@@ -148,6 +148,7 @@
 %    CMYK  Raw cyan, magenta, yellow, and black bytes.
 %    DCX   ZSoft IBM PC multi-page Paintbrush file
 %    DIB   Microsoft Windows bitmap image file.
+%    DICOM Medical image file.
 %    EPI   Adobe Encapsulated PostScript Interchange format.
 %    EPS   Adobe Encapsulated PostScript file.
 %    EPS2  Adobe Level II Encapsulated PostScript file.
@@ -271,6 +272,7 @@ static void Usage(const char *client_name)
       "CMYK   Raw cyan, magenta, yellow, and black bytes.",
       "DCX    ZSoft IBM PC multi-page Paintbrush file",
       "DIB    Microsoft Windows bitmap image file.",
+      "DICOM Medical image file.",
       "EPI    Adobe Encapsulated PostScript Interchange format.",
       "EPS    Adobe Encapsulated PostScript file.",
       "EPS2   Adobe Level II Encapsulated PostScript file.",

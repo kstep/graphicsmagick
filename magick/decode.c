@@ -1146,6 +1146,601 @@ static Image *ReadCMYKImage(const ImageInfo *image_info)
   return(image);
 }
 
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   R e a d D I C O M I m a g e                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method ReadDICOMImage reads a DICOM Medical image file and returns
+%  it.  It allocates the memory necessary for the new Image structure and
+%  returns a pointer to the new image.
+%
+%  This routine is strongly based on a similiar routine written by
+%  George J. Grevera.
+%
+%  The format of the ReadDICOMImage routine is:
+%
+%      image=ReadDICOMImage(image_info)
+%
+%  A description of each parameter follows:
+%
+%    o image:  Method ReadDICOMImage returns a pointer to the image after
+%      reading.  A null image is returned if there is a a memory shortage or
+%      if the image cannot be read.
+%
+%    o image_info: Specifies a pointer to an ImageInfo structure.
+%
+%
+*/
+static Image *ReadDICOMImage(const ImageInfo *image_info)
+{
+  char
+    *data,
+    *info;
+
+  Image
+    *image;
+
+  int
+    datum,
+    element,
+    group,
+    length,
+    remaining;
+
+  Quantum
+    *scale;
+
+  register int
+    i;
+
+  register RunlengthPacket
+    *q;
+
+  register long
+    packets;
+
+  unsigned int
+    bytes_per_pixel,
+    first_one,
+    photometric_type,
+    significant_bits;
+
+  unsigned long
+    max_packets,
+    max_value;
+
+  unsigned short
+    index;
+
+  /*
+    Allocate image structure.
+  */
+  image=AllocateImage(image_info);
+  if (image == (Image *) NULL)
+    return((Image *) NULL);
+  /*
+    Open image file.
+  */
+  OpenImage(image_info,image,ReadBinaryType);
+  if (image->file == (FILE *) NULL)
+    PrematureExit(FileOpenWarning,"Unable to open file",image);
+  /*
+    Read DICOM Medical image.
+  */
+  bytes_per_pixel=1;
+  first_one=True;
+  photometric_type=0;
+  significant_bits=0;
+  for ( ; ; )
+  {
+    /*
+      Read a group.
+    */
+    info=(char *) NULL;
+    image->offset=ftell(image->file);
+    group=LSBFirstReadShort(image->file);
+    element=LSBFirstReadShort(image->file);
+    length=LSBFirstReadLong(image->file);
+    remaining=length;
+    switch (group)
+    {
+      case 0x0002:
+      {
+        switch (element)
+        {
+          case 0x00: info="file meta elements group length"; break;
+          case 0x01: info="file meta info version"; break;
+          case 0x02: info="media storage SOP class uid"; break;
+          case 0x03: info="media storage SOP inst uid"; break;
+          case 0x10: info="transfer syntax uid"; break;
+          case 0x12: info="implementation class uid"; break;
+          case 0x13: info="implementation version name"; break;
+          case 0x16: info="source app entity title"; break;
+          case 0x100: info="private info creator uid"; break;
+          case 0x102: info="private info"; break;
+        }
+        break;
+      }
+      case 0x0008:
+      {
+        switch (element)
+        {
+          case 0x00: info="identifying group"; break;
+          case 0x01: info="length to end"; break;
+          case 0x05: info="specific character set"; break;
+          case 0x08: info="image type"; break;
+          case 0x10: info="recognition code"; break;
+          case 0x16: info="SOP Class UID"; break;
+          case 0x18: info="SOP Instance UID"; break;
+          case 0x20: info="study date"; break;
+          case 0x21: info="series date"; break;
+          case 0x22: info="acquisition date"; break;
+          case 0x23: info="image date"; break;
+          case 0x30: info="study time"; break;
+          case 0x31: info="series time"; break;
+          case 0x32: info="acquisition time"; break;
+          case 0x33: info="image time"; break;
+          case 0x40: info="data set type"; break;
+          case 0x41: info="data set subtype"; break;
+          case 0x50: info="accession number"; break;
+          case 0x60: info="modality"; break;
+          case 0x70: info="manufacturer"; break;
+          case 0x80: info="institution name"; break;
+          case 0x90: info="referring physician's name"; break;
+          case 0x1010: info="station name"; break;
+          case 0x103e: info="series description"; break;
+          case 0x1030: info="study description"; break;
+          case 0x1040: info="institutional dept. name"; break;
+          case 0x1050: info="performing physician's name"; break;
+          case 0x1060: info="name phys(s) read stdy"; break;
+          case 0x1070: info="operator's name"; break;
+          case 0x1080: info="admitting diagnoses description"; break;
+          case 0x1090: info="manufacturer's model name"; break;
+          case 0x1140: info="referenced image sequence"; break;
+        }
+        break;
+      }
+      case 0x0010:
+      {
+        switch (element)
+        {
+          case 0x00: info="patient group"; break;
+          case 0x10: info="patient name"; break;
+          case 0x20: info="patient ID"; break;
+          case 0x30: info="patient birthdate"; break;
+          case 0x40: info="patient sex"; break;
+          case 0x1010: info="patient age";  break;
+          case 0x1030: info="patient weight";  break;
+          case 0x21b0: info="additional patient history"; break;
+        }
+        break;
+      }
+      case 0x0018:
+      {
+        switch (element)
+        {
+          case 0x00: info="acquisition group"; break;
+          case 0x10: info="contrast/bolus agent"; break;
+          case 0x20: info="scanning sequence"; break;
+          case 0x21: info="Sequence Variant"; break;
+          case 0x22: info="Scan Options"; break;
+          case 0x23: info="MR Acquisition Type"; break;
+          case 0x24: info="Sequence Name"; break;
+          case 0x25: info="Angio Flag"; break;
+          case 0x30: info="radionuclide"; break;
+          case 0x50: info="slice thickness"; break;
+          case 0x60: info="kvp"; break;
+          case 0x80: info="repetition time"; break;
+          case 0x81: info="echo time"; break;
+          case 0x82: info="inversion time"; break;
+          case 0x83: info="Number of Averages"; break;
+          case 0x84: info="Imaging Frequency"; break;
+          case 0x85: info="Imaged Nucleus"; break;
+          case 0x86: info="Echo Number"; break;
+          case 0x87: info="Magnetic Field Strength"; break;
+          case 0x88: info="Spacing Between Slices"; break;
+          case 0x91: info="Echo Train Length"; break;
+          case 0x93: info="Percent Sampling"; break;
+          case 0x94: info="Percent Phase Field of View"; break;
+          case 0x95: info="Pixel Bandwidth"; break;
+          case 0x1020: info="software version(s)"; break;
+          case 0x1030: info="protocol name"; break;
+          case 0x1040: info="Contrast/Bolus Route"; break;
+          case 0x1062: info="Nominal Interval"; break;
+          case 0x1088: info="Heart Rate"; break;
+          case 0x1090: info="Cardiac Number of Images"; break;
+          case 0x1094: info="Trigger Window"; break;
+          case 0x1100: info="Reconstruction Diameter"; break;
+          case 0x1120: info="gantry/detector tilt"; break;
+          case 0x1150: info="exposure time"; break;
+          case 0x1151: info="x-ray tube current"; break;
+          case 0x1210: info="convolution kernel"; break;
+          case 0x1250: info="Receiving Coil"; break;
+          case 0x1251: info="Transmitting Coil"; break;
+          case 0x1310: info="Acquisition Matrix"; break;
+          case 0x1314: info="Flip Angle"; break;
+          case 0x1315: info="Variable Flip Angle Flag"; break;
+          case 0x1316: info="SAR"; break;
+          case 0x5100: info="Patient Position"; break;
+        }
+        break;
+      }
+      case 0x0020:
+      {
+        switch (element)
+        {
+          case 0x00: info="relationship group"; break;
+          case 0x0d: info="Study Instance UID"; break;
+          case 0x0e: info="Series Instance UID"; break;
+          case 0x10: info="study id"; break;
+          case 0x11: info="series number"; break;
+          case 0x12: info="acquisition number"; break;
+          case 0x13: info="image number"; break;
+          case 0x20: info="patient orientation"; break;
+          case 0x30: info="image position (ret)"; break;
+          case 0x32: info="Image Position (Patient)"; break;
+          case 0x35: info="image orientation (ret)"; break;
+          case 0x37: info="Image Orientation (Patient)"; break;
+          case 0x50: info="location (ret)"; break;
+          case 0x52: info="Frame of Reference UID"; break;
+          case 0x60: info="Laterality"; break;
+          case 0x1002: info="images in acquisition"; break;
+          case 0x1040: info="position reference"; break;
+          case 0x1041: info="slice location"; break;
+          case 0x3401: info="modifying device id"; break;
+          case 0x3402: info="modified image id"; break;
+          case 0x3403: info="modified image date"; break;
+          case 0x3404: info="modifying device mfg."; break;
+          case 0x3405: info="modified image time"; break;
+          case 0x3406: info="modified image desc."; break;
+          case 0x4000: info="image comments"; break;
+          case 0x5000: info="original image id"; break;
+        }
+        break;
+      }
+      case 0x0028:
+      {
+        switch (element)
+        {
+          case 0x00: info="image presentation group"; break;
+          case 0x02: info="samples per pixel"; break;
+          case 0x04:
+          {
+            long
+              location;
+
+            info="photometric interpretation";
+            data=(char *) AllocateMemory((length+1)*sizeof(char));
+            if (data == (char *) NULL)
+              PrematureExit(ResourceLimitWarning,"Memory allocation failed",
+                image);
+            location=ftell(image->file);
+            (void) ReadData(data,1,length,image->file);
+            (void) fseek(image->file,location,0);
+            data[length]='\0';
+            if (strncmp(data,"MONOCHROME1",strlen("MONOCHROME1")) == 0)
+              photometric_type=1;
+            else
+              if (strncmp(data,"MONOCHROME2",strlen("MONOCHROME2")) == 0)
+                photometric_type=2;
+            FreeMemory(data);
+            break;
+          }
+          case 0x05: info="image dimensions (ret)"; break;
+          case 0x06: info="planar configuration"; break;
+          case 0x08: info="number of frames";  break;
+          case 0x09: info="frame increment pointer"; break;
+          case 0x10:
+          {
+            info="rows";
+            image->rows=LSBFirstReadShort(image->file);
+            datum=image->rows;
+            remaining = 0;
+            break;
+          }
+          case 0x11:
+          {
+            info="columns";
+            image->columns=LSBFirstReadShort(image->file);
+            datum=image->columns;
+            remaining=0;
+            break;
+          }
+          case 0x30: info="pixel spacing"; break;
+          case 0x31: info="zoom factor"; break;
+          case 0x32: info="zoom center"; break;
+          case 0x34: info="pixel aspect ratio"; break;
+          case 0x40: info="image format (ret)"; break;
+          case 0x50: info="manipulated image (ret)"; break;
+          case 0x51: info="corrected image"; break;
+          case 0x60: info="compression code (ret)"; break;
+          case 0x0100:
+          {
+            info="bits allocated";
+            datum=LSBFirstReadShort(image->file);
+            if (datum == 8)
+              bytes_per_pixel=1;
+            else
+              if (datum == 16)
+                bytes_per_pixel=2;
+              else
+                PrematureExit(CorruptImageWarning,"unsupported bit depth",
+                  image);
+            remaining=0;
+            break;
+          }
+          case 0x0101:
+          {
+            info="bits stored";
+            significant_bits=LSBFirstReadShort(image->file);
+            datum=significant_bits;
+            if (datum <= 8)
+              bytes_per_pixel=1;
+            else
+              if (datum <= 16)
+                bytes_per_pixel=2;
+              else
+                PrematureExit(CorruptImageWarning,"unsupported bit depth",
+                  image);
+            remaining=0;
+            break;
+          }
+          case 0x0102:
+          {
+            info="high bit";
+            datum=LSBFirstReadShort(image->file);
+            remaining=0;
+            break;
+          }
+          case 0x0103: info="pixel representation"; break;
+          case 0x0200: info="image location (ret)"; break;
+          case 0x1050: info="window center"; break;
+          case 0x1051: info="window width"; break;
+          case 0x1052: info="rescale intercept"; break;
+          case 0x1053: info="rescale slope"; break;
+          case 0x1100: info="gray lookup table desc (ret)";  break;
+          case 0x1200:
+            info="gray lookup table data (ret)";
+          case 0x1201:
+            if (info == (char *) NULL)
+              info="red table";
+          case 0x1202:
+            if (info == (char *) NULL)
+              info="green table";
+          case 0x1203:
+          {
+            /*
+              Populate image colormap.
+            */
+            if (info == (char *) NULL)
+              info="blue table";
+            if (image->colormap == (ColorPacket *) NULL)
+              image->colormap=(ColorPacket *)
+                AllocateMemory(length*sizeof(ColorPacket));
+            else
+              image->colormap=(ColorPacket *)
+                ReallocateMemory((char *) length,sizeof(ColorPacket));
+            if (image->colormap == (ColorPacket *) NULL)
+              PrematureExit(ResourceLimitWarning,"Memory allocation failed",
+                image);
+            image->colors=length;
+            for (i=0; i < image->colors; i++)
+            {
+              index=LSBFirstReadShort(image->file);
+              if ((element == 0x1200) || (element == 0x1201))
+                image->colormap[i].red=(Quantum) index;
+              if ((element == 0x1200) || (element == 0x1202))
+                image->colormap[i].green=(Quantum) index;
+              if ((element == 0x1200) || (element == 0x1203))
+                image->colormap[i].blue=(Quantum) index;
+            }
+            remaining=0;
+            break;
+          }
+          break;
+        }
+        break;
+      }
+      case 0x4000: info="text"; break;
+      case 0x7FE0:
+      {
+        switch (element)
+        {
+          case 0x00: info="pixel data"; break;
+          case 0x10: info="pixel data"; break;
+        }
+        break;
+      }
+      default :
+      {
+        if ((group >= 0x6000) && (group <= 0x601e) && ((group & 1) == 0))
+          info="overlay";
+        if (element == 0x0000)
+          info="group length";
+        if (element == 0x4000)
+          info="comments";
+        break;
+      }
+    }
+    if (image_info->verbose)
+      {
+        /*
+          Display group header.
+        */
+        (void) fprintf(stdout,"%04lx: (%04x,%04x)",image->offset,group,element);
+        if (info != NULL)
+          (void) fprintf(stdout," %26s",info);
+        else
+          (void) fprintf(stdout," unrecognized");
+        (void) fprintf(stdout,": %4d ",length);
+      }
+    if ((group == 0x7FE0) && (element == 0x10))
+      {
+        if (image_info->verbose)
+          (void) fprintf(stdout,"\n");
+        break;
+      }
+    if (length <= 0)
+      {
+        if (image_info->verbose)
+          (void) fprintf(stdout,"\n");
+        continue;
+      }
+    if (remaining == 0)
+      {
+        if (image_info->verbose)
+          (void) fprintf(stdout,"%d\n",datum);
+        continue;
+      }
+    /*
+      Read group data.
+    */
+    data=(char *) AllocateMemory(length*sizeof(char));
+    if (data == (char *) NULL)
+      PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
+    (void) ReadData(data,1,length,image->file);
+    if (image_info->verbose)
+      {
+        /*
+          Display group data.
+        */
+        for (i=0; i < length; i++)
+          if (isprint(data[i]))
+            (void) fprintf(stdout,"%c",data[i]);
+          else
+            (void) fprintf(stdout,"%c",'.');
+        switch (length)
+        {
+          case 1:
+          {
+            (void) fprintf(stdout," (%d)",*data);
+            break;
+          }
+          case 2 :
+          {
+            i=data[0]+(data[1] << 8);
+            (void) fprintf(stdout," (%d)",i);
+            break;
+          }
+          case 4 :
+          {
+            i=data[0]+(data[1] << 8)+(data[2] << 16)+(data[3] << 24);
+            (void) fprintf(stdout," (%d)",i);
+            break;
+          }
+          default:
+            break;
+        }
+        (void) fprintf(stdout,"\n");
+      }
+    FreeMemory(data);
+  }
+  /*
+    Initialize image structure.
+  */
+  image->class=PseudoClass;
+  max_value=1 << (8*bytes_per_pixel);
+  if (photometric_type == 1)
+    max_value=1 << significant_bits;
+  if (image->colormap == (ColorPacket *) NULL)
+    {
+      /*
+        Allocate image colormap.
+      */
+      image->colors=Min(max_value,MaxRGB)+1;
+      image->colormap=(ColorPacket *)
+        AllocateMemory(image->colors*sizeof(ColorPacket));
+      if (image->colormap == (ColorPacket *) NULL)
+        PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
+      for (i=0; i < image->colors; i++)
+      {
+        image->colormap[i].red=(Quantum) ((long) (MaxRGB*i)/(image->colors-1));
+        image->colormap[i].green=(Quantum)
+          ((long) (MaxRGB*i)/(image->colors-1));
+        image->colormap[i].blue=(Quantum) ((long) (MaxRGB*i)/(image->colors-1));
+      }
+    }
+  packets=0;
+  max_packets=Max((image->columns*image->rows+4) >> 3,1);
+  image->pixels=(RunlengthPacket *)
+    AllocateMemory(max_packets*sizeof(RunlengthPacket));
+  if (image->pixels == (RunlengthPacket *) NULL)
+    PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
+  if (image_info->ping)
+    {
+      CloseImage(image);
+      return(image);
+    }
+  scale=(Quantum *) NULL;
+  if (max_value != MaxRGB)
+    {
+      /*
+        Compute pixel scaling table.
+      */
+      scale=(Quantum *) AllocateMemory((max_value+1)*sizeof(Quantum));
+      if (scale == (Quantum *) NULL)
+        PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
+      for (i=0; i <= max_value; i++)
+        scale[i]=(Quantum) ((i*MaxRGB+(max_value >> 1))/max_value);
+    }
+  /*
+    Convert DICOM Medical image to runlength-encoded packets.
+  */
+  q=image->pixels;
+  q->length=MaxRunlength;
+  q->length=0;
+  for (i=0; i < (image->columns*image->rows); i++)
+  {
+    if (bytes_per_pixel == 1)
+      index=fgetc(image->file);
+    else
+      index=LSBFirstReadShort(image->file);
+    if (photometric_type == 1)
+      index=max_value-index;
+    if (scale != (Quantum *) NULL)
+      index=scale[index];
+    if ((index == q->index) && ((int) q->length < MaxRunlength))
+      q->length++;
+    else
+      {
+        if (packets != 0)
+          q++;
+        packets++;
+        if (packets == max_packets)
+          {
+            max_packets<<=1;
+            image->pixels=(RunlengthPacket *) ReallocateMemory((char *)
+              image->pixels,max_packets*sizeof(RunlengthPacket));
+            if (image->pixels == (RunlengthPacket *) NULL)
+              {
+                if (scale != (Quantum *) NULL)
+                  FreeMemory((char *) scale);
+                PrematureExit(ResourceLimitWarning,"Memory allocation failed",
+                  image);
+              }
+            q=image->pixels+packets-1;
+          }
+        q->index=index;
+        q->length=0;
+      }
+    if (QuantumTick(i,image))
+      ProgressMonitor(LoadImageText,i,image->packets);
+  }
+  image->packets=packets;
+  SyncImage(image);
+  if (scale != (Quantum *) NULL)
+    FreeMemory((char *) scale);
+  CloseImage(image);
+  return(image);
+}
+
 #if defined(HasDPS)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -2342,20 +2937,27 @@ static Image *ReadFPXImage(const ImageInfo *image_info)
   /*
     Determine resolution by subimage specification.
   */
-  image->columns=width;
-  image->rows=height;
   for (i=1; ; i++)
-    if (((image->columns >> i) < tile_width) ||
-        ((image->rows >> i) < tile_height))
+    if (((width >> i) < tile_width) ||
+        ((height >> i) < tile_height))
       break;
   subimage=i;
   if (image_info->subrange != 0)
     while (subimage > image_info->subimage)
     {
-      image->columns>>=1;
-      image->rows>>=1;
+      width>>=1;
+      height>>=1;
       subimage--;
     }
+  if (image_info->size != (char *) NULL)
+    while ((width > image->columns) || (height > image->rows))
+    {
+      width>>=1;
+      height>>=1;
+      subimage--;
+    }
+  image->columns=width;
+  image->rows=height;
   if ((colorspace.numberOfComponents % 2) == 0)
     image->matte=True;
   if (colorspace.numberOfComponents == 1)
@@ -2706,7 +3308,7 @@ static Image *ReadGIFImage(ImageInfo *image_info)
               if (image->comments != (char *) NULL)
                 {
                   image->comments=(char *) ReallocateMemory((char *)
-                    image->comments,(Extent(image->comments)+length+1)*
+                    image->comments,(Extent(image->comments)+length+2)*
                     sizeof(char));
                 }
               else
@@ -2742,7 +3344,6 @@ static Image *ReadGIFImage(ImageInfo *image_info)
       }
     if (c != ',')
       continue;
-    CondenseImage(image);
     if (image_count != 0)
       {
         /*
@@ -5558,9 +6159,6 @@ static Image *ReadMAPImage(const ImageInfo *image_info)
 {
   Image
     *image;
-
-  int
-    colors;
 
   register int
     i;
@@ -9733,8 +10331,12 @@ static Image *ReadPNMImage(const ImageInfo *image_info)
                     image->pixels=(RunlengthPacket *) ReallocateMemory((char *)
                       image->pixels,max_packets*sizeof(RunlengthPacket));
                     if (image->pixels == (RunlengthPacket *) NULL)
-                      PrematureExit(ResourceLimitWarning,
-                        "Memory allocation failed",image);
+                      {
+                        if (scale != (Quantum *) NULL)
+                          FreeMemory((char *) scale);
+                        PrematureExit(ResourceLimitWarning,
+                          "Memory allocation failed",image);
+                      }
                     q=image->pixels+packets-1;
                   }
                 q->index=index;
@@ -9778,8 +10380,12 @@ static Image *ReadPNMImage(const ImageInfo *image_info)
                     image->pixels=(RunlengthPacket *) ReallocateMemory((char *)
                       image->pixels,max_packets*sizeof(RunlengthPacket));
                     if (image->pixels == (RunlengthPacket *) NULL)
-                      PrematureExit(ResourceLimitWarning,
-                        "Memory allocation failed",image);
+                      {
+                        if (scale != (Quantum *) NULL)
+                          FreeMemory((char *) scale);
+                        PrematureExit(ResourceLimitWarning,
+                          "Memory allocation failed",image);
+                      }
                     q=image->pixels+packets-1;
                   }
                 q->red=red;
@@ -9929,8 +10535,12 @@ static Image *ReadPNMImage(const ImageInfo *image_info)
                     image->pixels=(RunlengthPacket *) ReallocateMemory((char *)
                       image->pixels,max_packets*sizeof(RunlengthPacket));
                     if (image->pixels == (RunlengthPacket *) NULL)
-                      PrematureExit(ResourceLimitWarning,
-                        "Memory allocation failed",image);
+                      {
+                        if (scale != (Quantum *) NULL)
+                          FreeMemory((char *) scale);
+                        PrematureExit(ResourceLimitWarning,
+                          "Memory allocation failed",image);
+                      }
                     q=image->pixels+packets-1;
                   }
                 q->red=red;
@@ -17704,6 +18314,11 @@ Export Image *ReadImage(ImageInfo *image_info)
       if (Latin1Compare(decode_info.magick,"DIB") == 0)
         {
           image=ReadBMPImage(&decode_info);
+          break;
+        }
+      if (Latin1Compare(decode_info.magick,"DICOM") == 0)
+        {
+          image=ReadDICOMImage(&decode_info);
           break;
         }
       image=ReadMIFFImage(&decode_info);

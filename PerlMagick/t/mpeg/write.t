@@ -20,7 +20,7 @@ chdir 't/mpeg' || die 'Cd failed';
 testReadWrite( 'MPEG:input.mpg',
                'MPEG:output.mpg',
                q//,
-               '893aa3867a357a95ee2b991b38e9f47b' );
+               '562640e0c3044629a29a4f77913337df' );
 
 #
 # Create an MPEG (Version 2)
@@ -29,6 +29,6 @@ testReadWrite( 'MPEG:input.mpg',
 testReadWrite( 'M2V:input.m2v',
                'M2V:output.m2v',
                q//,
-               '4d63b90e33df433d520e660e46956eae' );
+               '14d779490ad401d17df02284b8dac0f0' );
 
 1;

@@ -32,7 +32,7 @@ testReadWrite( 'AVS:input.avs',
 testReadWrite( 'BMP:input.bmp',
                'BMP:output.bmp',
                q//,
-               '30fe8b9fee6480481f3aa4e9931499f6' );
+               '7785d161ea66bd39394bb74ef704a0aa' );
 
 #
 # Microsoft Windows 24-bit bitmap image file
@@ -212,7 +212,7 @@ testReadWrite( 'SGI:input.sgi',
 testReadWrite( 'SUN:input.im1',
                'SUN:output.im1',
                q//,
-               'd3ade8d6b9a7c216a8e7975450bb3d18' );
+               '61ed9c1e08dac993e5f020de8195e009' );
 
 #
 # SUN 8-bit Rasterfile
@@ -221,7 +221,7 @@ testReadWrite( 'SUN:input.im1',
 testReadWrite( 'SUN:input.im8',
                'SUN:output.im8',
                q//,
-               '30fe8b9fee6480481f3aa4e9931499f6' );
+               '7785d161ea66bd39394bb74ef704a0aa' );
 
 #
 # SUN True-Color Rasterfile
@@ -257,7 +257,7 @@ testReadWrite( 'VIFF:input.viff',
 testReadWrite( 'XBM:input.xbm',
                'XBM:output.xbm',
                q//,
-               'd3ade8d6b9a7c216a8e7975450bb3d18' );
+               '61ed9c1e08dac993e5f020de8195e009' );
 
 #
 # X Windows system pixmap file (color)
@@ -266,7 +266,7 @@ testReadWrite( 'XBM:input.xbm',
 testReadWrite( 'XPM:input.xpm',
                'XPM:output.xpm',
                q//,
-               'de76ba1b3c4eeacf4817b60f883889b9' );
+               '948df732ca8abbd1f7348a029f056c94' );
 
 #
 # X Windows system window dump file (color)
@@ -305,7 +305,7 @@ testReadWriteSized( 'RGBA:input_70x46.rgba',
 		    'RGBA:output_70x46.rgba',
 		    '70x46',
 		    q//,
-		    'cbea6d67fef0a219335af34069e36fac' );
+		    'f3e5ab88e328da3044c1fc177a7e2978' );
 
 #
 # CMYK format

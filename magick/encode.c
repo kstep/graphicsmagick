@@ -862,6 +862,43 @@ static unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
++   W r i t e C G M I m a g e                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method WriteDICOMImage writes an image in the DICOM Medical encoded image
+%  format.
+%
+%  The format of the WriteDICOMImage routine is:
+%
+%      status=WriteDICOMImage(image_info,image)
+%
+%  A description of each parameter follows.
+%
+%    o status: Method WriteDICOMImage return True if the image is written.
+%      False is returned is there is a memory shortage or if the image file
+%      fails to write.
+%
+%    o image_info: Specifies a pointer to an ImageInfo structure.
+%
+%    o image:  A pointer to a Image structure.
+%
+%
+*/
+static unsigned int WriteDICOMImage(const ImageInfo *image_info,Image *image)
+{
+  MagickWarning(MissingPluginWarning,"Cannot write DICOM images",
+    image->filename);
+  return(False);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 +   W r i t e E P T I m a g e                                                 %
 %                                                                             %
 %                                                                             %
@@ -6870,7 +6907,8 @@ static void PNGError(png_struct *ping,png_const_charp message)
   longjmp(ping->jmpbuf,1);
 }
 
-static void PNGTextChunk(png_info *ping_info,char *keyword,char *value)
+static void PNGTextChunk(const ImageInfo *image_info,png_info *ping_info,
+  char *keyword,char *value)
 {
   register int
     i;
@@ -6879,7 +6917,8 @@ static void PNGTextChunk(png_info *ping_info,char *keyword,char *value)
   ping_info->text[i].key=keyword;
   ping_info->text[i].text=value;
   ping_info->text[i].text_length=Extent(value);
-  ping_info->text[i].compression=Extent(value) > 1024 ? 0 : -1;
+  ping_info->text[i].compression= \
+    image_info->compression != NoCompression ? 0 : -1;
 }
 
 static void PNGWarning(png_struct *ping,png_const_charp message)
@@ -7298,17 +7337,17 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     ping_info->text=(png_text *) AllocateMemory(256*sizeof(png_text));
     if (ping_info->text == (png_text *) NULL)
       PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
-    PNGTextChunk(ping_info,"Software",Version);
+    PNGTextChunk(image_info,ping_info,"Software",Version);
     SignatureImage(image);
     if (image->signature != (char *) NULL)
-      PNGTextChunk(ping_info,"Signature",image->signature);
+      PNGTextChunk(image_info,ping_info,"Signature",image->signature);
     if (image->scene != 0)
       {
         char
           scene[MaxTextExtent];
 
         (void) sprintf(scene,"%u",image->scene);
-        PNGTextChunk(ping_info,"Scene",scene);
+        PNGTextChunk(image_info,ping_info,"Scene",scene);
       }
     if (image->delay != 0)
       {
@@ -7316,18 +7355,18 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
           delay[MaxTextExtent];
 
         (void) sprintf(delay,"%u",image->delay);
-        PNGTextChunk(ping_info,"Delay",delay);
+        PNGTextChunk(image_info,ping_info,"Delay",delay);
       }
     if (image->label != (char *) NULL)
-      PNGTextChunk(ping_info,"Label",image->label);
+      PNGTextChunk(image_info,ping_info,"Label",image->label);
     if (image->page != (char *) NULL)
-      PNGTextChunk(ping_info,"Page",image->page);
+      PNGTextChunk(image_info,ping_info,"Page",image->page);
     if (image->montage != (char *) NULL)
-      PNGTextChunk(ping_info,"Montage",image->montage);
+      PNGTextChunk(image_info,ping_info,"Montage",image->montage);
     if (image->directory != (char *) NULL)
-      PNGTextChunk(ping_info,"Directory",image->directory);
+      PNGTextChunk(image_info,ping_info,"Directory",image->directory);
     if (image->comments != (char *) NULL)
-      PNGTextChunk(ping_info,"Comment",image->comments);
+      PNGTextChunk(image_info,ping_info,"Comment",image->comments);
     png_write_end(ping,ping_info);
     png_destroy_write_struct(&ping,&ping_info);
     if (image->next == (Image *) NULL)
@@ -13830,6 +13869,11 @@ Export unsigned int WriteImage(ImageInfo *image_info,Image *image)
       if (Latin1Compare(image_info->magick,"DCX") == 0)
         {
           status=WritePCXImage(image_info,image);
+          break;
+        }
+      if (Latin1Compare(image_info->magick,"DICOM") == 0)
+        {
+          status=WriteDICOMImage(image_info,image);
           break;
         }
       status=WriteBMPImage(image_info,image);

@@ -20,7 +20,7 @@ chdir 't/hdf' || die 'Cd failed';
 testReadWrite( 'input_256.hdf',
 	       'output_256.hdf',
 	       q/quality=>54/,
-	       'ae64e066b6ec4294074de1226bd8d08a' );
+	       '0acbc70bac502726c1b72d3c3ff4d0fe' );
 
 #
 # 2) Test truecolor image

@@ -267,7 +267,7 @@ testReadSized( 'input_70x46.rgb', '70x46', 'e9b162b8431709942886f79b7b7c11bb' );
 # RGBA format
 #
 ++$test;
-testReadSized( 'input_70x46.rgba', '70x46', 'cbea6d67fef0a219335af34069e36fac' );
+testReadSized( 'input_70x46.rgba', '70x46', 'f3e5ab88e328da3044c1fc177a7e2978' );
 
 
 #

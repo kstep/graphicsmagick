@@ -12,6 +12,7 @@ static char
     { "CMYK", "True" },
     { "DCX", "True" },
     { "DIB", "True" },
+    { "DICOM", "False" },
     { "EPDF", "False" },
     { "EPI", "False" },
     { "EPS", "False" },

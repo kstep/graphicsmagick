@@ -413,167 +413,167 @@ Export void AnnotateImage(Image *image,AnnotateInfo *annotate_info)
         FreeMemory((char *) text);
       return;
     }
-  if (strcmp(SetClientName((char *) NULL),"PerlMagick") == 0)
-    (void) strcpy(image->text,text);
-  else
-    {
-      /*
-        Translate any embedded format characters.
-      */
-      for (q=image->text; *p != '\0'; p++)
+  /*
+    Translate any embedded format characters.
+  */
+  for (q=image->text; *p != '\0'; p++)
+  {
+    *q='\0';
+    if ((q-image->text+MaxTextExtent) >= length)
       {
-        *q='\0';
-        if ((q-image->text+MaxTextExtent) >= length)
-          {
-            length<<=1;
-            image->text=(char *) ReallocateMemory((char *) image->text,length);
-            if (image->text == (char *) NULL)
-              break;
-            q=image->text+Extent(image->text);
-          }
-        /*
-          Process formatting characters in text.
-        */
-        if ((*p == '\\') && (*(p+1) == 'r'))
-          {
-            *q++='\r';
-            p++;
-            continue;
-          }
-        if ((*p == '\\') && (*(p+1) == 'n'))
-          {
-            *q++='\n';
-            p++;
-            continue;
-          }
-        if (*p == '\\')
-          p++;
-        if (*p != '%')
-          {
-            *q++=(*p);
-            continue;
-          }
+        length<<=1;
+        image->text=(char *) ReallocateMemory((char *) image->text,length);
+        if (image->text == (char *) NULL)
+          break;
+        q=image->text+Extent(image->text);
+      }
+    /*
+      Process formatting characters in text.
+    */
+    if ((*p == '\\') && (*(p+1) == 'r'))
+      {
+        *q++='\r';
         p++;
+        continue;
+      }
+    if ((*p == '\\') && (*(p+1) == 'n'))
+      {
+        *q++='\n';
+        p++;
+        continue;
+      }
+    if (*p == '\\')
+      p++;
+    if (*p != '%')
+      {
+        *q++=(*p);
+        continue;
+      }
+    p++;
+    switch (*p)
+    {
+      case 'b':
+      {
+        if (image->filesize >= (1 << 24))
+          (void) sprintf(q,"%ldmb",image->filesize/1024/1024);
+        else
+          if (image->filesize >= (1 << 14))
+            (void) sprintf(q,"%ldkb",image->filesize/1024);
+          else
+            (void) sprintf(q,"%ldb",image->filesize);
+        q=image->text+Extent(image->text);
+        break;
+      }
+      case 'd':
+      case 'e':
+      case 'f':
+      case 't':
+      {
+        char
+          directory[MaxTextExtent],
+          *extension,
+          *filename;
+
+        /*
+          Label segment is the base of the filename.
+        */
+        if (Extent(image->magick_filename) == 0)
+          break;
+        (void) strcpy(directory,image->magick_filename);
+        extension=directory+Extent(directory);
+        filename=extension;
+        while ((filename > directory) &&
+               (*(filename-1) != *BasenameSeparator))
+        {
+          if (*filename == '.')
+            if (*extension == '\0')
+              extension=filename+1;
+          filename--;
+        }
         switch (*p)
         {
-          case 'b':
+          case 'd':
           {
-            if (image->filesize >= (1 << 24))
-              (void) sprintf(q,"%ldmb",image->filesize/1024/1024);
-            else
-              if (image->filesize >= (1 << 14))
-                (void) sprintf(q,"%ldkb",image->filesize/1024);
-              else
-                (void) sprintf(q,"%ldb",image->filesize);
-            q=image->text+Extent(image->text);
+             *filename='\0';
+            (void) strcpy(q,directory);
+            q+=Extent(directory);
             break;
           }
-          case 'd':
           case 'e':
+          {
+            (void) strcpy(q,extension);
+            q+=Extent(extension);
+            break;
+          }
           case 'f':
+          {
+            (void) strcpy(q,filename);
+            q+=Extent(filename);
+            break;
+          }
           case 't':
           {
-            char
-              directory[MaxTextExtent],
-              *extension,
-              *filename;
-
-            /*
-              Label segment is the base of the filename.
-            */
-            if (Extent(image->magick_filename) == 0)
-              break;
-            (void) strcpy(directory,image->magick_filename);
-            extension=directory+Extent(directory);
-            filename=extension;
-            while ((filename > directory) &&
-                   (*(filename-1) != *BasenameSeparator))
-            {
-              if (*filename == '.')
-                if (*extension == '\0')
-                  extension=filename+1;
-              filename--;
-            }
-            switch (*p)
-            {
-              case 'd':
-              {
-                 *filename='\0';
-                (void) strcpy(q,directory);
-                q+=Extent(directory);
-                break;
-              }
-              case 'e':
-              {
-                (void) strcpy(q,extension);
-                q+=Extent(extension);
-                break;
-              }
-              case 'f':
-              {
-                (void) strcpy(q,filename);
-                q+=Extent(filename);
-                break;
-              }
-              case 't':
-              {
-                 *(extension-1)='\0';
-                (void) strcpy(q,filename);
-                q+=Extent(filename);
-                break;
-              }
-            }
-            break;
-          }
-          case 'h':
-          {
-            (void) sprintf(q,"%u",image->magick_rows);
-            q=image->text+Extent(image->text);
-            break;
-          }
-          case 'm':
-          {
-            (void) strcpy(q,image->magick);
-            q+=Extent(image->magick);
-            break;
-          }
-          case 'p':
-          {
-            register Image
-              *p;
-
-            unsigned int
-              page;
-
-            p=image;
-            for (page=1; p->previous != (Image *) NULL; page++)
-              p=p->previous;
-            (void) sprintf(q,"%u",page);
-            q=image->text+Extent(image->text);
-            break;
-          }
-          case 's':
-          {
-            (void) sprintf(q,"%u",image->scene);
-            q=image->text+Extent(image->text);
-            break;
-          }
-          case 'w':
-          {
-            (void) sprintf(q,"%u",image->magick_columns);
-            q=image->text+Extent(image->text);
-            break;
-          }
-          default:
-          {
-            *q++='%';
-            *q++=(*p);
+             *(extension-1)='\0';
+            (void) strcpy(q,filename);
+            q+=Extent(filename);
             break;
           }
         }
+        break;
       }
-      *q++='\0';
+      case 'h':
+      {
+        (void) sprintf(q,"%u",image->magick_rows);
+        q=image->text+Extent(image->text);
+        break;
+      }
+      case 'm':
+      {
+        (void) strcpy(q,image->magick);
+        q+=Extent(image->magick);
+        break;
+      }
+      case 'p':
+      {
+        register Image
+          *p;
+
+        unsigned int
+          page;
+
+        p=image;
+        for (page=1; p->previous != (Image *) NULL; page++)
+          p=p->previous;
+        (void) sprintf(q,"%u",page);
+        q=image->text+Extent(image->text);
+        break;
+      }
+      case 's':
+      {
+        (void) sprintf(q,"%u",image->scene);
+        q=image->text+Extent(image->text);
+        break;
+      }
+      case 'w':
+      {
+        (void) sprintf(q,"%u",image->magick_columns);
+        q=image->text+Extent(image->text);
+        break;
+      }
+      case '%':
+      {
+        *q++=(*p);
+        break;
+      }
+      default:
+      {
+        *q++='%';
+        *q++=(*p);
+        break;
+      }
     }
+  }
+  *q++='\0';
   if (indirection)
     FreeMemory((char *) text);
   textlist=StringToList(image->text);
@@ -1680,166 +1680,166 @@ Export void CommentImage(Image *image,char *comments)
         FreeMemory((char *) comments);
       return;
     }
-  if (strcmp(SetClientName((char *) NULL),"PerlMagick") == 0)
-    (void) strcpy(image->comments,comments);
-  else
-    {
-      /*
-        Translate any embedded format characters.
-      */
-      for (q=image->comments; *p != '\0'; p++)
+  /*
+    Translate any embedded format characters.
+  */
+  for (q=image->comments; *p != '\0'; p++)
+  {
+    *q='\0';
+    if ((q-image->comments+MaxTextExtent) >= length)
       {
-        *q='\0';
-        if ((q-image->comments+MaxTextExtent) >= length)
-          {
-            length<<=1;
-            image->comments=(char *)
-              ReallocateMemory((char *) image->comments,length);
-            if (image->comments == (char *) NULL)
-              break;
-            q=image->comments+Extent(image->comments);
-          }
-        /*
-          Process formatting characters in comments.
-        */
-        if ((*p == '\\') && (*(p+1) == 'r'))
-          {
-            *q++='\r';
-            p++;
-            continue;
-          }
-        if ((*p == '\\') && (*(p+1) == 'n'))
-          {
-            *q++='\n';
-            p++;
-            continue;
-          }
-        if (*p != '%')
-          {
-            *q++=(*p);
-            continue;
-          }
+        length<<=1;
+        image->comments=(char *)
+          ReallocateMemory((char *) image->comments,length);
+        if (image->comments == (char *) NULL)
+          break;
+        q=image->comments+Extent(image->comments);
+      }
+    /*
+      Process formatting characters in comments.
+    */
+    if ((*p == '\\') && (*(p+1) == 'r'))
+      {
+        *q++='\r';
         p++;
+        continue;
+      }
+    if ((*p == '\\') && (*(p+1) == 'n'))
+      {
+        *q++='\n';
+        p++;
+        continue;
+      }
+    if (*p != '%')
+      {
+        *q++=(*p);
+        continue;
+      }
+    p++;
+    switch (*p)
+    {
+      case 'b':
+      {
+        if (image->filesize >= (1 << 24))
+          (void) sprintf(q,"%ldmb",image->filesize/1024/1024);
+        else
+          if (image->filesize >= (1 << 14))
+            (void) sprintf(q,"%ldkb",image->filesize/1024);
+          else
+            (void) sprintf(q,"%ldb",image->filesize);
+        q=image->comments+Extent(image->comments);
+        break;
+      }
+      case 'd':
+      case 'e':
+      case 'f':
+      case 't':
+      {
+        char
+          directory[MaxTextExtent],
+          *extension,
+          *filename;
+
+        /*
+          Label segment is the base of the filename.
+        */
+        if (Extent(image->magick_filename) == 0)
+          break;
+        (void) strcpy(directory,image->magick_filename);
+        extension=directory+Extent(directory);
+        filename=extension;
+        while ((filename > directory) &&
+               (*(filename-1) != *BasenameSeparator))
+        {
+          if (*filename == '.')
+            if (*extension == '\0')
+              extension=filename+1;
+          filename--;
+        }
         switch (*p)
         {
-          case 'b':
+          case 'd':
           {
-            if (image->filesize >= (1 << 24))
-              (void) sprintf(q,"%ldmb",image->filesize/1024/1024);
-            else
-              if (image->filesize >= (1 << 14))
-                (void) sprintf(q,"%ldkb",image->filesize/1024);
-              else
-                (void) sprintf(q,"%ldb",image->filesize);
-            q=image->comments+Extent(image->comments);
+             *filename='\0';
+            (void) strcpy(q,directory);
+            q+=Extent(directory);
             break;
           }
-          case 'd':
           case 'e':
+          {
+            (void) strcpy(q,extension);
+            q+=Extent(extension);
+            break;
+          }
           case 'f':
+          {
+            (void) strcpy(q,filename);
+            q+=Extent(filename);
+            break;
+          }
           case 't':
           {
-            char
-              directory[MaxTextExtent],
-              *extension,
-              *filename;
-
-            /*
-              Label segment is the base of the filename.
-            */
-            if (Extent(image->magick_filename) == 0)
-              break;
-            (void) strcpy(directory,image->magick_filename);
-            extension=directory+Extent(directory);
-            filename=extension;
-            while ((filename > directory) &&
-                   (*(filename-1) != *BasenameSeparator))
-            {
-              if (*filename == '.')
-                if (*extension == '\0')
-                  extension=filename+1;
-              filename--;
-            }
-            switch (*p)
-            {
-              case 'd':
-              {
-                 *filename='\0';
-                (void) strcpy(q,directory);
-                q+=Extent(directory);
-                break;
-              }
-              case 'e':
-              {
-                (void) strcpy(q,extension);
-                q+=Extent(extension);
-                break;
-              }
-              case 'f':
-              {
-                (void) strcpy(q,filename);
-                q+=Extent(filename);
-                break;
-              }
-              case 't':
-              {
-                 *(extension-1)='\0';
-                (void) strcpy(q,filename);
-                q+=Extent(filename);
-                break;
-              }
-            }
-            break;
-          }
-          case 'h':
-          {
-            (void) sprintf(q,"%u",image->magick_rows);
-            q=image->comments+Extent(image->comments);
-            break;
-          }
-          case 'm':
-          {
-            (void) strcpy(q,image->magick);
-            q+=Extent(image->magick);
-            break;
-          }
-          case 'p':
-          {
-            register Image
-              *p;
-
-            unsigned int
-              page;
-
-            p=image;
-            for (page=1; p->previous != (Image *) NULL; page++)
-              p=p->previous;
-            (void) sprintf(q,"%u",page);
-            q=image->text+Extent(image->text);
-            break;
-          }
-          case 's':
-          {
-            (void) sprintf(q,"%u",image->scene);
-            q=image->comments+Extent(image->comments);
-            break;
-          }
-          case 'w':
-          {
-            (void) sprintf(q,"%u",image->magick_columns);
-            q=image->comments+Extent(image->comments);
-            break;
-          }
-          default:
-          {
-            *q++='%';
-            *q++=(*p);
+             *(extension-1)='\0';
+            (void) strcpy(q,filename);
+            q+=Extent(filename);
             break;
           }
         }
+        break;
       }
-      *q='\0';
+      case 'h':
+      {
+        (void) sprintf(q,"%u",image->magick_rows);
+        q=image->comments+Extent(image->comments);
+        break;
+      }
+      case 'm':
+      {
+        (void) strcpy(q,image->magick);
+        q+=Extent(image->magick);
+        break;
+      }
+      case 'p':
+      {
+        register Image
+          *p;
+
+        unsigned int
+          page;
+
+        p=image;
+        for (page=1; p->previous != (Image *) NULL; page++)
+          p=p->previous;
+        (void) sprintf(q,"%u",page);
+        q=image->text+Extent(image->text);
+        break;
+      }
+      case 's':
+      {
+        (void) sprintf(q,"%u",image->scene);
+        q=image->comments+Extent(image->comments);
+        break;
+      }
+      case 'w':
+      {
+        (void) sprintf(q,"%u",image->magick_columns);
+        q=image->comments+Extent(image->comments);
+        break;
+      }
+      case '%':
+      {
+        *q++=(*p);
+        break;
+      }
+      default:
+      {
+        *q++='%';
+        *q++=(*p);
+        break;
+      }
     }
+  }
+  *q='\0';
   if (indirection)
     FreeMemory((char *) comments);
 }
@@ -2487,7 +2487,6 @@ Export void CondenseImage(Image *image)
   packets=0;
   q=image->pixels;
   q->length=MaxRunlength;
-  q->index=0;
   if (image->matte)
     for (i=0; i < (image->columns*image->rows); i++)
     {
@@ -5318,166 +5317,166 @@ Export void LabelImage(Image *image,char *label)
         FreeMemory((char *) label);
       return;
     }
-  if (strcmp(SetClientName((char *) NULL),"PerlMagick") == 0)
-    (void) strcpy(image->label,label);
-  else
-    {
-      /*
-        Translate any embedded format characters.
-      */
-      for (q=image->label; *p != '\0'; p++)
+  /*
+    Translate any embedded format characters.
+  */
+  for (q=image->label; *p != '\0'; p++)
+  {
+    *q='\0';
+    if ((q-image->label+MaxTextExtent) >= length)
       {
-        *q='\0';
-        if ((q-image->label+MaxTextExtent) >= length)
-          {
-            length<<=1;
-            image->label=(char *)
-              ReallocateMemory((char *) image->label,length);
-            if (image->label == (char *) NULL)
-              break;
-            q=image->label+Extent(image->label);
-          }
-        /*
-          Process formatting characters in label.
-        */
-        if ((*p == '\\') && (*(p+1) == 'r'))
-          {
-            *q++='\r';
-            p++;
-            continue;
-          }
-        if ((*p == '\\') && (*(p+1) == 'n'))
-          {
-            *q++='\n';
-            p++;
-            continue;
-          }
-        if (*p != '%')
-          {
-            *q++=(*p);
-            continue;
-          }
+        length<<=1;
+        image->label=(char *)
+          ReallocateMemory((char *) image->label,length);
+        if (image->label == (char *) NULL)
+          break;
+        q=image->label+Extent(image->label);
+      }
+    /*
+      Process formatting characters in label.
+    */
+    if ((*p == '\\') && (*(p+1) == 'r'))
+      {
+        *q++='\r';
         p++;
+        continue;
+      }
+    if ((*p == '\\') && (*(p+1) == 'n'))
+      {
+        *q++='\n';
+        p++;
+        continue;
+      }
+    if (*p != '%')
+      {
+        *q++=(*p);
+        continue;
+      }
+    p++;
+    switch (*p)
+    {
+      case 'b':
+      {
+        if (image->filesize >= (1 << 24))
+          (void) sprintf(q,"%ldmb",image->filesize/1024/1024);
+        else
+          if (image->filesize >= (1 << 14))
+            (void) sprintf(q,"%ldkb",image->filesize/1024);
+          else
+            (void) sprintf(q,"%ldb",image->filesize);
+        q=image->label+Extent(image->label);
+        break;
+      }
+      case 'd':
+      case 'e':
+      case 'f':
+      case 't':
+      {
+        char
+          directory[MaxTextExtent],
+          *extension,
+          *filename;
+
+        /*
+          Label segment is the base of the filename.
+        */
+        if (Extent(image->magick_filename) == 0)
+          break;
+        (void) strcpy(directory,image->magick_filename);
+        extension=directory+Extent(directory);
+        filename=extension;
+        while ((filename > directory) &&
+               (*(filename-1) != *BasenameSeparator))
+        {
+          if (*filename == '.')
+            if (*extension == '\0')
+              extension=filename+1;
+          filename--;
+        }
         switch (*p)
         {
-          case 'b':
+          case 'd':
           {
-            if (image->filesize >= (1 << 24))
-              (void) sprintf(q,"%ldmb",image->filesize/1024/1024);
-            else
-              if (image->filesize >= (1 << 14))
-                (void) sprintf(q,"%ldkb",image->filesize/1024);
-              else
-                (void) sprintf(q,"%ldb",image->filesize);
-            q=image->label+Extent(image->label);
+             *filename='\0';
+            (void) strcpy(q,directory);
+            q+=Extent(directory);
             break;
           }
-          case 'd':
           case 'e':
+          {
+            (void) strcpy(q,extension);
+            q+=Extent(extension);
+            break;
+          }
           case 'f':
+          {
+            (void) strcpy(q,filename);
+            q+=Extent(filename);
+            break;
+          }
           case 't':
           {
-            char
-              directory[MaxTextExtent],
-              *extension,
-              *filename;
-
-            /*
-              Label segment is the base of the filename.
-            */
-            if (Extent(image->magick_filename) == 0)
-              break;
-            (void) strcpy(directory,image->magick_filename);
-            extension=directory+Extent(directory);
-            filename=extension;
-            while ((filename > directory) &&
-                   (*(filename-1) != *BasenameSeparator))
-            {
-              if (*filename == '.')
-                if (*extension == '\0')
-                  extension=filename+1;
-              filename--;
-            }
-            switch (*p)
-            {
-              case 'd':
-              {
-                 *filename='\0';
-                (void) strcpy(q,directory);
-                q+=Extent(directory);
-                break;
-              }
-              case 'e':
-              {
-                (void) strcpy(q,extension);
-                q+=Extent(extension);
-                break;
-              }
-              case 'f':
-              {
-                (void) strcpy(q,filename);
-                q+=Extent(filename);
-                break;
-              }
-              case 't':
-              {
-                 *(extension-1)='\0';
-                (void) strcpy(q,filename);
-                q+=Extent(filename);
-                break;
-              }
-            }
-            break;
-          }
-          case 'h':
-          {
-            (void) sprintf(q,"%u",image->magick_rows);
-            q=image->label+Extent(image->label);
-            break;
-          }
-          case 'm':
-          {
-            (void) strcpy(q,image->magick);
-            q+=Extent(image->magick);
-            break;
-          }
-          case 'p':
-          {
-            register Image
-              *p;
-
-            unsigned int
-              page;
-
-            p=image;
-            for (page=1; p->previous != (Image *) NULL; page++)
-              p=p->previous;
-            (void) sprintf(q,"%u",page);
-            q=image->text+Extent(image->text);
-            break;
-          }
-          case 's':
-          {
-            (void) sprintf(q,"%u",image->scene);
-            q=image->label+Extent(image->label);
-            break;
-          }
-          case 'w':
-          {
-            (void) sprintf(q,"%u",image->magick_columns);
-            q=image->label+Extent(image->label);
-            break;
-          }
-          default:
-          {
-            *q++='%';
-            *q++=(*p);
+             *(extension-1)='\0';
+            (void) strcpy(q,filename);
+            q+=Extent(filename);
             break;
           }
         }
+        break;
       }
-      *q='\0';
+      case 'h':
+      {
+        (void) sprintf(q,"%u",image->magick_rows);
+        q=image->label+Extent(image->label);
+        break;
+      }
+      case 'm':
+      {
+        (void) strcpy(q,image->magick);
+        q+=Extent(image->magick);
+        break;
+      }
+      case 'p':
+      {
+        register Image
+          *p;
+
+        unsigned int
+          page;
+
+        p=image;
+        for (page=1; p->previous != (Image *) NULL; page++)
+          p=p->previous;
+        (void) sprintf(q,"%u",page);
+        q=image->text+Extent(image->text);
+        break;
+      }
+      case 's':
+      {
+        (void) sprintf(q,"%u",image->scene);
+        q=image->label+Extent(image->label);
+        break;
+      }
+      case 'w':
+      {
+        (void) sprintf(q,"%u",image->magick_columns);
+        q=image->label+Extent(image->label);
+        break;
+      }
+      case '%':
+      {
+        *q++=(*p);
+        break;
+      }
+      default:
+      {
+        *q++='%';
+        *q++=(*p);
+        break;
+      }
     }
+  }
+  *q='\0';
   if (indirection)
     FreeMemory((char *) label);
 }
