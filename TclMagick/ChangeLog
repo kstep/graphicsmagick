@@ -1,3 +1,8 @@
+2004-01-29  David N. Welton  <davidw@dedasys.com>
+
+	* generic/Makefile.am: Add correct instructions to build
+	libTkMagick shared library.  Requires automake 1.5 or greater.
+
 2004-01-25  David N. Welton  <davidw@dedasys.com>
 
 	* tcl.m4: Moved to top level directory.
