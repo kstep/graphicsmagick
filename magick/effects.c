@@ -3188,8 +3188,8 @@ MagickExport Image *WaveImage(Image *image,const double amplitude,
   assert(image != (Image *) NULL);
   if (!image->matte)
     MatteImage(image,OpaqueOpacity);
-  wave_image=CloneImage(image,image->columns,image->rows+2.0*fabs(amplitude),
-    False,exception);
+  wave_image=CloneImage(image,image->columns,(int)
+    (int) (image->rows+2.0*fabs(amplitude)),False,exception);
   if (wave_image == (Image *) NULL)
     return((Image *) NULL);
   /*

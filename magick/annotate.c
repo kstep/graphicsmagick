@@ -223,11 +223,11 @@ MagickExport unsigned int AnnotateImage(Image *image,
           q=GetImagePixels(annotate_image,0,0,annotate_image->columns,1);
         else
           if (annotate_info->decorate == UnderlineDecoration)
-            q=GetImagePixels(annotate_image,0,annotate_image->bounding_box.y2,
-              annotate_image->columns,1);
+            q=GetImagePixels(annotate_image,0,(int)
+              annotate_image->bounding_box.y2,annotate_image->columns,1);
           else
-            q=GetImagePixels(annotate_image,0,annotate_image->bounding_box.y2/
-              2.0,annotate_image->columns,1);
+            q=GetImagePixels(annotate_image,0,(int)
+              (annotate_image->bounding_box.y2/2.0),annotate_image->columns,1);
         if (q != (PixelPacket *) NULL)
           {
             register int
