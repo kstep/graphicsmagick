@@ -330,31 +330,42 @@ MagickExport void InitializeMagick(const char *path)
   char
     execution_path[MaxTextExtent];
 
-  long
-    limit,
-    pagesize,
-    pages;
-
   (void) setlocale(LC_ALL,"");
   (void) setlocale(LC_NUMERIC,"C");
   InitializeSemaphore();
-  pagesize=0;
-  pages=0;
+
+  {
+    /*
+      Compute memory allocation and memory map resource limits based
+      on available memory
+    */
+    long
+      limit,
+      pagesize,
+      pages;
+
+    limit=0;
+    pagesize=-1;
+    pages=-1;
 #if defined(HAVE_SYSCONF) && defined(_SC_PAGE_SIZE)
-  pagesize=sysconf(_SC_PAGE_SIZE);
+    pagesize=sysconf(_SC_PAGE_SIZE);
 #endif
 #if defined(HAVE_GETPAGESIZE)
-  pagesize=getpagesize();
+    if (pagesize <= 0)
+      pagesize=getpagesize();
 #endif
 #if defined(HAVE_SYSCONF) && defined(_SC_PHYS_PAGES)
-  pages=sysconf(_SC_PHYS_PAGES);
+    pages=sysconf(_SC_PHYS_PAGES);
 #endif
-  limit=((pages+512)/1024)*((pagesize+512)/1024);
+    if (pages > 0 && pagesize > 0)
+      limit=((pages+512)/1024)*((pagesize+512)/1024);
 #if defined(PixelCacheThreshold)
-  limit=PixelCacheThreshold;
+    limit=PixelCacheThreshold;
 #endif
-  SetMagickResourceLimit(MemoryResource,limit > 0 ? limit : 512);
-  SetMagickResourceLimit(MapResource,limit > 0 ? 2*limit : 1024);
+    SetMagickResourceLimit(MemoryResource,limit > 0 ? limit : 512);
+    SetMagickResourceLimit(MapResource,limit > 0 ? 2*limit : 1024);
+  }
+
   (void) SetLogEventMask(getenv("MAGICK_DEBUG"));
   *execution_path='\0';
 #if !defined(UseInstalledImageMagick)

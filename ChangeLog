@@ -1,3 +1,7 @@
+2002-12-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+	* magick/magick.c: Ensure that operating system call error
+	return values are never used in resource limit calculation.
+
 2002-12-12 William Radcliffe <billr@corbis.com>
 	* magick/magick.c
 	Fixed bugs in InitializeMagick, but I also heavily commented
