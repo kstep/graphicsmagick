@@ -2993,9 +2993,9 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
   */
   (void) WriteBlobString(image,"<?xml version=\"1.0\" standalone=\"no\"?>\n");
   (void) WriteBlobString(image,
-    "<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 20000802//EN\"\n");
+    "<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 20010904//EN\"\n");
   (void) WriteBlobString(image,
-    "  \"http://www.w3.org/TR/2000/CR-SVG-20000802/DTD/svg-20000802.dtd\">\n");
+    "  \"http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd\">\n");
   (void) FormatString(message,"<svg width=\"%lu\" height=\"%lu\">\n",
     image->columns,image->rows);
   (void) WriteBlobString(image,message);
