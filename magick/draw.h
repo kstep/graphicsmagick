@@ -1,235 +1,170 @@
 /*
-  Drawing methods.
+  ImageMagick Drawing API.
+
+  For internal use only!
+
 */
-#ifndef _MAGICK_DRAW_H
-#define _MAGICK_DRAW_H
 
-#if defined(__cplusplus) || defined(c_plusplus)
-extern "C" {
-#endif
+#include "magick.h"
+#include "define.h"
 
-/*
-  Typedef declarations.
-*/
-typedef struct _AffineMatrix
-{
-  double
-    sx,
-    rx,
-    ry,
-    sy,
-    tx,
-    ty;
-} AffineMatrix;
+typedef struct _MgkDrawContext *MgkDrawContext;
 
-typedef struct _DrawInfo
-{
-  char
-    *primitive,
-    *geometry;
+extern MagickExport MgkDrawContext
+  MgkDrawAllocateContext(ExceptionInfo *exception);
 
-  AffineMatrix
-    affine;
-
-  GravityType
-    gravity;
-
-  PixelPacket
-    fill,
-    stroke;
-
-  double
-    stroke_width;
-
-  Image
-    *fill_pattern,
-    *tile,
-    *stroke_pattern;
-
-  unsigned int
-    stroke_antialias,
-    text_antialias;
-
-  FillRule
-    fill_rule;
-
-  LineCap
-    linecap;
-
-  LineJoin
-    linejoin;
-
-  unsigned long
-    miterlimit;
-
-  double
-    dash_offset;
-
-  DecorationType
-    decorate;
-
-  CompositeOperator
-    compose;
-
-  unsigned int
-    unicode;
-
-  char
-    *text,
-    *font,
-    *family;
-
-  StyleType
-    style;
-
-  StretchType
-    stretch;
-
-  unsigned long
-    weight;
-
-  char
-    *encoding;
-
-  double
-    pointsize;
-
-  char
-    *density;
-
-  AlignType
-    align;
-
-  PixelPacket
-    box,
-    border_color;
-
-  char
-    *server_name;
-
-  double
-    *dash_pattern;
-
-  char
-    *clip_path;
-
-  SegmentInfo
-    bounds;
-
-  ClipPathUnits
-    clip_units;
-
-  unsigned int
-    debug;
-
-  Quantum
-    opacity;
-
-  unsigned long
-    signature;
-} DrawInfo;
-
-typedef struct _TypeInfo
-{
-  const char
-    *filename,
-    *name,
-    *description,
-    *family;
-
-  StyleType
-    style;
-
-  StretchType
-    stretch;
-
-  unsigned long
-    weight;
-
-  const char
-    *encoding,
-    *foundry,
-    *format,
-    *metrics,
-    *glyphs;
-
-  unsigned int
-    stealth;
-
-  unsigned long
-    signature;
-
-  struct _TypeInfo
-    *previous,
-    *next;
-} TypeInfo;
-
-typedef struct _PrimitiveInfo
-{
-  PointInfo
-    point;
-
-  unsigned long
-    coordinates;
-
-  PrimitiveType
-    primitive;
-
-  PaintMethod
-    method;
-
-  char
-    *text;
-} PrimitiveInfo;
-
-typedef struct _TypeMetric
-{
-  PointInfo
-    pixels_per_em;
-
-  double
-    ascent,
-    descent,
-    width,
-    height,
-    max_advance;
-
-  SegmentInfo
-    bounds;
-
-  double
-    underline_position,
-    underline_thickness;
-} TypeMetric;
-
-/*
-  Method declarations.
-*/
-extern MagickExport const TypeInfo
-  *GetTypeInfo(const char *,ExceptionInfo *),
-  *GetTypeInfoByFamily(const char *,const StyleType,const StretchType,
-    const unsigned long,ExceptionInfo *);
-
-extern MagickExport DrawInfo
-  *CloneDrawInfo(const ImageInfo *,const DrawInfo *);
-
-extern MagickExport unsigned int
-  AnnotateImage(Image *,const DrawInfo *),
-  ColorFloodfillImage(Image *,const DrawInfo *,const PixelPacket,const long,
-    const long,const PaintMethod),
-  DrawImage(Image *,DrawInfo *),
-  GetTypeMetrics(Image *,const DrawInfo *,TypeMetric *),
-  ListTypeInfo(FILE *,ExceptionInfo *),
-  MatteFloodfillImage(Image *,const PixelPacket,const unsigned int,const long,
-    const long,const PaintMethod);
+extern MagickExport int
+  MgkDrawRender(Image * image, const ImageInfo * image_info,
+                const MgkDrawContext context),
+  MgkDrawPrintf(MgkDrawContext context, const char *format, ...);
 
 extern MagickExport void
-  DestroyDrawInfo(DrawInfo *),
-  DestroyTypeInfo(void),
-  GetDrawInfo(const ImageInfo *,DrawInfo *);
-
-#if defined(__cplusplus) || defined(c_plusplus)
-}
-#endif
-
-#endif
+  MgkDrawArc(MgkDrawContext context,
+             const double sx, const double sy,
+             const double ex, const double ey,
+             const double sd, const double ed),
+  MgkDrawBezier(MgkDrawContext context,
+                const size_t num_coords, const PointInfo * coordinates),
+  MgkDrawCircle(MgkDrawContext context,
+                const double ox, const double oy,
+                const double px, const double py),
+  MgkDrawColor(MgkDrawContext context,
+               const double x, const double y,
+               const PaintMethod paintMethod),
+  MgkDrawDestroyContext(MgkDrawContext context),
+  MgkDrawEllipse(MgkDrawContext context,
+                 const double ox, const double oy,
+                 const double rx, const double ry,
+                 const double start, const double end),
+  MgkDrawImage(MgkDrawContext context,
+               const double x, const double y,
+               const double width, const double height,
+               const Image * image,
+               const CompositeOperator composition),
+  MgkDrawLine(MgkDrawContext context,
+              const double sx, const double sy,
+              const double ex, const double ey),
+  MgkDrawMatte(MgkDrawContext context,
+               const double x, const double y,
+               const PaintMethod paint_method),
+  MgkDrawPathClose(MgkDrawContext context),
+  MgkDrawPathCurveToAbsolute(MgkDrawContext context,
+                             const double x1, const double y1,
+                             const double x2, const double y2,
+                             const double x, const double y),
+  MgkDrawPathCurveToRelative(MgkDrawContext context,
+                             const double x1, const double y1,
+                             const double x2, const double y2,
+                             const double x, const double y),
+  MgkDrawPathCurveToQuadraticBezierAbsolute(MgkDrawContext context,
+                                            const double x1, const double y1,
+                                            const double x, const double y),
+  MgkDrawPathCurveToQuadraticBezierRelative(MgkDrawContext context,
+                                            const double x1, const double y1,
+                                            const double x, const double y),
+  MgkDrawPathCurveToQuadraticBezierSmoothAbsolute(MgkDrawContext context,
+                                                  const double x, const double y),
+  MgkDrawPathCurveToQuadraticBezierSmoothRelative(MgkDrawContext context,
+                                                  const double x, const double y),
+  MgkDrawPathCurveToSmoothAbsolute(MgkDrawContext context,
+                                   const double x2, const double y2,
+                                   const double x, const double y),
+  MgkDrawPathCurveToSmoothRelative(MgkDrawContext context,
+                                   const double x2, const double y2,
+                                   const double x, const double y),
+  MgkDrawPathEllipticArcAbsolute(MgkDrawContext context,
+                                 const double rx, const double ry,
+                                 const double x_axis_rotation,
+                                 unsigned int large_arc_flag,
+                                 unsigned int sweep_flag,
+                                 const double x, const double y),
+  MgkDrawPathEllipticArcRelative(MgkDrawContext context,
+                                 const double rx, const double ry,
+                                 const double x_axis_rotation,
+                                 unsigned int large_arc_flag,
+                                 unsigned int sweep_flag,
+                                 const double x, const double y),
+  MgkDrawPathFinish(MgkDrawContext context),
+  MgkDrawPathLineToAbsolute(MgkDrawContext context,
+                            const double x, const double y),
+  MgkDrawPathLineToRelative(MgkDrawContext context,
+                            const double x, const double y),
+  MgkDrawPathLineToHorizontalAbsolute(MgkDrawContext context, const double x),
+  MgkDrawPathLineToHorizontalRelative(MgkDrawContext context, const double x),
+  MgkDrawPathLineToVerticalAbsolute(MgkDrawContext context, const double y),
+  MgkDrawPathLineToVerticalRelative(MgkDrawContext context, const double y),
+  MgkDrawPathMoveToAbsolute(MgkDrawContext context,
+                            const double x, const double y),
+  MgkDrawPathMoveToRelative(MgkDrawContext context,
+                            const double x, const double y),
+  MgkDrawPathStart(MgkDrawContext context),
+  MgkDrawPoint(MgkDrawContext context, const double x, const double y),
+  MgkDrawPolygon(MgkDrawContext context,
+                 const size_t num_coords, const PointInfo * coordinates),
+  MgkDrawPolyline(MgkDrawContext context,
+                  const size_t num_coords, const PointInfo * coordinates),
+  MgkDrawPopClipPath(MgkDrawContext context),
+  MgkDrawPopDefs(MgkDrawContext context),
+  MgkDrawPopGraphicContext(MgkDrawContext context),
+  MgkDrawPopPattern(MgkDrawContext context),
+  MgkDrawPushClipPath(MgkDrawContext context, const char *clip_path_id),
+  MgkDrawPushDefs(MgkDrawContext context),
+  MgkDrawPushGraphicContext(MgkDrawContext context),
+  MgkDrawPushPattern(MgkDrawContext context,
+                     const char *pattern_id,
+                     const double x, const double y,
+                     const double width, const double height),
+  MgkDrawRectangle(MgkDrawContext context,
+                   const double x1, const double y1,
+                   const double x2, const double y2),
+  MgkDrawRoundRectangle(MgkDrawContext context,
+                        double x1, double y1,
+                        double x2, double y2,
+                        double rx, double ry),
+  MgkDrawSetAngle(MgkDrawContext context, const double degrees),
+  MgkDrawSetAffine(MgkDrawContext context,
+                   const double sx, const double rx,
+                   const double ry, const double sy,
+                   const double tx, const double ty),
+  MgkDrawSetClipPath(MgkDrawContext context, const char *clip_url),
+  MgkDrawSetClipRule(MgkDrawContext context, const FillRule fill_rule),
+  MgkDrawSetClipUnits(MgkDrawContext context, const ClipPathUnits clip_units),
+  MgkDrawSetFill(MgkDrawContext context, const PixelPacket * fill_color),
+  MgkDrawSetFillOpacity(MgkDrawContext context, const double fill_opacity),
+  MgkDrawSetFillRule(MgkDrawContext context, const FillRule fill_rule),
+  MgkDrawSetFont(MgkDrawContext context, const char *font_name),
+  MgkDrawSetFontFamily(MgkDrawContext context, const char *font_family),
+  MgkDrawSetFontSize(MgkDrawContext context, const double font_pointsize),
+  MgkDrawSetFontStretch(MgkDrawContext context, const StretchType font_stretch),
+  MgkDrawSetFontStyle(MgkDrawContext context, const StyleType font_style),
+  MgkDrawSetFontWeight(MgkDrawContext context, const double font_weight),
+  MgkDrawSetGravity(MgkDrawContext context, const GravityType gravity),
+  MgkDrawSetRotate(MgkDrawContext context, const double degrees),
+  MgkDrawSetScale(MgkDrawContext context, const double x, const double y),
+  MgkDrawSetSkewX(MgkDrawContext context, const double degrees),
+  MgkDrawSetSkewY(MgkDrawContext context, const double degrees),
+  MgkDrawSetStopColor(MgkDrawContext context, const PixelPacket * color,
+                      const double offset),
+  MgkDrawSetStroke(MgkDrawContext context, const PixelPacket * color),
+  MgkDrawSetStrokeAntialias(MgkDrawContext context, const int true_false),
+  MgkDrawSetStrokeDashArray(MgkDrawContext context,
+                            const unsigned int *dasharray),
+  MgkDrawSetStrokeDashOffset(MgkDrawContext context,
+                             const unsigned int dashoffset),
+  MgkDrawSetStrokeLineCap(MgkDrawContext context, const LineCap linecap),
+  MgkDrawSetStrokeLineJoin(MgkDrawContext context, const LineJoin linejoin),
+  MgkDrawSetStrokeMiterLimit(MgkDrawContext context,
+                             const unsigned int miterlimit),
+  MgkDrawSetStrokeOpacity(MgkDrawContext context, const double opacity),
+  MgkDrawSetStrokeWidth(MgkDrawContext context, const double width),
+  MgkDrawSetTextAntialias(MgkDrawContext context, const int true_false),
+  MgkDrawSetTextDecoration(MgkDrawContext context,
+                           const DecorationType decoration),
+  MgkDrawSetTextUnderColor(MgkDrawContext context, const PixelPacket * color),
+  MgkDrawSetTranslate(MgkDrawContext context, const double x, const double y),
+  MgkDrawSetViewbox(MgkDrawContext context,
+                    unsigned long x1, unsigned long y1,
+                    unsigned long x2, unsigned long y2),
+  MgkDrawText(MgkDrawContext context,
+              const double x, const double y,
+              const char *text);

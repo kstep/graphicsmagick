@@ -52,8 +52,8 @@
 /*
   Include declarations.
 */
-
-#include "drawapi.h"
+#include "magick.h"
+#include "define.h"
 
 typedef enum
 {
