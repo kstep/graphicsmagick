@@ -560,16 +560,19 @@ MagickExport void UniqueImageFilename(Image *image,char *filename)
     Convert digital signature to a filename.
   */
   assert(filename != (char *) NULL);
-  GetSignatureInfo(&signature_info);
-  UpdateSignature(&signature_info,(unsigned char *) &image,sizeof(Image *));
-  UpdateSignature(&signature_info,(unsigned char *) image,sizeof(Image));
-  UpdateSignature(&signature_info,(unsigned char *) &filename,sizeof(char *));
-  FinalizeSignature(&signature_info);
-  FormatString(filename,"magick%08lx%08lx%08lx%08lx%08lx%08lx%08lx%08lx",
-    signature_info.digest[0],signature_info.digest[1],signature_info.digest[2],
-    signature_info.digest[3],signature_info.digest[4],signature_info.digest[5],
-    signature_info.digest[6],signature_info.digest[7]);
-  AcquireSemaphoreInfo(&image->semaphore);
-  image->serial++;
-  LiberateSemaphoreInfo(&image->semaphore);
+  do
+  {
+    GetSignatureInfo(&signature_info);
+    UpdateSignature(&signature_info,(unsigned char *) &image,sizeof(Image *));
+    UpdateSignature(&signature_info,(unsigned char *) image,sizeof(Image));
+    UpdateSignature(&signature_info,(unsigned char *) &filename,sizeof(char *));
+    FinalizeSignature(&signature_info);
+    FormatString(filename,"magick%08lx%08lx%08lx%08lx%08lx%08lx%08lx%08lx",
+      signature_info.digest[0],signature_info.digest[1],signature_info.digest[2],
+      signature_info.digest[3],signature_info.digest[4],signature_info.digest[5],
+      signature_info.digest[6],signature_info.digest[7]);
+    AcquireSemaphoreInfo(&image->semaphore);
+    image->serial++;
+    LiberateSemaphoreInfo(&image->semaphore);
+  } while (IsAccessible(filename));
 }
