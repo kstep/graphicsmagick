@@ -1,39 +1,50 @@
 <HTML VERSION="2.0">
-<HEAD>
+<head>
 <TITLE>ImageMagick Image File Format</TITLE>
-<LINK rev="made" href="mailto:magick@wizards.dupont.com">
-<meta name="description" content="ImageMagick, version 4.2.8, is a package for
-  display and interactive manipulation of images for the X Window System. It
-  is written in C and interfaces to the X library, and therefore does not
-  require any proprietary toolkit in order to compile.  Although the software
-  is copyrighted, it is available for free and can be redistributed without
-  fee.">
+<link rev="made" href="mailto:magick@wizards.dupont.com">
+<meta name="description" content="ImageMagick, version 4.2.8, is a
+  robust collection of tools and libraries to read, write, and
+  manipulate an image in any of the more popular image formats
+  including GIF, JPEG, PNG, PDF, and Photo CD.  With ImageMagick you
+  can create GIFs dynamically making it suitable for Web applications.
+  You can also resize, rotate, sharpen, color reduce, or add special
+  effects to an image and save your completed work in the same or
+  differing image format.">
 <meta name="keywords" content="ImageMagick, Image Magick, Image Magic,
-  PerlMagick, Perl Magick, Perl Magic, CineMagick, PixelMagick, Pixel Magic,
-  WebMagick, Web Magic, visualization, image processing, software development,
-  simulation, image, software, AniMagick, Animagic, X11">
-</HEAD>
-<body background="../images/background.gif">
-<CENTER>
+  PerlMagick, Perl Magick, Perl Magic, CineMagick, PixelMagick, Pixel
+  Magic, WebMagick, Web Magic, visualization, image processing,
+  software development, simulation, image, software, AniMagick,
+  Animagic, Magick++">
+</head>
+<body text="#000000" bgcolor="#ffffff" link="#0062CE" vlink="#6C9EFF"
+  alink="#ff0000" background="../images/background.gif">
+<center>
 <img src="../images/miff.gif" align=bottom width=433 height=116>
-</CENTER>
+</center>
 <pre>
 
 </pre>
-<DL>
-<H2>
-<A NAME="desc">
-<DT>Description
-</A>
-</H2>
-<DD> <B>Magick Image File Format (MIFF)</B> is a platform-independent
+<B>Magick Image File Format (MIFF)</B> is a platform-independent
 format for storing bitmap images.  <B>MIFF</B> is a part of the
 <a href=../ImageMagick.html>ImageMagick</a> toolkit of image manipulation
 utilities for the <I>X Window System</I>.  <B>ImageMagick</B> is capable of
 converting many different image file formats to and from <B>MIFF</B>
 (<I>e.g.</I> <B>JPEG, XPM, TIFF,</B> <I>etc.</I>).
+<DL>
+<H2>
+<A NAME="desc">
+<table width="100%" cellpadding="1" border="0">
+<tr><td align="left" bgcolor="#52799e">
+  <font color="#ffffff" face="Helvetica, Arial"><big><b>
+    <img src="../images/right_triangle.gif" width="15" height="14" border="0"
+     alt="&gt;">Description</b></big>
+  </font>
+</td></tr>
+</table>
+</A>
+</H2>
 <P>
-A <B>MIFF</B> image file consist of two sections.  The first
+<dd>A <B>MIFF</B> image file consist of two sections.  The first
 section is a header composed of keywords describing the
 image in text form.  The next section is the binary image
 data.  The header is separated from the image data by a <tt>:</tt>
@@ -317,12 +328,33 @@ number of compressed packets stored in the file is specified by the
 concatenate each individual image (composed of a header and
 image data) into one file.
 </DL>
-<DL>
-<H2>
-<A NAME="copy">
-<DT>Copyright   
+<A NAME="auth">
+<table width="100%" cellpadding="1" border="0">
+<tr><td align="left" bgcolor="#52799e">
+  <font color="#ffffff" face="Helvetica, Arial"><big><b>
+    <img src="../images/right_triangle.gif" width="15" height="14" border="0"
+     alt="&gt;">Authors</b></big>
+  </font>
+</td></tr>
+</table>
 </A>
-</H2>
+<p>
+<DD><I>John Cristy</I>, <A HREF="mailto:magick@wizards.dupont.com">
+ <I>magick@wizards.dupont.com</I></A> <B>E.I. du Pont de Nemours and Company
+Incorporated</B>.
+</DL>
+<DL>
+<A NAME="copy">
+<table width="100%" cellpadding="1" border="0">
+<tr><td align="left" bgcolor="#52799e">
+  <font color="#ffffff" face="Helvetica, Arial"><big><b>
+    <img src="../images/right_triangle.gif" width="15" height="14" border="0"
+     alt="&gt;">Copyright</b></big>
+  </font>
+</td></tr>
+</table>
+</A>
+<p>
 <B>
 <dd>Copyright 1999 E. I. du Pont de Nemours and Company
 <p>
@@ -351,17 +383,6 @@ written authorization from the E. I. du Pont de Nemours and Company.
 </B>
 </DL>
 <DL>
-<H2>
-<A NAME="auth">
-<DT>Authors
-</A>
-</H2>
-<DD><I>John Cristy</I>, <A HREF="mailto:magick@wizards.dupont.com">
- <I>magick@wizards.dupont.com</I></A> <B>E.I. du Pont de Nemours and Company
-Incorporated</B>.
-</DL>
-<P>
-<A HREF="#top"><I>Back to Contents</I></A>
 <p><hr><p>
 <a href="../ImageMagick.html"><img alt="Home Page"
   src="../images/home.gif" width=40 height=40 align=middle border=0></a>

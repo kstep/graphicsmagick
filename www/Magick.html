@@ -1,22 +1,26 @@
 <HTML VERSION="2.0">
-<HEAD>
+<head>
 <TITLE>ImageMagick Frequently Asked Questions</TITLE>
-<LINK rev="made" href="mailto:magick@wizards.dupont.com">
-<meta name="description" content="ImageMagick, version 4.2.8, is a package for
-  display and interactive manipulation of images for the X Window System. It
-  is written in C and interfaces to the X library, and therefore does not
-  require any proprietary toolkit in order to compile.  Although the software
-  is copyrighted, it is available for free and can be redistributed without
-  fee.">
+<link rev="made" href="mailto:magick@wizards.dupont.com">
+<meta name="description" content="ImageMagick, version 4.2.8, is a
+  robust collection of tools and libraries to read, write, and
+  manipulate an image in any of the more popular image formats
+  including GIF, JPEG, PNG, PDF, and Photo CD.  With ImageMagick you
+  can create GIFs dynamically making it suitable for Web applications.
+  You can also resize, rotate, sharpen, color reduce, or add special
+  effects to an image and save your completed work in the same or
+  differing image format.">
 <meta name="keywords" content="ImageMagick, Image Magick, Image Magic,
-  PerlMagick, Perl Magick, Perl Magic, CineMagick, PixelMagick, Pixel Magic,
-  WebMagick, Web Magic, visualization, image processing, software development,
-  simulation, image, software, AniMagick, Animagic, X11">
-</HEAD>
-<body background="../images/background.gif">
-<CENTER>
+  PerlMagick, Perl Magick, Perl Magic, CineMagick, PixelMagick, Pixel
+  Magic, WebMagick, Web Magic, visualization, image processing,
+  software development, simulation, image, software, AniMagick,
+  Animagic, Magick++">
+</head>
+<body text="#000000" bgcolor="#ffffff" link="#0062CE" vlink="#6C9EFF"
+  alink="#ff0000" background="../images/background.gif">
+<center>
 <img src="../images/faq.gif" align=bottom width=511 height=134>
-</CENTER>
+</center>
 <pre>
 
 </pre>
@@ -567,7 +571,6 @@ TIFF image that has a matte channel and is 640 pixels in width and
     convert image.tiff image.matte
     display -size 640x480 gray:image.matte
 </PRE>
-</DL>
 <PRE>
 
 </PRE>
@@ -575,7 +578,7 @@ TIFF image that has a matte channel and is 640 pixels in width and
 <dt><B><A NAME="C20">20.  How can I add one of those cool bevels to my image
 that I see used on the Web? </A></B>
 <p>
-There are four types of ornamental borders you can add to your image with
+<dd>There are four types of ornamental borders you can add to your image with
 ImageMagick.  Each is listed below with the procedure to use them with
 your image.
 <p>
@@ -695,8 +698,6 @@ your pointsize and/or density:
 <p>
 <pre>
   convert -font @ArtBrush -pointsize 100 -density 300 ...
-<PRE>
-
 </PRE>
 <p><hr size=5 width=325><p>
 <dt><B><A NAME="C24">24.  How can I convert my GIF animation sequence to

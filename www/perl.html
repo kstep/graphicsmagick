@@ -1,28 +1,38 @@
 <HTML VERSION="2.0">
-<HEAD>
+<head>
 <TITLE>Perl Magick</TITLE>
-<LINK rev="made" href="mailto:magick@wizards.dupont.com">
-<meta name="description" content="ImageMagick, version 4.2.8, is a package for
-  display and interactive manipulation of images for the X Window System. It
-  is written in C and interfaces to the X library, and therefore does not
-  require any proprietary toolkit in order to compile.  Although the software
-  is copyrighted, it is available for free and can be redistributed without
-  fee.">
-<meta name="keywords" content="ImageMagick, Image Magick, Image Magic, 
-  PerlMagick, Perl Magick, Perl Magic, CineMagick, PixelMagick, Pixel Magic, 
-  WebMagick, Web Magic, visualization, image processing, software development, 
-  simulation, image, software, AniMagick, Animagic, X11">
-</HEAD>
-<body background="../images/background.gif">
+<link rev="made" href="mailto:magick@wizards.dupont.com">
+<meta name="description" content="ImageMagick, version 4.2.8, is a
+  robust collection of tools and libraries to read, write, and
+  manipulate an image in any of the more popular image formats
+  including GIF, JPEG, PNG, PDF, and Photo CD.  With ImageMagick you
+  can create GIFs dynamically making it suitable for Web applications.
+  You can also resize, rotate, sharpen, color reduce, or add special
+  effects to an image and save your completed work in the same or
+  differing image format.">
+<meta name="keywords" content="ImageMagick, Image Magick, Image Magic,
+  PerlMagick, Perl Magick, Perl Magic, CineMagick, PixelMagick, Pixel
+  Magic, WebMagick, Web Magic, visualization, image processing,
+  software development, simulation, image, software, AniMagick,
+  Animagic, Magick++">
+</head>
+<body text="#000000" bgcolor="#ffffff" link="#0062CE" vlink="#6C9EFF"
+  alink="#ff0000" background="../images/background.gif">
 <center>
 <img alt="Perl Magick" src="../images/perl.gif" width=355 height=57>
 </center>
 <pre>
 
 </pre>
-<H2>
-<A NAME="Contents">Contents</A>
-</H2>
+<a name="contents">
+<dt><table width="100%" cellpadding="1" border="0">
+<tr><td align="left" bgcolor="#52799e">
+  <font color="#ffffff" face="Helvetica, Arial"><big><b>
+    <img src="../images/right_triangle.gif" width="15" height="14" border="0"
+     alt="&gt;">Contents</b></big>
+  </font>
+</td></tr>
+</table>
 <UL>
 <LI><A HREF="#intr">Introduction</A>
 <LI><A HREF="#inst">Installation</A>
@@ -39,11 +49,17 @@
 <LI><A HREF="#copy">Copyright</A>
 </UL>
 <dl>
-<h2>
-<p><hr><p>
+<p>
 <a name="intr">
-<dt>Introduction
-</h2>
+<dt><table width="100%" cellpadding="1" border="0">
+<tr><td align="left" bgcolor="#52799e">
+  <font color="#ffffff" face="Helvetica, Arial"><big><b>
+    <img src="../images/right_triangle.gif" width="15" height="14" border="0"
+     alt="&gt;">Introduction</b></big>
+  </font>
+</td></tr>
+</table>
+<p>
 <dd><a href="ftp://204.183.81.131/pub/ImageMagick/perl">PerlMagick</a>, 
 version 4.28, is an objected-oriented <a href="http://www.perl.com/perl/">
 Perl</a> interface to <a href="../ImageMagick.html">ImageMagick</a>.  Use the
@@ -73,13 +89,18 @@ An object-oriented Python interface to <b>ImageMagick</b> is also available,
 see <a href="http://starship.skyport.net/crew/zack/pymagick/">PythonMagick</a>.
 </dl>
 <P>
-<A HREF="#top"><I>Back to Contents</I></A>
-<HR>
+<A HREF="#contents"><I>Back to Contents</I></A>
 <dl>
-<h2>
 <a name="inst">
-<dt>Installation
-</h2>
+<dt><table width="100%" cellpadding="1" border="0">
+<tr><td align="left" bgcolor="#52799e">
+  <font color="#ffffff" face="Helvetica, Arial"><big><b>
+    <img src="../images/right_triangle.gif" width="15" height="14" border="0"
+     alt="&gt;">Installation</b></big>
+  </font>
+</td></tr>
+</table>
+<p>
 <dd><strong>UNIX</strong><p>
 ImageMagick must already be installed on your system.  Next, get the
 <a href="ftp://204.183.81.131/pub/ImageMagick/perl">PerlMagick</a>
@@ -143,13 +164,18 @@ You are now ready to utilize the <b>PerlMagick</b> methods from
 within your Perl scripts.
 </dl>
 <P>
-<A HREF="#top"><I>Back to Contents</I></A>
-<HR>
+<A HREF="#contents"><I>Back to Contents</I></A>
 <dl>
-<h2>
 <a name="over">
-<dt>Overview
-</h2>
+<dt><table width="100%" cellpadding="1" border="0">
+<tr><td align="left" bgcolor="#52799e">
+  <font color="#ffffff" face="Helvetica, Arial"><big><b>
+    <img src="../images/right_triangle.gif" width="15" height="14" border="0"
+     alt="&gt;">Overview</b></big>
+  </font>
+</td></tr>
+</table>
+<p>
 <dd>Any script that wants to use <b>PerlMagick</b> methods must first
 define the methods within its namespace and instantiate an image object.
 Do this with:
@@ -213,13 +239,18 @@ PATH environment variable to work properly.  For example,
 </pre>
 </dl>
 <P>
-<A HREF="#top"><I>Back to Contents</I></A>
+<A HREF="#contents"><I>Back to Contents</I></A>
 <dl>
-<hr>
-<h2>
 <a name="exam">
-<dt>Example Script
-</h2>
+<dt><table width="100%" cellpadding="1" border="0">
+<tr><td align="left" bgcolor="#52799e">
+  <font color="#ffffff" face="Helvetica, Arial"><big><b>
+    <img src="../images/right_triangle.gif" width="15" height="14" border="0"
+     alt="&gt;">Example Script</b></big>
+  </font>
+</td></tr>
+</table>
+<p>
 <dd>Here is an example script to get you started:
 <p>
 <pre>
@@ -291,13 +322,18 @@ Other clever things you can do with <b>PerlMagick</b> objects include
 </pre>
 </dl>
 <P>
-<A HREF="#top"><I>Back to Contents</I></A>
-<HR>
+<A HREF="#contents"><I>Back to Contents</I></A>
 <dl>
-<h2>
 <a name="read">
-<dt>Read or Write an Image
-</h2>
+<dt><table width="100%" cellpadding="1" border="0">
+<tr><td align="left" bgcolor="#52799e">
+  <font color="#ffffff" face="Helvetica, Arial"><big><b>
+    <img src="../images/right_triangle.gif" width="15" height="14" border="0"
+     alt="&gt;">Read or Write an Image</b></big>
+  </font>
+</td></tr>
+</table>
+<p>
 <dd>Use the methods listed below to either read, write, or display an
 image or image sequence. 
 <p>
@@ -374,13 +410,18 @@ You can optionally add <tt>Image</tt> to any method name.  For example,
 <tt>ReadImage</tt> is an alias for method <tt>Read</tt>.
 </dl>
 <P>
-<A HREF="#top"><I>Back to Contents</I></A>
-<HR>
+<A HREF="#contents"><I>Back to Contents</I></A>
 <dl>
-<h2>
 <a name="mani">
-<dt>Manipulate an Image
-</h2>
+<dt><table width="100%" cellpadding="1" border="0">
+<tr><td align="left" bgcolor="#52799e">
+  <font color="#ffffff" face="Helvetica, Arial"><big><b>
+    <img src="../images/right_triangle.gif" width="15" height="14" border="0"
+     alt="&gt;">Manipulate an Image</b></big>
+  </font>
+</td></tr>
+</table>
+<p>
 <dd>Once you create an image with, for example, method <tt>ReadImage</tt> you
 may want to operate on it.  Below is a list of all the image manipulations 
 methods available to you with <b>PerlMagick</b>.  There are 
@@ -842,13 +883,18 @@ Most of the attributes listed above have an analog in
 a more detailed description of these attributes.
 </dl>
 <P>
-<A HREF="#top"><I>Back to Contents</I></A>
-<HR>
+<A HREF="#contents"><I>Back to Contents</I></A>
 <dl>
-<h2>
 <a name="seta">
-<dt>Set an Image Attribute
-</h2>
+<dt><table width="100%" cellpadding="1" border="0">
+<tr><td align="left" bgcolor="#52799e">
+  <font color="#ffffff" face="Helvetica, Arial"><big><b>
+    <img src="../images/right_triangle.gif" width="15" height="14" border="0"
+     alt="&gt;">Set an Image Attribute</b></big>
+  </font>
+</td></tr>
+</table>
+<p>
 <dd>Use method <tt>Set</tt> to set an image attribute.  For example, 
 <p>
 <pre>
@@ -1106,13 +1152,18 @@ Most of the attributes listed above have an analog in
 a more detailed description of these attributes.
 </dl>
 <p>
-<A HREF="#top">Back to Contents</A>
-<HR>
+<A HREF="#contents">Back to Contents</A>
 <dl>
-<h2>
 <a name="geta">
-<dt>Get an Image Attribute
-</h2>
+<dt><table width="100%" cellpadding="1" border="0">
+<tr><td align="left" bgcolor="#52799e">
+  <font color="#ffffff" face="Helvetica, Arial"><big><b>
+    <img src="../images/right_triangle.gif" width="15" height="14" border="0"
+     alt="&gt;">Get an Image Attribute</b></big>
+  </font>
+</td></tr>
+</table>
+<p>
 <dd>Use method <tt>Get</tt> to get an image attribute.  For example, 
 <p>
 <pre>
@@ -1286,13 +1337,18 @@ Most of the attributes listed above have an analog in
 a more detailed description of these attributes.
 </dl>
 <p>
-<A HREF="#top">Back to Contents</A>
-<HR>
+<A HREF="#contents">Back to Contents</A>
 <dl>
-<h2>
 <a name="mont">
-<dt>Create an Image Montage
-</h2>
+<dt><table width="100%" cellpadding="1" border="0">
+<tr><td align="left" bgcolor="#52799e">
+  <font color="#ffffff" face="Helvetica, Arial"><big><b>
+    <img src="../images/right_triangle.gif" width="15" height="14" border="0"
+     alt="&gt;">Create an Image Montage</b></big>
+  </font>
+</td></tr>
+</table>
+<p>
 <dd>Use method <tt>Montage</tt> to create a composite image by combining
 several separate images.  The images are tiled on the composite image with the
 name of the image optionally appearing just below the individual tile.
@@ -1413,13 +1469,20 @@ Most of the attributes listed above have an analog in
 <a href="montage.html">montage</a>.  See the documentation for
 a more detailed description of these attributes.
 </dl>
+<P>
+<A HREF="#contents"><I>Back to Contents</I></A>
 <p>
 <dl>
-<HR>
-<h2>
-<a name="misc">Miscellaneous Methods
-<dt>
-</h2>
+<a name="misc">
+<dt><table width="100%" cellpadding="1" border="0">
+<tr><td align="left" bgcolor="#52799e">
+  <font color="#ffffff" face="Helvetica, Arial"><big><b>
+    <img src="../images/right_triangle.gif" width="15" height="14" border="0"
+     alt="&gt;">Miscellaneous Methods</b></big>
+  </font>
+</td></tr>
+</table>
+<p>
 <dd>The <tt>Append</tt> method append a set of images.  For example,
 <p>
 <pre>
@@ -1524,13 +1587,19 @@ color values:
     ($red, $green, $blue) = split(', ', $image-&gt;QueryColor('#716bae'));
 </pre>
 </dl>
-<A HREF="#top">Back to Contents</A>
+<A HREF="#contents">Back to Contents</A>
 <dl>
-<HR>
-<h2>
-<a name="erro">Handling Errors
-<dt>
-</h2>
+<p>
+<a name="erro">
+<dt><table width="100%" cellpadding="1" border="0">
+<tr><td align="left" bgcolor="#52799e">
+  <font color="#ffffff" face="Helvetica, Arial"><big><b>
+    <img src="../images/right_triangle.gif" width="15" height="14" border="0"
+     alt="&gt;">Handling Errors</b></big>
+  </font>
+</td></tr>
+</table>
+<p>
 <dd>All <b>PerlMagick</b> methods return an undefined string context upon
 success.  If any problems occur, the error is returned as a string with
 an embedded numeric status code.  A status code less than 400 is a
@@ -1670,14 +1739,20 @@ The following illustrates how you can use a numeric status code:
     die "unable to continue" if ($1 == ResourceLimitError);
 </pre>
 </dl>
-<A HREF="#top">Back to Contents</A>
+<A HREF="#contents">Back to Contents</A>
 </dl>
-<p><hr><p>
-<DL>
-<h2>
-<a name="blobs">Working with Blobs
-<dt>
-</h2>
+<p>
+<dl>
+<a name="blobs">
+<dt><table width="100%" cellpadding="1" border="0">
+<tr><td align="left" bgcolor="#52799e">
+  <font color="#ffffff" face="Helvetica, Arial"><big><b>
+    <img src="../images/right_triangle.gif" width="15" height="14" border="0"
+     alt="&gt;">Working with Blobs</b></big>
+  </font>
+</td></tr>
+</table>
+<p>
 <dd>A blob contains data that directly represent a particular image format
 in memory instead of on disk.  <b>PerlMagick</b> supports blobs in any of
 these image <A HREF="../www/formats.html">formats</A> and provides
@@ -1727,14 +1802,20 @@ the supplied blob:
     $image=Image::Magick-&gt;new(magick=>'jpg');
     $image-&gt;BlobToImage($blob);
 </pre>
-<p>
 </dl>
-<p><hr><p>
-<DL>
-<A NAME="copy">
-<DT>Copyright
-</A>
-</H2>
+<p>
+<A HREF="#contents">Back to Contents</A>
+<dl>
+<a name="copy">
+<dt><table width="100%" cellpadding="1" border="0">
+<tr><td align="left" bgcolor="#52799e">
+  <font color="#ffffff" face="Helvetica, Arial"><big><b>
+    <img src="../images/right_triangle.gif" width="15" height="14" border="0"
+     alt="&gt;">Copyright</b></big>
+  </font>
+</td></tr>
+</table>
+<p>
 <B>
 <dd>Copyright 1999 E. I. du Pont de Nemours and Company
 <p>
@@ -1763,7 +1844,7 @@ written authorization from the E. I. du Pont de Nemours and Company.
 </B>
 </DL>
 <P>
-<A HREF="#top">Back to Contents</A>
+<A HREF="#contents">Back to Contents</A>
 <HR>
 <DL>
 <a href="../ImageMagick.html"><img alt="Home Page"

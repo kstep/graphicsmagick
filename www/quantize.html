@@ -1,22 +1,26 @@
 <HTML VERSION="2.0">
-<HEAD>
+<head>
 <TITLE>ImageMagick Color Reduction Algorithm</TITLE>
-<LINK rev="made" href="mailto:magick@wizards.dupont.com">
-<meta name="description" content="ImageMagick, version 4.2.8, is a package for
-  display and interactive manipulation of images for the X Window System. It
-  is written in C and interfaces to the X library, and therefore does not
-  require any proprietary toolkit in order to compile.  Although the software
-  is copyrighted, it is available for free and can be redistributed without
-  fee.">
+<link rev="made" href="mailto:magick@wizards.dupont.com">
+<meta name="description" content="ImageMagick, version 4.2.8, is a
+  robust collection of tools and libraries to read, write, and
+  manipulate an image in any of the more popular image formats
+  including GIF, JPEG, PNG, PDF, and Photo CD.  With ImageMagick you
+  can create GIFs dynamically making it suitable for Web applications.
+  You can also resize, rotate, sharpen, color reduce, or add special
+  effects to an image and save your completed work in the same or
+  differing image format.">
 <meta name="keywords" content="ImageMagick, Image Magick, Image Magic,
-  PerlMagick, Perl Magick, Perl Magic, CineMagick, PixelMagick, Pixel Magic,
-  WebMagick, Web Magic, visualization, image processing, software development,
-  simulation, image, software, AniMagick, Animagic, X11">
-</HEAD>
-<body background="../images/background.gif">
-<CENTER>
+  PerlMagick, Perl Magick, Perl Magic, CineMagick, PixelMagick, Pixel
+  Magic, WebMagick, Web Magic, visualization, image processing,
+  software development, simulation, image, software, AniMagick,
+  Animagic, Magick++">
+</head>
+<body text="#000000" bgcolor="#ffffff" link="#0062CE" vlink="#6C9EFF"
+  alink="#ff0000" background="../images/background.gif">
+<center>
 <img src="../images/quantize.gif" align=bottom width=267 height=48>
-</CENTER>
+</center>
 <pre>
 
 </pre>
@@ -24,8 +28,18 @@ This document describes how <a href=../ImageMagick.html>ImageMagick</a>
 performs color reduction on an image.  To fully understand this document,
 you should have a knowledge of basic imaging techniques and
 the tree data structure and terminology.
+<p>
+<dl>
+<table width="100%" cellpadding="1" border="0">
+<tr><td align="left" bgcolor="#52799e">
+  <font color="#ffffff" face="Helvetica, Arial"><big><b>
+    <img src="../images/right_triangle.gif" width="15" height="14" border="0"
+     alt="&gt;">Description</b></big>
+  </font>
+</td></tr>
+</table>
 <P>
-For purposes of color allocation, an image is a set of <I>n</I>
+<dd>For purposes of color allocation, an image is a set of <I>n</I>
 pixels, where each pixel is a point in <B>RGB</B> space.  <B>RGB</B> space
 is a 3-dimensional vector space, and each pixel, <I>p(i)</I>,  is
 defined by an ordered triple of red, green, and blue
@@ -217,11 +231,19 @@ except each pixel is a point in the alternate color space.
 For convenience, the color components are normalized to the
 range 0 to a maximum value, <I>Cmax</I>.  The color reduction can
 then proceed as described.
-<pre>
-
-</pre>
-<H2>Measuring Color Reduction Error</H2>
-Depending on the image, the color reduction error may be
+</dl>
+<dl>
+<p>
+<table width="100%" cellpadding="1" border="0">
+<tr><td align="left" bgcolor="#52799e">
+  <font color="#ffffff" face="Helvetica, Arial"><big><b>
+    <img src="../images/right_triangle.gif" width="15" height="14" border="0"
+     alt="&gt;">Measuring Color Reduction Error</b></big>
+  </font>
+</td></tr>
+</table>
+<p>
+<dd>Depending on the image, the color reduction error may be
 obvious or invisible.  Images with high spatial frequencies
 (such as hair or grass) will show error much less than
 pictures with large smoothly shaded areas (such as faces).
@@ -267,10 +289,49 @@ any single pixel in the image.
 in the image.
 </DL>
 </DL>
-<pre>
-
-</pre>
-<H2>Copyright</H2>
+</DL>
+<p>
+<dl>
+<table width="100%" cellpadding="1" border="0">
+<tr><td align="left" bgcolor="#52799e">
+  <font color="#ffffff" face="Helvetica, Arial"><big><b>
+    <img src="../images/right_triangle.gif" width="15" height="14" border="0"
+     alt="&gt;">Authors</b></big>
+  </font>
+</td></tr>
+</table>
+<p>
+<dd><I>John Cristy</I>, <A HREF="mailto:magick@wizards.dupont.com">
+ <I>magick@wizards.dupont.com</I>,</A> <B>E.I. du Pont de Nemours and Company
+ Incorporated</B>.
+</dl>
+<p>
+<dl>
+<table width="100%" cellpadding="1" border="0">
+<tr><td align="left" bgcolor="#52799e">
+  <font color="#ffffff" face="Helvetica, Arial"><big><b>
+    <img src="../images/right_triangle.gif" width="15" height="14" border="0"
+     alt="&gt;">Acknowledgements</b></big>
+  </font>
+</td></tr>
+</table>
+<p>
+<dd><I>Paul Raveling</I>, <B>USC Information Sciences Institute</B>, for the
+original idea of using space subdivision for the color
+reduction algorithm.  With Paul's permission, this document
+is an adaptation from a document he wrote.
+</dl>
+<p>
+<dl>
+<table width="100%" cellpadding="1" border="0">
+<tr><td align="left" bgcolor="#52799e">
+  <font color="#ffffff" face="Helvetica, Arial"><big><b>
+    <img src="../images/right_triangle.gif" width="15" height="14" border="0"
+     alt="&gt;">Copyright</b></big>
+  </font>
+</td></tr>
+</table>
+<p>
 <B>
 <dd>Copyright 1999 E. I. du Pont de Nemours and Company
 <p>
@@ -297,18 +358,7 @@ Nemours and Company shall not be used in advertising or otherwise to
 promote the sale, use or other dealings in ImageMagick without prior 
 written authorization from the E. I. du Pont de Nemours and Company. 
 </B>
-<pre>
-
-</pre>
-<H2>Acknowledgements</H2>
-<I>Paul Raveling</I>, <B>USC Information Sciences Institute</B>, for the
-original idea of using space subdivision for the color
-reduction algorithm.  With Paul's permission, this document
-is an adaptation from a document he wrote.
-<DT><H2>Authors</H2>
-<I>John Cristy</I>, <A HREF="mailto:magick@wizards.dupont.com">
- <I>magick@wizards.dupont.com</I>,</A> <B>E.I. du Pont de Nemours and Company
- Incorporated</B>.
+</dl>
 <p><hr><p>
 <a href="../ImageMagick.html"><img alt="Home Page"
   src="../images/home.gif" width=40 height=40 align=middle border=0></a>
