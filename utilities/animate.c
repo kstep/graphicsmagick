@@ -743,8 +743,7 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if ((LocaleCompare("mono",option+1) == 0) ||
-              (LocaleCompare("monochrome",option+1) == 0))
+          if (LocaleCompare("monochrome",option+1) == 0)
             {
               image_info->monochrome=(*option == '-');
               if (image_info->monochrome)
@@ -760,13 +759,17 @@ int main(int argc,char **argv)
         }
         case 'n':
         {
-          resource_info.name=(char *) NULL;
-          if (*option == '-')
+          if (LocaleCompare("name",option+1) == 0)
             {
-              i++;
-              if (i == argc)
-                MagickError(OptionError,"Missing name",option);
-              resource_info.name=argv[i];
+              resource_info.name=(char *) NULL;
+              if (*option == '-')
+                {
+                  i++;
+                  if (i == argc)
+                    MagickError(OptionError,"Missing name",option);
+                  resource_info.name=argv[i];
+                }
+              break;
             }
           break;
         }
