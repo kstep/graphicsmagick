@@ -504,8 +504,8 @@ MagickExport void SetCacheThreshold(const unsigned long size)
 {
   (void) LogMagickEvent(DeprecateEvent,GetMagickModule(),
     "Method has been deprecated");
-  SetMagickResourceLimit(MemoryResource,size);
-  SetMagickResourceLimit(MapResource,2*size);
+  (void) SetMagickResourceLimit(MemoryResource,size);
+  (void) SetMagickResourceLimit(MapResource,2*size);
 }
 
 /*

@@ -566,7 +566,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
   if (tiff == (TIFF *) NULL)
     {
       if (filename_is_temporary)
-        LiberateTemporaryFile(filename);
+        (void) LiberateTemporaryFile(filename);
       ThrowReaderException(FileOpenError,UnableToOpenFile,image)
     }
   if (image_info->subrange != 0)
@@ -581,7 +581,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         {
           TIFFClose(tiff);
           if (filename_is_temporary)
-            LiberateTemporaryFile(filename);
+            (void) LiberateTemporaryFile(filename);
           ThrowReaderException(CorruptImageError,UnableToReadSubImageData,
             image)
         }
@@ -619,7 +619,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       {
         TIFFClose(tiff);
         if (filename_is_temporary)
-          LiberateTemporaryFile(filename);
+          (void) LiberateTemporaryFile(filename);
         ThrowReaderException(CoderError,UnableToReadCIELABImages,image)
       }
     if (photometric == PHOTOMETRIC_SEPARATED)
@@ -693,7 +693,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     else
       image->depth=bits_per_sample;  /* FIXME */
     if (logging)
-      (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Image depth: %lu",
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Image depth: %u",
         image->depth);
     (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_EXTRASAMPLES,&extra_samples,
       &sample_info);
@@ -723,7 +723,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           {
             TIFFClose(tiff);
             if (filename_is_temporary)
-              remove(filename);
+              (void) remove(filename);
             ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
               image)
           }
@@ -798,7 +798,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         if (logging)
           {
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-              "Using PseudoClass read method with %u bits per sample, %lu colors",
+              "Using PseudoClass read method with %u bits per sample, %u colors",
                 bits_per_sample, image->colors);
           }
         
@@ -811,7 +811,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           {
             TIFFClose(tiff);
             if (filename_is_temporary)
-              LiberateTemporaryFile(filename);
+              (void) LiberateTemporaryFile(filename);
             ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
               image)
           }
@@ -986,7 +986,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           {
             TIFFClose(tiff);
             if (filename_is_temporary)
-              LiberateTemporaryFile(filename);
+              (void) LiberateTemporaryFile(filename);
             ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
               image)
           }
@@ -1131,14 +1131,14 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           {
             TIFFClose(tiff);
             if (filename_is_temporary)
-              LiberateTemporaryFile(filename);
+              (void) LiberateTemporaryFile(filename);
             ThrowReaderException(CoderError,ImageIsNotTiled,image)
           }
         tile_total_pixels=tile_columns*tile_rows;
         if (logging)
           {
-            LogMagickEvent(CoderEvent,GetMagickModule(),"Reading TIFF tiles ...");
-            LogMagickEvent(CoderEvent,GetMagickModule(),
+            (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Reading TIFF tiles ...");
+            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
               "TIFF tile geometry %ux%u, %lu pixels",(unsigned int)tile_columns,
               (unsigned int)tile_rows, tile_total_pixels);
           }
@@ -1151,7 +1151,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           {
             TIFFClose(tiff);
             if (filename_is_temporary)
-              LiberateTemporaryFile(filename);
+              (void) LiberateTemporaryFile(filename);
             ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
               image)
           }
@@ -1329,7 +1329,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           {
             TIFFClose(tiff);
             if (filename_is_temporary)
-              LiberateTemporaryFile(filename);
+              (void) LiberateTemporaryFile(filename);
             ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
               image)
           }
@@ -1404,7 +1404,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
   } while (status == True);
   TIFFClose(tiff);
   if (filename_is_temporary)
-    LiberateTemporaryFile(filename);
+    (void) LiberateTemporaryFile(filename);
   while (image->previous != (Image *) NULL)
     image=image->previous;
   return(image);
@@ -1846,7 +1846,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
   if (tiff == (TIFF *) NULL)
     {
       if (filename_is_temporary)
-        LiberateTemporaryFile(filename);
+        (void) LiberateTemporaryFile(filename);
       return(False);
     }
   scene=0;
@@ -1873,7 +1873,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
 #ifdef CCITT_SUPPORT
       case FaxCompression:
       {
-        SetImageType(image,BilevelType);
+        (void) SetImageType(image,BilevelType);
         if (logging)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "Set image type to BilevelType");
@@ -1882,7 +1882,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
       }
       case Group4Compression:
       {
-        SetImageType(image,BilevelType);
+        (void) SetImageType(image,BilevelType);
         if (logging)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "Set image type to BilevelType");
@@ -2421,9 +2421,9 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
         /*
           Initialize TIFF colormap.
         */
-        memset(red,0,65536L*sizeof(unsigned short));
-        memset(green,0,65536L*sizeof(unsigned short));
-        memset(blue,0,65536L*sizeof(unsigned short));
+        (void) memset(red,0,65536L*sizeof(unsigned short));
+        (void) memset(green,0,65536L*sizeof(unsigned short));
+        (void) memset(blue,0,65536L*sizeof(unsigned short));
         for (i=0; i < (long) image->colors; i++)
         {
           red[i]=ScaleQuantumToShort(image->colormap[i].red);
@@ -2580,7 +2580,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
       if (map != (void *) NULL)
         {
           (void) WriteBlob(image,length,map);
-          UnmapBlob(map,length);
+          (void) UnmapBlob(map,length);
         }
       else
         {
@@ -2610,7 +2610,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
           MagickFreeMemory(buffer);
         }
       (void) close(file);
-      LiberateTemporaryFile(filename);
+      (void) LiberateTemporaryFile(filename);
       CloseBlob(image);
     }
 #endif

@@ -254,8 +254,8 @@ static unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
         byte=0;
         for (x=0; x < (long) image->columns; x++)
         {
-          byte<<=1;
-          byte|=indexes[x] ? 0x01 : 0x00;
+          byte<<=1U;
+          byte|=indexes[x] ? 0x01U : 0x00U;
           bit++;
           if (bit == 8)
             {

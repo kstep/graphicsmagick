@@ -192,7 +192,7 @@ static Image *ReadPWPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         char
           filename[MaxTextExtent];
 
-        strcpy(filename,clone_info->filename);
+        (void) strcpy(filename,clone_info->filename);
         DestroyImageInfo(clone_info);
         ThrowReaderTemporaryFileException(filename);
       }
@@ -206,7 +206,7 @@ static Image *ReadPWPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     (void) fclose(file);
     handler=SetMonitorHandler((MonitorHandler) NULL);
     next_image=ReadImage(clone_info,exception);
-    LiberateTemporaryFile(clone_info->filename);
+    (void) LiberateTemporaryFile(clone_info->filename);
     (void) SetMonitorHandler(handler);
     if (next_image == (Image *) NULL)
       break;

@@ -288,11 +288,11 @@ static unsigned int DecodeImage(Image *image,unsigned char *luma,
           PCDGetBits(1);
         continue;
       }
-    if (r->key < 128)
+    if (r->key < 128U)
       quantum=(long) (*q)+r->key;
     else
       quantum=(long) (*q)+r->key-256;
-    *q=(unsigned char) ((quantum < 0) ? 0 : (quantum > 255) ? 255 : quantum);
+    *q=(unsigned char) ((quantum < 0) ? 0 : (quantum > 255) ? 255U : quantum);
     q++;
     PCDGetBits(r->length);
     count--;
@@ -395,7 +395,7 @@ static Image *OverviewImage(const ImageInfo *image_info,Image *image,
 
     for( label_image=GetFirstImageInList(image); label_image != 0;
          label_image=GetNextImageInList(label_image) )
-      SetImageAttribute(label_image, "label", DefaultTileLabel);
+      (void) SetImageAttribute(label_image, "label", DefaultTileLabel);
   }
 
   /*

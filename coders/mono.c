@@ -142,17 +142,17 @@ static Image *ReadMONOImage(const ImageInfo *image_info,
     if (q == (PixelPacket *) NULL)
       break;
     indexes=GetIndexes(image);
-    bit=0;
-    byte=0;
+    bit=0U;
+    byte=0U;
     for (x=0; x < (long) image->columns; x++)
     {
-      if (bit == 0)
+      if (bit == 0U)
         byte=ReadBlobByte(image);
-      indexes[x]=(byte & 0x01) ? 0x01 : 0x00;
+      indexes[x]=(byte & 0x01U) ? 0x01U : 0x00U;
       bit++;
-      if (bit == 8)
-        bit=0;
-      byte>>=1;
+      if (bit == 8U)
+        bit=0U;
+      byte>>=1U;
     }
     if (!SyncImagePixels(image))
       break;
@@ -296,7 +296,7 @@ static unsigned int WriteMONOImage(const ImageInfo *image_info,Image *image)
   /*
     Convert image to a bi-level image.
   */
-  SetImageType(image,BilevelType);
+  (void) SetImageType(image,BilevelType);
   polarity=PixelIntensityToQuantum(&image->colormap[0]) < (MaxRGB/2);
   if (image->colors == 2)
     polarity=PixelIntensityToQuantum(&image->colormap[0]) <

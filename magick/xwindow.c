@@ -52,8 +52,10 @@
    /* Need by some *BSD systems in order to use shmget */
 #  include <machine/param.h>
 # endif /* defined(HAVE_MACHINE_PARAM_H */
-# if __FreeBSD__ >= 5 && defined(_POSIX_C_SOURCE)
+# if defined(__FreeBSD__)
+#  if __FreeBSD__ >= 5 && defined(_POSIX_C_SOURCE)
    typedef unsigned short ushort; /* needed for sys/ipc.h at the moment */
+#  endif
 # endif
 # include <sys/ipc.h>
 # include <sys/shm.h>
@@ -257,11 +259,11 @@ MagickExport void XDestroyXWindows(XWindows *windows)
     {
       MagickFreeMemory(windows->icon_pixel->pixels);
       if (windows->icon_pixel->annotate_context != (GC) NULL)
-        XFreeGC(windows->display,windows->icon_pixel->annotate_context); /* Allocated by XCreateGC */
+        (void) XFreeGC(windows->display,windows->icon_pixel->annotate_context); /* Allocated by XCreateGC */
       if (windows->icon_pixel->widget_context != (GC) NULL)
-        XFreeGC(windows->display,windows->icon_pixel->widget_context); /* Allocated by XCreateGC */
+        (void) XFreeGC(windows->display,windows->icon_pixel->widget_context); /* Allocated by XCreateGC */
       if (windows->icon_pixel->highlight_context != (GC) NULL)
-        XFreeGC(windows->display,windows->icon_pixel->highlight_context); /* Allocated by XCreateGC */
+        (void) XFreeGC(windows->display,windows->icon_pixel->highlight_context); /* Allocated by XCreateGC */
       MagickFreeMemory(windows->icon_pixel);
     }
 
@@ -269,53 +271,53 @@ MagickExport void XDestroyXWindows(XWindows *windows)
     {
       MagickFreeMemory(windows->pixel_info->pixels);
       if (windows->pixel_info->annotate_context != (GC) NULL)
-        XFreeGC(windows->display,windows->pixel_info->annotate_context); /* Allocated by XCreateGC */
+        (void) XFreeGC(windows->display,windows->pixel_info->annotate_context); /* Allocated by XCreateGC */
       if (windows->pixel_info->widget_context != (GC) NULL)
-        XFreeGC(windows->display,windows->pixel_info->widget_context); /* Allocated by XCreateGC */
+        (void) XFreeGC(windows->display,windows->pixel_info->widget_context); /* Allocated by XCreateGC */
       if (windows->pixel_info->highlight_context != (GC) NULL)
-        XFreeGC(windows->display,windows->pixel_info->highlight_context); /* Allocated by XCreateGC */
+        (void) XFreeGC(windows->display,windows->pixel_info->highlight_context); /* Allocated by XCreateGC */
       MagickFreeMemory(windows->pixel_info);
     }
 
   if (windows->font_info != (XFontStruct *) NULL)
     {
-      XFreeFont(windows->display,windows->font_info); /* Allocated by XLoadQueryFont */
+      (void) XFreeFont(windows->display,windows->font_info); /* Allocated by XLoadQueryFont */
       windows->font_info=(XFontStruct *) NULL;
     }
 
   if (windows->class_hints != (XClassHint *) NULL)
     {
-      XFree(windows->class_hints); /* Allocated by XAllocClassHint */
+      (void) XFree(windows->class_hints); /* Allocated by XAllocClassHint */
       windows->class_hints=(XClassHint *) NULL;
     }
 
   if (windows->manager_hints != (XWMHints *) NULL)
     {
-      XFree(windows->manager_hints); /* Allocated by XAllocWMHints */
+      (void) XFree(windows->manager_hints); /* Allocated by XAllocWMHints */
       windows->manager_hints=(XWMHints *) NULL;
     }
 
   if (windows->map_info != (XStandardColormap *) NULL)
     {
-      XFree(windows->map_info); /* Allocated by XAllocStandardColormap */
+      (void) XFree(windows->map_info); /* Allocated by XAllocStandardColormap */
       windows->map_info=(XStandardColormap *) NULL;
     }
 
   if(windows->icon_map != (XStandardColormap *) NULL)
     {
-      XFree(windows->icon_map); /* Allocated by XAllocStandardColormap */
+      (void) XFree(windows->icon_map); /* Allocated by XAllocStandardColormap */
       windows->icon_map=(XStandardColormap *) NULL;
     }
 
   if (windows->visual_info != (XVisualInfo *) NULL)
     {
-      XFree(windows->visual_info); /* Allocated by XGetVisualInfo */
+      (void) XFree(windows->visual_info); /* Allocated by XGetVisualInfo */
       windows->visual_info=(XVisualInfo *) NULL;
     }
 
   if (windows->icon_visual != (XVisualInfo *) NULL)
     {
-      XFree(windows->icon_visual); /* Allocated by XGetVisualInfo */
+      (void) XFree(windows->icon_visual); /* Allocated by XGetVisualInfo */
       windows->icon_visual=(XVisualInfo *) NULL;
     }
 
@@ -1817,7 +1819,7 @@ MagickExport void XDestroyResourceInfo(XResourceInfo *resource_info)
     }
   MagickFreeMemory(resource_info->client_name);
   MagickFreeMemory(resource_info->name);
-  memset((void *) resource_info,0,sizeof(XResourceInfo));
+  (void) memset((void *) resource_info,0,sizeof(XResourceInfo));
 }
 
 /*
@@ -2019,10 +2021,10 @@ MagickExport void XDisplayImageInfo(Display *display,
   /*
     Write info about the image to a file.
   */
-  DescribeImage(image,file,True);
+  (void) DescribeImage(image,file,True);
   (void) fclose(file);
   text=(char *) FileToBlob(filename,&length,&image->exception);
-  LiberateTemporaryFile(filename);
+  (void) LiberateTemporaryFile(filename);
   if (text == (char *) NULL)
     {
       XNoticeWidget(display,windows,"MemoryAllocationFailed",
@@ -2424,7 +2426,7 @@ MagickExport unsigned int XDrawImage(Display *display,const XPixelInfo *pixel,
   y=0;
   (void) XParseGeometry(draw_info->geometry,&x,&y,&width,&height);
   draw_image->background_color=GetOnePixel(image,x,y);
-  SetImageType(draw_image,TrueColorMatteType);
+  (void) SetImageType(draw_image,TrueColorMatteType);
   for (y=0; y < (long) draw_image->rows; y++)
   {
     q=SetImagePixels(draw_image,0,y,draw_image->columns,1);
@@ -5164,13 +5166,13 @@ MagickExport XWindows *XInitializeWindows(Display *display,
       MagickMsg(XServerFatalError,UnableToCreateStandardColormap));
   windows->map_info->colormap=(Colormap) NULL;
   windows->icon_map->colormap=(Colormap) NULL;
-  memset((void *) windows->pixel_info, 0, sizeof(XPixelInfo));
+  (void) memset((void *) windows->pixel_info, 0, sizeof(XPixelInfo));
   windows->pixel_info->pixels=(unsigned long *) NULL;
   windows->pixel_info->annotate_context=(GC) NULL;
   windows->pixel_info->highlight_context=(GC) NULL;
   windows->pixel_info->widget_context=(GC) NULL;
   windows->font_info=(XFontStruct *) NULL;
-  memset((void *) windows->icon_pixel, 0, sizeof(XPixelInfo));
+  (void) memset((void *) windows->icon_pixel, 0, sizeof(XPixelInfo));
   windows->icon_pixel->annotate_context=(GC) NULL;
   windows->icon_pixel->pixels=(unsigned long *) NULL;
   windows->icon_pixel->highlight_context=(GC) NULL;
@@ -5533,7 +5535,7 @@ MagickExport unsigned int XMakeImage(Display *display,
         {
           window->shared_memory=False;
           if (shm_attached)
-            XShmDetach(display,&segment_info[1]);
+            (void) XShmDetach(display,&segment_info[1]);
           if (ximage != (XImage *) NULL)
             {
               ximage->data=NULL;
@@ -7573,7 +7575,7 @@ MagickExport void XMakeStandardColormap(Display *display,
               }
             XGetPixelPacket(display,visual_info,map_info,resource_info,image,
               pixel);
-            SetImageType(image,TrueColorType);
+            (void) SetImageType(image,TrueColorType);
             DestroyImage(map_image);
           }
       if (IsEventLogging())

@@ -751,7 +751,7 @@ MagickExport MagickPassFail GetTypeMetrics(Image *image,const DrawInfo *draw_inf
   assert(draw_info->signature == MagickSignature);
   clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
   clone_info->render=False;
-  memset(metrics,0,sizeof(TypeMetric));
+  (void) memset(metrics,0,sizeof(TypeMetric));
   offset.x=0.0;
   offset.y=0.0;
   status=RenderType(image,clone_info,&offset,metrics);
@@ -1212,13 +1212,13 @@ static MagickPassFail RenderFreetype(Image *image,const DrawInfo *draw_info,
       exact bounding box but may be slightly larger in some
       situations.
     */
-    FT_Glyph_Get_CBox(glyph.image,FT_GLYPH_BBOX_SUBPIXELS,&bounds);
+    (void) FT_Glyph_Get_CBox(glyph.image,FT_GLYPH_BBOX_SUBPIXELS,&bounds);
 #else
     /*
       Compute exact bounding box for scaled outline. If necessary, the
       outline Bezier arcs are walked over to extract their extrema.
     */
-    FT_Outline_Get_BBox(&((FT_OutlineGlyph) glyph.image)->outline,&bounds);
+    (void) FT_Outline_Get_BBox(&((FT_OutlineGlyph) glyph.image)->outline,&bounds);
 #endif
     if ((i == 0) || (bounds.xMin < metrics->bounds.x1))
       metrics->bounds.x1=bounds.xMin;
@@ -1525,7 +1525,7 @@ static MagickPassFail RenderPostscript(Image *image,const DrawInfo *draw_info,
     MagickError2(image->exception.severity,image->exception.reason,
       image->exception.description);
   DestroyImageInfo(clone_info);
-  LiberateTemporaryFile(filename);
+  (void) LiberateTemporaryFile(filename);
   if (annotate_image == (Image *) NULL)
     return(False);
   resolution.x=72.0;
@@ -1581,7 +1581,7 @@ static MagickPassFail RenderPostscript(Image *image,const DrawInfo *draw_info,
       /*
         Render fill color.
       */
-      SetImageType(annotate_image,TrueColorMatteType);
+      (void) SetImageType(annotate_image,TrueColorMatteType);
       fill_color=draw_info->fill;
       pattern=draw_info->fill_pattern;
       for (y=0; y < (long) annotate_image->rows; y++)

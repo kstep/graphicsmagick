@@ -146,7 +146,7 @@ static unsigned int DecodeImage(const unsigned char *compressed_pixels,
   while ((size_t) (p-compressed_pixels) < length)
   {
     byte=(*p++);
-    if (byte != 128)
+    if (byte != 128U)
       *q++=byte;
     else
       {
@@ -794,7 +794,7 @@ static unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
           /*
             Convert PseudoClass image to a SUN monochrome image.
           */
-          SetImageType(image,BilevelType);
+          (void) SetImageType(image,BilevelType);
           polarity=PixelIntensityToQuantum(&image->colormap[0]) < (MaxRGB/2);
           if (image->colors == 2)
             polarity=PixelIntensityToQuantum(&image->colormap[0]) <

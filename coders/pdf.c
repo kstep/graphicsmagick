@@ -144,7 +144,7 @@ static unsigned int Huffman2DEncodeImage(const ImageInfo *image_info,
   huffman_image=CloneImage(image,0,0,True,&image->exception);
   if (huffman_image == (Image *) NULL)
     return(False);
-  SetImageType(huffman_image,BilevelType);
+  (void) SetImageType(huffman_image,BilevelType);
   FormatString(huffman_image->filename,"tiff:%s",filename);
   clone_info=CloneImageInfo(image_info);
   clone_info->compression=Group4Compression;
@@ -156,7 +156,7 @@ static unsigned int Huffman2DEncodeImage(const ImageInfo *image_info,
   tiff=TIFFOpen(filename,"rb");
   if (tiff == (TIFF *) NULL)
     {
-      LiberateTemporaryFile(filename);
+      (void) LiberateTemporaryFile(filename);
       ThrowBinaryException(FileOpenError,UnableToOpenFile,
         image_info->filename)
     }
@@ -172,7 +172,7 @@ static unsigned int Huffman2DEncodeImage(const ImageInfo *image_info,
   if (buffer == (unsigned char *) NULL)
     {
       TIFFClose(tiff);
-      LiberateTemporaryFile(filename);
+      (void) LiberateTemporaryFile(filename);
       ThrowBinaryException(ResourceLimitError,MemoryAllocationFailed,
         (char *) NULL)
     }
@@ -188,7 +188,7 @@ static unsigned int Huffman2DEncodeImage(const ImageInfo *image_info,
   }
   MagickFreeMemory(buffer);
   TIFFClose(tiff);
-  LiberateTemporaryFile(filename);
+  (void) LiberateTemporaryFile(filename);
   return(True);
 }
 #else
@@ -370,8 +370,8 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Determine page geometry from the PDF media box.
   */
-  memset(&page,0,sizeof(RectangleInfo));
-  memset(&box,0,sizeof(RectangleInfo));
+  (void) memset(&page,0,sizeof(RectangleInfo));
+  (void) memset(&box,0,sizeof(RectangleInfo));
   portrait=True;
   for (p=command; ; )
   {
@@ -458,14 +458,14 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if ((status) || (!IsAccessibleAndNotEmpty(clone_info->filename)))
     {
       DestroyImageInfo(clone_info);
-      LiberateTemporaryFile(postscript_filename);
+      (void) LiberateTemporaryFile(postscript_filename);
       ThrowReaderException(DelegateError,PostscriptDelegateFailed,image)
     }
   DestroyImage(image);
   clone_info->blob=(void *) NULL;
   clone_info->length=0;
   image=ReadImage(clone_info,exception);
-  LiberateTemporaryFile(postscript_filename);
+  (void) LiberateTemporaryFile(postscript_filename);
   (void) remove(clone_info->filename);
   DestroyImageInfo(clone_info);
   if (image == (Image *) NULL)
@@ -761,7 +761,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     2048*sizeof(ExtendedSignedIntegralType));
   if (xref == (ExtendedSignedIntegralType *) NULL)
     ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
-  memset(xref,0,2048*sizeof(ExtendedSignedIntegralType));
+  (void) memset(xref,0,2048*sizeof(ExtendedSignedIntegralType));
   /*
     Write Info object.
   */
@@ -1416,8 +1416,8 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
             (compression == JPEGCompression))
           (void) strcpy(buffer,"/DeviceRGB\n");
         else
-          FormatString(buffer,"[ /Indexed /DeviceRGB %lu %lu 0 R ]\n",
-            image->colors-1,object+3);
+          FormatString(buffer,"[ /Indexed /DeviceRGB %u %lu 0 R ]\n",
+            (unsigned int) image->colors-1,object+3);
     (void) WriteBlobString(image,buffer);
     (void) WriteBlobString(image,"endobj\n");
     /*

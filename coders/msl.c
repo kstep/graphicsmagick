@@ -551,7 +551,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
           for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
           {
           keyword=(const char *) attributes[i++];
-          CloneString(&value,TranslateText(msl_info->image_info[n],
+          (void) CloneString(&value,TranslateText(msl_info->image_info[n],
             msl_info->attributes[n],(char *) attributes[i]));
           switch (*keyword)
           {
@@ -621,7 +621,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
           for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
           {
           keyword=(const char *) attributes[i++];
-          CloneString(&value,TranslateText(msl_info->image_info[n],
+          (void) CloneString(&value,TranslateText(msl_info->image_info[n],
             msl_info->attributes[n],(char *) attributes[i]));
           switch (*keyword)
           {
@@ -725,7 +725,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
           for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
           {
           keyword=(const char *) attributes[i++];
-          CloneString(&value,TranslateText(msl_info->image_info[n],
+          (void) CloneString(&value,TranslateText(msl_info->image_info[n],
             msl_info->attributes[n],(char *) attributes[i]));
           switch (*keyword)
           {
@@ -792,7 +792,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
         for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
         {
         keyword=(const char *) attributes[i++];
-        CloneString(&value,TranslateText(msl_info->image_info[n],
+        (void) CloneString(&value,TranslateText(msl_info->image_info[n],
           msl_info->attributes[n],(char *) attributes[i]));
         switch (*keyword)
         {
@@ -903,7 +903,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
         for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
         {
           keyword=(const char *) attributes[i++];
-          CloneString(&value,TranslateText(msl_info->image_info[n],
+          (void) CloneString(&value,TranslateText(msl_info->image_info[n],
                   msl_info->attributes[n],(char *) attributes[i]));
           switch (*keyword)
           {
@@ -1129,7 +1129,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
             }
           }
 
-          CompositeImage(msl_info->image[n], compositeOp, srcImage, x, y);
+          (void) CompositeImage(msl_info->image[n], compositeOp, srcImage, x, y);
           break;
         } else
           ThrowException(msl_info->exception,OptionError,NoImagesDefined,(char *) name);
@@ -1153,7 +1153,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
         for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
         {
         keyword=(const char *) attributes[i++];
-        CloneString(&value,TranslateText(msl_info->image_info[n],
+        (void) CloneString(&value,TranslateText(msl_info->image_info[n],
           msl_info->attributes[n],(char *) attributes[i]));
         switch (*keyword)
         {
@@ -1293,7 +1293,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
           for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
           {
           keyword=(const char *) attributes[i++];
-          CloneString(&value,TranslateText(msl_info->image_info[n],
+          (void) CloneString(&value,TranslateText(msl_info->image_info[n],
             msl_info->attributes[n],(char *) attributes[i]));
           switch (*keyword)
           {
@@ -1350,7 +1350,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
           for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
           {
           keyword=(const char *) attributes[i++];
-          CloneString(&value,TranslateText(msl_info->image_info[n],
+          (void) CloneString(&value,TranslateText(msl_info->image_info[n],
             msl_info->attributes[n],(char *) attributes[i]));
           switch (*keyword)
           {
@@ -1435,7 +1435,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
 
         /* process the image */
         {
-          EqualizeImage(msl_info->image[n]);  /* why doesn't this take an exception or return the changed image */
+          (void) EqualizeImage(msl_info->image[n]);  /* why doesn't this take an exception or return the changed image */
           break;
         }
       }
@@ -1532,7 +1532,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
           for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
           {
           keyword=(const char *) attributes[i++];
-          CloneString(&value,TranslateText(msl_info->image_info[n],
+          (void) CloneString(&value,TranslateText(msl_info->image_info[n],
             msl_info->attributes[n],(char *) attributes[i]));
           switch (*keyword)
           {
@@ -1678,7 +1678,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
       for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
       {
         keyword=(const char *) attributes[i++];
-        CloneString(&value,(char *) attributes[i]);
+        (void) CloneString(&value,(char *) attributes[i]);
         (void) strncpy(key,value,MaxTextExtent-1);
         switch (*keyword)
         {
@@ -1729,7 +1729,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
         FormatString( gamma, "%3.6f/%3.6f/%3.6f/",
                 gammaRed, gammaGreen, gammaBlue);
 
-        GammaImage ( msl_info->image[n], gamma );
+        (void) GammaImage ( msl_info->image[n], gamma );
       }
     }
       else if (LocaleCompare((char *) name,"get") == 0)
@@ -1744,7 +1744,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
           for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
           {
             keyword=(const char *) attributes[i++];
-            CloneString(&value,(char *) attributes[i]);
+            (void) CloneString(&value,(char *) attributes[i]);
             (void) strncpy(key,value,MaxTextExtent-1);
             switch (*keyword)
             {
@@ -1802,7 +1802,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
           for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
           {
             keyword=(const char *) attributes[i++];
-            CloneString(&value,TranslateText(msl_info->image_info[n],
+            (void) CloneString(&value,TranslateText(msl_info->image_info[n],
               msl_info->attributes[n],(char *) attributes[i]));
             switch (*keyword)
             {
@@ -1872,7 +1872,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
               {
                 if (LocaleCompare(keyword,"size") == 0)
                 {
-          CloneString(&msl_info->image_info[n]->size,value);
+          (void) CloneString(&msl_info->image_info[n]->size,value);
           break;
         }
                 ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
@@ -1902,7 +1902,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
         for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
         {
         keyword=(const char *) attributes[i++];
-        CloneString(&value,TranslateText(msl_info->image_info[n],
+        (void) CloneString(&value,TranslateText(msl_info->image_info[n],
           msl_info->attributes[n],(char *) attributes[i]));
         switch (*keyword)
         {
@@ -1983,7 +1983,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
         for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
         {
         keyword=(const char *) attributes[i++];
-        CloneString(&value,TranslateText(msl_info->image_info[n],
+        (void) CloneString(&value,TranslateText(msl_info->image_info[n],
           msl_info->attributes[n],(char *) attributes[i]));
         switch (*keyword)
         {
@@ -2070,7 +2070,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
 
         /* process the image */
         {
-          NormalizeImage(msl_info->image[n]);
+          (void) NormalizeImage(msl_info->image[n]);
           break;
         }
       }
@@ -2094,7 +2094,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
         for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
         {
         keyword=(const char *) attributes[i++];
-        CloneString(&value,TranslateText(msl_info->image_info[n],
+        (void) CloneString(&value,TranslateText(msl_info->image_info[n],
           msl_info->attributes[n],(char *) attributes[i]));
         switch (*keyword)
         {
@@ -2146,7 +2146,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
           for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
           {
             keyword=(const char *) attributes[i++];
-            CloneString(&value,TranslateText(msl_info->image_info[n],
+            (void) CloneString(&value,TranslateText(msl_info->image_info[n],
               msl_info->attributes[n],(char *) attributes[i]));
             switch (*keyword)
             {
@@ -2182,7 +2182,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
           for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
           {
             keyword=(const char *) attributes[i++];
-            CloneString(&value,TranslateText(msl_info->image_info[n],
+            (void) CloneString(&value,TranslateText(msl_info->image_info[n],
               msl_info->attributes[n],(char *) attributes[i]));
             switch (*keyword)
             {
@@ -2255,7 +2255,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
         for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
         {
         keyword=(const char *) attributes[i++];
-        CloneString(&value,TranslateText(msl_info->image_info[n],
+        (void) CloneString(&value,TranslateText(msl_info->image_info[n],
           msl_info->attributes[n],(char *) attributes[i]));
         switch (*keyword)
         {
@@ -2311,7 +2311,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
           for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
           {
             keyword=(const char *) attributes[i++];
-            CloneString(&value,TranslateText(msl_info->image_info[n],
+            (void) CloneString(&value,TranslateText(msl_info->image_info[n],
               msl_info->attributes[n],(char *) attributes[i]));
             switch (*keyword)
             {
@@ -2447,7 +2447,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
         for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
         {
         keyword=(const char *) attributes[i++];
-        CloneString(&value,TranslateText(msl_info->image_info[n],
+        (void) CloneString(&value,TranslateText(msl_info->image_info[n],
           msl_info->attributes[n],(char *) attributes[i]));
         switch (*keyword)
         {
@@ -2523,7 +2523,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
         for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
         {
         keyword=(const char *) attributes[i++];
-        CloneString(&value,TranslateText(msl_info->image_info[n],
+        (void) CloneString(&value,TranslateText(msl_info->image_info[n],
           msl_info->attributes[n],(char *) attributes[i]));
         switch (*keyword)
         {
@@ -2584,7 +2584,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
         for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
         {
         keyword=(const char *) attributes[i++];
-        CloneString(&value,TranslateText(msl_info->image_info[n],
+        (void) CloneString(&value,TranslateText(msl_info->image_info[n],
           msl_info->attributes[n],(char *) attributes[i]));
         switch (*keyword)
         {
@@ -2662,7 +2662,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
         for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
         {
         keyword=(const char *) attributes[i++];
-        CloneString(&value,TranslateText(msl_info->image_info[n],
+        (void) CloneString(&value,TranslateText(msl_info->image_info[n],
           msl_info->attributes[n],(char *) attributes[i]));
         switch (*keyword)
         {
@@ -2736,7 +2736,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
         for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
         {
           keyword=(const char *) attributes[i++];
-          CloneString(&value,TranslateText(msl_info->image_info[n],
+          (void) CloneString(&value,TranslateText(msl_info->image_info[n],
                 msl_info->attributes[n],(char *) attributes[i]));
           switch (*keyword)
           {
@@ -2769,7 +2769,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
                     theAttr = GetImageAttribute(msl_info->attributes[j], "id");
                   if (theAttr && LocaleCompare(theAttr->value, value) == 0)
                   {
-                    SetImageClipMask( msl_info->image[n], msl_info->image[j] );
+                    (void) SetImageClipMask( msl_info->image[n], msl_info->image[j] );
                     break;
                   }
                 }
@@ -2778,11 +2778,11 @@ static void MSLStartElement(void *context,const xmlChar *name,
               else if (LocaleCompare(keyword, "colorspace") == 0)
               {
                 if (LocaleCompare(value, "CMYK") == 0)
-                  SetImageType( msl_info->image[n], ColorSeparationType );
+                  (void) SetImageType( msl_info->image[n], ColorSeparationType );
                 else if (LocaleCompare(value, "Gray") == 0)
-                  SetImageType( msl_info->image[n], GrayscaleType );
+                  (void) SetImageType( msl_info->image[n], GrayscaleType );
                 else if (LocaleCompare(value, "RGB") == 0)
-                  SetImageType( msl_info->image[n], TrueColorType );
+                  (void) SetImageType( msl_info->image[n], TrueColorType );
                 else
                   ThrowException(msl_info->exception,OptionError,UnrecognizedColorspace,keyword);
                 break;
@@ -2795,9 +2795,9 @@ static void MSLStartElement(void *context,const xmlChar *name,
             {
               if (LocaleCompare(keyword, "density") == 0)
               {
-                (void) CloneString(&msl_info->image_info[n]->density,(char*)NULL);
-                (void) CloneString(&msl_info->image_info[n]->density,value);
-                (void) CloneString(&msl_info->draw_info[n]->density,
+                (void) (void) CloneString(&msl_info->image_info[n]->density,(char*)NULL);
+                (void) (void) CloneString(&msl_info->image_info[n]->density,value);
+                (void) (void) CloneString(&msl_info->draw_info[n]->density,
                           msl_info->image_info[n]->density);
                 j=GetMagickDimension(msl_info->image_info[n]->density,
                       &msl_info->image[n]->x_resolution,
@@ -2836,7 +2836,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
 
                 if (value[len-1] == '%') {
                   char  tmp[100];
-                  strncpy(tmp, value, (size_t) (len-1));
+                  (void) strncpy(tmp, value, (size_t) (len-1));
                   opac = atoi( tmp );
                   opac = (int)(MaxRGB * ((float)opac/100));
                 } else
@@ -2875,7 +2875,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
           for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
           {
           keyword=(const char *) attributes[i++];
-          CloneString(&value,TranslateText(msl_info->image_info[n],
+          (void) CloneString(&value,TranslateText(msl_info->image_info[n],
             msl_info->attributes[n],(char *) attributes[i]));
           switch (*keyword)
           {
@@ -2941,7 +2941,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
         for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
         {
         keyword=(const char *) attributes[i++];
-        CloneString(&value,TranslateText(msl_info->image_info[n],
+        (void) CloneString(&value,TranslateText(msl_info->image_info[n],
           msl_info->attributes[n],(char *) attributes[i]));
         switch (*keyword)
         {
@@ -3027,7 +3027,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
         for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
         {
         keyword=(const char *) attributes[i++];
-        CloneString(&value,TranslateText(msl_info->image_info[n],
+        (void) CloneString(&value,TranslateText(msl_info->image_info[n],
           msl_info->attributes[n],(char *) attributes[i]));
         switch (*keyword)
         {
@@ -3092,7 +3092,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
         for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
         {
         keyword=(const char *) attributes[i++];
-        CloneString(&value,TranslateText(msl_info->image_info[n],
+        (void) CloneString(&value,TranslateText(msl_info->image_info[n],
           msl_info->attributes[n],(char *) attributes[i]));
         switch (*keyword)
         {
@@ -3119,8 +3119,8 @@ static void MSLStartElement(void *context,const xmlChar *name,
           process image.
         */
         {
-        SolarizeImage(msl_info->image[n], threshold);
-        break;
+          (void) SolarizeImage(msl_info->image[n], threshold);
+          break;
         }
       }
       else if (LocaleCompare((char *) name,"spread") == 0)
@@ -3138,7 +3138,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
         for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
         {
         keyword=(const char *) attributes[i++];
-        CloneString(&value,TranslateText(msl_info->image_info[n],
+        (void) CloneString(&value,TranslateText(msl_info->image_info[n],
           msl_info->attributes[n],(char *) attributes[i]));
         switch (*keyword)
         {
@@ -3191,7 +3191,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
         for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
         {
         keyword=(const char *) attributes[i++];
-        CloneString(&value,TranslateText(msl_info->image_info[n],
+        (void) CloneString(&value,TranslateText(msl_info->image_info[n],
           msl_info->attributes[n],(char *) attributes[i]));
         switch (*keyword)
         {
@@ -3255,7 +3255,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
         for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
         {
         keyword=(const char *) attributes[i++];
-        CloneString(&value,TranslateText(msl_info->image_info[n],
+        (void) CloneString(&value,TranslateText(msl_info->image_info[n],
           msl_info->attributes[n],(char *) attributes[i]));
         switch (*keyword)
         {
@@ -3319,7 +3319,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
         for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
         {
         keyword=(const char *) attributes[i++];
-        CloneString(&value,TranslateText(msl_info->image_info[n],
+        (void) CloneString(&value,TranslateText(msl_info->image_info[n],
           msl_info->attributes[n],(char *) attributes[i]));
         switch (*keyword)
         {
@@ -3403,7 +3403,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
         for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
         {
         keyword=(const char *) attributes[i++];
-        CloneString(&value,TranslateText(msl_info->image_info[n],
+        (void) CloneString(&value,TranslateText(msl_info->image_info[n],
           msl_info->attributes[n],(char *) attributes[i]));
         switch (*keyword)
         {
@@ -3440,9 +3440,10 @@ static void MSLStartElement(void *context,const xmlChar *name,
         */
         if ( textureImage != (Image*) NULL )
         {
-        TextureImage(msl_info->image[n], textureImage);
-        break;
-        } else
+          (void) TextureImage(msl_info->image[n], textureImage);
+          break;
+        }
+        else
           ThrowException(msl_info->exception,OptionError,MissingAnImageFilename,keyword);
       }
       else if (LocaleCompare((char *) name,"threshold") == 0)
@@ -3460,7 +3461,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
         for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
         {
         keyword=(const char *) attributes[i++];
-        CloneString(&value,TranslateText(msl_info->image_info[n],
+        (void) CloneString(&value,TranslateText(msl_info->image_info[n],
           msl_info->attributes[n],(char *) attributes[i]));
         switch (*keyword)
         {
@@ -3490,7 +3491,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
           char thresholds[MaxTextExtent];
 
         FormatString(thresholds,"%g",threshold);
-        ChannelThresholdImage(msl_info->image[n], thresholds);
+        (void) ChannelThresholdImage(msl_info->image[n], thresholds);
         break;
         }
       }
@@ -3506,7 +3507,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
         for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
         {
           keyword=(const char *) attributes[i++];
-          CloneString(&value,TranslateText(msl_info->image_info[n],
+          (void) CloneString(&value,TranslateText(msl_info->image_info[n],
                 msl_info->attributes[n],(char *) attributes[i]));
           switch (*keyword)
           {
@@ -3581,7 +3582,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
           for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
           {
             keyword=(const char *) attributes[i++];
-            CloneString(&value,TranslateText(msl_info->image_info[n],
+            (void) CloneString(&value,TranslateText(msl_info->image_info[n],
               msl_info->attributes[n],(char *) attributes[i]));
             switch (*keyword)
             {
@@ -3829,7 +3830,7 @@ static void MSLCDataBlock(void *context,const xmlChar *value,int length)
   child=xmlGetLastChild(parser->node);
   if ((child != (xmlNodePtr) NULL) && (child->type == XML_CDATA_SECTION_NODE))
     {
-      xmlTextConcat(child,value,length);
+      (void) xmlTextConcat(child,value,length);
       return;
     }
   (void) xmlAddChild(parser->node,xmlNewCDataBlock(parser->myDoc,value,length));

@@ -361,10 +361,10 @@ static int FindColor(PixelPacket *pixel)
   register long
     i;
 
-  for (i=0; i < 256; i++)
-    if ((AbsoluteValue(pixel->red-PalmPalette[i][0]) < (QuantumDepth/8)) &&
-        (AbsoluteValue(pixel->green-PalmPalette[i][1]) < (QuantumDepth/8)) &&
-        (AbsoluteValue(pixel->blue-PalmPalette[i][2]) < (QuantumDepth/8)))
+  for (i=0; i < 256L; i++)
+    if ((AbsoluteValue(pixel->red-PalmPalette[i][0]) < (QuantumDepth/8U)) &&
+        (AbsoluteValue(pixel->green-PalmPalette[i][1]) < (QuantumDepth/8U)) &&
+        (AbsoluteValue(pixel->blue-PalmPalette[i][2]) < (QuantumDepth/8U)))
       return(i);
   return(-1);
 }
@@ -473,55 +473,55 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
 
   if(bits_per_pixel < 8 && flags & PALM_IS_COMPRESSED_FLAG)    /* compressed size */
     {
-    if(flags & PALM_HAS_FOUR_BYTE_FIELD)  /* big size */
-      (void) ReadBlobMSBLong(image); /* size */
-    else
-      (void) ReadBlobMSBShort(image); /* size */
+      if(flags & PALM_HAS_FOUR_BYTE_FIELD)  /* big size */
+        (void) ReadBlobMSBLong(image); /* size */
+      else
+        (void) ReadBlobMSBShort(image); /* size */
     }
   else  /* is color */
-  if(bits_per_pixel == 8)
-    {
-    i = 0;
-    if(flags & PALM_HAS_COLORMAP_FLAG)
+    if(bits_per_pixel == 8)
       {
-      count = ReadBlobMSBShort(image);
-      for(i = 0; i < (long) count; i++)
-        {
-        ReadBlobByte(image);
-        image->colormap[255 - i].red = ScaleCharToQuantum(ReadBlobByte(image));
-        image->colormap[255 - i].green = ScaleCharToQuantum(ReadBlobByte(image));
-        image->colormap[255 - i].blue = ScaleCharToQuantum(ReadBlobByte(image));
-        }
+        i = 0;
+        if(flags & PALM_HAS_COLORMAP_FLAG)
+          {
+            count = ReadBlobMSBShort(image);
+            for(i = 0; i < (long) count; i++)
+              {
+                (void) ReadBlobByte(image);
+                image->colormap[255 - i].red = ScaleCharToQuantum(ReadBlobByte(image));
+                image->colormap[255 - i].green = ScaleCharToQuantum(ReadBlobByte(image));
+                image->colormap[255 - i].blue = ScaleCharToQuantum(ReadBlobByte(image));
+              }
+          }
+        for(; i < (long) (1L << bits_per_pixel); i++)
+          {
+            if(bits_per_pixel == 16)  /* Direct Color */
+              {
+                (void) ReadBlobByte(image);     /* # of bits of red */
+                (void) ReadBlobByte(image);    /* # of bits of green */
+                (void) ReadBlobByte(image);    /* # of bits of blue */
+                (void) ReadBlobByte(image);    /* reserved by Palm */
+                (void) ReadBlobByte(image);    /* reserved by Palm */
+                transpix.red = (unsigned char) (ReadBlobByte(image) * MaxRGB / 31);
+                transpix.green = (unsigned char) (ReadBlobByte(image) * MaxRGB / 63);
+                transpix.blue = (unsigned char) (ReadBlobByte(image) * MaxRGB / 31);
+              }
+            image->colormap[255 - i].red = ScaleCharToQuantum(PalmPalette[i][0]);
+            image->colormap[255 - i].green = ScaleCharToQuantum(PalmPalette[i][1]);
+            image->colormap[255 - i].blue = ScaleCharToQuantum(PalmPalette[i][2]);
+          }
       }
-    for(; i < (long) (1L << bits_per_pixel); i++)
-      {
-  if(bits_per_pixel == 16)  /* Direct Color */
-    {
-    (void) ReadBlobByte(image);     /* # of bits of red */
-    (void) ReadBlobByte(image);   /* # of bits of green */
-    (void) ReadBlobByte(image);    /* # of bits of blue */
-    ReadBlobByte(image);               /* reserved by Palm */
-    ReadBlobByte(image);               /* reserved by Palm */
-    transpix.red = (unsigned char) (ReadBlobByte(image) * MaxRGB / 31);
-    transpix.green = (unsigned char) (ReadBlobByte(image) * MaxRGB / 63);
-    transpix.blue = (unsigned char) (ReadBlobByte(image) * MaxRGB / 31);
-    }
-      image->colormap[255 - i].red = ScaleCharToQuantum(PalmPalette[i][0]);
-      image->colormap[255 - i].green = ScaleCharToQuantum(PalmPalette[i][1]);
-      image->colormap[255 - i].blue = ScaleCharToQuantum(PalmPalette[i][2]);
-      }
-    }
 
   if(bits_per_pixel < 16)
     {
-    image->storage_class = PseudoClass;
-    image->depth = 8;
+      image->storage_class = PseudoClass;
+      image->depth = 8;
     }
   else
     {
-    image->storage_class = DirectClass;
-    image->depth = 0;
-    SetImageType(image, TrueColorType);
+      image->storage_class = DirectClass;
+      image->depth = 0;
+      (void) SetImageType(image, TrueColorType);
     }
 
   one_row = MagickAllocateMemory(unsigned char *,bytes_per_row);
@@ -534,92 +534,92 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
 
   for(y = 0; y < (long) image->rows; y++)
     {
-    if(flags & PALM_IS_COMPRESSED_FLAG)
-      {
-      if (compressionType == PALM_COMPRESSION_RLE)
+      if(flags & PALM_IS_COMPRESSED_FLAG)
         {
-        image->compression = RLECompression;
-        for (i = 0; i < (long) bytes_per_row; )
-          {
-          count = ReadBlobByte(image);
-          byte = ReadBlobByte(image);
-          memset(one_row + i, (int) byte, count);
-          i += count;
-          }
+          if (compressionType == PALM_COMPRESSION_RLE)
+            {
+              image->compression = RLECompression;
+              for (i = 0; i < (long) bytes_per_row; )
+                {
+                  count = ReadBlobByte(image);
+                  byte = ReadBlobByte(image);
+                  (void) memset(one_row + i, (int) byte, count);
+                  i += count;
+                }
+            }
+          else
+            if (compressionType == PALM_COMPRESSION_SCANLINE)
+              {
+                image->compression = FaxCompression;
+                for (i = 0; i < (long) bytes_per_row; i += 8)
+                  {
+                    count = ReadBlobByte(image);
+                    byte = Min(bytes_per_row - i, 8);
+                    for (bit = 0; bit < byte; bit++)
+                      {
+                        if (y == 0 || count & (1 << (7 - bit)))
+                          one_row[i + bit] = ReadBlobByte(image);
+                        else
+                          one_row[i + bit] = lastrow[i + bit];
+                      }
+                  }
+                (void) memcpy(lastrow, one_row, bytes_per_row);
+              }
         }
       else
-      if (compressionType == PALM_COMPRESSION_SCANLINE)
         {
-        image->compression = FaxCompression;
-        for (i = 0; i < (long) bytes_per_row; i += 8)
-          {
-          count = ReadBlobByte(image);
-          byte = Min(bytes_per_row - i, 8);
-          for (bit = 0; bit < byte; bit++)
-            {
-            if (y == 0 || count & (1 << (7 - bit)))
-              one_row[i + bit] = ReadBlobByte(image);
-            else
-              one_row[i + bit] = lastrow[i + bit];
-            }
-          }
-        memcpy(lastrow, one_row, bytes_per_row);
+          image->compression = NoCompression;
+          (void) ReadBlob(image, bytes_per_row, one_row);
         }
-      }
-    else
-      {
-      image->compression = NoCompression;
-      (void) ReadBlob(image, bytes_per_row, one_row);
-      }
 
-    ptr = one_row;
-    q = SetImagePixels(image, 0, y, image->columns, 1);
-    if (q == (PixelPacket *) NULL)
-      break;
-    indexes=GetIndexes(image);
-    if(bits_per_pixel == 16)
-      {
-      for (x=0; x < (long) image->columns; x++)
-        {
-        color16 = (*ptr++ << 8);
-        color16 |= *ptr++;
-        q->red = (unsigned char) ((((color16 >> 11) & 0x1f) * MaxRGB) / 31);
-        q->green = (unsigned char) ((((color16 >> 5) & 0x3f) * MaxRGB) / 63);
-        q->blue = (unsigned char) (((color16 & 0x1f) * MaxRGB) / 31);
-        q->opacity = 0;
-        q++;
-        }
-      }
-    else
-      {
-      bit = 8 - bits_per_pixel;
-      for(x = 0; x < (long) image->columns; x++)
-        {
-        index =(IndexPacket) (mask - (((*ptr) & (mask << bit)) >> bit));
-        indexes[x] = index;
-        *q++ = image->colormap[index];
-        if (!bit)
-          {
-          ++ptr;
-          bit = 8 - bits_per_pixel;
-          }
-        else
-          {
-          bit -= bits_per_pixel;
-          }
-        }
-      if (!SyncImagePixels(image))
+      ptr = one_row;
+      q = SetImagePixels(image, 0, y, image->columns, 1);
+      if (q == (PixelPacket *) NULL)
         break;
-      }
+      indexes=GetIndexes(image);
+      if(bits_per_pixel == 16)
+        {
+          for (x=0; x < (long) image->columns; x++)
+            {
+              color16 = (*ptr++ << 8);
+              color16 |= *ptr++;
+              q->red = (unsigned char) ((((color16 >> 11) & 0x1f) * MaxRGB) / 31);
+              q->green = (unsigned char) ((((color16 >> 5) & 0x3f) * MaxRGB) / 63);
+              q->blue = (unsigned char) (((color16 & 0x1f) * MaxRGB) / 31);
+              q->opacity = 0;
+              q++;
+            }
+        }
+      else
+        {
+          bit = 8 - bits_per_pixel;
+          for(x = 0; x < (long) image->columns; x++)
+            {
+              index =(IndexPacket) (mask - (((*ptr) & (mask << bit)) >> bit));
+              indexes[x] = index;
+              *q++ = image->colormap[index];
+              if (!bit)
+                {
+                  ++ptr;
+                  bit = 8 - bits_per_pixel;
+                }
+              else
+                {
+                  bit -= bits_per_pixel;
+                }
+            }
+          if (!SyncImagePixels(image))
+            break;
+        }
     }
 
   if(flags & PALM_HAS_TRANSPARENCY_FLAG)
     {
-    if(bits_per_pixel == 16)
-      TransparentImage(image, transpix, TransparentOpacity);
-    else
-      TransparentImage(image, image->colormap[mask - transparentIndex],
-                       TransparentOpacity);
+      if(bits_per_pixel == 16)
+        (void) TransparentImage(image, transpix, TransparentOpacity);
+      else
+        (void) TransparentImage(image, image->colormap[mask - transparentIndex],
+                                TransparentOpacity);
     }
 
   MagickFreeMemory(one_row);
@@ -688,7 +688,7 @@ ModuleExport void RegisterPALMImage(void)
 */
 ModuleExport void UnregisterPALMImage(void)
 {
-  UnregisterMagickInfo("PALM");
+  (void) UnregisterMagickInfo("PALM");
 }
 
 /*
@@ -788,10 +788,10 @@ static unsigned int WritePALMImage(const ImageInfo *image_info,Image *image)
     (void) TransformColorspace(image,RGBColorspace);
   if (bits_per_pixel < 8)
     {
-    if(IsGrayImage(image, &exception))   /* gray scale */
-      (void) SortColormapByIntensity(image);
-    else                                 /* is color */
-      bits_per_pixel = 8;
+      if(IsGrayImage(image, &exception))   /* gray scale */
+        (void) SortColormapByIntensity(image);
+      else                                 /* is color */
+        bits_per_pixel = 8;
     }
   if(bits_per_pixel > 8)
     flags |= PALM_IS_DIRECT_COLOR;
@@ -827,55 +827,55 @@ static unsigned int WritePALMImage(const ImageInfo *image_info,Image *image)
   (void) WriteBlobMSBShort(image, 0);  /* reserved */
   if(bits_per_pixel < 8)  /* not color */
     {
-    if(flags & PALM_IS_COMPRESSED_FLAG)  /* compressed size */
-      {
-      if(flags & PALM_HAS_FOUR_BYTE_FIELD)  /* big size */
-        WriteBlobMSBLong(image, 0);
-      else
-    if (bits_per_pixel == 16)
-      {
-      WriteBlobByte(image, 5);  /* # of bits of red */
-      WriteBlobByte(image, 6);  /* # of bits of green */
-      WriteBlobByte(image, 5);  /* # of bits of blue */
-      WriteBlobByte(image, 0);  /* reserved by Palm */
-      WriteBlobMSBLong(image, 0); /* no transparent color, YET */
-      }
-    else
-        WriteBlobMSBShort(image, 0);
-      }
+      if(flags & PALM_IS_COMPRESSED_FLAG)  /* compressed size */
+        {
+          if(flags & PALM_HAS_FOUR_BYTE_FIELD)  /* big size */
+            (void) WriteBlobMSBLong(image, 0);
+          else
+            if (bits_per_pixel == 16)
+              {
+                (void) WriteBlobByte(image, 5);  /* # of bits of red */
+                (void) WriteBlobByte(image, 6);  /* # of bits of green */
+                (void) WriteBlobByte(image, 5);  /* # of bits of blue */
+                (void) WriteBlobByte(image, 0);  /* reserved by Palm */
+                (void) WriteBlobMSBLong(image, 0); /* no transparent color, YET */
+              }
+            else
+              (void) WriteBlobMSBShort(image, 0);
+        }
     }
   else  /* is color */
     {
-    if(flags & PALM_HAS_COLORMAP_FLAG)  /* Write out colormap */
-      {
-      GetQuantizeInfo(&quantize_info);
-      quantize_info.dither=image_info->dither;
-      quantize_info.number_colors=image->colors;
-      (void) QuantizeImage(&quantize_info,image);
-      WriteBlobMSBShort(image, image->colors);
-      for(count = 0; count < image->colors; count++)
+      if(flags & PALM_HAS_COLORMAP_FLAG)  /* Write out colormap */
         {
-        WriteBlobByte(image, count);
-        WriteBlobByte(image, ScaleQuantumToChar(image->colormap[count].red));
-        WriteBlobByte(image, ScaleQuantumToChar(image->colormap[count].green));
-        WriteBlobByte(image, ScaleQuantumToChar(image->colormap[count].blue));
+          GetQuantizeInfo(&quantize_info);
+          quantize_info.dither=image_info->dither;
+          quantize_info.number_colors=image->colors;
+          (void) QuantizeImage(&quantize_info,image);
+          (void) WriteBlobMSBShort(image, image->colors);
+          for(count = 0; count < image->colors; count++)
+            {
+              (void) WriteBlobByte(image, count);
+              (void) WriteBlobByte(image, ScaleQuantumToChar(image->colormap[count].red));
+              (void) WriteBlobByte(image, ScaleQuantumToChar(image->colormap[count].green));
+              (void) WriteBlobByte(image, ScaleQuantumToChar(image->colormap[count].blue));
+            }
         }
-      }
-    else  /* Map colors to Palm standard colormap */
-      {
-      map = ConstituteImage(256, 1, "RGB", IntegerPixel,
-                      &PalmPalette, &exception);
-      SetImageType(map, PaletteType);
-      MapImage(image, map, False);
-      for(y = 0; y < (long) image->rows; y++)
+      else  /* Map colors to Palm standard colormap */
         {
-        p = GetImagePixels(image, 0, y, image->columns, 1);
-        indexes=GetIndexes(image);
-        for(x = 0; x < (long) image->columns; x++)
-          indexes[x] = FindColor(&image->colormap[indexes[x]]);
+          map = ConstituteImage(256, 1, "RGB", IntegerPixel,
+                                &PalmPalette, &exception);
+          (void) SetImageType(map, PaletteType);
+          (void) MapImage(image, map, False);
+          for(y = 0; y < (long) image->rows; y++)
+            {
+              p = GetImagePixels(image, 0, y, image->columns, 1);
+              indexes=GetIndexes(image);
+              for(x = 0; x < (long) image->columns; x++)
+                indexes[x] = FindColor(&image->colormap[indexes[x]]);
+            }
+          DestroyImage(map);
         }
-      DestroyImage(map);
-      }
     }
 
   if (image->compression == FaxCompression)
@@ -886,125 +886,125 @@ static unsigned int WritePALMImage(const ImageInfo *image_info,Image *image)
 
   for (y=0; y < (int) image->rows; y++)
     {
-    ptr = one_row;
-    memset(ptr, 0, bytes_per_row);
-    p=GetImagePixels(image,0,y,image->columns,1);
-    if (p == (PixelPacket *) NULL)
-      break;
-    indexes=GetIndexes(image);
-    if(bits_per_pixel == 16)
-      {
-      for (x=0; x < (int) image->columns; x++)
+      ptr = one_row;
+      (void) memset(ptr, 0, bytes_per_row);
+      p=GetImagePixels(image,0,y,image->columns,1);
+      if (p == (PixelPacket *) NULL)
+        break;
+      indexes=GetIndexes(image);
+      if(bits_per_pixel == 16)
         {
-        color16 = (unsigned short) (((p->red * 31) / MaxRGB) << 11
-                | ((p->green * 63) / MaxRGB) << 5
-                | ((p->blue * 31) / MaxRGB));
-        if(p->opacity == TransparentOpacity)
-          {
-          transpix.red = p->red;
-          transpix.green = p->green;
-          transpix.blue = p->blue;
-          transpix.opacity = p->opacity;
-          flags |= PALM_HAS_TRANSPARENCY_FLAG;
-          }
-        *ptr++ = (color16 >> 8) &0xff;
-        *ptr++ = color16 & 0xff;
-        p++;
+          for (x=0; x < (int) image->columns; x++)
+            {
+              color16 = (unsigned short) (((p->red * 31) / MaxRGB) << 11
+                                          | ((p->green * 63) / MaxRGB) << 5
+                                          | ((p->blue * 31) / MaxRGB));
+              if(p->opacity == TransparentOpacity)
+                {
+                  transpix.red = p->red;
+                  transpix.green = p->green;
+                  transpix.blue = p->blue;
+                  transpix.opacity = p->opacity;
+                  flags |= PALM_HAS_TRANSPARENCY_FLAG;
+                }
+              *ptr++ = (color16 >> 8) &0xff;
+              *ptr++ = color16 & 0xff;
+              p++;
+            }
         }
-      }
-    else
-      {
-      byte = 0x00;
-      bit = (unsigned char) (8 - bits_per_pixel);
-      for (x=0; x < (int) image->columns; x++)
+      else
         {
-        if(bits_per_pixel < 8) /* Make sure we use the entire colorspace for bits_per_pixel */
-          color = (unsigned char) (indexes[x] * ((1 << bits_per_pixel) - 1) /
-            (image->colors - 1));
-        else
-          color = (unsigned char) indexes[x];
-        byte |= color << bit;
-        if (bit == 0)
-          {
-          *ptr++ = byte;
           byte = 0x00;
           bit = (unsigned char) (8 - bits_per_pixel);
+          for (x=0; x < (int) image->columns; x++)
+            {
+              if(bits_per_pixel < 8) /* Make sure we use the entire colorspace for bits_per_pixel */
+                color = (unsigned char) (indexes[x] * ((1 << bits_per_pixel) - 1) /
+                                         (image->colors - 1));
+              else
+                color = (unsigned char) indexes[x];
+              byte |= color << bit;
+              if (bit == 0)
+                {
+                  *ptr++ = byte;
+                  byte = 0x00;
+                  bit = (unsigned char) (8 - bits_per_pixel);
+                }
+              else
+                {
+                  bit -= bits_per_pixel;
+                }
+            }
+          if ((image->columns % (8 / bits_per_pixel)) != 0) /* Handle case of partial byte */
+            *ptr++ = byte;
+        }
+
+      if(image->compression == RLECompression)
+        {
+          x = 0;
+          while(x < (long) bytes_per_row)
+            {
+              byte = one_row[x];
+              count = 1;
+              while(one_row[++x] == byte && count < 255 && x < (long) bytes_per_row)
+                count++;
+              (void) WriteBlobByte(image, count);
+              (void) WriteBlobByte(image, byte);
+            }
+        }
+      else
+        if(image->compression == FaxCompression)  /* Scanline really */
+          {
+            char tmpbuf[8];
+            char *tptr;
+
+            for (x = 0;  x < (long) bytes_per_row;  x += 8)
+              {
+                tptr = tmpbuf;
+                for(bit = 0, byte = 0; bit < Min(8, bytes_per_row - x); bit++)
+                  {
+                    if((y == 0) || (lastrow[x + bit] != one_row[x + bit]))
+                      {
+                        byte |= (1 << (7 - bit));
+                        *tptr++ = one_row[x + bit];
+                      }
+                  }
+                (void) WriteBlobByte(image, byte);
+                (void) WriteBlob(image, tptr - tmpbuf, tmpbuf);
+              }
+            (void) memcpy (lastrow, one_row, bytes_per_row);
           }
         else
           {
-          bit -= bits_per_pixel;
+            (void) WriteBlob(image, bytes_per_row, one_row);
           }
-        }
-      if ((image->columns % (8 / bits_per_pixel)) != 0) /* Handle case of partial byte */
-        *ptr++ = byte;
-      }
-
-    if(image->compression == RLECompression)
-      {
-      x = 0;
-      while(x < (long) bytes_per_row)
-        {
-        byte = one_row[x];
-        count = 1;
-        while(one_row[++x] == byte && count < 255 && x < (long) bytes_per_row)
-          count++;
-        (void) WriteBlobByte(image, count);
-        (void) WriteBlobByte(image, byte);
-        }
-      }
-    else
-    if(image->compression == FaxCompression)  /* Scanline really */
-      {
-      char tmpbuf[8];
-      char *tptr;
-
-      for (x = 0;  x < (long) bytes_per_row;  x += 8)
-        {
-        tptr = tmpbuf;
-        for(bit = 0, byte = 0; bit < Min(8, bytes_per_row - x); bit++)
-          {
-          if((y == 0) || (lastrow[x + bit] != one_row[x + bit]))
-            {
-            byte |= (1 << (7 - bit));
-            *tptr++ = one_row[x + bit];
-            }
-          }
-        (void) WriteBlobByte(image, byte);
-        (void) WriteBlob(image, tptr - tmpbuf, tmpbuf);
-       }
-      memcpy (lastrow, one_row, bytes_per_row);
-      }
-    else
-      {
-      (void) WriteBlob(image, bytes_per_row, one_row);
-      }
     }
 
   if(bits_per_pixel < 8 && flags & PALM_IS_COMPRESSED_FLAG)
     {
-    count = (unsigned long) GetBlobSize(image);  /* compressed size */
+      count = (unsigned long) GetBlobSize(image);  /* compressed size */
     }
 
   if(flags & PALM_HAS_TRANSPARENCY_FLAG)
     {
-    SeekBlob(image, 6, SEEK_SET);
-    (void) WriteBlobMSBShort(image, flags);
-    SeekBlob(image, 12, SEEK_SET);
-    (void) WriteBlobByte(image,transparentIndex);  /* trans index */
+      (void) SeekBlob(image, 6, SEEK_SET);
+      (void) WriteBlobMSBShort(image, flags);
+      (void) SeekBlob(image, 12, SEEK_SET);
+      (void) WriteBlobByte(image,transparentIndex);  /* trans index */
 
-    if(bits_per_pixel == 16)
-      {
-      SeekBlob(image, 20, SEEK_SET);
-      WriteBlobByte(image, 0);  /* reserved by Palm */
-      WriteBlobByte(image, (transpix.red * 31) / MaxRGB);
-      WriteBlobByte(image, (transpix.green * 63) / MaxRGB);
-      WriteBlobByte(image, (transpix.blue * 31) / MaxRGB);
-      }
-    SeekBlob(image, 16, SEEK_SET);
-    if(flags & PALM_HAS_FOUR_BYTE_FIELD)
-      (void) WriteBlobMSBLong(image, count - 16);
-    else
-      (void) WriteBlobMSBShort(image, count - 16);
+      if(bits_per_pixel == 16)
+        {
+          (void) SeekBlob(image, 20, SEEK_SET);
+          (void) WriteBlobByte(image, 0);  /* reserved by Palm */
+          (void) WriteBlobByte(image, (transpix.red * 31) / MaxRGB);
+          (void) WriteBlobByte(image, (transpix.green * 63) / MaxRGB);
+          (void) WriteBlobByte(image, (transpix.blue * 31) / MaxRGB);
+        }
+      SeekBlob(image, 16, SEEK_SET);
+      if(flags & PALM_HAS_FOUR_BYTE_FIELD)
+        (void) WriteBlobMSBLong(image, count - 16);
+      else
+        (void) WriteBlobMSBShort(image, count - 16);
     }
 
   CloseBlob(image);

@@ -105,8 +105,8 @@ static unsigned int IsTXT(const unsigned char *magick,const size_t length)
     char
       buffer[MaxTextExtent];
 
-    memset((void *)buffer,0,MaxTextExtent);
-    memcpy((void *)buffer,(const void *)magick,Min(MaxTextExtent,length));
+    (void) memset((void *)buffer,0,MaxTextExtent);
+    (void) memcpy((void *)buffer,(const void *)magick,Min(MaxTextExtent,length));
 
     count=sscanf(buffer,"%lu,%lu: (%u, %u, %u) #%02X%02X%02X",
                  &column, &row, &red, &green, &blue, &hex_red, &hex_green,
@@ -313,7 +313,7 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
           handler;
 
         handler=SetMonitorHandler((MonitorHandler) NULL);
-        TextureImage(image,texture);
+        (void) TextureImage(image,texture);
         (void) SetMonitorHandler(handler);
       }
     (void) AnnotateImage(image,draw_info);
@@ -344,7 +344,7 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
         handler;
 
       handler=SetMonitorHandler((MonitorHandler) NULL);
-      TextureImage(image,texture);
+      (void) TextureImage(image,texture);
       (void) SetMonitorHandler(handler);
     }
   (void) AnnotateImage(image,draw_info);

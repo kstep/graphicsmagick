@@ -473,7 +473,7 @@ MagickExport MagickPassFail MatteFloodfillImage(Image *image,
   /*
     Push initial segment on stack.
   */
-  SetImageType(image,TrueColorMatteType);
+  (void) SetImageType(image,TrueColorMatteType);
   x=x_offset;
   y=y_offset;
   start=0;

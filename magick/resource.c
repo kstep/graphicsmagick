@@ -429,10 +429,10 @@ MagickExport void InitializeMagickResources(void)
       max_map=atol(envp);
   }
 
-  SetMagickResourceLimit(DiskResource,max_disk);
-  SetMagickResourceLimit(FileResource,max_files);
-  SetMagickResourceLimit(MapResource,max_map);
-  SetMagickResourceLimit(MemoryResource,max_memory);
+  (void) SetMagickResourceLimit(DiskResource,max_disk);
+  (void) SetMagickResourceLimit(FileResource,max_files);
+  (void) SetMagickResourceLimit(MapResource,max_map);
+  (void) SetMagickResourceLimit(MemoryResource,max_memory);
 }
 
 /*

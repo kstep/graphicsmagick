@@ -1103,7 +1103,7 @@ static void png_get_data(png_structp png_ptr,png_bytep data,png_size_t length)
           char
             msg[MaxTextExtent];
 
-          sprintf(msg,"Expected %lu bytes; found %lu bytes",
+          (void) sprintf(msg,"Expected %lu bytes; found %lu bytes",
              (unsigned long) length,(unsigned long) check);
           png_warning(png_ptr,msg);
           png_error(png_ptr,"Read Exception");
@@ -1672,7 +1672,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   if (LocaleCompare(image_info->magick,"MNG") == 0)
     {
 #if defined(PNG_MNG_FEATURES_SUPPORTED)
-      png_permit_mng_features(ping,PNG_ALL_MNG_FEATURES);
+      (void) png_permit_mng_features(ping,PNG_ALL_MNG_FEATURES);
       png_set_read_fn(ping,image,png_get_data);
 #else
 #if defined(PNG_READ_EMPTY_PLTE_SUPPORTED)
@@ -2769,7 +2769,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
   if (LocaleCompare(image_info->magick,"PNG8") == 0)
     {
-      SetImageType(image,PaletteType);
+      (void) SetImageType(image,PaletteType);
       if (image->matte)
         {
           /* To do: Reduce to binary transparency */
@@ -2777,11 +2777,11 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
   if (LocaleCompare(image_info->magick,"PNG24") == 0)
     {
-      SetImageType(image,TrueColorType);
+      (void) SetImageType(image,TrueColorType);
       image->matte=False;
     }
   if (LocaleCompare(image_info->magick,"PNG32") == 0)
-      SetImageType(image,TrueColorMatteType);
+      (void) SetImageType(image,TrueColorMatteType);
   if (logging)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),"exit ReadPNGImage()");
   return (image);
@@ -2899,7 +2899,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
         Allocate next image structure.
       */
       if (logging)
-        LogMagickEvent(CoderEvent,GetMagickModule(),
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "  AllocateNextImage()");
       AllocateNextImage(image_info,image);
       if (image->next == (Image *) NULL)
@@ -3044,7 +3044,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
         if (logging)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
               "    Creating color_blob.");
-        AcquireUniqueFilename(color_image->filename);
+        (void) AcquireUniqueFilename(color_image->filename);
         status=OpenBlob(color_image_info,color_image,WriteBinaryBlobMode,
             exception);
         if (status == False)
@@ -3068,7 +3068,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
             if (logging)
               (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                   "    Creating alpha_blob.");
-            AcquireUniqueFilename(alpha_image->filename);
+            (void) AcquireUniqueFilename(alpha_image->filename);
             status=OpenBlob(alpha_image_info,alpha_image,WriteBinaryBlobMode,
                 exception);
             if (status == False)
@@ -3318,7 +3318,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
   color_image_info->ping=False;   /* To do: avoid this */
   jng_image=ReadImage(color_image_info,exception);
 
-  LiberateUniqueFileResource(color_image->filename);
+  (void) LiberateUniqueFileResource(color_image->filename);
   DestroyImage(color_image);
   DestroyImageInfo(color_image_info);
 
@@ -3332,7 +3332,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
   {
     s=AcquireImagePixels(jng_image,0,y,image->columns,1,&image->exception);
     q=GetImagePixels(image,0,y,image->columns,1);
-    memcpy(q,s,length);
+    (void) memcpy(q,s,length);
     if (!SyncImagePixels(image))
       break;
   }
@@ -3379,7 +3379,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
            if (!SyncImagePixels(image))
              break;
          }
-         LiberateUniqueFileResource(alpha_image->filename);
+         (void) LiberateUniqueFileResource(alpha_image->filename);
          DestroyImage(alpha_image);
          DestroyImageInfo(alpha_image_info);
          DestroyImage(jng_image);
@@ -6042,7 +6042,7 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
   */
 #if defined(PNG_MNG_FEATURES_SUPPORTED)
   if (mng_info->write_mng)
-     png_permit_mng_features(ping,PNG_ALL_MNG_FEATURES);
+     (void) png_permit_mng_features(ping,PNG_ALL_MNG_FEATURES);
 #else
 # ifdef PNG_WRITE_EMPTY_PLTE_SUPPORTED
   if (mng_info->write_mng)
@@ -6059,7 +6059,7 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
           "    height=%lu",ping_info->height);
      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-          "    image->depth=%lu",image->depth);
+          "    image->depth=%u",image->depth);
     }
   if (image->depth > 16)
      image->depth=16;
@@ -6314,7 +6314,7 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
               "    image_info->type: %d",image_info->type);
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-              "    image->depth: %lu",image->depth);
+              "    image->depth: %u",image->depth);
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
               "    ping_info->bit_depth: %d",ping_info->bit_depth);
         }
@@ -7313,7 +7313,7 @@ static unsigned int WriteOneJNGImage(MngInfo *mng_info,
         ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,
             image);
       if (logging)
-        LogMagickEvent(CoderEvent,GetMagickModule(),
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
              "  Creating jpeg_image.");
       jpeg_image=CloneImage(image,0,0,True,&image->exception);
       if (jpeg_image == (Image *) NULL)
@@ -7329,8 +7329,8 @@ static unsigned int WriteOneJNGImage(MngInfo *mng_info,
       else
         jpeg_image_info->quality=jng_quality;
       jpeg_image_info->type=GrayscaleType;
-      SetImageType(jpeg_image,GrayscaleType);
-      AcquireUniqueFilename(jpeg_image->filename);
+      (void) SetImageType(jpeg_image,GrayscaleType);
+      (void) AcquireUniqueFilename(jpeg_image->filename);
       FormatString(jpeg_image_info->filename,"%.1024s",
           jpeg_image->filename);
     }
@@ -7393,7 +7393,7 @@ static unsigned int WriteOneJNGImage(MngInfo *mng_info,
 
         }
       /* Destroy JPEG image and image_info */
-      LiberateUniqueFileResource(jpeg_image_info->filename);
+      (void) LiberateUniqueFileResource(jpeg_image_info->filename);
       DestroyImage(jpeg_image);
       DestroyImageInfo(jpeg_image_info);
     }
@@ -7664,7 +7664,7 @@ static unsigned int WriteOneJNGImage(MngInfo *mng_info,
         image);
   DestroyBlob(jpeg_image);
   jpeg_image->blob=CloneBlobInfo((BlobInfo *) NULL);
-  AcquireUniqueFilename(jpeg_image->filename);
+  (void) AcquireUniqueFilename(jpeg_image->filename);
   FormatString(jpeg_image_info->filename,"%.1024s",jpeg_image->filename);
 
   status=OpenBlob(jpeg_image_info,jpeg_image,WriteBinaryBlobMode,
@@ -7704,7 +7704,7 @@ static unsigned int WriteOneJNGImage(MngInfo *mng_info,
   (void) WriteBlobMSBULong(image,crc32(crc32(0,chunk,4),(unsigned char *)
       blob,length));
 
-  LiberateUniqueFileResource(jpeg_image_info->filename);
+  (void) LiberateUniqueFileResource(jpeg_image_info->filename);
   DestroyImage(jpeg_image);
   DestroyImageInfo(jpeg_image_info);
   MagickFreeMemory(blob);
@@ -7766,7 +7766,7 @@ static unsigned int WriteJNGImage(const ImageInfo *image_info,Image *image)
   status=WriteOneJNGImage(mng_info,image_info,image);
   CloseBlob(image);
 
-  CatchImageException(image);
+  (void) CatchImageException(image);
   MngInfoFreeStruct(mng_info,&have_mng_structure);
   if (logging)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),"exit WriteJNGImage()");
@@ -7909,7 +7909,7 @@ static unsigned int WriteMNGImage(const ImageInfo *image_info,Image *image)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "    Scene: %ld",scene++);
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-            "      Image depth: %lu",p->depth);
+            "      Image depth: %u",p->depth);
         if (p->matte)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
               "      Matte: True");
@@ -7924,7 +7924,7 @@ static unsigned int WriteMNGImage(const ImageInfo *image_info,Image *image)
               "      Storage class: DirectClass");
         if (p->colors)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-              "      Number of colors: %lu",p->colors);
+              "      Number of colors: %u",p->colors);
         else
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
               "      Number of colors: unspecified");
@@ -7969,9 +7969,9 @@ static unsigned int WriteMNGImage(const ImageInfo *image_info,Image *image)
               {
                 p->colors=0;
                 if (p->matte)
-                    SetImageType(p,PaletteMatteType);
+                    (void) SetImageType(p,PaletteMatteType);
                 else
-                    SetImageType(p,PaletteType);
+                    (void) SetImageType(p,PaletteType);
               }
           }
         if (!mng_info->adjoin)
@@ -8565,7 +8565,7 @@ static unsigned int WriteMNGImage(const ImageInfo *image_info,Image *image)
         CloseBlob(image);
         return (False);
       }
-    CatchImageException(image);
+    (void) CatchImageException(image);
     if (image->next == (Image *) NULL)
       break;
     image=SyncNextImageInList(image);

@@ -158,7 +158,7 @@ MagickExport MagickPassFail CompositeImage(Image *canvas_image,
   assert(composite_image->signature == MagickSignature);
   if (compose == NoCompositeOp)
     return(MagickPass);
-  SetImageType(canvas_image,TrueColorType);
+  (void) SetImageType(canvas_image,TrueColorType);
   switch (compose)
   {
     case DisplaceCompositeOp:

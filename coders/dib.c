@@ -307,7 +307,7 @@ static size_t EncodeImage(Image *image,const unsigned long bytes_per_line,
         Determine runlength.
       */
       for (i=1; ((x+i) < (long) bytes_per_line); i++)
-        if ((*(p+i) != *p) || (i == 255))
+        if ((*(p+i) != *p) || (i == 255U))
           break;
       *q++=(unsigned char) i;
       *q++=(*p);

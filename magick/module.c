@@ -161,7 +161,7 @@ static CoderInfo
   *RegisterModule(CoderInfo *,ExceptionInfo *),
   *SetCoderInfo(const char *);
 
-#if FUNCTION_UNUSED
+#if 0
 static const CoderInfo
   *GetCoderInfo(const char *,ExceptionInfo *);
 #endif
@@ -384,14 +384,14 @@ MagickExport MagickPassFail ExecuteModuleProcess(const char *tag,Image **image,
     method=(unsigned int (*)(Image **,const int,char **))
       lt_dlsym(handle,method_name);
 
-    LogMagickEvent(CoderEvent,GetMagickModule(),
-      "Invoking \"%.1024s\" filter module",tag);
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                          "Invoking \"%.1024s\" filter module",tag);
 
     /* Execute module method */
     if (method != (unsigned int (*)(Image **,const int,char **)) NULL)
       status=(*method)(image,argc,argv);
 
-    LogMagickEvent(CoderEvent,GetMagickModule(),
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
       "Returned from \"%.1024s\" filter module",tag);
 
   }
@@ -432,7 +432,7 @@ MagickExport MagickPassFail ExecuteModuleProcess(const char *tag,Image **image,
 %
 %
 */
-#if FUNCTION_UNUSED
+#if 0
 static const CoderInfo *GetCoderInfo(const char *tag,
   ExceptionInfo *exception)
 {
@@ -561,9 +561,9 @@ static MagickPassFail FindMagickModule(const char *filename,
       while(MagickMapIterateNext(path_map_iterator,&key))
         {
           if (search_path)
-            ConcatenateString(&search_path,list_seperator);
-          ConcatenateString(&search_path,
-                            MagickMapDereferenceIterator(path_map_iterator,0));
+            (void) ConcatenateString(&search_path,list_seperator);
+          (void) ConcatenateString(&search_path,
+                                   MagickMapDereferenceIterator(path_map_iterator,0));
         }
       
       (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
@@ -787,8 +787,8 @@ MagickExport void InitializeMagickModules(void)
       ReadModuleConfigureFile(ModuleFilename,0,&exception);
     }
   LiberateSemaphoreInfo(&module_semaphore);
-  InitializeModuleSearchPath(MagickCoderModule,&exception);
-  InitializeModuleSearchPath(MagickFilterModule,&exception);
+  (void) InitializeModuleSearchPath(MagickCoderModule,&exception);
+  (void) InitializeModuleSearchPath(MagickFilterModule,&exception);
 
   DestroyExceptionInfo(&exception);
 }
@@ -826,7 +826,7 @@ static void AddModulePath(MagickMap path_map, unsigned int *path_index,
     key[MaxTextExtent];
 
   FormatString(key,"%u",*path_index);
-  MagickMapAddEntry(path_map,key,(void *)path,0,exception);
+  (void) MagickMapAddEntry(path_map,key,(void *)path,0,exception);
   (*path_index)++;
 }
 
@@ -939,10 +939,10 @@ MagickPassFail InitializeModuleSearchPath(MagickModuleType module_type,
             length=end-start;
           if (length > MaxTextExtent-1)
             length = MaxTextExtent-1;
-          strncpy(buffer,start,length);
+          (void) strncpy(buffer,start,length);
           buffer[length]='\0';
           if (buffer[length-1] != DirectorySeparator[0])
-            strcat(buffer,DirectorySeparator);
+            (void) strcat(buffer,DirectorySeparator);
           AddModulePath(path_map,&path_index,buffer,exception);
           start += length+1;
         }
@@ -1515,7 +1515,7 @@ static unsigned int ReadModuleConfigureFile(const char *basename,
         */
         while ((*token != '>') && (*q != '\0'))
         {
-          strncpy(keyword,token,MaxTextExtent-1);
+          (void) strncpy(keyword,token,MaxTextExtent-1);
           GetToken(q,&q,token);
           if (*token != '=')
             continue;
@@ -1878,13 +1878,13 @@ static void TagToFunctionName(const char *tag,const char *format,char *function)
   assert(tag != (const char *) NULL);
   assert(format != (const char *) NULL);
   assert(function != (char *) NULL);
-  strncpy(function_name,tag,MaxTextExtent-1);
+  (void) strncpy(function_name,tag,MaxTextExtent-1);
   LocaleUpper(function_name);
 
 #if defined(PREFIX_MAGICK_SYMBOLS)
-  snprintf(extended_format,MaxTextExtent-1,"Gm%.1024s",format);
+  (void) snprintf(extended_format,MaxTextExtent-1,"Gm%.1024s",format);
 #else
-  strncpy(extended_format,format,MaxTextExtent-1);
+  (void) strncpy(extended_format,format,MaxTextExtent-1);
 #endif
   FormatString(function,extended_format,function_name);
 }

@@ -172,8 +172,8 @@ MagickExport void DestroyMagickInfo(void)
     magick_info=p;
     p=p->next;
 
-    printf("Warning: module registration for \"%s\" from module \"%s\" still present!\n",
-           magick_info->name, magick_info->module);
+    (void) printf("Warning: module registration for \"%s\" from module \"%s\" still present!\n",
+                  magick_info->name, magick_info->module);
     MagickFreeMemory(magick_info->name);
     MagickFreeMemory(magick_info->description);
     MagickFreeMemory(magick_info->version);
@@ -408,7 +408,7 @@ MagickExport MagickInfo **GetMagickInfoArray(ExceptionInfo *exception)
   /*
     Load all modules and obtain pointer to head of list
   */
-  GetMagickInfo("*",exception);
+  (void) GetMagickInfo("*",exception);
   if (!magick_list)
     return 0;
 
@@ -431,7 +431,7 @@ MagickExport MagickInfo **GetMagickInfoArray(ExceptionInfo *exception)
       ThrowException(exception,ResourceLimitError,MemoryAllocationFailed,0);
       return False;
     }
-  memset((void **)array,0,sizeof(MagickInfo *)*(entries+1));
+  (void) memset((void **)array,0,sizeof(MagickInfo *)*(entries+1));
 
   /*
     Add entries to array
@@ -504,7 +504,7 @@ static Sigfunc *MagickSignal(int signo, Sigfunc *func)
     oact;
 
   act.sa_handler=func;
-  sigemptyset(&act.sa_mask);
+  (void) sigemptyset(&act.sa_mask);
   act.sa_flags=0;
 #  if defined(SA_INTERRUPT)  /* SunOS */
   act.sa_flags |= SA_INTERRUPT;
@@ -538,7 +538,7 @@ static Sigfunc *MagickCondSignal(int signo, Sigfunc *func)
         setting.
       */
       if (o_handler != SIG_DFL)
-        MagickSignal(signo,o_handler);
+        (void) MagickSignal(signo,o_handler);
       else
         (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
           "Registered signal handler for signal ID %d",signo);
@@ -573,14 +573,14 @@ static RETSIGTYPE MagickSignalHandler(int signo)
   /*
     Restore default handling for the signal
   */
-  MagickSignal(signo,SIG_DFL);
+  (void) MagickSignal(signo,SIG_DFL);
 
   /*
     Raise signal again to invoke default handler
     This may cause a core dump or immediate exit.
   */
 #if defined(HAVE_RAISE)
-  raise(signo);
+  (void) raise(signo);
 #endif
 
   Exit(signo);

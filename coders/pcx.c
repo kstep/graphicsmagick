@@ -285,7 +285,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       Verify PCX identifier.
     */
     pcx_info.version=ReadBlobByte(image);
-    if ((count == 0) || (pcx_info.identifier != 0x0a))
+    if ((count == 0) || (pcx_info.identifier != 0x0aU))
       ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
     pcx_info.encoding=ReadBlobByte(image);
     pcx_info.bits_per_pixel=ReadBlobByte(image);

@@ -995,7 +995,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
               draw_info->pointsize=svg_info->pointsize;
               draw_info->text=AllocateString(svg_info->text);
               (void) ConcatenateString(&draw_info->text," ");
-              GetTypeMetrics(svg_info->image,draw_info,&metrics);
+              (void) GetTypeMetrics(svg_info->image,draw_info,&metrics);
               svg_info->bounds.x+=metrics.width;
               DestroyDrawInfo(draw_info);
               *svg_info->text='\0';
@@ -2304,7 +2304,7 @@ static void SVGEndElement(void *context,const xmlChar *name)
               draw_info->pointsize=svg_info->pointsize;
               draw_info->text=AllocateString(svg_info->text);
               (void) ConcatenateString(&draw_info->text," ");
-              GetTypeMetrics(svg_info->image,draw_info,&metrics);
+              (void) GetTypeMetrics(svg_info->image,draw_info,&metrics);
               svg_info->bounds.x+=metrics.width;
               DestroyDrawInfo(draw_info);
               *svg_info->text='\0';
@@ -2506,7 +2506,7 @@ static void SVGCDataBlock(void *context,const xmlChar *value,int length)
   child=xmlGetLastChild(parser->node);
   if ((child != (xmlNodePtr) NULL) && (child->type == XML_CDATA_SECTION_NODE))
     {
-      xmlTextConcat(child,value,length);
+      (void) xmlTextConcat(child,value,length);
       return;
     }
   (void) xmlAddChild(parser->node,xmlNewCDataBlock(parser->myDoc,value,length));
@@ -2736,7 +2736,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         (void) SetImageAttribute(image,"comment",svg_info.comment);
       MagickFreeMemory(svg_info.comment);
     }
-  LiberateTemporaryFile(filename);
+  (void) LiberateTemporaryFile(filename);
   return(image);
 }
 #endif

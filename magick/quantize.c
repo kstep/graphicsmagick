@@ -1500,7 +1500,7 @@ MagickExport MagickPassFail GetImageQuantizeError(Image *image)
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   image->total_colors=GetNumberColors(image,(FILE *) NULL,&image->exception);
-  memset(&image->error,0,sizeof(ErrorInfo));
+  (void) memset(&image->error,0,sizeof(ErrorInfo));
   if (image->storage_class == DirectClass)
     return(MagickFail);
   /*

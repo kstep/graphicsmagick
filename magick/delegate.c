@@ -376,7 +376,7 @@ MagickExport unsigned int InvokeDelegate(ImageInfo *image_info,Image *image,
   if (delegate_info == (DelegateInfo *) NULL)
     {
       if (temporary_image_filename)
-        LiberateTemporaryFile(image->filename);
+        (void) LiberateTemporaryFile(image->filename);
       (void) ThrowException(exception,DelegateError,NoTagFound,
         decode ? decode : encode);
       return(False);
@@ -391,7 +391,7 @@ MagickExport unsigned int InvokeDelegate(ImageInfo *image_info,Image *image,
       if(!AcquireTemporaryFileName(image_info->filename))
         {
           if (temporary_image_filename)
-            LiberateTemporaryFile(image->filename);
+            (void) LiberateTemporaryFile(image->filename);
           (void) ThrowException(exception,FileOpenError,UnableToCreateTemporaryFile,image_info->filename);
           return(False);
         }
@@ -419,7 +419,7 @@ MagickExport unsigned int InvokeDelegate(ImageInfo *image_info,Image *image,
         if (!AcquireTemporaryFileName(image_info->unique))
         {
           if (temporary_image_filename)
-            LiberateTemporaryFile(image->filename);
+            (void) LiberateTemporaryFile(image->filename);
           (void) ThrowException(exception,FileOpenError,UnableToCreateTemporaryFile,image_info->unique);
           return(False);
         }
@@ -427,8 +427,8 @@ MagickExport unsigned int InvokeDelegate(ImageInfo *image_info,Image *image,
         if (!AcquireTemporaryFileName(image_info->zero))
         {
           if (temporary_image_filename)
-            LiberateTemporaryFile(image->filename);
-          LiberateTemporaryFile(image_info->unique);
+            (void) LiberateTemporaryFile(image->filename);
+          (void) LiberateTemporaryFile(image_info->unique);
           (void) ThrowException(exception,FileOpenError,UnableToCreateTemporaryFile,image_info->zero);
           return(False);
         }
@@ -437,10 +437,10 @@ MagickExport unsigned int InvokeDelegate(ImageInfo *image_info,Image *image,
           delegate_info->encode : delegate_info->decode);
         if (magick == (char *) NULL)
           {
-            LiberateTemporaryFile(image_info->unique);
-            LiberateTemporaryFile(image_info->zero);
+            (void) LiberateTemporaryFile(image_info->unique);
+            (void) LiberateTemporaryFile(image_info->zero);
             if (temporary_image_filename)
-              LiberateTemporaryFile(image->filename);
+              (void) LiberateTemporaryFile(image->filename);
             (void) ThrowException(exception,DelegateError,DelegateFailed,
               decode ? decode : encode);
             return(False);
@@ -462,10 +462,10 @@ MagickExport unsigned int InvokeDelegate(ImageInfo *image_info,Image *image,
           status=WriteImage(clone_info,p);
           if (status == False)
             {
-              LiberateTemporaryFile(image_info->unique);
-              LiberateTemporaryFile(image_info->zero);
+              (void) LiberateTemporaryFile(image_info->unique);
+              (void) LiberateTemporaryFile(image_info->zero);
               if (temporary_image_filename)
-                LiberateTemporaryFile(image->filename);
+                (void) LiberateTemporaryFile(image->filename);
               DestroyImageInfo(clone_info);
               (void) ThrowException(exception,DelegateError,DelegateFailed,
                 decode ? decode : encode);
@@ -474,8 +474,8 @@ MagickExport unsigned int InvokeDelegate(ImageInfo *image_info,Image *image,
           if (clone_info->adjoin)
             break;
         }
-        LiberateTemporaryFile(image_info->unique);
-        LiberateTemporaryFile(image_info->zero);
+        (void) LiberateTemporaryFile(image_info->unique);
+        (void) LiberateTemporaryFile(image_info->zero);
         DestroyImageInfo(clone_info);
       }
   /*
@@ -486,7 +486,7 @@ MagickExport unsigned int InvokeDelegate(ImageInfo *image_info,Image *image,
   if (commands == (char **) NULL)
     {
       if (temporary_image_filename)
-        LiberateTemporaryFile(image->filename);
+        (void) LiberateTemporaryFile(image->filename);
       (void) ThrowException(exception,ResourceLimitError,MemoryAllocationFailed,decode ? decode : encode);
       return(False);
     }
@@ -506,7 +506,7 @@ MagickExport unsigned int InvokeDelegate(ImageInfo *image_info,Image *image,
     if (!AcquireTemporaryFileName(image_info->zero))
     {
       (void) ThrowException(exception,FileOpenError,UnableToCreateTemporaryFile,image_info->zero);
-      LiberateTemporaryFile(image_info->unique);
+      (void) LiberateTemporaryFile(image_info->unique);
       status=False;
       goto error_exit;
     }
@@ -521,8 +521,8 @@ MagickExport unsigned int InvokeDelegate(ImageInfo *image_info,Image *image,
     status=SystemCommand(image_info->verbose,command);
     MagickFreeMemory(command);
     /* Liberate convenience temporary files */
-    LiberateTemporaryFile(image_info->unique);
-    LiberateTemporaryFile(image_info->zero);
+    (void) LiberateTemporaryFile(image_info->unique);
+    (void) LiberateTemporaryFile(image_info->zero);
     if (status != False)
       {
         (void) ThrowException(exception,DelegateError,DelegateFailed,
@@ -536,7 +536,7 @@ MagickExport unsigned int InvokeDelegate(ImageInfo *image_info,Image *image,
   */
  error_exit:
   if (temporary_image_filename)
-    LiberateTemporaryFile(image->filename);
+    (void) LiberateTemporaryFile(image->filename);
   for ( ; commands[i] != (char *) NULL; i++)
     MagickFreeMemory(commands[i]);
   MagickFreeMemory(commands);
@@ -732,7 +732,7 @@ MagickExport unsigned int ListDelegateInfo(FILE *file,ExceptionInfo *exception)
       for (s=commands[0]; length < command_length; s+=formatted_chars)
         {
           if (s != commands[0])
-            fprintf(file,"%*s",command_start_column,"");
+            (void) fprintf(file,"%*s",command_start_column,"");
           strip_length=screen_width-command_start_column;
           if (length+strip_length < command_length)
             {
@@ -744,7 +744,7 @@ MagickExport unsigned int ListDelegateInfo(FILE *file,ExceptionInfo *exception)
             }
           formatted_chars=fprintf(file,"%.*s",strip_length,s);
           length+=formatted_chars;
-          fprintf(file,"\n");
+          (void) fprintf(file,"\n");
           if (formatted_chars <= 0)
             break;
         }

@@ -501,7 +501,7 @@ static unsigned int WriteXBMImage(const ImageInfo *image_info,Image *image)
   /*
     Convert MIFF to X bitmap pixels.
   */
-  SetImageType(image,BilevelType);
+  (void) SetImageType(image,BilevelType);
   polarity=(PixelIntensityToQuantum(&image->colormap[0]) < (MaxRGB/2));
   if (image->colors == 2)
     polarity=(PixelIntensityToQuantum(&image->colormap[0]) <

@@ -305,7 +305,7 @@ MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
   if (magnify_image == (Image *) NULL)
     return((Image *) NULL);
 
-  LogMagickEvent(TransformEvent,GetMagickModule(),
+  (void) LogMagickEvent(TransformEvent,GetMagickModule(),
     "Magnifying image of size %lux%lu to %lux%lu",
     image->columns,image->rows,magnify_image->columns,magnify_image->rows);
 
@@ -496,7 +496,7 @@ MagickExport Image *MinifyImage(const Image *image,ExceptionInfo *exception)
   if (minify_image == (Image *) NULL)
     return((Image *) NULL);
 
-  LogMagickEvent(TransformEvent,GetMagickModule(),
+  (void) LogMagickEvent(TransformEvent,GetMagickModule(),
     "Minifying image of size %lux%lu to %lux%lu",
     image->columns,image->rows,minify_image->columns,minify_image->rows);
 
@@ -504,7 +504,7 @@ MagickExport Image *MinifyImage(const Image *image,ExceptionInfo *exception)
   /*
     Reduce each row.
   */
-  memset(&zero,0,sizeof(DoublePixelPacket));
+  (void) memset(&zero,0,sizeof(DoublePixelPacket));
   for (y=0; y < (long) minify_image->rows; y++)
   {
     p=AcquireImagePixels(image,-2,2*(y-1),image->columns+4,4,exception);
@@ -800,7 +800,7 @@ static MagickPassFail HorizontalFilter(const Image *source,Image *destination,
       scale=1.0;
     }
   scale=1.0/scale;
-  memset(&zero,0,sizeof(DoublePixelPacket));
+  (void) memset(&zero,0,sizeof(DoublePixelPacket));
   for (x=0; x < (long) destination->columns; x++)
   {
     center=(double) (x+0.5)/x_factor;
@@ -921,7 +921,7 @@ static MagickPassFail VerticalFilter(const Image *source,Image *destination,
       scale=1.0;
     }
   scale=1.0/scale;
-  memset(&zero,0,sizeof(DoublePixelPacket));
+  (void) memset(&zero,0,sizeof(DoublePixelPacket));
   for (y=0; y < (long) destination->rows; y++)
   {
     center=(double) (y+0.5)/y_factor;
@@ -1130,7 +1130,7 @@ MagickExport Image *ResizeImage(const Image *image,const unsigned long columns,
         ((x_factor*y_factor) > 1.0))
       i=(long) MitchellFilter;
 
-  LogMagickEvent(TransformEvent,GetMagickModule(),
+  (void) LogMagickEvent(TransformEvent,GetMagickModule(),
     "Resizing image of size %lux%lu to %lux%lu using %s filter",
     image->columns,image->rows,columns,rows,
     ResizeFilterToString((FilterTypes)i));
@@ -1279,7 +1279,7 @@ MagickExport Image *SampleImage(const Image *image,const unsigned long columns,
   if (sample_image == (Image *) NULL)
     return((Image *) NULL);
 
-  LogMagickEvent(TransformEvent,GetMagickModule(),
+  (void) LogMagickEvent(TransformEvent,GetMagickModule(),
     "Sampling image of size %lux%lu to %lux%lu",
     image->columns,image->rows,sample_image->columns,sample_image->rows);
 
@@ -1438,7 +1438,7 @@ MagickExport Image *ScaleImage(const Image *image,const unsigned long columns,
   if (scale_image == (Image *) NULL)
     return((Image *) NULL);
 
-  LogMagickEvent(TransformEvent,GetMagickModule(),
+  (void) LogMagickEvent(TransformEvent,GetMagickModule(),
     "Scaling image of size %lux%lu to %lux%lu",
     image->columns,image->rows,scale_image->columns,scale_image->rows);
 
@@ -1472,8 +1472,8 @@ MagickExport Image *ScaleImage(const Image *image,const unsigned long columns,
   next_row=True;
   y_span=1.0;
   y_scale=(double) scale_image->rows/image->rows;
-  memset(y_vector,0,image->columns*sizeof(DoublePixelPacket));
-  memset(&zero,0,sizeof(DoublePixelPacket));
+  (void) memset(y_vector,0,image->columns*sizeof(DoublePixelPacket));
+  (void) memset(&zero,0,sizeof(DoublePixelPacket));
   i=0;
   for (y=0; y < (long) scale_image->rows; y++)
   {

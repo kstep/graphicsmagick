@@ -202,7 +202,7 @@ static unsigned int WriteHISTOGRAMImage(const ImageInfo *image_info,
   assert(image_info->signature == MagickSignature);
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  SetImageDepth(image,image->depth);
+  (void) SetImageDepth(image,image->depth);
   SetGeometry(image,&geometry);
   if (image_info->density == (char *) NULL)
     (void) GetMagickGeometry(HistogramDensity,&geometry.x,&geometry.y,
@@ -214,7 +214,7 @@ static unsigned int WriteHISTOGRAMImage(const ImageInfo *image_info,
     &image->exception);
   if (histogram_image == (Image *) NULL)
     ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
-  SetImageType(histogram_image,TrueColorType);
+  (void) SetImageType(histogram_image,TrueColorType);
   /*
     Allocate histogram count arrays.
   */
@@ -228,9 +228,9 @@ static unsigned int WriteHISTOGRAMImage(const ImageInfo *image_info,
       DestroyImage(histogram_image);
       ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image)
     }
-  memset(red,0,length*sizeof(long));
-  memset(green,0,length*sizeof(long));
-  memset(blue,0,length*sizeof(long));
+  (void) memset(red,0,length*sizeof(long));
+  (void) memset(green,0,length*sizeof(long));
+  (void) memset(blue,0,length*sizeof(long));
   /*
     Initialize histogram count arrays.
   */
@@ -319,7 +319,7 @@ static unsigned int WriteHISTOGRAMImage(const ImageInfo *image_info,
       (void) fclose(file);
       FormatString(command,"@%.1024s",filename);
       (void) SetImageAttribute(histogram_image,"comment",command);
-      LiberateTemporaryFile(filename);
+      (void) LiberateTemporaryFile(filename);
     }
   /*
     Write Histogram image as MIFF.

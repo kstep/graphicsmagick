@@ -683,9 +683,9 @@ typedef struct _Image
     columns,            /* Number of image columns */
     rows;               /* Number of image rows */
 
-  unsigned long
-    depth,              /* Bits of precision to preserve in color quantum */
-    colors;             /* Current number of colors in PseudoClass colormap */
+  unsigned int
+    colors,             /* Current number of colors in PseudoClass colormap */
+    depth;              /* Bits of precision to preserve in color quantum */
 
   PixelPacket
     *colormap;          /* Pseudoclass colormap array */

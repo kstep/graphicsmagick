@@ -555,8 +555,8 @@ MagickExport unsigned int AnimateImageCommand(ImageInfo *image_info,
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
                   MagickFatalError(OptionFatalError,MissingArgument,option);
-                SetMagickResourceLimit(MemoryResource,atol(argv[i]));
-                SetMagickResourceLimit(MapResource,2*atol(argv[i]));
+                (void) SetMagickResourceLimit(MemoryResource,atol(argv[i]));
+                (void) SetMagickResourceLimit(MapResource,2*atol(argv[i]));
               }
             break;
           }
@@ -676,7 +676,7 @@ MagickExport unsigned int AnimateImageCommand(ImageInfo *image_info,
             if (*option == '+')
               RemoveDefinitions(image_info,argv[i]);
             else
-              AddDefinitions(image_info,argv[i],exception);
+              (void) AddDefinitions(image_info,argv[i],exception);
             break;
           }
         if (LocaleCompare("delay",option+1) == 0)
@@ -863,13 +863,13 @@ MagickExport unsigned int AnimateImageCommand(ImageInfo *image_info,
                   MagickFatalError(OptionFatalError,MissingArgument,
                     option);
                 if (LocaleCompare("disk",type) == 0)
-                  SetMagickResourceLimit(DiskResource,atol(argv[i]));
+                  (void) SetMagickResourceLimit(DiskResource,atol(argv[i]));
                 else
                   if (LocaleCompare("map",type) == 0)
-                    SetMagickResourceLimit(MapResource,atol(argv[i]));
+                    (void) SetMagickResourceLimit(MapResource,atol(argv[i]));
                   else
                     if (LocaleCompare("memory",type) == 0)
-                      SetMagickResourceLimit(MemoryResource,atol(argv[i]));
+                      (void) SetMagickResourceLimit(MemoryResource,atol(argv[i]));
                     else
                       MagickFatalError(OptionFatalError,UnrecognizedResourceType,type);
               }
@@ -1262,7 +1262,7 @@ static unsigned int CompositeImageList(ImageInfo *image_info,Image **image,
       if (mask_image != (Image *) NULL)
         {
           assert(mask_image->signature == MagickSignature);
-          SetImageType(composite_image,TrueColorMatteType);
+          (void) SetImageType(composite_image,TrueColorMatteType);
           if (!composite_image->matte)
             SetImageOpacity(composite_image,OpaqueOpacity);
           status&=CompositeImage(composite_image,CopyOpacityCompositeOp,
@@ -1288,7 +1288,7 @@ static unsigned int CompositeImageList(ImageInfo *image_info,Image **image,
             for (x=0; x < (long) composite_image->columns; x++)
             {
               q->opacity=(Quantum)
-                (((MaxRGB-q->opacity)*option_info->dissolve)/100.0);
+                ((((unsigned long) MaxRGB-q->opacity)*option_info->dissolve)/100.0);
               q++;
             }
             if (!SyncImagePixels(composite_image))
@@ -1463,7 +1463,7 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
     MagickFatalError(ResourceLimitFatalError,MemoryAllocationFailed,
     (char *) NULL);
 
-  memset(&option_info,0,sizeof(CompositeOptions));
+  (void) memset(&option_info,0,sizeof(CompositeOptions));
   option_info.dissolve=0.0;
   option_info.compose=OverCompositeOp;
   composite_image=NewImageList();
@@ -1596,8 +1596,8 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
                   ThrowCompositeException(OptionError,MissingArgument,
                     option);
-                SetMagickResourceLimit(MemoryResource,atol(argv[i]));
-                SetMagickResourceLimit(MapResource,2*atol(argv[i]));
+                (void) SetMagickResourceLimit(MemoryResource,atol(argv[i]));
+                (void) SetMagickResourceLimit(MapResource,2*atol(argv[i]));
               }
             break;
           }
@@ -1775,9 +1775,9 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
               ThrowCompositeException(OptionError,MissingArgument,
                 option);
             if (*option == '+')
-              RemoveDefinitions(image_info,argv[i]);
+              (void) RemoveDefinitions(image_info,argv[i]);
             else
-              AddDefinitions(image_info,argv[i],exception);
+              (void) AddDefinitions(image_info,argv[i],exception);
             break;
           }
         if (LocaleCompare("density",option+1) == 0)
@@ -2113,13 +2113,13 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
                   ThrowCompositeException(OptionError,MissingArgument,
                     option);
                 if (LocaleCompare("disk",type) == 0)
-                  SetMagickResourceLimit(DiskResource,atol(argv[i]));
+                  (void) SetMagickResourceLimit(DiskResource,atol(argv[i]));
                 else
                   if (LocaleCompare("map",type) == 0)
-                    SetMagickResourceLimit(MapResource,atol(argv[i]));
+                    (void) SetMagickResourceLimit(MapResource,atol(argv[i]));
                   else
                     if (LocaleCompare("memory",type) == 0)
-                      SetMagickResourceLimit(MemoryResource,atol(argv[i]));
+                      (void) SetMagickResourceLimit(MemoryResource,atol(argv[i]));
                     else
                       ThrowCompositeException(OptionError,UnrecognizedResourceType,
                         type);
@@ -2936,8 +2936,8 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
                   ThrowConvertException(OptionError,MissingArgument,option);
-                SetMagickResourceLimit(MemoryResource,atol(argv[i]));
-                SetMagickResourceLimit(MapResource,2*atol(argv[i]));
+                (void) SetMagickResourceLimit(MemoryResource,atol(argv[i]));
+                (void) SetMagickResourceLimit(MapResource,2*atol(argv[i]));
               }
             break;
           }
@@ -3173,9 +3173,9 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
             if (i == argc)
               ThrowConvertException(OptionError,MissingArgument,option);
             if (*option == '+')
-              RemoveDefinitions(image_info,argv[i]);
+              (void) RemoveDefinitions(image_info,argv[i]);
             else
-              AddDefinitions(image_info,argv[i],exception);
+              (void) AddDefinitions(image_info,argv[i],exception);
             break;
           }
         if (LocaleCompare("delay",option+1) == 0)
@@ -3647,13 +3647,13 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
                   ThrowConvertException(OptionError,MissingArgument,
                     option);
                 if (LocaleCompare("disk",type) == 0)
-                  SetMagickResourceLimit(DiskResource,atol(argv[i]));
+                  (void) SetMagickResourceLimit(DiskResource,atol(argv[i]));
                 else
                   if (LocaleCompare("map",type) == 0)
-                    SetMagickResourceLimit(MapResource,atol(argv[i]));
+                    (void) SetMagickResourceLimit(MapResource,atol(argv[i]));
                   else
                     if (LocaleCompare("memory",type) == 0)
-                      SetMagickResourceLimit(MemoryResource,atol(argv[i]));
+                      (void) SetMagickResourceLimit(MemoryResource,atol(argv[i]));
                     else
                       ThrowConvertException(OptionError,UnrecognizedResourceType,
                         type);
@@ -5434,7 +5434,7 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
                 (void) CatchImageException(image);
               }
             if (image_info->verbose)
-              DescribeImage(image,stderr,False);
+              (void) DescribeImage(image,stderr,False);
             /*
               Proceed to next/previous image.
             */
@@ -5582,8 +5582,8 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
                   MagickFatalError(OptionFatalError,MissingArgument,option);
-                SetMagickResourceLimit(MemoryResource,atol(argv[i]));
-                SetMagickResourceLimit(MapResource,2*atol(argv[i]));
+                (void) SetMagickResourceLimit(MemoryResource,atol(argv[i]));
+                (void) SetMagickResourceLimit(MapResource,2*atol(argv[i]));
               }
             break;
           }
@@ -5746,9 +5746,9 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
             if (i == argc)
               MagickFatalError(OptionFatalError,MissingArgument,option);
             if (*option == '+')
-              RemoveDefinitions(image_info,argv[i]);
+              (void) RemoveDefinitions(image_info,argv[i]);
             else
-              AddDefinitions(image_info,argv[i],exception);
+              (void) AddDefinitions(image_info,argv[i],exception);
             break;
           }
         if (LocaleCompare("delay",option+1) == 0)
@@ -6070,13 +6070,13 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
                   MagickFatalError(OptionFatalError,MissingArgument,
                     option);
                 if (LocaleCompare("disk",type) == 0)
-                  SetMagickResourceLimit(DiskResource,atol(argv[i]));
+                  (void) SetMagickResourceLimit(DiskResource,atol(argv[i]));
                 else
                   if (LocaleCompare("map",type) == 0)
-                    SetMagickResourceLimit(MapResource,atol(argv[i]));
+                    (void) SetMagickResourceLimit(MapResource,atol(argv[i]));
                   else
                     if (LocaleCompare("memory",type) == 0)
-                      SetMagickResourceLimit(MemoryResource,atol(argv[i]));
+                      (void) SetMagickResourceLimit(MemoryResource,atol(argv[i]));
                     else
                       MagickFatalError(OptionFatalError,UnrecognizedResourceType,type);
               }
@@ -6528,7 +6528,7 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
   if (state & RetainColorsState)
     {
       XRetainWindowColors(display,XRootWindow(display,XDefaultScreen(display)));
-      XSync(display,False);
+      (void) XSync(display,False);
     } 
   if (resource_database != (XrmDatabase) NULL)
     {
@@ -6631,7 +6631,7 @@ static unsigned int HelpCommand(ImageInfo *image_info,
         {
           if (LocaleCompare(commands[i].command,argv[1]) == 0)
             {
-              SetClientName(commands[i].command);
+              (void) SetClientName(commands[i].command);
               if (commands[i].usage_vector)
                 {
                   (commands[i].usage_vector)();
@@ -6803,7 +6803,7 @@ MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
             p->scene=count++;
           if (format == (char *) NULL)
             {
-              DescribeImage(p,stdout,image_info->verbose);
+              (void) DescribeImage(p,stdout,image_info->verbose);
               continue;
             }
           if (metadata != (char **) NULL)
@@ -6837,8 +6837,8 @@ MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
                   ThrowIdentifyException(OptionError,MissingArgument,option);
-                SetMagickResourceLimit(MemoryResource,atol(argv[i]));
-                SetMagickResourceLimit(MapResource,2*atol(argv[i]));
+                (void) SetMagickResourceLimit(MemoryResource,atol(argv[i]));
+                (void) SetMagickResourceLimit(MapResource,2*atol(argv[i]));
               }
             break;
           }
@@ -6864,9 +6864,9 @@ MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
             if (i == argc)
               ThrowIdentifyException(OptionError,MissingArgument,option);
             if (*option == '+')
-              RemoveDefinitions(image_info,argv[i]);
+              (void) RemoveDefinitions(image_info,argv[i]);
             else
-              AddDefinitions(image_info,argv[i],exception);
+              (void) AddDefinitions(image_info,argv[i],exception);
             break;
           }
         if (LocaleCompare("density",option+1) == 0)
@@ -7751,7 +7751,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             /*
               Cycle an image colormap.
             */
-            CycleColormapImage(*image,atoi(argv[++i]));
+            (void) CycleColormapImage(*image,atoi(argv[++i]));
             continue;
           }
         break;
@@ -7762,9 +7762,9 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
           {
             i++;
             if (*option == '+')
-              RemoveDefinitions(clone_info,argv[i]);
+              (void) RemoveDefinitions(clone_info,argv[i]);
             else
-              AddDefinitions(clone_info,argv[i],&(*image)->exception);
+              (void) AddDefinitions(clone_info,argv[i],&(*image)->exception);
             break;
           }
         if (LocaleCompare("delay",option+1) == 0)
@@ -8387,7 +8387,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
               if (!SyncImagePixels(mask))
                 break;
             }
-            SetImageType(mask,TrueColorMatteType);
+            (void) SetImageType(mask,TrueColorMatteType);
             (void) SetImageClipMask(*image,mask);
           }
         if (LocaleCompare("matte",option+1) == 0)
@@ -9069,7 +9069,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
               threshold;
 
             threshold=StringToDouble(argv[++i],MaxRGB);
-            SolarizeImage(*image,threshold);
+            (void) SolarizeImage(*image,threshold);
             continue;
           }
         if (LocaleCompare("spread",option+1) == 0)
@@ -9211,7 +9211,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             if (LocaleCompare("Optimize",option) == 0)
               image_type=OptimizeType;
             (*image)->dither=image_info->dither;
-            SetImageType(*image,image_type);
+            (void) SetImageType(*image,image_type);
             continue;
           }
         break;
@@ -9311,7 +9311,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
 
             if (*option == '+')
               {
-                SetImageVirtualPixelMethod(*image,UndefinedVirtualPixelMethod);
+                (void) SetImageVirtualPixelMethod(*image,UndefinedVirtualPixelMethod);
                 continue;
               }
             option=argv[++i];
@@ -9324,7 +9324,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
               virtual_pixel_method=MirrorVirtualPixelMethod;
             if (LocaleCompare("Tile",option) == 0)
               virtual_pixel_method=TileVirtualPixelMethod;
-            SetImageVirtualPixelMethod(*image,virtual_pixel_method);
+            (void) SetImageVirtualPixelMethod(*image,virtual_pixel_method);
             continue;
           }
         break;
@@ -9543,7 +9543,7 @@ MagickExport unsigned int MogrifyImages(const ImageInfo *image_info,
     if (scene)
       image->scene+=i;
     if (image_info->verbose)
-      DescribeImage(image,stdout,False);
+      (void) DescribeImage(image,stdout,False);
     AppendImageToList(&mogrify_images,image);
     if (!MagickMonitor(MogrifyImageText,i,number_images,&image->exception))
       break;
@@ -10035,8 +10035,8 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
                   ThrowMogrifyException(OptionError,MissingArgument,option);
-                SetMagickResourceLimit(MemoryResource,atol(argv[i]));
-                SetMagickResourceLimit(MapResource,2*atol(argv[i]));
+                (void) SetMagickResourceLimit(MemoryResource,atol(argv[i]));
+                (void) SetMagickResourceLimit(MapResource,2*atol(argv[i]));
               }
             break;
           }
@@ -10260,9 +10260,9 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
             if (i == argc)
               ThrowMogrifyException(OptionError,MissingArgument,option);
             if (*option == '+')
-              RemoveDefinitions(image_info,argv[i]);
+              (void) RemoveDefinitions(image_info,argv[i]);
             else
-              AddDefinitions(image_info,argv[i],exception);
+              (void) AddDefinitions(image_info,argv[i],exception);
             break;
           }
         if (LocaleCompare("delay",option+1) == 0)
@@ -10714,13 +10714,13 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
                   ThrowMogrifyException(OptionError,MissingArgument,
                     option);
                 if (LocaleCompare("disk",type) == 0)
-                  SetMagickResourceLimit(DiskResource,atol(argv[i]));
+                  (void) SetMagickResourceLimit(DiskResource,atol(argv[i]));
                 else
                   if (LocaleCompare("map",type) == 0)
-                    SetMagickResourceLimit(MapResource,atol(argv[i]));
+                    (void) SetMagickResourceLimit(MapResource,atol(argv[i]));
                   else
                     if (LocaleCompare("memory",type) == 0)
-                      SetMagickResourceLimit(MemoryResource,atol(argv[i]));
+                      (void) SetMagickResourceLimit(MemoryResource,atol(argv[i]));
                     else
                       ThrowMogrifyException(OptionError,UnrecognizedResourceType,type);
               }
@@ -12050,8 +12050,8 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
                   ThrowMontageException(OptionError,MissingArgument,option);
-                SetMagickResourceLimit(MemoryResource,atol(argv[i]));
-                SetMagickResourceLimit(MapResource,2*atol(argv[i]));
+                (void) SetMagickResourceLimit(MemoryResource,atol(argv[i]));
+                (void) SetMagickResourceLimit(MapResource,2*atol(argv[i]));
               }
             break;
           }
@@ -12243,9 +12243,9 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
             if (i == argc)
               ThrowMontageException(OptionError,MissingArgument,option);
             if (*option == '+')
-              RemoveDefinitions(image_info,argv[i]);
+              (void) RemoveDefinitions(image_info,argv[i]);
             else
-              AddDefinitions(image_info,argv[i],exception);
+              (void) AddDefinitions(image_info,argv[i],exception);
             break;
           }
         if (LocaleCompare("density",option+1) == 0)
@@ -12602,13 +12602,13 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
                   ThrowMontageException(OptionError,MissingArgument,
                     option);
                 if (LocaleCompare("disk",type) == 0)
-                  SetMagickResourceLimit(DiskResource,atol(argv[i]));
+                  (void) SetMagickResourceLimit(DiskResource,atol(argv[i]));
                 else
                   if (LocaleCompare("map",type) == 0)
-                    SetMagickResourceLimit(MapResource,atol(argv[i]));
+                    (void) SetMagickResourceLimit(MapResource,atol(argv[i]));
                   else
                     if (LocaleCompare("memory",type) == 0)
-                      SetMagickResourceLimit(MemoryResource,atol(argv[i]));
+                      (void) SetMagickResourceLimit(MemoryResource,atol(argv[i]));
                     else
                       ThrowMontageException(OptionError,UnrecognizedResourceType,type);
               }
@@ -13451,8 +13451,8 @@ MagickExport unsigned int ImportImageCommand(ImageInfo *image_info,
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
                   MagickFatalError(OptionFatalError,MissingArgument,option);
-                SetMagickResourceLimit(MemoryResource,atol(argv[i]));
-                SetMagickResourceLimit(MapResource,2*atol(argv[i]));
+                (void) SetMagickResourceLimit(MemoryResource,atol(argv[i]));
+                (void) SetMagickResourceLimit(MapResource,2*atol(argv[i]));
               }
             break;
           }
@@ -13593,9 +13593,9 @@ MagickExport unsigned int ImportImageCommand(ImageInfo *image_info,
             if (i == argc)
               MagickFatalError(OptionFatalError,MissingArgument,option);
             if (*option == '+')
-              RemoveDefinitions(image_info,argv[i]);
+              (void) RemoveDefinitions(image_info,argv[i]);
             else
-              AddDefinitions(image_info,argv[i],exception);
+              (void) AddDefinitions(image_info,argv[i],exception);
             break;
           }
         if (LocaleCompare("delay",option+1) == 0)
@@ -13806,13 +13806,13 @@ MagickExport unsigned int ImportImageCommand(ImageInfo *image_info,
                   MagickFatalError(OptionFatalError,MissingArgument,
                     option);
                 if (LocaleCompare("disk",type) == 0)
-                  SetMagickResourceLimit(DiskResource,atol(argv[i]));
+                  (void) SetMagickResourceLimit(DiskResource,atol(argv[i]));
                 else
                   if (LocaleCompare("map",type) == 0)
-                    SetMagickResourceLimit(MapResource,atol(argv[i]));
+                    (void) SetMagickResourceLimit(MapResource,atol(argv[i]));
                   else
                     if (LocaleCompare("memory",type) == 0)
-                      SetMagickResourceLimit(MemoryResource,atol(argv[i]));
+                      (void) SetMagickResourceLimit(MemoryResource,atol(argv[i]));
                     else
                       MagickFatalError(OptionFatalError,UnrecognizedResourceType,
                                        type);

@@ -866,7 +866,7 @@ MagickExport MagickPassFail SetImageProfile(Image *image,const char *name,
       if (profile)
         {
           /* Clone user-supplied profile */
-          CloneString(&image_profile->name, name);
+          (void) CloneString(&image_profile->name, name);
 	  if (!image_profile->name)
             ThrowBinaryException3(ResourceLimitError,MemoryAllocationFailed,
               UnableToAddColorProfile);

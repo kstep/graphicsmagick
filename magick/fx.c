@@ -97,7 +97,7 @@ MagickExport Image *CharcoalImage(const Image *image,const double radius,
   charcoal_image=CloneImage(image,0,0,True,exception);
   if (charcoal_image == (Image *) NULL)
     return((Image *) NULL);
-  SetImageType(charcoal_image,GrayscaleType);
+  (void) SetImageType(charcoal_image,GrayscaleType);
   edge_image=EdgeImage(charcoal_image,radius,exception);
   if (edge_image == (Image *) NULL)
     return((Image *) NULL);
@@ -108,7 +108,7 @@ MagickExport Image *CharcoalImage(const Image *image,const double radius,
   DestroyImage(edge_image);
   (void) NormalizeImage(blur_image);
   (void) NegateImage(blur_image,False);
-  SetImageType(blur_image,GrayscaleType);
+  (void) SetImageType(blur_image,GrayscaleType);
   return(blur_image);
 }
 
@@ -183,7 +183,7 @@ MagickExport Image *ColorizeImage(const Image *image,const char *opacity,
   colorize_image=CloneImage(image,image->columns,image->rows,True,exception);
   if (colorize_image == (Image *) NULL)
     return((Image *) NULL);
-  SetImageType(colorize_image,TrueColorType);
+  (void) SetImageType(colorize_image,TrueColorType);
   if (opacity == (const char *) NULL)
     return(colorize_image);
   /*
@@ -533,7 +533,7 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
   implode_image=CloneImage(image,image->columns,image->rows,True,exception);
   if (implode_image == (Image *) NULL)
     return((Image *) NULL);
-  SetImageType(implode_image,implode_image->background_color.opacity !=
+  (void) SetImageType(implode_image,implode_image->background_color.opacity !=
     OpaqueOpacity ? TrueColorMatteType : TrueColorType);
   /*
     Compute scaling factor.
@@ -723,7 +723,7 @@ MagickExport Image *MorphImages(const Image *image,
       DestroyImage(clone_image);
       if (morph_image == (Image *) NULL)
         break;
-      SetImageType(morph_images,TrueColorType);
+      (void) SetImageType(morph_images,TrueColorType);
       for (y=0; y < (long) morph_images->rows; y++)
       {
         p=AcquireImagePixels(morph_image,0,y,morph_image->columns,1,exception);
@@ -842,7 +842,7 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
   paint_image=CloneImage(image,image->columns,image->rows,True,exception);
   if (paint_image == (Image *) NULL)
     return((Image *) NULL);
-  SetImageType(paint_image,TrueColorType);
+  (void) SetImageType(paint_image,TrueColorType);
   /*
     Allocate histogram and scanline.
   */
@@ -1098,7 +1098,7 @@ MagickExport Image *SteganoImage(const Image *image,const Image *watermark,
   stegano_image=CloneImage(image,0,0,True,exception);
   if (stegano_image == (Image *) NULL)
     return((Image *) NULL);
-  SetImageType(stegano_image,TrueColorType);
+  (void) SetImageType(stegano_image,TrueColorType);
   stegano_image->depth=QuantumDepth;
   /*
     Hide watermark in low-order bits of image.
@@ -1226,7 +1226,7 @@ MagickExport Image *StereoImage(const Image *image,const Image *offset_image,
   stereo_image=CloneImage(image,image->columns,image->rows,True,exception);
   if (stereo_image == (Image *) NULL)
     return((Image *) NULL);
-  SetImageType(stereo_image,TrueColorType);
+  (void) SetImageType(stereo_image,TrueColorType);
   /*
     Copy left image to red channel and right image to blue channel.
   */
@@ -1326,7 +1326,7 @@ MagickExport Image *SwirlImage(const Image *image,double degrees,
   swirl_image=CloneImage(image,image->columns,image->rows,True,exception);
   if (swirl_image == (Image *) NULL)
     return((Image *) NULL);
-  SetImageType(swirl_image,swirl_image->background_color.opacity !=
+  (void) SetImageType(swirl_image,swirl_image->background_color.opacity !=
     OpaqueOpacity ? TrueColorMatteType : TrueColorType);
   /*
     Compute scaling factor.
@@ -1475,7 +1475,7 @@ MagickExport Image *WaveImage(const Image *image,const double amplitude,
   */
   virtual_pixel_method=GetImageVirtualPixelMethod(image);
   if (virtual_pixel_method == UndefinedVirtualPixelMethod)
-    SetImageVirtualPixelMethod(image,ConstantVirtualPixelMethod);
+    (void) SetImageVirtualPixelMethod(image,ConstantVirtualPixelMethod);
   for (y=0; y < (long) wave_image->rows; y++)
   {
     q=SetImagePixels(wave_image,0,y,wave_image->columns,1);
@@ -1492,7 +1492,7 @@ MagickExport Image *WaveImage(const Image *image,const double amplitude,
       if (!MagickMonitor(WaveImageText,y,wave_image->rows,exception))
         break;
   }
-  SetImageVirtualPixelMethod(image,virtual_pixel_method);
+  (void) SetImageVirtualPixelMethod(image,virtual_pixel_method);
   MagickFreeMemory(sine_map);
   wave_image->is_grayscale=(image->is_grayscale && IsGray(wave_image->background_color));
   return(wave_image);

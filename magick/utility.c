@@ -925,7 +925,7 @@ MagickExport unsigned int ExpandFilenames(int *argc,char ***argv)
 
     /* GetPathComponent throws away the colon */
     if (*magick != '\0')
-      strcat(magick,":");
+      (void) strcat(magick,":");
     ExpandFilename(path);
 
     /* Get the list of matching file names. */
@@ -972,10 +972,10 @@ MagickExport unsigned int ExpandFilenames(int *argc,char ***argv)
           filename_buffer[MaxTextExtent];
 
         *filename_buffer='\0';
-        strcat(filename_buffer,path);
+        (void) strcat(filename_buffer,path);
         if (*path != '\0')
           strcat(filename_buffer,DirectorySeparator);
-        strcat(filename_buffer,filelist[j]);
+        (void) strcat(filename_buffer,filelist[j]);
         /* If it's a filename (not a directory) ... */
         if (IsDirectory(filename_buffer) == 0) 
           {
@@ -983,9 +983,9 @@ MagickExport unsigned int ExpandFilenames(int *argc,char ***argv)
               formatted_buffer[MaxTextExtent];
 
             *formatted_buffer='\0';
-            strcat(formatted_buffer,magick);
-            strcat(formatted_buffer,filename_buffer);
-            strcat(formatted_buffer,subimage);
+            (void) strcat(formatted_buffer,magick);
+            (void) strcat(formatted_buffer,filename_buffer);
+            (void) strcat(formatted_buffer,subimage);
 
             if (first)
               {
@@ -1218,7 +1218,7 @@ MagickExport unsigned int GetExecutionPathUsingName(char *path)
           if (execution_path[0] != '\0')
             {
               (void) strcat(execution_path,DirectorySeparator);
-              strcpy(path,execution_path);
+              (void) strcpy(path,execution_path);
               (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
                                     "Path \"%.1024s\" is usable.",path);
               errno=0;
@@ -2005,7 +2005,7 @@ MagickExport void GetPathComponent(const char *path,PathType type,
     ;
   if (*p == ':')
     {
-      strncpy(magick,component,(size_t)(p-component)+1);
+      (void) strncpy(magick,component,(size_t)(p-component)+1);
       magick[p-component+1]='\0';
       if (IsMagickConflict(magick))
         {

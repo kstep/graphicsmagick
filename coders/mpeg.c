@@ -479,7 +479,7 @@ static unsigned int WriteMPEGImage(const ImageInfo *image_info,Image *image)
     {
       if (coalesce_image != image)
         DestroyImage(coalesce_image);
-      LiberateTemporaryFile(basename);
+      (void) LiberateTemporaryFile(basename);
       if (image_info->quality != DefaultCompressionQuality)
         {
           FormatString(filename,"%.1024s.iqm",basename);
@@ -576,7 +576,7 @@ static unsigned int WriteMPEGImage(const ImageInfo *image_info,Image *image)
   (void) remove(filename);
   FormatString(filename,"%.1024s.log",basename);
   (void) remove(filename);
-  LiberateTemporaryFile(basename);
+  (void) LiberateTemporaryFile(basename);
   if (coalesce_image != image)
     DestroyImage(coalesce_image);
   if (logging)

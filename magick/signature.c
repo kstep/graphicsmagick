@@ -368,19 +368,19 @@ MagickExport void TransformSignature(SignatureInfo *signature_info)
         {
           T=(*((unsigned long *) p));
           p+=8;
-          W[i]=((T << 24) & 0xff000000) | ((T << 8) & 0x00ff0000) |
-            ((T >> 8) & 0x0000ff00) | ((T >> 24) & 0x000000ff);
+          W[i]=((T << 24) & 0xff000000U) | ((T << 8) & 0x00ff0000U) |
+            ((T >> 8) & 0x0000ff00U) | ((T >> 24) & 0x000000ffU);
           T>>=shift;
-          W[i+1]=((T << 24) & 0xff000000) | ((T << 8) & 0x00ff0000) |
-            ((T >> 8) & 0x0000ff00) | ((T >> 24) & 0x000000ff);
+          W[i+1]=((T << 24) & 0xff000000U) | ((T << 8) & 0x00ff0000U) |
+            ((T >> 8) & 0x0000ff00U) | ((T >> 24) & 0x000000ffU);
         }
       else
         for (i=0; i < 16; i++)
         {
           T=(*((unsigned long *) p));
           p+=4;
-          W[i]=((T << 24) & 0xff000000) | ((T << 8) & 0x00ff0000) |
-            ((T >> 8) & 0x0000ff00) | ((T >> 24) & 0x000000ff);
+          W[i]=((T << 24) & 0xff000000U) | ((T << 8) & 0x00ff0000U) |
+            ((T >> 8) & 0x0000ff00U) | ((T >> 24) & 0x000000ffU);
         }
     }
   else

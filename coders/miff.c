@@ -1171,8 +1171,8 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
     MagickFreeMemory(values);
     (void) ReadBlobByte(image);
 
-    LogMagickEvent(CoderEvent,GetMagickModule(),
-      "class=%sClass compression=%s matte=%s columns=%lu rows=%lu depth=%lu",
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+      "class=%sClass compression=%s matte=%s columns=%lu rows=%lu depth=%u",
       ClassTypeToString(image->storage_class),
       CompressionTypeToString(image->compression),
       image->matte ? "True" : "False",image->columns, image->rows, image->depth);
@@ -1188,7 +1188,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
         if (image->previous)
           {
             /* Recover from failure to read image in sequence */
-            RemoveLastImageFromList(&image);
+            (void) RemoveLastImageFromList(&image);
             ThrowException(exception,CorruptImageWarning,ImproperImageHeader,image->filename);
             break;
           }
@@ -1891,7 +1891,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
     */
     (void) WriteBlobString(image,"id=ImageMagick  version=1.0\n");
     if (image->storage_class == PseudoClass)
-      FormatString(buffer,"class=PseudoClass  colors=%lu  matte=%.1024s\n",
+      FormatString(buffer,"class=PseudoClass  colors=%u  matte=%.1024s\n",
         image->colors,image->matte ? "True" : "False");
     else
       if (image->colorspace == CMYKColorspace)
@@ -1913,7 +1913,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
           FormatString(buffer,"compression=Zip\n");
     if (*buffer != '\0')
       (void) WriteBlobString(image,buffer);
-    FormatString(buffer,"columns=%lu  rows=%lu  depth=%lu\n",image->columns,
+    FormatString(buffer,"columns=%lu  rows=%lu  depth=%u\n",image->columns,
       image->rows,image->depth);
     (void) WriteBlobString(image,buffer);
     if ((image->x_resolution != 0) && (image->y_resolution != 0))

@@ -623,7 +623,7 @@ MagickExport Image *AppendImages(const Image *image,const unsigned int stack,
       for (next=image; next != (Image *) NULL; next=next->next)
       {
         if (next->storage_class == DirectClass)
-          SetImageType(append_image,TrueColorType);
+          (void) SetImageType(append_image,TrueColorType);
         (void) CompositeImage(append_image,CopyCompositeOp,next,0,y);
         y+=next->rows;
         status=MagickMonitor(AppendImageText,scene,GetImageListLength(image),
@@ -641,7 +641,7 @@ MagickExport Image *AppendImages(const Image *image,const unsigned int stack,
   for (next=image; next != (Image *) NULL; next=next->next)
   {
     if (next->storage_class == DirectClass)
-      SetImageType(append_image,TrueColorType);
+      (void) SetImageType(append_image,TrueColorType);
     (void) CompositeImage(append_image,CopyCompositeOp,next,x,0);
     x+=next->columns;
     status=MagickMonitor(AppendImageText,scene++,GetImageListLength(image),
@@ -747,7 +747,7 @@ MagickExport Image *AverageImages(const Image *image,ExceptionInfo *exception)
       MagickFreeMemory(pixels_array);
       return((Image *) NULL);
     }
-  SetImageType(average_image,TrueColorType);
+  (void) SetImageType(average_image,TrueColorType);
   /*
     Compute sum over each pixel color component.
   */
@@ -1360,7 +1360,7 @@ MagickExport MagickPassFail  CycleColormapImage(Image *image,const int amount)
   is_grayscale=image->is_grayscale;
   is_monochrome=image->is_monochrome;
   if (image->storage_class == DirectClass)
-    SetImageType(image,PaletteType);
+    (void) SetImageType(image,PaletteType);
   for (y=0; y < (long) image->rows; y++)
   {
     q=GetImagePixels(image,0,y,image->columns,1);
@@ -1489,17 +1489,17 @@ MagickExport MagickPassFail DescribeImage(Image *image,FILE *file,
         }
       else
         if (image->total_colors <= image->colors)
-          (void) fprintf(file,"PseudoClass %luc ",image->colors);
+          (void) fprintf(file,"PseudoClass %uc ",image->colors);
         else
           {
-            (void) fprintf(file,"PseudoClass %lu=>%luc ",image->total_colors,
+            (void) fprintf(file,"PseudoClass %lu=>%uc ",image->total_colors,
               image->colors);
             (void) fprintf(file,"%ld/%.6f/%.6fe ",
               (long) image->error.mean_error_per_pixel,
               image->error.normalized_mean_error,
               image->error.normalized_maximum_error);
           }
-      (void) fprintf(file,"%lu-bit ",image->depth);
+      (void) fprintf(file,"%u-bit ",image->depth);
       if (GetBlobSize(image) != 0)
         {
           FormatSize(GetBlobSize(image),format);
@@ -1585,7 +1585,7 @@ MagickExport MagickPassFail DescribeImage(Image *image,FILE *file,
     ImageStatistics
       statistics;
 
-    GetImageStatistics(image,&statistics,&image->exception);
+    (void) GetImageStatistics(image,&statistics,&image->exception);
 
     if (image->colorspace == CMYKColorspace)
     {
@@ -1711,9 +1711,9 @@ MagickExport MagickPassFail DescribeImage(Image *image,FILE *file,
     (void) fprintf(file,"  Colors: %lu\n",image->total_colors);
   else
     if (image->total_colors <= image->colors)
-      (void) fprintf(file,"  Colors: %lu\n",image->colors);
+      (void) fprintf(file,"  Colors: %u\n",image->colors);
     else
-      (void) fprintf(file,"  Colors: %lu=>%lu\n",image->total_colors,
+      (void) fprintf(file,"  Colors: %lu=>%u\n",image->total_colors,
         image->colors);
   if (image->storage_class == DirectClass)
     {
@@ -2242,7 +2242,7 @@ MagickExport void DestroyImage(Image *image)
   DestroyBlob(image);
   if (image->semaphore)
     DestroySemaphoreInfo((SemaphoreInfo **) &image->semaphore);
-  memset((void *)image,0xbf,sizeof(Image));
+  (void) memset((void *)image,0xbf,sizeof(Image));
   MagickFreeMemory(image);
 }
 
@@ -2300,7 +2300,7 @@ MagickExport void DestroyImageInfo(ImageInfo *image_info)
     DestroyCacheInfo(image_info->cache);
   if (image_info->definitions != (MagickMap) NULL)
     MagickMapDeallocateMap(image_info->definitions);
-  memset((void *)image_info,0xbf,sizeof(ImageInfo));
+  (void) memset((void *)image_info,0xbf,sizeof(ImageInfo));
   MagickFreeMemory(image_info);
 }
 
@@ -3005,7 +3005,7 @@ MagickExport MagickPassFail GetImageStatistics(const Image *image,
   double
     samples;
   
-  memset((void *) statistics, 0, sizeof(ImageStatistics));
+  (void) memset((void *) statistics, 0, sizeof(ImageStatistics));
   statistics->red.minimum=1.0;
   statistics->green.minimum=1.0;
   statistics->blue.minimum=1.0;
@@ -3577,7 +3577,7 @@ MagickExport unsigned int IsImagesEqual(Image *image,const Image *reference)
   assert(image->signature == MagickSignature);
   assert(reference != (const Image *) NULL);
   assert(reference->signature == MagickSignature);
-  memset(&image->error,0,sizeof(ErrorInfo));
+  (void) memset(&image->error,0,sizeof(ErrorInfo));
   if ((image->rows != reference->rows) ||
       (image->columns != reference->columns))
     ThrowBinaryException3(ImageError,UnableToCompareImages,
@@ -3596,11 +3596,11 @@ MagickExport unsigned int IsImagesEqual(Image *image,const Image *reference)
   stats.maximum_error_per_pixel=0.0;
   stats.total_error=0.0;
 
-  PixelIterateDualRead(ComputePixelError,(void *) &stats,
-                       image->columns,image->rows,
-                       image,0,0,
-                       reference,0,0,
-                       &image->exception);
+  (void) PixelIterateDualRead(ComputePixelError,(void *) &stats,
+                              image->columns,image->rows,
+                              image,0,0,
+                              reference,0,0,
+                              &image->exception);
 
   /*
     Compute final error statistics.
@@ -3867,7 +3867,7 @@ MagickExport MagickPassFail PlasmaImage(Image *image,const SegmentInfo *segment,
   if ((image->colorspace != RGBColorspace) ||
       (image->storage_class != DirectClass))
     {
-      SetImageType(image,TrueColorType);
+      (void) SetImageType(image,TrueColorType);
     }
   x_mid=(long) (segment->x1+segment->x2+0.5)/2;
   y_mid=(long) (segment->y1+segment->y2+0.5)/2;
@@ -4776,14 +4776,14 @@ MagickExport MagickPassFail RGBTransformImage(Image *image,
   if ((image->colorspace != RGBColorspace) ||
       (image->colorspace != GRAYColorspace) ||
       (image->colorspace != TransparentColorspace))
-      TransformRGBImage(image,image->colorspace);
+    (void) TransformRGBImage(image,image->colorspace);
 
   /*
     Log colorspace transform event
   */
-  LogMagickEvent(TransformEvent,GetMagickModule(),
-                 "Transform colorspace from RGB to %s",
-                 ColorspaceTypeToString(colorspace));
+  (void) LogMagickEvent(TransformEvent,GetMagickModule(),
+                        "Transform colorspace from RGB to %s",
+                        ColorspaceTypeToString(colorspace));
 
   /*
     Store colorspace in image.
@@ -4841,8 +4841,8 @@ MagickExport MagickPassFail RGBTransformImage(Image *image,
             break;
           }
       }
-      LogMagickEvent(TransformEvent,GetMagickModule(),
-                     "Colorspace transform completed"); 
+      (void) LogMagickEvent(TransformEvent,GetMagickModule(),
+                            "Colorspace transform completed"); 
       return(status);
     }
 
@@ -4934,15 +4934,15 @@ MagickExport MagickPassFail RGBTransformImage(Image *image,
             break;
           }
         }
-      LogMagickEvent(TransformEvent,GetMagickModule(),
-                     "Colorspace transform completed"); 
+      (void) LogMagickEvent(TransformEvent,GetMagickModule(),
+                            "Colorspace transform completed"); 
       return(status);
     }
 
   if ((colorspace == GRAYColorspace) && IsGrayImage(image,&image->exception))
     {
-      LogMagickEvent(TransformEvent,GetMagickModule(),
-                     "Image colorspace was already GRAY");
+      (void) LogMagickEvent(TransformEvent,GetMagickModule(),
+                            "Image colorspace was already GRAY");
       return(status);
     }
   /*
@@ -5375,8 +5375,8 @@ MagickExport MagickPassFail RGBTransformImage(Image *image,
 
   if (colorspace==GRAYColorspace)
     image->is_grayscale=True;
-  LogMagickEvent(TransformEvent,GetMagickModule(),
-                 "Colorspace transform completed"); 
+  (void) LogMagickEvent(TransformEvent,GetMagickModule(),
+                        "Colorspace transform completed"); 
   return(status);
 }
 
@@ -6054,16 +6054,16 @@ MagickExport void SetImageOpacity(Image *image,const unsigned int opacity)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  SetImageType() sets the type of image.  Choose from these types:
+%  (void) SetImageType() sets the type of image.  Choose from these types:
 %
 %        Bilevel        Grayscale       GrayscaleMatte
 %        Palette        PaletteMatte    TrueColor
 %        TrueColorMatte ColorSeparation ColorSeparationMatte
 %        OptimizeType
 %
-%  The format of the SetImageType method is:
+%  The format of the (void) SetImageType method is:
 %
-%      SetImageType(Image *image,const ImageType image_type)
+%      (void) SetImageType(Image *image,const ImageType image_type)
 %
 %  A description of each parameter follows:
 %
@@ -6109,8 +6109,8 @@ MagickExport MagickPassFail SetImageType(Image *image,const ImageType image_type
               /*
                 Normalize and Threshold image to bilevel
               */
-              NormalizeImage(image); 
-              ThresholdImage(image,(double)MaxRGB/2);
+              (void) NormalizeImage(image); 
+              (void) ThresholdImage(image,(double)MaxRGB/2);
             }
         }
       image->is_grayscale=True;
@@ -6794,8 +6794,8 @@ MagickExport MagickPassFail TransformRGBImage(Image *image,
       log_colorspace = ColorspaceTypeToString(image->colorspace);
 
     if (log_colorspace != NULL)
-      LogMagickEvent(TransformEvent,GetMagickModule(),
-                     "Transform colorspace from %s to RGB", log_colorspace);
+      (void) LogMagickEvent(TransformEvent,GetMagickModule(),
+                            "Transform colorspace from %s to RGB", log_colorspace);
   }
 
   if (image->colorspace == CMYKColorspace)
@@ -6839,8 +6839,8 @@ MagickExport MagickPassFail TransformRGBImage(Image *image,
           }
       }
       image->colorspace=RGBColorspace;
-      LogMagickEvent(TransformEvent,GetMagickModule(),
-                     "Colorspace transform completed"); 
+      (void) LogMagickEvent(TransformEvent,GetMagickModule(),
+                            "Colorspace transform completed"); 
       return(status);
     }
 
@@ -6922,8 +6922,8 @@ MagickExport MagickPassFail TransformRGBImage(Image *image,
           }
         }
       image->colorspace=RGBColorspace;
-      LogMagickEvent(TransformEvent,GetMagickModule(),
-                     "Colorspace transform completed"); 
+      (void) LogMagickEvent(TransformEvent,GetMagickModule(),
+                            "Colorspace transform completed"); 
       return(status);
     }
 
@@ -7238,7 +7238,7 @@ MagickExport MagickPassFail TransformRGBImage(Image *image,
                            rgb_map_max_index);
         q++;
       }
-      SyncImagePixels(image);
+      (void) SyncImagePixels(image);
       break;
     }
   }
@@ -7251,7 +7251,7 @@ MagickExport MagickPassFail TransformRGBImage(Image *image,
   MagickFreeMemory(blue_map);
   MagickFreeMemory(green_map);
   MagickFreeMemory(red_map);
-  LogMagickEvent(TransformEvent,GetMagickModule(),
-                 "Colorspace transform completed"); 
+  (void) LogMagickEvent(TransformEvent,GetMagickModule(),
+                        "Colorspace transform completed"); 
   return(status);
 }

@@ -535,13 +535,13 @@ WandExport unsigned int MagickAnnotateImage(MagickWand *wand,
   draw_info=DrawPeekGraphicContext(drawing_wand);
   if (draw_info == (DrawInfo *) NULL)
     return(False);
-  CloneString(&draw_info->text,text);
+  (void) CloneString(&draw_info->text,text);
   (void) FormatMagickString(geometry,MaxTextExtent,"%+f%+f",x,y);
   draw_info->affine.sx=cos(DegreesToRadians(fmod(angle,360.0)));
   draw_info->affine.rx=sin(DegreesToRadians(fmod(angle,360.0)));
   draw_info->affine.ry=(-sin(DegreesToRadians(fmod(angle,360.0))));
   draw_info->affine.sy=cos(DegreesToRadians(fmod(angle,360.0)));
-  CloneString(&draw_info->geometry,geometry);
+  (void) CloneString(&draw_info->geometry,geometry);
   status=AnnotateImage(wand->image,draw_info);
   if (status == False)
     InheritException(&wand->exception,&wand->image->exception);
@@ -1815,7 +1815,7 @@ WandExport unsigned int MagickDisplayImages(MagickWand *wand,
 
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
-  CloneString(&wand->image_info->server_name,server_name);
+  (void) CloneString(&wand->image_info->server_name,server_name);
   status=DisplayImages(wand->image_info,wand->images);
   if (status == False)
     InheritException(&wand->exception,&wand->image->exception);
@@ -3672,7 +3672,7 @@ WandExport unsigned char *MagickGetImageProfile(MagickWand *wand,
     {
       result=MagickAllocateMemory(unsigned char *,profile_length);
       if (result)
-        memcpy(result,profile,profile_length);
+        (void) memcpy(result,profile,profile_length);
     }
   *length=profile_length;
   return (result);
@@ -5843,7 +5843,7 @@ WandExport double *MagickQueryFontMetrics(MagickWand *wand,
       font_metrics=(double *) RelinquishMagickMemory(font_metrics);
       return((double *) NULL);
     }
-  CloneString(&draw_info->text,text);
+  (void) CloneString(&draw_info->text,text);
   status=GetTypeMetrics(wand->image,draw_info,&metrics);
   DestroyDrawInfo(draw_info);
   if (status == False)
@@ -6378,12 +6378,12 @@ WandExport unsigned char *MagickRemoveImageProfile(MagickWand *wand,
   cloned_profile=MagickAllocateMemory(unsigned char *,profile_length);
   if (!cloned_profile)
     return 0;
-  memcpy(cloned_profile,profile,profile_length);
+  (void) memcpy(cloned_profile,profile,profile_length);
   profile=0;
   /*
     Remove image profile
   */
-  DeleteImageProfile(wand->image,name);
+  (void) DeleteImageProfile(wand->image,name);
   return cloned_profile;
 }
 
@@ -7205,7 +7205,7 @@ WandExport unsigned int MagickSetImageChannelDepth(MagickWand *wand,
   assert(wand->signature == MagickSignature);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,WandContainsNoImages,wand->id);
-  SetImageChannelDepth(wand->image,channel,depth);
+  (void) SetImageChannelDepth(wand->image,channel,depth);
   return(True);
 }
 
@@ -7241,7 +7241,7 @@ WandExport unsigned int MagickSetImageDepth(MagickWand *wand,
   assert(wand->signature == MagickSignature);
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,WandContainsNoImages,wand->id);
-  SetImageDepth(wand->image,depth);
+  (void) SetImageDepth(wand->image,depth);
   return(True);
 }
 
@@ -7584,7 +7584,7 @@ WandExport unsigned int MagickSetImageOption(MagickWand *wand,
   assert(wand->signature == MagickSignature);
   (void) FormatMagickString(option,MaxTextExtent,"%.1024s:%.1024s=%.1024s",
     format,key,value);
-  AddDefinitions(wand->image_info,option,&wand->exception);
+  (void) AddDefinitions(wand->image_info,option,&wand->exception);
   return(True);
 }
 
@@ -9343,7 +9343,7 @@ WandExport unsigned int MagickWriteImages(MagickWand *wand,const char *filename,
 %
 %
 */
-static unsigned long GetMagickWandId()
+static unsigned long GetMagickWandId(void)
 {
   static SemaphoreInfo
     *wand_semaphore = (SemaphoreInfo *) NULL;

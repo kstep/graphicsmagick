@@ -250,7 +250,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   {
     if (*p != '"')
       continue;
-    count=sscanf(p+1,"%lu %lu %lu %lu",&image->columns,&image->rows,
+    count=sscanf(p+1,"%lu %lu %u %lu",&image->columns,&image->rows,
       &image->colors,&width);
     if (count == 4)
       break;
@@ -646,7 +646,7 @@ static unsigned int WritePICONImage(const ImageInfo *image_info,Image *image)
               break;
           }
         }
-      SetImageType(picon,PaletteType);
+      (void) SetImageType(picon,PaletteType);
     }
   colors=picon->colors;
   if (transparent)
@@ -866,7 +866,7 @@ static unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
               break;
           }
         }
-      SetImageType(image,PaletteType);
+      (void) SetImageType(image,PaletteType);
     }
   colors=image->colors;
   if (transparent)

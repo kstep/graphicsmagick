@@ -267,7 +267,7 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
       {
         byte=ReadBlobByte(image);
         runlength=byte;
-        if (byte > 127)
+        if (byte > 127U)
           runlength=byte-256;
         length--;
         if (length == 0)

@@ -200,27 +200,27 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
       tga_info.height=ReadBlobLSBShort(image);
       tga_info.bits_per_pixel=ReadBlobByte(image);
       tga_info.attributes=ReadBlobByte(image);
-      LogMagickEvent(CoderEvent,GetMagickModule(),
-                     "ImageType=%s CMapType=%u CMapStart=%u CMapLength=%u CMapDepth=%u\n  XOffset=%u YOffset=%u Width=%u Height=%u PixelDepth=%u Attributes=0x%.2x",
-                     ((tga_info.image_type == TGAColormap) ? "Colormapped" :
-                      (tga_info.image_type == TGARGB) ? "TrueColor" :
-                      (tga_info.image_type == TGAMonochrome) ? "Monochrome" :
-                      (tga_info.image_type == TGARLEColormap) ? "Colormapped-RLE" :
-                      (tga_info.image_type == TGARLERGB) ? "Truecolor-RLE" :
-                      (tga_info.image_type == TGARLEMonochrome) ? "Monochrome-RLE" :
-                      "Unknown"),
-                     (unsigned int) tga_info.colormap_type,
-                     (unsigned int) tga_info.colormap_index,
-                     (unsigned int) tga_info.colormap_length,
-                     (unsigned int) tga_info.colormap_size,
-                     tga_info.x_origin, tga_info.y_origin, tga_info.width, tga_info.height,
-                     (unsigned int) tga_info.bits_per_pixel,
-                     tga_info.attributes);
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                            "ImageType=%s CMapType=%u CMapStart=%u CMapLength=%u CMapDepth=%u\n  XOffset=%u YOffset=%u Width=%u Height=%u PixelDepth=%u Attributes=0x%.2x",
+                            ((tga_info.image_type == TGAColormap) ? "Colormapped" :
+                             (tga_info.image_type == TGARGB) ? "TrueColor" :
+                             (tga_info.image_type == TGAMonochrome) ? "Monochrome" :
+                             (tga_info.image_type == TGARLEColormap) ? "Colormapped-RLE" :
+                             (tga_info.image_type == TGARLERGB) ? "Truecolor-RLE" :
+                             (tga_info.image_type == TGARLEMonochrome) ? "Monochrome-RLE" :
+                             "Unknown"),
+                            (unsigned int) tga_info.colormap_type,
+                            (unsigned int) tga_info.colormap_index,
+                            (unsigned int) tga_info.colormap_length,
+                            (unsigned int) tga_info.colormap_size,
+                            tga_info.x_origin, tga_info.y_origin, tga_info.width, tga_info.height,
+                            (unsigned int) tga_info.bits_per_pixel,
+                            tga_info.attributes);
                    
       /*
         Initialize image structure.
       */
-      alpha_bits=(tga_info.attributes & 0x0F);
+      alpha_bits=(tga_info.attributes & 0x0FU);
       image->matte=(alpha_bits > 0);
       image->columns=tga_info.width;
       image->rows=tga_info.height;
@@ -252,7 +252,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
           (tga_info.image_type == TGARLEColormap) ||
           (tga_info.image_type == TGARLEMonochrome))
         {
-          LogMagickEvent(CoderEvent,GetMagickModule(),"Setting PseudoClass");
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Setting PseudoClass");
           image->storage_class=PseudoClass;
         }
 
@@ -268,8 +268,8 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (tga_info.colormap_type != 0)
             {
               image->colors=tga_info.colormap_length;
-              LogMagickEvent(CoderEvent,GetMagickModule(),
-                             "Using existing colormap with %lu colors.",image->colors);
+              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                    "Using existing colormap with %u colors.",image->colors);
 
             }
           else
@@ -278,19 +278,19 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 Apply grayscale colormap.
               */
               image->colors=(0x01U << tga_info.bits_per_pixel);
-              LogMagickEvent(CoderEvent,GetMagickModule(),
-                             "Applying grayscale colormap with %lu colors.",image->colors);
+              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                    "Applying grayscale colormap with %u colors.",image->colors);
               if (!AllocateImageColormap(image,image->colors))
                 ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
                                      image);
             }
         }
 
-      LogMagickEvent(CoderEvent,GetMagickModule(),
-                     "StorageClass=%s Matte=%s Depth=%lu Grayscale=%s",
-                     ((image->storage_class == DirectClass) ? "DirectClass" : "PseduoClass"),
-                     (image->matte ? "True" : "False"), image->depth,
-                     (is_grayscale ? "True" : "False"));
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                            "StorageClass=%s Matte=%s Depth=%u Grayscale=%s",
+                            ((image->storage_class == DirectClass) ? "DirectClass" : "PseduoClass"),
+                            (image->matte ? "True" : "False"), image->depth,
+                            (is_grayscale ? "True" : "False"));
     
       if (tga_info.id_length != 0)
         {

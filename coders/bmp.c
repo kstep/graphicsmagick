@@ -751,7 +751,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             profile_data=profile_data;
             profile_size=ReadBlobLSBLong(image);
             profile_size=profile_size;
-            ReadBlobLSBLong(image);  /* Reserved byte */
+            (void) ReadBlobLSBLong(image);  /* Reserved byte */
           }
       }
 
@@ -821,7 +821,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         */
         if (logging)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-            "  Reading colormap of %ld colors",image->colors);
+            "  Reading colormap of %u colors",image->colors);
         if (!AllocateImageColormap(image,image->colors))
           ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
             image);
@@ -912,8 +912,8 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Get shift and quantum bits info from bitfield masks.
         */
-        memset(&shift,0,sizeof(PixelPacket));
-        memset(&quantum_bits,0,sizeof(PixelPacket));
+        (void) memset(&shift,0,sizeof(PixelPacket));
+        (void) memset(&quantum_bits,0,sizeof(PixelPacket));
         if (bmp_info.red_mask != 0)
           while (((bmp_info.red_mask << shift.red) & 0x80000000UL) == 0)
             shift.red++;
@@ -1464,7 +1464,7 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
     bmp_info.offset_bits=bmp_info.file_size;
     bmp_info.compression=BI_RGB;
     if ((image->storage_class != DirectClass) && (image->colors > 256))
-      SetImageType(image,TrueColorType);
+      (void) SetImageType(image,TrueColorType);
     if (image->storage_class != DirectClass)
       {
         /*
@@ -1479,10 +1479,10 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
           bmp_info.bits_per_pixel=8;
         bmp_info.number_colors=1 << bmp_info.bits_per_pixel;
         if (image->matte)
-          SetImageType(image,TrueColorMatteType);
+          (void) SetImageType(image,TrueColorMatteType);
         else
           if (bmp_info.number_colors < image->colors)
-            SetImageType(image,TrueColorType);
+            (void) SetImageType(image,TrueColorType);
           else
             {
               bmp_info.file_size+=3*(1 << bmp_info.bits_per_pixel);
@@ -1746,7 +1746,7 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "   Storage class=PseudoClass");
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-          "   Image depth=%lu",image->depth);
+          "   Image depth=%u",image->depth);
         if (image->matte)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "   Matte=True");
@@ -1906,7 +1906,7 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
         */
         if (logging)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-            "  Colormap: %ld entries",image->colors);
+            "  Colormap: %u entries",image->colors);
         bmp_colormap=MagickAllocateMemory(unsigned char *,
           (size_t) (4*(1L << bmp_info.bits_per_pixel)));
         if (bmp_colormap == (unsigned char *) NULL)

@@ -637,7 +637,7 @@ MagickExport void XAnimateBackgroundImage(Display *display,
     if ((resource_info->map_type != (char *) NULL) ||
         (visual_info->storage_class == TrueColor) ||
         (visual_info->storage_class == DirectColor))
-      SetImageType(image_list[scene],TrueColorType);
+      (void) SetImageType(image_list[scene],TrueColorType);
     if ((display_image->columns < image_list[scene]->columns) &&
         (display_image->rows < image_list[scene]->rows))
       display_image=image_list[scene];
@@ -645,7 +645,7 @@ MagickExport void XAnimateBackgroundImage(Display *display,
   if ((resource_info->map_type != (char *) NULL) ||
       (visual_info->storage_class == TrueColor) ||
       (visual_info->storage_class == DirectColor))
-    SetImageType(display_image,TrueColorType);
+    (void) SetImageType(display_image,TrueColorType);
   XMakeStandardColormap(display,visual_info,&resources,display_image,map_info,
     &pixel);
   /*
@@ -699,7 +699,7 @@ MagickExport void XAnimateBackgroundImage(Display *display,
         "Image: %.1024s[%lu] %lux%lu ",image_list[0]->filename,
         image_list[0]->scene,image_list[0]->columns,image_list[0]->rows);
       if (image_list[0]->colors != 0)
-        (void) LogMagickEvent(X11Event,GetMagickModule(),"%luc ",
+        (void) LogMagickEvent(X11Event,GetMagickModule(),"%uc ",
           image_list[0]->colors);
       (void) LogMagickEvent(X11Event,GetMagickModule(),"%.1024s",
         image_list[0]->magick);
@@ -816,7 +816,7 @@ MagickExport void XAnimateBackgroundImage(Display *display,
           image_list[scene]->filename,image_list[scene]->columns,
           image_list[scene]->rows);
         if (image_list[scene]->colors != 0)
-          (void) LogMagickEvent(X11Event,GetMagickModule(),"%luc ",
+          (void) LogMagickEvent(X11Event,GetMagickModule(),"%uc ",
             image_list[scene]->colors);
         (void) LogMagickEvent(X11Event,GetMagickModule(),"%.1024s",
           image_list[scene]->magick);
@@ -1274,7 +1274,7 @@ MagickExport Image *XAnimateImages(Display *display,
     if ((resource_info->map_type != (char *) NULL) ||
         (visual_info->storage_class == TrueColor) ||
         (visual_info->storage_class == DirectColor))
-      SetImageType(image_list[scene],TrueColorType);
+      (void) SetImageType(image_list[scene],TrueColorType);
     if ((display_image->columns < image_list[scene]->columns) &&
         (display_image->rows < image_list[scene]->rows))
       display_image=image_list[scene];
@@ -1285,7 +1285,7 @@ MagickExport Image *XAnimateImages(Display *display,
         "Image: %.1024s[%lu] %lux%lu ",display_image->filename,
         display_image->scene,display_image->columns,display_image->rows);
       if (display_image->colors != 0)
-        (void) LogMagickEvent(X11Event,GetMagickModule(),"%luc ",
+        (void) LogMagickEvent(X11Event,GetMagickModule(),"%uc ",
           display_image->colors);
       (void) LogMagickEvent(X11Event,GetMagickModule(),"%.1024s",
         display_image->magick);
@@ -1699,7 +1699,7 @@ MagickExport Image *XAnimateImages(Display *display,
           image_list[scene]->filename,image_list[scene]->columns,
           image_list[scene]->rows);
         if (image_list[scene]->colors != 0)
-          (void) LogMagickEvent(X11Event,GetMagickModule(),"%luc ",
+          (void) LogMagickEvent(X11Event,GetMagickModule(),"%uc ",
             image_list[scene]->colors);
         (void) LogMagickEvent(X11Event,GetMagickModule(),"%.1024s",
           image_list[scene]->magick);

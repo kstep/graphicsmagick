@@ -171,7 +171,7 @@ static unsigned int SerializeHuffman2DImage(const ImageInfo *image_info,
   */
   huffman_image->compression=Group4Compression;
 
-  SetImageType(huffman_image,BilevelType);
+  (void) SetImageType(huffman_image,BilevelType);
   FormatString(huffman_image->filename,"tiff:%s",filename);
   clone_info=CloneImageInfo(image_info);
   clone_info->compression=Group4Compression;
@@ -180,13 +180,13 @@ static unsigned int SerializeHuffman2DImage(const ImageInfo *image_info,
   DestroyImage(huffman_image);
   if (status == False)
     {
-      LiberateTemporaryFile(filename);
+      (void) LiberateTemporaryFile(filename);
       return(False);
     }
   tiff=TIFFOpen(filename,"rb");
   if (tiff == (TIFF *) NULL)
     {
-      LiberateTemporaryFile(filename);
+      (void) LiberateTemporaryFile(filename);
       ThrowBinaryException(FileOpenError,UnableToOpenFile,
         image_info->filename)
     }
@@ -205,7 +205,7 @@ static unsigned int SerializeHuffman2DImage(const ImageInfo *image_info,
   if (buffer == (unsigned char *) NULL)
     {
       TIFFClose(tiff);
-      LiberateTemporaryFile(filename);
+      (void) LiberateTemporaryFile(filename);
       ThrowBinaryException(ResourceLimitError,MemoryAllocationFailed,
         (char *) NULL)
     }
@@ -214,7 +214,7 @@ static unsigned int SerializeHuffman2DImage(const ImageInfo *image_info,
     {
       MagickFreeMemory(buffer);
       TIFFClose(tiff);
-      LiberateTemporaryFile(filename);
+      (void) LiberateTemporaryFile(filename);
       ThrowBinaryException(ResourceLimitError,MemoryAllocationFailed,
         (char *) NULL)
     }
@@ -231,7 +231,7 @@ static unsigned int SerializeHuffman2DImage(const ImageInfo *image_info,
   }
   MagickFreeMemory(buffer);
   TIFFClose(tiff);
-  LiberateTemporaryFile(filename);
+  (void) LiberateTemporaryFile(filename);
   return(True);
 }
 
@@ -832,7 +832,7 @@ static unsigned int WritePS3MaskImage(const ImageInfo *image_info,Image *image)
     DestroyImage(mask_image);
     return(False);
   }
-  SetImageType(mask_image, BilevelType);
+  (void) SetImageType(mask_image, BilevelType);
   mask_image->matte=False;
 
   /* Only lossless compressions for the mask */
@@ -1572,7 +1572,7 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
   
     /* Compression seems to take precedence over anyting */
     if (compression == FaxCompression)
-      SetImageType(image, BilevelType);
+      (void) SetImageType(image, BilevelType);
 
     /* Showpage for non-EPS. */
     (void) WriteBlobString(image,
@@ -1796,7 +1796,7 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
           }
           
           /* Number of colors in color map */
-          FormatString(buffer,"%lu\n",image->colors);
+          FormatString(buffer,"%u\n",image->colors);
           (void) WriteBlobString(image,buffer);
 
           /* Color map - uncompressed, ascii85 encoded */

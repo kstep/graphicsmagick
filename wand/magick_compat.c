@@ -292,8 +292,8 @@ WandExport unsigned int ImportImagePixels(Image *image,const long x_offset,
     ConstituteImage(columns,rows,map,type,pixels,&image->exception);
   if (constitute_image)
     {
-      CompositeImage(image,CopyCompositeOp,constitute_image,x_offset,
-                     y_offset);
+      (void) CompositeImage(image,CopyCompositeOp,constitute_image,x_offset,
+                            y_offset);
       DestroyImage(constitute_image);
       return (image->exception.severity == UndefinedException);
     }
@@ -615,7 +615,7 @@ WandExport void *ResizeMagickMemory(void *memory,const size_t size)
     return(AcquireMagickMemory(size));
   allocation=realloc(memory,size);
   if (allocation == (void *) NULL)
-    RelinquishMagickMemory(memory);
+    (void) RelinquishMagickMemory(memory);
   return(allocation);
 }
 

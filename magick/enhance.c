@@ -235,7 +235,7 @@ MagickExport MagickPassFail EqualizeImage(Image *image)
   /*
     Form histogram.
   */
-  memset(histogram,0,(MaxMap+1)*sizeof(DoublePixelPacket));
+  (void) memset(histogram,0,(MaxMap+1)*sizeof(DoublePixelPacket));
   for (y=0; y < (long) image->rows; y++)
   {
     p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);

@@ -287,7 +287,7 @@ static Image *ReadSFWImage(const ImageInfo *image_info,ExceptionInfo *exception)
       char
         filename[MaxTextExtent];
 
-      strcpy(filename,clone_info->filename);
+      (void) strcpy(filename,clone_info->filename);
       MagickFreeMemory(buffer);
       DestroyImageInfo(clone_info);
       ThrowReaderTemporaryFileException(filename)
@@ -300,7 +300,7 @@ static Image *ReadSFWImage(const ImageInfo *image_info,ExceptionInfo *exception)
   MagickFreeMemory(buffer);
   if (status)
     {
-      LiberateTemporaryFile(clone_info->filename);
+      (void) LiberateTemporaryFile(clone_info->filename);
       DestroyImageInfo(clone_info);
       ThrowReaderException(FileOpenError,UnableToWriteFile,image)
     }
@@ -308,7 +308,7 @@ static Image *ReadSFWImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Read JPEG image.
   */
   image=ReadImage(clone_info,exception);
-  LiberateTemporaryFile(clone_info->filename);
+  (void) LiberateTemporaryFile(clone_info->filename);
   DestroyImageInfo(clone_info);
   if (image == (Image *) NULL)
     return(image);

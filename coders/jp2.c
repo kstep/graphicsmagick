@@ -444,7 +444,7 @@ static Image *ReadJP2Image(const ImageInfo *image_info,
   else
     image->depth=Min(16,QuantumDepth);
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-     "Image depth is %lu",image->depth);
+     "Image depth is %u",image->depth);
   /*
     Channel depth may not be the same as image depth, and may not be
     modulo-8, so calculate per-channel scaling factors to normalize
@@ -469,7 +469,7 @@ static Image *ReadJP2Image(const ImageInfo *image_info,
         ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
                              image);
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-        "PseudoClass image colors %lu",image->colors);
+        "PseudoClass image colors %u",image->colors);
     }
 
   for (y=0; y < (long) image->rows; y++)

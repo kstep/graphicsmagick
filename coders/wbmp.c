@@ -145,7 +145,7 @@ static Image *ReadWBMPImage(const ImageInfo *image_info,
     ThrowReaderException(FileOpenError,UnableToOpenFile,image);
   if (!ReadBlob(image,2,(char *) &header)) 
     ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
-  if (header != 0)
+  if (header != 0U)
     ThrowReaderException(CoderError,OnlyLevelZerofilesSupported,image);
   /*
     Initialize image structure.
@@ -364,7 +364,7 @@ static unsigned int WriteWBMPImage(const ImageInfo *image_info,Image *image)
   /*
     Convert image to a bi-level image.
   */
-  SetImageType(image,BilevelType);
+  (void) SetImageType(image,BilevelType);
   polarity=PixelIntensityToQuantum(&image->colormap[0]) < (MaxRGB/2);
   if (image->colors == 2)
     polarity=PixelIntensityToQuantum(&image->colormap[0]) <

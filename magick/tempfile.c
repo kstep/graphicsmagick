@@ -66,7 +66,7 @@ static void AddTemporaryFileToList(const char *filename)
     if (info)
       {
         info->next=0;
-        strcpy(info->filename,filename);
+        (void) strcpy(info->filename,filename);
         if (!templist)
           templist=info;
         else
@@ -186,7 +186,7 @@ MagickExport unsigned int AcquireTemporaryFileName(char *filename)
   assert(filename != (char *) NULL);
   if ((fd=AcquireTemporaryFileDescriptor(filename)) != -1)
     {
-      close(fd);
+      (void) close(fd);
       return (True);
     }
   return (False);
@@ -266,12 +266,12 @@ MagickExport int AcquireTemporaryFileDescriptor(char *filename)
       
       for (tries=0; tries < 15; tries++)
         {
-          strcpy(tempname,"gmXXXXXX");
+          (void) strcpy(tempname,"gmXXXXXX");
           ComposeTemporaryFileName(tempname);
-          strcpy(filename,tempdir);
+          (void) strcpy(filename,tempdir);
           if (tempdir[strlen(tempdir)-1] != DirectorySeparator[0])
-            strcat(filename,DirectorySeparator);
-          strcat(filename,tempname);
+            (void) strcat(filename,DirectorySeparator);
+          (void) strcat(filename,tempname);
           fd=open(filename,O_RDWR | O_CREAT | O_BINARY | O_EXCL, S_MODE);
           if (fd != -1)
             {

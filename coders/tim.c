@@ -187,10 +187,10 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         for (i=0; i < (long) image->colors; i++)
         {
           word=(*p++);
-          word|=(unsigned short) (*p++ << 8);
-          image->colormap[i].blue=ScaleCharToQuantum(ScaleColor5to8((word >> 10) & 0x1f));
-          image->colormap[i].green=ScaleCharToQuantum(ScaleColor5to8((word >> 5) & 0x1f));
-          image->colormap[i].red=ScaleCharToQuantum(ScaleColor5to8(word & 0x1f));
+          word|=(unsigned short) (*p++ << 8U);
+          image->colormap[i].blue=ScaleCharToQuantum(ScaleColor5to8((word >> 10U) & 0x1fU));
+          image->colormap[i].green=ScaleCharToQuantum(ScaleColor5to8((word >> 5U) & 0x1fU));
+          image->colormap[i].red=ScaleCharToQuantum(ScaleColor5to8(word & 0x1fU));
         }
         MagickFreeMemory(tim_colormap);
       }

@@ -233,7 +233,7 @@ static void Rd_WP_DWORD(Image *image,unsigned long *d)
 
   b=ReadBlobByte(image);
   *d=b;
-  if (b < 0xFF)
+  if (b < 0xFFU)
     return;
   b=ReadBlobByte(image);
   *d=(unsigned long) b;
@@ -562,7 +562,7 @@ static int UnpackWPG2Raster(Image *image,int bpp)
           if(SampleSize<1) return(-2);
           break;
         case 0x7E:
-          fprintf(stderr,"\nUnsupported WPG token XOR, please report!");  
+          (void) fprintf(stderr,"\nUnsupported WPG token XOR, please report!");  
           break;
         case 0x7F:
           RunCount=ReadBlobByte(image);   /* BLK */
@@ -574,16 +574,16 @@ static int UnpackWPG2Raster(Image *image,int bpp)
         case 0xFD:
 	  RunCount=ReadBlobByte(image);   /* EXT */
 	  for(i=0;i<=(int)RunCount;i++)
-                for(bbuf=0;bbuf<SampleSize;bbuf++)
-                  InsertRByte(SampleBuffer[bbuf]);          
+            for(bbuf=0;bbuf<SampleSize;bbuf++)
+              InsertRByte(SampleBuffer[bbuf]);          
           break;
         case 0xFE:
           RunCount=ReadBlobByte(image);  /* RST */
           if(x!=0)
             {
-              fprintf(stderr,
-                "\nUnsupported WPG2 unaligned token RST x=%d, please report!\n"
-                  ,x);
+              (void) fprintf(stderr,
+                             "\nUnsupported WPG2 unaligned token RST x=%d, please report!\n"
+                             ,x);
               return(-3);
             }
           {
@@ -591,7 +591,7 @@ static int UnpackWPG2Raster(Image *image,int bpp)
             for(i=0;i<=RunCount;i++)
               {      
                 InsertRow(BImgBuff,(long) (image->rows>y?image->rows-y-1:0),
-                  image,bpp);
+                          image,bpp);
                 y++;
               }    
           }
@@ -662,7 +662,7 @@ static Image *ExtractPostscript(Image *image,const ImageInfo *image_info,
 
   /* Copy postscript to temporary file */
   (void) SeekBlob(image,PS_Offset,SEEK_SET);
-  ReadBlob(image, 2*MaxTextExtent, magick);
+  (void) ReadBlob(image, 2*MaxTextExtent, magick);
   
   (void) SeekBlob(image,PS_Offset,SEEK_SET);
   while(PS_Size-- > 0)
@@ -692,9 +692,9 @@ static Image *ExtractPostscript(Image *image,const ImageInfo *image_info,
     Replace current image with new image while copying base image
     attributes.
   */
-  strncpy(image2->filename,image->filename,MaxTextExtent-1);
-  strncpy(image2->magick_filename,image->magick_filename,MaxTextExtent-1);
-  strncpy(image2->magick,image->magick,MaxTextExtent-1);
+  (void) strncpy(image2->filename,image->filename,MaxTextExtent-1);
+  (void) strncpy(image2->magick_filename,image->magick_filename,MaxTextExtent-1);
+  (void) strncpy(image2->magick,image->magick,MaxTextExtent-1);
   image2->depth=image->depth;
   DestroyBlob(image2);
   image2->blob=ReferenceBlob(image->blob);
@@ -705,7 +705,7 @@ static Image *ExtractPostscript(Image *image,const ImageInfo *image_info,
   AppendImageToList(&image,image2);
 
  FINISH_UNL:    
-  LiberateTemporaryFile(postscript_file);
+  (void) LiberateTemporaryFile(postscript_file);
  FINISH:
   DestroyImageInfo(clone_info);
   return(image);

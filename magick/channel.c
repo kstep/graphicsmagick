@@ -243,14 +243,15 @@ MagickExport MagickPassFail ChannelImage(Image *image,const ChannelType channel)
 do { \
   if (src_image->storage_class == PseudoClass) \
     { \
-      const register IndexPacket \
+      register const IndexPacket \
         *src_indexes; \
       \
       src_indexes=GetIndexes(src_image); \
       for (x=(long) dst_image->columns; x > 0; x--) \
         { \
-          q->red=q->green=q->blue=src_image->colormap[*src_indexes++].source; \
+          q->red=q->green=q->blue=src_image->colormap[*src_indexes].source; \
           q->opacity=OpaqueOpacity; \
+          src_indexes++; \
           q++; \
         } \
     } \

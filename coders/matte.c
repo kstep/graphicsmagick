@@ -165,7 +165,7 @@ static unsigned int WriteMATTEImage(const ImageInfo *image_info,Image *image)
     CloneImage(image,image->columns,image->rows,True,&image->exception);
   if (matte_image == (Image *) NULL)
     return(False);
-  (void) SetImageType(matte_image,TrueColorType);
+  (void) (void) SetImageType(matte_image,TrueColorType);
   /*
     Convert image to matte pixels.
   */

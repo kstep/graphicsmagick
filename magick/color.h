@@ -22,7 +22,7 @@ extern "C" {
       char \
         colormapIndexBuffer[MaxTextExtent]; \
       \
-      FormatString(colormapIndexBuffer,"index %u >= %lu colors, %.1024s", \
+      FormatString(colormapIndexBuffer,"index %u >= %u colors, %.1024s", \
         (unsigned int) index, image->colors, image->filename); \
       errno=0; \
       index=0U; \

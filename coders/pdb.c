@@ -418,7 +418,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
         {
           for (bit=0; bit < 8; bit++)
           {
-            index=(*p & (0x80 >> bit) ? 0x00 : 0x01);
+            index=(*p & (0x80U >> bit) ? 0x00U : 0x01U);
             indexes[x+bit]=index;
             *q++=image->colormap[index];
           }
@@ -651,7 +651,7 @@ static unsigned char *EncodeRLE(unsigned char *destination,
 {
   if (literal > 0)
     *destination++=literal-1;
-  memcpy(destination,source,literal);
+  (void) memcpy(destination,source,literal);
   destination+=literal;
   if (repeat > 0)
     {
@@ -713,7 +713,7 @@ static unsigned int WritePDBImage(const ImageInfo *image_info,Image *image)
     bits_per_pixel=1;
   if ((bits_per_pixel != 1) && (bits_per_pixel != 2))
     bits_per_pixel=4;
-  memset(pdb_info.name,0,32);
+  (void) memset(pdb_info.name,0,32);
   (void) strncpy(pdb_info.name,image_info->filename,32);
   pdb_info.attributes=0;
   pdb_info.version=0;
@@ -723,8 +723,8 @@ static unsigned int WritePDBImage(const ImageInfo *image_info,Image *image)
   pdb_info.modify_number=0;
   pdb_info.application_info=0;
   pdb_info.sort_info=0;
-  memcpy(pdb_info.type,"vIMG",4);
-  memcpy(pdb_info.id,"View",4);
+  (void) memcpy(pdb_info.type,"vIMG",4);
+  (void) memcpy(pdb_info.id,"View",4);
   pdb_info.seed=0;
   pdb_info.next_record=0;
   comment=GetImageAttribute(image,"comment");
@@ -747,9 +747,9 @@ static unsigned int WritePDBImage(const ImageInfo *image_info,Image *image)
   pdb_image.version=1;  /* RLE Compressed */
   switch(bits_per_pixel)
   {
-    case 1: pdb_image.type=(char) 0xff; break;  /* monochrome */
-    case 2: pdb_image.type=(char) 0x00; break;  /* 2 bit gray */
-    default: pdb_image.type=(char) 0x02;  /* 4 bit gray */
+    case 1: pdb_image.type=0xffU; break;  /* monochrome */
+    case 2: pdb_image.type=0x00U; break;  /* 2 bit gray */
+    default: pdb_image.type=0x02U;        /* 4 bit gray */
   }
   pdb_image.reserved_1=0;
   pdb_image.note=0;
@@ -826,7 +826,7 @@ static unsigned int WritePDBImage(const ImageInfo *image_info,Image *image)
               if (0x7f < literal)
                 {
                   q=EncodeRLE(q,buffer,(literal < 0x80 ? literal : 0x80),0);
-                  CloneMemory(buffer,buffer+literal+repeat,0x80);
+                  (void) CloneMemory(buffer,buffer+literal+repeat,0x80);
                   literal-=0x80;
                 }
             }
@@ -879,7 +879,7 @@ static unsigned int WritePDBImage(const ImageInfo *image_info,Image *image)
   (void) WriteBlob(image,q-p,p);
   MagickFreeMemory(p);
   if (pdb_info.number_records > 1)
-    WriteBlobString(image,comment->value);
+    (void) WriteBlobString(image,comment->value);
   CloseBlob(image);
   return(True);
 }

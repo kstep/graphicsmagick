@@ -149,7 +149,7 @@ MagickExport Image *AffineTransformImage(const Image *image,
   transform.sy=affine->sy;
   transform.tx=(-min.x);
   transform.ty=(-min.y);
-  DrawAffineImage(affine_image,image,&transform);
+  (void) DrawAffineImage(affine_image,image,&transform);
   return(affine_image);
 }
 

@@ -309,7 +309,7 @@ static unsigned int WriteUYVYImage(const ImageInfo *image_info,Image *image)
     Accumulate two pixels, then output.
   */
   full=False;
-  memset(&pixel,0,sizeof(DoublePixelPacket));
+  (void) memset(&pixel,0,sizeof(DoublePixelPacket));
   for (y=0; y < (long) image->rows; y++)
   {
     p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);

@@ -701,7 +701,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
       image->colorspace=CMYKColorspace;
   if (jpeg_info.saw_JFIF_marker)
     {
-      if ((jpeg_info.X_density != 1) && (jpeg_info.Y_density != 1))
+      if ((jpeg_info.X_density != 1U) && (jpeg_info.Y_density != 1U))
         {
           /*
             Set image resolution.
@@ -906,10 +906,10 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
          }
        }
   }
-  sprintf(s,"%ld",save_quality);
+  (void) sprintf(s,"%ld",save_quality);
   (void) SetImageAttribute(image,"JPEG-Quality",s);
 
-  sprintf(s,"%ld",(long)jpeg_info.out_color_space);
+  (void) sprintf(s,"%ld",(long)jpeg_info.out_color_space);
   (void) SetImageAttribute(image,"JPEG-Colorspace",s);
 
   switch (jpeg_info.out_color_space)
@@ -918,7 +918,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
     {
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
         "Colorspace: CMYK");
-      sprintf(s,"%dx%d,%dx%d,%dx%d,%dx%d",
+      (void) sprintf(s,"%dx%d,%dx%d,%dx%d,%dx%d",
         jpeg_info.comp_info[0].h_samp_factor,
         jpeg_info.comp_info[0].v_samp_factor,
         jpeg_info.comp_info[1].h_samp_factor,
@@ -933,7 +933,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
     {
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
         "Colorspace: GRAYSCALE");
-      sprintf(s,"%dx%d",
+      (void) sprintf(s,"%dx%d",
         jpeg_info.comp_info[0].h_samp_factor,
         jpeg_info.comp_info[0].v_samp_factor);
         break;
@@ -941,7 +941,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
     case JCS_RGB:
     {
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Colorspace: RGB");
-      sprintf(s,"%dx%d,%dx%d,%dx%d",
+      (void) sprintf(s,"%dx%d,%dx%d,%dx%d",
         jpeg_info.comp_info[0].h_samp_factor,
         jpeg_info.comp_info[0].v_samp_factor,
         jpeg_info.comp_info[1].h_samp_factor,
@@ -954,7 +954,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
     {
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Colorspace: %d",
         jpeg_info.out_color_space);
-      sprintf(s,"%dx%d,%dx%d,%dx%d,%dx%d",
+      (void) sprintf(s,"%dx%d,%dx%d,%dx%d,%dx%d",
         jpeg_info.comp_info[0].h_samp_factor,
         jpeg_info.comp_info[0].v_samp_factor,
         jpeg_info.comp_info[1].h_samp_factor,
@@ -1501,7 +1501,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
       if ((attribute != (const ImageAttribute *) NULL) &&
           (attribute->value != (char *) NULL))
         {
-          sscanf(attribute->value,"%lu",&quality);
+          (void) sscanf(attribute->value,"%lu",&quality);
           if (image->logging)
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                 "  Input quality=%lu",quality);
@@ -1512,7 +1512,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
       if ((attribute != (const ImageAttribute *) NULL) &&
           (attribute->value != (char *) NULL))
         {
-          sscanf(attribute->value,"%lu",&input_colorspace);
+          (void) sscanf(attribute->value,"%lu",&input_colorspace);
           if (image->logging)
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                 "  Input colorspace=%lu",input_colorspace);
@@ -1704,11 +1704,11 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
       else
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
           "Storage class: DirectClass");
-      (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Depth: %lu",
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Depth: %u",
         image->depth);
       if (image->colors)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-          "Number of colors: %lu",image->colors);
+          "Number of colors: %u",image->colors);
       else
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
           "Number of colors: unspecified");

@@ -163,27 +163,27 @@ static void SGIDecode(const unsigned long bytes_per_pixel,
     {
       for ( ; ; )
       {
-        pixel=(*p++) << 8;
+        pixel=(*p++) << 8U;
         pixel|=(*p++);
-        count=(long) (pixel & 0x7f);
+        count=(long) (pixel & 0x7fU);
         if (count == 0)
           break;
-        if (pixel & 0x80)
-          for ( ; count != 0; count--)
+        if (pixel & 0x80U)
+          for ( ; count != 0U; count--)
           {
             *q=(*p++);
             *(q+1)=(*p++);
-            q+=8;
+            q+=8U;
           }
         else
           {
-            pixel=(*p++) << 8;
+            pixel=(*p++) << 8U;
             pixel|=(*p++);
             for ( ; count != 0; count--)
             {
-              *q=(unsigned char) (pixel >> 8);
+              *q=(unsigned char) (pixel >> 8U);
               *(q+1)=(unsigned char) pixel;
-              q+=8;
+              q+=8U;
             }
           }
       }

@@ -5118,7 +5118,7 @@ static Image *ReadLOGOImage(const ImageInfo *image_info,
   */
   if (!(LocaleCompare(image_info->magick,"IMAGE") == 0) &&
       !(LocaleCompare(image_info->magick,"PATTERN") == 0))
-    strcpy(clone_info->filename,image_info->magick);
+    (void) strcpy(clone_info->filename,image_info->magick);
 
   /*
     Search for image name in list
@@ -5151,7 +5151,7 @@ static Image *ReadLOGOImage(const ImageInfo *image_info,
       */
       pattern_image=image;
       image=AllocateImage(clone_info);
-      TextureImage(image,pattern_image);
+      (void) TextureImage(image,pattern_image);
       DestroyImage(pattern_image);
     }
 
@@ -5345,7 +5345,7 @@ static unsigned int WriteLOGOImage(const ImageInfo *image_info,Image *image)
   if (IsMonochromeImage(logo_image,&image->exception) &&
       (logo_image->columns*logo_image->rows < 4097))
     {
-      strcpy(logo_image->magick,"PBM");
+      (void) strcpy(logo_image->magick,"PBM");
       length=((logo_image->columns*logo_image->rows)/8)+16;
     }
   else if (LocaleCompare(image_info->magick,"ROSE") == 0)

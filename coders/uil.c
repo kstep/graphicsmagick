@@ -229,7 +229,7 @@ static unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
             }
           }
         }
-      SetImageType(image,PaletteType);
+      (void) SetImageType(image,PaletteType);
       colors=image->colors;
       if (transparent)
         {

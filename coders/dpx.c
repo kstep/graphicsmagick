@@ -408,9 +408,9 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
       break;
     for (x=0; x < (long) image->columns; x++)
     {
-      pixel=(((long) ((1023L*p->red+MaxRGB/2)/MaxRGB) & 0x3ff) << 22) |
-        (((long) ((1023L*p->green+MaxRGB/2)/MaxRGB) &0x3ff) << 12) |
-        (((long) ((1023L*p->blue+MaxRGB/2)/MaxRGB) &0x3ff) << 2);
+      pixel=(((long) ((1023L*p->red+MaxRGB/2)/MaxRGB) & 0x3ffU) << 22U) |
+        (((long) ((1023L*p->green+MaxRGB/2)/MaxRGB) &0x3ffU) << 12U) |
+        (((long) ((1023L*p->blue+MaxRGB/2)/MaxRGB) &0x3ffU) << 2U);
       (void) WriteBlobMSBLong(image,pixel);
       p++;
     }

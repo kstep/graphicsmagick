@@ -257,7 +257,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
     /*
       Verify VIFF identifier.
     */
-    if ((count == 0) || ((unsigned char) viff_info.identifier != 0xab))
+    if ((count == 0) || ((unsigned char) viff_info.identifier != 0xabU))
       ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
     /*
       Initialize VIFF image.
@@ -596,7 +596,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
         /*
           Convert bitmap scanline.
         */
-        SetImageType(image,BilevelType);
+        (void) SetImageType(image,BilevelType);
         polarity=PixelIntensityToQuantum(&image->colormap[0]) < (MaxRGB/2);
         if (image->colors >= 2)
           polarity=PixelIntensityToQuantum(&image->colormap[0]) >
@@ -918,7 +918,7 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
     ThrowWriterException(FileOpenError,UnableToOpenFile,image);
-  memset(&viff_info,0,sizeof(ViffInfo));
+  (void) memset(&viff_info,0,sizeof(ViffInfo));
   scene=0;
   do
   {
@@ -1121,7 +1121,7 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
             /*
               Convert PseudoClass image to a VIFF monochrome image.
             */
-            SetImageType(image,BilevelType);
+            (void) SetImageType(image,BilevelType);
             polarity=PixelIntensityToQuantum(&image->colormap[0]) < (MaxRGB/2);
             if (image->colors == 2)
               polarity=PixelIntensityToQuantum(&image->colormap[0]) <

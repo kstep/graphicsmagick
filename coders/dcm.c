@@ -2783,7 +2783,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /*
       Find corresponding VR for this group and element.
     */
-    for (i=0; dicom_info[i].group < 0xffff; i++)
+    for (i=0; dicom_info[i].group < 0xffffU; i++)
       if ((group == dicom_info[i].group) &&
           (element == dicom_info[i].element))
         break;
@@ -3236,7 +3236,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       clone_info->length=0;
       FormatString(clone_info->filename,"jpeg:%.1024s",filename);
       image=ReadImage(clone_info,exception);
-      LiberateTemporaryFile(filename);
+      (void) LiberateTemporaryFile(filename);
       DestroyImageInfo(clone_info);
       return(image);
     }

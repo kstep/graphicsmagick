@@ -961,7 +961,7 @@ static unsigned int WriteMPCImage(const ImageInfo *image_info,Image *image)
     FormatString(buffer,"quantum-depth=%d\n",QuantumDepth);
     (void) WriteBlobString(image,buffer);
     if (image->storage_class == PseudoClass)
-      FormatString(buffer,"class=PseudoClass  colors=%lu  matte=%s\n",
+      FormatString(buffer,"class=PseudoClass  colors=%u  matte=%s\n",
         image->colors,image->matte ? "True" : "False");
     else
       if (image->colorspace == CMYKColorspace)
@@ -1020,7 +1020,7 @@ static unsigned int WriteMPCImage(const ImageInfo *image_info,Image *image)
         break;
       }
     }
-    FormatString(buffer,"columns=%lu  rows=%lu  depth=%lu\n",image->columns,
+    FormatString(buffer,"columns=%lu  rows=%lu  depth=%u\n",image->columns,
       image->rows,image->depth);
     (void) WriteBlobString(image,buffer);
     if ((image->x_resolution != 0) && (image->y_resolution != 0))

@@ -108,7 +108,7 @@ static Image *ReadTILEImage(const ImageInfo *image_info,
     Tile texture onto image.
   */
   (void) strncpy(image->filename,image_info->filename,MaxTextExtent-1);
-  TextureImage(image,tile_image);
+  (void) TextureImage(image,tile_image);
 
   DestroyImage(tile_image);
   return(image);

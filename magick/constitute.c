@@ -249,7 +249,7 @@ MagickExport Image *ConstituteImage(const unsigned long width,
                         q->blue=ScaleCharToQuantum(*p++);
                         q->green=ScaleCharToQuantum(*p++);
                         q->red=ScaleCharToQuantum(*p++);
-                        q->opacity=MaxRGB-ScaleCharToQuantum(*p++);
+                        q->opacity=(Quantum) MaxRGB-ScaleCharToQuantum(*p++);
                         q++;
                       }
                     break;
@@ -2565,7 +2565,7 @@ static void RemoveTemporaryInputFile(ImageInfo *image_info)
     Remove normal file name.
   */
   if(!LiberateTemporaryFile(image_info->filename))
-    remove(image_info->filename);
+    (void) remove(image_info->filename);
 
   /*
     Remove a .cache file corresponding to a .mpc file.
@@ -2577,19 +2577,19 @@ static void RemoveTemporaryInputFile(ImageInfo *image_info)
       (LocaleCompare(image_info->filename+filename_length-4,".mpc") == 0))
     {
       char remove_name[MaxTextExtent];
-      strcpy(remove_name,image_info->filename);
+      (void) strcpy(remove_name,image_info->filename);
       remove_name[filename_length-4]=0;
-      strcat(remove_name,".cache");
-      printf("removing %s\n", remove_name);
-      remove(remove_name);
+      (void) strcat(remove_name,".cache");
+      (void) printf("removing %s\n", remove_name);
+      (void) remove(remove_name);
     }
   else if (LocaleCompare(image_info->magick,"mpc") == 0)
     {
       char remove_name[MaxTextExtent];
-      strcpy(remove_name,image_info->filename);
-      strcat(remove_name,".cache");
-      printf("removing %s\n", remove_name);
-      remove(remove_name);
+      (void) strcpy(remove_name,image_info->filename);
+      (void) strcat(remove_name,".cache");
+      (void) printf("removing %s\n", remove_name);
+      (void) remove(remove_name);
     }
 
   errno=0;
@@ -2741,11 +2741,11 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
     {
       if (!magick_info->thread_support)
         AcquireSemaphoreInfo(&constitute_semaphore);
-      LogMagickEvent(CoderEvent,GetMagickModule(),
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
         "Invoking \"%.1024s\" decoder (%.1024s)",magick_info->name,
         magick_info->description);
       image=(magick_info->decoder)(clone_info,exception);
-      LogMagickEvent(CoderEvent,GetMagickModule(),
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
         "Returned from \"%.1024s\" decoder",magick_info->name);
       if (!magick_info->thread_support)
         LiberateSemaphoreInfo(&constitute_semaphore);
@@ -2811,11 +2811,11 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
       */
       if (!magick_info->thread_support)
         AcquireSemaphoreInfo(&constitute_semaphore);
-      LogMagickEvent(CoderEvent,GetMagickModule(),
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
         "Invoking \"%.1024s\" decoder (%.1024s)",magick_info->name,
         magick_info->description);
       image=(magick_info->decoder)(clone_info,exception);
-      LogMagickEvent(CoderEvent,GetMagickModule(),
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
         "Returned from \"%.1024s\" decoder",magick_info->name);
       if (!magick_info->thread_support)
         LiberateSemaphoreInfo(&constitute_semaphore);
@@ -3199,11 +3199,11 @@ MagickExport unsigned int WriteImage(const ImageInfo *image_info,Image *image)
     {
       if (!magick_info->thread_support)
         AcquireSemaphoreInfo(&constitute_semaphore);
-      LogMagickEvent(CoderEvent,GetMagickModule(),
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
         "Invoking \"%.1024s\" encoder (%.1024s)",magick_info->name,
         magick_info->description);
       status=(magick_info->encoder)(clone_info,image);
-      LogMagickEvent(CoderEvent,GetMagickModule(),
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
         "Returned from \"%.1024s\" encoder",magick_info->name);
       if (!magick_info->thread_support)
         LiberateSemaphoreInfo(&constitute_semaphore);
@@ -3225,7 +3225,7 @@ MagickExport unsigned int WriteImage(const ImageInfo *image_info,Image *image)
             }
           status=InvokeDelegate(clone_info,image,(char *) NULL,
             clone_info->magick,&image->exception);
-          LiberateTemporaryFile(image->filename);
+          (void) LiberateTemporaryFile(image->filename);
           DestroyImageInfo(clone_info);
           return(!status);
         }
@@ -3318,6 +3318,6 @@ MagickExport unsigned int WriteImages(ImageInfo *image_info,Image *image,
       break;
   }
   if (image_info->verbose)
-    DescribeImage(image,stdout,False);
+    (void) DescribeImage(image,stdout,False);
   return(status);
 }

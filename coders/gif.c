@@ -152,7 +152,7 @@ static unsigned int DecodeImage(Image *image,const long opacity)
     Initialize GIF data stream decoder.
   */
   data_size=ReadBlobByte(image);
-  if (data_size > 8)
+  if (data_size > 8U)
     ThrowBinaryException(CorruptImageError,CorruptImage,image->filename);
   clear=1 << data_size;
   end_of_information=clear+1;

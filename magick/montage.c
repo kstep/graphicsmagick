@@ -474,7 +474,7 @@ MagickExport Image *MontageImages(const Image *images,
   draw_info->stroke=montage_info->stroke;
   draw_info->fill=montage_info->fill;
   draw_info->text=AllocateString("");
-  GetTypeMetrics(image_list[0],draw_info,&metrics);
+  (void) GetTypeMetrics(image_list[0],draw_info,&metrics);
   texture=(Image *) NULL;
   if (montage_info->texture != (char *) NULL)
     {
@@ -574,7 +574,7 @@ MagickExport Image *MontageImages(const Image *images,
     }
     handler=SetMonitorHandler((MonitorHandler) NULL);
     if (texture != (Image *) NULL)
-      TextureImage(montage,texture);
+      (void) TextureImage(montage,texture);
     if (montage_info->title != (char *) NULL)
       {
         char

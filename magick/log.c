@@ -497,7 +497,7 @@ MagickExport unsigned int LogMagickEvent(const ExceptionType type,
   time_meridian=localtime(&seconds);
   elapsed_time=GetElapsedTime(&log_info->timer);
   user_time=GetUserTime(&log_info->timer);
-  ContinueTimer((TimerInfo *) &log_info->timer);
+  (void) ContinueTimer((TimerInfo *) &log_info->timer);
   FormatString(timestamp,"%04d%02d%02d%02d%02d%02d",time_meridian->tm_year+
     1900,time_meridian->tm_mon+1,time_meridian->tm_mday,
     time_meridian->tm_hour,time_meridian->tm_min,time_meridian->tm_sec);
@@ -868,7 +868,7 @@ static MagickPassFail ReadLogConfigureFile(const char *basename,
         if (log_info == (LogInfo *) NULL)
           MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
             UnableToAllocateLogInfo);
-        CloneString(&log_info->path,path);
+        (void) CloneString(&log_info->path,path);
         continue;
       }
     if (log_info == (LogInfo *) NULL)

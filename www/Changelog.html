@@ -21,7 +21,20 @@
 </tr>
 </table>
 <p>
-2004-08-01  Bob Friesenhahn &lt;bfriesen@simple.dallas.tx.us&gt;  &lt;bfriesen@simple.dallas.tx.us&gt;
+2004-08-02  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/image.h (Image): Changed type of 'colors' and 'depth'
+        members from type 'unsigned long' to 'unsigned int'. This change
+        is made because on 64-bit CPUs, 'unsigned long' is a 64-bit
+        type. The depth member is often used in switch statements.  It is
+        not recommended to use 64-bit types in switch statements.  The
+        maximum number of colors in the colormap is limited to 64K so a
+        64-bit type is not required.
+
+</UL>
+<p>
+2004-08-01  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
   <LI> coders/tiff.c (ReadTIFFImage): Restore previous 8/16

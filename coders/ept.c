@@ -297,7 +297,7 @@ static Image *ReadEPTImage(const ImageInfo *image_info,
   if (ferror(file))
     {
       (void) fclose(file);
-      LiberateTemporaryFile(postscript_filename);
+      (void) LiberateTemporaryFile(postscript_filename);
       ThrowReaderException(CorruptImageError,AnErrorHasOccurredWritingToFile,
         image)
     }
@@ -316,10 +316,10 @@ static Image *ReadEPTImage(const ImageInfo *image_info,
       image_info->subimage+1,image_info->subimage+image_info->subrange);
   (void) strncpy(filename,image_info->filename,MaxTextExtent-1);
   if (image_info->temporary)
-    LiberateTemporaryFile((char *) image_info->filename);
+    (void) LiberateTemporaryFile((char *) image_info->filename);
   if(!AcquireTemporaryFileName((char *)image_info->filename))
     {
-      LiberateTemporaryFile(postscript_filename);
+      (void) LiberateTemporaryFile(postscript_filename);
       ThrowReaderTemporaryFileException(image_info->filename);
     }
   FormatString(command,delegate_info->commands,image_info->antialias ? 4 : 1,
@@ -339,7 +339,7 @@ static Image *ReadEPTImage(const ImageInfo *image_info,
       (void) fclose(file);
       status=InvokePostscriptDelegate(image_info->verbose,command);
     }
-  LiberateTemporaryFile(postscript_filename);
+  (void) LiberateTemporaryFile(postscript_filename);
   (void) MagickMonitor(RenderPostscriptText,7,8,&image->exception);
   if (!IsAccessibleAndNotEmpty(image_info->filename))
     {
@@ -357,7 +357,7 @@ static Image *ReadEPTImage(const ImageInfo *image_info,
   clone_info->length=0;
   image=ReadImage(clone_info,exception);
   DestroyImageInfo(clone_info);
-  LiberateTemporaryFile((char *) image_info->filename);
+  (void) LiberateTemporaryFile((char *) image_info->filename);
   if (image == (Image *) NULL)
     ThrowReaderException(DelegateError,PostscriptDelegateFailed,image);
   do
@@ -509,7 +509,7 @@ static unsigned int WriteEPTImage(const ImageInfo *image_info,Image *image)
   */
   if(!AcquireTemporaryFileName(tiff_filename))
     {
-      LiberateTemporaryFile(ps_filename);
+      (void) LiberateTemporaryFile(ps_filename);
       ThrowWriterTemporaryFileException(tiff_filename);
     }
   
@@ -597,8 +597,8 @@ static unsigned int WriteEPTImage(const ImageInfo *image_info,Image *image)
   (void) fclose(ps_file);
   (void) fclose(tiff_file);
   if (LocaleCompare(image_info->magick,"EPS") != 0)
-    LiberateTemporaryFile(ps_filename);
-  LiberateTemporaryFile(tiff_filename);
+    (void) LiberateTemporaryFile(ps_filename);
+  (void) LiberateTemporaryFile(tiff_filename);
   if (status == False)
     ThrowWriterException(FileOpenError,UnableToOpenFile,image);
   return(True);

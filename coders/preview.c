@@ -473,7 +473,7 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
       {
         FormatString(factor,"%g",percentage);
         FormatString(label,"solarize %.1024s",factor);
-        SolarizeImage(preview_image,percentage);
+        (void) SolarizeImage(preview_image,percentage);
         break;
       }
       case ShadePreview:
@@ -504,7 +504,7 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
         raise_info.y=0;
         FormatString(factor,"%ldx%ld",2*i+2,2*i+2);
         FormatString(label,"raise %.1024s",factor);
-        RaiseImage(preview_image,&raise_info,True);
+        (void) RaiseImage(preview_image,&raise_info,True);
         break;
       }
       case SegmentPreview:
@@ -587,7 +587,7 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
                 preview_image=quality_image;
               }
           }
-        LiberateTemporaryFile(filename);
+        (void) LiberateTemporaryFile(filename);
         if ((GetBlobSize(preview_image)/1024) >= 1024)
           FormatString(label,"quality %.1024s\n%gmb ",factor,
             (double) GetBlobSize(preview_image)/1024.0/1024.0);

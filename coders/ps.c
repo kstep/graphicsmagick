@@ -231,7 +231,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Determine page geometry from the Postscript bounding box.
   */
-  memset(&page,0,sizeof(RectangleInfo));
+  (void) memset(&page,0,sizeof(RectangleInfo));
   filesize=0;
   if (LocaleCompare(image_info->magick,"EPT") == 0)
     {
@@ -300,7 +300,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (ferror(file))
     {
       (void) fclose(file);
-      LiberateTemporaryFile(postscript_filename);
+      (void) LiberateTemporaryFile(postscript_filename);
       ThrowReaderException(CorruptImageError,AnErrorHasOccurredWritingToFile,
         image)
     }
@@ -319,10 +319,10 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
       image_info->subimage+1,image_info->subimage+image_info->subrange);
   (void) strncpy(filename,image_info->filename,MaxTextExtent-1);
   if (image_info->temporary)
-    LiberateTemporaryFile((char *) image_info->filename);
+    (void) LiberateTemporaryFile((char *) image_info->filename);
   if(!AcquireTemporaryFileName((char *) image_info->filename))
     {
-      LiberateTemporaryFile(postscript_filename);
+      (void) LiberateTemporaryFile(postscript_filename);
       ThrowReaderTemporaryFileException(image_info->filename);
     }
   FormatString(command,delegate_info->commands,image_info->antialias ? 4 : 1,
@@ -338,21 +338,21 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
       file=fopen(postscript_filename,"ab");
       if (file == (FILE *) NULL)
         {
-          LiberateTemporaryFile((char *) image_info->filename);
+          (void) LiberateTemporaryFile((char *) image_info->filename);
           ThrowReaderException(FileOpenError,UnableToWriteFile,image);
         }
       (void) fputs("showpage\n",file);
       (void) fclose(file);
       status=InvokePostscriptDelegate(image_info->verbose,command);
     }
-  LiberateTemporaryFile(postscript_filename);
+  (void) LiberateTemporaryFile(postscript_filename);
   (void) MagickMonitor(RenderPostscriptText,7,8,&image->exception);
   if (!IsAccessibleAndNotEmpty(image_info->filename))
     {
       /*
         Ghostscript has failed-- try the Display Postscript Extension.
       */
-      LiberateTemporaryFile((char *) image_info->filename);
+      (void) LiberateTemporaryFile((char *) image_info->filename);
       (void) FormatString((char *) image_info->filename,"dps:%.1024s",filename);
       image=ReadImage(image_info,exception);
       if (image != (Image *) NULL)
@@ -364,7 +364,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   clone_info->length=0;
   image=ReadImage(clone_info,exception);
   DestroyImageInfo(clone_info);
-  LiberateTemporaryFile((char *) image_info->filename);
+  (void) LiberateTemporaryFile((char *) image_info->filename);
   if (image == (Image *) NULL)
     ThrowReaderException(DelegateError,PostscriptDelegateFailed,image);
   do
@@ -986,7 +986,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
             /*
               Dump image as bitmap.
             */
-            SetImageType(preview_image,BilevelType);
+            (void) SetImageType(preview_image,BilevelType);
             polarity=
               PixelIntensityToQuantum(&preview_image->colormap[0]) < (MaxRGB/2);
             if (preview_image->colors == 2)
@@ -1160,7 +1160,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
             /*
               Dump image as bitmap.
             */
-            SetImageType(image,BilevelType);
+            (void) SetImageType(image,BilevelType);
             polarity=PixelIntensityToQuantum(&image->colormap[0]) < (MaxRGB/2);
             if (image->colors == 2)
               polarity=PixelIntensityToQuantum(&image->colormap[1]) <
@@ -1324,7 +1324,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
           /*
             Dump number of colors and colormap.
           */
-          FormatString(buffer,"%lu\n",image->colors);
+          FormatString(buffer,"%u\n",image->colors);
           (void) WriteBlobString(image,buffer);
           for (i=0; i < (long) image->colors; i++)
           {

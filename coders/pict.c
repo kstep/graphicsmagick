@@ -353,8 +353,8 @@ static unsigned char *ExpandBuffer(unsigned char *pixels,
     {
       for (i=0; i < (long) *bytes_per_line; i++)
       {
-        *q++=(*p >> 4) & 0xff;
-        *q++=(*p & 15);
+        *q++=(*p >> 4U) & 0xffU;
+        *q++=(*p & 15U);
         p++;
       }
       *bytes_per_line*=2;
@@ -364,10 +364,10 @@ static unsigned char *ExpandBuffer(unsigned char *pixels,
     {
       for (i=0; i < (long) *bytes_per_line; i++)
       {
-        *q++=(*p >> 6) & 0x03;
-        *q++=(*p >> 4) & 0x03;
-        *q++=(*p >> 2) & 0x03;
-        *q++=(*p & 3);
+        *q++=(*p >> 6U) & 0x03U;
+        *q++=(*p >> 4U) & 0x03U;
+        *q++=(*p >> 2U) & 0x03U;
+        *q++=(*p & 3U);
         p++;
       }
       *bytes_per_line*=4;
@@ -452,7 +452,7 @@ static unsigned char *DecodeImage(const ImageInfo *image_info,Image *blob,
   pixels=MagickAllocateMemory(unsigned char *,row_bytes*image->rows);
   if (pixels == (unsigned char *) NULL)
     return((unsigned char *) NULL);
-  memset(pixels,0,row_bytes*image->rows);
+  (void) memset(pixels,0,row_bytes*image->rows);
   scanline=MagickAllocateMemory(unsigned char *,row_bytes);
   if (scanline == (unsigned char *) NULL)
     return((unsigned char *) NULL);
@@ -999,7 +999,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
                     ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image)
                   }
                 (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                  "Allocated tile image colormap with %lu colors",tile_image->colors);
+                  "Allocated tile image colormap with %u colors",tile_image->colors);
                 if (bytes_per_line & 0x8000)
                   {
                     for (i=0; i < (long) tile_image->colors; i++)
@@ -1243,7 +1243,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
         }
         (void) fclose(file);
         tile_image=ReadImage(clone_info,exception);
-        LiberateTemporaryFile(clone_info->filename);
+        (void) LiberateTemporaryFile(clone_info->filename);
         DestroyImageInfo(clone_info);
         if (tile_image == (Image *) NULL)
           continue;
@@ -1521,7 +1521,7 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
   /*
     Write header, header size, size bounding box, version, and reserved.
   */
-  memset(buffer,0,PictInfoSize);
+  (void) memset(buffer,0,PictInfoSize);
   (void) WriteBlob(image,PictInfoSize,buffer);
   (void) WriteBlobMSBShort(image,0);
   (void) WriteBlobMSBShort(image,size_rectangle.top);

@@ -133,7 +133,7 @@ static Image *ReadURLImage(const ImageInfo *image_info,ExceptionInfo *exception)
   file=AcquireTemporaryFileStream(clone_info->filename,BinaryFileIOMode);
   if (file == (FILE *) NULL)
     {
-      strcpy(filename,clone_info->filename);
+      (void) strcpy(filename,clone_info->filename);
       DestroyImageInfo(clone_info);
       ThrowReaderTemporaryFileException(filename)
     }
@@ -175,7 +175,7 @@ static Image *ReadURLImage(const ImageInfo *image_info,ExceptionInfo *exception)
   (void) fclose(file);
   if (!IsAccessibleAndNotEmpty(clone_info->filename))
     {
-      LiberateTemporaryFile(clone_info->filename);
+      (void) LiberateTemporaryFile(clone_info->filename);
       ThrowException(exception,CoderError,NoDataReturned,filename);
     }
   else
@@ -183,7 +183,7 @@ static Image *ReadURLImage(const ImageInfo *image_info,ExceptionInfo *exception)
       *clone_info->magick='\0';
       image=ReadImage(clone_info,exception);
     }
-  LiberateTemporaryFile(clone_info->filename);
+  (void) LiberateTemporaryFile(clone_info->filename);
   DestroyImageInfo(clone_info);
   return(image);
 }

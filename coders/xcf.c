@@ -559,7 +559,7 @@ static int load_level (Image* image, XCFDocInfo* inDocInfo, XCFLayerInfo*
                          than we need to allow */
 
       /* seek to the tile offset */
-      SeekBlob(image, offset, SEEK_SET);
+      (void) SeekBlob(image, offset, SEEK_SET);
 
       /* allocate the image for the tile 
         NOTE: the last tile in a row or column may not be a full tile!
@@ -612,7 +612,7 @@ static int load_level (Image* image, XCFDocInfo* inDocInfo, XCFLayerInfo*
       /* restore the saved position so we'll be ready to
        *  read the next offset.
        */
-      SeekBlob(image, saved_pos, SEEK_SET);
+      (void) SeekBlob(image, saved_pos, SEEK_SET);
 
       /* read in the offset of the next tile */
       offset = ReadBlobMSBLong(image);
@@ -657,7 +657,7 @@ static int load_hierarchy (Image *image, XCFDocInfo* inDocInfo, XCFLayerInfo*
   saved_pos = TellBlob(image);
   
   /* seek to the level offset */
-  SeekBlob(image, offset, SEEK_SET);
+  (void) SeekBlob(image, offset, SEEK_SET);
   
   /* read in the level */
   if (!load_level (image, inDocInfo, inLayer))
@@ -666,7 +666,7 @@ static int load_hierarchy (Image *image, XCFDocInfo* inDocInfo, XCFLayerInfo*
   /* restore the saved position so we'll be ready to
    *  read the next offset.
    */
-  SeekBlob(image, saved_pos, SEEK_SET);
+  (void) SeekBlob(image, saved_pos, SEEK_SET);
 
   return 1;
 }
@@ -686,110 +686,110 @@ static int ReadOneLayer( Image* image, XCFDocInfo* inDocInfo, XCFLayerInfo*
     layer_mask_offset;
 
   /* clear the block! */
-  memset( outLayer, 0, sizeof( XCFLayerInfo ) );
+  (void) memset( outLayer, 0, sizeof( XCFLayerInfo ) );
   
   /* read in the layer width, height, type and name */
   outLayer->width = ReadBlobMSBLong(image);
   outLayer->height = ReadBlobMSBLong(image);
   outLayer->type = ReadBlobMSBLong(image);
-  ReadBlobStringWithLongSize(image, outLayer->name);
+  (void) ReadBlobStringWithLongSize(image, outLayer->name);
 
   /* allocate the image for this layer */
   outLayer->image=CloneImage(image,outLayer->width, outLayer->height,True,
-     &image->exception);
+                             &image->exception);
   if (outLayer->image == (Image *) NULL)
     return False;
 
   /* read the layer properties! */
   foundPropEnd = 0;
   while ( !foundPropEnd ) {
-  PropType    prop_type = (PropType) ReadBlobMSBLong(image);
-  unsigned long  prop_size = ReadBlobMSBLong(image);
+    PropType    prop_type = (PropType) ReadBlobMSBLong(image);
+    unsigned long  prop_size = ReadBlobMSBLong(image);
 
     switch (prop_type)
-    {
-    case PROP_END:
-      foundPropEnd = 1;
-      break;
-    case PROP_ACTIVE_LAYER:
-      outLayer->active = 1;
-      break;
-    case PROP_FLOATING_SELECTION:
-      outLayer->floating_offset = ReadBlobMSBLong(image);
-      break;
-    case PROP_OPACITY:
-      outLayer->opacity = ReadBlobMSBLong(image);
-      break;
-    case PROP_VISIBLE:
-      outLayer->visible = ReadBlobMSBLong(image);
-      break;
-    case PROP_LINKED:
-      outLayer->linked = ReadBlobMSBLong(image);
-      break;
-    case PROP_PRESERVE_TRANSPARENCY:
-      outLayer->preserve_trans = ReadBlobMSBLong(image);
-      break;
-    case PROP_APPLY_MASK:
-      outLayer->apply_mask = ReadBlobMSBLong(image);
-      break;
-    case PROP_EDIT_MASK:
-      outLayer->edit_mask = ReadBlobMSBLong(image);
-      break;
-    case PROP_SHOW_MASK:
-      outLayer->show_mask = ReadBlobMSBLong(image);
-      break;
-    case PROP_OFFSETS:
-      outLayer->offset_x = (long) ReadBlobMSBLong(image);
-      outLayer->offset_y = (long) ReadBlobMSBLong(image);
-      break;
-    case PROP_MODE:
-      outLayer->mode = ReadBlobMSBLong(image);
-      break;
-    case PROP_TATTOO:
-      outLayer->preserve_trans = ReadBlobMSBLong(image);
-      break;
-     case PROP_PARASITES:
-     {
-        for (i=0; i<(long) prop_size; i++ )
-          (void) ReadBlobByte(image);
-
-        /*
-       long base = info->cp;
-       GimpParasite *p;
-       while (info->cp - base < prop_size)
-       {
-       p = xcf_load_parasite(info);
-       gimp_drawable_parasite_attach(GIMP_DRAWABLE(layer), p);
-       gimp_parasite_free(p);
-       }
-       if (info->cp - base != prop_size)
-       g_message ("Error detected while loading a layer's parasites");
-       */
-     }
-     break;
-    default:
-      /* g_message ("unexpected/unknown layer property: %d (skipping)",
-         prop_type); */
-
       {
-      int buf[16];
-      unsigned int amount;
-
-      /* read over it... */
-      while (prop_size > 0)
+      case PROP_END:
+        foundPropEnd = 1;
+        break;
+      case PROP_ACTIVE_LAYER:
+        outLayer->active = 1;
+        break;
+      case PROP_FLOATING_SELECTION:
+        outLayer->floating_offset = ReadBlobMSBLong(image);
+        break;
+      case PROP_OPACITY:
+        outLayer->opacity = ReadBlobMSBLong(image);
+        break;
+      case PROP_VISIBLE:
+        outLayer->visible = ReadBlobMSBLong(image);
+        break;
+      case PROP_LINKED:
+        outLayer->linked = ReadBlobMSBLong(image);
+        break;
+      case PROP_PRESERVE_TRANSPARENCY:
+        outLayer->preserve_trans = ReadBlobMSBLong(image);
+        break;
+      case PROP_APPLY_MASK:
+        outLayer->apply_mask = ReadBlobMSBLong(image);
+        break;
+      case PROP_EDIT_MASK:
+        outLayer->edit_mask = ReadBlobMSBLong(image);
+        break;
+      case PROP_SHOW_MASK:
+        outLayer->show_mask = ReadBlobMSBLong(image);
+        break;
+      case PROP_OFFSETS:
+        outLayer->offset_x = (long) ReadBlobMSBLong(image);
+        outLayer->offset_y = (long) ReadBlobMSBLong(image);
+        break;
+      case PROP_MODE:
+        outLayer->mode = ReadBlobMSBLong(image);
+        break;
+      case PROP_TATTOO:
+        outLayer->preserve_trans = ReadBlobMSBLong(image);
+        break;
+      case PROP_PARASITES:
         {
-        amount = Min (16, prop_size);
-        for (i=0; i<(long)amount; i++)
-        amount = ReadBlob(image, amount, &buf);
-        prop_size -= Min (16, amount);
+          for (i=0; i<(long) prop_size; i++ )
+            (void) ReadBlobByte(image);
+
+          /*
+            long base = info->cp;
+            GimpParasite *p;
+            while (info->cp - base < prop_size)
+            {
+            p = xcf_load_parasite(info);
+            gimp_drawable_parasite_attach(GIMP_DRAWABLE(layer), p);
+            gimp_parasite_free(p);
+            }
+            if (info->cp - base != prop_size)
+            g_message ("Error detected while loading a layer's parasites");
+          */
         }
+        break;
+      default:
+        /* g_message ("unexpected/unknown layer property: %d (skipping)",
+           prop_type); */
+
+        {
+          int buf[16];
+          unsigned int amount;
+
+          /* read over it... */
+          while (prop_size > 0)
+            {
+              amount = Min (16, prop_size);
+              for (i=0; i<(long)amount; i++)
+                amount = ReadBlob(image, amount, &buf);
+              prop_size -= Min (16, amount);
+            }
+        }
+        break;
       }
-      break;
-    }
   }
 
   /* clear the image based on the layer opacity */
-    SetImage(outLayer->image,(Quantum)(255-outLayer->opacity));
+  SetImage(outLayer->image,(Quantum)(255-outLayer->opacity));
 
   /* set the compositing mode */
   outLayer->image->compose = GIMPBlendModeToCompositeOperator( outLayer->mode );
@@ -804,19 +804,19 @@ static int ReadOneLayer( Image* image, XCFDocInfo* inDocInfo, XCFLayerInfo*
   layer_mask_offset = ReadBlobMSBLong(image);
 
   /* read in the hierarchy */
-  SeekBlob(image, hierarchy_offset, SEEK_SET);
+  (void) SeekBlob(image, hierarchy_offset, SEEK_SET);
   if (!load_hierarchy (image, inDocInfo, outLayer))
     return 0;
 
   /* read in the layer mask */
   if (layer_mask_offset != 0)
     {
-    SeekBlob(image, layer_mask_offset, SEEK_SET);
+      (void) SeekBlob(image, layer_mask_offset, SEEK_SET);
 
 #if 0  /* BOGUS: support layer masks! */
       layer_mask = xcf_load_layer_mask (info, gimage);
       if (!layer_mask)
-  goto error;
+        goto error;
 
       /* set the offsets of the layer_mask */
       GIMP_DRAWABLE (layer_mask)->offset_x = GIMP_DRAWABLE (layer)->offset_x;
@@ -828,7 +828,7 @@ static int ReadOneLayer( Image* image, XCFDocInfo* inDocInfo, XCFLayerInfo*
       layer->mask->edit_mask  = edit_mask;
       layer->mask->show_mask  = show_mask;
 #endif
-  }
+    }
 
   /* attach the floating selection... */
 #if 0  /* BOGUS: we may need to read this, even if we don't support it! */
@@ -915,7 +915,7 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       (LocaleNCompare((char *) magick,"gimp xcf",8) != 0))
     ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
   /* clear the docinfo stuff */
-  memset( &doc_info, 0, sizeof(XCFDocInfo));
+  (void) memset( &doc_info, 0, sizeof(XCFDocInfo));
   doc_info.exception = exception;
 
   /* read the three simple values */
@@ -937,46 +937,46 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   /* read properties */
   while ( !foundPropEnd ) {
-  PropType    prop_type = (PropType) ReadBlobMSBLong(image);
-  unsigned long  prop_size = ReadBlobMSBLong(image);
+    PropType    prop_type = (PropType) ReadBlobMSBLong(image);
+    unsigned long  prop_size = ReadBlobMSBLong(image);
 
-  switch ( prop_type ) {
+    switch ( prop_type ) {
     case PROP_END:
       foundPropEnd = 1;
 
     case PROP_COLORMAP:
       /* BOGUS: just skip it for now */
-        for (i=0; i<prop_size; i++ )
-          (void) ReadBlobByte(image);
-    /*
-      if (info->file_version == 0) 
-      {
+      for (i=0; i<prop_size; i++ )
+        (void) ReadBlobByte(image);
+      /*
+        if (info->file_version == 0) 
+        {
         gint i;
 
         g_message (_("XCF warning: version 0 of XCF file format\n"
-           "did not save indexed colormaps correctly.\n"
-           "Substituting grayscale map."));
+        "did not save indexed colormaps correctly.\n"
+        "Substituting grayscale map."));
         info->cp += 
-          xcf_read_int32 (info->fp, (guint32*) &gimage->num_cols, 1);
+        xcf_read_int32 (info->fp, (guint32*) &gimage->num_cols, 1);
         gimage->cmap = g_new (guchar, gimage->num_cols*3);
         xcf_seek_pos (info, info->cp + gimage->num_cols);
         for (i = 0; i<gimage->num_cols; i++) 
-          {
-            gimage->cmap[i*3+0] = i;
-            gimage->cmap[i*3+1] = i;
-            gimage->cmap[i*3+2] = i;
-          }
-      }
-      else 
-      {
+        {
+        gimage->cmap[i*3+0] = i;
+        gimage->cmap[i*3+1] = i;
+        gimage->cmap[i*3+2] = i;
+        }
+        }
+        else 
+        {
         info->cp += 
-          xcf_read_int32 (info->fp, (guint32*) &gimage->num_cols, 1);
+        xcf_read_int32 (info->fp, (guint32*) &gimage->num_cols, 1);
         gimage->cmap = g_new (guchar, gimage->num_cols*3);
         info->cp += 
-          xcf_read_int8 (info->fp, 
-                   (guint8*) gimage->cmap, gimage->num_cols*3);
-      }
-     */
+        xcf_read_int8 (info->fp, 
+        (guint8*) gimage->cmap, gimage->num_cols*3);
+        }
+      */
       break;
 
     case PROP_COMPRESSION:
@@ -984,16 +984,16 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         doc_info.compression = ReadBlobByte(image);
 
         if ((doc_info.compression != COMPRESS_NONE) &&
-        (doc_info.compression != COMPRESS_RLE) &&
-        (doc_info.compression != COMPRESS_ZLIB) &&
-        (doc_info.compression != COMPRESS_FRACTAL))
+            (doc_info.compression != COMPRESS_RLE) &&
+            (doc_info.compression != COMPRESS_ZLIB) &&
+            (doc_info.compression != COMPRESS_FRACTAL))
           ThrowReaderException(CorruptImageWarning,CompressionNotValid,image);
       }
       break;
 
     case PROP_GUIDES:
       {
-      /* just skip it - we don't care about guides */
+        /* just skip it - we don't care about guides */
         for (i=0; i<prop_size; i++ )
           (void) ReadBlobByte(image);
       }
@@ -1005,13 +1005,13 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /* float yres = (float) */ (void) ReadBlobMSBLong(image);
 
         /*
-        if (xres < GIMP_MIN_RESOLUTION || xres > GIMP_MAX_RESOLUTION ||
-            yres < GIMP_MIN_RESOLUTION || yres > GIMP_MAX_RESOLUTION)
-        {
-        g_message ("Warning, resolution out of range in XCF file");
-        xres = gimage->gimp->config->default_xresolution;
-        yres = gimage->gimp->config->default_yresolution;
-        }
+          if (xres < GIMP_MIN_RESOLUTION || xres > GIMP_MAX_RESOLUTION ||
+          yres < GIMP_MIN_RESOLUTION || yres > GIMP_MAX_RESOLUTION)
+          {
+          g_message ("Warning, resolution out of range in XCF file");
+          xres = gimage->gimp->config->default_xresolution;
+          yres = gimage->gimp->config->default_yresolution;
+          }
         */
 
       
@@ -1037,38 +1037,38 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
           (void) ReadBlobByte(image);
 
         /*
-      glong         base = info->cp;
-      GimpParasite *p;
+          glong         base = info->cp;
+          GimpParasite *p;
 
-      while (info->cp - base < prop_size)
-        {
+          while (info->cp - base < prop_size)
+          {
           p = xcf_load_parasite (info);
           gimp_image_parasite_attach (gimage, p);
           gimp_parasite_free (p);
-        }
-      if (info->cp - base != prop_size)
-        g_message ("Error detected while loading an image's parasites");
-      */
           }
+          if (info->cp - base != prop_size)
+          g_message ("Error detected while loading an image's parasites");
+        */
+      }
       break;
 
     case PROP_UNIT:
       {
         /* BOGUS: ignore for now... */
-      /*unsigned long unit =  */ (void) ReadBlobMSBLong(image);
+        /*unsigned long unit =  */ (void) ReadBlobMSBLong(image);
       }
       break;
 
     case PROP_PATHS:
       {
-      /* BOGUS: just skip it for now */
+        /* BOGUS: just skip it for now */
         for (i=0; i<prop_size; i++ )
           (void) ReadBlobByte(image);
 
         /*
-      PathList *paths = xcf_load_bzpaths (gimage, info);
-      gimp_image_set_paths (gimage, paths);
-      */
+          PathList *paths = xcf_load_bzpaths (gimage, info);
+          gimp_image_set_paths (gimage, paths);
+        */
       }
       break;
 
@@ -1079,44 +1079,44 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*float  factor = (float) */ (void) ReadBlobMSBLong(image);
         /* unsigned long digits =  */ (void) ReadBlobMSBLong(image);
         for (i=0; i<5; i++)
-         ReadBlobStringWithLongSize(image, unit_string);
+          (void) ReadBlobStringWithLongSize(image, unit_string);
       }
-     break;
+      break;
 
     default:
       /* g_message ("unexpected/unknown image property: %d (skipping)",
          prop_type); */
 
       {
-      int buf[16];
-      long amount;
+        int buf[16];
+        long amount;
 
-      /* read over it... */
-      while (prop_size > 0)
-        {
-        amount = (long) Min (16, prop_size);
-        for (i=0; i<(unsigned long) amount; i++)
-        amount = (long) ReadBlob(image, amount, &buf);
-        prop_size -= Min (16, amount);
-        }
+        /* read over it... */
+        while (prop_size > 0)
+          {
+            amount = (long) Min (16, prop_size);
+            for (i=0; i<(unsigned long) amount; i++)
+              amount = (long) ReadBlob(image, amount, &buf);
+            prop_size -= Min (16, amount);
+          }
       }
       break;
-  }
+    }
   }
 
   if (image_info->ping && (image_info->subrange != 0)) {
-  ; /* do nothing, we were just pinging! */
+    ; /* do nothing, we were just pinging! */
   } else {
     XCFLayerInfo*  layer_info;
-      int  number_layers = 0,
+    int  number_layers = 0,
       current_layer = 0,
       foundAllLayers = False;
 
-      /* BIG HACK
-        because XCF doesn't include the layer count, and we
-        want to know it in advance in order to allocate memory,
-        we have to scan the layer offset list, and then reposition
-        the read pointer
+    /* BIG HACK
+       because XCF doesn't include the layer count, and we
+       want to know it in advance in order to allocate memory,
+       we have to scan the layer offset list, and then reposition
+       the read pointer
     */
     ExtendedSignedIntegralType  oldPos = TellBlob(image);
     do {
@@ -1126,62 +1126,62 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       else
         number_layers++;
     } while ( !foundAllLayers );
-    SeekBlob(image, oldPos, SEEK_SET); /* restore the position! */
+    (void) SeekBlob(image, oldPos, SEEK_SET); /* restore the position! */
 
 
     /* allocate our array of layer info blocks */
     layer_info=MagickAllocateMemory(XCFLayerInfo *,
-      number_layers*sizeof(XCFLayerInfo));
+                                    number_layers*sizeof(XCFLayerInfo));
     if (layer_info == (XCFLayerInfo *) NULL)
       ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
     (void) memset(layer_info,0,number_layers*sizeof(XCFLayerInfo));
 
     for ( ; ; )
-    {
-      ExtendedSignedIntegralType
-        offset,
-        saved_pos;
-      int
-        layer_ok;
+      {
+        ExtendedSignedIntegralType
+          offset,
+          saved_pos;
+        int
+          layer_ok;
 
-      /* read in the offset of the next layer */
-      offset = ReadBlobMSBLong(image);
+        /* read in the offset of the next layer */
+        offset = ReadBlobMSBLong(image);
 
-      /* if the offset is 0 then we are at the end
-      *  of the layer list.
-      */
-      if (offset == 0)
-        break;
+        /* if the offset is 0 then we are at the end
+         *  of the layer list.
+         */
+        if (offset == 0)
+          break;
 
-      /* save the current position as it is where the
-      *  next layer offset is stored.
-      */
-      saved_pos = TellBlob(image);
+        /* save the current position as it is where the
+         *  next layer offset is stored.
+         */
+        saved_pos = TellBlob(image);
 
-      /* seek to the layer offset */
-      SeekBlob(image, offset, SEEK_SET);
+        /* seek to the layer offset */
+        (void) SeekBlob(image, offset, SEEK_SET);
 
-      /* read in the layer */
-      layer_ok = ReadOneLayer( image, &doc_info, &layer_info[current_layer] );
-      if (!layer_ok) {
-        int j;
-        for (j=0; j < current_layer; j++)
-          DestroyImage(layer_info[j].image);
-        ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image)
+        /* read in the layer */
+        layer_ok = ReadOneLayer( image, &doc_info, &layer_info[current_layer] );
+        if (!layer_ok) {
+          int j;
+          for (j=0; j < current_layer; j++)
+            DestroyImage(layer_info[j].image);
+          ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image)
+            }
+
+        /* restore the saved position so we'll be ready to
+         *  read the next offset.
+         */
+        (void) SeekBlob(image, saved_pos, SEEK_SET);
+
+        current_layer++;
       }
-
-      /* restore the saved position so we'll be ready to
-      *  read the next offset.
-      */
-      SeekBlob(image, saved_pos, SEEK_SET);
-
-      current_layer++;
-    }
 
     if ( number_layers == 1 ) {
       /* composite the layer data onto the main image & then dispose the layer */
-      CompositeImage(image, OverCompositeOp, layer_info[0].image, 
-               layer_info[0].offset_x, layer_info[0].offset_y );
+      (void) CompositeImage(image, OverCompositeOp, layer_info[0].image, 
+                            layer_info[0].offset_x, layer_info[0].offset_y );
       DestroyImage( layer_info[0].image );
 
       /* Bob says that if we do this, we'll get REAL gray images! */
@@ -1189,11 +1189,11 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         QuantizeInfo  qi;
         GetQuantizeInfo(&qi);
         qi.colorspace = GRAYColorspace;
-        QuantizeImage( &qi, image );
+        (void) QuantizeImage( &qi, image );
       }
     } else {
 #if 0
-        {
+      {
         /* NOTE: XCF layers are REVERSED from composite order! */
         signed int  j;
         for (j=number_layers-1; j>=0; j--) {
@@ -1201,7 +1201,7 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
           
           if ( layer_info[j].visible ) { /* only visible ones, please! */
             CompositeImage(image, OverCompositeOp, layer_info[j].image, 
-                     layer_info[j].offset_x, layer_info[j].offset_y );
+                           layer_info[j].offset_x, layer_info[j].offset_y );
             DestroyImage( layer_info[j].image );
 
             /* Bob says that if we do this, we'll get REAL gray images! */
@@ -1220,9 +1220,9 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         signed int  j;
 
         /* first we copy the last layer on top of the main image */
-        CompositeImage(image, CopyCompositeOp, layer_info[number_layers-1].image, 
-                 layer_info[number_layers-1].offset_x, 
-                 layer_info[number_layers-1].offset_y );
+        (void) CompositeImage(image, CopyCompositeOp, layer_info[number_layers-1].image, 
+                              layer_info[number_layers-1].offset_x, 
+                              layer_info[number_layers-1].offset_y );
         DestroyImage( layer_info[number_layers-1].image );
 
         /* Bob says that if we do this, we'll get REAL gray images! */
@@ -1230,7 +1230,7 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
           QuantizeInfo  qi;
           GetQuantizeInfo(&qi);
           qi.colorspace = GRAYColorspace;
-          QuantizeImage( &qi, image );
+          (void) QuantizeImage( &qi, image );
         }
 
         /* now reverse the order of the layers as they are put
@@ -1239,24 +1239,24 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         image->next=layer_info[number_layers-2].image;
         layer_info[number_layers-2].image->previous=image;
         for (j=number_layers-2; j>=0; j--)
-        {
-          if (j > 0)
-            layer_info[j].image->next=layer_info[j-1].image;
-          if (j < (number_layers-1))
-            layer_info[j].image->previous=layer_info[j+1].image;
-          layer_info[j].image->page.x = layer_info[j].offset_x;
-          layer_info[j].image->page.y = layer_info[j].offset_y;
-          layer_info[j].image->page.width = layer_info[j].width;
-          layer_info[j].image->page.height = layer_info[j].height;
+          {
+            if (j > 0)
+              layer_info[j].image->next=layer_info[j-1].image;
+            if (j < (number_layers-1))
+              layer_info[j].image->previous=layer_info[j+1].image;
+            layer_info[j].image->page.x = layer_info[j].offset_x;
+            layer_info[j].image->page.y = layer_info[j].offset_y;
+            layer_info[j].image->page.width = layer_info[j].width;
+            layer_info[j].image->page.height = layer_info[j].height;
 
-          /* Bob says that if we do this, we'll get REAL gray images! */
-          if ( image_type == GIMP_GRAY ) {
-            QuantizeInfo  qi;
-            GetQuantizeInfo(&qi);
-            qi.colorspace = GRAYColorspace;
-            QuantizeImage( &qi, layer_info[j].image );
+            /* Bob says that if we do this, we'll get REAL gray images! */
+            if ( image_type == GIMP_GRAY ) {
+              QuantizeInfo  qi;
+              GetQuantizeInfo(&qi);
+              qi.colorspace = GRAYColorspace;
+              (void) QuantizeImage( &qi, layer_info[j].image );
+            }
           }
-        }
       }
 #endif
     }
@@ -1265,40 +1265,40 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
 #if 0  /* BOGUS: do we need the channels?? */
     while (True)
-    {
-      /* read in the offset of the next channel */
-      info->cp += xcf_read_int32 (info->fp, &offset, 1);
+      {
+        /* read in the offset of the next channel */
+        info->cp += xcf_read_int32 (info->fp, &offset, 1);
 
-      /* if the offset is 0 then we are at the end
-      *  of the channel list.
-      */
-      if (offset == 0)
-        break;
+        /* if the offset is 0 then we are at the end
+         *  of the channel list.
+         */
+        if (offset == 0)
+          break;
 
-      /* save the current position as it is where the
-      *  next channel offset is stored.
-      */
-      saved_pos = info->cp;
+        /* save the current position as it is where the
+         *  next channel offset is stored.
+         */
+        saved_pos = info->cp;
 
-      /* seek to the channel offset */
-      xcf_seek_pos (info, offset);
+        /* seek to the channel offset */
+        xcf_seek_pos (info, offset);
 
-      /* read in the layer */
-      channel = xcf_load_channel (info, gimage);
-      if (!channel)
-        goto error;
+        /* read in the layer */
+        channel = xcf_load_channel (info, gimage);
+        if (!channel)
+          goto error;
 
-      num_successful_elements++;
+        num_successful_elements++;
 
-      /* add the channel to the image if its not the selection */
-      if (channel != gimage->selection_mask)
-        gimp_image_add_channel (gimage, channel, -1);
+        /* add the channel to the image if its not the selection */
+        if (channel != gimage->selection_mask)
+          gimp_image_add_channel (gimage, channel, -1);
 
-      /* restore the saved position so we'll be ready to
-      *  read the next offset.
-      */
-      xcf_seek_pos (info, saved_pos);
-    }
+        /* restore the saved position so we'll be ready to
+         *  read the next offset.
+         */
+        xcf_seek_pos (info, saved_pos);
+      }
 #endif
   }
 

@@ -87,8 +87,8 @@ static unsigned int IsTTF(const unsigned char *magick,const size_t length)
 {
   if (length < 5)
     return(False);
-  if ((magick[0] == 0x00) && (magick[1] == 0x01) && (magick[2] == 0x00) &&
-      (magick[3] == 0x00) && (magick[4] == 0x0))
+  if ((magick[0] == 0x00U) && (magick[1] == 0x01U) && (magick[2] == 0x00U) &&
+      (magick[3] == 0x00U) && (magick[4] == 0x0U))
     return(True);
   return(False);
 }

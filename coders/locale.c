@@ -154,8 +154,8 @@ static unsigned int ReadConfigureFile(Image *image,const char *basename,
         length=Min(q-p-2,MaxTextExtent-1);
         (void) strncpy(comment,p+1,length);
         comment[length]='\0';
-        SetImageAttribute(image,"[LocaleComment]",comment);
-        SetImageAttribute(image,"[LocaleComment]","\n");
+        (void) SetImageAttribute(image,"[LocaleComment]",comment);
+        (void) SetImageAttribute(image,"[LocaleComment]","\n");
         continue;
       }
     if (LocaleCompare(keyword,"<include") == 0)
@@ -245,7 +245,7 @@ static unsigned int ReadConfigureFile(Image *image,const char *basename,
           Strip(message);
           (void) strncat(locale,message,MaxTextExtent-strlen(locale)-2);
           (void) strcat(locale,"\n");
-          SetImageAttribute(image,"[Locale]",locale);
+          (void) SetImageAttribute(image,"[Locale]",locale);
         }
         continue;
       }
@@ -511,7 +511,7 @@ static char *EscapeLocaleString(const char *str)
 
     if (!(strput = MagickAllocateMemory(char *,n + 1)))
     {
-        fprintf(stderr, "out of memory!\n");
+        (void) fprintf(stderr, "out of memory!\n");
         exit(1);
     }
 
@@ -562,7 +562,7 @@ static void accumulate(const char **buf, int siz, struct locale_str **locstr)
             {
                 if (!(xp = (char *) AllocateString(tp)))
                 {
-                    fprintf(stderr, " out of memory!\n");
+                    (void) fprintf(stderr, " out of memory!\n");
                     exit(1);
                 }
                 xt = xp;
@@ -573,8 +573,8 @@ static void accumulate(const char **buf, int siz, struct locale_str **locstr)
                 if (*xloc && !(*xloc)->lower)   /* see if already there */
                 {
                     if (LocaleCompare((*xloc)->name, xp))
-                        fprintf(stderr, "ignoring dup message for `%s'\n",
-                                         buf[n]);
+                        (void) fprintf(stderr, "ignoring dup message for `%s'\n",
+                                       buf[n]);
                     MagickFreeMemory(xp);
                     break;
                 }
@@ -596,10 +596,10 @@ static void accumulate(const char **buf, int siz, struct locale_str **locstr)
 
                 if (!(xp = MagickAllocateMemory(char *,np - tp + 1)))
                 {
-                    fprintf(stderr, "out of memory!\n" );
+                    (void) fprintf(stderr, "out of memory!\n" );
                     exit(1);
                 }
-                strncpy(xp, tp, (size_t) (np - tp));
+                (void) strncpy(xp, tp, (size_t) (np - tp));
                 xp[np - tp] = '\0';
                 tp = ++np;
 
@@ -620,11 +620,11 @@ static void accumulate(const char **buf, int siz, struct locale_str **locstr)
             /* node doesn't exist; create it */
 
             if (*xp == '\0')
-                fprintf(stderr, "warning: message is null for '%s'\n", buf[n]);
+                (void) fprintf(stderr, "warning: message is null for '%s'\n", buf[n]);
 
             if (!(xl = MagickAllocateMemory(struct locale_str *,sizeof *xl)))
             {
-                fprintf(stderr, "out of memory!\n");
+                (void) fprintf(stderr, "out of memory!\n");
                 exit(1);
             }
             xl->name = xp;
@@ -654,7 +654,7 @@ static void output_switches(Image *image,struct locale_str *locstr, int indent, 
 
     if (!locstr)
     {
-        fprintf(stderr, "NULL locstr in output_switches\n");
+        (void) fprintf(stderr, "NULL locstr in output_switches\n");
         return;
     }
 
@@ -667,7 +667,7 @@ static void output_switches(Image *image,struct locale_str *locstr, int indent, 
         if (!locstr->lower)
           {
             FormatString(message, "%*sreturn *np ? tag : \"%s\";\n", indent, "", p);
-            WriteBlobString(image,message);
+            (void) WriteBlobString(image,message);
           }
         else
         {
@@ -677,7 +677,7 @@ static void output_switches(Image *image,struct locale_str *locstr, int indent, 
             FormatString(message, "%*sif (LocaleNCompare(%s, \"%s\", %ld) || p - tp != %ld)\n%*sreturn tag;\n%*selse\n",
                     indent, "", field, p, (long) strlen(locstr->name),
                     (long) strlen(locstr->name), indent+INDENT, "", indent, "");
-            WriteBlobString(image,message);
+            (void) WriteBlobString(image,message);
 
             output_switches(image, locstr->lower, indent+INDENT, 1);
         }
@@ -695,7 +695,7 @@ static void output_switches(Image *image,struct locale_str *locstr, int indent, 
         p = EscapeLocaleString(xl->name);
         FormatString(message, "\n%*scase '\\0':\n%*sreturn \"%s\";\n",
                 indent, "", indent+INDENT, "", p);
-        WriteBlobString(image,message);
+        (void) WriteBlobString(image,message);
         MagickFreeMemory(p);
         xl = xl->next;
     }
@@ -706,54 +706,54 @@ static void output_switches(Image *image,struct locale_str *locstr, int indent, 
           {
             FormatString(message, "\n%*scase '%c':  case '%c':\n",
                     indent, "", tolower(*xl->name), toupper(*xl->name));
-            WriteBlobString(image,message);
+            (void) WriteBlobString(image,message);
           }
 
         p = EscapeLocaleString(xl->name);
         FormatString(message, "%*sif (p - tp == %ld && !LocaleNCompare(tp, \"%s\", %ld))\n",
                 indent+INDENT, "", (long) strlen(xl->name), p, (long) strlen(xl->name));
-        WriteBlobString(image,message);
+        (void) WriteBlobString(image,message);
         MagickFreeMemory(p);
 
         output_switches(image,xl->lower, indent+INDENT+INDENT, 0);
         FormatString(message, "%*selse\n", indent+INDENT, "");
-        WriteBlobString(image,message);
+        (void) WriteBlobString(image,message);
 
         flag = xl->next == 0 || tolower(*xl->name) != tolower(*xl->next->name);
         if (flag)
           {
             FormatString(message, "%*sreturn tag;\n", indent+INDENT+INDENT, "");
-            WriteBlobString(image,message);
+            (void) WriteBlobString(image,message);
           }
     }
 
     FormatString(message, "%*s}\n", indent, "");
-    WriteBlobString(image,message);
+    (void) WriteBlobString(image,message);
 }
 
 void WriteBlobStringEOL(Image *image)
 {
 #if defined(WIN32)
-  WriteBlobString(image,"\r\n");
+  (void) WriteBlobString(image,"\r\n");
 #else
 #if defined(macintosh)
-  WriteBlobString(image,"\r");
+  (void) WriteBlobString(image,"\r");
 #else
-  WriteBlobString(image,"\n");
+  (void) WriteBlobString(image,"\n");
 #endif
 #endif
 }
 
 void WriteBlobStringWithEOL(Image *image,char *s)
 {
-  WriteBlobString(image,s);
+  (void) WriteBlobString(image,s);
 #if defined(WIN32)
-  WriteBlobString(image,"\r\n");
+  (void) WriteBlobString(image,"\r\n");
 #else
 #if defined(macintosh)
-  WriteBlobString(image,"\r");
+  (void) WriteBlobString(image,"\r");
 #else
-  WriteBlobString(image,"\n");
+  (void) WriteBlobString(image,"\n");
 #endif
 #endif
 }
@@ -834,7 +834,7 @@ static unsigned int WriteLOCALEImage(const ImageInfo *image_info,Image *image)
         register char
           *p;
 
-        strcpy(path,locale[i]);
+        (void) strcpy(path,locale[i]);
         if (*path != '\0')
           {
             p=path+strlen(path)-1;
@@ -849,20 +849,20 @@ static unsigned int WriteLOCALEImage(const ImageInfo *image_info,Image *image)
                   index++;
                 }
             }
-            WriteBlobString(image,"\r\n");
+            (void) WriteBlobString(image,"\r\n");
             if (i == 0)
               {
-               WriteBlobString(image,"MessageId       = 0\r\nSymbolicName    = GENERIC_MESSAGE\r\nLanguage        = English\r\n%1\r\n.\r\n");
-               WriteBlobString(image,"MessageId       = 1\r\n");
+               (void) WriteBlobString(image,"MessageId       = 0\r\nSymbolicName    = GENERIC_MESSAGE\r\nLanguage        = English\r\n%1\r\n.\r\n");
+               (void) WriteBlobString(image,"MessageId       = 1\r\n");
               }
             else
-              WriteBlobString(image,"MessageId       = +1\r\n");
+              (void) WriteBlobString(image,"MessageId       = +1\r\n");
             FormatString(text, "SymbolicName    = %s%s%s\r\n", fields[0],fields[1],fields[2]);
-            WriteBlobString(image,text);
-            WriteBlobString(image,"Language        = English\r\n");
+            (void) WriteBlobString(image,text);
+            (void) WriteBlobString(image,"Language        = English\r\n");
             FormatString(text, "%s\r\n", fields[3]);
-            WriteBlobString(image,text);
-            WriteBlobString(image,".\r\n");
+            (void) WriteBlobString(image,text);
+            (void) WriteBlobString(image,".\r\n");
           }
       }
     }
@@ -897,7 +897,7 @@ static unsigned int WriteLOCALEImage(const ImageInfo *image_info,Image *image)
       */
       for (i=0; i < count; i++)
       {
-        strcpy(path,locale[i]);
+        (void) strcpy(path,locale[i]);
         if (*path != '\0')
           {
             p=path+strlen(path)-1;
@@ -937,7 +937,7 @@ static unsigned int WriteLOCALEImage(const ImageInfo *image_info,Image *image)
       severityindex=0;
       for (i=0; i < count; i++)
       {
-        strcpy(path,locale[i]);
+        (void) strcpy(path,locale[i]);
         if (*path != '\0')
           {
             p=path+strlen(path)-1;
@@ -958,14 +958,14 @@ static unsigned int WriteLOCALEImage(const ImageInfo *image_info,Image *image)
             if (LocaleCompare(severity,last2) != 0)
               {
                 severityindex++;
-                strncpy(last2,severity,MaxTextExtent-1);
+                (void) strncpy(last2,severity,MaxTextExtent-1);
               }
            if (LocaleCompare(category,last) != 0)
               {
                 FormatString(text, "    { \"%s%s%s\", %d },", fields[0],
                   strlen(fields[0]) ? "/" : "", fields[1], severityindex-1);
                 WriteBlobStringWithEOL(image,text);
-                strncpy(last,category,MaxTextExtent-1);
+                (void) strncpy(last,category,MaxTextExtent-1);
               }
           }
       }
@@ -989,7 +989,7 @@ static unsigned int WriteLOCALEImage(const ImageInfo *image_info,Image *image)
       last[0]='\0';
       for (i=0; i < count; i++)
       {
-        strcpy(path,locale[i]);
+        (void) strcpy(path,locale[i]);
         if (*path != '\0')
           {
             p=path+strlen(path)-1;
@@ -1012,7 +1012,7 @@ static unsigned int WriteLOCALEImage(const ImageInfo *image_info,Image *image)
                   strlen(fields[0]) ? "/" : "", fields[1], fields[2], i,
                   severity);
                 WriteBlobStringWithEOL(image,text);
-                strncpy(last,severity,MaxTextExtent-1);
+                (void) strncpy(last,severity,MaxTextExtent-1);
               }
           }
       }
@@ -1035,7 +1035,7 @@ static unsigned int WriteLOCALEImage(const ImageInfo *image_info,Image *image)
       WriteBlobStringWithEOL(image,"  {");
       for (i=0; i < count; i++)
       {
-        strcpy(path,locale[i]);
+        (void) strcpy(path,locale[i]);
         if (*path != '\0')
           {
             p=path+strlen(path)-1;
@@ -1069,7 +1069,7 @@ static unsigned int WriteLOCALEImage(const ImageInfo *image_info,Image *image)
       WriteBlobStringWithEOL(image,"    \"%1\",");
       for (i=0; i < count; i++)
       {
-        strcpy(path,locale[i]);
+        (void) strcpy(path,locale[i]);
         if (*path != '\0')
           {
             p=path+strlen(path)-1;
@@ -1101,15 +1101,15 @@ static unsigned int WriteLOCALEImage(const ImageInfo *image_info,Image *image)
       */
       attribute=GetImageAttribute(image,"[LocaleComment]");
       if (attribute != (const ImageAttribute *) NULL)
-        WriteBlobString(image,attribute->value);
+        (void) WriteBlobString(image,attribute->value);
       /*
         Write finite-state-machine.
       */
       locales=(struct locale_str *) NULL;
       accumulate((const char **) locale,count,&locales);
-      WriteBlobString(image,prologue);
+      (void) WriteBlobString(image,prologue);
       output_switches(image,locales, INDENT, -1);
-      WriteBlobString(image,epilogue);
+      (void) WriteBlobString(image,epilogue);
     }
   /*
     Free resources.

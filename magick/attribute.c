@@ -143,7 +143,7 @@ static unsigned int GenerateIPTCAttribute(Image *image,const char *key)
     return(False);
   for (i=0; i < (long) image->iptc_profile.length; i++)
   {
-    if (image->iptc_profile.info[i] != 0x1c)
+    if (image->iptc_profile.info[i] != 0x1cU)
       continue;
     if (image->iptc_profile.info[i+1] != dataset)
       continue;
@@ -229,6 +229,10 @@ static int ReadMSBShort(unsigned char **p,size_t *length)
   return(value);
 }
 
+/*
+  FIXME: length is defined as type size_t, and then code incorrectly assumes that size_t is
+  a signed type
+*/
 static char *TracePSClippingPath(unsigned char *blob,size_t length,
   unsigned long columns,unsigned long rows)
 {
@@ -445,6 +449,10 @@ static char *TracePSClippingPath(unsigned char *blob,size_t length,
   return(path);
 }
 
+/*
+  FIXME: length is defined as type size_t, and then code incorrectly assumes that size_t is
+  a signed type.
+*/
 static char *TraceSVGClippingPath(unsigned char *blob,size_t length,
   unsigned long columns,unsigned long rows)
 {
@@ -745,7 +753,7 @@ static int Generate8BIMAttribute(Image *image,const char *key)
     attribute=(char *) MagickAllocateMemory(char *,count+MaxTextExtent);
     if (attribute != (char *) NULL)
       {
-        memcpy(attribute,(char *) info,count);
+        (void) memcpy(attribute,(char *) info,count);
         attribute[count]='\0';
         info+=count;
         length-=count;
@@ -933,7 +941,7 @@ static long Read32s(int morder,void *ilong)
 
 static unsigned long Read32u(int morder, void *ilong)
 {
-  return(Read32s(morder,ilong) & 0xffffffff);
+  return(Read32s(morder,ilong) & 0xffffffffUL);
 }
 
 static int GenerateEXIFAttribute(Image *image,const char *specification)
@@ -1141,7 +1149,7 @@ static int GenerateEXIFAttribute(Image *image,const char *specification)
     nde=Read16u(morder,ifdp);
     for (; de < nde; de++)
     {
-      long
+      int
         n,
         t,
         f,
@@ -1296,7 +1304,7 @@ static int GenerateEXIFAttribute(Image *image,const char *specification)
                 }
                 case 2:
                 {
-                  FormatString(s,"#%04lx=",t);
+                  FormatString(s,"#%04x=",t);
                   (void) ConcatenateString(&final,s);
                   break;
                 }
@@ -1458,7 +1466,7 @@ MagickExport const ImageAttribute *GetImageInfoAttribute(
     {
       if (LocaleNCompare("depth",key,2) == 0)
         {
-          FormatString(attribute,"%lu",image->depth);
+          FormatString(attribute,"%u",image->depth);
           break;
         }
       if (LocaleNCompare("directory",key,2) == 0)

@@ -196,7 +196,7 @@ static int convertHTMLcodes(char *s, int len)
             break;
         }
         if (o < 6)
-          strcpy(s+1, s+1+o);
+          (void) strcpy(s+1, s+1+o);
         *s = val;
         return o;
       }
@@ -212,7 +212,7 @@ static int convertHTMLcodes(char *s, int len)
         if (html_codes[i].len <= len)
           if (stringnicmp(s, html_codes[i].code, (size_t) (html_codes[i].len)) == 0)
             {
-              strcpy(s+1, s+html_codes[i].len);
+              (void) strcpy(s+1, s+html_codes[i].len);
               *s = html_codes[i].val;
               return html_codes[i].len-1;
             }
@@ -351,7 +351,7 @@ static long parse8BIM(Image *ifile, Image *ofile)
               case 2:
                 name = MagickAllocateMemory(char *,strlen(newstr)+1);
                 if (name)
-                  strcpy(name,newstr);
+                  (void) strcpy(name,newstr);
                 break;
             }
             state++;
@@ -384,7 +384,7 @@ static long parse8BIM(Image *ifile, Image *ofile)
                 }
             }
 
-            if (dataset == 255)
+            if (dataset == 255U)
               {
                 unsigned char
                   nlen = 0;
@@ -396,44 +396,44 @@ static long parse8BIM(Image *ifile, Image *ofile)
                   {
                     long diff = outputlen - savedolen;
                     currentpos = TellBlob(ofile);
-                    SeekBlob(ofile,savedpos,SEEK_SET);
-                    WriteBlobMSBLong(ofile,diff);
-                    SeekBlob(ofile,currentpos,SEEK_SET);
+                    (void) SeekBlob(ofile,savedpos,SEEK_SET);
+                    (void) WriteBlobMSBLong(ofile,diff);
+                    (void) SeekBlob(ofile,currentpos,SEEK_SET);
                     savedolen = 0L;
                   }
                 if (outputlen & 1)
                   {
-                    WriteBlobByte(ofile,0x00);
+                    (void) WriteBlobByte(ofile,0x00);
                     outputlen++;
                   }
-                WriteBlobString(ofile,"8BIM");
-                WriteBlobMSBShort(ofile,recnum);
+                (void) WriteBlobString(ofile,"8BIM");
+                (void) WriteBlobMSBShort(ofile,recnum);
                 outputlen += 6;
                 if (name)
                   nlen = strlen(name);
-                WriteBlobByte(ofile,nlen);
+                (void) WriteBlobByte(ofile,nlen);
                 outputlen++;
                 for (i=0; i<nlen; i++)
-                  WriteBlobByte(ofile,name[i]);
+                  (void) WriteBlobByte(ofile,name[i]);
                 outputlen += nlen;
                 if (!(nlen&1))
                   {
-                    WriteBlobByte(ofile,0x00);
+                    (void) WriteBlobByte(ofile,0x00);
                     outputlen++;
                   }
                 if (recnum != IPTC_ID)
                   {
-                    WriteBlobMSBLong(ofile, len);
+                    (void) WriteBlobMSBLong(ofile, len);
                     outputlen += 4;
 
                     next=0;
                     outputlen += len;
                     while (len--)
-                      WriteBlobByte(ofile,token[next++]);
+                      (void) WriteBlobByte(ofile,token[next++]);
 
                     if (outputlen & 1)
                       {
-                        WriteBlobByte(ofile,0x00);
+                        (void) WriteBlobByte(ofile,0x00);
                         outputlen++;
                       }
                   }
@@ -441,7 +441,7 @@ static long parse8BIM(Image *ifile, Image *ofile)
                   {
                     /* patch in a fake length for now and fix it later */
                     savedpos = TellBlob(ofile);
-                    WriteBlobMSBLong(ofile,0xFFFFFFFFUL);
+                    (void) WriteBlobMSBLong(ofile,0xFFFFFFFFUL);
                     outputlen += 4;
                     savedolen = outputlen;
                   }
@@ -450,15 +450,15 @@ static long parse8BIM(Image *ifile, Image *ofile)
               {
                 if (len <= 0x7FFF)
                   {
-                    WriteBlobByte(ofile,0x1c);
-                    WriteBlobByte(ofile,dataset);
-                    WriteBlobByte(ofile,recnum & 255);
-                    WriteBlobMSBShort(ofile,len);
+                    (void) WriteBlobByte(ofile,0x1c);
+                    (void) WriteBlobByte(ofile,dataset);
+                    (void) WriteBlobByte(ofile,recnum & 255);
+                    (void) WriteBlobMSBShort(ofile,len);
                     outputlen += 5;
                     next=0;
                     outputlen += len;
                     while (len--)
-                      WriteBlobByte(ofile,token[next++]);
+                      (void) WriteBlobByte(ofile,token[next++]);
                   }
               }
           }
@@ -474,9 +474,9 @@ static long parse8BIM(Image *ifile, Image *ofile)
       long diff = outputlen - savedolen;
 
       currentpos = TellBlob(ofile);
-      SeekBlob(ofile,savedpos,SEEK_SET);
-      WriteBlobMSBLong(ofile,diff);
-      SeekBlob(ofile,currentpos,SEEK_SET);
+      (void) SeekBlob(ofile,savedpos,SEEK_SET);
+      (void) WriteBlobMSBLong(ofile,diff);
+      (void) SeekBlob(ofile,currentpos,SEEK_SET);
       savedolen = 0L;
     }
   return outputlen;
@@ -497,7 +497,7 @@ static char *super_fgets_w(char **b, int *blen, Image *file)
   for (q=p; ; q++)
   {
     c=ReadBlobLSBShort(file);
-    if (c == ((unsigned short) ~0) || c == '\n')
+    if (c == ((unsigned short) ~0U) || c == '\n')
       break;
    if (EOFBlob(file))
       break;
@@ -612,7 +612,7 @@ static long parse8BIMW(Image *ifile, Image *ofile)
               case 2:
                 name = MagickAllocateMemory(char *,strlen(newstr)+1);
                 if (name)
-                  strcpy(name,newstr);
+                  (void) strcpy(name,newstr);
                 break;
             }
             state++;
@@ -657,44 +657,44 @@ static long parse8BIMW(Image *ifile, Image *ofile)
                   {
                     long diff = outputlen - savedolen;
                     currentpos = TellBlob(ofile);
-                    SeekBlob(ofile,savedpos,SEEK_SET);
-                    WriteBlobMSBLong(ofile,diff);
-                    SeekBlob(ofile,currentpos,SEEK_SET);
+                    (void) SeekBlob(ofile,savedpos,SEEK_SET);
+                    (void) WriteBlobMSBLong(ofile,diff);
+                    (void) SeekBlob(ofile,currentpos,SEEK_SET);
                     savedolen = 0L;
                   }
                 if (outputlen & 1)
                   {
-                    WriteBlobByte(ofile,0x00);
+                    (void) WriteBlobByte(ofile,0x00);
                     outputlen++;
                   }
-                WriteBlobString(ofile,"8BIM");
-                WriteBlobMSBShort(ofile,recnum);
+                (void) WriteBlobString(ofile,"8BIM");
+                (void) WriteBlobMSBShort(ofile,recnum);
                 outputlen += 6;
                 if (name)
                   nlen = strlen(name);
-                WriteBlobByte(ofile,nlen);
+                (void) WriteBlobByte(ofile,nlen);
                 outputlen++;
                 for (i=0; i<nlen; i++)
-                  WriteBlobByte(ofile,name[i]);
+                  (void) WriteBlobByte(ofile,name[i]);
                 outputlen += nlen;
                 if (!(nlen&1))
                   {
-                    WriteBlobByte(ofile,0x00);
+                    (void) WriteBlobByte(ofile,0x00);
                     outputlen++;
                   }
                 if (recnum != IPTC_ID)
                   {
-                    WriteBlobMSBLong(ofile, len);
+                    (void) WriteBlobMSBLong(ofile, len);
                     outputlen += 4;
 
                     next=0;
                     outputlen += len;
                     while (len--)
-                      WriteBlobByte(ofile,token[next++]);
+                      (void) WriteBlobByte(ofile,token[next++]);
 
                     if (outputlen & 1)
                       {
-                        WriteBlobByte(ofile,0x00);
+                        (void) WriteBlobByte(ofile,0x00);
                         outputlen++;
                       }
                   }
@@ -702,7 +702,7 @@ static long parse8BIMW(Image *ifile, Image *ofile)
                   {
                     /* patch in a fake length for now and fix it later */
                     savedpos = TellBlob(ofile);
-                    WriteBlobMSBLong(ofile,0xFFFFFFFFUL);
+                    (void) WriteBlobMSBLong(ofile,0xFFFFFFFFUL);
                     outputlen += 4;
                     savedolen = outputlen;
                   }
@@ -711,15 +711,15 @@ static long parse8BIMW(Image *ifile, Image *ofile)
               {
                 if (len <= 0x7FFF)
                   {
-                    WriteBlobByte(ofile,0x1c);
-                    WriteBlobByte(ofile,dataset);
-                    WriteBlobByte(ofile,recnum & 255);
-                    WriteBlobMSBShort(ofile,len);
+                    (void) WriteBlobByte(ofile,0x1c);
+                    (void) WriteBlobByte(ofile,dataset);
+                    (void) WriteBlobByte(ofile,recnum & 255);
+                    (void) WriteBlobMSBShort(ofile,len);
                     outputlen += 5;
                     next=0;
                     outputlen += len;
                     while (len--)
-                      WriteBlobByte(ofile,token[next++]);
+                      (void) WriteBlobByte(ofile,token[next++]);
                   }
               }
           }
@@ -735,9 +735,9 @@ static long parse8BIMW(Image *ifile, Image *ofile)
       long diff = outputlen - savedolen;
 
       currentpos = TellBlob(ofile);
-      SeekBlob(ofile,savedpos,SEEK_SET);
-      WriteBlobMSBLong(ofile,diff);
-      SeekBlob(ofile,currentpos,SEEK_SET);
+      (void) SeekBlob(ofile,savedpos,SEEK_SET);
+      (void) WriteBlobMSBLong(ofile,diff);
+      (void) SeekBlob(ofile,currentpos,SEEK_SET);
       savedolen = 0L;
     }
   return outputlen;
@@ -784,7 +784,7 @@ static int jpeg_transfer_1(Image *ifile, Image *ofile)
   c = ReadBlobByte(ifile);
   if (c == EOF)
     return EOF;
-  WriteBlobByte(ofile,c);
+  (void) WriteBlobByte(ofile,c);
   return c;
 }
 
@@ -857,7 +857,7 @@ static int jpeg_nextmarker(Image *ifile, Image *ofile)
       return M_EOI; /* we hit EOF */
     else
       if (c != 0xff)
-        WriteBlobByte(ofile,c);
+        (void) WriteBlobByte(ofile,c);
   } while (c != 0xff);
 
   /* get marker byte, swallowing possible padding */
@@ -926,8 +926,8 @@ static int jpeg_embed(Image *ifile, Image *ofile, Image *iptc)
       {
         if (marker != M_APP13)
           {
-            WriteBlobByte(ofile,0xff);
-            WriteBlobByte(ofile,marker);
+            (void) WriteBlobByte(ofile,0xff);
+            (void) WriteBlobByte(ofile,marker);
           }
       }
 
@@ -935,12 +935,12 @@ static int jpeg_embed(Image *ifile, Image *ofile, Image *iptc)
     {
       case M_APP13:
         /* we are going to write a new APP13 marker, so don't output the old one */
-        jpeg_skip_variable2(ifile, ofile);
+        (void) jpeg_skip_variable2(ifile, ofile);
         break;
 
       case M_APP0:
         /* APP0 is in each and every JPEG, so when we hit APP0 we insert our new APP13! */
-        jpeg_skip_variable(ifile, ofile);
+        (void) jpeg_skip_variable(ifile, ofile);
 
         if (iptc != (Image *)NULL)
           {
@@ -950,22 +950,22 @@ static int jpeg_embed(Image *ifile, Image *ofile, Image *iptc)
             psheader[ 2 ] = (len+16)>>8;
             psheader[ 3 ] = (len+16)&0xff;
             for (inx = 0; inx < 18; inx++)
-              WriteBlobByte(ofile,psheader[inx]);
-            jpeg_read_remaining(iptc, ofile);
+              (void) WriteBlobByte(ofile,psheader[inx]);
+            (void) jpeg_read_remaining(iptc, ofile);
             len=GetBlobSize(iptc);
             if (len & 1)
-              WriteBlobByte(ofile,0);
+              (void) WriteBlobByte(ofile,0);
           }
         break;
 
       case M_SOS:
         /* we hit data, no more marker-inserting can be done! */
-        jpeg_read_remaining(ifile, ofile);
+        (void) jpeg_read_remaining(ifile, ofile);
         done = 1;
         break;
 
       default:
-        jpeg_skip_variable(ifile, ofile);
+        (void) jpeg_skip_variable(ifile, ofile);
         break;
     }
   }
@@ -1065,14 +1065,14 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
         {
           length=parse8BIM(image, buff);
           if (length & 1)
-            WriteBlobByte(buff,0x0);
+            (void) WriteBlobByte(buff,0x0);
         }
       else if (LocaleCompare(image_info->magick,"8BIMWTEXT") == 0)
         {
           length=parse8BIMW(image, buff);
           /* DebugString("META CODER Parse8BIMW returned: %ld\n",length); */
           if (length & 1)
-            WriteBlobByte(buff,0x0);
+            (void) WriteBlobByte(buff,0x0);
         }
       else
         {
@@ -1081,7 +1081,7 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
             c=ReadBlobByte(image);
             if (c == EOF)
               break;
-            WriteBlobByte(buff,c);
+            (void) WriteBlobByte(buff,c);
           }
         }
       image->iptc_profile.info = GetBlobStreamData(buff);
@@ -1236,7 +1236,7 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
         c=ReadBlobByte(image);
         if (c == EOF)
           break;
-        WriteBlobByte(buff,c);
+        (void) WriteBlobByte(buff,c);
       }
       image->color_profile.info = GetBlobStreamData(buff);
       image->color_profile.length=GetBlobSize(buff);
@@ -1257,12 +1257,12 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
         }
       AttachBlob(buff->blob,blob,length);
       /* write out the header - length field patched below */
-      WriteBlob(buff,12,"8BIM\04\04\0\0\0\0\0\0");
+      (void) WriteBlob(buff,12,"8BIM\04\04\0\0\0\0\0\0");
       if (LocaleCompare(image_info->magick,"IPTCTEXT") == 0)
         {
           length=parse8BIM(image, buff);
           if (length & 1)
-            WriteBlobByte(buff,0x0);
+            (void) WriteBlobByte(buff,0x0);
         }
       else if (LocaleCompare(image_info->magick,"IPTCWTEXT") == 0)
         {
@@ -1274,7 +1274,7 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
             c=ReadBlobByte(image);
             if (c == EOF)
               break;
-            WriteBlobByte(buff,c);
+            (void) WriteBlobByte(buff,c);
           }
         }
       image->iptc_profile.info = GetBlobStreamData(buff);
@@ -1623,12 +1623,12 @@ static void formatString(Image *ofile, const char *s, int len)
   char
     temp[MaxTextExtent];
 
-  WriteBlobByte(ofile,'"');
+  (void) WriteBlobByte(ofile,'"');
   for (; len > 0; --len, ++s) {
     int c = (*s) & 255;
     switch (c) {
     case '&':
-      WriteBlobString(ofile,"&amp;");
+      (void) WriteBlobString(ofile,"&amp;");
       break;
 #ifdef HANDLE_GT_LT
     case '<':
@@ -1639,26 +1639,26 @@ static void formatString(Image *ofile, const char *s, int len)
       break;
 #endif
     case '"':
-      WriteBlobString(ofile,"&quot;");
+      (void) WriteBlobString(ofile,"&quot;");
       break;
     default:
       if (isprint(c))
-        WriteBlobByte(ofile,*s);
+        (void) WriteBlobByte(ofile,*s);
       else
         {
           FormatString(temp, "&#%d;", c & 255);
-          WriteBlobString(ofile,temp);
+          (void) WriteBlobString(ofile,temp);
         }
       break;
     }
   }
 #if defined(WIN32)
-  WriteBlobString(ofile,"\"\r\n");
+  (void) WriteBlobString(ofile,"\"\r\n");
 #else
 #if defined(macintosh)
-  WriteBlobString(ofile,"\"\r");
+  (void) WriteBlobString(ofile,"\"\r");
 #else
-  WriteBlobString(ofile,"\"\n");
+  (void) WriteBlobString(ofile,"\"\n");
 #endif
 #endif
 }
@@ -1809,7 +1809,7 @@ static int formatIPTC(Image *ifile, Image *ofile)
     str=MagickAllocateMemory(unsigned char *,(unsigned int) (taglen+1));
     if (str == (unsigned char *) NULL)
       {
-        printf("MemoryAllocationFailed");
+        (void) printf("MemoryAllocationFailed");
         return 0;
       }
     for (tagindx=0; tagindx<taglen; tagindx++)
@@ -1825,7 +1825,7 @@ static int formatIPTC(Image *ifile, Image *ofile)
       FormatString(temp, "%d#%d#%s=",(unsigned int)dataset, (unsigned int) recnum, readable);
     else
       FormatString(temp, "%d#%d=",(unsigned int)dataset, (unsigned int) recnum);
-    WriteBlobString(ofile,temp);
+    (void) WriteBlobString(ofile,temp);
     formatString( ofile, (char *)str, taglen );
     MagickFreeMemory(str);
 
@@ -1948,7 +1948,7 @@ static int formatIPTCfromBuffer(Image *ofile, char *s, long len)
       FormatString(temp, "%d#%d#%s=",(unsigned int)dataset, (unsigned int) recnum, readable);
     else
       FormatString(temp, "%d#%d=",(unsigned int)dataset, (unsigned int) recnum);
-    WriteBlobString(ofile,temp);
+    (void) WriteBlobString(ofile,temp);
     formatString( ofile, (char *)str, taglen );
     MagickFreeMemory(str);
 
@@ -2015,7 +2015,7 @@ static int format8BIM(Image *ifile, Image *ofile)
       PString=MagickAllocateMemory(unsigned char *,(unsigned int) (plen+1));
       if (PString == (unsigned char *) NULL)
       {
-        printf("MemoryAllocationFailed");
+        (void) printf("MemoryAllocationFailed");
         return 0;
       }
       for (i=0; i<plen; i++)
@@ -2037,7 +2037,7 @@ static int format8BIM(Image *ifile, Image *ofile)
     str=MagickAllocateMemory(unsigned char *,(size_t) Size);
     if (str == (unsigned char *) NULL)
       {
-        printf("MemoryAllocationFailed");
+        (void) printf("MemoryAllocationFailed");
         return 0;
       }
     for (i=0; i<Size; i++)
@@ -2055,15 +2055,15 @@ static int format8BIM(Image *ifile, Image *ofile)
         /* now finish up by formatting this binary data into
          * ASCII equivalent
          */
-        if (strlen((const char *)PString) > 0)
+        if (strlen((const char *) PString) > 0)
           FormatString(temp, "8BIM#%d#%s=", ID, PString);
         else
           FormatString(temp, "8BIM#%d=", ID);
-        WriteBlobString(ofile,temp);
+        (void) WriteBlobString(ofile,temp);
         if (ID == IPTC_ID)
           {
             formatString(ofile, "IPTC", 4);
-            formatIPTCfromBuffer(ofile, (char *)str, (long) Size);
+            (void) formatIPTCfromBuffer(ofile, (char *)str, (long) Size);
           }
         else
           formatString(ofile, (char *)str, (long) Size);
@@ -2146,7 +2146,7 @@ static unsigned int WriteMETAImage(const ImageInfo *image_info,Image *image)
           ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
         }
       AttachBlob(buff->blob,image->iptc_profile.info,image->iptc_profile.length);
-      format8BIM(buff,image);
+      (void) format8BIM(buff,image);
       DetachBlob(buff->blob);
       DestroyImage(buff);
       CloseBlob(image);
@@ -2183,7 +2183,7 @@ static unsigned int WriteMETAImage(const ImageInfo *image_info,Image *image)
           ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
         }
       AttachBlob(buff->blob,info,length);
-      formatIPTC(buff,image);
+      (void) formatIPTC(buff,image);
       DetachBlob(buff->blob);
       DestroyImage(buff);
       CloseBlob(image);

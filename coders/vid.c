@@ -152,7 +152,7 @@ static Image *ReadVIDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   clone_info->blob=(void *) NULL;
   clone_info->length=0;
   if (clone_info->size == (char *) NULL)
-    CloneString(&clone_info->size,DefaultTileGeometry);
+    (void) CloneString(&clone_info->size,DefaultTileGeometry);
   for (i=0; i < number_files; i++)
   {
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),"name: %.1024s",

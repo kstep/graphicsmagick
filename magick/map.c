@@ -213,7 +213,7 @@ MagickMapDestroyObject(MagickMapObject *object)
   MagickFreeMemory(object->key);
   (object->deallocate_function)(object->object);
 
-  memset((void *)object,0xbf,sizeof(MagickMapObject));
+  (void) memset((void *)object,0xbf,sizeof(MagickMapObject));
   MagickFreeMemory(object);
 }
 
@@ -265,18 +265,18 @@ MagickMapAccessEntry(MagickMap map,const char *key, size_t *object_size)
   if (object_size)
     *object_size=0;
 
-  LockSemaphoreInfo(map->semaphore);
+  (void) LockSemaphoreInfo(map->semaphore);
 
   for (p=map->list; p != 0; p=p->next)
     if (LocaleCompare(key,p->key) == 0)
       {
         if (object_size)
           *object_size=p->object_size;
-        UnlockSemaphoreInfo(map->semaphore);
+        (void) UnlockSemaphoreInfo(map->semaphore);
         return(p->object);
       }
 
-  UnlockSemaphoreInfo(map->semaphore);
+  (void) UnlockSemaphoreInfo(map->semaphore);
 
   return 0;
 }
@@ -340,7 +340,7 @@ MagickMapAddEntry(MagickMap map,const char *key, const void *object,
       return (False);
     }
 
-  LockSemaphoreInfo(map->semaphore);
+  (void) LockSemaphoreInfo(map->semaphore);
 
   if (!map->list)
     {
@@ -399,7 +399,7 @@ MagickMapAddEntry(MagickMap map,const char *key, const void *object,
         }
     }
 
-  UnlockSemaphoreInfo(map->semaphore);
+  (void) UnlockSemaphoreInfo(map->semaphore);
 
   return (True);
 }
@@ -547,7 +547,7 @@ MagickMapClearMap(MagickMap map)
   assert(map != 0);
   assert(map->signature == MagickSignature);
 
-  LockSemaphoreInfo(map->semaphore);
+  (void) LockSemaphoreInfo(map->semaphore);
   if (map->list)
   {
     register MagickMapObject
@@ -562,7 +562,7 @@ MagickMapClearMap(MagickMap map)
       }
     map->list=0;
   }
-  UnlockSemaphoreInfo(map->semaphore);
+  (void) UnlockSemaphoreInfo(map->semaphore);
 }
 
 /*
@@ -612,7 +612,7 @@ MagickMapAllocateIterator(MagickMap map)
       iterator->signature=MagickSignature;
     }
 
-  UnlockSemaphoreInfo(map->semaphore);
+  (void) UnlockSemaphoreInfo(map->semaphore);
 
   return iterator;
 }
@@ -646,7 +646,7 @@ MagickMapDeallocateMap(MagickMap map)
   assert(map != 0);
   assert(map->signature == MagickSignature);
 
-  LockSemaphoreInfo(map->semaphore);
+  (void) LockSemaphoreInfo(map->semaphore);
 
   map->reference_count--;
 
@@ -667,10 +667,10 @@ MagickMapDeallocateMap(MagickMap map)
       }        
   }
 
-  UnlockSemaphoreInfo(map->semaphore);
+  (void) UnlockSemaphoreInfo(map->semaphore);
   DestroySemaphoreInfo(&map->semaphore);
 
-  memset((void *)map,0xbf,sizeof(MagickMapHandle));
+  (void) memset((void *)map,0xbf,sizeof(MagickMapHandle));
   MagickFreeMemory(map);
 }
 
@@ -702,13 +702,13 @@ MagickMapDeallocateIterator(MagickMapIterator iterator)
   assert(iterator != 0);
   assert(iterator->signature == MagickSignature);
 
-  LockSemaphoreInfo(iterator->map->semaphore);
+  (void) LockSemaphoreInfo(iterator->map->semaphore);
 
   iterator->map->reference_count--;
 
-  UnlockSemaphoreInfo(iterator->map->semaphore);
+  (void) UnlockSemaphoreInfo(iterator->map->semaphore);
 
-  memset((void *)iterator,0xbf,sizeof(MagickMapIteratorHandle));
+  (void) memset((void *)iterator,0xbf,sizeof(MagickMapIteratorHandle));
   MagickFreeMemory(iterator);
 }
 
@@ -887,7 +887,7 @@ MagickMapIterateNext(MagickMapIterator iterator,const char **key)
   if (iterator->member)
     *key=iterator->member->key;
 
-  UnlockSemaphoreInfo(iterator->map->semaphore);
+  (void) UnlockSemaphoreInfo(iterator->map->semaphore);
   
   return (iterator->member != 0);
 }
@@ -953,7 +953,7 @@ MagickMapIteratePrevious(MagickMapIterator iterator,const char **key)
   if (iterator->member)
     *key=iterator->member->key;
 
-  UnlockSemaphoreInfo(iterator->map->semaphore);
+  (void) UnlockSemaphoreInfo(iterator->map->semaphore);
 
   return (iterator->member != 0);
 }
@@ -1034,7 +1034,7 @@ MagickMapRemoveEntry(MagickMap map,const char *key)
         }
     }
 
-  UnlockSemaphoreInfo(map->semaphore);
+  (void) UnlockSemaphoreInfo(map->semaphore);
 
   return status;
 }
@@ -1139,7 +1139,7 @@ MagickMapCopyBlob(const void *blob, const size_t size)
 
       memory=MagickAllocateMemory(void *,size);
       if (memory)
-        memcpy(memory,blob,size);
+        (void) memcpy(memory,blob,size);
       return (memory);
     }
   return 0;

@@ -1080,11 +1080,11 @@ MagickExport void DestroyCacheInfo(Cache cache)
     {
       if (cache_info->file != -1)
         {
-          close(cache_info->file);
+          (void) close(cache_info->file);
           LiberateMagickResource(FileResource,1);
         }
       cache_info->file=(-1);
-      LiberateTemporaryFile(cache_info->cache_filename);
+      (void) LiberateTemporaryFile(cache_info->cache_filename);
       (void) LogMagickEvent(CacheEvent,GetMagickModule(),
         "remove %.1024s (%.1024s)",cache_info->filename,
         cache_info->cache_filename);
@@ -2004,7 +2004,7 @@ static unsigned int ModifyCache(Image *image)
   cache_info->reference_count--;
   clone_image=(*image);
   GetCacheInfo(&image->cache);
-  AcquireImagePixels(&clone_image,0,0,image->columns,1,&image->exception);
+  (void) AcquireImagePixels(&clone_image,0,0,image->columns,1,&image->exception);
   status=OpenCache(image,IOMode);
   if (status != False)
     {
@@ -2174,7 +2174,7 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
             LiberateMagickResource(DiskResource,cache_info->length);
             if (cache_info->file == -1)
               break;
-            close(cache_info->file);
+            (void) close(cache_info->file);
             cache_info->file=(-1);
             LiberateMagickResource(FileResource,1);
             break;
@@ -2279,8 +2279,8 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
         }
   if (!ExtendCache(file,cache_info->offset+cache_info->length))
     {
-      close(file);
-      LiberateTemporaryFile(cache_info->cache_filename);
+      (void) close(file);
+      (void) LiberateTemporaryFile(cache_info->cache_filename);
       (void) LogMagickEvent(CacheEvent,GetMagickModule(),
                             "remove %.1024s (%.1024s)",cache_info->filename,
                             cache_info->cache_filename);

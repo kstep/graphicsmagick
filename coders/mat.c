@@ -449,7 +449,7 @@ static Image *ReadMATImage(const ImageInfo * image_info, ExceptionInfo * excepti
         dblrow++;
       }
     }
-    SeekBlob(image, filepos, SEEK_SET);
+    (void) SeekBlob(image, filepos, SEEK_SET);
   }
 
   /*Main loop for reading all scanlines */
@@ -494,7 +494,7 @@ static Image *ReadMATImage(const ImageInfo * image_info, ExceptionInfo * excepti
           dblrow++;
         }
       }
-      SeekBlob(image, filepos, SEEK_SET);
+      (void) SeekBlob(image, filepos, SEEK_SET);
 
       for (i = 0; i < (long) MATLAB_HDR.SizeY; i++)
       {

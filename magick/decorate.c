@@ -192,7 +192,7 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
     CloneImage(image,frame_info->width,frame_info->height,True,exception);
   if (frame_image == (Image *) NULL)
     return(False);
-  SetImageType(frame_image,frame_image->matte_color.opacity !=
+  (void) SetImageType(frame_image,frame_image->matte_color.opacity !=
     OpaqueOpacity ? TrueColorMatteType : TrueColorType);
   /*
     Initialize 3D effects color.
@@ -436,7 +436,7 @@ MagickExport unsigned int RaiseImage(Image *image,
       foreground=0;
       background=MaxRGB;
     }
-  SetImageType(image,TrueColorType);
+  (void) SetImageType(image,TrueColorType);
   for (y=0; y < (long) raise_info->height; y++)
   {
     q=GetImagePixels(image,0,y,image->columns,1);

@@ -154,11 +154,11 @@ static Image *ReadMAPImage(const ImageInfo *image_info,ExceptionInfo *exception)
   else
     for (i=0; i < (long) image->colors; i++)
     {
-      image->colormap[i].red=(*p++ << 8);
+      image->colormap[i].red=(*p++ << 8U);
       image->colormap[i].red|=(*p++);
-      image->colormap[i].green=(*p++ << 8);
+      image->colormap[i].green=(*p++ << 8U);
       image->colormap[i].green|=(*p++);
-      image->colormap[i].blue=(*p++ << 8);
+      image->colormap[i].blue=(*p++ << 8U);
       image->colormap[i].blue|=(*p++);
     }
   MagickFreeMemory(colormap);
@@ -337,7 +337,7 @@ static unsigned int WriteMAPImage(const ImageInfo *image_info,Image *image)
     Allocate colormap.
   */
   if (!IsPaletteImage(image,&image->exception))
-    SetImageType(image,PaletteType);
+    (void) SetImageType(image,PaletteType);
   packet_size=image->depth > 8 ? 2 : 1;
   pixels=MagickAllocateMemory(unsigned char *,image->columns*packet_size);
   packet_size=image->colors > 256 ? 6 : 3;

@@ -806,7 +806,7 @@ static unsigned int ReadTypeConfigureFile(const char *basename,
               *glyphs;
 
             glyphs=(char *) NULL;
-            CloneString(&glyphs,token);
+            (void) CloneString(&glyphs,token);
 #if defined(WIN32)
             if (strchr(glyphs,'@') != (char *) NULL)
               SubstituteString(&glyphs,"@ghostscript_font_dir@",GhostscriptFontDir);

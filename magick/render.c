@@ -121,7 +121,7 @@ static unsigned long
   TracePath(PrimitiveInfo *,const char *);
 
 static void
-#if FUNCTION_UNUSED
+#if 0
   DestroyGradientInfo(GradientInfo *),
 #endif
   TraceArc(PrimitiveInfo *,const PointInfo,const PointInfo,const PointInfo),
@@ -209,7 +209,7 @@ MagickExport DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
   if (draw_info->text != (char *) NULL)
     clone_info->text=AllocateString(draw_info->text);
   if (draw_info->font != (char *) NULL)
-    CloneString(&clone_info->font,draw_info->font);
+    (void) CloneString(&clone_info->font,draw_info->font);
   if (draw_info->family != (char *) NULL)
     clone_info->family=AllocateString(draw_info->family);
   clone_info->style=draw_info->style;
@@ -219,12 +219,12 @@ MagickExport DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
     clone_info->encoding=AllocateString(draw_info->encoding);
   clone_info->pointsize=draw_info->pointsize;
   if (draw_info->density != (char *) NULL)
-    CloneString(&clone_info->density,draw_info->density);
+    (void) CloneString(&clone_info->density,draw_info->density);
   clone_info->align=draw_info->align;
   clone_info->undercolor=draw_info->undercolor;
   clone_info->border_color=draw_info->border_color;
   if (draw_info->server_name != (char *) NULL)
-    CloneString(&clone_info->server_name,draw_info->server_name);
+    (void) CloneString(&clone_info->server_name,draw_info->server_name);
   if (draw_info->dash_pattern != (double *) NULL)
     {
       register long
@@ -728,7 +728,7 @@ MagickExport void DestroyDrawInfo(DrawInfo *draw_info)
   MagickFreeMemory(draw_info->server_name);
   MagickFreeMemory(draw_info->dash_pattern);
   MagickFreeMemory(draw_info->clip_path);
-  memset((void *)draw_info,0xbf,sizeof(DrawInfo));
+  (void) memset((void *)draw_info,0xbf,sizeof(DrawInfo));
   MagickFreeMemory(draw_info);
 }
 
@@ -793,7 +793,7 @@ static long DestroyEdge(PolygonInfo *polygon_info,const long edge)
 %
 %
 */
-#if FUNCTION_UNUSED
+#if 0
 static void DestroyGradientInfo(GradientInfo *gradient_info)
 {
   register GradientInfo
@@ -1071,7 +1071,7 @@ MagickExport unsigned int DrawAffineImage(Image *image,const Image *composite,
   /*
     Affine transform image.
   */
-  SetImageType(image,TrueColorType);
+  (void) SetImageType(image,TrueColorType);
   edge.x1=min.x;
   edge.y1=min.y;
   edge.x2=max.x;
@@ -1627,7 +1627,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
   graphic_context[n]=CloneDrawInfo((ImageInfo *) NULL,draw_info);
   token=AllocateString(primitive);
   (void) QueryColorDatabase("black",&start_color,&image->exception);
-  SetImageType(image,TrueColorType);
+  (void) SetImageType(image,TrueColorType);
   status=True;
   for (q=primitive; *q != '\0'; )
   {
@@ -1826,7 +1826,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
               (void) QueryColorDatabase(token,&graphic_context[n]->fill,
                 &image->exception);
             else
-              DrawPatternPath(image,draw_info,token,
+              (void) DrawPatternPath(image,draw_info,token,
                 &graphic_context[n]->fill_pattern);
             if (graphic_context[n]->fill.opacity != TransparentOpacity)
               graphic_context[n]->fill.opacity=graphic_context[n]->opacity;
@@ -2424,7 +2424,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
 
             GetToken(q,&q,token);
             (void) QueryColorDatabase(token,&stop_color,&image->exception);
-            GradientImage(image,&start_color,&stop_color);
+            (void) GradientImage(image,&start_color,&stop_color);
             start_color=stop_color;
             GetToken(q,&q,token);
             break;
@@ -2437,7 +2437,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
               (void) QueryColorDatabase(token,&graphic_context[n]->stroke,
                 &image->exception);
             else
-              DrawPatternPath(image,draw_info,token,
+              (void) DrawPatternPath(image,draw_info,token,
                 &graphic_context[n]->stroke_pattern);
             if (graphic_context[n]->stroke.opacity != TransparentOpacity)
               graphic_context[n]->stroke.opacity=graphic_context[n]->opacity;

@@ -123,7 +123,7 @@ static void InsertRow(int depth, unsigned char *p, long y, Image * image, unsign
           {
             for (bit = 0; bit < 8; bit++)
               {
-                index = ((*p) & (0x80 >> bit) ? 0x01 : 0x00);
+                index = ((*p) & (0x80U >> bit) ? 0x01U : 0x00U);
                 indexes[x + bit] = MEZ[index];
                 *q++ = image->colormap[index];
               }
@@ -403,8 +403,8 @@ static Image *ReadTOPOLImage(const ImageInfo * image_info, ExceptionInfo * excep
   /*
     Read TopoL RAS header.
   */
-  memset(&Header, 0, sizeof(Header));
-  ReadBlob(image, 20, &Header.Name);
+  (void) memset(&Header, 0, sizeof(Header));
+  (void) ReadBlob(image, 20, &Header.Name);
   Header.Rows = ReadBlobLSBShort(image);
   Header.Cols = ReadBlobLSBShort(image);
   Header.TypSou = ReadBlobLSBShort(image);
@@ -510,9 +510,9 @@ static Image *ReadTOPOLImage(const ImageInfo * image_info, ExceptionInfo * excep
       (void) strcpy(clone_info->filename+i,".mez");
       if((clone_info->file=fopen(clone_info->filename,"rb"))==NULL)
         {
-        DestroyImageInfo(clone_info);
-        clone_info=NULL;
-        goto NoMEZ;            
+          DestroyImageInfo(clone_info);
+          clone_info=NULL;
+          goto NoMEZ;            
         }
     }
 
@@ -522,14 +522,14 @@ static Image *ReadTOPOLImage(const ImageInfo * image_info, ExceptionInfo * excep
 
   ldblk=(long) GetBlobSize(palette);
   if(ldblk>sizeof(MEZ)) ldblk=sizeof(MEZ);
-  ReadBlob(palette, ldblk, MEZ); 
+  (void) ReadBlob(palette, ldblk, MEZ); 
             
-NoMEZ:		/*Clean up palette and clone_info*/
+ NoMEZ:		/*Clean up palette and clone_info*/
   if (palette != NULL) {DestroyImage(palette);palette=NULL;}
   if (clone_info != NULL) 
     {
-    DestroyImageInfo(clone_info);
-    clone_info=NULL;
+      DestroyImageInfo(clone_info);
+      clone_info=NULL;
     }
 
   /* ----- Do something with palette ----- */
@@ -571,7 +571,7 @@ NoMEZ:		/*Clean up palette and clone_info*/
   status=OpenBlob(clone_info,palette,ReadBinaryBlobMode,exception);
   if (status == False)
     {
-ErasePalette:     
+    ErasePalette:     
       DestroyImage(palette);
       palette=NULL;
       goto NoPalette;
@@ -580,36 +580,36 @@ ErasePalette:
      
   if(palette!=NULL)
     {
-    ldblk=ReadBlobByte(palette);		/*size of palette*/
-    if(ldblk==EOF) goto ErasePalette;
-    image->colors=ldblk+1;    
-    if (!AllocateImageColormap(image, image->colors)) goto NoMemory;
+      ldblk=ReadBlobByte(palette);		/*size of palette*/
+      if(ldblk==EOF) goto ErasePalette;
+      image->colors=ldblk+1;    
+      if (!AllocateImageColormap(image, image->colors)) goto NoMemory;
     
-    for(i=0;i<=ldblk;i++)
+      for(i=0;i<=ldblk;i++)
         {     
-        j=ReadBlobByte(palette);	/* Flag */
-        if(j==EOF) break;		/* unexpected end of file */
-	if(j<=ldblk)
-	  {
-          image->colormap[j].red=ScaleCharToQuantum(ReadBlobByte(palette));
-          image->colormap[j].green=ScaleCharToQuantum(ReadBlobByte(palette));
-          image->colormap[j].blue=ScaleCharToQuantum(ReadBlobByte(palette));       
-	  }
-	else
-	  {
-	  SeekBlob(palette, 3, SEEK_CUR);
-	  fprintf(stderr,"TopoL: Wrong index inside palette %d!",(int)j);
-	  } 
+          j=ReadBlobByte(palette);	/* Flag */
+          if(j==EOF) break;		/* unexpected end of file */
+          if(j<=ldblk)
+            {
+              image->colormap[j].red=ScaleCharToQuantum(ReadBlobByte(palette));
+              image->colormap[j].green=ScaleCharToQuantum(ReadBlobByte(palette));
+              image->colormap[j].blue=ScaleCharToQuantum(ReadBlobByte(palette));       
+            }
+          else
+            {
+              (void) SeekBlob(palette, 3, SEEK_CUR);
+              (void) fprintf(stderr,"TopoL: Wrong index inside palette %d!",(int)j);
+            } 
         }
     }
 
 
-NoPalette:
+ NoPalette:
   if (palette == NULL && image->colors != 0)
     {
       if (!AllocateImageColormap(image, image->colors))
         {
-NoMemory:
+        NoMemory:
           ThrowReaderException(ResourceLimitError, MemoryAllocationFailed, image);
         }
 

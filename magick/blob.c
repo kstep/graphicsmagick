@@ -534,7 +534,7 @@ MagickExport Image *BlobToImage(const ImageInfo *image_info,const void *blob,
   image=ReadImage(clone_info,exception);
   (void) LogMagickEvent(BlobEvent,GetMagickModule(),
     "Removing temporary file \"%s\"\n",clone_info->filename);
-  LiberateTemporaryFile(clone_info->filename);
+  (void) LiberateTemporaryFile(clone_info->filename);
   DestroyImageInfo(clone_info);
   (void) LogMagickEvent(BlobEvent,GetMagickModule(), "Leaving BlobToImage");
   return(image);
@@ -657,14 +657,14 @@ MagickExport void CloseBlob(Image *image)
     case ZipStream:
     {
 #if defined(HasZLIB)
-      gzerror(image->blob->file,&status);
+      (void) gzerror(image->blob->file,&status);
 #endif
       break;
     }
     case BZipStream:
     {
 #if defined(HasBZLIB)
-      BZ2_bzerror(image->blob->file,&status);
+      (void) BZ2_bzerror(image->blob->file,&status);
 #endif
       break;
     }
@@ -761,7 +761,7 @@ MagickExport void DestroyBlob(Image *image)
     (void) UnmapBlob(image->blob->data,image->blob->length);
   if (image->blob->semaphore != (SemaphoreInfo **) NULL)
     DestroySemaphoreInfo((SemaphoreInfo **) &image->blob->semaphore);
-  memset((void *) image->blob,0xbf,sizeof(BlobInfo));
+  (void) memset((void *) image->blob,0xbf,sizeof(BlobInfo));
   MagickFreeMemory(image->blob);
 }
 
@@ -805,7 +805,7 @@ MagickExport void DestroyBlobInfo(BlobInfo *blob)
     (void) UnmapBlob(blob->data,blob->length);
   if (blob->semaphore != (SemaphoreInfo **) NULL)
     DestroySemaphoreInfo((SemaphoreInfo **) &blob->semaphore);
-  memset((void *)blob,0xbf,sizeof(BlobInfo));
+  (void) memset((void *)blob,0xbf,sizeof(BlobInfo));
   MagickFreeMemory(blob);
 }
 
@@ -1411,7 +1411,7 @@ static void AddConfigurePath(MagickMap path_map, unsigned int *path_index,
     key[MaxTextExtent];
 
   FormatString(key,"%u",*path_index);
-  MagickMapAddEntry(path_map,key,(void *)path,0,exception);
+  (void) MagickMapAddEntry(path_map,key,(void *)path,0,exception);
   (*path_index)++;
 }
 
@@ -1476,10 +1476,10 @@ MagickExport void *GetConfigureBlob(const char *filename,char *path,
               length=end-start;
             if (length > MaxTextExtent-1)
               length = MaxTextExtent-1;
-            strncpy(buffer,start,length);
+            (void) strncpy(buffer,start,length);
             buffer[length]='\0';
             if (buffer[length-1] != DirectorySeparator[0])
-              strcat(buffer,DirectorySeparator);
+              (void) strcat(buffer,DirectorySeparator);
             AddConfigurePath(path_map,&path_index,buffer,exception);
             start += length+1;
           }
@@ -1599,8 +1599,8 @@ MagickExport void *GetConfigureBlob(const char *filename,char *path,
       while(MagickMapIterateNext(path_map_iterator,&key))
         {
           if (search_path)
-            ConcatenateString(&search_path,list_seperator);
-          ConcatenateString(&search_path,
+            (void) ConcatenateString(&search_path,list_seperator);
+          (void) ConcatenateString(&search_path,
             MagickMapDereferenceIterator(path_map_iterator,0));
         }
       
@@ -1629,9 +1629,9 @@ MagickExport void *GetConfigureBlob(const char *filename,char *path,
           if (logging)
             (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
               "Found: %.1024s",test_path);
-          strcpy(path,test_path);
+          (void) strcpy(path,test_path);
           (void) fseek(file,0L,SEEK_END);
-          *length=ftell(file);
+          *length=ftell(file); /* FIXME: ftell returns long, but size_t may be unsigned */
           if (*length > 0)
             {
               (void) fseek(file,0L,SEEK_SET);
@@ -1797,7 +1797,7 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
   DestroyImageInfo(clone_info);
   if (status == False)
     {
-      LiberateTemporaryFile(unique);
+      (void) LiberateTemporaryFile(unique);
       ThrowException(exception,BlobError,UnableToWriteBlob,image->filename);
       (void) LogMagickEvent(BlobEvent,GetMagickModule(),
         "Exiting ImageToBlob");
@@ -1807,7 +1807,7 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
     Read image from disk as blob.
   */
   blob=(unsigned char *) FileToBlob(image->filename,length,exception);
-  LiberateTemporaryFile(image->filename);
+  (void) LiberateTemporaryFile(image->filename);
   (void) strncpy(image->filename,filename,MaxTextExtent-1);
   if (blob == (unsigned char ) NULL)
     {
@@ -2293,7 +2293,7 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
               Form filename for multi-part images.
             */
             FormMultiPartFilename(image,image_info);
-            strcpy(filename,image->filename);
+            (void) strcpy(filename,image->filename);
 #if defined(macintosh)
             /* What is this for? */
             SetApplicationType(filename,image_info->magick,'8BIM');
@@ -2354,19 +2354,19 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
                   size_t
                     count;
 
-                  setvbuf(image->blob->file,NULL,_IOFBF,16384);
+                  (void) setvbuf(image->blob->file,NULL,_IOFBF,16384);
                   image->blob->type=FileStream;
                   (void) LogMagickEvent(BlobEvent,GetMagickModule(),
                     "  opened file %s as FileStream blob %p",
                       filename,&image->blob);
-                  memset((void *) magick,0,MaxTextExtent);
+                  (void) memset((void *) magick,0,MaxTextExtent);
                   count=fread(magick,MaxTextExtent,1,image->blob->file);
                   (void) rewind(image->blob->file);
                   (void) LogMagickEvent(BlobEvent,GetMagickModule(),
                      "  read %ld magic header bytes", (long) count);
 #if defined(HasZLIB)
-                  if ((magick[0] == 0x1F) && (magick[1] == 0x8B) &&
-                      (magick[2] == 0x08))
+                  if ((magick[0] == 0x1FU) && (magick[1] == 0x8BU) &&
+                      (magick[2] == 0x08U))
                     {
                       (void) fclose(image->blob->file);
                       image->blob->file=(FILE *) gzopen(filename,type);
@@ -2862,7 +2862,7 @@ MagickExport unsigned short ReadBlobLSBShort(Image *image)
     value=ReadBlob(image,2,source_v);
   source=source_v;
   if (value < 2)
-    return((unsigned short) ~0);
+    return((unsigned short) ~0U);
   value=source[1] << 8;
   value|=source[0];
   return(value);

@@ -140,9 +140,11 @@ typedef struct _StreamInfo
 static unsigned int DecodeImage(Image *image,const unsigned int compression,
   unsigned char *pixels)
 {
-  long
+  int
     byte,
-    count,
+    count;
+
+  long
     y;
 
   register long

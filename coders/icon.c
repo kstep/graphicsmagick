@@ -208,11 +208,11 @@ static Image *ReadIconImage(const ImageInfo *image_info,
     icon_info.y_pixels=ReadBlobLSBLong(image);
     icon_info.number_colors=ReadBlobLSBLong(image);
     icon_info.colors_important=ReadBlobLSBLong(image);
-    image->matte=(unsigned int) (icon_info.bits_per_pixel == 32);
+    image->matte=(unsigned int) (icon_info.bits_per_pixel == 32U);
     image->columns=icon_info.width;
     image->rows=icon_info.height;
     image->depth=8;
-    if ((icon_info.number_colors != 0) || (icon_info.bits_per_pixel < 16))
+    if ((icon_info.number_colors != 0) || (icon_info.bits_per_pixel < 16U))
       {
         image->storage_class=PseudoClass;
         image->colors=icon_info.number_colors;
@@ -430,7 +430,7 @@ static Image *ReadIconImage(const ImageInfo *image_info,
         }
      if (image->columns % 32) 
        for (x=0; x < (long) ((32-(image->columns % 32))/8); x++)
-         ReadBlobByte(image);
+         (void) ReadBlobByte(image);
       if (!SyncImagePixels(image))
         break;
       if (image->previous == (Image *) NULL)

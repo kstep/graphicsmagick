@@ -226,7 +226,7 @@ static unsigned int WriteMPRImage(const ImageInfo *image_info,Image *image)
   DestroyExceptionInfo(&exception);
   if (registry_image != (Image *) NULL)
     {
-      DeleteMagickRegistry(id);
+      (void) DeleteMagickRegistry(id);
       DestroyImage(registry_image);
     }
   id=SetMagickRegistry(ImageRegistryType,image,sizeof(Image),&image->exception);

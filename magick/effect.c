@@ -126,7 +126,7 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
     return((Image *) NULL);
   if (image->is_monochrome)
     return threshold_image;
-  SetImageType(threshold_image,TrueColorType);
+  (void) SetImageType(threshold_image,TrueColorType);
   /*
     Threshold each row of the image.
   */
@@ -691,7 +691,7 @@ MagickExport unsigned int ChannelThresholdImage(Image *image,
   blue_threshold_quantum=RoundSignedToQuantum(blue_threshold);
   opacity_threshold_quantum=RoundSignedToQuantum(opacity_threshold);
 
-  SetImageType(image,TrueColorType);
+  (void) SetImageType(image,TrueColorType);
 
   for (y=0; y < (long) image->rows; y++)
   {

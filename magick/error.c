@@ -922,16 +922,16 @@ MagickExport void ThrowLoggedException(ExceptionInfo *exception,
   if (exception->reason)
     {
       if (exception->description)
-        LogMagickEvent(severity,module,function,line,"%.1024s (%.1024s)",
-          exception->reason,exception->description );
+        (void) LogMagickEvent(severity,module,function,line,"%.1024s (%.1024s)",
+                              exception->reason,exception->description );
       else
-        LogMagickEvent(severity,module,function,line,"%.1024s",
-          exception->reason);
+        (void) LogMagickEvent(severity,module,function,line,"%.1024s",
+                              exception->reason);
     }
   else
     {
-      LogMagickEvent(severity,module,function,line,
-        "exception contains no reason!");
+      (void) LogMagickEvent(severity,module,function,line,
+                            "exception contains no reason!");
     }
   return;
 }

@@ -887,7 +887,7 @@ static unsigned int XAnnotateEditImage(Display *display,
         */
         for (i=0; i < (long) length; i++)
         {
-          if (data[i] != '\n')
+          if ((char) data[i] != '\n')
             {
               /*
                 Draw a single character on the Image window.
@@ -1824,7 +1824,7 @@ static unsigned int XColorEditImage(Display *display,
                 (*image)->fuzz=StringToDouble(FuzzMenu[entry],MaxRGB);
                 break;
               }
-            strcpy(fuzz,"20%");
+            (void) strcpy(fuzz,"20%");
             (void) XDialogWidget(display,windows,"Ok",
               "Enter fuzz factor (0.0 - 99.9%):",fuzz);
             if (*fuzz == '\0')
@@ -2011,7 +2011,7 @@ static unsigned int XColorEditImage(Display *display,
             /*
               Update color information using point algorithm.
             */
-            SetImageType(*image,TrueColorType);
+            (void) SetImageType(*image,TrueColorType);
             q=GetImagePixels(*image,x_offset,y_offset,1,1);
             if (q == (PixelPacket *) NULL)
               break;
@@ -2099,7 +2099,7 @@ static unsigned int XColorEditImage(Display *display,
             /*
               Update color information using reset algorithm.
             */
-            SetImageType(*image,TrueColorType);
+            (void) SetImageType(*image,TrueColorType);
             for (y=0; y < (long) (*image)->rows; y++)
             {
               q=SetImagePixels(*image,0,y,(*image)->columns,1);
@@ -2637,7 +2637,7 @@ static unsigned int XCompositeImage(Display *display,
       SetImageOpacity(composite_image,OpaqueOpacity);
       opacity=(Quantum) (ScaleQuantumToChar(MaxRGB)-
         ((long) ScaleQuantumToChar(MaxRGB)*blend)/100);
-      SetImageType(image,TrueColorMatteType);
+      (void) SetImageType(image,TrueColorMatteType);
       for (y=0; y < (long) image->rows; y++)
       {
         q=GetImagePixels(image,0,y,image->columns,1);
@@ -3576,7 +3576,7 @@ static unsigned int XCropImage(Display *display,XResourceInfo *resource_info,
   /*
     Cut image.
   */
-  SetImageType(image,TrueColorMatteType);
+  (void) SetImageType(image,TrueColorMatteType);
   for (y=0; y < (long) crop_info.height; y++)
   {
     q=GetImagePixels(image,crop_info.x,y+crop_info.y,crop_info.width,1);
@@ -3976,7 +3976,7 @@ static unsigned int XDrawEditImage(Display *display,
               DestroyImageInfo(image_info);
               status=XReadBitmapFile(display,root_window,filename,&width,
                 &height,&stipple,&x,&y);
-              LiberateTemporaryFile(filename);
+              (void) LiberateTemporaryFile(filename);
               if (status != BitmapSuccess)
                 XNoticeWidget(display,windows,"Unable to read X bitmap image:",
                   filename);
@@ -5873,7 +5873,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       (void) strcpy(modulate_factors,"100.0/100.0/");
       (void) strncat(modulate_factors,hue_percent,MaxTextExtent-
         strlen(modulate_factors)-1);
-      ModulateImage(*image,modulate_factors);
+      (void) ModulateImage(*image,modulate_factors);
       XSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
@@ -5901,7 +5901,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       (void) strcpy(modulate_factors,"100.0/");
       (void) strncat(modulate_factors,saturation_percent,MaxTextExtent-
         strlen(modulate_factors)-1);
-      ModulateImage(*image,modulate_factors);
+      (void) ModulateImage(*image,modulate_factors);
       XSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
@@ -5927,7 +5927,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
       (void) strncpy(modulate_factors,brightness_percent,MaxTextExtent-1);
-      ModulateImage(*image,modulate_factors);
+      (void) ModulateImage(*image,modulate_factors);
       XSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
@@ -5952,7 +5952,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      GammaImage(*image,factor);
+      (void) GammaImage(*image,factor);
       XSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
@@ -5967,7 +5967,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      ContrastImage(*image,True);
+      (void) ContrastImage(*image,True);
       XSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
@@ -5982,7 +5982,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      ContrastImage(*image,False);
+      (void) ContrastImage(*image,False);
       XSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
@@ -6300,7 +6300,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       /*
         Query user for threshold value.
       */
-      sprintf(factor,"%lu",(unsigned long)(MaxRGB+1)/2);
+      (void) sprintf(factor,"%lu",(unsigned long)(MaxRGB+1)/2);
       (void) XDialogWidget(display,windows,"Threshold",
         "Enter threshold value:",factor);
       if (*factor == '\0')
@@ -6480,7 +6480,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      SolarizeImage(*image,StringToDouble(factor,MaxRGB));
+      (void) SolarizeImage(*image,StringToDouble(factor,MaxRGB));
       XSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
@@ -6810,7 +6810,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
           file=fopen(image_info->filename,"w");
           if (file == (FILE *) NULL)
             {
-              LiberateTemporaryFile(image_info->filename);
+              (void) LiberateTemporaryFile(image_info->filename);
               XNoticeWidget(display,windows,"Unable to edit image comment",
                 image_info->filename);
               break;
@@ -6837,7 +6837,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
           (void) SetImageAttribute(*image,"comment",command);
           (*image)->taint=True;
         }
-      LiberateTemporaryFile(image_info->filename);
+      (void) LiberateTemporaryFile(image_info->filename);
       XSetCursorState(display,windows,False);
       break;
     }
@@ -6858,7 +6858,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       status=WriteImage(image_info,*image);
       if (status == False)
         {
-          LiberateTemporaryFile(filename);
+          (void) LiberateTemporaryFile(filename);
           XNoticeWidget(display,windows,"Unable to launch image editor",
             (char *) NULL);
         }
@@ -6871,7 +6871,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
           XClientMessage(display,windows->image.id,windows->im_protocols,
             windows->im_next_image,CurrentTime);
         }
-      LiberateTemporaryFile(filename);
+      (void) LiberateTemporaryFile(filename);
       XSetCursorState(display,windows,False);
       break;
     }
@@ -7677,7 +7677,7 @@ static unsigned int XMatteEditImage(Display *display,
                 (*image)->fuzz=StringToDouble(FuzzMenu[entry],MaxRGB);
                 break;
               }
-            strcpy(fuzz,"20%");
+            (void) strcpy(fuzz,"20%");
             (void) XDialogWidget(display,windows,"Ok",
               "Enter fuzz factor (0.0 - 99.9%):",fuzz);
             if (*fuzz == '\0')
@@ -7894,7 +7894,7 @@ static unsigned int XMatteEditImage(Display *display,
         if ((x_offset >= (int) (*image)->columns) ||
             (y_offset >= (int) (*image)->rows))
           continue;
-        SetImageType(*image,TrueColorMatteType);
+        (void) SetImageType(*image,TrueColorMatteType);
         switch (method)
         {
           case PointMethod:
@@ -7960,7 +7960,7 @@ static unsigned int XMatteEditImage(Display *display,
             /*
               Update matte information using reset algorithm.
             */
-            SetImageType(*image,TrueColorType);
+            (void) SetImageType(*image,TrueColorType);
             for (y=0; y < (long) (*image)->rows; y++)
             {
               q=SetImagePixels(*image,0,y,(*image)->columns,1);
@@ -11656,7 +11656,7 @@ MagickExport unsigned int XDisplayBackgroundImage(Display *display,
         "Image: %.1024s[%lu] %lux%lu ",image->filename,image->scene,
         image->columns,image->rows);
       if (image->colors != 0)
-        (void) LogMagickEvent(X11Event,GetMagickModule(),"%luc ",image->colors);
+        (void) LogMagickEvent(X11Event,GetMagickModule(),"%uc ",image->colors);
       (void) LogMagickEvent(X11Event,GetMagickModule(),"%.1024s",image->magick);
     }
   /*
@@ -12312,7 +12312,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
         "Image: %.1024s[%lu] %lux%lu ",display_image->filename,
         display_image->scene,display_image->columns,display_image->rows);
       if (display_image->colors != 0)
-        (void) LogMagickEvent(X11Event,GetMagickModule(),"%luc ",
+        (void) LogMagickEvent(X11Event,GetMagickModule(),"%uc ",
           display_image->colors);
       (void) LogMagickEvent(X11Event,GetMagickModule(),"%.1024s",
         display_image->magick);
@@ -12336,7 +12336,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   if (IsEventLogging())
     (void) LogMagickEvent(X11Event,GetMagickModule(),"Window id: 0x%lx (context)",
       windows->context.id);
-  memset(&context_values,0,sizeof(context_values));
+  (void) memset(&context_values,0,sizeof(context_values));
   context_values.background=pixel->background_color.pixel;
   context_values.font=font_info->fid;
   context_values.foreground=pixel->foreground_color.pixel;

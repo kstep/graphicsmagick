@@ -48,9 +48,9 @@
 #define ColorFilename  "colors.mgk"
 
 #define ColorToNodeId(red,green,blue,index) ((unsigned int) \
-            (((ScaleQuantumToChar(red) >> index) & 0x01) << 2 | \
-             ((ScaleQuantumToChar(green) >> index) & 0x01) << 1 | \
-             ((ScaleQuantumToChar(blue) >> index) & 0x01)))
+            (((ScaleQuantumToChar(red) >> index) & 0x01U) << 2U | \
+             ((ScaleQuantumToChar(green) >> index) & 0x01U) << 1U | \
+             ((ScaleQuantumToChar(blue) >> index) & 0x01U)))
 
 /*
   Declare color map.
@@ -607,7 +607,7 @@ MagickExport ColorInfo **GetColorInfoArray(ExceptionInfo *exception)
   /*
     Load color list
   */
-  GetColorInfo("*",exception);
+  (void) GetColorInfo("*",exception);
   if ((!color_list) || (exception->severity > UndefinedException))
     return 0;
 
@@ -630,7 +630,7 @@ MagickExport ColorInfo **GetColorInfoArray(ExceptionInfo *exception)
       ThrowException(exception,ResourceLimitError,MemoryAllocationFailed,0);
       return False;
     }
-  memset((void **)array,0,sizeof(ColorInfo *)*(entries+1));
+  (void) memset((void **)array,0,sizeof(ColorInfo *)*(entries+1));
 
   /*
     Add entries to array
@@ -1574,11 +1574,11 @@ MagickExport unsigned int ListColorInfo(FILE *file,ExceptionInfo *exception)
     else
       (void) fprintf(file,"%5d,%5d,%5d,%5d ",p->color.red,p->color.green,
         p->color.blue,p->color.opacity);
-    if (p->compliance & SVGCompliance)
+    if ((unsigned int) p->compliance & (unsigned int) SVGCompliance)
       (void) fprintf(file,"SVG ");
-    if (p->compliance & X11Compliance)
+    if ((unsigned int) p->compliance & (unsigned int) X11Compliance)
       (void) fprintf(file,"X11 ");
-    if (p->compliance & XPMCompliance)
+    if ((unsigned int) p->compliance & (unsigned int) XPMCompliance)
       (void) fprintf(file,"XPM ");
     (void) fprintf(file,"\n");
   }
@@ -1653,7 +1653,7 @@ MagickExport unsigned int QueryColorDatabase(const char *name,
       LongPixelPacket
         pixel;
 
-      memset(&pixel,0,sizeof(LongPixelPacket));
+      (void) memset(&pixel,0,sizeof(LongPixelPacket));
       name++;
       for (n=0; isxdigit((int) name[n]); n++);
       if ((n == 3) || (n == 6) || (n == 9) || (n == 12) || (n == 24))
@@ -1833,7 +1833,7 @@ MagickExport unsigned int QueryColorname(const Image *image,
     {
       for (p=color_list; p != (const ColorInfo *) NULL; p=p->next)
       {
-        if (!(p->compliance & compliance))
+        if (!((unsigned int) p->compliance & (unsigned int) compliance))
           continue;
         if ((p->color.red != color->red) || (p->color.green != color->green) ||
             (p->color.blue != color->blue) ||

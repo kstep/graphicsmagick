@@ -370,7 +370,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
         for (j=1; j <= (packet_size-1); j++)
         {
           long_quantum[j]=(*p);
-          quantum=(quantum << 8) | (*p++);
+          quantum=(quantum << 8U) | (*p++);
         }
         pixel=(double) quantum;
         if (fits_info.bits_per_pixel == 16)
@@ -714,7 +714,7 @@ static unsigned int WriteFITSImage(const ImageInfo *image_info,Image *image)
     fits_info[i]=' ';
   (void) strcpy(buffer,"SIMPLE  =                    T");
   (void) strncpy(fits_info+0,buffer,strlen(buffer));
-  FormatString(buffer,"BITPIX  =                    %ld",image->depth);
+  FormatString(buffer,"BITPIX  =                    %u",image->depth);
   (void) strncpy(fits_info+80,buffer,strlen(buffer));
   (void) strcpy(buffer,"NAXIS   =                    2");
   (void) strncpy(fits_info+160,buffer,strlen(buffer));
