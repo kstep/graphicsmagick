@@ -1,10 +1,10 @@
-<HTML>
-<HEAD>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"><HTML>
+<HEAD><meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <TITLE>render - Methods to Draw on an Image</TITLE>
-<LINK REV="made" HREF="mailto:bhcompile@daffy.perf.redhat.com">
+<link rel="StyleSheet" href="../magick.css" type="text/css">
 </HEAD>
 
-<BODY>
+<body bgcolor="#FFFFFF" text="#000000" link="#0085c0" alink="#0085c0"  vlink="#800080">
 
 <A NAME="__index__"></A>
 <!-- INDEX BEGIN -->
@@ -12,23 +12,23 @@
 <UL>
 
 	<LI><A HREF="#name">
-<FONT SIZE=-1>NAME</FONT></A></LI>
+<FONT SIZE=-1>NAME</FONT></A>
 	<LI><A HREF="#synopsis">
-<FONT SIZE=-1>SYNOPSIS</FONT></A></LI>
+<FONT SIZE=-1>SYNOPSIS</FONT></A>
 	<LI><A HREF="#function descriptions">
 <FONT SIZE=-1>FUNCTION</FONT> 
-<FONT SIZE=-1>DESCRIPTIONS</FONT></A></LI>
+<FONT SIZE=-1>DESCRIPTIONS</FONT></A>
 	<UL>
 
-		<LI><A HREF="#clonedrawinfo">CloneDrawInfo</A></LI>
-		<LI><A HREF="#colorfloodfillimage">ColorFloodfillImage</A></LI>
-		<LI><A HREF="#destroydrawinfo">DestroyDrawInfo</A></LI>
-		<LI><A HREF="#drawclippath">DrawClipPath</A></LI>
-		<LI><A HREF="#drawimage">DrawImage</A></LI>
-		<LI><A HREF="#drawpatternpath">DrawPatternPath</A></LI>
-		<LI><A HREF="#mattefloodfillimage">MatteFloodfillImage</A></LI>
-		<LI><A HREF="#opaqueimage">OpaqueImage</A></LI>
-		<LI><A HREF="#transparentimage">TransparentImage</A></LI>
+		<LI><A HREF="#clonedrawinfo">CloneDrawInfo</A>
+		<LI><A HREF="#colorfloodfillimage">ColorFloodfillImage</A>
+		<LI><A HREF="#destroydrawinfo">DestroyDrawInfo</A>
+		<LI><A HREF="#drawclippath">DrawClipPath</A>
+		<LI><A HREF="#drawimage">DrawImage</A>
+		<LI><A HREF="#drawpatternpath">DrawPatternPath</A>
+		<LI><A HREF="#mattefloodfillimage">MatteFloodfillImage</A>
+		<LI><A HREF="#opaqueimage">OpaqueImage</A>
+		<LI><A HREF="#transparentimage">TransparentImage</A>
 	</UL>
 
 </UL>
@@ -62,15 +62,15 @@
 <blockquote>CloneDrawInfo() makes a copy of the given draw info structure. If NULL is specified, a new image info structure is created initialized to default values. </blockquote><P>The format of the CloneDrawInfo method is:</P>
 <blockquote><A HREF="types/DrawInfo.html">DrawInfo</A> *CloneDrawInfo ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, const <A HREF="types/DrawInfo.html">DrawInfo</A> *draw_info ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL>
-<DT><STRONG><A NAME="item_o_image_info%3A">o image_info:</A></STRONG><BR>
+<DL><DT><DD><DL>
+<dd><p></p><dt><STRONG><A NAME="item_o_image_info%3A">image_info:</A></STRONG><BR>
 <DD>
 The image info.
 <P></P>
-<DT><STRONG><A NAME="item_o_draw_info%3A">o draw_info:</A></STRONG><BR>
+<dd><p></p><dt><STRONG><A NAME="item_o_draw_info%3A">draw_info:</A></STRONG><BR>
 <DD>
 The draw info.
-<P></P></DL>
+<P></P></DL></DL>
 <P>
 <H2><A NAME="colorfloodfillimage">ColorFloodfillImage</A></H2>
 <P><CODE>ColorFloodfill()</CODE> changes the color value of any pixel that matches target and is an immediate neighbor.  If the method FillToBorderMethod is specified, the color value is changed for any neighbor pixel that does not match the bordercolor member of image.</P>
@@ -78,92 +78,92 @@ The draw info.
 <P>The format of the ColorFloodfillImage method is:</P>
 <blockquote>unsigned int ColorFloodfillImage ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/DrawInfo.html">DrawInfo</A> *draw_info, const <A HREF="types/PixelPacket.html">PixelPacket</A> target, const long x_offset, const long y_offset, const <A HREF="types/Enumerations.html#PaintMethod">PaintMethod</A> method ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL>
-<DT><STRONG><A NAME="item_o_image%3A">o image:</A></STRONG><BR>
+<DL><DT><DD><DL>
+<dd><p></p><dt><STRONG><A NAME="item_o_image%3A">image:</A></STRONG><BR>
 <DD>
 The image.
 <P></P>
-<DT><STRONG>o draw_info:</STRONG><BR>
+<dd><p></p><dt><STRONG>draw_info:</STRONG><BR>
 <DD>
 The draw info.
 <P></P>
-<DT><STRONG><A NAME="item_o_target%3A">o target:</A></STRONG><BR>
+<dd><p></p><dt><STRONG><A NAME="item_o_target%3A">target:</A></STRONG><BR>
 <DD>
 The 
 <FONT SIZE=-1>RGB</FONT> value of the target color.
 <P></P>
-<DT><STRONG><A NAME="item_o_x%2Cy%3A">o x,y:</A></STRONG><BR>
+<dd><p></p><dt><STRONG><A NAME="item_o_x%2Cy%3A">x,y:</A></STRONG><BR>
 <DD>
 The starting location of the operation.
 <P></P>
-<DT><STRONG><A NAME="item_o_method%3A">o method:</A></STRONG><BR>
+<dd><p></p><dt><STRONG><A NAME="item_o_method%3A">method:</A></STRONG><BR>
 <DD>
 Choose either FloodfillMethod or FillToBorderMethod.
-<P></P></DL>
+<P></P></DL></DL>
 <P>
 <H2><A NAME="destroydrawinfo">DestroyDrawInfo</A></H2>
 <blockquote>DestroyDrawInfo() deallocates memory associated with an <A HREF="types/DrawInfo.html">DrawInfo</A> structure. </blockquote><P>The format of the DestroyDrawInfo method is:</P>
 <blockquote>void DestroyDrawInfo ( <A HREF="types/DrawInfo.html">DrawInfo</A> *draw_info ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL>
-<DT><STRONG>o draw_info:</STRONG><BR>
+<DL><DT><DD><DL>
+<dd><p></p><dt><STRONG>draw_info:</STRONG><BR>
 <DD>
 The draw info.
-<P></P></DL>
+<P></P></DL></DL>
 <P>
 <H2><A NAME="drawclippath">DrawClipPath</A></H2>
 <blockquote>DrawClipPath() draws the clip path on the image mask. </blockquote><P>The format of the DrawClipPath method is:</P>
 <blockquote>unsigned int DrawClipPath ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/DrawInfo.html">DrawInfo</A> *draw_info, const char *name ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL>
-<DT><STRONG>o image:</STRONG><BR>
+<DL><DT><DD><DL>
+<dd><p></p><dt><STRONG>image:</STRONG><BR>
 <DD>
 The image.
 <P></P>
-<DT><STRONG>o draw_info:</STRONG><BR>
+<dd><p></p><dt><STRONG>draw_info:</STRONG><BR>
 <DD>
 The draw info.
 <P></P>
-<DT><STRONG><A NAME="item_o_name%3A">o name:</A></STRONG><BR>
+<dd><p></p><dt><STRONG><A NAME="item_o_name%3A">name:</A></STRONG><BR>
 <DD>
 The name of the clip path.
-<P></P></DL>
+<P></P></DL></DL>
 <P>
 <H2><A NAME="drawimage">DrawImage</A></H2>
 <blockquote>Use DrawImage() to draw a graphic primitive on your image. The primitive may be represented as a string or filename. Precede the filename with an "at" sign ( @ ) and the contents of the file are drawn on the image. You can affect how text is drawn by setting one or more members of the draw info structure. </blockquote><P>The format of the DrawImage method is:</P>
 <blockquote>unsigned int DrawImage ( <A HREF="types/Image.html">Image</A> *image, <A HREF="types/DrawInfo.html">DrawInfo</A> *draw_info ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL>
-<DT><STRONG>o image:</STRONG><BR>
+<DL><DT><DD><DL>
+<dd><p></p><dt><STRONG>image:</STRONG><BR>
 <DD>
 The image.
 <P></P>
-<DT><STRONG>o draw_info:</STRONG><BR>
+<dd><p></p><dt><STRONG>draw_info:</STRONG><BR>
 <DD>
 The draw info.
-<P></P></DL>
+<P></P></DL></DL>
 <P>
 <H2><A NAME="drawpatternpath">DrawPatternPath</A></H2>
 <blockquote>DrawPatternPath() draws a pattern. </blockquote><P>The format of the DrawPatternPath method is:</P>
 <blockquote>unsigned int DrawPatternPath ( <A HREF="types/Image.html">Image</A> *image, <A HREF="types/DrawInfo.html">DrawInfo</A> *draw_info, const char *name, <A HREF="types/Image.html">Image</A> **pattern ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL>
-<DT><STRONG>o image:</STRONG><BR>
+<DL><DT><DD><DL>
+<dd><p></p><dt><STRONG>image:</STRONG><BR>
 <DD>
 The image.
 <P></P>
-<DT><STRONG>o draw_info:</STRONG><BR>
+<dd><p></p><dt><STRONG>draw_info:</STRONG><BR>
 <DD>
 The draw info.
 <P></P>
-<DT><STRONG>o name:</STRONG><BR>
+<dd><p></p><dt><STRONG>name:</STRONG><BR>
 <DD>
 The pattern name.
 <P></P>
-<DT><STRONG>o image:</STRONG><BR>
+<dd><p></p><dt><STRONG>image:</STRONG><BR>
 <DD>
 The image.
-<P></P></DL>
+<P></P></DL></DL>
 <P>
 <H2><A NAME="mattefloodfillimage">MatteFloodfillImage</A></H2>
 <P><CODE>MatteFloodfill()</CODE> changes the transparency value of any pixel that matches target and is an immediate neighbor.  If the method FillToBorderMethod is specified, the transparency value is changed for any neighbor pixel that does not match the bordercolor member of image.</P>
@@ -171,68 +171,68 @@ The image.
 <P>The format of the MatteFloodfillImage method is:</P>
 <blockquote>unsigned int MatteFloodfillImage ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/PixelPacket.html">PixelPacket</A> target, const unsigned int opacity, const long x_offset, const long y_offset, const <A HREF="types/Enumerations.html#PaintMethod">PaintMethod</A> method ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL>
-<DT><STRONG>o image:</STRONG><BR>
+<DL><DT><DD><DL>
+<dd><p></p><dt><STRONG>image:</STRONG><BR>
 <DD>
 The image.
 <P></P>
-<DT><STRONG>o target:</STRONG><BR>
+<dd><p></p><dt><STRONG>target:</STRONG><BR>
 <DD>
 The 
 <FONT SIZE=-1>RGB</FONT> value of the target color.
 <P></P>
-<DT><STRONG><A NAME="item_o_opacity%3A">o opacity:</A></STRONG><BR>
+<dd><p></p><dt><STRONG><A NAME="item_o_opacity%3A">opacity:</A></STRONG><BR>
 <DD>
 The level of transparency: 0 is fully opaque and MaxRGB is fully transparent.
 <P></P>
-<DT><STRONG>o x,y:</STRONG><BR>
+<dd><p></p><dt><STRONG>x,y:</STRONG><BR>
 <DD>
 The starting location of the operation.
 <P></P>
-<DT><STRONG>o method:</STRONG><BR>
+<dd><p></p><dt><STRONG>method:</STRONG><BR>
 <DD>
 Choose either FloodfillMethod or FillToBorderMethod.
-<P></P></DL>
+<P></P></DL></DL>
 <P>
 <H2><A NAME="opaqueimage">OpaqueImage</A></H2>
 <blockquote>OpaqueImage() changes any pixel that matches color with the color defined by fill. </blockquote><P>By default color must match a particular pixel color exactly.  However, in many cases two colors may differ by a small amount.  Fuzz defines how much tolerance is acceptable to consider two colors as the same.  For example, set fuzz to 10 and the color red at intensities of 100 and 102 respectively are now interpreted as the same color.</P>
 <P>The format of the OpaqueImage method is:</P>
 <blockquote>unsigned int OpaqueImage ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/PixelPacket.html">PixelPacket</A> target, const <A HREF="types/PixelPacket.html">PixelPacket</A> fill ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL>
-<DT><STRONG>o image:</STRONG><BR>
+<DL><DT><DD><DL>
+<dd><p></p><dt><STRONG>image:</STRONG><BR>
 <DD>
 The image.
 <P></P>
-<DT><STRONG>o target:</STRONG><BR>
+<dd><p></p><dt><STRONG>target:</STRONG><BR>
 <DD>
 The 
 <FONT SIZE=-1>RGB</FONT> value of the target color.
 <P></P>
-<DT><STRONG><A NAME="item_o_fill%3A">o fill:</A></STRONG><BR>
+<dd><p></p><dt><STRONG><A NAME="item_o_fill%3A">fill:</A></STRONG><BR>
 <DD>
 The replacement color.
-<P></P></DL>
+<P></P></DL></DL>
 <P>
 <H2><A NAME="transparentimage">TransparentImage</A></H2>
 <blockquote>TransparentImage() changes the opacity value associated with any pixel that matches color to the value defined by opacity. </blockquote><P>By default color must match a particular pixel color exactly.  However, in many cases two colors may differ by a small amount.  Fuzz defines how much tolerance is acceptable to consider two colors as the same.  For example, set fuzz to 10 and the color red at intensities of 100 and 102 respectively are now interpreted as the same color.</P>
 <P>The format of the TransparentImage method is:</P>
 <blockquote>unsigned int TransparentImage ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/PixelPacket.html">PixelPacket</A> target, const unsigned int opacity ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL>
-<DT><STRONG>o image:</STRONG><BR>
+<DL><DT><DD><DL>
+<dd><p></p><dt><STRONG>image:</STRONG><BR>
 <DD>
 The image.
 <P></P>
-<DT><STRONG>o target:</STRONG><BR>
+<dd><p></p><dt><STRONG>target:</STRONG><BR>
 <DD>
 The 
 <FONT SIZE=-1>RGB</FONT> value of the target color.
 <P></P>
-<DT><STRONG>o opacity:</STRONG><BR>
+<dd><p></p><dt><STRONG>opacity:</STRONG><BR>
 <DD>
 The replacement opacity value.
-</DL>
+</DL></DL>
 
 </BODY>
 

@@ -1,10 +1,10 @@
-<HTML>
-<HEAD>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"><HTML>
+<HEAD><meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <TITLE>list - Working with Image Lists</TITLE>
-<LINK REV="made" HREF="mailto:bhcompile@daffy.perf.redhat.com">
+<link rel="StyleSheet" href="../magick.css" type="text/css">
 </HEAD>
 
-<BODY>
+<body bgcolor="#FFFFFF" text="#000000" link="#0085c0" alink="#0085c0"  vlink="#800080">
 
 <A NAME="__index__"></A>
 <!-- INDEX BEGIN -->
@@ -12,30 +12,30 @@
 <UL>
 
 	<LI><A HREF="#name">
-<FONT SIZE=-1>NAME</FONT></A></LI>
+<FONT SIZE=-1>NAME</FONT></A>
 	<LI><A HREF="#synopsis">
-<FONT SIZE=-1>SYNOPSIS</FONT></A></LI>
+<FONT SIZE=-1>SYNOPSIS</FONT></A>
 	<LI><A HREF="#function descriptions">
 <FONT SIZE=-1>FUNCTION</FONT> 
-<FONT SIZE=-1>DESCRIPTIONS</FONT></A></LI>
+<FONT SIZE=-1>DESCRIPTIONS</FONT></A>
 	<UL>
 
-		<LI><A HREF="#cloneimagelist">CloneImageList</A></LI>
-		<LI><A HREF="#deleteimagelist">DeleteImageList</A></LI>
-		<LI><A HREF="#destroyimagelist">DestroyImageList</A></LI>
-		<LI><A HREF="#getimagelist">GetImageList</A></LI>
-		<LI><A HREF="#getimagelistindex">GetImageListIndex</A></LI>
-		<LI><A HREF="#getimagelistsize">GetImageListSize</A></LI>
-		<LI><A HREF="#getnextimage">GetNextImage</A></LI>
-		<LI><A HREF="#imagelisttoarray">ImageListToArray</A></LI>
-		<LI><A HREF="#newimagelist">NewImageList</A></LI>
-		<LI><A HREF="#popimagelist">PopImageList</A></LI>
-		<LI><A HREF="#pushimagelist">PushImageList</A></LI>
-		<LI><A HREF="#reverseimagelist">ReverseImageList</A></LI>
-		<LI><A HREF="#setimagelist">SetImageList</A></LI>
-		<LI><A HREF="#shiftimagelist">ShiftImageList</A></LI>
-		<LI><A HREF="#spliceimagelist">SpliceImageList</A></LI>
-		<LI><A HREF="#unshiftimagelist">UnshiftImageList</A></LI>
+		<LI><A HREF="#cloneimagelist">CloneImageList</A>
+		<LI><A HREF="#deleteimagelist">DeleteImageList</A>
+		<LI><A HREF="#destroyimagelist">DestroyImageList</A>
+		<LI><A HREF="#getimagelist">GetImageList</A>
+		<LI><A HREF="#getimagelistindex">GetImageListIndex</A>
+		<LI><A HREF="#getimagelistsize">GetImageListSize</A>
+		<LI><A HREF="#getnextimage">GetNextImage</A>
+		<LI><A HREF="#imagelisttoarray">ImageListToArray</A>
+		<LI><A HREF="#newimagelist">NewImageList</A>
+		<LI><A HREF="#popimagelist">PopImageList</A>
+		<LI><A HREF="#pushimagelist">PushImageList</A>
+		<LI><A HREF="#reverseimagelist">ReverseImageList</A>
+		<LI><A HREF="#setimagelist">SetImageList</A>
+		<LI><A HREF="#shiftimagelist">ShiftImageList</A>
+		<LI><A HREF="#spliceimagelist">SpliceImageList</A>
+		<LI><A HREF="#unshiftimagelist">UnshiftImageList</A>
 	</UL>
 
 </UL>
@@ -76,101 +76,101 @@
 <blockquote>CloneImageList() returns a duplicate of the image list. </blockquote><P>The format of the CloneImageList method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *CloneImageList ( const <A HREF="types/Image.html">Image</A> *images, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL>
-<DT><STRONG><A NAME="item_o_images%3A">o images:</A></STRONG><BR>
+<DL><DT><DD><DL>
+<dd><p></p><dt><STRONG><A NAME="item_o_images%3A">images:</A></STRONG><BR>
 <DD>
 The image list.
 <P></P>
-<DT><STRONG><A NAME="item_o_exception%3A">o exception:</A></STRONG><BR>
+<dd><p></p><dt><STRONG><A NAME="item_o_exception%3A">exception:</A></STRONG><BR>
 <DD>
 Return any errors or warnings in this structure.
-<P></P></DL>
+<P></P></DL></DL>
 <P>
 <H2><A NAME="deleteimagelist">DeleteImageList</A></H2>
 <blockquote>DeleteImageList() deletes an image at the specified position in the list. </blockquote><P>The format of the DeleteImageList method is:</P>
 <blockquote>unsigned int DeleteImageList ( <A HREF="types/Image.html">Image</A> *images, const unsigned long offset ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL>
-<DT><STRONG>o images:</STRONG><BR>
+<DL><DT><DD><DL>
+<dd><p></p><dt><STRONG>images:</STRONG><BR>
 <DD>
 The image list.
 <P></P>
-<DT><STRONG><A NAME="item_o_offset%3A">o offset:</A></STRONG><BR>
+<dd><p></p><dt><STRONG><A NAME="item_o_offset%3A">offset:</A></STRONG><BR>
 <DD>
 The position within the list.
-<P></P></DL>
+<P></P></DL></DL>
 <P>
 <H2><A NAME="destroyimagelist">DestroyImageList</A></H2>
 <blockquote>DestroyImageList() destroys an image list. </blockquote><P>The format of the DestroyImageList method is:</P>
 <blockquote>void DestroyImageList ( <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL>
-<DT><STRONG><A NAME="item_o_image%3A">o image:</A></STRONG><BR>
+<DL><DT><DD><DL>
+<dd><p></p><dt><STRONG><A NAME="item_o_image%3A">image:</A></STRONG><BR>
 <DD>
 The image sequence.
-<P></P></DL>
+<P></P></DL></DL>
 <P>
 <H2><A NAME="getimagelist">GetImageList</A></H2>
 <blockquote>GetImageList() returns an image at the specified position in the list. </blockquote><P>The format of the GetImageList method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *GetImageList ( const <A HREF="types/Image.html">Image</A> *images, const unsigned long offset, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL>
-<DT><STRONG>o images:</STRONG><BR>
+<DL><DT><DD><DL>
+<dd><p></p><dt><STRONG>images:</STRONG><BR>
 <DD>
 The image list.
 <P></P>
-<DT><STRONG>o offset:</STRONG><BR>
+<dd><p></p><dt><STRONG>offset:</STRONG><BR>
 <DD>
 The position within the list.
 <P></P>
-<DT><STRONG>o exception:</STRONG><BR>
+<dd><p></p><dt><STRONG>exception:</STRONG><BR>
 <DD>
 Return any errors or warnings in this structure.
-<P></P></DL>
+<P></P></DL></DL>
 <P>
 <H2><A NAME="getimagelistindex">GetImageListIndex</A></H2>
 <blockquote>GetImageListIndex() returns the position in the list of the specified image. </blockquote><P>The format of the GetImageListIndex method is:</P>
 <blockquote>size_t GetImageListIndex ( const <A HREF="types/Image.html">Image</A> *images ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL>
-<DT><STRONG>o images:</STRONG><BR>
+<DL><DT><DD><DL>
+<dd><p></p><dt><STRONG>images:</STRONG><BR>
 <DD>
 The image list.
-<P></P></DL>
+<P></P></DL></DL>
 <P>
 <H2><A NAME="getimagelistsize">GetImageListSize</A></H2>
 <blockquote>GetImageListSize() returns the number of images in the list. </blockquote><P>The format of the GetImageListSize method is:</P>
 <blockquote>size_t GetImageListSize ( const <A HREF="types/Image.html">Image</A> *images ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL>
-<DT><STRONG>o images:</STRONG><BR>
+<DL><DT><DD><DL>
+<dd><p></p><dt><STRONG>images:</STRONG><BR>
 <DD>
 The image list.
-<P></P></DL>
+<P></P></DL></DL>
 <P>
 <H2><A NAME="getnextimage">GetNextImage</A></H2>
 <blockquote>GetNextImage() returns the next image in a list. </blockquote><P>The format of the GetNextImage method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *GetNextImage ( <A HREF="types/Image.html">Image</A> *images ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL>
-<DT><STRONG>o images:</STRONG><BR>
+<DL><DT><DD><DL>
+<dd><p></p><dt><STRONG>images:</STRONG><BR>
 <DD>
 The image list.
-<P></P></DL>
+<P></P></DL></DL>
 <P>
 <H2><A NAME="imagelisttoarray">ImageListToArray</A></H2>
 <blockquote>ImageListToArray() is a convenience method that converts an image list to a sequential array. For example, </blockquote><blockquote>group = ImageListToArray ( images, exception ); for ( i = 0; i < n; i++ ) puts ( group[i]->filename ) ;; </blockquote><P>The format of the ImageListToArray method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> **ImageListToArray ( const <A HREF="types/Image.html">Image</A> *images, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL>
-<DT><STRONG>o image:</STRONG><BR>
+<DL><DT><DD><DL>
+<dd><p></p><dt><STRONG>image:</STRONG><BR>
 <DD>
 The image list.
 <P></P>
-<DT><STRONG>o exception:</STRONG><BR>
+<dd><p></p><dt><STRONG>exception:</STRONG><BR>
 <DD>
 Return any errors or warnings in this structure.
-<P></P></DL>
+<P></P></DL></DL>
 <P>
 <H2><A NAME="newimagelist">NewImageList</A></H2>
 <blockquote>NewImageList() creates an empty image list. </blockquote><P>The format of the NewImageList method is:</P>
@@ -179,119 +179,119 @@ Return any errors or warnings in this structure.
 <blockquote>PopImageList() removes the last image in the list. </blockquote><P>The format of the PopImageList method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *PopImageList ( <A HREF="types/Image.html">Image</A> **images ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL>
-<DT><STRONG>o images:</STRONG><BR>
+<DL><DT><DD><DL>
+<dd><p></p><dt><STRONG>images:</STRONG><BR>
 <DD>
 The image list.
-<P></P></DL>
+<P></P></DL></DL>
 <P>
 <H2><A NAME="pushimagelist">PushImageList</A></H2>
 <blockquote>PushImageList() add an image to the end of the list. </blockquote><P>The format of the PushImageList method is:</P>
 <blockquote>unsigned int PushImageList ( <A HREF="types/Image.html">Image</A> *images, const <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL>
-<DT><STRONG>o images:</STRONG><BR>
+<DL><DT><DD><DL>
+<dd><p></p><dt><STRONG>images:</STRONG><BR>
 <DD>
 The image list.
 <P></P>
-<DT><STRONG>o image:</STRONG><BR>
+<dd><p></p><dt><STRONG>image:</STRONG><BR>
 <DD>
 The image.
 <P></P>
-<DT><STRONG>o exception:</STRONG><BR>
+<dd><p></p><dt><STRONG>exception:</STRONG><BR>
 <DD>
 Return any errors or warnings in this structure.
-<P></P></DL>
+<P></P></DL></DL>
 <P>
 <H2><A NAME="reverseimagelist">ReverseImageList</A></H2>
 <blockquote>ReverseImageList() reverses the image list. </blockquote><P>The format of the ReverseImageList method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *ReverseImageList ( const <A HREF="types/Image.html">Image</A> *images, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL>
-<DT><STRONG>o images:</STRONG><BR>
+<DL><DT><DD><DL>
+<dd><p></p><dt><STRONG>images:</STRONG><BR>
 <DD>
 The image list.
 <P></P>
-<DT><STRONG>o exception:</STRONG><BR>
+<dd><p></p><dt><STRONG>exception:</STRONG><BR>
 <DD>
 Return any errors or warnings in this structure.
-<P></P></DL>
+<P></P></DL></DL>
 <P>
 <H2><A NAME="setimagelist">SetImageList</A></H2>
 <blockquote>SetImageList() inserts an image into the list at the specified position. </blockquote><P>The format of the SetImageList method is:</P>
 <blockquote>unsigned int SetImageList ( <A HREF="types/Image.html">Image</A> *images, const <A HREF="types/Image.html">Image</A> *image, const unsigned long offset, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL>
-<DT><STRONG>o images:</STRONG><BR>
+<DL><DT><DD><DL>
+<dd><p></p><dt><STRONG>images:</STRONG><BR>
 <DD>
 The image list.
 <P></P>
-<DT><STRONG>o image:</STRONG><BR>
+<dd><p></p><dt><STRONG>image:</STRONG><BR>
 <DD>
 The image.
 <P></P>
-<DT><STRONG>o offset:</STRONG><BR>
+<dd><p></p><dt><STRONG>offset:</STRONG><BR>
 <DD>
 The position within the list.
 <P></P>
-<DT><STRONG>o exception:</STRONG><BR>
+<dd><p></p><dt><STRONG>exception:</STRONG><BR>
 <DD>
 Return any errors or warnings in this structure.
-<P></P></DL>
+<P></P></DL></DL>
 <P>
 <H2><A NAME="shiftimagelist">ShiftImageList</A></H2>
 <blockquote>ShiftImageList() removes an image from the beginning of the list. </blockquote><P>The format of the ShiftImageList method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *ShiftImageList ( <A HREF="types/Image.html">Image</A> **images ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL>
-<DT><STRONG>o images:</STRONG><BR>
+<DL><DT><DD><DL>
+<dd><p></p><dt><STRONG>images:</STRONG><BR>
 <DD>
 The image list.
-<P></P></DL>
+<P></P></DL></DL>
 <P>
 <H2><A NAME="spliceimagelist">SpliceImageList</A></H2>
 <blockquote>SpliceImageList() removes the images designated by offset and length from the list and replaces them with the specified list. </blockquote><P>The format of the SpliceImageList method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *SpliceImageList ( <A HREF="types/Image.html">Image</A> *images, const unsigned long offset, const unsigned long length, const <A HREF="types/Image.html">Image</A> *splices, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL>
-<DT><STRONG>o images:</STRONG><BR>
+<DL><DT><DD><DL>
+<dd><p></p><dt><STRONG>images:</STRONG><BR>
 <DD>
 The image list.
 <P></P>
-<DT><STRONG>o offset:</STRONG><BR>
+<dd><p></p><dt><STRONG>offset:</STRONG><BR>
 <DD>
 The position within the list.
 <P></P>
-<DT><STRONG>o offset:</STRONG><BR>
+<dd><p></p><dt><STRONG>offset:</STRONG><BR>
 <DD>
 The length of the image list to remove.
 <P></P>
-<DT><STRONG><A NAME="item_o_splice%3A">o splice:</A></STRONG><BR>
+<dd><p></p><dt><STRONG><A NAME="item_o_splice%3A">splice:</A></STRONG><BR>
 <DD>
 Replace the removed image list with this list.
 <P></P>
-<DT><STRONG>o exception:</STRONG><BR>
+<dd><p></p><dt><STRONG>exception:</STRONG><BR>
 <DD>
 Return any errors or warnings in this structure.
-<P></P></DL>
+<P></P></DL></DL>
 <P>
 <H2><A NAME="unshiftimagelist">UnshiftImageList</A></H2>
 <blockquote>UnshiftImageList() adds the image to the beginning of the list. </blockquote><P>The format of the UnshiftImageList method is:</P>
 <blockquote>unsigned int UnshiftImageList ( <A HREF="types/Image.html">Image</A> *images, const <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL>
-<DT><STRONG>o images:</STRONG><BR>
+<DL><DT><DD><DL>
+<dd><p></p><dt><STRONG>images:</STRONG><BR>
 <DD>
 The image list.
 <P></P>
-<DT><STRONG>o image:</STRONG><BR>
+<dd><p></p><dt><STRONG>image:</STRONG><BR>
 <DD>
 The image.
 <P></P>
-<DT><STRONG>o exception:</STRONG><BR>
+<dd><p></p><dt><STRONG>exception:</STRONG><BR>
 <DD>
 Return any errors or warnings in this structure.
-</DL>
+</DL></DL>
 
 </BODY>
 

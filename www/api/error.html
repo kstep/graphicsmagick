@@ -1,10 +1,10 @@
-<HTML>
-<HEAD>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"><HTML>
+<HEAD><meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <TITLE>error - ImageMagick Error Methods</TITLE>
-<LINK REV="made" HREF="mailto:bhcompile@daffy.perf.redhat.com">
+<link rel="StyleSheet" href="../magick.css" type="text/css">
 </HEAD>
 
-<BODY>
+<body bgcolor="#FFFFFF" text="#000000" link="#0085c0" alink="#0085c0"  vlink="#800080">
 
 <A NAME="__index__"></A>
 <!-- INDEX BEGIN -->
@@ -12,24 +12,24 @@
 <UL>
 
 	<LI><A HREF="#name">
-<FONT SIZE=-1>NAME</FONT></A></LI>
+<FONT SIZE=-1>NAME</FONT></A>
 	<LI><A HREF="#synopsis">
-<FONT SIZE=-1>SYNOPSIS</FONT></A></LI>
+<FONT SIZE=-1>SYNOPSIS</FONT></A>
 	<LI><A HREF="#function descriptions">
 <FONT SIZE=-1>FUNCTION</FONT> 
-<FONT SIZE=-1>DESCRIPTIONS</FONT></A></LI>
+<FONT SIZE=-1>DESCRIPTIONS</FONT></A>
 	<UL>
 
-		<LI><A HREF="#catchimageexception">CatchImageException</A></LI>
-		<LI><A HREF="#destroyexceptioninfo">DestroyExceptionInfo</A></LI>
-		<LI><A HREF="#getexceptioninfo">GetExceptionInfo</A></LI>
-		<LI><A HREF="#getimageexception">GetImageException</A></LI>
-		<LI><A HREF="#magickerror">MagickError</A></LI>
-		<LI><A HREF="#magickwarning">MagickWarning</A></LI>
-		<LI><A HREF="#seterrorhandler">SetErrorHandler</A></LI>
-		<LI><A HREF="#setexceptioninfo">SetExceptionInfo</A></LI>
-		<LI><A HREF="#setwarninghandler">SetWarningHandler</A></LI>
-		<LI><A HREF="#throwexception">ThrowException</A></LI>
+		<LI><A HREF="#catchimageexception">CatchImageException</A>
+		<LI><A HREF="#destroyexceptioninfo">DestroyExceptionInfo</A>
+		<LI><A HREF="#getexceptioninfo">GetExceptionInfo</A>
+		<LI><A HREF="#getimageexception">GetImageException</A>
+		<LI><A HREF="#magickerror">MagickError</A>
+		<LI><A HREF="#magickwarning">MagickWarning</A>
+		<LI><A HREF="#seterrorhandler">SetErrorHandler</A>
+		<LI><A HREF="#setexceptioninfo">SetExceptionInfo</A>
+		<LI><A HREF="#setwarninghandler">SetWarningHandler</A>
+		<LI><A HREF="#throwexception">ThrowException</A>
 	</UL>
 
 </UL>
@@ -64,139 +64,139 @@
 <blockquote>CatchImageException() returns if no exceptions are found in the image sequence, otherwise it determines the most severe exception and reports it as a warning or error depending on the severity. </blockquote><P>The format of the CatchImageException method is:</P>
 <blockquote><A HREF="types/Enumerations.html#ExceptionType">ExceptionType</A> CatchImageException ( <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL>
-<DT><STRONG><A NAME="item_o_image%3A">o image:</A></STRONG><BR>
+<DL><DT><DD><DL>
+<dd><p></p><dt><STRONG><A NAME="item_o_image%3A">image:</A></STRONG><BR>
 <DD>
 An image sequence.
-<P></P></DL>
+<P></P></DL></DL>
 <P>
 <H2><A NAME="destroyexceptioninfo">DestroyExceptionInfo</A></H2>
 <blockquote>DestroyExceptionInfo() deallocates memory associated with exception. </blockquote><P>The format of the DestroyExceptionInfo method is:</P>
 <blockquote>void DestroyExceptionInfo ( <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL>
-<DT><STRONG><A NAME="item_o_exception%3A">o exception:</A></STRONG><BR>
+<DL><DT><DD><DL>
+<dd><p></p><dt><STRONG><A NAME="item_o_exception%3A">exception:</A></STRONG><BR>
 <DD>
 The exception info.
-<P></P></DL>
+<P></P></DL></DL>
 <P>
 <H2><A NAME="getexceptioninfo">GetExceptionInfo</A></H2>
 <blockquote>GetExceptionInfo() initializes exception to default values. </blockquote><P>The format of the GetExceptionInfo method is:</P>
 <blockquote>GetExceptionInfo ( <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL>
-<DT><STRONG>o exception:</STRONG><BR>
+<DL><DT><DD><DL>
+<dd><p></p><dt><STRONG>exception:</STRONG><BR>
 <DD>
 The exception info.
-<P></P></DL>
+<P></P></DL></DL>
 <P>
 <H2><A NAME="getimageexception">GetImageException</A></H2>
 <blockquote>GetImageException() traverses an image sequence and returns any error more severe than noted by the exception parameter. </blockquote><P>The format of the GetImageException method is:</P>
 <blockquote>void GetImageException ( <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL>
-<DT><STRONG>o image:</STRONG><BR>
+<DL><DT><DD><DL>
+<dd><p></p><dt><STRONG>image:</STRONG><BR>
 <DD>
 Specifies a pointer to a list of one or more images.
 <P></P>
-<DT><STRONG>o exception:</STRONG><BR>
+<dd><p></p><dt><STRONG>exception:</STRONG><BR>
 <DD>
 return the highest severity exception.
-<P></P></DL>
+<P></P></DL></DL>
 <P>
 <H2><A NAME="magickerror">MagickError</A></H2>
 <P>Method MagickError calls the error handler methods with an error reason.</P>
 <P>The format of the MagickError method is:</P>
 <blockquote>void MagickError ( const <A HREF="types/Enumerations.html#ExceptionType">ExceptionType</A> error, const char *reason, const char *description ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL>
-<DT><STRONG>o exception:</STRONG><BR>
+<DL><DT><DD><DL>
+<dd><p></p><dt><STRONG>exception:</STRONG><BR>
 <DD>
 Specifies the numeric error category.
 <P></P>
-<DT><STRONG><A NAME="item_o_reason%3A">o reason:</A></STRONG><BR>
+<dd><p></p><dt><STRONG><A NAME="item_o_reason%3A">reason:</A></STRONG><BR>
 <DD>
 Specifies the reason to display before terminating the program.
 <P></P>
-<DT><STRONG><A NAME="item_o_description%3A">o description:</A></STRONG><BR>
+<dd><p></p><dt><STRONG><A NAME="item_o_description%3A">description:</A></STRONG><BR>
 <DD>
 Specifies any description to the reason.
-<P></P></DL>
+<P></P></DL></DL>
 <P>
 <H2><A NAME="magickwarning">MagickWarning</A></H2>
 <P>Method MagickWarning calls the warning handler methods with a warning reason.</P>
 <P>The format of the MagickWarning method is:</P>
 <blockquote>void MagickWarning ( const <A HREF="types/Enumerations.html#ExceptionType">ExceptionType</A> warning, const char *reason, const char *description ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL>
-<DT><STRONG><A NAME="item_o_warning%3A">o warning:</A></STRONG><BR>
+<DL><DT><DD><DL>
+<dd><p></p><dt><STRONG><A NAME="item_o_warning%3A">warning:</A></STRONG><BR>
 <DD>
 The warning severity.
 <P></P>
-<DT><STRONG>o reason:</STRONG><BR>
+<dd><p></p><dt><STRONG>reason:</STRONG><BR>
 <DD>
 Define the reason for the warning.
 <P></P>
-<DT><STRONG>o description:</STRONG><BR>
+<dd><p></p><dt><STRONG>description:</STRONG><BR>
 <DD>
 Describe the warning.
-<P></P></DL>
+<P></P></DL></DL>
 <P>
 <H2><A NAME="seterrorhandler">SetErrorHandler</A></H2>
 <blockquote>SetErrorHandler() sets the error handler to the specified method and returns the previous error handler. </blockquote><P>The format of the SetErrorHandler method is:</P>
 <blockquote>ErrorHandler SetErrorHandler ( ErrorHandler handler ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL>
-<DT><STRONG><A NAME="item_o_handler%3A">o handler:</A></STRONG><BR>
+<DL><DT><DD><DL>
+<dd><p></p><dt><STRONG><A NAME="item_o_handler%3A">handler:</A></STRONG><BR>
 <DD>
 The method to handle errors.
-<P></P></DL>
+<P></P></DL></DL>
 <P>
 <H2><A NAME="setexceptioninfo">SetExceptionInfo</A></H2>
 <blockquote>SetExceptionInfo() set the exception severity. </blockquote><P>The format of the SetExceptionInfo method is:</P>
 <blockquote>SetExceptionInfo ( <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception, <A HREF="types/Enumerations.html#ExceptionType">ExceptionType</A> severity ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL>
-<DT><STRONG>o exception:</STRONG><BR>
+<DL><DT><DD><DL>
+<dd><p></p><dt><STRONG>exception:</STRONG><BR>
 <DD>
 The exception info.
 <P></P>
-<DT><STRONG><A NAME="item_o_severity%3A">o severity:</A></STRONG><BR>
+<dd><p></p><dt><STRONG><A NAME="item_o_severity%3A">severity:</A></STRONG><BR>
 <DD>
 The exception severity.
-<P></P></DL>
+<P></P></DL></DL>
 <P>
 <H2><A NAME="setwarninghandler">SetWarningHandler</A></H2>
 <blockquote>SetWarningHandler() sets the warning handler to the specified method and returns the previous warning handler. </blockquote><P>The format of the SetWarningHandler method is:</P>
 <blockquote>ErrorHandler SetWarningHandler ( ErrorHandler handler ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL>
-<DT><STRONG>o handler:</STRONG><BR>
+<DL><DT><DD><DL>
+<dd><p></p><dt><STRONG>handler:</STRONG><BR>
 <DD>
 The method to handle warnings.
-<P></P></DL>
+<P></P></DL></DL>
 <P>
 <H2><A NAME="throwexception">ThrowException</A></H2>
 <blockquote>ThrowException() throws an exception with the specified severity code, reason, and optional description. </blockquote><P>The format of the ThrowException method is:</P>
 <blockquote>void ThrowException ( <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception, const <A HREF="types/Enumerations.html#ExceptionType">ExceptionType</A> severity, const char *reason, const char *description ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL>
-<DT><STRONG>o exception:</STRONG><BR>
+<DL><DT><DD><DL>
+<dd><p></p><dt><STRONG>exception:</STRONG><BR>
 <DD>
 The exception.
 <P></P>
-<DT><STRONG>o severity:</STRONG><BR>
+<dd><p></p><dt><STRONG>severity:</STRONG><BR>
 <DD>
 Define the severity of the exception.
 <P></P>
-<DT><STRONG>o reason:</STRONG><BR>
+<dd><p></p><dt><STRONG>reason:</STRONG><BR>
 <DD>
 Define the reason of the exception.
 <P></P>
-<DT><STRONG>o description:</STRONG><BR>
+<dd><p></p><dt><STRONG>description:</STRONG><BR>
 <DD>
 Describe the exception.
-</DL>
+</DL></DL>
 
 </BODY>
 
