@@ -29,13 +29,9 @@
 #include <sys/stat.h>
 #include <string.h>
 #include <ctype.h>
-
 #ifdef _VISUALC_
 #include <io.h>
-#define STRNICMP strnicmp
-#else 
-#define STRNICMP strncasecmp
-#endif 
+#endif
 
 typedef struct _tag_spec
 {
@@ -100,6 +96,39 @@ static tag_spec tags[] = {
   { 218,"Custom Field 19" },
   { 219,"Custom Field 20" }
 };
+
+int stringnicmp(const char *p,const char *q,size_t n)
+{
+  register int
+    i,
+    j;
+
+  if (p == q)
+    return(0);
+  if (p == (char *) NULL)
+    return(-1);
+  if (q == (char *) NULL)
+    return(1);
+  while ((*p != '\0') && (*q != '\0'))
+  {
+    if ((*p == '\0') || (*q == '\0'))
+      break;
+    i=(*p);
+    if (islower(i))
+      i=toupper(i);
+    j=(*q);
+    if (islower(j))
+      j=toupper(j);
+    if (i != j)
+      break;
+    n--;
+    if (n == 0)
+      break;
+    p++;
+    q++;
+  }
+  return(toupper(*p)-toupper(*q));
+}
 
 void writeLong(FILE *ofile, long val)
 {
@@ -291,7 +320,7 @@ int convertHTMLcodes(char *s, int len)
       for (i=0; i < codes; i++)
       {
         if (html_codes[i].len <= len)
-          if (STRNICMP(s, html_codes[i].code, html_codes[i].len) == 0)
+          if (stringnicmp(s, html_codes[i].code, html_codes[i].len) == 0)
             {
               strcpy(s+1, s+html_codes[i].len);
               *s = html_codes[i].val;
