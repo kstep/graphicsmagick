@@ -10,7 +10,7 @@
 %                   DDDD   EEEEE   CCCC   OOO   DDDD   EEEEE                  %
 %                                                                             %
 %                                                                             %
-%                    Utility Routines to Read Image Formats                   %
+%                        Methods to Read Image Formats                        %
 %                                                                             %
 %                                                                             %
 %                             Software Design                                 %
@@ -13658,14 +13658,12 @@ Image *ReadTEXTImage(const ImageInfo *image_info)
     status=fgets(text,MaxTextExtent,image->file);
     if (status == (char *) NULL)
       break;
-    handler=SetMonitorHandler((MonitorHandler) NULL);
     if (Extent(text) > 0)
       text[Extent(text)-1]='\0';
     FormatString(annotate_info.geometry,"%+d%+d",bounding_box.x,
       bounding_box.y+offset);
     AnnotateImage(image,&annotate_info);
     offset+=annotate_info.bounds.height;
-    (void) SetMonitorHandler(handler);
     if (image->previous == (Image *) NULL)
       if (QuantumTick(bounding_box.y+offset,image->rows))
         ProgressMonitor(LoadImageText,bounding_box.y+offset,image->rows);
@@ -17529,15 +17527,15 @@ Export Image *ReadImage(ImageInfo *image_info)
   char
     filename[MaxTextExtent];
 
-  const MagickInfo
-    *magick_info;
-
   DelegateInfo
     delegate_info;
 
   Image
     *image,
     *next_image;
+
+  MagickInfo
+    *magick_info;
 
   register char
     *p;
@@ -17576,9 +17574,8 @@ Export Image *ReadImage(ImageInfo *image_info)
     Call appropriate image reader based on image type.
   */
   image=(Image *) NULL;
-  magick_info=(MagickInfo *)
-    GetMagickInfo(image_info->magick,strlen(image_info->magick));
-  if ((magick_info != (const MagickInfo *) NULL) &&
+  magick_info=(MagickInfo *) GetMagickInfo(image_info->magick);
+  if ((magick_info != (MagickInfo *) NULL) &&
       (magick_info->decoder != (Image *(*)(const ImageInfo *)) NULL))
     image=(magick_info->decoder)(image_info);
   else

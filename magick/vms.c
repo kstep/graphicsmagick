@@ -3,14 +3,14 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%                                                                             %
 %                            V   V  M   M  SSSSS                              %
 %                            V   V  MM MM  SS                                 %
 %                            V   V  M M M   SSS                               %
 %                             V V   M   M     SS                              %
 %                              V    M   M  SSSSS                              %
 %                                                                             %
-%                    VMS Utility Routines for ImageMagick.                    %
+%                                                                             %
+%                     VMS Utility Methods for ImageMagick                     %
 %                                                                             %
 %                                                                             %
 %                               Software Design                               %

@@ -189,7 +189,7 @@ noinst_HEADERS = Colorlist.h animate.h dicom.h display.h logo.h mac.h \
 	nt.h pict.h proxy.h vms.h
 
 # Additional files to distribute
-EXTRA_DIST = magick.ph Imakefile Magick-config.in Make.com
+EXTRA_DIST = Imakefile Magick-config.in Make.com
 
 INCLUDES = #$(X_CFLAGS)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs

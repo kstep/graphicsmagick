@@ -10,8 +10,7 @@
 %               SSSSS  EEEEE   GGGG  M   M  EEEEE  N   N    T                 %
 %                                                                             %
 %                                                                             %
-%     Segment an Image with Thresholding and the Fuzzy c-Means Technique.     %
-%                                                                             %
+%        Methods to Segment an Image with Thresholding Fuzzy c-Means          %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %

@@ -1,285 +1,314 @@
-/* C code produced by gperf version 2.5 (GNU C++ version) */
-/* Command-line: gperf -C -p -a -n -t -N GetMagickInfo -K magick -k1-4,$ magick.ph  */
 /*
-  Use to generate magick.c via:
-
-   gperf -C -p -a -n -t -N GetMagickInfo -K magick -k'1-4,$' \
-     magick.ph > magick.c
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%                  M   M   AAA    GGGG  IIIII   CCCC  K   K                   %
+%                  MM MM  A   A  G        I    C      K  K                    %
+%                  M M M  AAAAA  G GGG    I    C      KKK                     %
+%                  M   M  A   A  G   G    I    C      K  K                    %
+%                  M   M  A   A   GGGG  IIIII   CCCC  K   K                   %
+%                                                                             %
+%                                                                             %
+%               Methods to Read or List ImageMagick Image formats             %
+%                                                                             %
+%                                                                             %
+%                            Software Design                                  %
+%                            Bob Friesenhahn                                  %
+%                              John Cristy                                    %
+%                             November 1998                                   %
+%                                                                             %
+%                                                                             %
+%  Copyright 1998 E. I. du Pont de Nemours and Company                        %
+%                                                                             %
+%  Permission is hereby granted, free of charge, to any person obtaining a    %
+%  copy of this software and associated documentation files ("ImageMagick"),  %
+%  to deal in ImageMagick without restriction, including without limitation   %
+%  the rights to use, copy, modify, merge, publish, distribute, sublicense,   %
+%  and/or sell copies of ImageMagick, and to permit persons to whom the       %
+%  ImageMagick is furnished to do so, subject to the following conditions:    %
+%                                                                             %
+%  The above copyright notice and this permission notice shall be included in %
+%  all copies or substantial portions of ImageMagick.                         %
+%                                                                             %
+%  The software is provided "as is", without warranty of any kind, express or %
+%  implied, including but not limited to the warranties of merchantability,   %
+%  fitness for a particular purpose and noninfringement.  In no event shall   %
+%  E. I. du Pont de Nemours and Company be liable for any claim, damages or   %
+%  other liability, whether in an action of contract, tort or otherwise,      %
+%  arising from, out of or in connection with ImageMagick or the use or other %
+%  dealings in ImageMagick.                                                   %
+%                                                                             %
+%  Except as contained in this notice, the name of the E. I. du Pont de       %
+%  Nemours and Company shall not be used in advertising or otherwise to       %
+%  promote the sale, use or other dealings in ImageMagick without prior       %
+%  written authorization from the E. I. du Pont de Nemours and Company.       %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%
+*/
+
+/*
+  Include declarations.
 */
 #include "magick.h"
-struct MagickInfo {
-  char
-    *magick;
-
-  Image
-    *(*decoder) (const ImageInfo *);
-
-  unsigned int
-    (*encoder) (const ImageInfo *,Image *),
-    adjoin;
-
-  const char
-    *description;
-};
-
-#define TOTAL_KEYWORDS 99
-#define MIN_WORD_LENGTH 1
-#define MAX_WORD_LENGTH 9
-#define MIN_HASH_VALUE 18
-#define MAX_HASH_VALUE 436
-/* maximum key range = 419, duplicates = 0 */
-
-static unsigned int
-hash (register const char *str, register int len)
+
+/*
+  Image format declarations.
+*/
+static MagickInfo
+  ImageFormats[] =
+  {
+    { "JPG", ReadJPEGImage, WriteJPEGImage, True,
+      "Joint Photographic Experts Group JFIF format" },
+    { "JPEG", ReadJPEGImage, WriteJPEGImage, True,
+      "Joint Photographic Experts Group JFIF format" },
+    { "GIF", ReadGIFImage, WriteGIFImage, True,
+      "CompuServe graphics interchange format" },
+    { "PNG", ReadPNGImage, WritePNGImage, False, "Portable Network Graphics" },
+    { "PS", ReadPSImage, WritePSImage, True, "Adobe PostScript file" },
+    { "TIF", ReadTIFFImage, WriteTIFFImage, True, "Tagged Image File Format" },
+    { "BMP", ReadBMPImage, WriteBMPImage, True,
+      "Microsoft Windows bitmap image file" },
+    { "PBM", ReadPNMImage, WritePNMImage, True,
+      "Portable bitmap format (black and white)" },
+    { "PGM", ReadPNMImage, WritePNMImage, True,
+      "Portable graymap format (gray scale)" },
+    { "PNM", ReadPNMImage, WritePNMImage, True, "Portable anymap" },
+    { "PPM", ReadPNMImage, WritePNMImage, True,
+      "Portable pixmap format (color)" },
+    { "EPS", ReadPSImage, WritePSImage, False,
+      "Adobe Encapsulated PostScript file" },
+    { "TGA", ReadTGAImage, WriteTGAImage, True, "Truevision Targa image file" },
+    { "XC", ReadXCImage, (unsigned int (*)(const ImageInfo *,Image *)) NULL,
+      False, "Constant image of X server color" },
+    { "TXT", ReadTEXTImage, (unsigned int (*)(const ImageInfo *,Image *)) NULL,
+      True, "Raw text file" },
+    { "XPM", ReadXPMImage, WriteXPMImage, False,
+      "X Windows system pixmap file (color)" },
+    { "PCD", ReadPCDImage, WritePCDImage, False, "Photo CD" },
+    { "MIFF", ReadMIFFImage, WriteMIFFImage, True, "Magick image file format" },
+    { "AVS", ReadAVSImage, WriteAVSImage, True, "AVS X image file" },
+    { "BIE", ReadJBIGImage, WriteJBIGImage, False, "JBIG image" },
+    { "BMP24", ReadBMPImage, WriteBMPImage, True,
+      "Microsoft Windows 24-bit bitmap image file" },
+    { "CMYK", ReadCMYKImage, WriteCMYKImage, False,
+      "Raw cyan, magenta, yellow, and black bytes" },
+    { "DCM", ReadDCMImage, (unsigned int (*)(const ImageInfo *,Image *)) NULL,
+      False, "DICOM Medical image file" },
+    { "DCX", ReadPCXImage, WritePCXImage, True,
+      "ZSoft IBM PC multi-page Paintbrush file" },
+    { "DIB", ReadBMPImage, WriteBMPImage, True,
+      "Microsoft Windows bitmap image file" },
+    { "EPDF", ReadPDFImage, WritePDFImage, False,
+      "Encapsulated Portable Document Format" },
+    { "EPI", ReadPSImage, (unsigned int (*)(const ImageInfo *,Image *)) NULL,
+      False, "Adobe Encapsulated PostScript Interchange format" },
+    { "EPS2", ReadPSImage, WritePS2Image, False,
+      "Adobe Level II Encapsulated PostScript file" },
+    { "EPSF", ReadPSImage, WritePSImage, False,
+      "Adobe Encapsulated PostScript file" },
+    { "EPSI", ReadPSImage, WritePSImage, False,
+      "Adobe Encapsulated PostScript Interchange format" },
+    { "EPT", ReadPSImage, WriteEPTImage, False,
+      "Adobe Encapsulated PostScript with TIFF preview" },
+    { "FAX", ReadFAXImage, WriteFAXImage, True, "Group 3 FAX" },
+    { "FITS", ReadFITSImage, WriteFITSImage, False,
+      "Flexible Image Transport System" },
+    { "FPX", ReadFPXImage, WriteFPXImage, False, "FlashPix Format" },
+    { "G3", ReadFAXImage, (unsigned int (*)(const ImageInfo *,Image *)) NULL,
+      False, "Group 3 FAX" },
+    { "GIF87", ReadGIFImage, WriteGIFImage, False,
+      "CompuServe graphics interchange format" },
+    { "GRADATION", ReadGRADATIONImage, (unsigned int (*)(const ImageInfo *,
+      Image *)) NULL, False, "Gradual passing from one shade to another" },
+    { "GRANITE", ReadLOGOImage, WriteLOGOImage, False, "Granite texture" },
+    { "GRAY", ReadGRAYImage, WriteGRAYImage, True, "Raw gray bytes" },
+    { "H", ReadLOGOImage, WriteLOGOImage, False, "Internal format" },
+    { "HDF", ReadHDFImage, WriteHDFImage, True, "Hierarchical Data Format" },
+    { "HISTOGRAM", ReadHISTOGRAMImage, WriteHISTOGRAMImage, False,
+      "Histogram of the image" },
+    { "HTM", (Image *(*)(const ImageInfo *)) NULL, WriteHTMLImage, False,
+      "Hypertext Markup Language with a client-side image map" },
+    { "HTML", (Image *(*)(const ImageInfo *)) NULL, WriteHTMLImage, False,
+      "Hypertext Markup Language with a client-side image map" },
+    { "ICB", ReadTGAImage, WriteTGAImage, True, "Truevision Targa image file" },
+    { "ICC", (Image *(*)(const ImageInfo *)) NULL, WriteICCImage, False,
+      "ICC Color Profile" },
+    { "ICO", ReadICONImage, (unsigned int (*)(const ImageInfo *,Image *)) NULL,
+      False, "Microsoft icon" },
+    { "IMPLICIT", (Image *(*)(const ImageInfo *)) NULL,
+      (unsigned int (*)(const ImageInfo *,Image *)) NULL, True,
+      "Internal format" },
+    { "JBG", ReadJBIGImage, WriteJBIGImage, True,
+      "Joint Bi-level Image experts Group file interchange format" },
+    { "JBIG", ReadJBIGImage, WriteJBIGImage, True,
+      "Joint Bi-level Image experts Group file interchange format" },
+    { "JPEG24", ReadJPEGImage, WriteJPEGImage, True,
+      "Joint Photographic Experts Group JFIF format" },
+    { "LABEL", ReadLABELImage,
+      (unsigned int (*)(const ImageInfo *,Image *)) NULL, False,
+      "Text image format" },
+    { "LOGO", ReadLOGOImage, WriteLOGOImage, False, "ImageMagick Logo" },
+    { "MAP", ReadMAPImage, WriteMAPImage, False,
+      "Colormap intensities and indices" },
+    { "MNG", ReadPNGImage, WritePNGImage, True,
+      "Multiple-image Network Graphics" },
+    { "MONO", ReadMONOImage, WriteMONOImage, False,
+      "Bi-level bitmap in least-significant-byte (LSB) first order" },
+    { "MTV", ReadMTVImage, WriteMTVImage, True, "MTV Raytracing image format" },
+    { "NETSCAPE", ReadLOGOImage, WriteLOGOImage, False,
+      "Netscape 216 color cube" },
+    { "NULL", ReadNULLImage, (unsigned int (*)(const ImageInfo *,Image *)) NULL,
+      False, "NULL image" },
+    { "P7", ReadPNMImage, WritePNMImage, True, "Xv thumbnail format" },
+    { "PCDS", ReadPCDImage, WritePCDImage, False, "Photo CD" },
+    { "PCL", ReadPCLImage, WritePCLImage, False, "Page Control Language" },
+    { "PCT", (Image *(*)(const ImageInfo *)) ReadPICTImage, WritePICTImage,
+      False, "Apple Macintosh QuickDraw/PICT file" },
+    { "PCX", ReadPCXImage, WritePCXImage, False,
+      "ZSoft IBM PC Paintbrush file" },
+    { "PDF", ReadPDFImage, WritePDFImage, True, "Portable Document Format" },
+    { "PIC", ReadPICTImage, WritePICTImage, False,
+      "Apple Macintosh QuickDraw/PICT file" },
+    { "PICT", ReadPICTImage, WritePICTImage, False,
+      "Apple Macintosh QuickDraw/PICT file" },
+    { "PIX", ReadPIXImage, (unsigned int (*)(const ImageInfo *,Image *)) NULL,
+      True, "Alias/Wavefront RLE image format" },
+    { "PLASMA", ReadPLASMAImage,
+      (unsigned int (*)(const ImageInfo *,Image *)) NULL, False,
+      "Plasma fractal image" },
+    { "PM", ReadXPMImage, WriteXPMImage, False,
+      "X Windows system pixmap file (color)" },
+    { "PREVIEW", (Image *(*)(const ImageInfo *)) NULL, WritePREVIEWImage, False,
+      "Show a preview an image enhancement effect, or f/x" },
+    { "PS2", (Image *(*)(const ImageInfo *)) NULL, WritePS2Image, True,
+      "Adobe Level II PostScript file" },
+    { "PSD", ReadPSDImage, WritePSDImage, False,
+      "Adobe Photoshop bitmap file" },
+    { "RAS", ReadSUNImage, WriteSUNImage, True, "SUN Rasterfile" },
+    { "RGB", ReadRGBImage, WriteRGBImage, True,
+      "Raw red, green, and blue bytes" },
+    { "RGBA", ReadRGBImage, WriteRGBImage, True,
+      "Raw red, green, blue, and matte bytes" },
+    { "RLA", ReadRLAImage, (unsigned int (*)(const ImageInfo *,Image *)) NULL,
+      False, "Alias/Wavefront image file" },
+    { "RLE", ReadRLEImage, (unsigned int (*)(const ImageInfo *,Image *)) NULL,
+      False, "Utah Run length encoded image file" },
+    { "SGI", ReadSGIImage, WriteSGIImage, True, "Irix RGB image file" },
+    { "SHTML", (Image *(*)(const ImageInfo *)) NULL, WriteHTMLImage, False,
+      "Hypertext Markup Language with a client-side image map" },
+    { "STEGANO", ReadSTEGANOImage,
+      (unsigned int (*)(const ImageInfo *,Image *)) NULL, True,
+      "Steganographic image" },
+    { "SUN", ReadSUNImage, WriteSUNImage, True, "SUN Rasterfile" },
+    { "TEXT", ReadTEXTImage, (unsigned int (*)(const ImageInfo *,Image *)) NULL,
+      True, "Raw text file" },
+    { "TIFF", ReadTIFFImage, WriteTIFFImage, True, "Tagged Image File Format" },
+    { "TIFF24", ReadTIFFImage, WriteTIFFImage, True,
+      "24-bit Tagged Image File Format" },
+    { "TILE", ReadTILEImage, (unsigned int (*)(const ImageInfo *,Image *)) NULL,
+      True, "Tile image with a texture" },
+    { "TIM", ReadTIMImage, (unsigned int (*)(const ImageInfo *,Image *)) NULL,
+      True, "PSX TIM file" },
+    { "TTF", ReadTTFImage, (unsigned int (*)(const ImageInfo *,Image *)) NULL,
+      False, "TrueType font file" },
+    { "UIL", ReadUILImage, WriteUILImage, False, "X-Motif UIL table" },
+    { "UYVY", ReadUYVYImage, WriteUYVYImage, False,
+      "16bit/pixel interleaved YUV" },
+    { "VDA", ReadTGAImage, WriteTGAImage, True, "Truevision Targa image file" },
+    { "VICAR", ReadVICARImage, WriteVICARImage, False,
+      "VICAR rasterfile format" },
+    { "VID", ReadVIDImage, WriteMIFFImage, False, "Visual Image Directory" },
+    { "VIFF", ReadVIFFImage, WriteVIFFImage, True,
+      "Khoros Visualization image file" },
+    { "VST", ReadTGAImage, WriteTGAImage, True, "Truevision Targa image file" },
+    { "XBM", ReadXBMImage, WriteXBMImage, False,
+      "X Windows system bitmap (black and white)" },
+    { "XV", ReadVIFFImage, WriteVIFFImage, True,
+      "Khoros Visualization image file" },
+    { "XWD", ReadXWDImage, WriteXWDImage, False,
+      "X Windows system window dump file (color)" },
+    { "YUV", ReadYUVImage, WriteYUVImage, True, "CCIR 601 4:1:1 file" },
+    { (char *) NULL, (Image *(*)(const ImageInfo *)) NULL,
+      (unsigned int (*)(const ImageInfo *,Image *)) NULL, 0,
+      (char *) NULL },
+  };
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   G e t M a g i c k I n f o                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method GetMagickInfo returns a pointer MagickInfo structure that matches
+%  the specified tag.
+%
+%  The format of the GetMagickInfo routine is:
+%
+%      magick_info=GetMagickInfo(tag)
+%
+%  A description of each parameter follows:
+%
+%    o magick_info: Method GetMagickInfo returns a pointer MagickInfo
+%      structure that matches the specified tag.
+%
+%    o tag: a character string that represents the image format we are
+%      looking for.
+%
+%
+*/
+Export MagickInfo *GetMagickInfo(const char *tag)
 {
-  static const unsigned short asso_values[] =
-    {
-     437, 437, 437, 437, 437, 437, 437, 437, 437, 437,
-     437, 437, 437, 437, 437, 437, 437, 437, 437, 437,
-     437, 437, 437, 437, 437, 437, 437, 437, 437, 437,
-     437, 437, 437, 437, 437, 437, 437, 437, 437, 437,
-     437, 437, 437, 437, 437, 437, 437, 437, 437, 437,
-      45,  35, 105, 437, 437,  15,  30, 437, 437, 437,
-     437, 437, 437, 437, 437,  10,  15, 110,  42,   5,
-      35,   7,   9,  55,  32,  10, 107,  37,  35,  75,
-      84, 437,  54,  30,   0,  80, 115,  10,  90,  15,
-     437, 437, 437, 437, 437, 437, 437, 437, 437, 437,
-     437, 437, 437, 437, 437, 437, 437, 437, 437, 437,
-     437, 437, 437, 437, 437, 437, 437, 437, 437, 437,
-     437, 437, 437, 437, 437, 437, 437, 437,
-    };
-  register int hval = 0;
+  register int
+    i;
 
-  switch (len)
-    {
-      default:
-      case 4:
-        hval += asso_values[str[3]];
-      case 3:
-        hval += asso_values[str[2]];
-      case 2:
-        hval += asso_values[str[1]];
-      case 1:
-        hval += asso_values[str[0]];
-        break;
-    }
-  return hval + asso_values[str[len - 1]];
+  for (i=0; ImageFormats[i].magick != (char *) NULL; i++)
+    if (Latin1Compare(tag,ImageFormats[i].magick) == 0)
+      return(&ImageFormats[i]);
+  return((MagickInfo *) NULL);
 }
-
-const struct MagickInfo *
-GetMagickInfo (register const char *str, register int len)
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%  L i s t M a g i c k I n f o                                                %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method ListMagickInfo lists the image formats to a file.
+%
+%  The format of the ListMagickInfo routine is:
+%
+%      ListMagickInfo(file)
+%
+%  A description of each parameter follows.
+%
+%    o file:  An pointer to a FILE.
+%
+%
+*/
+Export void ListMagickInfo(FILE *file)
 {
-  static const struct MagickInfo wordlist[] =
-    {
-      {"",}, {"",}, {"",}, {"",}, {"",}, {"",}, {"",}, {"",}, {"",}, 
-      {"",}, {"",}, {"",}, {"",}, {"",}, {"",}, {"",}, {"",}, {"",}, 
-      
-      {"H", 		ReadLOGOImage,	WriteLOGOImage,	False, ""},
-      {"",}, {"",}, {"",}, {"",}, {"",}, {"",}, {"",}, {"",}, 
-      {"TGA", 		ReadTGAImage,	WriteTGAImage,	True, "Truevision Targa image file"},
-      {"",}, {"",}, {"",}, {"",}, {"",}, {"",}, {"",}, {"",}, {"",}, 
-      {"",}, {"",}, {"",}, {"",}, {"",}, {"",}, {"",}, {"",}, {"",}, 
-      {"",}, {"",}, {"",}, {"",}, {"",}, {"",}, {"",}, {"",}, {"",}, 
-      {"",}, {"",}, {"",}, {"",}, {"",}, {"",}, 
-      {"JBG", 		ReadJBIGImage,	WriteJBIGImage,	True, "Joint Bi-level Image experts Group file interchange format"},
-      {"",}, {"",}, {"",}, {"",}, {"",}, {"",}, {"",}, {"",}, 
-      {"TTF", 		ReadTTFImage,	(unsigned int (*)(const ImageInfo *,Image *)) NULL,		False, "TrueType font file"},
-      {"",}, {"",}, {"",}, {"",}, 
-      {"NETSCAPE", 	ReadLOGOImage,	WriteLOGOImage,	False, "Netscape 216 color cube"},
-      {"",}, 
-      {"G3", 		ReadFAXImage,	(unsigned int (*)(const ImageInfo *,Image *)) NULL,		False, "Group 3 FAX"},
-      {"",}, {"",}, 
-      {"BIE", 		ReadJBIGImage,	WriteJBIGImage,	False, "JBIG image"},
-      {"",}, {"",}, 
-      {"HTM", 		(Image *(*)(const ImageInfo *)) NULL,		WriteHTMLImage,	False, "Hypertext Markup Language with a client-side image map"},
-      {"",}, {"",}, 
-      {"MNG", 		ReadPNGImage,	WritePNGImage,	True, "Multiple-image Network Graphics"},
-      {"",}, {"",}, 
-      {"EPT", 		ReadPSImage,	WriteEPTImage,	False, "Adobe Encapsulated PostScript Interchange format with TIFF preview"},
-      {"TXT", 		ReadTEXTImage,	(unsigned int (*)(const ImageInfo *,Image *)) NULL,		True, "Raw text file"},
-      {"RGB", 		ReadRGBImage,	WriteRGBImage,	True, "Raw red, green, and blue bytes"},
-      {"",}, {"",}, {"",}, 
-      {"TEXT", 		ReadTEXTImage,	(unsigned int (*)(const ImageInfo *,Image *)) NULL,		True, "Raw text file"},
-      {"RGBA", 		ReadRGBImage,	WriteRGBImage,	True, "Raw red, green, blue, and matte bytes"},
-      {"",}, {"",}, {"",}, {"",}, 
-      {"GRAY", 		ReadGRAYImage,	WriteGRAYImage,	True, "Raw gray bytes"},
-      {"",}, {"",}, {"",}, {"",}, {"",}, {"",}, {"",}, {"",}, {"",}, 
-      {"GRANITE", 	ReadLOGOImage,	WriteLOGOImage,	False, "Granite texture"},
-      {"",}, {"",}, 
-      {"P7", 		ReadPNMImage,	WritePNMImage,	True, "Xv thumbnail format"},
-      {"",}, 
-      {"JBIG", 		ReadJBIGImage,	WriteJBIGImage,	True, "Joint Bi-level Image experts Group file interchange format"},
-      {"STEGANO", 	ReadSTEGANOImage, (unsigned int (*)(const ImageInfo *,Image *)) NULL,		True, "Steganographic image"},
-      {"",}, {"",}, {"",}, 
-      {"HDF", 		ReadHDFImage,	WriteHDFImage,	True, "Hierarchical Data Format"},
-      {"",}, {"",}, 
-      {"RAS", 		ReadSUNImage,	WriteSUNImage,	True, "SUN Rasterfile"},
-      {"TIF", 		ReadTIFFImage,	WriteTIFFImage,	True, "Tagged Image File Format"},
-      {"",}, 
-      {"DIB", 		ReadBMPImage,	WriteBMPImage,	True, "Microsoft Windows bitmap image file"},
-      {"",}, 
-      {"TIM", 		ReadTIMImage,	(unsigned int (*)(const ImageInfo *,Image *)) NULL,		True, "PSX TIM file"},
-      {"JPG", 		ReadJPEGImage,	WriteJPEGImage,	True, "Joint Photographic Experts Group JFIF format"},
-      {"HISTOGRAM", 	ReadHISTOGRAMImage, WriteHISTOGRAMImage, False, "Histogram of the image"},
-      {"GIF", 		ReadGIFImage,	WriteGIFImage,	True, "CompuServe graphics interchange format"},
-      {"PNG", 		ReadPNGImage,	WritePNGImage,	False, "Portable Network Graphics"},
-      {"",}, 
-      {"JPEG", 		ReadJPEGImage,	WriteJPEGImage,	True, "Joint Photographic Experts Group JFIF format"},
-      {"",}, {"",}, {"",}, {"",}, {"",}, {"",}, 
-      {"GIF87", 		ReadGIFImage,   WriteGIFImage,	False, "CompuServe graphics interchange format"},
-      {"",}, 
-      {"PS", 		ReadPSImage,	WritePSImage,	True, "Adobe PostScript file"},
-      {"VST", 		ReadTGAImage,	WriteTGAImage,	True, "Truevision Targa image file"},
-      {"",}, 
-      {"SGI", 		ReadSGIImage,	WriteSGIImage,	True, "Irix RGB image file"},
-      {"GRADATION", 	ReadGRADATIONImage,	(unsigned int (*)(const ImageInfo *,Image *)) NULL,	False, "Gradual passing from one shade to another"},
-      {"EPS", 		ReadPSImage,	WritePSImage,	False, "Adobe Encapsulated PostScript file"},
-      {"FITS", 		ReadFITSImage,	WriteFITSImage,	False, "Flexible Image Transport System"},
-      {"",}, {"",}, {"",}, {"",}, {"",}, {"",}, {"",}, 
-      {"PM", 		ReadXPMImage,	WriteXPMImage,	False, "X Windows system pixmap file (color)"},
-      {"",}, 
-      {"TIFF", 		ReadTIFFImage,	WriteTIFFImage,	True, "Tagged Image File Format"},
-      {"",}, {"",}, {"",}, {"",}, 
-      {"PGM", 		ReadPNMImage,	WritePNMImage,	True, "Portable graymap format (gray scale)"},
-      {"",}, {"",}, {"",}, {"",}, {"",}, 
-      {"RLE", 		ReadRLEImage,	(unsigned int (*)(const ImageInfo *,Image *)) NULL,		False, "Utah Run length encoded image file"},
-      {"TILE", 		ReadTILEImage,	(unsigned int (*)(const ImageInfo *,Image *)) NULL,		True, "Tile image with a texture"},
-      {"PBM", 		ReadPNMImage,	WritePNMImage,	True, "Portable bitmap format (black and white)"},
-      {"",}, {"",}, {"",}, 
-      {"VDA", 		ReadTGAImage,	WriteTGAImage,	True, "Truevision Targa image file"},
-      {"",}, 
-      {"XBM", 		ReadXBMImage,	WriteXBMImage,	False, "X Windows system bitmap (black and white)"},
-      {"SUN", 		ReadSUNImage,	WriteSUNImage,	True, "SUN Rasterfile"},
-      {"RLA", 		ReadRLAImage,	(unsigned int (*)(const ImageInfo *,Image *)) NULL,		False, "Alias/Wavefront image file"},
-      {"CMYK", 		ReadCMYKImage,	WriteCMYKImage,	False, "Raw cyan, magenta, yellow, and black bytes"},
-      {"SHTML", 		(Image *(*)(const ImageInfo *)) NULL,		WriteHTMLImage,	False, "Hypertext Markup Language with a client-side image map"},
-      {"XWD", 		ReadXWDImage,	WriteXWDImage,	False, "X Windows system window dump file (color)"},
-      {"AVS", 		ReadAVSImage,	WriteAVSImage,	True, "AVS X image file"},
-      {"",}, {"",}, {"",}, 
-      {"EPSF", 		ReadPSImage,	WritePSImage,	False, "Adobe Encapsulated PostScript file"},
-      {"",}, {"",}, {"",}, 
-      {"PNM", 		ReadPNMImage,	WritePNMImage,	True, "Portable anymap"},
-      {"PCT", 		(Image *(*)(const ImageInfo *)) ReadPICTImage,	WritePICTImage,	False, "Apple Macintosh QuickDraw/PICT file"},
-      {"ICB", 		ReadTGAImage,	WriteTGAImage,	True, "Truevision Targa image file"},
-      {"PDF", 		ReadPDFImage,	WritePDFImage,	True, "Portable Document Format"},
-      {"MIFF", 		ReadMIFFImage,	WriteMIFFImage,	True, "Magick image file format"},
-      {"PSD", 		ReadPSDImage,	WritePSDImage,	False, "Adobe Photoshop bitmap file"},
-      {"EPI", 		ReadPSImage,	(unsigned int (*)(const ImageInfo *,Image *)) NULL,		False, "Adobe Encapsulated PostScript Interchange format"},
-      {"",}, 
-      {"EPDF", 		ReadPDFImage,	WritePDFImage,	False, "Encapsulated Portable Document Format"},
-      {"",}, {"",}, 
-      {"PS2", 		(Image *(*)(const ImageInfo *)) NULL,		WritePS2Image,	True, "Adobe Level II PostScript file"},
-      {"",}, {"",}, {"",}, {"",}, 
-      {"EPS2", 		ReadPSImage,	WritePS2Image,	False, "Adobe Level II Encapsulated PostScript file"},
-      {"",}, {"",}, {"",}, {"",}, {"",}, 
-      {"MAP", 		ReadMAPImage,	WriteMAPImage,	False, "Colormap intensities and indices"},
-      {"",}, {"",}, {"",}, {"",}, 
-      {"BMP", 		ReadBMPImage,	WriteBMPImage,	True, "Microsoft Windows bitmap image file"},
-      {"",}, {"",}, {"",}, {"",}, 
-      {"FAX", 		ReadFAXImage,	WriteFAXImage,	True, "Group 3 FAX"},
-      {"DCM", 		ReadDCMImage,	(unsigned int (*)(const ImageInfo *,Image *)) NULL,		False, "DICOM Medical image file"},
-      {"",}, {"",}, 
-      {"EPSI", 		ReadPSImage,	WritePSImage,	False, "Adobe Encapsulated PostScript Interchange format"},
-      {"TIFF24", 		ReadTIFFImage,	WriteTIFFImage,	True, "24-bit Tagged Image File Format"},
-      {"",}, {"",}, 
-      {"JPEG24", 		ReadJPEGImage,	WriteJPEGImage,	True, "Joint Photographic Experts Group JFIF format"},
-      {"",}, {"",}, {"",}, {"",}, {"",}, {"",}, 
-      {"UYVY", 		ReadUYVYImage,	WriteUYVYImage,	False, "16bit/pixel interleaved YUV"},
-      {"PLASMA", 		ReadPLASMAImage, (unsigned int (*)(const ImageInfo *,Image *)) NULL,		False, "Plasma fractal image"},
-      {"PPM", 		ReadPNMImage,	WritePNMImage,	True, "Portable pixmap format (color)"},
-      {"",}, 
-      {"LABEL", 		ReadLABELImage,	(unsigned int (*)(const ImageInfo *,Image *)) NULL,		False, "Text image format"},
-      {"",}, {"",}, {"",}, 
-      {"XPM", 		ReadXPMImage,	WriteXPMImage,	False, "X Windows system pixmap file (color)"},
-      {"PICT", 		ReadPICTImage,	WritePICTImage,	False, "Apple Macintosh QuickDraw/PICT file"},
-      {"",}, {"",}, {"",}, {"",}, 
-      {"VID", 		ReadVIDImage,	WriteMIFFImage,	False, "Visual Image Directory"},
-      {"",}, {"",}, {"",}, {"",}, {"",}, 
-      {"HTML", 		(Image *(*)(const ImageInfo *)) NULL,		WriteHTMLImage,	False, "Hypertext Markup Language with a client-side image map"},
-      {"",}, {"",}, {"",}, {"",}, {"",}, {"",}, 
-      {"MTV", 		ReadMTVImage,	WriteMTVImage,	True, "MTV Raytracing image format"},
-      {"PREVIEW", 	(Image *(*)(const ImageInfo *)) NULL,		WritePREVIEWImage, False, "Show a preview an image enhancement effect, or f/x"},
-      {"",}, {"",}, {"",}, {"",}, {"",}, {"",}, 
-      {"VIFF", 		ReadVIFFImage,	WriteVIFFImage,	True, "Khoros Visualization image file"},
-      {"",}, {"",}, 
-      {"PCD", 		ReadPCDImage,	WritePCDImage,	False, "Photo CD"},
-      {"",}, {"",}, {"",}, {"",}, 
-      {"IMPLICIT", 		(Image *(*)(const ImageInfo *)) NULL,	(unsigned int (*)(const ImageInfo *,Image *)) NULL,		True, "internal format"},
-      {"",}, {"",}, 
-      {"BMP24", 		ReadBMPImage,	WriteBMPImage,	True, "Microsoft Windows 24-bit bitmap image file"},
-      {"",}, {"",}, {"",}, {"",}, {"",}, {"",}, {"",}, {"",}, {"",}, 
-      {"PCDS", 		ReadPCDImage,	WritePCDImage,	False, "Photo CD"},
-      {"MONO", 		ReadMONOImage,	WriteMONOImage,	False, "Bi-level bitmap in least-significant-byte (LSB) first order"},
-      {"",}, 
-      {"FPX", 		ReadFPXImage,	WriteFPXImage,	False, "FlashPix Format"},
-      {"",}, {"",}, {"",}, {"",}, {"",}, {"",}, {"",}, {"",}, {"",}, 
-      {"",}, 
-      {"XC", 		ReadXCImage,	(unsigned int (*)(const ImageInfo *,Image *)) NULL,		False, "Constant image of X server color"},
-      {"",}, {"",}, {"",}, {"",}, 
-      {"ICO", 		ReadICONImage,	(unsigned int (*)(const ImageInfo *,Image *)) NULL,		False, "Microsoft icon"},
-      {"",}, {"",}, {"",}, 
-      {"PIX", 		ReadPIXImage,	(unsigned int (*)(const ImageInfo *,Image *)) NULL,		True, "Alias/Wavefront RLE image format"},
-      {"XV", 		ReadVIFFImage,	WriteVIFFImage,	True, "Khoros Visualization image file"},
-      {"",}, {"",}, {"",}, {"",}, 
-      {"YUV", 		ReadYUVImage,	WriteYUVImage,	True, "CCIR 601 4:1:1 file"},
-      {"",}, {"",}, {"",}, {"",}, {"",}, {"",}, 
-      {"DCX", 		ReadPCXImage,	WritePCXImage,	True, "ZSoft IBM PC multi-page Paintbrush file"},
-      {"",}, {"",}, {"",}, {"",}, {"",}, {"",}, 
-      {"LOGO", 		ReadLOGOImage,	WriteLOGOImage,	False, ""},
-      {"",}, {"",}, {"",}, {"",}, 
-      {"VICAR", 		ReadVICARImage,	WriteVICARImage, False, "VICAR rasterfile format"},
-      {"",}, {"",}, {"",}, {"",}, 
-      {"UIL", 		ReadUILImage,	WriteUILImage,	False, "X-Motif UIL table"},
-      {"",}, {"",}, {"",}, {"",}, {"",}, {"",}, {"",}, {"",}, {"",}, 
-      {"PIC", 		ReadPICTImage,	WritePICTImage,	False, "Apple Macintosh QuickDraw/PICT file"},
-      {"",}, {"",}, {"",}, {"",}, {"",}, {"",}, {"",}, {"",}, {"",}, 
-      {"",}, {"",}, {"",}, {"",}, {"",}, 
-      {"PCX", 		ReadPCXImage,	WritePCXImage,	False, "ZSoft IBM PC Paintbrush file"},
-      {"",}, {"",}, {"",}, {"",}, {"",}, {"",}, {"",}, {"",}, {"",}, 
-      {"",}, 
-      {"ICC", 		(Image *(*)(const ImageInfo *)) NULL,		WriteICCImage,	False, "ICC Color Profile"},
-      {"",}, {"",}, {"",}, {"",}, {"",}, {"",}, {"",}, {"",}, {"",}, 
-      {"",}, {"",}, {"",}, {"",}, {"",}, {"",}, {"",}, {"",}, {"",}, 
-      {"",}, {"",}, {"",}, {"",}, 
-      {"PCL", 		ReadPCLImage,	WritePCLImage,	False, "Page Control Language"},
-      {"",}, {"",}, {"",}, {"",}, {"",}, {"",}, {"",}, {"",}, {"",}, 
-      {"",}, {"",}, {"",}, {"",}, {"",}, {"",}, {"",}, {"",}, {"",}, 
-      {"",}, {"",}, {"",}, {"",}, {"",}, {"",}, {"",}, {"",}, {"",}, 
-      
-      {"NULL", 		ReadNULLImage,	(unsigned int (*)(const ImageInfo *,Image *)) NULL,		False, "NULL image"},
-    };
+  register int
+    i;
 
-  if (len <= MAX_WORD_LENGTH && len >= MIN_WORD_LENGTH)
-    {
-      register int key = hash (str, len);
-
-      if (key <= MAX_HASH_VALUE && key >= 0)
-        {
-          register const char *s = wordlist[key].magick;
-
-          if (*s == *str && !strcmp (str + 1, s + 1))
-            return &wordlist[key];
-        }
-    }
-  return 0;
+  if (file == (FILE *) NULL)
+    file=stdout;
+  (void) fprintf(file,"     Format   Description\n");
+  (void) fprintf(file,"  ------------------------------------------------------"
+    "------------------------\n");
+  for (i=0; ImageFormats[i].magick != (char *) NULL; i++)
+    (void) fprintf(file,"  %9s%c  %s\n",ImageFormats[i].magick,
+      ImageFormats[i].adjoin ? '+' : ' ',ImageFormats[i].description);
 }
-/* Auxillary code */
-#ifdef DEBUG
-const char
-  buffer[] = "XWD";
-
-int main()
-{
-  struct MagickInfo
-    *magick_info;
-
-  magick_info=GetMagickInfo(buffer,strlen(buffer));
-  if (magick_info == (const MagickInfo *) NULL)
-    printf("Entry %s: not found\n",buffer);
-  else
-    printf("Entry %s: read=%lx write=%lx description:%s\n",
-      magick_info->magick,magick_info->decoder,magick_info->encoder,
-      magick_info->description);
-  return(0);
-}
-#endif

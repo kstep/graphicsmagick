@@ -10,7 +10,7 @@
 %                  CCCC   OOO   LLLLL   OOO   R  R    SSSSS                   %
 %                                                                             %
 %                                                                             %
-%                       Count the Colors in an Image                          %
+%                  Methods to Count the Colors in an Image                    %
 %                                                                             %
 %                                                                             %
 %                                                                             %

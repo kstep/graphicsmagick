@@ -3,14 +3,14 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%                                                                             %
 %                            M   M   AAA    CCCC                              %
 %                            MM MM  A   A  C                                  %
 %                            M M M  AAAAA  C                                  %
 %                            M   M  A   A  C                                  %
 %                            M   M  A   A   CCCC                              %
 %                                                                             %
-%                  Macintosh Utility Routines for ImageMagick.                %
+%                                                                             %
+%                   Macintosh Utility Methods for ImageMagick                 %
 %                                                                             %
 %                                                                             %
 %                               Software Design                               %

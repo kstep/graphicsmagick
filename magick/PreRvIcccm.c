@@ -10,7 +10,7 @@
 %                        I    C      C      C      M   M                      %
 %                      IIIII   CCCC   CCCC   CCCC  M   M                      %
 %                                                                             %
-%                         X11 Compatibility Routines.                         %
+%                          X11 Compatibility Methods                          %
 %                                                                             %
 %                                                                             %
 %                               Software Design                               %

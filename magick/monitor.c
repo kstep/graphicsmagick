@@ -10,8 +10,7 @@
 %               M   M   OOO   N   N  IIIII    T     OOO   R  R                %
 %                                                                             %
 %                                                                             %
-%                    ImageMagick Progress Monitor Routines                    %
-%                                                                             %
+%                    ImageMagick Progress Monitor Methods                     %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %

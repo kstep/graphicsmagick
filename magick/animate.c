@@ -10,7 +10,7 @@
 %             A   A  N   N  IIIII  M   M  A   A    T    EEEEE                 %
 %                                                                             %
 %                                                                             %
-%                 Interactively Animate an Image Sequence.                    %
+%            Methods to Interactively Animate an Image Sequence               %
 %                                                                             %
 %                                                                             %
 %                           Software Design                                   %

@@ -1,0 +1,93 @@
+<HTML>
+<HEAD>
+<TITLE>magick - Methods to Read or List ImageMagick Image formats</TITLE>
+<LINK REV="made" HREF="mailto:cristy@mystic.es.dupont.com">
+</HEAD>
+
+<body background="../../images/background.gif">
+
+<!-- INDEX BEGIN -->
+
+<UL>
+
+	<LI><A HREF="#NAME">NAME</A>
+	<LI><A HREF="#SYNOPSIS">SYNOPSIS</A>
+	<LI><A HREF="#FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A>
+	<UL>
+
+		<LI><A HREF="#GetMagickInfo">GetMagickInfo</A>
+		<LI><A HREF="#ListMagickInfo">ListMagickInfo</A>
+	</UL>
+
+</UL>
+<!-- INDEX END -->
+
+<HR>
+<P>
+<H1><A NAME="NAME">NAME</A></H1>
+<P>
+magick - Methods to Read or List ImageMagick Image formats
+
+<P>
+<HR>
+<H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
+<P>
+magick_info=<STRONG>GetMagickInfo</STRONG>(tag)
+
+<P>
+<STRONG>ListMagickInfo</STRONG>(file)
+
+<P>
+<HR>
+<H1><A NAME="FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A></H1>
+<P>
+<HR>
+<H2><A NAME="GetMagickInfo">GetMagickInfo</A></H2>
+<P>
+Method GetMagickInfo returns a pointer MagickInfo structure that matches
+the specified tag.
+
+<P>
+The format of the GetMagickInfo routine is:
+
+<P>
+<PRE>        magick_info=GetMagickInfo(tag)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG><A NAME="item_o">magick_info:</A></STRONG><DD>
+<P>
+Method GetMagickInfo returns a pointer MagickInfo structure that matches
+the specified tag.
+
+<DT><STRONG>tag:</STRONG><DD>
+<P>
+a character string that represents the image format we are looking for.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="ListMagickInfo">ListMagickInfo</A></H2>
+<P>
+Method ListMagickInfo lists the image formats to a file.
+
+<P>
+The format of the ListMagickInfo routine is:
+
+<P>
+<PRE>        ListMagickInfo(file)
+</PRE>
+<P>
+A description of each parameter follows.
+
+<DL><DL>
+<DT><STRONG>file:</STRONG><DD>
+<P>
+An pointer to a FILE.
+
+</DL></DL>
+</BODY>
+
+</HTML>

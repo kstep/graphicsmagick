@@ -10,8 +10,7 @@
 %              UUU     T    IIIII  LLLLL  IIIII    T      Y                   %
 %                                                                             %
 %                                                                             %
-%                       ImageMagick Utility Routines                          %
-%                                                                             %
+%                       ImageMagick Utility Methods                           %
 %                                                                             %
 %                                                                             %
 %                             Software Design                                 %

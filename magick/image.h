@@ -693,30 +693,10 @@ typedef struct _Image
     *list,
     *next;
 } Image;
-
-typedef struct _MagickInfo
-{
-  char
-    *magick;
-
-  Image
-    *(*decoder)(const ImageInfo *);
-
-  unsigned int
-    (*encoder)(const ImageInfo *,Image *),
-    adjoin;
-
-  const char
-    *description;
-} MagickInfo;  /* must match the structure definition in magick.gperf */
 
 /*
-  Image utilities routines.
+  Image utilities mathods.
 */
-extern Export void
-  CommentImage(Image *,char *),
-  LabelImage(Image *,char *);
-
 extern Export Image
   *AddNoiseImage(Image *,NoiseType),
   *AllocateImage(const ImageInfo *),
@@ -831,7 +811,8 @@ extern Export unsigned int
   QuantizeImage(QuantizeInfo *,Image *),
   QuantizeImages(QuantizeInfo *,Image *),
   QueryColorName(ColorPacket *,char *),
-  SegmentImage(Image *,const unsigned int,const unsigned int,const double, const double),
+  SegmentImage(Image *,const unsigned int,const unsigned int,const double,
+    const double),
   UncondenseImage(Image *),
   WriteAVSImage(const ImageInfo *image_info,Image *image),
   WriteBMPImage(const ImageInfo *image_info,Image *image),
@@ -890,6 +871,7 @@ extern Export void
   ColorFloodfillImage(Image *,const RunlengthPacket *,const ColorPacket *,int x,
     int y,const PaintMethod),
   ColorizeImage(Image *,char *,char *),
+  CommentImage(Image *,char *),
   CompositeImage(Image *,const CompositeOperator,Image *,const int,const int),
   CompressColormap(Image *),
   CondenseImage(Image *),
@@ -906,6 +888,7 @@ extern Export void
   GetImageInfo(ImageInfo *),
   GetQuantizeInfo(QuantizeInfo *),
   HSLTransform(double,const double,const double,Quantum *,Quantum *,Quantum *),
+  LabelImage(Image *,char *),
   LayerImage(Image *,LayerType),
   MatteFloodfillImage(Image *,const RunlengthPacket *,const unsigned int,int x,
     int y,const PaintMethod),
@@ -932,6 +915,3 @@ extern Export void
   TransformImage(Image **,char *,char *),
   TransformRGBImage(Image *,const unsigned int),
   TransparentImage(Image *,char *);
-
-extern Export const struct MagickInfo *
-  GetMagickInfo (const char *str, int len);

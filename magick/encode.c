@@ -9,7 +9,7 @@
 %                   EEEEE  N   N   CCCC   OOO   DDDD   EEEEE                  %
 %                                                                             %
 %                                                                             %
-%                    Utility Routines to Write Image Formats                  %
+%                        Methods to Write Image Formats                       %
 %                                                                             %
 %                                                                             %
 %                             Software Design                                 %
@@ -13059,11 +13059,11 @@ unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
 */
 Export unsigned int WriteImage(ImageInfo *image_info,Image *image)
 {
-  const MagickInfo
-    *magick_info;
-
   DelegateInfo
     delegate_info;
+
+  MagickInfo
+    *magick_info;
 
   unsigned int
     status;
@@ -13106,10 +13106,10 @@ Export unsigned int WriteImage(ImageInfo *image_info,Image *image)
     Call appropriate image writer based on image type.
   */
   status=False;
-  magick_info=(MagickInfo *)
-    GetMagickInfo(image_info->magick,strlen(image_info->magick));
-  if((magick_info != (const MagickInfo *) NULL) &&
-     (magick_info->encoder != (unsigned int (*)(const ImageInfo *,Image *)) NULL))
+  magick_info=(MagickInfo *) GetMagickInfo(image_info->magick);
+  if ((magick_info != (MagickInfo *) NULL) &&
+      (magick_info->encoder !=
+      (unsigned int (*)(const ImageInfo *,Image *)) NULL))
     status=(magick_info->encoder)(image_info,image);
   else
     MagickWarning(MissingDelegateWarning,

@@ -9,7 +9,7 @@
 %        DDDD   EEEEE  LLLLL  EEEEE   GGG   A   A    T    EEEEE  SSSSS        %
 %                                                                             %
 %                                                                             %
-%                       Read/Write/Invoke Delegates                           %
+%                   Methods to Read/Write/Invoke Delegates                    %
 %                                                                             %
 %                                                                             %
 %                             Software Design                                 %

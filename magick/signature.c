@@ -9,8 +9,7 @@
 %        SSSSS  IIIII   GGG   N   N  A   A    T     UUU   R  R   EEEEE        %
 %                                                                             %
 %                                                                             %
-%                   Compute a Digital Signature for an Image                  %
-%                                                                             %
+%             Methods to Compute a Digital Signature for an Image             %
 %                                                                             %
 %                                                                             %
 %                             Software Design                                 %

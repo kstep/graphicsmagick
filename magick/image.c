@@ -10,8 +10,7 @@
 %                       IIIII  M   M  A   A  GGGG  EEEEE                      %
 %                                                                             %
 %                                                                             %
-%                          ImageMagick Image Routines                         %
-%                                                                             %
+%                           ImageMagick Image Methods                         %
 %                                                                             %
 %                                                                             %
 %                               Software Design                               %
@@ -443,9 +442,9 @@ Export void AnnotateImage(Image *image,AnnotateInfo *annotate_info)
     /*
       Convert text to image.
     */
-    FormatString(local_info.filename,"label:%.128s",textlist[i]);
+    FormatString(local_info.filename,"%.128s",textlist[i]);
     FreeMemory(textlist[i]);
-    annotate_image=ReadImage(&local_info);
+    annotate_image=ReadLABELImage(&local_info);
     if (annotate_image == (Image *) NULL)
       {
         MagickWarning(ResourceLimitWarning,"Unable to annotate image",
@@ -2996,11 +2995,11 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
     color[MaxTextExtent],
     **textlist;
 
-  const MagickInfo
-    *magick_info;
-
   Image
     *p;
+
+  MagickInfo
+    *magick_info;
 
   register int
     i;
@@ -3246,8 +3245,8 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
     (void) fprintf(file,"  delay: %d\n",image->delay);
   if (image->iterations != 1)
     (void) fprintf(file,"  iterations: %d\n",image->iterations);
-  magick_info=(MagickInfo *) GetMagickInfo(image->magick,strlen(image->magick));
-  if ((magick_info == (const MagickInfo *) NULL) ||
+  magick_info=(MagickInfo *) GetMagickInfo(image->magick);
+  if ((magick_info == (MagickInfo *) NULL) ||
       (*magick_info->description == '\0'))
     (void) fprintf(file,"  format: %.128s\n",image->magick);
   else
@@ -4784,8 +4783,8 @@ Export void GetAnnotateInfo(ImageInfo *image_info,AnnotateInfo *annotate_info)
     Get font bounds.
   */
   local_info=(*image_info);
-  FormatString(local_info.filename,"label:%.128s",Alphabet);
-  annotate_image=ReadImage(&local_info);
+  FormatString(local_info.filename,"%.128s",Alphabet);
+  annotate_image=ReadLABELImage(&local_info);
   if (annotate_image == (Image *) NULL)
     return;
   annotate_info->bounds.width=
@@ -9350,9 +9349,6 @@ Export void SetImageInfo(ImageInfo *image_info,unsigned int rectify)
     *p,
     *q;
 
-  register int
-    i;
-
   /*
     Look for 'image.format' in filename.
   */
@@ -9464,7 +9460,7 @@ Export void SetImageInfo(ImageInfo *image_info,unsigned int rectify)
       char
         filename[MaxTextExtent];
 
-      const MagickInfo
+      MagickInfo
         *magick_info;
 
       /*
@@ -9474,9 +9470,8 @@ Export void SetImageInfo(ImageInfo *image_info,unsigned int rectify)
       if ((Latin1Compare(filename,image_info->filename) != 0) &&
           (strchr(filename,'%') == (char *) NULL))
         image_info->adjoin=False;
-      magick_info=(MagickInfo *)
-        GetMagickInfo(magick,strlen(magick));
-      if (magick_info != (const MagickInfo *) NULL)
+      magick_info=(MagickInfo *) GetMagickInfo(magick);
+      if (magick_info != (MagickInfo *) NULL)
         image_info->adjoin&=magick_info->adjoin;
       return;
     }

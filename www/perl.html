@@ -1512,10 +1512,12 @@ application.  The only parameter is the name of the image file to display or
 animate.
 <p>
 Finally, for convenience, method <tt>QueryColor</tt> accepts one or more
-color names and returns their respective red, green, and blue color values:
+color names or hex value and returns the respective red, green, and blue
+color values:
 <p>
 <pre>
     ($red, $green, $blue) = split(', ', $image-&gt;QueryColor('cyan'));
+    ($red, $green, $blue) = split(', ', $image-&gt;QueryColor('#716bae'));
 </pre>
 </dl>
 <A HREF="#top">Back to Contents</A>

@@ -10,8 +10,7 @@
 %                      EEEEE  R  R   R  R   OOO   R  R                        %
 %                                                                             %
 %                                                                             %
-%                         ImageMagick Error Routines                          %
-%                                                                             %
+%                         ImageMagick Error Methods                           %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %

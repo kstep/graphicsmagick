@@ -10,8 +10,7 @@
 %                    M   M  EEEEE  M   M   OOO   R  R     Y                   %
 %                                                                             %
 %                                                                             %
-%                    ImageMagick Memory Allocation Routines                   %
-%                                                                             %
+%                    ImageMagick Memory Allocation Methods                    %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %

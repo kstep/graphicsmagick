@@ -10,7 +10,8 @@
 %                  WW WW    I    D   D  G   G  E        T                     %
 %                  W   W  IIIII  DDDD    GGGG  EEEEE    T                     %
 %                                                                             %
-%                X11 User Interface Routines for ImageMagick.                 %
+%                                                                             %
+%                 X11 User Interface Methods for ImageMagick                  %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %

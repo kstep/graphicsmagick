@@ -3,14 +3,14 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%                                                                             %
 %                                   X   X                                     %
 %                                    X X                                      %
 %                                     X                                       %
 %                                    X X                                      %
 %                                   X   X                                     %
 %                                                                             %
-%                    X11 Utility Routines for ImageMagick.                    %
+%                                                                             %
+%                     X11 Utility Methods for ImageMagick                     %
 %                                                                             %
 %                                                                             %
 %                               Software Design                               %
@@ -1542,14 +1542,14 @@ Export void XDisplayImageInfo(Display *display,
     **textlist,
     title[MaxTextExtent];
 
-  const MagickInfo
-    *magick_info;
-
   int
     length;
 
   Image
     *p;
+
+  MagickInfo
+    *magick_info;
 
   register int
     i;
@@ -1798,8 +1798,8 @@ Export void XDisplayImageInfo(Display *display,
     FormatString(text,"%s  delay: %d\n",text,image->delay);
   if (image->iterations != 1)
     FormatString(text,"%s  iterations: %d\n",text,image->iterations);
-  magick_info=(MagickInfo *) GetMagickInfo(image->magick,strlen(image->magick));
-  if ((magick_info == (const MagickInfo *) NULL) ||
+  magick_info=(MagickInfo *) GetMagickInfo(image->magick);
+  if ((magick_info == (MagickInfo *) NULL) ||
       (*magick_info->description == '\0'))
     FormatString(text,"%s  format: %.128s\n",text,image->magick);
   else

@@ -10,8 +10,7 @@
 %                EEEEE  F      F      EEEEE  CCCC    T    SSSSS               %
 %                                                                             %
 %                                                                             %
-%                      ImageMagick Image Effects Routines                     %
-%                                                                             %
+%                      ImageMagick Image Effects Methods                      %
 %                                                                             %
 %                                                                             %
 %                               Software Design                               %

@@ -10,8 +10,7 @@
 %                           GGGG  EEEEE  M   M SSSSS                          %
 %                                                                             %
 %                                                                             %
-%                    Graphic Gems - Graphic Support Routines                  %
-%                                                                             %
+%                    Graphic Gems - Graphic Support Methods                   %
 %                                                                             %
 %                                                                             %
 %                               Software Design                               %

@@ -3,14 +3,14 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%                                                                             %
 %                                 N   N  TTTTT                                %
 %                                 NN  N    T                                  %
 %                                 N N N    T                                  %
 %                                 N  NN    T                                  %
 %                                 N   N    T                                  %
 %                                                                             %
-%                 Windows NT Utility Routines for ImageMagick.                %
+%                                                                             %
+%                  Windows NT Utility Methods for ImageMagick                 %
 %                                                                             %
 %                                                                             %
 %                               Software Design                               %

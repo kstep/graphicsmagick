@@ -228,6 +228,34 @@ extern "C" {
 #define ShadowModulate  UpScale(135)
 #define DepthModulate  UpScale(185)
 #define TroughModulate  UpScale(110)
+
+/*
+  Typedef declarations.
+*/
+typedef struct _MagickInfo
+{
+  char
+    *magick;
+
+  Image
+    *(*decoder)(const ImageInfo *);
+
+  unsigned int
+    (*encoder)(const ImageInfo *,Image *),
+    adjoin;
+
+  const char
+    *description;
+} MagickInfo;
+
+/*
+  Magick utilities methods.
+*/
+extern Export MagickInfo
+  *GetMagickInfo(const char *);
+
+extern Export void
+  ListMagickInfo(FILE *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

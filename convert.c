@@ -141,93 +141,6 @@
 %  image type as the filename suffix (i.e. image.ps).  Specify 'file' as
 %  '-' for standard input or output.
 %
-%  Convert recognizes the following image formats:
-%
-%    Tag   Description
-%    ---------------------------------------------------
-%    AVS   AVS X image file.
-%    BMP   Microsoft Windows bitmap image file.
-%    BMP24 Microsoft Windows 24-bit bitmap image file.
-%    CMYK  Raw cyan, magenta, yellow, and black bytes.
-%    DCX   ZSoft IBM PC multi-page Paintbrush file
-%    DIB   Microsoft Windows bitmap image file.
-%    DICOM Medical image file.
-%    EPI   Adobe Encapsulated PostScript Interchange format.
-%    EPS   Adobe Encapsulated PostScript file.
-%    EPS2  Adobe Level II Encapsulated PostScript file.
-%    EPSF  Adobe Encapsulated PostScript file.
-%    EPSI  Adobe Encapsulated PostScript Interchange format.
-%    EPT   Adobe Encapsulated PostScript Interchange format with TIFF preview.
-%    FAX   Group 3.
-%    FIG   TransFig image format.
-%    FITS  Flexible Image Transport System.
-%    FPX   FlashPix Format.
-%    GIF   CompuServe graphics interchange format; 8-bit color.
-%    GIF87 CompuServe graphics interchange format; 8-bit color (version 87a).
-%    GRADATION gradual passing from one shade to another.
-%    GRANITE granite texture
-%    GRAY  Raw gray bytes.
-%    HDF   Hierarchical Data Format.
-%    HISTOGRAM
-%    HPGL  HP-GL plotter language.
-%    HTML  Hypertext Markup Language with a client-side image map
-%    JBIG  Joint Bi-level Image experts Group file interchange format.
-%    JPEG  Joint Photographic Experts Group JFIF format; compressed 24-bit color.
-%    MAP   colormap intensities and indices.
-%    MATTE Raw matte bytes.
-%    MIFF  Magick image file format.
-%    MONO  Bi-level bitmap in least-significant-byte (LSB) first order.
-%    MPEG  Motion Picture Experts Group file interchange format.
-%    MTV   MTV Raytracing image format
-%    M2V   Motion Picture Experts Group file interchange format (version 2).
-%    NETSCAPE
-%          Netscape 216 color cube.
-%    NULL  NULL image.
-%    PBM   Portable bitmap format (black and white).
-%    PCD   Photo CD.
-%    PCDS  Photo CD.  Decode with the sRGB color table.
-%    PCX   ZSoft IBM PC Paintbrush file.
-%    PDF   Portable Document Format.
-%    PGM   Portable graymap format (gray scale).
-%    PICT  Apple Macintosh QuickDraw/PICT file.
-%    PIX   Alias/Wavefront RLE image format.
-%    PLASMA plasma fractal image.
-%    PNG   Portable Network Graphics.
-%    PNM   Portable anymap.
-%    PPM   Portable pixmap format (color).
-%    PREVIEW
-%    PS    Adobe PostScript file.
-%    PSD   Adobe Photoshop bitmap file.
-%    PS2   Adobe Level II PostScript file.
-%    RAD   Radiance image file.
-%    RGB   Raw red, green, and blue bytes.
-%    RGBA  Raw red, green, blue, and matte bytes.
-%    RLA   Alias/Wavefront image file; read only
-%    RLE   Utah Run length encoded image file; read only.
-%    SGI   Irix RGB image file.
-%    SHTML Hypertext Markup Language with a client-side image map
-%    SUN   SUN Rasterfile.
-%    TEXT  raw text file; read only.
-%    TGA   Truevision Targa image file.
-%    TIFF  Tagged Image File Format.
-%    TIFF24
-%          24-bit Tagged Image File Format.
-%    TILE  tile image with a texture.
-%    TIM   PSX TIM file.
-%    TTF   TrueType font file.
-%    UYVY  16bit/pixel interleaved YUV (e.g. used by AccomWSD)
-%    UIL   X-Motif UIL table.
-%    VICAR read only.
-%    VID   Visual Image Directory.
-%    VIFF  Khoros Visualization image file.
-%    WIN   select image from or display image to your computer screen.
-%    X     select image from or display image to your X server screen.
-%    XC    constant image of X server color.
-%    XBM   X Windows system bitmap, black and white only.
-%    XPM   X Windows system pixmap file (color).
-%    XWD   X Windows system window dump file (color).
-%    YUV   CCIR 601 4:1:1 file.
-%
 %
 */
 
@@ -325,94 +238,6 @@ static void Usage(const char *client_name)
     **p;
 
   static char
-    *ImageTypes[]=
-    {
-      "Tag    Description",
-      "------------------------------------------------------------",
-      "AVS    AVS X image file.",
-      "BMP    Microsoft Windows bitmap image file.",
-      "BMP24  Microsoft Windows 24-bit bitmap image file.",
-      "CMYK   Raw cyan, magenta, yellow, and black bytes.",
-      "DCX    ZSoft IBM PC multi-page Paintbrush file",
-      "DIB    Microsoft Windows bitmap image file.",
-      "DICOM Medical image file.",
-      "EPI    Adobe Encapsulated PostScript Interchange format.",
-      "EPS    Adobe Encapsulated PostScript file.",
-      "EPS2   Adobe Level II Encapsulated PostScript file.",
-      "EPSF   Adobe Encapsulated PostScript file.",
-      "EPSI   Adobe Encapsulated PostScript Interchange format.",
-      "EPT    Adobe Encapsulated PostScript Interchange format with TIFF preview.",
-      "FAX    Group 3.",
-      "FIG    TransFig image format.",
-      "FITS   Flexible Image Transport System.",
-      "FPX    FlashPix Format.",
-      "GIF    CompuServe graphics interchange format; 8-bit color.",
-      "GIF87  CompuServe graphics interchange format; 8-bit color (version 87a).",
-      "GRADATION",
-      "       gradual passing from one shade to another.",
-      "GRANITE",
-      "       granite texture.",
-      "GRAY   Raw gray bytes.",
-      "HDF    Hierarchical Data Format.",
-      "HISTOGRAM",
-      "HPGL   HP-GL plotter language.",
-      "HTML   Hypertext Markup Language with a client-side image map",
-      "JBIG   Joint Bi-level Image experts Group file interchange format.",
-      "JPEG   Joint Photographic Experts Group JFIF format.",
-      "MAP    colormap intensities and indices.",
-      "MATTE  Raw matte bytes.",
-      "MIFF   Magick image file format.",
-      "MONO   Bi-level bitmap in least-significant-byte (LSB) first order.",
-      "MPEG   Motion Picture Experts Group file interchange format.",
-      "MTV    MTV Raytracing image format.",
-      "M2V    Motion Picture Experts Group file interchange format (version 2).",
-      "NETSCAPE",
-      "       Netscape 216 color cube.",
-      "NULL   NULL image.",
-      "PBM    Portable bitmap format (black and white).",
-      "PCD    Photo CD.",
-      "PCDS   Photo CD.  Decode with the sRGB color table",
-      "PCX    ZSoft IBM PC Paintbrush file.",
-      "PDF    Portable Document Format.",
-      "PGM    Portable graymap format (gray scale).",
-      "PICT   Apple Macintosh QuickDraw/PICT file.",
-      "PIX    Alias/Wavefront RLE image format.",
-      "PLASMA plasma fractal image.",
-      "PNG    Portable Network Graphics.",
-      "PNM    Portable anymap.",
-      "PPM    Portable pixmap format (color).",
-      "PREVIEW",
-      "PS     Adobe PostScript file.",
-      "PSD    Adobe Photoshop bitmap file.",
-      "PS2    Adobe Level II PostScript file.",
-      "RAD    Radiance image file.",
-      "RGB    Raw red, green, and blue bytes.",
-      "RGBA   Raw red, green, blue, and matte bytes.",
-      "RLA    Alias/Wavefront image file; read only.",
-      "RLE    Utah Run length encoded image file; read only.",
-      "SGI    Irix RGB image file.",
-      "SUN    SUN Rasterfile.",
-      "TEXT   raw text file; read only.",
-      "TGA    Truevision Targa image file.",
-      "TIFF   Tagged Image File Format.",
-      "TIFF24 24-bit Tagged Image File Format.",
-      "TILE   tile image with a texture.",
-      "TIM    PSX TIM file.",
-      "TTF    TrueType font file.",
-      "UYVY   16bit/pixel interleaved YUV.",
-      "UIL    X-Motif UIL table.",
-      "VICAR  read only.",
-      "VID    Visual Image Directory.",
-      "VIFF   Khoros Visualization image file.",
-      "WIN    select image from or display image to your computer screen.",
-      "X      select image from or display image to your X server screen.",
-      "XC     constant image of X server color.",
-      "XBM    X Windows system bitmap, black and white only.",
-      "XPM    X Windows system pixmap file (color).",
-      "XWD    X Windows system window dump file (color).",
-      "YUV    CCIR 601 4:1:1 file.",
-      (char *) NULL,
-    },
     *options[]=
     {
       "-adjoin              join images into a single multi-image file",
@@ -516,8 +341,7 @@ static void Usage(const char *client_name)
     "image type as the filename suffix (i.e. image.ps).  Specify 'file' as\n");
   (void) printf("'-' for standard input or output.\n");
   (void) printf("\nThe following image formats are recognized: \n\n");
-  for (p=ImageTypes; *p != (char *) NULL; p++)
-    (void) printf("  %.128s\n",*p);
+  ListMagickInfo(stdout);
   Exit(0);
 }
 

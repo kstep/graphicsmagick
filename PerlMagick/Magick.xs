@@ -1745,7 +1745,7 @@ static int strEQcase(const char *p,const char *q)
   for (i=0 ; c=(*q); i++)
   {
     if ((isUPPER(c) ? toLOWER(c) : c) != (isUPPER(*p) ? toLOWER(*p) : *p))
-      return 0;
+      return(0);
     p++;
     q++;
   }
@@ -1876,7 +1876,7 @@ Animate(ref,...)
 
     struct PackageInfo
       *info,
-      *magick_info;
+      *package_info;
 
     SV
       *reference;
@@ -1890,7 +1890,7 @@ Animate(ref,...)
     XrmDatabase
       resource_database;
 
-    magick_info=(struct PackageInfo *) NULL;
+    package_info=(struct PackageInfo *) NULL;
     error_list=newSVpv("",0);
     status=0;
     if (!sv_isobject(ST(0)))
@@ -1909,28 +1909,28 @@ Animate(ref,...)
         MagickWarning(OptionWarning,"No images to animate",NULL);
         goto MethodError;
       }
-    magick_info=ClonePackageInfo(info);
+    package_info=ClonePackageInfo(info);
     if (items == 2)
-      SetAttribute(magick_info,NULL,"server",ST(1));
+      SetAttribute(package_info,NULL,"server",ST(1));
     else
       if (items > 2)
         for (i=2; i < items; i+=2)
-          SetAttribute(magick_info,NULL,SvPV(ST(i-1),na),ST(i));
-    display=XOpenDisplay(magick_info->image_info.server_name);
+          SetAttribute(package_info,NULL,SvPV(ST(i-1),na),ST(i));
+    display=XOpenDisplay(package_info->image_info.server_name);
     if (display)
       {
         XSetErrorHandler(XError);
         resource_database=XGetResourceDatabase(display,client_name);
         XGetResourceInfo(resource_database,client_name,&resource);
-        resource.image_info=magick_info->image_info;
-        resource.quantize_info=magick_info->quantize_info;
+        resource.image_info=package_info->image_info;
+        resource.quantize_info=package_info->quantize_info;
         (void) XAnimateImages(display,&resource,&client_name,1,image);
         XCloseDisplay(display);
       }
 
   MethodError:
-    if (magick_info)
-      DestroyPackageInfo(magick_info);
+    if (package_info)
+      DestroyPackageInfo(package_info);
     sv_setiv(error_list,(IV) (status ? status : SvCUR(error_list) != 0));
     SvPOK_on(error_list);
     ST(0)=sv_2mortal(error_list);
@@ -2387,7 +2387,7 @@ Display(ref,...)
 
     struct PackageInfo
       *info,
-      *magick_info;
+      *package_info;
 
     SV
       *reference;
@@ -2405,7 +2405,7 @@ Display(ref,...)
       status;
 
     status=0;
-    magick_info=(struct PackageInfo *) NULL;
+    package_info=(struct PackageInfo *) NULL;
     error_list=newSVpv("",0);
     if (!sv_isobject(ST(0)))
       {
@@ -2423,28 +2423,28 @@ Display(ref,...)
         MagickWarning(OptionWarning,"No images to display",NULL);
         goto MethodError;
       }
-    magick_info=ClonePackageInfo(info);
+    package_info=ClonePackageInfo(info);
     if (items == 2)
-      SetAttribute(magick_info,NULL,"server",ST(1));
+      SetAttribute(package_info,NULL,"server",ST(1));
     else
       if (items > 2)
         for (i=2; i < items; i+=2)
-          SetAttribute(magick_info,NULL,SvPV(ST(i-1),na),ST(i));
-    display=XOpenDisplay(magick_info->image_info.server_name);
+          SetAttribute(package_info,NULL,SvPV(ST(i-1),na),ST(i));
+    display=XOpenDisplay(package_info->image_info.server_name);
     if (!display)
       MagickWarning(XServerError,"Unable to connect to X server",
-        XDisplayName(magick_info->image_info.server_name));
+        XDisplayName(package_info->image_info.server_name));
     else
       {
         XSetErrorHandler(XError);
         resource_database=XGetResourceDatabase(display,client_name);
         XGetResourceInfo(resource_database,client_name,&resource);
-        resource.image_info=magick_info->image_info;
-        resource.quantize_info=magick_info->quantize_info;
+        resource.image_info=package_info->image_info;
+        resource.quantize_info=package_info->quantize_info;
         for (next=image; next; next=next->next)
         {
-          if (magick_info->image_info.delay)
-            resource.delay=atoi(magick_info->image_info.delay);
+          if (package_info->image_info.delay)
+            resource.delay=atoi(package_info->image_info.delay);
           state=DefaultState;
           (void) XDisplayImage(display,&resource,&client_name,1,&next,&state);
           if (state & ExitState)
@@ -2454,8 +2454,8 @@ Display(ref,...)
       }
 
   MethodError:
-    if (magick_info)
-      DestroyPackageInfo(magick_info);
+    if (package_info)
+      DestroyPackageInfo(package_info);
     sv_setiv(error_list,(IV) status);
     SvPOK_on(error_list);
     ST(0)=sv_2mortal(error_list);
@@ -2784,17 +2784,16 @@ Get(ref,...)
             }
           if (strEQcase(attribute,"format"))
             {
-              const MagickInfo
+              MagickInfo
                 *magick_info;
 
               if (info && (*info->image_info.magick != '\0'))
-                magick_info=(MagickInfo *) GetMagickInfo(
-                  info->image_info.magick,strlen(info->image_info.magick));
+                magick_info=(MagickInfo *)
+                  GetMagickInfo(info->image_info.magick);
               else
                 if (image)
-                  magick_info=(MagickInfo *) GetMagickInfo(image->magick,
-                    strlen(image->magick));
-                if ((magick_info != (const MagickInfo *) NULL) &&
+                  magick_info=(MagickInfo *) GetMagickInfo(image->magick);
+                if ((magick_info != (MagickInfo *) NULL) &&
                     (*magick_info->description != '\0'))
                   s=newSVpv((char *) magick_info->description,0);
               break;
@@ -3152,7 +3151,7 @@ Get(ref,...)
         case 'T':
         case 't':
         {
-          if (strEQcase(attribute,"magick_info"))
+          if (strEQcase(attribute,"package_info"))
             {
               if (image)
                 s=newSViv(image->temporary);
@@ -3481,7 +3480,7 @@ Mogrify(ref,...)
 
     struct PackageInfo
       *info,
-      *magick_info;
+      *package_info;
 
     struct Methods
       *rp;
@@ -3502,7 +3501,7 @@ Mogrify(ref,...)
       pen_color;
 
     reference_vector=NULL;
-    magick_info=(struct PackageInfo *) NULL;
+    package_info=(struct PackageInfo *) NULL;
     region_image=NULL;
     number_images=0;
     base=2;
@@ -4023,22 +4022,22 @@ Mogrify(ref,...)
         {
           if (first)
             {
-              magick_info=ClonePackageInfo(info);
+              package_info=ClonePackageInfo(info);
               if (attribute_flag[1])
-                CopyString(&magick_info->image_info.font,
+                CopyString(&package_info->image_info.font,
                   argument_list[1].string_reference);
               if (attribute_flag[2])
-               magick_info->image_info.pointsize=argument_list[2].int_reference;
+               package_info->image_info.pointsize=argument_list[2].int_reference;
               if (attribute_flag[3])
-                CopyString(&magick_info->image_info.density,
+                CopyString(&package_info->image_info.density,
                   argument_list[3].string_reference);
               if (attribute_flag[5])
-                CopyString(&magick_info->image_info.pen,
+                CopyString(&package_info->image_info.pen,
                   argument_list[5].string_reference);
               if (attribute_flag[7])
-                CopyString(&magick_info->image_info.server_name,
+                CopyString(&package_info->image_info.server_name,
                   argument_list[7].string_reference);
-              GetAnnotateInfo(&magick_info->image_info,&annotate);
+              GetAnnotateInfo(&package_info->image_info,&annotate);
               if (attribute_flag[0])
                 annotate.text=argument_list[0].string_reference;
               if (attribute_flag[4])
@@ -4223,17 +4222,17 @@ Mogrify(ref,...)
         {
           if (first)
             {
-              magick_info=ClonePackageInfo(info);
+              package_info=ClonePackageInfo(info);
               if (attribute_flag[3])
-                CopyString(&magick_info->image_info.pen,
+                CopyString(&package_info->image_info.pen,
                   argument_list[3].string_reference);
               if (attribute_flag[5])
-                CopyString(&magick_info->image_info.server_name,
+                CopyString(&package_info->image_info.server_name,
                   argument_list[5].string_reference);
               if (attribute_flag[6])
-                CopyString(&magick_info->image_info.border_color,
+                CopyString(&package_info->image_info.border_color,
                   argument_list[6].string_reference);
-              GetAnnotateInfo(&magick_info->image_info,&annotate);
+              GetAnnotateInfo(&package_info->image_info,&annotate);
               if (attribute_flag[4])
                 annotate.linewidth=argument_list[4].int_reference;
             }
@@ -4536,13 +4535,13 @@ Mogrify(ref,...)
         {
           if (first)
             {
-              magick_info=ClonePackageInfo(info);
+              package_info=ClonePackageInfo(info);
               if (!attribute_flag[0])
                 argument_list[0].string_reference="50";
-              GetQuantizeInfo(&magick_info->quantize_info);
+              GetQuantizeInfo(&package_info->quantize_info);
              if (info)
-               magick_info->quantize_info.dither=info->quantize_info.dither;
-             magick_info->quantize_info.colorspace=GRAYColorspace;
+               package_info->quantize_info.dither=info->quantize_info.dither;
+             package_info->quantize_info.colorspace=GRAYColorspace;
              commands[0]=client_name;
              commands[1]="-edge";
              commands[2]=argument_list[0].string_reference;
@@ -4551,7 +4550,7 @@ Mogrify(ref,...)
              commands[5]="-normalize";
              commands[6]="-negate";
            }
-          QuantizeImage(&magick_info->quantize_info,image);
+          QuantizeImage(&package_info->quantize_info,image);
           SyncImage(image);
           MogrifyImage(&info->image_info,7,commands,&image);
           if (next != image)
@@ -4643,8 +4642,8 @@ Mogrify(ref,...)
       if (*pv)
         pv++;
     }
-    if (magick_info)
-      DestroyPackageInfo(magick_info);
+    if (package_info)
+      DestroyPackageInfo(package_info);
 
   ReturnIt:
     if (reference_vector)
@@ -5599,7 +5598,7 @@ Write(ref,...)
 
     struct PackageInfo
       *info,
-      *magick_info;
+      *package_info;
 
     SV
       *reference;
@@ -5608,7 +5607,7 @@ Write(ref,...)
       number_images;
 
     number_images=0;
-    magick_info=(struct PackageInfo *) NULL;
+    package_info=(struct PackageInfo *) NULL;
     error_list=newSVpv("",0);
     if (!sv_isobject(ST(0)))
       {
@@ -5625,14 +5624,14 @@ Write(ref,...)
         MagickWarning(OptionWarning,"No images to write",NULL);
         goto MethodError;
       }
-    magick_info=ClonePackageInfo(info);
+    package_info=ClonePackageInfo(info);
     if (items == 2)
-      SetAttribute(magick_info,NULL,"filen",ST(1));
+      SetAttribute(package_info,NULL,"filen",ST(1));
     else
       if (items > 2)
         for (i=2; i < items; i+=2)
-          SetAttribute(magick_info,NULL,SvPV(ST(i-1),na),ST(i));
-    (void) strcpy(filename,magick_info->image_info.filename);
+          SetAttribute(package_info,NULL,SvPV(ST(i-1),na),ST(i));
+    (void) strcpy(filename,package_info->image_info.filename);
     scene=0;
     for (next=image; next; next=next->next)
     {
@@ -5641,15 +5640,15 @@ Write(ref,...)
     }
     for (next=image; next; next=next->next)
     {
-      if (WriteImage((ImageInfo *) &magick_info->image_info,next))
+      if (WriteImage((ImageInfo *) &package_info->image_info,next))
         number_images++;
-      if (magick_info->image_info.adjoin)
+      if (package_info->image_info.adjoin)
         break;
     }
 
   MethodError:
-    if (magick_info)
-      DestroyPackageInfo(magick_info);
+    if (package_info)
+      DestroyPackageInfo(package_info);
     sv_setiv(error_list,(IV) number_images);
     SvPOK_on(error_list);
     ST(0)=sv_2mortal(error_list);

@@ -10,7 +10,7 @@
 %           QQQQ   UUU   A   A  N   N    T    IIIII   ZZZZZ  EEEEE            %
 %                                                                             %
 %                                                                             %
-%              Reduce the Number of Unique Colors in an Image                 %
+%         Methods to Reduce the Number of Unique Colors in an Image           %
 %                                                                             %
 %                                                                             %
 %                           Software Design                                   %

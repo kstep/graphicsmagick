@@ -10,8 +10,7 @@
 %                      SSSSS  H   H  EEEEE  A   A   R  R                      %
 %                                                                             %
 %                                                                             %
-%              Shear or rotate a raster image by an arbitrary angle.          %
-%                                                                             %
+%            Methods to Shear or Rotate an Image by an Arbitrary Angle        %
 %                                                                             %
 %                                                                             %
 %                               Software Design                               %

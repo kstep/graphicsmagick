@@ -10,7 +10,7 @@
 %             DDDD   IIIII  SSSSS  P      LLLLL  A   A    Y                   %
 %                                                                             %
 %                                                                             %
-%                     Interactively Display an Image.                         %
+%            Methods to Interactively Display and Edit an Image               %
 %                                                                             %
 %                                                                             %
 %                           Software Design                                   %

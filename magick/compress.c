@@ -10,8 +10,7 @@
 %           CCCC   OOO   M   M  P      R  R   EEEEE   SSSSS  SSSSS            %
 %                                                                             %
 %                                                                             %
-%                  Image Compression/Decompression Coders                     %
-%                                                                             %
+%                  Image Compression/Decompression Methods                    %
 %                                                                             %
 %                                                                             %
 %                           Software Design                                   %
