@@ -1647,6 +1647,21 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
     case 'S':
     case 's':
     {
+      if (LocaleCompare(attribute,"sample_factor") == 0)
+        {
+          if (!IsGeometry(SvPV(sval,na)))
+            {
+              MagickWarning(OptionWarning,"Invalid geometry on sample factor",
+                SvPV(sval,na));
+              return;
+            }
+          if (info)
+            {
+              (void) CloneString(&info->image_info->density,SvPV(sval,na));
+              (void) CloneString(&info->draw_info->density,SvPV(sval,na));
+            }
+          return;
+        }
       if (LocaleCompare(attribute,"scene") == 0)
         {
           for ( ; image; image=image->next)
@@ -3590,6 +3605,13 @@ Get(ref,...)
         case 'S':
         case 's':
         {
+          if (LocaleCompare(attribute,"sampling_factor") == 0)
+            {
+              if (info && *info->image_info->sampling_factor)
+                s=newSVpv(info->image_info->sampling_factor,0);
+              PUSHs(s ? sv_2mortal(s) : &sv_undef);
+              continue;
+            }
           if (LocaleCompare(attribute,"subimage") == 0)
             {
               if (info)

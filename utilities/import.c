@@ -102,7 +102,7 @@ static void ImportUsage(void)
       "-crop geometry       preferred size and location of the cropped image",
       "-debug               display copious debugging information",
       "-delay value         display the next image after pausing",
-      "-density geometry    vertical and horizontal density of the image",
+      "-density geometry    horizontal and vertical density of the image",
       "-depth value         depth of the image",
       "-descend             obtain image by descending window hierarchy",
       "-display server      X server to contact",
@@ -122,6 +122,8 @@ static void ImportUsage(void)
       "-quality value       JPEG/MIFF/PNG compression level",
       "-resize geometry     resize the image",
       "-rotate degrees      apply Paeth rotation to the image",
+      "-sampling_factor geometry",
+      "                     horizontal and vertical sampling factor",
       "-scene value         image scene number",
       "-screen              select image from root window",
       "-silent              operate silently, i.e. don't ring any bells ",
@@ -774,6 +776,18 @@ int main(int argc,char **argv)
       }
       case 's':
       {
+        if (LocaleCompare("sampling_factor",option+1) == 0)
+          {
+            (void) CloneString(&image_info->sampling_factor,(char *) NULL);
+            if (*option == '-')
+              {
+                i++;
+                if ((i == argc) || !IsGeometry(argv[i]))
+                  MagickError(OptionError,"Missing geometry",option);
+                (void) CloneString(&image_info->sampling_factor,argv[i]);
+              }
+            break;
+          }
         if (LocaleCompare("scene",option+1) == 0)
           {
             if (*option == '-')

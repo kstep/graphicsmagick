@@ -120,7 +120,7 @@ static void DisplayUsage(void)
       "-crop geometry       preferred size and location of the cropped image",
       "-debug               display copious debugging information",
       "-delay value         display the next image after pausing",
-      "-density geometry    vertical and horizontal density of the image",
+      "-density geometry    horizontal and vertical density of the image",
       "-depth value         depth of the image",
       "-despeckle           reduce the speckles within an image",
       "-display server      display image to this X server",
@@ -151,6 +151,8 @@ static void DisplayUsage(void)
       "-roll geometry       roll an image vertically or horizontally",
       "-rotate degrees      apply Paeth rotation to the image",
       "-sample geometry     scale image with pixel sampling",
+      "-sampling_factor geometry",
+      "                     horizontal and vertical sampling factor",
       "-scenes range        image scene range",
       "-segment value       segment an image",
       "-sharpen geometry    sharpen the image",
@@ -1233,6 +1235,18 @@ int main(int argc,char **argv)
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
                   MagickError(OptionError,"Missing geometry",option);
+              }
+            break;
+          }
+        if (LocaleCompare("sampling_factor",option+1) == 0)
+          {
+            (void) CloneString(&image_info->sampling_factor,(char *) NULL);
+            if (*option == '-')
+              {
+                i++;
+                if ((i == argc) || !IsGeometry(argv[i]))
+                  MagickError(OptionError,"Missing geometry",option);
+                (void) CloneString(&image_info->sampling_factor,argv[i]);
               }
             break;
           }

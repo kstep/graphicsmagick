@@ -1108,6 +1108,8 @@ MagickExport ImageInfo *CloneImageInfo(const ImageInfo *image_info)
   clone_info->endian=image_info->endian;
   clone_info->units=image_info->units;
   clone_info->quality=image_info->quality;
+  if (image_info->sampling_factor != (char *) NULL)
+    clone_info->sampling_factor=GetString(image_info->sampling_factor);
   if (image_info->server_name != (char *) NULL)
     clone_info->server_name=GetString(image_info->server_name);
   if (image_info->font != (char *) NULL)
@@ -4771,6 +4773,14 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
               break;
             DestroyImage(*image);
             *image=sample_image;
+            continue;
+          }
+        if (LocaleCompare("-sampling_factor",option) == 0)
+          {
+            /*
+              Set image sampling factor.
+            */
+            (void) CloneString(&clone_info->sampling_factor,argv[++i]);
             continue;
           }
         if (LocaleCompare("sans",option+1) == 0)

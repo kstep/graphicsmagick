@@ -105,7 +105,7 @@ static void MogrifyUsage(void)
       "-cycle amount        cycle the image colormap",
       "-debug               display copious debugging information",
       "-delay value         display the next image after pausing",
-      "-density geometry    vertical and horizontal density of the image",
+      "-density geometry    horizontal and vertical density of the image",
       "-depth value         depth of the image",
       "-despeckle           reduce the speckles within an image",
       "-display server      obtain image or font from this X server",
@@ -158,6 +158,8 @@ static void MogrifyUsage(void)
       "-roll geometry       roll an image vertically or horizontally",
       "-rotate degrees      apply Paeth rotation to the image",
       "-sample geometry     scale image with pixel sampling",
+      "-sampling_factor geometry",
+      "                     horizontal and vertical sampling factor",
       "-scale geometry      scale the image",
       "-scene number        image scene number",
       "-seed value          pseudo-random number generator seed value",
@@ -1363,6 +1365,18 @@ static unsigned int MogrifyUtility(int argc,char **argv)
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
                   MagickError(OptionError,"Missing geometry",option);
+              }
+            break;
+          }
+        if (LocaleCompare("sampling_factor",option+1) == 0)
+          {
+            (void) CloneString(&image_info->sampling_factor,(char *) NULL);
+            if (*option == '-')
+              {
+                i++;
+                if ((i == argc) || !IsGeometry(argv[i]))
+                  MagickError(OptionError,"Missing geometry",option);
+                (void) CloneString(&image_info->sampling_factor,argv[i]);
               }
             break;
           }

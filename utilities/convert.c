@@ -175,7 +175,7 @@ static void ConvertUsage(void)
       "-debug               display copious debugging information",
       "-deconstruct         break down an image sequence into constituent parts",
       "-delay value         display the next image after pausing",
-      "-density geometry    vertical and horizontal density of the image",
+      "-density geometry    horizontal and vertical density of the image",
       "-depth value         depth of the image",
       "-despeckle           reduce the speckles within an image",
       "-display server      obtain image or font from this X server",
@@ -198,7 +198,7 @@ static void ConvertUsage(void)
       "-gamma value         level of gamma correction",
       "-gaussian geometry   gaussian blur an image",
       "-geometry geometry   perferred size or location of the image",
-      "-gravity type        vertical and horizontal text placement",
+      "-gravity type        horizontal and vertical text placement",
       "-help                print program options",
       "-implode amount      implode image pixels about the center",
       "-intent type         Absolute, Perceptual, Relative, or Saturation",
@@ -233,6 +233,8 @@ static void ConvertUsage(void)
       "-roll geometry       roll an image vertically or horizontally",
       "-rotate degrees      apply Paeth rotation to the image",
       "-sample geometry     scale image with pixel sampling",
+      "-sampling_factor geometry",
+      "                     horizontal and vertical sampling factor",
       "-scale geometry      scale the image",
       "-scene value         image scene number",
       "-seed value          pseudo-random number generator seed value",
@@ -1535,6 +1537,18 @@ static unsigned int ConvertUtility(int argc,char **argv)
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
                   MagickError(OptionError,"Missing geometry",option);
+              }
+            break;
+          }
+        if (LocaleCompare("sampling_factor",option+1) == 0)
+          {
+            (void) CloneString(&image_info->sampling_factor,(char *) NULL);
+            if (*option == '-')
+              {
+                i++;
+                if ((i == argc) || !IsGeometry(argv[i]))
+                  MagickError(OptionError,"Missing geometry",option);
+                (void) CloneString(&image_info->sampling_factor,argv[i]);
               }
             break;
           }

@@ -97,7 +97,7 @@ static void MontageUsage(void)
       "-compress type       type of image compression",
       "-crop geometry       preferred size and location of the cropped image",
       "-debug               display copious debugging information",
-      "-density geometry    vertical and horizontal density of the image",
+      "-density geometry    horizontal and vertical density of the image",
       "-depth value         depth of the image",
       "-display server      query font from this X server",
       "-dispose method      GIF disposal method",
@@ -122,6 +122,8 @@ static void MontageUsage(void)
       "-quality value       JPEG/MIFF/PNG compression level",
       "-resize geometry     resize the image",
       "-rotate degrees      apply Paeth rotation to the image",
+      "-sampling_factor geometry",
+      "                     horizontal and vertical sampling factor",
       "-scenes range        image scene range",
       "-shadow              add a shadow beneath a tile to simulate depth",
       "-size geometry       width and height of image",
@@ -1022,6 +1024,18 @@ static unsigned int MontageUtility(int argc,char **argv)
       }
       case 's':
       {
+        if (LocaleCompare("sampling_factor",option+1) == 0)
+          {
+            (void) CloneString(&image_info->sampling_factor,(char *) NULL);
+            if (*option == '-')
+              {
+                i++;
+                if ((i == argc) || !IsGeometry(argv[i]))
+                  MagickError(OptionError,"Missing geometry",option);
+                (void) CloneString(&image_info->sampling_factor,argv[i]);
+              }
+            break;
+          }
         if (LocaleCompare("scenes",option+1) == 0)
           {
             first_scene=0;

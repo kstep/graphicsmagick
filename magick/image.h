@@ -492,6 +492,7 @@ typedef struct _ImageInfo
     quality;
 
   char
+    *sampling_factor,
     *server_name,
     *font,
     *texture,

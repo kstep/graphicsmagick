@@ -305,7 +305,7 @@ static void CompositeUsage(void)
       "-compose operator    composite operator",
       "-compress type       type of image compression",
       "-debug               display copious debugging information",
-      "-density geometry    vertical and horizontal density of the image",
+      "-density geometry    horizontal and vertical density of the image",
       "-depth value         depth of the image",
       "-displace geometry   shift image pixels defined by a displacement map",
       "-display server      obtain image or font from this X server",
@@ -328,6 +328,8 @@ static void CompositeUsage(void)
       "-quality value       JPEG/MIFF/PNG compression level",
       "-resize geometry     resize the image",
       "-rotate degrees      apply Paeth rotation to the image",
+      "-sampling_factor geometry",
+      "                     horizontal and vertical sampling factor",
       "-scene value         image scene number",
       "-sharpen geometry    sharpen the image",
       "-size geometry       width and height of image",
@@ -1052,6 +1054,18 @@ unsigned int CompositeUtility(int argc,char **argv)
       }
       case 's':
       {
+        if (LocaleCompare("sampling_factor",option+1) == 0)
+          {
+            (void) CloneString(&image_info->sampling_factor,(char *) NULL);
+            if (*option == '-')
+              {
+                i++;
+                if ((i == argc) || !IsGeometry(argv[i]))
+                  MagickError(OptionError,"Missing geometry",option);
+                (void) CloneString(&image_info->sampling_factor,argv[i]);
+              }
+            break;
+          }
         if (LocaleCompare("scene",option+1) == 0)
           {
             if (*option == '-')

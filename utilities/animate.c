@@ -112,7 +112,7 @@ static void AnimateUsage(void)
       "-crop geometry       preferred size and location of the cropped image",
       "-debug               display copious debugging information",
       "-delay value         display the next image after pausing",
-      "-density geometry    vertical and horizontal density of the image",
+      "-density geometry    horizontal and vertical density of the image",
       "-depth value         depth of the image",
       "-display server      display image to this X server",
       "-dither              apply Floyd/Steinberg error diffusion to image",

@@ -88,7 +88,7 @@ static void IdentifyUsage(void)
     {
       "-cache threshold   megabytes of memory available to the pixel cache",
       "-debug             display copious debugging information",
-      "-density geometry  vertical and horizontal density of the image",
+      "-density geometry  horizontal and vertical density of the image",
       "-depth value       depth of the image",
       "-format \"string\"   output formatted image characteristics",
       "-help              print program options",
