@@ -127,6 +127,8 @@ typedef unsigned int Quantum;
 #define TransparentOpacity  MaxRGB
 #define RoundSignedToQuantum(value) ((Quantum) (value < 0 ? 0 : \
   (value > MaxRGB) ? MaxRGB : value + 0.5))
+#define RoundToQuantum(value) ((Quantum) (value > MaxRGB ? MaxRGB : \
+  value + 0.5))
 /*
   Deprecated defines.
 */

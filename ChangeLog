@@ -1,3 +1,10 @@
+2004-03-20  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/composite.c (CompositeImage): Fix Multiply composite
+	operator for Q:32 build (was all black image).
+	* magick/image.h (RoundToQuantum): Added macro to round double to
+	Quantum.
+
 2004-03-10  Peter Boos  <pedib@colorfullife.com>
 
 	* magick/annotate.c (RenderFreetype): If DrawAnnotation is called

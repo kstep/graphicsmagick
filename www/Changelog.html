@@ -2,7 +2,7 @@
   "http://www.w3.org/TR/html4/loose.dtd">
 <HTML>
 <HEAD>
-<TITLE>GraphicsMagick 1.0.5 ChangeLog</TITLE>
+<TITLE>GraphicsMagick 1.0.6 ChangeLog</TITLE>
 	<STYLE>
 	<!--
 		@page { size: 8.5in 11in }
@@ -49,9 +49,19 @@
 <table BORDER=0 WIDTH="100%" >
 <tr>
 <td BGCOLOR="#52799E"><img SRC="../images/right_triangle.png" ALT=">" height=14 width=15>
-<b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">GraphicsMagick 1.0.5 ChangeLog</font></font></font></b></td>
+<b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">GraphicsMagick 1.0.6 ChangeLog</font></font></font></b></td>
 </tr>
 </table>
+<p>
+2004-03-20  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/composite.c (CompositeImage): Fix Multiply composite
+        operator for Q:32 build (was all black image).
+  <LI> magick/image.h (RoundToQuantum): Added macro to round double to
+        Quantum.
+
+</UL>
 <p>
 2004-03-10  Peter Boos  &lt;pedib@colorfullife.com&gt;
 

@@ -481,14 +481,15 @@ MagickExport unsigned int CompositeImage(Image *image,
         }
         case MultiplyCompositeOp:
         {
-          destination.red=(Quantum)
-            ((double) (source.red*destination.red/MaxRGB));
-          destination.green=(Quantum)
-            ((unsigned long) (source.green*destination.green/MaxRGB));
-          destination.blue=(Quantum)
-            ((double) (source.blue*destination.blue/MaxRGB));
-          destination.opacity=(Quantum)
-            ((double) (source.opacity*destination.opacity/MaxRGB+0.5));
+          double composite;
+          composite=((double) source.red*destination.red)/MaxRGB;
+          destination.red=RoundToQuantum(composite);
+          composite=((double) source.green*destination.green)/MaxRGB;
+          destination.green=RoundToQuantum(composite);
+          composite=((double) source.blue*destination.blue)/MaxRGB;
+          destination.blue=RoundToQuantum(composite);
+          composite=((double) source.opacity*destination.opacity)/MaxRGB;
+          destination.opacity=RoundToQuantum(composite);
           break;
         }
         case DifferenceCompositeOp:
