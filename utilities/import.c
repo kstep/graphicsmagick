@@ -965,9 +965,6 @@ int main(int argc,char **argv)
   (void) CatchImageException(image);
   (void) SetImageInfo(image_info,True,&image->exception);
   for (p=image; p != (Image *) NULL; p=p->next)
-    if (p->next != (Image *) NULL)
-      p->next->scene=p->scene+1;
-  for (p=image; p != (Image *) NULL; p=p->next)
   {
     status&=WriteImage(image_info,p);
     (void) CatchImageException(p);
