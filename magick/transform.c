@@ -275,7 +275,7 @@ MagickExport Image *CoalesceImages(Image *image,ExceptionInfo *exception)
   /*
     Coalesce image.
   */
-  for (next=image->next; next != (Image *) NULL; next=next->next)
+  for (next=image->next; next != (Image *) NULL; next=GetNextImage(next))
   {
     coalesce_image->next=CloneImage(coalesce_image,0,0,True,exception);
     if (coalesce_image->next == (Image *) NULL)
@@ -284,14 +284,12 @@ MagickExport Image *CoalesceImages(Image *image,ExceptionInfo *exception)
         return((Image *) NULL);
       }
     coalesce_image->next->previous=coalesce_image;
-    coalesce_image=coalesce_image->next;
+    coalesce_image=GetNextImage(coalesce_image);
     coalesce_image->delay=next->delay;
     coalesce_image->start_loop=next->start_loop;
     CompositeImage(coalesce_image,next->matte ? OverCompositeOp :
       CopyCompositeOp,next,next->page.x,next->page.y);
     GetPageInfo(&coalesce_image->page);
-    CloseImagePixels(next);
-    CloseImagePixels(coalesce_image);
   }
   while (coalesce_image->previous != (Image *) NULL)
     coalesce_image=coalesce_image->previous;
@@ -529,7 +527,7 @@ MagickExport Image *DeconstructImages(Image *image,ExceptionInfo *exception)
     Compute the bounding box for each next in the sequence.
   */
   i=0;
-  for (next=image->next; next != (Image *) NULL; next=next->next)
+  for (next=image->next; next != (Image *) NULL; next=GetNextImage(next))
   {
     /*
       Set bounding box to the next dimensions.
@@ -603,8 +601,6 @@ MagickExport Image *DeconstructImages(Image *image,ExceptionInfo *exception)
     }
     bounds[i].height=y-bounds[i].y+1;
     i++;
-    CloseImagePixels(next);
-    CloseImagePixels(next->previous);
   }
   /*
     Clone first image in sequence.
@@ -688,12 +684,9 @@ MagickExport Image *FlattenImages(Image *image,ExceptionInfo *exception)
   /*
     Flatten image.
   */
-  for (next=image->next; next != (Image *) NULL; next=next->next)
-  {
+  for (next=image->next; next != (Image *) NULL; next=GetNextImage(next))
     CompositeImage(flatten_image,next->matte ? OverCompositeOp :
       CopyCompositeOp,next,next->page.x,next->page.y);
-    CloseImagePixels(next);
-  }
   (void) IsOpaqueImage(flatten_image);
   return(flatten_image);
 }
