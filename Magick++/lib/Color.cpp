@@ -148,15 +148,7 @@ Magick::Color::operator std::string() const
   colorstr.setf(ios::right | ios::uppercase );
   colorstr.fill('0');
 
-#if defined(QuantumLeap)
-  colorstr << "#"
-	   << hex
-	   << setw(4) << static_cast<unsigned int>(redQuantum())
-	   << setw(4) << static_cast<unsigned int>(greenQuantum())
-	   << setw(4) << static_cast<unsigned int>(blueQuantum());
-  if ( _pixelType == RGBAPixel )
-    colorstr << hex << setw(4) << (unsigned int)alphaQuantum();
-#else
+#if defined(QuantumMagick)
   colorstr << "#"
 	   << hex
 	   << setw(2) << static_cast<unsigned int>(redQuantum())
@@ -164,6 +156,14 @@ Magick::Color::operator std::string() const
 	   << setw(2) << static_cast<unsigned int>(blueQuantum());
   if ( _pixelType == RGBAPixel )
     colorstr << hex << setw(2) << static_cast<unsigned int>(alphaQuantum());
+#else
+  colorstr << "#"
+	   << hex
+	   << setw(4) << static_cast<unsigned int>(redQuantum())
+	   << setw(4) << static_cast<unsigned int>(greenQuantum())
+	   << setw(4) << static_cast<unsigned int>(blueQuantum());
+  if ( _pixelType == RGBAPixel )
+    colorstr << hex << setw(4) << (unsigned int)alphaQuantum();
 #endif
 
   colorstr << ends;

@@ -3728,9 +3728,9 @@ if test "${enable_16bit_pixel+set}" = set; then
 else
   with_16_bit_pixel='yes'
 fi;
-test "$with_16_bit_pixel" = 'yes' &&
+test "$with_16_bit_pixel" = 'no' &&
 cat >>confdefs.h <<\EOF
-#define QuantumLeap
+#define QuantumMagick
 EOF
 
 # Set pixel cache threshold

@@ -63,8 +63,8 @@
 /* X11 server supports shared memory extension */
 #undef HasSharedMemory
 
-/* Increase max color value from 255 to 65535 */
-#undef QuantumLeap
+/* Decrease max color value from 65535 to 255 */
+#undef QuantumMagick
 
 /* Define if you have the bzip2 library */
 #undef HasBZLIB

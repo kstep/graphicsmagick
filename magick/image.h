@@ -8,19 +8,7 @@
 extern "C" {
 #endif
 
-#if defined(QuantumLeap)
-/*
-  Color quantum is [0..65535].
-*/
-#define DownScale(quantum)  ((quantum)/257)
-#define MaxRGB  65535L
-#define QuantumDepth  16
-#define UpScale(quantum)  (257*(quantum))
-#define XDownScale(color)  (color)
-#define XUpScale(color)  (color)
-
-typedef unsigned short Quantum;
-#else
+#if defined(QuantumMagick)
 /*
   Color quantum is [0..255].
 */
@@ -32,6 +20,18 @@ typedef unsigned short Quantum;
 #define XUpScale(color)  (257*(color))
 
 typedef unsigned char Quantum;
+#else
+/*
+  Color quantum is [0..65535].
+*/
+#define DownScale(quantum)  ((quantum)/257)
+#define MaxRGB  65535L
+#define QuantumDepth  16
+#define UpScale(quantum)  (257*(quantum))
+#define XDownScale(color)  (color)
+#define XUpScale(color)  (color)
+
+typedef unsigned short Quantum;
 #endif
 #define OpaqueOpacity  0
 #define TransparentOpacity  MaxRGB
@@ -279,7 +279,7 @@ typedef struct _Image
   FILE
     *file;
 
-  off_t
+  size_t
     filesize;
 
   int
@@ -378,7 +378,7 @@ typedef struct _Image
   double
     blur;
 
-  off_t
+  size_t
     total_colors;
 
   unsigned int
@@ -722,7 +722,7 @@ extern MagickExport PixelPacket
 extern MagickExport RectangleInfo
   GetImageBoundingBox(Image *);
 
-extern MagickExport off_t
+extern MagickExport size_t
   GetNumberColors(Image *,FILE *);
 
 extern MagickExport unsigned int

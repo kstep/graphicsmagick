@@ -13,7 +13,7 @@ require 't/subroutines.pl';
 
 chdir 't' || die 'Cd failed';
 
-# Determine if QuantumLeap is defined
+# Determine if QuantumMagick is defined
 $image=Image::Magick->new;
 my $depth = $image->Get('depth');
 

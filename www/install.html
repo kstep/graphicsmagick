@@ -300,9 +300,9 @@ ImageMagick represents images internally using an eight-bit pixel quantum
 specialized applications, which must ensure that the full dynamic range of
 the image pixels is preserved across operations, or which must process an
 image format that can represent deep pixels, may want to enable support for
-sixteen-bit pixel quantums. When this option is specified, the definition
-QuantumLeap is applied when ImageMagick is built, allowing RGBA values to
-range from 0 to 65535 rather than 0 to 255. Enabling this option will cause
+sixteen-bit pixel quantums. When this option is not specified, the definition
+QuantumMagick is applied when ImageMagick is built, allowing RGBA values to
+range from 0 to 255 rather than 0 to 65535. Enabling this option will cause
 ImageMagick to run about 30% slower.</li>
 
 <li> <tt>--without-frozenpaths</tt> By default,

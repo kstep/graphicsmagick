@@ -206,8 +206,8 @@
 /* Include LZW compression */
 #undef HasLZW
 
-/* Increase max color value from 255 to 65535 */
-#undef QuantumLeap
+/* Decrease max color value from 65535 to 255 */
+#undef QuantumMagick
 
 /* Pixel cache threshold (default 2047MB) */
 #undef PixelCacheThreshold
