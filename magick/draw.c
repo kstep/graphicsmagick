@@ -47,10 +47,10 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 % Bill Radcliffe of Corbis (www.corbis.com) contributed the polygon
-% rendering code.  Leonard Rosenthal and David Harr of Appligent
+% rendering code based on Paul Heckbert's "Concave Polygon Scan Conversion",
+% Graphics Gems, 1990.  Leonard Rosenthal and David Harr of Appligent
 % (www.appligent.com) contributed the dash pattern, linecap stroking
-% algorithm, and minor rendering improvements.  Parts of the fast
-% rendering algorithm was inspired by libart.
+% algorithm, and minor rendering improvements.
 %
 */
 
