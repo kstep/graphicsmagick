@@ -665,7 +665,7 @@ MagickExport char *EscapeString(const char *source,const char escape)
 MagickExport void ExpandFilename(char *filename)
 {
   char
-    expanded_filename[MaxTextExtent];
+    expand_filename[MaxTextExtent];
 
   register char
     *p;
@@ -674,7 +674,7 @@ MagickExport void ExpandFilename(char *filename)
     return;
   if (*filename != '~')
     return;
-  (void) strncpy(expanded_filename,filename,MaxTextExtent-1);
+  (void) strncpy(expand_filename,filename,MaxTextExtent-1);
   if (*(filename+1) == '/')
     {
       /*
@@ -683,9 +683,9 @@ MagickExport void ExpandFilename(char *filename)
       p=(char *) getenv("HOME");
       if (p == (char *) NULL)
         p=(char *) ".";
-      (void) strncpy(expanded_filename,p,MaxTextExtent-1);
-      (void) strncat(expanded_filename,filename+1,MaxTextExtent-
-        strlen(expanded_filename)-1);
+      (void) strncpy(expand_filename,p,MaxTextExtent-1);
+      (void) strncat(expand_filename,filename+1,MaxTextExtent-
+        strlen(expand_filename)-1);
     }
   else
     {
@@ -706,16 +706,16 @@ MagickExport void ExpandFilename(char *filename)
       entry=getpwnam(username);
       if (entry == (struct passwd *) NULL)
         return;
-      (void) strncpy(expanded_filename,entry->pw_dir,MaxTextExtent-1);
+      (void) strncpy(expand_filename,entry->pw_dir,MaxTextExtent-1);
       if (p != (char *) NULL)
         {
-          (void) strcat(expanded_filename,"/");
-          (void) strncat(expanded_filename,p+1,MaxTextExtent-
-            strlen(expanded_filename)-1);
+          (void) strcat(expand_filename,"/");
+          (void) strncat(expand_filename,p+1,MaxTextExtent-
+            strlen(expand_filename)-1);
         }
 #endif
     }
-  (void) strncpy(filename,expanded_filename,MaxTextExtent-1);
+  (void) strncpy(filename,expand_filename,MaxTextExtent-1);
 }
 
 /*
@@ -760,7 +760,7 @@ MagickExport unsigned int ExpandFilenames(int *argc,char ***argv)
 
   long
     count,
-    expanded,
+    expand,
     number_files;
 
   register long
@@ -783,7 +783,7 @@ MagickExport unsigned int ExpandFilenames(int *argc,char ***argv)
     Expand any wildcard filenames.
   */
   (void) getcwd(home_directory,MaxTextExtent-1);
-  expanded=False;
+  expand=False;
   count=0;
   for (i=0; i < *argc; i++)
   {
@@ -827,7 +827,7 @@ MagickExport unsigned int ExpandFilenames(int *argc,char ***argv)
         DestroyImageInfo(image_info);
         if (exempt)
           {
-            expanded=True;
+            expand=True;
             continue;
           }
        }
@@ -835,7 +835,7 @@ MagickExport unsigned int ExpandFilenames(int *argc,char ***argv)
     ExpandFilename(path);
     if (!IsGlob(path))
       {
-        expanded=True;
+        expand=True;
         continue;
       }
     /*
@@ -875,7 +875,7 @@ MagickExport unsigned int ExpandFilenames(int *argc,char ***argv)
           LiberateMemory((void **) &filelist[j]);
           continue;
         }
-      expanded=True;
+      expand=True;
       vector[count]=AllocateString(filename);
       LiberateMemory((void **) &filelist[j]);
       count++;
@@ -883,7 +883,7 @@ MagickExport unsigned int ExpandFilenames(int *argc,char ***argv)
     LiberateMemory((void **) &filelist);
   }
   (void) chdir(home_directory);
-  if (!expanded)
+  if (!expand)
     {
       LiberateMemory((void **) &vector);
       return(True);
