@@ -24,6 +24,9 @@ extern "C" {
 extern MagickExport char
   *NTRegistryKeyLookup(const char *key);
 
+extern MagickExport HBITMAP 
+	ImageToHBITMAP(Image* image);
+
 #if !defined(XS_VERSION)
 
 extern MagickExport unsigned int
