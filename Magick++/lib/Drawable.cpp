@@ -293,6 +293,71 @@ Magick::DrawableBase* Magick::DrawableBezier::copy() const
   return new DrawableBezier(*this);
 }
 
+//
+//Clip Path 
+//
+
+// Pop (terminate) Clip path definition
+Magick::DrawablePopClipPath::~DrawablePopClipPath ( void )
+{
+}
+void Magick::DrawablePopClipPath::operator() ( MagickLib::DrawContext context_ ) const
+{
+  DrawPopClipPath( context_ );
+  DrawPopDefs(context_);
+}
+Magick::DrawableBase* Magick::DrawablePopClipPath::copy() const
+{
+  return new DrawablePopClipPath(*this);
+}
+
+// Push clip path definition
+Magick::DrawablePushClipPath::DrawablePushClipPath( const std::string &id_)
+  : _id(id_.c_str())    //multithread safe const char*
+{
+}
+Magick::DrawablePushClipPath::DrawablePushClipPath
+( const Magick::DrawablePushClipPath& original_ ) //multithread safe const char*
+  : _id(original_._id.c_str())
+{
+}
+Magick::DrawablePushClipPath::~DrawablePushClipPath( void )
+{
+}
+void Magick::DrawablePushClipPath::operator()
+  ( MagickLib::DrawContext context_ ) const
+{
+  DrawPushDefs(context_);
+  DrawPushClipPath( context_, _id.c_str());
+}
+Magick::DrawableBase* Magick::DrawablePushClipPath::copy() const
+{
+  return new DrawablePushClipPath(*this);
+}
+//
+// ClipPath
+//
+Magick::DrawableClipPath::DrawableClipPath( const std::string &id_ )
+:_id(id_.c_str())
+{
+}
+
+Magick::DrawableClipPath::DrawableClipPath ( const Magick::DrawableClipPath& original_ )
+  : _id(original_._id.c_str())
+{
+}
+Magick::DrawableClipPath::~DrawableClipPath( void )
+{
+}
+void Magick::DrawableClipPath::operator()( MagickLib::DrawContext context_ ) const
+{
+	DrawSetClipPath( context_, _id.c_str());
+}
+Magick::DrawableBase* Magick::DrawableClipPath::copy() const
+{
+  return new DrawableClipPath(*this);
+}
+
 // Circle
 Magick::DrawableCircle::~DrawableCircle ( void )
 {

@@ -7,7 +7,7 @@
 	<META NAME="AUTHOR" CONTENT="Bob Friesenhahn">
 	<META NAME="CREATED" CONTENT="20020805;15043598">
 	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
-	<META NAME="CHANGED" CONTENT="20020819;15052100">
+	<META NAME="CHANGED" CONTENT="20021124;11445600">
 	<META NAME="DESCRIPTION" CONTENT="Documentation for Magick::Drawable class">
 	<STYLE>
 	<!--
@@ -292,6 +292,17 @@ which each individual parameter may be adjusted.</FONT>
 	</TR>
 	<TR>
 		<TD WIDTH=27%>
+			<P CLASS="western" ALIGN=CENTER>DrawableClipPath</P>
+		</TD>
+		<TD WIDTH=21%>
+			<P CLASS="western">const std::string &amp;id_</P>
+		</TD>
+		<TD WIDTH=52%>
+			<P CLASS="western">Select a drawing clip path matching <EM>id_.</EM></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=27%>
 			<P CLASS="western" ALIGN=CENTER>DrawableCircle</P>
 		</TD>
 		<TD WIDTH=21%>
@@ -418,9 +429,9 @@ which each individual parameter may be adjusted.</FONT>
 			<P CLASS="western">double offset_</P>
 		</TD>
 		<TD WIDTH=52%>
-			<P CLASS="western"><FONT SIZE=2>Specify the distance into the dash
-			pattern to start the dash. See documentation on SVG's
-			<A HREF="http://www.w3.org/TR/SVG/painting.html#StrokeDashoffsetProperty">stroke-dashoffset</A>
+			<P CLASS="western"><FONT SIZE=2 STYLE="font-size: 11pt">Specify
+			the distance into the dash pattern to start the dash. See
+			documentation on SVG's </FONT><A HREF="http://www.w3.org/TR/SVG/painting.html#StrokeDashoffsetProperty"><FONT SIZE=2 STYLE="font-size: 11pt">stroke-dashoffset</FONT></A><FONT SIZE=2 STYLE="font-size: 11pt">
 			property for usage details.</FONT></P>
 		</TD>
 	</TR>
@@ -460,9 +471,10 @@ which each individual parameter may be adjusted.</FONT>
 			fillRule_</FONT></P>
 		</TD>
 		<TD WIDTH=52%>
-			<P CLASS="western"><FONT SIZE=2>Specify the algorithm which is to
-			be used to determine what parts of the canvas are included inside
-			the shape. See documentation on SVG's <A HREF="http://www.w3.org/TR/SVG/painting.html#FillRuleProperty">fill-rule</A>&nbsp;
+			<P CLASS="western"><FONT SIZE=2 STYLE="font-size: 11pt">Specify
+			the algorithm which is to be used to determine what parts of the
+			canvas are included inside the shape. See documentation on SVG's
+			</FONT><A HREF="http://www.w3.org/TR/SVG/painting.html#FillRuleProperty"><FONT SIZE=2 STYLE="font-size: 11pt">fill-rule</FONT></A><FONT SIZE=2 STYLE="font-size: 11pt">&nbsp;
 			property for usage details.</FONT></P>
 		</TD>
 	</TR>
@@ -632,17 +644,42 @@ which each individual parameter may be adjusted.</FONT>
 	</TR>
 	<TR>
 		<TD WIDTH=27%>
+			<P CLASS="western" ALIGN=CENTER>DrawablePopClipPath</P>
+		</TD>
+		<TD WIDTH=21%>
+			<P CLASS="western">void</P>
+		</TD>
+		<TD WIDTH=52%>
+			<P CLASS="western">Pop (terminate) clip path definition started by
+			DrawablePushClipPath.</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=27%>
 			<P CLASS="western" ALIGN=CENTER>DrawablePopGraphicContext</P>
 		</TD>
 		<TD WIDTH=21%>
 			<P CLASS="western">void</P>
 		</TD>
 		<TD WIDTH=52%>
-			<P CLASS="western"><FONT SIZE=2>Pop Graphic Context. Removing the
-			current graphic context from the graphic context stack restores
-			the options to the values they had prior to the preceding
-			<A HREF="#DrawablePushGraphicContext"><I>DrawablePushGraphicContext</I></A>
+			<P CLASS="western"><FONT SIZE=2 STYLE="font-size: 11pt">Pop
+			Graphic Context. Removing the current graphic context from the
+			graphic context stack restores the options to the values they had
+			prior to the preceding </FONT><A HREF="#DrawablePushGraphicContext"><I><FONT SIZE=2 STYLE="font-size: 11pt">DrawablePushGraphicContext</FONT></I></A><FONT SIZE=2 STYLE="font-size: 11pt">
 			operation.</FONT></P>
+		</TD>
+	</TR>
+	<TR>
+		<TD WIDTH=27%>
+			<P CLASS="western" ALIGN=CENTER>DrawablePushClipPath</P>
+		</TD>
+		<TD WIDTH=21%>
+			<P CLASS="western">const std::string &amp;id_</P>
+		</TD>
+		<TD WIDTH=52%>
+			<P CLASS="western">Push (create) clip path definition with id_.
+			Clip patch definition consists of subsequent drawing commands,
+			terminated by DrawablePopClipPath.</P>
 		</TD>
 	</TR>
 	<TR>
@@ -653,12 +690,13 @@ which each individual parameter may be adjusted.</FONT>
 			<P CLASS="western">void</P>
 		</TD>
 		<TD WIDTH=52%>
-			<P CLASS="western"><FONT SIZE=2>Push Graphic Context.&nbsp; When a
-			graphic context is pushed, options set after the context is pushed
-			(such as coordinate transformations, color settings, etc.) are
-			saved to a new graphic context. This allows related options to be
-			saved on a graphic context &quot;stack&quot; in order to support
-			heirarchical nesting of options. When <A HREF="#DrawablePopGraphicContext"><I>DrawablePopGraphicContext</I></A>
+			<P CLASS="western"><FONT SIZE=2 STYLE="font-size: 11pt">Push
+			Graphic Context. When a graphic context is pushed, options set
+			after the context is pushed (such as coordinate transformations,
+			color settings, etc.) are saved to a new graphic context. This
+			allows related options to be saved on a graphic context &quot;stack&quot;
+			in order to support heirarchical nesting of options. When
+			</FONT><A HREF="#DrawablePopGraphicContext"><I><FONT SIZE=2 STYLE="font-size: 11pt">DrawablePopGraphicContext</FONT></I></A><FONT SIZE=2 STYLE="font-size: 11pt">
 			is used to pop the current graphic context, the options in effect
 			during the last <I>DrawablePushGraphicContext</I> operation are
 			restored.</FONT></P>
@@ -673,18 +711,20 @@ which each individual parameter may be adjusted.</FONT>
 			width_, long height_</P>
 		</TD>
 		<TD WIDTH=52%>
-			<P CLASS="western"><FONT SIZE=2>Start a pattern definition with
-			arbitrary pattern name specified by <I>id_</I>, pattern offset
-			specified by <I>x_</I> and <I>y_</I>, and pattern size specified
-			by <I>width_</I> and <I>height_</I>. The pattern is defined within
-			the coordinate system defined by the specified offset and size.
-			Arbitrary drawing objects (including <A HREF="#DrawableCompositeImage">DrawableCompositeImage</A>)
-			may be specified between <A HREF="#DrawablePushPattern">DrawablePushPattern</A>
-			and <A HREF="#DrawablePopPattern">DrawablePopPattern</A> in order
-			to draw the pattern. Normally the pair <A HREF="#DrawablePushGraphicContext">DrawablePushGraphicContext</A>
-			&amp; <A HREF="#DrawablePopGraphicContext">DrawablePopGraphicContext</A>
+			<P CLASS="western"><FONT SIZE=2 STYLE="font-size: 11pt">Start a
+			pattern definition with arbitrary pattern name specified by <I>id_</I>,
+			pattern offset specified by <I>x_</I> and <I>y_</I>, and pattern
+			size specified by <I>width_</I> and <I>height_</I>. The pattern is
+			defined within the coordinate system defined by the specified
+			offset and size. Arbitrary drawing objects (including
+			</FONT><A HREF="#DrawableCompositeImage"><FONT SIZE=2 STYLE="font-size: 11pt">DrawableCompositeImage</FONT></A><FONT SIZE=2 STYLE="font-size: 11pt">)
+			may be specified between </FONT><A HREF="#DrawablePushPattern"><FONT SIZE=2 STYLE="font-size: 11pt">DrawablePushPattern</FONT></A><FONT SIZE=2 STYLE="font-size: 11pt">
+			and </FONT><A HREF="#DrawablePopPattern"><FONT SIZE=2 STYLE="font-size: 11pt">DrawablePopPattern</FONT></A><FONT SIZE=2 STYLE="font-size: 11pt">
+			in order to draw the pattern. Normally the pair
+			</FONT><A HREF="#DrawablePushGraphicContext"><FONT SIZE=2 STYLE="font-size: 11pt">DrawablePushGraphicContext</FONT></A><FONT SIZE=2 STYLE="font-size: 11pt">
+			&amp; </FONT><A HREF="#DrawablePopGraphicContext"><FONT SIZE=2 STYLE="font-size: 11pt">DrawablePopGraphicContext</FONT></A><FONT SIZE=2 STYLE="font-size: 11pt">
 			are used to enclose a pattern definition. Pattern definitions are
-			terminated by a <A HREF="#DrawablePopPattern">DrawablePopPattern</A>
+			terminated by a </FONT><A HREF="#DrawablePopPattern"><FONT SIZE=2 STYLE="font-size: 11pt">DrawablePopPattern</FONT></A><FONT SIZE=2 STYLE="font-size: 11pt">
 			object.</FONT></P>
 		</TD>
 	</TR>
@@ -696,8 +736,8 @@ which each individual parameter may be adjusted.</FONT>
 			<P CLASS="western">void</P>
 		</TD>
 		<TD WIDTH=52%>
-			<P CLASS="western"><FONT SIZE=2>Terminate a pattern definition
-			started via <A HREF="#DrawablePushPattern">DrawablePushPattern</A>.</FONT></P>
+			<P CLASS="western"><FONT SIZE=2 STYLE="font-size: 11pt">Terminate
+			a pattern definition started via </FONT><A HREF="#DrawablePushPattern"><FONT SIZE=2 STYLE="font-size: 11pt">DrawablePushPattern</FONT></A><FONT SIZE=2 STYLE="font-size: 11pt">.</FONT></P>
 		</TD>
 	</TR>
 	<TR>
@@ -710,7 +750,7 @@ which each individual parameter may be adjusted.</FONT>
 		</TD>
 		<TD WIDTH=52%>
 			<P CLASS="western">Draw a rectangle using <I>stroke</I> color and
-			thickness from upper-left coordinates to lower-right coordinates.&nbsp;
+			thickness from upper-left coordinates to lower-right coordinates.
 			If a <I>fill</I> color is specified, then the object is filled.</P>
 		</TD>
 	</TR>
@@ -861,10 +901,11 @@ which each individual parameter may be adjusted.</FONT>
 			<P CLASS="western">double x_, double y_, std::string text_</P>
 		</TD>
 		<TD WIDTH=52%>
-			<P CLASS="western"><FONT SIZE=2>Annotate image with text using
-			<I>stroke</I> color, font, font pointsize, and <I>box</I> color
-			(text background color), at specified coordinates. If text
-			contains <A HREF="FormatCharacters.html">special format characters</A>
+			<P CLASS="western"><FONT SIZE=2 STYLE="font-size: 11pt">Annotate
+			image with text using <I>stroke</I> color, font, font pointsize,
+			and <I>box</I> color (text background color), at specified
+			coordinates. If text contains </FONT><A HREF="FormatCharacters.html"><FONT SIZE=2 STYLE="font-size: 11pt">special
+			format characters</FONT></A><FONT SIZE=2 STYLE="font-size: 11pt">
 			the image filename, type, width, height, or other image attributes
 			may be incorporated in the text (see label()).</FONT></P>
 		</TD>
@@ -875,20 +916,22 @@ which each individual parameter may be adjusted.</FONT>
 			std::string &amp;text_, const std::string &amp;encoding_</P>
 		</TD>
 		<TD WIDTH=52%>
-			<P CLASS="western"><FONT SIZE=2>Annotate image with text
-			represented with text encoding, using current  <I>stroke</I>
-			color, font, font pointsize, and <I>box</I> color (text background
-			color), at specified coordinates. If text contains <A HREF="FormatCharacters.html">special
-			format characters</A> the image filename, type, width, height, or
-			other image attributes may be incorporated in the text (see
-			label()).</FONT></P>
-			<P CLASS="western"><FONT SIZE=2>The text encoding specifies the
-			code set to use for text annotations. The only character encoding
-			which may be specified at this time is &quot;<FONT FACE="Courier, monospace">UTF-8</FONT>&quot;
-			for representing <A HREF="http://www.unicode.org/">Unicode</A> as
-			a sequence of bytes. Specify an empty string to set text encoding
-			to the system's default. Successful text annotation using Unicode
-			may require fonts designed to support Unicode.</FONT></P>
+			<P CLASS="western"><FONT SIZE=2 STYLE="font-size: 11pt">Annotate
+			image with text represented with text encoding, using current
+			<I>stroke</I> color, font, font pointsize, and <I>box</I> color
+			(text background color), at specified coordinates. If text
+			contains </FONT><A HREF="FormatCharacters.html"><FONT SIZE=2 STYLE="font-size: 11pt">special
+			format characters</FONT></A><FONT SIZE=2 STYLE="font-size: 11pt">
+			the image filename, type, width, height, or other image attributes
+			may be incorporated in the text (see label()).</FONT></P>
+			<P CLASS="western"><FONT SIZE=2 STYLE="font-size: 11pt">The text
+			encoding specifies the code set to use for text annotations. The
+			only character encoding which may be specified at this time is
+			&quot;<FONT FACE="Courier, monospace">UTF-8</FONT>&quot; for
+			representing </FONT><A HREF="http://www.unicode.org/"><FONT SIZE=2 STYLE="font-size: 11pt">Unicode</FONT></A><FONT SIZE=2 STYLE="font-size: 11pt">
+			as a sequence of bytes. Specify an empty string to set text
+			encoding to the system's default. Successful text annotation using
+			Unicode may require fonts designed to support Unicode.</FONT></P>
 		</TD>
 	</TR>
 	<TR>

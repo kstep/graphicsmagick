@@ -451,6 +451,76 @@ private:
   CoordinateList _coordinates;
 };
 
+
+// Pop (terminate) clip path definition
+class MagickDLLDecl DrawablePopClipPath : public DrawableBase
+{
+public:
+  DrawablePopClipPath ( void )
+    : _dummy(0)
+    {
+    }
+
+  /*virtual*/ ~DrawablePopClipPath ( void );
+
+  // Operator to invoke equivalent draw API call
+  /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
+
+  // Return polymorphic copy of object
+  /*virtual*/ DrawableBase* copy() const;
+
+private:
+  int   _dummy;
+};
+
+// Push (create) Clip path definition
+class MagickDLLDecl DrawablePushClipPath : public DrawableBase
+{
+public:
+  DrawablePushClipPath ( const std::string &id_);
+
+  DrawablePushClipPath ( const DrawablePushClipPath& original_ );
+
+  /*virtual*/ ~DrawablePushClipPath ( void );
+
+  // Operator to invoke equivalent draw API call
+  /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
+
+  // Return polymorphic copy of object
+  /*virtual*/ DrawableBase* copy() const;
+
+private:
+  std::string _id;
+};
+
+// Named Clip Path
+class MagickDLLDecl DrawableClipPath : public DrawableBase
+{
+public:
+  DrawableClipPath ( const std::string &id_ );
+  DrawableClipPath ( const DrawableClipPath& original_ );
+
+  /*virtual*/ ~DrawableClipPath ( void );
+
+  // Operator to invoke equivalent draw API call
+  /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
+
+  // Return polymorphic copy of object
+  /*virtual*/ DrawableBase* copy() const;
+
+  void clip_path( const std::string &id_ )
+    {
+      _id = id_.c_str(); //multithread safe
+    }
+  std::string clip_path( void ) const
+    {
+      return _id;
+    }
+
+private:
+  std::string   _id;
+};
+
 // Circle
 class MagickDLLDecl DrawableCircle : public DrawableBase
 {
