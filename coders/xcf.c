@@ -297,60 +297,7 @@ static char *ReadBlobStringWithLongSize(Image *image,char *string)
   string[i]='\0';
   return(string);
 }
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   R e a d B l o b S t r i n g W i t h S h o r t S i z e                                              %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method ReadBlobStringWithShortSize reads characters from a blob or file
-%  starting with a long length byte and then characters to that length
-%
-%  The format of the ReadBlobStringWithShortSize method is:
-%
-%      char *ReadBlobStringWithShortSize(Image *image,char *string)
-%
-%  A description of each parameter follows:
-%
-%    o status:  Method ReadBlobString returns the string on success, otherwise,
-%      a null is returned.
-%
-%    o image: The image.
-%
-%    o string: The address of a character buffer.
-%
-%
-*/
-static char *ReadBlobStringWithShortSize(Image *image,char *string)
-{
-  int
-    c;
 
-  register long
-    i;
-
-  unsigned long
-    length;
-
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  length = ReadBlobMSBShort(image);
-  for (i=0; i < (long) length; i++)
-  {
-    c=ReadBlobByte(image);
-    if (c == EOF)
-      return((char *) NULL);
-    string[i]=c;
-  }
-  string[i]='\0';
-  return(string);
-}
 
 static int load_tile (Image* image, Image* tile_image, XCFDocInfo* inDocInfo, 
             XCFLayerInfo*  inLayerInfo, int data_length)
@@ -1046,8 +993,8 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
     case PROP_RESOLUTION:
       {
-        float xres = (float) ReadBlobMSBLong(image);
-        float yres = (float) ReadBlobMSBLong(image);
+        /* float xres = (float) */ (void) ReadBlobMSBLong(image);
+        /* float yres = (float) */ (void) ReadBlobMSBLong(image);
 
         /*
         if (xres < GIMP_MIN_RESOLUTION || xres > GIMP_MAX_RESOLUTION ||
@@ -1071,7 +1018,7 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     case PROP_TATTOO:
       {
         /* we need to read it, even if we ignore it */
-        unsigned long  tattoo_state = ReadBlobMSBLong(image);
+        /*unsigned long  tattoo_state = */ (void) ReadBlobMSBLong(image);
       }
       break;
 
@@ -1100,7 +1047,7 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     case PROP_UNIT:
       {
         /* BOGUS: ignore for now... */
-      unsigned long unit = ReadBlobMSBLong(image);
+      /*unsigned long unit =  */ (void) ReadBlobMSBLong(image);
       }
       break;
 
@@ -1119,12 +1066,12 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
     case PROP_USER_UNIT:
       {
+		char  unit_string[1000];
         /*BOGUS: ignored for now */
-        char  unit_string[1000];
-        float  factor = (float)ReadBlobMSBLong(image);
-        unsigned long digits = ReadBlobMSBLong(image);
-        for (i=0; i<5; i++)
-          ReadBlobStringWithLongSize(image, unit_string);
+        /*float  factor = (float) */ (void) ReadBlobMSBLong(image);
+        /* unsigned long digits =  */ (void) ReadBlobMSBLong(image);
+		for (i=0; i<5; i++)
+		 ReadBlobStringWithLongSize(image, unit_string);
       }
      break;
 
