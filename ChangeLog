@@ -1,5 +1,7 @@
 2003-02-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/quantize.c (AssignImageColors): Sync image to
+	update DirectClass pixels to new colormap.
 	* coders/fpx.c (RegisterFPXImage): FlashPIX does not
 	provide direct BLOB I/O support.
 	* magick/blob.c (BlobToImage): Add logging.
