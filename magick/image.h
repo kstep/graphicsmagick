@@ -599,6 +599,7 @@ extern MagickExport Image
   *AverageImages(Image *,ExceptionInfo *),
   *BlurImage(Image *,const double,const double,ExceptionInfo *),
   *BorderImage(Image *,const RectangleInfo *,ExceptionInfo *),
+  *CharcoalImage(Image *,const double,const double,ExceptionInfo *),
   *ChopImage(Image *,const RectangleInfo *,ExceptionInfo *),
   *CloneImage(Image *,const unsigned int,const unsigned int,const unsigned int,
     ExceptionInfo *),

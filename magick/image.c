@@ -878,6 +878,7 @@ MagickExport Image *CloneImage(Image *image,const unsigned int columns,
       if (clone_image->colormap == (PixelPacket *) NULL)
         ThrowImageException(ResourceLimitWarning,"Unable to clone image",
           "Memory allocation failed");
+      length=image->colors*sizeof(PixelPacket);
       memcpy(clone_image->colormap,image->colormap,length);
     }
   clone_image->color_profile.name=AllocateString(image->color_profile.name);
@@ -3487,29 +3488,26 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
           }
         if (LocaleNCompare("-charcoal",option,4) == 0)
           {
-            char
-              *commands[7];
+            double
+              radius,
+              sigma;
 
-            QuantizeInfo
-              quantize_info;
+            Image
+              *charcoal_image;
 
             /*
-              Charcoal drawing.
+              Charcoal image.
             */
-            i++;
-            GetQuantizeInfo(&quantize_info);
-            quantize_info.dither=image_info->dither;
-            quantize_info.colorspace=GRAYColorspace;
-            (void) QuantizeImage(&quantize_info,*image);
-            commands[0]=SetClientName((char *) NULL);
-            commands[1]=(char *) "-edge";
-            commands[2]=argv[i];
-            commands[3]=(char *) "-blur";
-            commands[4]=argv[i];
-            commands[5]=(char *) "-normalize";
-            commands[6]=(char *) "-negate";
-            MogrifyImage(clone_info,7,commands,image);
-            (void) QuantizeImage(&quantize_info,*image);
+            radius=0.0;
+            sigma=1.0;
+            if (*option == '-')
+              (void) sscanf(argv[++i],"%lfx%lf",&radius,&sigma);
+            charcoal_image=CharcoalImage(*image,radius,sigma,
+              &(*image)->exception);
+            if (charcoal_image == (Image *) NULL)
+              break;
+            DestroyImage(*image);
+            *image=charcoal_image;
             continue;
           }
         if (LocaleNCompare("-colorize",option,8) == 0)

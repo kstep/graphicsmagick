@@ -507,6 +507,71 @@ MagickExport Image *BlurImage(Image *image,const double radius,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
+%     C h a r c o a l I m a g e                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method CharcoalImage creates a new image that is a copy of an existing
+%  one with the edge highlighted.  It allocates the memory necessary for the
+%  new Image structure and returns a pointer to the new image.
+%
+%  The format of the CharcoalImage method is:
+%
+%      Image *CharcoalImage(Image *image,const double radius,
+%        const double sigma,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o charcoal_image: Method CharcoalImage returns a pointer to the image
+%      after it is embossed.  A null image is returned if there is a memory
+%      shortage.
+%
+%    o image: The image.
+%
+%    o radius: the radius of the pixel neighborhood.
+%
+%    o sigma: The standard deviation of the Gaussian, in pixels.
+%
+%    o exception: Return any errors or warnings in this structure.
+%
+%
+*/
+MagickExport Image *CharcoalImage(Image *image,const double radius,
+  const double sigma,ExceptionInfo *exception)
+{
+  Image
+    *blur_image,
+    *charcoal_image,
+    *edge_image;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
+  charcoal_image=CloneImage(image,0,0,False,exception);
+  if (charcoal_image == (Image *) NULL)
+    return((Image *) NULL);
+  SetImageType(charcoal_image,GrayscaleType);
+  edge_image=EdgeImage(charcoal_image,radius,exception);
+  if (edge_image == (Image *) NULL)
+    return((Image *) NULL);
+  DestroyImage(charcoal_image);
+  blur_image=BlurImage(edge_image,radius,sigma,exception);
+  if (blur_image == (Image *) NULL)
+    return((Image *) NULL);
+  DestroyImage(edge_image);
+  NormalizeImage(blur_image);
+  NegateImage(blur_image,False);
+  SetImageType(blur_image,GrayscaleType);
+  return(blur_image);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
 %     C o l o r i z e I m a g e                                               %
 %                                                                             %
 %                                                                             %
@@ -1452,7 +1517,7 @@ MagickExport Image *ImplodeImage(Image *image,const double amount,
       distance=x_distance*x_distance+y_distance*y_distance;
       if (distance >= (radius*radius))
         *q=GetOnePixel(image,x,y);
-      else     
+      else
         {
           double
             factor;
@@ -2995,7 +3060,7 @@ MagickExport Image *SpreadImage(Image *image,const unsigned int amount,
         y_distance=(rand() & (amount+1))-quantum;
       } while (((x+x_distance) < 0) || ((y+y_distance) < 0) ||
                ((x+x_distance) >= (int) image->columns) ||
-	       ((y+y_distance) >= (int) image->rows));
+               ((y+y_distance) >= (int) image->rows));
       *q++=GetOnePixel(image,x+x_distance,y+y_distance);
     }
     if (!SyncImagePixels(spread_image))
@@ -3376,7 +3441,7 @@ MagickExport Image *SwirlImage(Image *image,double degrees,
       distance=x_distance*x_distance+y_distance*y_distance;
       if (distance >= (radius*radius))
         *q=GetOnePixel(image,x,y);
-      else     
+      else
         {
           /*
             Swirl the pixel.

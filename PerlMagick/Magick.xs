@@ -5351,9 +5351,6 @@ Mogrify(ref,...)
         }
         case 58:  /* Charcoal */
         {
-          char
-            geometry[MaxTextExtent];
-
           double
             radius,
             sigma;
@@ -5367,13 +5364,7 @@ Mogrify(ref,...)
           if (attribute_flag[0])
             (void) sscanf(argument_list[0].string_reference,"%lfx%lf",
               &radius,&sigma);
-          FormatString(geometry,"%gx%g",radius,sigma);
-          commands[0]=client_name;
-          commands[1]="-charcoal";
-          commands[2]=geometry;
-          MogrifyImage(info->image_info,3,commands,&image);
-          if (next != image)
-            next=NULL;  /* 'cause it's been blown away */
+          image=CharcoalImage(image,radius,sigma,&exception);
           break;
         }
         case 60:  /* Wave */
