@@ -1199,7 +1199,10 @@ ImageAttribute *GetImageInfoAttribute(const ImageInfo *image_info,Image *image,
     {
       if (LocaleNCompare("unique",key,2) == 0)
         {
-          (void) strcpy(attribute,image_info->unique);
+          (void) strcpy(filename,image_info->unique);
+          if (*filename == '\0')
+            TemporaryFilename(filename);
+          (void) strcpy(attribute,filename);
           break;
         }
       break;
@@ -1236,7 +1239,10 @@ ImageAttribute *GetImageInfoAttribute(const ImageInfo *image_info,Image *image,
     {
       if (LocaleNCompare("zero",key,2) == 0)
         {
-          (void) strcpy(attribute,image_info->zero);
+          (void) strcpy(filename,image_info->zero);
+          if (*filename == '\0')
+            TemporaryFilename(filename);
+          (void) strcpy(attribute,filename);
           break;
         }
       break;

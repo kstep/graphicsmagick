@@ -90,7 +90,7 @@ static SemaphoreInfo
 */
 static unsigned int
   ReadConfigurationFile(const char *,ExceptionInfo *),
-  WriteMPEGParameterFiles(Image *,const ImageInfo *,const DelegateInfo *);
+  WriteMPEGParameterFiles(const ImageInfo *,const DelegateInfo *,Image *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -334,12 +334,18 @@ MagickExport unsigned int InvokeDelegate(const ImageInfo *image_info,
   DelegateInfo
     *delegate_info;
 
+  ImageInfo
+    *clone_info;
+
   register int
     i;
 
   unsigned int
     status;
 
+  /*
+    Get delegate.
+  */
   assert(image_info != (ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
   assert(image != (Image *) NULL);
@@ -349,15 +355,21 @@ MagickExport unsigned int InvokeDelegate(const ImageInfo *image_info,
   if (delegate_info == (DelegateInfo *) NULL)
     ThrowBinaryException(MissingDelegateWarning,"no tag found",
       decode ? decode : encode);
+  clone_info=CloneImageInfo(image_info);
+  TemporaryFilename(clone_info->unique);
+  TemporaryFilename(clone_info->zero);
   if (LocaleCompare(delegate_info->decode,"YUV") == 0)
     if ((LocaleCompare(delegate_info->encode,"M2V") == 0) ||
         (LocaleCompare(delegate_info->encode,"MPG") == 0) ||
         (LocaleCompare(delegate_info->encode,"MPEG") == 0))
       {
-        status=WriteMPEGParameterFiles(image,image_info,delegate_info);
+        status=WriteMPEGParameterFiles(clone_info,delegate_info,image);
         if (status == False)
-          ThrowBinaryException(DelegateWarning,"delegate failed",
-            decode ? decode : encode);
+          {
+            DestroyImageInfo(clone_info);
+            ThrowBinaryException(DelegateWarning,"delegate failed",
+              decode ? decode : encode);
+          }
       }
   if (delegate_info->mode != 0)
     if ((decode && (delegate_info->encode != (char *) NULL)) ||
@@ -367,29 +379,25 @@ MagickExport unsigned int InvokeDelegate(const ImageInfo *image_info,
           filename[MaxTextExtent],
           *magick;
 
-        ImageInfo
-          *clone_info;
-
         register Image
           *p;
 
         /*
           Delegate requires a particular image format.
         */
-        magick=TranslateText(image_info,image,decode != (char *) NULL ?
+        magick=TranslateText(clone_info,image,decode != (char *) NULL ?
           delegate_info->encode : delegate_info->decode);
         if (magick == (char *) NULL)
-          ThrowBinaryException(DelegateWarning,"delegate failed",
-            decode ? decode : encode);
+          {
+            DestroyImageInfo(clone_info);
+            ThrowBinaryException(DelegateWarning,"delegate failed",
+              decode ? decode : encode);
+          }
         LocaleUpper(magick);
-        (void) strcpy((char *) image_info->magick,magick);
+        (void) strcpy((char *) clone_info->magick,magick);
         (void) strcpy(image->magick,magick);
         LiberateMemory((void **) &magick);
         (void) strcpy(filename,image->filename);
-        clone_info=CloneImageInfo(image_info);
-        if (clone_info == (ImageInfo *) NULL)
-          ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
-            (char *) NULL);
         FormatString(clone_info->filename,"%.1024s:",delegate_info->decode);
         SetImageInfo(clone_info,True,&image->exception);
         for (p=image; p != (Image *) NULL; p=p->next)
@@ -398,24 +406,32 @@ MagickExport unsigned int InvokeDelegate(const ImageInfo *image_info,
             filename);
           status=WriteImage(clone_info,p);
           if (status == False)
-            ThrowBinaryException(DelegateWarning,"delegate failed",
-              decode ? decode : encode);
+            {
+              DestroyImageInfo(clone_info);
+              ThrowBinaryException(DelegateWarning,"delegate failed",
+                decode ? decode : encode);
+            }
           if (clone_info->adjoin)
             break;
         }
-        DestroyImageInfo(clone_info);
       }
+  /*
+    Invoke delegate.
+  */
   (void) strcpy(image->filename,filename);
   commands=StringToList(delegate_info->commands);
   if (commands == (char **) NULL)
-    ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
-      decode ? decode : encode);
+    {
+      DestroyImageInfo(clone_info);
+      ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
+        decode ? decode : encode);
+    }
   command=(char *) NULL;
   status=True;
   for (i=0; commands[i] != (char *) NULL; i++)
   {
     status=True;
-    command=TranslateText(image_info,image,commands[i]);
+    command=TranslateText(clone_info,image,commands[i]);
     if (command == (char *) NULL)
       break;
     /*
@@ -423,31 +439,30 @@ MagickExport unsigned int InvokeDelegate(const ImageInfo *image_info,
     */
     if (delegate_info->spawn)
       ConcatenateString(&command," &");
-    status=SystemCommand(image_info->verbose,command);
+    status=SystemCommand(clone_info->verbose,command);
     LiberateMemory((void **) &command);
+    (void) remove(clone_info->zero);
+    (void) remove(clone_info->unique);
+    if (LocaleCompare(delegate_info->decode,"YUV") == 0)
+      if ((LocaleCompare(delegate_info->encode,"M2V") == 0) ||
+          (LocaleCompare(delegate_info->encode,"MPG") == 0) ||
+          (LocaleCompare(delegate_info->encode,"MPEG") == 0))
+        {
+          FormatString(filename,"%s.iqm",clone_info->unique);
+          (void) remove(filename);
+          FormatString(filename,"%s.niq",clone_info->unique);
+          (void) remove(filename);
+        }
     if (status != False)
-      ThrowBinaryException(DelegateWarning,"delegate failed",commands[i]);
+      ThrowException(&image->exception,DelegateWarning,"delegate failed",
+        commands[i]);
     LiberateMemory((void **) &commands[i]);
   }
-  /*
-    Free resources.
-  */
-  (void) remove(image_info->unique);
-  if (LocaleCompare(delegate_info->decode,"YUV") == 0)
-    if ((LocaleCompare(delegate_info->encode,"M2V") == 0) ||
-        (LocaleCompare(delegate_info->encode,"MPG") == 0) ||
-        (LocaleCompare(delegate_info->encode,"MPEG") == 0))
-      {
-        FormatString(filename,"%s.iqm",image_info->unique);
-        (void) remove(filename);
-        FormatString(filename,"%s.niq",image_info->unique);
-        (void) remove(filename);
-      }
-  (void) remove(image_info->zero);
   for ( ; commands[i] != (char *) NULL; i++)
     LiberateMemory((void **) &commands[i]);
   LiberateMemory((void **) &commands);
-  return(!status);
+  DestroyImageInfo(clone_info);
+  return(status != False);
 }
 
 /*
@@ -816,21 +831,21 @@ MagickExport DelegateInfo *SetDelegateInfo(DelegateInfo *delegate_info)
 %
 %  The format of the WriteMPEGParameterFiles method is:
 %
-%      unsigned int WriteMPEGParameterFiles(Image *image,
-%        const ImageInfo *image_info,const DelegateInfo *delegate_info)
+%      unsigned int WriteMPEGParameterFiles(const ImageInfo *image_info,
+%        const DelegateInfo *delegate_info,Image *image)
 %
 %  A description of each parameter follows:
 %
 %    o image_info: The image info.
 %
-%    o image: The image.
-%
 %    o delegate_info: The delegate info.
+%
+%    o image: The image.
 %
 %
 */
-static unsigned int WriteMPEGParameterFiles(Image *image,
-  const ImageInfo *image_info,const DelegateInfo *delegate_info)
+static unsigned int WriteMPEGParameterFiles(const ImageInfo *image_info,
+  const DelegateInfo *delegate_info,Image *image)
 {
   char
     filename[MaxTextExtent];

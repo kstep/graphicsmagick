@@ -1640,8 +1640,8 @@ MagickExport Image *XAnimateImages(Display *display,
       Window name is the base of the filename.
     */
     if (resource_info->title != (char *) NULL)
-      windows->image.name=TranslateText(resource_info->image_info,
-        images[scene],resource_info->title);
+      windows->image.name=TranslateText(resource_info->image_info,images[scene],
+        resource_info->title);
     else
       {
         p=images[scene]->filename+strlen(images[scene]->filename)-1;

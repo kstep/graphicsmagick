@@ -2705,9 +2705,6 @@ MagickExport void GetImageInfo(ImageInfo *image_info)
   assert(image_info != (ImageInfo *) NULL);
   memset(image_info,0,sizeof(ImageInfo));
   image_info->blob=CloneBlobInfo((BlobInfo *) NULL);
-  TemporaryFilename(image_info->unique);
-  (void) strcat(image_info->unique,"u");
-  TemporaryFilename(image_info->zero);
   image_info->adjoin=True;
   image_info->depth=QuantumDepth;
   image_info->interlace=NoInterlace;

@@ -2838,6 +2838,7 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
   const char *formatted_text)
 {
   char
+    filename[MaxTextExtent],
     *text,
     *translated_text;
 
@@ -2934,9 +2935,6 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
       case 'f':
       case 't':
       {
-        char
-          filename[MaxTextExtent];
-
         /*
           Label segment is the base of the filename.
         */
@@ -3061,8 +3059,11 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
       }
       case 'u':
       {
-        (void) strcpy(q,clone_info->unique);
-        q+=strlen(clone_info->unique);
+        (void) strcpy(filename,clone_info->unique);
+        if (*filename == '\0')
+          TemporaryFilename(filename);
+        (void) strcpy(q,filename);
+        q+=strlen(filename);
         break;
       }
       case 'w':
@@ -3086,8 +3087,11 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
       }
       case 'z':
       {
-        (void) strcpy(q,clone_info->zero);
-        q+=strlen(clone_info->zero);
+        (void) strcpy(filename,clone_info->zero);
+        if (*filename == '\0')
+          TemporaryFilename(filename);
+        (void) strcpy(q,filename);
+        q+=strlen(filename);
         break;
       }
       case '[':

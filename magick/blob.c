@@ -517,7 +517,8 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
   size_t *length,ExceptionInfo *exception)
 {
   char
-    filename[MaxTextExtent];
+    filename[MaxTextExtent],
+    unique[MaxTextExtent];
 
   ImageInfo
     *clone_info;
@@ -595,17 +596,16 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
   *length=0;
   clone_info=CloneImageInfo(image_info);
   (void) strcpy(filename,image->filename);
-  FormatString(image->filename,"%.1024s:%.1024s",image->magick,
-    clone_info->unique);
+  TemporaryFilename(unique);
+  FormatString(image->filename,"%.1024s:%.1024s",image->magick,unique);
   status=WriteImage(clone_info,image);
+  DestroyImageInfo(clone_info);
   if (status == False)
     {
       ThrowException(exception,BlobWarning,"Unable to write blob",
         image->filename);
-      DestroyImageInfo(clone_info);
       return((void *) NULL);
     }
-  DestroyImageInfo(clone_info);
   /*
     Read image from disk as blob.
   */
