@@ -689,7 +689,7 @@ extern MagickExport void
   DestroyMagick(void),
   DestroyMagickInfo(void),
   DestroyMontageInfo(MontageInfo *),
-	GetImageException(Image *,ExceptionInfo *),
+  GetImageException(Image *,ExceptionInfo *),
   GetImageInfo(ImageInfo *),
   GetMontageInfo(const ImageInfo *,MontageInfo *),
   InitializeMagick(const char *),
