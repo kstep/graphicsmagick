@@ -965,15 +965,6 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
   if (image_info->fifo !=
       (int (*)(const Image *,const void *,const size_t)) NULL)
     image->fifo=image_info->fifo;  /* image stream */
-  if (image_info->file != (FILE *) NULL)
-    {
-      /*
-        Use previously opened filehandle.
-      */
-      image->file=image_info->file;
-      image->exempt=True;
-      return(True);
-    }
   (void) strncpy(filename,image->filename,MaxTextExtent-1);
 #if !defined(vms) && !defined(macintosh) && !defined(WIN32)
   if (*filename != '|')
@@ -1096,7 +1087,16 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
         if (*type == 'w')
           SetApplicationType(filename,image_info->magick,'8BIM');
 #endif
-        image->file=(FILE *) fopen(filename,type);
+        if (image_info->file == (FILE *) NULL)
+          image->file=(FILE *) fopen(filename,type);
+        else
+          {
+            /*
+              Use previously opened filehandle.
+            */
+            image->file=image_info->file;
+            image->exempt=True;
+          }
         if ((image->file != (FILE *) NULL) && (*type == 'r'))
           {
             const MagickInfo
@@ -1119,7 +1119,10 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
                     blob=MapBlob(fileno(image->file),ReadMode,&length);
                     if (blob != (void *) NULL)
                       {
-                        (void) fclose(image->file);
+                        if (image_info->file != (FILE *) NULL)
+                          image->exempt=False;
+                        else
+                          (void) fclose(image->file);
                         image->file=(FILE *) NULL;
                         AttachBlob(image->blob,blob,length);
                         image->blob->mapped=True;
