@@ -349,6 +349,8 @@ Export void DestroyCacheInfo(Cache cache)
       (void) remove(cache_info->filename);
       break;
     }
+    default:
+      break;
   }
   FreeMemory(cache_info);
   cache=(void *) NULL;
