@@ -21,8 +21,44 @@
 </tr>
 </table>
 <p>
-This file was last updated on August 7, 2004.
+This file was last updated on November 13, 2004.
 
+<p>
+Significant changes associated with GraphicsMagick 1.1.4 (released November ??, 2004)
+
+<p>
+  Security Fixes:<BR>
+<UL>
+  <LI> Security fixes for AVI, BMP, DIB, and TIFF formats.
+
+</UL>
+<p>
+  Bugs fixed:<BR>
+<UL>
+  <LI> Properly detect and handle errors from libtiff APIs while writing
+    TIFF files which could result in corrupted output files. This fix is
+    particularly important when the installed libtiff does not support
+    LZW compression.<BR>
+  <LI> Fix writing 16-bit (or larger) grayscale TIFF on little-endian
+    machines.<BR>
+  <LI> Better detect and report defective GIF files (sometimes crashed due
+    to bad access).<BR>
+  <LI> Ensure that MIFF files indicate the compression type which was
+    actually used.<BR>
+  <LI> Eliminate warning regarding module registration which occured for
+    JNG in some build configurations (when libjpeg was missing).
+  <LI> Documentation fixes.
+
+</UL>
+<p>
+  Improvements:<BR>
+<UL>
+  <LI> Display GraphicsMagick logo rather than ImageMagick logo in
+    'display' Commmands widget.<BR>
+  <LI> TclMagick updated to latest version.
+  <LI> Use latest Automake (1.9.3).
+
+</UL>
 <p>
 Significant changes associated with GraphicsMagick 1.1.3 (released August 7, 2004)
 
