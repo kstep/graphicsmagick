@@ -1537,21 +1537,21 @@ MagickExport void XDisplayImageInfo(Display *display,
   register int
     i;
 
-  size_t
+  unsigned int
+    levels;
+
+  unsigned long
     bytes,
     length,
     number_pixels;
 
-  unsigned int
-    levels;
-
+  /*
+    Write info about the X server to a file.
+  */
   assert(display != (Display *) NULL);
   assert(resource_info != (XResourceInfo *) NULL);
   assert(windows != (XWindows *) NULL);
   assert(image != (Image *) NULL);
-  /*
-    Write info about the X server to a file.
-  */
   TemporaryFilename(filename);
   file=fopen(filename,WriteBinaryType);
   if (file == (FILE *) NULL)
@@ -7812,8 +7812,8 @@ MagickExport void XMakeWindow(Display *display,Window parent,char **argv,
 %
 %  The format of the XMagickMonitor method is:
 %
-%      void XMagickMonitor(const char *task,const size_t quantum,
-%        const size_t span)
+%      void XMagickMonitor(const char *task,const unsigned long quantum,
+%        const unsigned long span)
 %
 %  A description of each parameter follows:
 %
@@ -7826,8 +7826,8 @@ MagickExport void XMakeWindow(Display *display,Window parent,char **argv,
 %
 %
 */
-MagickExport void XMagickMonitor(const char *task,const size_t quantum,
-  const size_t span)
+MagickExport void XMagickMonitor(const char *task,const unsigned long quantum,
+  const unsigned long span)
 {
   XWindows
     *windows;

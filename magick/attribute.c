@@ -589,13 +589,7 @@ ImageAttribute *GetImageInfoAttribute(const ImageInfo *image_info,
     {
       if (LocaleNCompare("size",key,2) == 0)
         {
-          if (image->filesize >= (1 << 24))
-            FormatString(attribute,"%dmb",(int) (image->filesize/1024/1024));
-          else
-            if (image->filesize >= (1 << 16))
-              FormatString(attribute,"%dkb",(int) (image->filesize/1024));
-            else
-              FormatString(attribute,"%db",(int) image->filesize);
+          FormatString(attribute,"%lu",image->filesize);
           break;
         }
       if (LocaleNCompare("scene",key,2) == 0)

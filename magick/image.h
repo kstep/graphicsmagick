@@ -279,7 +279,7 @@ typedef struct _Image
   FILE
     *file;
 
-  double
+  unsigned long
     filesize;
 
   int
@@ -376,8 +376,12 @@ typedef struct _Image
     filter;
 
   double
-    blur,
-    total_colors,
+    blur;
+
+  unsigned long
+    total_colors;
+
+  double
     mean_error_per_pixel,
     normalized_mean_error,
     normalized_maximum_error;
@@ -716,9 +720,6 @@ extern MagickExport PixelPacket
 extern MagickExport RectangleInfo
   GetImageBoundingBox(Image *);
 
-extern MagickExport off_t
-  GetNumberColors(Image *,FILE *);
-
 extern MagickExport unsigned int
   AllocateImageColormap(Image *,const unsigned int),
   AnimateImages(const ImageInfo *image_info,Image *image),
@@ -772,6 +773,9 @@ extern MagickExport unsigned int
   WriteImage(const ImageInfo *,Image *),
   WriteStream(ImageInfo *,Image *,
     int (*)(const Image *,const void *,const size_t));
+
+extern MagickExport unsigned long
+  GetNumberColors(Image *,FILE *);
 
 extern MagickExport void
   AllocateNextImage(const ImageInfo *,Image *),

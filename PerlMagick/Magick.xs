@@ -3003,8 +3003,9 @@ Get(ref,...)
             }
           if (LocaleCompare(attribute,"colors") == 0)
             {
+              (void) GetNumberColors(image,(FILE *) NULL);
               if (image)
-                s=newSViv(GetNumberColors(image,(FILE *) NULL));
+                s=newSViv(image->total_colors);
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
             }

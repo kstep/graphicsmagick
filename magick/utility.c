@@ -3028,7 +3028,7 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
     {
       case 'b':
       {
-        FormatString(q,"%u",(unsigned int) image->filesize);
+        FormatString(q,"%lu",image->filesize);
         q=translated_text+Extent(translated_text);
         break;
       }
@@ -3110,8 +3110,8 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
       }
       case 'k':
       {
-        FormatString(q,"%u",(unsigned int)
-          GetNumberColors(image,(FILE *) NULL));
+        (void) GetNumberColors(image,(FILE *) NULL));
+        FormatString(q,"%lu",image->total_colors);
         q=translated_text+Extent(translated_text);
         break;
       }

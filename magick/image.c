@@ -1743,13 +1743,12 @@ MagickExport void DescribeImage(Image *image,FILE *file,
           if (image->total_colors != 0)
             {
               if (image->total_colors >= (1 << 24))
-                (void) fprintf(file,"%dmc ",(int)
-                  (image->total_colors/1024/1024));
+                (void) fprintf(file,"%lumc ",image->total_colors/1024/1024);
               else
                 if (image->total_colors >= (1 << 16))
-                  (void) fprintf(file,"%dkc ",(int) (image->total_colors/1024));
+                  (void) fprintf(file,"%lukc ",image->total_colors/1024);
                 else
-                  (void) fprintf(file,"%dc ",(int) image->total_colors);
+                  (void) fprintf(file,"%luc ",image->total_colors);
             }
         }
       else
@@ -1757,8 +1756,8 @@ MagickExport void DescribeImage(Image *image,FILE *file,
           (void) fprintf(file,"PseudoClass %uc ",image->colors);
         else
           {
-            (void) fprintf(file,"PseudoClass %ld=>%uc ",
-              (long) image->total_colors,image->colors);
+            (void) fprintf(file,"PseudoClass %ld=>%luc ",image->total_colors,
+              image->colors);
             (void) fprintf(file,"%d/%.6f/%.6fe ",
               (int) image->mean_error_per_pixel,image->normalized_mean_error,
               image->normalized_maximum_error);
@@ -1767,12 +1766,12 @@ MagickExport void DescribeImage(Image *image,FILE *file,
       if (image->filesize != 0)
         {
           if (image->filesize >= (1 << 24))
-            (void) fprintf(file,"%dmb ",(int) (image->filesize/1024/1024));
+            (void) fprintf(file,"%lumb ",image->filesize/1024/1024);
           else
             if (image->filesize >= (1 << 16))
-              (void) fprintf(file,"%dkb ",(int) (image->filesize/1024));
+              (void) fprintf(file,"%lukb ",image->filesize/1024);
             else
-              (void) fprintf(file,"%db ",(int) image->filesize);
+              (void) fprintf(file,"%lub ",image->filesize);
         }
       (void) fprintf(file,"%.1fu %d:%02d\n",user_time,(int) (elapsed_time/60.0),
         (int) ceil(fmod(elapsed_time,60.0)));
@@ -1849,7 +1848,7 @@ MagickExport void DescribeImage(Image *image,FILE *file,
           p->red,p->green,p->blue,p->red,p->green,p->blue);
     }
   if (image->storage_class == DirectClass)
-    (void) fprintf(file,"  Colors: %u\n",(unsigned int) image->total_colors);
+    (void) fprintf(file,"  Colors: %lu\n",image->total_colors);
   else
     if (image->total_colors <= image->colors)
       (void) fprintf(file,"  Colors: %u\n",image->colors);
@@ -2062,7 +2061,7 @@ MagickExport void DescribeImage(Image *image,FILE *file,
           else
             (void) fprintf(file,"\n");
     }
-  (void) fprintf(file,"  Filesize: %u\n",(unsigned int) image->filesize);
+  (void) fprintf(file,"  Filesize: %lu\n",image->filesize);
   if (image->interlace == NoInterlace)
     (void) fprintf(file,"  Interlace: None\n");
   else
