@@ -993,10 +993,14 @@ MagickExport void FormatString(char *string,const char *format,...)
     operands;
 
   va_start(operands,format);
-#if !defined(HAVE_VSNPRINTF)
-  (void) vsprintf(string,format,operands);
-#else
+#if defined(HAVE_VSNPRINTF)
   (void) vsnprintf(string,MaxTextExtent,format,operands);
+#else
+#  if defined(HAVE_VSPRINTF)
+  (void) vsprintf(string,format,operands);
+#  else
+#    error Neither vsnprintf or vsprintf is available.
+#  endif
 #endif
   va_end(operands);
 }

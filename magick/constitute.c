@@ -2824,6 +2824,17 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
     }
   for (next=image; next; next=next->next)
   {
+    if (next->storage_class == PseudoClass)
+      {
+        /*
+          Check and cache monochrome and grayscale status
+        */
+        (void) IsMonochromeImage(next,exception);
+        if (next->is_monochrome)
+          next->is_grayscale=True;
+        else
+          (void) IsGrayImage(next,exception);
+      }
     next->taint=False;
     (void) strncpy(next->magick_filename,filename,MaxTextExtent-1);
     if (image->blob->temporary)

@@ -30,7 +30,7 @@ static void ScribbleImage ( Image *image)
 {
   DrawContext
     context;
-
+/* SetLogEventMask("Render"); */
   context = DrawAllocateContext((DrawInfo*)NULL, image);
   
   DrawPushGraphicContext(context);

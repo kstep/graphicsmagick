@@ -60,6 +60,7 @@
 #endif
 #include "blob.h"
 #include "cache.h"
+#include "color.h"
 #include "constitute.h"
 #include "delegate.h"
 #include "log.h"

@@ -1363,6 +1363,11 @@ MagickExport Image *SampleImage(const Image *image,const unsigned long columns,
   LiberateMemory((void **) &y_offset);
   LiberateMemory((void **) &x_offset);
   LiberateMemory((void **) &pixels);
+  /*
+    Sampling does not change the image properties.
+  */
+  sample_image->is_monochrome=image->is_monochrome;
+  sample_image->is_grayscale=image->is_grayscale;
   return(sample_image);
 }
 

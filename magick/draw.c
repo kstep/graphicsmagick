@@ -428,12 +428,16 @@ static int MvgPrintf(DrawContext context, const char *format, ...)
     context->mvg[context->mvg_length] = 0;
 
     va_start(argp, format);
-#if !defined(HAVE_VSNPRINTF)
-    formatted_length = vsprintf(context->mvg + context->mvg_length, format, argp);
-#else
+#if defined(HAVE_VSNPRINTF)
     formatted_length =
       vsnprintf(context->mvg + context->mvg_length,
                 context->mvg_alloc - context->mvg_length - 1, format, argp);
+#else
+#  if defined(HAVE_VSPRINTF)
+    formatted_length = vsprintf(context->mvg + context->mvg_length, format, argp);
+#  else
+#    error Neither vsnprintf or vsprintf is available.
+#  endif
 #endif
     va_end(argp);
 
@@ -473,12 +477,14 @@ static int MvgAutoWrapPrintf(DrawContext context, const char *format, ...)
     buffer[MaxTextExtent];
 
   va_start(argp, format);
-#if !defined(HAVE_VSNPRINTF)
-  formatted_length = vsprintf(buffer, format, argp);
+#if defined(HAVE_VSNPRINTF)
+  formatted_length = vsnprintf(buffer, sizeof(buffer) - 1, format, argp);
 #else
-  formatted_length =
-    vsnprintf(buffer,
-              sizeof(buffer) - 1, format, argp);
+#  if defined(HAVE_VSPRINTF)
+  formatted_length = vsprintf(buffer, format, argp);
+#  else
+#    error Neither vsnprintf or vsprintf is available.
+#  endif
 #endif
   va_end(argp);
   *(buffer+sizeof(buffer)-1)=0;
@@ -4236,7 +4242,6 @@ MagickExport void DrawRectangle(DrawContext context,
 {
   assert(context != (DrawContext)NULL);
   assert(context->signature == MagickSignature);
-
   MvgPrintf(context, "rectangle %.4g,%.4g %.4g,%.4g\n", x1, y1, x2, y2);
 }
 

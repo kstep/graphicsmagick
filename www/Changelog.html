@@ -13,6 +13,82 @@
 </tr>
 </table>
 <p>
+2003-02-15  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/resize.c (SampleImage): Preserve grayscale and
+        monochrome flags.<BR>
+  <LI> magick/quantize.c (AssignImageColors): Set image monochrome
+        flag to True when quantizing to two colors in GrayColorspace.
+  <LI> magick/effect.c (SpreadImage): Preserve grayscale and
+        monochrome flags.<BR>
+        (AdaptiveThresholdImage): Short-circuit algorithm if image
+        flags indicate it is already monochrome. Set monochrome and
+        grayscale flags once algorithm completes.
+        (ThresholdImage): Short-circuit algorithm if image
+        flags indicate it is already monochrome. Set monochrome and
+        grayscale flags once algorithm completes.
+        (ChannelThresholdImage): Short-circuit algorithm if image
+        flags indicate it is already monochrome. Set monochrome and
+        grayscale flags once algorithm completes.
+        (ShadeImage): If grayscale shading is done, then set image
+        grayscale flag to True.<BR>
+  <LI> magick/color.c (IsGrayImage): If the image is_grayscale
+        flag is True, then short-circuit the test. Update the flag
+        if the test is performed.<BR>
+        (IsMonochromeImage): If the image is_monochrome flag is True
+        then short-circuit the test. Update the flag if the test is
+        performed.<BR>
+  <LI> magick/image.c (CloneImage): Copy image is_grayscale and
+        is_monochrome members.<BR>
+  <LI> magick/cache.c (SyncCacheNexus): If image pixels are updated
+        then set image is_grayscale and is_monochrome members to False.
+        Algorithms which want to preserve the values of these members
+        should save their original values before processing the image
+        and restore them when processing is complete, or transfer them
+        from the input image to the output image.
+  <LI> magick/constitute.c (ReadImage): If the returned image is
+        PseudoClass then invoke IsGrayImage() and IsMonochromeImage()
+        and cache the result in image is_grayscale and is_monochrome
+        members for later use.<BR>
+  <LI> magick/image.h (Image): Added is_grayscale and is_monochrome
+        members to remember if image is grayscale or monochrome.
+
+</UL>
+<p>
+2003-02-14  Glenn Randers-Pehrson &lt;randeg@alum.rpi.edu&gt;
+
+<UL>
+  <LI> www/archives.html: commented out sites not mirroring GM yet.
+
+</UL>
+<p>
+2003-02-13  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/utility.c (FormatString): Check for the availability of
+        vsprintf.<BR>
+  <LI> magick/log.c (LogMagickEvent): Check for the availability of
+        vsprintf.<BR>
+  <LI> configure.ac: Test for vsprintf.
+
+</UL>
+<p>
+2003-02-12  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/annotate.c (RenderFreetype): Used smarter code to prepare
+        the beta argument for AlphaComposite.
+
+</UL>
+<p>
+2003-02-12  Glenn Randers-Pehrson &lt;randeg@alum.rpi.edu&gt;
+
+<UL>
+  <LI> coders/logo.c: updated logo.c to produce the GraphicsMagick logo.
+
+</UL>
+<p>
 2003-02-12  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

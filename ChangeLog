@@ -1,8 +1,56 @@
+2003-02-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/resize.c (SampleImage): Preserve grayscale and
+	monochrome flags.
+	* magick/quantize.c (AssignImageColors): Set image monochrome
+	flag to True when quantizing to two colors in GrayColorspace.
+	* magick/effect.c (SpreadImage): Preserve grayscale and
+	monochrome flags.
+	(AdaptiveThresholdImage): Short-circuit algorithm if image
+	flags indicate it is already monochrome. Set monochrome and
+	grayscale flags once algorithm completes.
+	(ThresholdImage): Short-circuit algorithm if image
+	flags indicate it is already monochrome. Set monochrome and
+	grayscale flags once algorithm completes.
+	(ChannelThresholdImage): Short-circuit algorithm if image
+	flags indicate it is already monochrome. Set monochrome and
+	grayscale flags once algorithm completes.
+	(ShadeImage): If grayscale shading is done, then set image
+	grayscale flag to True.
+	* magick/color.c (IsGrayImage): If the image is_grayscale
+	flag is True, then short-circuit the test. Update the flag
+	if the test is performed.
+	(IsMonochromeImage): If the image is_monochrome flag is True
+	then short-circuit the test. Update the flag if the test is
+	performed.
+	* magick/image.c (CloneImage): Copy image is_grayscale and
+	is_monochrome members.
+	* magick/cache.c (SyncCacheNexus): If image pixels are updated
+	then set image is_grayscale and is_monochrome members to False.
+	Algorithms which want to preserve the values of these members
+	should save their original values before processing the image
+	and restore them when processing is complete, or transfer them
+	from the input image to the output image.
+	* magick/constitute.c (ReadImage): If the returned image is
+	PseudoClass then invoke IsGrayImage() and IsMonochromeImage()
+	and cache the result in image is_grayscale and is_monochrome
+	members for later use.
+	* magick/image.h (Image): Added is_grayscale and is_monochrome
+	members to remember if image is grayscale or monochrome.
+
 2003-02-14  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
 
 	* www/archives.html: commented out sites not mirroring GM yet.
 	Changed "ftp.simplesystems.org" to "ftp.graphicsmagick.org".
 	Added link to graphicsmagick.sf.net.
+
+2003-02-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/utility.c (FormatString): Check for the availability of
+	vsprintf.
+	* magick/log.c (LogMagickEvent): Check for the availability of
+	vsprintf.
+	* configure.ac: Test for vsprintf.
 
 2003-02-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 

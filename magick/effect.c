@@ -141,6 +141,8 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
   threshold_image=CloneImage(image,0,0,True,exception);
   if (threshold_image == (Image *) NULL)
     return((Image *) NULL);
+  if (image->is_monochrome)
+    return threshold_image;
   SetImageType(threshold_image,TrueColorType);
   /*
     Threshold each row of the image.
@@ -185,6 +187,8 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
       if (!MagickMonitor(ThresholdImageText,y,image->rows,exception))
         break;
   }
+  threshold_image->is_monochrome=True;
+  threshold_image->is_grayscale=True;
   return(threshold_image);
 }
 
@@ -650,6 +654,8 @@ MagickExport unsigned int ChannelThresholdImage(Image *image,
   assert(image->signature == MagickSignature);
   if (threshold == (const char *) NULL)
     return(True);
+  if (image->is_monochrome)
+    return(True);
   SetImageType(image,TrueColorType);
   pixel.red=MaxRGB;
   pixel.green=MaxRGB;
@@ -699,6 +705,8 @@ MagickExport unsigned int ChannelThresholdImage(Image *image,
       if (!MagickMonitor(ThresholdImageText,y,image->rows,&image->exception))
         break;
   }
+  image->is_monochrome=True;
+  image->is_grayscale=True;
   return(True);
 }
 
@@ -2104,6 +2112,8 @@ MagickExport Image *ShadeImage(const Image *image,const unsigned int gray,
       if (!MagickMonitor(ShadeImageText,y,image->rows,exception))
         break;
   }
+  if (gray)
+    shade_image->is_grayscale=True;
   return(shade_image);
 }
 
@@ -2327,6 +2337,8 @@ MagickExport Image *SpreadImage(const Image *image,const unsigned int radius,
         break;
   }
   LiberateMemory((void **)&offsets);
+  spread_image->is_grayscale=image->is_grayscale;
+  spread_image->is_monochrome=image->is_monochrome;
   return(spread_image);
 }
 
@@ -2380,6 +2392,8 @@ MagickExport unsigned int ThresholdImage(Image *image,const double threshold)
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
+  if (image->is_monochrome)
+    return(True);
   if (!AllocateImageColormap(image,2))
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       "UnableToThresholdImage");
@@ -2404,6 +2418,8 @@ MagickExport unsigned int ThresholdImage(Image *image,const double threshold)
       if (!MagickMonitor(ThresholdImageText,y,image->rows,&image->exception))
         break;
   }
+  image->is_monochrome=True;
+  image->is_grayscale=True;
   return(True);
 }
 

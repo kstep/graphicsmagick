@@ -983,6 +983,8 @@ MagickExport unsigned int IsGrayImage(const Image *image,
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
+  if (image->is_grayscale)
+    return(True);
   switch (image->storage_class)
   {
     case DirectClass:
@@ -1014,6 +1016,7 @@ MagickExport unsigned int IsGrayImage(const Image *image,
       break;
     }
   }
+  ((Image *)image)->is_grayscale=True;
   return(True);
 }
 
@@ -1058,6 +1061,8 @@ MagickExport unsigned int IsMonochromeImage(const Image *image,
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
+  if (image->is_monochrome)
+    return(True);
   switch (image->storage_class)
   {
     case DirectClass:
@@ -1089,6 +1094,7 @@ MagickExport unsigned int IsMonochromeImage(const Image *image,
       break;
     }
   }
+  ((Image *)image)->is_monochrome=True;
   return(True);
 }
 
@@ -1133,7 +1139,7 @@ MagickExport unsigned int IsOpaqueImage(const Image *image,
     x;
 
   /*
-    Determine if image is grayscale.
+    Determine if image is opaque.
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);

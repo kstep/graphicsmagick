@@ -394,7 +394,8 @@ static unsigned int AssignImageColors(CubeInfo *cube_info,Image *image)
     dither;
 
   unsigned int
-    id;
+    id,
+    is_monochrome;
 
   /*
     Allocate image colormap.
@@ -403,6 +404,7 @@ static unsigned int AssignImageColors(CubeInfo *cube_info,Image *image)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       "UnableToQuantizeImage");
   image->colors=0;
+  is_monochrome=image->is_monochrome;
   DefineImageColormap(image,cube_info->root);
   if (cube_info->quantize_info->colorspace == TransparentColorspace)
     image->storage_class=DirectClass;
@@ -472,6 +474,7 @@ static unsigned int AssignImageColors(CubeInfo *cube_info,Image *image)
       /*
         Monochrome image.
       */
+      is_monochrome=True;
       q=image->colormap;
       for (i=(long) image->colors; i > 0; i--)
       {
@@ -488,6 +491,7 @@ static unsigned int AssignImageColors(CubeInfo *cube_info,Image *image)
       (void) GetImageQuantizeError(image);
       SyncImage(image);
     }
+  image->is_monochrome=is_monochrome;
   return(True);
 }
 

@@ -662,151 +662,153 @@ typedef struct _ImageAttribute  _ImageAttribute_;
 typedef struct _Image
 {
   ClassType
-    storage_class;
+    storage_class;      /* DirectClass (TrueColor) or PseudoClass (colormapped) */
 
   ColorspaceType
-    colorspace;
+    colorspace;         /* Current image colorspace/model */
 
   CompressionType
-    compression;
+    compression;        /* Compression algorithm to use when encoding image */
 
   unsigned int
-    dither,
-    taint,
-    matte;
+    dither,             /* True if image is to be dithered */
+    is_monochrome,      /* True if image is known to be monochrome */
+    is_grayscale,       /* True if image is known to be grayscale */
+    taint,              /* True if image has not been modifed */
+    matte;              /* True if image has an opacity channel */ 
 
   unsigned long
-    columns,
-    rows;
+    columns,            /* Number of image columns */
+    rows;               /* Number of image rows */
 
   unsigned long
-    depth,
-    colors;
+    depth,              /* Bits of precision to preserve in color quantum */
+    colors;             /* Current number of colors in PseudoClass colormap */
 
   PixelPacket
-    *colormap;
+    *colormap;          /* Pseudoclass colormap array */
 
   PixelPacket
-    background_color,
-    border_color,
-    matte_color;
+    background_color,   /* Background color */
+    border_color,       /* Border color */
+    matte_color;        /* Matte (transparent) color */
 
   double
-    gamma;
+    gamma;              /* Image gamma */
 
   ChromaticityInfo
-    chromaticity;
+    chromaticity;       /* Red, green, blue, and white chromaticity values */
 
   ProfileInfo
-    color_profile,
-    iptc_profile,
-    *generic_profile;
+    color_profile,      /* ICC color profile */
+    iptc_profile,       /* IPTC newsphoto profile */
+    *generic_profile;   /* List of additional profiles */
 
   unsigned long
-    generic_profiles;
+    generic_profiles;   /* Number of additional generic profiles */
 
   RenderingIntent
-    rendering_intent;
+    rendering_intent;   /* Rendering intent */
 
   ResolutionType
-    units;
+    units;              /* Units of image resolution (density) */
 
   char
-    *montage,
-    *directory,
-    *geometry;
+    *montage,           /* Tile size and offset within an image montage */
+    *directory,         /* Tile names from within an image montage */
+    *geometry;          /* Composite/Crop options */
 
   long
-    offset;
+    offset;             /* Offset to start of image data */
 
   double
-    x_resolution,
-    y_resolution;
+    x_resolution,       /* Horizontal resolution (also see units) */
+    y_resolution;       /* Vertical resoution (also see units) */
 
   RectangleInfo
-    page,
-    tile_info;
+    page,               /* Offset to apply when placing image */
+    tile_info;          /* Subregion tile dimensions and offset */
 
   double
-    blur,
-    fuzz;
+    blur,               /* Amount of blur to apply when zooming image */
+    fuzz;               /* Colors within this distance match target color */
 
   FilterTypes
-    filter;
+    filter;             /* Filter to use when zooming image */
 
   InterlaceType
-    interlace;
+    interlace;          /* Interlace pattern to use when writing image */
 
   EndianType
-    endian;
+    endian;             /* Byte order to use when writing image */
 
   GravityType
-    gravity;
+    gravity;            /* Image placement gravity */
 
   CompositeOperator
-    compose;
+    compose;            /* Image placement composition */
 
   DisposeType
-    dispose;
+    dispose;            /* GIF disposal option */
 
   struct _Image
-    *clip_mask;
+    *clip_mask;         /* Clipping mask to apply when updating pixels */
 
   unsigned long
-    scene,
-    delay,
-    iterations,
-    total_colors;
+    scene,              /* Animation frame scene number */
+    delay,              /* Animation frame scene delay */
+    iterations,         /* Animation iterations */
+    total_colors;       /* Number of unique colors. See GetNumberColors() */
 
   long
-    start_loop;
+    start_loop;         /* Animation frame number to start looping at */
 
   ErrorInfo
-    error;
+    error;              /* Computed error between two images, or quantization */
 
   TimerInfo
-    timer;
+    timer;              /* Operation micro-timer */
 
   void
-    *client_data;
+    *client_data;       /* User specified opaque data pointer */
 
   void
-    *cache;
+    *cache;             /* Private, image pixel cache */
 
   _ImageAttribute_
-    *attributes;
+    *attributes;        /* Private, Image attribute list */
 
   _Ascii85Info_
-    *ascii85;
+    *ascii85;           /* Private, supports huffman encoding */
 
   _BlobInfo_
-    *blob;
+    *blob;              /* Private, file I/O object */
 
   char
-    filename[MaxTextExtent],
-    magick_filename[MaxTextExtent],
-    magick[MaxTextExtent];
+    filename[MaxTextExtent], /* Output filename */
+    magick_filename[MaxTextExtent], /* Base image filename (before transformations) */
+    magick[MaxTextExtent];   /* Output format */
 
   unsigned long
-    magick_columns,
-    magick_rows;
+    magick_columns,     /* Base image width (before transformations) */
+    magick_rows;        /* Base image height (before transformations) */
 
   ExceptionInfo
-    exception;
+    exception;          /* Any error associated with this image frame */
 
   long
-    reference_count;
+    reference_count;    /* Private, Image reference count */
 
   SemaphoreInfo
-    *semaphore;
+    *semaphore;         /* Private, Per image lock (for reference count) */
 
   unsigned long
-    signature;
+    signature;          /* Private, Unique code to validate structure */
 
   struct _Image
-    *previous,
-    *list,
-    *next;
+    *previous,          /* Pointer to previous frame */
+    *list,              /* Private, only used by display */
+    *next;              /* Pointer to next frame */
 } Image;
 
 typedef unsigned int

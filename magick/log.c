@@ -584,10 +584,14 @@ MagickExport unsigned int LogMagickEvent(const LogEventType type,
     default: domain=(char *) "UnknownEvent"; break;
   }
   va_start(operands,format);
-#if !defined(HAVE_VSNPRINTF)
-  (void) vsprintf(event,format,operands);
-#else
+#if defined(HAVE_VSNPRINTF)
   (void) vsnprintf(event,MaxTextExtent,format,operands);
+#else
+#  if defined(HAVE_VSPRINTF)
+  (void) vsprintf(event,format,operands);
+#  else
+#    error Neither vsnprintf or vsprintf is available.
+#  endif
 #endif
   va_end(operands);
   seconds=time((time_t *) NULL);

@@ -977,6 +977,8 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
   clone_image->compression=image->compression;
   clone_image->dither=image->dither;
   clone_image->taint=image->taint;
+  clone_image->is_grayscale=image->is_grayscale;
+  clone_image->is_monochrome=image->is_monochrome;
   clone_image->matte=image->matte;
   clone_image->columns=image->columns;
   clone_image->rows=image->rows;
@@ -3934,6 +3936,8 @@ MagickExport unsigned int RGBTransformImage(Image *image,
   LiberateMemory((void **) &y_map);
   LiberateMemory((void **) &x_map);
 
+  if (colorspace==GRAYColorspace)
+    image->is_grayscale=True;
   LogMagickEvent(TransformEvent,GetMagickModule(),
                  "Colorspace transform completed"); 
   return(True);
