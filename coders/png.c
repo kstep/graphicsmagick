@@ -4347,7 +4347,12 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     save_image_depth,
     ticks_per_second=0;
 
+#if 0
+    /* doesn't work properly with grayscale images. */
     optimize=image_info->type==OptimizeType;
+#else
+    optimize=True;
+#endif
   /*
     Open image file.
   */
