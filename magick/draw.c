@@ -1707,10 +1707,10 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
                 graphic_context[n]->decorate=LineThroughDecoration;
                 break;
               }
-            (void) QueryColorDatabase(token,&graphic_context[n]->box);
-            if (graphic_context[n]->box.opacity == TransparentOpacity)
+            if(QueryColorDatabase(token,&graphic_context[n]->box)==True)
               {
-                graphic_context[n]->decorate=NoDecoration;
+                if (graphic_context[n]->box.opacity == TransparentOpacity)
+                  graphic_context[n]->decorate=NoDecoration;
                 break;
               }
             status=False;
