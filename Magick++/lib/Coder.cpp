@@ -71,13 +71,13 @@ static MagickLib::Image *decoder( const MagickLib::ImageInfo *imageInfo_,
     return 0;
 
   Magick::Options* options = new Magick::Options(imageInfo_,0,0,0);
-  Magick::Image image(image_, options);
+//   Magick::Image image(image_, options);
 
-  Magick::Coder* coder = static_cast<Magick::Coder*>(imageInfo_->client_data);
-  image = coder->decoder( image );
-  MagickLib::Image* final = image.image();
-  image.image() = 0; // Ensure that image is not freed after return
-  return final;
+//   Magick::Coder* coder = static_cast<Magick::Coder*>(imageInfo_->client_data);
+//   image = coder->decoder( image );
+//   MagickLib::Image* final = image.image();
+//   image.image() = 0; // Ensure that image is not freed after return
+//   return final;
 }
 
 // Image encoder callback (C linkage)
@@ -139,6 +139,6 @@ Magick::Coder::Coder (
   info->tag     = 0;
   Magick::CloneString( &info->description, description_ );
   info->module  = 0;
-  info->data = static_cast<void *>(this); // coder object
+  info->client_data = static_cast<void *>(this); // coder object
   RegisterMagickInfo ( info );
 }
