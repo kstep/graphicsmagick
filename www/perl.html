@@ -993,6 +993,7 @@ The <i>text</i> parameter for methods, <tt>Annotate</tt>, <tt>Comment</tt>,
 and <tt>Label</tt> can include the image filename, type, width, height,
 or other image attribute by embedding these special format characters:
 <pre>&nbsp;&nbsp;&nbsp; %b&nbsp;&nbsp; file size
+&nbsp;&nbsp;&nbsp; %d&nbsp;&nbsp; comment
 &nbsp;&nbsp;&nbsp; %d&nbsp;&nbsp; directory
 &nbsp;&nbsp;&nbsp; %e&nbsp;&nbsp; filename extension
 &nbsp;&nbsp;&nbsp; %f&nbsp;&nbsp; filename
@@ -1074,7 +1075,7 @@ And here is a list of all the image attributes you can set:
 </tr>
 
 <tr>
-<td>blue_primary</td>
+<td>blue-primary</td>
 
 <td><i>x-value</i>, <i>y-value</i></td>
 
@@ -1090,7 +1091,7 @@ And here is a list of all the image attributes you can set:
 </tr>
 
 <tr>
-<td>cache_threshold</td>
+<td>cache-threshold</td>
 
 <td><i>integer</i></td>
 
@@ -1199,7 +1200,7 @@ next image in a sequence</td>
 </tr>
 
 <tr>
-<td>green_primary</td>
+<td>green-primary</td>
 
 <td><i>x-value</i>, <i>y-value</i></td>
 
@@ -1315,7 +1316,7 @@ OilPaint, CharcoalDrawing, JPEG}&nbsp;</td>
 </tr>
 
 <tr>
-<td>red_primary</td>
+<td>red-primary</td>
 
 <td><i>x-value</i>, <i>y-value</i></td>
 
@@ -1323,7 +1324,7 @@ OilPaint, CharcoalDrawing, JPEG}&nbsp;</td>
 </tr>
 
 <tr>
-<td>rendering_intent</td>
+<td>rendering-intent</td>
 
 <td>{Undefined, Saturation, Perceptual, Absolute, Relative}</td>
 
@@ -1403,7 +1404,7 @@ OilPaint, CharcoalDrawing, JPEG}&nbsp;</td>
 </tr>
 
 <tr>
-<td>white_point</td>
+<td>white-point</td>
 
 <td><i>x-value</i>, <i>y-value</i></td>
 
@@ -1449,7 +1450,7 @@ Attribute</a>, you can get these additional attributes:
 </tr>
 
 <tr>
-<td>base_columns</td>
+<td>base-columns</td>
 
 <td><i>integer</i></td>
 
@@ -1457,7 +1458,7 @@ Attribute</a>, you can get these additional attributes:
 </tr>
 
 <tr>
-<td>base_filename</td>
+<td>base-filename</td>
 
 <td><i>string</i></td>
 
@@ -1465,7 +1466,7 @@ Attribute</a>, you can get these additional attributes:
 </tr>
 
 <tr>
-<td>base_rows</td>
+<td>base-rows</td>
 
 <td><i>integer</i></td>
 
@@ -1521,6 +1522,14 @@ Attribute</a>, you can get these additional attributes:
 </tr>
 
 <tr>
+<td>error</td>
+
+<td><i>double</i></td>
+
+<td>the mean error per pixel computed when an image is color reduced</td>
+</tr>
+
+<tr>
 <td>filesize</td>
 
 <td><i>integer</i></td>
@@ -1569,23 +1578,7 @@ Attribute</a>, you can get these additional attributes:
 </tr>
 
 <tr>
-<td>mean</td>
-
-<td><i>double</i></td>
-
-<td>the mean error per pixel computed when an image is color reduced</td>
-</tr>
-
-<tr>
-<td>montage</td>
-
-<td><i>geometry</i></td>
-
-<td>tile size and offset within an image montage</td>
-</tr>
-
-<tr>
-<td>normalized_max</td>
+<td>maximum-error</td>
 
 <td><i>double</i></td>
 
@@ -1594,12 +1587,20 @@ reduced</td>
 </tr>
 
 <tr>
-<td>normalized_mean</td>
+<td>mean-error</td>
 
 <td><i>double</i></td>
 
 <td>the normalized mean error per pixel computed when an image is color
 reduced</td>
+</tr>
+
+<tr>
+<td>montage</td>
+
+<td><i>geometry</i></td>
+
+<td>tile size and offset within an image montage</td>
 </tr>
 
 <tr>
@@ -1619,7 +1620,7 @@ reduced</td>
 </tr>
 
 <tr>
-<td>tainted</td>
+<td>taint</td>
 
 <td>{True, False}</td>
 
