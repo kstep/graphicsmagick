@@ -55,13 +55,13 @@ extern MagickExport const ModuleInfo
   *GetModuleInfo(const char *,ExceptionInfo *);
 
 extern MagickExport unsigned int
-  ExecuteModuleProcess(const char *,Image *,const int,char **),
+  ExecuteModuleProcess(const char *,Image **,const int,char **),
   ListModuleAliases(FILE *,ExceptionInfo *),
   OpenModule(const char *,ExceptionInfo *),
   OpenModules(ExceptionInfo *);
 
 extern unsigned int
-  ExecuteStaticModuleProcess(const char *,Image *,const int,char **);
+  ExecuteStaticModuleProcess(const char *,Image **,const int,char **);
 
 extern MagickExport void
   DestroyModuleInfo(void);

@@ -248,7 +248,7 @@ static void *lt_dlsym(void *handle,char *symbol)
 #endif
 #endif
 
-MagickExport unsigned int ExecuteModuleProcess(const char *tag,Image *image,
+MagickExport unsigned int ExecuteModuleProcess(const char *tag,Image **image,
   const int argc,char **argv)
 {
 #if defined(HasMODULES)
@@ -259,7 +259,7 @@ MagickExport unsigned int ExecuteModuleProcess(const char *tag,Image *image,
     handle;
 
   unsigned int
-    (*method)(Image *,const int,char **),
+    (*method)(Image **,const int,char **),
     status;
 
   assert(image != (Image *) NULL);
@@ -285,9 +285,9 @@ MagickExport unsigned int ExecuteModuleProcess(const char *tag,Image *image,
     }
   (void) strncpy(module_name,tag,MaxTextExtent-1);
   (void) strcat(module_name,"Image");
-  method=(unsigned int (*)(Image *,const int,char **))
+  method=(unsigned int (*)(Image **,const int,char **))
     lt_dlsym(handle,module_name);
-  if (method != (unsigned int (*)(Image *,const int,char **)) NULL)
+  if (method != (unsigned int (*)(Image **,const int,char **)) NULL)
     status=(*method)(image,argc,argv);
   (void) lt_dlclose(handle);
   LiberateMemory((void **) &module_name);

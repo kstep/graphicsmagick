@@ -4412,7 +4412,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
                   *argv;
 
                 argv=&(arguments[next]);
-                (void) ExecuteModuleProcess((const char *) token,*image,1,
+                (void) ExecuteModuleProcess((const char *) token,image,1,
                   &argv);
               }
             LiberateMemory((void **) &token);
