@@ -1170,7 +1170,7 @@ Export PixelPacket *SetCacheNexus(Cache cache,const unsigned int id,
       nexus->stash=ReallocateMemory(nexus->stash,length);
   if (nexus->stash == (void *) NULL)
     MagickError(ResourceLimitError,"Memory allocation failed",
-      "unable to allocate cache info");
+      "unable to allocate cache nexus");
   nexus->length=length;
   nexus->pixels=(PixelPacket *) nexus->stash;
   nexus->indexes=(IndexPacket *) (nexus->pixels+nexus->columns*nexus->rows);

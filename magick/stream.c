@@ -170,7 +170,7 @@ Export void DestroyPixelStream(Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   G e t P i x e l S t r e a m I n d e x e s                                 %
+%   G e t I n d e x e s F r o m S t r e a m                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -275,12 +275,12 @@ static PixelPacket GetOnePixelFromStream(Image *image,const int x,const int y)
 static PixelPacket *GetPixelStream(Image *image,const int x,const int y,
   const unsigned int columns,const unsigned int rows)
 {
-  StreamInfo
-    *stream_info;
+  PixelPacket
+    *pixels;
 
   assert(image != (Image *) NULL);
-  stream_info=image->cache;
-  return(stream_info->pixels);
+  pixels=SetPixelStream(image,x,y,columns,rows);
+  return(pixels);
 }
 
 /*

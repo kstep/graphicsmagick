@@ -406,7 +406,7 @@ static PixelPacket *SetPixelCache(Image *image,const int x,const int y,
       if (status == False)
         {
           ThrowException(&image->exception,CacheWarning,
-            "Unable to allocate pixel cache",image->filename);
+            "Unable to open pixel cache",image->filename);
           return((PixelPacket *) NULL);
         }
     }
@@ -485,7 +485,7 @@ static unsigned int SyncPixelCache(Image *image)
   */
   assert(image != (Image *) NULL);
   if (image->cache == (Cache) NULL)
-    ThrowBinaryException(CacheWarning,"pixel cache is not allocated",
+    ThrowBinaryException(CacheWarning,"pixel cache is not open",
       image->filename);
   image->taint=True;
   if (IsNexusInCore(image->cache,0))
