@@ -80,9 +80,9 @@ int main ( int argc, char **argv )
    */
   strcpy( original->magick, format );
   strcpy( original->filename, filename );
-  imageInfo.depth=GetImageDepth(original);
   original->delay = 10;
   WriteImage ( &imageInfo, original );
+  imageInfo.depth=GetImageDepth(original);
   DestroyImage( original );
   original = (Image*)NULL;
 
@@ -91,7 +91,7 @@ int main ( int argc, char **argv )
    */
   strcpy( imageInfo.magick, format );
   strcpy( imageInfo.filename, filename );
-  if ( size != NULL )
+  if (size != NULL)
     CloneString( &imageInfo.size, size );
   original = ReadImage ( &imageInfo, &exception );
   if ( original == (Image *)NULL )
