@@ -3207,15 +3207,6 @@ MagickExport int SystemCommand(const unsigned int verbose,const char *command)
 */
 MagickExport void TemporaryFilename(char *filename)
 {
-  ExceptionInfo
-    exception;
-
-  ImageInfo
-    *image_info;
-
-  unsigned int
-    exempt;
-
   assert(filename != (char *) NULL);
   (void) strcpy(filename,"magic");
 #if !defined(vms) && !defined(macintosh)
@@ -3233,14 +3224,9 @@ MagickExport void TemporaryFilename(char *filename)
 #else
   (void) tmpnam(filename);
 #endif
-  image_info=CloneImageInfo((ImageInfo *) NULL);
-  (void) strncpy(image_info->filename,filename,MaxTextExtent-1);
-  GetExceptionInfo(&exception);
-  (void) SetImageInfo(image_info,True,&exception);
-  exempt=(*image_info->magick != '\0');
-  DestroyExceptionInfo(&exception);
-  DestroyImageInfo(image_info);
-  if (exempt)
+  if ((strlen(filename) > 3) &&
+      ((LocaleCompare(filename+strlen(filename)-3,".gz") == 0) ||
+       (LocaleCompare(filename+strlen(filename)-2,".Z") == 0)))
     TemporaryFilename(filename);
 }
 
