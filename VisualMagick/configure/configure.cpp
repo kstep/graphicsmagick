@@ -42,7 +42,7 @@ CConfigureApp theApp;
 /////////////////////////////////////////////////////////////////////////////
 // CConfigureApp initialization
 
-enum {MULTITHREADEDDLL, SINGLETHREADEDSTATIC, MULTITHREADEDSTATIC};
+enum {MULTITHREADEDDLL, SINGLETHREADEDSTATIC, MULTITHREADEDSTATIC, MULTITHREADEDSTATICDLL};
 
 enum {DISABLED, UTILITY, LIBRARY, STATICLIB, MODULE, THIRDPARTY};
 typedef struct _ConfigureInfo
@@ -64,7 +64,7 @@ std::list<std::string> defines_list;
 std::list<std::string> dependency_list;
 
 void CConfigureApp::process_utility(ofstream &dsw,
-  WIN32_FIND_DATA	&data, const char *filename, bool mt)
+  WIN32_FIND_DATA	&data, const char *filename, int runtime)
 {
 	CStringEx basename = filename;
   std::string name = basename.GetField('.',0);
@@ -77,7 +77,7 @@ void CConfigureApp::process_utility(ofstream &dsw,
 	std::list<std::string> includes_list;
 
 	write_exe_dsp(
-    mt,
+    runtime,
     staging,
 		"",
 		name,
@@ -94,108 +94,121 @@ void CConfigureApp::process_utility(ofstream &dsw,
   project += staging;
   project += "\\";
   project += name;
-  if (mt)
-    project += "_mt_exe.dsp";
-  else
-    project += "_st_exe.dsp";
-	begin_project(dsw, name.c_str(), project.c_str());
-  if (mt)
+  switch (runtime)
   {
-	  add_project_dependency(dsw, "CORE_magick");
-    if (useX11Stubs)
-	    add_project_dependency(dsw, "CORE_xlib");
-    if (extn.compare("cpp") == 0)
-    {
-		  add_project_dependency(dsw, "CORE_MagickArgs");
-		  add_project_dependency(dsw, "CORE_Magick++");
-    }
-  } else {
-    CStringEx strDepends;
-		for (
-			std::list<std::string>::iterator it1a = dependency_list.begin();
-			it1a != dependency_list.end();
-			it1a++)
-		{
-      strDepends = (*it1a).c_str();
-      if (strDepends.FindNoCase("LIBR_zlib",0) == 0)
-		    add_project_dependency(dsw, strDepends );
-		}
-
-		for (
-			std::list<std::string>::iterator it1b = dependency_list.begin();
-			it1b != dependency_list.end();
-			it1b++)
-		{
-      strDepends = (*it1b).c_str();
-      if (strDepends.FindNoCase("LIBR_bzlib",0) == 0)
-		    add_project_dependency(dsw, strDepends );
-		}
-
-		for (
-			std::list<std::string>::iterator it1c = dependency_list.begin();
-			it1c != dependency_list.end();
-			it1c++)
-		{
-      strDepends = (*it1c).c_str();
-      if (strDepends.FindNoCase("LIBR_jpeg",0) == 0)
-		    add_project_dependency(dsw, strDepends );
-		}
-
-		for (
-			std::list<std::string>::iterator it1 = dependency_list.begin();
-			it1 != dependency_list.end();
-			it1++)
-		{
-      strDepends = (*it1).c_str();
-      if (strDepends.FindNoCase("LIBR_zlib",0) == 0)
-        continue;
-      if (strDepends.FindNoCase("LIBR_bzlib",0) == 0)
-        continue;
-      if (strDepends.FindNoCase("LIBR_jpeg",0) == 0)
-        continue;
-      if (strDepends.FindNoCase("LIBR_",0) == 0)
-		    add_project_dependency(dsw, strDepends );
-		}
-		for (
-			std::list<std::string>::iterator it2 = dependency_list.begin();
-			it2 != dependency_list.end();
-			it2++)
-		{
-      strDepends = (*it2).c_str();
-      if (strDepends.FindNoCase("CORE_",0) == 0)
+    case MULTITHREADEDSTATIC:
+    case SINGLETHREADEDSTATIC:
+    case MULTITHREADEDSTATICDLL:
+      if (runtime == SINGLETHREADEDSTATIC)
+        project += "_st_exe.dsp";
+      if (runtime == MULTITHREADEDSTATIC)
+        project += "_xt_exe.dsp";
+      if (runtime == MULTITHREADEDSTATICDLL)
+        project += "_mtdll_exe.dsp";
+	    begin_project(dsw, name.c_str(), project.c_str());
       {
-        if (strDepends.Find("CORE_Magick",0) == 0)
-          continue;
-		    add_project_dependency(dsw, strDepends );
+        CStringEx strDepends;
+		    for (
+			    std::list<std::string>::iterator it1a = dependency_list.begin();
+			    it1a != dependency_list.end();
+			    it1a++)
+		    {
+          strDepends = (*it1a).c_str();
+          if (strDepends.FindNoCase("LIBR_zlib",0) == 0)
+		        add_project_dependency(dsw, strDepends );
+		    }
+
+		    for (
+			    std::list<std::string>::iterator it1b = dependency_list.begin();
+			    it1b != dependency_list.end();
+			    it1b++)
+		    {
+          strDepends = (*it1b).c_str();
+          if (strDepends.FindNoCase("LIBR_bzlib",0) == 0)
+		        add_project_dependency(dsw, strDepends );
+		    }
+
+		    for (
+			    std::list<std::string>::iterator it1c = dependency_list.begin();
+			    it1c != dependency_list.end();
+			    it1c++)
+		    {
+          strDepends = (*it1c).c_str();
+          if (strDepends.FindNoCase("LIBR_jpeg",0) == 0)
+		        add_project_dependency(dsw, strDepends );
+		    }
+
+		    for (
+			    std::list<std::string>::iterator it1 = dependency_list.begin();
+			    it1 != dependency_list.end();
+			    it1++)
+		    {
+          strDepends = (*it1).c_str();
+          if (strDepends.FindNoCase("LIBR_zlib",0) == 0)
+            continue;
+          if (strDepends.FindNoCase("LIBR_bzlib",0) == 0)
+            continue;
+          if (strDepends.FindNoCase("LIBR_jpeg",0) == 0)
+            continue;
+          if (strDepends.FindNoCase("LIBR_",0) == 0)
+		        add_project_dependency(dsw, strDepends );
+		    }
+		    for (
+			    std::list<std::string>::iterator it2 = dependency_list.begin();
+			    it2 != dependency_list.end();
+			    it2++)
+		    {
+          strDepends = (*it2).c_str();
+          if (strDepends.FindNoCase("CORE_",0) == 0)
+          {
+            if (strDepends.Find("CORE_Magick",0) == 0)
+              continue;
+		        add_project_dependency(dsw, strDepends );
+          }
+		    }
+        if (extn.compare("cpp") == 0)
+        {
+		      for (
+			      std::list<std::string>::iterator it3 = dependency_list.begin();
+			      it3 != dependency_list.end();
+			      it3++)
+		      {
+            strDepends = (*it3).c_str();
+            if (strDepends.FindNoCase("CORE_Magick",0) == 0)
+		          add_project_dependency(dsw, strDepends );
+		      }
+        }
+		    for (
+			    std::list<std::string>::iterator it4 = dependency_list.begin();
+			    it4 != dependency_list.end();
+			    it4++)
+		    {
+          strDepends = (*it4).c_str();
+          if (strDepends.FindNoCase("IM_MOD_",0) == 0)
+		        add_project_dependency(dsw, strDepends );
+		    }
       }
-		}
-    if (extn.compare("cpp") == 0)
-    {
-		  for (
-			  std::list<std::string>::iterator it3 = dependency_list.begin();
-			  it3 != dependency_list.end();
-			  it3++)
-		  {
-        strDepends = (*it3).c_str();
-        if (strDepends.FindNoCase("CORE_Magick",0) == 0)
-		      add_project_dependency(dsw, strDepends );
-		  }
-    }
-		for (
-			std::list<std::string>::iterator it4 = dependency_list.begin();
-			it4 != dependency_list.end();
-			it4++)
-		{
-      strDepends = (*it4).c_str();
-      if (strDepends.FindNoCase("IM_MOD_",0) == 0)
-		    add_project_dependency(dsw, strDepends );
-		}
+	    end_project(dsw);
+      break;
+    default:
+    case MULTITHREADEDDLL:
+      project += "_mt_exe.dsp";
+	    begin_project(dsw, name.c_str(), project.c_str());
+	    add_project_dependency(dsw, "CORE_magick");
+      if (useX11Stubs)
+	      add_project_dependency(dsw, "CORE_xlib");
+      if (extn.compare("cpp") == 0)
+      {
+		    add_project_dependency(dsw, "CORE_MagickArgs");
+		    add_project_dependency(dsw, "CORE_Magick++");
+      }
+	    end_project(dsw);
+      break;
   }
-	end_project(dsw);
 }
 
 void CConfigureApp::process_library(ofstream &dsw,
-                      const char *filename, bool dll, bool mt)
+                      const char *filename, bool dll, int runtime)
 {
 	CStringEx basename = filename;
   std::string name = basename.GetField('.',0);
@@ -238,7 +251,7 @@ void CConfigureApp::process_library(ofstream &dsw,
 
 	write_lib_dsp(
     dll,
-    mt, // multi-threaded
+    runtime, // multi-threaded
     filename,
 		"*",
 		name,
@@ -258,33 +271,81 @@ void CConfigureApp::process_library(ofstream &dsw,
   project += "\\";
   project += pname;
   if (dll)
-    project += "_mt_dll.dsp";
-  else
-    project += "_st_lib.dsp";
-	begin_project(dsw, pname.c_str(), project.c_str());
-  if (dll)
   {
-    if (name.compare("magick") == 0)
+    switch(runtime)
     {
-      if (useX11Stubs)
-	      add_project_dependency(dsw, "CORE_xlib");
-	    add_project_dependency(dsw, "LIBR_JPEG");
-	    add_project_dependency(dsw, "LIBR_ZLIB");
-    }
-    if (name.compare("Magick++") == 0)
-    {
-	    add_project_dependency(dsw, "CORE_magick");
+      case SINGLETHREADEDSTATIC:
+        project += "_st_dll.dsp";
+	      begin_project(dsw, pname.c_str(), project.c_str());
+		    dependency_list.push_back(pname.c_str());
+	      end_project(dsw);
+        break;
+      case MULTITHREADEDSTATIC:
+        project += "_xt_dll.dsp";
+	      begin_project(dsw, pname.c_str(), project.c_str());
+		    dependency_list.push_back(pname.c_str());
+	      end_project(dsw);
+        break;
+      case MULTITHREADEDSTATICDLL:
+        project += "_mtdll_dll.dsp";
+	      begin_project(dsw, pname.c_str(), project.c_str());
+		    dependency_list.push_back(pname.c_str());
+	      end_project(dsw);
+        break;
+      default:
+      case MULTITHREADEDDLL:
+        project += "_mt_dll.dsp";
+	      begin_project(dsw, pname.c_str(), project.c_str());
+        if (name.compare("magick") == 0)
+        {
+          if (useX11Stubs)
+	          add_project_dependency(dsw, "CORE_xlib");
+	        add_project_dependency(dsw, "LIBR_JPEG");
+	        add_project_dependency(dsw, "LIBR_ZLIB");
+        }
+        if (name.compare("Magick++") == 0)
+        {
+	        add_project_dependency(dsw, "CORE_magick");
+        }
+	      end_project(dsw);
+        break;
     }
   }
   else
   {
-		dependency_list.push_back(pname.c_str());
+    switch(runtime)
+    {
+      case SINGLETHREADEDSTATIC:
+        project += "_st_lib.dsp";
+	      begin_project(dsw, pname.c_str(), project.c_str());
+		    dependency_list.push_back(pname.c_str());
+	      end_project(dsw);
+        break;
+      case MULTITHREADEDSTATIC:
+        project += "_xt_lib.dsp";
+	      begin_project(dsw, pname.c_str(), project.c_str());
+		    dependency_list.push_back(pname.c_str());
+	      end_project(dsw);
+        break;
+      case MULTITHREADEDSTATICDLL:
+        project += "_mtdll_lib.dsp";
+	      begin_project(dsw, pname.c_str(), project.c_str());
+		    dependency_list.push_back(pname.c_str());
+	      end_project(dsw);
+        break;
+      default:
+      case MULTITHREADEDDLL:
+        project += "_mt_lib.dsp";
+	      begin_project(dsw, pname.c_str(), project.c_str());
+		    dependency_list.push_back(pname.c_str());
+	      end_project(dsw);
+        break;
+    }
   }
-	end_project(dsw);
 }
 
 void CConfigureApp::process_3rd_party_library(ofstream &dsw,
-                      const char *filename, bool dll, bool mt)
+                      const char *filename, int runtime)
 {
 	CStringEx basename = filename;
   std::string name = basename.GetField('.',0);
@@ -317,10 +378,22 @@ do_it_again:
     project += staging;
     project += "\\";
     project += pname;
-    if (dll)
-      project += "_mt_dll.dsp";
-    else
-      project += "_st_lib.dsp";
+    switch(runtime)
+    {
+      case SINGLETHREADEDSTATIC:
+        project += "_st_lib.dsp";
+        break;
+      case MULTITHREADEDSTATIC:
+        project += "_xt_lib.dsp";
+        break;
+      case MULTITHREADEDSTATICDLL:
+        project += "_mtdll_lib.dsp";
+        break;
+      default:
+      case MULTITHREADEDDLL:
+        project += "_mt_dll.dsp";
+        break;
+    }
 
     libhandle = FindFirstFile(project.c_str(), &libdata);
 	  if (libhandle != INVALID_HANDLE_VALUE)
@@ -329,32 +402,38 @@ do_it_again:
 
       const char *path = project.c_str();
 	    begin_project(dsw, pname.c_str(), &path[1]);
-      if (dll)
+      switch(runtime)
       {
-        if (name.compare("png") == 0)
-        {
-	        add_project_dependency(dsw, "LIBR_ZLIB");
-        }
-        if (name.compare("hdf") == 0)
-        {
-	        add_project_dependency(dsw, "LIBR_JPEG");
-	        add_project_dependency(dsw, "LIBR_ZLIB");
-        }
-        if (name.compare("tiff") == 0)
-        {
-	        add_project_dependency(dsw, "LIBR_JPEG");
-	        add_project_dependency(dsw, "LIBR_ZLIB");
-        }
-        if (name.compare("fpx") == 0)
-        {
-	        add_project_dependency(dsw, "LIBR_FPXjpeg");
-          name = "FPXjpeg";
-          do_extra_stuff = true;
-        }
-      }
-      else
-      {
-		    dependency_list.push_back(pname.c_str());
+        case SINGLETHREADEDSTATIC:
+        case MULTITHREADEDSTATIC:
+        case MULTITHREADEDSTATICDLL:
+		      dependency_list.push_back(pname.c_str());
+          break;
+        default:
+        case MULTITHREADEDDLL:
+          {
+            if (name.compare("png") == 0)
+            {
+	            add_project_dependency(dsw, "LIBR_ZLIB");
+            }
+            if (name.compare("hdf") == 0)
+            {
+	            add_project_dependency(dsw, "LIBR_JPEG");
+	            add_project_dependency(dsw, "LIBR_ZLIB");
+            }
+            if (name.compare("tiff") == 0)
+            {
+	            add_project_dependency(dsw, "LIBR_JPEG");
+	            add_project_dependency(dsw, "LIBR_ZLIB");
+            }
+            if (name.compare("fpx") == 0)
+            {
+	            add_project_dependency(dsw, "LIBR_FPXjpeg");
+              name = "FPXjpeg";
+              do_extra_stuff = true;
+            }
+          }
+          break;
       }
 	    end_project(dsw);
       if (do_extra_stuff)
@@ -367,7 +446,7 @@ do_it_again:
 }
 
 void CConfigureApp::process_module(ofstream &dsw,
-  WIN32_FIND_DATA	&data, const char *filename, bool dll)
+  WIN32_FIND_DATA	&data, const char *filename, int runtime)
 {
 	CStringEx basename = filename;
   std::string name = basename.GetField('.',0);
@@ -436,7 +515,6 @@ void CConfigureApp::process_module(ofstream &dsw,
 	if (libhandle != INVALID_HANDLE_VALUE)
   {
     std::string extralibrary;
-
 	  do
 	  {
       extralibrary = "..\\..\\";
@@ -450,8 +528,8 @@ void CConfigureApp::process_module(ofstream &dsw,
   }
 
  	write_lib_dsp(
-    dll,
-    dll, // multi-threaded
+    (runtime == MULTITHREADEDDLL),
+    runtime, // multi-threaded
     data.cFileName,
 		"",
 		name,
@@ -469,55 +547,71 @@ void CConfigureApp::process_module(ofstream &dsw,
   project += data.cFileName;
   project += "\\";
   project += pname;
-  if (dll)
-    project += "_mt_dll.dsp";
-  else
-    project += "_st_lib.dsp";
-	begin_project(dsw, pname.c_str(), project.c_str());
-  if (dll)
+  switch(runtime)
   {
-	  add_project_dependency(dsw, "CORE_magick");
-    if (dependency.length() > 0)
-	    add_project_dependency(dsw, dependency.c_str());
-    if (name.compare("label") == 0)
-    {
-		  add_project_dependency(dsw, "LIBR_ttf");
-      if (useX11Stubs)
-		    add_project_dependency(dsw, "CORE_xlib");
-    }
-    if (name.compare("miff") == 0)
-    {
-	    add_project_dependency(dsw, "LIBR_ZLIB");
-		  add_project_dependency(dsw, "LIBR_BZLIB");
-    }
-    if (name.compare("png") == 0)
-    {
-	    add_project_dependency(dsw, "LIBR_ZLIB");
-    }
-    if (name.compare("pdf") == 0)
-    {
-	    add_project_dependency(dsw, "IM_MOD_tiff");
-    }
-    if (name.compare("ps2") == 0)
-    {
-	    add_project_dependency(dsw, "IM_MOD_tiff");
-    }
-    if (name.compare("x") == 0)
-    {
-      if (useX11Stubs)
-		    add_project_dependency(dsw, "CORE_xlib");
-    }
-    if (name.compare("xwd") == 0)
-    {
-      if (useX11Stubs)
-		    add_project_dependency(dsw, "CORE_xlib");
-    }
+    case SINGLETHREADEDSTATIC:
+      project += "_st_lib.dsp";
+	    begin_project(dsw, pname.c_str(), project.c_str());
+		  dependency_list.push_back(pname.c_str());
+	    end_project(dsw);
+      break;
+    case MULTITHREADEDSTATIC:
+      project += "_xt_lib.dsp";
+	    begin_project(dsw, pname.c_str(), project.c_str());
+		  dependency_list.push_back(pname.c_str());
+	    end_project(dsw);
+      break;
+    case MULTITHREADEDSTATICDLL:
+      project += "_mtdll_lib.dsp";
+	    begin_project(dsw, pname.c_str(), project.c_str());
+		  dependency_list.push_back(pname.c_str());
+	    end_project(dsw);
+      break;
+    default:
+    case MULTITHREADEDDLL:
+      project += "_mt_dll.dsp";
+	    begin_project(dsw, pname.c_str(), project.c_str());
+      {
+	      add_project_dependency(dsw, "CORE_magick");
+        if (dependency.length() > 0)
+	        add_project_dependency(dsw, dependency.c_str());
+        if (name.compare("label") == 0)
+        {
+		      add_project_dependency(dsw, "LIBR_ttf");
+          if (useX11Stubs)
+		        add_project_dependency(dsw, "CORE_xlib");
+        }
+        if (name.compare("miff") == 0)
+        {
+	        add_project_dependency(dsw, "LIBR_ZLIB");
+		      add_project_dependency(dsw, "LIBR_BZLIB");
+        }
+        if (name.compare("png") == 0)
+        {
+	        add_project_dependency(dsw, "LIBR_ZLIB");
+        }
+        if (name.compare("pdf") == 0)
+        {
+	        add_project_dependency(dsw, "IM_MOD_tiff");
+        }
+        if (name.compare("ps2") == 0)
+        {
+	        add_project_dependency(dsw, "IM_MOD_tiff");
+        }
+        if (name.compare("x") == 0)
+        {
+          if (useX11Stubs)
+		        add_project_dependency(dsw, "CORE_xlib");
+        }
+        if (name.compare("xwd") == 0)
+        {
+          if (useX11Stubs)
+		        add_project_dependency(dsw, "CORE_xlib");
+        }
+      }
+	    end_project(dsw);
+      break;
   }
-  else
-  {
-		dependency_list.push_back(pname.c_str());
-  }
-	end_project(dsw);
 }
 
 void CConfigureApp::process_one_folder(ofstream &dsw,
@@ -538,8 +632,7 @@ void CConfigureApp::process_one_folder(ofstream &dsw,
       {
 	      do
 	      {
-          process_utility(dsw, data, subdata.cFileName,
-            projectType == MULTITHREADEDDLL);
+          process_utility(dsw, data, subdata.cFileName, projectType);
 	      } while (FindNextFile(subhandle, &subdata));
         FindClose(subhandle);
       }
@@ -552,8 +645,7 @@ void CConfigureApp::process_one_folder(ofstream &dsw,
       {
 	      do
 	      {
-          process_utility(dsw, data, subdata.cFileName,
-            projectType == MULTITHREADEDDLL);
+          process_utility(dsw, data, subdata.cFileName, projectType);
 	      } while (FindNextFile(subhandle, &subdata));
         FindClose(subhandle);
       }
@@ -561,17 +653,12 @@ void CConfigureApp::process_one_folder(ofstream &dsw,
     break;
   case LIBRARY:
 	  defines_list.push_back("_MAGICKLIB_");
-    if (projectType != MULTITHREADEDDLL)
-      project_type=STATICLIB;
-    process_library(dsw, data.cFileName, (project_type==LIBRARY),
-        projectType == MULTITHREADEDDLL);
+    process_library(dsw, data.cFileName, (projectType == MULTITHREADEDDLL),
+        projectType);
 	  defines_list.pop_back();
     break;
   case STATICLIB:
-    if (projectType != MULTITHREADEDDLL)
-      project_type=STATICLIB;
-    process_library(dsw, data.cFileName, (project_type==LIBRARY),
-        projectType == MULTITHREADEDDLL);
+    process_library(dsw, data.cFileName, false, projectType);
     break;
   case MODULE:
     {
@@ -584,8 +671,7 @@ void CConfigureApp::process_one_folder(ofstream &dsw,
       {
 	      do
 	      {
-          process_module(dsw, data, subdata.cFileName,
-            projectType == MULTITHREADEDDLL);
+          process_module(dsw, data, subdata.cFileName, projectType);
 	      } while (FindNextFile(subhandle, &subdata));
         FindClose(subhandle);
       }
@@ -598,8 +684,7 @@ void CConfigureApp::process_one_folder(ofstream &dsw,
       {
 	      do
 	      {
-          process_module(dsw, data, subdata.cFileName,
-            projectType == MULTITHREADEDDLL);
+          process_module(dsw, data, subdata.cFileName, projectType);
 	      } while (FindNextFile(subhandle, &subdata));
         FindClose(subhandle);
       }
@@ -607,14 +692,60 @@ void CConfigureApp::process_one_folder(ofstream &dsw,
     break;
   case THIRDPARTY:
 	  defines_list.push_back("_MAGICKLIB_");
-    process_3rd_party_library(dsw, data.cFileName, (projectType == MULTITHREADEDDLL),
-        projectType == MULTITHREADEDDLL);
+    process_3rd_party_library(dsw, data.cFileName, projectType);
 	  defines_list.pop_back();
     break;
   }
 }
 
-#define NEW_METHOD
+void CConfigureApp::process_project_type(ofstream &dsw,
+      int runtime, const char *stype, const int btype)
+{
+    int project_type = DISABLED;
+    HANDLE tophandle;
+    // Scan all top level directories and process the ones
+    // that we are allowed to.
+	  WIN32_FIND_DATA	topdata;
+	  tophandle = FindFirstFile("..\\*.", &topdata);
+	  do
+	  {
+	    if (tophandle == INVALID_HANDLE_VALUE)
+        break;
+		  if ((topdata.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) ==
+              FILE_ATTRIBUTE_DIRECTORY)
+      {
+        HANDLE handle;
+	      WIN32_FIND_DATA	data;
+
+        if (stricmp(topdata.cFileName,".") == 0)
+          continue;
+        if (stricmp(topdata.cFileName,"..") == 0)
+          continue;
+
+        std::string searchpath = "..\\";
+        searchpath += topdata.cFileName;
+        searchpath += "\\";
+        searchpath += stype;
+
+	      handle = FindFirstFile(searchpath.c_str(), &data);
+	      if (handle == INVALID_HANDLE_VALUE)
+          continue;
+        FindClose(handle);
+
+        searchpath = "..\\..\\";
+        searchpath += topdata.cFileName;
+
+	      handle = FindFirstFile(searchpath.c_str(), &data);
+	      if (handle == INVALID_HANDLE_VALUE)
+          continue;
+        FindClose(handle);
+		    if ((data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) ==
+                FILE_ATTRIBUTE_DIRECTORY)
+          process_one_folder(dsw, data, btype, runtime);
+      }
+	  } while (FindNextFile(tophandle, &topdata));
+    FindClose(tophandle);
+}
 
 BOOL CConfigureApp::InitInstance()
 {
@@ -661,6 +792,9 @@ BOOL CConfigureApp::InitInstance()
       case MULTITHREADEDSTATIC:
 	      theprojectname = "..\\VisualStaticMT.dsw";
         break;
+      case MULTITHREADEDSTATICDLL:
+	      theprojectname = "..\\VisualStaticMTDLL.dsw";
+        break;
       default:
       case MULTITHREADEDDLL:
 	      theprojectname = "..\\VisualDynamicMT.dsw";
@@ -690,109 +824,12 @@ BOOL CConfigureApp::InitInstance()
 		  defines_list.push_back("_LIB");
     }
 
-#ifdef NEW_METHOD
-    int project_type = DISABLED;
-    HANDLE tophandle;
-    // Scan all top level directories and process the ones
-    // that we are allowed to.
-	  WIN32_FIND_DATA	topdata;
-	  tophandle = FindFirstFile("..\\*.", &topdata);
-//->
-	  do
-	  {
-	    if (tophandle == INVALID_HANDLE_VALUE)
-        break;
-		  if ((topdata.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) ==
-              FILE_ATTRIBUTE_DIRECTORY)
-      {
-        HANDLE handle;
-	      WIN32_FIND_DATA	data;
+    process_project_type(dsw,projectType,"THIRDPARTY.txt",THIRDPARTY);
+    process_project_type(dsw,projectType,"LIBRARY.txt",   LIBRARY);
+    process_project_type(dsw,projectType,"STATICLIB.txt", STATICLIB);
+    process_project_type(dsw,projectType,"MODULE.txt",    MODULE);
+    process_project_type(dsw,projectType,"UTILITY.txt",   UTILITY);
 
-        if (stricmp(topdata.cFileName,".") == 0)
-          continue;
-        if (stricmp(topdata.cFileName,"..") == 0)
-          continue;
-
-        std::string searchpath = "..\\";
-        searchpath += topdata.cFileName;
-        searchpath += "\\*.txt";
-
-	      handle = FindFirstFile(searchpath.c_str(), &data);
-	      if (handle == INVALID_HANDLE_VALUE)
-          continue;
-        FindClose(handle);
-
-        project_type = DISABLED;
-        if (stricmp(data.cFileName,"UTILITY.txt") == 0)
-          project_type = UTILITY;
-        else if (stricmp(data.cFileName,"THIRDPARTY.txt") == 0)
-          project_type = THIRDPARTY;
-        else if (stricmp(data.cFileName,"LIBRARY.txt") == 0)
-          project_type = LIBRARY;
-        else if (stricmp(data.cFileName,"MODULE.txt") == 0)
-          project_type = MODULE;
-        else if (stricmp(data.cFileName,"STATICLIB.txt") == 0)
-          project_type = STATICLIB;
-
-        searchpath = "..\\..\\";
-        searchpath += topdata.cFileName;
-
-	      handle = FindFirstFile(searchpath.c_str(), &data);
-	      if (handle == INVALID_HANDLE_VALUE)
-          continue;
-        FindClose(handle);
-		    if ((data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) ==
-                FILE_ATTRIBUTE_DIRECTORY)
-          process_one_folder(dsw, data, project_type, projectType);
-      }
-	  } while (FindNextFile(tophandle, &topdata));
-//->
-    FindClose(tophandle);
-#else
-    const ConfigureInfo
-      valid_dirs[] = {
-      { "bzlib",        THIRDPARTY },
-      { "fpx",          THIRDPARTY },
-      { "hdf",          THIRDPARTY },
-      { "jbig",         THIRDPARTY },
-      { "jpeg",         THIRDPARTY },
-      { "magick",       LIBRARY    },
-      { "coders",       MODULE     },
-      { "digimarc",     MODULE     },
-      { "PerlMagick",   DISABLED   },
-      { "png",          THIRDPARTY },
-      { "tiff",         THIRDPARTY },
-      { "ttf",          THIRDPARTY },
-      { "xlib",         LIBRARY    },
-      { "zlib",         THIRDPARTY },
-      { "MagickArgs",   STATICLIB  },
-      { "Magick++",     STATICLIB  },
-      { "utilities",    UTILITY    },
-      { "tests",        UTILITY    },
-      { "Convert++",    UTILITY    },
-		  { NULL,           -1 }
-	  };
-
-    int project_type = DISABLED;
-    HANDLE handle;
-    // Scan all top level directories and process the ones
-    // that we are allowed to.
-	  WIN32_FIND_DATA	data;
-		for (int i=0; valid_dirs[i].name != NULL; i++)
-    {
-      std::string searchpath = "..\\..\\";
-      searchpath += valid_dirs[i].name;
-
-	    handle = FindFirstFile(searchpath.c_str(), &data);
-	    if (handle == INVALID_HANDLE_VALUE)
-        continue;
-      FindClose(handle);
-      project_type = valid_dirs[i].type;
-		  if ((data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) ==
-              FILE_ATTRIBUTE_DIRECTORY)
-        process_one_folder(dsw, data, project_type, projectType);
-    }
-#endif
 		write_dsw_end(dsw);
 	}
 /*	else if (nResponse == IDCANCEL)
@@ -864,7 +901,7 @@ void CConfigureApp::add_project_dependency(ofstream &dsw, const char *dep_name)
 
 void CConfigureApp::write_lib_dsp(
   bool dll,
-  bool mt,
+  int runtime,
 	std::string directory,
 	std::string search,
 	std::string dspname,
@@ -881,9 +918,43 @@ void CConfigureApp::write_lib_dsp(
 	filename += prefix.c_str();
 	filename += dspname.c_str();
   if (dll)
-    filename += "_mt_dll.dsp";
+  {
+    switch(runtime)
+    {
+      case SINGLETHREADEDSTATIC:
+	      filename += "_st_dll.dsp";  // should never happen
+        break;
+      case MULTITHREADEDSTATIC:
+	      filename += "_xt_dll.dsp";  // should never happen
+        break;
+      case MULTITHREADEDSTATICDLL:
+	      filename += "_mtdll_dll.dsp";  // should never happen
+        break;
+      default:
+      case MULTITHREADEDDLL:
+	      filename += "_mt_dll.dsp";
+        break;
+    }
+  }
   else
-    filename += "_st_lib.dsp";
+  {
+    switch(runtime)
+    {
+      case SINGLETHREADEDSTATIC:
+	      filename += "_st_lib.dsp";
+        break;
+      case MULTITHREADEDSTATIC:
+	      filename += "_xt_lib.dsp";
+        break;
+      case MULTITHREADEDSTATICDLL:
+	      filename += "_mtdll_lib.dsp";
+        break;
+      default:
+      case MULTITHREADEDDLL:
+	      filename += "_mt_lib.dsp";
+        break;
+    }
+  }
 
   CString outname;
 
@@ -946,8 +1017,20 @@ void CConfigureApp::write_lib_dsp(
   if (dll)
 	  dsp << "LIB32=link.exe -lib" << endl;
 	dsp << "# ADD CPP /nologo";
-  if (mt)
-    dsp << " /MD";
+  switch(runtime)
+  {
+    case SINGLETHREADEDSTATIC:
+      dsp << " /ML";
+      break;
+    case MULTITHREADEDSTATIC:
+      dsp << " /MT";
+      break;
+    default:
+    case MULTITHREADEDSTATICDLL:
+    case MULTITHREADEDDLL:
+      dsp << " /MD";
+      break;
+  }
   dsp << " /W3 /GX /O2";
   dsp << standard_include;
 	{
@@ -1046,8 +1129,20 @@ void CConfigureApp::write_lib_dsp(
   if (dll)
 	  dsp << "LIB32=link.exe -lib" << endl;
 	dsp << "# ADD CPP /nologo";
-  if (mt)
-    dsp << " /MDd";
+  switch(runtime)
+  {
+    case SINGLETHREADEDSTATIC:
+      dsp << " /MLd";
+      break;
+    case MULTITHREADEDSTATIC:
+      dsp << " /MTd";
+      break;
+    default:
+    case MULTITHREADEDSTATICDLL:
+    case MULTITHREADEDDLL:
+      dsp << " /MDd";
+      break;
+  }
   dsp << " /W3 /Gm /GX /Zi /Od";
   dsp << standard_include;
 	{
@@ -1122,7 +1217,7 @@ void CConfigureApp::write_lib_dsp(
     dsp << " /incremental:no /debug /machine:I386 ";
   }
   else
-	  dsp << " /nologo /debug /machine:I386 ";
+	  dsp << " /nologo /machine:I386 ";
   if (dll)
   {
     dsp << "/pdb:\"" << bin_loc << outname << "_.pdb\"";
@@ -1214,7 +1309,7 @@ void CConfigureApp::write_lib_dsp(
 }
 
 void CConfigureApp::write_exe_dsp(
-  bool mt,
+  int runtime,
 	std::string directory,
 	std::string search,
 	std::string dspname,
@@ -1230,10 +1325,22 @@ void CConfigureApp::write_exe_dsp(
   filename += "\\";
 	filename += prefix.c_str();
 	filename += dspname.c_str();
-  if (mt)
-	  filename += "_mt_exe.dsp";
-  else
-	  filename += "_st_exe.dsp";
+  switch(runtime)
+  {
+    case SINGLETHREADEDSTATIC:
+	    filename += "_st_exe.dsp";
+      break;
+    case MULTITHREADEDSTATIC:
+	    filename += "_xt_exe.dsp";
+      break;
+    case MULTITHREADEDSTATICDLL:
+	    filename += "_mtdll_exe.dsp";
+      break;
+    default:
+    case MULTITHREADEDDLL:
+	    filename += "_mt_exe.dsp";
+      break;
+  }
 
   CString outname;
 
@@ -1284,8 +1391,20 @@ void CConfigureApp::write_exe_dsp(
 	dsp << "# PROP Target_Dir \"\"" << endl;
 	dsp << "LIB32=link.exe -lib" << endl;
 	dsp << "# ADD CPP /nologo";
-  if (mt)
-    dsp << " /MD";
+  switch(runtime)
+  {
+    case SINGLETHREADEDSTATIC:
+      dsp << " /ML";
+      break;
+    case MULTITHREADEDSTATIC:
+      dsp << " /MT";
+      break;
+    default:
+    case MULTITHREADEDSTATICDLL:
+    case MULTITHREADEDDLL:
+      dsp << " /MD";
+      break;
+  }
   dsp << " /W3 /GX /O2";
   dsp << standard_include;
 	{
@@ -1363,8 +1482,20 @@ void CConfigureApp::write_exe_dsp(
 	dsp << "# PROP Target_Dir \"\"" << endl;
 	dsp << "LIB32=link.exe -lib" << endl;
 	dsp << "# ADD CPP /nologo";
-  if (mt)
-    dsp << " /MDd";
+  switch(runtime)
+  {
+    case SINGLETHREADEDSTATIC:
+      dsp << " /MLd";
+      break;
+    case MULTITHREADEDSTATIC:
+      dsp << " /MTd";
+      break;
+    default:
+    case MULTITHREADEDSTATICDLL:
+    case MULTITHREADEDDLL:
+      dsp << " /MDd";
+      break;
+  }
   dsp << " /W3 /Gm /GX /Zi /Od";
   dsp << standard_include;
 	{

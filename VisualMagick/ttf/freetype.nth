@@ -46,20 +46,9 @@
  * Under VISUALC we have single threaded static libraries, or
  * mutli-threaded DLLs using the multithreaded runtime DLLs.
  **/
-#	if defined(_MT) && defined(_DLL) && !defined(_TTFDLL_)
+#	if defined(_MT) && defined(_DLL) && !defined(_TTFDLL_) && !defined(_LIB)
 #		define _TTFDLL_
 #	endif
-
-#	if defined(_MT) && !defined(_TTFDLL_)
-#		error To use the truetype libraries from a multithreaded project, you must use the DLLs
-#		error Use the Mutlithreaded DLL runtime libraries (prefered), or define the macro "_TTFDLL_"
-#	endif
-
-#	if !defined(_MT) && defined(_TTFDLL_)
-#		error To use the truetype libraries from a single-threaded project, you must use static libraries
-#		error Undefine the macro "_TTFDLL_"
-#	endif
-
 #	if defined(_TTFDLL_)
 #		pragma warning( disable: 4273 )	/* Disable the stupid dll linkage warnings */
 #		if !defined(_TTFLIB_)

@@ -99,20 +99,24 @@ STYLE WS_CHILD | WS_DISABLED | WS_CAPTION
 CAPTION "Target Setup"
 FONT 8, "MS Sans Serif"
 BEGIN
-    GROUPBOX        "Build type setup:",IDC_STATIC,7,7,304,65
-    CONTROL         "Multi-threaded DLL",IDC_PROJECT_TYPE,"Button",
-                    BS_AUTORADIOBUTTON | WS_GROUP,15,22,76,10
-    CONTROL         "Single-threaded static",IDC_PROJECT_TYPE1,"Button",
-                    BS_AUTORADIOBUTTON,15,37,84,10
-    CONTROL         "Multi-threaded static",IDC_PROJECT_TYPE2,"Button",
-                    BS_AUTORADIOBUTTON | WS_DISABLED,15,52,79,10
-    CONTROL         "Use X11 stubs to eliminate use of X Window",
+    GROUPBOX        "Build type setup:",IDC_STATIC,7,7,304,107
+    CONTROL         "Dynamic Multi-threaded DLL runtimes",IDC_PROJECT_TYPE,
+                    "Button",BS_AUTORADIOBUTTON | WS_GROUP,15,33,133,10
+    CONTROL         "Static Single-threaded runtimes",IDC_PROJECT_TYPE1,
+                    "Button",BS_AUTORADIOBUTTON,15,64,113,10
+    CONTROL         "Static Multi-threaded runtimes",IDC_PROJECT_TYPE2,
+                    "Button",BS_AUTORADIOBUTTON,15,79,109,10
+    CONTROL         "Use X11 stubs to prevent use of X Window",
                     IDC_USE_X11_STUBS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
-                    144,22,155,10
+                    153,33,152,10
     CONTROL         "Decorate exe files with build options",
                     IDC_DECORATE_FILES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
-                    15,91,129,10
-    GROUPBOX        "Build options",IDC_STATIC,7,78,304,32
+                    15,135,129,10
+    GROUPBOX        "Build options",IDC_STATIC,7,122,304,32
+    CONTROL         "Static Multi-threaded DLL runtimes",IDC_PROJECT_TYPE3,
+                    "Button",BS_AUTORADIOBUTTON,15,95,124,10
+    LTEXT           "Static Builds",IDC_STATIC,13,50,40,8
+    LTEXT           "Dynamic (DLL) Builds",IDC_STATIC,13,19,68,8
 END
 
 IDD_SYSTEM_PAGE DIALOG DISCARDABLE  0, 0, 318, 233
@@ -210,8 +214,8 @@ IDB_LOGO1               BITMAP  DISCARDABLE     "res\\magick.bmp"
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,0,0,1
- PRODUCTVERSION 1,0,0,1
+ FILEVERSION 1,0,0,2
+ PRODUCTVERSION 1,0,0,2
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -229,14 +233,14 @@ BEGIN
             VALUE "Comments", "This program is part of the ImageMagick imaging tookit.\0"
             VALUE "CompanyName", "ImageMagick Development Group\0"
             VALUE "FileDescription", "ImageMagick Win32 Configure Application\0"
-            VALUE "FileVersion", "1, 0, 0, 1\0"
+            VALUE "FileVersion", "1, 0, 0, 2\0"
             VALUE "InternalName", "Configure\0"
             VALUE "LegalCopyright", "This program is LGPL\0"
             VALUE "LegalTrademarks", "\0"
             VALUE "OriginalFilename", "Configure.EXE\0"
             VALUE "PrivateBuild", "\0"
             VALUE "ProductName", "Win32 Configure Application\0"
-            VALUE "ProductVersion", "1, 0, 0, 1\0"
+            VALUE "ProductVersion", "1, 0, 0, 2\0"
             VALUE "SpecialBuild", "\0"
         END
     END

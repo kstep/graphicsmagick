@@ -233,20 +233,9 @@ struct jbg_dec_state {
  * Under VISUALC we have single threaded static libraries, or
  * mutli-threaded DLLs using the multithreaded runtime DLLs.
  **/
-#	if defined(_MT) && defined(_DLL) && !defined(_JBIGDLL_)
+#	if defined(_MT) && defined(_DLL) && !defined(_JBIGDLL_) && !defined(_LIB)
 #		define _JBIGDLL_
 #	endif
-
-#	if defined(_MT) && !defined(_JBIGDLL_)
-#		error To use the jbig libraries from a multithreaded project, you must use the DLLs
-#		error Use the Mutlithreaded DLL runtime libraries (prefered), or define the macro "_JBIGDLL_"
-#	endif
-
-#	if !defined(_MT) && defined(_JBIGDLL_)
-#		error To use the jbig libraries from a single-threaded project, you must use static libraries
-#		error Undefine the macro "_JBIGDLL_"
-#	endif
-
 #	if defined(_JBIGDLL_)
 #		pragma warning( disable: 4273 )	/* Disable the stupid dll linkage warnings */
 #		if !defined(_JBIGLIB_)

@@ -43,12 +43,15 @@ public:
 private:
 	void write_dsw_start(ofstream &dsw);
 	void write_dsw_end(ofstream &dsw);
-	void begin_project(ofstream &dsw, const char *name, const char *filename);
+	void begin_project(ofstream &dsw,
+          const char *name, const char *filename);
 	void end_project(ofstream &dsw);
 	void add_project_dependency(ofstream &dsw, const char *dep_name);
+  void process_project_type(ofstream &dsw, const int runtime,
+          const char *stype, const int btype);
 	void write_lib_dsp(
     bool dll,
-    bool mt,
+    int runtime,
 		std::string directory,
 		std::string name,
 		std::string libname,
@@ -59,7 +62,7 @@ private:
 		std::list<std::string> &defines_list,
 		std::list<std::string> &includes_list);
 	void write_exe_dsp(
-    bool mt,
+    int runtime,
 		std::string directory,
 		std::string name,
 		std::string libname,
@@ -74,13 +77,13 @@ private:
 	void add_file(ofstream &dsp, const char *filename);
 	void generate_dir(ofstream &dsp, const char *dir, const char *specS);
   void process_utility(ofstream &dsw,
-          WIN32_FIND_DATA	&data, const char *filename, bool mt);
+          WIN32_FIND_DATA	&data, const char *filename, int runtime);
   void process_library(ofstream &dsw, const char *filename,
-          bool dll, bool mt);
+          bool dll, int runtime);
   void process_3rd_party_library(ofstream &dsw, const char *filename,
-          bool dll, bool mt);
+          int runtime);
   void process_module(ofstream &dsw,
-          WIN32_FIND_DATA	&data, const char *filename, bool dll);
+          WIN32_FIND_DATA	&data, const char *filename, int runtime);
   void process_one_folder(ofstream &dsw,
           WIN32_FIND_DATA	&data, int project_type, int projectType);
 };
