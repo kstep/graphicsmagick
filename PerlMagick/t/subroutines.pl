@@ -117,15 +117,19 @@ sub testReadCompare {
     }
 
   # FIXME: The following statement should not be needed.
-  $status=$refimage->Set(type=>'TrueColor');
-
-  $srcimage->Compare($refimage);
-#  $status=$image->Compare($refimage);
+#  $status=$refimage->Set(type=>'TrueColor');
 #  if ("$status")
 #    {
-#      $errorinfo = "Compare($refimage_name): $status";
+#      $errorinfo = "Set(type=>'TrueColor'): $status";
 #      goto COMPARE_RUNTIME_ERROR;
 #    }
+
+  $status=$srcimage->Compare($refimage);
+  if ("$status")
+    {
+      $errorinfo = "Compare($refimage_name): $status";
+      goto COMPARE_RUNTIME_ERROR;
+    }
 
   $mean_error_per_pixel=0;
   $mean_error_per_pixel=$srcimage->GetAttribute('error');
@@ -374,15 +378,19 @@ sub testReadWriteCompare {
   #
 
   # FIXME: The following statement should not be needed.
-  $status=$refimage->Set(type=>'TrueColor');
-
-  $image->Compare($refimage);
-#  $status=$image->Compare($refimage);
+#  $status=$refimage->Set(type=>'TrueColor');
 #  if ("$status")
 #    {
-#      $errorinfo = "Compare($refimage_name): $status";
+#      $errorinfo = "Set(type=>'TrueColor'): $status";
 #      goto COMPARE_RUNTIME_ERROR;
 #    }
+
+  $status=$image->Compare($refimage);
+  if ("$status")
+    {
+      $errorinfo = "Compare($refimage_name): $status";
+      goto COMPARE_RUNTIME_ERROR;
+    }
 
   $mean_error_per_pixel=0;
   $mean_error_per_pixel=$image->GetAttribute('error');
@@ -859,15 +867,19 @@ sub testFilterCompare {
     }
 
   # FIXME: The following statement should not be needed.
-  $status=$refimage->Set(type=>'TrueColor');
-
-  $srcimage->Compare($refimage);
-#  $status=$image->Compare($refimage);
+#  $status=$refimage->Set(type=>'TrueColor');
 #  if ("$status")
 #    {
-#      $errorinfo = "Compare($refimage_name): $status";
+#      $errorinfo = "Set(type=>'TrueColor'): $status";
 #      goto COMPARE_RUNTIME_ERROR;
 #    }
+
+  $status=$srcimage->Compare($refimage);
+  if ("$status")
+    {
+      $errorinfo = "Compare($refimage_name): $status";
+      goto COMPARE_RUNTIME_ERROR;
+    }
 
   $mean_error_per_pixel=0;
   $mean_error_per_pixel=$srcimage->GetAttribute('error');
