@@ -1157,13 +1157,13 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
   }
   if (draw_info->encoding != (char *) NULL)
     {
-      if (LocaleCompare(draw_info->encoding,"Adobe Custom") == 0)
+      if (LocaleCompare(draw_info->encoding,"AdobeCustom") == 0)
         FT_Select_Charmap(face,ft_encoding_adobe_custom);
-      if (LocaleCompare(draw_info->encoding,"Adobe Expert") == 0)
+      if (LocaleCompare(draw_info->encoding,"AdobeExpert") == 0)
         FT_Select_Charmap(face,ft_encoding_adobe_expert);
-      if (LocaleCompare(draw_info->encoding,"Adobe Standard") == 0)
+      if (LocaleCompare(draw_info->encoding,"AdobeStandard") == 0)
         FT_Select_Charmap(face,ft_encoding_adobe_standard);
-      if (LocaleCompare(draw_info->encoding,"Apple Roman") == 0)
+      if (LocaleCompare(draw_info->encoding,"AppleRoman") == 0)
         FT_Select_Charmap(face,ft_encoding_apple_roman);
       if (LocaleCompare(draw_info->encoding,"BIG5") == 0)
         FT_Select_Charmap(face,ft_encoding_big5);

@@ -852,8 +852,9 @@ static unsigned int HorizontalFilter(const Image *source,Image *destination,
       }
       if (indexes != (IndexPacket *) NULL)
         {
+          i=Min(Max((long) (center+0.5),start),stop-1);
           j=y*(contribution[n-1].pixel-contribution[0].pixel+1)+
-            (contribution[n/2].pixel-contribution[0].pixel);
+            (contribution[i].pixel-contribution[0].pixel);
           indexes[y]=(GetIndexes(source))[j];
         }
       q->red=(Quantum) ((red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red+0.5);
@@ -977,7 +978,8 @@ static unsigned int VerticalFilter(const Image *source,Image *destination,
       }
       if (indexes != (IndexPacket *) NULL)
         {
-          j=(long) (contribution[n/2].pixel-contribution[0].pixel)*
+          i=Min(Max((long) (center+0.5),start),stop-1);
+          j=(long) (contribution[i].pixel-contribution[0].pixel)*
             source->columns+x;
           indexes[x]=(GetIndexes(source))[j];
         }

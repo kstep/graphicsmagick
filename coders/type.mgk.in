@@ -12,5 +12,5 @@
   <type format="type1" metrics="@prefix@/share/ghostscript/fonts/n022004l.afm" glyphs="@prefix@/share/ghostscript/fonts/n022004l.pfb" name="Courier-Bold" fullname="Courier Bold" familyname="Courier" weight="Bold" version="0.1"/>
   <type format="type1" metrics="@prefix@/share/ghostscript/fonts/n022023l.afm" glyphs="@prefix@/share/ghostscript/fonts/n022023l.pfb" name="Courier-Oblique" fullname="Courier Regular Oblique" familyname="Courier" weight="Regular" version="0.1"/>
   <type format="type1" metrics="@prefix@/share/ghostscript/fonts/n022024l.afm" glyphs="@prefix@/share/ghostscript/fonts/n022024l.pfb" name="Courier-BoldOblique" fullname="Courier Bold Oblique" familyname="Courier" weight="Bold" version="0.1"/>
-  <type format="type1" metrics="@prefix@/share/ghostscript/fonts/s050000l.afm" glyphs="@prefix@/share/ghostscript/fonts/s050000l.pfb" name="Symbol" fullname="Symbol" familyname="Symbol" weight="Regular" version="0.1" encoding="Adobe Custom"/>
+  <type format="type1" metrics="@prefix@/share/ghostscript/fonts/s050000l.afm" glyphs="@prefix@/share/ghostscript/fonts/s050000l.pfb" name="Symbol" fullname="Symbol" familyname="Symbol" weight="Regular" version="0.1" encoding="AdobeCustom"/>
 </typemap>

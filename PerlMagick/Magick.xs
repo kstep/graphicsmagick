@@ -3188,7 +3188,7 @@ Get(ref,...)
           if (LocaleCompare(attribute,"icm") == 0)
             {
               if (image)
-                s=newSVpv(image->color_profile,0);
+                s=newSVpv((void *) image->color_profile,0);
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
             }
@@ -3229,7 +3229,7 @@ Get(ref,...)
           if (LocaleCompare(attribute,"iptc") == 0)
             {
               if (image)
-                s=newSVpv(image->iptc_profile,0);
+                s=newSVpv((void *) image->iptc_profile,0);
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
             }
