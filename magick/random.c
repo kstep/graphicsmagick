@@ -53,6 +53,7 @@
   Include declarations.
 */
 #include "studio.h"
+#include "random.h"
 #include "signature.h"
 #include "utility.h"
 
@@ -67,6 +68,12 @@ static SignatureInfo
 
 static unsigned long
   *roulette = (unsigned long *) NULL;
+
+/*
+  Forward declarations.
+*/
+static void
+  InitializeRandomReservoir(void);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -109,8 +116,8 @@ MagickExport void DestroyRandomReservoir(void)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DistillRandomEvent() distills randomness from an event and stores in
-%  in the reservoir.  This method must be called before GetRandomKey()
+%  DistillRandomEvent() distills randomness from an event and stores it
+%  in the reservoir.  This method should be called before GetRandomKey()
 %  and it should be called a number of times using different random events
 %  (e.g. thread completion time, fine grained time-of-day clock in a
 %  tight loop, keystroke timing, etc.) to build up sufficient randomness
@@ -137,11 +144,16 @@ MagickExport void DistillRandomEvent(const unsigned char *event,
     Distill a random event.
   */
   assert(event != (const unsigned char *) NULL);
-  AcquireSemaphoreInfo(&random_semaphore);
-  if (reservoir == (SignatureInfo *) NULL)
-    reservoir=(SignatureInfo *) AcquireMemory(sizeof(SignatureInfo));
-  if (roulette == (unsigned long *) NULL)
-    roulette=(unsigned long *) AcquireMemory(sizeof(unsigned long));
+  if ((reservoir == (SignatureInfo *) NULL) ||
+      (roulette == (unsigned long *) NULL))
+    {
+      AcquireSemaphoreInfo(&random_semaphore);
+      if (reservoir == (SignatureInfo *) NULL)
+        reservoir=(SignatureInfo *) AcquireMemory(sizeof(SignatureInfo));
+      if (roulette == (unsigned long *) NULL)
+        roulette=(unsigned long *) AcquireMemory(sizeof(unsigned long));
+      LiberateSemaphoreInfo(&random_semaphore);
+    }
   if ((reservoir == (SignatureInfo *) NULL) ||
       (roulette == (unsigned long *) NULL))
     MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
@@ -152,7 +164,6 @@ MagickExport void DistillRandomEvent(const unsigned char *event,
   UpdateSignature(&digest_info,event,length);
   FinalizeSignature(&digest_info);
   memcpy(reservoir->digest,digest_info.digest,sizeof(reservoir->digest));
-  LiberateSemaphoreInfo(&random_semaphore);
 }
 
 /*
@@ -191,52 +202,7 @@ MagickExport void GetRandomKey(unsigned char *key,const size_t length)
   assert(key != (unsigned char *) NULL);
   if ((roulette == (unsigned long *) NULL) ||
       (reservoir == (SignatureInfo *) NULL))
-    {
-      char
-        filename[MaxTextExtent];
-
-      int
-        file;
-
-      long
-        pid;
-
-      time_t
-        seconds;
-
-      /*
-        Initialize random reservoir.
-      */
-      (void) strcpy(filename,"magic");
-      (void) tmpnam(filename);
-      DistillRandomEvent((const unsigned char *) filename,MaxTextExtent);
-      seconds=time(0);
-      DistillRandomEvent((const unsigned char *) &seconds,sizeof(time_t));
-#if HAVE_FTIME
-      {
-        struct timeb
-          timer;
-
-        (void) ftime(&timer);
-        DistillRandomEvent((const unsigned char *) &timer.millitm,
-          sizeof(unsigned short));
-      }
-#endif
-      pid=getpid();
-      DistillRandomEvent((const unsigned char *) &pid,sizeof(long));
-      DistillRandomEvent((const unsigned char *) *roulette,
-        sizeof(unsigned long *));
-      file=open("/dev/random",O_RDONLY | O_BINARY,0777);
-      if (file != -1)
-        {
-          unsigned char
-            random[MaxTextExtent];
-
-          (void) read(file,random,MaxTextExtent);
-          (void) close(file);
-          DistillRandomEvent(random,MaxTextExtent);
-        }
-    }
+    InitializeRandomReservoir();
   n=length;
   while (n > 0)
   {
@@ -252,4 +218,69 @@ MagickExport void GetRandomKey(unsigned char *key,const size_t length)
     n-=sizeof(reservoir->digest);
     key+=sizeof(reservoir->digest);
   }
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   I n i t i a l i z e R a n d o m R e s e r v i o r                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  InitializeRandomReservoir() initializes the random reservoir with entropy.
+%
+%  The format of the InitializeRandomReservoir method is:
+%
+%      InitializeRandomReservoir(void)
+%
+%
+*/
+static void InitializeRandomReservoir(void)
+{
+  char
+    filename[MaxTextExtent];
+
+  int
+    file;
+
+  long
+    pid;
+
+  time_t
+    seconds;
+
+  unsigned char
+    random[MaxTextExtent];
+
+  /*
+    Initialize random reservoir.
+  */
+  (void) strcpy(filename,"magic");
+  (void) tmpnam(filename);
+  DistillRandomEvent((const unsigned char *) filename,MaxTextExtent);
+  seconds=time(0);
+  DistillRandomEvent((const unsigned char *) &seconds,sizeof(time_t));
+#if HAVE_FTIME
+  {
+    struct timeb
+      timer;
+
+    (void) ftime(&timer);
+    DistillRandomEvent((const unsigned char *) &timer.millitm,
+      sizeof(unsigned short));
+  }
+#endif
+  pid=getpid();
+  DistillRandomEvent((const unsigned char *) &pid,sizeof(long));
+  DistillRandomEvent((const unsigned char *) &roulette,sizeof(unsigned long *));
+  file=open("/dev/random",O_RDONLY | O_BINARY,0777);
+  if (file == -1)
+    return;
+  (void) read(file,random,MaxTextExtent);
+  (void) close(file);
+  DistillRandomEvent(random,MaxTextExtent);
 }
