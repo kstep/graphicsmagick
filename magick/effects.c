@@ -193,6 +193,9 @@ MagickExport Image *BlurImage(Image *image,const unsigned int order,
     v;
 
   assert(image != (Image *) NULL);
+  if ((order % 2) == 0)
+    ThrowImageException(ResourceLimitWarning,"Unable to blur image",
+      "kernel order must be an odd number");
   kernel=(double *) AllocateMemory(order*order*sizeof(double));
   if (kernel == (double *) NULL)
     ThrowImageException(ResourceLimitWarning,"Unable to blur image",
@@ -722,6 +725,9 @@ MagickExport Image *EdgeImage(Image *image,const unsigned int order,
     i;
 
   assert(image != (Image *) NULL);
+  if ((order % 2) == 0)
+    ThrowImageException(ResourceLimitWarning,"Unable to edge image",
+      "kernel order must be an odd number");
   kernel=(double *) AllocateMemory(order*order*sizeof(double));
   if (kernel == (double *) NULL)
     ThrowImageException(ResourceLimitWarning,"Unable to detect edges",
@@ -786,6 +792,9 @@ MagickExport Image *EmbossImage(Image *image,const unsigned int order,
     v;
 
   assert(image != (Image *) NULL);
+  if ((order % 2) == 0)
+    ThrowImageException(ResourceLimitWarning,"Unable to convolve image",
+      "kernel order must be an odd number");
   kernel=(double *) AllocateMemory(order*order*sizeof(double));
   if (kernel == (double *) NULL)
     ThrowImageException(ResourceLimitWarning,"Unable to emboss image",
@@ -2446,6 +2455,9 @@ MagickExport Image *SharpenImage(Image *image,const unsigned int order,
     v;
 
   assert(image != (Image *) NULL);
+  if ((order % 2) == 0)
+    ThrowImageException(ResourceLimitWarning,"Unable to sharpen image",
+      "kernel order must be an odd number");
   kernel=(double *) AllocateMemory(order*order*sizeof(double));
   if (kernel == (double *) NULL)
     ThrowImageException(ResourceLimitWarning,"Unable to sharpen image",

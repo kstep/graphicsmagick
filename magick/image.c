@@ -3063,7 +3063,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
     *draw_info;
 
   ExceptionInfo
-    error;
+    exception;
 
   Image
     *map_image,
@@ -3738,7 +3738,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
           Transform image colors to match this set of colors.
         */
         (void) strcpy(clone_info->filename,argv[++i]);
-        map_image=ReadImage(clone_info,&error);
+        map_image=ReadImage(clone_info,&exception);
         continue;
       }
     if (LocaleCompare("matte",option+1) == 0)
@@ -3945,7 +3945,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
           Add a ICC or IPTC profile to the image.
         */
         (void) strcpy(clone_info->filename,argv[++i]);
-        profile=ReadImage(clone_info,&error);
+        profile=ReadImage(clone_info,&exception);
         if (profile == (Image *) NULL)
           continue;
         if (LocaleCompare("icm",profile->magick) == 0)
@@ -4143,7 +4143,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
         (void) sscanf(argv[++i],"%lfx%lf",&cluster_threshold,
           &smoothing_threshold);
         (void) SegmentImage(*image,quantize_info.colorspace,clone_info->verbose,
-          (double) cluster_threshold,(double) smoothing_threshold);
+          cluster_threshold,smoothing_threshold);
         continue;
       }
     if (LocaleNCompare("shade",option+1,5) == 0)
@@ -4161,8 +4161,8 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
         azimuth=30.0;
         elevation=30.0;
         (void) sscanf(argv[++i],"%lfx%lf",&azimuth,&elevation);
-        shade_image=ShadeImage(*image,*option == '-',(double) azimuth,
-          (double) elevation,&(*image)->exception);
+        shade_image=ShadeImage(*image,*option == '-',azimuth,
+          elevation,&(*image)->exception);
         if (shade_image == (Image *) NULL)
           break;
         DestroyImage(*image);
@@ -4203,8 +4203,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
         x_shear=0.0;
         y_shear=0.0;
         (void) sscanf(argv[++i],"%lfx%lf",&x_shear,&y_shear);
-        shear_image=ShearImage(*image,(double) x_shear,(double) y_shear,
-          &(*image)->exception);
+        shear_image=ShearImage(*image,x_shear,y_shear,&(*image)->exception);
         if (shear_image == (Image *) NULL)
           break;
         DestroyImage(*image);
