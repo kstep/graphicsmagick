@@ -219,11 +219,11 @@ extern "C" {
 /*
   3D effects.
 */
-#define AccentuateModulate  ((double) ScaleCharToQuantum(80))
-#define HighlightModulate  ((double) ScaleCharToQuantum(125))
-#define ShadowModulate  ((double) ScaleCharToQuantum(135))
-#define DepthModulate  ((double) ScaleCharToQuantum(185))
-#define TroughModulate  ((double) ScaleCharToQuantum(110))
+#define AccentuateModulate  ScaleCharToQuantum(80)
+#define HighlightModulate  ScaleCharToQuantum(125)
+#define ShadowModulate  ScaleCharToQuantum(135)
+#define DepthModulate  ScaleCharToQuantum(185)
+#define TroughModulate  ScaleCharToQuantum(110)
 
 /*
   Define system symbols if not already defined.
