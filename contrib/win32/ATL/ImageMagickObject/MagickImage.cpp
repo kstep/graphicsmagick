@@ -557,8 +557,7 @@ STDMETHODIMP CMagickImage::Mogrify(SAFEARRAY **pArrayVar, VARIANT *pVar)
 
   EmptyArgs();
   AddArgs(L"-mogrify");
-  hr = E_INVALIDARG;
-  // hr = Perform(MogrifyImageCommand,pArrayVar,pVar);
+  hr = Perform(MogrifyImageCommand,pArrayVar,pVar);
 	if (FAILED(hr))
     {
       hr = MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,dwErrorBase+1003);
@@ -610,7 +609,7 @@ HRESULT CMagickImage::Perform(unsigned int (*func)(ImageInfo *image_info,
   HRESULT hr = E_INVALIDARG;
 
 #ifdef _DEBUG
-  // _DbgBreak();
+  _DbgBreak();
 #endif
 
 #ifdef DO_DEBUG
