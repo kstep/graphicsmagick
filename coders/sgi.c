@@ -143,17 +143,14 @@ static void SGIDecode(const unsigned int bytes_per_pixel,
     *p,
     *q;
 
+  p=max_packets;
+  q=pixels;
   if (bytes_per_pixel == 2)
     {
-      register unsigned short
-        *p,
-        *q;
-
-      p=(unsigned short *) max_packets;
-      q=(unsigned short *) pixels;
       for ( ; ;)
       {
-        pixel=(*p++);
+        pixel=(*p++) << 8;
+        pixel|=(*p++);
         count=pixel & 0x7f;
         if (count == 0)
           break;
@@ -161,22 +158,23 @@ static void SGIDecode(const unsigned int bytes_per_pixel,
           for ( ; count != 0; count--)
           {
             *q=(*p++);
-            q+=4;
+            *(q+1)=(*p++);
+            q+=8;
           }
         else
           {
-            pixel=(*p++);
+            pixel=(*p++) << 8;
+            pixel|=(*p++);
             for ( ; count != 0; count--)
             {
-              *q=pixel;
-              q+=4;
+              *q=pixel >> 8;
+              *(q+1)=pixel;
+              q+=8;
             }
           }
       }
       return;
     }
-  p=max_packets;
-  q=pixels;
   for ( ; ;)
   {
     pixel=(*p++);
@@ -326,13 +324,19 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
           {
             (void) ReadBlob(image,bytes_per_pixel*iris_header.columns,
               (char *) scanline);
-            for (x=0; x < (int) iris_header.columns; x+=bytes_per_pixel)
-            {
-              *p=scanline[x*bytes_per_pixel];
-              if (bytes_per_pixel == 2)
-                *(p+1)=scanline[x*bytes_per_pixel+1];
-              p+=4*bytes_per_pixel;
-            }
+            if (bytes_per_pixel == 2)
+              for (x=0; x < (int) iris_header.columns; x++)
+              {
+                *p=scanline[2*x];
+                *(p+1)=scanline[2*x+1];
+                p+=8;
+              }
+            else
+              for (x=0; x < (int) iris_header.columns; x++)
+              {
+                *p=scanline[x];
+                p+=4;
+              }
           }
         }
         FreeMemory((void **) &scanline);
@@ -379,8 +383,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
               data_order=1;
             offset=offsets[y+z*iris_header.rows];
           }
-        offset=512+
-          4*bytes_per_pixel*((iris_header.rows*iris_header.depth) << 1);
+        offset=512+4*bytes_per_pixel*2*(iris_header.rows*iris_header.depth);
         if (data_order == 1)
           {
             for (z=0; z < (int) iris_header.depth; z++)
@@ -441,23 +444,19 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
         */
         if (bytes_per_pixel == 2)
           {
-            register unsigned short
-              *p;
-
             for (y=0; y < (int) image->rows; y++)
             {
-              p=(unsigned short *) iris_pixels;
-              p+=((image->rows-1)-y)*(image->columns*4);
+              p=iris_pixels+((image->rows-1)-y)*(image->columns*8);
               q=SetImagePixels(image,0,y,image->columns,1);
               if (q == (PixelPacket *) NULL)
                 break;
               for (x=0; x < (int) image->columns; x++)
               {
-                q->red=UpScale(*p);
-                q->green=UpScale(*(p+1));
-                q->blue=UpScale(*(p+2));
-                q->opacity=UpScale(*(p+3));
-                p+=4;
+                q->red=UpScale((*(p+0) << 8)+(*(p+1)));
+                q->green=UpScale((*(p+2) << 8)+(*(p+3)));
+                q->blue=UpScale((*(p+4) << 8)+(*(p+5)));
+                q->opacity=UpScale((*(p+6) << 8)+(*(p+7)));
+                p+=8;
                 q++;
               }
               if (!SyncImagePixels(image))
@@ -470,8 +469,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
         else
           for (y=0; y < (int) image->rows; y++)
           {
-            p=iris_pixels;
-            p+=((image->rows-1)-y)*(image->columns*4);
+            p=iris_pixels+((image->rows-1)-y)*(image->columns*4);
             q=SetImagePixels(image,0,y,image->columns,1);
             if (q == (PixelPacket *) NULL)
               break;
@@ -504,21 +502,18 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
         */
         if (bytes_per_pixel == 2)
           {
-            register unsigned short
-              *p;
-
             for (y=0; y < (int) image->rows; y++)
             {
-              p=(unsigned short *) iris_pixels;
-              p+=((image->rows-1)-y)*(image->columns*4);
+              p=iris_pixels+((image->rows-1)-y)*(image->columns*8);
               q=SetImagePixels(image,0,y,image->columns,1);
               if (q == (PixelPacket *) NULL)
                 break;
               indexes=GetIndexes(image);
               for (x=0; x < (int) image->columns; x++)
               {
-                indexes[x]=(*p);
-                p+=4;
+                indexes[x]=(*p << 8);
+                indexes[x]|=(*(p+1));
+                p+=8;
                 q++;
               }
               if (!SyncImagePixels(image))
@@ -898,7 +893,7 @@ static unsigned int WriteSGIImage(const ImageInfo *image_info,Image *image)
             (runlength == (unsigned long *) NULL))
           ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
             image);
-        offset=512+4*((iris_header.rows*iris_header.depth) << 1);
+        offset=512+4*2*(iris_header.rows*iris_header.depth);
         number_packets=0;
         q=iris_pixels;
         for (y=0; y < (int) iris_header.rows; y++)
