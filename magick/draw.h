@@ -24,8 +24,8 @@ extern MagickExport int
 
 extern MagickExport void
   DrawAnnotation(DrawContext context,
-		 const double x, const double y,
-		 const unsigned char *text),
+    const double x, const double y,
+    const unsigned char *text),
   DrawArc(DrawContext context,
           const double sx, const double sy,
           const double ex, const double ey,

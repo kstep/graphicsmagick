@@ -767,7 +767,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                   image->colormap[i].blue=ScaleCharToQuantum(pixel);
                   p+=2;
                 }
-							else
+              else
                 for (i=0; i < (long) image->colors; i++)
                 {
                   pixel=(*p << 24) | (*(p+1) << 16) | (*(p+2) << 8) | *(p+3);

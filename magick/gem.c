@@ -886,7 +886,7 @@ MagickExport double Permutate(const long n,const long k)
 %
 %  A description of each parameter follows:
 %
-%    o quantum: ScaleCharToQuantum() returned the scaled value.
+%    o quantum: ScaleCharToQuantum() returns the scaled value.
 %
 %    o value: scale this unsigned long value.
 %
@@ -924,7 +924,7 @@ MagickExport unsigned long ScaleCharToQuantum(const unsigned long value)
 %
 %  A description of each parameter follows:
 %
-%    o quantum: ScaleIntToQuantum() returned the scaled value.
+%    o quantum: ScaleIntToQuantum() returns the scaled quantum value.
 %
 %    o value: scale this unsigned long value.
 %
@@ -963,7 +963,7 @@ MagickExport unsigned long ScaleIntToQuantum(const unsigned long value)
 %
 %  A description of each parameter follows:
 %
-%    o value: ScaleQuantumToChar() returned the scaled value.
+%    o value: ScaleQuantumToChar() returns the scaled quantum value.
 %
 %    o quantum: scale this unsigned long quantum value.
 %
@@ -1002,7 +1002,7 @@ MagickExport unsigned long ScaleQuantumToChar(const unsigned long quantum)
 %
 %  A description of each parameter follows:
 %
-%    o value: ScaleQuantumToInt() returned the scaled value.
+%    o value: ScaleQuantumToInt() returns the scaled valuequantum .
 %
 %    o quantum: scale this unsigned long value.
 %
@@ -1041,7 +1041,7 @@ MagickExport unsigned long ScaleQuantumToInt(const unsigned long quantum)
 %
 %  A description of each parameter follows:
 %
-%    o value: ScaleQuantumToShort() returned the scaled value.
+%    o value: ScaleQuantumToShort() returns the scaled value.
 %
 %    o quantum: scale this unsigned long value.
 %
@@ -1079,7 +1079,7 @@ MagickExport unsigned long ScaleQuantumToShort(const unsigned long quantum)
 %
 %  A description of each parameter follows:
 %
-%    o quantum: ScaleShortToQuantum() returned the scaled value.
+%    o quantum: ScaleShortToQuantum() returns the scaled value.
 %
 %    o value: scale this unsigned long value.
 %
@@ -1254,7 +1254,7 @@ MagickExport void TransformHWB(const Quantum red,const Quantum green,
 %    o scaled_width:  Specifies the final width of the upsampled pixel array.
 %
 %    o pixels:  An unsigned char containing the pixel data.  On output the
-%      upsampled pixels are returned here.
+%      upsampled pixels are returns here.
 %
 %
 */
