@@ -1856,7 +1856,7 @@ MagickExport void XColorBrowserWidget(Display *display,XWindows *windows,
         char
           **checklist;
 
-        int
+        unsigned long
           number_colors;
 
         status=XParseColor(display,windows->widget.map_info->colormap,

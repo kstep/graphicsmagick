@@ -4755,14 +4755,15 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
         LogMagickEvent(CoderEvent,"     Optimize=TRUE");
       else
         LogMagickEvent(CoderEvent,"     Optimize=FALSE");
-      LogMagickEvent(CoderEvent,  "     Image_info depth=%d",image_info->depth);
+      LogMagickEvent(CoderEvent,  "     Image_info depth=%ld",
+        image_info->depth);
       LogMagickEvent(CoderEvent,  "     Type=%d",image_info->type);
 
       scene=0;
       for(p=image; p != (Image *) NULL; p=p->next)
       {
-        LogMagickEvent(CoderEvent,  "     Scene=%d",scene++);
-        LogMagickEvent(CoderEvent,  "       Image depth=%d",p->depth);
+        LogMagickEvent(CoderEvent,  "     Scene=%ld",scene++);
+        LogMagickEvent(CoderEvent,  "       Image depth=%ld",p->depth);
         if (p->matte)
           LogMagickEvent(CoderEvent,"       Matte=True");
         if(p->storage_class == PseudoClass)

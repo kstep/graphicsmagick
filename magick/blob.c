@@ -803,7 +803,7 @@ MagickExport void *GetConfigureBlob(const char *filename,char *path,
         Search based on executable directory if directory is known.
       */
       (void) strncpy(prefix,SetClientPath((char *) NULL),MaxTextExtent-1);
-      ChopPathComponents(prefix,1,debug);
+      ChopPathComponents(prefix,1);
       FormatString(path,"%.1024s/lib/ImageMagick/%.1024s",prefix,filename);
 #else
       FormatString(path,"%.1024s%s%.1024s",SetClientPath((char *) NULL),
@@ -935,7 +935,7 @@ MagickExport void *GetModuleBlob(const char *filename,char *path,size_t *length,
         Search based on executable directory if directory is known.
       */
       (void) strncpy(prefix,SetClientPath((char *) NULL),MaxTextExtent-1);
-      ChopPathComponents(prefix,1,debug);
+      ChopPathComponents(prefix,1);
       FormatString(path,"%.1024s/lib/ImageMagick/modules/coders/%.1024s",
         prefix,filename);
 #else
@@ -1079,7 +1079,7 @@ MagickExport void *GetTypeBlob(const char *filename,char *path,
         Search based on executable directory if directory is known.
       */
       (void) strncpy(prefix,SetClientPath((char *) NULL),MaxTextExtent-1);
-      ChopPathComponents(prefix,1,debug);
+      ChopPathComponents(prefix,1);
       FormatString(path,"%.1024s/lib/ImageMagick/%.1024s",prefix,filename);
 #else
       FormatString(path,"%.1024s%s%.1024s",SetClientPath((char *) NULL),
