@@ -79,9 +79,9 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ReadURLImage reads a Scalable Vector Gaphics file and returns it.  It
-%  allocates the memory necessary for the new Image structure and returns a
-%  pointer to the new image.
+%  Method ReadURLImage retrieves an image via a URL, decodes the image, and
+%   returns it.  It allocates the memory necessary for the new Image structure
+%  and returns a pointer to the new image.
 %
 %  The format of the ReadURLImage method is:
 %
@@ -195,7 +195,7 @@ static Image *ReadURLImage(const ImageInfo *image_info,ExceptionInfo *exception)
 static Image *ReadURLImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   ThrowException(exception,MissingDelegateError,
-    "XML library is not available",image_info->filename);
+    "ImageMagick must be linked with XML library to support URLs",image_info->filename);
   return((Image *) NULL);
 }
 #endif
@@ -230,18 +230,21 @@ ModuleExport void RegisterURLImage(void)
 
   entry=SetMagickInfo("HTTP");
   entry->decoder=ReadURLImage;
-  entry->description=AcquireString("Uniform Resource Locator");
+  entry->description=AcquireString("Uniform Resource Locator (http://)");
   entry->module=AcquireString("URL");
+  entry->stealth=True;
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("FTP");
   entry->decoder=ReadURLImage;
-  entry->description=AcquireString("Uniform Resource Locator");
+  entry->description=AcquireString("Uniform Resource Locator (ftp://)");
   entry->module=AcquireString("URL");
+  entry->stealth=True;
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("FILE");
   entry->decoder=ReadURLImage;
-  entry->description=AcquireString("Uniform Resource Locator");
+  entry->description=AcquireString("Uniform Resource Locator (file://)");
   entry->module=AcquireString("URL");
+  entry->stealth=True;
   (void) RegisterMagickInfo(entry);
 }
 

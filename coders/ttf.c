@@ -250,7 +250,6 @@ static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 */
 ModuleExport void RegisterTTFImage(void)
 {
-#define TTFDescription  "TrueType font"
   char
     version[MaxTextExtent];
 
@@ -265,7 +264,7 @@ ModuleExport void RegisterTTFImage(void)
   entry->decoder=ReadTTFImage;
   entry->magick=IsTTF;
   entry->adjoin=False;
-  entry->description=AcquireString(TTFDescription);
+  entry->description=AcquireString("TrueType font");
   if (*version != '\0')
     entry->version=AcquireString(version);
   entry->module=AcquireString("TTF");
@@ -274,7 +273,7 @@ ModuleExport void RegisterTTFImage(void)
   entry->decoder=ReadTTFImage;
   entry->magick=IsPFA;
   entry->adjoin=False;
-  entry->description=AcquireString(TTFDescription);
+  entry->description=AcquireString("Postscript Type 1 font (ASCII)");
   if (*version != '\0')
     entry->version=AcquireString(version);
   entry->module=AcquireString("TTF");
@@ -283,7 +282,7 @@ ModuleExport void RegisterTTFImage(void)
   entry->decoder=ReadTTFImage;
   entry->magick=IsPFA;
   entry->adjoin=False;
-  entry->description=AcquireString(TTFDescription);
+  entry->description=AcquireString("Postscript Type 1 font (binary)");
   if (*version != '\0')
     entry->version=AcquireString(version);
   entry->module=AcquireString("TTF");

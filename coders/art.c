@@ -225,7 +225,7 @@ ModuleExport void RegisterARTImage(void)
 
   entry=SetMagickInfo("ART");
   entry->decoder=ReadARTImage;
-  entry->description=AcquireString("PF1: 1st Publisher");
+  entry->description=AcquireString("PFS: 1st Publisher");
   entry->module=AcquireString("ART");
   (void) RegisterMagickInfo(entry);
 }
