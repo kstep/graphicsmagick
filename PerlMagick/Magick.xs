@@ -4458,9 +4458,9 @@ Mogrify(ref,...)
               if (!attribute_flag[3])
                 argument_list[3].double_reference=1.5;
             }
-          (void) SegmentImage(image,argument_list[0].int_reference,
-            argument_list[1].int_reference,argument_list[2].double_reference,
-            argument_list[3].double_reference);
+          (void) SegmentImage(image,(ColorspaceType)
+            argument_list[0].int_reference,argument_list[1].int_reference,
+            argument_list[2].double_reference,argument_list[3].double_reference);
           SyncImage(image);
           break;
         }
@@ -4550,7 +4550,7 @@ Mogrify(ref,...)
         {
           if (!attribute_flag[0])
             argument_list[0].int_reference=0;
-          LayerImage(image,argument_list[0].int_reference);
+          LayerImage(image,(LayerType) argument_list[0].int_reference);
           break;
         }
         case 62:  /* Condense */
