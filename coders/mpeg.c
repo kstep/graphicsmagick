@@ -369,7 +369,7 @@ static unsigned int WriteMPEGParameterFiles(const ImageInfo *image_info,
   if (file == (FILE *) NULL)
     return(False);
   (void) fprintf(file,"MPEG\n");  /* comment */
-  (void) fprintf(file,"%.1024s.%%lu\n",image->filename); /* source frame file */
+  (void) fprintf(file,"%.1024s.%%d\n",image->filename); /* source frame file */
   (void) fprintf(file,"-\n");  /* reconstructed frame file */
   if (image_info->quality == DefaultCompressionQuality)
     (void) fprintf(file,"-\n");  /* default intra quant matrix */
@@ -581,7 +581,7 @@ static unsigned int WriteMPEGImage(const ImageInfo *image_info,Image *image)
     for (i=0; i < (long) Max((p->delay+1)/3,1); i++)
     {
       p->scene=count++;
-      FormatString(p->filename,"%.1024s.%%lu.yuv",basename);
+      FormatString(p->filename,"%.1024s.%%d.yuv",basename);
       switch ((int) i)
       {
         case 0:
