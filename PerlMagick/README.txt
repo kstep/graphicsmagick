@@ -3,17 +3,17 @@ Introduction
     PerlMagick, is an objected-oriented Perl interface to ImageMagick.
     Use the module to read, manipulate, or write an image or image
     sequence from within a Perl script. This makes it suitable for Web
-    CGI scripts. You must have ImageMagick 5.2.4 above and Perl version
+    CGI scripts. You must have ImageMagick 5.3.9 above and Perl version
     5.002 or greater installed on your system.  Perl version 5.005_02
     or greater is required for PerlMagick to work under NT.
 
     See
 
-        http://www.simplesystems.org/ImageMagick/www/perl.html
+        http://www.imagemagick.org/ImageMagick/www/perl.html
 
     for additional information about PerlMagick.  See
 
-        http://www.simplesystems.org/ImageMagick/
+        http://www.imagemagick.org/ImageMagick/
 
     for instructions about installing ImageMagick.
 
@@ -22,8 +22,8 @@ Installation
 
     Get the PerlMagick distribution and type the following: 
 
-        gunzip PerlMagick-5.31.tar.gz
-        tar xvf PerlMagick-5.31.tar
+        gunzip PerlMagick-5.39.tar.gz
+        tar xvf PerlMagick-5.39.tar
         cd Magick
 
     Next, edit Makefile.PL and change LIBS and INC to include the
@@ -64,15 +64,16 @@ Installation
     See the ExtUtils::MakeMaker(3) manual page for more information on
     building PERL extensions (like PerlMagick).
 
-    Use nmake instead of make on an NT system.  For NT, you also need
-    to copy IMagick.dll and X11.dll from the NT ImageMagick (see
-    ftp://ftp.wizards.dupont.com/pub/ImageMagick/nt) distribution to a
-    path library such as c:\perl\lib.
+    For Windows systems, type
+
+        perl Makefile.nt
+        nmake install
 
     For Unix, you typically need to be root to install the software.
     There are ways around this.  Consult the Perl manual pages for more
     information. You are now ready to utilize the PerlMagick routines
     from within your Perl scripts.
+
 
 Testing PerlMagick
 
@@ -94,7 +95,7 @@ Example Perl Magick Script
 
     Here is an example script to get you started: 
 
-        #!/usr/local/bin/perl
+        #!/usr/bin/perl
         use Image::Magick;
 
         $q = Image::Magick->new;
@@ -109,4 +110,3 @@ Example Perl Magick Script
 
     The script reads three images, crops them, and writes a single
     image as a GIF animation sequence.
-
