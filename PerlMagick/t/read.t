@@ -104,12 +104,12 @@ testRead( 'NULL:DarkOrange',
 print("Portable bitmap format (black and white), ASCII format ...\n");
 ++$test;
 testRead( 'input_p1.pbm',
-  '2b48bcf7d93cc31a8deb3026d872f1bb0a300b0f4e177423e5301adc638179e4');
+  'dff1c15caf8bc7f460cfa14d4422e77a32569ae7510c881d9b7d907b0d4077dd');
 
 print("Portable bitmap format (black and white), binary format ...\n");
 ++$test;
 testRead( 'input_p4.pbm',
-  '2b48bcf7d93cc31a8deb3026d872f1bb0a300b0f4e177423e5301adc638179e4');
+  'dff1c15caf8bc7f460cfa14d4422e77a32569ae7510c881d9b7d907b0d4077dd');
 
 print("ZSoft IBM PC Paintbrush file ...\n");
 ++$test;
@@ -159,7 +159,7 @@ testRead( 'input.sgi',
 print("SUN 1-bit Rasterfile ...\n");
 ++$test;
 testRead( 'input.im1',
-  '86cf46ab9d620aa85eba722d777cc97e30df51916b2380df3cbc2685614d1222');
+  '615fa1d8bae486118b3733c1dba4e2a225fc1f4f8ff9441bcb7c3293753e4da1');
 
 print("SUN 8-bit Rasterfile ...\n");
 ++$test;
@@ -194,7 +194,7 @@ testRead( 'input.wbmp',
 print("X Windows system bitmap (black and white only) ...\n");
 ++$test;
 testRead( 'input.xbm',
-  '86cf46ab9d620aa85eba722d777cc97e30df51916b2380df3cbc2685614d1222');
+  '615fa1d8bae486118b3733c1dba4e2a225fc1f4f8ff9441bcb7c3293753e4da1');
 
 print("XC: Constant image of X server color ...\n");
 ++$test;
