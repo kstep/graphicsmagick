@@ -373,7 +373,7 @@ static void CompositeUsage(void)
       "-resize geometry    resize the image",
       "-rotate degrees     apply Paeth rotation to the image",
       "-scene value        image scene number",
-			"-sharpen geometry   sharpen the image",
+      "-sharpen geometry   sharpen the image",
       "-size geometry      width and height of image",
       "-stegano offset     hide watermark within an image",
       "-stereo             combine two image to create a stereo anaglyph",
@@ -506,10 +506,11 @@ unsigned int CompositeUtility(int argc,char **argv)
             if (exception.severity != UndefinedException)
               MagickWarning(exception.severity,exception.reason,
                 exception.description);
-            if (composite_image == (Image *) NULL)
-              continue;
-            status&=MogrifyImages(image_info,i-j,argv+j,&composite_image);
-            (void) CatchImageException(composite_image);
+            if (composite_image != (Image *) NULL)
+              {
+                status&=MogrifyImages(image_info,i-j,argv+j,&composite_image);
+                (void) CatchImageException(composite_image);
+              }
             j=i+1;
             continue;
           }
@@ -521,10 +522,11 @@ unsigned int CompositeUtility(int argc,char **argv)
             if (exception.severity != UndefinedException)
               MagickWarning(exception.severity,exception.reason,
                 exception.description);
-            if (image == (Image *) NULL)
-              continue;
-            status&=MogrifyImages(image_info,i-j,argv+j,&image);
-            (void) CatchImageException(image);
+            if (image != (Image *) NULL)
+              {
+                status&=MogrifyImages(image_info,i-j,argv+j,&image);
+                (void) CatchImageException(image);
+              }
             j=i+1;
             continue;
           }
@@ -536,10 +538,11 @@ unsigned int CompositeUtility(int argc,char **argv)
           MagickWarning(exception.severity,exception.reason,
             exception.description);
         status&=mask_image != (Image *) NULL;
-        if (mask_image == (Image *) NULL)
-          continue;
-        status&=MogrifyImages(image_info,i-j,argv+j,&mask_image);
-        (void) CatchImageException(mask_image);
+        if (mask_image != (Image *) NULL)
+          {
+            status&=MogrifyImages(image_info,i-j,argv+j,&mask_image);
+            (void) CatchImageException(mask_image);
+          }
         j=i+1;
       }
     else

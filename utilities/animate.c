@@ -972,20 +972,21 @@ int main(int argc,char **argv)
             MagickWarning(exception.severity,exception.reason,
               exception.description);
           status&=next_image != (Image *) NULL;
-          if (next_image == (Image *) NULL)
-            continue;
-          status&=MogrifyImages(image_info,i-j,argv+j,&next_image);
-          (void) CatchImageException(next_image);
-          if (image == (Image *) NULL)
-            image=next_image;
-          else
+          if (next_image != (Image *) NULL)
             {
-              /*
-                Link image into image list.
-              */
-              for (p=image; p->next != (Image *) NULL; p=p->next);
-              next_image->previous=p;
-              p->next=next_image;
+              status&=MogrifyImages(image_info,i-j,argv+j,&next_image);
+              (void) CatchImageException(next_image);
+              if (image == (Image *) NULL)
+                image=next_image;
+              else
+                {
+                  /*
+                    Link image into image list.
+                  */
+                  for (p=image; p->next != (Image *) NULL; p=p->next);
+                  next_image->previous=p;
+                  p->next=next_image;
+                }
             }
           j=i+1;
         }

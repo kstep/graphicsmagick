@@ -187,7 +187,6 @@ int main(int argc,char **argv)
     option=argv[i];
     if ((strlen(option) > 1) && ((*option == '-') || (*option == '+')))
       {
-
         if (LocaleCompare("debug",option+1) == 0)
           {
             image_info->debug=(*option == '-');
