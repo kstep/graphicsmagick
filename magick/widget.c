@@ -1825,7 +1825,7 @@ MagickExport void XColorBrowserWidget(Display *display,XWindows *windows,
         (void) XDrawString(display,windows->widget.id,
           windows->widget.annotate_context,x,y,ColorPatternText,
           Extent(ColorPatternText));
-        FormatString(text_info.text,"%.1024s",glob_pattern);
+        (void) strncpy(text_info.text,glob_pattern,MaxTextExtent-1);
         XDrawWidgetText(display,&windows->widget,&text_info);
         XDrawBeveledButton(display,&windows->widget,&grab_info);
         XDrawBeveledButton(display,&windows->widget,&reset_info);
@@ -1908,7 +1908,7 @@ MagickExport void XColorBrowserWidget(Display *display,XWindows *windows,
         */
         *reply_info.text='\0';
         reply_info.cursor=reply_info.text;
-        FormatString(text_info.text,"%.1024s",glob_pattern);
+        (void) strncpy(text_info.text,glob_pattern,MaxTextExtent-1);
         XDrawWidgetText(display,&windows->widget,&text_info);
         XDrawMatteText(display,&windows->widget,&reply_info);
         XDrawBeveledMatte(display,&windows->widget,&scroll_info);
@@ -5635,7 +5635,7 @@ MagickExport void XFontBrowserWidget(Display *display,XWindows *windows,
         (void) XDrawString(display,windows->widget.id,
           windows->widget.annotate_context,x,y,FontPatternText,
           Extent(FontPatternText));
-        FormatString(text_info.text,"%.1024s",glob_pattern);
+        (void) strncpy(text_info.text,glob_pattern,MaxTextExtent-1);
         XDrawWidgetText(display,&windows->widget,&text_info);
         XDrawBeveledButton(display,&windows->widget,&back_info);
         XDrawBeveledButton(display,&windows->widget,&reset_info);
@@ -5739,7 +5739,7 @@ MagickExport void XFontBrowserWidget(Display *display,XWindows *windows,
         */
         *reply_info.text='\0';
         reply_info.cursor=reply_info.text;
-        FormatString(text_info.text,"%.1024s",glob_pattern);
+        (void) strncpy(text_info.text,glob_pattern,MaxTextExtent-1);
         XDrawWidgetText(display,&windows->widget,&text_info);
         XDrawMatteText(display,&windows->widget,&reply_info);
         XDrawBeveledMatte(display,&windows->widget,&scroll_info);

@@ -718,7 +718,7 @@ static unsigned int WritePDBImage(const ImageInfo *image_info,Image *image)
   if ((bits_per_pixel != 1) && (bits_per_pixel != 2))
     bits_per_pixel=4;
   memset(pdb_info.name,0,32);
-  strncpy(pdb_info.name,image_info->filename,32);
+  (void) strncpy(pdb_info.name,image_info->filename,32);
   pdb_info.attributes=0;
   pdb_info.version=0;
   pdb_info.create_time=time(NULL);

@@ -330,7 +330,7 @@ static unsigned int ReadConfigureFile(const char *basename,
     GetToken(q,&q,token);
     if (*token == '\0')
       break;
-    (void) strncpy((keyword,token,MaxTextExtent-1);
+    (void) strncpy(keyword,token,MaxTextExtent-1);
     if (LocaleCompare(keyword,"<!") == 0)
       {
         /*
@@ -347,7 +347,7 @@ static unsigned int ReadConfigureFile(const char *basename,
         */
         while ((*token != '>') && (*q != '\0'))
         {
-          strncpy(keyword,token,MaxTextExtent-1);
+          (void) strncpy(keyword,token,MaxTextExtent-1);
           GetToken(q,&q,token);
           if (*token != '=')
             continue;
