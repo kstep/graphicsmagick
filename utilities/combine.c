@@ -345,13 +345,14 @@ int main(int argc,char **argv)
         {
           if (LocaleNCompare("cache",option+1,3) == 0)
             {
+              SetCacheThreshold(0);
               if (*option == '-')
                 {
                   i++;
                   if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
-                    MagickError(OptionError,"Missing unsharp",option);
+                    MagickError(OptionError,"Missing threshold",option);
+                  SetCacheThreshold(atoi(argv[i]));
                 }
-              SetCacheThreshold(atoi(argv[i]));
               break;
             }
           if (LocaleNCompare("colors",option+1,7) == 0)

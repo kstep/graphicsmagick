@@ -185,7 +185,7 @@ return any errors or warnings in this structure.
 <H2><A NAME="profileimage">ProfileImage</A></H2>
 <P>Method ProfileImage removes or adds a 
 <FONT SIZE=-1>ICM,</FONT> 
-<FONT SIZE=-1>IPTC,</FONT> or generic profile to an image.  If the profile name is specified it is deleted from the image.  If a filename is specified, one or more profiles are read and added to the image.</P>
+<FONT SIZE=-1>IPTC,</FONT> or generic profile to an image.  If the profile name is specified it is deleted from the image.  If a filename is specified, one or more profiles are read and added to the image.  If the profile name is ``*'' then all profiles are deleted from the image.</P>
 <P>The format of the ProfileImage method is:</P>
 <blockquote>unsigned int ProfileImage ( <A HREF="types/Image.html">Image</A> *image, const char *profile_name, const char *filename ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
