@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999
+// Copyright Bob Friesenhahn, 1999, 2000
 //
 // Simple demo program for Magick++
 //
@@ -61,15 +61,18 @@ int main( int /*argc*/, char ** argv)
 
     cout << "  annotate ..." << endl;
     example.label( "Annotate" );
+    example.density( "72x72" );
+    example.fontPointsize( 18 );
     example.font( "@Generic.ttf" );
     example.strokeColor( "gold" );
-    example.annotate( "Magick++", "+0+10", NorthGravity );
+    example.fillColor( "gold" );
+    example.annotate( "Magick++", "+0+20", NorthGravity );
     images.push_back( example );
 
     cout << "  blur ..." << endl;
     example = model;
     example.label( "Blur" );
-    example.blur( 3 );
+    example.blur( 0, 1.5 );
     images.push_back( example );
 
     cout << "  gaussian blur ..." << endl;
@@ -182,7 +185,7 @@ int main( int /*argc*/, char ** argv)
     cout << "  modulate ..." << endl;
     example = model;
     example.label( "Modulate" );
-    example.modulate( -3, -3, -3 );
+    example.modulate( 110, 110, 110 );
     images.push_back( example );
 
     cout << "  monochrome ..." << endl;
