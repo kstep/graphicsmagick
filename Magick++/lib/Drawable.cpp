@@ -18,7 +18,7 @@ using namespace std;
 
 
 std::ostream& Magick::operator<<( std::ostream& stream_,
-				  const Magick::Coordinate& coordinate_)
+				  const Magick::Coordinate &coordinate_)
 {
   stream_ << coordinate_._x << "," << coordinate_._y;
   return stream_;
@@ -33,69 +33,8 @@ std::ostream& Magick::operator<<( std::ostream& stream_,
 // Drawable Objects
 //
 
-// Point
-void Magick::Drawable::point ( Magick::Coordinate coordinate_ )
-{
-  char buffer[MaxTextExtent + 1];
-  ostrstream buffstr( buffer, sizeof(buffer));
-  buffstr << "point " << coordinate_ << ends;
-  _primitive.assign(buffer);
-}
-
-// Line
-void Magick::Drawable::line ( Magick::Coordinate startCoordinate_,
-			      Magick::Coordinate endCoordinate_ )
-{
-  char buffer[MaxTextExtent + 1];
-  ostrstream buffstr( buffer, sizeof(buffer));
-  buffstr << "line " << startCoordinate_ << " " << endCoordinate_ << ends;
-  _primitive.assign( buffer );
-}
-
-// Rectangle
-void Magick::Drawable::rectangle ( Magick::Coordinate upperLeftCoordinate_,
-				   Magick::Coordinate lowerRightCoordinate_ )
-{
-  char buffer[MaxTextExtent + 1];
-  ostrstream buffstr( buffer, sizeof(buffer));
-  buffstr << "rectangle " << upperLeftCoordinate_ << " "
-	  << lowerRightCoordinate_ << ends;
-  _primitive.assign( buffer );
-}
-
-// Filled Rectangle
-void Magick::Drawable::fillRectangle ( Magick::Coordinate upperLeftCoordinate_,
-				       Magick::Coordinate lowerRightCoordinate_ )
-{
-  char buffer[MaxTextExtent + 1];
-  ostrstream buffstr( buffer, sizeof(buffer));
-  buffstr << "fillRectangle " << upperLeftCoordinate_ << " "
-	  << lowerRightCoordinate_ << ends;
-  _primitive.assign( buffer );
-}
-
-// Circle
-void Magick::Drawable::circle ( Magick::Coordinate originCoordinate_,
-				Magick::Coordinate perimCoordinate_ )
-{
-  char buffer[MaxTextExtent + 1];
-  ostrstream buffstr( buffer, sizeof(buffer));
-  buffstr << "circle " << originCoordinate_ << " " << perimCoordinate_ << ends;
-  _primitive.assign( buffer );
-}
-
-// Filled Circle
-void Magick::Drawable::fillCircle ( Magick::Coordinate originCoordinate_,
-				    Magick::Coordinate perimCoordinate_ )
-{
-  char buffer[MaxTextExtent + 1];
-  ostrstream buffstr( buffer, sizeof(buffer));
-  buffstr << "fillCircle " << originCoordinate_ << " " << perimCoordinate_ << ends;
-  _primitive.assign( buffer );
-}
-
 // Ellipse
-void Magick::Drawable::ellipse( Magick::Coordinate originCoordinate_, 
+void Magick::Drawable::ellipse( const Magick::Coordinate &originCoordinate_, 
 				double width_, double height_,
 				double arcStart_, double arcEnd_ )
 {
@@ -109,7 +48,7 @@ void Magick::Drawable::ellipse( Magick::Coordinate originCoordinate_,
 }
 
 // Filled Ellipse
-void Magick::Drawable::fillEllipse( Magick::Coordinate originCoordinate_, 
+void Magick::Drawable::fillEllipse( const Magick::Coordinate &originCoordinate_, 
 				    double width_, double height_,
 				    double arcStart_, double arcEnd_ )
 {
@@ -122,46 +61,8 @@ void Magick::Drawable::fillEllipse( Magick::Coordinate originCoordinate_,
   _primitive.assign( buffer );
 }
 
-// Polygon (Coordinate list must contain at least three members)
-void Magick::Drawable::polygon ( const std::list<Magick::Coordinate> &coordinates_ )
-{
-  char buffer[MaxTextExtent + 1];
-  ostrstream buffstr( buffer, sizeof(buffer));
-  buffstr << "polygon";
-  list<Magick::Coordinate>::const_iterator p = coordinates_.begin();
-  while ( p != coordinates_.end() )
-    {
-      buffstr << " "
-	      << *p;
-      p++;
-    }
-  buffstr << ends;
-  _primitive.assign( buffer );
-}
-
-// Filled Polygon (Coordinate list must contain at least three members)
-void Magick::Drawable::fillPolygon ( const std::list<Magick::Coordinate> &coordinates_ )
-{
-  char buffer[MaxTextExtent + 1];
-  ostrstream buffstr( buffer, sizeof(buffer));
-
-  buffstr << "fillPolygon";
-
-  std::list<Magick::Coordinate>::const_iterator p = coordinates_.begin();
-
-  while ( p != coordinates_.end() )
-    {
-      buffstr << " "
-	      << *p;
-      p++;
-    }
-
-  buffstr << ends;
-  _primitive.assign( buffer );
-}
-
 // Colorize at point using PaintMethod
-void Magick::Drawable::color( Magick::Coordinate coordinate_,
+void Magick::Drawable::color( const Magick::Coordinate &coordinate_,
 			      Magick::PaintMethod paintMethod_ )
 {
   char buffer[MaxTextExtent + 1];
@@ -197,7 +98,7 @@ void Magick::Drawable::color( Magick::Coordinate coordinate_,
 }
 
 // Change pixel matte value to transparent using PaintMethod
-void Magick::Drawable::matte( Magick::Coordinate coordinate_,
+void Magick::Drawable::matte( const Magick::Coordinate &coordinate_,
 			      Magick::PaintMethod paintMethod_ )
 {
   char buffer[MaxTextExtent + 1];
@@ -233,7 +134,7 @@ void Magick::Drawable::matte( Magick::Coordinate coordinate_,
 }
 
 // Draw text at point
-void Magick::Drawable::text ( Magick::Coordinate coordinate_,
+void Magick::Drawable::text ( const Magick::Coordinate &coordinate_,
 			      std::string text_ )
 {
   char buffer[MaxTextExtent + 1];
@@ -252,7 +153,7 @@ void Magick::Drawable::text ( Magick::Coordinate coordinate_,
 }
 
 // Draw image at point
-void Magick::Drawable::image ( Magick::Coordinate coordinate_,
+void Magick::Drawable::image ( const Magick::Coordinate &coordinate_,
 			       const std::string &image_ )
 {
   char buffer[MaxTextExtent + 1];
@@ -265,5 +166,48 @@ void Magick::Drawable::image ( Magick::Coordinate coordinate_,
       buffstr << image_[i];
     }
   buffstr  << "\"" << ends;
+  _primitive.assign( buffer );
+}
+
+// Common implementation of methods which take one Coordinate argument
+void Magick::Drawable::one_arg_impl ( const char* command_,
+				      const Magick::Coordinate &coordinate_ )
+{
+  char buffer[MaxTextExtent + 1];
+  ostrstream buffstr( buffer, sizeof(buffer));
+  buffstr << command_ << " " << coordinate_ << ends;
+  _primitive.assign(buffer);
+}
+
+// Common implementation of methods which take two Coordinate arguments
+void Magick::Drawable::two_arg_impl ( const char* command_,
+				      const Magick::Coordinate &startCoordinate_,
+				      const Magick::Coordinate &endCoordinate_ )
+{
+  char buffer[MaxTextExtent + 1];
+  ostrstream buffstr( buffer, sizeof(buffer));
+  buffstr << command_ << " " << startCoordinate_ << " " << endCoordinate_ << ends;
+  _primitive.assign( buffer );
+}
+
+// Common implementation of methods which take a list argument
+void Magick::Drawable::list_arg_impl ( const char* command_,
+				       const std::list<Magick::Coordinate> &coordinates_ )
+{
+  char buffer[MaxTextExtent + 1];
+  ostrstream buffstr( buffer, sizeof(buffer));
+
+  buffstr << command_;
+
+  std::list<Magick::Coordinate>::const_iterator p = coordinates_.begin();
+
+  while ( p != coordinates_.end() )
+    {
+      buffstr << " "
+	      << *p;
+      p++;
+    }
+
+  buffstr << ends;
   _primitive.assign( buffer );
 }

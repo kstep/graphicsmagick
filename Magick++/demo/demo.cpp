@@ -66,7 +66,7 @@ int main( int /*argc*/, char ** /*argv*/)
     cout << "  blur ..." << endl;
     example = model;
     example.label( "Blur" );
-    example.blur( 60 );
+    example.blur( 3 );
     images.push_back( example );
 
     cout << "  gaussian blur ..." << endl;
@@ -252,7 +252,7 @@ int main( int /*argc*/, char ** /*argv*/)
     cout << "  sharpen ..." << endl;
     example = model;
     example.label("Sharpen");
-    example.sharpen( 60 );
+    example.sharpen( 3 );
     images.push_back( example );
 
     cout << "  shear ..." << endl;

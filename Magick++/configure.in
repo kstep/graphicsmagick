@@ -32,7 +32,6 @@ then
   AC_MSG_WARN("ImageMagick version is not expected version $TESTED_MAGICK_VERSION !!!")
 fi
 
-AC_CANONICAL_SYSTEM
 # Check to see if cache was generated on this OS version
 # AC_VALIDATE_CACHED_SYSTEM_TUPLE
 AM_INIT_AUTOMAKE(Magick++, $MAGICK_RELEASE, ' ')

@@ -103,13 +103,14 @@ namespace Magick
 			       GravityType gravity_ = NorthWestGravity);
     
     // Blur image with specified blur factor
-    void            blur ( double factor_ );
+    // The order_ parameter represents the order of the pixel neighborhood.
+    void            blur ( unsigned int order_ );
     
     // Border image (add border to image)
     void            border ( const Geometry &geometry_ = borderGeometryDefault );
     
     // Charcoal effect image (looks like charcoal sketch)
-    void            charcoal ( double factor_ = 50 );
+    void            charcoal ( unsigned int order_ = 3 );
     
     // Chop image (remove vertical or horizontal subregion of image)
     // FIXME: describe how geometry argument is used to select either horizontal or
@@ -158,10 +159,11 @@ namespace Magick
     void            draw ( const std::list<Magick::Drawable> &drawable_ );
     
     // Edge image (hilight edges in image)
-    void            edge ( double factor_ );
+    void            edge ( unsigned int order_ );
     
     // Emboss image (hilight edges with 3D effect)
     void            emboss ( void );
+    void            emboss ( unsigned int order_ );
     
     // Enhance image (minimize noise)
     void            enhance ( void );
@@ -322,6 +324,7 @@ namespace Magick
 
     // Reduce noise in image using a noise peak elimination filter
     void            reduceNoise ( void );
+    void            reduceNoise ( unsigned int order_ );
     
     // Roll image (rolls image vertically and horizontally) by specified
     // number of columnms and rows)
@@ -351,7 +354,7 @@ namespace Magick
 			    bool   colorShading_ = false );
     
     // Sharpen pixels in image
-    void            sharpen ( double factor_ );
+    void            sharpen ( unsigned int order_ );
     
     // Shear image (create parallelogram by sliding image by X or Y axis)
     void            shear ( double xShearAngle_,
@@ -809,6 +812,19 @@ inline Magick::Options * Magick::ImageRef::options ( void )
 //
 // Image
 //
+
+// Emboss image
+inline void Magick::Image::emboss ( void )
+{
+  // Value of three provides legacy embossing effect
+  emboss( 3 );
+}
+
+// Reduce noise in image using a noise peak elimination filter
+inline void Magick::Image::reduceNoise ( void )
+{
+  reduceNoise( 3 );
+}
 
 // Get MagickLib::Image*
 inline MagickLib::Image*& Magick::Image::image( void )

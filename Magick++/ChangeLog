@@ -1,3 +1,20 @@
+2000-03-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Magick++/STL.h (Magick): 
+
+2000-03-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Magick++/STL.h (blurImage,charcoalImage,edgeImage,embossImage,
+	reduceNoiseImage,sharpenImage): Modified to support order of the
+	pixel neighborhood. Backward compatable function objects constructors
+ 	are provided for embossImage, and reduceNoiseImage.
+
+	* lib/Image.cpp (blur,charcoal,edge,emboss,reduceNoise,sharpen):
+	Now accept unsigned int argument which represents the order of the
+	pixel neighborhood (e.g. 3).  This is not a backwards compatable
+	change, however, backward compatable methods are provided for emboss,
+	and reduceNoise.
+
 2000-03-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Magick++/Pixels.h (Pixels): Moved Image pixel methods to

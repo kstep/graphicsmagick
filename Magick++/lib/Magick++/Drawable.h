@@ -59,43 +59,43 @@ namespace Magick
     
     // Point
     void point ( double x_, double y_ );
-    void point ( Coordinate coordinate_ );
+    void point ( const Coordinate &coordinate_ );
     
     // Line
     void line ( double startX_, double startY_,
 		double endX_, double endY_ );
-    void line ( Coordinate startCoordinate_,
-		Coordinate endCoordinate_ );
+    void line ( const Coordinate &startCoordinate_,
+		const Coordinate &endCoordinate_ );
     
     // Rectangle
     void rectangle ( double upperLeftX_, double upperLeftY_,
 		     double lowerRightX_, double lowerRightY );
-    void rectangle ( Coordinate upperLeftCoordinate_,
-		     Coordinate lowerRightCoordinate_ );
+    void rectangle ( const Coordinate &upperLeftCoordinate_,
+		     const Coordinate &lowerRightCoordinate_ );
     
     // Filled Rectangle
     void fillRectangle ( double upperLeftX_, double upperLeftY_,
 			 double lowerRightX_, double lowerRightY );
-    void fillRectangle ( Coordinate upperLeftCoordinate_,
-			 Coordinate lowerRightCoordinate_ );
+    void fillRectangle ( const Coordinate &upperLeftCoordinate_,
+			 const Coordinate &lowerRightCoordinate_ );
     
     // Circle
     void circle ( double originX_, double originY_,
 		  double perimX_, double perimY_ );
-    void circle ( Coordinate originCoordinate_,
-		  Coordinate perimCoordinate_ );
+    void circle ( const Coordinate &originCoordinate_,
+		  const Coordinate &perimCoordinate_ );
     
     // Filled Circle
     void fillCircle ( double originX_, double originY_,
 		      double perimX_, double perimY_ );
-    void fillCircle ( Coordinate originCoordinate_,
-		      Coordinate perimCoordinate_ );
+    void fillCircle ( const Coordinate &originCoordinate_,
+		      const Coordinate &perimCoordinate_ );
     
     // Ellipse
     void ellipse ( double originX_, double originY_, 
 		   double width_, double height_,
 		   double arcStart_, double arcEnd_ );
-    void ellipse ( Coordinate originCoordinate_, 
+    void ellipse ( const Coordinate &originCoordinate_, 
 		   double width_, double height_,
 		   double arcStart_, double arcEnd_ );
     
@@ -103,7 +103,7 @@ namespace Magick
     void fillEllipse ( double originX_, double originY_, 
 		       double width_, double height_,
 		       double arcStart_, double arcEnd_ );
-    void fillEllipse ( Coordinate originCoordinate_, 
+    void fillEllipse ( const Coordinate &originCoordinate_, 
 		       double width_, double height_,
 		       double arcStart_, double arcEnd_ );
     
@@ -112,29 +112,32 @@ namespace Magick
     
     // Filled Polygon (vectors_ is number coordinates)
     void fillPolygon ( const std::list<Magick::Coordinate> &coordinates_ );
+
+    // Bezier curve (Coordinate list must contain at least three members)
+    void bezier ( const std::list<Magick::Coordinate> &coordinates_ );
     
     // Colorize at point using PaintMethod
     void color ( double x_, double y_,
 		 PaintMethod paintMethod_ );
-    void color ( Coordinate coordinate_,
+    void color ( const Coordinate &coordinate_,
 		 PaintMethod paintMethod_ );
     
     // Change pixel matte value to transparent using PaintMethod
     void matte ( double x_, double y_,
 		 PaintMethod paintMethod_ );
-    void matte ( Coordinate coordinate_,
+    void matte ( const Coordinate &coordinate_,
 		 PaintMethod paintMethod_ );
     
     // Draw text at point
     void text ( double x_, double y_,
 		std::string text_ );
-    void text ( Coordinate coordinate_,
+    void text ( const Coordinate &coordinate_,
 		std::string text_ );
     
     // Draw image at point
     void image ( double x_, double y_,
 		 const std::string &image_ );
-    void image ( Coordinate coordinate_,
+    void image ( const Coordinate &coordinate_,
 		 const std::string &image_ );
     
     //
@@ -144,6 +147,19 @@ namespace Magick
     std::string primitive ( void ) const;
     
   private:
+
+    // Common implementation of methods which take one Coordinate argument
+    void one_arg_impl ( const char* command_,
+			const Coordinate &coordinate_ );
+
+    // Common implementation of methods which take two Coordinate arguments
+    void two_arg_impl ( const char* command_,
+			const Coordinate &startCoordinate_,
+			const Coordinate &endCoordinate_ );
+
+    // Common implementation of methods which take a list of Coordinates
+    void list_arg_impl ( const char* command_,
+			 const std::list<Magick::Coordinate> &coordinates_ );
     
     // This is the string normally passed by -draw, e.g. "circle
     // +100+100 +200+200"
@@ -223,7 +239,12 @@ inline std::string Magick::Drawable::primitive ( void ) const
   return _primitive;
 }
 
+
 // Point
+inline void Magick::Drawable::point ( const Magick::Coordinate &coordinate_ )
+{
+  one_arg_impl( "point", coordinate_ );
+}
 inline void Magick::Drawable::point ( double x_,
 				      double y_ )
 {
@@ -231,6 +252,11 @@ inline void Magick::Drawable::point ( double x_,
 }
 
 // Line
+inline void Magick::Drawable::line ( const Magick::Coordinate &startCoordinate_,
+				     const Magick::Coordinate &endCoordinate_ )
+{
+  two_arg_impl( "line", startCoordinate_, endCoordinate_ );
+}
 inline void Magick::Drawable::line ( double startX_,
 				     double startY_,
 				     double endX_,
@@ -240,6 +266,11 @@ inline void Magick::Drawable::line ( double startX_,
 }
 
 // Rectangle
+inline void Magick::Drawable::rectangle ( const Magick::Coordinate &upperLeftCoordinate_,
+					  const Magick::Coordinate &lowerRightCoordinate_ )
+{
+  two_arg_impl( "rectangle", upperLeftCoordinate_, lowerRightCoordinate_ );
+}
 inline void Magick::Drawable::rectangle ( double upperLeftX_,
 					  double upperLeftY_,
 					  double lowerRightX_,
@@ -250,6 +281,11 @@ inline void Magick::Drawable::rectangle ( double upperLeftX_,
 }
 
 // Filled Rectangle
+inline void Magick::Drawable::fillRectangle ( const Magick::Coordinate &upperLeftCoordinate_,
+					      const Magick::Coordinate &lowerRightCoordinate_ )
+{
+  two_arg_impl( "fillRectangle", upperLeftCoordinate_, lowerRightCoordinate_ );
+}
 inline void Magick::Drawable::fillRectangle ( double upperLeftX_,
 					      double upperLeftY_,
 					      double lowerRightX_,
@@ -260,6 +296,11 @@ inline void Magick::Drawable::fillRectangle ( double upperLeftX_,
 }
 
 // Circle
+inline void Magick::Drawable::circle ( const Magick::Coordinate &originCoordinate_,
+				       const Magick::Coordinate &perimCoordinate_ )
+{
+  two_arg_impl( "circle", originCoordinate_, perimCoordinate_ );
+}
 inline void Magick::Drawable::circle ( double originX_,
 				       double originY_,
 				       double perimX_,
@@ -270,6 +311,11 @@ inline void Magick::Drawable::circle ( double originX_,
 }
 
 // Filled Circle
+inline void Magick::Drawable::fillCircle ( const Magick::Coordinate &originCoordinate_,
+					   const Magick::Coordinate &perimCoordinate_ )
+{
+  two_arg_impl( "fillCircle", originCoordinate_, perimCoordinate_ );
+}
 inline void Magick::Drawable::fillCircle ( double originX_,
 					   double originY_,
 					   double perimX_,
@@ -303,6 +349,24 @@ inline void Magick::Drawable::fillEllipse ( double originX_,
   fillEllipse( Coordinate( originX_, originY_ ),
 	       width_, height_,
 	       arcStart_, arcEnd_ );
+}
+
+// Polygon (Coordinate list must contain at least three members)
+inline void Magick::Drawable::polygon ( const std::list<Magick::Coordinate> &coordinates_ )
+{
+  list_arg_impl( "polygon", coordinates_ );
+}
+
+// Filled Polygon (Coordinate list must contain at least three members)
+inline void Magick::Drawable::fillPolygon ( const std::list<Magick::Coordinate> &coordinates_ )
+{
+  list_arg_impl( "fillPolygon", coordinates_ );
+}
+
+// Bezier curve (Coordinate list must contain at least three members)
+inline void Magick::Drawable::bezier ( const std::list<Magick::Coordinate> &coordinates_ )
+{
+  list_arg_impl( "bezier", coordinates_ );
 }
 
 // Colorize at point using PaintMethod

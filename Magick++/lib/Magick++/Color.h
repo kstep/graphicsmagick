@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999
+// Copyright Bob Friesenhahn, 1999, 2000
 //
 // Color Implementation
 //
@@ -321,6 +321,7 @@ inline Magick::Color::Color ( Quantum red_,
   alphaQuantum ( alpha_ );
 }
 
+// Construct from color expressed as C++ string
 inline Magick::Color::Color ( const std::string x11color_ )
   : _pixel(new MagickLib::PixelPacket),
     _pixelOwn(true),
@@ -333,18 +334,20 @@ inline Magick::Color::Color ( const std::string x11color_ )
   *this = x11color_;
 }
 
+// Construct from color expressed as C string
 inline Magick::Color::Color ( const char * x11color_ )
   : _pixel(new MagickLib::PixelPacket),
     _pixelOwn(true),
     _pixelType(RGBPixel),
     _valid(true)
 {
-    initPixel();
+  initPixel();
 
   // Use operator = implementation
   *this = x11color_;
 }
 
+// Default constructor
 inline Magick::Color::Color ( void )
   : _pixel(new MagickLib::PixelPacket),
     _pixelOwn(true),
@@ -354,6 +357,7 @@ inline Magick::Color::Color ( void )
   initPixel();
 }
 
+// Destructor
 inline Magick::Color::~Color( void )
 {
   if ( _pixelOwn )

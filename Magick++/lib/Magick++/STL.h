@@ -183,15 +183,15 @@ namespace Magick
   class blurImage : public std::unary_function<Image&,void>
   {
   public:
-    blurImage( double factor_ )
-      : _factor( factor_ ) { }
+    blurImage( unsigned int order_ )
+      : _order( order_ ) { }
 
     void operator()( Image &image_ )
       {
-	image_.blur( _factor );
+	image_.blur( _order );
       }
   private:
-    const double _factor;
+    const unsigned int _order;
   };
 
   // Border image (add border to image)
@@ -213,15 +213,15 @@ namespace Magick
   class charcoalImage : public std::unary_function<Image&,void>
   {
   public:
-    charcoalImage( double factor_ = 50  )
-      : _factor( factor_ ) { }
+    charcoalImage( unsigned int order_ = 3  )
+      : _order( order_ ) { }
 
     void operator()( Image &image_ )
       {
-	image_.charcoal( _factor );
+	image_.charcoal( _order );
       }
   private:
-    const double _factor;
+    const unsigned int _order;
   };
 
   // Chop image (remove vertical or horizontal subregion of image)
@@ -403,28 +403,32 @@ namespace Magick
   class edgeImage : public std::unary_function<Image&,void>
   {
   public:
-    edgeImage( double factor_ = 50  )
-      : _factor( factor_ ) { }
+    edgeImage( unsigned int order_ = 3  )
+      : _order( order_ ) { }
 
     void operator()( Image &image_ )
       {
-	image_.edge( _factor );
+	image_.edge( _order );
       }
   private:
-    const double _factor;
+    const unsigned int _order;
   };
 
   // Emboss image (hilight edges with 3D effect)
   class embossImage : public std::unary_function<Image&,void>
   {
   public:
-    embossImage( void ) { }
+    embossImage( void )
+      : _order(3) { }
+    embossImage( unsigned int order_ )
+      : _order(order_) { }
 
     void operator()( Image &image_ )
       {
-	image_.emboss( );
+	image_.emboss( _order );
       }
   private:
+    const unsigned int _order;
   };
 
   // Enhance image (minimize noise)
@@ -915,13 +919,17 @@ namespace Magick
   class reduceNoiseImage : public std::unary_function<Image&,void>
   {
   public:
-    reduceNoiseImage( void ) { }
+    reduceNoiseImage( void )
+      : _order(3) { }
+    reduceNoiseImage ( unsigned int order_ )
+      : _order(order_) { }
 
     void operator()( Image &image_ )
       {
-	image_.reduceNoise( );
+	image_.reduceNoise( _order );
       }
   private:
+    unsigned int _order;
   };
 
   // Roll image (rolls image vertically and horizontally) by specified
@@ -947,7 +955,6 @@ namespace Magick
   };
 
   // Rotate image counter-clockwise by specified number of degrees.
-  // Optionally crop image to original size and sharpen image.
   class rotateImage : public std::unary_function<Image&,void>
   {
   public:
@@ -1035,15 +1042,15 @@ namespace Magick
   class sharpenImage : public std::unary_function<Image&,void>
   {
   public:
-    sharpenImage( double factor_ )
-      : _factor( factor_ ) { }
+    sharpenImage( unsigned int order_ )
+      : _order( order_ ) { }
 
     void operator()( Image &image_ )
       {
-	image_.sharpen( _factor );
+	image_.sharpen( _order );
       }
   private:
-    const double _factor;
+    const unsigned int _order;
   };
 
   // Shear image (create parallelogram by sliding image by X or Y axis)

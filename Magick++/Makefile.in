@@ -59,12 +59,8 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 
 @SET_MAKE@
-build_alias = @build_alias@
-build_triplet = @build@
 host_alias = @host_alias@
 host_triplet = @host@
-target_alias = @target_alias@
-target_triplet = @target@
 AMDEP = @AMDEP@
 AMTAR = @AMTAR@
 AS = @AS@
@@ -101,7 +97,7 @@ install_sh = @install_sh@
 AUTOMAKE_OPTIONS = 1.2 dist-zip #readme-alpha
 
 # Additional files to distribute
-EXTRA_DIST = Magick++.dsw
+EXTRA_DIST = Magick++.dsw ltcf-c.sh ltcf-cxx.sh
 
 SUBDIRS = lib tests demo
 
@@ -299,7 +295,6 @@ distdir: $(DISTFILES)
 	    cp -pR $$d/$$file $(distdir); \
 	  else \
 	    test -f $(distdir)/$$file \
-	    || ln $$d/$$file $(distdir)/$$file 2> /dev/null \
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done

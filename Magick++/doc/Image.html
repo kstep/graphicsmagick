@@ -128,7 +128,7 @@ it to a file:
 <br><tt><font color="#000066">int main(int argc,char **argv)</font></tt>
 <br><tt><font color="#000066">{</font></tt>
 <br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; Image image( "100x100",
-"xc:white" );</font></tt>
+"white" );</font></tt>
 <br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; image.pixelColor( 49,
 49, "red" );</font></tt>
 <br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; image.write( "red_pixel.png"
@@ -350,9 +350,9 @@ by gravity.</font></td>
 <center><a NAME="blur"></a><font size=-1>blur</font></center>
 </td>
 
-<td><font size=-1>double factor_</font></td>
+<td><font size=-1>unsigned int order_</font></td>
 
-<td><font size=-1>Blur image with specified blur factor</font></td>
+<td><font size=-1>Blur image with specified order of the pixel neighborhood</font></td>
 </tr>
 
 <tr>
@@ -367,12 +367,12 @@ by gravity.</font></td>
 the border is specified by the <i>borderColor</i> attribute.</font></td>
 </tr>
 
-<tr>
-<td>
+<tr NOSAVE>
+<td NOSAVE>
 <center><a NAME="charcoal"></a><font size=-1>charcoal</font></center>
 </td>
 
-<td><font size=-1>double factor_ = 50</font></td>
+<td><font size=-1>unsigned int order_ = 3</font></td>
 
 <td><font size=-1>Charcoal effect image (looks like charcoal sketch)</font></td>
 </tr>
@@ -529,19 +529,24 @@ and allows batching draw objects together in a list for repeated use.</font></td
 <center><a NAME="edge"></a><font size=-1>edge</font></center>
 </td>
 
-<td><font size=-1>double factor_</font></td>
+<td><font size=-1>unsigned int order_</font></td>
 
 <td><font size=-1>Edge image (hilight edges in image)</font></td>
 </tr>
 
 <tr NOSAVE>
-<td NOSAVE>
+<td ROWSPAN="2" NOSAVE>
 <center><a NAME="emboss"></a><font size=-1>emboss</font></center>
 </td>
 
 <td><font size=-1>void</font></td>
 
-<td><font size=-1>Emboss image (hilight edges with 3D effect)</font></td>
+<td ROWSPAN="2" NOSAVE><font size=-1>Emboss image (hilight edges with 3D
+effect)</font></td>
+</tr>
+
+<tr>
+<td><font size=-1>unsigned int order_</font></td>
 </tr>
 
 <tr>
@@ -943,15 +948,19 @@ When a format can't be automatically detected, the format must be specified.</fo
 &amp;size_, const string &amp;magick_</font></td>
 </tr>
 
-<tr>
-<td>
+<tr NOSAVE>
+<td ROWSPAN="2" NOSAVE>
 <center><a NAME="reduceNoise"></a><font size=-1>reduceNoise</font></center>
 </td>
 
 <td><font size=-1>void</font></td>
 
-<td><font size=-1>Reduce noise in image using a noise peak elimination
-filter.</font></td>
+<td ROWSPAN="2" NOSAVE><font size=-1>Reduce noise in image using a noise
+peak elimination filter.</font></td>
+</tr>
+
+<tr>
+<td><font size=-1>unsigned int order_</font></td>
 </tr>
 
 <tr>
@@ -1035,10 +1044,10 @@ to <i>true</i> to shade the red, green, and blue components of the image.</font>
 <center><a NAME="sharpen"></a><font size=-1>sharpen</font></center>
 </td>
 
-<td><font size=-1>double factor_</font></td>
+<td><font size=-1>unsigned int order_</font></td>
 
-<td><font size=-1>Sharpen pixels in image. Specify factor as the percent
-enhancement (0.0 - 99.9%).</font></td>
+<td><font size=-1>Sharpen pixels in image. Order_ represents the order
+of the pixel neighborhood.</font></td>
 </tr>
 
 <tr>

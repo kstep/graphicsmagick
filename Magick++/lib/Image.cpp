@@ -239,12 +239,12 @@ void Magick::Image::annotate ( const std::string &text_,
 }
 
 // Blur image
-void Magick::Image::blur( double factor_)
+void Magick::Image::blur( unsigned int order_ )
 {
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
   MagickLib::Image* newImage =
-    BlurImage( image(), factor_, &exceptionInfo);
+    BlurImage( image(), order_, &exceptionInfo);
   replaceImage( newImage );
   throwException( exceptionInfo );
 }
@@ -267,13 +267,13 @@ void Magick::Image::border( const Geometry &geometry_ )
 
 
 // Charcoal-effect image
-void Magick::Image::charcoal( double factor_ )
+void Magick::Image::charcoal( unsigned int order_ )
 {
   quantizeDither( true );
   quantizeColorSpace( GRAYColorspace );
   quantize( );
-  edge( factor_ );
-  blur( factor_ );
+  edge( order_ );
+  blur( order_ );
   normalize( );
   negate( true );
 }
@@ -534,7 +534,7 @@ void Magick::Image::draw ( const std::list<Magick::Drawable> &drawable_ )
 }
 
 // Hilight edges in image
-void Magick::Image::edge ( double factor_ )
+void Magick::Image::edge ( unsigned int factor_ )
 {
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
@@ -545,12 +545,12 @@ void Magick::Image::edge ( double factor_ )
 }
 
 // Emboss image (hilight edges)
-void Magick::Image::emboss ( void )
+void Magick::Image::emboss ( unsigned int order_ )
 {
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
   MagickLib::Image* newImage =
-    EmbossImage( image(), &exceptionInfo );
+    EmbossImage( image(), order_, &exceptionInfo );
   replaceImage( newImage );
   throwException( exceptionInfo );
 }
@@ -1046,12 +1046,12 @@ void Magick::Image::read ( const Blob &blob_,
 }
 
 // Reduce noise in image
-void Magick::Image::reduceNoise ( void )
+void Magick::Image::reduceNoise ( unsigned int order_ )
 {
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
   MagickLib::Image* newImage =
-    ReduceNoiseImage( image(), &exceptionInfo );
+    ReduceNoiseImage( image(), order_, &exceptionInfo );
   replaceImage( newImage );
   throwException( exceptionInfo );
 }
@@ -1163,13 +1163,13 @@ void Magick::Image::shade ( double azimuth_,
 }
 
 // Sharpen pixels in image
-void Magick::Image::sharpen ( double factor_ )
+void Magick::Image::sharpen ( unsigned int order_ )
 {
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
   MagickLib::Image* newImage =
     SharpenImage( image(),
-			     factor_,
+			     order_,
 			     &exceptionInfo );
   replaceImage( newImage );
   throwException( exceptionInfo );
