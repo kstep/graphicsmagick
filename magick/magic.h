@@ -7,10 +7,16 @@
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
-
+
+/*
+  Define declaration.
+*/
 #define MagicInfoListExtent 256
 #define StringMethodArgumentExtent  64
-
+
+/*
+  Typedef declaractions.
+*/
 typedef enum
 {
   UndefinedMagicMethod,
@@ -50,7 +56,10 @@ typedef struct _MagicInfo
   struct _MagicInfoMember
     *member;
 } MagicInfo;
-
+
+/*
+  Magic method declarations.
+*/
 extern Export void
   DestroyMagicInfo(void);
 

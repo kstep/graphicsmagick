@@ -151,11 +151,11 @@ static int ReadMagicConfigurationFile(const char *filename)
   MagicInfoMember
     *test_member;
 
-  register unsigned char
-    *q;
-
   register int
     i;
+
+  register unsigned char
+    *q;
 
   /*
     Allocate and initialize the format list.
@@ -165,7 +165,7 @@ static int ReadMagicConfigurationFile(const char *filename)
     return(False);
   i=0;
   magic_list=(MagicInfo **)
-    AllocateMemory((MagicInfoListExtent)*sizeof(MagicInfo *));
+    AllocateMemory(MagicInfoListExtent*sizeof(MagicInfo *));
   if (magic_list == (MagicInfo **) NULL)
     MagickError(ResourceLimitError,"Unable to allocate image",
       "Memory allocation failed");
@@ -431,6 +431,7 @@ Export unsigned int SetImageMagic(const unsigned char *magick,
   if (magic_list == (MagicInfo **) NULL)
     MagickError(FileOpenError,"Unable to read file","magic.mgk");
   for (i=0; magic_list[i] != (MagicInfo *) NULL; i++)
+  {
     switch (magic_list[i]->member->method)
     {
       case StringMagicMethod:
@@ -457,5 +458,6 @@ Export unsigned int SetImageMagic(const unsigned char *magick,
       default:
         break;
     }
+  }
   return(False);
 }

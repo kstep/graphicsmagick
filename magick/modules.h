@@ -7,11 +7,14 @@
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
-
+
+/*
+  Define declarations.
+*/
 #if defined(HasLTDL)
 #include "ltdl/ltdl.h"
 typedef lt_dlhandle ModuleHandle;
-#endif /* HasLTDL */
+#endif
 #if defined(_MAGICKMOD_)
 typedef void *ModuleHandle;
 #if defined(_MT) && defined(_VISUALC_)
@@ -23,10 +26,20 @@ typedef void *ModuleHandle;
 #endif
 #endif
 #endif
-
+
 /*
-  Information on loaded modules.
+  Typedef declarations.
 */
+typedef struct _ModuleAliases
+{
+  char
+    *alias,
+    *module;
+
+  struct _ModuleAliases
+    *next;
+} ModuleAliases;
+
 typedef struct _ModuleInfo
 {
   char
@@ -42,46 +55,33 @@ typedef struct _ModuleInfo
     *previous,
     *next;
 } ModuleInfo;
-
-/*
-  Magick to module translation.
-*/
-typedef struct _ModuleAliases
-{
-  char
-    *alias,
-    *module;
-
-  struct _ModuleAliases
-    *next;
-} ModuleAliases;
-
+
 /*
   Modules declarations.
 */
-extern Export void
-  DestroyModuleInfo(),
-  ExitModules(void),
-  InitializeModules(void),
-  ModuleToTag(const char *,const char *, char *);
+extern Export char
+  **ListModules(void),
+  *TagToModule(const char *);
 
 extern Export int
   LoadAllModules(void),
   LoadDynamicModule(const char *),
-  UnregisterModuleInfo(const char *),
-  UnloadDynamicModule(const char *);
-
-extern Export char
-  **ListModules(void),
-  *TagToModule(const char *);
+  UnloadDynamicModule(const char *),
+  UnregisterModuleInfo(const char *);
 
 extern Export ModuleInfo
   *GetModuleInfo(const char *),
   *RegisterModuleInfo(ModuleInfo *),
   *SetModuleInfo(const char *);
 
-extern Export unsigned int CallImageFilter(const char *,
-  Image *, const char *);
+extern Export unsigned int
+  CallImageFilter(const char *,Image *,const char *);
+
+extern Export void
+  DestroyModuleInfo(void),
+  ExitModules(void),
+  InitializeModules(void),
+  ModuleToTag(const char *,const char *,char *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
