@@ -48,15 +48,17 @@ $image->Draw(primitive=>'polygon',
 #
 # Draw rectangle.
 #
-$image->Draw(primitve=>'rectangle',points=>'200,200 260,260',stroke=>yellow,
+$image->Draw(primitve=>'line',points=>'200,260 200,200',stroke=>yellow,
   linewidth=>5);
-$image->Draw(primitve=>'line',points=>'200,260 260,260',stroke=>green,
+$image->Draw(primitve=>'line',points=>'200,200 260,200',stroke=>yellow,
   linewidth=>5);
 $image->Draw(primitve=>'line',points=>'260,200 260,260',stroke=>red,
+  linewidth=>5);
+$image->Draw(primitve=>'line',points=>'200,260 260,260',stroke=>green,
   linewidth=>5);
 #
 # Draw text.
 #
 $image->Annotate(text=>'This is a test!',geometry=>'+30+140',
-  font=>'@Generic.ttf',fill=>'green',pointsize=>24,rotate=>45.0);
+  font=>'Generic.ttf',fill=>'green',pointsize=>24,rotate=>45.0);
 $image->Display();

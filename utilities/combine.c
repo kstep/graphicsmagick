@@ -480,6 +480,8 @@ int main(int argc,char **argv)
                     image_info->compression=Group4Compression;
                   if (LocaleCompare("JPEG",option) == 0)
                     image_info->compression=JPEGCompression;
+                  if (LocaleCompare("Lossless",option) == 0)
+                    image_info->compression=LosslessJPEGCompression;
                   if (LocaleCompare("LZW",option) == 0)
                     image_info->compression=LZWCompression;
                   if (LocaleCompare("RunlengthEncoded",option) == 0)
