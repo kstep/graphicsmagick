@@ -3,11 +3,11 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%           RRRR    EEEEE    GGG   IIIII  SSSSS  TTTTT  RRRR   Y   Y          %
-%           R   R   E       G        I    SS       T    R   R   Y Y           %
-%           RRRR    EEE     G GGG    I     SSS     T    RRRR     Y            %
-%           R R     E       G   G    I       SS    T    R R      Y            %
-%           R  R    EEEEE    GGG   IIIII  SSSSS    T    R  R     Y            %
+%                           M   M  PPPP   RRRR                                %
+%                           MM MM  P   P  R   R                               %
+%                           M M M  PPPP   RRRR                                %
+%                           M   M  P      R R                                 %
+%                           M   M  P      R  R                                %
 %                                                                             %
 %                                                                             %
 %                    Read/Write ImageMagick Image Format.                     %
@@ -60,24 +60,24 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   R e a d R E G I S T R Y I m a g e                                         %
+%   R e a d M P R I m a g e                                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ReadREGISTRYImage reads an image as a blob from memory.  It allocates
-%  the memory necessary for the new Image structure and returns a pointer to
-%  the new image.
+%  Method ReadMPRImage reads a Magick Persistent Registry image as a blob from
+%  memory.  It allocates the memory necessary for the new Image structure and
+%  returns a pointer to the new image.
 %
-%  The format of the ReadREGISTRYImage method is:
+%  The format of the ReadMPRImage method is:
 %
-%      Image *ReadREGISTRYImage(const ImageInfo *image_info,
+%      Image *ReadMPRImage(const ImageInfo *image_info,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
-%    o image:  Method ReadREGISTRYImage returns a pointer to the image after
+%    o image:  Method ReadMPRImage returns a pointer to the image after
 %      reading.  A null image is returned if there is a memory shortage or
 %      if the image cannot be read.
 %
@@ -87,7 +87,7 @@
 %
 %
 */
-static Image *ReadREGISTRYImage(const ImageInfo *image_info,
+static Image *ReadMPRImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
   char
@@ -104,7 +104,7 @@ static Image *ReadREGISTRYImage(const ImageInfo *image_info,
 
   size_t
     length;
- 
+
   assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
@@ -121,35 +121,34 @@ static Image *ReadREGISTRYImage(const ImageInfo *image_info,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   R e g i s t e r R E G I S T R Y I m a g e                                 %
+%   R e g i s t e r M P R I m a g e                                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method RegisterREGISTRYImage adds attributes for the REGISTRY image format to
+%  Method RegisterMPRImage adds attributes for the MPR image format to
 %  the list of supported formats.  The attributes include the image format
 %  tag, a method to read and/or write the format, whether the format
 %  supports the saving of more than one frame to the same file or blob,
 %  whether the format supports native in-memory I/O, and a brief
 %  description of the format.
 %
-%  The format of the RegisterREGISTRYImage method is:
+%  The format of the RegisterMPRImage method is:
 %
-%      RegisterREGISTRYImage(void)
+%      RegisterMPRImage(void)
 %
 */
-ModuleExport void RegisterREGISTRYImage(void)
+ModuleExport void RegisterMPRImage(void)
 {
   MagickInfo
     *entry;
 
-  entry=SetMagickInfo("REGISTRY");
-  entry->decoder=ReadREGISTRYImage;
+  entry=SetMagickInfo("MPR");
+  entry->decoder=ReadMPRImage;
   entry->adjoin=False;
-  entry->stealth=True;
-  entry->description=AllocateString("Image from Magick Registry");
-  entry->module=AllocateString("REGISTRY");
+  entry->description=AllocateString("Magick Persistent Registry");
+  entry->module=AllocateString("MPR");
   (void) RegisterMagickInfo(entry);
 }
 
@@ -158,21 +157,22 @@ ModuleExport void RegisterREGISTRYImage(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   U n r e g i s t e r R E G I S T R Y I m a g e                             %
+%   U n r e g i s t e r M P R I m a g e                                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method UnregisterREGISTRYImage removes format registrations made by the
-%  REGISTRY module from the list of supported formats.
+%  Method UnregisterMPRImage removes format registrations made by the
+%  MPR module from the list of supported formats.
 %
-%  The format of the UnregisterREGISTRYImage method is:
+%  The format of the UnregisterMPRImage method is:
 %
-%      UnregisterREGISTRYImage(void)
+%      UnregisterMPRImage(void)
 %
 */
-ModuleExport void UnregisterREGISTRYImage(void)
+ModuleExport void UnregisterMPRImage(void)
 {
+  (void) UnregisterMagickInfo("MPR");
   (void) UnregisterMagickInfo("REGISTRY");
 }

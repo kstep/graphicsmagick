@@ -298,7 +298,7 @@ static void wmf_magick_bmp_draw (wmfAPI* API,wmfBMP_Draw_t* bmp_draw)
       ddata->max_temp_file_index += 2048;
       ReacquireMemory((void **) &ddata->temp_images, ddata->max_temp_file_index*sizeof(long));
     }
-  sprintf(imgspec,"registry:%li", id);
+  sprintf(imgspec,"mpr:%li", id);
   }
 #else
   TemporaryFilename(imgspec);
