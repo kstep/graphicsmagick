@@ -614,6 +614,7 @@ static int load_level (Image* image, XCFDocInfo* inDocInfo, XCFLayerInfo* inLaye
       offset = ReadBlobMSBLong(image);
     }
 
+
   if (offset != 0)
 	  ThrowBinaryException(FileOpenWarning,"encountered garbage after reading level",image->filename)
 
@@ -1172,6 +1173,14 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 			CompositeImage(image, OverCompositeOp, layer_info[0].image, 
 						   layer_info[0].offset_x, layer_info[0].offset_y );
 			DestroyImage( layer_info[0].image );
+
+			/* Bob says that if we do this, we'll get REAL gray images! */
+			if ( image_type == GIMP_GRAY ) {
+				QuantizeInfo	qi;
+				GetQuantizeInfo(&qi);
+				qi.colorspace = GRAYColorspace;
+				QuantizeImage( &qi, image );
+			}
 		} else {
 			if ( composite_all_layers ) {
 				/* NOTE: XCF layers are REVERSED from composite order! */
@@ -1183,8 +1192,17 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 						CompositeImage(image, OverCompositeOp, layer_info[j].image, 
 									   layer_info[j].offset_x, layer_info[j].offset_y );
 						DestroyImage( layer_info[j].image );
+
+						/* Bob says that if we do this, we'll get REAL gray images! */
+						if ( image_type == GIMP_GRAY ) {
+							QuantizeInfo	qi;
+							GetQuantizeInfo(&qi);
+							qi.colorspace = GRAYColorspace;
+							QuantizeImage( &qi, layer_info[j].image );
+						}
 					}
 				}
+
 			} else {
 				/* NOTE: XCF layers are REVERSED from composite order! */
 				signed int	j;
@@ -1194,6 +1212,14 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 							   layer_info[number_layers-1].offset_x, 
 							   layer_info[number_layers-1].offset_y );
 				DestroyImage( layer_info[number_layers-1].image );
+
+				/* Bob says that if we do this, we'll get REAL gray images! */
+				if ( image_type == GIMP_GRAY ) {
+					QuantizeInfo	qi;
+					GetQuantizeInfo(&qi);
+					qi.colorspace = GRAYColorspace;
+					QuantizeImage( &qi, image );
+				}
 
 				/* now reverse the order of the layers as they are put
 				   into subimages
@@ -1210,6 +1236,14 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 					layer_info[j].image->page.y = layer_info[j].offset_y;
 					layer_info[j].image->page.width = layer_info[j].width;
 					layer_info[j].image->page.height = layer_info[j].height;
+
+					/* Bob says that if we do this, we'll get REAL gray images! */
+					if ( image_type == GIMP_GRAY ) {
+						QuantizeInfo	qi;
+						GetQuantizeInfo(&qi);
+						qi.colorspace = GRAYColorspace;
+						QuantizeImage( &qi, layer_info[j].image );
+					}
 				}
 			}
 		}
@@ -1352,287 +1386,7 @@ ModuleExport void UnregisterXCFImage(void)
 */
 static unsigned int WriteXCFImage(const ImageInfo *image_info,Image *image)
 {
-#if 0
-  long
-    y;
+	/* BOGUS: NOT YET IMPLEMENTED */
 
-  register const PixelPacket
-    *p;
-
-  register IndexPacket
-    *indexes;
-
-  register long
-    i,
-    x;
-
-  register unsigned char
-    *q;
-
-  unsigned char
-    *bmp_data,
-    *pixels;
-
-  unsigned int
-    scene,
-    status;
-
-  unsigned long
-    bytes_per_line;
-
-  /*
-    Open output image file.
-  */
-  assert(image_info != (const ImageInfo *) NULL);
-  assert(image_info->signature == MagickSignature);
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  status=OpenBlob(image_info,image,WriteBinaryType,&image->exception);
-  if (status == False)
-    ThrowWriterException(FileOpenWarning,"Unable to open file",image);
-  scene=0;
-
-  do
-  {
-    /*
-      Initialize BMP raster file header.
-    */
-    (void) TransformRGBImage(image,RGBColorspace);
-    bmp_info.file_size=14+40;
-    bmp_info.offset_bits=14+40;
-    if (image->storage_class == DirectClass)
-      {
-        /*
-          Full color BMP raster.
-        */
-        bmp_info.number_colors=0;
-        bmp_info.bits_per_pixel=image->matte ? 32 : 24;
-      }
-    else
-      {
-        /*
-          Colormapped BMP raster.
-        */
-        bmp_info.bits_per_pixel=8;
-        if (IsMonochromeImage(image,&image->exception))
-          bmp_info.bits_per_pixel=1;
-        bmp_info.file_size+=4*(1 << bmp_info.bits_per_pixel);
-        bmp_info.offset_bits+=4*(1 << bmp_info.bits_per_pixel);
-        bmp_info.number_colors=1 << bmp_info.bits_per_pixel;
-      }
-    bytes_per_line=4*((image->columns*bmp_info.bits_per_pixel+31)/32);
-    bmp_info.ba_offset=0;
-    bmp_info.size=40;
-    bmp_info.width=(long) image->columns;
-    bmp_info.height=(long) image->rows;
-    bmp_info.planes=1;
-    bmp_info.compression=0;
-    bmp_info.image_size=bytes_per_line*image->rows;
-    bmp_info.file_size+=bmp_info.image_size;
-    bmp_info.x_pixels=75*39;
-    bmp_info.y_pixels=75*39;
-    if (image->units == PixelsPerInchResolution)
-      {
-        bmp_info.x_pixels=(unsigned long) (100.0*image->x_resolution/2.54);
-        bmp_info.y_pixels=(unsigned long) (100.0*image->y_resolution/2.54);
-      }
-    if (image->units == PixelsPerCentimeterResolution)
-      {
-        bmp_info.x_pixels=(unsigned long) (100.0*image->x_resolution);
-        bmp_info.y_pixels=(unsigned long) (100.0*image->y_resolution);
-      }
-    bmp_info.colors_important=bmp_info.number_colors;
-    /*
-      Convert MIFF to BMP raster pixels.
-    */
-    pixels=(unsigned char *) AcquireMemory(bmp_info.image_size);
-    if (pixels == (unsigned char *) NULL)
-      ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
-        image);
-    switch (bmp_info.bits_per_pixel)
-    {
-      case 1:
-      {
-        register unsigned char
-          bit,
-          byte,
-          polarity;
-
-        /*
-          Convert PseudoClass image to a BMP monochrome image.
-        */
-        polarity=Intensity(&image->colormap[0]) < (MaxRGB >> 1);
-        if (image->colors == 2)
-          polarity=
-            Intensity(&image->colormap[1]) < Intensity(&image->colormap[0]);
-        for (y=0; y < (long) image->rows; y++)
-        {
-          p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
-          if (p == (const PixelPacket *) NULL)
-            break;
-          indexes=GetIndexes(image);
-          q=pixels+(image->rows-y-1)*bytes_per_line;
-          bit=0;
-          byte=0;
-          for (x=0; x < (long) image->columns; x++)
-          {
-            byte<<=1;
-            if (indexes[x] == polarity)
-              byte|=0x01;
-            bit++;
-            if (bit == 8)
-              {
-                *q++=byte;
-                bit=0;
-                byte=0;
-              }
-             p++;
-           }
-         if (bit != 0)
-           *q++=byte << (8-bit);
-         if (image->previous == (Image *) NULL)
-           if (QuantumTick(y,image->rows))
-             MagickMonitor(SaveImageText,y,image->rows);
-        }
-        break;
-      }
-      case 8:
-      {
-        /*
-          Convert PseudoClass packet to BMP pixel.
-        */
-        for (y=0; y < (long) image->rows; y++)
-        {
-          p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
-          if (p == (const PixelPacket *) NULL)
-            break;
-          indexes=GetIndexes(image);
-          q=pixels+(image->rows-y-1)*bytes_per_line;
-          for (x=0; x < (long) image->columns; x++)
-          {
-            *q++=indexes[x];
-            p++;
-          }
-          if (image->previous == (Image *) NULL)
-            if (QuantumTick(y,image->rows))
-              MagickMonitor(SaveImageText,y,image->rows);
-        }
-        break;
-      }
-      case 24:
-      case 32:
-      {
-        /*
-          Convert DirectClass packet to BMP RGB pixel.
-        */
-        for (y=0; y < (long) image->rows; y++)
-        {
-          p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
-          if (p == (const PixelPacket *) NULL)
-            break;
-          q=pixels+(image->rows-y-1)*bytes_per_line;
-          for (x=0; x < (long) image->columns; x++)
-          {
-            *q++=Downscale(p->blue);
-            *q++=Downscale(p->green);
-            *q++=Downscale(p->red);
-            if (image->matte)
-              *q++=Downscale(p->opacity);
-            p++;
-          }
-          if (image->previous == (Image *) NULL)
-            if (QuantumTick(y,image->rows))
-              MagickMonitor(SaveImageText,y,image->rows);
-        }
-        break;
-      }
-    }
-    if (bmp_info.bits_per_pixel == 8)
-      if (image_info->compression != NoCompression)
-        {
-          size_t
-            length;
-
-          /*
-            Convert run-length encoded raster pixels.
-          */
-          length=2*(bytes_per_line+2)*(image->rows+2)+2;
-          bmp_data=(unsigned char *) AcquireMemory(length);
-          if (pixels == (unsigned char *) NULL)
-            {
-              LiberateMemory((void **) &pixels);
-              ThrowWriterException(ResourceLimitWarning,
-                "Memory allocation failed",image)
-            }
-          bmp_info.file_size-=bmp_info.image_size;
-          bmp_info.image_size=EncodeImage(image,bytes_per_line,pixels,bmp_data);
-          bmp_info.file_size+=bmp_info.image_size;
-          LiberateMemory((void **) &pixels);
-          pixels=bmp_data;
-          bmp_info.compression=1;
-        }
-    /*
-      Write BMP header.
-    */
-    (void) WriteBlob(image,2,"BM");
-    (void) WriteBlobLSBLong(image,bmp_info.file_size);
-    (void) WriteBlobLSBLong(image,bmp_info.ba_offset);
-    (void) WriteBlobLSBLong(image,bmp_info.offset_bits);
-    (void) WriteBlobLSBLong(image,bmp_info.size);
-    (void) WriteBlobLSBLong(image,bmp_info.width);
-    (void) WriteBlobLSBLong(image,bmp_info.height);
-    (void) WriteBlobLSBShort(image,bmp_info.planes);
-    (void) WriteBlobLSBShort(image,bmp_info.bits_per_pixel);
-    (void) WriteBlobLSBLong(image,bmp_info.compression);
-    (void) WriteBlobLSBLong(image,bmp_info.image_size);
-    (void) WriteBlobLSBLong(image,bmp_info.x_pixels);
-    (void) WriteBlobLSBLong(image,bmp_info.y_pixels);
-    (void) WriteBlobLSBLong(image,bmp_info.number_colors);
-    (void) WriteBlobLSBLong(image,bmp_info.colors_important);
-    if (image->storage_class == PseudoClass)
-      {
-        unsigned char
-          *bmp_colormap;
-
-        /*
-          Dump colormap to file.
-        */
-        bmp_colormap=(unsigned char *)
-          AcquireMemory(4*(1 << bmp_info.bits_per_pixel));
-        if (bmp_colormap == (unsigned char *) NULL)
-          ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
-            image);
-        q=bmp_colormap;
-        for (i=0; i < (long) image->colors; i++)
-        {
-          *q++=Downscale(image->colormap[i].blue);
-          *q++=Downscale(image->colormap[i].green);
-          *q++=Downscale(image->colormap[i].red);
-          *q++=(Quantum) 0x0;
-        }
-        for ( ; i < (1L << bmp_info.bits_per_pixel); i++)
-        {
-          *q++=(Quantum) 0x0;
-          *q++=(Quantum) 0x0;
-          *q++=(Quantum) 0x0;
-          *q++=(Quantum) 0x0;
-        }
-        (void) WriteBlob(image,4*(1 << bmp_info.bits_per_pixel),
-          (char *) bmp_colormap);
-        LiberateMemory((void **) &bmp_colormap);
-      }
-    (void) WriteBlob(image,bmp_info.image_size,(char *) pixels);
-    LiberateMemory((void **) &pixels);
-    if (image->next == (Image *) NULL)
-      break;
-    image=GetNextImage(image);
-    MagickMonitor(SaveImagesText,scene++,GetNumberScenes(image));
-  } while (image_info->adjoin);
-  if (image_info->adjoin)
-    while (image->previous != (Image *) NULL)
-      image=image->previous;
-
-  CloseBlob(image);
-#endif
   return(True);
 }
