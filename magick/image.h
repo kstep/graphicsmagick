@@ -209,15 +209,6 @@ typedef struct _SegmentInfo
     y2;
 } SegmentInfo;
 
-typedef struct _VirtualPixel
-{
-  VirtualPixelMethod
-    method;
-
-  PixelPacket
-    pixel;
-} VirtualPixel;
-
 typedef struct _Ascii85Info _Ascii85Info_;
 
 typedef struct _BlobInfo _BlobInfo_;
@@ -334,9 +325,6 @@ typedef struct _Image
 
   void
     *client_data;
-
-  VirtualPixel
-    virtual_pixel;
 
   void
     *cache;
@@ -833,6 +821,7 @@ extern MagickExport void
   SetImage(Image *,const Quantum),
   SetImageOpacity(Image *,const unsigned int),
   SetImageType(Image *,const ImageType),
+  SetImageVirtualPixelType(Image *,const VirtualPixelType,const PixelPacket *),
   SolarizeImage(Image *,const double),
   SyncImage(Image *),
   TextureImage(Image *,const Image *),

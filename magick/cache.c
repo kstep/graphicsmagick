@@ -2413,9 +2413,9 @@ MagickExport PixelPacket *SetImagePixels(Image *image,const long x,const long y,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %  
-%  SetImageVirtualPixelType() sets the method used to define "virtual" pixels.
+%  SetImageVirtualPixelType() sets the type of "virtual" pixels for the image.
 %  A virtual pixel is any pixel access that is outside the boundaries of the
-%  image.
+%  image cache.
 %  
 %  The format of the SetImageVirtualPixelType() method is:
 %      
