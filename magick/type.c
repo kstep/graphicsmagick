@@ -120,14 +120,10 @@ MagickExport void DestroyTypeInfo(void)
       LiberateMemory((void **) &type_info->filename);
     if (type_info->name != (char *) NULL)
       LiberateMemory((void **) &type_info->name);
-    if (type_info->description != (char *) NULL)
-      LiberateMemory((void **) &type_info->description);
     if (type_info->family != (char *) NULL)
       LiberateMemory((void **) &type_info->family);
-    if (type_info->encoding != (char *) NULL)
-      LiberateMemory((void **) &type_info->encoding);
-    if (type_info->foundry != (char *) NULL)
-      LiberateMemory((void **) &type_info->foundry);
+    if (type_info->description != (char *) NULL)
+      LiberateMemory((void **) &type_info->description);
     if (type_info->format != (char *) NULL)
       LiberateMemory((void **) &type_info->format);
     if (type_info->metrics != (char *) NULL)
@@ -227,63 +223,189 @@ MagickExport const TypeInfo *GetTypeInfo(const char *name,
 %
 %
 */
+typedef struct _FontMap FontMap;
+struct _FontMap
+{       char* name;
+        char* mapping;
+};
+static FontMap SubstitutionFontMap[] =
+{
+  { "arial",		"helvetica" },
+  { "fixed",		"courier"   },
+  { "modern",           "courier"   },
+  { "monotype corsiva", "courier"   },
+  { "news gothic",      "helvetica" },
+  { "system",           "courier"   },
+  { "terminal",		"courier"   },
+  { "wingdings",	"symbol"    },
+  {  NULL,	         NULL       }
+};
+static const char* StretchTypeToString(StretchType stretch)
+{
+  switch(stretch)
+    {
+    case NormalStretch:
+      return "normal";
+    case UltraCondensedStretch:
+      return "ultra-condensed";
+    case ExtraCondensedStretch:
+      return "extra-condensed";
+    case CondensedStretch:
+      return "condensed";
+    case SemiCondensedStretch:
+      return "semi-condensed";
+    case SemiExpandedStretch:
+      return "semi-expanded";
+    case ExpandedStretch:
+      return "expanded";
+    case ExtraExpandedStretch:
+      return "extra-expanded";
+    case UltraExpandedStretch:
+      return "ultra-expanded";
+    case AnyStretch:
+      return "any";
+    default:
+      {
+      }
+    }
+  return NULL;
+}
+
+static const char* StyleTypeToString(StyleType style)
+{
+  switch(style)
+    {
+    case NormalStyle:
+      return "normal";
+    case ItalicStyle:
+      return "italic";
+    case ObliqueStyle:
+      return "oblique";
+    case AnyStyle:
+      return "any";
+    default:
+      {
+      }
+    }
+  return NULL;
+}
+static long AttributeScore(const TypeInfo *type_info,
+                          const StyleType style,
+                          const StretchType stretch,
+                          const unsigned long weight)
+{
+  unsigned long
+    local_weight;
+
+  long
+    stretch_range;
+
+  long
+    final_score,
+    weight_score,
+    stretch_score,
+    style_score;
+
+  local_weight = Min(900,weight);
+
+  final_score=0;
+  weight_score=0;
+  stretch_score=0;
+  style_score=0;
+
+  if (type_info->style == style)
+    style_score=32;
+  else
+    if (((style == ItalicStyle) || (style == ObliqueStyle)) &&
+        ((type_info->style == ItalicStyle) || (type_info->style == ObliqueStyle)))
+      style_score=25;
+  weight_score=16*(((double)800-(Max(local_weight,type_info->weight) - Min(local_weight,type_info->weight)))/800);
+  stretch_range = (long)UltraExpandedStretch - (long)NormalStretch;
+  stretch_score=8*(((double)stretch_range-(Max(stretch,type_info->stretch)-Min(stretch,type_info->stretch)))/stretch_range);
+  final_score = style_score + stretch_score + weight_score;
+  
+  return final_score;
+}
 MagickExport const TypeInfo *GetTypeInfoByFamily(const char *family,
   const StyleType style,const StretchType stretch,const unsigned long weight,
   ExceptionInfo *exception)
 {
+  const char
+    *lfamily = "helvetica";
+
   const TypeInfo
     *type_info;
 
   register const TypeInfo
     *p;
 
-  unsigned long
+  unsigned int
     max_score,
     score;
 
-  /*
-    Search for requested type.
-  */
-  max_score=0;
+  int
+    i;
+
   type_info=(TypeInfo *) NULL;
   (void) GetTypeInfo("*",exception);
+
+  if(family != (char *) NULL)
+    lfamily=family;
+
+  /*
+    Check for an exact match first
+  */
   for (p=type_list; p != (TypeInfo *) NULL; p=p->next)
-  {
-    score=0;
-    if (p->family == (char *) NULL)
-      continue;
-    if (family == (char *) NULL)
-      {
-        if (LocaleCompare(p->family,"helvetica") == 0)
-          score+=64;
-      }
-    else
-      if (LocaleCompare(p->family,family) == 0)
-        score+=64;
-    if (p->style == style)
-      score+=32;
-    else
-      if ((style == ItalicStyle) && (p->style == ObliqueStyle))
-        score+=16;
-    if (p->weight != weight)
-      score+=8;
-    else
-      if (AbsoluteValue(weight-(long) p->weight) <= 200)
-        score+=4;
-      else
-        if (AbsoluteValue(weight-(long) p->weight) <= 400)
-          score+=2;
-    if (p->stretch == stretch)
-      score+=1;
-    if (score > max_score)
-      {
-        max_score=score;
-        type_info=p;
-      }
-  }
-  if (max_score < 41)
-    return((TypeInfo *) NULL);
-  return(type_info);
+    {
+      if ((p->family == (char *) NULL) ||
+          ((LocaleCompare(p->family,family) != 0)) ||
+          (p->style != style) ||
+          (p->stretch != stretch) ||
+          (p->weight != weight))
+        continue;
+      return p;
+    }
+
+  /*
+    Do an approximate match for fonts in same family
+  */
+  max_score=0;
+  for (p=type_list; p != (TypeInfo *) NULL; p=p->next)
+    {
+      score=0;
+      if ((p->family == (char *) NULL) ||
+          ((LocaleCompare(p->family,family) != 0)))
+        continue;
+      score=AttributeScore(p,style,stretch,weight);
+      if (score > max_score)
+        {
+          max_score=score;
+          type_info=p;
+        }
+    }
+  if(type_info != (TypeInfo *) NULL)
+    return type_info;
+
+  /*
+    Try table-based substitution match
+  */
+  for( i=0; SubstitutionFontMap[i].name != NULL; i++ )
+    {
+      if(LocaleCompare(lfamily, SubstitutionFontMap[i].name) == 0)
+        {
+          lfamily=SubstitutionFontMap[i].mapping;
+          type_info=GetTypeInfoByFamily(lfamily,style,stretch,weight,exception);
+          break;
+        }
+    }
+  if(type_info != (TypeInfo *) NULL)
+    return type_info;
+
+  /* Default to helvetica */
+  lfamily="helvetica";
+  type_info=GetTypeInfoByFamily(lfamily,style,stretch,weight,exception);
+
+  return type_info;
 }
 
 /*
