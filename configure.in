@@ -334,35 +334,7 @@ AC_PROG_GCC_TRADITIONAL
 #
 # Check for large file support
 #
-LIB_LF=''
-if test "$with_largefiles" = 'yes'
-then
-#  AC_SYS_LARGEFILE
-
-  AC_MSG_CHECKING(whether large file support needs explicit enabling)
-  result='no'
-  getconf='getconf LFS_CFLAGS'
-  if ($getconf) >/dev/null 2>&1
-  then
-    CPPFLAGS="$CPPFLAGS "`$getconf`
-    result='yes'
-  fi
-  getconf='getconf LFS_LDFLAGS'
-  if ($getconf) >/dev/null 2>&1
-  then
-    LDFLAGS="$LDFLAGS "`$getconf`
-    result='yes'
-  fi
-  getconf='getconf LFS_LIBS'
-  if ($getconf) >/dev/null 2>&1
-  then
-    LIB_LF=`$getconf`
-    LIBS="$LIB_LF $LIBS"
-    result='yes'
-  fi
-  AC_MSG_RESULT($result)
-fi
-AC_SUBST(LIB_LF)
+AC_SYS_LARGEFILE
 
 # Check for delegate sub-directories and add -I & -L options as required.
 # This presumes that delegates are installed as detailed in the ImageMagick
@@ -1186,13 +1158,19 @@ fi
 # Configure Delegates
 #
 
-# Directory where configured ImageMagick/delegates.mgk lives (default /usr/local/lib/ImageMagick).
+# Directory where configured ImageMagick/delegates.mgk lives
+# (default /usr/local/lib/ImageMagick).
 eval MagickLibPath="${LIB_DIR}/ImageMagick/"
 AC_DEFINE_UNQUOTED(MagickLibPath,"$MagickLibPath",Directory where architecture-dependent files live.)
 
 # Directory where magic.mgk lives. (default /usr/local/share/ImageMagick)
-eval MagickSharePath="${DATA_DIR}/ImageMagick/"
+AC_ARG_WITH(share-path,
+[  --with-share-path=DIR   Alternate path to share directory
+                          (default share/ImageMagick)],
+ MagickSharePath="${with_share_path}/",
+ eval MagickSharePath="${DATA_DIR}/ImageMagick/")
 AC_DEFINE_UNQUOTED(MagickSharePath,"$MagickSharePath",Directory where architecture-independent files live.)
+AC_SUBST(MagickSharePath)
 
 # Locate delegates
 AC_PATH_PROG(BZIPDelegate, bzip2, bzip2)
