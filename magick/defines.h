@@ -152,7 +152,7 @@ extern "C" {
   (IsMonochromeImage(image) && ((image)->columns <= 2560))
 #define IsGray(color)  \
   (((color).red == (color).green) && ((color).green == (color).blue))
-#define MagickEpsilon  0.00000000001
+#define MagickEpsilon  1.0e-12
 #define Max(x,y)  (((x) > (y)) ? (x) : (y))
 #define MaxApplicationProfiles  16
 #define Min(x,y)  (((x) < (y)) ? (x) : (y))

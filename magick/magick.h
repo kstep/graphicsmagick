@@ -118,5 +118,6 @@
 #define MagickSignature  0xabacadab
 
 #undef index
+#undef pipe
 
 #endif

@@ -69,8 +69,8 @@
 </table>
 
 <dd>
-<a href="ftp://ftp.cdrom.com/pub/ImageMagick/perl">PerlMagick</a>,
-version 5.23, is an objected-oriented <a href="http://www.perl.com/perl/">Perl</a>
+<a href="ftp://ftp.cdrom.com/pub/ImageMagick/perl">PerlMagick</a>
+is an objected-oriented <a href="http://www.perl.com/perl/">Perl</a>
 interface to <a href="../ImageMagick.html">ImageMagick</a>. Use the module
 to read, manipulate, or write an image or image sequence from within a
 Perl script. This makes it very suitable for Web CGI scripts. You must
@@ -195,7 +195,7 @@ object, the memory is returned for use by other Perl methods. The recommended
 way to destroy an object is with <tt>undef</tt>:
 <pre>&nbsp;&nbsp;&nbsp; undef $image;</pre>
 To delete all the images but retain the <tt>Image::Magick</tt> object use
-<pre>&nbsp;&nbsp;&nbsp; undef @$image;</pre>
+<pre>&nbsp;&nbsp;&nbsp; @$image = ();</pre>
 and finally, to delete a single image from a multi-image sequence, use
 <pre>&nbsp;&nbsp;&nbsp; undef $image->[x];</pre>
 The next section illustrates how to use various <b>PerlMagick</b> methods
@@ -271,7 +271,7 @@ Here we annotate an image with a Taipai TrueType font:
 Other clever things you can do with <b>PerlMagick</b> objects include
 <pre>&nbsp;&nbsp;&nbsp; $i = $#$p"+1";&nbsp;&nbsp; # return the number of images associated with object p
 &nbsp;&nbsp;&nbsp; push(@$q, @$p);&nbsp; # push the images from object p onto object q
-&nbsp;&nbsp;&nbsp; undef @$p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; # delete the images but not the object p
+&nbsp;&nbsp;&nbsp; @$p = ();&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; # delete the images but not the object p
 &nbsp;&nbsp;&nbsp; p->Convolve([1, 2, 1, 2, 4, 2, 1, 2, 1]);&nbsp;&nbsp; # 3x3 Gaussian kernel</pre>
 </dl>
 <i><a href="#contents">Back to Contents</a></i>
