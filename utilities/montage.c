@@ -95,7 +95,7 @@ static void MontageUsage(void)
       "-colorspace type     alternate image colorsapce",
       "-comment string      annotate image with comment",
       "-compose operator    composite operator",
-      "-compress type       image compression tyhpe",
+      "-compress type       image compression type",
       "-crop geometry       preferred size and location of the cropped image",
       "-debug               display copious debugging information",
       "-density geometry    horizontal and vertical density of the image",

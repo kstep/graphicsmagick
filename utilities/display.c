@@ -115,7 +115,7 @@ static void DisplayUsage(void)
       "-colors value        preferred number of colors in the image",
       "-colorspace type     alternate image colorspace",
       "-comment string      annotate image with comment",
-      "-compress type       image compression tyhpe",
+      "-compress type       image compression type",
       "-contrast            enhance or reduce the image contrast",
       "-crop geometry       preferred size and location of the cropped image",
       "-debug               display copious debugging information",
