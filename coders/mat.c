@@ -391,9 +391,9 @@ NoMemory:  ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
    
      for (i=0; i < (long)image->colors; i++)
            {
-           image->colormap[i].red=UpScale(i);
-           image->colormap[i].green=UpScale(i);
-           image->colormap[i].blue=UpScale(i);
+           image->colormap[i].red=Upscale(i);
+           image->colormap[i].green=Upscale(i);
+           image->colormap[i].blue=Upscale(i);
            }
      }	    
 
