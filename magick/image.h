@@ -99,15 +99,15 @@ typedef struct _PixelPacket
 {
 #if defined(WORDS_BIGENDIAN)
   Quantum
-    blue,
-    green,
     red,
+    green,
+    blue,
     opacity;
 #else
   Quantum
-    red,
-    green,
     blue,
+    green,
+    red,
     opacity;
 #endif
 } PixelPacket;
