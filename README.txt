@@ -67,13 +67,14 @@ MAILING LIST
   magick-user@imagemagick.org.
 
 
-UNIX/Cygwin COMPILATION
+UNIX/Cygwin/MinGW COMPILATION
 
   Note:
 
     Platform specific notes regarding specific operating systems may
     be found in the PLATFORMS.txt file.  This file (README.txt) provides
-    generic instructions which work in most common cases.
+    generic instructions which work in most common cases.  Additional
+    notes regarding Cygwin & MinGW are provided later in this file.
 
   Type:
 
@@ -378,6 +379,30 @@ UNIX/Cygwin COMPILATION
     is required if you want to build PerlMagick under Cygwin because
     Cygwin does not provide the libperl.a static library required to
     create a static PerlMagick.
+
+  Building under MinGW & MSYS
+
+    ImageMagick may be built using the free MinGW ("Minimalistic GNU for
+    Windows") package (available from http://www.mingw.org) which
+    consists of a GNU-based (e.g. gcc) toolset plus headers and
+    libraries required to build programs which are entirely based on
+    Microsoft Windows DLLs. MSYS provides a Unix-like console shell
+    window with sufficient functionality to run the ImageMagick
+    configure script and execute make.
+
+    Unlike the Cygwin build which
+    creates programs based on a Unix-emulation DLL, and which uses
+    Unix-style paths to access Windows files, the MinGW build creates
+    native Windows applications similar to the Visual C++ build.
+
+    Please note that since the MinGW build is very new, there may be
+    some issues with Unix vs Windows paths in configure, and that only a
+    static build (no DLLs or modules) is currently supported.
+
+    Once MinGW & MSYS have been installed, start the MSYS console (via
+    the MSYS icon on the Windows desktop) and follow the Unix configure
+    and build instructions. Any additional delegate libraries (e.g.
+    libpng) will need to be built under MinGW in order to be used.
 
   Dealing with configuration failures:
 
