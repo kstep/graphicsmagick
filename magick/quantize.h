@@ -7,22 +7,16 @@
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
-
-#define ErrorQueueLength  16
+
+/*
+  Define declarations.
+*/
 #define MaxTreeDepth  8
 #define NodesInAList  1536
 
 /*
   Typedef declarations.
 */
-typedef struct _ErrorPacket
-{
-  double
-    red,
-    green,
-    blue;
-} ErrorPacket;
-
 typedef struct _QuantizeInfo
 {
   unsigned int

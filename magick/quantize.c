@@ -194,8 +194,23 @@
 #include "defines.h"
 
 /*
+  Define declarations.
+*/
+#define CacheShift  (QuantumDepth-6)
+#define ErrorQueueLength  16
+#define MaxNodes  266817
+
+/*
   Typdef declarations.
 */
+typedef struct _ErrorPacket
+{
+  double
+    red,
+    green,
+    blue;
+} ErrorPacket;
+
 typedef struct _NodeInfo
 {
   double
@@ -280,10 +295,6 @@ typedef struct _CubeInfo
 /*
   Const declarations.
 */
-const int
-  CacheShift = (QuantumDepth-6),
-  MaxNodes = 266817;
-
 const long
   MaxColormapSize = 65535L;
 
@@ -585,11 +596,11 @@ static unsigned int Classification(CubeInfo *cube_info,Image *image)
         Start at the root and descend the color cube tree.
       */
       node_info=cube_info->root;
-      index=MaxTreeDepth-1;
+      level=1;
       mid_red=MaxRGB/2.0;
       mid_green=MaxRGB/2.0;
       mid_blue=MaxRGB/2.0;
-      for (level=1; level <= cube_info->depth; level++)
+      for (index=MaxTreeDepth-1; (int) index > 0; index--)
       {
         id=((DownScale(p->red) >> index) & 0x01) << 2 |
            ((DownScale(p->green) >> index) & 0x01) << 1 |
@@ -617,7 +628,9 @@ static unsigned int Classification(CubeInfo *cube_info,Image *image)
           }
         node_info=node_info->child[id];
         node_info->quantization_error+=distance_squared;
-        index--;
+        if (level == cube_info->depth)
+          break;
+        level++;
       }
       /*
         Sum RGB for this leaf for later derivation of the mean cube color.
