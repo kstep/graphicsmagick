@@ -68,10 +68,10 @@ pkg_DATA = modules.mgk
 pkgdata_DATA = 
 
 # Modules which are to be built
-pkg_LTLIBRARIES   = 8bim.la art.la avi.la avs.la bmp.la mpc.la cmyk.la cut.la \
+pkg_LTLIBRARIES   = 8bim.la art.la avi.la avs.la bmp.la cmyk.la cut.la \
   dcm.la dps.la dpx.la ept.la fax.la fpx.la fits.la gif.la gray.la gradient.la \
-  hdf.la histogram.la html.la icm.la icon.la iptc.la jbig.la \
-  jpeg.la label.la logo.la map.la matte.la miff.la mono.la mtv.la mvg.la \
+  hdf.la histogram.la html.la icm.la icon.la iptc.la jbig.la jpeg.la \
+  label.la logo.la map.la matte.la miff.la mono.la mpc.la mtv.la mvg.la \
   null.la pcd.la pcl.la pcx.la pdb.la pdf.la pict.la pix.la plasma.la \
   png.la pnm.la preview.la ps.la ps2.la ps3.la psd.la pwp.la rgb.la rla.la \
   rle.la sct.la sfw.la sgi.la stegano.la sun.la svg.la tga.la tiff.la \
@@ -105,11 +105,6 @@ avs_la_LIBADD       = ../magick/libMagick.la
 bmp_la_SOURCES      = bmp.c
 bmp_la_LDFLAGS      = -no-undefined -module -avoid-version
 bmp_la_LIBADD       = ../magick/libMagick.la
-
-# CACHE module
-mpc_la_SOURCES    = mpc.c
-mpc_la_LDFLAGS    = -no-undefined -module -avoid-version
-mpc_la_LIBADD     = ../magick/libMagick.la
 
 # CMYK module
 cmyk_la_SOURCES     = cmyk.c
@@ -240,6 +235,11 @@ miff_la_LIBADD      = ../magick/libMagick.la @LIB_ZLIB@  @LIB_BZLIB@ @LIB_JPEG@
 mono_la_SOURCES     = mono.c
 mono_la_LDFLAGS     = -no-undefined -module -avoid-version
 mono_la_LIBADD      = ../magick/libMagick.la
+
+# MPC module
+mpc_la_SOURCES    = mpc.c
+mpc_la_LDFLAGS    = -no-undefined -module -avoid-version
+mpc_la_LIBADD     = ../magick/libMagick.la
 
 # MTV module
 mtv_la_SOURCES      = mtv.c
