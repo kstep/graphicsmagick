@@ -472,6 +472,7 @@ Export PixelPacket InterpolateColor(Image *image,const double x_offset,
     beta;
 
   PixelPacket
+  abc,
     p,
     q,
     r,
@@ -484,9 +485,9 @@ Export PixelPacket InterpolateColor(Image *image,const double x_offset,
   assert(image != (Image *) NULL);
   x=x_offset;
   y=y_offset;
-  if ((x < -1) || (x >= image->columns) || (y < -1) || (y >= image->rows))
-    return(image->background_color);
   p=image->background_color;
+  if ((x < -1) || (x >= image->columns) || (y < -1) || (y >= image->rows))
+    return(p);
   q=p;
   r=p;
   s=p;
@@ -511,7 +512,7 @@ Export PixelPacket InterpolateColor(Image *image,const double x_offset,
           if (GetPixelCache(image,x,y,1,1))
             p=(*image->pixels);
         }
-      if ((y >= 0) && ((x+1) < image->columns))
+      if (((x+1) < image->columns) && (y >= 0))
         {
           if (GetPixelCache(image,x+1,y,1,1))
             q=(*image->pixels);
@@ -531,11 +532,10 @@ Export PixelPacket InterpolateColor(Image *image,const double x_offset,
   y-=floor(y);
   alpha=1.0-x;
   beta=1.0-y;
-  p.red=(beta*(alpha*p.red+x*q.red)+y*(alpha*r.red+x*s.red));
-  p.green=(beta*(alpha*p.green+x*q.green)+y*(alpha*r.green+x*s.green));
-  p.blue=(beta*(alpha*p.blue+x*q.blue)+y*(alpha*r.blue+x*s.blue));
-  p.opacity=
-    (beta*(alpha*p.opacity+x*q.opacity)+y*(alpha*r.opacity+x*s.opacity));
+  p.red=beta*(alpha*p.red+x*q.red)+y*(alpha*r.red+x*s.red);
+  p.green=beta*(alpha*p.green+x*q.green)+y*(alpha*r.green+x*s.green);
+  p.blue=beta*(alpha*p.blue+x*q.blue)+y*(alpha*r.blue+x*s.blue);
+  p.opacity=beta*(alpha*p.opacity+x*q.opacity)+y*(alpha*r.opacity+x*s.opacity);
   return(p);
 }
 

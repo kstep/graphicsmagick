@@ -1099,8 +1099,7 @@ Export Image *ImplodeImage(Image *image,const double factor)
     x_scale,
     y_center,
     y_distance,
-    y_scale,
-    y_squared;
+    y_scale;
 
   Image
     *implode_image;
@@ -1157,17 +1156,15 @@ Export Image *ImplodeImage(Image *image,const double factor)
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
     y_distance=y_scale*((double) y-y_center);
-    y_squared=y_distance*y_distance;
     for (x=0; x < image->columns; x++)
     {
       /*
         Determine if the pixel is within an ellipse.
       */
+      *q=(*p);
       x_distance=x_scale*((double) x-x_center);
-      distance=x_distance*x_distance+y_squared;
-      if (distance >= radius*radius)
-        *q=(*p);
-      else
+      distance=x_distance*x_distance+y_distance*y_distance;
+      if (distance < (radius*radius))
         {
           double
             factor;
@@ -2691,8 +2688,7 @@ Export Image *SwirlImage(Image *image,double degrees)
     x_scale,
     y_center,
     y_distance,
-    y_scale,
-    y_squared;
+    y_scale;
 
   int
     y;
@@ -2744,25 +2740,22 @@ Export Image *SwirlImage(Image *image,double degrees)
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
     y_distance=y_scale*((double) y-y_center);
-    y_squared=y_distance*y_distance;
     for (x=0; x < image->columns; x++)
     {
       /*
         Determine if the pixel is within an ellipse.
       */
+      *q=(*p);
       x_distance=x_scale*((double) x-x_center);
-      distance=x_distance*x_distance+y_squared;
-      if (distance >= (radius*radius))
-        *q=(*p);
-      else
+      distance=x_distance*x_distance+y_distance*y_distance;
+      if (distance < (radius*radius))
         {
           /*
             Swirl the pixel.
           */
           factor=1.0-sqrt(distance)/radius;
-          factor*=degrees*factor;
-          sine=sin(factor);
-          cosine=cos(factor);
+          sine=sin(degrees*factor*factor);
+          cosine=cos(degrees*factor*factor);
           *q=InterpolateColor(image,
             (cosine*x_distance-sine*y_distance)/x_scale+x_center,
             (sine*x_distance+cosine*y_distance)/y_scale+y_center);
