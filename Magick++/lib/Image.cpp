@@ -2885,31 +2885,28 @@ Magick::Image::Image ( MagickLib::Image* image_, Magick::Options* options_ )
 //
 MagickLib::Image * Magick::Image::replaceImage( MagickLib::Image* replacement_ )
 {
-  if ( replacement_ )
+  Lock( _imgRef->_mutexLock );
+  if ( _imgRef->_refCount == 1 )
     {
-      Lock( _imgRef->_mutexLock );
-      if ( _imgRef->_refCount == 1 )
-	{
-	  // We own the image.  Destroy existing image.
-	  if ( _imgRef->_image )
-	    DestroyImages( _imgRef->_image );
-	  
-	  // Set reference image pointer to new image
-	  _imgRef->image(replacement_);
-	}
+      // We own the image, just replace it
+      if ( _imgRef->_image )
+        DestroyImages( _imgRef->_image );
+      if( replacement_ )
+        _imgRef->image(replacement_);
       else
-	{
-	  // De-reference old reference object
-	  --_imgRef->_refCount;
-
-	  // Initialize new reference object with new image pointer
-	  // and copy of options
-	  _imgRef = new ImageRef( replacement_,
-				  _imgRef->_options );
-	}
+        _imgRef->image(AllocateImage(_imgRef->_options->imageInfo()));
+    }
+  else
+    {
+      // We don't own the image, dereference and replace with copy
+      --_imgRef->_refCount;
+      if( replacement_ )
+        _imgRef = new ImageRef( replacement_, _imgRef->_options );
+      else
+        _imgRef = new ImageRef;
     }
 
-  return replacement_;
+  return _imgRef->_image;
 }
 
 //
