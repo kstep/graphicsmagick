@@ -1036,7 +1036,7 @@ static unsigned int RenderFreetype(Image *image,const DrawInfo *draw_info,
         draw_info->font)
     }
   (void) strncpy(font,draw_info->font,MaxTextExtent-1);
-  if (face->num_charmaps != 0))
+  if (face->num_charmaps != 0)
     status=FT_Set_Charmap(face,face->charmaps[0]);
   encoding_type=ft_encoding_none;
   if (draw_info->encoding != (char *) NULL)
