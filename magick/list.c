@@ -730,7 +730,6 @@ MagickExport Image *ShiftImageList(Image **images)
 %    o exception: Return any errors or warnings in this structure.
 %
 %
-%
 */
 MagickExport Image *SpliceImageList(Image *images,const Image *target,
   const unsigned long length,const Image *splices,ExceptionInfo *exception)
