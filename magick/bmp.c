@@ -755,6 +755,7 @@ Export Image *ReadBMPImage(const ImageInfo *image_info)
         /*
           Convert PseudoColor scanline to runlength-encoded color packets.
         */
+        image->class=DirectClass;
         if (bmp_header.compression == 1)
           bytes_per_line=image->columns << 1;
         for (y=image->rows-1; y >= 0; y--)
@@ -767,10 +768,10 @@ Export Image *ReadBMPImage(const ImageInfo *image_info)
           {
             h=(*p++);
             l=(*p++);
-            q->red=(Quantum) ((MaxRGB*((int) (l & 0x7c) >> 2))/31);
-            q->green=(Quantum)
-              ((MaxRGB*(((int) (l & 0x03) << 3)+((int) (h & 0xe0) >> 5)))/31);
-            q->blue=(Quantum) ((MaxRGB*((int) (h & 0x1f)))/31);
+            q->red=(MaxRGB*((int) (l & 0x7c) >> 2))/31;
+            q->green=
+              (MaxRGB*(((int) (l & 0x03) << 3)+((int) (h & 0xe0) >> 5)))/31;
+            q->blue=(MaxRGB*((int) (h & 0x1f)))/31;
             q++;
           }
           if (!SyncPixelCache(image))
