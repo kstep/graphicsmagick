@@ -7586,22 +7586,22 @@ MagickExport unsigned int TransformRGBImage(Image *image,
             case sRGBColorspace:
             case YCCColorspace:
             {
-              red=(red < 0) ? 0 : (red > ScaleCharToWideChar(350)) ?
-                ScaleCharToWideChar(350) : red+0.5;
-              green=(green < 0) ? 0 : (green > ScaleCharToWideChar(350)) ?
-                ScaleCharToWideChar(350) : green+0.5;
-              blue=(blue < 0) ? 0 : (blue > ScaleCharToWideChar(350)) ?
-                ScaleCharToWideChar(350) : blue+0.5;
+              red=(red < 0) ? 0 : (red > ScaleWideCharToQuantum(350)) ?
+                ScaleWideCharToQuantum(350) : red+0.5;
+              green=(green < 0) ? 0 : (green > ScaleWideCharToQuantum(350)) ?
+                ScaleWideCharToQuantum(350) : green+0.5;
+              blue=(blue < 0) ? 0 : (blue > ScaleWideCharToQuantum(350)) ?
+                ScaleWideCharToQuantum(350) : blue+0.5;
               if (colorspace == sRGBColorspace)
                 {
-                  q->red=ScaleCharToWideChar(sRGBMap[ScaleQuantumToWideChar(red)]);
-                  q->green=ScaleCharToWideChar(sRGBMap[ScaleQuantumToWideChar(green)]);
-                  q->blue=ScaleCharToWideChar(sRGBMap[ScaleQuantumToWideChar(blue)]);
+                  q->red=ScaleWideCharToQuantum(sRGBMap[ScaleQuantumToWideChar(red)]);
+                  q->green=ScaleWideCharToQuantum(sRGBMap[ScaleQuantumToWideChar(green)]);
+                  q->blue=ScaleWideCharToQuantum(sRGBMap[ScaleQuantumToWideChar(blue)]);
                   break;
                 }
-              q->red=ScaleCharToWideChar(YCCMap[ScaleQuantumToWideChar(red)]);
-              q->green=ScaleCharToWideChar(YCCMap[ScaleQuantumToWideChar(green)]);
-              q->blue=ScaleCharToWideChar(YCCMap[ScaleQuantumToWideChar(blue)]);
+              q->red=ScaleWideCharToQuantum(YCCMap[ScaleQuantumToWideChar(red)]);
+              q->green=ScaleWideCharToQuantum(YCCMap[ScaleQuantumToWideChar(green)]);
+              q->blue=ScaleWideCharToQuantum(YCCMap[ScaleQuantumToWideChar(blue)]);
               break;
             }
             default:
@@ -7645,28 +7645,28 @@ MagickExport unsigned int TransformRGBImage(Image *image,
           case sRGBColorspace:
           case YCCColorspace:
           {
-            red=(red < 0) ? 0 : (red > ScaleCharToWideChar(350)) ?
-              ScaleCharToWideChar(350) : red+0.5;
-            green=(green < 0) ? 0 : (green > ScaleCharToWideChar(350)) ?
-              ScaleCharToWideChar(350) : green+0.5;
-            blue=(blue < 0) ? 0 : (blue > ScaleCharToWideChar(350)) ?
-              ScaleCharToWideChar(350) : blue+0.5;
+            red=(red < 0) ? 0 : (red > ScaleWideCharToQuantum(350)) ?
+              ScaleWideCharToQuantum(350) : red+0.5;
+            green=(green < 0) ? 0 : (green > ScaleWideCharToQuantum(350)) ?
+              ScaleWideCharToQuantum(350) : green+0.5;
+            blue=(blue < 0) ? 0 : (blue > ScaleWideCharToQuantum(350)) ?
+              ScaleWideCharToQuantum(350) : blue+0.5;
             if (colorspace == sRGBColorspace)
               {
                 image->colormap[i].red=
-                  ScaleCharToWideChar(sRGBMap[ScaleQuantumToWideChar(red)]);
+                  ScaleWideCharToQuantum(sRGBMap[ScaleQuantumToWideChar(red)]);
                 image->colormap[i].green=
-                  ScaleCharToWideChar(sRGBMap[ScaleQuantumToWideChar(green)]);
+                  ScaleWideCharToQuantum(sRGBMap[ScaleQuantumToWideChar(green)]);
                 image->colormap[i].blue=
-                  ScaleCharToWideChar(sRGBMap[ScaleQuantumToWideChar(blue)]);
+                  ScaleWideCharToQuantum(sRGBMap[ScaleQuantumToWideChar(blue)]);
                 break;
               }
             image->colormap[i].red=
-              ScaleCharToWideChar(YCCMap[ScaleQuantumToWideChar(red)]);
+              ScaleWideCharToQuantum(YCCMap[ScaleQuantumToWideChar(red)]);
             image->colormap[i].green=
-              ScaleCharToWideChar(YCCMap[ScaleQuantumToWideChar(green)]);
+              ScaleWideCharToQuantum(YCCMap[ScaleQuantumToWideChar(green)]);
             image->colormap[i].blue=
-              ScaleCharToWideChar(YCCMap[ScaleQuantumToWideChar(blue)]);
+              ScaleWideCharToQuantum(YCCMap[ScaleQuantumToWideChar(blue)]);
             break;
           }
           default:

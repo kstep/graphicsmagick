@@ -28,7 +28,7 @@ testReadWrite( 'input_bw.png', 'output_bw.png', q/quality=>95/,
 print( "8-bit grayscale PNG ...\n" );
 testReadWrite( 'input_mono.png',
   'output_mono.png', '',
-  '7ff88b9faaf4d149c515ea06544abe2899181e12ffae6adef988129f5dd66ef7');
+  '19da3123692c66d023074dd1e272119ab2357b9a34855a393ad18c88af01ae86');
 #
 # 3) Test 16-bit Portable Network Graphics
 # 
