@@ -1,4 +1,7 @@
 2004-06-28  Rolf Schroedter <rolf.schroedter@dlr.de>
+	* INSTALL: Added windows compilation instructions
+
+2004-06-28  Rolf Schroedter <rolf.schroedter@dlr.de>
 	* tests/test-wand.tcl: Fixed FxImage, FxImageChannel tests
 
 2004-06-27  Rolf Schroedter <rolf.schroedter@dlr.de>
