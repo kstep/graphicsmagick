@@ -2237,17 +2237,6 @@ Magick::FilterTypes Magick::Image::filterType ( void ) const
   return constImage()->filter;
 }
 
-// Should a multi-image file be flattened on Read
-void Magick::Image::flatten ( bool flag_ )
-{
-  modifyImage();
-  imageInfo()->flatten = flag_;
-}
-bool Magick::Image::flatten ( void ) const
-{
-  return constImageInfo()->flatten;
-}
-
 // Font name
 void Magick::Image::font ( const std::string &font_ )
 {

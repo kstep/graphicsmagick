@@ -51,8 +51,6 @@ void Magick::Montage::updateMontageInfo ( MontageInfo &montageInfo_ ) const
   montageInfo_.border_color = Color();
   // border_width
   montageInfo_.border_width = 0;
-  // compose
-  montageInfo_.compose = _compose;
   // filename
   _fileName.copy( montageInfo_.filename, MaxTextExtent - 1 );
   montageInfo_.filename[ _fileName.length() ] = 0; // null terminate
