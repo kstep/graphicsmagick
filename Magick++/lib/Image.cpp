@@ -1133,7 +1133,6 @@ void Magick::Image::read ( const std::string &imageSpec_ )
       // Destroy any extra image frames
       MagickLib::Image* next = image->next;
       image->next = 0;
-      image->orphan = true;
       next->previous = 0;
       DestroyImageList( next );
  
