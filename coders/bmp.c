@@ -581,9 +581,9 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         bmp_info.alpha_mask=0;
         if (logging)
           {
-            LogMagickEvent(CoderEvent,"  Datastream:  OS/2");
-            LogMagickEvent(CoderEvent,"  Width: %ld",bmp_info.width);
-            LogMagickEvent(CoderEvent,"  Height: %ld",bmp_info.height);
+            LogMagickEvent(CoderEvent,"  Format: OS/2 datastream");
+            LogMagickEvent(CoderEvent,"  Geometry: %ldx%ld",bmp_info.width,
+              bmp_info.height);
           }
       }
     else
@@ -606,12 +606,11 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         bmp_info.colors_important=ReadBlobLSBLong(image);
         profile_data=0;
         profile_size=0;
-
         if (logging)
           {
-            LogMagickEvent(CoderEvent,"  Datastream: MS Windows");
-            LogMagickEvent(CoderEvent,"  Width: %ld",bmp_info.width);
-            LogMagickEvent(CoderEvent,"  Height: %ld",bmp_info.height);
+            LogMagickEvent(CoderEvent,"  Format: MS Windows datastream");
+            LogMagickEvent(CoderEvent,"  Geometry: %ldx%ld",bmp_info.width,
+              bmp_info.height);
             LogMagickEvent(CoderEvent,"  Bits per pixel: %d",
               bmp_info.bits_per_pixel);
             switch ((int) bmp_info.compression)

@@ -521,20 +521,6 @@ static void *LogToBlob(const char *filename,size_t *length,
 %
 %
 */
-
-static long _GetThreadId(void)
-{
-#if defined(HasPTHREADS)
-  return((long) pthread_self());
-#else
-#if defined(WIN32)
-  return((long) GetCurrentThreadId());
-#else
-  return(0);
-#endif
-#endif
-}
-
 MagickExport unsigned int LogMagickEvent(const LogEventType type,
   const char *format,...)
 {
@@ -592,7 +578,7 @@ MagickExport unsigned int LogMagickEvent(const LogEventType type,
       (void) fprintf(log_info->file,
         "%.1024s %0.3fu %ld:%02ld %.1024s[%ld]: %.1024s\n",timestamp,user_time,
         (long) (elapsed_time/60.0),(long) ceil(fmod(elapsed_time,60.0)),domain,
-        _GetThreadId(),event);
+        (long) getpid(),event);
     }
   else
     {
@@ -623,7 +609,7 @@ MagickExport unsigned int LogMagickEvent(const LogEventType type,
       (void) fprintf(log_info->file,"<record>\n");
       (void) fprintf(log_info->file,"  <timestamp>%.1024s</timestamp>\n",
         timestamp);
-      (void) fprintf(log_info->file,"  <id>%ld</id>\n",_GetThreadId());
+      (void) fprintf(log_info->file,"  <id>%ld</id>\n",(long) getpid());
       (void) fprintf(log_info->file,"  <user-time>%0.3f</user-time>\n",
         user_time);
       (void) fprintf(log_info->file,
