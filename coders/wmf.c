@@ -528,6 +528,7 @@ static void wmf_magick_device_begin (wmfAPI* API)
   wmf_stream_printf (API,out,"translate %.10g,%.10g\n",
                      ddata->translate_x,
                      ddata->translate_y);
+  wmf_stream_printf (API,out,"fill none\n");
 }
 
 /*
