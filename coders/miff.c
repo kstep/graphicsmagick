@@ -1186,6 +1186,14 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
     /*
       Allocate image pixels.
     */
+    if (((image_info->colorspace != UndefinedColorspace) ||
+         (image->colorspace != CMYKColorspace)) &&
+         (image_info->colorspace != CMYKColorspace))
+      TransformRGBImage(image,RGBColorspace);
+    else
+      if (image->colorspace != CMYKColorspace)
+        RGBTransformImage(image,CMYKColorspace);
+    (void) GetImageDepth(image);
     if (image->storage_class == DirectClass)
       packet_size=image->depth > 8 ? 6 : 3;
     else
@@ -1204,13 +1212,6 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
     /*
       Write MIFF header.
     */
-    if (((image_info->colorspace != UndefinedColorspace) ||
-         (image->colorspace != CMYKColorspace)) &&
-         (image_info->colorspace != CMYKColorspace))
-      TransformRGBImage(image,RGBColorspace);
-    else
-      if (image->colorspace != CMYKColorspace)
-        RGBTransformImage(image,CMYKColorspace);
     (void) WriteBlobString(image,"id=ImageMagick\n");
     if (image->storage_class == PseudoClass)
       FormatString(buffer,"class=PseudoClass  colors=%u  matte=%s\n",
