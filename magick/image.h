@@ -11,6 +11,7 @@ extern "C" {
 /*
   Image define declarations.
 */
+#define alias  antialias
 #define Alphabet  "`-=[]\\;',./~!@#$%^&*()_+{}|:\"<>?" \
   "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 #define ColorMatch(color,target,distance) \
@@ -421,7 +422,7 @@ typedef struct _ImageInfo
     linewidth,
     pointsize,
     adjoin,
-    alias,
+    antialias,
     depth,
     dither,
     monochrome,

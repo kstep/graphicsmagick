@@ -44,7 +44,7 @@
 <dt>Introduction
 </h2>
 <dd><a href="ftp://204.183.81.131/pub/ImageMagick/perl">PerlMagick</a>, 
-version 1.57, is an objected-oriented <a href="http://www.perl.com/perl/">
+version 1.60, is an objected-oriented <a href="http://www.perl.com/perl/">
 Perl</a> interface to <a href="../ImageMagick.html">ImageMagick</a>.  Use the
 module to read, manipulate, or write an image or image sequence
 from within a Perl script.  This makes it very suitable for Web CGI scripts.
@@ -85,7 +85,7 @@ ImageMagick must already be installed on your system.  Next, get the
 distribution and unpack it as shown below:
 <p>
 <pre>
-    gunzip -c PerlMagick-1.57.tar.gz | tar -xvf -
+    gunzip -c PerlMagick-1.60.tar.gz | tar -xvf -
     cd PerlMagick
 </pre>
 <p>
@@ -884,9 +884,9 @@ Image Attributes
   <td>join images into a single multi-image file</td>
 </tr>
 <tr>
-  <td>alias</td>
+  <td>antialias</td>
   <td>{True, False}</td>
-  <td>allow pixel aliasing</td>
+  <td>remove pixel aliasing</td>
 </tr>
 <tr>
   <td>background</td>

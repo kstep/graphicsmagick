@@ -55,7 +55,7 @@
 %
 %  Where options include:
 %    -adjoin              join images into a single multi-image file
-%    -alias               allow pixel aliasing
+%    -antialias               remove pixelaliasing
 %    -append              append an image sequence
 %    -average             average an image sequence
 %    -blur factor         apply a filter to blur the image
@@ -245,7 +245,7 @@ static void Usage(const char *client_name)
     *options[]=
     {
       "-adjoin              join images into a single multi-image file",
-      "-alias               allow pixel aliasing",
+      "-antialias               remove pixelaliasing",
       "-append              append an image sequence",
       "-average             average an image sequence",
       "-blur factor         apply a filter to blur the image",
@@ -464,9 +464,9 @@ int main(int argc,char **argv)
               image_info.adjoin=(*option == '-');
               break;
             }
-          if (strncmp("alias",option+1,3) == 0)
+          if (strncmp("antialias",option+1,3) == 0)
             {
-              image_info.alias=(*option == '-');
+              image_info.antialias=(*option == '-');
               break;
             }
           if (strncmp("append",option+1,2) == 0)

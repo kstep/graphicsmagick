@@ -19,10 +19,10 @@ testSetAttribute('input.miff','adjoin','True');
 testSetAttribute('input.miff','adjoin','False');
 
 ++$test;
-testSetAttribute('input.miff','alias','True');
+testSetAttribute('input.miff','antialias','True');
 
 ++$test;
-testSetAttribute('input.miff','alias','False');
+testSetAttribute('input.miff','antialias','False');
 
 ++$test;
 testSetAttribute('input.miff','background','#807060');

@@ -5858,9 +5858,10 @@ Image *ReadLABELImage(const ImageInfo *image_info)
         q->red=XDownScale(pen_color.red);
         q->green=XDownScale(pen_color.green);
         q->blue=XDownScale(pen_color.blue);
-        q->index=(int) (Opaque*Min(*p,4))/4;
-        if (local_info->alias && (*p > 1))
-          q->index=Opaque;
+        if (local_info->antialias)
+          q->index=(int) (Opaque*Min(*p,4))/4;
+        else
+          q->index=(*p) > 1 ? Opaque : Transparent;
         if (q->index == Transparent)
           {
             q->red=(~q->red);
@@ -8465,8 +8466,8 @@ Image *ReadPDFImage(const ImageInfo *image_info)
       image_info->subimage+1,image_info->subimage+image_info->subrange);
   (void) strcpy(filename,image_info->filename);
   TemporaryFilename((char *) image_info->filename);
-  FormatString(command,delegate_info.commands,image_info->alias ? 1 : 4,
-    image_info->alias ? 1 : 4,geometry,density,options,image_info->filename,
+  FormatString(command,delegate_info.commands,image_info->antialias ? 4 : 1,
+    image_info->antialias ? 4 : 1,geometry,density,options,image_info->filename,
     postscript_filename);
   ProgressMonitor(RenderPostscriptText,0,8);
   status=SystemCommand(image_info->verbose,command);
@@ -10888,8 +10889,8 @@ Image *ReadPSImage(const ImageInfo *image_info)
       image_info->subimage+1,image_info->subimage+image_info->subrange);
   (void) strcpy(filename,image_info->filename);
   TemporaryFilename((char *) image_info->filename);
-  FormatString(command,delegate_info.commands,image_info->alias ? 1 : 4,
-    image_info->alias ? 1 : 4,geometry,density,options,image_info->filename,
+  FormatString(command,delegate_info.commands,image_info->antialias ? 1 : 1,
+    image_info->antialias ? 4 : 1,geometry,density,options,image_info->filename,
     postscript_filename);
   ProgressMonitor(RenderPostscriptText,0,8);
   status=SystemCommand(image_info->verbose,command);

@@ -913,16 +913,17 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
             info->image_info->adjoin=sp;
           return;
         }
-      if (strEQcase(attribute,"alias"))
+      if (strEQcase(attribute,"antialias"))
         {
           sp=SvPOK(sval) ? LookupStr(BooleanTypes,SvPV(sval,na)) : SvIV(sval);
           if (sp < 0)
             {
-              MagickWarning(OptionWarning,"Invalid alias type",SvPV(sval,na));
+              MagickWarning(OptionWarning,"Invalid antialias type",
+                SvPV(sval,na));
               return;
             }
           if (info)
-            info->image_info->alias=sp;
+            info->image_info->antialias=sp;
           return;
         }
       break;
@@ -2561,7 +2562,7 @@ Get(ref,...)
                 s=newSViv(info->image_info->adjoin);
               break;
             }
-          if (strEQcase(attribute,"alias"))
+          if (strEQcase(attribute,"antialias"))
             {
               if (info)
                 s=newSViv(info->image_info->alias);

@@ -4156,10 +4156,10 @@ Export void DrawImage(Image *image,AnnotateInfo *annotate_info)
       if (point.y > bounds.y2)
         bounds.y2=point.y;
       primitive_info[i].primitive=primitive_type;
-      primitive_info[i].method=FloodfillMethod;
       primitive_info[i].coordinates=0;
       primitive_info[i].x=point.x;
       primitive_info[i].y=point.y;
+      primitive_info[i].method=FloodfillMethod;
       p+=n;
       while (isspace((int) (*p)) || (*p == ','))
         p++;
@@ -4432,6 +4432,9 @@ Export void DrawImage(Image *image,AnnotateInfo *annotate_info)
     {
       target.x=x;
       opacity=InsidePrimitive(primitive_info,annotate_info,&target,image);
+      if (!annotate_info->image_info->antialias)
+        if (opacity != Transparent)
+          opacity=Opaque;
       if (opacity != Transparent)
         {
           if (tile != (Image *) NULL)
@@ -5332,7 +5335,7 @@ Export void GetImageInfo(ImageInfo *image_info)
   image_info->density=(char *) NULL;
   image_info->linewidth=1;
   image_info->adjoin=True;
-  image_info->alias=False;
+  image_info->antialias=True;
   image_info->depth=QuantumDepth;
   image_info->dither=True;
   image_info->monochrome=False;
@@ -6814,9 +6817,9 @@ Export void MogrifyImage(ImageInfo *image_info,const int argc,char **argv,
     option=argv[i];
     if ((Extent(option) <= 1) || ((*option != '-') && (*option != '+')))
       continue;
-    if (strncmp("alias",option+1,3) == 0)
+    if (strncmp("antialias",option+1,3) == 0)
       {
-        image_info->alias=(*option == '-');
+        image_info->antialias=(*option == '-');
         continue;
       }
     if (strncmp("-background",option,6) == 0)

@@ -39,4 +39,4 @@ $image->Rotate(-90);
 print "Write image...\n";
 $image->Write('shapes.gif');
 print "Display image...\n";
-$image->display();
+$image->Display();

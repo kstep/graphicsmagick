@@ -7895,7 +7895,7 @@ unsigned int WritePREVIEWImage(const ImageInfo *image_info,Image *image)
     PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
   local_info->quality=0;
   degrees=0;
-  gamma=(-0.2);
+  gamma=(-0.2f);
   colors=2;
   x=0;
   y=0;
@@ -7980,7 +7980,7 @@ unsigned int WritePREVIEWImage(const ImageInfo *image_info,Image *image)
       }
       case GammaPreview:
       {
-        FormatString(factor,"%.1f",gamma+=0.4);
+        FormatString(factor,"%.1f",gamma+=0.4f);
         FormatString(label,"gamma %.1024s",factor);
         commands[argc++]="-gamma";
         commands[argc++]=factor;
@@ -8124,7 +8124,7 @@ unsigned int WritePREVIEWImage(const ImageInfo *image_info,Image *image)
       }
       case SegmentPreview:
       {
-        threshold+=0.4;
+        threshold+=0.4f;
         FormatString(factor,"%.1fx%.1f",threshold,threshold);
         FormatString(label,"segment %.1024s",factor);
         commands[argc++]="-colors";

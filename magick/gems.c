@@ -487,15 +487,15 @@ static double DistanceToLine(const PointInfo *pixel,const SegmentInfo *line)
   dot_product=(pixel->x-line->x1)*(line->x2-line->x1)+
     (pixel->y-line->y1)*(line->y2-line->y1);
   if (dot_product <= 0)
-    return(sqrt(alpha*alpha+beta*beta));
+    return(alpha*alpha+beta*beta);
   v=(line->x2-line->x1)*(line->x2-line->x1)+
     (line->y2-line->y1)*(line->y2-line->y1);
   gamma=dot_product*dot_product/v;
   if (gamma <= v)
-    return(sqrt(alpha*alpha+beta*beta-gamma));
+    return(alpha*alpha+beta*beta-gamma);
   alpha=pixel->x-line->x2;
   beta=pixel->y-line->y2;
-  return(sqrt(alpha*alpha+beta*beta));
+  return(alpha*alpha+beta*beta);
 }
 
 static unsigned short PixelOnLine(const PointInfo *pixel,
@@ -509,14 +509,14 @@ static unsigned short PixelOnLine(const PointInfo *pixel,
   if ((line->x1 == line->x2) && (line->y1 == line->y2))
     return((pixel->x == line->x1) && (pixel->y == line->y1) ? Opaque : opacity);
   distance=DistanceToLine(pixel,line);
-  if (distance <= (mid-0.5))
+  if (distance <= ((mid-0.5)*(mid-0.5)))
     return(Opaque);
-  if (distance <= (mid+0.5))
+  if (distance <= ((mid+0.5)*(mid+0.5)))
     {
       register double
         alpha;
 
-      alpha=distance-mid-0.5;
+      alpha=sqrt(distance)-mid-0.5;
       return((unsigned short) Max(opacity,Opaque*alpha*alpha));
     }
   return(opacity);
@@ -602,20 +602,21 @@ Export unsigned short InsidePrimitive(PrimitiveInfo *primitive_info,
       }
       case CirclePrimitive:
       {
-        double
-          center;
-
         alpha=p->x-pixel->x;
         beta=p->y-pixel->y;
         distance=sqrt(alpha*alpha+beta*beta);
-        radius=sqrt(((p->y-q->y)*(p->y-q->y))+((p->x-q->x)*(p->x-q->x)));
-        center=fabs(distance-radius);
-        if (center < (mid+0.5))
-          if (center <= (mid-0.5))
+        alpha=p->x-q->x;
+        beta=p->y-q->y;
+        radius=sqrt(alpha*alpha+beta*beta);
+        beta=fabs(distance-radius);
+        if (beta < (mid+0.5))
+          if (beta <= (mid-0.5))
             opacity=Opaque;
           else
-            opacity=(unsigned short)
-              Max(opacity,Opaque*(mid-center+0.5)*(mid-center+0.5));
+            {
+              alpha=mid-beta+0.5;
+              opacity=(unsigned short) Max(opacity,Opaque*alpha*alpha);
+            }
         break;
       }
       case FillCirclePrimitive:
@@ -623,13 +624,17 @@ Export unsigned short InsidePrimitive(PrimitiveInfo *primitive_info,
         alpha=p->x-pixel->x;
         beta=p->y-pixel->y;
         distance=sqrt(alpha*alpha+beta*beta);
-        radius=sqrt(((p->y-q->y)*(p->y-q->y))+((p->x-q->x)*(p->x-q->x)));
+        alpha=p->x-q->x;
+        beta=p->y-q->y;
+        radius=sqrt(alpha*alpha+beta*beta);
         if (distance <= (radius-1.0))
           opacity=Opaque;
         else
           if (distance < (radius+1.0))
-            opacity=(unsigned short) Max(opacity,Opaque*
-              ((radius-distance+1.0)/2)*(radius-distance+1.0)/2);
+            {
+              alpha=(radius-distance+1.0)/2.0;
+              opacity=(unsigned short) Max(opacity,Opaque*alpha*alpha);
+            }
         break;
       }
       case PolygonPrimitive:
@@ -726,19 +731,24 @@ Export unsigned short InsidePrimitive(PrimitiveInfo *primitive_info,
           if (distance < minimum_distance)
             minimum_distance=distance;
         }
+        minimum_distance=sqrt(minimum_distance);
         if (crossings & 0x01)
           {
             poly_opacity=Opaque;
             if (minimum_distance < 0.5)
-              poly_opacity=(unsigned short)
-                (Opaque*(0.5+minimum_distance)*(0.5+minimum_distance));
+              {
+                alpha=0.5+minimum_distance;
+                poly_opacity=(unsigned short) (Opaque*alpha*alpha);
+              }
             opacity=Max(opacity,poly_opacity);
             break;
           }
         poly_opacity=Transparent;
         if (minimum_distance < 0.5)
-          poly_opacity=(unsigned short)
-            (Opaque*(0.5-minimum_distance)*(0.5-minimum_distance));
+          {
+            alpha=0.5-minimum_distance;
+            poly_opacity=(unsigned short) (Opaque*alpha*alpha);
+          }
         opacity=Max(opacity,poly_opacity);
         break;
       }
