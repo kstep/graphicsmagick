@@ -961,11 +961,13 @@ static int LookupStr(char **list,const char *string)
 static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
   SV *sval)
 {
-  int
+  double
     blue,
     green,
     opacity,
-    red,
+    red;
+
+  int
     sp;
 
   PixelPacket
@@ -1022,9 +1024,14 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
       if (strEQcase(attribute,"blue-") || strEQcase(attribute,"blue_"))
         {
           for ( ; image; image=image->next)
+          {
+            (void) sscanf(SvPV(sval,na),"%lf %lf",
+              &image->chromaticity.blue_primary.x,
+              &image->chromaticity.blue_primary.y);
             (void) sscanf(SvPV(sval,na),"%lf,%lf",
               &image->chromaticity.blue_primary.x,
               &image->chromaticity.blue_primary.y);
+          }
           return;
         }
       if (strEQcase(attribute,"bordercolor"))
@@ -1067,11 +1074,14 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
                 red=color->red;
                 green=color->green;
                 blue=color->blue;
-                (void) sscanf(SvPV(sval,na),"%d,%d,%d",&red,&green,&blue);
-                color->red=((red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red);
-                color->green=
+                (void) sscanf(SvPV(sval,na),"%lf %lf %lf",&red,&green,&blue);
+                (void) sscanf(SvPV(sval,na),"%lf,%lf,%lf",&red,&green,&blue);
+                color->red=(Quantum)
+                  ((red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red);
+                color->green=(Quantum)
                   ((green < 0) ? 0 : (green > MaxRGB) ? MaxRGB : green);
-                color->blue=((blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue);
+                color->blue=(Quantum)
+                  ((blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue);
               }
           }
           return;
@@ -1225,9 +1235,14 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
       if (strEQcase(attribute,"green-") || strEQcase(attribute,"green_"))
         {
           for ( ; image; image=image->next)
+          {
+            (void) sscanf(SvPV(sval,na),"%lf %lf",
+              &image->chromaticity.green_primary.x,
+              &image->chromaticity.green_primary.y);
             (void) sscanf(SvPV(sval,na),"%lf,%lf",
               &image->chromaticity.green_primary.x,
               &image->chromaticity.green_primary.y);
+          }
           return;
         }
       break;
@@ -1257,6 +1272,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
               continue;
             x=0;
             y=0;
+            (void) sscanf(attribute,"%*[^[][%d %d",&x,&y);
             (void) sscanf(attribute,"%*[^[][%d,%d",&x,&y);
             pixel=GetImagePixels(image,x % image->columns,y % image->rows,1,1);
             if (pixel == (PixelPacket *) NULL)
@@ -1402,6 +1418,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
           {
             x=0;
             y=0;
+            (void) sscanf(attribute,"%*[^[][%d %d",&x,&y);
             (void) sscanf(attribute,"%*[^[][%d,%d",&x,&y);
             pixel=GetImagePixels(image,x % image->columns,y % image->rows,1,1);
             if (pixel == (PixelPacket *) NULL)
@@ -1415,13 +1432,17 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
                 green=pixel->green;
                 blue=pixel->blue;
                 opacity=pixel->opacity;
-                (void) sscanf(SvPV(sval,na),"%d,%d,%d,%d",&red,&green,&blue,
+                (void) sscanf(SvPV(sval,na),"%lf %lf %lf %lf",&red,&green,&blue,
                   &opacity);
-                pixel->red=((red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red);
-                pixel->green=
+                (void) sscanf(SvPV(sval,na),"%lf,%lf,%lf,%lf",&red,&green,&blue,
+                  &opacity);
+                pixel->red=(Quantum)
+                  ((red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red);
+                pixel->green=(Quantum)
                   ((green < 0) ? 0 : (green > MaxRGB) ? MaxRGB : green);
-                pixel->blue=((blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue);
-                pixel->opacity=
+                pixel->blue=(Quantum)
+                  ((blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue);
+                pixel->opacity=(Quantum)
                   ((opacity < 0) ? 0 : (opacity > MaxRGB) ? MaxRGB : opacity);
               }
             (void) SyncImagePixels(image);
@@ -1465,9 +1486,14 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
       if (strEQcase(attribute,"red-") || strEQcase(attribute,"red_"))
         {
           for ( ; image; image=image->next)
+          {
+            (void) sscanf(SvPV(sval,na),"%lf %lf",
+              &image->chromaticity.red_primary.x,
+              &image->chromaticity.red_primary.y);
             (void) sscanf(SvPV(sval,na),"%lf,%lf",
               &image->chromaticity.red_primary.x,
               &image->chromaticity.red_primary.y);
+          }
           return;
         }
       if (strEQcase(attribute,"render"))
@@ -1592,9 +1618,14 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
       if (strEQcase(attribute,"white-") || strEQcase(attribute,"white_"))
         {
           for ( ; image; image=image->next)
+          {
+            (void) sscanf(SvPV(sval,na),"%lf %lf",
+              &image->chromaticity.white_point.x,
+              &image->chromaticity.white_point.y);
             (void) sscanf(SvPV(sval,na),"%lf,%lf",
               &image->chromaticity.white_point.x,
               &image->chromaticity.white_point.y);
+          }
           return;
         }
       break;
@@ -3028,6 +3059,7 @@ Get(ref,...)
                 break;
               x=0;
               y=0;
+              (void) sscanf(attribute,"%*[^[][%d %d",&x,&y);
               (void) sscanf(attribute,"%*[^[][%d,%d",&x,&y);
               pixel=GetOnePixel(image,x % image->columns,y % image->rows);
               indexes=GetIndexes(image);
@@ -3182,6 +3214,7 @@ Get(ref,...)
                 break;
               x=0;
               y=0;
+              (void) sscanf(attribute,"%*[^[][%d %d",&x,&y);
               (void) sscanf(attribute,"%*[^[][%d,%d",&x,&y);
               pixel=GetOnePixel(image,x % image->columns,y % image->rows);
               FormatString(name,"%u,%u,%u,%u",pixel.red,pixel.green,pixel.blue,
@@ -6168,6 +6201,7 @@ QueryFontMetrics(ref,...)
         {
           if (strEQcase(attribute,"rotate"))
             {
+              (void) sscanf(SvPV(ST(i),na),"%lf %lf",&affine.rx,&affine.ry);
               (void) sscanf(SvPV(ST(i),na),"%lf,%lf",&affine.rx,&affine.ry);
               break;
             }
@@ -6178,6 +6212,7 @@ QueryFontMetrics(ref,...)
         {
           if (strEQcase(attribute,"scale"))
             {
+              (void) sscanf(SvPV(ST(i),na),"%lf %lf",&affine.sx,&affine.sy);
               (void) sscanf(SvPV(ST(i),na),"%lf,%lf",&affine.sx,&affine.sy);
               break;
             }
@@ -6189,6 +6224,7 @@ QueryFontMetrics(ref,...)
 
               x_angle=0.0;
               y_angle=0.0;
+              (void) sscanf(SvPV(ST(i),na),"%lf %lf",&x_angle,&y_angle);
               (void) sscanf(SvPV(ST(i),na),"%lf,%lf",&x_angle,&y_angle);
               affine.ry=tan(DegreesToRadians(fmod(x_angle,360.0)));
               affine.rx=tan(DegreesToRadians(fmod(y_angle,360.0)));
@@ -6206,6 +6242,7 @@ QueryFontMetrics(ref,...)
             }
           if (strEQcase(attribute,"translate"))
             {
+              (void) sscanf(SvPV(ST(i),na),"%lf %lf",&affine.tx,&affine.ty);
               (void) sscanf(SvPV(ST(i),na),"%lf,%lf",&affine.tx,&affine.ty);
               break;
             }
