@@ -10,7 +10,7 @@
 %                            P      N   N   GGG                               %
 %                                                                             %
 %                                                                             %
-%                    Read/Write ImageMagick Image Format.                     %
+%                   Read/Write GraphicsMagick Image Format.                   %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %
@@ -26,8 +26,8 @@
 %  copy of this software and associated documentation files                   %
 %  ("GraphicsMagick"), to deal in GraphicsMagick without restriction,         %
 %  including without limitation the rights to use, copy, modify, merge,       %
-%  publish, distribute, sublicense, and/or sell copies of ImageMagick, and    %
-%  to permit persons to whom GraphicsMagick is furnished to do so,            %
+%  publish, distribute, sublicense, and/or sell copies of GraphicsMagick,     %
+%  and to permit persons to whom GraphicsMagick is furnished to do so,        %
 %  subject to the following conditions:                                       %
 %                                                                             %
 %  The above copyright notice and this permission notice shall be included    %
@@ -1187,7 +1187,7 @@ static void mng_get_data(png_structp png_ptr,png_bytep data,png_size_t length)
                       Skip the bKGD data byte and CRC.
                     */
                     check=(png_size_t)
-                      ReadBlob(image,5,(char *) mng_info->read_buffer);
+                   ReadBlob(image,5,(char *) mng_info->read_buffer);
                     check=(png_size_t) ReadBlob(image,(size_t) length,
                       (char *) mng_info->read_buffer);
                     mng_info->saved_bkgd_index=mng_info->read_buffer[0];

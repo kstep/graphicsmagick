@@ -10,7 +10,7 @@
 %                                 N   N    T                                  %
 %                                                                             %
 %                                                                             %
-%                  Windows NT Utility Methods for ImageMagick                 %
+%                Windows NT Utility Methods for GraphicsMagick                %
 %                                                                             %
 %                                                                             %
 %                               Software Design                               %
@@ -25,8 +25,8 @@
 %  copy of this software and associated documentation files                   %
 %  ("GraphicsMagick"), to deal in GraphicsMagick without restriction,         %
 %  including without limitation the rights to use, copy, modify, merge,       %
-%  publish, distribute, sublicense, and/or sell copies of ImageMagick, and    %
-%  to permit persons to whom GraphicsMagick is furnished to do so,            %
+%  publish, distribute, sublicense, and/or sell copies of GraphicsMagick,     %
+%  and to permit persons to whom GraphicsMagick is furnished to do so,        %
 %  subject to the following conditions:                                       %
 %                                                                             %
 %  The above copyright notice and this permission notice shall be included    %
@@ -832,7 +832,7 @@ MagickExport void NTErrorHandler(const ExceptionType error,const char *reason,
       else
         FormatString(buffer,"%.1024s: %.1024s.\n",SetClientName((char *) NULL),
           reason);
-  (void) MessageBox(NULL,buffer,"ImageMagick Exception",MB_OK | MB_TASKMODAL |
+  (void) MessageBox(NULL,buffer,"GraphicsMagick Exception",MB_OK | MB_TASKMODAL |
     MB_SETFOREGROUND | MB_ICONEXCLAMATION);
   DestroyMagick();
   Exit(0);
@@ -1461,13 +1461,13 @@ MagickExport int NTGhostscriptUnLoadDLL(void)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method NTRegistryKeyLookup returns ImageMagick installation path settings
-%  stored in the Windows Registry. Path settings are specific to the
-%  installed ImageMagick version so that multiple ImageMagick installations
-%  may coexist.
+%  Method NTRegistryKeyLookup returns GraphicsMagick installation path settings
+%  stored in the Windows Registry. Path settings are specific to the installed
+%  GraphicsMagick version so that multiple Graphics Magick installations may
+%  coexist.
 %
 %  Values are stored in the registry under a path path similar to
-%  "HKEY_LOCAL_MACHINE/SOFTWARE/ImageMagick/5.4.7/LibPath".
+%  "HKEY_LOCAL_MACHINE/SOFTWARE/GraphicsMagick/1.0.0/LibPath".
 %
 %  The format of the NTRegistryKeyLookup method is:
 %
@@ -1797,7 +1797,7 @@ MagickExport void NTWarningHandler(const ExceptionType warning,
   else
     FormatString(buffer,"%.1024s: %.1024s (%.1024s).\n",
       SetClientName((char *) NULL),reason,description);
-  (void) MessageBox(NULL,buffer,"ImageMagick Warning",MB_OK | MB_TASKMODAL |
+  (void) MessageBox(NULL,buffer,"GraphicsMagick Warning",MB_OK | MB_TASKMODAL |
     MB_SETFOREGROUND | MB_ICONINFORMATION);
 }
 

@@ -1,5 +1,12 @@
 2003-01-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/integral_types.h: New header to include the integral
+ 	types typedefs.  Needed new header in order to include in both
+ 	studio.h and api.h at the right point.
+
+	* magick/studio.h: Move nt_feature.h inclusion to the few modules
+ 	which actually use functions from it.
+
 	* magick/api.h: Added typedefs gm_int16_t, gm_uint16_t,
  	gm_int32_t, gm_uint32_t, gm_int64_t, gm_uint64_t to support
  	specifically sized types.

@@ -11,7 +11,7 @@
 %                                 N   N    T                                  %
 %                                                                             %
 %                                                                             %
-%                  Windows NT Feature Methods for ImageMagick                 %
+%                 Windows NT Feature Methods for GraphicsMagick               %
 %                                                                             %
 %                                                                             %
 %                               Software Design                               %
@@ -26,8 +26,8 @@
 %  copy of this software and associated documentation files                   %
 %  ("GraphicsMagick"), to deal in GraphicsMagick without restriction,         %
 %  including without limitation the rights to use, copy, modify, merge,       %
-%  publish, distribute, sublicense, and/or sell copies of ImageMagick, and    %
-%  to permit persons to whom GraphicsMagick is furnished to do so,            %
+%  publish, distribute, sublicense, and/or sell copies of GraphicsMagick,     %
+%  and to permit persons to whom GraphicsMagick is furnished to do so,        %
 %  subject to the following conditions:                                       %
 %                                                                             %
 %  The above copyright notice and this permission notice shall be included    %

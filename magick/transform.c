@@ -10,7 +10,7 @@
 %         T    R  R   A   A  N   N  SSSSS  F       OOO   R  R   M   M         %
 %                                                                             %
 %                                                                             %
-%                   ImageMagick Image Transform Methods                       %
+%                   GraphicsMagick Image Transform Methods                    %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %
@@ -25,8 +25,8 @@
 %  copy of this software and associated documentation files                   %
 %  ("GraphicsMagick"), to deal in GraphicsMagick without restriction,         %
 %  including without limitation the rights to use, copy, modify, merge,       %
-%  publish, distribute, sublicense, and/or sell copies of ImageMagick, and    %
-%  to permit persons to whom GraphicsMagick is furnished to do so,            %
+%  publish, distribute, sublicense, and/or sell copies of GraphicsMagick,     %
+%  and to permit persons to whom GraphicsMagick is furnished to do so,        %
 %  subject to the following conditions:                                       %
 %                                                                             %
 %  The above copyright notice and this permission notice shall be included    %
@@ -1018,7 +1018,7 @@ MagickExport Image *MosaicImages(const Image *image,ExceptionInfo *exception)
 %  ProfileImage() adds or removes a ICM, IPTC, or generic profile from an
 %  image.  If the profile is NULL, it is removed from the image otherwise
 %  added.  Use a name of '*' and a profile of NULL to remove all profiles
-%  from the image. Ownership of the profile is transferred to ImageMagick
+%  from the image. Ownership of the profile is transferred to GraphicsMagick
 %  (it should not be altered or deallocated) unless the clone option is set
 %  to True.
 %

@@ -10,7 +10,7 @@
 %                            P      SSSSS  22222                              %
 %                                                                             %
 %                                                                             %
-%                    Read/Write ImageMagick Image Format.                     %
+%                   Read/Write GraphicsMagick Image Format.                   %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %
@@ -25,8 +25,8 @@
 %  copy of this software and associated documentation files                   %
 %  ("GraphicsMagick"), to deal in GraphicsMagick without restriction,         %
 %  including without limitation the rights to use, copy, modify, merge,       %
-%  publish, distribute, sublicense, and/or sell copies of ImageMagick, and    %
-%  to permit persons to whom GraphicsMagick is furnished to do so,            %
+%  publish, distribute, sublicense, and/or sell copies of GraphicsMagick,     %
+%  and to permit persons to whom GraphicsMagick is furnished to do so,        %
 %  subject to the following conditions:                                       %
 %                                                                             %
 %  The above copyright notice and this permission notice shall be included    %
@@ -649,7 +649,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
         else
           (void) strcpy(buffer,"%!PS-Adobe-3.0 EPSF-3.0\n");
         (void) WriteBlobString(image,buffer);
-        (void) WriteBlobString(image,"%%Creator: (ImageMagick)\n");
+        (void) WriteBlobString(image,"%%Creator: (GraphicsMagick)\n");
         FormatString(buffer,"%%%%Title: (%.1024s)\n",image->filename);
         (void) WriteBlobString(image,buffer);
         timer=time((time_t *) NULL);

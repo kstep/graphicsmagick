@@ -24,32 +24,32 @@
 %                             February 1997                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright (C) 2002 GraphicsMagick Group, an organization dedicated	      %
-%  to making software imaging solutions freely available.		      %
-%									      %
+%  Copyright (C) 2002 GraphicsMagick Group, an organization dedicated         %
+%  to making software imaging solutions freely available.                     %
+%                                                                             %
 %  Permission is hereby granted, free of charge, to any person obtaining a    %
-%  copy of this software and associated documentation files ("Open	      %
-%  ImageMagick"), to deal in GraphicsMagick without restriction,	      %
-%  including without limitation the rights to use, copy, modify, merge,	      %
-%  publish, distribute, sublicense, and/or sell copies of ImageMagick, and    %
-%  to permit persons to whom GraphicsMagick is furnished to do so,	      %
-%  subject to the following conditions:					      %
-%									      %
+%  copy of this software and associated documentation files                   %
+%  ("GraphicsMagick"), to deal in GraphicsMagick without restriction,         %
+%  including without limitation the rights to use, copy, modify, merge,       %
+%  publish, distribute, sublicense, and/or sell copies of GraphicsMagick,     %
+%  and to permit persons to whom GraphicsMagick is furnished to do so,        %
+%  subject to the following conditions:                                       %
+%                                                                             %
 %  The above copyright notice and this permission notice shall be included    %
-%  in all copies or substantial portions of GraphicsMagick.		      %
-%									      %
+%  in all copies or substantial portions of GraphicsMagick.                   %
+%                                                                             %
 %  The software is provided "as is", without warranty of any kind, express    %
-%  or implied, including but not limited to the warranties of		      %
+%  or implied, including but not limited to the warranties of                 %
 %  merchantability, fitness for a particular purpose and noninfringement.     %
-%  In no event shall GraphicsMagick Group be liable for any claim,	      %
+%  In no event shall GraphicsMagick Group be liable for any claim,            %
 %  damages or other liability, whether in an action of contract, tort or      %
-%  otherwise, arising from, out of or in connection with GraphicsMagick	      %
-%  or the use or other dealings in GraphicsMagick.			      %
-%									      %
-%  Except as contained in this notice, the name of the GraphicsMagick	      %
-%  Group shall not be used in advertising or otherwise to promote the	      %
-%  sale, use or other dealings in GraphicsMagick without prior written	      %
-%  authorization from the GraphicsMagick Group.				      %
+%  otherwise, arising from, out of or in connection with GraphicsMagick       %
+%  or the use or other dealings in GraphicsMagick.                            %
+%                                                                             %
+%  Except as contained in this notice, the name of the GraphicsMagick         %
+%  Group shall not be used in advertising or otherwise to promote the         %
+%  sale, use or other dealings in GraphicsMagick without prior written        %
+%  authorization from the GraphicsMagick Group.                               %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
@@ -978,7 +978,7 @@ static int LookupStr(char **list,const char *string)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method MagickErrorHandler replaces ImageMagick's fatal error handler.  This
+%  Method MagickErrorHandler replaces GraphicsMagick's fatal error handler.  This
 %  stores the message in a Perl variable,and longjmp's to return the error to
 %  Perl.  If the error_flag variable is set, it also calls the Perl warn
 %  routine.  Note that this doesn't exit but returns control to Perl; the
@@ -1043,7 +1043,7 @@ static void MagickErrorHandler(const ExceptionType severity,const char *reason,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method MagickWarningHandler replaces the ImageMagick warning handler.  This
+%  Method MagickWarningHandler replaces the GraphicsMagick warning handler.  This
 %  stores the (possibly multiple) reasons in a Perl variable for later
 %  returning.
 %
@@ -1955,7 +1955,7 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  Method SetupList returns the list of all the images linked by their
-%  image->next and image->previous link lists for use with ImageMagick.  If
+%  image->next and image->previous link lists for use with GraphicsMagick.  If
 %  info is non-NULL, an info structure is returned in *info.  If
 %  reference_vector is non-NULL,an array of SV* are returned in
 %  *reference_vector.  Reference_vector is used when the images are going to be

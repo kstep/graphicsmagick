@@ -1,5 +1,5 @@
 /*
-  ImageMagick Application Programming Interface declarations.
+  GraphicsMagick Application Programming Interface declarations.
 
   Api.h depends on a number of ANSI C headers as follows:
 
@@ -27,93 +27,6 @@ extern "C" {
 # if defined(__cplusplus) || defined(c_plusplus)
 #  undef inline
 # endif
-#endif
-
-/*
-  Assign typedefs based on the sizes of native types
-  gm_int16_t
-  gm_uint16_t
-  gm_int32_t
-  gm_uint32_t
-  gm_int64_t
-  gm_uint64_t  -- unsigned 64 bit -- may not port
-*/
-
-#if !defined(SIZEOF_SHORT)
-# define SIZEOF_SHORT 2
-#endif
-
-#if !defined(SIZEOF_UNSIGNED_SHORT)
-# define SIZEOF_UNSIGNED_SHORT 2
-#endif
-
-#if !defined(SIZEOF_INT)
-# define SIZEOF_INT 4
-#endif
-
-#if !defined(SIZEOF_UNSIGNED_INT)
-# define SIZEOF_UNSIGNED_INT 4
-#endif
-
-#if !defined(SIZEOF_LONG)
-# define SIZEOF_LONG 4
-#endif
-
-#if !defined(SIZEOF_UNSIGNED_LONG)
-# define SIZEOF_UNSIGNED_LONG 4
-#endif
-
-#if !defined(SIZEOF_LONG_LONG)
-# define SIZEOF_LONG_LONG 0
-#endif
-
-#if !defined(SIZEOF_UNSIGNED_LONG_LONG)
-# define SIZEOF_UNSIGNED_LONG_LONG 0
-#endif
-
-#if (SIZEOF_SHORT == 2)
-  typedef short gm_int16_t;
-#else
-#  error sizeof(short) != 2
-#endif
-
-#if (SIZEOF_UNSIGNED_SHORT == 2)
-  typedef unsigned short gm_uint16_t;
-#else
-#  error sizeof(unsigned short) != 2
-#endif
-
-#if (SIZEOF_INT == 4)
-  typedef int gm_int32_t;
-#else
-#  error sizeof(int) != 4
-#endif
-
-#if (SIZEOF_UNSIGNED_INT == 4)
-  typedef unsigned int gm_uint32_t;
-#else
-#  error sizeof(unsigned int) != 4)
-#endif
-
-#if (SIZEOF_LONG == 8)
-  typedef long gm_int64_t;
-#elif (SIZEOF_LONG_LONG == 8)
-  typedef long long gm_int64_t;
-#elif defined(_VISUALC_)
-  typedef __int64 gm_int64_t;
-#else
-  typedef double gm_int64_t;
-#endif
-
-#if (SIZEOF_UNSIGNED_LONG == 8)
-  typedef unsigned long gm_uint64_t;
-#elif (SIZEOF_UNSIGNED_LONG_LONG == 8)
-  typedef unsigned long long gm_uint64_t;
-#elif defined(_VISUALC_)
-  /* Does Visual C++ support an unsigned 64-bit type? */
-  typedef __int64 gm_uint64_t;
-#else
-  typedef double gm_uint64_t;
 #endif
 
 #if defined(__cplusplus) || defined(c_plusplus)
@@ -178,6 +91,7 @@ extern "C" {
 #define MagickSignature  0xabacadabUL
 
 #if !defined(vms) && !defined(macintosh)
+# include "magick/integral_types.h"
 # include "magick/semaphore.h"
 # include "magick/error.h"
 # include "magick/timer.h"
@@ -222,6 +136,7 @@ extern "C" {
 # include "magick/version.h"
 # include "magick/deprecate.h"
 #else
+# include "integral_types.h"
 # include "semaphore.h"
 # include "timer.h"
 # include "error.h"

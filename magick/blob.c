@@ -10,7 +10,7 @@
 %                         BBBB   LLLLL   OOO   BBBB                           %
 %                                                                             %
 %                                                                             %
-%                    ImageMagick Binary Large OBjectS Methods                 %
+%                  GraphicsMagick Binary Large OBject Methods                 %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %
@@ -25,8 +25,8 @@
 %  copy of this software and associated documentation files                   %
 %  ("GraphicsMagick"), to deal in GraphicsMagick without restriction,         %
 %  including without limitation the rights to use, copy, modify, merge,       %
-%  publish, distribute, sublicense, and/or sell copies of ImageMagick, and    %
-%  to permit persons to whom GraphicsMagick is furnished to do so,            %
+%  publish, distribute, sublicense, and/or sell copies of GraphicsMagick,     %
+%  and to permit persons to whom GraphicsMagick is furnished to do so,        %
 %  subject to the following conditions:                                       %
 %                                                                             %
 %  The above copyright notice and this permission notice shall be included    %
@@ -55,6 +55,9 @@
   Include declarations.
 */
 #include "studio.h"
+#if defined(WIN32) || defined(__CYGWIN__)
+# include "nt_feature.h"
+#endif
 #include "blob.h"
 #include "cache.h"
 #include "constitute.h"
@@ -159,7 +162,7 @@ static inline size_t ReadBlobStream(Image *image,const size_t length,void **data
 %    o blob_info: Specifies a pointer to a BlobInfo structure.
 %
 %    o blob: The address of a character stream in one of the image formats
-%      understood by ImageMagick.
+%      understood by GraphicsMagick.
 %
 %    o length: This size_t integer reflects the length in bytes of the blob.
 %
@@ -273,7 +276,7 @@ MagickExport unsigned int BlobToFile(const char *filename,const void *blob,
 %    o image_info: The image info.
 %
 %    o blob: The address of a character stream in one of the image formats
-%      understood by ImageMagick.
+%      understood by GraphicsMagick.
 %
 %    o length: This size_t integer reflects the length in bytes of the blob.
 %
@@ -2008,7 +2011,7 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
 %    o image_info: The image info.
 %
 %    o blob: The address of a character stream in one of the image formats
-%      understood by ImageMagick.
+%      understood by GraphicsMagick.
 %
 %    o length: This size_t integer reflects the length in bytes of the blob.
 %

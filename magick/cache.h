@@ -1,5 +1,5 @@
 /*
-  ImageMagick Cache Methods.
+  GraphicsMagick Cache Methods.
 */
 #ifndef _MAGICK_CACHE_H
 #define _MAGICK_CACHE_H

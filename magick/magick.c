@@ -10,7 +10,7 @@
 %                  M   M  A   A   GGGG  IIIII   CCCC  K   K                   %
 %                                                                             %
 %                                                                             %
-%               Methods to Read or List ImageMagick Image formats             %
+%            Methods to Read or List GraphicsMagick Image formats             %
 %                                                                             %
 %                                                                             %
 %                            Software Design                                  %
@@ -26,8 +26,8 @@
 %  copy of this software and associated documentation files                   %
 %  ("GraphicsMagick"), to deal in GraphicsMagick without restriction,         %
 %  including without limitation the rights to use, copy, modify, merge,       %
-%  publish, distribute, sublicense, and/or sell copies of ImageMagick, and    %
-%  to permit persons to whom GraphicsMagick is furnished to do so,            %
+%  publish, distribute, sublicense, and/or sell copies of GraphicsMagick,     %
+%  and to permit persons to whom GraphicsMagick is furnished to do so,        %
 %  subject to the following conditions:                                       %
 %                                                                             %
 %  The above copyright notice and this permission notice shall be included    %
@@ -55,6 +55,9 @@
   Include declarations.
 */
 #include "studio.h"
+#if defined(WIN32) || defined(__CYGWIN__)
+# include "nt_feature.h"
+#endif
 #include "blob.h"
 #include "cache.h"
 #include "constitute.h"
@@ -90,7 +93,7 @@ static MagickInfo
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DestroyMagick() destroys the ImageMagick environment.
+%  DestroyMagick() destroys the GraphicsMagick environment.
 %
 %  The format of the DestroyMagick function is:
 %
@@ -317,7 +320,7 @@ MagickExport const MagickInfo *GetMagickInfo(const char *name,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  InitializeMagick() initializes the ImageMagick environment.
+%  InitializeMagick() initializes the GraphicsMagick environment.
 %
 %  The format of the InitializeMagick function is:
 %
@@ -325,7 +328,7 @@ MagickExport const MagickInfo *GetMagickInfo(const char *name,
 %
 %  A description of each parameter follows:
 %
-%    o path: The execution path of the current ImageMagick client.
+%    o path: The execution path of the current GraphicsMagick client.
 %
 %
 */
@@ -641,7 +644,7 @@ MagickExport unsigned int ListMagickInfo(FILE *file,ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
-%   o  magick:  ImageMagick format specification "magick" tag.
+%   o  magick:  GraphicsMagick format specification "magick" tag.
 %
 %
 */

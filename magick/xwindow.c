@@ -10,7 +10,7 @@
 %              X   X   W W   IIIII  N   N  DDDD    OOO    W W                 %
 %                                                                             %
 %                                                                             %
-%                     X11 Utility Methods for ImageMagick                     %
+%                  X11 Utility Methods for GraphicsMagick                     %
 %                                                                             %
 %                                                                             %
 %                               Software Design                               %
@@ -25,8 +25,8 @@
 %  copy of this software and associated documentation files                   %
 %  ("GraphicsMagick"), to deal in GraphicsMagick without restriction,         %
 %  including without limitation the rights to use, copy, modify, merge,       %
-%  publish, distribute, sublicense, and/or sell copies of ImageMagick, and    %
-%  to permit persons to whom GraphicsMagick is furnished to do so,            %
+%  publish, distribute, sublicense, and/or sell copies of GraphicsMagick,     %
+%  and to permit persons to whom GraphicsMagick is furnished to do so,        %
 %  subject to the following conditions:                                       %
 %                                                                             %
 %  The above copyright notice and this permission notice shall be included    %
@@ -3282,8 +3282,8 @@ MagickExport char *XGetResourceInstance(XrmDatabase database,
   *resource_name='\0';
   if (keyword != (char *) NULL)
     FormatString(resource_name,"%.1024s.%.1024s",client_name,keyword);
-  status=XrmGetResource(database,resource_name,"ImageMagick",&resource_type,
-    &resource_value);
+  status=XrmGetResource(database,resource_name,"GraphicsMagick",
+    &resource_type,&resource_value);
   if (status == False)
     return((char *) resource_default);
   return(resource_value.addr);
@@ -4740,7 +4740,7 @@ MagickExport XWindows *XInitializeWindows(Display *display,
         windows->wm_delete_window);
       (void) LogMagickEvent(X11Event,GetMagickModule(),"    take focus: 0x%lx",
         windows->wm_take_focus);
-      (void) LogMagickEvent(X11Event,GetMagickModule(),"  ImageMagick: 0x%lx",
+      (void) LogMagickEvent(X11Event,GetMagickModule(),"  GraphicsMagick: 0x%lx",
         windows->im_protocols);
       (void) LogMagickEvent(X11Event,GetMagickModule(),"    remote command: 0x%lx",
         windows->im_remote_command);

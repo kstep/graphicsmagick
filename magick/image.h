@@ -1,5 +1,5 @@
 /*
-  ImageMagick Image Methods.
+  GraphicsMagick Image Methods.
 */
 #ifndef _MAGICK_IMAGE_H
 #define _MAGICK_IMAGE_H
@@ -40,7 +40,9 @@ extern "C" {
 #define ScaleShortToQuantum(value)  ((Quantum) ((value)/257UL))
 #define ScaleToQuantum(value)  ((unsigned long) (value))
 /*
-  i=0.299*red+0.587*green+0.114*blue
+  intensity=0.299*red+0.587*green+0.114*blue.
+  Premultiply by 1024 to obtain integral values, and then divide
+  result by 1024 by shifting to the right by 10 bits.
 */
 #define PixelIntensity(pixel) ((unsigned long) \
    (((unsigned int)306U*(pixel)->red+601U*(pixel)->green+117U*(pixel)->blue) \
@@ -50,6 +52,8 @@ extern "C" {
    >> 10))
 
 typedef unsigned char Quantum;
+typedef gm_int32_t QuantumArithType;
+typedef gm_int64_t QuantumSumType;
 #elif (QuantumDepth == 16)
 #define MaxColormapSize  65536UL
 #define MaxMap 65535UL
@@ -67,7 +71,9 @@ typedef unsigned char Quantum;
 #define ScaleShortToQuantum(value)  ((Quantum) (value))
 #define ScaleToQuantum(value)  ((unsigned long) (257UL*(value)))
 /*
-  i=0.299*red+0.587*green+0.114*blue
+  intensity=0.299*red+0.587*green+0.114*blue.
+  Premultiply by 1024 to obtain integral values, and then divide
+  result by 1024 by shifting to the right by 10 bits.
 */
 #define PixelIntensity(pixel) ((unsigned long) \
    (((unsigned int)306U*(pixel)->red+601U*(pixel)->green+117U*(pixel)->blue) \
@@ -77,6 +83,8 @@ typedef unsigned char Quantum;
    >> 10))
 
 typedef unsigned short Quantum;
+typedef gm_int32_t QuantumArithType;
+typedef gm_int64_t QuantumSumType;
 #elif (QuantumDepth == 32)
 #define MaxColormapSize  65536UL
 #define MaxMap 65535UL
@@ -102,6 +110,8 @@ typedef unsigned short Quantum;
   (0.299*(pixel)->red+0.587*(pixel)->green+0.114*(pixel)->blue+0.5))
 
 typedef unsigned int Quantum;
+typedef gm_int64_t QuantumArithType;
+typedef double QuantumSumType;
 #else
 # error "Specified value of QuantumDepth is not supported"
 #endif

@@ -25,8 +25,8 @@
 %  copy of this software and associated documentation files                   %
 %  ("GraphicsMagick"), to deal in GraphicsMagick without restriction,         %
 %  including without limitation the rights to use, copy, modify, merge,       %
-%  publish, distribute, sublicense, and/or sell copies of ImageMagick, and    %
-%  to permit persons to whom GraphicsMagick is furnished to do so,            %
+%  publish, distribute, sublicense, and/or sell copies of GraphicsMagick,     %
+%  and to permit persons to whom GraphicsMagick is furnished to do so,        %
 %  subject to the following conditions:                                       %
 %                                                                             %
 %  The above copyright notice and this permission notice shall be included    %
@@ -238,7 +238,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       *state|=PlayAnimationState;
       *state&=(~AutoReverseAnimationState);
       GetPathComponent((*image)->filename,BasePath,basename);
-      FormatString(windows->image.name,"ImageMagick: %.1024s",basename);
+      FormatString(windows->image.name,"GraphicsMagick: %.1024s",basename);
       if (resource_info->title != (char *) NULL)
         windows->image.name=TranslateText(resource_info->image_info,*image,
           resource_info->title);
@@ -325,7 +325,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         root_window;
 
       /*
-        Browse the ImageMagick documentation.
+        Browse the GraphicsMagick documentation.
       */
       root_window=XRootWindow(display,XDefaultScreen(display));
       mozilla_atom=XInternAtom(display,"_MOZILLA_VERSION",False);
@@ -1412,7 +1412,7 @@ MagickExport Image *XAnimateImages(Display *display,
       windows->image.name=AllocateString((char *) NULL);
       windows->image.icon_name=AllocateString((char *) NULL);
       GetPathComponent(display_image->filename,TailPath,filename);
-      FormatString(windows->image.name,"ImageMagick: %.1024s[%lu of %lu]",
+      FormatString(windows->image.name,"GraphicsMagick: %.1024s[%lu of %lu]",
         filename,display_image->scene,number_scenes);
       (void) strncpy(windows->image.icon_name,filename,MaxTextExtent-1);
     }
@@ -1443,7 +1443,7 @@ MagickExport Image *XAnimateImages(Display *display,
       */
       windows->backdrop.x=0;
       windows->backdrop.y=0;
-      windows->backdrop.name=(char *) "ImageMagick Backdrop";
+      windows->backdrop.name=(char *) "GraphicsMagick Backdrop";
       windows->backdrop.flags=USSize | USPosition;
       windows->backdrop.width=XDisplayWidth(display,visual_info->screen);
       windows->backdrop.height=XDisplayHeight(display,visual_info->screen);
@@ -1725,7 +1725,7 @@ MagickExport Image *XAnimateImages(Display *display,
         p=image_list[scene]->filename+strlen(image_list[scene]->filename)-1;
         while ((p > image_list[scene]->filename) && (*(p-1) != '/'))
           p--;
-        FormatString(windows->image.name,"ImageMagick: %.1024s[%lu of %lu]",p,
+        FormatString(windows->image.name,"GraphicsMagick: %.1024s[%lu of %lu]",p,
           scene,number_scenes);
       }
     status=XStringListToTextProperty(&windows->image.name,1,&window_name);
@@ -1833,7 +1833,7 @@ MagickExport Image *XAnimateImages(Display *display,
               while ((p > image_list[scene]->filename) && (*(p-1) != '/'))
                 p--;
               FormatString(windows->image.name,
-                "ImageMagick: %.1024s[%lu of %lu]",p,scene,number_scenes);
+                "GraphicsMagick: %.1024s[%lu of %lu]",p,scene,number_scenes);
               if (resource_info->title != (char *) NULL)
                 windows->image.name=TranslateText(resource_info->image_info,
                   image,resource_info->title);

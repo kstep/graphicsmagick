@@ -10,7 +10,7 @@
 %                        F      IIIII    T    SSSSS                           %
 %                                                                             %
 %                                                                             %
-%                    Read/Write ImageMagick Image Format.                     %
+%                   Read/Write GraphicsMagick Image Format.                   %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %
@@ -25,8 +25,8 @@
 %  copy of this software and associated documentation files                   %
 %  ("GraphicsMagick"), to deal in GraphicsMagick without restriction,         %
 %  including without limitation the rights to use, copy, modify, merge,       %
-%  publish, distribute, sublicense, and/or sell copies of ImageMagick, and    %
-%  to permit persons to whom GraphicsMagick is furnished to do so,            %
+%  publish, distribute, sublicense, and/or sell copies of GraphicsMagick,     %
+%  and to permit persons to whom GraphicsMagick is furnished to do so,        %
 %  subject to the following conditions:                                       %
 %                                                                             %
 %  The above copyright notice and this permission notice shall be included    %
@@ -744,7 +744,7 @@ static unsigned int WriteFITSImage(const ImageInfo *image_info,Image *image)
   (void) strncpy(fits_info+400,buffer,strlen(buffer));
   FormatString(buffer,"DATAMAX =           %10u",(1 << image->depth)-1);
   (void) strncpy(fits_info+480,buffer,strlen(buffer));
-  (void) strcpy(buffer,"HISTORY Created by ImageMagick.");
+  (void) strcpy(buffer,"HISTORY Created by GraphicsMagick.");
   (void) strncpy(fits_info+560,buffer,strlen(buffer));
   (void) strcpy(buffer,"END");
   (void) strncpy(fits_info+640,buffer,strlen(buffer));

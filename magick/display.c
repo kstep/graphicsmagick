@@ -25,8 +25,8 @@
 %  copy of this software and associated documentation files                   %
 %  ("GraphicsMagick"), to deal in GraphicsMagick without restriction,         %
 %  including without limitation the rights to use, copy, modify, merge,       %
-%  publish, distribute, sublicense, and/or sell copies of ImageMagick, and    %
-%  to permit persons to whom GraphicsMagick is furnished to do so,            %
+%  publish, distribute, sublicense, and/or sell copies of GraphicsMagick,     %
+%  and to permit persons to whom GraphicsMagick is furnished to do so,        %
 %  subject to the following conditions:                                       %
 %                                                                             %
 %  The above copyright notice and this permission notice shall be included    %
@@ -6977,7 +6977,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         root_window;
 
       /*
-        Browse the ImageMagick documentation.
+        Browse the GraphicsMagick documentation.
       */
       root_window=XRootWindow(display,XDefaultScreen(display));
       mozilla_atom=XInternAtom(display,"_MOZILLA_VERSION",False);
@@ -12290,19 +12290,19 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
       windows->image.name=AllocateString((char *) NULL);
       windows->image.icon_name=AllocateString((char *) NULL);
       GetPathComponent(display_image->filename,TailPath,filename);
-      FormatString(windows->image.name,"ImageMagick: %.1024s[%lu]",filename,
+      FormatString(windows->image.name,"GraphicsMagick: %.1024s[%lu]",filename,
         display_image->scene);
       q=display_image;
       while (q->previous != (Image *) NULL)
         q=q->previous;
       for (count=1; q->next != (Image *) NULL; count++)
         q=q->next;
-      FormatString(windows->image.name,"ImageMagick: %.1024s[%lu of %lu]",
+      FormatString(windows->image.name,"GraphicsMagick: %.1024s[%lu of %lu]",
         filename,display_image->scene,count);
       if ((display_image->previous == (Image *) NULL) &&
           (display_image->next == (Image *) NULL) &&
           (display_image->scene == 0))
-        FormatString(windows->image.name,"ImageMagick: %.1024s",filename);
+        FormatString(windows->image.name,"GraphicsMagick: %.1024s",filename);
       (void) strncpy(windows->image.icon_name,filename,MaxTextExtent-1);
     }
   if (resource_info->immutable)
@@ -12332,7 +12332,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
       */
       windows->backdrop.x=0;
       windows->backdrop.y=0;
-      windows->backdrop.name=(char *) "ImageMagick Backdrop";
+      windows->backdrop.name=(char *) "GraphicsMagick Backdrop";
       windows->backdrop.flags=USSize | USPosition;
       windows->backdrop.width=XDisplayWidth(display,visual_info->screen);
       windows->backdrop.height=XDisplayHeight(display,visual_info->screen);

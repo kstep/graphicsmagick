@@ -10,7 +10,7 @@
 %                 V    EEEEE  R  R   SSSSS  IIIII   OOO   N   N               %
 %                                                                             %
 %                                                                             %
-%                         ImageMagick Version Methods                         %
+%                        GraphicsMagick Version Methods                       %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %
@@ -25,8 +25,8 @@
 %  copy of this software and associated documentation files                   %
 %  ("GraphicsMagick"), to deal in GraphicsMagick without restriction,         %
 %  including without limitation the rights to use, copy, modify, merge,       %
-%  publish, distribute, sublicense, and/or sell copies of ImageMagick, and    %
-%  to permit persons to whom GraphicsMagick is furnished to do so,            %
+%  publish, distribute, sublicense, and/or sell copies of GraphicsMagick,     %
+%  and to permit persons to whom GraphicsMagick is furnished to do so,        %
 %  subject to the following conditions:                                       %
 %                                                                             %
 %  The above copyright notice and this permission notice shall be included    %
@@ -64,7 +64,7 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetMagickCopyright() returns the ImageMagick API copyright as a string.
+%  GetMagickCopyright() returns the GraphicsMagick API copyright as a string.
 %
 %  The format of the GetMagickCopyright method is:
 %
@@ -88,7 +88,7 @@ MagickExport const char *GetMagickCopyright(void)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetMagickVersion() returns the ImageMagick API version as a string and
+%  GetMagickVersion() returns the GraphicsMagick API version as a string and
 %  as a number.
 %
 %  The format of the GetMagickVersion method is:

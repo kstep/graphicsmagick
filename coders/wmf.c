@@ -10,7 +10,7 @@
 %                             W   W   M   M  F                                %
 %                                                                             %
 %                                                                             %
-%                        Read Windows Metafile Format.                        %
+%                     Read Windows Metafile Format.                        %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %
@@ -30,8 +30,8 @@
 %  copy of this software and associated documentation files                   %
 %  ("GraphicsMagick"), to deal in GraphicsMagick without restriction,         %
 %  including without limitation the rights to use, copy, modify, merge,       %
-%  publish, distribute, sublicense, and/or sell copies of ImageMagick, and    %
-%  to permit persons to whom GraphicsMagick is furnished to do so,            %
+%  publish, distribute, sublicense, and/or sell copies of GraphicsMagick,     %
+%  and to permit persons to whom GraphicsMagick is furnished to do so,        %
 %  subject to the following conditions:                                       %
 %                                                                             %
 %  The above copyright notice and this permission notice shall be included    %
@@ -166,7 +166,7 @@ struct _wmf_magick_t
   DrawContext
     draw_context;
 
-  /* ImageMagick image */
+  /* GraphicsMagick image */
     Image
       *image;
 
@@ -637,7 +637,7 @@ static void ipa_device_begin(wmfAPI * API)
 
   DrawSetViewbox(WmfDrawContext, 0, 0, ddata->image->columns, ddata->image->rows );
 
-  FormatString(comment,"Created by ImageMagick %s (http://www.imagemagick.org/)",
+  FormatString(comment,"Created by GraphicsMagick %s (http://www.graphicsmagick.org/)",
                GetMagickVersion((unsigned long *) NULL));
   DrawComment(WmfDrawContext,comment);
 
@@ -1376,7 +1376,7 @@ static void ipa_draw_text(wmfAPI * API, wmfDrawText_t * draw_text)
   DrawScale(WmfDrawContext, ddata->scale_y / ddata->scale_x, 1.0);
 
   /* Apply rotation */
-  /* ImageMagick's drawing rotation is clockwise from horizontal
+  /* GraphicsMagick's drawing rotation is clockwise from horizontal
      while WMF drawing rotation is counterclockwise from horizontal */
   angle = AbsoluteValue(RadiansToDegrees(2 * MagickPI - WMF_TEXT_ANGLE(font)));
   if (angle == 360)

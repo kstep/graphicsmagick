@@ -1,5 +1,5 @@
 /*
-  ImageMagick X11 compatibility methods.
+  GraphicsMagick X11 compatibility methods.
 */
 #ifndef _MAGICK_PRER5ICCCM_H
 #define _MAGICK_PRER5ICCCM_H

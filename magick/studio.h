@@ -110,10 +110,6 @@ extern "C" {
 # endif
 #endif
 
-#if defined(HAVE_INTTYPES_H)
-# include <inttypes.h>
-#endif
-
 #if defined(_FILE_OFFSET_BITS) && (_FILE_OFFSET_BITS == 64)
 # define fseek  fseeko
 # define ftell  ftello
@@ -161,6 +157,7 @@ extern "C" {
 # if !defined(S_ISREG)
 #  define S_ISREG(mode) (((mode) & S_IFMT) == S_IFREG)
 # endif
+# include "magick/integral_types.h"
 # include "magick/image.h"
 # include "magick/list.h"
 # if !defined(WIN32)
@@ -177,15 +174,13 @@ extern "C" {
 #  include <console.h>
 #  include <unix.h>
 # endif
+# include "integral_types.h"
 # include "image.h"
 # include "list.h"
 #endif
 
 #if defined(WIN32)
 # include "nt_base.h"
-#endif
-#if defined(WIN32) || defined(__CYGWIN__)
-# include "nt_feature.h"
 #endif
 #if defined(macintosh)
 # include "mac.h"

@@ -10,7 +10,7 @@
 %                  LLLLL   OOO    CCCC  A   A  LLLLL  EEEEE                   % 
 %                                                                             % 
 %                                                                             % 
-%                    ImageMagick Locale Message Methods                       % 
+%                   GraphicsMagick Locale Message Methods                     % 
 %                                                                             % 
 %                                                                             % 
 %                              Software Design                                % 

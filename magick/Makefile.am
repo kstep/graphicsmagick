@@ -121,6 +121,7 @@ pkginclude_HEADERS = \
 	error.h \
 	fx.h \
 	gem.h \
+	integral_types.h \
 	image.h \
 	list.h \
 	log.h \
