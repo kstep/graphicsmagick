@@ -58,6 +58,7 @@ struct _htmlEntityDesc {
  */
 htmlElemDescPtr		htmlTagLookup	(const xmlChar *tag);
 htmlEntityDescPtr	htmlEntityLookup(const xmlChar *name);
+htmlEntityDescPtr	htmlEntityValueLookup(int value);
 
 int			htmlIsAutoClosed(htmlDocPtr doc,
 					 htmlNodePtr elem);
@@ -81,6 +82,14 @@ htmlDocPtr		htmlSAXParseFile(const char *filename,
 					 void *userData);
 htmlDocPtr		htmlParseFile	(const char *filename,
 					 const char *encoding);
+int			UTF8ToHtml	(unsigned char* out,
+					 int *outlen,
+					 const unsigned char* in,
+					 int *inlen);
+int			htmlEncodeEntities(unsigned char* out,
+					 int *outlen,
+					 const unsigned char* in,
+					 int *inlen, int quoteChar);
 
 /**
  * Interfaces for the Push mode

@@ -54,6 +54,9 @@ struct _xmlEntity {
     const xmlChar    *ExternalID;	/* External identifier for PUBLIC */
     const xmlChar      *SystemID;	/* URI for a SYSTEM or PUBLIC Entity */
 
+    struct _xmlEntity     *nexte;	/* next entity in the hash table */
+    const xmlChar           *URI;	/* the full URI as computed */
+
 #ifdef WITH_EXTRA_ENT_DETECT
     /* Referenced entities name stack */
     xmlChar           *ent;             /* Current parsed Node */

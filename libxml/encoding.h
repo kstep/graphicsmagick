@@ -70,7 +70,8 @@ typedef enum {
     XML_CHAR_ENCODING_8859_9=	18,/* ISO-8859-9 */
     XML_CHAR_ENCODING_2022_JP=  19,/* ISO-2022-JP */
     XML_CHAR_ENCODING_SHIFT_JIS=20,/* Shift_JIS */
-    XML_CHAR_ENCODING_EUC_JP=   21 /* EUC-JP */
+    XML_CHAR_ENCODING_EUC_JP=   21,/* EUC-JP */
+    XML_CHAR_ENCODING_ASCII=    22 /* pure ASCII */
 } xmlCharEncoding;
 
 /**
@@ -132,15 +133,39 @@ struct _xmlCharEncodingHandler {
 #endif /* LIBXML_ICONV_ENABLED */
 };
 
+/*
+ * Interfaces for encoding handlers
+ */
 void	xmlInitCharEncodingHandlers	(void);
 void	xmlCleanupCharEncodingHandlers	(void);
 void	xmlRegisterCharEncodingHandler	(xmlCharEncodingHandlerPtr handler);
-xmlCharEncoding xmlDetectCharEncoding	(const unsigned char* in,
+xmlCharEncodingHandlerPtr
+	xmlGetCharEncodingHandler	(xmlCharEncoding enc);
+xmlCharEncodingHandlerPtr
+	xmlFindCharEncodingHandler	(const char *name);
+
+
+/*
+ * Interfaces for encoding names and aliases
+ */
+int	xmlAddEncodingAlias		(const char *name,
+					 const char *alias);
+int	xmlDelEncodingAlias		(const char *alias);
+const char *
+	xmlGetEncodingAlias		(const char *alias);
+void	xmlCleanupEncodingAliases	(void);
+xmlCharEncoding
+	xmlParseCharEncoding		(const char* name);
+const char*
+	xmlGetCharEncodingName		(xmlCharEncoding enc);
+
+/*
+ * Interfaces directly used by the parsers.
+ */
+xmlCharEncoding
+	xmlDetectCharEncoding		(const unsigned char* in,
 					 int len);
-xmlCharEncoding xmlParseCharEncoding	(const char* name);
-const char*	xmlGetCharEncodingName	(xmlCharEncoding enc);
-xmlCharEncodingHandlerPtr xmlGetCharEncodingHandler(xmlCharEncoding enc);
-xmlCharEncodingHandlerPtr xmlFindCharEncodingHandler(const char *name);
+
 int	xmlCheckUTF8			(const unsigned char *utf);
 
 int	xmlCharEncOutFunc		(xmlCharEncodingHandler *handler,

@@ -16,7 +16,7 @@
 #include <libxml/xlink.h>
 
 #ifdef __cplusplus
-#define extern "C" {
+extern "C" {
 #endif
 const xmlChar *	getPublicId			(void *ctx);
 const xmlChar *	getSystemId			(void *ctx);
@@ -109,6 +109,7 @@ void		cdataBlock			(void *ctx,
 
 void		xmlDefaultSAXHandlerInit	(void);
 void		htmlDefaultSAXHandlerInit	(void);
+void		sgmlDefaultSAXHandlerInit	(void);
 #ifdef __cplusplus
 }
 #endif

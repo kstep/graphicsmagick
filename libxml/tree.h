@@ -41,7 +41,12 @@ typedef enum {
     XML_DTD_NODE=		14,
     XML_ELEMENT_DECL=		15,
     XML_ATTRIBUTE_DECL=		16,
+#ifdef LIBXML_SGML_ENABLED
+    XML_ENTITY_DECL=		17,
+    XML_SGML_DOCUMENT_NODE=	18
+#else
     XML_ENTITY_DECL=		17
+#endif
 } xmlElementType;
 
 /*
@@ -181,6 +186,7 @@ struct _xmlElement {
     xmlElementTypeVal      etype;	/* The type */
     xmlElementContentPtr content;	/* the allowed element content */
     xmlAttributePtr   attributes;	/* List of the declared attributes */
+    const xmlChar        *prefix;	/* the namespace prefix if any */
 };
 
 /*
@@ -356,6 +362,14 @@ struct _xmlDoc {
 };
 
 /*
+ * Compatibility naming layer with libxml1
+ */
+#ifndef xmlChildrenNode
+#define xmlChildrenNode children
+#define xmlRootNode children
+#endif
+
+/*
  * Variables.
  */
 extern xmlNsPtr baseDTD;
@@ -405,6 +419,7 @@ xmlDtdPtr	xmlNewDtd		(xmlDocPtr doc,
 					 const xmlChar *name,
 					 const xmlChar *ExternalID,
 					 const xmlChar *SystemID);
+xmlDtdPtr	xmlGetIntSubset		(xmlDocPtr doc);
 void		xmlFreeDtd		(xmlDtdPtr cur);
 xmlNsPtr	xmlNewGlobalNs		(xmlDocPtr doc,
 					 const xmlChar *href,
@@ -498,6 +513,8 @@ void		xmlNodeSetName		(xmlNodePtr cur,
 					 const xmlChar *name);
 xmlNodePtr	xmlAddChild		(xmlNodePtr parent,
 					 xmlNodePtr cur);
+xmlNodePtr	xmlAddChildList		(xmlNodePtr parent,
+					 xmlNodePtr cur);
 xmlNodePtr	xmlReplaceNode		(xmlNodePtr old,
 					 xmlNodePtr cur);
 xmlNodePtr	xmlAddSibling		(xmlNodePtr cur,
@@ -538,6 +555,8 @@ xmlAttrPtr	xmlSetProp		(xmlNodePtr node,
 					 const xmlChar *name,
 					 const xmlChar *value);
 xmlChar *	xmlGetProp		(xmlNodePtr node,
+					 const xmlChar *name);
+xmlAttrPtr	xmlHasProp		(xmlNodePtr node,
 					 const xmlChar *name);
 xmlChar *	xmlGetNsProp		(xmlNodePtr node,
 					 const xmlChar *name,

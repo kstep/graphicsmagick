@@ -116,14 +116,14 @@ typedef struct _xmlParserCtxt xmlParserCtxt;
 typedef xmlParserCtxt *xmlParserCtxtPtr;
 struct _xmlParserCtxt {
     struct _xmlSAXHandler *sax;       /* The SAX handler */
-    void            *userData;        /* the document being built */
+    void            *userData;        /* For SAX interface only, used by DOM build */
     xmlDocPtr           myDoc;        /* the document being built */
     int            wellFormed;        /* is the document well formed */
     int       replaceEntities;        /* shall we replace entities ? */
     const xmlChar    *version;        /* the XML version string */
     const xmlChar   *encoding;        /* the declared encoding, if any */
     int            standalone;        /* standalone document */
-    int                  html;        /* are we parsing an HTML document */
+    int                  html;        /* an HTML(1)/Docbook(2) document */
 
     /* Input stream stack */
     xmlParserInputPtr  input;         /* Current input stream */
@@ -182,6 +182,8 @@ struct _xmlParserCtxt {
 				         actually an xmlCharEncoding */
     int                nodelen;       /* Those two fields are there to */
     int                nodemem;       /* Speed up large node parsing */
+    int                pedantic;      /* signal pedantic warnings */
+    void              *_private;      /* For user data, libxml won't touch it */
 };
 
 /**
@@ -297,6 +299,7 @@ extern const char *xmlParserVersion;
 extern xmlSAXLocator xmlDefaultSAXLocator;
 extern xmlSAXHandler xmlDefaultSAXHandler;
 extern xmlSAXHandler htmlDefaultSAXHandler;
+extern xmlSAXHandler sgmlDefaultSAXHandler;
 
 /**
  * entity substitution default behaviour.
@@ -353,6 +356,8 @@ xmlDocPtr	xmlParseMemory		(char *buffer,
 xmlDocPtr	xmlParseFile		(const char *filename);
 int		xmlSubstituteEntitiesDefault(int val);
 int		xmlKeepBlanksDefault	(int val);
+void		xmlStopParser		(xmlParserCtxtPtr ctxt);
+int		xmlPedanticParserDefault(int val);
 
 /**
  * Recovery mode 
@@ -366,6 +371,7 @@ xmlDocPtr	xmlRecoverFile		(const char *filename);
  * Less common routines and SAX interfaces
  */
 int		xmlParseDocument	(xmlParserCtxtPtr ctxt);
+int		xmlParseExtParsedEnt	(xmlParserCtxtPtr ctxt);
 xmlDocPtr	xmlSAXParseDoc		(xmlSAXHandlerPtr sax,
 					 xmlChar *cur,
 					 int recovery);
@@ -383,6 +389,9 @@ xmlDocPtr	xmlSAXParseMemory	(xmlSAXHandlerPtr sax,
 xmlDocPtr	xmlSAXParseFile		(xmlSAXHandlerPtr sax,
 					 const char *filename,
 					 int recovery);
+xmlDocPtr	xmlSAXParseEntity	(xmlSAXHandlerPtr sax,
+					 const char *filename);
+xmlDocPtr	xmlParseEntity		(const char *filename);
 xmlDtdPtr	xmlParseDTD		(const xmlChar *ExternalID,
 					 const xmlChar *SystemID);
 xmlDtdPtr	xmlSAXParseDTD		(xmlSAXHandlerPtr sax,
@@ -398,6 +407,10 @@ int		xmlParseExternalEntity	(xmlDocPtr doc,
 					 xmlSAXHandlerPtr sax,
 					 void *user_data,
 					 int depth,
+					 const xmlChar *URL,
+					 const xmlChar *ID,
+					 xmlNodePtr *list);
+int		xmlParseCtxtExternalEntity(xmlParserCtxtPtr ctx,
 					 const xmlChar *URL,
 					 const xmlChar *ID,
 					 xmlNodePtr *list);
@@ -418,6 +431,19 @@ void		xmlSetupParserForBuffer	(xmlParserCtxtPtr ctxt,
 					 const xmlChar* buffer,
 					 const char* filename);
 xmlParserCtxtPtr xmlCreateDocParserCtxt	(xmlChar *cur);
+
+/**
+ * Reading/setting optional parsing features.
+ */
+
+int		xmlGetFeaturesList	(int *len,
+					 const char **result);
+int		xmlGetFeature		(xmlParserCtxtPtr ctxt,
+					 const char *name,
+					 void *result);
+int		xmlSetFeature		(xmlParserCtxtPtr ctxt,
+					 const char *name,
+					 void *value);
 
 /**
  * Interfaces for the Push mode
