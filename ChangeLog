@@ -1,3 +1,7 @@
+2003-09-19  William Radcliffe  <billr@corbis.com>
+	* lcms/include/icc34.h lcms.h: Added back the icc34.h header and
+	changes to make lcms compile on Win32" icc34.h lcms.h.
+
 2003-09-19  Lars Ruben Skyum  <lars.skyum@stibo.com>
 
 	* coders/ps3.c: Fixed warnings from Solaris compiler.
