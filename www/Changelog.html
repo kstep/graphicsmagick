@@ -56,6 +56,8 @@
 2004-03-21  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> magick/constitute.c (DispatchImage): Removed some unreachable
+        code that was accidentially left in the switch statement.
   <LI> magick/pixel_iterator.c (PixelIterateDualRead): Extended so that
         the region in each image may use a different origin.
         (PixelIterateDualModify): Extended so that

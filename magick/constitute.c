@@ -602,10 +602,6 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
             switch_map[i]=PadMapQuantum;
             break;
           }
-          {
-            switch_map[i]=OpacityMapQuantum;
-            break;
-          }
         default:
           {
             ThrowException(exception,OptionError,UnrecognizedPixelMap,map);
