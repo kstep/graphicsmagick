@@ -69,7 +69,6 @@
 #include "studio.h"
 #include "cache.h"
 #include "command.h"
-#include "list.h"
 #include "log.h"
 #include "resource.h"
 #include "utility.h"

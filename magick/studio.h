@@ -159,6 +159,7 @@ extern "C" {
 #  define S_ISREG(mode) (((mode) & S_IFMT) == S_IFREG)
 # endif
 # include "magick/image.h"
+# include "magick/list.h"
 # if !defined(WIN32)
 #  include <sys/time.h>
 #  include <sys/times.h>
@@ -172,6 +173,7 @@ extern "C" {
 #  include <unix.h>
 # endif
 # include "image.h"
+# include "list.h"
 #endif
 
 #if defined(WIN32)

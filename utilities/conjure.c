@@ -71,7 +71,6 @@
 #include "studio.h"
 #include "attribute.h"
 #include "command.h"
-#include "list.h"
 #include "log.h"
 #include "version.h"
 #include "utility.h"

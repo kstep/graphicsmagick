@@ -54,7 +54,6 @@
   Include declarations.
 */
 #include "studio.h"
-#include "list.h"
 #include "monitor.h"
 #include "utility.h"
 #if defined(HasLCMS)

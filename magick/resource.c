@@ -53,7 +53,6 @@
   Include declarations.
 */
 #include "studio.h"
-#include "list.h"
 #include "resource.h"
 #include "utility.h"
 
