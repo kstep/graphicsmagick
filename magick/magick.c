@@ -733,6 +733,16 @@ MagickExport MagickInfo *RegisterMagickInfo(MagickInfo *magick_info)
 %
 %
 */
+
+static inline unsigned int IsFrame(const char *point)
+{
+  char
+    *p;
+
+  (void) strtol(point,&p,10);
+  return(p != point);
+}
+
 MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
   const unsigned int rectify,ExceptionInfo *exception)
 {
@@ -777,7 +787,7 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
       */
       if (*q != '[')
         continue;
-      if (!IsGeometry(q+1))
+      if (!IsFrame(q+1))
         break;
       tile=(char *) AcquireMemory(p-q);
       if (tile == (char *) NULL)
