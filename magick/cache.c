@@ -1717,12 +1717,18 @@ static unsigned int ModifyCache(Image *image)
   long
     y;
 
+  RectangleInfo
+    region;
+
   register const PixelPacket
     *p;
 
   register IndexPacket
     *clone_indexes,
     *indexes;
+
+  register NexusInfo
+    *nexus_info;
 
   register PixelPacket
     *q;
@@ -1741,13 +1747,24 @@ static unsigned int ModifyCache(Image *image)
       return(True);
    }
   cache_info->reference_count--;
+  /*
+    Save nexus.
+  */
+  nexus_info=cache_info->nexus_info;
+  region.x=nexus_info->x;
+  region.y=nexus_info->y;
+  region.width=nexus_info->columns;
+  region.height=nexus_info->rows;
+  /*
+    Clone pixels.
+  */
   clone_image=(Image *) AcquireMemory(sizeof(Image));
   if (clone_image == (Image *) NULL)
     MagickFatalError(ResourceLimitFatalError,"Unable to clone image",
       "Memory allocation failed");
   *clone_image=(*image);
-  length=clone_image->columns*sizeof(PixelPacket);
   GetCacheInfo(&image->cache);
+  length=clone_image->columns*sizeof(PixelPacket);
   for (y=0; y < (long) image->rows; y++)
   {
     p=AcquireImagePixels(clone_image,0,y,image->columns,1,&image->exception);
@@ -1764,9 +1781,14 @@ static unsigned int ModifyCache(Image *image)
     if (!SyncImagePixels(image))
       break;
   }
+  /*
+    Restore nexus.
+  */
+  p=AcquireImagePixels(clone_image,region.x,region.y,region.width,region.height,
+    &image->exception);
   LiberateMemory((void **) &clone_image);
   LiberateSemaphoreInfo(&cache_info->semaphore);
-  if (y < (long) image->rows)
+  if ((p == (const PixelPacket *) NULL) || (y < (long) image->rows))
     ThrowBinaryException(CacheError,"Unable to clone cache",image->filename);
   return(True);
 }
@@ -2706,14 +2728,19 @@ static PixelPacket *SetNexus(const Image *image,const RectangleInfo *region,
       (cache_info->colorspace == CMYKColorspace))
     offset+=number_pixels*sizeof(IndexPacket);
   if (nexus_info->staging == (PixelPacket *) NULL)
-    nexus_info->staging=(PixelPacket *) AcquireMemory(offset);
+    {
+      nexus_info->staging=(PixelPacket *) AcquireMemory(offset);
+      nexus_info->length=offset;
+    }
   else
     if (nexus_info->length < offset)
-      ReacquireMemory((void **) &nexus_info->staging,offset);
+      {
+        ReacquireMemory((void **) &nexus_info->staging,offset);
+        nexus_info->length=offset;
+      }
   if (nexus_info->staging == (PixelPacket *) NULL)
     MagickFatalError(ResourceLimitFatalError,"Memory allocation failed",
       "unable to allocate cache nexus_info");
-  nexus_info->length=offset;
   nexus_info->pixels=nexus_info->staging;
   nexus_info->indexes=(IndexPacket *) NULL;
   if ((cache_info->storage_class == PseudoClass) ||
