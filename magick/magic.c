@@ -400,7 +400,7 @@ static unsigned int InitializeMagic(void)
 
   if (getenv("MAGICK_DELEGATE_PATH") != (char *) NULL)
     {
-      (void) strcpy(path,getenv("DELEGATE_PATH"));
+      (void) strcpy(path,getenv("MAGICK_DELEGATE_PATH"));
       (void) strcat(path,DirectorySeparator);
       (void) strcat(path,"magic.mgk");
       if (ReadMagicConfigurationFile(path) == True)

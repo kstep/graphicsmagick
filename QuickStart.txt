@@ -21,17 +21,18 @@ Unix:
   Alternatively, download the appropriate binary from
   ftp://www.wizards.dupont.com/pub/ImageMagick/binaries.
 
-  If you downloaded just the binary distribution, you must move
+  If you download the binary distribution, you must move
   the file share/ImageMagick/delegates.mgk to the directory
   /usr/local/share/ImageMagick/ or to the directory $HOME/.magick
   and move the file share/ImageMagick/magic.mgk to directory
   /usr/local/share/ImageMagick/, or to the directory $HOME/.magick.
   If the binary distribution is anywhere but /usr/local you will
-  probably need to set the LD_LIBRARY_PATH and DELEGATE_PATH
-  environment variables.  For example,
+  probably need to set the LD_LIBRARY_PATH, MAGICK_DELEGATE_PATH, and
+  MAGICK_MODULE_PATH environment variables.  For example,
 
     setenv LD_LIBRARY_PATH ~/lib
-    setenv DELEGATE_PATH ~/share/ImageMagick
+    setenv MAGICK_DELEGATE_PATH ~/share/ImageMagick
+    setenv MAGICK_DELEGATE_PATH ~/ImageMagick/modules/coders
 
 
   In some cases, ImageMagick needs to write temporary files.  If your
@@ -60,12 +61,10 @@ Win2K, NT, Win95, Win98:
   copy
 
     ImageMagick-5.2.0\delegates\magic.mgk
-    ImageMagick-5.2.0\coders\modules.mgk
 
   to
 
     c:\ImageMagick\magic.mgk
-    c:\ImageMagick\modules.mgk
 
   respectively.
 
