@@ -1,3 +1,6 @@
+2002-04-10  Cristy  <cristy@mystic.es.dupont.com>
+  * Fixed PingImage() memory leak (thanks to Timo Vogel).
+
 2002-04-08  Cristy  <cristy@mystic.es.dupont.com>
   * Added reference counted blobs.
   * Added MagickFatalError() and SetFatalErrorHandler() to the C API.
