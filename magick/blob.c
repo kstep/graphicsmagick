@@ -335,11 +335,7 @@ MagickExport int EOFBlob(const Image *image)
 MagickExport void GetBlobInfo(BlobInfo *blob)
 {
   assert(blob != (BlobInfo *) NULL);
-  blob->mapped=False;
-  blob->data=(char *) NULL;
-  blob->offset=0;
-  blob->length=0;
-  blob->extent=0;
+  memset(blob,0,sizeof(BlobInfo));
   blob->quantum=BlobQuantum;
   blob->signature=MagickSignature;
 }

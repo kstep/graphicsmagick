@@ -270,9 +270,8 @@ MagickExport void DestroyExceptionInfo(ExceptionInfo *exception)
 MagickExport void GetExceptionInfo(ExceptionInfo *exception)
 {
   assert(exception != (ExceptionInfo *) NULL);
+  memset(exception,0,sizeof(ExceptionInfo));
   exception->severity=UndefinedException;
-  exception->message=(char *) NULL;
-  exception->qualifier=(char *) NULL;
   exception->signature=MagickSignature;
 }
 

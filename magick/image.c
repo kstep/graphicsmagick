@@ -67,7 +67,6 @@ const char
   *AppendBinaryType = "ab",
   *BackgroundColor = "#dfdfdf",  /* gray */
   *BorderColor = "#dfdfdf",  /* gray */
-  *DefaultPointSize = "12",
   *DefaultTileFrame = "15x15+3+3",
   *DefaultTileGeometry = "120x120+4+3>",
   *DefaultTileLabel = "%f\n%wx%h\n%b",
@@ -2607,21 +2606,14 @@ MagickExport void GetImageInfo(ImageInfo *image_info)
     File and image dimension members.
   */
   assert(image_info != (ImageInfo *) NULL);
+  memset(image_info,0,sizeof(ImageInfo));
   GetBlobInfo(&(image_info->blob));
-  image_info->file=(FILE *) NULL;
-  *image_info->filename='\0';
-  *image_info->magick='\0';
   TemporaryFilename(image_info->unique);
   (void) strcat(image_info->unique,"u");
   TemporaryFilename(image_info->zero);
   image_info->temporary=False;
   image_info->adjoin=True;
-  image_info->subimage=0;
-  image_info->subrange=0;
   image_info->depth=QuantumDepth;
-  image_info->size=(char *) NULL;
-  image_info->tile=(char *) NULL;
-  image_info->page=(char *) NULL;
   image_info->interlace=NoInterlace;
   image_info->units=UndefinedResolution;
   /*
@@ -2632,15 +2624,11 @@ MagickExport void GetImageInfo(ImageInfo *image_info)
   /*
     Annotation members.
   */
-  image_info->server_name=(char *) NULL;
-  image_info->font=(char *) NULL;
-  image_info->texture=(char *) NULL;
-  image_info->density=(char *) NULL;
+  image_info->font=AllocateString("Robson-Celtic");
   image_info->antialias=True;
-  image_info->pointsize=atof(DefaultPointSize);
+  image_info->pointsize=12;
   for (i=0; i < 6; i++)
     image_info->affine[i]=(i == 0) || (i == 3) ? 1.0 : 0.0;
-  image_info->fuzz=0.0;
   (void) QueryColorDatabase("none",&image_info->stroke);
   (void) QueryColorDatabase("none",&image_info->fill);
   (void) QueryColorDatabase("#ffffff",&image_info->background_color);
@@ -2650,25 +2638,11 @@ MagickExport void GetImageInfo(ImageInfo *image_info)
     Color reduction members.
   */
   image_info->dither=True;
-  image_info->monochrome=False;
   image_info->colorspace=UndefinedColorspace;
-  /*
-    Animation members.
-  */
-  image_info->dispose=(char *) NULL;
-  image_info->delay=(char *) NULL;
-  image_info->iterations=(char *) NULL;
-  image_info->decode_all_MNG_objects=False;
-  image_info->coalesce_frames=False;
-  image_info->insert_backdrops=False;
   /*
     Miscellaneous members.
   */
-  image_info->verbose=False;
   image_info->preview_type=JPEGPreview;
-  image_info->view=(char *) NULL;
-  image_info->group=0L;
-  image_info->ping=False;
   image_info->fifo=(int (*)(const Image *,const void *,const size_t)) NULL;
   image_info->signature=MagickSignature;
 }
@@ -2825,10 +2799,7 @@ MagickExport unsigned int GetNumberScenes(const Image *image)
 MagickExport void GetPageInfo(RectangleInfo *page)
 {
   assert(page != (RectangleInfo *) NULL);
-  page->width=0;
-  page->height=0;
-  page->x=0;
-  page->y=0;
+  memset(page,0,sizeof(RectangleInfo));
 }
 
 /*

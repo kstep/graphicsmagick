@@ -190,17 +190,13 @@ MagickExport void GetMontageInfo(const ImageInfo *image_info,
   assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
   assert(montage_info != (MontageInfo *) NULL);
+  memset(montage_info,0,sizeof(MontageInfo));
   (void) strcpy(montage_info->filename,image_info->filename);
   montage_info->geometry=AllocateString(DefaultTileGeometry);
   montage_info->tile=AllocateString("6x4");
-  montage_info->title=(char *) NULL;
-  montage_info->frame=(char *) NULL;
-  montage_info->texture=(char *) NULL;
   montage_info->font=AllocateString(image_info->font);
   montage_info->pointsize=image_info->pointsize;
-  montage_info->border_width=0;
   montage_info->gravity=CenterGravity;
-  montage_info->shadow=False;
   montage_info->compose=ReplaceCompositeOp;
   montage_info->fill=image_info->fill;
   montage_info->stroke=image_info->stroke;

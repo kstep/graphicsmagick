@@ -206,9 +206,8 @@ MagickExport void GetTimerInfo(TimerInfo *time_info)
     Create a stopwatch and start it.
   */
   assert(time_info != (TimerInfo *) NULL);
+  memset(time_info,0,sizeof(TimerInfo));
   time_info->state=UndefinedTimerState;
-  time_info->user.total=0;
-  time_info->elapsed.total=0;
   time_info->signature=MagickSignature;
   StartTimer(time_info,True);
 }

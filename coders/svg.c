@@ -772,6 +772,12 @@ static void SVGStartElement(void *context,const xmlChar *name,
                 (void) fprintf(svg_info->file,"fill %s\n",value);
                 continue;
               }
+            if (LocaleCompare(keyword,"fill-opacity:") == 0)
+              {
+                (void) fprintf(svg_info->file,"fill-opacity %g\n",atof(value)*
+                  (strchr(value,'%') == (char *) NULL ? 1.0 : 100.0));
+                continue;
+              }
             if (LocaleCompare(keyword,"font-family:") == 0)
               {
                 font_family=AllocateString(value);
@@ -783,22 +789,16 @@ static void SVGStartElement(void *context,const xmlChar *name,
                 *font_style=toupper((int) *font_style);
                 continue;
               }
-            if (LocaleCompare(keyword,"font-weight:") == 0)
-              {
-                font_weight=AllocateString(value);
-                *font_weight=toupper((int) *font_weight);
-                continue;
-              }
-            if (LocaleCompare(keyword,"fill-opacity:") == 0)
-              {
-                (void) fprintf(svg_info->file,"fill-opacity %g\n",atof(value)*
-                  (strchr(value,'%') == (char *) NULL ? 1.0 : 100.0));
-                continue;
-              }
             if (LocaleCompare(keyword,"font-size:") == 0)
               {
                 (void) fprintf(svg_info->file,"pointsize %g\n",
                   atof(value)*UnitOfMeasure(value));
+                continue;
+              }
+            if (LocaleCompare(keyword,"font-weight:") == 0)
+              {
+                font_weight=AllocateString(value);
+                *font_weight=toupper((int) *font_weight);
                 continue;
               }
             if (LocaleCompare(keyword,"opacity:") == 0)

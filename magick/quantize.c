@@ -1308,11 +1308,8 @@ static NodeInfo *GetNodeInfo(CubeInfo *cube_info,const unsigned int id,
 MagickExport void GetQuantizeInfo(QuantizeInfo *quantize_info)
 {
   assert(quantize_info != (QuantizeInfo *) NULL);
-  quantize_info->number_colors=0;
-  quantize_info->tree_depth=0;
-  quantize_info->dither=False;
+  memset(quantize_info,0,sizeof(QuantizeInfo));
   quantize_info->colorspace=RGBColorspace;
-  quantize_info->measure_error=False;
   quantize_info->signature=MagickSignature;
 }
 

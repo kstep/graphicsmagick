@@ -406,16 +406,10 @@ MagickExport void GetCacheInfo(Cache *cache)
   if (cache_info == (CacheInfo *) NULL)
     MagickError(ResourceLimitError,"Memory allocation failed",
       "unable to allocate cache info");
+  memset(cache_info,0,sizeof(CacheInfo));
   cache_info->storage_class=UndefinedClass;
   cache_info->type=UndefinedCache;
-  cache_info->rows=0;
-  cache_info->columns=0;
-  cache_info->pixels=(PixelPacket *) NULL;
-  cache_info->indexes=(IndexPacket *) NULL;
-  cache_info->persist=False;
-  *cache_info->filename='\0';
   cache_info->file=(-1);
-  cache_info->nexus=(NexusInfo *) NULL;
   cache_info->signature=MagickSignature;
   *cache=cache_info;
 }

@@ -492,14 +492,12 @@ MagickExport void GetAnnotateInfo(const ImageInfo *image_info,
   assert(image_info != (ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
   assert(annotate_info != (AnnotateInfo *) NULL);
-  annotate_info->geometry=(char *) NULL;
-  annotate_info->text=(char *) NULL;
+  memset(annotate_info,0,sizeof(AnnotateInfo));
   annotate_info->font=AllocateString(image_info->font);
   annotate_info->density=AllocateString(image_info->density);
   annotate_info->antialias=image_info->antialias;
   annotate_info->gravity=NorthWestGravity;
   annotate_info->pointsize=image_info->pointsize;
-  annotate_info->degrees=0.0;
   for (i=0; i < 6; i++)
     annotate_info->affine[i]=image_info->affine[i];
   annotate_info->fill=image_info->fill;

@@ -2351,13 +2351,11 @@ MagickExport void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
   assert(image_info != (ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
   assert(draw_info != (DrawInfo *) NULL);
-  draw_info->primitive=(char *) NULL;
+  memset(draw_info,0,sizeof(DrawInfo));
   for (i=0; i < 6; i++)
     draw_info->affine[i]=image_info->affine[i];
-  draw_info->angle=0.0;
   draw_info->gravity=NorthWestGravity;
   draw_info->fill=image_info->fill;
-  draw_info->tile=(Image *) NULL;
   draw_info->stroke=image_info->stroke;
   draw_info->linewidth=1.0;
   draw_info->stroke_antialias=image_info->antialias;

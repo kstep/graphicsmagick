@@ -3090,10 +3090,10 @@ MagickExport void XGetResourceInfo(XrmDatabase database,char *client_name,
     Initialize resource info fields.
   */
   assert(resource_info != (XResourceInfo *) NULL);
+  memset(resource_info,0,sizeof(XResourceInfo));
   resource_info->resource_database=database;
   resource_info->image_info=CloneImageInfo((ImageInfo *) NULL);
   resource_info->quantize_info=CloneQuantizeInfo((QuantizeInfo *) NULL);
-  resource_info->colors=0;
   resource_info->close_server=True;
   resource_info->client_name=client_name;
   resource_value=XGetResourceClass(database,client_name,"backdrop","False");
@@ -3251,7 +3251,6 @@ MagickExport void XGetResourceInfo(XrmDatabase database,char *client_name,
     XGetResourceClass(database,client_name,"window",(char *) NULL);
   resource_info->write_filename=XGetResourceClass(database,client_name,
     "writeFilename",(char *) NULL);
-  resource_info->copy_image=(Image *) NULL;
 }
 
 /*
