@@ -1272,6 +1272,8 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
               break;
           }
         }
+    if (image->colormap == (PixelPacket *) NULL)
+      break;
     for (bits_per_pixel=1; bits_per_pixel < 8; bits_per_pixel++)
       if ((1 << bits_per_pixel) >= (int) image->colors)
         break;
