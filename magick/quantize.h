@@ -20,6 +20,9 @@ extern "C" {
 typedef struct _QuantizeInfo
 {
   unsigned long
+    signature;
+
+  unsigned long
     number_colors;
 
   unsigned int
@@ -31,9 +34,6 @@ typedef struct _QuantizeInfo
 
   unsigned int
     measure_error;
-
-  unsigned long
-    signature;
 } QuantizeInfo;
 
 /*

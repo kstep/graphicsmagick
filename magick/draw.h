@@ -24,10 +24,16 @@ typedef struct _AffineMatrix
 
 typedef struct _DrawInfo
 {
+  unsigned long
+    signature;
+
   char
     *primitive,
     *text,
     *geometry;
+
+  Image
+    *tile;
 
   AffineMatrix
     affine;
@@ -35,21 +41,13 @@ typedef struct _DrawInfo
   GravityType
     gravity;
 
-  Quantum
-    opacity;
-
-  Image
-    *tile;
-
   PixelPacket
     fill,
     stroke;
 
   unsigned int
-    stroke_antialias;
-
-  double
-    stroke_width;
+    stroke_antialias,
+    text_antialias;
 
   FillRule
     fill_rule;
@@ -67,22 +65,22 @@ typedef struct _DrawInfo
   DecorationType
     decorate;
 
-  char
-    *font,
-    *density;
-
-  unsigned int
-    text_antialias;
+  CompositeOperator
+    compose;
 
   double
     pointsize;
 
+  double
+    stroke_width;
+
+  char
+    *font,
+    *density;
+
   PixelPacket
     box,
     border_color;
-
-  CompositeOperator
-    compose;
 
   char
     *server_name;
@@ -93,17 +91,17 @@ typedef struct _DrawInfo
   char
     *clip_path;
 
-  ClipPathUnits
-    clip_units;
-
   SegmentInfo
     bounds;
+
+  ClipPathUnits
+    clip_units;
 
   unsigned int
     debug;
 
-  unsigned long
-    signature;
+  Quantum
+    opacity;
 } DrawInfo;
 
 typedef struct _TypeInfo
@@ -130,11 +128,11 @@ typedef struct _PrimitiveInfo
   PointInfo
     point;
 
-  PrimitiveType
-    primitive;
-
   unsigned long
     coordinates;
+
+  PrimitiveType
+    primitive;
 
   PaintMethod
     method;

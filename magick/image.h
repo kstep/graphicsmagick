@@ -94,6 +94,9 @@ typedef struct _Ascii85Info
 
 typedef struct _BlobInfo
 {
+  unsigned long
+    signature;
+
   size_t
     length,
     extent,
@@ -109,9 +112,6 @@ typedef struct _BlobInfo
   off_t
     offset,
     size;
-
-  unsigned long
-    signature;
 } BlobInfo;
 
 typedef struct _ChromaticityInfo
@@ -125,6 +125,10 @@ typedef struct _ChromaticityInfo
 
 typedef struct _ColorInfo
 {
+  struct _ColorInfo
+    *previous,
+    *next;
+
   char
     *filename,
     *name;
@@ -134,23 +138,19 @@ typedef struct _ColorInfo
 
   PixelPacket
     color;
-
-  struct _ColorInfo
-    *previous,
-    *next;
 } ColorInfo;
 
 typedef struct _ExceptionInfo
 {
-  ExceptionType
-    severity;
+  unsigned long
+    signature;
 
   char
     *reason,
     *description;
 
-  unsigned long
-    signature;
+  ExceptionType
+    severity;
 } ExceptionInfo;
 
 typedef struct _FrameInfo
@@ -168,24 +168,26 @@ typedef struct _FrameInfo
 
 typedef struct _ImageAttribute
 {
+  struct _ImageAttribute
+    *previous,
+    *next;
+
   char
     *key,
     *value;
 
   unsigned int
     compression;
-
-  struct _ImageAttribute
-    *previous,
-    *next;
 } ImageAttribute;
 
 typedef Quantum IndexPacket;
 
 typedef struct _MontageInfo
 {
+  unsigned long
+    signature;
+
   char
-    filename[MaxTextExtent],
     *geometry,
     *tile,
     *title,
@@ -213,8 +215,8 @@ typedef struct _MontageInfo
     border_color,
     matte_color;
 
-  unsigned long
-    signature;
+  char
+    filename[MaxTextExtent];
 } MontageInfo;
 
 typedef struct _ProfileInfo
@@ -253,22 +255,26 @@ typedef struct _Timer
 
 typedef struct _TimerInfo
 {
+  unsigned long
+    signature;
+
   Timer
     user,
     elapsed;
 
   TimerState
     state;
-
-  unsigned long
-    signature;
 } TimerInfo;
 
 typedef struct _Image
 {
-  char
-    filename[MaxTextExtent],
-    magick[MaxTextExtent];
+  unsigned long
+    signature;
+
+  struct _Image
+    *previous,
+    *list,
+    *next;
 
   ClassType
     storage_class;
@@ -276,7 +282,12 @@ typedef struct _Image
   ColorspaceType
     colorspace;
 
+  CompressionType
+    compression;
+
   unsigned int
+    orphan,
+    taint,
     matte,
     columns,
     rows;
@@ -299,9 +310,6 @@ typedef struct _Image
   ChromaticityInfo
     chromaticity;
 
-  RenderingIntent
-    rendering_intent;
-
   ProfileInfo
     color_profile,
     iptc_profile;
@@ -311,6 +319,9 @@ typedef struct _Image
 
   ProfileInfo
     *generic_profile;
+
+  RenderingIntent
+    rendering_intent;
 
   ResolutionType
     units;
@@ -343,9 +354,6 @@ typedef struct _Image
   InterlaceType
     interlace;
 
-  CompressionType
-    compression;
-
   ImageAttribute
     *attributes;
 
@@ -364,13 +372,6 @@ typedef struct _Image
     normalized_mean_error,
     normalized_maximum_error;
 
-  char
-    magick_filename[MaxTextExtent];
-
-  unsigned int
-    magick_columns,
-    magick_rows;
-
   SemaphoreInfo
     *semaphore;
 
@@ -385,9 +386,6 @@ typedef struct _Image
 
   long
     start_loop;
-
-  unsigned int
-    taint;
 
   void
     *cache;
@@ -414,26 +412,27 @@ typedef struct _Image
     *blob;
 
   unsigned int
-    orphan;
+    magick_columns,
+    magick_rows;
 
-  struct _Image
-    *previous,
-    *list,
-    *next;
-
-  unsigned long
-    signature;
+  char
+    magick_filename[MaxTextExtent],
+    magick[MaxTextExtent],
+    filename[MaxTextExtent];
 } Image;
 
 typedef struct _ImageInfo
 {
-  char
-    filename[MaxTextExtent],
-    magick[MaxTextExtent];
+  unsigned long
+    signature;
+
+  CompressionType
+    compression;
 
   unsigned int
     temporary,
-    adjoin;
+    adjoin,
+    antialias;
 
   unsigned long
     subimage,
@@ -451,9 +450,6 @@ typedef struct _ImageInfo
   ResolutionType
     units;
 
-  CompressionType
-    compression;
-
   unsigned long
     quality;
 
@@ -462,9 +458,6 @@ typedef struct _ImageInfo
     *font,
     *texture,
     *density;
-
-  unsigned int
-    antialias;
 
   double
     pointsize;
@@ -504,35 +497,34 @@ typedef struct _ImageInfo
   int
     (*fifo)(const Image *,const void *,const size_t);
 
-  char
-    unique[MaxTextExtent],
-    zero[MaxTextExtent];
-
   FILE
     *file;
 
   BlobInfo
     *blob;
 
-  unsigned long
-    signature;
+  char
+    magick[MaxTextExtent],
+    unique[MaxTextExtent],
+    zero[MaxTextExtent],
+    filename[MaxTextExtent];
 } ImageInfo;
 
 typedef struct _MagickInfo
 {
+  unsigned long
+    signature;
+
+  struct _MagickInfo
+    *previous,
+    *next;
+
   char
     *name;
 
   char
     *description,
     *module;
-
-  unsigned int
-    adjoin,
-    raw,
-    stealth,
-    blob_support,
-    thread_support;
 
   ImageInfo
     *image_info;
@@ -547,12 +539,12 @@ typedef struct _MagickInfo
   void
     *client_data;
 
-  struct _MagickInfo
-    *previous,
-    *next;
-
-  unsigned long
-    signature;
+  unsigned int
+    adjoin,
+    raw,
+    stealth,
+    blob_support,
+    thread_support;
 } MagickInfo;
 
 /*

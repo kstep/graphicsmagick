@@ -22,6 +22,13 @@ typedef struct _ModuleAlias
 
 typedef struct _ModuleInfo
 {
+  unsigned long
+    signature;
+  
+  struct _ModuleInfo
+    *previous,
+    *next;
+  
   char
     *tag;
   
@@ -30,13 +37,6 @@ typedef struct _ModuleInfo
   
   time_t
     load_time;
-  
-  unsigned long
-    signature;
-  
-  struct _ModuleInfo
-    *previous,
-    *next;
 } ModuleInfo;
 
 /*

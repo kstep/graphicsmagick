@@ -20,11 +20,11 @@ typedef struct _TokenInfo
   unsigned int
     flag;
 
-  char
-    quote;
-
   long
     offset;
+
+  char
+    quote;
 } TokenInfo;
 
 /*

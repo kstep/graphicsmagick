@@ -20,11 +20,6 @@ typedef IndexPacket
 
 typedef struct _NexusInfo
 {
-  unsigned int
-    available,
-    columns,
-    rows;
-
   int
     x,
     y;
@@ -38,10 +33,21 @@ typedef struct _NexusInfo
 
   IndexPacket
     *indexes;
+
+  unsigned int
+    available,
+    columns,
+    rows;
 } NexusInfo;
 
 typedef struct _CacheInfo
 {
+  unsigned long
+    signature;
+
+  NexusInfo
+    *nexus_info;
+
   ClassType
     storage_class;
 
@@ -52,6 +58,7 @@ typedef struct _CacheInfo
     type;
 
   unsigned int
+    persist,
     columns,
     rows;
 
@@ -64,21 +71,12 @@ typedef struct _CacheInfo
   IndexPacket
     *indexes;
 
-  char
-    cache_filename[MaxTextExtent],
-    meta_filename[MaxTextExtent];
-
   int
     file;
 
-  unsigned int
-    persist;
-
-  NexusInfo
-    *nexus_info;
-
-  unsigned long
-    signature;
+  char
+    cache_filename[MaxTextExtent],
+    meta_filename[MaxTextExtent];
 } CacheInfo;
 
 typedef PixelPacket

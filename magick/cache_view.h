@@ -13,14 +13,14 @@ extern "C" {
 */
 typedef struct _ViewInfo
 {
-  unsigned int
-    id;
+  unsigned long
+    signature;
 
   Image
     *image;
 
-  unsigned long
-    signature;
+  unsigned int
+    id;
 } ViewInfo;
 
 /*
