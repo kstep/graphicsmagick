@@ -3,7 +3,6 @@
   <module name="TTF" alias="AFM"/>
   <module name="JBIG" alias="BIE"/>
   <module name="PCX" alias="DCX"/>
-  <module name="BMP" alias="DIB"/>
   <module name="PDF" alias="EPDF"/>
   <module name="PS" alias="EPI"/>
   <module name="PS" alias="EPS"/>
