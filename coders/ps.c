@@ -810,7 +810,6 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
 
   int
     length,
-    max_runlength,
     x,
     y;
 
@@ -1153,8 +1152,6 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
     GetPixelPacket(&pixel);
     i=0;
     index=0;
-    length=0;
-    max_runlength=255;
     x=0;
     if (!IsPseudoClass(image) && !IsGrayImage(image))
       {
@@ -1178,21 +1175,13 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
               p=GetImagePixels(image,0,y,image->columns,1);
               if (p == (PixelPacket *) NULL)
                 break;
-              indexes=GetIndexes(image);
-              if (y == 0)
-                {
-                  pixel=(*p);
-                  if (image->class == PseudoClass)
-                    index=(*indexes);
-                }
+              pixel=(*p);
+              length=0;
               for (x=0; x < (int) image->columns; x++)
               {
-                if ((x == (int) (image->columns-1)) &&
-                    (y == (int) (image->rows-1)))
-                  max_runlength=0;
                 if ((p->red == pixel.red) && (p->green == pixel.green) &&
                     (p->blue == pixel.blue) && (p->opacity == pixel.opacity) &&
-                    (length < max_runlength))
+                    (length < 255) && (x < (image->columns-1)))
                   length++;
                 else
                   {
@@ -1213,7 +1202,8 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                       }
                     length=0;
                   }
-                pixel=(*p++);
+                pixel=(*p);
+                p++;
               }
               if (image->previous == (Image *) NULL)
                 if (QuantumTick(y,image->rows))
@@ -1390,17 +1380,12 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                 if (p == (PixelPacket *) NULL)
                   break;
                 indexes=GetIndexes(image);
-                if (y == 0)
-                  {
-                    pixel=(*p);
-                    index=(*indexes);
-                  }
+                index=(*indexes);
+                length=0;
                 for (x=0; x < (int) image->columns; x++)
                 {
-                  if ((x == (int) (image->columns-1)) &&
-                      (y == (int) (image->rows-1)))
-                    max_runlength=0;
-                  if ((index == indexes[x]) && (length < max_runlength))
+                  if ((index == indexes[x]) && (length < 255) &&
+                      (x < (image->columns-1)))
                     length++;
                   else
                     {
@@ -1416,7 +1401,8 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                       length=0;
                     }
                   index=indexes[x];
-                  pixel=(*p++);
+                  pixel=(*p);
+                  p++;
                 }
                 if (image->previous == (Image *) NULL)
                   if (QuantumTick(y,image->rows))
