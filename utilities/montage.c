@@ -785,7 +785,7 @@ int main(int argc,char **argv)
         }
         case 'i':
         {
-          if (LocaleNCompare("interlace",option+1,3) == 0)
+          if (LocaleNCompare("interlace",option+1,5) == 0)
             {
               image_info->interlace=NoInterlace;
               if (*option == '-')

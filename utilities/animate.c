@@ -671,7 +671,7 @@ int main(int argc,char **argv)
               resource_info.iconic=(*option == '-');
               break;
             }
-          if (LocaleNCompare("interlace",option+1,3) == 0)
+          if (LocaleNCompare("interlace",option+1,5) == 0)
             {
               if (*option == '-')
                 {

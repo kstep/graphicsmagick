@@ -548,7 +548,7 @@ static void mng_get_data(png_structp png_ptr,png_bytep data,png_size_t length)
               mng_info->bytes_in_read_buffer=4;
               if (!png_memcmp(mng_info->read_buffer,mng_PLTE,4))
                 mng_info->found_empty_plte=True;
-              if (!png_memcmp(mng_info->read_buffer,mng_IEND, 4))
+              if (!png_memcmp(mng_info->read_buffer,mng_IEND,4))
                 {
                   mng_info->found_empty_plte=False;
                   mng_info->have_saved_bkgd_index=False;
@@ -1960,7 +1960,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (have_global_srgb)
         image->rendering_intent=(RenderingIntent)
           (mng_info->global_srgb_intent+1);
-      if (png_get_sRGB(ping, ping_info, &intent))
+      if (png_get_sRGB(ping,ping_info,&intent))
         image->rendering_intent=(RenderingIntent) (intent+1);
     }
 #endif
@@ -1970,14 +1970,14 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
        if (have_global_gama)
          image->gamma=mng_info->global_gamma;
-       if (png_get_gAMA(ping, ping_info, &file_gamma))
+       if (png_get_gAMA(ping,ping_info,&file_gamma))
          image->gamma=(float) file_gamma;
     }
     if (have_global_chrm)
       image->chromaticity=mng_info->global_chrm;
     if (ping_info->valid & PNG_INFO_cHRM)
       {
-        png_get_cHRM(ping, ping_info,
+        png_get_cHRM(ping,ping_info,
           &image->chromaticity.white_point.x,
           &image->chromaticity.white_point.y,
           &image->chromaticity.red_primary.x,
@@ -2009,24 +2009,24 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       ping_info->valid|=PNG_INFO_cHRM;
     if (ping_info->valid & PNG_INFO_pHYs)
       {
-        /*
-          Set image resolution.
-        */
-        png_uint_32
-          res_x,
-          res_y;
-
         int
           unit_type;
 
-        png_get_pHYs(ping, ping_info, &res_x, &res_y, &unit_type);
-        image->x_resolution=(float) res_x;
-        image->y_resolution=(float) res_y;
+        png_uint_32
+          x_resolution,
+          y_resolution;
+
+        /*
+          Set image resolution.
+        */
+        png_get_pHYs(ping,ping_info,&x_resolution,&y_resolution,&unit_type);
+        image->x_resolution=(float) x_resolution;
+        image->y_resolution=(float) y_resolution;
         if (unit_type == PNG_RESOLUTION_METER)
           {
             image->units=PixelsPerCentimeterResolution;
-            image->x_resolution=(float) res_x/100.0;
-            image->y_resolution=(float) res_y/100.0;
+            image->x_resolution=(double) x_resolution/100.0;
+            image->y_resolution=(double) y_resolution/100.0;
           }
       }
     else
@@ -2038,10 +2038,10 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (mng_info->global_phys_unit_type == PNG_RESOLUTION_METER)
               {
                 image->units=PixelsPerCentimeterResolution;
-                image->x_resolution=(float) mng_info->global_x_pixels_per_unit
-                   /100.0;
-                image->y_resolution=(float) mng_info->global_y_pixels_per_unit
-                   /100.0;
+                image->x_resolution=(double)
+                  mng_info->global_x_pixels_per_unit/100.0;
+                image->y_resolution=(double)
+                  mng_info->global_y_pixels_per_unit/100.0;
               }
             ping_info->valid|=PNG_INFO_pHYs;
           }
@@ -2049,13 +2049,13 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (ping_info->valid & PNG_INFO_PLTE)
       {
         int
-          num_palette;
+          number_colors;
 
         png_colorp
           palette;
 
-        png_get_PLTE(ping,ping_info,&palette,&num_palette);
-        if (num_palette == 0 && ping_info->color_type == PNG_COLOR_TYPE_PALETTE)
+        png_get_PLTE(ping,ping_info,&palette,&number_colors);
+        if (number_colors == 0 && ping_info->color_type == PNG_COLOR_TYPE_PALETTE)
           {
             if (global_plte_length)
               {
@@ -2181,12 +2181,14 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         image->colors=1 << ping_info->bit_depth;
         if (ping_info->color_type == PNG_COLOR_TYPE_PALETTE)
           {
-            png_colorp
-               palette;
             int
-               num_palette;
-            png_get_PLTE(ping, ping_info, &palette, &num_palette);
-            image->colors=num_palette;
+              number_colors;
+
+            png_colorp
+              palette;
+
+            png_get_PLTE(ping,ping_info,&palette,&number_colors);
+            image->colors=number_colors;
           }
       }
     if (image_info->ping)
@@ -2214,13 +2216,13 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             image);
         if (ping_info->color_type == PNG_COLOR_TYPE_PALETTE)
           {
+            int
+              number_colors;
+
             png_colorp
               palette;
 
-            int
-              num_palette;
-
-            png_get_PLTE(ping,ping_info,&palette,&num_palette);
+            png_get_PLTE(ping,ping_info,&palette,&number_colors);
             for (i=0; i < (int) image->colors; i++)
             {
               image->colormap[i].red=UpScale(palette[i].red);
@@ -2346,7 +2348,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             case 8:
             {
 #if (QuantumDepth == 108)
-              memcpy(r,p, (int) image->columns * sizeof(Quantum));
+              memcpy(r,p,(int) image->columns*sizeof(Quantum));
 #else
               for (x=0; x < (int) image->columns; x++)
               {
@@ -2363,8 +2365,8 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             case 16:
             {
 #if (QuantumDepth == 116 && WORDS_BIGENDIAN)
-              memcpy(r,p, (ping_info->color_type == 4 ? 2 : 1) *
-                   image->columns * sizeof(Quantum));
+              memcpy(r,p,(ping_info->color_type == 4 ? 2 : 1)*
+                image->columns*sizeof(Quantum));
 #else
               for (x=0; x < (int) image->columns; x++)
               {
@@ -2565,7 +2567,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (ping_info->valid & PNG_INFO_PLTE)
               {
                 int
-                  num_palette;
+                  number_colors;
 
                 png_colorp
                   plte;
@@ -2573,9 +2575,9 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 /*
                   Copy the PLTE to the object buffer.
                 */
-                png_get_PLTE(ping,ping_info,&plte,&num_palette);
-                mng_info->ob[object_id]->plte_length = num_palette;
-                for (i=0; i<num_palette; i++)
+                png_get_PLTE(ping,ping_info,&plte,&number_colors);
+                mng_info->ob[object_id]->plte_length = number_colors;
+                for (i=0; i<number_colors; i++)
                 {
                   mng_info->ob[object_id]->plte[i]=plte[i];
                 }
@@ -2658,8 +2660,8 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   a layer, though, so make a single transparent pixel in
                   the top left corner.
                 */
-                image->columns=(unsigned int) 1;
-                image->rows=(unsigned int) 1;
+                image->columns=1;
+                image->rows=1;
                 image->matte=True;
                 image->colors=2;
                 SetImage(image,TransparentOpacity);
@@ -3534,49 +3536,44 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     if ((image->x_resolution != 0) && (image->y_resolution != 0) &&
         (!image_info->adjoin || !equal_physs))
       {
-        png_uint_32
-          res_x,
-          res_y;
-
         int
           unit_type;
+
+        png_uint_32
+          x_resolution,
+          y_resolution;
 
         if (image->units == PixelsPerInchResolution)
           {
             unit_type=PNG_RESOLUTION_METER;
-            res_x=(png_uint_32) (100.0*image->x_resolution/2.54);
-            res_y=(png_uint_32) (100.0*image->y_resolution/2.54);
+            x_resolution=(png_uint_32) (100.0*image->x_resolution/2.54);
+            y_resolution=(png_uint_32) (100.0*image->y_resolution/2.54);
           }
         else if (image->units == PixelsPerCentimeterResolution)
           {
             unit_type=PNG_RESOLUTION_METER;
-            res_x=(png_uint_32) (100.0*image->x_resolution);
-            res_y=(png_uint_32)
-              (100.0*image->y_resolution);
+            x_resolution=(png_uint_32) (100.0*image->x_resolution);
+            y_resolution=(png_uint_32) (100.0*image->y_resolution);
           }
         else
           {
             unit_type=PNG_RESOLUTION_UNKNOWN;
-            res_x=(png_uint_32) image->x_resolution;
-            res_y=(png_uint_32) image->y_resolution;
+            x_resolution=(png_uint_32) image->x_resolution;
+            y_resolution=(png_uint_32) image->y_resolution;
           }
-         png_set_pHYs(ping, ping_info, res_x, res_y, unit_type);
+         png_set_pHYs(ping,ping_info,x_resolution,y_resolution,unit_type);
       }
     if (image->matte && (!image_info->adjoin || !equal_backgrounds))
       {
         png_color_16
-           background;
+          background;
 
-        background.red=
-          (unsigned short) DownScale(image->background_color.red);
-        background.green=
-          (unsigned short) DownScale(image->background_color.green);
-        background.blue=
-          (unsigned short) DownScale(image->background_color.blue);
-        background.gray=
-          (unsigned short) DownScale(Intensity(image->background_color));
+        background.red=DownScale(image->background_color.red);
+        background.green=DownScale(image->background_color.green);
+        background.blue=DownScale(image->background_color.blue);
+        background.gray=DownScale(Intensity(image->background_color));
         background.index=background.gray;
-        png_set_bKGD(ping, ping_info, &background);
+        png_set_bKGD(ping,ping_info,&background);
       }
     /*
       Select the color type.
@@ -3712,7 +3709,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
         if (image->depth <= 8)
           {
             int
-               num_palette;
+               number_colors;
             if (matte)
                ping_info->valid|=PNG_INFO_tRNS;
             /*
@@ -3721,13 +3718,13 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
             ping_info->color_type=PNG_COLOR_TYPE_PALETTE;
             ping_info->valid|=PNG_INFO_PLTE;
             if (have_write_global_plte && !matte)
-              png_set_PLTE(ping, ping_info, NULL, 0);
+              png_set_PLTE(ping,ping_info,NULL,0);
             else
               {
 #if (PNG_LIBPNG_VER > 10005)
                 CompressColormapTransFirst(image);
 #endif
-                num_palette=image->colors;
+                number_colors=image->colors;
                 palette=(png_color *)
                   AllocateMemory(image->colors*sizeof(png_color));
                 if (palette == (png_color *) NULL)
@@ -3739,7 +3736,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
                   palette[i].green=DownScale(image->colormap[i].green);
                   palette[i].blue=DownScale(image->colormap[i].blue);
                 }
-                png_set_PLTE(ping,ping_info,palette,num_palette);
+                png_set_PLTE(ping,ping_info,palette,number_colors);
               }
             ping_info->bit_depth=1;
             while ((1 << ping_info->bit_depth) < (int) image->colors)
@@ -3814,8 +3811,8 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
         /*
           Note image rendering intent.
         */
-        png_set_sRGB(ping, ping_info, (int) image->rendering_intent+1);
-        png_set_gAMA(ping, ping_info, 0.45455);
+        png_set_sRGB(ping,ping_info,(int) image->rendering_intent+1);
+        png_set_gAMA(ping,ping_info,0.45455);
       }
     if (!image_info->adjoin || (!ping_info->valid&PNG_INFO_sRGB))
 #endif
@@ -3826,7 +3823,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
               Note image gamma.
               To do: check for cHRM+gAMA == sRGB, and write sRGB instead.
             */
-            png_set_gAMA(ping, ping_info, image->gamma);
+            png_set_gAMA(ping,ping_info,image->gamma);
           }
         if (!have_write_global_chrm && image->chromaticity.white_point.x != 0.0)
           {
@@ -3834,10 +3831,8 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
               Note image chromaticity.
               To do: check for cHRM+gAMA == sRGB, and write sRGB instead.
             */
-         png_set_cHRM(ping, ping_info,
-            image->chromaticity.white_point.x,
-            image->chromaticity.white_point.y,
-            image->chromaticity.red_primary.x,
+         png_set_cHRM(ping,ping_info,image->chromaticity.white_point.x,
+            image->chromaticity.white_point.y,image->chromaticity.red_primary.x,
             image->chromaticity.red_primary.y,
             image->chromaticity.green_primary.x,
             image->chromaticity.green_primary.y,

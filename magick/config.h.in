@@ -84,6 +84,9 @@
 /* Define if you have the `jpeg' library (-ljpeg). */
 #undef HAVE_LIBJPEG
 
+/* Define if you have the `lcms' library (-llcms). */
+#undef HAVE_LIBLCMS
+
 /* Define if you have the `m' library (-lm). */
 #undef HAVE_LIBM
 
@@ -227,6 +230,9 @@
 
 /* Define if you have JPEG library */
 #undef HasJPEG
+
+/* Define if you have LCMS library */
+#undef HasLCMS
 
 /* Define if using libltdl to create dynamically loadable modules */
 #undef HasLTDL

@@ -3751,6 +3751,27 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
         *image=implode_image;
         continue;
       }
+    if (LocaleNCompare("intent",option+1,5) == 0)
+      {
+        if (*option == '-')
+          {
+            RenderingIntent
+              rendering_intent;
+
+            option=argv[++i];
+            rendering_intent=UndefinedIntent;
+            if (LocaleCompare("Absolute",option) == 0)
+              rendering_intent=AbsoluteIntent;
+            if (LocaleCompare("Perceptual",option) == 0)
+              rendering_intent=PerceptualIntent;
+            if (LocaleCompare("Relative",option) == 0)
+              rendering_intent=RelativeIntent;
+            if (LocaleCompare("Saturation",option) == 0)
+              rendering_intent=SaturationIntent;
+            (*image)->rendering_intent=rendering_intent;
+          }
+        continue;
+      }
     if (LocaleNCompare("label",option+1,3) == 0)
       {
         if (*option == '-')
@@ -4009,15 +4030,6 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             (*image)->color_profile.info=profile->color_profile.info;
             profile->color_profile.length=0;
             profile->color_profile.info=(unsigned char *) NULL;
-          }
-        if (LocaleCompare("8bim",profile->magick) == 0)
-          {
-            if ((*image)->iptc_profile.length != 0)
-              FreeMemory((void **) &(*image)->iptc_profile.info);
-            (*image)->iptc_profile.length=profile->iptc_profile.length;
-            (*image)->iptc_profile.info=profile->iptc_profile.info;
-            profile->iptc_profile.length=0;
-            profile->iptc_profile.info=(unsigned char *) NULL;
           }
         if (LocaleCompare("iptc",profile->magick) == 0)
           {

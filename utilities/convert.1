@@ -814,6 +814,22 @@ By default, the text gravity is \fINorthWest\fP.
 implode image pixels about the center.  Specify \fIfactor\fP as the percent
 implosion (0 - 99.9%) or explosion (-99.9 - 0%).
 .TP
+.B "-intent \fItype\fP"
+use this type of rendering intent when managing the image color.
+
+Use this option to affect the color management operation of an image (see
+\fB-cms\fP).  Choose from these intents:
+
+.nf
+     Absolute
+     Perceptual
+     Relative
+     Saturation
+.fi
+
+The default rendering intent is undefined.
+
+.TP
 .B "-interlace \fItype\fP"
 the type of interlacing scheme: \fBNone\fP, \fBLine\fP, \fBPlane\fP, or
 \fBPartition\fP.  The default is \fBNone\fP.
@@ -1068,6 +1084,9 @@ The default preview is \fBJPEG\fP.
 .TP
 .B "-profile \fIfilename\fP"
 add ICC color or IPTC newswire information profile to image.
+
+Use \fB+profile icc\fP or \fB+profile iptc\fP to remove the respective
+profile.
 .TP
 .B "-quality \fIvalue\fP"
 JPEG/MIFF/PNG compression level.

@@ -858,8 +858,8 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
                           (image->depth-QuantumDepth);
                         if (image->matte ||
                             (image->colorspace == CMYKColorspace))
-                          pixel.opacity=MaxRGB-MSBFirstReadShort(image) >>
-                            (image->depth-QuantumDepth);
+                          pixel.opacity=MaxRGB-(MSBFirstReadShort(image) >>
+                            (image->depth-QuantumDepth));
                       }
                   }
                 length=ReadByte(image)+1;

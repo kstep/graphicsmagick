@@ -87,6 +87,9 @@
 /* Define if you have JPEG library */
 #undef HasJPEG
 
+/* Define if you have LCMS library */
+#undef HasLCMS
+
 /* Define if you have MPEG library */
 #undef HasMPEG
 

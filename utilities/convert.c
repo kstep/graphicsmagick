@@ -100,6 +100,7 @@
 %    -geometry geometry   perferred size or location of the image
 %    -gravity type        vertical and horizontal text placement
 %    -implode amount      implode image pixels about the center
+%    -intent type         Absolute, Perceptual, Relative, or Saturation
 %    -interlace type      None, Line, Plane, or Partition
 %    -label name          assign a label to an image
 %    -layer type          Red, Green, Blue, Matte
@@ -300,6 +301,7 @@ static void Usage(const char *client_name)
       "-gaussian geometry   gaussian blur an image",
       "-gravity type        vertical and horizontal text placement",
       "-implode amount      implode image pixels about the center",
+      "-intent type         Absolute, Perceptual, Relative, or Saturation",
       "-interlace type      None, Line, Plane, or Partition",
       "-label name          assign a label to an image",
       "-layer type          Red, Green, Blue, Matte",
@@ -1055,7 +1057,32 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (LocaleNCompare("interlace",option+1,3) == 0)
+          if (LocaleNCompare("filter",option+1,5) == 0)
+            {
+              if (*option == '-')
+                {
+                  RenderingIntent
+                    rendering_intent;
+
+                  i++;
+                  if (i == argc)
+                    MagickError(OptionError,"Missing type",option);
+                  option=argv[i];
+                  rendering_intent=UndefinedIntent;
+                  if (LocaleCompare("Absolute",option) == 0)
+                    rendering_intent=AbsoluteIntent;
+                  if (LocaleCompare("Perceptual",option) == 0)
+                    rendering_intent=PerceptualIntent;
+                  if (LocaleCompare("Relative",option) == 0)
+                    rendering_intent=RelativeIntent;
+                  if (LocaleCompare("Saturation",option) == 0)
+                    rendering_intent=SaturationIntent;
+                  if (rendering_intent == UndefinedIntent)
+                    MagickError(OptionError,"Invalid intent type",option);
+                }
+              break;
+            }
+          if (LocaleNCompare("interlace",option+1,5) == 0)
             {
               image_info->interlace=NoInterlace;
               if (*option == '-')
