@@ -72,9 +72,10 @@ static unsigned int
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ReadYUVImage reads an image with digital YUV (CCIR 601 4:1:1) bytes
-%  and returns it.  It allocates the memory necessary for the new Image
-%  structure and returns a pointer to the new image.
+%  Method ReadYUVImage reads an image with digital YUV (CCIR 601 4:1:1, plane
+%  or partition interlaced, or 4:2:2 plane, partition interlaced or
+%  noninterlaced) bytes and returns it.  It allocates the memory necessary
+%  for the new Image structure and returns a pointer to the new image.
 %
 %  The format of the ReadYUVImage method is:
 %
@@ -110,7 +111,8 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
     x;
 
   register PixelPacket
-    *q;
+    *q,
+    *s;
 
   register long
     i;
@@ -127,6 +129,13 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
   unsigned int
     status;
 
+  int
+    horizontal_factor=2,
+    vertical_factor=2;
+
+  InterlaceType
+    interlace;
+
   /*
     Allocate image structure.
   */
@@ -138,7 +147,31 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if ((image->columns == 0) || (image->rows == 0))
     ThrowReaderException(OptionWarning,"Must specify image size",image);
   image->depth=8;
-  if (image_info->interlace != PartitionInterlace)
+  interlace=image_info->interlace;
+  if (image_info->sampling_factor != (char *) NULL)
+    {
+    long
+      count;
+
+    count=sscanf(image_info->sampling_factor,"%ldx%ld",&horizontal_factor,
+      &vertical_factor);
+    if (count != 2)
+      vertical_factor=horizontal_factor;
+    if (horizontal_factor != 1 && horizontal_factor != 2 &&
+        vertical_factor != 1 && vertical_factor != 2)
+      ThrowReaderException(CorruptImageWarning,"Unexpected sampling factor",
+        image);
+      
+    }
+
+  if (interlace == UndefinedInterlace || (interlace == NoInterlace &&
+    vertical_factor==2))
+    if (vertical_factor == 2)
+      interlace=PlaneInterlace; /* CCIR 4:1:1 */
+    else
+      interlace=NoInterlace;    /* CCIR 4:2:2 */
+
+  if (interlace != PartitionInterlace)
     {
       /*
         Open image file.
@@ -149,10 +182,18 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
       for (i=0; i < image->offset; i++)
         (void) ReadBlobByte(image);
     }
+  chroma_image=CloneImage(image,image->columns/horizontal_factor,
+    image->rows/vertical_factor,True,exception);
+  if (chroma_image == (Image *) NULL)
+    ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+      image);
   /*
     Allocate memory for a scanline.
   */
-  scanline=(unsigned char *) AcquireMemory(image->columns);
+  if (interlace == NoInterlace)
+    scanline=(unsigned char *) AcquireMemory(2*image->columns+2);
+  else
+    scanline=(unsigned char *) AcquireMemory(image->columns);
   if (scanline == (unsigned char *) NULL)
     ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
   do
@@ -163,7 +204,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (image_info->ping && (image_info->subrange != 0))
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
         break;
-    if (image_info->interlace == PartitionInterlace)
+    if (interlace == PartitionInterlace)
       {
         AppendImageFormat("Y",image->filename);
         status=OpenBlob(image_info,image,ReadBinaryType,exception);
@@ -172,25 +213,58 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
     for (y=0; y < (long) image->rows; y++)
     {
-      if ((y > 0) || (image->previous == (Image *) NULL))
-        (void) ReadBlob(image,image->columns,scanline);
-      p=scanline;
-      q=SetImagePixels(image,0,y,image->columns,1);
-      if (q == (PixelPacket *) NULL)
-        break;
-      for (x=0; x < (long) image->columns; x++)
+    if (interlace == NoInterlace)
       {
-        q->red=Upscale(*p++);
-        q->green=0;
-        q->blue=0;
-        q++;
+        if ((y > 0) || (image->previous == (Image *) NULL))
+          (void) ReadBlob(image,2*image->columns,scanline);
+        p=scanline;
+        q=SetImagePixels(image,0,y,image->columns,1);
+        if (q == (PixelPacket *) NULL)
+          break;
+        s=SetImagePixels(chroma_image,0,y,chroma_image->columns,1);
+        if (s == (PixelPacket *) NULL)
+          break;
+        for (x=0; x < (long) image->columns; x+=2)
+        {
+          s->red=0;
+          s->green=Upscale(*p++);
+          q->red=Upscale(*p++);
+          q->green=0;
+          q->blue=0;
+          q++;
+          q->green=0;
+          q->blue=0;
+          s->blue=Upscale(*p++);
+          q->red=Upscale(*p++);
+          s++;
+          q++;
+        }
+      }
+    else
+      {
+        if ((y > 0) || (image->previous == (Image *) NULL))
+          (void) ReadBlob(image,image->columns,scanline);
+        p=scanline;
+        q=SetImagePixels(image,0,y,image->columns,1);
+        if (q == (PixelPacket *) NULL)
+          break;
+        for (x=0; x < (long) image->columns; x++)
+        {
+          q->red=Upscale(*p++);
+          q->green=0;
+          q->blue=0;
+          q++;
+        }
       }
       if (!SyncImagePixels(image))
         break;
+      if (interlace == NoInterlace)
+        if (!SyncImagePixels(chroma_image))
+          break;
       if (image->previous == (Image *) NULL)
         MagickMonitor(LoadImageText,y,image->rows);
     }
-    if (image_info->interlace == PartitionInterlace)
+    if (interlace == PartitionInterlace)
       {
         CloseBlob(image);
         AppendImageFormat("U",image->filename);
@@ -198,49 +272,48 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (status == False)
           ThrowReaderException(FileOpenWarning,"Unable to open file",image);
       }
-    chroma_image=CloneImage(image,image->columns/2,image->rows/2,True,
-      exception);
-    if (chroma_image == (Image *) NULL)
-      return((Image *) NULL);
-    for (y=0; y < (long) chroma_image->rows; y++)
-    {
-      (void) ReadBlob(image,chroma_image->columns,scanline);
-      p=scanline;
-      q=SetImagePixels(chroma_image,0,y,chroma_image->columns,1);
-      if (q == (PixelPacket *) NULL)
-        break;
-      for (x=0; x < (long) chroma_image->columns; x++)
+    if (interlace != NoInterlace)
       {
-        q->red=0;
-        q->green=Upscale(*p++);
-        q->blue=0;
-        q++;
-      }
-      if (!SyncImagePixels(chroma_image))
-        break;
-    }
-    if (image_info->interlace == PartitionInterlace)
+        for (y=0; y < (long) chroma_image->rows; y++)
+        {
+          (void) ReadBlob(image,chroma_image->columns,scanline);
+          p=scanline;
+          q=SetImagePixels(chroma_image,0,y,chroma_image->columns,1);
+          if (q == (PixelPacket *) NULL)
+            break;
+          for (x=0; x < (long) chroma_image->columns; x++)
+          {
+            q->red=0;
+            q->green=Upscale(*p++);
+            q->blue=0;
+            q++;
+          }
+          if (!SyncImagePixels(chroma_image))
+            break;
+        }
+      if (interlace == PartitionInterlace)
+        {
+          CloseBlob(image);
+          AppendImageFormat("V",image->filename);
+          status=OpenBlob(image_info,image,ReadBinaryType,exception);
+          if (status == False)
+            ThrowReaderException(FileOpenWarning,"Unable to open file",image);
+        }
+      for (y=0; y < (long) chroma_image->rows; y++)
       {
-        CloseBlob(image);
-        AppendImageFormat("V",image->filename);
-        status=OpenBlob(image_info,image,ReadBinaryType,exception);
-        if (status == False)
-          ThrowReaderException(FileOpenWarning,"Unable to open file",image);
+        (void) ReadBlob(image,chroma_image->columns,scanline);
+        p=scanline;
+        q=GetImagePixels(chroma_image,0,y,chroma_image->columns,1);
+        if (q == (PixelPacket *) NULL)
+          break;
+        for (x=0; x < (long) chroma_image->columns; x++)
+        {
+          q->blue=Upscale(*p++);
+          q++;
+        }
+        if (!SyncImagePixels(chroma_image))
+          break;
       }
-    for (y=0; y < (long) chroma_image->rows; y++)
-    {
-      (void) ReadBlob(image,chroma_image->columns,scanline);
-      p=scanline;
-      q=GetImagePixels(chroma_image,0,y,chroma_image->columns,1);
-      if (q == (PixelPacket *) NULL)
-        break;
-      for (x=0; x < (long) chroma_image->columns; x++)
-      {
-        q->blue=Upscale(*p++);
-        q++;
-      }
-      if (!SyncImagePixels(chroma_image))
-        break;
     }
     /*
       Scale image.
@@ -274,7 +347,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
     DestroyImage(resize_image);
     (void) TransformRGBImage(image,YCbCrColorspace);
-    if (image_info->interlace == PartitionInterlace)
+    if (interlace == PartitionInterlace)
       (void) strncpy(image->filename,image_info->filename,MaxTextExtent-1);
     if (EOFBlob(image))
       ThrowReaderException(CorruptImageWarning,"Unexpected end-of-file",image);
@@ -340,7 +413,7 @@ ModuleExport void RegisterYUVImage(void)
   entry->encoder=WriteYUVImage;
   entry->adjoin=False;
   entry->raw=True;
-  entry->description=AcquireString("CCIR 601 4:1:1");
+  entry->description=AcquireString("CCIR 601 4:1:1 or 4:2:2");
   entry->module=AcquireString("YUV");
   (void) RegisterMagickInfo(entry);
 }
@@ -381,7 +454,8 @@ ModuleExport void UnregisterYUVImage(void)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  Method WriteYUVImage writes an image to a file in the digital YUV
-%  (CCIR 601 4:1:1) format.
+%  (CCIR 601 4:1:1, plane or partition interlaced, or 4:2:2 plane, partition
+%  interlaced or noninterlaced) bytes and returns it.
 %
 %  The format of the WriteYUVImage method is:
 %
@@ -410,7 +484,8 @@ static unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
     y;
 
   register const PixelPacket
-    *p;
+    *p,
+    *s;
 
   register long
     x;
@@ -423,11 +498,41 @@ static unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
     height,
     width;
 
+  InterlaceType
+    interlace;
+
+  int
+    horizontal_factor=2,
+    vertical_factor=2;
+
   assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  if (image_info->interlace != PartitionInterlace)
+  interlace=image_info->interlace;
+  if (image_info->sampling_factor != (char *) NULL)
+    {
+    long
+      count;
+
+    count=sscanf(image_info->sampling_factor,"%ldx%ld",&horizontal_factor,
+      &vertical_factor);
+    if (count != 2)
+      vertical_factor=horizontal_factor;
+    if (horizontal_factor != 1 && horizontal_factor != 2 &&
+        vertical_factor != 1 && vertical_factor != 2)
+      ThrowWriterException(ResourceLimitWarning,"Unexpected sampling factor",
+        image);
+    }
+
+  if (interlace == UndefinedInterlace || (interlace == NoInterlace &&
+    vertical_factor==2))
+    if (vertical_factor == 2)
+      interlace=PlaneInterlace; /* CCIR 4:1:1 */
+    else
+      interlace=NoInterlace;    /* CCIR 4:2:2 */
+
+  if (interlace != PartitionInterlace)
     {
       /*
         Open output image file.
@@ -436,7 +541,7 @@ static unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
       if (status == False)
         ThrowWriterException(FileOpenWarning,"Unable to open file",image);
     }
-  if (image_info->interlace == PartitionInterlace)
+  else
     {
       AppendImageFormat("Y",image->filename);
       status=OpenBlob(image_info,image,WriteBinaryType,&image->exception);
@@ -447,12 +552,12 @@ static unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
   do
   {
     /*
-      Sample image to an even width and height.
+      Sample image to an even width and height, if necessary.
     */
     image->depth=8;
     (void) TransformRGBImage(image,RGBColorspace);
-    width=image->columns+(image->columns & 0x01);
-    height=image->rows+(image->rows & 0x01);
+    width=image->columns+(image->columns & (horizontal_factor-1));
+    height=image->rows+(image->rows & (vertical_factor-1));
     clone_image=CloneImage(image,0,0,True,&image->exception);
     if (clone_image == (Image *) NULL)
       ThrowWriterException(ResourceLimitWarning,"Unable to resize image",image);
@@ -464,25 +569,6 @@ static unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
       ThrowWriterException(ResourceLimitWarning,"Unable to resize image",image);
     (void) RGBTransformImage(yuv_image,YCbCrColorspace);
     /*
-      Initialize Y channel.
-    */
-    for (y=0; y < (long) yuv_image->rows; y++)
-    {
-      p=AcquireImagePixels(yuv_image,0,y,yuv_image->columns,1,
-        &yuv_image->exception);
-      if (p == (const PixelPacket *) NULL)
-        break;
-      for (x=0; x < (long) yuv_image->columns; x++)
-      {
-        (void) WriteBlobByte(image,Downscale(p->red));
-        p++;
-      }
-      if (image->previous == (Image *) NULL)
-        if (QuantumTick(y,image->rows))
-          MagickMonitor(SaveImageText,y,image->rows);
-    }
-    DestroyImage(yuv_image);
-    /*
       Downsample image.
     */
     clone_image=CloneImage(image,0,0,True,&image->exception);
@@ -490,59 +576,112 @@ static unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
       ThrowWriterException(ResourceLimitWarning,"Unable to resize image",image);
     if (clone_image->storage_class == PseudoClass)
       clone_image->filter=PointFilter;
-    chroma_image=ZoomImage(clone_image,width/2,height/2,&image->exception);
+    chroma_image=ZoomImage(clone_image,width/horizontal_factor,
+      height/vertical_factor,&image->exception);
     DestroyImage(clone_image);
     if (chroma_image == (Image *) NULL)
       ThrowWriterException(ResourceLimitWarning,"Unable to resize image",image);
     (void) RGBTransformImage(chroma_image,YCbCrColorspace);
-    /*
-      Initialize U channel.
-    */
-    if (image_info->interlace == PartitionInterlace)
+    if (interlace == NoInterlace)
       {
-        CloseBlob(image);
-        AppendImageFormat("U",image->filename);
-        status=OpenBlob(image_info,image,WriteBinaryType,&image->exception);
-        if (status == False)
-          ThrowWriterException(FileOpenWarning,"Unable to open file",image);
+        /* Write noninterlaced YUV. */
+        for (y=0; y < (long) yuv_image->rows; y++)
+        {
+          p=AcquireImagePixels(yuv_image,0,y,yuv_image->columns,1,
+            &yuv_image->exception);
+          if (p == (const PixelPacket *) NULL)
+            break;
+          s=AcquireImagePixels(chroma_image,0,y,chroma_image->columns,1,
+            &chroma_image->exception);
+          if (s == (const PixelPacket *) NULL)
+            break;
+          for (x=0; x < (long) yuv_image->columns; x++)
+          {
+            (void) WriteBlobByte(image,Downscale(s->green));
+            (void) WriteBlobByte(image,Downscale(p->red));
+            p++;
+            (void) WriteBlobByte(image,Downscale(s->blue));
+            (void) WriteBlobByte(image,Downscale(p->red));
+            p++;
+            s++;
+            x++;
+          }
+          if (image->previous == (Image *) NULL)
+            if (QuantumTick(y,image->rows))
+              MagickMonitor(SaveImageText,y,image->rows);
+        }
+        DestroyImage(yuv_image);
       }
-    for (y=0; y < (long) chroma_image->rows; y++)
-    {
-      p=AcquireImagePixels(chroma_image,0,y,chroma_image->columns,1,
-        &chroma_image->exception);
-      if (p == (const PixelPacket *) NULL)
-        break;
-      for (x=0; x < (long) chroma_image->columns; x++)
+    else
       {
-        (void) WriteBlobByte(image,Downscale(p->green));
-        p++;
+        /*
+          Initialize Y channel.
+        */
+        for (y=0; y < (long) yuv_image->rows; y++)
+        {
+          p=AcquireImagePixels(yuv_image,0,y,yuv_image->columns,1,
+            &yuv_image->exception);
+          if (p == (const PixelPacket *) NULL)
+            break;
+          for (x=0; x < (long) yuv_image->columns; x++)
+          {
+            (void) WriteBlobByte(image,Downscale(p->red));
+            p++;
+          }
+          if (image->previous == (Image *) NULL)
+            if (QuantumTick(y,image->rows))
+              MagickMonitor(SaveImageText,y,image->rows);
+        }
+        DestroyImage(yuv_image);
+        /*
+          Initialize U channel.
+        */
+        if (interlace == PartitionInterlace)
+          {
+            CloseBlob(image);
+            AppendImageFormat("U",image->filename);
+            status=OpenBlob(image_info,image,WriteBinaryType,&image->exception);
+            if (status == False)
+              ThrowWriterException(FileOpenWarning,"Unable to open file",image);
+          }
+        for (y=0; y < (long) chroma_image->rows; y++)
+        {
+          p=AcquireImagePixels(chroma_image,0,y,chroma_image->columns,1,
+            &chroma_image->exception);
+          if (p == (const PixelPacket *) NULL)
+            break;
+          for (x=0; x < (long) chroma_image->columns; x++)
+          {
+            (void) WriteBlobByte(image,Downscale(p->green));
+            p++;
+          }
+        }
+        /*
+          Initialize V channel.
+        */
+        if (interlace == PartitionInterlace)
+          {
+            CloseBlob(image);
+            AppendImageFormat("V",image->filename);
+            status=OpenBlob(image_info,image,WriteBinaryType,&image->exception);
+            if (status == False)
+              ThrowWriterException(FileOpenWarning,"Unable to open file",image);
+          }
+        for (y=0; y < (long) chroma_image->rows; y++)
+        {
+          p=AcquireImagePixels(chroma_image,0,y,chroma_image->columns,1,
+            &chroma_image->exception);
+          if (p == (const PixelPacket *) NULL)
+            break;
+          for (x=0; x < (long) chroma_image->columns; x++)
+          {
+            (void) WriteBlobByte(image,Downscale(p->blue));
+            p++;
+          }
+        }
       }
-    }
-    /*
-      Initialize V channel.
-    */
-    if (image_info->interlace == PartitionInterlace)
-      {
-        CloseBlob(image);
-        AppendImageFormat("V",image->filename);
-        status=OpenBlob(image_info,image,WriteBinaryType,&image->exception);
-        if (status == False)
-          ThrowWriterException(FileOpenWarning,"Unable to open file",image);
-      }
-    for (y=0; y < (long) chroma_image->rows; y++)
-    {
-      p=AcquireImagePixels(chroma_image,0,y,chroma_image->columns,1,
-        &chroma_image->exception);
-      if (p == (const PixelPacket *) NULL)
-        break;
-      for (x=0; x < (long) chroma_image->columns; x++)
-      {
-        (void) WriteBlobByte(image,Downscale(p->blue));
-        p++;
-      }
-    }
     DestroyImage(chroma_image);
-    if (image_info->interlace == PartitionInterlace)
+    if (interlace == PartitionInterlace)
       (void) strncpy(image->filename,image_info->filename,MaxTextExtent-1);
     if (image->next == (Image *) NULL)
       break;
