@@ -273,8 +273,7 @@ static double BesselOrderOne(double x)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  MagnifyImage() is a convenience method that scales an image proportionally
-%  to twice its size.  If a NULL image is returned, check the exception member
-%  of image to determine why the image failed to magnify.
+%  to twice its size.
 %
 %  The format of the MagnifyImage method is:
 %
@@ -448,8 +447,7 @@ MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  MinifyImage() is a convenience method that scales an image proportionally
-%  to half its size.  If a NULL image is returned, check the exception member
-%  of image to determine why the image failed to minify.
+%  to half its size.
 %
 %  The format of the MinifyImage method is:
 %
@@ -571,9 +569,6 @@ MagickExport Image *MinifyImage(const Image *image,ExceptionInfo *exception)
 %    Hanning  Hermite    Lanczos
 %    Mitchell Point      Quandratic
 %    Sinc     Triangle
-%
-%  If a NULL image is returned, check exception to determine why the image
-%  failed to scale.
 %
 %  The format of the ResizeImage method is:
 %
@@ -1149,8 +1144,7 @@ MagickExport Image *ResizeImage(const Image *image,const unsigned long columns,
 %
 %  SampleImage() scales an image to the desired dimensions with pixel
 %  sampling.  Unlike other scaling methods, this method does not introduce
-%  any additional color into the scaled image.  If a NULL image is
-%  returned, check exception to determine why the image failed to scale.
+%  any additional color into the scaled image.
 %
 %  The format of the SampleImage method is:
 %
@@ -1286,9 +1280,7 @@ MagickExport Image *SampleImage(const Image *image,const unsigned long columns,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ScaleImage() changes the size of an image to the given dimensions.  If
-%  a NULL image is returned, check exception to determine why the image failed
-%  to scale.
+%  ScaleImage() changes the size of an image to the given dimensions.
 %
 %  The format of the ScaleImage method is:
 %

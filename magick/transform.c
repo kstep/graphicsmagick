@@ -75,8 +75,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  Chop() removes a region of an image and collapses the image to occupy the
-%  removed portion. If a NULL image is returned, check exception to determine
-%  why the operation failed.
+%  removed portion.
 %
 %  The format of the ChopImage method is:
 %
@@ -87,7 +86,7 @@
 %
 %    o image: The image.
 %
-%    o chop_info: Defines the region of the image to chop.
+%    o chop_info: Define the region of the image to chop.
 %
 %    o exception: Return any errors or warnings in this structure.
 %
@@ -228,13 +227,12 @@ MagickExport Image *ChopImage(const Image *image,const RectangleInfo *chop_info,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  This method composites a set of images while respecting any page
+%  CoalesceImages() composites a set of images while respecting any page
 %  offsets and disposal methods.  GIF, MIFF, and MNG animation sequences
 %  typically start with an image background and each subsequent image
-%  varies in size and offset.  Coalesce() returns a new sequence
+%  varies in size and offset.  CoalesceImages() returns a new sequence
 %  where each image in the sequence is the same size as the first and
-%  composited with the next image in the sequence.  On failure, check
-%  exception to determine the reason why the operation failed.
+%  composited with the next image in the sequence.
 %
 %  The format of the CoalesceImages method is:
 %
@@ -307,9 +305,8 @@ MagickExport Image *CoalesceImages(const Image *image,ExceptionInfo *exception)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  CropImage() extracts a region of the image starting at the offset defined by
-%  crop_info.  If a NULL image is returned, check exception to determine the
-%  reason why the operation failed.
+%  Use CropImage() to extract a region of the image starting at the offset
+%  defined by crop_info.
 %
 %  The format of the CropImage method is:
 %
@@ -320,7 +317,7 @@ MagickExport Image *CoalesceImages(const Image *image,ExceptionInfo *exception)
 %
 %    o image: The image.
 %
-%    o crop_info: Defines the region of the image to crop with members
+%    o crop_info: Define the region of the image to crop with members
 %      x, y, width, and height.
 %
 %    o exception: Return any errors or warnings in this structure.
@@ -454,10 +451,8 @@ MagickExport Image *CropImage(const Image *image,const RectangleInfo *crop_info,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DeconstructImages() returns a new sequence that consists of the first image
-%  in the sequence followed by the maximum bounding region of any differences
-%  in subsequent images.  This method can undo a coalesced sequence returned
-%  by CoalesceImages().
+%  DeconstructImages() compares each image with the next in a sequence and
+%  returns the maximum bounding region of any pixel differences it discovers.
 %
 %  The format of the DeconstructImages method is:
 %
@@ -707,8 +702,7 @@ MagickExport Image *FlattenImages(const Image *image,ExceptionInfo *exception)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  FlipImage() creates a vertical mirror image by reflecting the pixels
-%  around the central x-axis.  If a NULL image is returned, check
-%  exception to determine the reason why the operation failed.
+%  around the central x-axis.
 %
 %  The format of the FlipImage method is:
 %
@@ -789,9 +783,7 @@ MagickExport Image *FlipImage(const Image *image,ExceptionInfo *exception)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  FlopImage() creates a horizontal mirror image by reflecting the pixels
-%  around the central y-axis.  If a NULL image is returned, check
-%  exception to determine the reason why the operation failed.
-%
+%  around the central y-axis.
 %
 %  The format of the FlopImage method is:
 %
@@ -880,11 +872,9 @@ MagickExport Image *FlopImage(const Image *image,ExceptionInfo *exception)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  The MosaicImages() method takes a set of images and inlays them to form
-%  a single coherent pictiure.  MosaicImages() returns a single image with
-%  each image in the sequence inlayed in the image canvas at an offset as
-%  defined in the image.  If a NULL image is returned, check
-%  exception to determine the reason why the operation failed.
+%  MosaicImages() inlays an image sequence to form a single coherent picture.
+%  It returns a single image with each image in the sequence composited at
+%  the location defined by the page member of the image structure.
 %
 %  The format of the MosaicImage method is:
 %
@@ -1238,8 +1228,7 @@ MagickExport unsigned int ProfileImage(Image *image,const char *profile_name,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  RollImage() offsets an image as defined by x and y.  If a NULL image is
-%  returned, check exception to determine the reason why the operation failed.
+%  RollImage() offsets an image as defined by x_offset and y_offset.
 %
 %  The format of the RollImage method is:
 %
@@ -1409,7 +1398,7 @@ MagickExport Image *ShaveImage(const Image *image,
 %      subregion of the image to crop.
 %
 %    o image_geometry: An image geometry string.  This geometry defines the
-%      final size if the image.
+%      final size of the image.
 %
 %
 */
