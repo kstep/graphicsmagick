@@ -706,7 +706,7 @@ MagickExport Image *ShiftImageList(Image **images)
 %
 %    o offset: The length of the image list to remove.
 %
-%    o splice: Replace the removes image list with this list.
+%    o splice: Replace the removed image list with this list.
 %
 %    o exception: Return any errors or warnings in this structure.
 %

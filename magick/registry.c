@@ -100,48 +100,42 @@ MagickExport unsigned int DeleteMagickRegistry(const long id)
   register RegistryInfo
     *p;
 
-  unsigned int
-    status;
-
-  status=False;
   AcquireSemaphoreInfo(&registry_semaphore);
   for (p=registry_list; p != (RegistryInfo *) NULL; p=p->next)
   {
-    if (id == p->id)
+    if (id != p->id)
+      continue;
+    registry_info=p;
+    switch (registry_info->type)
+    {
+      case ImageRegistryType:
       {
-        registry_info=p;
-        switch (registry_info->type)
-        {
-          case ImageRegistryType:
-          {
-            DestroyImage((Image *) registry_info->blob);
-            break;
-          }
-          case ImageInfoRegistryType:
-          {
-            DestroyImageInfo((ImageInfo *) registry_info->blob);
-            break;
-          }
-          default:
-          {
-            LiberateMemory((void **) &registry_info->blob);
-            break;
-          }
-        }
-        if (registry_info == registry_list)
-          registry_list=registry_info->next;
-        if (registry_info->previous != (RegistryInfo *) NULL)
-          registry_info->previous->next=registry_info->next;
-        if (registry_info->next != (RegistryInfo *) NULL)
-          registry_info->next->previous=registry_info->previous;
-        LiberateMemory((void **) &registry_info);
-        registry_info=(RegistryInfo *) NULL;
-        status=True;
+        DestroyImage((Image *) registry_info->blob);
         break;
       }
+      case ImageInfoRegistryType:
+      {
+        DestroyImageInfo((ImageInfo *) registry_info->blob);
+        break;
+      }
+      default:
+      {
+        LiberateMemory((void **) &registry_info->blob);
+        break;
+      }
+    }
+    if (registry_info == registry_list)
+      registry_list=registry_info->next;
+    if (registry_info->previous != (RegistryInfo *) NULL)
+      registry_info->previous->next=registry_info->next;
+    if (registry_info->next != (RegistryInfo *) NULL)
+      registry_info->next->previous=registry_info->previous;
+    LiberateMemory((void **) &registry_info);
+    registry_info=(RegistryInfo *) NULL;
+    break;
   }
   LiberateSemaphoreInfo(&registry_semaphore);
-  return(status);
+  return(p != (RegistryInfo *) NULL);
 }
 
 /*
@@ -174,30 +168,82 @@ MagickExport void DestroyMagickRegistry(void)
   AcquireSemaphoreInfo(&registry_semaphore);
   for (p=registry_list; p != (RegistryInfo *) NULL; )
   {
-    switch (p->type)
+    registry_info=p;
+    p=p->next;
+    switch (registry_info->type)
     {
       case ImageRegistryType:
       {
-        DestroyImage((Image *) p->blob);
+        DestroyImage((Image *) registry_info->blob);
         break;
       }
       case ImageInfoRegistryType:
       {
-        DestroyImageInfo((ImageInfo *) p->blob);
+        DestroyImageInfo((ImageInfo *) registry_info->blob);
         break;
       }
       default:
       {
-        LiberateMemory((void **) &p->blob);
+        LiberateMemory((void **) &registry_info->blob);
         break;
       }
     }
-    registry_info=p;
-    p=p->next;
     LiberateMemory((void **) &registry_info);
   }
   registry_list=(RegistryInfo *) NULL;
   DestroySemaphoreInfo(&registry_semaphore);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   G e t I m a g e F r o m M a g i c k R e g i s t y                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetImageFromMagickRegistry() gets an image from the registry as defined by
+%  its name.  If the blob that matches the name is not found, NULL is returned.
+%
+%  The format of the GetImageFromMagickRegistry method is:
+%
+%      Image *GetImageFromMagickRegistry(const char *name,
+%        ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o id: The registry id.
+%
+%    o exception: Return any errors or warnings in this structure.
+%
+%
+*/
+MagickExport Image *GetImageFromMagickRegistry(const char *name,
+  ExceptionInfo *exception)
+{
+  Image
+    *image;
+
+  register RegistryInfo
+    *p;
+
+  image=(Image *) NULL;
+  AcquireSemaphoreInfo(&registry_semaphore);
+  for (p=registry_list; p != (RegistryInfo *) NULL; p=p->next)
+  {
+    if (p->type != ImageRegistryType)
+      continue;
+    if (LocaleCompare(((Image *) p->blob)->filename,name) == 0)
+      {
+        image=CloneImageList((Image *) p->blob,exception);
+        break;
+      }
+  }
+  LiberateSemaphoreInfo(&registry_semaphore);
+  return(image);
 }
 
 /*
@@ -214,10 +260,10 @@ MagickExport void DestroyMagickRegistry(void)
 %  GetMagickRegistry() gets a blob from the registry as defined by the id.  If
 %  the blob that matches the id is not found, NULL is returned.
 %
-%  The format of the getMagickRegistry method is:
+%  The format of the GetMagickRegistry method is:
 %
 %      const void *GetMagickRegistry(const long id,RegistryType *type,
-%        size_t *length)
+%        size_t *length,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -227,31 +273,64 @@ MagickExport void DestroyMagickRegistry(void)
 %
 %    o length: The blob length in number of bytes.
 %
+%    o exception: Return any errors or warnings in this structure.
+%
 %
 */
-MagickExport const void *GetMagickRegistry(const long id,RegistryType *type,
-  size_t *length)
+MagickExport void *GetMagickRegistry(const long id,RegistryType *type,
+  size_t *length,ExceptionInfo *exception)
 {
-  RegistryInfo
-    *registry_info;
-
   register RegistryInfo
     *p;
 
-  registry_info=(RegistryInfo *) NULL;
+  RegistryInfo
+    *registry_info;
+
+  void
+    *blob;
+
+  blob=(void *) NULL;
+  *type=UndefinedRegistryType;
+  *length=0;
   AcquireSemaphoreInfo(&registry_semaphore);
   for (p=registry_list; p != (RegistryInfo *) NULL; p=p->next)
-    if (id == p->id)
+  {
+    if (id != p->id)
+      continue;
+    registry_info=p;
+    switch (registry_info->type)
+    {
+      case ImageRegistryType:
       {
-        registry_info=p;
+        Image
+          *image;
+
+        image=(Image *) registry_info->blob;
+        blob=(void *) CloneImageList(image,exception);
         break;
       }
+      case ImageInfoRegistryType:
+      {
+        ImageInfo
+          *image_info;
+
+        image_info=(ImageInfo *) registry_info->blob;
+        blob=(void *) CloneImageInfo(image_info);
+        break;
+      }
+      default:
+      {
+        blob=(void *) AcquireMemory(registry_info->length);
+        if (blob != (void *) NULL)
+          (void) memcpy(blob,registry_info->blob,registry_info->length);
+      }
+    }
+    *type=registry_info->type;
+    *length=registry_info->length;
+		break;
+  }
   LiberateSemaphoreInfo(&registry_semaphore);
-  if (p == (RegistryInfo *) NULL)
-    return((RegistryInfo *) NULL);
-  *type=registry_info->type;
-  *length=registry_info->length;
-  return(registry_info->blob);
+  return(blob);
 }
 
 /*
@@ -315,7 +394,7 @@ MagickExport long SetMagickRegistry(const RegistryType type,const void *blob,
             "Image expected");
           return(-1);
         }
-      clone_blob=(void *) CloneImage(image,0,0,True,exception);
+      clone_blob=(void *) CloneImageList(image,exception);
       if (clone_blob == (void *) NULL)
         return(-1);
       break;

@@ -33,8 +33,8 @@ typedef struct _RegistryInfo
 /*
   Magick registry methods.
 */
-extern MagickExport const void
-  *GetMagickRegistry(const long,RegistryType *,size_t *);
+extern MagickExport Image
+  *GetImageFromMagickRegistry(const char *,ExceptionInfo *);
 
 extern MagickExport long
   SetMagickRegistry(const RegistryType,const void *,const size_t,
@@ -44,7 +44,8 @@ extern MagickExport unsigned int
   DeleteMagickRegistry(const long);
 
 extern MagickExport void
-  DestroyMagickRegistry(void);
+  DestroyMagickRegistry(void),
+  *GetMagickRegistry(const long,RegistryType *,size_t *,ExceptionInfo *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

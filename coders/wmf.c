@@ -306,13 +306,17 @@ static void magick_remove_registry(wmfAPI * API, const long id)
 /* Retrieve an image from the image registry */
 static const Image* magick_get_registry(wmfAPI * API, const long id)
 {
+	ExceptionInfo
+		exception;
+
   size_t
     length;
 
   RegistryType
     type;
 
-  return (const Image*)GetMagickRegistry(id,&type,&length);
+  GetExceptionInfo(&exception);
+  return (const Image*)GetMagickRegistry(id,&type,&length,&exception);
 }
 
 static void wmf_magick_bmp_draw(wmfAPI *API, wmfBMP_Draw_t *bmp_draw)
