@@ -545,7 +545,9 @@ static void SVGStartElement(void *context,const xmlChar *name,
 {
   char
     *keyword,
-    **tokens,
+    **tokens;
+
+  const char
     *value;
 
   double
@@ -567,7 +569,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
     j,
     k;
 
-  /*
+ /*
     Called when an opening tag has been processed.
   */
   svg_info=(SVGInfo *) context;
@@ -655,8 +657,12 @@ static void SVGStartElement(void *context,const xmlChar *name,
             if ((LocaleCompare(tokens[j],"fill:") == 0) ||
                 (LocaleCompare(tokens[j],"fillcolor:") == 0))
               {
-                (void) CloneString(&value,tokens[++j]);
-                (void) CloneString(&svg_info->graphic_context[n].fill,value);
+                char
+                  *s;
+
+                s=NULL;
+                (void) CloneString(&s,tokens[++j]);
+                (void) CloneString(&svg_info->graphic_context[n].fill,s);
               }
             if (LocaleCompare(tokens[j],"fill-opacity:") == 0)
               {
@@ -681,8 +687,12 @@ static void SVGStartElement(void *context,const xmlChar *name,
               }
             if (LocaleCompare(tokens[j],"stroke:") == 0)
               {
-                (void) CloneString(&value,tokens[++j]);
-                (void) CloneString(&svg_info->graphic_context[n].stroke,value);
+                char
+                  *s;
+
+                s=NULL;
+                (void) CloneString(&s,tokens[++j]);
+                (void) CloneString(&svg_info->graphic_context[n].stroke,s);
               }
             if (LocaleCompare(tokens[j],"stroke-antialiasing:") == 0)
               svg_info->graphic_context[n].antialias=
@@ -979,7 +989,8 @@ static void SVGEndElement(void *context, const xmlChar *name)
   if (LocaleCompare((char *) name,"text") == 0)
     {
       (void) fprintf(svg_info->file,"text %g,%g '%s'\n",svg_info->page.x,
-        svg_info->page.y,svg_info->text);
+        svg_info->page.y-svg_info->graphic_context[n].pointsize/2.0,
+        svg_info->text);
       svg_info->n--;
       return;
     }
