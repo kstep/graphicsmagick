@@ -194,7 +194,16 @@ static unsigned int CompositeImages(ImageInfo *image_info,const int argc,
   status=MogrifyImages(image_info,argc-1,argv,image);
   CatchImageException(*image);
   if (mask_image != (Image *) NULL)
-    SetImageClipMask(*image,mask_image);
+    {
+      SetImageType(composite_image,TrueColorMatteType);
+      if (!composite_image->matte)
+        SetImageOpacity(composite_image,OpaqueOpacity);;
+      status=CompositeImage(composite_image,CopyOpacityCompositeOp,
+        mask_image,0,0);
+      if (status == False)
+        CatchImageException(composite_image);
+      DestroyImage(mask_image);
+    }
   if (option_info->compose == DissolveCompositeOp)
     {
       register PixelPacket
