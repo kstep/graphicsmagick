@@ -4052,6 +4052,7 @@ Export void DrawImage(Image *image,AnnotateInfo *annotate_info)
       if (point.y > bounds.y2)
         bounds.y2=(int) point.y;
       primitive_info[i].primitive=primitive_type;
+      primitive_info[i].method=FloodfillMethod;
       primitive_info[i].coordinates=0;
       primitive_info[i].x=(int) point.x;
       primitive_info[i].y=(int) point.y;
@@ -6708,7 +6709,7 @@ Export void MogrifyImage(ImageInfo *image_info,const int argc,char **argv,
     if (strncmp("-bordercolor",option,8) == 0)
       {
         image_info->border_color=argv[++i];
-        annotate_info.border_color=image_info->border_color;
+        CloneString(&annotate_info.border_color,image_info->border_color);
         (void) XQueryColorDatabase(image_info->border_color,&target_color);
         (*image)->border_color.red=XDownScale(target_color.red);
         (*image)->border_color.green=XDownScale(target_color.green);
@@ -6717,7 +6718,7 @@ Export void MogrifyImage(ImageInfo *image_info,const int argc,char **argv,
       }
     if (Latin1Compare("-box",option) == 0)
       {
-        annotate_info.box=argv[++i];
+        CloneString(&annotate_info.box,argv[++i]);
         continue;
       }
     if (strncmp("-charcoal",option,3) == 0)
@@ -6829,7 +6830,7 @@ Export void MogrifyImage(ImageInfo *image_info,const int argc,char **argv,
           Set image density.
         */
         image_info->density=argv[++i];
-        annotate_info.density=image_info->density;
+        CloneString(&annotate_info.density,image_info->density);
         count=sscanf(image_info->density,"%lfx%lf",
           &(*image)->x_resolution,&(*image)->y_resolution);
         if (count != 2)
@@ -6854,7 +6855,7 @@ Export void MogrifyImage(ImageInfo *image_info,const int argc,char **argv,
     if (strncmp("-display",option,6) == 0)
       {
         image_info->server_name=argv[++i];
-        annotate_info.server_name=image_info->server_name;
+        CloneString(&annotate_info.server_name,image_info->server_name);
         continue;
       }
     if (strncmp("dither",option+1,3) == 0)
@@ -6865,7 +6866,7 @@ Export void MogrifyImage(ImageInfo *image_info,const int argc,char **argv,
       }
     if (strncmp("-draw",option,3) == 0)
       {
-        annotate_info.primitive=argv[++i];
+        CloneString(&annotate_info.primitive,argv[++i]);
         DrawImage(*image,&annotate_info);
         continue;
       }
@@ -7042,7 +7043,7 @@ Export void MogrifyImage(ImageInfo *image_info,const int argc,char **argv,
     if (Latin1Compare("-font",option) == 0)
       {
         image_info->font=argv[++i];
-        annotate_info.font=image_info->font;
+        CloneString(&annotate_info.font,image_info->font);
         continue;
       }
     if (strncmp("gamma",option+1,2) == 0)
@@ -7056,7 +7057,7 @@ Export void MogrifyImage(ImageInfo *image_info,const int argc,char **argv,
     if (strncmp("-geometry",option,4) == 0)
       {
         TransformImage(image,(char *) NULL,argv[++i]);
-        annotate_info.geometry=argv[i];
+        CloneString(&annotate_info.geometry,argv[i]);
         continue;
       }
     if (strncmp("gravity",option+1,2) == 0)
@@ -7256,7 +7257,7 @@ Export void MogrifyImage(ImageInfo *image_info,const int argc,char **argv,
     if (Latin1Compare("-pen",option) == 0)
       {
         image_info->pen=argv[++i];
-        annotate_info.pen=image_info->pen;
+        CloneString(&annotate_info.pen,image_info->pen);
         continue;
       }
     if (strncmp("pointsize",option+1,2) == 0)
@@ -7691,6 +7692,7 @@ Export void MogrifyImage(ImageInfo *image_info,const int argc,char **argv,
       (void) MapImage(*image,map_image,quantize_info.dither);
       DestroyImage(map_image);
     }
+  DestroyAnnotateInfo(&annotate_info);
 }
 
 /*

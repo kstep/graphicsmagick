@@ -6042,9 +6042,9 @@ Image *ReadLABELImage(const ImageInfo *image_info)
     Render label with a Postscript font.
   */
   local_info->density=(char *) NULL;
+  (void) sprintf(page,"%ux%u+0+0!",local_info->pointsize*Extent(text),
+    local_info->pointsize << 1);
   CloneString(&local_info->page,page);
-  (void) sprintf(local_info->page,"%ux%u+0+0!",local_info->pointsize*
-    Extent(text),local_info->pointsize << 1);
   TemporaryFilename(filename);
   file=fopen(filename,WriteBinaryType);
   if (file == (FILE *) NULL)
@@ -10079,15 +10079,17 @@ static unsigned int PNMInteger(Image *image,const unsigned int base)
         /*
           Read comment.
         */
-        p=image->comments;
-        length=MaxTextExtent;
-        if (image->comments == (char *) NULL)
-          image->comments=(char *) AllocateMemory(length*sizeof(char));
-        else
+        if (image->comments != (char *) NULL)
           {
             p=image->comments+Extent(image->comments);
             length=p-image->comments;
           }
+        else
+	  {
+            length=MaxTextExtent;
+            image->comments=(char *) AllocateMemory(length*sizeof(char));
+            p=image->comments;
+	  }
         q=p;
         if (image->comments != (char *) NULL)
           for ( ; (c != EOF) && (c != '\n'); p++)
@@ -13977,7 +13979,7 @@ static boolean TIFFNewsProfileHandler(char *text,long int length,Image *image,
   /*
     Eat OSType, IPTC ID code, and Pascal string length bytes.
   */
-  p+=6; 
+  p+=6;
   length=(*p++);
   if (length)
     p+=length;

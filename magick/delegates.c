@@ -621,11 +621,12 @@ Export unsigned int InvokeDelegate(const ImageInfo *image_info,Image *image,
     status=SystemCommand(image_info->verbose,command);
     FreeMemory((char *) command);
     if (status != False)
-      break;
+      {
+        MagickWarning(DelegateWarning,"delegate failed",commands[i]);
+        break;
+      }
     FreeMemory((char *) commands[i]);
   }
-  if (status != False)
-    MagickWarning(DelegateWarning,"delegate failed",command);
   /*
     Free resources.
   */
@@ -705,7 +706,7 @@ Export void ListDelegateInfo(FILE *file)
     "formats it does not\ndirectly support:\n\n");
   (void) fprintf(file,"Decode-Tag   Encode-Tag  Delegate\n");
   (void) fprintf(file,"--------------------------------------------------------"
-	"-----------------\n");
+    "-----------------\n");
   for (p=delegates->next; p != (DelegateInfo *) NULL; p=p->next)
   {
     i=0;
