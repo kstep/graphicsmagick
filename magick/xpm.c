@@ -423,6 +423,7 @@ Export Image *ReadXPMImage(const ImageInfo *image_info)
     count,
     j,
     length,
+    none,
     y;
 
   register char
@@ -558,6 +559,7 @@ Export Image *ReadXPMImage(const ImageInfo *image_info)
     Read image colormap.
   */
   i=1;
+  none=(-1);
   for (x=0; x < (int) image->colors; x++)
   {
     p=textlist[i++];
@@ -589,11 +591,11 @@ Export Image *ReadXPMImage(const ImageInfo *image_info)
           *q='\0';
       }
     Strip(target);
-    image->colormap[x].opacity=Latin1Compare(target,"none") == 0;
-    if (image->colormap[x].opacity)
+    if (Latin1Compare(target,"none") == 0)
       {
         image->class=DirectClass;
         image->matte=True;
+        none=x;
         (void) strcpy(target,"black");
       }
     (void) QueryColorDatabase(target,&image->colormap[x]);
@@ -630,14 +632,10 @@ Export Image *ReadXPMImage(const ImageInfo *image_info)
         for (j=0; j < (int) (image->colors-1); j++)
           if (strcmp(key,keys[j]) == 0)
             break;
-      *r=image->colormap[j];
       if (image->class == PseudoClass)
         image->indexes[x]=(IndexPacket) j;
-      else
-        if (image->colormap[j].opacity)
-          r->opacity=Transparent;
-        else
-          r->opacity=Opaque;
+      *r=image->colormap[j];
+      r->opacity=j == none ? Transparent : Opaque;
       r++;
       p+=width;
     }
