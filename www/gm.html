@@ -774,7 +774,7 @@ If a clipping path is present, it will be applied to subsequent operations.</fon
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 For example, if you type the following command:</font></td></tr></table>
 <pre>
-     convert -clip -negate cockatoo.tif negated.tif
+     gm convert -clip -negate cockatoo.tif negated.tif
 </pre>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 only the pixels within the clipping path are negated.</font></td></tr></table>
@@ -1123,7 +1123,7 @@ or <strong>+contrast</strong> to reduce the image contrast.
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 For a more pronounced effect you can repeat the option:</font></td></tr></table>
 <pre>
-    convert rose: -contrast -contrast rose_c2.png
+    gm convert rose: -contrast -contrast rose_c2.png
 </pre>
 <table BORDER=0 WIDTH="94%">
 <tr>
@@ -1218,7 +1218,7 @@ consisting of one or more of the following domains: <tt>Annotate</tt>,
 <tt>X11</tt>, or <tt>User</tt>.
 For example, to log cache and blob events, use</font></td></tr></table>
 <pre>
-    convert -debug "Cache,Blob" rose: rose.png
+    gm convert -debug "Cache,Blob" rose: rose.png
 </pre>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 The "User" domain is normally empty, but developers can log "User" events
@@ -1751,9 +1751,9 @@ or the parentheses from being interpreted by your shell.</font></td></tr></table
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 For example,</font></td></tr></table>
 <pre>
-    convert -fill blue ...
-    convert -fill "#ddddff" ...
-    convert -fill "rgb(65000,65000,65535)" ...
+    gm convert -fill blue ...
+    gm convert -fill "#ddddff" ...
+    gm convert -fill "rgb(65000,65000,65535)" ...
 </pre>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 The shorter forms are scaled up, if necessary by replication.  For example, 
@@ -2571,7 +2571,7 @@ special format characters:</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 For example:</font></td></tr></table>
 <pre>
-    convert -debug coders -log "%u %m:%l %e" in.gif out.png
+    gm convert -debug coders -log "%u %m:%l %e" in.gif out.png
 </pre>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 The default behavior is to print all of the components.</font></td></tr></table>
@@ -3181,7 +3181,7 @@ For example, to extract the Exif data (which is stored in JPEG files
 in the <em>APP1</em> profile), use
 </font></td></tr></table>
 <pre>
-    convert cockatoo.jpg exifdata.app1
+    gm convert cockatoo.jpg exifdata.app1
 </pre>
 <table BORDER=0 WIDTH="94%">
 <tr>
@@ -3483,12 +3483,12 @@ number.  You
 can change this behavior by embedding a <strong>%d, %0Nd, %o, %0No, %x, or %0Nx
 printf</strong> format specification in the file name. For example,</font></td></tr></table>
 <pre>
-    montage -scenes 5-7 image.miff
+    gm montage -scenes 5-7 image.miff
 </pre>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 makes a montage of files image.miff.5, image.miff.6, and image.miff.7, and</font></td></tr></table>
 <pre>
-    animate -scenes 0-12 image%02d.miff
+    gm animate -scenes 0-12 image%02d.miff
 </pre>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 animates files image00.miff, image01.miff, through image12.miff.</font></td></tr></table>
@@ -3886,8 +3886,8 @@ auto-thresholding will be performed.
 To generate an all-black or all-white image with the same dimensions as
 the input image, you can use</font></td></tr></table>
 <pre>
-    convert -threshold 65535 in.png black.png
-    convert -threshold 0,0 in.png white.png
+    gm convert -threshold 65535 in.png black.png
+    gm convert -threshold 0,0 in.png white.png
 </pre>
 <table BORDER=0 WIDTH="94%">
 <tr>
@@ -3955,7 +3955,7 @@ This option applies the transformation matrix from a previous
 <strong>-affine</strong> option.
 </font></td></tr></table>
 <pre>
-    convert -affine 2,2,-2,2,0,0 -transform bird.ppm bird.jpg
+    gm convert -affine 2,2,-2,2,0,0 -transform bird.ppm bird.jpg
 </pre>
 <table BORDER=0 WIDTH="94%">
 <tr>
@@ -4037,7 +4037,7 @@ example, to prevent a JPEG from being written in grayscale format even
 though only gray pixels are present, use
 </font></td></tr></table>
 <pre>
-    convert bird.pgm -type TrueColor bird.jpg
+    gm convert bird.pgm -type TrueColor bird.jpg
 </pre>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Similarly, using <tt>-type TrueColorMatte</tt> will force the encoder
@@ -4390,7 +4390,7 @@ it eliminates the need to compute a global colormap.
 SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
 height=14 width=15><b><font face="Helvetica, Arial"><font 
 color="#FFFFFF"><font size="+1">
-<a NAME="exam"></a>Examples
+<a NAME="ani-exam"></a>Examples
 </font></font></font></b></td></tr></table>
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
@@ -4398,7 +4398,7 @@ color="#FFFFFF"><font size="+1">
 To animate a set of images of a cockatoo, use:
 <br>&nbsp;<br>
 <pre>
-    animate cockatoo.*
+    gm animate cockatoo.*
 </pre>
 <p>
 To animate a cockatoo image sequence while using the Standard Colormap
@@ -4406,14 +4406,14 @@ To animate a cockatoo image sequence while using the Standard Colormap
 <br>&nbsp;<br>
 <pre>
     xstdcmap -best
-    animate -map best cockatoo.*
+    gm animate -map best cockatoo.*
 </pre>
 <p>
 To animate an image of a cockatoo without a border centered on a backdrop,
 use:
 <br>&nbsp;<br>
 <pre>
-    animate +borderwidth -backdrop cockatoo.*
+    gm animate +borderwidth -backdrop cockatoo.*
 </pre>
 </td></tr></table>
      <p>
@@ -4425,7 +4425,7 @@ use:
 SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
 height=14 width=15><b><font face="Helvetica, Arial"><font 
 color="#FFFFFF"><font size="+1">
-<a NAME="opti"></a>Options
+<a NAME="ani-opti"></a>Options
 </font></font></font></b></td></tr></table>
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
@@ -4996,7 +4996,7 @@ with 32 colors, the second with an unlimited number of colors, and the
 third with only 16 colors, use:
 <br>&nbsp;<br>
 <pre>
-     animate -colors 32 cockatoo.1 -noop cockatoo.2 -colors 16 cockatoo.3
+     gm animate -colors 32 cockatoo.1 -noop cockatoo.2 -colors 16 cockatoo.3
 </pre>
 <p>
 <strong>Animate</strong> options can appear on the command line or in your X resources
@@ -5017,7 +5017,7 @@ they appear on the command line.
 SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
 height=14 width=15><b><font face="Helvetica, Arial"><font 
 color="#FFFFFF"><font size="+1">
-<a NAME="mous"></a>Mouse Buttons
+<a NAME="ani-mous"></a>Mouse Buttons
 </font></font></font></b></td></tr></table>
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
@@ -5034,7 +5034,7 @@ for more information about the Command widget.
 SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
 height=14 width=15><b><font face="Helvetica, Arial"><font 
 color="#FFFFFF"><font size="+1">
-<a NAME="comm"></a>Command Widget
+<a NAME="ani-comm"></a>Command Widget
 </font></font></font></b></td></tr></table>
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
@@ -5080,7 +5080,7 @@ particular command.
 SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
 height=14 width=15><b><font face="Helvetica, Arial"><font 
 color="#FFFFFF"><font size="+1">
-<a NAME="keyb"></a>Keyboard Accelerators
+<a NAME="ani-keyb"></a>Keyboard Accelerators
 </font></font></font></b></td></tr></table>
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
@@ -5115,7 +5115,7 @@ and the total number of unique colors in the image.</dd>
 SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
 height=14 width=15><b><font face="Helvetica, Arial"><font 
 color="#FFFFFF"><font size="+1">
-<a NAME="xres"></a>X Resources
+<a NAME="ani-xres"></a>X Resources
 </font></font></font></b></td></tr></table>
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
@@ -5202,7 +5202,7 @@ of header identifying the window. The default is the image file name.</dd>
 SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
 height=14 width=15><b><font face="Helvetica, Arial"><font 
 color="#FFFFFF"><font size="+1">
-<a NAME="envi"></a>Environment
+<a NAME="ani-envi"></a>Environment
 </font></font></font></b></td></tr></table>
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
@@ -5224,7 +5224,7 @@ width=15><b><font face="Helvetica, Arial"
 SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
 height=14 width=15><b><font face="Helvetica, Arial"><font 
 color="#FFFFFF"><font size="+1">
-<a NAME="ackn"></a>Acknowledgements
+<a NAME="ani-ackn"></a>Acknowledgements
 </font></font></font></b></td></tr></table>
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
@@ -5277,39 +5277,39 @@ matte information.
 SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
 height=14 width=15><b><font face="Helvetica, Arial"><font 
 color="#FFFFFF"><font size="+1">
-<a NAME="exam"></a>Examples
+<a NAME="comp-exam"></a>Examples
 </font></font></font></b></td></tr></table>
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
 <p>
 To composite an image of a cockatoo with a perch, use:
 <pre>
-    composite cockatoo.miff perch.ras composite.miff
+    gm composite cockatoo.miff perch.ras composite.miff
 </pre>
 <p>
 To compute the difference between images in a series, use:
 <pre>
-    composite -compose difference series.2 series.1 difference.miff
+    gm composite -compose difference series.2 series.1 difference.miff
 </pre>
 <p>
 To composite an image of a cockatoo with a perch starting at location (100,150),
 use:
 <pre>
-    composite -geometry +100+150 cockatoo.miff perch.ras composite.miff
+    gm composite -geometry +100+150 cockatoo.miff perch.ras composite.miff
 </pre>
 <p>
 To tile a logo across your image of a cockatoo, use
 <pre>
-    convert +shade 30x60 cockatoo.miff mask.miff
-    composite -compose bumpmap -tile logo.png
+    gm convert +shade 30x60 cockatoo.miff mask.miff
+    gm composite -compose bumpmap -tile logo.png
               cockatoo.miff mask.miff composite.miff
 </pre>
 <p>
 To composite a red, green, and blue color plane into a single composite image,
 try
 <pre>
-    composite -compose CopyGreen green.png red.png red-green.png
-    composite -compose CopyBlue blue.png red-green.png composite.png
+    gm composite -compose CopyGreen green.png red.png red-green.png
+    gm composite -compose CopyBlue blue.png red-green.png composite.png
 </pre>
 </td></tr></table>
      <p>
@@ -5321,7 +5321,7 @@ try
 SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
 height=14 width=15><b><font face="Helvetica, Arial"><font 
 color="#FFFFFF"><font size="+1">
-<a NAME="opti"></a>Options
+<a NAME="comp-opti"></a>Options
 </font></font></font></b></td></tr></table>
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
@@ -5988,7 +5988,7 @@ is an example script:
 invoked with
 <br>&nbsp;<br>
 <pre>
-    conjure -dimensions 400x400 incantation.msl
+    gm conjure -dimensions 400x400 incantation.msl
 </pre>
 <p>
 All operations will closely follow the key/value pairs defined in
@@ -6015,7 +6015,7 @@ magick-developers@imagemagick.org.
 SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
 height=14 width=15><b><font face="Helvetica, Arial"><font 
 color="#FFFFFF"><font size="+1">
-<a NAME="opti"></a>Options
+<a NAME="conj-opti"></a>Options
 </font></font></font></b></td></tr></table>
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
@@ -6122,7 +6122,7 @@ width=15><b><font face="Helvetica, Arial"
 SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
 height=14 width=15><b><font face="Helvetica, Arial"><font 
 color="#FFFFFF"><font size="+1">
-<a NAME="msl"></a>Magick Scripting Language
+<a NAME="conj-msl"></a>Magick Scripting Language
 </font></font></font></b></td></tr></table>
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
@@ -6310,14 +6310,14 @@ process. <strong>Convert</strong> recognizes the image formats listed in
 SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
 height=14 width=15><b><font face="Helvetica, Arial"><font 
 color="#FFFFFF"><font size="+1">
-<a NAME="exam"></a>Examples
+<a NAME="conv-exam"></a>Examples
 </font></font></font></b></td></tr></table>
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
 <p>
 To make a thumbnail of a JPEG image, use:
 <pre>
-    convert -size 120x120 cockatoo.jpg -resize 120x120 +profile "*" thumbnail.jpg
+    gm convert -size 120x120 cockatoo.jpg -resize 120x120 +profile "*" thumbnail.jpg
 </pre>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 In this example, <tt>'-size 120x120'</tt> gives a hint to the JPEG decoder
@@ -6331,25 +6331,25 @@ that might be present in the input and aren't needed in the thumbnail.</font></t
 <p>
 To convert a <em>MIFF</em> image of a cockatoo to a SUN raster image, use:
 <pre>
-    convert cockatoo.miff sun:cockatoo.ras
+    gm convert cockatoo.miff sun:cockatoo.ras
 </pre>
 <p>
 To convert a multi-page <em>PostScript</em> document to individual FAX pages,
 use:
 <pre>
-    convert -monochrome document.ps fax:page
+    gm convert -monochrome document.ps fax:page
 </pre>
 <p>
 To convert a TIFF image to a <em>PostScript</em> A4 page with the image in
 the lower left-hand corner, use:
 <pre>
-    convert -page A4+0+0 image.tiff document.ps
+    gm convert -page A4+0+0 image.tiff document.ps
 </pre>
 <p>
 To convert a raw Gray image with a 128 byte header to a portable graymap,
 use:
 <pre>
-    convert -depth 8 -size 768x512+128 gray:raw image.pgm
+    gm convert -depth 8 -size 768x512+128 gray:raw image.pgm
 </pre>
 <p>
 In this example, "raw" is the input file.  Its format is "gray" and it
@@ -6360,35 +6360,35 @@ specifies its format.
 <p>
 To convert a Photo CD image to a TIFF image, use:
 <pre>
-    convert -size 1536x1024 img0009.pcd image.tiff
-    convert img0009.pcd[4] image.tiff
+    gm convert -size 1536x1024 img0009.pcd image.tiff
+    gm convert img0009.pcd[4] image.tiff
 </pre>
 <p>
 To create a visual image directory of all your JPEG images, use:
 <pre>
-    convert 'vid:*.jpg' directory.miff
+    gm convert 'vid:*.jpg' directory.miff
 </pre>
 <p>
 To annotate an image with blue text using font 12x24 at position (100,100),
 use:
 <pre>
-    convert -font helvetica -fill blue -draw "text 100,100 Cockatoo"
+    gm convert -font helvetica -fill blue -draw "text 100,100 Cockatoo"
             bird.jpg bird.miff
 </pre>
 <p>
 To tile a 640x480 image with a JPEG texture with bumps use:
 <pre>
-    convert -size 640x480 tile:bumps.jpg tiled.png
+    gm convert -size 640x480 tile:bumps.jpg tiled.png
 </pre>
 <p>
 To surround an icon with an ornamental border to use with Mosaic(1), use:
 <pre>
-    convert -mattecolor "#697B8F" -frame 6x6 bird.jpg icon.png
+    gm convert -mattecolor "#697B8F" -frame 6x6 bird.jpg icon.png
 </pre>
 <p>
 To create a MNG animation from a DNA molecule sequence, use:
 <pre>
-    convert -delay 20 dna.* dna.mng
+    gm convert -delay 20 dna.* dna.mng
 </pre>
 </td></tr></table>
      <p>
@@ -6400,7 +6400,7 @@ To create a MNG animation from a DNA molecule sequence, use:
 SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
 height=14 width=15><b><font face="Helvetica, Arial"><font 
 color="#FFFFFF"><font size="+1">
-<a NAME="opti"></a>Options
+<a NAME="conv-opti"></a>Options
 </font></font></font></b></td></tr></table>
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
@@ -7891,7 +7891,7 @@ Options, above.
 SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
 height=14 width=15><b><font face="Helvetica, Arial"><font 
 color="#FFFFFF"><font size="+1">
-<a NAME="segm"></a>Segmentation
+<a NAME="conv-segm"></a>Segmentation
 </font></font></font></b></td></tr></table>
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
@@ -8033,7 +8033,7 @@ With <strong>display</strong>, you can perform these functions on an image:
 SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
 height=14 width=15><b><font face="Helvetica, Arial"><font 
 color="#FFFFFF"><font size="+1">
-<a NAME="exam"></a>Examples
+<a NAME="disp-exam"></a>Examples
 </font></font></font></b></td></tr></table>
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
@@ -8041,40 +8041,40 @@ color="#FFFFFF"><font size="+1">
 To scale an image of a cockatoo to exactly 640 pixels in width and 480
 pixels in height and position the window at location (200,200), use:
 <pre>
-    display -geometry 640x480+200+200! cockatoo.miff
+    gm display -geometry 640x480+200+200! cockatoo.miff
 </pre>
 <p>
 To display an image of a cockatoo without a border centered on a backdrop,
 use:
 <pre>
-    display +borderwidth -backdrop cockatoo.miff
+    gm display +borderwidth -backdrop cockatoo.miff
 </pre>
 <p>
 To tile a slate texture onto the root window, use:
 <pre>
-    display -size 1280x1024 -window root slate.png
+    gm display -size 1280x1024 -window root slate.png
 </pre>
 <p>
 To display a visual image directory of all your JPEG images, use:
 <pre>
-    display 'vid:*.jpg'
+    gm display 'vid:*.jpg'
 </pre>
 <p>
 To display a MAP image that is 640 pixels in width and 480 pixels in height
 with 256 colors, use:
 <pre>
-    display -size 640x480+256 cockatoo.map
+    gm display -size 640x480+256 cockatoo.map
 </pre>
 <p>
 To display an image of a cockatoo specified with a <strong>World Wide Web (WWW)</strong>
 uniform resource locator <strong>(URL)</strong>, use:
 <pre>
-    display ftp://wizards.dupont.com/images/cockatoo.jpg
+    gm display ftp://wizards.dupont.com/images/cockatoo.jpg
 </pre>
 <p>
 To display histogram of an image, use:
 <pre>
-    convert file.jpg HISTOGRAM:- | display -
+    gm convert file.jpg HISTOGRAM:- | display -
 </pre>
 </td></tr></table>
      <p>
@@ -8086,7 +8086,7 @@ To display histogram of an image, use:
 SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
 height=14 width=15><b><font face="Helvetica, Arial"><font 
 color="#FFFFFF"><font size="+1">
-<a NAME="opti"></a>Options
+<a NAME="disp-opti"></a>Options
 </font></font></font></b></td></tr></table>
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
@@ -8097,7 +8097,7 @@ the option again with a different effect. For example to display three images,
 the first with 32 colors, the second with an unlimited number of colors,
 and the third with only 16 colors, use:
 <pre>
-      display -colors 32 cockatoo.miff -noop duck.miff -colors 16 macaw.miff
+      gm display -colors 32 cockatoo.miff -noop duck.miff -colors 16 macaw.miff
 </pre>
 <p>
 <strong>Display</strong> options can appear on the command line or in your X resources
@@ -8959,7 +8959,7 @@ Options, above.
 SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
 height=14 width=15><b><font face="Helvetica, Arial"><font 
 color="#FFFFFF"><font size="+1">
-<a NAME="mous"></a>Mouse Buttons
+<a NAME="disp-mous"></a>Mouse Buttons
 </font></font></font></b></td></tr></table>
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
@@ -8978,7 +8978,7 @@ width=15><b><font face="Helvetica, Arial"
     1
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>
-Press this button to map or unmap the <a href="#comm">Command
+Press this button to map or unmap the <a href="#disp-comm">Command
 widget</a> . See the next section for more information about the Command
 widget.</td></tr></table>
 <table BORDER=0 WIDTH="94%">
@@ -9019,7 +9019,7 @@ Choose from these menu items:</td></tr></table>
 <p>
 If you choose <strong>Open</strong>, the image represented by the tile is displayed.
 To return to the visual image directory, choose <strong>Next</strong> from the Command
-widget (refer to <a href="#comm">Command Widget</a>).
+widget (refer to <a href="#disp-comm">Command Widget</a>).
 <strong>Next</strong> and <strong>Former</strong>
 moves to the next or former image respectively. Choose <strong>Delete</strong> to
 delete a particular image tile. Finally, choose <strong>Update</strong> to synchronize
@@ -9037,7 +9037,7 @@ and
 SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
 height=14 width=15><b><font face="Helvetica, Arial"><font 
 color="#FFFFFF"><font size="+1">
-<a NAME="comm"></a>Command Widget
+<a NAME="disp-comm"></a>Command Widget
 </font></font></font></b></td></tr></table>
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
@@ -9192,7 +9192,7 @@ particular command.
 SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
 height=14 width=15><b><font face="Helvetica, Arial"><font 
 color="#FFFFFF"><font size="+1">
-<a NAME="keyb"></a>Keyboard Accelerators
+<a NAME="disp-keyb"></a>Keyboard Accelerators
 </font></font></font></b></td></tr></table>
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
@@ -9201,7 +9201,7 @@ Accelerators are one or two key presses that effect a particular command.
 The keyboard accelerators that
 <strong>display</strong> understands is:
 <pre>
-    Ctl+O     Press to <a href="#imlo">load</a> an image from a file.
+    Ctl+O     Press to <a href="#disp-imlo">load</a> an image from a file.
     space     Press to display the next image.
 </pre>
 <p>
@@ -9228,11 +9228,11 @@ For example to display the fourth page preceding the current page, press
     Ctl-Q    Press to discard all images and exit program.
     Ctl+Z    Press to undo last image transformation.
     Ctl+R    Press to redo last image transformation.
-    Ctl-X    Press to <a href="#imcu">cut</a> a region of
+    Ctl-X    Press to <a href="#disp-imcu">cut</a> a region of
              the image.
-    Ctl-C    Press to <a href="#imco">copy</a> a region of
+    Ctl-C    Press to <a href="#disp-imco">copy</a> a region of
              the image.
-    Ctl-V    Press to <a href="#impa">paste</a> a region to
+    Ctl-V    Press to <a href="#disp-impa">paste</a> a region to
              the image.
     &lt;        Press to halve the image size.
     .        Press to return to the original image size.
@@ -9242,7 +9242,7 @@ For example to display the fourth page preceding the current page, press
     Cmd-A    Press to make any image transformations permanent.
              By default, any image size transformations are
              applied to the original image to create the image
-             displayed on the X server.  However, the
+             gm displayed on the X server.  However, the
              transformations are not permanent (i.e. the original
              image does not change size only the X image does).
              For example, if you press "&gt;" the X image will
@@ -9251,14 +9251,14 @@ For example to display the fourth page preceding the current page, press
              original image to double in size, press "&gt;" followed
              by "Cmd-A".
     @        Press to refresh the image window.
-    C        Press to <a href="#imcr">crop</a> the image.
-    [        Press to <a href="#imch">chop</a> the image.
+    C        Press to <a href="#disp-imcr">crop</a> the image.
+    [        Press to <a href="#disp-imch">chop</a> the image.
     H        Press to flop image in the horizontal direction.
     V        Press to flip image in the vertical direction.
     /        Press to rotate the image 90 degrees clockwise.
     \        Press to rotate the image 90 degrees
              counter-clockwise.
-    *        Press to <a href="#imro">rotate</a> the image
+    *        Press to <a href="#disp-imro">rotate</a> the image
              the number of degrees you specify.
     S        Press to shear the image the number of degrees
              you specify.
@@ -9297,13 +9297,13 @@ For example to display the fourth page preceding the current page, press
     Meta-W   Press to alter an image along a sine wave.
     Meta-P   Press to simulate an oil painting.
     Meta-C   Press to simulate a charcoal drawing.
-    Alt-X    Press to <a href="#imcomp">composite</a> the image
+    Alt-X    Press to <a href="#disp-imcomp">composite</a> the image
              with another.
-    Alt-A    Press to <a href="#iman">annotate</a> the image with text.
-    Alt-D    Press to <a href="#imdr">draw</a> a line on the image.
-    Alt-P    Press to <a href="#cole">edit an image pixel color</a>.
-    Alt-M    Press to <a href="#matt">edit the image matte</a> information.
-    Alt-X    Press to <a href="#imcomp">composite</a> the image with another.
+    Alt-A    Press to <a href="#disp-iman">annotate</a> the image with text.
+    Alt-D    Press to <a href="#disp-imdr">draw</a> a line on the image.
+    Alt-P    Press to <a href="#disp-cole">edit an image pixel color</a>.
+    Alt-M    Press to <a href="#disp-matt">edit the image matte</a> information.
+    Alt-X    Press to <a href="#disp-imcomp">composite</a> the image with another.
     Alt-A    Press to add a border to the image.
     Alt-F    Press to add a ornamental frame to the image.
     Alt-Shft-!   Press to add an image comment.
@@ -9335,7 +9335,7 @@ of the image.
 SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
 height=14 width=15><b><font face="Helvetica, Arial"><font 
 color="#FFFFFF"><font size="+1">
-<a NAME="xres"></a>X Resources
+<a NAME="disp-xres"></a>X Resources
 </font></font></font></b></td></tr></table>
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
@@ -9560,7 +9560,7 @@ specifies an integral factor by which the image should be enlarged. The
 default is 3.</td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>
 This value only affects the magnification window which is invoked with
-<a href="#mous">button</a>
+<a href="#disp-mous">button</a>
 number 3 after the image is displayed.</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
@@ -9603,7 +9603,7 @@ width=15><b><font face="Helvetica, Arial"
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>
 Specifies the color of the preferred font to use when
-<a href="#iman">annotating</a>
+<a href="#disp-iman">annotating</a>
 the image window with text. The default colors are black, blue, green,
 cyan, gray, red, magenta, yellow, and white.</td></tr></table>
 <table BORDER=0 WIDTH="94%">
@@ -9697,7 +9697,7 @@ are considered a precious resource, use them with discretion.</td></tr></table>
 To set the geometry of the Magnify or Pan or window, use the geometry resource.
 For example, to set the Pan window geometry to 256x256, use:
 <pre>
-    display.pan.geometry: 256x256
+    gm display.pan.geometry: 256x256
 </pre>
 </td></tr></table>
      <p>
@@ -9709,13 +9709,13 @@ For example, to set the Pan window geometry to 256x256, use:
 SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
 height=14 width=15><b><font face="Helvetica, Arial"><font 
 color="#FFFFFF"><font size="+1">
-<a NAME="imlo"></a>Image Loading
+<a NAME="disp-imlo"></a>Image Loading
 </font></font></font></b></td></tr></table>
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
 <p>
 To select an image to display, choose <strong>Open</strong> of the <strong>File</strong> sub-menu
-from the <a href="#comm">Command widget</a>. A file browser is displayed.
+from the <a href="#disp-comm">Command widget</a>. A file browser is displayed.
 To choose a particular image file, move the pointer to the filename and
 press any button. The filename is copied to the text window. Next, press
 <strong>Open</strong>
@@ -9741,13 +9741,13 @@ To select your image from the X server screen instead of from a file, Choose
 SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
 height=14 width=15><b><font face="Helvetica, Arial"><font 
 color="#FFFFFF"><font size="+1">
-<a NAME="visu"></a>Visual Image Directory
+<a NAME="disp-visu"></a>Visual Image Directory
 </font></font></font></b></td></tr></table>
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
 <p>
 To create a Visual Image Directory, choose Visual Directory of the <strong>File</strong>
-sub-menu from the <a href="#comm">Command widget</a> . A file browser is
+sub-menu from the <a href="#disp-comm">Command widget</a> . A file browser is
 displayed. To create a Visual Image Directory from all the images in the
 current directory, press <strong>Directory</strong> or press the <strong>RETURN key</strong>.
 Alternatively, you can select a set of image names by using shell globbing
@@ -9773,7 +9773,7 @@ Image Directory.
 SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
 height=14 width=15><b><font face="Helvetica, Arial"><font 
 color="#FFFFFF"><font size="+1">
-<a NAME="imcu"></a>Image Cutting
+<a NAME="disp-imcu"></a>Image Cutting
 </font></font></font></b></td></tr></table>
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
@@ -9786,7 +9786,7 @@ Correct cutting behavior may require a <em>TrueColor</em> or <em>DirectColor</em
 visual or a <em>Standard Colormap</em>.
 <p>
 To begin, press choose <strong>Cut</strong> of the <strong>Edit</strong> sub-menu from the
-<a href="#comm">Command
+<a href="#disp-comm">Command
 widget</a>. Alternatively, press
 <strong>F3</strong> in the image window.
 <p>
@@ -9822,13 +9822,13 @@ your copy region. To exit without cutting the image, press Dismiss.
 SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
 height=14 width=15><b><font face="Helvetica, Arial"><font 
 color="#FFFFFF"><font size="+1">
-<a NAME="imco"></a>Image Copying
+<a NAME="disp-imco"></a>Image Copying
 </font></font></font></b></td></tr></table>
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
 <p>
 To begin, press choose <strong>Copy</strong> of the <strong>Edit</strong> sub-menu from the
-<a href="#comm">Command
+<a href="#disp-comm">Command
 widget</a>. Alternatively, press
 <strong>F4</strong> in the image window.
 <p>
@@ -9864,13 +9864,13 @@ your copy region. To exit without copying the image, press Dismiss.
 SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
 height=14 width=15><b><font face="Helvetica, Arial"><font 
 color="#FFFFFF"><font size="+1">
-<a NAME="impas"></a>Image Pasting
+<a NAME="disp-impas"></a>Image Pasting
 </font></font></font></b></td></tr></table>
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
 <p>
 To begin, press choose <strong>Paste</strong> of the <strong>Edit</strong> sub-menu from the
-<a href="#comm">Command
+<a href="#disp-comm">Command
 widget</a>. Alternatively, press
 <strong>F5</strong> in the image window.
 <p>
@@ -9899,7 +9899,7 @@ In Paste mode, the Command widget has these options:
 </ul>
 <p>
 Choose a composite operation from the <strong>Operators</strong> sub-menu of the
-<a href="#comm">Command
+<a href="#disp-comm">Command
 widget</a>. How each operator behaves is described below. <em>image window</em>
 is the image currently displayed on your X server and <em>image</em> is the
 image obtained with the File Browser widget.
@@ -10087,7 +10087,7 @@ a sort of a cookie-cutter for the image. This is the case when matte is
 255 (full coverage) for pixels inside the shape, zero outside, and between
 zero and 255 on the boundary. If image does not have a matte channel, it
 is initialized with 0 for any pixel matching in color to pixel location
-(0,0), otherwise 255. See <a href="#matt">Matte Editing</a> for a method
+(0,0), otherwise 255. See <a href="#disp-matt">Matte Editing</a> for a method
 of defining a matte channel.
 <p>
 Note that matte information for image window is not retained for colormapped
@@ -10120,14 +10120,14 @@ use <strong>-colors</strong>.
 SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
 height=14 width=15><b><font face="Helvetica, Arial"><font 
 color="#FFFFFF"><font size="+1">
-<a NAME="imcr"></a>Image Cropping
+<a NAME="disp-imcr"></a>Image Cropping
 </font></font></font></b></td></tr></table>
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
 <p>
 To begin, press choose <strong>Crop</strong> of the <strong>Transform</strong> submenu from
-the <a href="#comm">Command widget</a>. Alternatively,
-<a href="#keyb">press</a> [ in the image window.
+the <a href="#disp-comm">Command widget</a>. Alternatively,
+<a href="#disp-keyb">press</a> [ in the image window.
 <p>
 A small window appears showing the location of the cursor in the image
 window. You are now in crop mode. In crop mode, the Command widget has
@@ -10161,15 +10161,15 @@ your cropping region. To exit without cropping the image, press Dismiss.
 SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
 height=14 width=15><b><font face="Helvetica, Arial"><font 
 color="#FFFFFF"><font size="+1">
-<a NAME="imch"></a>Image Chopping
+<a NAME="disp-imch"></a>Image Chopping
 </font></font></font></b></td></tr></table>
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
 <p>
 An image is chopped interactively. There is no command line argument to
 chop an image. To begin, choose <strong>Chop</strong> of the <strong>Transform</strong> sub-menu
-from the <a href="#comm">Command widget</a>. Alternatively,
-<a href="#keyb">press</a> ] in the Image window.
+from the <a href="#disp-comm">Command widget</a>. Alternatively,
+<a href="#disp-keyb">press</a> ] in the Image window.
 <p>
 You are now in <strong>Chop</strong> mode. To exit immediately, press
 <strong>Dismiss</strong>.
@@ -10207,7 +10207,7 @@ of the line and release the button.
 SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
 height=14 width=15><b><font face="Helvetica, Arial"><font 
 color="#FFFFFF"><font size="+1">
-<a NAME="imro"></a>Image Rotation
+<a NAME="disp-imro"></a>Image Rotation
 </font></font></font></b></td></tr></table>
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
@@ -10215,8 +10215,8 @@ color="#FFFFFF"><font size="+1">
 Press the / key to rotate the image 90 degrees or \ to rotate -90 degrees.
 To interactively choose the degree of rotation, choose
 <strong>Rotate...</strong>
-of the <strong>Transform</strong> submenu from the <a href="#comm">Command Widget</a>.
-Alternatively, <a href="#keyb">press</a> * in the image window.
+of the <strong>Transform</strong> submenu from the <a href="#disp-comm">Command Widget</a>.
+Alternatively, <a href="#disp-keyb">press</a> * in the image window.
 <p>
 A small horizontal line is drawn next to the pointer. You are now in rotate
 mode. To exit immediately, press Dismiss. In rotate mode, the Command widget
@@ -10246,7 +10246,7 @@ has these options:
 <p>
 Choose a background color from the Pixel Color sub-menu. Additional background
 colors can be specified with the color browser. You can change the menu
-colors by setting the <a href="#xres">X resources</a> pen1 through pen9.
+colors by setting the <a href="#disp-xres">X resources</a> pen1 through pen9.
 <p>
 If you choose the color browser and press <strong>Grab</strong>, you can select the
 background color by moving the pointer to the desired color on the screen
@@ -10271,7 +10271,7 @@ of the line and release the button.
 SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
 height=14 width=15><b><font face="Helvetica, Arial"><font 
 color="#FFFFFF"><font size="+1">
-<a NAME="segm"></a>Image Segmentation
+<a NAME="disp-segm"></a>Image Segmentation
 </font></font></font></b></td></tr></table>
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
@@ -10324,7 +10324,7 @@ Pattern Recognition, Volume 23, Number 9, pages 935-952, 1990.</blockquote>
 SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
 height=14 width=15><b><font face="Helvetica, Arial"><font 
 color="#FFFFFF"><font size="+1">
-<a NAME="iman"></a>Image Annotation
+<a NAME="disp-iman"></a>Image Annotation
 </font></font></font></b></td></tr></table>
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
@@ -10332,8 +10332,8 @@ color="#FFFFFF"><font size="+1">
 An image is annotated interactively. There is no command line argument
 to annotate an image. To begin, choose
 <strong>Annotate</strong> of the <strong>Image
-Edit</strong> sub-menu from the <a href="#comm">Command widget</a>. Alternatively,
-<a href="#keyb">press</a> a in the image window.
+Edit</strong> sub-menu from the <a href="#disp-comm">Command widget</a>. Alternatively,
+<a href="#disp-keyb">press</a> a in the image window.
 <p>
 A small window appears showing the location of the cursor in the image
 window. You are now in annotate mode. To exit immediately, press Dismiss.
@@ -10445,11 +10445,11 @@ Dialog...
 <p>
 Choose a font name from the <strong>Font Name</strong> sub-menu. Additional font
 names can be specified with the font browser. You can change the menu names
-by setting the <a href="#xres">X resources</a> font1 through font9.
+by setting the <a href="#disp-xres">X resources</a> font1 through font9.
 <p>
 Choose a font color from the <strong>Font Color</strong> sub-menu. Additional font
 colors can be specified with the color browser. You can change the menu
-colors by setting the <a href="#xres">X resources</a> pen1 through pen9.
+colors by setting the <a href="#disp-xres">X resources</a> pen1 through pen9.
 <p>
 If you select the color browser and press <strong>Grab</strong>, you can choose the
 font color by moving the pointer to the desired color on the screen and
@@ -10493,15 +10493,15 @@ to remain
 SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
 height=14 width=15><b><font face="Helvetica, Arial"><font 
 color="#FFFFFF"><font size="+1">
-<a NAME="imcomp"></a>Image Compositing
+<a NAME="disp-imcomp"></a>Image Compositing
 </font></font></font></b></td></tr></table>
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
 <p>
 An image composite is created interactively. <strong>There is no command line
 argument to composite an image</strong>. To begin, choose <strong>Composite</strong> of
-the <strong>Image Edit</strong> from the <a href="#comm">Command widget</a>. Alternatively,
-<a href="#keyb">press</a> x in the Image window.
+the <strong>Image Edit</strong> from the <a href="#disp-comm">Command widget</a>. Alternatively,
+<a href="#disp-keyb">press</a> x in the Image window.
 <p>
 First a popup window is displayed requesting you to enter an image name.
 Press <strong>Composite</strong>, <strong>Grab</strong> or type a file name. Press <strong>Cancel</strong>
@@ -10731,7 +10731,7 @@ a sort of a cookie-cutter for the image. This is the case when matte is
 255 (full coverage) for pixels inside the shape, zero outside, and between
 zero and 255 on the boundary. If image does not have a matte channel, it
 is initialized with 0 for any pixel matching in color to pixel location
-(0,0), otherwise 255. See <a href="#matt">Matte Editing</a> for a method
+(0,0), otherwise 255. See <a href="#disp-matt">Matte Editing</a> for a method
 of defining a matte channel.
 <p>
 If you choose <strong>blend</strong>, the composite operator becomes <strong>over</strong>.
@@ -10781,15 +10781,15 @@ use <strong>-colors</strong>.
 SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
 height=14 width=15><b><font face="Helvetica, Arial"><font 
 color="#FFFFFF"><font size="+1">
-<a NAME="cole"></a>Color Editing
+<a NAME="disp-cole"></a>Color Editing
 </font></font></font></b></td></tr></table>
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
 <p>
 Changing the the color of a set of pixels is performed interactively. There
 is no command line argument to edit a pixel. To begin, choose <strong>Color</strong>
-from the <strong>Image Edit</strong> submenu of the <a href="#comm">Command widget</a>.
-Alternatively, <a href="#keyb">press</a> c in the image window.
+from the <strong>Image Edit</strong> submenu of the <a href="#disp-comm">Command widget</a>.
+Alternatively, <a href="#disp-keyb">press</a> c in the image window.
 <p>
 A small window appears showing the location of the cursor in the image
 window. You are now in color edit mode. To exit immediately, press <strong>Dismiss</strong>.
@@ -10880,7 +10880,7 @@ Browser...
 </ul>
 <p>
 Choose a color editing method from the <strong>Method</strong> sub-menu of
-the <a href="#comm">Command
+the <a href="#disp-comm">Command
 widget</a>. The <strong>point method</strong> recolors any pixel selected with the
 pointer unless the button is released. The <strong>replace method</strong> recolors
 any pixel that matches the color of the pixel you select with a button
@@ -10892,7 +10892,7 @@ Finally <strong>reset</strong> changes the entire image to the designated color.
 <p>
 Next, choose a pixel color from the <strong>Pixel Color</strong> sub-menu. Additional
 pixel colors can be specified with the color browser. You can change the
-menu colors by setting the <a href="#xres">X resources</a> pen1 through
+menu colors by setting the <a href="#disp-xres">X resources</a> pen1 through
 pen9.
 <p>
 Now press button 1 to select a pixel within the Image window to change
@@ -10925,22 +10925,22 @@ To force a <em>PseudoClass</em> image to remain
 SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
 height=14 width=15><b><font face="Helvetica, Arial"><font 
 color="#FFFFFF"><font size="+1">
-<a NAME="matt"></a>Matte Editing
+<a NAME="disp-matt"></a>Matte Editing
 </font></font></font></b></td></tr></table>
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
 <p>
 Matte information within an image is useful for some operations such as
-image <a href="#imcomp">compositing</a>. This extra channel usually defines
+image <a href="#disp-imcomp">compositing</a>. This extra channel usually defines
 a mask which represents a sort of a cookie-cutter for the image. This is
 the case when matte is 255 (full coverage) for pixels inside the shape,
 zero outside, and between zero and 255 on the boundary.
 <p>
 Setting the matte information in an image is done interactively. There
 is no command line argument to edit a pixel. To begin, and choose <strong>Matte</strong>
-of the <strong>Image Edit</strong> sub-menu from the <a href="#comm">Command widget</a>.
+of the <strong>Image Edit</strong> sub-menu from the <a href="#disp-comm">Command widget</a>.
 <p>
-Alternatively, <a href="#keyb">press</a> m in the image window.
+Alternatively, <a href="#disp-keyb">press</a> m in the image window.
 <p>
 A small window appears showing the location of the cursor in the image
 window. You are now in matte edit mode. To exit immediately, press Dismiss.
@@ -11006,7 +11006,7 @@ Browser...
 <li>
 <strong>Dismiss</strong>
 </ul>
-Choose a matte editing method from the <strong>Method</strong> sub-menu of the <a href="#comm">Command
+Choose a matte editing method from the <strong>Method</strong> sub-menu of the <a href="#disp-comm">Command
 widget</a>. The <strong>point method</strong> changes the matte value of the any
 pixel selected with the pointer until the button is released. The <strong>replace
 method</strong> changes the matte value of any pixel that matches the color
@@ -11049,15 +11049,15 @@ visual or a <em>Standard Colormap</em>.
 SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
 height=14 width=15><b><font face="Helvetica, Arial"><font 
 color="#FFFFFF"><font size="+1">
-<a NAME="imdr"></a>Image Drawing
+<a NAME="disp-imdr"></a>Image Drawing
 </font></font></font></b></td></tr></table>
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
 <p>
 An image is drawn upon interactively. <strong>There is no command line argument
 to draw on an image</strong>. To begin, choose <strong>Draw</strong> of the Image <strong>Edit</strong>
-sub-menu from the <a href="#comm">Command widget</a>.
-Alternatively, <a href="#keyb">press</a> d in the image window.
+sub-menu from the <a href="#disp-comm">Command widget</a>.
+Alternatively, <a href="#disp-keyb">press</a> d in the image window.
 <p>
 The cursor changes to a crosshair to indicate you are in draw mode. To
 exit immediately, press Dismiss. In draw mode, the Command widget has these
@@ -11159,7 +11159,7 @@ Choose a drawing primitive from the <strong>Primitive</strong> sub-menu.
 <p>
 Next, choose a color from the <strong>Color</strong> sub-menu. Additional colors
 can be specified with the color browser. You can change the menu colors
-by setting the <a href="#xres">X resources</a> pen1 through pen9. The transparent
+by setting the <a href="#disp-xres">X resources</a> pen1 through pen9. The transparent
 color updates the image matte channel and is useful for image compositing.
 <p>
 If you choose the color browser and press <strong>Grab</strong>, you can select the
@@ -11192,14 +11192,14 @@ the line and release the button.
 SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
 height=14 width=15><b><font face="Helvetica, Arial"><font 
 color="#FFFFFF"><font size="+1">
-<a NAME="regi"></a>Region of Interest
+<a NAME="disp-regi"></a>Region of Interest
 </font></font></font></b></td></tr></table>
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
 <p>
 To begin, press choose Region of Interest of the Pixel Transform sub-menu
-from the <a href="#comm">Command widget</a>.
-Alternatively, <a href="#keyb">press</a> R in the image window.
+from the <a href="#disp-comm">Command widget</a>.
+Alternatively, <a href="#disp-keyb">press</a> R in the image window.
 <p>
 A small window appears showing the location of the cursor in the image
 window. You are now in region of interest mode. In region of interest mode,
@@ -11355,7 +11355,7 @@ technique. To exit, press Dismiss.
 SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
 height=14 width=15><b><font face="Helvetica, Arial"><font 
 color="#FFFFFF"><font size="+1">
-<a NAME="impa"></a>Image Panning
+<a NAME="disp-impa"></a>Image Panning
 </font></font></font></b></td></tr></table>
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
@@ -11383,7 +11383,7 @@ of the X server screen.
 SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
 height=14 width=15><b><font face="Helvetica, Arial"><font 
 color="#FFFFFF"><font size="+1">
-<a NAME="pref"></a>User Preferences
+<a NAME="disp-pref"></a>User Preferences
 </font></font></font></b></td></tr></table>
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
@@ -11397,7 +11397,7 @@ as <tt>.displayrc</tt>:
 <dd>
 This backdrop covers the entire workstation screen and is useful for hiding
 other X window activity while viewing the image. The color of the backdrop
-is specified as the background color. Refer to <a href="#xres">X Resources</a>
+is specified as the background color. Refer to <a href="#disp-xres">X Resources</a>
 for details.</dd>
 <dt>
 <strong>confirm on program exit</strong></dt>
@@ -11407,7 +11407,7 @@ Ask for a confirmation before exiting the <strong>display(1)</strong> program.</
 <strong>correct image for display gamma</strong></dt>
 <dd>
 If the image has a known gamma, the gamma is corrected to match that of
-the X server (see the <a href="#xres">X Resource</a><strong> displayGamma</strong>).</dd>
+the X server (see the <a href="#disp-xres">X Resource</a><strong> displayGamma</strong>).</dd>
 <dt>
 <strong>display warning messages</strong></dt>
 <dd>
@@ -11449,7 +11449,7 @@ are considered a precious resource, use them with discretion.</dd>
 SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
 height=14 width=15><b><font face="Helvetica, Arial"><font 
 color="#FFFFFF"><font size="+1">
-<a NAME="envi"></a>Environment
+<a NAME="disp-envi"></a>Environment
 </font></font></font></b></td></tr></table>
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
@@ -11474,7 +11474,7 @@ width=15><b><font face="Helvetica, Arial"
 SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
 height=14 width=15><b><font face="Helvetica, Arial"><font 
 color="#FFFFFF"><font size="+1">
-<a NAME="ackn"></a>Acknowledgements
+<a NAME="disp-ackn"></a>Acknowledgements
 </font></font></font></b></td></tr></table>
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
@@ -11734,7 +11734,7 @@ is used.
 SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
 height=14 width=15><b><font face="Helvetica, Arial"><font 
 color="#FFFFFF"><font size="+1">
-<a NAME="opti-identify"></a>Identify options
+<a NAME="ident-opti"></a>Identify options
 </font></font></font></b></td></tr></table>
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
@@ -11977,7 +11977,7 @@ the screen capture and twice when it completes.
 SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
 height=14 width=15><b><font face="Helvetica, Arial"><font 
 color="#FFFFFF"><font size="+1">
-<a NAME="exam"></a>Examples
+<a NAME="imp-exam"></a>Examples
 </font></font></font></b></td></tr></table>
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
@@ -11985,26 +11985,26 @@ color="#FFFFFF"><font size="+1">
 To select an X window or an area of the screen with the mouse and save it
 in the MIFF image format to a file entitled window.miff, use:
 <pre>
-    import window.miff
+    gm import window.miff
 </pre>
 <p>
 To select an X window or an area of the screen with the mouse and save it
 in the Encapsulated PostScript format to include in another document, use:
 <pre>
-    import figure.eps
+    gm import figure.eps
 </pre>
 <p>
 To capture the entire X server screen in the JPEG image format in a file
 entitled root.jpeg, without using the mouse, use:
 <pre>
-    import -window root root.jpeg
+    gm import -window root root.jpeg
 </pre>
 <p>
 To capture the 512x256 area at the upper right corner of the X server
 screen in the PNG image format in a well-compressed file entitled corner.png,
 without using the mouse,  use:
 <pre>
-    import -window root -crop 512x256-0+0 -quality 90
+    gm import -window root -crop 512x256-0+0 -quality 90
            corner.png
 </pre>
 </td></tr></table>
@@ -12017,7 +12017,7 @@ without using the mouse,  use:
 SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
 height=14 width=15><b><font face="Helvetica, Arial"><font 
 color="#FFFFFF"><font size="+1">
-<a NAME="opti"></a>Options
+<a NAME="imp-opti"></a>Options
 </font></font></font></b></td></tr></table>
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
@@ -12531,19 +12531,19 @@ The graphics formats supported by <strong>mogrify</strong> are listed in
 SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
 height=14 width=15><b><font face="Helvetica, Arial"><font 
 color="#FFFFFF"><font size="+1">
-<a NAME="exam"></a>Examples
+<a NAME="mog-exam"></a>Examples
 </font></font></font></b></td></tr></table>
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
 <p>
 To convert all the TIFF files in a particular directory to JPEG, use:
 <pre>
-    mogrify -format jpeg *.tiff
+    gm mogrify -format jpeg *.tiff
 </pre>
 <p>
 To convert a directory full of JPEG images to thumbnails, use:
 <pre>
-    mogrify -size 120x120 *.jpg -resize 120x120 +profile "*"
+    gm mogrify -size 120x120 *.jpg -resize 120x120 +profile "*"
 </pre>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 In this example, <tt>'-size 120x120'</tt> gives a hint to the JPEG decoder
@@ -12558,7 +12558,7 @@ that might be present in the input and aren't needed in the thumbnails.</font></
 To scale an image of a cockatoo to exactly 640 pixels in width and 480
 pixels in height, use: 
 <pre>
-    mogrify -resize 640x480! cockatoo.miff
+    gm mogrify -resize 640x480! cockatoo.miff
 </pre>
 </td></tr></table>
      <p>
@@ -12570,7 +12570,7 @@ pixels in height, use:
 SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
 height=14 width=15><b><font face="Helvetica, Arial"><font 
 color="#FFFFFF"><font size="+1">
-<a NAME="opti"></a>Options
+<a NAME="mog-opti"></a>Options
 </font></font></font></b></td></tr></table>
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
@@ -13894,7 +13894,7 @@ Options, above.
 SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
 height=14 width=15><b><font face="Helvetica, Arial"><font 
 color="#FFFFFF"><font size="+1">
-<a NAME="segm"></a>Image Segmentation
+<a NAME="mog-segm"></a>Image Segmentation
 </font></font></font></b></td></tr></table>
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
@@ -13959,7 +13959,7 @@ image specified on the command line, except for the last, is scaled to
 fit the maximum tile size. The maximum tile size by default is 120x120.
 It can be modified with the <strong>-geometry</strong> command line argument or X
 resource. See
-<strong><a href="#opti">Options</a></strong>
+<strong><a href="#mont-opti">Options</a></strong>
 for more information on command line arguments. See
 <strong>X(1)</strong> for more information on X resources.
 Note that the maximum tile size need not be a square.
@@ -14019,7 +14019,7 @@ press a button to display it. See <strong>display(1)</strong> and <strong>miff(5
 SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
 height=14 width=15><b><font face="Helvetica, Arial"><font 
 color="#FFFFFF"><font size="+1">
-<a NAME="exam"></a>Examples
+<a NAME=mont-exam"></a>Examples
 </font></font></font></b></td></tr></table>
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
@@ -14027,32 +14027,32 @@ color="#FFFFFF"><font size="+1">
 To create a montage of a cockatoo, a parrot, and a hummingbird and write
 it to a file called birds, use:
 <pre>
-    montage cockatoo.miff parrot.miff hummingbird.miff birds.miff
+    gm montage cockatoo.miff parrot.miff hummingbird.miff birds.miff
 </pre>
 <p>
 To tile several bird images so that they are at most 256 pixels in width
 and 192 pixels in height, surrounded by a red border, and separated by
 10 pixels of background color, use:
 <pre>
-    montage -geometry 256x192+10+10 -bordercolor red birds.* montage.miff
+    gm montage -geometry 256x192+10+10 -bordercolor red birds.* montage.miff
 </pre>
 <p>
 To create an unlabeled parrot image, 640 by 480 pixels, and surrounded
 by a border of black, use:
 <pre>
-    montage -geometry 640x480 -bordercolor black -label "" parrot.miff
+    gm montage -geometry 640x480 -bordercolor black -label "" parrot.miff
 bird.miff
 </pre>
 <p>
 To create an image of an eagle with a textured background, use:
 <pre>
-    montage -texture bumps.jpg eagle.jpg eagle.png
+    gm montage -texture bumps.jpg eagle.jpg eagle.png
 </pre>
 <p>
 To join several GIF images together without any extraneous graphics (e.g.
 no label, no shadowing, no surrounding tile frame), use:
 <pre>
-    montage +frame +shadow +label -tile 5x1 -geometry 50x50+0+0 *.png joined.png
+    gm montage +frame +shadow +label -tile 5x1 -geometry 50x50+0+0 *.png joined.png
 </pre>
 </td></tr></table>
      <p>
@@ -14064,7 +14064,7 @@ no label, no shadowing, no surrounding tile frame), use:
 SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
 height=14 width=15><b><font face="Helvetica, Arial"><font 
 color="#FFFFFF"><font size="+1">
-<a NAME="opti"></a>Options
+<a NAME=mont-opti"></a>Options
 </font></font></font></b></td></tr></table>
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
@@ -14076,7 +14076,7 @@ the first with 32 colors, the second with an unlimited number of colors, and
 the third with only 16 colors, use:
 <br>&nbsp;<br>
 <pre>
-     montage -colors 32 cockatoo.1 -noop cockatoo.2 -colors 16 cockatoo.3
+     gm montage -colors 32 cockatoo.1 -noop cockatoo.2 -colors 16 cockatoo.3
 cockatoos.miff
 </pre>
 <p>
@@ -14845,7 +14845,7 @@ Options, above.
 SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
 height=14 width=15><b><font face="Helvetica, Arial"><font 
 color="#FFFFFF"><font size="+1">
-<a NAME="xres"></a>X Resources
+<a NAME=mont-xres"></a>X Resources
 </font></font></font></b></td></tr></table>
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
@@ -14967,7 +14967,7 @@ image.
 SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
 height=14 width=15><b><font face="Helvetica, Arial"><font 
 color="#FFFFFF"><font size="+1">
-<a NAME="envi"></a>Environment
+<a NAME=mont-envi"></a>Environment
 </font></font></font></b></td></tr></table>
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
@@ -14992,7 +14992,7 @@ width=15><b><font face="Helvetica, Arial"
 SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
 height=14 width=15><b><font face="Helvetica, Arial"><font 
 color="#FFFFFF"><font size="+1">
-<a NAME="ackn"></a>Acknowledgements
+<a NAME=mont-ackn"></a>Acknowledgements
 </font></font></font></b></td></tr></table>
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>

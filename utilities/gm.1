@@ -528,7 +528,7 @@ If a clipping path is present, it will be applied to subsequent operations.
 
 For example, if you type the following command:
 
-     convert -clip -negate cockatoo.tif negated.tif
+     gm convert -clip -negate cockatoo.tif negated.tif
 
 only the pixels within the clipping path are negated.
 
@@ -888,7 +888,7 @@ or \fB+contrast\fP to reduce the image contrast.
 
 For a more pronounced effect you can repeat the option:
 
-    convert rose: -contrast -contrast rose_c2.png
+    gm convert rose: -contrast -contrast rose_c2.png
 .TP
 .B "-convolve \fI<kernel>"\fP
 \fRconvolve image with the specified convolution kernel
@@ -950,7 +950,7 @@ Locale, Render, Resource, Transform,
 X11, or User.
 For example, to log cache and blob events, use
 
-    convert -debug "Cache,Blob" rose: rose.png
+    gm convert -debug "Cache,Blob" rose: rose.png
 
 The "User" domain is normally empty, but developers can log "User" events
 in their private copy of ImageMagick.
@@ -1311,9 +1311,9 @@ or the parentheses from being interpreted by your shell.
 
 For example,
 
-    convert -fill blue ...
-    convert -fill "#ddddff" ...
-    convert -fill "rgb(65000,65000,65535)" ...
+    gm convert -fill blue ...
+    gm convert -fill "#ddddff" ...
+    gm convert -fill "rgb(65000,65000,65535)" ...
 
 The shorter forms are scaled up, if necessary by replication.  For example, 
 #3af, #33aaff, and #3333aaaaffff are all equivalent.
@@ -1883,7 +1883,7 @@ special format characters:
 
 For example:
 
-    convert -debug coders -log "%u %m:%l %e" in.gif out.png
+    gm convert -debug coders -log "%u %m:%l %e" in.gif out.png
 
 The default behavior is to print all of the components.
 .TP
@@ -2256,7 +2256,7 @@ For example, to extract the Exif data (which is stored in JPEG files
 in the \fIAPP1\fP profile), use
 
 
-    convert cockatoo.jpg exifdata.app1
+    gm convert cockatoo.jpg exifdata.app1
 .TP
 .B "-quality \fI<value>"\fP
 \fRJPEG/MIFF/PNG compression level
@@ -2444,11 +2444,11 @@ number.  You
 can change this behavior by embedding a \fB%d, %0Nd, %o, %0No, %x, or %0Nx
 printf\fP format specification in the file name. For example,
 
-    montage -scenes 5-7 image.miff
+    gm montage -scenes 5-7 image.miff
 
 makes a montage of files image.miff.5, image.miff.6, and image.miff.7, and
 
-    animate -scenes 0-12 image%02d.miff
+    gm animate -scenes 0-12 image%02d.miff
 
 animates files image00.miff, image01.miff, through image12.miff.
 .TP
@@ -2668,8 +2668,8 @@ auto-thresholding will be performed.
 To generate an all-black or all-white image with the same dimensions as
 the input image, you can use
 
-    convert -threshold 65535 in.png black.png
-    convert -threshold 0,0 in.png white.png
+    gm convert -threshold 65535 in.png black.png
+    gm convert -threshold 0,0 in.png white.png
 .TP
 .B "-tile \fI<filename>"\fP
 \fRtile image when filling a graphic primitive
@@ -2703,7 +2703,7 @@ This option applies the transformation matrix from a previous
 \fB-affine\fP option.
 
 
-    convert -affine 2,2,-2,2,0,0 -transform bird.ppm bird.jpg
+    gm convert -affine 2,2,-2,2,0,0 -transform bird.ppm bird.jpg
 .TP
 .B "-transparent \fI<color>"\fP
 \fRmake this color transparent within the image
@@ -2752,7 +2752,7 @@ example, to prevent a JPEG from being written in grayscale format even
 though only gray pixels are present, use
 
 
-    convert bird.pgm -type TrueColor bird.jpg
+    gm convert bird.pgm -type TrueColor bird.jpg
 
 Similarly, using -type TrueColorMatte will force the encoder
 to write an alpha channel even though the image is opaque, if the
@@ -2955,20 +2955,20 @@ it eliminates the need to compute a global colormap.
 To animate a set of images of a cockatoo, use:
 
 
-    animate cockatoo.*
+    gm animate cockatoo.*
 
 To animate a cockatoo image sequence while using the Standard Colormap
 \fIbest\fP, use:
 
 
     xstdcmap -best
-    animate -map best cockatoo.*
+    gm animate -map best cockatoo.*
 
 To animate an image of a cockatoo without a border centered on a backdrop,
 use:
 
 
-    animate +borderwidth -backdrop cockatoo.*
+    gm animate +borderwidth -backdrop cockatoo.*
 .SH OPTIONS
 
 For a more detailed description of each option, see
@@ -3137,7 +3137,7 @@ with 32 colors, the second with an unlimited number of colors, and the
 third with only 16 colors, use:
 
 
-     animate -colors 32 cockatoo.1 -noop cockatoo.2
+     gm animate -colors 32 cockatoo.1 -noop cockatoo.2
              -colors 16 cockatoo.3
 
 \fBAnimate\fP options can appear on the command line or in your X resources
@@ -3444,32 +3444,32 @@ matte information.
 
 To composite an image of a cockatoo with a perch, use:
 
-    composite cockatoo.miff perch.ras composite.miff
+    gm composite cockatoo.miff perch.ras composite.miff
 
 To compute the difference between images in a series, use:
 
-    composite -compose difference series.2 series.1
+    gm composite -compose difference series.2 series.1
               difference.miff
 
 To composite an image of a cockatoo with a perch starting at location (100,150),
 use:
 
-    composite -geometry +100+150 cockatoo.miff
+    gm composite -geometry +100+150 cockatoo.miff
               perch.ras composite.miff
 
 To tile a logo across your image of a cockatoo, use
 
-    convert +shade 30x60 cockatoo.miff mask.miff
-    composite -compose bumpmap -tile logo.png
+    gm convert +shade 30x60 cockatoo.miff mask.miff
+    gm composite -compose bumpmap -tile logo.png
               cockatoo.miff mask.miff composite.miff
 
 To composite a red, green, and blue color plane into a single composite image,
 try
 
-    composite -compose CopyGreen green.png red.png
+    gm composite -compose CopyGreen green.png red.png
               red-green.png
-    composite -compose CopyBlue blue.png red-green.png 
-              composite.png
+    gm composite -compose CopyBlue blue.png red-green.png 
+              gm composite.png
 .SH OPTIONS
 
 Options are processed in command line order. Any option you specify on
@@ -3675,7 +3675,7 @@ is an example script:
 invoked with
 
 
-    conjure -dimensions 400x400 incantation.msl
+    gm conjure -dimensions 400x400 incantation.msl
 
 All operations will closely follow the key/value pairs defined in
 PerlMagick, unless otherwise noted.
@@ -4120,7 +4120,7 @@ process. \fBConvert\fP recognizes the image formats listed in
 
 To make a thumbnail of a JPEG image, use:
 
-    convert -size 120x120 cockatoo.jpg -resize 120x120
+    gm convert -size 120x120 cockatoo.jpg -resize 120x120
             +profile "*" thumbnail.jpg
 
 In this example, '-size 120x120' gives a hint to the JPEG decoder
@@ -4134,22 +4134,22 @@ that might be present in the input and aren't needed in the thumbnail.
 
 To convert a \fIMIFF\fP image of a cockatoo to a SUN raster image, use:
 
-    convert cockatoo.miff sun:cockatoo.ras
+    gm convert cockatoo.miff sun:cockatoo.ras
 
 To convert a multi-page \fIPostScript\fP document to individual FAX pages,
 use:
 
-    convert -monochrome document.ps fax:page
+    gm convert -monochrome document.ps fax:page
 
 To convert a TIFF image to a \fIPostScript\fP A4 page with the image in
 the lower left-hand corner, use:
 
-    convert -page A4+0+0 image.tiff document.ps
+    gm convert -page A4+0+0 image.tiff document.ps
 
 To convert a raw Gray image with a 128 byte header to a portable graymap,
 use:
 
-    convert -depth 8 -size 768x512+128 gray:raw
+    gm convert -depth 8 -size 768x512+128 gray:raw
             image.pgm
 
 In this example, "raw" is the input file.  Its format is "gray" and it
@@ -4160,32 +4160,32 @@ specifies its format.
 
 To convert a Photo CD image to a TIFF image, use:
 
-    convert -size 1536x1024 img0009.pcd image.tiff
-    convert img0009.pcd[4] image.tiff
+    gm convert -size 1536x1024 img0009.pcd image.tiff
+    gm convert img0009.pcd[4] image.tiff
 
 To create a visual image directory of all your JPEG images, use:
 
-    convert 'vid:*.jpg' directory.miff
+    gm convert 'vid:*.jpg' directory.miff
 
 To annotate an image with blue text using font 12x24 at position (100,100),
 use:
 
-    convert -font helvetica -fill blue
+    gm convert -font helvetica -fill blue
             -draw "text 100,100 Cockatoo"
             bird.jpg bird.miff
 
 To tile a 640x480 image with a JPEG texture with bumps use:
 
-    convert -size 640x480 tile:bumps.jpg tiled.png
+    gm convert -size 640x480 tile:bumps.jpg tiled.png
 
 To surround an icon with an ornamental border to use with Mosaic(1), use:
 
-    convert -mattecolor "#697B8F" -frame 6x6 bird.jpg
+    gm convert -mattecolor "#697B8F" -frame 6x6 bird.jpg
             icon.png
 
 To create a MNG animation from a DNA molecule sequence, use:
 
-    convert -delay 20 dna.* dna.mng
+    gm convert -delay 20 dna.* dna.mng
 .SH OPTIONS
 
 Options are processed in command line order. Any option you specify on
@@ -4725,34 +4725,34 @@ With \fBdisplay\fP, you can perform these functions on an image:
 To scale an image of a cockatoo to exactly 640 pixels in width and 480
 pixels in height and position the window at location (200,200), use:
 
-    display -geometry 640x480+200+200! cockatoo.miff
+    gm display -geometry 640x480+200+200! cockatoo.miff
 
 To display an image of a cockatoo without a border centered on a backdrop,
 use:
 
-    display +borderwidth -backdrop cockatoo.miff
+    gm display +borderwidth -backdrop cockatoo.miff
 
 To tile a slate texture onto the root window, use:
 
-    display -size 1280x1024 -window root slate.png
+    gm display -size 1280x1024 -window root slate.png
 
 To display a visual image directory of all your JPEG images, use:
 
-    display 'vid:*.jpg'
+    gm display 'vid:*.jpg'
 
 To display a MAP image that is 640 pixels in width and 480 pixels in height
 with 256 colors, use:
 
-    display -size 640x480+256 cockatoo.map
+    gm display -size 640x480+256 cockatoo.map
 
 To display an image of a cockatoo specified with a \fBWorld Wide Web (WWW)\fP
 uniform resource locator \fB(URL)\fP, use:
 
-    display ftp://wizards.dupont.com/images/cockatoo.jpg
+    gm display ftp://wizards.dupont.com/images/cockatoo.jpg
 
 To display histogram of an image, use:
 
-    convert file.jpg HISTOGRAM:- | display -
+    gm convert file.jpg HISTOGRAM:- | display -
 .SH OPTIONS
 
 Options are processed in command line order. Any option you specify on
@@ -4761,7 +4761,7 @@ the option again with a different effect. For example to display three images,
 the first with 32 colors, the second with an unlimited number of colors,
 and the third with only 16 colors, use:
 
-      display -colors 32 cockatoo.miff -noop duck.miff
+      gm display -colors 32 cockatoo.miff -noop duck.miff
               -colors 16 macaw.miff
 
 \fBDisplay\fP options can appear on the command line or in your X resources
@@ -5233,7 +5233,7 @@ For example to display the fourth page preceding the current page, press
     Cmd-A    Press to make any image transformations permanent.
              By default, any image size transformations are
              applied to the original image to create the image
-             displayed on the X server.  However, the
+             gm displayed on the X server.  However, the
              transformations are not permanent (i.e. the original
              image does not change size only the X image does).
              For example, if you press ">" the X image will
@@ -5482,7 +5482,7 @@ are considered a precious resource, use them with discretion.
 To set the geometry of the Magnify or Pan or window, use the geometry resource.
 For example, to set the Pan window geometry to 256x256, use:
 
-    display.pan.geometry: 256x256
+    gm display.pan.geometry: 256x256
 .SH IMAGE LOADING
 
 To select an image to display, choose \fBOpen\fP of the \fBFile\fP sub-menu
@@ -7160,23 +7160,23 @@ the screen capture and twice when it completes.
 To select an X window or an area of the screen with the mouse and save it
 in the MIFF image format to a file entitled window.miff, use:
 
-    import window.miff
+    gm import window.miff
 
 To select an X window or an area of the screen with the mouse and save it
 in the Encapsulated PostScript format to include in another document, use:
 
-    import figure.eps
+    gm import figure.eps
 
 To capture the entire X server screen in the JPEG image format in a file
 entitled root.jpeg, without using the mouse, use:
 
-    import -window root root.jpeg
+    gm import -window root root.jpeg
 
 To capture the 512x256 area at the upper right corner of the X server
 screen in the PNG image format in a well-compressed file entitled corner.png,
 without using the mouse,  use:
 
-    import -window root -crop 512x256-0+0 -quality 90
+    gm import -window root -crop 512x256-0+0 -quality 90
            corner.png
 .SH OPTIONS
 
@@ -7336,11 +7336,11 @@ The graphics formats supported by \fBmogrify\fP are listed in
 
 To convert all the TIFF files in a particular directory to JPEG, use:
 
-    mogrify -format jpeg *.tiff
+    gm mogrify -format jpeg *.tiff
 
 To convert a directory full of JPEG images to thumbnails, use:
 
-    mogrify -size 120x120 *.jpg -resize 120x120 +profile "*"
+    gm mogrify -size 120x120 *.jpg -resize 120x120 +profile "*"
 
 In this example, '-size 120x120' gives a hint to the JPEG decoder
 that the images are going to be downscaled to 120x120, allowing it to run
@@ -7354,7 +7354,7 @@ that might be present in the input and aren't needed in the thumbnails.
 To scale an image of a cockatoo to exactly 640 pixels in width and 480
 pixels in height, use: 
 
-    mogrify -resize 640x480! cockatoo.miff
+    gm mogrify -resize 640x480! cockatoo.miff
 .SH OPTIONS
 
 Options are processed in command line order. Any option you specify on
@@ -7828,30 +7828,30 @@ press a button to display it. See \fBdisplay(1)\fP and \fBmiff(5)\fP
 To create a montage of a cockatoo, a parrot, and a hummingbird and write
 it to a file called birds, use:
 
-    montage cockatoo.miff parrot.miff hummingbird.miff
+    gm montage cockatoo.miff parrot.miff hummingbird.miff
             birds.miff
 
 To tile several bird images so that they are at most 256 pixels in width
 and 192 pixels in height, surrounded by a red border, and separated by
 10 pixels of background color, use:
 
-    montage -geometry 256x192+10+10 -bordercolor red
+    gm montage -geometry 256x192+10+10 -bordercolor red
             birds.* montage.miff
 
 To create an unlabeled parrot image, 640 by 480 pixels, and surrounded
 by a border of black, use:
 
-    montage -geometry 640x480 -bordercolor black
+    gm montage -geometry 640x480 -bordercolor black
             -label "" parrot.miff bird.miff
 
 To create an image of an eagle with a textured background, use:
 
-    montage -texture bumps.jpg eagle.jpg eagle.png
+    gm montage -texture bumps.jpg eagle.jpg eagle.png
 
 To join several GIF images together without any extraneous graphics (e.g.
 no label, no shadowing, no surrounding tile frame), use:
 
-    montage +frame +shadow +label -tile 5x1
+    gm montage +frame +shadow +label -tile 5x1
             -geometry 50x50+0+0 *.png joined.png
 .SH OPTIONS
 
@@ -7862,7 +7862,7 @@ the first with 32 colors, the second with an unlimited number of colors, and
 the third with only 16 colors, use:
 
 
-     montage -colors 32 cockatoo.1 -noop cockatoo.2
+     gm montage -colors 32 cockatoo.1 -noop cockatoo.2
              -colors 16 cockatoo.3 cockatoos.miff
 
 For a more detailed description of each option, see
