@@ -105,11 +105,11 @@ edit=>
 	notepad %o
 
 eps<=>pdf
-	gswin32 -dMaxBitmap=300000000 -sDEVICE=pdfwrite -q -dNOPAUSE -dSAFER \
+	gswin32c -dMaxBitmap=300000000 -sDEVICE=pdfwrite -q -dNOPAUSE -dSAFER \
 	  -sOutputFile="%o" -- "%i" -c quit
 
 eps<=>ps
-	gswin32 -dMaxBitmap=300000000 -sDEVICE=pswrite -q -dNOPAUSE -dSAFER \
+	gswin32c -dMaxBitmap=300000000 -sDEVICE=pswrite -q -dNOPAUSE -dSAFER \
 	  -sOutputFile="%o" -- "%i" -c quit
 
 file=>
@@ -128,12 +128,12 @@ gplt=>
 	gnuplot %u
 
 gs-color=>
-	gswin32 -dMaxBitmap=300000000 -sDEVICE=pnmraw -q -dNOPAUSE -dSAFER \
+	gswin32c -dMaxBitmap=300000000 -sDEVICE=pnmraw -q -dNOPAUSE -dSAFER \
 	  -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g%s -r%s %s \
 	  -sOutputFile="%s" -- "%s" -c quit
 
 gs-mono=>
-	gswin32 -dMaxBitmap=300000000 -sDEVICE=pbmraw -q -dNOPAUSE -dSAFER \
+	gswin32c -dMaxBitmap=300000000 -sDEVICE=pbmraw -q -dNOPAUSE -dSAFER \
 	  -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g%s -r%s %s \
 	  -sOutputFile="%s" -- "%s" -c quit
 
@@ -161,11 +161,11 @@ pcl<=print
 	print %i
 
 pdf<=>eps
-	gswin32 -dMaxBitmap=300000000 -sDEVICE=epswrite -q -dNOPAUSE -dSAFER \
+	gswin32c -dMaxBitmap=300000000 -sDEVICE=epswrite -q -dNOPAUSE -dSAFER \
 	  -sOutputFile="%o" -- "%i" -c quit
 
 pdf<=>ps
-	gswin32 -dMaxBitmap=300000000 -sDEVICE=pswrite -q -dNOPAUSE -dSAFER \
+	gswin32c -dMaxBitmap=300000000 -sDEVICE=pswrite -q -dNOPAUSE -dSAFER \
 	  -sOutputFile="%o" -- "%i" -c quit
 
 pgp=>
@@ -176,11 +176,11 @@ pov=>
 	convert -concatenate %o*.png %o
 
 ps<=>eps
-	gswin32 -dMaxBitmap=300000000 -sDEVICE=epswrite -q -dNOPAUSE -dSAFER \
+	gswin32c -dMaxBitmap=300000000 -sDEVICE=epswrite -q -dNOPAUSE -dSAFER \
 	  -sOutputFile="%o" -- "%i" -c quit
 
 ps<=>pdf
-	gswin32 -dMaxBitmap=300000000 -sDEVICE=pdfwrite -q -dNOPAUSE -dSAFER \
+	gswin32c -dMaxBitmap=300000000 -sDEVICE=pdfwrite -q -dNOPAUSE -dSAFER \
 	  -sOutputFile="%o" -- "%i" -c quit
 
 rad=>
