@@ -848,19 +848,19 @@ static unsigned int RenderType(Image *image,const DrawInfo *draw_info,
 */
 
 static inline PixelPacket AlphaComposite(const PixelPacket *p,
-  const double alpha,const PixelPacket *q,const double beta)
+  const QuantumPrecision alpha,const PixelPacket *q,const QuantumPrecision beta)
 {
   PixelPacket
     composite;
 
   composite.red=(Quantum)
-    (((MaxRGB-alpha)*p->red+alpha*(MaxRGB-beta)*q->red/MaxRGB)/MaxRGB+0.5);
+    (((MaxRGB-alpha)*p->red+alpha*((MaxRGB-beta)*q->red/MaxRGB))/MaxRGB);
   composite.green=(Quantum)
-    (((MaxRGB-alpha)*p->green+alpha*(MaxRGB-beta)*q->green/MaxRGB)/MaxRGB+0.5);
+    (((MaxRGB-alpha)*p->green+alpha*((MaxRGB-beta)*q->green/MaxRGB))/MaxRGB);
   composite.blue=(Quantum)
-    (((MaxRGB-alpha)*p->blue+alpha*(MaxRGB-beta)*q->blue/MaxRGB)/MaxRGB+0.5);
+    (((MaxRGB-alpha)*p->blue+alpha*((MaxRGB-beta)*q->blue/MaxRGB))/MaxRGB);
   composite.opacity=(Quantum)
-    (MaxRGB-((MaxRGB-alpha)+alpha*(MaxRGB-beta)/MaxRGB)+0.5);
+    (MaxRGB-((MaxRGB-alpha)+alpha*((MaxRGB-beta)/MaxRGB)));
   return(composite);
 }
 
@@ -944,9 +944,6 @@ static unsigned int RenderFreetype(Image *image,const DrawInfo *draw_info,
   char
     font[MaxTextExtent];
 
-  double
-    opacity;
-
   DrawInfo
     *clone_info;
 
@@ -1016,6 +1013,9 @@ static unsigned int RenderFreetype(Image *image,const DrawInfo *draw_info,
 
   unsigned int
     active;
+
+  double
+    opacity;
 
   unsigned short
     *encoding;

@@ -430,7 +430,7 @@ static unsigned int Assignment(CubeInfo *cube_info,Image *image)
         cube_info->color.red=q->red;
         cube_info->color.green=q->green;
         cube_info->color.blue=q->blue;
-        cube_info->distance=3.0*(MaxRGB+1)*(MaxRGB+1);
+        cube_info->distance=3.0*((double) MaxRGB+1.0)*((double) MaxRGB+1.0);
         ClosestColor(cube_info,node_info->parent);
         index=(unsigned int) cube_info->color_number;
         for (i=0; i < count; i++)
@@ -601,7 +601,7 @@ static unsigned int Classification(CubeInfo *cube_info,const Image *image,
         if (!ColorMatch(p,p+count))
           break;
       index=MaxTreeDepth-1;
-      bisect=(MaxRGB+1)/2.0;
+      bisect=((double) MaxRGB+1.0)/2.0;
       mid_red=MaxRGB/2.0;
       mid_green=MaxRGB/2.0;
       mid_blue=MaxRGB/2.0;
@@ -1069,7 +1069,7 @@ static unsigned int Dither(CubeInfo *cube_info,Image *image,
           p->color.red=red;
           p->color.green=green;
           p->color.blue=blue;
-          p->distance=3.0*(MaxRGB+1)*(MaxRGB+1);
+          p->distance=3.0*((double) MaxRGB+1.0)*((double) MaxRGB+1.0);
           ClosestColor(p,node_info->parent);
           p->cache[i]=(long) p->color_number;
         }
@@ -1256,7 +1256,7 @@ static CubeInfo *GetCubeInfo(const QuantizeInfo *quantize_info,
   for (i=0; i < ExceptionQueueLength; i++)
   {
     cube_info->weights[ExceptionQueueLength-i-1]=1.0/weight;
-    weight*=exp(log((MaxRGB+1))/(ExceptionQueueLength-1.0));
+    weight*=exp(log(((double) MaxRGB+1.0))/(ExceptionQueueLength-1.0));
   }
   /*
     Normalize the weighting factors.
@@ -1959,9 +1959,9 @@ MagickExport unsigned int QuantizationError(Image *image)
   */
   image->mean_error_per_pixel=total_error/image->columns/image->rows;
   image->normalized_mean_error=image->mean_error_per_pixel/
-    (3.0*(MaxRGB+1)*(MaxRGB+1));
+    (3.0*((double) MaxRGB+1.0)*((double) MaxRGB+1.0));
   image->normalized_maximum_error=maximum_error_per_pixel/
-    (3.0*(MaxRGB+1)*(MaxRGB+1));
+    (3.0*((double) MaxRGB+1.0)*((double) MaxRGB+1.0));
   return(True);
 }
 

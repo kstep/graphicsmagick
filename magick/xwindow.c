@@ -770,7 +770,7 @@ MagickExport void XBestPixel(Display *display,const Colormap colormap,
         number_colors=256;
       (void) XQueryColors(display,colormap,colors,number_colors);
     }
-  min_distance=3.0*(MaxRGB+1)*(MaxRGB+1);
+  min_distance=3.0*((double) MaxRGB+1.0)*((double) MaxRGB+1.0);
   j=0;
   for (i=0; i < (int) number_colors; i++)
   {
@@ -7041,16 +7041,16 @@ MagickExport void XMakeStandardColormap(Display *display,
                 {
                   q->red=0;
                   if (map_info->red_max != 0)
-                    q->red=(Quantum) (((double) MaxRGB*
+                    q->red=(Quantum) (((QuantumPrecision) MaxRGB*
                       (i/map_info->red_mult))/map_info->red_max+0.5);
                   q->green=0;
                   if (map_info->green_max != 0)
-                    q->green=(Quantum) (((double) MaxRGB*
+                    q->green=(Quantum) (((QuantumPrecision) MaxRGB*
                       ((i/map_info->green_mult) % (map_info->green_max+1)))/
                       map_info->green_max+0.5);
                   q->blue=0;
                   if (map_info->blue_max != 0)
-                    q->blue=(Quantum) (((double) MaxRGB*
+                    q->blue=(Quantum) (((QuantumPrecision) MaxRGB*
                       (i % map_info->green_mult))/map_info->blue_max+0.5);
                   q->opacity=TransparentOpacity;
                   q++;

@@ -119,8 +119,9 @@ static unsigned int ExecutePostscriptInterpreter(const unsigned int verbose,
     gs_func_struct;
 
   const GhostscriptVectors
-    *gs_func = &gs_func_struct;
+    *gs_func;
 
+  gs_func=(&gs_func_struct);
   gs_func_struct.exit=gsapi_exit;
   gs_func_struct.init_with_args=gsapi_init_with_args;
   gs_func_struct.new_instance=gsapi_new_instance;
@@ -128,39 +129,35 @@ static unsigned int ExecutePostscriptInterpreter(const unsigned int verbose,
   gs_func_struct.delete_instance=gsapi_delete_instance;
 #elif defined(WIN32)
   const GhostscriptVectors
-    *gs_func = NTGhostscriptDLLVectors();
-#endif
+    *gs_func;
 
+  gs_func=NTGhostscriptDLLVectors();
+#endif
   if (gs_func == (GhostscriptVectors*) NULL)
     {
       if (verbose)
         (void) fputs(command,stdout);
       return(SystemCommand(verbose,command));
     }
-
   if (verbose)
     {
       (void) fputs("gsdll32",stdout);
       (void) fputs(strchr(command,' '),stdout);
     }
-
   status=(gs_func->new_instance)(&interpreter,(void *) NULL);
   if (status < 0)
     return(False);
   argv=StringToArgv(command,&argc);
   status=(gs_func->init_with_args)(interpreter,argc-1,argv+1);
   if (status == 0)
-    status=(gs_func->run_string)(interpreter,"systemdict /start get exec\n",0,&code);
+    status=(gs_func->run_string)(interpreter,
+      "systemdict /start get exec\n",0,&code);
   (gs_func->exit)(interpreter);
   (gs_func->delete_instance)(interpreter);
   for (i=0; i < argc; i++)
     LiberateMemory((void **) &argv[i]);
   LiberateMemory((void **) &argv);
-  /*
-    If gsapi_run_* functions return <= -100, either quit a or a fatal
-    error has occured.  The defined value for e_Quit is -101.
-  */
-  if ((status == 0) || (status == -101 /* e_Quit */))
+  if ((status == 0) || (status == -101))
     return(False);
   return(True);
 
@@ -636,7 +633,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
   (void) WriteBlobString(image,buffer); \
 }
 
-  static const char 
+  static const char
     *PostscriptProlog[]=
     {
       "%%BeginProlog",

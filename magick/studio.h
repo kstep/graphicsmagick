@@ -31,6 +31,9 @@ extern "C" {
 
 #include <stdarg.h>
 #include <stdio.h>
+#if defined(HAVE_INTTYPES_H)
+#  include <inttypes.h>
+#endif
 #if defined(WIN32) && defined(_DEBUG)
 #define _CRTDBG_MAP_ALLOC
 #endif
@@ -245,11 +248,11 @@ extern "C" {
 /*
   3D effects.
 */
-#define AccentuateModulate  ScaleCharToQuantum(80)
-#define HighlightModulate  ScaleCharToQuantum(125)
-#define ShadowModulate  ScaleCharToQuantum(135)
-#define DepthModulate  ScaleCharToQuantum(185)
-#define TroughModulate  ScaleCharToQuantum(110)
+#define AccentuateModulate  ((QuantumPrecision) ScaleCharToQuantum(80))
+#define HighlightModulate  ((QuantumPrecision) ScaleCharToQuantum(125))
+#define ShadowModulate  ((QuantumPrecision) ScaleCharToQuantum(135))
+#define DepthModulate  ((QuantumPrecision) ScaleCharToQuantum(185))
+#define TroughModulate  ((QuantumPrecision) ScaleCharToQuantum(110))
 
 /*
   Define system symbols if not already defined.

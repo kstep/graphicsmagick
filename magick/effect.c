@@ -1095,17 +1095,17 @@ MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
 #define Enhance(weight) \
   mean=(long) (r->red+pixel.red)/2; \
   distance=r->red-(double) pixel.red; \
-  distance_squared=(2.0*(MaxRGB+1)+mean)*distance*distance/MaxRGB; \
+  distance_squared=(2.0*((double) MaxRGB+1.0)+mean)*distance*distance/MaxRGB; \
   mean=(long) (r->green+pixel.green)/2; \
   distance=r->green-(double) pixel.green; \
   distance_squared+=4.0*distance*distance; \
   mean=(long) (r->blue+pixel.blue)/2; \
   distance=r->blue-(double) pixel.blue; \
-  distance_squared+=(3.0*(MaxRGB+1)-1.0-mean)*distance*distance/MaxRGB; \
+  distance_squared+=(3.0*((double) MaxRGB+1.0)-1.0-mean)*distance*distance/MaxRGB; \
   mean=(long) (r->opacity+pixel.opacity)/2; \
   distance=r->opacity-(double) pixel.opacity; \
-  distance_squared+=(3.0*(MaxRGB+1)-1.0-mean)*distance*distance/MaxRGB; \
-  if (distance_squared < ((double) MaxRGB*MaxRGB/25.0)) \
+  distance_squared+=(3.0*((double) MaxRGB+1.0)-1.0-mean)*distance*distance/MaxRGB; \
+  if (distance_squared < ((QuantumPrecision) MaxRGB*MaxRGB/25.0)) \
     { \
       aggregate.red+=(weight)*r->red; \
       aggregate.green+=(weight)*r->green; \
@@ -2683,9 +2683,9 @@ MagickExport Image *ShadeImage(const Image *image,
   */
   azimuth=DegreesToRadians(azimuth);
   elevation=DegreesToRadians(elevation);
-  light.x=(double) MaxRGB*cos(azimuth)*cos(elevation);
-  light.y=(double) MaxRGB*sin(azimuth)*cos(elevation);
-  light.z=(double) MaxRGB*sin(elevation);
+  light.x=(QuantumPrecision) MaxRGB*cos(azimuth)*cos(elevation);
+  light.y=(QuantumPrecision) MaxRGB*sin(azimuth)*cos(elevation);
+  light.z=(QuantumPrecision) MaxRGB*sin(elevation);
   normal.z=2.0*MaxRGB;  /* constant Z of surface normal */
   /*
     Shade image.
@@ -2707,12 +2707,12 @@ MagickExport Image *ShadeImage(const Image *image,
       /*
         Determine the surface normal and compute shading.
       */
-      normal.x=PixelIntensity(s0-1)+PixelIntensity(s1-1)+PixelIntensity(s2-1)-
-        (double) PixelIntensity(s0+1)-(double) PixelIntensity(s1+1)-
-        (double) PixelIntensity(s2+1);
-      normal.y=PixelIntensity(s2-1)+PixelIntensity(s2)+PixelIntensity(s2+1)-
-        (double) PixelIntensity(s0-1)-(double) PixelIntensity(s0)-
-        (double) PixelIntensity(s0+1);
+      normal.x=(double) PixelIntensity(s0-1)+(double) PixelIntensity(s1-1)+
+        (double) PixelIntensity(s2-1)-(double) PixelIntensity(s0+1)-
+        (double) PixelIntensity(s1+1)-(double) PixelIntensity(s2+1);
+      normal.y=(double) PixelIntensity(s2-1)+(double) PixelIntensity(s2)+
+        (double) PixelIntensity(s2+1)-(double) PixelIntensity(s0-1)-
+        (double) PixelIntensity(s0)-(double) PixelIntensity(s0+1);
       if ((normal.x == 0.0) && (normal.y == 0.0))
         shade=light.z;
       else

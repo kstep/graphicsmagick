@@ -31,7 +31,7 @@ testRead( 'input.ttf',
 print("Draw text using font ...\n");
 $infile = 'input.ttf';
 $md5    = 'f85f556f418a80a8e30bd01254b1735fa4b730174706ddab39e676014e69e1ee';
-$md5_16 = '025882a03b92779d6d37bb38ae55cfd8522aa2b801ee60d02d90fe989b7ff0b4';
+$md5_16 = 'd6d3fe1140984b60ae545394e72cade03faf639086b6f264b708f5c51419fd24';
 
 $image=Image::Magick->new;
 $status=$image->Set(font=>"\@$infile", pen=>'#0000FF', pointsize=>14);
@@ -68,7 +68,7 @@ undef $image;
 print("Draw text using annotate ...\n");
 $infile = 'input.ttf';
 $md5    = 'ebda8f8d290e9d77a3016b1c829aeb38d4830ad99a27069ea7fac87485206411';
-$md5_16 = '0b7bac508473eac587e39da285ae9540d2769263ac1d89dc00c9557a80a3c4e1';
+$md5_16 = 'eeca51a05a87b2b251500c38255f8c80aa368ac6255fe08914dcd2dbb451028c';
 
 $image=Image::Magick->new;
 $status = $image->Set(size=>'330x30');

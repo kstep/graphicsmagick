@@ -486,24 +486,14 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
 */
 
 static inline PixelPacket BlendComposite(const PixelPacket *p,
-  const PixelPacket *q,const double alpha)
+  const PixelPacket *q,const QuantumPrecision alpha)
 {
-  double
-    color;
-
   PixelPacket
     composite;
 
-  color=(double) (p->red*(MaxRGB-alpha)+q->red*alpha)/MaxRGB;
-  composite.red=(Quantum)
-    ((color < 0) ? 0 : (color > MaxRGB) ? MaxRGB : color+0.5);
-  color=(double) (p->green*(MaxRGB-alpha)+q->green*alpha)/MaxRGB;
-  composite.green=(Quantum)
-    ((color < 0) ? 0 : (color > MaxRGB) ? MaxRGB : color+0.5);
-  color=(double) (p->blue*(MaxRGB-alpha)+q->blue*alpha)/MaxRGB;
-  composite.blue=(Quantum)
-    ((color < 0) ? 0 : (color > MaxRGB) ? MaxRGB : color+0.5);
-  color=(double) (p->opacity*(MaxRGB-alpha)+q->opacity*alpha)/MaxRGB;
+  composite.red=(Quantum) ((p->red*(MaxRGB-alpha)+q->red*alpha)/MaxRGB);
+  composite.green=(Quantum) ((p->green*(MaxRGB-alpha)+q->green*alpha)/MaxRGB);
+  composite.blue=(Quantum) ((p->blue*(MaxRGB-alpha)+q->blue*alpha)/MaxRGB);
   composite.opacity=p->opacity;
   return(composite);
 }
@@ -551,7 +541,7 @@ static void XShearImage(Image *image,const double degrees,
         direction=LEFT;
       }
     step=(long) floor(displacement+0.5);
-    alpha=(double) MaxRGB*(displacement-step);
+    alpha=(QuantumPrecision) MaxRGB*(displacement-step);
     if (alpha == 0.0)
       {
         /*
@@ -742,7 +732,7 @@ static void YShearImage(Image *image,const double degrees,
         direction=UP;
       }
     step=(long) floor(displacement+0.5);
-    alpha=(double) MaxRGB*(displacement-step);
+    alpha=(QuantumPrecision) MaxRGB*(displacement-step);
     if (alpha == 0.0)
       {
         /*
