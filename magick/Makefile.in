@@ -1,6 +1,6 @@
-# Makefile.in generated automatically by automake 1.4a from Makefile.am
+# Makefile.in generated automatically by automake 1.5 from Makefile.am.
 
-# Copyright 1994, 1995, 1996, 1997, 1998, 1999, 2000
+# Copyright 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001
 # Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
@@ -10,6 +10,39 @@
 # but WITHOUT ANY WARRANTY, to the extent permitted by law; without
 # even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE.
+
+@SET_MAKE@
+
+#  Makefile for building ImageMagick library
+#
+# Copyright (C) 2001 ImageMagick Studio, a non-profit organization dedicated
+# to making software imaging solutions freely available.
+#
+# Permission is hereby granted, free of charge, to any person obtaining a
+# copy of this software and associated documentation files ("ImageMagick"),
+# to deal in ImageMagick without restriction, including without limitation
+# the rights to use, copy, modify, merge, publish, distribute, sublicense
+# and/or sell copies of ImageMagick, and to permit persons to whom the
+# ImageMagick is furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of ImageMagick.
+#
+# The software is provided "as is", without warranty of any kind, express or
+# implied, including but not limited to the warranties of merchantability,
+# fitness for a particular purpose and noninfringement.  In no event shall
+# ImageMagick Studio be liable for any claim, damages or other liability,
+# whether in an action of contract, tort or otherwise, arising from, out of
+# or in connection with ImageMagick or the use or other dealings in
+# ImageMagick.
+#
+# Except as contained in this notice, the name of the ImageMagick Studio
+# shall not be used in advertising or otherwise to promote the sale, use or
+# other dealings in ImageMagick without prior written authorization from the
+# ImageMagick Studio.
+#
+
+# Don't require all the GNU mandated files
 
 SHELL = @SHELL@
 
@@ -31,11 +64,9 @@ infodir = @infodir@
 mandir = @mandir@
 includedir = @includedir@
 oldincludedir = /usr/include
-
 pkgdatadir = $(datadir)/@PACKAGE@
 pkglibdir = $(libdir)/@PACKAGE@
 pkgincludedir = $(includedir)/@PACKAGE@
-
 top_builddir = ..
 
 ACLOCAL = @ACLOCAL@
@@ -47,24 +78,20 @@ INSTALL = @INSTALL@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
-INSTALL_STRIP_FLAG =
+INSTALL_HEADER = $(INSTALL_DATA)
 transform = @program_transform_name@
-
 NORMAL_INSTALL = :
 PRE_INSTALL = :
 POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
-
-@SET_MAKE@
 build_alias = @build_alias@
 build_triplet = @build@
 host_alias = @host_alias@
 host_triplet = @host@
 target_alias = @target_alias@
 target_triplet = @target@
-AMDEP = @AMDEP@
 AMTAR = @AMTAR@
 AS = @AS@
 AWK = @AWK@
@@ -100,6 +127,7 @@ HTMLDecodeDelegate = @HTMLDecodeDelegate@
 ILBMDecodeDelegate = @ILBMDecodeDelegate@
 ILBMEncodeDelegate = @ILBMEncodeDelegate@
 INCLTDL = @INCLTDL@
+INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
 LD = @LD@
 LIBLTDL = @LIBLTDL@
 LIBSTDC_LDFLAGS = @LIBSTDC_LDFLAGS@
@@ -134,11 +162,7 @@ LZWEncodeDelegate = @LZWEncodeDelegate@
 LaunchDelegate = @LaunchDelegate@
 MAGICKLIB = @MAGICKLIB@
 MAINT = @MAINT@
-MAJOR_VERSION = @MAJOR_VERSION@
-MAKEINFO = @MAKEINFO@
 MANDelegate = @MANDelegate@
-MICRO_VERSION = @MICRO_VERSION@
-MINOR_VERSION = @MINOR_VERSION@
 MPEGDecodeDelegate = @MPEGDecodeDelegate@
 MPEGEncodeDelegate = @MPEGEncodeDelegate@
 MVDelegate = @MVDelegate@
@@ -166,50 +190,23 @@ WMFDecodeDelegate = @WMFDecodeDelegate@
 WWWDecodeDelegate = @WWWDecodeDelegate@
 XCFDecodeDelegate = @XCFDecodeDelegate@
 X_CFLAGS = @X_CFLAGS@
+X_EXTRA_LIBS = @X_EXTRA_LIBS@
+X_LIBS = @X_LIBS@
+X_PRE_LIBS = @X_PRE_LIBS@
 ZipDelegate = @ZipDelegate@
+am__include = @am__include@
+am__quote = @am__quote@
 freetype_config = @freetype_config@
 install_sh = @install_sh@
 
-#  Makefile for building ImageMagick library
-#
-# Copyright (C) 2001 ImageMagick Studio, a non-profit organization dedicated
-# to making software imaging solutions freely available.
-#
-# Permission is hereby granted, free of charge, to any person obtaining a
-# copy of this software and associated documentation files ("ImageMagick"),
-# to deal in ImageMagick without restriction, including without limitation
-# the rights to use, copy, modify, merge, publish, distribute, sublicense
-# and/or sell copies of ImageMagick, and to permit persons to whom the
-# ImageMagick is furnished to do so, subject to the following conditions:
-#
-# The above copyright notice and this permission notice shall be included in
-# all copies or substantial portions of ImageMagick.
-#
-# The software is provided "as is", without warranty of any kind, express or
-# implied, including but not limited to the warranties of merchantability,
-# fitness for a particular purpose and noninfringement.  In no event shall
-# ImageMagick Studio be liable for any claim, damages or other liability,
-# whether in an action of contract, tort or otherwise, arising from, out of
-# or in connection with ImageMagick or the use or other dealings in
-# ImageMagick.
-#
-# Except as contained in this notice, the name of the ImageMagick Studio
-# shall not be used in advertising or otherwise to promote the sale, use or
-# other dealings in ImageMagick without prior written authorization from the
-# ImageMagick Studio.
-#
-
-# Don't require all the GNU mandated files
-
+MAJOR_VERSION = @MAJOR_VERSION@
+MICRO_VERSION = @MICRO_VERSION@
+MINOR_VERSION = @MINOR_VERSION@
 
 AUTOMAKE_OPTIONS = 1.4 foreign
 
 # Shared libraries built in this directory
 lib_LTLIBRARIES = libMagick.la
-
-MAJOR_VERSION = @MAJOR_VERSION@
-MINOR_VERSION = @MINOR_VERSION@
-MICRO_VERSION = @MICRO_VERSION@
 
 BUILT_SOURCES = config.h
 
@@ -227,15 +224,19 @@ MAGICK_BASE_SRCS = PreRvIcccm.c animate.c annotate.c attribute.c blob.c \
   quantize.c segment.c shear.c signature.c static.c stream.c timer.c transform.c \
   type.c utility.c widget.c xwindow.c zoom.c
 
-@WITH_MODULES_TRUE@libMagick_la_SOURCES = @WITH_MODULES_TRUE@$(MAGICK_BASE_SRCS)
-@WITH_MODULES_FALSE@libMagick_la_SOURCES = @WITH_MODULES_FALSE@$(MAGICK_BASE_SRCS)
-@WITH_MODULES_TRUE@libMagick_la_LIBADD = @WITH_MODULES_TRUE@@LIB_LCMS@ @LIB_TIFF@ @LIB_XML@ @LIB_TTF@ @LIB_JPEG@ @LIB_GS@ @LIB_XEXT@ @LIB_XT@ \
+
+# Library sources
+@WITH_MODULES_TRUE@libMagick_la_SOURCES = $(MAGICK_BASE_SRCS)
+@WITH_MODULES_FALSE@libMagick_la_SOURCES = $(MAGICK_BASE_SRCS)
+@WITH_MODULES_TRUE@libMagick_la_LIBADD = @LIB_LCMS@ @LIB_TIFF@ @LIB_XML@ @LIB_TTF@ @LIB_JPEG@ @LIB_GS@ @LIB_XEXT@ @LIB_XT@ \
 @WITH_MODULES_TRUE@  @LIB_X11@ @LIB_ZLIB@ @LIB_THREAD@ @LIB_LF@ \
 @WITH_MODULES_TRUE@  @LIB_MATH@ $(top_builddir)/ltdl/libltdlc.la
-@WITH_MODULES_FALSE@libMagick_la_LIBADD = @WITH_MODULES_FALSE@../coders/libCoders.la @LIB_JBIG@ @LIB_HDF@ \
+
+@WITH_MODULES_FALSE@libMagick_la_LIBADD = ../coders/libCoders.la @LIB_JBIG@ @LIB_HDF@ \
 @WITH_MODULES_FALSE@  @LIB_LCMS@ @LIB_TIFF@ @LIB_TTF@ @LIB_JP2@ @LIB_JPEG@ @LIB_GS@ @LIB_PNG@ \
 @WITH_MODULES_FALSE@  @LIB_FPX@ @LIB_WMF@ @LIB_DPS@ @LIB_XEXT@ @LIB_XT@ @LIB_X11@ @LIB_BZLIB@ \
 @WITH_MODULES_FALSE@  @LIB_XML@ @LIB_ZLIB@ @LIB_THREAD@ @LIB_LF@ @LIB_MATH@
+
 
 # Binary scripts
 bin_SCRIPTS = Magick-config
@@ -271,89 +272,103 @@ DEFS = @DEFS@ -I../
 subdir = magick
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = config.h
-CONFIG_CLEAN_FILES =  Magick-config
-LTLIBRARIES =  $(lib_LTLIBRARIES)
+CONFIG_CLEAN_FILES = Magick-config
+LTLIBRARIES = $(lib_LTLIBRARIES)
 
+@WITH_MODULES_TRUE@libMagick_la_DEPENDENCIES = \
+@WITH_MODULES_TRUE@	$(top_builddir)/ltdl/libltdlc.la
+@WITH_MODULES_FALSE@libMagick_la_DEPENDENCIES = ../coders/libCoders.la
+@WITH_MODULES_TRUE@am_libMagick_la_OBJECTS = PreRvIcccm.lo animate.lo \
+@WITH_MODULES_TRUE@	annotate.lo attribute.lo blob.lo cache.lo \
+@WITH_MODULES_TRUE@	cache_view.lo color.lo compress.lo \
+@WITH_MODULES_TRUE@	constitute.lo decorate.lo delegate.lo \
+@WITH_MODULES_TRUE@	display.lo draw.lo effect.lo enhance.lo \
+@WITH_MODULES_TRUE@	error.lo gem.lo image.lo semaphore.lo \
+@WITH_MODULES_TRUE@	magic.lo magick.lo memory.lo module.lo \
+@WITH_MODULES_TRUE@	monitor.lo montage.lo quantize.lo segment.lo \
+@WITH_MODULES_TRUE@	shear.lo signature.lo static.lo stream.lo \
+@WITH_MODULES_TRUE@	timer.lo transform.lo type.lo utility.lo \
+@WITH_MODULES_TRUE@	widget.lo xwindow.lo zoom.lo
+@WITH_MODULES_FALSE@am_libMagick_la_OBJECTS = PreRvIcccm.lo animate.lo \
+@WITH_MODULES_FALSE@	annotate.lo attribute.lo blob.lo cache.lo \
+@WITH_MODULES_FALSE@	cache_view.lo color.lo compress.lo \
+@WITH_MODULES_FALSE@	constitute.lo decorate.lo delegate.lo \
+@WITH_MODULES_FALSE@	display.lo draw.lo effect.lo enhance.lo \
+@WITH_MODULES_FALSE@	error.lo gem.lo image.lo semaphore.lo \
+@WITH_MODULES_FALSE@	magic.lo magick.lo memory.lo module.lo \
+@WITH_MODULES_FALSE@	monitor.lo montage.lo quantize.lo \
+@WITH_MODULES_FALSE@	segment.lo shear.lo signature.lo static.lo \
+@WITH_MODULES_FALSE@	stream.lo timer.lo transform.lo type.lo \
+@WITH_MODULES_FALSE@	utility.lo widget.lo xwindow.lo zoom.lo
+libMagick_la_OBJECTS = $(am_libMagick_la_OBJECTS)
+SCRIPTS = $(bin_SCRIPTS)
+
+DEFAULT_INCLUDES =  -I. -I$(srcdir) -I.
 CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
-X_LIBS = @X_LIBS@
-X_EXTRA_LIBS = @X_EXTRA_LIBS@
-X_PRE_LIBS = @X_PRE_LIBS@
-@WITH_MODULES_FALSE@libMagick_la_DEPENDENCIES =  ../coders/libCoders.la
-@WITH_MODULES_TRUE@libMagick_la_DEPENDENCIES =  \
-@WITH_MODULES_TRUE@$(top_builddir)/ltdl/libltdlc.la
-@WITH_MODULES_FALSE@am_libMagick_la_OBJECTS =  PreRvIcccm.lo animate.lo \
-@WITH_MODULES_FALSE@annotate.lo attribute.lo blob.lo cache.lo \
-@WITH_MODULES_FALSE@cache_view.lo color.lo compress.lo constitute.lo \
-@WITH_MODULES_FALSE@decorate.lo delegate.lo display.lo draw.lo \
-@WITH_MODULES_FALSE@effect.lo enhance.lo error.lo gem.lo image.lo \
-@WITH_MODULES_FALSE@semaphore.lo magic.lo magick.lo memory.lo module.lo \
-@WITH_MODULES_FALSE@monitor.lo montage.lo quantize.lo segment.lo \
-@WITH_MODULES_FALSE@shear.lo signature.lo static.lo stream.lo timer.lo \
-@WITH_MODULES_FALSE@transform.lo type.lo utility.lo widget.lo \
-@WITH_MODULES_FALSE@xwindow.lo zoom.lo
-@WITH_MODULES_TRUE@am_libMagick_la_OBJECTS =  PreRvIcccm.lo animate.lo \
-@WITH_MODULES_TRUE@annotate.lo attribute.lo blob.lo cache.lo \
-@WITH_MODULES_TRUE@cache_view.lo color.lo compress.lo constitute.lo \
-@WITH_MODULES_TRUE@decorate.lo delegate.lo display.lo draw.lo effect.lo \
-@WITH_MODULES_TRUE@enhance.lo error.lo gem.lo image.lo semaphore.lo \
-@WITH_MODULES_TRUE@magic.lo magick.lo memory.lo module.lo monitor.lo \
-@WITH_MODULES_TRUE@montage.lo quantize.lo segment.lo shear.lo \
-@WITH_MODULES_TRUE@signature.lo static.lo stream.lo timer.lo transform.lo type.lo \
-@WITH_MODULES_TRUE@utility.lo widget.lo xwindow.lo zoom.lo
-libMagick_la_OBJECTS =  $(am_libMagick_la_OBJECTS)
-SCRIPTS =  $(bin_SCRIPTS)
-
-COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
-LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
-CFLAGS = @CFLAGS@
+depcomp = $(SHELL) $(top_srcdir)/depcomp
+@AMDEP_TRUE@DEP_FILES = $(DEPDIR)/PreRvIcccm.Plo $(DEPDIR)/animate.Plo \
+@AMDEP_TRUE@	$(DEPDIR)/annotate.Plo $(DEPDIR)/attribute.Plo \
+@AMDEP_TRUE@	$(DEPDIR)/blob.Plo $(DEPDIR)/cache.Plo \
+@AMDEP_TRUE@	$(DEPDIR)/cache_view.Plo $(DEPDIR)/color.Plo \
+@AMDEP_TRUE@	$(DEPDIR)/compress.Plo $(DEPDIR)/constitute.Plo \
+@AMDEP_TRUE@	$(DEPDIR)/decorate.Plo $(DEPDIR)/delegate.Plo \
+@AMDEP_TRUE@	$(DEPDIR)/display.Plo $(DEPDIR)/draw.Plo \
+@AMDEP_TRUE@	$(DEPDIR)/effect.Plo $(DEPDIR)/enhance.Plo \
+@AMDEP_TRUE@	$(DEPDIR)/error.Plo $(DEPDIR)/gem.Plo \
+@AMDEP_TRUE@	$(DEPDIR)/image.Plo $(DEPDIR)/magic.Plo \
+@AMDEP_TRUE@	$(DEPDIR)/magick.Plo $(DEPDIR)/memory.Plo \
+@AMDEP_TRUE@	$(DEPDIR)/module.Plo $(DEPDIR)/monitor.Plo \
+@AMDEP_TRUE@	$(DEPDIR)/montage.Plo $(DEPDIR)/quantize.Plo \
+@AMDEP_TRUE@	$(DEPDIR)/segment.Plo $(DEPDIR)/semaphore.Plo \
+@AMDEP_TRUE@	$(DEPDIR)/shear.Plo $(DEPDIR)/signature.Plo \
+@AMDEP_TRUE@	$(DEPDIR)/static.Plo $(DEPDIR)/stream.Plo \
+@AMDEP_TRUE@	$(DEPDIR)/timer.Plo $(DEPDIR)/transform.Plo \
+@AMDEP_TRUE@	$(DEPDIR)/type.Plo $(DEPDIR)/utility.Plo \
+@AMDEP_TRUE@	$(DEPDIR)/widget.Plo $(DEPDIR)/xwindow.Plo \
+@AMDEP_TRUE@	$(DEPDIR)/zoom.Plo
+COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
+	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) \
+	$(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
-LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
-DIST_SOURCES =  $(libMagick_la_SOURCES)
-man1dir = $(mandir)/man1
-MANS = $(man_MANS)
+LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
+	$(AM_LDFLAGS) $(LDFLAGS) -o $@
+CFLAGS = @CFLAGS@
+DIST_SOURCES = $(libMagick_la_SOURCES)
 
 NROFF = nroff
-DATA =  $(pkg_DATA) $(pkgdata_DATA)
+MANS = $(man_MANS)
+DATA = $(pkg_DATA) $(pkgdata_DATA)
 
-HEADERS =  $(include_HEADERS) $(noinst_HEADERS)
+HEADERS = $(include_HEADERS) $(noinst_HEADERS)
 
-depcomp = $(SHELL) $(top_srcdir)/depcomp
-DEP_FILES =  @AMDEP@ $(DEPDIR)/PreRvIcccm.Plo $(DEPDIR)/animate.Plo \
-$(DEPDIR)/annotate.Plo $(DEPDIR)/attribute.Plo $(DEPDIR)/blob.Plo \
-$(DEPDIR)/cache.Plo $(DEPDIR)/cache_view.Plo $(DEPDIR)/color.Plo \
-$(DEPDIR)/compress.Plo $(DEPDIR)/constitute.Plo $(DEPDIR)/decorate.Plo \
-$(DEPDIR)/delegate.Plo $(DEPDIR)/display.Plo $(DEPDIR)/draw.Plo \
-$(DEPDIR)/effect.Plo $(DEPDIR)/enhance.Plo $(DEPDIR)/error.Plo \
-$(DEPDIR)/gem.Plo $(DEPDIR)/image.Plo $(DEPDIR)/magic.Plo \
-$(DEPDIR)/magick.Plo $(DEPDIR)/memory.Plo $(DEPDIR)/module.Plo \
-$(DEPDIR)/monitor.Plo $(DEPDIR)/montage.Plo $(DEPDIR)/quantize.Plo \
-$(DEPDIR)/segment.Plo $(DEPDIR)/semaphore.Plo $(DEPDIR)/shear.Plo \
-$(DEPDIR)/signature.Plo $(DEPDIR)/static.Plo $(DEPDIR)/stream.Plo $(DEPDIR)/timer.Plo \
-$(DEPDIR)/transform.Plo $(DEPDIR)/type.Plo $(DEPDIR)/utility.Plo \
-$(DEPDIR)/widget.Plo $(DEPDIR)/xwindow.Plo $(DEPDIR)/zoom.Plo
-DIST_COMMON =  $(include_HEADERS) $(noinst_HEADERS) ./stamp-h.in \
-Magick-config.in Makefile.am Makefile.in config.h.in
-
-
-DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
-
-GZIP_ENV = --best
+DIST_COMMON = $(include_HEADERS) $(noinst_HEADERS) ./stamp-h.in \
+	Magick-config.in Makefile.am Makefile.in config.h.in
 SOURCES = $(libMagick_la_SOURCES)
-OBJECTS = $(am_libMagick_la_OBJECTS)
 
-all: all-redirect
+all: $(BUILT_SOURCES) config.h
+	$(MAKE) $(AM_MAKEFLAGS) all-am
+
 .SUFFIXES:
 .SUFFIXES: .c .lo .o .obj
-$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
-	cd $(top_srcdir) && $(AUTOMAKE) --foreign magick/Makefile
 
-Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
-	cd $(top_builddir) \
-	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
+mostlyclean-libtool:
+	-rm -f *.lo
 
+clean-libtool:
+	-rm -rf .libs _libs
 
+distclean-libtool:
+	-rm -f libtool
+$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am  $(top_srcdir)/configure.in $(ACLOCAL_M4)
+	cd $(top_srcdir) && \
+	  $(AUTOMAKE) --foreign  magick/Makefile
+Makefile: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.in  $(top_builddir)/config.status
+	cd $(top_builddir) && \
+	  CONFIG_HEADERS= CONFIG_LINKS= \
+	  CONFIG_FILES=$(subdir)/$@ $(SHELL) ./config.status
 config.h: stamp-h
 	@if test ! -f $@; then \
 		rm -f stamp-h; \
@@ -366,7 +381,7 @@ stamp-h: $(srcdir)/config.h.in $(top_builddir)/config.status
 	  && CONFIG_FILES= CONFIG_HEADERS=magick/config.h \
 	     $(SHELL) ./config.status
 	@mv stamp-hT stamp-h
-$(srcdir)/config.h.in: @MAINTAINER_MODE_TRUE@$(srcdir)/./stamp-h.in
+$(srcdir)/config.h.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/./stamp-h.in
 	@if test ! -f $@; then \
 		rm -f $(srcdir)/./stamp-h.in; \
 		$(MAKE) $(srcdir)/./stamp-h.in; \
@@ -377,67 +392,31 @@ $(srcdir)/./stamp-h.in: $(top_srcdir)/configure.in $(ACLOCAL_M4) $(top_srcdir)/a
 	cd $(top_srcdir) && $(AUTOHEADER)
 	@mv $(srcdir)/./stamp-h.inT $(srcdir)/./stamp-h.in
 
-mostlyclean-hdr:
-
-clean-hdr:
-
 distclean-hdr:
 	-rm -f config.h
-
-maintainer-clean-hdr:
 Magick-config: $(top_builddir)/config.status Magick-config.in
-	cd $(top_builddir) && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
-
-mostlyclean-libLTLIBRARIES:
-
-clean-libLTLIBRARIES:
-	-test -z "$(lib_LTLIBRARIES)" || rm -f $(lib_LTLIBRARIES)
-
-distclean-libLTLIBRARIES:
-
-maintainer-clean-libLTLIBRARIES:
-
+	cd $(top_builddir) && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= CONFIG_LINKS= $(SHELL) ./config.status
 install-libLTLIBRARIES: $(lib_LTLIBRARIES)
 	@$(NORMAL_INSTALL)
 	$(mkinstalldirs) $(DESTDIR)$(libdir)
 	@list='$(lib_LTLIBRARIES)'; for p in $$list; do \
 	  if test -f $$p; then \
-	    echo " $(LIBTOOL)  --mode=install $(INSTALL) $(INSTALL_STRIP_FLAG) $$p $(DESTDIR)$(libdir)/$$p"; \
-	    $(LIBTOOL)  --mode=install $(INSTALL) $(INSTALL_STRIP_FLAG) $$p $(DESTDIR)$(libdir)/$$p; \
+	    echo " $(LIBTOOL) --mode=install $(INSTALL) $(INSTALL_STRIP_FLAG) $$p $(DESTDIR)$(libdir)/$$p"; \
+	    $(LIBTOOL) --mode=install $(INSTALL) $(INSTALL_STRIP_FLAG) $$p $(DESTDIR)$(libdir)/$$p; \
 	  else :; fi; \
 	done
 
 uninstall-libLTLIBRARIES:
 	@$(NORMAL_UNINSTALL)
 	@list='$(lib_LTLIBRARIES)'; for p in $$list; do \
-	  echo " $(LIBTOOL)  --mode=uninstall rm -f $(DESTDIR)$(libdir)/$$p"; \
-	  $(LIBTOOL)  --mode=uninstall rm -f $(DESTDIR)$(libdir)/$$p; \
+	  echo " $(LIBTOOL) --mode=uninstall rm -f $(DESTDIR)$(libdir)/$$p"; \
+	  $(LIBTOOL) --mode=uninstall rm -f $(DESTDIR)$(libdir)/$$p; \
 	done
 
-mostlyclean-compile:
-	-rm -f *.o core *.core
-	-rm -f *.$(OBJEXT)
-
-clean-compile:
-
-distclean-compile:
-	-rm -f *.tab.c
-
-maintainer-clean-compile:
-
-mostlyclean-libtool:
-	-rm -f *.lo
-
-clean-libtool:
-	-rm -rf .libs _libs
-
-distclean-libtool:
-
-maintainer-clean-libtool:
-
-libMagick.la: $(libMagick_la_OBJECTS) $(libMagick_la_DEPENDENCIES)
+clean-libLTLIBRARIES:
+	-test -z "$(lib_LTLIBRARIES)" || rm -f $(lib_LTLIBRARIES)
+libMagick.la: $(libMagick_la_OBJECTS) $(libMagick_la_DEPENDENCIES) 
 	$(LINK) -rpath $(libdir) $(libMagick_la_LDFLAGS) $(libMagick_la_OBJECTS) $(libMagick_la_LIBADD) $(LIBS)
-
 install-binSCRIPTS: $(bin_SCRIPTS)
 	@$(NORMAL_INSTALL)
 	$(mkinstalldirs) $(DESTDIR)$(bindir)
@@ -460,10 +439,82 @@ uninstall-binSCRIPTS:
 	  rm -f $(DESTDIR)$(bindir)/$$f; \
 	done
 
-install-man1:
+mostlyclean-compile:
+	-rm -f *.$(OBJEXT) core *.core
+
+distclean-compile:
+	-rm -f *.tab.c
+
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/PreRvIcccm.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/animate.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/annotate.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/attribute.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/blob.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/cache.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/cache_view.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/color.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/compress.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/constitute.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/decorate.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/delegate.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/display.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/draw.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/effect.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/enhance.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/error.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/gem.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/image.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/magic.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/magick.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/memory.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/module.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/monitor.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/montage.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/quantize.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/segment.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/semaphore.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/shear.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/signature.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/static.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/stream.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/timer.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/transform.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/type.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/utility.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/widget.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/xwindow.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/zoom.Plo@am__quote@
+
+distclean-depend:
+	-rm -rf $(DEPDIR)
+
+.c.o:
+@AMDEP_TRUE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/$*.Po' tmpdepfile='$(DEPDIR)/$*.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(COMPILE) -c `test -f $< || echo '$(srcdir)/'`$<
+
+.c.obj:
+@AMDEP_TRUE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/$*.Po' tmpdepfile='$(DEPDIR)/$*.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(COMPILE) -c `cygpath -w $<`
+
+.c.lo:
+@AMDEP_TRUE@	source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/$*.Plo' tmpdepfile='$(DEPDIR)/$*.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(LTCOMPILE) -c -o $@ `test -f $< || echo '$(srcdir)/'`$<
+CCDEPMODE = @CCDEPMODE@
+uninstall-info-am:
+
+man1dir = $(mandir)/man1
+install-man1: $(man1_MANS) $(man_MANS)
+	@$(NORMAL_INSTALL)
 	$(mkinstalldirs) $(DESTDIR)$(man1dir)
-	@list='$(man1_MANS)'; \
-	l2='$(man_MANS)'; for i in $$l2; do \
+	@list='$(man1_MANS) $(dist_man1_MANS) $(nodist_man1_MANS)'; \
+	l2='$(man_MANS) $(dist_man_MANS) $(nodist_man_MANS)'; \
+	for i in $$l2; do \
 	  case "$$i" in \
 	    *.1*) list="$$list $$i" ;; \
 	  esac; \
@@ -478,10 +529,11 @@ install-man1:
 	  echo " $(INSTALL_DATA) $$file $(DESTDIR)$(man1dir)/$$inst"; \
 	  $(INSTALL_DATA) $$file $(DESTDIR)$(man1dir)/$$inst; \
 	done
-
 uninstall-man1:
-	@list='$(man1_MANS)'; \
-	l2='$(man_MANS)'; for i in $$l2; do \
+	@$(NORMAL_UNINSTALL)
+	@list='$(man1_MANS) $(dist_man1_MANS) $(nodist_man1_MANS)'; \
+	l2='$(man_MANS) $(dist_man_MANS) $(nodist_man_MANS)'; \
+	for i in $$l2; do \
 	  case "$$i" in \
 	    *.1*) list="$$list $$i" ;; \
 	  esac; \
@@ -494,18 +546,11 @@ uninstall-man1:
 	  echo " rm -f $(DESTDIR)$(man1dir)/$$inst"; \
 	  rm -f $(DESTDIR)$(man1dir)/$$inst; \
 	done
-install-man: $(MANS)
-	@$(NORMAL_INSTALL)
-	$(MAKE) $(AM_MAKEFLAGS) install-man1
-uninstall-man:
-	@$(NORMAL_UNINSTALL)
-	$(MAKE) $(AM_MAKEFLAGS) uninstall-man1
-
 install-pkgDATA: $(pkg_DATA)
 	@$(NORMAL_INSTALL)
 	$(mkinstalldirs) $(DESTDIR)$(pkgdir)
 	@list='$(pkg_DATA)'; for p in $$list; do \
-	  if test -f "$$p"; then d= ; else d="$(srcdir)/"; fi; \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
 	  f="`echo $$p | sed -e 's|^.*/||'`"; \
 	  echo " $(INSTALL_DATA) $$d$$p $(DESTDIR)$(pkgdir)/$$f"; \
 	  $(INSTALL_DATA) $$d$$p $(DESTDIR)$(pkgdir)/$$f; \
@@ -518,12 +563,11 @@ uninstall-pkgDATA:
 	  echo " rm -f $(DESTDIR)$(pkgdir)/$$f"; \
 	  rm -f $(DESTDIR)$(pkgdir)/$$f; \
 	done
-
 install-pkgdataDATA: $(pkgdata_DATA)
 	@$(NORMAL_INSTALL)
 	$(mkinstalldirs) $(DESTDIR)$(pkgdatadir)
 	@list='$(pkgdata_DATA)'; for p in $$list; do \
-	  if test -f "$$p"; then d= ; else d="$(srcdir)/"; fi; \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
 	  f="`echo $$p | sed -e 's|^.*/||'`"; \
 	  echo " $(INSTALL_DATA) $$d$$p $(DESTDIR)$(pkgdatadir)/$$f"; \
 	  $(INSTALL_DATA) $$d$$p $(DESTDIR)$(pkgdatadir)/$$f; \
@@ -536,15 +580,14 @@ uninstall-pkgdataDATA:
 	  echo " rm -f $(DESTDIR)$(pkgdatadir)/$$f"; \
 	  rm -f $(DESTDIR)$(pkgdatadir)/$$f; \
 	done
-
 install-includeHEADERS: $(include_HEADERS)
 	@$(NORMAL_INSTALL)
 	$(mkinstalldirs) $(DESTDIR)$(includedir)
 	@list='$(include_HEADERS)'; for p in $$list; do \
-	  if test -f "$$p"; then d= ; else d="$(srcdir)/"; fi; \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
 	  f="`echo $$p | sed -e 's|^.*/||'`"; \
-	  echo " $(INSTALL_DATA) $$d$$p $(DESTDIR)$(includedir)/$$f"; \
-	  $(INSTALL_DATA) $$d$$p $(DESTDIR)$(includedir)/$$f; \
+	  echo " $(INSTALL_HEADER) $$d$$p $(DESTDIR)$(includedir)/$$f"; \
+	  $(INSTALL_HEADER) $$d$$p $(DESTDIR)$(includedir)/$$f; \
 	done
 
 uninstall-includeHEADERS:
@@ -579,90 +622,26 @@ TAGS:  $(HEADERS) $(SOURCES) config.h.in $(TAGS_DEPENDENCIES) \
 	test -z "$(ETAGS_ARGS)config.h.in$$unique$(LISP)$$tags" \
 	  || etags $(ETAGS_ARGS) $$tags config.h.in $$unique $(LISP)
 
-mostlyclean-tags:
-
-clean-tags:
+GTAGS:
+	here=`CDPATH=: && cd $(top_builddir) && pwd` \
+	  && cd $(top_srcdir) \
+	  && gtags -i $(GTAGS_ARGS) $$here
 
 distclean-tags:
-	-rm -f TAGS ID
+	-rm -f TAGS ID GTAGS GRTAGS GSYMS GPATH
 
-maintainer-clean-tags:
+DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 
-@AMDEP@include $(DEPDIR)/PreRvIcccm.Plo
-@AMDEP@include $(DEPDIR)/animate.Plo
-@AMDEP@include $(DEPDIR)/annotate.Plo
-@AMDEP@include $(DEPDIR)/attribute.Plo
-@AMDEP@include $(DEPDIR)/blob.Plo
-@AMDEP@include $(DEPDIR)/cache.Plo
-@AMDEP@include $(DEPDIR)/cache_view.Plo
-@AMDEP@include $(DEPDIR)/color.Plo
-@AMDEP@include $(DEPDIR)/compress.Plo
-@AMDEP@include $(DEPDIR)/constitute.Plo
-@AMDEP@include $(DEPDIR)/decorate.Plo
-@AMDEP@include $(DEPDIR)/delegate.Plo
-@AMDEP@include $(DEPDIR)/display.Plo
-@AMDEP@include $(DEPDIR)/draw.Plo
-@AMDEP@include $(DEPDIR)/effect.Plo
-@AMDEP@include $(DEPDIR)/enhance.Plo
-@AMDEP@include $(DEPDIR)/error.Plo
-@AMDEP@include $(DEPDIR)/gem.Plo
-@AMDEP@include $(DEPDIR)/image.Plo
-@AMDEP@include $(DEPDIR)/magic.Plo
-@AMDEP@include $(DEPDIR)/magick.Plo
-@AMDEP@include $(DEPDIR)/memory.Plo
-@AMDEP@include $(DEPDIR)/module.Plo
-@AMDEP@include $(DEPDIR)/monitor.Plo
-@AMDEP@include $(DEPDIR)/montage.Plo
-@AMDEP@include $(DEPDIR)/quantize.Plo
-@AMDEP@include $(DEPDIR)/segment.Plo
-@AMDEP@include $(DEPDIR)/semaphore.Plo
-@AMDEP@include $(DEPDIR)/shear.Plo
-@AMDEP@include $(DEPDIR)/signature.Plo
-@AMDEP@include $(DEPDIR)/static.Plo
-@AMDEP@include $(DEPDIR)/stream.Plo
-@AMDEP@include $(DEPDIR)/timer.Plo
-@AMDEP@include $(DEPDIR)/transform.Plo
-@AMDEP@include $(DEPDIR)/type.Plo
-@AMDEP@include $(DEPDIR)/utility.Plo
-@AMDEP@include $(DEPDIR)/widget.Plo
-@AMDEP@include $(DEPDIR)/xwindow.Plo
-@AMDEP@include $(DEPDIR)/zoom.Plo
-
-mostlyclean-depend:
-
-clean-depend:
-
-distclean-depend:
-	-rm -rf $(DEPDIR)
-
-maintainer-clean-depend:
-
-@AMDEP@CCDEPMODE = @CCDEPMODE@
-
-.c.o:
-@AMDEP@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
-@AMDEP@	depfile='$(DEPDIR)/$*.Po' tmpdepfile='$(DEPDIR)/$*.TPo' @AMDEPBACKSLASH@
-@AMDEP@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-	$(COMPILE) -c -o $@ `test -f $< || echo '$(srcdir)/'`$<
-
-.c.lo:
-@AMDEP@	source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
-@AMDEP@	depfile='$(DEPDIR)/$*.Plo' tmpdepfile='$(DEPDIR)/$*.TPlo' @AMDEPBACKSLASH@
-@AMDEP@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-	$(LTCOMPILE) -c -o $@ `test -f $< || echo '$(srcdir)/'`$<
-
-.c.obj:
-@AMDEP@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
-@AMDEP@	depfile='$(DEPDIR)/$*.Po' tmpdepfile='$(DEPDIR)/$*.TPo' @AMDEPBACKSLASH@
-@AMDEP@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-	$(COMPILE) -c -o $@ `cygpath -w $<`
-
-
-distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)/$(subdir)
+top_distdir = ..
+distdir = $(top_distdir)/$(PACKAGE)-$(VERSION)
 
 distdir: $(DISTFILES)
 	@for file in $(DISTFILES); do \
-	  d=$(srcdir); \
+	  if test -f $$file; then d=.; else d=$(srcdir); fi; \
+	  dir=`echo "$$file" | sed -e 's,/[^/]*$$,,'`; \
+	  if test "$$dir" != "$$file" && test "$$dir" != "."; then \
+	    $(mkinstalldirs) "$(distdir)/$$dir"; \
+	  fi; \
 	  if test -d $$d/$$file; then \
 	    cp -pR $$d/$$file $(distdir) \
 	    || exit 1; \
@@ -672,106 +651,106 @@ distdir: $(DISTFILES)
 	    || exit 1; \
 	  fi; \
 	done
-	$(MAKE) $(AM_MAKEFLAGS) top_distdir="$(top_distdir)" distdir="$(distdir)" dist-hook
-info-am:
-info: info-am
-dvi-am:
-dvi: dvi-am
+	$(MAKE) $(AM_MAKEFLAGS) \
+	  top_distdir="${top_distdir}" distdir="$(distdir)" \
+	  dist-hook
 check-am: all-am
 check: check-am
-installcheck-am:
-installcheck: installcheck-am
-all-recursive-am: config.h
-	$(MAKE) $(AM_MAKEFLAGS) all-recursive
+all-am: Makefile $(LTLIBRARIES) $(SCRIPTS) $(MANS) $(DATA) $(HEADERS) \
+		config.h
 
-install-exec-am: install-libLTLIBRARIES install-binSCRIPTS
+installdirs:
+	$(mkinstalldirs) $(DESTDIR)$(libdir) $(DESTDIR)$(bindir) $(DESTDIR)$(man1dir) $(DESTDIR)$(pkgdir) $(DESTDIR)$(pkgdatadir) $(DESTDIR)$(includedir)
+
+install: install-am
 install-exec: install-exec-am
-
-install-data-am: install-man install-pkgDATA install-pkgdataDATA \
-		install-includeHEADERS
 install-data: install-data-am
+uninstall: uninstall-am
 
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
-install: install-am
-uninstall-am: uninstall-libLTLIBRARIES uninstall-binSCRIPTS \
-		uninstall-man uninstall-pkgDATA uninstall-pkgdataDATA \
-		uninstall-includeHEADERS
-uninstall: uninstall-am
-all-am: Makefile $(LTLIBRARIES) $(SCRIPTS) $(MANS) $(DATA) $(HEADERS) \
-		config.h
-all-redirect: all-am
+
+installcheck: installcheck-am
 install-strip:
-	$(MAKE) $(AM_MAKEFLAGS) INSTALL_STRIP_FLAG=-s install
-installdirs:
-	$(mkinstalldirs)  $(DESTDIR)$(libdir) $(DESTDIR)$(bindir) \
-		$(DESTDIR)$(mandir)/man1 $(DESTDIR)$(pkgdir) \
-		$(DESTDIR)$(pkgdatadir) $(DESTDIR)$(includedir)
-
-
+	$(MAKE) $(AM_MAKEFLAGS) INSTALL_PROGRAM="$(INSTALL_STRIP_PROGRAM)" \
+	  `test -z '$(STRIP)' || \
+	    echo "INSTALL_PROGRAM_ENV=STRIPPROG='$(STRIP)'"` install
 mostlyclean-generic:
 
 clean-generic:
 
 distclean-generic:
-	-rm -f Makefile $(CONFIG_CLEAN_FILES)
-	-rm -f config.cache config.log stamp-h stamp-h[0-9]*
+	-rm -f Makefile $(CONFIG_CLEAN_FILES) stamp-h stamp-h[0-9]*
 
 maintainer-clean-generic:
-	-rm -f Makefile.in
+	@echo "This command is intended for maintainers to use"
+	@echo "it deletes files that may require special tools to rebuild."
 	-test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
-mostlyclean-am:  mostlyclean-hdr mostlyclean-libLTLIBRARIES \
-		mostlyclean-compile mostlyclean-libtool \
-		mostlyclean-tags mostlyclean-depend mostlyclean-generic
-
-mostlyclean: mostlyclean-am
-
-clean-am:  clean-hdr clean-libLTLIBRARIES clean-compile clean-libtool \
-		clean-tags clean-depend clean-generic mostlyclean-am
-
 clean: clean-am
 
-distclean-am:  distclean-hdr distclean-libLTLIBRARIES distclean-compile \
-		distclean-libtool distclean-tags distclean-depend \
-		distclean-generic clean-am
-	-rm -f libtool
+clean-am: clean-generic clean-libLTLIBRARIES clean-libtool \
+	mostlyclean-am
 
 distclean: distclean-am
 
-maintainer-clean-am:  maintainer-clean-hdr \
-		maintainer-clean-libLTLIBRARIES \
-		maintainer-clean-compile maintainer-clean-libtool \
-		maintainer-clean-tags maintainer-clean-depend \
-		maintainer-clean-generic distclean-am
-	@echo "This command is intended for maintainers to use;"
-	@echo "it deletes files that may require special tools to rebuild."
+distclean-am: clean-am distclean-compile distclean-depend \
+	distclean-generic distclean-hdr distclean-libtool \
+	distclean-tags
+
+dvi: dvi-am
+
+dvi-am:
+
+info: info-am
+
+info-am:
+
+install-data-am: install-includeHEADERS install-man install-pkgDATA \
+	install-pkgdataDATA
+
+install-exec-am: install-binSCRIPTS install-libLTLIBRARIES
+
+install-info: install-info-am
+
+install-man: install-man1
+
+installcheck-am:
 
 maintainer-clean: maintainer-clean-am
 
-.PHONY: mostlyclean-hdr distclean-hdr clean-hdr maintainer-clean-hdr \
-mostlyclean-libLTLIBRARIES distclean-libLTLIBRARIES \
-clean-libLTLIBRARIES maintainer-clean-libLTLIBRARIES \
-uninstall-libLTLIBRARIES install-libLTLIBRARIES mostlyclean-compile \
-distclean-compile clean-compile maintainer-clean-compile \
-mostlyclean-libtool distclean-libtool clean-libtool \
-maintainer-clean-libtool uninstall-binSCRIPTS install-binSCRIPTS \
-install-man1 uninstall-man1 install-man uninstall-man uninstall-pkgDATA \
-install-pkgDATA uninstall-pkgdataDATA install-pkgdataDATA \
-uninstall-includeHEADERS install-includeHEADERS tags mostlyclean-tags \
-distclean-tags clean-tags maintainer-clean-tags mostlyclean-depend \
-distclean-depend clean-depend maintainer-clean-depend distdir info-am \
-info dvi-am dvi check check-am installcheck-am installcheck \
-all-recursive-am install-exec-am install-exec install-data-am \
-install-data install-am install uninstall-am uninstall all-redirect \
-all-am all install-strip installdirs mostlyclean-generic \
-distclean-generic clean-generic maintainer-clean-generic clean \
-mostlyclean distclean maintainer-clean
+maintainer-clean-am: distclean-am maintainer-clean-generic
+
+mostlyclean: mostlyclean-am
+
+mostlyclean-am: mostlyclean-compile mostlyclean-generic \
+	mostlyclean-libtool
+
+uninstall-am: uninstall-binSCRIPTS uninstall-includeHEADERS \
+	uninstall-info-am uninstall-libLTLIBRARIES uninstall-man \
+	uninstall-pkgDATA uninstall-pkgdataDATA
+
+uninstall-man: uninstall-man1
+
+.PHONY: GTAGS all all-am check check-am clean clean-generic \
+	clean-libLTLIBRARIES clean-libtool distclean distclean-compile \
+	distclean-depend distclean-generic distclean-hdr \
+	distclean-libtool distclean-tags distdir dvi dvi-am info \
+	info-am install install-am install-binSCRIPTS install-data \
+	install-data-am install-exec install-exec-am \
+	install-includeHEADERS install-info install-info-am \
+	install-libLTLIBRARIES install-man install-man1 install-pkgDATA \
+	install-pkgdataDATA install-strip installcheck installcheck-am \
+	installdirs maintainer-clean maintainer-clean-generic \
+	mostlyclean mostlyclean-compile mostlyclean-generic \
+	mostlyclean-libtool tags uninstall uninstall-am \
+	uninstall-binSCRIPTS uninstall-includeHEADERS uninstall-info-am \
+	uninstall-libLTLIBRARIES uninstall-man uninstall-man1 \
+	uninstall-pkgDATA uninstall-pkgdataDATA
 
 
 # Ensure that configuration header is not distributed
 dist-hook:
 	-rm $(distdir)/config.h
-
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

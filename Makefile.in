@@ -1,6 +1,6 @@
-# Makefile.in generated automatically by automake 1.4a from Makefile.am
+# Makefile.in generated automatically by automake 1.5 from Makefile.am.
 
-# Copyright 1994, 1995, 1996, 1997, 1998, 1999, 2000
+# Copyright 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001
 # Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
@@ -11,164 +11,7 @@
 # even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE.
 
-SHELL = @SHELL@
-
-srcdir = @srcdir@
-top_srcdir = @top_srcdir@
-VPATH = @srcdir@
-prefix = @prefix@
-exec_prefix = @exec_prefix@
-
-bindir = @bindir@
-sbindir = @sbindir@
-libexecdir = @libexecdir@
-datadir = @datadir@
-sysconfdir = @sysconfdir@
-sharedstatedir = @sharedstatedir@
-localstatedir = @localstatedir@
-libdir = @libdir@
-infodir = @infodir@
-mandir = @mandir@
-includedir = @includedir@
-oldincludedir = /usr/include
-
-pkgdatadir = $(datadir)/@PACKAGE@
-pkglibdir = $(libdir)/@PACKAGE@
-pkgincludedir = $(includedir)/@PACKAGE@
-
-top_builddir = .
-
-ACLOCAL = @ACLOCAL@
-AUTOCONF = @AUTOCONF@
-AUTOMAKE = @AUTOMAKE@
-AUTOHEADER = @AUTOHEADER@
-
-INSTALL = @INSTALL@
-INSTALL_PROGRAM = @INSTALL_PROGRAM@
-INSTALL_DATA = @INSTALL_DATA@
-INSTALL_SCRIPT = @INSTALL_SCRIPT@
-INSTALL_STRIP_FLAG =
-transform = @program_transform_name@
-
-NORMAL_INSTALL = :
-PRE_INSTALL = :
-POST_INSTALL = :
-NORMAL_UNINSTALL = :
-PRE_UNINSTALL = :
-POST_UNINSTALL = :
-
 @SET_MAKE@
-build_alias = @build_alias@
-build_triplet = @build@
-host_alias = @host_alias@
-host_triplet = @host@
-target_alias = @target_alias@
-target_triplet = @target@
-AMDEP = @AMDEP@
-AMTAR = @AMTAR@
-AS = @AS@
-AWK = @AWK@
-BZIPDelegate = @BZIPDelegate@
-BrowseDelegate = @BrowseDelegate@
-CC = @CC@
-CGMDecodeDelegate = @CGMDecodeDelegate@
-CPP = @CPP@
-CXX = @CXX@
-CXXCPP = @CXXCPP@
-CatDelegate = @CatDelegate@
-ConvertDelegate = @ConvertDelegate@
-DELEGATES = @DELEGATES@
-DEPDIR = @DEPDIR@
-DLLDFLAGS = @DLLDFLAGS@
-DLLTOOL = @DLLTOOL@
-DOTDecodeDelegate = @DOTDecodeDelegate@
-DVIDecodeDelegate = @DVIDecodeDelegate@
-EXEEXT = @EXEEXT@
-EchoDelegate = @EchoDelegate@
-EditorDelegate = @EditorDelegate@
-FIGDecodeDelegate = @FIGDecodeDelegate@
-GCJ = @GCJ@
-GCJFLAGS = @GCJFLAGS@
-GSColorDevice = @GSColorDevice@
-GSEPSDevice = @GSEPSDevice@
-GSMonoDevice = @GSMonoDevice@
-GSPDFDevice = @GSPDFDevice@
-GSPSDevice = @GSPSDevice@
-GnuplotDecodeDelegate = @GnuplotDecodeDelegate@
-HPGLDecodeDelegate = @HPGLDecodeDelegate@
-HTMLDecodeDelegate = @HTMLDecodeDelegate@
-ILBMDecodeDelegate = @ILBMDecodeDelegate@
-ILBMEncodeDelegate = @ILBMEncodeDelegate@
-INCLTDL = @INCLTDL@
-LD = @LD@
-LIBLTDL = @LIBLTDL@
-LIBSTDC_LDFLAGS = @LIBSTDC_LDFLAGS@
-LIBTOOL = @LIBTOOL@
-LIB_BZLIB = @LIB_BZLIB@
-LIB_DL = @LIB_DL@
-LIB_DPS = @LIB_DPS@
-LIB_FPX = @LIB_FPX@
-LIB_GS = @LIB_GS@
-LIB_HDF = @LIB_HDF@
-LIB_JBIG = @LIB_JBIG@
-LIB_JP2 = @LIB_JP2@
-LIB_JPEG = @LIB_JPEG@
-LIB_LCMS = @LIB_LCMS@
-LIB_LF = @LIB_LF@
-LIB_MATH = @LIB_MATH@
-LIB_PNG = @LIB_PNG@
-LIB_THREAD = @LIB_THREAD@
-LIB_TIFF = @LIB_TIFF@
-LIB_TTF = @LIB_TTF@
-LIB_WMF = @LIB_WMF@
-LIB_X11 = @LIB_X11@
-LIB_XEXT = @LIB_XEXT@
-LIB_XML = @LIB_XML@
-LIB_XT = @LIB_XT@
-LIB_ZLIB = @LIB_ZLIB@
-LN_S = @LN_S@
-LPDelegate = @LPDelegate@
-LPRDelegate = @LPRDelegate@
-LZWDecodeDelegate = @LZWDecodeDelegate@
-LZWEncodeDelegate = @LZWEncodeDelegate@
-LaunchDelegate = @LaunchDelegate@
-MAGICKLIB = @MAGICKLIB@
-MAINT = @MAINT@
-MAJOR_VERSION = @MAJOR_VERSION@
-MAKEINFO = @MAKEINFO@
-MANDelegate = @MANDelegate@
-MICRO_VERSION = @MICRO_VERSION@
-MINOR_VERSION = @MINOR_VERSION@
-MPEGDecodeDelegate = @MPEGDecodeDelegate@
-MPEGEncodeDelegate = @MPEGEncodeDelegate@
-MVDelegate = @MVDelegate@
-MagickSharePath = @MagickSharePath@
-MogrifyDelegate = @MogrifyDelegate@
-OBJDUMP = @OBJDUMP@
-OBJEXT = @OBJEXT@
-PACKAGE = @PACKAGE@
-PERL = @PERL@
-PERL_MAKE_OPTIONS = @PERL_MAKE_OPTIONS@
-PGPDecodeDelegate = @PGPDecodeDelegate@
-POVDelegate = @POVDelegate@
-PSDelegate = @PSDelegate@
-PrintDelegate = @PrintDelegate@
-RADDecodeDelegate = @RADDecodeDelegate@
-RANLIB = @RANLIB@
-RLEEncodeDelegate = @RLEEncodeDelegate@
-RMDelegate = @RMDelegate@
-SCANDecodeDelegate = @SCANDecodeDelegate@
-STRIP = @STRIP@
-ShowImageDelegate = @ShowImageDelegate@
-TXTDelegate = @TXTDelegate@
-VERSION = @VERSION@
-WMFDecodeDelegate = @WMFDecodeDelegate@
-WWWDecodeDelegate = @WWWDecodeDelegate@
-XCFDecodeDelegate = @XCFDecodeDelegate@
-X_CFLAGS = @X_CFLAGS@
-ZipDelegate = @ZipDelegate@
-freetype_config = @freetype_config@
-install_sh = @install_sh@
 
 #
 #  Top-Level Makefile for building ImageMagick
@@ -205,16 +48,174 @@ install_sh = @install_sh@
 
 # Don't require all the GNU mandated files
 
+SHELL = @SHELL@
+
+srcdir = @srcdir@
+top_srcdir = @top_srcdir@
+VPATH = @srcdir@
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+
+bindir = @bindir@
+sbindir = @sbindir@
+libexecdir = @libexecdir@
+datadir = @datadir@
+sysconfdir = @sysconfdir@
+sharedstatedir = @sharedstatedir@
+localstatedir = @localstatedir@
+libdir = @libdir@
+infodir = @infodir@
+mandir = @mandir@
+includedir = @includedir@
+oldincludedir = /usr/include
+pkgdatadir = $(datadir)/@PACKAGE@
+pkglibdir = $(libdir)/@PACKAGE@
+pkgincludedir = $(includedir)/@PACKAGE@
+top_builddir = .
+
+ACLOCAL = @ACLOCAL@
+AUTOCONF = @AUTOCONF@
+AUTOMAKE = @AUTOMAKE@
+AUTOHEADER = @AUTOHEADER@
+
+INSTALL = @INSTALL@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@
+INSTALL_DATA = @INSTALL_DATA@
+INSTALL_SCRIPT = @INSTALL_SCRIPT@
+INSTALL_HEADER = $(INSTALL_DATA)
+transform = @program_transform_name@
+NORMAL_INSTALL = :
+PRE_INSTALL = :
+POST_INSTALL = :
+NORMAL_UNINSTALL = :
+PRE_UNINSTALL = :
+POST_UNINSTALL = :
+build_alias = @build_alias@
+build_triplet = @build@
+host_alias = @host_alias@
+host_triplet = @host@
+target_alias = @target_alias@
+target_triplet = @target@
+AMTAR = @AMTAR@
+AS = @AS@
+AWK = @AWK@
+BZIPDelegate = @BZIPDelegate@
+BrowseDelegate = @BrowseDelegate@
+CC = @CC@
+CGMDecodeDelegate = @CGMDecodeDelegate@
+CPP = @CPP@
+CXX = @CXX@
+CXXCPP = @CXXCPP@
+CatDelegate = @CatDelegate@
+ConvertDelegate = @ConvertDelegate@
+DELEGATES = @DELEGATES@
+DEPDIR = @DEPDIR@
+DLLDFLAGS = @DLLDFLAGS@
+DLLTOOL = @DLLTOOL@
+DOTDecodeDelegate = @DOTDecodeDelegate@
+DVIDecodeDelegate = @DVIDecodeDelegate@
+EXEEXT = @EXEEXT@
+EchoDelegate = @EchoDelegate@
+EditorDelegate = @EditorDelegate@
+FIGDecodeDelegate = @FIGDecodeDelegate@
+GCJ = @GCJ@
+GCJFLAGS = @GCJFLAGS@
+GSColorDevice = @GSColorDevice@
+GSEPSDevice = @GSEPSDevice@
+GSMonoDevice = @GSMonoDevice@
+GSPDFDevice = @GSPDFDevice@
+GSPSDevice = @GSPSDevice@
+GnuplotDecodeDelegate = @GnuplotDecodeDelegate@
+HPGLDecodeDelegate = @HPGLDecodeDelegate@
+HTMLDecodeDelegate = @HTMLDecodeDelegate@
+ILBMDecodeDelegate = @ILBMDecodeDelegate@
+ILBMEncodeDelegate = @ILBMEncodeDelegate@
+INCLTDL = @INCLTDL@
+INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
+LD = @LD@
+LIBLTDL = @LIBLTDL@
+LIBSTDC_LDFLAGS = @LIBSTDC_LDFLAGS@
+LIBTOOL = @LIBTOOL@
+LIB_BZLIB = @LIB_BZLIB@
+LIB_DL = @LIB_DL@
+LIB_DPS = @LIB_DPS@
+LIB_FPX = @LIB_FPX@
+LIB_GS = @LIB_GS@
+LIB_HDF = @LIB_HDF@
+LIB_JBIG = @LIB_JBIG@
+LIB_JP2 = @LIB_JP2@
+LIB_JPEG = @LIB_JPEG@
+LIB_LCMS = @LIB_LCMS@
+LIB_LF = @LIB_LF@
+LIB_MATH = @LIB_MATH@
+LIB_PNG = @LIB_PNG@
+LIB_THREAD = @LIB_THREAD@
+LIB_TIFF = @LIB_TIFF@
+LIB_TTF = @LIB_TTF@
+LIB_WMF = @LIB_WMF@
+LIB_X11 = @LIB_X11@
+LIB_XEXT = @LIB_XEXT@
+LIB_XML = @LIB_XML@
+LIB_XT = @LIB_XT@
+LIB_ZLIB = @LIB_ZLIB@
+LN_S = @LN_S@
+LPDelegate = @LPDelegate@
+LPRDelegate = @LPRDelegate@
+LZWDecodeDelegate = @LZWDecodeDelegate@
+LZWEncodeDelegate = @LZWEncodeDelegate@
+LaunchDelegate = @LaunchDelegate@
+MAGICKLIB = @MAGICKLIB@
+MAINT = @MAINT@
+MAJOR_VERSION = @MAJOR_VERSION@
+MANDelegate = @MANDelegate@
+MICRO_VERSION = @MICRO_VERSION@
+MINOR_VERSION = @MINOR_VERSION@
+MPEGDecodeDelegate = @MPEGDecodeDelegate@
+MPEGEncodeDelegate = @MPEGEncodeDelegate@
+MVDelegate = @MVDelegate@
+MagickSharePath = @MagickSharePath@
+MogrifyDelegate = @MogrifyDelegate@
+OBJDUMP = @OBJDUMP@
+OBJEXT = @OBJEXT@
+PACKAGE = @PACKAGE@
+PERL = @PERL@
+PERL_MAKE_OPTIONS = @PERL_MAKE_OPTIONS@
+PGPDecodeDelegate = @PGPDecodeDelegate@
+POVDelegate = @POVDelegate@
+PSDelegate = @PSDelegate@
+PrintDelegate = @PrintDelegate@
+RADDecodeDelegate = @RADDecodeDelegate@
+RANLIB = @RANLIB@
+RLEEncodeDelegate = @RLEEncodeDelegate@
+RMDelegate = @RMDelegate@
+SCANDecodeDelegate = @SCANDecodeDelegate@
+STRIP = @STRIP@
+ShowImageDelegate = @ShowImageDelegate@
+TXTDelegate = @TXTDelegate@
+VERSION = @VERSION@
+WMFDecodeDelegate = @WMFDecodeDelegate@
+WWWDecodeDelegate = @WWWDecodeDelegate@
+XCFDecodeDelegate = @XCFDecodeDelegate@
+X_CFLAGS = @X_CFLAGS@
+X_EXTRA_LIBS = @X_EXTRA_LIBS@
+X_LIBS = @X_LIBS@
+X_PRE_LIBS = @X_PRE_LIBS@
+ZipDelegate = @ZipDelegate@
+am__include = @am__include@
+am__quote = @am__quote@
+freetype_config = @freetype_config@
+install_sh = @install_sh@
 
 AUTOMAKE_OPTIONS = 1.4 dist-zip dist-bzip2 foreign
 
 # Subdirectories to build
-@WITH_MAGICK_PLUS_PLUS_TRUE@MAGICK_PLUS_PLUS = @WITH_MAGICK_PLUS_PLUS_TRUE@Magick++
+@WITH_MAGICK_PLUS_PLUS_TRUE@MAGICK_PLUS_PLUS = Magick++
 
 # Directories to include in distribution
 DIST_SUBDIRS = ltdl coders magick utilities tests Magick++
-@WITH_MODULES_TRUE@SUBDIRS = @WITH_MODULES_TRUE@ltdl magick coders utilities tests $(MAGICK_PLUS_PLUS)
-@WITH_MODULES_FALSE@SUBDIRS = @WITH_MODULES_FALSE@coders magick utilities tests $(MAGICK_PLUS_PLUS)
+
+@WITH_MODULES_TRUE@SUBDIRS = ltdl magick coders utilities tests $(MAGICK_PLUS_PLUS)
+@WITH_MODULES_FALSE@SUBDIRS = coders magick utilities tests $(MAGICK_PLUS_PLUS)
 
 # Architecture independent data files installed in the package's data directory
 pkgdata_DATA = Copyright.txt QuickStart.txt
@@ -236,49 +237,63 @@ DISTDIRS = contrib guide images scenes scripts www PerlMagick
 pkgdocdir = @MagickSharePath@
 DOCDIRS = images www www/api www/api/types www/Magick++
 
-@WITH_PERL_TRUE@PERLMAGICK = @WITH_PERL_TRUE@PerlMagick
-@WITH_PERL_TRUE@PERLMAKEMAKER = @WITH_PERL_TRUE@$(PERLMAGICK)/Makefile.PL
-@WITH_PERL_TRUE@PERLMAKEFILE = @WITH_PERL_TRUE@$(PERLMAGICK)/Makefile
+@WITH_PERL_TRUE@PERLMAGICK = PerlMagick
+@WITH_PERL_TRUE@PERLMAKEMAKER = $(PERLMAGICK)/Makefile.PL
+@WITH_PERL_TRUE@PERLMAKEFILE = $(PERLMAGICK)/Makefile
 
-@WITH_PERL_TRUE@@WITH_PERL_DYNAMIC_FALSE@@WITH_PERL_STATIC_TRUE@PERLSTATICNAME = @WITH_PERL_TRUE@@WITH_PERL_DYNAMIC_FALSE@@WITH_PERL_STATIC_TRUE@PerlMagick
+@WITH_PERL_DYNAMIC_FALSE@@WITH_PERL_STATIC_TRUE@@WITH_PERL_TRUE@PERLSTATICNAME = PerlMagick
 subdir = .
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
-CONFIG_HEADER = ./magick/config.h
-CONFIG_CLEAN_FILES = 
-DIST_SOURCES = 
-DATA =  $(pkgdata_DATA)
-
-DIST_COMMON =  Makefile.am Makefile.in acconfig.h acinclude.m4 \
-aclocal.m4 config.guess config.sub configure configure.in depcomp \
-install-sh ltconfig ltmain.sh missing mkinstalldirs
+CONFIG_HEADER = $(top_builddir)/magick/config.h
+CONFIG_CLEAN_FILES = PerlMagick/Makefile.PL
+DIST_SOURCES =
+DATA = $(pkgdata_DATA)
 
 
-DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
+RECURSIVE_TARGETS = info-recursive dvi-recursive install-info-recursive \
+	uninstall-info-recursive all-recursive install-data-recursive \
+	install-exec-recursive installdirs-recursive install-recursive \
+	uninstall-recursive check-recursive installcheck-recursive
+DIST_COMMON = Makefile.am Makefile.in acconfig.h acinclude.m4 \
+	aclocal.m4 config.guess config.sub configure configure.in \
+	depcomp install-sh ltcf-c.sh ltcf-cxx.sh ltcf-gcj.sh ltconfig \
+	ltmain.sh missing mkinstalldirs
+all: all-recursive
 
-GZIP_ENV = --best
-all: all-redirect
 .SUFFIXES:
-$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
-	cd $(top_srcdir) && $(AUTOMAKE) --foreign Makefile
 
-Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
-	cd $(top_builddir) \
-	  && CONFIG_FILES=$@ CONFIG_HEADERS= $(SHELL) ./config.status
+mostlyclean-libtool:
+	-rm -f *.lo
 
-$(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ configure.in  acinclude.m4
-	cd $(srcdir) && $(ACLOCAL)
+clean-libtool:
+	-rm -rf .libs _libs
 
-config.status: $(srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
+distclean-libtool:
+	-rm -f libtool
+$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am  $(top_srcdir)/configure.in $(ACLOCAL_M4)
+	cd $(top_srcdir) && \
+	  $(AUTOMAKE) --foreign  Makefile
+Makefile: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.in  $(top_builddir)/config.status
+	cd $(top_builddir) && \
+	  CONFIG_HEADERS= CONFIG_LINKS= \
+	  CONFIG_FILES=$@ $(SHELL) ./config.status
+
+$(top_builddir)/config.status: $(srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
 	$(SHELL) ./config.status --recheck
-$(srcdir)/configure: @MAINTAINER_MODE_TRUE@$(srcdir)/configure.in $(ACLOCAL_M4) $(CONFIGURE_DEPENDENCIES)
+$(srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(srcdir)/configure.in $(ACLOCAL_M4) $(CONFIGURE_DEPENDENCIES)
 	cd $(srcdir) && $(AUTOCONF)
 
+$(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ configure.in acinclude.m4
+	cd $(srcdir) && $(ACLOCAL) $(ACLOCAL_AMFLAGS)
+PerlMagick/Makefile.PL: $(top_builddir)/config.status $(top_srcdir)/PerlMagick/Makefile.PL.in
+	cd $(top_builddir) && CONFIG_FILES=$@ CONFIG_HEADERS= CONFIG_LINKS= $(SHELL) ./config.status
+uninstall-info-am:
 install-pkgdataDATA: $(pkgdata_DATA)
 	@$(NORMAL_INSTALL)
 	$(mkinstalldirs) $(DESTDIR)$(pkgdatadir)
 	@list='$(pkgdata_DATA)'; for p in $$list; do \
-	  if test -f "$$p"; then d= ; else d="$(srcdir)/"; fi; \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
 	  f="`echo $$p | sed -e 's|^.*/||'`"; \
 	  echo " $(INSTALL_DATA) $$d$$p $(DESTDIR)$(pkgdatadir)/$$f"; \
 	  $(INSTALL_DATA) $$d$$p $(DESTDIR)$(pkgdatadir)/$$f; \
@@ -298,10 +313,7 @@ uninstall-pkgdataDATA:
 # (1) if the variable is set in `config.status', edit `config.status'
 #     (which will cause the Makefiles to be regenerated when you run `make');
 # (2) otherwise, pass the desired values on the `make' command line.
-
-all-recursive install-data-recursive install-exec-recursive \
-installdirs-recursive install-recursive uninstall-recursive  \
-check-recursive installcheck-recursive info-recursive dvi-recursive:
+$(RECURSIVE_TARGETS):
 	@set fnord $(MAKEFLAGS); amf=$$2; \
 	dot_seen=no; \
 	target=`echo $@ | sed s/-recursive//`; \
@@ -324,7 +336,11 @@ mostlyclean-recursive clean-recursive distclean-recursive \
 maintainer-clean-recursive:
 	@set fnord $(MAKEFLAGS); amf=$$2; \
 	dot_seen=no; \
-	rev=''; list='$(SUBDIRS)'; for subdir in $$list; do \
+	case "$@" in \
+	  distclean-* | maintainer-clean-*) list='$(DIST_SUBDIRS)' ;; \
+	  *) list='$(SUBDIRS)' ;; \
+	esac; \
+	rev=''; for subdir in $$list; do \
 	  if test "$$subdir" = "."; then :; else \
 	    rev="$$subdir $$rev"; \
 	  fi; \
@@ -362,9 +378,9 @@ TAGS: tags-recursive $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) \
 	tags=; \
 	here=`pwd`; \
 	list='$(SUBDIRS)'; for subdir in $$list; do \
-   if test "$$subdir" = .; then :; else \
+	  if test "$$subdir" = .; then :; else \
 	    test -f $$subdir/TAGS && tags="$$tags -i $$here/$$subdir/TAGS"; \
-   fi; \
+	  fi; \
 	done; \
 	list='$(SOURCES) $(HEADERS) $(TAGS_FILES)'; \
 	unique=`for i in $$list; do \
@@ -375,18 +391,74 @@ TAGS: tags-recursive $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) \
 	test -z "$(ETAGS_ARGS)$$unique$(LISP)$$tags" \
 	  || etags $(ETAGS_ARGS) $$tags  $$unique $(LISP)
 
-mostlyclean-tags:
-
-clean-tags:
+GTAGS:
+	here=`CDPATH=: && cd $(top_builddir) && pwd` \
+	  && cd $(top_srcdir) \
+	  && gtags -i $(GTAGS_ARGS) $$here
 
 distclean-tags:
-	-rm -f TAGS ID
+	-rm -f TAGS ID GTAGS GRTAGS GSYMS GPATH
 
-maintainer-clean-tags:
+DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 
+top_distdir = .
+# Avoid unsightly `./'.
 distdir = $(PACKAGE)-$(VERSION)
-top_distdir = $(distdir)
 
+GZIP_ENV = --best
+
+distdir: $(DISTFILES)
+	-chmod -R a+w $(distdir) >/dev/null 2>&1; rm -rf $(distdir)
+	mkdir $(distdir)
+	$(mkinstalldirs) $(distdir)/Magick++/bin $(distdir)/PerlMagick $(distdir)/coders $(distdir)/magick
+	@for file in $(DISTFILES); do \
+	  if test -f $$file; then d=.; else d=$(srcdir); fi; \
+	  dir=`echo "$$file" | sed -e 's,/[^/]*$$,,'`; \
+	  if test "$$dir" != "$$file" && test "$$dir" != "."; then \
+	    $(mkinstalldirs) "$(distdir)/$$dir"; \
+	  fi; \
+	  if test -d $$d/$$file; then \
+	    cp -pR $$d/$$file $(distdir) \
+	    || exit 1; \
+	  else \
+	    test -f $(distdir)/$$file \
+	    || cp -p $$d/$$file $(distdir)/$$file \
+	    || exit 1; \
+	  fi; \
+	done
+	for subdir in $(DIST_SUBDIRS); do \
+	  if test "$$subdir" = .; then :; else \
+	    test -d $(distdir)/$$subdir \
+	    || mkdir $(distdir)/$$subdir \
+	    || exit 1; \
+	    (cd $$subdir && \
+	      $(MAKE) $(AM_MAKEFLAGS) \
+	        top_distdir="$(top_distdir)" \
+	        distdir=../$(distdir)/$$subdir \
+	        distdir) \
+	      || exit 1; \
+	  fi; \
+	done
+	$(MAKE) $(AM_MAKEFLAGS) \
+	  top_distdir="${top_distdir}" distdir="$(distdir)" \
+	  dist-hook
+	-find $(distdir) -type d ! -perm -777 -exec chmod a+rwx {} \; -o \
+	  ! -type d ! -perm -444 -links 1 -exec chmod a+r {} \; -o \
+	  ! -type d ! -perm -400 -exec chmod a+r {} \; -o \
+	  ! -type d ! -perm -444 -exec $(SHELL) $(install_sh) -c -m a+r {} {} \; \
+	|| chmod -R a+r $(distdir)
+dist: distdir
+	$(AMTAR) chof - $(distdir) | GZIP=$(GZIP_ENV) gzip -c >$(distdir).tar.gz
+	-chmod -R a+w $(distdir) >/dev/null 2>&1; rm -rf $(distdir)
+
+dist-bzip2: distdir
+	$(AMTAR) chof - $(distdir) | bzip2 -9 -c >$(distdir).tar.bz2
+	-chmod -R a+w $(distdir) >/dev/null 2>&1; rm -rf $(distdir)
+
+dist-zip: distdir
+	-rm -f $(distdir).zip
+	zip -rq $(distdir).zip $(distdir)
+	-chmod -R a+w $(distdir) >/dev/null 2>&1; rm -rf $(distdir)
 
 # This target untars the dist file and tries a VPATH configuration.  Then
 # it guarantees that the distribution is self-contained by making another
@@ -407,153 +479,113 @@ distcheck: dist
 	  && $(MAKE) $(AM_MAKEFLAGS) install \
 	  && $(MAKE) $(AM_MAKEFLAGS) installcheck \
 	  && $(MAKE) $(AM_MAKEFLAGS) uninstall \
-	  && test `find $$dc_install_base -type f -print | wc -l` -le 1 \
+	  && (test `find $$dc_install_base -type f -print | wc -l` -le 1 \
+	     || (echo "Error: files left after uninstall" 1>&2; \
+	         exit 1) ) \
 	  && $(MAKE) $(AM_MAKEFLAGS) dist \
 	  && $(MAKE) $(AM_MAKEFLAGS) distclean \
 	  && rm -f $(distdir).tar.gz \
-	  && test `find . -type f -print | wc -l` -eq 0
+	  && (test `find . -type f -print | wc -l` -eq 0 \
+	     || (echo "Error: files left after distclean" 1>&2; \
+	         exit 1) )
 	-chmod -R a+w $(distdir) > /dev/null 2>&1; rm -rf $(distdir)
-	@banner="$(distdir).tar.gz is ready for distribution"; \
-	dashes=`echo "$$banner" | sed s/./=/g`; \
-	echo "$$dashes"; \
-	echo "$$banner"; \
-	echo "$$dashes"
-dist: distdir
-	-find $(distdir) -type d ! -perm -777 -exec chmod a+rwx {} \; -o \
-	  ! -type d ! -perm -444 -links 1 -exec chmod a+r {} \; -o \
-	  ! -type d ! -perm -400 -exec chmod a+r {} \; -o \
-	  ! -type d ! -perm -444 -exec $(SHELL) $(install_sh) -c -m a+r {} {} \; \
-	|| chmod -R a+r $(distdir)
-	$(AMTAR) chof - $(distdir) | GZIP=$(GZIP_ENV) gzip -c > $(distdir).tar.gz
-	-chmod -R a+w $(distdir) > /dev/null 2>&1; rm -rf $(distdir)
-dist-zip: distdir
-	-find $(distdir) -type d ! -perm -777 -exec chmod a+rwx {} \; -o \
-	  ! -type d ! -perm -444 -links 1 -exec chmod a+r {} \; -o \
-	  ! -type d ! -perm -400 -exec chmod a+r {} \; -o \
-	  ! -type d ! -perm -444 -exec $(SHELL) $(install_sh) -c -m a+r {} {} \; \
-	|| chmod -R a+r $(distdir)
-	-rm -f $(distdir).zip
-	zip -rq $(distdir).zip $(distdir)
-	-chmod -R a+w $(distdir) > /dev/null 2>&1; rm -rf $(distdir)
-dist-bzip2: distdir
-	-find $(distdir) -type d ! -perm -777 -exec chmod a+rwx {} \; -o \
-	  ! -type d ! -perm -444 -links 1 -exec chmod a+r {} \; -o \
-	  ! -type d ! -perm -400 -exec chmod a+r {} \; -o \
-	  ! -type d ! -perm -444 -exec $(SHELL) $(install_sh) -c -m a+r {} {} \; \
-	|| chmod -R a+r $(distdir)
-	$(AMTAR) chof - $(distdir) | bzip2 -9 -c > $(distdir).tar.bz2
-	-chmod -R a+w $(distdir) > /dev/null 2>&1; rm -rf $(distdir)
-dist-all: distdir
-	-find $(distdir) -type d ! -perm -777 -exec chmod a+rwx {} \; -o \
-	  ! -type d ! -perm -444 -links 1 -exec chmod a+r {} \; -o \
-	  ! -type d ! -perm -400 -exec chmod a+r {} \; -o \
-	  ! -type d ! -perm -444 -exec $(SHELL) $(install_sh) -c -m a+r {} {} \; \
-	|| chmod -R a+r $(distdir)
-	$(AMTAR) chof - $(distdir) | GZIP=$(GZIP_ENV) gzip -c > $(distdir).tar.gz
-	-rm -f $(distdir).zip
-	zip -rq $(distdir).zip $(distdir)
-	$(AMTAR) chof - $(distdir) | bzip2 -9 -c > $(distdir).tar.bz2
-	-chmod -R a+w $(distdir) > /dev/null 2>&1; rm -rf $(distdir)
-distdir: $(DISTFILES)
-	-chmod -R a+w $(distdir) > /dev/null 2>&1; rm -rf $(distdir)
-	mkdir $(distdir)
-	@for file in $(DISTFILES); do \
-	  d=$(srcdir); \
-	  if test -d $$d/$$file; then \
-	    cp -pR $$d/$$file $(distdir) \
-	    || exit 1; \
-	  else \
-	    test -f $(distdir)/$$file \
-	    || cp -p $$d/$$file $(distdir)/$$file \
-	    || exit 1; \
-	  fi; \
-	done
-	for subdir in $(DIST_SUBDIRS); do \
-	  if test "$$subdir" = .; then :; else \
-	    test -d $(distdir)/$$subdir \
-	    || mkdir $(distdir)/$$subdir \
-	    || exit 1; \
-	    (cd $$subdir && $(MAKE) $(AM_MAKEFLAGS) top_distdir=../$(distdir) distdir=../$(distdir)/$$subdir distdir) \
-	      || exit 1; \
-	  fi; \
-	done
-	$(MAKE) $(AM_MAKEFLAGS) top_distdir="$(top_distdir)" distdir="$(distdir)" dist-hook
-info-am:
-info: info-recursive
-dvi-am:
-dvi: dvi-recursive
+	@echo "$(distdir).tar.gz is ready for distribution" | \
+	  sed 'h;s/./=/g;p;x;p;x'
 check-am: all-am
 	$(MAKE) $(AM_MAKEFLAGS) check-local
 check: check-recursive
-installcheck-am:
-installcheck: installcheck-recursive
-install-exec-am: install-exec-local
-install-exec: install-exec-recursive
+all-am: Makefile $(DATA)
+installdirs: installdirs-recursive
+installdirs-am:
+	$(mkinstalldirs) $(DESTDIR)$(pkgdatadir)
 
-install-data-am: install-pkgdataDATA install-data-local
+install: install-recursive
+install-exec: install-exec-recursive
 install-data: install-data-recursive
+uninstall: uninstall-recursive
 
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
-install: install-recursive
-uninstall-am: uninstall-pkgdataDATA uninstall-local
-uninstall: uninstall-recursive
-all-am: Makefile $(DATA)
-all-redirect: all-recursive
+
+installcheck: installcheck-recursive
 install-strip:
-	$(MAKE) $(AM_MAKEFLAGS) INSTALL_STRIP_FLAG=-s install
-installdirs: installdirs-recursive
-installdirs-am:
-	$(mkinstalldirs)  $(DESTDIR)$(pkgdatadir)
-
-
+	$(MAKE) $(AM_MAKEFLAGS) INSTALL_PROGRAM="$(INSTALL_STRIP_PROGRAM)" \
+	  `test -z '$(STRIP)' || \
+	    echo "INSTALL_PROGRAM_ENV=STRIPPROG='$(STRIP)'"` install
 mostlyclean-generic:
 
 clean-generic:
 
 distclean-generic:
-	-rm -f Makefile $(CONFIG_CLEAN_FILES)
-	-rm -f config.cache config.log stamp-h stamp-h[0-9]*
+	-rm -f Makefile $(CONFIG_CLEAN_FILES) stamp-h stamp-h[0-9]*
 
 maintainer-clean-generic:
-	-rm -f Makefile.in
-mostlyclean-am:  mostlyclean-tags mostlyclean-generic
+	@echo "This command is intended for maintainers to use"
+	@echo "it deletes files that may require special tools to rebuild."
+clean: clean-recursive
+
+clean-am: clean-generic clean-libtool clean-local mostlyclean-am
+
+dist-all: distdir
+	$(AMTAR) chof - $(distdir) | GZIP=$(GZIP_ENV) gzip -c >$(distdir).tar.gz
+	$(AMTAR) chof - $(distdir) | bzip2 -9 -c >$(distdir).tar.bz2
+	-rm -f $(distdir).zip
+	zip -rq $(distdir).zip $(distdir)
+	-chmod -R a+w $(distdir) >/dev/null 2>&1; rm -rf $(distdir)
+distclean: distclean-recursive
+	-rm -f config.status config.cache config.log
+distclean-am: clean-am distclean-generic distclean-libtool \
+	distclean-local distclean-tags
+
+dvi: dvi-recursive
+
+dvi-am:
+
+info: info-recursive
+
+info-am:
+
+install-data-am: install-data-local install-pkgdataDATA
+
+install-exec-am: install-exec-local
+
+install-info: install-info-recursive
+
+install-man:
+
+installcheck-am:
+
+maintainer-clean: maintainer-clean-recursive
+
+maintainer-clean-am: distclean-am maintainer-clean-generic \
+	maintainer-clean-local
 
 mostlyclean: mostlyclean-recursive
 
-clean-am:  clean-tags clean-generic mostlyclean-am clean-local
+mostlyclean-am: mostlyclean-generic mostlyclean-libtool
 
-clean: clean-recursive
+uninstall-am: uninstall-info-am uninstall-local uninstall-pkgdataDATA
 
-distclean-am:  distclean-tags distclean-generic clean-am distclean-local
-	-rm -f libtool
+uninstall-info: uninstall-info-recursive
 
-distclean: distclean-recursive
-	-rm -f config.status
-
-maintainer-clean-am:  maintainer-clean-tags maintainer-clean-generic \
-		distclean-am maintainer-clean-local
-	@echo "This command is intended for maintainers to use;"
-	@echo "it deletes files that may require special tools to rebuild."
-
-maintainer-clean: maintainer-clean-recursive
-	-rm -f config.status
-
-.PHONY: uninstall-pkgdataDATA install-pkgdataDATA install-recursive \
-uninstall-recursive install-data-recursive uninstall-data-recursive \
-install-exec-recursive uninstall-exec-recursive installdirs-recursive \
-uninstalldirs-recursive all-recursive check-recursive \
-installcheck-recursive info-recursive dvi-recursive \
-mostlyclean-recursive distclean-recursive clean-recursive \
-maintainer-clean-recursive tags tags-recursive mostlyclean-tags \
-distclean-tags clean-tags maintainer-clean-tags distdir info-am info \
-dvi-am dvi check-local check check-am installcheck-am installcheck \
-install-exec-local install-exec-am install-exec install-data-local \
-install-data-am install-data install-am install uninstall-local \
-uninstall-am uninstall all-redirect all-am all install-strip \
-installdirs-am installdirs mostlyclean-generic distclean-generic \
-clean-generic maintainer-clean-generic clean mostlyclean distclean \
-maintainer-clean
+.PHONY: $(RECURSIVE_TARGETS) GTAGS all all-am check check-am check-local \
+	clean clean-generic clean-libtool clean-local clean-recursive \
+	dist dist-all dist-bzip2 dist-zip distcheck distclean \
+	distclean-generic distclean-libtool distclean-local \
+	distclean-recursive distclean-tags distdir dvi dvi-am \
+	dvi-recursive info info-am info-recursive install install-am \
+	install-data install-data-am install-data-local \
+	install-data-recursive install-exec install-exec-am \
+	install-exec-local install-exec-recursive install-info \
+	install-info-am install-info-recursive install-man \
+	install-pkgdataDATA install-recursive install-strip \
+	installcheck installcheck-am installdirs installdirs-am \
+	installdirs-recursive maintainer-clean maintainer-clean-generic \
+	maintainer-clean-local maintainer-clean-recursive mostlyclean \
+	mostlyclean-generic mostlyclean-libtool mostlyclean-recursive \
+	tags tags-recursive uninstall uninstall-am uninstall-info-am \
+	uninstall-info-recursive uninstall-local uninstall-pkgdataDATA \
+	uninstall-recursive
 
 dist-hook:
 	( \
@@ -588,31 +620,31 @@ uninstall-data-html:
 @WITH_PERL_TRUE@	fi
 @WITH_PERL_TRUE@	touch perl-sources
 
-@WITH_PERL_TRUE@@WITH_PERL_DYNAMIC_TRUE@$(PERLMAKEFILE): perl-sources $(PERLMAKEMAKER)
-@WITH_PERL_TRUE@@WITH_PERL_DYNAMIC_TRUE@	cd $(PERLMAGICK) && @PERL@ Makefile.PL $(PERL_MAKE_OPTIONS)
+@WITH_PERL_DYNAMIC_TRUE@@WITH_PERL_TRUE@$(PERLMAKEFILE): perl-sources $(PERLMAKEMAKER)
+@WITH_PERL_DYNAMIC_TRUE@@WITH_PERL_TRUE@	cd $(PERLMAGICK) && @PERL@ Makefile.PL $(PERL_MAKE_OPTIONS)
 
-@WITH_PERL_TRUE@@WITH_PERL_DYNAMIC_TRUE@install-exec-perl: $(PERLMAKEFILE)
-@WITH_PERL_TRUE@@WITH_PERL_DYNAMIC_TRUE@	( cd $(PERLMAGICK) && $(MAKE) CC='@CC@' && \
-@WITH_PERL_TRUE@@WITH_PERL_DYNAMIC_TRUE@	$(MAKE) CC='@CC@' install && \
-@WITH_PERL_TRUE@@WITH_PERL_DYNAMIC_TRUE@	$(MAKE) clean && rm -f  Makefile.old )
+@WITH_PERL_DYNAMIC_TRUE@@WITH_PERL_TRUE@install-exec-perl: $(PERLMAKEFILE)
+@WITH_PERL_DYNAMIC_TRUE@@WITH_PERL_TRUE@	( cd $(PERLMAGICK) && $(MAKE) CC='@CC@' && \
+@WITH_PERL_DYNAMIC_TRUE@@WITH_PERL_TRUE@	$(MAKE) CC='@CC@' install && \
+@WITH_PERL_DYNAMIC_TRUE@@WITH_PERL_TRUE@	$(MAKE) clean && rm -f  Makefile.old )
 
-@WITH_PERL_TRUE@@WITH_PERL_DYNAMIC_TRUE@check-perl: $(PERLMAKEFILE)
-@WITH_PERL_TRUE@@WITH_PERL_DYNAMIC_TRUE@	cd $(PERLMAGICK) && $(MAKE) CC='@CC@' test
+@WITH_PERL_DYNAMIC_TRUE@@WITH_PERL_TRUE@check-perl: $(PERLMAKEFILE)
+@WITH_PERL_DYNAMIC_TRUE@@WITH_PERL_TRUE@	cd $(PERLMAGICK) && $(MAKE) CC='@CC@' test
 
-@WITH_PERL_TRUE@@WITH_PERL_DYNAMIC_FALSE@@WITH_PERL_STATIC_TRUE@$(PERLMAKEFILE): perl-sources $(PERLMAKEMAKER)
-@WITH_PERL_TRUE@@WITH_PERL_DYNAMIC_FALSE@@WITH_PERL_STATIC_TRUE@	cd $(PERLMAGICK) && @PERL@ Makefile.PL MAP_TARGET=$(PERLSTATICNAME) $(PERL_MAKE_OPTIONS)
+@WITH_PERL_DYNAMIC_FALSE@@WITH_PERL_STATIC_TRUE@@WITH_PERL_TRUE@$(PERLMAKEFILE): perl-sources $(PERLMAKEMAKER)
+@WITH_PERL_DYNAMIC_FALSE@@WITH_PERL_STATIC_TRUE@@WITH_PERL_TRUE@	cd $(PERLMAGICK) && @PERL@ Makefile.PL MAP_TARGET=$(PERLSTATICNAME) $(PERL_MAKE_OPTIONS)
 
-@WITH_PERL_TRUE@@WITH_PERL_DYNAMIC_FALSE@@WITH_PERL_STATIC_TRUE@$(PERLMAGICK)/$(PERLMAGICK): $(PERLMAKEFILE)
-@WITH_PERL_TRUE@@WITH_PERL_DYNAMIC_FALSE@@WITH_PERL_STATIC_TRUE@	( cd $(PERLMAGICK) && $(MAKE) CC='@CC@' $(PERLSTATICNAME) )
+@WITH_PERL_DYNAMIC_FALSE@@WITH_PERL_STATIC_TRUE@@WITH_PERL_TRUE@$(PERLMAGICK)/$(PERLMAGICK): $(PERLMAKEFILE)
+@WITH_PERL_DYNAMIC_FALSE@@WITH_PERL_STATIC_TRUE@@WITH_PERL_TRUE@	( cd $(PERLMAGICK) && $(MAKE) CC='@CC@' $(PERLSTATICNAME) )
 
-@WITH_PERL_TRUE@@WITH_PERL_DYNAMIC_FALSE@@WITH_PERL_STATIC_TRUE@install-exec-perl: $(PERLMAGICK)/$(PERLMAGICK)
-@WITH_PERL_TRUE@@WITH_PERL_DYNAMIC_FALSE@@WITH_PERL_STATIC_TRUE@	( cd $(PERLMAGICK) && \
-@WITH_PERL_TRUE@@WITH_PERL_DYNAMIC_FALSE@@WITH_PERL_STATIC_TRUE@	$(MAKE) -f Makefile.aperl CC='@CC@' inst_perl MAP_TARGET=$(PERLSTATICNAME) && \
-@WITH_PERL_TRUE@@WITH_PERL_DYNAMIC_FALSE@@WITH_PERL_STATIC_TRUE@	$(MAKE) -f Makefile.aperl map_clean && \
-@WITH_PERL_TRUE@@WITH_PERL_DYNAMIC_FALSE@@WITH_PERL_STATIC_TRUE@	$(MAKE) clean && rm -f  Makefile.old )
+@WITH_PERL_DYNAMIC_FALSE@@WITH_PERL_STATIC_TRUE@@WITH_PERL_TRUE@install-exec-perl: $(PERLMAGICK)/$(PERLMAGICK)
+@WITH_PERL_DYNAMIC_FALSE@@WITH_PERL_STATIC_TRUE@@WITH_PERL_TRUE@	( cd $(PERLMAGICK) && \
+@WITH_PERL_DYNAMIC_FALSE@@WITH_PERL_STATIC_TRUE@@WITH_PERL_TRUE@	$(MAKE) -f Makefile.aperl CC='@CC@' inst_perl MAP_TARGET=$(PERLSTATICNAME) && \
+@WITH_PERL_DYNAMIC_FALSE@@WITH_PERL_STATIC_TRUE@@WITH_PERL_TRUE@	$(MAKE) -f Makefile.aperl map_clean && \
+@WITH_PERL_DYNAMIC_FALSE@@WITH_PERL_STATIC_TRUE@@WITH_PERL_TRUE@	$(MAKE) clean && rm -f  Makefile.old )
 
-@WITH_PERL_TRUE@@WITH_PERL_DYNAMIC_FALSE@@WITH_PERL_STATIC_TRUE@check-perl: $(PERLMAGICK)/$(PERLMAGICK)
-@WITH_PERL_TRUE@@WITH_PERL_DYNAMIC_FALSE@@WITH_PERL_STATIC_TRUE@	cd $(PERLMAGICK) && $(MAKE) -f Makefile.aperl CC='@CC@' test
+@WITH_PERL_DYNAMIC_FALSE@@WITH_PERL_STATIC_TRUE@@WITH_PERL_TRUE@check-perl: $(PERLMAGICK)/$(PERLMAGICK)
+@WITH_PERL_DYNAMIC_FALSE@@WITH_PERL_STATIC_TRUE@@WITH_PERL_TRUE@	cd $(PERLMAGICK) && $(MAKE) -f Makefile.aperl CC='@CC@' test
 
 @WITH_PERL_TRUE@clean-perl: $(PERLMAKEFILE)
 @WITH_PERL_TRUE@	cd $(PERLMAGICK) && $(MAKE) CC='@CC@' clean && rm -f Makefile.old PerlMagick
@@ -649,7 +681,6 @@ maintainer-clean-local: distclean-local
 
 # Run tests on PerlMagick
 check-local: check-perl
-
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:
