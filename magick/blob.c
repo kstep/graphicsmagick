@@ -596,6 +596,7 @@ MagickExport int EOFBlob(const Image *image)
     case BlobStream:
       return(image->blob->eof);
   }
+  return(0);
 }
 
 /*
@@ -1909,6 +1910,7 @@ MagickExport size_t ReadBlob(Image *image,const size_t length,void *data)
       return(count);
     }
   }
+  return(0);
 }
 
 /*
@@ -2331,6 +2333,7 @@ MagickExport ExtendedSignedIntegralType SeekBlob(Image *image,
       return(TellBlob(image));
     }
   }
+  return(-1);
 }
 
 /*
@@ -2400,6 +2403,7 @@ MagickExport int SyncBlob(Image *image)
     case BlobStream:
       return(0);
   }
+  return(0);
 }
 
 /*
@@ -2449,6 +2453,7 @@ MagickExport ExtendedSignedIntegralType TellBlob(const Image *image)
     case BlobStream:
       return(image->blob->offset);
   }
+  return(-1);
 }
 
 /*
@@ -2583,6 +2588,7 @@ MagickExport size_t WriteBlob(Image *image,const size_t length,const void *data)
       return(length);
     }
   }
+  return(0);
 }
 
 /*
