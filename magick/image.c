@@ -2400,6 +2400,68 @@ MagickExport RectangleInfo GetImageBoundingBox(Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   G e t I m a g e D e p t h                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method GetImageDepth returns the depth of the image.
+%
+%  The format of the GetImageDepth method is:
+%
+%      RectangleInfo GetImageDepth(Image *image)
+%
+%  A description of each parameter follows:
+%
+%    o bounds: Method GetImageDepth returns the depth of the image.
+%
+%    o image: The address of a structure of type Image.
+%
+%
+*/
+MagickExport unsigned int GetImageDepth(Image *image)
+{
+  int
+    y;
+
+  register int
+    x;
+
+  register PixelPacket
+    *p;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  if (QuantumDepth == 8)
+    return(QuantumDepth);
+  for (y=0; y < (int) image->rows; y++)
+  {
+    p=GetImagePixels(image,0,y,image->columns,1);
+    if (p == (PixelPacket *) NULL)
+      break;
+    for (x=0; x < (int) image->columns; x++)
+    {
+      if (((p->red >> 8) & 0xff) != (p->red & 0xff))
+        return(QuantumDepth);
+      if (((p->green >> 8) & 0xff) != (p->green & 0xff))
+        return(QuantumDepth);
+      if (((p->blue >> 8) & 0xff) != (p->blue & 0xff))
+        return(QuantumDepth);
+      if (image->matte || (image->colorspace == CMYKColorspace)
+        if (((p->opacity >> 8) & 0xff) != (p->opacity & 0xff))
+          return(QuantumDepth);
+      p++;
+    }
+  }
+  return(8);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   G e t I m a g e I n f o                                                   %
 %                                                                             %
 %                                                                             %
