@@ -56,7 +56,7 @@
 #include "magick.h"
 #include "defines.h"
 #include "magic.h"
-#if defined(HasLTDL) || defined(_MAGICKMOD_)
+#if defined(HasMODULES)
 #include "modules.h"
 #endif
 
@@ -4226,7 +4226,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             draw_info->pointsize=clone_info->pointsize;
             continue;
           }
-#if defined(HasLTDL) || defined(_MAGICKMOD_)
+#if defined(HasMODULES)
         if (LocaleNCompare("-process",option,5) == 0)
           {
             char

@@ -56,8 +56,8 @@
 #include "magick.h"
 #include "defines.h"
 #include "magic.h"
-#if defined(HasLTDL) || defined(_MAGICKMOD_)
-#include "modules.h"
+#if defined(HasMODULES)
+# include "modules.h"
 #endif
 
 /*
@@ -291,7 +291,7 @@ MagickExport MagickInfo *GetMagickInfo(const char *tag,ExceptionInfo *exception)
         Register image formats.
       */
       LiberateSemaphore(&magick_semaphore);
-#if defined(HasLTDL) || defined(_MAGICKMOD_)
+#if defined(HasMODULES)
       (void) GetModuleInfo((char *) NULL,exception);
 #else
       Register8BIMImage();
@@ -392,7 +392,7 @@ MagickExport MagickInfo *GetMagickInfo(const char *tag,ExceptionInfo *exception)
       return(p);
     }
   LiberateSemaphore(&magick_semaphore);
-#if defined(HasLTDL) || defined(_MAGICKMOD_)
+#if defined(HasMODULES)
   (void) OpenModule(tag,exception);
   AcquireSemaphore(&magick_semaphore);
   for (p=magick_list; p != (MagickInfo *) NULL; p=p->next)
@@ -521,7 +521,7 @@ MagickExport unsigned int ListMagickInfo(FILE *file,ExceptionInfo *exception)
   (void) fprintf(file,"    Format  Mode  Description\n");
   (void) fprintf(file,"--------------------------------------------------------"
     "-----------------------\n");
-#if defined(HasLTDL) || defined(_MAGICKMOD_)
+#if defined(HasMODULES)
   OpenModules(exception);
 #endif
   (void) GetMagickInfo((char *) NULL,exception);

@@ -1214,11 +1214,13 @@ int main(int argc,char **argv)
                           (void) ListMagicInfo((FILE *) NULL,&exception);
                           break;
                         }
+#if defined(HasMODULES)
                       if (LocaleCompare("Module",option) == 0)
                         {
                           (void) ListModuleAliases((FILE *) NULL,&exception);
                           break;
                         }
+#endif /* HasMODULES */
                       MagickError(OptionError,"Invalid list type",option);
                     }
                     default:

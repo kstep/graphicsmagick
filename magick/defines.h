@@ -170,6 +170,11 @@ extern "C" {
 #define ScaleColor6to8(x)  ((x) << 2)
 #define Swap(x,y) ((x)^=(y), (y)^=(x), (x)^=(y))
 #define True  1
+
+#if defined(HasLTDL) || defined(_MAGICKMOD_)
+#define HasMODULES
+#endif
+
 
 /*
   Define system symbols if not already defined.
