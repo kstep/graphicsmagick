@@ -3439,10 +3439,10 @@ Export unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
               /*
                 Convert DirectClass packets to contiguous CMYK scanlines.
               */
-              *q++=(JSAMPLE) (MaxRGB-(p->red >> 4));
-              *q++=(JSAMPLE) (MaxRGB-(p->green >> 4));
-              *q++=(JSAMPLE) (MaxRGB-(p->blue >> 4));
-              *q++=(JSAMPLE) (MaxRGB-(p->index >> 4));
+              *q++=(JSAMPLE) (p->red >> 4);
+              *q++=(JSAMPLE) (p->green >> 4);
+              *q++=(JSAMPLE) (p->blue >> 4);
+              *q++=(JSAMPLE) (p->index >> 4);
               x++;
               if (x == (int) image->columns)
                 {
@@ -3507,10 +3507,10 @@ Export unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
             /*
               Convert DirectClass packets to contiguous CMYK scanlines.
             */
-            *q++=(JSAMPLE) DownScale(MaxRGB-p->red);
-            *q++=(JSAMPLE) DownScale(MaxRGB-p->green);
-            *q++=(JSAMPLE) DownScale(MaxRGB-p->blue);
-            *q++=(JSAMPLE) DownScale(MaxRGB-p->index);
+            *q++=(JSAMPLE) DownScale(p->red);
+            *q++=(JSAMPLE) DownScale(p->green);
+            *q++=(JSAMPLE) DownScale(p->blue);
+            *q++=(JSAMPLE) DownScale(p->index);
             x++;
             if (x == (int) image->columns)
               {
@@ -9088,20 +9088,8 @@ Export unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
     }
   else
     {
-      /*
-        Correct CMYK levels.
-      */
       if (image->colorspace != CMYKColorspace)
         RGBTransformImage(image,CMYKColorspace);
-      p=image->pixels;
-      for (i=0; i < (int) image->packets; i++)
-      {
-        p->red=MaxRGB-p->red;
-        p->green=MaxRGB-p->green;
-        p->blue=MaxRGB-p->blue;
-        p->index=MaxRGB-p->index;
-        p++;
-      }
       MSBFirstWriteShort(4,image->file);
     }
   if ((image->class == DirectClass) || (image->colors > 256))
@@ -13646,10 +13634,10 @@ Export unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method WriteImage writes an image to a file.  You can specify a
-%  particular image format by prefixing the file with the image type and a
-%  colon (i.e. ps:image) or specify the image type as the filename suffix
-%  (i.e. image.ps).
+%  Method WriteImage writes an image to a file as defined by image->filename.
+%  You can specify a particular image format by prefixing the file with the
+%  image type and a colon (i.e. ps:image) or specify the image type as the
+%  filename suffix (i.e. image.ps).
 %
 %  The format of the WriteImage routine is:
 %

@@ -297,7 +297,7 @@ static unsigned int
 static void
   ClosestColor(CubeInfo *,const NodeInfo *),
   DefineColormap(CubeInfo *,NodeInfo *),
-  HilbertCurve(CubeInfo *,Image *,int,unsigned int),
+  HilbertCurve(CubeInfo *,Image *,const int,unsigned int),
   PruneLevel(CubeInfo *,const NodeInfo *),
   Reduction(CubeInfo *,const unsigned int);
 

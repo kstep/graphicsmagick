@@ -668,7 +668,6 @@ extern Export void
   GetImageInfo(ImageInfo *),
   GetMontageInfo(MontageInfo *),
   GetPixels(const Image *,float *,float *,float *,float *),
-  HSLTransform(double,const double,const double,Quantum *,Quantum *,Quantum *),
   LabelImage(Image *,const char *),
   LayerImage(Image *,const LayerType),
   MatteFloodfillImage(Image *,const RunlengthPacket *,const unsigned int,

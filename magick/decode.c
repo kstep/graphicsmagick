@@ -5473,26 +5473,8 @@ Export Image *ReadJPEGImage(const ImageInfo *image_info)
   }
   SetRunlengthPackets(image,packets);
   if (image->colorspace != CMYKColorspace)
-    {
-      if (image->class == PseudoClass)
-        SyncImage(image);
-    }
-  else
-    if (jpeg_info.saw_Adobe_marker)
-      {
-        /*
-          Correct CMYK levels.
-        */
-        q=image->pixels;
-        for (i=0; i < (int) image->packets; i++)
-        {
-          q->red=MaxRGB-q->red;
-          q->green=MaxRGB-q->green;
-          q->blue=MaxRGB-q->blue;
-          q->index=MaxRGB-q->index;
-          q++;
-        }
-      }
+    if (image->class == PseudoClass)
+      SyncImage(image);
   /*
     Free jpeg resources.
   */
@@ -11409,21 +11391,6 @@ Export Image *ReadPSDImage(const ImageInfo *image_info)
               q++;
             }
           }
-        if (layer_info[i].image->colorspace == CMYKColorspace)
-          {
-            /*
-              Correct CMYK levels.
-            */
-            q=layer_info[i].image->pixels;
-            for (i=0; i < (int) layer_info[i].image->packets; i++)
-            {
-              q->red=MaxRGB-q->red;
-              q->green=MaxRGB-q->green;
-              q->blue=MaxRGB-q->blue;
-              q->index=MaxRGB-q->index;
-              q++;
-            }
-          }
         layer_info[i].image->file=(FILE *) NULL;
       }
       for (i=0; i < 4; i++)
@@ -11491,21 +11458,6 @@ Export Image *ReadPSDImage(const ImageInfo *image_info)
     }
   if (image->class == PseudoClass)
     SyncImage(image);
-  if (image->colorspace == CMYKColorspace)
-    {
-      /*
-        Correct CMYK levels.
-      */
-      q=image->pixels;
-      for (i=0; i < (int) image->packets; i++)
-      {
-        q->red=MaxRGB-q->red;
-        q->green=MaxRGB-q->green;
-        q->blue=MaxRGB-q->blue;
-        q->index=MaxRGB-q->index;
-        q++;
-      }
-    }
   for (i=0; i < number_layers; i++)
   {
     /*

@@ -5,7 +5,7 @@ exec_prefix=@exec_prefix@
 exec_prefix_set=no
 
 usage="\
-Usage: Magick-config [--prefix[=DIR]] [--exec-prefix[=DIR]] [--version] [--libs] [--cflags]"
+Usage: Magick-config [--prefix[=DIR]] [--exec-prefix[=DIR]] [--version] [--cflags] [--cppflags] [--ldflags] [--libs]"
 
 if test $# -eq 0; then
       echo "${usage}" 1>&2
@@ -39,10 +39,16 @@ while test $# -gt 0; do
       echo @MAJOR_VERSION@.@MINOR_VERSION@.@MICRO_VERSION@
       ;;
     --cflags)
-      echo @CPPFLAGS@ @CFLAGS@
+      echo '@CFLAGS@'
+      ;;
+    --cppflags)
+      echo '@CPPFLAGS@'
+      ;;
+    --ldflags)
+      echo '@LDFLAGS@'
       ;;
     --libs)
-      echo '@LDFLAGS@ @MAGICKLIB@ @X11STUBSLIB@ @LIBS@'
+      echo '@MAGICKLIB@ @X11STUBSLIB@ @LIBS@'
       ;;
     *)
       echo "${usage}" 1>&2

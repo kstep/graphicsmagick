@@ -77,7 +77,8 @@ typedef struct _MessageDigest
 */
 static void
   TransformMessageDigest(MessageDigest *,unsigned long *),
-  UpdateMessageDigest(MessageDigest *,unsigned char *,unsigned long);
+  UpdateMessageDigest(MessageDigest *,const unsigned char *,
+    const unsigned long);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -380,7 +381,7 @@ static void TransformMessageDigest(MessageDigest *message_digest,
 %
 */
 static void UpdateMessageDigest(MessageDigest *message_digest,
-  unsigned char *input_message,const unsigned long message_length)
+  const unsigned char *input_message,const unsigned long message_length)
 {
   register unsigned char
     *p;

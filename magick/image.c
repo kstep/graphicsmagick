@@ -9856,10 +9856,10 @@ Export void RGBTransformImage(Image *image,const ColorspaceType colorspace)
       p=image->pixels;
       for (i=0; i < (int) image->packets; i++)
       {
-        cyan=MaxRGB-p->red;
-        magenta=MaxRGB-p->green;
-        yellow=MaxRGB-p->blue;
-        black=cyan;
+        cyan=p->red;
+        magenta=p->green;
+        yellow=p->blue;
+        black=MaxRGB-cyan;
         if (magenta < black)
           black=magenta;
         if (yellow < black)
@@ -12194,10 +12194,10 @@ Export void TransformRGBImage(Image *image,const ColorspaceType colorspace)
       p=image->pixels;
       for (i=0; i < (int) image->packets; i++)
       {
-        cyan=p->red;
-        magenta=p->green;
-        yellow=p->blue;
-        black=p->index;
+        cyan=MaxRGB-p->red;
+        magenta=MaxRGB-p->green;
+        yellow=MaxRGB-p->blue;
+        black=MaxRGB-p->index;
         if ((cyan+black) > MaxRGB)
           p->red=0;
         else

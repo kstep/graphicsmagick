@@ -3258,7 +3258,7 @@ Export int XConfirmWidget(Display *display,XWindows *windows,
         x=(windows->widget.width >> 1)-(width >> 1);
         y=(windows->widget.height >> 1)-(height << 1);
         XDrawString(display,windows->widget.id,windows->widget.annotate_context,
-          x,y,message,Extent(message));
+          x,y,(char *) message,Extent(message));
         if (qualifier != (char *) NULL)
           {
             char
@@ -8105,14 +8105,15 @@ Export void XNoticeWidget(Display *display,XWindows *windows,
         x=(windows->widget.width >> 1)-(width >> 1);
         y=(windows->widget.height >> 1)-(height << 1);
         XDrawString(display,windows->widget.id,windows->widget.annotate_context,
-          x,y,message,Extent(message));
+          x,y,(char *) message,Extent(message));
         if (qualifier != (char *) NULL)
           {
             width=TextWidth(font_info,qualifier,Extent(qualifier));
             x=(windows->widget.width >> 1)-(width >> 1);
             y+=height;
             XDrawString(display,windows->widget.id,
-              windows->widget.annotate_context,x,y,qualifier,Extent(qualifier));
+              windows->widget.annotate_context,x,y,(char *) qualifier,
+              Extent(qualifier));
           }
         XDrawBeveledButton(display,&windows->widget,&dismiss_info);
         XHighlightWidget(display,&windows->widget,BorderOffset,BorderOffset);
