@@ -1,5 +1,5 @@
-<HTML>
-<HEAD>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"><HTML>
+<HEAD><meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <TITLE>animate - Methods to Interactively Animate an Image Sequence</TITLE>
 <link rel="StyleSheet" href="../www/magick.css" type="text/css">
 </HEAD>
@@ -12,16 +12,16 @@
 <UL>
 
 	<LI><A HREF="#name">
-<FONT SIZE=-1>NAME</FONT></A></LI>
+<FONT SIZE=-1>NAME</FONT></A>
 	<LI><A HREF="#synopsis">
-<FONT SIZE=-1>SYNOPSIS</FONT></A></LI>
+<FONT SIZE=-1>SYNOPSIS</FONT></A>
 	<LI><A HREF="#function descriptions">
 <FONT SIZE=-1>FUNCTION</FONT> 
-<FONT SIZE=-1>DESCRIPTIONS</FONT></A></LI>
+<FONT SIZE=-1>DESCRIPTIONS</FONT></A>
 	<UL>
 
-		<LI><A HREF="#xanimatebackgroundimage">XAnimateBackgroundImage</A></LI>
-		<LI><A HREF="#xanimateimage">XAnimateImage</A></LI>
+		<LI><A HREF="#xanimatebackgroundimage">XAnimateBackgroundImage</A>
+		<LI><A HREF="#xanimateimage">XAnimateImage</A>
 	</UL>
 
 </UL>
@@ -44,21 +44,21 @@
 <FONT SIZE=-1>DESCRIPTIONS</FONT></A></H1>
 <P>
 <H2><A NAME="xanimatebackgroundimage">XAnimateBackgroundImage</A></H2>
-<blockquote>XAnimateBackgroundImage ( ) animates an image sequence in the background ofa window.; </blockquote><P>The format of the XAnimateBackgroundImage method is:</P>
+<blockquote>XAnimateBackgroundImage() animates an image sequence in the background of a window. </blockquote><P>The format of the XAnimateBackgroundImage method is:</P>
 <blockquote>void XAnimateBackgroundImage ( Display *display, <A HREF="types/XResourceInfo.html">XResourceInfo</A> *resource_info, <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DL>
-<p><dt><STRONG><A NAME="item_o_display%3A">display:</A></STRONG><BR>
+<DL><DT><DD><DL>
+<dd><p></p><dt><STRONG><A NAME="item_o_display%3A">display:</A></STRONG><BR>
 <DD>
 Specifies a connection to an 
 <FONT SIZE=-1>X</FONT> server; returned from XOpenDisplay.
 <P></P>
-<p><dt><STRONG><A NAME="item_o_resource_info%3A">resource_info:</A></STRONG><BR>
+<dd><p></p><dt><STRONG><A NAME="item_o_resource_info%3A">resource_info:</A></STRONG><BR>
 <DD>
 Specifies a pointer to a 
 <FONT SIZE=-1>X11</FONT> XResourceInfo structure.
 <P></P>
-<p><dt><STRONG><A NAME="item_o_image%3A">image:</A></STRONG><BR>
+<dd><p></p><dt><STRONG><A NAME="item_o_image%3A">image:</A></STRONG><BR>
 <DD>
 Specifies a pointer to a Image structure; returned from ReadImage.
 <P></P></DL></DL>
@@ -72,26 +72,26 @@ Specifies a pointer to a Image structure; returned from ReadImage.
       char **argv,const int argc,Image *image)</PRE>
 <P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DL>
-<p><dt><STRONG>display:</STRONG><BR>
+<DL><DT><DD><DL>
+<dd><p></p><dt><STRONG>display:</STRONG><BR>
 <DD>
 Specifies a connection to an 
 <FONT SIZE=-1>X</FONT> server; returned from XOpenDisplay.
 <P></P>
-<p><dt><STRONG>resource_info:</STRONG><BR>
+<dd><p></p><dt><STRONG>resource_info:</STRONG><BR>
 <DD>
 Specifies a pointer to a 
 <FONT SIZE=-1>X11</FONT> XResourceInfo structure.
 <P></P>
-<p><dt><STRONG><A NAME="item_o_argv%3A">argv:</A></STRONG><BR>
+<dd><p></p><dt><STRONG><A NAME="item_o_argv%3A">argv:</A></STRONG><BR>
 <DD>
 Specifies the application's argument list.
 <P></P>
-<p><dt><STRONG><A NAME="item_o_argc%3A">argc:</A></STRONG><BR>
+<dd><p></p><dt><STRONG><A NAME="item_o_argc%3A">argc:</A></STRONG><BR>
 <DD>
 Specifies the number of arguments.
 <P></P>
-<p><dt><STRONG>image:</STRONG><BR>
+<dd><p></p><dt><STRONG>image:</STRONG><BR>
 <DD>
 Specifies a pointer to a Image structure; returned from ReadImage.
 </DL></DL>
