@@ -155,20 +155,15 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
   long
     count;
 
-  register IndexPacket
-    *indexes;
-
   register int
+    i,
     x;
-
-  register PixelPacket
-    *q;
 
   unsigned char
     *scanline;
 
   unsigned int
-    header_length,
+    length,
     status,
     value_expected;
 
@@ -189,7 +184,9 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
       DestroyImage(image);
       return((Image *) NULL);
     }
-  header_length=0;
+  length=0;
+  image->columns=0;
+  image->rows=0;
   while (isgraph(c) && ((image->columns*image->rows) == 0))
   {
     if (!isalnum(c))
@@ -237,9 +234,9 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
           Assign a value to the specified keyword.
         */
         if (LocaleCompare(keyword,"Label_RECORDS") == 0)
-          header_length=(unsigned int) atoi(value);
+          length=(unsigned int) atoi(value);
         if (LocaleCompare(keyword,"LBLSIZE") == 0)
-          header_length=(unsigned int) atoi(value);
+          length=(unsigned int) atoi(value);
         if (LocaleCompare(keyword,"RECORD_BYTES") == 0)
           image->columns=(unsigned int) atoi(value);
         if (LocaleCompare(keyword,"NS") == 0)
@@ -255,13 +252,14 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
       count++;
     }
   }
-  while (count < (int) header_length)
+  while (count < (int) length)
   {
     c=ReadBlobByte(image);
     count++;
   }
   if ((image->columns*image->rows) == 0)
     ThrowReaderException(CorruptImageWarning,"image size is zero",image);
+  image->depth=8;
   if (!AllocateImageColormap(image,256))
     ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
   if (image_info->ping)
@@ -272,20 +270,17 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
   /*
     Initialize image structure.
   */
-  scanline=(unsigned char *)
-    AcquireMemory(image->columns*sizeof(unsigned char));
+  scanline=(unsigned char *) AcquireMemory(image->columns);
   if (scanline == (unsigned char *) NULL)
     ThrowReaderException(CorruptImageWarning,"Unable to read image data",image);
   /*
     Read VICAR pixels.
   */
-  image->depth=8;
   for (y=0; y < (int) image->rows; y++)
   {
-    q=SetImagePixels(image,0,y,image->columns,1);
-    if (q == (PixelPacket *) NULL)
+    if (!SetImagePixels(image,0,y,image->columns,1))
       break;
-    (void) ReadBlob(image,image->columns,(char *) scanline);
+    (void) ReadBlob(image,image->columns,scanline);
     (void) PushImagePixels(image,GrayQuantum,scanline);
     if (!SyncImagePixels(image))
       break;
@@ -403,15 +398,11 @@ static unsigned int WriteVICARImage(const ImageInfo *image_info,Image *image)
     label[MaxTextExtent];
 
   int
-    label_size,
     y;
 
   register int
     i,
     x;
-
-  register PixelPacket
-    *p;
 
   unsigned char
     *scanline;
@@ -429,31 +420,16 @@ static unsigned int WriteVICARImage(const ImageInfo *image_info,Image *image)
   /*
     Write header.
   */
-  FormatString(header,"LBLSIZE=            FORMAT='BYTE'  TYPE='IMAGE'");
-  FormatString(header+Extent(header),"  BUFSIZE=20000  DIM=2  EOL=0");
-  FormatString(header+Extent(header),
-    "  RECSIZE=%u  ORG='BSQ'  NL=%u  NS=%u  NB=1",image->columns,image->rows,
+  memset(header,' ',MaxTextExtent);
+  FormatString(header,"LBLSIZE=%u FORMAT='BYTE' TYPE='IMAGE' BUFSIZE=20000 "
+    "DIM=2 EOL=0 RECSIZE=%u ORG='BSQ' NL=%u NS=%u NB=1 N1=0 N2=0 N3=0 N4=0 "
+    "NBB=0 NLB=0 TASK='ImageMagick'",MaxTextExtent,image->columns,image->rows,
     image->columns);
-  FormatString(header+Extent(header),
-    "  N1=0  N2=0  N3=0  N4=0  NBB=0  NLB=0");
-  FormatString(header+Extent(header),"  TASK='ImageMagick'");
-  /*
-    Compute the size of the label.
-  */
-  label_size=(Extent(header)+image->columns-1)/image->columns*image->columns;
-  FormatString(label,"%d",label_size);
-  for (i=0 ; i < Extent(label); i++)
-    header[i+8]=label[i];
-  /*
-    Print the header and enough spaces to pad to label size.
-  */
-  FormatString(buffer, "%-*s",label_size,header);
-  (void) WriteBlobString(image,buffer);
+  (void) WriteBlob(image,MaxTextExtent,header);
   /*
     Allocate memory for scanline.
   */
-  scanline=(unsigned char *)
-    AcquireMemory(image->columns*sizeof(unsigned char));
+  scanline=(unsigned char *) AcquireMemory(image->columns);
   if (scanline == (unsigned char *) NULL)
     ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
   /*
@@ -462,11 +438,10 @@ static unsigned int WriteVICARImage(const ImageInfo *image_info,Image *image)
   image->depth=8;
   for (y=0; y < (int) image->rows; y++)
   {
-    p=GetImagePixels(image,0,y,image->columns,1);
-    if (p == (PixelPacket *) NULL)
+    if (!GetImagePixels(image,0,y,image->columns,1))
       break;
     (void) PopImagePixels(image,GrayQuantum,scanline);
-    (void) WriteBlob(image,image->columns,(char *) scanline);
+    (void) WriteBlob(image,image->columns,scanline);
     if (image->previous == (Image *) NULL)
       if (QuantumTick(y,image->rows))
         MagickMonitor(SaveImageText,y,image->rows);
