@@ -180,11 +180,21 @@ then
     *-*-hpux* )
       # aCC: HP ANSI C++ B3910B A.03.34
       CFLAGS="${CFLAGS} -Wp,-H30000"
-      CXX="${CXX} -AA"
+      if test -n "${CXXFLAGS}"
+      then
+        CXXFLAGS='-AA'
+      else
+        CXXFLAGS="${CXXFLAGS} -AA"
+      fi
       ;;
     *-dec-osf5.* )
       # Compaq alphaev68-dec-osf5.1 compiler
-      CXXFLAGS="${CXXFLAGS} -std strict_ansi -noimplicit_include"
+      if test -n "${CXXFLAGS}"
+      then
+        CXXFLAGS='-std strict_ansi -noimplicit_include'
+      else
+        CXXFLAGS="${CXXFLAGS} -std strict_ansi -noimplicit_include"
+      fi
   esac
 else
   CFLAGS="${CFLAGS} -Wall"

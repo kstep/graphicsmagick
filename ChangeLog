@@ -1,3 +1,10 @@
+2003-09-14  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* ltdl/ltdl.c: Update to libltdl current as of today.
+	* ltmain.sh: Update to libtool current as of today.
+	* configure.ac: For HPUX C++ compiler, add -AA to CXXFLAGS rather
+	than CXX.
+
 2003-09-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* configure.ac: Decided that the standards conformance
