@@ -89,8 +89,11 @@ static unsigned int IsTTF(const unsigned char *magick,const size_t length)
 {
   if (length < 23)
     return(False);
-  /* PFB */
+  /* PFA */
   if (LocaleNCompare((char *) magick,"%!PS-AdobeFont-1.0",0) == 0)
+    return(True);
+  /* PFB */
+  if (LocaleNCompare((char *) magick,"%!PS-AdobeFont-1.0",6) == 0)
     return(True);
   /* TTF */
   if(magick[0] == 0x0 && magick[1] == 0x1 && magick[2] == 0x0 &&
@@ -256,6 +259,13 @@ ModuleExport void RegisterTTFImage(void)
   entry->description=AllocateString("TrueType font");
   entry->module=AllocateString("TTF");
   (void) RegisterMagickInfo(entry);
+  entry=SetMagickInfo("PFA");
+  entry->decoder=ReadTTFImage;
+  entry->magick=IsTTF;
+  entry->adjoin=False;
+  entry->description=AllocateString("TrueType font");
+  entry->module=AllocateString("TTF");
+  (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("PFB");
   entry->decoder=ReadTTFImage;
   entry->magick=IsTTF;
@@ -295,6 +305,7 @@ ModuleExport void UnregisterTTFImage(void)
 {
   (void) UnregisterMagickInfo("TTF");
   (void) UnregisterMagickInfo("AFM");
+  (void) UnregisterMagickInfo("PFA");
   (void) UnregisterMagickInfo("PFB");
   (void) UnregisterMagickInfo("PFM");
 }
