@@ -1054,7 +1054,7 @@ MagickExport void Upsample(const unsigned long width,const unsigned long height,
       p--;
       q-=2;
       *q=(*p);
-      *(q+1)=(((int) *p)+((int) *(p+1))+1) >> 1;
+      *(q+1)=(((long) *p)+((long) *(p+1))+1) >> 1;
     }
   }
   for (y=0; y < (long) (height-1); y++)
@@ -1064,14 +1064,14 @@ MagickExport void Upsample(const unsigned long width,const unsigned long height,
     r=q+scaled_width;
     for (x=0; x < (long) (width-1); x++)
     {
-      *q=(((int) *p)+((int) *r)+1) >> 1;
-      *(q+1)=(((int) *p)+((int) *(p+2))+((int) *r)+((int) *(r+2))+2) >> 2;
+      *q=(((long) *p)+((long) *r)+1) >> 1;
+      *(q+1)=(((long) *p)+((long) *(p+2))+((long) *r)+((long) *(r+2))+2) >> 2;
       q+=2;
       p+=2;
       r+=2;
     }
-    *q++=(((int) *p++)+((int) *r++)+1) >> 1;
-    *q++=(((int) *p++)+((int) *r++)+1) >> 1;
+    *q++=(((long) *p++)+((long) *r++)+1) >> 1;
+    *q++=(((long) *p++)+((long) *r++)+1) >> 1;
   }
   p=pixels+(2*height-2)*scaled_width;
   q=pixels+(2*height-1)*scaled_width;

@@ -1040,7 +1040,7 @@ static unsigned int WritePCDImage(const ImageInfo *image_info,Image *image)
     (void) WriteBlobByte(pcd_image,'\1');
   else
     (void) WriteBlobByte(pcd_image,'\0');
-  for (i=0; i < 3*0x800-1539; i++)
+  for (i=0; i < (3*0x800-1539); i++)
     (void) WriteBlobByte(pcd_image,'\0');
   /*
     Write PCD tiles.

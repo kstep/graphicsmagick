@@ -17,9 +17,9 @@ extern "C" {
 /*
   Color quantum is [0..255].
 */
-#define Downscale(quantum)  ((Quantum) (quantum))
+#define Downscale(quantum)  ((unsigned int) (quantum))
 #define Upscale(quantum)  ((unsigned int) (quantum))
-#define XDownscale(color)  ((Quantum) ((color)/257))
+#define XDownscale(color)  ((unsigned int) ((color)/257))
 #define XUpscale(color)  ((unsigned int) (257*(color)))
 
 typedef unsigned char Quantum;
@@ -27,9 +27,9 @@ typedef unsigned char Quantum;
 /*
   Color quantum is [0..65535].
 */
-#define Downscale(quantum)  ((Quantum) ((quantum)/257))
+#define Downscale(quantum)  ((unsigned int) ((quantum)/257))
 #define Upscale(quantum)  ((unsigned int) (257*(quantum)))
-#define XDownscale(color)  ((Quantum) (color))
+#define XDownscale(color)  ((unsigned int) (color))
 #define XUpscale(color)  ((unsigned int) (color))
 
 typedef unsigned short Quantum;
@@ -690,7 +690,7 @@ extern MagickExport void
   DestroyMagick(void),
   DestroyMagickInfo(void),
   DestroyMontageInfo(MontageInfo *),
-	GetImageException(Image *,ExceptionInfo *),
+  GetImageException(Image *,ExceptionInfo *),
   GetImageInfo(ImageInfo *),
   GetMontageInfo(const ImageInfo *,MontageInfo *),
   InitializeMagick(const char *),
