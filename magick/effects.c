@@ -1379,7 +1379,6 @@ MagickExport Image *ImplodeImage(Image *image,const double amount,
 #define ImplodeImageText  "  Implode image...  "
 
   double
-    amount,
     distance,
     radius,
     x_center,
