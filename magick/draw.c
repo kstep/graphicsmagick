@@ -1605,9 +1605,6 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
             graphic_context[n]->clip_path=AllocateString(token);
             graphic_context[n]->clip_mask=
               CloneImage(image,0,0,True,&image->exception);
-            if (graphic_context[n]->clip_mask != (Image *) NULL)
-              if (graphic_context[n]->clip_units != ObjectBoundingBox)
-                (void) DrawClipPath(image,graphic_context[n]);
             break;
           }
         if (LocaleCompare("clip-rule",keyword) == 0)
@@ -1628,18 +1625,12 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
         if (LocaleCompare("clip-units",keyword) == 0)
           {
             GetToken(q,&q,token);
-            if (LocaleCompare("userSpaceOnUse",token) == 0)
-              {
-                graphic_context[n]->clip_units=UserSpaceOnUse;
-                break;
-              }
             if (LocaleCompare("objectBoundingBox",token) == 0)
               {
                 affine.sx=draw_info->bounds.x2;
                 affine.sy=draw_info->bounds.y2;
                 affine.tx=draw_info->bounds.x1;
                 affine.ty=draw_info->bounds.y1;
-                graphic_context[n]->clip_units=ObjectBoundingBox;
                 break;
               }
             break;
@@ -1977,10 +1968,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
               {
                 if (graphic_context[n]->clip_mask != 
                     graphic_context[n-1]->clip_mask)
-                  {
-                    DestroyImage(graphic_context[n]->clip_mask);
-                    SetImageClipMask(image,(Image *) NULL);
-                  }
+                  DestroyImage(graphic_context[n]->clip_mask);
                 DestroyDrawInfo(graphic_context[n]);
                 n--;
                 if (n < 0)
@@ -2539,9 +2527,6 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       if (point.y > graphic_context[n]->bounds.y2)
         graphic_context[n]->bounds.y2=point.y;
     }
-    if ((graphic_context[n]->clip_mask != (Image *) NULL) &&
-        (graphic_context[n]->clip_units == ObjectBoundingBox))
-      (void) DrawClipPath(image,graphic_context[n]);
     (void) DrawPrimitive(image,graphic_context[n],primitive_info);
     if (primitive_info->text != (char *) NULL)
       LiberateMemory((void **) &primitive_info->text);
@@ -3058,6 +3043,8 @@ static unsigned int DrawPrimitive(Image *image,const DrawInfo *draw_info,
       (void) fprintf(stdout,"  begin draw-primitive\n");
     }
   status=True;
+  if (draw_info->clip_mask != (Image *) NULL)
+    (void) DrawClipPath(image,draw_info);
   x=(int) ceil(primitive_info->point.x-0.5);
   y=(int) ceil(primitive_info->point.y-0.5);
   switch (primitive_info->primitive)
@@ -3383,6 +3370,8 @@ static unsigned int DrawPrimitive(Image *image,const DrawInfo *draw_info,
       break;
     }
   }
+  if (draw_info->clip_mask != (Image *) NULL)
+    SetImageClipMask(image,(Image *) NULL);
   if (draw_info->debug)
     (void) fprintf(stdout,"  end draw-primitive (%.2fu)\n",GetUserTime(&timer));
   return(status);

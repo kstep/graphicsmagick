@@ -8,12 +8,6 @@
 extern "C" {
 #endif
 
-typedef enum
-{
-  UserSpaceOnUse,
-  ObjectBoundingBox
-} DrawUnits;
-
 /*
   Typedef declarations.
 */
@@ -114,9 +108,6 @@ typedef struct _DrawInfo
 
   char
     *clip_path;
-
-  DrawUnits
-    clip_units;
 
   Image
     *clip_mask;
