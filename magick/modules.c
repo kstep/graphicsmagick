@@ -1108,7 +1108,7 @@ static int UnloadDynamicModule(const char *module)
   /*
     Close and remove module from list.
   */
-  lt_dlclose(module_info->handle);
+  lt_dlclose((ModuleHandle) module_info->handle);
   return(True);
 }
 
