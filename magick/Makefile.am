@@ -45,24 +45,25 @@ libMagick_la_LDFLAGS = -version-info $(MAJOR_VERSION):$(MINOR_VERSION)$(MICRO_VE
 
 # Library base sources
 MAGICK_BASE_SRCS=PreRvIcccm.c animate.c annotate.c attributes.c blob.c \
-  cache.c cache_view.c colors.c compress.c constitute.c decorate.c delegates.c \
-  display.c draw.c effects.c enhance.c error.c gems.c gradation.c histogram.c \
-  html.c image.c magick.c memory.c modules.c monitor.c \
-  montage.c quantize.c segment.c shear.c signature.c stream.c \
-  timer.c transform.c utility.c widget.c xwindows.c zoom.c
+  cache.c cache_view.c colors.c compress.c constitute.c decorate.c \
+  delegates.c display.c draw.c effects.c enhance.c error.c gems.c image.c \
+  magick.c memory.c modules.c monitor.c montage.c quantize.c segment.c \
+  shear.c signature.c stream.c timer.c transform.c utility.c widget.c \
+  xwindows.c zoom.c
 
 # Library coder sources
 MAGICK_CODER_SRCS=avs.c bim.c bmp.c cmyk.c dcm.c dps.c ept.c fax.c fits.c \
-  fpx.c gif.c gray.c hdf.c icc.c icon.c iptc.c jbig.c jpeg.c label.c logo.c \
-  map.c matte.c miff.c mono.c mtv.c pcd.c pcl.c pcx.c pdb.c pdf.c pict.c pix.c png.c \
-  plasma.c pnm.c preview.c ps.c ps2.c ps3.c psd.c pwp.c rgb.c rla.c rle.c \
-  sct.c sfw.c sgi.c stegano.c sun.c svg.c tga.c tiff.c tile.c tim.c ttf.c txt.c uil.c uyvy.c \
-  vicar.c vid.c viff.c wbmp.c x.c xbm.c xc.c xpm.c xwd.c yuv.c
+  fpx.c gif.c gradation.c gray.c hdf.c histogram.c html.c icc.c icon.c \
+  iptc.c jbig.c jpeg.c label.c logo.c map.c matte.c miff.c mono.c mtv.c \
+  pcd.c pcl.c pcx.c pdb.c pdf.c pict.c pix.c png.c plasma.c pnm.c preview.c \
+  ps.c ps2.c ps3.c psd.c pwp.c rgb.c rla.c rle.c sct.c sfw.c sgi.c stegano.c \
+  sun.c svg.c tga.c tiff.c tile.c tim.c ttf.c txt.c uil.c uyvy.c vicar.c \
+  vid.c viff.c wbmp.c x.c xbm.c xc.c xpm.c xwd.c yuv.c
 
 # Library sources
 if WITH_MODULES
 libMagick_la_SOURCES = $(MAGICK_BASE_SRCS)
-libMagick_la_LIBADD = @LIB_TIFF@ @LIB_JPEG@ @LIB_TTF@ @LIB_XEXT@ @LIB_XT@ \
+libMagick_la_LIBADD = @LIB_TIFF@ @LIB_JPEG@ @LIB_XEXT@ @LIB_XT@ \
   @LIB_X11@ @LIB_BZLIB@ @LIB_ZLIB@ @LIB_SFIO@ @LIB_THREAD@ @LIB_LF@ \
   @LIB_MATH@ $(top_builddir)/ltdl/libltdlc.la
 else
@@ -97,12 +98,13 @@ pkgdir            = $(libdir)/ImageMagick/modules/coders
 # Modules which are to be built
 if WITH_MODULES
 pkg_LTLIBRARIES   = avs.la bmp.la cmyk.la dcm.la dps.la ept.la fax.la fpx.la \
-  fits.la gif.la gray.la hdf.la icc.la icon.la iptc.la jbig.la jpeg.la \
-  label.la logo.la map.la matte.la miff.la mono.la mtv.la pcd.la pcl.la pcx.la pdb.la pdf.la pict.la \
-  png.la pix.la plasma.la pnm.la preview.la ps.la ps2.la ps3.la psd.la \
-  pwp.la rgb.la rla.la rle.la sct.la sfw.la sgi.la stegano.la sun.la svg.la tga.la \
-  tiff.la tile.la tim.la ttf.la txt.la uil.la uyvy.la vicar.la vid.la viff.la wbmp.la \
-  x.la xbm.la xc.la xpm.la xwd.la yuv.la bim.la
+  fits.la gif.la gray.la gradation.la hdf.la histogram.la html.la icc.la \
+  icon.la iptc.la jbig.la jpeg.la label.la logo.la map.la matte.la miff.la \
+  mono.la mtv.la pcd.la pcl.la pcx.la pdb.la pdf.la pict.la png.la pix.la \
+  plasma.la pnm.la preview.la ps.la ps2.la ps3.la psd.la pwp.la rgb.la \
+  rla.la rle.la sct.la sfw.la sgi.la stegano.la sun.la svg.la tga.la \
+  tiff.la tile.la tim.la ttf.la txt.la uil.la uyvy.la vicar.la vid.la \
+  viff.la wbmp.la x.la xbm.la xc.la xpm.la xwd.la yuv.la bim.la
 else
 pkg_LTLIBRARIES   =
 endif # WITH_MODULES
@@ -167,10 +169,25 @@ gray_la_SOURCES     = gray.c
 gray_la_LDFLAGS     = -no-undefined -module -avoid-version
 gray_la_LIBADD      = libMagick.la
 
+# GRADATION module
+gradation_la_SOURCES = gradation.c
+gradation_la_LDFLAGS = -no-undefined -module -avoid-version
+gradation_la_LIBADD  = libMagick.la
+
 # HDF module
 hdf_la_SOURCES      = hdf.c
 hdf_la_LDFLAGS      = -no-undefined -module -avoid-version
 hdf_la_LIBADD       = libMagick.la @LIB_HDF@ @LIB_JPEG@ @LIB_ZLIB@
+
+# HISTOGRAM module
+histogram_la_SOURCES = histogram.c
+histogram_la_LDFLAGS = -no-undefined -module -avoid-version
+histogram_la_LIBADD  = libMagick.la
+
+# HTML module
+html_la_SOURCES      = html.c
+html_la_LDFLAGS      = -no-undefined -module -avoid-version
+html_la_LIBADD       = libMagick.la
 
 # ICC module
 icc_la_SOURCES      = icc.c
