@@ -222,9 +222,6 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   Image
     *image;
 
-  IndexPacket
-    index;
-
   int
     blue,
     green,
@@ -259,13 +256,13 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *pixels;
 
   unsigned int
+    index,
     status;
 
   unsigned long
     max_value,
     packets,
     *scale;
-
 
   /*
     Open image file.
@@ -787,6 +784,9 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
   const ImageAttribute
     *attribute;
 
+  IndexPacket
+    index;
+
   int
     format;
 
@@ -807,9 +807,6 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
   unsigned int
     scene,
     status;
-
-  unsigned short
-    index;
 
   /*
     Open output image file.
@@ -939,8 +936,8 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
           for (x=0; x < (long) image->columns; x++)
           {
             index=Intensity(p);
-            FormatString(buffer," %lu",
-              image->depth > 8 ? index : ScaleQuantumToChar(index));
+            FormatString(buffer," %lu",(unsigned long)
+              (image->depth > 8 ? index : ScaleQuantumToChar(index)));
             (void) WriteBlobString(image,buffer);
             i++;
             if (i == 12)
@@ -975,9 +972,9 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
           for (x=0; x < (long) image->columns; x++)
           {
             FormatString(buffer," %lu %lu %lu",
-              image->depth > 8 ? p->red : ScaleQuantumToChar(p->red),
-              image->depth > 8 ? p->green : ScaleQuantumToChar(p->green),
-              image->depth > 8 ? p->blue : ScaleQuantumToChar(p->blue));
+              image->depth > 8 ? (long) p->red : ScaleQuantumToChar(p->red),
+              image->depth > 8 ? (long) p->green : ScaleQuantumToChar(p->green),
+              image->depth > 8 ? (long) p->blue : ScaleQuantumToChar(p->blue));
             (void) WriteBlobString(image,buffer);
             i++;
             if (i == 4)

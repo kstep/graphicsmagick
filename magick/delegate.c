@@ -805,7 +805,7 @@ MagickExport DelegateInfo *SetDelegateInfo(DelegateInfo *delegate_info)
   delegate->mode=delegate_info->mode;
   delegate->commands=(char *) NULL;
   if (delegate_info->commands != (char *) NULL)
-    delegate->commands=AcquireString(delegate_info->commands);
+    delegate->commands=AllocateString(delegate_info->commands);
   delegate->previous=(DelegateInfo *) NULL;
   delegate->next=(DelegateInfo *) NULL;
   if (delegate_list == (DelegateInfo *) NULL)

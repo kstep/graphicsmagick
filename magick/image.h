@@ -17,33 +17,33 @@ extern "C" {
 /*
   Color quantum is [0..255].
 */
-#define ScaleCharToQuantum(value)  (value)
-#define ScaleQuantumToChar(quantum)  (quantum)
+#define ScaleCharToQuantum(value)  (1UL*(value))
+#define ScaleQuantumToChar(quantum)  ((quantum)/1UL)
 #define ScaleQuantumToInt(quantum) (16843009UL*(quantum))
-#define ScaleQuantumToShort(quantum)  (257*(quantum))
-#define ScaleShortToQuantum(value)  ((value)/257)
+#define ScaleQuantumToShort(quantum)  (257UL*(quantum))
+#define ScaleShortToQuantum(value)  ((value)/257UL)
 
 typedef unsigned char Quantum;
 #elif (QuantumDepth == 16)
 /*
   Color quantum is [0..65535].
 */
-#define ScaleCharToQuantum(value)  (257*(value))
-#define ScaleQuantumToChar(quantum)  ((quantum)/257)
+#define ScaleCharToQuantum(value)  (257UL*(value))
+#define ScaleQuantumToChar(quantum)  ((quantum)/257UL)
 #define ScaleQuantumToInt(quantum) (65537UL*(quantum))
-#define ScaleQuantumToShort(quantum)  (quantum)
-#define ScaleShortToQuantum(value)  (value)
+#define ScaleQuantumToShort(quantum)  (1UL*(quantum))
+#define ScaleShortToQuantum(value)  ((value)/1UL)
 
 typedef unsigned short Quantum;
 #elif (QuantumDepth == 32)
 /*
   Experimental: Color quantum is [0..4294967295].
 */
-#define ScaleCharToQuantum(value)  (16843009L*(value))
-#define ScaleQuantumToChar(quantum)  ((quantum)/16843009L)
-#define ScaleQuantumToInt(quantum)  (quantum)
-#define ScaleQuantumToShort(quantum)  ((quantum)/65537L)
-#define ScaleShortToQuantum(value)  (65537L*(value))
+#define ScaleCharToQuantum(value)  (16843009UL*(value))
+#define ScaleQuantumToChar(quantum)  ((quantum)/16843009UL)
+#define ScaleQuantumToInt(quantum)  (1UL*(quantum))
+#define ScaleQuantumToShort(quantum)  ((quantum)/65537UL)
+#define ScaleShortToQuantum(value)  (65537UL*(value))
 
 typedef unsigned int Quantum;
 #else
@@ -54,8 +54,8 @@ typedef unsigned int Quantum;
   ((p)->green == (q)->green) && ((p)->blue == (q)->blue))
 #define Downscale(quantum)  ScaleQuantumToChar(quantum)
 #define Intensity(color)  \
-  ((9798L*(color)->red+19235L*(color)->green+3735L*(color)->blue)/32768L)
-#define MaxRGB  ((1L << QuantumDepth)-1L)
+  ((9798UL*(color)->red+19235UL*(color)->green+3735UL*(color)->blue)/32768UL)
+#define MaxRGB  ((1UL << QuantumDepth)-1UL)
 #define OpaqueOpacity  0
 #define TransparentOpacity  MaxRGB
 #define Upscale(value)  ScaleCharToQuantum(value)
