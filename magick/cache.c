@@ -57,12 +57,24 @@
 #include "studio.h"
 #include "blob.h"
 #include "cache.h"
+#include "list.h"
 #include "log.h"
 #include "magick.h"
 #include "resource.h"
 #include "utility.h"
 #if defined(HasZLIB)
 #include "zlib.h"
+#endif
+
+/*
+  Define declarations.
+*/
+#define MaxCacheViews  (Max(cache_info->columns,cache_info->rows)+3)
+
+#ifdef S_IRUSR
+#define S_MODE      (S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH)
+#else
+#define S_MODE      0644 
 #endif
 
 /*
@@ -137,8 +149,8 @@ static unsigned int
 %
 %  A description of each parameter follows:
 %
-%    o status: Method AcquireCacheNexus() returns a pointer to the pixels if
-%      they are transferred, otherwise a NULL is returned.
+%    o status: AcquireCacheNexus() returns a pointer to the pixels if they
+%      are transferred, otherwise a NULL is returned.
 %
 %    o image: The image.
 %
@@ -172,6 +184,7 @@ MagickExport const PixelPacket *AcquireCacheNexus(const Image *image,
     *cache_info;
 
   ExtendedSignedIntegralType
+    number_pixels,
     offset;
 
   IndexPacket
@@ -194,10 +207,11 @@ MagickExport const PixelPacket *AcquireCacheNexus(const Image *image,
   register PixelPacket
     *q;
 
+  size_t
+    length;
+
   unsigned long
-    image_nexus,
-    number_pixels,
-    span;
+    image_nexus;
 
   /*
     Acquire pixels.
@@ -217,11 +231,11 @@ MagickExport const PixelPacket *AcquireCacheNexus(const Image *image,
   region.width=columns;
   region.height=rows;
   pixels=SetNexus(image,&region,nexus);
-  offset=region.y*cache_info->columns+region.x;
-  span=(region.height-1)*cache_info->columns+region.width-1;
-  number_pixels=cache_info->columns*cache_info->rows;
-  if ((offset >= 0) &&
-      ((offset+span) < (ExtendedSignedIntegralType) (number_pixels)))
+  offset=region.y*(ExtendedSignedIntegralType) cache_info->columns+region.x;
+  length=(region.height-1)*cache_info->columns+region.width-1;
+  number_pixels=(ExtendedSignedIntegralType)
+    cache_info->columns*cache_info->rows;
+  if ((offset >= 0) && ((offset+length) < number_pixels))
     if ((x >= 0) && ((x+columns) <= cache_info->columns) &&
         (y >= 0) && ((y+rows) <= cache_info->rows))
       {
@@ -260,16 +274,16 @@ MagickExport const PixelPacket *AcquireCacheNexus(const Image *image,
   q=pixels;
   for (v=0; v < (long) rows; v++)
   {
-    for (u=0; u < (long) columns; u+=span)
+    for (u=0; u < (long) columns; u+=length)
     {
-      span=Min(cache_info->columns-(x+u),columns-u);
+      length=Min(cache_info->columns-(x+u),columns-u);
       if ((((x+u) < 0) || ((x+u) >= (long) cache_info->columns)) ||
-          (((y+v) < 0) || ((y+v) >= (long) cache_info->rows)) || (span == 0))
+          (((y+v) < 0) || ((y+v) >= (long) cache_info->rows)) || (length == 0))
         {
           /*
             Transfer a single pixel.
           */
-          span=1;
+          length=1;
           switch (cache_info->virtual_pixel_method)
           {
             case ConstantVirtualPixelMethod:
@@ -313,18 +327,18 @@ MagickExport const PixelPacket *AcquireCacheNexus(const Image *image,
       /*
         Transfer a run of pixels.
       */
-      p=AcquireCacheNexus(image,x+u,y+v,span,1,image_nexus,exception);
+      p=AcquireCacheNexus(image,x+u,y+v,length,1,image_nexus,exception);
       if (p == (const PixelPacket *) NULL)
         break;
-      (void) memcpy(q,p,span*sizeof(PixelPacket));
-      q+=span;
+      (void) memcpy(q,p,length*sizeof(PixelPacket));
+      q+=length;
       if (indexes == (IndexPacket *) NULL)
         continue;
       nexus_indexes=GetNexusIndexes(cache_info,image_nexus);
       if (nexus_indexes == (IndexPacket *) NULL)
         continue;
-      (void) memcpy(indexes,nexus_indexes,span*sizeof(IndexPacket));
-      indexes+=span;
+      (void) memcpy(indexes,nexus_indexes,length*sizeof(IndexPacket));
+      indexes+=length;
     }
   }
   DestroyCacheNexus(cache_info,image_nexus);
@@ -342,10 +356,10 @@ MagickExport const PixelPacket *AcquireCacheNexus(const Image *image,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method AcquireImagePixels() acquires pixels from the in-memory or disk
-%  pixel cache as defined by the geometry parameters.   A pointer to the
-%  pixels is returned if the pixels are transferred, otherwise a NULL is
-%  returned. If you plan to change the pixels, use GetImagePixels() instead.
+%  AcquireImagePixels() acquires pixels from the in-memory or disk pixel cache
+%  as defined by the geometry parameters.   A pointer to the pixel is returned
+%  if the pixels are transferred, otherwise a NULL is returned.  If you plan
+%  to modify the pixels, use GetImagePixels() instead.
 %
 %  The format of the AcquireImagePixels() method is:
 %
@@ -355,8 +369,8 @@ MagickExport const PixelPacket *AcquireCacheNexus(const Image *image,
 %
 %  A description of each parameter follows:
 %
-%    o status: Method AcquireImagePixels() returns a pointer to the pixels
-%      if they are transferred, otherwise a NULL is returned.
+%    o status: AcquireImagePixels() returns a pointer to the pixels if they
+%      are transferred, otherwise a NULL is returned.
 %
 %    o image: The image.
 %
@@ -439,9 +453,9 @@ static const PixelPacket *AcquirePixelCache(const Image *image,const long x,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method AcquireOnePixel() returns a single pixel at the specified (x,y)
-%  location.  The image background color is returned if an error occurs.
-%  If you plan to change the pixel, use GetOnePixel() instead.
+%  AcquireOnePixel() returns a single pixel at the specified (x,y) location.
+%  The image background color is returned if an error occurs.  If you plan to
+%  modify the pixel, use GetOnePixel() instead.
 %
 %  The format of the AcquireOnePixel() method is:
 %
@@ -450,8 +464,8 @@ static const PixelPacket *AcquirePixelCache(const Image *image,const long x,
 %
 %  A description of each parameter follows:
 %
-%    o pixels: Method AcquireOnePixel() returns a pixel at the
-%      specified (x,y) location.
+%    o pixels: AcquireOnePixel() returns a pixel at the specified (x,y)
+%      location.
 %
 %    o image: The image.
 %
@@ -493,8 +507,8 @@ MagickExport PixelPacket AcquireOnePixel(const Image *image,const long x,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method AcquireOnePixelFromCache() returns a single pixel at the specified
-%  (x,y) location.  The image background color is returned if an error occurs.
+%  AcquireOnePixelFromCache() returns a single pixel at the specified (x,y)
+%  location.  The image background color is returned if an error occurs.
 %
 %  The format of the AcquireOnePixelFromCache() method is:
 %
@@ -503,8 +517,8 @@ MagickExport PixelPacket AcquireOnePixel(const Image *image,const long x,
 %
 %  A description of each parameter follows:
 %
-%    o pixels: Method AcquireOnePixelFromCache returns a pixel at the
-%      specified (x,y) location.
+%    o pixels: AcquireOnePixelFromCache returns a pixel at the specified (x,y)
+%      location.
 %
 %    o image: The image.
 %
@@ -549,8 +563,8 @@ static PixelPacket AcquireOnePixelFromCache(const Image *image,const long x,
 %
 %  A description of each parameter follows:
 %
-%    o status: Method ClipCacheNexus() returns True if the image pixels are
-%      clipped, otherwise False.
+%    o status: ClipCacheNexus() returns True if the image pixels are clipped,
+%      otherwise False.
 %
 %    o image: The image.
 %
@@ -627,6 +641,208 @@ static unsigned int ClipCacheNexus(Image *image,const unsigned long nexus)
 %                                                                             %
 %                                                                             %
 %                                                                             %
++   C l o n e P i x e l C a c h e                                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ClonePixelCache() clones the pixel cache pixels from one cache to another.
+%
+%  The format of the ClonePixelCache() method is:
+%
+%      unsigned int ClonePixelCache(Image *image,Image *clone_image)
+%
+%  A description of each parameter follows:
+%
+%    o clone: Specifies a pointer to a Cache structure.
+%
+%    o cache: Specifies a pointer to a Cache structure.
+%
+%
+*/
+static unsigned int ClonePixelCache(Image *image,Image *clone_image)
+{
+#define MaxBufferSize  65541
+
+  CacheInfo
+    *cache_info,
+    *clone_info;
+
+  char
+    *buffer;
+
+  ExtendedSignedIntegralType
+    count;
+
+  int
+    cache_file,
+    clone_file;
+
+  register size_t
+    i;
+
+  size_t
+    length;
+
+  cache_info=(CacheInfo *) image->cache;
+  clone_info=(CacheInfo *) clone_image->cache;
+  if (cache_info->length != clone_info->length)
+    {
+      Image
+        *clip_mask;
+
+      long
+        y;
+
+      register const PixelPacket
+        *p;
+
+      register IndexPacket
+        *clone_indexes,
+        *indexes;
+
+      register PixelPacket
+        *q;
+
+      /*
+        Unoptimized pixel cache clone.
+      */
+      (void) LogMagickEvent(CacheEvent,GetMagickModule(),"unoptimized");
+      clip_mask=clone_image->clip_mask;
+      clone_image->clip_mask=(Image *) NULL;
+      length=Min(image->columns,clone_image->columns);
+      for (y=0; y < (long) image->rows; y++)
+      {
+        p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+        q=SetImagePixels(clone_image,0,y,image->columns,1);
+        if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+          break;
+        (void) memcpy(q,p,length*sizeof(PixelPacket));
+        indexes=GetIndexes(image);
+        clone_indexes=GetIndexes(clone_image);
+        if ((indexes != (IndexPacket *) NULL) &&
+            (clone_indexes != (IndexPacket *) NULL))
+          (void) memcpy(clone_indexes,indexes,length*sizeof(IndexPacket));
+        if (!SyncImagePixels(clone_image))
+          break;
+      }
+      clone_image->clip_mask=clip_mask;
+      return(y == (long) image->rows);
+    }
+  /*
+    Opimized pixel cache clone.
+  */
+  if ((cache_info->type != DiskCache) && (clone_info->type != DiskCache))
+    {
+      (void) LogMagickEvent(CacheEvent,GetMagickModule(),"memory => memory");
+      (void) memcpy(clone_info->pixels,cache_info->pixels,
+        (size_t) cache_info->length);
+      return(True);
+    }
+  cache_file=cache_info->file;
+  if (cache_info->type == DiskCache)
+    {
+      if (cache_info->file == -1)
+        {
+          cache_file=open(cache_info->cache_filename,O_RDONLY | O_BINARY);
+          if (cache_file == -1)
+            ThrowBinaryException(FileOpenError,"UnableToOpenFile",
+              cache_info->cache_filename);
+        }
+      (void) MagickSeek(cache_file,0,SEEK_SET);
+      if (clone_info->type != DiskCache)
+        {
+          (void) LogMagickEvent(CacheEvent,GetMagickModule(),"disk => memory");
+          for (i=0; i < cache_info->length; i+=count)
+          {
+            count=read(cache_file,(char *) clone_info->pixels+i,
+              (size_t) (cache_info->length-i));
+            if (count <= 0)
+              break;
+          }
+          if (cache_info->file == -1)
+            (void) close(cache_file);
+          if (i < cache_info->length)
+            ThrowBinaryException(CacheError,"UnableToCloneCache",
+              image->filename);
+          return(True);
+        }
+    }
+  clone_file=clone_info->file;
+  if (clone_info->type == DiskCache)
+    {
+      if (clone_info->file == -1)
+        {
+          clone_file=open(clone_info->cache_filename,O_WRONLY | O_BINARY |
+            O_EXCL,S_MODE);
+          if (clone_file == -1)
+            clone_file=open(clone_info->cache_filename,O_WRONLY | O_BINARY,
+              S_MODE);
+          if (clone_file == -1)
+            {
+              if (cache_info->file == -1)
+                (void) close(cache_file);
+              ThrowBinaryException(FileOpenError,"UnableToOpenFile",
+                clone_info->cache_filename)
+            }
+        }
+      (void) MagickSeek(clone_file,0,SEEK_SET);
+      if (cache_info->type != DiskCache)
+        {
+          (void) LogMagickEvent(CacheEvent,GetMagickModule(),"memory => disk");
+          for (i=0; i < clone_info->length; i+=count)
+          {
+            count=write(clone_file,(char *) cache_info->pixels+i,
+              (size_t) (clone_info->length-i));
+            if (count <= 0)
+              break;
+          }
+          if (clone_info->file == -1)
+            (void) close(clone_file);
+          if (i < clone_info->length)
+            ThrowBinaryException(CacheError,"UnableToCloneCache",
+              image->filename);
+          return(True);
+        }
+    }
+  (void) LogMagickEvent(CacheEvent,GetMagickModule(),"disk => disk");
+  buffer=(char *) AcquireMemory(MaxBufferSize);
+  if (buffer == (char *) NULL)
+    {
+      if (cache_info->file == -1)
+        (void) close(cache_file);
+      if (clone_info->file == -1)
+        (void) close(clone_file);
+      ThrowBinaryException(ResourceLimitFatalError,"MemoryAllocationFailed",
+        "UnableToCloneImage")
+    }
+  for (i=0; (length=read(cache_file,buffer,MaxBufferSize)) > 0; )
+  {
+    for (i=0; i < length; i+=count)
+    {
+      count=write(clone_file,buffer+i,length-i);
+      if (count <= 0)
+        break;
+    }
+    if (i < length)
+      break;
+  }
+  if (cache_info->file == -1)
+    (void) close(cache_file);
+  if (clone_info->file == -1)
+    (void) close(clone_file);
+  LiberateMemory((void **) &buffer);
+  if (i < length)
+    ThrowBinaryException(CacheError,"UnableToCloneCache",image->filename);
+  return(True);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 +   C l o n e P i x e l C a c h e M e t h o d s                               %
 %                                                                             %
 %                                                                             %
@@ -674,8 +890,7 @@ MagickExport void ClonePixelCacheMethods(Cache clone,const Cache cache)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method DestroyCacheInfo() deallocates memory associated with the pixel
-%  cache.
+%  DestroyCacheInfo() deallocates memory associated with the pixel cache.
 %
 %  The format of the DestroyCacheInfo() method is:
 %
@@ -708,6 +923,11 @@ MagickExport void DestroyCacheInfo(Cache cache)
   LiberateSemaphoreInfo(&cache_info->semaphore);
   switch (cache_info->type)
   {
+    default:
+    {
+      if (cache_info->pixels == (PixelPacket *) NULL)
+        break;
+    }
     case MemoryCache:
     {
       LiberateMemory((void **) &cache_info->pixels);
@@ -715,26 +935,29 @@ MagickExport void DestroyCacheInfo(Cache cache)
       break;
     }
     case MapCache:
+    {
       (void) UnmapBlob(cache_info->pixels,(size_t) cache_info->length);
+      LiberateMagickResource(MapResource,cache_info->length);
+    }
     case DiskCache:
     {
+      if (cache_info->file != -1)
+        {
+          close(cache_info->file);
+          LiberateMagickResource(FileResource,1);
+        }
+      cache_info->file=(-1);
       (void) remove(cache_info->cache_filename);
       LiberateMagickResource(DiskResource,cache_info->length);
-      break;
-    }
-    default:
-    {
-      if (cache_info->pixels != (PixelPacket *) NULL)
-        LiberateMemory((void **) &cache_info->pixels);
       break;
     }
   }
   if (cache_info->type != UndefinedCache)
     {
-      register unsigned long
+      register long
         id;
 
-      for (id=0; id < (cache_info->rows+3); id++)
+      for (id=0; id < (long) MaxCacheViews; id++)
         DestroyCacheNexus(cache,id);
       LiberateMemory((void **) &cache_info->nexus_info);
     }
@@ -756,7 +979,7 @@ MagickExport void DestroyCacheInfo(Cache cache)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method DestroyCacheNexus() destroys a cache nexus.
+%  DestroyCacheNexus() destroys a cache nexus.
 %
 %  The format of the DestroyCacheNexus() method is:
 %
@@ -799,8 +1022,7 @@ MagickExport void DestroyCacheNexus(Cache cache,const unsigned long nexus)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method DestroyImagePixels() deallocates memory associated with the pixel
-%  cache.
+%  DestroyImagePixels() deallocates memory associated with the pixel cache.
 %
 %  The format of the DestroyImagePixels() method is:
 %
@@ -838,8 +1060,7 @@ MagickExport void DestroyImagePixels(Image *image)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method DestroyPixelCache() deallocates memory associated with the pixel
-%  cache.
+%  DestroyPixelCache() deallocates memory associated with the pixel cache.
 %
 %  The format of the DestroyPixelCache() method is:
 %
@@ -872,7 +1093,7 @@ static void DestroyPixelCache(Image *image)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method GetCacheClass() returns the class type of the pixel cache.
+%  GetCacheClass() returns the class type of the pixel cache.
 %
 %  The format of the GetCacheClass() method is:
 %
@@ -880,7 +1101,7 @@ static void DestroyPixelCache(Image *image)
 %
 %  A description of each parameter follows:
 %
-%    o type: Method GetCacheClass returns DirectClass or PseudoClass.
+%    o type: GetCacheClass returns DirectClass or PseudoClass.
 %
 %    o cache: Specifies a pointer to a Cache structure.
 %
@@ -908,7 +1129,7 @@ MagickExport ClassType GetCacheClass(const Cache cache)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method GetCacheColorspace() returns the class type of the pixel cache.
+%  GetCacheColorspace() returns the class type of the pixel cache.
 %
 %  The format of the GetCacheColorspace() method is:
 %
@@ -916,7 +1137,7 @@ MagickExport ClassType GetCacheClass(const Cache cache)
 %
 %  A description of each parameter follows:
 %
-%    o type: Method GetCacheColorspace returns DirectClass or PseudoClass.
+%    o type: GetCacheColorspace returns DirectClass or PseudoClass.
 %
 %    o cache: Specifies a pointer to a Cache structure.
 %
@@ -944,7 +1165,7 @@ MagickExport ColorspaceType GetCacheColorspace(const Cache cache)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method GetCacheInfo() initializes the Cache structure.
+%  GetCacheInfo() initializes the Cache structure.
 %
 %  The format of the GetCacheInfo() method is:
 %
@@ -969,6 +1190,7 @@ MagickExport void GetCacheInfo(Cache *cache)
   (void) memset(cache_info,0,sizeof(CacheInfo));
   cache_info->colorspace=RGBColorspace;
   cache_info->reference_count=1;
+  cache_info->file=(-1);
   cache_info->signature=MagickSignature;
   SetPixelCacheMethods(cache_info,AcquirePixelCache,GetPixelCache,
     SetPixelCache,SyncPixelCache,GetPixelsFromCache,GetIndexesFromCache,
@@ -998,8 +1220,8 @@ MagickExport void GetCacheInfo(Cache *cache)
 %
 %  A description of each parameter follows:
 %
-%    o status: Method GetCacheNexus() returns a pointer to the pixels if they
-%      are transferred, otherwise a NULL is returned.
+%    o status: GetCacheNexus() returns a pointer to the pixels if they are
+%      transferred, otherwise a NULL is returned.
 %
 %    o image: The image.
 %
@@ -1054,8 +1276,8 @@ MagickExport PixelPacket *GetCacheNexus(Image *image,const long x,const long y,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method GetImagePixels() gets pixels from the in-memory or disk pixel cache
-%  as defined by the geometry parameters.   A pointer to the pixels is returned
+%  GetImagePixels() gets pixels from the in-memory or disk pixel cache as
+%  defined by the geometry parameters.   A pointer to the pixels is returned
 %  if the pixels are transferred, otherwise a NULL is returned.
 %
 %  The format of the GetImagePixels() method is:
@@ -1065,8 +1287,8 @@ MagickExport PixelPacket *GetCacheNexus(Image *image,const long x,const long y,
 %
 %  A description of each parameter follows:
 %
-%    o status: Method GetImagePixels() returns a pointer to the pixels if they
-%      are transferred, otherwise a NULL is returned.
+%    o status: GetImagePixels() returns a pointer to the pixels if they are
+%      transferred, otherwise a NULL is returned.
 %
 %    o image: The image.
 %
@@ -1140,7 +1362,7 @@ MagickExport VirtualPixelMethod GetImageVirtualPixelMethod(const Image *image)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method GetIndexes() returns the indexes associated with the last call to
+%  GetIndexes() returns the indexes associated with the last call to
 %  SetImagePixels() or GetImagePixels().
 %
 %  The format of the GetIndexes() method is:
@@ -1149,8 +1371,8 @@ MagickExport VirtualPixelMethod GetImageVirtualPixelMethod(const Image *image)
 %
 %  A description of each parameter follows:
 %
-%    o indexes: Method GetIndexes() returns the indexes associated with the
-%      last call to SetImagePixels() or GetImagePixels().
+%    o indexes: GetIndexes() returns the indexes associated with the last
+%      call to SetImagePixels() or GetImagePixels().
 %
 %    o image: The image.
 %
@@ -1183,8 +1405,8 @@ MagickExport IndexPacket *GetIndexes(const Image *image)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method GetIndexesFromCache() returns the indexes associated with the last
-%  call to SetPixelCache() or GetPixelCache().
+%  GetIndexesFromCache() returns the indexes associated with the last call to
+%  SetPixelCache() or GetPixelCache().
 %
 %  The format of the GetIndexesFromCache() method is:
 %
@@ -1192,8 +1414,8 @@ MagickExport IndexPacket *GetIndexes(const Image *image)
 %
 %  A description of each parameter follows:
 %
-%    o indexes: Method GetIndexesFromCache() returns the indexes associated
-%      with the last call to SetPixelCache() or GetPixelCache().
+%    o indexes: GetIndexesFromCache() returns the indexes associated with the
+%      last call to SetPixelCache() or GetPixelCache().
 %
 %    o image: The image.
 %
@@ -1218,7 +1440,7 @@ static IndexPacket *GetIndexesFromCache(const Image *image)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method GetNexus() returns an available cache nexus.
+%  GetNexus() returns an available cache nexus.
 %
 %  The format of the GetNexus() method is:
 %
@@ -1226,7 +1448,7 @@ static IndexPacket *GetIndexesFromCache(const Image *image)
 %
 %  A description of each parameter follows:
 %
-%    o id:  Method GetNexus returns an available cache nexus slot.
+%    o id:  GetNexus returns an available cache nexus slot.
 %
 %    o cache: Specifies a pointer to a Cache structure.
 %
@@ -1237,13 +1459,13 @@ MagickExport unsigned long GetNexus(Cache cache)
   CacheInfo
     *cache_info;
 
-  register unsigned long
+  register long
     id;
 
   assert(cache != (Cache) NULL);
   cache_info=(CacheInfo *) cache;
   assert(cache_info->signature == MagickSignature);
-  for (id=1; id < (cache_info->rows+3); id++)
+  for (id=1; id < (long) MaxCacheViews; id++)
     if (cache_info->nexus_info[id].available)
       {
         cache_info->nexus_info[id].available=False;
@@ -1263,8 +1485,8 @@ MagickExport unsigned long GetNexus(Cache cache)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method GetNexusIndexes() returns the indexes associated with the specified
-%  cache nexus.
+%  GetNexusIndexes() returns the indexes associated with the specified cache
+%  nexus.
 %
 %  The format of the GetNexusIndexes() method is:
 %
@@ -1272,7 +1494,7 @@ MagickExport unsigned long GetNexus(Cache cache)
 %
 %  A description of each parameter follows:
 %
-%    o indexes: Method GetNexusIndexes returns the indexes associated with the
+%    o indexes: GetNexusIndexes returns the indexes associated with the
 %      specified cache nexus.
 %
 %    o cache: Specifies a pointer to a Cache structure.
@@ -1311,8 +1533,8 @@ MagickExport IndexPacket *GetNexusIndexes(const Cache cache,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method GetNexusPixels() returns the pixels associated with the specified
-%  cache nexus.
+%  GetNexusPixels() returns the pixels associated with the specified cache
+%  nexus.
 %
 %  The format of the GetNexusPixels() method is:
 %
@@ -1320,8 +1542,8 @@ MagickExport IndexPacket *GetNexusIndexes(const Cache cache,
 %
 %  A description of each parameter follows:
 %
-%    o pixels: Method GetNexusPixels returns the pixels associated with the
-%      specified cache nexus.
+%    o pixels: GetNexusPixels returns the pixels associated with the specified
+%      cache nexus.
 %
 %    o nexus: specifies which cache nexus to return the pixels.
 %
@@ -1398,7 +1620,7 @@ MagickExport PixelPacket GetOnePixel(Image *image,const long x,const long y)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method GetOnePixelFromCache() returns a single pixel at the specified (x,y)
+%  GetOnePixelFromCache() returns a single pixel at the specified (x,y)
 %  location.  The image background color is returned if an error occurs.
 %
 %  The format of the GetOnePixelFromCache() method is:
@@ -1408,8 +1630,8 @@ MagickExport PixelPacket GetOnePixel(Image *image,const long x,const long y)
 %
 %  A description of each parameter follows:
 %
-%    o pixels: Method GetOnePixelFromCache returns a pixel at the specified
-%      (x,y) location.
+%    o pixels: GetOnePixelFromCache returns a pixel at the specified (x,y)
+%      location.
 %
 %    o image: The image.
 %
@@ -1440,7 +1662,7 @@ static PixelPacket GetOnePixelFromCache(Image *image,const long x,const long y)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method GetPixels() returns the pixels associated with the last call to
+%  GetPixels() returns the pixels associated with the last call to
 %  SetImagePixels() or GetImagePixels().
 %
 %  The format of the GetPixels() method is:
@@ -1449,8 +1671,8 @@ static PixelPacket GetOnePixelFromCache(Image *image,const long x,const long y)
 %
 %  A description of each parameter follows:
 %
-%    o pixels: Method GetPixels() returns the pixels associated with the
-%      last call to SetImagePixels() or GetImagePixels().
+%    o pixels: GetPixels() returns the pixels associated with the last call
+%      to SetImagePixels() or GetImagePixels().
 %
 %    o image: The image.
 %
@@ -1531,7 +1753,7 @@ static PixelPacket *GetPixelCache(Image *image,const long x,const long y,
 %
 %
 */
-MagickExport unsigned long GetPixelCacheArea(const Image *image)
+MagickExport ExtendedSignedIntegralType GetPixelCacheArea(const Image *image)
 {
   CacheInfo
     *cache_info;
@@ -1545,9 +1767,9 @@ MagickExport unsigned long GetPixelCacheArea(const Image *image)
   cache_info=(CacheInfo *) image->cache;
   assert(cache_info->signature == MagickSignature);
   if (cache_info->nexus_info == (NexusInfo *) NULL)
-    return(cache_info->columns*cache_info->rows);
+    return((ExtendedSignedIntegralType) cache_info->columns*cache_info->rows);
   nexus_info=cache_info->nexus_info+cache_info->id;
-  return(nexus_info->columns*nexus_info->rows);
+  return((ExtendedSignedIntegralType) nexus_info->columns*nexus_info->rows);
 }
 
 /*
@@ -1561,8 +1783,8 @@ MagickExport unsigned long GetPixelCacheArea(const Image *image)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method GetPixelsFromCache() returns the pixels associated with the last call
-%  to the SetPixelCache() or GetPixelCache() methods.
+%  GetPixelsFromCache() returns the pixels associated with the last call to
+%  the SetPixelCache() or GetPixelCache() methods.
 %
 %  The format of the GetPixelsFromCache() method is:
 %
@@ -1570,8 +1792,8 @@ MagickExport unsigned long GetPixelCacheArea(const Image *image)
 %
 %  A description of each parameter follows:
 %
-%    o pixels: Method GetPixelsFromCache() returns the pixels associated with
-%      the last call to SetPixelCache() or GetPixelCache().
+%    o pixels: GetPixelsFromCache() returns the pixels associated with the
+%      last call to SetPixelCache() or GetPixelCache().
 %
 %    o image: The image.
 %
@@ -1596,8 +1818,8 @@ static PixelPacket *GetPixelsFromCache(const Image *image)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method IsNexusInCore() returns true if the pixels associated with the
-%  specified cache nexus is non-strided and in core.
+%  IsNexusInCore() returns true if the pixels associated with the specified
+%  cache nexus is non-strided and in core.
 %
 %  The format of the IsNexusInCore() method is:
 %
@@ -1605,8 +1827,8 @@ static PixelPacket *GetPixelsFromCache(const Image *image)
 %
 %  A description of each parameter follows:
 %
-%    o status: Method IsNexusInCore() returns True if the pixels are
-%      non-strided and in core, otherwise False.
+%    o status: IsNexusInCore() returns True if the pixels are non-strided and
+%      in core, otherwise False.
 %
 %    o nexus: specifies which cache nexus to return the pixels.
 %
@@ -1631,7 +1853,8 @@ static inline unsigned int IsNexusInCore(const Cache cache,
   if (cache_info->storage_class == UndefinedClass)
     return(False);
   nexus_info=cache_info->nexus_info+nexus;
-  offset=nexus_info->y*cache_info->columns+nexus_info->x;
+  offset=nexus_info->y*(ExtendedSignedIntegralType) cache_info->columns+
+    nexus_info->x;
   if (nexus_info->pixels == (cache_info->pixels+offset))
     return(True);
   return(False);
@@ -1668,29 +1891,10 @@ static unsigned int ModifyCache(Image *image)
     *cache_info;
 
   Image
-    *clone_image;
+    clone_image;
 
-  long
-    y;
-
-  RectangleInfo
-    region;
-
-  register const PixelPacket
-    *p;
-
-  register IndexPacket
-    *clone_indexes,
-    *indexes;
-
-  register NexusInfo
-    *nexus_info;
-
-  register PixelPacket
-    *q;
-
-  size_t
-    length;
+  unsigned int
+    status;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -1701,56 +1905,28 @@ static unsigned int ModifyCache(Image *image)
     {
       LiberateSemaphoreInfo(&cache_info->semaphore);
       return(True);
-   }
+    }
   cache_info->reference_count--;
-  /*
-    Save nexus.
-  */
-  nexus_info=cache_info->nexus_info;
-  region.x=nexus_info->x;
-  region.y=nexus_info->y;
-  region.width=nexus_info->columns;
-  region.height=nexus_info->rows;
-  /*
-    Clone pixels.
-  */
-  clone_image=(Image *) AcquireMemory(sizeof(Image));
-  if (clone_image == (Image *) NULL)
-    MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
-      "UnableToCloneImage");
-  *clone_image=(*image);
+  clone_image=(*image);
   GetCacheInfo(&image->cache);
-  length=clone_image->columns*sizeof(PixelPacket);
-  p=AcquireImagePixels(clone_image,0,0,image->columns,1,&image->exception);
-  image->clip_mask=(Image *) NULL;
-  for (y=0; y < (long) image->rows; y++)
-  {
-    p=AcquireImagePixels(clone_image,0,y,image->columns,1,&image->exception);
-    q=SetImagePixels(image,0,y,image->columns,1);
-    if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
-      break;
-    (void) memcpy(q,p,length);
-    clone_indexes=GetIndexes(clone_image);
-    indexes=GetIndexes(image);
-    if ((clone_indexes != (IndexPacket *) NULL) &&
-        (indexes != (IndexPacket *) NULL))
-      (void) memcpy(indexes,clone_indexes,
-        image->columns*sizeof(IndexPacket));
-    if (!SyncImagePixels(image))
-      break;
-  }
-  image->clip_mask=clone_image->clip_mask;
-  /*
-    Restore nexus.
-  */
-  if ((region.width != 0) && (region.height != 0))
-    p=AcquireImagePixels(clone_image,region.x,region.y,region.width,
-      region.height,&image->exception);
-  LiberateMemory((void **) &clone_image);
+    AcquireImagePixels(&clone_image,0,0,image->columns,1,&image->exception);
+  status=OpenCache(image,IOMode);
+  if (status != False)
+    {
+      NexusInfo
+        nexus_info;
+
+      /*
+        More than one reference, clone the pixel cache.
+      */
+      nexus_info=(*cache_info->nexus_info);
+      status=ClonePixelCache(&clone_image,image);
+      if ((nexus_info.columns != 0) && (nexus_info.rows != 0))
+        (void) AcquireImagePixels(&clone_image,nexus_info.x,nexus_info.y,
+          nexus_info.columns,nexus_info.rows,&image->exception);
+    }
   LiberateSemaphoreInfo(&cache_info->semaphore);
-  if ((p == (const PixelPacket *) NULL) || (y < (long) image->rows))
-    ThrowBinaryException(CacheError,"UnableToCloneCache",image->filename);
-  return(True);
+  return(status);
 }
 
 /*
@@ -1775,7 +1951,7 @@ static unsigned int ModifyCache(Image *image)
 %
 %  A description of each parameter follows:
 %
-%    o status: Method OpenCache returns True if the pixel cache is initialized
+%    o status: OpenCache() returns True if the pixel cache is initialized
 %      successfully otherwise False.
 %
 %    o image: The image.
@@ -1831,8 +2007,8 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
     *cache_info;
 
   ExtendedSignedIntegralType
-    offset,
-    size;
+    number_pixels,
+    offset;
 
   int
     file;
@@ -1840,8 +2016,8 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
   PixelPacket
     *pixels;
 
-  unsigned long
-    number_pixels;
+  size_t
+    packet_size;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -1851,38 +2027,67 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
       image->filename);
   cache_info=(CacheInfo *) image->cache;
   assert(cache_info->signature == MagickSignature);
-  if (cache_info->storage_class != UndefinedClass)
-    if (cache_info->type == MapCache)
-      (void) UnmapBlob(cache_info->pixels,(size_t) cache_info->length);
   FormatString(cache_info->filename,"%.1024s[%ld]",image->filename,
     GetImageIndexInList(image));
   cache_info->rows=image->rows;
   cache_info->columns=image->columns;
-  number_pixels=cache_info->columns*cache_info->rows;
+  number_pixels=(ExtendedSignedIntegralType)
+    cache_info->columns*cache_info->rows;
   if (cache_info->nexus_info == (NexusInfo *) NULL)
     {
-      unsigned long
+      register long
         id;
 
       /*
         Allocate cache nexus.
       */
       cache_info->nexus_info=(NexusInfo *)
-        AcquireMemory((cache_info->rows+3)*sizeof(NexusInfo));
+        AcquireMemory(MaxCacheViews*sizeof(NexusInfo));
       if (cache_info->nexus_info == (NexusInfo *) NULL)
         MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
           "UnableToAllocateCacheInfo");
-      (void) memset(cache_info->nexus_info,0,
-        (cache_info->rows+3)*sizeof(NexusInfo));
-      for (id=1; id < (cache_info->rows+3); id++)
+      (void) memset(cache_info->nexus_info,0,MaxCacheViews*sizeof(NexusInfo));
+      for (id=1; id < (long) MaxCacheViews; id++)
         cache_info->nexus_info[id].available=True;
     }
-  size=sizeof(PixelPacket);
+  if (cache_info->storage_class != UndefinedClass)
+    {
+      /*
+        Free cache resources.
+      */
+      switch (cache_info->type)
+      {
+        case MemoryCache:
+        {
+          LiberateMagickResource(MemoryResource,cache_info->length);
+          break;
+        }
+        case MapCache:
+        {
+          (void) UnmapBlob(cache_info->pixels,(size_t) cache_info->length);
+          LiberateMagickResource(MapResource,cache_info->length);
+          break;
+        }
+        case DiskCache:
+        {
+          LiberateMagickResource(DiskResource,cache_info->length);
+          if (cache_info->file == -1)
+            break;
+          close(cache_info->file);
+          cache_info->file=(-1);
+          LiberateMagickResource(FileResource,1);
+          break;
+        }
+        default:
+          break;
+      }
+    }
+  packet_size=sizeof(PixelPacket);
   if ((image->storage_class == PseudoClass) ||
       (image->colorspace == CMYKColorspace))
-    size+=sizeof(IndexPacket);
-  offset=size*number_pixels;
-  if (cache_info->columns != (offset/cache_info->rows/size))
+    packet_size+=sizeof(IndexPacket);
+  offset=number_pixels*packet_size;
+  if (cache_info->columns != (offset/cache_info->rows/packet_size))
     ThrowBinaryException(ResourceLimitError,"PixelCacheAllocationFailed",
       image->filename);
   cache_info->length=offset;
@@ -1895,8 +2100,8 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
           pixels=(PixelPacket *) AcquireMemory((size_t) cache_info->length);
         else
           {
-            ReacquireMemory((void **) &cache_info->pixels,
-              (size_t) cache_info->length);
+            ReacquireMemory((void **) &cache_info->pixels,(size_t)
+              cache_info->length);
             if (cache_info->pixels == (void *) NULL)
               ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
                 image->filename);
@@ -1936,24 +2141,24 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
   {
     case ReadMode:
     {
-      file=open(cache_info->cache_filename,O_RDONLY | O_BINARY,0777);
+      file=open(cache_info->cache_filename,O_RDONLY | O_BINARY);
       break;
     }
     case WriteMode:
     {
       file=open(cache_info->cache_filename,O_WRONLY | O_CREAT | O_BINARY |
-        O_EXCL,0777);
+        O_EXCL,S_MODE);
       if (file == -1)
-        file=open(cache_info->cache_filename,O_WRONLY | O_BINARY,0777);
+        file=open(cache_info->cache_filename,O_WRONLY | O_BINARY,S_MODE);
       break;
     }
     case IOMode:
     default:
     {
       file=open(cache_info->cache_filename,O_RDWR | O_CREAT | O_BINARY |
-        O_EXCL,0777);
+        O_EXCL,S_MODE);
       if (file == -1)
-        file=open(cache_info->cache_filename,O_RDWR | O_BINARY,0777);
+        file=open(cache_info->cache_filename,O_RDWR | O_BINARY,S_MODE);
       break;
     }
   }
@@ -1973,15 +2178,19 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
   cache_info->colorspace=image->colorspace;
   cache_info->type=DiskCache;
   if ((cache_info->length > MinBlobExtent) &&
-      (cache_info->length == (size_t) cache_info->length))
+      (cache_info->length == (size_t) cache_info->length) &&
+      AcquireMagickResource(MapResource,cache_info->length))
     {
       pixels=(PixelPacket *) MapBlob(file,mode,(off_t) cache_info->offset,
         (size_t) cache_info->length);
-      if (pixels != (PixelPacket *) NULL)
+      if (pixels == (PixelPacket *) NULL)
+        LiberateMagickResource(MapResource,cache_info->length);
+      else
         {
           /*
             Create memory-mapped pixel cache.
           */
+          (void) close(file);
           cache_info->type=MapCache;
           cache_info->pixels=pixels;
           cache_info->indexes=(IndexPacket *) NULL;
@@ -1990,13 +2199,19 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
             cache_info->indexes=(IndexPacket *) (pixels+number_pixels);
         }
     }
-  (void) close(file);
+  if (cache_info->type == DiskCache)
+    {
+      if (AcquireMagickResource(FileResource,1))
+        cache_info->file=file;
+      else
+        (void) close(file);
+    }
 #if defined(SIGBUS)
   (void) signal(SIGBUS,CacheSignalHandler);
 #endif
   FormatSize(cache_info->length,format);
-  FormatString(message,"open %.1024s (%.1024s, %.1024s, %.1024s)",
-    cache_info->filename,cache_info->cache_filename,
+  FormatString(message,"open %.1024s (%.1024s[%d], %.1024s, %.1024s)",
+    cache_info->filename,cache_info->cache_filename,cache_info->file,
     cache_info->type == MapCache ? "memory-mapped" : "disk",format);
   (void) LogMagickEvent(CacheEvent,GetMagickModule(),message);
   return(True);
@@ -2166,8 +2381,8 @@ MagickExport unsigned int PersistCache(Image *image,const char *filename,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ReadCacheIndexes() reads colormap indexes from the specified region
-%  of the pixel cache.
+%  ReadCacheIndexes() reads colormap indexes from the specified region of the
+%  pixel cache.
 %
 %  The format of the ReadCacheIndexes() method is:
 %
@@ -2176,8 +2391,8 @@ MagickExport unsigned int PersistCache(Image *image,const char *filename,
 %
 %  A description of each parameter follows:
 %
-%    o status: Method ReadCacheIndexes returns True if the colormap indexes
-%      are successfully read from the pixel cache, otherwise False.
+%    o status: ReadCacheIndexes returns True if the colormap indexes are
+%      successfully read from the pixel cache, otherwise False.
 %
 %    o cache: Specifies a pointer to a CacheInfo structure.
 %
@@ -2220,10 +2435,11 @@ static unsigned int ReadCacheIndexes(const Cache cache,
   if ((cache_info->storage_class != PseudoClass) &&
       (cache_info->colorspace != CMYKColorspace))
     return(False);
+  nexus_info=cache_info->nexus_info+nexus;
   if (IsNexusInCore(cache,nexus))
     return(True);
-  nexus_info=cache_info->nexus_info+nexus;
-  offset=nexus_info->y*cache_info->columns+nexus_info->x;
+  offset=nexus_info->y*(ExtendedSignedIntegralType) cache_info->columns+
+    nexus_info->x;
   length=nexus_info->columns*sizeof(IndexPacket);
   indexes=nexus_info->indexes;
   if (cache_info->type != DiskCache)
@@ -2242,16 +2458,21 @@ static unsigned int ReadCacheIndexes(const Cache cache,
   /*
     Read indexes from disk.
   */
-  file=open(cache_info->cache_filename,O_RDONLY | O_BINARY,0777);
-  if (file == -1)
-    return(False);
-  number_pixels=cache_info->columns*cache_info->rows;
+  file=cache_info->file;
+  if (cache_info->file == -1)
+    {
+      file=open(cache_info->cache_filename,O_RDONLY | O_BINARY);
+      if (file == -1)
+        return(False);
+    }
+  number_pixels=(ExtendedSignedIntegralType)
+    cache_info->columns*cache_info->rows;
   for (y=0; y < (long) nexus_info->rows; y++)
   {
     count=MagickSeek(file,cache_info->offset+number_pixels*sizeof(PixelPacket)+
       offset*sizeof(IndexPacket),SEEK_SET);
     if (count == -1)
-      return(False);
+      break;
     for (i=0; i < length; i+=count)
     {
       count=read(file,(char *) indexes+i,length-i);
@@ -2259,12 +2480,16 @@ static unsigned int ReadCacheIndexes(const Cache cache,
         break;
     }
     if (i < length)
-      return(False);
+      break;
     indexes+=nexus_info->columns;
     offset+=cache_info->columns;
   }
-  (void) close(file);
-  return(True);
+  if (cache_info->file == -1)
+    (void) close(file);
+  if (QuantumTick(nexus_info->y,cache_info->rows))
+    (void) LogMagickEvent(CacheEvent,GetMagickModule(),"%lux%lu%+ld%+ld",
+      nexus_info->columns,nexus_info->rows,nexus_info->x,nexus_info->y);
+  return(y == (long) nexus_info->rows);
 }
 
 /*
@@ -2286,7 +2511,7 @@ static unsigned int ReadCacheIndexes(const Cache cache,
 %
 %  A description of each parameter follows:
 %
-%    o status: Method ReadCachePixels() returns True if the pixels are
+%    o status: ReadCachePixels() returns True if the pixels are
 %      successfully read from the pixel cache, otherwise False.
 %
 %    o cache: Specifies a pointer to a CacheInfo structure.
@@ -2325,10 +2550,11 @@ static unsigned int ReadCachePixels(const Cache cache,const unsigned long nexus)
   assert(cache != (Cache *) NULL);
   cache_info=(CacheInfo *) cache;
   assert(cache_info->signature == MagickSignature);
+  nexus_info=cache_info->nexus_info+nexus;
   if (IsNexusInCore(cache,nexus))
     return(True);
-  nexus_info=cache_info->nexus_info+nexus;
-  offset=nexus_info->y*cache_info->columns+nexus_info->x;
+  offset=nexus_info->y*(ExtendedSignedIntegralType) cache_info->columns+
+    nexus_info->x;
   length=nexus_info->columns*sizeof(PixelPacket);
   pixels=nexus_info->pixels;
   if (cache_info->type != DiskCache)
@@ -2347,15 +2573,19 @@ static unsigned int ReadCachePixels(const Cache cache,const unsigned long nexus)
   /*
     Read pixels from disk.
   */
-  file=open(cache_info->cache_filename,O_RDONLY | O_BINARY,0777);
-  if (file == -1)
-    return(False);
+  file=cache_info->file;
+  if (cache_info->file == -1)
+    {
+      file=open(cache_info->cache_filename,O_RDONLY | O_BINARY);
+      if (file == -1)
+        return(False);
+    }
   for (y=0; y < (long) nexus_info->rows; y++)
   {
     count=MagickSeek(file,cache_info->offset+offset*sizeof(PixelPacket),
       SEEK_SET);
     if (count == -1)
-      return(False);
+      break;
     for (i=0; i < length; i+=count)
     {
       count=read(file,(char *) pixels+i,length-i);
@@ -2363,12 +2593,16 @@ static unsigned int ReadCachePixels(const Cache cache,const unsigned long nexus)
         break;
     }
     if (i < length)
-      return(False);
+      break;
     pixels+=nexus_info->columns;
     offset+=cache_info->columns;
   }
-  (void) close(file);
-  return(True);
+  if (cache_info->file == -1)
+    (void) close(file);
+  if (QuantumTick(nexus_info->y,cache_info->rows))
+    (void) LogMagickEvent(CacheEvent,GetMagickModule(),"%lux%lu%+ld%+ld",
+      nexus_info->columns,nexus_info->rows,nexus_info->x,nexus_info->y);
+  return(y == (long) nexus_info->rows);
 }
 
 /*
@@ -2420,8 +2654,8 @@ MagickExport Cache ReferenceCache(Cache cache)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method SetCacheNexus() allocates an area to store image pixels as defined
-%  by the region rectangle and returns a pointer to the area.  This area is
+%  SetCacheNexus() allocates an area to store image pixels as defined by the
+%  region rectangle and returns a pointer to the area.  This area is
 %  subsequently transferred from the pixel cache with SyncPixelCache().  A
 %  pointer to the pixels is returned if the pixels are transferred, otherwise
 %  a NULL is returned.
@@ -2434,8 +2668,8 @@ MagickExport Cache ReferenceCache(Cache cache)
 %
 %  A description of each parameter follows:
 %
-%    o pixels: Method SetCacheNexus() returns a pointer to the pixels if they
-%      are transferred, otherwise a NULL is returned.
+%    o pixels: SetCacheNexus() returns a pointer to the pixels if they are
+%      transferred, otherwise a NULL is returned.
 %
 %    o image: The image.
 %
@@ -2454,13 +2688,11 @@ MagickExport PixelPacket *SetCacheNexus(Image *image,const long x,const long y,
     *cache_info;
 
   ExtendedSignedIntegralType
+    number_pixels,
     offset;
 
   RectangleInfo
     region;
-
-  unsigned long
-    number_pixels;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -2473,11 +2705,12 @@ MagickExport PixelPacket *SetCacheNexus(Image *image,const long x,const long y,
     Validate pixel cache geometry.
   */
   cache_info=(CacheInfo *) image->cache;
-  offset=y*cache_info->columns+x;
+  offset=y*(ExtendedSignedIntegralType) cache_info->columns+x;
   if (offset < 0)
     return((PixelPacket *) NULL);
-  number_pixels=cache_info->columns*cache_info->rows;
-  offset+=(rows-1)*cache_info->columns+columns-1;
+  number_pixels=(ExtendedSignedIntegralType)
+    cache_info->columns*cache_info->rows;
+  offset+=(rows-1)*(ExtendedSignedIntegralType) cache_info->columns+columns-1;
   if (offset >= number_pixels)
     return((PixelPacket *) NULL);
   /*
@@ -2501,8 +2734,8 @@ MagickExport PixelPacket *SetCacheNexus(Image *image,const long x,const long y,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method SetImagePixels() allocates an area to store image pixels as defined
-%  by the region rectangle and returns a pointer to the area.  This area is
+%  SetImagePixels() allocates an area to store image pixels as defined by the
+%  region rectangle and returns a pointer to the area.  This area is
 %  subsequently transferred from the pixel cache with SyncImagePixels().  A
 %  pointer to the pixels is returned if the pixels are transferred, otherwise
 %  a NULL is returned.
@@ -2514,8 +2747,8 @@ MagickExport PixelPacket *SetCacheNexus(Image *image,const long x,const long y,
 %
 %  A description of each parameter follows:
 %
-%    o pixels: Method SetImagePixels returns a pointer to the pixels if they
-%      are transferred, otherwise a NULL is returned.
+%    o pixels: SetImagePixels returns a pointer to the pixels if they are
+%      transferred, otherwise a NULL is returned.
 %
 %    o image: The image.
 %
@@ -2605,8 +2838,7 @@ MagickExport void SetImageVirtualPixelMethod(const Image *image,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method SetNexus() defines the region of the cache for the specified
-%  cache nexus.
+%  SetNexus() defines the region of the cache for the specified cache nexus.
 %
 %  The format of the SetNexus() method is:
 %
@@ -2615,8 +2847,8 @@ MagickExport void SetImageVirtualPixelMethod(const Image *image,
 %
 %  A description of each parameter follows:
 %
-%    o pixels: Method SetNexus() returns a pointer to the pixels
-%      associated with the specified cache nexus.
+%    o pixels: SetNexus() returns a pointer to the pixels associated with
+%      the specified cache nexus.
 %
 %    o image: The image.
 %
@@ -2634,6 +2866,7 @@ static PixelPacket *SetNexus(const Image *image,const RectangleInfo *region,
     *cache_info;
 
   ExtendedSignedIntegralType
+    number_pixels,
     offset;
 
   register NexusInfo
@@ -2641,9 +2874,6 @@ static PixelPacket *SetNexus(const Image *image,const RectangleInfo *region,
 
   size_t
     length;
-
-  unsigned long
-    number_pixels;
 
   assert(image != (Image *) NULL);
   cache_info=(CacheInfo *) image->cache;
@@ -2656,15 +2886,12 @@ static PixelPacket *SetNexus(const Image *image,const RectangleInfo *region,
   nexus_info->y=region->y;
   if ((cache_info->type != DiskCache) && (image->clip_mask == (Image *) NULL))
     {
-      unsigned long
-        number_pixels,
-        span;
-
-      offset=nexus_info->y*cache_info->columns+nexus_info->x;
-      span=(nexus_info->rows-1)*cache_info->columns+nexus_info->columns-1;
-      number_pixels=cache_info->columns*cache_info->rows;
-      if ((offset >= 0) &&
-          ((offset+span) < (ExtendedSignedIntegralType) number_pixels))
+      offset=nexus_info->y*(ExtendedSignedIntegralType) cache_info->columns+
+        nexus_info->x;
+      length=(nexus_info->rows-1)*cache_info->columns+nexus_info->columns-1;
+      number_pixels=(ExtendedSignedIntegralType)
+        cache_info->columns*cache_info->rows;
+      if ((offset >= 0) && ((offset+length) < number_pixels))
         if ((((nexus_info->x+nexus_info->columns) <= cache_info->columns) &&
             (nexus_info->rows == 1)) || ((nexus_info->x == 0) &&
             ((nexus_info->columns % cache_info->columns) == 0)))
@@ -2683,7 +2910,8 @@ static PixelPacket *SetNexus(const Image *image,const RectangleInfo *region,
   /*
     Pixels are stored in a staging area until they are synced to the cache.
   */
-  number_pixels=Max(nexus_info->columns*nexus_info->rows,cache_info->columns);
+  number_pixels=(ExtendedSignedIntegralType)
+    Max(nexus_info->columns*nexus_info->rows,cache_info->columns);
   length=number_pixels*sizeof(PixelPacket);
   if ((cache_info->storage_class == PseudoClass) ||
       (cache_info->colorspace == CMYKColorspace))
@@ -2734,8 +2962,8 @@ static PixelPacket *SetNexus(const Image *image,const RectangleInfo *region,
 %
 %  A description of each parameter follows:
 %
-%    o pixels: Method SetPixelCache() returns a pointer to the pixels if they
-%      are transferred, otherwise a NULL is returned.
+%    o pixels: SetPixelCache() returns a pointer to the pixels if they are
+%      transferred, otherwise a NULL is returned.
 %
 %    o image: The image.
 %
@@ -2826,7 +3054,7 @@ MagickExport void SetPixelCacheMethods(Cache cache,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method SyncCache() synchronizes the image with the pixel cache.
+%  SyncCache() synchronizes the image with the pixel cache.
 %
 %  The format of the SyncCache() method is:
 %
@@ -2834,7 +3062,7 @@ MagickExport void SetPixelCacheMethods(Cache cache,
 %
 %  A description of each parameter follows:
 %
-%    o status: Method SyncCache returns True if the pixel cache is synchronized
+%    o status: SyncCache() returns True if the pixel cache is synchronized
 %      successfully otherwise False.
 %
 %    o image: The image.
@@ -2869,9 +3097,8 @@ static unsigned int SyncCache(Image *image)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method SyncCacheNexus() saves the image pixels to the in-memory or disk
-%  cache.  The method returns True if the pixel region is synced, otherwise
-%  False.
+%  SyncCacheNexus() saves the image pixels to the in-memory or disk cache.
+%  The method returns True if the pixel region is synced, otherwise False.
 %
 %  The format of the SyncCacheNexus() method is:
 %
@@ -2879,7 +3106,7 @@ static unsigned int SyncCache(Image *image)
 %
 %  A description of each parameter follows:
 %
-%    o status: Method SyncCacheNexus() returns True if the image pixels are
+%    o status: SyncCacheNexus() returns True if the image pixels are
 %      transferred to the in-memory or disk cache otherwise False.
 %
 %    o image: The image.
@@ -2901,8 +3128,6 @@ MagickExport unsigned int SyncCacheNexus(Image *image,const unsigned long nexus)
   if (image->cache == (Cache) NULL)
     ThrowBinaryException(CacheError,"PixelCacheIsNotOpen",image->filename);
   image->taint=True;
-  image->is_grayscale=False;
-  image->is_monochrome=False;
   if (IsNexusInCore(image->cache,nexus))
     return(True);
   if (image->clip_mask != (Image *) NULL)
@@ -2928,9 +3153,8 @@ MagickExport unsigned int SyncCacheNexus(Image *image,const unsigned long nexus)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method SyncImagePixels() saves the image pixels to the in-memory or disk
-%  cache.  The method returns True if the pixel region is synced, otherwise
-%  False.
+%  SyncImagePixels() saves the image pixels to the in-memory or disk cache.
+%  The method returns True if the pixel region is synced, otherwise False.
 %
 %  The format of the SyncImagePixels() method is:
 %
@@ -2938,7 +3162,7 @@ MagickExport unsigned int SyncCacheNexus(Image *image,const unsigned long nexus)
 %
 %  A description of each parameter follows:
 %
-%    o status: Method SyncImagePixels() returns True if the image pixels are
+%    o status: SyncImagePixels() returns True if the image pixels are
 %      transferred to the in-memory or disk cache otherwise False.
 %
 %    o image: The image.
@@ -3000,8 +3224,8 @@ static unsigned int SyncPixelCache(Image *image)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method WriteCacheIndexes() writes the colormap indexes to the specified
-%  region of the pixel cache.
+%  WriteCacheIndexes() writes the colormap indexes to the specified region of
+%  the pixel cache.
 %
 %  The format of the WriteCacheIndexes() method is:
 %
@@ -3009,7 +3233,7 @@ static unsigned int SyncPixelCache(Image *image)
 %
 %  A description of each parameter follows:
 %
-%    o status: Method WriteCacheIndexes() returns True if the indexes are
+%    o status: WriteCacheIndexes() returns True if the indexes are
 %      successfully written to the pixel cache, otherwise False.
 %
 %    o cache: Specifies a pointer to a CacheInfo structure.
@@ -3052,10 +3276,11 @@ static unsigned int WriteCacheIndexes(Cache cache,const unsigned long nexus)
   if ((cache_info->storage_class != PseudoClass) &&
       (cache_info->colorspace != CMYKColorspace))
     return(False);
+  nexus_info=cache_info->nexus_info+nexus;
   if (IsNexusInCore(cache,nexus))
     return(True);
-  nexus_info=cache_info->nexus_info+nexus;
-  offset=nexus_info->y*cache_info->columns+nexus_info->x;
+  offset=nexus_info->y*(ExtendedSignedIntegralType) cache_info->columns+
+    nexus_info->x;
   length=nexus_info->columns*sizeof(IndexPacket);
   indexes=nexus_info->indexes;
   if (cache_info->type != DiskCache)
@@ -3074,18 +3299,23 @@ static unsigned int WriteCacheIndexes(Cache cache,const unsigned long nexus)
   /*
     Write indexes to disk.
   */
-  file=open(cache_info->cache_filename,O_WRONLY | O_BINARY | O_EXCL,0777);
-  if (file == -1)
-    file=open(cache_info->cache_filename,O_WRONLY | O_BINARY,0777);
-  if (file == -1)
-    return(False);
-  number_pixels=cache_info->columns*cache_info->rows;
+  file=cache_info->file;
+  if (cache_info->file == -1)
+    {
+      file=open(cache_info->cache_filename,O_WRONLY | O_BINARY | O_EXCL,S_MODE);
+      if (file == -1)
+        file=open(cache_info->cache_filename,O_WRONLY | O_BINARY,S_MODE);
+      if (file == -1)
+        return(False);
+    }
+  number_pixels=(ExtendedSignedIntegralType)
+    cache_info->columns*cache_info->rows;
   for (y=0; y < (long) nexus_info->rows; y++)
   {
     count=MagickSeek(file,cache_info->offset+number_pixels*sizeof(PixelPacket)+
       offset*sizeof(IndexPacket),SEEK_SET);
     if (count == -1)
-      return(False);
+      break;
     for (i=0; i < length; i+=count)
     {
       count=write(file,(char *) indexes+i,length-i);
@@ -3093,12 +3323,16 @@ static unsigned int WriteCacheIndexes(Cache cache,const unsigned long nexus)
         break;
     }
     if (i < length)
-      return(False);
+      break;
     indexes+=nexus_info->columns;
     offset+=cache_info->columns;
   }
-  (void) close(file);
-  return(True);
+  if (cache_info->file == -1)
+    (void) close(file);
+  if (QuantumTick(nexus_info->y,cache_info->rows))
+    (void) LogMagickEvent(CacheEvent,GetMagickModule(),"%lux%lu%+ld%+ld",
+      nexus_info->columns,nexus_info->rows,nexus_info->x,nexus_info->y);
+  return(y == (long) nexus_info->rows);
 }
 
 /*
@@ -3112,8 +3346,8 @@ static unsigned int WriteCacheIndexes(Cache cache,const unsigned long nexus)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method WriteCachePixels() writes image pixels to the specified region of the
-%  pixel cache.
+%  WriteCachePixels() writes image pixels to the specified region of the pixel
+%  cache.
 %
 %  The format of the WriteCachePixels() method is:
 %
@@ -3121,7 +3355,7 @@ static unsigned int WriteCacheIndexes(Cache cache,const unsigned long nexus)
 %
 %  A description of each parameter follows:
 %
-%    o status: Method WriteCachePixels() returns True if the pixels are
+%    o status: WriteCachePixels() returns True if the pixels are
 %      successfully written to the cache, otherwise False.
 %
 %    o cache: Specifies a pointer to a Cache structure.
@@ -3135,12 +3369,12 @@ static unsigned int WriteCachePixels(Cache cache,const unsigned long nexus)
   CacheInfo
     *cache_info;
 
-  int
-    file;
-
   ExtendedSignedIntegralType
     count,
     offset;
+
+  int
+    file;
 
   register long
     y;
@@ -3160,10 +3394,11 @@ static unsigned int WriteCachePixels(Cache cache,const unsigned long nexus)
   assert(cache != (Cache) NULL);
   cache_info=(CacheInfo *) cache;
   assert(cache_info->signature == MagickSignature);
+  nexus_info=cache_info->nexus_info+nexus;
   if (IsNexusInCore(cache,nexus))
     return(True);
-  nexus_info=cache_info->nexus_info+nexus;
-  offset=nexus_info->y*cache_info->columns+nexus_info->x;
+  offset=nexus_info->y*(ExtendedSignedIntegralType) cache_info->columns+
+    nexus_info->x;
   length=nexus_info->columns*sizeof(PixelPacket);
   pixels=nexus_info->pixels;
   if (cache_info->type != DiskCache)
@@ -3182,17 +3417,21 @@ static unsigned int WriteCachePixels(Cache cache,const unsigned long nexus)
   /*
     Write pixels to disk.
   */
-  file=open(cache_info->cache_filename,O_WRONLY | O_BINARY | O_EXCL,0777);
-  if (file == -1)
-    file=open(cache_info->cache_filename,O_WRONLY | O_BINARY,0777);
-  if (file == -1)
-    return(False);
+  file=cache_info->file;
+  if (cache_info->file == -1)
+    {
+      file=open(cache_info->cache_filename,O_WRONLY | O_BINARY | O_EXCL,S_MODE);
+      if (file == -1)
+        file=open(cache_info->cache_filename,O_WRONLY | O_BINARY,S_MODE);
+      if (file == -1)
+        return(False);
+    }
   for (y=0; y < (long) nexus_info->rows; y++)
   {
     count=MagickSeek(file,cache_info->offset+offset*sizeof(PixelPacket),
       SEEK_SET);
     if (count == -1)
-      return(False);
+      break;
     for (i=0; i < length; i+=count)
     {
       count=write(file,(char *) pixels+i,length-i);
@@ -3200,10 +3439,14 @@ static unsigned int WriteCachePixels(Cache cache,const unsigned long nexus)
         break;
     }
     if (i < length)
-      return(False);
+      break;
     pixels+=nexus_info->columns;
     offset+=cache_info->columns;
   }
-  (void) close(file);
-  return(True);
+  if (cache_info->file == -1)
+    (void) close(file);
+  if (QuantumTick(nexus_info->y,cache_info->rows))
+    (void) LogMagickEvent(CacheEvent,GetMagickModule(),"%lux%lu%+ld%+ld",
+      nexus_info->columns,nexus_info->rows,nexus_info->x,nexus_info->y);
+  return(y == (long) nexus_info->rows);
 }

@@ -6,6 +6,7 @@
 
 2003-03-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/cache.c: Snarfed cache.c updates from ImageMagick.
 	* magick/command.c: Added -list resource support.
 
 2003-03-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>

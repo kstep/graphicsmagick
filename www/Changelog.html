@@ -13,9 +13,19 @@
 </tr>
 </table>
 <p>
+2003-03-17  Glenn Randers-Pehrson &lt;randeg@alum.rpi.edu&gt;
+
+<UL>
+  <LI> magick/image.c Relocated misplaced break in ChannelImage()
+        and sped up SetImageOpacity by avoiding blend operation when
+        setting the image fully opaque.
+
+</UL>
+<p>
 2003-03-17  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> magick/cache.c: Snarfed cache.c updates from ImageMagick.
   <LI> magick/command.c: Added -list resource support.
 
 </UL>

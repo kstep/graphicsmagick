@@ -158,6 +158,9 @@ typedef struct _CacheInfo
   PixelPacket
     virtual_pixel;
 
+  int
+    file;
+
   char
     filename[MaxTextExtent],
     cache_filename[MaxTextExtent];
@@ -191,6 +194,9 @@ extern MagickExport const PixelPacket
   *AcquireCacheNexus(const Image *,const long,const long,const unsigned long,
     const unsigned long,const unsigned long,ExceptionInfo *);
 
+extern MagickExport ExtendedSignedIntegralType
+  GetPixelCacheArea(const Image *);
+
 extern MagickExport IndexPacket
   *GetIndexes(const Image *),
   *GetNexusIndexes(const Cache,const unsigned long);
@@ -221,8 +227,7 @@ extern MagickExport unsigned int
   SyncImagePixels(Image *);
 
 extern MagickExport unsigned long
-  GetNexus(Cache),
-  GetPixelCacheArea(const Image *);
+  GetNexus(Cache);
 
 extern MagickExport VirtualPixelMethod
   GetImageVirtualPixelMethod(const Image *);
