@@ -108,6 +108,7 @@ extern "C" {
 #include "blob.h"
 #include "cache.h"
 #include "cache_view.h"
+#include "magic.h"
 #include "delegates.h"
 #include "timer.h"
 #include "semaphore.h"
