@@ -48,10 +48,16 @@ extern "C" {
 #   if defined(_VISUALC_)
 #    pragma message( "Compiling as dll import" )
 #   endif
+#   if defined(__GNUC__)
+#     warning "MagickExport  __declspec(dllimport)"
+#   endif
 #  else
 #   define MagickExport  __declspec(dllexport)
 #   if defined(_VISUALC_)
 #    pragma message( "Compiling as dll export" )
+#   endif
+#   if defined(__GNUC__)
+#     warning "MagickExport  __declspec(dllexport)"
 #   endif
 #  endif
 # else
@@ -59,17 +65,28 @@ extern "C" {
 #  if defined(_VISUALC_)
 #   pragma message( "Compiling as simple library" )
 #  endif
+#   if defined(__GNUC__)
+#     warning "MagickExport export"
+#   endif
 # endif
+
 # if defined(_DLL) && !defined(_LIB)
 #  define ModuleExport  __declspec(dllexport)
 #  if defined(_VISUALC_)
 #   pragma message( "Module compiled as DLL" ) 
+#  endif
+#  if defined(__GNUC__)
+#    warning "ModuleExport  __declspec(dllexport)"
 #  endif
 # else
 #  define ModuleExport
 #  if defined(_VISUALC_)
 #   pragma message( "Module compiled as library" ) 
 #  endif
+#  if defined(__GNUC__)
+#    warning "ModuleExport export"
+#  endif
+
 # endif
 # define MagickGlobal __declspec(thread)
 # if defined(_VISUALC_)

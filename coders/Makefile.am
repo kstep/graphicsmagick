@@ -32,12 +32,12 @@ AUTOMAKE_OPTIONS = 1.6 foreign
 
 INCLUDES = -I$(top_srcdir) -I$(top_srcdir)/magick
 
-if WIN32
-MAGICK_WIN32_SRCS = clipboard.c
-MAGICK_WIN32_MODULES = clipboard.la
+if HasWINGDI32
+MAGICK_GDI32_SRCS    = clipboard.c emf.c
+MAGICK_GDI32_MODULES = clipboard.la emf.la
 else
-MAGICK_WIN32_SRCS =
-MAGICK_WIN32_MODULES =
+MAGICK_GDI32_SRCS    =
+MAGICK_GDI32_MODULES =
 endif
 
 MAGICK_CODER_SRCS = \
@@ -50,7 +50,7 @@ MAGICK_CODER_SRCS = \
   pwp.c rgb.c rla.c rle.c sct.c sfw.c sgi.c stegano.c sun.c svg.c \
   tga.c tiff.c tile.c tim.c ttf.c txt.c uil.c url.c uyvy.c vicar.c \
   vid.c viff.c wbmp.c wmf.c wpg.c x.c xbm.c xc.c xcf.c xpm.c xwd.c \
-  yuv.c $(MAGICK_WIN32_SRCS)
+  yuv.c $(MAGICK_GDI32_SRCS)
 
 MAJOR_VERSION=@MAJOR_VERSION@
 MINOR_VERSION=@MINOR_VERSION@
@@ -60,7 +60,7 @@ noinst_LTLIBRARIES =
 else
 noinst_LTLIBRARIES = libCoders.la
 libCoders_la_SOURCES = $(MAGICK_CODER_SRCS)
-EXTRA_libCoders_la_SOURCES = clipboard.c
+EXTRA_libCoders_la_SOURCES = clipboard.c emf.c
 endif # WITH_MODULES
 
 # Additional files to distribute
@@ -85,15 +85,15 @@ pkgdata_DATA =
 # Modules which are to be built
 pkg_LTLIBRARIES = \
   art.la avi.la avs.la bmp.la caption.la cmyk.la cut.la dcm.la dib.la dps.la \
-	dpx.la ept.la fax.la fits.la fpx.la gif.la gradient.la gray.la hdf.la \
+  dpx.la ept.la fax.la fits.la fpx.la gif.la gradient.la gray.la hdf.la \
   histogram.la html.la icon.la jbig.la jp2.la jpeg.la label.la logo.la \
   map.la mat.la matte.la meta.la miff.la mono.la mpc.la mpeg.la mpr.la msl.la \
   mtv.la mvg.la null.la otb.la palm.la pcd.la pcl.la pcx.la pdb.la pdf.la \
-	pict.la pix.la plasma.la png.la pnm.la preview.la ps.la ps2.la ps3.la psd.la \
+  pict.la pix.la plasma.la png.la pnm.la preview.la ps.la ps2.la ps3.la psd.la \
   pwp.la rgb.la rla.la rle.la sct.la sfw.la sgi.la stegano.la sun.la svg.la \
   tga.la tiff.la tile.la tim.la ttf.la txt.la uil.la url.la uyvy.la vicar.la \
   vid.la viff.la wbmp.la wmf.la wpg.la x.la xbm.la xc.la xcf.la xpm.la xwd.la \
-  yuv.la $(MAGICK_WIN32_MODULES)
+  yuv.la $(MAGICK_GDI32_MODULES)
 MODULECOMMONFLAGS = -no-undefined -module -avoid-version
 else
 pkg_LTLIBRARIES =
@@ -162,6 +162,11 @@ dps_la_LIBADD       = $(LIBMAGICK) @LIB_DPS@ @LIB_XEXT@ @LIB_XT@ @LIB_X11@
 dpx_la_SOURCES      = dpx.c
 dpx_la_LDFLAGS      = $(MODULECOMMONFLAGS)
 dpx_la_LIBADD       = $(LIBMAGICK) 
+
+# EMF module
+emf_la_SOURCES      = emf.c
+emf_la_LDFLAGS      = $(MODULECOMMONFLAGS)
+emf_la_LIBADD       = $(LIBMAGICK) @LIB_GDI32@
 
 # EPT module
 ept_la_SOURCES      = ept.c

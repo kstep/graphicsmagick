@@ -28,7 +28,7 @@ ZOOM_FILTERS = point box triangle hermite hanning hamming blackman gaussian \
 	       quadratic cubic catrom mitchell lanczos bessel sinc
 ZOOM_GEOMETRY = 600x600
 
-if WIN32
+if WIN32_NATIVE
 SRCDIR='$(shell @WinPathScript@ $(srcdir)/)'
 else
 SRCDIR='$(srcdir)/'

@@ -1,7 +1,7 @@
 #
 # Makefile for ImageMagick tests invoked via the C API
 #
-# Copyright (C) 2000 ImageMagick Studio, a non-profit organization dedicated
+# Copyright (C) 2002 ImageMagick Studio, a non-profit organization dedicated
 # to making software imaging solutions freely available.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a

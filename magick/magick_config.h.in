@@ -240,6 +240,9 @@
 /* Define if you have FreeType (TrueType font) library */
 #undef HasTTF
 
+/* Define to use the Windows GDI32 library */
+#undef HasWINGDI32
+
 /* Define if you have wmf library */
 #undef HasWMF
 

@@ -236,8 +236,8 @@ ZOOM_FILTERS = point box triangle hermite hanning hamming blackman gaussian \
 
 ZOOM_GEOMETRY = 600x600
 
-@WIN32_TRUE@SRCDIR = '$(shell @WinPathScript@ $(srcdir)/)'
-@WIN32_FALSE@SRCDIR = '$(srcdir)/'
+@WIN32_NATIVE_TRUE@SRCDIR = '$(shell @WinPathScript@ $(srcdir)/)'
+@WIN32_NATIVE_FALSE@SRCDIR = '$(srcdir)/'
 subdir = Magick++/demo
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/magick/magick_config.h

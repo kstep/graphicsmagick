@@ -42,7 +42,7 @@ EXTRA_DIST = \
 
 CLEANFILES = testmagick_anim_out.miff
 
-if WIN32
+if WIN32_NATIVE
 SRCDIR='$(shell @WinPathScript@ $(srcdir)/)'
 else
 SRCDIR='$(srcdir)/'

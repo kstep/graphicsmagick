@@ -251,7 +251,8 @@ libMagick_la_LDFLAGS = -no-undefined \
 	-version-info $(MAJOR_VERSION):$(MINOR_VERSION)$(MICRO_VERSION):0
 
 
-AM_CFLAGS = @LIBRARY_EXTRA_CPPFLAGS@
+#AM_CFLAGS = @LIBRARY_EXTRA_CPPFLAGS@
+AM_CPPFLAGS = @LIBRARY_EXTRA_CPPFLAGS@
 
 # Library base sources
 MAGICK_BASE_SRCS = memory.c blob.c cache.c error.c monitor.c constitute.c \
@@ -265,8 +266,8 @@ MAGICK_BASE_SRCS = memory.c blob.c cache.c error.c monitor.c constitute.c \
 # Platform specific source files that may appear in the library
 EXTRA_libMagick_la_SOURCES = nt.c
 
-@WIN32_TRUE@MAGICK_PLATFORM_SRCS = nt.c
-@WIN32_FALSE@MAGICK_PLATFORM_SRCS = 
+@WIN32_NATIVE_TRUE@MAGICK_PLATFORM_SRCS = nt.c
+@WIN32_NATIVE_FALSE@MAGICK_PLATFORM_SRCS = 
 
 # Library sources
 @WITH_MODULES_TRUE@libMagick_la_SOURCES = $(MAGICK_BASE_SRCS) $(MAGICK_PLATFORM_SRCS)
@@ -323,8 +324,8 @@ am__objects_1 = memory.lo blob.lo cache.lo error.lo monitor.lo \
 	magic.lo magick.lo delegate.lo module.lo static.lo timer.lo \
 	utility.lo cache_view.lo stream.lo animate.lo display.lo \
 	widget.lo xwindow.lo PreRvIcccm.lo
-@WIN32_TRUE@am__objects_2 = nt.lo
-@WIN32_FALSE@am__objects_2 =
+@WIN32_NATIVE_TRUE@am__objects_2 = nt.lo
+@WIN32_NATIVE_FALSE@am__objects_2 =
 @WITH_MODULES_TRUE@am_libMagick_la_OBJECTS = $(am__objects_1) \
 @WITH_MODULES_TRUE@	$(am__objects_2)
 @WITH_MODULES_FALSE@am_libMagick_la_OBJECTS = $(am__objects_1) \

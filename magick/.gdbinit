@@ -1,1 +1,3 @@
-dir ../coders:$cdir:$cwd
+dir $cwd
+dir $cdir
+dir ../coders

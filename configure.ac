@@ -32,15 +32,6 @@ CPPFLAGS_INITIAL=$CPPFLAGS
 LDFLAGS_INITIAL=$LDFLAGS
 LIBS_INITIAL=$LIBS
 
-# Set native_win32_build to 'yes' if building under MinGW
-native_win32_build='no'
-case "${host_os}" in
-  mingw* )
-    native_win32_build='yes'
-    ;;
-esac
-AM_CONDITIONAL(WIN32, test "$native_win32_build" != 'no')
-
 #
 # Evaluate shell variable equivalents to Makefile directory variables
 #
@@ -107,12 +98,27 @@ AC_EXEEXT
 AC_OBJEXT
 
 LIB_GDI32=''
-if test "$native_win32_build" = 'yes'
+native_win32_build='no'
+case "${host_os}" in
+  cygwin* )
+    LIB_GDI32='-lgdi32'
+    ;;
+  mingw* )
+    native_win32_build='yes'
+    LIB_GDI32='-lgdi32'
+    ;;
+esac
+if test -n "$LIB_GDI32"
 then
-  LIB_GDI32='-lgdi32'
-  AC_SUBST(LIB_GDI32)
+  AC_DEFINE(HasWINGDI32,1,Define to use the Windows GDI32 library)
 fi
+AC_SUBST(LIB_GDI32)
+AM_CONDITIONAL(HasWINGDI32, test -n "$LIB_GDI32" )
+AM_CONDITIONAL(WIN32_NATIVE, test "$native_win32_build" != 'no' )
 
+#
+# Compiler flags tweaks
+#
 if test "${GCC}" != "yes"
 then
   case "${host}" in

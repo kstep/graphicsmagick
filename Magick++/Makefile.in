@@ -476,6 +476,8 @@ uninstall-info: uninstall-info-recursive
 @HasTXT2HTML_TRUE@../www/Magick++/ChangeLog.html: ChangeLog
 @HasTXT2HTML_TRUE@	txt2html -t 'Magick++ ChangeLog' < $(srcdir)/ChangeLog > $(srcdir)/../www/Magick++/ChangeLog.html
 @HasTXT2HTML_TRUE@	echo "Please do a 'cvs commit www/Magick++/ChangeLog.html' to submit updated HTML file"
+
+@HasTXT2HTML_FALSE@all-local:
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

@@ -24,4 +24,8 @@ all-local: ../www/Magick++/NEWS.html ../www/Magick++/ChangeLog.html
 	txt2html -t 'Magick++ ChangeLog' < $(srcdir)/ChangeLog > $(srcdir)/../www/Magick++/ChangeLog.html
 	echo "Please do a 'cvs commit www/Magick++/ChangeLog.html' to submit updated HTML file"
 
+else
+
+all-local:
+
 endif

@@ -61,7 +61,7 @@ MAGICK_BASE_SRCS = memory.c blob.c cache.c error.c monitor.c constitute.c \
 # Platform specific source files that may appear in the library
 EXTRA_libMagick_la_SOURCES = nt.c
 
-if WIN32
+if WIN32_NATIVE
 MAGICK_PLATFORM_SRCS = nt.c
 else
 MAGICK_PLATFORM_SRCS =

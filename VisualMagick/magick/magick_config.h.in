@@ -1,29 +1,81 @@
 #if defined(WIN32)
+
+// ImageMagick build feature configuration.  Please note that
+// disabling a feature via this header file may not be sufficient to
+// remove any library dependencies from the build.  The VisualMagick
+// project files may need to be edited to remove libraries the feature
+// depends on.
+
+// Define to use the autotrace library (obtain sources seperately)
 //#define HasAUTOTRACE
-#define HAVE_FREETYPE_FREETYPE_H
-#define HAVE_LIBXML_XMLERROR_H
+
+// Define to support memory mapping files for improved performance
 #define HAVE_MMAP
+
+// Define to include the <sys/types.h> header file
 #define HAVE_SYS_TYPES_H 1
+
+// Define to use the bzip2 compression library
 #define HasBZLIB
+
+// Define to use the FlashPIX library
 #define HasFPX
-//#define HasHDF
+
+// Define to use the JBIG library
 #define HasJBIG
+
+// Define to use the Jasper JPEG v2 library
 #define HasJP2
+
+// Define to use the IJG JPEG v1 library
 #define HasJPEG
+
+// Define to use the "little" Color Management System (LCMS) library
 #define HasLCMS
+
+// Define to support patented LZW compression
 #define HasLZW 1
+
+// Define to use the PNG library
 #define HasPNG
+
+// Define to use the TIFF library
 #define HasTIFF
+
+// Define to use the FreeType (TrueType & Postscript font support) library
 #define HasTTF
-#define HasWIN32WMFAPI
+
+// Define to use the Windows GDI32 library (for clipboard and emf modules)
+#define HasWINGDI32
+
+// Define to use the libwmf WMF parsing library
 #define HasWMFlite
+
+// Define if MIT X11 is available (or stubbed)
 #define HasX11
+
+// Define to use the GNOME XML library
 #define HasXML
+
+// Define to use the zlib ZIP compression library
 #define HasZLIB
+
+// Specify size of PixelPacket Quantums (8 or 16)
 #define QuantumDepth 16
+
+// Use Visual C++ C inline method extension to improve performance
 #define inline __inline
+
+// Specify where X11 application resource files are installed
 #define ApplicationDefaults "c:\\ImageMagick\\"
+
+// Specify where operating system specific files are installed
 #define MagickLibPath       "c:\\ImageMagick\\"
-#define MagickModulesPath   "c:\\ImageMagick\\"
+
+// Specify where operating system independent files are installed
 #define MagickSharePath     "c:\\ImageMagick\\"
+
+// Specify where coder modules (DLLs) are installed
+#define MagickModulesPath   "c:\\ImageMagick\\"
+
 #endif

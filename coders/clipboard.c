@@ -44,15 +44,19 @@
 %
 */
 
-
-#if defined(WIN32)
-#include <windows.h>
-#endif
-
 /*
   Include declarations.
 */
+
 #include "studio.h"
+#if defined(HasWINGDI32)
+#  if defined(__CYGWIN__)
+#    include <windows.h>
+#  else
+     // All MinGW needs ...
+#    include <wingdi.h>
+#  endif
+#endif
 
 
 /*
@@ -86,6 +90,7 @@
 %
 %
 */
+#if defined(HasWINGDI32)
 static Image *ReadCLIPBOARDImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   Image
@@ -106,7 +111,6 @@ static Image *ReadCLIPBOARDImage(const ImageInfo *image_info,ExceptionInfo *exce
   assert(exception->signature == MagickSignature);
   image=AllocateImage(image_info);
 
-#if defined(WIN32)
   {
     HBITMAP
       bitmapH;
@@ -204,11 +208,11 @@ static Image *ReadCLIPBOARDImage(const ImageInfo *image_info,ExceptionInfo *exce
       } else
         ThrowReaderException(FileOpenError,"no bitmap on clipboard",image);
   }
-#endif
 
   CloseBlob(image);
   return(image);
 }
+#endif /* HasWINGDI32 */
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -239,6 +243,7 @@ static Image *ReadCLIPBOARDImage(const ImageInfo *image_info,ExceptionInfo *exce
 %
 %
 */
+#if defined(HasWINGDI32)
 static unsigned int WriteCLIPBOARDImage(const ImageInfo *image_info,Image *image)
 {
   /*
@@ -249,7 +254,6 @@ static unsigned int WriteCLIPBOARDImage(const ImageInfo *image_info,Image *image
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
 
-#if defined(WIN32)
   {
     unsigned long 
       nPixels,
@@ -315,10 +319,10 @@ static unsigned int WriteCLIPBOARDImage(const ImageInfo *image_info,Image *image
 
     return(True);
   }
-#endif
 
   return(False);
 }
+#endif /* HasWINGDI32 */
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -345,6 +349,7 @@ static unsigned int WriteCLIPBOARDImage(const ImageInfo *image_info,Image *image
 */
 ModuleExport void RegisterCLIPBOARDImage(void)
 {
+#if defined(HasWINGDI32)
   MagickInfo
     *entry;
 
@@ -355,6 +360,7 @@ ModuleExport void RegisterCLIPBOARDImage(void)
   entry->description=AcquireString("the system clipboard");
   entry->module=AcquireString("CLIPBOARD");
   (void) RegisterMagickInfo(entry);
+#endif
 }
 
 /*
@@ -378,6 +384,8 @@ ModuleExport void RegisterCLIPBOARDImage(void)
 */
 ModuleExport void UnregisterCLIPBOARDImage(void)
 {
+#if defined(HasWINGDI32)
   (void) UnregisterMagickInfo("CLIPBOARD");
+#endif
 }
 

@@ -61,7 +61,6 @@
 #endif
 
 #if defined(HasWMF) || defined(HasWMFlite)
-/* #if !defined(HasWIN32WMFAPI) */
 
 #define ERR(API)  ((API)->err != wmf_E_None)
 #define XC(x) ((double)x)
@@ -2609,20 +2608,6 @@ ModuleExport void RegisterWMFImage(void)
   entry->blob_support = False;
   entry->module = AcquireString("WMF");
   (void) RegisterMagickInfo(entry);
-#if defined(HasWIN32WMFAPI)
-  entry = SetMagickInfo("EMF");
-  entry->decoder = ReadEMFImage;
-  entry->description = AcquireString("Windows WIN32 API rendered Enhanced Meta File");
-  entry->blob_support = False;
-  entry->module = AcquireString("WMF");
-  (void) RegisterMagickInfo(entry);
-  entry = SetMagickInfo("WMFWIN32");
-  entry->decoder = ReadEMFImage;
-  entry->description = AcquireString("Windows WIN32 API rendered Meta File");
-  entry->blob_support = False;
-  entry->module = AcquireString("WMFWIN32");
-  (void) RegisterMagickInfo(entry);
-#endif
 #endif /* HasWMF || HasWMFlite */
 }
 
@@ -2649,9 +2634,5 @@ ModuleExport void UnregisterWMFImage(void)
 {
 #if defined(HasWMF) || defined(HasWMFlite)
   (void) UnregisterMagickInfo("WMF");
-#if defined(HasWIN32WMFAPI)
-  (void) UnregisterMagickInfo("EMF");
-  (void) UnregisterMagickInfo("WMFWIN32");
-#endif
 #endif /* defined(HasWMF) */
 }
