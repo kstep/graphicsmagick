@@ -2168,8 +2168,6 @@ MagickExport int LocaleCompare(const char *p,const char *q)
     c,
     d;
 
-  if (p == q)
-    return(0);
   if (p == (char *) NULL)
     return(-1);
   if (q == (char *) NULL)
@@ -2265,8 +2263,6 @@ MagickExport int LocaleNCompare(const char *p,const char *q,const size_t length)
     c,
     d;
 
-  if (p == q)
-    return(0);
   if (p == (char *) NULL)
     return(-1);
   if (q == (char *) NULL)
