@@ -465,7 +465,7 @@ MagickExport unsigned int SignatureImage(Image *image)
   assert(image->signature == MagickSignature);
   message=(unsigned char *) AcquireMemory(10*image->columns);
   if (message == (unsigned char *) NULL)
-    ThrowBinaryException(ResourceLimitWarning,"Unable to compute image signature",
+    ThrowBinaryException(ResourceLimitWarning,"Unable to compute signature",
       "Memory allocation failed");
   /*
     Compute image digital signature.
@@ -486,27 +486,26 @@ MagickExport unsigned int SignatureImage(Image *image)
       *q++=XUpScale(p->green);
       *q++=XUpScale(p->blue) >> 8;
       *q++=XUpScale(p->blue);
-      if (image->colorspace == CMYKColorspace)
+      if (!image->matte)
+        {
+          if (image->colorspace == CMYKColorspace)
+            {
+              *q++=XUpScale(p->opacity) >> 8;
+              *q++=XUpScale(p->opacity);
+            }
+          *q++=XUpScale(OpaqueOpacity) >> 8;
+          *q++=XUpScale(OpaqueOpacity) & 0xff;
+        }
+      else
         {
           *q++=XUpScale(p->opacity) >> 8;
           *q++=XUpScale(p->opacity);
-          if (indexes != (IndexPacket *) NULL)
+          if (image->colorspace == CMYKColorspace)
             {
               *q++=XUpScale(indexes[x]) >> 8;
               *q++=XUpScale(indexes[x]);
             }
         }
-      else
-        if (image->matte)
-          {
-            *q++=XUpScale(p->opacity) >> 8;
-            *q++=XUpScale(p->opacity);
-          }
-        else
-          {
-            *q++=XUpScale(OpaqueOpacity) >> 8;
-            *q++=XUpScale(OpaqueOpacity) & 0xff;
-          }
       p++;
     }
     UpdateSignature(&signature_info,message,q-message);
