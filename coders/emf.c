@@ -14,10 +14,8 @@
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %
-%                              J.A. Gutierrez                                 %
-%                                 Oct 1997                                    %
-%                               Prepared By                                   %
 %                              Bill Radcliffe                                 %
+%                                   2001                                      %
 %                                                                             %
 %  Copyright (C) 2002 ImageMagick Studio, a non-profit organization dedicated %
 %  to making software imaging solutions freely available.                     %
@@ -77,9 +75,6 @@
 %  Windows MetaFile (WMF) file using the Windows API and returns it.  It
 %  allocates the memory necessary for the new Image structure and returns a
 %  pointer to the new image.
-%
-%  This method was written and contributed by spd@daphne.cps.unizar.es
-%  (feel free to copy and use it as you want. No warranty).
 %
 %  The format of the ReadEMFImage method is:
 %
