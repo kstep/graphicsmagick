@@ -383,7 +383,8 @@ MagickExport unsigned int ReadStream(const ImageInfo *image_info,
   clone_info->fifo=fifo;
   image=ReadImage(clone_info,exception);
   DestroyImageInfo(clone_info);
-  DestroyImage(image);
+  if (image != (Image *) NULL)
+    DestroyImage(image);
   /*
     Restore pixel cache methods.
   */
