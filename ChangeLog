@@ -1,3 +1,13 @@
+2003-06-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/txt.c (WriteTXTImage): Apply patch from John Cristy's
+	ImageMagick to observe image depth while writing pixel colors.
+	This patch is not applied to the 1.0 branch because it represents
+	an output format change which could break a dependent application.
+	(IsTXT): Recognize files written by the TXT coder.
+	(ReadTXTImage): Reject files written by the TXT coder until support
+	for reading these files is implemented.
+
 2003-06-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* configure.ac: Don't add -lfpx to LIBS while configuring

@@ -320,7 +320,7 @@ const char *GetLocaleMessage(const char *tag)
                 return *np ? tag : "No IPTC profile available";
               else
               if (p - tp == 22 && !LocaleNCompare(tp, "NotASupportedImageFile", 22))
-                return *np ? tag : "Not a support image file";
+                return *np ? tag : "Not a supported image file";
               else
               if (p - tp == 28 && !LocaleNCompare(tp, "NumberOfImagesIsNotSupported", 28))
                 return *np ? tag : "Number of images is not supported";
@@ -402,7 +402,7 @@ const char *GetLocaleMessage(const char *tag)
 
           case 'u':  case 'U':
             if (p - tp == 27 && !LocaleNCompare(tp, "UnableToAccessConfigureFile", 27))
-              return *np ? tag : "Unable to access configure file";
+              return *np ? tag : "Unable to access configuration file";
             else
             if (p - tp == 22 && !LocaleNCompare(tp, "UnableToAccessFontFile", 22))
               return *np ? tag : "Unable to access font file";

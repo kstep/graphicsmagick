@@ -139,7 +139,7 @@
         No IPTC info was found
       </Message>
       <Message name="NotASupportedImageFile">
-        Not a support image file
+        Not a supported image file
       </Message>
       <Message name="NumberOfImagesIsNotSupported">
         Number of images is not supported
