@@ -701,6 +701,17 @@ NoMemory:		ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
 			if( image->colors<(1<<image->depth) && image->depth!=24 )
 			    ReacquireMemory((void **)&image->colormap,(1<<image->depth)*sizeof(PixelPacket));
 		      }
+		      
+		 if(image->depth==1)
+		      {
+		      if(image->colormap[0].red==0 && image->colormap[0].green==0 && image->colormap[0].blue==0 &&
+			 image->colormap[1].red==0 && image->colormap[1].green==0 && image->colormap[1].blue==0)
+				{  /*fix crippled monochrome palette*/
+				image->colormap[1].red =
+				image->colormap[1].green =
+				image->colormap[1].blue = UpScale(255);
+				}
+		       }      
 
 		 if(UnpackWPGRaster(image)<0) /* The raster cannot be unpacked */
 		     {

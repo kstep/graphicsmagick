@@ -267,10 +267,11 @@ static boolean ReadComment(j_decompress_ptr jpeg_info)
   /*
     Determine length of comment.
   */
-  image=(Image *) jpeg_info->client_data;
   length=GetCharacter(jpeg_info) << 8;
   length+=GetCharacter(jpeg_info);
   length-=2;
+  if (length <= 0)
+    return(True);
   comment=(char *) AcquireMemory(length+1);
   if (comment == (char *) NULL)
     ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
@@ -278,10 +279,10 @@ static boolean ReadComment(j_decompress_ptr jpeg_info)
   /*
     Read comment.
   */
-  p=comment;
-  while (--length >= 0)
-    *p++=GetCharacter(jpeg_info);
+  for (p=comment; --length >= 0; p++)
+    *p=GetCharacter(jpeg_info);
   *p='\0';
+  image=(Image *) jpeg_info->client_data;
   (void) SetImageAttribute(image,"Comment",comment);
   LiberateMemory((void **) &comment);
   return(True);
@@ -302,6 +303,14 @@ static boolean ReadGenericProfile(j_decompress_ptr jpeg_info)
     *p;
 
   /*
+    Determine length of generic profile.
+  */
+  length=GetCharacter(jpeg_info) << 8;
+  length+=GetCharacter(jpeg_info);
+  length-=2;
+  if (length <= 0)
+    return(True);
+  /*
     Allocate generic profile.
   */
   image=(Image *) jpeg_info->client_data;
@@ -317,15 +326,9 @@ static boolean ReadGenericProfile(j_decompress_ptr jpeg_info)
       ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
         (char *) NULL);
     }
-  /*
-    Determine length of generic profile.
-  */
   image->generic_profile[i].name=AllocateString((char *) NULL);
   FormatString(image->generic_profile[i].name,"APP%d",
     jpeg_info->unread_marker-JPEG_APP0);
-  length=GetCharacter(jpeg_info) << 8;
-  length+=GetCharacter(jpeg_info);
-  length-=2;
   image->generic_profile[i].info=(unsigned char *) AcquireMemory(length);
   if (image->generic_profile[i].info == (unsigned char *) NULL)
     ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
@@ -334,9 +337,8 @@ static boolean ReadGenericProfile(j_decompress_ptr jpeg_info)
     Read generic profile.
   */
   image->generic_profile[i].length=length;
-  p=image->generic_profile[i].info;
-  while (--length >= 0)
-    *p++=GetCharacter(jpeg_info);
+  for (p=image->generic_profile[i].info; --length >= 0; p++)
+    *p=GetCharacter(jpeg_info);
   image->generic_profiles++;
   return(True);
 }
@@ -364,6 +366,8 @@ static boolean ReadICCProfile(j_decompress_ptr jpeg_info)
   length=GetCharacter(jpeg_info) << 8;
   length+=GetCharacter(jpeg_info);
   length-=2;
+  if (length <= 0)
+    return(True);
   for (i=0; i < 12; i++)
     magick[i]=GetCharacter(jpeg_info);
   if (LocaleCompare(magick,"ICC_PROFILE") != 0)
@@ -391,9 +395,8 @@ static boolean ReadICCProfile(j_decompress_ptr jpeg_info)
     Read color profile.
   */
   p=image->color_profile.info+image->color_profile.length;
-  image->color_profile.length+=length;
-  while (--length >= 0)
-    *p++=GetCharacter(jpeg_info);
+  for (image->color_profile.length+=length; --length >= 0; p++)
+    *p=GetCharacter(jpeg_info);
   return(True);
 }
 
