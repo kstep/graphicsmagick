@@ -1,3 +1,10 @@
+2001-12-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Drawable.cpp (DrawablePushPattern): Support pushing
+ 	(starting) pattern definition.
+	(DrawablePopPattern): Support popping (terminating) pattern
+ 	definition.
+
 2001-12-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Drawable.cpp (DrawableCompositeImage): Read image

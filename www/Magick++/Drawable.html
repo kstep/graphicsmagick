@@ -289,8 +289,9 @@ coordinates. If the <i>matte</i> attribute is set to <i>true</i>, then
 the image composition will consider an alpha channel, or transparency,
 present in the image file so that non-opaque portions allow part (or all)
 of the composite image to show through. If the specified <i>width</i> or
-<i>height</i> is zero, then the image is composited at its natural size,
-without enlargement or reduction.</font></td>
+<i>height</i>
+is zero, then the image is composited at its natural size, without enlargement
+or reduction.</font></td>
 </tr>
 
 <tr>
@@ -529,8 +530,8 @@ list. If a <i>fill</i> color is specified, then the object is filled.</font></td
 <td><font size=-1>void</font></td>
 
 <td><font size=-1>Pop Graphic Context. Removing the current graphic context
-from the graphic context stack returns the options to the values they had
-prior to the preceding <i><a href="#DrawablePushGraphicContext">DrawablePushGraphicContext</a></i>
+from the graphic context stack restores the options to the values they
+had prior to the preceding <i><a href="#DrawablePushGraphicContext">DrawablePushGraphicContext</a></i>
 operation.</font></td>
 </tr>
 
@@ -542,12 +543,39 @@ operation.</font></td>
 <td><font size=-1>void</font></td>
 
 <td><font size=-1>Push Graphic Context.&nbsp; When a graphic context is
-pushedcdc, options set after the context is pushed (such as coordinate
-transformations, color settings, etc.) are saved to a new graphic context.
-This allows related options to be saved on a graphic context "stack" in
-order to support heirarchical nesting of options. When <i><a href="#DrawablePopGraphicContext">DrawablePopGraphicContext</a></i>
+pushed, options set after the context is pushed (such as coordinate transformations,
+color settings, etc.) are saved to a new graphic context. This allows related
+options to be saved on a graphic context "stack" in order to support heirarchical
+nesting of options. When <i><a href="#DrawablePopGraphicContext">DrawablePopGraphicContext</a></i>
 is used to pop the current graphic context, the options in effect during
-the last <i>DrawablePushGraphicContext</i> operation.</font></td>
+the last <i>DrawablePushGraphicContext</i> operation are restored.</font></td>
+</tr>
+
+<tr>
+<td><a NAME="DrawablePushPattern"></a><font size=-1>DrawablePushPattern</font></td>
+
+<td><font size=-1>std::string &amp;id_, long x_, long y_, long width_,
+long height_</font></td>
+
+<td><font size=-1>Start a pattern definition with arbitrary pattern name
+specified by <i>id_</i>, pattern offset specified by <i>x_</i> and <i>y_</i>,
+and pattern size specified by <i>width_</i> and <i>height_</i>. The pattern
+is defined within the coordinate system defined by the specified offset
+and size. Arbitrary drawing objects (including <a href="#DrawableCompositeImage">DrawableCompositeImage</a>)
+may be specified between <a href="#DrawablePushPattern">DrawablePushPattern</a>
+and <a href="#DrawablePopPattern">DrawablePopPattern</a> in order to draw
+the pattern. Normally the pair <a href="#DrawablePushGraphicContext">DrawablePushGraphicContext</a>
+&amp; <a href="#DrawablePopGraphicContext">DrawablePopGraphicContext</a>
+are used to enclose a pattern definition. Pattern definitions are terminated
+by a <a href="#DrawablePopPattern">DrawablePopPattern</a> object.</font></td>
+</tr>
+
+<tr>
+<td><a NAME="DrawablePopPattern"></a><font size=-1>DrawablePopPattern</font></td>
+
+<td><font size=-1>void</font></td>
+
+<td><font size=-1>Terminate a pattern definition started via <a href="#DrawablePushPattern">DrawablePushPattern</a>.</font></td>
 </tr>
 
 <tr>
@@ -766,12 +794,14 @@ the first command) represent the start of a new subpath:
 
 <td><font size=-1>const Magick::Coordinate &amp;coordinate_</font></td>
 
-<td ROWSPAN="4"><font size=-1>Start a new sub-path at the given coordinate.&nbsp;
-<i>PathMovetoAbs</i> indicates that absolute coordinates will follow; <i>PathMovetoRel</i>
-indicates that relative coordinates will follow. If a relative moveto appears
-as the first element of the path, then it is treated as a pair of absolute
-coordinates. If a moveto is followed by multiple pairs of coordinates,
-the subsequent pairs are treated as implicit lineto commands.</font></td>
+<td ROWSPAN="4"><font size=-1>Start a new sub-path at the given coordinate.
+
+<i>PathMovetoAbs</i> indicates that absolute coordinates will follow;
+<i>PathMovetoRel</i> indicates that relative coordinates will follow. If
+a relative moveto appears as the first element of the path, then it is
+treated as a pair of absolute coordinates. If a moveto is followed by multiple
+pairs of coordinates, the subsequent pairs are treated as implicit lineto
+commands.</font></td>
 </tr>
 
 <tr>
@@ -982,11 +1012,12 @@ double x_, double y_ );</tt>
 <td ROWSPAN="4"><font size=-1>Draws a cubic B&eacute;zier curve from the
 current point to (x,y) using (x1,y1) as the control point at the beginning
 of the curve and (x2,y2) as the control point at the end of the curve.
-<i>PathCurvetoAbs</i> indicates that absolutecoordinates will follow;
-<i>PathCurvetoRel</i>
-indicates that relative coordinates will follow. Multiple sets of coordinates
-may be specified to draw a polybezier. At the end of the command, the new
-current point becomes the final (x,y) coordinate pair used in the polybezier.</font></td>
+<i>PathCurvetoAbs</i>
+indicates that absolutecoordinates will follow;
+<i>PathCurvetoRel</i> indicates
+that relative coordinates will follow. Multiple sets of coordinates may
+be specified to draw a polybezier. At the end of the command, the new current
+point becomes the final (x,y) coordinate pair used in the polybezier.</font></td>
 </tr>
 
 <tr>

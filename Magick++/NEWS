@@ -10,6 +10,8 @@ with Magick++ itself.
     Color as a string.
   * DrawableCompositeImage can be constructed based on an Image in memory
     rather than just a filename.
+  * Added Drawable objects (DrawablePushPattern & DrawablePopPattern)
+    for definining arbitrary named patterns to be used for stroke and fill.
 
 (5.4.1)
   * Fixed memory leak in Image::draw().

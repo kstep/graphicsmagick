@@ -577,6 +577,23 @@ void Magick::DrawablePushGraphicContext::print (std::ostream& stream_) const
   stream_ << "push graphic-context";
 }
 
+// Pop (terminate) Pattern definition
+void Magick::DrawablePopPattern::print (std::ostream& stream_) const
+{
+  stream_ << "pop pattern";
+}
+
+// Push Pattern definition
+void Magick::DrawablePushPattern::print (std::ostream& stream_) const
+{
+  stream_ << "push pattern "
+          << _id
+          << " "
+          << _x << "," << _y
+          << " "
+          << _width << "," << _height;
+}
+
 // Rectangle
 void Magick::DrawableRectangle::print (std::ostream& stream_) const
 {

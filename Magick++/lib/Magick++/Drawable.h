@@ -1220,6 +1220,55 @@ public:
 private:
 };
 
+// Pop (terminate) Pattern definition
+class DrawablePopPattern : public DrawableBase
+{
+public:
+  DrawablePopPattern ( void )
+    { }
+
+  // Support a polymorphic print-to-stream operator
+  /*virtual*/ void print (std::ostream& stream_) const;
+
+  // Return polymorphic copy of object
+  /*virtual*/ DrawableBase* copy() const
+    {
+      return new DrawablePopPattern(*this);
+    }
+
+private:
+};
+
+// Push (create) Pattern definition
+class DrawablePushPattern : public DrawableBase
+{
+public:
+  DrawablePushPattern ( std::string &id_, long x_, long y_,
+                        long width_, long height_ )
+    : _id(id_),
+      _x(x_),
+      _y(y_),
+      _width(width_),
+      _height(height_)
+    { }
+
+  // Support a polymorphic print-to-stream operator
+  /*virtual*/ void print (std::ostream& stream_) const;
+
+  // Return polymorphic copy of object
+  /*virtual*/ DrawableBase* copy() const
+    {
+      return new DrawablePushPattern(*this);
+    }
+
+private:
+  std::string	_id;
+  long		_x;
+  long		_y;
+  long		_width;
+  long		_height;
+};
+
 // Rectangle
 class DrawableRectangle : public DrawableBase
 {
