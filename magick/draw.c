@@ -1535,6 +1535,7 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
   /*
     Allocate primitive info memory.
   */
+  image->storage_class=DirectClass;
   graphic_context=(DrawInfo **) AcquireMemory(sizeof(DrawInfo *));
   if (graphic_context == (DrawInfo **) NULL)
     {
@@ -2660,7 +2661,6 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
   if (status == False)
     ThrowBinaryException(OptionWarning,
       "Non-conforming drawing primitive definition",keyword);
-  image->storage_class=DirectClass;
   (void) IsOpaqueImage(image);
   return(status);
 }
