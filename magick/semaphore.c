@@ -126,7 +126,6 @@ static pthread_mutex_t
 MagickExport void AcquireSemaphoreInfo(SemaphoreInfo **semaphore_info)
 {
   assert(semaphore_info != (SemaphoreInfo **) NULL);
-  assert((*semaphore_info)->signature == MagickSignature);
 #if defined(HasPTHREADS)
   (void) pthread_mutex_lock(&semaphore_mutex);
 #endif
