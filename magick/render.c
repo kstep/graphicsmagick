@@ -347,6 +347,9 @@ MagickExport unsigned int ColorFloodfillImage(Image *image,
   register SegmentInfo
     *s;
 
+  register unsigned char
+    *p;
+
   SegmentInfo
     *segment_stack;
 
@@ -375,7 +378,7 @@ MagickExport unsigned int ColorFloodfillImage(Image *image,
       (segment_stack == (SegmentInfo *) NULL))
     ThrowBinaryException(ResourceLimitError,"Unable to floodfill image",
       image->filename);
-  (void) memset(floodplane,0,image->columns*image->rows);
+  (void) memset(floodplane,False,image->columns*image->rows);
   /*
     Push initial segment on stack.
   */
@@ -402,6 +405,7 @@ MagickExport unsigned int ColorFloodfillImage(Image *image,
     q=GetImagePixels(image,0,y,x1+1,1);
     if (q == (PixelPacket *) NULL)
       break;
+    p=floodplane+y*image->columns+x1;
     q+=x1;
     for (x=x1; x >= 0; x--)
     {
@@ -414,9 +418,8 @@ MagickExport unsigned int ColorFloodfillImage(Image *image,
         if (FuzzyColorMatch(q,&target,image->fuzz) ||
             FuzzyColorMatch(q,&draw_info->fill,image->fuzz))
           break;
-      floodplane[y*image->columns+x]=True;
-      *q=draw_info->fill;
-      q--;
+      *p--=True;
+      *q--=draw_info->fill;
     }
     if (!SyncImagePixels(image))
       break;
@@ -437,6 +440,7 @@ MagickExport unsigned int ColorFloodfillImage(Image *image,
               q=GetImagePixels(image,x,y,image->columns-x,1);
               if (q == (PixelPacket *) NULL)
                 break;
+              p=floodplane+y*image->columns+x;
               for ( ; x < (long) image->columns; x++)
               {
                 if (method == FloodfillMethod)
@@ -448,9 +452,8 @@ MagickExport unsigned int ColorFloodfillImage(Image *image,
                   if (FuzzyColorMatch(q,&target,image->fuzz) ||
                       FuzzyColorMatch(q,&draw_info->fill,image->fuzz))
                     break;
-                floodplane[y*image->columns+x]=True;
-                *q=draw_info->fill;
-                q++;
+                *p++=True;
+                *q++=draw_info->fill;
               }
               if (!SyncImagePixels(image))
                 break;
@@ -483,6 +486,7 @@ MagickExport unsigned int ColorFloodfillImage(Image *image,
       start=x;
     } while (x <= x2);
   }
+  p=floodplane;
   pattern=draw_info->fill_pattern;
   if (pattern == (Image *) NULL)
     for (y=0; y < (long) image->rows; y++)
@@ -495,8 +499,9 @@ MagickExport unsigned int ColorFloodfillImage(Image *image,
         break;
       for (x=0; x < (long) image->columns; x++)
       {
-        if (floodplane[y*image->columns+x])
+        if (*p)
           *q=draw_info->fill;
+        p++;
         q++;
       }
       if (!SyncImagePixels(image))
@@ -514,7 +519,7 @@ MagickExport unsigned int ColorFloodfillImage(Image *image,
           break;
         for (x=0; x < (long) image->columns; x++)
         {
-          if (floodplane[y*image->columns+x])
+          if (*p);
             {
               color=AcquireOnePixel(pattern,(long) ((unsigned long)
                 (x-pattern->tile_info.x) % pattern->columns),(long)
@@ -525,6 +530,7 @@ MagickExport unsigned int ColorFloodfillImage(Image *image,
               if (color.opacity != TransparentOpacity)
                 *q=AlphaComposite(&color,color.opacity,q,q->opacity);
             }
+          p++;
           q++;
         }
         if (!SyncImagePixels(image))
