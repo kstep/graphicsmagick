@@ -16,7 +16,6 @@ extern "C" {
   Color quantum is [0..255].
 */
 #define DownScale(quantum)  (quantum)
-#define MaxRGB  255L
 #define QuantumDepth  8
 #define UpScale(quantum)  (quantum)
 #define XDownScale(color)  ((color)/257)
@@ -28,7 +27,6 @@ typedef unsigned char Quantum;
   Color quantum is [0..65535].
 */
 #define DownScale(quantum)  ((quantum)/257)
-#define MaxRGB  65535L
 #define QuantumDepth  16
 #define UpScale(quantum)  (257*(quantum))
 #define XDownScale(color)  (color)
@@ -38,6 +36,7 @@ typedef unsigned short Quantum;
 #else
 # error "Specified value of QuantumSize is not supported"
 #endif
+#define MaxRGB  ((1 << QuantumDepth)-1)
 #define OpaqueOpacity  0
 #define TransparentOpacity  MaxRGB
 
