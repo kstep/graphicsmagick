@@ -6,7 +6,7 @@
    <meta name="keywords" content="ImageMagick, Image Magick, Image Magic,    PerlMagick, Perl Magick, Perl Magic, CineMagick, PixelMagick, Pixel Magic,    WebMagick, Web Magic, visualization, image processing, software     development, simulation, image, software, AniMagick, Animagic,    Magick++">
    <meta name="GENERATOR" content="Mozilla/4.7 [en] (X11; U; SunOS 5.6 sun4u) [Netscape]">
    <title>ImageMagick - Image Processing and Display Package</title>
-<link rev="made" href="mailto:magick@wizards.dupont.com">
+<link rev="made" href="mailto:magick.dupont.com">
 </head>
 <body text="#000000" bgcolor="#FFFFFF" link="#1F00FF" vlink="#9900DD" alink="#FF0000">
 
@@ -21,178 +21,13 @@ ImageMagick Changes</font></font></font></b></td>
 </tr>
 </table>
 <dl>
-<dd>Renamed public API method GetFontInfo() to GetTypeInfo() due to a namespace
-conflict with Quickdraw under Mac OS X.</dd>
-</p>
 <dd>
-The compression quality setting is now recognized when creating MPEG images
-(contributed by Lawrence Livermore National Laboratory (LLNL)).
+<pre>
+2001-09-07  Cristy  <cristy@mystic.es.dupont.com>
+	* Added -background to convert program usage text.
+	* DispatchImage() now properly handles grayscale images.
+</pre>
 </dd>
-<p>
-<dd>Added a new method <tt>SetImageClipMask()</tt>. </dd>
-<dd>
-Added <b>@</b> to the image geometry specification.  Use it to specify the
-the maximum area in pixels of an image (suggested by Darxus@ChaosReigns.com).
-</dd>
-<p>
-<dd>Added support for a fontmap.  A fontmap associates font glyphs
-with font names (e.g. Helvetica => /usr/share/fonts/default/Type1/n019064l.pfb)
-</dd>
-<p>
-<dd>Combine program name changed to composite and image order reversed
-(e.g. composite -compose over smile.gif model.gif image.gif).</dd>
-<p>
-<dd>CMYKA images are now supported.</dd>
-<p>
-<dd>
-JPEG images are now compressed with the default downsampling method
-chosen by the jpeg library (typically 2x2), when "quality" is less
-than 75.  Previously, no images were downsampled.
-</dd>
-<p>
-<dd>A number of memory leaks were fixed
-(thanks to William Anderson).</dd>
-<p>
-<dd>Threading bug fixes and enhancements
-(thanks to John Carnahan of WebEasy).</dd>
-<p>
-<dd>Lots of 16-bit pixel component related problems fixed.</dd>
-<p>
-<dd>URL's are now understood on Win32
-(thanks to libXML and William Radcliffe).</dd>
-<p>
-<dd>ImageMagick defaults to 16-bit per pixel component now.</dd>
-<p>
-<dd>Support added for ART images (contributed by Jaroslav Fojtik).</dd>
-<p>
-<dd>Added <tt>-pause</tt> to the animate program.</dd>
-
-<dd>You can now specify a minimum/maximum delay for an image sequence.</dd>
-<p>
-<dd>Added <tt>%c</tt> to <tt>-format</tt> to get the image comment
-(patch provided by Frank Mattern).</dd>
-<p>
-<dd>Over compositing is now the Porter-Duff algorithm (inspired by
-William Radcliffe and Alvy Ray Smith).</dd>
-<p>
-<dd>You can write SVG output if the input is SVG, MVG, or WMF.</dd>
-<p>
-<dd>ImageMagick now can accept AFM, PFB, and PFM fonts.</dd>
-<p>
-<dd>The <tt>linewidth</tt> parameter is deprecated in PerlMagick.  Use
-<tt>stroke_width</tt> instead.</dd>
-<p>
-<dd><a href=http://www.digapp.com>Digital Applications</a> contributed text
-stroking code.</dd>
-<p>
-<dd>You can now specify Truetype fonts directly.  No <tt>@</tt> prefix
-is required (e.g. convert -font Arial.ttf ...)</dd>
-<p>
-<dd><a href=http://www.digapp.com>Digital Applications</a> contributed line
-cap and dash pattern rendering code.</dd>
-<p>
-<dd>Added the Multiple composite operator for the creation of drop-shadows
-(patch provided by John Harper).</dd>
-<p>
-<dd>Support added for CUT images (contributed by Jaroslav Fojtik).</dd>
-<p>
-<dd><a href=http://wwww.corbis.com>Bill Radcliffe</a> contributed fast polygoni
-rendering code.  Parts of the rendering algorithm were inspired by
-libart.</dd>
-<p>
-<dd> Support added for BMP images with a 'BA' chunk
-(contributed by Jaroslav Fojtik).</dd>
-<p>
-<dd> Support added for the Word Perfect Graphics (WPG) file format
-(contributed by Jaroslav Fojtik).</dd>
-<p>
-<dd>The pixel 'matte' field is changed to indicate the degree of pixel
-transparency rather than the degree of opacity. This makes the pixels
-compatable with most popular video cards, and many in-memory image
-formats.</dd>
-<p>
-<dd>When the pixel quantum size is eight bits, the colormap is restricted
-to 256 colors, but supports up to 65535 colors when the quantum size
-is sixteen bits (when QuantumLeap is defined at compilation time).</dd>
-<p>
-<dd>ImageMagick is more memory efficient (by 18%) when the quantum size
-is eight bits, and the image is colormapped.<dd>
-<p>
-<dd>ImageMagick is (finally) believed to be thread safe under Windows, since
-it uses the Windows synchronization APIs to lock shared data.</dd>
-<p>
-<dd>Under Unix and Windows, dynamically-loaded format <i>coder</i> modules are
-supported. There are currently 72 loadable modules. Support for
-loadable modules allows the user to add or remove formats from
-ImageMagick by simply adding or removing a file. New modules are
-automatically detected so users may add their own modules. This support
-is proven to work for Sun Solaris, Linux, and SGI IRIX.  Please let us
-know about other operating systems they work on.  Building a modular
-ImageMagick is enabled by specifing the configure options
-<tt>--enable-shared --with-modules</tt>.
-</dd>
-<p>
-
-<dd>
-ImageMagick now has a set of modules for streaming.  Here pixels are
-passed to the application as they are available and deleted after use ensuring
-a small memory footprint.  This is useful for multi-media applications such as
-MPEG.
-</dd>
-<p>
-
-<dd>Image format identification (based on the file header) is now
-configured via an external text file. This allows the user to add
-automatic file identification for new formats added via a coder module,
-or via a delegate (external program).</dd>
-<p>
-
-<dd>XML files conforming to the W3C SVG DTD are now rendered directly by
-ImageMagick.  The support is incomplete but still useful.</dd>
-<p>
-
-<dd>The Pilot Image Format (PDB) is now supported.</dd>
-<p>
-
-<dd>The drawing primitives have been extended to support drawing bezier
-curves, rounded rectangles, and arcs. There is now support for drawing
-compound objects (a sequence of objects) using drawing paths.  The
-concept of a drawing <tt>pen</tt> has been split into <tt>stroke</tt> (for the
-outline) and <tt>fill</tt> (for the objects internal color). If fill is not
-defined, then only the object outline is drawn. This substantial change
-results in the existing drawing commands for filled objects
-(fillEllipse, fillRectangle, fillCircle, and fillPolygon) being
-deprecated.</dd>
-<p>
-
-<dd>A <i>cache</i> file format is now supported which is a snapshot of an
-image's pixel cache as it appears on disk. Images stored in this format
-(large) may be loaded <i>instantly</i> by ImageMagick since decoding is not
-required. In order to write this format, just convert your image to the
-cache format (e.g. <tt>convert image.jpg cache:image.miff</tt>).</dd>
-<p>
-
-<dd>The build environment for Windows NT is entirely re-done. There is now
-a <tt>configure</tt> program which generates a set of Visual C++ project files
-which satisfy a set of reqirements (e.g. DLL, multi-thread, X11). These
-project files are then used to build ImageMagick.</dd>
-<p>
-
-<dd>The C API is significantly modified in order to provide thread-safe
-operation via function re-entrancy. ImageMagick is believed to be
-thread-safe when used with POSIX threads. It is not yet completely
-thread safe under Windows or the Mac. Errors (of type ExceptionInfo)
-are now reported by a function argument, or via a member of the current
-image.</dd>
-<p>
-
-<dd>The GaussianBlurImage() function (contributed by
-<tt>runger@cs.mcgill.ca</tt>) supports Gaussian bluring an image.</dd>
-<p>
-
-<dd>Functions (OpenCacheView(), CloseCacheView(), GetCacheView(),
-SetCacheView(), and SyncCacheView()) are provided in order to support
-manipulating multiple pixel views.</dd>
 </dl>
 <p>
 
