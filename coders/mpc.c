@@ -813,6 +813,7 @@ ModuleExport void RegisterMPCImage(void)
   entry->encoder=WriteMPCImage;
   entry->magick=IsMPC;
   entry->adjoin=False;
+  entry->blob_support=False;
   entry->description=AllocateString("Magick Persistent Cache image format");
   entry->module=AllocateString("MPC");
   RegisterMagickInfo(entry);
