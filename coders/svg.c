@@ -1091,15 +1091,15 @@ static void SVGStartElement(void *context,const xmlChar *name,
             {
               if (LocaleCompare(value,"currentColor") == 0)
                 {
-                  (void) fprintf(svg_info->file,"fill %s\n",color);
+                  (void) fprintf(svg_info->file,"fill '%s'\n",color);
                   break;
                 }
-              (void) fprintf(svg_info->file,"fill %s\n",value);
+              (void) fprintf(svg_info->file,"fill '%s'\n",value);
               break;
             }
           if (LocaleCompare(keyword,"fillcolor") == 0)
             {
-              (void) fprintf(svg_info->file,"fill %s\n",value);
+              (void) fprintf(svg_info->file,"fill '%s'\n",value);
               break;
             }
           if (LocaleCompare(keyword,"fill-rule") == 0)
@@ -1259,10 +1259,10 @@ static void SVGStartElement(void *context,const xmlChar *name,
             {
               if (LocaleCompare(value,"currentColor") == 0)
                 {
-                  (void) fprintf(svg_info->file,"stroke %s\n",color);
+                  (void) fprintf(svg_info->file,"stroke '%s'\n",color);
                   break;
                 }
-              (void) fprintf(svg_info->file,"stroke %s\n",value);
+              (void) fprintf(svg_info->file,"stroke '%s'\n",value);
               break;
             }
           if (LocaleCompare(keyword,"stroke-antialiasing") == 0)

@@ -1236,7 +1236,7 @@ MagickExport unsigned int QueryColorDatabase(const char *name,
       blue=0;
       opacity=(-1);
       name++;
-      n=(long) strlen(name);
+      for (n=0; isxdigit(name[n]); n++);
       if ((n == 3) || (n == 6) || (n == 9) || (n == 12))
         {
           /*
@@ -1263,7 +1263,7 @@ MagickExport unsigned int QueryColorDatabase(const char *name,
                   else
                     return(False);
             }
-          } while (*name != '\0');
+          } while (isxdigit(*name));
         }
       else
         if ((n != 4) && (n != 8) && (n != 16))
@@ -1295,7 +1295,7 @@ MagickExport unsigned int QueryColorDatabase(const char *name,
                     else
                       return(False);
               }
-            } while (*name != '\0');
+            } while (isxdigit(*name));
           }
       n<<=2;
       color->red=(Quantum) ((unsigned long) (MaxRGB*red)/((1 << n)-1));
