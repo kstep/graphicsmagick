@@ -38,7 +38,7 @@
 #    pragma warning( disable: 4273 )  /* Disable the dll linkage warnings */
 #    if !defined(_MAGICKLIB_)
 #      define Export __declspec(dllimport)
-#      pragma message( "Compiling as dll inport" ) 
+#      pragma message( "Compiling as dll import" ) 
 #    else
 #      define Export __declspec(dllexport)
 #      pragma message( "Compiling as dll export" ) 
