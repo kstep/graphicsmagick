@@ -996,7 +996,8 @@ typedef struct _ImageInfo
 /*
   Image const declarations.
 */
-extern MagickExport const char
+#if defined(MAGICK_IMPLEMENTATION)
+extern const char
   *BackgroundColor,
   *BorderColor,
   *DefaultTileFrame,
@@ -1011,8 +1012,9 @@ extern MagickExport const char
   *SaveImageText,
   *SaveImagesText;
 
-extern MagickExport const unsigned long
+extern const unsigned long
   DefaultCompressionQuality;
+#endif /* defined(MAGICK_IMPLEMENTATION) */
 
 /*
   Image utilities methods.

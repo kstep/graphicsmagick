@@ -110,7 +110,7 @@ TESTS_TIFF_XFAIL_TESTS = \
 endif
 
 if !HasX11
-TESTS_X11_XFAIL_TESTS =
+TESTS_X11_XFAIL_TESTS = \
 	tests/rwblob_XWD_bilevel.sh \
 	tests/rwblob_XWD_gray.sh \
 	tests/rwblob_XWD_pallette.sh \

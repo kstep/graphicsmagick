@@ -1,4 +1,4 @@
-# generated automatically by aclocal 1.9.1 -*- Autoconf -*-
+# generated automatically by aclocal 1.9a -*- Autoconf -*-
 
 # Copyright (C) 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004
 # Free Software Foundation, Inc.
@@ -6432,14 +6432,14 @@ AC_CHECK_FUNCS([argz_append argz_create_sep argz_insert argz_next argz_stringify
 # ----------------------------
 # Automake X.Y traces this macro to ensure aclocal.m4 has been
 # generated from the m4 files accompanying Automake X.Y.
-AC_DEFUN([AM_AUTOMAKE_VERSION], [am__api_version="1.9"])
+AC_DEFUN([AM_AUTOMAKE_VERSION], [am__api_version="1.9a"])
 
 # AM_SET_CURRENT_AUTOMAKE_VERSION
 # -------------------------------
 # Call AM_AUTOMAKE_VERSION so it can be traced.
 # This function is AC_REQUIREd by AC_INIT_AUTOMAKE.
 AC_DEFUN([AM_SET_CURRENT_AUTOMAKE_VERSION],
-	 [AM_AUTOMAKE_VERSION([1.9.1])])
+	 [AM_AUTOMAKE_VERSION([1.9a])])
 
 # AM_AUX_DIR_EXPAND
 
@@ -6832,7 +6832,7 @@ AC_DEFUN([AM_OUTPUT_DEPENDENCY_COMMANDS],
 # arguments mandatory, and then we can depend on a new Autoconf
 # release and drop the old call support.
 AC_DEFUN([AM_INIT_AUTOMAKE],
-[AC_PREREQ([2.58])dnl
+[AC_PREREQ([2.59a])dnl
 dnl Autoconf wants to disallow AM_ names.  We explicitly allow
 dnl the ones we care about.
 m4_pattern_allow([^AM_[A-Z]+FLAGS$])dnl
@@ -7088,7 +7088,7 @@ rm -f confinc confmf
 # --------------
 # Like AC_PROG_CC_C_O, but changed for automake.
 
-# Copyright (C) 1999, 2000, 2001, 2003 Free Software Foundation, Inc.
+# Copyright (C) 1999, 2000, 2001, 2003, 2004 Free Software Foundation, Inc.
 
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -7108,6 +7108,7 @@ rm -f confinc confmf
 AC_DEFUN([AM_PROG_CC_C_O],
 [AC_REQUIRE([AC_PROG_CC_C_O])dnl
 AC_REQUIRE([AM_AUX_DIR_EXPAND])dnl
+AC_REQUIRE_AUX_FILE([compile])dnl
 # FIXME: we rely on the cache variable name because
 # there is no other way.
 set dummy $CC
@@ -7125,7 +7126,7 @@ fi
 #  -*- Autoconf -*-
 
 
-# Copyright (C) 1997, 1999, 2000, 2001, 2003 Free Software Foundation, Inc.
+# Copyright (C) 1997, 1999, 2000, 2001, 2003, 2004 Free Software Foundation, Inc.
 
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -7158,6 +7159,7 @@ AC_SUBST($1)])
 # If it does, set am_missing_run to use it, otherwise, to nothing.
 AC_DEFUN([AM_MISSING_HAS_RUN],
 [AC_REQUIRE([AM_AUX_DIR_EXPAND])dnl
+AC_REQUIRE_AUX_FILE([missing])dnl
 test x"${MISSING+set}" = xset || MISSING="\${SHELL} $am_aux_dir/missing"
 # Use eval to expand $SHELL
 if eval "$MISSING --run true"; then
