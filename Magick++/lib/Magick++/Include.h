@@ -124,7 +124,6 @@ namespace Magick
   using MagickLib::ReplaceMatteCompositeOp;
   using MagickLib::BlendCompositeOp;
   using MagickLib::DisplaceCompositeOp;
-  using MagickLib::AnnotateCompositeOp;
   using MagickLib::ModulateCompositeOp;
 
   
