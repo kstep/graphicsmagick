@@ -753,7 +753,6 @@ static unsigned int HorizontalFilter(const Image *source,Image *destination,
     center,
     density,
     green,
-    mid,
     opacity,
     red,
     scale,
@@ -791,18 +790,16 @@ static unsigned int HorizontalFilter(const Image *source,Image *destination,
       scale=1.0;
     }
   scale=1.0/scale;
-  mid=(scale >= 1.0 ? 1.0 : -1.0)*0.5;
   for (x=0; x < (long) destination->columns; x++)
   {
     center=(double) x/x_factor;
-    start=(long) Max(ceil(center-support-0.5),0);
-    stop=(long) Min(floor(center+support+0.5),source->columns-1);
+    start=(long) Max(center-support+0.5,0);
+    stop=(long) Min(center+support+0.5,source->columns);
     density=0.0;
-    for (n=0; start <= stop; n++)
+    for (n=0; start < stop; n++)
     {
       contribution[n].pixel=start;
-      contribution[n].weight=
-        scale*filter_info->function(scale*(start-center+mid));
+      contribution[n].weight=scale*filter_info->function(start-center+0.5);
       density+=contribution[n].weight;
       start++;
     }
@@ -867,7 +864,6 @@ static unsigned int VerticalFilter(const Image *source,Image *destination,
     center,
     density,
     green,
-    mid,
     opacity,
     red,
     scale,
@@ -905,18 +901,16 @@ static unsigned int VerticalFilter(const Image *source,Image *destination,
       scale=1.0;
     }
   scale=1.0/scale;
-  mid=(scale >= 1.0 ? 1.0 : -1.0)*0.5;
   for (y=0; y < (long) destination->rows; y++)
   {
     center=(double) y/y_factor;
-    start=(long) Max(ceil(center-support-0.5),0);
-    stop=(long) Min(floor(center+support+0.5),source->rows-1);
+    start=(long) Max(center-support+0.5,0);
+    stop=(long) Min(center+support+0.5,source->rows);
     density=0.0;
-    for (n=0; start <= stop; n++)
+    for (n=0; start < stop; n++)
     {
       contribution[n].pixel=start;
-      contribution[n].weight=
-        scale*filter_info->function(scale*(start-center+mid));
+      contribution[n].weight=scale*filter_info->function(start-center+0.5);
       density+=contribution[n].weight;
       start++;
     }
