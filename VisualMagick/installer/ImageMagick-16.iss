@@ -808,7 +808,6 @@ Source: "..\..\magick\attribute.h"; DestDir: "{app}\include\magick"; CopyMode: a
 Source: "..\..\magick\blob.h"; DestDir: "{app}\include\magick"; CopyMode: alwaysoverwrite
 Source: "..\..\magick\cache.h"; DestDir: "{app}\include\magick"; CopyMode: alwaysoverwrite
 Source: "..\..\magick\cache_view.h"; DestDir: "{app}\include\magick"; CopyMode: alwaysoverwrite
-Source: "..\..\magick\classify.h"; DestDir: "{app}\include\magick"; CopyMode: alwaysoverwrite
 Source: "..\..\magick\command.h"; DestDir: "{app}\include\magick"; CopyMode: alwaysoverwrite
 Source: "..\..\magick\compress.h"; DestDir: "{app}\include\magick"; CopyMode: alwaysoverwrite
 Source: "..\..\magick\delegate.h"; DestDir: "{app}\include\magick"; CopyMode: alwaysoverwrite
