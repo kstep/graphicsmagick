@@ -387,21 +387,7 @@ MagickExport ModuleInfo *GetModuleInfo(const char *tag,ExceptionInfo *exception)
     *p;
 
   (void) GetMagicInfo((unsigned char *) NULL,0,exception);
-  AcquireSemaphoreInfo(&module_semaphore);
-  if (module_list == (ModuleInfo *) NULL)
-    {
-      /*
-        Initialize ltdl.
-      */
-      if (lt_dlinit() != 0)
-        MagickError(DelegateError,"unable to initialize module loader",
-          lt_dlerror());
-      /*
-        Read modules.
-      */
-      (void) ReadConfigurationFile(ModuleFilename,exception);
-    }
-  LiberateSemaphoreInfo(&module_semaphore);
+  (void) GetModuleAlias(tag,exception);
   if ((tag == (const char *) NULL) || (LocaleCompare(tag,"*") == 0))
     return(module_list);
   for (p=module_list; p != (ModuleInfo *) NULL; p=p->next)
