@@ -262,21 +262,6 @@ MagickExport char *GetMagickConfigurePath(const char *filename,
     }
   ConcatenateString(&search_path,"; Client Path:");
   ConcatenateString(&search_path,path);
-  if (getenv("MAGICK_HOME") != (char *) NULL)
-    {
-      /*
-        Search MAGICK_HOME.
-      */
-      FormatString(path,"%.1024s%s%.1024s",getenv("MAGICK_HOME"),
-        DirectorySeparator,filename);
-      if (IsAccessible(path))
-        {
-          LiberateMemory((void **) &search_path);
-          return(path);
-        }
-      ConcatenateString(&search_path,"; MAGICK_HOME:");
-      ConcatenateString(&search_path,path);
-    }
   if (getenv("HOME") != (char *) NULL)
     {
       /*
@@ -291,21 +276,6 @@ MagickExport char *GetMagickConfigurePath(const char *filename,
           return(path);
         }
       ConcatenateString(&search_path,"; HOME:");
-      ConcatenateString(&search_path,path);
-    }
-  if (getenv("MAGICK_FONT_PATH") != (char *) NULL)
-    {
-      /*
-        Search MAGICK_FONT_PATH.
-      */
-      FormatString(path,"%.1024s%s%.1024s",getenv("MAGICK_FONT_PATH"),
-        DirectorySeparator,filename);
-      if (IsAccessible(path))
-        {
-          LiberateMemory((void **) &search_path);
-          return(path);
-        }
-      ConcatenateString(&search_path,"; MAGICK_FONT_PATH:");
       ConcatenateString(&search_path,path);
     }
 #if defined(WIN32)
@@ -345,6 +315,36 @@ MagickExport char *GetMagickConfigurePath(const char *filename,
     }
   }
 #endif
+  if (getenv("MAGICK_HOME") != (char *) NULL)
+    {
+      /*
+        Search MAGICK_HOME.
+      */
+      FormatString(path,"%.1024s%s%.1024s",getenv("MAGICK_HOME"),
+        DirectorySeparator,filename);
+      if (IsAccessible(path))
+        {
+          LiberateMemory((void **) &search_path);
+          return(path);
+        }
+      ConcatenateString(&search_path,"; MAGICK_HOME:");
+      ConcatenateString(&search_path,path);
+    }
+  if (getenv("MAGICK_FONT_PATH") != (char *) NULL)
+    {
+      /*
+        Search MAGICK_FONT_PATH.
+      */
+      FormatString(path,"%.1024s%s%.1024s",getenv("MAGICK_FONT_PATH"),
+        DirectorySeparator,filename);
+      if (IsAccessible(path))
+        {
+          LiberateMemory((void **) &search_path);
+          return(path);
+        }
+      ConcatenateString(&search_path,"; MAGICK_FONT_PATH:");
+      ConcatenateString(&search_path,path);
+    }
   /*
     Search hard coded paths.
   */
