@@ -769,7 +769,7 @@ static unsigned int WriteSGIImage(const ImageInfo *image_info,Image *image)
   if ((image->columns > 65535L) || (image->rows > 65535L))
     ThrowWriterException(ImageError,WidthOrHeightExceedsLimit,image);
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
-  if (status == False)
+  if (status == MagickFail)
     ThrowWriterException(FileOpenError,UnableToOpenFile,image);
   scene=0;
   do
@@ -787,7 +787,7 @@ static unsigned int WriteSGIImage(const ImageInfo *image_info,Image *image)
     iris_info.dimension=3;
     iris_info.columns=(unsigned short) image->columns;
     iris_info.rows=(unsigned short) image->rows;
-    if (image->matte != False)
+    if (image->matte != MagickFalse)
       iris_info.depth=4;
     else
       {

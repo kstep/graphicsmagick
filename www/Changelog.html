@@ -21,6 +21,27 @@
 </tr>
 </table>
 <p>
+2005-03-12  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/image.c (SetImageType): Bilevel image is not required to
+        be PseudoClass type.<BR>
+  <LI> coders/mpc.c (WriteMPCImage): Persist is_monochrome and
+        is_grayscale flags.<BR>
+        (ReadMPCImage): Restore is_monochrome and is_grayscale flags.
+  <LI> magick/constitute.c (WriteImage): Extended logging to include
+        monochrome and grayscale flags.
+        (ReadImage): Extended logging to include monochrome and grayscale
+        flags.<BR>
+  <LI> magick/image.c (DescribeImage): Include the effective pixel I/O
+        rate alongside the image read/write time.  This provides an easier
+        way to evaluate image read/write performance when looking at
+        'identify' or 'convert -verbose' output.
+  <LI> coders/sun.c (ReadSUNImage): Ensure that pixel length value does
+        not overflow for large images.
+
+</UL>
+<p>
 2005-03-10  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

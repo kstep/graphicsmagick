@@ -208,7 +208,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   typedef struct _SUNInfo
   {
-    unsigned long
+    magick_uint32_t
       magic,
       width,
       height,
@@ -273,6 +273,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Read SUN raster header.
   */
+  memset(&sun_info,0,sizeof(sun_info));
   sun_info.magic=ReadBlobMSBLong(image);
   do
   {
@@ -369,7 +370,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
         CloseBlob(image);
         return(image);
       }
-    sun_data=MagickAllocateMemory(unsigned char *,sun_info.length);
+    sun_data=MagickAllocateMemory(unsigned char *,(size_t) sun_info.length);
     if (sun_data == (unsigned char *) NULL)
       ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
     count=ReadBlob(image,sun_info.length,(char *) sun_data);
@@ -628,7 +629,7 @@ static unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
 
   typedef struct _SUNInfo
   {
-    unsigned long
+    magick_uint32_t
       magic,
       width,
       height,
@@ -694,9 +695,9 @@ static unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
         /*
           Full color SUN raster.
         */
-        sun_info.depth=(image->matte ? 32 : 24);
-        sun_info.length=(image->matte ? 4 : 3)*number_pixels;
-        sun_info.length+=image->columns & 0x01 ? image->rows : 0;
+        sun_info.depth=(image->matte ? 32U : 24U);
+        sun_info.length=(image->matte ? 4U : 3U)*number_pixels;
+        sun_info.length+=image->columns & 0x01U ? image->rows : 0U;
       }
     else
       if (IsMonochromeImage(image,&image->exception))
@@ -705,9 +706,9 @@ static unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
             Monochrome SUN raster.
           */
           sun_info.depth=1;
-          sun_info.length=((image->columns+7) >> 3)*image->rows;
-          sun_info.length+=((image->columns/8)+(image->columns % 8 ? 1 : 0)) %
-            2 ? image->rows : 0;
+          sun_info.length=((image->columns+7U) >> 3)*image->rows;
+          sun_info.length+=((image->columns/8U)+(image->columns % 8U ? 1U : 0U)) %
+            2U ? image->rows : 0U;
         }
       else
         {
@@ -716,7 +717,7 @@ static unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
           */
           sun_info.depth=8;
           sun_info.length=number_pixels;
-          sun_info.length+=image->columns & 0x01 ? image->rows : 0;
+          sun_info.length+=image->columns & 0x01U ? image->rows : 0;
           sun_info.maptype=RMT_EQUAL_RGB;
           sun_info.maplength=image->colors*3;
         }

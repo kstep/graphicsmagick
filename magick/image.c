@@ -1448,6 +1448,13 @@ MagickExport MagickPassFail DescribeImage(Image *image,FILE *file,
     elapsed_time,
     user_time;
 
+  unsigned long
+    columns,
+    rows;
+
+  magick_int64_t
+    pixels_per_second;
+
   Image
     *p;
 
@@ -1481,11 +1488,17 @@ MagickExport MagickPassFail DescribeImage(Image *image,FILE *file,
       else
         (void) fprintf(file,"%.1024s[%lu] ",image->filename,image->scene);
       (void) fprintf(file,"%.1024s ",image->magick);
+      columns=image->columns;
+      rows=image->rows;
       if ((image->magick_columns != 0) || (image->magick_rows != 0))
         if ((image->magick_columns != image->columns) ||
             (image->magick_rows != image->rows))
-          (void) fprintf(file,"%lux%lu=>",image->magick_columns,
-            image->magick_rows);
+          {
+            columns=image->magick_columns;
+            rows=image->magick_rows;
+            (void) fprintf(file,"%lux%lu=>",image->magick_columns,
+                           image->magick_rows);
+          }
       (void) fprintf(file,"%lux%lu%+ld%+ld ",image->columns,image->rows,
         image->page.x,image->page.y);
       if (image->storage_class == DirectClass)
@@ -1515,8 +1528,13 @@ MagickExport MagickPassFail DescribeImage(Image *image,FILE *file,
           FormatSize(GetBlobSize(image),format);
           (void) fprintf(file,"%.1024s ",format);
         }
-      (void) fprintf(file,"%0.3fu %ld:%02ld\n",user_time,
-        (long) (elapsed_time/60.0),(long) ceil(fmod(elapsed_time,60.0)));
+      pixels_per_second=(magick_int64_t) ((double) rows*columns/
+                                          (elapsed_time+MagickEpsilon));
+      FormatSize(pixels_per_second,format);
+      (void) fprintf(file,"%0.3fu %ld:%02ld (%s pixels/s)\n",user_time,
+                     (long) (elapsed_time/60.0),
+                     (long) ceil(fmod(elapsed_time,60.0)),
+                     format);
       return (ferror(file) ? MagickFail : MagickPass);
     }
   /*
@@ -2194,8 +2212,16 @@ MagickExport MagickPassFail DescribeImage(Image *image,FILE *file,
   if (user_time != 0.0)
     (void) fprintf(file,"  User Time: %0.3fu\n",user_time);
   if (elapsed_time != 0.0)
-    (void) fprintf(file,"  Elapsed Time: %ld:%02ld\n",
-      (long) (elapsed_time/60.0),(long) ceil(fmod(elapsed_time,60.0)));
+    {
+      (void) fprintf(file,"  Elapsed Time: %ld:%02ld\n",
+                     (long) (elapsed_time/60.0),
+                     (long) ceil(fmod(elapsed_time,60.0)));
+      pixels_per_second=(magick_int64_t) ((double) image->rows*
+                                          image->columns/
+                                          (elapsed_time+MagickEpsilon));
+      FormatSize(pixels_per_second,format);
+      (void) fprintf(file,"  Pixels Per Second: %s\n", format);
+    }
   (void) fflush(file);
   return (ferror(file) ? MagickFail : MagickPass);
 }
@@ -5630,8 +5656,7 @@ MagickExport MagickPassFail SetImageType(Image *image,const ImageType image_type
     {
       if (image->colorspace != RGBColorspace)
         (void) TransformColorspace(image,RGBColorspace);
-      if ((image->storage_class != PseudoClass) ||
-          !IsMonochromeImage(image,&image->exception))
+      if (!IsMonochromeImage(image,&image->exception))
         {
           if (image->dither == True)
             {
