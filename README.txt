@@ -421,6 +421,12 @@ MAGICK DELEGATES
 
       to read the HP-GL image format.
 
+    o ImageMagick requires the LCMS library available from
+
+          ttp://www.abaforum.es/martim/lcms.htm
+
+      to perform color management.
+
     o ImageMagick requires gnuplot available via anonymous FTP as
 
           ftp://ftp.dartmouth.edu/pub/gnuplot/gnuplot3.5.tar.Z

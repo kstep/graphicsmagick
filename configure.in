@@ -264,6 +264,12 @@ AC_ARG_WITH(jpeg,
 	      [with_jpeg=$withval],
 	      [with_jpeg='yes'])
 
+# Disable LCMS.
+AC_ARG_WITH(lcms,
+	      [  --without-lcms          disable LCMS support],
+	      [with_lcms=$withval],
+	      [with_lcms='yes'])
+
 # Disable PNG.
 AC_ARG_WITH(png,
 	      [  --without-png           disable PNG support],
@@ -370,7 +376,7 @@ fi
 #
 # Most delegates have includes in the same directory as the library
 #
-for dir in bzlib hdf/hdf/src jbig/libjbig jpeg xml zlib png tiff/libtiff ttf ttf/lib ttf/lib/.libs
+for dir in bzlib hdf/hdf/src jbig/libjbig jpeg lcms png tiff/libtiff ttf ttf/lib ttf/lib/.libs xml zlib
 do
   if test -d "$builddir/$dir"
   then
@@ -712,6 +718,39 @@ then
 fi
 AM_CONDITIONAL(HasFPX, test "$have_fpx" != 'no')
 AC_SUBST(LIB_FPX)
+
+#
+# Check for LCMS
+#
+have_lcms='no'
+LIB_LCMS=''
+if test "$with_lcms" != 'no'
+then
+    AC_CHECKING(for LCMS support ...)
+    failed=0;
+    passed=0;
+    AC_CHECK_HEADER(lcms.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
+    AC_CHECK_LIB(lcms,cmsOpenProfileFromMem,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
+    AC_MSG_CHECKING(if LCMS package is complete)
+    if test $passed -gt 0
+    then
+    if test $failed -gt 0
+    then
+	AC_MSG_RESULT(no -- some components failed test)
+	have_lcms='no (failed tests)'
+    else
+	LIB_LCMS='-llcms'
+	LIBS="$LIB_LCMS $LIBS"
+	AC_DEFINE(HasLCMS,,Define if you have LCMS library)
+	AC_MSG_RESULT(yes)
+	have_lcms='yes'
+    fi
+    else
+    AC_MSG_RESULT(no)
+    fi
+fi
+AM_CONDITIONAL(HasLCMS, test "$have_lcms" != 'no')
+AC_SUBST(LIB_LCMS)
 
 #
 # Check for PNG
@@ -1293,6 +1332,7 @@ if test "$have_hp2xx"  = 'yes' ; then DELEGATES="$DELEGATES hpgl"  ; fi
 if test "$have_hdf"    = 'yes' ; then DELEGATES="$DELEGATES hdf"  ; fi
 if test "$have_jbig"   = 'yes' ; then DELEGATES="$DELEGATES jbig" ; fi
 if test "$have_jpeg"   = 'yes' ; then DELEGATES="$DELEGATES jpeg" ; fi
+if test "$have_lcms"    = 'yes' ; then DELEGATES="$DELEGATES lcms"  ; fi
 if test "$have_mpeg2decode" = 'yes' && test "$have_mpeg2encode"  = 'yes' ; then DELEGATES="$DELEGATES mpeg" ; fi
 if test "$have_png"    = 'yes' ; then DELEGATES="$DELEGATES png"  ; fi
 
@@ -1389,6 +1429,7 @@ echo "FlashPIX          --with-fpx=$with_fpx		$have_fpx"
 echo "HDF               --with-hdf=$with_hdf		$have_hdf"
 echo "JBIG              --with-jbig=$with_jbig		$have_jbig"
 echo "JPEG              --with-jpeg=$with_jpeg		$have_jpeg"
+echo "LCMS              --with-lcms=$with_lcms		$have_lcms"
 echo "PNG               --with-png=$with_png		$have_png"
 echo "TIFF              --with-tiff=$with_tiff		$have_tiff"
 echo "TrueType (TTF)    --with-ttf=$with_ttf		$have_ttf"
