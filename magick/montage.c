@@ -514,8 +514,8 @@ MagickExport Image *MontageImages(Image *image,const MontageInfo *montage_info,
   /*
     Initialize font info.
   */
-  font_height=annotate_info->pointsize*
-    AbsoluteValue(Max(clone_info->affine[0],clone_info->affine[1]));
+  font_height=clone_info->affine[0]*annotate_info->pointsize+
+    clone_info->affine[2]*annotate_info->pointsize;
   FormatLabel(clone_info,montage_info->title,((tile_info.width+
     2*border_width)*Min(number_images,tiles_per_column))/2,
     &font_height);
