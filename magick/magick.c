@@ -606,7 +606,7 @@ MagickExport unsigned int ListMagickInfo(FILE *file,ExceptionInfo *exception)
   module_file=TagToModule("MIFF");
   GetExceptionInfo(&path_exception);
   path=GetMagickConfigurePath(module_file,&path_exception);
-  DestoryExceptionInfo(&path_exception);
+  DestroyExceptionInfo(&path_exception);
   if (path != (char *) NULL)
     {
       GetPathComponent(path,HeadPath,filename);
