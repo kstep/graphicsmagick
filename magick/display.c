@@ -6446,13 +6446,13 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
     case ImplodeCommand:
     {
       static char
-        factor[MaxTextExtent] = "30.0";
+        factor[MaxTextExtent] = "0.3";
 
       /*
         Query user for implode factor.
       */
       (void) XDialogWidget(display,windows,"Implode",
-        "Enter the implosion/explosion factor (-99.9 - 99.9%):",factor);
+        "Enter the implosion/explosion factor (-1.0 - 1.0):",factor);
       if (*factor == '\0')
         break;
       /*

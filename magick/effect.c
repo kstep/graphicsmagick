@@ -1930,7 +1930,7 @@ MagickExport Image *MorphImages(const Image *image,
 %  The format of the MotionBlurImage method is:
 %
 %    Image *MotionBlurImage(const Image *image,const double radius,
-%      const double sigma,const double amount,ExceptionInfo *exception)
+%      const double sigma,const double angle,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -2931,7 +2931,7 @@ MagickExport void SolarizeImage(Image *image,const double threshold)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  SpreadImage() is a special effects method that randomly displaces each
-%  pixel in a block defined by the amount parameter.
+%  pixel in a block defined by the radius parameter.
 %
 %  The format of the SpreadImage method is:
 %
