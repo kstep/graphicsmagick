@@ -211,19 +211,25 @@ need drawing commands for:
   stroke-width
  */
 
-static void         draw_clip_pop( wmfAPI* API );
-static void         draw_clip_push( wmfAPI* API, unsigned long id );
-static void         draw_color_fill_pixelpacket( wmfAPI* API, const PixelPacket* color );
-static void         draw_color_fill_reset( wmfAPI* API );
-static void         draw_color_fill_rgb( wmfAPI* API, const wmfRGB* rgb );
+static void         draw_clip_pop(wmfAPI* API);
+static void         draw_clip_push(wmfAPI* API, unsigned long id);
+static void         draw_color_fill_pixelpacket(wmfAPI* API, const PixelPacket* color);
+static void         draw_color_fill_reset(wmfAPI* API);
+static void         draw_color_fill_rgb(wmfAPI* API, const wmfRGB* rgb);
 static void         draw_color_stroke_reset( wmfAPI* API );
-static void         draw_color_stroke_rgb( wmfAPI* API, const wmfRGB* rgb );
-static void         draw_context_pop( wmfAPI* API );
-static void         draw_context_push( wmfAPI* API );
-static void         draw_defs_pop( wmfAPI* API );
-static void         draw_defs_push( wmfAPI* API );
-static void         draw_pattern_pop( wmfAPI* API );
-static void         draw_pattern_push( wmfAPI* API, unsigned long id, unsigned long columns, unsigned long rows );
+static void         draw_color_stroke_rgb(wmfAPI* API, const wmfRGB* rgb);
+static void         draw_context_pop(wmfAPI* API);
+static void         draw_context_push(wmfAPI* API);
+static void         draw_defs_pop(wmfAPI* API);
+static void         draw_defs_push(wmfAPI* API);
+static void         draw_pattern_pop(wmfAPI* API);
+static void         draw_pattern_push(wmfAPI* API, unsigned long id, unsigned long columns, unsigned long rows);
+static void         draw_rectangle(wmfAPI* API, double x1, double y1, double x2, double y2);
+static void         draw_round_rectangle(wmfAPI* API, double x1, double y1, double x2, double y2, double rx, double ry);
+static void         draw_scale(wmfAPI* API, double x, double y);
+static void         draw_translate(wmfAPI* API, double x, double y);
+static void         draw_rotate(wmfAPI* API, double degrees);
+static void         draw_viewbox(wmfAPI* API, unsigned long x1, unsigned long y1, unsigned long x2, unsigned long y2);
 static int          ipa_blob_read(void* context);
 static int          ipa_blob_seek(void* context,long position);
 static long         ipa_blob_tell(void* context);
@@ -389,6 +395,37 @@ static void draw_pattern_push( wmfAPI* API,
   ddata->push_depth++;
 }
 
+static void draw_rectangle( wmfAPI* API, double x1, double y1, double x2, double y2 )
+{
+  util_append_mvg(API, "rectangle %.10g,%.10g %.10g,%.10g\n", x1,y1, x2,y2);
+}
+
+static void draw_round_rectangle( wmfAPI* API, double x1, double y1, double x2, double y2, double rx, double ry )
+{
+  util_append_mvg(API, "roundrectangle %.10g,%.10g %.10g,%.10g %.10g,%.10g\n",
+                  x1,y1, x2,y2, rx,ry );
+}
+
+static void draw_rotate(wmfAPI* API, double degrees)
+{
+  util_append_mvg(API, "rotate %.10g\n", degrees);
+}
+
+static void draw_scale(wmfAPI* API, double x, double y)
+{
+  util_append_mvg(API, "scale %.10g,%.10g\n", x, y);
+}
+
+static void  draw_translate(wmfAPI* API, double x, double y)
+{
+  util_append_mvg(API, "translate %.10g,%.10g\n", x, y);
+}
+
+static void draw_viewbox(wmfAPI* API, unsigned long x1, unsigned long y1, unsigned long x2, unsigned long y2)
+{
+  util_append_mvg(API, "viewbox %lu %lu %lu %lu\n", x1,y1, x2,y2);
+}
+
 /* Register an image with the image registry */
 static long util_registry_add(wmfAPI * API, const Image *image, ExceptionInfo *exception)
 {
@@ -497,9 +534,9 @@ static void ipa_rop_draw(wmfAPI * API, wmfROP_Draw_t * rop_draw)
       break;
     }
 
-  util_append_mvg(API, "rectangle %.10g,%.10g %.10g,%.10g\n",
-                    XC(rop_draw->TL.x), YC(rop_draw->TL.y),
-                    XC(rop_draw->BR.x), YC(rop_draw->BR.y));
+  draw_rectangle(API,
+                 XC(rop_draw->TL.x), YC(rop_draw->TL.y),
+                 XC(rop_draw->BR.x), YC(rop_draw->BR.y));
 
   /* Restore graphic context */
   draw_context_pop(API);
@@ -715,31 +752,27 @@ static void ipa_device_begin(wmfAPI * API)
   /* Make SVG output happy */
   draw_context_push(API);
 
-  util_append_mvg(API, "viewbox 0 0 %u %u\n", ddata->image->columns,
-        ddata->image->rows);
+  draw_viewbox( API, 0, 0, ddata->image->columns, ddata->image->rows );
 
   util_append_mvg(API, "#Created by ImageMagick %s (http://www.imagemagick.org/)\n",
                     MagickLibVersionText);
 
   /* Scale width and height to image */
-  util_append_mvg(API, "scale %.10g,%.10g\n",
-        ddata->scale_x, ddata->scale_y);
+  draw_scale(API, ddata->scale_x, ddata->scale_y);
 
   /* Translate to TL corner of bounding box */
-  util_append_mvg(API, "translate %.10g,%.10g\n",
-        ddata->translate_x,
-        ddata->translate_y);
+  draw_translate(API, ddata->translate_x, ddata->translate_y);
 
   /* Apply rotation */
-  util_append_mvg(API, "rotate %.10g\n", ddata->rotate);
+  draw_rotate(API, ddata->rotate);
 
   if(ddata->image_info->texture == NULL)
     {
       /* Draw rectangle in background color */
       draw_color_fill_pixelpacket(API,&ddata->image->background_color);
-      util_append_mvg(API, "rectangle %.10g,%.10g %.10g,%.10g\n",
-                        XC(ddata->bbox.TL.x),YC(ddata->bbox.TL.y),
-                        XC(ddata->bbox.BR.x),YC(ddata->bbox.BR.y));
+      draw_rectangle(API,
+                     XC(ddata->bbox.TL.x),YC(ddata->bbox.TL.y),
+                     XC(ddata->bbox.BR.x),YC(ddata->bbox.BR.y));
     }
   else
     {
@@ -776,9 +809,9 @@ static void ipa_device_begin(wmfAPI * API)
               util_append_mvg(API, "fill url(#brush_%lu)\n", ddata->pattern_id);
               ++ddata->pattern_id;
 
-              util_append_mvg(API, "rectangle %.10g,%.10g %.10g,%.10g\n",
-                                XC(ddata->bbox.TL.x),YC(ddata->bbox.TL.y),
-                                XC(ddata->bbox.BR.x),YC(ddata->bbox.BR.y));
+              draw_rectangle(API,
+                             XC(ddata->bbox.TL.x),YC(ddata->bbox.TL.y),
+                             XC(ddata->bbox.BR.x),YC(ddata->bbox.BR.y));
             }
         }
       ThrowException(&ddata->image->exception,exception.severity,
@@ -848,11 +881,11 @@ static void ipa_draw_pixel(wmfAPI * API, wmfDrawPixel_t * draw_pixel)
 
   draw_color_fill_rgb(API,&(draw_pixel->color));
 
-  util_append_mvg(API, "rectangle %.10g,%.10g %.10g,%.10g\n",
-                  XC(draw_pixel->pt.x),
-                  YC(draw_pixel->pt.y),
-                  XC(draw_pixel->pt.x + draw_pixel->pixel_width),
-                  YC(draw_pixel->pt.y + draw_pixel->pixel_height));
+  draw_rectangle(API,
+                 XC(draw_pixel->pt.x),
+                 YC(draw_pixel->pt.y),
+                 XC(draw_pixel->pt.x + draw_pixel->pixel_width),
+                 YC(draw_pixel->pt.y + draw_pixel->pixel_height));
 
   /* Restore graphic context */
   draw_context_pop(API);
@@ -1063,14 +1096,14 @@ static void ipa_draw_rectangle(wmfAPI * API, wmfDrawRectangle_t * draw_rect)
       util_set_brush(API, draw_rect->dc, BrushApplyFill);
 
       if ((draw_rect->width > 0) || (draw_rect->height > 0))
-        util_append_mvg(API, "roundrectangle %.10g,%.10g %.10g,%.10g %.10g,%.10g\n",
+        draw_round_rectangle(API,
                         XC(draw_rect->TL.x), YC(draw_rect->TL.y),
                         XC(draw_rect->BR.x), YC(draw_rect->BR.y),
                         draw_rect->width / 2, draw_rect->height / 2);
       else
-        util_append_mvg(API, "rectangle %.10g,%.10g %.10g,%.10g\n",
-                        XC(draw_rect->TL.x), YC(draw_rect->TL.y),
-                        XC(draw_rect->BR.x), YC(draw_rect->BR.y));
+        draw_rectangle(API,
+                       XC(draw_rect->TL.x), YC(draw_rect->TL.y),
+                       XC(draw_rect->BR.x), YC(draw_rect->BR.y));
     }
 
   /* Restore graphic context */
@@ -1093,9 +1126,9 @@ static void ipa_region_frame(wmfAPI * API, wmfPolyRectangle_t * poly_rect)
 
       for (i = 0; i < poly_rect->count; i++)
         {
-          util_append_mvg(API, "rectangle %.10g,%.10g %.10g,%.10g\n",
-                          XC(poly_rect->TL[i].x), YC(poly_rect->TL[i].y),
-                          XC(poly_rect->BR[i].x), YC(poly_rect->BR[i].y));
+          draw_rectangle(API,
+                         XC(poly_rect->TL[i].x), YC(poly_rect->TL[i].y),
+                         XC(poly_rect->BR[i].x), YC(poly_rect->BR[i].y));
         }
     }
 
@@ -1122,9 +1155,9 @@ static void ipa_region_paint(wmfAPI * API, wmfPolyRectangle_t * poly_rect)
 
       for (i = 0; i < poly_rect->count; i++)
         {
-          util_append_mvg(API, "rectangle %.10g,%.10g %.10g,%.10g\n",
-                          XC(poly_rect->TL[i].x), YC(poly_rect->TL[i].y),
-                          XC(poly_rect->BR[i].x), YC(poly_rect->BR[i].y));
+          draw_rectangle(API,
+                         XC(poly_rect->TL[i].x), YC(poly_rect->TL[i].y),
+                         XC(poly_rect->BR[i].x), YC(poly_rect->BR[i].y));
         }
     }
 
@@ -1155,9 +1188,9 @@ static void ipa_region_clip(wmfAPI *API, wmfPolyRectangle_t *poly_rect)
       draw_context_push(API);
       for (i = 0; i < poly_rect->count; i++)
         {
-          util_append_mvg(API, "rectangle %.10g,%.10g %.10g,%.10g\n",
-                          XC(poly_rect->TL[i].x), YC(poly_rect->TL[i].y),
-                          XC(poly_rect->BR[i].x), YC(poly_rect->BR[i].y));
+          draw_rectangle(API,
+                         XC(poly_rect->TL[i].x), YC(poly_rect->TL[i].y),
+                         XC(poly_rect->BR[i].x), YC(poly_rect->BR[i].y));
         }
       draw_context_pop(API);
       draw_clip_pop(API);
@@ -1351,9 +1384,9 @@ static void ipa_draw_text(wmfAPI * API, wmfDrawText_t * draw_text)
       /* Draw bounding-box background color (META_EXTTEXTOUT mode) */
       draw_color_stroke_reset(API);
       draw_color_fill_rgb(API,WMF_DC_BACKGROUND(draw_text->dc));
-      util_append_mvg(API, "rectangle %.10g,%.10g %.10g,%.10g\n",
-                      XC(draw_text->TL.x),YC(draw_text->TL.y),
-                      XC(draw_text->BR.x),YC(draw_text->BR.y));
+      draw_rectangle(API,
+                     XC(draw_text->TL.x),YC(draw_text->TL.y),
+                     XC(draw_text->BR.x),YC(draw_text->BR.y));
       draw_color_fill_reset(API);
     }
   else
@@ -1389,11 +1422,10 @@ static void ipa_draw_text(wmfAPI * API, wmfDrawText_t * draw_text)
   util_append_mvg(API, "font '%s'\n", WMF_FONT_PSNAME(font));
 
   /* Translate coordinates so target is 0,0 */
-  util_append_mvg(API, "translate %.10g,%.10g\n", XC(point.x), YC(point.y));
+  draw_translate(API, XC(point.x), YC(point.y));
 
   /* Transform horizontal scale to draw text at 1:1 ratio */
-  util_append_mvg(API, "scale %.10g,%.10g\n",
-                  ddata->scale_y / ddata->scale_x, 1.0);
+  draw_scale(API, ddata->scale_y / ddata->scale_x, 1.0);
 
   /* Apply rotation */
   /* ImageMagick's drawing rotation is clockwise from horizontal
@@ -1402,7 +1434,7 @@ static void ipa_draw_text(wmfAPI * API, wmfDrawText_t * draw_text)
   if (angle == 360)
     angle = 0;
   if (angle != 0)
-    util_append_mvg(API, "rotate %.10g\n", angle);
+    draw_rotate(API, angle);
 
   /*
    * Render text
@@ -1460,8 +1492,8 @@ static void ipa_draw_text(wmfAPI * API, wmfDrawText_t * draw_text)
         ulBR.x = metrics.width;
         ulBR.y = AbsoluteValue(metrics.descent);
 
-        util_append_mvg(API, "rectangle %.10g,%.10g %.10g,%.10g\n",
-                        XC(ulTL.x), YC(ulTL.y), XC(ulBR.x), YC(ulBR.y));
+        draw_rectangle(API,
+                       XC(ulTL.x), YC(ulTL.y), XC(ulBR.x), YC(ulBR.y));
       }
 
     /* Strikeout text the Windows way */
@@ -1482,8 +1514,8 @@ static void ipa_draw_text(wmfAPI * API, wmfDrawText_t * draw_text)
         ulBR.x = metrics.width;
         ulBR.y = -(((double) metrics.ascent) / 2 - line_height / 2);
 
-        util_append_mvg(API, "rectangle %.10g,%.10g %.10g,%.10g\n",
-                        XC(ulTL.x), YC(ulTL.y), XC(ulBR.x), YC(ulBR.y));
+        draw_rectangle(API,
+                       XC(ulTL.x), YC(ulTL.y), XC(ulBR.x), YC(ulBR.y));
 
       }
   }
@@ -1495,9 +1527,9 @@ static void ipa_draw_text(wmfAPI * API, wmfDrawText_t * draw_text)
   draw_context_push(API);
   util_append_mvg(API, "stroke red\n");
   draw_color_fill_reset(API);
-  util_append_mvg(API, "rectangle %.10g,%.10g %.10g,%.10g\n",
-                  XC(TL.x), YC(TL.y),
-                  XC(BR.x), YC(BR.y));
+  draw_rectangle(API,
+                 XC(TL.x), YC(TL.y),
+                 XC(BR.x), YC(BR.y));
   draw_color_stroke_reset(API);
   draw_context_pop(API);
 #endif
