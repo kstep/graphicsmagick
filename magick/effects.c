@@ -252,6 +252,39 @@ static int GetKernelWidth(const double radius,const double sigma)
   return(2*width+1);
 }
 
+static int GetOptimalKernelWidth1D(const double radius,const double sigma)
+{
+  double
+    normalize,
+    value;
+
+  int
+    u,
+    width;
+
+  if (radius > 0.0)
+    return((int) (2.0*ceil(radius)+1.0));
+
+  /*
+    Determine optimal kernel radius. Start with the minimum value
+    of 3 pixels and walk out until we drop below the threshold of
+    one pixel numerical accuracy,
+  */
+  for (width=3; ;)
+  {
+    normalize=0.0;
+    for (u=(-width/2); u <= (width/2); u++)
+      normalize+=exp((double) -(u*u)/(sigma*sigma));
+    u=width/2;
+    value=exp((double) -(u*u)/(sigma*sigma))/normalize;
+    if ((int)(value*MaxRGB) > 0)
+      width+=2;
+    else
+      break;
+  }
+  return(width-2);
+}
+
 MagickExport Image *BlurImage(Image *image,const double radius,
   const double sigma,ExceptionInfo *exception)
 {
@@ -287,7 +320,8 @@ MagickExport Image *BlurImage(Image *image,const double radius,
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  width=GetKernelWidth(radius,sigma);
+  width=GetOptimalKernelWidth1D(radius,sigma);
+  width=(width-1)/2; /* we only really want the radius */
   if ((image->columns < width) || (image->rows < width))
     ThrowImageException(OptionWarning,"Unable to blur image",
       "image is smaller than radius");
@@ -308,10 +342,13 @@ MagickExport Image *BlurImage(Image *image,const double radius,
   if ((radius > 0.0) && ((2.0*radius+1.0) < width))
     kernel[width]*=((2.0*radius+1.0)-width+1.0);
   normalize=0.0;
+  /* normalize the center and 1st half of the kernel */
   for (i=0; i < (width+1); i++)
     normalize+=kernel[i];
+  /* normalize the second half and avoid the center */
   for (i=1; i < (width+1); i++)
     normalize+=kernel[i];
+  /* actually nromalize the kernel to add up to 1.0 */
   for (i=0; i < (width+1); i++)
     kernel[i]/=normalize;
   /*
@@ -1264,6 +1301,42 @@ MagickExport Image *EnhanceImage(Image *image,ExceptionInfo *exception)
 %
 %
 */
+static int GetOptimalKernelWidth2D(const double radius,const double sigma)
+{
+  double
+    normalize,
+    value;
+
+  int
+    u,
+    v,
+    width;
+
+  if (radius > 0.0)
+    return((int) (2.0*ceil(radius)+1.0));
+  /*
+    Determine optimal kernel radius. Start with the minimum value
+    of 3 pixels and walk out until we drop below the threshold of
+    one pixel numerical accuracy,
+  */
+  for (width=3; ;)
+  {
+    normalize=0.0;
+    for (v=(-width/2); v <= (width/2); v++)
+    {
+      for (u=(-width/2); u <= (width/2); u++)
+        normalize+=exp((double) -(u*u+v*v)/(sigma*sigma));
+    }
+    v=width/2;
+    value=exp((double) -(v*v)/(sigma*sigma))/normalize;
+    if ((int)(value*MaxRGB) > 0)
+      width+=2;
+    else
+      break;
+  }
+  return(width-2);
+}
+
 MagickExport Image *GaussianBlurImage(Image *image,const double radius,
   const double sigma,ExceptionInfo *exception)
 {
@@ -1286,7 +1359,7 @@ MagickExport Image *GaussianBlurImage(Image *image,const double radius,
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  width=GetKernelWidth(radius,sigma);
+  width=GetOptimalKernelWidth2D(radius,sigma);
   if ((image->columns < width) || (image->rows < width))
     ThrowImageException(OptionWarning,"Unable to Gaussian blur image",
       "image is smaller than radius");
@@ -1305,8 +1378,11 @@ MagickExport Image *GaussianBlurImage(Image *image,const double radius,
       i++;
     }
   }
+#ifdef NORMALIZE_KERNEL
+  /* Should not be needed - ConvolveImage does its own normalize */
   for (i=0; i < (width*width); i++)
     kernel[i]/=normalize;
+#endif
   blur_image=ConvolveImage(image,width,kernel,exception);
   LiberateMemory((void **) &kernel);
   return(blur_image);
