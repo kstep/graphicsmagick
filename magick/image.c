@@ -6526,8 +6526,8 @@ MagickExport unsigned int TransmitImage(Image *image,ImageInfo *image_info,
       ImageInfo
         **image_info_ptr;
 
-      image_ptr=(Image **) param1;
-      image_info_ptr=(ImageInfo **) param2;
+      image_info_ptr=(ImageInfo **) param1;
+      image_ptr=(Image **) param2;
       *image_ptr=image;
       *image_info_ptr=image_info;
       break;
