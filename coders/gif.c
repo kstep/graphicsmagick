@@ -69,12 +69,12 @@ static unsigned int
 %
 %  The format of the DecodeImage method is:
 %
-%      unsigned int DecodeImage(Image *image,const long opacity)
+%      MagickPassFail DecodeImage(Image *image,const long opacity)
 %
 %  A description of each parameter follows:
 %
-%    o status:  Method DecodeImage returns True if all the pixels are
-%      uncompressed without error, otherwise False.
+%    o status:  Method DecodeImage returns MagickPass if all the pixels are
+%      uncompressed without error, otherwise MagickFail.
 %
 %    o image: The address of a structure of type Image.
 %
@@ -83,11 +83,10 @@ static unsigned int
 %
 %
 */
-static unsigned int DecodeImage(Image *image,const long opacity)
-{
 #define MaxStackSize  4096
 #define NullCode  (-1)
-
+static MagickPassFail DecodeImage(Image *image,const long opacity)
+{
   int
     bits,
     code_size,
@@ -134,10 +133,17 @@ static unsigned int DecodeImage(Image *image,const long opacity)
     *suffix,
     *top_stack;
 
+  MagickPassFail
+    status=MagickPass;
+
+  assert(image != (Image *) NULL);
+
+  data_size=ReadBlobByte(image);
+  if (data_size > 8U)
+    ThrowBinaryException(CorruptImageError,CorruptImage,image->filename);
   /*
     Allocate decoder tables.
   */
-  assert(image != (Image *) NULL);
   packet=MagickAllocateMemory(unsigned char *,256);
   prefix=MagickAllocateMemory(short *,MaxStackSize*sizeof(short));
   suffix=MagickAllocateMemory(unsigned char *,MaxStackSize);
@@ -146,14 +152,17 @@ static unsigned int DecodeImage(Image *image,const long opacity)
       (prefix == (short *) NULL) ||
       (suffix == (unsigned char *) NULL) ||
       (pixel_stack == (unsigned char *) NULL))
-    ThrowBinaryException(ResourceLimitError,MemoryAllocationFailed,
-      image->filename);
+    {
+      MagickFreeMemory(pixel_stack);
+      MagickFreeMemory(suffix);
+      MagickFreeMemory(prefix);
+      MagickFreeMemory(packet);
+      ThrowBinaryException(ResourceLimitError,MemoryAllocationFailed,
+                           image->filename);
+    }
   /*
     Initialize GIF data stream decoder.
   */
-  data_size=ReadBlobByte(image);
-  if (data_size > 8)
-    ThrowBinaryException(CorruptImageError,CorruptImage,image->filename);
   clear=1 << data_size;
   end_of_information=clear+1;
   available=clear+2;
@@ -180,7 +189,10 @@ static unsigned int DecodeImage(Image *image,const long opacity)
   {
     q=SetImagePixels(image,0,offset,image->columns,1);
     if (q == (PixelPacket *) NULL)
-      break;
+      {
+        status=MagickFail;
+        break;
+      }
     indexes=GetIndexes(image);
     for (x=0; x < (long) image->columns; )
     {
@@ -216,7 +228,12 @@ static unsigned int DecodeImage(Image *image,const long opacity)
           /*
             Interpret the code
           */
-          if ((code > available) || (code == end_of_information))
+          if (code > available)
+            {
+              status=MagickFail;
+              break;
+            }
+          if (code == end_of_information)
             break;
           if (code == clear)
             {
@@ -244,15 +261,25 @@ static unsigned int DecodeImage(Image *image,const long opacity)
             }
           while (code >= clear)
           {
+            if ((top_stack-pixel_stack) >= MaxStackSize)
+              {
+                status=MagickFail;
+                break;
+              }
             *top_stack++=suffix[code];
             code=prefix[code];
           }
+          if (status == MagickFail)
+            break;
           first=suffix[code];
           /*
             Add a new string to the string table,
           */
           if (available >= MaxStackSize)
-            break;
+            {
+              status=MagickFail;
+              break;
+            }
           *top_stack++=first;
           prefix[available]=(short) old_code;
           suffix[available]=first;
@@ -320,21 +347,30 @@ static unsigned int DecodeImage(Image *image,const long opacity)
         }
       }
     if (!SyncImagePixels(image))
-      break;
+      {
+        status=MagickFail;
+        break;
+      }
     if (x < (long) image->columns)
-      break;
+      {
+        status=MagickFail;
+        break;
+      }
     if (image->previous == (Image *) NULL)
       if (QuantumTick(y,image->rows))
         if (!MagickMonitor(LoadImageText,y,image->rows,&image->exception))
-          break;
+          {
+            status=MagickFail;
+            break;
+          }
   }
   MagickFreeMemory(pixel_stack);
   MagickFreeMemory(suffix);
   MagickFreeMemory(prefix);
   MagickFreeMemory(packet);
-  if (y < (long) image->rows)
+  if ((status == MagickFail) || (y < (long) image->rows))
     ThrowBinaryException(CorruptImageError,CorruptImage,image->filename);
-  return(True);
+  return(MagickPass);
 }
 
 /*
@@ -352,13 +388,13 @@ static unsigned int DecodeImage(Image *image,const long opacity)
 %
 %  The format of the EncodeImage method is:
 %
-%      unsigned int EncodeImage(const ImageInfo *image_info,Image *image,
+%      MagickPassFail EncodeImage(const ImageInfo *image_info,Image *image,
 %        const unsigned int data_size)
 %
 %  A description of each parameter follows:
 %
-%    o status:  Method EncodeImage returns True if all the pixels are
-%      compressed without error, otherwise False.
+%    o status:  Method EncodeImage returns MagickPass if all the pixels are
+%      compressed without error, otherwise MagickFail.
 %
 %    o image_info: Specifies a pointer to a ImageInfo structure.
 %
@@ -368,16 +404,13 @@ static unsigned int DecodeImage(Image *image,const long opacity)
 %
 %
 */
-static unsigned int EncodeImage(const ImageInfo *image_info,Image *image,
-  const unsigned int data_size)
-{
 #define MaxCode(number_bits)  ((1 << (number_bits))-1)
 #define MaxHashTable  5003
 #define MaxGIFBits  12
 #if defined(HasLZW)
-#define MaxGIFTable  (1 << MaxGIFBits)
+#  define MaxGIFTable  (1 << MaxGIFBits)
 #else
-#define MaxGIFTable  max_code
+#  define MaxGIFTable  max_code
 #endif
 #define GIFOutputCode(code) \
 { \
@@ -413,6 +446,9 @@ static unsigned int EncodeImage(const ImageInfo *image_info,Image *image,
         max_code=MaxCode(number_bits); \
     } \
 }
+static MagickPassFail EncodeImage(const ImageInfo *image_info,Image *image,
+  const unsigned int data_size)
+{
 
   int
 #if defined(HasLZW)
@@ -465,7 +501,7 @@ static unsigned int EncodeImage(const ImageInfo *image_info,Image *image,
   if ((packet == (unsigned char *) NULL) || (hash_code == (short *) NULL) ||
       (hash_prefix == (short *) NULL) ||
       (hash_suffix == (unsigned char *) NULL))
-    return(False);
+    return(MagickFail);
   /*
     Initialize GIF encoder.
   */
@@ -638,7 +674,7 @@ static unsigned int EncodeImage(const ImageInfo *image_info,Image *image,
   MagickFreeMemory(hash_prefix);
   MagickFreeMemory(hash_code);
   MagickFreeMemory(packet);
-  return(True);
+  return(MagickPass);
 }
 
 /*
@@ -652,12 +688,12 @@ static unsigned int EncodeImage(const ImageInfo *image_info,Image *image,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method IsGIF returns True if the image format type, identified by the
-%  magick string, is GIF.
+%  Method IsGIF returns MagickTrue if the image format type, identified by
+%  the magick string, is GIF.
 %
 %  The format of the IsGIF method is:
 %
-%      unsigned int IsGIF(const unsigned char *magick,const size_t length)
+%      MagickBool IsGIF(const unsigned char *magick,const size_t length)
 %
 %  A description of each parameter follows:
 %
@@ -670,13 +706,13 @@ static unsigned int EncodeImage(const ImageInfo *image_info,Image *image,
 %
 %
 */
-static unsigned int IsGIF(const unsigned char *magick,const size_t length)
+static MagickBool IsGIF(const unsigned char *magick,const size_t length)
 {
   if (length < 4)
-    return(False);
+    return(MagickFalse);
   if (LocaleNCompare((char *) magick,"GIF8",4) == 0)
-    return(True);
-  return(False);
+    return(MagickTrue);
+  return(MagickFalse);
 }
 
 /*
@@ -807,7 +843,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   assert(exception->signature == MagickSignature);
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
-  if (status == False)
+  if (status == MagickFail)
     ThrowReaderException(FileOpenError,UnableToOpenFile,image);
   /*
     Determine if this is a GIF file.
@@ -939,7 +975,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->depth=8;
     flag=ReadBlobByte(image);
     image->interlace=BitSet(flag,0x40) ? PlaneInterlace : NoInterlace;
-    image->colors=!BitSet(flag,0x80) ? global_colors : 1 << ((flag & 0x07)+1);
+    image->colors=!BitSet(flag,0x80) ? global_colors : 0x01U << ((flag & 0x07)+1);
     if (opacity >= (long) image->colors)
       image->colors=opacity+1;
     image->page.width=page.width;
@@ -1109,12 +1145,12 @@ ModuleExport void UnregisterGIFImage(void)
 %
 %  The format of the WriteGIFImage method is:
 %
-%      unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
+%      MagickPassFail WriteGIFImage(const ImageInfo *image_info,Image *image)
 %
 %  A description of each parameter follows.
 %
-%    o status: Method WriteGIFImage return True if the image is written.
-%      False is returned is there is a memory shortage or if the image file
+%    o status: Method WriteGIFImage return MagickPass if the image is written.
+%      MagickFail is returned is there is a memory shortage or if the image file
 %      fails to write.
 %
 %    o image_info: Specifies a pointer to a ImageInfo structure.
@@ -1123,7 +1159,7 @@ ModuleExport void UnregisterGIFImage(void)
 %
 %
 */
-static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
+static MagickPassFail WriteGIFImage(const ImageInfo *image_info,Image *image)
 {
   Image
     *next_image;
@@ -1179,7 +1215,7 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
-  if (status == False)
+  if (status == MagickFail)
     ThrowWriterException(FileOpenError,UnableToOpenFile,image);
   /*
     Determine image bounding box.
@@ -1235,7 +1271,7 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
   scene=0;
   do
   {
-    TransformColorspace(image,RGBColorspace);
+    (void) TransformColorspace(image,RGBColorspace);
     if ((image->storage_class == DirectClass) || (image->colors > 256))
       {
         /*
@@ -1430,7 +1466,7 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
     c=Max(bits_per_pixel,2);
     (void) WriteBlobByte(image,c);
     status=EncodeImage(image_info,image,Max(bits_per_pixel,2)+1);
-    if (status == False)
+    if (status == MagickFail)
       {
         MagickFreeMemory(global_colormap);
         MagickFreeMemory(colormap);
@@ -1442,7 +1478,7 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
     image=SyncNextImageInList(image);
     status=MagickMonitor(SaveImagesText,scene++,GetImageListLength(image),
       &image->exception);
-    if (status == False)
+    if (status == MagickFail)
       break;
   } while (image_info->adjoin);
   (void) WriteBlobByte(image,';'); /* terminator */
@@ -1452,5 +1488,5 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
     while (image->previous != (Image *) NULL)
       image=image->previous;
   CloseBlob(image);
-  return(True);
+  return(MagickPass);
 }

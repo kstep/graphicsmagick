@@ -1,3 +1,11 @@
+2004-10-31  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/gif.c (DecodeImage): Improve handling of corrupt GIF
+	files.  Resolves SourceForge bug #1042904.  Also, eliminate a
+	potential memory leak.
+	* magick/constitute.c (WriteImages): ImageInfo argument is now a
+	const pointer.
+
 2004-09-19  Bob Friesenhahn <bfriesen@simple.dallas.tx.us>
 
 	* coders/tiff.c (WriteTIFFImage): Implement error handling so
