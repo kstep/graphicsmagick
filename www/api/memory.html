@@ -69,14 +69,14 @@ The size of the memory in bytes to allocate.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="liberatememory">LiberateMemory</A></H2>
-<blockquote>LiberateMemory() frees memory that has already been allocated. </blockquote><P>The format of the LiberateMemory method is:</P>
+<blockquote>LiberateMemory() frees memory that has already been allocated, and NULLs the pointer to it. </blockquote><P>The format of the LiberateMemory method is:</P>
 <blockquote>void LiberateMemory ( void **memory ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DT><DD><DL>
-<dd><p></p><dt><STRONG><A NAME="item_o_span%3A">span:</A></STRONG><BR>
+<dd><p></p><dt><STRONG><A NAME="item_o_memory%3A">memory:</A></STRONG><BR>
 <DD>
 
-<FONT SIZE=-1>A</FONT> pointer to a block memory to free for reuse.
+<FONT SIZE=-1>A</FONT> pointer to a block of memory to free for reuse.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="reacquirememory">ReacquireMemory</A></H2>
@@ -84,7 +84,7 @@ The size of the memory in bytes to allocate.
 <blockquote>void ReacquireMemory ( void **memory, const size_t size ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DT><DD><DL>
-<dd><p></p><dt><STRONG><A NAME="item_o_memory%3A">memory:</A></STRONG><BR>
+<dd><p></p><dt><STRONG>memory:</STRONG><BR>
 <DD>
 
 <FONT SIZE=-1>A</FONT> pointer to a memory allocation.  On return the pointer may change but the contents of the original allocation will not.

@@ -23,9 +23,28 @@ ImageMagick Changes</font></font></font></b></td>
 <dl>
 <dd>
 <pre>
+2002-07-21  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+  * Created Windows "setup.exe" style installation package for
+    ImageMagick.
+  * Include PerlMagick Perl extension for ActiveState ActivePerl as
+    checkmark install option in Windows installation package.
+  * Include ImageMagickObject OLE Object for WSH and Visual Basic (not
+    IIS!!!) as checkmark install option in Windows installation package.
+  * Windows installation package establishes file extension associations
+    for ImageMagick.
+
+2002-07-17  Glenn Randers-Pehrson &lt;randeg@alum.rpi.edu&gt;
+  * PPM files were being written in P4 or P5 format if all pixels were gray.
+    This is correct behavior for the PNM format but not for the PPM format.
+
+2002-07-13  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+  * Load font information from Windows rather than depending on hand
+    edited type-windows.mgk file. Still not incorporated in Cygwin build.
+
 2002-07-04  Cristy  &lt;cristy@mystic.es.dupont.com&gt;
   * Typos corrected in perl.html (thanks to Ron Savage);
   * A color profile is now correctly referred to as ICM instead of IPTC.
+  * Added XPM color compliance to colors.mgk.
   * $image-&gt;Get('clip-mask') now returns the clipping image.
 
 2002-07-03  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;

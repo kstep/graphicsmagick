@@ -9,8 +9,9 @@
     for ImageMagick.
 
 2002-07-17  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
-  * PPM files were being written in P4 or P5 format if all pixels were gray.
-    This is correct behavior for the PNM format but not for the PPM format.
+  * PPM files were being written in P4 or P5 format if all pixels
+    were gray.  This is correct behavior for the PNM format but not for
+    the PPM format.
 
 2002-07-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
   * Load font information from Windows rather than depending on hand
@@ -77,8 +78,8 @@
 
 2002-05-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
   * ImageMagick may now be built (static build only) using the
-    free MinGW development package from http://www.mingw.org.
-    Leonard's "clipboard" coder is included in the build.
+    free MinGW development package from http://www.mingw.org.  Leonard's
+    "clipboard" coder is included in the build.
 
 2002-05-28  Leonard Rosenthol  <leonardr@lazerware.com>
   * Added new "clipboard" coder for reading/writing the system's
@@ -86,8 +87,8 @@
     For example:  'convert logo: clipboard:', 'convert clipboard: foo.png'
 
 2002-05-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
-  * Support autotrace via delegates.mgk.
-    For example:  'convert autotrace:file.png file.mvg'
+  * Support autotrace via delegates.mgk.  For example:  'convert
+    autotrace:file.png file.mvg'
 
 2002-05-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
   * Added progress monitor support to DrawImage().
