@@ -207,6 +207,15 @@ static void *GetTypeBlob(const char *filename,char *path,size_t *length,
         return(FileToBlob(path,length,exception));
     }
 #if defined(UseInstalledImageMagick)
+#if defined(MagickLibPath)
+  /*
+    Search hard coded paths.
+  */
+  FormatString(path,"%.1024s%.1024s",MagickLibPath,filename);
+  if (!IsAccessible(path))
+    ThrowException(exception,ConfigureError,"UnableToAccessFontFile",path);
+  return(FileToBlob(path,length,exception));
+#endif
 #if defined(WIN32)
   {
     char
@@ -226,15 +235,6 @@ static void *GetTypeBlob(const char *filename,char *path,size_t *length,
         return(FileToBlob(path,length,exception));
       }
   }
-#endif
-#if defined(MagickLibPath)
-  /*
-    Search hard coded paths.
-  */
-  FormatString(path,"%.1024s%.1024s",MagickLibPath,filename);
-  if (!IsAccessible(path))
-    ThrowException(exception,ConfigureError,"UnableToAccessFontFile",path);
-  return(FileToBlob(path,length,exception));
 #endif
 #else
   if (*SetClientPath((char *) NULL) != '\0')

@@ -665,9 +665,41 @@ MagickExport unsigned int ListDelegateInfo(FILE *file,ExceptionInfo *exception)
     commands=StringToList(p->commands);
     if (commands == (char **) NULL)
       continue;
-    (void) fprintf(file,"%8s%c=%c%s  %.55s%s\n",p->decode ? p->decode : "",
-      p->mode <= 0 ? '<' : ' ',p->mode >= 0 ? '>' : ' ',delegate,commands[0],
-      strlen(commands[0]) > 55 ? "..." : "");
+    {
+      int
+        command_start_column,
+        command_length,
+        formatted_chars=0,
+        length=0,
+        screen_width=80,
+        strip_length;
+      
+      char
+        *s;
+
+      /* Format output so that command spans multiple lines if
+         necessary */
+      command_length=strlen(commands[0]);
+      command_start_column=fprintf(file,"%8s%c=%c%s  ",p->decode ? p->decode : "",
+        p->mode <= 0 ? '<' : ' ',p->mode >= 0 ? '>' : ' ',delegate);
+      for (s=commands[0]; length < command_length; s+=formatted_chars)
+        {
+          if (s != commands[0])
+            fprintf(file,"%*s",command_start_column,"");
+          strip_length=screen_width-command_start_column;
+          if (length+strip_length < command_length)
+            {
+              char
+                *e;
+
+              for(e=s+strip_length; (*e != ' ') && (e > s) ; e--);
+              strip_length=e-s;
+            }
+          formatted_chars=fprintf(file,"%.*s",strip_length,s);
+          length+=formatted_chars;
+          fprintf(file,"\n");          
+        }
+    }
     for (i=0; commands[i] != (char *) NULL; i++)
       LiberateMemory((void **) &commands[i]);
   }
@@ -860,7 +892,7 @@ static unsigned int ReadConfigureFile(const char *basename,
                     if ((BinPath[0] != 0) &&
                         (BinPath[strlen(BinPath)-1] != *DirectorySeparator))
                       strcat(BinPath,DirectorySeparator);
-
+printf("BinPath=%s\n",BinPath);
                     /* Substitute @GMDelegate@ with path to gm.exe */
                     strcpy(path,BinPath);
                     strcat(path,"gm.exe");

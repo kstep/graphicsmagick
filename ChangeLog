@@ -1,23 +1,28 @@
 2003-04-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/type.c (GetTypeBlob): Prioritize hard-coded path
+	over Windows registry values.
+	* magick/log.c (GetLogBlob): Prioritize hard-coded path
+	over Windows registry values.
+	* magick/blob.c (GetConfigureBlob): Prioritize hard-coded path
+	over Windows registry values.
 	* magick/delegate.c (ReadConfigureFile): Perform substitutions
 	for "@GMDelegate@", "@GMDisplayDelegate@", "@MPEGDecodeDelegate@",
 	"@MPEGEncodeDelegate@", and "@HPGLDecodeDelegate@" while reading
 	delegates.mgk under windows.
+	(ListDelegateInfo): Format delegate command line to multiple
+	lines if necessary rather than truncating.
 	* configure.ac (MagickBinPathDefine): Added support for
 	a MagickBinPath definition.
+	* configure.ac (GSVersion): Added test to obtain version
+	of installed Ghostcript.
+	* magick/tempfile.c (AcquireTemporaryFileDescriptor): Open
+	flag should have been O_RDWR, not O_WRONLY!
 
 2003-04-03  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
 
 	* magick/utility.c: Simplified skipping over the "*" in
 	the +profile "*" option when expanding filenames.
-
-2003-04-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
-
-	* configure.ac (GSVersion): Added test to obtain version
-	of installed Ghostcript.
-	* magick/tempfile.c (AcquireTemporaryFileDescriptor): Open
-	flag should have been O_RDWR, not O_WRONLY!
 
 2003-04-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 

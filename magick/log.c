@@ -218,6 +218,13 @@ static void *GetLogBlob(const char *filename,char *path,size_t *length,
   assert(exception != (ExceptionInfo *) NULL);
   (void) strncpy(path,filename,MaxTextExtent-1);
 #if defined(UseInstalledImageMagick)
+#if defined(MagickLibPath)
+  /*
+    Search hard coded paths.
+  */
+  FormatString(path,"%.1024s%.1024s",MagickLibPath,filename);
+  return(LogToBlob(path,length,exception));
+#endif
 #if defined(WIN32)
   {
     char
@@ -234,13 +241,6 @@ static void *GetLogBlob(const char *filename,char *path,size_t *length,
         return(LogToBlob(path,length,exception));
       }
   }
-#endif
-#if defined(MagickLibPath)
-  /*
-    Search hard coded paths.
-  */
-  FormatString(path,"%.1024s%.1024s",MagickLibPath,filename);
-  return(LogToBlob(path,length,exception));
 #endif
 #else
   if (*SetClientPath((char *) NULL) != '\0')

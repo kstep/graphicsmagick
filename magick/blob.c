@@ -1104,6 +1104,16 @@ MagickExport void *GetConfigureBlob(const char *filename,char *path,
   (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
     "Searching for configure file \"%s\" ...",filename);
 #if defined(UseInstalledImageMagick)
+#if defined(MagickLibPath)
+  /*
+    Search hard coded paths.
+  */
+  FormatString(path,"%.1024s%.1024s",MagickLibPath,filename);
+  if (!IsAccessible(path))
+    ThrowException(exception,ConfigureError,"UnableToAccessConfigureFile",
+      path);
+  return(FileToBlob(path,length,exception));
+#endif /* defined(MagickLibPath) */
 #if defined(WIN32)
   {
     char
@@ -1124,16 +1134,6 @@ MagickExport void *GetConfigureBlob(const char *filename,char *path,
       }
   }
 #endif /* defined(WIN32) */
-#if defined(MagickLibPath)
-  /*
-    Search hard coded paths.
-  */
-  FormatString(path,"%.1024s%.1024s",MagickLibPath,filename);
-  if (!IsAccessible(path))
-    ThrowException(exception,ConfigureError,"UnableToAccessConfigureFile",
-      path);
-  return(FileToBlob(path,length,exception));
-#endif /* defined(MagickLibPath) */
 #else /* !defined(UseInstalledImageMagick) */
   if (*SetClientPath((char *) NULL) != '\0')
     {

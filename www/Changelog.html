@@ -16,12 +16,24 @@
 2003-04-03  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> magick/type.c (GetTypeBlob): Prioritize hard-coded path
+        over Windows registry values.<BR>
+  <LI> magick/log.c (GetLogBlob): Prioritize hard-coded path
+        over Windows registry values.<BR>
+  <LI> magick/blob.c (GetConfigureBlob): Prioritize hard-coded path
+        over Windows registry values.<BR>
   <LI> magick/delegate.c (ReadConfigureFile): Perform substitutions
         for "@GMDelegate@", "@GMDisplayDelegate@", "@MPEGDecodeDelegate@",
         "@MPEGEncodeDelegate@", and "@HPGLDecodeDelegate@" while reading
         delegates.mgk under windows.<BR>
+        (ListDelegateInfo): Format delegate command line to multiple
+        lines if necessary rather than truncating.
   <LI> configure.ac (MagickBinPathDefine): Added support for
-        a MagickBinPath definition.
+        a MagickBinPath definition.<BR>
+  <LI> configure.ac (GSVersion): Added test to obtain version
+        of installed Ghostcript.<BR>
+  <LI> magick/tempfile.c (AcquireTemporaryFileDescriptor): Open
+        flag should have been O_RDWR, not O_WRONLY!
 
 </UL>
 <p>
@@ -30,16 +42,6 @@
 <UL>
   <LI> magick/utility.c: Simplified skipping over the "*" in
         the +profile "*" option when expanding filenames.
-
-</UL>
-<p>
-2003-04-03  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
-
-<UL>
-  <LI> configure.ac (GSVersion): Added test to obtain version
-        of installed Ghostcript.<BR>
-  <LI> magick/tempfile.c (AcquireTemporaryFileDescriptor): Open
-        flag should have been O_RDWR, not O_WRONLY!
 
 </UL>
 <p>
