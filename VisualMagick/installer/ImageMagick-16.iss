@@ -31,12 +31,28 @@
 ; other dealings in ImageMagick without prior written authorization from the
 ; ImageMagick Studio.
 ;
+;
+; Notes to whoever builds an installer from this file.  Certain things
+; may need to be adjusted before you run the compiler.  Please remember
+; to update the following if needed:
+;
+;   o ImageMagick release version (needs to be globally substituted)
+;   o Release date in AppVerName should reflect the release date.
+;   o Ensure that the word "Beta" occurs in AppVerName before the date
+;     if this is a beta release snapshot.  For example:
+;     "ImageMagick 5.4.9 Q:16 Beta (August 26, 2002)"
+;   o Ensure that the quantum depth indication ("Q:8", "Q:16", or "Q:32")
+;     is correct.  The normal release build should be Q:16.
+;
+; Eventually I hope to create an m4 macro package that makes producing this
+; file easier, and perhaps even running the compiler automatically as a
+; final build step.
 
 [Setup]
 AppName=ImageMagick 5.4.9 Q:16
 ; When updating the version string, remember to also update the version in
 ; the [Registry] section
-AppVerName=ImageMagick 5.4.9 Q:16 Beta (August 24, 2002)
+AppVerName=ImageMagick 5.4.9 Q:16 Beta (August 30, 2002)
 AppVersion=5.4.9
 AppCopyright=Copyright (C) 2002 ImageMagick Studio LLC
 AppPublisher=ImageMagick Studio
@@ -49,6 +65,8 @@ DefaultGroupName=ImageMagick 5.4.9
 Compression=zip/9
 ChangesAssociations=1
 AllowRootDirectory=no
+InfoBeforeFile=before.txt
+InfoAfterFile=after.txt
 UninstallDisplayIcon={app}\ImageMagick.ico
 OutputDir=..\bin
 OutputBaseFilename=ImageMagick-5.4.9-win2k
@@ -61,7 +79,7 @@ Name: desktop_icon; Description: "Create a &desktop icon"; MinVersion: 4,4
 Name: update_path; Description: "Update executable search path"
 Name: associate_extensions; Description: "Associate supported file extensions with ImageMagick"
 Name: install_PerlMagick; Description: "Install PerlMagick for ActiveState Perl v5.6.1 build 633"; Flags: unchecked
-Name: install_Magick_DLL; Description: "Install ImageMagickObject OLE Control for Visual Basic and WSH"; Flags: unchecked
+Name: install_Magick_DLL; Description: "Install ImageMagickObject OLE Control for VBscript, Visual Basic, and WSH"; Flags: unchecked
 
 ; Windows registry settings
 [Registry]
