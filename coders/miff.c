@@ -368,7 +368,8 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                       if (LocaleCompare(values,"BZip") == 0)
                         image->compression=BZipCompression;
                       else
-                        if (LocaleCompare(values,"RLE") == 0)
+                        if ((LocaleCompare(values,"RLE") == 0) ||
+                            (LocaleCompare(values,"RunlengthEncoded") == 0))
                           image->compression=RunlengthEncodedCompression;
                         else
                           image->compression=UndefinedCompression;
