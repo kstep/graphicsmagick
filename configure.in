@@ -170,6 +170,45 @@ AC_ARG_WITH(zlib,
 	      [with_zlib='yes'])
 
 
+# Check standard headers
+AC_HEADER_STDC
+AC_HEADER_STAT
+AC_HEADER_TIME
+AC_HEADER_SYS_WAIT
+AC_HEADER_DIRENT
+AC_CHECK_HEADER(elf.h,AC_DEFINE(SVR4))
+AC_CHECK_HEADERS(sys/time.h sys/stat.h sys/types.h)
+AC_CHECK_HEADERS(math.h string.h stdarg.h pwd.h malloc.h)
+AC_CHECK_HEADERS(memory.h errno.h fcntl.h)
+
+# Checks for typedefs, structures, and compiler characteristics.
+AC_C_CONST
+
+AC_RETSIGTYPE
+AC_TYPE_MODE_T
+AC_TYPE_OFF_T
+AC_TYPE_PID_T
+AC_TYPE_SIZE_T
+
+
+# Checks for library functions.
+AC_PROG_GCC_TRADITIONAL
+AC_FUNC_MEMCMP
+AC_TYPE_SIGNAL
+AC_FUNC_VPRINTF
+AC_FUNC_WAIT3
+AC_CHECK_FUNCS(strchr strtol getcwd mkdir select tempnam)
+AC_FUNC_MMAP
+
+# Check standard functions
+AC_CHECK_FUNCS(strerror)
+AC_CHECK_FUNCS(snprintf)
+AC_CHECK_FUNCS(vsnprintf)
+AC_MSG_CHECKING(for sys_errlist)
+AC_TRY_LINK([extern char** sys_errlist;],[char** p = sys_errlist;],
+AC_MSG_RESULT(yes); AC_DEFINE(HAVE_SYS_ERRLIST),AC_MSG_RESULT(no))
+
+
 # Check for delegate sub-directories and add -I & -L options as required.
 # This presumes that delegates are installed as detailed in the ImageMagick
 # README. If delegates are installed in a standard location where the
@@ -245,58 +284,6 @@ CPPFLAGS="$CPPFLAGS -I$INCLUDE_DIR"
 # Extend includedir to include magick subdirectory offset
 includedir="$includedir/magick"
 
-#
-# Find math library
-#
-LIB_MATH=''
-AC_CHECK_LIB(m,sqrt,LIB_MATH="-lm",,)
-LIBS="$LIB_MATH $LIBS"
-
-#
-# Find the X11 include and library directories.
-#
-AC_PATH_X
-AC_PATH_XTRA
-
-X11STUBSDIR=''
-X11STUBSLA=''
-X11STUBSLIB=''
-
-LIB_XEXT=''
-LIB_XT=''
-if test "$with_x" != 'no'
-then
-    with_x='yes'dnl Ensure value is set
-    LDFLAGS="$LDFLAGS $X_LIBS"
-    LIBS="-lX11 $X_EXTRA_LIBS $LIBS"
-    CPPFLAGS="$CPPFLAGS $X_CFLAGS"
-
-    AC_CHECK_LIB(Xext,XShmAttach,LIB_XEXT='-lXext',,)
-    AC_CHECK_LIB(Xext,XShmAttach,AC_DEFINE(HasSharedMemory),,)
-    AC_CHECK_LIB(Xext,XShapeCombineMask,AC_DEFINE(HasShape),,)
-
-    AC_CHECK_LIB(Xt,XtSetEventDispatcher,LIB_XT='-lXt',,)
-    LIBS="$LIB_XEXT $LIB_XT $LIBS"
-else
-    dnl Check for X11 stubs library
-    AC_MSG_CHECKING(for X11 stubs library)
-    if test -f "$srcdir/xlib/X11_stubs.c"
-    then
-	CPPFLAGS="$CPPFLAGS -I$srcdirfull/xlib"
-	X11STUBSDIR="$srcdir/xlib"
-	X11STUBSLANAME="libX11_stubs.la"
-	X11STUBSLA="$srcdir/xlib/$X11STUBSLANAME"
-	X11STUBSLIB="-lX11_stubs"
-	AC_MSG_RESULT(yes)
-    else
-	AC_MSG_RESULT(no)
-	AC_MSG_ERROR(ImageMagick requires X11 library or X11 stubs library to build)
-    fi
-fi
-AC_SUBST(X11STUBSDIR)
-AC_SUBST(X11STUBSLANAME)
-AC_SUBST(X11STUBSLA)
-AC_SUBST(X11STUBSLIB)
 
 
 #
@@ -348,6 +335,13 @@ AC_CACHE_CHECK(for X11 RGB database,im_cv_x_rgbdb,
 
   done])
 AC_DEFINE_UNQUOTED(RGBColorDatabase,"$im_cv_x_rgbdb")
+
+#
+# Find math library
+#
+LIB_MATH=''
+AC_CHECK_LIB(m,sqrt,LIB_MATH="-lm",,)
+LIBS="$LIB_MATH $LIBS"
 
 #
 # Check for Sfio
@@ -448,6 +442,52 @@ then
     AC_MSG_RESULT(no)
   fi
 fi
+
+#
+# Find the X11 include and library directories.
+#
+AC_PATH_X
+AC_PATH_XTRA
+
+X11STUBSDIR=''
+X11STUBSLA=''
+X11STUBSLIB=''
+
+LIB_XEXT=''
+LIB_XT=''
+if test "$with_x" != 'no'
+then
+    with_x='yes'dnl Ensure value is set
+    LDFLAGS="$LDFLAGS $X_LIBS"
+    LIBS="-lX11 $X_EXTRA_LIBS $LIBS"
+    CPPFLAGS="$CPPFLAGS $X_CFLAGS"
+
+    AC_CHECK_LIB(Xext,XShmAttach,LIB_XEXT='-lXext',,)
+    AC_CHECK_LIB(Xext,XShmAttach,AC_DEFINE(HasSharedMemory),,)
+    AC_CHECK_LIB(Xext,XShapeCombineMask,AC_DEFINE(HasShape),,)
+
+    AC_CHECK_LIB(Xt,XtSetEventDispatcher,LIB_XT='-lXt',,)
+    LIBS="$LIB_XEXT $LIB_XT $LIBS"
+else
+    dnl Check for X11 stubs library
+    AC_MSG_CHECKING(for X11 stubs library)
+    if test -f "$srcdir/xlib/X11_stubs.c"
+    then
+	CPPFLAGS="$CPPFLAGS -I$srcdirfull/xlib"
+	X11STUBSDIR="$srcdir/xlib"
+	X11STUBSLANAME="libX11_stubs.la"
+	X11STUBSLA="$srcdir/xlib/$X11STUBSLANAME"
+	X11STUBSLIB="-lX11_stubs"
+	AC_MSG_RESULT(yes)
+    else
+	AC_MSG_RESULT(no)
+	AC_MSG_ERROR(ImageMagick requires X11 library or X11 stubs library to build)
+    fi
+fi
+AC_SUBST(X11STUBSDIR)
+AC_SUBST(X11STUBSLANAME)
+AC_SUBST(X11STUBSLA)
+AC_SUBST(X11STUBSLIB)
 
 #
 # Check for Display Postscript
@@ -709,44 +749,6 @@ then
 fi
 
 
-# Check standard headers
-AC_HEADER_STDC
-AC_HEADER_STAT
-AC_HEADER_TIME
-AC_HEADER_SYS_WAIT
-AC_HEADER_DIRENT
-AC_CHECK_HEADER(elf.h,AC_DEFINE(SVR4))
-AC_CHECK_HEADERS(sys/time.h sys/stat.h sys/types.h)
-AC_CHECK_HEADERS(math.h string.h stdarg.h pwd.h malloc.h)
-AC_CHECK_HEADERS(memory.h errno.h fcntl.h)
-
-# Checks for typedefs, structures, and compiler characteristics.
-AC_C_CONST
-
-AC_RETSIGTYPE
-AC_TYPE_MODE_T
-AC_TYPE_OFF_T
-AC_TYPE_PID_T
-AC_TYPE_SIZE_T
-
-
-# Checks for library functions.
-AC_PROG_GCC_TRADITIONAL
-AC_FUNC_MEMCMP
-AC_TYPE_SIGNAL
-AC_FUNC_VPRINTF
-AC_FUNC_WAIT3
-AC_CHECK_FUNCS(strchr strtol getcwd mkdir select tempnam)
-AC_FUNC_MMAP
-
-# Check standard functions
-AC_CHECK_FUNCS(strerror)
-AC_CHECK_FUNCS(snprintf)
-AC_CHECK_FUNCS(vsnprintf)
-AC_MSG_CHECKING(for sys_errlist)
-AC_TRY_LINK([extern char** sys_errlist;],[char** p = sys_errlist;],
-AC_MSG_RESULT(yes); AC_DEFINE(HAVE_SYS_ERRLIST),AC_MSG_RESULT(no))
-
 #
 # Configure Delegates
 #
@@ -992,7 +994,7 @@ then
 fi
 
 # Determine path to pick up ImageMagick library from for use with building PerlMagick
-MAGICKLIB="-L$PREFIX/lib -L/usr/local/lib -lMagick"
+MAGICKLIB="-L${LIB_DIR} -lMagick"
 if test $with_perl_static = 'yes'
 then
   MAGICKLIB="-L${builddir}/magick -lMagick"
@@ -1164,7 +1166,7 @@ AC_SUBST(X_PRE_LIBS)
 AC_SUBST(X_LIBS)
 AC_SUBST(X_EXTRA_LIBS)
 
-AC_OUTPUT(Makefile delegates/delegates.mgk delegates/Makefile magick/Makefile xtp/Makefile xlib/Makefile PerlMagick/Makefile.PL)
+AC_OUTPUT(Makefile delegates/delegates.mgk delegates/Makefile magick/Makefile magick/Magick-config xtp/Makefile xlib/Makefile PerlMagick/Makefile.PL)
 
 echo ""
 

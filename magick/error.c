@@ -104,11 +104,11 @@ static void DefaultErrorHandler(const char *message,const char *qualifier)
   magick_status=SetErrorStatus(0);
   if (message == (char *) NULL)
     Exit(magick_status % 100);
-  (void) fprintf(stderr,"%s: %s",SetClientName((char *) NULL),message);
+  (void) fprintf(stderr,"%.128s: %.128s",SetClientName((char *) NULL),message);
   if (qualifier != (char *) NULL)
-    (void) fprintf(stderr," (%s)",qualifier);
+    (void) fprintf(stderr," (%.128s)",qualifier);
   if (errno)
-    (void) fprintf(stderr," [%s]",strerror(errno));
+    (void) fprintf(stderr," [%.128s]",strerror(errno));
   (void) fprintf(stderr,".\n");
   Exit(magick_status % 100);
 }
@@ -143,9 +143,9 @@ static void DefaultWarningHandler(const char *message,const char *qualifier)
 {
   if (message == (char *) NULL)
     return;
-  (void) fprintf(stderr,"%s: %s",SetClientName((char *) NULL),message);
+  (void) fprintf(stderr,"%.128s: %.128s",SetClientName((char *) NULL),message);
   if (qualifier != (char *) NULL)
-    (void) fprintf(stderr," (%s)",qualifier);
+    (void) fprintf(stderr," (%.128s)",qualifier);
   (void) fprintf(stderr,".\n");
 }
 

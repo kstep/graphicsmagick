@@ -46,6 +46,9 @@ libMagick_la_SOURCES = PreRvIcccm.c X.c animate.c colors.c compress.c decode.c \
 # Source files not used for Unix library but which are distributed
 EXTRA_libMagick_la_SOURCES = mac.c nt.c vms.c
 
+# Binary scripts
+bin_SCRIPTS = Magick-config
+
 # Headers which are installed
 include_HEADERS = PreRvIcccm.h X.h compress.h config.h error.h gems.h image.h \
 	magick.h monitor.h utility.h widget.h memory.h delegates.h version.h
@@ -55,7 +58,7 @@ noinst_HEADERS = Colorlist.h animate.h dicom.h display.h formats.h logo.h \
 	mac.h nt.h pict.h proxy.h vms.h
 
 # Additional files to distribute
-EXTRA_DIST = Imakefile Make.com
+EXTRA_DIST = Imakefile Magick-config.in Make.com
 
 # Ensure that configuration header is not distributed
 dist-hook:

@@ -248,13 +248,13 @@ static void Usage(const char *client_name)
       (char *) NULL
     };
 
-  (void) printf("Version: %s\n",MagickVersion);
-  (void) printf("Copyright: %s\n\n",MagickCopyright);
+  (void) printf("Version: %.128s\n",MagickVersion);
+  (void) printf("Copyright: %.128s\n\n",MagickCopyright);
   (void) printf(
-    "Usage: %s [-options ...] file [ [-options ...] file ...]\n",client_name);
+    "Usage: %.128s [-options ...] file [ [-options ...] file ...]\n",client_name);
   (void) printf("\nWhere options include: \n");
   for (p=options; *p != (char *) NULL; p++)
-    (void) printf("  %s\n",*p);
+    (void) printf("  %.128s\n",*p);
   (void) printf(
     "\nBy default, the image format of `file' is determined by its magic\n");
   (void) printf(
@@ -1356,7 +1356,7 @@ int main(int argc,char **argv)
               (void) strcpy(p,format);
             else
               {
-                FormatString(image_info.filename,"%s:%s",format,
+                FormatString(image_info.filename,"%.128s:%.128s",format,
                   image->filename);
                 (void) strcpy(image->filename,image_info.filename);
               }

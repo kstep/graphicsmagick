@@ -229,13 +229,13 @@ static void Usage(const char *client_name)
       (char *) NULL
     };
 
-  (void) printf("Version: %s\n",MagickVersion);
-  (void) printf("Copyright: %s\n\n",MagickCopyright);
+  (void) printf("Version: %.128s\n",MagickVersion);
+  (void) printf("Copyright: %.128s\n\n",MagickCopyright);
   (void) printf(
-    "Usage: %s [-options ...] file [ [-options ...] file ...]\n",client_name);
+    "Usage: %.128s [-options ...] file [ [-options ...] file ...]\n",client_name);
   (void) printf("\nWhere options include: \n");
   for (p=options; *p != (char *) NULL; p++)
-    (void) printf("  %s\n",*p);
+    (void) printf("  %.128s\n",*p);
   (void) printf(
     "\nIn addition to those listed above, you can specify these standard X\n");
   (void) printf(
@@ -254,7 +254,7 @@ static void Usage(const char *client_name)
   (void) printf("'-' for standard input or output.\n");
   (void) printf("\nButtons: \n");
   for (p=buttons; *p != (char *) NULL; p++)
-    (void) printf("  %s\n",*p);
+    (void) printf("  %.128s\n",*p);
   Exit(0);
 }
 
@@ -1243,7 +1243,7 @@ int main(int argc,char **argv)
                       char
                         answer[2];
 
-                      (void) fprintf(stderr,"Overwrite %s? ",
+                      (void) fprintf(stderr,"Overwrite %.128s? ",
                         resource_info.write_filename);
                       (void) fgets(answer,sizeof(answer),stdin);
                       if (!((*answer == 'y') || (*answer == 'Y')))
@@ -1287,7 +1287,7 @@ int main(int argc,char **argv)
               */
               FormatString(filename,image_info->filename,scene);
               if (Latin1Compare(filename,image_info->filename) == 0)
-                FormatString(filename,"%s.%u",image_info->filename,scene);
+                FormatString(filename,"%.128s.%u",image_info->filename,scene);
               (void) strcpy(image_info->filename,filename);
             }
           (void) strcpy(image_info->magick,"MIFF");

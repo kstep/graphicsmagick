@@ -443,7 +443,7 @@ Export void AnnotateImage(Image *image,AnnotateInfo *annotate_info)
     /*
       Convert text to image.
     */
-    FormatString(local_info.filename,"label:%s",textlist[i]);
+    FormatString(local_info.filename,"label:%.128s",textlist[i]);
     FreeMemory(textlist[i]);
     annotate_image=ReadImage(&local_info);
     if (annotate_image == (Image *) NULL)
@@ -527,7 +527,7 @@ Export void AnnotateImage(Image *image,AnnotateInfo *annotate_info)
         /*
           Surround text with a bounding box.
         */
-        (void) sprintf(local_info.filename,"xc:%s",annotate_info->box);
+        (void) sprintf(local_info.filename,"xc:%.128s",annotate_info->box);
         (void) sprintf(local_info.size,"%ux%u",annotate_image->columns,
           annotate_image->rows);
         box_image=ReadImage(&local_info);
@@ -3008,12 +3008,12 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
       */
       if (*image->magick_filename != '\0')
         if (Latin1Compare(image->magick_filename,image->filename) != 0)
-          (void) fprintf(file,"%s=>",image->magick_filename);
+          (void) fprintf(file,"%.128s=>",image->magick_filename);
        if ((image->previous == (Image *) NULL) &&
            (image->next == (Image *) NULL) && (image->scene == 0))
-        (void) fprintf(file,"%s ",image->filename);
+        (void) fprintf(file,"%.128s ",image->filename);
       else
-        (void) fprintf(file,"%s[%u] ",image->filename,image->scene);
+        (void) fprintf(file,"%.128s[%u] ",image->filename,image->scene);
       if ((image->magick_columns != 0) || (image->magick_rows != 0))
         if ((image->magick_columns != image->columns) ||
             (image->magick_rows != image->rows))
@@ -3059,14 +3059,14 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
             (void) fprintf(file,"%ldkb ",image->filesize/1024);
           else
             (void) fprintf(file,"%ldb ",image->filesize);
-      (void) fprintf(file,"%s %lds\n",image->magick,time((time_t *) NULL)-
+      (void) fprintf(file,"%.128s %lds\n",image->magick,time((time_t *) NULL)-
         image->magick_time+1);
       return;
     }
   /*
     Display verbose info about the image.
   */
-  (void) fprintf(file,"Image: %s\n",image->filename);
+  (void) fprintf(file,"Image: %.128s\n",image->filename);
   if (IsMonochromeImage(image))
     (void) fprintf(file,"  type: bilevel\n");
   else
@@ -3120,7 +3120,7 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
         (void) fprintf(file,"    %d: (%3d,%3d,%3d)",i,p->red,p->green,p->blue);
         (void) fprintf(file,"  ");
         (void) QueryColorName(p,name);
-        (void) fprintf(file,"  %s",name);
+        (void) fprintf(file,"  %.128s",name);
         (void) fprintf(file,"\n");
         p++;
       }
@@ -3135,7 +3135,7 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
     (void) fprintf(file,"  normalized maximum error: %.6f\n",
       image->normalized_maximum_error);
   if (image->signature != (char *) NULL)
-    (void) fprintf(file,"  signature: %s\n",image->signature);
+    (void) fprintf(file,"  signature: %.128s\n",image->signature);
   if (image->matte)
     (void) fprintf(file,"  matte: True\n");
   else
@@ -3223,14 +3223,14 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
       if (image->interlace == PartitionInterlace)
         (void) fprintf(file,"  interlace: Partition\n");
   if (image->page != (char *) NULL)
-    (void) fprintf(file,"  page geometry: %s\n",image->page);
+    (void) fprintf(file,"  page geometry: %.128s\n",image->page);
   if (image->dispose != 0)
     (void) fprintf(file,"  dispose method: %d\n",image->dispose);
   if (image->delay != 0)
     (void) fprintf(file,"  delay: %d\n",image->delay);
   if (image->iterations != 1)
     (void) fprintf(file,"  iterations: %d\n",image->iterations);
-  (void) fprintf(file,"  format: %s\n",image->magick);
+  (void) fprintf(file,"  format: %.128s\n",image->magick);
   p=image;
   while (p->previous != (Image *) NULL)
     p=p->previous;
@@ -3242,7 +3242,7 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
     if (image->scene != 0)
       (void) fprintf(file,"  scene: %u\n",image->scene);
   if (image->label != (char *) NULL)
-    (void) fprintf(file,"  label: %s\n",image->label);
+    (void) fprintf(file,"  label: %.128s\n",image->label);
   (void) fprintf(file,"  compression: ");
   if (image->compression == ZipCompression)
     (void) fprintf(file,"Zip\n");
@@ -3271,14 +3271,14 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
         {
           for (i=0; textlist[i] != (char *) NULL; i++)
           {
-            (void) fprintf(file,"  %s\n",textlist[i]);
+            (void) fprintf(file,"  %.128s\n",textlist[i]);
             FreeMemory(textlist[i]);
           }
           FreeMemory((char *) textlist);
         }
     }
   if (image->montage != (char *) NULL)
-    (void) fprintf(file,"  montage: %s\n",image->montage);
+    (void) fprintf(file,"  montage: %.128s\n",image->montage);
   if (image->directory != (char *) NULL)
     {
       ErrorHandler
@@ -3308,7 +3308,7 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
         (void) strncpy(image_info.filename,p,q-p);
         image_info.filename[q-p]='\0';
         p=q;
-        (void) fprintf(file,"    %s",image_info.filename);
+        (void) fprintf(file,"    %.128s",image_info.filename);
         handler=SetWarningHandler((ErrorHandler) NULL);
         tile=ReadImage(&image_info);
         (void) SetWarningHandler(handler);
@@ -3317,7 +3317,7 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
             (void) fprintf(file,"\n");
             continue;
           }
-        (void) fprintf(file," %ux%u %s\n",tile->magick_columns,
+        (void) fprintf(file," %ux%u %.128s\n",tile->magick_columns,
           tile->magick_rows,tile->magick);
         if (tile->comments != (char *) NULL)
           {
@@ -3329,7 +3329,7 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
               {
                 for (i=0; textlist[i] != (char *) NULL; i++)
                 {
-                  (void) fprintf(file,"    %s\n",textlist[i]);
+                  (void) fprintf(file,"    %.128s\n",textlist[i]);
                   FreeMemory(textlist[i]);
                 }
                 FreeMemory((char *) textlist);
@@ -4758,7 +4758,7 @@ Export void GetAnnotateInfo(ImageInfo *image_info,AnnotateInfo *annotate_info)
     Get font bounds.
   */
   local_info=(*image_info);
-  FormatString(local_info.filename,"label:%s",Alphabet);
+  FormatString(local_info.filename,"label:%.128s",Alphabet);
   annotate_image=ReadImage(&local_info);
   if (annotate_image == (Image *) NULL)
     return;
@@ -6070,6 +6070,9 @@ Export void MogrifyImage(ImageInfo *image_info,int argc,char **argv,
     height,
     width;
 
+  XColor
+    target_color;
+
   /*
     Initialize routine variables.
   */
@@ -6124,6 +6127,14 @@ Export void MogrifyImage(ImageInfo *image_info,int argc,char **argv,
           }
         continue;
       }
+    if (strncmp("-background",option,6) == 0)
+      {
+        (void) XQueryColorDatabase(argv[++i],&target_color);
+        (*image)->background_color.red=XDownScale(target_color.red);
+        (*image)->background_color.green=XDownScale(target_color.green);
+        (*image)->background_color.blue=XDownScale(target_color.blue);
+        continue;
+      }
     if (strncmp("-blur",option,4) == 0)
       {
         double
@@ -6170,6 +6181,14 @@ Export void MogrifyImage(ImageInfo *image_info,int argc,char **argv,
             bordered_image->class=DirectClass;
             *image=bordered_image;
           }
+        continue;
+      }
+    if (strncmp("-bordercolor",option,8) == 0)
+      {
+        (void) XQueryColorDatabase(argv[++i],&target_color);
+        (*image)->border_color.red=XDownScale(target_color.red);
+        (*image)->border_color.green=XDownScale(target_color.green);
+        (*image)->border_color.blue=XDownScale(target_color.blue);
         continue;
       }
     if (Latin1Compare("-box",option) == 0)
@@ -6603,6 +6622,14 @@ Export void MogrifyImage(ImageInfo *image_info,int argc,char **argv,
               }
             }
         (*image)->matte=(*option == '-');
+        continue;
+      }
+    if (strncmp("-mattecolor",option,7) == 0)
+      {
+        (void) XQueryColorDatabase(argv[++i],&target_color);
+        (*image)->matte_color.red=XDownScale(target_color.red);
+        (*image)->matte_color.green=XDownScale(target_color.green);
+        (*image)->matte_color.blue=XDownScale(target_color.blue);
         continue;
       }
     if (strncmp("-modulate",option,4) == 0)
@@ -7764,7 +7791,7 @@ Export void OpenImage(const ImageInfo *image_info,Image *image,const char *type)
                 {
                   if ((Latin1Compare(filename,image->filename) == 0) ||
                       (strchr(filename,'%') != (char *) NULL))
-                    FormatString(filename,"%s.%u",filename,image->scene);
+                    FormatString(filename,"%.128s.%u",filename,image->scene);
                   if (image->next != (Image *) NULL)
                     (void) strcpy(image->next->magick,image->magick);
                 }

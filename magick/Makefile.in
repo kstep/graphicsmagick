@@ -177,6 +177,9 @@ libMagick_la_SOURCES = PreRvIcccm.c X.c animate.c colors.c compress.c decode.c \
 # Source files not used for Unix library but which are distributed
 EXTRA_libMagick_la_SOURCES = mac.c nt.c vms.c
 
+# Binary scripts
+bin_SCRIPTS = Magick-config
+
 # Headers which are installed
 include_HEADERS = PreRvIcccm.h X.h compress.h config.h error.h gems.h image.h \
 	magick.h monitor.h utility.h widget.h memory.h delegates.h version.h
@@ -186,12 +189,12 @@ noinst_HEADERS = Colorlist.h animate.h dicom.h display.h formats.h logo.h \
 	mac.h nt.h pict.h proxy.h vms.h
 
 # Additional files to distribute
-EXTRA_DIST = Imakefile Make.com
+EXTRA_DIST = Imakefile Magick-config.in Make.com
 
 INCLUDES = #$(X_CFLAGS)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = config.h
-CONFIG_CLEAN_FILES = 
+CONFIG_CLEAN_FILES =  Magick-config
 LTLIBRARIES =  $(lib_LTLIBRARIES)
 
 
@@ -202,13 +205,16 @@ libMagick_la_OBJECTS =  PreRvIcccm.lo X.lo animate.lo colors.lo \
 compress.lo decode.lo delegates.lo display.lo effects.lo encode.lo \
 error.lo gems.lo image.lo monitor.lo quantize.lo segment.lo shear.lo \
 signature.lo utility.lo widget.lo memory.lo
+SCRIPTS =  $(bin_SCRIPTS)
+
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LINK = $(LIBTOOL) --mode=link $(CC) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
 HEADERS =  $(include_HEADERS) $(noinst_HEADERS)
 
-DIST_COMMON =  Makefile.am Makefile.in config.h.in stamp-h.in
+DIST_COMMON =  Magick-config.in Makefile.am Makefile.in config.h.in \
+stamp-h.in
 
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
@@ -218,7 +224,7 @@ GZIP = --best
 SOURCES = $(libMagick_la_SOURCES) $(EXTRA_libMagick_la_SOURCES)
 OBJECTS = $(libMagick_la_OBJECTS)
 
-all: Makefile $(LTLIBRARIES) $(HEADERS) config.h
+all: Makefile $(LTLIBRARIES) $(SCRIPTS) $(HEADERS) config.h
 
 .SUFFIXES:
 .SUFFIXES: .S .c .lo .o .s
@@ -250,6 +256,8 @@ distclean-hdr:
 	-rm -f config.h
 
 maintainer-clean-hdr:
+Magick-config: $(top_builddir)/config.status Magick-config.in
+	cd $(top_builddir) && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
 mostlyclean-libLTLIBRARIES:
 
@@ -317,6 +325,25 @@ maintainer-clean-libtool:
 libMagick.la: $(libMagick_la_OBJECTS) $(libMagick_la_DEPENDENCIES)
 	$(LINK) -rpath $(libdir) $(libMagick_la_LDFLAGS) $(libMagick_la_OBJECTS) $(libMagick_la_LIBADD) $(LIBS)
 
+install-binSCRIPTS: $(bin_SCRIPTS)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(bindir)
+	@list='$(bin_SCRIPTS)'; for p in $$list; do \
+	  if test -f $$p; then \
+	    echo " $(INSTALL_SCRIPT) $$p $(DESTDIR)$(bindir)/`echo $$p|sed '$(transform)'`"; \
+	    $(INSTALL_SCRIPT) $$p $(DESTDIR)$(bindir)/`echo $$p|sed '$(transform)'`; \
+	  else if test -f $(srcdir)/$$p; then \
+	    echo " $(INSTALL_SCRIPT) $(srcdir)/$$p $(DESTDIR)$(bindir)/`echo $$p|sed '$(transform)'`"; \
+	    $(INSTALL_SCRIPT) $(srcdir)/$$p $(DESTDIR)$(bindir)/`echo $$p|sed '$(transform)'`; \
+	  else :; fi; fi; \
+	done
+
+uninstall-binSCRIPTS:
+	@$(NORMAL_UNINSTALL)
+	list='$(bin_SCRIPTS)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(bindir)/`echo $$p|sed '$(transform)'`; \
+	done
+
 install-includeHEADERS: $(include_HEADERS)
 	@$(NORMAL_INSTALL)
 	$(mkinstalldirs) $(DESTDIR)$(includedir)
@@ -373,7 +400,7 @@ info:
 dvi:
 check: all
 installcheck:
-install-exec: install-libLTLIBRARIES
+install-exec: install-libLTLIBRARIES install-binSCRIPTS
 	@$(NORMAL_INSTALL)
 
 install-data: install-includeHEADERS
@@ -382,12 +409,13 @@ install-data: install-includeHEADERS
 install: install-exec install-data all
 	@:
 
-uninstall: uninstall-libLTLIBRARIES uninstall-includeHEADERS
+uninstall: uninstall-libLTLIBRARIES uninstall-binSCRIPTS uninstall-includeHEADERS
 
 install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) INSTALL_PROGRAM='$(INSTALL_PROGRAM) -s' INSTALL_SCRIPT='$(INSTALL_PROGRAM)' install
 installdirs:
-	$(mkinstalldirs)  $(DESTDIR)$(libdir) $(DESTDIR)$(includedir)
+	$(mkinstalldirs)  $(DESTDIR)$(libdir) $(DESTDIR)$(bindir) \
+		$(DESTDIR)$(includedir)
 
 
 mostlyclean-generic:
@@ -425,12 +453,12 @@ clean-libLTLIBRARIES maintainer-clean-libLTLIBRARIES \
 uninstall-libLTLIBRARIES install-libLTLIBRARIES mostlyclean-compile \
 distclean-compile clean-compile maintainer-clean-compile \
 mostlyclean-libtool distclean-libtool clean-libtool \
-maintainer-clean-libtool uninstall-includeHEADERS \
-install-includeHEADERS tags mostlyclean-tags distclean-tags clean-tags \
-maintainer-clean-tags distdir info dvi installcheck install-exec \
-install-data install uninstall all installdirs mostlyclean-generic \
-distclean-generic clean-generic maintainer-clean-generic clean \
-mostlyclean distclean maintainer-clean
+maintainer-clean-libtool uninstall-binSCRIPTS install-binSCRIPTS \
+uninstall-includeHEADERS install-includeHEADERS tags mostlyclean-tags \
+distclean-tags clean-tags maintainer-clean-tags distdir info dvi \
+installcheck install-exec install-data install uninstall all \
+installdirs mostlyclean-generic distclean-generic clean-generic \
+maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
 
 # Ensure that configuration header is not distributed

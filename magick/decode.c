@@ -1383,7 +1383,7 @@ static Image *ReadDICOMImage(const ImageInfo *image_info)
         (void) fprintf(stdout,"0x%04x %4d (0x%04x,0x%04x)",image->offset,
           length,group,element);
         if (dicom_info[i].description != (char *) NULL)
-          (void) fprintf(stdout," %s",dicom_info[i].description);
+          (void) fprintf(stdout," %.128s",dicom_info[i].description);
         (void) fprintf(stdout,": ");
       }
     if ((group == 0x7FE0) && (element == 0x10))
@@ -5537,13 +5537,13 @@ static Image *ReadLABELImage(const ImageInfo *image_info)
   (void) fprintf(file,"%%!PS-Adobe-3.0\n");
   (void) fprintf(file,"/Helvetica findfont %u scalefont setfont\n",
     local_info.pointsize);
-  (void) fprintf(file,"/%s findfont %u scalefont setfont\n",local_info.font,
+  (void) fprintf(file,"/%.128s findfont %u scalefont setfont\n",local_info.font,
     local_info.pointsize);
   (void) fprintf(file,"0.0 0.0 0.0 setrgbcolor\n");
   (void) fprintf(file,"0 0 %u %u rectfill\n",
     local_info.pointsize*Extent(text),local_info.pointsize << 1);
   (void) fprintf(file,"1.0 1.0 1.0 setrgbcolor\n");
-  (void) fprintf(file,"0 %u moveto (%s) show\n",local_info.pointsize,
+  (void) fprintf(file,"0 %u moveto (%.128s) show\n",local_info.pointsize,
     EscapeParenthesis(text));
   (void) fprintf(file,"showpage\n");
   (void) fclose(file);
@@ -9600,7 +9600,7 @@ static unsigned int PNMInteger(Image *image,const unsigned int base)
         if (Latin1Compare(q,"END_OF_COMMENT") == 0)
           p=q;
         *p='\0';
-        c=fgetc(image->file);
+        continue;
       }
   } while (!isdigit(c));
   if (base == 2)
@@ -13594,7 +13594,7 @@ static void TIFFWarningMessage(const char *module,const char *format,
   p=message;
   if (module != (char *) NULL)
     {
-      FormatString(p,"%s: ",module);
+      FormatString(p,"%.128s: ",module);
       p+=Extent(message);
     }
   FormatString(p,format,warning);
@@ -14718,7 +14718,7 @@ static Image *ReadTTFImage(const ImageInfo *image_info)
   local_info.pen="black";
   local_info.pointsize=18;
   local_info.font=font;
-  FormatString(local_info.font,"@%s",image_info->filename);
+  FormatString(local_info.font,"@%.128s",image_info->filename);
   GetAnnotateInfo(&local_info,&annotate_info);
   annotate_info.geometry=geometry;
   annotate_info.text=text;

@@ -207,14 +207,14 @@ static void Usage(const char *client_name)
       (char *) NULL
     };
 
-  (void) printf("Version: %s\n",MagickVersion);
-  (void) printf("Copyright: %s\n\n",MagickCopyright);
+  (void) printf("Version: %.128s\n",MagickVersion);
+  (void) printf("Copyright: %.128s\n\n",MagickCopyright);
   (void) printf(
-    "Usage: %s [-options ...] file [ [-options ...] file ...] file\n",
+    "Usage: %.128s [-options ...] file [ [-options ...] file ...] file\n",
     client_name);
   (void) printf("\nWhere options include: \n");
   for (p=options; *p != (char *) NULL; p++)
-    (void) printf("  %s\n",*p);
+    (void) printf("  %.128s\n",*p);
   (void) printf(
     "\nIn addition to those listed above, you can specify these standard X\n");
   (void) printf(
@@ -1108,7 +1108,7 @@ int main(int argc,char **argv)
             */
             FormatString(filename,image_info->filename,scene);
             if (Latin1Compare(filename,image_info->filename) == 0)
-              FormatString(filename,"%s.%u",image_info->filename,scene);
+              FormatString(filename,"%.128s.%u",image_info->filename,scene);
             (void) strcpy(image_info->filename,filename);
           }
         image_info->font=resource_info.font;

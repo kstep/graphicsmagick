@@ -401,12 +401,12 @@ Export void MACErrorHandler(const char *message,const char *qualifier)
 
   if (message == (char *) NULL)
     Exit(0);
-  FormatString(buffer,"%s: %s",SetClientName((char *) NULL),message);
+  FormatString(buffer,"%.128s: %.128s",SetClientName((char *) NULL),message);
   if (qualifier != (char *) NULL)
-    FormatString(buffer,"%s (%s)",buffer,qualifier);
+    FormatString(buffer,"%.128s (%.128s)",buffer,qualifier);
   if (errno)
-    FormatString(buffer,"%s [%s]",buffer,strerror(errno));
-  FormatString(buffer,"%s.\n",buffer);
+    FormatString(buffer,"%.128s [%.128s]",buffer,strerror(errno));
+  FormatString(buffer,"%.128s.\n",buffer);
   /* display error to message window */
   puts(buffer);
   Exit(0);
@@ -724,10 +724,10 @@ Export void MACWarningHandler(const char *message,const char *qualifier)
 
   if (message == (char *) NULL)
     return;
-  FormatString(buffer,"%s: %s",SetClientName((char *) NULL),message);
+  FormatString(buffer,"%.128s: %.128s",SetClientName((char *) NULL),message);
   if (qualifier != (char *) NULL)
-    FormatString(buffer,"%s (%s)",buffer,qualifier);
-  FormatString(buffer,"%s.\n",buffer);
+    FormatString(buffer,"%.128s (%.128s)",buffer,qualifier);
+  FormatString(buffer,"%.128s.\n",buffer);
   /* display warning to message window */
   puts(buffer);
 }

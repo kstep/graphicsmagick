@@ -2732,10 +2732,10 @@ static unsigned int WriteHISTOGRAMImage(const ImageInfo *image_info,
         Add a histogram as an image comment.
       */
       if (image->comments != (char *) NULL)
-        (void) fprintf(file,"%s\n",image->comments);
+        (void) fprintf(file,"%.128s\n",image->comments);
       NumberColors(image,file);
       (void) fclose(file);
-      FormatString(command,"@%s",filename);
+      FormatString(command,"@%.128s",filename);
       CommentImage(histogram_image,command);
       (void) remove(filename);
     }
@@ -2850,16 +2850,16 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
       */
       (void) fprintf(image->file,"<html version=\"2.0\">\n");
       (void) fprintf(image->file,"<head>\n");
-      (void) fprintf(image->file,"<title>%s</title>\n",
+      (void) fprintf(image->file,"<title>%.128s</title>\n",
         image->label ? image->label : BaseFilename(image->filename));
       (void) fprintf(image->file,"</head>\n");
       (void) fprintf(image->file,"<body>\n");
       (void) fprintf(image->file,"<center>\n");
-      (void) fprintf(image->file,"<h1>%s</h1>\n",image->filename);
+      (void) fprintf(image->file,"<h1>%.128s</h1>\n",image->filename);
       (void) fprintf(image->file,"<br><br>\n");
       (void) strcpy(filename,image->filename);
       AppendImageFormat("gif",filename);
-      (void) fprintf(image->file,"<img ismap usemap=#%s src=\"%s\" border=0>\n",
+      (void) fprintf(image->file,"<img ismap usemap=#%.128s src=\"%.128s\" border=0>\n",
         mapname,filename);
       /*
         Determine the size and location of each image tile.
@@ -2873,10 +2873,10 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
       /*
         Write an image map.
       */
-      (void) fprintf(image->file,"<map name=%s>\n",mapname);
-      (void) fprintf(image->file,"  <area href=""%s""",url);
+      (void) fprintf(image->file,"<map name=%.128s>\n",mapname);
+      (void) fprintf(image->file,"  <area href=""%.128s""",url);
       if (image->directory == (char *) NULL)
-        (void) fprintf(image->file,"%s shape=rect coords=0,0,%u,%u>\n",
+        (void) fprintf(image->file,"%.128s shape=rect coords=0,0,%u,%u>\n",
           image->filename,width-1,height-1);
       else
         for (p=image->directory; *p != '\0'; p++)
@@ -2887,7 +2887,7 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
               (void) fprintf(image->file," shape=rect coords=%d,%d,%d,%d>\n",
                 x,y,x+(int) width-1,y+(int) height-1);
               if (*(p+1) != '\0')
-                (void) fprintf(image->file,"  <area href=""%s""",url);
+                (void) fprintf(image->file,"  <area href=""%.128s""",url);
               x+=width;
               if (x >= image->columns)
                 {
@@ -2955,10 +2955,10 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
   /*
     Write an image map.
   */
-  (void) fprintf(image->file,"<map name=%s>\n",mapname);
-  (void) fprintf(image->file,"  <area href=""%s""",url);
+  (void) fprintf(image->file,"<map name=%.128s>\n",mapname);
+  (void) fprintf(image->file,"  <area href=""%.128s""",url);
   if (image->directory == (char *) NULL)
-    (void) fprintf(image->file,"%s shape=rect coords=0,0,%u,%u>\n",
+    (void) fprintf(image->file,"%.128s shape=rect coords=0,0,%u,%u>\n",
       image->filename,width-1,height-1);
   else
     for (p=image->directory; *p != '\0'; p++)
@@ -2969,7 +2969,7 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
           (void) fprintf(image->file," shape=rect coords=%d,%d,%d,%d>\n",x,y,
             x+(int) width-1,y+(int) height-1);
           if (*(p+1) != '\0')
-            (void) fprintf(image->file,"  <area href=""%s""",url);
+            (void) fprintf(image->file,"  <area href=""%.128s""",url);
           x+=width;
           if (x >= image->columns)
             {
@@ -4009,20 +4009,20 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
           (void) strcpy(units,"pixels-per-inch");
         if (image->units == PixelsPerCentimeterResolution)
           (void) strcpy(units,"pixels-per-centimeter");
-        (void) fprintf(image->file,"resolution=%gx%g  units=%s\n",
+        (void) fprintf(image->file,"resolution=%gx%g  units=%.128s\n",
           image->x_resolution,image->y_resolution,units);
       }
     SignatureImage(image);
     if (image->signature != (char *) NULL)
-      (void) fprintf(image->file,"signature=%s\n",image->signature);
+      (void) fprintf(image->file,"signature=%.128s\n",image->signature);
     if (image->page != (char *) NULL)
-      (void) fprintf(image->file,"page=%s\n",image->page);
+      (void) fprintf(image->file,"page=%.128s\n",image->page);
     (void) QueryColorName(&image->background_color,color);
-    (void) fprintf(image->file,"background-color=%s  ",color);
+    (void) fprintf(image->file,"background-color=%.128s  ",color);
     (void) QueryColorName(&image->border_color,color);
-    (void) fprintf(image->file,"border-color=%s  ",color);
+    (void) fprintf(image->file,"border-color=%.128s  ",color);
     (void) QueryColorName(&image->matte_color,color);
-    (void) fprintf(image->file,"matte-color=%s\n",color);
+    (void) fprintf(image->file,"matte-color=%.128s\n",color);
     if ((image->next != (Image *) NULL) || (image->previous != (Image *) NULL))
       (void) fprintf(image->file,
         "scene=%u  iterations=%u  delay=%u  dispose=%u\n",
@@ -4070,11 +4070,11 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
       (void) fprintf(image->file,"color-profile=%u\n",
         image->color_profile.length);
     if (image->montage != (char *) NULL)
-      (void) fprintf(image->file,"montage=%s\n",image->montage);
+      (void) fprintf(image->file,"montage=%.128s\n",image->montage);
     if (image->label != (char *) NULL)
-      (void) fprintf(image->file,"label=\"%s\"\n",image->label);
+      (void) fprintf(image->file,"label=\"%.128s\"\n",image->label);
     if (image->comments != (char *) NULL)
-      (void) fprintf(image->file,"{%s}\n",image->comments);
+      (void) fprintf(image->file,"{%.128s}\n",image->comments);
     (void) fprintf(image->file,"\f\n:\n");
     if (image->montage != (char *) NULL)
       {
@@ -4082,7 +4082,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
           Write montage tile directory.
         */
         if (image->directory != (char *) NULL)
-          (void) fprintf(image->file,"%s",image->directory);
+          (void) fprintf(image->file,"%.128s",image->directory);
         (void) fputc('\0',image->file);
       }
     if (image->color_profile.length > 0)
@@ -4648,7 +4648,7 @@ static unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
       */
       (void) fprintf(image->file,"\033&k2G");
       (void) fprintf(image->file,"\033(s1p%uv5t3b",image_info->pointsize);
-      (void) fprintf(image->file,"\n%s\n",image->label);
+      (void) fprintf(image->file,"\n%.128s\n",image->label);
       (void) fprintf(image->file,"\033(s0B");
     }
   (void) fprintf(image->file,"\033*t%uR",density);  /* graphic resolution */
@@ -5311,8 +5311,8 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
   (void) localtime(&timer);
   (void) strcpy(date,ctime(&timer));
   date[Extent(date)-1]='\0';
-  (void) fprintf(image->file,"/CreationDate (%s)\n",date);
-  (void) fprintf(image->file,"/Producer (%s)\n",MagickVersion);
+  (void) fprintf(image->file,"/CreationDate (%.128s)\n",date);
+  (void) fprintf(image->file,"/Producer (%.128s)\n",MagickVersion);
   (void) fprintf(image->file,">>\n");
   (void) fprintf(image->file,"endobj\n");
   /*
@@ -5456,7 +5456,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
             image_info->pointsize);
           (void) fprintf(image->file,"%d %u Td\n",x,y+height+
             i*image_info->pointsize+12);
-          (void) fprintf(image->file,"(%s) Tj\n",labels[i]);
+          (void) fprintf(image->file,"(%.128s) Tj\n",labels[i]);
           (void) fprintf(image->file,"ET\n");
           FreeMemory(labels[i]);
         }
@@ -5515,7 +5515,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
       (void) fprintf(image->file,"/Filter /ASCII85Decode\n");
     else
       if (!IsFaxImage(image))
-        (void) fprintf(image->file,"/Filter [ /ASCII85Decode /%s ]\n",
+        (void) fprintf(image->file,"/Filter [ /ASCII85Decode /%.128s ]\n",
           compression == ZipCompression ? "FlateDecode" :
           compression == LZWCompression ? "LZWDecode" : "RunLengthDecode");
       else
@@ -5523,7 +5523,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
           (void) fprintf(image->file,
             "/Filter [ /ASCII85Decode /CCITTFaxDecode ]\n");
           (void) fprintf(image->file,
-            "/DecodeParms [ << >> << /K %s /Columns %d /Rows %d >> ]\n",
+            "/DecodeParms [ << >> << /K %.128s /Columns %d /Rows %d >> ]\n",
             CCITTParam,image->columns,image->rows);
         }
     (void) fprintf(image->file,"/Width %u\n",image->columns);
@@ -5810,7 +5810,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
       (void) fprintf(image->file,"/Filter /ASCII85Decode\n");
     else
       if (!IsFaxImage(image))
-        (void) fprintf(image->file,"/Filter [ /ASCII85Decode /%s ]\n",
+        (void) fprintf(image->file,"/Filter [ /ASCII85Decode /%.128s ]\n",
           compression == ZipCompression ? "FlateDecode" :
           compression == LZWCompression ? "LZWDecode" : "RunLengthDecode");
       else
@@ -7737,7 +7737,7 @@ static unsigned int WritePREVIEWImage(const ImageInfo *image_info,
       case RotatePreview:
       {
         FormatString(factor,"%.1f",degrees+=45.0);
-        FormatString(label,"rotate %s",factor);
+        FormatString(label,"rotate %.128s",factor);
         commands[argc++]="-rotate";
         commands[argc++]=factor;
         commands[argc++]="-crop";
@@ -7748,7 +7748,7 @@ static unsigned int WritePREVIEWImage(const ImageInfo *image_info,
       {
         degrees+=10.0;
         FormatString(factor,"%.1fx%.1f",degrees,2.0*degrees);
-        FormatString(label,"shear %s",factor);
+        FormatString(label,"shear %.128s",factor);
         commands[argc++]="-shear";
         commands[argc++]=factor;
         commands[argc++]="-crop";
@@ -7760,7 +7760,7 @@ static unsigned int WritePREVIEWImage(const ImageInfo *image_info,
         x+=preview_image->columns/NumberTiles;
         y+=preview_image->rows/NumberTiles;
         FormatString(factor,"%+d%+d",x,y);
-        FormatString(label,"roll %s",factor);
+        FormatString(label,"roll %.128s",factor);
         commands[argc++]="-roll";
         commands[argc++]=factor;
         break;
@@ -7768,7 +7768,7 @@ static unsigned int WritePREVIEWImage(const ImageInfo *image_info,
       case HuePreview:
       {
         FormatString(factor,"0,0,%.1f",percentage);
-        FormatString(label,"modulate %s",factor);
+        FormatString(label,"modulate %.128s",factor);
         commands[argc++]="-modulate";
         commands[argc++]=factor;
         break;
@@ -7776,7 +7776,7 @@ static unsigned int WritePREVIEWImage(const ImageInfo *image_info,
       case SaturationPreview:
       {
         FormatString(factor,"0,%.1f",percentage);
-        FormatString(label,"modulate %s",factor);
+        FormatString(label,"modulate %.128s",factor);
         commands[argc++]="-modulate";
         commands[argc++]=factor;
         break;
@@ -7784,7 +7784,7 @@ static unsigned int WritePREVIEWImage(const ImageInfo *image_info,
       case BrightnessPreview:
       {
         FormatString(factor,"%.1f",percentage);
-        FormatString(label,"modulate %s",factor);
+        FormatString(label,"modulate %.128s",factor);
         commands[argc++]="-modulate";
         commands[argc++]=factor;
         break;
@@ -7792,7 +7792,7 @@ static unsigned int WritePREVIEWImage(const ImageInfo *image_info,
       case GammaPreview:
       {
         FormatString(factor,"%.1f",gamma+=(float) 0.4);
-        FormatString(label,"gamma %s",factor);
+        FormatString(label,"gamma %.128s",factor);
         commands[argc++]="-gamma";
         commands[argc++]=factor;
         break;
@@ -7815,7 +7815,7 @@ static unsigned int WritePREVIEWImage(const ImageInfo *image_info,
       {
         FormatString(factor,"%u",colors);
         colors<<=1;
-        FormatString(label,"colors %s",factor);
+        FormatString(label,"colors %.128s",factor);
         commands[argc++]="-colorspace";
         commands[argc++]="gray";
         commands[argc++]="-colors";
@@ -7825,7 +7825,7 @@ static unsigned int WritePREVIEWImage(const ImageInfo *image_info,
       case QuantizePreview:
       {
         FormatString(factor,"%u",colors<<=1);
-        FormatString(label,"colors %s",factor);
+        FormatString(label,"colors %.128s",factor);
         commands[argc++]="-colors";
         commands[argc++]=factor;
         break;
@@ -7857,7 +7857,7 @@ static unsigned int WritePREVIEWImage(const ImageInfo *image_info,
           default: (void) strcpy(images[i]->magick,"NULL"); break;
         }
         x++;
-        FormatString(label,"+noise %s",factor);
+        FormatString(label,"+noise %.128s",factor);
         commands[argc++]="+noise";
         commands[argc++]=factor;
         break;
@@ -7865,7 +7865,7 @@ static unsigned int WritePREVIEWImage(const ImageInfo *image_info,
       case SharpenPreview:
       {
         FormatString(factor,"%.1f",percentage);
-        FormatString(label,"sharpen %s",factor);
+        FormatString(label,"sharpen %.128s",factor);
         commands[argc++]="-sharpen";
         commands[argc++]=factor;
         break;
@@ -7873,7 +7873,7 @@ static unsigned int WritePREVIEWImage(const ImageInfo *image_info,
       case BlurPreview:
       {
         FormatString(factor,"%.1f",percentage);
-        FormatString(label,"-blur %s",factor);
+        FormatString(label,"-blur %.128s",factor);
         commands[argc++]="-blur";
         commands[argc++]=factor;
         break;
@@ -7881,7 +7881,7 @@ static unsigned int WritePREVIEWImage(const ImageInfo *image_info,
       case ThresholdPreview:
       {
         FormatString(factor,"%d",(int) ((percentage*(MaxRGB+1))/100));
-        FormatString(label,"threshold %s",factor);
+        FormatString(label,"threshold %.128s",factor);
         commands[argc++]="-threshold";
         commands[argc++]=factor;
         break;
@@ -7889,7 +7889,7 @@ static unsigned int WritePREVIEWImage(const ImageInfo *image_info,
       case EdgeDetectPreview:
       {
         FormatString(factor,"%.1f",percentage);
-        FormatString(label,"edge %s",factor);
+        FormatString(label,"edge %.128s",factor);
         commands[argc++]="-edge";
         commands[argc++]=factor;
         break;
@@ -7897,7 +7897,7 @@ static unsigned int WritePREVIEWImage(const ImageInfo *image_info,
       case SpreadPreview:
       {
         FormatString(factor,"%d",i+1);
-        FormatString(label,"spread %s",factor);
+        FormatString(label,"spread %.128s",factor);
         commands[argc++]="-spread";
         commands[argc++]=factor;
         break;
@@ -7905,7 +7905,7 @@ static unsigned int WritePREVIEWImage(const ImageInfo *image_info,
       case SolarizePreview:
       {
         FormatString(factor,"%.1f",percentage);
-        FormatString(label,"solarize %s",factor);
+        FormatString(label,"solarize %.128s",factor);
         commands[argc++]="-solarize";
         commands[argc++]=factor;
         break;
@@ -7920,7 +7920,7 @@ static unsigned int WritePREVIEWImage(const ImageInfo *image_info,
           }
         degrees+=10.0;
         FormatString(factor,"%.1fx%.1f",degrees,degrees);
-        FormatString(label,"shade %s",factor);
+        FormatString(label,"shade %.128s",factor);
         commands[argc++]="-shade";
         commands[argc++]=factor;
         break;
@@ -7928,7 +7928,7 @@ static unsigned int WritePREVIEWImage(const ImageInfo *image_info,
       case RaisePreview:
       {
         FormatString(factor,"%d",i+1);
-        FormatString(label,"raise %s",factor);
+        FormatString(label,"raise %.128s",factor);
         commands[argc++]="-raise";
         commands[argc++]=factor;
         break;
@@ -7936,7 +7936,7 @@ static unsigned int WritePREVIEWImage(const ImageInfo *image_info,
       case SegmentPreview:
       {
         FormatString(factor,"1.5x%.1f",threshold+=(float) 0.4);
-        FormatString(label,"segment %s",factor);
+        FormatString(label,"segment %.128s",factor);
         commands[argc++]="-colors";
         commands[argc++]=factor;
         break;
@@ -7944,7 +7944,7 @@ static unsigned int WritePREVIEWImage(const ImageInfo *image_info,
       case SwirlPreview:
       {
         FormatString(factor,"%.1f",degrees+=45.0);
-        FormatString(label,"swirl %s",factor);
+        FormatString(label,"swirl %.128s",factor);
         commands[argc++]="-swirl";
         commands[argc++]=factor;
         break;
@@ -7952,7 +7952,7 @@ static unsigned int WritePREVIEWImage(const ImageInfo *image_info,
       case ImplodePreview:
       {
         FormatString(factor,"%.1f",percentage);
-        FormatString(label,"implode %s",factor);
+        FormatString(label,"implode %.128s",factor);
         commands[argc++]="-implode";
         commands[argc++]=factor;
         break;
@@ -7961,7 +7961,7 @@ static unsigned int WritePREVIEWImage(const ImageInfo *image_info,
       {
         degrees+=5.0;
         FormatString(factor,"%.1fx%.1f",degrees,degrees);
-        FormatString(label,"wave %s",factor);
+        FormatString(label,"wave %.128s",factor);
         commands[argc++]="-implode";
         commands[argc++]=factor;
         break;
@@ -7969,7 +7969,7 @@ static unsigned int WritePREVIEWImage(const ImageInfo *image_info,
       case OilPaintPreview:
       {
         FormatString(factor,"%i",i+1);
-        FormatString(label,"paint %s",factor);
+        FormatString(label,"paint %.128s",factor);
         commands[argc++]="-paint";
         commands[argc++]=factor;
         break;
@@ -7977,7 +7977,7 @@ static unsigned int WritePREVIEWImage(const ImageInfo *image_info,
       case CharcoalDrawingPreview:
       {
         FormatString(factor,"%.1f",percentage);
-        FormatString(label,"charcoal %s",factor);
+        FormatString(label,"charcoal %.128s",factor);
         commands[argc++]="-charcoal";
         commands[argc++]=factor;
         break;
@@ -8003,13 +8003,13 @@ static unsigned int WritePREVIEWImage(const ImageInfo *image_info,
                 images[i]=quality_image;
               }
           }
-        FormatString(label,"quality %s\n%ldb ",factor,images[i]->filesize);
+        FormatString(label,"quality %.128s\n%ldb ",factor,images[i]->filesize);
         if (images[i]->filesize >= (1 << 24))
-          FormatString(label,"quality %s\n%ldmb ",factor,
+          FormatString(label,"quality %.128s\n%ldmb ",factor,
             images[i]->filesize/1024/1024);
         else
           if (images[i]->filesize >= (1 << 14))
-            FormatString(label,"quality %s\n%ldkb ",factor,
+            FormatString(label,"quality %.128s\n%ldkb ",factor,
               images[i]->filesize/1024);
         break;
       }
@@ -8479,12 +8479,12 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
         else
           (void) fprintf(image->file,"%%!PS-Adobe-3.0 EPSF-3.0\n");
         (void) fprintf(image->file,"%%%%Creator: (ImageMagick)\n");
-        (void) fprintf(image->file,"%%%%Title: (%s)\n",image->filename);
+        (void) fprintf(image->file,"%%%%Title: (%.128s)\n",image->filename);
         timer=time((time_t *) NULL);
         (void) localtime(&timer);
         (void) strcpy(date,ctime(&timer));
         date[Extent(date)-1]='\0';
-        (void) fprintf(image->file,"%%%%CreationDate: (%s)\n",date);
+        (void) fprintf(image->file,"%%%%CreationDate: (%.128s)\n",date);
         bounding_box.x1=x;
         bounding_box.y1=y;
         bounding_box.x2=x+(int) x_scale;
@@ -8618,7 +8618,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
           Output Postscript commands.
         */
         for (q=PostscriptProlog; *q; q++)
-          (void) fprintf(image->file,"%s\n",*q);
+          (void) fprintf(image->file,"%.128s\n",*q);
         for (i=MultilineCensus(image->label)-1; i >= 0; i--)
         {
           (void) fprintf(image->file,"  /label 512 string def\n");
@@ -8627,7 +8627,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
             i*image_info->pointsize+12);
         }
         for (q=PostscriptEpilog; *q; q++)
-          (void) fprintf(image->file,"%s\n",*q);
+          (void) fprintf(image->file,"%.128s\n",*q);
         if (Latin1Compare(image_info->magick,"PS") == 0)
           (void) fprintf(image->file,"  showpage\n");
         (void) fprintf(image->file,"} bind def\n");
@@ -8660,7 +8660,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
       {
         for (i=0; labels[i] != (char *) NULL; i++)
         {
-          (void) fprintf(image->file,"%s \n",labels[i]);
+          (void) fprintf(image->file,"%.128s \n",labels[i]);
           FreeMemory(labels[i]);
         }
         FreeMemory(labels);
@@ -9111,7 +9111,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
       "    /ImageMatrix [columns 0 0 rows neg 0 rows]",
       "    compression 0 gt",
       "    { /DataSource pixel_stream }",
-      "    { /DataSource pixel_stream /%s filter } ifelse",
+      "    { /DataSource pixel_stream /%.128s filter } ifelse",
       "  >> image",
       "} bind def",
       "",
@@ -9167,7 +9167,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
       "      /ImageMatrix [columns 0 0 rows neg 0 rows]",
       "      compression 0 gt",
       "      { /DataSource pixel_stream }",
-      "      { /DataSource pixel_stream /%s filter } ifelse",
+      "      { /DataSource pixel_stream /%.128s filter } ifelse",
       "    >> image",
       "  } ifelse",
       "} bind def",
@@ -9330,12 +9330,12 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
         else
           (void) fprintf(image->file,"%%!PS-Adobe-3.0 EPSF-3.0\n");
         (void) fprintf(image->file,"%%%%Creator: (ImageMagick)\n");
-        (void) fprintf(image->file,"%%%%Title: (%s)\n",image->filename);
+        (void) fprintf(image->file,"%%%%Title: (%.128s)\n",image->filename);
         timer=time((time_t *) NULL);
         (void) localtime(&timer);
         (void) strcpy(date,ctime(&timer));
         date[Extent(date)-1]='\0';
-        (void) fprintf(image->file,"%%%%CreationDate: (%s)\n",date);
+        (void) fprintf(image->file,"%%%%CreationDate: (%.128s)\n",date);
         bounding_box.x1=x;
         bounding_box.y1=y;
         bounding_box.x2=x+(int) width-1;
@@ -9395,7 +9395,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
             i*image_info->pointsize+12);
         }
         for (q=PostscriptEpilog; *q; q++)
-          (void) fprintf(image->file,"%s\n",*q);
+          (void) fprintf(image->file,"%.128s\n",*q);
         if (Latin1Compare(image_info->magick,"PS2") == 0)
           (void) fprintf(image->file,"  showpage\n");
         (void) fprintf(image->file,"} bind def\n");
@@ -9428,7 +9428,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
       {
         for (i=0; labels[i] != (char *) NULL; i++)
         {
-          (void) fprintf(image->file,"%s \n",labels[i]);
+          (void) fprintf(image->file,"%.128s \n",labels[i]);
           FreeMemory(labels[i]);
         }
         FreeMemory(labels);
@@ -11744,7 +11744,7 @@ static unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
     UIL header.
   */
   (void) fprintf(image->file,"/* UIL */\n");
-  (void) fprintf(image->file,"value\n  %s_ct : color_table(\n",
+  (void) fprintf(image->file,"value\n  %.128s_ct : color_table(\n",
     BaseFilename(image->filename));
   for (i=0; i < colors; i++)
   {
@@ -11785,17 +11785,17 @@ static unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
     }
     symbol[j]='\0';
     if (Latin1Compare(name,"None") == 0)
-      (void) fprintf(image->file,"    background color = '%s'",symbol);
+      (void) fprintf(image->file,"    background color = '%.128s'",symbol);
     else
-      (void) fprintf(image->file,"    color('%s',%s) = '%s'",name,
+      (void) fprintf(image->file,"    color('%.128s',%.128s) = '%.128s'",name,
         Intensity(*p) < ((MaxRGB+1)/2) ? "background" : "foreground",symbol);
-    (void) fprintf(image->file,"%s",(i == (colors-1) ? ");\n" : ",\n"));
+    (void) fprintf(image->file,"%.128s",(i == (colors-1) ? ");\n" : ",\n"));
   }
   /*
     Define UIL pixels.
   */
   (void) fprintf(image->file,
-    "  %s_icon : icon(color_table = %s_ct,\n",
+    "  %.128s_icon : icon(color_table = %.128s_ct,\n",
     BaseFilename(image->filename),BaseFilename(image->filename));
   p=image->pixels;
   runlength=p->length+1;
@@ -11819,9 +11819,9 @@ static unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
         symbol[j]=Cixel[k];
       }
       symbol[j]='\0';
-      (void) fprintf(image->file,"%s",symbol);
+      (void) fprintf(image->file,"%.128s",symbol);
     }
-    (void) fprintf(image->file,"\"%s\n",(y == (image->rows-1) ? ");" : ","));
+    (void) fprintf(image->file,"\"%.128s\n",(y == (image->rows-1) ? ");" : ","));
     if (QuantumTick(y,image->rows))
       ProgressMonitor(SaveImageText,y,image->rows);
   }
@@ -12533,9 +12533,9 @@ static unsigned int WriteXImage(const ImageInfo *image_info,Image *image)
   p=image->filename+Extent(image->filename)-1;
   while ((p > image->filename) && !IsBasenameSeparator(*(p-1)))
     p--;
-  FormatString(window_info.name,"%s[%u]",p,image->scene);
+  FormatString(window_info.name,"%.128s[%u]",p,image->scene);
   if (image->scene == 0)
-    FormatString(window_info.name,"%s",p);
+    FormatString(window_info.name,"%.128s",p);
   window_info.width=image->columns;
   window_info.height=image->rows;
   window_info.attributes.event_mask=ButtonPressMask | ExposureMask;
@@ -12676,9 +12676,9 @@ static unsigned int WriteXBMImage(const ImageInfo *image_info,Image *image)
     q++;
   if (*q == '.')
     *q='\0';
-  (void) fprintf(image->file,"#define %s_width %u\n",name,image->columns);
-  (void) fprintf(image->file,"#define %s_height %u\n",name,image->rows);
-  (void) fprintf(image->file,"static char %s_bits[] = {\n",name);
+  (void) fprintf(image->file,"#define %.128s_width %u\n",name,image->columns);
+  (void) fprintf(image->file,"#define %.128s_height %u\n",name,image->rows);
+  (void) fprintf(image->file,"static char %.128s_bits[] = {\n",name);
   (void) fprintf(image->file," ");
   /*
     Convert MIFF to X bitmap pixels.
@@ -12979,7 +12979,7 @@ static unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
       symbol[j]=Cixel[k];
     }
     symbol[j]='\0';
-    (void) fprintf(image->file,"\"%s c %s\",\n",symbol,name);
+    (void) fprintf(image->file,"\"%.128s c %.128s\",\n",symbol,name);
   }
   /*
     Define XPM pixels.
@@ -13007,9 +13007,9 @@ static unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
         symbol[j]=Cixel[k];
       }
       symbol[j]='\0';
-      (void) fprintf(image->file,"%s",symbol);
+      (void) fprintf(image->file,"%.128s",symbol);
     }
-    (void) fprintf(image->file,"\"%s\n",(y == (image->rows-1) ? "" : ","));
+    (void) fprintf(image->file,"\"%.128s\n",(y == (image->rows-1) ? "" : ","));
     if (QuantumTick(y,image->rows))
       ProgressMonitor(SaveImageText,y,image->rows);
   }

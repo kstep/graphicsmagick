@@ -1108,7 +1108,7 @@ Export XVisualInfo *XBestVisualInfo(Display *display,
           /*
             User specified Standard Colormap.
           */
-          FormatString((char *) map_name,"RGB_%s_MAP",map_type);
+          FormatString((char *) map_name,"RGB_%.128s_MAP",map_type);
           Latin1Upper(map_name);
           map_property=XInternAtom(display,(char *) map_name,True);
           if (map_property != (Atom) NULL)
@@ -1706,28 +1706,28 @@ Export void XDisplayImageInfo(Display *display,
   /*
     Display info about the X server.
   */
-  FormatString(title," Image Info: %s",image->filename);
+  FormatString(title," Image Info: %.128s",image->filename);
   if (resource_info->gamma_correct)
     if (resource_info->display_gamma != (char *) NULL)
-      FormatString(text,"%sDisplay\n  gamma: %s\n\n",text,
+      FormatString(text,"%.128sDisplay\n  gamma: %.128s\n\n",text,
         resource_info->display_gamma);
   /*
     Display info about the X image.
   */
-  FormatString(text,"%sX\n  visual: %s\n",text,
+  FormatString(text,"%.128sX\n  visual: %.128s\n",text,
     XVisualClassName(windows->image.class));
-  FormatString(text,"%s  depth: %d\n",text,windows->image.ximage->depth);
+  FormatString(text,"%.128s  depth: %d\n",text,windows->image.ximage->depth);
   if (windows->visual_info->colormap_size != 0)
-    FormatString(text,"%s  colormap size: %d\n",text,
+    FormatString(text,"%.128s  colormap size: %d\n",text,
       windows->visual_info->colormap_size);
   if (resource_info->colormap== SharedColormap)
     (void) strcat(text,"  colormap type: Shared\n");
   else
     (void) strcat(text,"  colormap type: Private\n");
-  FormatString(text,"%s  geometry: %dx%d\n",text,
+  FormatString(text,"%.128s  geometry: %dx%d\n",text,
     windows->image.ximage->width,windows->image.ximage->height);
   if (windows->image.crop_geometry != (char *) NULL)
-    FormatString(text,"%s  crop geometry: %s\n",text,
+    FormatString(text,"%.128s  crop geometry: %.128s\n",text,
       windows->image.crop_geometry);
   if (windows->image.pixmap == (Pixmap) NULL)
     (void) strcat(text,"  type: X Image\n");
@@ -1751,13 +1751,13 @@ Export void XDisplayImageInfo(Display *display,
     bytes+=undo_image->list->packets*sizeof(RunlengthPacket);
     undo_image=undo_image->previous;
   }
-  FormatString(text,"%sUndo Edit Cache\n  levels: %u\n",text,levels);
-  FormatString(text,"%s  bytes: %umb\n",text,(bytes+(1 << 19)) >> 20);
-  FormatString(text,"%s  limit: %umb\n\n",text,resource_info->undo_cache);
+  FormatString(text,"%.128sUndo Edit Cache\n  levels: %u\n",text,levels);
+  FormatString(text,"%.128s  bytes: %umb\n",text,(bytes+(1 << 19)) >> 20);
+  FormatString(text,"%.128s  limit: %umb\n\n",text,resource_info->undo_cache);
   /*
     Display info about the image.
   */
-  FormatString(text,"%sImage\n  file: %s\n",text,image->filename);
+  FormatString(text,"%.128sImage\n  file: %.128s\n",text,image->filename);
   if (IsMonochromeImage(image))
     (void) strcat(text,"  type: bilevel\n");
   else
@@ -1790,32 +1790,32 @@ Export void XDisplayImageInfo(Display *display,
         Display image colormap.
       */
       if (image->total_colors <= image->colors)
-        FormatString(text,"%s  colors: %u\n",text,image->colors);
+        FormatString(text,"%.128s  colors: %u\n",text,image->colors);
       else
-        FormatString(text,"%s  colors: %lu=>%u\n",text,image->total_colors,
+        FormatString(text,"%.128s  colors: %lu=>%u\n",text,image->total_colors,
           image->colors);
       p=image->colormap;
       for (i=0; i < image->colors; i++)
       {
-        FormatString(text,"%s    %d: (%3d,%3d,%3d)  ",text,i,p->red,p->green,
+        FormatString(text,"%.128s    %d: (%3d,%3d,%3d)  ",text,i,p->red,p->green,
           p->blue);
         (void) QueryColorName(p,name);
-        (void) FormatString(text,"%s  %s",text,name);
+        (void) FormatString(text,"%.128s  %.128s",text,name);
         (void) strcat(text,"\n");
         p++;
       }
     }
   if (image->mean_error_per_pixel != 0)
-    FormatString(text,"%s  mean error per pixel: %d\n",text,
+    FormatString(text,"%.128s  mean error per pixel: %d\n",text,
       image->mean_error_per_pixel);
   if (image->normalized_mean_error != 0)
-    FormatString(text,"%s  normalized mean error: %.6f\n",text,
+    FormatString(text,"%.128s  normalized mean error: %.6f\n",text,
       image->normalized_mean_error);
   if (image->normalized_maximum_error != 0)
-    FormatString(text,"%s  normalized maximum error: %.6f\n",text,
+    FormatString(text,"%.128s  normalized maximum error: %.6f\n",text,
       image->normalized_maximum_error);
   if (image->signature != (char *) NULL)
-    FormatString(text,"%s  signature: %s\n",text,image->signature);
+    FormatString(text,"%.128s  signature: %.128s\n",text,image->signature);
   if (image->matte)
     (void) strcat(text,"  matte: True\n");
   else
@@ -1832,38 +1832,38 @@ Export void XDisplayImageInfo(Display *display,
       if (image->rendering_intent == RelativeIntent)
         (void) strcat(text,"  rendering-intent: relative\n");
   if (image->gamma != 0.0)
-    FormatString(text,"%s  gamma: %g\n",text,image->gamma);
+    FormatString(text,"%.128s  gamma: %g\n",text,image->gamma);
   if (image->chromaticity.white_point.x != 0.0)
     {
       /*
         Display image chromaticity.
       */
       (void) strcat(text,"  chromaticity:\n");
-      FormatString(text,"%s    red primary: (%g,%g)\n",text,
+      FormatString(text,"%.128s    red primary: (%g,%g)\n",text,
         image->chromaticity.red_primary.x,image->chromaticity.red_primary.y);
-      FormatString(text,"%s    green primary: (%g,%g)\n",text,
+      FormatString(text,"%.128s    green primary: (%g,%g)\n",text,
         image->chromaticity.green_primary.x,
         image->chromaticity.green_primary.y);
-      FormatString(text,"%s    blue primary: (%g,%g)\n",text,
+      FormatString(text,"%.128s    blue primary: (%g,%g)\n",text,
         image->chromaticity.blue_primary.x,image->chromaticity.blue_primary.y);
-      FormatString(text,"%s    white point: (%g,%g)\n",text,
+      FormatString(text,"%.128s    white point: (%g,%g)\n",text,
         image->chromaticity.white_point.x,image->chromaticity.white_point.y);
     }
   if (image->color_profile.length > 0)
-    FormatString(text,"%s  color profile: %u bytes\n",text,
+    FormatString(text,"%.128s  color profile: %u bytes\n",text,
       image->color_profile.length);
   if (image->packets < (image->columns*image->rows))
-    FormatString(text,"%s  runlength packets: %lu of %u\n",text,
+    FormatString(text,"%.128s  runlength packets: %lu of %u\n",text,
       image->packets,image->columns*image->rows);
   if ((image->magick_columns != 0) || (image->magick_rows != 0))
     if ((image->magick_columns != image->columns) ||
         (image->magick_rows != image->rows))
-      FormatString(text,"%s  base geometry: %ux%u\n",text,
+      FormatString(text,"%.128s  base geometry: %ux%u\n",text,
         image->magick_columns,image->magick_rows);
-  FormatString(text,"%s  geometry: %ux%u\n",text,
+  FormatString(text,"%.128s  geometry: %ux%u\n",text,
     image->columns,image->rows);
   if ((image->tile_info.width*image->tile_info.height) != 0)
-      FormatString(text,"%s  tile geometry: %ux%u%+d%+d\n",text,
+      FormatString(text,"%.128s  tile geometry: %ux%u%+d%+d\n",text,
         image->tile_info.width,image->tile_info.height,image->tile_info.x,
         image->tile_info.y);
   if ((image->x_resolution != 0.0) && (image->y_resolution != 0.0))
@@ -1871,29 +1871,29 @@ Export void XDisplayImageInfo(Display *display,
       /*
         Display image resolution.
       */
-      FormatString(text,"%s  resolution: %gx%g",text,
+      FormatString(text,"%.128s  resolution: %gx%g",text,
         image->x_resolution,image->y_resolution);
       if (image->units == UndefinedResolution)
-        FormatString(text,"%s pixels\n",text);
+        FormatString(text,"%.128s pixels\n",text);
       else
         if (image->units == PixelsPerInchResolution)
-          FormatString(text,"%s pixels/inch\n",text);
+          FormatString(text,"%.128s pixels/inch\n",text);
         else
           if (image->units == PixelsPerCentimeterResolution)
-            FormatString(text,"%s pixels/centimeter\n",text);
+            FormatString(text,"%.128s pixels/centimeter\n",text);
           else
-            FormatString(text,"%s\n",text);
+            FormatString(text,"%.128s\n",text);
     }
-  FormatString(text,"%s  depth: %u\n",text,image->depth);
+  FormatString(text,"%.128s  depth: %u\n",text,image->depth);
   if (image->filesize != 0)
     if (image->filesize >= (1 << 24))
-      FormatString(text,"%s  filesize: %ldmb\n",text,
+      FormatString(text,"%.128s  filesize: %ldmb\n",text,
         image->filesize/1024/1024);
     else
       if (image->filesize >= (1 << 14))
-        FormatString(text,"%s  filesize: %ldkb\n",text,image->filesize/1024);
+        FormatString(text,"%.128s  filesize: %ldkb\n",text,image->filesize/1024);
       else
-        FormatString(text,"%s  filesize: %ldb\n",text,image->filesize);
+        FormatString(text,"%.128s  filesize: %ldb\n",text,image->filesize);
   if (image->interlace == NoInterlace)
     (void) strcat(text,"  interlace: None\n");
   else
@@ -1906,26 +1906,26 @@ Export void XDisplayImageInfo(Display *display,
       if (image->interlace == PartitionInterlace)
         (void) strcat(text,"  interlace: Partition\n");
   if (image->page != (char *) NULL)
-    FormatString(text,"%s  page geometry: %s\n",text,image->page);
+    FormatString(text,"%.128s  page geometry: %.128s\n",text,image->page);
   if (image->dispose != 0)
-    FormatString(text,"%s  dispose method: %d\n",text,image->dispose);
+    FormatString(text,"%.128s  dispose method: %d\n",text,image->dispose);
   if (image->delay != 0)
-    FormatString(text,"%s  delay: %d\n",text,image->delay);
+    FormatString(text,"%.128s  delay: %d\n",text,image->delay);
   if (image->iterations != 1)
-    FormatString(text,"%s  iterations: %d\n",text,image->iterations);
-  FormatString(text,"%s  format: %s\n",text,image->magick);
+    FormatString(text,"%.128s  iterations: %d\n",text,image->iterations);
+  FormatString(text,"%.128s  format: %.128s\n",text,image->magick);
   p=image;
   while (p->previous != (Image *) NULL)
     p=p->previous;
   for (count=1; p->next != (Image *) NULL; count++)
     p=p->next;
   if (count > 1)
-    FormatString(text,"%s  scene: %u of %u\n",text,image->scene,count);
+    FormatString(text,"%.128s  scene: %u of %u\n",text,image->scene,count);
   else
     if (image->scene != 0)
-      FormatString(text,"%s  scene: %u\n",text,image->scene);
+      FormatString(text,"%.128s  scene: %u\n",text,image->scene);
   if (image->label != (char *) NULL)
-    FormatString(text,"%s  label: %s\n",text,image->label);
+    FormatString(text,"%.128s  label: %.128s\n",text,image->label);
   (void) strcat(text,"  compression: ");
   if (image->compression == ZipCompression)
     (void) strcat(text,"Zip\n");
@@ -1948,32 +1948,32 @@ Export void XDisplayImageInfo(Display *display,
       /*
         Display image comment.
       */
-      FormatString(text,"%s  comments:\n",text);
+      FormatString(text,"%.128s  comments:\n",text);
       textlist=StringToList(image->comments);
       if (textlist != (char **) NULL)
         {
           for (i=0; textlist[i] != (char *) NULL; i++)
           {
-            FormatString(text,"%s  %s\n",text,textlist[i]);
+            FormatString(text,"%.128s  %.128s\n",text,textlist[i]);
             FreeMemory(textlist[i]);
           }
           FreeMemory((char *) textlist);
         }
     }
   if (image->montage != (char *) NULL)
-    FormatString(text,"%s  montage: %s\n",text,image->montage);
+    FormatString(text,"%.128s  montage: %.128s\n",text,image->montage);
   if (image->directory != (char *) NULL)
     {
       /*
         Display image directory.
       */
-      FormatString(text,"%s  directory:\n",text);
+      FormatString(text,"%.128s  directory:\n",text);
       textlist=StringToList(image->directory);
       if (textlist != (char **) NULL)
         {
           for (i=0; textlist[i] != (char *) NULL; i++)
           {
-            FormatString(text,"%s    %s\n",text,textlist[i]);
+            FormatString(text,"%.128s    %.128s\n",text,textlist[i]);
             FreeMemory(textlist[i]);
           }
           FreeMemory((char *) textlist);
@@ -3256,7 +3256,7 @@ Export char *XGetResourceClass(XrmDatabase database,const char *client_name,
       /*
         Initialize resource keyword and class.
       */
-      FormatString(resource_name,"%s.%s",client_name,keyword);
+      FormatString(resource_name,"%.128s.%.128s",client_name,keyword);
       c=(*client_name);
       if ((c >= XK_a) && (c <= XK_z))
         c-=(XK_a-XK_A);
@@ -3275,7 +3275,7 @@ Export char *XGetResourceClass(XrmDatabase database,const char *client_name,
         else
           if ((k >= XK_oslash) && (k <= XK_thorn))
             k-=(XK_oslash-XK_Ooblique);
-      FormatString(resource_class,"%c%s.%c%s",c,client_name+1,k,keyword+1);
+      FormatString(resource_class,"%c%.128s.%c%.128s",c,client_name+1,k,keyword+1);
     }
   status=XrmGetResource(database,resource_name,resource_class,&resource_type,
     &resource_value);
@@ -3362,7 +3362,7 @@ Export XrmDatabase XGetResourceDatabase(Display *display,char *client_name)
     else
       if ((c >= XK_oslash) && (c <= XK_thorn))
         c-=(XK_oslash-XK_Ooblique);
-  FormatString(filename,"%s%c%s",ApplicationDefaults,c,client_name+1);
+  FormatString(filename,"%.128s%c%.128s",ApplicationDefaults,c,client_name+1);
   XrmCombineFileDatabase(filename,&resource_database,False);
   if (XResourceManagerString(display) != (char *) NULL)
     {
@@ -3375,7 +3375,7 @@ Export XrmDatabase XGetResourceDatabase(Display *display,char *client_name)
   /*
     Merge user preferences database.
   */
-  FormatString(filename,"%s%src",PreferencesDefaults,client_name);
+  FormatString(filename,"%.128s%.128src",PreferencesDefaults,client_name);
   ExpandFilename(filename);
   XrmCombineFileDatabase(filename,&resource_database,False);
   return(resource_database);
@@ -3640,7 +3640,7 @@ Export char *XGetResourceInstance(XrmDatabase database,const char *client_name,
     return(resource_default);
   *resource_name='\0';
   if (keyword != (char *) NULL)
-    FormatString(resource_name,"%s.%s",client_name,keyword);
+    FormatString(resource_name,"%.128s.%.128s",client_name,keyword);
   status=XrmGetResource(database,resource_name,"ImageMagick",&resource_type,
     &resource_value);
   if (status == False)
@@ -4851,7 +4851,7 @@ Export XWindows *XInitializeWindows(Display *display,
   if (resource_info->debug)
     {
       XSynchronize(display,True);
-      (void) fprintf(stderr,"Version: %s\n",MagickVersion);
+      (void) fprintf(stderr,"Version: %.128s\n",MagickVersion);
       (void) fprintf(stderr,"  timestamp: %ld\n",time((time_t *) NULL));
       (void) fprintf(stderr,"Protocols:\n");
       (void) fprintf(stderr,"  Window Manager: 0x%lx\n",
@@ -4920,7 +4920,7 @@ Export XWindows *XInitializeWindows(Display *display,
       (void) fprintf(stderr,"Visual:\n");
       (void) fprintf(stderr,"  visual id: 0x%lx\n",
         windows->visual_info->visualid);
-      (void) fprintf(stderr,"  class: %s\n",
+      (void) fprintf(stderr,"  class: %.128s\n",
         XVisualClassName(windows->visual_info->class));
       (void) fprintf(stderr,"  depth: %d planes\n",
         windows->visual_info->depth);
@@ -9477,31 +9477,31 @@ Export void XUserPreferences(XResourceInfo *resource_info)
   assert(resource_info != (XResourceInfo *) NULL);
   client_name=SetClientName((char *) NULL);
   preferences_database=XrmGetStringDatabase("");
-  FormatString(specifier,"%s.backdrop",client_name);
+  FormatString(specifier,"%.128s.backdrop",client_name);
   value=resource_info->backdrop ? "True" : "False";
   XrmPutStringResource(&preferences_database,specifier,value);
-  FormatString(specifier,"%s.colormap",client_name);
+  FormatString(specifier,"%.128s.colormap",client_name);
   value=resource_info->colormap == SharedColormap ? "Shared" : "Private";
   XrmPutStringResource(&preferences_database,specifier,value);
-  FormatString(specifier,"%s.confirmExit",client_name);
+  FormatString(specifier,"%.128s.confirmExit",client_name);
   value=resource_info->confirm_exit ? "True" : "False";
   XrmPutStringResource(&preferences_database,specifier,value);
-  FormatString(specifier,"%s.displayWarnings",client_name);
+  FormatString(specifier,"%.128s.displayWarnings",client_name);
   value=resource_info->display_warnings ? "True" : "False";
   XrmPutStringResource(&preferences_database,specifier,value);
-  FormatString(specifier,"%s.dither",client_name);
+  FormatString(specifier,"%.128s.dither",client_name);
   value=resource_info->quantize_info.dither ? "True" : "False";
   XrmPutStringResource(&preferences_database,specifier,value);
-  FormatString(specifier,"%s.gammaCorrect",client_name);
+  FormatString(specifier,"%.128s.gammaCorrect",client_name);
   value=resource_info->gamma_correct ? "True" : "False";
   XrmPutStringResource(&preferences_database,specifier,value);
-  FormatString(specifier,"%s.undoCache",client_name);
+  FormatString(specifier,"%.128s.undoCache",client_name);
   FormatString(cache,"%u",resource_info->undo_cache);
   XrmPutStringResource(&preferences_database,specifier,cache);
-  FormatString(specifier,"%s.usePixmap",client_name);
+  FormatString(specifier,"%.128s.usePixmap",client_name);
   value=resource_info->use_pixmap ? "True" : "False";
   XrmPutStringResource(&preferences_database,specifier,value);
-  FormatString(filename,"%s%src",PreferencesDefaults,client_name);
+  FormatString(filename,"%.128s%.128src",PreferencesDefaults,client_name);
   ExpandFilename(filename);
   XrmPutFileDatabase(preferences_database,filename);
 }

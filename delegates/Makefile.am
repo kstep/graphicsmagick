@@ -35,3 +35,7 @@ pkgdata_DATA = delegates.mgk
 
 # Additional files to distribute
 EXTRA_DIST = delegates.mgk.in delegates.mgk mac.mgk nt.mgk unix.mgk vms.mgk win95.mgk
+
+# Ensure that processed delegates file is not distributed
+dist-hook:
+	$(RM) $(distdir)/delegates.mgk

@@ -209,9 +209,9 @@ $title->Composite(image=>$background,compose=>'Add');
 # Create image montage.
 #
 print "Montage image...\n";
-$montage=$images->montage(geometry=>'130x194+10+5>',gravity=>'Center',
-  bordercolor=>'green',borderwidth=>1,tile=>'5x1000',compose=>'over',
-  texture=>'granite:',font=>'@Generic.ttf',pen=>'#600');
+$montage=$images->montage(filename=>'PerlMagick',geometry=>'130x194+10+5>',
+  gravity=>'Center',bordercolor=>'green',borderwidth=>1,tile=>'5x1000',
+  compose=>'over',texture=>'granite:',font=>'@Generic.ttf',pen=>'#600');
 $montage->Composite(image=>$title,geometry=>'+90+50',compose=>'Over');
 $montage->Annotate(text=>'Every thing you see on this page was created ' .
   'with the PerlMagick and ImageMagick toolkits.',geometry=>"+20+175",
