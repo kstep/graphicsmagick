@@ -288,10 +288,10 @@
           Invalid colormap index
         </Message>
         <Message name="LengthAndFilesizeDoNotMatch">
-					Length and filesize do not match
+          Length and filesize do not match
         </Message>
         <Message name="NegativeOrZeroImageSize">
-					Negative or zero image size
+          Negative or zero image size
         </Message>
         <Message name="NonOS2HeaderSizeError">
           Non OS2 BMP header size less than 40
@@ -414,7 +414,7 @@
           Too much image data in file
         </Message>
         <Message name="StaticPlanesValueNotEqualToOne">
-					Static planes value not equal to 1
+          Static planes value not equal to 1
         </Message>
         <Message name="UnableToReadColormapFromDumpFile">
           Unable to read colormap from dump file
@@ -465,19 +465,19 @@
           Unknown pattern type
         </Message>
         <Message name="UnrecognizedBitsPerPixel">
-					Unrecognized bits per pixel
+          Unrecognized bits per pixel
         </Message>
         <Message name="UnrecognizedImageCompression">
-					Unrecognized compression
+          Unrecognized compression
         </Message>
         <Message name="UnrecognizedImageCompressionMethod">
           Unrecognized compression method
         </Message>
         <Message name="UnrecognizedNumerOfColors">
-					Unrecognized number of colors
+          Unrecognized number of colors
         </Message>
         <Message name="UnrecognizedXWDHeader">
-					Unrecognized XWD header
+          Unrecognized XWD header
         </Message>
       </Error>
       <FatalError>
@@ -1105,24 +1105,6 @@
       </Message>
     </Error>
     </FatalError>
-      <Message name="UnrecognizedColormapType">
-        Unrecognized colormap type
-      </Message>
-      <Message name="UnrecognizedColorspaceType">
-        Unrecognized colorspace type
-      </Message>
-      <Message name="UnrecognizedEndianType">
-        Unrecognized endian type
-      </Message>
-      <Message name="UnrecognizedImageType">
-        Unrecognized image type
-      </Message>
-      <Message name="UnrecognizedInterlaceType">
-        Unrecognized interlace type
-      </Message>
-      <Message name="UnrecognizedVirtualPixelMethod">
-        Unrecognized virtual pixel method
-      </Message>
       <Message name="MissingAnImageFilename">
         Missing an image filename
       </Message>
@@ -1137,6 +1119,9 @@
       </Message>
       <Message name="MissingCommand">
         Missing command
+      </Message>
+      <Message name="MissingCompressQuality">
+        Missing compression quality
       </Message>
       <Message name="MissingDegrees">
         Missing degrees
@@ -1237,8 +1222,26 @@
       <Message name="OptionLengthExceedsLimit">
         Option length exceeds limit
       </Message>
+      <Message name="UnrecognizedColormapType">
+        Unrecognized colormap type
+      </Message>
+      <Message name="UnrecognizedColorspaceType">
+        Unrecognized colorspace type
+      </Message>
+      <Message name="UnrecognizedEndianType">
+        Unrecognized endian type
+      </Message>
       <Message name="UnrecognizedImageCompressionType">
         unrecognized compression type
+      </Message>
+      <Message name="UnrecognizedImageType">
+        Unrecognized image type
+      </Message>
+      <Message name="UnrecognizedInterlaceType">
+        Unrecognized interlace type
+      </Message>
+      <Message name="UnrecognizedVirtualPixelMethod">
+        Unrecognized virtual pixel method
       </Message>
       <Message name="UnrecognizedDisposeMethod">
         unrecognized dispose method
