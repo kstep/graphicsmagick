@@ -105,7 +105,6 @@ static unsigned int IsJPEG(const unsigned char *magick,const size_t length)
 
 #if defined(HasJPEG)
 #define JPEG_INTERNAL_OPTIONS
-#include <setjmp.h>
 #include "jpeglib.h"
 #include "jerror.h"
 
@@ -142,9 +141,6 @@ typedef struct _SourceManager
   boolean
     start_of_blob;
 } SourceManager;
-
-static jmp_buf
-  error_recovery;
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -244,8 +240,12 @@ static void InitializeSource(j_decompress_ptr cinfo)
 
 static void JPEGErrorHandler(j_common_ptr jpeg_info)
 {
+  Image
+    *image;
+
   (void) EmitMessage(jpeg_info,0);
-  longjmp(error_recovery,1);
+  image=(Image *) jpeg_info->client_data;
+  longjmp(image->error_recovery,1);
 }
 
 static boolean ReadComment(j_decompress_ptr jpeg_info)
@@ -604,7 +604,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   jpeg_info.err->emit_message=(void (*)(j_common_ptr,int)) EmitMessage;
   jpeg_info.err->error_exit=(void (*)(j_common_ptr)) JPEGErrorHandler;
   jpeg_pixels=(JSAMPLE *) NULL;
-  if (setjmp(error_recovery))
+  if (setjmp(image->error_recovery))
     {
       if (jpeg_pixels != (JSAMPLE *) NULL)
         LiberateMemory((void **) &jpeg_pixels);
