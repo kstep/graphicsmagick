@@ -1823,10 +1823,10 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             have_global_bkgd=False;
             if (length > 5)
               {
-                mng_global_bkgd.red=(Quantum) XDownscale(((p[0]<<8) | p[1]));
-                mng_global_bkgd.green=(Quantum) XDownscale(((p[2]<<8)
+                mng_global_bkgd.red=(Quantum) ScaleQuantumToShort(((p[0]<<8) | p[1]));
+                mng_global_bkgd.green=(Quantum) ScaleQuantumToShort(((p[2]<<8)
                    | p[3]));
-                mng_global_bkgd.blue=(Quantum) XDownscale(((p[4]<<8) | p[5]));
+                mng_global_bkgd.blue=(Quantum) ScaleQuantumToShort(((p[4]<<8) | p[5]));
                 have_global_bkgd=True;
               }
             LiberateMemory((void **) &chunk);
@@ -1841,11 +1841,11 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
               mandatory_back=0;
             if (mandatory_back && length>5)
               {
-                mng_background_color.red=(Quantum) XDownscale(((p[0]<<8)
+                mng_background_color.red=(Quantum) ScaleQuantumToShort(((p[0]<<8)
                    | p[1]));
-                mng_background_color.green=(Quantum) XDownscale(((p[2]<<8)
+                mng_background_color.green=(Quantum) ScaleQuantumToShort(((p[2]<<8)
                    | p[3]));
-                mng_background_color.blue=(Quantum) XDownscale(((p[4]<<8)
+                mng_background_color.blue=(Quantum) ScaleQuantumToShort(((p[4]<<8)
                    | p[5]));
                 mng_background_color.opacity=OpaqueOpacity;
               }
@@ -2939,10 +2939,10 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #if (QuantumDepth == 16)
         image->background_color=mng_global_bkgd;
 #else
-        image->background_color.red=(Quantum) XDownscale(mng_global_bkgd.red);
+        image->background_color.red=(Quantum) ScaleQuantumToShort(mng_global_bkgd.red);
         image->background_color.green=
-          (Quantum) XDownscale(mng_global_bkgd.green);
-        image->background_color.blue=(Quantum) XDownscale(mng_global_bkgd.blue);
+          (Quantum) ScaleQuantumToShort(mng_global_bkgd.green);
+        image->background_color.blue=(Quantum) ScaleQuantumToShort(mng_global_bkgd.blue);
 #endif
       }
     if (ping_info->valid & PNG_INFO_bKGD)
@@ -2959,11 +2959,11 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         else
           {
             image->background_color.red=
-              (Quantum) XDownscale(ping_info->background.red);
+              (Quantum) ScaleQuantumToShort(ping_info->background.red);
             image->background_color.green=
-              (Quantum) XDownscale(ping_info->background.green);
+              (Quantum) ScaleQuantumToShort(ping_info->background.green);
             image->background_color.blue=
-              (Quantum) XDownscale(ping_info->background.blue);
+              (Quantum) ScaleQuantumToShort(ping_info->background.blue);
           }
       }
 #endif
@@ -3061,9 +3061,9 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             (void) png_get_PLTE(ping,ping_info,&palette,&number_colors);
             for (i=0; i < (long) image->colors; i++)
             {
-              image->colormap[i].red=(Quantum) Upscale(palette[i].red);
-              image->colormap[i].green=(Quantum) Upscale(palette[i].green);
-              image->colormap[i].blue=(Quantum) Upscale(palette[i].blue);
+              image->colormap[i].red=(Quantum) ScaleByteToQuantum(palette[i].red);
+              image->colormap[i].green=(Quantum) ScaleByteToQuantum(palette[i].green);
+              image->colormap[i].blue=(Quantum) ScaleByteToQuantum(palette[i].blue);
             }
           }
         else
@@ -3331,7 +3331,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                      * In a PNG datastream, Opaque is MaxRGB
                      * and Transparent is 0.
                      */
-                    q->opacity=(Quantum) Upscale(255-(*p++));
+                    q->opacity=(Quantum) ScaleByteToQuantum(255-(*p++));
                     q++;
                   }
               }
@@ -3412,7 +3412,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 if (ping_info->color_type == PNG_COLOR_TYPE_PALETTE)
                   {
                     if (index < ping_info->num_trans)
-                      q->opacity=(Quantum) Upscale(255-ping_info->trans[index]);
+                      q->opacity=(Quantum) ScaleByteToQuantum(255-ping_info->trans[index]);
                   }
                 else if (ping_info->color_type == PNG_COLOR_TYPE_GRAY)
                   {
@@ -4964,9 +4964,9 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
        {
          (void) WriteBlobMSBULong(image,6L);
          PNGType(chunk,mng_BACK);
-         red=(unsigned short) XUpscale(image->background_color.red);
-         green=(unsigned short) XUpscale(image->background_color.green);
-         blue=(unsigned short) XUpscale(image->background_color.blue);
+         red=(unsigned short) ScaleShortToQuantum(image->background_color.red);
+         green=(unsigned short) ScaleShortToQuantum(image->background_color.green);
+         blue=(unsigned short) ScaleShortToQuantum(image->background_color.blue);
          PNGShort(chunk+4,red);
          PNGShort(chunk+6,green);
          PNGShort(chunk+8,blue);
@@ -4996,11 +4996,11 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
          PNGType(chunk,mng_PLTE);
          for (i=0; i < (long) image->colors; i++)
          {
-           chunk[4+i*3]=(unsigned char) Downscale(image->colormap[i].red) &
+           chunk[4+i*3]=(unsigned char) ScaleQuantumToByte(image->colormap[i].red) &
              0xff;
-           chunk[5+i*3]=(unsigned char) Downscale(image->colormap[i].green) &
+           chunk[5+i*3]=(unsigned char) ScaleQuantumToByte(image->colormap[i].green) &
               0xff;
-           chunk[6+i*3]=(unsigned char) Downscale(image->colormap[i].blue) &
+           chunk[6+i*3]=(unsigned char) ScaleQuantumToByte(image->colormap[i].blue) &
               0xff;
          }
          (void) WriteBlob(image,data_length+4,(char *) chunk);
@@ -5060,11 +5060,11 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
                 for (i=0; i < (long) image->colors; i++)
                 {
                   chunk[4+i*3]=
-                    (unsigned char) Downscale(image->colormap[i].red) & 0xff;
+                    (unsigned char) ScaleQuantumToByte(image->colormap[i].red) & 0xff;
                   chunk[5+i*3]=
-                    (unsigned char) Downscale(image->colormap[i].green) & 0xff;
+                    (unsigned char) ScaleQuantumToByte(image->colormap[i].green) & 0xff;
                   chunk[6+i*3]=
-                    (unsigned char) Downscale(image->colormap[i].blue) & 0xff;
+                    (unsigned char) ScaleQuantumToByte(image->colormap[i].blue) & 0xff;
                 }
                 (void) WriteBlob(image,data_length+4,(char *) chunk);
                 (void) WriteBlobMSBULong(image,crc32(0,chunk,
@@ -5302,7 +5302,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
             ping_info->trans_values.blue=p->blue;
             ping_info->trans_values.gray=(png_uint_16) Intensity(p);
             ping_info->trans_values.index=(unsigned char)
-               (MAXRGB-(unsigned char) Downscale(p->opacity));
+               (MAXRGB-(unsigned char) ScaleQuantumToByte(p->opacity));
           }
         if (ping_info->valid & PNG_INFO_tRNS)
           {
@@ -5400,7 +5400,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
                    unsigned int
                      intensity;
 
-                   intensity=(unsigned int) Downscale(image->colormap[i].red);
+                   intensity=(unsigned int) ScaleQuantumToByte(image->colormap[i].red);
 
                    if ((intensity & 0x0f) != ((intensity & 0xf0)>>4))
                      depth_4_ok=depth_2_ok=depth_1_ok=False;
@@ -5458,11 +5458,11 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
                 for (i=0; i < (long) number_colors; i++)
                 {
                   palette[i].red=
-                    (unsigned char) Downscale(image->colormap[i].red);
+                    (unsigned char) ScaleQuantumToByte(image->colormap[i].red);
                   palette[i].green=
-                    (unsigned char) Downscale(image->colormap[i].green);
+                    (unsigned char) ScaleQuantumToByte(image->colormap[i].green);
                   palette[i].blue=
-                    (unsigned char) Downscale(image->colormap[i].blue);
+                    (unsigned char) ScaleQuantumToByte(image->colormap[i].blue);
                 }
                 png_set_PLTE(ping,ping_info,palette,(int) number_colors);
 #if (PNG_LIBPNG_VER > 10008)

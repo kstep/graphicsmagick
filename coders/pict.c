@@ -911,11 +911,11 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
               Initialize image background color.
             */
             image->background_color.red=(Quantum)
-              XDownscale(ReadBlobMSBShort(image));
+              ScaleQuantumToShort(ReadBlobMSBShort(image));
             image->background_color.green=(Quantum)
-              XDownscale(ReadBlobMSBShort(image));
+              ScaleQuantumToShort(ReadBlobMSBShort(image));
             image->background_color.blue=(Quantum)
-              XDownscale(ReadBlobMSBShort(image));
+              ScaleQuantumToShort(ReadBlobMSBShort(image));
             break;
           }
           case 0x70:
@@ -1016,11 +1016,11 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
                       if (flags & 0x8000)
                         j=i;
                       tile_image->colormap[j].red=(Quantum)
-                        XDownscale(ReadBlobMSBShort(image));
+                        ScaleQuantumToShort(ReadBlobMSBShort(image));
                       tile_image->colormap[j].green=(Quantum)
-                        XDownscale(ReadBlobMSBShort(image));
+                        ScaleQuantumToShort(ReadBlobMSBShort(image));
                       tile_image->colormap[j].blue=(Quantum)
-                        XDownscale(ReadBlobMSBShort(image));
+                        ScaleQuantumToShort(ReadBlobMSBShort(image));
                     }
                   }
                 else
@@ -1086,24 +1086,24 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
                       {
                         i=(*p++);
                         j=(*p);
-                        q->red=Upscale((i & 0x7c) << 1);
-                        q->green=Upscale(((i & 0x03) << 6) | ((j & 0xe0) >> 2));
-                        q->blue=Upscale((j & 0x1f) << 3);
+                        q->red=ScaleByteToQuantum((i & 0x7c) << 1);
+                        q->green=ScaleByteToQuantum(((i & 0x03) << 6) | ((j & 0xe0) >> 2));
+                        q->blue=ScaleByteToQuantum((j & 0x1f) << 3);
                       }
                     else
                       if (!tile_image->matte)
                         {
-                          q->red=Upscale(*p);
-                          q->green=Upscale(*(p+tile_image->columns));
-                          q->blue=Upscale(*(p+2*tile_image->columns));
+                          q->red=ScaleByteToQuantum(*p);
+                          q->green=ScaleByteToQuantum(*(p+tile_image->columns));
+                          q->blue=ScaleByteToQuantum(*(p+2*tile_image->columns));
                         }
                       else
                         {
-                          q->opacity=(Quantum) (MaxRGB-Upscale(*p));
-                          q->red=Upscale(*(p+tile_image->columns));
+                          q->opacity=(Quantum) (MaxRGB-ScaleByteToQuantum(*p));
+                          q->red=ScaleByteToQuantum(*(p+tile_image->columns));
                           q->green=(Quantum)
-                            Upscale(*(p+2*tile_image->columns));
-                          q->blue=Upscale(*(p+3*tile_image->columns));
+                            ScaleByteToQuantum(*(p+2*tile_image->columns));
+                          q->blue=ScaleByteToQuantum(*(p+3*tile_image->columns));
                         }
                   }
                 p++;
@@ -1767,11 +1767,11 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
             }
           for (x=0; x < (long) image->columns; x++)
           {
-            *red++=Downscale(p->red);
-            *green++=Downscale(p->green);
-            *blue++=Downscale(p->blue);
+            *red++=ScaleQuantumToByte(p->red);
+            *green++=ScaleQuantumToByte(p->green);
+            *blue++=ScaleQuantumToByte(p->blue);
             if (image->matte)
-              *opacity++=MaxRGB-Downscale(p->opacity);
+              *opacity++=MaxRGB-ScaleQuantumToByte(p->opacity);
             p++;
           }
           count+=EncodeImage(image,scanline,row_bytes & 0x7FFF,packed_scanline);

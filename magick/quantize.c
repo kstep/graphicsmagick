@@ -416,9 +416,10 @@ static unsigned int Assignment(CubeInfo *cube_info,Image *image)
         node_info=cube_info->root;
         for (index=MaxTreeDepth-1; (long) index > 0; index--)
         {
-          id=(unsigned int) (((Downscale(q->red) >> index) & 0x01) << 2 |
-             ((Downscale(q->green) >> index) & 0x01) << 1 |
-             ((Downscale(q->blue) >> index) & 0x01));
+          id=(unsigned int)
+            (((ScaleQuantumToByte(q->red) >> index) & 0x01) << 2 |
+             ((ScaleQuantumToByte(q->green) >> index) & 0x01) << 1 |
+             ((ScaleQuantumToByte(q->blue) >> index) & 0x01));
           if ((node_info->census & (1 << id)) == 0)
             break;
           node_info=node_info->child[id];
@@ -608,9 +609,10 @@ static unsigned int Classification(CubeInfo *cube_info,const Image *image,
       for (level=1; level <= cube_info->depth; level++)
       {
         bisect*=0.5;
-        id=(unsigned int) (((Downscale(p->red) >> index) & 0x01) << 2 |
-           ((Downscale(p->green) >> index) & 0x01) << 1 |
-           ((Downscale(p->blue) >> index) & 0x01));
+        id=(unsigned int)
+          (((ScaleQuantumToByte(p->red) >> index) & 0x01) << 2 |
+           ((ScaleQuantumToByte(p->green) >> index) & 0x01) << 1 |
+           ((ScaleQuantumToByte(p->blue) >> index) & 0x01));
         mid_red+=id & 4 ? bisect : -bisect;
         mid_green+=id & 2 ? bisect : -bisect;
         mid_blue+=id & 1 ? bisect : -bisect;
@@ -1053,9 +1055,10 @@ static unsigned int Dither(CubeInfo *cube_info,Image *image,
           node_info=p->root;
           for (index=MaxTreeDepth-1; (long) index > 0; index--)
           {
-            id=(unsigned int) (((Downscale(red) >> index) & 0x01) << 2 |
-               ((Downscale(green) >> index) & 0x01) << 1 |
-               ((Downscale(blue) >> index) & 0x01));
+            id=(unsigned int)
+              (((ScaleQuantumToByte(red) >> index) & 0x01) << 2 |
+               ((ScaleQuantumToByte(green) >> index) & 0x01) << 1 |
+               ((ScaleQuantumToByte(blue) >> index) & 0x01));
             if ((node_info->census & (1 << id)) == 0)
               break;
             node_info=node_info->child[id];
@@ -1732,8 +1735,8 @@ MagickExport unsigned int OrderedDitherImage(Image *image)
     indexes=GetIndexes(image);
     for (x=0; x < (long) image->columns; x++)
     {
-      index=(Quantum)
-        Intensity(q) > Upscale(DitherMatrix[y & 0x07][x & 0x07]) ? 1 : 0;
+      index=(Quantum) (Intensity(q) >
+        ScaleByteToQuantum(DitherMatrix[y & 0x07][x & 0x07]) ? 1 : 0);
       indexes[x]=index;
       q->red=image->colormap[index].red;
       q->green=image->colormap[index].green;

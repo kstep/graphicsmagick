@@ -335,9 +335,9 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     p=pcx_colormap;
     for (i=0; i < (long) image->colors; i++)
     {
-      image->colormap[i].red=Upscale(*p++);
-      image->colormap[i].green=Upscale(*p++);
-      image->colormap[i].blue=Upscale(*p++);
+      image->colormap[i].red=ScaleByteToQuantum(*p++);
+      image->colormap[i].green=ScaleByteToQuantum(*p++);
+      image->colormap[i].blue=ScaleByteToQuantum(*p++);
     }
     pcx_info.bytes_per_line=ReadBlobLSBShort(image);
     pcx_info.palette_info=ReadBlobLSBShort(image);
@@ -413,9 +413,9 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 p=pcx_colormap;
                 for (i=0; i < (long) image->colors; i++)
                 {
-                  image->colormap[i].red=Upscale(*p++);
-                  image->colormap[i].green=Upscale(*p++);
-                  image->colormap[i].blue=Upscale(*p++);
+                  image->colormap[i].red=ScaleByteToQuantum(*p++);
+                  image->colormap[i].green=ScaleByteToQuantum(*p++);
+                  image->colormap[i].blue=ScaleByteToQuantum(*p++);
                 }
             }
           LiberateMemory((void **) &pcx_colormap);
@@ -441,23 +441,23 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
             {
               case 0:
               {
-                *r=Upscale(*p++);
+                *r=ScaleByteToQuantum(*p++);
                 break;
               }
               case 1:
               {
-                *r=Upscale(*p++);
+                *r=ScaleByteToQuantum(*p++);
                 break;
               }
               case 2:
               {
-                *r=Upscale(*p++);
+                *r=ScaleByteToQuantum(*p++);
                 break;
               }
               case 3:
               default:
               {
-                *r=Upscale(*p++);
+                *r=ScaleByteToQuantum(*p++);
                 break;
               }
             }
@@ -554,11 +554,11 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
           indexes[x]=(*r++);
         else
           {
-            q->red=Upscale(*r++);
-            q->green=Upscale(*r++);
-            q->blue=Upscale(*r++);
+            q->red=ScaleByteToQuantum(*r++);
+            q->green=ScaleByteToQuantum(*r++);
+            q->blue=ScaleByteToQuantum(*r++);
             if (image->matte)
-              q->opacity=(Quantum) (MaxRGB-Upscale(*r++));
+              q->opacity=(Quantum) (MaxRGB-ScaleByteToQuantum(*r++));
           }
         q++;
       }
@@ -844,9 +844,9 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
     if (image->storage_class == PseudoClass)
       for (i=0; i < (long) image->colors; i++)
       {
-        *q++=Downscale(image->colormap[i].red);
-        *q++=Downscale(image->colormap[i].green);
-        *q++=Downscale(image->colormap[i].blue);
+        *q++=ScaleQuantumToByte(image->colormap[i].red);
+        *q++=ScaleQuantumToByte(image->colormap[i].green);
+        *q++=ScaleQuantumToByte(image->colormap[i].blue);
       }
     (void) WriteBlob(image,3*16,(char *) pcx_colormap);
     (void) WriteBlobByte(image,pcx_info.reserved);
@@ -880,23 +880,23 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
               {
                 case 0:
                 {
-                  *q++=Downscale(p->red);
+                  *q++=ScaleQuantumToByte(p->red);
                   break;
                 }
                 case 1:
                 {
-                  *q++=Downscale(p->green);
+                  *q++=ScaleQuantumToByte(p->green);
                   break;
                 }
                 case 2:
                 {
-                  *q++=Downscale(p->blue);
+                  *q++=ScaleQuantumToByte(p->blue);
                   break;
                 }
                 case 3:
                 default:
                 {
-                  *q++=MaxRGB-Downscale(p->opacity);
+                  *q++=MaxRGB-ScaleQuantumToByte(p->opacity);
                   break;
                 }
               }

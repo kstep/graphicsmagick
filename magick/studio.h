@@ -267,11 +267,11 @@ extern "C" {
 /*
   3D effects.
 */
-#define AccentuateModulate  Upscale(80)
-#define HighlightModulate  Upscale(125)
-#define ShadowModulate  Upscale(135)
-#define DepthModulate  Upscale(185)
-#define TroughModulate  Upscale(110)
+#define AccentuateModulate  ScaleByteToQuantum(80)
+#define HighlightModulate  ScaleByteToQuantum(125)
+#define ShadowModulate  ScaleByteToQuantum(135)
+#define DepthModulate  ScaleByteToQuantum(185)
+#define TroughModulate  ScaleByteToQuantum(110)
 
 /*
   Define system symbols if not already defined.

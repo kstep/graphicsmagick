@@ -1225,7 +1225,7 @@ static unsigned int RenderFreetype(Image *image,const DrawInfo *draw_info,
                     continue;
                   }
                 if (draw_info->text_antialias)
-                  opacity=Upscale(*p);
+                  opacity=ScaleByteToQuantum(*p);
                 else
                   opacity=(Quantum)
                     ((*p) < 127 ? OpaqueOpacity : TransparentOpacity);
@@ -1752,9 +1752,9 @@ static unsigned int RenderX11(Image *image,const DrawInfo *draw_info,
   FormatString(annotate_info.geometry,"%ux%u+%ld+%ld",width,height,
     (long) ceil(offset->x-0.5),
     (long) ceil(offset->y-metrics->ascent-metrics->descent-0.5));
-  pixel.pen_color.red=XUpscale(draw_info->fill.red);
-  pixel.pen_color.green=XUpscale(draw_info->fill.green);
-  pixel.pen_color.blue=XUpscale(draw_info->fill.blue);
+  pixel.pen_color.red=ScaleShortToQuantum(draw_info->fill.red);
+  pixel.pen_color.green=ScaleShortToQuantum(draw_info->fill.green);
+  pixel.pen_color.blue=ScaleShortToQuantum(draw_info->fill.blue);
   status=XAnnotateImage(display,&pixel,&annotate_info,image);
   if (status == 0)
     ThrowBinaryException(ResourceLimitError,"Unable to annotate image",

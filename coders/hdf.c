@@ -251,16 +251,16 @@ static Image *ReadHDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (is_palette)
           for (i=0; i < 256; i++)
           {
-            image->colormap[i].red=Upscale(*p++);
-            image->colormap[i].green=Upscale(*p++);
-            image->colormap[i].blue=Upscale(*p++);
+            image->colormap[i].red=ScaleByteToQuantum(*p++);
+            image->colormap[i].green=ScaleByteToQuantum(*p++);
+            image->colormap[i].blue=ScaleByteToQuantum(*p++);
           }
         else
           for (i=0; i < (long) image->colors; i++)
           {
-            image->colormap[i].red=Upscale(i);
-            image->colormap[i].green=Upscale(i);
-            image->colormap[i].blue=Upscale(i);
+            image->colormap[i].red=ScaleByteToQuantum(i);
+            image->colormap[i].green=ScaleByteToQuantum(i);
+            image->colormap[i].blue=ScaleByteToQuantum(i);
           }
         LiberateMemory((void **) &hdf_palette);
         p=hdf_pixels;
@@ -296,9 +296,9 @@ static Image *ReadHDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
           for (x=0; x < (long) image->columns; x++)
           {
-            q->red=Upscale(*p++);
-            q->green=Upscale(*p++);
-            q->blue=Upscale(*p++);
+            q->red=ScaleByteToQuantum(*p++);
+            q->green=ScaleByteToQuantum(*p++);
+            q->blue=ScaleByteToQuantum(*p++);
             q++;
           }
           if (!SyncImagePixels(image))
@@ -563,9 +563,9 @@ static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
                 break;
               for (x=0; x < (long) image->columns; x++)
               {
-                *q++=Downscale(p->red);
-                *q++=Downscale(p->green);
-                *q++=Downscale(p->blue);
+                *q++=ScaleQuantumToByte(p->red);
+                *q++=ScaleQuantumToByte(p->green);
+                *q++=ScaleQuantumToByte(p->blue);
                 p++;
               }
               if (image->previous == (Image *) NULL)
@@ -588,7 +588,7 @@ static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
                 break;
               for (x=0; x < (long) image->columns; x++)
               {
-                *q++=Downscale(p->red);
+                *q++=ScaleQuantumToByte(p->red);
                 p++;
               }
               p=AcquireImagePixels(image,0,y,image->columns,1,
@@ -597,7 +597,7 @@ static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
                 break;
               for (x=0; x < (long) image->columns; x++)
               {
-                *q++=Downscale(p->green);
+                *q++=ScaleQuantumToByte(p->green);
                 p++;
               }
               p=AcquireImagePixels(image,0,y,image->columns,1,
@@ -606,7 +606,7 @@ static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
                 break;
               for (x=0; x < (long) image->columns; x++)
               {
-                *q++=Downscale(p->blue);
+                *q++=ScaleQuantumToByte(p->blue);
                 p++;
               }
               if (QuantumTick(y,image->rows))
@@ -629,7 +629,7 @@ static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
                 break;
               for (x=0; x < (long) image->columns; x++)
               {
-                *q++=Downscale(p->red);
+                *q++=ScaleQuantumToByte(p->red);
                 p++;
               }
             }
@@ -642,7 +642,7 @@ static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
                 break;
               for (x=0; x < (long) image->columns; x++)
               {
-                *q++=Downscale(p->green);
+                *q++=ScaleQuantumToByte(p->green);
                 p++;
               }
             }
@@ -655,7 +655,7 @@ static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
                 break;
               for (x=0; x < (long) image->columns; x++)
               {
-                *q++=Downscale(p->blue);
+                *q++=ScaleQuantumToByte(p->blue);
                 p++;
               }
             }
@@ -685,7 +685,7 @@ static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
               break;
             for (x=0; x < (long) image->columns; x++)
             {
-              *q++=Downscale(Intensity(p));
+              *q++=ScaleQuantumToByte(Intensity(p));
               p++;
             }
             if (image->previous == (Image *) NULL)
@@ -704,9 +704,9 @@ static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
             q=hdf_palette;
             for (i=0; i < (long) image->colors; i++)
             {
-              *q++=Downscale(image->colormap[i].red);
-              *q++=Downscale(image->colormap[i].green);
-              *q++=Downscale(image->colormap[i].blue);
+              *q++=ScaleQuantumToByte(image->colormap[i].red);
+              *q++=ScaleQuantumToByte(image->colormap[i].green);
+              *q++=ScaleQuantumToByte(image->colormap[i].blue);
             }
             (void) DFR8setpalette(hdf_palette);
             LiberateMemory((void **) &hdf_palette);

@@ -539,9 +539,9 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       p=dib_colormap;
       for (i=0; i < (long) image->colors; i++)
       {
-        image->colormap[i].blue=Upscale(*p++);
-        image->colormap[i].green=Upscale(*p++);
-        image->colormap[i].red=Upscale(*p++);
+        image->colormap[i].blue=ScaleByteToQuantum(*p++);
+        image->colormap[i].green=ScaleByteToQuantum(*p++);
+        image->colormap[i].red=ScaleByteToQuantum(*p++);
         if (packet_size == 4)
           p++;
       }
@@ -712,15 +712,15 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
           word|=(*p++ << 8);
           if (dib_info.red_mask == 0)
             {
-              q->red=Upscale(ScaleColor5to8((word >> 10) & 0x1f));
-              q->green=Upscale(ScaleColor5to8((word >> 5) & 0x1f));
-              q->blue=Upscale(ScaleColor5to8(word & 0x1f));
+              q->red=ScaleByteToQuantum(ScaleColor5to8((word >> 10) & 0x1f));
+              q->green=ScaleByteToQuantum(ScaleColor5to8((word >> 5) & 0x1f));
+              q->blue=ScaleByteToQuantum(ScaleColor5to8(word & 0x1f));
             }
           else
             {
-              q->red=Upscale(ScaleColor5to8((word >> 11) & 0x1f));
-              q->green=Upscale(ScaleColor6to8((word >> 5) & 0x3f));
-              q->blue=Upscale(ScaleColor5to8(word & 0x1f));
+              q->red=ScaleByteToQuantum(ScaleColor5to8((word >> 11) & 0x1f));
+              q->green=ScaleByteToQuantum(ScaleColor6to8((word >> 5) & 0x3f));
+              q->blue=ScaleByteToQuantum(ScaleColor5to8(word & 0x1f));
             }
           q++;
         }
@@ -746,11 +746,11 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
           break;
         for (x=0; x < (long) image->columns; x++)
         {
-          q->blue=Upscale(*p++);
-          q->green=Upscale(*p++);
-          q->red=Upscale(*p++);
+          q->blue=ScaleByteToQuantum(*p++);
+          q->green=ScaleByteToQuantum(*p++);
+          q->red=ScaleByteToQuantum(*p++);
           if (image->matte)
-            q->opacity=Upscale(*p++);
+            q->opacity=ScaleByteToQuantum(*p++);
           q++;
         }
         if (!SyncImagePixels(image))
@@ -1050,11 +1050,11 @@ static unsigned int WriteDIBImage(const ImageInfo *image_info,Image *image)
         q=pixels+(image->rows-y-1)*bytes_per_line;
         for (x=0; x < (long) image->columns; x++)
         {
-          *q++=Downscale(p->blue);
-          *q++=Downscale(p->green);
-          *q++=Downscale(p->red);
+          *q++=ScaleQuantumToByte(p->blue);
+          *q++=ScaleQuantumToByte(p->green);
+          *q++=ScaleQuantumToByte(p->red);
           if (image->matte)
-            *q++=Downscale(p->opacity);
+            *q++=ScaleQuantumToByte(p->opacity);
           p++;
         }
         if (image->previous == (Image *) NULL)
@@ -1116,9 +1116,9 @@ static unsigned int WriteDIBImage(const ImageInfo *image_info,Image *image)
       q=dib_colormap;
       for (i=0; i < (long) image->colors; i++)
       {
-        *q++=Downscale(image->colormap[i].blue);
-        *q++=Downscale(image->colormap[i].green);
-        *q++=Downscale(image->colormap[i].red);
+        *q++=ScaleQuantumToByte(image->colormap[i].blue);
+        *q++=ScaleQuantumToByte(image->colormap[i].green);
+        *q++=ScaleQuantumToByte(image->colormap[i].red);
         *q++=(Quantum) 0x0;
       }
       for ( ; i < (1L << dib_info.bits_per_pixel); i++)

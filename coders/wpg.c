@@ -262,9 +262,9 @@ register IndexPacket *indexes;
       break;
           for (x=0; x < (long) image->columns; x++)
              {
-             q->red=Upscale(*p++);
-             q->green=Upscale(*p++);
-             q->blue=Upscale(*p++);
+             q->red=ScaleByteToQuantum(*p++);
+             q->green=ScaleByteToQuantum(*p++);
+             q->blue=ScaleByteToQuantum(*p++);
              q++;
              }
           if (!SyncImagePixels(image))
@@ -649,9 +649,9 @@ typedef struct {
       goto NoMemory;
      for (i=WPG_Palette.StartIndex; i < (int)WPG_Palette.NumOfEntries; i++)
        {
-       image->colormap[i].red=Upscale(ReadBlobByte(image));
-       image->colormap[i].green=Upscale(ReadBlobByte(image));
-       image->colormap[i].blue=Upscale(ReadBlobByte(image));
+       image->colormap[i].red=ScaleByteToQuantum(ReadBlobByte(image));
+       image->colormap[i].green=ScaleByteToQuantum(ReadBlobByte(image));
+       image->colormap[i].blue=ScaleByteToQuantum(ReadBlobByte(image));
        }
      break;
      
@@ -713,7 +713,7 @@ NoMemory:    ThrowReaderException(ResourceLimitError,"Memory allocation failed",
         {  /*fix crippled monochrome palette*/
         image->colormap[1].red =
         image->colormap[1].green =
-        image->colormap[1].blue = Upscale(255);
+        image->colormap[1].blue = ScaleByteToQuantum(255);
         }
            }      
 
@@ -767,9 +767,9 @@ DecompressionFailed: ThrowReaderException(ResourceLimitError,"Cannot decompress 
            image);
        for (i=WPG_Palette.StartIndex; i < (int)WPG_Palette.NumOfEntries; i++)
        {
-       image->colormap[i].red=Upscale(ReadBlobByte(image));
-       image->colormap[i].green=Upscale(ReadBlobByte(image));
-       image->colormap[i].blue=Upscale(ReadBlobByte(image));
+       image->colormap[i].red=ScaleByteToQuantum(ReadBlobByte(image));
+       image->colormap[i].green=ScaleByteToQuantum(ReadBlobByte(image));
+       image->colormap[i].blue=ScaleByteToQuantum(ReadBlobByte(image));
        (void) ReadBlobByte(image);   /*Opacity??*/
        }
        break;

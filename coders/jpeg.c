@@ -787,11 +787,11 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
         {
           for (x=0; x < (long) image->columns; x++)
           {
-            q->red=Upscale(GETJSAMPLE(*p++));
-            q->green=Upscale(GETJSAMPLE(*p++));
-            q->blue=Upscale(GETJSAMPLE(*p++));
+            q->red=ScaleByteToQuantum(GETJSAMPLE(*p++));
+            q->green=ScaleByteToQuantum(GETJSAMPLE(*p++));
+            q->blue=ScaleByteToQuantum(GETJSAMPLE(*p++));
             if (image->colorspace == CMYKColorspace)
-              q->opacity=(IndexPacket) Upscale(GETJSAMPLE(*p++));
+              q->opacity=(IndexPacket) ScaleByteToQuantum(GETJSAMPLE(*p++));
             q++;
           }
         }
@@ -1402,7 +1402,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
         q=jpeg_pixels;
         for (x=0; x < (long) image->columns; x++)
         {
-          *q++=(JSAMPLE) Downscale(Intensity(p));
+          *q++=(JSAMPLE) ScaleQuantumToByte(Intensity(p));
           p++;
         }
         (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
@@ -1420,9 +1420,9 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
           q=jpeg_pixels;
           for (x=0; x < (long) image->columns; x++)
           {
-            *q++=(JSAMPLE) Downscale(p->red);
-            *q++=(JSAMPLE) Downscale(p->green);
-            *q++=(JSAMPLE) Downscale(p->blue);
+            *q++=(JSAMPLE) ScaleQuantumToByte(p->red);
+            *q++=(JSAMPLE) ScaleQuantumToByte(p->green);
+            *q++=(JSAMPLE) ScaleQuantumToByte(p->blue);
             p++;
           }
           (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
@@ -1441,10 +1441,10 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
             /*
               Convert DirectClass packets to contiguous CMYK scanlines.
             */
-            *q++=(JSAMPLE) (MaxRGB-Downscale(p->red));
-            *q++=(JSAMPLE) (MaxRGB-Downscale(p->green));
-            *q++=(JSAMPLE) (MaxRGB-Downscale(p->blue));
-            *q++=(JSAMPLE) (MaxRGB-Downscale(p->opacity));
+            *q++=(JSAMPLE) (MaxRGB-ScaleQuantumToByte(p->red));
+            *q++=(JSAMPLE) (MaxRGB-ScaleQuantumToByte(p->green));
+            *q++=(JSAMPLE) (MaxRGB-ScaleQuantumToByte(p->blue));
+            *q++=(JSAMPLE) (MaxRGB-ScaleQuantumToByte(p->opacity));
             p++;
           }
           (void) jpeg_write_scanlines(&jpeg_info,scanline,1);

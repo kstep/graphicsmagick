@@ -458,18 +458,18 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
           }
           if (i < (long) image->colors)
             {
-              image->colormap[i].red=Upscale((unsigned long) value);
-              image->colormap[i].green=Upscale((unsigned long) value);
-              image->colormap[i].blue=Upscale((unsigned long) value);
+              image->colormap[i].red=ScaleByteToQuantum((unsigned long) value);
+              image->colormap[i].green=ScaleByteToQuantum((unsigned long) value);
+              image->colormap[i].blue=ScaleByteToQuantum((unsigned long) value);
             }
           else
             if (i < (long) (2*image->colors))
               image->colormap[i % image->colors].green=
-                Upscale((unsigned long) value);
+                ScaleByteToQuantum((unsigned long) value);
             else
               if (i < (long) (3*image->colors))
                 image->colormap[i % image->colors].blue=
-                  Upscale((unsigned long) value);
+                  ScaleByteToQuantum((unsigned long) value);
         }
         LiberateMemory((void **) &viff_colormap);
         break;
@@ -675,16 +675,16 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
               break;
             for (x=0; x < (long) image->columns; x++)
             {
-              q->red=Upscale(*p);
-              q->green=Upscale(*(p+number_pixels));
-              q->blue=Upscale(*(p+2*number_pixels));
+              q->red=ScaleByteToQuantum(*p);
+              q->green=ScaleByteToQuantum(*(p+number_pixels));
+              q->blue=ScaleByteToQuantum(*(p+2*number_pixels));
               if (image->colors != 0)
                 {
                   q->red=image->colormap[q->red].red;
                   q->green=image->colormap[q->green].green;
                   q->blue=image->colormap[q->blue].blue;
                 }
-              q->opacity=Upscale(image->matte ?
+              q->opacity=ScaleByteToQuantum(image->matte ?
                 MaxRGB-(*(p+number_pixels*3)) : OpaqueOpacity);
               p++;
               q++;
@@ -1060,11 +1060,11 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
             break;
           for (x=0; x < (long) image->columns; x++)
           {
-            *q=Downscale(p->red);
-            *(q+number_pixels)=Downscale(p->green);
-            *(q+number_pixels*2)=Downscale(p->blue);
+            *q=ScaleQuantumToByte(p->red);
+            *(q+number_pixels)=ScaleQuantumToByte(p->green);
+            *(q+number_pixels*2)=ScaleQuantumToByte(p->blue);
             if (image->matte)
-              *(q+number_pixels*3)=MaxRGB-Downscale(p->opacity);
+              *(q+number_pixels*3)=MaxRGB-ScaleQuantumToByte(p->opacity);
             p++;
             q++;
           }
@@ -1088,11 +1088,11 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
               "Memory allocation failed",image);
           q=viff_colormap;
           for (i=0; i < (long) image->colors; i++)
-            *q++=Downscale(image->colormap[i].red);
+            *q++=ScaleQuantumToByte(image->colormap[i].red);
           for (i=0; i < (long) image->colors; i++)
-            *q++=Downscale(image->colormap[i].green);
+            *q++=ScaleQuantumToByte(image->colormap[i].green);
           for (i=0; i < (long) image->colors; i++)
-            *q++=Downscale(image->colormap[i].blue);
+            *q++=ScaleQuantumToByte(image->colormap[i].blue);
           (void) WriteBlob(image,3*image->colors,(char *) viff_colormap);
           LiberateMemory((void **) &viff_colormap);
           /*

@@ -480,17 +480,17 @@ MagickExport unsigned int SignatureImage(Image *image)
     q=message;
     for (x=0; x < (long) image->columns; x++)
     {
-      quantum=NormalizeSignature(p->red);
+      quantum=ScaleQuantumToUnsignedLong(p->red);
       *q++=(unsigned char) (quantum >> 24);
       *q++=(unsigned char) (quantum >> 16);
       *q++=(unsigned char) (quantum >> 8);
       *q++=(unsigned char) quantum;
-      quantum=NormalizeSignature(p->green);
+      quantum=ScaleQuantumToUnsignedLong(p->green);
       *q++=(unsigned char) (quantum >> 24);
       *q++=(unsigned char) (quantum >> 16);
       *q++=(unsigned char) (quantum >> 8);
       *q++=(unsigned char) quantum;
-      quantum=NormalizeSignature(p->blue);
+      quantum=ScaleQuantumToUnsignedLong(p->blue);
       *q++=(unsigned char) (quantum >> 24);
       *q++=(unsigned char) (quantum >> 16);
       *q++=(unsigned char) (quantum >> 8);
@@ -499,13 +499,13 @@ MagickExport unsigned int SignatureImage(Image *image)
         {
           if (image->colorspace == CMYKColorspace)
             {
-              quantum=NormalizeSignature(p->opacity);
+              quantum=ScaleQuantumToUnsignedLong(p->opacity);
               *q++=(unsigned char) (quantum >> 24);
               *q++=(unsigned char) (quantum >> 16);
               *q++=(unsigned char) (quantum >> 8);
               *q++=(unsigned char) quantum;
             }
-          quantum=NormalizeSignature(OpaqueOpacity);
+          quantum=ScaleQuantumToUnsignedLong(OpaqueOpacity);
           *q++=(unsigned char) (quantum >> 24);
           *q++=(unsigned char) (quantum >> 16);
           *q++=(unsigned char) (quantum >> 8);
@@ -513,14 +513,14 @@ MagickExport unsigned int SignatureImage(Image *image)
         }
       else
         {
-          quantum=NormalizeSignature(p->opacity);
+          quantum=ScaleQuantumToUnsignedLong(p->opacity);
           *q++=(unsigned char) (quantum >> 24);
           *q++=(unsigned char) (quantum >> 16);
           *q++=(unsigned char) (quantum >> 8);
           *q++=(unsigned char) quantum;
           if (image->colorspace == CMYKColorspace)
             {
-              quantum=NormalizeSignature(indexes[x]);
+              quantum=ScaleQuantumToUnsignedLong(indexes[x]);
               *q++=(unsigned char) (quantum >> 24);
               *q++=(unsigned char) (quantum >> 16);
               *q++=(unsigned char) (quantum >> 8);

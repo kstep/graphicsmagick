@@ -3150,11 +3150,11 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             {
               index=(*p | *(p+1) << 8);
               if (element == 0x1201)
-                image->colormap[i].red=XDownscale(index);
+                image->colormap[i].red=ScaleQuantumToShort(index);
               if (element == 0x1202)
-                image->colormap[i].green=XDownscale(index);
+                image->colormap[i].green=ScaleQuantumToShort(index);
               if (element == 0x1203)
-                image->colormap[i].blue=XDownscale(index);
+                image->colormap[i].blue=ScaleQuantumToShort(index);
               p+=2;
             }
             break;
@@ -3294,11 +3294,11 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             {
               switch ((int) i)
               {
-                case 0: q->red=Upscale(ReadBlobByte(image)); break;
-                case 1: q->green=Upscale(ReadBlobByte(image)); break;
-                case 2: q->blue=Upscale(ReadBlobByte(image)); break;
+                case 0: q->red=ScaleByteToQuantum(ReadBlobByte(image)); break;
+                case 1: q->green=ScaleByteToQuantum(ReadBlobByte(image)); break;
+                case 2: q->blue=ScaleByteToQuantum(ReadBlobByte(image)); break;
                 case 3: q->opacity=(Quantum)
-                  (MaxRGB-Upscale(ReadBlobByte(image))); break;
+                  (MaxRGB-ScaleByteToQuantum(ReadBlobByte(image))); break;
                 default: break;
               }
               q++;

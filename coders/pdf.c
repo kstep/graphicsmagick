@@ -1205,7 +1205,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                 break;
               for (x=0; x < (long) image->columns; x++)
               {
-                *q++=Downscale(Intensity(p));
+                *q++=ScaleQuantumToByte(Intensity(p));
                 p++;
               }
               if (image->previous == (Image *) NULL)
@@ -1241,7 +1241,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                 break;
               for (x=0; x < (long) image->columns; x++)
               {
-                Ascii85Encode(image,Downscale(Intensity(p)));
+                Ascii85Encode(image,ScaleQuantumToByte(Intensity(p)));
                 p++;
               }
               if (image->previous == (Image *) NULL)
@@ -1306,17 +1306,17 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
               {
                 if (image->matte && (p->opacity == TransparentOpacity))
                   {
-                    *q++=Downscale(MaxRGB);
-                    *q++=Downscale(MaxRGB);
-                    *q++=Downscale(MaxRGB);
+                    *q++=ScaleQuantumToByte(MaxRGB);
+                    *q++=ScaleQuantumToByte(MaxRGB);
+                    *q++=ScaleQuantumToByte(MaxRGB);
                     p++;
                     continue;
                   }
-                *q++=Downscale(p->red);
-                *q++=Downscale(p->green);
-                *q++=Downscale(p->blue);
+                *q++=ScaleQuantumToByte(p->red);
+                *q++=ScaleQuantumToByte(p->green);
+                *q++=ScaleQuantumToByte(p->blue);
                 if (image->colorspace == CMYKColorspace)
-                  *q++=Downscale(p->opacity);
+                  *q++=ScaleQuantumToByte(p->opacity);
                 p++;
               }
               if (image->previous == (Image *) NULL)
@@ -1354,16 +1354,16 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
               {
                 if (image->matte && (p->opacity == TransparentOpacity))
                   {
-                    Ascii85Encode(image,Downscale(MaxRGB));
-                    Ascii85Encode(image,Downscale(MaxRGB));
-                    Ascii85Encode(image,Downscale(MaxRGB));
+                    Ascii85Encode(image,ScaleQuantumToByte(MaxRGB));
+                    Ascii85Encode(image,ScaleQuantumToByte(MaxRGB));
+                    Ascii85Encode(image,ScaleQuantumToByte(MaxRGB));
                     continue;
                   }
-                Ascii85Encode(image,Downscale(p->red));
-                Ascii85Encode(image,Downscale(p->green));
-                Ascii85Encode(image,Downscale(p->blue));
+                Ascii85Encode(image,ScaleQuantumToByte(p->red));
+                Ascii85Encode(image,ScaleQuantumToByte(p->green));
+                Ascii85Encode(image,ScaleQuantumToByte(p->blue));
                 if (image->colorspace == CMYKColorspace)
-                  Ascii85Encode(image,Downscale(p->opacity));
+                  Ascii85Encode(image,ScaleQuantumToByte(p->opacity));
                 p++;
               }
               if (image->previous == (Image *) NULL)
@@ -1600,7 +1600,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                 break;
               for (x=0; x < (long) tile_image->columns; x++)
               {
-                *q++=Downscale(Intensity(p));
+                *q++=ScaleQuantumToByte(Intensity(p));
                 p++;
               }
             }
@@ -1633,7 +1633,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                 break;
               for (x=0; x < (long) tile_image->columns; x++)
               {
-                Ascii85Encode(image,Downscale(Intensity(p)));
+                Ascii85Encode(image,ScaleQuantumToByte(Intensity(p)));
                 p++;
               }
             }
@@ -1699,16 +1699,16 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
               {
                 if (tile_image->matte && (p->opacity == TransparentOpacity))
                   {
-                    *q++=Downscale(MaxRGB);
-                    *q++=Downscale(MaxRGB);
-                    *q++=Downscale(MaxRGB);
+                    *q++=ScaleQuantumToByte(MaxRGB);
+                    *q++=ScaleQuantumToByte(MaxRGB);
+                    *q++=ScaleQuantumToByte(MaxRGB);
                     continue;
                   }
-                *q++=Downscale(p->red);
-                *q++=Downscale(p->green);
-                *q++=Downscale(p->blue);
+                *q++=ScaleQuantumToByte(p->red);
+                *q++=ScaleQuantumToByte(p->green);
+                *q++=ScaleQuantumToByte(p->blue);
                 if (image->colorspace == CMYKColorspace)
-                  *q++=Downscale(p->opacity);
+                  *q++=ScaleQuantumToByte(p->opacity);
                 p++;
               }
             }
@@ -1743,16 +1743,16 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
               {
                 if (tile_image->matte && (p->opacity == TransparentOpacity))
                   {
-                    Ascii85Encode(image,Downscale(MaxRGB));
-                    Ascii85Encode(image,Downscale(MaxRGB));
-                    Ascii85Encode(image,Downscale(MaxRGB));
+                    Ascii85Encode(image,ScaleQuantumToByte(MaxRGB));
+                    Ascii85Encode(image,ScaleQuantumToByte(MaxRGB));
+                    Ascii85Encode(image,ScaleQuantumToByte(MaxRGB));
                     continue;
                   }
-                Ascii85Encode(image,Downscale(p->red));
-                Ascii85Encode(image,Downscale(p->green));
-                Ascii85Encode(image,Downscale(p->blue));
+                Ascii85Encode(image,ScaleQuantumToByte(p->red));
+                Ascii85Encode(image,ScaleQuantumToByte(p->green));
+                Ascii85Encode(image,ScaleQuantumToByte(p->blue));
                 if (image->colorspace == CMYKColorspace)
-                  Ascii85Encode(image,Downscale(p->opacity));
+                  Ascii85Encode(image,ScaleQuantumToByte(p->opacity));
                 p++;
               }
             }
@@ -1872,14 +1872,14 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
         {
           if (compression == NoCompression)
             {
-              Ascii85Encode(image,Downscale(image->colormap[i].red));
-              Ascii85Encode(image,Downscale(image->colormap[i].green));
-              Ascii85Encode(image,Downscale(image->colormap[i].blue));
+              Ascii85Encode(image,ScaleQuantumToByte(image->colormap[i].red));
+              Ascii85Encode(image,ScaleQuantumToByte(image->colormap[i].green));
+              Ascii85Encode(image,ScaleQuantumToByte(image->colormap[i].blue));
               continue;
             }
-          (void) WriteBlobByte(image,Downscale(image->colormap[i].red));
-          (void) WriteBlobByte(image,Downscale(image->colormap[i].green));
-          (void) WriteBlobByte(image,Downscale(image->colormap[i].blue));
+          (void) WriteBlobByte(image,ScaleQuantumToByte(image->colormap[i].red));
+          (void) WriteBlobByte(image,ScaleQuantumToByte(image->colormap[i].green));
+          (void) WriteBlobByte(image,ScaleQuantumToByte(image->colormap[i].blue));
         }
         if (compression == NoCompression)
           Ascii85Flush(image);

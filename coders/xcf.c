@@ -319,17 +319,17 @@ static int load_tile (Image* image, Image* tile_image, XCFDocInfo* inDocInfo,
   */
   for( i=0; i<nmemb_read_successfully;i++ ) {
     if ( inDocInfo->image_type == GIMP_GRAY ) {
-      q->red    = Upscale(*graydata);
-      q->green  = Upscale(*graydata);
-      q->blue    = Upscale(*graydata);
-      q->opacity  = Upscale(255-inLayerInfo->opacity);
+      q->red    = ScaleByteToQuantum(*graydata);
+      q->green  = ScaleByteToQuantum(*graydata);
+      q->blue    = ScaleByteToQuantum(*graydata);
+      q->opacity  = ScaleByteToQuantum(255-inLayerInfo->opacity);
 
       graydata++;
     } else if ( inDocInfo->image_type == GIMP_RGB ) {
-      q->red    = Upscale(xcfdata->red);
-      q->green  = Upscale(xcfdata->green);
-      q->blue    = Upscale(xcfdata->blue);
-      q->opacity  = xcfdata->opacity==0 ? TransparentOpacity : Upscale(255-inLayerInfo->opacity);  
+      q->red    = ScaleByteToQuantum(xcfdata->red);
+      q->green  = ScaleByteToQuantum(xcfdata->green);
+      q->blue    = ScaleByteToQuantum(xcfdata->blue);
+      q->opacity  = xcfdata->opacity==0 ? TransparentOpacity : ScaleByteToQuantum(255-inLayerInfo->opacity);  
 
       xcfdata++;
     };
@@ -410,17 +410,17 @@ static int load_tile_rle (Image* image, Image* tile_image, XCFDocInfo* inDocInfo
       data = *xcfdata++;
       switch (i) {
         case 0:  
-        q->red    = Upscale(data);  
+        q->red    = ScaleByteToQuantum(data);  
         if ( inDocInfo->image_type == GIMP_GRAY ) {
-          q->green  = Upscale(data);
-          q->blue    = Upscale(data);
-          q->opacity  = Upscale(255-inLayerInfo->opacity);
+          q->green  = ScaleByteToQuantum(data);
+          q->blue    = ScaleByteToQuantum(data);
+          q->opacity  = ScaleByteToQuantum(255-inLayerInfo->opacity);
         }
         break;
-        case 1:  q->green  = Upscale(data);  break;
-        case 2:  q->blue    = Upscale(data);  break;
+        case 1:  q->green  = ScaleByteToQuantum(data);  break;
+        case 2:  q->blue    = ScaleByteToQuantum(data);  break;
         case 3:  
-          q->opacity = data==0 ? TransparentOpacity : Upscale(255-inLayerInfo->opacity);  
+          q->opacity = data==0 ? TransparentOpacity : ScaleByteToQuantum(255-inLayerInfo->opacity);  
         break;
       }
       q++;
@@ -460,17 +460,17 @@ static int load_tile_rle (Image* image, Image* tile_image, XCFDocInfo* inDocInfo
       data = val;
       switch (i) {
         case 0:  
-          q->red    = Upscale(data);  
+          q->red    = ScaleByteToQuantum(data);  
         if ( inDocInfo->image_type == GIMP_GRAY ) {
-          q->green  = Upscale(data);
-          q->blue    = Upscale(data);
-          q->opacity  = Upscale(255-inLayerInfo->opacity);
+          q->green  = ScaleByteToQuantum(data);
+          q->blue    = ScaleByteToQuantum(data);
+          q->opacity  = ScaleByteToQuantum(255-inLayerInfo->opacity);
         }
         break;
-        case 1:  q->green  = Upscale(data);  break;
-        case 2:  q->blue    = Upscale(data);  break;
+        case 1:  q->green  = ScaleByteToQuantum(data);  break;
+        case 2:  q->blue    = ScaleByteToQuantum(data);  break;
         case 3:  
-          q->opacity = data==0 ? TransparentOpacity : Upscale(255-inLayerInfo->opacity);  
+          q->opacity = data==0 ? TransparentOpacity : ScaleByteToQuantum(255-inLayerInfo->opacity);  
         break;
       }
       q++;

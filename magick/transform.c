@@ -1167,15 +1167,15 @@ MagickExport unsigned int ProfileImage(Image *image,const char *name,
               break;
             for (x=0; x < (long) image->columns; x++)
             {
-              alpha.red=XUpscale(q->red);
-              alpha.green=XUpscale(q->green);
-              alpha.blue=XUpscale(q->blue);
-              alpha.opacity=XUpscale(q->opacity);
+              alpha.red=ScaleShortToQuantum(q->red);
+              alpha.green=ScaleShortToQuantum(q->green);
+              alpha.blue=ScaleShortToQuantum(q->blue);
+              alpha.opacity=ScaleShortToQuantum(q->opacity);
               cmsDoTransform(transform,&alpha,&beta,1);
-              q->red=XDownscale(beta.red);
-              q->green=XDownscale(beta.green);
-              q->blue=XDownscale(beta.blue);
-              q->opacity=XDownscale(beta.opacity);
+              q->red=ScaleQuantumToShort(beta.red);
+              q->green=ScaleQuantumToShort(beta.green);
+              q->blue=ScaleQuantumToShort(beta.blue);
+              q->opacity=ScaleQuantumToShort(beta.opacity);
               q++;
             }
             if (!SyncImagePixels(image))

@@ -592,9 +592,9 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
               {
                 word=(*p++);
                 word|=(*p++ << 8);
-                q->red=Upscale(ScaleColor5to8((word >> 11) & 0x1f));
-                q->green=Upscale(ScaleColor6to8((word >> 5) & 0x3f));
-                q->blue=Upscale(ScaleColor5to8(word & 0x1f));
+                q->red=ScaleByteToQuantum(ScaleColor5to8((word >> 11) & 0x1f));
+                q->green=ScaleByteToQuantum(ScaleColor6to8((word >> 5) & 0x3f));
+                q->blue=ScaleByteToQuantum(ScaleColor5to8(word & 0x1f));
                 q++;
               }
               if (!SyncImagePixels(image))
@@ -620,11 +620,11 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 break;
               for (x=0; x < (long) image->columns; x++)
               {
-                q->blue=Upscale(*p++);
-                q->green=Upscale(*p++);
-                q->red=Upscale(*p++);
+                q->blue=ScaleByteToQuantum(*p++);
+                q->green=ScaleByteToQuantum(*p++);
+                q->red=ScaleByteToQuantum(*p++);
                 if (image->matte)
-                  q->opacity=Upscale(*p++);
+                  q->opacity=ScaleByteToQuantum(*p++);
                 q++;
               }
               if (!SyncImagePixels(image))
@@ -745,9 +745,9 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     "Memory allocation failed",image);
                 for (i=0; i < (long) number_colors; i++)
                 {
-                  colormap[i].blue=Upscale(ReadBlobByte(image));
-                  colormap[i].green=Upscale(ReadBlobByte(image));
-                  colormap[i].red=Upscale(ReadBlobByte(image));
+                  colormap[i].blue=ScaleByteToQuantum(ReadBlobByte(image));
+                  colormap[i].green=ScaleByteToQuantum(ReadBlobByte(image));
+                  colormap[i].red=ScaleByteToQuantum(ReadBlobByte(image));
                   (void) ReadBlobByte(image);
                   chunk_size-=4;
                 }

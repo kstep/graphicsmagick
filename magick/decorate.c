@@ -406,11 +406,11 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
 MagickExport unsigned int RaiseImage(Image *image,
   const RectangleInfo *raise_info,const int raise)
 {
-#define AccentuateFactor  Upscale(135)
-#define HighlightFactor  Upscale(190)
-#define ShadowFactor  Upscale(190)
+#define AccentuateFactor  ScaleByteToQuantum(135)
+#define HighlightFactor  ScaleByteToQuantum(190)
+#define ShadowFactor  ScaleByteToQuantum(190)
 #define RaiseImageText  "  Raise image...  "
-#define TroughFactor  Upscale(135)
+#define TroughFactor  ScaleByteToQuantum(135)
 
   Quantum
     foreground,

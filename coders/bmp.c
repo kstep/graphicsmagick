@@ -728,9 +728,9 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         p=bmp_colormap;
         for (i=0; i < (long) image->colors; i++)
         {
-          image->colormap[i].blue=Upscale(*p++);
-          image->colormap[i].green=Upscale(*p++);
-          image->colormap[i].red=Upscale(*p++);
+          image->colormap[i].blue=ScaleByteToQuantum(*p++);
+          image->colormap[i].green=ScaleByteToQuantum(*p++);
+          image->colormap[i].red=ScaleByteToQuantum(*p++);
           if (packet_size == 4)
             p++;
         }
@@ -964,19 +964,19 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             green=((pixel & bmp_info.green_mask) << shift.green) >> 16;
             blue=((pixel & bmp_info.blue_mask) << shift.blue) >> 16;
             opacity=((pixel & bmp_info.alpha_mask) << shift.opacity) >> 16;
-            q->red=XDownscale(red);
+            q->red=ScaleQuantumToShort(red);
             if (quantum_bits.red == 5)
               q->red|=(q->red >> 5);
-            q->green=XDownscale(green);
+            q->green=ScaleQuantumToShort(green);
             if (quantum_bits.green == 5)
               q->green|=(q->green >> 5);
             if (quantum_bits.green == 6)
               q->green|=(q->green >> 6);
-            q->blue=XDownscale(blue);
+            q->blue=ScaleQuantumToShort(blue);
             if (quantum_bits.blue == 5)
               q->blue|=(q->blue >> 5);
             if (image->matte)
-              q->opacity=XDownscale(opacity);
+              q->opacity=ScaleQuantumToShort(opacity);
 #if QuantumDepth == 16
             if (quantum_bits.blue <= 8)
               q->blue|=((q->blue & 0xff00) >> 8);
@@ -1011,9 +1011,9 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
           for (x=0; x < (long) image->columns; x++)
           {
-            q->blue=Upscale(*p++);
-            q->green=Upscale(*p++);
-            q->red=Upscale(*p++);
+            q->blue=ScaleByteToQuantum(*p++);
+            q->green=ScaleByteToQuantum(*p++);
+            q->red=ScaleByteToQuantum(*p++);
             q++;
           }
           if (!SyncImagePixels(image))
@@ -1053,11 +1053,11 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
             green=((pixel & bmp_info.green_mask) << shift.green) >> 16;
             blue=((pixel & bmp_info.blue_mask) << shift.blue) >> 16;
             opacity=((pixel & bmp_info.alpha_mask) << shift.opacity) >> 16;
-            q->red=XDownscale(red);
-            q->green=XDownscale(green);
-            q->blue=XDownscale(blue);
+            q->red=ScaleQuantumToShort(red);
+            q->green=ScaleQuantumToShort(green);
+            q->blue=ScaleQuantumToShort(blue);
             if (image->matte)
-              q->opacity=XDownscale(opacity);
+              q->opacity=ScaleQuantumToShort(opacity);
 #if QuantumDepth == 16
             if (quantum_bits.red == 8)
               q->red|=(q->red >> 8);
@@ -1433,11 +1433,11 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
           q=pixels+(image->rows-y-1)*bytes_per_line;
           for (x=0; x < (long) image->columns; x++)
           {
-            *q++=Downscale(p->blue);
-            *q++=Downscale(p->green);
-            *q++=Downscale(p->red);
+            *q++=ScaleQuantumToByte(p->blue);
+            *q++=ScaleQuantumToByte(p->green);
+            *q++=ScaleQuantumToByte(p->red);
             if (bmp_info.bits_per_pixel == 32)
-              *q++=Downscale(p->opacity);
+              *q++=ScaleQuantumToByte(p->opacity);
             p++;
           }
           if (image->previous == (Image *) NULL)
@@ -1579,9 +1579,9 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
         q=bmp_colormap;
         for (i=0; i < (long) image->colors; i++)
         {
-          *q++=Downscale(image->colormap[i].blue);
-          *q++=Downscale(image->colormap[i].green);
-          *q++=Downscale(image->colormap[i].red);
+          *q++=ScaleQuantumToByte(image->colormap[i].blue);
+          *q++=ScaleQuantumToByte(image->colormap[i].green);
+          *q++=ScaleQuantumToByte(image->colormap[i].red);
           *q++=(Quantum) 0x0;
         }
         for ( ; i < (1L << bmp_info.bits_per_pixel); i++)

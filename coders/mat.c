@@ -113,9 +113,9 @@ register IndexPacket *indexes;
        break;
            for (x=0; x < (long) image->columns; x++)
               {
-              q->red=XDownscale(*(unsigned short *)p);
-              q->green=XDownscale(*(unsigned short *)p);
-              q->blue=XDownscale(*(unsigned short *)p);
+              q->red=ScaleQuantumToShort(*(unsigned short *)p);
+              q->green=ScaleQuantumToShort(*(unsigned short *)p);
+              q->blue=ScaleQuantumToShort(*(unsigned short *)p);
         p+=2;
               q++;
               }
@@ -144,9 +144,9 @@ register PixelPacket *q;
    for (x=0; x < (long) image->columns; x++)
           {
     f=(double)MaxRGB* (*p-Min)/(Max-Min);
-          q->red=XDownscale(f);
-    q->green=XDownscale(f);
-    q->blue=XDownscale(f);
+          q->red=ScaleQuantumToShort(f);
+    q->green=ScaleQuantumToShort(f);
+    q->blue=ScaleQuantumToShort(f);
           p++;
           q++;
           }
@@ -387,9 +387,9 @@ NoMemory:  ThrowReaderException(ResourceLimitError,"Memory allocation failed",
    
      for (i=0; i < (long)image->colors; i++)
            {
-           image->colormap[i].red=Upscale(i);
-           image->colormap[i].green=Upscale(i);
-           image->colormap[i].blue=Upscale(i);
+           image->colormap[i].red=ScaleByteToQuantum(i);
+           image->colormap[i].green=ScaleByteToQuantum(i);
+           image->colormap[i].blue=ScaleByteToQuantum(i);
            }
      }      
 
