@@ -36,13 +36,11 @@
 		<LI><A HREF="#destroyimageinfo">DestroyImageInfo</A></LI>
 		<LI><A HREF="#destroyimages">DestroyImages</A></LI>
 		<LI><A HREF="#displayimages">DisplayImages</A></LI>
-		<LI><A HREF="#getimageboundingbox">GetImageBoundingBox</A></LI>
 		<LI><A HREF="#getimagedepth">GetImageDepth</A></LI>
 		<LI><A HREF="#getimageinfo">GetImageInfo</A></LI>
 		<LI><A HREF="#getimagetype">GetImageType</A></LI>
 		<LI><A HREF="#getnextimage">GetNextImage</A></LI>
 		<LI><A HREF="#getnumberscenes">GetNumberScenes</A></LI>
-		<LI><A HREF="#getpageinfo">GetPageInfo</A></LI>
 		<LI><A HREF="#getpixelpacket">GetPixelPacket</A></LI>
 		<LI><A HREF="#isgeometry">IsGeometry</A></LI>
 		<LI><A HREF="#isimagesequal">IsImagesEqual</A></LI>
@@ -94,13 +92,11 @@
 <P>void  <STRONG>DestroyImageInfo</STRONG>( ImageInfo *image_info );</P>
 <P>void  <STRONG>DestroyImages</STRONG>( Image *image );</P>
 <P>unsigned int  <STRONG>DisplayImages</STRONG>( const ImageInfo *image_info, Image *image );</P>
-<P>RectangleInfo  <STRONG>GetImageBoundingBox</STRONG>( Image *image );</P>
 <P>unsigned int  <STRONG>GetImageDepth</STRONG>( Image *image );</P>
 <P>void  <STRONG>GetImageInfo</STRONG>( ImageInfo *image_info );</P>
 <P>ImageType  <STRONG>GetImageType</STRONG>( Image *image );</P>
 <P>Image * <STRONG>GetNextImage</STRONG>( Image *image );</P>
 <P>unsigned int  <STRONG>GetNumberScenes</STRONG>( const Image *image );</P>
-<P>void  <STRONG>GetPageInfo</STRONG>( RectangleInfo *page );</P>
 <P>void  <STRONG>GetPixelPacket</STRONG>( PixelPacket *pixel );</P>
 <P>unsigned int  <STRONG>IsGeometry</STRONG>( const char *geometry );</P>
 <P>unsigned int  <STRONG>IsImageTainted</STRONG>( const Image *image );</P>
@@ -337,154 +333,102 @@ The file, typically stdout.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="destroyimage">DestroyImage</A></H2>
-<P>Method DestroyImage deallocates memory associated with an image.</P>
-<P>The format of the DestroyImage method is:</P>
+<blockquote>DestroyImage ( ) deallocates memory associated with an image.; </blockquote><P>The format of the DestroyImage method is:</P>
 <blockquote>void DestroyImage ( <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>
-The address of a structure of type Image.
+The image.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="destroyimageinfo">DestroyImageInfo</A></H2>
-<P>Method DestroyImageInfo deallocates memory associated with an ImageInfo structure.</P>
-<P>The format of the DestroyImageInfo method is:</P>
+<blockquote>DestroyImageInfo ( ) deallocates memory associated with an <A HREF="types/ImageInfo.html">ImageInfo</A> structure.; </blockquote><P>The format of the DestroyImageInfo method is:</P>
 <blockquote>void DestroyImageInfo ( <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>image_info:</STRONG><BR>
 <DD>
-Specifies a pointer to an ImageInfo structure.
+The image info.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="destroyimages">DestroyImages</A></H2>
-<P>Method DestroyImages deallocates memory associated with a linked list of images.</P>
-<P>The format of the DestroyImages method is:</P>
+<blockquote>DestroyImages ( ) deallocates memory associated with all the images in asequence.; </blockquote><P>The format of the DestroyImages method is:</P>
 <blockquote>void DestroyImages ( <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>
-The address of a structure of type Image.
+The image sequence.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="displayimages">DisplayImages</A></H2>
-<P>Method DisplayImages displays one or more images to an 
-<FONT SIZE=-1>X</FONT> window.</P>
-<P>The format of the AllocateNextImage method is:</P>
+<blockquote>DisplayImages ( ) displays an image sequence to any X windowscreen. It returns a value other than 0 if successful. Check theexception member of image to determine the reason for any failure.; </blockquote><P>The format of the AllocateNextImage method is:</P>
 <blockquote>unsigned int DisplayImages ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG><A NAME="item_o_status%3A">status:</A></STRONG><BR>
-<DD>
-Method DisplayImages returns True if the images are displayed in an 
-<FONT SIZE=-1>X</FONT> window, otherwise False is returned.
-<P></P>
 <p><dt><STRONG>image_info:</STRONG><BR>
 <DD>
-Specifies a pointer to an ImageInfo structure.
+The image info.
 <P></P>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>
-The address of a structure of type Image.
-<P></P></DL></DL>
-<P>
-<H2><A NAME="getimageboundingbox">GetImageBoundingBox</A></H2>
-<P>Method GetImageBoundingBox returns the bounding box of an image canvas.</P>
-<P>The format of the GetImageBoundingBox method is:</P>
-<blockquote><A HREF="types/RectangleInfo.html">RectangleInfo</A> GetImageBoundingBox ( <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
-<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DL>
-<p><dt><STRONG><A NAME="item_o_bounds%3A">bounds:</A></STRONG><BR>
-<DD>
-Method GetImageBoundingBox returns the bounding box of an image canvas.
-<P></P>
-<p><dt><STRONG>image:</STRONG><BR>
-<DD>
-The address of a structure of type Image.
+The image.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="getimagedepth">GetImageDepth</A></H2>
-<P>Method GetImageDepth returns the depth of the image.</P>
-<P>The format of the GetImageDepth method is:</P>
+<blockquote>GetImageDepth ( ) returns the depth of the image, either 8 or 16 bits. Bydefault, pixels components are stored as 16-bit two byte unsigned shortintegers that range in value from 0 to 65535. However, if all the pixelshave lower-order bytes of zero, the image is considered to have a depth of8-bit.; </blockquote><P>The format of the GetImageDepth method is:</P>
 <blockquote>unsigned int GetImageDepth ( <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG><A NAME="item_o_depth%3A">depth:</A></STRONG><BR>
-<DD>
-Method GetImageDepth returns the depth of the image.
-<P></P>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>
-The address of a structure of type Image.
+The image.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="getimageinfo">GetImageInfo</A></H2>
-<P>Method GetImageInfo initializes the ImageInfo structure.</P>
-<P>The format of the GetImageInfo method is:</P>
+<blockquote>GetImageInfo ( ) initializes the <A HREF="types/ImageInfo.html">ImageInfo</A> structure to default values.; </blockquote><P>The format of the GetImageInfo method is:</P>
 <blockquote>void GetImageInfo ( <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>image_info:</STRONG><BR>
 <DD>
-Specifies a pointer to an ImageInfo structure.
+The image info.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="getimagetype">GetImageType</A></H2>
-<P>Method GetImageType returns the type of image (e.g.  bilevel, palette, etc).</P>
+<blockquote>GetImageType ( ) returns the type of image:; </blockquote><PRE>
+      Bilevel        Grayscale       GrayscaleMatte
+      Palette        PaletteMatte    TrueColor
+      TrueColorMatte ColorSeparation ColorSeparationMatte</PRE>
 <P>The format of the GetImageType method is:</P>
 <blockquote><A HREF="types/Enumerations.html#ImageType">ImageType</A> GetImageType ( <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG><A NAME="item_o_type%3A">type:</A></STRONG><BR>
-<DD>
-Method GetImageType returns a ImageType enum that specifies the type of the specified image (e.g.  bilevel, palette, etc).
-<P></P>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>
-The address of a structure of type Image.
+The image.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="getnextimage">GetNextImage</A></H2>
-<P>Method GetNextImage returns the next image in an image sequence.</P>
-<P>The format of the GetNextImage method is:</P>
+<blockquote>GetNextImage ( ) returns the next image in an image sequence.; </blockquote><P>The format of the GetNextImage method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *GetNextImage ( <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG><A NAME="item_o_next%3A">next:</A></STRONG><BR>
-<DD>
-Method GetNextImage returns the next image in an image sequence.
-<P></P>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>
-The address of a structure of type Image.
+The image.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="getnumberscenes">GetNumberScenes</A></H2>
-<P>Method GetNumberScenes returns the number of scenes in an image sequence.</P>
+<P>Method GetNumberScenes returns the number of images in an image sequence.</P>
 <P>The format of the GetNumberScenes method is:</P>
 <blockquote>unsigned int GetNumberScenes ( const <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG><A NAME="item_o_scenes%3A">scenes:</A></STRONG><BR>
-<DD>
-Method GetNumberScenes returns the number of scenes in an image sequence.
-<P></P>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>
-The address of a structure of type Image.
-<P></P></DL></DL>
-<P>
-<H2><A NAME="getpageinfo">GetPageInfo</A></H2>
-<P>Method GetPageInfo initializes the image page structure.</P>
-<P>The format of the GetPageInfo method is:</P>
-<blockquote>void GetPageInfo ( <A HREF="types/RectangleInfo.html">RectangleInfo</A> *page ); </blockquote><P>
-<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DL>
-<p><dt><STRONG><A NAME="item_o_page%3A">page:</A></STRONG><BR>
-<DD>
-Specifies a pointer to a RectangleInfo structure.
+The image.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="getpixelpacket">GetPixelPacket</A></H2>
@@ -504,7 +448,7 @@ Specifies a pointer to a PixelPacket structure.
 <blockquote>unsigned int IsGeometry ( const char *geometry ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG>status:</STRONG><BR>
+<p><dt><STRONG><A NAME="item_o_status%3A">status:</A></STRONG><BR>
 <DD>
 Method IsGeometry returns True if the geometry specification is valid otherwise False is returned.
 <P></P>
@@ -728,7 +672,7 @@ Method SetImageDepth returns True if the image depth is set.
 <DD>
 The address of a structure of type Image.
 <P></P>
-<p><dt><STRONG>depth:</STRONG><BR>
+<p><dt><STRONG><A NAME="item_o_depth%3A">depth:</A></STRONG><BR>
 <DD>
 specified the image depth.
 <P></P></DL></DL>

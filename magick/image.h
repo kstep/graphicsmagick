@@ -765,8 +765,6 @@ extern MagickExport void
   DestroyMontageInfo(MontageInfo *),
   GetImageInfo(ImageInfo *),
   GetMontageInfo(const ImageInfo *,MontageInfo *),
-  GetPageInfo(RectangleInfo *),
-  GetPixelPacket(PixelPacket *),
   MagickIncarnate(const char *),
   Register8BIMImage(void),
   RegisterARTImage(void),

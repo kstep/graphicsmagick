@@ -1196,7 +1196,8 @@ MagickExport unsigned int QueryColorDatabase(const char *name,
     Initialize color return value.
   */
   assert(color != (PixelPacket *) NULL);
-  GetPixelPacket(color);
+  memset(color,0,sizeof(PixelPacket));
+  color->opacity=TransparentOpacity;
   if ((name == (char *) NULL) || (*name == '\0'))
     name=BackgroundColor;
   while (isspace((int) (*name)))

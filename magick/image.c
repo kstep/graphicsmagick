@@ -2865,7 +2865,7 @@ MagickExport unsigned int GetNumberScenes(const Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   G e t P i x e l P a c k e t                                               %
++   G e t P i x e l P a c k e t                                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -2886,9 +2886,7 @@ MagickExport unsigned int GetNumberScenes(const Image *image)
 MagickExport void GetPixelPacket(PixelPacket *pixel)
 {
   assert(pixel != (PixelPacket *) NULL);
-  pixel->red=0;
-  pixel->green=0;
-  pixel->blue=0;
+  memset(pixel,0,sizeof(PixelPacket));
   pixel->opacity=TransparentOpacity;
 }
 
