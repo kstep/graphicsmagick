@@ -56,6 +56,10 @@
 2003-05-02  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> magick/semaphore.c (struct SemaphoreInfo): Added
+        `locked' and `thread_id' members. These are used to record
+        if the semaphore is locked, and to validate the thread
+        ID of the unlocker.<BR>
   <LI> www/links.html: Added link to Nathan Day's MagickDocs
         "ImageMagick and GraphicsMagick documentation project"
         site.<BR>
