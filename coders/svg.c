@@ -646,6 +646,7 @@ static void SVGStartDocument(void *context)
   svg_info->graphic_context[0].linewidth=1.0;
   svg_info->graphic_context[0].pointsize=12.0;
   svg_info->graphic_context[0].opacity=100.0;
+  svg_info->graphic_context[0].angle=0.0;
   for (i=0; i < 6; i++)
     svg_info->graphic_context[0].affine[i]=(i == 0) || (i == 3) ? 1.0 : 0.0;
   GetExceptionInfo(svg_info->exception);
@@ -1210,7 +1211,7 @@ static void SVGEndElement(void *context,const xmlChar *name)
             (void) fprintf(svg_info->file,"-%s",p->font_weight);
       (void) fprintf(svg_info->file,"\n");
     }
-  (void) fprintf(svg_info->file,"angle %f\n",p->angle);
+  (void) fprintf(svg_info->file,"angle %g\n",p->angle);
   (void) fprintf(svg_info->file,"affine ");
   for (i=0; i < 6; i++)
     (void) fprintf(svg_info->file,"%g ",p->affine[i]);
@@ -1638,8 +1639,8 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Open draw file.
   */
-  TemporaryFilename(filename);
-  /* FormatString(filename,"C:\\Temp\\%s.mvg",image_info->filename); */
+  /* TemporaryFilename(filename); */
+  FormatString(filename,"C:\\Temp\\%s.mvg",image_info->filename);
   file=fopen(filename,"w");
   if (file == (FILE *) NULL)
     ThrowReaderException(FileOpenWarning,"Unable to open file",image);
@@ -1647,6 +1648,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Parse SVG file.
   */
   memset(&svg_info,0,sizeof(SVGInfo));
+  svg_info.element.angle=0.0;
   svg_info.file=file;
   svg_info.verbose=image_info->verbose;
   svg_info.exception=exception;
