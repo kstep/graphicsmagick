@@ -11,11 +11,13 @@
 #define HasBZLIB
 #define HasHDF
 #define HasFPX
+#define HasJP2
 #define HAVE_MMAP
 #define HasXML
 #define HAVE_LIBXML_XMLERROR_H
 #define HAVE_FREETYPE_FREETYPE_H
 #define QuantumSize 16
+//#define HasLZW
 //#define HasAUTOTRACE
 //#define HasWMF
 #endif
