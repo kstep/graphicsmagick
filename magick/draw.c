@@ -2318,7 +2318,7 @@ static double IntersectPrimitive(PrimitiveInfo *primitive_info,
               crossings++;
         }
         poly_opacity=crossings & 0x01 ? 1.0 : 0.0;
-        minimum_distance=DistanceToLine(point,&primitive_info->point,&q->point);
+        minimum_distance=DistanceToLine(point,&q->point,&primitive_info->point);
         for (p=primitive_info ; p < q; p++)
         {
           distance=DistanceToLine(point,&p->point,&(p+1)->point);
@@ -2336,7 +2336,9 @@ static double IntersectPrimitive(PrimitiveInfo *primitive_info,
         if (primitive_info->method == FillToBorderMethod)
           if ((opacity != 0.0) && (poly_opacity != 0.0))
             {
-              opacity=1.0-poly_opacity;
+              opacity=0.0;
+              for (p=primitive_info ; (p < q) && (opacity != 1.0); p++)
+                opacity=PixelOnLine(point,&p->point,&(p+1)->point,1.0,opacity);
               break;
             }
         opacity=Max(opacity,poly_opacity);
