@@ -49,6 +49,12 @@
 %
 */
 
+#if !defined(ColorMatchExact)
+#define ColorMatchExact(color,target) \
+   (((color).red == (target).red) && \
+    ((color).green == (target).green) && \
+    ((color).blue == (target).blue))
+#endif
 /*
   Include declarations.
 */
@@ -69,6 +75,8 @@
 #undef MNG_OBJECT_BUFFERS
 #undef MNG_BASI_SUPPORTED
 #define PNG_SORT_PALETTE
+
+#define PNG_NO_REDUCTIONS
 
 /*
   This is temporary until I set up malloc'ed object attributes array.
@@ -372,8 +380,7 @@ static unsigned int CompressColormapTransFirst(Image *image)
   int
     remap_needed,
     transparent_pixels,
-    k,
-    zero=0;
+    k;
 
   long
     j,
@@ -457,7 +464,7 @@ static unsigned int CompressColormapTransFirst(Image *image)
     */
     for (i=number_colors-1; i; i--)
     {
-      if (ColorMatch(image->colormap[i],image->background_color,zero))
+      if (ColorMatchExact(image->colormap[i],image->background_color))
         {
           marker[i]=True;
           break;
@@ -472,7 +479,7 @@ static unsigned int CompressColormapTransFirst(Image *image)
       {
         for (j=i+1; j<number_colors; j++)
           if ((opacity[i] == opacity[j]) &&
-              (ColorMatch(image->colormap[i],image->colormap[j],zero)))
+              (ColorMatchExact(image->colormap[i],image->colormap[j])))
             marker[j]=False;
        }
   /*
@@ -535,7 +542,7 @@ static unsigned int CompressColormapTransFirst(Image *image)
         for (j=i+1; j < number_colors; j++)
         {
           if ((opacity[i] == opacity[j]) &&
-              (ColorMatch(image->colormap[i],image->colormap[j],zero)))
+              (ColorMatchExact(image->colormap[i],image->colormap[j])))
             {
                map[j]=(IndexPacket) k;
                marker[j]=False;
@@ -687,8 +694,7 @@ static unsigned int ImageIsMonochrome(Image *image)
   register long
     i,
     x,
-    y,
-    zero=0;
+    y;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -697,7 +703,7 @@ static unsigned int ImageIsMonochrome(Image *image)
     {
       for (i=0; i < (long) image->colors; i++)
       {
-        if (!IsGray(image->colormap[i]) || ((image->colormap[i].red != zero)
+        if (!IsGray(image->colormap[i]) || ((image->colormap[i].red != 0)
             && (image->colormap[i].red != MaxRGB)))
           return(False);
       }
@@ -4272,8 +4278,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     need_iterations,
     need_matte,
     old_framing_mode,
-    use_global_plte,
-    zero=0;
+    use_global_plte;
 
   unsigned long
     rowbytes;
@@ -4912,6 +4917,9 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     /*
       Select the color type.
     */
+#ifdef PNG_NO_REDUCTIONS
+    if (image->storage_class == PseudoClass)
+#endif
     if (ImageIsMonochrome(image))
       {
         if (!image->matte)
@@ -4919,6 +4927,11 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
       }
     ping_info->color_type=PNG_COLOR_TYPE_RGB;
     matte=image->matte;
+#ifdef PNG_NO_REDUCTIONS
+    if (matte)
+      ping_info->color_type=PNG_COLOR_TYPE_RGB_ALPHA;
+    if (image->storage_class == PseudoClass)
+#endif
     if (matte)
       {
         ping_info->color_type=PNG_COLOR_TYPE_GRAY_ALPHA;
@@ -4989,7 +5002,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
               {
                 if (p->opacity != OpaqueOpacity)
                   {
-                    if (!ColorMatch(ping_info->trans_values,*p,zero))
+                    if (!ColorMatchExact(ping_info->trans_values,*p))
                     {
                        break;  /* Can't use RGB + tRNS for multiple transparent
                                   colors.  */
@@ -5001,7 +5014,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
                   }
                  else
                   {
-                    if (ColorMatch(ping_info->trans_values,*p,zero))
+                    if (ColorMatchExact(ping_info->trans_values,*p))
                         break; /* Can't use RGB + tRNS when another pixel
                                   having the same RGB samples is transparent. */
                   }
@@ -5028,7 +5041,12 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     matte=image->matte;
     if (ping_info->valid & PNG_INFO_tRNS)
       image->matte=False;
+#ifdef PNG_NO_REDUCTIONS
+    if (image->storage_class == PseudoClass &&
+        ImageIsGray(image) && (!image->matte || image->depth >= 8))
+#else
     if (ImageIsGray(image) && (!image->matte || image->depth >= 8))
+#endif
       {
         if (image->matte)
             ping_info->color_type=PNG_COLOR_TYPE_GRAY_ALPHA;
@@ -5177,7 +5195,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
               Identify which colormap entry is the background color.
             */
             for (i=0; i < (long) Max(number_colors-1,1); i++)
-              if (ColorMatch(ping_info->background,image->colormap[i],zero))
+              if (ColorMatchExact(ping_info->background,image->colormap[i]))
                 break;
             ping_info->background.index=(Quantum) i;
           }
