@@ -251,7 +251,7 @@ MagickExport const PixelPacket *AcquireCacheNexus(const Image *image,
     {
       span=Min(cache_info->columns-(x+u),columns-u);
       if ((((x+u) < 0) || ((x+u) >= (long) cache_info->columns)) ||
-          (((y+v) < 0) || ((y+v) >= (long) cache_info->rows)) || (span == 1))
+          (((y+v) < 0) || ((y+v) >= (long) cache_info->rows)))
         {
           /*
             Transfer a single pixel.
