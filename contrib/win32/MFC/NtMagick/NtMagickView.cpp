@@ -289,8 +289,11 @@ void CNtMagickView::DoDisplayImage()
           ++pPixels;
         }
 
-      // Need to write bitmap to device.  Could use SetDIBitsToDevice,
-      // BitBlt, or DrawDibDraw
+      // Now copy the bitmap to device.
+	HDC	hMemDC = CreateCompatibleDC( pDC->m_hDC );
+	SelectObject( hMemDC, hBitmap );
+	BitBlt( pDC->m_hDC, 0, 0, m_pImage->columns(), m_pImage->rows(), hMemDC, 0, 0, SRCCOPY );
+	DeleteObject( hMemDC );
 
 #endif
 
