@@ -38,32 +38,34 @@ extern "C" {
     Return the requested number of bits from the current position in a
     bit stream.
   */
-  static const unsigned int BitMasks[9] =
-    {
-      0x00, 0x01, 0x03, 0x07, 0x0f, 0x1f, 0x3f, 0x7f, 0xff
-    };
+
   static inline unsigned int ReadBitStream(BitStream *bit_stream,
     const unsigned int requested_bits)
   {
+    static const unsigned int BitMasks[9] =
+      {
+        /*
+          Same as (~(~0 << retrieve_bits))
+        */
+        0x00, 0x01, 0x03, 0x07, 0x0f, 0x1f, 0x3f, 0x7f, 0xff
+      };
+
     unsigned int
       current_bits = 0,
       quantum = 0;
 
     while (current_bits < requested_bits)
       {
-        unsigned int
-          retrieve_bits,
-          shift;
+        register unsigned int
+          retrieve_bits;
 
         retrieve_bits = (requested_bits - current_bits);
-
         if (retrieve_bits > bit_stream->bits_available)
           retrieve_bits = bit_stream->bits_available;
 
-        shift = bit_stream->bits_available - retrieve_bits;
-
         quantum = (quantum << retrieve_bits) |
-          ((*bit_stream->byte >> shift ) & BitMasks[retrieve_bits]);
+          ((*bit_stream->byte >> (bit_stream->bits_available - retrieve_bits))
+           & BitMasks[retrieve_bits]);
 
         current_bits += retrieve_bits;
         bit_stream->bits_available -= retrieve_bits;
