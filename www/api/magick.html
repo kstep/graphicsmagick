@@ -24,6 +24,7 @@
 		<LI><A HREF="#getimagemagick">GetImageMagick</A></LI>
 		<LI><A HREF="#getmagickconfigurepath">GetMagickConfigurePath</A></LI>
 		<LI><A HREF="#getmagickinfo">GetMagickInfo</A></LI>
+		<LI><A HREF="#getmagickversion">GetMagickVersion</A></LI>
 		<LI><A HREF="#listmagickinfo">ListMagickInfo</A></LI>
 		<LI><A HREF="#magickincarnate">MagickIncarnate</A></LI>
 		<LI><A HREF="#registermagickinfo">RegisterMagickInfo</A></LI>
@@ -47,6 +48,7 @@
 <P>char * <STRONG>GetImageMagick</STRONG>( const unsigned char *magick, const unsigned int length );</P>
 <P>char * <STRONG>GetMagickConfigurePath</STRONG>( const char *filename );</P>
 <P>MagickInfo * <STRONG>GetMagickInfo</STRONG>( const char *tag );</P>
+<P>char * <STRONG>GetMagickVersion</STRONG>( unsigned int *version );</P>
 <P>void  <STRONG>ListMagickInfo</STRONG>( 
 <FONT SIZE=-1>FILE</FONT> *file );</P>
 <P><STRONG>MagickIncarnate</STRONG>( const char *path );</P>
@@ -121,6 +123,22 @@ Method GetMagickInfo returns a pointer MagickInfo structure that matches the spe
 <p><dt><STRONG>tag:</STRONG><BR>
 <DD>
 a character string that represents the image format we are looking for.
+<P></P></DL></DL>
+<P>
+<H2><A NAME="getmagickversion">GetMagickVersion</A></H2>
+<P>Method GetMagickVersion returns the ImageMagick 
+<FONT SIZE=-1>API</FONT> version as a string and as a number.</P>
+<P>The format of the GetMagickVersion method is:</P>
+<blockquote>char *GetMagickVersion ( unsigned int *version ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
+<DL><DL>
+<p><dt><STRONG><A NAME="item_o_string%3A">string:</A></STRONG><BR>
+<DD>
+Method GetMagickVersion returns the ImageMagick version string.
+<P></P>
+<p><dt><STRONG><A NAME="item_o_version%3A">version:</A></STRONG><BR>
+<DD>
+The ImageMagick version is returned as a number.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="listmagickinfo">ListMagickInfo</A></H2>

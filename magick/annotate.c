@@ -483,7 +483,10 @@ static unsigned int RenderFont(Image *image,const DrawInfo *draw_info,
   if (LocaleCompare(image_info->magick,"ps") == 0)
     status=RenderPostscript(image,clone_info,offset,render,metrics);
   else
-    if (LocaleCompare(image_info->magick,"ttf") == 0)
+    if ((LocaleCompare(image_info->magick,"ttf") == 0) ||
+        (LocaleCompare(image_info->magick,"afm") == 0) ||
+        (LocaleCompare(image_info->magick,"pfb") == 0) ||
+        (LocaleCompare(image_info->magick,"pfm") == 0))
       status=RenderTruetype(image,clone_info,offset,render,metrics);
     else
       if (LocaleCompare(image_info->magick,"x") == 0)
@@ -650,8 +653,7 @@ static unsigned int RenderPostscript(Image *image,const DrawInfo *draw_info,
   if (!identity)
     (void) fprintf(file,"(%.1024s) stringwidth pop -0.5 mul -0.5 rmoveto\n",
       EscapeParenthesis(draw_info->text));
-  (void) fprintf(file,"(%.1024s) show\n",
-    EscapeParenthesis(draw_info->text));
+  (void) fprintf(file,"(%.1024s) show\n",EscapeParenthesis(draw_info->text));
   (void) fprintf(file,"showpage\n");
   (void) fclose(file);
   FormatString(geometry,"%dx%d+0+0!",(int) ceil(extent.x-0.5),
@@ -830,7 +832,7 @@ static int TraceQuadraticBezier(FT_Vector *control,FT_Vector *to,
 static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
   const PointInfo *offset,const unsigned int render,FontMetrics *metrics)
 {
-  typedef struct TGlyph_
+  typedef struct _GlyphInfo
   {
     FT_UInt
       id;
@@ -840,7 +842,7 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
 
     FT_Glyph
       image;
-  } TGlyph;
+  } GlyphInfo;
 
   char
     filename[MaxTextExtent];
@@ -860,30 +862,16 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
   FT_Matrix
     affine;
 
-  static FT_Outline_Funcs
-    OutlineMethods =
-    {
-      (FT_Outline_MoveTo_Func) TraceMoveTo,
-      (FT_Outline_LineTo_Func) TraceLineTo,
-      (FT_Outline_ConicTo_Func) TraceQuadraticBezier,
-      (FT_Outline_CubicTo_Func) TraceCubicBezier,
-      0,
-      0
-    };
-
-  FT_OutlineGlyph
-    outline;
-
   FT_Vector
-    delta,
     origin;
+
+  GlyphInfo
+    glyph,
+    last_glyph;
 
   int
     length,
     y;
-
-  PixelPacket
-    fill_color;
 
   PointInfo
     point,
@@ -892,15 +880,15 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
   Quantum
     opacity;
 
-  register unsigned char
-    *p;
-
   register int
     i,
     x;
 
   register PixelPacket
     *q;
+
+  register unsigned char
+    *p;
 
   SegmentInfo
     extent;
@@ -914,9 +902,16 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
   static FT_Library
     library = (FT_Library) NULL;
 
-  TGlyph
-    *glyph,
-    *glyphs;
+  static FT_Outline_Funcs
+    OutlineMethods =
+    {
+      (FT_Outline_MoveTo_Func) TraceMoveTo,
+      (FT_Outline_LineTo_Func) TraceLineTo,
+      (FT_Outline_ConicTo_Func) TraceQuadraticBezier,
+      (FT_Outline_CubicTo_Func) TraceCubicBezier,
+      0,
+      0
+    };
 
   unsigned short
     *unicode;
@@ -978,16 +973,15 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
         ThrowBinaryException(DelegateWarning,"Unable to read font",
           draw_info->font);
     }
+  /*
+    Set text size.
+  */
   resolution.x=72.0;
   resolution.y=72.0;
   if (draw_info->density != (char *) NULL)
     {
-      int
-        count;
-
-      count=sscanf(draw_info->density,"%lfx%lf",&resolution.x,
-        &resolution.y);
-      if (count != 2)
+      i=sscanf(draw_info->density,"%lfx%lf",&resolution.x,&resolution.y);
+      if (i != 2)
         resolution.y=resolution.x;
     }
   (void) FT_Set_Char_Size(face,(long int) (64.0*draw_info->pointsize),
@@ -997,8 +991,7 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
     Convert to Unicode.
   */
   unicode=ConvertTextToUnicode(draw_info->text,&length);
-  glyphs=(TGlyph *) AcquireMemory((length+1)*sizeof(TGlyph));
-  if ((unicode == (unsigned short *) NULL) || (glyphs == (TGlyph *) NULL))
+  if (unicode == (unsigned short *) NULL)
     {
       FT_Done_FreeType(library);
       ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
@@ -1017,74 +1010,60 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
   affine.yx=(FT_Fixed) (-65536.0*draw_info->affine.rx);
   affine.xy=(FT_Fixed) (-65536.0*draw_info->affine.ry);
   affine.yy=(FT_Fixed) (65536.0*draw_info->affine.sy);
-  glyph=glyphs;
+  clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
+  CloneString(&clone_info->primitive,"");
   for (i=0; i < length; i++)
   {
-    glyph->id=FT_Get_Char_Index(face,unicode[i]);
-    if ((glyph > glyphs) && glyph->id && FT_HAS_KERNING(face))
+    glyph.id=FT_Get_Char_Index(face,unicode[i]);
+    if ((glyph.id != 0) && (last_glyph.id != 0) && FT_HAS_KERNING(face))
       {
-        FT_Get_Kerning(face,(glyph-1)->id,glyph->id,ft_kerning_default,&delta);
+        FT_Vector
+          delta;
+
+        FT_Get_Kerning(face,last_glyph.id,glyph.id,ft_kerning_default,&delta);
         origin.x+=delta.x;
       }
-    glyph->origin=origin;
-    status=FT_Load_Glyph(face,glyph->id,FT_LOAD_DEFAULT);
+    glyph.origin=origin;
+    status=FT_Load_Glyph(face,glyph.id,FT_LOAD_DEFAULT);
     if (status != False)
       continue;
-    status=FT_Get_Glyph(face->glyph,&glyph->image);
+    status=FT_Get_Glyph(face->glyph,&glyph.image);
     if (status != False)
       continue;
-    FT_Vector_Transform(&glyph->origin,&affine);
-    FT_Glyph_Transform(glyph->image,&affine,&glyph->origin);
-    FT_Glyph_Get_CBox(glyph->image,ft_glyph_bbox_pixels,&bounding_box);
-    if (bounding_box.xMin < extent.x1)
-      extent.x1=bounding_box.xMin;
-    if (bounding_box.xMax > extent.x2)
-      extent.x2=bounding_box.xMax;
-    if (bounding_box.yMin < extent.y1)
-      extent.y1=bounding_box.yMin;
-    if (bounding_box.yMax > extent.y2)
-      extent.y2=bounding_box.yMax;
-    origin.x+=face->glyph->advance.x;
-    glyph++;
-  }
-  glyph->id=0;
-  LiberateMemory((void **) &unicode);
-  metrics->pixels_per_em.x=face->size->metrics.x_ppem;
-  metrics->pixels_per_em.y=face->size->metrics.y_ppem;
-  metrics->ascent=face->size->metrics.ascender >> 6;
-  metrics->descent=face->size->metrics.descender >> 6;
-  metrics->width=Max(origin.x >> 6,extent.x2);
-  metrics->height=face->size->metrics.height >> 6;
-  metrics->max_advance=face->size->metrics.max_advance >> 6;
-  if (!render)
-    {
-      for (glyph=glyphs; glyph->id != 0; glyph++)
-        FT_Done_Glyph(glyph->image);
-      LiberateMemory((void **) &glyphs);
-      return(True);
-    }
-  /*
-    Render text.
-  */
-  clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
-  origin.x=0;
-  origin.y=0;
-  image->storage_class=DirectClass;
-  fill_color=draw_info->fill;
-  for (glyph=glyphs; glyph->id != 0; glyph++)
-  {
-    if (glyph->image == (FT_Glyph) NULL)
-      continue;
-    status=FT_Glyph_To_Bitmap(&glyph->image,ft_render_mode_normal,
-      (FT_Vector *) NULL,False);
-    if (status != False)
-      continue;
-    bitmap=(FT_BitmapGlyph) glyph->image;
-    point.x=offset->x+bitmap->left;
-    point.y=offset->y-bitmap->top;
-    if ((draw_info->fill.opacity != TransparentOpacity) &&
-        (bitmap->bitmap.width != 0) && (bitmap->bitmap.rows != 0))
+    FT_Vector_Transform(&glyph.origin,&affine);
+    if (render && (clone_info->stroke.opacity != TransparentOpacity))
       {
+        /*
+          Trace the glyph.
+        */
+        clone_info->affine.tx=offset->x+(glyph.origin.x >> 6);
+        clone_info->affine.ty=offset->y-(glyph.origin.y >> 6);
+        CloneString(&clone_info->primitive,"path '");
+        status=FT_Outline_Decompose(&((FT_OutlineGlyph) glyph.image)->outline,
+          &OutlineMethods,clone_info);
+        if (status == False)
+          {
+            /*
+              Draw the glyph.
+            */
+            ConcatenateString(&clone_info->primitive,"'");
+            DrawImage(image,clone_info);
+          }
+      }
+    FT_Glyph_Transform(glyph.image,&affine,&glyph.origin);
+    if ((clone_info->fill.opacity != TransparentOpacity) &&
+        (clone_info->stroke.opacity == TransparentOpacity) &&  render)
+      {
+        /*
+          Rasterize the glyph.
+        */
+        status=FT_Glyph_To_Bitmap(&glyph.image,ft_render_mode_normal,
+          (FT_Vector *) NULL,False);
+        if (status != False)
+          continue;
+        bitmap=(FT_BitmapGlyph) glyph.image;
+        point.x=offset->x+bitmap->left;
+        point.y=offset->y-bitmap->top;
         p=bitmap->bitmap.buffer;
         for (y=0; y < bitmap->bitmap.rows; y++)
         {
@@ -1109,12 +1088,12 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
                 continue;
               }
             opacity=MaxRGB-((unsigned long) (UpScale(*p)*
-              (MaxRGB-fill_color.opacity))/MaxRGB);
-            q->red=((unsigned long) (fill_color.red*(MaxRGB-opacity)+
+              (MaxRGB-clone_info->fill.opacity))/MaxRGB);
+            q->red=((unsigned long) (clone_info->fill.red*(MaxRGB-opacity)+
               q->red*opacity)/MaxRGB);
-            q->green=((unsigned long) (fill_color.green*(MaxRGB-opacity)+
+            q->green=((unsigned long) (clone_info->fill.green*(MaxRGB-opacity)+
               q->green*opacity)/MaxRGB);
-            q->blue=((unsigned long) (fill_color.blue*(MaxRGB-opacity)+
+            q->blue=((unsigned long) (clone_info->fill.blue*(MaxRGB-opacity)+
               q->blue*opacity)/MaxRGB);
             q->opacity=((unsigned long) (opacity*(MaxRGB-opacity)+
               q->opacity*opacity)/MaxRGB);
@@ -1124,49 +1103,36 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
           }
         }
       }
-    if (draw_info->stroke.opacity == TransparentOpacity)
-      continue;
-    if ((glyph > glyphs) && glyph->id && FT_HAS_KERNING(face))
-      {
-        FT_Get_Kerning(face,(glyph-1)->id,glyph->id,ft_kerning_default,&delta);
-        origin.x+=delta.x;
-      }
-    glyph->origin=origin;
-    status=FT_Load_Glyph(face,glyph->id,FT_LOAD_DEFAULT);
-    if (status != False)
-      continue;
-    status=FT_Get_Glyph(face->glyph,&glyph->image);
-    if (status != False)
-      continue;
-    if (glyph->image->format != ft_glyph_format_outline)
-     continue;
-    clone_info->affine.tx=offset->x+(origin.x >> 6);
+    FT_Glyph_Get_CBox(glyph.image,ft_glyph_bbox_pixels,&bounding_box);
+    if (bounding_box.xMin < extent.x1)
+      extent.x1=bounding_box.xMin;
+    if (bounding_box.xMax > extent.x2)
+      extent.x2=bounding_box.xMax;
+    if (bounding_box.yMin < extent.y1)
+      extent.y1=bounding_box.yMin;
+    if (bounding_box.yMax > extent.y2)
+      extent.y2=bounding_box.yMax;
     origin.x+=face->glyph->advance.x;
-    clone_info->affine.ty=offset->y;
-    clone_info->stroke=draw_info->stroke;
-    clone_info->stroke_width=draw_info->stroke_width;
-    CloneString(&clone_info->primitive,"path '");
-    outline=(FT_OutlineGlyph) glyph->image;
-    status=FT_Outline_Decompose(&outline->outline,&OutlineMethods,clone_info);
-    if (status != False)
-      continue;
-    ConcatenateString(&clone_info->primitive,"'");
-    if (!status)
-      DrawImage(image,clone_info);
+    FT_Done_Glyph(glyph.image);
+    last_glyph=glyph;
   }
+  metrics->pixels_per_em.x=face->size->metrics.x_ppem;
+  metrics->pixels_per_em.y=face->size->metrics.y_ppem;
+  metrics->ascent=face->size->metrics.ascender >> 6;
+  metrics->descent=face->size->metrics.descender >> 6;
+  metrics->width=Max(origin.x >> 6,extent.x2);
+  metrics->height=face->size->metrics.height >> 6;
+  metrics->max_advance=face->size->metrics.max_advance >> 6;
   /*
     Free resources.
   */
+  LiberateMemory((void **) &unicode);
   DestroyDrawInfo(clone_info);
-  for (glyph=glyphs; glyph->id != 0; glyph++)
-    FT_Done_Glyph(glyph->image);
-  LiberateMemory((void **) &glyphs);
   return(True);
 }
 #else
-static unsigned int RenderTruetype(Image *image,
-  const DrawInfo *draw_info,const PointInfo *offset,
-  const unsigned int render,FontMetrics *metrics)
+static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
+  const PointInfo *offset,const unsigned int render,FontMetrics *metrics)
 {
   ThrowBinaryException(MissingDelegateWarning,
     "FreeType library is not available",draw_info->font);
@@ -1358,8 +1324,7 @@ static unsigned int RenderX11(Image *image,const DrawInfo *draw_info,
       */
       width=xdraw_info.width;
       height=xdraw_info.height;
-      if ((draw_info->affine.rx != 0.0) ||
-          (draw_info->affine.ry != 0.0))
+      if ((draw_info->affine.rx != 0.0) || (draw_info->affine.ry != 0.0))
         {
           if (((draw_info->affine.sx-draw_info->affine.sy) == 0.0) &&
               ((draw_info->affine.rx+draw_info->affine.ry) == 0.0))

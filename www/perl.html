@@ -414,9 +414,9 @@ And here is a list of other image manipulation methods you can call:
 <td>Annotate</td>
 
 <td>text=><i>string</i>, font=><i>string</i>, pointsize=><i>integer</i>,
-density=><i>geometry</i>, stroke=><i>colorname</i>, 
-stroke_width=><i>integer</i>, fill=><i>colorname</i>,
-box=><i>colorname</i>, geometry=><i>geometry</i>, 
+density=><i>geometry</i>, stroke=><i><a href="color.html">color name</a></i>, 
+stroke_width=><i>integer</i>, fill=><i><a href="color.html">color name</a></i>,
+box=><i><a href="color.html">color name</a></i>, geometry=><i>geometry</i>, 
 gravity=>{NorthWest, North, NorthEast, West, Center, East,
 SouthWest, South, SouthEast}, x=><i>integer</i>, y=><i>integer</i>,
 translate=><i>float, float</i>, scale=><i>float, float</i>,
@@ -441,7 +441,7 @@ standard deviation (sigma).</td>
 <td>Border</td>
 
 <td>geometry=><i>geometry</i>, width=><i>integer</i>, height=><i>integer</i>,
-fill=<i>colorname</i></td>
+fill=<i><a href="color.html">color name</a></i></td>
 
 <td>surround the image with a border of color</td>
 </tr>
@@ -475,7 +475,7 @@ x=><i>integer</i>, y=><i>integer</i></td>
 <td>ColorFloodfill</td>
 
 <td>geometry=><i>geometry</i>, x=><i>integer</i>, y=><i>integer</i>,
-fill=<i>colorname</i>, bordercolor=<i>colorname</i></td>
+fill=<i><a href="color.html">color name</a></i>, bordercolor=<i><a href="color.html">color name</a></i></td>
 
 <td>changes the color value of any pixel that matches the color of the
 target pixel and is a neighbor. If you specify a border color, the color
@@ -485,7 +485,7 @@ value is changed for any neighbor pixel that is not that color.</td>
 <tr>
 <td>Colorize</td>
 
-<td>color=><i>colorname</i>, fill=><i>colorname</i></td>
+<td>color=><i><a href="color.html">color name</a></i>, fill=><i><a href="color.html">color name</a></i></td>
 
 <td>colorize the image with the fill color</td>
 </tr>
@@ -506,7 +506,7 @@ Multiply, Bumpmap, Replace, ReplaceRed, ReplaceGreen, ReplaceBlue, ReplaceMatte,
 Blend, Displace, Modulate, Threshold}, image=><i>image-handle,
 geometry=>geometry, x=>integer, y=>integer, gravity=>{NorthWest, North,
 NorthEast, West, Center, East, SouthWest, South, SouthEast}</i>,
-opacity=><i>float</i>,tile=><i>image-handle</i></td>
+opacity=><i>integer</i>,tile=><i>image-handle</i></td>
 
 <td>composite one image onto another</td>
 </tr>
@@ -568,11 +568,11 @@ x=><i>integer</i>, y=><i>integer</i></td>
 <td>primitive=>{point, line, rectangle, arc, ellipse, circle, polyline, polygon,
 bezier, color, matte, text, image, @<i>filename</i>}, points=><i>string</i>,
 method=<i>{Point, Replace, Floodfill, FillToBorder, Reset}</i>,
-stroke=><i>colorname</i>, fill=><i>colorname</i>, tile=><i>image-handle</i>,
-linewidth=><i>float</i>, bordercolor=><i>colorname</i>, 
-x=><i>float</i>, y=><i>float</i>, translate=><i>float, float</i>,
-scale=><i>float, float</i>, rotate=><i>float</i>.  skewX=><i>float</i>,
-skewY=><i>float</i>
+stroke=><i><a href="color.html">color name</a></i>, fill=><i><a href="color.html">color name</a></i>, tile=><i>image-handle</i>,
+stroke_width=><i>float</i>,
+bordercolor=><i><a href="color.html">color name</a></i>, x=><i>float</i>,
+y=><i>float</i>, translate=><i>float, float</i>, scale=><i>float, float</i>,
+rotate=><i>float</i>.  skewX=><i>float</i>, skewY=><i>float</i>
 </td>
 
 <td>annotate an image with one or more graphic primitives</td>
@@ -634,7 +634,7 @@ horizontal direction</td>
 <td>Frame</td>
 
 <td>geometry=><i>geometry</i>, width=><i>integer</i>, height=><i>integer</i>,
-inner=><i>integer</i>, outer=><i>integer</i>, fill=><i>colorname</i></td>
+inner=><i>integer</i>, outer=><i>integer</i>, fill=><i><a href="color.html">color name</a></i></td>
 
 <td>surround the image with an ornamental border</td>
 </tr>
@@ -691,7 +691,7 @@ inner=><i>integer</i>, outer=><i>integer</i>, fill=><i>colorname</i></td>
 <td>MatteFloodfill</td>
 
 <td>geometry=><i>geometry</i>, x=><i>integer</i>, y=><i>integer</i>, matte=<i>integer</i>,
-bordercolor=<i>colorname</i></td>
+bordercolor=<i><a href="color.html">color name</a></i></td>
 
 <td>changes the matte value of any pixel that matches the color of the
 target pixel and is a neighbor. If you specify a border color, the matte
@@ -750,7 +750,7 @@ yellow becomes blue, etc.)</td>
 <tr>
 <td>Opaque</td>
 
-<td>color=><i>colorname</i>, fill=><i>colorname</i></td>
+<td>color=><i><a href="color.html">color name</a></i>, fill=><i><a href="color.html">color name</a></i></td>
 
 <td>change this color to the fill color within the image</td>
 </tr>
@@ -941,7 +941,7 @@ of a left and right image of a stereo pair</td>
 <tr>
 <td>Transparent</td>
 
-<td>color=><i>colorname</i></td>
+<td>color=><i><a href="color.html">color name</a></i></td>
 
 <td>make this color transparent within the image</td>
 </tr>
@@ -1037,6 +1037,7 @@ Use method <tt>Set</tt> to set an image attribute. For example,</dd>
 <pre>&nbsp;&nbsp;&nbsp; $image->Set(dither=>'True');
 &nbsp;&nbsp;&nbsp; $image->[$x]->Set(delay=>3);</pre>
 And here is a list of all the image attributes you can set:
+<p>
 <table BORDER >
 <caption>Image Attributes</caption>
 
@@ -1067,7 +1068,7 @@ And here is a list of all the image attributes you can set:
 <tr>
 <td>background</td>
 
-<td><i>string</i></td>
+<td><i><a href="color.html">color name</a></i></td>
 
 <td>image background color</td>
 </tr>
@@ -1083,7 +1084,7 @@ And here is a list of all the image attributes you can set:
 <tr>
 <td>bordercolor</td>
 
-<td><i>string</i></td>
+<td><i><a href="color.html">color name</a></i></td>
 
 <td>set the image border color</td>
 </tr>
@@ -1103,7 +1104,7 @@ a small megabyte value.  Use 0 to cache all images to disk.</td>
 <tr>
 <td>colormap[<i>i</i>]</td>
 
-<td><i>string</i></td>
+<td><i><a href="color.html">color name</a></i></td>
 
 <td>color name (e.g. red) or hex value (e.g. #ccc) at position <i>i</i></td>
 </tr>
@@ -1182,6 +1183,15 @@ next image in a sequence</td>
 </tr>
 
 <tr>
+<td>fill</td>
+
+<td><i><a href="color.html">color name</a>kkkk</i></td>
+
+<td>color name (e.g. red) or hex value (e.g. #ccc) for annotating or changing
+opaque color</td>
+</tr>
+
+<tr>
 <td>font</td>
 
 <td><i>string</i></td>
@@ -1256,7 +1266,7 @@ next image in a sequence</td>
 <tr>
 <td>mattecolor</td>
 
-<td><i>string</i></td>
+<td><i><a href="color.html">color name</a></i></td>
 
 <td>set the image matte color</td>
 </tr>
@@ -1276,15 +1286,6 @@ next image in a sequence</td>
 B4, B5, Folio, Quarto, 10x14} or <i>geometry</i></td>
 
 <td>preferred size and location of an image canvas</td>
-</tr>
-
-<tr>
-<td>pen</td>
-
-<td><i>color</i></td>
-
-<td>color name (e.g. red) or hex value (e.g. #ccc) for annotating or changing
-opaque color</td>
 </tr>
 
 <tr>
@@ -1344,6 +1345,15 @@ OilPaint, CharcoalDrawing, JPEG}&nbsp;</td>
 <td><i>integer</i></td>
 
 <td>image scene number</td>
+</tr>
+
+<tr>
+<td>stroke</td>
+
+<td><i><a href="color.html">color name</a>kkkk</i></td>
+
+<td>color name (e.g. red) or hex value (e.g. #ccc) for annotating or changing
+opaque color</td>
 </tr>
 
 <tr>
@@ -1408,14 +1418,6 @@ OilPaint, CharcoalDrawing, JPEG}&nbsp;</td>
 <td>{True, False}</td>
 
 <td>print detailed information about the image</td>
-</tr>
-
-<tr>
-<td>view</td>
-
-<td><i>string</i></td>
-
-<td>FlashPix viewing parameters</td>
 </tr>
 
 <tr>
@@ -1698,6 +1700,7 @@ of the image optionally appearing just below the individual tile. For example,</
 
 <pre>&nbsp;&nbsp;&nbsp; $image->Montage(geometry=>'160x160', tile=>'2x2', texture=>'granite:');</pre>
 And here is a list of <tt>Montage</tt> parameters you can set:
+<p>
 <table BORDER >
 <caption>Montage Parameters</caption>
 
@@ -1712,9 +1715,9 @@ And here is a list of <tt>Montage</tt> parameters you can set:
 <tr>
 <td>background</td>
 
-<td><i>color</i></td>
+<td><i><a href="color.html">color name</a></i></td>
 
-<td>X11 color name</td>
+<td>background color name</td>
 </tr>
 
 <tr>
@@ -1745,13 +1748,10 @@ Bumpmap, Replace, MatteReplace, Mask, Blend, Displace}</td>
 <tr>
 <td>fill</td>
 
-<td>color</td>
+<td><a href="color.html">color name</a></td>
 
 <td>fill color for annotations</td>
 </tr>
-
-<tr>
-<td>pointsize</td>
 
 <tr>
 <td>font</td>
@@ -1821,7 +1821,7 @@ SouthEast}</td>
 <tr>
 <td>stroke</td>
 
-<td>color</td>
+<td><a href="color.html">color name</a></td>
 
 <td>stroke color for annotations</td>
 </tr>
@@ -2002,17 +2002,15 @@ information.  Use
 
 Where <i>parameters</i> is any parameter of the <a href="#mani">Annotate</a>
 method.  The return values are
+<p>
 <ul>
-<li>character width, expressed in integer pixels.<li>
+<li>character width, expressed in integer pixels.</li>
 <li>character height, expressed in integer pixels.</li>
 <li>ascender, expressed in 26.6 fixed point pixels.</li>
 <li>descender, expressed in 26.6 fixed point pixels.</li>
 <li>text width, expressed in 26.6 fixed point pixels.</li>
 <li>text height, expressed in 26.6 fixed point pixels.</li>
 <li>maximum horizontal advance, expressed in 26.6 fixed point pixels.</li>
-<li></li>
-<li></li>
-<li></li>
 </ul>
 
 

@@ -526,6 +526,7 @@ ModuleExport void RegisterDPSImage(void)
 
   entry=SetMagickInfo("DPS");
   entry->decoder=ReadDPSImage;
+  entry->blob_support=False;
   entry->description=AllocateString("Display Postscript");
   entry->module=AllocateString("DPS");
   RegisterMagickInfo(entry);

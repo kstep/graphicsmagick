@@ -537,8 +537,11 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
   register int
     i;
 
+  struct tm
+    *time_meridian;
+
   time_t
-    timer;
+    seconds;
 
   unsigned char
     *pixels;
@@ -597,10 +600,11 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
   (void) WriteBlob(image,strlen(buffer),buffer);
   (void) strcpy(buffer,"<<\n");
   (void) WriteBlob(image,strlen(buffer),buffer);
-  timer=time((time_t *) NULL);
-  (void) localtime(&timer);
-  (void) strcpy(date,ctime(&timer));
-  date[Extent(date)-1]='\0';
+  seconds=time((time_t *) NULL);
+  time_meridian=localtime(&seconds);
+  FormatString(date,"D:%04d%02d%02d%02d%02d%02d",time_meridian->tm_year+1900,
+    time_meridian->tm_mon+1,time_meridian->tm_mday,time_meridian->tm_hour,
+    time_meridian->tm_min,time_meridian->tm_sec);
   FormatString(buffer,"/CreationDate (%.1024s)\n",date);
   (void) WriteBlob(image,strlen(buffer),buffer);
   FormatString(buffer,"/Producer (%.1024s)\n",EscapeParenthesis(MagickVersion));

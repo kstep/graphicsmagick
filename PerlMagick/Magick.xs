@@ -353,7 +353,7 @@ static struct
     { "CycleColormap", { {"amount", IntegerReference} } },
     { "Draw", { {"prim", PrimitiveTypes}, {"points", StringReference},
       {"meth", MethodTypes}, {"stroke", StringReference},
-      {"fill", StringReference}, {"linewidth", DoubleReference},
+      {"fill", StringReference}, {"stroke_width", DoubleReference},
       {"sans", StringReference}, {"borderc", StringReference},
       {"x", DoubleReference}, {"y", DoubleReference},
       {"translate", StringReference}, {"scale", StringReference},
@@ -1395,12 +1395,6 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
               &image->page.x,&image->page.y,
               &image->page.width,&image->page.height);
           DestroyPostscriptGeometry(p);
-          return;
-        }
-      if (strEQcase(attribute,"pen"))
-        {
-          if (info)
-            (void) QueryColorDatabase(SvPV(sval,na),&info->image_info->fill);
           return;
         }
       if (strEQcase(attribute,"pixel"))
@@ -3206,15 +3200,6 @@ Get(ref,...)
                       image->page.height,image->page.x,image->page.y);
                     s=newSVpv(geometry,0);
                   }
-              break;
-            }
-          if (strEQcase(attribute,"pen"))
-            {
-              if (info)
-                {
-                  (void) QueryColorName(&info->image_info->fill,color);
-                  s=newSVpv(color,0);
-                }
               break;
             }
           if (strEQcase(attribute,"pipe"))
@@ -5584,21 +5569,6 @@ Montage(ref,...)
           if (strEQcase(attribute,"point"))
             {
               montage_info->pointsize=SvIV(ST(i));
-              break;
-            }
-          if (strEQcase(attribute,"pen"))
-            {
-              if (info)
-                {
-                  (void) QueryColorDatabase(SvPV(ST(i),na),
-                    &info->image_info->fill);
-                  (void) QueryColorDatabase(SvPV(ST(i),na),
-                    &info->image_info->stroke);
-                }
-              (void) QueryColorDatabase(SvPV(ST(i),na),
-                &montage_info->fill);
-              (void) QueryColorDatabase(SvPV(ST(i),na),
-                &montage_info->stroke);
               break;
             }
           break;

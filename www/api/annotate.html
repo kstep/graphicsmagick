@@ -21,9 +21,6 @@
 	<UL>
 
 		<LI><A HREF="#annotateimage">AnnotateImage</A></LI>
-		<LI><A HREF="#cloneannotateinfo">CloneAnnotateInfo</A></LI>
-		<LI><A HREF="#destroyannotateinfo">DestroyAnnotateInfo</A></LI>
-		<LI><A HREF="#getannotateinfo">GetAnnotateInfo</A></LI>
 		<LI><A HREF="#getfontmetrics">GetFontMetrics</A></LI>
 	</UL>
 
@@ -39,11 +36,8 @@
 <HR>
 <H1><A NAME="synopsis">
 <FONT SIZE=-1>SYNOPSIS</FONT></A></H1>
-<P>unsigned int  <STRONG>AnnotateImage</STRONG>( Image *image, AnnotateInfo *annotate_info );</P>
-<P>AnnotateInfo * <STRONG>CloneAnnotateInfo</STRONG>( const ImageInfo *image_info, const AnnotateInfo *annotate_info );</P>
-<P>void  <STRONG>DestroyAnnotateInfo</STRONG>( AnnotateInfo *annotate_info );</P>
-<P>void  <STRONG>GetAnnotateInfo</STRONG>( const ImageInfo *image_info, AnnotateInfo *annotate_info );</P>
-<P>unsigned int  <STRONG>GetFontMetrics</STRONG>( Image *image, const AnnotateInfo *annotate_info, SegmentInfo bounds );</P>
+<P>unsigned int  <STRONG>AnnotateImage</STRONG>( Image *image, DrawInfo *draw_info );</P>
+<P>unsigned int  <STRONG>GetFontMetrics</STRONG>( Image *image, const DrawInfo *draw_info, FontInfo metrics );</P>
 <P>
 <HR>
 <H1><A NAME="function descriptions">
@@ -53,7 +47,7 @@
 <H2><A NAME="annotateimage">AnnotateImage</A></H2>
 <P>Method AnnotateImage annotates an image with text.  Optionally the annotation can include the image filename, type, width, height, or scene</P>
 <P>The format of the AnnotateImage method is:</P>
-<blockquote>unsigned int AnnotateImage ( <A HREF="types/Image.html">Image</A> *image, <A HREF="types/AnnotateInfo.html">AnnotateInfo</A> *annotate_info ); </blockquote><P>
+<blockquote>unsigned int AnnotateImage ( <A HREF="types/Image.html">Image</A> *image, <A HREF="types/DrawInfo.html">DrawInfo</A> *draw_info ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG><A NAME="item_o_status%3A">status:</A></STRONG><BR>
@@ -64,62 +58,20 @@ Method AnnotateImage returns True if the image is annotated otherwise False.
 <DD>
 The address of a structure of type Image.
 <P></P>
-<p><dt><STRONG><A NAME="item_o_annotate_info%3A">annotate_info:</A></STRONG><BR>
+<p><dt><STRONG><A NAME="item_o_draw_info%3A">draw_info:</A></STRONG><BR>
 <DD>
-The address of a AnnotateInfo structure.
-<P></P></DL></DL>
-<P>
-<H2><A NAME="cloneannotateinfo">CloneAnnotateInfo</A></H2>
-<P>Method CloneAnnotateInfo makes a duplicate of the given annotate info, or if annotate info is 
-<FONT SIZE=-1>NULL,</FONT> a new one.</P>
-<P>The format of the CloneAnnotateInfo method is:</P>
-<blockquote><A HREF="types/AnnotateInfo.html">AnnotateInfo</A> *CloneAnnotateInfo ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, const <A HREF="types/AnnotateInfo.html">AnnotateInfo</A> *annotate_info ); </blockquote><P>
-<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DL>
-<p><dt><STRONG><A NAME="item_o_clone_info%3A">clone_info:</A></STRONG><BR>
-<DD>
-Method CloneAnnotateInfo returns a duplicate of the given annotate info, or if annotate info is 
-<FONT SIZE=-1>NULL</FONT> a new one.
-<P></P>
-<p><dt><STRONG><A NAME="item_o_image_info%3A">image_info:</A></STRONG><BR>
-<DD>
-a structure of type info.
-<P></P>
-<p><dt><STRONG>annotate_info:</STRONG><BR>
-<DD>
-a structure of type info.
-<P></P></DL></DL>
-<P>
-<H2><A NAME="destroyannotateinfo">DestroyAnnotateInfo</A></H2>
-<P>Method DestroyAnnotateInfo deallocates memory associated with an AnnotateInfo structure.</P>
-<P>The format of the DestroyAnnotateInfo method is:</P>
-<blockquote>void DestroyAnnotateInfo ( <A HREF="types/AnnotateInfo.html">AnnotateInfo</A> *annotate_info ); </blockquote><P>
-<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DL>
-<p><dt><STRONG>annotate_info:</STRONG><BR>
-<DD>
-Specifies a pointer to an AnnotateInfo structure.
-<P></P></DL></DL>
-<P>
-<H2><A NAME="getannotateinfo">GetAnnotateInfo</A></H2>
-<P>Method GetAnnotateInfo initializes the AnnotateInfo structure.</P>
-<P>The format of the GetAnnotateInfo method is:</P>
-<blockquote>void GetAnnotateInfo ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, <A HREF="types/AnnotateInfo.html">AnnotateInfo</A> *annotate_info ); </blockquote><P>
-<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DL>
-<p><dt><STRONG>image_info:</STRONG><BR>
-<DD>
-Specifies a pointer to an ImageInfo structure.
-<P></P>
-<p><dt><STRONG>annotate_info:</STRONG><BR>
-<DD>
-Specifies a pointer to a AnnotateInfo structure.
+The address of a DrawInfo structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="getfontmetrics">GetFontMetrics</A></H2>
-<P>Method GetFontMetrics returns the bounding box of the specified font and text.</P>
+<P>Method GetFontMetrics returns the following information for the specified font and text:</P>
+<DL><DL>
+<p><dt><STRONG><A NAME="item_o">o</A></STRONG><BR>
+<DD>
+character width, expressed in integer pixels o character height, expressed in integer pixels o ascent, expressed in 26.6 fixed point pixels o descent, expressed in 26.6 fixed point pixels o text width, expressed in 26.6 fixed point pixels o text height, expressed in 26.6 fixed point pixels o maximum horizontal advance, expressed in 26.6 fixed point pixels
+<P></P></DL></DL>
 <P>The format of the GetFontMetrics method is:</P>
-<blockquote>unsigned int GetFontMetrics ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/AnnotateInfo.html">AnnotateInfo</A> *annotate_info, SegmentInfo bounds ); </blockquote><P>
+<blockquote>unsigned int GetFontMetrics ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/DrawInfo.html">DrawInfo</A> *draw_info, FontInfo metrics ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>status:</STRONG><BR>
@@ -130,13 +82,13 @@ Method GetFontMetrics returns True if the metrics are available otherwise False.
 <DD>
 The address of a structure of type Image.
 <P></P>
-<p><dt><STRONG>annotate_info:</STRONG><BR>
+<p><dt><STRONG>draw_info:</STRONG><BR>
 <DD>
-Specifies a pointer to a AnnotateInfo structure.
+Specifies a pointer to a DrawInfo structure.
 <P></P>
-<p><dt><STRONG><A NAME="item_o_bounds%3A">bounds:</A></STRONG><BR>
+<p><dt><STRONG><A NAME="item_o_metrics%3A">metrics:</A></STRONG><BR>
 <DD>
-Method GetFontMetrics returns the bounding box of text.
+Method GetFontMetrics returns the font metrics.
 </DL></DL>
 
 </BODY>
