@@ -43,6 +43,7 @@
 #include "magick/log.h"
 #include "magick/magick.h"
 #include "magick/monitor.h"
+#include "magick/profile.h"
 #include "magick/utility.h"
 #if defined(HasJP2)
 #if !defined(uchar)
@@ -380,9 +381,28 @@ static Image *ReadJP2Image(const ImageInfo *image_info,
         break;
       }
     case JAS_CLRSPC_FAM_YCBCR:
-      /* YCBCR is not supported yet */
-      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-              "Image is in YCBCR colorspace family");
+      {
+        components[0]=jas_image_getcmptbytype(jp2_image,JAS_IMAGE_CT_YCBCR_Y);
+        components[1]=jas_image_getcmptbytype(jp2_image,JAS_IMAGE_CT_YCBCR_CB);
+        components[2]=jas_image_getcmptbytype(jp2_image,JAS_IMAGE_CT_YCBCR_CR);
+        if ((components[0] < 0) || (components[1] < 0) || (components[2] < 0))
+          {
+            (void) jas_stream_close(jp2_stream);
+            jas_image_destroy(jp2_image);
+            ThrowReaderException(CorruptImageError,MissingImageChannel,image);
+          }
+        number_components=3;
+        components[3]=jas_image_getcmptbytype(jp2_image,JAS_IMAGE_CT_OPACITY);
+        if (components[3] > 0)
+          {
+            image->matte=True;
+            number_components++;
+          }
+        image->colorspace=YCbCrColorspace;
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                              "Image is in YCBCR colorspace family");
+        break;
+      }
     default:
       {
         (void) jas_stream_close(jp2_stream);
@@ -555,6 +575,44 @@ static Image *ReadJP2Image(const ImageInfo *image_info,
         if (!MagickMonitor(LoadImageText,y,image->rows,exception))
           break;
   }
+
+  {
+    /*
+      Obtain ICC ICM color profile
+    */
+    jas_cmprof_t
+      *cm_profile;
+    
+    jas_iccprof_t
+      *icc_profile;
+    
+    cm_profile=jas_image_cmprof(jp2_image);
+    icc_profile=(jas_iccprof_t *) NULL;
+    if (cm_profile != (jas_cmprof_t *) NULL)
+      icc_profile=jas_iccprof_createfromcmprof(cm_profile);
+    if (icc_profile != (jas_iccprof_t *) NULL)
+      {
+        jas_stream_t
+          *icc_stream;
+
+        icc_stream=jas_stream_memopen(NULL,0);
+        if ((icc_stream != (jas_stream_t *) NULL) &&
+            (jas_iccprof_save(icc_profile,icc_stream) == 0) &&
+            (jas_stream_flush(icc_stream) == 0))
+          {
+            jas_stream_memobj_t
+              *blob;
+
+            blob=(jas_stream_memobj_t *) icc_stream->obj_;
+            if (image->logging)
+              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                    "ICC profile: %lu bytes",(unsigned long) blob->len_);
+            SetImageProfile(image,"ICM",blob->buf_,blob->len_);
+            (void) jas_stream_close(icc_stream);
+          }
+      }
+  }
+
   for (i=0; i < (long) number_components; i++)
     jas_matrix_destroy(pixels[i]);
   (void) jas_stream_close(jp2_stream);
@@ -848,7 +906,7 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
             jas_matrix_setv(pixels[1],x,ScaleQuantumToChar(p->green));
             jas_matrix_setv(pixels[2],x,ScaleQuantumToChar(p->blue));
             if (number_components > 3)
-              jas_matrix_setv(pixels[3],x,ScaleQuantumToChar(p->opacity));
+              jas_matrix_setv(pixels[3],x,ScaleQuantumToChar(MaxRGB-p->opacity));
           }
         p++;
       }
