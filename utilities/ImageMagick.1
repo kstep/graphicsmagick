@@ -17,8 +17,8 @@ ImageMagick - commandline utilities to create, edit, or convert images
 \fB[\fP \fImask\fP \fB]\fP \fIcomposited\fP
 
 
-\fBconjure\fP \fB[\fP \fIoptions ...\fP \fB]\fP \fIscript.msl\fP
-\fIimagefiles\fP
+\fBconjure\fP \fB[\fP \fIoptions\fP \fB]\fP \fIscript.msl\fP
+\fB[ [\fP \fIoptions\fP \fB]\fP \fIscript.msl\fP \fB]\fP
 
 
 \fBconvert\fP \fB[ [\fP \fIoptions ...\fP \fB] [\fP \fIinput_file ...\fP
@@ -457,6 +457,9 @@ is not present, the option is ignored.
 .TP
 .B "-coalesce"
 \fRmerge a sequence of images
+
+Each image N in the sequence after Image 0 is replaced with the image
+created by flattening images 0 through N.
 
 The set of images
 is terminated by the appearance of any option.
@@ -943,7 +946,7 @@ Here are the valid methods:
 
 
      0     No disposal specified.
-     1     Do not dispose between frames.      
+     1     Do not dispose between frames.
      2     Overwrite frame with background color
            from header.
      3     Overwrite with previous frame.
@@ -1157,6 +1160,9 @@ The default filter is \fBLanczos\fP
 .B "-flatten"
 \fRflatten a sequence of images
 
+The sequence of images is replaced by a single image created by composing each
+image after the first over the first image.
+
 The sequence of images
 is terminated by the appearance of any option.
 If the \fB-flatten\fP
@@ -1179,7 +1185,7 @@ reflect the scanlines in the horizontal direction.
 
 You can tag a font to specify whether it is a Postscript, Truetype, or OPTION1
 font.  For example, Arial.ttf is a Truetype font, ps:helvetica
-is Postscript, and x:fixed is OPTION1. 
+is Postscript, and x:fixed is OPTION1.
 
 .TP
 .B "-foreground \fI<color>"\fP
@@ -1299,7 +1305,7 @@ but not set as an image attribute (e.g. PNG images).
 .B "-gaussian \fI<radius>x<sigma>"\fP
 \fRblur the image with a gaussian operator
 
-Use the given radius and standard deviation (sigma). 
+Use the given radius and standard deviation (sigma).
 
 .TP
 .B "-geometry \fI<width>x<height>{+-}<x>{+-}<y>{%}{@} {!}{<}{>}"\fP
@@ -1320,7 +1326,7 @@ height to 480.
 If only the width is specified, the width assumes the
 value and the height is chosen to maintain the aspect ratio of the image.
 Similarly, if only the height is specified (e.g., -geometry x256),
-the width is chosen to maintain the aspect ratio. 
+the width is chosen to maintain the aspect ratio.
 
 
 To specify a percentage width or height instead, append %. The image size
@@ -1355,7 +1361,7 @@ offsets are not affected by "%"; they are always measured in pixels.
 When used as a \fIcomposite\fP option, \fB-geometry\fP
 gives the dimensions of the image and its location with respect
 to the composite image.  If the \fB-gravity\fP option is present
-with \fINorthEast, East,\fP or \fISouthEast\fP gravity, the \fIx\fP 
+with \fINorthEast, East,\fP or \fISouthEast\fP gravity, the \fIx\fP
 represents the distance from the right edge of the image to the right edge of
 the composite image.  Similarly, if the \fB-gravity\fP option is present
 with \fISouthWest, South,\fP or \fISouthEast\fP gravity, \fIy\fP
@@ -1394,7 +1400,7 @@ See \fB-draw\fP for more details about graphic primitives.
 The \fB-gravity\fP option is also used in concert with the \fB-geometry\fP
 option and other options that take \fB<geometry>\fP as a parameter, such
 as the \fB-crop\fP option.  See \fB-geometry\fP for details of how the
-\fB-gravity\fP option interacts with the 
+\fB-gravity\fP option interacts with the
 \fB<x>\fP and \fB<y>\fP parameters of a geometry
 specification.
 
@@ -1432,7 +1438,7 @@ negative offsets.
 Use this option to affect the the color management operation of an image (see
 \fB-profile\fP).
 Choose from these intents:
-\fBAbsolute, Perceptual, Relative, Saturation\fP 
+\fBAbsolute, Perceptual, Relative, Saturation\fP
 
 
 The default intent is undefined.
@@ -1704,8 +1710,8 @@ in dots per inch or a TEXT page in pixels. The choices for a Postscript
 page are:
 
 
-     11x17         792  1224 
-     Ledger       1224   792    
+     11x17         792  1224
+     Ledger       1224   792
      Legal         612  1008
      Letter        612   792
      LetterSmall   612   792
@@ -1739,7 +1745,7 @@ page are:
      C4            649   918
      C5            459   649
      C6            323   459
-     Flsa          612   936 
+     Flsa          612   936
      Flse          612   936
      HalfLetter    396   612
 
@@ -2033,11 +2039,11 @@ printf\fP format specification in the file name. For example,
 
     montage -scenes 5-7 image.miff
 
-makes a montage of files image.miff.5, image.miff.6, and image.miff.7, and 
+makes a montage of files image.miff.5, image.miff.6, and image.miff.7, and
 
     animate -scenes 0-12 image%02d.miff
 
-animates files image00.miff, image01.miff, through image12.miff. 
+animates files image00.miff, image01.miff, through image12.miff.
 .TP
 .B "-screen"
 \fRspecify the screen to capture
@@ -2091,7 +2097,7 @@ option is ignored.  The default is \fBTrue\fP.
 \fRsharpen the image
 
 Use a gaussian operator of the given radius and
-standard deviation (sigma). 
+standard deviation (sigma).
 
 .TP
 .B "-shave \fI<width>x<height>"\fP
@@ -2222,7 +2228,7 @@ formatted text.  The default is 14 point \fICourier\fP.
 
 You can tag a font to specify whether it is a Postscript, Truetype, or
 OPTION1 font.  For example, Courier.ttf is a Truetype font
-and x:fixed is OPTION1. 
+and x:fixed is OPTION1.
 
 .TP
 .B "-texture \fI<filename>"\fP
@@ -2406,7 +2412,7 @@ simultaneous colors on the default screen is chosen.
 .B "-wave \fI<amplitude>x<wavelength>"\fP
 \fRalter an image along a sine wave
 
-Specify \fIamplitude\fP and \fIwavelength\fP to effect the characteristics
+Specify \fIamplitude\fP and \fIwavelength\fP
 of the wave.
 
 .TP
@@ -2434,7 +2440,7 @@ unique colors than the target window colormap allows.  Use
 .B "-write \fI<filename>"\fP
 \fRwrite  an image sequence [\fIconvert, composite\fP]
 
-The image sequence following the \fB-write\fP \fIfilename\fPoption is 
+The image sequence following the \fB-write\fP \fIfilename\fPoption is
 written out, and then processing continues with the
 same image in its current state if there are additional options.  To
 restore the image to its original state after writing it, use

@@ -89,8 +89,8 @@ color="#FFFFFF"><font size="+1">
 <strong>[</strong> <em>mask</em> <strong>]</strong> <em>composited</em>
 <br>&nbsp;<br>
 <p>
-<strong>conjure</strong> <strong>[</strong> <em>options ...</em> <strong>]</strong> <em>script.msl</em>
-<em>imagefiles</em>
+<strong>conjure</strong> <strong>[</strong> <em>options</em> <strong>]</strong> <em>script.msl</em>
+<strong>[ [</strong> <em>options</em> <strong>]</strong> <em>script.msl</em> <strong>]</strong>
 <br>&nbsp;<br>
 <p>
 <strong>convert</strong> <strong>[ [</strong> <em>options ...</em> <strong>] [</strong> <em>input_file ...</em>
@@ -700,6 +700,9 @@ width=15><b><font face="Helvetica, Arial"
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>merge a sequence of images</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+Each image N in the sequence after Image 0 is replaced with the image
+created by flattening images 0 through N.</font></td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 The set of images
 is terminated by the appearance of any option.
 If the <strong>-coalesce</strong>
@@ -1262,7 +1265,7 @@ Here are the valid methods:
 </font></td></tr></table>
 <pre>
      0     No disposal specified.
-     1     Do not dispose between frames.      
+     1     Do not dispose between frames.
      2     Overwrite frame with background color
            from header.
      3     Overwrite with previous frame.
@@ -1571,6 +1574,9 @@ width=15><b><font face="Helvetica, Arial"
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>flatten a sequence of images</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+The sequence of images is replaced by a single image created by composing each
+image after the first over the first image.</font></td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 The sequence of images
 is terminated by the appearance of any option.
 If the <strong>-flatten</strong>
@@ -1617,7 +1623,7 @@ width=15><b><font face="Helvetica, Arial"
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 You can tag a font to specify whether it is a Postscript, Truetype, or OPTION1
 font.  For example, <tt>Arial.ttf</tt> is a Truetype font, <tt>ps:helvetica</tt>
-is Postscript, and <tt>x:fixed</tt> is OPTION1. 
+is Postscript, and <tt>x:fixed</tt> is OPTION1.
 </font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
@@ -1803,7 +1809,7 @@ width=15><b><font face="Helvetica, Arial"
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>blur the image with a gaussian operator</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-Use the given radius and standard deviation (sigma). 
+Use the given radius and standard deviation (sigma).
 </font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
@@ -1832,7 +1838,7 @@ height to 480.
 If only the width is specified, the width assumes the
 value and the height is chosen to maintain the aspect ratio of the image.
 Similarly, if only the height is specified (e.g., <tt>-geometry x256</tt>),
-the width is chosen to maintain the aspect ratio. 
+the width is chosen to maintain the aspect ratio.
 </font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 To specify a percentage width or height instead, append %. The image size
@@ -1867,7 +1873,7 @@ offsets are not affected by "%"; they are always measured in pixels.</font></td>
 When used as a <em>composite</em> option, <strong>-geometry</strong>
 gives the dimensions of the image and its location with respect
 to the composite image.  If the <strong>-gravity</strong> option is present
-with <em>NorthEast, East,</em> or <em>SouthEast</em> gravity, the <em>x</em> 
+with <em>NorthEast, East,</em> or <em>SouthEast</em> gravity, the <em>x</em>
 represents the distance from the right edge of the image to the right edge of
 the composite image.  Similarly, if the <strong>-gravity</strong> option is present
 with <em>SouthWest, South,</em> or <em>SouthEast</em> gravity, <em>y</em>
@@ -1914,7 +1920,7 @@ See <strong>-draw</strong> for more details about graphic primitives.
 The <strong>-gravity</strong> option is also used in concert with the <strong>-geometry</strong>
 option and other options that take <strong>&lt;geometry&gt;</strong> as a parameter, such
 as the <strong>-crop</strong> option.  See <strong>-geometry</strong> for details of how the
-<strong>-gravity</strong> option interacts with the 
+<strong>-gravity</strong> option interacts with the
 <strong>&lt;x&gt;</strong> and <strong>&lt;y&gt;</strong> parameters of a geometry
 specification.</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
@@ -2000,7 +2006,7 @@ width=15><b><font face="Helvetica, Arial"
 Use this option to affect the the color management operation of an image (see
 <strong>-profile</strong>).
 Choose from these intents:
-<strong>Absolute, Perceptual, Relative, Saturation</strong> 
+<strong>Absolute, Perceptual, Relative, Saturation</strong>
 </font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 The default intent is undefined.
@@ -2475,8 +2481,8 @@ in dots per inch or a TEXT page in pixels. The choices for a Postscript
 page are:
 </font></td></tr></table>
 <pre>
-     11x17         792  1224 
-     Ledger       1224   792    
+     11x17         792  1224
+     Ledger       1224   792
      Legal         612  1008
      Letter        612   792
      LetterSmall   612   792
@@ -2510,7 +2516,7 @@ page are:
      C4            649   918
      C5            459   649
      C6            323   459
-     Flsa          612   936 
+     Flsa          612   936
      Flse          612   936
      HalfLetter    396   612
 </pre>
@@ -2976,12 +2982,12 @@ printf</strong> format specification in the file name. For example,</font></td><
     montage -scenes 5-7 image.miff
 </pre>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-makes a montage of files image.miff.5, image.miff.6, and image.miff.7, and</font></td></tr></table> 
+makes a montage of files image.miff.5, image.miff.6, and image.miff.7, and</font></td></tr></table>
 <pre>
     animate -scenes 0-12 image%02d.miff
 </pre>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-animates files image00.miff, image01.miff, through image12.miff.</font></td></tr></table> 
+animates files image00.miff, image01.miff, through image12.miff.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -3091,7 +3097,7 @@ width=15><b><font face="Helvetica, Arial"
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>sharpen the image</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Use a gaussian operator of the given radius and
-standard deviation (sigma). 
+standard deviation (sigma).
 </font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
@@ -3327,7 +3333,7 @@ formatted text.  The default is 14 point <em>Courier</em>.
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 You can tag a font to specify whether it is a Postscript, Truetype, or
 OPTION1 font.  For example, <tt>Courier.ttf</tt> is a Truetype font
-and <tt>x:fixed</tt> is OPTION1. 
+and <tt>x:fixed</tt> is OPTION1.
 </font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
@@ -3659,7 +3665,7 @@ width=15><b><font face="Helvetica, Arial"
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>alter an image along a sine wave</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-Specify <em>amplitude</em> and <em>wavelength</em> to effect the characteristics
+Specify <em>amplitude</em> and <em>wavelength</em>
 of the wave.
 </font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
@@ -3711,7 +3717,7 @@ width=15><b><font face="Helvetica, Arial"
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>write  an image sequence [<em>convert, composite</em>]</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-The image sequence following the <strong>-write</strong> <em>filename</em>option is 
+The image sequence following the <strong>-write</strong> <em>filename</em>option is
 written out, and then processing continues with the
 same image in its current state if there are additional options.  To
 restore the image to its original state after writing it, use
