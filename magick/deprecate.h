@@ -15,11 +15,35 @@
 extern "C" {
 #endif
 
+/*
+  Legacy names for (possibly) large integral types
+*/
+
 #if !defined(ExtendedSignedIntegralType)
-# define ExtendedSignedIntegralType magick_int64_t
+#  define ExtendedSignedIntegralType magick_int64_t
 #endif
 #if !defined(ExtendedUnsignedIntegralType)
-# define ExtendedUnsignedIntegralType magick_uint64_t
+#  define ExtendedUnsignedIntegralType magick_uint64_t
+#endif
+
+/*
+  Compatibility definitions to handle the renaming of
+  ExtendedSignedIntegralType and ExtendedUnsignedIntegralType to
+  MagickSignedType and MagickUnsignedType which occured in ImageMagick
+  5.5.8.  ImageMagick 5.5.8 also introduced MagickRationalType.
+*/
+#if !defined(MagickSignedType)
+#  define MagickSignedType magick_int64_t
+#endif
+#if !defined(MagickUnsignedType)
+#  define MagickUnsignedType magick_uint64_t
+#endif
+#if !defined(MagickRationalType)
+#  if defined(HAVE_LONG_DOUBLE)
+#    define MagickRationalType long double
+#  else
+#    define MagickRationalType double
+#  endif
 #endif
 
 extern MagickExport char

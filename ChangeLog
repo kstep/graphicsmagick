@@ -1,5 +1,10 @@
 2003-09-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/deprecate.h (MagickSignedType): Compatibility definition
+	to handle ImageMagick API change.
+	(MagickUnsignedType): Compatibility definition to handle
+	ImageMagick API change. The new names are just as useless as the
+	old names, but at least they are shorter.
 	* magick/command.c: Linux's sscanf has the terrible bug that it
 	improperly handles pulling out the first floating value from the
 	string "0x1".  Instead of retreiving the value 0 and returning 1,
