@@ -759,10 +759,6 @@ to crop the image by ten percent (five percent on each side of the image),
 use \fB-crop 10%\fP.
 
 
-Use cropping to apply image processing options to, or display, a particular
-area of an image.
-
-
 The x and y offsets specify the location of the upper left corner of
 the cropping region measured downward and rightward with respect to the
 upper left corner of the image.
@@ -1154,7 +1150,7 @@ if its dimensions is less than the geometry specification. For example,
 if you specify '640x480>' and the image size is 512x512, the image
 size does not change. However, if the image is 1024x1024, it is resized
 to 640x480.  Enclose the geometry specification in quotation marks to
-prevent the > or > from being interpreted by your shell
+prevent the < or > from being interpreted by your shell
 as a file redirection.
 
 
@@ -1164,16 +1160,17 @@ specifies the size of the output image and the offsets, if present, are ignored.
 
 .TP
 .B "-gravity \fI<type>"\fP
-\fRdirection text gravitates to when annotating the image.
+\fRdirection primitive  gravitates to when annotating the image.
 
 Choices are: NorthWest, North,
-NorthEast, West, Center, East, SouthWest, South, SouthEast. See X(1) for
-details about the gravity specification.
+NorthEast, West, Center, East, SouthWest, South, SouthEast.
 
 
-The direction you choose specifies where to position the text when annotating
+The direction you choose specifies where to position the text or other
+graphic primitive when annotating
 the image. For example \fICenter\fP gravity forces the text to be centered
 within the image. By default, the image gravity is \fINorthWest\fP.
+See \fB-draw\fP for more details about graphic primitives.
 
 
 The \fB-gravity\fP option is also used in concert with the \fB-geometry\fP

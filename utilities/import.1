@@ -169,10 +169,6 @@ to crop the image by ten percent (five percent on each side of the image),
 use \fB-crop 10%\fP.
 
 
-Use cropping to apply image processing options to, or display, a particular
-area of an image.
-
-
 The x and y offsets specify the location of the upper left corner of
 the cropping region measured downward and rightward with respect to the
 upper left corner of the image.
@@ -297,7 +293,7 @@ if its dimensions is less than the geometry specification. For example,
 if you specify '640x480>' and the image size is 512x512, the image
 size does not change. However, if the image is 1024x1024, it is resized
 to 640x480.  Enclose the geometry specification in quotation marks to
-prevent the > or > from being interpreted by your shell
+prevent the < or > from being interpreted by your shell
 as a file redirection.
 
 

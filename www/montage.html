@@ -644,10 +644,6 @@ to crop the image by ten percent (five percent on each side of the image),
 use <strong>-crop 10%</strong>.
 </font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-Use cropping to apply image processing options to, or display, a particular
-area of an image.
-</font></td></tr></table>
-<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 The x and y offsets specify the location of the upper left corner of
 the cropping region measured downward and rightward with respect to the
 upper left corner of the image.
@@ -1069,7 +1065,7 @@ if its dimensions is less than the geometry specification. For example,
 if you specify <tt>'640x480&gt;'</tt> and the image size is 512x512, the image
 size does not change. However, if the image is 1024x1024, it is resized
 to 640x480.  Enclose the geometry specification in quotation marks to
-prevent the <tt>&gt;</tt> or <tt>&gt;</tt> from being interpreted by your shell
+prevent the <tt>&lt;</tt> or <tt>&gt;</tt> from being interpreted by your shell
 as a file redirection.
 </font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
@@ -1089,16 +1085,17 @@ width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
     <a name="-gravity">-gravity</a> <i>&lt;type&gt;</i>
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>direction text gravitates to when annotating the image.</td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>direction primitive  gravitates to when annotating the image.</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Choices are: NorthWest, North,
-NorthEast, West, Center, East, SouthWest, South, SouthEast. See X(1) for
-details about the gravity specification.
+NorthEast, West, Center, East, SouthWest, South, SouthEast.
 </font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-The direction you choose specifies where to position the text when annotating
+The direction you choose specifies where to position the text or other
+graphic primitive when annotating
 the image. For example <em>Center</em> gravity forces the text to be centered
 within the image. By default, the image gravity is <em>NorthWest</em>.
+See <strong>-draw</strong> for more details about graphic primitives.
 </font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 The <strong>-gravity</strong> option is also used in concert with the <strong>-geometry</strong>
