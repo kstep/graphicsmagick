@@ -508,8 +508,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           }
           default:
           {
-            (void) LogMagickEvent(CoderEvent,GetMagickModule(),"
-              Photometric interpretation: %u",photometric);
+            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+              "Photometric interpretation: %u",photometric);
             break;
           }
         }
