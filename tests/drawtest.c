@@ -36,9 +36,9 @@ static void ScribbleImage ( Image *image)
   DrawPushGraphicContext(context);
   {
     DrawSetViewbox(context,0,0,image->columns,image->rows);
-    DrawSetScale(context,1.101,1.08);
-    DrawSetTranslate(context,-23.69,-22.97);
-    DrawSetRotate(context,0);
+    DrawScale(context,1.101,1.08);
+    DrawTranslate(context,-23.69,-22.97);
+    DrawRotate(context,0);
     DrawSetFillColorString(context,"#ffffff");
     DrawRectangle(context,23.69,22.97,564.6,802.2);
     DrawSetFillOpacity(context,1.0);
@@ -73,7 +73,7 @@ static void ScribbleImage ( Image *image)
         DrawSetStrokeWidth(context,4.032);
         DrawSetStrokeLineCap(context,RoundCap);
         DrawSetStrokeLineJoin(context,RoundJoin);
-        DrawSetStrokeDashArray(context,(const double *)NULL);
+        DrawSetStrokeDashArray(context,0,(const double *)NULL);
         DrawSetStrokeColorString(context,"#ff0000");
         DrawSetFillRule(context,EvenOddRule);
         DrawSetFillColorString(context,"#ff00ff");
@@ -87,7 +87,7 @@ static void ScribbleImage ( Image *image)
         DrawSetStrokeWidth(context,9);
         DrawSetStrokeLineCap(context,RoundCap);
         DrawSetStrokeLineJoin(context,RoundJoin);
-        DrawSetStrokeDashArray(context,(const double *)NULL);
+        DrawSetStrokeDashArray(context,0,(const double *)NULL);
         DrawSetStrokeColorString(context,"#00ff00");
         DrawSetFillRule(context,EvenOddRule);
         DrawSetFillColorString(context,"#0080ff");
@@ -115,7 +115,7 @@ static void ScribbleImage ( Image *image)
         DrawSetStrokeWidth(context,2.016);
         DrawSetStrokeLineCap(context,RoundCap);
         DrawSetStrokeLineJoin(context,RoundJoin);
-        DrawSetStrokeDashArray(context,(const double *)NULL);
+        DrawSetStrokeDashArray(context,0,(const double *)NULL);
         DrawSetStrokeColorString(context,"#000080");
         DrawSetFillRule(context,EvenOddRule);
         DrawSetFillColorString(context,"#c2c280");
@@ -129,7 +129,7 @@ static void ScribbleImage ( Image *image)
         DrawSetStrokeWidth(context,3.024);
         DrawSetStrokeLineCap(context,RoundCap);
         DrawSetStrokeLineJoin(context,RoundJoin);
-        DrawSetStrokeDashArray(context,(const double *)NULL);
+        DrawSetStrokeDashArray(context,0,(const double *)NULL);
         DrawSetStrokeColorString(context,"#000080");
         DrawSetFillRule(context,EvenOddRule);
         DrawSetFillColorString(context,"#00ffff");
@@ -159,7 +159,7 @@ static void ScribbleImage ( Image *image)
         DrawSetStrokeWidth(context,3.024);
         DrawSetStrokeLineCap(context,RoundCap);
         DrawSetStrokeLineJoin(context,RoundJoin);
-        DrawSetStrokeDashArray(context,(const double *)NULL);
+        DrawSetStrokeDashArray(context,0,(const double *)NULL);
         DrawSetStrokeColorString(context,"#ff8000");
         DrawSetFillRule(context,EvenOddRule);
         DrawSetFillColorString(context,"#00ffff");
@@ -173,7 +173,7 @@ static void ScribbleImage ( Image *image)
         DrawSetStrokeWidth(context,12.02);
         DrawSetStrokeLineCap(context,RoundCap);
         DrawSetStrokeLineJoin(context,RoundJoin);
-        DrawSetStrokeDashArray(context,(const double *)NULL);
+        DrawSetStrokeDashArray(context,0,(const double *)NULL);
         DrawSetStrokeColorString(context,"#4000c2");
         DrawSetFillColorString(context,"none");
         DrawArc(context,360,554.4,187.2,237.6,0,90);
@@ -186,7 +186,7 @@ static void ScribbleImage ( Image *image)
         DrawSetStrokeWidth(context,9);
         DrawSetStrokeLineCap(context,RoundCap);
         DrawSetStrokeLineJoin(context,RoundJoin);
-        DrawSetStrokeDashArray(context,(const double *)NULL);
+        DrawSetStrokeDashArray(context,0,(const double *)NULL);
         DrawSetStrokeColorString(context,"#4000c2");
         DrawSetFillRule(context,EvenOddRule);
         DrawSetFillColorString(context,"#800000");
@@ -206,7 +206,7 @@ static void ScribbleImage ( Image *image)
         DrawSetStrokeWidth(context,9);
         DrawSetStrokeLineCap(context,RoundCap);
         DrawSetStrokeLineJoin(context,RoundJoin);
-        DrawSetStrokeDashArray(context,(const double *)NULL);
+        DrawSetStrokeDashArray(context,0,(const double *)NULL);
         DrawSetStrokeColorString(context,"#4000c2");
         DrawSetFillRule(context,EvenOddRule);
         DrawSetFillColorString(context,"#800000");
@@ -227,7 +227,7 @@ static void ScribbleImage ( Image *image)
         DrawSetStrokeWidth(context,9);
         DrawSetStrokeLineCap(context,RoundCap);
         DrawSetStrokeLineJoin(context,RoundJoin);
-        DrawSetStrokeDashArray(context,(const double *)NULL);
+        DrawSetStrokeDashArray(context,0,(const double *)NULL);
         DrawSetStrokeColorString(context,"#4000c2");
         DrawSetFillRule(context,EvenOddRule);
         DrawSetFillColorString(context,"#800000");
@@ -249,7 +249,7 @@ static void ScribbleImage ( Image *image)
         DrawSetStrokeWidth(context,5.976);
         DrawSetStrokeLineCap(context,RoundCap);
         DrawSetStrokeLineJoin(context,RoundJoin);
-        DrawSetStrokeDashArray(context,(const double *)NULL);
+        DrawSetStrokeDashArray(context,0,(const double *)NULL);
         DrawSetStrokeColorString(context,"#4000c2");
         DrawSetFillRule(context,EvenOddRule);
         DrawSetFillColorString(context,"#ffff00");
@@ -269,7 +269,7 @@ static void ScribbleImage ( Image *image)
         DrawSetStrokeWidth(context,5.976);
         DrawSetStrokeLineCap(context,RoundCap);
         DrawSetStrokeLineJoin(context,RoundJoin);
-        DrawSetStrokeDashArray(context,(const double *)NULL);
+        DrawSetStrokeDashArray(context,0,(const double *)NULL);
         DrawSetStrokeColorString(context,"#4000c2");
         DrawSetFillRule(context,EvenOddRule);
         DrawSetFillColorString(context,"#ffff00");
@@ -336,7 +336,7 @@ static void ScribbleImage ( Image *image)
         DrawSetStrokeWidth(context,5.904);
         DrawSetStrokeLineCap(context,RoundCap);
         DrawSetStrokeLineJoin(context,RoundJoin);
-        DrawSetStrokeDashArray(context,(const double *)NULL);
+        DrawSetStrokeDashArray(context,0,(const double *)NULL);
         DrawSetStrokeColorString(context,"#4000c2");
         DrawSetFillRule(context,EvenOddRule);
         DrawSetFillColorString(context,"#ffff00");

@@ -273,7 +273,7 @@ struct _DrawVTable
   void (*DrawRoundRectangle)
     (DrawContext context, double x1, double y1,
      double x2, double y2, double rx, double ry);
-  void (*DrawSetAffine)
+  void (*DrawAffine)
     (DrawContext context, const AffineMatrix *affine);
   void (*DrawSetClipPath)
     (DrawContext context, const char *clip_path);
@@ -303,13 +303,13 @@ struct _DrawVTable
     (DrawContext context, const unsigned long font_weight);
   void (*DrawSetGravity)
     (DrawContext context, const GravityType gravity);
-  void (*DrawSetRotate)
+  void (*DrawRotate)
     (DrawContext context, const double degrees);
-  void (*DrawSetScale)
+  void (*DrawScale)
     (DrawContext context, const double x, const double y);
-  void (*DrawSetSkewX)
+  void (*DrawSkewX)
     (DrawContext context, const double degrees);
-  void (*DrawSetSkewY)
+  void (*DrawSkewY)
     (DrawContext context, const double degrees);
 /*   void (*DrawSetStopColor) */
 /*     (DrawContext context, const PixelPacket * color, const double offset); */
@@ -339,7 +339,7 @@ struct _DrawVTable
     (DrawContext context, const DecorationType decoration);
   void (*DrawSetTextUnderColor)
     (DrawContext context, const PixelPacket * color);
-  void (*DrawSetTranslate)
+  void (*DrawTranslate)
     (DrawContext context, const double x, const double y);
   void (*DrawSetViewbox)
     (DrawContext context, unsigned long x1, unsigned long y1,
@@ -609,19 +609,19 @@ MagickExport void DrawAnnotation(DrawContext context,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   D r a w S e t A f f i n e                                                 %
+%   D r a w A f f i n e                                                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DrawSetAffine() adjusts the current affine transformation matrix with
+%  DrawAffine() adjusts the current affine transformation matrix with
 %  the specified affine transformation matrix. Note that the current affine
 %  transform is adjusted rather than replaced.
 %
-%  The format of the DrawSetAffine method is:
+%  The format of the DrawAffine method is:
 %
-%      void DrawSetAffine(DrawContext context, const AffineMatrix *affine)
+%      void DrawAffine(DrawContext context, const AffineMatrix *affine)
 %
 %  A description of each parameter follows:
 %
@@ -630,10 +630,11 @@ MagickExport void DrawAnnotation(DrawContext context,
 %    o affine: Affine matrix parameters
 %
 */
-MagickExport void DrawSetAffine(DrawContext context, const AffineMatrix *affine)
+MagickExport void DrawAffine(DrawContext context, const AffineMatrix *affine)
 {
   assert(context != (DrawContext)NULL);
   assert(context->signature == MagickSignature);
+  assert(affine != (const AffineMatrix *)NULL);
 
   AdjustAffine( context, affine );
 
@@ -864,6 +865,45 @@ MagickExport void DrawCircle(DrawContext context, const double ox,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   D r a w G e t C l i p P a t h                                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  DrawGetClipPath() obtains the current clipping path.
+%
+%  The format of the DrawGetClipPath method is:
+%
+%      void DrawGetClipPath(DrawContext context, char **clip_path)
+%
+%  A description of each parameter follows:
+%
+%    o context: drawing context
+%
+%    o clip_path: Address of pointer to update with clip-path string. Pointer
+%                 value is set to NULL if there is no clip-path present.
+%                 String must be freed with LiberateMemory() by user once it
+%                 is no longer needed.
+%
+*/
+MagickExport void DrawGetClipPath(DrawContext context, char **clip_path)
+{
+  assert(context != (DrawContext)NULL);
+  assert(context->signature == MagickSignature);
+  assert(clip_path != (char **) NULL);
+
+  if (CurrentContext->clip_path != (char *) NULL)
+    *clip_path = AllocateString(CurrentContext->clip_path);
+  else
+    *clip_path = (char *) NULL;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   D r a w S e t C l i p P a t h                                             %
 %                                                                             %
 %                                                                             %
@@ -905,6 +945,42 @@ MagickExport void DrawSetClipPath(DrawContext context, const char *clip_path)
 
       MvgPrintf(context, "clip-path url(#%s)\n", clip_path);
     }
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   D r a w G e t C l i p R u l e                                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  DrawGetClipRule() obtains the current polygon fill rule to be used by the
+%  clipping path.
+%
+%  The format of the DrawGetClipRule method is:
+%
+%      void DrawGetClipRule(DrawContext context,
+%                           FillRule *fill_rule)
+%
+%  A description of each parameter follows:
+%
+%    o context: drawing context
+%
+%    o fill_rule: Addess of object to update with fill rule
+%
+*/
+MagickExport void DrawGetClipRule(DrawContext context,
+                                  FillRule *fill_rule)
+{
+  assert(context != (DrawContext)NULL);
+  assert(context->signature == MagickSignature);
+  assert(fill_rule != (FillRule *) NULL);
+
+  *fill_rule = CurrentContext->fill_rule;
 }
 
 /*
@@ -960,6 +1036,40 @@ MagickExport void DrawSetClipRule(DrawContext context,
       if (p != NULL)
         MvgPrintf(context, "clip-rule %s\n", p);
     }
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   D r a w G e t C l i p U n i t s                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  DrawGetClipUnits() obtains the interpretation of clip path units.
+%
+%  The format of the DrawGetClipUnits method is:
+%
+%      void DrawGetClipUnits(DrawContext context,
+%                            ClipPathUnits *clip_units)
+%
+%  A description of each parameter follows:
+%
+%    o context: drawing context
+%
+%    o clip_units: Address of ClipPathUnits.
+%
+*/
+MagickExport void DrawGetClipUnits(DrawContext context,
+                                   ClipPathUnits *clip_units)
+{
+  assert(context != (DrawContext)NULL);
+  assert(context->signature == MagickSignature);
+
+  *clip_units = CurrentContext->clip_units;
 }
 
 /*
@@ -1257,6 +1367,42 @@ MagickExport void DrawEllipse(DrawContext context,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   D r a w G e t F i l l C o l o r                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  DrawGetFillColor() obtains the fill color to be used for drawing filled
+%  objects.
+%
+%  The format of the DrawGetFillColor method is:
+%
+%      void DrawGetFillColor(DrawContext context,
+%                            PixelPacket **fill_color)
+%
+%  A description of each parameter follows:
+%
+%    o context: drawing context
+%
+%    o fill_color: Address of object to set
+%
+*/
+MagickExport void DrawGetFillColor(DrawContext context,
+                                   PixelPacket *fill_color)
+{
+  assert(context != (DrawContext)NULL);
+  assert(context->signature == MagickSignature);
+  assert(fill_color != (PixelPacket *) NULL);
+
+  *fill_color = CurrentContext->fill;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   D r a w S e t F i l l C o l o r                                           %
 %                                                                             %
 %                                                                             %
@@ -1278,7 +1424,7 @@ MagickExport void DrawEllipse(DrawContext context,
 %
 */
 MagickExport void DrawSetFillColor(DrawContext context,
-                                   const PixelPacket * fill_color)
+                                   const PixelPacket *fill_color)
 {
   PixelPacket
     *current_fill,
@@ -1404,6 +1550,41 @@ MagickExport void DrawSetFillPatternURL(DrawContext context, const char* fill_ur
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   D r a w G e t F i l l O p a c i t y                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  DrawGetFillOpacity() obtains the opacity to use when drawing using the fill
+%  color or fill texture.  Fully opaque is 1.0.
+%
+%  The format of the DrawGetFillOpacity method is:
+%
+%      void DrawGetFillOpacity(DrawContext context, double *fill_opacity)
+%
+%  A description of each parameter follows:
+%
+%    o context: drawing context
+%
+%    o fill_opacity: address of fill opacity
+%
+*/
+MagickExport void DrawGetFillOpacity(DrawContext context,
+                                     double *fill_opacity)
+{
+  assert(context != (DrawContext)NULL);
+  assert(context->signature == MagickSignature);
+  assert(fill_opacity != (double *) NULL);
+
+  *fill_opacity = ((double)CurrentContext->opacity/MaxRGB);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   D r a w S e t F i l l O p a c i t y                                       %
 %                                                                             %
 %                                                                             %
@@ -1440,6 +1621,40 @@ MagickExport void DrawSetFillOpacity(DrawContext context,
       CurrentContext->opacity = opacity;
       MvgPrintf(context, "fill-opacity %.4g\n", fill_opacity);
     }
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   D r a w G e t F i l l R u l e                                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  DrawGetFillRule() obtains the fill rule to use while drawing polygons.
+%
+%  The format of the DrawGetFillRule method is:
+%
+%      void DrawGetFillRule(DrawContext context, FillRule *fill_rule)
+%
+%  A description of each parameter follows:
+%
+%    o context: drawing context
+%
+%    o fill_rule: address of fill rule (EvenOddRule or NonZeroRule)
+%
+*/
+MagickExport void DrawGetFillRule(DrawContext context,
+                                  FillRule *fill_rule)
+{
+  assert(context != (DrawContext)NULL);
+  assert(context->signature == MagickSignature);
+  assert(fill_rule != (FillRule *) NULL);
+
+  *fill_rule = CurrentContext->fill_rule;
 }
 
 /*
@@ -1501,6 +1716,45 @@ MagickExport void DrawSetFillRule(DrawContext context,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   D r a w G e t F o n t                                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  DrawGetFont() obtains the fully-sepecified font used when annotating with
+%  text.
+%
+%  The format of the DrawGetFont method is:
+%
+%      void DrawGetFont(DrawContext context, char **font_name)
+%
+%  A description of each parameter follows:
+%
+%    o context: drawing context
+%
+%    o font_name: address of pointer to store address of font name string. Set
+%                 to NULL if there is no font name set. Value must be freed by
+%                 the user when no longer needed.
+%
+*/
+MagickExport void DrawGetFont(DrawContext context, char **font_name)
+{
+  assert(context != (DrawContext)NULL);
+  assert(context->signature == MagickSignature);
+  assert(font_name != (char **) NULL);
+
+  if (CurrentContext->font != (char *) NULL)
+    *font_name = AllocateString(CurrentContext->font);
+  else
+    *font_name = (char *) NULL;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   D r a w S e t F o n t                                                     %
 %                                                                             %
 %                                                                             %
@@ -1536,6 +1790,45 @@ MagickExport void DrawSetFont(DrawContext context, const char *font_name)
                            "Memory allocation failed");
       MvgPrintf(context, "font '%s'\n", font_name);
     }
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   D r a w G e t F o n t F a m i l y                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  DrawGetFontFamily() obtains the font family to use when annotating with text.
+%
+%  The format of the DrawGetFontFamily method is:
+%
+%      void DrawGetFontFamily(DrawContext context, char **font_family)
+%
+%  A description of each parameter follows:
+%
+%    o context: drawing context
+%
+%    o font_family: Address of pointer to place font family string. Value is
+%                   set to NULL if the font family is not set. The value must
+%                   be freed by the user when it is no longer needed.
+%
+*/
+MagickExport void DrawGetFontFamily(DrawContext context,
+                                    char **font_family)
+{
+  assert(context != (DrawContext)NULL);
+  assert(context->signature == MagickSignature);
+  assert(font_family != (char **) NULL);
+
+  if (CurrentContext->family != NULL)
+    *font_family = AllocateString(CurrentContext->family);
+  else
+    *font_family = NULL;
 }
 
 /*
@@ -1585,6 +1878,40 @@ MagickExport void DrawSetFontFamily(DrawContext context,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   D r a w G e t F o n t S i z e                                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  DrawGetFontSize() obtains the font pointsize used when annotating with text.
+%
+%  The format of the DrawGetFontSize method is:
+%
+%      void DrawGetFontSize(DrawContext context, double *pointsize)
+%
+%  A description of each parameter follows:
+%
+%    o context: drawing context
+%
+%    o pointsize: address to place value
+%
+*/
+MagickExport void DrawGetFontSize(DrawContext context,
+                                  double *pointsize)
+{
+  assert(context != (DrawContext)NULL);
+  assert(context->signature == MagickSignature);
+  assert(pointsize != (double *)NULL);
+
+  *pointsize = CurrentContext->pointsize;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   D r a w S e t F o n t S i z e                                             %
 %                                                                             %
 %                                                                             %
@@ -1617,6 +1944,41 @@ MagickExport void DrawSetFontSize(DrawContext context,
 
       MvgPrintf(context, "font-size %.4g\n", pointsize);
     }
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   D r a w G e t F o n t S t r e t c h                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  DrawGetFontStretch() obtains the font stretch used when annotating with text.
+%
+%  The format of the DrawGetFontStretch method is:
+%
+%      void DrawGetFontStretch(DrawContext context,
+%                              StretchType *font_stretch)
+%
+%  A description of each parameter follows:
+%
+%    o context: drawing context
+%
+%    o font_stretch: address to place font stretch
+%
+*/
+MagickExport void DrawGetFontStretch(DrawContext context,
+                                     StretchType *font_stretch)
+{
+  assert(context != (DrawContext)NULL);
+  assert(context->signature == MagickSignature);
+  assert(font_stretch != (StretchType *)NULL);
+
+  *font_stretch = CurrentContext->stretch;
 }
 
 /*
@@ -1705,6 +2067,40 @@ MagickExport void DrawSetFontStretch(DrawContext context,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   D r a w G e t F o n t S t y l e                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  DrawGetFontStyle() obtains the font style used when annotating with text.
+%
+%  The format of the DrawGetFontStyle method is:
+%
+%      void DrawGetFontStyle(DrawContext context, StyleType *style)
+%
+%  A description of each parameter follows:
+%
+%    o context: drawing context
+%
+%    o style: address to place value
+%
+*/
+MagickExport void DrawGetFontStyle(DrawContext context,
+                                   StyleType *style)
+{
+  assert(context != (DrawContext)NULL);
+  assert(context->signature == MagickSignature);
+  assert(style != (StyleType *)NULL);
+
+  *style = CurrentContext->style;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   D r a w S e t F o n t S t y l e                                           %
 %                                                                             %
 %                                                                             %
@@ -1764,6 +2160,41 @@ MagickExport void DrawSetFontStyle(DrawContext context,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   D r a w G e t F o n t W e i g h t                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  DrawGetFontWeight() obtains the font weight used when annotating with text.
+%
+%  The format of the DrawGetFontWeight method is:
+%
+%      void DrawGetFontWeight(DrawContext context,
+%                             unsigned long *font_weight)
+%
+%  A description of each parameter follows:
+%
+%    o context: drawing context
+%
+%    o font_weight: address to place value
+%
+*/
+MagickExport void DrawGetFontWeight(DrawContext context,
+                                    unsigned long *font_weight)
+{
+  assert(context != (DrawContext)NULL);
+  assert(context->signature == MagickSignature);
+  assert(font_weight != (unsigned long *)NULL);
+
+  *font_weight = CurrentContext->weight;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   D r a w S e t F o n t W e i g h t                                         %
 %                                                                             %
 %                                                                             %
@@ -1795,6 +2226,41 @@ MagickExport void DrawSetFontWeight(DrawContext context,
       CurrentContext->weight=font_weight;
       MvgPrintf(context, "font-weight %lu\n", font_weight);
     }
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   D r a w G e t G r a v i t y                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  DrawGetGravity() obtains the text placement gravity used when annotating
+%  with text.
+%
+%  The format of the DrawGetGravity method is:
+%
+%      void DrawGetGravity(DrawContext context, GravityType *gravity)
+%
+%  A description of each parameter follows:
+%
+%    o context: drawing context
+%
+%    o gravity: address to place value
+%
+*/
+MagickExport void DrawGetGravity(DrawContext context,
+                                 GravityType *gravity)
+{
+  assert(context != (DrawContext)NULL);
+  assert(context->signature == MagickSignature);
+  assert(gravity != (GravityType *)NULL);
+
+  *gravity = CurrentContext->gravity;
 }
 
 /*
@@ -3883,18 +4349,18 @@ MagickExport int DrawRender(const DrawContext context)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   D r a w S e t R o t a t e                                                 %
+%   D r a w R o t a t e                                                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DrawSetRotate() applies the specified rotation to the current coordinate
+%  DrawRotate() applies the specified rotation to the current coordinate
 %  space.
 %
-%  The format of the DrawSetRotate method is:
+%  The format of the DrawRotate method is:
 %
-%      void DrawSetRotate(DrawContext context, const double degrees)
+%      void DrawRotate(DrawContext context, const double degrees)
 %
 %  A description of each parameter follows:
 %
@@ -3903,7 +4369,7 @@ MagickExport int DrawRender(const DrawContext context)
 %    o degrees: degrees of rotation
 %
 */
-MagickExport void DrawSetRotate(DrawContext context, const double degrees)
+MagickExport void DrawRotate(DrawContext context, const double degrees)
 {
   AffineMatrix
     affine;
@@ -3977,19 +4443,18 @@ MagickExport void DrawRoundRectangle(DrawContext context,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   D r a w S e t S c a l e                                                   %
+%   D r a w S c a l e                                                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DrawSetScale() sets the scaling factor to apply in the horizontal and
+%  DrawScale() adjusts the scaling factor to apply in the horizontal and
 %  vertical directions to the current coordinate space.
 %
-%  The format of the DrawSetScale method is:
+%  The format of the DrawScale method is:
 %
-%      void DrawSetScale(DrawContext context,
-%                        const double x, const double y)
+%      void DrawScale(DrawContext context, const double x, const double y)
 %
 %  A description of each parameter follows:
 %
@@ -4000,7 +4465,7 @@ MagickExport void DrawRoundRectangle(DrawContext context,
 %    o y: vertical scale factor
 %
 */
-MagickExport void DrawSetScale(DrawContext context,
+MagickExport void DrawScale(DrawContext context,
                                const double x, const double y)
 {
   AffineMatrix
@@ -4022,18 +4487,18 @@ MagickExport void DrawSetScale(DrawContext context,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   D r a w S e t S k e w X                                                    %
+%   D r a w S k e w X                                                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DrawSetSkewX() skews the current coordinate system in the horizontal
+%  DrawSkewX() skews the current coordinate system in the horizontal
 %  direction.
 %
-%  The format of the DrawSetSkewX method is:
+%  The format of the DrawSkewX method is:
 %
-%      void DrawSetSkewX(DrawContext context, const double degrees)
+%      void DrawSkewX(DrawContext context, const double degrees)
 %
 %  A description of each parameter follows:
 %
@@ -4042,7 +4507,7 @@ MagickExport void DrawSetScale(DrawContext context,
 %    o degrees: number of degrees to skew the coordinates
 %
 */
-MagickExport void DrawSetSkewX(DrawContext context, const double degrees)
+MagickExport void DrawSkewX(DrawContext context, const double degrees)
 {
   AffineMatrix
     affine;
@@ -4062,18 +4527,18 @@ MagickExport void DrawSetSkewX(DrawContext context, const double degrees)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   D r a w S e t S k e w Y                                                   %
+%   D r a w S k e w Y                                                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DrawSetSkewY() skews the current coordinate system in the vertical
+%  DrawSkewY() skews the current coordinate system in the vertical
 %  direction.
 %
-%  The format of the DrawSetSkewY method is:
+%  The format of the DrawSkewY method is:
 %
-%      void DrawSetSkewY(DrawContext context, const double degrees)
+%      void DrawSkewY(DrawContext context, const double degrees)
 %
 %  A description of each parameter follows:
 %
@@ -4082,7 +4547,7 @@ MagickExport void DrawSetSkewX(DrawContext context, const double degrees)
 %    o degrees: number of degrees to skew the coordinates
 %
 */
-MagickExport void DrawSetSkewY(DrawContext context, const double degrees)
+MagickExport void DrawSkewY(DrawContext context, const double degrees)
 {
   AffineMatrix
     affine;
@@ -4092,7 +4557,7 @@ MagickExport void DrawSetSkewY(DrawContext context, const double degrees)
 
   IdentityAffine(&affine);
   affine.rx=tan(DegreesToRadians(fmod(degrees,360.0)));
-  DrawSetAffine(context,&affine);
+  DrawAffine(context,&affine);
 
   MvgPrintf(context, "skewY %.4g\n", degrees);
 }
@@ -4142,6 +4607,41 @@ MagickExport void DrawSetStopColor(DrawContext context,
   MvgPrintf(context, "\n");
 }
 #endif
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   D r a w G e t S t r o k e C o l o r                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  DrawGetStrokeColor() obtains the color used for stroking object outlines.
+%
+%  The format of the DrawGetStrokeColor method is:
+%
+%      void DrawGetStrokeColor(DrawContext context,
+%                              PixelPacket *stroke_color)
+%
+%  A description of each parameter follows:
+%
+%    o context: drawing context
+%
+%    o stroke_color: address to place stroke color
+%
+*/
+MagickExport void DrawGetStrokeColor(DrawContext context,
+                                     PixelPacket *stroke_color)
+{
+  assert(context != (DrawContext)NULL);
+  assert(context->signature == MagickSignature);
+  assert(stroke_color != (const PixelPacket *) NULL);
+
+  *stroke_color = CurrentContext->stroke;
+}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -4293,6 +4793,44 @@ MagickExport void DrawSetStrokePatternURL(DrawContext context,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   D r a w G e t S t r o k e A n t i a l i a s                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  DrawGetStrokeAntialias() obtains the current stroke antialias setting.
+%  Stroked outlines are antialiased by default.  When antialiasing is disabled
+%  stroked pixels are thresholded to determine if the stroke color or
+%  underlying canvas color should be used.
+%
+%  The format of the DrawGetStrokeAntialias method is:
+%
+%      void DrawGetStrokeAntialias(DrawContext context,
+%                                  unsigned int *stroke_antialias)
+%
+%  A description of each parameter follows:
+%
+%    o context: drawing context
+%
+%    o stroke_antialias: address to place value
+%
+*/
+MagickExport void DrawGetStrokeAntialias(DrawContext context,
+                                         unsigned int *stroke_antialias)
+{
+  assert(context != (DrawContext)NULL);
+  assert(context->signature == MagickSignature);
+  assert(stroke_antialias != (unsigned int *)NULL);
+
+  *stroke_antialias = CurrentContext->stroke_antialias;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   D r a w S e t S t r o k e A n t i a l i a s                               %
 %                                                                             %
 %                                                                             %
@@ -4335,33 +4873,107 @@ MagickExport void DrawSetStrokeAntialias(DrawContext context,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   D r a w G e t S t r o k e D a s h A r r a y                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  DrawGetStrokeDashArray() obtains the pattern of dashes and gaps used to
+%  stroke paths. The strokeDashArray represents an array of numbers that
+%  specify the lengths of alternating dashes and gaps in pixels. If an odd
+%  number of values is provided, then the list of values is repeated to yield
+%  an even number of values. If the value returned in num_elems is zero, then
+%  no stroke dash array is defined.
+%
+%  The format of the DrawGetStrokeDashArray method is:
+%
+%      void DrawGetStrokeDashArray(DrawContext context,
+%                                  size_t *num_elems,
+%                                  double **dasharray)
+%
+%  A description of each parameter follows:
+%
+%    o context: drawing context
+%
+%    o num_elems: address to place number of elements in dash array
+%
+%    o dasharray: address to place array of dash array values
+%
+% */
+MagickExport void DrawGetStrokeDashArray(DrawContext context,
+                                         size_t *num_elems,
+                                         double **dasharray)
+{
+  register const double
+    *p;
+
+  register double
+    *q;
+
+  unsigned int
+    i,
+    n = 0;
+
+  assert(context != (DrawContext)NULL);
+  assert(context->signature == MagickSignature);
+  assert(num_elems != (size_t *)NULL);
+  assert(dasharray != (double **)NULL);
+
+  p = CurrentContext->dash_pattern;
+  if( p != (const double *) NULL )
+    while( *p++ != 0)
+      n++;
+
+  *num_elems = n;
+  *dasharray = (double *)NULL;
+  if (n != 0)
+    {
+      *dasharray = (double *)AcquireMemory(n*sizeof(double));
+      p = CurrentContext->dash_pattern;
+      q = *dasharray;
+      i = n;
+      while( i-- )
+        *q++ = *p++;
+    }
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   D r a w S e t S t r o k e D a s h A r r a y                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DrawSetStrokeDashArray() specifies the pattern of dashes and gaps
-%  used to stroke paths. The strokeDashArray represents a zero-terminated
-%  array of numbers that specify the lengths of alternating dashes and
-%  gaps in pixels. If an odd number of values is provided, then the list
-%  of values is repeated to yield an even number of values.  A typical
-%  strokeDashArray_ array might contain the members 5 3 2 0, where the
-%  zero value indicates the end of the pattern array.
+%  DrawSetStrokeDashArray() specifies the pattern of dashes and gaps used to
+%  stroke paths. The strokeDashArray represents an array of numbers that
+%  specify the lengths of alternating dashes and gaps in pixels. If an odd
+%  number of values is provided, then the list of values is repeated to yield
+%  an even number of values. To remove an existing dash array, pass a zero
+%  num_elems argument and null dasharray.
+%  A typical strokeDashArray_ array might contain the members 5 3 2.
 %
 %  The format of the DrawSetStrokeDashArray method is:
 %
 %      void DrawSetStrokeDashArray(DrawContext context,
+%                                  const size_t num_elems,
 %                                  const double *dasharray)
 %
 %  A description of each parameter follows:
 %
 %    o context: drawing context
 %
-%    o dasharray: dash array
+%    o num_elems: number of elements in dash array
+%
+%    o dasharray: dash array values
 %
 % */
 MagickExport void DrawSetStrokeDashArray(DrawContext context,
+                                         const size_t num_elems,
                                          const double *dasharray)
 {
   register const double
@@ -4371,17 +4983,13 @@ MagickExport void DrawSetStrokeDashArray(DrawContext context,
     *q;
 
   unsigned int
+    i,
     updated = False,
-    n_new = 0,
+    n_new = num_elems,
     n_old = 0;
 
   assert(context != (DrawContext)NULL);
   assert(context->signature == MagickSignature);
-
-  p = dasharray;
-  if( p != (const double *) NULL )
-    while( *p++ != 0)
-      n_new++;
 
   q = CurrentContext->dash_pattern;
   if( q != (const double *) NULL )
@@ -4401,12 +5009,17 @@ MagickExport void DrawSetStrokeDashArray(DrawContext context,
     {
       p = dasharray;
       q = CurrentContext->dash_pattern;
-      while( *p && *q )
-        if(AbsoluteValue(*p - *q) > MagickEpsilon)
-          {
-            updated = True;
-            break;
-          }
+      i = n_new;
+      while( i-- )
+        {
+          if(AbsoluteValue(*p - *q) > MagickEpsilon)
+            {
+              updated = True;
+              break;
+            }
+          ++p;
+          ++q;
+        }
     }
 
   if( context->filter_off || updated )
@@ -4439,12 +5052,49 @@ MagickExport void DrawSetStrokeDashArray(DrawContext context,
       else
         {
           p = dasharray;
+          i = n_new;
           MvgPrintf(context, "%.4g", *p++);
-          while (*p)
+          while (i--)
             MvgPrintf(context, ",%.4g", *p++);
         }
-      MvgPrintf(context, "\n");
+      MvgPrintf(context, "0 \n");
     }
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   D r a w G e t S t r o k e D a s h O f f s e t                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  DrawGetStrokeDashOffset() obtains the offset into the dash pattern to
+%  start the dash.
+%
+%  The format of the DrawGetStrokeDashOffset method is:
+%
+%      void DrawGetStrokeDashOffset(DrawContext context,
+%                                   double *dash_offset)
+%
+%  A description of each parameter follows:
+%
+%    o context: drawing context
+%
+%    o dash_offset: address to write dash offset
+%
+*/
+MagickExport void DrawGetStrokeDashOffset(DrawContext context,
+                                          double *dash_offset)
+{
+  assert(context != (DrawContext)NULL);
+  assert(context->signature == MagickSignature);
+  assert(dash_offset != (double *)NULL);
+
+  *dash_offset = CurrentContext->dash_offset;
 }
 
 /*
@@ -4486,6 +5136,43 @@ MagickExport void DrawSetStrokeDashOffset(DrawContext context,
 
       MvgPrintf(context, "stroke-dashoffset %.4g\n", dash_offset);
     }
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   D r a w G e t S t r o k e L i n e C a p                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  DrawGetStrokeLineCap() obtains the shape to be used at the end of
+%  open subpaths when they are stroked. Values of LineCap are
+%  UndefinedCap, ButtCap, RoundCap, and SquareCap.
+%
+%  The format of the DrawGetStrokeLineCap method is:
+%
+%      void DrawGetStrokeLineCap(DrawContext context,
+%                                LineCap *linecap)
+%
+%  A description of each parameter follows:
+%
+%    o context: drawing context
+%
+%    o linecap: address to write linecap style
+%
+% */
+MagickExport void DrawGetStrokeLineCap(DrawContext context,
+                                       LineCap *linecap)
+{
+  assert(context != (DrawContext)NULL);
+  assert(context->signature == MagickSignature);
+  assert(linecap != (LineCap *)NULL);
+
+  *linecap = CurrentContext->linecap;
 }
 
 /*
@@ -4553,6 +5240,43 @@ MagickExport void DrawSetStrokeLineCap(DrawContext context,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   D r a w G e t S t r o k e L i n e J o i n                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  DrawGetStrokeLineJoin() obtains the shape to be used at the
+%  corners of paths (or other vector shapes) when they are
+%  stroked. Values of LineJoin are UndefinedJoin, MiterJoin, RoundJoin,
+%  and BevelJoin.
+%
+%  The format of the DrawGetStrokeLineJoin method is:
+%
+%      void DrawGetStrokeLineJoin(DrawContext context, LineJoin *linejoin)
+%
+%  A description of each parameter follows:
+%
+%    o context: drawing context
+%
+%    o linejoin: address to write line join style
+%
+% */
+MagickExport void DrawGetStrokeLineJoin(DrawContext context,
+                                        LineJoin *linejoin)
+{
+  assert(context != (DrawContext)NULL);
+  assert(context->signature == MagickSignature);
+  assert(linejoin != (LineJoin *)NULL);
+
+  *linejoin = CurrentContext->linejoin;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   D r a w S e t S t r o k e L i n e J o i n                                 %
 %                                                                             %
 %                                                                             %
@@ -4613,6 +5337,45 @@ MagickExport void DrawSetStrokeLineJoin(DrawContext context,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   D r a w G e t S t r o k e M i t e r L i m i t                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  DrawGetStrokeMiterLimit() obtains the miter limit. When two line
+%  segments meet at a sharp angle and miter joins have been specified for
+%  'lineJoin', it is possible for the miter to extend far beyond the
+%  thickness of the line stroking the path. The miterLimit' imposes a
+%  limit on the ratio of the miter length to the 'lineWidth'.
+%
+%  The format of the DrawGetStrokeMiterLimit method is:
+%
+%      void DrawGetStrokeMiterLimit(DrawContext context,
+%                                   unsigned long *miterlimit)
+%
+%  A description of each parameter follows:
+%
+%    o context: drawing context
+%
+%    o miterlimit: address to save miter limit
+%
+% */
+MagickExport void DrawGetStrokeMiterLimit(DrawContext context,
+                                          unsigned long *miterlimit)
+{
+  assert(context != (DrawContext)NULL);
+  assert(context->signature == MagickSignature);
+  assert(miterlimit != (unsigned long *)NULL);
+
+  *miterlimit = CurrentContext->miterlimit;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   D r a w S e t S t r o k e M i t e r L i m i t                             %
 %                                                                             %
 %                                                                             %
@@ -4649,6 +5412,41 @@ MagickExport void DrawSetStrokeMiterLimit(DrawContext context,
 
       MvgPrintf(context, "stroke-miterlimit %lu\n", miterlimit);
     }
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   D r a w G e t S t r o k e O p a c i t y                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  DrawGetStrokeOpacity() obtains the opacity of stroked object outlines.
+%
+%  The format of the DrawGetStrokeOpacity method is:
+%
+%      void DrawGetStrokeOpacity(DrawContext context,
+%                                double *stroke_opacity)
+%
+%  A description of each parameter follows:
+%
+%    o context: drawing context
+%
+%    o stroke_opacity: address to save stroke opacity.
+%
+*/
+MagickExport void DrawGetStrokeOpacity(DrawContext context,
+                                       double *stroke_opacity)
+{
+  assert(context != (DrawContext)NULL);
+  assert(context->signature == MagickSignature);
+  assert(stroke_opacity != (double *)NULL);
+
+  *stroke_opacity = 1.0-(((double)CurrentContext->stroke.opacity)/MaxRGB);
 }
 
 /*
@@ -4699,6 +5497,41 @@ MagickExport void DrawSetStrokeOpacity(DrawContext context,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   D r a w G e t S t r o k e W i d t h                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  DrawGetStrokeWidth() obtains the width of the stroke used to draw object
+%  outlines.
+%
+%  The format of the DrawGetStrokeWidth method is:
+%
+%      void DrawGetStrokeWidth(DrawContext context, double *stroke_width)
+%
+%  A description of each parameter follows:
+%
+%    o context: drawing context
+%
+%    o stroke_width: address to save stroke width
+%
+*/
+MagickExport void DrawGetStrokeWidth(DrawContext context,
+                                     double *stroke_width)
+{
+  assert(context != (DrawContext)NULL);
+  assert(context->signature == MagickSignature);
+  assert(stroke_width != (double *)NULL);
+
+  *stroke_width = CurrentContext->stroke_width;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   D r a w S e t S t r o k e W i d t h                                       %
 %                                                                             %
 %                                                                             %
@@ -4732,6 +5565,42 @@ MagickExport void DrawSetStrokeWidth(DrawContext context,
 
       MvgPrintf(context, "stroke-width %.4g\n", stroke_width);
     }
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   D r a w G e t T e x t A n t i a l i a s                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  DrawGetTextAntialias() obtains the current text antialias setting, which
+%  determines whether text is antialiased.  Text is antialiased by default.
+%
+%  The format of the DrawGetTextAntialias method is:
+%
+%      void DrawGetTextAntialias(DrawContext context,
+%                                unsigned int *text_antialias)
+%
+%  A description of each parameter follows:
+%
+%    o context: drawing context
+%
+%    o text_antialias: address to save antialias boolean.
+%
+*/
+MagickExport void DrawGetTextAntialias(DrawContext context,
+                                       unsigned int *text_antialias)
+{
+  assert(context != (DrawContext)NULL);
+  assert(context->signature == MagickSignature);
+  assert(text_antialias != (unsigned int *)NULL);
+
+  *text_antialias = CurrentContext->text_antialias;
 }
 
 /*
@@ -4773,6 +5642,44 @@ MagickExport void DrawSetTextAntialias(DrawContext context,
 
       MvgPrintf(context, "text-antialias %i\n", text_antialias ? 1 : 0);
     }
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   D r a w G e t T e x t D e c o r a t i o n                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  DrawGetTextDecoration() obtains the decoration to be applied when
+%  annotating with text.
+%
+%  The format of the DrawGetTextDecoration method is:
+%
+%      void DrawGetTextDecoration(DrawContext context,
+%                                 DecorationType *decoration)
+%
+%  A description of each parameter follows:
+%
+%    o context: drawing context
+%
+%    o decoration: address to save text decoration. One of NoDecoration,
+%                  UnderlineDecoration, OverlineDecoration, or
+%                  LineThroughDecoration
+%
+*/
+MagickExport void DrawGetTextDecoration(DrawContext context,
+                                        DecorationType *decoration)
+{
+  assert(context != (DrawContext)NULL);
+  assert(context->signature == MagickSignature);
+  assert(decoration != (DecorationType *)NULL);
+  
+  *decoration = CurrentContext->decorate;
 }
 
 /*
@@ -4841,6 +5748,45 @@ MagickExport void DrawSetTextDecoration(DrawContext context,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   D r a w G e t T e x t E n c o d i n g                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  DrawGetTextEncoding() obtains specifies the code set used for
+%  text annotations.
+%
+%  The format of the DrawGetTextEncoding method is:
+%
+%      void DrawGetTextEncoding(DrawContext context, char **encoding)
+%
+%  A description of each parameter follows:
+%
+%    o context: drawing context
+%
+%    o encoding: address specifiying pointer to record string specifying
+%                text encoding. If the value is not set, then the
+%                string pointer is set to NULL.
+%
+% */
+MagickExport void DrawGetTextEncoding(DrawContext context, char **encoding)
+{
+  assert(context != (DrawContext)NULL);
+  assert(context->signature == MagickSignature);
+  assert(encoding != (char **) NULL);
+
+  if (CurrentContext->encoding != (char *)NULL)
+    *encoding=AllocateString(CurrentContext->encoding);
+  else
+    *encoding=NULL;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   D r a w S e t T e x t E n c o d i n g                                     %
 %                                                                             %
 %                                                                             %
@@ -4878,6 +5824,42 @@ MagickExport void DrawSetTextEncoding(DrawContext context, const char* encoding)
 
       MvgPrintf(context, "encoding '%s'\n", encoding);
     }
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   D r a w G e t T e x t U n d e r C o l o r                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  DrawGetTextUnderColor() obtains the color of a background rectangle
+%  to place under text annotations.
+%
+%  The format of the DrawGetTextUnderColor method is:
+%
+%      void DrawGetTextUnderColor(DrawContext context,
+%                                 PixelPacket *under_color)
+%
+%  A description of each parameter follows:
+%
+%    o context: drawing context
+%
+%    o under_color: address to save text under-color
+%
+*/
+MagickExport void DrawGetTextUnderColor(DrawContext context,
+                                        PixelPacket *under_color)
+{
+  assert(context != (DrawContext)NULL);
+  assert(context->signature == MagickSignature);
+  assert(under_color != (PixelPacket *)NULL);
+
+  *under_color = CurrentContext->undercolor;
 }
 
 /*
@@ -4963,19 +5945,19 @@ MagickExport void DrawSetTextUnderColorString(DrawContext context,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   D r a w S e t T r a n s l a t e                                           %
+%   D r a w T r a n s l a t e                                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DrawSetTranslate() specifies a translation to the current coordinate
+%  DrawTranslate() applies a translation to the current coordinate
 %  system which moves the coordinate system origin to the specified
 %  coordinate.
 %
-%  The format of the DrawSetTranslate method is:
+%  The format of the DrawTranslate method is:
 %
-%      void DrawSetTranslate(DrawContext context,
+%      void DrawTranslate(DrawContext context,
 %                            const double x, const double y)
 %
 %  A description of each parameter follows:
@@ -4987,7 +5969,7 @@ MagickExport void DrawSetTextUnderColorString(DrawContext context,
 %    o y: new y ordinate for coordinate system origin
 %
 */
-MagickExport void DrawSetTranslate(DrawContext context,
+MagickExport void DrawTranslate(DrawContext context,
                                    const double x, const double y)
 {
   AffineMatrix

@@ -1539,7 +1539,8 @@ public:
   DrawableDashArray& operator=(const Magick::DrawableDashArray &original_);
 
 private:
-  double* _dasharray;
+  size_t	_size;
+  double       *_dasharray;
 };
 
 // Stroke dashoffset

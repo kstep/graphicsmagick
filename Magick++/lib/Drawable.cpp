@@ -232,7 +232,7 @@ Magick::DrawableAffine::~DrawableAffine( void )
 }
 void Magick::DrawableAffine::operator()( MagickLib::DrawContext context_ ) const
 {
-  DrawSetAffine( context_, &_affine );
+  DrawAffine( context_, &_affine );
 }
 Magick::DrawableBase* Magick::DrawableAffine::copy() const
 {
@@ -865,7 +865,7 @@ Magick::DrawableRotation::~DrawableRotation ( void )
 void Magick::DrawableRotation::operator()
   ( MagickLib::DrawContext context_ ) const
 {
-  DrawSetRotate( context_, _angle );
+  DrawRotate( context_, _angle );
 }
 Magick::DrawableBase* Magick::DrawableRotation::copy() const
 {
@@ -894,7 +894,7 @@ Magick::DrawableScaling::~DrawableScaling ( void )
 void Magick::DrawableScaling::operator()
   ( MagickLib::DrawContext context_ ) const
 {
-  DrawSetScale( context_, _x, _y );
+  DrawScale( context_, _x, _y );
 }
 Magick::DrawableBase* Magick::DrawableScaling::copy() const
 {
@@ -908,7 +908,7 @@ Magick::DrawableSkewX::~DrawableSkewX ( void )
 void Magick::DrawableSkewX::operator()
   ( MagickLib::DrawContext context_ ) const
 {
-  DrawSetSkewX( context_, _angle );
+  DrawSkewX( context_, _angle );
 }
 Magick::DrawableBase* Magick::DrawableSkewX::copy() const
 {
@@ -921,7 +921,7 @@ Magick::DrawableSkewY::~DrawableSkewY ( void )
 }
 void Magick::DrawableSkewY::operator()( MagickLib::DrawContext context_ ) const
 {
-  DrawSetSkewY( context_, _angle );
+  DrawSkewY( context_, _angle );
 }
 Magick::DrawableBase* Magick::DrawableSkewY::copy() const
 {
@@ -930,26 +930,30 @@ Magick::DrawableBase* Magick::DrawableSkewY::copy() const
 
 // Stroke dasharray
 Magick::DrawableDashArray::DrawableDashArray( const double* dasharray_ )
-  : _dasharray(0)
+  : _size(0),
+    _dasharray(0)
 {
   dasharray( dasharray_ );
 }
 // Deprecated, do not use for new code, and migrate existing code to
 // using double*
 Magick::DrawableDashArray::DrawableDashArray( const unsigned int* dasharray_ )
-  : _dasharray(0)
+  : _size(0),
+    _dasharray(0)
 {
   dasharray( dasharray_ );
 }
 Magick::DrawableDashArray::DrawableDashArray
 (const Magick::DrawableDashArray& original_)
-  : _dasharray(0)
+  : _size(0),
+    _dasharray(0)
 {
   dasharray( original_._dasharray );
 }
 Magick::DrawableDashArray::~DrawableDashArray( void )
 {
   delete _dasharray;
+  _size = 0;
   _dasharray = 0;
 }
 Magick::DrawableDashArray& Magick::DrawableDashArray::operator=
@@ -964,7 +968,7 @@ Magick::DrawableDashArray& Magick::DrawableDashArray::operator=
 void Magick::DrawableDashArray::operator()
   ( MagickLib::DrawContext context_ ) const
 {
-  DrawSetStrokeDashArray( context_, _dasharray );
+  DrawSetStrokeDashArray( context_, _size, _dasharray );
 }
 Magick::DrawableBase* Magick::DrawableDashArray::copy() const
 {
@@ -983,6 +987,7 @@ void Magick::DrawableDashArray::dasharray ( const double* dasharray_ )
         while(*p++ != 0)
           n++;
       }
+      _size = n;
 
       // Allocate elements
       _dasharray=static_cast<double*>(AcquireMemory((n+1)*sizeof(double)));
@@ -1011,6 +1016,7 @@ void Magick::DrawableDashArray::dasharray( const unsigned int* dasharray_ )
         while(*p++ != 0)
           n++;
       }
+      _size = n;
 
       // Allocate elements
       _dasharray=static_cast<double*>(AcquireMemory((n+1)*sizeof(double)));
@@ -1265,7 +1271,7 @@ Magick::DrawableTranslation::~DrawableTranslation ( void )
 void Magick::DrawableTranslation::operator()
   ( MagickLib::DrawContext context_ ) const
 {
-  DrawSetTranslate( context_, _x, _y );
+  DrawTranslate( context_, _x, _y );
 }
 Magick::DrawableBase* Magick::DrawableTranslation::copy() const
 {

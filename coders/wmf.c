@@ -627,13 +627,13 @@ static void ipa_device_begin(wmfAPI * API)
   DrawComment(WmfDrawContext,comment);
 
   /* Scale width and height to image */
-  DrawSetScale(WmfDrawContext, ddata->scale_x, ddata->scale_y);
+  DrawScale(WmfDrawContext, ddata->scale_x, ddata->scale_y);
 
   /* Translate to TL corner of bounding box */
-  DrawSetTranslate(WmfDrawContext, ddata->translate_x, ddata->translate_y);
+  DrawTranslate(WmfDrawContext, ddata->translate_x, ddata->translate_y);
 
   /* Apply rotation */
-  DrawSetRotate(WmfDrawContext, ddata->rotate);
+  DrawRotate(WmfDrawContext, ddata->rotate);
 
   if(ddata->image_info->texture == NULL)
     {
@@ -1352,10 +1352,10 @@ static void ipa_draw_text(wmfAPI * API, wmfDrawText_t * draw_text)
   DrawSetFont(WmfDrawContext, WMF_FONT_PSNAME(font));
 
   /* Translate coordinates so target is 0,0 */
-  DrawSetTranslate(WmfDrawContext, XC(point.x), YC(point.y));
+  DrawTranslate(WmfDrawContext, XC(point.x), YC(point.y));
 
   /* Transform horizontal scale to draw text at 1:1 ratio */
-  DrawSetScale(WmfDrawContext, ddata->scale_y / ddata->scale_x, 1.0);
+  DrawScale(WmfDrawContext, ddata->scale_y / ddata->scale_x, 1.0);
 
   /* Apply rotation */
   /* ImageMagick's drawing rotation is clockwise from horizontal
@@ -1364,7 +1364,7 @@ static void ipa_draw_text(wmfAPI * API, wmfDrawText_t * draw_text)
   if (angle == 360)
     angle = 0;
   if (angle != 0)
-    DrawSetRotate(WmfDrawContext, angle);
+    DrawRotate(WmfDrawContext, angle);
 
   /*
    * Render text
@@ -1816,7 +1816,7 @@ static void util_set_pen(wmfAPI * API, wmfDC * dc)
           dasharray[2] = 0;
 
           DrawSetStrokeAntialias(WmfDrawContext,False);
-          DrawSetStrokeDashArray(WmfDrawContext,dasharray);
+          DrawSetStrokeDashArray(WmfDrawContext,2,dasharray);
           break;
         }
       case PS_ALTERNATE:
@@ -1828,7 +1828,7 @@ static void util_set_pen(wmfAPI * API, wmfDC * dc)
           dasharray[2] = 0;
 
           DrawSetStrokeAntialias(WmfDrawContext,False);
-          DrawSetStrokeDashArray(WmfDrawContext,dasharray);
+          DrawSetStrokeDashArray(WmfDrawContext,2,dasharray);
           break;
         }
       case PS_DASHDOT:    /* _._._._  */
@@ -1841,7 +1841,7 @@ static void util_set_pen(wmfAPI * API, wmfDC * dc)
           dasharray[4] = 0;
 
           DrawSetStrokeAntialias(WmfDrawContext,False);
-          DrawSetStrokeDashArray(WmfDrawContext,dasharray);
+          DrawSetStrokeDashArray(WmfDrawContext,4,dasharray);
           break;
         }
       case PS_DASHDOTDOT:  /* _.._.._  */
@@ -1856,14 +1856,14 @@ static void util_set_pen(wmfAPI * API, wmfDC * dc)
           dasharray[6] = 0;
 
           DrawSetStrokeAntialias(WmfDrawContext,False);
-          DrawSetStrokeDashArray(WmfDrawContext,dasharray);
+          DrawSetStrokeDashArray(WmfDrawContext,6,dasharray);
           break;
         }
       case PS_INSIDEFRAME:  /* There is nothing to do in this case... */
       case PS_SOLID:
       default:
         {
-          DrawSetStrokeDashArray(WmfDrawContext,(double *)NULL);
+          DrawSetStrokeDashArray(WmfDrawContext,0,(double *)NULL);
           break;
         }
       }

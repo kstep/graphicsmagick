@@ -90,6 +90,7 @@ coders/xcf.c
 coders/xpm.c
 coders/xwd.c
 coders/yuv.c
+filters/analyze.c
 magick/animate.c
 magick/animate.h
 magick/annotate.c
@@ -157,6 +158,8 @@ magick/registry.h
 magick/render.c
 magick/render.h
 magick/resize.c
+magick/resource.c
+magick/resource.h
 magick/segment.c
 magick/semaphore.c
 magick/semaphore.h

@@ -439,6 +439,7 @@ namespace Magick
   using MagickLib::DestroyQuantizeInfo;
   using MagickLib::DispatchImage;
   using MagickLib::DisplayImages;
+  using MagickLib::DrawAffine;
   using MagickLib::DrawAllocateContext;
   using MagickLib::DrawAnnotation;
   using MagickLib::DrawArc;
@@ -488,8 +489,9 @@ namespace Magick
   using MagickLib::DrawPushPattern;
   using MagickLib::DrawRectangle;
   using MagickLib::DrawRender;
+  using MagickLib::DrawRotate;
   using MagickLib::DrawRoundRectangle;
-  using MagickLib::DrawSetAffine;
+  using MagickLib::DrawScale;
   using MagickLib::DrawSetClipPath;
   using MagickLib::DrawSetClipRule;
   using MagickLib::DrawSetClipUnits;
@@ -505,10 +507,6 @@ namespace Magick
   using MagickLib::DrawSetFontStyle;
   using MagickLib::DrawSetFontWeight;
   using MagickLib::DrawSetGravity;
-  using MagickLib::DrawSetRotate;
-  using MagickLib::DrawSetScale;
-  using MagickLib::DrawSetSkewX;
-  using MagickLib::DrawSetSkewY;
   using MagickLib::DrawSetStrokeAntialias;
   using MagickLib::DrawSetStrokeColor;
   using MagickLib::DrawSetStrokeColorString;
@@ -521,12 +519,14 @@ namespace Magick
   using MagickLib::DrawSetStrokePatternURL;
   using MagickLib::DrawSetStrokeWidth;
   using MagickLib::DrawSetTextAntialias;
-  using MagickLib::DrawSetTextEncoding;
   using MagickLib::DrawSetTextDecoration;
+  using MagickLib::DrawSetTextEncoding;
   using MagickLib::DrawSetTextUnderColor;
   using MagickLib::DrawSetTextUnderColorString;
-  using MagickLib::DrawSetTranslate;
   using MagickLib::DrawSetViewbox;
+  using MagickLib::DrawSkewX;
+  using MagickLib::DrawSkewY;
+  using MagickLib::DrawTranslate;
   using MagickLib::EdgeImage;
   using MagickLib::EmbossImage;
   using MagickLib::EnhanceImage;
@@ -556,6 +556,7 @@ namespace Magick
   using MagickLib::GetImageDepth;
   using MagickLib::GetImageInfo;
   using MagickLib::GetImagePixels;
+  using MagickLib::GetImageQuantizeError;
   using MagickLib::GetImageType;
   using MagickLib::GetIndexes;
   using MagickLib::GetMagickGeometry;
@@ -612,7 +613,6 @@ namespace Magick
   using MagickLib::ProfileImage;
   using MagickLib::ProfileInfo;
   using MagickLib::PushImagePixels;
-  using MagickLib::GetImageQuantizeError;
   using MagickLib::QuantizeImage;
   using MagickLib::QuantizeInfo;
   using MagickLib::QueryColorDatabase;
@@ -636,7 +636,6 @@ namespace Magick
   using MagickLib::SetCacheView;
   using MagickLib::SetClientName;
   using MagickLib::SetImage;
-  using MagickLib::SetLogEventMask;
   using MagickLib::SetImageAttribute;
   using MagickLib::SetImageClipMask;
   using MagickLib::SetImageDepth;
@@ -644,6 +643,7 @@ namespace Magick
   using MagickLib::SetImageOpacity;
   using MagickLib::SetImagePixels;
   using MagickLib::SetImageType;
+  using MagickLib::SetLogEventMask;
   using MagickLib::SetMagickInfo;
   using MagickLib::SetMagickRegistry;
   using MagickLib::ShadeImage;
