@@ -569,6 +569,7 @@ static unsigned int WritePICONImage(const ImageInfo *image_info,Image *image)
     return(False);
   status=MapImage(picon,map,image_info->dither);
   DestroyImage(map);
+  picon->blob=ReferenceBlob(image->blob);
   status|=WriteXPMImage(image_info,picon);
   DestroyImage(picon);
   return(status);
