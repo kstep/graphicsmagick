@@ -261,7 +261,7 @@ MagickExport PixelPacket AlphaComposite(const CompositeOperator compose,
       color.red=(unsigned long) ((Intensity(*p)*q->red)/MaxRGB);
       color.green=(unsigned long) ((Intensity(*p)*q->green)/MaxRGB);
       color.blue=(unsigned long) ((Intensity(*p)*q->blue)/MaxRGB);
-      color.opacity=(unsigned long) (Intensity(*p)/MaxRGB);
+      color.opacity=(unsigned long) (Intensity(*p)*beta/MaxRGB);
       return(color);
     }
     case CopyCompositeOp:
