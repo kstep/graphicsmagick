@@ -872,7 +872,6 @@ static unsigned int WriteCACHEImage(const ImageInfo *image_info,Image *image)
   status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
     ThrowWriterException(FileOpenWarning,"Unable to open file",image);
-  (void) IsPseudoClass(image);
   (void) strcpy((char *) image_info->magick,"Cache");
   compression=image->compression;
   if (image_info->compression != UndefinedCompression)
