@@ -1541,7 +1541,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       /*
         Read text from a file.
       */
-      text=FileToBlob(draw_info->primitive+1,&length,&image->exception);
+      text=(char *) FileToBlob(draw_info->primitive+1,&length,&image->exception);
       if (text == (char *) NULL)
         return(False);
       primitive=TranslateText((ImageInfo *) NULL,image,text);
