@@ -65,9 +65,9 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ReadUYVYImage reads an image in the UYVY (16bit/pixel) format
-%  and returns it.  It allocates the memory necessary for the new Image
-%  structure and returns a pointer to the new image.
+%  Method ReadUYVYImage reads an image in the UYVY format and returns it.  It
+%  allocates the memory necessary for the new Image structure and returns a
+%  pointer to the new image.
 %
 %  The format of the ReadUYVYImage routine is:
 %
@@ -175,8 +175,8 @@ Export Image *ReadUYVYImage(const ImageInfo *image_info)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  Method WriteUYVYImage writes an image to a file in the digital UYVY
-%  (16bit/pixel) format.  This format, used by AccomWSD, is not dramatically
-%  higher quality than the 12bit/pixel YUV format, but has better locality.
+%  format.  This format, used by AccomWSD, is not dramatically higher quality
+%  than the 12bit/pixel YUV format, but has better locality.
 %
 %  The format of the WriteUYVYImage routine is:
 %
