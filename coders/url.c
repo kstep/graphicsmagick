@@ -172,9 +172,12 @@ static Image *ReadURLImage(const ImageInfo *image_info,ExceptionInfo *exception)
         }
     }
   (void) fclose(file);
-  image=ReadImage(clone_info,exception);
+  if (context != (void *) NULL)
+    image=ReadImage(clone_info,exception);
   (void) remove(clone_info->filename);
   DestroyImageInfo(clone_info);
+  if (context == (void *) NULL)
+    ThrowReaderException(DelegateWarning,"Not a valid URL",image);
   return(image);
 }
 #else
