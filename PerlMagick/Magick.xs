@@ -4039,10 +4039,8 @@ Mogrify(ref,...)
         attribute=(char *) SvPV(ST(1),na);
         if (ix)
           {
-            flags=ParseGeometry(attribute,&region_info.x,&region_info.y,
+            flags=ParseImageGeometry(attribute,&region_info.x,&region_info.y,
               &region_info.width,&region_info.height);
-            if (!(flags & HeightValue))
-              region_info.height=region_info.width;
             attribute=(char *) SvPV(ST(2),na);
             base++;
           }
@@ -4219,12 +4217,8 @@ Mogrify(ref,...)
         case 5:  /* Border */
         {
           if (attribute_flag[0])
-            {
-              flags=ParseGeometry(argument_list[0].string_reference,
-                &geometry.x,&geometry.y,&geometry.width,&geometry.height);
-              if (!(flags & HeightValue))
-                geometry.height=geometry.width;
-            }
+            flags=ParseImageGeometry(argument_list[0].string_reference,
+              &geometry.x,&geometry.y,&geometry.width,&geometry.height);
           if (attribute_flag[1])
             geometry.width=argument_list[1].int_reference;
           if (attribute_flag[2])
@@ -4427,7 +4421,7 @@ Mogrify(ref,...)
         case 22:  /* Roll */
         {
           if (attribute_flag[0])
-            (void) ParseGeometry(argument_list[0].string_reference,
+            (void) ParseImageGeometry(argument_list[0].string_reference,
               &geometry.x,&geometry.y,&geometry.width,&geometry.height);
           if (attribute_flag[1])
             geometry.x=argument_list[1].int_reference;
@@ -5181,12 +5175,8 @@ Mogrify(ref,...)
         case 49:  /* Raise */
         {
           if (attribute_flag[0])
-            {
-              flags=ParseGeometry(argument_list[0].string_reference,
-                &geometry.x,&geometry.y,&geometry.width,&geometry.height);
-              if (!(flags & HeightValue))
-                geometry.height=geometry.width;
-            }
+            flags=ParseImageGeometry(argument_list[0].string_reference,
+              &geometry.x,&geometry.y,&geometry.width,&geometry.height);
           if (attribute_flag[1])
             geometry.width=argument_list[1].int_reference;
           if (attribute_flag[2])

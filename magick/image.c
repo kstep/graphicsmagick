@@ -3442,10 +3442,8 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             /*
               Surround image with a border of solid color.
             */
-            flags=ParseGeometry(argv[++i],&geometry.x,&geometry.y,
+            flags=ParseImageGeometry(argv[++i],&geometry.x,&geometry.y,
               &geometry.width,&geometry.height);
-            if ((flags & HeightValue) == 0)
-              geometry.height=geometry.width;
             border_image=BorderImage(*image,&geometry,&(*image)->exception);
             if (border_image == (Image *) NULL)
               break;
@@ -4473,8 +4471,9 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             /*
               Surround image with a raise of solid color.
             */
-            flags=ParseGeometry(argv[++i],&geometry.x,&geometry.y,
+            flags=ParseImageGeometry(argv[++i],&geometry.x,&geometry.y,
               &geometry.width,&geometry.height);
+							if (0)
             if ((flags & HeightValue) == 0)
               geometry.height=geometry.width;
             (void) RaiseImage(*image,&geometry,*option == '-');
@@ -4541,7 +4540,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             /*
               Roll image.
             */
-            flags=ParseGeometry(argv[++i],&geometry.x,&geometry.y,
+            flags=ParseImageGeometry(argv[++i],&geometry.x,&geometry.y,
               &geometry.width,&geometry.height);
             roll_image=RollImage(*image,geometry.x,geometry.y,
               &(*image)->exception);
