@@ -6627,7 +6627,7 @@ MagickExport void SetImageType(Image *image,const ImageType image_type)
           IsMonochromeImage(image,&image->exception))
         break;
       if (image->colorspace != RGBColorspace)
-        (void) RGBTransformImage(image,RGBColorspace);
+        (void) TransformRGBImage(image,RGBColorspace);
       GetQuantizeInfo(&quantize_info);
       quantize_info.colorspace=GRAYColorspace;
       quantize_info.tree_depth=8;
@@ -6641,7 +6641,7 @@ MagickExport void SetImageType(Image *image,const ImageType image_type)
           IsGrayImage(image,&image->exception))
         break;
       if (image->colorspace != RGBColorspace)
-        (void) RGBTransformImage(image,RGBColorspace);
+        (void) TransformRGBImage(image,RGBColorspace);
       (void) RGBTransformImage(image,GRAYColorspace);
       break;
     }
@@ -6651,7 +6651,7 @@ MagickExport void SetImageType(Image *image,const ImageType image_type)
           IsGrayImage(image,&image->exception) && image->matte)
         break;
       if (image->colorspace != RGBColorspace)
-        (void) RGBTransformImage(image,RGBColorspace);
+        (void) TransformRGBImage(image,RGBColorspace);
       (void) RGBTransformImage(image,GRAYColorspace);
       if (!image->matte)
         SetImageOpacity(image,OpaqueOpacity);
@@ -6663,7 +6663,7 @@ MagickExport void SetImageType(Image *image,const ImageType image_type)
           (image->storage_class == PseudoClass))
         break;
       if (image->colorspace != RGBColorspace)
-        (void) RGBTransformImage(image,RGBColorspace);
+        (void) TransformRGBImage(image,RGBColorspace);
       GetQuantizeInfo(&quantize_info);
       (void) QuantizeImage(&quantize_info,image);
       break;
@@ -6674,7 +6674,7 @@ MagickExport void SetImageType(Image *image,const ImageType image_type)
           (image->storage_class == PseudoClass) && image->matte)
         break;
       if (image->colorspace != RGBColorspace)
-        (void) RGBTransformImage(image,RGBColorspace);
+        (void) TransformRGBImage(image,RGBColorspace);
       if (!image->matte)
         SetImageOpacity(image,OpaqueOpacity);
       GetQuantizeInfo(&quantize_info);
@@ -6688,7 +6688,7 @@ MagickExport void SetImageType(Image *image,const ImageType image_type)
           (image->storage_class == DirectClass))
         break;
       if (image->colorspace != RGBColorspace)
-        (void) RGBTransformImage(image,RGBColorspace);
+        (void) TransformRGBImage(image,RGBColorspace);
       image->storage_class=DirectClass;
       break;
     }
@@ -6698,7 +6698,7 @@ MagickExport void SetImageType(Image *image,const ImageType image_type)
           (image->storage_class == DirectClass) && image->matte)
         break;
       if (image->colorspace != RGBColorspace)
-        (void) RGBTransformImage(image,RGBColorspace);
+        (void) TransformRGBImage(image,RGBColorspace);
       image->storage_class=DirectClass;
       if (!image->matte)
         SetImageOpacity(image,OpaqueOpacity);
@@ -6708,6 +6708,8 @@ MagickExport void SetImageType(Image *image,const ImageType image_type)
     {
       if (image->colorspace == CMYKColorspace)
         break;
+      if (image->colorspace != RGBColorspace)
+        (void) TransformRGBImage(image,RGBColorspace);
       (void) RGBTransformImage(image,CMYKColorspace);
       break;
     }
@@ -6715,6 +6717,8 @@ MagickExport void SetImageType(Image *image,const ImageType image_type)
     {
       if ((image->colorspace == CMYKColorspace) && image->matte)
         break;
+      if (image->colorspace != RGBColorspace)
+        (void) TransformRGBImage(image,RGBColorspace);
       if (image->colorspace != CMYKColorspace)
         (void) RGBTransformImage(image,CMYKColorspace);
       if (!image->matte)
