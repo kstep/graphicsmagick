@@ -91,6 +91,7 @@ typedef struct
    BYTE Red;
    BYTE Green;
    BYTE Blue;*/
+  int foo;
 } paletteRAS;
 
 static void InsertRow(int depth, unsigned char *p, long y, Image * image)

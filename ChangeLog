@@ -1,5 +1,7 @@
 2003-07-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+        * coders/topol.c: Insert dummy member into palettRAS structure
+	since Visual C++ doesn't seem to handle empty structures.
 	* wand/GraphicsMagickWand.pc.in (prefix): Pass LFS CPPFLAGS.
 	* wand/GraphicsMagickWand-config.in: Pass LFS CPPFLAGS.
 	* wand/Makefile.am: Fix include path.
