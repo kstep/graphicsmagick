@@ -15,7 +15,7 @@ $image=Image::Magick->new;
 $image->ReadImage('model.gif');
 $image->SteganoImage(image=>$watermark,offset=>91);
 $image->Write('model.png');
-$image->Display();
+$image->Write('win:');
 #
 # Extract watermark from image.
 #
