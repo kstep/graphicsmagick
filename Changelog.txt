@@ -1,3 +1,9 @@
+2001-09-08  Cristy  <cristy@mystic.es.dupont.com>
+	* ImageMagick defaults to 16-bit quantum.  Set QuantumMagick for
+	  8-bit.
+	* Changed filesize/total_colors to double so the Image structure
+	  size does not depend on the large-file preprocessor defines.
+
 2001-09-07  Cristy  <cristy@mystic.es.dupont.com>
 	* Added -background to convert program usage text.
 	* DispatchImage() now properly handles grayscale images.

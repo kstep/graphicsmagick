@@ -1762,8 +1762,9 @@ MagickExport void DescribeImage(Image *image,FILE *file,
           {
             (void) fprintf(file,"PseudoClass %ld=>%uc ",
               (long) image->total_colors,image->colors);
-            (void) fprintf(file,"%d/%g/%ge ",(int) image->mean_error_per_pixel,
-              image->normalized_mean_error,image->normalized_maximum_error);
+            (void) fprintf(file,"%d/%.6f/%.6fge ",
+              (int) image->mean_error_per_pixel,image->normalized_mean_error,
+              image->normalized_maximum_error);
           }
       (void) fprintf(file,"%u-bit ",image->depth);
       if (image->filesize != 0)
@@ -1891,7 +1892,7 @@ MagickExport void DescribeImage(Image *image,FILE *file,
     (void) fprintf(file,"  Normalized Mean Exception: %g\n",
       image->normalized_mean_error);
   if (image->normalized_maximum_error != 0.0)
-    (void) fprintf(file,"  Normalized Maximum Exception: %g\n",
+    (void) fprintf(file,"  Normalized Maximum Exception: %gn",
       image->normalized_maximum_error);
   if (image->rendering_intent == SaturationIntent)
     (void) fprintf(file,"  Rendering-Intent: saturation\n");
