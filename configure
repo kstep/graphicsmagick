@@ -4072,7 +4072,7 @@ echo "${ECHO_T}${flag}" >&6
         LIBS="$save_LIBS"
         CFLAGS="$save_CFLAGS"
 
-        # More AIX lossage: must compile with cc_r
+        # More AIX lossage: must compile with cc_r (or xlc_r)
         case "${host_os}" in
           aix* )
             case "$CC" in
@@ -23831,6 +23831,7 @@ cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
 #undef inline
+#undef _XOPEN_SOURCE
 #include <iostream>
 #include <map>
 #include <iomanip>

@@ -258,6 +258,7 @@ ac_cv_cxx_have_std,
  AC_LANG_SAVE
  AC_LANG_CPLUSPLUS
  AC_TRY_COMPILE([#undef inline
+#undef _XOPEN_SOURCE
 #include <iostream>
 #include <map>
 #include <iomanip>
@@ -679,7 +680,7 @@ if test "x$acx_pthread_ok" = xyes; then
         LIBS="$save_LIBS"
         CFLAGS="$save_CFLAGS"
 
-        # More AIX lossage: must compile with cc_r
+        # More AIX lossage: must compile with cc_r (or xlc_r)
         case "${host_os}" in
           aix* )
             case "$CC" in

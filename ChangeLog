@@ -1,3 +1,7 @@
+2003-09-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* www/api/types.html: Update description of MonitorHandler.
+
 2003-09-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* configure.ac: Set CXX to PTHREAD_CXX if necessary (and warn).
