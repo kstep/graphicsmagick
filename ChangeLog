@@ -1,4 +1,4 @@
-2003-10-09  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
+2003-10-08  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
 
 	* coders/jpeg.c: Extended -sampling-factor option to allow
 	user to supply full set of sampling factors.  If the full
