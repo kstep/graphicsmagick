@@ -15,6 +15,10 @@ extern MagickExport double
   ExpandAffine(const AffineMatrix *),
   Permutate(int,int);
 
+extern MagickExport PixelPacket
+  CompositeOver(const PixelPacket *,const double,const PixelPacket *,
+    const double);
+
 extern MagickExport int
   GetOptimalKernelWidth(const double,const double),
   GetOptimalKernelWidth1D(const double,const double),

@@ -1227,14 +1227,14 @@ MagickExport unsigned int CompositeImage(Image *image,
             }
             default:
             {
-              red=CompositeOver(q->red,MaxRGB-q->opacity,
-                p->red,MaxRGB-p->opacity);
-              green=CompositeOver(q->green,MaxRGB-q->opacity,
-                p->green,MaxRGB-p->opacity);
-              blue=CompositeOver(q->blue,MaxRGB-q->opacity,
-                p->blue,MaxRGB-p->opacity);
-              opacity=CompositeOver(q->opacity,MaxRGB-q->opacity,
-                p->opacity,MaxRGB-p->opacity);
+              PixelPacket
+                color;
+
+              color=CompositeOver(q,q->opacity,p,p->opacity);
+              red=color.red;
+              green=color.green;
+              blue=color.green;
+              opacity=color.green;
               break;
             }
           }
@@ -3528,17 +3528,17 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
           {
             double
               maximum_delay,
-              minimun_delay;
+              minimum_delay;
 
             /*
               Set image delay.
             */
-            count=sscanf(argv[++i],"%lf-%lf",&minimun_delay,&maximum_delay);
+            count=sscanf(argv[++i],"%lf-%lf",&minimum_delay,&maximum_delay);
             if (count == 1)
-              (*image)->delay=minimun_delay;
+              (*image)->delay=minimum_delay;
             else
-              if ((*image)->delay < minimun_delay)
-                (*image)->delay=minimun_delay;
+              if ((*image)->delay < minimum_delay)
+                (*image)->delay=minimum_delay;
               else
                 if ((*image)->delay > maximum_delay)
                   (*image)->delay=maximum_delay;

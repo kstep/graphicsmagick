@@ -61,6 +61,64 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   C o m p o s i t e O v e r                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method CompositeOver implements the Over alpha compositing rules for
+%  combining source and destination pixels to achieve blending and
+%  transparency effects with graphics and images. The rules implemented by
+%  this class are a subset of the Porter-Duff rules described in T. Porter
+%  and T. Duff, "Compositing Digital Images", SIGGRAPH 84, 253-259.
+%
+%  The format of the CompositeOver method is:
+%
+%      PixelPacket CompositeOver(const PixelPacket *p,const double alpha,
+%        const PixelPacket *q,const double beta)
+%
+%  A description of each parameter follows:
+%
+%    o color: Method CompositeOver returns the color resulting from the
+%      compositing operation.
+%
+%    o p: one of the color components of the source pixel.
+%
+%    o alpha: alpha component of the source pixel.
+%
+%    o q: one of the color components of the destination pixel.
+%
+%    o beta: alpha component of the destination pixel.
+%
+%
+*/
+MagickExport PixelPacket CompositeOver(const PixelPacket *p,const double alpha,
+  const PixelPacket *q,const double beta)
+{
+  double
+    gamma;
+
+  PixelPacket
+    color;
+
+  gamma=1.0/((MaxRGB-alpha)+(MaxRGB-beta)-(MaxRGB-alpha)*(MaxRGB-beta)/MaxRGB);
+  color.red=(Quantum) (gamma*((MaxRGB-alpha)*p->red+(MaxRGB-beta)*(q->red-
+    (MaxRGB-alpha)*p->red/MaxRGB))+0.5);
+  color.green=(Quantum) (gamma*((MaxRGB-alpha)*p->green+(MaxRGB-beta)*(q->green-
+    (MaxRGB-alpha)*p->green/MaxRGB))+0.5);
+  color.blue=(Quantum) (gamma*((MaxRGB-alpha)*p->blue+(MaxRGB-beta)*(q->blue-
+    (MaxRGB-alpha)*p->blue/MaxRGB))+0.5);
+  color.opacity=(Quantum) (gamma*((MaxRGB-alpha)*p->opacity+(MaxRGB-beta)*
+    (q->opacity-(MaxRGB-alpha)*p->opacity/MaxRGB))+0.5);
+  return(color);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   C o n s t r a s t                                                         %
 %                                                                             %
 %                                                                             %

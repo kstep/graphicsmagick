@@ -144,8 +144,6 @@ extern "C" {
      (((double) (color).blue-(double) (target).blue)* \
       ((double) (color).blue-(double) (target).blue))) <= \
       (double) (distance*distance))
-#define CompositeOver(P,Pa,Q,Qa)  (((double) (Pa)*(P)+(double) (Qa)*((Q)- \
-  (double) (Pa)*(P)/MaxRGB))/((Pa)+(Qa)-(double) (Pa)*(Qa)/MaxRGB))
 #define Extent(string)  ((int) strlen(string))
 #define False  0
 #define DegreesToRadians(x) (MagickPI*(x)/180.0)

@@ -468,14 +468,7 @@ MagickExport unsigned int ColorFloodfillImage(Image *image,
                 }
                 default:
                 {
-                  q->red=CompositeOver(q->red,MaxRGB-q->opacity,
-                    color.red,MaxRGB-color.opacity);
-                  q->green=CompositeOver(q->green,MaxRGB-q->opacity,
-                    color.green,MaxRGB-color.opacity);
-                  q->blue=CompositeOver(q->blue,MaxRGB-q->opacity,
-                    color.blue,MaxRGB-color.opacity);
-                  q->opacity=CompositeOver(q->opacity,MaxRGB-q->opacity,
-                    color.opacity,MaxRGB-color.opacity);
+                  *q=CompositeOver(q,q->opacity,&color,color.opacity);
                   break;
                 }
               }
@@ -2791,14 +2784,7 @@ static void DrawPolygonPrimitive(const DrawInfo *draw_info,
                     }
                     default:
                     {
-                      q->red=CompositeOver(q->red,MaxRGB-q->opacity,
-                        fill_color.red,MaxRGB-fill_opacity);
-                      q->green=CompositeOver(q->green,MaxRGB-q->opacity,
-                        fill_color.green,MaxRGB-fill_opacity);
-                      q->blue=CompositeOver(q->blue,MaxRGB-q->opacity,
-                        fill_color.blue,MaxRGB-fill_opacity);
-                      q->opacity=CompositeOver(q->opacity,MaxRGB-q->opacity,
-                        fill_color.opacity,MaxRGB-fill_opacity);
+                      *q=CompositeOver(q,q->opacity,&fill_color,fill_opacity);
                       break;
                     }
                   }
@@ -2825,14 +2811,7 @@ static void DrawPolygonPrimitive(const DrawInfo *draw_info,
             }
             default:
             {
-              q->red=CompositeOver(q->red,MaxRGB-q->opacity,
-                stroke_color.red,MaxRGB-stroke_opacity);
-              q->green=CompositeOver(q->green,MaxRGB-q->opacity,
-                stroke_color.green,MaxRGB-stroke_opacity);
-              q->blue=CompositeOver(q->blue,MaxRGB-q->opacity,
-                stroke_color.blue,MaxRGB-stroke_opacity);
-              q->opacity=CompositeOver(q->opacity,MaxRGB-q->opacity,
-                stroke_color.opacity,MaxRGB-stroke_opacity);
+              *q=CompositeOver(q,q->opacity,&stroke_color,stroke_opacity);
               break;
             }
           }
