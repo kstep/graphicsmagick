@@ -1009,7 +1009,6 @@ static void MSLStartElement(void *context,const xmlChar *name,
               if (LocaleCompare(keyword,"geometry") == 0)
               {
                 (void) GetMagickGeometry(value,&x,&y,&width,&height);
-                gravity = ForgetGravity;  /* disable on explicit x,y */
                 break;
               }
               else if (LocaleCompare(keyword,"gravity") == 0)
@@ -1065,7 +1064,6 @@ static void MSLStartElement(void *context,const xmlChar *name,
               if (LocaleCompare(keyword,"x") == 0)
               {
                 x = atoi( value );
-                gravity = ForgetGravity;  /* disable on explicit x,y */
                 break;
               }
               ThrowException(msl_info->exception,OptionError,
@@ -1078,7 +1076,6 @@ static void MSLStartElement(void *context,const xmlChar *name,
               if (LocaleCompare(keyword,"y") == 0)
               {
                 y = atoi( value );
-                gravity = ForgetGravity;  /* disable on explicit x,y */
                 break;
               }
               ThrowException(msl_info->exception,OptionError,
