@@ -17,16 +17,51 @@ dedicated to making software imaging solutions freely available.
 ImageMagick is available for free, may be used to support both open and
 proprietary applications, and may be redistributed without fee.
 
-Significant changes from the 5.4.5 release (see release ChangeLog for
+Significant changes from the 5.4.6 release (see release ChangeLog for
 details):
 
   o General:
+
+    - Platform independent changes
+
+     + IPTC support integrated. Supports both binary and text (iptcutil
+       style) forms of IPTC profiles.
+     + Lossless JPEG embedding (similar to provided by iptcutil) is
+       supported.
+     + Profile code enhanced to provide for not always copying the
+       profile data.
+     + The wbmp writer is fixed for monochrome images.
+     + PICT files are automatically identified.
+
+    - Windows specific changes
+
+     - VisualMagick build works with both Visual C++ 6.0 and 7.0.
+     - Tracing support was incorporated for Win32 developers.
+     - An ATL-based COM interface to the ImageMagick APIs is provided in
+       the 'contrib' directory.  This is known to work with Visual Basic
+       and WSH.  Using the COM interface from ASP is *not* supported due
+       to threading issues.
+     - Building under MinGW (GNU tools for Windows) has been improved.
+     - The CLIPBOARD and EMF modules are now available in the Cygwin build.
+
+    - Linux specific changes
+     + Ghostscript fonts should be discovered automatically (while
+       configuring) under Linux.
   
   o Utilities enhancements/changes:
+    - The -encoding option may be used to specify the font encoding
+      to use when rendering a TrueType font.  This is useful for
+      fonts (e.g. symbol and international) that use a non-default
+      encoding.
 
   o C API enhancements:
+     - Locking under Windows has been rewritten.
 
   o C++ API enhancements:
+     - No changes in this release.
+
+  o Perl API enhancements:
+     - Added multithread support.
 
 The ImageMagick WWW page is
 
@@ -62,3 +97,4 @@ Jaroslav Fojtik       - CUT, ART, and MATLAB coder modules.
 There are many other individual contributors, some of whom made
 significant contributions to ImageMagick but shall remain anonymous
 anyway.
+
