@@ -1930,21 +1930,8 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
   assert(cache_info->signature == MagickSignature);
   if (cache_info->storage_class != UndefinedClass)
     {
-      switch (cache_info->type)
-      {
-        case MemoryCache:
-        {
-          (void) GetCacheThreshold(-cache_info->length);
-          break;
-        }
-        case MemoryMappedCache:
-        {
-          (void) UnmapBlob(cache_info->pixels,cache_info->length);
-          break;
-        }
-        default:
-          break;
-      }
+      if (cache_info->type == MemoryMappedCache)
+        (void) UnmapBlob(cache_info->pixels,cache_info->length);
       (void) GetCacheThreshold(-cache_info->length);
     }
   (void) strncpy(cache_info->filename,image->filename,MaxTextExtent-1);
@@ -2076,11 +2063,11 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
             cache_info->indexes=(IndexPacket *) (pixels+number_pixels);
         }
     }
-  (void) GetCacheThreshold(cache_info->length);
   (void) close(file);
 #if defined(SIGBUS)
   (void) signal(SIGBUS,CacheSignalHandler);
 #endif
+  (void) GetCacheThreshold(cache_info->length);
   FormatString(message,"open %.1024s (%.1024s, %.1024s, %lumb)",
     cache_info->filename,cache_info->cache_filename,
     cache_info->type == MemoryMappedCache ? "memory-mapped" : "disk",
