@@ -53,6 +53,18 @@
 </tr>
 </table>
 <p>
+2003-05-05  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/command.c: For the composite, convert, identify, mogrify,
+        and montage commands, make sure a usage error is returned if a
+        usage message is printed. This is useful for ImageMagickObject
+        users who won't see the usage message if stdio is not supported.
+  <LI> locale/C.mgk: Added "UsageError" error.  Added missing closure
+        to &lt;Corrupt&gt; tag which caused most/many message lookups to fail.
+
+</UL>
+<p>
 2003-05-04  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
@@ -62,7 +74,7 @@
         NTGetLastError returns an allocated string, causing a memory leak
         if NTGetLastError is used in the place of lt_dlerror.  A new
         lt_dlerror function is added to fix this.
-        (lt_dlsetsearchpath): lt_dlsetsearchpath should return and int
+        (lt_dlsetsearchpath): lt_dlsetsearchpath should return an int
         and accept a const char *.<BR>
         (lt_dlsym): lt_dlsym is supposed to take a const char *.
   <LI> magick/nt_base.h: lt_dlclose should return an 'int'.
@@ -87,6 +99,8 @@
         exiting.<BR>
   <LI> magick/Makefile.am (noinst_HEADERS): integral_types.h had to be
         listed *somewhere* in order to make it into the distribution.
+  <LI> Magick++/lib/Magick++/Image.h: InitializeMagick must be DLL
+        exported.
 
 </UL>
 <p>
