@@ -29,34 +29,24 @@
 		<LI><A HREF="#channelimage">ChannelImage</A>
 		<LI><A HREF="#cloneimage">CloneImage</A>
 		<LI><A HREF="#cloneimageinfo">CloneImageInfo</A>
-		<LI><A HREF="#cloneimagelist">CloneImageList</A>
 		<LI><A HREF="#compositeimage">CompositeImage</A>
 		<LI><A HREF="#cyclecolormapimage">CycleColormapImage</A>
 		<LI><A HREF="#describeimage">DescribeImage</A>
 		<LI><A HREF="#destroyimage">DestroyImage</A>
 		<LI><A HREF="#destroyimageinfo">DestroyImageInfo</A>
-		<LI><A HREF="#destroyimages">DestroyImages</A>
 		<LI><A HREF="#displayimages">DisplayImages</A>
 		<LI><A HREF="#getimagedepth">GetImageDepth</A>
 		<LI><A HREF="#getimageinfo">GetImageInfo</A>
-		<LI><A HREF="#getimagelist">GetImageList</A>
 		<LI><A HREF="#getimagetype">GetImageType</A>
-		<LI><A HREF="#getnextimage">GetNextImage</A>
 		<LI><A HREF="#isimagesequal">IsImagesEqual</A>
 		<LI><A HREF="#istaintimage">IsTaintImage</A>
-		<LI><A HREF="#listtogroupimage">ListToGroupImage</A>
 		<LI><A HREF="#modifyimage">ModifyImage</A>
-		<LI><A HREF="#newimagelist">NewImageList</A>
-		<LI><A HREF="#popimagelist">PopImageList</A>
-		<LI><A HREF="#pushimagelist">PushImageList</A>
-		<LI><A HREF="#setimagelist">SetImageList</A>
 		<LI><A HREF="#referenceimage">ReferenceImage</A>
 		<LI><A HREF="#setimage">SetImage</A>
 		<LI><A HREF="#setimageclipmask">SetImageClipMask</A>
 		<LI><A HREF="#setimagedepth">SetImageDepth</A>
 		<LI><A HREF="#setimageopacity">SetImageOpacity</A>
 		<LI><A HREF="#setimagetype">SetImageType</A>
-		<LI><A HREF="#sizeimagelist">SizeImageList</A>
 		<LI><A HREF="#textureimage">TextureImage</A>
 	</UL>
 
@@ -81,35 +71,25 @@
 <P>unsigned int  <STRONG>ChannelImage</STRONG>( Image *image, const ChannelType channel );</P>
 <P>Image * <STRONG>CloneImage</STRONG>( const Image *image, const unsigned long columns, const unsigned long rows, const unsigned int orphan, ExceptionInfo *exception );</P>
 <P>ImageInfo * <STRONG>CloneImageInfo</STRONG>( const ImageInfo *image_info );</P>
-<P>Image * <STRONG>CloneImageList</STRONG>( const Image *images, ExceptionInfo *exception );</P>
 <P>unsigned int  <STRONG>CompositeImage</STRONG>( Image *image, const CompositeOperator compose, const Image *composite_image, const long x_offset, const long y_offset );</P>
 <P><STRONG>CycleColormapImage</STRONG>( Image *image, const int amount );</P>
 <P>void  <STRONG>DescribeImage</STRONG>( Image *image, 
 <FONT SIZE=-1>FILE</FONT> *file, const unsigned int verbose );</P>
 <P>void  <STRONG>DestroyImage</STRONG>( Image *image );</P>
 <P>void  <STRONG>DestroyImageInfo</STRONG>( ImageInfo *image_info );</P>
-<P>void  <STRONG>DestroyImages</STRONG>( Image *image );</P>
 <P>unsigned int  <STRONG>DisplayImages</STRONG>( const ImageInfo *image_info, Image *image );</P>
 <P>unsigned long  <STRONG>GetImageDepth</STRONG>( const Image *image, ExceptionInfo *exception );</P>
 <P>void  <STRONG>GetImageInfo</STRONG>( ImageInfo *image_info );</P>
-<P>Image * <STRONG>GetImageList</STRONG>( Image *images, const unsigned long n, ExceptionInfo *esception );</P>
 <P>ImageType  <STRONG>GetImageType</STRONG>( const Image *image, ExceptionInfo *exception );</P>
-<P>Image * <STRONG>GetNextImage</STRONG>( Image *image );</P>
 <P>unsigned int  <STRONG>IsImagesEqual</STRONG>( Image *image, Image *reference );</P>
 <P>unsigned int  <STRONG>IsTaintImage</STRONG>( const Image *image );</P>
-<P>Image **  <STRONG>ListToGroupImage</STRONG>( const Image *image, unsigned long *number_images );</P>
 <P><STRONG>ModifyImage</STRONG>( Image *image, ExceptionInfo *exception );</P>
-<P>Image * <STRONG>NewImageList</STRONG>( void );</P>
-<P>Image * <STRONG>PopImageList</STRONG>( Image ** images );</P>
-<P>unsigned int  <STRONG>PushImageList</STRONG>( Image *images, const Image *image, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>ReferenceImage</STRONG>( Image *image );</P>
 <P>void  <STRONG>SetImage</STRONG>( Image *image, const Quantum opacity );</P>
 <P>unsigned int  <STRONG>SetImageClipMask</STRONG>( Image *image, Image *clip_mask );</P>
 <P>unsigned int  <STRONG>SetImageDepth</STRONG>( Image *image, const unsigned long depth );</P>
-<P>unsigned int  <STRONG>SetImageList</STRONG>( Image *images, const Image *image, ExceptionInfo *exception );</P>
 <P>void  <STRONG>SetImageOpacity</STRONG>( Image *image, const unsigned int opacity );</P>
 <P><STRONG>SetImageType</STRONG>( Image *image, const ImageType image_type );</P>
-<P>unsigned long  <STRONG>SizeImageList</STRONG>( const Image *images );</P>
 <P>void  <STRONG>TextureImage</STRONG>( Image *image, const Image *texture );</P>
 <P>
 <HR>
@@ -257,21 +237,6 @@ Return any errors or warnings in this structure.
 The image info.
 <P></P></DL></DL>
 <P>
-<H2><A NAME="cloneimagelist">CloneImageList</A></H2>
-<P>Method CloneImageList returns a duplicate of the specified image list.</P>
-<P>The format of the PopImageList method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *CloneImageList ( const <A HREF="types/Image.html">Image</A> *images, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
-<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<dd><p></p><dt><STRONG><A NAME="item_o_images%3A">images:</A></STRONG><BR>
-<DD>
-The image list.
-<P></P>
-<dd><p></p><dt><STRONG>exception:</STRONG><BR>
-<DD>
-Return any errors or warnings in this structure.
-<P></P></DL></DL>
-<P>
 <H2><A NAME="compositeimage">CompositeImage</A></H2>
 <blockquote>CompositeImage() returns the second image composited onto the first at the specified offsets. </blockquote><P>The format of the CompositeImage method is:</P>
 <blockquote>unsigned int CompositeImage ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/Enumerations.html#CompositeOperator">CompositeOperator</A> compose, const <A HREF="types/Image.html">Image</A> *composite_image, const long x_offset, const long y_offset ); </blockquote><P>
@@ -360,16 +325,6 @@ The image.
 The image info.
 <P></P></DL></DL>
 <P>
-<H2><A NAME="destroyimages">DestroyImages</A></H2>
-<blockquote>DestroyImages() is a convenience method. It calls DestroyImage ( ) for each image in the sequence. </blockquote><P>The format of the DestroyImages method is:</P>
-<blockquote>void DestroyImages ( <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
-<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<dd><p></p><dt><STRONG>image:</STRONG><BR>
-<DD>
-The image sequence.
-<P></P></DL></DL>
-<P>
 <H2><A NAME="displayimages">DisplayImages</A></H2>
 <blockquote>DisplayImages() displays an image sequence to any X window screen. It returns a value other than 0 if successful. Check the exception member of image to determine the reason for any failure. </blockquote><P>The format of the AllocateNextImage method is:</P>
 <blockquote>unsigned int DisplayImages ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
@@ -408,25 +363,6 @@ Return any errors or warnings in this structure.
 The image info.
 <P></P></DL></DL>
 <P>
-<H2><A NAME="getimagelist">GetImageList</A></H2>
-<P>Method GetImageList returns an image at the specified position in the image list.</P>
-<P>The format of the GetImageList method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *GetImageList ( <A HREF="types/Image.html">Image</A> *images, const unsigned long n, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *esception ); </blockquote><P>
-<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<dd><p></p><dt><STRONG>images:</STRONG><BR>
-<DD>
-The image list.
-<P></P>
-<dd><p></p><dt><STRONG><A NAME="item_o_n%3A">n:</A></STRONG><BR>
-<DD>
-The position within the list.
-<P></P>
-<dd><p></p><dt><STRONG>exception:</STRONG><BR>
-<DD>
-Return any errors or warnings in this structure.
-<P></P></DL></DL>
-<P>
 <H2><A NAME="getimagetype">GetImageType</A></H2>
 <blockquote>GetImageType() returns the type of image: </blockquote><PRE>
       Bilevel        Grayscale       GrayscaleMatte
@@ -443,16 +379,6 @@ The image.
 <dd><p></p><dt><STRONG>exception:</STRONG><BR>
 <DD>
 Return any errors or warnings in this structure.
-<P></P></DL></DL>
-<P>
-<H2><A NAME="getnextimage">GetNextImage</A></H2>
-<blockquote>GetNextImage() returns the next image in an image sequence. </blockquote><P>The format of the GetNextImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *GetNextImage ( <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
-<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<dd><p></p><dt><STRONG>image:</STRONG><BR>
-<DD>
-The image.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="isimagesequal">IsImagesEqual</A></H2>
@@ -494,79 +420,11 @@ The reference image.
 The image.
 <P></P></DL></DL>
 <P>
-<H2><A NAME="listtogroupimage">ListToGroupImage</A></H2>
-<blockquote>ListToGroupImage() is a convenience method that converts a linked list of images to a sequential array. For example, </blockquote><blockquote>images = ListToGroupImage ( image_list, &n ); for ( i=0; i < n; i++ ) puts ( images[i]->filename ) ;; </blockquote><P>The format of the ListToGroupImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> **ListToGroupImage ( const <A HREF="types/Image.html">Image</A> *image, unsigned long *number_images ); </blockquote><P>
-<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<dd><p></p><dt><STRONG>image:</STRONG><BR>
-<DD>
-The image list.
-<P></P>
-<dd><p></p><dt><STRONG><A NAME="item_o_number_images%3A">number_images:</A></STRONG><BR>
-<DD>
-The length of the image array is returned here.
-<P></P></DL></DL>
-<P>
 <H2><A NAME="modifyimage">ModifyImage</A></H2>
 <blockquote>ModifyImage() ensures that there is only a single reference to the image to be modified, updating the provided image pointer to point to a clone of the original image if necessary. </blockquote><P>The format of the ModifyImage method is:</P>
 <blockquote>ModifyImage ( <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DT><DD><DL>
-<dd><p></p><dt><STRONG>image:</STRONG><BR>
-<DD>
-The image.
-<P></P>
-<dd><p></p><dt><STRONG>exception:</STRONG><BR>
-<DD>
-Return any errors or warnings in this structure.
-<P></P></DL></DL>
-<P>
-<H2><A NAME="newimagelist">NewImageList</A></H2>
-<P>Method NetImageList starts a number image list simply by returning 
-<FONT SIZE=-1>NULL.</FONT></P>
-<P>The format of the NewImageList method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *NewImageList ( void ); </blockquote><P>
-<H2><A NAME="popimagelist">PopImageList</A></H2>
-<P>Method PopImageList returns the first image on the list and updates the image list pointer.</P>
-<P>The format of the PopImageList method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *PopImageList ( <A HREF="types/Image.html">Image</A> **images ); </blockquote><P>
-<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<dd><p></p><dt><STRONG>images:</STRONG><BR>
-<DD>
-The image list.
-<P></P></DL></DL>
-<P>
-<H2><A NAME="pushimagelist">PushImageList</A></H2>
-<P>Method PushImageList adds an image to the end of the image list.</P>
-<P>The format of the PushImageList method is:</P>
-<blockquote>unsigned int PushImageList ( <A HREF="types/Image.html">Image</A> *images, const <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
-<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<dd><p></p><dt><STRONG>images:</STRONG><BR>
-<DD>
-The image list.
-<P></P>
-<dd><p></p><dt><STRONG>image:</STRONG><BR>
-<DD>
-The image.
-<P></P>
-<dd><p></p><dt><STRONG>exception:</STRONG><BR>
-<DD>
-Return any errors or warnings in this structure.
-<P></P></DL></DL>
-<P>
-<H2><A NAME="setimagelist">SetImageList</A></H2>
-<P>Method SetImageList inserts an image into the list at the specified position.</P>
-<P>The format of the SetImageList method is:</P>
-<blockquote>unsigned int SetImageList ( <A HREF="types/Image.html">Image</A> *images, const <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
-<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<dd><p></p><dt><STRONG>images:</STRONG><BR>
-<DD>
-The image list.
-<P></P>
 <dd><p></p><dt><STRONG>image:</STRONG><BR>
 <DD>
 The image.
@@ -659,17 +517,6 @@ The image.
 <dd><p></p><dt><STRONG><A NAME="item_o_image_type%3A">image_type:</A></STRONG><BR>
 <DD>
 Image type.
-<P></P></DL></DL>
-<P>
-<H2><A NAME="sizeimagelist">SizeImageList</A></H2>
-<P>Method SizeImageList returns the number of images in the image list.</P>
-<P>The format of the SizeImageList method is:</P>
-<blockquote>unsigned long SizeImageList ( const <A HREF="types/Image.html">Image</A> *images ); </blockquote><P>
-<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<dd><p></p><dt><STRONG>images:</STRONG><BR>
-<DD>
-The image list.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="textureimage">TextureImage</A></H2>
