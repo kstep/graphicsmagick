@@ -485,7 +485,7 @@ static void ChopPathComponents(char *path,const unsigned long components)
 }
 #endif
 
-MagickExport unsigned int FindMagickModule(const char *filename,
+static unsigned int FindMagickModule(const char *filename,
   MagickModuleType module_type,char *path,ExceptionInfo *exception)
 {
   assert(filename != (const char *) NULL);
