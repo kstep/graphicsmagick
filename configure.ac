@@ -556,7 +556,7 @@ AC_HEADER_STDC
 AC_HEADER_DIRENT
 
 # Check additional headers
-AC_CHECK_HEADERS(sys/types.h)
+AC_CHECK_HEADERS(sys/times.h sys/types.h)
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
@@ -594,7 +594,7 @@ fi
 # Check for functions
 #
 AC_FUNC_MMAP
-AC_CHECK_FUNCS(ftime getexecname poll select strerror sysconf vsnprintf)
+AC_CHECK_FUNCS(ftime getexecname poll select times strerror sysconf vsnprintf)
 
 #
 # C++ Support Tests (For Magick++)

@@ -135,7 +135,7 @@ MagickExport unsigned int ContinueTimer(TimerInfo *time_info)
 */
 static double ElapsedTime(void)
 {
-#if !defined(vms) && !defined(macintosh) && !defined(WIN32)
+#if defined(HAVE_TIMES)
   struct tms
     timer;
 
@@ -389,7 +389,7 @@ static void StopTimer(TimerInfo *time_info)
 */
 static double UserTime(void)
 {
-#if !defined(vms) && !defined(macintosh) && !defined(WIN32)
+#if defined(HAVE_TIMES)
   struct tms
     timer;
 

@@ -3918,7 +3918,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             width=3;
             (void) sscanf(argv[++i],"%lux%lu%lu",&width,&height,&offset);
             if (strchr(argv[i],'%') != (char *) NULL)
-              offset*=(double) MaxRGB/100.0;
+              offset*=(unsigned long) ((double) MaxRGB/100.0);
             threshold_image=AdaptiveThresholdImage(*image,width,height,offset,
               &(*image)->exception);
             if (threshold_image == (Image *) NULL)

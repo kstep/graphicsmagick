@@ -19,7 +19,7 @@ extern "C" {
 #define _GNU_SOURCE  1
 #define _ISOC99_SOURCE  1
 #define _POSIX_C_SOURCE  199506L
-#define _XOPEN_SOURCE  600 
+#define _XOPEN_SOURCE  500 
 #define _LARGEFILE64_SOURCE  1
 
 #if !defined(_MAGICK_CONFIG_H)
@@ -165,7 +165,9 @@ extern "C" {
 # include "magick/list.h"
 # if !defined(WIN32)
 #  include <sys/time.h>
+#if defined(HAVE_SYS_TIMES_H)
 #  include <sys/times.h>
+#endif
 # endif
 #else
 # include <types.h>
@@ -287,7 +289,8 @@ extern "C" {
 #define MagickSQ2PI 2.50662827463100024161235523934010416269302368164062
 #define Max(x,y)  (((x) > (y)) ? (x) : (y))
 #define Min(x,y)  (((x) < (y)) ? (x) : (y))
-#define QuantumTick(i,span) ((((i) & 0xff) == 0) || (i == ((span)-1)))
+#define QuantumTick(i,span) \
+  ((((i) & 0xff) == 0) || (i == ((ExtendedSignedIntegralType) (span)-1)))
 #define RadiansToDegrees(x) (180.0*(x)/MagickPI)
 #define ScaleColor5to8(x)  ((x) << 3)
 #define ScaleColor6to8(x)  ((x) << 2)
