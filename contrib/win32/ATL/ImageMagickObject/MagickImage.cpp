@@ -2,7 +2,7 @@
 #include "stdafx.h"
 #include "ImageMagickObject.h"
 #include "MagickImage.h"
-#include "comvector.h"
+#  include "comvector.h"
 
 const LCID lcidDefault = 0;
 const DWORD dwErrorBase = 5000;

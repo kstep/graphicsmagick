@@ -131,11 +131,12 @@ static Image *ReadXTRNImage(const ImageInfo *image_info, ExceptionInfo *exceptio
     *param3;
 
   param1 = param2 = param3 = (void *) NULL;
+  image = (Image *) NULL;
   clone_info=CloneImageInfo(image_info);
   if (clone_info->filename == NULL)
     {
       DestroyImageInfo(clone_info);
-      ThrowReaderException(FileOpenWarning,"No filename specified",(Image *) NULL);
+      ThrowReaderException(FileOpenWarning,"No filename specified",image);
     }
   if (LocaleCompare(image_info->magick,"XTRNFILE") == 0)
     {
