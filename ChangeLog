@@ -1,5 +1,8 @@
 2003-05-14  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/nt_base.c (NTResourceToBlob): Add logging similar
+	to that used in IsAccessible() in order to make operation
+	more clear.
 	* magick/module.c (FindMagickModule): Removed extraneous
 	"Searching for module file" log event.
 	(GetModuleBlob): Under Windows, don't clear or overwrite

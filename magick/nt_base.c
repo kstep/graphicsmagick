@@ -37,6 +37,7 @@
   Include declarations.
 */
 #include "magick/studio.h"
+#include "magick/log.h"
 #include "magick/magick.h"
 #include "magick/utility.h"
 #include "magick/version.h"
@@ -1693,7 +1694,13 @@ MagickExport unsigned char *NTResourceToBlob(const char *id)
     return((char *) NULL);
   resource=FindResource(handle,id,"IMAGEMAGICK");
   if (!resource)
+  {
+    (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
+      "Tried: windows resource \"%.1024s\"",id);
     return((char *) NULL);
+  }
+  (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
+    "Found: windows resource \"%.1024s\"",id);
   global=LoadResource(handle,resource);
   if (!global)
     return((char *) NULL);
