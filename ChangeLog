@@ -20,7 +20,7 @@
 2003-02-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/command.c: Fixed preview error message.
-	* coders/preview.c: Previous update had broke noiseimage demo.
+	* coders/preview.c: Previous update had broken noiseimage demo.
 	Also some cleanups.
 	* magick/display.c (XMagickCommand): No longer uses
 	MogrifyImage.
@@ -106,7 +106,6 @@
 	least 10X faster than quantizing with dither.
 	(AllocateImage): Initialize image->dither.
 	(CloneImage): Copy image->dither.
-
 	* magick/image.h: Added dither member to Image.
 
 2003-01-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
@@ -567,12 +566,12 @@
 
 2002-12-12 William Radcliffe <billr@corbis.com>
 	* utilities/gm.c
-	Fixes a crashing bug in gm.c caused by an attempt tp free a bad
+	Fixes a crashing bug in gm.c caused by an attempt to free a bad
 	pointer. Added comments to the code that explain why this happens
 	so that future developers don't fall into the same trap.
 	* win2k/IMDisplay/IMDisplay.rc
 	Modified some of the string resources that define supported file
-	formats that were in error. One exmaple was eps with had a *.eps
+	formats that were in error. One example was eps with had a *.eps
 	in the string instead of just .eps. This caused the document
 	class to ASSERT under the debug build.
 
@@ -592,10 +591,10 @@
 	but must be important).
 
 2002-12-11  Cristy  <cristy@mystic.es.dupont.com>
-	* magick/ehnance.c: Fixed LevelImage() to accept percent
+	* magick/enhance.c: Fixed LevelImage() to accept percent
 	black/white points (.i.e. 90%).
 	* magick/enhance.c: Added LevelImageChannel().
-	* magick/ehnance.c: Improved Q:8 performance of color
+	* magick/enhance.c: Improved Q:8 performance of color
 	transformations (e.g. for Gamma) which are based on a mapping
 	array.
 	* coders/pcl.c: Fixed PCL coder to output proper color PCL
@@ -609,7 +608,7 @@
 
 2002-12-09 William Radcliffe <billr@corbis.com>
 	* Moved xtrn.c from contrib area into coders area so that it can
-	be used form within the COM object. This is windows only code that
+	be used from within the COM object. This is windows only code that
 	provides a back door way for the COM object to have data read or
 	written into VB arrays.
 
