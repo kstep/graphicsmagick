@@ -250,7 +250,6 @@ MagickExport char *GetDelegateCommand(const ImageInfo *image_info,Image *image,
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(decode_tag != (char *) NULL);
-  assert(encode_tag != (char *) NULL);
   if (!GetDelegateInfo(decode_tag,encode_tag,&delegate_info))
     {
       ThrowException(&image->exception,MissingDelegateWarning,"no tag found",
