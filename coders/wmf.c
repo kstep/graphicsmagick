@@ -47,6 +47,17 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %
+%
+Work remaining to be completed on this module:
+ - Clipping rectangles
+ - Overlay/inset images
+ - Text annotation
+ - Pie arc
+ - Framed regions
+ - Painting regions
+ - Setting ROP
+ - Setting fill style
+ - Setting pen style
 */
 
 /*
@@ -376,14 +387,16 @@ static void WmfDrawArc(CSTRUCT *cstruct, WMFRECORD *wmfrecord,
   ExtendMVG(cstruct, "push graphic-context\n");
 
   width = cstruct->dc->pen->lopnWidth;
-  yend   = (NormY(wmfrecord->Parameters[0],cstruct)); /* y of endpoint */
-  xend   = (NormX(wmfrecord->Parameters[1],cstruct)); /* x of endpoint */
-  ystart = (NormY(wmfrecord->Parameters[2],cstruct)); /* y of startpoint */
-  xstart = (NormX(wmfrecord->Parameters[3],cstruct)); /* x of startpoint */
-  bottom = (NormY(wmfrecord->Parameters[4],cstruct)); /* bottom of bounding box */
-  right  = (NormX(wmfrecord->Parameters[5],cstruct)); /* right of bounding box */
+
   top    = (NormY(wmfrecord->Parameters[6],cstruct)); /* top of bounding box */
   left   = (NormX(wmfrecord->Parameters[7],cstruct)); /* left of bounding box */
+  bottom = (NormY(wmfrecord->Parameters[4],cstruct)); /* bottom of bounding box */
+  right  = (NormX(wmfrecord->Parameters[5],cstruct)); /* right of bounding box */
+  xstart = (NormX(wmfrecord->Parameters[3],cstruct)); /* x of startpoint */
+  ystart = (NormY(wmfrecord->Parameters[2],cstruct)); /* y of startpoint */
+  xend   = (NormX(wmfrecord->Parameters[1],cstruct)); /* x of endpoint */
+  yend   = (NormY(wmfrecord->Parameters[0],cstruct)); /* y of endpoint */
+
 
 /*   printf("DrawArc: yend=%f, xend=%f, ystart=%f, xstart=%f, bottom=%f right=%f, top=%f left=%f, width=%i\n", */
 /*          yend,xend,ystart,xstart,bottom,right,top,left,width); */
@@ -846,8 +859,118 @@ static void WmfDrawSimpleArc(CSTRUCT *cstruct, WMFRECORD *wmfrecord)
 static void WmfDrawText(CSTRUCT *cstruct, char *str, RECT *arect,
                         U16 flags, U16 *lpDx, int x, int y)
 {
-  /* FIXME */
-  puts("WmfDrawText() not implemented");
+  /* FIXME: incomplete */
+
+  char
+    buff[MaxTextExtent],
+    *facename,
+    fontname[MaxTextExtent],
+    gravity[10];
+
+  double
+    angle;
+
+  int
+    pointsize,
+    rotate,
+    strikeout,
+    textalign,
+    underline;
+
+  
+  pointsize = ScaleY(cstruct->dc->font->lfHeight,cstruct);
+  facename = cstruct->dc->font->lfFaceName;
+  textalign = cstruct->dc->textalign;
+  underline = cstruct->dc->font->lfUnderline;
+  strikeout = cstruct->dc->font->lfStrikeOut;
+  rotate = cstruct->dc->font->lfEscapement;
+  angle = (double)(-cstruct->dc->font->lfEscapement)/10.0 * PI / 180;
+
+  ExtendMVG(cstruct, "push graphic-context\n");
+
+  /* Set underline */
+  if(underline)
+    ExtendMVG(cstruct,"decorate underline\n");
+
+  /* Set strike-Out */
+  if(strikeout)
+    ExtendMVG(cstruct,"decorate line-through\n");
+
+  /* Compute font name */
+  if (!(strcmp("Times New Roman",facename)))
+    sprintf(fontname,"%s.ttf","times");
+  else if (!(strcmp("Courier New",facename)))
+    sprintf(fontname,"%s.ttf","cour");
+  else if (!(strcmp("MS Sans Serif",facename)))
+    sprintf(fontname,"%s.ttf","arial");
+  else if (!(strcmp("MS Serif",facename)))
+    sprintf(fontname,"%s.ttf","arial");
+  else if (!(strcmp("Arial",facename)))
+    sprintf(fontname,"%s.ttf","arial");
+  else if (!(strcmp("Symbol",facename)))
+    sprintf(fontname,"%s.ttf","arial");
+  else
+    sprintf(fontname,"%s.ttf","arial");
+  printf("facename=\"%s\", fontname=\"%s\"\n", facename, fontname);
+  sprintf(buff, "font %s\n", fontname);
+  ExtendMVG(cstruct,buff);
+
+  /* Compute gravity */
+  *gravity='\0';
+  if(textalign & TA_TOP)
+    {
+      if(textalign & TA_LEFT)
+        strcpy(gravity,"NorthWest");
+      else if(textalign & TA_CENTER)
+        strcpy(gravity,"North");
+      else if(textalign & TA_RIGHT)
+        strcpy(gravity,"NorthEast");
+    }
+  else if(textalign & TA_BOTTOM)
+    {
+      if(textalign & TA_LEFT)
+        strcpy(gravity,"SouthWest");
+      else if(textalign & TA_CENTER)
+        strcpy(gravity,"South");
+      else if(textalign & TA_RIGHT)
+        strcpy(gravity,"SouthEast");
+    }
+  else if(textalign & TA_BASELINE)
+    {
+      if(textalign & TA_RIGHT)
+        strcpy(gravity,"South");
+      else if(textalign & TA_CENTER)
+        strcpy(gravity,"Center");
+      else if(textalign & TA_RIGHT)
+        strcpy(gravity,"East");
+    }
+  if(*gravity!='\0')
+    {
+      sprintf(buff, "gravity %s\n", gravity);
+      ExtendMVG(cstruct, buff);
+    }
+
+  /* Set point size */
+  sprintf(buff, "font-size %i\n", pointsize);
+  ExtendMVG(cstruct, buff);
+
+  /* Translate coordinates so target is 0,0 */
+  sprintf(buff, "translate %i,%i\n",x,y);
+  ExtendMVG(cstruct, buff);
+
+  /* Rotation */
+  if(rotate)
+    {
+      sprintf(buff, "rotate %f\n",angle);
+      ExtendMVG(cstruct, buff);
+    }
+
+  /* Render text */
+  if(str!=NULL)
+    sprintf(buff, "text 0,0 \"%s\"\n",str);
+  ExtendMVG(cstruct, buff);
+
+  ExtendMVG(cstruct, "pop graphic-context\n");
 }
 
 /* META_FRAMEREGION */
@@ -861,6 +984,7 @@ static void WmfExtFloodFill(CSTRUCT *cstruct, WMFRECORD *wmfrecord)
 {
   char
     buff[MaxTextExtent];
+
   ExtendMVG(cstruct, "push graphic-context\n");
 
   if(wmfrecord->Parameters[0] == FLOODFILLSURFACE)
@@ -988,36 +1112,63 @@ static void WmfPaintRgn(CSTRUCT *cstruct, WINEREGION *rgn)
     x2,
     y2;
 
-  ExtendMVG(cstruct, "push graphic-context\n");
   if ((cstruct->dc->brush!=NULL) && (cstruct->dc->brush->lbStyle != BS_NULL))
     {
-      sprintf(buff, "fill #%02x%02x%02x\n",
-              (cstruct->dc->brush->lbColor[0]& 0x00FF),
-              (cstruct->dc->brush->lbColor[0]& 0xFF00)>>8,
-              (cstruct->dc->brush->lbColor[1]& 0x00FF)
-              );
+      /* Fill Region */
+      ExtendMVG(cstruct, "push graphic-context\n");
+      if ((cstruct->dc->brush!=NULL) && (cstruct->dc->brush->lbStyle != BS_NULL))
+        {
+          sprintf(buff, "fill #%02x%02x%02x\n",
+                  (cstruct->dc->brush->lbColor[0]& 0x00FF),
+                  (cstruct->dc->brush->lbColor[0]& 0xFF00)>>8,
+                  (cstruct->dc->brush->lbColor[1]& 0x00FF)
+                  );
+          ExtendMVG(cstruct, buff);
+        }
+      else
+        ExtendMVG(cstruct, "fill none\n");
+
+      ExtendMVG(cstruct, "stroke none\n");
+
+      /* Add rectangle primitive and points */
+      x1 = NormX(rgn->extents.left,cstruct);
+      y1 = NormY(rgn->extents.top,cstruct);
+      x2 = NormX(rgn->extents.left,cstruct)+ScaleX(rgn->extents.right-rgn->extents.left,cstruct);
+      y2 = NormY(rgn->extents.top,cstruct)+ScaleY(rgn->extents.bottom-rgn->extents.top,cstruct);
+      sprintf(buff,"rectangle %f,%f %f,%f\n",x1,y1,x2,y2);
       ExtendMVG(cstruct, buff);
+      ExtendMVG(cstruct, "pop graphic-context\n");
     }
-  else
-    ExtendMVG(cstruct, "fill none\n");
-
-    ExtendMVG(cstruct, "stroke none\n");
-
-  /* Add rectangle primitive and points */
-  x1 = NormX(rgn->extents.left,cstruct);
-  y1 = NormY(rgn->extents.top,cstruct);
-  x2 = NormX(rgn->extents.left,cstruct)+ScaleX(rgn->extents.right-rgn->extents.left,cstruct);
-  y2 = NormY(rgn->extents.top,cstruct)+ScaleY(rgn->extents.bottom-rgn->extents.top,cstruct);
-  sprintf(buff,"rectangle %f,%f %f,%f\n",x1,y1,x2,y2);
-  ExtendMVG(cstruct, buff);
-  ExtendMVG(cstruct, "pop graphic-context\n");
 }
 
 static void WmfParseROP(CSTRUCT *cstruct, unsigned int dwROP,
                         unsigned short x, unsigned short y,
                         unsigned short width, unsigned short height)
 {
-  /* FIXME */
+  /* FIXME: not implemented */
+
+  if (width == 0)
+    width = 1;
+  if (height == 0)
+    height = 1;
+
+  switch (dwROP)
+    {
+    case PATCOPY:
+      /*paint the region with the current brush*/
+      break;
+    case DSTINVERT:
+      break;
+    case PATINVERT:
+      break;
+    case BLACKNESS:
+      break;
+    case WHITENESS:
+      break;
+    default:
+      break;
+    }
+
   puts("WmfParseROP() not implemented");
 }
 
@@ -1076,13 +1227,98 @@ static void WmfSetPmfSize(CSTRUCT *cstruct, HMETAFILE file)
 
 static void WmfSetFillStyle(CSTRUCT *cstruct, LOGBRUSH *brush, DC *currentDC)
 {
-  /* FIXME */
+  /* FIXME: not implemented */
+
+  /* Fill brush style */
+  if (brush->lbStyle == BS_NULL)
+    return;
+ 
+  switch(brush->lbStyle)
+    {
+    case BS_NULL:
+      break;
+    case BS_SOLID:
+      break;
+    case BS_HATCHED:
+      break;
+    case BS_PATTERN:
+      break;
+    case BS_DIBPATTERN:
+      break;
+    }
+
+  /* Polygon filling mode (META_SETPOLYFILLMODE) */
+  switch(cstruct->dc->polyfillmode)
+    {
+    case ALTERNATE:
+      break;
+    case WINDING:
+      break;
+    }
+
   puts("WmfSetFillStyle() not implemented");
 }
 
 static void WmfSetPenStyle(CSTRUCT *cstruct, LOGPEN *pen, DC *currentDC)
 {
-  /* FIXME */
+  /* FIXME: not implemented */
+
+  if (pen->lopnStyle == PS_NULL)
+    return;
+
+  switch(cstruct->dc->ROPmode)
+    {
+    case R2_BLACK :
+      /* Boolean 0, clears pixels to black */
+      break;
+    case R2_WHITE :
+      /* Boolean 1, sets pixels to white */
+      break;
+    case R2_XORPEN :
+      /* Source XOR Dest */
+      break;
+    default:
+      break;
+    }
+
+  if (pen->lopnWidth <= 1)
+    {
+      switch(pen->lopnStyle & PS_STYLE_MASK)
+        {
+        case PS_DASH:
+          break;
+        case PS_DOT:
+          break;
+        case PS_DASHDOT:
+          break;
+        case PS_DASHDOTDOT:
+          break;
+        case PS_ALTERNATE:
+        case PS_USERSTYLE:
+          break;
+        }
+    }
+
+  switch(pen->lopnStyle & PS_ENDCAP_MASK)
+    {
+    case PS_ENDCAP_SQUARE:
+      break;
+    case PS_ENDCAP_FLAT:
+      break;
+    case PS_ENDCAP_ROUND:
+    default:
+    }
+
+  switch(pen->lopnStyle & PS_JOIN_MASK)
+    {
+    case PS_JOIN_BEVEL:
+      break;
+    case PS_JOIN_MITER:
+      break;
+    case PS_JOIN_ROUND:
+    default:
+    }
+
   puts("WmfSetPenStyle() not implemented");
 }
 
@@ -1090,7 +1326,6 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   CSTRUCT*
     cstruct;
-
 
   HMETAFILE 
     metafile;
