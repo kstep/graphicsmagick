@@ -2954,6 +2954,7 @@ MagickExport int SubstituteString(char** buffer, const char* search, const char 
     *source;
 
   assert(buffer != (char**) NULL);
+  assert(*buffer != (char *) NULL);
   assert(search != (const char*) NULL);
   assert(replace != (const char*) NULL);
 
