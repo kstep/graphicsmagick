@@ -603,13 +603,13 @@ static unsigned int IsValidFilesystemPath(const char *path)
  */
 MagickExport void InitializeMagickClientPathAndName(const char *path)
 {
+#if !defined(UseInstalledMagick)
   const char
     *spath;
 
   char
     execution_path[MaxTextExtent];
 
-#if !defined(UseInstalledMagick)
   /* the following is to make the logging more readable later on */
   spath = path;
   if (spath == (char *) NULL)
