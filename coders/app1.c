@@ -139,7 +139,9 @@ static Image *ReadAPP1Image(const ImageInfo *image_info,
     *image;
 
   int
-    c,
+    c;
+
+  long
     i;
 
   register unsigned char
@@ -168,7 +170,7 @@ static Image *ReadAPP1Image(const ImageInfo *image_info,
   if (image->generic_profile == (ProfileInfo *) NULL)
     {
       image->generic_profiles=0;
-      ThrowReaderException(FileOpenWarning,"Memory allocation failed",image);
+      ThrowReaderException(FileOpenWarning,"Memory allocation failed",image)
     }
   image->generic_profiles++;
   image->generic_profile[i].name=AllocateString((char *) NULL);
@@ -317,6 +319,5 @@ static unsigned int WriteAPP1Image(const ImageInfo *image_info,Image *image)
         return(True);
       }
   }
-  ThrowWriterException(FileOpenWarning,"No APP1 data is available",image);
-  return(True);
+  ThrowWriterException(FileOpenWarning,"No APP1 data is available",image)
 }

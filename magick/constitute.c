@@ -2013,8 +2013,11 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
   char
     filename[MaxTextExtent];
 
-  DelegateInfo
+  const DelegateInfo
     *delegate_info;
+
+  const MagickInfo
+    *magick_info;
 
   Image
     *image,
@@ -2022,9 +2025,6 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
 
   ImageInfo
     *clone_info;
-
-  MagickInfo
-    *magick_info;
 
   register char
     *p;
@@ -2046,8 +2046,8 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
     Call appropriate image reader based on image type.
   */
   image=(Image *) NULL;
-  magick_info=(MagickInfo *) GetMagickInfo(clone_info->magick,exception);
-  if ((magick_info != (MagickInfo *) NULL) &&
+  magick_info=GetMagickInfo(clone_info->magick,exception);
+  if ((magick_info != (const MagickInfo *) NULL) &&
       (magick_info->decoder !=
         (Image *(*)(const ImageInfo *,ExceptionInfo *)) NULL))
     {
@@ -2064,7 +2064,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
         status;
 
       delegate_info=GetDelegateInfo(clone_info->magick,(char *) NULL,exception);
-      if (delegate_info == (DelegateInfo *) NULL)
+      if (delegate_info == (const DelegateInfo *) NULL)
         {
           if (IsAccessible(clone_info->filename))
             ThrowException(exception,MissingDelegateWarning,
@@ -2093,8 +2093,8 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
       if (status != False)
         clone_info->temporary=True;
       (void) SetImageInfo(clone_info,False,exception);
-      magick_info=(MagickInfo *) GetMagickInfo(clone_info->magick,exception);
-      if ((magick_info == (MagickInfo *) NULL) ||
+      magick_info=GetMagickInfo(clone_info->magick,exception);
+      if ((magick_info == (const MagickInfo *) NULL) ||
           (magick_info->decoder ==
             (Image *(*)(const ImageInfo *,ExceptionInfo *)) NULL))
         {
@@ -2384,14 +2384,14 @@ static Image *ReadImages(const ImageInfo *image_info,ExceptionInfo *exception)
 */
 MagickExport unsigned int WriteImage(const ImageInfo *image_info,Image *image)
 {
-  DelegateInfo
+  const DelegateInfo
     *delegate_info;
+
+  const MagickInfo
+    *magick_info;
 
   ImageInfo
     *clone_info;
-
-  MagickInfo
-    *magick_info;
 
   unsigned int
     status;
@@ -2416,7 +2416,7 @@ MagickExport unsigned int WriteImage(const ImageInfo *image_info,Image *image)
     {
       delegate_info=GetDelegateInfo(image->magick,clone_info->magick,
         &image->exception);
-      if ((delegate_info != (DelegateInfo *) NULL) &&
+      if ((delegate_info != (const DelegateInfo *) NULL) &&
           (delegate_info->mode == 0))
         {
           /*
@@ -2434,9 +2434,8 @@ MagickExport unsigned int WriteImage(const ImageInfo *image_info,Image *image)
     Call appropriate image writer based on image type.
   */
   status=False;
-  magick_info=(MagickInfo *)
-    GetMagickInfo(clone_info->magick,&image->exception);
-  if ((magick_info != (MagickInfo *) NULL) &&
+  magick_info=GetMagickInfo(clone_info->magick,&image->exception);
+  if ((magick_info != (const MagickInfo *) NULL) &&
       (magick_info->encoder !=
         (unsigned int (*)(const ImageInfo *,Image *)) NULL))
     {
@@ -2463,9 +2462,8 @@ MagickExport unsigned int WriteImage(const ImageInfo *image_info,Image *image)
           DestroyImageInfo(clone_info);
           return(!status);
         }
-      magick_info=(MagickInfo *)
-        GetMagickInfo(clone_info->magick,&image->exception);
-      if (magick_info == (MagickInfo *) NULL)
+      magick_info=GetMagickInfo(clone_info->magick,&image->exception);
+      if (magick_info == (const MagickInfo *) NULL)
         magick_info=(MagickInfo *)
           GetMagickInfo(image->magick,&image->exception);
       if ((magick_info == (MagickInfo *) NULL) ||

@@ -578,14 +578,14 @@ MagickExport unsigned int GetTypeMetrics(Image *image,
 static unsigned int RenderType(Image *image,const DrawInfo *draw_info,
   const PointInfo *offset,const unsigned int render,TypeMetric *metrics)
 {
+  const TypeInfo
+    *type_info;
+
   DrawInfo
     *clone_info;
 
   ImageInfo
     *image_info;
-
-  TypeInfo
-    *type_info;
 
   unsigned int
     status;
@@ -594,7 +594,8 @@ static unsigned int RenderType(Image *image,const DrawInfo *draw_info,
     return(RenderPostscript(image,draw_info,offset,render,metrics));
   image_info=CloneImageInfo((ImageInfo *) NULL);
   type_info=GetTypeInfo(draw_info->font,&image->exception);
-  if ((type_info != (TypeInfo *) NULL) && (type_info->glyphs != (char *) NULL))
+  if ((type_info != (const TypeInfo *) NULL) &&
+      (type_info->glyphs != (char *) NULL))
     (void) strncpy(image_info->filename,type_info->glyphs,MaxTextExtent-1);
   else
     (void) strncpy(image_info->filename,draw_info->font,MaxTextExtent-1);

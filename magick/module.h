@@ -42,11 +42,11 @@ typedef struct _ModuleInfo
 /*
   Modules declarations.
 */
+extern MagickExport const ModuleInfo
+  *GetModuleInfo(const char *,ExceptionInfo *);
+
 extern MagickExport ModuleAlias
   *GetModuleAlias(const char *,ExceptionInfo *);
-
-extern MagickExport ModuleInfo
-  *GetModuleInfo(const char *,ExceptionInfo *);
 
 extern MagickExport unsigned int
   ExecuteModuleProcess(const char *,Image *,const int,char **),

@@ -4816,13 +4816,13 @@ MagickExport void XFileBrowserWidget(Display *display,XWindows *windows,
                 const char
                   **formats;
 
+                const MagickInfo
+                  *magick_info;
+
                 ExceptionInfo
                   exception;
 
-                MagickInfo
-                  *magick_info;
-
-                register MagickInfo
+                register const MagickInfo
                   *p;
 
                 /*

@@ -368,7 +368,8 @@ MagickExport ModuleAlias *GetModuleAlias(const char *name,
 %
 %  The format of the GetModuleInfo method is:
 %
-%      ModuleInfo *GetModuleInfo(const char *tag,ExceptionInfo *exception)
+%      const ModuleInfo *GetModuleInfo(const char *tag,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -382,9 +383,10 @@ MagickExport ModuleAlias *GetModuleAlias(const char *name,
 %
 %
 */
-MagickExport ModuleInfo *GetModuleInfo(const char *tag,ExceptionInfo *exception)
+MagickExport const ModuleInfo *GetModuleInfo(const char *tag,
+  ExceptionInfo *exception)
 {
-  register ModuleInfo
+  register const ModuleInfo
     *p;
 
   (void) GetMagicInfo((unsigned char *) NULL,0,exception);
@@ -1133,11 +1135,11 @@ static int UnloadDynamicModule(const char *module)
   char
     name[MaxTextExtent];
 
+  const ModuleInfo
+    *module_info;
+
   ExceptionInfo
     exception;
-
-  ModuleInfo
-    *module_info;
 
   void
     (*method)(void);
@@ -1145,7 +1147,7 @@ static int UnloadDynamicModule(const char *module)
   assert(module != (const char *) NULL);
   GetExceptionInfo(&exception);
   module_info=GetModuleInfo(module,&exception);
-  if (module_info == (ModuleInfo *) NULL)
+  if (module_info == (const ModuleInfo *) NULL)
     return(False);
   /*
     Locate and execute UnregisterFORMATImage function

@@ -226,7 +226,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     postscript_filename[MaxTextExtent],
     translate_geometry[MaxTextExtent];
 
-  DelegateInfo
+  const DelegateInfo
     *delegate_info;
 
   double
@@ -271,13 +271,13 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (image_info->monochrome)
     {
       delegate_info=GetDelegateInfo("gs-mono",(char *) NULL,exception);
-      if (delegate_info == (DelegateInfo *) NULL)
+      if (delegate_info == (const DelegateInfo *) NULL)
         return((Image *) NULL);
     }
   else
     {
       delegate_info=GetDelegateInfo("gs-color",(char *) NULL,exception);
-      if (delegate_info == (DelegateInfo *) NULL)
+      if (delegate_info == (const DelegateInfo *) NULL)
         return((Image *) NULL);
     }
   /*

@@ -159,11 +159,11 @@ typedef struct _TypeMetric
 /*
   Method declarations.
 */
+extern MagickExport const TypeInfo
+  *GetTypeInfo(const char *,ExceptionInfo *);
+
 extern MagickExport DrawInfo
   *CloneDrawInfo(const ImageInfo *,const DrawInfo *);
-
-extern MagickExport TypeInfo
-  *GetTypeInfo(const char *,ExceptionInfo *);
 
 extern MagickExport unsigned int
   AnnotateImage(Image *,const DrawInfo *),

@@ -3122,18 +3122,16 @@ Get(ref,...)
             }
           if (LocaleCompare(attribute,"format") == 0)
             {
-              MagickInfo
+              const MagickInfo
                 *magick_info;
 
-              magick_info=(MagickInfo *) NULL;
+              magick_info=(const MagickInfo *) NULL;
               if (info && (*info->image_info->magick != '\0'))
-                magick_info=(MagickInfo *)
-                  GetMagickInfo(info->image_info->magick,&exception);
+                magick_info=GetMagickInfo(info->image_info->magick,&exception);
               else
                 if (image)
-                  magick_info=(MagickInfo *)
-                    GetMagickInfo(image->magick,&image->exception);
-                if ((magick_info != (MagickInfo *) NULL) &&
+                  magick_info=GetMagickInfo(image->magick,&image->exception);
+                if ((magick_info != (const MagickInfo *) NULL) &&
                     (*magick_info->description != '\0'))
                   s=newSVpv((char *) magick_info->description,0);
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
@@ -6307,18 +6305,18 @@ QueryColor(ref,...)
     error_list=newSVpv("",0);
     if (items == 1)
       {
-        ColorInfo
+        const ColorInfo
           *color_info;
 
         ExceptionInfo
           exception;
 
-        register ColorInfo
+        register const ColorInfo
           *p;
 
         GetExceptionInfo(&exception);
         color_info=GetColorInfo("*",&exception);
-        if (color_info == (ColorInfo *) NULL)
+        if (color_info == (const ColorInfo *) NULL)
           {
             PUSHs(&sv_undef);
             goto MethodException;
@@ -6440,24 +6438,24 @@ QueryFont(ref,...)
     char
       *name;
 
+    const TypeInfo
+      *type_info;
+
     ExceptionInfo
       exception;
 
     register int
       i;
 
-    TypeInfo
-      *type_info;
-
     error_list=newSVpv("",0);
     GetExceptionInfo(&exception);
     if (items == 1)
       {
-        register TypeInfo
+        register const TypeInfo
           *p;
 
         type_info=GetTypeInfo("*",&exception);
-        if (type_info == (TypeInfo *) NULL)
+        if (type_info == (const TypeInfo *) NULL)
           {
             PUSHs(&sv_undef);
             goto MethodException;
@@ -6785,11 +6783,11 @@ QueryFormat(ref,...)
       message[MaxTextExtent],
       *name;
 
+    const MagickInfo
+      *magick_info;
+
     ExceptionInfo
       exception;
-
-    MagickInfo
-      *magick_info;
 
     register int
       i;
@@ -6798,11 +6796,11 @@ QueryFormat(ref,...)
     GetExceptionInfo(&exception);
     if (items == 1)
       {
-        register MagickInfo
+        register const MagickInfo
           *p;
 
         magick_info=GetMagickInfo("*",&exception);
-        if (magick_info == (MagickInfo *) NULL)
+        if (magick_info == (const MagickInfo *) NULL)
           {
             PUSHs(&sv_undef);
             goto MethodException;
@@ -6831,7 +6829,7 @@ QueryFormat(ref,...)
     {
       name=(char *) SvPV(ST(i),na);
       magick_info=GetMagickInfo(name,&exception);
-      if (magick_info == (MagickInfo *) NULL)
+      if (magick_info == (const MagickInfo *) NULL)
         {
           PUSHs(&sv_undef);
           continue;

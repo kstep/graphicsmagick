@@ -153,8 +153,8 @@ MagickExport void DestroyDelegateInfo(void)
 %
 %  The format of the GetDelegateInfo method is:
 %
-%      DelegateInfo *GetDelegateInfo(const char *decode,const char *encode,
-%        ExceptionInfo *exception)
+%      const DelegateInfo *GetDelegateInfo(const char *decode,
+%        const char *encode,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -171,10 +171,10 @@ MagickExport void DestroyDelegateInfo(void)
 %
 %
 */
-MagickExport DelegateInfo *GetDelegateInfo(const char *decode,
+MagickExport const DelegateInfo *GetDelegateInfo(const char *decode,
   const char *encode,ExceptionInfo *exception)
 {
-  register DelegateInfo
+  register const DelegateInfo
     *p;
 
   AcquireSemaphoreInfo(&delegate_semaphore);
@@ -186,7 +186,7 @@ MagickExport DelegateInfo *GetDelegateInfo(const char *decode,
   /*
     Search for requested delegate.
   */
-  for (p=delegate_list; p != (DelegateInfo *) NULL; p=p->next)
+  for (p=delegate_list; p != (const DelegateInfo *) NULL; p=p->next)
   {
     if (p->mode > 0)
       {
@@ -259,7 +259,7 @@ MagickExport char *GetDelegateCommand(const ImageInfo *image_info,
     *command,
     **commands;
 
-  DelegateInfo
+  const DelegateInfo
     *delegate_info;
 
   register int
@@ -271,7 +271,7 @@ MagickExport char *GetDelegateCommand(const ImageInfo *image_info,
   assert(image->signature == MagickSignature);
   assert(decode!= (char *) NULL);
   delegate_info=GetDelegateInfo(decode,encode,exception);
-  if (delegate_info == (DelegateInfo *) NULL)
+  if (delegate_info == (const DelegateInfo *) NULL)
     {
       ThrowException(exception,MissingDelegateWarning,"no tag found",
         decode ? decode : encode);
@@ -335,7 +335,7 @@ MagickExport unsigned int InvokeDelegate(ImageInfo *image_info,Image *image,
     **commands,
     filename[MaxTextExtent];
 
-  DelegateInfo
+  const DelegateInfo
     *delegate_info;
 
   register int
@@ -482,7 +482,7 @@ MagickExport unsigned int ListDelegateInfo(FILE *file,ExceptionInfo *exception)
     **commands,
     delegate[MaxTextExtent];
 
-  register DelegateInfo
+  register const DelegateInfo
     *p;
 
   register int
@@ -491,14 +491,14 @@ MagickExport unsigned int ListDelegateInfo(FILE *file,ExceptionInfo *exception)
   if (file == (const FILE *) NULL)
     file=stdout;
   p=GetDelegateInfo("*","*",exception);
-  if (p == (DelegateInfo *) NULL)
+  if (p == (const DelegateInfo *) NULL)
     return(False);
   if (p->filename != (char *) NULL)
     (void) fprintf(file,"Filename: %.1024s\n\n",p->filename);
   (void) fprintf(file,"Delegate             Command\n");
   (void) fprintf(file,"-------------------------------------------------------"
     "------------------------\n");
-  for ( ; p != (DelegateInfo *) NULL; p=p->next)
+  for ( ; p != (const DelegateInfo *) NULL; p=p->next)
   {
     if (p->stealth)
       continue;

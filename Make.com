@@ -1,9 +1,6 @@
 $!
 $! Make ImageMagick X image utilities for VMS.
 $!
-$ on error then continue
-$ deassign magick
-$ set noon
 $
 $ option := 'p1'
 $ if option .eqs. "CLEAN"
@@ -71,15 +68,8 @@ $ if share
 $ then
 $    write sys$output "Making shareable image"
 $    link/share/exe=magickshr.exe   [.magick]libMagick.olb/lib, -
-  [.coders]libCoders.olb/lib, -
-  sys$library:freetype.olb/lib, -
-  sys$library:libjpeg.olb/lib, -
-  sys$library:libpng.olb/lib, -
-  sys$library:tiff.olb/lib, -
-  sys$library:libz.olb/lib, -
-  sys$library:libbz2.olb/lib, -
-  sys$library:df.olb/lib, -
-  sys$library:libjbig.olb/lib, -
+  [-.coders]libCoders.olb/lib, -
+  $disk2:[joukj.public.freetype.freetype.freetype2.lib]freetype.olb/lib, -
   []magickshr.opt/opt
 $ libr/crea/share/log magickshr.olb magickshr.exe
 $    set file/trunc magickshr.olb
@@ -89,19 +79,11 @@ $    define/nolog magickshr 'f$environment("default")'magickshr.exe
 $    write sys$output "Shareable image logical MAGICKSHR defined:"
 $    show logi magickshr
 $ else
-$    link_libraries := [.magick]libMagick.olb/lib, -
-  [.coders]libCoders.olb/lib, -
-  sys$library:libjpeg.olb/lib, -
-  sys$library:libpng.olb/lib, -
-  sys$library:tiff.olb/lib, -
-  sys$library:freetype.olb/l, -
-  sys$library:libz.olb/lib,-
-  sys$library:df.olb/lib, -
-  sys$library:libjbig.olb/lib, -
-  sys$library:libbz2.olb/lib
+$    link_libraries := [-.magick]libMagick.olb/lib, -
+  [-.coders]libCoders.olb/lib
 $ endif
 $ define magick [-.magick]
-$ set def [.utilities]
+$ set default [.utilities]
 $if ((p1 .nes. "") .and. (p1 .nes. "DISPLAY")) then goto SkipDisplay
 $write sys$output "Making Display..."
 $call Make display.c
@@ -195,12 +177,13 @@ $
 $composite:==$'f$environment("default")'composite
 $write sys$output "..symbol COMPOSITE defined."
 $SkipComposite:
-$set def [-]
+$set default [-]
 $copy [.magick]magic.mgk sys$login:magic.mgk
 $copy [.magick]colors.mgk sys$login:colors.mgk
 $copy [.coders]delegates.mgk sys$login:delegates.mgk
 $copy [.coders]modules.mgk sys$login:modules.mgk
 $copy [.coders]type.mgk sys$login:type.mgk
+$deassign magick
 $type sys$input
 
 Use this command to specify which X server to contact:

@@ -156,7 +156,7 @@ MagickExport void DestroyTypeInfo(void)
 %
 %  The format of the GetTypeInfo method is:
 %
-%      TypeInfo *GetTypeInfo(const char *name,ExceptionInfo *exception)
+%      const TypeInfo *GetTypeInfo(const char *name,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -169,9 +169,10 @@ MagickExport void DestroyTypeInfo(void)
 %
 %
 */
-MagickExport TypeInfo *GetTypeInfo(const char *name,ExceptionInfo *exception)
+MagickExport const TypeInfo *GetTypeInfo(const char *name,
+  ExceptionInfo *exception)
 {
-  register TypeInfo
+  register const TypeInfo
     *p;
 
   AcquireSemaphoreInfo(&type_semaphore);
@@ -219,20 +220,20 @@ MagickExport unsigned int ListTypeInfo(FILE *file,ExceptionInfo *exception)
   register long
     i;
 
-  register TypeInfo
+  register const TypeInfo
     *p;
 
   if (file == (FILE *) NULL)
     file=stdout;
   p=GetTypeInfo("*",exception);
-  if (p == (TypeInfo *) NULL)
+  if (p == (const TypeInfo *) NULL)
     return(False);
   if (p->filename != (char *) NULL)
     (void) fprintf(file,"Filename: %.1024s\n\n",p->filename);
   (void) fprintf(file,"Name                         Description\n");
   (void) fprintf(file,"-------------------------------------------------------"
     "------------------------\n");
-  for ( ; p != (TypeInfo *) NULL; p=p->next)
+  for ( ; p != (const TypeInfo *) NULL; p=p->next)
   {
     (void) fprintf(file,"%.1024s",p->name);
     for (i=strlen(p->name); i <= 28; i++)

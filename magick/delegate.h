@@ -38,8 +38,10 @@ extern MagickExport char
   *GetDelegateCommand(const ImageInfo *,const Image *,const char *,const char *,
     ExceptionInfo *);
 
+extern MagickExport const DelegateInfo
+  *GetDelegateInfo(const char *,const char *,ExceptionInfo *exception);
+
 extern MagickExport DelegateInfo
-  *GetDelegateInfo(const char *,const char *,ExceptionInfo *exception),
   *SetDelegateInfo(DelegateInfo *);
 
 extern MagickExport unsigned int

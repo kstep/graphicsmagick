@@ -143,8 +143,8 @@ MagickExport void DestroyMagicInfo(void)
 %
 %  The format of the GetMagicInfo method is:
 %
-%      MagicInfo *GetMagicInfo(const unsigned char *magic,const size_t length,
-%        ExceptionInfo *exception)
+%      const MagicInfo *GetMagicInfo(const unsigned char *magic,
+%        const size_t length,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -161,10 +161,10 @@ MagickExport void DestroyMagicInfo(void)
 %
 %
 */
-MagickExport MagicInfo *GetMagicInfo(const unsigned char *magic,
+MagickExport const MagicInfo *GetMagicInfo(const unsigned char *magic,
   const size_t length,ExceptionInfo *exception)
 {
-  register MagicInfo
+  register const MagicInfo
     *p;
 
   AcquireSemaphoreInfo(&magic_semaphore);
@@ -209,7 +209,7 @@ MagickExport MagicInfo *GetMagicInfo(const unsigned char *magic,
 */
 MagickExport unsigned int ListMagicInfo(FILE *file,ExceptionInfo *exception)
 {
-  register MagicInfo
+  register const MagicInfo
     *p;
 
   register long

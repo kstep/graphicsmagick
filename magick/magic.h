@@ -33,7 +33,7 @@ typedef struct _MagicInfo
 /*
   Method declarations.
 */
-extern MagickExport MagicInfo
+extern MagickExport const MagicInfo
   *GetMagicInfo(const unsigned char *,const size_t,ExceptionInfo *);
 
 extern MagickExport unsigned int

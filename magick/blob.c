@@ -132,6 +132,9 @@ static void AttachBlob(BlobInfo *blob_info,const void *blob,const size_t length)
 MagickExport Image *BlobToImage(const ImageInfo *image_info,const void *blob,
   const size_t length,ExceptionInfo *exception)
 {
+  const MagickInfo
+    *magick_info;
+
   Image
     *image;
 
@@ -144,9 +147,6 @@ MagickExport Image *BlobToImage(const ImageInfo *image_info,const void *blob,
   long
     count;
 
-  MagickInfo
-    *magick_info;
-
   assert(image_info != (ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
@@ -154,8 +154,8 @@ MagickExport Image *BlobToImage(const ImageInfo *image_info,const void *blob,
   AttachBlob(clone_info->blob,blob,length);
   GetExceptionInfo(exception);
   (void) SetImageInfo(clone_info,False,exception);
-  magick_info=(MagickInfo *) GetMagickInfo(clone_info->magick,exception);
-  if (magick_info == (MagickInfo *) NULL)
+  magick_info=GetMagickInfo(clone_info->magick,exception);
+  if (magick_info == (const MagickInfo *) NULL)
     {
       ThrowException(exception,BlobWarning,"Unrecognized image format",
         clone_info->magick);
@@ -586,6 +586,9 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
     filename[MaxTextExtent],
     unique[MaxTextExtent];
 
+  const MagickInfo
+    *magick_info;
+
   ImageInfo
     *clone_info;
 
@@ -594,9 +597,6 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
 
   long
     count;
-
-  MagickInfo
-    *magick_info;
 
   struct stat
     attributes;
@@ -615,8 +615,8 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
   clone_info=CloneImageInfo(image_info);
   (void) strncpy(clone_info->magick,image->magick,MaxTextExtent-1);
   GetExceptionInfo(exception);
-  magick_info=(MagickInfo *) GetMagickInfo(clone_info->magick,exception);
-  if (magick_info == (MagickInfo *) NULL)
+  magick_info=GetMagickInfo(clone_info->magick,exception);
+  if (magick_info == (const MagickInfo *) NULL)
      {
        ThrowException(exception,BlobWarning,"No delegate for this image format",
          clone_info->magick);
@@ -1074,12 +1074,11 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
         image->file=(FILE *) fopen(filename,type);
         if ((image->file != (FILE *) NULL) && (*type == 'r'))
           {
-            MagickInfo
+            const MagickInfo
               *magick_info;
 
-            magick_info=(MagickInfo *)
-              GetMagickInfo(image_info->magick,&image->exception);
-            if (magick_info != (MagickInfo *) NULL)
+            magick_info=GetMagickInfo(image_info->magick,&image->exception);
+            if (magick_info != (const MagickInfo *) NULL)
               {
                 if (magick_info->blob_support)
                   {

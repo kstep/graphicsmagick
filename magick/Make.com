@@ -59,11 +59,11 @@ $call Make vms.c
 $call Make widget.c
 $call Make xwindow.c
 $call Make zoom.c
-$library/create libMagick.olb PreRvIcccm,animate,annotate,attribute,blob, -
-  cache,cache_view,color,compress,constitute,decorate,delegate,display,draw, -
-  effect,enhance,error,gem,image,magic,magick,memory,module,monitor, -
-  montage,quantize,segment,semaphore,shear,signature,static,stream,timer, -
-  transform,type,utility,vms,widget,xwindow,zoom
+$library/create libMagick.olb memory,blob,cache,error,monitor,constitute, -
+  image,color,quantize,segment,zoom,transform,shear,enhance,effect,decorate, -
+  annotate,type,draw,montage,semaphore,attribute,signature,compress,gem,magic, -
+  magick,delegate,module,static,timer,utility,cache_view,stream,animate, -
+  display,widget,xwindow,PreRvIcccm,vms
 $exit
 $
 $Make: subroutine

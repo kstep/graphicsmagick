@@ -283,7 +283,7 @@ MagickExport char *GetMagickConfigurePath(const char *filename)
 %
 %  The format of the GetMagickInfo method is:
 %
-%      MagickInfo *GetMagickInfo(const char *name,Exception *exception)
+%      const MagickInfo *GetMagickInfo(const char *name,Exception *exception)
 %
 %  A description of each parameter follows:
 %
@@ -297,10 +297,10 @@ MagickExport char *GetMagickConfigurePath(const char *filename)
 %
 %
 */
-MagickExport MagickInfo *GetMagickInfo(const char *name,
+MagickExport const MagickInfo *GetMagickInfo(const char *name,
   ExceptionInfo *exception)
 {
-  register MagickInfo
+  register const MagickInfo
     *p;
 
   if ((name != (const char *) NULL) && (LocaleCompare(name,"*") == 0))
@@ -493,7 +493,7 @@ MagickExport int unsigned IsMagickConflict(const char *magick)
 */
 MagickExport unsigned int ListMagickInfo(FILE *file,ExceptionInfo *exception)
 {
-  register MagickInfo
+  register const MagickInfo
     *p;
 
   if (file == (FILE *) NULL)
@@ -502,7 +502,7 @@ MagickExport unsigned int ListMagickInfo(FILE *file,ExceptionInfo *exception)
   (void) fprintf(file,"--------------------------------------------------------"
     "-----------------------\n");
   p=GetMagickInfo("*",exception);
-  if (p == (MagickInfo *) NULL)
+  if (p == (const MagickInfo *) NULL)
     return(False);
   AcquireSemaphoreInfo(&magick_semaphore);
   for ( ; p != (MagickInfo *) NULL; p=p->next)
@@ -645,11 +645,11 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
   char
     magic[MaxTextExtent];
 
+  const MagicInfo
+    *magic_info;
+
   Image
     *image;
-
-  MagicInfo
-    *magic_info;
 
   register char
     *p,
@@ -786,7 +786,7 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
       char
         filename[MaxTextExtent];
 
-      MagickInfo
+      const MagickInfo
         *magick_info;
 
       /*
@@ -796,8 +796,8 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
       if ((LocaleCompare(filename,image_info->filename) != 0) &&
           (strchr(filename,'%') == (char *) NULL))
         image_info->adjoin=False;
-      magick_info=(MagickInfo *) GetMagickInfo(magic,exception);
-      if (magick_info != (MagickInfo *) NULL)
+      magick_info=GetMagickInfo(magic,exception);
+      if (magick_info != (const MagickInfo *) NULL)
         image_info->adjoin&=magick_info->adjoin;
       return(True);
     }
@@ -857,7 +857,8 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
     Check magic.mgk configuration file.
   */
   magic_info=GetMagicInfo(magick,2*MaxTextExtent,exception);
-  if ((magic_info != (MagicInfo *) NULL) && (magic_info->name != (char *) NULL))
+  if ((magic_info != (const MagicInfo *) NULL) &&
+      (magic_info->name != (char *) NULL))
     {
       (void) strncpy(image_info->magick,magic_info->name,MaxTextExtent-1);
       return(True);

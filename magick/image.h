@@ -595,12 +595,15 @@ extern MagickExport char
   *GetMagickConfigurePath(const char *),
   *GetMagickVersion(unsigned int *);
 
+extern MagickExport const ColorInfo
+  *GetColorInfo(const char *,ExceptionInfo *);
+
+extern const MagickExport MagickInfo
+  *GetMagickInfo(const char *,ExceptionInfo *exception);
+
 extern MagickExport const PixelPacket
   *AcquireImagePixels(const Image *,const long,const long,const unsigned long,
     const unsigned long,ExceptionInfo *);
-
-extern MagickExport ColorInfo
-  *GetColorInfo(const char *,ExceptionInfo *);
 
 extern MagickExport Image
   *AddNoiseImage(const Image *,const NoiseType,ExceptionInfo *),
@@ -685,7 +688,6 @@ extern MagickExport int
     unsigned long *);
 
 extern MagickExport MagickInfo
-  *GetMagickInfo(const char *,ExceptionInfo *exception),
   *RegisterMagickInfo(MagickInfo *),
   *SetMagickInfo(const char *);
 

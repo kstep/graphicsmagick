@@ -1406,11 +1406,8 @@ static unsigned int ModifyCache(Image *image)
   LiberateMemory((void **) &clone_image);
   LiberateSemaphoreInfo(&cache_info->semaphore);
   if (y < (long) image->rows)
-    {
-      ThrowBinaryException(CacheWarning,"Unable to clone cache",
-        image->filename)
-      return(False);
-    }
+    ThrowBinaryException(CacheWarning,"Unable to clone cache",
+      image->filename);
   return(True);
 }
 
@@ -1579,19 +1576,19 @@ MagickExport unsigned int OpenCache(Image *image)
     {
       close(file);
       ThrowBinaryException(CacheWarning,"Unable to truncate cache",
-        image->filename);
+        image->filename)
     }
 #else
   if (lseek(file,length,SEEK_SET) == -1)
     {
       close(file);
-      ThrowBinaryException(CacheWarning,"Unable to seek cache",image->filename);
+      ThrowBinaryException(CacheWarning,"Unable to seek cache",image->filename)
     }
   if (write(file,&offset,sizeof(size_t)) == -1)
     {
       close(file);
       ThrowBinaryException(CacheWarning,"Unable to write cache",
-        image->filename);
+        image->filename)
     }
 #endif
   cache_info->storage_class=image->storage_class;

@@ -183,7 +183,7 @@ MagickExport void DestroyColorInfo(void)
     *p;
 
   AcquireSemaphoreInfo(&color_semaphore);
-  for (p=color_list; p != (ColorInfo *) NULL; )
+  for (p=color_list; p != (const ColorInfo *) NULL; )
   {
     if (p->filename != (char *) NULL)
       LiberateMemory((void **) &p->filename);
@@ -294,7 +294,8 @@ static void DestroyColorList(const NodeInfo *node_info)
 %
 %  The format of the GetColorInfo method is:
 %
-%      PixelPacket *GetColorInfo(const char *name,ExceptionInfo *exception)
+%      const PixelPacket *GetColorInfo(const char *name,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -309,16 +310,17 @@ static void DestroyColorList(const NodeInfo *node_info)
 %
 %
 */
-MagickExport ColorInfo *GetColorInfo(const char *name,ExceptionInfo *exception)
+MagickExport const ColorInfo *GetColorInfo(const char *name,
+  ExceptionInfo *exception)
 {
   char
     colorname[MaxTextExtent];
 
-  register ColorInfo
-    *p;
-
   register char
     *q;
+
+  register const ColorInfo
+    *p;
 
   AcquireSemaphoreInfo(&color_semaphore);
   if (color_list == (ColorInfo *) NULL)
@@ -377,11 +379,11 @@ MagickExport char **GetColorList(const char *pattern,int *number_colors)
   char
     **colorlist;
 
+  register const ColorInfo
+    *p;
+
   ExceptionInfo
     exception;
-
-  register ColorInfo
-    *p;
 
   register int
     i;
@@ -394,16 +396,16 @@ MagickExport char **GetColorList(const char *pattern,int *number_colors)
   *number_colors=0;
   GetExceptionInfo(&exception);
   p=GetColorInfo("*",&exception);
-  if (p == (ColorInfo *) NULL)
+  if (p == (const ColorInfo *) NULL)
     return((char **) NULL);
   i=0;
-  for (p=color_list; p != (ColorInfo *) NULL; p=p->next)
+  for (p=color_list; p != (const ColorInfo *) NULL; p=p->next)
     i++;
   colorlist=(char **) AcquireMemory(i*sizeof(char *));
   if (colorlist == (char **) NULL)
     return((char **) NULL);
   i=0;
-  for (p=color_list; p != (ColorInfo *) NULL; p=p->next)
+  for (p=color_list; p != (const ColorInfo *) NULL; p=p->next)
     if (GlobExpression(p->name,pattern))
       colorlist[i++]=AllocateString(p->name);
   *number_colors=i;
@@ -1116,7 +1118,7 @@ MagickExport unsigned int IsPaletteImage(const Image *image,
 */
 MagickExport unsigned int ListColorInfo(FILE *file,ExceptionInfo *exception)
 {
-  register ColorInfo
+  register const ColorInfo
     *p;
 
   register long
@@ -1125,7 +1127,7 @@ MagickExport unsigned int ListColorInfo(FILE *file,ExceptionInfo *exception)
   if (file == (const FILE *) NULL)
     file=stdout;
   p=GetColorInfo("*",exception);
-  if (p == (ColorInfo *) NULL)
+  if (p == (const ColorInfo *) NULL)
     return(False);
   if (p->filename != (char *) NULL)
     (void) fprintf(file,"Filename: %.1024s\n\n",p->filename);
@@ -1133,7 +1135,7 @@ MagickExport unsigned int ListColorInfo(FILE *file,ExceptionInfo *exception)
     "Name                   Color                   Compliance\n");
   (void) fprintf(file,"-------------------------------------------------------"
     "------------------------\n");
-  for ( ; p != (ColorInfo *) NULL; p=p->next)
+  for ( ; p != (const ColorInfo *) NULL; p=p->next)
   {
     (void) fprintf(file,"%.1024s",p->name);
     for (i=strlen(p->name); i <= 22; i++)
@@ -1198,11 +1200,11 @@ MagickExport unsigned int QueryColorDatabase(const char *name,
     opacity,
     red;
 
+  register const ColorInfo
+    *p;
+
   register long
     i;
-
-  register ColorInfo
-    *p;
 
   /*
     Initialize color return value.
@@ -1317,7 +1319,7 @@ MagickExport unsigned int QueryColorDatabase(const char *name,
     }
   GetExceptionInfo(&exception);
   p=GetColorInfo(name,&exception);
-  if (p == (ColorInfo *) NULL)
+  if (p == (const ColorInfo *) NULL)
     return(False);
   *color=p->color;
   return(True);
@@ -1364,19 +1366,19 @@ MagickExport unsigned int QueryColorname(const Image *image,
   ExceptionInfo
     exception;
 
-  register ColorInfo
+  register const ColorInfo
     *p;
 
   *name='\0';
   GetExceptionInfo(&exception);
   p=GetColorInfo("*",&exception);
-  if (p != (ColorInfo *) NULL)
+  if (p != (const ColorInfo *) NULL)
     {
       double
         distance,
         distance_squared;
 
-      for (p=color_list; p != (ColorInfo *) NULL; p=p->next)
+      for (p=color_list; p != (const ColorInfo *) NULL; p=p->next)
       {
         if ((p->compliance != AllCompliance) && (p->compliance != compliance))
           continue;
