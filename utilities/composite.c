@@ -208,7 +208,6 @@ static unsigned int CompositeImages(ImageInfo *image_info,
             mask_image,0,0);
           if (status == False)
             CatchImageException(composite_image);
-          DestroyImage(mask_image);
         }
       if (option_info->compose == DissolveCompositeOp)
         {
