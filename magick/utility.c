@@ -763,9 +763,6 @@ MagickExport unsigned int ExpandFilenames(int *argc,char ***argv)
     expanded,
     number_files;
 
-  register char
-    *p;
-
   register long
     i,
     j;
@@ -806,10 +803,37 @@ MagickExport unsigned int ExpandFilenames(int *argc,char ***argv)
       }
     if ((*option == '"') || (*option == '\''))
       continue;
+    if (strchr(option,'['))
+      {
+        ExceptionInfo
+          exception;
+
+        ImageInfo
+          *image_info;
+
+        unsigned int
+          exempt;
+
+        /*
+          Determine if pattern is a subimage, i.e. img0001.pcd[2].
+        */
+        image_info=CloneImageInfo((ImageInfo *) NULL);
+        (void) strncpy(image_info->filename,option,MaxTextExtent-1);
+        GetExceptionInfo(&exception);
+        (void) SetImageInfo(image_info,True,&exception);
+        DestroyExceptionInfo(&exception);
+        exempt=(LocaleCompare(image_info->magick,"VID") == 0) ||
+          (image_info->subimage);
+        DestroyImageInfo(image_info);
+        if (exempt)
+          {
+            expanded=True;
+            continue;
+          }
+       }
     (void) strncpy(path,option,MaxTextExtent-1);
     ExpandFilename(path);
-    p=path+Max((long) strlen(path)-1,0);
-    if ((*p == ']') || !IsGlob(path))
+    if (!IsGlob(path))
       {
         expanded=True;
         continue;
@@ -838,7 +862,7 @@ MagickExport unsigned int ExpandFilenames(int *argc,char ***argv)
       Transfer file list to argument vector.
     */
     ReacquireMemory((void **) &vector,
-      (*argc+count+number_files)*sizeof(char *));
+      (*argc+count+number_files+MaxTextExtent)*sizeof(char *));
     if (vector == (char **) NULL)
       return(False);
     count--;
@@ -2085,6 +2109,46 @@ MagickExport unsigned int IsGeometry(const char *geometry)
     return(False);
   flags=GetGeometry(geometry,&x,&y,&width,&height);
   return(flags != NoValue);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
++     I s G l o b                                                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  IsGlob() returns True if the path specification contains a globbing patten.
+%  as determined by GetGlob.
+%
+%  The format of the IsGlob method is:
+%
+%      unsigned int IsGlob(const char *geometry)
+%
+%  A description of each parameter follows:
+%
+%    o status: IsGlob() returns True if the path specification contains
+%      a globbing patten.
+%
+%    o path: The path.
+%
+%
+*/
+MagickExport unsigned int IsGlob(const char *path)
+{
+  unsigned int
+    status;
+
+  status=(strchr(path,'*') != (char *) NULL) ||
+    (strchr(path,'?') != (char *) NULL) ||
+    (strchr(path,'{') != (char *) NULL) ||
+    (strchr(path,'}') != (char *) NULL) ||
+    (strchr(path,'[') != (char *) NULL) ||
+    (strchr(path,']') != (char *) NULL);
+  return(status);
 }
 
 /*

@@ -135,13 +135,6 @@ extern "C" {
 # define EditorOptions  " -title \"Edit Image Comment\" -e vi"
 # define Exit  exit
 # define IsBasenameSeparator(c)  ((c) == '/')
-# define IsGlob(text) \
-  ((strchr(text,'*') != (char *) NULL) || \
-   (strchr(text,'?') != (char *) NULL) || \
-   (strchr(text,'{') != (char *) NULL) || \
-   (strchr(text,'}') != (char *) NULL) || \
-   (strchr(text,'[') != (char *) NULL) || \
-   (strchr(text,']') != (char *) NULL))
 # define PreferencesDefaults  "~/."
 # define ProcessPendingEvents(text)
 # define ReadCommandlLine(argc,argv)
@@ -155,11 +148,6 @@ extern "C" {
 #  define EditorOptions  ""
 #  define Exit  exit
 #  define IsBasenameSeparator(c)  (((c) == ']') || ((c) == ':') || ((c) == '/'))
-#  define IsGlob(text) \
-  ((strchr(text,'*') != (char *) NULL) || \
-   (strchr(text,'?') != (char *) NULL) || \
-   (strchr(text,'{') != (char *) NULL) || \
-   (strchr(text,'}') != (char *) NULL))
 #  define MagickLibPath  "sys$login:"
 #  define MagickModulesPath  "sys$login:"
 #  define MagickSharePath  "sys$login:"
@@ -175,13 +163,6 @@ extern "C" {
 #  define DirectoryListSeparator  ';'
 #  define EditorOptions ""
 #  define IsBasenameSeparator(c)  ((c) == ':')
-#  define IsGlob(text) \
-    ((strchr(text,'*') != (char *) NULL) || \
-     (strchr(text,'?') != (char *) NULL) || \
-     (strchr(text,'{') != (char *) NULL) || \
-     (strchr(text,'}') != (char *) NULL) || \
-     (strchr(text,'[') != (char *) NULL) || \
-     (strchr(text,']') != (char *) NULL))
 #  define MagickLibPath  ""
 #  define MagickModulesPath  ""
 #  define MagickSharePath  ""
@@ -197,13 +178,6 @@ extern "C" {
 #  define DirectoryListSeparator  ';'
 #  define EditorOptions ""
 #  define IsBasenameSeparator(c)  (((c) == '/') || ((c) == '\\'))
-#  define IsGlob(text) \
-    ((strchr(text,'*') != (char *) NULL) || \
-     (strchr(text,'?') != (char *) NULL) || \
-     (strchr(text,'{') != (char *) NULL) || \
-     (strchr(text,'}') != (char *) NULL) || \
-     (strchr(text,'[') != (char *) NULL) || \
-     (strchr(text,']') != (char *) NULL))
 #  define ProcessPendingEvents(text)
 #if !defined(PreferencesDefaults)
 #  define PreferencesDefaults  "~\\."
