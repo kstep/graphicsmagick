@@ -5730,7 +5730,7 @@ Montage(ref,...)
               transparent_color=GetOnePixel(image,0,0);
               QueryColorDatabase(SvPV(ST(i),na),&transparent_color);
               for (next=image; next; next=next->next)
-                TransparentImage(next,transparent_color);
+                TransparentImage(next,transparent_color,TransparentOpacity);
               break;
             }
           break;
@@ -5748,7 +5748,7 @@ Montage(ref,...)
       }
     if (transparent_color.opacity != TransparentOpacity)
       for (next=image; next; next=next->next)
-        TransparentImage(next,transparent_color);
+        TransparentImage(next,transparent_color,TransparentOpacity);
     (void) SetImageInfo(info->image_info,False);
     for (next=image; next; next=next->next)
     {
