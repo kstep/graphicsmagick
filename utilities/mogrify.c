@@ -849,7 +849,7 @@ int main(int argc,char **argv)
             }
           if (LocaleNCompare("fuzz",option+1,2) == 0)
             {
-              image_info->fuzz=0;
+              image_info->fuzz=0.0;
               if (*option == '-')
                 {
                   i++;
