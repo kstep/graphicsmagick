@@ -716,6 +716,11 @@ void CConfigureApp::process_utility(ofstream &dsw,
     extra = "..\\SDL";
     add_includes(includes_list, extra, levels-2);
   }
+//   if (LocalFindNoCase(staging,"..\\hp2xx",0) == 0)
+//   {
+//     extra = "..\\hp2xx";
+//     add_includes(includes_list, extra, levels-2);
+//   }
   if (LocalFindNoCase(staging,"..\\jp2",0) == 0)
   {
     extra = "..\\jp2";
@@ -776,7 +781,12 @@ void CConfigureApp::process_utility(ofstream &dsw,
       begin_project(dsw, pname.c_str(), project.c_str());
       if (!standaloneMode)
       {
-        add_project_dependency(dsw, "CORE_magick");
+        // hp2xx and jp2 do not depend on CORE_magick
+        string strDepends = staging.c_str();
+        if ( (LocalFindNoCase(strDepends,"..\\hp2xx",0) != 0) &&
+             (LocalFindNoCase(strDepends,"..\\jp2",0) != 0) )
+          add_project_dependency(dsw, "CORE_magick");
+
         // FIXME: Only CORE_magick, UTIL_animate, UTIL_display, &
         // UTIL_import should link with X11
         if (useX11Stubs)
@@ -785,10 +795,13 @@ void CConfigureApp::process_utility(ofstream &dsw,
         {
           add_project_dependency(dsw, "CORE_Magick++");
         }
-        string strDepends = staging.c_str();
         if (LocalFindNoCase(strDepends,"\\SDL",0) >= 0)
         {
           add_project_dependency(dsw, "CORE_SDL");
+        }
+        if (LocalFindNoCase(strDepends,"..\\hp2xx",0) == 0)
+        {
+          add_project_dependency(dsw, "CORE_hp2xx");
         }
         if (LocalFindNoCase(strDepends,"..\\jp2",0) == 0)
         {
@@ -915,8 +928,10 @@ void CConfigureApp::process_library(ofstream &dsw,
     begin_project(dsw, pname.c_str(), project.c_str());
     if (name.compare("magick") == 0)
     {
+      // FIXME: Only CORE_magick, UTIL_animate, UTIL_display, &
+      // UTIL_import should link with X11
       if (useX11Stubs)
-      add_project_dependency(dsw, "CORE_xlib");
+        add_project_dependency(dsw, "CORE_xlib");
       //add_project_dependency(dsw, "CORE_tiff");
       //add_project_dependency(dsw, "CORE_jpeg");
       //add_project_dependency(dsw, "CORE_zlib");

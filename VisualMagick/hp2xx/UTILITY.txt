@@ -1,0 +1,4 @@
+#ECF - this file contains additional configuration info.
+DEFINE = _NO_VCL
+DEFINE = NORINT
+#INCLUDE = sources
