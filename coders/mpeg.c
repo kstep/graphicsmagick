@@ -251,6 +251,7 @@ ModuleExport void RegisterMPEGImage(void)
   entry->decoder=(DecoderHandler) ReadMPEGImage;
   entry->encoder=(EncoderHandler) WriteMPEGImage;
   entry->magick=(MagickHandler) IsMPEG;
+  entry->blob_support=False;
   entry->description=AcquireString("MPEG Video Stream");
   entry->module=AcquireString("MPEG");
   (void) RegisterMagickInfo(entry);
@@ -258,6 +259,7 @@ ModuleExport void RegisterMPEGImage(void)
   entry->decoder=(DecoderHandler) ReadMPEGImage;
   entry->encoder=(EncoderHandler) WriteMPEGImage;
   entry->magick=(MagickHandler) IsMPEG;
+  entry->blob_support=False;
   entry->description=AcquireString("MPEG Video Stream");
   entry->module=AcquireString("MPEG");
   (void) RegisterMagickInfo(entry);
@@ -265,6 +267,7 @@ ModuleExport void RegisterMPEGImage(void)
   entry->decoder=(DecoderHandler) ReadMPEGImage;
   entry->encoder=(EncoderHandler) WriteMPEGImage;
   entry->magick=(MagickHandler) IsMPEG;
+  entry->blob_support=False;
   entry->description=AcquireString("MPEG Video Stream");
   entry->module=AcquireString("MPEG");
   (void) RegisterMagickInfo(entry);
@@ -567,7 +570,7 @@ static unsigned int WriteMPEGImage(const ImageInfo *image_info,Image *image)
   assert(image_info->signature == MagickSignature);
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  logging=LogMagickEvent(CoderEvent,GetMagickModule(),"enter WriteMPEGImage()");
+  logging=LogMagickEvent(CoderEvent,GetMagickModule(),"enter");
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
     ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
@@ -659,12 +662,13 @@ static unsigned int WriteMPEGImage(const ImageInfo *image_info,Image *image)
       if (logging)
         {
           if (status)
-            (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  %lu. Wrote YUV file for scene %lu:",i,
-              p->scene);
+            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+              "%lu. Wrote YUV file for scene %lu:",i,p->scene);
           else
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-              "  %lu. Failed to write YUV file for scene %lu:",i,p->scene);
-          (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  %.1024s",filename);
+              "%lu. Failed to write YUV file for scene %lu:",i,p->scene);
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),"%.1024s",
+            filename);
         }
     }
     p->scene=scene;
@@ -703,6 +707,6 @@ static unsigned int WriteMPEGImage(const ImageInfo *image_info,Image *image)
   if (coalesce_image != image)
     DestroyImage(coalesce_image);
   if (logging)
-    (void) LogMagickEvent(CoderEvent,GetMagickModule(),"exit WriteMPEGImage()");
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),"exit");
   return(status);
 }
