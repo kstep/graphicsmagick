@@ -968,8 +968,8 @@ MagickExport unsigned int GetExecutionPath(char *path)
     const char
       *execution_path;
 
-    execution_path=getexecname();
-    if (execution_path != (char *) NULL)
+    execution_path=(const char *) getexecname();
+    if (execution_path != (const char *) NULL)
       {
         if (*execution_path != *DirectorySeparator)
           {
