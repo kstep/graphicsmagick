@@ -487,6 +487,17 @@ AC_CHECK_LIB(m,sqrt,LIB_MATH="-lm",,)
 LIBS="$LIB_MATH $LIBS"
 
 #
+# Find Posix threads library
+#
+LIB_THREAD=''
+AC_CHECK_LIB(pthread,pthread_attr_init,
+  [AC_DEFINE(HasPTHREADS)
+   LIB_THREAD="-lpthread"
+   DEF_THREAD="-D_REENTRANT"],,)
+LIBS="$LIB_THREAD $LIBS"
+CPPFLAGS="$DEF_THREAD $CPPFLAGS"
+
+#
 # Check for Sfio
 #
 have_sfio='no'

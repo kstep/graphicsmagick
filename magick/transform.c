@@ -472,12 +472,10 @@ Export Image *CropImage(Image *image,const RectangleInfo *crop_info)
     q=SetPixelCache(crop_image,0,y,crop_image->columns,1);
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
-    for (x=0; x < (int) crop_image->columns; x++)
-    {
-      if (image->class == PseudoClass)
-        crop_image->indexes[x]=image->indexes[x];
-      *q++=(*p++);
-    }
+    if (image->class == PseudoClass)
+      (void) memcpy(crop_image->indexes,image->indexes,
+        crop_image->columns*sizeof(IndexPacket));
+    (void) memcpy(q,p,crop_image->columns*sizeof(PixelPacket));
     if (!SyncPixelCache(crop_image))
       break;
     if (QuantumTick(y,crop_image->rows))

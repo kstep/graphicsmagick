@@ -467,8 +467,7 @@ static unsigned char *DecodeImage(const ImageInfo *image_info,Image *image,
         number_pixels=bytes_per_line;
         (void) ReadBlob(image,number_pixels,(char *) scanline);
         p=ExpandBuffer(scanline,&number_pixels,bits_per_pixel);
-        for (x=0; x < number_pixels; x++)
-          *q++=(*p++);
+        (void) memcpy(q,p,number_pixels*sizeof(unsigned char));
       }
       FreeMemory(scanline);
       return(pixels);
@@ -490,8 +489,8 @@ static unsigned char *DecodeImage(const ImageInfo *image_info,Image *image,
           length=(scanline[x] & 0xff)+1;
           number_pixels=length*bytes_per_pixel;
           p=ExpandBuffer(scanline+x+1,&number_pixels,bits_per_pixel);
-          for (i=0; i < number_pixels; i++)
-            *q++=(*p++);
+          (void) memcpy(q,p,number_pixels*sizeof(unsigned char));
+          q+=number_pixels;
           x+=length*bytes_per_pixel+1;
         }
       else
@@ -501,9 +500,8 @@ static unsigned char *DecodeImage(const ImageInfo *image_info,Image *image,
           p=ExpandBuffer(scanline+x+1,&number_pixels,bits_per_pixel);
           for (i=0; i < length; i++)
           {
-            for (j=0; j < number_pixels; j++)
-              *q++=(*p++);
-            p-=number_pixels;
+            (void) memcpy(q,p,number_pixels*sizeof(unsigned char));
+            q+=number_pixels;
           }
           x+=bytes_per_pixel+1;
         }

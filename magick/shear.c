@@ -139,11 +139,10 @@ static Image *IntegralRotateImage(Image *image,unsigned int rotations)
         q=SetPixelCache(rotate_image,0,y,rotate_image->columns,1);
         if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
           break;
-        for (x=0; x < (int) image->columns; x++)
-          *q++=(*p++);
         if (image->class == PseudoClass)
-          for (x=0; x < (int) image->columns; x++)
-            rotate_image->indexes[x]=image->indexes[x];
+          (void) memcpy(rotate_image->indexes,image->indexes,
+            image->columns*sizeof(IndexPacket));
+        (void) memcpy(q,p,image->columns*sizeof(PixelPacket));
         if (!SyncPixelCache(rotate_image))
           break;
         if (QuantumTick(y,image->rows))
@@ -162,11 +161,10 @@ static Image *IntegralRotateImage(Image *image,unsigned int rotations)
         q=SetPixelCache(rotate_image,image->rows-y-1,0,1,rotate_image->rows);
         if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
           break;
-        for (x=0; x < (int) image->columns; x++)
-          *q++=(*p++);
         if (image->class == PseudoClass)
-          for (x=0; x < (int) image->columns; x++)
-            rotate_image->indexes[x]=image->indexes[x];
+          (void) memcpy(rotate_image->indexes,image->indexes,
+            image->columns*sizeof(IndexPacket));
+        (void) memcpy(q,p,image->columns*sizeof(PixelPacket));
         if (!SyncPixelCache(rotate_image))
           break;
         if (QuantumTick(y,image->rows))
@@ -322,11 +320,11 @@ static void XShearImage(Image *image,const double degrees,
               break;
             p+=x_offset;
             q=p-step;
-            for (i=0; i < (int) width; i++)
-              *q++=(*p++);
+            (void) memcpy(q,p,width*sizeof(PixelPacket));
             /*
               Set old row to border color.
             */
+            q+=width;
             for (i=0; i < (int) step; i++)
               *q++=image->border_color;
             break;
@@ -554,11 +552,11 @@ static void YShearImage(Image *image,const double degrees,
               break;
             p+=y_offset;
             q=p-step;
-            for (i=0; i < (int) height; i++)
-              *q++=(*p++);
+            (void) memcpy(q,p,height*sizeof(PixelPacket));
             /*
               Set old column to border color.
             */
+            q+=height;
             for (i=0; i < (int) step; i++)
               *q++=image->border_color;
             break;

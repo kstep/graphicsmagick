@@ -2282,9 +2282,8 @@ Export void Strip(char *data)
     q--;
   count=q-p+1;
   q=data;
-  for (i=0; i < count; i++)
-    *q++=(*p++);
-  *q='\0';
+  (void) memcpy(q,p,count);
+  *(q+count)='\0';
 }
 
 /*

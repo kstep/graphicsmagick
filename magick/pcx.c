@@ -539,8 +539,7 @@ Export Image *ReadPCXImage(const ImageInfo *image_info)
             }
             case 8:
             {
-              for (x=0; x < (int) image->columns; x++)
-                *r++=(*p++);
+              (void) memcpy(r,p,image->columns*sizeof(unsigned char));
               break;
             }
             default:

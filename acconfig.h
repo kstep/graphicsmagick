@@ -48,6 +48,9 @@
 /* Define if the X Window System is missing or not being used.  */
 #undef X_DISPLAY_MISSING
 
+/* Define if you have Posix thread methods.  */
+#undef HasPTHREADS
+
 /* Define if you have X11 library */
 #undef HasX11
 

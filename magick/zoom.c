@@ -702,13 +702,10 @@ Export Image *SampleImage(Image *image,const unsigned int columns,
       /*
         Preload first scanline.
       */
-      s=scanline;
-      for (x=0; x < (int) image->columns; x++)
-      {
-        if (image->class == PseudoClass)
-          indexes[x]=image->indexes[x];
-        *s++=(*p++);
-      }
+      if (image->class == PseudoClass)
+        (void) memcpy(indexes,image->indexes,
+          image->columns*sizeof(IndexPacket));
+      (void) memcpy(scanline,p,image->columns*sizeof(PixelPacket));
     }
   /*
     Sample each row.
@@ -727,13 +724,10 @@ Export Image *SampleImage(Image *image,const unsigned int columns,
       p=GetPixelCache(image,0,j++,image->columns,1);
       if (p == (PixelPacket *) NULL)
         break;
-      s=scanline;
-      for (x=0; x < (int) image->columns; x++)
-      {
-        if (image->class == PseudoClass)
-          indexes[x]=image->indexes[x];
-        *s++=(*p++);
-      }
+      if (image->class == PseudoClass)
+        (void) memcpy(indexes,image->indexes,
+          image->columns*sizeof(IndexPacket));
+      (void) memcpy(scanline,p,image->columns*sizeof(PixelPacket));
     }
     /*
       Sample each column.

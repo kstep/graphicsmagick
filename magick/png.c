@@ -2059,8 +2059,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
             }
             case 8:
             {
-              for (x=0; x < (int) image->columns; x++)
-                *r++=(*p++);
+              memcpy(r,p,image->columns*sizeof(Quantum));
               break;
             }
             case 16:
@@ -2071,7 +2070,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
                 *r=((*p++) << 8);
                 *r++|=(*p++);
 #else
-                image->indexes[x]=(unsigned short) (((*p) << 8)|(*(p+1)));
+                image->indexes[x]=(unsigned short) (((*p) << 8) | (*(p+1)));
                 *r++=(*p++);
                 p++;
 #endif
@@ -2554,10 +2553,7 @@ static void PNGShort(png_bytep p,png_uint_16 value)
 
 static void PNGType(png_bytep p,png_bytep type)
 {
-  *p++=(*type++);
-  *p++=(*type++);
-  *p++=(*type++);
-  *p++=(*type++);
+  (void) memcpy(p,type,4*sizeof(png_byte));
 }
 
 static void WriteTextChunk(const ImageInfo *image_info,png_info *ping_info,

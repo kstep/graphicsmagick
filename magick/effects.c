@@ -265,7 +265,8 @@ Export Image *BlurImage(Image *image,const double factor)
       p++;
       q++;
     }
-    *q++=(*++p);
+    p++;
+    *q++=(*p);
     if (!SyncPixelCache(blur_image))
       break;
     if (QuantumTick(y,image->rows))
@@ -714,7 +715,8 @@ Export Image *EdgeImage(Image *image,const double factor)
       p++;
       q++;
     }
-    *q++=(*++p);
+    p++;
+    *q++=(*p);
     if (!SyncPixelCache(edge_image))
       break;
     if (QuantumTick(y,image->rows))
@@ -847,7 +849,8 @@ Export Image *EmbossImage(Image *image)
       p++;
       q++;
     }
-    *q++=(*++p);
+    p++;
+    *q++=(*p);
     if (!SyncPixelCache(emboss_image))
       break;
     if (QuantumTick(y,image->rows))
@@ -1034,8 +1037,10 @@ Export Image *EnhanceImage(Image *image)
       q->opacity=(p+2*image->columns)->opacity;
       q++;
     }
-    *q++=(*++p);
-    *q++=(*++p);
+    p++;
+    *q++=(*p);
+    p++;
+    *q++=(*p);
     if (!SyncPixelCache(enhance_image))
       break;
     if (QuantumTick(y,image->rows))
@@ -1305,15 +1310,15 @@ Export Image *MedianFilterImage(Image *image,const unsigned int radius)
       for (i=0; i < (int) radius; i++)
       {
         s=p-(radius-i)*image->columns-i-1;
-        for (j=0; j < (2*i+1); j++)
-          *t++=(*s++);
+        (void) memcpy(t,s,(2*i+1)*sizeof(PixelPacket));
+        t+=2*i+1;
         s=p+(radius-i)*image->columns-i-1;
-        for (j=0; j < (2*i+1); j++)
-          *t++=(*s++);
+        (void) memcpy(t,s,(2*i+1)*sizeof(PixelPacket));
+        t+=2*i+1;
       }
       s=p-radius;
-      for (j=0; j < (int) (radius+radius+1); j++)
-        *t++=(*s++);
+      (void) memcpy(t,s,(radius+radius+1)*sizeof(PixelPacket));
+      t+=radius+radius+1;
       qsort((void *) neighbors,t-neighbors,sizeof(PixelPacket),
         (int (*)(const void *, const void *)) MedianCompare);
       t-=(t-neighbors)/2;
@@ -1997,7 +2002,8 @@ Export Image *ReduceNoiseImage(Image *image)
       p++;
       q++;
     }
-    *q++=(*++p);
+    p++;
+    *q++=(*p);
     if (!SyncPixelCache(image))
       break;
     if (QuantumTick(y,image->rows))
@@ -2343,7 +2349,8 @@ Export Image *SharpenImage(Image *image,const double factor)
       p++;
       q++;
     }
-    *q++=(*++p);
+    p++;
+    *q++=(*p);
     if (!SyncPixelCache(sharpen_image))
       break;
     if (QuantumTick(y,image->rows-1))

@@ -677,8 +677,7 @@ Export Image *ReadTIFFImage(const ImageInfo *image_info)
             }
             case 8:
             {
-              for (x=0; x < (int) width; x++)
-                *r++=(*p++);
+              (void) memcpy(r,p,width);
               break;
             }
             case 16:
@@ -1034,9 +1033,6 @@ static int TIFFWritePixels(TIFF *tiff,tdata_t scanline,uint32 row,
     for (j=0; j < (int) ((row % image->tile_info.height)+1); j++)
       for (k=0; k < tile_width; k++)
       {
-        register int
-          l;
-
         register unsigned char
           *p,
           *q;
@@ -1045,8 +1041,7 @@ static int TIFFWritePixels(TIFF *tiff,tdata_t scanline,uint32 row,
           bytes_per_pixel);
         q=tile_pixels+
           (j*(TIFFTileSize(tiff)/image->tile_info.height)+k*bytes_per_pixel);
-        for (l=0; l < bytes_per_pixel; l++)
-          *q++=(*p++);
+        (void) memcpy(q,p,bytes_per_pixel);
       }
       status=TIFFWriteTile(tiff,tile_pixels,i*image->tile_info.width,(row/
         image->tile_info.height)*image->tile_info.height,0,sample);

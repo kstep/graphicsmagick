@@ -318,11 +318,9 @@ static unsigned int DecodeImage(Image *image,const short int opacity)
           q=SetPixelCache(image,0,y,image->columns,1);
           if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
             break;
-          for (x=0; x < (int) image->columns; x++)
-          {
-            image->indexes[x]=interlace_image->indexes[x];
-            *q++=(*p++);
-          }
+          (void) memcpy(image->indexes,interlace_image->indexes,
+            image->columns*sizeof(IndexPacket));
+          (void) memcpy(q,p,image->columns*sizeof(PixelPacket));
           if (!SyncPixelCache(image))
             break;
           i++;
@@ -1297,11 +1295,9 @@ Export unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
             q=SetPixelCache(interlace_image,0,i,interlace_image->columns,1);
             if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
               break;
-            for (x=0; x < (int) image->columns; x++)
-            {
-              interlace_image->indexes[x]=image->indexes[x];
-              *q++=(*p++);
-            }
+            (void) memcpy(interlace_image->indexes,image->indexes,
+              image->columns*sizeof(IndexPacket));
+            (void) memcpy(q,p,image->columns*sizeof(PixelPacket));
             if (!SyncPixelCache(interlace_image))
               break;
             i++;
