@@ -474,7 +474,6 @@ static unsigned int SyncPixelStream(Image *image)
 %
 %  A description of each parameter follows:
 %
-%
 %    o status: Method StreamImage returns True if the image pixels are
 %      streamed to the user supplied callback method otherwise False.
 %
@@ -487,7 +486,7 @@ static unsigned int SyncPixelStream(Image *image)
 %
 */
 MagickExport unsigned int StreamImage(const ImageInfo *image_info,
-  void (*fifo)(const Image *),ExceptionInfo *exception)
+  void (*fifo)(Image *),ExceptionInfo *exception)
 {
   Image
     *image;

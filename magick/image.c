@@ -205,7 +205,7 @@ MagickExport Image *AllocateImage(const ImageInfo *image_info)
   GetExceptionInfo(&allocate_image->exception);
   GetTimerInfo(&allocate_image->timer);
   allocate_image->cache=(void *) NULL;
-  allocate_image->fifo=(void (*)(const Image *)) NULL;
+  allocate_image->fifo=(void (*)(Image *)) NULL;
   allocate_image->orphan=False;
   allocate_image->previous=(Image *) NULL;
   allocate_image->list=(Image *) NULL;
@@ -2526,7 +2526,7 @@ MagickExport void GetImageInfo(ImageInfo *image_info)
   image_info->view=(char *) NULL;
   image_info->group=0L;
   image_info->ping=False;
-  image_info->fifo=(void (*)(const Image *)) NULL;
+  image_info->fifo=(void (*)(Image *)) NULL;
 }
 
 /*

@@ -253,75 +253,65 @@ MagickExport char *BaseFilename(const char *name)
 %
 */
 
-typedef struct _html_code
+static int HTMLtoASCII(char *message,int length)
 {
-  short
-    len;
-  const char
-    *code,
-    val;
-} html_code;
+  typedef struct _HTMLInfo
+  {
+    short
+      length;
 
-static html_code html_codes[] = {
-  4,"&lt;",'<',
-  4,"&gt;",'>',
-  5,"&amp;",'&',
-  6,"&quot;",'"'
-};
+    const char
+      *code,
+      value;
+  } HTMLInfo;
 
-/*
-  This routine converts HTML escape sequences back to the
-  original ASCII representation and returns the number of
-  characters dropped.
-*/
-static int convertHTMLcodes(char *s, int len)
-{
-  if (len <=0 || s==(char*)NULL || *s=='\0')
-    return 0;
+  int
+    value;
 
-  if (s[1] == '#')
+  register int
+    i;
+
+  static HTMLInfo
+    codes[] =
     {
-      int val, o;
+      4, "&lt;", '<',
+      4, "&gt;", '>',
+      5, "&amp;", '&',
+      6, "&quot;", '"'
+    };
 
-      if (sscanf(s,"&#%d;",&val) == 1)
+  if ((length <= 0) || (message == (char *) NULL) || (*message == '\0'))
+    return(0);
+  if ((message[1] == '#') && (sscanf(message,"&#%d;",&value) == 1))
+    {
+      for (i=3; message[i] != ';'; )
       {
-        o = 3;
-        while (s[o] != ';')
+        i++;
+        if (i > 5)
+          break;
+      }
+      if (i < 6)
+        (void) strcpy(message+1,message+i+1);
+      *message=value;
+      return(i);
+    }
+  for (i=0; i < (sizeof(codes)/sizeof(HTMLInfo)); i++)
+  {
+    if (codes[i].length <= length)
+      if (LocaleNCompare(message,codes[i].code,codes[i].length) == 0)
         {
-          o++;
-          if (o > 5)
-            break;
+          strcpy(message+1,message+codes[i].length);
+          *message=codes[i].value;
+          return(codes[i].length-1);
         }
-        if (o < 6)
-          strcpy(s+1, s+1+o);
-        *s = val;
-        return o;
-      }
-    }
-  else
-    {
-      int
-        i,
-        codes = sizeof(html_codes) / sizeof(html_code);
-
-      for (i=0; i < codes; i++)
-      {
-        if (html_codes[i].len <= len)
-          if (LocaleNCompare(s,html_codes[i].code,html_codes[i].len) == 0)
-            {
-              strcpy(s+1, s+html_codes[i].len);
-              *s = html_codes[i].val;
-              return html_codes[i].len-1;
-            }
-      }
-    }
-  return 0;
+  }
+  return(0);
 }
-
-#define IsCGIDelimiter(c)  ((c) == '&')
 
 MagickExport unsigned int CGIToArgv(const char *text,int *argc,char ***argv)
 {
+#define IsCGIDelimiter(c)  ((c) == '&')
+
   char
     **vector;
 
@@ -380,9 +370,9 @@ MagickExport unsigned int CGIToArgv(const char *text,int *argc,char ***argv)
     (void) strncpy(vector[i],p,q-p);
     vector[i][q-p]='\0';
     /*
-      Convert any special HTML codes in place back to ASCII
+      Convert any special HTML codes to ASCII.
     */
-    convertHTMLcodes(vector[i], q-p);
+    HTMLtoASCII(vector[i],q-p);
     q++;
   }
   vector[i]=(char *) NULL;
@@ -570,7 +560,7 @@ MagickExport unsigned short *ConvertTextToUnicode(const char *text,int *count)
   if ((text == (char *) NULL) || (*text == '\0'))
     return((unsigned short *) NULL);
   unicode=(unsigned short *)
-    AllocateMemory((strlen(text)+1)*sizeof(unsigned short));
+    AllocateMemory((Extent(text)+1)*sizeof(unsigned short));
   if (unicode == (unsigned short *) NULL)
     MagickError(ResourceLimitError,"Unable to convert text to Unicode",
       "Memory allocation failed");

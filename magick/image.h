@@ -444,7 +444,7 @@ typedef struct _Image
     *cache;
 
   void
-    (*fifo)(const struct _Image *);
+    (*fifo)(struct _Image *);
 
   unsigned int
     orphan;
@@ -602,7 +602,7 @@ typedef struct _ImageInfo
     ping;
 
   void
-    (*fifo)(const Image *);
+    (*fifo)(Image *);
 } ImageInfo;
 
 typedef struct _MagickInfo
@@ -795,7 +795,7 @@ extern MagickExport unsigned int
   SetImageInfo(ImageInfo *,const unsigned int),
   SignatureImage(Image *),
   SortColormapByIntensity(Image *),
-  StreamImage(const ImageInfo *,void (*)(const Image *),ExceptionInfo *),
+  StreamImage(const ImageInfo *,void (*)(Image *),ExceptionInfo *),
   (*SyncImagePixels)(Image *),
   ThresholdImage(Image *,const double),
   TransformRGBImage(Image *,const ColorspaceType),
