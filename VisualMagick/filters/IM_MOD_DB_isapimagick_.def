@@ -1,7 +1,0 @@
-LIBRARY	     IM_MOD_DB_isapimagick_
-
-DESCRIPTION  'ImageMagick Extension DLL'
-
-EXPORTS
-    GetExtensionVersion
-    HttpExtensionProc
