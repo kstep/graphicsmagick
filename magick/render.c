@@ -2033,8 +2033,7 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
                 graphic_context[n]->decorate=LineThroughDecoration;
                 break;
               }
-            (void) QueryColorDatabase(token,&graphic_context[n]->box,
-              &image->exception);
+            status=False;
             break;
           }
         status=False;
@@ -2836,6 +2835,13 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
           {
             GetToken(q,&q,token);
             graphic_context[n]->text_antialias=atoi(token);
+            break;
+          }
+        if (LocaleCompare("text-underbox",keyword) == 0)
+          {
+            GetToken(q,&q,token);
+            (void) QueryColorDatabase(token,&graphic_context[n]->box,
+              &image->exception);
             break;
           }
         if (LocaleCompare("translate",keyword) == 0)
