@@ -2068,42 +2068,58 @@ static int wandObjCmd(
 	break;
     }
 
-    case TM_FX:         /* fx expr */
-    case TM_FX_IMAGE:   /* fxImage expr */
+    case TM_FX:         /* fx expr ?newName? */
+    case TM_FX_IMAGE:   /* fxImage expr ?newName? */
     {
-        char	    *expr;
+        char	   *expr;
+	MagickWand *newWand;
+	char       *name=NULL;
 
-	if( objc != 3 ) {
-	    Tcl_WrongNumArgs(interp, 2, objv, "expr");
+	if( (objc != 3) && (objc != 4) ) {
+	    Tcl_WrongNumArgs(interp, 2, objv, "expr ?newName?");
 	    return TCL_ERROR;
 	}
 	expr = Tcl_GetString(objv[2]);
-	result = MagickFxImage(wandPtr, expr);
-	if (!result) {
+
+	if( objc > 3 ) {
+	    name = Tcl_GetString(objv[3]);
+	}
+	newWand = MagickFxImage(wandPtr, expr);
+	if (newWand == NULL) {
 	    return myMagickError(interp, wandPtr);
 	}
+	name = newWandObj(interp, newWand, name);
+	Tcl_SetResult(interp, name, TCL_VOLATILE);
 
 	break;
     }
 
-    case TM_FX_CHANNEL:         /* fxchannel channelType expr */
-    case TM_FX_IMAGE_CHANNEL:   /* fxImageChannel channelType expr */
+    case TM_FX_CHANNEL:         /* fxchannel channelType expr ?newName? */
+    case TM_FX_IMAGE_CHANNEL:   /* fxImageChannel channelType expr ?newName? */
     {
-	int         chanIdx;
-        char	    *expr;
+	int        chanIdx;
+        char       *expr;
+	MagickWand *newWand;
+	char       *name=NULL;
 
-	if( objc != 4 ) {
-	    Tcl_WrongNumArgs(interp, 2, objv, "channelType expr");
+	if( (objc != 4) && (objc != 5) ) {
+	    Tcl_WrongNumArgs(interp, 2, objv, "channelType expr ?newName?");
 	    return TCL_ERROR;
 	}
 	if (Tcl_GetIndexFromObj(interp, objv[2], chanNames, "channelType", 0, &chanIdx) != TCL_OK) {
 	    return TCL_ERROR;
 	}
 	expr = Tcl_GetString(objv[3]);
-	result = MagickFxImageChannel(wandPtr, chanTypes[chanIdx], expr);
-	if (!result) {
+
+	if( objc > 4 ) {
+	    name = Tcl_GetString(objv[4]);
+	}
+	newWand = MagickFxImageChannel(wandPtr, chanTypes[chanIdx], expr);
+	if (newWand == NULL) {
 	    return myMagickError(interp, wandPtr);
 	}
+	name = newWandObj(interp, newWand, name);
+	Tcl_SetResult(interp, name, TCL_VOLATILE);
 
 	break;
     }

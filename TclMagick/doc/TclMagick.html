@@ -7,13 +7,29 @@
 </head>
 
 <body>
-<h1>Tcl interface to ImageMagick & GraphicsMagick using the new high-level Wand interface</h1>
-     <a href="http://www.imagemagick.org" target="http://www.imagemagick.org">http://www.imagemagick.org</a><br>
-     <a href="http://www.graphicsmagick.org" target="http://www.graphicsmagick.org">http://www.graphicsmagick.org</a>
-     <h2>General design:</h2>
+<h1>A Tcl interface to ImageMagick & GraphicsMagick</h1>
+<p>TclMagick is a one-to-one wrapper of ImageMagick's new high-level Wand interface.
+</p>
+<a href="http://www.imagemagick.org" target="http://www.imagemagick.org">http://www.imagemagick.org</a><br>
+<a href="http://www.graphicsmagick.org" target="http://www.graphicsmagick.org">http://www.graphicsmagick.org</a>
+
+<p>
+TclMagick doesn't add any intelligence to ImageMagick,
+except some Tcl'ification with optional command arguments.
+The wrapping of ImageMagick's Wand-API's should be almost obvious,
+so there is no need for an extensive separate TclMagick documentation.
+For a more detailed description of methods refer to the
+<a href="http://www.imagemagick.org/www/api.html" target="http://www.imagemagick.org/www/api.html">Wand-API documentation</a>.
+</p>
+<p>There are three different ImageMagick object types: MagickWand, DrawingWand and PixelWand.
+In TclMagick these objects are called <i>wand</i>, <i>drawing</i> and <i>pixel</i>.
+They are created and deleted with the <i>magick</i> command similar to Tcl's <i>image</i>command.
+Wand-API methods are then called as subcommands of the created TclMagick object.
+</p>
+<h2>General design:</h2>
 
 <pre>One main command:
-    magick - Create/delete Magick "wand&quot;, &quot;drawing&quot;, &quot;pixel" objects
+    magick - Create/delete Magick &quot;wand&quot;, &quot;drawing&quot;, &quot;pixel&quot; objects
 
 Creating a Magick objects creates a command of the same name
     magickName subcmd ?args?
@@ -814,8 +830,8 @@ MagickClipImage</div></td>
   </tr>
   <tr>
     <td><div align="left"></div>
-        <div align="left">wandname fx expr <br>
-          wandname fxImage expr<br>
+        <div align="left">wandname fx expr ?newName?<br>
+          wandname fxImage expr ?newName?<br>
         </div></td>
     <td><div align="left">MagickFxImage<br>
       MagickFxImage<br>
@@ -824,15 +840,16 @@ MagickClipImage</div></td>
   <tr>
     <td><div align="left">
         <ul>
-          <li> string expr          </li>
+          <li> string expr</li>
+          <li> string newName</li>
         </ul>
     </div></td>
     <td><div align="left"></div></td>
   </tr>
   <tr>
     <td><div align="left"></div>
-        <div align="left">wandname fxchannel channelType expr <br>
-          wandname fxImageChannel channelType expr<br>
+        <div align="left">wandname fxchannel channelType expr ?newName?<br>
+          wandname fxImageChannel channelType expr ?newName?<br>
         </div></td>
     <td><div align="left">MagickFxImageChannel<br>
       MagickFxImageChannel<br>
@@ -842,7 +859,8 @@ MagickClipImage</div></td>
     <td><div align="left">
         <ul>
           <li>string channelType = &quot;undefined&quot;, &quot;red&quot;, &quot;cyan&quot;, &quot;green&quot;, &quot;magenta&quot;, &quot;blue&quot;, &quot;yellow, &quot;opacity, &quot;black, &quot;matte&quot;, &quot;index&quot;</li>
-          <li> string expr          </li>
+          <li> string expr</li>
+          <li> string newName</li>
         </ul>
     </div></td>
     <td><div align="left"></div></td>
