@@ -2039,8 +2039,6 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
     {
       if (!magick_info->thread_support)
         AcquireSemaphoreInfo(&constitute_semaphore);
-      /* it is very bad to clobber the client_data for a specific use */
-      /* clone_info->client_data=magick_info->client_data; */
       image=(magick_info->decoder)(clone_info,exception);
       if (!magick_info->thread_support)
         LiberateSemaphoreInfo(&constitute_semaphore);

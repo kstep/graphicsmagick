@@ -981,7 +981,7 @@ MagickExport Image *MosaicImages(const Image *image,ExceptionInfo *exception)
 %  The format of the ProfileImage method is:
 %
 %      unsigned int ProfileImage(Image *image,const char *name,
-%        const unsigned char *profile,const size_t length)
+%        const unsigned char *profile,const size_t length,unsigned int clone)
 %
 %  A description of each parameter follows:
 %
@@ -996,7 +996,7 @@ MagickExport Image *MosaicImages(const Image *image,ExceptionInfo *exception)
 %
 */
 MagickExport unsigned int ProfileImage(Image *image,const char *name,
-  const unsigned char *profile,const size_t length,int copy)
+  const unsigned char *profile,const size_t length,unsigned int clone)
 {
   register long
     i,
@@ -1048,12 +1048,12 @@ MagickExport unsigned int ProfileImage(Image *image,const char *name,
     {
       if (image->iptc_profile.length != 0)
         LiberateMemory((void **) &image->iptc_profile.info);
-      if (copy)
+      if (clone)
         {
           image->iptc_profile.info=(unsigned char *) AcquireMemory(length);
           if (image->iptc_profile.info == (unsigned char *) NULL)
-            ThrowBinaryException(ResourceLimitWarning,"Unable to add IPTC profile",
-              "Memory allocation failed");
+            ThrowBinaryException(ResourceLimitWarning,
+              "Unable to add IPTC profile","Memory allocation failed");
           image->iptc_profile.length=length;
           (void) memcpy(image->iptc_profile.info,profile,length);
         }
@@ -1184,7 +1184,7 @@ MagickExport unsigned int ProfileImage(Image *image,const char *name,
 #endif
           LiberateMemory((void **) &image->color_profile.info);
         }
-      if (copy)
+      if (clone)
         {
           image->color_profile.info=(unsigned char *) AcquireMemory(length);
           if (image->color_profile.info == (unsigned char *) NULL)
@@ -1221,7 +1221,7 @@ MagickExport unsigned int ProfileImage(Image *image,const char *name,
     }
   if (image->generic_profile[i].length != 0)
     LiberateMemory((void **) &image->generic_profile[i].info);
-  if (copy)
+  if (clone)
     {
       image->generic_profile[i].info=(unsigned char *) AcquireMemory(length);
       if (image->generic_profile[i].info == (unsigned char *) NULL)

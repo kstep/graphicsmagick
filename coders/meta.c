@@ -14,8 +14,8 @@
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %
-%                                John Cristy                                  %
-%                                 July 1992                                   %
+%                             William Radcliffe                               %
+%                                 July 2001                                   %
 %                                                                             %
 %                                                                             %
 %  Copyright (C) 2002 ImageMagick Studio, a non-profit organization dedicated %
@@ -318,21 +318,21 @@ long parse8BIM(Image *ifile, Image *ofile)
 
   dataset = 0;
   recnum = 0;
-  line = (char *) AcquireMemory(inputlen);     
+  line = (char *) AcquireMemory(inputlen);
   name = token = (char *)NULL;
   while(super_fgets(&line,&inputlen,ifile)!=NULL)
   {
     state=0;
     next=0;
 
-    token = (char *) AcquireMemory(inputlen);     
-    newstr = (char *) AcquireMemory(inputlen);     
+    token = (char *) AcquireMemory(inputlen);
+    newstr = (char *) AcquireMemory(inputlen);
     while (Tokenizer(&token_info, 0, token, inputlen, line,
           (char *) "", (char *) "=",
       (char *) "\"", 0, &brkused,&next,&quoted)==0)
     {
       if (state == 0)
-        {                  
+        {
           int
             state,
             next;
@@ -360,7 +360,7 @@ long parse8BIM(Image *ifile, Image *ofile)
               case 2:
                 name = (char *) AcquireMemory(strlen(newstr)+1);
                 if (name)
-                  strcpy(name,newstr);  
+                  strcpy(name,newstr);
                 break;
             }
             state++;
@@ -526,71 +526,71 @@ long parse8BIM(Image *ifile, Image *ofile)
 #define M_APP15 0xef
 
 static int jpeg_transfer_1(Image *ifile, Image *ofile)
-{ 	
-	int c;
+{
+  int c;
 
-	c = ReadBlobByte(ifile);
-	if (c == EOF)
+  c = ReadBlobByte(ifile);
+  if (c == EOF)
     return EOF;
   WriteBlobByte(ofile,c);
-	return c;
+  return c;
 }
 
 static int jpeg_skip_1(Image *ifile)
-{ 	
-	int c;
+{
+  int c;
 
-	c = ReadBlobByte(ifile);
-	if (c == EOF)
+  c = ReadBlobByte(ifile);
+  if (c == EOF)
     return EOF;
-	return c;
+  return c;
 }
 
 static int jpeg_read_remaining(Image *ifile, Image *ofile)
 {
- 	int c;
+   int c;
 
   while ((c = jpeg_transfer_1(ifile, ofile)) != EOF)
     continue;
-	return M_EOI;
+  return M_EOI;
 }
 
 static int jpeg_skip_variable(Image *ifile, Image *ofile)
-{ 
-	unsigned int  length;
-	int c1,c2;
+{
+  unsigned int  length;
+  int c1,c2;
 
   if ((c1 = jpeg_transfer_1(ifile, ofile)) == EOF)
     return M_EOI;
   if ((c2 = jpeg_transfer_1(ifile, ofile)) == EOF)
     return M_EOI;
 
-	length = (((unsigned char) c1) << 8) + ((unsigned char) c2);
-	length -= 2;
+  length = (((unsigned char) c1) << 8) + ((unsigned char) c2);
+  length -= 2;
 
-	while (length--)
-		if (jpeg_transfer_1(ifile, ofile) == EOF)
+  while (length--)
+    if (jpeg_transfer_1(ifile, ofile) == EOF)
       return M_EOI;
 
-	return 0;
+  return 0;
 }
 
 static int jpeg_skip_variable2(Image *ifile, Image *ofile)
-{ 
-	unsigned int  length;
-	int c1,c2;
+{
+  unsigned int  length;
+  int c1,c2;
 
   if ((c1 = ReadBlobByte(ifile)) == EOF) return M_EOI;
   if ((c2 = ReadBlobByte(ifile)) == EOF) return M_EOI;
 
-	length = (((unsigned char) c1) << 8) + ((unsigned char) c2);
-	length -= 2;
+  length = (((unsigned char) c1) << 8) + ((unsigned char) c2);
+  length -= 2;
 
-	while (length--)
-		if (ReadBlobByte(ifile) == EOF)
+  while (length--)
+    if (ReadBlobByte(ifile) == EOF)
       return M_EOI;
 
-	return 0;
+  return 0;
 }
 
 static int jpeg_nextmarker(Image *ifile, Image *ofile)
@@ -601,10 +601,10 @@ static int jpeg_nextmarker(Image *ifile, Image *ofile)
   do
   {
     c = ReadBlobByte(ifile);
-	  if (c == EOF)
+    if (c == EOF)
       return M_EOI; /* we hit EOF */
-	  else
-	    if (c != 0xff)
+    else
+      if (c != 0xff)
         WriteBlobByte(ofile,c);
   } while (c != 0xff);
 
@@ -612,7 +612,7 @@ static int jpeg_nextmarker(Image *ifile, Image *ofile)
   do
   {
     c = ReadBlobByte(ifile);
-	  if (c == EOF)
+    if (c == EOF)
       return M_EOI; /* we hit EOF */
   } while (c == 0xff);
 
@@ -620,7 +620,7 @@ static int jpeg_nextmarker(Image *ifile, Image *ofile)
 }
 
 static int jpeg_skip_till_marker(Image *ifile, int marker)
-{ 
+{
   int c, i;
 
   do
@@ -631,7 +631,7 @@ static int jpeg_skip_till_marker(Image *ifile, int marker)
     {
       c = ReadBlobByte(ifile);
       i++;
-	    if (c == EOF)
+      if (c == EOF)
         return M_EOI; /* we hit EOF */
     } while (c != 0xff);
 
@@ -639,7 +639,7 @@ static int jpeg_skip_till_marker(Image *ifile, int marker)
     do
     {
       c = ReadBlobByte(ifile);
-	    if (c == EOF)
+      if (c == EOF)
         return M_EOI; /* we hit EOF */
     } while (c == 0xff);
   } while (c != marker);
@@ -651,74 +651,74 @@ static char psheader[] = "\xFF\xED\0\0Photoshop 3.0\08BIM\x04\x04\0\0\0\0";
 /* Embed binary IPTC data into a JPEG image. */
 int jpeg_embed(Image *ifile, Image *ofile, Image *iptc)
 {
-	unsigned int marker;
-	unsigned int done = 0;
-	unsigned int len;
+  unsigned int marker;
+  unsigned int done = 0;
+  unsigned int len;
   int inx;
 
-	if (jpeg_transfer_1(ifile, ofile) != 0xFF)
-		return 0;
-	if (jpeg_transfer_1(ifile, ofile) != M_SOI)
-		return 0;
+  if (jpeg_transfer_1(ifile, ofile) != 0xFF)
+    return 0;
+  if (jpeg_transfer_1(ifile, ofile) != M_SOI)
+    return 0;
 
-	while (!done)
+  while (!done)
   {
-		marker = jpeg_nextmarker(ifile, ofile);
-		if (marker == M_EOI)
+    marker = jpeg_nextmarker(ifile, ofile);
+    if (marker == M_EOI)
       { /* EOF */
-			  break;
-		  }
+        break;
+      }
     else
       {
         if (marker != M_APP13)
           {
             WriteBlobByte(ofile,0xff);
             WriteBlobByte(ofile,marker);
-		      }
+          }
       }
 
-		switch (marker)
+    switch (marker)
     {
-			case M_APP13:
-				/* we are going to write a new APP13 marker, so don't output the old one */
-				jpeg_skip_variable2(ifile, ofile);
-				break;
+      case M_APP13:
+        /* we are going to write a new APP13 marker, so don't output the old one */
+        jpeg_skip_variable2(ifile, ofile);
+        break;
 
-			case M_APP0:
-				/* APP0 is in each and every JPEG, so when we hit APP0 we insert our new APP13! */
-				jpeg_skip_variable(ifile, ofile);
+      case M_APP0:
+        /* APP0 is in each and every JPEG, so when we hit APP0 we insert our new APP13! */
+        jpeg_skip_variable(ifile, ofile);
 
         if (iptc != (Image *)NULL)
           {
             //fstat(fileno(iptc),&sb);
-		        //len = sb.st_size;
+            //len = sb.st_size;
             len=GetBlobSize(iptc);
-				    if (len & 1)
+            if (len & 1)
               len++; /* make the length even */
-				    psheader[ 2 ] = (len+16)>>8;
-				    psheader[ 3 ] = (len+16)&0xff;
-				    for (inx = 0; inx < 18; inx++)
+            psheader[ 2 ] = (len+16)>>8;
+            psheader[ 3 ] = (len+16)&0xff;
+            for (inx = 0; inx < 18; inx++)
               WriteBlobByte(ofile,psheader[inx]);
-				    jpeg_read_remaining(iptc, ofile);
-		        //len = sb.st_size;
+            jpeg_read_remaining(iptc, ofile);
+            //len = sb.st_size;
             len=GetBlobSize(iptc);
-				    if (len & 1)
+            if (len & 1)
               WriteBlobByte(ofile,0);
           }
-				break;
+        break;
 
-			case M_SOS:								
-				/* we hit data, no more marker-inserting can be done! */
-				jpeg_read_remaining(ifile, ofile);
-				done = 1;
-				break;
-			
-			default:
-				jpeg_skip_variable(ifile, ofile);
-				break;
-		}
-	}
-	return 1;
+      case M_SOS:
+        /* we hit data, no more marker-inserting can be done! */
+        jpeg_read_remaining(ifile, ofile);
+        done = 1;
+        break;
+
+      default:
+        jpeg_skip_variable(ifile, ofile);
+        break;
+    }
+  }
+  return 1;
 }
 
 /* handle writing iptc info into JPEG */
@@ -741,24 +741,24 @@ void jpeg_strip(Image *ifile, Image *ofile)
 /* Extract any APP13 binary data into a file. */
 int jpeg_extract(Image *ifile, Image *ofile)
 {
-	unsigned int marker;
-	unsigned int done = 0;
+  unsigned int marker;
+  unsigned int done = 0;
 
-	if (jpeg_skip_1(ifile) != 0xff)
-		return 0;
-	if (jpeg_skip_1(ifile) != M_SOI)
-		return 0;
+  if (jpeg_skip_1(ifile) != 0xff)
+    return 0;
+  if (jpeg_skip_1(ifile) != M_SOI)
+    return 0;
 
-	while (!done)
+  while (!done)
   {
-		marker = jpeg_skip_till_marker(ifile, M_APP13);
-		if (marker == M_APP13)
+    marker = jpeg_skip_till_marker(ifile, M_APP13);
+    if (marker == M_APP13)
       {
         marker = jpeg_nextmarker(ifile, ofile);
-			  break;
-		  }
-	}
-	return 1;
+        break;
+      }
+  }
+  return 1;
 }
 
 static Image *ReadMETAImage(const ImageInfo *image_info,
@@ -767,13 +767,13 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
   Image
     *buff,
     *image;
-    
+
   int
     c;
 
   size_t
     length;
-    
+
   unsigned int
     status;
 
@@ -1175,7 +1175,7 @@ static long GetIPTCStream(unsigned char **info,unsigned long length)
     c=(*p++);
     length--;
     if (length == 0)
-      break; 
+      break;
     if (c == 0x1c)
       {
         p--;
@@ -1191,12 +1191,12 @@ static long GetIPTCStream(unsigned char **info,unsigned long length)
     c=(*p++);
     length--;
     if (length == 0)
-      break; 
+      break;
     if (c == 0x1c)
       marker=True;
     else
       if (marker)
-        break; 
+        break;
       else
         continue;
     info_length++;
@@ -1206,12 +1206,12 @@ static long GetIPTCStream(unsigned char **info,unsigned long length)
     p++; /* dataset */
     length--;
     if (length == 0)
-      break; 
+      break;
     info_length++;
     p++; /* record number */
     length--;
     if (length == 0)
-      break; 
+      break;
     info_length++;
     /*
       Decode the length of the block that follows - long or short format.
@@ -1219,7 +1219,7 @@ static long GetIPTCStream(unsigned char **info,unsigned long length)
     c=(*p++);
     length--;
     if (length == 0)
-      break; 
+      break;
     info_length++;
     if (c & (unsigned char) 0x80)
       {
@@ -1228,7 +1228,7 @@ static long GetIPTCStream(unsigned char **info,unsigned long length)
           buffer[i]=(*p++);
           length--;
           if (length == 0)
-            break; 
+            break;
           info_length++;
         }
         tag_length=(((long) buffer[0]) << 24) | (((long) buffer[1]) << 16) |
@@ -1240,7 +1240,7 @@ static long GetIPTCStream(unsigned char **info,unsigned long length)
         c=(*p++);
         length--;
         if (length == 0)
-          break; 
+          break;
         info_length++;
         tag_length|=(long) c;
       }
@@ -1249,8 +1249,8 @@ static long GetIPTCStream(unsigned char **info,unsigned long length)
     p+=tag_length;
     length-=tag_length;
     if (length == 0)
-      break; 
-    info_length+=tag_length;  
+      break;
+    info_length+=tag_length;
   }
   return(info_length);
 }
@@ -1398,22 +1398,22 @@ int formatIPTC(Image *ifile, Image *ofile)
   c = ReadBlobByte(ifile);
   while (c != EOF)
   {
-	  if (c == 0x1c)
-	    foundiptc = 1;
-	  else
+    if (c == 0x1c)
+      foundiptc = 1;
+    else
       {
         if (foundiptc)
-	        return -1;
+          return -1;
         else
-	        continue;
-	    }
+          continue;
+      }
 
     /* we found the 0x1c tag and now grab the dataset and record number tags */
     c = ReadBlobByte(ifile);
-	  if (c == EOF) return -1;
+    if (c == EOF) return -1;
     dataset = c;
     c = ReadBlobByte(ifile);
-	  if (c == EOF) return -1;
+    if (c == EOF) return -1;
     recnum = c;
     /* try to match this record to one of the ones in our named table */
     for (i=0; i< tagcount; i++)
@@ -1428,8 +1428,8 @@ int formatIPTC(Image *ifile, Image *ofile)
 
     /* then we decode the length of the block that follows - long or short fmt */
     c=ReadBlobByte(ifile);
-	  if (c == EOF) return -1;
-	  if (c & (unsigned char) 0x80)
+    if (c == EOF) return -1;
+    if (c & (unsigned char) 0x80)
       {
         printf("Unable to read block longer then 32k");
         return 0;
@@ -1442,7 +1442,7 @@ int formatIPTC(Image *ifile, Image *ofile)
         c0=ReadBlobByte(ifile);
         if (c0 == EOF) return -1;
         taglen = (c << 8) | c0;
-	    }
+      }
     if (taglen < 0) return -1;
     /* make a buffer to hold the tag data and snag it from the input stream */
     str=(unsigned char *) AcquireMemory((unsigned int) (taglen+1));
@@ -1461,14 +1461,14 @@ int formatIPTC(Image *ifile, Image *ofile)
 
     /* now finish up by formatting this binary data into ASCII equivalent */
     if (strlen((char *)readable) > 0)
-	    FormatString(temp, "%d#%d#%s=",(unsigned int)dataset, (unsigned int) recnum, readable);
+      FormatString(temp, "%d#%d#%s=",(unsigned int)dataset, (unsigned int) recnum, readable);
     else
-	    FormatString(temp, "%d#%d=",(unsigned int)dataset, (unsigned int) recnum);
+      FormatString(temp, "%d#%d=",(unsigned int)dataset, (unsigned int) recnum);
     WriteBlobString(ofile,temp);
     formatString( ofile, (char *)str, taglen );
     LiberateMemory((void **) &str);
 
-	  tagsfound++;
+    tagsfound++;
 
     c=ReadBlobByte(ifile);
   }
@@ -1528,22 +1528,22 @@ int formatIPTCfromBuffer(Image *ofile, char *s, long len)
   while (len > 0)
   {
     c = *s++; len--;
-	  if (c == 0x1c)
-	    foundiptc = 1;
-	  else
+    if (c == 0x1c)
+      foundiptc = 1;
+    else
       {
         if (foundiptc)
-	        return -1;
+          return -1;
         else
-	        continue;
-	    }
+          continue;
+      }
 
     /* we found the 0x1c tag and now grab the dataset and record number tags */
     c = *s++; len--;
-	  if (len < 0) return -1;
+    if (len < 0) return -1;
     dataset = c;
     c = *s++; len--;
-	  if (len < 0) return -1;
+    if (len < 0) return -1;
     recnum = c;
     /* try to match this record to one of the ones in our named table */
     for (i=0; i< tagcount; i++)
@@ -1558,8 +1558,8 @@ int formatIPTCfromBuffer(Image *ofile, char *s, long len)
 
     /* then we decode the length of the block that follows - long or short fmt */
     c = *s++; len--;
-	  if (len < 0) return -1;
-	  if (c & (unsigned char) 0x80)
+    if (len < 0) return -1;
+    if (c & (unsigned char) 0x80)
       {
         printf("Unable to read block longer then 32k");
         return 0;
@@ -1568,7 +1568,7 @@ int formatIPTCfromBuffer(Image *ofile, char *s, long len)
       {
         s--; len++;
         taglen = readWordFromBuffer(&s, &len);
-	    }
+      }
     if (taglen < 0) return -1;
     /* make a buffer to hold the tag data and snag it from the input stream */
     str=(unsigned char *) AcquireMemory((unsigned int) (taglen+1));
@@ -1587,14 +1587,14 @@ int formatIPTCfromBuffer(Image *ofile, char *s, long len)
 
     /* now finish up by formatting this binary data into ASCII equivalent */
     if (strlen((char *)readable) > 0)
-	    FormatString(temp, "%d#%d#%s=",(unsigned int)dataset, (unsigned int) recnum, readable);
+      FormatString(temp, "%d#%d#%s=",(unsigned int)dataset, (unsigned int) recnum, readable);
     else
-	    FormatString(temp, "%d#%d=",(unsigned int)dataset, (unsigned int) recnum);
+      FormatString(temp, "%d#%d=",(unsigned int)dataset, (unsigned int) recnum);
     WriteBlobString(ofile,temp);
     formatString( ofile, (char *)str, taglen );
     LiberateMemory((void **) &str);
 
-	  tagsfound++;
+    tagsfound++;
   }
   return tagsfound;
 }
@@ -1625,7 +1625,7 @@ int format8BIM(Image *ifile, Image *ofile)
   c =ReadBlobByte(ifile);
   while (c != EOF)
   {
-	  if (c == '8')
+    if (c == '8')
       {
         unsigned char
           buffer[5];
@@ -1642,11 +1642,11 @@ int format8BIM(Image *ifile, Image *ofile)
           foundOSType = 1;
         else
           continue;
-	    }
-	  else
+      }
+    else
       {
         c=ReadBlobByte(ifile);
-	      continue;
+        continue;
       }
 
     /* we found the OSType (8BIM) and now grab the ID, PString, and Size fields */
@@ -1672,12 +1672,12 @@ int format8BIM(Image *ifile, Image *ofile)
         PString[i] = c;
       }
       PString[ plen ] = 0;
-      if (!(plen&1)) 
+      if (!(plen&1))
       {
         c=ReadBlobByte(ifile);
         if (c == EOF) return -1;
       }
-	  }
+    }
     Size = ReadBlobMSBLong(ifile);
     if (Size < 0) return -1;
     /* make a buffer to hold the data and snag it from the input stream */
@@ -1703,9 +1703,9 @@ int format8BIM(Image *ifile, Image *ofile)
          * ASCII equivalent
          */
         if (strlen((const char *)PString) > 0)
-	        FormatString(temp, "8BIM#%d#%s=", ID, PString);
+          FormatString(temp, "8BIM#%d#%s=", ID, PString);
         else
-	        FormatString(temp, "8BIM#%d=", ID);
+          FormatString(temp, "8BIM#%d=", ID);
         WriteBlobString(ofile,temp);
         if (ID == IPTC_ID)
           {
@@ -1735,7 +1735,7 @@ static unsigned int WriteMETAImage(const ImageInfo *image_info,Image *image)
 
   /*
     Open image file.
-  */   
+  */
   assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
   assert(image != (Image *) NULL);
@@ -1745,7 +1745,7 @@ static unsigned int WriteMETAImage(const ImageInfo *image_info,Image *image)
       /*
         Write 8BIM image.
       */
-      if (image->iptc_profile.length == 0) 
+      if (image->iptc_profile.length == 0)
         ThrowWriterException(FileOpenError,"No 8BIM data is available",image);
       status=OpenBlob(image_info,image,WriteBinaryType,&image->exception);
       if (status == False)
@@ -1777,7 +1777,7 @@ static unsigned int WriteMETAImage(const ImageInfo *image_info,Image *image)
       Image
         *buff;
 
-      if (image->iptc_profile.length == 0) 
+      if (image->iptc_profile.length == 0)
         ThrowWriterException(FileOpenError,"No 8BIM data is available",image);
       buff=AllocateImage((ImageInfo *) NULL);
       if (buff == (Image *) NULL)
@@ -1786,7 +1786,7 @@ static unsigned int WriteMETAImage(const ImageInfo *image_info,Image *image)
       status=OpenBlob(image_info,image,WriteBinaryType,&image->exception);
       if (status == False)
         ThrowWriterException(FileOpenError,"Unable to open file",image);
-	    if (image->iptc_profile.info[0] == 0x1c)
+      if (image->iptc_profile.info[0] == 0x1c)
         formatIPTC(buff, image);
       else
         format8BIM(buff, image);

@@ -442,7 +442,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     if (photometric == PHOTOMETRIC_CIELAB)
       {
         TIFFClose(tiff);
-        ThrowReaderException(CorruptImageWarning,"Unable to read CIELAB image",
+        ThrowReaderException(CorruptImageWarning,"Unable to read CIELAB images",
           image);
       }
     if (photometric == PHOTOMETRIC_SEPARATED)
@@ -1559,18 +1559,14 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
       (void) TIFFSetField(tiff,TIFFTAG_ROWSPERSTRIP,strip_size+
         (8-(strip_size % 8)));
     else
-      if ((compress_tag == COMPRESSION_CCITTFAX4) ||
-          (compress_tag == COMPRESSION_ADOBE_DEFLATE))
+      if ((compress_tag != COMPRESSION_CCITTFAX4) &&
+          (compress_tag != COMPRESSION_ADOBE_DEFLATE))
+        (void) TIFFSetField(tiff,TIFFTAG_ROWSPERSTRIP,strip_size);
+      else
         {
-          /* ignored for FAX4, but makes deflate very agressive and matches
-             what Photoshop does */
           (void) TIFFSetField(tiff,TIFFTAG_PREDICTOR,2);
           (void) TIFFSetField(tiff,TIFFTAG_ZIPQUALITY,9);
           (void) TIFFSetField(tiff,TIFFTAG_ROWSPERSTRIP,image->rows);
-        }
-      else
-        {
-          (void) TIFFSetField(tiff,TIFFTAG_ROWSPERSTRIP,strip_size);
         }
     if ((image->x_resolution != 0) && (image->y_resolution != 0))
       {

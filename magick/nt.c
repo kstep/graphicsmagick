@@ -167,26 +167,26 @@ MagickExport void InitializeTracingCriticalSection(void)
 #endif
 }
 
-MagickExport void DebugString(char *format, ...)
+MagickExport void DebugString(char *format,...)
 {
 #ifdef ENABLE_TRACING
   va_list
     operands;
 
-	char
+  char
     string[MaxTextExtent],
     trace_name[MaxTextExtent];
 
-	va_start(operands, format);
+  va_start(operands, format);
   EnterTracingCriticalSection();
-  (void) _snprintf(string, MaxTextExtent-1, "%08d  ", (int) GetCurrentThreadId()); 
-	(void) _vsnprintf(&string[9], MaxTextExtent-10, format, operands);
-	/* OutputDebugString(string); */
+  (void) _snprintf(string,MaxTextExtent-1,"%08d  ",(int) GetCurrentThreadId());
+  (void) _vsnprintf(&string[9],MaxTextExtent-10,format,operands);
+  /* OutputDebugString(string); */
   if (trace_file == (FILE *) NULL)
     {
       tracings_counter=0;
       (void) _snprintf(trace_name, MaxTextExtent-1,
-        "C:\\IM_%08x.log", tracings_sequence); 
+        "C:\\IM_%08x.log",tracings_sequence);
       trace_file=fopen(trace_name,"wS");
     }
   if (trace_file != (FILE *) NULL)
