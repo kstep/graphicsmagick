@@ -16,6 +16,7 @@
   <module name="GIF" alias="GIF87"/>
   <module name="LOGO" alias="GRANITE"/>
   <module name="LOGO" alias="H"/>
+  <module name="HDF" alias="H5"/>
   <module name="HTML" alias="HTM"/>
   <module name="URL" alias="HTTP"/>
   <module name="TGA" alias="ICB"/>
