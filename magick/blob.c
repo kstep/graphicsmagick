@@ -934,7 +934,7 @@ MagickExport void *GetFontBlob(const char *filename,char *path,
     /*
       Locate file via registry key.
     */
-    key_value=NTRegistryKeyLookup("FontPath");
+    key_value=NTRegistryKeyLookup("ConfigurePath");
     if (key_value != (char *) NULL)
       {
         FormatString(path,"%.1024s%s%.1024s",key_value,DirectorySeparator,
