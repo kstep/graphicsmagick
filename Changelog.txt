@@ -1,6 +1,6 @@
 2001-09-12  Cristy  <cristy@mystic.es.dupont.com>
 	* Text drawing now handles UTF8-encoding.
-	* Fixed uninitialized pointer in pixel cache subsystem.
+	* Off-by-one GetImagePixels() fix in draw.c
 	* PingImage() now reports attributes for all images in
 	  an image sequence.
 

@@ -1875,10 +1875,10 @@ MagickExport PixelPacket *SetNexus(Image *image,const unsigned int id,
       (cache_info->colorspace == CMYKColorspace))
     length+=number_pixels*sizeof(IndexPacket);
   if (nexus_info->staging == (PixelPacket *) NULL)
-    nexus_info->staging=(PixelPacket *) AcquireMemory(length+8);
+    nexus_info->staging=(PixelPacket *) AcquireMemory(length);
   else
     if (nexus_info->length != length)
-      ReacquireMemory((void **) &nexus_info->staging,length+8);
+      ReacquireMemory((void **) &nexus_info->staging,length);
   if (nexus_info->staging == (PixelPacket *) NULL)
     MagickError(ResourceLimitError,"Memory allocation failed",
       "unable to allocate cache nexus_info");
