@@ -2726,6 +2726,8 @@ static unsigned int XConfigureImage(Display *display,
       windows->image.ximage->width,windows->image.ximage->height,width,height);
   if ((width*height) == 0)
     return(True);
+  x=0;
+  y=0;
   /*
     Resize image to fit Image window dimensions.
   */
@@ -8419,8 +8421,8 @@ static unsigned int XPasteImage(Display *display,XResourceInfo *resource_info,
         /*
           Paste rectangle is relative to image configuration.
         */
-        width=(unsigned int) (unsigned int) image->columns;
-        height=(unsigned int) (unsigned int) image->rows;
+        width=(unsigned int) image->columns;
+        height=(unsigned int) image->rows;
         x=0;
         y=0;
         if (windows->image.crop_geometry != (char *) NULL)

@@ -15,7 +15,7 @@
 %                                                                             %
 %                              Software Design                                %
 %                            Christopher R. Hawks                             %
-%                               December 2001                                 % 
+%                               December 2001                                 %
 %                                                                             %
 %                                                                             %
 %  Copyright (C) 2001 ImageMagick Studio, a non-profit organization dedicated %

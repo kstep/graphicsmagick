@@ -194,7 +194,8 @@ static unsigned int IsEPT(const unsigned char *magick,const size_t length)
 %
 %  The format of the ReadEPTImage method is:
 %
-%      Image *ReadEPTImage(const ImageInfo *image_info,ExceptionInfo *exception)
+%      Image *ReadEPTImage(const ImageInfo *image_info,
+         ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -208,7 +209,8 @@ static unsigned int IsEPT(const unsigned char *magick,const size_t length)
 %
 %
 */
-static Image *ReadEPTImage(const ImageInfo *image_info,ExceptionInfo *exception)
+static Image *ReadEPTImage(const ImageInfo *image_info,
+  ExceptionInfo *exception)
 {
 #define BoundingBox  "%%BoundingBox:"
 #define DocumentMedia  "%%DocumentMedia:"
@@ -309,17 +311,16 @@ static Image *ReadEPTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if ((image->x_resolution == 0.0) || (image->y_resolution == 0.0))
     {
       (void) strcpy(density,PSDensityGeometry);
-      count=sscanf(density,"%lfx%lf",&image->x_resolution,&image->y_resolution);
+      count=sscanf(density,"%lfx%lf",&image->x_resolution,
+        &image->y_resolution);
       if (count != 2)
         image->y_resolution=image->x_resolution;
     }
   FormatString(density,"%gx%g",image->x_resolution,image->y_resolution);
+	SetGeometry(image,&page);
   page.width=612;
   page.height=792;
-  page.x=0;
-  page.y=0;
-  (void) ParseImageGeometry(PSPageGeometry,&page.x,&page.y,&page.width,
-    &page.height);
+  (void) GetGeometry(PSPageGeometry,&page.x,&page.y,&page.width,&page.height);
   /*
     Determine page geometry from the Postscript bounding box.
   */
@@ -380,8 +381,8 @@ static Image *ReadEPTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     box=page;
   }
   if (image_info->page != (char *) NULL)
-    (void) ParseImageGeometry(image_info->page,&page.x,&page.y,
-      &page.width,&page.height);
+    (void) GetGeometry(image_info->page,&page.x,&page.y,&page.width,
+      &page.height);
   FormatString(geometry,"%lux%lu",
     (unsigned long) ceil(page.width*image->x_resolution/dx_resolution-0.5),
     (unsigned long) ceil(page.height*image->y_resolution/dy_resolution-0.5));

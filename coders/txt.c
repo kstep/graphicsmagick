@@ -146,19 +146,18 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
         density[MaxTextExtent];
 
       (void) strcpy(density,PSDensityGeometry);
-      count=sscanf(density,"%lfx%lf",&image->x_resolution,&image->y_resolution);
+      count=sscanf(density,"%lfx%lf",&image->x_resolution,
+        &image->y_resolution);
       if (count != 2)
         image->y_resolution=image->x_resolution;
     }
+  SetGeometry(image,&page);
   page.width=612;
   page.height=792;
-  page.x=0;
-  page.y=0;
-  (void) ParseImageGeometry("612x792+43+43",&page.x,&page.y,
-    &page.width,&page.height);
+  (void) GetGeometry("612x792+43+43",&page.x,&page.y,&page.width,&page.height);
   if (image_info->page != (char *) NULL)
-    (void) ParseImageGeometry(image_info->page,&page.x,&page.y,
-      &page.width,&page.height);
+    (void) GetGeometry(image_info->page,&page.x,&page.y,&page.width,
+      &page.height);
   /*
     Initialize Image structure.
   */

@@ -493,8 +493,8 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                       *geometry;
 
                     geometry=GetPageGeometry(values);
-                    (void) ParseImageGeometry(geometry,&image->page.x,
-                      &image->page.y,&image->page.width,&image->page.height);
+                    (void) GetGeometry(geometry,&image->page.x,&image->page.y,
+                      &image->page.width,&image->page.height);
                     LiberateMemory((void **) &geometry);
                     break;
                   }

@@ -1979,10 +1979,9 @@ static void SVGStartElement(void *context,const xmlChar *name,
           if ((svg_info->view_box.width == 0.0) ||
               (svg_info->view_box.height == 0.0))
             svg_info->view_box=svg_info->bounds;
+          SetGeometry(svg_info->image,&page);
           page.width=(unsigned int) svg_info->bounds.width;
           page.height=(unsigned int) svg_info->bounds.height;
-          page.x=0;
-          page.y=0;
           geometry=(char *) NULL;
           if (svg_info->page != (char *) NULL)
             geometry=GetPageGeometry(svg_info->page);
@@ -1999,10 +1998,10 @@ static void SVGStartElement(void *context,const xmlChar *name,
               LiberateMemory((void **) &geometry);
             }
           if (svg_info->affine.sx != 1.0)
-            page.width=(unsigned int)
+            page.width=(unsigned long)
               ceil(ExpandAffine(&svg_info->affine)*page.width-0.5);
           if (svg_info->affine.sy != 0.0)
-            page.height=(unsigned int)
+            page.height=(unsigned long)
               ceil(ExpandAffine(&svg_info->affine)*page.height-0.5);
           (void) fprintf(svg_info->file,"viewbox 0 0 %g %g\n",
             svg_info->view_box.width,svg_info->view_box.height);

@@ -619,7 +619,8 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
       y_resolution=x_resolution;
     if (image_info->density != (char *) NULL)
       {
-        count=sscanf(image_info->density,"%lfx%lf",&x_resolution,&y_resolution);
+        count=sscanf(image_info->density,"%lfx%lf",&x_resolution,
+          &y_resolution);
         if (count != 2)
           y_resolution=x_resolution;
       }

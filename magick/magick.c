@@ -205,6 +205,7 @@ MagickExport const char *GetImageMagick(const unsigned char *magick,
 %             <client path>/
 %             $MAGICK_HOME/
 %             $HOME/.magick/
+%             $MAGICK_FONT_PATH
 %             MagickLibPath
 %             MagickModulesPath
 %             MagickSharePath
@@ -272,6 +273,18 @@ MagickExport char *GetMagickConfigurePath(const char *filename,
           return(path);
         }
       ConcatenateString(&search_path,"; HOME:");
+      ConcatenateString(&search_path,path);
+    }
+  if (getenv("MAGICK_FONT_PATH") != (char *) NULL)
+    {
+      FormatString(path,"%.1024s%s%.1024s",getenv("MAGICK_FONT_PATH"),
+        DirectorySeparator,filename);
+      if (IsAccessible(path))
+        {
+          LiberateMemory((void **) &search_path);
+          return(path);
+        }
+      ConcatenateString(&search_path,"; MAGICK_FONT_PATH:");
       ConcatenateString(&search_path,path);
     }
   FormatString(path,"%.1024s%.1024s",MagickLibPath,filename);

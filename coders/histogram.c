@@ -209,17 +209,17 @@ static unsigned int WriteHISTOGRAMImage(const ImageInfo *image_info,
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   SetGeometry(image,&geometry);
-  if (image_info->density != (char *) NULL)
-    (void) ParseImageGeometry(image_info->density,&geometry.x,&geometry.y,
+  if (image_info->density == (char *) NULL)
+    (void) ParseImageGeometry(HistogramDensity,&geometry.x,&geometry.y,
       &geometry.width,&geometry.height);
   else
-    (void) ParseImageGeometry(HistogramDensity,&geometry.x,&geometry.y,
+    (void) ParseImageGeometry(image_info->density,&geometry.x,&geometry.y,
       &geometry.width,&geometry.height);
   histogram_image=CloneImage(image,geometry.width,geometry.height,True,
     &image->exception);
   if (histogram_image == (Image *) NULL)
-      ThrowWriterException(ResourceLimitWarning,
-        "Memory allocation failed",image);
+    ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
+      image);
   SetImageType(histogram_image,TrueColorType);
   /*
     Allocate histogram count arrays.

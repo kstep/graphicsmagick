@@ -1288,10 +1288,10 @@ MagickExport Image *ReadEMFImage(const ImageInfo *image_info,
       long
         x;
 
+      image->columns=width;
+      image->rows=height;
       x=0;
       y=0;
-      image->rows=height;
-      image->columns=width;
       (void) GetGeometry(image_info->size,&x,&y,&image->columns,&image->rows);
     }
   if (image_info->page != (char *) NULL)

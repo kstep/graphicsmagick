@@ -373,7 +373,6 @@ static void JBIGEncode(unsigned char *pixels,size_t length,void *data)
 static unsigned int WriteJBIGImage(const ImageInfo *image_info,Image *image)
 {
   long
-    sans_offset,
     y;
 
   register const PixelPacket
@@ -471,15 +470,19 @@ static unsigned int WriteJBIGImage(const ImageInfo *image_info,Image *image)
       jbg_enc_layers(&jbig_info,(int) image_info->subimage);
     else
       {
+        long
+          sans_offset;
+
         unsigned long
           x_resolution,
           y_resolution;
 
         x_resolution=640;
         y_resolution=480;
+        sans_offset=0;
         if (image_info->density != (char *) NULL)
-          (void) ParseImageGeometry(image_info->density,&sans_offset,
-            &sans_offset,&x_resolution,&y_resolution);
+          (void) GetGeometry(image_info->density,&sans_offset,&sans_offset,
+            &x_resolution,&y_resolution);
         (void) jbg_enc_lrlmax(&jbig_info,x_resolution,y_resolution);
       }
     (void) jbg_enc_lrange(&jbig_info,-1,-1);

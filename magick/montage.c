@@ -344,8 +344,8 @@ MagickExport Image *MontageImages(const Image *images,
   image_list=master_list;
   for (i=0; i < (long) number_images; i++)
   {
-    image=image_list[i];
     handler=SetMonitorHandler((MonitorHandler) NULL);
+    image=image_list[i];
     SetGeometry(image,&geometry);
     flags=ParseImageGeometry(montage_info->geometry,&geometry.x,&geometry.y,
       &geometry.width,&geometry.height);
@@ -384,9 +384,9 @@ MagickExport Image *MontageImages(const Image *images,
   }
   if (montage_info->tile != (char *) NULL)
     {
-      tiles_per_column=number_images;
       x=0;
       y=0;
+      tiles_per_column=number_images;
       flags=GetGeometry(montage_info->tile,&x,&y,&tiles_per_row,
         &tiles_per_column);
     }

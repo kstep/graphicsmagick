@@ -184,8 +184,9 @@ MagickExport Image *AllocateImage(const ImageInfo *image_info)
       char
         *geometry;
 
+      allocate_image->page=allocate_image->tile_info;
       geometry=GetPageGeometry(image_info->page);
-      flags=ParseImageGeometry(geometry,&allocate_image->page.x,
+      flags=GetGeometry(geometry,&allocate_image->page.x,
         &allocate_image->page.y,&allocate_image->page.width,
         &allocate_image->page.height);
       LiberateMemory((void **) &geometry);
@@ -3972,13 +3973,11 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             /*
               Surround image with an ornamental border.
             */
-            flags=ParseImageGeometry(argv[++i],&geometry.x,&geometry.y,
-              &geometry.width,&geometry.height);
             (void) memset(&frame_info,0,sizeof(FrameInfo));
-            frame_info.width=geometry.width;
-            frame_info.height=geometry.height;
-            frame_info.outer_bevel=geometry.x;
-            frame_info.inner_bevel=geometry.y;
+            frame_info.width=(*image)->columns;
+            frame_info.height=(*image)->rows;
+            flags=ParseImageGeometry(argv[++i],&frame_info.outer_bevel,
+              &frame_info.inner_bevel,&frame_info.width,&frame_info.height);
             if ((flags & HeightValue) == 0)
               frame_info.height=frame_info.width;
             if ((flags & XValue) == 0)

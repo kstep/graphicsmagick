@@ -792,8 +792,8 @@ MagickExport char *GetPageGeometry(const char *page_geometry)
           Replace mneumonic with the equivalent size in dots-per-inch.
         */
         (void) strncpy(page,PageSizes[i][1],MaxTextExtent-1);
-        (void) strncat(page,page_geometry+strlen(PageSizes[i][0]),MaxTextExtent-
-          strlen(page)-2);
+        (void) strncat(page,page_geometry+strlen(PageSizes[i][0]),
+          MaxTextExtent-strlen(page)-2);
         flags=GetGeometry(page,&geometry.x,&geometry.y,&geometry.width,
           &geometry.height);
         if (!(flags & GreaterValue))
