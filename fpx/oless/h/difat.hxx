@@ -5,12 +5,12 @@
 // 
 //  Copyright (c) 1999 Digital Imaging Group, Inc.
 // 
-//  Contents:	Double-indirect Fat class headers
+//  Contents: Double-indirect Fat class headers
 //
-//  Classes:	CDIFat
-//		CDIFatVector
+//  Classes:  CDIFat
+//    CDIFatVector
 //
-//  Functions:	
+//  Functions:  
 //
 //--------------------------------------------------------------------------
 

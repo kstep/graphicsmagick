@@ -993,9 +993,9 @@ EH_Err:
 
 //+--------------------------------------------------------------
 //
-//  Member:	CExposedStream::RevertFromAbove, public (virtual)
+//  Member: CExposedStream::RevertFromAbove, public (virtual)
 //
-//  Synopsis:	Parent has asked for reversion
+//  Synopsis: Parent has asked for reversion
 //
 //---------------------------------------------------------------
 
@@ -1240,7 +1240,7 @@ ULONG CExposedStream::GetSize(OUT LONG *phr)
 //              NtCreatePropertySet et al.
 //
 //  Arguments:  [cb] -- requested size.
-//		[fPersistent] -- FALSE if expanding in-memory read-only image
+//    [fPersistent] -- FALSE if expanding in-memory read-only image
 //              [ppv] -- new mapped address.
 //
 //  Signals:    Not enough disk space.

@@ -1,39 +1,39 @@
-//	------------------------------------------------------------------------------------------------
-//	MODULE		: FicNom
-//	LANGAGE		: C++
-//	CREATEUR	: Adolfo VIDE
-//	DATE		: October 15, 1992
-//	DESCRIPTION	: File name class
-//	COMMENTAIRE	:
-//      SCCSID          : @(#)filename.cpp	1.5 12:54:10 02 Jun 1997
+//  ------------------------------------------------------------------------------------------------
+//  MODULE    : FicNom
+//  LANGAGE   : C++
+//  CREATEUR  : Adolfo VIDE
+//  DATE    : October 15, 1992
+//  DESCRIPTION : File name class
+//  COMMENTAIRE :
+//      SCCSID          : @(#)filename.cpp  1.5 12:54:10 02 Jun 1997
 //  ----------------------------------------------------------------------------
 //  Copyright (c) 1999 Digital Imaging Group, Inc.
 //  For conditions of distribution and use, see copyright notice
 //  in Flashpix.h
 //  ----------------------------------------------------------------------------
-//	------------------------------------------------------------------------------------------------
+//  ------------------------------------------------------------------------------------------------
 #include "filename.h"
-//	------------------------------------------------------------------------------------------------
+//  ------------------------------------------------------------------------------------------------
 
 
-//	Includes
-//	--------
+//  Includes
+//  --------
 
 #ifdef macintosh
 #  ifdef USE_UNIVERS_HDR
-#    include 	<LowMem.h>
+#    include  <LowMem.h>
 #  else
-#    include 	<SysEqu.h>
+#    include  <SysEqu.h>
 #  endif
-#  include	<Finder.h>
-#  include	<Errors.h>	
-#  include	"fileutil.h"
+#  include  <Finder.h>
+#  include  <Errors.h>  
+#  include  "fileutil.h"
 #endif // macintosh
 
 #ifndef macintosh
-#  include 	"a_file.h"
+#  include  "a_file.h"
 #endif
-	
+  
 #ifdef _UNIX
 #  include <sys/types.h>
 #  include <sys/stat.h>
@@ -47,40 +47,40 @@
 #  include <stdio.h>
 #endif
 
-#include	"b_memory.h"	
-#include	"b_error.h"
+#include  "b_memory.h"  
+#include  "b_error.h"
 
 
-//	Constants
-//	---------
+//  Constants
+//  ---------
 
 #define kOneKilobyte 1024
-static const short	unknownFolderMessageID[] = {203,1};
-	
-	
-//	Types
-//	-----
+static const short  unknownFolderMessageID[] = {203,1};
+  
+  
+//  Types
+//  -----
 
-//	Variables
-//	---------
+//  Variables
+//  ---------
 
 #ifdef macintosh
-ptr_MemoDirVol	enLecture = 0;
-ptr_MemoDirVol	enEcriture = 0;
+ptr_MemoDirVol  enLecture = 0;
+ptr_MemoDirVol  enEcriture = 0;
 #endif
 
 Boolean FicNom::showErrorDialog = TRUE;
-FicNom_SearchFunc FicNom::searchFunction = NULL;				
+FicNom_SearchFunc FicNom::searchFunction = NULL;        
 
-//	------------------------------------------------------------------------------------------------
+//  ------------------------------------------------------------------------------------------------
 #ifdef macintosh
 #  pragma segment Fichier
 #endif
-//	------------------------------------------------------------------------------------------------
+//  ------------------------------------------------------------------------------------------------
 
-//	------------------------------------------------------------------------------------------------
-//	Fonctions internes
-//	------------------------------------------------------------------------------------------------
+//  ------------------------------------------------------------------------------------------------
+//  Fonctions internes
+//  ------------------------------------------------------------------------------------------------
 
 // Truncate a long to fit into an unsigned char
 inline unsigned char TruncateToUchar(long x)
@@ -100,7 +100,7 @@ inline void SetSFCurFolder(long dirID, short vRefNum)
     if (response >= 0x0750)
       *(unsigned char*)0xB21 &= ~0x04;
   } 
-	
+  
 #ifdef USE_UNIVERS_HDR
   LMSetCurDirStore(dirID);
   LMSetSFSaveDisk(-vRefNum);
@@ -114,9 +114,9 @@ static OSErr TrouveIndVolume(short whichVol,StringPtr volName,short* volRefNum)
 
 {
   /*Return the name and vRefNum of volume specified by whichVol.*/
-  HVolumeParam	volPB;
-  OSErr			error;
-	   
+  HVolumeParam  volPB;
+  OSErr     error;
+     
   volPB.ioNamePtr = volName; /*make sure it returns the name*/
   volPB.ioVRefNum = 0;       /*0 means use ioVolIndex*/
   volPB.ioVolIndex = whichVol; /*use this to determine the volume*/
@@ -125,7 +125,7 @@ static OSErr TrouveIndVolume(short whichVol,StringPtr volName,short* volRefNum)
     *volRefNum = volPB.ioVRefNum; /*return the volume reference*/
   /*other information is available from this record; see the FILE*/
   /*Manager's description of PBHGetVInfo for more details...*/
-	      
+        
   return(error);   /*always return error code*/
 } /* GetIndVolume */
 
@@ -135,14 +135,14 @@ static OSErr ChercheFichierDsTsVolumes(FicNom& leFichier, FicNom* tableauDeFichi
   FSSpec* tableau;
   Str255 nomVolume;
   short j, i = 1;
-  long	nbFichiersTrouves = 0;
+  long  nbFichiersTrouves = 0;
   long taille;
   short volume;
   OSErr err = noErr;
   Boolean sortie = FALSE;
 
   FastAllocArray(tableau,FSSpec,*nbReponse);
-	
+  
   sortie = TrouveIndVolume(i++ , nomVolume, &volume) != noErr;
   while (!sortie) {
     taille = *nbReponse;
@@ -156,68 +156,68 @@ static OSErr ChercheFichierDsTsVolumes(FicNom& leFichier, FicNom* tableauDeFichi
     }
     sortie = TrouveIndVolume(i++ , nomVolume, &volume) != noErr;
   }
-	
+  
   FastDeleteArray(tableau,FSSpec);
-	
+  
   *nbReponse = nbFichiersTrouves;
-	
+  
   return err;
 }
 #endif
 
-//	------------------------------------------------------------------------------------------------
-//	Methodes
-//	------------------------------------------------------------------------------------------------
+//  ------------------------------------------------------------------------------------------------
+//  Methodes
+//  ------------------------------------------------------------------------------------------------
 
 FicNom::FicNom(const FicNom& fic)
 {
-  volume 		= fic.volume;
-  directory 	= fic.directory;
-  nom			= fic.nom;
-  type 		= fic.type;
+  volume    = fic.volume;
+  directory   = fic.directory;
+  nom     = fic.nom;
+  type    = fic.type;
 }
 
 FicNom::FicNom(const ChaineFic& fileName, OSType fileType, short fileVolume, long fileDirectory)
 {
-  volume 		= fileVolume;
-  directory 	= fileDirectory;
-  nom 		= fileName;
-  type 		= fileType;
+  volume    = fileVolume;
+  directory   = fileDirectory;
+  nom     = fileName;
+  type    = fileType;
 }
 
 FicNom::FicNom(const char* fileName, OSType fileType)
 {
 #ifdef macintosh
-  nom 		= Chaine(CStringHolder(fileName));
+  nom     = Chaine(CStringHolder(fileName));
 #else
-  nom 		= Chaine(CStringHolder(fileName));
+  nom     = Chaine(CStringHolder(fileName));
 #endif
-  type 		= fileType;
-  volume 		= 0;
-  directory 	= 0;
+  type    = fileType;
+  volume    = 0;
+  directory   = 0;
 }
 
 #ifdef macintosh
 FicNom::FicNom(const FSSpec& specs)
 {
-  FSSpec tmp = specs;							// we need a non const variable <= ChaineFic(str63)
+  FSSpec tmp = specs;             // we need a non const variable <= ChaineFic(str63)
   FInfo  fndrInfo;
-	
-  volume 		= tmp.vRefNum;
-  directory 	= tmp.parID;
-  nom 		= tmp.name;
+  
+  volume    = tmp.vRefNum;
+  directory   = tmp.parID;
+  nom     = tmp.name;
   FSpGetFInfo(&tmp,&fndrInfo);
-  type 		= fndrInfo.fdType;
+  type    = fndrInfo.fdType;
 }
 
 #endif
 
 FicNom::FicNom(const FicNom& fic, short newVolume)
 {
-  volume 		= newVolume;
-  directory 	= fic.directory;
-  nom			= fic.nom;
-  type 		= fic.type;
+  volume    = newVolume;
+  directory   = fic.directory;
+  nom     = fic.nom;
+  type    = fic.type;
 }
 
 
@@ -229,12 +229,10 @@ OSErr FicNom::Detruit() const
 #else
   char cname[256];
 
-  int len = nom[0];
-  // int len = nom; // FIXME: examine because fix may be suspect
+  int len = nom[0]; // FIXME: Sun Forte 6.0 fails
   cname[len] = '\0';
   for (int i = len-1; i >= 0; i--)
-    cname[i] = nom[i+1];
-  // cname[i] = *(&nom + i + 1); // FIXME: examine because fix may be suspect
+    cname[i] = nom[i+1]; // FIXME: Sun Forte 6.0 fails
   if ((err = unlink (cname)) != 0)
     perror ("Unlink failed\n");
 #endif
@@ -252,16 +250,16 @@ OSErr FicNom::Search()
 #ifdef macintosh
 OSErr FicNom::GiveNumberOfHierarchicalLevels(long* nbNiveauxPtr) const
 {
-  CInfoPBRec	lePB;
-  Str255		dirNom;
-  OSErr		err = noErr;
-	
+  CInfoPBRec  lePB;
+  Str255    dirNom;
+  OSErr   err = noErr;
+  
   // Update the Parameter Block
   lePB.dirInfo.ioNamePtr = dirNom;
   lePB.dirInfo.ioVRefNum = this->volume;
   lePB.dirInfo.ioDrParID = this->directory;
   lePB.dirInfo.ioFDirIndex = -1;
-	
+  
   // Count number of hierarchical levels
   *nbNiveauxPtr = 1;
   if (this->directory != fsRtParID) {
@@ -276,28 +274,28 @@ OSErr FicNom::GiveNumberOfHierarchicalLevels(long* nbNiveauxPtr) const
 
 OSErr FicNom::ConstructTruncPathName(short width, TruncCode truncWhere, Chaine * chaineText) const
 {
-  long 		nbNiveaux;
-  CInfoPBRec	lePB;
-  OSErr		err = noErr;
-  Str255		dirNom;
-  Chaine		cheminAcces;
-  long		i;
-  Chaine*		hierarchieAcces;
-  char*		textBuffer;
-  short		textWidth;
-	
+  long    nbNiveaux;
+  CInfoPBRec  lePB;
+  OSErr   err = noErr;
+  Str255    dirNom;
+  Chaine    cheminAcces;
+  long    i;
+  Chaine*   hierarchieAcces;
+  char*   textBuffer;
+  short   textWidth;
+  
   // If the file or folder exists
   if ( ((err = Exist()) == noErr) &&
        ((err = GiveNumberOfHierarchicalLevels(&nbNiveaux)) == noErr) ) {
     // Allocate an array to store level's names
     AllocArray(hierarchieAcces,Chaine,nbNiveaux);
-			
+      
     // Update the Parameter Block
     lePB.dirInfo.ioNamePtr = dirNom;
     lePB.dirInfo.ioVRefNum = volume;
     lePB.dirInfo.ioDrParID = directory;
     lePB.dirInfo.ioFDirIndex = -1;
-			
+      
     // Get name of each level
     hierarchieAcces[0] =  nom; 
     textWidth = hierarchieAcces[0].Longueur() + 1;
@@ -316,7 +314,7 @@ OSErr FicNom::ConstructTruncPathName(short width, TruncCode truncWhere, Chaine *
     *hierarchieAcces = unknownFolder;
     textWidth = hierarchieAcces->Longueur() + 1;
   }
-		
+    
   // Allocate the text buffer 
   textBuffer = new char [textWidth];
   if (textBuffer==NULL) {
@@ -324,7 +322,7 @@ OSErr FicNom::ConstructTruncPathName(short width, TruncCode truncWhere, Chaine *
   }
   char* currText = textBuffer;
   *currText++ = ' ';
-	
+  
   // Built the complete path name
   for (i=(nbNiveaux-1); i>=0; i--) {
     BlockMove (hierarchieAcces[i].Texte(), currText, hierarchieAcces[i].Longueur());
@@ -336,14 +334,14 @@ OSErr FicNom::ConstructTruncPathName(short width, TruncCode truncWhere, Chaine *
   // Trunc the text
   TruncText (width, textBuffer, &textWidth, truncWhere);
   *textBuffer = (unsigned char)(textWidth-1);
-	
+  
   // Build the complete chain
   BlockMove (textBuffer, chaineText, textWidth);
 
   // Clean memory of intermediate buffers
   DeleteArray(hierarchieAcces,Chaine);
   delete [] textBuffer;
-	
+  
   return err;
 }
 
@@ -352,7 +350,7 @@ OSErr FicNom::ConstructTruncPathName(short width, TruncCode truncWhere, Chaine *
 
 OSErr FicNom::Exist() const
 {
-  OSErr		err = noErr;
+  OSErr   err = noErr;
 #ifdef macintosh
   FSSpec myFSSpec;
 
@@ -384,11 +382,11 @@ OSErr FicNom::CheckNameWithPeriod(Boolean withDialog) const
 Boolean FicNom::EnoughFreeSpace(long sizeInKBytes) const
 {
   Boolean enoughSpace = TRUE;
-	
+  
   if (PlaceDisponible() < sizeInKBytes) {
     enoughSpace = FALSE;
   }
-	
+  
   return enoughSpace;
 }
 
@@ -396,16 +394,16 @@ Boolean FicNom::EnoughFreeSpace(long sizeInKBytes) const
 long FicNom::PlaceDisponible() const
 {
 #ifdef macintosh
-  HParamBlockRec	myHPB;
-  OSErr			myErr;
-  long			sizeInKBytes;
-	
+  HParamBlockRec  myHPB;
+  OSErr     myErr;
+  long      sizeInKBytes;
+  
   myHPB.volumeParam.ioNamePtr  = nil;
   myHPB.volumeParam.ioVRefNum  = volume;
   myHPB.volumeParam.ioVolIndex = 0;
-	
+  
   myErr = PBHGetVInfoSync(&myHPB);
-	
+  
   if (myErr == noErr)
     {
       sizeInKBytes = (((float)(myHPB.volumeParam.ioVFrBlk)/1024.0) * (float)(myHPB.volumeParam.ioVAlBlkSiz));
@@ -414,13 +412,13 @@ long FicNom::PlaceDisponible() const
     {
       sizeInKBytes = 0;
     }
-	
+  
   return sizeInKBytes;
 #elif WIN32
-  DWORD	nSecPerCluster, nBytePerSec, nFreeCluster, nCluster;
+  DWORD nSecPerCluster, nBytePerSec, nFreeCluster, nCluster;
   if (GetDiskFreeSpace( NULL, &nSecPerCluster, &nBytePerSec, &nFreeCluster, &nCluster ))
     return nFreeCluster * nSecPerCluster * nBytePerSec / 1024;
-  else		// Function failed, don't know why
+  else    // Function failed, don't know why
     return 0;
 #else
   struct statfs buf;
@@ -437,22 +435,22 @@ long FicNom::PlaceDisponible() const
 OSErr FicNom::GetSize(long* sizeInKBytes)
 {
   OSErr err = noErr;
-	
+  
 #ifdef macintosh
-  HParamBlockRec	myHPB;
-	
+  HParamBlockRec  myHPB;
+  
   myHPB.fileParam.ioNamePtr  = (StringPtr)(&(nom));
   myHPB.fileParam.ioVRefNum  = volume;
   myHPB.fileParam.ioDirID = directory;
   myHPB.fileParam.ioFDirIndex = 0;
-	
+  
   err = PBHGetFInfoSync(&myHPB);
-	
+  
   if (err == noErr)
     {
       *sizeInKBytes = (((float)(myHPB.fileParam.ioFlPyLen)/1024.) + (float)(myHPB.fileParam.ioFlRPyLen)/1024.) + 1;
     }
-	
+  
   return err;
 #else
   return -1;
@@ -463,17 +461,17 @@ OSErr FicNom::Empty(Boolean* empty)
 {
   OSErr err = noErr;
   *empty = FALSE;
-	
+  
 #ifdef macintosh
   long sizeInBytes;
-  HParamBlockRec	myHPB;
+  HParamBlockRec  myHPB;
   myHPB.fileParam.ioNamePtr  = (StringPtr)(&(nom));
   myHPB.fileParam.ioVRefNum  = volume;
   myHPB.fileParam.ioDirID = directory;
   myHPB.fileParam.ioFDirIndex = 0;
-	
+  
   err = PBHGetFInfoSync(&myHPB);
-	
+  
   if (err == noErr)
     {
       sizeInBytes = myHPB.fileParam.ioFlRPyLen;
@@ -481,12 +479,12 @@ OSErr FicNom::Empty(Boolean* empty)
         *empty = TRUE;
       else 
         *empty = FALSE;
-		  
+      
     }
   return err;
 #else
   return -1;
-#endif	
+#endif  
 }
 
 #ifdef macintosh
@@ -501,7 +499,7 @@ MemoDirVol::MemoDirVol(const FicNom& fic, ptr_MemoDirVol avant)
 ptr_MemoDirVol FicNom::Recherche(ptr_MemoDirVol memo)
 {
   ptr_MemoDirVol x;
-	
+  
   for (x = memo; x; x = x->suivant) {
     if (type == x->type)
       break;
@@ -512,7 +510,7 @@ ptr_MemoDirVol FicNom::Recherche(ptr_MemoDirVol memo)
 void FicNom::DirectoryDeSauvegarde()
 {
   ptr_MemoDirVol trouve = Recherche(enEcriture);
-	
+  
   if (trouve) {
     SetSFCurFolder(trouve->directory, trouve->volume);
   }
@@ -521,7 +519,7 @@ void FicNom::DirectoryDeSauvegarde()
 void FicNom::DirectoryDeChargement()
 {
   ptr_MemoDirVol trouve = Recherche(enLecture);
-	
+  
   if (trouve) {
     SetSFCurFolder(trouve->directory, trouve->volume);
   }
@@ -530,27 +528,27 @@ void FicNom::DirectoryDeChargement()
 void FicNom::SetToDirectoryChargement()
 {
   ptr_MemoDirVol trouve = Recherche(enLecture);
-	
+  
   if (trouve) {
-    directory	= trouve->directory;
-    volume		= trouve->volume;
+    directory = trouve->directory;
+    volume    = trouve->volume;
   }
 }
 
 void FicNom::SetToDirectorySauvegarde()
 {
   ptr_MemoDirVol trouve = Recherche(enEcriture);
-	
+  
   if (trouve) {
-    directory	= trouve->directory;
-    volume		= trouve->volume;
+    directory = trouve->directory;
+    volume    = trouve->volume;
   }
 }
 
 Boolean FicNom::ChangeFolder(const FicNom& folder)
 {
   OSErr err = noErr;
-	
+  
   if (folder.nom.Longueur() == 0) {
     volume = folder.volume;
     directory = folder.directory;
@@ -558,7 +556,7 @@ Boolean FicNom::ChangeFolder(const FicNom& folder)
   else {
     // Initialize and clear the parameter blocks needed by PBGetCatInfoSync
     CInfoPBPtr lePB = (CInfoPBPtr)NewPtrClear(sizeof(CInfoPBRec));
-		
+    
     if (lePB) {
       // Position inside the given preference folder
       lePB->dirInfo.ioNamePtr   = (StringPtr)(&(folder.nom));
@@ -566,13 +564,13 @@ Boolean FicNom::ChangeFolder(const FicNom& folder)
       lePB->dirInfo.ioDrDirID   = folder.directory;
       lePB->dirInfo.ioFDirIndex = 0;
       err = PBGetCatInfoSync(lePB);
-			
+      
       if (err == noErr) {
-				// Set current volume and directory
+        // Set current volume and directory
         volume    = lePB->dirInfo.ioVRefNum;
         directory = lePB->dirInfo.ioDrDirID;
       }
-			
+      
       DisposePtr((Ptr)lePB);
     }
     else
@@ -589,7 +587,7 @@ void FicNom::SetDefaultFolder()
 void FicNom::MemorisationDeSauvegarde()
 {
   ptr_MemoDirVol trouve = Recherche(enEcriture);
-	
+  
   if (!trouve) {
     trouve = new MemoDirVol(*this,enEcriture);
     if (trouve==NULL) {
@@ -605,7 +603,7 @@ void FicNom::MemorisationDeSauvegarde()
 void FicNom::MemorisationDeChargement()
 {
   ptr_MemoDirVol trouve = Recherche(enLecture);
-	
+  
   if (!trouve) {
     trouve = new MemoDirVol(*this,enLecture);
     if (trouve==NULL) {
@@ -624,76 +622,76 @@ OSErr FicNom::ChercheDsVolume (short volume, FSSpec* tableauDeFSSpec, long* nbRe
   return intermFile.SearchWithCriteria (tableauDeFSSpec, nbReponse, searchOnName);
 }
 
-/* Search file routine on FicNom criteria. This routine hides PBCatSearch() problems.	*/
-/* see Inside Macintosh : Files p.2-204 for PBCatSearch documentation					*/
-/* see Inside Macintosh : Files p.2-40 for search bit setting constants					*/
+/* Search file routine on FicNom criteria. This routine hides PBCatSearch() problems. */
+/* see Inside Macintosh : Files p.2-204 for PBCatSearch documentation         */
+/* see Inside Macintosh : Files p.2-40 for search bit setting constants         */
 
 OSErr FicNom::SearchWithCriteria (FSSpec* tableauDeFSSpec, long* nbReponse, searchCriteria what)
 {
   short bufferSize = kOneKilobyte * 16;
   OSErr myError = noErr;
-	
-  /* Initialize and clear the cat search parameter block (csBlockPtr)  				*/
+  
+  /* Initialize and clear the cat search parameter block (csBlockPtr)         */
   CSParamPtr csBlockPtr = (CSParamPtr) NewPtrClear(sizeof(CSParam));
-	
+  
   if (csBlockPtr) {
 
-    /* Initialize and clear the two other parameter blocks needed by PBCatSearch	*/
+    /* Initialize and clear the two other parameter blocks needed by PBCatSearch  */
     csBlockPtr->ioSearchInfo1 = (CInfoPBPtr)NewPtrClear(sizeof(CInfoPBRec));
     csBlockPtr->ioSearchInfo2 = (CInfoPBPtr)NewPtrClear(sizeof(CInfoPBRec));
 
-    /* Set the match pointer to the output array									*/
+    /* Set the match pointer to the output array                  */
     csBlockPtr->ioMatchPtr = tableauDeFSSpec;
     csBlockPtr->ioReqMatchCount = *nbReponse;
-			
-    /* Allocate optimization buffer : PBCatSearch will work even if there is no 	*/
-    /* optimization buffer.															*/
+      
+    /* Allocate optimization buffer : PBCatSearch will work even if there is no   */
+    /* optimization buffer.                             */
     csBlockPtr->ioOptBufSize = bufferSize;
-    while (csBlockPtr->ioOptBufSize) {				
+    while (csBlockPtr->ioOptBufSize) {        
       csBlockPtr->ioOptBuffer = NewPtr(csBlockPtr->ioOptBufSize);
       if (csBlockPtr->ioOptBuffer != NULL)
         break;
       csBlockPtr->ioOptBufSize -= kOneKilobyte;
     }
 
-    /* No timeout																	*/
+    /* No timeout                                 */
     csBlockPtr->ioSearchTime = 0;
 
-    /* Test if needed buffers has been allocated before launching PBCatSearch		*/
+    /* Test if needed buffers has been allocated before launching PBCatSearch   */
     if (csBlockPtr->ioSearchInfo1 && csBlockPtr->ioSearchInfo2) {
-      /* Set the search criteria :												*/
-      /* The volume reference number to search 									*/
+      /* Set the search criteria :                        */
+      /* The volume reference number to search                  */
       csBlockPtr->ioVRefNum = volume;
       switch (what) {
-      case searchOnName:			/* Search files with the same name			*/
+      case searchOnName:      /* Search files with the same name      */
         csBlockPtr->ioSearchInfo1->hFileInfo.ioNamePtr = nom;
         csBlockPtr->ioSearchBits += fsSBFullName;
         break;
-      case searchOnType:			/* Search files with the same type			*/
+      case searchOnType:      /* Search files with the same type      */
         csBlockPtr->ioSearchInfo1->hFileInfo.ioNamePtr = nil;
         csBlockPtr->ioSearchInfo1->hFileInfo.ioFlFndrInfo.fdType = type;
         csBlockPtr->ioSearchInfo2->hFileInfo.ioFlFndrInfo.fdType = 0xFFFFFFFF;
         csBlockPtr->ioSearchBits += fsSBFlFndrInfo;
         break;
-      default:					/* Will search all files in volume			*/
+      default:          /* Will search all files in volume      */
         break;
       }
-      /* To do because we are searching for files only							*/
+      /* To do because we are searching for files only              */
       csBlockPtr->ioSearchInfo2->hFileInfo.ioNamePtr = nil;
       csBlockPtr->ioSearchInfo2->hFileInfo.ioFlAttrib = 0x10;
       csBlockPtr->ioSearchBits += fsSBFlAttrib;
-			
-      /* Launch the search routine itself+ (at last+)								*/
+      
+      /* Launch the search routine itself+ (at last+)               */
       myError = PBCatSearchSync (csBlockPtr);
-      if (myError == eofErr)	/* PBCatSearch has searched the entire volume		*/
+      if (myError == eofErr)  /* PBCatSearch has searched the entire volume   */
         myError = noErr;
       *nbReponse = csBlockPtr->ioActMatchCount;
     } else
       myError = memFullErr;
   } else
     myError = memFullErr;
-	
-  /* Free allocated buffers before leaving											*/
+  
+  /* Free allocated buffers before leaving                      */
   if (csBlockPtr) {
     if (csBlockPtr->ioSearchInfo1)
       DisposePtr((Ptr)csBlockPtr->ioSearchInfo1);
@@ -708,20 +706,20 @@ OSErr FicNom::SearchWithCriteria (FSSpec* tableauDeFSSpec, long* nbReponse, sear
 }
 
 /* Search file routine in a given folder. This routine hides PBGetCatInfoSync() problems*/
-/* see Inside Macintosh : Files for PBGetCatInfo documentation						*/
-/* see Lettre des DÄveloppeurs Apple ní23/DÄcembre 1992, p.10							*/
+/* see Inside Macintosh : Files for PBGetCatInfo documentation            */
+/* see Lettre des DÄveloppeurs Apple ní23/DÄcembre 1992, p.10             */
 
 OSErr FicNom::SearchInFolder (FSSpec* tableauDeFSSpec, long* nbReponse, ptr_FicNom sourceFolder, searchCriteria what, Boolean into)
 {
-  OSErr		err = noErr;
-  short		index = 1;
-  ChaineFic	dirNom;
-  short		currVol;
-  long		currDir;
-  long		maxReponse = *nbReponse;
+  OSErr   err = noErr;
+  short   index = 1;
+  ChaineFic dirNom;
+  short   currVol;
+  long    currDir;
+  long    maxReponse = *nbReponse;
 
   *nbReponse = 0;
-	
+  
   // Initialize and clear the parameter blocks needed by PBGetCatInfoSync
   CInfoPBPtr lePB = (CInfoPBPtr)NewPtrClear(sizeof(CInfoPBRec));
 
@@ -734,7 +732,7 @@ OSErr FicNom::SearchInFolder (FSSpec* tableauDeFSSpec, long* nbReponse, ptr_FicN
     // Position inside the given folder (default option)
     if (into)
       err = PBGetCatInfoSync(lePB);
-		
+    
     if (err == noErr) {
       // Set current volume and directory
       currVol = lePB->dirInfo.ioVRefNum;
@@ -743,19 +741,19 @@ OSErr FicNom::SearchInFolder (FSSpec* tableauDeFSSpec, long* nbReponse, ptr_FicN
       lePB->dirInfo.ioNamePtr = (StringPtr)(&dirNom);
       lePB->dirInfo.ioVRefNum = currVol;
     }
-		
+    
     // Loop while the folder is not empty
     while (err == noErr) {
       lePB->dirInfo.ioDrDirID   = currDir;
       lePB->dirInfo.ioFDirIndex = index;
       err = PBGetCatInfoSync(lePB);
       if (err == noErr) {
-				// Test if this is not a folder
-        if ( (	!(lePB->hFileInfo.ioFlAttrib & 0x10) &&
+        // Test if this is not a folder
+        if ( (  !(lePB->hFileInfo.ioFlAttrib & 0x10) &&
                 (((what == searchOnType) && (lePB->hFileInfo.ioFlFndrInfo.fdType == type)) ||
                  ((what == searchOnName) && (!IdenticalString(lePB->hFileInfo.ioNamePtr,(ConstStr255Param)(&nom),0)))) )
              ||
-             (	(lePB->hFileInfo.ioFlAttrib & 0x10) && (what == searchSubFolder) ) ){
+             (  (lePB->hFileInfo.ioFlAttrib & 0x10) && (what == searchSubFolder) ) ){
           tableauDeFSSpec->vRefNum = currVol;
           tableauDeFSSpec->parID   = currDir;
           BlockMove (&dirNom, &(tableauDeFSSpec->name), dirNom.Longueur()+1);
@@ -771,10 +769,10 @@ OSErr FicNom::SearchInFolder (FSSpec* tableauDeFSSpec, long* nbReponse, ptr_FicN
     err = noErr;
   } else
     err = memFullErr;
-		
+    
   if (lePB)
     DisposePtr((Ptr)lePB);
-	
+  
   return err;
 }
 
@@ -800,7 +798,7 @@ OSErr FicNom::SearchSameTypeInFolder(FicNom* tableauDeFichier, long* nbReponse)
     FastDeleteArray(tableau,FSSpec);
   } else
     err = memFullErr;
-	
+  
   return err;
 }
 
@@ -823,7 +821,7 @@ OSErr FicNom::SearchSameType(FicNom* tableauDeFichier, long* nbReponse, ptr_FicN
     FastDeleteArray(tableau,FSSpec);
   } else
     err = memFullErr;
-	
+  
   return err;
 }
 
@@ -832,7 +830,7 @@ OSErr FicNom::ChercheDsRepertoire(FicNom* tableauDeFichier, long* nbReponse, ptr
   FSSpec* tableau;
   long j;
   OSErr err = noErr;
-	
+  
   FastAllocArray(tableau,FSSpec,*nbReponse);
 
   if (tableau) {
@@ -844,7 +842,7 @@ OSErr FicNom::ChercheDsRepertoire(FicNom* tableauDeFichier, long* nbReponse, ptr
     FastDeleteArray(tableau,FSSpec);
   } else
     err = memFullErr;
-	
+  
   return err;
 }
 
@@ -853,14 +851,14 @@ OSErr FicNom::ChercheDsVolumesLocaux(FicNom* tableauDeFichier, long* nbReponse)
   FSSpec* tableau;
   Str255 nomVolume;
   short j, i = 1;
-  long	nbFichiersTrouves = 0;
+  long  nbFichiersTrouves = 0;
   long taille;
   short volume;
   OSErr err = noErr;
   Boolean sortie = FALSE;
   HParamBlockRec paramBlock;
   GetVolParmsInfoBuffer infoBuffer;
-	
+  
   FastAllocArray(tableau,FSSpec,*nbReponse);
 
   if (tableau) {
@@ -869,7 +867,7 @@ OSErr FicNom::ChercheDsVolumesLocaux(FicNom* tableauDeFichier, long* nbReponse)
       taille = *nbReponse;
       paramBlock.ioParam.ioNamePtr = NULL;
       paramBlock.ioParam.ioVRefNum = volume;
-      paramBlock.ioParam.ioBuffer = (Ptr) &infoBuffer;		
+      paramBlock.ioParam.ioBuffer = (Ptr) &infoBuffer;    
       paramBlock.ioParam.ioReqCount = sizeof(infoBuffer);
       err = PBHGetVolParmsSync(&paramBlock);
       if (((infoBuffer.vMAttrib & (1 << bHasExtFSVol)) == 0) && 
@@ -894,7 +892,7 @@ OSErr FicNom::ChercheDsVolumesLocaux(FicNom* tableauDeFichier, long* nbReponse)
     *nbReponse = nbFichiersTrouves;
   } else
     err = memFullErr;
-	
+  
   return err;
 }
 
@@ -903,14 +901,14 @@ OSErr FicNom::ChercheDsVolumesDistants(FicNom* tableauDeFichier, long* nbReponse
   FSSpec* tableau;
   Str255 nomVolume;
   short j, i = 1;
-  long	nbFichiersTrouves = 0;
+  long  nbFichiersTrouves = 0;
   long taille;
   short volume;
   OSErr err = noErr;
   Boolean sortie = FALSE;
   HParamBlockRec paramBlock;
   GetVolParmsInfoBuffer infoBuffer;
-	
+  
   FastAllocArray(tableau,FSSpec,*nbReponse);
 
   if (tableau) {
@@ -919,7 +917,7 @@ OSErr FicNom::ChercheDsVolumesDistants(FicNom* tableauDeFichier, long* nbReponse
       taille = *nbReponse;
       paramBlock.ioParam.ioNamePtr = NULL;
       paramBlock.ioParam.ioVRefNum = volume;
-      paramBlock.ioParam.ioBuffer = (Ptr) &infoBuffer;		
+      paramBlock.ioParam.ioBuffer = (Ptr) &infoBuffer;    
       paramBlock.ioParam.ioReqCount = sizeof(infoBuffer);
       err = PBHGetVolParmsSync(&paramBlock);
       if (((infoBuffer.vMAttrib & (1 << bHasExtFSVol)) != 0) &&
@@ -944,56 +942,56 @@ OSErr FicNom::ChercheDsVolumesDistants(FicNom* tableauDeFichier, long* nbReponse
     *nbReponse = nbFichiersTrouves;
   } else
     err = memFullErr;
-	
+  
   return err;
 }
 
 unsigned long FicNom::DateModification()
 {
-  OSErr	err;
-  HParamBlockRec	paramBlock;
-	
+  OSErr err;
+  HParamBlockRec  paramBlock;
+  
   paramBlock.fileParam.ioNamePtr = this->nom;
   paramBlock.fileParam.ioVRefNum = this->volume;
   paramBlock.fileParam.ioDirID   = this->directory;
   paramBlock.fileParam.ioFDirIndex = 0;
-	
+  
   err = PBHGetFInfoSync(&paramBlock);
-	
+  
   return paramBlock.fileParam.ioFlMdDat;
 }
 
 unsigned long FicNom::DateCreation()
 {
-  OSErr	err;
-  HParamBlockRec	paramBlock;
-	
+  OSErr err;
+  HParamBlockRec  paramBlock;
+  
   paramBlock.fileParam.ioNamePtr = this->nom;
   paramBlock.fileParam.ioVRefNum = this->volume;
   paramBlock.fileParam.ioDirID   = this->directory;
   paramBlock.fileParam.ioFDirIndex = 0;
-	
+  
   err = PBHGetFInfoSync(&paramBlock);
-	
+  
   return paramBlock.fileParam.ioFlCrDat;
 }
 
 void FicNom::GetNewLocation()
 {
-  //	This directory always exists because the program is running
+  //  This directory always exists because the program is running
   FicNom livePicture;
   FicNom file;
   OSErr err = GetProgramName(livePicture);
   this->directory = livePicture.directory; 
   this->volume = livePicture.volume; 
-	
+  
 }
 #endif
 
 OSErr FicNom::Copy(const FicNom& newFileName)
 {
-  OSErr	err;
-	
+  OSErr err;
+  
 #ifdef macintosh
   err = FileCopy(this->volume, this->directory, this->nom, 
                  newFileName.volume, newFileName.directory, NULL , newFileName.nom,
@@ -1001,7 +999,7 @@ OSErr FicNom::Copy(const FicNom& newFileName)
 #else
   err = -1;
 #endif
-	
+  
   return err;
 }
 
@@ -1009,7 +1007,7 @@ OSErr FicNom::Copy(const FicNom& newFileName)
 
 OSErr FicNom::Rename(const FicNom& newFileName)
 {
-  OSErr	err;
+  OSErr err;
 #ifdef macintosh
   FSSpec mySpec;
   CopyToFSSpec (mySpec);
@@ -1023,7 +1021,7 @@ OSErr FicNom::Rename(const FicNom& newFileName)
 
 OSErr FicNom::Move(const FicNom& newFileName)
 {
-  OSErr	err;
+  OSErr err;
 #ifdef macintosh
   if (volume != newFileName.volume)
     return (diffVolErr);
@@ -1035,12 +1033,12 @@ OSErr FicNom::Move(const FicNom& newFileName)
   return err;
 }
 
-//	------------------------------------------------------------------------------------------------
-//	Fonctions externes
-//	------------------------------------------------------------------------------------------------
+//  ------------------------------------------------------------------------------------------------
+//  Fonctions externes
+//  ------------------------------------------------------------------------------------------------
 
 #ifdef macintosh
-	OSErr GetProgramName (ref_FicNom programName)
+  OSErr GetProgramName (ref_FicNom programName)
 {
   static short refNum = 0;
 
@@ -1050,33 +1048,33 @@ OSErr FicNom::Move(const FicNom& newFileName)
   // Must be done only once in the pragram life at the very beginning
   if (!refNum)
     refNum = CurResFile();
-		
+    
   // Initialize and clear the parameter blocks needed by PBGetFCBInfoSync
   FCBPBPtr lePB = (FCBPBPtr)NewPtrClear(sizeof(FCBPBRec));
 
   if (lePB) {
     // Set the flags to get the current program name
-    lePB->ioCompletion	= NULL;
-    lePB->ioNamePtr   	= (StringPtr)(&(programName.nom));
-    lePB->ioVRefNum   	= 0;
-    lePB->ioRefNum		= refNum;
-    lePB->ioFCBIndx		= 0;
-		
+    lePB->ioCompletion  = NULL;
+    lePB->ioNamePtr     = (StringPtr)(&(programName.nom));
+    lePB->ioVRefNum     = 0;
+    lePB->ioRefNum    = refNum;
+    lePB->ioFCBIndx   = 0;
+    
     // Get the information
     err = PBGetFCBInfoSync (lePB);
-		
+    
     if (err == noErr) {
       // Set current volume and directory
       programName.volume    = lePB->ioFCBVRefNum;
       programName.directory = lePB->ioFCBParID;
     }
-		
+    
     // Release the parameter block
     DisposePtr((Ptr)lePB);
         
   } else
     err = memFullErr;
-	
+  
   return err;
 }
 #endif

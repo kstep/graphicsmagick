@@ -335,7 +335,7 @@ CPropVariant & CPropVariant::operator=(LPPROPVARIANT lppropvar)
     {
         ASSERT( INVALID_SUBSCRIPT != wReserved1 );
         PropVariantClear(this);
-	Init();
+  Init();
         return (*this);
     }
     else
@@ -346,7 +346,7 @@ CPropVariant & CPropVariant::operator=(LPPROPVARIANT lppropvar)
         {
             USHORT wReserved1Save = wReserved1;
             PropVariantClear(this);
-	    Init(VT_VARIANT, wReserved1Save );
+      Init(VT_VARIANT, wReserved1Save );
             wReserved1 = wReserved1Save;
         }
 
@@ -437,7 +437,7 @@ void CPropVariant::Init(const CLIPDATA *p)
 
     if( sizeof(pclipdata->ulClipFmt) > p->cbSize )
     {
-	Init();
+  Init();
         return;
     }
 

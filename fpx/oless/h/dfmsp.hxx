@@ -188,9 +188,9 @@ public:
 
     void Set(WORD const cb, BYTE const *pb)
     {
-	_cb = cb;
-	if (pb)
-	    memcpy(_ab, pb, cb);
+  _cb = cb;
+  if (pb)
+      memcpy(_ab, pb, cb);
     }
     void Set(WCHAR const *pwcs) 
     { 
@@ -217,9 +217,9 @@ public:
 
     BOOL IsEqual(CDfName const *dfn) const
     {
-	// This assumes that all DfNames are actually Unicode strings
-	return _cb == dfn->_cb &&
-	    dfwcsnicmp((WCHAR *)_ab, (WCHAR *)dfn->GetBuffer(), _cb) == 0;
+  // This assumes that all DfNames are actually Unicode strings
+  return _cb == dfn->_cb &&
+      dfwcsnicmp((WCHAR *)_ab, (WCHAR *)dfn->GetBuffer(), _cb) == 0;
     }
     
     inline void ByteSwap(void);
@@ -332,7 +332,7 @@ typedef WORD DFLAGS;
 #define P_DENYREAD(f)   ((f) & DF_DENYREAD)
 #define P_DENYWRITE(f)  ((f) & DF_DENYWRITE)
 #define P_DENYALL(f)    (((f) & (DF_DENYREAD | DF_DENYWRITE)) == \
-			 (DF_DENYREAD | DF_DENYWRITE))
+       (DF_DENYREAD | DF_DENYWRITE))
 #define P_PRIORITY(f)   ((f) & DF_PRIORITY)
 #define P_TRANSACTED(f) ((f) & DF_TRANSACTED)
 #define P_DIRECT(f)     (!P_TRANSACTED(f))

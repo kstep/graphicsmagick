@@ -245,12 +245,12 @@ STDMETHODIMP CExposedIterator::Clone(IEnumSTATSTG **ppenm)
     olDebugOut((DEB_ITRACE, "In  CExposedIterator::Clone(%p)\n", ppenm));
     TRY
     {
-	olChk(ValidateOutPtrBuffer(ppenm));
-	*ppenm = NULL;
-	olChk(Validate());
+  olChk(ValidateOutPtrBuffer(ppenm));
+  *ppenm = NULL;
+  olChk(Validate());
         olChk(_ppdf->CheckReverted());
         olMem(piExp = new CExposedIterator(_ppdf, &_dfnKey));
-	*ppenm = piExp;
+  *ppenm = piExp;
     }
     CATCH(CException, e)
     {

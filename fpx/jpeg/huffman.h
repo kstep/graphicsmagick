@@ -19,5 +19,5 @@
 
 JPEGEXPORT
 void BuildHuffmanTable(unsigned char *bits,
-					   unsigned char *huffval,
-					   HUFFMAN_TABLE *table);
+             unsigned char *huffval,
+             HUFFMAN_TABLE *table);

@@ -8,7 +8,7 @@
 #      define _FPXDLL_
 #   endif
 #   if defined(_FPXDLL_)
-#      pragma warning( disable: 4273 )	/* Disable the stupid dll linkage warnings */
+#      pragma warning( disable: 4273 )  /* Disable the stupid dll linkage warnings */
 #      if !defined(_FPXLIB_)
 #         define JPEGEXPORT extern __declspec(dllimport)
 #         define FPXEXPORT extern __declspec(dllimport)

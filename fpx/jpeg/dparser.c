@@ -48,8 +48,8 @@ TABLE_LIST *New_Table_Element(int table_type)
             tlist->table = (void *) FPX_malloc(sizeof(QUANT_TABLE));
             check = 1;
         } else if (table_type == -1) {
-        	tlist->table = NULL;
-        	check = 0;
+          tlist->table = NULL;
+          check = 0;
         } else {
             tlist->table = (void *) FPX_malloc(sizeof(DHUFF_TABLE));
             check = 1;
@@ -255,7 +255,7 @@ TABLE_LIST *DP_Parse_DQT(
   DB_STATE *db_state,
   int *ntables,       /* number of tables */
   int type,           /* 0 = Chen, 1 = Lee, 2 = Winograd, 
-								 3 = Feig, 4 = Pruned Winograd */
+                 3 = Feig, 4 = Pruned Winograd */
   int *error_code)
 {
     int i, j;
@@ -318,7 +318,7 @@ TABLE_LIST *DP_Parse_DHT(
     
     length = len-2;
     while (length > 0L) {
-        if ((t = New_Table_Element(0)) == NULL) {	/* KW:  -1 now indicates no allocation! */
+        if ((t = New_Table_Element(0)) == NULL) { /* KW:  -1 now indicates no allocation! */
             Free_Table_List(tlist);
             *error_code = ERROR_MEM;
             return(NULL);

@@ -5,7 +5,7 @@
 // 
 //  Copyright (c) 1999 Digital Imaging Group, Inc.
 // 
-//  Contents:	Private CDirectory child tree methods
+//  Contents: Private CDirectory child tree methods
 //
 //  Notes:
 //
@@ -23,22 +23,22 @@
 //  Synopsis:   insert entry into child tree
 //
 //  Arguments:  [sidTree] -- storage entry in which to insert entry
-//		[sidNew]  -- new entry
-//		[pdfnNew] -- new entry name
+//    [sidNew]  -- new entry
+//    [pdfnNew] -- new entry name
 //
-//  Returns:	S_OK, STG_E_FILEALREADYEXISTS, or other error
+//  Returns:  S_OK, STG_E_FILEALREADYEXISTS, or other error
 //
-//  Modifies:	sidParent's child tree
+//  Modifies: sidParent's child tree
 //
-//  Algorithm:	Search down the binary tree to find the leaf node to which
-//		to add the new entry (failing if we find the name already
-//		exists).  Along the way we split nodes where needed to keep
-//		the tree balanced.
+//  Algorithm:  Search down the binary tree to find the leaf node to which
+//    to add the new entry (failing if we find the name already
+//    exists).  Along the way we split nodes where needed to keep
+//    the tree balanced.
 //
 //--------------------------------------------------------------------------
 
 SCODE  CDirectory::InsertEntry(
-	SID sidTree,
+  SID sidTree,
         SID sidNew,
         CDfName const *pdfnNew)
 {
@@ -97,7 +97,7 @@ SCODE  CDirectory::InsertEntry(
             if (sidLeft == NOSTREAM || sidRight == NOSTREAM)
                 break;
 
-	    {
+      {
                 CDirEntry *pdeLeft;
 
                 msfChk(GetDirEntry(sidLeft, FB_NONE, &pdeLeft));
@@ -111,14 +111,14 @@ SCODE  CDirectory::InsertEntry(
             {
                 CDirEntry *pdeRight;
 
-		msfChk(GetDirEntry(sidRight, FB_NONE, &pdeRight));
-		fRed = (pdeRight->GetColor() == DE_RED);
-		ReleaseEntry(sidRight);
+    msfChk(GetDirEntry(sidRight, FB_NONE, &pdeRight));
+    fRed = (pdeRight->GetColor() == DE_RED);
+    ReleaseEntry(sidRight);
             }
 
             if (fRed)
                 msfChk(SplitEntry(pdfnNew, sidTree, sidGreatGrandParent,
-			          sidGrandParent, sidParent, sidChild,
+                sidGrandParent, sidParent, sidChild,
                                   &sidChild));
         }
         while (FALSE);
@@ -198,7 +198,7 @@ EH_RelParent:
     {
         SID sidTemp;
         sc = SplitEntry(pdfnNew, sidTree, sidGreatGrandParent, sidGrandParent,
-		        sidParent, sidNew, &sidTemp);
+            sidParent, sidNew, &sidTemp);
     }
 Err:
     return(sc);
@@ -213,25 +213,25 @@ Err:
 //  Effects:    Passes up red link to parent
 //
 //  Arguments:  [pdfn]      -- search key
-//		[sidTree]   -- child tree sid
-//		[sidGreat]  -- greatgrandparent of child to split
-//		[sidGrand]  -- grandparent of child to split
-//		[sidParent] -- parent of child to split
-//		[sidChild]  -- child to split
-//		[psid]      -- place holder for tree position
+//    [sidTree]   -- child tree sid
+//    [sidGreat]  -- greatgrandparent of child to split
+//    [sidGrand]  -- grandparent of child to split
+//    [sidParent] -- parent of child to split
+//    [sidChild]  -- child to split
+//    [psid]      -- place holder for tree position
 //
-//  Returns:	S_OK, or error
+//  Returns:  S_OK, or error
 //
-//  Modifies:	psid, tree
+//  Modifies: psid, tree
 //
 //  Algorithm:
 //
-//  Notes:	
+//  Notes:  
 //
 //--------------------------------------------------------------------------
 
 SCODE CDirectory::SplitEntry(
-	CDfName const *pdfn,
+  CDfName const *pdfn,
         SID sidTree,
         SID sidGreat,
         SID sidGrand,
@@ -379,9 +379,9 @@ Err:
 //  Effects:    rotates localized portion of child tree
 //
 //  Arguments:  [pdfn] -- search key
-//		[sidTree] -- child tree sid
-//		[sidParent] -- root of rotation
-//		[psid]      -- placeholder for root after rotation
+//    [sidTree] -- child tree sid
+//    [sidParent] -- root of rotation
+//    [psid]      -- placeholder for root after rotation
 //
 //  Returns:    S_OK, or error
 //
@@ -394,7 +394,7 @@ Err:
 //--------------------------------------------------------------------------
 
 SCODE CDirectory::RotateEntry(
-	CDfName const *pdfn,
+  CDfName const *pdfn,
         SID sidTree,
         SID sidParent,
         SID *psid)
@@ -546,27 +546,27 @@ Err:
 //
 //  Member:     CDirectory::FindEntry, private
 //
-//  Synopsis:	find entry info based on name (optionally removing it)
+//  Synopsis: find entry info based on name (optionally removing it)
 //
-//  Effects:	find - none, remove - takes entry out of child list
+//  Effects:  find - none, remove - takes entry out of child list
 //
-//  Arguments:	[sidParent] -- sid of parent entry to search
-//		[pdfn]      -- name to search for
-//		[deop]      -- entry operation (find or remove)
-//		[peb]       -- entry information buffer
+//  Arguments:  [sidParent] -- sid of parent entry to search
+//    [pdfn]      -- name to search for
+//    [deop]      -- entry operation (find or remove)
+//    [peb]       -- entry information buffer
 //
-//  Returns:	S_OK, STG_E_FILENOTFOUND, or other error
+//  Returns:  S_OK, STG_E_FILENOTFOUND, or other error
 //
-//  Modifies:	peb
+//  Modifies: peb
 //
-//  Algorithm:	To find the entry we search down the binary tree.
-//		To remove the entry, we need to patch the tree to keep it
-//		as a valid binary tree.
+//  Algorithm:  To find the entry we search down the binary tree.
+//    To remove the entry, we need to patch the tree to keep it
+//    as a valid binary tree.
 //
 //--------------------------------------------------------------------------
 
 SCODE  CDirectory::FindEntry(
-	SID sidParent,
+  SID sidParent,
         CDfName const *pdfn,
         DIRENTRYOP deop,
         SEntryBuffer *peb)
@@ -596,7 +596,7 @@ SCODE  CDirectory::FindEntry(
             sc = STG_E_FILENOTFOUND;
             goto EH_RelPrev;
 // Removed this line to supress the debug error print.
-//	    msfChkTo(EH_RelPrev, STG_E_FILENOTFOUND);
+//      msfChkTo(EH_RelPrev, STG_E_FILENOTFOUND);
         }
 
         msfChkTo(EH_RelPrev, GetDirEntry(sidFind, FB_NONE, &pdeFind));
@@ -698,7 +698,7 @@ SCODE  CDirectory::FindEntry(
 
                 //  we wait to assign sidInsert so we can clean up
                 msfChkTo(EH_RelIns, GetDirEntry(pdePreInsert->GetLeftSib(),
-						FB_NONE, &pdeInsert));
+            FB_NONE, &pdeInsert));
 
                 sidInsert = pdePreInsert->GetLeftSib();
 
@@ -718,7 +718,7 @@ SCODE  CDirectory::FindEntry(
 
                     //  we wait to assign sidInsert to we can clean up
                     msfChkTo(EH_RelIns, GetDirEntry(sidLeft,
-						    FB_NONE, &pdeInsert));
+                FB_NONE, &pdeInsert));
 
                     sidInsert = sidLeft;
                 }
@@ -733,7 +733,7 @@ SCODE  CDirectory::FindEntry(
 
                 ReleaseEntry(sidPreInsert);
                 msfChkTo(EH_RelIns, GetDirEntry(sidPreInsert, FB_DIRTY,
-				                &pdePreInsert));
+                        &pdePreInsert));
 
                 pdePreInsert->SetLeftSib(pdeInsert->GetRightSib());
                 ReleaseEntry(sidPreInsert);
@@ -745,19 +745,19 @@ SCODE  CDirectory::FindEntry(
 
                 ReleaseEntry(sidInsert);
                 msfChkTo(EH_RelFind, GetDirEntry(sidInsert, FB_DIRTY,
-						 &pdeInsert));
+             &pdeInsert));
                 pdeInsert->SetRightSib(pdeFind->GetRightSib());
             }
             else
             {
                 //  sidFind's right child has no left child, so we can patch
-		//  the tree by making sidFind's right child's left child
+    //  the tree by making sidFind's right child's left child
                 //  point to sidFind's left child, and then replacing sidFind
                 //  with sidFind's right child.
 
                 ReleaseEntry(sidInsert);
                 msfChkTo(EH_RelFind, GetDirEntry(sidInsert, FB_DIRTY,
-				                 &pdeInsert));
+                         &pdeInsert));
 
                 //  fall through to do the work
             }
@@ -833,9 +833,9 @@ int CDirectory::NameCompare(CDfName const *pdfn1, CDfName const *pdfn2)
 
     if (iCmp == 0)
     {
-	msfAssert(pdfn1->GetLength() != 0);
-	iCmp = dfwcsnicmp((WCHAR *)pdfn1->GetBuffer(),
-	    (WCHAR *)pdfn2->GetBuffer(), pdfn1->GetLength());
+  msfAssert(pdfn1->GetLength() != 0);
+  iCmp = dfwcsnicmp((WCHAR *)pdfn1->GetBuffer(),
+      (WCHAR *)pdfn2->GetBuffer(), pdfn1->GetLength());
     }
 
     return(iCmp);

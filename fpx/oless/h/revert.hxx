@@ -5,13 +5,13 @@
 // 
 //  Copyright (c) 1999 Digital Imaging Group, Inc.
 // 
-//  Contents:	PRevertable definition
+//  Contents: PRevertable definition
 //
-//  Classes:	PRevertable
+//  Classes:  PRevertable
 //
-//  Notes:	This class forms the root of all objects in the
-//		transaction tree that understand reversion.
-//		It allows lists of them to be formed.
+//  Notes:  This class forms the root of all objects in the
+//    transaction tree that understand reversion.
+//    It allows lists of them to be formed.
 //
 //---------------------------------------------------------------
 
@@ -46,9 +46,9 @@ private:
 
 //+--------------------------------------------------------------
 //
-//  Member:	PRevertable::GetLuid, public
+//  Member: PRevertable::GetLuid, public
 //
-//  Synopsis:	Returns the LUID
+//  Synopsis: Returns the LUID
 //
 //---------------------------------------------------------------
 
@@ -59,9 +59,9 @@ inline DFLUID PRevertable::GetLuid(void) const
 
 //+--------------------------------------------------------------
 //
-//  Member:	PRevertable::GetDFlags, public
+//  Member: PRevertable::GetDFlags, public
 //
-//  Synopsis:	Returns the flags
+//  Synopsis: Returns the flags
 //
 //---------------------------------------------------------------
 
@@ -72,9 +72,9 @@ inline DFLAGS PRevertable::GetDFlags(void) const
 
 //+--------------------------------------------------------------
 //
-//  Member:	PRevertable::GetNext, public
+//  Member: PRevertable::GetNext, public
 //
-//  Synopsis:	Returns the next revertable
+//  Synopsis: Returns the next revertable
 //
 //---------------------------------------------------------------
 

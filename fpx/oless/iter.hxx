@@ -5,9 +5,9 @@
 // 
 //  Copyright (c) 1999 Digital Imaging Group, Inc.
 // 
-//  Contents:	CDocFileIterator header file
+//  Contents: CDocFileIterator header file
 //
-//  Classes:	CDocFileIterator
+//  Classes:  CDocFileIterator
 //
 //---------------------------------------------------------------
 
@@ -21,12 +21,12 @@ class CStgHandle;
 
 //+--------------------------------------------------------------
 //
-//  Class:	CDocFileIterator (dfi)
+//  Class:  CDocFileIterator (dfi)
 //
-//  Purpose:	Derive a new iterator that remembers what DocFile it
-//		came from
+//  Purpose:  Derive a new iterator that remembers what DocFile it
+//    came from
 //
-//  Interface:	Same as PDocFileIterator
+//  Interface:  Same as PDocFileIterator
 //
 //---------------------------------------------------------------
 

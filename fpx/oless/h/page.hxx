@@ -5,12 +5,12 @@
 // 
 //  Copyright (c) 1999 Digital Imaging Group, Inc.
 // 
-//  Contents:	Paging classes for MSF
+//  Contents: Paging classes for MSF
 //
-//  Classes:	CMSFPage
+//  Classes:  CMSFPage
 //              CMSFPageTable
 //
-//  Functions:	
+//  Functions:  
 //
 //----------------------------------------------------------------------------
 
@@ -32,13 +32,13 @@ class CPagedVector;
 
 //+---------------------------------------------------------------------------
 //
-//  Class:	CMSFPage (mp)
+//  Class:  CMSFPage (mp)
 //
-//  Purpose:	Contain MSF data in a form that is swappable to disk
+//  Purpose:  Contain MSF data in a form that is swappable to disk
 //
-//  Interface:	See below.
+//  Interface:  See below.
 //
-//  Notes:	
+//  Notes:  
 //
 //----------------------------------------------------------------------------
 
@@ -111,9 +111,9 @@ private:
 
 //+---------------------------------------------------------------------------
 //
-//  Member:	CMSFPage::~CMSFPage, public
+//  Member: CMSFPage::~CMSFPage, public
 //
-//  Synopsis:	Destructor
+//  Synopsis: Destructor
 //
 //----------------------------------------------------------------------------
 
@@ -127,16 +127,16 @@ inline CMSFPage::~CMSFPage()
 
 //+---------------------------------------------------------------------------
 //
-//  Member:	CMSFPage::operator new, public
+//  Member: CMSFPage::operator new, public
 //
-//  Synopsis:	Overloaded new operator for CMSFPage.
+//  Synopsis: Overloaded new operator for CMSFPage.
 //
-//  Arguments:	[size] -- Default size field
+//  Arguments:  [size] -- Default size field
 //              [sizeData] -- Size of byte array to allocate.
 //
-//  Returns:	Pointer to new CMSFPage object
+//  Returns:  Pointer to new CMSFPage object
 //
-//  Notes:	*Finish This*
+//  Notes:  *Finish This*
 //
 //----------------------------------------------------------------------------
 
@@ -149,9 +149,9 @@ inline void * CMSFPage::operator new(size_t size, size_t sizeData)
 
 //+---------------------------------------------------------------------------
 //
-//  Member:	CMSFPage::GetNext, public
+//  Member: CMSFPage::GetNext, public
 //
-//  Synopsis:	Returns the next page in the list
+//  Synopsis: Returns the next page in the list
 //
 //----------------------------------------------------------------------------
 
@@ -162,9 +162,9 @@ inline CMSFPage * CMSFPage::GetNext(void) const
 
 //+---------------------------------------------------------------------------
 //
-//  Member:	CMSFPage::GetPrev, public
+//  Member: CMSFPage::GetPrev, public
 //
-//  Synopsis:	Returns the next page in the list
+//  Synopsis: Returns the next page in the list
 //
 //----------------------------------------------------------------------------
 
@@ -175,9 +175,9 @@ inline CMSFPage * CMSFPage::GetPrev(void) const
 
 //+---------------------------------------------------------------------------
 //
-//  Member:	CMSFPage::GetSid, public
+//  Member: CMSFPage::GetSid, public
 //
-//  Synopsis:	Returns the SID for this page
+//  Synopsis: Returns the SID for this page
 //
 //----------------------------------------------------------------------------
 
@@ -188,9 +188,9 @@ inline SID CMSFPage::GetSid(void) const
 
 //+---------------------------------------------------------------------------
 //
-//  Member:	CMSFPage::GetOffset, public
+//  Member: CMSFPage::GetOffset, public
 //
-//  Synopsis:	Returns the array offset for this page
+//  Synopsis: Returns the array offset for this page
 //
 //----------------------------------------------------------------------------
 
@@ -201,9 +201,9 @@ inline ULONG CMSFPage::GetOffset(void) const
 
 //+---------------------------------------------------------------------------
 //
-//  Member:	CMSFPage::GetSect, public
+//  Member: CMSFPage::GetSect, public
 //
-//  Synopsis:	Returns the SECT for this page
+//  Synopsis: Returns the SECT for this page
 //
 //----------------------------------------------------------------------------
 
@@ -214,9 +214,9 @@ inline SECT CMSFPage::GetSect(void) const
 
 //+---------------------------------------------------------------------------
 //
-//  Member:	CMSFPage::GetFlags, public
+//  Member: CMSFPage::GetFlags, public
 //
-//  Synopsis:	Returns the flags for this page
+//  Synopsis: Returns the flags for this page
 //
 //----------------------------------------------------------------------------
 
@@ -227,9 +227,9 @@ inline DWORD CMSFPage::GetFlags(void) const
 
 //+---------------------------------------------------------------------------
 //
-//  Member:	CMSFPage::GetData, public
+//  Member: CMSFPage::GetData, public
 //
-//  Synopsis:	Returns a pointer to the page storage for this page
+//  Synopsis: Returns a pointer to the page storage for this page
 //
 //----------------------------------------------------------------------------
 
@@ -240,9 +240,9 @@ inline void * CMSFPage::GetData(void) const
 
 //+---------------------------------------------------------------------------
 //
-//  Member:	CMSFPage::GetVector, public
+//  Member: CMSFPage::GetVector, public
 //
-//  Synopsis:	Returns a pointer to the vector holding this page
+//  Synopsis: Returns a pointer to the vector holding this page
 //
 //----------------------------------------------------------------------------
 
@@ -253,9 +253,9 @@ inline CPagedVector * CMSFPage::GetVector(void) const
 
 //+---------------------------------------------------------------------------
 //
-//  Member:	CMSFPage::SetChain, public
+//  Member: CMSFPage::SetChain, public
 //
-//  Synopsis:	Sets the chain pointers for this page
+//  Synopsis: Sets the chain pointers for this page
 //
 //----------------------------------------------------------------------------
 
@@ -269,9 +269,9 @@ inline void CMSFPage::SetChain(
 
 //+---------------------------------------------------------------------------
 //
-//  Member:	CMSFPage::SetPrev, public
+//  Member: CMSFPage::SetPrev, public
 //
-//  Synopsis:	Sets the prev pointer for this page
+//  Synopsis: Sets the prev pointer for this page
 //
 //----------------------------------------------------------------------------
 
@@ -282,9 +282,9 @@ inline void CMSFPage::SetPrev(CMSFPage *const pmpPrev)
 
 //+---------------------------------------------------------------------------
 //
-//  Member:	CMSFPage::SetNext, public
+//  Member: CMSFPage::SetNext, public
 //
-//  Synopsis:	Sets the next pointer for this page
+//  Synopsis: Sets the next pointer for this page
 //
 //----------------------------------------------------------------------------
 
@@ -295,9 +295,9 @@ inline void CMSFPage::SetNext(CMSFPage *const pmpNext)
 
 //+---------------------------------------------------------------------------
 //
-//  Member:	CMSFPage::SetSid, public
+//  Member: CMSFPage::SetSid, public
 //
-//  Synopsis:	Sets the SID for this page
+//  Synopsis: Sets the SID for this page
 //
 //----------------------------------------------------------------------------
 
@@ -308,9 +308,9 @@ inline void CMSFPage::SetSid(const SID sid)
 
 //+---------------------------------------------------------------------------
 //
-//  Member:	CMSFPage::SetOffset, public
+//  Member: CMSFPage::SetOffset, public
 //
-//  Synopsis:	Sets the offset for this page
+//  Synopsis: Sets the offset for this page
 //
 //----------------------------------------------------------------------------
 
@@ -321,9 +321,9 @@ inline void CMSFPage::SetOffset(const ULONG ulOffset)
 
 //+---------------------------------------------------------------------------
 //
-//  Member:	CMSFPage::SetSect, public
+//  Member: CMSFPage::SetSect, public
 //
-//  Synopsis:	Sets the SECT for this page
+//  Synopsis: Sets the SECT for this page
 //
 //----------------------------------------------------------------------------
 
@@ -334,9 +334,9 @@ inline void CMSFPage::SetSect(const SECT sect)
 
 //+---------------------------------------------------------------------------
 //
-//  Member:	CMSFPage::SetSect, public
+//  Member: CMSFPage::SetSect, public
 //
-//  Synopsis:	Sets the SECT for this page
+//  Synopsis: Sets the SECT for this page
 //
 //----------------------------------------------------------------------------
 
@@ -347,9 +347,9 @@ inline void CMSFPage::SetFlags(const DWORD dwFlags)
 
 //+---------------------------------------------------------------------------
 //
-//  Member:	CMSFPage::SetVector, public
+//  Member: CMSFPage::SetVector, public
 //
-//  Synopsis:	Sets the pointer to the vector holding this page
+//  Synopsis: Sets the pointer to the vector holding this page
 //
 //----------------------------------------------------------------------------
 
@@ -360,9 +360,9 @@ inline void CMSFPage::SetVector(CPagedVector *ppv)
 
 //+---------------------------------------------------------------------------
 //
-//  Member:	CMSFPage::SetDirty, public
+//  Member: CMSFPage::SetDirty, public
 //
-//  Synopsis:	Sets the dirty bit for this page
+//  Synopsis: Sets the dirty bit for this page
 //
 //----------------------------------------------------------------------------
 
@@ -373,9 +373,9 @@ inline void CMSFPage::SetDirty(void)
 
 //+---------------------------------------------------------------------------
 //
-//  Member:	CMSFPage::ResetDirty, public
+//  Member: CMSFPage::ResetDirty, public
 //
-//  Synopsis:	Resets the dirty bit for this page
+//  Synopsis: Resets the dirty bit for this page
 //
 //----------------------------------------------------------------------------
 
@@ -386,9 +386,9 @@ inline void CMSFPage::ResetDirty(void)
 
 //+---------------------------------------------------------------------------
 //
-//  Member:	CMSFPage::IsDirty, public
+//  Member: CMSFPage::IsDirty, public
 //
-//  Synopsis:	Returns TRUE if the dirty bit is set on this page
+//  Synopsis: Returns TRUE if the dirty bit is set on this page
 //
 //----------------------------------------------------------------------------
 
@@ -399,9 +399,9 @@ inline BOOL CMSFPage::IsDirty(void) const
 
 //+---------------------------------------------------------------------------
 //
-//  Member:	CMSFPage::IsInUse, public
+//  Member: CMSFPage::IsInUse, public
 //
-//  Synopsis:	Returns TRUE if the page is currently in use
+//  Synopsis: Returns TRUE if the page is currently in use
 //
 //----------------------------------------------------------------------------
 
@@ -412,9 +412,9 @@ inline BOOL CMSFPage::IsInUse(void) const
 
 //+---------------------------------------------------------------------------
 //
-//  Member:	CMSFPage::AddRef, public
+//  Member: CMSFPage::AddRef, public
 //
-//  Synopsis:	Increment the reference count
+//  Synopsis: Increment the reference count
 //
 //----------------------------------------------------------------------------
 
@@ -426,9 +426,9 @@ inline void CMSFPage::AddRef(void)
 
 //+---------------------------------------------------------------------------
 //
-//  Member:	CMSFPage::Release, public
+//  Member: CMSFPage::Release, public
 //
-//  Synopsis:	Decrement the reference count
+//  Synopsis: Decrement the reference count
 //
 //----------------------------------------------------------------------------
 
@@ -440,13 +440,13 @@ inline void CMSFPage::Release(void)
 
 //+---------------------------------------------------------------------------
 //
-//  Class:	CMSFPageTable
+//  Class:  CMSFPageTable
 //
-//  Purpose:	Page allocator and handler for MSF
+//  Purpose:  Page allocator and handler for MSF
 //
-//  Interface:	See below
+//  Interface:  See below
 //
-//  Notes:	
+//  Notes:  
 //
 //----------------------------------------------------------------------------
 
@@ -509,15 +509,15 @@ private:
 
 //+---------------------------------------------------------------------------
 //
-//  Member:	CMSFPageTable::GetNewPage, private
+//  Member: CMSFPageTable::GetNewPage, private
 //
-//  Synopsis:	Insert a new page into the list and return a pointer to it.
+//  Synopsis: Insert a new page into the list and return a pointer to it.
 //
-//  Arguments:	None.
+//  Arguments:  None.
 //
-//  Returns:	Pointer to new page.  Null if there was an allocation error.
+//  Returns:  Pointer to new page.  Null if there was an allocation error.
 //
-//  Notes:	
+//  Notes:  
 //
 //----------------------------------------------------------------------------
 
@@ -528,9 +528,9 @@ inline CMSFPage * CMSFPageTable::GetNewPage(void)
 
 //+---------------------------------------------------------------------------
 //
-//  Member:	CMSFPageTable::AddRef, public
+//  Member: CMSFPageTable::AddRef, public
 //
-//  Synopsis:	Increment the ref coutn
+//  Synopsis: Increment the ref coutn
 //
 //----------------------------------------------------------------------------
 
@@ -541,9 +541,9 @@ inline void CMSFPageTable::AddRef(void)
 
 //+---------------------------------------------------------------------------
 //
-//  Member:	CMSFPageTable::Release, public
+//  Member: CMSFPageTable::Release, public
 //
-//  Synopsis:	Decrement the ref count, delete if necessary
+//  Synopsis: Decrement the ref count, delete if necessary
 //
 //----------------------------------------------------------------------------
 
@@ -559,11 +559,11 @@ inline void CMSFPageTable::Release(void)
 
 //+---------------------------------------------------------------------------
 //
-//  Member:	CMSFPageTable::SetParent, public
+//  Member: CMSFPageTable::SetParent, public
 //
-//  Synopsis:	Set the parent of this page table
+//  Synopsis: Set the parent of this page table
 //
-//  Arguments:	[pms] -- Pointer to new parent
+//  Arguments:  [pms] -- Pointer to new parent
 //
 //----------------------------------------------------------------------------
 

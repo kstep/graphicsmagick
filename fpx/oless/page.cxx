@@ -5,11 +5,11 @@
 // 
 //  Copyright (c) 1999 Digital Imaging Group, Inc.
 // 
-//  Contents:	Paging code for MSF
+//  Contents: Paging code for MSF
 //
-//  Classes:	Defined in page.hxx
+//  Classes:  Defined in page.hxx
 //
-//  Functions:	
+//  Functions:  
 //
 //----------------------------------------------------------------
 
@@ -21,9 +21,9 @@
 
 //+---------------------------------------------------------------------
 //
-//  Member:	CMSFPage::Byteswap, public
+//  Member: CMSFPage::Byteswap, public
 //
-//  Synopsis:	Byteswap the elments of the page
+//  Synopsis: Byteswap the elments of the page
 //
 //  Algorithm:  Call the corresponding byteswap routine depending on the 
 //              actual type of the Mutli-stream.
@@ -55,13 +55,13 @@ void CMSFPage::ByteSwap(void)
 
 //+---------------------------------------------------------------------------
 //
-//  Member:	CMSFPageTable::CMSFPageTable, public
+//  Member: CMSFPageTable::CMSFPageTable, public
 //
-//  Synopsis:	CMSFPageTable constructor.
+//  Synopsis: CMSFPageTable constructor.
 //
-//  Arguments:	[pmsParent] -- Pointer to multistream for this page table.
+//  Arguments:  [pmsParent] -- Pointer to multistream for this page table.
 //
-//  Notes:	
+//  Notes:  
 //
 //----------------------------------------------------------------------------
 
@@ -78,9 +78,9 @@ CMSFPageTable::CMSFPageTable( CMStream *const pmsParent,
 
 //+---------------------------------------------------------------------------
 //
-//  Member:	CMSFPage::CMSFPage, public
+//  Member: CMSFPage::CMSFPage, public
 //
-//  Synopsis:	CMSFPage default constructor
+//  Synopsis: CMSFPage default constructor
 //
 //----------------------------------------------------------------------------
 
@@ -109,9 +109,9 @@ CMSFPage::CMSFPage(CMSFPage *pmp)
 
 //+---------------------------------------------------------------------------
 //
-//  Member:	CMSFPageTable::~CMSFPageTable, public
+//  Member: CMSFPageTable::~CMSFPageTable, public
 //
-//  Synopsis:	CMSFPageTable destructor
+//  Synopsis: CMSFPageTable destructor
 //
 //----------------------------------------------------------------------------
 
@@ -140,15 +140,15 @@ CMSFPageTable::~CMSFPageTable()
 
 //+---------------------------------------------------------------------------
 //
-//  Member:	CMSFPageTable::Init, public
+//  Member: CMSFPageTable::Init, public
 //
-//  Synopsis:	Initialize a CMSFPageTable
+//  Synopsis: Initialize a CMSFPageTable
 //
-//  Arguments:	[cPages] -- Number of pages to preallocate.
+//  Arguments:  [cPages] -- Number of pages to preallocate.
 //
-//  Returns:	Appropriate status code
+//  Returns:  Appropriate status code
 //
-//  Notes:	
+//  Notes:  
 //
 //----------------------------------------------------------------------------
 
@@ -179,13 +179,13 @@ SCODE CMSFPageTable::Init(void)
 
 //+---------------------------------------------------------------------------
 //
-//  Member:	CMSFPageTable::FlushPage, public
+//  Member: CMSFPageTable::FlushPage, public
 //
-//  Synopsis:	Flush a page
+//  Synopsis: Flush a page
 //
-//  Arguments:	[pmp] -- Pointer to page to flush
+//  Arguments:  [pmp] -- Pointer to page to flush
 //
-//  Returns:	Appropriate status code
+//  Returns:  Appropriate status code
 //
 //----------------------------------------------------------------------------
 
@@ -234,15 +234,15 @@ SCODE CMSFPageTable::FlushPage(CMSFPage *pmp)
 
 //+---------------------------------------------------------------------------
 //
-//  Member:	CMSFPageTable::GetFreePage, public
+//  Member: CMSFPageTable::GetFreePage, public
 //
-//  Synopsis:	Return a pointer to a free page.
+//  Synopsis: Return a pointer to a free page.
 //
-//  Arguments:	[ppmp] -- Pointer to storage for return pointer
+//  Arguments:  [ppmp] -- Pointer to storage for return pointer
 //
-//  Returns:	Appropriate status code
+//  Returns:  Appropriate status code
 //
-//  Notes:	
+//  Notes:  
 //
 //----------------------------------------------------------------------------
 
@@ -326,18 +326,18 @@ SCODE CMSFPageTable::GetFreePage(CMSFPage **ppmp)
 
 //+---------------------------------------------------------------------------
 //
-//  Member:	CMSFPageTable::FindPage, public
+//  Member: CMSFPageTable::FindPage, public
 //
-//  Synopsis:	Find and return a given page
+//  Synopsis: Find and return a given page
 //
 //  Arguments:  [ppv] -- Pointer to vector of page to return
 //              [sid] -- SID of page to return
 //              [ulOffset] -- Offset of page to return
 //              [ppmp] -- Location to return pointer
 //
-//  Returns:	Appropriate status code
+//  Returns:  Appropriate status code
 //
-//  Notes:	
+//  Notes:  
 //
 //----------------------------------------------------------------------------
 
@@ -385,17 +385,17 @@ SCODE CMSFPageTable::FindPage(
 
 //+---------------------------------------------------------------------------
 //
-//  Member:	CMSFPageTable::GetPage, public
+//  Member: CMSFPageTable::GetPage, public
 //
-//  Synopsis:	Find and return a given page
+//  Synopsis: Find and return a given page
 //
-//  Arguments:	[sid] -- SID of page to return
+//  Arguments:  [sid] -- SID of page to return
 //              [ulOffset] -- Offset of page to return
 //              [ppmp] -- Location to return pointer
 //
-//  Returns:	Appropriate status code
+//  Returns:  Appropriate status code
 //
-//  Notes:	
+//  Notes:  
 //
 //----------------------------------------------------------------------------
 
@@ -449,11 +449,11 @@ SCODE CMSFPageTable::GetPage(
 
 //+---------------------------------------------------------------------------
 //
-//  Member:	CMSFPageTable::ReleasePage, public
+//  Member: CMSFPageTable::ReleasePage, public
 //
-//  Synopsis:	Release a given page
+//  Synopsis: Release a given page
 //
-//  Arguments:	[sid] -- SID of page to release
+//  Arguments:  [sid] -- SID of page to release
 //              [ulOffset] -- Offset of page to release
 //
 //----------------------------------------------------------------------------
@@ -474,11 +474,11 @@ void CMSFPageTable::ReleasePage(CPagedVector *ppv, SID sid, ULONG ulOffset)
 
 //+---------------------------------------------------------------------------
 //
-//  Member:	CMSFPageTable::Flush, public
+//  Member: CMSFPageTable::Flush, public
 //
-//  Synopsis:	Flush dirty pages to disk
+//  Synopsis: Flush dirty pages to disk
 //
-//  Returns:	Appropriate status code
+//  Returns:  Appropriate status code
 //
 //----------------------------------------------------------------------------
 
@@ -511,11 +511,11 @@ SCODE CMSFPageTable::Flush(void)
 
 //+---------------------------------------------------------------------------
 //
-//  Member:	CMSFPageTable::FreePages, public
+//  Member: CMSFPageTable::FreePages, public
 //
-//  Synopsis:	Free all the pages associated with a vector.
+//  Synopsis: Free all the pages associated with a vector.
 //
-//  Arguments:	[ppv] -- Pointer to vector to free pages for.
+//  Arguments:  [ppv] -- Pointer to vector to free pages for.
 //
 //----------------------------------------------------------------------------
 
@@ -541,13 +541,13 @@ void CMSFPageTable::FreePages(CPagedVector *ppv)
 
 //+---------------------------------------------------------------------------
 //
-//  Member:	CMSFPageTable::FindSwapPage, private
+//  Member: CMSFPageTable::FindSwapPage, private
 //
-//  Synopsis:	Find a page to swap out.
+//  Synopsis: Find a page to swap out.
 //
-//  Arguments:	None.
+//  Arguments:  None.
 //
-//  Returns:	Pointer to page to swap out.
+//  Returns:  Pointer to page to swap out.
 //
 //----------------------------------------------------------------------------
 

@@ -5,8 +5,8 @@
 // 
 //  Copyright (c) 1999 Digital Imaging Group, Inc.
 // 
-//  Contents:	Macros to make exception code no-ops in 16-bit
-//		Includes real exceptions for 32-bit
+//  Contents: Macros to make exception code no-ops in 16-bit
+//    Includes real exceptions for 32-bit
 //
 //---------------------------------------------------------------
 

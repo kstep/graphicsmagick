@@ -102,7 +102,7 @@ typedef struct tagPROPERTY_INFORMATION  // pinfo
 
 } PROPERTY_INFORMATION;
 
-#define VT_DICTIONARY	(VT_VECTOR | VT_ILLEGALMASKED)
+#define VT_DICTIONARY (VT_VECTOR | VT_ILLEGALMASKED)
 
 
 
@@ -213,25 +213,25 @@ private:
 #define CPSS_DOCUMENTSUMMARYINFO    0x08  // DocumentSummaryInfo propset
 #define CPSS_USERDEFINEDPROPERTIES  0x10  // DocumentSummaryInfo: second section
 #define CPSS_MULTIPLESECTIONS       0x20  // Multiple property sections
-#define CPSS_USERDEFINEDDELETED	    0x40  // second section deleted
+#define CPSS_USERDEFINEDDELETED     0x40  // second section deleted
 #define CPSS_VARIANTVECTOR          0x80  // Only for recursion
 
 
 typedef enum tagLOADSTATE
 {
-    LOADSTATE_FAIL			= 0,	// load failed
-    LOADSTATE_DONE			= 1,	// load succeeded
-    LOADSTATE_BADFMTID			= 2,	// fmtid mismatch
-    LOADSTATE_USERDEFINEDNOTFOUND	= 3,	// user defined section missing
-    LOADSTATE_USERDEFINEDDELETE		= 4,	// delete user defined section
+    LOADSTATE_FAIL      = 0,  // load failed
+    LOADSTATE_DONE      = 1,  // load succeeded
+    LOADSTATE_BADFMTID      = 2,  // fmtid mismatch
+    LOADSTATE_USERDEFINEDNOTFOUND = 3,  // user defined section missing
+    LOADSTATE_USERDEFINEDDELETE   = 4,  // delete user defined section
 } LOADSTATE;
 
 
 typedef enum tagPATCHOP
 {
-    PATCHOP_COMPUTESIZE			= 0,	// just compute expanded size
-    PATCHOP_ALIGNLENGTHS		= 1,	// just align string lengths
-    PATCHOP_EXPAND			= 2,	// expand property in-place
+    PATCHOP_COMPUTESIZE     = 0,  // just compute expanded size
+    PATCHOP_ALIGNLENGTHS    = 1,  // just align string lengths
+    PATCHOP_EXPAND      = 2,  // expand property in-place
 } PATCHOP;
 
 // Create a macro that tells us the type
@@ -308,9 +308,9 @@ public:
 
 
     VOID Open(
-        OPTIONAL IN GUID const *pfmtid,	// property set fmtid (create or Word95)
+        OPTIONAL IN GUID const *pfmtid, // property set fmtid (create or Word95)
         OPTIONAL IN GUID const *pclsid, // CLASSID of propset code (create only)
-	IN ULONG LocaleId,		// Locale Id (create only)
+  IN ULONG LocaleId,    // Locale Id (create only)
         OPTIONAL OUT ULONG *pOSVersion, // OS Version field in the propset header
         IN USHORT CodePage,             // CodePage of propset (create only)
         OUT NTSTATUS *pstatus);         // Return code.
@@ -502,13 +502,13 @@ private:
     VOID      _SetModified(VOID) { _MSTM(SetModified)(); }
 
 #if DBGPROP
-public:		// public for fnEntryNameCompare only!
+public:   // public for fnEntryNameCompare only!
 #endif
     BOOLEAN   _ComparePropertyNames(
-		    IN VOID const *pvName1,
-		    IN VOID const *pvName2,
+        IN VOID const *pvName1,
+        IN VOID const *pvName2,
                     IN BOOL fSameByteOrder,
-		    IN ULONG cbName) const;
+        IN ULONG cbName) const;
 #if DBGPROP
 private:
 #endif
@@ -603,7 +603,7 @@ private:
     USHORT                 _CodePage;
     BYTE                   _Flags;
     BYTE                   _State;
-    ULONG		   _cbTail;
+    ULONG      _cbTail;
     PMemoryAllocator      *_pma;
     CMappedStream         *_pmstm;        // user mode: replacable virtual class
 };
@@ -619,7 +619,7 @@ VOID CopyPropertyValue(
 ULONG PropertyLengthAsVariant(
         IN SERIALIZEDPROPERTYVALUE const *pprop,
         IN ULONG cbprop,
-	IN USHORT CodePage,
+  IN USHORT CodePage,
         IN BYTE flags,
         OUT NTSTATUS *pstatus);
 #endif

@@ -1,18 +1,18 @@
-//	------------------------------------------------------------------------------------------------
-//	MODULE		:	Commun
-//	LANGAGE		:	C(++)
-//	DESCRIPTION	:	Header included everywhere but by Application project and PlutonCommun.h
-//	COMMENTAIRE	:	Contains global declarations.
-//  SCCSID      : @(#)common.h	1.1 11:49:57 18 Dec 1996
+//  ------------------------------------------------------------------------------------------------
+//  MODULE    : Commun
+//  LANGAGE   : C(++)
+//  DESCRIPTION : Header included everywhere but by Application project and PlutonCommun.h
+//  COMMENTAIRE : Contains global declarations.
+//  SCCSID      : @(#)common.h  1.1 11:49:57 18 Dec 1996
 //  ----------------------------------------------------------------------------
 //  Copyright (c) 1999 Digital Imaging Group, Inc.
 //  For conditions of distribution and use, see copyright notice
 //  in Flashpix.h
 //  ----------------------------------------------------------------------------
-//	------------------------------------------------------------------------------------------------
+//  ------------------------------------------------------------------------------------------------
 #ifndef Commun_h
 #   define Commun_h
-//	------------------------------------------------------------------------------------------------
+//  ------------------------------------------------------------------------------------------------
 
 /**
  * Under VISUALC we have single threaded static libraries, or
@@ -23,7 +23,7 @@
 #      define _FPXDLL_
 #   endif
 #   if defined(_FPXDLL_)
-#      pragma warning( disable: 4273 )	/* Disable the stupid dll linkage warnings */
+#      pragma warning( disable: 4273 )  /* Disable the stupid dll linkage warnings */
 #      if !defined(_FPXLIB_)
 #         define JPEGEXPORT extern __declspec(dllimport)
 #         define FPXEXPORT extern __declspec(dllimport)
@@ -47,13 +47,13 @@
 #endif
 
 #ifndef ApplCommun_h
-	#include	"common_a.h"
+  #include  "common_a.h"
 #endif
 
 #ifndef PlutonCommun_h
-	#include 	"common_b.h"
+  #include  "common_b.h"
 #endif
 
-//	------------------------------------------------------------------------------------------------
-	#endif // Commun_h
-//	------------------------------------------------------------------------------------------------
+//  ------------------------------------------------------------------------------------------------
+  #endif // Commun_h
+//  ------------------------------------------------------------------------------------------------

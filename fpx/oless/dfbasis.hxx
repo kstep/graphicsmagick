@@ -9,10 +9,10 @@
 
 //+--------------------------------------------------------------
 //
-//  Class:	CDFBasis (dfb)
+//  Class:  CDFBasis (dfb)
 //
-//  Purpose:	Defines base variables for sharing between exposed
-//		DocFiles
+//  Purpose:  Defines base variables for sharing between exposed
+//    DocFiles
 //
 //---------------------------------------------------------------
 #include "h/ole.hxx"
@@ -37,7 +37,7 @@ private:
 
 //+--------------------------------------------------------------
 //
-//  Member:	CDFBasis::CDFBasis, public
+//  Member: CDFBasis::CDFBasis, public
 //
 //---------------------------------------------------------------
 
@@ -50,7 +50,7 @@ inline CDFBasis::CDFBasis(void)
 
 //+--------------------------------------------------------------
 //
-//  Member:	CDFBasis::~CDFBasis, public
+//  Member: CDFBasis::~CDFBasis, public
 //
 //---------------------------------------------------------------
 
@@ -60,9 +60,9 @@ inline CDFBasis::~CDFBasis(void)
 
 //+--------------------------------------------------------------
 //
-//  Member:	CDFBasis::GetCopyBase, public
+//  Member: CDFBasis::GetCopyBase, public
 //
-//  Synopsis:	Returns _pdfCopyBase
+//  Synopsis: Returns _pdfCopyBase
 //
 //---------------------------------------------------------------
 
@@ -73,9 +73,9 @@ inline CExposedDocFile *CDFBasis::GetCopyBase(void)
 
 //+--------------------------------------------------------------
 //
-//  Member:	CDFBasis::SetCopyBase, public
+//  Member: CDFBasis::SetCopyBase, public
 //
-//  Synopsis:	Sets _pdfCopyBase
+//  Synopsis: Sets _pdfCopyBase
 //
 //---------------------------------------------------------------
 
@@ -86,7 +86,7 @@ inline void CDFBasis::SetCopyBase(CExposedDocFile *pdf)
 
 //+--------------------------------------------------------------
 //
-//  Member:	CDFBasis::AddRef, Public
+//  Member: CDFBasis::AddRef, Public
 //
 //---------------------------------------------------------------
 
@@ -97,7 +97,7 @@ inline void CDFBasis::AddRef()
 
 //+--------------------------------------------------------------
 //
-//  Member:	CDFBasis::SetCopyBase, public
+//  Member: CDFBasis::SetCopyBase, public
 //
 //---------------------------------------------------------------
 

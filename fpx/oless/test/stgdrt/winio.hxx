@@ -25,12 +25,12 @@ inline int _creat(const char *filename, int pmode)
     int oflag=O_CREAT|O_TRUNC;
 
     if (pmode & _S_IWRITE)
-	oflag |= O_RDWR;
+  oflag |= O_RDWR;
     else if (pmode & _S_IREAD)
-	oflag |= O_RDONLY;
+  oflag |= O_RDONLY;
     else {
-	printf("ERROR: _creat called with unrecognised parameter!\n");
-	assert(FALSE);
+  printf("ERROR: _creat called with unrecognised parameter!\n");
+  assert(FALSE);
     }
     int fides = open(filename, oflag);
     fchmod(fides, S_IRUSR|S_IWUSR);       // enable read/write by owner
@@ -46,13 +46,13 @@ inline int _chmod( const char *filename, int pmode )
 {
     mode_t unixmode=0;
     if (pmode & _S_IWRITE)
-	unixmode |= (S_IWUSR|S_IWGRP|S_IWOTH|S_IRUSR|S_IRGRP|S_IROTH);
+  unixmode |= (S_IWUSR|S_IWGRP|S_IWOTH|S_IRUSR|S_IRGRP|S_IROTH);
     else if (pmode & _S_IREAD)
-	unixmode |= (S_IRUSR|S_IRGRP|S_IROTH);
+  unixmode |= (S_IRUSR|S_IRGRP|S_IROTH);
     else 
     {
-	printf("ERROR: _chmod called with unrecognized parameter!\n");
-	assert(FALSE);
+  printf("ERROR: _chmod called with unrecognized parameter!\n");
+  assert(FALSE);
     }
     return chmod(filename, pmode);
 }

@@ -5,7 +5,7 @@
 // 
 //  Copyright (c) 1999 Digital Imaging Group, Inc.
 // 
-//  Contents:	Error code handler routines
+//  Contents: Error code handler routines
 //
 //---------------------------------------------------------------
 
@@ -17,7 +17,7 @@
 {\
     var = errval;\
     comp##DebugOut((DEB_IERROR, "Error %lX at %s:%d\n",\
-		    (unsigned long)var, __FILE__, __LINE__));\
+        (unsigned long)var, __FILE__, __LINE__));\
     goto label;\
 }
 #else

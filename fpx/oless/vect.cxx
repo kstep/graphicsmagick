@@ -5,11 +5,11 @@
 // 
 //  Copyright (c) 1999 Digital Imaging Group, Inc.
 // 
-//  Contents:	Vector common code.
+//  Contents: Vector common code.
 //
-//  Classes:	
+//  Classes:  
 //
-//  Functions:	
+//  Functions:  
 //
 //--------------------------------------------------------------------------
 
@@ -97,13 +97,13 @@ CPagedVector::~CPagedVector()
 
 //+---------------------------------------------------------------------------
 //
-//  Member:	CPagedVector::Empty, public
+//  Member: CPagedVector::Empty, public
 //
-//  Synopsis:	Discard the storage associated with this vector.
+//  Synopsis: Discard the storage associated with this vector.
 //
-//  Arguments:	None.
+//  Arguments:  None.
 //
-//  Returns:	void.
+//  Returns:  void.
 //
 //----------------------------------------------------------------------------
 
@@ -124,13 +124,13 @@ void CPagedVector::Empty(void)
 
 //+---------------------------------------------------------------------------
 //
-//  Member:	CPagedVector::Flush, public
+//  Member: CPagedVector::Flush, public
 //
-//  Synopsis:	Flush the dirty pages for this vector
+//  Synopsis: Flush the dirty pages for this vector
 //
-//  Arguments:	None.
+//  Arguments:  None.
 //
-//  Returns:	Appropriate status code
+//  Returns:  Appropriate status code
 //
 //----------------------------------------------------------------------------
 
@@ -195,7 +195,7 @@ SCODE CPagedVector::GetTable(
     // docfile is corrupted with an invalid iTable size
     if (iTable >= _ulSize)
     {
-	msfErr(Err, STG_E_DOCFILECORRUPT);
+  msfErr(Err, STG_E_DOCFILECORRUPT);
  
     }     
 
@@ -277,11 +277,11 @@ Err_Rel:
 
 //+---------------------------------------------------------------------------
 //
-//  Member:	CPagedVector::SetDirty, public
+//  Member: CPagedVector::SetDirty, public
 //
-//  Synopsis:	Set the dirty bit on the specified page
+//  Synopsis: Set the dirty bit on the specified page
 //
-//  Arguments:	[iTable] -- Table to set bit on
+//  Arguments:  [iTable] -- Table to set bit on
 //
 //  Notes:  This function is always called on a page with an
 //              open reference.  Therefore, the page is

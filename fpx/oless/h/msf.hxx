@@ -523,17 +523,17 @@ inline SCODE  CMStream::GetChild(
 
 //+---------------------------------------------------------------------------
 //
-//  Member:	CMStream::FindGreaterEntry, public
+//  Member: CMStream::FindGreaterEntry, public
 //
-//  Synopsis:	Returns the next greater entry for the given parent SID
+//  Synopsis: Returns the next greater entry for the given parent SID
 //
-//  Arguments:	[sidParent] - SID of parent storage
+//  Arguments:  [sidParent] - SID of parent storage
 //              [CDfName *pdfnKey] - Previous key
 //              [psid] - Result
 //
-//  Returns:	Appropriate status code
+//  Returns:  Appropriate status code
 //
-//  Modifies:	[psid]
+//  Modifies: [psid]
 //
 //----------------------------------------------------------------------------
 

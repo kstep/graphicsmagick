@@ -92,17 +92,17 @@ Err:
 
 //+--------------------------------------------------------------
 //
-//  Member:	CMSFIterator::BufferGetNext, public
+//  Member: CMSFIterator::BufferGetNext, public
 //
-//  Synopsis:	Fast, fixed-size buffer version of GetNext
-//		for iterations that don't care about having
-//		full stat info and an allocated name
+//  Synopsis: Fast, fixed-size buffer version of GetNext
+//    for iterations that don't care about having
+//    full stat info and an allocated name
 //
-//  Arguments:	[pib] - Buffer to fill in
+//  Arguments:  [pib] - Buffer to fill in
 //
-//  Returns:	Appropriate status code
+//  Returns:  Appropriate status code
 //
-//  Modifies:	[pib]
+//  Modifies: [pib]
 //
 //---------------------------------------------------------------
 

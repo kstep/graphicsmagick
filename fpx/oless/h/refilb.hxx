@@ -5,11 +5,11 @@
 // 
 //  Copyright (c) 1999 Digital Imaging Group, Inc.
 // 
-//  Contents:	
+//  Contents: 
 //
-//  Classes:	
+//  Classes:  
 //
-//  Functions:	
+//  Functions:  
 //
 //----------------------------------------------------------------------------
 

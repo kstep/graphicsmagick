@@ -22,24 +22,24 @@
 #ifndef _MSC_VER
 size_t sbstowcs(WCHAR *pwcs, const char *s, size_t n )
 {
-	size_t count=0;
+  size_t count=0;
 
-	/* if destintation string exists, fill it in */
-	if (pwcs)
-	{
-		while (count < n)
-		{
-			*pwcs = (WCHAR) ( (unsigned char)s[count]);
-			if (!s[count])
-				return count;
-			count++;
-			pwcs++;
-		}
-		return count;
-	}
-	else { /* pwcs == NULL, get size only, s must be NUL-terminated */
-		return strlen(s);
-	}
+  /* if destintation string exists, fill it in */
+  if (pwcs)
+  {
+    while (count < n)
+    {
+      *pwcs = (WCHAR) ( (unsigned char)s[count]);
+      if (!s[count])
+        return count;
+      count++;
+      pwcs++;
+    }
+    return count;
+  }
+  else { /* pwcs == NULL, get size only, s must be NUL-terminated */
+    return strlen(s);
+  }
 }
 #endif
 
@@ -67,34 +67,34 @@ size_t sbstowcs(WCHAR *pwcs, const char *s, size_t n )
 
 size_t _CRTAPI1 wcstosbs( char * s, const WCHAR * pwcs, size_t n)
 {
-	size_t count=0;
+  size_t count=0;
         /* if destination string exists, fill it in */
- 	if (s)
-	{
-		while(count < n)
-		{
-		    if (*pwcs > 255)  /* validate high byte */
-		    {
-			errno = EILSEQ;
-			return (size_t)-1;  /* error */
-		    }
-		    s[count] = (char) *pwcs;
+  if (s)
+  {
+    while(count < n)
+    {
+        if (*pwcs > 255)  /* validate high byte */
+        {
+      errno = EILSEQ;
+      return (size_t)-1;  /* error */
+        }
+        s[count] = (char) *pwcs;
 
- 		    if (!(*pwcs++))
-			return count;
-    		    count++;
-	        }
-		return count;
-											} else { /* s == NULL, get size only, pwcs must be NUL-terminated */
-	        const WCHAR *eos = pwcs;
-		while (*eos++);
-		return ( (size_t) (eos - pwcs -1));
-	}
+        if (!(*pwcs++))
+      return count;
+            count++;
+          }
+    return count;
+                      } else { /* s == NULL, get size only, pwcs must be NUL-terminated */
+          const WCHAR *eos = pwcs;
+    while (*eos++);
+    return ( (size_t) (eos - pwcs -1));
+  }
 }
 
 
 /******
-*	WCHAR *wcscat(dst, src) - concatenate (append) one wide character string
+* WCHAR *wcscat(dst, src) - concatenate (append) one wide character string
 *       to another
 *
 *Purpose:

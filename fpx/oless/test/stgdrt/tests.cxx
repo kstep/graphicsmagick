@@ -5,7 +5,7 @@
 // 
 //  Copyright (c) 1999 Digital Imaging Group, Inc.
 // 
-//  Contents:	DRT tests
+//  Contents: DRT tests
 //
 //---------------------------------------------------------------
 #ifdef _WIN32
@@ -28,13 +28,13 @@ void t_create(void)
     DECLARE_OLESTR(ocsStream, "Stream");
 
     WStgCreateDocfile(DRTDF, ROOTP(WSTG_READWRITE) | WSTG_CREATE,
-		      0, &pstgRoot);
+          0, &pstgRoot);
     pstgRoot->CreateStorage(ocsChild, STGP(WSTG_READWRITE), 0, 0,
-			    &pstgChild);
+          &pstgChild);
     pstgChild->CreateStorage(ocsChild2, STGP(WSTG_READWRITE), 0, 0,
-			     &pstgChild2);
+           &pstgChild2);
     pstgChild2->CreateStream(ocsStream, STMP(WSTG_READWRITE), 0, 0,
-			     &pstm);
+           &pstm);
     pstm->Unwrap();
     pstgChild2->Commit(0);
     pstgChild2->Unwrap();
@@ -50,7 +50,7 @@ void t_open(void)
     WStream *pstm;
 
     WStgCreateDocfile(DRTDF, ROOTP(WSTG_READWRITE) | WSTG_CREATE,
-		     0, &pstgRoot);
+         0, &pstgRoot);
     CreateStructure(pstgRoot->GetI(), "dChild(dChild2(sStream))");
     pstgRoot->Commit(0);
     pstgRoot->Unwrap();
@@ -60,13 +60,13 @@ void t_open(void)
     DECLARE_OLESTR(ocsStream, "Stream");
 
     WStgOpenStorage(DRTDF, NULL, ROOTP(WSTG_READWRITE), NULL,
-		    0, &pstgRoot);
+        0, &pstgRoot);
     pstgRoot->OpenStorage(ocsChild, NULL, STGP(WSTG_READWRITE), NULL, 0,
-			  &pstgChild);
+        &pstgChild);
     pstgChild->OpenStorage(ocsChild2, NULL, STGP(WSTG_READWRITE), NULL, 0,
-			   &pstgChild2);
+         &pstgChild2);
     pstgChild2->OpenStream(ocsStream, NULL, STMP(WSTG_READWRITE), 0,
-			   &pstm);
+         &pstm);
     pstm->Unwrap();
     pstgChild2->Unwrap();
     pstgChild->Unwrap();
@@ -80,7 +80,7 @@ void t_addref(void)
     ULONG ul;
 
     WStgCreateDocfile(DRTDF, ROOTP(WSTG_READWRITE) | WSTG_CREATE,
-		      0, &pstg);
+          0, &pstg);
 
     DECLARE_OLESTR(ocsChild, "Child");
     DECLARE_OLESTR(ocsChild2, "Child2");
@@ -89,24 +89,24 @@ void t_addref(void)
     pstg->CreateStream(ocsStream, STMP(WSTG_READWRITE), 0, 0, &pstm);
 #ifndef FLAT
     if ((ul = pstm->AddRef()) != 2)
-	error(EXIT_BADSC, "Wrong reference count - %lu\n", ul);
+  error(EXIT_BADSC, "Wrong reference count - %lu\n", ul);
     if ((ul = pstm->Release()) != 1)
-	error(EXIT_BADSC, "Wrong reference count - %lu\n", ul);
+  error(EXIT_BADSC, "Wrong reference count - %lu\n", ul);
     pstm->Unwrap();
     if ((ul = pstg->AddRef()) != 2)
-	error(EXIT_BADSC, "Wrong reference count - %lu\n", ul);
+  error(EXIT_BADSC, "Wrong reference count - %lu\n", ul);
     if ((ul = pstg->Release()) != 1)
-	error(EXIT_BADSC, "Wrong reference count - %lu\n", ul);
+  error(EXIT_BADSC, "Wrong reference count - %lu\n", ul);
 #else
     if ((ul = pstm->AddRef()) <= 0)
-	error(EXIT_BADSC, "Wrong reference count - %lu\n", ul);
+  error(EXIT_BADSC, "Wrong reference count - %lu\n", ul);
     if ((ul = pstm->Release()) <= 0)
-	error(EXIT_BADSC, "Wrong reference count - %lu\n", ul);
+  error(EXIT_BADSC, "Wrong reference count - %lu\n", ul);
     pstm->Unwrap();
     if ((ul = pstg->AddRef()) <= 0)
-	error(EXIT_BADSC, "Wrong reference count - %lu\n", ul);
+  error(EXIT_BADSC, "Wrong reference count - %lu\n", ul);
     if ((ul = pstg->Release()) <= 0)
-	error(EXIT_BADSC, "Wrong reference count - %lu\n", ul);
+  error(EXIT_BADSC, "Wrong reference count - %lu\n", ul);
 #endif
     pstg->Unwrap();
 }
@@ -122,11 +122,11 @@ void t_dmodify(void)
     DECLARE_OLESTR(ocsStream, "Stream");
 
     WStgCreateDocfile(DRTDF, ROOTP(WSTG_READWRITE) | WSTG_CREATE,
-		      0, &pstgRoot);
+          0, &pstgRoot);
     pstgRoot->CreateStorage(ocsChild, STGP(WSTG_READWRITE), 0,
                             0, &pstgChild);
     pstgChild->CreateStorage(ocsChild2, STGP(WSTG_READWRITE), 0,
-			     0, &pstgChild2);
+           0, &pstgChild2);
     pstgChild2->CreateStream(ocsStream, STMP(WSTG_READWRITE), 0, 0, &pstm);
     pstm->Unwrap();
     VerifyStructure(pstgChild2->GetI(), "sStream");
@@ -146,7 +146,7 @@ void t_dmodify(void)
     DECLARE_OLESTR(ocsRenamedChild, "RenamedChild");
     pstgChild->RenameElement(ocsChild2, ocsRenamedChild);
     pstgChild->CreateStream(ocsStream, STMP(WSTG_READWRITE), 0, 0,
-			     &pstm);
+           &pstm);
     pstm->Unwrap();
     pstgChild->DestroyElement(ocsStream);
 
@@ -209,7 +209,7 @@ void t_dmodify(void)
     pstgRoot->Unwrap();
 
     WStgCreateDocfile(NULL, ROOTP(WSTG_READWRITE) | WSTG_CREATE |
-		      WSTG_DELETEONRELEASE, 0, &pstgRoot);
+          WSTG_DELETEONRELEASE, 0, &pstgRoot);
 
     //  removal cases
     //    1) no right child
@@ -256,9 +256,9 @@ void t_stat(void)
     DECLARE_OLESTR(ocsStream, "Stream");
 
     WStgCreateDocfile(DRTDF, ROOTP(WSTG_READWRITE) | WSTG_CREATE,
-		      0, &pstgRoot);
+          0, &pstgRoot);
     pstgRoot->CreateStorage(ocsChild, STGP(WSTG_READWRITE), 0, 0,
-			    &pstgChild);
+          &pstgChild);
     pstgChild->CreateStream(ocsStream, STMP(WSTG_READWRITE), 0, 0, &pstm);
 
     pstm->Stat(&stat, 0);
@@ -307,19 +307,19 @@ void t_stream(void)
     pstm->Commit(0);
     pstm->Seek(0, WSTM_SEEK_SET, &ulPos);
     if (ulPos != 0)
-	error(EXIT_BADSC, "Incorrect seek, ptr is %lu\n", ulPos);
+  error(EXIT_BADSC, "Incorrect seek, ptr is %lu\n", ulPos);
     pstm->Read(buf, sizeof(NUMBERS), &cb);
     if (strcmp(buf, NUMBERS))
-	error(EXIT_BADSC, "Incorrect stream contents\n");
+  error(EXIT_BADSC, "Incorrect stream contents\n");
     pstm->SetSize(sizeof(NUMBERS)/2);
     pstm->Seek(0, WSTM_SEEK_SET, NULL);
     fExitOnFail = FALSE;
     pstm->Read(buf, sizeof(NUMBERS), &cb);
     fExitOnFail = TRUE;
     if (cb != sizeof(NUMBERS)/2)
-	error(EXIT_BADSC, "SetSize failed to size stream properly\n");
+  error(EXIT_BADSC, "SetSize failed to size stream properly\n");
     if (memcmp(buf, NUMBERS, sizeof(NUMBERS)/2))
-	error(EXIT_BADSC, "SetSize corrupted contents\n");
+  error(EXIT_BADSC, "SetSize corrupted contents\n");
     pstm->Clone(&pstmC);
     pstm->Seek(0, WSTM_SEEK_SET, NULL);
     pstm->CopyTo(pstmC, sizeof(NUMBERS)/2, NULL, NULL);
@@ -328,10 +328,10 @@ void t_stream(void)
     pstm->Seek(0, WSTM_SEEK_SET, NULL);
     pstm->Read(buf, (sizeof(NUMBERS)&~1)*2, &cb);
     if (memcmp(buf, NUMBERS, sizeof(NUMBERS)/2) ||
-	memcmp(buf+sizeof(NUMBERS)/2, NUMBERS, sizeof(NUMBERS)/2) ||
-	memcmp(buf+(sizeof(NUMBERS)&~1), NUMBERS, sizeof(NUMBERS)/2) ||
-	memcmp(buf+3*(sizeof(NUMBERS)/2), NUMBERS, sizeof(NUMBERS)/2))
-	error(EXIT_BADSC, "Stream contents incorrect\n");
+  memcmp(buf+sizeof(NUMBERS)/2, NUMBERS, sizeof(NUMBERS)/2) ||
+  memcmp(buf+(sizeof(NUMBERS)&~1), NUMBERS, sizeof(NUMBERS)/2) ||
+  memcmp(buf+3*(sizeof(NUMBERS)/2), NUMBERS, sizeof(NUMBERS)/2))
+  error(EXIT_BADSC, "Stream contents incorrect\n");
     pstmC->Unwrap();
     pstm->Unwrap();
     pstg->Unwrap();
@@ -389,21 +389,21 @@ void t_enum(void)
     WStgCreateDocfile(DRTDF, ROOTP(WSTG_READWRITE) | WSTG_CREATE, 0, &pstg);
     for (i = 0; i<ENUMENTRIES; i++)
     {
-	sprintf(pchName, "Name%d", rand());
+  sprintf(pchName, "Name%d", rand());
         STOT(pchName, atcName, strlen(pchName)+1);
-	pse = sl.Add(atcName);
-	if (rand()%100 < 50)
-	{
-	    pse->user.dw = STGTY_STORAGE;
-	    pstg->CreateStorage(atcName, STGP(WSTG_READWRITE), 0, 0, &pstg2);
-	    pstg2->Unwrap();
-	}
-	else
-	{
-	    pse->user.dw = STGTY_STREAM;
-	    pstg->CreateStream(atcName, STMP(WSTG_READWRITE), 0, 0, &pstm);
-	    pstm->Unwrap();
-	}
+  pse = sl.Add(atcName);
+  if (rand()%100 < 50)
+  {
+      pse->user.dw = STGTY_STORAGE;
+      pstg->CreateStorage(atcName, STGP(WSTG_READWRITE), 0, 0, &pstg2);
+      pstg2->Unwrap();
+  }
+  else
+  {
+      pse->user.dw = STGTY_STREAM;
+      pstg->CreateStream(atcName, STMP(WSTG_READWRITE), 0, 0, &pstm);
+      pstm->Unwrap();
+  }
     }
 
     WEnumSTATSTG *penm;
@@ -414,9 +414,9 @@ void t_enum(void)
     pstg->EnumElements(0, NULL, 0, &penm);
     for (;;)
     {
-	sc = DfGetScode(penm->Next(1, stat, NULL));
-	if (sc == S_FALSE)
-	    break;
+  sc = DfGetScode(penm->Next(1, stat, NULL));
+  if (sc == S_FALSE)
+      break;
         elt_check(stat, &sl);
         drtMemFree(stat->pwcsName);
 
@@ -474,7 +474,7 @@ void t_stgcopyto(void)
     STATSTG statFrom, statTo;
 
     WStgCreateDocfile(NULL, ROOTP(WSTG_READWRITE) | WSTG_CREATE |
-		      WSTG_DELETEONRELEASE, 0, &pstgFrom);
+          WSTG_DELETEONRELEASE, 0, &pstgFrom);
     pstgFrom->Stat(&statFrom, 0);
 
     // Set some interesting values to make sure they're copied
@@ -484,14 +484,14 @@ void t_stgcopyto(void)
     fExitOnFail = TRUE;
 
     WStgCreateDocfile(NULL, ROOTP(WSTG_READWRITE) | WSTG_CREATE |
-		      WSTG_DELETEONRELEASE, 0, &pstgTo);
+          WSTG_DELETEONRELEASE, 0, &pstgTo);
     CreateStructure(pstgFrom->GetI(), "dA(dB(dC(sA,sB,sC),sCs),sBs),sAs");
     CreateStructure(pstgTo->GetI(), "dA(dY(sZ),sBs)");
 
     pstgFrom->CopyTo(0, NULL, NULL, pstgTo);
 
     VerifyStructure(pstgTo->GetI(),
-		    "dA(dB(dC(sA,sB,sC),sCs),dY(sZ),sBs),sAs");
+        "dA(dB(dC(sA,sB,sC),sCs),dY(sZ),sBs),sAs");
     pstgTo->Stat(&statTo, 0);
     if (!IsEqualCLSID(statTo.clsid, SCT_CLASSID))
         error(EXIT_BADSC, "Class ID mismatch after copy\n");
@@ -502,10 +502,10 @@ void t_stgcopyto(void)
     pstgFrom->Unwrap();
     pstgTo->Unwrap();
     if (Exists(statFrom.pwcsName))
-	error(EXIT_BADSC, "Storage '%s' not deleted\n", statFrom.pwcsName);
+  error(EXIT_BADSC, "Storage '%s' not deleted\n", statFrom.pwcsName);
     drtMemFree(statFrom.pwcsName);
     if (Exists(statTo.pwcsName))
-	error(EXIT_BADSC, "Storage '%s' not deleted\n", statTo.pwcsName);
+  error(EXIT_BADSC, "Storage '%s' not deleted\n", statTo.pwcsName);
     drtMemFree(statTo.pwcsName);
 }
 
@@ -518,24 +518,24 @@ void t_stgmisc(void)
     // Can't make this call in transacted mode because we want
     // the storage signature to make it into the file right away
     WStgCreateDocfile(DRTDF, WSTG_READWRITE | WSTG_CREATE |
-	WSTG_SHARE_EXCLUSIVE, 0, &pstg);
+  WSTG_SHARE_EXCLUSIVE, 0, &pstg);
 
     sc = DfGetScode(WStgIsStorageFile(DRTDF));
     if (sc == S_FALSE)
-	error(EXIT_BADSC, "Open file - Should be a storage object\n");
+  error(EXIT_BADSC, "Open file - Should be a storage object\n");
     pstg->Unwrap();
     sc = DfGetScode(WStgIsStorageFile(DRTDF));
     if (sc == S_FALSE)
-	error(EXIT_BADSC, "Closed file - Should be a storage object\n");
+  error(EXIT_BADSC, "Closed file - Should be a storage object\n");
     WStgCreateDocfile(NULL, ROOTP(WSTG_READWRITE) | WSTG_CREATE |
-	    WSTG_DELETEONRELEASE, 0, &pstg);
+      WSTG_DELETEONRELEASE, 0, &pstg);
     pstg->Stat(&stat, 0);
     if (!Exists(stat.pwcsName))
-	error(EXIT_BADSC, "Storage '%s' not created\n", stat.pwcsName);
+  error(EXIT_BADSC, "Storage '%s' not created\n", stat.pwcsName);
     pstg->Unwrap();
     if (Exists(stat.pwcsName))
-	error(EXIT_BADSC, "Storage '%s' not deleted on release\n",
-	    stat.pwcsName);
+  error(EXIT_BADSC, "Storage '%s' not deleted on release\n",
+      stat.pwcsName);
     drtMemFree(stat.pwcsName);
 }
 
@@ -547,12 +547,12 @@ void t_ilb(void)
 
     ILockBytes *pilb = new CMapBytes();
     if (pilb == NULL)
-	error(EXIT_BADSC, "Unable to allocate an ILockBytes\n");
+  error(EXIT_BADSC, "Unable to allocate an ILockBytes\n");
 
     //  create a storage on the ILockBytes
 
     WStgCreateDocfileOnILockBytes(pilb,
-				  WSTG_READWRITE |
+          WSTG_READWRITE |
                                   WSTG_CREATE    |
                                   WSTG_SHARE_EXCLUSIVE,
                                   0, &pstg);
@@ -561,7 +561,7 @@ void t_ilb(void)
 
     sc = DfGetScode(WStgIsStorageILockBytes(pilb));
     if (sc == S_FALSE)
-	error(EXIT_BADSC, "Open ILockBytes - Should be a storage object\n");
+  error(EXIT_BADSC, "Open ILockBytes - Should be a storage object\n");
 
     //  release the storage
 
@@ -572,12 +572,12 @@ void t_ilb(void)
     sc = DfGetScode(WStgIsStorageILockBytes(pilb));
 
     if (sc == S_FALSE)
-	error(EXIT_BADSC, "Released ILockBytes - Should be a storage object\n");
+  error(EXIT_BADSC, "Released ILockBytes - Should be a storage object\n");
 
     //  open the ILockBytes
 
     WStgOpenStorageOnILockBytes(pilb, NULL, ROOTP(WSTG_READWRITE),
-				NULL, 0, &pstg);
+        NULL, 0, &pstg);
 
 
     //  release the storage
@@ -596,12 +596,12 @@ void t_movecopy(void)
 
     //  create a source
     WStgCreateDocfile(NULL, ROOTP(WSTG_READWRITE) | WSTG_CREATE |
-		      WSTG_DELETEONRELEASE, 0, &pstgFrom);
+          WSTG_DELETEONRELEASE, 0, &pstgFrom);
     pstgFrom->Stat(&statFrom, 0);
 
     //  create a destination
     WStgCreateDocfile(NULL, ROOTP(WSTG_READWRITE) | WSTG_CREATE |
-		      WSTG_DELETEONRELEASE, 0, &pstgTo);
+          WSTG_DELETEONRELEASE, 0, &pstgTo);
     pstgTo->Stat(&statTo, 0);
 
     //  populate source
@@ -628,9 +628,9 @@ void t_movecopy(void)
     pstgFrom->Unwrap();
     pstgTo->Unwrap();
     if (Exists(statFrom.pwcsName))
-	error(EXIT_BADSC, "Storage '%s' not deleted\n", statFrom.pwcsName);
+  error(EXIT_BADSC, "Storage '%s' not deleted\n", statFrom.pwcsName);
     drtMemFree(statFrom.pwcsName);
     if (Exists(statTo.pwcsName))
-	error(EXIT_BADSC, "Storage '%s' not deleted\n", statTo.pwcsName);
+  error(EXIT_BADSC, "Storage '%s' not deleted\n", statTo.pwcsName);
     drtMemFree(statTo.pwcsName);
 }

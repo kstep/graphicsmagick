@@ -14,76 +14,76 @@
  */
 
 /****************************************************************************/
-	#ifndef FPXBaselineIO_h
-	#define FPXBaselineIO_h
+  #ifndef FPXBaselineIO_h
+  #define FPXBaselineIO_h
 /****************************************************************************/
 
 #include "common.h"
 
-	#ifdef macintosh
-		#include "Compobj.h"
-	#elif defined(_UNIX) 
-		// use the reference implementation header files
-        	#include "exphead.cxx"
- 		#include "msfhead.cxx"
-		#include "dfhead.cxx"
-	#else
-		#include "objbase.h"
-		struct IStream;
-		#ifndef GUID_DEFINED
-			#define GUID_DEFINED
-			typedef struct _GUID
-			{
-			    unsigned long Data1;
-			    unsigned short Data2;
-			    unsigned short Data3;
-			    unsigned char Data4[8];
-			} GUID;
-		#endif /* GUID_DEFINED */
-		typedef GUID CLSID;
+  #ifdef macintosh
+    #include "Compobj.h"
+  #elif defined(_UNIX) 
+    // use the reference implementation header files
+          #include "exphead.cxx"
+    #include "msfhead.cxx"
+    #include "dfhead.cxx"
+  #else
+    #include "objbase.h"
+    struct IStream;
+    #ifndef GUID_DEFINED
+      #define GUID_DEFINED
+      typedef struct _GUID
+      {
+          unsigned long Data1;
+          unsigned short Data2;
+          unsigned short Data3;
+          unsigned char Data4[8];
+      } GUID;
+    #endif /* GUID_DEFINED */
+    typedef GUID CLSID;
 
-	#endif
+  #endif
 
 // The following comes from Microsoft's OLE header. It's duplicated here to avoid
 // compilation problems in application or source code which may not need to
 // include some of these files.
 // CAUTION: these definitions have to be kept updated with MicroSoft OLE definitions.
 
-	#ifndef FARSTRUCT
-		#define FARSTRUCT
-	#endif
-	#ifndef __RPC_FAR
-		#define __RPC_FAR
-	#endif
-	#ifndef BYTE
-		#define	BYTE		unsigned char	
-	#endif
-	#ifndef ULONG
-		#define	ULONG		unsigned long
-	#endif
+  #ifndef FARSTRUCT
+    #define FARSTRUCT
+  #endif
+  #ifndef __RPC_FAR
+    #define __RPC_FAR
+  #endif
+  #ifndef BYTE
+    #define BYTE    unsigned char 
+  #endif
+  #ifndef ULONG
+    #define ULONG   unsigned long
+  #endif
 
-	// Copied from OAIDL.H
-			/* size is 4 */
+  // Copied from OAIDL.H
+      /* size is 4 */
 #if defined(macintosh) || defined(_UNIX)
   #ifndef _tagCLIPDATA_DEFINED
     #define _tagCLIPDATA_DEFINED
     #define _CLIPDATA_DEFINED
-			/* size is 12 */
+      /* size is 12 */
     typedef struct  tagCLIPDATA {
-		ULONG cbSize;
-		long ulClipFmt;
-		/* [size_is] */ BYTE __RPC_FAR *pClipData;
-		}	CLIPDATA;
+    ULONG cbSize;
+    long ulClipFmt;
+    /* [size_is] */ BYTE __RPC_FAR *pClipData;
+    } CLIPDATA;
 
   #endif
 #endif
 
-	#ifndef WCHAR
-		typedef unsigned short WCHAR; 
-		typedef WCHAR * LPWSTR; 
-	#endif
+  #ifndef WCHAR
+    typedef unsigned short WCHAR; 
+    typedef WCHAR * LPWSTR; 
+  #endif
 
-	// End of the OAIDL.H copy
+  // End of the OAIDL.H copy
 
 /****************************************************************************
   BASIC TYPEDEFS
@@ -91,11 +91,11 @@
 
 typedef unsigned char   FPXbool;
 
-struct	IStorage;			// To avoid including "ole2.h"
+struct  IStorage;     // To avoid including "ole2.h"
 
 typedef struct {
               unsigned long         length;        /* number of chars */
-              unsigned char  	  * ptr;
+              unsigned char     * ptr;
 } FPXStr;
 
 typedef struct {
@@ -110,7 +110,7 @@ typedef struct {
 
 typedef struct {
               unsigned long         length;        /* number of reals */
-              float        		  * ptr;
+              float             * ptr;
 } FPXRealArray;
 
 typedef struct FPXWideStr {
@@ -120,20 +120,20 @@ typedef struct FPXWideStr {
 
 typedef struct {
               unsigned long         length;        /* number of strings */
-              FPXStr         	  * ptr;
+              FPXStr            * ptr;
 } FPXStrArray;
 
 typedef struct {
               unsigned long         length;        /* number of wide strings */
-              FPXWideStr     	  * ptr;
+              FPXWideStr        * ptr;
 } FPXWideStrArray;
 
 typedef struct {
               unsigned long         length;        /* number of strings */
-              CLSID         	  * ptr;
+              CLSID             * ptr;
 } FPXClsIDArray;
 
-typedef FILETIME FPXfiletime;                  	   /* cf. OLE FILETIME in compobj.h */
+typedef FILETIME FPXfiletime;                      /* cf. OLE FILETIME in compobj.h */
 
 #ifndef DATE 
 typedef  double DATE; 
@@ -165,21 +165,21 @@ typedef enum {
               FPX_VIEW_IS_TRANFORMLESS       = 18,
               FPX_ERROR                      = 19,
               FPX_UNIMPLEMENTED_FUNCTION     = 20,
-              FPX_INVALID_IMAGE_DESC		 = 21,
-              FPX_INVALID_JPEG_TABLE		 = 22,
-              FPX_ILLEGAL_JPEG_ID			 = 23,
-              FPX_MEMORY_ALLOCATION_FAILED	 = 24,
-              FPX_NO_MEMORY_MANAGEMENT		 = 25,
-              FPX_OBJECT_CREATION_FAILED	 = 26,
-              FPX_EXTENSION_FAILED	 		 = 27,
-			  FPX_FREE_NULL_PTR				 = 28,
-			  FPX_INVALID_TILE               = 29,
-			  FPX_FILE_IN_USE				 = 30,
-			  FPX_FILE_CREATE_ERROR			 = 31,
-			  FPX_FILE_NOT_OPEN_ERROR		 = 32,
-			  FPX_USER_ABORT				 = 33,
-			  FPX_OLE_FILE_ERROR			 = 34,
-			  FPX_INVALID_PIXEL_FORMAT		 = 35,
+              FPX_INVALID_IMAGE_DESC     = 21,
+              FPX_INVALID_JPEG_TABLE     = 22,
+              FPX_ILLEGAL_JPEG_ID      = 23,
+              FPX_MEMORY_ALLOCATION_FAILED   = 24,
+              FPX_NO_MEMORY_MANAGEMENT     = 25,
+              FPX_OBJECT_CREATION_FAILED   = 26,
+              FPX_EXTENSION_FAILED       = 27,
+        FPX_FREE_NULL_PTR        = 28,
+        FPX_INVALID_TILE               = 29,
+        FPX_FILE_IN_USE        = 30,
+        FPX_FILE_CREATE_ERROR      = 31,
+        FPX_FILE_NOT_OPEN_ERROR    = 32,
+        FPX_USER_ABORT         = 33,
+        FPX_OLE_FILE_ERROR       = 34,
+        FPX_INVALID_PIXEL_FORMAT     = 35,
               
               // Numbers above 1000 are reserved for warnings. When returning a warning, the
               // function did something (default behavior) and it's safe for the application
@@ -187,7 +187,7 @@ typedef enum {
               FPX_W_COORDINATES_OUT_OF_RANGE = 1000
 } FPXStatus;
 
-#define ERRSTR_TBLSIZE	28
+#define ERRSTR_TBLSIZE  28
 
 FPXEXPORT FPXStatus FPX_GetErrorString (FPXStatus errorCode, 
                               char *errorString,
@@ -265,8 +265,8 @@ typedef struct {
 } FPXJPEGHUFFTable;
 
 typedef struct {
-    unsigned char *quantizer; 	/* Table elements specified in zigzag order */
-    unsigned char ident;  		/* 0,1,2,3 */
+    unsigned char *quantizer;   /* Table elements specified in zigzag order */
+    unsigned char ident;      /* 0,1,2,3 */
 } FPXJPEGQuantTable;
 
 
@@ -278,7 +278,7 @@ typedef struct {
 #define FPX_MAX_TABLE_STREAM_SIZE   1400
 
 typedef struct {
-			  unsigned short  theStreamSize;
+        unsigned short  theStreamSize;
               unsigned char   theStream[FPX_MAX_TABLE_STREAM_SIZE];
 } FPXJPEGTableGroup;
 
@@ -289,14 +289,14 @@ extern "C" {
 /*  Not all tables need be supplied. A NULL indicates such an omission. */
 
 FPXEXPORT FPXStatus FPX_CreateJPEGTableGroup (
-              FPXJPEGTableGroup*  	theGroup,
-              short 				numOfQuanTable,
-              unsigned char *		quanTableChanID,
-              FPXJPEGQuantTable*  	quanTable,
-              short 				numOfHuffTable,
-              unsigned char *		huffDCTableChanID,
-              unsigned char *		huffACTableChanID,
-              FPXJPEGHUFFTable*   	huffTable ); 
+              FPXJPEGTableGroup*    theGroup,
+              short         numOfQuanTable,
+              unsigned char *   quanTableChanID,
+              FPXJPEGQuantTable*    quanTable,
+              short         numOfHuffTable,
+              unsigned char *   huffDCTableChanID,
+              unsigned char *   huffACTableChanID,
+              FPXJPEGHUFFTable*     huffTable ); 
 
 } // extern "C"
 
@@ -369,7 +369,7 @@ typedef struct {
  */
 typedef struct FPXColorspace {
               FPXbool               isUncalibrated;
-              short         		numberOfComponents;
+              short             numberOfComponents;
               FPXComponentColorType theComponents[FPX_MAX_COMPONENTS];
 } FPXColorspace;
 
@@ -414,7 +414,7 @@ FPXEXPORT FPXStatus FPX_GetToolkitVersion (
          long* versionNumber);
 
 } // extern "C"
-	
+  
 /* Global options
  * --------------
  */
@@ -482,7 +482,7 @@ FPXEXPORT FPXStatus FPX_SetComposeMethod (
 FPXEXPORT FPXStatus FPX_SetViewBackgroundColor (
          FPXColorspace colorspace,
          FPXBackground color);
-	
+  
 } // extern "C"
 
 
@@ -504,13 +504,13 @@ FPXEXPORT FPXStatus FPX_SetToolkitMemoryLimit (
               unsigned long *    memoryLimit);
          
 FPXEXPORT FPXStatus FPX_GetToolkitMemoryLimit (
-		 unsigned long * 	memoryLimit);
-		 
+     unsigned long *  memoryLimit);
+     
 FPXEXPORT FPXStatus FPX_GetToolkitMemoryAvailable (
-		 unsigned long * 	availableMemory);
-		 
+     unsigned long *  availableMemory);
+     
 FPXEXPORT FPXStatus FPX_GetToolkitMemoryUsed (
-		 unsigned long * 	usedMemory);
+     unsigned long *  usedMemory);
 
 // Memory management functions
 // ---------------------------
@@ -520,14 +520,14 @@ FPXEXPORT FPXStatus FPX_GetToolkitMemoryUsed (
  */
  
 FPXEXPORT long FPX_PurgeToolkitMemory (
-		 unsigned long      memoryToBePurged);
+     unsigned long      memoryToBePurged);
 
 /* Lock a FPX image tiles to avoid having them purged 
  * during a FPX_PurgeToolkitMemory()
  */
  
 FPXEXPORT FPXStatus FPX_LockFPXImage (
-		 FPXImageHandle*	theFPX);
+     FPXImageHandle*  theFPX);
 
 } // extern "C"
 
@@ -668,7 +668,7 @@ extern "C" {
  */
  
 FPXEXPORT FPXStatus FPX_SetProgressFunction (
-		 FPXProgressFunction	theProgressive);
+     FPXProgressFunction  theProgressive);
 
 } // extern "C"
 
@@ -705,9 +705,9 @@ FPXEXPORT FPXStatus FPX_CloseImage (
 typedef struct {
               FPXComponentColorType myColorType;           /* the color and datatype      */
                                                            /* of this component.          */
-              unsigned long         horzSubSampFactor; 	   /* horizontal subsampling  	  */
-              unsigned long         vertSubSampFactor; 	   /* vertical subsampling    	  */
-              long                  columnStride;          /* items to next column on 	  */
+              unsigned long         horzSubSampFactor;     /* horizontal subsampling      */
+              unsigned long         vertSubSampFactor;     /* vertical subsampling        */
+              long                  columnStride;          /* items to next column on     */
                                                            /* this row.                   */
               long                  lineStride;            /* items to next line in       */
                                                            /* this column.                */
@@ -736,8 +736,8 @@ typedef struct FPXImageDesc {
  *     - these functions are not implemented in Baseline
  */
 typedef enum {
-	PREMULTIPLIED_CHANNELS,
-	INDEPENDENT_CHANNELS
+  PREMULTIPLIED_CHANNELS,
+  INDEPENDENT_CHANNELS
 } FPXPreComputedAlpha;
 
 extern "C" {
@@ -880,12 +880,12 @@ FPXEXPORT FPXStatus FPX_WriteImageResolution (
 
 
 
-/*	Flush modified tiles to the file.
+/*  Flush modified tiles to the file.
  *
- *	After pixel content has been modified by an FPX_WriteXXXX() routine, the
- *	changes may be cached in memory. This call ensures that the modified tiles
- *	are written to the file. Failure to call this may result in stale pixel data
- *	when lower resolutions are read.
+ *  After pixel content has been modified by an FPX_WriteXXXX() routine, the
+ *  changes may be cached in memory. This call ensures that the modified tiles
+ *  are written to the file. Failure to call this may result in stale pixel data
+ *  when lower resolutions are read.
  */ 
 FPXEXPORT FPXStatus FPX_FlushModifiedTiles (
               FPXImageHandle*     theFPX);
@@ -900,8 +900,8 @@ FPXEXPORT FPXStatus FPX_FlushModifiedTiles (
  *  compression of a tile.
  */
 typedef struct {
-              FPXCompressionOption 	compressOption;
-              unsigned char       	compressQuality;
+              FPXCompressionOption  compressOption;
+              unsigned char         compressQuality;
               long                  compressSubtype;
 } FPXTileCompressionInfo;
 
@@ -910,8 +910,8 @@ typedef struct {
  */
 typedef struct {
               FPXTileCompressionInfo compInfo;
-              unsigned long			 dataLength;
-              void*			 		 data;
+              unsigned long      dataLength;
+              void*          data;
 } FPXTileDesc;
 
 extern "C" {
@@ -1153,8 +1153,8 @@ FPXEXPORT FPXStatus FPX_CreateImageWithViewByFilename (
 #endif
 
 FPXEXPORT FPXStatus FPX_CreateImageWithViewByStorage (
-              IStorage*            	 owningStorage,
-              char*                	 storageName,
+              IStorage*              owningStorage,
+              char*                  storageName,
               unsigned long          width,
               unsigned long          height,
               unsigned long          tileWidth,
@@ -1217,15 +1217,15 @@ typedef enum {  LINKED_POINT = 0,   // Smooth Bezier point
 } FPXPointType;
 
 typedef struct {
-		float x;  // Horizontal coordinate
-		float y;  // Vertical   coordinate
+    float x;  // Horizontal coordinate
+    float y;  // Vertical   coordinate
 } FPXCoordinate;
 
 typedef struct {
-		FPXPointType 	type;
-		FPXCoordinate 	directionLeft;
-		FPXCoordinate 	anchor;
-		FPXCoordinate 	directionRight;
+    FPXPointType  type;
+    FPXCoordinate   directionLeft;
+    FPXCoordinate   anchor;
+    FPXCoordinate   directionRight;
 } FPXBezierPoint;
 
 typedef enum {  CLOSED_PATH = 0,   // Closed path
@@ -1233,9 +1233,9 @@ typedef enum {  CLOSED_PATH = 0,   // Closed path
 } FPXPathType;
 
 typedef struct {
-		FPXPathType     type;
-		unsigned long   numberOfPoints;
-		FPXBezierPoint* points;
+    FPXPathType     type;
+    unsigned long   numberOfPoints;
+    FPXBezierPoint* points;
 } FPXPath;
 
 extern "C" {
@@ -1399,19 +1399,19 @@ FPXEXPORT FPXStatus FPX_GetSummaryInformation(
 
 
 // CHG_GBLINFO - added call to return a struct containing data from the Global
-//	Info property set
+//  Info property set
 typedef struct {
-		FPXbool       	visible_outputs_valid;
-		FPXLongArray	visible_outputs;
+    FPXbool         visible_outputs_valid;
+    FPXLongArray  visible_outputs;
 
-		FPXbool       	max_image_index_valid;
-		unsigned long	max_image_index;
+    FPXbool         max_image_index_valid;
+    unsigned long max_image_index;
 
-		FPXbool       	max_transform_index_valid;
-		unsigned long	max_transform_index;
+    FPXbool         max_transform_index_valid;
+    unsigned long max_transform_index;
 
-		FPXbool       	max_operation_index_valid;
-		unsigned long	max_operation_index;
+    FPXbool         max_operation_index_valid;
+    unsigned long max_operation_index;
 
 }FPXGlobalInformation;
 
@@ -1478,12 +1478,12 @@ typedef struct {
 extern "C" {
 
 FPXEXPORT FPXStatus FPX_SetSourceGroup ( 
-			  FPXImageHandle*     theFPX,
-			  FPXFileSourceGroup* theSourceGroup);
+        FPXImageHandle*     theFPX,
+        FPXFileSourceGroup* theSourceGroup);
 
 FPXEXPORT FPXStatus FPX_GetSourceGroup ( 
-			  FPXImageHandle*     theFPX,
-		      FPXFileSourceGroup* theSourceGroup);
+        FPXImageHandle*     theFPX,
+          FPXFileSourceGroup* theSourceGroup);
 
 } // extern "C"
 
@@ -1509,11 +1509,11 @@ typedef struct {
 extern "C" {
 
  FPXStatus FPX_SetIntellectualPropGroup ( 
-			  FPXImageHandle*     theFPX,
+        FPXImageHandle*     theFPX,
               FPXIntellectualPropertyGroup*  thePropGroup);
 
  FPXStatus FPX_GetIntellectualPropGroup ( 
-			  FPXImageHandle*     theFPX,
+        FPXImageHandle*     theFPX,
               FPXIntellectualPropertyGroup*  thePropGroup);
 
 } // extern "C"
@@ -1549,7 +1549,7 @@ typedef struct {
               FPXWideStrArray things_in_image;
 
               FPXbool         date_of_original_image_valid;
-              FPXfiletime     date_of_original_image;     	
+              FPXfiletime     date_of_original_image;       
 
               FPXbool         events_in_the_image_valid;
               FPXWideStrArray events_in_the_image;
@@ -1564,11 +1564,11 @@ typedef struct {
 extern "C" {
 
 FPXEXPORT FPXStatus FPX_SetContentDescriptionGroup (
-			  FPXImageHandle*     theFPX,
+        FPXImageHandle*     theFPX,
               FPXContentDescriptionGroup*    theContentGroup);
 
 FPXEXPORT FPXStatus FPX_GetContentDescriptionGroup (
-			  FPXImageHandle*     theFPX,
+        FPXImageHandle*     theFPX,
               FPXContentDescriptionGroup*    theContentGroup);
 
 } // extern "C"
@@ -1589,11 +1589,11 @@ typedef struct {
 extern "C" {
 
 FPXEXPORT FPXStatus FPX_SetCameraInformationGroup (
-			  FPXImageHandle*               theFPX,
+        FPXImageHandle*               theFPX,
               FPXCameraInformationGroup*    theCameraGroup);
 
 FPXEXPORT FPXStatus FPX_GetCameraInformationGroup (
-			  FPXImageHandle*               theFPX,
+        FPXImageHandle*               theFPX,
               FPXCameraInformationGroup*    theCameraGroup);
 
 } // extern "C"
@@ -1665,8 +1665,8 @@ typedef enum {
 } FPXSpecialEffectsOpticalFilter;
 
 typedef struct {
-			unsigned long length; // number of filters
-			FPXSpecialEffectsOpticalFilter *ptr;
+      unsigned long length; // number of filters
+      FPXSpecialEffectsOpticalFilter *ptr;
 } FPXOpticalFilterArray;
 
 typedef struct {
@@ -1722,7 +1722,7 @@ typedef struct {
               float              exposure_index;
 
               FPXbool           special_effects_optical_filter_valid;
-              FPXLongArray  	special_effects_optical_filter;
+              FPXLongArray    special_effects_optical_filter;
 
               FPXbool            per_picture_notes_valid;
               FPXWideStr         per_picture_notes;
@@ -1731,11 +1731,11 @@ typedef struct {
 extern "C" {
 
 FPXEXPORT FPXStatus FPX_SetPerPictureGroup (
-			  FPXImageHandle*                      theFPX,
+        FPXImageHandle*                      theFPX,
               FPXPerPictureCameraSettingsGroup*    thePerPictureGroup);
 
  FPXStatus FPX_GetPerPictureGroup (
-			  FPXImageHandle*                      theFPX,
+        FPXImageHandle*                      theFPX,
               FPXPerPictureCameraSettingsGroup*    thePerPictureGroup);
 
 } // extern "C"
@@ -1810,17 +1810,17 @@ typedef struct {
               FPXShortArray     iso_speed_ratings;
 
               FPXbool            oecf_valid;
-              FPXOECF_Block 	 oecf;
+              FPXOECF_Block    oecf;
 } FPXDigitalCameraCharacterizationGroup;
 
 extern "C" {
 
 FPXEXPORT FPXStatus FPX_SetDigitalCameraGroup (
-			  FPXImageHandle*                        theFPX,
+        FPXImageHandle*                        theFPX,
               FPXDigitalCameraCharacterizationGroup* theDigitalCameraGroup);
 
 FPXEXPORT FPXStatus FPX_GetDigitalCameraGroup (
-			  FPXImageHandle*                        theFPX,
+        FPXImageHandle*                        theFPX,
               FPXDigitalCameraCharacterizationGroup* theDigitalCameraGroup);
 
 } // extern "C"
@@ -1847,8 +1847,8 @@ typedef struct {
               FPXFilmCategory   film_category;
 
               FPXbool           film_size_valid;
-              float				film_size_x;
-              float 			film_size_y;
+              float       film_size_x;
+              float       film_size_y;
               FPXResolutionUnit film_size_unit;
 
               FPXbool           film_roll_number_valid;
@@ -1861,11 +1861,11 @@ typedef struct {
 extern "C" {
 
 FPXEXPORT FPXStatus FPX_SetFilmDescriptionGroup (
-			  FPXImageHandle*          theFPX,
+        FPXImageHandle*          theFPX,
               FPXFilmDescriptionGroup* theFilmGroup);
 
 FPXEXPORT FPXStatus FPX_GetFilmDescriptionGroup (
-			  FPXImageHandle*          theFPX,
+        FPXImageHandle*          theFPX,
               FPXFilmDescriptionGroup* theFilmGroup);
 
 } // extern "C"
@@ -1910,11 +1910,11 @@ typedef struct {
 extern "C" {
 
 FPXEXPORT FPXStatus FPX_SetOriginalDocDescriptionGroup (
-			  FPXImageHandle*                          theFPX,
+        FPXImageHandle*                          theFPX,
               FPXOriginalDocumentScanDescriptionGroup* theDocGroup);
 
 FPXEXPORT FPXStatus FPX_GetOriginalDocDescriptionGroup (
-			  FPXImageHandle*                          theFPX,
+        FPXImageHandle*                          theFPX,
               FPXOriginalDocumentScanDescriptionGroup* theDocGroup);
 
 } // extern "C"
@@ -1936,7 +1936,7 @@ typedef struct {
               FPXWideStr    scan_software;
 
               FPXbool       scan_software_revision_date_valid;
-              DATE        	scan_software_revision_date;    
+              DATE          scan_software_revision_date;    
 
               FPXbool       service_bureau_org_name_valid;
               FPXWideStr    service_bureau_org_name;
@@ -1957,11 +1957,11 @@ typedef struct {
 extern "C" {
 
 FPXEXPORT FPXStatus FPX_SetScanDevicePropertyGroup (
-			  FPXImageHandle*             theFPX,
+        FPXImageHandle*             theFPX,
               FPXScanDevicePropertyGroup* theScanGroup);
 
 FPXEXPORT FPXStatus FPX_GetScanDevicePropertyGroup (
-			  FPXImageHandle*             theFPX,
+        FPXImageHandle*             theFPX,
               FPXScanDevicePropertyGroup* theScanGroup);
 
 } // extern "C"
@@ -1970,7 +1970,7 @@ FPXEXPORT FPXStatus FPX_GetScanDevicePropertyGroup (
 /* EXTENSION LIST MANAGEMENT
 /****************************************************************************/
 
-#define FPX_MAX_EXTENSION_ITEMS		5
+#define FPX_MAX_EXTENSION_ITEMS   5
 
 typedef enum {
               FPX_EXTENSION_PERSISTENT = 0,
@@ -1979,38 +1979,38 @@ typedef enum {
 } FPXExtensionPersistence;
 
 typedef struct {
-              FPXWideStr              	extensionName;
-              CLSID                   	extensionClassID;
-              FPXExtensionPersistence 	extensionPersistence;
+              FPXWideStr                extensionName;
+              CLSID                     extensionClassID;
+              FPXExtensionPersistence   extensionPersistence;
 
-              FPXbool				  	extensionCreationDateIsValid;
-              FPXfiletime             	extensionCreationDate;
+              FPXbool           extensionCreationDateIsValid;
+              FPXfiletime               extensionCreationDate;
               
-              FPXbool				  	extensionModificationDateIsValid;
-              FPXfiletime             	extensionModificationDate;
+              FPXbool           extensionModificationDateIsValid;
+              FPXfiletime               extensionModificationDate;
               
-              FPXbool				  	creatingApplicationIsValid;
-              FPXWideStr              	creatingApplication;
+              FPXbool           creatingApplicationIsValid;
+              FPXWideStr                creatingApplication;
               
-              FPXbool				  	extensionDescriptionIsValid;
-              FPXWideStr              	extensionDescription;
+              FPXbool           extensionDescriptionIsValid;
+              FPXWideStr                extensionDescription;
               
-              FPXbool				  	streamPathNameIsValid;
-              FPXWideStrArray         	streamPathName;
+              FPXbool           streamPathNameIsValid;
+              FPXWideStrArray           streamPathName;
               
-              FPXbool				  	fpxStreamPathNameIsValid;
-              FPXWideStrArray         	fpxStreamPathName;
+              FPXbool           fpxStreamPathNameIsValid;
+              FPXWideStrArray           fpxStreamPathName;
               
-              FPXbool				  	fpxStreamOffsetIsValid;
-              FPXLongArray         		fpxStreamOffset;
+              FPXbool           fpxStreamOffsetIsValid;
+              FPXLongArray            fpxStreamOffset;
               
-              FPXbool				  	propertySetPathNameIsValid;
-              FPXWideStrArray         	propertySetPathName;
+              FPXbool           propertySetPathNameIsValid;
+              FPXWideStrArray           propertySetPathName;
               
-              FPXbool				  	propertySetFormatIDIsValid;
+              FPXbool           propertySetFormatIDIsValid;
               FPXClsIDArray             propertySetFormatID;
               
-              FPXbool				  	propertySetIDCodesIsValid;
+              FPXbool           propertySetIDCodesIsValid;
               FPXWideStrArray           propertySetIDCodes;
               
 } FPXExtensionDescription;
@@ -2018,13 +2018,13 @@ typedef struct {
 extern "C" {
 
 FPXEXPORT FPXStatus FPX_GetExtensionDescription (
-              FPXImageHandle*             	theFPX,
-              LPWSTR                      	extensionName,
-              FPXExtensionDescription*    	theDescription);
+              FPXImageHandle*               theFPX,
+              LPWSTR                        extensionName,
+              FPXExtensionDescription*      theDescription);
 FPXEXPORT FPXStatus FPX_SetExtensionDescription (
-              FPXImageHandle*             	theFPX,
-              LPWSTR                       	extensionName,
-              FPXExtensionDescription*    	theDescription);
+              FPXImageHandle*               theFPX,
+              LPWSTR                        extensionName,
+              FPXExtensionDescription*      theDescription);
 FPXEXPORT FPXStatus FPX_GetStreamPointer (
               FPXImageHandle*             theFPX,
               char*                       streamName,
@@ -2043,5 +2043,5 @@ FPXEXPORT FPXStatus FPX_GetPropertySetPointer (
 
 
 /****************************************************************************/
-	#endif // FPXBaselineIO_h
+  #endif // FPXBaselineIO_h
 /****************************************************************************/

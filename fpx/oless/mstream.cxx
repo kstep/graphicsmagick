@@ -39,31 +39,31 @@ DECLARE_INFOLEVEL(msf, DEB_ERROR)
 #define MAXPAGES 12
 
 extern "C" WCHAR const wcsContents[] = 
-	{'C','O','N','T','E','N','T','S','\0'};
+  {'C','O','N','T','E','N','T','S','\0'};
 extern "C" CDfName const dfnContents(wcsContents);
 SCODE ILBFlush(ILockBytes *pilb, BOOL fFlushCache);
 
 //+---------------------------------------------------------------------------
 //
-//  Function:	GetBuffer, public
+//  Function: GetBuffer, public
 //
-//  Synopsis:	Gets a chunk of memory to use as a buffer
+//  Synopsis: Gets a chunk of memory to use as a buffer
 //
-//  Arguments:	[cbMin] - Minimum size for buffer
+//  Arguments:  [cbMin] - Minimum size for buffer
 //              [cbMax] - Maximum size for buffer
 //              [ppb] - Buffer pointer return
 //              [pcbActual] - Actual buffer size return
 //
-//  Returns:	Appropriate status code
+//  Returns:  Appropriate status code
 //
-//  Modifies:	[ppb]
+//  Modifies: [ppb]
 //              [pcbActual]
 //
 //  Algorithm:  Attempt to dynamically allocate [cbMax] bytes
 //              If that fails, halve allocation size and retry
 //              If allocation size falls below [cbMin], fail
 //
-//  Notes:	Buffer should be released with FreeBuffer
+//  Notes:  Buffer should be released with FreeBuffer
 //
 //----------------------------------------------------------------------------
 
@@ -111,18 +111,18 @@ static LONG s_bufRef = 0;
 
 //+---------------------------------------------------------------------------
 //
-//  Function:	GetSafeBuffer, public
+//  Function: GetSafeBuffer, public
 //
-//  Synopsis:	Gets a buffer by first trying GetBuffer and if that fails,
+//  Synopsis: Gets a buffer by first trying GetBuffer and if that fails,
 //              returning a pointer to statically allocated storage.
 //              Guaranteed to return a pointer to some storage.
 //
-//  Arguments:	[cbMin] - Minimum buffer size
+//  Arguments:  [cbMin] - Minimum buffer size
 //              [cbMax] - Maximum buffer size
 //              [ppb] - Buffer pointer return
 //              [pcbActual] - Actual buffer size return
 //
-//  Modifies:	[ppb]
+//  Modifies: [ppb]
 //              [pcbActual]
 //
 //----------------------------------------------------------------------------
@@ -149,11 +149,11 @@ void GetSafeBuffer(USHORT cbMin, USHORT cbMax, BYTE **ppb, USHORT *pcbActual)
 
 //+---------------------------------------------------------------------------
 //
-//  Function:	FreeBuffer, public
+//  Function: FreeBuffer, public
 //
-//  Synopsis:	Releases a buffer allocated by GetBuffer or GetSafeBuffer
+//  Synopsis: Releases a buffer allocated by GetBuffer or GetSafeBuffer
 //
-//  Arguments:	[pb] - Buffer
+//  Arguments:  [pb] - Buffer
 //
 //----------------------------------------------------------------------------
 
@@ -279,17 +279,17 @@ SCODE CMStream::GetESect(SID sid, SECT sect, SECT *psect)
     *psect = start;
 Err:
     return sc;
-										}
+                    }
 
 //+---------------------------------------------------------------------------
 //
-//  Member:	CMStream::Empty, public
+//  Member: CMStream::Empty, public
 //
-//  Synopsis:	Empty all of the control structures of this CMStream
+//  Synopsis: Empty all of the control structures of this CMStream
 //
-//  Arguments:	None.
+//  Arguments:  None.
 //
-//  Returns:	void.
+//  Returns:  void.
 //
 //----------------------------------------------------------------------------
 
@@ -500,14 +500,14 @@ Err:
 
 //+---------------------------------------------------------------------------
 //
-//  Member:	CMStream::ConvertILB, private
+//  Member: CMStream::ConvertILB, private
 //
-//  Synopsis:	Copy the first sector of the underlying ILockBytes
+//  Synopsis: Copy the first sector of the underlying ILockBytes
 //                      out to the end.
 //
-//  Arguments:	[sectMax] -- Total number of sectors in the ILockBytes
+//  Arguments:  [sectMax] -- Total number of sectors in the ILockBytes
 //
-//  Returns:	Appropriate status code
+//  Returns:  Appropriate status code
 //
 //----------------------------------------------------------------------------
 
@@ -557,7 +557,7 @@ Err:
 //
 //  Algorithm:  *Finish This*
 //
-//  Notes:	We are allowed to fail here in low memory
+//  Notes:  We are allowed to fail here in low memory
 //
 //--------------------------------------------------------------------------
 
@@ -684,8 +684,8 @@ SCODE  CMStream::FlushHeader(USHORT uForce)
     ULISet32(ulOffset, 0);
     _hdr.ByteSwap(); // swap to disk format if neccessary
     sc = DfGetScode((*_pplstParent)->
-		    WriteAt(ulOffset, (BYTE *)(&_hdr),
-			    sizeof(CMSFHeader), &ulTemp));
+        WriteAt(ulOffset, (BYTE *)(&_hdr),
+          sizeof(CMSFHeader), &ulTemp));
     _hdr.ByteSwap(); // swap to memort/machine format if neccessary
     msfDebugOut((DEB_ITRACE,"Out CMStream::FlushHeader()\n"));
     return sc;
@@ -931,13 +931,13 @@ Err:
 
 //+---------------------------------------------------------------------------
 //
-//  Member:	CMStream::Flush, public
+//  Member: CMStream::Flush, public
 //
-//  Synopsis:	Flush control structures.
+//  Synopsis: Flush control structures.
 //
-//  Arguments:	None.
+//  Arguments:  None.
 //
-//  Returns:	Appropriate status code
+//  Returns:  Appropriate status code
 //
 //----------------------------------------------------------------------------
 
@@ -991,19 +991,19 @@ SCODE ILBFlush(ILockBytes *pilb, BOOL fFlushCache)
 
 //+---------------------------------------------------------------------------
 //
-//  Member:	CMStream::SecureSect, public
+//  Member: CMStream::SecureSect, public
 //
-//  Synopsis:	Zero out the unused portion of a sector
+//  Synopsis: Zero out the unused portion of a sector
 //
-//  Arguments:	[sect] -- Sector to zero out
+//  Arguments:  [sect] -- Sector to zero out
 //              [ulSize] -- Size of stream
 //              [fIsMini] -- TRUE if stream is in ministream
 //
-//  Returns:	Appropriate status code
+//  Returns:  Appropriate status code
 //
-//  Modifies:	
+//  Modifies: 
 //
-//  Notes:	
+//  Notes:  
 //
 //----------------------------------------------------------------------------
 

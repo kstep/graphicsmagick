@@ -23,9 +23,9 @@
 
 //+--------------------------------------------------------------
 //
-//  Member:	CDirectStream::CDirectStream, public
+//  Member: CDirectStream::CDirectStream, public
 //
-//  Synopsis:	Empty object constructor
+//  Synopsis: Empty object constructor
 //
 //  Arguments:  [dl] - LUID
 //
@@ -40,19 +40,19 @@ CDirectStream::CDirectStream(DFLUID dl)
 
 //+--------------------------------------------------------------
 //
-//  Member:	CDirectStream::InitSystem, public
+//  Member: CDirectStream::InitSystem, public
 //
-//  Synopsis:	Initializes special system streams like the ministream
+//  Synopsis: Initializes special system streams like the ministream
 //
-//  Arguments:	[pms] - Multistream
-//		[sid] - SID
-//		[cbSize] - size
+//  Arguments:  [pms] - Multistream
+//    [sid] - SID
+//    [cbSize] - size
 //
 //---------------------------------------------------------------
 
 void CDirectStream::InitSystem(CMStream *pms,
-			       SID sid,
-			       ULONG cbSize)
+             SID sid,
+             ULONG cbSize)
 {
     _stmh.Init(pms, sid);
     _ulSize = _ulOldSize = cbSize;
@@ -67,10 +67,10 @@ void CDirectStream::InitSystem(CMStream *pms,
 //  Synopsis:   CDirectStream constructor
 //
 //  Arguments:  [pstgh] - Parent
-//		[pdfn] - Name of entry
-//		[fCreate] - Create or get
+//    [pdfn] - Name of entry
+//    [fCreate] - Create or get
 //
-//  Returns:	Appropriate status code
+//  Returns:  Appropriate status code
 //
 //--------------------------------------------------------------------------
 
@@ -87,8 +87,8 @@ SCODE CDirectStream::Init(
         sc = pstgh->GetEntry(pdfn, STGTY_STREAM, &_stmh);
     if (SUCCEEDED(sc))
     {
-	sc = _stmh.GetSize(&_ulSize);
-	_ulOldSize = _ulSize;
+  sc = _stmh.GetSize(&_ulSize);
+  _ulOldSize = _ulSize;
         if (SUCCEEDED(sc))
             AddRef();
     }
@@ -255,7 +255,7 @@ SCODE CDirectStream::ReadAt(
                 sc = pms->GetMiniStream()->CDirectStream::ReadAt(
                                             (sectStart << uShift) + offset,
                                              pBuffer, ulSize,
-					    (ULONG STACKBASED *)&bytecount);
+              (ULONG STACKBASED *)&bytecount);
             }
             else
             {
@@ -616,9 +616,9 @@ Err:
 
 //+---------------------------------------------------------------------------
 //
-//  Member:	CDirectStream::Release, public
+//  Member: CDirectStream::Release, public
 //
-//  Synopsis:	Decrements the ref count and frees if necessary
+//  Synopsis: Decrements the ref count and frees if necessary
 //
 //----------------------------------------------------------------------------
 
@@ -653,13 +653,13 @@ void CDirectStream::AddRef(void)
 
 //+---------------------------------------------------------------------------
 //
-//  Member:	CDirectStream::GetSize, public
+//  Member: CDirectStream::GetSize, public
 //
-//  Synopsis:	Gets the size of the stream
+//  Synopsis: Gets the size of the stream
 //
-//  Arguments:	[pulSize] - Size return
+//  Arguments:  [pulSize] - Size return
 //
-//  Modifies:	[pulSize]
+//  Modifies: [pulSize]
 //
 //----------------------------------------------------------------------------
 
@@ -670,16 +670,16 @@ void CDirectStream::GetSize(ULONG *pulSize)
 
 //+--------------------------------------------------------------
 //
-//  Member:	CDirectStream::GetTime, public
+//  Member: CDirectStream::GetTime, public
 //
-//  Synopsis:	Gets a time
+//  Synopsis: Gets a time
 //
-//  Arguments:	[wt] - Which time
-//		[ptm] - Time return
+//  Arguments:  [wt] - Which time
+//    [ptm] - Time return
 //
-//  Returns:	Appropriate status code
+//  Returns:  Appropriate status code
 //
-//  Modifies:	[ptm]
+//  Modifies: [ptm]
 //
 //---------------------------------------------------------------
 
@@ -690,14 +690,14 @@ SCODE CDirectStream::GetTime(WHICHTIME wt, TIME_T *ptm)
 
 //+--------------------------------------------------------------
 //
-//  Member:	CDirectStream::SetTime, public
+//  Member: CDirectStream::SetTime, public
 //
-//  Synopsis:	Sets a time
+//  Synopsis: Sets a time
 //
-//  Arguments:	[wt] - Which time
-//		[tm] - New time
+//  Arguments:  [wt] - Which time
+//    [tm] - New time
 //
-//  Returns:	Appropriate status code
+//  Returns:  Appropriate status code
 //
 //---------------------------------------------------------------
 

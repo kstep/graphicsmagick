@@ -33,14 +33,14 @@ class CMSFIterator
     public:
         inline CMSFIterator(CDirectory *pdir, SID sidChild);
         SCODE GetNext(STATSTGW *pstat);
-	SCODE BufferGetNext(SIterBuffer *pib);
+  SCODE BufferGetNext(SIterBuffer *pib);
         inline SCODE Rewind();
 
         inline void  Release();
 
     private:
         CDirectory *_pdir;
-	SID _sidChildRoot;
+  SID _sidChildRoot;
         CDfName _dfnCurrent;
 };
 

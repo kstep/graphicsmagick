@@ -5,7 +5,7 @@
 // 
 //  Copyright (c) 1999 Digital Imaging Group, Inc.
 // 
-//  Contents:	Mapping between wide characters and normal character types
+//  Contents: Mapping between wide characters and normal character types
 //              for functions used in the reference implementation
 //----------------------------------------------------------------------------
 
@@ -167,8 +167,8 @@ typedef TCHAR OLECHAR, *LPOLECHAR, *LPOLESTR;
 #include <assert.h>   
 inline void  _itoa(int v, char* string, int radix)
 {
-	if (radix!=10) assert(FALSE);  /* only handle base 10 */
-	sprintf(string, "%d", v);
+  if (radix!=10) assert(FALSE);  /* only handle base 10 */
+  sprintf(string, "%d", v);
 }
 #endif /* _MSC_VER */
 

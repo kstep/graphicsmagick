@@ -223,20 +223,20 @@ STDMETHODIMP_(void *) CAllocator::Alloc ( ULONG cb )
 STDMETHODIMP_(void *) 
 CAllocator::Realloc( void *pv, ULONG cb )
 {
-    void* pvNew=NULL;
-    if (!pv)                    
-        pvNew = Alloc(cb);         
-    else
+  void* pvNew=NULL;
+  if (!pv)                    
+    pvNew = Alloc(cb);         
+  else
     {
-        // make sure the new pointer is 8-byte aligned
-        pvNew = (void *) (new LONGLONG [(cb+7)/sizeof(LONGLONG)]);
-        if (pvNew)
+      // make sure the new pointer is 8-byte aligned
+      pvNew = (void *) (new LONGLONG [(cb+7)/sizeof(LONGLONG)]);
+      if (pvNew)
         {
-            memcpy(pvNew, pv, cb);
-            delete[] pv;
+          memcpy(pvNew, pv, cb);
+          delete[] pv;
         }
     }
-    return pvNew;
+  return pvNew;
 }
 
 //+---------------------------------------------------------------------------
@@ -258,13 +258,13 @@ STDMETHODIMP_(void) CAllocator::Free(void *pv)
 
 //+---------------------------------------------------------------------------
 //
-//  Member:	CAllocator::GetSize, public
+//  Member: CAllocator::GetSize, public
 //
-//  Synopsis:	Return the size of the given block
+//  Synopsis: Return the size of the given block
 //
-//  Arguments:	[pv] -- Block to get size of
+//  Arguments:  [pv] -- Block to get size of
 //
-//  Returns:	(should) Size of block pointer to by 
+//  Returns:  (should) Size of block pointer to by 
 //              (now) 0
 //----------------------------------------------------------------------------
 
@@ -276,13 +276,13 @@ STDMETHODIMP_(ULONG) CAllocator::GetSize(void * pv)
 
 //+---------------------------------------------------------------------------
 //
-//  Member:	CAllocator::DidAlloc, public
+//  Member: CAllocator::DidAlloc, public
 //
-//  Synopsis:	Return '1' if this heap allocated pointer at pv
+//  Synopsis: Return '1' if this heap allocated pointer at pv
 //
-//  Arguments:	[pv] -- Pointer to block
+//  Arguments:  [pv] -- Pointer to block
 //
-//  Returns:	'1' == This heap allocated block.
+//  Returns:  '1' == This heap allocated block.
 //              '0' == This heap did not allocate block.
 //              '-1' == Could not determine if this heap allocated block.
 //
@@ -297,11 +297,11 @@ STDMETHODIMP_(int) CAllocator::DidAlloc(void FAR * pv)
 
 //+---------------------------------------------------------------------------
 //
-//  Member:	CAllocator::HeapMinimize, public
+//  Member: CAllocator::HeapMinimize, public
 //
-//  Synopsis:	Minimize the heap
+//  Synopsis: Minimize the heap
 //
-//  Arguments:	None.
+//  Arguments:  None.
 //
 //  Returns:    void.
 //

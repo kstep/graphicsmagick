@@ -96,7 +96,7 @@ STDAPI StgCreateDocfile(TCHAR const *pszName,
     int i;
 
     olDebugOut((DEB_ITRACE, "In  StgCreateDocfile(%p, %lX, %lu, %p)\n",
-				pszName, grfMode, reserved, ppstgOpen));
+        pszName, grfMode, reserved, ppstgOpen));
 
     olChk(ValidatePtrBuffer(ppstgOpen));
     *ppstgOpen = NULL;

@@ -74,7 +74,7 @@ extern GUID guidDocumentSummarySection2;
 #define CP_DEFAULT_NONUNICODE   1252 // ANSI Latin1 (US, Western Europe)
 
 extern "C" UNICODECALLOUTS UnicodeCallouts;
-#define CP_CREATEDEFAULT(state)	(*UnicodeCallouts.pfnGetACP)()
+#define CP_CREATEDEFAULT(state) (*UnicodeCallouts.pfnGetACP)()
 
 #if DBGPROP
 #define StatusCorruption(pstatus, szReason)             \
@@ -355,10 +355,10 @@ inline BOOLEAN
 IsReadOnlyPropertySet(BYTE flags, BYTE state)
 {
     return(
-	(flags & CREATEPROP_MODEMASK) == CREATEPROP_READ ||
-	(state & CPSS_USERDEFINEDDELETED) ||
-	(state & (CPSS_MULTIPLESECTIONS | CPSS_DOCUMENTSUMMARYINFO)) ==
-	    CPSS_MULTIPLESECTIONS);
+  (flags & CREATEPROP_MODEMASK) == CREATEPROP_READ ||
+  (state & CPSS_USERDEFINEDDELETED) ||
+  (state & (CPSS_MULTIPLESECTIONS | CPSS_DOCUMENTSUMMARYINFO)) ==
+      CPSS_MULTIPLESECTIONS);
 }
 
 
@@ -749,7 +749,7 @@ CPropertySetStream::_SearchForCodePage( OUT NTSTATUS *pstatus )
 
     if (_State & CPSS_USERDEFINEDDELETED)
     {
-	StatusAccessDenied(pstatus, "GetValue: deleted");
+  StatusAccessDenied(pstatus, "GetValue: deleted");
         goto Exit;
     }
 
@@ -910,7 +910,7 @@ CPropertySetStream::_MapAddressToAbsOffset(VOID const *pvAddr) const
 //---------------------------------------------------------------------------
 
 CPropertySetStream::CPropertySetStream(
-    IN USHORT Flags,	// NONSIMPLE|*1* of READ/WRITE/CREATE/CREATEIF/DELETE
+    IN USHORT Flags,  // NONSIMPLE|*1* of READ/WRITE/CREATE/CREATEIF/DELETE
     IN CMappedStream *pmstm,    // mapped stream impelementation
     IN PMemoryAllocator *pma    // caller's memory allocator
     ) 
@@ -974,9 +974,9 @@ CPropertySetStream::Close(OUT NTSTATUS *pstatus)
 
 VOID
 CPropertySetStream::Open(
-    IN GUID const *pfmtid,	    // property set fmtid
+    IN GUID const *pfmtid,      // property set fmtid
     OPTIONAL IN GUID const *pclsid, // CLASSID of propset code (create only)
-    IN ULONG LocaleId,		    // Locale Id (create only)
+    IN ULONG LocaleId,        // Locale Id (create only)
     OPTIONAL OUT ULONG *pOSVersion, // OS Version from header
     IN USHORT CodePage,             // CodePage of property set (create only)
     OUT NTSTATUS *pstatus
@@ -1004,31 +1004,31 @@ CPropertySetStream::Open(
 
     if (LoadState != LOADSTATE_DONE)
     {
-	switch (_Flags & CREATEPROP_MODEMASK)
-	{
-	    case CREATEPROP_READ:
-	    case CREATEPROP_WRITE:
-    		if (LoadState == LOADSTATE_FAIL)
-		{
-		    StatusCorruption(pstatus, "Open: _LoadHeader");
+  switch (_Flags & CREATEPROP_MODEMASK)
+  {
+      case CREATEPROP_READ:
+      case CREATEPROP_WRITE:
+        if (LoadState == LOADSTATE_FAIL)
+    {
+        StatusCorruption(pstatus, "Open: _LoadHeader");
                     goto Exit;
-		}
-		PROPASSERT(
-		    LoadState == LOADSTATE_BADFMTID ||
-		    LoadState == LOADSTATE_USERDEFINEDNOTFOUND);
-		DebugTrace(0, DEBTRACE_ERROR, (
-		    "_LoadHeader: LoadState=%x\n", LoadState));
+    }
+    PROPASSERT(
+        LoadState == LOADSTATE_BADFMTID ||
+        LoadState == LOADSTATE_USERDEFINEDNOTFOUND);
+    DebugTrace(0, DEBTRACE_ERROR, (
+        "_LoadHeader: LoadState=%x\n", LoadState));
 
                 *pstatus = STATUS_PROPSET_NOT_FOUND;
-		goto Exit;
-	}
+    goto Exit;
+  }
 
         _Create(
             pfmtid,
             pclsid,
-	    LocaleId,
+      LocaleId,
             CodePage,
-	    LoadState,
+      LoadState,
             pstatus
             );
         if( !NT_SUCCESS(*pstatus) ) goto Exit;
@@ -1056,7 +1056,7 @@ CPropertySetStream::Open(
             goto Exit;
         }
         if ((_State & (CPSS_MULTIPLESECTIONS | CPSS_DOCUMENTSUMMARYINFO)) ==
-	    CPSS_MULTIPLESECTIONS)
+      CPSS_MULTIPLESECTIONS)
         {
             StatusAccessDenied(pstatus, "Open: writing unknown multiple section propset");
             goto Exit;
@@ -1105,7 +1105,7 @@ CPropertySetStream::ReOpen(OUT NTSTATUS *pstatus)
 
     if (_State & CPSS_USERDEFINEDDELETED)
     {
-	goto Exit;
+  goto Exit;
     }
 
     LoadState = _LoadHeader(NULL,
@@ -1115,9 +1115,9 @@ CPropertySetStream::ReOpen(OUT NTSTATUS *pstatus)
 
     if (LoadState != LOADSTATE_DONE)
     {
-	DebugTrace(0, DEBTRACE_ERROR, (
-	    "ReOpen: LoadState=%lx\n",
-	    LoadState));
+  DebugTrace(0, DEBTRACE_ERROR, (
+      "ReOpen: LoadState=%lx\n",
+      LoadState));
         StatusCorruption(pstatus, "ReOpen: _LoadHeader");
         goto Exit;
     }
@@ -1144,8 +1144,8 @@ Exit:
 //
 // Synopsis:    Initialize a section header and the default properties.
 //
-// Arguments:   [pfo]		-- pointer to section info
-//		[LocaleId]	-- Locale Id
+// Arguments:   [pfo]   -- pointer to section info
+//    [LocaleId]  -- Locale Id
 //
 // Returns:     None
 //---------------------------------------------------------------------------
@@ -1154,7 +1154,7 @@ Exit:
 #define CB_CODEPAGE         (sizeof(ULONG) + DwordAlign(sizeof(USHORT)))
 
         // Serialized Locale ID (LCID) size.
-#define CB_LOCALE	    (sizeof(ULONG) + sizeof(ULONG))
+#define CB_LOCALE     (sizeof(ULONG) + sizeof(ULONG))
 
         // Minimum section size (minimum has Code Page & LCID)
 #define CB_MINSECTIONSIZE   (CB_PROPERTYSECTIONHEADER   \
@@ -1332,21 +1332,21 @@ CPropertySetStream::_MultiByteToWideChar(
     {
         // Attempt to convert the string.
 
-	*pcb = (*UnicodeCallouts.pfnMultiByteToWideChar)(
-				    CodePage,   // Source codepage
-				    0,          // Flags
-				    pch,        // Source string
-				    cb,         // Source string length
-				    *ppwc,      // Target string
-				    *pcb);      // Size of target string buffer
+  *pcb = (*UnicodeCallouts.pfnMultiByteToWideChar)(
+            CodePage,   // Source codepage
+            0,          // Flags
+            pch,        // Source string
+            cb,         // Source string length
+            *ppwc,      // Target string
+            *pcb);      // Size of target string buffer
 
         // The converted length should never be zero.
-	if (0 == *pcb)
-	{
+  if (0 == *pcb)
+  {
             // If we alloced a buffer, free it now.
             if( fAlloc )
             {
-	        _pma->Free( *ppwc );
+          _pma->Free( *ppwc );
                 *ppwc = NULL;
             }
 
@@ -1356,34 +1356,34 @@ CPropertySetStream::_MultiByteToWideChar(
             StatusError(pstatus, "_MultiByteToWideChar error",
                         STATUS_UNMAPPABLE_CHARACTER);
             goto Exit;
-	}
+  }
 
         // There was no error.  If we provided a non-NULL buffer,
         // then the conversion was performed and we're done.
 
-	*pcb *= sizeof(WCHAR);  // cch => cb
-	if (*ppwc != NULL)
-	{
-	    DebugTrace(0, DEBTRACE_PROPERTY, (
-		"_MultiByteToWideChar: pch='%s'[%x] pwc='%ws'[%x->%x]\n",
-		pch,
-		cb,
-		*ppwc,
-		*pcb,
-		*pcb * sizeof(WCHAR)));
-	    break;
-	}
+  *pcb *= sizeof(WCHAR);  // cch => cb
+  if (*ppwc != NULL)
+  {
+      DebugTrace(0, DEBTRACE_PROPERTY, (
+    "_MultiByteToWideChar: pch='%s'[%x] pwc='%ws'[%x->%x]\n",
+    pch,
+    cb,
+    *ppwc,
+    *pcb,
+    *pcb * sizeof(WCHAR)));
+      break;
+  }
 
         // We haven't actually the string yet.  Now that
         // we know the length, we can allocate a buffer and try the
         // conversion for real.
 
-	*ppwc = (WCHAR *) _pma->Allocate( *pcb );
-	if (NULL == *ppwc)
-	{
-	    StatusNoMemory(pstatus, "_MultiByteToWideChar: no memory");
+  *ppwc = (WCHAR *) _pma->Allocate( *pcb );
+  if (NULL == *ppwc)
+  {
+      StatusNoMemory(pstatus, "_MultiByteToWideChar: no memory");
             goto Exit;
-	}
+  }
         fAlloc = TRUE;
 
     }   // while(TRUE)
@@ -1461,23 +1461,23 @@ CPropertySetStream::_WideCharToMultiByte(
     while (TRUE)
     {
         // Attempt the conversion.
-	*pcb = (*UnicodeCallouts.pfnWideCharToMultiByte)(
-				    CodePage,       // Codepage to convert to
-				    0,              // Flags
-				    pwc,            // Source string
-				    cch,            // Size of source string
-				    *ppch,          // Target string
-				    *pcb,           // Size of target string buffer
-				    NULL,           // lpDefaultChar
-				    NULL);          // lpUsedDefaultChar
+  *pcb = (*UnicodeCallouts.pfnWideCharToMultiByte)(
+            CodePage,       // Codepage to convert to
+            0,              // Flags
+            pwc,            // Source string
+            cch,            // Size of source string
+            *ppch,          // Target string
+            *pcb,           // Size of target string buffer
+            NULL,           // lpDefaultChar
+            NULL);          // lpUsedDefaultChar
 
         // A converted length of zero indicates an error.
-	if (0 == *pcb)
-	{
+  if (0 == *pcb)
+  {
             // If we allocated a buffer in this routine, free it.
             if( fAlloc )
             {
-	        _pma->Free( *ppch );
+          _pma->Free( *ppch );
                 *ppch = NULL;
             }
 
@@ -1487,32 +1487,32 @@ CPropertySetStream::_WideCharToMultiByte(
             StatusError(pstatus, "_WideCharToMultiByte: WideCharToMultiByte error",
                         STATUS_UNMAPPABLE_CHARACTER);
             goto Exit;
-	}
+  }
 
         // If we have a non-zero length, and we provided a buffer,
         // then we're done (successfully).
 
-	if (*ppch != NULL)
-	{
-	    DebugTrace(0, DEBTRACE_PROPERTY, (
-		"_WideCharToMultiByte: pwc='%ws'[%x] pch='%s'[%x->%x]\n",
-		pwc,
-		cch,
-		*ppch,
-		*pcb,
-		*pcb));
-	    break;
-	}
+  if (*ppch != NULL)
+  {
+      DebugTrace(0, DEBTRACE_PROPERTY, (
+    "_WideCharToMultiByte: pwc='%ws'[%x] pch='%s'[%x->%x]\n",
+    pwc,
+    cch,
+    *ppch,
+    *pcb,
+    *pcb));
+      break;
+  }
 
         // There were no errors, but we need to allocate a buffer
         // to do the actual conversion.
 
-	*ppch = (CHAR*) _pma->Allocate( *pcb );
-	if (*ppch == NULL)
-	{
-	    StatusNoMemory(pstatus, "_WideCharToMultiByte: no memory");
+  *ppch = (CHAR*) _pma->Allocate( *pcb );
+  if (*ppch == NULL)
+  {
+      StatusNoMemory(pstatus, "_WideCharToMultiByte: no memory");
             goto Exit;
-	}
+  }
         fAlloc = TRUE;
 
     }   // while (TRUE)
@@ -1756,8 +1756,8 @@ Exit:
 //
 // Synopsis:    Create second property section
 //
-// Arguments:   [LoadState]	-- _LoadHeader returned state
-//		[LocaleId]	-- Locale Id
+// Arguments:   [LoadState] -- _LoadHeader returned state
+//    [LocaleId]  -- Locale Id
 //              [pstatus]       -- Pointer to NTSTATUS code.
 //
 // Returns:     TRUE if LoadState handled successfully.  If TRUE,
@@ -1782,117 +1782,117 @@ CPropertySetStream::_CreateUserDefinedSection(
     {
     case CREATEPROP_CREATEIF:
     case CREATEPROP_CREATE:
-	if (LoadState == LOADSTATE_USERDEFINEDNOTFOUND)
-	{
-	    ULONG cbmove;
+  if (LoadState == LOADSTATE_USERDEFINEDNOTFOUND)
+  {
+      ULONG cbmove;
 
-	    PROPASSERT(_cSection == 1);
-	    pfo = _GetFormatidOffset(0);
-	    PROPASSERT(pfo->fmtid == guidDocumentSummary);
-	    PROPASSERT(IsDwordAligned(pfo->dwOffset));
+      PROPASSERT(_cSection == 1);
+      pfo = _GetFormatidOffset(0);
+      PROPASSERT(pfo->fmtid == guidDocumentSummary);
+      PROPASSERT(IsDwordAligned(pfo->dwOffset));
 
             // Get a pointer to the first section header, using the 
             // FmtID/Offset array.
 
-	    psh = (PROPERTYSECTIONHEADER *) _MapAbsOffsetToAddress(pfo->dwOffset);
+      psh = (PROPERTYSECTIONHEADER *) _MapAbsOffsetToAddress(pfo->dwOffset);
 
             // Determine if we need to move the first section back in order
             // to make room for this new entry in the FmtID/Offset array.
 
-	    cbmove = 0;
-	    if (pfo->dwOffset < CB_PROPERTYSETHEADER + 2 * CB_FORMATIDOFFSET)
-	    {
-		cbmove = CB_PROPERTYSETHEADER + 2*CB_FORMATIDOFFSET - pfo->dwOffset;
-	    }
+      cbmove = 0;
+      if (pfo->dwOffset < CB_PROPERTYSETHEADER + 2 * CB_FORMATIDOFFSET)
+      {
+    cbmove = CB_PROPERTYSETHEADER + 2*CB_FORMATIDOFFSET - pfo->dwOffset;
+      }
 
             // How big should the Stream be?
 
-	    cbstmNew = pfo->dwOffset            // The offset of the first section
+      cbstmNew = pfo->dwOffset            // The offset of the first section
                             +
-			    cbmove              // Room for new FormatID/Offset array entry
+          cbmove              // Room for new FormatID/Offset array entry
                             +                   // Size of first section
-			    DwordAlign(psh->cbSection)
+          DwordAlign(psh->cbSection)
                             +                   // Size of User-Defined section.
-			    CB_MINUSERDEFSECTIONSIZE;
+          CB_MINUSERDEFSECTIONSIZE;
 
             // Set the stream size.
 
-	    _MSTM(SetSize)(cbstmNew, TRUE, (VOID **) &_pph, pstatus);
+      _MSTM(SetSize)(cbstmNew, TRUE, (VOID **) &_pph, pstatus);
             if( !NT_SUCCESS(*pstatus) ) goto Exit;
 
-	    // reload all pointers into mapped image:
+      // reload all pointers into mapped image:
 
-	    pfo = _GetFormatidOffset(0);
-	    psh = (PROPERTYSECTIONHEADER *) _MapAbsOffsetToAddress(pfo->dwOffset);
+      pfo = _GetFormatidOffset(0);
+      psh = (PROPERTYSECTIONHEADER *) _MapAbsOffsetToAddress(pfo->dwOffset);
 
-	    if (cbmove != 0)
-	    {
-		// Move section back to make room for new FORMATIDOFFSET entry
+      if (cbmove != 0)
+      {
+    // Move section back to make room for new FORMATIDOFFSET entry
 
-		PropMoveMemory(
-			"_AddSection",
-			psh,
-			Add2Ptr(psh, cbmove),
-			psh,
-			psh->cbSection);
+    PropMoveMemory(
+      "_AddSection",
+      psh,
+      Add2Ptr(psh, cbmove),
+      psh,
+      psh->cbSection);
 
-		pfo->dwOffset += cbmove;
-		PROPASSERT(IsDwordAligned(pfo->dwOffset));
-	    }
+    pfo->dwOffset += cbmove;
+    PROPASSERT(IsDwordAligned(pfo->dwOffset));
+      }
 
-	    psh->cbSection = DwordAlign(psh->cbSection);
+      psh->cbSection = DwordAlign(psh->cbSection);
 
             PROPASSERT(_oSection == 0);
-	    PROPASSERT(_cSection == 1);
-	    PROPASSERT(_pph->reserved == 1);
+      PROPASSERT(_cSection == 1);
+      PROPASSERT(_pph->reserved == 1);
 
-	    _cSection++;
-	    _pph->reserved++;
+      _cSection++;
+      _pph->reserved++;
 
-	    _oSection = pfo->dwOffset + psh->cbSection;
-	    pfo = _GetFormatidOffset(1);
-	    pfo->fmtid = guidDocumentSummarySection2;
-	    pfo->dwOffset = _oSection;
-	    _InitSection(pfo,
+      _oSection = pfo->dwOffset + psh->cbSection;
+      pfo = _GetFormatidOffset(1);
+      pfo->fmtid = guidDocumentSummarySection2;
+      pfo->dwOffset = _oSection;
+      _InitSection(pfo,
                          LocaleId,
                          TRUE ); // Create an empty dictionary.
 
-	    fSuccess = TRUE;
-	}
-	break;
+      fSuccess = TRUE;
+  }
+  break;
 
     case CREATEPROP_DELETE:
-	PROPASSERT(
-	    LoadState == LOADSTATE_USERDEFINEDDELETE ||
-	    LoadState == LOADSTATE_USERDEFINEDNOTFOUND);
-	if (LoadState == LOADSTATE_USERDEFINEDDELETE)
-	{
-	    PROPASSERT(_cSection == 2);
-	    PROPASSERT(_pph->reserved == 2);
-	    pfo = _GetFormatidOffset(1);
-	    RtlZeroMemory(pfo, sizeof(*pfo));
+  PROPASSERT(
+      LoadState == LOADSTATE_USERDEFINEDDELETE ||
+      LoadState == LOADSTATE_USERDEFINEDNOTFOUND);
+  if (LoadState == LOADSTATE_USERDEFINEDDELETE)
+  {
+      PROPASSERT(_cSection == 2);
+      PROPASSERT(_pph->reserved == 2);
+      pfo = _GetFormatidOffset(1);
+      RtlZeroMemory(pfo, sizeof(*pfo));
 
-	    _cSection--;
-	    _pph->reserved--;
-	    pfo = _GetFormatidOffset(0);
-	    PROPASSERT(pfo->fmtid == guidDocumentSummary);
-	    PROPASSERT(IsDwordAligned(pfo->dwOffset));
-	    psh = (PROPERTYSECTIONHEADER *)
-			_MapAbsOffsetToAddress(pfo->dwOffset);
-	    psh->cbSection = DwordAlign(psh->cbSection);
-	    cbstmNew = pfo->dwOffset + psh->cbSection;
+      _cSection--;
+      _pph->reserved--;
+      pfo = _GetFormatidOffset(0);
+      PROPASSERT(pfo->fmtid == guidDocumentSummary);
+      PROPASSERT(IsDwordAligned(pfo->dwOffset));
+      psh = (PROPERTYSECTIONHEADER *)
+      _MapAbsOffsetToAddress(pfo->dwOffset);
+      psh->cbSection = DwordAlign(psh->cbSection);
+      cbstmNew = pfo->dwOffset + psh->cbSection;
 
-	    _MSTM(SetSize)(cbstmNew, TRUE, (VOID **) &_pph, pstatus);
+      _MSTM(SetSize)(cbstmNew, TRUE, (VOID **) &_pph, pstatus);
             if( !NT_SUCCESS(*pstatus) ) goto Exit;
             
-	}
-	_State |= CPSS_USERDEFINEDDELETED;
+  }
+  _State |= CPSS_USERDEFINEDDELETED;
 
-	fSuccess = TRUE;
+  fSuccess = TRUE;
         break;
 
     default:
-	PROPASSERT(!"_Flags: bad open mode");
+  PROPASSERT(!"_Flags: bad open mode");
     }
 
     //  ----
@@ -1911,9 +1911,9 @@ Exit:
 //
 // Arguments:   [pfmtid]        -- format id
 //              [pclsid]        -- class id
-//		[LocaleId]	-- Locale Id
+//    [LocaleId]  -- Locale Id
 //              [CodePage]      -- CodePage
-//		[LoadState]	-- _LoadHeader returned state
+//    [LoadState] -- _LoadHeader returned state
 //
 // Returns:     None
 //---------------------------------------------------------------------------
@@ -1922,7 +1922,7 @@ VOID
 CPropertySetStream::_Create(
     IN GUID const *pfmtid,
     OPTIONAL IN GUID const *pclsid,
-    IN ULONG LocaleId,		    // Locale Id (create only)
+    IN ULONG LocaleId,        // Locale Id (create only)
     IN USHORT CodePage,
     IN LOADSTATE LoadState,
     OUT NTSTATUS *pstatus
@@ -1952,19 +1952,19 @@ CPropertySetStream::_Create(
         // the first section already existed, and we're done.
         // Otherwise, we must continue and create the first section.
 
-	if (_CreateUserDefinedSection(LoadState, LocaleId, pstatus))
-	{
+  if (_CreateUserDefinedSection(LoadState, LocaleId, pstatus))
+  {
             // If we get here, we know that *pstatus is Success.
 
-	    if (pclsid != NULL)
-	    {
-		_pph->clsid = *pclsid;
-	    }
-	    goto Exit;
-	}
+      if (pclsid != NULL)
+      {
+    _pph->clsid = *pclsid;
+      }
+      goto Exit;
+  }
         if( !NT_SUCCESS(*pstatus) ) goto Exit;
 
-	cSectionT = 2;
+  cSectionT = 2;
     }
 
     // Calculate the exact size of the Stream (we know exactly
@@ -1999,7 +1999,7 @@ CPropertySetStream::_Create(
     _pph->dwOSVer = PROPSETVER_CURRENT;
     if (pclsid != NULL)
     {
-	_pph->clsid = *pclsid;
+  _pph->clsid = *pclsid;
     }
     _pph->reserved = cSectionT;
 
@@ -2014,19 +2014,19 @@ CPropertySetStream::_Create(
     {
         // We need to initialize any empty first section.
 
-	pfo->fmtid = guidDocumentSummary;
+  pfo->fmtid = guidDocumentSummary;
 
-	_InitSection(pfo,
+  _InitSection(pfo,
                      LocaleId,
                      FALSE); // Don't create an empty dictionary.
 
         // Advance the FmtID/Offset table pointer to the second entry,
         // and set it's offset to just beyond the first section.
 
-	pfo = _GetFormatidOffset(1);
-	pfo->dwOffset = CB_PROPERTYSETHEADER +
-			cSectionT * CB_FORMATIDOFFSET +
-			CB_MINSECTIONSIZE;
+  pfo = _GetFormatidOffset(1);
+  pfo->dwOffset = CB_PROPERTYSETHEADER +
+      cSectionT * CB_FORMATIDOFFSET +
+      CB_MINSECTIONSIZE;
     }
 
     // Initialize the requested property set.
@@ -2059,7 +2059,7 @@ Exit:
 // Synopsis:    verify header of a property set and read the code page
 //
 // Arguments:   [pfmtid]        -- format id
-//		[Mode]		-- open mode
+//    [Mode]    -- open mode
 //              [pstatus]       -- Pointer to NTSTATUS code.
 //
 // Returns:     LOADSTATE
@@ -2097,7 +2097,7 @@ CPropertySetStream::_LoadHeader(
 
     if (pfmtid != NULL && *pfmtid == guidDocumentSummarySection2)
     {
-	_State |= CPSS_USERDEFINEDPROPERTIES;
+  _State |= CPSS_USERDEFINEDPROPERTIES;
     }
     else
     {
@@ -2106,16 +2106,16 @@ CPropertySetStream::_LoadHeader(
         // are deleted simply be deleting the underlying
         // stream).
 
-	if (Mode == CREATEPROP_DELETE)
-	{
-	    DebugTrace(0, Dbg, ("_LoadHeader: CREATEPROP_DELETE\n"));
-	    StatusInvalidParameter(pstatus, "_LoadHeader: CREATEPROP_DELETE");
+  if (Mode == CREATEPROP_DELETE)
+  {
+      DebugTrace(0, Dbg, ("_LoadHeader: CREATEPROP_DELETE\n"));
+      StatusInvalidParameter(pstatus, "_LoadHeader: CREATEPROP_DELETE");
             goto Exit;
-	}
-	if (Mode == CREATEPROP_CREATE)
-	{
-	    goto Exit;  // We're going to overwrite it anyway
-	}
+  }
+  if (Mode == CREATEPROP_CREATE)
+  {
+      goto Exit;  // We're going to overwrite it anyway
+  }
     }
 
     // Get the size of the underlying stream.
@@ -2149,24 +2149,24 @@ CPropertySetStream::_LoadHeader(
 
     if (_HasPropHeader())
     {
-	// The first expression must be TRUE before we can dereference _pph
-	// for the second expression.
+  // The first expression must be TRUE before we can dereference _pph
+  // for the second expression.
 
         if (cbstm < CB_PROPERTYSETHEADER + CB_FORMATIDOFFSET ||
-	    cbstm < CB_PROPERTYSETHEADER + _pph->reserved * CB_FORMATIDOFFSET ||
+      cbstm < CB_PROPERTYSETHEADER + _pph->reserved * CB_FORMATIDOFFSET ||
             _pph->wByteOrder != 0xfffe ||
             _pph->wFormat != 0 ||
             _pph->reserved < 1)
         {
-            _cSection = 0;		// Mark property set invalid
+            _cSection = 0;    // Mark property set invalid
             DebugTrace(0, cbstm != 0? DEBTRACE_ERROR : Dbg, (
                 "_LoadHeader: %s (ver=%lx)\n",
                 cbstm == 0? "Empty Stream" :
-		    cbstm < CB_PROPERTYSETHEADER + CB_FORMATIDOFFSET?
-			"Stream too small for header" :
-		    _pph->wByteOrder != 0xfffe? "Bad wByteOrder field" :
-		    _pph->wFormat != 0? "Bad wFormat field" :
-		    _pph->reserved < 1? "Bad reserved field" :
+        cbstm < CB_PROPERTYSETHEADER + CB_FORMATIDOFFSET?
+      "Stream too small for header" :
+        _pph->wByteOrder != 0xfffe? "Bad wByteOrder field" :
+        _pph->wFormat != 0? "Bad wFormat field" :
+        _pph->reserved < 1? "Bad reserved field" :
                     "Bad dwOSVer field",
                 _pph != NULL? _pph->dwOSVer : 0));
             goto Exit;
@@ -2176,10 +2176,10 @@ CPropertySetStream::_LoadHeader(
         // to see if this is a SumInfo or DocSumInfo set.
 
         pfo = _GetFormatidOffset(0);
-	if (pfo->fmtid == guidDocumentSummary)
-	{
-	    _State |= CPSS_DOCUMENTSUMMARYINFO;
-	}
+  if (pfo->fmtid == guidDocumentSummary)
+  {
+      _State |= CPSS_DOCUMENTSUMMARYINFO;
+  }
         else if (pfo->fmtid == guidSummary)
         {
             fSummaryInformation = TRUE;
@@ -2189,32 +2189,32 @@ CPropertySetStream::_LoadHeader(
         // second section, verify that it's there.
 
         if (_State & CPSS_USERDEFINEDPROPERTIES)
-	{
+  {
             // Ensure that this is the second section of
             // the DocSumInfo property set; that's the only
             // two-section property set we support.
 
-	    if ((_State & CPSS_DOCUMENTSUMMARYINFO) == 0)
-	    {
-		DebugTrace(0, DEBTRACE_ERROR, ("Not DocumentSummaryInfo 1st FMTID\n"));
-		goto Exit;
-	    }
+      if ((_State & CPSS_DOCUMENTSUMMARYINFO) == 0)
+      {
+    DebugTrace(0, DEBTRACE_ERROR, ("Not DocumentSummaryInfo 1st FMTID\n"));
+    goto Exit;
+      }
 
             // Verify that this proeprty set has two sections, and that
             // the second section is the UD propset.
 
-	    if (_pph->reserved < 2 ||
-		(pfo = _GetFormatidOffset(1))->fmtid != guidDocumentSummarySection2)
-	    {
-		DebugTrace(
-			0,
-			_pph->reserved < 2? Dbg : DEBTRACE_ERROR,
-			("Bad/missing 2nd section FMTID\n"));
-		loadstate = LOADSTATE_USERDEFINEDNOTFOUND;
+      if (_pph->reserved < 2 ||
+    (pfo = _GetFormatidOffset(1))->fmtid != guidDocumentSummarySection2)
+      {
+    DebugTrace(
+      0,
+      _pph->reserved < 2? Dbg : DEBTRACE_ERROR,
+      ("Bad/missing 2nd section FMTID\n"));
+    loadstate = LOADSTATE_USERDEFINEDNOTFOUND;
                 goto Exit;
-	    }
-	}
-	else if (pfmtid != NULL)
+      }
+  }
+  else if (pfmtid != NULL)
         {
             // This isn't the UserDefined property set, so it
             // should be the first section, so it should match
@@ -2236,12 +2236,12 @@ CPropertySetStream::_LoadHeader(
                     fSummaryInformation = TRUE;
                 }
                 else
-	        {
+          {
                     _cSection = 0;
-	            DebugTrace(0, DEBTRACE_ERROR, ("Bad FMTID\n"));
+              DebugTrace(0, DEBTRACE_ERROR, ("Bad FMTID\n"));
                     loadstate = LOADSTATE_BADFMTID;
                     goto Exit;
-	        }
+          }
             }   // if (*pfmtid != pfo->fmtid)
         }   // else if (pfmtid != NULL)
 
@@ -2274,33 +2274,33 @@ CPropertySetStream::_LoadHeader(
         // If we have multiple sections, record the tail length
         // (the size of the property set beyond this section).
 
-	if (_cSection > 1)
-	{
-	    _State |= CPSS_MULTIPLESECTIONS;
-	    _cbTail = cbMin - (_oSection + psh->cbSection);
-	    DebugTrace(0, Dbg, ("_LoadHeader: cbTail=%x\n", _cbTail));
-	}
+  if (_cSection > 1)
+  {
+      _State |= CPSS_MULTIPLESECTIONS;
+      _cbTail = cbMin - (_oSection + psh->cbSection);
+      DebugTrace(0, Dbg, ("_LoadHeader: cbTail=%x\n", _cbTail));
+  }
 
         // Fix all the problems we know how to fix in the in-memory
         // representation of the property set.
 
         if (fSummaryInformation || (_State & CPSS_DOCUMENTSUMMARYINFO))
         {
-	    if (fSummaryInformation)
-	    {
-		_FixSummaryInformation(&cbstm, pstatus);
+      if (fSummaryInformation)
+      {
+    _FixSummaryInformation(&cbstm, pstatus);
                 if( !NT_SUCCESS(*pstatus) ) goto Exit;
-	    }
+      }
 
-	    _FixPackedPropertySet( pstatus );
+      _FixPackedPropertySet( pstatus );
             if( !NT_SUCCESS(*pstatus) ) goto Exit;
         }
 
-	if (Mode == CREATEPROP_DELETE)
-	{
-	    loadstate = LOADSTATE_USERDEFINEDDELETE;
+  if (Mode == CREATEPROP_DELETE)
+  {
+      loadstate = LOADSTATE_USERDEFINEDDELETE;
             goto Exit;
-	}
+  }
     }
 
     //  ----
@@ -2329,7 +2329,7 @@ Exit:
 // Returns:     None
 //---------------------------------------------------------------------------
 
-#define PID_THUMBNAIL	0x00000011  // SummaryInformation thumbnail property
+#define PID_THUMBNAIL 0x00000011  // SummaryInformation thumbnail property
 
 VOID
 CPropertySetStream::_FixSummaryInformation(IN OUT ULONG *pcbstm,
@@ -2354,23 +2354,23 @@ CPropertySetStream::_FixSummaryInformation(IN OUT ULONG *pcbstm,
     {
         // Look for the thumbnail property.
 
-	for ( ; ppo < ppoMax; ppo++)
-	{
-	    if (ppo->propid == PID_THUMBNAIL)
-	    {
-		SERIALIZEDPROPERTYVALUE const *pprop;
+  for ( ; ppo < ppoMax; ppo++)
+  {
+      if (ppo->propid == PID_THUMBNAIL)
+      {
+    SERIALIZEDPROPERTYVALUE const *pprop;
 
                 // If this property isn't properly aligned, then ignore it.
 
-		if (ppo->dwOffset & (sizeof(DWORD) - 1))
-		{
-		    break;
-		}
+    if (ppo->dwOffset & (sizeof(DWORD) - 1))
+    {
+        break;
+    }
 
                 // Get a pointer to the property.
 
-		pprop = (SERIALIZEDPROPERTYVALUE *)
-			    _MapOffsetToAddress(ppo->dwOffset);
+    pprop = (SERIALIZEDPROPERTYVALUE *)
+          _MapOffsetToAddress(ppo->dwOffset);
 
                 // Look specifically for the Publisher's Thumbnail property.
                 // If this is a Publisher set, the lengths won't add
@@ -2381,14 +2381,14 @@ CPropertySetStream::_FixSummaryInformation(IN OUT ULONG *pcbstm,
                 // size of the Section.  But In the case of Publisher,
                 // the section length is 4 bytes short.
 
-		if (PropByteSwap(pprop->dwType) == VT_CF                // It's in a clipboard format
+    if (PropByteSwap(pprop->dwType) == VT_CF                // It's in a clipboard format
                     &&                                                  // For Windows
-		    *(ULONG *) &pprop->rgb[sizeof(ULONG)] == PropByteSwap((ULONG)MAXULONG)
+        *(ULONG *) &pprop->rgb[sizeof(ULONG)] == PropByteSwap((ULONG)MAXULONG)
                     &&
-		    ppo->dwOffset +                                     // And the lengths don't add up
-			PropByteSwap( *(ULONG *) pprop->rgb ) +
-			(3 - 2) * sizeof(ULONG) == psh->cbSection)
-		{
+        ppo->dwOffset +                                     // And the lengths don't add up
+      PropByteSwap( *(ULONG *) pprop->rgb ) +
+      (3 - 2) * sizeof(ULONG) == psh->cbSection)
+    {
                     // We've found the Publisher problem.
 
                     // For Pub95 files, we must dword-align the section
@@ -2404,7 +2404,7 @@ CPropertySetStream::_FixSummaryInformation(IN OUT ULONG *pcbstm,
                         // psh pointer.
 
                         *pcbstm += DwordRemain(*pcbstm);
-    	                _MSTM(SetSize)(*pcbstm,             // The new size
+                      _MSTM(SetSize)(*pcbstm,             // The new size
                                        FALSE,               // Don't update the underlying stream
                                        (VOID **) &_pph,     // The new mapping
                                        pstatus);
@@ -2420,19 +2420,19 @@ CPropertySetStream::_FixSummaryInformation(IN OUT ULONG *pcbstm,
 
                     // Now correct the section size.
 
-		    DebugTrace(0, DEBTRACE_PROPPATCH, (
-			"_FixSummaryInformation: Patch section size: %x->%x\n",
-			psh->cbSection,
-			psh->cbSection + sizeof(ULONG)));
+        DebugTrace(0, DEBTRACE_PROPPATCH, (
+      "_FixSummaryInformation: Patch section size: %x->%x\n",
+      psh->cbSection,
+      psh->cbSection + sizeof(ULONG)));
 
                     psh->cbSection += sizeof(ULONG);
 
-		}   // if (pprop->dwType == VT_CF ...
+    }   // if (pprop->dwType == VT_CF ...
 
-		break;
+    break;
 
-	    }   // if (ppo->propid == PID_THUMBNAIL)
-	}   // for ( ; ppo < ppoMax; ppo++)
+      }   // if (ppo->propid == PID_THUMBNAIL)
+  }   // for ( ; ppo < ppoMax; ppo++)
     }   // if (psh != NULL && cbstm == _oSection + psh->cbSection + sizeof(ULONG))
 
     //  ----
@@ -2495,9 +2495,9 @@ INT _CRTAPI1 fnOffsetCompare(VOID const *ppo1, VOID const *ppo2);
 
 // DocumentSummaryInformation special case properties (w/packed vector elements)
 #define PID_HEADINGPAIR 0x0000000c // heading pair (VT_VECTOR | VT_VARIANT):
-					// {VT_LPSTR, VT_I4} pairs
-#define PID_DOCPARTS	0x0000000d // docparts (VT_VECTOR | VT_LPSTR)
-//#define PID_HLINKS	0x00000015 // hlinks vector
+          // {VT_LPSTR, VT_I4} pairs
+#define PID_DOCPARTS  0x0000000d // docparts (VT_VECTOR | VT_LPSTR)
+//#define PID_HLINKS  0x00000015 // hlinks vector
 
 VOID
 CPropertySetStream::_FixPackedPropertySet(OUT NTSTATUS *pstatus)
@@ -2537,9 +2537,9 @@ CPropertySetStream::_FixPackedPropertySet(OUT NTSTATUS *pstatus)
     // Determine if this is the first section of the DocSumInfo
     // property set.
     if ((_State & (CPSS_USERDEFINEDPROPERTIES | CPSS_DOCUMENTSUMMARYINFO)) ==
-	 CPSS_DOCUMENTSUMMARYINFO)
+   CPSS_DOCUMENTSUMMARYINFO)
     {
-	fDocSummaryInfo = TRUE;
+  fDocSummaryInfo = TRUE;
     }
 
     // Get pointers into this section's header.
@@ -2557,25 +2557,25 @@ CPropertySetStream::_FixPackedPropertySet(OUT NTSTATUS *pstatus)
    
     if (!fPacked && psh != NULL)
     {
-	for (ppo = ppoBase; ppo < ppoMax; ppo++)
-	{
-	    if ( !IsDwordAligned(ppo->dwOffset)
+  for (ppo = ppoBase; ppo < ppoMax; ppo++)
+  {
+      if ( !IsDwordAligned(ppo->dwOffset)
                  ||
-		 ( fDocSummaryInfo
+     ( fDocSummaryInfo
                    &&
                    _CodePage != CP_WINUNICODE
                    &&
-		   ( ppo->propid == PID_HEADINGPAIR
+       ( ppo->propid == PID_HEADINGPAIR
                      ||
-		     ppo->propid == PID_DOCPARTS
+         ppo->propid == PID_DOCPARTS
                    )
                  )
                )
-	    {
-		fPacked = TRUE;
-		break;
-	    }
-	}
+      {
+    fPacked = TRUE;
+    break;
+      }
+  }
     }
 
     //  ----------------------------------------------------
@@ -2590,8 +2590,8 @@ CPropertySetStream::_FixPackedPropertySet(OUT NTSTATUS *pstatus)
 
     if (fPacked)
     {
-	DebugTrace(0, DEBTRACE_PROPPATCH, (
-	    "_FixPackedPropertySet: packed properties\n"));
+  DebugTrace(0, DEBTRACE_PROPPATCH, (
+      "_FixPackedPropertySet: packed properties\n"));
         _State |= CPSS_PACKEDPROPERTIES;
     }
 
@@ -2607,7 +2607,7 @@ CPropertySetStream::_FixPackedPropertySet(OUT NTSTATUS *pstatus)
     apoT = newk(mtPropSetStream, NULL) PROPERTYIDOFFSET[psh->cProperties + 1];
     if (apoT == NULL)
     {
-	*pstatus = STATUS_NO_MEMORY;
+  *pstatus = STATUS_NO_MEMORY;
         goto Exit;
     }
 
@@ -2615,9 +2615,9 @@ CPropertySetStream::_FixPackedPropertySet(OUT NTSTATUS *pstatus)
     // temporary PID/Offset array.
 
     RtlCopyMemory(
-	    apoT,
-	    psh->rgprop,
-	    psh->cProperties * CB_PROPERTYIDOFFSET);
+      apoT,
+      psh->rgprop,
+      psh->cProperties * CB_PROPERTYIDOFFSET);
 
     // Mark the end of the temporary array.
 
@@ -2638,14 +2638,14 @@ CPropertySetStream::_FixPackedPropertySet(OUT NTSTATUS *pstatus)
     aopropShrink = newk(mtPropSetStream, NULL) ULONG[psh->cProperties + 1];
     if (aopropShrink == NULL)
     {
-	*pstatus = STATUS_NO_MEMORY;
+  *pstatus = STATUS_NO_MEMORY;
         goto Exit;
     }
 
     aopropFinal = newk(mtPropSetStream, NULL) ULONG[psh->cProperties + 1];
     if (aopropFinal == NULL)
     {
-	*pstatus = STATUS_NO_MEMORY;
+  *pstatus = STATUS_NO_MEMORY;
         goto Exit;
     }
 
@@ -2659,25 +2659,25 @@ CPropertySetStream::_FixPackedPropertySet(OUT NTSTATUS *pstatus)
 
     for (ppoT = apoT; ppoT < ppoTMax; ppoT++)
     {
-	if (!IsDwordAligned(ppoT->dwOffset))
-	{
-	    cbprop = DwordAlign(ppoT[1].dwOffset - ppoT->dwOffset);
-	    if (cbpropbuf < cbprop)
-	    {
-		cbpropbuf = cbprop;
-	    }
-	}
+  if (!IsDwordAligned(ppoT->dwOffset))
+  {
+      cbprop = DwordAlign(ppoT[1].dwOffset - ppoT->dwOffset);
+      if (cbpropbuf < cbprop)
+      {
+    cbpropbuf = cbprop;
+      }
+  }
     }
 
     if (cbpropbuf != 0)
     {
-	ppropbuf = (SERIALIZEDPROPERTYVALUE *)
-			newk(mtPropSetStream, NULL) BYTE[cbpropbuf];
-	if (ppropbuf == NULL)
-	{
-	    *pstatus = STATUS_NO_MEMORY;
+  ppropbuf = (SERIALIZEDPROPERTYVALUE *)
+      newk(mtPropSetStream, NULL) BYTE[cbpropbuf];
+  if (ppropbuf == NULL)
+  {
+      *pstatus = STATUS_NO_MEMORY;
             goto Exit;
-	}
+  }
     }
 #endif  // i386==0
 
@@ -2697,30 +2697,30 @@ CPropertySetStream::_FixPackedPropertySet(OUT NTSTATUS *pstatus)
 
     for (ppoT = apoT; ppoT < ppoTMax; ppoT++)
     {
-	SERIALIZEDPROPERTYVALUE *pprop;
-	BOOLEAN fDocSumLengthComputed = FALSE;
+  SERIALIZEDPROPERTYVALUE *pprop;
+  BOOLEAN fDocSumLengthComputed = FALSE;
         ULONG cbpropOriginal;
 
         // How much space does the property take up in the current
         // property set?
 
-	cbpropOriginal = cbprop = ppoT[1].dwOffset - ppoT->dwOffset;
-	pprop = (SERIALIZEDPROPERTYVALUE *)
-		    _MapOffsetToAddress(ppoT->dwOffset);
+  cbpropOriginal = cbprop = ppoT[1].dwOffset - ppoT->dwOffset;
+  pprop = (SERIALIZEDPROPERTYVALUE *)
+        _MapOffsetToAddress(ppoT->dwOffset);
 
 #if i386 == 0
         // If necessary, put this property into an aligned buffer.
 
-	if (!IsDwordAligned(ppoT->dwOffset))
-	{
-	    DebugTrace(0, Dbg, (
-		"_FixPackedPropertySet: unaligned pid=%x off=%x\n",
-		ppoT->propid,
-		ppoT->dwOffset));
-	    PROPASSERT(DwordAlign(cbprop) <= cbpropbuf);
-	    RtlCopyMemory((VOID *) ppropbuf, pprop, cbprop);
-	    pprop = ppropbuf;
-	}
+  if (!IsDwordAligned(ppoT->dwOffset))
+  {
+      DebugTrace(0, Dbg, (
+    "_FixPackedPropertySet: unaligned pid=%x off=%x\n",
+    ppoT->propid,
+    ppoT->dwOffset));
+      PROPASSERT(DwordAlign(cbprop) <= cbpropbuf);
+      RtlCopyMemory((VOID *) ppropbuf, pprop, cbprop);
+      pprop = ppropbuf;
+  }
 #endif
         // Calculate the actual length of this property, including
         // the necessary padding.  This might be bigger than the
@@ -2728,64 +2728,64 @@ CPropertySetStream::_FixPackedPropertySet(OUT NTSTATUS *pstatus)
         // padded), and it might be smaller than the property's current
         // length (if the propset was over-padded).
 
-	if (ppoT->propid == PID_DICTIONARY)
-	{
+  if (ppoT->propid == PID_DICTIONARY)
+  {
             // Get the size of the dictionary.
 
-	    cbprop = DwordAlign(_DictionaryLength(
-				    (DICTIONARY const *) pprop,
-				    cbprop,
+      cbprop = DwordAlign(_DictionaryLength(
+            (DICTIONARY const *) pprop,
+            cbprop,
                                     pstatus));
             if( !NT_SUCCESS(*pstatus) ) goto Exit;
-	}
-	else
-	{
-	    ULONG cbpropT;
+  }
+  else
+  {
+      ULONG cbpropT;
 
             // Ansi DocSumInfo property sets have two vector properties
             // which are packed.  If this is one of those properties,
             // we won't fix it yet, but we'll compute the size required
             // when the elements are un-packed.
 
-	    if (fDocSummaryInfo && _CodePage != CP_WINUNICODE)
-	    {
-		if (ppoT->propid == PID_HEADINGPAIR)
-		{
-		    fDocSumLengthComputed = _FixHeadingPairVector(
-					    PATCHOP_COMPUTESIZE,
-					    pprop,
-					    &cbpropT);
-		}
-		else
-		if (ppoT->propid == PID_DOCPARTS)
-		{
-		    fDocSumLengthComputed = _FixDocPartsVector(
-					    PATCHOP_COMPUTESIZE,
-					    pprop,
-					    &cbpropT);
-		}
-	    }
+      if (fDocSummaryInfo && _CodePage != CP_WINUNICODE)
+      {
+    if (ppoT->propid == PID_HEADINGPAIR)
+    {
+        fDocSumLengthComputed = _FixHeadingPairVector(
+              PATCHOP_COMPUTESIZE,
+              pprop,
+              &cbpropT);
+    }
+    else
+    if (ppoT->propid == PID_DOCPARTS)
+    {
+        fDocSumLengthComputed = _FixDocPartsVector(
+              PATCHOP_COMPUTESIZE,
+              pprop,
+              &cbpropT);
+    }
+      }
 
             // If we computed a length above, use it, otherwise calculate
             // the length using the standard rules (we've already checked
             // for the special cases).
 
-	    if (fDocSumLengthComputed)
-	    {
-		cbprop = cbpropT;
+      if (fDocSumLengthComputed)
+      {
+    cbprop = cbpropT;
 #if DBGPROP
-		fExpandDocSummaryInfo = TRUE;
+    fExpandDocSummaryInfo = TRUE;
 #endif
-	    }
-	    else
-	    {
-		cbprop = PropertyLength(pprop, DwordAlign(cbprop), 0, pstatus);
+      }
+      else
+      {
+    cbprop = PropertyLength(pprop, DwordAlign(cbprop), 0, pstatus);
                 if( !NT_SUCCESS(*pstatus) ) goto Exit;
-	    }
+      }
 
-	}   // if (ppoT->propid == PID_DICTIONARY) ... else
+  }   // if (ppoT->propid == PID_DICTIONARY) ... else
 
-	PROPASSERT(IsDwordAligned(cbprop));
+  PROPASSERT(IsDwordAligned(cbprop));
 
         // Now that we know the actual cbprop, use it to update the
         // *next* entry in the two arrays of correct offsets.
@@ -2802,14 +2802,14 @@ CPropertySetStream::_FixPackedPropertySet(OUT NTSTATUS *pstatus)
         poprop = &aopropFinal[ ppoT - apoT ];  // 2nd do aopropFinal
         poprop[1] = poprop[0] + cbprop;
 
-	DebugTrace(0, Dbg, (
-	    "_FixPackedPropertySet: pid=%x off=%x->%x\n",
-	    ppoT->propid,
-	    ppoT->dwOffset,
-	    poprop[0],
-	    poprop[0] < ppoT->dwOffset?
-		" (compact)" :
-		poprop[0] > ppoT->dwOffset? " (expand)" : ""));
+  DebugTrace(0, Dbg, (
+      "_FixPackedPropertySet: pid=%x off=%x->%x\n",
+      ppoT->propid,
+      ppoT->dwOffset,
+      poprop[0],
+      poprop[0] < ppoT->dwOffset?
+    " (compact)" :
+    poprop[0] > ppoT->dwOffset? " (expand)" : ""));
 
 
         // Is this compaction or an expansion?
@@ -2817,15 +2817,15 @@ CPropertySetStream::_FixPackedPropertySet(OUT NTSTATUS *pstatus)
         // an expansion, even if the total property size didn't change,
         // because we need the expand the elements within the vector.
 
-	if (cbprop < cbpropOriginal)
-	{
-	    cCompact++;
-	}
-	else
-	if (cbprop > cbpropOriginal || fDocSumLengthComputed)
-	{
-	    cExpand++;
-	}
+  if (cbprop < cbpropOriginal)
+  {
+      cCompact++;
+  }
+  else
+  if (cbprop > cbpropOriginal || fDocSumLengthComputed)
+  {
+      cExpand++;
+  }
     }   // for (ppoT = apoT; ppoT < ppoTMax; ppoT++)
 
 
@@ -2839,29 +2839,29 @@ CPropertySetStream::_FixPackedPropertySet(OUT NTSTATUS *pstatus)
 
     if (cExpand || cCompact)
     {
-	ULONG cbstm;
-	LONG cbdelta;
+  ULONG cbstm;
+  LONG cbdelta;
 
-	cbstm = _oSection + psh->cbSection + _cbTail;
-	cbdelta = aopropFinal[psh->cProperties] - psh->cbSection;
+  cbstm = _oSection + psh->cbSection + _cbTail;
+  cbdelta = aopropFinal[psh->cProperties] - psh->cbSection;
 
-	DebugTrace(0, Dbg, (
-	    "_FixPackedPropertySet: cbstm=%x cbdelta=%x cexpand=%x ccompact=%x\n",
-	    cbstm,
-	    cbdelta,
-	    cExpand,
-	    cCompact));
+  DebugTrace(0, Dbg, (
+      "_FixPackedPropertySet: cbstm=%x cbdelta=%x cexpand=%x ccompact=%x\n",
+      cbstm,
+      cbdelta,
+      cExpand,
+      cCompact));
 
         //  -----------------------------
         //  Grow the Stream if necessary.
         //  -----------------------------
 
         if (cbdelta > 0)
-	{
-	    DebugTrace(0, Dbg, (
-		"SetSize(%x) _FixPackedPropertySet grow %x bytes\n",
-		cbstm + cbdelta,
-		cbdelta));
+  {
+      DebugTrace(0, Dbg, (
+    "SetSize(%x) _FixPackedPropertySet grow %x bytes\n",
+    cbstm + cbdelta,
+    cbdelta));
              
             // On the set-size, say that this is a non-persistent
             // change, so that the underlying Stream isn't modified.
@@ -2869,34 +2869,34 @@ CPropertySetStream::_FixPackedPropertySet(OUT NTSTATUS *pstatus)
             // permanent (if the caller closes without making any changes
             // the file should remain un-changed). 
 
-	    _MSTM(SetSize)(
-		    cbstm + cbdelta,
+      _MSTM(SetSize)(
+        cbstm + cbdelta,
                     FALSE,   // Not persistent
-		    (VOID **) &_pph,
+        (VOID **) &_pph,
                     pstatus);
             if( !NT_SUCCESS(*pstatus) ) goto Exit;
 
-	    // reload all pointers into mapped image:
+      // reload all pointers into mapped image:
 
-	    psh = _LoadPropertyOffsetPointers(&ppoBase, &ppoMax, pstatus);
+      psh = _LoadPropertyOffsetPointers(&ppoBase, &ppoMax, pstatus);
             if( !NT_SUCCESS(*pstatus) ) goto Exit;
 
-	    // If there's another section after this one, move it back
-	    // to the end of the stream now, which will create room for
+      // If there's another section after this one, move it back
+      // to the end of the stream now, which will create room for
             // our expansion.
 
-	    if (_cbTail != 0)
-	    {
-		VOID *pvSrc = _MapAbsOffsetToAddress(cbstm - _cbTail);
+      if (_cbTail != 0)
+      {
+    VOID *pvSrc = _MapAbsOffsetToAddress(cbstm - _cbTail);
 
-		PropMoveMemory(
-			"_FixPackedPropertySet(_cbTail:grow)",
-			psh,
-			Add2Ptr(pvSrc, cbdelta),
-			pvSrc,
-			_cbTail);
-	    }
-	}   // if (cbdelta > 0)
+    PropMoveMemory(
+      "_FixPackedPropertySet(_cbTail:grow)",
+      psh,
+      Add2Ptr(pvSrc, cbdelta),
+      pvSrc,
+      _cbTail);
+      }
+  }   // if (cbdelta > 0)
 
         // This previous step (growing the Stream), was the last one which can
         // fail.  We're about to modify the actual property set (we've been
@@ -2913,32 +2913,32 @@ CPropertySetStream::_FixPackedPropertySet(OUT NTSTATUS *pstatus)
         // the property set buffer so that it matches aopropShrink.
 
         if (cCompact > 0)
-	{
-	    // Start at the beginning and move each property up.
+  {
+      // Start at the beginning and move each property up.
 
-	    poprop = aopropShrink;
-	    for (ppoT = apoT; ppoT < ppoTMax; ppoT++, poprop++)
-	    {
-		if (*poprop != ppoT->dwOffset)
-		{
-		    PROPASSERT(*poprop < ppoT->dwOffset);
-		    PROPASSERT(poprop[1] > *poprop);
+      poprop = aopropShrink;
+      for (ppoT = apoT; ppoT < ppoTMax; ppoT++, poprop++)
+      {
+    if (*poprop != ppoT->dwOffset)
+    {
+        PROPASSERT(*poprop < ppoT->dwOffset);
+        PROPASSERT(poprop[1] > *poprop);
 
-		    // We're compacting; the property should not grow!
+        // We're compacting; the property should not grow!
 
-		    PROPASSERT(
-			poprop[1] - *poprop <=
-			ppoT[1].dwOffset - ppoT->dwOffset);
+        PROPASSERT(
+      poprop[1] - *poprop <=
+      ppoT[1].dwOffset - ppoT->dwOffset);
 
-		    PropMoveMemory(
-			    "_FixPackedPropertySet(compact)",
-			    psh,
-			    Add2Ptr(psh, *poprop),
-			    Add2Ptr(psh, ppoT->dwOffset),
-			    poprop[1] - *poprop);
-		}
-	    }   // for (ppoT = apoT; ppoT < ppoTMax; ppoT++, poprop++)
-	}   // if (cCompact > 0)
+        PropMoveMemory(
+          "_FixPackedPropertySet(compact)",
+          psh,
+          Add2Ptr(psh, *poprop),
+          Add2Ptr(psh, ppoT->dwOffset),
+          poprop[1] - *poprop);
+    }
+      }   // for (ppoT = apoT; ppoT < ppoTMax; ppoT++, poprop++)
+  }   // if (cCompact > 0)
 
 
         //  ---------------
@@ -2951,151 +2951,151 @@ CPropertySetStream::_FixPackedPropertySet(OUT NTSTATUS *pstatus)
 
         if (cExpand > 0)
         {
-	    // Start at the end and move each property back.
+      // Start at the end and move each property back.
             // The 'poprop' gives us the final correct offset
             // of the current property.
 
             LONG lOffsetIndex;
-	    poprop = &aopropFinal[psh->cProperties - 1];
+      poprop = &aopropFinal[psh->cProperties - 1];
 
             // Start at the second-to-last entry in the arrays of offsets
             // (the last entry is an artificially added one to mark the end of the
             // property set).
 
-	    for (lOffsetIndex = ppoTMax - apoT - 1, ppoT = ppoTMax - 1;
+      for (lOffsetIndex = ppoTMax - apoT - 1, ppoT = ppoTMax - 1;
                  lOffsetIndex >=0;
                  lOffsetIndex--, poprop--, ppoT--)
-	    {
+      {
                 // Get a pointer to the final location of this
                 // property.
 
-		SERIALIZEDPROPERTYVALUE *pprop;
-		pprop = (SERIALIZEDPROPERTYVALUE *)
-			    Add2Ptr(psh, *poprop);
+    SERIALIZEDPROPERTYVALUE *pprop;
+    pprop = (SERIALIZEDPROPERTYVALUE *)
+          Add2Ptr(psh, *poprop);
 
-		if (*poprop != aopropShrink[ lOffsetIndex ])
-		{
-		    ULONG cbCopy, cbOld;
-			
-		    PROPASSERT(*poprop > aopropShrink[ lOffsetIndex ]);
-		    PROPASSERT(poprop[1] > *poprop);
+    if (*poprop != aopropShrink[ lOffsetIndex ])
+    {
+        ULONG cbCopy, cbOld;
+      
+        PROPASSERT(*poprop > aopropShrink[ lOffsetIndex ]);
+        PROPASSERT(poprop[1] > *poprop);
                     PROPASSERT(aopropShrink[ lOffsetIndex+1 ] > aopropShrink[ lOffsetIndex ]);
 
                     // How many bytes should we copy?  The minimum size of the property
                     // calculated using the old and new offsets.
 
-		    cbCopy = poprop[1] - poprop[0];
-		    cbOld = aopropShrink[ lOffsetIndex+1 ]
+        cbCopy = poprop[1] - poprop[0];
+        cbOld = aopropShrink[ lOffsetIndex+1 ]
                             - aopropShrink[ lOffsetIndex+0 ];
 
-		    if (cbCopy > cbOld)
-		    {
-			cbCopy = cbOld;
-		    }
+        if (cbCopy > cbOld)
+        {
+      cbCopy = cbOld;
+        }
 
                     // Copy the property from its old location
                     // (psh+aopropShrink[lOffsetIndex]) to its new location
                     // (pprop == psh+*poprop).
 
-		    DebugTrace(0, DEBTRACE_PROPPATCH, (
-			"_FixPackedPropertySet:move pid=%x off=%x->%x "
-			    "cb=%x->%x cbCopy=%x z=%x @%x\n",
-			ppoT->propid,
-			ppoT->dwOffset,
-			*poprop,
-			cbOld,
-			poprop[1] - *poprop,
-			cbCopy,
-			DwordRemain(cbCopy),
-			_MapAddressToOffset(Add2Ptr(pprop, cbCopy))));
+        DebugTrace(0, DEBTRACE_PROPPATCH, (
+      "_FixPackedPropertySet:move pid=%x off=%x->%x "
+          "cb=%x->%x cbCopy=%x z=%x @%x\n",
+      ppoT->propid,
+      ppoT->dwOffset,
+      *poprop,
+      cbOld,
+      poprop[1] - *poprop,
+      cbCopy,
+      DwordRemain(cbCopy),
+      _MapAddressToOffset(Add2Ptr(pprop, cbCopy))));
 
-		    PropMoveMemory(
-			    "_FixPackedPropertySet(expand)",
-			    psh,
-			    pprop,
-			    Add2Ptr(psh, aopropShrink[ lOffsetIndex ]),
-			    cbCopy);
-		    RtlZeroMemory(
-			    Add2Ptr(pprop, cbCopy),
-			    DwordRemain(cbCopy));
+        PropMoveMemory(
+          "_FixPackedPropertySet(expand)",
+          psh,
+          pprop,
+          Add2Ptr(psh, aopropShrink[ lOffsetIndex ]),
+          cbCopy);
+        RtlZeroMemory(
+          Add2Ptr(pprop, cbCopy),
+          DwordRemain(cbCopy));
 
-		}   // if (*poprop != ppoT->dwOffset)
+    }   // if (*poprop != ppoT->dwOffset)
 
                 // If this is an older DocSumInfo property set,
                 // and this property is one of the vector values,
                 // we must expand the vector elements now that we've
                 // room for it.
 
-		if (fDocSummaryInfo && _CodePage != CP_WINUNICODE)
-		{
-		    ULONG cbpropT;
+    if (fDocSummaryInfo && _CodePage != CP_WINUNICODE)
+    {
+        ULONG cbpropT;
 
-		    if (ppoT->propid == PID_HEADINGPAIR)
-		    {
-			_FixHeadingPairVector(
-					PATCHOP_EXPAND,
-					pprop,
-					&cbpropT);
-		    }
-		    else
-		    if (ppoT->propid == PID_DOCPARTS)
-		    {
-			_FixDocPartsVector(
-					PATCHOP_EXPAND,
-					pprop,
-					&cbpropT);
-		    }
-		}   // if (fDocSummaryInfo)
-	    }   // for (ppoT = ppoTMax; --ppoT >= apoT; popropNew--)
-	}   // if (cExpand != 0)
+        if (ppoT->propid == PID_HEADINGPAIR)
+        {
+      _FixHeadingPairVector(
+          PATCHOP_EXPAND,
+          pprop,
+          &cbpropT);
+        }
+        else
+        if (ppoT->propid == PID_DOCPARTS)
+        {
+      _FixDocPartsVector(
+          PATCHOP_EXPAND,
+          pprop,
+          &cbpropT);
+        }
+    }   // if (fDocSummaryInfo)
+      }   // for (ppoT = ppoTMax; --ppoT >= apoT; popropNew--)
+  }   // if (cExpand != 0)
 
 
 
         //  ---------------------------------------------------------
-	//  Patch the section size and the moved properties' offsets.
+  //  Patch the section size and the moved properties' offsets.
         //  ---------------------------------------------------------
 
-	DebugTrace(0, DEBTRACE_PROPPATCH, (
-	    "_FixPackedPropertySet: Patch section size %x->%x\n",
-	    psh->cbSection,
-	    psh->cbSection + cbdelta));
+  DebugTrace(0, DEBTRACE_PROPPATCH, (
+      "_FixPackedPropertySet: Patch section size %x->%x\n",
+      psh->cbSection,
+      psh->cbSection + cbdelta));
 
-	psh->cbSection += cbdelta;
+  psh->cbSection += cbdelta;
 
         // Iterate through the original PID/Offset array to update the
         // offsets.
 
-	for (ppo = ppoBase; ppo < ppoMax; ppo++)
-	{
+  for (ppo = ppoBase; ppo < ppoMax; ppo++)
+  {
             // Search the temporary PID/Offset array (which has the updated
             // offsets) for ppo->propid.
 
-	    for (ppoT = apoT; ppoT < ppoTMax; ppoT++)
-	    {
-		if (ppo->propid == ppoT->propid)
-		{
+      for (ppoT = apoT; ppoT < ppoTMax; ppoT++)
+      {
+    if (ppo->propid == ppoT->propid)
+    {
                     // We've found ppo->propid in the temporary PID/Offset
                     // array.  Copy the offset value from the temporary array
                     // to the actual array in the property set.
 
-		    PROPASSERT(ppo->dwOffset == ppoT->dwOffset);
-		    ppo->dwOffset = aopropFinal[ppoT - apoT];
+        PROPASSERT(ppo->dwOffset == ppoT->dwOffset);
+        ppo->dwOffset = aopropFinal[ppoT - apoT];
 #if DBGPROP
-		    if (ppo->dwOffset != ppoT->dwOffset)
-		    {
-			DebugTrace(0, DEBTRACE_PROPPATCH, (
-			    "_FixPackedPropertySet: Patch propid %x"
-				" offset=%x->%x\n",
-			    ppo->propid,
-			    ppoT->dwOffset,
-			    ppo->dwOffset));
-		    }   // if (ppo->dwOffset != ppoT->dwOffset)
+        if (ppo->dwOffset != ppoT->dwOffset)
+        {
+      DebugTrace(0, DEBTRACE_PROPPATCH, (
+          "_FixPackedPropertySet: Patch propid %x"
+        " offset=%x->%x\n",
+          ppo->propid,
+          ppoT->dwOffset,
+          ppo->dwOffset));
+        }   // if (ppo->dwOffset != ppoT->dwOffset)
 #endif
-		    break;
+        break;
 
-		}   // if (ppo->propid == ppoT->propid)
-	    }   // for (ppoT = apoT; ppoT < ppoTMax; ppoT++)
-	}   // for (ppo = ppoBase; ppo < ppoMax; ppo++)
+    }   // if (ppo->propid == ppoT->propid)
+      }   // for (ppoT = apoT; ppoT < ppoTMax; ppoT++)
+  }   // for (ppo = ppoBase; ppo < ppoMax; ppo++)
 
         //  ------------
         //  Fix the tail
@@ -3107,29 +3107,29 @@ CPropertySetStream::_FixPackedPropertySet(OUT NTSTATUS *pstatus)
         // the tail in accordingly.
 
         if (_cbTail != 0)
-	{
-	    if (cbdelta < 0)
-	    {
-		VOID *pvSrc = _MapAbsOffsetToAddress(cbstm - _cbTail);
+  {
+      if (cbdelta < 0)
+      {
+    VOID *pvSrc = _MapAbsOffsetToAddress(cbstm - _cbTail);
 
-		PropMoveMemory(
-			"_FixPackedPropertySet(_cbTail:shrink)",
-			psh,
-			Add2Ptr(pvSrc, cbdelta),
-			pvSrc,
-			_cbTail);
-	    }
+    PropMoveMemory(
+      "_FixPackedPropertySet(_cbTail:shrink)",
+      psh,
+      Add2Ptr(pvSrc, cbdelta),
+      pvSrc,
+      _cbTail);
+      }
 
-	    _PatchSectionOffsets(cbdelta);
+      _PatchSectionOffsets(cbdelta);
 
-	}   // if (_cbTail != 0)
+  }   // if (_cbTail != 0)
 
 
         // If we get to this point we've successfully un-packed (or
         // un-over-padded) the property set, so we can clear the
         // state flag.
 
-	_State &= ~CPSS_PACKEDPROPERTIES;
+  _State &= ~CPSS_PACKEDPROPERTIES;
 
     }   // if (cExpand || cCompact)
 
@@ -3160,27 +3160,27 @@ Exit:
 //              of strings, and in Ansi property sets it's packed
 //              and must be un-packed.
 //
-// Arguments:	[PatchOp]	-- patch request
-//		[pprop]         -- property value to be patched or sized
-//		[pcbprop]	-- pointer to computed property length
+// Arguments: [PatchOp] -- patch request
+//    [pprop]         -- property value to be patched or sized
+//    [pcbprop] -- pointer to computed property length
 //
 // Returns:     TRUE if property type and all elements meet expectations;
-//		FALSE on error
+//    FALSE on error
 //
-// Note:	Operate on a DocumentSummaryInformation first section property,
-//		PID_DOCPARTS.  This property is assumed to be an array of
-//		VT_LPSTRs.
+// Note:  Operate on a DocumentSummaryInformation first section property,
+//    PID_DOCPARTS.  This property is assumed to be an array of
+//    VT_LPSTRs.
 //
-//		PATCHOP_COMPUTESIZE merely computes the size required to unpack
-//		the property, and must assume it is currently unaligned.
+//    PATCHOP_COMPUTESIZE merely computes the size required to unpack
+//    the property, and must assume it is currently unaligned.
 //
-//		PATCHOP_ALIGNLENGTHS patches all VT_LPSTR lengths to DWORD
-//		multiples, and may rely on the property already being aligned.
+//    PATCHOP_ALIGNLENGTHS patches all VT_LPSTR lengths to DWORD
+//    multiples, and may rely on the property already being aligned.
 //
-//		PATCHOP_EXPAND expands the property from the Src to Dst buffer,
-//		moving elements to DWORD boundaries, and patching VT_LPSTR
-//		lengths to DWORD multiples.  The Src buffer is assumed to be
-//		unaligned, and the Dst buffer is assumed to be properly sized.
+//    PATCHOP_EXPAND expands the property from the Src to Dst buffer,
+//    moving elements to DWORD boundaries, and patching VT_LPSTR
+//    lengths to DWORD multiples.  The Src buffer is assumed to be
+//    unaligned, and the Dst buffer is assumed to be properly sized.
 //---------------------------------------------------------------------------
 
 BOOLEAN
@@ -3190,9 +3190,9 @@ CPropertySetStream::_FixDocPartsVector(
     OUT ULONG *pcbprop)
 {
     PROPASSERT(
-	PatchOp == PATCHOP_COMPUTESIZE ||
-	PatchOp == PATCHOP_ALIGNLENGTHS ||
-	PatchOp == PATCHOP_EXPAND);
+  PatchOp == PATCHOP_COMPUTESIZE ||
+  PatchOp == PATCHOP_ALIGNLENGTHS ||
+  PatchOp == PATCHOP_EXPAND);
     PROPASSERT(pprop != NULL);
     PROPASSERT(pcbprop != NULL);
 
@@ -3204,19 +3204,19 @@ CPropertySetStream::_FixDocPartsVector(
          &&
          _CodePage != CP_WINUNICODE)
     {
-	ULONG cString;
-	VOID *pv;
+  ULONG cString;
+  VOID *pv;
 
-	cString = PropByteSwap( *(DWORD *) pprop->rgb );
-	pv = Add2Ptr(pprop->rgb, sizeof(DWORD));
+  cString = PropByteSwap( *(DWORD *) pprop->rgb );
+  pv = Add2Ptr(pprop->rgb, sizeof(DWORD));
 
-	if (_FixDocPartsElements(PatchOp, cString, pv, pv, pcbprop))
-	{
-	    *pcbprop += CB_SERIALIZEDPROPERTYVALUE + sizeof(ULONG);
-	    return(TRUE);
-	}
+  if (_FixDocPartsElements(PatchOp, cString, pv, pv, pcbprop))
+  {
+      *pcbprop += CB_SERIALIZEDPROPERTYVALUE + sizeof(ULONG);
+      return(TRUE);
+  }
     }
-    return(FALSE);	// Not a recognizable DocParts vector
+    return(FALSE);  // Not a recognizable DocParts vector
 }
 
 
@@ -3225,14 +3225,14 @@ CPropertySetStream::_FixDocPartsVector(
 //
 // Synopsis:    Recursively align the memory image of DocParts elements
 //
-// Arguments:	[PatchOp]	-- patch request
-//		[cString]	-- count of strings remaining in the vector
-//		[pvDst]		-- aligned overlapping destination buffer
-//		[pvSrc]		-- unaligned overlapping source buffer
-//		[pcbprop]	-- pointer to computed property length
+// Arguments: [PatchOp] -- patch request
+//    [cString] -- count of strings remaining in the vector
+//    [pvDst]   -- aligned overlapping destination buffer
+//    [pvSrc]   -- unaligned overlapping source buffer
+//    [pcbprop] -- pointer to computed property length
 //
 // Returns:     TRUE if all remaining elements meet expectations;
-//		FALSE on error
+//    FALSE on error
 //
 // Note:        The pvDst & pvSrc buffers must be in property-set
 //              byte order (little endian).
@@ -3249,16 +3249,16 @@ CPropertySetStream::_FixDocPartsElements(
     ULONG cb;
     
     PROPASSERT(
-	PatchOp == PATCHOP_COMPUTESIZE ||
-	PatchOp == PATCHOP_ALIGNLENGTHS ||
-	PatchOp == PATCHOP_EXPAND);
+  PatchOp == PATCHOP_COMPUTESIZE ||
+  PatchOp == PATCHOP_ALIGNLENGTHS ||
+  PatchOp == PATCHOP_EXPAND);
     PROPASSERT(pvDst >= pvSrc);
     PROPASSERT(PatchOp != PATCHOP_ALIGNLENGTHS || pvDst == pvSrc);
 
     if (cString == 0)
     {
-	*pcbprop = 0;
-	return(TRUE);
+  *pcbprop = 0;
+  return(TRUE);
     }
     DWORD dwTemp;
     memcpy(&dwTemp, pvSrc, sizeof(DWORD));
@@ -3272,59 +3272,59 @@ CPropertySetStream::_FixDocPartsElements(
 
     if (PatchOp == PATCHOP_ALIGNLENGTHS)
     {
-	cb = DwordAlign(cb);	// Caller says it's already aligned
+  cb = DwordAlign(cb);  // Caller says it's already aligned
     }
     if (_FixDocPartsElements(
-		PatchOp,
-		cString - 1,
-		Add2Ptr(pvDst, DwordAlign(cb)),
-		(VOID UNALIGNED const *) Add2ConstPtr(pvSrc, cb),
-		pcbprop))
+    PatchOp,
+    cString - 1,
+    Add2Ptr(pvDst, DwordAlign(cb)),
+    (VOID UNALIGNED const *) Add2ConstPtr(pvSrc, cb),
+    pcbprop))
     {
-	*pcbprop += DwordAlign(cb);
+  *pcbprop += DwordAlign(cb);
 
-	if (PatchOp == PATCHOP_EXPAND)
-	{
-	    PropMoveMemory(
-		    "_FixDocPartsElements",
-		    _GetSectionHeader(),
-		    pvDst,
-		    pvSrc,
-		    cb);
-	    RtlZeroMemory(Add2Ptr(pvDst, cb), DwordRemain(cb));
+  if (PatchOp == PATCHOP_EXPAND)
+  {
+      PropMoveMemory(
+        "_FixDocPartsElements",
+        _GetSectionHeader(),
+        pvDst,
+        pvSrc,
+        cb);
+      RtlZeroMemory(Add2Ptr(pvDst, cb), DwordRemain(cb));
 
-	    DebugTrace(0, DEBTRACE_PROPPATCH, (
-		"_FixDocPartsElements: Move(%x:%s) "
-		    "cb=%x->%x off=%x->%x z=%x @%x\n",
-		cString,
-		Add2Ptr(pvDst, sizeof(ULONG)),
-		cb - sizeof(ULONG),
-		DwordAlign(cb) - sizeof(ULONG),
-		_MapAddressToOffset(pvSrc),
-		_MapAddressToOffset(pvDst),
-		DwordRemain(cb),
-		_MapAddressToOffset(Add2Ptr(pvDst, cb))));
-	}
-	if (PatchOp != PATCHOP_COMPUTESIZE)
-	{
-	    PROPASSERT(
-		PatchOp == PATCHOP_ALIGNLENGTHS ||
-		PatchOp == PATCHOP_EXPAND);
+      DebugTrace(0, DEBTRACE_PROPPATCH, (
+    "_FixDocPartsElements: Move(%x:%s) "
+        "cb=%x->%x off=%x->%x z=%x @%x\n",
+    cString,
+    Add2Ptr(pvDst, sizeof(ULONG)),
+    cb - sizeof(ULONG),
+    DwordAlign(cb) - sizeof(ULONG),
+    _MapAddressToOffset(pvSrc),
+    _MapAddressToOffset(pvDst),
+    DwordRemain(cb),
+    _MapAddressToOffset(Add2Ptr(pvDst, cb))));
+  }
+  if (PatchOp != PATCHOP_COMPUTESIZE)
+  {
+      PROPASSERT(
+    PatchOp == PATCHOP_ALIGNLENGTHS ||
+    PatchOp == PATCHOP_EXPAND);
 
-	    DebugTrace(0, DEBTRACE_PROPPATCH, (
-		"_FixDocPartsElements: Patch(%x:%s) cb=%x->%x\n",
-		cString,
-		Add2Ptr(pvDst, sizeof(ULONG)),
-		*(ULONG *) pvDst,
-		DwordAlign(*(ULONG *) pvDst)));
+      DebugTrace(0, DEBTRACE_PROPPATCH, (
+    "_FixDocPartsElements: Patch(%x:%s) cb=%x->%x\n",
+    cString,
+    Add2Ptr(pvDst, sizeof(ULONG)),
+    *(ULONG *) pvDst,
+    DwordAlign(*(ULONG *) pvDst)));
 
             // put in the length
-	    *(ULONG *) pvDst = 
+      *(ULONG *) pvDst = 
                 PropByteSwap( DwordAlign( PropByteSwap(*(ULONG *) pvDst) ) );
-	}
-	return(TRUE);
+  }
+  return(TRUE);
     }
-    return(FALSE);	// Not a recognizable DocParts vector
+    return(FALSE);  // Not a recognizable DocParts vector
 }
 
 
@@ -3340,28 +3340,28 @@ CPropertySetStream::_FixDocPartsElements(
 //              heading).  In Ansi property sets, these elements
 //              are packed, and must be un-packed.
 //
-// Arguments:	[PatchOp]	-- patch request
-//		[pprop]         -- property value to be patched or sized
-//		[pcbprop]	-- pointer to computed property length
+// Arguments: [PatchOp] -- patch request
+//    [pprop]         -- property value to be patched or sized
+//    [pcbprop] -- pointer to computed property length
 //
 // Returns:     TRUE if property and all elements meet expectations;
-//		FALSE on error
+//    FALSE on error
 //
-// Note:	Operate on a DocumentSummaryInformation first section property,
-//		PID_HEADINGPAIR.  This property is assumed to be an array of
-//		VT_VARIANTs with an even number of elements.  Each pair must
-//		consist of a VT_LPSTR followed by a VT_I4.
+// Note:  Operate on a DocumentSummaryInformation first section property,
+//    PID_HEADINGPAIR.  This property is assumed to be an array of
+//    VT_VARIANTs with an even number of elements.  Each pair must
+//    consist of a VT_LPSTR followed by a VT_I4.
 //
-//		PATCHOP_COMPUTESIZE merely computes the size required to unpack
-//		the property, and must assume it is currently unaligned.
+//    PATCHOP_COMPUTESIZE merely computes the size required to unpack
+//    the property, and must assume it is currently unaligned.
 //
-//		PATCHOP_ALIGNLENGTHS patches all VT_LPSTR lengths to DWORD
-//		multiples, and may rely on the property already being aligned.
+//    PATCHOP_ALIGNLENGTHS patches all VT_LPSTR lengths to DWORD
+//    multiples, and may rely on the property already being aligned.
 //
-//		PATCHOP_EXPAND expands the property from the Src to Dst buffer,
-//		moving elements to DWORD boundaries, and patching VT_LPSTR
-//		lengths to DWORD multiples.  The Src buffer is assumed to be
-//		unaligned, and the Dst buffer is assumed to be properly sized.
+//    PATCHOP_EXPAND expands the property from the Src to Dst buffer,
+//    moving elements to DWORD boundaries, and patching VT_LPSTR
+//    lengths to DWORD multiples.  The Src buffer is assumed to be
+//    unaligned, and the Dst buffer is assumed to be properly sized.
 //---------------------------------------------------------------------------
 
 BOOLEAN
@@ -3374,9 +3374,9 @@ CPropertySetStream::_FixHeadingPairVector(
     ULONG cbprop = 0;
 
     PROPASSERT(
-	PatchOp == PATCHOP_COMPUTESIZE ||
-	PatchOp == PATCHOP_ALIGNLENGTHS ||
-	PatchOp == PATCHOP_EXPAND);
+  PatchOp == PATCHOP_COMPUTESIZE ||
+  PatchOp == PATCHOP_ALIGNLENGTHS ||
+  PatchOp == PATCHOP_EXPAND);
     PROPASSERT(pprop != NULL);
     PROPASSERT(pcbprop != NULL);
 
@@ -3385,19 +3385,19 @@ CPropertySetStream::_FixHeadingPairVector(
 
     if( PropByteSwap(pprop->dwType) == (VT_VECTOR | VT_VARIANT)
         &&
-	( (celem = PropByteSwap(*(ULONG *) pprop->rgb) ) & 1) == 0
+  ( (celem = PropByteSwap(*(ULONG *) pprop->rgb) ) & 1) == 0
         &&
         _CodePage != CP_WINUNICODE)
     {
-	pprop = (SERIALIZEDPROPERTYVALUE *) Add2Ptr(pprop->rgb, sizeof(ULONG));
+  pprop = (SERIALIZEDPROPERTYVALUE *) Add2Ptr(pprop->rgb, sizeof(ULONG));
 
-	if (_FixHeadingPairElements(PatchOp, celem/2, pprop, pprop, pcbprop))
-	{
-	    *pcbprop += CB_SERIALIZEDPROPERTYVALUE + sizeof(ULONG);
-	    return(TRUE);
-	}
+  if (_FixHeadingPairElements(PatchOp, celem/2, pprop, pprop, pcbprop))
+  {
+      *pcbprop += CB_SERIALIZEDPROPERTYVALUE + sizeof(ULONG);
+      return(TRUE);
+  }
     }
-    return(FALSE);	// Not a recognizable HeadingPair vector
+    return(FALSE);  // Not a recognizable HeadingPair vector
 }
 
 
@@ -3406,14 +3406,14 @@ CPropertySetStream::_FixHeadingPairVector(
 //
 // Synopsis:    Recursively align the memory image of HeadingPair elements
 //
-// Arguments:	[PatchOp]	-- patch request
-//		[cPairs]	-- count of heading pairs remaining
-//		[ppropDst]	-- aligned overlapping destination buffer
-//		[ppropSrc]	-- unaligned overlapping source buffer
-//		[pcbprop]	-- pointer to computed property length
+// Arguments: [PatchOp] -- patch request
+//    [cPairs]  -- count of heading pairs remaining
+//    [ppropDst]  -- aligned overlapping destination buffer
+//    [ppropSrc]  -- unaligned overlapping source buffer
+//    [pcbprop] -- pointer to computed property length
 //
 // Returns:     TRUE if all remaining elements meet expectations;
-//		FALSE on error
+//    FALSE on error
 //---------------------------------------------------------------------------
 
 BOOLEAN
@@ -3425,146 +3425,146 @@ CPropertySetStream::_FixHeadingPairElements(
     OUT ULONG *pcbprop)
 {
     PROPASSERT(
-	PatchOp == PATCHOP_COMPUTESIZE ||
-	PatchOp == PATCHOP_ALIGNLENGTHS ||
-	PatchOp == PATCHOP_EXPAND);
+  PatchOp == PATCHOP_COMPUTESIZE ||
+  PatchOp == PATCHOP_ALIGNLENGTHS ||
+  PatchOp == PATCHOP_EXPAND);
     PROPASSERT(ppropDst >= ppropSrc);
     PROPASSERT(PatchOp != PATCHOP_ALIGNLENGTHS || ppropDst == ppropSrc);
 
     if (cPairs == 0)
     {
-	*pcbprop = 0;
-	return(TRUE);
+  *pcbprop = 0;
+  return(TRUE);
     }
 
     // If the first element of the pair is a VT_LPSTR, ...
     if( PropByteSwap(SPV_GetType(ppropSrc)) == VT_LPSTR )
     {
-	ULONG cb;
+  ULONG cb;
 
-	// Compute size of the string element.
+  // Compute size of the string element.
         DWORD dwStrLen;
         memcpy(&dwStrLen, SPV_GetRgb(ppropSrc), sizeof(DWORD));
         dwStrLen = PropByteSwap(dwStrLen);
         
-	cb = CB_SERIALIZEDPROPERTYVALUE  
+  cb = CB_SERIALIZEDPROPERTYVALUE  
             +
             sizeof(ULONG)
             +
             dwStrLen;
 
-	// If the caller serialized the vector properly, all we need to do is
-	// to round up the string lengths to DWORD multiples, so readers that
-	// treat these vectors as byte-aligned get faked out.  We expect
-	// readers will not have problems with a DWORD aligned length, and a
-	// '\0' character a few bytes earlier than the length indicates.
+  // If the caller serialized the vector properly, all we need to do is
+  // to round up the string lengths to DWORD multiples, so readers that
+  // treat these vectors as byte-aligned get faked out.  We expect
+  // readers will not have problems with a DWORD aligned length, and a
+  // '\0' character a few bytes earlier than the length indicates.
 
-	if (PatchOp == PATCHOP_ALIGNLENGTHS)
-	{
-	    cb = DwordAlign(cb);	// Caller says it's already aligned
-	}
+  if (PatchOp == PATCHOP_ALIGNLENGTHS)
+  {
+      cb = DwordAlign(cb);  // Caller says it's already aligned
+  }
 
-	// and if the second element of the pair is a VT_I4, ...
+  // and if the second element of the pair is a VT_I4, ...
 
-	if ( PropByteSwap( (DWORD) VT_I4 )
+  if ( PropByteSwap( (DWORD) VT_I4 )
              ==
              SPV_GetType( 
                          (SERIALIZEDPROPERTYVALUE UNALIGNED const *)
                          Add2ConstPtr(ppropSrc, cb)
              ))
-	{
-	    cb += CB_SERIALIZEDPROPERTYVALUE + sizeof(DWORD);
+  {
+      cb += CB_SERIALIZEDPROPERTYVALUE + sizeof(DWORD);
 
-	    if (_FixHeadingPairElements(
-			    PatchOp,
-			    cPairs - 1,
-			    (SERIALIZEDPROPERTYVALUE *)
-				    Add2Ptr(ppropDst, DwordAlign(cb)),
-			    (SERIALIZEDPROPERTYVALUE UNALIGNED const *)
-				    Add2ConstPtr(ppropSrc, cb),
-			    pcbprop))
-	    {
-		*pcbprop += DwordAlign(cb);
+      if (_FixHeadingPairElements(
+          PatchOp,
+          cPairs - 1,
+          (SERIALIZEDPROPERTYVALUE *)
+            Add2Ptr(ppropDst, DwordAlign(cb)),
+          (SERIALIZEDPROPERTYVALUE UNALIGNED const *)
+            Add2ConstPtr(ppropSrc, cb),
+          pcbprop))
+      {
+    *pcbprop += DwordAlign(cb);
 
-		if (PatchOp == PATCHOP_EXPAND)
-		{
-		    // Move the unaligned VT_I4 property back in memory to an
-		    // aligned boundary, move the string back to a (possibly
-		    // different) aligned boundary, zero the space in between
-		    // the two and patch the string length to be a DWORD
-		    // multiple to fake out code that expects vector elements
-		    // to be byte aligned.
+    if (PatchOp == PATCHOP_EXPAND)
+    {
+        // Move the unaligned VT_I4 property back in memory to an
+        // aligned boundary, move the string back to a (possibly
+        // different) aligned boundary, zero the space in between
+        // the two and patch the string length to be a DWORD
+        // multiple to fake out code that expects vector elements
+        // to be byte aligned.
 
-		    // Adjust byte count to include just the string element.
+        // Adjust byte count to include just the string element.
 
-		    cb -= CB_SERIALIZEDPROPERTYVALUE + sizeof(ULONG);
+        cb -= CB_SERIALIZEDPROPERTYVALUE + sizeof(ULONG);
 
-		    // Move the VT_I4 element.
+        // Move the VT_I4 element.
 
-		    PropMoveMemory(
-			    "_FixHeadingPairElements:I4",
-			    _GetSectionHeader(),
-			    Add2Ptr(ppropDst, DwordAlign(cb)),
-			    Add2ConstPtr(ppropSrc, cb),
-			    CB_SERIALIZEDPROPERTYVALUE + sizeof(ULONG));
+        PropMoveMemory(
+          "_FixHeadingPairElements:I4",
+          _GetSectionHeader(),
+          Add2Ptr(ppropDst, DwordAlign(cb)),
+          Add2ConstPtr(ppropSrc, cb),
+          CB_SERIALIZEDPROPERTYVALUE + sizeof(ULONG));
 
-		    // Move the VT_LPSTR element.
+        // Move the VT_LPSTR element.
 
-		    PropMoveMemory(
-			    "_FixHeadingPairElements:LPSTR",
-			    _GetSectionHeader(),
-			    ppropDst,
-			    ppropSrc,
-			    cb);
+        PropMoveMemory(
+          "_FixHeadingPairElements:LPSTR",
+          _GetSectionHeader(),
+          ppropDst,
+          ppropSrc,
+          cb);
 
-		    // Zero the space in between.
+        // Zero the space in between.
 
-		    RtlZeroMemory(Add2Ptr(ppropDst, cb), DwordRemain(cb));
+        RtlZeroMemory(Add2Ptr(ppropDst, cb), DwordRemain(cb));
 
-		    DebugTrace(0, DEBTRACE_PROPPATCH, (
-		        "_FixHeadingPairElements: Move(%x:%s) "
-			    "cb=%x->%x off=%x->%x z=%x @%x\n",
-		        cPairs,
-		        &ppropDst->rgb[sizeof(ULONG)],
-		        PropByteSwap( *(ULONG *) ppropDst->rgb ),
-		        DwordAlign(PropByteSwap( *(ULONG *) ppropDst->rgb )),
-		        _MapAddressToOffset(ppropSrc),
-		        _MapAddressToOffset(ppropDst),
-		        DwordRemain(cb),
-		        _MapAddressToOffset(Add2Ptr(ppropDst, cb))));
-		}
+        DebugTrace(0, DEBTRACE_PROPPATCH, (
+            "_FixHeadingPairElements: Move(%x:%s) "
+          "cb=%x->%x off=%x->%x z=%x @%x\n",
+            cPairs,
+            &ppropDst->rgb[sizeof(ULONG)],
+            PropByteSwap( *(ULONG *) ppropDst->rgb ),
+            DwordAlign(PropByteSwap( *(ULONG *) ppropDst->rgb )),
+            _MapAddressToOffset(ppropSrc),
+            _MapAddressToOffset(ppropDst),
+            DwordRemain(cb),
+            _MapAddressToOffset(Add2Ptr(ppropDst, cb))));
+    }
 
-		if (PatchOp != PATCHOP_COMPUTESIZE)
-		{
-		    PROPASSERT(
-			PatchOp == PATCHOP_ALIGNLENGTHS ||
-			PatchOp == PATCHOP_EXPAND);
+    if (PatchOp != PATCHOP_COMPUTESIZE)
+    {
+        PROPASSERT(
+      PatchOp == PATCHOP_ALIGNLENGTHS ||
+      PatchOp == PATCHOP_EXPAND);
 #ifdef DBGPROP
-		    SERIALIZEDPROPERTYVALUE const *ppropT =
-			(SERIALIZEDPROPERTYVALUE const *)
-			    Add2Ptr(ppropDst, DwordAlign(cb));
+        SERIALIZEDPROPERTYVALUE const *ppropT =
+      (SERIALIZEDPROPERTYVALUE const *)
+          Add2Ptr(ppropDst, DwordAlign(cb));
 #endif
-		    DebugTrace(0, DEBTRACE_PROPPATCH, (
-			"_FixHeadingPairElements: Patch(%x:%s) "
-			    "cb=%x->%x, vt=%x, %x\n",
-			cPairs,
-			&ppropDst->rgb[sizeof(ULONG)],
-			PropByteSwap( *(ULONG *) ppropDst->rgb ),
-			DwordAlign( PropByteSwap( *(ULONG *) ppropDst->rgb )),
-			PropByteSwap( ppropT->dwType ),
-			PropByteSwap( *(ULONG *) ppropT->rgb )));
+        DebugTrace(0, DEBTRACE_PROPPATCH, (
+      "_FixHeadingPairElements: Patch(%x:%s) "
+          "cb=%x->%x, vt=%x, %x\n",
+      cPairs,
+      &ppropDst->rgb[sizeof(ULONG)],
+      PropByteSwap( *(ULONG *) ppropDst->rgb ),
+      DwordAlign( PropByteSwap( *(ULONG *) ppropDst->rgb )),
+      PropByteSwap( ppropT->dwType ),
+      PropByteSwap( *(ULONG *) ppropT->rgb )));
 
-		    // Patch the string length to be a DWORD multiple.
+        // Patch the string length to be a DWORD multiple.
                     // and we have to put back the swapped length
 
-		    *(ULONG *) ppropDst->rgb
+        *(ULONG *) ppropDst->rgb
                         = PropByteSwap( DwordAlign( PropByteSwap( *(ULONG *) ppropDst->rgb )));
-		}
-		return(TRUE);
-	    }
-	}
     }
-    return(FALSE);	// Not a recognizable HeadingPair vector
+    return(TRUE);
+      }
+  }
+    }
+    return(FALSE);  // Not a recognizable HeadingPair vector
 }
 
 
@@ -3590,7 +3590,7 @@ CPropertySetStream::QueryPropertySet(OUT STATPROPSETSTG *pspss,
 
     if ((_State & CPSS_USERDEFINEDDELETED) || _cSection < 1)
     {
-	StatusAccessDenied(pstatus, "QueryPropertySet: deleted or no section");
+  StatusAccessDenied(pstatus, "QueryPropertySet: deleted or no section");
         goto Exit;
     }
     _MSTM(QueryTimeStamps)(
@@ -3598,7 +3598,7 @@ CPropertySetStream::QueryPropertySet(OUT STATPROPSETSTG *pspss,
                 (BOOLEAN) ((_Flags & CREATEPROP_NONSIMPLE) != 0));
     pspss->clsid = _pph->clsid;
     pspss->fmtid = _GetFormatidOffset(
-			    (_State & CPSS_USERDEFINEDPROPERTIES)? 1 : 0)->fmtid;
+          (_State & CPSS_USERDEFINEDPROPERTIES)? 1 : 0)->fmtid;
     pspss->grfFlags = _CodePage == CP_WINUNICODE?
         PROPSETFLAG_DEFAULT : PROPSETFLAG_ANSI;
 
@@ -3633,7 +3633,7 @@ CPropertySetStream::SetClassId(IN GUID const *pclsid,
 
     if (IsReadOnlyPropertySet(_Flags, _State))
     {
-	StatusAccessDenied(pstatus, "SetClassId: deleted or read-only");
+  StatusAccessDenied(pstatus, "SetClassId: deleted or read-only");
         goto Exit;
     }
 
@@ -3681,7 +3681,7 @@ CPropertySetStream::EnumeratePropids(
 
     if (_State & CPSS_USERDEFINEDDELETED)
     {
-	StatusAccessDenied(pstatus, "EnumeratePropids: deleted");
+  StatusAccessDenied(pstatus, "EnumeratePropids: deleted");
         goto Exit;
     }
 
@@ -3850,9 +3850,9 @@ CPropertySetStream::_LoadProperty(
                     }
                     else
                     {
-			*pcbprop = PropertyLength(pprop, cb, 0, pstatus);
+      *pcbprop = PropertyLength(pprop, cb, 0, pstatus);
                         if( !NT_SUCCESS(*pstatus) ) goto Exit;
-		    }
+        }
                 }
                 if (pcbprop == NULL ||
                     psh->cbSection >= ppo->dwOffset + *pcbprop)
@@ -3903,13 +3903,13 @@ CPropertySetStream::GetValue(
 
     if (_State & CPSS_USERDEFINEDDELETED)
     {
-	StatusAccessDenied(pstatus, "GetValue: deleted");
+  StatusAccessDenied(pstatus, "GetValue: deleted");
         goto Exit;
     }
     if (propid == PID_DICTIONARY)
     {
-	DebugTrace(0, DEBTRACE_ERROR, ("GetValue: PID_DICTIONARY\n"));
-	StatusInvalidParameter(pstatus, "GetValue: PID_DICTIONARY");
+  DebugTrace(0, DEBTRACE_ERROR, ("GetValue: PID_DICTIONARY\n"));
+  StatusInvalidParameter(pstatus, "GetValue: PID_DICTIONARY");
         goto Exit;
     }
 
@@ -3953,7 +3953,7 @@ CPropertySetStream::GetValue(
                 goto Exit;
             }
             DebugTrace(0, Dbg, (
-		"GetValue: pprop=%lx, vt=%lx, cb=%lx\n",
+    "GetValue: pprop=%lx, vt=%lx, cb=%lx\n",
                 pprop,
                 PropByteSwap( aprop[0].dwType ),
                 *pcbprop));
@@ -3963,7 +3963,7 @@ CPropertySetStream::GetValue(
 
     else
     {
-	pprop = _LoadProperty(propid, pcbprop, pstatus);
+  pprop = _LoadProperty(propid, pcbprop, pstatus);
         if( !NT_SUCCESS(*pstatus) )
         {
             pprop = NULL;
@@ -3983,7 +3983,7 @@ CPropertySetStream::GetValue(
         DebugTrace(0, Dbg, (
             "GetValue: propid=%lx pprop=%l" szX " vt=%hx val=%s cb=%l" szX "\n",
             propid,
-	    _MapAddressToOffset(pprop),
+      _MapAddressToOffset(pprop),
             PropByteSwap( pprop->dwType ),
             ValueToString(pprop, *pcbprop, valbuf),
             *pcbprop));
@@ -4108,7 +4108,7 @@ CPropertySetStream::SetValue(
     CStreamChunkList scl(
                         1 + cprop + 1,
                         1 + cprop + 1 <= CCHUNKSTACK? 
-			ascnkStack : ((CStreamChunk*)NULL) );
+      ascnkStack : ((CStreamChunk*)NULL) );
 
     PROPASSERT(_IsMapped());
 
@@ -4163,18 +4163,18 @@ CPropertySetStream::SetValue(
 
         if (IsReadOnlyPropid(apinfo[iprop].pid))
         {
-	    if (cprop != 1 ||
-		apinfo[0].pid != PID_DICTIONARY ||
-		apinfo[0].cbprop == 0 ||
+      if (cprop != 1 ||
+    apinfo[0].pid != PID_DICTIONARY ||
+    apinfo[0].cbprop == 0 ||
                 ( avar == NULL || avar[0].vt != VT_DICTIONARY )
                )
-	    {
-		DebugTrace(0, DEBTRACE_ERROR, (
-		    "SetValue: read-only propid=%lx\n",
-		    apinfo[iprop].pid));
-		StatusInvalidParameter(pstatus, "SetValue: read-only PROPID");
+      {
+    DebugTrace(0, DEBTRACE_ERROR, (
+        "SetValue: read-only propid=%lx\n",
+        apinfo[iprop].pid));
+    StatusInvalidParameter(pstatus, "SetValue: read-only PROPID");
                 goto Exit;
-	    }
+      }
         }
 
         if (apinfo[iprop].pid != PID_ILLEGAL)
@@ -4234,21 +4234,21 @@ CPropertySetStream::SetValue(
                         apinfo[iprop].pid,
                         _MapAddressToOffset(pprop),
                         PropByteSwap( pprop->dwType ),
-			KERNELSELECT(
-				PropByteSwap( apinfo[iprop].pprop->dwType ),
-				avar[iprop].vt),
+      KERNELSELECT(
+        PropByteSwap( apinfo[iprop].pprop->dwType ),
+        avar[iprop].vt),
                         cbPropOld,
                         apinfo[iprop].cbprop,
                         ValueToString(pprop, cbPropOld, valbuf),
-			KERNELSELECT(
-			    ValueToString(
-				    apinfo[iprop].pprop,
-				    apinfo[iprop].cbprop,
-				    valbuf2),
-			    VariantToString(
-				    avar[iprop],
-				    varbuf,
-				    sizeof( varbuf )))));
+      KERNELSELECT(
+          ValueToString(
+            apinfo[iprop].pprop,
+            apinfo[iprop].cbprop,
+            valbuf2),
+          VariantToString(
+            avar[iprop],
+            varbuf,
+            sizeof( varbuf )))));
 
                     cbPropNew = apinfo[iprop].cbprop;
                     if (cbPropOld != cbPropNew)
@@ -4298,18 +4298,18 @@ CPropertySetStream::SetValue(
                         "cbNew=%l" szX " val=%s\n",
                     apinfo[iprop].pid,
                     KERNELSELECT(
-			    PropByteSwap( apinfo[iprop].pprop->dwType ),
-			    avar[iprop].vt),
+          PropByteSwap( apinfo[iprop].pprop->dwType ),
+          avar[iprop].vt),
                     apinfo[iprop].cbprop,
                     KERNELSELECT(
-			ValueToString(
-			    apinfo[iprop].pprop,
-			    apinfo[iprop].cbprop,
-			    valbuf),
-			VariantToString(
-			    avar[iprop],
-			    varbuf,
-			    sizeof( varbuf )))));
+      ValueToString(
+          apinfo[iprop].pprop,
+          apinfo[iprop].cbprop,
+          valbuf),
+      VariantToString(
+          avar[iprop],
+          varbuf,
+          sizeof( varbuf )))));
 
                 PROPASSERT(apinfo[iprop].pid != PID_ILLEGAL);
 
@@ -4448,7 +4448,7 @@ CPropertySetStream::SetValue(
         cbstm + cbChange >=
         _oSection + CB_PROPERTYSECTIONHEADER +
         (psh->cProperties + cInsert - cDelete) * CB_PROPERTYIDOFFSET +
-	_cbTail);
+  _cbTail);
 
     // If we need to grow the stream, do it now.
 
@@ -4472,20 +4472,20 @@ CPropertySetStream::SetValue(
         psh = _GetSectionHeader();
         PROPASSERT(cbstm == _oSection + psh->cbSection + _cbTail);
 
-	// If there's another section after this one, move it back to the
-	// end of the stream now.
+  // If there's another section after this one, move it back to the
+  // end of the stream now.
 
-	if (_cbTail != 0)
-	{
-	    VOID *pvSrc = _MapAbsOffsetToAddress(cbstm - _cbTail);
+  if (_cbTail != 0)
+  {
+      VOID *pvSrc = _MapAbsOffsetToAddress(cbstm - _cbTail);
 
-	    PropMoveMemory(
-		    "SetValue(_cbTail:grow)",
-		    psh,
-		    Add2Ptr(pvSrc, cbChange),
-		    pvSrc,
-		    _cbTail);
-	}
+      PropMoveMemory(
+        "SetValue(_cbTail:grow)",
+        psh,
+        Add2Ptr(pvSrc, cbChange),
+        pvSrc,
+        _cbTail);
+  }
     }
 
     // From this point on, the operation should succeed.
@@ -4561,24 +4561,24 @@ CPropertySetStream::SetValue(
         }
 
         PROPASSERT(cbstm + cbChange == _oSection + psh->cbSection + _cbTail);
-	if (_cbTail != 0)
-	{
-	    // There's another section after this one; if we're shrinking
-	    // the stream, move it up to the new end of the stream now.
+  if (_cbTail != 0)
+  {
+      // There's another section after this one; if we're shrinking
+      // the stream, move it up to the new end of the stream now.
 
-	    if (cbChange < 0)
-	    {
-		VOID *pvSrc = _MapAbsOffsetToAddress(cbstm - _cbTail);
+      if (cbChange < 0)
+      {
+    VOID *pvSrc = _MapAbsOffsetToAddress(cbstm - _cbTail);
 
-		PropMoveMemory(
-			"SetValue(_cbTail:shrink)",
-			psh,
-			Add2Ptr(pvSrc, cbChange),
-			pvSrc,
-			_cbTail);
-	    }
-	    _PatchSectionOffsets(cbChange);
-	}
+    PropMoveMemory(
+      "SetValue(_cbTail:shrink)",
+      psh,
+      Add2Ptr(pvSrc, cbChange),
+      pvSrc,
+      _cbTail);
+      }
+      _PatchSectionOffsets(cbChange);
+  }
     }   // if (cDelete + cInsert + cMove != 0)
 
     // Copy the new values.
@@ -4592,14 +4592,14 @@ CPropertySetStream::SetValue(
 
     if (cInsert + cUpdate + cMove != 0)
     {
-	BOOLEAN fDocSummaryInfo = FALSE;
+  BOOLEAN fDocSummaryInfo = FALSE;
 
-	if ((_State &
+  if ((_State &
              (CPSS_USERDEFINEDPROPERTIES | CPSS_DOCUMENTSUMMARYINFO)) ==
-	     CPSS_DOCUMENTSUMMARYINFO)
-	{
-	    fDocSummaryInfo = TRUE;
-	}
+       CPSS_DOCUMENTSUMMARYINFO)
+  {
+      fDocSummaryInfo = TRUE;
+  }
         
         for (iprop = 0; iprop < cprop; iprop++)
         {
@@ -4647,35 +4647,35 @@ CPropertySetStream::SetValue(
                     PROPASSERT(cbprop == DwordAlign(cbprop));
                     PROPASSERT(cbprop == apinfo[iprop].cbprop);
 
-		    // If writing a DocumentSummaryInformation property
-		    // for which an alignment hack is provided, hack it now.
+        // If writing a DocumentSummaryInformation property
+        // for which an alignment hack is provided, hack it now.
 
-		    if (fDocSummaryInfo && _CodePage != CP_WINUNICODE)
-		    {
+        if (fDocSummaryInfo && _CodePage != CP_WINUNICODE)
+        {
                         // The two vectors in the DocSumInfo property set
                         // (if Ansi) are un-packed, but we'll adjust the lengths
                         // so that if a propset reader expects them to be packed,
                         // it will still work.  E.g., a one character string will
                         // have a length of 4, with padding of NULL characters.
 
-			ULONG cbpropT;
+      ULONG cbpropT;
 
-			if (propid == PID_HEADINGPAIR)
-			{
-			    _FixHeadingPairVector(
-					    PATCHOP_ALIGNLENGTHS,
-					    pprop,
-					    &cbpropT);
-			}
-			else
-			if (propid == PID_DOCPARTS)
-			{
-			    _FixDocPartsVector(
-					    PATCHOP_ALIGNLENGTHS,
-					    pprop,
-					    &cbpropT);
-			}
-		    }
+      if (propid == PID_HEADINGPAIR)
+      {
+          _FixHeadingPairVector(
+              PATCHOP_ALIGNLENGTHS,
+              pprop,
+              &cbpropT);
+      }
+      else
+      if (propid == PID_DOCPARTS)
+      {
+          _FixDocPartsVector(
+              PATCHOP_ALIGNLENGTHS,
+              pprop,
+              &cbpropT);
+      }
+        }
                     DebugTrace(0, Dbg, (
                         "SetValue:Insert: pph=%x pprop=%x cb=%3l" szX
                             " vt=%4x val=%s o=%x oEnd=%x\n",
@@ -5215,19 +5215,19 @@ CPropertySetStream::_PatchSectionOffsets(
 
     for (i = 0; i < _cSection; i++)
     {
-	FORMATIDOFFSET *pfo;
+  FORMATIDOFFSET *pfo;
 
-	pfo = _GetFormatidOffset(i);
-	if (pfo->dwOffset > _oSection)
-	{
-	    DebugTrace(0, DEBTRACE_PROPPATCH, (
-		"PatchSectionOffsets(%x): %l" szX " + %l" szX " --> %l" szX "\n",
-		i,
-		pfo->dwOffset,
-		cbChange,
-		pfo->dwOffset + cbChange));
-	    pfo->dwOffset += cbChange;
-	}
+  pfo = _GetFormatidOffset(i);
+  if (pfo->dwOffset > _oSection)
+  {
+      DebugTrace(0, DEBTRACE_PROPPATCH, (
+    "PatchSectionOffsets(%x): %l" szX " + %l" szX " --> %l" szX "\n",
+    i,
+    pfo->dwOffset,
+    cbChange,
+    pfo->dwOffset + cbChange));
+      pfo->dwOffset += cbChange;
+  }
     }
 }
 
@@ -6043,7 +6043,7 @@ Exit:
     // a special success code.
 
     if( !fFound && NT_SUCCESS(*pstatus) )
-	    *pstatus = STATUS_BUFFER_ALL_ZEROS;
+      *pstatus = STATUS_BUFFER_ALL_ZEROS;
 
     return( fFound );
 
@@ -6067,8 +6067,8 @@ Exit:
 //              exist in the property set is not an error.
 //
 //              Attempting to set a property name or property id that would
-//		result in a duplicate name or property id causes the existing
-//		entry(ies) to be replaced.
+//    result in a duplicate name or property id causes the existing
+//    entry(ies) to be replaced.
 //+--------------------------------------------------------------------------
 
 VOID
@@ -6229,25 +6229,25 @@ CPropertySetStream::SetPropertyNames(
         // it means that the name for this PID is to be deleted.
 
         if (appvNames == NULL)
-	{
+  {
             // If the PID is for the dictionary, then it must be the
             // only entry in apid, and it indicates that we're going to
             // delete all the names in the dictionary.
 
-	    if (apid[iprop] == PID_DICTIONARY)
-	    {
-		if (cprop != 1)
-		{
-		    StatusInvalidParameter(pstatus, "SetPropertyNames: DeleteAll parms");
+      if (apid[iprop] == PID_DICTIONARY)
+      {
+    if (cprop != 1)
+    {
+        StatusInvalidParameter(pstatus, "SetPropertyNames: DeleteAll parms");
                     goto Exit;
-		}
-		fDeleteAll = TRUE;
-	    }
+    }
+    fDeleteAll = TRUE;
+      }
         }
 
         // Otherwise, we're setting a new name for this PID.
 
-	else
+  else
         {
             ULONG cbname;
 
@@ -6651,9 +6651,9 @@ CPropertySetStream::SetPropertyNames(
 
                 // Zero-out the pad bytes.
 
-		RtlZeroMemory(
-			Add2Ptr(pent->sz, cbname),
-			DwordRemain((ULONG) pent->sz + cbname));
+    RtlZeroMemory(
+      Add2Ptr(pent->sz, cbname),
+      DwordRemain((ULONG) pent->sz + cbname));
                 
                 pent = _NextDictionaryEntry( pent );
             }
@@ -6712,7 +6712,7 @@ CPropertySetStream::SetPropertyNames(
     }
     if (_cbTail != 0)
     {
-	_PatchSectionOffsets(cbChangeD);
+  _PatchSectionOffsets(cbChangeD);
     }
 
     // If we need to shrink the stream or if we are cleaning up after a
@@ -6813,49 +6813,49 @@ CPropertySetStream::_ValidateStructure(OUT NTSTATUS *pstatus)
 
     if (_cSection > 1)
     {
-	FORMATIDOFFSET const *pfo;
+  FORMATIDOFFSET const *pfo;
 
-	if (_cSection != 2)
-	{
-	    DebugTrace(0, DEBTRACE_ERROR, (
-		"_ValidateStructure: csection(%x) != 2",
-		_cSection));
-	    StatusCorruption(pstatus, "_ValidateStructure: csection != 2");
+  if (_cSection != 2)
+  {
+      DebugTrace(0, DEBTRACE_ERROR, (
+    "_ValidateStructure: csection(%x) != 2",
+    _cSection));
+      StatusCorruption(pstatus, "_ValidateStructure: csection != 2");
             goto Exit;
-	}
-	pfo = _GetFormatidOffset(0);
-	if (pfo->fmtid != guidDocumentSummary)
-	{
-	    DebugTrace(0, DEBTRACE_ERROR, (
-		"_ValidateStructure: DocumentSummary[0] fmtid"));
-	    StatusCorruption(pstatus, "_ValidateStructure: DocumentSummary[0] fmtid");
+  }
+  pfo = _GetFormatidOffset(0);
+  if (pfo->fmtid != guidDocumentSummary)
+  {
+      DebugTrace(0, DEBTRACE_ERROR, (
+    "_ValidateStructure: DocumentSummary[0] fmtid"));
+      StatusCorruption(pstatus, "_ValidateStructure: DocumentSummary[0] fmtid");
             goto Exit;
-	}
-	if (!IsDwordAligned(pfo->dwOffset))
-	{
-	    DebugTrace(0, DEBTRACE_ERROR, (
-		"_ValidateStructure: dwOffset[0] = %x",
-		pfo->dwOffset));
-	    StatusCorruption(pstatus, "_ValidateStructure: dwOffset[0]");
+  }
+  if (!IsDwordAligned(pfo->dwOffset))
+  {
+      DebugTrace(0, DEBTRACE_ERROR, (
+    "_ValidateStructure: dwOffset[0] = %x",
+    pfo->dwOffset));
+      StatusCorruption(pstatus, "_ValidateStructure: dwOffset[0]");
             goto Exit;
-	}
+  }
 
-	pfo = _GetFormatidOffset(1);
-	if (pfo->fmtid != guidDocumentSummarySection2)
-	{
-	    DebugTrace(0, DEBTRACE_ERROR, (
-		"_ValidateStructure: DocumentSummary[1] fmtid"));
-	    StatusCorruption(pstatus, "_ValidateStructure: DocumentSummary[1] fmtid");
+  pfo = _GetFormatidOffset(1);
+  if (pfo->fmtid != guidDocumentSummarySection2)
+  {
+      DebugTrace(0, DEBTRACE_ERROR, (
+    "_ValidateStructure: DocumentSummary[1] fmtid"));
+      StatusCorruption(pstatus, "_ValidateStructure: DocumentSummary[1] fmtid");
             goto Exit;
-	}
-	if (!IsDwordAligned(pfo->dwOffset))
-	{
-	    DebugTrace(0, DEBTRACE_ERROR, (
-		"_ValidateStructure: dwOffset[1] = %x",
-		pfo->dwOffset));
-	    StatusCorruption(pstatus, "_ValidateStructure: dwOffset[1]");
+  }
+  if (!IsDwordAligned(pfo->dwOffset))
+  {
+      DebugTrace(0, DEBTRACE_ERROR, (
+    "_ValidateStructure: dwOffset[1] = %x",
+    pfo->dwOffset));
+      StatusCorruption(pstatus, "_ValidateStructure: dwOffset[1]");
             goto Exit;
-	}
+  }
     }   // if (_cSection > 1)
 
     //  ----
@@ -6981,11 +6981,11 @@ CPropertySetStream::_ValidateProperties(OUT NTSTATUS *pstatus) const
 
     cValidate++;
     DebugTrace(0, DEBTRACE_PROPVALIDATE, (
-	"_ValidateProperties(%x ppsstm=%x state=%x pph=%x)\n",
-	cValidate,
-	this,
-	_State,
-	_pph));
+  "_ValidateProperties(%x ppsstm=%x state=%x pph=%x)\n",
+  cValidate,
+  this,
+  _State,
+  _pph));
 
     if (psh->cProperties != 0)
     {
@@ -7032,12 +7032,12 @@ CPropertySetStream::_ValidateProperties(OUT NTSTATUS *pstatus) const
         cbtotal = _oSection;
         for (ppo = apo; ppo < ppoMax; ppo++)
         {
-	    ULONG cbdiff, cbprop, cbpropraw;
-	    SERIALIZEDPROPERTYVALUE const *pprop;
+      ULONG cbdiff, cbprop, cbpropraw;
+      SERIALIZEDPROPERTYVALUE const *pprop;
 
-	    cbprop = MAXULONG;
-	    cbpropraw = cbprop;
-	    cbdiff = ppo[1].dwOffset - ppo->dwOffset;
+      cbprop = MAXULONG;
+      cbpropraw = cbprop;
+      cbdiff = ppo[1].dwOffset - ppo->dwOffset;
             if (IsDwordAligned(ppo->dwOffset) &&
                 IsDwordAligned(ppo[1].dwOffset))
             {
@@ -7052,24 +7052,24 @@ CPropertySetStream::_ValidateProperties(OUT NTSTATUS *pstatus) const
                                     pstatus);
                     if( !NT_SUCCESS(*pstatus) ) goto Exit;
 
-		    cbpropraw = cbprop;
-		    cbprop = DwordAlign(cbprop);
+        cbpropraw = cbprop;
+        cbprop = DwordAlign(cbprop);
                 }
-		else
-		{
-		    cbprop = PropertyLength(pprop, cbdiff, 0, pstatus);
+    else
+    {
+        cbprop = PropertyLength(pprop, cbdiff, 0, pstatus);
                     if( !NT_SUCCESS(*pstatus) ) goto Exit;
-		    cbpropraw = cbprop;
-		}
-		DebugTrace(0, DEBTRACE_PROPVALIDATE, (
-		    "_ValidateProperties(%x) i=%x cb=%x/%x/%x @%x/%x pid=%x\n",
-		    cValidate,
-		    ppo - apo,
-		    cbprop,
-		    cbdiff,
-		    ppo->dwOffset,
-		    pprop,
-		    ppo->propid));
+        cbpropraw = cbprop;
+    }
+    DebugTrace(0, DEBTRACE_PROPVALIDATE, (
+        "_ValidateProperties(%x) i=%x cb=%x/%x/%x @%x/%x pid=%x\n",
+        cValidate,
+        ppo - apo,
+        cbprop,
+        cbdiff,
+        ppo->dwOffset,
+        pprop,
+        ppo->propid));
                 cbtotal += cbdiff;
 
                 // Technically, the OLE spec allows extra unused space
@@ -7085,11 +7085,11 @@ CPropertySetStream::_ValidateProperties(OUT NTSTATUS *pstatus) const
                 "_ValidateProperties(bad value length: propid=%x @%x/%x cb=%x/%x/%x ppsstm=%x)\n",
                 ppo->propid,
                 ppo->dwOffset,
-		pprop,
-		cbpropraw,
-		cbprop,
-		cbdiff,
-		this));
+    pprop,
+    cbpropraw,
+    cbprop,
+    cbdiff,
+    this));
             StatusCorruption(pstatus, "_ValidateProperties: bad property length");
             goto Exit;
 

@@ -36,28 +36,28 @@
 #define CWCSTORAGENAME 32
 
 /* Storage instantiation modes */
-#define STGM_DIRECT		0x00000000L
+#define STGM_DIRECT   0x00000000L
 
 /* not used in ref, but defined here for error checking etc. */
-#define STGM_TRANSACTED		0x00010000L
+#define STGM_TRANSACTED   0x00010000L
 #define STGM_SIMPLE             0x08000000L
 #define STGM_NOSCRATCH          0x00100000L
 
-#define STGM_READ		0x00000000L
-#define STGM_WRITE		0x00000001L
-#define STGM_READWRITE		0x00000002L
+#define STGM_READ   0x00000000L
+#define STGM_WRITE    0x00000001L
+#define STGM_READWRITE    0x00000002L
 
-#define STGM_SHARE_DENY_NONE	0x00000040L
-#define STGM_SHARE_DENY_READ	0x00000030L
-#define STGM_SHARE_DENY_WRITE	0x00000020L
-#define STGM_SHARE_EXCLUSIVE	0x00000010L
+#define STGM_SHARE_DENY_NONE  0x00000040L
+#define STGM_SHARE_DENY_READ  0x00000030L
+#define STGM_SHARE_DENY_WRITE 0x00000020L
+#define STGM_SHARE_EXCLUSIVE  0x00000010L
 
-#define STGM_PRIORITY		0x00040000L
-#define STGM_DELETEONRELEASE	0x04000000L
+#define STGM_PRIORITY   0x00040000L
+#define STGM_DELETEONRELEASE  0x04000000L
 
-#define STGM_CREATE		0x00001000L
-#define STGM_CONVERT		0x00020000L
-#define STGM_FAILIFTHERE	0x00000000L
+#define STGM_CREATE   0x00001000L
+#define STGM_CONVERT    0x00020000L
+#define STGM_FAILIFTHERE  0x00000000L
 
 /* Storage commit types */
 typedef enum tagSTGC
@@ -208,7 +208,7 @@ DECLARE_INTERFACE_(IStream, IUnknown)
 
     /* *** IStream methods *** */
     STDMETHOD(Read) (THIS_ VOID HUGEP *pv,
-		     ULONG cb, ULONG FAR *pcbRead) PURE;
+         ULONG cb, ULONG FAR *pcbRead) PURE;
     STDMETHOD(Write) (THIS_ VOID const HUGEP *pv,
             ULONG cb,
             ULONG FAR *pcbWritten) PURE;
@@ -254,7 +254,7 @@ DECLARE_INTERFACE_(IStorage, IUnknown)
                    DWORD reserved2,
                    IStream FAR *FAR *ppstm) PURE;
     STDMETHOD(OpenStream) (THIS_ const TCHAR FAR* pwcsName,
-		 void FAR *reserved1,
+     void FAR *reserved1,
                  DWORD grfMode,
                  DWORD reserved2,
                  IStream FAR *FAR *ppstm) PURE;
@@ -270,11 +270,11 @@ DECLARE_INTERFACE_(IStorage, IUnknown)
                   DWORD reserved,
                   IStorage FAR *FAR *ppstg) PURE;
     STDMETHOD(CopyTo) (THIS_ DWORD ciidExclude,
- 		       IID const FAR *rgiidExclude,
- 		       SNB snbExclude,
- 		       IStorage FAR *pstgDest) PURE;
+           IID const FAR *rgiidExclude,
+           SNB snbExclude,
+           IStorage FAR *pstgDest) PURE;
     STDMETHOD(MoveElementTo) (THIS_ TCHAR const FAR* lpszName,
-    			      IStorage FAR *pstgDest,
+                IStorage FAR *pstgDest,
                               TCHAR const FAR* lpszNewName,
                               DWORD grfFlags) PURE;
     STDMETHOD(Commit) (THIS_ DWORD grfCommitFlags) PURE;
@@ -287,7 +287,7 @@ DECLARE_INTERFACE_(IStorage, IUnknown)
     STDMETHOD(RenameElement) (THIS_ const TCHAR FAR* pwcsOldName,
                 const TCHAR FAR* pwcsNewName) PURE;
     STDMETHOD(SetElementTimes) (THIS_ const TCHAR FAR *lpszName,
-    			        FILETIME const FAR *pctime,
+                  FILETIME const FAR *pctime,
                                 FILETIME const FAR *patime,
                                 FILETIME const FAR *pmtime) PURE;
     STDMETHOD(SetClass) (THIS_ REFCLSID clsid) PURE;

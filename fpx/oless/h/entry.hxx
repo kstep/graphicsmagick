@@ -5,11 +5,11 @@
 // 
 //  Copyright (c) 1999 Digital Imaging Group, Inc.
 // 
-//  Contents:	Entry management classes
+//  Contents: Entry management classes
 //
-//  Classes:	PEntry
-//		CDirectEntry
-//		
+//  Classes:  PEntry
+//    CDirectEntry
+//    
 //---------------------------------------------------------------
 
 #ifndef __ENTRY_HXX__
@@ -19,18 +19,18 @@
 
 //+--------------------------------------------------------------
 //
-//  Class:	PEntry (en)
+//  Class:  PEntry (en)
 //
-//  Purpose:	Entry management
+//  Purpose:  Entry management
 //
-//  Interface:	See below
+//  Interface:  See below
 //
 //---------------------------------------------------------------
 
-#define ROOT_LUID		1
-#define MINISTREAM_LUID	        2
-#define ITERATOR_LUID		3
-#define LUID_BASE		4
+#define ROOT_LUID   1
+#define MINISTREAM_LUID         2
+#define ITERATOR_LUID   3
+#define LUID_BASE   4
 
 class PEntry
 {
@@ -65,9 +65,9 @@ private:
 
 //+--------------------------------------------------------------
 //
-//  Member:	PEntry::GetNewLuid, public
+//  Member: PEntry::GetNewLuid, public
 //
-//  Synopsis:	Returns a new luid
+//  Synopsis: Returns a new luid
 //
 //---------------------------------------------------------------
 
@@ -80,9 +80,9 @@ inline DFLUID PEntry::GetNewLuid(void)
 
 //+--------------------------------------------------------------
 //
-//  Member:	PEntry::PEntry, protected
+//  Member: PEntry::PEntry, protected
 //
-//  Synopsis:	Constructor, sets luid
+//  Synopsis: Constructor, sets luid
 //
 //---------------------------------------------------------------
 
@@ -93,9 +93,9 @@ inline PEntry::PEntry(DFLUID dl)
 
 //+--------------------------------------------------------------
 //
-//  Member:	PEntry::GetLuid, public
+//  Member: PEntry::GetLuid, public
 //
-//  Synopsis:	Returns the luid
+//  Synopsis: Returns the luid
 //
 //---------------------------------------------------------------
 

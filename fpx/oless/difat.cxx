@@ -44,13 +44,13 @@ CDIFat::CDIFat(USHORT cbSector)
 
 //+---------------------------------------------------------------------------
 //
-//  Member:	CDIFat::Empty, public
+//  Member: CDIFat::Empty, public
 //
-//  Synopsis:	Empty all the control structures of this instance
+//  Synopsis: Empty all the control structures of this instance
 //
-//  Arguments:	None.
+//  Arguments:  None.
 //
-//  Returns:	void.
+//  Returns:  void.
 //
 //----------------------------------------------------------------------------
 

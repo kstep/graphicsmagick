@@ -301,7 +301,7 @@ void Decode_MCU_Chen(
   int interleave) 
 {
     int i, j;
-	 int iflag = interleave;
+   int iflag = interleave;
     int *quant_table;
     int blockin[64];
     SCAN_COMPONENT *comp;
@@ -327,7 +327,7 @@ void Decode_MCU_Chen(
             for (j = comp->hsampling*comp->vsampling; j > 0; j--) {
                 *blockin = Decode_DC(db_state,comp->dc_table, comp->comp, dp_last_dc);
                 Decode_AC(db_state,comp->ac_table, quant_table, blockin);
-            	IDct_Chen(db_state,blockin);
+              IDct_Chen(db_state,blockin);
             }
         }
     }
@@ -341,7 +341,7 @@ void Decode_MCU_Winograd(
   int interleave)
 {
     int i, j;
-	 int iflag = interleave;
+   int iflag = interleave;
     int *quant_table;
     int block[64];
     SCAN_COMPONENT *comp;
@@ -385,7 +385,7 @@ void Decode_MCU_Pruned_Winograd(
   int interleave)
 {
     int i, j;
-	 int iflag = interleave;
+   int iflag = interleave;
     int *quant_table, block[64];
     SCAN_COMPONENT *comp;
 
@@ -452,7 +452,7 @@ void Write_Blank_MCUs(
   int interleave)
 {
     int i, j, ncomps, bi;
-	 int iflag = interleave;
+   int iflag = interleave;
     SCAN_COMPONENT *comp;
 
     ncomps = (scan->gray_scale) ? 1 : scan->ncomps;
@@ -460,8 +460,8 @@ void Write_Blank_MCUs(
         for (i = 0; i < ncomps; i++) {
             comp = scan->comps + i;
             for (j = comp->hsampling*comp->vsampling; j > 0; j--) {
-					 for (bi=64; bi > 0 ;bi--)
-						  *db_state->db_MCUptr++ = 0;
+           for (bi=64; bi > 0 ;bi--)
+              *db_state->db_MCUptr++ = 0;
             }
         }
     }
@@ -479,11 +479,11 @@ int Decode_Scan(
   int interleave)
 {
    register long nMCU;
-	int *dp_last_dc;
+  int *dp_last_dc;
 
-	if ((dp_last_dc =(int *) FPX_malloc( 4 * sizeof(int)))==NULL) {
-		return(ERROR_MEM);
-	}
+  if ((dp_last_dc =(int *) FPX_malloc( 4 * sizeof(int)))==NULL) {
+    return(ERROR_MEM);
+  }
     
     Clear_Old_DC(dp_last_dc);
     if (scan->restart_interv) {
@@ -570,8 +570,8 @@ int Decode_Scan(
     }
     DB_Align_Byte(db_state);
 
-	/* Write pixels stored in <db_state->db_MCUbuf> to <db_state->db_outbuf> */
-	DB_Write_Scan_MCUs(db_state,frame->width,frame->height,interleave);
+  /* Write pixels stored in <db_state->db_MCUbuf> to <db_state->db_outbuf> */
+  DB_Write_Scan_MCUs(db_state,frame->width,frame->height,interleave);
 
    if (dp_last_dc != NULL) FPX_free(dp_last_dc);
     return(0);

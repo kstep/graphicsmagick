@@ -22,75 +22,75 @@ extern "C" UNICODECALLOUTS UnicodeCallouts;
 // contain the types listed below as legal for arrays.  Nested vectors of
 // VT_VARIANT are specifically *allowed*.
 //
-// dd    xx  symbolic name	     field		  size
-// --   ---  -------------	     -----		  ----
-// -1 - ffff VT_ILLEGAL		     <none>		  can't legally be stored
+// dd    xx  symbolic name       field      size
+// --   ---  -------------       -----      ----
+// -1 - ffff VT_ILLEGAL        <none>     can't legally be stored
 //
-//  0 - x00  VT_EMPTY		     <none>		  0
-//  1 - x01  VT_NULL		     <none>		  0
+//  0 - x00  VT_EMPTY        <none>     0
+//  1 - x01  VT_NULL         <none>     0
 //
 // 16 - x10  VT_I1                   CHAR cVal            sizeof(char)
-// 17 - x11  VT_UI1		     UCHAR bVal		  sizeof(char)
+// 17 - x11  VT_UI1        UCHAR bVal     sizeof(char)
 //
-//  2 - x02  VT_I2		     short iVal		  sizeof(short)
-// 18 - x12  VT_UI2		     USHORT uiVal	  sizeof(short)
-// 11 - x0b  VT_BOOL		     VARIANT_BOOL boolVal sizeof(short)
+//  2 - x02  VT_I2         short iVal     sizeof(short)
+// 18 - x12  VT_UI2        USHORT uiVal   sizeof(short)
+// 11 - x0b  VT_BOOL         VARIANT_BOOL boolVal sizeof(short)
 //
-//  3 - x03  VT_I4		     long lVal		  sizeof(long)
-// 19 - x13  VT_UI4		     ULONG ulVal	  sizeof(long)
-//  4 - x04  VT_R4		     float fltVal	  sizeof(long)
-// 10 - x0a  VT_ERROR		     SCODE scode	  sizeof(long)
+//  3 - x03  VT_I4         long lVal      sizeof(long)
+// 19 - x13  VT_UI4        ULONG ulVal    sizeof(long)
+//  4 - x04  VT_R4         float fltVal   sizeof(long)
+// 10 - x0a  VT_ERROR        SCODE scode    sizeof(long)
 //
-// 20 - x14  VT_I8		     LARGE_INTEGER hVal	  sizeof(ll)
-// 21 - x15  VT_UI8		   ULARGE_INTEGER uhVal	  sizeof(ll)
-//  5 - x05  VT_R8		     double dblVal	  sizeof(ll)
-//  6 - x06  VT_CY		     CY cyVal		  sizeof(ll)
-//  7 - x07  VT_DATE		     DATE date		  sizeof(ll)
-// 64 - x40  VT_FILETIME	     FILETIME filetime	  sizeof(ll)
+// 20 - x14  VT_I8         LARGE_INTEGER hVal   sizeof(ll)
+// 21 - x15  VT_UI8      ULARGE_INTEGER uhVal   sizeof(ll)
+//  5 - x05  VT_R8         double dblVal    sizeof(ll)
+//  6 - x06  VT_CY         CY cyVal     sizeof(ll)
+//  7 - x07  VT_DATE         DATE date      sizeof(ll)
+// 64 - x40  VT_FILETIME       FILETIME filetime    sizeof(ll)
 //
-// 72 - x48  VT_CLSID		     CLSID *puuid	  sizeof(GUID)
+// 72 - x48  VT_CLSID        CLSID *puuid   sizeof(GUID)
 //
-// 65 - x41  VT_BLOB		     BLOB blob		  counted array of bytes
-// 70 - x46  VT_BLOB_OBJECT	     BLOB blob		  counted array of bytes
-// 71 - x47  VT_CF		     CLIPDATA *pclipdata    " + ulClipFmt
-// 66 - x42  VT_STREAM		     LPSTR pszVal	  counted array of bytes
-// 68 - x44  VT_STREAMED_OBJECT      LPSTR pszVal	  counted array of bytes
-// 67 - x43  VT_STORAGE		     LPSTR pszVal	  counted array of bytes
-// 69 - x45  VT_STORED_OBJECT	     LPSTR pszVal	  counted array of bytes
-//  8 - x08  VT_BSTR		     BSTR bstrVal	  counted array of bytes
-// 30 - x1e  VT_LPSTR		     LPSTR pszVal	  counted array of bytes
+// 65 - x41  VT_BLOB         BLOB blob      counted array of bytes
+// 70 - x46  VT_BLOB_OBJECT      BLOB blob      counted array of bytes
+// 71 - x47  VT_CF         CLIPDATA *pclipdata    " + ulClipFmt
+// 66 - x42  VT_STREAM         LPSTR pszVal   counted array of bytes
+// 68 - x44  VT_STREAMED_OBJECT      LPSTR pszVal   counted array of bytes
+// 67 - x43  VT_STORAGE        LPSTR pszVal   counted array of bytes
+// 69 - x45  VT_STORED_OBJECT      LPSTR pszVal   counted array of bytes
+//  8 - x08  VT_BSTR         BSTR bstrVal   counted array of bytes
+// 30 - x1e  VT_LPSTR        LPSTR pszVal   counted array of bytes
 //
-// 31 - x1f  VT_LPWSTR		     LPWSTR pwszVal	  counted array of WCHARs
+// 31 - x1f  VT_LPWSTR         LPWSTR pwszVal   counted array of WCHARs
 //
-//    x1010  VT_VECTOR | VT_I1	     CAC cac		  cElems * sizeof(char)
-//    x1011  VT_VECTOR | VT_UI1	     CAUB caub		  cElems * sizeof(char)
+//    x1010  VT_VECTOR | VT_I1       CAC cac      cElems * sizeof(char)
+//    x1011  VT_VECTOR | VT_UI1      CAUB caub      cElems * sizeof(char)
 //
-//    x1002  VT_VECTOR | VT_I2	     CAI cai		  cElems * sizeof(short)
-//    x1012  VT_VECTOR | VT_UI2	     CAUI caui		  cElems * sizeof(short)
-//    x100b  VT_VECTOR | VT_BOOL     CABOOL cabool	  cElems * sizeof(short)
+//    x1002  VT_VECTOR | VT_I2       CAI cai      cElems * sizeof(short)
+//    x1012  VT_VECTOR | VT_UI2      CAUI caui      cElems * sizeof(short)
+//    x100b  VT_VECTOR | VT_BOOL     CABOOL cabool    cElems * sizeof(short)
 //
-//    x1003  VT_VECTOR | VT_I4	     CAL cal		  cElems * sizeof(long)
-//    x1013  VT_VECTOR | VT_UI4	     CAUL caul		  cElems * sizeof(long)
-//    x1004  VT_VECTOR | VT_R4	     CAFLT caflt	  cElems * sizeof(long)
-//    x100a  VT_VECTOR | VT_ERROR    CAERROR cascode	  cElems * sizeof(long)
+//    x1003  VT_VECTOR | VT_I4       CAL cal      cElems * sizeof(long)
+//    x1013  VT_VECTOR | VT_UI4      CAUL caul      cElems * sizeof(long)
+//    x1004  VT_VECTOR | VT_R4       CAFLT caflt    cElems * sizeof(long)
+//    x100a  VT_VECTOR | VT_ERROR    CAERROR cascode    cElems * sizeof(long)
 //
-//    x1014  VT_VECTOR | VT_I8	     CAH cah		  cElems * sizeof(ll)
-//    x1015  VT_VECTOR | VT_UI8	     CAUH cauh		  cElems * sizeof(ll)
-//    x1005  VT_VECTOR | VT_R8	     CADBL cadbl	  cElems * sizeof(ll)
-//    x1006  VT_VECTOR | VT_CY	     CACY cacy		  cElems * sizeof(ll)
-//    x1007  VT_VECTOR | VT_DATE     CADATE cadate	  cElems * sizeof(ll)
+//    x1014  VT_VECTOR | VT_I8       CAH cah      cElems * sizeof(ll)
+//    x1015  VT_VECTOR | VT_UI8      CAUH cauh      cElems * sizeof(ll)
+//    x1005  VT_VECTOR | VT_R8       CADBL cadbl    cElems * sizeof(ll)
+//    x1006  VT_VECTOR | VT_CY       CACY cacy      cElems * sizeof(ll)
+//    x1007  VT_VECTOR | VT_DATE     CADATE cadate    cElems * sizeof(ll)
 //    x1040  VT_VECTOR | VT_FILETIME CAFILETIME cafiletime cElems * sizeof(ll)
 //
-//    x1048  VT_VECTOR | VT_CLSID    CACLSID cauuid	  cElems * sizeof(GUID)
+//    x1048  VT_VECTOR | VT_CLSID    CACLSID cauuid   cElems * sizeof(GUID)
 //
-//    x1047  VT_VECTOR | VT_CF	  CACLIPDATA caclipdata   cElems cntarray of bytes
-//    x1008  VT_VECTOR | VT_BSTR     CABSTR cabstr	  cElems cntarray of bytes
-//    x101e  VT_VECTOR | VT_LPSTR    CALPSTR calpstr	  cElems cntarray of bytes
+//    x1047  VT_VECTOR | VT_CF    CACLIPDATA caclipdata   cElems cntarray of bytes
+//    x1008  VT_VECTOR | VT_BSTR     CABSTR cabstr    cElems cntarray of bytes
+//    x101e  VT_VECTOR | VT_LPSTR    CALPSTR calpstr    cElems cntarray of bytes
 //
-//    x101f  VT_VECTOR | VT_LPWSTR   CALPWSTR calpwstr	  cElems cntarray of WCHAR
+//    x101f  VT_VECTOR | VT_LPWSTR   CALPWSTR calpwstr    cElems cntarray of WCHAR
 //
 //    x100c  VT_VECTOR | VT_VARIANT  CAPROPVARIANT capropvar cElems variants
-//							   (recurse on each)
+//                 (recurse on each)
 
 
 //+---------------------------------------------------------------------------
@@ -136,40 +136,40 @@ RtlpConvertToUnicode(
     cwcName = 0;
     while (TRUE)
     {
-	cwcName = (*UnicodeCallouts.pfnMultiByteToWideChar)(
-				    CodePage,
-				    0,			// dwFlags
-				    pch,
-				    cb,
-				    pwszName,
-				    cwcName);
-	if (cwcName == 0)
-	{
-	    delete [] pwszName;
+  cwcName = (*UnicodeCallouts.pfnMultiByteToWideChar)(
+            CodePage,
+            0,      // dwFlags
+            pch,
+            cb,
+            pwszName,
+            cwcName);
+  if (cwcName == 0)
+  {
+      delete [] pwszName;
             // If there was an error, assume that it was a code-page
             // incompatibility problem.
             StatusError(pstatus, "RtlpConvertToUnicode: MultiByteToWideChar error",
                         STATUS_UNMAPPABLE_CHARACTER);
             goto Exit;
-	}
-	if (pwszName != NULL)
-	{
-	    DebugTrace(0, DEBTRACE_PROPERTY, (
-		"RtlpConvertToUnicode: pch='%s'[%x] pwc='%ws'[%x->%x]\n",
-		pch,
-		cb,
-		pwszName,
-		*pcb,
-		cwcName * sizeof(WCHAR)));
-	    break;
-	}
-	*pcb = cwcName * sizeof(WCHAR);
-	*ppwc = pwszName = (WCHAR *) newk(mtPropSetStream, NULL) CHAR[*pcb];
-	if (pwszName == NULL)
-	{
-	    StatusNoMemory(pstatus, "RtlpConvertToUnicode: no memory");
+  }
+  if (pwszName != NULL)
+  {
+      DebugTrace(0, DEBTRACE_PROPERTY, (
+    "RtlpConvertToUnicode: pch='%s'[%x] pwc='%ws'[%x->%x]\n",
+    pch,
+    cb,
+    pwszName,
+    *pcb,
+    cwcName * sizeof(WCHAR)));
+      break;
+  }
+  *pcb = cwcName * sizeof(WCHAR);
+  *ppwc = pwszName = (WCHAR *) newk(mtPropSetStream, NULL) CHAR[*pcb];
+  if (pwszName == NULL)
+  {
+      StatusNoMemory(pstatus, "RtlpConvertToUnicode: no memory");
             goto Exit;
-	}
+  }
     }
 
     //  ----
@@ -225,42 +225,42 @@ RtlpConvertToMultiByte(
     cbName = 0;
     while (TRUE)
     {
-	cbName = (*UnicodeCallouts.pfnWideCharToMultiByte)(
-				    CodePage,
-				    0,			// dwFlags
-				    pwc,
-				    cb/sizeof(WCHAR),
-				    pszName,
-				    cbName,
-				    NULL,		// lpDefaultChar
-				    NULL);		// lpUsedDefaultChar
-	if (cbName == 0)
-	{
-	    delete [] pszName;
+  cbName = (*UnicodeCallouts.pfnWideCharToMultiByte)(
+            CodePage,
+            0,      // dwFlags
+            pwc,
+            cb/sizeof(WCHAR),
+            pszName,
+            cbName,
+            NULL,   // lpDefaultChar
+            NULL);    // lpUsedDefaultChar
+  if (cbName == 0)
+  {
+      delete [] pszName;
             // If there was an error, assume that it was a code-page
             // incompatibility problem.
             StatusError(pstatus, "RtlpConvertToMultiByte: WideCharToMultiByte error",
                         STATUS_UNMAPPABLE_CHARACTER);
             goto Exit;
-	}
-	if (pszName != NULL)
-	{
-	    DebugTrace(0, DEBTRACE_PROPERTY, (
-		"RtlpConvertToMultiByte: pwc='%ws'[%x] pch='%s'[%x->%x]\n",
-		pwc,
-		cb,
-		pszName,
-		*pcb,
-		cbName));
-	    break;
-	}
-	*pcb = cbName;
-	*ppch = pszName = newk(mtPropSetStream, NULL) CHAR[cbName];
-	if (pszName == NULL)
-	{
-	    StatusNoMemory(pstatus, "RtlpConvertToMultiByte: no memory");
+  }
+  if (pszName != NULL)
+  {
+      DebugTrace(0, DEBTRACE_PROPERTY, (
+    "RtlpConvertToMultiByte: pwc='%ws'[%x] pch='%s'[%x->%x]\n",
+    pwc,
+    cb,
+    pszName,
+    *pcb,
+    cbName));
+      break;
+  }
+  *pcb = cbName;
+  *ppch = pszName = newk(mtPropSetStream, NULL) CHAR[cbName];
+  if (pszName == NULL)
+  {
+      StatusNoMemory(pstatus, "RtlpConvertToMultiByte: no memory");
             goto Exit;
-	}
+  }
     }
 
     //  ----
@@ -282,8 +282,8 @@ Exit:
 //              [CodePage]   -- property set codepage
 //              [pprop]      -- pointer to SERIALIZEDPROPERTYVALUE
 //              [pcb]        -- pointer to remaining stream length,
-//			        updated to actual property size on return
-//              [pid]	     -- propid
+//              updated to actual property size on return
+//              [pid]      -- propid
 //              [fVariantVector] -- TRUE if recursing on VT_VECTOR | VT_VARIANT
 //              [pstatus]    -- pointer to NTSTATUS code
 //
@@ -347,8 +347,8 @@ RtlConvertVariantToProperty(
     {
     case VT_EMPTY:
     case VT_NULL:
-	fIllegalType = fVariantVector;
-	break;
+  fIllegalType = fVariantVector;
+  break;
 
 #ifdef PROPVAR_VT_I1
     case VT_I1:
@@ -356,18 +356,18 @@ RtlConvertVariantToProperty(
 #endif
     case VT_UI1:
         AssertByteField(bVal);          // VT_UI1
-	cb = sizeof(pvar->bVal);
-	pv = &pvar->bVal;
-	break;
+  cb = sizeof(pvar->bVal);
+  pv = &pvar->bVal;
+  break;
 
     case VT_I2:
     case VT_UI2:
     case VT_BOOL:
-	AssertShortField(iVal);	        // VT_I2
-	AssertShortField(uiVal);        // VT_UI2
-	AssertShortField(boolVal);      // VT_BOOL
-	cb = sizeof(pvar->iVal);
-	pv = &pvar->iVal;
+  AssertShortField(iVal);         // VT_I2
+  AssertShortField(uiVal);        // VT_UI2
+  AssertShortField(boolVal);      // VT_BOOL
+  cb = sizeof(pvar->iVal);
+  pv = &pvar->iVal;
 
         // If swapping, swap as a WORD
         CBBYTESWAP(cb);
@@ -377,128 +377,128 @@ RtlConvertVariantToProperty(
     case VT_UI4:
     case VT_R4:
     case VT_ERROR:
-	AssertLongField(lVal);		// VT_I4
-	AssertLongField(ulVal);		// VT_UI4
-	AssertLongField(fltVal);		// VT_R4
-	AssertLongField(scode);		// VT_ERROR
-	cb = sizeof(pvar->lVal);
-	pv = &pvar->lVal;
+  AssertLongField(lVal);    // VT_I4
+  AssertLongField(ulVal);   // VT_UI4
+  AssertLongField(fltVal);    // VT_R4
+  AssertLongField(scode);   // VT_ERROR
+  cb = sizeof(pvar->lVal);
+  pv = &pvar->lVal;
 
         // If swapping, swap as a DWORD
         CBBYTESWAP(cb);
-	break;
+  break;
 
     case VT_I8:
     case VT_UI8:
     case VT_FILETIME:
-	AssertLongLongField(hVal);		// VT_I8
-	AssertLongLongField(uhVal);		// VT_UI8
-	AssertLongLongField(filetime);	// VT_FILETIME
-	cb = sizeof(pvar->hVal);
-	pv = &pvar->hVal;
+  AssertLongLongField(hVal);    // VT_I8
+  AssertLongLongField(uhVal);   // VT_UI8
+  AssertLongLongField(filetime);  // VT_FILETIME
+  cb = sizeof(pvar->hVal);
+  pv = &pvar->hVal;
 
         // If swapping, swap each DWORD independently.
         CBBYTESWAP(sizeof(DWORD));
-	break;
+  break;
 
     case VT_R8:
     case VT_CY:
     case VT_DATE:
-	AssertLongLongField(dblVal);    // VT_R8
-	AssertLongLongField(cyVal);     // VT_CY
-	AssertLongLongField(date);      // VT_DATE
-	cb = sizeof(pvar->dblVal);
-	pv = &pvar->dblVal;
+  AssertLongLongField(dblVal);    // VT_R8
+  AssertLongLongField(cyVal);     // VT_CY
+  AssertLongLongField(date);      // VT_DATE
+  cb = sizeof(pvar->dblVal);
+  pv = &pvar->dblVal;
 
         // If swapping, swap as a LONGLONG (64 bits).
         CBBYTESWAP(cb);
-	break;
+  break;
 
     case VT_CLSID:
-	AssertStringField(puuid);       // VT_CLSID
-	cb = sizeof(GUID);
-	pv = pvar->puuid;
-	fCheckNullSource = TRUE;
+  AssertStringField(puuid);       // VT_CLSID
+  cb = sizeof(GUID);
+  pv = pvar->puuid;
+  fCheckNullSource = TRUE;
 
         // If swapping, special handling is required.
         CBBYTESWAP( CBBYTESWAP_UID );
-	break;
+  break;
 
     case VT_CF:
 
         // Validate the PropVariant
-	if (pvar->pclipdata == NULL
+  if (pvar->pclipdata == NULL
             ||
             pvar->pclipdata->cbSize < sizeof(pvar->pclipdata->ulClipFmt) )
-	{
-	    StatusInvalidParameter(pstatus, "RtlConvertVariantToProperty: pclipdata NULL");
+  {
+      StatusInvalidParameter(pstatus, "RtlConvertVariantToProperty: pclipdata NULL");
             goto Exit;
-	}
+  }
 
         // How many bytes should we copy?
-	cb = CBPCLIPDATA( *(pvar->pclipdata) );
+  cb = CBPCLIPDATA( *(pvar->pclipdata) );
 
         // Identify the value for this property's count field.
         // (which includes sizeof(ulClipFmt))
-	count = pvar->pclipdata->cbSize;
-	pcount = &count;
+  count = pvar->pclipdata->cbSize;
+  pcount = &count;
 
         // Identify the clipdata's format & data
-	pclipfmt = &pvar->pclipdata->ulClipFmt;
-	pv = pvar->pclipdata->pClipData;
+  pclipfmt = &pvar->pclipdata->ulClipFmt;
+  pv = pvar->pclipdata->pClipData;
 
-	fCheckNullSource = TRUE;
+  fCheckNullSource = TRUE;
 
         // Note that no byte-swapping of 'pv' is necessary.
-	break;
+  break;
 
     case VT_BLOB:
     case VT_BLOB_OBJECT:
-	fIllegalType = fVariantVector;
-	pcount = &pvar->blob.cbSize;
-	cb = *pcount;
-	pv = pvar->blob.pBlobData;
-	fCheckNullSource = TRUE;
+  fIllegalType = fVariantVector;
+  pcount = &pvar->blob.cbSize;
+  cb = *pcount;
+  pv = pvar->blob.pBlobData;
+  fCheckNullSource = TRUE;
 
         // Note that no byte-swapping of 'pv' is necessary.
-	break;
+  break;
 
     case VT_LPSTR:
-	PROPASSERT(
-	    pvar->pszVal == NULL ||
-	    IsAnsiString(pvar->pszVal, MAXULONG));
-	// FALLTHROUGH
+  PROPASSERT(
+      pvar->pszVal == NULL ||
+      IsAnsiString(pvar->pszVal, MAXULONG));
+  // FALLTHROUGH
 
     case VT_BSTR:
-	count = 0;	// allow NULL pointer
-	pv = pvar->pszVal;
+  count = 0;  // allow NULL pointer
+  pv = pvar->pszVal;
 
-	AssertStringField(bstrVal);	// VT_BSTR
-	AssertStringField(pszVal);	// VT_LPSTR
+  AssertStringField(bstrVal); // VT_BSTR
+  AssertStringField(pszVal);  // VT_LPSTR
 
         // We have the string for an LPSTR, BSTR
         // property pointed to by 'pv'.  Now we'll perform any
         // Ansi/Unicode conversions and byte-swapping that's
         // necessary (putting the result in 'pv').
 
-	if (pv == NULL)
-	{
-	    fCheckNullSource = TRUE;
-	}
+  if (pv == NULL)
+  {
+      fCheckNullSource = TRUE;
+  }
 
-	else
-	if (pvar->vt == VT_LPSTR)
-	{
-	    count = strlen((char *) pv) + 1;
+  else
+  if (pvar->vt == VT_LPSTR)
+  {
+      count = strlen((char *) pv) + 1;
 
             // If the propset is Unicode, convert the LPSTR to Unicode.
 
-	    if (CodePage == CP_WINUNICODE)
-	    {
+      if (CodePage == CP_WINUNICODE)
+      {
                 // Convert to Unicode.
 
-		PROPASSERT(IsAnsiString((CHAR const *) pv, count));
-		RtlpConvertToUnicode( (CHAR const *) pv,
+    PROPASSERT(IsAnsiString((CHAR const *) pv, count));
+    RtlpConvertToUnicode( (CHAR const *) pv,
                                       count, CP_ACP,
                                       // Variants are in the system codepage
                                       (WCHAR **) &pchConvert,
@@ -507,38 +507,38 @@ RtlConvertVariantToProperty(
                 if( !NT_SUCCESS(*pstatus) ) goto Exit;
 
                 // 'pv' always has the ready-to-serialize string.
-		pv = pchConvert;
+    pv = pchConvert;
 
                 // This unicode string may require byte-swapping.
                 CBBYTESWAP( sizeof(WCHAR) );
-	    }
-	}   // else if (pvar->vt == VT_LPSTR)
+      }
+  }   // else if (pvar->vt == VT_LPSTR)
 
-	else
-	{
+  else
+  {
             // If this is a BSTR, increment the count to include
             // the string terminator.
-	    if (pvar->vt == VT_BSTR)
-	    {
-		count = BSTRLEN(pv);
+      if (pvar->vt == VT_BSTR)
+      {
+    count = BSTRLEN(pv);
 
                 // Verify that the input BSTR is terminated.
-		if (pvar->bstrVal[count/sizeof(OLECHAR)] != ((OLECHAR)'\0'))
-		{
-		    PROPASSERT(pvar->bstrVal[count/sizeof(OLECHAR)] == OLESTR('\0'));
-		    StatusInvalidParameter(pstatus,
-			"RtlConvertVariantToProperty: bad BSTR null char");
+    if (pvar->bstrVal[count/sizeof(OLECHAR)] != ((OLECHAR)'\0'))
+    {
+        PROPASSERT(pvar->bstrVal[count/sizeof(OLECHAR)] == OLESTR('\0'));
+        StatusInvalidParameter(pstatus,
+      "RtlConvertVariantToProperty: bad BSTR null char");
                     goto Exit;
-		}
+    }
 
                 // Increment the count to include the terminator.
-		count += sizeof(OLECHAR);
-	    }
-	    else
-	    {
-		count = (Prop_wcslen((WCHAR *) pv) + 1) * sizeof(WCHAR);
-		PROPASSERT(IsUnicodeString((WCHAR const *) pv, count));
-	    }
+    count += sizeof(OLECHAR);
+      }
+      else
+      {
+    count = (Prop_wcslen((WCHAR *) pv) + 1) * sizeof(WCHAR);
+    PROPASSERT(IsUnicodeString((WCHAR const *) pv, count));
+      }
 
             // See if this BSTR requires conversion to the propset's code page      
 
@@ -546,21 +546,21 @@ RtlConvertVariantToProperty(
                 &&
                 OLECHAR_IS_UNICODE      // BSTRs are Unicode
                 )
-	    {
+      {
                 // A Unicode to Ansi conversion is required.
 
                 PROPASSERT( IsUnicodeString( (WCHAR*)pv, count ));
 
-		RtlpConvertToMultiByte(
-				(WCHAR const *) pv,
-				count,
-				CodePage,
-				&pchConvert,
-				&count,
+    RtlpConvertToMultiByte(
+        (WCHAR const *) pv,
+        count,
+        CodePage,
+        &pchConvert,
+        &count,
                                 pstatus);
                 if( !NT_SUCCESS(*pstatus) ) goto Exit;
-		pv = pchConvert;
-	    }
+    pv = pchConvert;
+      }
             else if (CodePage == CP_WINUNICODE   // Unicode property set,
                      &&
                      pvar->vt == VT_BSTR         // a BSTR property, and
@@ -598,7 +598,7 @@ RtlConvertVariantToProperty(
 
                 CBBYTESWAP( sizeof(WCHAR) );
             }
-	}   // if (pv == NULL) ... else if ... else
+  }   // if (pv == NULL) ... else if ... else
 
         // Validate 'pv'.
 
@@ -611,151 +611,151 @@ RtlConvertVariantToProperty(
                     CodePage != CP_WINUNICODE && IsAnsiString((CHAR*)pv, count) );
 #endif
 
-	cb = count;
-	pcount = &count;
-	break;
+  cb = count;
+  pcount = &count;
+  break;
 
     case VT_LPWSTR:
-	AssertStringField(pwszVal);		// VT_LPWSTR
-	PROPASSERT(
-	    pvar->pwszVal == NULL ||
-	    IsUnicodeString(pvar->pwszVal, MAXULONG));
+  AssertStringField(pwszVal);   // VT_LPWSTR
+  PROPASSERT(
+      pvar->pwszVal == NULL ||
+      IsUnicodeString(pvar->pwszVal, MAXULONG));
 
         pv = pvar->pwszVal;
-	if (pv == NULL)
-	{
-	    count = 0;
-	    fCheckNullSource = TRUE;
-	}
-	else
-	{
+  if (pv == NULL)
+  {
+      count = 0;
+      fCheckNullSource = TRUE;
+  }
+  else
+  {
             // Calculate the [length] field.
-	    count = Prop_wcslen(pvar->pwszVal) + 1;
+      count = Prop_wcslen(pvar->pwszVal) + 1;
 
             // If byte-swapping will be necessary to get to the serialized
             // format, we'll do so in units of WCHARs.
 
             CBBYTESWAP( sizeof(WCHAR) );
-	}
+  }
 
-	cb = count * sizeof(WCHAR);
-	pcount = &count;
-	break;
+  cb = count * sizeof(WCHAR);
+  pcount = &count;
+  break;
 
     // Vector properties:
 
 #ifdef PROPVAR_VT_I1
     case VT_VECTOR | VT_I1:
-	AssertByteVector(cac);		// VT_I1
+  AssertByteVector(cac);    // VT_I1
 #endif
     case VT_VECTOR | VT_UI1:
-	AssertByteVector(caub);		// VT_UI1
-	pcount = &pvar->caub.cElems;
-	cb = *pcount * sizeof(pvar->caub.pElems[0]);
-	pv = pvar->caub.pElems;
-	break;
+  AssertByteVector(caub);   // VT_UI1
+  pcount = &pvar->caub.cElems;
+  cb = *pcount * sizeof(pvar->caub.pElems[0]);
+  pv = pvar->caub.pElems;
+  break;
 
     case VT_VECTOR | VT_I2:
     case VT_VECTOR | VT_UI2:
     case VT_VECTOR | VT_BOOL:
-	AssertShortVector(cai);		// VT_I2
-	AssertShortVector(caui);        // VT_UI2
-	AssertShortVector(cabool);      // VT_BOOL
-	pcount = &pvar->cai.cElems;
-	cb = *pcount * sizeof(pvar->cai.pElems[0]);
-	pv = pvar->cai.pElems;
+  AssertShortVector(cai);   // VT_I2
+  AssertShortVector(caui);        // VT_UI2
+  AssertShortVector(cabool);      // VT_BOOL
+  pcount = &pvar->cai.cElems;
+  cb = *pcount * sizeof(pvar->cai.pElems[0]);
+  pv = pvar->cai.pElems;
 
         // If swapping, swap as WORDs
         CBBYTESWAP(sizeof(pvar->cai.pElems[0]));
-	break;
+  break;
 
     case VT_VECTOR | VT_I4:
     case VT_VECTOR | VT_UI4:
     case VT_VECTOR | VT_R4:
     case VT_VECTOR | VT_ERROR:
-	AssertLongVector(cal);		// VT_I4
-	AssertLongVector(caul);		// VT_UI4
-	AssertLongVector(caflt);        // VT_R4
-	AssertLongVector(cascode);      // VT_ERROR
-	pcount = &pvar->cal.cElems;
-	cb = *pcount * sizeof(pvar->cal.pElems[0]);
-	pv = pvar->cal.pElems;
+  AssertLongVector(cal);    // VT_I4
+  AssertLongVector(caul);   // VT_UI4
+  AssertLongVector(caflt);        // VT_R4
+  AssertLongVector(cascode);      // VT_ERROR
+  pcount = &pvar->cal.cElems;
+  cb = *pcount * sizeof(pvar->cal.pElems[0]);
+  pv = pvar->cal.pElems;
 
         // If swapping, swap as DWORDs
         CBBYTESWAP(sizeof(pvar->cal.pElems[0]));
-	break;
+  break;
 
     case VT_VECTOR | VT_I8:
     case VT_VECTOR | VT_UI8:
     case VT_VECTOR | VT_FILETIME:
-	AssertLongLongVector(cah);      // VT_I8
-	AssertLongLongVector(cauh);     // VT_UI8
-	AssertLongLongVector(cafiletime);// VT_FILETIME
-	pcount = &pvar->cah.cElems;
-	cb = *pcount * sizeof(pvar->cah.pElems[0]);
-	pv = pvar->cah.pElems;
+  AssertLongLongVector(cah);      // VT_I8
+  AssertLongLongVector(cauh);     // VT_UI8
+  AssertLongLongVector(cafiletime);// VT_FILETIME
+  pcount = &pvar->cah.cElems;
+  cb = *pcount * sizeof(pvar->cah.pElems[0]);
+  pv = pvar->cah.pElems;
 
         // If swapping, swap as DWORDs
         CBBYTESWAP(sizeof(DWORD));
-	break;
+  break;
 
     case VT_VECTOR | VT_R8:
     case VT_VECTOR | VT_CY:
     case VT_VECTOR | VT_DATE:
-	AssertLongLongVector(cadbl);    // VT_R8
-	AssertLongLongVector(cacy);     // VT_CY
-	AssertLongLongVector(cadate);   // VT_DATE
-	pcount = &pvar->cah.cElems;
-	cb = *pcount * sizeof(pvar->cadbl.pElems[0]);
-	pv = pvar->cadbl.pElems;
+  AssertLongLongVector(cadbl);    // VT_R8
+  AssertLongLongVector(cacy);     // VT_CY
+  AssertLongLongVector(cadate);   // VT_DATE
+  pcount = &pvar->cah.cElems;
+  cb = *pcount * sizeof(pvar->cadbl.pElems[0]);
+  pv = pvar->cadbl.pElems;
 
         // If swapping, swap as LONGLONGs (8 bytes)
         CBBYTESWAP(sizeof(pvar->cadbl.pElems[0]));
-	break;
+  break;
 
 
     case VT_VECTOR | VT_CLSID:
-	AssertVarVector(cauuid, sizeof(GUID));
-	pcount = &pvar->cauuid.cElems;
-	cb = *pcount * sizeof(pvar->cauuid.pElems[0]);
-	pv = pvar->cauuid.pElems;
+  AssertVarVector(cauuid, sizeof(GUID));
+  pcount = &pvar->cauuid.cElems;
+  cb = *pcount * sizeof(pvar->cauuid.pElems[0]);
+  pv = pvar->cauuid.pElems;
 
         // If swapping, special handling is required.
         CBBYTESWAP( CBBYTESWAP_UID );
-	break;
+  break;
 
     case VT_VECTOR | VT_CF:
-	cbch = sizeof(CLIPDATA);
-	cbchdiv = sizeof(BYTE);
-	goto stringvector;
+  cbch = sizeof(CLIPDATA);
+  cbchdiv = sizeof(BYTE);
+  goto stringvector;
 
     case VT_VECTOR | VT_BSTR:
     case VT_VECTOR | VT_LPSTR:
-	cbchdiv = cbch = sizeof(BYTE);
-	goto stringvector;
+  cbchdiv = cbch = sizeof(BYTE);
+  goto stringvector;
 
     case VT_VECTOR | VT_LPWSTR:
-	cbchdiv = cbch = sizeof(WCHAR);
-	goto stringvector;
+  cbchdiv = cbch = sizeof(WCHAR);
+  goto stringvector;
 
     case VT_VECTOR | VT_VARIANT:
-	cbch = MAXULONG;
+  cbch = MAXULONG;
 stringvector:
-	AssertVarVector(caclipdata, sizeof(CLIPDATA));	// VT_CF
-	AssertStringVector(cabstr);                     // VT_BSTR
-	AssertStringVector(calpstr);			// VT_LPSTR
-	AssertStringVector(calpwstr);			// VT_LPWSTR
-	AssertVarVector(capropvar, sizeof(PROPVARIANT));// VT_VARIANT
+  AssertVarVector(caclipdata, sizeof(CLIPDATA));  // VT_CF
+  AssertStringVector(cabstr);                     // VT_BSTR
+  AssertStringVector(calpstr);      // VT_LPSTR
+  AssertStringVector(calpwstr);     // VT_LPWSTR
+  AssertVarVector(capropvar, sizeof(PROPVARIANT));// VT_VARIANT
 
-	pcount = &pvar->calpstr.cElems;
-	ppv = (VOID **) pvar->calpstr.pElems;
-	break;
+  pcount = &pvar->calpstr.cElems;
+  ppv = (VOID **) pvar->calpstr.pElems;
+  break;
 
     default:
-	DebugTrace(0, DEBTRACE_ERROR, (
-	    "RtlConvertVariantToProperty: unsupported vt=%x\n",
-	    pvar->vt));
-	StatusInvalidParameter(pstatus, "RtlConvertVariantToProperty: bad type");
+  DebugTrace(0, DEBTRACE_ERROR, (
+      "RtlConvertVariantToProperty: unsupported vt=%x\n",
+      pvar->vt));
+  StatusInvalidParameter(pstatus, "RtlConvertVariantToProperty: bad type");
         goto Exit;
 
     }   // switch (pvar->vt)
@@ -768,7 +768,7 @@ stringvector:
 
     if (fIllegalType)
     {
-	StatusInvalidParameter(pstatus, "RtlConvertVariantToProperty: Illegal VarType");
+  StatusInvalidParameter(pstatus, "RtlConvertVariantToProperty: Illegal VarType");
         goto Exit;
     }
 
@@ -777,11 +777,11 @@ stringvector:
 
     if (pprop == NULL)
     {
-	pbdst = NULL;
+  pbdst = NULL;
     }
     else
     {
-	pbdst = pprop->rgb;
+  pbdst = pprop->rgb;
     }
 
     // Is this a Vector of Strings/Variants/CFs?
@@ -789,72 +789,72 @@ stringvector:
     {
         // Yes.
 
-	ULONG cElems;
+  ULONG cElems;
 
-	PROPASSERT(pcount != NULL);
-	PROPASSERT(*pcount == 0 || ppv != NULL);
+  PROPASSERT(pcount != NULL);
+  PROPASSERT(*pcount == 0 || ppv != NULL);
         PROPASSERT(0 == cbByteSwap);
 
-	// Start calculating the serialized size.  Include the sizes
+  // Start calculating the serialized size.  Include the sizes
         // of the VT & element count.
 
-	cb = sizeof(ULONG) + sizeof(ULONG);
+  cb = sizeof(ULONG) + sizeof(ULONG);
 
         // Is this a Variant Vector?
-	if (cbch != MAXULONG)
-	{
-	    // No.  Include each element's length field.
-	    cb += *pcount * sizeof(ULONG);
-	}
+  if (cbch != MAXULONG)
+  {
+      // No.  Include each element's length field.
+      cb += *pcount * sizeof(ULONG);
+  }
 
         // Is there room in the caller's buffer for everything
         // counted so far?
-	if (*pcb < cb)
-	{
+  if (*pcb < cb)
+  {
             // No - we won't serialize the data, but we will continue
             // to calculate cb.
-	    pprop = NULL;
-	}
+      pprop = NULL;
+  }
 
         // Write the count of vector elements.
-	if (pprop != NULL)
-	{
-	    *(ULONG *) pbdst = PropByteSwap((ULONG) *pcount);
-	    pbdst += sizeof(ULONG);
-	}
+  if (pprop != NULL)
+  {
+      *(ULONG *) pbdst = PropByteSwap((ULONG) *pcount);
+      pbdst += sizeof(ULONG);
+  }
 
         // Walk through the vector and write the elements.
 
-	for (cElems = *pcount; cElems > 0; cElems--)
-	{
-	    ULONG cbcopy = 0;
+  for (cElems = *pcount; cElems > 0; cElems--)
+  {
+      ULONG cbcopy = 0;
 
             // Switch on the size of the element.
-	    switch (cbch)
-	    {
+      switch (cbch)
+      {
                 //
                 // VT_VARIANT
                 //
-		case MAXULONG:
-		    cbcopy = MAXULONG;
+    case MAXULONG:
+        cbcopy = MAXULONG;
 
                     // Perform a recursive serialization
-		    RtlConvertVariantToProperty(
-				(PROPVARIANT *) ppv,
-				CodePage,
-				NULL,
-				&cbcopy,
-				PID_ILLEGAL,
-				TRUE,
+        RtlConvertVariantToProperty(
+        (PROPVARIANT *) ppv,
+        CodePage,
+        NULL,
+        &cbcopy,
+        PID_ILLEGAL,
+        TRUE,
                                 pstatus);
                     if( !NT_SUCCESS(*pstatus) ) goto Exit;
 
-		    break;
+        break;
 
                 //
                 //  VT_CF
                 //
-		case sizeof(CLIPDATA):
+    case sizeof(CLIPDATA):
 
                     // We copy cbSize-sizeof(ulClipFmt) bytes.
 
@@ -870,79 +870,79 @@ stringvector:
 
                     // But increment cb to to include sizeof(ulClipFmt)
                     cb += sizeof(ULONG);
-		    break;
+        break;
 
                 //
                 //  VT_LPWSTR
                 //
-		case sizeof(WCHAR):
-		    if (*ppv != NULL)
-		    {
-			PROPASSERT(IsUnicodeString((WCHAR const *) *ppv, MAXULONG));
-			cbcopy = (Prop_wcslen((WCHAR *) *ppv) + 1) * sizeof(WCHAR);
-			pv = *ppv;
+    case sizeof(WCHAR):
+        if (*ppv != NULL)
+        {
+      PROPASSERT(IsUnicodeString((WCHAR const *) *ppv, MAXULONG));
+      cbcopy = (Prop_wcslen((WCHAR *) *ppv) + 1) * sizeof(WCHAR);
+      pv = *ppv;
 
                         // If byte-swapping is necessary, swap in units of WCHARs
                         CBBYTESWAP( sizeof(WCHAR) );
 
-		    }
-		    break;
+        }
+        break;
 
                 //
                 //  VT_LPSTR/VT_BSTR
                 //
-		default:
-		    PROPASSERT(cbch == sizeof(BYTE));
-		    PROPASSERT(pchConvert == NULL);
-		    if (*ppv != NULL)
-		    {
-			pv = *ppv;
+    default:
+        PROPASSERT(cbch == sizeof(BYTE));
+        PROPASSERT(pchConvert == NULL);
+        if (*ppv != NULL)
+        {
+      pv = *ppv;
 
                         // Is this a BSTR?
-			if (pvar->vt == (VT_VECTOR | VT_BSTR))
-			{
+      if (pvar->vt == (VT_VECTOR | VT_BSTR))
+      {
                             // Initialize the # bytes to copy.
-			    cbcopy = BSTRLEN(pv);
+          cbcopy = BSTRLEN(pv);
 
                             // Verify that the BSTR is terminated.
-			    if (((OLECHAR const *) pv)
+          if (((OLECHAR const *) pv)
                                 [cbcopy/sizeof(OLECHAR)] != ( (OLECHAR)'\0'))
-			    {
-				PROPASSERT(
+          {
+        PROPASSERT(
                                     ((OLECHAR const *) pv)
                                     [cbcopy/sizeof(OLECHAR)] == ((OLECHAR)'\0'));
-				StatusInvalidParameter(
+        StatusInvalidParameter(
                                     pstatus,
                                     "RtlConvertVariantToProperty: bad BSTR"
                                     "array null char"); 
                                 goto Exit;
-			    }
+          }
 
                             // Also copy the string terminator.
-			    cbcopy += sizeof(OLECHAR);
+          cbcopy += sizeof(OLECHAR);
 
                             // If the propset and the BSTR are in mismatched
                             // codepages (one's Unicode, the other's Ansi),
                             // correct the BSTR now.  In any case, the correct
                             // string is in 'pv'.
 
-			    if (CodePage != CP_WINUNICODE   // Ansi property set
+          if (CodePage != CP_WINUNICODE   // Ansi property set
                                 &&
                                 OLECHAR_IS_UNICODE)         // Unicode BSTR
-			    {
+          {
                                 PROPASSERT(IsUnicodeString((WCHAR*)pv, cbcopy));
 
-				RtlpConvertToMultiByte(
-						(WCHAR const *) pv,
-						cbcopy,
-						CodePage,
-						&pchConvert,
-						&cbcopy,
+        RtlpConvertToMultiByte(
+            (WCHAR const *) pv,
+            cbcopy,
+            CodePage,
+            &pchConvert,
+            &cbcopy,
                                                 pstatus);
                                 if( !NT_SUCCESS(*pstatus) ) goto Exit;
 
-				pv = pchConvert;
-			    }
+        pv = pchConvert;
+          }
 
                             else
                             if (CodePage == CP_WINUNICODE   // Unicode property set
@@ -952,11 +952,11 @@ stringvector:
                                 PROPASSERT(IsAnsiString((CHAR const *) pv, cbcopy));
 
                                 RtlpConvertToUnicode(
-		                                (CHAR const *) pv,
-		                                cbcopy,
-		                                CP_ACP, // In-mem BSTR is in system CP
-		                                (WCHAR **) &pchConvert,
-		                                &cbcopy,
+                                    (CHAR const *) pv,
+                                    cbcopy,
+                                    CP_ACP, // In-mem BSTR is in system CP
+                                    (WCHAR **) &pchConvert,
+                                    &cbcopy,
                                                 pstatus);
                                 if( !NT_SUCCESS(*pstatus) ) goto Exit;
 
@@ -977,36 +977,36 @@ stringvector:
                                 CBBYTESWAP( sizeof(WCHAR) );
                             }
 
-			}   // if (pvar->vt == (VT_VECTOR | VT_BSTR))
+      }   // if (pvar->vt == (VT_VECTOR | VT_BSTR))
 
                         // Otherwise it's an LPSTR
-			else
-			{
-			    PROPASSERT(IsAnsiString((char const *) pv, MAXULONG));
-			    PROPASSERT(pvar->vt == (VT_VECTOR | VT_LPSTR));
-			    cbcopy = strlen((char *) pv) + 1; // + trailing null
+      else
+      {
+          PROPASSERT(IsAnsiString((char const *) pv, MAXULONG));
+          PROPASSERT(pvar->vt == (VT_VECTOR | VT_LPSTR));
+          cbcopy = strlen((char *) pv) + 1; // + trailing null
 
-			    if (CodePage == CP_WINUNICODE)
-			    {
-				PROPASSERT(IsAnsiString(
-						(CHAR const *) pv,
-						cbcopy));
-				RtlpConvertToUnicode(
-						(CHAR const *) pv,
-						cbcopy,
-						CP_ACP,
-						(WCHAR **) &pchConvert,
-						&cbcopy,
+          if (CodePage == CP_WINUNICODE)
+          {
+        PROPASSERT(IsAnsiString(
+            (CHAR const *) pv,
+            cbcopy));
+        RtlpConvertToUnicode(
+            (CHAR const *) pv,
+            cbcopy,
+            CP_ACP,
+            (WCHAR **) &pchConvert,
+            &cbcopy,
                                                 pstatus);
                                 if( !NT_SUCCESS(*pstatus) ) goto Exit;
 
                                 // If byte-swapping, we'll do so with the WCHARs
                                 CBBYTESWAP( sizeof(WCHAR) );
 
-				pv = pchConvert;
-			    }   
-			}   // if (pvar->vt == (VT_VECTOR | VT_BSTR)) ... else
-		    }   // if (*ppv != NULL)
+        pv = pchConvert;
+          }   
+      }   // if (pvar->vt == (VT_VECTOR | VT_BSTR)) ... else
+        }   // if (*ppv != NULL)
 
                     // In the end, pv should be in the codepage of
                     // the property set.
@@ -1019,65 +1019,65 @@ stringvector:
                                 CodePage != CP_WINUNICODE && IsAnsiString((CHAR*)pv, cbcopy));
 #endif
 
-		    break;
+        break;
 
-	    }   // switch (cbch)
-	    
+      }   // switch (cbch)
+      
             // Add the size of this vector element to the property total
-	    cb += DwordAlign(cbcopy);
+      cb += DwordAlign(cbcopy);
 
             // Will there be enough room for this vector element?
 
-	    if (*pcb < cb)
-	    {
+      if (*pcb < cb)
+      {
                 // No - we'll continue (thus calculating the total size
                 // necessary), but we won't write to the caller's buffer.
-		pprop = NULL;
-	    }
+    pprop = NULL;
+      }
 
             // Is this a vector of Variants?
 
-	    if (cbch == MAXULONG)
-	    {
+      if (cbch == MAXULONG)
+      {
                 // Yes.  Convert this variant.
-		if (pprop != NULL)
-		{
-		    RtlConvertVariantToProperty(
-				(PROPVARIANT *) ppv,
-				CodePage,
-				(SERIALIZEDPROPERTYVALUE *) pbdst,
-				&cbcopy,
-				PID_ILLEGAL,
-				TRUE,
+    if (pprop != NULL)
+    {
+        RtlConvertVariantToProperty(
+        (PROPVARIANT *) ppv,
+        CodePage,
+        (SERIALIZEDPROPERTYVALUE *) pbdst,
+        &cbcopy,
+        PID_ILLEGAL,
+        TRUE,
                                 pstatus);
                     if( !NT_SUCCESS(*pstatus) ) goto Exit;
-		    pbdst += cbcopy;
-		}
-		ppv = (VOID **) Add2Ptr(ppv, sizeof(PROPVARIANT));
-	    }   // if (cbch == MAXULONG)
+        pbdst += cbcopy;
+    }
+    ppv = (VOID **) Add2Ptr(ppv, sizeof(PROPVARIANT));
+      }   // if (cbch == MAXULONG)
 
-	    else
-	    {
+      else
+      {
                 // This is a vector of something other than Variants.
 
-		PROPASSERT(
-		    cbch == sizeof(BYTE) ||
-		    cbch == sizeof(WCHAR) ||
-		    cbch == sizeof(CLIPDATA));
+    PROPASSERT(
+        cbch == sizeof(BYTE) ||
+        cbch == sizeof(WCHAR) ||
+        cbch == sizeof(CLIPDATA));
 
-		PROPASSERT(cbchdiv == sizeof(BYTE) || cbchdiv == sizeof(WCHAR));
+    PROPASSERT(cbchdiv == sizeof(BYTE) || cbchdiv == sizeof(WCHAR));
 
                 // Are we writing the serialized property?
-		if (pprop != NULL)
-		{
+    if (pprop != NULL)
+    {
                     ULONG cbVectElement;
 
                     // Calculate the length of the vector element.
                     cbVectElement = (ULONG) cbcopy/cbchdiv;
 
                     // Is this a ClipData?
-		    if (cbch == sizeof(CLIPDATA))
-		    {
+        if (cbch == sizeof(CLIPDATA))
+        {
                         // Adjust the length to include sizeof(ulClipFmt)
                         cbVectElement += sizeof(ULONG);
 
@@ -1085,50 +1085,50 @@ stringvector:
                         *(ULONG *) pbdst = PropByteSwap( cbVectElement );
 
                         // Advance pbdst & write the clipboard format.
-			pbdst += sizeof(ULONG);
-			*(ULONG *) pbdst = PropByteSwap( ((CLIPDATA *) ppv)->ulClipFmt );
-		    }
+      pbdst += sizeof(ULONG);
+      *(ULONG *) pbdst = PropByteSwap( ((CLIPDATA *) ppv)->ulClipFmt );
+        }
                     else    // This isn't a ClipFormat vector element.
                     {
                         // Write the vector element length.
-		        *(ULONG *) pbdst = PropByteSwap( cbVectElement );
+            *(ULONG *) pbdst = PropByteSwap( cbVectElement );
                     }
 
                     // Advance pbdst & write the property data.
-		    pbdst += sizeof(ULONG);
-		    RtlCopyMemory(
-				pbdst,
-				cbch == sizeof(CLIPDATA)?
-				  ((CLIPDATA *) ppv)->pClipData :
-				  pv,
-				cbcopy);
+        pbdst += sizeof(ULONG);
+        RtlCopyMemory(
+        pbdst,
+        cbch == sizeof(CLIPDATA)?
+          ((CLIPDATA *) ppv)->pClipData :
+          pv,
+        cbcopy);
 
                     // Zero out the pad bytes.
-		    RtlZeroMemory(pbdst + cbcopy, DwordRemain(cbcopy));
+        RtlZeroMemory(pbdst + cbcopy, DwordRemain(cbcopy));
 
                     // If byte-swapping is necessary, do so now.
                     PBSBuffer( pbdst, DwordAlign(cbcopy), cbByteSwap );
 
                     // Advance pbdst to the next property.
-		    pbdst += DwordAlign(cbcopy);
+        pbdst += DwordAlign(cbcopy);
 
-		}   // if (pprop != NULL)
+    }   // if (pprop != NULL)
 
                 // Advance ppv to point into the PropVariant at the
                 // next element in the array.
 
-		if (cbch == sizeof(CLIPDATA))
-		{
-		    ppv = (VOID **) Add2Ptr(ppv, sizeof(CLIPDATA));
-		}
-		else
-		{
-		    ppv++;
-		    delete [] pchConvert;
-		    pchConvert = NULL;
-		}
-	    }   // if (cbch == MAXULONG) ... else
-	}   // for (cElems = *pcount; cElems > 0; cElems--)
+    if (cbch == sizeof(CLIPDATA))
+    {
+        ppv = (VOID **) Add2Ptr(ppv, sizeof(CLIPDATA));
+    }
+    else
+    {
+        ppv++;
+        delete [] pchConvert;
+        pchConvert = NULL;
+    }
+      }   // if (cbch == MAXULONG) ... else
+  }   // for (cElems = *pcount; cElems > 0; cElems--)
     }   // if (cbch != 0)    // STRING/VARIANT/CF VECTOR property
 
     else
@@ -1136,116 +1136,116 @@ stringvector:
         // This isn't a vector, or if it is, the elements
         // aren't Strings, Variants, or CFs.
 
-	ULONG cbCopy = cb;
+  ULONG cbCopy = cb;
 
         // Adjust cb (the total serialized buffer size) for
         // pre-data.
 
-	if (pvar->vt != VT_EMPTY)
-	{   // Allow for the VT
-	    cb += sizeof(ULONG);
-	}
-	if (pcount != NULL)
-	{   // Allow for the count field
-	    cb += sizeof(ULONG);
-	}
-	if (pclipfmt != NULL)
-	{   // Allow for the ulClipFmt field.
-	    cb += sizeof(ULONG);
-	}
+  if (pvar->vt != VT_EMPTY)
+  {   // Allow for the VT
+      cb += sizeof(ULONG);
+  }
+  if (pcount != NULL)
+  {   // Allow for the count field
+      cb += sizeof(ULONG);
+  }
+  if (pclipfmt != NULL)
+  {   // Allow for the ulClipFmt field.
+      cb += sizeof(ULONG);
+  }
 
         // Is there room in the caller's buffer?
-	if (*pcb < cb)
-	{   // No - calculate cb but don't write anything.
-	    pprop = NULL;
-	}
+  if (*pcb < cb)
+  {   // No - calculate cb but don't write anything.
+      pprop = NULL;
+  }
 
         // 'pv' should point to the source data.  If it does, then
         // we'll copy it into the property set.  If it doesn't but
         // it should, then we'll report an error.
 
-	if (pv != NULL || fCheckNullSource)
-	{
-	    ULONG cbZero = DwordRemain(cbCopy);
+  if (pv != NULL || fCheckNullSource)
+  {
+      ULONG cbZero = DwordRemain(cbCopy);
 
             // Do we have a destination (propset) buffer?
 
-	    if (pprop != NULL)
-	    {
+      if (pprop != NULL)
+      {
                 // Does this property have a count field?
-		if (pcount != NULL)
-		{
+    if (pcount != NULL)
+    {
                     // Write the count & advance pbdst
-		    *(ULONG *) pbdst = PropByteSwap( *pcount );
-		    pbdst += sizeof(ULONG);
-		}
+        *(ULONG *) pbdst = PropByteSwap( *pcount );
+        pbdst += sizeof(ULONG);
+    }
 
                 // Is this a VT_CF?
-		if (pclipfmt != NULL)
-		{
+    if (pclipfmt != NULL)
+    {
                     // Write the ClipFormat & advance pbdst
-		    *(ULONG *) pbdst = PropByteSwap( (DWORD) *pclipfmt );
-		    pbdst += sizeof(ULONG);
-		}
-	    }
+        *(ULONG *) pbdst = PropByteSwap( (DWORD) *pclipfmt );
+        pbdst += sizeof(ULONG);
+    }
+      }
 
             // Are we missing the source data?
-	    if (pv == NULL)
-	    {
-		// The Source pointer is NULL.  If cbCopy != 0, the passed
-		// VARIANT is not properly formed.
+      if (pv == NULL)
+      {
+    // The Source pointer is NULL.  If cbCopy != 0, the passed
+    // VARIANT is not properly formed.
 
-		if (cbCopy != 0)
-		{
-		    StatusInvalidParameter(pstatus, "RtlConvertVariantToProperty: bad NULL");
+    if (cbCopy != 0)
+    {
+        StatusInvalidParameter(pstatus, "RtlConvertVariantToProperty: bad NULL");
                     goto Exit;
-		}
-	    }
-	    else if (pprop != NULL)
-	    {
+    }
+      }
+      else if (pprop != NULL)
+      {
                 // We have a non-NULL source & destination.
                 // First, copy the bytes from the former to the latter.
 
-		RtlCopyMemory(pbdst, pv, cbCopy);
+    RtlCopyMemory(pbdst, pv, cbCopy);
 
                 // Then, if necessary, swap the bytes in the property
                 // set (leaving the PropVariant bytes untouched).
 
                 PBSBuffer( (VOID*) pbdst, cbCopy, cbByteSwap );
-	    }
+      }
 
             // Did we write the serialization?
-	    if (pprop != NULL)
-	    {
+      if (pprop != NULL)
+      {
                 // Zero the padding bytes.
-		RtlZeroMemory(pbdst + cbCopy, cbZero);
+    RtlZeroMemory(pbdst + cbCopy, cbZero);
 
-		// Canonicalize VARIANT_BOOLs.  We do this here because
-		// we don't want to muck with the caller's buffer directly.
+    // Canonicalize VARIANT_BOOLs.  We do this here because
+    // we don't want to muck with the caller's buffer directly.
 
-		if ((pvar->vt & ~VT_VECTOR) == VT_BOOL)
-		{
-		    VARIANT_BOOL *pvb = (VARIANT_BOOL *) pbdst;
-		    VARIANT_BOOL *pvbEnd = &pvb[cbCopy/sizeof(*pvb)];
+    if ((pvar->vt & ~VT_VECTOR) == VT_BOOL)
+    {
+        VARIANT_BOOL *pvb = (VARIANT_BOOL *) pbdst;
+        VARIANT_BOOL *pvbEnd = &pvb[cbCopy/sizeof(*pvb)];
 
-		    while (pvb < pvbEnd)
-		    {
-			if (*pvb
+        while (pvb < pvbEnd)
+        {
+      if (*pvb
                             &&
                             PropByteSwap(*pvb) != VARIANT_TRUE)
-			{
-			    DebugTrace(0, DEBTRACE_ERROR, (
-				"Patching VARIANT_TRUE value: %hx --> %hx\n",
-				*pvb,
-				VARIANT_TRUE));
+      {
+          DebugTrace(0, DEBTRACE_ERROR, (
+        "Patching VARIANT_TRUE value: %hx --> %hx\n",
+        *pvb,
+        VARIANT_TRUE));
 
                             *pvb = PropByteSwap( (VARIANT_BOOL) VARIANT_TRUE );
-			}
-			pvb++;
-		    }
-		}
-	    }   // if (pprop != NULL)
-	}
+      }
+      pvb++;
+        }
+    }
+      }   // if (pprop != NULL)
+  }
     }   // if (cbch != 0) ... else    // non - STRING/VARIANT/CF VECTOR property
 
     // Set the VT in the serialized buffer now that all size
@@ -1257,7 +1257,7 @@ stringvector:
         // (it's a WORD in the PropVariant, but a DWORD when
         // serialized).
 
-	pprop->dwType = PropByteSwap( (DWORD) pvar->vt );
+  pprop->dwType = PropByteSwap( (DWORD) pvar->vt );
     }
 
     // Update the caller's copy of the total size.
@@ -1277,11 +1277,11 @@ Exit:
 // Synopsis:    Convert a SERIALIZEDPROPERTYVALUE to a PROPVARIANT
 //
 // Arguments:   [pprop]         -- pointer to SERIALIZEDPROPERTYVALUE
-//              [PointerDelta]	-- adjustment to pointers to get user addresses
+//              [PointerDelta]  -- adjustment to pointers to get user addresses
 //              [fConvertNullStrings] -- map NULL strings to empty strings
-//              [CodePage]	-- property set codepage
+//              [CodePage]  -- property set codepage
 //              [pvar]          -- pointer to PROPVARIANT
-//              [pma]		-- caller's memory allocation routine
+//              [pma]   -- caller's memory allocation routine
 //              [pstatus]       -- pointer to NTSTATUS code
 //
 //---------------------------------------------------------------------------
@@ -1327,96 +1327,96 @@ RtlConvertPropertyToVariant( IN SERIALIZEDPROPERTYVALUE const *pprop,
 
     switch (pvar->vt)
     {
-	case VT_EMPTY:
-	case VT_NULL:
-	    break;
+  case VT_EMPTY:
+  case VT_NULL:
+      break;
 
 #ifdef PROPVAR_VT_I1
         case VT_I1:
             AssertByteField(cVal);          // VT_I1
 #endif
-	case VT_UI1:
-	    AssertByteField(bVal);          // VT_UI1
-	    cb = sizeof(pvar->bVal);
-	    pv = &pvar->bVal;
-	    break;
+  case VT_UI1:
+      AssertByteField(bVal);          // VT_UI1
+      cb = sizeof(pvar->bVal);
+      pv = &pvar->bVal;
+      break;
 
-	case VT_I2:
-	case VT_UI2:
-	case VT_BOOL:
-	    AssertShortField(iVal);         // VT_I2
-	    AssertShortField(uiVal);        // VT_UI2
-	    AssertShortField(boolVal);      // VT_BOOL
-	    cb = sizeof(pvar->iVal);
-	    pv = &pvar->iVal;
+  case VT_I2:
+  case VT_UI2:
+  case VT_BOOL:
+      AssertShortField(iVal);         // VT_I2
+      AssertShortField(uiVal);        // VT_UI2
+      AssertShortField(boolVal);      // VT_BOOL
+      cb = sizeof(pvar->iVal);
+      pv = &pvar->iVal;
 
             // If swapping, swap as a WORD
             CBBYTESWAP(cb);
-	    break;
+      break;
 
-	case VT_I4:
-	case VT_UI4:
-	case VT_R4:
-	case VT_ERROR:
-	    AssertLongField(lVal);          // VT_I4
-	    AssertLongField(ulVal);         // VT_UI4
-	    AssertLongField(fltVal);        // VT_R4
-	    AssertLongField(scode);         // VT_ERROR
-	    cb = sizeof(pvar->lVal);
-	    pv = &pvar->lVal;
+  case VT_I4:
+  case VT_UI4:
+  case VT_R4:
+  case VT_ERROR:
+      AssertLongField(lVal);          // VT_I4
+      AssertLongField(ulVal);         // VT_UI4
+      AssertLongField(fltVal);        // VT_R4
+      AssertLongField(scode);         // VT_ERROR
+      cb = sizeof(pvar->lVal);
+      pv = &pvar->lVal;
 
             // If swapping, swap as a DWORD
             CBBYTESWAP(cb);
-	    break;
+      break;
 
-	case VT_I8:
-	case VT_UI8:
-	case VT_FILETIME:
-	    AssertLongLongField(hVal);		// VT_I8
-	    AssertLongLongField(uhVal);		// VT_UI8
-	    AssertLongLongField(filetime);	// VT_FILETIME
-	    cb = sizeof(pvar->hVal);
-	    pv = &pvar->hVal;
+  case VT_I8:
+  case VT_UI8:
+  case VT_FILETIME:
+      AssertLongLongField(hVal);    // VT_I8
+      AssertLongLongField(uhVal);   // VT_UI8
+      AssertLongLongField(filetime);  // VT_FILETIME
+      cb = sizeof(pvar->hVal);
+      pv = &pvar->hVal;
 
             // If swapping, swap as a pair of DWORDs
             CBBYTESWAP(sizeof(DWORD));
-	    break;
+      break;
 
-	case VT_R8:
-	case VT_CY:
-	case VT_DATE:
-	    AssertLongLongField(dblVal);	// VT_R8
-	    AssertLongLongField(cyVal);		// VT_CY
-	    AssertLongLongField(date);		// VT_DATE
-	    cb = sizeof(pvar->dblVal);
-	    pv = &pvar->dblVal;
+  case VT_R8:
+  case VT_CY:
+  case VT_DATE:
+      AssertLongLongField(dblVal);  // VT_R8
+      AssertLongLongField(cyVal);   // VT_CY
+      AssertLongLongField(date);    // VT_DATE
+      cb = sizeof(pvar->dblVal);
+      pv = &pvar->dblVal;
 
             // If swapping, swap as a LONGLONG
             CBBYTESWAP(cb);
-	    break;
+      break;
 
-	case VT_CLSID:
-	    AssertStringField(puuid);		// VT_CLSID
-	    cb = sizeof(GUID);
-	    ppv = (VOID **) &pvar->puuid;
-	    cbskip = 0;
+  case VT_CLSID:
+      AssertStringField(puuid);   // VT_CLSID
+      cb = sizeof(GUID);
+      ppv = (VOID **) &pvar->puuid;
+      cbskip = 0;
 
             // If swapping, special handling is required
             CBBYTESWAP( CBBYTESWAP_UID );
-	    break;
+      break;
 
-	case VT_CF:
+  case VT_CF:
 
             // Allocate a CLIPDATA buffer
-	    pvar->pclipdata = (CLIPDATA *) pma->Allocate(sizeof(CLIPDATA));
-	    if (pvar->pclipdata == NULL)
-	    {
-		StatusKBufferOverflow(pstatus, "RtlConvertPropertyToVariant: no memory for CF");
+      pvar->pclipdata = (CLIPDATA *) pma->Allocate(sizeof(CLIPDATA));
+      if (pvar->pclipdata == NULL)
+      {
+    StatusKBufferOverflow(pstatus, "RtlConvertPropertyToVariant: no memory for CF");
                 goto Exit;
-	    }
+      }
 
             // Set the size (includes sizeof(ulClipFmt))
-	    pvar->pclipdata->cbSize = PropByteSwap( ((CLIPDATA *) pprop->rgb)->cbSize );
+      pvar->pclipdata->cbSize = PropByteSwap( ((CLIPDATA *) pprop->rgb)->cbSize );
             if( pvar->pclipdata->cbSize < sizeof(pvar->pclipdata->ulClipFmt) )
             {
                 StatusError(pstatus, "RtlConvertPropertyToVariant:  Invalid VT_CF cbSize",
@@ -1427,60 +1427,60 @@ RtlConvertPropertyToVariant( IN SERIALIZEDPROPERTYVALUE const *pprop,
             // Set the # bytes-to-copy.  We can't use the CBPCLIPDATA macro
             // here because it assumes that the CLIPDATA parameter is correctly
             // byte-swapped.
-	    cb = PropByteSwap( *(DWORD*) pprop->rgb ) - sizeof(pvar->pclipdata->ulClipFmt);
+      cb = PropByteSwap( *(DWORD*) pprop->rgb ) - sizeof(pvar->pclipdata->ulClipFmt);
 
             // Set the ClipFormat itself.
-	    pvar->pclipdata->ulClipFmt = PropByteSwap( ((CLIPDATA *) pprop->rgb)->ulClipFmt );
+      pvar->pclipdata->ulClipFmt = PropByteSwap( ((CLIPDATA *) pprop->rgb)->ulClipFmt );
 
             // Prepare for the alloc & copy.  Put the buffer pointer
             // in pClipData, & skip the ulClipFmt in the copy.
-	    ppv = (VOID **) &pvar->pclipdata->pClipData;
-	    cbskip += sizeof(ULONG);
+      ppv = (VOID **) &pvar->pclipdata->pClipData;
+      cbskip += sizeof(ULONG);
 
             // It's legal for cb to be 0.
             fNullLegal = TRUE;
 
             // Adjust to the user-mode pointer (Kernel only)
-	    ADJUSTPOINTER(pvar->pclipdata, PointerDelta, CLIPDATA *);
+      ADJUSTPOINTER(pvar->pclipdata, PointerDelta, CLIPDATA *);
 
-	    break;
+      break;
 
-	case VT_BLOB:
-	case VT_BLOB_OBJECT:
-	    cb = pvar->blob.cbSize = PropByteSwap( *(ULONG *) pprop->rgb );
-	    ppv = (VOID **) &pvar->blob.pBlobData;
-	    fNullLegal = TRUE;
-	    break;
+  case VT_BLOB:
+  case VT_BLOB_OBJECT:
+      cb = pvar->blob.cbSize = PropByteSwap( *(ULONG *) pprop->rgb );
+      ppv = (VOID **) &pvar->blob.pBlobData;
+      fNullLegal = TRUE;
+      break;
 
-	case VT_BSTR:
-	case VT_LPSTR:
-	    AssertStringField(bstrVal);		// VT_BSTR
-	    AssertStringField(pszVal);		// VT_LPSTR
+  case VT_BSTR:
+  case VT_LPSTR:
+      AssertStringField(bstrVal);   // VT_BSTR
+      AssertStringField(pszVal);    // VT_LPSTR
 
             // [length field] bytes should be allocated
-	    cb = PropByteSwap( *(ULONG *) pprop->rgb );
+      cb = PropByteSwap( *(ULONG *) pprop->rgb );
 
             // When a buffer is allocated, it's pointer will go
             // in *ppv.
-	    ppv = (VOID **) &pvar->pszVal;
+      ppv = (VOID **) &pvar->pszVal;
 
             // Is this a non-empty string?
-	    if (cb != 0)
-	    {
+      if (cb != 0)
+      {
                 // Is the serialized value one that should be
                 // an Ansi string in the PropVariant?
 
-		if (pvar->vt == VT_LPSTR        // It's an LPSTR (always Ansi), or
+    if (pvar->vt == VT_LPSTR        // It's an LPSTR (always Ansi), or
                     ||
                     pvar->vt == VT_BSTR         // It's a BSTR and
                     &&
                     !OLECHAR_IS_UNICODE )       //    BSTRs are Ansi.
-		{
+    {
                     // If the propset is Unicode, we must do a
                     // conversion to Ansi.
 
-		    if (CodePage == CP_WINUNICODE)
-		    {
+        if (CodePage == CP_WINUNICODE)
+        {
                         WCHAR *pwsz = (WCHAR *) Add2ConstPtr(pprop->rgb, sizeof(ULONG));
 
                         // If necessary, swap the WCHARs.  'pwsz' will point to
@@ -1490,49 +1490,49 @@ RtlConvertPropertyToVariant( IN SERIALIZEDPROPERTYVALUE const *pprop,
 
                         PBSInPlaceAlloc( &pwsz, (WCHAR**) &pchByteSwap, pstatus );
                         if( !NT_SUCCESS( *pstatus )) goto Exit;
-			PROPASSERT(IsUnicodeString( pwsz, cb));
+      PROPASSERT(IsUnicodeString( pwsz, cb));
 
                         // Convert the properly-byte-ordered string in 'pwsz'
                         // into MBCS, putting the result in pchConvert.
 
-			RtlpConvertToMultiByte(
-				    pwsz,
-				    cb,
-				    CP_ACP,  // Use the system default codepage
-				    &pchConvert,
-				    &cb,
+      RtlpConvertToMultiByte(
+            pwsz,
+            cb,
+            CP_ACP,  // Use the system default codepage
+            &pchConvert,
+            &cb,
                                     pstatus);
                         if( !NT_SUCCESS(*pstatus) ) goto Exit;
-		    }
-		}   // if (pvar->vt == VT_LPSTR) ...
+        }
+    }   // if (pvar->vt == VT_LPSTR) ...
 
                 // Otherwise, even though this string may be
                 // Ansi in the Property Set, it must be Unicode
                 // in the PropVariant.
 
-		else
-		{
+    else
+    {
                     // If necessary, convert to Unicode
 
-		    if (CodePage != CP_WINUNICODE)
-		    {
-			PROPASSERT(
-			    IsAnsiString(
-				    (CHAR const *)
-					Add2ConstPtr(pprop->rgb, sizeof(ULONG)),
-				    cb));
+        if (CodePage != CP_WINUNICODE)
+        {
+      PROPASSERT(
+          IsAnsiString(
+            (CHAR const *)
+          Add2ConstPtr(pprop->rgb, sizeof(ULONG)),
+            cb));
 
-			RtlpConvertToUnicode(
-				    (CHAR const *)
-					Add2ConstPtr(pprop->rgb, sizeof(ULONG)),
-				    cb,
-				    CodePage,
-				    (WCHAR **) &pchConvert,
-				    &cb,
+      RtlpConvertToUnicode(
+            (CHAR const *)
+          Add2ConstPtr(pprop->rgb, sizeof(ULONG)),
+            cb,
+            CodePage,
+            (WCHAR **) &pchConvert,
+            &cb,
                                     pstatus);
                         if( !NT_SUCCESS(*pstatus) ) goto Exit;
 
-		    }   // if (CodePage != CP_WINUNICODE)
+        }   // if (CodePage != CP_WINUNICODE)
                     else
                     {
                         // The value is Unicode both the property set
@@ -1542,13 +1542,13 @@ RtlConvertPropertyToVariant( IN SERIALIZEDPROPERTYVALUE const *pprop,
                         CBBYTESWAP( sizeof(WCHAR) );
                     }
 
-		}   // if (pvar->vt == VT_LPSTR) ... else
+    }   // if (pvar->vt == VT_LPSTR) ... else
 
                 // If this is a BSTR property, verify that it is terminated
                 // appropriately.
 
-		if (VT_BSTR == pvar->vt)
-		{
+    if (VT_BSTR == pvar->vt)
+    {
                     BSTR bstr = ( NULL == pchConvert )
                                 ? (BSTR) Add2ConstPtr(pprop->rgb, sizeof(ULONG))
                                 : (BSTR) pchConvert;
@@ -1573,158 +1573,158 @@ RtlConvertPropertyToVariant( IN SERIALIZEDPROPERTYVALUE const *pprop,
                                      STATUS_INTERNAL_DB_CORRUPTION);
                         goto Exit;
                     }
-		}   // if (VT_BSTR == pvar->vt)
-	    }   // if (cb != 0)
+    }   // if (VT_BSTR == pvar->vt)
+      }   // if (cb != 0)
 
-	    fNullLegal = TRUE;
-	    break;
+      fNullLegal = TRUE;
+      break;
 
-	case VT_LPWSTR:
-	    fNullLegal = TRUE;
-	    AssertStringField(pwszVal);		// VT_LPWSTR
-	    cb = PropByteSwap( *(ULONG *) pprop->rgb ) * sizeof(WCHAR);
-	    ppv = (VOID **) &pvar->pwszVal;
+  case VT_LPWSTR:
+      fNullLegal = TRUE;
+      AssertStringField(pwszVal);   // VT_LPWSTR
+      cb = PropByteSwap( *(ULONG *) pprop->rgb ) * sizeof(WCHAR);
+      ppv = (VOID **) &pvar->pwszVal;
 
             // If byte-swapping will be necessary, do so for the WCHARs
             CBBYTESWAP( sizeof(WCHAR) );
 
-	    break;
+      break;
 
 #ifdef PROPVAR_VT_I1
-	case VT_VECTOR | VT_I1:
+  case VT_VECTOR | VT_I1:
             AssertByteVector(cac);              // VT_I1
 #endif
-	case VT_VECTOR | VT_UI1:
-	    AssertByteVector(caub);		// VT_UI1
-	    pvar->caub.cElems = PropByteSwap( *(ULONG *) pprop->rgb );
-	    cb = pvar->caub.cElems * sizeof(pvar->caub.pElems[0]);
-	    ppv = (VOID **) &pvar->caub.pElems;
-	    break;
+  case VT_VECTOR | VT_UI1:
+      AssertByteVector(caub);   // VT_UI1
+      pvar->caub.cElems = PropByteSwap( *(ULONG *) pprop->rgb );
+      cb = pvar->caub.cElems * sizeof(pvar->caub.pElems[0]);
+      ppv = (VOID **) &pvar->caub.pElems;
+      break;
 
-	case VT_VECTOR | VT_I2:
-	case VT_VECTOR | VT_UI2:
-	case VT_VECTOR | VT_BOOL:
-	    AssertShortVector(cai);		// VT_I2
-	    AssertShortVector(caui);		// VT_UI2
-	    AssertShortVector(cabool);		// VT_BOOL
-	    pvar->cai.cElems = PropByteSwap( *(ULONG *) pprop->rgb );
-	    cb = pvar->cai.cElems * sizeof(pvar->cai.pElems[0]);
-	    ppv = (VOID **) &pvar->cai.pElems;
+  case VT_VECTOR | VT_I2:
+  case VT_VECTOR | VT_UI2:
+  case VT_VECTOR | VT_BOOL:
+      AssertShortVector(cai);   // VT_I2
+      AssertShortVector(caui);    // VT_UI2
+      AssertShortVector(cabool);    // VT_BOOL
+      pvar->cai.cElems = PropByteSwap( *(ULONG *) pprop->rgb );
+      cb = pvar->cai.cElems * sizeof(pvar->cai.pElems[0]);
+      ppv = (VOID **) &pvar->cai.pElems;
 
             // If swapping, swap as a WORD
             CBBYTESWAP(sizeof(pvar->cai.pElems[0]));
-	    break;
+      break;
 
-	case VT_VECTOR | VT_I4:
-	case VT_VECTOR | VT_UI4:
-	case VT_VECTOR | VT_R4:
-	case VT_VECTOR | VT_ERROR:
-	    AssertLongVector(cal);		// VT_I4
-	    AssertLongVector(caul);		// VT_UI4
-	    AssertLongVector(caflt);		// VT_R4
-	    AssertLongVector(cascode);		// VT_ERROR
-	    pvar->cal.cElems = PropByteSwap( *(ULONG *) pprop->rgb );
-	    cb = pvar->cal.cElems * sizeof(pvar->cal.pElems[0]);
-	    ppv = (VOID **) &pvar->cal.pElems;
+  case VT_VECTOR | VT_I4:
+  case VT_VECTOR | VT_UI4:
+  case VT_VECTOR | VT_R4:
+  case VT_VECTOR | VT_ERROR:
+      AssertLongVector(cal);    // VT_I4
+      AssertLongVector(caul);   // VT_UI4
+      AssertLongVector(caflt);    // VT_R4
+      AssertLongVector(cascode);    // VT_ERROR
+      pvar->cal.cElems = PropByteSwap( *(ULONG *) pprop->rgb );
+      cb = pvar->cal.cElems * sizeof(pvar->cal.pElems[0]);
+      ppv = (VOID **) &pvar->cal.pElems;
 
             // If byte swapping, swap as DWORDs
             CBBYTESWAP(sizeof(pvar->cal.pElems[0]));
-	    break;
+      break;
 
-	case VT_VECTOR | VT_I8:
-	case VT_VECTOR | VT_UI8:
-	case VT_VECTOR | VT_FILETIME:
-	    AssertLongLongVector(cah);		// VT_I8
-	    AssertLongLongVector(cauh);		// VT_UI8
-	    AssertLongLongVector(cafiletime);	// VT_FILETIME
-	    pvar->cah.cElems = PropByteSwap( *(ULONG *) pprop->rgb );
-	    cb = pvar->cah.cElems * sizeof(pvar->cah.pElems[0]);
-	    ppv = (VOID **) &pvar->cah.pElems;
+  case VT_VECTOR | VT_I8:
+  case VT_VECTOR | VT_UI8:
+  case VT_VECTOR | VT_FILETIME:
+      AssertLongLongVector(cah);    // VT_I8
+      AssertLongLongVector(cauh);   // VT_UI8
+      AssertLongLongVector(cafiletime); // VT_FILETIME
+      pvar->cah.cElems = PropByteSwap( *(ULONG *) pprop->rgb );
+      cb = pvar->cah.cElems * sizeof(pvar->cah.pElems[0]);
+      ppv = (VOID **) &pvar->cah.pElems;
 
             // If byte swapping, swap as DWORDs
             CBBYTESWAP(sizeof(DWORD));
-	    break;
+      break;
 
-	case VT_VECTOR | VT_R8:
-	case VT_VECTOR | VT_CY:
-	case VT_VECTOR | VT_DATE:
-	    AssertLongLongVector(cadbl);	// VT_R8
-	    AssertLongLongVector(cacy);		// VT_CY
-	    AssertLongLongVector(cadate);	// VT_DATE
-	    pvar->cadbl.cElems = PropByteSwap( *(ULONG *) pprop->rgb );
-	    cb = pvar->cadbl.cElems * sizeof(pvar->cadbl.pElems[0]);
-	    ppv = (VOID **) &pvar->cadbl.pElems;
+  case VT_VECTOR | VT_R8:
+  case VT_VECTOR | VT_CY:
+  case VT_VECTOR | VT_DATE:
+      AssertLongLongVector(cadbl);  // VT_R8
+      AssertLongLongVector(cacy);   // VT_CY
+      AssertLongLongVector(cadate); // VT_DATE
+      pvar->cadbl.cElems = PropByteSwap( *(ULONG *) pprop->rgb );
+      cb = pvar->cadbl.cElems * sizeof(pvar->cadbl.pElems[0]);
+      ppv = (VOID **) &pvar->cadbl.pElems;
 
             // If byte swapping, swap as LONGLONGs
             CBBYTESWAP(sizeof(pvar->cah.pElems[0]));
-	    break;
+      break;
 
 
-	case VT_VECTOR | VT_CLSID:
-	    AssertVarVector(cauuid, sizeof(GUID));
-	    pvar->cauuid.cElems = PropByteSwap( *(ULONG *) pprop->rgb );
-	    cb = pvar->cauuid.cElems * sizeof(pvar->cauuid.pElems[0]);
-	    ppv = (VOID **) &pvar->cauuid.pElems;
+  case VT_VECTOR | VT_CLSID:
+      AssertVarVector(cauuid, sizeof(GUID));
+      pvar->cauuid.cElems = PropByteSwap( *(ULONG *) pprop->rgb );
+      cb = pvar->cauuid.cElems * sizeof(pvar->cauuid.pElems[0]);
+      ppv = (VOID **) &pvar->cauuid.pElems;
 
             // If byte swapping, special handling is required.
             CBBYTESWAP( CBBYTESWAP_UID );
-	    break;
+      break;
 
-	case VT_VECTOR | VT_CF:
+  case VT_VECTOR | VT_CF:
 
             // Set the count of clipdatas
-	    pvar->caclipdata.cElems = PropByteSwap( *(ULONG *) pprop->rgb );
+      pvar->caclipdata.cElems = PropByteSwap( *(ULONG *) pprop->rgb );
 
             // How much should we allocate for caclipdata.pElems, & where
             // should that buffer pointer go?
-	    cb = pvar->caclipdata.cElems * sizeof(pvar->caclipdata.pElems[0]);
-	    ppv = (VOID **) &pvar->caclipdata.pElems;
+      cb = pvar->caclipdata.cElems * sizeof(pvar->caclipdata.pElems[0]);
+      ppv = (VOID **) &pvar->caclipdata.pElems;
 
             // We need to do work after pElems is allocated.
-	    fPostAllocInit = TRUE;
-	    break;
+      fPostAllocInit = TRUE;
+      break;
 
-	case VT_VECTOR | VT_BSTR:
-	case VT_VECTOR | VT_LPSTR:
-	    AssertStringVector(cabstr);     // VT_BSTR
-	    AssertStringVector(calpstr);    // VT_LPSTR
+  case VT_VECTOR | VT_BSTR:
+  case VT_VECTOR | VT_LPSTR:
+      AssertStringVector(cabstr);     // VT_BSTR
+      AssertStringVector(calpstr);    // VT_LPSTR
 
             // Put the element count in the PropVar
-	    pvar->calpstr.cElems = PropByteSwap( *(ULONG *) pprop->rgb );
+      pvar->calpstr.cElems = PropByteSwap( *(ULONG *) pprop->rgb );
 
             // An array of cElems pointers should be alloced
-	    cb = pvar->calpstr.cElems * sizeof(CHAR*);
+      cb = pvar->calpstr.cElems * sizeof(CHAR*);
 
             // Show where the array of pointers should go.
-	    ppv = (VOID **) &pvar->calpstr.pElems;
+      ppv = (VOID **) &pvar->calpstr.pElems;
 
             // Additional allocs will be necessary after the vector
             // is alloced.
-	    fPostAllocInit = TRUE;
+      fPostAllocInit = TRUE;
 
-	    break;
+      break;
 
-	case VT_VECTOR | VT_LPWSTR:
-	    AssertStringVector(calpwstr);	// VT_LPWSTR
-	    pvar->calpwstr.cElems = PropByteSwap( *(ULONG *) pprop->rgb );
-	    cb = pvar->calpwstr.cElems * sizeof(ULONG);
-	    ppv = (VOID **) &pvar->calpwstr.pElems;
-	    fPostAllocInit = TRUE;
-	    break;
+  case VT_VECTOR | VT_LPWSTR:
+      AssertStringVector(calpwstr); // VT_LPWSTR
+      pvar->calpwstr.cElems = PropByteSwap( *(ULONG *) pprop->rgb );
+      cb = pvar->calpwstr.cElems * sizeof(ULONG);
+      ppv = (VOID **) &pvar->calpwstr.pElems;
+      fPostAllocInit = TRUE;
+      break;
 
-	case VT_VECTOR | VT_VARIANT:
-	    AssertVariantVector(capropvar);	// VT_VARIANT
-	    pvar->capropvar.cElems = PropByteSwap( *(ULONG *) pprop->rgb );
-	    cb = pvar->capropvar.cElems * sizeof(PROPVARIANT);
-	    ppv = (VOID **) &pvar->capropvar.pElems;
-	    fPostAllocInit = TRUE;
-     	    break;
+  case VT_VECTOR | VT_VARIANT:
+      AssertVariantVector(capropvar); // VT_VARIANT
+      pvar->capropvar.cElems = PropByteSwap( *(ULONG *) pprop->rgb );
+      cb = pvar->capropvar.cElems * sizeof(PROPVARIANT);
+      ppv = (VOID **) &pvar->capropvar.pElems;
+      fPostAllocInit = TRUE;
+          break;
 
-	default:
-	    DebugTrace(0, DEBTRACE_ERROR, (
-		"RtlConvertPropertyToVariant: unsupported vt=%x\n",
-		pvar->vt));
-	    StatusInvalidParameter(pstatus, "RtlConvertPropertyToVariant: bad type");
+  default:
+      DebugTrace(0, DEBTRACE_ERROR, (
+    "RtlConvertPropertyToVariant: unsupported vt=%x\n",
+    pvar->vt));
+      StatusInvalidParameter(pstatus, "RtlConvertPropertyToVariant: bad type");
             goto Exit;
 
     }   // switch (pvar->vt)
@@ -1739,8 +1739,8 @@ RtlConvertPropertyToVariant( IN SERIALIZEDPROPERTYVALUE const *pprop,
     if (pv != NULL)
     {
         // Yes.  All we need to do is copy some bytes.
-	PROPASSERT(pchConvert == NULL);
-	RtlCopyMemory(pv, pprop->rgb, cb);
+  PROPASSERT(pchConvert == NULL);
+  RtlCopyMemory(pv, pprop->rgb, cb);
 
         // We also might need to byte-swap them (but only in the PropVar).
         PBSBuffer( pv, cb, cbByteSwap );
@@ -1751,21 +1751,21 @@ RtlConvertPropertyToVariant( IN SERIALIZEDPROPERTYVALUE const *pprop,
 
     else if (ppv != NULL)
     {
-	*ppv = NULL;
+  *ppv = NULL;
 
-	if (!fConvertToEmpty && cb == 0)    // Kernel only
-	{
-	    if (!fNullLegal)
-	    {
-		StatusInvalidParameter(pstatus, "RtlConvertPropertyToVariant: bad NULL");
+  if (!fConvertToEmpty && cb == 0)    // Kernel only
+  {
+      if (!fNullLegal)
+      {
+    StatusInvalidParameter(pstatus, "RtlConvertPropertyToVariant: bad NULL");
                 goto Exit;
-	    }
-	}
+      }
+  }
 
         else
-	{
+  {
 
-	    PROPASSERT(cb != 0 || fConvertToEmpty);
+      PROPASSERT(cb != 0 || fConvertToEmpty);
 
             // Allocate the necessary buffer (which we figured out in the
             // switch above).  For vector properties, 
@@ -1775,22 +1775,22 @@ RtlConvertPropertyToVariant( IN SERIALIZEDPROPERTYVALUE const *pprop,
 
             if( VT_BSTR != pvar->vt  )
             {
-		*ppv = pma->Allocate(max(1, cb));
-		if (*ppv == NULL)
-		{
-		    StatusKBufferOverflow(pstatus, "RtlConvertPropertyToVariant: no memory");
+    *ppv = pma->Allocate(max(1, cb));
+    if (*ppv == NULL)
+    {
+        StatusKBufferOverflow(pstatus, "RtlConvertPropertyToVariant: no memory");
                     goto Exit;
-		}
+    }
             }
 
             // Can we load the PropVariant with a simple copy?
-	    if (!fPostAllocInit)
-	    {
+      if (!fPostAllocInit)
+      {
                 // Yes - all we need is a copy (and an implicit
                 // alloc for BSTRs).
 
                 if (VT_BSTR == pvar->vt)
-		{
+    {
                     // We do the copy with the OleAutomation routine
                     // (which does an allocation too).
                     // If byte-swapping is necessary, the switch block
@@ -1802,55 +1802,55 @@ RtlConvertPropertyToVariant( IN SERIALIZEDPROPERTYVALUE const *pprop,
                                             ( pchConvert != NULL )
                                                 ? (OLECHAR *) pchConvert
                                                 : (OLECHAR *) (pprop->rgb + cbskip) );
-		    if (*ppv == NULL)
-		    {
-		        StatusKBufferOverflow(pstatus, "RtlConvertPropertyToVariant: no memory");
+        if (*ppv == NULL)
+        {
+            StatusKBufferOverflow(pstatus, "RtlConvertPropertyToVariant: no memory");
                         goto Exit;
-		    }
-		}
+        }
+    }
                 else
                 {
                     // Copy the property into the PropVariant.
-		    RtlCopyMemory(
-			    *ppv,
-			    pchConvert != NULL?
-				(BYTE const *) pchConvert : pprop->rgb + cbskip,
-			    cb);
+        RtlCopyMemory(
+          *ppv,
+          pchConvert != NULL?
+        (BYTE const *) pchConvert : pprop->rgb + cbskip,
+          cb);
 
                 }
 
                 // If necessary, byte-swap the property (only in the PropVar).
                 PBSBuffer( *ppv, cb, cbByteSwap );
 
-	    }   // if (!fPostAllocInit)
+      }   // if (!fPostAllocInit)
 
-	    else
-	    {
+      else
+      {
                 // We must do more than just a copy.
                 // (Thus this is a vector of strings, variants, or CFs).
 
-		ULONG cElems = pvar->calpstr.cElems;
+    ULONG cElems = pvar->calpstr.cElems;
 
                 // Initialize the source pointer to point just beyond
                 // the element count.
 
-		BYTE const *pbsrc = pprop->rgb + sizeof(ULONG);
+    BYTE const *pbsrc = pprop->rgb + sizeof(ULONG);
 
-		// Zero all pointers in the pElems array for easy caller cleanup
-		ppv = (VOID **) *ppv;
-		RtlZeroMemory(ppv, cb);
+    // Zero all pointers in the pElems array for easy caller cleanup
+    ppv = (VOID **) *ppv;
+    RtlZeroMemory(ppv, cb);
 
                 // Handle Variants, ClipFormats, & Strings separately.
 
-		if (pvar->vt == (VT_VECTOR | VT_VARIANT))
-		{
-		    PROPVARIANT *pvarT = (PROPVARIANT *) ppv;
+    if (pvar->vt == (VT_VECTOR | VT_VARIANT))
+    {
+        PROPVARIANT *pvarT = (PROPVARIANT *) ppv;
 
-		    while (cElems-- > 0)
-		    {
-			ULONG cbelement;
+        while (cElems-- > 0)
+        {
+      ULONG cbelement;
 
-			RtlConvertPropertyToVariant(
+      RtlConvertPropertyToVariant(
                             (SERIALIZEDPROPERTYVALUE const *) pbsrc,
                             CodePage,
                             pvarT,
@@ -1858,26 +1858,26 @@ RtlConvertPropertyToVariant( IN SERIALIZEDPROPERTYVALUE const *pprop,
                             pstatus);
                         if( !NT_SUCCESS(*pstatus) ) goto Exit;
                         
-			cbelement = PropertyLength(
-					(SERIALIZEDPROPERTYVALUE const *) pbsrc,
-					MAXULONG,
-					CPSS_VARIANTVECTOR,
+      cbelement = PropertyLength(
+          (SERIALIZEDPROPERTYVALUE const *) pbsrc,
+          MAXULONG,
+          CPSS_VARIANTVECTOR,
                                         pstatus);
                         if( !NT_SUCCESS(*pstatus) ) goto Exit;
                         
-			pbsrc += cbelement;
-			pvarT++;
-		    }
-		}   // if (pvar->vt == (VT_VECTOR | VT_VARIANT))
+      pbsrc += cbelement;
+      pvarT++;
+        }
+    }   // if (pvar->vt == (VT_VECTOR | VT_VARIANT))
 
-		else if (pvar->vt == (VT_VECTOR | VT_CF))
-		{
+    else if (pvar->vt == (VT_VECTOR | VT_CF))
+    {
                     // Set pcd to &pElems[0]
-		    CLIPDATA *pcd = (CLIPDATA *) ppv;
+        CLIPDATA *pcd = (CLIPDATA *) ppv;
 
                     // Loop through pElems
-		    while (cElems-- > 0)
-		    {
+        while (cElems-- > 0)
+        {
                         // What is the size of the clipdata (including sizeof(ulClipFmt))?
                         pcd->cbSize = PropByteSwap( ((CLIPDATA *) pbsrc)->cbSize );
                         if( pcd->cbSize < sizeof(pcd->ulClipFmt) )
@@ -1888,89 +1888,89 @@ RtlConvertPropertyToVariant( IN SERIALIZEDPROPERTYVALUE const *pprop,
                         }
 
                         // How many bytes should we copy to pClipData?
-			cb = CBPCLIPDATA( *pcd );
+      cb = CBPCLIPDATA( *pcd );
 
                         // Set the ClipFormat & advance pbsrc to the clipdata.
-			pcd->ulClipFmt = PropByteSwap( ((CLIPDATA *) pbsrc)->ulClipFmt );
-			pbsrc += 2 * sizeof(ULONG);
+      pcd->ulClipFmt = PropByteSwap( ((CLIPDATA *) pbsrc)->ulClipFmt );
+      pbsrc += 2 * sizeof(ULONG);
 
                         // Copy the ClipData into the PropVariant
 
-			pcd->pClipData = NULL;
-			if (cb > 0)
-			{
+      pcd->pClipData = NULL;
+      if (cb > 0)
+      {
                             // Get a buffer for the clip data.
-			    pcd->pClipData = (BYTE *) pma->Allocate(cb);
-			    if (pcd->pClipData == NULL)
-			    {
-				StatusKBufferOverflow(pstatus, "RtlConvertPropertyToVariant: no memory for CF[]");
+          pcd->pClipData = (BYTE *) pma->Allocate(cb);
+          if (pcd->pClipData == NULL)
+          {
+        StatusKBufferOverflow(pstatus, "RtlConvertPropertyToVariant: no memory for CF[]");
                                 goto Exit;
-			    }
+          }
 
                             // Copy the clipdata into pElems[i].pClipData
-			    RtlCopyMemory(pcd->pClipData, pbsrc, cb);
-			    ADJUSTPOINTER(pcd->pClipData, PointerDelta, BYTE *);
+          RtlCopyMemory(pcd->pClipData, pbsrc, cb);
+          ADJUSTPOINTER(pcd->pClipData, PointerDelta, BYTE *);
 
-			}   // if (cb > 0)
+      }   // if (cb > 0)
 
                         // Move pcd to &pElems[i+1], and advance the buffer pointer.
-			pcd++;
-			pbsrc += DwordAlign(cb);
+      pcd++;
+      pbsrc += DwordAlign(cb);
 
-		    }   // while (cElems-- > 0)
-		}   // else if (pvar->vt == (VT_VECTOR | VT_CF))
+        }   // while (cElems-- > 0)
+    }   // else if (pvar->vt == (VT_VECTOR | VT_CF))
 
-		else    // This is a vector of some kind of string.
-		{
+    else    // This is a vector of some kind of string.
+    {
                     // Assume that characters are CHARs
-		    ULONG cbch = sizeof(char);
+        ULONG cbch = sizeof(char);
 
-		    if (pvar->vt == (VT_VECTOR | VT_LPWSTR))
-		    {
+        if (pvar->vt == (VT_VECTOR | VT_LPWSTR))
+        {
                         // Characters are WCHARs
-			cbch = sizeof(WCHAR);
+      cbch = sizeof(WCHAR);
 
                         // If byte-swapping is enabled, LPWSTRs must have
                         // their WCHARs swapped.
                         CBBYTESWAP( sizeof(WCHAR) );
-		    }
+        }
 
-		    while (cElems-- > 0)
-		    {
-			ULONG cbcopy;
+        while (cElems-- > 0)
+        {
+      ULONG cbcopy;
 
-			cbcopy = cb = PropByteSwap( *((ULONG *) pbsrc) ) * cbch;
-			pbsrc += sizeof(ULONG);
-			pv = (VOID *) pbsrc;
-			PROPASSERT(*ppv == NULL);
-			PROPASSERT(pchConvert == NULL);
+      cbcopy = cb = PropByteSwap( *((ULONG *) pbsrc) ) * cbch;
+      pbsrc += sizeof(ULONG);
+      pv = (VOID *) pbsrc;
+      PROPASSERT(*ppv == NULL);
+      PROPASSERT(pchConvert == NULL);
 
-			if (fConvertToEmpty || cb != 0)
-			{
+      if (fConvertToEmpty || cb != 0)
+      {
                             // Do we have actual data to work with?
-			    if (cb != 0)
-			    {
+          if (cb != 0)
+          {
                                 // Special BSTR pre-processing ...
-				if (pvar->vt == (VT_VECTOR | VT_BSTR))
-				{
+        if (pvar->vt == (VT_VECTOR | VT_BSTR))
+        {
                                     // If the propset & in-memory BSTRs are of
                                     // different Unicode-ness, convert now.
 
-				    if (CodePage != CP_WINUNICODE   // Ansi PropSet
+            if (CodePage != CP_WINUNICODE   // Ansi PropSet
                                         &&
                                         OLECHAR_IS_UNICODE )        // Unicode BSTRs
-				    {
+            {
                                         PROPASSERT(IsAnsiString((CHAR*) pv, cb));
-					RtlpConvertToUnicode(
-						    (CHAR const *) pv,
-						    cb,
-						    CodePage,
-						    (WCHAR **) &pchConvert,
-						    &cbcopy,
+          RtlpConvertToUnicode(
+                (CHAR const *) pv,
+                cb,
+                CodePage,
+                (WCHAR **) &pchConvert,
+                &cbcopy,
                                                     pstatus);
                                         if( !NT_SUCCESS(*pstatus) ) goto Exit;
-					pv = pchConvert;
-				    }
+          pv = pchConvert;
+            }
 
                                     else
                                     if (CodePage == CP_WINUNICODE   // Unicode PropSet
@@ -1988,17 +1988,17 @@ RtlConvertPropertyToVariant( IN SERIALIZEDPROPERTYVALUE const *pprop,
                                                          (WCHAR**) &pchByteSwap,
                                                          pstatus );
                                         if( !NT_SUCCESS(*pstatus) ) goto Exit;
-			                PROPASSERT(IsUnicodeString((WCHAR*)pv, cb));
+                      PROPASSERT(IsUnicodeString((WCHAR*)pv, cb));
 
                                         // Convert the Unicode string from the property
                                         // set to Ansi.
 
-			                RtlpConvertToMultiByte(
-				                    (WCHAR const *) pv,
-				                    cb,
-				                    CP_ACP,  // Use the system default codepage
-				                    &pchConvert,
-				                    &cbcopy,
+                      RtlpConvertToMultiByte(
+                            (WCHAR const *) pv,
+                            cb,
+                            CP_ACP,  // Use the system default codepage
+                            &pchConvert,
+                            &cbcopy,
                                                     pstatus);
                                         if( !NT_SUCCESS(*pstatus) ) goto Exit;
 
@@ -2036,16 +2036,16 @@ RtlConvertPropertyToVariant( IN SERIALIZEDPROPERTYVALUE const *pprop,
                                         goto Exit;
                                     }
 
-				}   // if (pvar->vt == (VT_VECTOR | VT_BSTR))
+        }   // if (pvar->vt == (VT_VECTOR | VT_BSTR))
 
                                 // Special LPSTR pre-processing
-				else if (pvar->vt == (VT_VECTOR | VT_LPSTR))
-				{
+        else if (pvar->vt == (VT_VECTOR | VT_LPSTR))
+        {
                                     // LPSTRs are always Ansi.  If the string
                                     // is Unicode in the propset, convert now.
 
-				    if (CodePage == CP_WINUNICODE)
-				    {
+            if (CodePage == CP_WINUNICODE)
+            {
                                         // If byte-swapping is necessary, the string from
                                         // the propset must be swapped before it can be
                                         // converted to MBCS.  If such a conversion
@@ -2056,24 +2056,24 @@ RtlConvertPropertyToVariant( IN SERIALIZEDPROPERTYVALUE const *pprop,
                                         PBSInPlaceAlloc( (WCHAR**) &pv, (WCHAR**) &pchByteSwap,
                                                       pstatus );
                                         if( !NT_SUCCESS(*pstatus) ) goto Exit;
-					PROPASSERT(IsUnicodeString((WCHAR*)pv, cb));
+          PROPASSERT(IsUnicodeString((WCHAR*)pv, cb));
 
                                         // Convert to Ansi.
-					RtlpConvertToMultiByte(
-						    (WCHAR const *) pv,
-						    cb,
-						    CP_ACP,     // Use the system default codepage
-						    &pchConvert,
-						    &cbcopy,
+          RtlpConvertToMultiByte(
+                (WCHAR const *) pv,
+                cb,
+                CP_ACP,     // Use the system default codepage
+                &pchConvert,
+                &cbcopy,
                                                     pstatus);
                                         if( !NT_SUCCESS(*pstatus) ) goto Exit;
 
                                         pv = pchConvert;
-				    }
+            }
 
                                     PROPASSERT( IsAnsiString( (CHAR const *)pv, cbcopy ));
-				}   // else if (pvar->vt == (VT_VECTOR | VT_LPSTR))
-			    }   // if (cb != 0)
+        }   // else if (pvar->vt == (VT_VECTOR | VT_LPSTR))
+          }   // if (cb != 0)
 
 
                             // Allocate memory in the PropVariant and copy
@@ -2085,11 +2085,11 @@ RtlConvertPropertyToVariant( IN SERIALIZEDPROPERTYVALUE const *pprop,
                                 // by SysStringAlloc.
 
                                 *ppv = (*UnicodeCallouts.pfnSysAllocString)( (BSTR) pv );
-				if (*ppv == NULL)
-				{
-				    StatusKBufferOverflow(pstatus, "RtlConvertPropertyToVariant: no memory for BSTR element");
+        if (*ppv == NULL)
+        {
+            StatusKBufferOverflow(pstatus, "RtlConvertPropertyToVariant: no memory for BSTR element");
                                     goto Exit;
-				}
+        }
 
                                 // The BSTR length should be the property length
                                 // minus the NULL.
@@ -2100,15 +2100,15 @@ RtlConvertPropertyToVariant( IN SERIALIZEDPROPERTYVALUE const *pprop,
                             else
                             {
                                 // Allocate a buffer in the PropVariant
-				*ppv = pma->Allocate(max(1, cbcopy));
-				if (*ppv == NULL)
-				{
-				    StatusKBufferOverflow(pstatus, "RtlConvertPropertyToVariant: no memory for string element");
+        *ppv = pma->Allocate(max(1, cbcopy));
+        if (*ppv == NULL)
+        {
+            StatusKBufferOverflow(pstatus, "RtlConvertPropertyToVariant: no memory for string element");
                                     goto Exit;
-				}
+        }
 
                                 // Copy from the propset buffer to the PropVariant
-				RtlCopyMemory(*ppv, pv, cbcopy);
+        RtlCopyMemory(*ppv, pv, cbcopy);
 
                             }   // if( VT_BSTR == pvar->vt ) ... else
 
@@ -2117,33 +2117,33 @@ RtlConvertPropertyToVariant( IN SERIALIZEDPROPERTYVALUE const *pprop,
                             PBSBuffer( *ppv, cbcopy, cbByteSwap );
 
                             // Adjust the PropVar element ptr to user-space (kernel only)
-			    ADJUSTPOINTER(*ppv, PointerDelta, VOID *);
+          ADJUSTPOINTER(*ppv, PointerDelta, VOID *);
 
                             // Move, within the propset buffer, to the
                             // next element in the vector.
-			    pbsrc += DwordAlign(cb);
+          pbsrc += DwordAlign(cb);
 
                             // Delete the temporary buffers
 
                             delete[] pchByteSwap;
                             pchByteSwap = NULL;
 
-			    delete [] pchConvert;
-			    pchConvert = NULL;
+          delete [] pchConvert;
+          pchConvert = NULL;
 
-			}   // if (fConvertToEmpty || cb != 0)
+      }   // if (fConvertToEmpty || cb != 0)
 
                         // Move, within the PropVariant, to the next
                         // element in the vector.
-			ppv++;
+      ppv++;
 
-		    }   // while (cElems-- > 0)
-		}   // else if (pvar->vt == (VT_VECTOR | VT_CF)) ... else
-	    }   // if (!fPostAllocInit) ... else
+        }   // while (cElems-- > 0)
+    }   // else if (pvar->vt == (VT_VECTOR | VT_CF)) ... else
+      }   // if (!fPostAllocInit) ... else
 
-	    ADJUSTPOINTER(*ppvK, PointerDelta, VOID *);
+      ADJUSTPOINTER(*ppvK, PointerDelta, VOID *);
 
-	}   // if (!fConvertToEmpty && cb == 0) ... else
+  }   // if (!fConvertToEmpty && cb == 0) ... else
     }   // else if (ppv != NULL)
 
 Exit:
@@ -2160,7 +2160,7 @@ Exit:
 //
 // Arguments:   [pvar]          -- pointer to PROPVARIANT
 //              [cprop]         -- property count
-//              [pma]		-- caller's memory free routine
+//              [pma]   -- caller's memory free routine
 //
 // Returns:     None
 //---------------------------------------------------------------------------
@@ -2173,143 +2173,143 @@ CleanupVariants(
 {
     while (cprop-- > 0)
     {
-	VOID *pv = NULL;
-	VOID **ppv = NULL;
+  VOID *pv = NULL;
+  VOID **ppv = NULL;
 
-	ULONG cElems;
+  ULONG cElems;
 
-	switch (pvar->vt)
-	{
-	case VT_CF:
-	    pv = pvar->pclipdata;
-	    if (pv != NULL && pvar->pclipdata->pClipData)
-	    {
-		pma->Free(pvar->pclipdata->pClipData);
-	    }
-	    break;
+  switch (pvar->vt)
+  {
+  case VT_CF:
+      pv = pvar->pclipdata;
+      if (pv != NULL && pvar->pclipdata->pClipData)
+      {
+    pma->Free(pvar->pclipdata->pClipData);
+      }
+      break;
 
-	case VT_BLOB:
-	case VT_BLOB_OBJECT:
-	    pv = pvar->blob.pBlobData;
-	    break;
+  case VT_BLOB:
+  case VT_BLOB_OBJECT:
+      pv = pvar->blob.pBlobData;
+      break;
 
-	case VT_BSTR:
-	case VT_CLSID:
-	case VT_LPSTR:
-	case VT_LPWSTR:
-	    AssertStringField(puuid);		// VT_CLSID
-	    AssertStringField(bstrVal);		// VT_BSTR
-	    AssertStringField(pszVal);		// VT_LPSTR
-	    AssertStringField(pwszVal);		// VT_LPWSTR
-	    pv = pvar->pszVal;
-	    break;
+  case VT_BSTR:
+  case VT_CLSID:
+  case VT_LPSTR:
+  case VT_LPWSTR:
+      AssertStringField(puuid);   // VT_CLSID
+      AssertStringField(bstrVal);   // VT_BSTR
+      AssertStringField(pszVal);    // VT_LPSTR
+      AssertStringField(pwszVal);   // VT_LPWSTR
+      pv = pvar->pszVal;
+      break;
 
-	// Vector properties:
+  // Vector properties:
 
 #ifdef PROPVAR_VT_I1
-	case VT_VECTOR | VT_I1:
-	    AssertByteVector(cac);			// VT_I1
+  case VT_VECTOR | VT_I1:
+      AssertByteVector(cac);      // VT_I1
 #endif
-	case VT_VECTOR | VT_UI1:
-	case VT_VECTOR | VT_I2:
-	case VT_VECTOR | VT_UI2:
-	case VT_VECTOR | VT_BOOL:
-	case VT_VECTOR | VT_I4:
-	case VT_VECTOR | VT_UI4:
-	case VT_VECTOR | VT_R4:
-	case VT_VECTOR | VT_ERROR:
-	case VT_VECTOR | VT_I8:
-	case VT_VECTOR | VT_UI8:
-	case VT_VECTOR | VT_R8:
-	case VT_VECTOR | VT_CY:
-	case VT_VECTOR | VT_DATE:
-	case VT_VECTOR | VT_FILETIME:
-	case VT_VECTOR | VT_CLSID:
-	    AssertByteVector(caub);			// VT_UI1
-	    AssertShortVector(cai);			// VT_I2
-	    AssertShortVector(caui);			// VT_UI2
-	    AssertShortVector(cabool);			// VT_BOOL
-	    AssertLongVector(cal);			// VT_I4
-	    AssertLongVector(caul);			// VT_UI4
-	    AssertLongVector(caflt);			// VT_R4
-	    AssertLongVector(cascode);			// VT_ERROR
-	    AssertLongLongVector(cah);			// VT_I8
-	    AssertLongLongVector(cauh);			// VT_UI8
-	    AssertLongLongVector(cadbl);		// VT_R8
-	    AssertLongLongVector(cacy);			// VT_CY
-	    AssertLongLongVector(cadate);		// VT_DATE
-	    AssertLongLongVector(cafiletime);		// VT_FILETIME
-	    AssertVarVector(cauuid, sizeof(GUID));	// VT_CLSID
-	    pv = pvar->cai.pElems;
-	    break;
+  case VT_VECTOR | VT_UI1:
+  case VT_VECTOR | VT_I2:
+  case VT_VECTOR | VT_UI2:
+  case VT_VECTOR | VT_BOOL:
+  case VT_VECTOR | VT_I4:
+  case VT_VECTOR | VT_UI4:
+  case VT_VECTOR | VT_R4:
+  case VT_VECTOR | VT_ERROR:
+  case VT_VECTOR | VT_I8:
+  case VT_VECTOR | VT_UI8:
+  case VT_VECTOR | VT_R8:
+  case VT_VECTOR | VT_CY:
+  case VT_VECTOR | VT_DATE:
+  case VT_VECTOR | VT_FILETIME:
+  case VT_VECTOR | VT_CLSID:
+      AssertByteVector(caub);     // VT_UI1
+      AssertShortVector(cai);     // VT_I2
+      AssertShortVector(caui);      // VT_UI2
+      AssertShortVector(cabool);      // VT_BOOL
+      AssertLongVector(cal);      // VT_I4
+      AssertLongVector(caul);     // VT_UI4
+      AssertLongVector(caflt);      // VT_R4
+      AssertLongVector(cascode);      // VT_ERROR
+      AssertLongLongVector(cah);      // VT_I8
+      AssertLongLongVector(cauh);     // VT_UI8
+      AssertLongLongVector(cadbl);    // VT_R8
+      AssertLongLongVector(cacy);     // VT_CY
+      AssertLongLongVector(cadate);   // VT_DATE
+      AssertLongLongVector(cafiletime);   // VT_FILETIME
+      AssertVarVector(cauuid, sizeof(GUID));  // VT_CLSID
+      pv = pvar->cai.pElems;
+      break;
 
-	case VT_VECTOR | VT_CF:
-	    {
-		CLIPDATA *pcd;
+  case VT_VECTOR | VT_CF:
+      {
+    CLIPDATA *pcd;
 
-		cElems = pvar->caclipdata.cElems;
-		pv = pcd = pvar->caclipdata.pElems;
-		while (cElems-- > 0)
-		{
-		    if (pcd->pClipData != NULL)
-		    {
-			pma->Free(pcd->pClipData);
-		    }
-		    pcd++;
-		}
-	    }
-	    break;
+    cElems = pvar->caclipdata.cElems;
+    pv = pcd = pvar->caclipdata.pElems;
+    while (cElems-- > 0)
+    {
+        if (pcd->pClipData != NULL)
+        {
+      pma->Free(pcd->pClipData);
+        }
+        pcd++;
+    }
+      }
+      break;
 
-	case VT_VECTOR | VT_BSTR:
-	case VT_VECTOR | VT_LPSTR:
-	case VT_VECTOR | VT_LPWSTR:
-	    AssertStringVector(cabstr);			// VT_BSTR
-	    AssertStringVector(calpstr);		// VT_LPSTR
-	    AssertStringVector(calpwstr);		// VT_LPWSTR
-	    cElems = pvar->calpstr.cElems;
-	    ppv = (VOID **) pvar->calpstr.pElems;
-	    break;
+  case VT_VECTOR | VT_BSTR:
+  case VT_VECTOR | VT_LPSTR:
+  case VT_VECTOR | VT_LPWSTR:
+      AssertStringVector(cabstr);     // VT_BSTR
+      AssertStringVector(calpstr);    // VT_LPSTR
+      AssertStringVector(calpwstr);   // VT_LPWSTR
+      cElems = pvar->calpstr.cElems;
+      ppv = (VOID **) pvar->calpstr.pElems;
+      break;
 
-	case VT_VECTOR | VT_VARIANT:
-	    CleanupVariants(
-		    pvar->capropvar.pElems,
-		    pvar->capropvar.cElems,
-		    pma);
-	    pv = pvar->capropvar.pElems;
-	    break;
+  case VT_VECTOR | VT_VARIANT:
+      CleanupVariants(
+        pvar->capropvar.pElems,
+        pvar->capropvar.cElems,
+        pma);
+      pv = pvar->capropvar.pElems;
+      break;
 
-	}   // switch (pvar->vt)
+  }   // switch (pvar->vt)
 
-	if (ppv != NULL)			// STRING VECTOR property
-	{
+  if (ppv != NULL)      // STRING VECTOR property
+  {
             // Save the vector of pointers
-	    pv = (VOID *) ppv;
+      pv = (VOID *) ppv;
 
             // Free the vector elements
-	    while (cElems-- > 0)
-	    {
-		if (*ppv != NULL)
-		{
+      while (cElems-- > 0)
+      {
+    if (*ppv != NULL)
+    {
                     if( (VT_BSTR | VT_VECTOR) == pvar->vt )
                     {
                         (*UnicodeCallouts.pfnSysFreeString)( (BSTR) *ppv );
                     }
                     else
                     {
-		        pma->Free((BYTE *) *ppv);
+            pma->Free((BYTE *) *ppv);
                     }
-		}
-		ppv++;
-	    }
+    }
+    ppv++;
+      }
 
             // Free the vector of pointers.
             pma->Free(pv);
             pv = NULL;
 
-	}   // if (ppv != NULL)
+  }   // if (ppv != NULL)
 
-	if (pv != NULL)
-	{
+  if (pv != NULL)
+  {
             if( VT_BSTR == pvar->vt )
             {
                 (*UnicodeCallouts.pfnSysFreeString)( (BSTR) pv );
@@ -2320,10 +2320,10 @@ CleanupVariants(
             }
         }
 
-	pvar->vt = VT_EMPTY;
+  pvar->vt = VT_EMPTY;
 
         // Move on to the next PropVar in the vector.
-	pvar++;
+  pvar++;
 
     }   // while (cprop-- > 0)
 }
@@ -2336,7 +2336,7 @@ CleanupVariants(
 //
 // Arguments:   [pprop]         -- property value
 //              [cbbuf]         -- max length of accessible memory at pprop
-//              [flags]		-- CPropertySetStream flags
+//              [flags]   -- CPropertySetStream flags
 //              [pstatus]       -- pointer to NTSTATUS code
 //
 // Returns:     length of property
@@ -2375,16 +2375,16 @@ PropertyLength(
     }
     if( PropByteSwap(pprop->dwType) == (VT_VECTOR | VT_VARIANT) )
     {
-	while (cElems-- > 0)
-	{
-	    cb = PropertyLength(
-			(SERIALIZEDPROPERTYVALUE const *) pl,
-			cbremain,
-			flags | CPSS_VARIANTVECTOR,
+  while (cElems-- > 0)
+  {
+      cb = PropertyLength(
+      (SERIALIZEDPROPERTYVALUE const *) pl,
+      cbremain,
+      flags | CPSS_VARIANTVECTOR,
                         pstatus);
             if( !NT_SUCCESS(*pstatus) ) goto Exit;
-	    pl = (ULONG const *) Add2ConstPtr(pl, cb);
-	    cbremain -= cb;
+      pl = (ULONG const *) Add2ConstPtr(pl, cb);
+      cbremain -= cb;
         }
     }
     else
@@ -2452,11 +2452,11 @@ PropertyLength(
                 }
 
 #ifdef LITTLEENDIAN
-		PROPASSERT(
-		    (PropByteSwap(pprop->dwType) & VT_TYPEMASK) != VT_LPWSTR
+    PROPASSERT(
+        (PropByteSwap(pprop->dwType) & VT_TYPEMASK) != VT_LPWSTR
                      ||
-		     IsUnicodeString( (WCHAR const *) &pl[1],
-				       PropByteSwap(*pl) * sizeof(WCHAR)));
+         IsUnicodeString( (WCHAR const *) &pl[1],
+               PropByteSwap(*pl) * sizeof(WCHAR)));
 #endif
 
                 pl = (ULONG const *) Add2ConstPtr(pl, cb);
@@ -2465,7 +2465,7 @@ PropertyLength(
             break;
 
         default:
-	    fIllegalType = TRUE;
+      fIllegalType = TRUE;
             break;
         }
     }

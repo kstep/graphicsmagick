@@ -44,7 +44,7 @@ typedef const WCHAR* LPCWSTR;
 #define INTL_PADDING(cb) (INTL_PADDING_VALUE * (cb))
 
 long     _CRTAPI1 wcsatol(const WCHAR *wsz);
-int	 _CRTAPI1 wcsatoi(const WCHAR *wsz);
+int  _CRTAPI1 wcsatoi(const WCHAR *wsz);
 WCHAR *  _CRTAPI1 wcscat(WCHAR *wsz1, const WCHAR *wsz2);
 WCHAR *  _CRTAPI1 wcschr ( const WCHAR * string, WCHAR ch );
 int      _CRTAPI1 wcscmp(const WCHAR *wsz1, const WCHAR *wsz2);
@@ -75,21 +75,21 @@ size_t   _CRTAPI1 sbstowcs(WCHAR *wcstr, const char *mbstr, size_t count);
 extern int STDCALL MultiByteToWideChar(
     unsigned int CodePage,              /* code page */
     unsigned long dwFlags,              /* character-type options  */
-    const char * lpMultiByteStr,	/* address of string to map  */
+    const char * lpMultiByteStr,  /* address of string to map  */
     int cchMultiByte,           /* number of characters in string  */
-    WCHAR* lpWideCharStr,	/* address of wide-character buffer  */
+    WCHAR* lpWideCharStr, /* address of wide-character buffer  */
     int cchWideChar             /* size of buffer  */
-   );	
+   ); 
  
 extern int STDCALL WideCharToMultiByte(
     unsigned int CodePage,              /* code page */
     unsigned long dwFlags,              /* performance and mapping flags */
-    const WCHAR* lpWideCharStr,	/* address of wide-character string */
+    const WCHAR* lpWideCharStr, /* address of wide-character string */
     int cchWideChar,            /* number of characters in string */
-    char* lpMultiByteStr,	/* address of buffer for new string */
+    char* lpMultiByteStr, /* address of buffer for new string */
     int cchMultiByte,           /* size of buffer  */
-    const char* lpDefaultChar,	/* addr of default for unmappable chars */
-    int* lpUsedDefaultChar 	/* addr of flag set when default char. used */
+    const char* lpDefaultChar,  /* addr of default for unmappable chars */
+    int* lpUsedDefaultChar  /* addr of flag set when default char. used */
    );
 
 #ifdef __cplusplus

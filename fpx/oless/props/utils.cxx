@@ -312,8 +312,8 @@ STDAPI_(void) SysFreeString(BSTR bstr)
 {
     if (bstr)
     {
-	BYTE* pab = (BYTE*) bstr;
-	delete[] (pab - sizeof(DWORD));
+  BYTE* pab = (BYTE*) bstr;
+  delete[] (pab - sizeof(DWORD));
     }
 }
 

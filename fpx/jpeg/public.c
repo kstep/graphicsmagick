@@ -55,44 +55,44 @@
 int  eJPEG_Init(void **encoder)
 {
 
-	ENCODER_STRUCT	*jpg ;
-	int x;
+  ENCODER_STRUCT  *jpg ;
+  int x;
 
-	if(!( *encoder = (ENCODER_STRUCT *)FPX_malloc( sizeof(ENCODER_STRUCT))))
-		return eJPEG_MEMORY_ERROR;
-	else
-	{
-		jpg = (ENCODER_STRUCT *)*encoder;
-		{
-			jpg->header = NULL;
-			jpg->headerBytes = 0;
-			jpg->ssDisabled = FALSE;    /* internal subsampling is enabled */
-			jpg->YCrCbDisabled = FALSE; /* internal YCrCb is enabled */
-			jpg->xPixels = 64; 	    /* defaulted to FlashPix baseline */
-			jpg->yPixels = 64; 	    /* ditto */
-			jpg->bytes = 3;	   	    /* RGB is assumed */
-			jpg->scratch = (unsigned char *)
-			    FPX_malloc(jpg->xPixels * jpg->yPixels * jpg->bytes);
-			
-			if(jpg->scratch == NULL)
-				return eJPEG_MEMORY_ERROR;	/* CHG_JPEG_MEM_FIX - added test */
+  if(!( *encoder = (ENCODER_STRUCT *)FPX_malloc( sizeof(ENCODER_STRUCT))))
+    return eJPEG_MEMORY_ERROR;
+  else
+  {
+    jpg = (ENCODER_STRUCT *)*encoder;
+    {
+      jpg->header = NULL;
+      jpg->headerBytes = 0;
+      jpg->ssDisabled = FALSE;    /* internal subsampling is enabled */
+      jpg->YCrCbDisabled = FALSE; /* internal YCrCb is enabled */
+      jpg->xPixels = 64;      /* defaulted to FlashPix baseline */
+      jpg->yPixels = 64;      /* ditto */
+      jpg->bytes = 3;         /* RGB is assumed */
+      jpg->scratch = (unsigned char *)
+          FPX_malloc(jpg->xPixels * jpg->yPixels * jpg->bytes);
+      
+      if(jpg->scratch == NULL)
+        return eJPEG_MEMORY_ERROR;  /* CHG_JPEG_MEM_FIX - added test */
 
-			jpg->subsampling = 0x11;    /* no subsampling */
+      jpg->subsampling = 0x11;    /* no subsampling */
 
-			/* init iHsamp & iVsamp to reflect above defaults */
-			for(x = 0; x < 3; x++)
-				jpg->iHsamp[x] = jpg->iVsamp[x] = 1;
+      /* init iHsamp & iVsamp to reflect above defaults */
+      for(x = 0; x < 3; x++)
+        jpg->iHsamp[x] = jpg->iVsamp[x] = 1;
 
-			jpg->iHsamp[3] = jpg->iVsamp[3] = 0;
-			jpg->qFactor = 50;	   /* defaulted to 50 */
-			jpg->interleaveType = 0;   /* interleaved */
+      jpg->iHsamp[3] = jpg->iVsamp[3] = 0;
+      jpg->qFactor = 50;     /* defaulted to 50 */
+      jpg->interleaveType = 0;   /* interleaved */
 
-			SetDefaultTables((void *) jpg);
+      SetDefaultTables((void *) jpg);
 
-			return eJPEG_NO_ERROR;
-		}
-	}
-	return eJPEG_MEMORY_ERROR;
+      return eJPEG_NO_ERROR;
+    }
+  }
+  return eJPEG_MEMORY_ERROR;
 }
 
 /*
@@ -106,14 +106,14 @@ int  eJPEG_Init(void **encoder)
 */
 int eJPEG_DisableInternalSubsampling(void  *encoder)
 {
-	ENCODER_STRUCT *jpg = (ENCODER_STRUCT *)encoder;
+  ENCODER_STRUCT *jpg = (ENCODER_STRUCT *)encoder;
 
-	if (jpg != NULL){
-		jpg->ssDisabled = TRUE;
-		return(eJPEG_NO_ERROR);
-	}
-	else
-		return(eJPEG_INVALID_ENCODER);
+  if (jpg != NULL){
+    jpg->ssDisabled = TRUE;
+    return(eJPEG_NO_ERROR);
+  }
+  else
+    return(eJPEG_INVALID_ENCODER);
 }
 
 /*
@@ -125,14 +125,14 @@ int eJPEG_DisableInternalSubsampling(void  *encoder)
 */
 int eJPEG_DisableInternalYCbCr(void  *encoder)
 {
-	ENCODER_STRUCT *jpg = (ENCODER_STRUCT *)encoder;
+  ENCODER_STRUCT *jpg = (ENCODER_STRUCT *)encoder;
 
-	if(jpg != NULL){
-		jpg->YCrCbDisabled = TRUE;
-		return(eJPEG_NO_ERROR);
-	}
-	else
-		return(eJPEG_INVALID_ENCODER);
+  if(jpg != NULL){
+    jpg->YCrCbDisabled = TRUE;
+    return(eJPEG_NO_ERROR);
+  }
+  else
+    return(eJPEG_INVALID_ENCODER);
 }
 
 /*
@@ -140,59 +140,59 @@ int eJPEG_DisableInternalYCbCr(void  *encoder)
  "Chroma subsampling."  Note, however, that this particular encoder will not support
 */
 int eJPEG_SetSubsampling(
-void *encoder,	  /* same value returned by eJPEG_Init */
+void *encoder,    /* same value returned by eJPEG_Init */
 unsigned char subSampling  /* pass the same value you'd put in the FlashPix 
                                   compression subtype field for JPEG data */
 )
 {
-	ENCODER_STRUCT *jpg = (ENCODER_STRUCT *)encoder;
-	int ret, x;
+  ENCODER_STRUCT *jpg = (ENCODER_STRUCT *)encoder;
+  int ret, x;
 
-	if(jpg != NULL){
-		if((subSampling == 0x11) || (subSampling == 0x22) || (subSampling == 0x21) )
-		{
-			for(x = 0; x < jpg->bytes; x++)
-				jpg->iHsamp[x] = jpg->iVsamp[x] = 1; /* default */
-			if((jpg->bytes == 4) && (subSampling == 0x22))
-			{
-				jpg->subsampling = subSampling;
-				jpg->iHsamp[0] = jpg->iVsamp[0] = 2;
-				jpg->iHsamp[3] = jpg->iVsamp[3] = 2; /* alpha channel */
-				ret = eJPEG_NO_ERROR;
-			}
-			else
-			{
-				if(jpg->bytes == 3)
-					jpg->iHsamp[3] = jpg->iVsamp[3] = 0;
-				if(subSampling == 0x22)
-					jpg->iHsamp[0] = jpg->iVsamp[0] = 2;
-				else if (subSampling == 0x21){
-					jpg->iHsamp[0] = 2;
-					jpg->iVsamp[0] = 1;
-				}
-				jpg->subsampling = subSampling;
-				ret = eJPEG_NO_ERROR;
-			}
-		}
-		else
-			ret = eJPEG_UNSUPPORTED_SUBSAMPLING;
+  if(jpg != NULL){
+    if((subSampling == 0x11) || (subSampling == 0x22) || (subSampling == 0x21) )
+    {
+      for(x = 0; x < jpg->bytes; x++)
+        jpg->iHsamp[x] = jpg->iVsamp[x] = 1; /* default */
+      if((jpg->bytes == 4) && (subSampling == 0x22))
+      {
+        jpg->subsampling = subSampling;
+        jpg->iHsamp[0] = jpg->iVsamp[0] = 2;
+        jpg->iHsamp[3] = jpg->iVsamp[3] = 2; /* alpha channel */
+        ret = eJPEG_NO_ERROR;
+      }
+      else
+      {
+        if(jpg->bytes == 3)
+          jpg->iHsamp[3] = jpg->iVsamp[3] = 0;
+        if(subSampling == 0x22)
+          jpg->iHsamp[0] = jpg->iVsamp[0] = 2;
+        else if (subSampling == 0x21){
+          jpg->iHsamp[0] = 2;
+          jpg->iVsamp[0] = 1;
+        }
+        jpg->subsampling = subSampling;
+        ret = eJPEG_NO_ERROR;
+      }
+    }
+    else
+      ret = eJPEG_UNSUPPORTED_SUBSAMPLING;
 
-		return(ret);
-	}
-	else
-		return(eJPEG_INVALID_ENCODER);
+    return(ret);
+  }
+  else
+    return(eJPEG_INVALID_ENCODER);
 }
 
 int eJPEG_EnableInternalYCbCr(void  *encoder)
 {
-	ENCODER_STRUCT *jpg = (ENCODER_STRUCT *)encoder;
+  ENCODER_STRUCT *jpg = (ENCODER_STRUCT *)encoder;
 
-	if(jpg != NULL ){
-		jpg->YCrCbDisabled = FALSE;	/* not sure if this will work */
-		return(eJPEG_NO_ERROR);
-	}
-	else
-		return(eJPEG_INVALID_ENCODER);
+  if(jpg != NULL ){
+    jpg->YCrCbDisabled = FALSE; /* not sure if this will work */
+    return(eJPEG_NO_ERROR);
+  }
+  else
+    return(eJPEG_INVALID_ENCODER);
 }
 
 
@@ -202,46 +202,46 @@ int eJPEG_EnableInternalYCbCr(void  *encoder)
 */
 int eJPEG_EnableChannelInterleave(void  *encoder)
 {
-	ENCODER_STRUCT *jpg = (ENCODER_STRUCT *)encoder;
+  ENCODER_STRUCT *jpg = (ENCODER_STRUCT *)encoder;
 
-	if(jpg != NULL ){
-		jpg->interleaveType = 0; /* channels are interleaved */
-		return(eJPEG_NO_ERROR);
-	}
-	else
-		return(eJPEG_INVALID_ENCODER);
+  if(jpg != NULL ){
+    jpg->interleaveType = 0; /* channels are interleaved */
+    return(eJPEG_NO_ERROR);
+  }
+  else
+    return(eJPEG_INVALID_ENCODER);
 }
 
 int eJPEG_DisableChannelInterleave(void  *encoder)
 {
-	ENCODER_STRUCT *jpg = (ENCODER_STRUCT *)encoder;
+  ENCODER_STRUCT *jpg = (ENCODER_STRUCT *)encoder;
 
-	if(jpg != NULL ){
-		jpg->interleaveType = 1;
-		return(eJPEG_NO_ERROR);
-	}
-	else
-		return(eJPEG_INVALID_ENCODER);
+  if(jpg != NULL ){
+    jpg->interleaveType = 1;
+    return(eJPEG_NO_ERROR);
+  }
+  else
+    return(eJPEG_INVALID_ENCODER);
 }
 
 /* Call this routine to change from the default Q factor. */
 int eJPEG_SetQFactor(
-void *encoder,	 /* same value returned by eJPEG_Init */
-int quality	 /* default is 50 */
+void *encoder,   /* same value returned by eJPEG_Init */
+int quality  /* default is 50 */
 )
 {
-	ENCODER_STRUCT *jpg = (ENCODER_STRUCT *)encoder;
+  ENCODER_STRUCT *jpg = (ENCODER_STRUCT *)encoder;
 
-	if(jpg != NULL){
-		if (quality > 255)
-			quality = 255;
-		else if (quality < 0)
-			quality = 0;
-		jpg->qFactor = quality;
-		return(eJPEG_NO_ERROR);
-	}
-	else
-		return(eJPEG_INVALID_ENCODER);
+  if(jpg != NULL){
+    if (quality > 255)
+      quality = 255;
+    else if (quality < 0)
+      quality = 0;
+    jpg->qFactor = quality;
+    return(eJPEG_NO_ERROR);
+  }
+  else
+    return(eJPEG_INVALID_ENCODER);
 }
 
 /* Call this routine if you want to use custom Huffman Tables.
@@ -258,33 +258,33 @@ JPEGHuffTable **HuffTables,
 unsigned char * CompDCHuffIdent,
 unsigned char * CompACHuffIdent)
 {
-	ENCODER_STRUCT* jpg = (ENCODER_STRUCT *)encoder;
-	JPEGHuffTable *hufftable;
-	int i;
+  ENCODER_STRUCT* jpg = (ENCODER_STRUCT *)encoder;
+  JPEGHuffTable *hufftable;
+  int i;
 
-	if (((NumbHuffTables%2)!=0) || (NumbHuffTables> 8) || (NumbHuffTables < 2))
-		return(eJPEG_BAD_HUFFMAN_TABLE);
+  if (((NumbHuffTables%2)!=0) || (NumbHuffTables> 8) || (NumbHuffTables < 2))
+    return(eJPEG_BAD_HUFFMAN_TABLE);
 
-	jpg->nu_huff = NumbHuffTables;
-	hufftable = (JPEGHuffTable *) HuffTables;
-	for (i=0; i < NumbHuffTables; i++, hufftable++) {
-		jpg->HuffTables[i].bits = hufftable->bits;
-		jpg->HuffTables[i].vals = hufftable->vals;
-		jpg->HuffTables[i].hclass = hufftable->hclass;
-		jpg->HuffTables[i].ident = hufftable->ident;
-	}
-	for (i=NumbHuffTables; i < 8 ;i++) {
-		jpg->HuffTables[i].bits = NULL;
-		jpg->HuffTables[i].vals = NULL;
-		jpg->HuffTables[i].hclass = 0;
-		jpg->HuffTables[i].ident = 0;
-	}
-	for (i=0; i < 4; i++) {
-		jpg->CompDCHuffIdent[i] = CompDCHuffIdent[i];
-		jpg->CompACHuffIdent[i] = CompACHuffIdent[i];
-	}
+  jpg->nu_huff = NumbHuffTables;
+  hufftable = (JPEGHuffTable *) HuffTables;
+  for (i=0; i < NumbHuffTables; i++, hufftable++) {
+    jpg->HuffTables[i].bits = hufftable->bits;
+    jpg->HuffTables[i].vals = hufftable->vals;
+    jpg->HuffTables[i].hclass = hufftable->hclass;
+    jpg->HuffTables[i].ident = hufftable->ident;
+  }
+  for (i=NumbHuffTables; i < 8 ;i++) {
+    jpg->HuffTables[i].bits = NULL;
+    jpg->HuffTables[i].vals = NULL;
+    jpg->HuffTables[i].hclass = 0;
+    jpg->HuffTables[i].ident = 0;
+  }
+  for (i=0; i < 4; i++) {
+    jpg->CompDCHuffIdent[i] = CompDCHuffIdent[i];
+    jpg->CompACHuffIdent[i] = CompACHuffIdent[i];
+  }
 
-	return(eJPEG_NO_ERROR);
+  return(eJPEG_NO_ERROR);
 }
 
 
@@ -297,100 +297,100 @@ int eJPEG_SetQuantTables(void* encoder,
 int NumbQuantTables, JPEGQuantTable **QuantTables, 
 unsigned char* CompQuantIdent)
 {
-	ENCODER_STRUCT* jpg = (ENCODER_STRUCT *)encoder;
-	JPEGQuantTable *quant;
-	int i;
+  ENCODER_STRUCT* jpg = (ENCODER_STRUCT *)encoder;
+  JPEGQuantTable *quant;
+  int i;
 
-	if (NumbQuantTables > 4 || NumbQuantTables < 1)
-		return(eJPEG_BAD_QUANT_TABLE);
+  if (NumbQuantTables > 4 || NumbQuantTables < 1)
+    return(eJPEG_BAD_QUANT_TABLE);
 
-	jpg->nu_qtables = NumbQuantTables;
+  jpg->nu_qtables = NumbQuantTables;
 
-	for (i=0, quant=(JPEGQuantTable *) QuantTables; i < NumbQuantTables; i++, quant++) {
-		jpg->QuantTables[i].quantizer = quant->quantizer;
-		jpg->QuantTables[i].ident = quant->ident;
+  for (i=0, quant=(JPEGQuantTable *) QuantTables; i < NumbQuantTables; i++, quant++) {
+    jpg->QuantTables[i].quantizer = quant->quantizer;
+    jpg->QuantTables[i].ident = quant->ident;
 
-	}
-	for (i=NumbQuantTables; i < 4 ;i++) {
-		jpg->QuantTables[i].quantizer = NULL;
-		jpg->QuantTables[i].ident = 0;
-	}
-	for (i=0; i < 4; i++) {
-		jpg->CompQuantIdent[i] = CompQuantIdent[i];
-	}
+  }
+  for (i=NumbQuantTables; i < 4 ;i++) {
+    jpg->QuantTables[i].quantizer = NULL;
+    jpg->QuantTables[i].ident = 0;
+  }
+  for (i=0; i < 4; i++) {
+    jpg->CompQuantIdent[i] = CompQuantIdent[i];
+  }
 
-	return(eJPEG_NO_ERROR);
+  return(eJPEG_NO_ERROR);
 }
 
 int eJPEG_SetTileSize(
 void *encoder,
-int hSize,	   /* in pixels, the width of a tile */
-int vSize,	   /* in pixels, the height of a tile */
+int hSize,     /* in pixels, the width of a tile */
+int vSize,     /* in pixels, the height of a tile */
 int bytesPerPixel  /* how many bytes per pixel */
 )
 {
-	ENCODER_STRUCT *jpg = (ENCODER_STRUCT *)encoder;
-	int ret, x;
+  ENCODER_STRUCT *jpg = (ENCODER_STRUCT *)encoder;
+  int ret, x;
 
-	if(jpg != NULL ){
-		if((bytesPerPixel > 4) || (bytesPerPixel < 1))
-			ret = eJPEG_UNSUPPORTED_BYTES_PER_PIXEL;
-		else{
-			jpg->xPixels = hSize;
-			jpg->yPixels = vSize;
-			jpg->bytes = bytesPerPixel;
+  if(jpg != NULL ){
+    if((bytesPerPixel > 4) || (bytesPerPixel < 1))
+      ret = eJPEG_UNSUPPORTED_BYTES_PER_PIXEL;
+    else{
+      jpg->xPixels = hSize;
+      jpg->yPixels = vSize;
+      jpg->bytes = bytesPerPixel;
 
-			if (jpg->scratch != NULL) FPX_free(jpg->scratch);
-			jpg->scratch = 
-			    (unsigned char *) FPX_malloc(hSize * vSize * bytesPerPixel);
-			
-			if (jpg->scratch == NULL)			/* CHG_JPEG_MEM_FIX - added check */
-				return (eJPEG_MEMORY_ERROR);
+      if (jpg->scratch != NULL) FPX_free(jpg->scratch);
+      jpg->scratch = 
+          (unsigned char *) FPX_malloc(hSize * vSize * bytesPerPixel);
+      
+      if (jpg->scratch == NULL)     /* CHG_JPEG_MEM_FIX - added check */
+        return (eJPEG_MEMORY_ERROR);
 
-			for(x = 0; x < jpg->bytes; x++)
-				jpg->iHsamp[x] = jpg->iVsamp[x] = 1;
+      for(x = 0; x < jpg->bytes; x++)
+        jpg->iHsamp[x] = jpg->iVsamp[x] = 1;
 
-			/* Subsampling of 1 and 2-channel images is not supported, so 	*/
-			/* disable internal subdsampling. Note that the FlashPix spec	*/
-			/* does not specify what subsampling values are valid for these	*/
-			/* cases, so we simply ignore them via the following override.	*/
-			if((jpg->bytes < 3) && (jpg->subsampling > 0x11)){
-				jpg->subsampling = 0x11;
-				ret = eJPEG_NO_ERROR;
-			}
-			else if (jpg->subsampling == 0x22)
-			{
-				if (jpg->bytes == 4)  {
-					jpg->iHsamp[0] = jpg->iVsamp[0] = 2;
-					jpg->iHsamp[3] = jpg->iVsamp[3] = 2;
-				}
-				else {
-					jpg->iHsamp[0] = jpg->iVsamp[0] = 2;
-				}
-				ret = eJPEG_NO_ERROR;
-			}
-			else if (jpg->subsampling == 0x21)
-			{
-				if (jpg->bytes == 4)  {
-					jpg->iHsamp[0] = 2;
-					jpg->iHsamp[3] = 2;
-				}
-				else {
-					jpg->iHsamp[0] = 2;
-				}
-				jpg->iHsamp[0] = 2;
-				ret = eJPEG_NO_ERROR;
-			}
-			else { /* must be non-subsampled (0x11) */
+      /* Subsampling of 1 and 2-channel images is not supported, so   */
+      /* disable internal subdsampling. Note that the FlashPix spec */
+      /* does not specify what subsampling values are valid for these */
+      /* cases, so we simply ignore them via the following override.  */
+      if((jpg->bytes < 3) && (jpg->subsampling > 0x11)){
+        jpg->subsampling = 0x11;
+        ret = eJPEG_NO_ERROR;
+      }
+      else if (jpg->subsampling == 0x22)
+      {
+        if (jpg->bytes == 4)  {
+          jpg->iHsamp[0] = jpg->iVsamp[0] = 2;
+          jpg->iHsamp[3] = jpg->iVsamp[3] = 2;
+        }
+        else {
+          jpg->iHsamp[0] = jpg->iVsamp[0] = 2;
+        }
+        ret = eJPEG_NO_ERROR;
+      }
+      else if (jpg->subsampling == 0x21)
+      {
+        if (jpg->bytes == 4)  {
+          jpg->iHsamp[0] = 2;
+          jpg->iHsamp[3] = 2;
+        }
+        else {
+          jpg->iHsamp[0] = 2;
+        }
+        jpg->iHsamp[0] = 2;
+        ret = eJPEG_NO_ERROR;
+      }
+      else { /* must be non-subsampled (0x11) */
 
-				ret = eJPEG_NO_ERROR;
-			}
-		}
+        ret = eJPEG_NO_ERROR;
+      }
+    }
 
-		return(ret);
-	}
-	else
-		return(eJPEG_INVALID_ENCODER);
+    return(ret);
+  }
+  else
+    return(eJPEG_INVALID_ENCODER);
 
 }
 
@@ -406,43 +406,43 @@ int bytesPerPixel  /* how many bytes per pixel */
  compression subtype field.
 */
 int eJPEG_CreateHeader(
-void *encoder,	     /* same value returned by eJPEG_Init */
-long hdrBufferSize,	     /* the size of the <hdrBuffer> in bytes */
+void *encoder,       /* same value returned by eJPEG_Init */
+long hdrBufferSize,      /* the size of the <hdrBuffer> in bytes */
 unsigned char *hdrBuffer, /* the buffer itself */
-long *hdrBufferUsed	     /* upon return shows the amount of
-					<hdrBuffer> that was used */
+long *hdrBufferUsed      /* upon return shows the amount of
+          <hdrBuffer> that was used */
 )
 {
-	ENCODER_STRUCT *jpg = (ENCODER_STRUCT *)encoder;
+  ENCODER_STRUCT *jpg = (ENCODER_STRUCT *)encoder;
 
-	if(jpg != NULL ){
+  if(jpg != NULL ){
 
-		JPEGEncodeTileInit(
-		    NULL,
-		    jpg->xPixels,
-		    jpg->yPixels,
-		    jpg->bytes,    /* number of bytes per pixel */
-		jpg->qFactor,
-		    jpg->iHsamp,
-		    jpg->iVsamp, /* Hor. & Vert. subsampling factors */
-		jpg->interleaveType,   
-		    &jpg->tile_data,
-		    jpg->nu_huff, /* # of Huffman Tables (a max of 8 tables, ie four DC-AC sets) */
-		jpg->HuffTables,
-		    jpg->CompDCHuffIdent,
-		    jpg->CompACHuffIdent,
-		    jpg->nu_qtables, /* # of Q-tables (a max of 4 tables) */
-		jpg->QuantTables,
-		    jpg->CompQuantIdent,
-		    &jpg->jpegStruct,
-		    hdrBuffer,
-		    hdrBufferSize,
-		    hdrBufferUsed);
+    JPEGEncodeTileInit(
+        NULL,
+        jpg->xPixels,
+        jpg->yPixels,
+        jpg->bytes,    /* number of bytes per pixel */
+    jpg->qFactor,
+        jpg->iHsamp,
+        jpg->iVsamp, /* Hor. & Vert. subsampling factors */
+    jpg->interleaveType,   
+        &jpg->tile_data,
+        jpg->nu_huff, /* # of Huffman Tables (a max of 8 tables, ie four DC-AC sets) */
+    jpg->HuffTables,
+        jpg->CompDCHuffIdent,
+        jpg->CompACHuffIdent,
+        jpg->nu_qtables, /* # of Q-tables (a max of 4 tables) */
+    jpg->QuantTables,
+        jpg->CompQuantIdent,
+        &jpg->jpegStruct,
+        hdrBuffer,
+        hdrBufferSize,
+        hdrBufferUsed);
 
-		return(eJPEG_NO_ERROR);
-	}
-	else
-		return(eJPEG_INVALID_ENCODER);
+    return(eJPEG_NO_ERROR);
+  }
+  else
+    return(eJPEG_INVALID_ENCODER);
 }
 
 /* see explanation above  */
@@ -450,176 +450,176 @@ long *hdrBufferUsed	     /* upon return shows the amount of
 int eJPEG_ConcatenateHeader(
 void *encoder,   /* same value returned by eJPEG_Init */
 unsigned char *hdrBuffer, /* the buffer itself */
-long *hdrBufferUsed	     /* upon return shows the amount of
-					<hdrBuffer> that was used */
+long *hdrBufferUsed      /* upon return shows the amount of
+          <hdrBuffer> that was used */
 )
 {
-	int ret;
-	long size,size_minus_eoi;
-	unsigned char tempBuf[HDR_BUFF_SIZE];
-	ENCODER_STRUCT *jpg = (ENCODER_STRUCT *)encoder;
+  int ret;
+  long size,size_minus_eoi;
+  unsigned char tempBuf[HDR_BUFF_SIZE];
+  ENCODER_STRUCT *jpg = (ENCODER_STRUCT *)encoder;
 
-	ret = eJPEG_CreateHeader(encoder, HDR_BUFF_SIZE, tempBuf, &size);
-	size_minus_eoi = size-2;
-	*hdrBufferUsed = size;
+  ret = eJPEG_CreateHeader(encoder, HDR_BUFF_SIZE, tempBuf, &size);
+  size_minus_eoi = size-2;
+  *hdrBufferUsed = size;
 
-	if(ret)
-		return(ret);
+  if(ret)
+    return(ret);
 
-	if(jpg != NULL ){
-		jpg->headerBytes = size_minus_eoi;
-		jpg->header = (unsigned char *) FPX_malloc(size);
-		if (memcpy(jpg->header, tempBuf, (size_t) size_minus_eoi))
-			ret = eJPEG_NO_ERROR;
-		else
-			ret = eJPEG_MEMORY_ERROR;
+  if(jpg != NULL ){
+    jpg->headerBytes = size_minus_eoi;
+    jpg->header = (unsigned char *) FPX_malloc(size);
+    if (memcpy(jpg->header, tempBuf, (size_t) size_minus_eoi))
+      ret = eJPEG_NO_ERROR;
+    else
+      ret = eJPEG_MEMORY_ERROR;
 
-	}
+  }
 
-	hdrBuffer = jpg->header;
+  hdrBuffer = jpg->header;
 
-	return(ret);
+  return(ret);
 }
 
 long eJPEG_EncodeTile(
-void *encoder,		/* same value returned by eJPEG_Init */
-unsigned char *inbuf,	/* assumed to be the size of a tile or sub-
-				   sampled tile! */
-unsigned char *outbuf,	/* the buffer to put the compressed tile into */
-size_t outbuf_size	/* size of the output buffer */
+void *encoder,    /* same value returned by eJPEG_Init */
+unsigned char *inbuf, /* assumed to be the size of a tile or sub-
+           sampled tile! */
+unsigned char *outbuf,  /* the buffer to put the compressed tile into */
+size_t outbuf_size  /* size of the output buffer */
 )
 {
-	int check;
-	long finalSize;
-	size_t inBufSize;
-	long offset;
-	ENCODER_STRUCT *jpg = (ENCODER_STRUCT *)encoder;
+  int check;
+  long finalSize;
+  size_t inBufSize;
+  long offset;
+  ENCODER_STRUCT *jpg = (ENCODER_STRUCT *)encoder;
 
-	if(jpg != NULL ){
-		inBufSize = jpg->xPixels * jpg->yPixels * jpg->bytes;
+  if(jpg != NULL ){
+    inBufSize = jpg->xPixels * jpg->yPixels * jpg->bytes;
 
-		/* initialize output buffer to input buffer (needed for
-	   no color rotation, no subsample case)
-	*/
-		if (inBufSize < outbuf_size) 
-			return (-1);
-		memcpy(jpg->scratch, inbuf, inBufSize);
+    /* initialize output buffer to input buffer (needed for
+     no color rotation, no subsample case)
+  */
+    if (inBufSize < outbuf_size) 
+      return (-1);
+    memcpy(jpg->scratch, inbuf, inBufSize);
 
-		/* decide whether or not we need to subsample and/or YCrCb */
-		if(!jpg->YCrCbDisabled)
-		{
-			if(!jpg->ssDisabled && (jpg->subsampling == 0x22)){
-				/* subsample and YCrCb  */
-				RGBtoYCrCb_SubSample411(
-				    (unsigned char *) inbuf, 
-				    (unsigned char *) jpg->scratch,
-				    jpg->xPixels, 
-				    jpg->bytes);
-				if (jpg->bytes == 3)
-					inBufSize = inBufSize >> 1;
-				else if (jpg->bytes == 4)
-					inBufSize = 10 * inBufSize / 16;
-			}
-			else if (!jpg->ssDisabled && (jpg->subsampling == 0x21)) {
-				RGBtoYCrCb_SubSample422(
-				    (unsigned char *) inbuf, 
-				    (unsigned char *) jpg->scratch,
-				    jpg->xPixels, 
-				    jpg->bytes);
-				if (jpg->bytes == 3)
-					inBufSize = 4 * inBufSize / 6;
-				else if (jpg->bytes == 4)
-					inBufSize = 6 * inBufSize / 8;
-			}
-			else {
-				/* just YCrCb it */
-				RGBtoYCrCb(
-				    (unsigned char *) inbuf, 
-				    (unsigned char *) jpg->scratch,
-				    jpg->xPixels, 
-				    jpg->bytes);
-			}
-		}
-		else { /* don't YCrCb rotate */
+    /* decide whether or not we need to subsample and/or YCrCb */
+    if(!jpg->YCrCbDisabled)
+    {
+      if(!jpg->ssDisabled && (jpg->subsampling == 0x22)){
+        /* subsample and YCrCb  */
+        RGBtoYCrCb_SubSample411(
+            (unsigned char *) inbuf, 
+            (unsigned char *) jpg->scratch,
+            jpg->xPixels, 
+            jpg->bytes);
+        if (jpg->bytes == 3)
+          inBufSize = inBufSize >> 1;
+        else if (jpg->bytes == 4)
+          inBufSize = 10 * inBufSize / 16;
+      }
+      else if (!jpg->ssDisabled && (jpg->subsampling == 0x21)) {
+        RGBtoYCrCb_SubSample422(
+            (unsigned char *) inbuf, 
+            (unsigned char *) jpg->scratch,
+            jpg->xPixels, 
+            jpg->bytes);
+        if (jpg->bytes == 3)
+          inBufSize = 4 * inBufSize / 6;
+        else if (jpg->bytes == 4)
+          inBufSize = 6 * inBufSize / 8;
+      }
+      else {
+        /* just YCrCb it */
+        RGBtoYCrCb(
+            (unsigned char *) inbuf, 
+            (unsigned char *) jpg->scratch,
+            jpg->xPixels, 
+            jpg->bytes);
+      }
+    }
+    else { /* don't YCrCb rotate */
 
-			if(!jpg->ssDisabled && (jpg->subsampling == 0x22)){
-				/* just subsample it */
-				SubSample411(
-				    (unsigned char *) inbuf, 
-				    (unsigned char *) jpg->scratch,
-				    jpg->xPixels, 
-				    jpg->bytes);
-				if (jpg->bytes == 3)
-					inBufSize = inBufSize >> 1;
-				else if (jpg->bytes == 4)
-					inBufSize = 10 * inBufSize / 16;
-			}
-			else if (!jpg->ssDisabled && (jpg->subsampling == 0x21)) {
-				SubSample422(
-				    (unsigned char *)inbuf, 
-				    (unsigned char *) jpg->scratch,
-				    jpg->xPixels, 
-				    jpg->bytes);
-				if (jpg->bytes == 3)
-					inBufSize = 4 * inBufSize / 6;
-				else if (jpg->bytes == 4)
-					inBufSize = 6 * inBufSize / 8;
-			}
-		}
-		jpg->tile_data.data = jpg->scratch;
-		offset = (jpg->headerBytes != 0) ? -2 : 0;
+      if(!jpg->ssDisabled && (jpg->subsampling == 0x22)){
+        /* just subsample it */
+        SubSample411(
+            (unsigned char *) inbuf, 
+            (unsigned char *) jpg->scratch,
+            jpg->xPixels, 
+            jpg->bytes);
+        if (jpg->bytes == 3)
+          inBufSize = inBufSize >> 1;
+        else if (jpg->bytes == 4)
+          inBufSize = 10 * inBufSize / 16;
+      }
+      else if (!jpg->ssDisabled && (jpg->subsampling == 0x21)) {
+        SubSample422(
+            (unsigned char *)inbuf, 
+            (unsigned char *) jpg->scratch,
+            jpg->xPixels, 
+            jpg->bytes);
+        if (jpg->bytes == 3)
+          inBufSize = 4 * inBufSize / 6;
+        else if (jpg->bytes == 4)
+          inBufSize = 6 * inBufSize / 8;
+      }
+    }
+    jpg->tile_data.data = jpg->scratch;
+    offset = (jpg->headerBytes != 0) ? -2 : 0;
 
-		/* jpg->headerBytes != 0 means that header & entropy data are 
-	   in the same jfif bitstream, so the EOI-SOI markers at the 
-	   end of the header and the beginning of the entropy bitstreams
-	   need to be striped off.
-	*/
-		check = JPEGEncodeTile(
-		    &jpg->tile_data,
-		    &jpg->jpegStruct,
-		    jpg->CompDCHuffIdent,
-		    jpg->CompACHuffIdent,
-		    jpg->CompQuantIdent,
-		    outbuf + jpg->headerBytes + offset,
-		    jpg->xPixels * jpg->yPixels * jpg->bytes,
-		    &finalSize);
+    /* jpg->headerBytes != 0 means that header & entropy data are 
+     in the same jfif bitstream, so the EOI-SOI markers at the 
+     end of the header and the beginning of the entropy bitstreams
+     need to be striped off.
+  */
+    check = JPEGEncodeTile(
+        &jpg->tile_data,
+        &jpg->jpegStruct,
+        jpg->CompDCHuffIdent,
+        jpg->CompACHuffIdent,
+        jpg->CompQuantIdent,
+        outbuf + jpg->headerBytes + offset,
+        jpg->xPixels * jpg->yPixels * jpg->bytes,
+        &finalSize);
 
-		/* Are supposed to include the header in the tile */
-		if(jpg->headerBytes){
-			memcpy(outbuf, jpg->header, (size_t)jpg->headerBytes);
-			finalSize += (jpg->headerBytes - 2);
+    /* Are supposed to include the header in the tile */
+    if(jpg->headerBytes){
+      memcpy(outbuf, jpg->header, (size_t)jpg->headerBytes);
+      finalSize += (jpg->headerBytes - 2);
 
-			/* adjusted by the size of the EOI-SOI markers which
-	       have been striped off */
-		}
-		/* notice that the SOI in the entropy bitstream will be overwritten by 
-	   the last two bytes of the header bitstream */
+      /* adjusted by the size of the EOI-SOI markers which
+         have been striped off */
+    }
+    /* notice that the SOI in the entropy bitstream will be overwritten by 
+     the last two bytes of the header bitstream */
 
-	}
-	return(finalSize);
+  }
+  return(finalSize);
 }
 
 /* Once you are finished with the encoder, you have to call this. */
 int eJPEG_Shutdown(void* encoder)
 {
-	ENCODER_STRUCT *jpg = (ENCODER_STRUCT *)encoder;
+  ENCODER_STRUCT *jpg = (ENCODER_STRUCT *)encoder;
 
-	if( jpg )
-	{
-		if(jpg->header) {
-			FPX_free(jpg->header);
-			jpg->header = NULL;						/* CHG_JPEG_MEM_FIX - clear ptr */
-		}
-		if(jpg->scratch) {
-			FPX_free(jpg->scratch);
-			jpg->scratch = NULL;					/* CHG_JPEG_MEM_FIX - clear ptr */
-		}
-		FPX_free(jpg);
-		jpg = 0;									/* CHG_JPEG_MEM_FIX - clear ptr */
+  if( jpg )
+  {
+    if(jpg->header) {
+      FPX_free(jpg->header);
+      jpg->header = NULL;           /* CHG_JPEG_MEM_FIX - clear ptr */
+    }
+    if(jpg->scratch) {
+      FPX_free(jpg->scratch);
+      jpg->scratch = NULL;          /* CHG_JPEG_MEM_FIX - clear ptr */
+    }
+    FPX_free(jpg);
+    jpg = 0;                  /* CHG_JPEG_MEM_FIX - clear ptr */
 
-		return(TRUE);
-	}
+    return(TRUE);
+  }
 
-	return(FALSE);
+  return(FALSE);
 
 } /* eJPEG_Shutdown() */

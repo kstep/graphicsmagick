@@ -18,45 +18,45 @@
 */
 
 typedef struct {            /* one structure for each image component */
-	int *mcu_buf;               /* buffer of current MCU */
-	int hsampling;              /* # horizontal data units in one MCU */
-	int vsampling;              /* # vertical data units in one MCU */
-	int scale_x;                /* scale factor = max(hsamplings)/hsampling */
-	int scale_y;                /* scale factor = max(vsamplings)/vsampling */
-	int block_x, block_y;       /* position of current 8x8 block within MCU */
-	int offset_to_next_row;
+  int *mcu_buf;               /* buffer of current MCU */
+  int hsampling;              /* # horizontal data units in one MCU */
+  int vsampling;              /* # vertical data units in one MCU */
+  int scale_x;                /* scale factor = max(hsamplings)/hsampling */
+  int scale_y;                /* scale factor = max(vsamplings)/vsampling */
+  int block_x, block_y;       /* position of current 8x8 block within MCU */
+  int offset_to_next_row;
 } BCOMPONENT;
 
 typedef struct {
-	unsigned char *db_buf; /* local data buffer */
-	unsigned char *db_ptr; /* points to next byte with unprocessed bits
-	                          in db_buf*/
-	int db_size;           /* local buffer size = BUFFER_SIZE + extra */
-	unsigned char *db_inbuf;   /* memory-buffer with compressed data */
-	unsigned char *db_inptr;   /* pointer to db_inbuf */
-	int db_inbuf_size;     /* size of compressed data buffer */
-	long db_byte_count;    /* total number of processed bytes from inbuf */
-	unsigned char *db_supplied_bufs; /* externally allocated out-buffer */
-	unsigned char *db_supplied_ptr;  /* pointer to externally supplied buffer */
-	unsigned char *db_outbuf;   /* output image buffer */
-	unsigned char *db_outptr;   /* pointer to db_outbuf */
-	unsigned int *db_MCUbuf;   /* output buffer sequential MCU order */
-	unsigned int *db_MCUptr;   /* pointer to db_MCUbuf */
-	int db_nbytes;         /* number of unprocessed bytes in db_buf, 
+  unsigned char *db_buf; /* local data buffer */
+  unsigned char *db_ptr; /* points to next byte with unprocessed bits
+                            in db_buf*/
+  int db_size;           /* local buffer size = BUFFER_SIZE + extra */
+  unsigned char *db_inbuf;   /* memory-buffer with compressed data */
+  unsigned char *db_inptr;   /* pointer to db_inbuf */
+  int db_inbuf_size;     /* size of compressed data buffer */
+  long db_byte_count;    /* total number of processed bytes from inbuf */
+  unsigned char *db_supplied_bufs; /* externally allocated out-buffer */
+  unsigned char *db_supplied_ptr;  /* pointer to externally supplied buffer */
+  unsigned char *db_outbuf;   /* output image buffer */
+  unsigned char *db_outptr;   /* pointer to db_outbuf */
+  unsigned int *db_MCUbuf;   /* output buffer sequential MCU order */
+  unsigned int *db_MCUptr;   /* pointer to db_MCUbuf */
+  int db_nbytes;         /* number of unprocessed bytes in db_buf, 
                           including the 1st byte that has some bits
-	                          already processed */
-	int db_nbits;          /* number of unprocessed bits in *db_ptr,
-	                          in [0,8] inclusive */
-	long nbytes_left;      /* number of unprocessed bytes in inbuf */
-	int db_push_back_ff00; /* normally, bytes ff00 is replaced by byte ff.
+                            already processed */
+  int db_nbits;          /* number of unprocessed bits in *db_ptr,
+                            in [0,8] inclusive */
+  long nbytes_left;      /* number of unprocessed bytes in inbuf */
+  int db_push_back_ff00; /* normally, bytes ff00 is replaced by byte ff.
                           In rare instances, this replacement causes
                           another replacement so that ff0000 becomes
                           just ff.  This happens only if after the
                           first replacement, byte ff is pushed back 
                           and the next byte is 00.  This boolean
                           variable is set true in this case, so that
-	                          the next replacement will not happen */
-	/*
+                            the next replacement will not happen */
+  /*
                             db_nbits
                                v
     |BYTE BYTE BYTE BYTE BYTE|BYTE BYTE BYTE BYTE BYTE BYTE BYTE BYTE|
@@ -65,24 +65,24 @@ typedef struct {
                              |<------------- db_nbytes ------------->|
 */
 
-	/** User provided IO routines **/
+  /** User provided IO routines **/
 
-	/**** Information about Output Image ****/
-	int db_image_w;             /* image width */
-	int db_ncomps;              /* number of components in the image */
-	BCOMPONENT db_comps[4];     /* image components (1,2,3 or 4) */
-	int db_max_hsampling;       /* max. hsampling of 'db_ncomps' components */
-	int db_max_vsampling;       /* max. vsampling of 'db_ncomps' components */
-	int db_current_col;         /* used to determine if db_our_rows are full */
-	unsigned char **db_row_bufs;/* output buffers */
-	unsigned char *db_xtra_buf; /* extra buffer used if db_supplied_bufs!=NULL */
-	int db_nrow_bufs;           /* number of row buffers */
-	int db_nrows_left;          /* number of rows to be written */
-	void (*proc_write_current_mcu)(void *, int);
-	int *db_current_buf;
-	unsigned char *db_current_buf2;
-	int db_offset_to_next_row;
-	int db_do_bound; /* has diff. meanings depending on db_state->db_ncomps */
+  /**** Information about Output Image ****/
+  int db_image_w;             /* image width */
+  int db_ncomps;              /* number of components in the image */
+  BCOMPONENT db_comps[4];     /* image components (1,2,3 or 4) */
+  int db_max_hsampling;       /* max. hsampling of 'db_ncomps' components */
+  int db_max_vsampling;       /* max. vsampling of 'db_ncomps' components */
+  int db_current_col;         /* used to determine if db_our_rows are full */
+  unsigned char **db_row_bufs;/* output buffers */
+  unsigned char *db_xtra_buf; /* extra buffer used if db_supplied_bufs!=NULL */
+  int db_nrow_bufs;           /* number of row buffers */
+  int db_nrows_left;          /* number of rows to be written */
+  void (*proc_write_current_mcu)(void *, int);
+  int *db_current_buf;
+  unsigned char *db_current_buf2;
+  int db_offset_to_next_row;
+  int db_do_bound; /* has diff. meanings depending on db_state->db_ncomps */
 } DB_STATE;
 
 

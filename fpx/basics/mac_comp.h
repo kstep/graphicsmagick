@@ -1,12 +1,12 @@
 //  ------------------------------------------------------------------------------------------------
 //  MODULE      : MacCompatibility
 //  LANGAGE     : C and C++
-//  CREATOR	    : Laurent SABORET 04/02/96, from FITypes.h and MacMem.h by Laurent ALBERT
-//	DESCRIPTION	: Define for all platforms common Mac types, constants and functions
-//				  Mustn't include ApplCommun.h
+//  CREATOR     : Laurent SABORET 04/02/96, from FITypes.h and MacMem.h by Laurent ALBERT
+//  DESCRIPTION : Define for all platforms common Mac types, constants and functions
+//          Mustn't include ApplCommun.h
 //
-//	COMMENT		  LS 04/09/96: Merge with Sophia's server
-//  SCCSID      : @(#)mac_comp.h	1.1 11:50:03 18 Dec 1996
+//  COMMENT     LS 04/09/96: Merge with Sophia's server
+//  SCCSID      : @(#)mac_comp.h  1.1 11:50:03 18 Dec 1996
 //  ----------------------------------------------------------------------------
 //  Copyright (c) 1999 Digital Imaging Group, Inc.
 //  For conditions of distribution and use, see copyright notice
@@ -28,12 +28,12 @@
     #include "b_error.h"
 #endif
 
-	#include <memory.h>
-	#include <string.h>
-	#include <stdlib.h>
+  #include <memory.h>
+  #include <string.h>
+  #include <stdlib.h>
 
 // Mac general headers
-#ifdef macintosh					
+#ifdef macintosh          
 
     #ifndef __QUICKDRAW__
         #include <Quickdraw.h>
@@ -108,7 +108,7 @@
 // Let's define Macintosh's functions on other machines :
 #ifndef macintosh
 
-	#define BlockMove(srcptr, dstptr, byteCount) memmove((dstptr), (srcptr), (byteCount))
+  #define BlockMove(srcptr, dstptr, byteCount) memmove((dstptr), (srcptr), (byteCount))
     
 #endif
 

@@ -241,9 +241,9 @@ inline CDirVector::CDirVector(USHORT cbSector)
 //--------------------------------------------------------------------------
 
 inline SCODE CDirVector::GetTable(
-	const DIRINDEX iTable,
-	const DWORD dwFlags,
-	CDirSect **ppds)
+  const DIRINDEX iTable,
+  const DWORD dwFlags,
+  CDirSect **ppds)
 {
     SCODE sc;
 
@@ -251,7 +251,7 @@ inline SCODE CDirVector::GetTable(
 
     if (sc == STG_S_NEWPAGE)
     {
-	(*ppds)->Init(_cbSector);
+  (*ppds)->Init(_cbSector);
     }
     return sc;
 }
@@ -307,8 +307,8 @@ inline SCODE CDirectory::GetStart(const SID sid, SECT *psect)
 
 
 inline SCODE CDirectory::GetSize(
-	const SID sid,
-	ULONG * pulSize)
+  const SID sid,
+  ULONG * pulSize)
 {
     SCODE sc;
     CDirEntry *pde;
@@ -334,8 +334,8 @@ inline SCODE CDirectory::GetChild(const SID sid, SID * psid)
 }
 
 inline SCODE CDirectory::GetFlags(
-	const SID sid,
-	MSENTRYFLAGS *pmse)
+  const SID sid,
+  MSENTRYFLAGS *pmse)
 {
     SCODE sc;
     CDirEntry *pde;
@@ -362,7 +362,7 @@ inline SCODE CDirectory::GetClassId(const SID sid, GUID *pcls)
 
 
 inline SCODE CDirectory::GetUserFlags(const SID sid,
-					       DWORD *pdwUserFlags)
+                 DWORD *pdwUserFlags)
 {
     SCODE sc;
     CDirEntry *pde;
@@ -376,9 +376,9 @@ inline SCODE CDirectory::GetUserFlags(const SID sid,
 }
 
 inline SCODE CDirectory::GetTime(
-	const SID sid,
-	WHICHTIME tt,
-	TIME_T *ptime)
+  const SID sid,
+  WHICHTIME tt,
+  TIME_T *ptime)
 {
     SCODE sc;
     CDirEntry *pde;
@@ -391,16 +391,16 @@ inline SCODE CDirectory::GetTime(
 }
 
 inline SID CDirectory::PairToSid(
-	DIRINDEX iTable,
-	DIROFFSET iEntry) const
+  DIRINDEX iTable,
+  DIROFFSET iEntry) const
 {
     return (SID)((iTable * _cdeEntries) + iEntry);
 }
 
 inline SCODE CDirectory::SidToPair(
-	SID sid,
-	DIRINDEX* pipds,
-	DIROFFSET* pide) const
+  SID sid,
+  DIRINDEX* pipds,
+  DIROFFSET* pide) const
 {
     *pipds = (DIRINDEX)(sid / _cdeEntries);
     *pide = (DIROFFSET)(sid % _cdeEntries);
@@ -415,8 +415,8 @@ inline void CDirectory::SetParent(CMStream *pms)
 
 
 inline SCODE CDirectory::IsEntry(SID const sidParent,
-	CDfName const *pdfn,
-	SEntryBuffer *peb)
+  CDfName const *pdfn,
+  SEntryBuffer *peb)
 {
     return FindEntry(sidParent, pdfn, DEOP_FIND, peb);
 }

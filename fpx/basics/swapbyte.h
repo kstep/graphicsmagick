@@ -1,10 +1,10 @@
 //  ------------------------------------------------------------------------------------------------
 //  MODULE      : SwapBytes
 //  LANGAGE     : C++
-//  CREATOR	    : Laurent SABORET 04/02/96, from FITypes.h by Laurent ALBERT
-//	DESCRIPTION	: Contains byte ordering functions
-//	COMMENT		: Doesn't compile with a C compiler
-//  SCCSID      : @(#)swapbyte.h	1.1 11:50:08 18 Dec 1996
+//  CREATOR     : Laurent SABORET 04/02/96, from FITypes.h by Laurent ALBERT
+//  DESCRIPTION : Contains byte ordering functions
+//  COMMENT   : Doesn't compile with a C compiler
+//  SCCSID      : @(#)swapbyte.h  1.1 11:50:08 18 Dec 1996
 //  ----------------------------------------------------------------------------
 //  Copyright (c) 1999 Digital Imaging Group, Inc.
 //  For conditions of distribution and use, see copyright notice

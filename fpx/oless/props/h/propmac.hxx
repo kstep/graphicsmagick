@@ -139,8 +139,8 @@ extern "C" ULONG DebugIndent;
 #define DEBTRACE_MAPSTM         (ULONG) 0x00000010
 #define DEBTRACE_PROPERTY       (ULONG) 0x00000020
 #define DEBTRACE_SUMCAT         (ULONG) 0x00000040
-#define DEBTRACE_PROPVALIDATE	(ULONG) 0x00010000	// awfully noisy
-#define DEBTRACE_PROPPATCH	(ULONG) 0x00020000	// awfully noisy
+#define DEBTRACE_PROPVALIDATE (ULONG) 0x00010000  // awfully noisy
+#define DEBTRACE_PROPPATCH  (ULONG) 0x00020000  // awfully noisy
 
 extern ULONG DbgPrint(PCHAR Format, ...);
 

@@ -5,9 +5,9 @@
 // 
 //  Copyright (c) 1999 Digital Imaging Group, Inc.
 // 
-//  Contents:	Reference ILockBytes class
+//  Contents: Reference ILockBytes class
 //
-//  Classes:	CFileILB
+//  Classes:  CFileILB
 //
 //  Notes:      This Class always call single byte I/O routines
 //              because most systems only have support for single byte
@@ -78,7 +78,7 @@ CFileILB::CFileILB(const TCHAR *pszName,
     if (fOpenFile)
     {
         // disregard if file is already there
-	Create(STGM_CREATE|STGM_READWRITE); 
+  Create(STGM_CREATE|STGM_READWRITE); 
         // got to open the file with this option
         assert(_f && "CFileILB could not open the file!");
     }

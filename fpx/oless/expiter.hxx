@@ -5,9 +5,9 @@
 // 
 //  Copyright (c) 1999 Digital Imaging Group, Inc.
 // 
-//  Contents:	CExposedIterator header file
+//  Contents: CExposedIterator header file
 //
-//  Classes:	CExposedIterator
+//  Classes:  CExposedIterator
 //
 //---------------------------------------------------------------
 
@@ -20,11 +20,11 @@ class CDirectStream;
 
 //+--------------------------------------------------------------
 //
-//  Class:	CExposedIterator (ei)
+//  Class:  CExposedIterator (ei)
 //
-//  Purpose:	Iterator for wrapped DocFiles
+//  Purpose:  Iterator for wrapped DocFiles
 //
-//  Interface:	See below
+//  Interface:  See below
 //
 //---------------------------------------------------------------
 
@@ -63,11 +63,11 @@ private:
 
 //+--------------------------------------------------------------
 //
-//  Member:	CExposedIterator::Validate, public
+//  Member: CExposedIterator::Validate, public
 //
-//  Synopsis:	Validates the signature
+//  Synopsis: Validates the signature
 //
-//  Returns:	Returns STG_E_INVALIDHANDLE if the signature 
+//  Returns:  Returns STG_E_INVALIDHANDLE if the signature 
 //              doesn't match
 //
 //---------------------------------------------------------------

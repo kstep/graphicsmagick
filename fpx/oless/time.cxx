@@ -15,11 +15,11 @@
 //
 // This should be a constant difference between the 2 time formats
 //
-#ifdef __GNUC__	// cater to differences of compiler syntax
+#ifdef __GNUC__ // cater to differences of compiler syntax
 const LONGLONG ci64DiffFTtoTT=11644473600LL; 
-#else				//  __GNUC__
+#else       //  __GNUC__
 const LONGLONG ci64DiffFTtoTT=11644473600;
-#endif				//  __GNUC__
+#endif        //  __GNUC__
 
 STDAPI_(void) FileTimeToTimeT(const FILETIME *pft, time_t *ptt)
 {

@@ -86,10 +86,10 @@ CleanupVariants(
 
 #if DBGPROPASSERT
 #define TraceStatus(szReason)                                   \
-	{							\
-	    DebugTrace(0, DEBTRACE_ERROR, (szReason "\n"));     \
-	    PROPASSERTMSG(szReason, !(DebugLevel & DEBTRACE_WARN)); \
-	}
+  {             \
+      DebugTrace(0, DEBTRACE_ERROR, (szReason "\n"));     \
+      PROPASSERTMSG(szReason, !(DebugLevel & DEBTRACE_WARN)); \
+  }
 
 
 #else
@@ -100,30 +100,30 @@ CleanupVariants(
 
 #define AssertVarField(field, cb) \
   PROPASSERT(FIELD_OFFSET(PROPVARIANT, iVal) == FIELD_OFFSET(PROPVARIANT, field) && \
-	 sizeof(((PROPVARIANT *) 0)->field) == (cb))
+   sizeof(((PROPVARIANT *) 0)->field) == (cb))
 
 #define AssertVarVector(field, cbElem) \
   PROPASSERT(FIELD_OFFSET(PROPVARIANT, cai.cElems) == \
-	     FIELD_OFFSET(PROPVARIANT, field.cElems) && \
+       FIELD_OFFSET(PROPVARIANT, field.cElems) && \
          FIELD_OFFSET(PROPVARIANT, cai.pElems) == \
-	     FIELD_OFFSET(PROPVARIANT, field.pElems) && \
-	 sizeof(((PROPVARIANT *) 0)->field.pElems[0]) == (cbElem))
+       FIELD_OFFSET(PROPVARIANT, field.pElems) && \
+   sizeof(((PROPVARIANT *) 0)->field.pElems[0]) == (cbElem))
 
-#define AssertByteField(field)	    AssertVarField(field, sizeof(BYTE))
-#define AssertShortField(field)	    AssertVarField(field, sizeof(SHORT))
-#define AssertLongField(field)	    AssertVarField(field, sizeof(LONG))
+#define AssertByteField(field)      AssertVarField(field, sizeof(BYTE))
+#define AssertShortField(field)     AssertVarField(field, sizeof(SHORT))
+#define AssertLongField(field)      AssertVarField(field, sizeof(LONG))
 #define AssertLongLongField(field)  AssertVarField(field, sizeof(LONGLONG))
 #define AssertStringField(field)    AssertVarField(field, sizeof(VOID *))
 
-#define AssertByteVector(field)	    AssertVarVector(field, sizeof(BYTE))
+#define AssertByteVector(field)     AssertVarVector(field, sizeof(BYTE))
 #define AssertShortVector(field)    AssertVarVector(field, sizeof(SHORT))
-#define AssertLongVector(field)	    AssertVarVector(field, sizeof(LONG))
+#define AssertLongVector(field)     AssertVarVector(field, sizeof(LONG))
 #define AssertLongLongVector(field) AssertVarVector(field, sizeof(LONGLONG))
 #define AssertStringVector(field)   AssertVarVector(field, sizeof(VOID *))
 #define AssertVariantVector(field)  AssertVarVector(field, sizeof(PROPVARIANT))
 
 
-#define BSTRLEN(bstrVal)	*((ULONG *) bstrVal - 1)
+#define BSTRLEN(bstrVal)  *((ULONG *) bstrVal - 1)
 
 
 /*+-------------------------------------------------------------------
@@ -141,12 +141,12 @@ class CBufferAllocator : public PMemoryAllocator
 public:
     inline CBufferAllocator(ULONG cbBuffer, VOID *pvBuffer)
     {
-	_cbFree = cbBuffer;
-	_pvCur = _pvBuffer = pvBuffer;
-#if _X86_	/* stack variables on x86 are not aligned*/
-	PROPASSERT(((ULONG) _pvCur & (sizeof(LONG) - 1)) == 0);
+  _cbFree = cbBuffer;
+  _pvCur = _pvBuffer = pvBuffer;
+#if _X86_ /* stack variables on x86 are not aligned*/
+  PROPASSERT(((ULONG) _pvCur & (sizeof(LONG) - 1)) == 0);
 #else /* RISC*/
-	PROPASSERT(((ULONG) _pvCur & (sizeof(LONGLONG) - 1)) == 0);
+  PROPASSERT(((ULONG) _pvCur & (sizeof(LONGLONG) - 1)) == 0);
 #endif /* X86/RISC*/
     }
 
@@ -166,26 +166,26 @@ private:
   
   Synopsis:    allocation from a buffer
   
-  Arguments:   [cb]	-- Count of bytes to be allocated.
+  Arguments:   [cb] -- Count of bytes to be allocated.
   
   Returns:     pointer to 'allocated' memory -- NULL if no space left
 ----------------------------------------------------------------------*/
 
-#define DEFINE_CBufferAllocator__Allocate			\
-VOID *								\
-CBufferAllocator::Allocate(ULONG cb)				\
-{								\
-    VOID *pv;							\
-								\
-    cb = (cb + sizeof(LONGLONG) - 1) & ~(sizeof(LONGLONG) - 1);	\
-    if (cb > _cbFree)						\
-    {								\
-        return(NULL);						\
-    }								\
-    pv = _pvCur;						\
-    _pvCur = (BYTE *) _pvCur + cb;				\
-    _cbFree -= cb;						\
-    return(pv);							\
+#define DEFINE_CBufferAllocator__Allocate     \
+VOID *                \
+CBufferAllocator::Allocate(ULONG cb)        \
+{               \
+    VOID *pv;             \
+                \
+    cb = (cb + sizeof(LONGLONG) - 1) & ~(sizeof(LONGLONG) - 1); \
+    if (cb > _cbFree)           \
+    {               \
+        return(NULL);           \
+    }               \
+    pv = _pvCur;            \
+    _pvCur = (BYTE *) _pvCur + cb;        \
+    _cbFree -= cb;            \
+    return(pv);             \
 }
 
 #endif /* #ifndef _PROPVAR_HXX_ */

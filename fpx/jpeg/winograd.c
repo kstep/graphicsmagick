@@ -33,27 +33,27 @@ LG2_DCT_SCALE bits of precision). It  returns the matrix created.
 EFUNC*/
 
 static double FloatI2DDctNorm[] = {
-	0.125000,0.173380,0.173380,0.163320,0.240485,0.163320,0.146984,0.226532,
-	0.226532,0.146984,0.125000,0.203873,0.213388,0.203873,0.125000,0.098212,
-	0.173380,0.192044,0.192044,0.173380,0.098212,0.067650,0.136224,0.163320,
-	0.172835,0.163320,0.136224,0.067650,0.034566,0.093833,0.128320,0.146984,
-	0.146984,0.128320,0.093833,0.034566,0.047944,0.088388,0.115485,0.125000,
-	0.115485,0.088388,0.047944,0.045162,0.079547,0.098212,0.098212,0.079547,
-	0.045162,0.040645,0.067650,0.077165,0.067650,0.040645,0.034566,0.053152,
-	0.053152,0.034566,0.027158,0.036612,0.027158,0.018707,0.018707,0.009558
+  0.125000,0.173380,0.173380,0.163320,0.240485,0.163320,0.146984,0.226532,
+  0.226532,0.146984,0.125000,0.203873,0.213388,0.203873,0.125000,0.098212,
+  0.173380,0.192044,0.192044,0.173380,0.098212,0.067650,0.136224,0.163320,
+  0.172835,0.163320,0.136224,0.067650,0.034566,0.093833,0.128320,0.146984,
+  0.146984,0.128320,0.093833,0.034566,0.047944,0.088388,0.115485,0.125000,
+  0.115485,0.088388,0.047944,0.045162,0.079547,0.098212,0.098212,0.079547,
+  0.045162,0.040645,0.067650,0.077165,0.067650,0.040645,0.034566,0.053152,
+  0.053152,0.034566,0.027158,0.036612,0.027158,0.018707,0.018707,0.009558
 };
 
 void Fill_Winograd_Quant_Table2(
 int *in,                         /* regular quantization table */
 int *out)                        /* winograd quantization table */
 {
-	double *fptr;
-	int i;
+  double *fptr;
+  int i;
 
-	fptr = FloatI2DDctNorm;
-	for (i = 0; i < 64; i++) {
-		*out++ = FIX(((double) *in++) * (*fptr++));
-	}
+  fptr = FloatI2DDctNorm;
+  for (i = 0; i < 64; i++) {
+    *out++ = FIX(((double) *in++) * (*fptr++));
+  }
 }
 
 
@@ -112,110 +112,110 @@ EFUNC*/
 
 void IDct_Winograd( DB_STATE *db_state, int *x)
 {
-	register int *lptr, r0,r1,r2,r3,r4,r5,r6,r7, tmp, i;
+  register int *lptr, r0,r1,r2,r3,r4,r5,r6,r7, tmp, i;
 
-	/** Do columns **/
-	for(lptr=x, i = 8; i > 0; i--, lptr++) {
-		in4 = lptr[40];
-		in7 = lptr[24];
-		stg4  = in4 - in7;
-		stg7  = in4 + in7;
+  /** Do columns **/
+  for(lptr=x, i = 8; i > 0; i--, lptr++) {
+    in4 = lptr[40];
+    in7 = lptr[24];
+    stg4  = in4 - in7;
+    stg7  = in4 + in7;
 
-		in5 = lptr[8];
-		in6 = lptr[56];
-		stg5  = in5 + in6;
-		stg6  = in5 - in6;
+    in5 = lptr[8];
+    in6 = lptr[56];
+    stg5  = in5 + in6;
+    stg6  = in5 - in6;
 
-		hold3 = SCALEM(b5*(stg4-stg6));
-		stg26 = SCALEM(b4*stg6) - hold3;
+    hold3 = SCALEM(b5*(stg4-stg6));
+    stg26 = SCALEM(b4*stg6) - hold3;
 
-		stg24 = hold3 - SCALEM(b2*stg4);
+    stg24 = hold3 - SCALEM(b2*stg4);
 
-		stg15 = stg5 - stg7;
-		stg17 = stg5 + stg7;
+    stg15 = stg5 - stg7;
+    stg17 = stg5 + stg7;
 
-		hold4 = stg26 - stg17;
-		hold5 = SCALEM(b3*stg15) - hold4;
-		stg44 = hold5 + stg24;
+    hold4 = stg26 - stg17;
+    hold5 = SCALEM(b3*stg15) - hold4;
+    stg44 = hold5 + stg24;
 
-		in0 = lptr[0];
-		in1 = lptr[32];
-		stg30 = in0 + in1;
-		stg31 = in0 - in1;
+    in0 = lptr[0];
+    in1 = lptr[32];
+    stg30 = in0 + in1;
+    stg31 = in0 - in1;
 
-		in2 = lptr[16];
-		in3 = lptr[48];
-		stg12 = in2 - in3;
-		stg13 = in2 + in3;
+    in2 = lptr[16];
+    in3 = lptr[48];
+    stg12 = in2 - in3;
+    stg13 = in2 + in3;
 
-		stg32 = SCALEM(b1*stg12) - stg13;
+    stg32 = SCALEM(b1*stg12) - stg13;
 
-		stg40 = stg30 + stg13;
-		stg43 = stg30 - stg13;
-		stg41 = stg31 + stg32;
-		stg42 = stg31 - stg32;
+    stg40 = stg30 + stg13;
+    stg43 = stg30 - stg13;
+    stg41 = stg31 + stg32;
+    stg42 = stg31 - stg32;
 
-		lptr[0]  = (stg40 + stg17);
-		lptr[8]  = (stg41 + hold4);
-		lptr[16] = (stg42 + hold5);
-		lptr[24] = (stg43 - stg44);
-		lptr[32] = (stg43 + stg44);
-		lptr[40] = (stg42 - hold5);
-		lptr[48] = (stg41 - hold4);
-		lptr[56] = (stg40 - stg17);
-	}
+    lptr[0]  = (stg40 + stg17);
+    lptr[8]  = (stg41 + hold4);
+    lptr[16] = (stg42 + hold5);
+    lptr[24] = (stg43 - stg44);
+    lptr[32] = (stg43 + stg44);
+    lptr[40] = (stg42 - hold5);
+    lptr[48] = (stg41 - hold4);
+    lptr[56] = (stg40 - stg17);
+  }
 
-	/*  Do Rows */
-	for(lptr=x,i = 8; i > 0; i--, lptr+=8) {
-		in4 = lptr[5];
-		in7 = lptr[3];
-		stg4  = in4 - in7;
-		stg7  = in4 + in7;
+  /*  Do Rows */
+  for(lptr=x,i = 8; i > 0; i--, lptr+=8) {
+    in4 = lptr[5];
+    in7 = lptr[3];
+    stg4  = in4 - in7;
+    stg7  = in4 + in7;
 
-		in5 = lptr[1];
-		in6 = lptr[7];
-		stg5  = in5 + in6;
-		stg6  = in5 - in6;
+    in5 = lptr[1];
+    in6 = lptr[7];
+    stg5  = in5 + in6;
+    stg6  = in5 - in6;
 
-		hold3 = SCALEM(b5*(stg4-stg6));
-		stg26 = SCALEM(b4*stg6) - hold3;
+    hold3 = SCALEM(b5*(stg4-stg6));
+    stg26 = SCALEM(b4*stg6) - hold3;
 
-		stg24 = hold3 - SCALEM(b2*stg4);
+    stg24 = hold3 - SCALEM(b2*stg4);
 
-		stg15 = stg5 - stg7;
-		stg17 = stg5 + stg7;
+    stg15 = stg5 - stg7;
+    stg17 = stg5 + stg7;
 
-		hold4 = stg26 - stg17;
-		hold5 = SCALEM(b3*stg15) - hold4;
-		stg44 = hold5 + stg24;
+    hold4 = stg26 - stg17;
+    hold5 = SCALEM(b3*stg15) - hold4;
+    stg44 = hold5 + stg24;
 
-		in0 = lptr[0];
-		in1 = lptr[4];
-		stg30 = in0 + in1;
-		stg31 = in0 - in1;
+    in0 = lptr[0];
+    in1 = lptr[4];
+    stg30 = in0 + in1;
+    stg31 = in0 - in1;
 
-		in2 = lptr[2];
-		in3 = lptr[6];
-		stg12 = in2 - in3;
-		stg13 = in2 + in3;
+    in2 = lptr[2];
+    in3 = lptr[6];
+    stg12 = in2 - in3;
+    stg13 = in2 + in3;
 
-		stg32 = SCALEM(b1*stg12) - stg13;
+    stg32 = SCALEM(b1*stg12) - stg13;
 
-		stg40 = stg30 + stg13;
-		stg43 = stg30 - stg13;
-		stg41 = stg31 + stg32;
-		stg42 = stg31 - stg32;
+    stg40 = stg30 + stg13;
+    stg43 = stg30 - stg13;
+    stg41 = stg31 + stg32;
+    stg42 = stg31 - stg32;
 
-		/* remove the 5-EXTRA-fractional bits by using SCALEE */
-		SHIFT_AND_BOUND(r3,SCALEE(stg40 + stg17),*db_state->db_MCUptr++);
-		SHIFT_AND_BOUND(r3,SCALEE(stg41 + hold4),*db_state->db_MCUptr++);
-		SHIFT_AND_BOUND(r3,SCALEE(stg42 + hold5),*db_state->db_MCUptr++);
-		SHIFT_AND_BOUND(r3,SCALEE(stg43 - stg44),*db_state->db_MCUptr++);
-		SHIFT_AND_BOUND(r3,SCALEE(stg43 + stg44),*db_state->db_MCUptr++);
-		SHIFT_AND_BOUND(r3,SCALEE(stg42 - hold5),*db_state->db_MCUptr++);
-		SHIFT_AND_BOUND(r3,SCALEE(stg41 - hold4),*db_state->db_MCUptr++);
-		SHIFT_AND_BOUND(r3,SCALEE(stg40 - stg17),*db_state->db_MCUptr++);
-	}
+    /* remove the 5-EXTRA-fractional bits by using SCALEE */
+    SHIFT_AND_BOUND(r3,SCALEE(stg40 + stg17),*db_state->db_MCUptr++);
+    SHIFT_AND_BOUND(r3,SCALEE(stg41 + hold4),*db_state->db_MCUptr++);
+    SHIFT_AND_BOUND(r3,SCALEE(stg42 + hold5),*db_state->db_MCUptr++);
+    SHIFT_AND_BOUND(r3,SCALEE(stg43 - stg44),*db_state->db_MCUptr++);
+    SHIFT_AND_BOUND(r3,SCALEE(stg43 + stg44),*db_state->db_MCUptr++);
+    SHIFT_AND_BOUND(r3,SCALEE(stg42 - hold5),*db_state->db_MCUptr++);
+    SHIFT_AND_BOUND(r3,SCALEE(stg41 - hold4),*db_state->db_MCUptr++);
+    SHIFT_AND_BOUND(r3,SCALEE(stg40 - stg17),*db_state->db_MCUptr++);
+  }
 }
 
 
@@ -292,86 +292,86 @@ EFUNC*/
 
 void IDct_Pruned_Winograd( DB_STATE *db_state, int *x)
 {
-	register int *lptr, r0,r1,r2,r3,r4,r5,r6,r7, tmp, i;
+  register int *lptr, r0,r1,r2,r3,r4,r5,r6,r7, tmp, i;
 
-	/** Do columns **/
-	for(lptr=x, i = 4; i > 0; i--, lptr++) {
-		stg7 = -lptr[24];
-		stg5 = lptr[8];
+  /** Do columns **/
+  for(lptr=x, i = 4; i > 0; i--, lptr++) {
+    stg7 = -lptr[24];
+    stg5 = lptr[8];
 
-		stg15 = stg7 + stg5;
-		stg17 = stg7 - stg5;
+    stg15 = stg7 + stg5;
+    stg17 = stg7 - stg5;
 
-		hold3 = SCALEM(b5*stg17);
-		stg26 = SCALEM(b4*stg5) - hold3;
-		stg24 = hold3 - SCALEM(b2*stg7);
+    hold3 = SCALEM(b5*stg17);
+    stg26 = SCALEM(b4*stg5) - hold3;
+    stg24 = hold3 - SCALEM(b2*stg7);
 
-		hold4 = stg26 + stg17;
-		hold5 = SCALEM(b3*stg15) - hold4;
-		stg44 = hold5 + stg24;
+    hold4 = stg26 + stg17;
+    hold5 = SCALEM(b3*stg15) - hold4;
+    stg44 = hold5 + stg24;
 
-		stg30 = lptr[0];
-		stg12 = lptr[16];
-		stg40 = stg30 + stg12;
-		stg43 = stg30 - stg12;
+    stg30 = lptr[0];
+    stg12 = lptr[16];
+    stg40 = stg30 + stg12;
+    stg43 = stg30 - stg12;
 
-		stg32 = SCALEM(b1*stg12) - stg12;
-		stg41 = stg30 + stg32;
-		stg42 = stg30 - stg32;
+    stg32 = SCALEM(b1*stg12) - stg12;
+    stg41 = stg30 + stg32;
+    stg42 = stg30 - stg32;
 
-		lptr[0]  = (stg40 - stg17);
-		lptr[8]  = (stg41 + hold4);
-		lptr[16] = (stg42 + hold5);
-		lptr[24] = (stg43 - stg44);
-		lptr[32] = (stg43 + stg44);
-		lptr[40] = (stg42 - hold5);
-		lptr[48] = (stg41 - hold4);
-		lptr[56] = (stg40 + stg17);
-	}
+    lptr[0]  = (stg40 - stg17);
+    lptr[8]  = (stg41 + hold4);
+    lptr[16] = (stg42 + hold5);
+    lptr[24] = (stg43 - stg44);
+    lptr[32] = (stg43 + stg44);
+    lptr[40] = (stg42 - hold5);
+    lptr[48] = (stg41 - hold4);
+    lptr[56] = (stg40 + stg17);
+  }
 
-	/*  Do Rows */
-	for(lptr=x,i = 8; i > 0; i--, lptr+=8) {
-		stg7 = -lptr[3];
-		stg5 = lptr[1];
+  /*  Do Rows */
+  for(lptr=x,i = 8; i > 0; i--, lptr+=8) {
+    stg7 = -lptr[3];
+    stg5 = lptr[1];
 
-		stg15 = stg7 + stg5;
-		stg17 = stg7 - stg5;
+    stg15 = stg7 + stg5;
+    stg17 = stg7 - stg5;
 
-		hold3 = SCALEM(b5*stg17);
-		stg26 = SCALEM(b4*stg5) - hold3;
-		stg24 = hold3 - SCALEM(b2*stg7);
+    hold3 = SCALEM(b5*stg17);
+    stg26 = SCALEM(b4*stg5) - hold3;
+    stg24 = hold3 - SCALEM(b2*stg7);
 
-		hold4 = stg26 + stg17;
-		hold5 = SCALEM(b3*stg15) - hold4;
-		stg44 = hold5 + stg24;
+    hold4 = stg26 + stg17;
+    hold5 = SCALEM(b3*stg15) - hold4;
+    stg44 = hold5 + stg24;
 
-		stg30 = lptr[0];
-		stg12 = lptr[2];
-		stg40 = stg30 + stg12;
-		stg43 = stg30 - stg12;
+    stg30 = lptr[0];
+    stg12 = lptr[2];
+    stg40 = stg30 + stg12;
+    stg43 = stg30 - stg12;
 
-		stg32 = SCALEM(b1*stg12) - stg12;
-		stg41 = stg30 + stg32;
-		stg42 = stg30 - stg32;
+    stg32 = SCALEM(b1*stg12) - stg12;
+    stg41 = stg30 + stg32;
+    stg42 = stg30 - stg32;
 
-		/* remove the 5-EXTRA-fractional bits by using SCALEE */
-		SHIFT_AND_BOUND(r3,SCALEE(stg40 - stg17),*db_state->db_MCUptr++);
-		SHIFT_AND_BOUND(r3,SCALEE(stg41 + hold4),*db_state->db_MCUptr++);
-		SHIFT_AND_BOUND(r3,SCALEE(stg42 + hold5),*db_state->db_MCUptr++);
-		SHIFT_AND_BOUND(r3,SCALEE(stg43 - stg44),*db_state->db_MCUptr++);
-		SHIFT_AND_BOUND(r3,SCALEE(stg43 + stg44),*db_state->db_MCUptr++);
-		SHIFT_AND_BOUND(r3,SCALEE(stg42 - hold5),*db_state->db_MCUptr++);
-		SHIFT_AND_BOUND(r3,SCALEE(stg41 - hold4),*db_state->db_MCUptr++);
-		SHIFT_AND_BOUND(r3,SCALEE(stg40 + stg17),*db_state->db_MCUptr++);
-	}
+    /* remove the 5-EXTRA-fractional bits by using SCALEE */
+    SHIFT_AND_BOUND(r3,SCALEE(stg40 - stg17),*db_state->db_MCUptr++);
+    SHIFT_AND_BOUND(r3,SCALEE(stg41 + hold4),*db_state->db_MCUptr++);
+    SHIFT_AND_BOUND(r3,SCALEE(stg42 + hold5),*db_state->db_MCUptr++);
+    SHIFT_AND_BOUND(r3,SCALEE(stg43 - stg44),*db_state->db_MCUptr++);
+    SHIFT_AND_BOUND(r3,SCALEE(stg43 + stg44),*db_state->db_MCUptr++);
+    SHIFT_AND_BOUND(r3,SCALEE(stg42 - hold5),*db_state->db_MCUptr++);
+    SHIFT_AND_BOUND(r3,SCALEE(stg41 - hold4),*db_state->db_MCUptr++);
+    SHIFT_AND_BOUND(r3,SCALEE(stg40 + stg17),*db_state->db_MCUptr++);
+  }
 }
 
 
 /*** DC-component only  ***/
 void IDct_DC_Winograd( DB_STATE *db_state, int *x )
 {
-	register int i,tmp;
+  register int i,tmp;
 
-	for (i=64; i > 0 ;i--)
-		SHIFT_AND_BOUND(tmp,SCALEE(*x),*db_state->db_MCUptr++);
+  for (i=64; i > 0 ;i--)
+    SHIFT_AND_BOUND(tmp,SCALEE(*x),*db_state->db_MCUptr++);
 }

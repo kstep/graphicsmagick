@@ -386,17 +386,17 @@ SCODE CDocFile::SetStateBits(DWORD grfStateBits, DWORD grfMask)
 
 //+---------------------------------------------------------------------------
 //
-//  Member:	CDocFile::FindGreaterEntry, public (virtual)
+//  Member: CDocFile::FindGreaterEntry, public (virtual)
 //
-//  Synopsis:	Returns the next greater child
+//  Synopsis: Returns the next greater child
 //
-//  Arguments:	[pdfnKey]  - Previous key
+//  Arguments:  [pdfnKey]  - Previous key
 //              [pNextKey] - The found key
 //              [pstat]    - Full iterator buffer
 //
 //  Returns:    Appropriate status code
 //
-//  Modifies:	[pstat]    - if it is not null
+//  Modifies: [pstat]    - if it is not null
 //              [pNextKey] - if it is not null
 //
 //----------------------------------------------------------------------------

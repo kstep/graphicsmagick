@@ -52,7 +52,7 @@
 /** of precision to be removed at the last stage of the   **/
 /** inverse transformation                                **/
 #define SCALEE(x) \
-	( (int)(RIGHTS(((x)+(ONE<<(EXTRA_PRECISION-1))),EXTRA_PRECISION)) )
+  ( (int)(RIGHTS(((x)+(ONE<<(EXTRA_PRECISION-1))),EXTRA_PRECISION)) )
 /** scale the <EXTRA>-extra bits of precision **/
 
 JPEGEXPORT

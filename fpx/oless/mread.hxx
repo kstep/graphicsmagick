@@ -93,20 +93,20 @@ inline SECT CMStream::GetStart(SID sid) const
 
 //+---------------------------------------------------------------------------
 //
-//  Member:	CMStream::GetSect, private
+//  Member: CMStream::GetSect, private
 //
-//  Synopsis:	For a given SID and sect, return the location of that
+//  Synopsis: For a given SID and sect, return the location of that
 //              sector in the multistream.
 //
-//  Arguments:	[sid] -- SID of sector to locate
+//  Arguments:  [sid] -- SID of sector to locate
 //              [sect] -- Offset into chain to locate
 //              [psect] -- Pointer to return location.
 //
-//  Returns:	Appropriate status code
+//  Returns:  Appropriate status code
 //
-//  Modifies:	
+//  Modifies: 
 //
-//  Notes:	
+//  Notes:  
 //
 //----------------------------------------------------------------------------
 

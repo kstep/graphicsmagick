@@ -5,9 +5,9 @@
 // 
 //  Copyright (c) 1999 Digital Imaging Group, Inc.
 // 
-//  Contents:	ILockBytes memory implementation
+//  Contents: ILockBytes memory implementation
 //
-//  Classes:	CMapBytes
+//  Classes:  CMapBytes
 //
 //--------------------------------------------------------------------------
 
@@ -48,8 +48,8 @@ CMapBytes::CMapBytes(void)
 //
 //  Member:     CMapBytes::QueryInterface, public
 //
-//  Arguments:	[riid] - interface id
-//		[ppvObj] - place holder for interface
+//  Arguments:  [riid] - interface id
+//    [ppvObj] - place holder for interface
 //
 //  Returns:    Always fails
 //
@@ -69,7 +69,7 @@ STDMETHODIMP CMapBytes::QueryInterface(REFIID riid, LPVOID FAR* ppvObj)
 //
 //  Member:     CMapBytes::AddRef, public
 //
-//  Synopsis:	add reference
+//  Synopsis: add reference
 //
 //  Returns:    post reference count
 //
@@ -87,11 +87,11 @@ STDMETHODIMP_(ULONG) CMapBytes::AddRef(void)
 //
 //  Member:     CMapBytes::Release, public
 //
-//  Synopsis:	release reference
+//  Synopsis: release reference
 //
-//  Effects:	deletes object when reference count reaches zero
+//  Effects:  deletes object when reference count reaches zero
 //
-//  Returns:	post reference count
+//  Returns:  post reference count
 //
 //  Derivation: ILockBytes
 //
@@ -118,9 +118,9 @@ STDMETHODIMP_(ULONG) CMapBytes::Release(void)
 //  Synopsis:   Reads bytes from memory
 //
 //  Arguments:  [ulOffset] - byte offset
-//		[pv]       - input buffer
-//		[cb]       - count of bytes to read
-//		[pcbRead]  - count of bytes read
+//    [pv]       - input buffer
+//    [cb]       - count of bytes to read
+//    [pcbRead]  - count of bytes read
 //
 //  Returns:    SCODE
 //
@@ -131,9 +131,9 @@ STDMETHODIMP_(ULONG) CMapBytes::Release(void)
 //--------------------------------------------------------------------------
 
 STDMETHODIMP CMapBytes::ReadAt(ULARGE_INTEGER uliOffset,
-			       VOID HUGEP *pv,
-			       ULONG cb,
-			       ULONG *pcbRead)
+             VOID HUGEP *pv,
+             ULONG cb,
+             ULONG *pcbRead)
 {
     olAssert(ULIGetHigh(uliOffset) == 0);
 
@@ -158,29 +158,29 @@ STDMETHODIMP CMapBytes::ReadAt(ULARGE_INTEGER uliOffset,
 //
 //  Member:     CMapBytes::WriteAt, public
 //
-//  Synopsis:	Writes bytes to memory
+//  Synopsis: Writes bytes to memory
 //
-//  Effects:	May change memory size
+//  Effects:  May change memory size
 //
-//  Arguments:	[uliOffset]  - byte offset
-//		[pv]         - output buffer
-//		[cb]         - count of bytes to write
-//		[pcbWritten] - count of bytes written
+//  Arguments:  [uliOffset]  - byte offset
+//    [pv]         - output buffer
+//    [cb]         - count of bytes to write
+//    [pcbWritten] - count of bytes written
 //
-//  Returns:	SCODE
+//  Returns:  SCODE
 //
-//  Modifies:	pcbWritten
+//  Modifies: pcbWritten
 //
 //  Derivation: ILockBytes
 //
-//  Notes:	This implementation doesn't write partial buffers.
+//  Notes:  This implementation doesn't write partial buffers.
 //
 //--------------------------------------------------------------------------
 
 STDMETHODIMP CMapBytes::WriteAt(ULARGE_INTEGER uliOffset,
-				VOID const HUGEP *pv,
-				ULONG cb,
-				ULONG FAR *pcbWritten)
+        VOID const HUGEP *pv,
+        ULONG cb,
+        ULONG FAR *pcbWritten)
 {
     olAssert(ULIGetHigh(uliOffset) == 0);
 
@@ -215,9 +215,9 @@ STDMETHODIMP CMapBytes::WriteAt(ULARGE_INTEGER uliOffset,
 //
 //  Member:     CMapBytes::Flush, public
 //
-//  Synopsis:	flushes memory - not appropriate for this implementation
+//  Synopsis: flushes memory - not appropriate for this implementation
 //
-//  Effects:	none
+//  Effects:  none
 //
 //  Returns:    SUCCESS_SUCCESS
 //
@@ -234,13 +234,13 @@ STDMETHODIMP CMapBytes::Flush(void)
 //
 //  Member:     CMapBytes::GetSize, public
 //
-//  Synopsis:	gets memory buffer size
+//  Synopsis: gets memory buffer size
 //
-//  Arguments:	[pcb] - size place holder
+//  Arguments:  [pcb] - size place holder
 //
-//  Returns:	SUCCESS_SUCCESS
+//  Returns:  SUCCESS_SUCCESS
 //
-//  Modifies:	pcb
+//  Modifies: pcb
 //
 //  Derivation: ILockBytes
 //
@@ -257,13 +257,13 @@ STDMETHODIMP CMapBytes::GetSize(ULARGE_INTEGER FAR *pcb)
 //
 //  Member:     CMapBytes::SetSize, public
 //
-//  Synopsis:	sets memory buffer size
+//  Synopsis: sets memory buffer size
 //
-//  Effects:	may change buffer size
+//  Effects:  may change buffer size
 //
-//  Arguments:	[ulicb] - new memory size
+//  Arguments:  [ulicb] - new memory size
 //
-//  Returns:	SCODE
+//  Returns:  SCODE
 //
 //  Derivation: ILockBytes
 //
@@ -300,23 +300,23 @@ STDMETHODIMP CMapBytes::SetSize(ULARGE_INTEGER ulicb)
 //
 //  Member:     CMapBytes::LockRegion, public
 //
-//  Synopsis:	not supported (intentionally)
+//  Synopsis: not supported (intentionally)
 //
-//  Effects:	asserts if called
+//  Effects:  asserts if called
 //
-//  Arguments:	[libOffset]  - lock range offset
-//		[cb]         - lock range size
-//		[dwLockType] - lock type
+//  Arguments:  [libOffset]  - lock range offset
+//    [cb]         - lock range size
+//    [dwLockType] - lock type
 //
-//  Returns:	STG_E_INVALIDFUNCTION
+//  Returns:  STG_E_INVALIDFUNCTION
 //
 //  Derivation: ILockBytes
 //
 //--------------------------------------------------------------------------
 
 STDMETHODIMP CMapBytes::LockRegion(ULARGE_INTEGER libOffset,
-				   ULARGE_INTEGER cb,
-				   DWORD dwLockType)
+           ULARGE_INTEGER cb,
+           DWORD dwLockType)
 {
     olAssert(0 && "Can't lock CMapBytes");
     return ResultFromScode(STG_E_INVALIDFUNCTION);
@@ -326,23 +326,23 @@ STDMETHODIMP CMapBytes::LockRegion(ULARGE_INTEGER libOffset,
 //
 //  Member:     CMapBytes::UnLockRegion, public
 //
-//  Synopsis:	not supported (intentionally)
+//  Synopsis: not supported (intentionally)
 //
-//  Effects:	asserts if called
+//  Effects:  asserts if called
 //
-//  Arguments:	[libOffset]  - lock range offset
-//		[cb]         - lock range size
-//		[dwLockType] - lock type
+//  Arguments:  [libOffset]  - lock range offset
+//    [cb]         - lock range size
+//    [dwLockType] - lock type
 //
-//  Returns:	STG_E_INVALIDFUNCTION
+//  Returns:  STG_E_INVALIDFUNCTION
 //
 //  Derivation: ILockBytes
 //
 //--------------------------------------------------------------------------
 
 STDMETHODIMP CMapBytes::UnlockRegion(ULARGE_INTEGER libOffset,
-				     ULARGE_INTEGER cb,
-				     DWORD dwLockType)
+             ULARGE_INTEGER cb,
+             DWORD dwLockType)
 {
     olAssert(0 && "Can't unlock CMapBytes");
     return ResultFromScode(STG_E_INVALIDFUNCTION);
@@ -352,18 +352,18 @@ STDMETHODIMP CMapBytes::UnlockRegion(ULARGE_INTEGER libOffset,
 //
 //  Member:     CMapBytes::Stat, public
 //
-//  Synopsis:	Provide instance information
+//  Synopsis: Provide instance information
 //
-//  Arguments:	[pstatstg]    - status buffer
-//		[grfStatFlag] - status flags
+//  Arguments:  [pstatstg]    - status buffer
+//    [grfStatFlag] - status flags
 //
-//  Returns:	SCODE
+//  Returns:  SCODE
 //
-//  Modifies:	pstatstg
+//  Modifies: pstatstg
 //
 //  Derivation: ILockBytes
 //
-//  Notes:	No time stamps
+//  Notes:  No time stamps
 //
 //--------------------------------------------------------------------------
 

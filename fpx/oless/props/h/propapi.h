@@ -155,11 +155,11 @@ RtlPropertySetNameToGuid(
 NTSTATUS PROPSYSAPI PROPAPI
 RtlCreatePropertySet(
     IN NTMAPPEDSTREAM ms,       /* Nt mapped stream*/
-    IN USHORT Flags,	/* NONSIMPLE|*1* of READ/WRITE/CREATE/CREATEIF/DELETE*/
+    IN USHORT Flags,  /* NONSIMPLE|*1* of READ/WRITE/CREATE/CREATEIF/DELETE*/
     OPTIONAL IN GUID const *pguid, /* property set guid (create only)*/
     OPTIONAL IN GUID const *pclsid,/* CLASSID of propset code (create only)*/
-    IN NTMEMORYALLOCATOR ma,	/* memory allocator of caller*/
-    IN ULONG LocaleId,		/* Locale Id (create only)*/
+    IN NTMEMORYALLOCATOR ma,  /* memory allocator of caller*/
+    IN ULONG LocaleId,    /* Locale Id (create only)*/
     OPTIONAL OUT ULONG *pOSVersion,/* OS Version field in header.*/
     IN OUT USHORT *pCodePage,   /* IN: CodePage of property set (create only)*/
                                 /* OUT: CodePage of property set (always)*/

@@ -5,7 +5,7 @@
 // 
 //  Copyright (c) 1999 Digital Imaging Group, Inc.
 // 
-//  Contents:	CStrList implementation
+//  Contents: CStrList implementation
 //
 //---------------------------------------------------------------
 
@@ -15,9 +15,9 @@
 
 //+--------------------------------------------------------------
 //
-//  Member:	CStrList::CStrList, public
+//  Member: CStrList::CStrList, public
 //
-//  Synopsis:	Ctor
+//  Synopsis: Ctor
 //
 //---------------------------------------------------------------
 
@@ -28,9 +28,9 @@ CStrList::CStrList(void)
 
 //+--------------------------------------------------------------
 //
-//  Member:	CStrList::~CStrList, public
+//  Member: CStrList::~CStrList, public
 //
-//  Synopsis:	Dtor
+//  Synopsis: Dtor
 //
 //---------------------------------------------------------------
 
@@ -41,13 +41,13 @@ CStrList::~CStrList(void)
 
 //+--------------------------------------------------------------
 //
-//  Member:	CStrList::Add, public
+//  Member: CStrList::Add, public
 //
-//  Synopsis:	Adds a string to the list
+//  Synopsis: Adds a string to the list
 //
-//  Arguments:	[ptcs] - String
+//  Arguments:  [ptcs] - String
 //
-//  Returns:	Pointer to entry or NULL
+//  Returns:  Pointer to entry or NULL
 //
 //---------------------------------------------------------------
 
@@ -59,11 +59,11 @@ SStrEntry *CStrList::Add(OLECHAR *ptcs)
     pse = (SStrEntry *)new
         char[sizeof(SStrEntry)+olecslen(ptcs)*sizeof(OLECHAR)];
     if (pse == NULL)
-	return NULL;
+  return NULL;
     pse->pseNext = _pseHead;
     pse->psePrev = NULL;
     if (_pseHead)
-	_pseHead->psePrev = pse;
+  _pseHead->psePrev = pse;
     _pseHead = pse;
     olecscpy(pse->atc, ptcs);
     return pse;
@@ -71,34 +71,34 @@ SStrEntry *CStrList::Add(OLECHAR *ptcs)
 
 //+--------------------------------------------------------------
 //
-//  Member:	CStrList::Remove, public
+//  Member: CStrList::Remove, public
 //
-//  Synopsis:	Removes an entry from the list
+//  Synopsis: Removes an entry from the list
 //
-//  Arguments:	[pse] - Entry
+//  Arguments:  [pse] - Entry
 //
 //---------------------------------------------------------------
 
 void CStrList::Remove(SStrEntry *pse)
 {
     if (pse->psePrev)
-	pse->psePrev->pseNext = pse->pseNext;
+  pse->psePrev->pseNext = pse->pseNext;
     else
-	_pseHead = pse->pseNext;
+  _pseHead = pse->pseNext;
     if (pse->pseNext)
-	pse->pseNext->psePrev = pse->psePrev;
+  pse->pseNext->psePrev = pse->psePrev;
     delete pse;
 }
 
 //+--------------------------------------------------------------
 //
-//  Member:	CStrList::Find, public
+//  Member: CStrList::Find, public
 //
-//  Synopsis:	Attempts to find a string in the list
+//  Synopsis: Attempts to find a string in the list
 //
-//  Arguments:	[ptcs] - String
+//  Arguments:  [ptcs] - String
 //
-//  Returns:	Entry or NULL
+//  Returns:  Entry or NULL
 //
 //---------------------------------------------------------------
 
@@ -107,16 +107,16 @@ SStrEntry *CStrList::Find(OLECHAR *ptcs)
     SStrEntry *pse;
 
     for (pse = _pseHead; pse; pse = pse->pseNext)
-	if (!olecscmp(ptcs, pse->atc))
-	    return pse;
+  if (!olecscmp(ptcs, pse->atc))
+      return pse;
     return NULL;
 }
 
 //+--------------------------------------------------------------
 //
-//  Member:	CStrList::Empty, public
+//  Member: CStrList::Empty, public
 //
-//  Synopsis:	Frees all elements in list
+//  Synopsis: Frees all elements in list
 //
 //---------------------------------------------------------------
 
@@ -126,8 +126,8 @@ void CStrList::Empty(void)
 
     while (_pseHead)
     {
-	pse = _pseHead->pseNext;
-	delete _pseHead;
-	_pseHead = pse;
+  pse = _pseHead->pseNext;
+  delete _pseHead;
+  _pseHead = pse;
     }
 }

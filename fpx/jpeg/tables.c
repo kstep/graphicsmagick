@@ -57,9 +57,9 @@ SetDefaultTables(void *encoder)
    CompACHuffIdent[3]=CompDCHuffIdent[3]=1;
 
    err_num = eJPEG_SetHuffTables(jpg,4,(JPEGHuffTable **)(&HuffTables),
-				 CompDCHuffIdent,CompACHuffIdent);
+         CompDCHuffIdent,CompACHuffIdent);
    if (err_num != eJPEG_NO_ERROR)
-	return(err_num);
+  return(err_num);
 
    QuantTables[0].quantizer = DefaultLumQuant;
    QuantTables[0].ident = 0;
@@ -73,7 +73,7 @@ SetDefaultTables(void *encoder)
 
    err_num = eJPEG_SetQuantTables(jpg,2,(JPEGQuantTable **)(&QuantTables),CompQuantIdent);
    if (err_num != eJPEG_NO_ERROR)
-	return(err_num);
+  return(err_num);
 
    return(eJPEG_NO_ERROR);
 

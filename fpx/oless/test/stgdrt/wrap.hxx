@@ -5,15 +5,15 @@
 // 
 //  Copyright (c) 1999 Digital Imaging Group, Inc.
 // 
-//  Contents:	Interface wrappers for test
+//  Contents: Interface wrappers for test
 //
-//  Classes:	WStorage, WStream, WLockBytes, WEnmSTATSTG
+//  Classes:  WStorage, WStream, WLockBytes, WEnmSTATSTG
 //
 //
-//  Notes:	These wrappers function in legitimate cases only,
-//		they are not intended for testing illegitimate
-//		calls.
-//		QueryInterface does not return wrapped objects.
+//  Notes:  These wrappers function in legitimate cases only,
+//    they are not intended for testing illegitimate
+//    calls.
+//    QueryInterface does not return wrapped objects.
 //
 //---------------------------------------------------------------
 
@@ -21,24 +21,24 @@
 #define __WRAP_HXX__
 
 /* Storage instantiation modes */
-#define WSTG_DIRECT		0x00000000L
-#define WSTG_TRANSACTED		0x00010000L
+#define WSTG_DIRECT   0x00000000L
+#define WSTG_TRANSACTED   0x00010000L
 
-#define WSTG_READ		0x00000000L
-#define WSTG_WRITE		0x00000001L
-#define WSTG_READWRITE		0x00000002L
+#define WSTG_READ   0x00000000L
+#define WSTG_WRITE    0x00000001L
+#define WSTG_READWRITE    0x00000002L
 
-#define WSTG_SHARE_DENY_NONE	0x00000040L
-#define WSTG_SHARE_DENY_READ	0x00000030L
-#define WSTG_SHARE_DENY_WRITE	0x00000020L
-#define WSTG_SHARE_EXCLUSIVE	0x00000010L
+#define WSTG_SHARE_DENY_NONE  0x00000040L
+#define WSTG_SHARE_DENY_READ  0x00000030L
+#define WSTG_SHARE_DENY_WRITE 0x00000020L
+#define WSTG_SHARE_EXCLUSIVE  0x00000010L
 
-#define WSTG_PRIORITY		0x00040000L
-#define WSTG_DELETEONRELEASE	0x04000000L
+#define WSTG_PRIORITY   0x00040000L
+#define WSTG_DELETEONRELEASE  0x04000000L
 
-#define WSTG_CREATE		0x00001000L
-#define WSTG_CONVERT		0x00020000L
-#define WSTG_FAILIFTHERE	0x00000000L
+#define WSTG_CREATE   0x00001000L
+#define WSTG_CONVERT    0x00020000L
+#define WSTG_FAILIFTHERE  0x00000000L
 
 /* Storage commit types */
 typedef enum
@@ -63,9 +63,9 @@ typedef enum
 
 //+--------------------------------------------------------------
 //
-//  Class:	WUnknown
+//  Class:  WUnknown
 //
-//  Purpose:	Replacement for IUnknown
+//  Purpose:  Replacement for IUnknown
 //
 //---------------------------------------------------------------
 
@@ -79,9 +79,9 @@ public:
 
 //+--------------------------------------------------------------
 //
-//  Class:	WEnumSTATSTG
+//  Class:  WEnumSTATSTG
 //
-//  Purpose:	Wrapper for IEnumSTATSTG
+//  Purpose:  Wrapper for IEnumSTATSTG
 //
 //---------------------------------------------------------------
 
@@ -110,9 +110,9 @@ private:
 
 //+--------------------------------------------------------------
 //
-//  Class:	WMarshal
+//  Class:  WMarshal
 //
-//  Purpose:	Wrapper for IMarshal
+//  Purpose:  Wrapper for IMarshal
 //
 //---------------------------------------------------------------
 
@@ -136,20 +136,20 @@ public:
     HRESULT GetUnmarshalClass(REFIID riid,
                               LPVOID pv,
                               DWORD dwDestContext,
-			      LPVOID pvDestContext,
+            LPVOID pvDestContext,
                               DWORD mshlflags,
                               CLSID * pCid);
     HRESULT GetMarshalSizeMax(REFIID riid,
                               LPVOID pv,
                               DWORD dwDestContext,
-			      LPVOID pvDestContext,
+            LPVOID pvDestContext,
                               DWORD mshlflags,
                               DWORD * pSize);
     HRESULT MarshalInterface(WStream * pStm,
                              REFIID riid,
                              LPVOID pv,
                              DWORD dwDestContext,
-			     LPVOID pvDestContext,
+           LPVOID pvDestContext,
                              DWORD mshlflags);
     HRESULT UnmarshalInterface(WStream * pStm,
                                REFIID riid,
@@ -164,9 +164,9 @@ private:
 
 //+--------------------------------------------------------------
 //
-//  Class:	WStream
+//  Class:  WStream
 //
-//  Purpose:	Wrapper for IStream
+//  Purpose:  Wrapper for IStream
 //
 //---------------------------------------------------------------
 
@@ -213,9 +213,9 @@ private:
 
 //+--------------------------------------------------------------
 //
-//  Class:	WStorage
+//  Class:  WStorage
 //
-//  Purpose:	Wrapper for IStorage
+//  Purpose:  Wrapper for IStorage
 //
 //---------------------------------------------------------------
 

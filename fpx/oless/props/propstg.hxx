@@ -51,7 +51,7 @@ public:
 //              correct type of NTMAPPEDSTREAM  (CExposedStream::CPubMappedStream
 //              to handle making a docfile stream look like a real memory mapped
 //              stream, and CNtMappedStream, created by RtlCreateMappedStream,
-//		for native file systems.)
+//    for native file systems.)
 //
 //--------------------------------------------------------------------------
 

@@ -5,11 +5,11 @@
 // 
 //  Copyright (c) 1999 Digital Imaging Group, Inc.
 // 
-//  Contents:	Reference tests
+//  Contents: Reference tests
 //
-//  Classes:	
+//  Classes:  
 //
-//  Functions:	
+//  Functions:  
 //
 //----------------------------------------------------------------------------
 #ifdef _MSC_VER
@@ -112,8 +112,8 @@ SCODE t_create(BOOL fTestStorage)
     {
        printf("Testing Create storage\n");
        olHChk(StgCreateDocfile( ocsDRT, 
-			       STGM_READWRITE | STGM_CREATE | STGM_SHARE_EXCLUSIVE,
-			       0, &pstgRoot));
+             STGM_READWRITE | STGM_CREATE | STGM_SHARE_EXCLUSIVE,
+             0, &pstgRoot));
     }
     
     olHChk(pstgRoot->CreateStorage(ocsChild, STGP(STGM_READWRITE), 0, 0,
@@ -150,12 +150,12 @@ SCODE t_open(BOOL fTestStorage)
        printf("Testing Open ILB\n");
        pilb = new CFileILB(ocsDRT, (DWORD)NULL);
        if (pilb == NULL)
-	  error(EXIT_BADSC, "Unable to allocate an ILockBytes\n");
+    error(EXIT_BADSC, "Unable to allocate an ILockBytes\n");
        
        //  create a storage on the ILockBytes
        olHChk(StgCreateDocfileOnILockBytes(pilb,
-					   STGM_READWRITE | STGM_CREATE | STGM_SHARE_EXCLUSIVE,
-					   0, &pstgRoot));
+             STGM_READWRITE | STGM_CREATE | STGM_SHARE_EXCLUSIVE,
+             0, &pstgRoot));
     }
     else 
     {
@@ -163,7 +163,7 @@ SCODE t_open(BOOL fTestStorage)
         printf("Testing Open storage\n");
         olHChk(StgCreateDocfile(ocsDRT, 
                                 STGM_READWRITE | STGM_CREATE | STGM_SHARE_EXCLUSIVE,
-                                0, &pstgRoot));				
+                                0, &pstgRoot));       
     }
     
     olHChk(pstgRoot->CreateStorage(ocsChild, STGP(STGM_READWRITE), 0, 0,
@@ -186,7 +186,7 @@ SCODE t_open(BOOL fTestStorage)
     }
     else 
     {
-        olHChk(StgOpenStorage(ocsDRT,			
+        olHChk(StgOpenStorage(ocsDRT,     
                               NULL, ROOTP(STGM_READWRITE), NULL, 0,
                               &pstgRoot));
     }
@@ -236,7 +236,7 @@ SCODE t_addref(BOOL fTestStorage)
     
     if (!fTestStorage)
     {
-		printf("Testing Addref ILB\n");
+    printf("Testing Addref ILB\n");
         pilb = new CFileILB(ocsDRT, (DWORD)NULL);
         if (pilb == NULL)
             error(EXIT_BADSC, "Unable to allocate an ILockBytes\n");
@@ -248,7 +248,7 @@ SCODE t_addref(BOOL fTestStorage)
     }
     else 
     {
-		printf("Testing Addref Storage\n");
+    printf("Testing Addref Storage\n");
         olHChk(StgCreateDocfile(ocsDRT,
                                 STGM_READWRITE | STGM_CREATE | STGM_SHARE_EXCLUSIVE,
                                 0, &pstg));
@@ -290,18 +290,18 @@ SCODE t_dmodify(BOOL fTestStorage)
     
     if (!fTestStorage)
     {
-		printf("Testing Modify ILB\n");
+    printf("Testing Modify ILB\n");
         pilb = new CFileILB(ocsDRT, (DWORD)NULL);
         if (pilb == NULL)
             error(EXIT_BADSC, "Unable to allocate an ILockBytes\n");
-	
+  
         //  create a storage on the ILockBytes  
         olHChk(StgCreateDocfileOnILockBytes(pilb, 
                                             STGM_READWRITE | STGM_CREATE | STGM_SHARE_EXCLUSIVE, 
                                             0, &pstgRoot));
     }
     else {
-		printf("Testing Modify Storage\n");
+    printf("Testing Modify Storage\n");
         olHChk(StgCreateDocfile(ocsDRT, 
                                 STGM_READWRITE | STGM_CREATE | STGM_SHARE_EXCLUSIVE, 
                                 0, &pstgRoot));
@@ -425,8 +425,8 @@ SCODE t_dmodify(BOOL fTestStorage)
         pilb = new CFileILB((TCHAR*)NULL, (DWORD)NULL);
         if (pilb == NULL)
             error(EXIT_BADSC, "Unable to allocate an ILockBytes\n");
-	
-        //  create a storage on the ILockBytes		
+  
+        //  create a storage on the ILockBytes    
         olHChk(StgCreateDocfileOnILockBytes(pilb,
                                             STGM_READWRITE |
                                             STGM_CREATE    |
@@ -439,7 +439,7 @@ SCODE t_dmodify(BOOL fTestStorage)
                                 STGM_READWRITE |
                                 STGM_CREATE    |
                                 STGM_SHARE_EXCLUSIVE,
-                                0, &pstgRoot));		
+                                0, &pstgRoot));   
     }
     
     //  removal cases
@@ -503,21 +503,21 @@ SCODE t_stat(BOOL fTestStorage)
     
     if (!fTestStorage)
     { 
-		printf("Testing Stat ILB\n");
+    printf("Testing Stat ILB\n");
         pilb = new CFileILB(ocsDRT, (DWORD)NULL);
         if (pilb == NULL)
             error(EXIT_BADSC, "Unable to allocate an ILockBytes\n");
-	
+  
         //  create a storage on the ILockBytes
-	
+  
         olHChk(StgCreateDocfileOnILockBytes(pilb,
                                             STGM_READWRITE | STGM_CREATE | STGM_SHARE_EXCLUSIVE,
                                             0, &pstgRoot));
     }
     else 
-    {		
-		printf("Testing Stat Storage\n");
-        //  create a storage 		
+    {   
+    printf("Testing Stat Storage\n");
+        //  create a storage    
         olHChk(StgCreateDocfile(ocsDRT,
                                 STGM_READWRITE | STGM_CREATE | STGM_SHARE_EXCLUSIVE,
                                 0, &pstgRoot));
@@ -586,7 +586,7 @@ SCODE t_stream(BOOL fTestStorage, BOOL fCreate=1)
             pilb = new CFileILB(ocsDRT, (DWORD)NULL);
             if (pilb == NULL)
                 error(EXIT_BADSC, "Unable to allocate an ILockBytes\n");
-	      
+        
             //  create a storage on the ILockBytes
             olHChk(StgCreateDocfileOnILockBytes(pilb,
                                                 STGM_READWRITE |
@@ -603,24 +603,24 @@ SCODE t_stream(BOOL fTestStorage, BOOL fCreate=1)
                                     | STGM_SHARE_EXCLUSIVE,
                                     0, &pstg));
         }
-	 
+   
         olHChk(pstg->CreateStream( ocsStream,
-				   STMP(STGM_READWRITE), 0, 0, &pstm));
+           STMP(STGM_READWRITE), 0, 0, &pstm));
         olHChk(pstg->CreateStorage( ocsStorage1,
-				    STMP(STGM_READWRITE), 0, 0, &pstg1));
+            STMP(STGM_READWRITE), 0, 0, &pstg1));
         olHChk(pstg1->CreateStream( ocsStorage1Stream1,
-				    STMP(STGM_READWRITE), 0, 0, &pstm1));
+            STMP(STGM_READWRITE), 0, 0, &pstm1));
         olHChk(pstg->CreateStorage( ocsStorage2,
-				    STMP(STGM_READWRITE), 0, 0, &pstg2));
+            STMP(STGM_READWRITE), 0, 0, &pstg2));
         olHChk(pstg2->CreateStorage( ocsStorage2Storage1,
-				     STMP(STGM_READWRITE), 0, 0, &pstg3));
+             STMP(STGM_READWRITE), 0, 0, &pstg3));
         olHChk(pstg3->CreateStream( ocsStorage3Stream1,
-				    STMP(STGM_READWRITE), 0, 0, &pstm2));
+            STMP(STGM_READWRITE), 0, 0, &pstm2));
         for (i=0; i<20; i++)
             olHChk(pstm->Write(NUMBERS, sizeof(NUMBERS), &cb));
         for (i=0; i<20; i++)
             olHChk(pstm2->Write(NUMBERS, sizeof(NUMBERS), &cb));
-	 
+   
         olHChk(pstm->Commit(0));
         unsigned long ul;
         if ((ul = pstm->Release())!=0)
@@ -654,7 +654,7 @@ SCODE t_stream(BOOL fTestStorage, BOOL fCreate=1)
     }
     else
     {
-        olHChk(StgOpenStorage(ocsDRT,			
+        olHChk(StgOpenStorage(ocsDRT,     
                               NULL, ROOTP(STGM_READWRITE), NULL, 0,
                               &pstg));
     }
@@ -789,7 +789,7 @@ int main(int argc, char** argv)
     if (argc==2) {
         printf(" * Interops testing --- ");
         
-        if (*(argv[1])=='c')	 {
+        if (*(argv[1])=='c')   {
             printf("Create\n");
             fCreate=1;
         }
@@ -800,7 +800,7 @@ int main(int argc, char** argv)
             return 0;
         }
         
-	g_fTestInterop = 1;
+  g_fTestInterop = 1;
     }
 
     if (g_fTestInterop)

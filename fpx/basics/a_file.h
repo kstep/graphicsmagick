@@ -1,11 +1,11 @@
 //  ------------------------------------------------------------------------------------------------
 //  MODULE      : Fichier
 //  LANGUAGE    : C++
-//  AUTHOR	    : Adolfo VIDE
+//  AUTHOR      : Adolfo VIDE
 //  DATE        : Thursday October 15th, 1992
 //  DESCRIPTION :
-//  COMMENT		:
-//  SCCSID      : @(#)a_file.h	1.1 11:49:53 18 Dec 1996
+//  COMMENT   :
+//  SCCSID      : @(#)a_file.h  1.1 11:49:53 18 Dec 1996
 //  ----------------------------------------------------------------------------
 //  Copyright (c) 1999 Digital Imaging Group, Inc.
 //  For conditions of distribution and use, see copyright notice
@@ -43,8 +43,8 @@ enum mode_Ouverture {
 #  define DEFAULT_SIGNATURE "\?\?\?\?"
 #endif
 
-//	Global Functions
-//	________________
+//  Global Functions
+//  ________________
 
 #ifdef _WINDOWS
 uint16          shortswap(uint16);  // Swap for Big/Little Endian
@@ -74,7 +74,7 @@ public:
   friend void SauvegardeMemosDirsVols(ref_Fichier fic);
   friend void ChargementMemosDirsVols(ref_Fichier fic);
 #endif
-				// To be cleaned up one day...
+        // To be cleaned up one day...
   friend class obj_Brosse;
   friend class obj_Trace;
   friend class obj_EltTrace;
@@ -100,10 +100,10 @@ public:
   // to access the resource fork of a file being
   // overwritten (GetFileName() above returns the wrong
   // file name). Don't use it if you don't need it. (XS)
-  FicNom			GetInternalFileName (void) const;
+  FicNom      GetInternalFileName (void) const;
 
-  void			DoNotCloseFileWhenDelete();		// To avoid closing the file when deleting the IVUE
-  void			CloseFileWhenDelete();			// File will be closed when deleting (default mode)
+  void      DoNotCloseFileWhenDelete();   // To avoid closing the file when deleting the IVUE
+  void      CloseFileWhenDelete();      // File will be closed when deleting (default mode)
 
 protected:  // Before using those functions, please think portability
 
@@ -129,9 +129,9 @@ public:
   // Arrays of Int32s
   // ----------------
   //  Modified by GDN -- Visual C++ 2.0 gives error with const int32,
-  //	because the Ecriture functions actually modify the array contents with byte
-  //	and word swaps before writing, then change them back.
-  //	If not for this, these functions could take const (indeed it compiles on Mac)
+  //  because the Ecriture functions actually modify the array contents with byte
+  //  and word swaps before writing, then change them back.
+  //  If not for this, these functions could take const (indeed it compiles on Mac)
   Boolean         EcritureTableau( int32 *array, int32 t);
   Boolean         LectureTableau(int32 *array, int32 t);
   // Added by GDN
@@ -249,16 +249,16 @@ protected:
   Boolean         fatalError;                 // == true if a non corrected error occurred
   // since file is open
 #ifdef macintosh
-  short           refNum;						// File reference number
+  short           refNum;           // File reference number
   FicNom          vraiNom,                    // Name asked by the user
     nomActuel;                  // Name used at that time
 #else
 
-  int         	handle;						// File descriptor
+  int           handle;           // File descriptor
   FicNom          vraiNom;                    // Name asked by the user
-  char            cname[255];					// UNIX path name to the file
+  char            cname[255];         // UNIX path name to the file
 #endif
-  Boolean			closeWhenDelete;			// Flag indicating if we have to close the handle
+  Boolean     closeWhenDelete;      // Flag indicating if we have to close the handle
   // when deleting the object (for IVUE Toolkit)
 };
 

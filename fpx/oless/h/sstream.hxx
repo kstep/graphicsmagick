@@ -22,11 +22,11 @@
 
 //+---------------------------------------------------------------------------
 //
-//  Class:	CStreamCache (stmc)
+//  Class:  CStreamCache (stmc)
 //
-//  Purpose:	Cache for stream optimization
+//  Purpose:  Cache for stream optimization
 //
-//  Interface:	See below.
+//  Interface:  See below.
 //
 //----------------------------------------------------------------------------
 
@@ -47,9 +47,9 @@ private:
 
 //+---------------------------------------------------------------------------
 //
-//  Member:	CStreamCache::CStreamCache, public
+//  Member: CStreamCache::CStreamCache, public
 //
-//  Synopsis:	CStreamCache constructor
+//  Synopsis: CStreamCache constructor
 //
 //----------------------------------------------------------------------------
 
@@ -62,11 +62,11 @@ inline CStreamCache::CStreamCache()
 
 //+---------------------------------------------------------------------------
 //
-//  Member:	CStreamCache::SetCache, public
+//  Member: CStreamCache::SetCache, public
 //
-//  Synopsis:	Set the cache information
+//  Synopsis: Set the cache information
 //
-//  Arguments:	[ulOffset] -- Offset into chain
+//  Arguments:  [ulOffset] -- Offset into chain
 //              [sect] -- Sect at that offset
 //
 //----------------------------------------------------------------------------
@@ -79,9 +79,9 @@ inline void CStreamCache::SetCache(ULONG ulOffset, SECT sect)
 
 //+---------------------------------------------------------------------------
 //
-//  Member:	CStreamCache::GetOffset, public
+//  Member: CStreamCache::GetOffset, public
 //
-//  Synopsis:	Return offset
+//  Synopsis: Return offset
 //
 //----------------------------------------------------------------------------
 
@@ -93,9 +93,9 @@ inline ULONG CStreamCache::GetOffset(void) const
 
 //+---------------------------------------------------------------------------
 //
-//  Member:	CStreamCache::GetSect, public
+//  Member: CStreamCache::GetSect, public
 //
-//  Synopsis:	Return sect
+//  Synopsis: Return sect
 //
 //----------------------------------------------------------------------------
 
@@ -176,9 +176,9 @@ private:
 
 //+---------------------------------------------------------------------------
 //
-//  Member:	CDirectStream::GetHandle, public
+//  Member: CDirectStream::GetHandle, public
 //
-//  Synopsis:	Returns a pointer to the stream handle
+//  Synopsis: Returns a pointer to the stream handle
 //
 //----------------------------------------------------------------------------
 
@@ -189,9 +189,9 @@ inline CStmHandle *CDirectStream::GetHandle(void)
 
 //+---------------------------------------------------------------------------
 //
-//  Member:	CDirectStream::DecRef, public
+//  Member: CDirectStream::DecRef, public
 //
-//  Synopsis:	Decrements the ref count
+//  Synopsis: Decrements the ref count
 //
 //----------------------------------------------------------------------------
 

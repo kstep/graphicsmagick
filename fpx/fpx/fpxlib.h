@@ -7,18 +7,18 @@
  *  FlashPix Baseline View Layer API
  *
  */
-//  SCCSID      : @(#)fpxlib.h	1.2 08:41:22 29 Jan 1997
+//  SCCSID      : @(#)fpxlib.h  1.2 08:41:22 29 Jan 1997
 
 /****************************************************************************/
-	#ifndef FPXBaselineView_h
-	#define FPXBaselineView_h
+  #ifndef FPXBaselineView_h
+  #define FPXBaselineView_h
 /****************************************************************************/
 
 #ifndef FPXBaselineIO_h
-	#include "fpxlibio.h"              /* for various I/O level functions. */
+  #include "fpxlibio.h"              /* for various I/O level functions. */
 #endif
 
-//	Viewing Toolkit Class Definitions
+//  Viewing Toolkit Class Definitions
 //  ---------------------------------
 
 class PageImage;
@@ -273,7 +273,7 @@ FPXEXPORT FPXStatus FPX_InvertAlphaChannel (
               FPXImageInWorld* theImage,
               FPXbool          inverseAlpha);
 // The opacity is inversed prior composition if (inverseAlpha == true)
-		
+    
 // View Window  tools :
 // An FPX window is really a viewport on the world.
 // It establishes resolution and hence pixels.
@@ -399,19 +399,19 @@ FPXEXPORT FPXStatus FPX_GetImageInWorldFilteringValue (
 /* Get current Image in World Affine Matrix */
 
 FPXEXPORT FPXStatus FPX_GetImageInWorldAffineMatrix (
-			FPXImageInWorld*   	theImage,
-			FPXAffineMatrix* 	mat);
-			
+      FPXImageInWorld*    theImage,
+      FPXAffineMatrix*  mat);
+      
 /* Set current Image in World Affine Matrix */
 
 FPXEXPORT FPXStatus FPX_SetImageInWorldAffineMatrix (
-			FPXImageInWorld*   	theImage,
-			FPXAffineMatrix* 	mat);
+      FPXImageInWorld*    theImage,
+      FPXAffineMatrix*  mat);
 
 
 } // extern "C"
                 
 /****************************************************************************/
-	#endif // FPXBaselineView_h
+  #endif // FPXBaselineView_h
 /****************************************************************************/
 

@@ -21,8 +21,8 @@ const BYTE CBSIGSTG = sizeof(SIGSTG);
 // The first portion of a storage file
 struct SStorageFile
 {
-    BYTE	abSig[CBSIGSTG];		//  Signature
-    CLSID	_clid;				//  Class Id
+    BYTE  abSig[CBSIGSTG];    //  Signature
+    CLSID _clid;        //  Class Id
 };
 
 #endif

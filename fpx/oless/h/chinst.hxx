@@ -5,10 +5,10 @@
 // 
 //  Copyright (c) 1999 Digital Imaging Group, Inc.
 // 
-//  Contents:	DocFile child object maintenance code header file
+//  Contents: DocFile child object maintenance code header file
 //
-//  Classes:	CChildInstance
-//		CChildInstanceList
+//  Classes:  CChildInstance
+//    CChildInstanceList
 //
 //---------------------------------------------------------------
 
@@ -19,11 +19,11 @@ class PRevertable;
 
 //+--------------------------------------------------------------
 //
-//  Class:	CChildInstanceList (cil)
+//  Class:  CChildInstanceList (cil)
 //
-//  Purpose:	Maintains a list of child instances
+//  Purpose:  Maintains a list of child instances
 //
-//  Interface:	See below
+//  Interface:  See below
 //
 //---------------------------------------------------------------
 
@@ -40,8 +40,8 @@ public:
     void Empty(void);
 
     SCODE IsDenied(CDfName const *pdfn,
-		   DFLAGS const dwDFlagsCheck,
-		   DFLAGS const dwDFlagsAgainst);
+       DFLAGS const dwDFlagsCheck,
+       DFLAGS const dwDFlagsAgainst);
 
     void RenameChild(CDfName const *pdfn, CDfName const *pdfnNewName);
  
@@ -56,9 +56,9 @@ private:
 
 //+--------------------------------------------------------------
 //
-//  Member:	CChildInstanceList::CChildInstanceList, pubic
+//  Member: CChildInstanceList::CChildInstanceList, pubic
 //
-//  Synopsis:	ctor
+//  Synopsis: ctor
 //
 //---------------------------------------------------------------
 
@@ -69,9 +69,9 @@ inline CChildInstanceList::CChildInstanceList(void)
 
 //+--------------------------------------------------------------
 //
-//  Member:	CChildInstanceList::~CChildInstanceList, public
+//  Member: CChildInstanceList::~CChildInstanceList, public
 //
-//  Synopsis:	dtor
+//  Synopsis: dtor
 //
 //---------------------------------------------------------------
 

@@ -21,5 +21,5 @@ void IDct_Chen(DB_STATE *db_state,
 int *x);
 
 JPEGEXPORT
-void Fill_Chen_Quant_Table(int *in,		/* regular quantization table */
-int *out);	/* chen quantization table */
+void Fill_Chen_Quant_Table(int *in,   /* regular quantization table */
+int *out);  /* chen quantization table */

@@ -108,13 +108,13 @@ CFat::CFat(SID sid, USHORT cbSector, USHORT uSectorShift)
 
 //+---------------------------------------------------------------------------
 //
-//  Member:	CFat::Empty, public
+//  Member: CFat::Empty, public
 //
-//  Synopsis:	Empty all the control structures of this instance
+//  Synopsis: Empty all the control structures of this instance
 //
-//  Arguments:	None.
+//  Arguments:  None.
 //
-//  Returns:	void.
+//  Returns:  void.
 //
 //----------------------------------------------------------------------------
 

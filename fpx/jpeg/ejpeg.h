@@ -18,7 +18,7 @@
 */
 
 /* CHG_FILE_ERR - unified JPEG error values by prepending EJPEG_ to the following
-				error codes and offsetting the values by 0x0100 */
+        error codes and offsetting the values by 0x0100 */
 # define EJPEG_ERROR_PARSER  0x0101        /* error during parsing */
 # define EJPEG_ERROR_MEM     0x0102        /* memory can not be allocated */
 # define EJPEG_ERROR_EOF     0x0103        /* unexpected EOF (or end of data stream) */

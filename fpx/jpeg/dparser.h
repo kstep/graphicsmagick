@@ -70,31 +70,31 @@
     (((x) >= 0xe0) && ((x) <= 0xfd)) ? (x) & 0xf0 : (x)
 
 typedef struct t_list {
-	void *table;                /* points to a DHUFF_TABLE or QUANT_TABLE */
-	struct t_list *next;        /* points to next member of the list */
+  void *table;                /* points to a DHUFF_TABLE or QUANT_TABLE */
+  struct t_list *next;        /* points to next member of the list */
 } TABLE_LIST;
 
 
 typedef struct {
-	int comp;                   /* component #, index to FRAME_COMPONENT */
-	int hsampling;              /* horizontal sampling factor =
-	                                       frame.comps[comp].hsampling */
-	int vsampling;              /* vertical sampling factor =
-	                                       frame.comps[comp].vsampling */
-	DHUFF_TABLE *dc_table;    /* DC Huffman Table */
-	DHUFF_TABLE *ac_table;    /* AC Huffman Table */
-	QUANT_TABLE   *quant_table; /* Quantization Table */
+  int comp;                   /* component #, index to FRAME_COMPONENT */
+  int hsampling;              /* horizontal sampling factor =
+                                         frame.comps[comp].hsampling */
+  int vsampling;              /* vertical sampling factor =
+                                         frame.comps[comp].vsampling */
+  DHUFF_TABLE *dc_table;    /* DC Huffman Table */
+  DHUFF_TABLE *ac_table;    /* AC Huffman Table */
+  QUANT_TABLE   *quant_table; /* Quantization Table */
 } SCAN_COMPONENT;
 
 typedef struct {                /* Structure for each scan in JPEG file */
-	int ncomps;                 /* number of image components in scan */
-	int gray_scale;             /* if TRUE, decode only Y channel */
-	int start_spec;             /* start of spectral or predictor sel */
-	int end_spec;               /* end of spectral selection */
-	int approx_high;            /* succ. approximation bit pos. high */
-	int approx_low;             /* succ. approximation bit pos. low */
-	unsigned int restart_interv;/* restart interval, 0 if disabled */
-	SCAN_COMPONENT *comps;      /* array of 'ncomps' items */
+  int ncomps;                 /* number of image components in scan */
+  int gray_scale;             /* if TRUE, decode only Y channel */
+  int start_spec;             /* start of spectral or predictor sel */
+  int end_spec;               /* end of spectral selection */
+  int approx_high;            /* succ. approximation bit pos. high */
+  int approx_low;             /* succ. approximation bit pos. low */
+  unsigned int restart_interv;/* restart interval, 0 if disabled */
+  SCAN_COMPONENT *comps;      /* array of 'ncomps' items */
 } SCAN;
 
 JPEGEXPORT

@@ -5,7 +5,7 @@
 // 
 //  Copyright (c) 1999 Digital Imaging Group
 // 
-// Contents:	OLE Appendix B property set structure definitions
+// Contents:  OLE Appendix B property set structure definitions
 //
 //----------------------------------------------------------------------------
 
@@ -14,7 +14,7 @@
 #include "propmac.hxx"
 
 /* CBMAXPROPSETSTREAM must be a power of 2.*/
-#define CBMAXPROPSETSTREAM	(256 * 1024)
+#define CBMAXPROPSETSTREAM  (256 * 1024)
 
 /* this is the 'correct' value of 0xFFFE */
 #define PROPSET_BYTEORDER  0xFFFE
@@ -28,32 +28,32 @@
 
 typedef struct tagFORMATIDOFFSET
 {
-    FMTID	fmtid;
-    DWORD	dwOffset;
+    FMTID fmtid;
+    DWORD dwOffset;
 } FORMATIDOFFSET;
  
-#define CB_FORMATIDOFFSET	sizeof(FORMATIDOFFSET)
+#define CB_FORMATIDOFFSET sizeof(FORMATIDOFFSET)
 
 
-typedef struct tagPROPERTYSETHEADER	/* ph*/
+typedef struct tagPROPERTYSETHEADER /* ph*/
 {
-    WORD        wByteOrder;	/* Always 0xfffe*/
-    WORD        wFormat;	/* Always 0*/
-    DWORD       dwOSVer;	/* System version*/
-    CLSID       clsid;		/* Application CLSID*/
-    DWORD       reserved;	/* reserved (must be at least 1)*/
+    WORD        wByteOrder; /* Always 0xfffe*/
+    WORD        wFormat;  /* Always 0*/
+    DWORD       dwOSVer;  /* System version*/
+    CLSID       clsid;    /* Application CLSID*/
+    DWORD       reserved; /* reserved (must be at least 1)*/
 } PROPERTYSETHEADER;
 
-#define CB_PROPERTYSETHEADER	sizeof(PROPERTYSETHEADER)
+#define CB_PROPERTYSETHEADER  sizeof(PROPERTYSETHEADER)
 
 
-typedef struct tagPROPERTYIDOFFSET	/* po*/
+typedef struct tagPROPERTYIDOFFSET  /* po*/
 {
     DWORD       propid;
     DWORD       dwOffset;
 } PROPERTYIDOFFSET;
 
-#define CB_PROPERTYIDOFFSET	sizeof(PROPERTYIDOFFSET)
+#define CB_PROPERTYIDOFFSET sizeof(PROPERTYIDOFFSET)
 
 // use these 2 member accessors for unaligned pointers
 // NOTE: these functions need to be changed manually when the structures
@@ -85,7 +85,7 @@ inline DWORD PIDOFFSET_GetOffset(PROPERTYIDOFFSET UNALIGNED *ppo)
 #endif
 }
 
-typedef struct tagPROPERTYSECTIONHEADER	/* sh*/
+typedef struct tagPROPERTYSECTIONHEADER /* sh*/
 {
     DWORD       cbSection;
     DWORD       cProperties;
@@ -93,10 +93,10 @@ typedef struct tagPROPERTYSECTIONHEADER	/* sh*/
 } PROPERTYSECTIONHEADER;
 
 #define CB_PROPERTYSECTIONHEADER FIELD_OFFSET(PROPERTYSECTIONHEADER, rgprop)
-typedef struct tagSERIALIZEDPROPERTYVALUE		/* prop*/
+typedef struct tagSERIALIZEDPROPERTYVALUE   /* prop*/
 {
-    DWORD	dwType;
-    BYTE	rgb[1];
+    DWORD dwType;
+    BYTE  rgb[1];
 } SERIALIZEDPROPERTYVALUE;
 
 #define CB_SERIALIZEDPROPERTYVALUE  FIELD_OFFSET(SERIALIZEDPROPERTYVALUE, rgb)
@@ -119,14 +119,14 @@ inline BYTE* SPV_GetRgb(const SERIALIZEDPROPERTYVALUE *pprop)
     return (BYTE*) Add2Ptr(pprop, CB_SERIALIZEDPROPERTYVALUE);
 }
 
-typedef struct tagENTRY			/* ent*/
+typedef struct tagENTRY     /* ent*/
 {
     DWORD propid;
-    DWORD cch;			/* Includes trailing '\0' or L'\0'*/
-    char  sz[1];		/* WCHAR if UNICODE CodePage*/
+    DWORD cch;      /* Includes trailing '\0' or L'\0'*/
+    char  sz[1];    /* WCHAR if UNICODE CodePage*/
 } ENTRY;
 
-#define CB_ENTRY		FIELD_OFFSET(ENTRY, sz)
+#define CB_ENTRY    FIELD_OFFSET(ENTRY, sz)
 
 inline DWORD ENTRY_GetPropid(const ENTRY *pent)
 {
@@ -182,12 +182,12 @@ inline char* ENTRY_GetSz(const ENTRY *pent)
     return (char*) Add2Ptr(pent, CB_ENTRY);
 }
 
-typedef struct tagDICTIONARY		/* dy*/
+typedef struct tagDICTIONARY    /* dy*/
 {
-    DWORD	cEntries;
-    ENTRY	rgEntry[1];
+    DWORD cEntries;
+    ENTRY rgEntry[1];
 } DICTIONARY;
 
-#define CB_DICTIONARY		FIELD_OFFSET(DICTIONARY, rgEntry)
+#define CB_DICTIONARY   FIELD_OFFSET(DICTIONARY, rgEntry)
 
 #endif /* _PROPSET_HXX_*/

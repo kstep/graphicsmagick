@@ -20,56 +20,56 @@
 #ifndef _DECODER_H
 #define _DECODER_H
 
-#define FOUR_ONE_ONE 			411
-#define FOUR_ONE_ONE_FOUR		4114
-#define FOUR_TWO_TWO 			422
-#define FOUR_TWO_TWO_FOUR		4224
-#define WRONG_SAMPLE 			0
-#define ONE_ONE_ONE 			111
-#define ONE_ONE_ONE_ONE 		1111
-#define COLOR_CONVERT			10000
-#define COLOR_AND_FOUR_ONE_ONE		10411
-#define COLOR_AND_FOUR_ONE_ONE_FOUR	14114
-#define COLOR_AND_FOUR_TWO_TWO		10422
-#define COLOR_AND_FOUR_TWO_TWO_FOUR	14224
-#define COLOR_AND_ONE_ONE_ONE		10111
-#define COLOR_AND_ONE_ONE_ONE_ONE	11111
+#define FOUR_ONE_ONE      411
+#define FOUR_ONE_ONE_FOUR   4114
+#define FOUR_TWO_TWO      422
+#define FOUR_TWO_TWO_FOUR   4224
+#define WRONG_SAMPLE      0
+#define ONE_ONE_ONE       111
+#define ONE_ONE_ONE_ONE     1111
+#define COLOR_CONVERT     10000
+#define COLOR_AND_FOUR_ONE_ONE    10411
+#define COLOR_AND_FOUR_ONE_ONE_FOUR 14114
+#define COLOR_AND_FOUR_TWO_TWO    10422
+#define COLOR_AND_FOUR_TWO_TWO_FOUR 14224
+#define COLOR_AND_ONE_ONE_ONE   10111
+#define COLOR_AND_ONE_ONE_ONE_ONE 11111
 
-#define ENTROPY_ONLY		0
-#define ENTROPY_AND_HEADER	1
+#define ENTROPY_ONLY    0
+#define ENTROPY_AND_HEADER  1
 
-#define CHEN_DCT		0
-#define WINOGRAD		1
-#define PRUNED_WINOGRAD 	2
+#define CHEN_DCT    0
+#define WINOGRAD    1
+#define PRUNED_WINOGRAD   2
 
 #ifndef _CLIP_
 #define CLIP(i) ( (i)>255?255:(((i)<0)?0:(i)) )
 #define _CLIP_
 #endif
 
-#define LEFT_NIBBLE(x) 		( (0x00F0 & x) >> 4)
-#define RIGHT_NIBBLE(x)		( (0x000F & x) )
+#define LEFT_NIBBLE(x)    ( (0x00F0 & x) >> 4)
+#define RIGHT_NIBBLE(x)   ( (0x000F & x) )
 
 /* CHG_FILE_ERR - unified JPEG error values by offsetting the values by 0x0400 */
 /* error value */
-#define	DJPEG_NO_ERROR				0x0000
-#define DJPEG_ERR_ALLOC_DECODER		0x0402
-#define DJPEG_ERR_BAD_INTERLEAVE	0x0403
-#define DJPEG_ERR_BAD_SUBSAMPLE		0x0404
-#define DJPEG_ERR_BAD_COLOR_CONVERT	0x0405
-#define DJPEG_ERR_BAD_CHANNELS		0x0406
-#define DJPEG_ERR_BAD_411			0x0407
-#define DJPEG_ERR_BAD_422			0x0410
-#define DJPEG_ERR_BAD_411CONVERT	0x0411
-#define DJPEG_ERR_BAD_422CONVERT	0x0412
-#define DJPEG_ERR_BAD_CONVERT		0x0413
-#define DJPEG_ERR_BAD_SWITCH		0x0414
-#define DJPEG_ERR_BAD_4114			0x0415
-#define DJPEG_ERR_BAD_4224			0x0416
-#define DJPEG_ERR_BAD_4114CONVERT	0x0417
-#define DJPEG_ERR_BAD_4224CONVERT	0x0420
-#define DJPEG_ERR_BAD_111CONVERT	0x0421
-#define DJPEG_ERR_BAD_1111CONVERT	0x0422
+#define DJPEG_NO_ERROR        0x0000
+#define DJPEG_ERR_ALLOC_DECODER   0x0402
+#define DJPEG_ERR_BAD_INTERLEAVE  0x0403
+#define DJPEG_ERR_BAD_SUBSAMPLE   0x0404
+#define DJPEG_ERR_BAD_COLOR_CONVERT 0x0405
+#define DJPEG_ERR_BAD_CHANNELS    0x0406
+#define DJPEG_ERR_BAD_411     0x0407
+#define DJPEG_ERR_BAD_422     0x0410
+#define DJPEG_ERR_BAD_411CONVERT  0x0411
+#define DJPEG_ERR_BAD_422CONVERT  0x0412
+#define DJPEG_ERR_BAD_CONVERT   0x0413
+#define DJPEG_ERR_BAD_SWITCH    0x0414
+#define DJPEG_ERR_BAD_4114      0x0415
+#define DJPEG_ERR_BAD_4224      0x0416
+#define DJPEG_ERR_BAD_4114CONVERT 0x0417
+#define DJPEG_ERR_BAD_4224CONVERT 0x0420
+#define DJPEG_ERR_BAD_111CONVERT  0x0421
+#define DJPEG_ERR_BAD_1111CONVERT 0x0422
 
 typedef struct _HUFFMAN_TREE
 {                /* Huffman tree as suggested by JPEG */
@@ -130,14 +130,14 @@ typedef struct _FRAME
 
 #ifndef TILE_DATA_DEFINED
 typedef struct {
-	int width;		/* tile width */
-	int height;		/* tile height */
-	int components;		/* # of components: 1-4 */
-	int *Hsamp, *Vsamp;	/* one pair of <Hsamp,Vsamp> subsampling 
-				   factors per component */
-	int iflag;		/* Interleave-flag: 
-				   1/0= Interleaved/Non-interleaved */
-	unsigned char *data;	/* points to image/compressed data */
+  int width;    /* tile width */
+  int height;   /* tile height */
+  int components;   /* # of components: 1-4 */
+  int *Hsamp, *Vsamp; /* one pair of <Hsamp,Vsamp> subsampling 
+           factors per component */
+  int iflag;    /* Interleave-flag: 
+           1/0= Interleaved/Non-interleaved */
+  unsigned char *data;  /* points to image/compressed data */
 } TILE_DATA;
 
 #define TILE_DATA_DEFINED
@@ -145,44 +145,44 @@ typedef struct {
 
 typedef struct _JPEGSUBTYPE
 {
-	unsigned char interleave_type;
-	unsigned char chroma_subsample;
-	unsigned char internal_colorconvert;
-	unsigned char jpeg_tblselector;
+  unsigned char interleave_type;
+  unsigned char chroma_subsample;
+  unsigned char internal_colorconvert;
+  unsigned char jpeg_tblselector;
 
-	unsigned char horiz_subsample; /* left nibble of chroma_subsample unsigned char above */
-	unsigned char vert_subsample;  /* right nibble of chroma_subsample unsigned char above */
+  unsigned char horiz_subsample; /* left nibble of chroma_subsample unsigned char above */
+  unsigned char vert_subsample;  /* right nibble of chroma_subsample unsigned char above */
 
 } JPEGSUBTYPE;
 
 typedef struct _DECODERSTRUCT
 {
-        int hSize, vSize;	/* width/height of tile in pixels */
-        int num_channels;	/* bytes per pixel */
+        int hSize, vSize; /* width/height of tile in pixels */
+        int num_channels; /* bytes per pixel */
 
-	int InternalUpsample; /* if TRUE, then upsampling is done in jpeg decoder */
-	int InternalColor; /* if TRUE, then color conversion is done in jpeg decoder */
+  int InternalUpsample; /* if TRUE, then upsampling is done in jpeg decoder */
+  int InternalColor; /* if TRUE, then color conversion is done in jpeg decoder */
 
-	/* next 6 bytes are a copy of jpegsubtype above */							 
-	unsigned char interleave_type;
-	unsigned char chroma_subsample;
-	unsigned char internal_colorconvert; 	/* color conversion is needed */
-	unsigned char jpeg_tblselector;
+  /* next 6 bytes are a copy of jpegsubtype above */               
+  unsigned char interleave_type;
+  unsigned char chroma_subsample;
+  unsigned char internal_colorconvert;  /* color conversion is needed */
+  unsigned char jpeg_tblselector;
 
-	unsigned char horiz_subsample; /* left nibble of chroma_subsample unsigned char above */
-	unsigned char vert_subsample;  /* right nibble of chroma_subsample unsigned char above */
+  unsigned char horiz_subsample; /* left nibble of chroma_subsample unsigned char above */
+  unsigned char vert_subsample;  /* right nibble of chroma_subsample unsigned char above */
 
-	int numb_huffman_pair_tables;
-	DHUFF_TABLE *huffman_table_dc[4]; /* A maximum of 4 pairs of Huffman tables */
-	DHUFF_TABLE *huffman_table_ac[4]; /* A maximum of 4 pairs of Huffman tables */
-	int numb_quant_tables;
-	QUANT_TABLE *quant_table[4];     /* A maximum of 4 quantization tables per tile */
+  int numb_huffman_pair_tables;
+  DHUFF_TABLE *huffman_table_dc[4]; /* A maximum of 4 pairs of Huffman tables */
+  DHUFF_TABLE *huffman_table_ac[4]; /* A maximum of 4 pairs of Huffman tables */
+  int numb_quant_tables;
+  QUANT_TABLE *quant_table[4];     /* A maximum of 4 quantization tables per tile */
 
-	FRAME *frame;     /* A JPEG frame-structure */
-	int *mcu_buf[4];
-	unsigned char **row_bufs;
-	int nrow_bufs;   /* number of row buffers */
-	unsigned char *irow_bufs[16];	
+  FRAME *frame;     /* A JPEG frame-structure */
+  int *mcu_buf[4];
+  unsigned char **row_bufs;
+  int nrow_bufs;   /* number of row buffers */
+  unsigned char *irow_bufs[16]; 
 
 } DECODER_STRUCT, *DECODER;
 
@@ -233,7 +233,7 @@ void dJPEG_DecoderFree(void *decode, int freeStructure);
 extern "C"
 #endif
 JPEGEXPORT
- void dJPEG_DisableUpsample(void *decoder);	
+ void dJPEG_DisableUpsample(void *decoder); 
 
 /*
 ** To disable the internal color rotation from YCbCr to RGB,
@@ -297,34 +297,34 @@ JPEGEXPORT
 **             or the JPEG header stream used for this tile followed by the
 **             tile's entropy data.
 **             Currently (3/14/96) the former mode has not been completely 
-**	       debugged.
+**         debugged.
 ** inbuf_size: IN  Size of input buffer, which is read from tile header stream
 **                 and in the case of jpeg header and entropy, is added by the
 **                 size of the jpeg header in bytes.
 ** *decoder    IN  Void pointer to decoder's internal structure. This structure
-**	           holds flags to show whether internal upsampling and color
-**	           rotation are disabled or not. Also, it copies over the JPEG
-**	           compression subtype field info (interleave type, 
-**		   chroma subsample, internal color convert, table selector) 
+**             holds flags to show whether internal upsampling and color
+**             rotation are disabled or not. Also, it copies over the JPEG
+**             compression subtype field info (interleave type, 
+**       chroma subsample, internal color convert, table selector) 
 **                 to be used in proper selection of sampling/rotation routines.
 ** parse_option IN  Will be either ENTROPY_ONLY or ENTROPY_AND_HEADER (defined
-**		    in decoder.h). 
-** dct_method	IN  Will be either CHEN_DCT, WINOGRAD, or PRUNED_WINOGRAD 
-**		    (defined in decoder.h). Currently PRUNED_WINOGRAD is not
-**		    completely tested.
+**        in decoder.h). 
+** dct_method IN  Will be either CHEN_DCT, WINOGRAD, or PRUNED_WINOGRAD 
+**        (defined in decoder.h). Currently PRUNED_WINOGRAD is not
+**        completely tested.
 */
 #ifdef __cplusplus
 extern "C"
 #endif
 JPEGEXPORT
 int  dJPEG_DecodeTile(unsigned char *outbuf,
-			   size_t outbuf_size,
-			   unsigned char *inbuf,
-			   size_t inbuf_size,
-			   void *decoder,
-		           int parse_option,  
-			   int dct_method 
-			   );
+         size_t outbuf_size,
+         unsigned char *inbuf,
+         size_t inbuf_size,
+         void *decoder,
+               int parse_option,  
+         int dct_method 
+         );
 
 /*
 ** dJPEG_DecodeTileHeader() is the parser for the jpeg header stream.
@@ -359,9 +359,9 @@ extern "C"
 #endif
 JPEGEXPORT
 int dJPEG_SetTileSize( void *decoder, 
-		       int hSize,  /* width of a tile in pixels */
-		       int Vsize,  /* height of a tile in pixels */ 
-		       int num_channels /* number of channels (bytes per pixel)*/
+           int hSize,  /* width of a tile in pixels */
+           int Vsize,  /* height of a tile in pixels */ 
+           int num_channels /* number of channels (bytes per pixel)*/
                       );
 
 
@@ -377,8 +377,8 @@ int dJPEG_SetTileSize( void *decoder,
 */
 JPEGEXPORT
 int dJPEG_UpsampleAndConvert(DECODER_STRUCT *decoder, 
-			      unsigned char *dataBuffer,  
-			      size_t oneTile_inBytes);
+            unsigned char *dataBuffer,  
+            size_t oneTile_inBytes);
  
 
 #endif  /* _DECODER_H */

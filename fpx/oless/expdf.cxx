@@ -856,14 +856,14 @@ STDMETHODIMP CExposedDocFile::EnumElements(DWORD reserved1,
                 ppenm));
     TRY
     {
-	olChk(ValidateOutPtrBuffer(ppenm));
-	*ppenm = NULL;
-	if (reserved1 != 0 || reserved2 != NULL || reserved3 != 0)
-	    olErr(EH_Err, STG_E_INVALIDPARAMETER);
-	olChk(Validate());
+  olChk(ValidateOutPtrBuffer(ppenm));
+  *ppenm = NULL;
+  if (reserved1 != 0 || reserved2 != NULL || reserved3 != 0)
+      olErr(EH_Err, STG_E_INVALIDPARAMETER);
+  olChk(Validate());
         olChk(CheckReverted());
-	if (!P_READ(_df))
-	    olErr(EH_Err, STG_E_ACCESSDENIED);
+  if (!P_READ(_df))
+      olErr(EH_Err, STG_E_ACCESSDENIED);
         olMem(pdiExp = new CExposedIterator(this, &dfnTemp)); 
         *ppenm = pdiExp;
     }
@@ -1744,9 +1744,9 @@ EH_Err:
 
 //+--------------------------------------------------------------
 //
-//  Member:	CExposedDocFile::DestroyEntry, private
+//  Member: CExposedDocFile::DestroyEntry, private
 //
-//  Synopsis:	Destroys an entry and removes it from the children
+//  Synopsis: Destroys an entry and removes it from the children
 //              list.
 //
 //---------------------------------------------------------------
@@ -1768,9 +1768,9 @@ EH_Err:
 
 //+--------------------------------------------------------------
 //
-//  Member:	CExposedDocFile::CreateExposedDocFile, private
+//  Member: CExposedDocFile::CreateExposedDocFile, private
 //
-//  Synopsis:	Creates an embedded DocFile
+//  Synopsis: Creates an embedded DocFile
 //
 //  Arguments:  [pdfnName] - Name
 //              [df] - Permissions
@@ -1819,9 +1819,9 @@ EH_Err:
 
 //+--------------------------------------------------------------
 //
-//  Member:	CExposedDocFile::GetExposedDocFile, private
+//  Member: CExposedDocFile::GetExposedDocFile, private
 //
-//  Synopsis:	Retrieves an embedded DocFile
+//  Synopsis: Retrieves an embedded DocFile
 //
 //  Arguments:  [pdfnName] - Name
 //              [df] - Permissions

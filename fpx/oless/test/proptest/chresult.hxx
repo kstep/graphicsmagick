@@ -31,7 +31,7 @@ public:
     }
 
     CHResult( HRESULT hr, const LPOLESTR pwszMessage, 
-	     const LPSTR pszFile=NULL, ULONG ulLine=0 )
+       const LPSTR pszFile=NULL, ULONG ulLine=0 )
     {
         _hr = hr;
 

@@ -5,9 +5,9 @@
 // 
 //  Copyright (c) 1999 Digital Imaging Group, Inc.
 // 
-//  Contents:	CDocFile class header
+//  Contents: CDocFile class header
 //
-//  Classes:	CDocFile
+//  Classes:  CDocFile
 //
 //---------------------------------------------------------------
 
@@ -21,18 +21,18 @@ class PDocFileIterator;
 class CUpdateList;
 
 // CopyDocFileToDocFile flags
-#define CDF_NORMAL	0			// Normal copy
-#define CDF_EXACT	1			// Exact dir entry match
-#define CDF_REMAP	2			// Remap handles
-#define CDF_ENTRIESONLY	4			// Don't copy contents
+#define CDF_NORMAL  0     // Normal copy
+#define CDF_EXACT 1     // Exact dir entry match
+#define CDF_REMAP 2     // Remap handles
+#define CDF_ENTRIESONLY 4     // Don't copy contents
 
 //+--------------------------------------------------------------
 //
-//  Class:	CDocFile (df)
+//  Class:  CDocFile (df)
 //
-//  Purpose:	DocFile object
+//  Purpose:  DocFile object
 //
-//  Interface:	See below
+//  Interface:  See below
 //
 //---------------------------------------------------------------
 
@@ -45,8 +45,8 @@ public:
                     DFLUID dl,
                     ILockBytes *pilbBase);
     SCODE InitFromEntry(CStgHandle *pstghParent,
-			CDfName const *dfnName,
-			BOOL const fCreate);
+      CDfName const *dfnName,
+      BOOL const fCreate);
     
     inline ~CDocFile(void);
 

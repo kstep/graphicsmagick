@@ -134,53 +134,53 @@ typedef struct  tagCLIPDATA
  */
 
 enum VARENUM
-{	VT_EMPTY	= 0,
-	VT_NULL	= 1,
-	VT_I2	= 2,
-	VT_I4	= 3,
-	VT_R4	= 4,
-	VT_R8	= 5,
-	VT_CY	= 6,
-	VT_DATE	= 7,
-	VT_BSTR	= 8,
-	VT_DISPATCH	= 9,
-	VT_ERROR	= 10,
-	VT_BOOL	= 11,
-	VT_VARIANT	= 12,
-	VT_UNKNOWN	= 13,
-	VT_DECIMAL	= 14,
-	VT_I1	= 16,
-	VT_UI1	= 17,
-	VT_UI2	= 18,
-	VT_UI4	= 19,
-	VT_I8	= 20,
-	VT_UI8	= 21,
-	VT_INT	= 22,
-	VT_UINT	= 23,
-	VT_VOID	= 24,
-	VT_HRESULT	= 25,
-	VT_PTR	= 26,
-	VT_SAFEARRAY	= 27,
-	VT_CARRAY	= 28,
-	VT_USERDEFINED	= 29,
-	VT_LPSTR	= 30,
-	VT_LPWSTR	= 31,
-	VT_FILETIME	= 64,
-	VT_BLOB	= 65,
-	VT_STREAM	= 66,
-	VT_STORAGE	= 67,
-	VT_STREAMED_OBJECT	= 68,
-	VT_STORED_OBJECT	= 69,
-	VT_BLOB_OBJECT	= 70,
-	VT_CF	= 71,
-	VT_CLSID	= 72,
-	VT_VECTOR	= 0x1000,
-	VT_ARRAY	= 0x2000,
-	VT_BYREF	= 0x4000,
-	VT_RESERVED	= 0x8000,
-	VT_ILLEGAL	= 0xffff,
-	VT_ILLEGALMASKED	= 0xfff,
-	VT_TYPEMASK	= 0xfff
+{ VT_EMPTY  = 0,
+  VT_NULL = 1,
+  VT_I2 = 2,
+  VT_I4 = 3,
+  VT_R4 = 4,
+  VT_R8 = 5,
+  VT_CY = 6,
+  VT_DATE = 7,
+  VT_BSTR = 8,
+  VT_DISPATCH = 9,
+  VT_ERROR  = 10,
+  VT_BOOL = 11,
+  VT_VARIANT  = 12,
+  VT_UNKNOWN  = 13,
+  VT_DECIMAL  = 14,
+  VT_I1 = 16,
+  VT_UI1  = 17,
+  VT_UI2  = 18,
+  VT_UI4  = 19,
+  VT_I8 = 20,
+  VT_UI8  = 21,
+  VT_INT  = 22,
+  VT_UINT = 23,
+  VT_VOID = 24,
+  VT_HRESULT  = 25,
+  VT_PTR  = 26,
+  VT_SAFEARRAY  = 27,
+  VT_CARRAY = 28,
+  VT_USERDEFINED  = 29,
+  VT_LPSTR  = 30,
+  VT_LPWSTR = 31,
+  VT_FILETIME = 64,
+  VT_BLOB = 65,
+  VT_STREAM = 66,
+  VT_STORAGE  = 67,
+  VT_STREAMED_OBJECT  = 68,
+  VT_STORED_OBJECT  = 69,
+  VT_BLOB_OBJECT  = 70,
+  VT_CF = 71,
+  VT_CLSID  = 72,
+  VT_VECTOR = 0x1000,
+  VT_ARRAY  = 0x2000,
+  VT_BYREF  = 0x4000,
+  VT_RESERVED = 0x8000,
+  VT_ILLEGAL  = 0xffff,
+  VT_ILLEGALMASKED  = 0xfff,
+  VT_TYPEMASK = 0xfff
 };
 typedef ULONG PROPID;
 
@@ -202,11 +202,11 @@ inline BOOL operator!=(REFFMTID g1, REFFMTID g2)
 { return !IsEqualGUID(g1, g2); }
 
 /* Flags for IPropertySetStorage::Create*/
-#define	PROPSETFLAG_DEFAULT	( 0 )
+#define PROPSETFLAG_DEFAULT ( 0 )
 
-#define	PROPSETFLAG_NONSIMPLE	( 1 )
+#define PROPSETFLAG_NONSIMPLE ( 1 )
 
-#define	PROPSETFLAG_ANSI	( 2 )
+#define PROPSETFLAG_ANSI  ( 2 )
 
 /* FORWARD REFERENCES */
 interface IPropertyStorage;
@@ -356,7 +356,7 @@ struct  tagPROPVARIANT
         short iVal;
         USHORT uiVal;
         VARIANT_BOOL boolVal;
-#ifndef _UNIX	    /* in GCC this obsolete member causes conflicts */
+#ifndef _UNIX     /* in GCC this obsolete member causes conflicts */
 /* FIXME: investigate */
         _VARIANT_BOOL bool;
 #endif
@@ -416,21 +416,21 @@ struct  tagPROPVARIANT
 typedef struct tagPROPVARIANT  *LPPROPVARIANT;
 
 /* Reserved global Property IDs */
-#define	PID_DICTIONARY	( 0 )
+#define PID_DICTIONARY  ( 0 )
 
-#define	PID_CODEPAGE	( 0x1 )
+#define PID_CODEPAGE  ( 0x1 )
 
-#define	PID_FIRST_USABLE	( 0x2 )
+#define PID_FIRST_USABLE  ( 0x2 )
 
-#define	PID_FIRST_NAME_DEFAULT	( 0xfff )
+#define PID_FIRST_NAME_DEFAULT  ( 0xfff )
 
-#define	PID_LOCALE	( 0x80000000 )
+#define PID_LOCALE  ( 0x80000000 )
 
-#define	PID_MODIFY_TIME	( 0x80000001 )
+#define PID_MODIFY_TIME ( 0x80000001 )
 
-#define	PID_SECURITY	( 0x80000002 )
+#define PID_SECURITY  ( 0x80000002 )
 
-#define	PID_ILLEGAL	( 0xffffffff )
+#define PID_ILLEGAL ( 0xffffffff )
 
 /* Property IDs for the SummaryInformation Property Set */
 
@@ -452,11 +452,11 @@ typedef struct tagPROPVARIANT  *LPPROPVARIANT;
 #define PIDSI_THUMBNAIL           0x00000011L  /* VT_CF*/
 #define PIDSI_APPNAME             0x00000012L  /* VT_LPSTR*/
 #define PIDSI_DOC_SECURITY        0x00000013L  /* VT_I4*/
-#define	PRSPEC_INVALID	( 0xffffffff )
+#define PRSPEC_INVALID  ( 0xffffffff )
 
-#define	PRSPEC_LPWSTR	( 0 )
+#define PRSPEC_LPWSTR ( 0 )
 
-#define	PRSPEC_PROPID	( 1 )
+#define PRSPEC_PROPID ( 1 )
 
 typedef struct  tagPROPSPEC
 {
@@ -772,10 +772,10 @@ typedef struct tagVARIANT  {
 #define V_DECIMAL(X)     V_UNION(X, decVal)
 #define V_DECIMALREF(X)  V_UNION(X, pdecVal)
 
-#define V_CY(X)      	 V_UNION(X, cyVal)
-#define V_DATE(X) 	 V_UNION(X, date)
-#define V_BSTR(X)	 V_UNION(X, bstrVal)
-#define V_ERROR(X)	 V_UNION(X, scode)
+#define V_CY(X)        V_UNION(X, cyVal)
+#define V_DATE(X)    V_UNION(X, date)
+#define V_BSTR(X)  V_UNION(X, bstrVal)
+#define V_ERROR(X)   V_UNION(X, scode)
 
 #endif // _UNIX
 

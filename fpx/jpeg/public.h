@@ -21,25 +21,25 @@
 #endif
 
 typedef struct {
-	unsigned char subsampling;	/* stored in FPX tile header format */
-    int	  	iHsamp[4];	/* same thing, but in the format the 
-				   encoder prefers */
-    int	  	iVsamp[4];		
-    JPEG_STRUCT	jpegStruct;	/* used by the encoder to store tables */
-    unsigned char ssDisabled;	/* if non-zero, internal subsampling is
-				   disabled */
-    unsigned char YCrCbDisabled;	/* if non-zero, internal YCrCb is disabled */
-    int		xPixels;	/* x dimension of a tile in pixels */
-    int		yPixels;	/* y dimension of a tile in pixels */
-    int		bytes;		/* number of bytes per pixel */
-    int		qFactor;	/* the quality level of the encoding */
-    int		interleaveType;	/* 0 =interleaved channels, 1 = non-interleaved */
-    TILE_DATA	tile_data;
-    int		nu_huff;	/* # of Huffman Tables (8, four DC-AC sets) */
-    int		nu_qtables;	/* # of Q-tables (a max of 4 tables) */
-    unsigned char  *scratch;	/* place to hold rotated/subsampled data */
-    unsigned char  *header;	/* place to hold the JPEG header */
-    long	headerBytes;	/* how big is the header anyway? */
+  unsigned char subsampling;  /* stored in FPX tile header format */
+    int     iHsamp[4];  /* same thing, but in the format the 
+           encoder prefers */
+    int     iVsamp[4];    
+    JPEG_STRUCT jpegStruct; /* used by the encoder to store tables */
+    unsigned char ssDisabled; /* if non-zero, internal subsampling is
+           disabled */
+    unsigned char YCrCbDisabled;  /* if non-zero, internal YCrCb is disabled */
+    int   xPixels;  /* x dimension of a tile in pixels */
+    int   yPixels;  /* y dimension of a tile in pixels */
+    int   bytes;    /* number of bytes per pixel */
+    int   qFactor;  /* the quality level of the encoding */
+    int   interleaveType; /* 0 =interleaved channels, 1 = non-interleaved */
+    TILE_DATA tile_data;
+    int   nu_huff;  /* # of Huffman Tables (8, four DC-AC sets) */
+    int   nu_qtables; /* # of Q-tables (a max of 4 tables) */
+    unsigned char  *scratch;  /* place to hold rotated/subsampled data */
+    unsigned char  *header; /* place to hold the JPEG header */
+    long  headerBytes;  /* how big is the header anyway? */
     JPEGHuffTable  HuffTables[8]; /* Pointers to a maximum of four pairs of DC-AC 
                                       Huffman Tables */
     JPEGQuantTable QuantTables[4]; /* Pointers to a maximum of 4 Quantization Tables */

@@ -5,11 +5,11 @@
 // 
 //  Copyright (c) 1999 Digital Imaging Group
 // 
-//  Contents:	Declaration for IPrivateStorage
+//  Contents: Declaration for IPrivateStorage
 //
-//  Classes:	
+//  Classes:  
 //
-//  Functions:	
+//  Functions:  
 //
 //--------------------------------------------------------------------------
 
@@ -18,16 +18,16 @@
 
 //+-------------------------------------------------------------------------
 //
-//  Class:	IPrivateStorage
+//  Class:  IPrivateStorage
 //
-//  Purpose:	Polymorphic but private calls on objects that implement
+//  Purpose:  Polymorphic but private calls on objects that implement
 //              IStorage.
 //
-//  Interface:	GetStorage -- get the IStorage for the object
+//  Interface:  GetStorage -- get the IStorage for the object
 //
-//		
+//    
 //
-//		
+//    
 //
 //  Notes:
 //

@@ -15,13 +15,13 @@
 #define FPX_MEMORY_H
 
 #ifdef __cplusplus
-	extern "C" {
+  extern "C" {
 #endif
 
 
 #include <stddef.h>
-typedef	void *	(*MallocHookType)(size_t);
-typedef void	(*FreeHookType)(void*);
+typedef void *  (*MallocHookType)(size_t);
+typedef void  (*FreeHookType)(void*);
 
 
 JPEGEXPORT
@@ -34,7 +34,7 @@ JPEGEXPORT
 void FPXSetMemoryHooks(MallocHookType,FreeHookType);
 
 #ifdef __cplusplus
-	}
+  }
 #endif
 
 #endif

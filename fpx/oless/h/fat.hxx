@@ -50,7 +50,7 @@ public:
     inline void SetNextFat(USHORT uSize, const SECT sect);
     inline void ByteSwap(USHORT cbSector);
     
-private:	
+private:  
 
 #ifdef _MSC_VER
 #pragma warning(disable: 4200)    

@@ -24,29 +24,29 @@
 struct SPreHeader : protected SStorageFile
 {
 protected:
-	USHORT		_uMinorVersion;
-	USHORT		_uDllVersion;
+  USHORT    _uMinorVersion;
+  USHORT    _uDllVersion;
         USHORT          _uByteOrder;
 
-	USHORT          _uSectorShift;
+  USHORT          _uSectorShift;
         USHORT          _uMiniSectorShift;
 
-	USHORT          _usReserved;
-	ULONG           _ulReserved1;
-	ULONG           _ulReserved2;
-		
-        FSINDEX 	_csectFat;
-        SECT    	_sectDirStart;
+  USHORT          _usReserved;
+  ULONG           _ulReserved1;
+  ULONG           _ulReserved2;
+    
+        FSINDEX   _csectFat;
+        SECT      _sectDirStart;
 
-        DFSIGNATURE	_signature;
+        DFSIGNATURE _signature;
 
         ULONG           _ulMiniSectorCutoff;
 
-        SECT		_sectMiniFatStart;
-        FSINDEX		_csectMiniFat;
+        SECT    _sectMiniFatStart;
+        FSINDEX   _csectMiniFat;
 
-        SECT		_sectDifStart;
-        FSINDEX		_csectDif;
+        SECT    _sectDifStart;
+        FSINDEX   _csectDif;
 };
 
 
@@ -64,7 +64,7 @@ public:
     
     inline USHORT GetMinorVersion() const;
     inline USHORT GetDllVersion() const;
-	
+  
     inline SCODE SetFatLength(const FSINDEX cFatSect);
     inline FSINDEX GetFatLength() const;
 
@@ -102,7 +102,7 @@ public:
     inline void ByteSwap();
 
 private:
-    SECT	_sectFat[CSECTFAT];
+    SECT  _sectFat[CSECTFAT];
 
     SCODE SetSig(const BYTE *pbSig);
 };
@@ -162,7 +162,7 @@ inline SECT CMSFHeader::GetFatStart() const
 //
 //  Synopsis:   Sets minifat's first sector's index
 //
-//  Arguments:	[sectNew]   -- sector index
+//  Arguments:  [sectNew]   -- sector index
 //
 //  Returns:    S_OK (necessary?)
 //
@@ -283,29 +283,29 @@ inline void CMSFHeader::ByteSwap()
 {
     if (DiffByteOrder())
     {
-	::ByteSwap(& _uMinorVersion);
-	::ByteSwap(& _uDllVersion);
-	// note: _uByteOrder should not be swapped so that we know
-	//       which Endian the machine is operating in.
-	::ByteSwap(& _uSectorShift);
-	::ByteSwap(& _uMiniSectorShift);
+  ::ByteSwap(& _uMinorVersion);
+  ::ByteSwap(& _uDllVersion);
+  // note: _uByteOrder should not be swapped so that we know
+  //       which Endian the machine is operating in.
+  ::ByteSwap(& _uSectorShift);
+  ::ByteSwap(& _uMiniSectorShift);
 
-	::ByteSwap(& _usReserved);
-	::ByteSwap(& _ulReserved1);
-	::ByteSwap(& _ulReserved2);
+  ::ByteSwap(& _usReserved);
+  ::ByteSwap(& _ulReserved1);
+  ::ByteSwap(& _ulReserved2);
     
-	::ByteSwap(& _csectFat);
-	::ByteSwap(& _sectDirStart);
-	
-	::ByteSwap(& _signature);
-	
-	::ByteSwap(& _ulMiniSectorCutoff);
+  ::ByteSwap(& _csectFat);
+  ::ByteSwap(& _sectDirStart);
+  
+  ::ByteSwap(& _signature);
+  
+  ::ByteSwap(& _ulMiniSectorCutoff);
 
-	::ByteSwap(& _sectMiniFatStart);
-	::ByteSwap(& _csectMiniFat);
+  ::ByteSwap(& _sectMiniFatStart);
+  ::ByteSwap(& _csectMiniFat);
 
-	::ByteSwap(& _sectDifStart);
-	::ByteSwap(& _csectDif);
+  ::ByteSwap(& _sectDifStart);
+  ::ByteSwap(& _csectDif);
 
         // swapping the Fat table
         for (int cnt=0; cnt < CSECTFAT; cnt++)

@@ -5,7 +5,7 @@
 // 
 //  Copyright (c) 1999 Digital Imaging Group, Inc.
 // 
-//  Contents:	CDocFile inline functions
+//  Contents: CDocFile inline functions
 //              In a separate file to avoid circular dependencies
 //
 //--------------------------------------------------------------------------
@@ -43,14 +43,14 @@ inline CDocFile::CDocFile(DFLUID dl, ILockBytes *pilbBase)
 //  Synopsis:   Handle-setting construction
 //
 //  Arguments:  [pms] - MultiStream to use
-//		[sid] - SID to use
+//    [sid] - SID to use
 //              [dl] - LUID
 //              [pdfb] - Basis
 //
 //---------------------------------------------------------------
 
 inline CDocFile::CDocFile(CMStream *pms,
-			  SID sid,
+        SID sid,
                           DFLUID dl,
                           ILockBytes *pilbBase)
         : PEntry(dl)
@@ -62,9 +62,9 @@ inline CDocFile::CDocFile(CMStream *pms,
 
 //+--------------------------------------------------------------
 //
-//  Member:	CDocFile::~CDocFile, public
+//  Member: CDocFile::~CDocFile, public
 //
-//  Synopsis:	Destructor
+//  Synopsis: Destructor
 //
 //---------------------------------------------------------------
 
@@ -74,16 +74,16 @@ inline CDocFile::~CDocFile(void)
     if (_stgh.IsValid())
     {
         if (_stgh.IsRoot())
-	    DllReleaseMultiStream(_stgh.GetMS());
+      DllReleaseMultiStream(_stgh.GetMS());
     }
 }
 
 
 //+--------------------------------------------------------------
 //
-//  Member:	CDocFile::GetHandle, public
+//  Member: CDocFile::GetHandle, public
 //
-//  Synopsis:	Returns the handle
+//  Synopsis: Returns the handle
 //
 //---------------------------------------------------------------
 
@@ -96,9 +96,9 @@ inline CStgHandle *CDocFile::GetHandle(void)
 
 //+---------------------------------------------------------------------------
 //
-//  Member:	CDocFile::DecRef, public
+//  Member: CDocFile::DecRef, public
 //
-//  Synopsis:	Decrements the ref count
+//  Synopsis: Decrements the ref count
 //
 //----------------------------------------------------------------------------
 

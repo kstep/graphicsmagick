@@ -5,7 +5,7 @@
 // 
 //  Copyright (c) 1999 Digital Imaging Group, Inc.
 // 
-//  Contents:	OLE Project Header File
+//  Contents: OLE Project Header File
 //
 //----------------------------------------------------------------------------
 

@@ -5,9 +5,9 @@
 // 
 //  Copyright (c) 1999 Digital Imaging Group, Inc.
 // 
-//  Contents:	Exposed DocFile header
+//  Contents: Exposed DocFile header
 //
-//  Classes:	CExposedDocFile
+//  Classes:  CExposedDocFile
 //
 //  Notes:
 //              The CExposedDocFile class is the implementation
@@ -48,9 +48,9 @@ class CPropertySetStorage;
 
 //+--------------------------------------------------------------
 //
-//  Class:	CExposedDocFile (df)
+//  Class:  CExposedDocFile (df)
 //
-//  Purpose:	Exposed DocFile class
+//  Purpose:  Exposed DocFile class
 //
 //  Note:       PRevertable is a general virtual class base that 
 //              handles updates to the storage elements. E.g.
@@ -104,10 +104,10 @@ public:
 
     // functions that uses char/wchar directly or indirectly   
     STDMETHOD(CreateStream)(TCHAR const *pwcsName,
-			   DWORD grfMode,
-			   DWORD reserved1,
-			   DWORD reserved2,
-			   IStream **ppstm);
+         DWORD grfMode,
+         DWORD reserved1,
+         DWORD reserved2,
+         IStream **ppstm);
     STDMETHOD(OpenStream)(TCHAR const *pwcsName,
                           void *reserved1,
                           DWORD grfMode,
@@ -254,7 +254,7 @@ public:                // methods related to maintaining the tree
 #ifdef NEWPROPS
     virtual SCODE FlushBufferedData(void);
 #endif
-		
+    
 private:
     SCODE CreateEntry(WCHAR const *pwcsName,
                       DWORD dwType,
@@ -294,18 +294,18 @@ protected:
 
 //+--------------------------------------------------------------
 //
-//  Member:	CExposedDocFile::Validate, public
+//  Member: CExposedDocFile::Validate, public
 //
-//  Synopsis:	Validates the class signature
+//  Synopsis: Validates the class signature
 //
-//  Returns:	Returns STG_E_INVALIDHANDLE for failure
+//  Returns:  Returns STG_E_INVALIDHANDLE for failure
 //
 //---------------------------------------------------------------
 
 inline SCODE CExposedDocFile::Validate(void) const
 {
     return (this == NULL || _sig != CEXPOSEDDOCFILE_SIG) ?
-	STG_E_INVALIDHANDLE : S_OK;
+  STG_E_INVALIDHANDLE : S_OK;
 }
 
 //+---------------------------------------------------------------------------
@@ -363,16 +363,16 @@ inline void CExposedDocFile::AddChild(PRevertable *prv)
 
 //+---------------------------------------------------------------------------
 //
-//  Member:	CExposedDocFile::FindGreaterEntry, public
+//  Member: CExposedDocFile::FindGreaterEntry, public
 //
-//  Synopsis:	Returns the next greater child
+//  Synopsis: Returns the next greater child
 //
-//  Arguments:	[pdfnKey] - Previous key
+//  Arguments:  [pdfnKey] - Previous key
 //              [pstat] -   iterator buffer
 //
-//  Returns:	Appropriate status code
+//  Returns:  Appropriate status code
 //
-//  Modifies:	[pstat]
+//  Modifies: [pstat]
 //
 //----------------------------------------------------------------------------
 

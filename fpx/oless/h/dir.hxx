@@ -35,22 +35,22 @@
 struct SPreDirEntry
 {
 protected:
-    CDfName	_dfn;		//  Name (word-aligned)
-    BYTE	_mse;		//  STGTY_...
-    BYTE	_bflags;
+    CDfName _dfn;   //  Name (word-aligned)
+    BYTE  _mse;   //  STGTY_...
+    BYTE  _bflags;
 
-    SID		_sidLeftSib;	//  Siblings
-    SID		_sidRightSib;	//  Siblings
+    SID   _sidLeftSib;  //  Siblings
+    SID   _sidRightSib; //  Siblings
 
-    SID		_sidChild;	//  Storage - Child list
-    GUID	_clsId;		//  Storage - Class id
-    DWORD	_dwUserFlags;	//  Storage - User flags
-    TIME_T	_time[2];	//  Storage - time stamps
+    SID   _sidChild;  //  Storage - Child list
+    GUID  _clsId;   //  Storage - Class id
+    DWORD _dwUserFlags; //  Storage - User flags
+    TIME_T  _time[2]; //  Storage - time stamps
 
-    SECT	_sectStart;	//  Stream - start
-    ULONG	_ulSize;	//  Stream - size
+    SECT  _sectStart; //  Stream - start
+    ULONG _ulSize;  //  Stream - size
 
-    //DFPROPTYPE	_dptPropType;	//  Property - type
+    //DFPROPTYPE  _dptPropType; //  Property - type
 };
 
 
@@ -90,10 +90,10 @@ const unsigned int CBDIRPAD = DIRENTRYSIZE - sizeof(SPreDirEntry);
 
 //  DirEntry bit flags are used for the following private state
 
-//	Usage		Bit
+//  Usage   Bit
 
-#define DECOLORBIT	0x01
-#define DERESERVED	0xfe
+#define DECOLORBIT  0x01
+#define DERESERVED  0xfe
 
 typedef enum
 {
@@ -197,7 +197,7 @@ class CDirVector: public CPagedVector
 {
 public:
     inline  CDirVector(USHORT cbSector);
-    inline  ~CDirVector() {}	
+    inline  ~CDirVector() {}  
 
     inline SCODE  GetTable(
             const DIRINDEX iTable,
@@ -239,7 +239,7 @@ private:
 
 typedef enum DIRENTRYOP
 {
-	DEOP_FIND = 0,
+  DEOP_FIND = 0,
         DEOP_REMOVE = 1
 } DIRENTRYOP;
 
@@ -258,7 +258,7 @@ public:
     SCODE  InitNew(CMStream *pmsParent);
 
     SCODE  FindGreaterEntry(
-	    SID sidChildRoot,
+      SID sidChildRoot,
             CDfName const *pdfn,
             SID *psidResult);
 
@@ -306,10 +306,10 @@ public:
             SEntryBuffer *peb);
 
     SCODE  DestroyAllChildren(
-	    SID const sidParent);
+      SID const sidParent);
 
     SCODE  DestroyChild(
-	    SID const sidParent,
+      SID const sidParent,
             CDfName const *pdfn);
 
     SCODE  StatEntry(SID const sid, 
@@ -344,22 +344,22 @@ private:
     SCODE  GetFree(SID * psid);
 
     SCODE  InsertEntry(
-	    SID sidParent,
+      SID sidParent,
             SID sidInsert,
             CDfName const *pdfnInsert);
 
     SCODE  FindEntry(
-	    SID sidParent,
+      SID sidParent,
             CDfName const *pdfnFind,
             DIRENTRYOP deop,
             SEntryBuffer *peb);
 
     static int  NameCompare(
-	    CDfName const *pdfn1,
+      CDfName const *pdfn1,
             CDfName const *pdfn2);
 
     SCODE SplitEntry(
-	CDfName const *pdfn,
+  CDfName const *pdfn,
         SID sidTree,
         SID sidGreat,
         SID sidGrand,
@@ -368,7 +368,7 @@ private:
         SID *psid);
 
     SCODE RotateEntry(
-	CDfName const *pdfn,
+  CDfName const *pdfn,
         SID sidTree,
         SID sidParent,
         SID *psid);

@@ -32,7 +32,7 @@
 //  Arguments:  [ppms] -- Pointer to storage for return of multistream
 //              [pplstStream] -- Stream to be used by multi-stream for
 //                           reads and writes
-//		[dwFlags] - Startup flags
+//    [dwFlags] - Startup flags
 //
 //  Returns:    STG_E_INVALIDHEADER if signature on pStream does not
 //                  match.
@@ -51,8 +51,8 @@
 //--------------------------------------------------------------------------
 
 SCODE DllMultiStreamFromStream(CMStream **ppms,
-			       ILockBytes **pplstStream,
-			       DWORD dwFlags)
+             ILockBytes **pplstStream,
+             DWORD dwFlags)
 {
     SCODE sc;
     CMStream *temp;

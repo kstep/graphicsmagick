@@ -1,69 +1,69 @@
-//	----------------------------------------------------------------------------
-//	MODULE		: IVUEImageView 
-//	LANGUAGE	: C++
-//	CREATOR		: Philippe BOSSUT 
-//	CREAT. DATE	: Friday, April 5, 1996 
-//	DESCRIPTION	:  
-//	COMMENTS	: 
-//  SCCSID      : @(#)ri_imgvw.h	1.1 11:46:43 18 Dec 1996
+//  ----------------------------------------------------------------------------
+//  MODULE    : IVUEImageView 
+//  LANGUAGE  : C++
+//  CREATOR   : Philippe BOSSUT 
+//  CREAT. DATE : Friday, April 5, 1996 
+//  DESCRIPTION :  
+//  COMMENTS  : 
+//  SCCSID      : @(#)ri_imgvw.h  1.1 11:46:43 18 Dec 1996
 //  ----------------------------------------------------------------------------
 //  Copyright (c) 1999 Digital Imaging Group, Inc.
 //  For conditions of distribution and use, see copyright notice
 //  in Flashpix.h
 //  ----------------------------------------------------------------------------
-	#ifndef IVUEImageView_h
-	#define IVUEImageView_h
-	#ifndef Commun_h
-		#include	"common.h"
-	#endif
-//	----------------------------------------------------------------------------
+  #ifndef IVUEImageView_h
+  #define IVUEImageView_h
+  #ifndef Commun_h
+    #include  "common.h"
+  #endif
+//  ----------------------------------------------------------------------------
 
-//	Includes
-//	--------
+//  Includes
+//  --------
 
 #ifndef SystemIVUE_h
-	#include "ri_sys.h"
+  #include "ri_sys.h"
 #endif
 #ifndef AdvancedIVUE_h
-	#include	"viewimg.h"
+  #include  "viewimg.h"
 #endif
 
-//	Constants
-//	---------
+//  Constants
+//  ---------
 
-//	Types Declarations
-//	------------------
+//  Types Declarations
+//  ------------------
 
-//	Types Definitions
-//	-----------------
+//  Types Definitions
+//  -----------------
 
-//	Classes Declarations
-//	--------------------
+//  Classes Declarations
+//  --------------------
 
-	class PIVUEImageView;
+  class PIVUEImageView;
 
-//	Classes Definitions
-//	-------------------
+//  Classes Definitions
+//  -------------------
 
-	class PIVUEImageView : public ViewImage {
+  class PIVUEImageView : public ViewImage {
 
-	public:
-								 // Open the file in Create Mode 
-								 PIVUEImageView (FicNom& refName);
-								 // Create an IVUE Image View from an already opened image
-								 PIVUEImageView (PRIImage* theImage);
-				virtual			~PIVUEImageView ();
-	};
+  public:
+                 // Open the file in Create Mode 
+                 PIVUEImageView (FicNom& refName);
+                 // Create an IVUE Image View from an already opened image
+                 PIVUEImageView (PRIImage* theImage);
+        virtual     ~PIVUEImageView ();
+  };
 
-//	'inline' Functions
-//	------------------
+//  'inline' Functions
+//  ------------------
 
-//	'extern' Functions
-//	------------------
+//  'extern' Functions
+//  ------------------
 
-//	'extern' Variables
-//	------------------
+//  'extern' Variables
+//  ------------------
 
-//	----------------------------------------------------------------------------
-	#endif // IVUEImageView_h
-//	----------------------------------------------------------------------------
+//  ----------------------------------------------------------------------------
+  #endif // IVUEImageView_h
+//  ----------------------------------------------------------------------------

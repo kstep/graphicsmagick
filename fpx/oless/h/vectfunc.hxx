@@ -5,11 +5,11 @@
 // 
 //  Copyright (c) 1999 Digital Imaging Group, Inc.
 // 
-//  Contents:	CPagedVector inline functions
+//  Contents: CPagedVector inline functions
 //
-//  Classes:	
+//  Classes:  
 //
-//  Functions:	
+//  Functions:  
 //
 //----------------------------------------------------------------
 
@@ -83,11 +83,11 @@ inline CVectBits * CPagedVector::GetBits(const ULONG iTable)
 
 //+---------------------------------------------------------------------------
 //
-//  Member:	CPagedVector::ResetDirty, public
+//  Member: CPagedVector::ResetDirty, public
 //
-//  Synopsis:	Reset the dirty bit on the specified page
+//  Synopsis: Reset the dirty bit on the specified page
 //
-//  Arguments:	[iTable] -- Table to reset bit on
+//  Arguments:  [iTable] -- Table to reset bit on
 //
 //  Notes:  This function is always called on a page with an
 //              open reference.  Therefore, the page is
@@ -123,11 +123,11 @@ inline void CPagedVector::ResetDirty(ULONG iTable)
 
 //+---------------------------------------------------------------------------
 //
-//  Member:	CPagedVector::SetSect, public
+//  Member: CPagedVector::SetSect, public
 //
-//  Synopsis:	Set the sector location of a page
+//  Synopsis: Set the sector location of a page
 //
-//  Arguments:	[iTable] -- Table to set page for
+//  Arguments:  [iTable] -- Table to set page for
 //              [sect] -- Sector location of page
 //
 //  Notes:  This function is always called on a page with an
@@ -167,11 +167,11 @@ Err:
 
 //+---------------------------------------------------------------------------
 //
-//  Member:	CPagedVector::FreeTable, public
+//  Member: CPagedVector::FreeTable, public
 //
-//  Synopsis:	Free a given table (NULL its pointer)
+//  Synopsis: Free a given table (NULL its pointer)
 //
-//  Arguments:	[iTable] -- Table to free
+//  Arguments:  [iTable] -- Table to free
 //
 //----------------------------------------------------------------------------
 
@@ -187,11 +187,11 @@ inline void CPagedVector::FreeTable(ULONG iTable)
 
 //+---------------------------------------------------------------------------
 //
-//  Member:	CPagedVector::SetParent, public
+//  Member: CPagedVector::SetParent, public
 //
-//  Synopsis:	Set the parent of this page table
+//  Synopsis: Set the parent of this page table
 //
-//  Arguments:	[pms] -- Pointer to new parent
+//  Arguments:  [pms] -- Pointer to new parent
 //
 //----------------------------------------------------------------------------
 
@@ -203,9 +203,9 @@ inline void CPagedVector::SetParent(CMStream *pms)
 
 //+---------------------------------------------------------------------------
 //
-//  Member:	CPagedVector::GetParent, public
+//  Member: CPagedVector::GetParent, public
 //
-//  Synopsis:	Return the parent MS pointer of a vector
+//  Synopsis: Return the parent MS pointer of a vector
 //
 //----------------------------------------------------------------------------
 
@@ -217,9 +217,9 @@ inline CMStream* CPagedVector::GetParent(void) const
 
 //+---------------------------------------------------------------------------
 //
-//  Member:	CPagedVector::ResetBits, public
+//  Member: CPagedVector::ResetBits, public
 //
-//  Synopsis:	Reset all the optimization bits in the vector
+//  Synopsis: Reset all the optimization bits in the vector
 //
 //----------------------------------------------------------------------------
 

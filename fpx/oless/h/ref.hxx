@@ -5,7 +5,7 @@
 // 
 //  Copyright (c) 1999 Digital Imaging Group, Inc.
 // 
-//  Contents:	Reference implementation headers
+//  Contents: Reference implementation headers
 //
 //----------------------------------------------------------------------------
 
@@ -180,7 +180,7 @@ DECLARE_INTERFACE(IUnknown)
 #define ERROR_NO_UNICODE_TRANSLATION 1113L
 #define SUCCEEDED(Status) ((SCODE)(Status) >= 0)
 #define FAILED(Status) ((SCODE)(Status)<0)
-//#define GetScode(hr) 		((SCODE)(hr) & 0x800FFFFF)
+//#define GetScode(hr)    ((SCODE)(hr) & 0x800FFFFF)
 //#define ResultFromScode(sc) ((HRESULT)((SCODE)(sc) & 0x800FFFFF))
 #define ResultFromScode(sc) ((HRESULT) (sc))
 #define GetScode(hr) ((SCODE) (hr))
@@ -197,7 +197,7 @@ DECLARE_INTERFACE(IUnknown)
                                                                           
 #else                                                                     
 #define DEFINE_GUID(name, l, w1, w2, b1, b2, b3, b4, b5, b6, b7, b8)      \
-	EXTERN_C const GUID name;                                         \
+  EXTERN_C const GUID name;                                         \
         EXTERN_C const GUID name                                          \
                 = { l, w1, w2, { b1, b2,  b3,  b4,  b5,  b6,  b7,  b8 } } 
 #endif /* INITGUID */
@@ -261,7 +261,7 @@ EXTERN_C STDAPI_(BOOL) IsEqualGUID(REFGUID rguid1, REFGUID rguid2);
 #define DEB_PROP_MAP            DEB_ITRACE      // 0x00000400
 #define DEB_IERROR              0x00000100      // internal error paths
 #define DEB_ITRACE              0x00000400      // internal trace messages
-#define DEB_ALL			0xFFFFFFFF	// all traces on
+#define DEB_ALL     0xFFFFFFFF  // all traces on
 
 
 #if DBG == 1
@@ -276,48 +276,48 @@ EXTERN_C STDAPI_(BOOL) IsEqualGUID(REFGUID rguid1, REFGUID rguid2);
 
 #if (__GNUC__ == 2 && __GNUC_MINOR__ <= 6)
 
-#define DECLARE_DEBUG(comp)						     \
-EXTERN_C unsigned long comp##InfoLevel;					     \
-EXTERN_C char *comp##InfoLevelString;					     \
+#define DECLARE_DEBUG(comp)                \
+EXTERN_C unsigned long comp##InfoLevel;              \
+EXTERN_C char *comp##InfoLevelString;              \
 void comp##InlineDebugOut(unsigned long fDebugMask, char const *pszfmt, ...);
 
-#define DECLARE_INFOLEVEL(comp, level)					\
-    unsigned long comp##InfoLevel = level;				\
-    char *comp##InfoLevelString = #comp;				\
-									\
-void									\
-comp##InlineDebugOut(unsigned long fDebugMask, char const *pszfmt, ...)	\
-{									\
-   va_list vstart;							\
-   va_start(vstart, pszfmt);						\
-   if (comp##InfoLevel & fDebugMask)					\
-   {									\
-	vprintf((const char *)pszfmt, vstart);				\
-   }									\
+#define DECLARE_INFOLEVEL(comp, level)          \
+    unsigned long comp##InfoLevel = level;        \
+    char *comp##InfoLevelString = #comp;        \
+                  \
+void                  \
+comp##InlineDebugOut(unsigned long fDebugMask, char const *pszfmt, ...) \
+{                 \
+   va_list vstart;              \
+   va_start(vstart, pszfmt);            \
+   if (comp##InfoLevel & fDebugMask)          \
+   {                  \
+  vprintf((const char *)pszfmt, vstart);        \
+   }                  \
 }
 
 #else // (__GNUC__ > 2 && __GNUC_MINOR__ <= 6)
 
-#define DECLARE_DEBUG(comp)						\
-EXTERN_C unsigned long comp##InfoLevel;					\
-EXTERN_C char *comp##InfoLevelString;					\
-inline void								\
-comp##InlineDebugOut(unsigned long fDebugMask, char const *pszfmt, ...)	\
-{									\
-   va_list vstart;							\
-   va_start(vstart, pszfmt);						\
-   if (comp##InfoLevel & fDebugMask)					\
-   {									\
-	vprintf((const char *)pszfmt, vstart);				\
-   }									\
+#define DECLARE_DEBUG(comp)           \
+EXTERN_C unsigned long comp##InfoLevel;         \
+EXTERN_C char *comp##InfoLevelString;         \
+inline void               \
+comp##InlineDebugOut(unsigned long fDebugMask, char const *pszfmt, ...) \
+{                 \
+   va_list vstart;              \
+   va_start(vstart, pszfmt);            \
+   if (comp##InfoLevel & fDebugMask)          \
+   {                  \
+  vprintf((const char *)pszfmt, vstart);        \
+   }                  \
 }
 
-#define DECLARE_INFOLEVEL(comp, level)		\
-    unsigned long comp##InfoLevel = level;	\
+#define DECLARE_INFOLEVEL(comp, level)    \
+    unsigned long comp##InfoLevel = level;  \
     char *comp##InfoLevelString = #comp;
 
 #endif  // (__GNUC__ > 2 && __GNUC_MINOR__ <= 6) 
-		        
+            
 
 #else  // DBG
 

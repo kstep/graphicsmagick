@@ -5,7 +5,7 @@
 // 
 //  Copyright (c) 1999 Digital Imaging Group, Inc.
 // 
-//  Contents:	Private DocFile definitions
+//  Contents: Private DocFile definitions
 //
 //---------------------------------------------------------------
 
@@ -20,7 +20,7 @@
 // Common bundles of STGM flags
 #define STGM_RDWR (STGM_READ | STGM_WRITE | STGM_READWRITE)
 #define STGM_DENY (STGM_SHARE_DENY_NONE | STGM_SHARE_DENY_READ | \
-		   STGM_SHARE_DENY_WRITE | STGM_SHARE_EXCLUSIVE)
+       STGM_SHARE_DENY_WRITE | STGM_SHARE_EXCLUSIVE)
 
 #define VALID_IFTHERE(it) \
     ((it) == STG_FAILIFTHERE || (it) == STG_CREATEIFTHERE || \

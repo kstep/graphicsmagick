@@ -18,17 +18,17 @@
 */
 
 /*
-**	All of the following routines have the same arguments...
+**  All of the following routines have the same arguments...
 **
-**	unsigned char *src		 --the data to act upon
-**	unsigned char *dst		 --where to put the results (can be the same as src)
-**	int tileSize	 --assuming you have 64x64 tiles, pass 64
-**	int bpp		 --how many bytes per pixel
-**					 note that the subsampling routines do not support
-**					 anything other than 3 bytes/pixel, but will happily
-**					 destroy any data sent to them
-**					 even the YCbCr routine will destroy anything but
-**					 3 or 4 bits/pixel data
+**  unsigned char *src     --the data to act upon
+**  unsigned char *dst     --where to put the results (can be the same as src)
+**  int tileSize   --assuming you have 64x64 tiles, pass 64
+**  int bpp    --how many bytes per pixel
+**           note that the subsampling routines do not support
+**           anything other than 3 bytes/pixel, but will happily
+**           destroy any data sent to them
+**           even the YCbCr routine will destroy anything but
+**           3 or 4 bits/pixel data
 */
 
 /*
@@ -42,7 +42,7 @@ unsigned char *dst,
 int tileSize, 
 int bpp);
 
-/* This routine does an RGB to YCbCr conversion.  After	complettion, the
+/* This routine does an RGB to YCbCr conversion.  After complettion, the
 ** destination buffer will be filled with YCbCrYCbCrYCbCrYCbCrYCbCr,
 ** assuming of course that it was originally RGBRGBRGBRGBRGB.
 ** The routine also handles RGBa data, and in that situation, you'll

@@ -71,7 +71,7 @@ JPEGEXPORT
  int eJPEG_SetSubsampling(
 void *encoder,    /* same value returned by eJPEG_Init */
 unsigned char subSampling  /* pass the same value you'd put in the FlashPix
-				  compression subtype field for JPEG data */
+          compression subtype field for JPEG data */
 );
 
 
@@ -135,10 +135,10 @@ unsigned char *CompQuantIdent);
 /* Note that currently, if you set 4-bytes per pixel, you don't get subsampling */
 JPEGEXPORT
  int eJPEG_SetTileSize(
-void *encoder,	/* same value returned by eJPEG_Init */
-int hSize,		/* in pixels, the width of a tile */
-int vSize,		/* in pixels, the height of a tile */
-int bytesPerPixel	/* how many bytes per pixel */
+void *encoder,  /* same value returned by eJPEG_Init */
+int hSize,    /* in pixels, the width of a tile */
+int vSize,    /* in pixels, the height of a tile */
+int bytesPerPixel /* how many bytes per pixel */
 );
 
 
@@ -153,11 +153,11 @@ int bytesPerPixel	/* how many bytes per pixel */
 */ 
 JPEGEXPORT
  int eJPEG_CreateHeader(
-void *encoder,	     /* same value returned by eJPEG_Init */
-long hdrBufferSize,	     /* the size of the <hdrBuffer> in bytes */
+void *encoder,       /* same value returned by eJPEG_Init */
+long hdrBufferSize,      /* the size of the <hdrBuffer> in bytes */
 unsigned char *hdrBuffer,/* the buffer itself */
-long *hdrBufferUsed	     /* upon return shows the amount of 
-			        hdrbuffer that was used */
+long *hdrBufferUsed      /* upon return shows the amount of 
+              hdrbuffer that was used */
 );
 
 
@@ -166,18 +166,18 @@ JPEGEXPORT
  int eJPEG_ConcatenateHeader( 
 void *encoder,
 unsigned char *hdrBuffer,/* the buffer itself */
-long *hdrBufferUsed	     /* upon return shows the amount of 
-				hdrbuffer that was used. */
+long *hdrBufferUsed      /* upon return shows the amount of 
+        hdrbuffer that was used. */
 );
 
 
 JPEGEXPORT
  long eJPEG_EncodeTile(
-void *encoder,	  /* same value returned by eJPEG_Init */
+void *encoder,    /* same value returned by eJPEG_Init */
 unsigned char *inbuf, /* assumed to be the size of a tile or sub-
                              sampled tile! */
 unsigned char *outbuf,/* the buffer to put the compressed tile into */
-size_t outbuf_size	  /* size of the output buffer */
+size_t outbuf_size    /* size of the output buffer */
 );
 
 /* called at the end of using the encoder project */
@@ -192,12 +192,12 @@ JPEGEXPORT
 int SetDefaultTables(void* encoder);
 
 /* CHG_FILE_ERR - unified JPEG error values by offsetting the values by 0x0200 */
-#define eJPEG_NO_ERROR						0
-#define eJPEG_SUBSAMPLING_NOT_SUPPORTED		0x0201
-#define eJPEG_INVALID_ENCODER				0x0202
-#define	eJPEG_UNSUPPORTED_SUBSAMPLING		0x0203
-#define eJPEG_UNSUPPORTED_BYTES_PER_PIXEL	0x0204
-#define eJPEG_MEMORY_ERROR					0x0205
+#define eJPEG_NO_ERROR            0
+#define eJPEG_SUBSAMPLING_NOT_SUPPORTED   0x0201
+#define eJPEG_INVALID_ENCODER       0x0202
+#define eJPEG_UNSUPPORTED_SUBSAMPLING   0x0203
+#define eJPEG_UNSUPPORTED_BYTES_PER_PIXEL 0x0204
+#define eJPEG_MEMORY_ERROR          0x0205
 #define eJPEG_BAD_HUFFMAN_TABLE             0x0206
 #define eJPEG_BAD_QUANT_TABLE               0x0207
 

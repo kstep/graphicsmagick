@@ -37,7 +37,7 @@ UNICODECALLOUTS UnicodeCallouts =
 //
 // Synopsis:    Set the Unicode conversion function pointers
 //
-// Arguments:   [pUnicodeCallouts]	-- Unicode callouts table
+// Arguments:   [pUnicodeCallouts]  -- Unicode callouts table
 //
 // Returns:     Nothing
 //---------------------------------------------------------------------------
@@ -59,7 +59,7 @@ RtlSetUnicodeCallouts(
 //              [pguid]         -- property set guid (create only)
 //              [pclsid]        -- CLASSID of propset code (create only)
 //              [ma]            -- caller's memory allocator
-//		[LocaleId]	-- Locale Id (create only)
+//    [LocaleId]  -- Locale Id (create only)
 //              [pOSVersion]    -- pointer to the OS Version header field
 //              [pCodePage]     -- pointer to new/returned CodePage of propset
 //              [pnp]           -- pointer to returned property set context
@@ -73,8 +73,8 @@ RtlCreatePropertySet(
     IN USHORT Flags,                // *one* of READ/WRITE/CREATE/CREATEIF/DELETE
     OPTIONAL IN GUID const *pguid,  // property set guid (create only)
     OPTIONAL IN GUID const *pclsid, // CLASSID of propset code (create only)
-    IN NTMEMORYALLOCATOR ma,	    // caller's memory allocator
-    IN ULONG LocaleId,		    // Locale Id (create only)
+    IN NTMEMORYALLOCATOR ma,      // caller's memory allocator
+    IN ULONG LocaleId,        // Locale Id (create only)
     OPTIONAL OUT ULONG *pOSVersion, // OS Version from the propset header
     IN OUT USHORT *pCodePage,       // IN: CodePage of property set (create only)
                                     // OUT: CodePage of property set (always)
@@ -121,10 +121,10 @@ RtlCreatePropertySet(
             // FALLTHROUGH
 
         case CREATEPROP_READ:
-	    if (ma == NULL)
-	    {
+      if (ma == NULL)
+      {
                 goto Exit;
-	    }
+      }
             break;
 
         default:
@@ -138,7 +138,7 @@ RtlCreatePropertySet(
     ppsstm = new CPropertySetStream(
                             Flags,
                             pmstm,
-			    (PMemoryAllocator *) ma);
+          (PMemoryAllocator *) ma);
     if (ppsstm == NULL)
     {
         Status = STATUS_INSUFFICIENT_RESOURCES;
@@ -387,7 +387,7 @@ MapNameToPropId(
         {
             // The property name could not be found in the dictionary
             ULONG cbT;
-	    SERIALIZEDPROPERTYVALUE const *pprop;
+      SERIALIZEDPROPERTYVALUE const *pprop;
 
             // was the name not found due to an error in QueryProperyBuf?
             if( !NT_SUCCESS(*pstatus) ) goto Exit;
@@ -400,7 +400,7 @@ MapNameToPropId(
             if (pprop == NULL)
             {
                 DebugTrace(0, Dbg, (
-		    "MapNameToPropId(Set Entry: pid=%x, name=L'%ws')\n",
+        "MapNameToPropId(Set Entry: pid=%x, name=L'%ws')\n",
                     pid,
                     poszName));
 
@@ -460,70 +460,70 @@ ConvertVariantToPropInfo(
 
     for (iprop = 0; iprop < cprop; iprop++)
     {
-	PROPID pid;
-	ULONG cbprop;
+  PROPID pid;
+  ULONG cbprop;
 
-	switch(aprs[iprop].ulKind)
-	{
-	case PRSPEC_LPWSTR:
-	{
-	    PROPASSERT(IsOLECHARString(aprs[iprop].lpwstr, MAXULONG));
-	    pid = ppsstm->QueryPropid(aprs[iprop].lpwstr, pstatus);
+  switch(aprs[iprop].ulKind)
+  {
+  case PRSPEC_LPWSTR:
+  {
+      PROPASSERT(IsOLECHARString(aprs[iprop].lpwstr, MAXULONG));
+      pid = ppsstm->QueryPropid(aprs[iprop].lpwstr, pstatus);
             if( !NT_SUCCESS(*pstatus) ) goto Exit;
 
-	    if (pid == PID_ILLEGAL && avar != NULL)
-	    {
-		pid = MapNameToPropId(
-				ppsstm,
-				CodePage,
-				aprs,
-				cprop,
-				iprop,
-				pidStart,
+      if (pid == PID_ILLEGAL && avar != NULL)
+      {
+    pid = MapNameToPropId(
+        ppsstm,
+        CodePage,
+        aprs,
+        cprop,
+        iprop,
+        pidStart,
                                 pstatus);
                 if( !NT_SUCCESS(*pstatus) ) goto Exit;
 
-		pidStart = pid + 1;
-	    }
-	    break;
-	}
+    pidStart = pid + 1;
+      }
+      break;
+  }
 
-	case PRSPEC_PROPID:
-	    pid = aprs[iprop].propid;
-	    break;
+  case PRSPEC_PROPID:
+      pid = aprs[iprop].propid;
+      break;
 
-	default:
-	    PROPASSERT(!"Bad ulKind");
-	    *pstatus = STATUS_INVALID_PARAMETER;
+  default:
+      PROPASSERT(!"Bad ulKind");
+      *pstatus = STATUS_INVALID_PARAMETER;
             goto Exit;
 
-	    break;
-	}
+      break;
+  }
 
-	if (apid != NULL)
-	{
-	    apid[iprop] = pid;
-	}
+  if (apid != NULL)
+  {
+      apid[iprop] = pid;
+  }
 
-	// RtlConvertVariantToProperty returns NULL on overflow and
-	// Raises on bad data.
+  // RtlConvertVariantToProperty returns NULL on overflow and
+  // Raises on bad data.
 
-	cbprop = 0;             // Assume property deletion
-	if (pid != PID_ILLEGAL && avar != NULL)
-	{
-	    RtlConvertVariantToProperty(
-			    &avar[iprop],
-			    CodePage,
-			    NULL,
-			    &cbprop,
-			    pid,
-			    FALSE,
+  cbprop = 0;             // Assume property deletion
+  if (pid != PID_ILLEGAL && avar != NULL)
+  {
+      RtlConvertVariantToProperty(
+          &avar[iprop],
+          CodePage,
+          NULL,
+          &cbprop,
+          pid,
+          FALSE,
                             pstatus);
             if( !NT_SUCCESS(*pstatus) ) goto Exit;
-	    PROPASSERT(cbprop == DwordAlign(cbprop));
-	}
-	apinfo[iprop].cbprop = cbprop;
-	apinfo[iprop].pid = pid;
+      PROPASSERT(cbprop == DwordAlign(cbprop));
+  }
+  apinfo[iprop].cbprop = cbprop;
+  apinfo[iprop].pid = pid;
     }
 
     //  ----
@@ -826,7 +826,7 @@ RtlEnumerateProperties(
 
     if (cprop > cpropin)
     {
-	cprop = cpropin;
+  cprop = cpropin;
     }
 
     ppsstm->Validate(&Status);
@@ -835,17 +835,17 @@ RtlEnumerateProperties(
     ppid = NULL;
     if (aprs != NULL || asps != NULL)
     {
-	ppid = apidStack;
-	if (cprop > sizeof(apidStack)/sizeof(apidStack[0]))
-	{
-	    ppidBase = new PROPID[cprop];
-	    if (ppidBase == NULL)
-	    {
-		Status = STATUS_INSUFFICIENT_RESOURCES;
+  ppid = apidStack;
+  if (cprop > sizeof(apidStack)/sizeof(apidStack[0]))
+  {
+      ppidBase = new PROPID[cprop];
+      if (ppidBase == NULL)
+      {
+    Status = STATUS_INSUFFICIENT_RESOURCES;
                 goto Exit;
-	    }
-	    ppid = ppidBase;
-	}
+      }
+      ppid = ppidBase;
+  }
     }
 
     ppsstm->EnumeratePropids(pkey, &cprop, ppid, &Status);
@@ -856,77 +856,77 @@ RtlEnumerateProperties(
     if (ppid != NULL)
     {
         psps = asps;
-	pprs = aprs;
-	while (cprop-- > 0)
-	{
-	    OLECHAR aocName[CCH_MAXPROPNAMESZ];
-	    ULONG cbName;
-	    ULONG cbprop;
-	    BOOLEAN fHasName;
-	    
-	    PROPASSERT(*ppid != PID_DICTIONARY && *ppid != PID_CODEPAGE);
-	    fHasName = FALSE;
+  pprs = aprs;
+  while (cprop-- > 0)
+  {
+      OLECHAR aocName[CCH_MAXPROPNAMESZ];
+      ULONG cbName;
+      ULONG cbprop;
+      BOOLEAN fHasName;
+      
+      PROPASSERT(*ppid != PID_DICTIONARY && *ppid != PID_CODEPAGE);
+      fHasName = FALSE;
 
-	    if ((Flags & ENUMPROP_NONAMES) == 0)
-	    {
-		cbName = sizeof(aocName);
-		fHasName = ppsstm->QueryPropertyNameBuf(
-					*ppid,
-					aocName,
-					&cbName,
+      if ((Flags & ENUMPROP_NONAMES) == 0)
+      {
+    cbName = sizeof(aocName);
+    fHasName = ppsstm->QueryPropertyNameBuf(
+          *ppid,
+          aocName,
+          &cbName,
                                         &Status);
                 if( !NT_SUCCESS(Status) ) goto Exit;
-	    }
+      }
 
-	    if (pprs != NULL)
-	    {
-		PROPASSERT(pprs->ulKind == PRSPEC_PROPID);
-		if (fHasName)
-		{
-		    pprs->lpwstr = ppsstm->DuplicatePropertyName(
-						aocName,
-						cbName,
+      if (pprs != NULL)
+      {
+    PROPASSERT(pprs->ulKind == PRSPEC_PROPID);
+    if (fHasName)
+    {
+        pprs->lpwstr = ppsstm->DuplicatePropertyName(
+            aocName,
+            cbName,
                                                 &Status);
                     if( !NT_SUCCESS(Status) ) goto Exit;
-		    PROPASSERT(pprs->lpwstr != NULL);
+        PROPASSERT(pprs->lpwstr != NULL);
 
-		    // Make this assignment *after* memory allocation
-		    // succeeds so we free only valid pointers in below
-		    // cleanup code.
-		    pprs->ulKind = PRSPEC_LPWSTR;
-		}
-		else
-		{
-		    pprs->propid = *ppid;
-		}
-		pprs++;
+        // Make this assignment *after* memory allocation
+        // succeeds so we free only valid pointers in below
+        // cleanup code.
+        pprs->ulKind = PRSPEC_LPWSTR;
+    }
+    else
+    {
+        pprs->propid = *ppid;
+    }
+    pprs++;
 
-	    }   // if (pprs != NULL)
+      }   // if (pprs != NULL)
 
-	    if (psps != NULL)
-	    {
-		pprop = ppsstm->GetValue(*ppid, &cbprop, &Status);
+      if (psps != NULL)
+      {
+    pprop = ppsstm->GetValue(*ppid, &cbprop, &Status);
                 if( !NT_SUCCESS(Status) ) goto Exit;
 
-		PROPASSERT(psps->lpwstrName == NULL);
-		if (fHasName)
-		{
-		    psps->lpwstrName = ppsstm->DuplicatePropertyName(
-						aocName,
-						cbName,
+    PROPASSERT(psps->lpwstrName == NULL);
+    if (fHasName)
+    {
+        psps->lpwstrName = ppsstm->DuplicatePropertyName(
+            aocName,
+            cbName,
                                                 &Status);
                     if( !NT_SUCCESS(Status) ) goto Exit;
                     PROPASSERT(psps->lpwstrName != NULL);
-		}
-		psps->propid = *ppid;
-		psps->vt = (VARTYPE) PropByteSwap(pprop->dwType);
-		psps++;
+    }
+    psps->propid = *ppid;
+    psps->vt = (VARTYPE) PropByteSwap(pprop->dwType);
+    psps++;
 
-	    }   // if (psps != NULL)
-	    
+      }   // if (psps != NULL)
+      
             ppid++;
 
-	}   // while (cprop-- > 0)
+  }   // while (cprop-- > 0)
     }   // if (ppid != NULL)
 
     ppsstm->Validate(&Status);
@@ -972,27 +972,27 @@ Exit:
 #if DBG
     if (NT_SUCCESS(Status))
     {
-	if (aprs != NULL)
-	{
-	    for (i = 0; i < cpropin; i++)
-	    {
-		if (aprs[i].ulKind == PRSPEC_LPWSTR)
-		{
-		    PROPASSERT(aprs[i].lpwstr != NULL);
-		    PROPASSERT(ocslen(aprs[i].lpwstr) > 0);
-		}
-	    }
-	}
-	if (asps != NULL)
-	{
-	    for (i = 0; i < cpropin; i++)
-	    {
-		if (asps[i].lpwstrName != NULL)
-		{
-		    PROPASSERT(ocslen(asps[i].lpwstrName) > 0);
-		}
-	    }
-	}
+  if (aprs != NULL)
+  {
+      for (i = 0; i < cpropin; i++)
+      {
+    if (aprs[i].ulKind == PRSPEC_LPWSTR)
+    {
+        PROPASSERT(aprs[i].lpwstr != NULL);
+        PROPASSERT(ocslen(aprs[i].lpwstr) > 0);
+    }
+      }
+  }
+  if (asps != NULL)
+  {
+      for (i = 0; i < cpropin; i++)
+      {
+    if (asps[i].lpwstrName != NULL)
+    {
+        PROPASSERT(ocslen(asps[i].lpwstrName) > 0);
+    }
+      }
+  }
     }
 #endif // DBG
 

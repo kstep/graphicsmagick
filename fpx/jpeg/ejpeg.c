@@ -31,27 +31,27 @@ FILE *ej_outfp;              /* used by Write_Bytes_To_File */
 
 int Read_Next_Rows_From_Memory(unsigned char *buf, int nrows, int nbytes_per_row)
 {
-	int i, j;
+  int i, j;
 
-	/* Check if there are enough data in the buffer 'image_data' */
-	if (nrows_left < nrows) {
-		nrows = (nrows_left <= 0) ? 0 : nrows_left;
-	}
-	for (i = 0; i < nrows; i++) {
-		for (j = nbytes_per_row; j > 0; j--) *buf++ = *image_data++;
-	}
-	nrows_left -= nrows;
-	return(nrows);
+  /* Check if there are enough data in the buffer 'image_data' */
+  if (nrows_left < nrows) {
+    nrows = (nrows_left <= 0) ? 0 : nrows_left;
+  }
+  for (i = 0; i < nrows; i++) {
+    for (j = nbytes_per_row; j > 0; j--) *buf++ = *image_data++;
+  }
+  nrows_left -= nrows;
+  return(nrows);
 }
 
 int Read_Next_Rows_From_File(unsigned char *buf, int nrows, int nbytes_per_row)
 {
-	return(fread(buf, nbytes_per_row, nrows, ej_infp));
+  return(fread(buf, nbytes_per_row, nrows, ej_infp));
 }
 
 /********************************** OUTPUT **********************************/
 
 void Write_Bytes_To_File(unsigned char *data, int nbytes)
 {
-	fwrite(data, nbytes, 1, ej_outfp);
+  fwrite(data, nbytes, 1, ej_outfp);
 }

@@ -45,7 +45,7 @@ public:
 //  Synopsis:   Constructor
 //
 //---------------------------------------------------------------
-	
+  
 inline CAllocator::CAllocator()
 {
     // does nothing

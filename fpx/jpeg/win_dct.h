@@ -44,7 +44,7 @@
 #define b5 25080L
 
 JPEGEXPORT
-void  Fill_Winograd_Quant_Table(int *in,	/* regular quantization table */
-int *out);	/* winograd quantization table */
+void  Fill_Winograd_Quant_Table(int *in,  /* regular quantization table */
+int *out);  /* winograd quantization table */
 
 void Dct(int *x);

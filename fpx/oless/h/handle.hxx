@@ -5,11 +5,11 @@
 // 
 //  Copyright (c) 1999 Digital Imaging Group, Inc.
 // 
-//  Contents:	Defines CHandle
+//  Contents: Defines CHandle
 //
-//  Classes:	CHandle
-//		CStgHandle
-//		CStmHandle
+//  Classes:  CHandle
+//    CStgHandle
+//    CStmHandle
 //
 //---------------------------------------------------------------
 
@@ -21,11 +21,11 @@
 
 //+--------------------------------------------------------------
 //
-//  Class:	CHandle (h)
+//  Class:  CHandle (h)
 //
-//  Purpose:	An opaque handle to a directory entry-based object
+//  Purpose:  An opaque handle to a directory entry-based object
 //
-//  Interface:	See below
+//  Interface:  See below
 //
 //---------------------------------------------------------------
 
@@ -38,7 +38,7 @@ public:
     inline CHandle(void);
 
     inline void Init(CMStream *pms,
-		     SID sid);
+         SID sid);
 
     inline BOOL IsRoot(void) const;
     inline BOOL IsValid(void) const;
@@ -62,9 +62,9 @@ private:
 
 //+--------------------------------------------------------------
 //
-//  Member:	CHandle::CHandle, public
+//  Member: CHandle::CHandle, public
 //
-//  Synopsis:	NULL constructor
+//  Synopsis: NULL constructor
 //
 //---------------------------------------------------------------
 
@@ -76,19 +76,19 @@ inline CHandle::CHandle(void)
 
 //+--------------------------------------------------------------
 //
-//  Member:	CHandle::Init, public
+//  Member: CHandle::Init, public
 //
-//  Synopsis:	Sets internal data members
+//  Synopsis: Sets internal data members
 //
-//  Arguments:	[pms] - Multistream
-//		[sid] - SID
+//  Arguments:  [pms] - Multistream
+//    [sid] - SID
 //
-//  Returns:	Appropriate status code
+//  Returns:  Appropriate status code
 //
 //---------------------------------------------------------------
 
 inline void CHandle::Init(CMStream *pms,
-			  SID sid)
+        SID sid)
 {
     _pms = pms;
     _sid = sid;
@@ -96,9 +96,9 @@ inline void CHandle::Init(CMStream *pms,
 
 //+--------------------------------------------------------------
 //
-//  Member:	CHandle::IsRoot, public
+//  Member: CHandle::IsRoot, public
 //
-//  Synopsis:	Whether this is a root handle or not
+//  Synopsis: Whether this is a root handle or not
 //
 //---------------------------------------------------------------
 
@@ -109,9 +109,9 @@ inline BOOL CHandle::IsRoot(void) const
 
 //+--------------------------------------------------------------
 //
-//  Member:	CHandle::IsValid, public
+//  Member: CHandle::IsValid, public
 //
-//  Synopsis:	Whether this handle has been initialized
+//  Synopsis: Whether this handle has been initialized
 //
 //---------------------------------------------------------------
 
@@ -122,9 +122,9 @@ inline BOOL CHandle::IsValid(void) const
 
 //+--------------------------------------------------------------
 //
-//  Member:	CHandle::GetTime, public
+//  Member: CHandle::GetTime, public
 //
-//  Synopsis:	Returns the time
+//  Synopsis: Returns the time
 //
 //---------------------------------------------------------------
 
@@ -135,9 +135,9 @@ inline SCODE CHandle::GetTime(WHICHTIME wt, TIME_T *ptm)
 
 //+--------------------------------------------------------------
 //
-//  Member:	CHandle::SetTime, public
+//  Member: CHandle::SetTime, public
 //
-//  Synopsis:	Sets the time
+//  Synopsis: Sets the time
 //
 //---------------------------------------------------------------
 
@@ -149,11 +149,11 @@ inline SCODE CHandle::SetTime(WHICHTIME wt, TIME_T tm)
 
 //+--------------------------------------------------------------
 //
-//  Member:	CHandle::DestroyEntry, public
+//  Member: CHandle::DestroyEntry, public
 //
-//  Synopsis:	Destroys this entry
+//  Synopsis: Destroys this entry
 //
-//  Returns:	Appropriate status code
+//  Returns:  Appropriate status code
 //
 //---------------------------------------------------------------
 
@@ -165,9 +165,9 @@ inline SCODE CHandle::DestroyEntry(CDfName const *pdfn)
 
 //+--------------------------------------------------------------
 //
-//  Member:	CHandle::GetMS, public
+//  Member: CHandle::GetMS, public
 //
-//  Synopsis:	Returns the multistream
+//  Synopsis: Returns the multistream
 //
 //---------------------------------------------------------------
 
@@ -178,9 +178,9 @@ inline CMStream *CHandle::GetMS(void) const
 
 //+--------------------------------------------------------------
 //
-//  Member:	CHandle::GetSid, public
+//  Member: CHandle::GetSid, public
 //
-//  Synopsis:	Returns the sid
+//  Synopsis: Returns the sid
 //
 //---------------------------------------------------------------
 
@@ -191,11 +191,11 @@ inline SID CHandle::GetSid(void) const
 
 //+--------------------------------------------------------------
 //
-//  Class:	CStgHandle, (stgh)
+//  Class:  CStgHandle, (stgh)
 //
-//  Purpose:	An opaque handle for Multistream directories
+//  Purpose:  An opaque handle for Multistream directories
 //
-//  Interface:	See below
+//  Interface:  See below
 //
 //---------------------------------------------------------------
 
@@ -205,15 +205,15 @@ class CStgHandle : public CHandle
 {
 public:
     inline SCODE CreateEntry(CDfName const *pdfnName,
-			     MSENTRYFLAGS const mefFlags,
-			     CHandle *ph);
+           MSENTRYFLAGS const mefFlags,
+           CHandle *ph);
     inline SCODE GetEntry(CDfName const *pdfnName,
-			  MSENTRYFLAGS const mefFlags,
-			  CHandle *ph);
+        MSENTRYFLAGS const mefFlags,
+        CHandle *ph);
     inline SCODE RenameEntry(CDfName const *pdfnName,
-			     CDfName const *pdfnNewName);
+           CDfName const *pdfnNewName);
     inline SCODE IsEntry(CDfName const *pdfnName,
-			 SEntryBuffer *peb);
+       SEntryBuffer *peb);
     inline SCODE GetIterator(CMSFIterator **ppi);
     inline SCODE GetClass(CLSID *pclsid);
     inline SCODE SetClass(REFCLSID clsid);
@@ -223,16 +223,16 @@ public:
 
 //+--------------------------------------------------------------
 //
-//  Member:	CStgHandle::CreateEntry, public
+//  Member: CStgHandle::CreateEntry, public
 //
-//  Synopsis:	Creates an entry
+//  Synopsis: Creates an entry
 //
 //---------------------------------------------------------------
 
 
 inline SCODE CStgHandle::CreateEntry(CDfName const *pdfnName,
-				     MSENTRYFLAGS const mefFlags,
-				     CHandle *ph)
+             MSENTRYFLAGS const mefFlags,
+             CHandle *ph)
 {
     ph->_pms = _pms;
     return _pms->CreateEntry(_sid, pdfnName, mefFlags, &ph->_sid);
@@ -240,16 +240,16 @@ inline SCODE CStgHandle::CreateEntry(CDfName const *pdfnName,
 
 //+--------------------------------------------------------------
 //
-//  Member:	CStgHandle::GetEntry, public
+//  Member: CStgHandle::GetEntry, public
 //
-//  Synopsis:	Gets an entry
+//  Synopsis: Gets an entry
 //
 //---------------------------------------------------------------
 
 
 inline SCODE CStgHandle::GetEntry(CDfName const *pdfnName,
-				  MSENTRYFLAGS const mefFlags,
-				  CHandle *ph)
+          MSENTRYFLAGS const mefFlags,
+          CHandle *ph)
 {
     SCODE sc;
     SEntryBuffer eb;
@@ -264,7 +264,7 @@ inline SCODE CStgHandle::GetEntry(CDfName const *pdfnName,
 
         if ((mefFlags != MEF_ANY) && (mefFlags != eb.dwType))
         {
-	    sc = STG_E_FILENOTFOUND;
+      sc = STG_E_FILENOTFOUND;
         }
         else
             ph->_sid = eb.sid;
@@ -274,38 +274,38 @@ inline SCODE CStgHandle::GetEntry(CDfName const *pdfnName,
 
 //+--------------------------------------------------------------
 //
-//  Member:	CStgHandle::RenameEntry, public
+//  Member: CStgHandle::RenameEntry, public
 //
-//  Synopsis:	Renames an entry
+//  Synopsis: Renames an entry
 //
 //---------------------------------------------------------------
 
 
 inline SCODE CStgHandle::RenameEntry(CDfName const *pdfnName,
-				     CDfName const *pdfnNewName)
+             CDfName const *pdfnNewName)
 {
     return _pms->RenameEntry(_sid, pdfnName, pdfnNewName);
 }
 
 //+--------------------------------------------------------------
 //
-//  Member:	CStgHandle::IsEntry, public
+//  Member: CStgHandle::IsEntry, public
 //
-//  Synopsis:	Gets entry info and checks for existence
+//  Synopsis: Gets entry info and checks for existence
 //
 //---------------------------------------------------------------
 
 inline SCODE CStgHandle::IsEntry(CDfName const *pdfnName,
-				 SEntryBuffer *peb)
+         SEntryBuffer *peb)
 {
     return _pms->IsEntry(_sid, pdfnName, peb);
 }
 
 //+--------------------------------------------------------------
 //
-//  Member:	CStgHandle::GetIterator, public
+//  Member: CStgHandle::GetIterator, public
 //
-//  Synopsis:	Gets an iterator
+//  Synopsis: Gets an iterator
 //
 //---------------------------------------------------------------
 
@@ -316,9 +316,9 @@ inline SCODE CStgHandle::GetIterator(CMSFIterator **ppi)
 
 //+---------------------------------------------------------------------------
 //
-//  Member:	CStgHandle::GetClass, public
+//  Member: CStgHandle::GetClass, public
 //
-//  Synopsis:	Gets the class ID
+//  Synopsis: Gets the class ID
 //
 //----------------------------------------------------------------------------
 
@@ -330,9 +330,9 @@ inline SCODE CStgHandle::GetClass(CLSID *pclsid)
 
 //+---------------------------------------------------------------------------
 //
-//  Member:	CStgHandle::SetClass, public
+//  Member: CStgHandle::SetClass, public
 //
-//  Synopsis:	Sets the class ID
+//  Synopsis: Sets the class ID
 //
 //----------------------------------------------------------------------------
 
@@ -343,9 +343,9 @@ inline SCODE CStgHandle::SetClass(REFCLSID clsid)
 
 //+---------------------------------------------------------------------------
 //
-//  Member:	CStgHandle::GetStateBits, public
+//  Member: CStgHandle::GetStateBits, public
 //
-//  Synopsis:	Gets state bits
+//  Synopsis: Gets state bits
 //
 //----------------------------------------------------------------------------
 
@@ -356,9 +356,9 @@ inline SCODE CStgHandle::GetStateBits(DWORD *pgrfStateBits)
 
 //+---------------------------------------------------------------------------
 //
-//  Member:	CStgHandle::SetStateBits, public
+//  Member: CStgHandle::SetStateBits, public
 //
-//  Synopsis:	Sets state bits
+//  Synopsis: Sets state bits
 //
 //----------------------------------------------------------------------------
 
@@ -369,11 +369,11 @@ inline SCODE CStgHandle::SetStateBits(DWORD grfStateBits, DWORD grfMask)
 
 //+--------------------------------------------------------------
 //
-//  Class:	CStmHandle, (stmh)
+//  Class:  CStmHandle, (stmh)
 //
-//  Purpose:	An opaque handle for Multistream streams
+//  Purpose:  An opaque handle for Multistream streams
 //
-//  Interface:	See below
+//  Interface:  See below
 //
 //---------------------------------------------------------------
 
@@ -387,9 +387,9 @@ public:
 
 //+--------------------------------------------------------------
 //
-//  Member:	CStmHandle::GetSize, public
+//  Member: CStmHandle::GetSize, public
 //
-//  Synopsis:	Gets the stream size
+//  Synopsis: Gets the stream size
 //
 //---------------------------------------------------------------
 

@@ -1,4 +1,4 @@
-//  SCCSID      : @(#)str8_16.h	1.1 11:53:32 18 Dec 1996
+//  SCCSID      : @(#)str8_16.h 1.1 11:53:32 18 Dec 1996
 //  ----------------------------------------------------------------------------
 //  Copyright (c) 1999 Digital Imaging Group, Inc.
 //  For conditions of distribution and use, see copyright notice
@@ -16,8 +16,8 @@
 class String16 {
 public:
 // native and foreign constructors
-	String16(const char *p8);
-	String16(const wchar_t *p16);
+  String16(const char *p8);
+  String16(const wchar_t *p16);
 
 // non-virtual destructor (this class is concrete)
   ~String16(void);
@@ -27,13 +27,13 @@ public:
 
 private:
 // native wideness string
-	wchar_t *m_sz;
+  wchar_t *m_sz;
 // is foreign??
-	BOOL m_bIsForeign;
+  BOOL m_bIsForeign;
 
 // protect against assignment!
   String16(const String16&);
-	String16& operator=(const String16&);
+  String16& operator=(const String16&);
 };
 
 // native constructor is a pass-through
@@ -80,8 +80,8 @@ inline String16::~String16(void) {
 class String8 {
 public:
 // native and foreign constructors
-	String8(const char *p8);
-	String8(const wchar_t *p16);
+  String8(const char *p8);
+  String8(const wchar_t *p16);
 
 // non-virtual destructor (this class is concrete)
   ~String8(void);
@@ -91,13 +91,13 @@ public:
 
 private:
 // native wideness string
-	char *m_sz;
+  char *m_sz;
 // is foreign??
-	BOOL m_bIsForeign;
+  BOOL m_bIsForeign;
 
 // protect against assignment!
   String8(const String8&);
-	String8& operator=(const String8&);
+  String8& operator=(const String8&);
 };
 
 // native constructor is a pass-through

@@ -5,9 +5,9 @@
 // 
 //  Copyright (c) 1999 Digital Imaging Group, Inc.
 // 
-//  Contents:	ILockBytes memory implementation
+//  Contents: ILockBytes memory implementation
 //
-//  Classes:	CMapBytes
+//  Classes:  CMapBytes
 //
 //--------------------------------------------------------------------------
 
@@ -32,9 +32,9 @@ inline void AtomicDec(long *lp) { (*lp)--; }
 
 DECLARE_DEBUG(ol);
 
-#define olDebugOut(parms)	olInlineDebugOut parms
+#define olDebugOut(parms) olInlineDebugOut parms
 #include <assert.h>
-#define olAssert(exp)		assert(exp)
+#define olAssert(exp)   assert(exp)
 
 #else  // DBG != 1
 
@@ -73,9 +73,9 @@ public:
     STDMETHOD(Stat) (STATSTG FAR *pstatstg, DWORD grfStatFlag);
 
 private:
-    LONG _ulRef;	//  reference count
-    ULONG _ulSize;	//  memory map size
-    void FAR *_pv;		//  memory map
+    LONG _ulRef;  //  reference count
+    ULONG _ulSize;  //  memory map size
+    void FAR *_pv;    //  memory map
 };
 
 #endif // #ifndef __ILB_HXX__

@@ -18,7 +18,7 @@
 
 JPEGEXPORT
 int Decode_Huffman(DB_STATE *db_state,
-				   DHUFF_TABLE *huff_table);
+           DHUFF_TABLE *huff_table);
 
 JPEGEXPORT
 DHUFF_TABLE *Build_Huffman_Table(

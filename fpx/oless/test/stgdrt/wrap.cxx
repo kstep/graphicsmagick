@@ -5,7 +5,7 @@
 // 
 //  Copyright (c) 1999 Digital Imaging Group, Inc.
 // 
-//  Contents:	Wrapper implementations
+//  Contents: Wrapper implementations
 //
 //---------------------------------------------------------------
 
@@ -26,7 +26,7 @@ WStorage *WStorage::Wrap(IStorage *pistg)
 
     wstg = new WStorage(pistg);
     if (wstg == NULL)
-	error(EXIT_OOM, "Unable to wrap IStorage\n");
+  error(EXIT_OOM, "Unable to wrap IStorage\n");
     return wstg;
 }
 
@@ -39,7 +39,7 @@ WStorage::WStorage(IStorage *pstg)
 WStorage::~WStorage(void)
 {
     if (_pstg)
-	Release();
+  Release();
 }
 
 void WStorage::Unwrap(void)
@@ -69,21 +69,21 @@ ULONG WStorage::Release(void)
     ul = _pstg->Release();
     out("IStorage %p::Release() - %lu\n", _pstg, ul);
     if (ul == 0)
-	_pstg = NULL;
+  _pstg = NULL;
     return ul;
 }
 
 HRESULT WStorage::CreateStream(const OLECHAR * pwcsName,
-			     const DWORD grfMode,
-			     DWORD reserved1,
-			     DWORD reserved2,
-			     WStream **ppstm)
+           const DWORD grfMode,
+           DWORD reserved1,
+           DWORD reserved2,
+           WStream **ppstm)
 {
     HRESULT hr;
     IStream *pistm;
 
     out("IStorage %p::CreateStream(%s, 0x%lX, %lu, %lu, %p)", _pstg,
-	OlecsOut(pwcsName), grfMode, reserved1, reserved2, ppstm);
+  OlecsOut(pwcsName), grfMode, reserved1, reserved2, ppstm);
     hr = Result(_pstg->CreateStream(pwcsName, grfMode, reserved1,
                                     reserved2, &pistm));
     *ppstm = WStream::Wrap(pistm);
@@ -91,27 +91,27 @@ HRESULT WStorage::CreateStream(const OLECHAR * pwcsName,
 }
 
 HRESULT WStorage::OpenStream(const OLECHAR * pwcsName,
-			   void *reserved1,
-			   const DWORD grfMode,
-			   DWORD reserved2,
-			   WStream **ppstm)
+         void *reserved1,
+         const DWORD grfMode,
+         DWORD reserved2,
+         WStream **ppstm)
 {
     HRESULT hr;
     IStream *pistm;
 
     out("IStorage %p::OpenStream(%s, %p, 0x%lX, %lu, %p)", _pstg,
-	OlecsOut(pwcsName), reserved1, grfMode, reserved2, ppstm);
+  OlecsOut(pwcsName), reserved1, grfMode, reserved2, ppstm);
     hr = Result(_pstg->OpenStream(pwcsName, reserved1, grfMode,
-				 reserved2, &pistm));
+         reserved2, &pistm));
     *ppstm = WStream::Wrap(pistm);
     return hr;
 }
 
 HRESULT WStorage::CreateStorage(const OLECHAR * pwcsName,
-			      const DWORD grfMode,
-			      DWORD reserved1,
+            const DWORD grfMode,
+            DWORD reserved1,
                               DWORD reserved2,
-			      WStorage **ppstg)
+            WStorage **ppstg)
 {
     HRESULT hr;
     IStorage *pistg;
@@ -125,18 +125,18 @@ HRESULT WStorage::CreateStorage(const OLECHAR * pwcsName,
 }
 
 HRESULT WStorage::OpenStorage(const OLECHAR * pwcsName,
-			    WStorage *pstgPriority,
-			    const DWORD grfMode,
-			    SNB snbExclude,
-			    DWORD reserved,
-			    WStorage **ppstg)
+          WStorage *pstgPriority,
+          const DWORD grfMode,
+          SNB snbExclude,
+          DWORD reserved,
+          WStorage **ppstg)
 {
     HRESULT hr;
     IStorage *pistg;
 
     out("IStorage %p::OpenStorage(%s, %p, 0x%lX, %p, %lu, %p)", _pstg,
-	OlecsOut(pwcsName), SAFEI(pstgPriority), grfMode,
-	snbExclude, reserved, ppstg);
+  OlecsOut(pwcsName), SAFEI(pstgPriority), grfMode,
+  snbExclude, reserved, ppstg);
     hr = Result(_pstg->OpenStorage(pwcsName, (IStorage*) SAFEI(pstgPriority),
                                    grfMode, snbExclude,
                                    reserved, &pistg));
@@ -145,23 +145,23 @@ HRESULT WStorage::OpenStorage(const OLECHAR * pwcsName,
 }
 
 HRESULT WStorage::CopyTo(DWORD ciidExclude,
-		       IID *rgiidExclude,
-		       SNB snbExclude,
-		       WStorage *pstgDest)
+           IID *rgiidExclude,
+           SNB snbExclude,
+           WStorage *pstgDest)
 {
     out("IStorage %p::CopyTo(%lu, %p, %p, %p)", _pstg, ciidExclude,
-	rgiidExclude, snbExclude, pstgDest->GetI());
+  rgiidExclude, snbExclude, pstgDest->GetI());
     return Result(_pstg->CopyTo(ciidExclude, rgiidExclude, snbExclude,
                                 pstgDest->GetI()));
 }
 
 HRESULT WStorage::MoveElementTo(OLECHAR const FAR* lpszName,
-    			WStorage FAR *pstgDest,
+          WStorage FAR *pstgDest,
                         OLECHAR const FAR* lpszNewName,
                         DWORD grfFlags)
 {
     out("IStorage %p::MoveElementTo(%p, %p, %p, %lu)", _pstg, lpszName,
-	pstgDest->GetI(), lpszNewName, grfFlags);
+  pstgDest->GetI(), lpszNewName, grfFlags);
     return Result(_pstg->MoveElementTo(lpszName, pstgDest->GetI(),
                                        lpszNewName, grfFlags));
 }
@@ -179,15 +179,15 @@ HRESULT WStorage::Revert(void)
 }
 
 HRESULT WStorage::EnumElements(DWORD reserved1,
-			     void *reserved2,
-			     DWORD reserved3,
-			     WEnumSTATSTG **ppenm)
+           void *reserved2,
+           DWORD reserved3,
+           WEnumSTATSTG **ppenm)
 {
     HRESULT hr;
     IEnumSTATSTG *pienm;
 
     out("IStorage %p::EnumElements(%lu, %p, %lu, %p)", _pstg,
-	reserved1, reserved2, reserved3, ppenm);
+  reserved1, reserved2, reserved3, ppenm);
     hr = Result(_pstg->EnumElements(reserved1, reserved2, reserved3, &pienm));
     *ppenm = WEnumSTATSTG::Wrap(pienm);
     return hr;
@@ -200,10 +200,10 @@ HRESULT WStorage::DestroyElement(const OLECHAR * pwcsName)
 }
 
 HRESULT WStorage::RenameElement(const OLECHAR * pwcsOldName,
-			      const OLECHAR * pwcsNewName)
+            const OLECHAR * pwcsNewName)
 {
     out("IStorage %p::RenameElement(%s, %s)", _pstg, OlecsOut(pwcsOldName),
-	OlecsOut(pwcsNewName));
+  OlecsOut(pwcsNewName));
     return Result(_pstg->RenameElement(pwcsOldName, pwcsNewName));
 }
 
@@ -248,7 +248,7 @@ WStream *WStream::Wrap(IStream *pistm)
 
     wstm = new WStream(pistm);
     if (wstm == NULL)
-	error(EXIT_OOM, "Unable to wrap IStream\n");
+  error(EXIT_OOM, "Unable to wrap IStream\n");
     return wstm;
 }
 
@@ -261,7 +261,7 @@ WStream::WStream(IStream *pstm)
 WStream::~WStream(void)
 {
     if (_pstm)
-	Release();
+  Release();
 }
 
 void WStream::Unwrap(void)
@@ -291,7 +291,7 @@ ULONG WStream::Release(void)
     ul = _pstm->Release();
     out("IStream %p::Release() - %lu\n", _pstm, ul);
     if (ul == 0)
-	_pstm = NULL;
+  _pstm = NULL;
     return ul;
 }
 
@@ -302,10 +302,10 @@ HRESULT WStream::Read(VOID *pv, ULONG cb, ULONG *pcbRead)
     out("IStream %p::Read(%p, %lu, %p)", _pstm, pv, cb, pcbRead);
     hr = _pstm->Read(pv, cb, pcbRead);
     if (pcbRead)
-	out(" - %lu bytes", *pcbRead);
+  out(" - %lu bytes", *pcbRead);
     Result(hr);
     if (pcbRead && *pcbRead != cb && fExitOnFail)
-	error(EXIT_BADSC, "Couldn't read data\n");
+  error(EXIT_BADSC, "Couldn't read data\n");
     return hr;
 }
 
@@ -316,29 +316,29 @@ HRESULT WStream::Write(VOID *pv, ULONG cb, ULONG *pcbWritten)
     out("IStream %p::Write(%p, %lu, %p)", _pstm, pv, cb, pcbWritten);
     hr = _pstm->Write(pv, cb, pcbWritten);
     if (pcbWritten)
-	out(" - %lu bytes", *pcbWritten);
+  out(" - %lu bytes", *pcbWritten);
     Result(hr);
     if (pcbWritten && *pcbWritten != cb && fExitOnFail)
-	error(EXIT_BADSC, "Couldn't write data\n");
+  error(EXIT_BADSC, "Couldn't write data\n");
     return hr;
 }
 
 HRESULT WStream::Seek(LONG dlibMove,
-		    DWORD dwOrigin,
-		    ULONG *plibNewPosition)
+        DWORD dwOrigin,
+        ULONG *plibNewPosition)
 {
     HRESULT hr;
     LARGE_INTEGER dlib;
     ULARGE_INTEGER plib;
 
     out("IStream %p::Seek(%ld, %lu, %p)", _pstm, dlibMove, dwOrigin,
-	plibNewPosition);
+  plibNewPosition);
     LISet32(dlib, dlibMove);
     hr = _pstm->Seek(dlib, dwOrigin, &plib);
     if (plibNewPosition)
     {
         *plibNewPosition = ULIGetLow(plib);
-	out(" - ptr %lu", *plibNewPosition);
+  out(" - ptr %lu", *plibNewPosition);
     }
     return Result(hr);
 }
@@ -359,15 +359,15 @@ HRESULT WStream::Commit(const DWORD dwFlags)
 }
 
 HRESULT WStream::CopyTo(WStream *pstm,
-		      ULONG cb,
-		      ULONG *pcbRead,
-		      ULONG *pcbWritten)
+          ULONG cb,
+          ULONG *pcbRead,
+          ULONG *pcbWritten)
 {
     ULARGE_INTEGER lcb, pcbr, pcbw;
     HRESULT hr;
     
     out("IStream %p::CopyTo(%p, %lu, %p, %p)", _pstm, pstm->GetI(), cb,
-	pcbRead, pcbWritten);
+  pcbRead, pcbWritten);
     ULISet32(lcb, cb);
     hr = Result(_pstm->CopyTo(pstm->GetI(), lcb, &pcbr, &pcbw));
     if (pcbRead)
@@ -406,7 +406,7 @@ WEnumSTATSTG *WEnumSTATSTG::Wrap(IEnumSTATSTG *pienm)
 
     wenm = new WEnumSTATSTG(pienm);
     if (wenm == NULL)
-	error(EXIT_OOM, "Unable to wrap IEnumSTATSTG\n");
+  error(EXIT_OOM, "Unable to wrap IEnumSTATSTG\n");
     return wenm;
 }
 
@@ -419,7 +419,7 @@ WEnumSTATSTG::WEnumSTATSTG(IEnumSTATSTG *penm)
 WEnumSTATSTG::~WEnumSTATSTG(void)
 {
     if (_penm)
-	Release();
+  Release();
 }
 
 void WEnumSTATSTG::Unwrap(void)
@@ -449,7 +449,7 @@ ULONG WEnumSTATSTG::Release(void)
     ul = _penm->Release();
     out("IEnumSTATSTG %p::Release() - %lu\n", _penm, ul);
     if (ul == 0)
-	_penm = NULL;
+  _penm = NULL;
     return ul;
 }
 
@@ -489,9 +489,9 @@ HRESULT WEnumSTATSTG::Clone(WEnumSTATSTG **ppenm)
 //---------------------------------------------------------------
 
 HRESULT WStgCreateDocfile(const OLECHAR * pwcsName,
-			const DWORD grfMode,
-			DWORD reserved,
-			WStorage * *ppstgOpen)
+      const DWORD grfMode,
+      DWORD reserved,
+      WStorage * *ppstgOpen)
 {
     HRESULT hr;
     IStorage *pistg;
@@ -499,14 +499,14 @@ HRESULT WStgCreateDocfile(const OLECHAR * pwcsName,
 #ifndef _CAIRO_
     if (pwcsName)
      {
-	 out("StgCreateDocfile(%s, 0x%lX, %lu, %p)", 
-	     OlecsOut(pwcsName), grfMode, reserved, ppstgOpen);
+   out("StgCreateDocfile(%s, 0x%lX, %lu, %p)", 
+       OlecsOut(pwcsName), grfMode, reserved, ppstgOpen);
      }
     hr = Result(StgCreateDocfile(pwcsName, grfMode,
                                  reserved, &pistg));
 #else ELSE == 300
     out("StgCreateStorage(%s, 0x%lX, %lu, %p)", OlecsOut(pwcsName), grfMode,
-	reserved, ppstgOpen);
+  reserved, ppstgOpen);
 
     hr = Result(StgCreateStorage(pwcsName, grfMode,
                                  STGFMT_DOCUMENT,
@@ -518,15 +518,15 @@ HRESULT WStgCreateDocfile(const OLECHAR * pwcsName,
 }
 
 HRESULT WStgCreateDocfileOnILockBytes(ILockBytes *plkbyt,
-				    const DWORD grfMode,
-				    DWORD reserved,
-				    WStorage * *ppstgOpen)
+            const DWORD grfMode,
+            DWORD reserved,
+            WStorage * *ppstgOpen)
 {
     HRESULT hr;
     IStorage *pistg;
 
     out("StgCreateDocfileOnILockBytes(%p, 0x%lX, %lu, %p)",
-	plkbyt, grfMode, reserved, ppstgOpen);
+  plkbyt, grfMode, reserved, ppstgOpen);
     hr = Result(StgCreateDocfileOnILockBytes(plkbyt, grfMode,
                                              reserved, &pistg));
     *ppstgOpen = WStorage::Wrap(pistg);
@@ -534,19 +534,19 @@ HRESULT WStgCreateDocfileOnILockBytes(ILockBytes *plkbyt,
 }
 
 HRESULT WStgOpenStorage(const OLECHAR * pwcsName,
-		      WStorage *pstgPriority,
-		      const DWORD grfMode,
-		      SNB snbExclude,
-		      DWORD reserved,
-		      WStorage * *ppstgOpen)
+          WStorage *pstgPriority,
+          const DWORD grfMode,
+          SNB snbExclude,
+          DWORD reserved,
+          WStorage * *ppstgOpen)
 {
     HRESULT hr;
     IStorage *pistg;
 
     out("StgOpenStorage(%s, %p, 0x%lX, %p, %lu, %p)", OlecsOut(pwcsName),
-	SAFEI(pstgPriority), grfMode, snbExclude, reserved, ppstgOpen);
+  SAFEI(pstgPriority), grfMode, snbExclude, reserved, ppstgOpen);
     hr = Result(StgOpenStorage(pwcsName, (IStorage*)SAFEI(pstgPriority), grfMode,
-			      snbExclude,
+            snbExclude,
                                reserved, &pistg));
 
     *ppstgOpen = WStorage::Wrap(pistg);
@@ -554,21 +554,21 @@ HRESULT WStgOpenStorage(const OLECHAR * pwcsName,
 }
 
 HRESULT WStgOpenStorageOnILockBytes(ILockBytes *plkbyt,
-				  WStorage *pstgPriority,
-				  const DWORD grfMode,
-				  SNB snbExclude,
-				  DWORD reserved,
-				  WStorage * *ppstgOpen)
+          WStorage *pstgPriority,
+          const DWORD grfMode,
+          SNB snbExclude,
+          DWORD reserved,
+          WStorage * *ppstgOpen)
 {
     HRESULT hr;
     IStorage *pistg;
 
     out("StgOpenStorageOnILockBytes(%p, %p, 0x%lX, %p, %lu, %p)",
-	plkbyt, SAFEI(pstgPriority), grfMode, snbExclude, reserved,
-	ppstgOpen);
+  plkbyt, SAFEI(pstgPriority), grfMode, snbExclude, reserved,
+  ppstgOpen);
     hr = Result(StgOpenStorageOnILockBytes(plkbyt, (IStorage*)SAFEI(pstgPriority),
-					  grfMode, snbExclude, reserved,
-					  &pistg));
+            grfMode, snbExclude, reserved,
+            &pistg));
     *ppstgOpen = WStorage::Wrap(pistg);
     return hr;
 }

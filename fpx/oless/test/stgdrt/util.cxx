@@ -5,7 +5,7 @@
 // 
 //  Copyright (c) 1999 Digital Imaging Group, Inc.
 // 
-//  Contents:	DRT support routines
+//  Contents: DRT support routines
 //
 //---------------------------------------------------------------
 
@@ -34,7 +34,7 @@ void SetData(void)
     _getcwd(szOrigDir, _MAX_PATH);
     pszDataDir = getenv("DRTDATA");
     if (pszDataDir == NULL)
-	pszDataDir = DEFAULT_DATA_DIR;
+  pszDataDir = DEFAULT_DATA_DIR;
     _chdir(pszDataDir);
 }
 
@@ -57,9 +57,9 @@ void out(char *fmt, ...)
 
     if (fVerbose)
     {
-	va_start(args, fmt);
-	vprintf(fmt, args);
-	va_end(args);
+  va_start(args, fmt);
+  vprintf(fmt, args);
+  va_end(args);
     }
 }
 
@@ -178,8 +178,8 @@ char *ScText(SCODE sc)
     int i;
 
     for (i = 0; i<NSCODETEXT; i++)
-	if (scodes[i].sc == sc)
-	    return scodes[i].text;
+  if (scodes[i].sc == sc)
+      return scodes[i].text;
     return "?";
 }
 
@@ -230,64 +230,64 @@ char *VerifyStructure(IStorage *pstg, char *pszStructure)
     OLECHAR atcName[CWCSTORAGENAME];
 
     if (FAILED(sc = DfGetScode(pstg->EnumElements(0, NULL, 0, &penm))))
-	error(EXIT_BADSC, "VerifyStructure: Unable to create enumerator - "
-	      "%s (0x%lX)\n", ScText(sc), sc);
+  error(EXIT_BADSC, "VerifyStructure: Unable to create enumerator - "
+        "%s (0x%lX)\n", ScText(sc), sc);
     for (;;)
     {
-	sc = DfGetScode(penm->Next(1, &stat, NULL));
-	if (sc == S_FALSE)
-	    break;
-	else if (FAILED(sc))
-	    error(EXIT_BADSC, "VerifyStructure: Unable to enumerate - "
-	      "%s (0x%lX)\n", ScText(sc), sc);
-	pse = sl.Add(stat.pwcsName);
-	if (pse == NULL)
-	    error(EXIT_OOM, "VerifyStructure: Unable to allocate string\n");
-	pse->user.dw = stat.type;
-	drtMemFree(stat.pwcsName);
+  sc = DfGetScode(penm->Next(1, &stat, NULL));
+  if (sc == S_FALSE)
+      break;
+  else if (FAILED(sc))
+      error(EXIT_BADSC, "VerifyStructure: Unable to enumerate - "
+        "%s (0x%lX)\n", ScText(sc), sc);
+  pse = sl.Add(stat.pwcsName);
+  if (pse == NULL)
+      error(EXIT_OOM, "VerifyStructure: Unable to allocate string\n");
+  pse->user.dw = stat.type;
+  drtMemFree(stat.pwcsName);
     }
     penm->Release();
     while (*pszStructure && *pszStructure != ')')
     {
-	chType = *pszStructure++;
-	psz = szName;
-	while (*pszStructure && *pszStructure != '(' &&
-	       *pszStructure != ')' && *pszStructure != ',')
-	    *psz++ = *pszStructure++;
-	*psz = 0;
+  chType = *pszStructure++;
+  psz = szName;
+  while (*pszStructure && *pszStructure != '(' &&
+         *pszStructure != ')' && *pszStructure != ',')
+      *psz++ = *pszStructure++;
+  *psz = 0;
         ATOOLE(szName, atcName, CWCSTORAGENAME);
-	pse = sl.Find(atcName);
-	if (pse == NULL)
-	    error(EXIT_BADSC, "VerifyStructure: '%s' not found\n", szName);
-	switch(chType)
-	{
-	case 'd':
-	    if (pse->user.dw != STGTY_STORAGE)
-		error(EXIT_BADSC, "VerifyStructure: '%s' is not a storage\n",
-		      szName);
-	    sc = DfGetScode(pstg->OpenStorage(atcName, NULL,
+  pse = sl.Find(atcName);
+  if (pse == NULL)
+      error(EXIT_BADSC, "VerifyStructure: '%s' not found\n", szName);
+  switch(chType)
+  {
+  case 'd':
+      if (pse->user.dw != STGTY_STORAGE)
+    error(EXIT_BADSC, "VerifyStructure: '%s' is not a storage\n",
+          szName);
+      sc = DfGetScode(pstg->OpenStorage(atcName, NULL,
                                               STGP(STGM_READWRITE), NULL,
                                               0, &pstgChild));
-	    if (FAILED(sc))
-		error(EXIT_BADSC, "VerifyStructure: can't open storage "
-		      "'%s' - %s\n", szName, ScText(sc));
-	    if (*pszStructure == '(')
-		pszStructure = VerifyStructure(pstgChild, pszStructure+1)+1;
-	    pstgChild->Release();
-	    break;
-	case 's':
-	    if (pse->user.dw != STGTY_STREAM)
-		error(EXIT_BADSC, "VerifyStructure: '%s' is not a stream\n",
-		      szName);
-	    break;
-	}
-	sl.Remove(pse);
-	if (*pszStructure == ',')
-	    pszStructure++;
+      if (FAILED(sc))
+    error(EXIT_BADSC, "VerifyStructure: can't open storage "
+          "'%s' - %s\n", szName, ScText(sc));
+      if (*pszStructure == '(')
+    pszStructure = VerifyStructure(pstgChild, pszStructure+1)+1;
+      pstgChild->Release();
+      break;
+  case 's':
+      if (pse->user.dw != STGTY_STREAM)
+    error(EXIT_BADSC, "VerifyStructure: '%s' is not a stream\n",
+          szName);
+      break;
+  }
+  sl.Remove(pse);
+  if (*pszStructure == ',')
+      pszStructure++;
     }
     for (pse = sl.GetHead(); pse; pse = pse->pseNext)
-	error(EXIT_BADSC, "VerifyStructure: additional member '%s'\n",
-	      OlecsOut(pse->atc));
+  error(EXIT_BADSC, "VerifyStructure: additional member '%s'\n",
+        OlecsOut(pse->atc));
     return pszStructure;
 }
 
@@ -304,36 +304,36 @@ char *CreateStructure(IStorage *pstg, char *pszStructure)
 
     while (*pszStructure && *pszStructure != ')')
     {
-	chType = *pszStructure++;
-	psz = szName;
-	while (*pszStructure && *pszStructure != '(' &&
-	       *pszStructure != ')' && *pszStructure != ',')
-	    *psz++ = *pszStructure++;
-	*psz = 0;
+  chType = *pszStructure++;
+  psz = szName;
+  while (*pszStructure && *pszStructure != '(' &&
+         *pszStructure != ')' && *pszStructure != ',')
+      *psz++ = *pszStructure++;
+  *psz = 0;
         ATOOLE(szName, atcName, CWCSTORAGENAME);
-	switch(chType)
-	{
-	case 'd':
-	    sc = DfGetScode(pstg->CreateStorage(atcName, STGP(STGM_READWRITE),
+  switch(chType)
+  {
+  case 'd':
+      sc = DfGetScode(pstg->CreateStorage(atcName, STGP(STGM_READWRITE),
                                                 0, 0, &pstgChild));
-	    if (FAILED(sc))
-		error(EXIT_BADSC, "CreateStructure: can't create storage "
-		      "'%s' - %s\n", szName, ScText(sc));
-	    if (*pszStructure == '(')
-		pszStructure = CreateStructure(pstgChild, pszStructure+1)+1;
-	    pstgChild->Release();
-	    break;
-	case 's':
-	    sc = DfGetScode(pstg->CreateStream(atcName, STMP(STGM_READWRITE),
+      if (FAILED(sc))
+    error(EXIT_BADSC, "CreateStructure: can't create storage "
+          "'%s' - %s\n", szName, ScText(sc));
+      if (*pszStructure == '(')
+    pszStructure = CreateStructure(pstgChild, pszStructure+1)+1;
+      pstgChild->Release();
+      break;
+  case 's':
+      sc = DfGetScode(pstg->CreateStream(atcName, STMP(STGM_READWRITE),
                                                0, 0, &pstmChild));
-	    if (FAILED(sc))
-		error(EXIT_BADSC, "CreateStructure: can't create stream "
-		      "'%s' - %s\n", szName, ScText(sc));
-	    pstmChild->Release();
-	    break;
-	}
-	if (*pszStructure == ',')
-	    pszStructure++;
+      if (FAILED(sc))
+    error(EXIT_BADSC, "CreateStructure: can't create stream "
+          "'%s' - %s\n", szName, ScText(sc));
+      pstmChild->Release();
+      break;
+  }
+  if (*pszStructure == ',')
+      pszStructure++;
     }
     pstg->Commit(0);
     return pszStructure;
@@ -345,18 +345,18 @@ void VerifyStat(STATSTG *pstat, OLECHAR *ptcsName, DWORD type, DWORD grfMode)
     if (ptcsName == NULL)
     {
         if (pstat->pwcsName != NULL)
-	    error(EXIT_BADSC, "Stat name should be NULL - is %p\n",
+      error(EXIT_BADSC, "Stat name should be NULL - is %p\n",
                   pstat->pwcsName);
     }
     else if (olecscmp(pstat->pwcsName, ptcsName))
-	error(EXIT_BADSC, "Stat name mismatch - has '%s' vs. '%s'\n",
-	      OlecsOut(pstat->pwcsName), OlecsOut(ptcsName));
+  error(EXIT_BADSC, "Stat name mismatch - has '%s' vs. '%s'\n",
+        OlecsOut(pstat->pwcsName), OlecsOut(ptcsName));
     if (pstat->type != type)
-	error(EXIT_BADSC, "Stat type mismatch - has %lu vs. %lu\n",
-	      pstat->type, type);
+  error(EXIT_BADSC, "Stat type mismatch - has %lu vs. %lu\n",
+        pstat->type, type);
     if (pstat->grfMode != grfMode)
-	error(EXIT_BADSC, "Stat mode mismatch - has 0x%lX vs. 0x%lX\n",
-	      pstat->grfMode, grfMode);
+  error(EXIT_BADSC, "Stat mode mismatch - has 0x%lX vs. 0x%lX\n",
+        pstat->grfMode, grfMode);
 }
 
 // Checks on a file's existence
@@ -379,11 +379,11 @@ ULONG Length(OLECHAR *ocsFile)
 
     FILE *f=fopen(pszFile, "r");
     if (!f) 
-	error(EXIT_BADSC, "Length: Unable to open '%s'\n", pszFile);
+  error(EXIT_BADSC, "Length: Unable to open '%s'\n", pszFile);
     int rcode=fseek(f, 0, SEEK_END);
     if (rcode!=0)
-	error(EXIT_BADSC, "Length: Unable to get length for '%s'\n",
-	      pszFile);
+  error(EXIT_BADSC, "Length: Unable to get length for '%s'\n",
+        pszFile);
     cb= (ULONG) ftell(f);
     fclose(f);
 

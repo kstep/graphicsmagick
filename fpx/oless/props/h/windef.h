@@ -72,8 +72,8 @@ inline void OutputDebugString(LPSTR sz)
 #define WINVER 0x400
 
 inline LONG CompareFileTime(
-    const FILETIME *lpFileTime1,	/* pointer to first file time */
-    const FILETIME *lpFileTime2 	/* pointer to second file time */
+    const FILETIME *lpFileTime1,  /* pointer to first file time */
+    const FILETIME *lpFileTime2   /* pointer to second file time */
    )
 {
     LONG ldiff = lpFileTime1->dwHighDateTime - lpFileTime2->dwHighDateTime;

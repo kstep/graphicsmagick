@@ -46,11 +46,11 @@
 //---------------------------------------------------------------
 
 STDAPI StgOpenStorage(TCHAR const *pwcsName,
-		      IStorage *pstgPriority,
-		      DWORD grfMode,
-		      SNB snbExclude,
-		      DWORD reserved,
-		      IStorage **ppstgOpen)
+          IStorage *pstgPriority,
+          DWORD grfMode,
+          SNB snbExclude,
+          DWORD reserved,
+          IStorage **ppstgOpen)
 {
     SCODE sc;
     int i;
@@ -102,11 +102,11 @@ EH_Err:
 //---------------------------------------------------------------
 
 STDAPI StgOpenStorageOnILockBytes(ILockBytes *plkbyt,
-				  IStorage *pstgPriority,
-				  DWORD grfMode,
-				  SNB snbExclude,
-				  DWORD reserved,
-				  IStorage **ppstgOpen)
+          IStorage *pstgPriority,
+          DWORD grfMode,
+          SNB snbExclude,
+          DWORD reserved,
+          IStorage **ppstgOpen)
 {
     CLSID cid;
 #ifndef _UNICODE
@@ -177,16 +177,16 @@ STDAPI StgIsStorageILockBytes(ILockBytes *plkbyt)
 
     TRY
     {
-	if (FAILED(sc = ValidateInterface(plkbyt, IID_ILockBytes)))
-	    return ResultFromScode(sc);
-	ULISet32(ulOffset, 0);
-	hr = plkbyt->ReadAt(ulOffset, &stgfile, sizeof(stgfile), &cbRead);
+  if (FAILED(sc = ValidateInterface(plkbyt, IID_ILockBytes)))
+      return ResultFromScode(sc);
+  ULISet32(ulOffset, 0);
+  hr = plkbyt->ReadAt(ulOffset, &stgfile, sizeof(stgfile), &cbRead);
         if (FAILED(GetScode(hr)))
-	    return hr;
+      return hr;
     }
     CATCH(CException, e)
     {
-	return ResultFromScode(e.GetErrorCode());
+  return ResultFromScode(e.GetErrorCode());
     }
     END_CATCH
 

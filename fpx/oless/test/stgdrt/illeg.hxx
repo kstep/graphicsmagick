@@ -5,7 +5,7 @@
 // 
 //  Copyright (c) 1999 Digital Imaging Group, Inc.
 // 
-//  Contents:	Illegitimate tests header
+//  Contents: Illegitimate tests header
 //
 //
 //----------------------------------------------------------------------------

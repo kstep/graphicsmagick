@@ -5,9 +5,9 @@
 // 
 //  Copyright (c) 1999 Digital Imaging Group, Inc.
 // 
-//  Contents:	Vector common types
+//  Contents: Vector common types
 //
-//  Classes:	CVectBits -- Bit fields for vectors
+//  Classes:  CVectBits -- Bit fields for vectors
 //
 //--------------------------------------------------------------------------
 

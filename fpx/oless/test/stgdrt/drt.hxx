@@ -5,7 +5,7 @@
 // 
 //  Copyright (c) 1999 Digital Imaging Group, Inc.
 // 
-//  Contents:	DRT header
+//  Contents: DRT header
 //
 //---------------------------------------------------------------
 

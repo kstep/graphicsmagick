@@ -5,7 +5,7 @@
 // 
 //  Copyright (c) 1999 Digital Imaging Group, Inc.
 // 
-//  Contents:	functions exported from docfile.cxx
+//  Contents: functions exported from docfile.cxx
 //
 //---------------------------------------------------------------
 

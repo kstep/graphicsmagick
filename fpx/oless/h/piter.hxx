@@ -5,9 +5,9 @@
 // 
 //  Copyright (c) 1999 Digital Imaging Group, Inc.
 // 
-//  Contents:	PDocFileIterator header file
+//  Contents: PDocFileIterator header file
 //
-//  Classes:	PDocFileIterator
+//  Classes:  PDocFileIterator
 //
 //---------------------------------------------------------------
 
@@ -16,11 +16,11 @@
 
 //+--------------------------------------------------------------
 //
-//  Class:	PDocFileIterator (dfi)
+//  Class:  PDocFileIterator (dfi)
 //
-//  Purpose:	DocFile iterator protocol
+//  Purpose:  DocFile iterator protocol
 //
-//  Interface:	See below
+//  Interface:  See below
 //
 //---------------------------------------------------------------
 

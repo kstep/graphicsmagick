@@ -5,7 +5,7 @@
 // 
 //  Copyright (c) 1999 Digital Imaging Group, Inc.
 // 
-//  Contents:	Declarations for tracing property code
+//  Contents: Declarations for tracing property code
 //
 //--------------------------------------------------------------------------
 

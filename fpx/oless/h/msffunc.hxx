@@ -25,7 +25,7 @@
 //  Synposis:   Rename an entry.
 //
 //  Arguments:  [sidParent] - Parent SID
-//		[pdfn] - Old name
+//    [pdfn] - Old name
 //              [pdfnNew] -- New name
 //
 //  Returns:    S_OK otherwise
@@ -53,7 +53,7 @@ inline SCODE CMStream::RenameEntry(
 //
 //  Arguments:  [sidParent] - Parent SID
 //              [pdfn] -- Name of entry to be located
-//		[peb] - Entry block to fill in
+//    [peb] - Entry block to fill in
 //
 //  Returns:    S_OK if entry exists.
 //              STG_E_FILENOTFOUND if it doesn't.
@@ -146,15 +146,15 @@ inline SCODE CMStream::SetTime(SID const sid,
 
 //+---------------------------------------------------------------------------
 //
-//  Member:	CMStream::GetClass, public
+//  Member: CMStream::GetClass, public
 //
-//  Synopsis:	Gets the class ID
+//  Synopsis: Gets the class ID
 //
-//  Arguments:	[pclsid] - Class ID return
+//  Arguments:  [pclsid] - Class ID return
 //
-//  Returns:	Appropriate status code
+//  Returns:  Appropriate status code
 //
-//  Modifies:	[pclsid]
+//  Modifies: [pclsid]
 //
 //----------------------------------------------------------------------------
 
@@ -166,13 +166,13 @@ inline SCODE CMStream::GetClass(SID const sid,
 
 //+---------------------------------------------------------------------------
 //
-//  Member:	CMStream::SetClass, public
+//  Member: CMStream::SetClass, public
 //
-//  Synopsis:	Sets the class ID
+//  Synopsis: Sets the class ID
 //
-//  Arguments:	[clsid] - Class ID
+//  Arguments:  [clsid] - Class ID
 //
-//  Returns:	Appropriate status code
+//  Returns:  Appropriate status code
 //
 //----------------------------------------------------------------------------
 
@@ -184,15 +184,15 @@ inline SCODE CMStream::SetClass(SID const sid,
 
 //+---------------------------------------------------------------------------
 //
-//  Member:	CMStream::GetStateBits, public
+//  Member: CMStream::GetStateBits, public
 //
-//  Synopsis:	Gets state bits
+//  Synopsis: Gets state bits
 //
-//  Arguments:	[pgrfStateBits] - State bits return
+//  Arguments:  [pgrfStateBits] - State bits return
 //
-//  Returns:	Appropriate status code
+//  Returns:  Appropriate status code
 //
-//  Modifies:	[pgrfStateBits]
+//  Modifies: [pgrfStateBits]
 //
 //----------------------------------------------------------------------------
 
@@ -204,13 +204,13 @@ inline SCODE CMStream::GetStateBits(SID const sid,
 
 //+---------------------------------------------------------------------------
 //
-//  Member:	CMStream::SetStateBits, public
+//  Member: CMStream::SetStateBits, public
 //
-//  Synopsis:	Sets state bits
+//  Synopsis: Sets state bits
 //
-//  Arguments:	[grfStateBits] - State bits
+//  Arguments:  [grfStateBits] - State bits
 //
-//  Returns:	Appropriate status code
+//  Returns:  Appropriate status code
 //
 //----------------------------------------------------------------------------
 
@@ -253,7 +253,7 @@ inline SCODE CMStream::GetEntrySize(SID const sid,
 //  Effects:    Modifies directory.
 //
 //  Arguments:  [sidParent] - Parent SID
-//		[pdfn] - Name of entry
+//    [pdfn] - Name of entry
 //
 //  Returns:    S_OK if operation completed successfully.
 //

@@ -5,9 +5,9 @@
 // 
 //  Copyright (c) 1999 Digital Imaging Group, Inc.
 // 
-//  Contents:	CStrList header
+//  Contents: CStrList header
 //
-//  Classes:	CStrList
+//  Classes:  CStrList
 //
 //---------------------------------------------------------------
 
@@ -21,10 +21,10 @@ struct SStrEntry
     SStrEntry *pseNext, *psePrev;
     union
     {
-	void *pv;
-	unsigned long dw;
+  void *pv;
+  unsigned long dw;
     } user;
-    OLECHAR atc[1];		// Actually contains the whole string
+    OLECHAR atc[1];   // Actually contains the whole string
 };
 
 class CStrList

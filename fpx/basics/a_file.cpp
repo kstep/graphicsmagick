@@ -1,26 +1,26 @@
-//	------------------------------------------------------------------------------------------------
-//	MODULE		: Fichier
-//	LANGUAGE	: C++
-//	AUTHOR		: Adolfo VIDE
-//	DATE		: Thursday October 15th, 1992
-//	DESCRIPTION	: 
-//	COMMENT		:
-//  SCCSID      : @(#)a_file.cpp	1.1 11:49:53 18 Dec 1996
+//  ------------------------------------------------------------------------------------------------
+//  MODULE    : Fichier
+//  LANGUAGE  : C++
+//  AUTHOR    : Adolfo VIDE
+//  DATE    : Thursday October 15th, 1992
+//  DESCRIPTION : 
+//  COMMENT   :
+//  SCCSID      : @(#)a_file.cpp  1.1 11:49:53 18 Dec 1996
 //  ----------------------------------------------------------------------------
 //  Copyright (c) 1999 Digital Imaging Group, Inc.
 //  For conditions of distribution and use, see copyright notice
 //  in Flashpix.h
 //  ----------------------------------------------------------------------------
-//	------------------------------------------------------------------------------------------------
-	#include "a_file.h"
-//	------------------------------------------------------------------------------------------------
+//  ------------------------------------------------------------------------------------------------
+  #include "a_file.h"
+//  ------------------------------------------------------------------------------------------------
 
 
-//	Includes
-//	--------
+//  Includes
+//  --------
 
 #ifdef macintosh
-#  include	<aliases.h>
+#  include  <aliases.h>
 #endif
 
 #include "b_error.h"
@@ -36,42 +36,42 @@
 #endif
 
 #ifdef _WINDOWS
-#  include	<io.h>
-#  include	<fcntl.h>
+#  include  <io.h>
+#  include  <fcntl.h>
 #  include <sys/types.h>
 #  include <sys/stat.h>
 #endif
 
-#include	"debug.h"
+#include  "debug.h"
 
 
-//	Constants
-//	---------
+//  Constants
+//  ---------
 
 // Suffix of temporary files
-#define	SUFFIXE_FICHIER_TEMPORAIRE 	(unsigned char*)"\p.tmp"
+#define SUFFIXE_FICHIER_TEMPORAIRE  (unsigned char*)"\p.tmp"
 
 OSType signature = (OSType)DEFAULT_SIGNATURE;
 
-//	Types
-//	-----
+//  Types
+//  -----
 
-//	Variables
-//	---------
+//  Variables
+//  ---------
 
-//	------------------------------------------------------------------------------------------------
+//  ------------------------------------------------------------------------------------------------
 #ifdef macintosh
 #  pragma segment Fichier
 #endif
-//	------------------------------------------------------------------------------------------------
+//  ------------------------------------------------------------------------------------------------
 
-//	------------------------------------------------------------------------------------------------
-//	Functions intern
-//	------------------------------------------------------------------------------------------------
+//  ------------------------------------------------------------------------------------------------
+//  Functions intern
+//  ------------------------------------------------------------------------------------------------
 
-//	------------------------------------------------------------------------------------------------
-//	Methods
-//	------------------------------------------------------------------------------------------------
+//  ------------------------------------------------------------------------------------------------
+//  Methods
+//  ------------------------------------------------------------------------------------------------
 
 // Open a file. If file is open to write into, try multiple times on Macintosh.
 Fichier::Fichier(const FicNom& fNom, mode_Ouverture mode, const obj_Signature &fileSignature)
@@ -145,10 +145,10 @@ void Fichier::CloseFileWhenDelete()
 void Fichier::Ouverture(const FicNom& fNom, mode_Ouverture mode, OSType fileSignature)
 
 {
-  OSErr 	err 			= noErr;
-  Boolean targetIsFolder	= FALSE;
-  Boolean	wasAliased		= FALSE;
-	
+  OSErr   err       = noErr;
+  Boolean targetIsFolder  = FALSE;
+  Boolean wasAliased    = FALSE;
+  
 #ifdef macintosh
   FSSpec myFSSpec;
 
@@ -163,11 +163,11 @@ void Fichier::Ouverture(const FicNom& fNom, mode_Ouverture mode, OSType fileSign
     if (erreurIO == noErr)
       erreurIO = err;
   }
-	
+  
   // If 'fNom' is an alias on a file
   if (!targetIsFolder && wasAliased) 
     {
-      vraiNom = nomActuel = FicNom(myFSSpec);	
+      vraiNom = nomActuel = FicNom(myFSSpec); 
     } 
   else 
     // else, handle the case where 'fNom.nom' contains an access path
@@ -178,7 +178,7 @@ void Fichier::Ouverture(const FicNom& fNom, mode_Ouverture mode, OSType fileSign
       else
         vraiNom = nomActuel = fNom;
     }
-	
+  
   // Force the file's type if we are going to create the file
   if ((mode == mode_Ecrasement) || (mode == mode_Reset))
     vraiNom.type = nomActuel.type = fNom.type;
@@ -188,7 +188,7 @@ void Fichier::Ouverture(const FicNom& fNom, mode_Ouverture mode, OSType fileSign
     case mode_Lecture:
       erreurIO = HOpen(vraiNom.volume,vraiNom.directory,vraiNom.nom,fsRdPerm,&refNum);
       break;
-				
+        
     case mode_Ecrasement:
       do
         {
@@ -203,25 +203,25 @@ void Fichier::Ouverture(const FicNom& fNom, mode_Ouverture mode, OSType fileSign
             nomActuel.type = 'TMP ';
           }
           // If the file is locked => end
-          else if (erreurIO != fnfErr)	
+          else if (erreurIO != fnfErr)  
             break;
-						
+            
           // Create the new file
           HCreate(nomActuel.volume,nomActuel.directory,nomActuel.nom,fileSignature,nomActuel.type);
           erreurIO = HOpen(nomActuel.volume,nomActuel.directory,nomActuel.nom,fsRdWrPerm,&refNum);
         }
       while ( (erreurIO != noErr) && SignaleErreurEcriture() );
       break;
-				
+        
     case mode_Modification:
       erreurIO = HOpen(vraiNom.volume,vraiNom.directory,vraiNom.nom,fsRdWrPerm,&refNum);
       break;
-				
+        
     case mode_Reset:
       do
         {
           erreurIO = HOpen(vraiNom.volume,vraiNom.directory,vraiNom.nom,fsRdWrPerm,&refNum);
-					
+          
           // If file doesn't exist, create it
           if (erreurIO == fnfErr)
             {
@@ -238,18 +238,16 @@ void Fichier::Ouverture(const FicNom& fNom, mode_Ouverture mode, OSType fileSign
       break;
     }
   }
-	
+  
   myFSSpec.vRefNum = 0;
 
 #else
   // Convert Pascal string to C string
-  int len = fNom.nom[0];
-  //int len = fNom.nom; // FIXME: examine because fix may be suspect
+  int len = fNom.nom[0];  // FIXME: Sun Forte 6.0 fails
   cname[len] = '\0';
   int i;
   for (i = len-1; i >= 0; i--)
-    cname[i] = fNom.nom[i+1];
-    //cname[i] = *(&(fNom.nom) + i + 1); // FIXME: examine because fix may be suspect
+    cname[i] = fNom.nom[i+1];  // FIXME: Sun Forte 6.0 fails
 
   // remove access path from name
   long index = 0;
@@ -266,7 +264,7 @@ void Fichier::Ouverture(const FicNom& fNom, mode_Ouverture mode, OSType fileSign
     }
     cname[i] = '\0';
   }
-		
+    
   errno = noErr;
 
   switch (mode) {
@@ -294,20 +292,20 @@ void Fichier::Ouverture(const FicNom& fNom, mode_Ouverture mode, OSType fileSign
 // Init the private fields correctly.
 void Fichier::InitEverything(int fd)
 {
-  bufferIO 		= NULL;
-  erreurIO 		= noErr;
+  bufferIO    = NULL;
+  erreurIO    = noErr;
   CloseFileWhenDelete();
-	
-  maxBuf			= 0;
-  modifie			= FALSE;
-  offsetCourant	= 0;
-  offsetDebut		= 0;
-  offsetFin		= 0;
-  offsetEndOfFile	= 0;
+  
+  maxBuf      = 0;
+  modifie     = FALSE;
+  offsetCourant = 0;
+  offsetDebut   = 0;
+  offsetFin   = 0;
+  offsetEndOfFile = 0;
 
-  temporary		= FALSE;
-  fatalError		= FALSE;
-	
+  temporary   = FALSE;
+  fatalError    = FALSE;
+  
 #ifdef macintosh
   refNum = fd;
 #else
@@ -338,7 +336,7 @@ void Fichier::AllocateCacheBuffer(unsigned long tailleBuf)
 
 void Fichier::InitCacheBuffer(unsigned long tailleBuf)
 {
-  long	offset;
+  long  offset;
 
   if (!erreurIO) {
     AllocateCacheBuffer(tailleBuf);
@@ -373,7 +371,7 @@ Boolean Fichier::Flush()
         SignaleErreur();
       fatalError = (erreurIO != noErr);
     }
-	
+  
   return fatalError;
 }
 
@@ -389,7 +387,7 @@ Fichier::~Fichier()
       free(bufferIO);
 #endif
     }
-	
+  
   // Close the file
 #ifdef macintosh
   if (closeWhenDelete)
@@ -399,7 +397,7 @@ Fichier::~Fichier()
   if (closeWhenDelete)
     close (handle);
 #endif
-	
+  
 #ifdef macintosh
   // If file corrupted
   if (fatalError)
@@ -418,7 +416,7 @@ Fichier::~Fichier()
   //        temporary name, we store the right signature and we erase the old one 
   else if (vraiNom != nomActuel)
     {
-      FInfo	fileInfos;
+      FInfo fileInfos;
       HGetFInfo(nomActuel.volume,nomActuel.directory,nomActuel.nom, &fileInfos);
       fileInfos.fdType = vraiNom.type;
       HSetFInfo(nomActuel.volume,nomActuel.directory,nomActuel.nom, &fileInfos);
@@ -448,10 +446,10 @@ void Fichier::ValideTampon()
       lseek( handle, offsetDebut, SEEK_SET );
       erreurIO = errno;
 #endif
-      //		if (erreurIO) {
+      //    if (erreurIO) {
       // VISU2 "Seek error when writing : offset = %d, error = %d, try = %d\n", offsetDebut, erreurIO, nbErr FIN
-      //		}
-		
+      //    }
+    
       if (!erreurIO) 
         {
           long nb = offsetFin - offsetDebut;
@@ -466,9 +464,9 @@ void Fichier::ValideTampon()
             if (!erreurIO) {
               modifie = FALSE;
             }
-            //				else {
+            //        else {
             // VISU2 "Error when writing : offset = %d, size = %d, error = %d, try = %d\n", offsetDebut, nb, erreurIO, nbErr FIN
-            //				}
+            //        }
           }
         }
     }
@@ -477,16 +475,16 @@ void Fichier::ValideTampon()
 // Write a buffer on disk. Try multiple times on Macintosh.
 Boolean Fichier::Ecriture(ptr buffer, long nbOctets, long offset)
 {
-  const	long	nbBytesToWrite = nbOctets;				// Backup
-	
+  const long  nbBytesToWrite = nbOctets;        // Backup
+  
   assert(nbOctets > 0);
-	
+  
   if (!fatalError)
     {
       do
         {
           nbOctets = nbBytesToWrite;
-			
+      
           if (bufferIO) {
             offsetCourant = offset;
             EcritureBufferisee(buffer, nbOctets);
@@ -515,7 +513,7 @@ Boolean Fichier::Ecriture(ptr buffer, long nbOctets, long offset)
           }
         }
       while ( (erreurIO != noErr) && SignaleErreurEcriture() );
-		
+    
       if (erreurIO)
         SignaleErreur();
       fatalError = (erreurIO != noErr);
@@ -526,11 +524,11 @@ Boolean Fichier::Ecriture(ptr buffer, long nbOctets, long offset)
 // Write a buffer on disk. Try multiple times on Macintosh.
 Boolean Fichier::Ecriture(ptr buffer, long nbOctets)
 {
-  const	long	currentOffset  = PositionCourante();	// Backups
-  const	long	nbBytesToWrite = nbOctets;				//
-	
+  const long  currentOffset  = PositionCourante();  // Backups
+  const long  nbBytesToWrite = nbOctets;        //
+  
   assert(nbOctets > 0);
-	
+  
   if (!fatalError)
     {
       // Try to write
@@ -547,11 +545,11 @@ Boolean Fichier::Ecriture(ptr buffer, long nbOctets)
         if (nWritten != nbOctets)
           erreurIO = (OSErr) errno;
 #endif
-      }	
+      } 
       // On error, try again while user wants to
       if (erreurIO)
         Ecriture(buffer, nbBytesToWrite, currentOffset);
-			
+      
       assert(fatalError == (erreurIO != noErr));
     }
   return fatalError;
@@ -559,7 +557,7 @@ Boolean Fichier::Ecriture(ptr buffer, long nbOctets)
 
 long Fichier::PositionCourante()
 {
-  long	offset;
+  long  offset;
 
   if (bufferIO)
     offset = offsetCourant;
@@ -577,7 +575,7 @@ long Fichier::PositionCourante()
 
 long Fichier::GetEndOfFile()
 {
-  long	offset;
+  long  offset;
 
   if (bufferIO)
     offset = offsetEndOfFile;
@@ -585,7 +583,7 @@ long Fichier::GetEndOfFile()
 #ifdef macintosh
     erreurIO = GetEOF(refNum,&offset);
 #else
-    long	oldoffset;
+    long  oldoffset;
     oldoffset = lseek (handle, 0L, SEEK_CUR);
     errno = noErr;
     offset = lseek (handle, 0L, SEEK_END);
@@ -601,7 +599,7 @@ OSErr  Fichier::SetEndOfFile(long logEOF)
 {
   char c = 'z';
   erreurIO = noErr;
-	
+  
 #ifdef macintosh
   erreurIO = SetEOF(refNum,logEOF);
 #else
@@ -644,7 +642,7 @@ Boolean Fichier::Lecture(ptr buffer, long nbOctets)
 {
   long nbOctetsToRead;
   long currentPosition = PositionCourante();
-  Boolean tryToRead =  TRUE;		// test to retry three time to read a bloc if its not correct the first one
+  Boolean tryToRead =  TRUE;    // test to retry three time to read a bloc if its not correct the first one
   short i = 0;
   while (tryToRead) {
     nbOctetsToRead = nbOctets;
@@ -682,8 +680,8 @@ Boolean Fichier::Lecture(ptr buffer, long nbOctets)
 void Fichier::LectureBufferisee(ptr buffer, long nbOctets)
 {
   //--- If the block to be read is entirely in the IO buffer,     ---//
-  //--- we just copy the required amount of memory.				---//
-	
+  //--- we just copy the required amount of memory.       ---//
+  
   if ((offsetCourant >= offsetDebut) && (offsetCourant + nbOctets <= offsetFin)) {
     BlockMove(bufferIO + offsetCourant - offsetDebut,buffer,nbOctets);
     offsetCourant += nbOctets;
@@ -693,7 +691,7 @@ void Fichier::LectureBufferisee(ptr buffer, long nbOctets)
 
     // If the old IO buffer has been modified, we write it on the disk.
     Flush();
-		
+    
     // jump to the current offset in the file
     if (!erreurIO) {
 #ifdef macintosh
@@ -710,14 +708,14 @@ void Fichier::LectureBufferisee(ptr buffer, long nbOctets)
       return;
 
     if (!erreurIO) {
-		
+    
       // If the block to be read is small enough to be contained in the IO buffer,
       // we read a complete IO buffer and we copy the required amount of memory.
-			
+      
       if ((unsigned long)nbOctets < maxBuf) {
         long nb = maxBuf;
-        //				unsigned long nb = maxBuf;
-#ifdef macintosh	
+        //        unsigned long nb = maxBuf;
+#ifdef macintosh  
         erreurIO = FSRead(refNum,&nb,bufferIO);
         if (erreurIO == eofErr)
           erreurIO = noErr;
@@ -738,10 +736,10 @@ void Fichier::LectureBufferisee(ptr buffer, long nbOctets)
           BlockMove(bufferIO,buffer,nbOctets);
           offsetCourant += nbOctets;
         }
-	
+  
         // If the block to be read is too big to be contained in the IO buffer,
         // we read it directly and keep the old IO buffer unchanged.
-	
+  
       } else {
 #ifdef macintosh
         erreurIO = FSRead(refNum,&nbOctets,buffer);
@@ -766,8 +764,8 @@ void Fichier::EcritureBufferisee(ptr buffer, long nbOctets)
   erreurIO = noErr;
 
   //--- If the block to be written is entirely in the IO buffer,  ---//
-  //--- we just copy the required amount of memory.				---//
-	
+  //--- we just copy the required amount of memory.       ---//
+  
   if ((offsetCourant >= offsetDebut) && (offsetCourant + nbOctets <= offsetFin)) {
     BlockMove(buffer,bufferIO + offsetCourant - offsetDebut,nbOctets);
     offsetCourant += nbOctets;
@@ -775,9 +773,9 @@ void Fichier::EcritureBufferisee(ptr buffer, long nbOctets)
       offsetEndOfFile = offsetCourant;
     modifie = TRUE;
 
-    //--- If the block to be written can be contained in the biggest IO buffer 		 	   ---//
+    //--- If the block to be written can be contained in the biggest IO buffer         ---//
     //--- we copy the required amount of memory and we increase the size of the IO buffer. ---//
-	
+  
   } else if ((offsetCourant >= offsetDebut) && (offsetCourant + nbOctets <= offsetDebut + maxBuf)
              && (offsetFin >= offsetEndOfFile)) {
     BlockMove(buffer,bufferIO + offsetCourant - offsetDebut,nbOctets);
@@ -793,7 +791,7 @@ void Fichier::EcritureBufferisee(ptr buffer, long nbOctets)
     // If the old IO buffer has been modified, we write it on the disk.
 
     ValideTampon();
-		
+    
     // If we are at the end of the file, we increase the file size.
 
     if (!erreurIO) {
@@ -811,7 +809,7 @@ void Fichier::EcritureBufferisee(ptr buffer, long nbOctets)
 
     // If the bloc to be written is small enough to be contained in the IO buffer,
     // we read a complete IO buffer and we copy the required amount of memory.
-		
+    
     if (!erreurIO) {
       if ((unsigned long)nbOctets < maxBuf) {
         long nb = maxBuf;
@@ -837,10 +835,10 @@ void Fichier::EcritureBufferisee(ptr buffer, long nbOctets)
             offsetEndOfFile = offsetCourant;
           modifie = TRUE;
         }
-				
+        
         // If the bloc to be written os too big to be contained in the IO buffer,
         // we read it directly and keep the old IO buffer unchanged.
-	
+  
       } else {
 #ifdef macintosh
         erreurIO = FSWrite(refNum,&nbOctets,buffer);
@@ -880,7 +878,7 @@ OSErr Fichier::ResizeBuffer(unsigned long tailleBuf)
   }
   if (!erreurIO)
     AllocateCacheBuffer(tailleBuf);
-	
+  
   return erreurIO;
 }
 
@@ -906,7 +904,7 @@ Boolean Fichier::Ecriture(const Chaine& cetteChaine)
 Boolean Fichier::Lecture(Chaine* cetteChaine)
 {
   unsigned char* pStr = *cetteChaine;
-	
+  
   if (!Lecture(pStr,sizeof(unsigned char)))
     if (*pStr)
       return Lecture(pStr+1,*pStr);
@@ -925,7 +923,7 @@ Boolean Fichier::Ecriture(const Chaine63& cetteChaine)
 Boolean Fichier::Lecture(Chaine63* cetteChaine)
 {
   unsigned char* pStr = *cetteChaine;
-	
+  
   if (!Lecture(pStr,sizeof(unsigned char)))
     if (*pStr)
       return Lecture(pStr+1,*pStr);
@@ -949,38 +947,38 @@ void Fichier::SignaleFichierDetruit()
 {
 }
 
-//	------------------------------------------------------------------------------------------------
-//	Functions 'extern'
-//	------------------------------------------------------------------------------------------------
+//  ------------------------------------------------------------------------------------------------
+//  Functions 'extern'
+//  ------------------------------------------------------------------------------------------------
 
 #ifdef macintosh
 void SauvegardeMemosDirsVols(ref_Fichier fic)
 {
-  int32			i;
-  ptr_MemoDirVol	aDetruire;
-	
+  int32     i;
+  ptr_MemoDirVol  aDetruire;
+  
   for (i=1;enLecture;i++) {
     fic.Ecriture(i);
-    //		fic.Ecriture(enLecture,sizeof(MemoDirVol));
+    //    fic.Ecriture(enLecture,sizeof(MemoDirVol));
     fic.Ecriture(int32(enLecture->type));
     fic.Ecriture(int32(enLecture->directory));
     fic.Ecriture(enLecture->volume);
     fic.Ecriture(int32(enLecture->suivant));
-		
+    
     aDetruire = enLecture;
     enLecture = enLecture->suivant;
     delete aDetruire;
   }
   fic.Ecriture(0L);
-	
+  
   for (i=1;enEcriture;i++) {
     fic.Ecriture(i);
-    //		fic.Ecriture(enEcriture,sizeof(MemoDirVol));
+    //    fic.Ecriture(enEcriture,sizeof(MemoDirVol));
     fic.Ecriture(int32(enEcriture->type));
     fic.Ecriture(int32(enEcriture->directory));
     fic.Ecriture(enEcriture->volume);
     fic.Ecriture(int32(enEcriture->suivant));
-		
+    
     aDetruire = enEcriture;
     enEcriture = enEcriture->suivant;
     delete aDetruire;
@@ -990,21 +988,21 @@ void SauvegardeMemosDirsVols(ref_Fichier fic)
 
 void ChargementMemosDirsVols(ref_Fichier fic)
 {
-  int32			i, tmp;
-  ptr_MemoDirVol	nouveau;
-	
+  int32     i, tmp;
+  ptr_MemoDirVol  nouveau;
+  
   do {
     fic.Lecture(&i);
     if (i) {
       nouveau = new MemoDirVol();
-      //	fic.Lecture(nouveau,sizeof(MemoDirVol));
+      //  fic.Lecture(nouveau,sizeof(MemoDirVol));
       fic.Lecture(&tmp);
       nouveau->type = OSType(tmp);
       fic.Lecture(&tmp);
       nouveau->directory = long(tmp);
       fic.Lecture(&(nouveau->volume));
       fic.Lecture(&tmp);
-			
+      
       nouveau->suivant = enLecture;
       enLecture = nouveau;
     }
@@ -1014,14 +1012,14 @@ void ChargementMemosDirsVols(ref_Fichier fic)
     fic.Lecture(&i);
     if (i) {
       nouveau = new MemoDirVol();
-      //			fic.Lecture(nouveau,sizeof(MemoDirVol));
+      //      fic.Lecture(nouveau,sizeof(MemoDirVol));
       fic.Lecture(&tmp);
       nouveau->type = OSType(tmp);
       fic.Lecture(&tmp);
       nouveau->directory = long(tmp);
       fic.Lecture(&(nouveau->volume));
       fic.Lecture(&tmp);
-			
+      
       nouveau->suivant = enEcriture;
       enEcriture = nouveau;
     }

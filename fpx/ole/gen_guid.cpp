@@ -1,96 +1,96 @@
-//	----------------------------------------------------------------------------
-//	MODULE		: Gen_guid 
-//	LANGUAGE	: C++ 
-//	CREATOR		: Philippe BOSSUT 
-//	CREAT. DATE	: Thursday, May 2, 1996 
-//	DESCRIPTION	: Guid generation compatible Mac and Windows.
-//  SCCSID      : @(#)gen_guid.cpp	1.1 11:53:26 18 Dec 1996
+//  ----------------------------------------------------------------------------
+//  MODULE    : Gen_guid 
+//  LANGUAGE  : C++ 
+//  CREATOR   : Philippe BOSSUT 
+//  CREAT. DATE : Thursday, May 2, 1996 
+//  DESCRIPTION : Guid generation compatible Mac and Windows.
+//  SCCSID      : @(#)gen_guid.cpp  1.1 11:53:26 18 Dec 1996
 //  ----------------------------------------------------------------------------
 //  Copyright (c) 1999 Digital Imaging Group, Inc.
 //  For conditions of distribution and use, see copyright notice
 //  in Flashpix.h
 //  ----------------------------------------------------------------------------
-	#ifdef macintosh
-		#pragma segment Gen_guid
-	#endif
-//	----------------------------------------------------------------------------
+  #ifdef macintosh
+    #pragma segment Gen_guid
+  #endif
+//  ----------------------------------------------------------------------------
 
-//	Includes
-//	--------
+//  Includes
+//  --------
 
 #ifndef OLECommun_h
-	#include "olecomm.h"
+  #include "olecomm.h"
 #endif
 #ifndef OLECore_h
-	#include "olecore.h"
+  #include "olecore.h"
 #endif
 #ifndef Debug_h
-	#include "debug.h"
+  #include "debug.h"
 #endif
 
-#ifdef _WINDOWS	
-	#include "b_error.h"
+#ifdef _WINDOWS 
+  #include "b_error.h"
 #endif
 
-//	----------------------------------------------------------------------------
-	#include "gen_guid.h"
-//	----------------------------------------------------------------------------
+//  ----------------------------------------------------------------------------
+  #include "gen_guid.h"
+//  ----------------------------------------------------------------------------
 
-//	Constants
-//	---------
+//  Constants
+//  ---------
 
-#define UUID_LEN        128             		/* In bits */
-#define UUID_VERSION    0x1000          		/* DCE variant */
+#define UUID_LEN        128                 /* In bits */
+#define UUID_VERSION    0x1000              /* DCE variant */
 #define UUID_RESERVED   0x10
-#define DEFAULT_ETHER_ADDR	"8:0:20:20:32:d0" 	/* Historically significant... :-) */
+#define DEFAULT_ETHER_ADDR  "8:0:20:20:32:d0"   /* Historically significant... :-) */
 
-//	Variables
-//	---------
+//  Variables
+//  ---------
 
-#if 	!defined(__unix)
+#if   !defined(__unix)
 typedef struct _timespec
 {
-	unsigned long tv_nsec;
-	unsigned long tv_sec;
+  unsigned long tv_nsec;
+  unsigned long tv_sec;
 } timespec;
 #endif
 
-//	----------------------------------------------------------------------------
-//	Internal Functions
-//	----------------------------------------------------------------------------
+//  ----------------------------------------------------------------------------
+//  Internal Functions
+//  ----------------------------------------------------------------------------
 
 #if defined(macintosh) || defined(__unix)
 static void GetENETAddress(unsigned char *ENETaddress)
 {
-	// MPPParamBlock thePB;
-	short i;
-	char linkAddr[7];
-	char zoneName[34];
-	// OSErr err;
-	
-	linkAddr[0] = 0x08;
-	linkAddr[1] = 0x00;
-	linkAddr[2] = 0x20;
-	linkAddr[3] = 0x20;
-	linkAddr[4] = 0x32;
-	linkAddr[5] = 0xd0;
-	// thePB.GAIINFO.version = 1;
-	// thePB.GAIINFO.LAlength = 6;
-	// thePB.GAIINFO.linkAddr = linkAddr;
-	// thePB.GAIINFO.zoneName = zoneName;
-	// err = PGetAppleTalkInfo(&thePB, 0);
-	for(i=0;i<6;i++)
-		*(ENETaddress+i) = linkAddr[i];
+  // MPPParamBlock thePB;
+  short i;
+  char linkAddr[7];
+  char zoneName[34];
+  // OSErr err;
+  
+  linkAddr[0] = 0x08;
+  linkAddr[1] = 0x00;
+  linkAddr[2] = 0x20;
+  linkAddr[3] = 0x20;
+  linkAddr[4] = 0x32;
+  linkAddr[5] = 0xd0;
+  // thePB.GAIINFO.version = 1;
+  // thePB.GAIINFO.LAlength = 6;
+  // thePB.GAIINFO.linkAddr = linkAddr;
+  // thePB.GAIINFO.zoneName = zoneName;
+  // err = PGetAppleTalkInfo(&thePB, 0);
+  for(i=0;i<6;i++)
+    *(ENETaddress+i) = linkAddr[i];
 }
 #endif
 
-//	----------------------------------------------------------------------------
-//	Member Functions
-//	----------------------------------------------------------------------------
+//  ----------------------------------------------------------------------------
+//  Member Functions
+//  ----------------------------------------------------------------------------
 
-//	----------------------------------------------------------------------------
-//	External Functions
-//	----------------------------------------------------------------------------
+//  ----------------------------------------------------------------------------
+//  External Functions
+//  ----------------------------------------------------------------------------
 
 #if defined(macintosh) || defined(_UNIX)
 HRESULT GenGuid(CLSID *clsid)
@@ -105,7 +105,7 @@ HRESULT GenGuid(CLSID *clsid)
 
   uuid = (unsigned char *)clsid;
 
-#if	defined(macintosh)
+#if defined(macintosh)
   ts.tv_sec  = TickCount() * 60;
   ts.tv_nsec = ts.tv_sec   * 100000; 
 #else
@@ -138,7 +138,7 @@ HRESULT GenGuid(CLSID *clsid)
   /* Always assume we have to reinit the clock sequence.
    * It's just easier this way... :-)
    */
-  srand(ts.tv_nsec);		/* Seed random number generator with nanoseconds */
+  srand(ts.tv_nsec);    /* Seed random number generator with nanoseconds */
   clock_sequence = ((unsigned short)rand() % 16384);
 
   clock_seq_low = (unsigned char)(clock_sequence);
@@ -163,9 +163,9 @@ HRESULT GenGuid(CLSID *clsid)
 // The Windows version is of course better integrated...
 HRESULT GenGuid(CLSID *clsid)
 {
-	return CoCreateGuid(clsid);
+  return CoCreateGuid(clsid);
 }
 #endif // macintosh
 
 
-//	- EOF ----------------------------------------------------------------------
+//  - EOF ----------------------------------------------------------------------

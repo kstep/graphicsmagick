@@ -1,60 +1,60 @@
-//	------------------------------------------------------------------------------------------------
-//	MODULE		: FicNomSearchIVUE
-//	LANGUAGE	: C++
-//	AUTHOR		: Laurent Saboret
-//	DATE		: Monday, March 14th 1994
-//	DESCRIPTION	: 
-//	COMMENT		: LS, 2 February 1995 : SelectionneSauvegarde() is moved into FicNomSaveIVUE.cp
-//  SCCSID      : @(#)fn_srch.cpp	1.2 14:49:38 06 Jan 1997
+//  ------------------------------------------------------------------------------------------------
+//  MODULE    : FicNomSearchIVUE
+//  LANGUAGE  : C++
+//  AUTHOR    : Laurent Saboret
+//  DATE    : Monday, March 14th 1994
+//  DESCRIPTION : 
+//  COMMENT   : LS, 2 February 1995 : SelectionneSauvegarde() is moved into FicNomSaveIVUE.cp
+//  SCCSID      : @(#)fn_srch.cpp 1.2 14:49:38 06 Jan 1997
 //  ----------------------------------------------------------------------------
 //  Copyright (c) 1999 Digital Imaging Group, Inc.
 //  For conditions of distribution and use, see copyright notice
 //  in Flashpix.h
 //  ----------------------------------------------------------------------------
-//	------------------------------------------------------------------------------------------------
-	#ifdef macintosh
-		#pragma segment FicNomSearchIVUE
-	#endif
-//	------------------------------------------------------------------------------------------------
+//  ------------------------------------------------------------------------------------------------
+  #ifdef macintosh
+    #pragma segment FicNomSearchIVUE
+  #endif
+//  ------------------------------------------------------------------------------------------------
 
-//	------------------------------------------------------------------------------------------------
-	#include "fn_srch.h"
-//	------------------------------------------------------------------------------------------------
+//  ------------------------------------------------------------------------------------------------
+  #include "fn_srch.h"
+//  ------------------------------------------------------------------------------------------------
 
-//	Includes
-//	--------
+//  Includes
+//  --------
 
 #ifdef macintosh
-	#include	<Errors.h>
+  #include  <Errors.h>
 #endif
-	#include	"debug.h"
+  #include  "debug.h"
 
-//	Constants
-//	---------
+//  Constants
+//  ---------
 
-	#define nbMaxNames	30
-	
-//	Types
-//	-----
+  #define nbMaxNames  30
+  
+//  Types
+//  -----
 
-//	Variables
-//	---------
+//  Variables
+//  ---------
 
-//	------------------------------------------------------------------------------------------------
-//	Functions 'intern'
-//	------------------------------------------------------------------------------------------------
+//  ------------------------------------------------------------------------------------------------
+//  Functions 'intern'
+//  ------------------------------------------------------------------------------------------------
 
-//	------------------------------------------------------------------------------------------------
-//	Methods of FicNomSearchIVUE
-//	------------------------------------------------------------------------------------------------
+//  ------------------------------------------------------------------------------------------------
+//  Methods of FicNomSearchIVUE
+//  ------------------------------------------------------------------------------------------------
 
 
 FicNomSearchIVUE::FicNomSearchIVUE()
 
 {
-	type = 'IVUE';
+  type = 'IVUE';
 }
-	
+  
 FicNomSearchIVUE::FicNomSearchIVUE(const ChaineFic& fileName, OSType fileType) : FicNom(fileName, fileType)
 
 {
@@ -84,26 +84,26 @@ FicNomSearchIVUE::FicNomSearchIVUE(const FicNomSearchIVUE& fileName) : FicNom(fi
 OSErr FicNomSearchIVUE::Search ()
 
 {
-	return FicNom::Search();
+  return FicNom::Search();
 }
 
 OSErr FicNomSearchIVUE::SearchStrategy ()
 
 {
-	Boolean found =  (Boolean)Exist();
+  Boolean found =  (Boolean)Exist();
 
-	if (found)
-		return noErr;
-	else
-		return fnfErr;
+  if (found)
+    return noErr;
+  else
+    return fnfErr;
 }
 
 Boolean FicNomSearchIVUE::SelectImage (SearchImagePref searchImagePref, OSType typeA, OSType typeB)
 
 {
-	Boolean found = FALSE;
-	
-	SearchImagePref ser = searchImagePref; 	
-	OSType type = typeA = typeB; 
-	return found;
+  Boolean found = FALSE;
+  
+  SearchImagePref ser = searchImagePref;  
+  OSType type = typeA = typeB; 
+  return found;
 }

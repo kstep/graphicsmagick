@@ -38,8 +38,8 @@ HUFFMAN_ELEM *huffelem)     /* Huffman table to receive the assignment */
     
     bound = (code + 1) << (8 - nbits);
     for (i = (code << (8 - nbits)); i < bound; i++) {
-		huffelem[i].codelen = (unsigned char) nbits;
-		huffelem[i].value   = (unsigned char) val;
+    huffelem[i].codelen = (unsigned char) nbits;
+    huffelem[i].value   = (unsigned char) val;
         huffelem[i].hufftree= NULL;
     }
 }
@@ -112,8 +112,8 @@ unsigned char *huffval)     /* huffman values - see JPEG doc */
     /* Fill huff_table */
     code = 0;
     for (bitlen = 1; bitlen <= 8; bitlen++) {   /* Build primary table */
-		freq = *bits++;
-		if (freq) {
+    freq = *bits++;
+    if (freq) {
             for (j = 0; j < freq; j++) {
                 Assign_Code(code++, *huffval++, bitlen, huff_table->huffelem);
             }
@@ -126,12 +126,12 @@ unsigned char *huffval)     /* huffman values - see JPEG doc */
     for (j = 0; j < (int)code; j++) huff_elem[j].hufftree = NULL;
     for (j = code; j < 256; j++) {
         huff_elem[j].codelen = 0;
-		/*      huff_elem[j].value   = -1; */
+    /*      huff_elem[j].value   = -1; */
         if ((huff_tree =(HUFFMAN_TREE *)FPX_malloc(sizeof(HUFFMAN_TREE)))==NULL) {
             for (k = code; k < j; k++) {
-            	if(huff_elem[k].hufftree) {		/* CHG_JPEG_MEM_FIX - added check & clear */
-                	FPX_free(huff_elem[k].hufftree);
-                	huff_elem[k].hufftree = NULL;
+              if(huff_elem[k].hufftree) {   /* CHG_JPEG_MEM_FIX - added check & clear */
+                  FPX_free(huff_elem[k].hufftree);
+                  huff_elem[k].hufftree = NULL;
                 }
             }
             FPX_free(huff_table);
@@ -148,8 +148,8 @@ unsigned char *huffval)     /* huffman values - see JPEG doc */
     code <<= 1;
     ptr = 0;
     for (bitlen = 9; bitlen <= 16; bitlen++) {   /* Build Huffman trees */
-		freq = *bits++;
-		if (freq) {
+    freq = *bits++;
+    if (freq) {
             for (j = 0; j < freq; j++) {
                 *huff_val++ = *huffval++;
             }
@@ -172,8 +172,8 @@ DHUFF_TABLE *huff_table)
     HUFFMAN_TREE  *huff_tree;
     
     huff_elem = huff_table->huffelem + DB_Get_Byte(db_state);
-	n = huff_elem->codelen;
-	if (n) {
+  n = huff_elem->codelen;
+  if (n) {
         PUSH_BACK_BITS(8-n);
         return(huff_elem->value);
     } else {            /* decode bit by bit using huffman tree */

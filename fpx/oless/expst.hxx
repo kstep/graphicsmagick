@@ -38,7 +38,7 @@ class CMappedStream;
 
 //+--------------------------------------------------------------
 //
-//  Class:	CExposedStream (est)
+//  Class:  CExposedStream (est)
 //
 //  Purpose:    Exposed stream interface
 //
@@ -76,27 +76,27 @@ public:
 
     // IStream
     STDMETHOD(Read)(VOID HUGEP *pv,
-		   ULONG cb,
-		   ULONG *pcbRead);
+       ULONG cb,
+       ULONG *pcbRead);
     STDMETHOD(Write)(VOID const HUGEP *pv,
-		    ULONG cb,
-		    ULONG *pcbWritten);
+        ULONG cb,
+        ULONG *pcbWritten);
     STDMETHOD(Seek)(LARGE_INTEGER dlibMove,
-		   DWORD dwOrigin,
-		   ULARGE_INTEGER *plibNewPosition);
+       DWORD dwOrigin,
+       ULARGE_INTEGER *plibNewPosition);
     STDMETHOD(SetSize)(ULARGE_INTEGER cb);
     STDMETHOD(CopyTo)(IStream *pstm,
-		     ULARGE_INTEGER cb,
-		     ULARGE_INTEGER *pcbRead,
-		     ULARGE_INTEGER *pcbWritten);
+         ULARGE_INTEGER cb,
+         ULARGE_INTEGER *pcbRead,
+         ULARGE_INTEGER *pcbWritten);
     STDMETHOD(Commit)(DWORD grfCommitFlags);
     STDMETHOD(Revert)(void);
     STDMETHOD(LockRegion)(ULARGE_INTEGER libOffset,
-			  ULARGE_INTEGER cb,
-			  DWORD dwLockType);
+        ULARGE_INTEGER cb,
+        DWORD dwLockType);
     STDMETHOD(UnlockRegion)(ULARGE_INTEGER libOffset,
-			    ULARGE_INTEGER cb,
-			    DWORD dwLockType);
+          ULARGE_INTEGER cb,
+          DWORD dwLockType);
 #ifndef _UNICODE
     STDMETHOD(Stat)(STATSTG *pstatstg, DWORD grfStatFlag);
 #endif
@@ -156,7 +156,7 @@ public:
 #ifdef NEWPROPS
     virtual SCODE FlushBufferedData();
 #endif
-		
+    
 private:
     CDirectStream *_pst;
     CExposedDocFile *_pdfParent;
@@ -181,11 +181,11 @@ private:
 
 //+--------------------------------------------------------------
 //
-//  Member:	CExposedStream::Validate, public
+//  Member: CExposedStream::Validate, public
 //
-//  Synopsis:	Validates the object signature
+//  Synopsis: Validates the object signature
 //
-//  Returns:	Returns STG_E_INVALIDHANDLE for bad signatures
+//  Returns:  Returns STG_E_INVALIDHANDLE for bad signatures
 //
 //---------------------------------------------------------------
 
@@ -193,14 +193,14 @@ inline SCODE CExposedStream::Validate(void) const
 {
     return (this == NULL || _sig != CEXPOSEDSTREAM_SIG) ?
 
-	STG_E_INVALIDHANDLE : S_OK;
+  STG_E_INVALIDHANDLE : S_OK;
 }
 
 //+--------------------------------------------------------------
 //
-//  Member:	CExposedStream::GetPub, public
+//  Member: CExposedStream::GetPub, public
 //
-//  Synopsis:	Returns the public
+//  Synopsis: Returns the public
 //
 //---------------------------------------------------------------
 
@@ -229,7 +229,7 @@ inline SCODE CExposedStream::GetSize(ULONG *pcb)
     SCODE sc;
 
     if (SUCCEEDED(sc = CheckReverted()))
-	_pst->GetSize(pcb);
+  _pst->GetSize(pcb);
     return sc;
 }
 
@@ -262,8 +262,8 @@ inline CExposedStream::~CExposedStream(void)
     _sig = CEXPOSEDSTREAM_SIGDEL;        
     if (SUCCEEDED(CheckReverted()))
     {
-	if (_pdfParent) _pdfParent->ReleaseChild(this);	
-	if (_pst) _pst->Release();
+  if (_pdfParent) _pdfParent->ReleaseChild(this); 
+  if (_pst) _pst->Release();
     }
 #ifdef NEWPROPS    
     delete[] _pb;

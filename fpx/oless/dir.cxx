@@ -179,13 +179,13 @@ CDirectory::CDirectory(USHORT cbSector)
 
 //+---------------------------------------------------------------------------
 //
-//  Member:	CDirectory::Empty, public
+//  Member: CDirectory::Empty, public
 //
-//  Synopsis:	Empty all the control structures of this instance
+//  Synopsis: Empty all the control structures of this instance
 //
-//  Arguments:	None.
+//  Arguments:  None.
 //
-//  Returns:	void.
+//  Returns:  void.
 //
 //----------------------------------------------------------------------------
 
@@ -230,7 +230,7 @@ SCODE CDirectory::GetFree(SID* psid)
     SidToPair(_sidFirstFree, &ipdsStart, &ideStart);
     while (TRUE)
     {
-	DIRINDEX ipds;
+  DIRINDEX ipds;
         for (ipds = ipdsStart; ipds < _cdsTable; ipds++)
         {
             msfChk(_dv.GetTable(ipds, FB_NONE, &pds));
@@ -266,8 +266,8 @@ SCODE CDirectory::GetFree(SID* psid)
 //  Synopsis:   finds next entry (for iteration)
 //
 //  Arguments:  [sidStart]   -- child sid to start looking
-//		[pdfn]       -- previous entry name
-//		[psidResult] -- place holder for returned sid
+//    [pdfn]       -- previous entry name
+//    [psidResult] -- place holder for returned sid
 //
 //  Requires:   sidStart != NOSTREAM
 //
@@ -276,7 +276,7 @@ SCODE CDirectory::GetFree(SID* psid)
 //  Modifies:   psidResult
 //
 //  Algorithm:  Iterate by returning the sid that has a name larger
-//		than the given name.
+//    than the given name.
 //
 //  Notes:      This method is called recursively
 //
@@ -744,9 +744,9 @@ SCODE CDirectory::InitNew(CMStream *pmsParent)
 //  Synopsis:   Create a new directory entry
 //
 //  Arguments:  [sidParent] -- SID of parent for new entry
-//		[pwcsName] -- Name of new entry
-//		[mef] -- Flags for new entry
-//		[psidNew] -- Return location for new SID
+//    [pwcsName] -- Name of new entry
+//    [mef] -- Flags for new entry
+//    [psidNew] -- Return location for new SID
 //
 //  Returns:    S_OK if call completed OK.
 //
@@ -758,10 +758,10 @@ SCODE CDirectory::InitNew(CMStream *pmsParent)
 
 
 SCODE CDirectory::CreateEntry(
-	SID sidParent,
-	CDfName const *pdfn,
-	MSENTRYFLAGS mef,
-	SID *psidNew)
+  SID sidParent,
+  CDfName const *pdfn,
+  MSENTRYFLAGS mef,
+  SID *psidNew)
 {
     SCODE sc;
     SID sidNew;
@@ -818,8 +818,8 @@ Err:
 //  Returns:    S_OK if call completed OK.
 //
 //  Algorithm:  Remove old entry
-//		Rename entry
-//		Insert as new entry
+//    Rename entry
+//    Insert as new entry
 //
 //  Notes:
 //
@@ -900,15 +900,15 @@ Err:
 //  Modifies:   sidParent's entry
 //
 //  Algorithm:  While there's a child
-//		  destroy it
+//      destroy it
 //
-//  Notes:	We may want to consider a more efficient implementation
+//  Notes:  We may want to consider a more efficient implementation
 //
 //--------------------------------------------------------------------------
 
 
 SCODE CDirectory::DestroyAllChildren(
-	SID const sidParent)
+  SID const sidParent)
 {
     SCODE sc;
     CDirEntry *pdeParent, *pdeChild;
@@ -947,19 +947,19 @@ Err:
 //  Effects:    destroys named child's entry
 //
 //  Arguments:  [sidParent] -- storage entry
-//		[pdfn]      -- child name
+//    [pdfn]      -- child name
 //
 //  Returns:    S_OK, STG_E_FILENOTFOUND, or other error code
 //
 //  Modifies:   child's entry
 //
 //  Algorithm:  Find and remove child
-//		Free child entry
+//    Free child entry
 //
 //--------------------------------------------------------------------------
 
 SCODE CDirectory::DestroyChild(
-	SID const sidParent,
+  SID const sidParent,
         CDfName const *pdfn)
 {
     SCODE sc;
@@ -990,7 +990,7 @@ SCODE CDirectory::DestroyChild(
     {
         //  Deallocate any used streams
         msfChkTo(EH_Rel, _pmsParent->KillStream(pdeChild->GetStart(),
-				                pdeChild->GetSize()));
+                        pdeChild->GetSize()));
     }
 
     pdeChild->SetFlags(STGTY_INVALID);
@@ -1093,9 +1093,9 @@ Err:
 
 
 SCODE CDirectory::GetDirEntry(
-	const SID sid,
-	const DWORD dwFlags,
-	CDirEntry **ppde)
+  const SID sid,
+  const DWORD dwFlags,
+  CDirEntry **ppde)
 {
     SCODE sc;
     CDirSect *pds;

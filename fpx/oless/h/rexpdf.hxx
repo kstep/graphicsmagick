@@ -5,9 +5,9 @@
 // 
 //  Copyright (c) 1999 Digital Imaging Group, Inc.
 // 
-//  Contents:	Root exposed docfile header
+//  Contents: Root exposed docfile header
 //
-//  Classes:	CRootExposedDocFile
+//  Classes:  CRootExposedDocFile
 //
 //---------------------------------------------------------------
 
@@ -18,11 +18,11 @@
 
 //+--------------------------------------------------------------
 //
-//  Class:	CRootExposedDocFile (rpdf)
+//  Class:  CRootExposedDocFile (rpdf)
 //
-//  Purpose:	Root form of the public docfile
+//  Purpose:  Root form of the public docfile
 //
-//  Interface:	See below
+//  Interface:  See below
 //
 //---------------------------------------------------------------
 
@@ -31,9 +31,9 @@ class CRootExposedDocFile : public CExposedDocFile
 public:
     CRootExposedDocFile(CDFBasis *pdfb);
     SCODE InitRoot(ILockBytes *plstBase,
-		   DWORD const dwStartFlags,
-		   DFLAGS const df,
-		   SNBW snbExclude);
+       DWORD const dwStartFlags,
+       DFLAGS const df,
+       SNBW snbExclude);
 
     virtual ~CRootExposedDocFile(void);
 
