@@ -251,36 +251,48 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if ((summary_info.title.length != 0) &&
         (summary_info.title.ptr != (unsigned char *) NULL))
       {
+        char
+          *label;
         /*
           Note image label.
         */
-        image->label=(char *) AllocateMemory(summary_info.title.length+1);
-        if (image->label == (char *) NULL)
-          ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
-            image)
+        label=(char *) AllocateMemory(summary_info.title.length+1);
+        if (label == (char *) NULL)
+          {
+            ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+              image)
+          }
         else
           {
-            (void) strncpy(image->label,(char *) summary_info.title.ptr,
+            (void) strncpy(label,(char *) summary_info.title.ptr,
               summary_info.title.length);
-            image->label[summary_info.title.length]='\0';
+            label[summary_info.title.length]='\0';
+            (void) SetImageAttribute(image,"Label",label);
+            FreeMemory((void **) &label);
           }
       }
   if (summary_info.comments_valid)
     if ((summary_info.comments.length != 0) &&
         (summary_info.comments.ptr != (unsigned char *) NULL))
       {
+        char
+          *comments;
         /*
           Note image comment.
         */
-        image->comments=(char *) AllocateMemory(summary_info.comments.length+1);
-        if (image->comments == (char *) NULL)
-          ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
-            image);
+        comments=(char *) AllocateMemory(summary_info.comments.length+1);
+        if (comments == (char *) NULL)
+          {
+            ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+              image)
+          }
         else
           {
-            (void) strncpy(image->comments,(char *) summary_info.comments.ptr,
+            (void) strncpy(comments,(char *) summary_info.comments.ptr,
               summary_info.comments.length);
-            image->comments[summary_info.comments.length]='\0';
+            comments[summary_info.comments.length]='\0';
+            (void) SetImageAttribute(image,"Comment",comments);
+            FreeMemory((void **) &comments);
           }
       }
   /*
@@ -783,6 +795,10 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
     tile_height,
     tile_width;
 
+  ImageAttribute
+    *comment,
+    *label;
+
   /*
     Open input file.
   */
@@ -833,9 +849,9 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
       fsspec;
 
     FilenameToFSSpec(image->filename,&fsspec);
-    fpx_status=FPX_ConstituteByFilename((const FSSpec &) fsspec,
+    fpx_status=FPX_CreateImageByFilename((const FSSpec &) fsspec,
 #else
-    fpx_status=FPX_ConstituteByFilename(image->filename,
+    fpx_status=FPX_CreateImageByFilename(image->filename,
 #endif
     image->columns,image->rows,tile_width,tile_height,colorspace,
     background_color,compression,&flashpix);
@@ -850,8 +866,7 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
       fpx_status=
         FPX_SetJPEGCompression(flashpix,(unsigned short) (image_info->quality));
       if (fpx_status != FPX_OK)
-        ThrowWriterException(DelegateWarning,"Unable to set JPEG level",
-          (char *) NULL);
+        ThrowWriterException(DelegateWarning,"Unable to set JPEG level",image);
     }
   /*
     Set image summary info.
@@ -874,31 +889,34 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
   summary_info.thumbnail_valid=False;
   summary_info.appname_valid=False;
   summary_info.security_valid=False;
-  if (image->label != (char *) NULL)
+  label=GetImageAttribute(image,"Label");
+  if (label != (ImageAttribute *) NULL)
     {
       /*
         Note image label.
       */
       summary_info.title_valid=True;
-      summary_info.title.length=strlen(image->label);
+      summary_info.title.length=Extent(label->value);
       summary_info.title.ptr=(unsigned char *)
-        AllocateMemory(strlen(image->label)+1);
+        AllocateMemory(Extent(label->value)+1);
       if (summary_info.title.ptr != (unsigned char *) NULL)
-        (void) strcpy((char *) summary_info.title.ptr,image->label);
+        (void) strcpy((char *) summary_info.title.ptr,label->value);
       else
-        ThrowWriterException(DelegateWarning,"Unable to set image title",image);
+        ThrowWriterException(DelegateWarning,"Unable to set image title",
+          image);
     }
-  if (image->comments != (char *) NULL)
+  comment=GetImageAttribute(image,"Comment");
+  if (comment != (ImageAttribute *) NULL)
     {
       /*
         Note image comment.
       */
       summary_info.comments_valid=True;
-      summary_info.comments.length=strlen(image->comments);
+      summary_info.comments.length=Extent(comment->value);
       summary_info.comments.ptr=(unsigned char *)
-        AllocateMemory(strlen(image->comments)+1);
+        AllocateMemory(Extent(comment->value)+1);
       if (summary_info.comments.ptr != (unsigned char *) NULL)
-        (void) strcpy((char *) summary_info.comments.ptr,image->comments);
+        (void) strcpy((char *) summary_info.comments.ptr,comment->value);
       else
         ThrowWriterException(DelegateWarning,"Unable to set image comments",
           image);
@@ -1011,10 +1029,10 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
       sharpen_valid=False;
       aspect_ratio=(double) image->columns/image->rows;
       aspect_ratio_valid=False;
-      view_rect.left=0.1;
+      view_rect.left=(float)0.1;
       view_rect.width=aspect_ratio-0.2;
-      view_rect.top=0.1;
-      view_rect.height=1.0-0.2;
+      view_rect.top=(float)0.1;
+      view_rect.height=(float)0.8; /* 1.0-0.2 */
       view_rect_valid=False;
       affine.a11=1.0;
       affine.a12=0.0;
