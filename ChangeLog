@@ -1,3 +1,8 @@
+2005-03-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/pdf.c (WritePDFImage): Eliminate cause of annoying
+	warning when PDFs are read by Ghostscript 8.5.
+
 2005-03-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/nt_base.h (lt_dlerror): Needed to provide a mapping to
