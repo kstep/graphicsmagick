@@ -1726,25 +1726,9 @@ MagickExport void DescribeImage(Image *image,FILE *file,
       else
         (void) fprintf(file,"%lux%lu%+ld%+ld ",image->page.width,
           image->page.height,image->page.x,image->page.y);
-        switch (GetImageType(image,&image->exception))
-        {
-          case BilevelType: (void) fprintf(file,"Bilevel "); break;
-          case GrayscaleType: (void) fprintf(file,"Grayscale "); break;
-          case GrayscaleMatteType:
-            (void) fprintf(file,"GrayscaleMatte "); break;
-          case PaletteType: (void) fprintf(file,"Palette "); break;
-          case PaletteMatteType: (void) fprintf(file,"PaletteMatte "); break;
-          case TrueColorType: (void) fprintf(file,"TrueColor "); break;
-          case TrueColorMatteType:
-            (void) fprintf(file,"TrueColorMatte "); break;
-          case ColorSeparationType:
-            (void) fprintf(file,"ColorSeparation "); break;
-          case ColorSeparationMatteType:
-            (void) fprintf(file,"ColorSeparationMatte "); break;
-          default: (void) fprintf(file,"Undefined "); break;
-        }
       if (image->storage_class == DirectClass)
         {
+          (void) fprintf(file,"DirectClass ");
           if (image->total_colors != 0)
             {
               if (image->total_colors >= (1 << 24))
@@ -1758,10 +1742,11 @@ MagickExport void DescribeImage(Image *image,FILE *file,
         }
       else
         if (image->total_colors <= image->colors)
-          (void) fprintf(file,"%luc ",image->colors);
+          (void) fprintf(file,"PseudoClass %luc ",image->colors);
         else
           {
-            (void) fprintf(file,"%lu=>%luc ",image->total_colors,image->colors);
+            (void) fprintf(file,"PseudoClass %lu=>%luc ",image->total_colors,
+              image->colors);
             (void) fprintf(file,"%ld/%.6f/%.6fe ",
               (long) image->mean_error_per_pixel,image->normalized_mean_error,
               image->normalized_maximum_error);
