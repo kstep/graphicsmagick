@@ -108,14 +108,13 @@ if WITH_PERL_DYNAMIC
 $(PERLMAKEFILE): perl-sources $(PERLMAKEMAKER)
 	cd $(PERLMAGICK) && @PERL@ Makefile.PL
 
-# Make all PERL sub-targets except those that require a link
-# since the link must be against installed libraries
-#PERLALLTARGETS=config pm_to_blib subdirs Magick.o manifypods
-#all-perl: $(PERLMAKEFILE)
-#	cd $(PERLMAGICK) && $(MAKE) CC='@CC@' $(PERLALLTARGETS)
-
 install-exec-perl: $(PERLMAKEFILE)
-	cd $(PERLMAGICK) && $(MAKE) CC='@CC@' install
+	( cd $(PERLMAGICK) && $(MAKE) CC='@CC@' && \
+	$(MAKE) CC='@CC@' install && \
+	$(MAKE) clean && rm -f  Makefile.old )
+
+check-perl: $(PERLMAKEFILE)
+	DELEGATE_PATH=../delegates cd $(PERLMAGICK) && $(MAKE) CC='@CC@' test
 
 else
 if WITH_PERL_STATIC
@@ -125,25 +124,27 @@ PERLSTATICNAME=PerlMagick
 $(PERLMAKEFILE): perl-sources $(PERLMAKEMAKER)
 	cd $(PERLMAGICK) && @PERL@ Makefile.PL MAP_TARGET=$(PERLSTATICNAME)
 
-#all-perl: $(PERLMAKEFILE)
-#	cd $(PERLMAGICK) && $(MAKE) CC='@CC@' $(PERLSTATICNAME)
+$(PERLMAGICK)/$(PERLMAGICK): $(PERLMAKEFILE)
+	( cd $(PERLMAGICK) && $(MAKE) CC='@CC@' $(PERLSTATICNAME) )
 
-install-exec-perl: $(PERLMAKEFILE)
-	cd $(PERLMAGICK) && $(MAKE) CC='@CC@' $(PERLSTATICNAME)
-	cd $(PERLMAGICK) && $(MAKE) -f Makefile.aperl CC='@CC@' $(PERLSTATICNAME) inst_perl
+install-exec-perl: $(PERLMAGICK)/$(PERLMAGICK)
+	( cd $(PERLMAGICK) && \
+	$(MAKE) -f Makefile.aperl CC='@CC@' inst_perl MAP_TARGET=$(PERLSTATICNAME) && \
+	$(MAKE) -f Makefile.aperl map_clean && \
+	$(MAKE) clean && rm -f  Makefile.old )
+	
+check-perl: $(PERLMAGICK)/$(PERLMAGICK)
+	DELEGATE_PATH=../delegates cd $(PERLMAGICK) && $(MAKE) -f Makefile.aperl CC='@CC@' test
 
 endif # WITH_PERL_STATIC
 endif # WTIH_PERL_DYNAMIC
 
-check-perl: $(PERLMAKEFILE)
-	DELEGATE_PATH=../delegates cd $(PERLMAGICK) && $(MAKE) CC='@CC@' test
 
 clean-perl: $(PERLMAKEFILE)
-	cd $(PERLMAGICK) && $(MAKE) CC='@CC@' clean && rm -f  Makefile.old PerlMagick
+	cd $(PERLMAGICK) && $(MAKE) CC='@CC@' clean && rm -f Makefile.old PerlMagick
 	rm -f perl-sources
 
 distclean-perl: clean-perl
-
 
 else
 # Satisfy makefile requirements if not building PERL
