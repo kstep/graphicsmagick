@@ -156,10 +156,6 @@ LIB32=link.exe -lib
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;hpj;bat;for;f90"
 # Begin Source File
 
-SOURCE=..\..\magick\BIM.c
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\magick\animate.c
 # End Source File
 # Begin Source File
@@ -176,6 +172,10 @@ SOURCE=..\..\magick\avs.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\magick\BIM.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\magick\blob.c
 # End Source File
 # Begin Source File
@@ -189,10 +189,6 @@ SOURCE=..\..\magick\cache.c
 # Begin Source File
 
 SOURCE=..\..\magick\cache_view.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\magick\pixel_cache.c
 # End Source File
 # Begin Source File
 
@@ -588,6 +584,14 @@ SOURCE=..\..\magick\yuv.c
 
 SOURCE=..\..\magick\zoom.c
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\magick\stream.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\magick\constitute.c
+# End Source File
 # End Group
 # Begin Group "Header Files"
 
@@ -611,10 +615,6 @@ SOURCE=..\..\magick\blob.h
 # Begin Source File
 
 SOURCE=..\..\magick\cache.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\magick\cache_io.h
 # End Source File
 # Begin Source File
 

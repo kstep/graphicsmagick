@@ -192,10 +192,6 @@ SOURCE=..\..\magick\cache_view.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\magick\pixel_cache.c
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\magick\cmyk.c
 # End Source File
 # Begin Source File
@@ -587,6 +583,14 @@ SOURCE=..\..\magick\yuv.c
 # Begin Source File
 
 SOURCE=..\..\magick\zoom.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\magick\stream.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\magick\constitute.c
 # End Source File
 # End Group
 # Begin Group "Header Files"
