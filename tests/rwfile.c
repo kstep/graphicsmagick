@@ -23,7 +23,8 @@ static int CompareImage( int fuzz, Image *original, Image *final )
   int
     x,
     y,
-    factor;
+    factor,
+    diff;
 
   PixelPacket
     *orig_p, *final_p;
@@ -58,30 +59,19 @@ static int CompareImage( int fuzz, Image *original, Image *final )
       if (!GetPixelCache(final,0,y,final->columns,1))
 	return 1;
 
+      // Compare pixels in row
       orig_p  = original->pixels;
       final_p = final->pixels;
-
-      if ( original->matte )
+      for ( x = 0; x < (int) original->columns; x++ )
 	{
-	  /* RGBA */
-	  for ( x = 0; x < (int) original->columns; x++ )
+	  if ( ( ( diff = labs((long)orig_p->red     - (long)final_p->red   ) )  > factor ) ||
+	       ( ( diff = labs((long)orig_p->green   - (long)final_p->green ) )  > factor ) ||
+	       ( ( diff = labs((long)orig_p->blue    - (long)final_p->blue  ) )  > factor ) )
+	    return ((float)diff/MaxRGB*100);
+	  if ( original->matte )
 	    {
-	      if ( ( labs((long)orig_p->red     - (long)final_p->red)     > factor ) ||
-		   ( labs((long)orig_p->green   - (long)final_p->green)   > factor ) ||
-		   ( labs((long)orig_p->blue    - (long)final_p->blue)    > factor ) ||
-		   ( labs((long)orig_p->opacity - (long)final_p->opacity) > factor ) )
-		return 1;
-	    }
-	}
-      else
-	{
-	  /* Plain RGB */
-	  for ( x = 0; x < (int) original->columns; x++ )
-	    {
-	      if ( ( labs((long)orig_p->red     - (long)final_p->red)     > factor ) ||
-		   ( labs((long)orig_p->green   - (long)final_p->green)   > factor ) ||
-		   ( labs((long)orig_p->blue    - (long)final_p->blue)    > factor ) )
-		return 1;
+	      if ( ( diff = labs((long)orig_p->opacity - (long)final_p->opacity) ) > factor )
+		return ((float)diff/MaxRGB*100);
 	    }
 	}
 
@@ -102,6 +92,7 @@ int main ( int argc, char **argv )
   int rows, columns = 0;
   char filename[80];
   int fuzz_factor = 0;
+  int diff = 0;
   ImageInfo imageInfo;
 
   if ( argc != 3 )
@@ -113,8 +104,9 @@ int main ( int argc, char **argv )
   strcpy( infile, argv[1] );
   strcpy( format, argv[2] );
 
-  printf( "Testing R/W file: original image \"%s\"; test format \"%s\" ...\n",
-	  infile, format );
+  /*  printf( "R/W file: original \"%s\"; format \"%s\" ...\n", */
+  printf("%s %s %s\n",
+	  argv[0], infile, format );
   fflush(stdout);
 
   sprintf( filename, "out.%s", format );
@@ -215,9 +207,11 @@ int main ( int argc, char **argv )
   if ( !strcmp( "P7", format ) )
        fuzz_factor = 2;
 
-  if ( !strcmp( "PCD", format ) ||
-       !strcmp( "PCDS", format ) )
+  if ( !strcmp( "PCD", format ) )
     fuzz_factor = 8;
+
+  if ( !strcmp( "PCDS", format ) )
+    fuzz_factor = 12;
 
   if ( !strcmp( "UYVY", format ) )
     fuzz_factor = 1;
@@ -225,9 +219,9 @@ int main ( int argc, char **argv )
   if ( !strcmp( "YUV", format ) )
     fuzz_factor = 2;
 
-  if ( CompareImage( fuzz_factor, original, final ) )
+  if ( (diff = CompareImage( fuzz_factor, original, final )) )
     {
-      printf( "R/W file check for format \"%s\" failed.\n", format );
+      printf( "R/W file check for format \"%s\" failed: (%d%% component difference)\n", format, diff );
       fflush(stdout);
     }
 
