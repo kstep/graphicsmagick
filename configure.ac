@@ -1127,8 +1127,8 @@ then
     then
 	AC_MSG_RESULT(no -- some components failed test)
         have_xml='no (failed tests)'
-        LDFLAGS=OLD_LDFLAGS
-        CPPFLAGS=OLD_CPPFLAGS
+        LDFLAGS="$OLD_LDFLAGS"
+        CPPFLAGS="$OLD_CPPFLAGS"
     else
 	LIB_XML='-lxml2'
 	LIBS="$LIB_XML $LIBS"
@@ -1160,10 +1160,10 @@ then
     AC_MSG_RESULT()
     failed=0;
     passed=0;
-    AC_CHECK_HEADER(wmfapi.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
-    AC_CHECK_LIB(Xpm,XpmReadFileToBuffer,LIBS="-lXpm $LIBS"; passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
-    AC_CHECK_LIB(dib,save_DIBasXpm,LIBS="-ldib $LIBS"; passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
-    AC_CHECK_LIB(wmf,PlayMetaFile,LIBS="-lwmf $LIBS"; passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
+    AC_CHECK_HEADER(libwmf/ipa.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
+#    AC_CHECK_LIB(Xpm,XpmReadFileToBuffer,LIBS="-lXpm $LIBS"; passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
+#    AC_CHECK_LIB(dib,save_DIBasXpm,LIBS="-ldib $LIBS"; passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
+    AC_CHECK_LIB(wmf,wmf_api_create,LIBS="-lwmf $LIBS"; passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
     AC_MSG_CHECKING(if WMF package is complete)
     if test $passed -gt 0
     then
@@ -1173,7 +1173,7 @@ then
         have_wmf='no (failed tests)'
         LIBS="$OLIBS"
     else
-	LIB_WMF='-lwmf -ldib -lXpm'
+	LIB_WMF='-lwmf'
 	AC_DEFINE(HasWMF,,Define if you have WMF library)
 	AC_MSG_RESULT(yes)
         have_wmf='yes'
