@@ -437,8 +437,12 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Initialize image.
   */
+  image->matte=psd_info.channels >= 4;
   if (psd_info.mode == CMYKMode)
-    image->colorspace=CMYKColorspace;
+    {
+      image->colorspace=CMYKColorspace;
+      image->matte=psd_info.channels >= 5;
+    }
   image->columns=psd_info.columns;
   image->rows=psd_info.rows;
   image->depth=psd_info.depth <= 8 ? 8 : QuantumDepth;
