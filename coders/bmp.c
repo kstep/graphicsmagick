@@ -1025,15 +1025,7 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
     (void) TransformRGBImage(image,RGBColorspace);
     bmp_info.file_size=14+40;
     bmp_info.offset_bits=14+40;
-    if (image->storage_class == DirectClass)
-      {
-        /*
-          Full color BMP raster.
-        */
-        bmp_info.number_colors=0;
-        bmp_info.bits_per_pixel=image->matte ? 32 : 24;
-      }
-    else
+    if (image->storage_class != DirectClass)
       {
         /*
           Colormapped BMP raster.
@@ -1041,9 +1033,22 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
         bmp_info.bits_per_pixel=8;
         if (IsMonochromeImage(image,&image->exception))
           bmp_info.bits_per_pixel=1;
-        bmp_info.file_size+=4*(1 << bmp_info.bits_per_pixel);
-        bmp_info.offset_bits+=4*(1 << bmp_info.bits_per_pixel);
         bmp_info.number_colors=1 << bmp_info.bits_per_pixel;
+        if (bmp_info.number_colors < image->colors)
+          SetImageType(image,image->matte ? TrueColorMatteType : TrueColorType);
+        else
+          {
+            bmp_info.file_size+=4*(1 << bmp_info.bits_per_pixel);
+            bmp_info.offset_bits+=4*(1 << bmp_info.bits_per_pixel);
+          }
+      }
+    if (image->storage_class == DirectClass)
+      {
+        /*
+          Full color BMP raster.
+        */
+        bmp_info.number_colors=0;
+        bmp_info.bits_per_pixel=image->matte ? 32 : 24;
       }
     bytes_per_line=4*((image->columns*bmp_info.bits_per_pixel+31)/32);
     bmp_info.ba_offset=0;
