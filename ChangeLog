@@ -2,6 +2,9 @@
 
 	* magick/studio.h: small modifications to achieve DLL
 	compilation of library with Borland C++ Builder.
+	* coders/ps3.c (ZLIBEncode2Image): Fixed bug. Compilation
+	fail when HasZLIB is undefined because parameters 5 and 6,
+	are undefined.
 	
 2003-10-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
