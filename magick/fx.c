@@ -193,20 +193,24 @@ MagickExport Image *ColorizeImage(const Image *image,const char *opacity,
   if (colorize_image == (Image *) NULL)
     return((Image *) NULL);
   SetImageType(colorize_image,TrueColorType);
+  if (opacity == (const char *) NULL)
+    return(colorize_image);
   /*
     Determine RGB values of the pen color.
   */
   pixel.red=100.0;
   pixel.green=100.0;
   pixel.blue=100.0;
-  count=sscanf(opacity,"%lf%*[/,]%lf%*[/,]%lf",
-    &pixel.red,&pixel.green,&pixel.blue);
+  pixel.opacity=100.0;
+  count=sscanf(opacity,"%lf%*[/,]%lf%*[/,]%lf%*[/,]%lf",
+    &pixel.red,&pixel.green,&pixel.blue,&pixel.opacity);
   if (count == 1)
     {
       if (pixel.red == 0.0)
         return(colorize_image);
       pixel.green=pixel.red;
       pixel.blue=pixel.red;
+      pixel.opacity=pixel.red;
     }
   /*
     Colorize DirectClass image.
@@ -225,7 +229,8 @@ MagickExport Image *ColorizeImage(const Image *image,const char *opacity,
         ((p->green*(100.0-pixel.green)+target.green*pixel.green)/100.0);
       q->blue=(Quantum)
         ((p->blue*(100.0-pixel.blue)+target.blue*pixel.blue)/100.0);
-      q->opacity=p->opacity;
+      q->opacity=(Quantum)
+        ((p->opacity*(100.0-pixel.opacity)+target.opacity*pixel.opacity)/100.0);
       p++;
       q++;
     }

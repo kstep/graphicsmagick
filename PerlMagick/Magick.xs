@@ -5603,8 +5603,8 @@ Mogrify(ref,...)
         case 57:  /* Threshold */
         {
           if (!attribute_flag[0])
-            argument_list[0].double_reference=(MaxRGB+1)/2.0;
-          ThresholdImage(image,argument_list[0].double_reference);
+            argument_list[0].string_reference="50%";
+          ThresholdImage(image,argument_list[0].string_reference);
           break;
         }
         case 58:  /* Charcoal */

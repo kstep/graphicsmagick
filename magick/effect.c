@@ -1998,7 +1998,7 @@ MagickExport Image *SpreadImage(const Image *image,const unsigned int radius,
 %
 %  The format of the ThresholdImage method is:
 %
-%      unsigned int ThresholdImage(Image *image,const double threshold)
+%      unsigned int ThresholdImage(Image *image,const char *threshold)
 %
 %  A description of each parameter follows:
 %
@@ -2008,18 +2008,16 @@ MagickExport Image *SpreadImage(const Image *image,const unsigned int radius,
 %
 %
 */
-MagickExport unsigned int ThresholdImage(Image *image,const double threshold)
+MagickExport unsigned int ThresholdImage(Image *image,const char *threshold)
 {
 #define ThresholdImageText  "  Threshold the image...  "
 
-  IndexPacket
-    index;
+  DoublePixelPacket
+    pixel;
 
   long
+    count,
     y;
-
-  register IndexPacket
-    *indexes;
 
   register long
     x;
@@ -2032,22 +2030,34 @@ MagickExport unsigned int ThresholdImage(Image *image,const double threshold)
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  if (!AllocateImageColormap(image,2))
-    ThrowBinaryException(ResourceLimitError,"Unable to threshold image",
-      "Memory allocation failed");
+  if (threshold == (const char *) NULL)
+    return(True);
+  SetImageType(image,TrueColorType);
+  pixel.red=100.0;
+  pixel.green=100.0;
+  pixel.blue=100.0;
+  pixel.opacity=100.0;
+  count=sscanf(threshold,"%lf%*[/,]%lf%*[/,]%lf%*[/,]%lf",
+    &pixel.red,&pixel.green,&pixel.blue,&pixel.opacity);
+  if (count == 1)
+    {
+      if (pixel.red == 0.0)
+        return(True);
+      pixel.green=pixel.red;
+      pixel.blue=pixel.red;
+      pixel.opacity=pixel.red;
+    }
   for (y=0; y < (long) image->rows; y++)
   {
     q=GetImagePixels(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
-    indexes=GetIndexes(image);
     for (x=0; x < (long) image->columns; x++)
     {
-      index=PixelIntensityToQuantum(q) < threshold ? 0 : 1;
-      indexes[x]=index;
-      q->red=image->colormap[index].red;
-      q->green=image->colormap[index].green;
-      q->blue=image->colormap[index].blue;
+      q->red=q->red < pixel.red ? 0 : MaxRGB;
+      q->green=q->green < pixel.green ? 0 : MaxRGB;
+      q->blue=q->blue < pixel.blue ? 0 : MaxRGB;
+      q->opacity=q->opacity < pixel.opacity ? 0 : MaxRGB;
       q++;
     }
     if (!SyncImagePixels(image))

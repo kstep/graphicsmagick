@@ -234,9 +234,9 @@ testFilterSignature('input.miff', 'Swirl',
 
 ++$test;
 testFilterSignature('input.miff', 'Threshold',
-  ($MaxRGB+1)/2,
+  q/50%/,
   '36c9b367b84035869df118d2fc61cbd7060d419d8626c4147955c712bcab15c0',
-  '40db28af0162a4abd3ee8a1094591cd7eb07463464d7c235e4c2f2ae40aa3686');
+  '8b19185a62241bd7b79ecf3f619711f4ebbedd73eaeca0366f05778762b6614f');
 
 ++$test;
 testFilterSignature('input.miff', 'Trim',

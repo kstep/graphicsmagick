@@ -1034,7 +1034,7 @@ extern MagickExport unsigned int
   SignatureImage(Image *),
   SortColormapByIntensity(Image *),
   SyncImagePixels(Image *),
-  ThresholdImage(Image *,const double),
+  ThresholdImage(Image *,const char *),
   TransformRGBImage(Image *,const ColorspaceType),
   TransparentImage(Image *,const PixelPacket,const unsigned int),
   UnregisterMagickInfo(const char *),

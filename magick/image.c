@@ -4468,14 +4468,10 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
       {
         if (LocaleCompare("threshold",option+1) == 0)
           {
-            double
-              threshold;
-
             /*
               Threshold image.
             */
-            threshold=StringToDouble(argv[++i],MaxRGB);
-            (void) ThresholdImage(*image,threshold);
+            (void) ThresholdImage(*image,argv[++i]);
             continue;
           }
         if (LocaleCompare("tile",option+1) == 0)
