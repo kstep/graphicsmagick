@@ -63,7 +63,8 @@ John Cristy
 		a stand-alone library by GraphicsMagick.
 
 Jaroslav Fojtik
-		Authored the CUT, ART, and MATLAB coder modules.
+		Authored the ART, CUT, MATLAB, TOPOL, and WPG
+                coder modules.
 
 Kelly Bergougnoux
 		Authored the Cineon coder.

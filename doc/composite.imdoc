@@ -50,8 +50,8 @@ composite - composite images together.
 <sect NAME="comp-syno">Synopsis
 
 <p>
-<s>composite</s> <s>[</s> <i>options</i> <s>... ]</s> <i>image composite</i>
-<s>[</s> <i>mask</i> <s>]</s> <i>composited</i>
+<s>composite</s> <s>[</s> <i>options</i> <s>... ]</s> <i>change-image base-image</i>
+<s>[</s> <i>mask-image</i> <s>]</s> <i>output-image</i>
 </p>
 
 </sect>
@@ -59,20 +59,19 @@ composite - composite images together.
 <sect NAME="comp-desc">Description
 </im>
 <p>
-<s>composite</s> composite images to create new images.</p>
-<p><i>composite</i> is the base image and <i>image</i> contains the changes.
-<i>composited</i> is the result, and normally has the same dimensions
-as <i>composite</i>.
+<s>composite</s> composites (combines) images to create new images.</p>
+<p><i>base-image</i> is the base image and <i>change-image</i> contains the changes.
+<i>ouput-image</i> is the result, and normally has the same dimensions
+as <i>base-image</i>.
 </p>
 
 <p>
-The optional <i>mask</i> can be used to provide matte information for
-<i>composite</i>
-when it has none or if you want a different mask. A mask image is typically
-grayscale and the same size as <s>composite</s>. If <i>mask</i> is
-not grayscale,
-it is converted to grayscale and the resulting intensities are used as
-matte information.</p>
+The optional <i>mask-image</i> can be used to provide opacity information
+for <i>change-image</i> when it has none or if you want a different mask.
+A mask image is typically grayscale and the same size as
+<s>base-image</s>. If <i>mask-image</i> is not grayscale, it is converted
+to grayscale and the resulting intensities are used as opacity
+information.</p>
 
 </sect>
 

@@ -1,3 +1,12 @@
+2003-10-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* doc/composite.imdoc, doc/options.imdoc, doc/GraphicsMagick.imdoc:
+	Attempted to clarify the meaning of the compose arguments and how
+	composition works, as well as eliminating use of hard-coded values like
+	255.
+	* www/links.html: Added a link to Michael Still's article
+	"Graphics from the command line".
+
 2003-10-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/*.c: Updated module descriptions so that they accurately

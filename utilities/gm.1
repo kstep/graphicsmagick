@@ -13,16 +13,16 @@ gm - GraphicsMagick command-line utilities to create, edit, or convert images
 \fIoptions ...\fP \fB]\fP \fIfile ...\fP \fB]\fP
 
 
-\fBgm composite\fP \fB[\fP \fIoptions ...\fP \fB]\fP \fIimage composite\fP
-\fB[\fP \fImask\fP \fB]\fP \fIcomposited\fP
+\fBgm composite\fP \fB[\fP \fIoptions ...\fP \fB]\fP \fIchange-image base-image\fP
+\fB[\fP \fImask-image\fP \fB]\fP \fIoutput-image\fP
 
 
 \fBgm conjure\fP \fB[\fP \fIoptions\fP \fB]\fP \fIscript.msl\fP
 \fB[ [\fP \fIoptions\fP \fB]\fP \fIscript.msl\fP \fB]\fP
 
 
-\fBgm convert\fP \fB[ [\fP \fIoptions ...\fP \fB] [\fP \fIinput_file ...\fP
-\fB]\fP \fI...\fP \fB[\fP \fIoutput_file\fP \fB] ]\fP
+\fBgm convert\fP \fB[ [\fP \fIoptions ...\fP \fB] [\fP \fIinput-file ...\fP
+\fB]\fP \fI...\fP \fB[\fP \fIoutput-file\fP \fB] ]\fP
 
 
 \fBgm display\fP \fB[\fP \fIoptions ...\fP \fB]\fP \fIfile ...\fP
@@ -39,7 +39,7 @@ gm - GraphicsMagick command-line utilities to create, edit, or convert images
 
 
 \fBgm montage\fP \fB[\fP \fIoptions ...\fP \fB]\fP \fIfile\fP \fB[ [\fP
-\fIoptions ...\fP \fB]\fP \fIfile ...\fP \fB]\fP \fIoutput_file\fP
+\fIoptions ...\fP \fB]\fP \fIfile ...\fP \fB]\fP \fIoutput-file\fP
 
 .SH DESCRIPTION
 
@@ -640,9 +640,38 @@ is read from a file titled by the remaining characters in the string.
 .B "-compose \fI<operator>"\fP
 \fRthe type of image composition
 
-By default, each of the composite image pixels are replaced by the
-corresponding image tile pixel. You can choose an alternate composite
-operation:
+The description of composition uses abstract terminology in order to
+allow the the description to be more clear, while avoiding constant
+values which are specific to a particular build configuration. Each image
+pixel is represented by red, green, and blue levels (which are equal for
+a gray pixel). MaxRGB is the maximum integral value which may be stored
+in the red, green, or blue channels of the image. Each image pixel may
+also optionally (if the image matte channel is enabled) have an
+associated level of opacity (ranging from opaque to transparent), which
+may be used to determine the influence of the pixel color when
+compositing the pixel with another image pixel. If the image matte
+channel is disabled, then all pixels in the image are treated as opaque.
+The color of an \fIopaque\fP pixel is fully visible while the color of a
+\fItransparent\fP pixel color is entirely absent (pixel color is ignored).
+
+
+By definition, raster images have a rectangular shape. All image rows are
+of equal length, and all image columns have the same number of rows. By
+treating the opacity channel as a visual "mask" the rectangular image may
+be given a "shape" by treating the opacity channel as a cookie-cutter for
+the image. Pixels within the shape are opaque, while pixels outside the
+shape are transparent. Pixels on the boundary of the shape may be between
+opaque and transparent in order to provide antialiasing (visually smooth
+edges). The description of the composition operators use this concept of
+image "shape" in order to make the description of the operators easier to
+understand. While it is convenient to describe the operators in terms of
+"shapes" they are by no means limited to mask-style operations since they
+are based on continuous floating-point mathematics rather than simple
+boolean operations.
+
+
+By default, the \fIOver\fP composite operator is used. The following
+composite operators are available:
 
 
      Over
@@ -663,7 +692,7 @@ operation:
      CopyBlue
      CopyOpacity
 
-How each operator behaves is described below.
+The behavior of each operator is described below.
 
 .in 15
 
@@ -673,8 +702,9 @@ How each operator behaves is described below.
  \fR
 .in 20
 
-The result will be the union of the two image shapes, with opaque areas of
-\fIcomposite image\fP obscuring \fIimage\fP in the region of overlap.
+The result will be the union of the two image shapes, with opaque areas
+of \fIchange-image\fP obscuring \fIbase-image\fP in the region of
+overlap.
 
 .in 15
 .in 15
@@ -683,9 +713,9 @@ The result will be the union of the two image shapes, with opaque areas of
  \fR
 .in 20
 
-The result is simply \fIcomposite image\fP cut by the shape
-of \fIimage\fP.
-None of the image data of \fIimage\fP will be in the result.
+The result is simply \fIchange-image\fP cut by the shape of
+\fIbase-image\fP. None of the image data of \fIbase-image\fP will be in
+the result.
 
 .in 15
 .in 15
@@ -694,8 +724,8 @@ None of the image data of \fIimage\fP will be in the result.
  \fR
 .in 20
 
-The resulting image is \fIcomposite image\fP with the shape
-of \fIimage\fP cut out.
+The resulting image is \fIchange-image\fP with the shape of
+\fIbase-image\fP cut out.
 
 .in 15
 .in 15
@@ -704,11 +734,11 @@ of \fIimage\fP cut out.
  \fR
 .in 20
 
-The result is the same shape as image \fIimage\fP,
-with \fIcomposite image\fP
-obscuring \fIimage\fP where the image shapes overlap.  Note this differs
-from \fBover\fP because the portion of \fIcomposite image\fP outside
-\fIimage\fP's shape does not appear in the result.
+The result is the same shape as \fIbase-image\fP, with
+\fIchange-image\fP obscuring \fIbase-image\fP where the image shapes
+overlap. Note this differs from \fBover\fP because the portion of
+\fIchange-image\fP outside \fIbase-image\fP's shape does not appear in
+the result.
 
 .in 15
 .in 15
@@ -717,9 +747,9 @@ from \fBover\fP because the portion of \fIcomposite image\fP outside
  \fR
 .in 20
 
-The result is the image data from both \fIcomposite image\fP and
-\fIimage\fP
-that is outside the overlap region.  The overlap region will be blank.
+The result is the image data from both \fIchange-image\fP and
+\fIbase-image\fP that is outside the overlap region. The overlap region
+will be blank.
 
 .in 15
 .in 15
@@ -728,9 +758,9 @@ that is outside the overlap region.  The overlap region will be blank.
  \fR
 .in 20
 
-The result is just the sum of the image data.  Output values are
-cropped to 255 (no overflow).  This operation is independent of the
-matte channels.
+The result is just the sum of the image data. Output values are cropped
+to MaxRGB (no overflow). This operation is independent of the matte
+channels.
 
 .in 15
 .in 15
@@ -739,9 +769,9 @@ matte channels.
  \fR
 .in 20
 
-The result of \fIcomposite image\fP - \fIimage\fP, with underflow
-cropped to
-zero.  The matte channel is ignored (set to 255, full coverage).
+The result of \fIchange-image\fP - \fIbase-image\fP, with underflow
+cropped to zero. The matte channel is ignored (set to opaque, full
+coverage).
 
 .in 15
 .in 15
@@ -750,8 +780,8 @@ zero.  The matte channel is ignored (set to 255, full coverage).
  \fR
 .in 20
 
-The result of \fIcomposite image\fP + \fIimage\fP, with overflow wrapping
-around (\fImod\fP 256).
+The result of \fIchange-image\fP + \fIbase-image\fP, with overflow
+wrapping around (\fImod\fP MaxRGB+1).
 
 .in 15
 .in 15
@@ -760,9 +790,9 @@ around (\fImod\fP 256).
  \fR
 .in 20
 
-The result of \fIcomposite image\fP - \fIimage\fP, with underflow wrapping
-around (\fImod\fP 256).  The \fBadd\fP and \fBsubtract\fP operators can be
-used to perform reversible transformations.
+The result of \fIchange-image\fP - \fIbase-image\fP, with underflow
+wrapping around (\fImod\fP MaxRGB+1). The \fBadd\fP and \fBsubtract\fP
+operators can be used to perform reversible transformations.
 
 .in 15
 .in 15
@@ -771,8 +801,8 @@ used to perform reversible transformations.
  \fR
 .in 20
 
-The result of abs(\fIcomposite image\fP - \fIimage\fP).  This is useful
-for comparing two very similar images.
+The result of abs(\fIchange-image\fP - \fIbase-image\fP). This is
+useful for comparing two very similar images.
 
 .in 15
 .in 15
@@ -781,7 +811,7 @@ for comparing two very similar images.
  \fR
 .in 20
 
-The result of \fIcomposite image\fP * \fIimage\fP.  This is useful for
+The result of \fIchange-image\fP * \fIbase-image\fP. This is useful for
 the creation of drop-shadows.
 
 .in 15
@@ -791,7 +821,7 @@ the creation of drop-shadows.
  \fR
 .in 20
 
-The result \fIimage\fP shaded by \fIcomposite image\fP.
+The result \fIbase-image\fP shaded by \fIchange-image\fP.
 
 .in 15
 .in 15
@@ -800,8 +830,8 @@ The result \fIimage\fP shaded by \fIcomposite image\fP.
  \fR
 .in 20
 
-The resulting image is \fIimage\fP replaced with \fIcomposite image\fP.
-Here the matte information is ignored.
+The resulting image is \fIbase-image\fP replaced with
+\fIchange-image\fP. Here the matte information is ignored.
 
 .in 15
 .in 15
@@ -810,8 +840,9 @@ Here the matte information is ignored.
  \fR
 .in 20
 
-The resulting image is the red layer in \fIimage\fP replaced with the red
-layer in \fIcomposite image\fP.  The other layers are copied untouched.
+The resulting image is the red channel in \fIbase-image\fP replaced with
+the red channel in \fIchange-image\fP. The other channels are copied
+untouched.
 
 .in 15
 .in 15
@@ -820,8 +851,9 @@ layer in \fIcomposite image\fP.  The other layers are copied untouched.
  \fR
 .in 20
 
-The resulting image is the green layer in \fIimage\fP replaced with the green
-layer in \fIcomposite image\fP.  The other layers are copied untouched.
+The resulting image is the green channel in \fIbase-image\fP replaced
+with the green channel in \fIchange-image\fP. The other channels are
+copied untouched.
 
 .in 15
 .in 15
@@ -830,8 +862,9 @@ layer in \fIcomposite image\fP.  The other layers are copied untouched.
  \fR
 .in 20
 
-The resulting image is the blue layer in \fIimage\fP replaced with the blue
-layer in \fIcomposite image\fP.  The other layers are copied untouched.
+The resulting image is the blue channel in \fIbase-image\fP replaced
+with the blue channel in \fIchange-image\fP. The other channels are
+copied untouched.
 
 .in 15
 .in 15
@@ -840,20 +873,11 @@ layer in \fIcomposite image\fP.  The other layers are copied untouched.
  \fR
 .in 20
 
-The resulting image is the matte layer in \fIimage\fP replaced with the matte
-layer in \fIcomposite image\fP.  The other layers are copied untouched.
+The resulting image is the opacity channel in \fIbase-image\fP replaced
+with the opacity channel in \fIchange-image\fP. The other channels are
+copied untouched.
 
 .in 15
-
-
-The image compositor requires a matte, or alpha channel in the image
-for some operations.  This extra channel usually defines a mask which
-represents a sort of a cookie-cutter for the image.  This is the case
-when matte is 255 (full coverage) for pixels inside the shape, zero
-outside, and between zero and 255 on the boundary.  For certain
-operations, if \fIimage\fP does not have a matte channel, it is initialized
-with 0 for any pixel matching in color to pixel location (0,0), otherwise
-255 (to work properly \fBborderwidth\fP must be 0).
 
 .TP
 .B "-compress \fI<type>"\fP
@@ -3444,19 +3468,18 @@ of header identifying the window. The default is the image file name.
 
 .SH GM COMPOSITE
 
-\fBcomposite\fP composite images to create new images.
-\fIcomposite\fP is the base image and \fIimage\fP contains the changes.
-\fIcomposited\fP is the result, and normally has the same dimensions
-as \fIcomposite\fP.
+\fBcomposite\fP composites (combines) images to create new images.
+\fIbase-image\fP is the base image and \fIchange-image\fP contains the changes.
+\fIouput-image\fP is the result, and normally has the same dimensions
+as \fIbase-image\fP.
 
 
-The optional \fImask\fP can be used to provide matte information for
-\fIcomposite\fP
-when it has none or if you want a different mask. A mask image is typically
-grayscale and the same size as \fBcomposite\fP. If \fImask\fP is
-not grayscale,
-it is converted to grayscale and the resulting intensities are used as
-matte information.
+The optional \fImask-image\fP can be used to provide opacity information
+for \fIchange-image\fP when it has none or if you want a different mask.
+A mask image is typically grayscale and the same size as
+\fBbase-image\fP. If \fImask-image\fP is not grayscale, it is converted
+to grayscale and the resulting intensities are used as opacity
+information.
 .SH EXAMPLES
 
 To composite an image of a cockatoo with a perch, use:
@@ -5625,22 +5648,23 @@ that is outside the overlap region. The overlap region is blank.
 .B "plus"
 \fR
 The result is just the sum of the image data. Output values are cropped
-to 255 (no overflow). This operation is independent of the matte channels.
+to the maximum value (no overflow). This operation is independent of the
+matte channels.
 .TP
 .B "minus"
 \fR
 The result of \fIimage\fP - \fIimage window\fP, with underflow cropped
-to zero. The matte channel is ignored (set to 255, full coverage).
+to zero. The matte channel is ignored (set to opaque, full coverage).
 .TP
 .B "add"
 \fR
 The result of \fIimage\fP + \fIimage window\fP, with overflow wrapping
-around (mod 256).
+around (mod MaxRGB+1).
 .TP
 .B "subtract"
 \fR
 The result of \fIimage\fP - \fIimage window\fP, with underflow wrapping
-around (mod 256). The add and subtract operators can be used to perform
+around (mod MaxRGB+1). The add and subtract operators can be used to perform
 reversible transformations.
 .TP
 .B "difference"

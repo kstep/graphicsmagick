@@ -86,16 +86,16 @@ color="#FFFFFF"><font size="+1">
 <em>options ...</em> <strong>]</strong> <em>file ...</em> <strong>]</strong>
 <br>&nbsp;<br>
 <p>
-<strong>gm composite</strong> <strong>[</strong> <em>options ...</em> <strong>]</strong> <em>image composite</em>
-<strong>[</strong> <em>mask</em> <strong>]</strong> <em>composited</em>
+<strong>gm composite</strong> <strong>[</strong> <em>options ...</em> <strong>]</strong> <em>change-image base-image</em>
+<strong>[</strong> <em>mask-image</em> <strong>]</strong> <em>output-image</em>
 <br>&nbsp;<br>
 <p>
 <strong>gm conjure</strong> <strong>[</strong> <em>options</em> <strong>]</strong> <em>script.msl</em>
 <strong>[ [</strong> <em>options</em> <strong>]</strong> <em>script.msl</em> <strong>]</strong>
 <br>&nbsp;<br>
 <p>
-<strong>gm convert</strong> <strong>[ [</strong> <em>options ...</em> <strong>] [</strong> <em>input_file ...</em>
-<strong>]</strong> <em>...</em> <strong>[</strong> <em>output_file</em> <strong>] ]</strong>
+<strong>gm convert</strong> <strong>[ [</strong> <em>options ...</em> <strong>] [</strong> <em>input-file ...</em>
+<strong>]</strong> <em>...</em> <strong>[</strong> <em>output-file</em> <strong>] ]</strong>
 <br>&nbsp;<br>
 <p>
 <strong>gm display</strong> <strong>[</strong> <em>options ...</em> <strong>]</strong> <em>file ...</em>
@@ -112,7 +112,7 @@ color="#FFFFFF"><font size="+1">
 <br>&nbsp;<br>
 <p>
 <strong>gm montage</strong> <strong>[</strong> <em>options ...</em> <strong>]</strong> <em>file</em> <strong>[ [</strong>
-<em>options ...</em> <strong>]</strong> <em>file ...</em> <strong>]</strong> <em>output_file</em>
+<em>options ...</em> <strong>]</strong> <em>file ...</em> <strong>]</strong> <em>output-file</em>
 <br>&nbsp;<br>
 </td></tr></table>
 <table BORDER=0 WIDTH="100%"> 
@@ -962,9 +962,38 @@ width=15><b><font face="Helvetica, Arial"
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>the type of image composition</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-By default, each of the composite image pixels are replaced by the
-corresponding image tile pixel. You can choose an alternate composite
-operation:
+The description of composition uses abstract terminology in order to
+allow the the description to be more clear, while avoiding constant
+values which are specific to a particular build configuration. Each image
+pixel is represented by red, green, and blue levels (which are equal for
+a gray pixel). MaxRGB is the maximum integral value which may be stored
+in the red, green, or blue channels of the image. Each image pixel may
+also optionally (if the image matte channel is enabled) have an
+associated level of opacity (ranging from opaque to transparent), which
+may be used to determine the influence of the pixel color when
+compositing the pixel with another image pixel. If the image matte
+channel is disabled, then all pixels in the image are treated as opaque.
+The color of an <em>opaque</em> pixel is fully visible while the color of a
+<em>transparent</em> pixel color is entirely absent (pixel color is ignored).
+</font></td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+By definition, raster images have a rectangular shape. All image rows are
+of equal length, and all image columns have the same number of rows. By
+treating the opacity channel as a visual "mask" the rectangular image may
+be given a "shape" by treating the opacity channel as a cookie-cutter for
+the image. Pixels within the shape are opaque, while pixels outside the
+shape are transparent. Pixels on the boundary of the shape may be between
+opaque and transparent in order to provide antialiasing (visually smooth
+edges). The description of the composition operators use this concept of
+image "shape" in order to make the description of the operators easier to
+understand. While it is convenient to describe the operators in terms of
+"shapes" they are by no means limited to mask-style operations since they
+are based on continuous floating-point mathematics rather than simple
+boolean operations.
+</font></td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+By default, the <em>Over</em> composite operator is used. The following
+composite operators are available:
 </font></td></tr></table>
 <pre>
      Over
@@ -986,112 +1015,107 @@ operation:
      CopyOpacity
 </pre>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-How each operator behaves is described below.
+The behavior of each operator is described below.
 </font></td></tr></table>
 <dl>
 <dt>Over</dt>
 <dd>
-The result will be the union of the two image shapes, with opaque areas of
-<em>composite image</em> obscuring <em>image</em> in the region of overlap.
+The result will be the union of the two image shapes, with opaque areas
+of <em>change-image</em> obscuring <em>base-image</em> in the region of
+overlap.
 </dd>
 <dt>In</dt>
 <dd>
-The result is simply <em>composite image</em> cut by the shape
-of <em>image</em>.
-None of the image data of <em>image</em> will be in the result.
+The result is simply <em>change-image</em> cut by the shape of
+<em>base-image</em>. None of the image data of <em>base-image</em> will be in
+the result.
 </dd>
 <dt>Out</dt>
 <dd>
-The resulting image is <em>composite image</em> with the shape
-of <em>image</em> cut out.
+The resulting image is <em>change-image</em> with the shape of
+<em>base-image</em> cut out.
 </dd>
 <dt>Atop</dt>
 <dd>
-The result is the same shape as image <em>image</em>,
-with <em>composite image</em>
-obscuring <em>image</em> where the image shapes overlap.  Note this differs
-from <strong>over</strong> because the portion of <em>composite image</em> outside
-<em>image</em>'s shape does not appear in the result.
+The result is the same shape as <em>base-image</em>, with
+<em>change-image</em> obscuring <em>base-image</em> where the image shapes
+overlap. Note this differs from <strong>over</strong> because the portion of
+<em>change-image</em> outside <em>base-image</em>'s shape does not appear in
+the result.
 </dd>
 <dt>Xor</dt>
 <dd>
-The result is the image data from both <em>composite image</em> and
-<em>image</em>
-that is outside the overlap region.  The overlap region will be blank.
+The result is the image data from both <em>change-image</em> and
+<em>base-image</em> that is outside the overlap region. The overlap region
+will be blank.
 </dd>
 <dt>Plus</dt>
 <dd>
-The result is just the sum of the image data.  Output values are
-cropped to 255 (no overflow).  This operation is independent of the
-matte channels.
+The result is just the sum of the image data. Output values are cropped
+to MaxRGB (no overflow). This operation is independent of the matte
+channels.
 </dd>
 <dt>Minus</dt>
 <dd>
-The result of <em>composite image</em> - <em>image</em>, with underflow
-cropped to
-zero.  The matte channel is ignored (set to 255, full coverage).
+The result of <em>change-image</em> - <em>base-image</em>, with underflow
+cropped to zero. The matte channel is ignored (set to opaque, full
+coverage).
 </dd>
 <dt>Add</dt>
 <dd>
-The result of <em>composite image</em> + <em>image</em>, with overflow wrapping
-around (<em>mod</em> 256).
+The result of <em>change-image</em> + <em>base-image</em>, with overflow
+wrapping around (<em>mod</em> MaxRGB+1).
 </dd>
 <dt>Subtract</dt>
 <dd>
-The result of <em>composite image</em> - <em>image</em>, with underflow wrapping
-around (<em>mod</em> 256).  The <strong>add</strong> and <strong>subtract</strong> operators can be
-used to perform reversible transformations.
+The result of <em>change-image</em> - <em>base-image</em>, with underflow
+wrapping around (<em>mod</em> MaxRGB+1). The <strong>add</strong> and <strong>subtract</strong>
+operators can be used to perform reversible transformations.
 </dd>
 <dt>Difference</dt>
 <dd>
-The result of abs(<em>composite image</em> - <em>image</em>).  This is useful
-for comparing two very similar images.
+The result of abs(<em>change-image</em> - <em>base-image</em>). This is
+useful for comparing two very similar images.
 </dd>
 <dt>Multiply</dt>
 <dd>
-The result of <em>composite image</em> * <em>image</em>.  This is useful for
+The result of <em>change-image</em> * <em>base-image</em>. This is useful for
 the creation of drop-shadows.
 </dd>
 <dt>Bumpmap</dt>
 <dd>
-The result <em>image</em> shaded by <em>composite image</em>.
+The result <em>base-image</em> shaded by <em>change-image</em>.
 </dd>
 <dt>Copy</dt>
 <dd>
-The resulting image is <em>image</em> replaced with <em>composite image</em>.
-Here the matte information is ignored.
+The resulting image is <em>base-image</em> replaced with
+<em>change-image</em>. Here the matte information is ignored.
 </dd>
 <dt>CopyRed</dt>
 <dd>
-The resulting image is the red layer in <em>image</em> replaced with the red
-layer in <em>composite image</em>.  The other layers are copied untouched.
+The resulting image is the red channel in <em>base-image</em> replaced with
+the red channel in <em>change-image</em>. The other channels are copied
+untouched.
 </dd>
 <dt>CopyGreen</dt>
 <dd>
-The resulting image is the green layer in <em>image</em> replaced with the green
-layer in <em>composite image</em>.  The other layers are copied untouched.
+The resulting image is the green channel in <em>base-image</em> replaced
+with the green channel in <em>change-image</em>. The other channels are
+copied untouched.
 </dd>
 <dt>CopyBlue</dt>
 <dd>
-The resulting image is the blue layer in <em>image</em> replaced with the blue
-layer in <em>composite image</em>.  The other layers are copied untouched.
+The resulting image is the blue channel in <em>base-image</em> replaced
+with the blue channel in <em>change-image</em>. The other channels are
+copied untouched.
 </dd>
 <dt>CopyOpacity</dt>
 <dd>
-The resulting image is the matte layer in <em>image</em> replaced with the matte
-layer in <em>composite image</em>.  The other layers are copied untouched.
+The resulting image is the opacity channel in <em>base-image</em> replaced
+with the opacity channel in <em>change-image</em>. The other channels are
+copied untouched.
 </dd>
 </dl>
-<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-The image compositor requires a matte, or alpha channel in the image
-for some operations.  This extra channel usually defines a mask which
-represents a sort of a cookie-cutter for the image.  This is the case
-when matte is 255 (full coverage) for pixels inside the shape, zero
-outside, and between zero and 255 on the boundary.  For certain
-operations, if <em>image</em> does not have a matte channel, it is initialized
-with 0 for any pixel matching in color to pixel location (0,0), otherwise
-255 (to work properly <strong>borderwidth</strong> must be 0).
-</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -5269,19 +5293,18 @@ color="#FFFFFF"><font size="+1">
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
 <p>
-<strong>composite</strong> composite images to create new images.
-<p><em>composite</em> is the base image and <em>image</em> contains the changes.
-<em>composited</em> is the result, and normally has the same dimensions
-as <em>composite</em>.
+<strong>composite</strong> composites (combines) images to create new images.
+<p><em>base-image</em> is the base image and <em>change-image</em> contains the changes.
+<em>ouput-image</em> is the result, and normally has the same dimensions
+as <em>base-image</em>.
 <br>&nbsp;<br>
 <p>
-The optional <em>mask</em> can be used to provide matte information for
-<em>composite</em>
-when it has none or if you want a different mask. A mask image is typically
-grayscale and the same size as <strong>composite</strong>. If <em>mask</em> is
-not grayscale,
-it is converted to grayscale and the resulting intensities are used as
-matte information.
+The optional <em>mask-image</em> can be used to provide opacity information
+for <em>change-image</em> when it has none or if you want a different mask.
+A mask image is typically grayscale and the same size as
+<strong>base-image</strong>. If <em>mask-image</em> is not grayscale, it is converted
+to grayscale and the resulting intensities are used as opacity
+information.
 </td></tr></table>
 <table BORDER=0 WIDTH="100%"> 
 <tr> 
@@ -9923,7 +9946,8 @@ width=15><b><font face="Helvetica, Arial"
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>
 The result is just the sum of the image data. Output values are cropped
-to 255 (no overflow). This operation is independent of the matte channels.</td></tr></table>
+to the maximum value (no overflow). This operation is independent of the
+matte channels.</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -9936,7 +9960,7 @@ width=15><b><font face="Helvetica, Arial"
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>
 The result of <em>image</em> - <em>image window</em>, with underflow cropped
-to zero. The matte channel is ignored (set to 255, full coverage).</td></tr></table>
+to zero. The matte channel is ignored (set to opaque, full coverage).</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -9949,7 +9973,7 @@ width=15><b><font face="Helvetica, Arial"
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>
 The result of <em>image</em> + <em>image window</em>, with overflow wrapping
-around (mod 256).</td></tr></table>
+around (mod MaxRGB+1).</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -9962,7 +9986,7 @@ width=15><b><font face="Helvetica, Arial"
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>
 The result of <em>image</em> - <em>image window</em>, with underflow wrapping
-around (mod 256). The add and subtract operators can be used to perform
+around (mod MaxRGB+1). The add and subtract operators can be used to perform
 reversible transformations.</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>

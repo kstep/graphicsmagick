@@ -1237,22 +1237,23 @@ that is outside the overlap region. The overlap region is blank.</abs>
 <opt>plus</opt>
 <abs>
 The result is just the sum of the image data. Output values are cropped
-to 255 (no overflow). This operation is independent of the matte channels.</abs>
+to the maximum value (no overflow). This operation is independent of the
+matte channels.</abs>
 
 <opt>minus</opt>
 <abs>
 The result of <i>image</i> - <i>image window</i>, with underflow cropped
-to zero. The matte channel is ignored (set to 255, full coverage).</abs>
+to zero. The matte channel is ignored (set to opaque, full coverage).</abs>
 
 <opt>add</opt>
 <abs>
 The result of <i>image</i> + <i>image window</i>, with overflow wrapping
-around (mod 256).</abs>
+around (mod MaxRGB+1).</abs>
 
 <opt>subtract</opt>
 <abs>
 The result of <i>image</i> - <i>image window</i>, with underflow wrapping
-around (mod 256). The add and subtract operators can be used to perform
+around (mod MaxRGB+1). The add and subtract operators can be used to perform
 reversible transformations.</abs>
 
 <opt>difference</opt>

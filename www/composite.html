@@ -127,8 +127,8 @@ color="#FFFFFF"><font size="+1">
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
 <p>
-<strong>composite</strong> <strong>[</strong> <em>options</em> <strong>... ]</strong> <em>image composite</em>
-<strong>[</strong> <em>mask</em> <strong>]</strong> <em>composited</em>
+<strong>composite</strong> <strong>[</strong> <em>options</em> <strong>... ]</strong> <em>change-image base-image</em>
+<strong>[</strong> <em>mask-image</em> <strong>]</strong> <em>output-image</em>
 <br>&nbsp;<br>
 </td></tr></table>
 <table BORDER=0 WIDTH="100%"> 
@@ -142,19 +142,18 @@ color="#FFFFFF"><font size="+1">
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
 <p>
-<strong>composite</strong> composite images to create new images.
-<p><em>composite</em> is the base image and <em>image</em> contains the changes.
-<em>composited</em> is the result, and normally has the same dimensions
-as <em>composite</em>.
+<strong>composite</strong> composites (combines) images to create new images.
+<p><em>base-image</em> is the base image and <em>change-image</em> contains the changes.
+<em>ouput-image</em> is the result, and normally has the same dimensions
+as <em>base-image</em>.
 <br>&nbsp;<br>
 <p>
-The optional <em>mask</em> can be used to provide matte information for
-<em>composite</em>
-when it has none or if you want a different mask. A mask image is typically
-grayscale and the same size as <strong>composite</strong>. If <em>mask</em> is
-not grayscale,
-it is converted to grayscale and the resulting intensities are used as
-matte information.
+The optional <em>mask-image</em> can be used to provide opacity information
+for <em>change-image</em> when it has none or if you want a different mask.
+A mask image is typically grayscale and the same size as
+<strong>base-image</strong>. If <em>mask-image</em> is not grayscale, it is converted
+to grayscale and the resulting intensities are used as opacity
+information.
 </td></tr></table>
 <table BORDER=0 WIDTH="100%"> 
 <tr> 

@@ -77,8 +77,8 @@ gm - GraphicsMagick command-line utilities to create, edit, or convert images
 </p>
 
 <p>
-<s>gm composite</s> <s>[</s> <i>options ...</i> <s>]</s> <i>image composite</i>
-<s>[</s> <i>mask</i> <s>]</s> <i>composited</i>
+<s>gm composite</s> <s>[</s> <i>options ...</i> <s>]</s> <i>change-image base-image</i>
+<s>[</s> <i>mask-image</i> <s>]</s> <i>output-image</i>
 </p>
 
 <p>
@@ -87,8 +87,8 @@ gm - GraphicsMagick command-line utilities to create, edit, or convert images
 </p>
 
 <p>
-<s>gm convert</s> <s>[ [</s> <i>options ...</i> <s>] [</s> <i>input_file ...</i>
-<s>]</s> <i>...</i> <s>[</s> <i>output_file</i> <s>] ]</s>
+<s>gm convert</s> <s>[ [</s> <i>options ...</i> <s>] [</s> <i>input-file ...</i>
+<s>]</s> <i>...</i> <s>[</s> <i>output-file</i> <s>] ]</s>
 </p>
 
 <p>
@@ -110,7 +110,7 @@ gm - GraphicsMagick command-line utilities to create, edit, or convert images
 
 <p>
 <s>gm montage</s> <s>[</s> <i>options ...</i> <s>]</s> <i>file</i> <s>[ [</s>
-<i>options ...</i> <s>]</s> <i>file ...</i> <s>]</s> <i>output_file</i>
+<i>options ...</i> <s>]</s> <i>file ...</i> <s>]</s> <i>output-file</i>
 </p>
 
 </sect>

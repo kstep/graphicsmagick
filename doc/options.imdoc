@@ -548,9 +548,40 @@ is read from a file titled by the remaining characters in the string.
 <abs>the type of image composition</abs>
 
 <pp>
-By default, each of the composite image pixels are replaced by the
-corresponding image tile pixel. You can choose an alternate composite
-operation:
+The description of composition uses abstract terminology in order to
+allow the the description to be more clear, while avoiding constant
+values which are specific to a particular build configuration. Each image
+pixel is represented by red, green, and blue levels (which are equal for
+a gray pixel). MaxRGB is the maximum integral value which may be stored
+in the red, green, or blue channels of the image. Each image pixel may
+also optionally (if the image matte channel is enabled) have an
+associated level of opacity (ranging from opaque to transparent), which
+may be used to determine the influence of the pixel color when
+compositing the pixel with another image pixel. If the image matte
+channel is disabled, then all pixels in the image are treated as opaque.
+The color of an <i>opaque</i> pixel is fully visible while the color of a
+<i>transparent</i> pixel color is entirely absent (pixel color is ignored).
+</pp>
+
+<pp>
+By definition, raster images have a rectangular shape. All image rows are
+of equal length, and all image columns have the same number of rows. By
+treating the opacity channel as a visual "mask" the rectangular image may
+be given a "shape" by treating the opacity channel as a cookie-cutter for
+the image. Pixels within the shape are opaque, while pixels outside the
+shape are transparent. Pixels on the boundary of the shape may be between
+opaque and transparent in order to provide antialiasing (visually smooth
+edges). The description of the composition operators use this concept of
+image "shape" in order to make the description of the operators easier to
+understand. While it is convenient to describe the operators in terms of
+"shapes" they are by no means limited to mask-style operations since they
+are based on continuous floating-point mathematics rather than simple
+boolean operations.
+</pp>
+
+<pp>
+By default, the <i>Over</i> composite operator is used. The following
+composite operators are available:
 </pp>
 
 <pre>
@@ -574,132 +605,125 @@ operation:
 </pre>
 
 <pp>
-How each operator behaves is described below.
+The behavior of each operator is described below.
 </pp>
-
-<!-- Need to define "composite image" and "image" -->
 
 <dl>
 <dt>Over</dt>
 <dd>
-The result will be the union of the two image shapes, with opaque areas of
-<i>composite image</i> obscuring <i>image</i> in the region of overlap.
+The result will be the union of the two image shapes, with opaque areas
+of <i>change-image</i> obscuring <i>base-image</i> in the region of
+overlap.
 </dd>
 
 <dt>In</dt>
 <dd>
-The result is simply <i>composite image</i> cut by the shape
-of <i>image</i>.
-None of the image data of <i>image</i> will be in the result.
+The result is simply <i>change-image</i> cut by the shape of
+<i>base-image</i>. None of the image data of <i>base-image</i> will be in
+the result.
 </dd>
 
 <dt>Out</dt>
 <dd>
-The resulting image is <i>composite image</i> with the shape
-of <i>image</i> cut out.
+The resulting image is <i>change-image</i> with the shape of
+<i>base-image</i> cut out.
 </dd>
 
 <dt>Atop</dt>
 <dd>
-The result is the same shape as image <i>image</i>,
-with <i>composite image</i>
-obscuring <i>image</i> where the image shapes overlap.  Note this differs
-from <s>over</s> because the portion of <i>composite image</i> outside
-<i>image</i>'s shape does not appear in the result.
+The result is the same shape as <i>base-image</i>, with
+<i>change-image</i> obscuring <i>base-image</i> where the image shapes
+overlap. Note this differs from <s>over</s> because the portion of
+<i>change-image</i> outside <i>base-image</i>'s shape does not appear in
+the result.
 </dd>
 
 <dt>Xor</dt>
 <dd>
-The result is the image data from both <i>composite image</i> and
-<i>image</i>
-that is outside the overlap region.  The overlap region will be blank.
+The result is the image data from both <i>change-image</i> and
+<i>base-image</i> that is outside the overlap region. The overlap region
+will be blank.
 </dd>
 
 <dt>Plus</dt>
 <dd>
-The result is just the sum of the image data.  Output values are
-cropped to 255 (no overflow).  This operation is independent of the
-matte channels.
+The result is just the sum of the image data. Output values are cropped
+to MaxRGB (no overflow). This operation is independent of the matte
+channels.
 </dd>
 
 <dt>Minus</dt>
 <dd>
-The result of <i>composite image</i> - <i>image</i>, with underflow
-cropped to
-zero.  The matte channel is ignored (set to 255, full coverage).
+The result of <i>change-image</i> - <i>base-image</i>, with underflow
+cropped to zero. The matte channel is ignored (set to opaque, full
+coverage).
 </dd>
 
 <dt>Add</dt>
 <dd>
-The result of <i>composite image</i> + <i>image</i>, with overflow wrapping
-around (<i>mod</i> 256).
+The result of <i>change-image</i> + <i>base-image</i>, with overflow
+wrapping around (<i>mod</i> MaxRGB+1).
 </dd>
 
 <dt>Subtract</dt>
 <dd>
-The result of <i>composite image</i> - <i>image</i>, with underflow wrapping
-around (<i>mod</i> 256).  The <s>add</s> and <s>subtract</s> operators can be
-used to perform reversible transformations.
+The result of <i>change-image</i> - <i>base-image</i>, with underflow
+wrapping around (<i>mod</i> MaxRGB+1). The <s>add</s> and <s>subtract</s>
+operators can be used to perform reversible transformations.
 </dd>
 
 <dt>Difference</dt>
 <dd>
-The result of abs(<i>composite image</i> - <i>image</i>).  This is useful
-for comparing two very similar images.
+The result of abs(<i>change-image</i> - <i>base-image</i>). This is
+useful for comparing two very similar images.
 </dd>
 
 <dt>Multiply</dt>
 <dd>
-The result of <i>composite image</i> * <i>image</i>.  This is useful for
+The result of <i>change-image</i> * <i>base-image</i>. This is useful for
 the creation of drop-shadows.
 </dd>
 
 <dt>Bumpmap</dt>
 <dd>
-The result <i>image</i> shaded by <i>composite image</i>.
+The result <i>base-image</i> shaded by <i>change-image</i>.
 </dd>
 
 <dt>Copy</dt>
 <dd>
-The resulting image is <i>image</i> replaced with <i>composite image</i>.
-Here the matte information is ignored.
+The resulting image is <i>base-image</i> replaced with
+<i>change-image</i>. Here the matte information is ignored.
 </dd>
 
 <dt>CopyRed</dt>
 <dd>
-The resulting image is the red layer in <i>image</i> replaced with the red
-layer in <i>composite image</i>.  The other layers are copied untouched.
+The resulting image is the red channel in <i>base-image</i> replaced with
+the red channel in <i>change-image</i>. The other channels are copied
+untouched.
 </dd>
 
 <dt>CopyGreen</dt>
 <dd>
-The resulting image is the green layer in <i>image</i> replaced with the green
-layer in <i>composite image</i>.  The other layers are copied untouched.
+The resulting image is the green channel in <i>base-image</i> replaced
+with the green channel in <i>change-image</i>. The other channels are
+copied untouched.
 </dd>
 
 <dt>CopyBlue</dt>
 <dd>
-The resulting image is the blue layer in <i>image</i> replaced with the blue
-layer in <i>composite image</i>.  The other layers are copied untouched.
+The resulting image is the blue channel in <i>base-image</i> replaced
+with the blue channel in <i>change-image</i>. The other channels are
+copied untouched.
 </dd>
 
 <dt>CopyOpacity</dt>
 <dd>
-The resulting image is the matte layer in <i>image</i> replaced with the matte
-layer in <i>composite image</i>.  The other layers are copied untouched.
+The resulting image is the opacity channel in <i>base-image</i> replaced
+with the opacity channel in <i>change-image</i>. The other channels are
+copied untouched.
 </dd>
 </dl>
 
-<pp>
-The image compositor requires a matte, or alpha channel in the image
-for some operations.  This extra channel usually defines a mask which
-represents a sort of a cookie-cutter for the image.  This is the case
-when matte is 255 (full coverage) for pixels inside the shape, zero
-outside, and between zero and 255 on the boundary.  For certain
-operations, if <i>image</i> does not have a matte channel, it is initialized
-with 0 for any pixel matching in color to pixel location (0,0), otherwise
-255 (to work properly <s>borderwidth</s> must be 0).
-</pp>
 </utils>
 
 
