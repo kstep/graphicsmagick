@@ -844,6 +844,20 @@ static unsigned int WriteMPCImage(const ImageInfo *image_info,Image *image)
   CacheInfo
     *cache_info;
 
+  Image
+    *clone_image;
+
+  register IndexPacket
+    *clone_indexes,
+    *indexes;
+
+  register int
+    y;
+
+  register PixelPacket
+    *p,
+    *q;
+
   unsigned int
     status;
 
@@ -853,46 +867,39 @@ static unsigned int WriteMPCImage(const ImageInfo *image_info,Image *image)
   status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
     ThrowWriterException(FileOpenWarning,"Unable to open file",image);
-  cache_info=(CacheInfo *) image->cache;
+  clone_image=CloneImage(image,image->columns,image->rows,True,
+    &image->exception);
+  if (status == False)
+    ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
+  /*
+    Clone pixel cache.
+  */
+  cache_info=(CacheInfo *) clone_image->cache;
+  cache_info->type=DiskCache;
   cache_info->persist=True;
   (void) strcpy(cache_info->meta_filename,image->filename);
-  if (cache_info->type == MemoryCache)
-    {
-      int
-        file;
-
-      register int
-        y;
-
-      register PixelPacket
-        *p;
-
-      /*
-        Write persistent cache to disk.
-      */
-      (void) strcpy(cache_info->cache_filename,image->filename);
-      AppendImageFormat("cache",cache_info->cache_filename);
-      file=open(cache_info->cache_filename,O_WRONLY | O_CREAT | O_BINARY,0777);
-      if (file == -1)
-        ThrowWriterException(FileOpenWarning,"Unable to open file",image);
-      for (y=0; y < (int) image->rows; y++)
-      {
-        p=GetImagePixels(image,0,y,image->columns,1);
-        if (p == (PixelPacket *) NULL)
-          break;
-        (void) write(file,(char *) p,image->columns*sizeof(PixelPacket));
-      }
-      if (image->storage_class == PseudoClass)
-        for (y=0; y < (int) image->rows; y++)
-        {
-          p=GetImagePixels(image,0,y,image->columns,1);
-          if (p == (PixelPacket *) NULL)
-            break;
-          (void) write(file,(char *) GetIndexes(image),image->columns*
-            sizeof(IndexPacket));
-        }
-      (void) close(file);
-    }
+  (void) strcpy(cache_info->cache_filename,image->filename);
+  AppendImageFormat("cache",cache_info->cache_filename);
+  for (y=0; y < (int) image->rows; y++)
+  {
+    p=GetImagePixels(image,0,y,image->columns,1);
+    q=SetImagePixels(clone_image,0,y,clone_image->columns,1);
+    if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+      break;
+    memcpy(q,p,image->columns*sizeof(PixelPacket));
+    indexes=GetIndexes(image);
+    clone_indexes=GetIndexes(clone_image);
+    if (image->storage_class == PseudoClass)
+      memcpy(clone_indexes,indexes,image->columns*sizeof(IndexPacket));
+    if (!SyncImagePixels(clone_image))
+      break;
+  }
+  if (y < image->rows)
+    ThrowWriterException(CacheWarning,"Unable to clone image",image);
+  /*
+    Free resources.
+  */
+  DestroyImage(clone_image);
   CloseBlob(image);
   return(status);
 }

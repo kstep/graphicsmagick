@@ -125,89 +125,27 @@ MagickExport Image *AllocateImage(const ImageInfo *image_info)
   if (allocate_image == (Image *) NULL)
     MagickError(ResourceLimitError,"Unable to allocate image",
       "Memory allocation failed");
+  memset(allocate_image,0,sizeof(Image));
   /*
     Initialize Image structure.
   */
-  allocate_image->file=(FILE *) NULL;
   GetBlobInfo(&allocate_image->blob);
-  allocate_image->exempt=False;
-  allocate_image->status=False;
-  allocate_image->temporary=False;
-  *allocate_image->filename='\0';
-  allocate_image->filesize=0;
-  allocate_image->pipe=False;
   (void) strcpy(allocate_image->magick,"MIFF");
-  allocate_image->attributes=(ImageAttribute *) NULL;
   allocate_image->storage_class=DirectClass;
-  allocate_image->matte=False;
-  allocate_image->compression=UndefinedCompression;
-  allocate_image->columns=0;
-  allocate_image->rows=0;
   allocate_image->depth=QuantumDepth;
-  allocate_image->tile_info.width=0;
-  allocate_image->tile_info.height=0;
-  allocate_image->tile_info.x=0;
-  allocate_image->tile_info.y=0;
-  allocate_image->offset=0;
   allocate_image->interlace=NoInterlace;
-  allocate_image->scene=0;
-  allocate_image->units=UndefinedResolution;
-  allocate_image->x_resolution=0.0;
-  allocate_image->y_resolution=0.0;
-  allocate_image->montage=(char *) NULL;
-  allocate_image->directory=(char *) NULL;
-  allocate_image->colormap=(PixelPacket *) NULL;
-  allocate_image->colors=0;
   allocate_image->colorspace=RGBColorspace;
-  allocate_image->rendering_intent=UndefinedIntent;
-  allocate_image->gamma=0.0;
-  allocate_image->chromaticity.red_primary.x=0.0;
-  allocate_image->chromaticity.red_primary.y=0.0;
-  allocate_image->chromaticity.green_primary.x=0.0;
-  allocate_image->chromaticity.green_primary.y=0.0;
-  allocate_image->chromaticity.blue_primary.x=0.0;
-  allocate_image->chromaticity.blue_primary.y=0.0;
-  allocate_image->chromaticity.white_point.x=0.0;
-  allocate_image->chromaticity.white_point.y=0.0;
-  allocate_image->color_profile.name=(char *) NULL;
-  allocate_image->color_profile.length=0;
-  allocate_image->color_profile.info=(unsigned char *) NULL;
-  allocate_image->iptc_profile.name=(char *) NULL;
-  allocate_image->iptc_profile.length=0;
-  allocate_image->iptc_profile.info=(unsigned char *) NULL;
-  allocate_image->generic_profiles=0;
-  allocate_image->generic_profile=(ProfileInfo *) NULL;
   (void) QueryColorDatabase(BackgroundColor,&allocate_image->background_color);
   (void) QueryColorDatabase(BorderColor,&allocate_image->border_color);
   (void) QueryColorDatabase(MatteColor,&allocate_image->matte_color);
-  allocate_image->geometry=(char *) NULL;
   GetPageInfo(&allocate_image->page);
-  allocate_image->dispose=0;
-  allocate_image->delay=0;
   allocate_image->iterations=1;
-  allocate_image->fuzz=0.0;
   allocate_image->filter=LanczosFilter;
   allocate_image->blur=1.0;
-  allocate_image->total_colors=0;
-  allocate_image->normalized_mean_error=0.0;
-  allocate_image->normalized_maximum_error=0.0;
-  allocate_image->mean_error_per_pixel=0;
-  *allocate_image->magick_filename='\0';
-  allocate_image->magick_columns=0;
-  allocate_image->magick_rows=0;
-  allocate_image->restart_animation_here=False;
-  allocate_image->taint=False;
-  allocate_image->ascii85.offset=0;
-  allocate_image->ascii85.line_break=0;
   GetExceptionInfo(&allocate_image->exception);
   GetTimerInfo(&allocate_image->timer);
-  allocate_image->cache=(void *) NULL;
-  allocate_image->fifo=(int (*)(const Image *,const void *,const size_t)) NULL;
-  allocate_image->orphan=False;
+  GetCacheInfo(&allocate_image->cache);
   allocate_image->signature=MagickSignature;
-  allocate_image->previous=(Image *) NULL;
-  allocate_image->list=(Image *) NULL;
-  allocate_image->next=(Image *) NULL;
   if (image_info == (ImageInfo *) NULL)
     return(allocate_image);
   /*
@@ -906,7 +844,7 @@ MagickExport Image *CloneImage(Image *image,const unsigned int columns,
       }
     }
   GetBlobInfo(&clone_image->blob);
-  clone_image->cache=(void *) NULL;
+  GetCacheInfo(&clone_image->cache);
   if ((columns != 0) || (rows != 0))
     {
       clone_image->page.width=columns;

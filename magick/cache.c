@@ -1378,6 +1378,7 @@ static PixelPacket *SetPixelCache(Image *image,const int x,const int y,
     Validate pixel cache geometry.
   */
   assert(image != (Image *) NULL);
+  assert(image->cache != (Cache) NULL);
   assert(image->signature == MagickSignature);
   if ((x < 0) || (y < 0) || ((x+columns) > (int) image->columns) ||
       ((y+rows) > (int) image->rows) || (columns == 0) || (rows == 0))
@@ -1386,8 +1387,6 @@ static PixelPacket *SetPixelCache(Image *image,const int x,const int y,
         "image does not contain the cache geometry");
       return((PixelPacket *) NULL);
     }
-  if (image->cache == (Cache) NULL)
-    GetCacheInfo(&image->cache);
   if (image->storage_class != GetCacheClassType(image->cache))
     {
       /*
