@@ -893,140 +893,9 @@ width=15><b><font face="Helvetica, Arial"
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>the type of image composition</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-[This option is not used by <em>convert</em> but this section
+[This option is not used by <em>convert</em> or <em>mogrify</em>  but this section
 is included because it describes the composite operators that are used
-by the <strong>-draw</strong> option of <em>convert</em>.]
-</font></td></tr></table>
-<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-By default, each of the composite image pixels are replaced by the
-corresponding image tile pixel. You can choose an alternate composite
-operation:
-</font></td></tr></table>
-<pre>
-     Over
-     In
-     Out
-     Atop
-     Xor
-     Plus
-     Minus
-     Add
-     Subtract
-     Difference
-     Multiply
-     Bumpmap
-     Copy
-     CopyRed
-     CopyGreen
-     CopyBlue
-     CopyOpacity
-</pre>
-<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-How each operator behaves is described below.
-</font></td></tr></table>
-<dl>
-<dt>Over</dt>
-<dd>
-The result will be the union of the two image shapes, with opaque areas of
-<em>composite image</em> obscuring <em>image</em> in the region of overlap.
-</dd>
-<dt>In</dt>
-<dd>
-The result is simply <em>composite image</em> cut by the shape
-of <em>image</em>.
-None of the image data of <em>image</em> will be in the result.
-</dd>
-<dt>Out</dt>
-<dd>
-The resulting image is <em>composite image</em> with the shape
-of <em>image</em> cut out.
-</dd>
-<dt>Atop</dt>
-<dd>
-The result is the same shape as image <em>image</em>,
-with <em>composite image</em>
-obscuring <em>image</em> where the image shapes overlap.  Note this differs
-from <strong>over</strong> because the portion of <em>composite image</em> outside
-<em>image</em>'s shape does not appear in the result.
-</dd>
-<dt>Xor</dt>
-<dd>
-The result is the image data from both <em>composite image</em> and
-<em>image</em>
-that is outside the overlap region.  The overlap region will be blank.
-</dd>
-<dt>Plus</dt>
-<dd>
-The result is just the sum of the image data.  Output values are
-cropped to 255 (no overflow).  This operation is independent of the
-matte channels.
-</dd>
-<dt>Minus</dt>
-<dd>
-The result of <em>composite image</em> - <em>image</em>, with underflow
-cropped to
-zero.  The matte channel is ignored (set to 255, full coverage).
-</dd>
-<dt>Add</dt>
-<dd>
-The result of <em>composite image</em> + <em>image</em>, with overflow wrapping
-around (<em>mod</em> 256).
-</dd>
-<dt>Subtract</dt>
-<dd>
-The result of <em>composite image</em> - <em>image</em>, with underflow wrapping
-around (<em>mod</em> 256).  The <strong>add</strong> and <strong>subtract</strong> operators can be
-used to perform reversible transformations.
-</dd>
-<dt>Difference</dt>
-<dd>
-The result of abs(<em>composite image</em> - <em>image</em>).  This is useful
-for comparing two very similar images.
-</dd>
-<dt>Multiply</dt>
-<dd>
-The result of <em>composite image</em> * <em>image</em>.  This is useful for
-the creation of drop-shadows.
-</dd>
-<dt>Bumpmap</dt>
-<dd>
-The result <em>image</em> shaded by <em>composite image</em>.
-</dd>
-<dt>Copy</dt>
-<dd>
-The resulting image is <em>image</em> replaced with <em>composite image</em>.
-Here the matte information is ignored.
-</dd>
-<dt>CopyRed</dt>
-<dd>
-The resulting image is the red layer in <em>image</em> replaced with the red
-layer in <em>composite image</em>.  The other layers are copied untouched.
-</dd>
-<dt>CopyGreen</dt>
-<dd>
-The resulting image is the green layer in <em>image</em> replaced with the green
-layer in <em>composite image</em>.  The other layers are copied untouched.
-</dd>
-<dt>CopyBlue</dt>
-<dd>
-The resulting image is the blue layer in <em>image</em> replaced with the blue
-layer in <em>composite image</em>.  The other layers are copied untouched.
-</dd>
-<dt>CopyOpacity</dt>
-<dd>
-The resulting image is the matte layer in <em>image</em> replaced with the matte
-layer in <em>composite image</em>.  The other layers are copied untouched.
-</dd>
-</dl>
-<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-The image compositor requires a matte, or alpha channel in the image
-for some operations.  This extra channel usually defines a mask which
-represents a sort of a cookie-cutter for the image.  This is the case
-when matte is 255 (full coverage) for pixels inside the shape, zero
-outside, and between zero and 255 on the boundary.  For certain
-operations, if <em>image</em> does not have a matte channel, it is initialized
-with 0 for any pixel matching in color to pixel location (0,0), otherwise
-255 (to work properly <strong>borderwidth</strong> must be 0).
+by the <strong>-draw</strong> option.]
 </font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
@@ -1298,14 +1167,17 @@ width=15><b><font face="Helvetica, Arial"
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>GIF disposal method</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+The Disposal Method indicates the way in which the graphic is to
+be treated after being displayed.</font></td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Here are the valid methods:
 </font></td></tr></table>
 <pre>
-     0     No disposal specified.
-     1     Do not dispose between frames.
-     2     Overwrite frame with background color
-           from header.
-     3     Overwrite with previous frame.
+Unsdefined      No disposal specified.
+None            Do not dispose between frames.
+Background      Overwrite the image area with background color
+Previous        Overwrite the image area with what was there
+                prior to rendering the image.
 </pre>
 <table BORDER=0 WIDTH="94%">
 <tr>

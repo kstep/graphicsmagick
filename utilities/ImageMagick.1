@@ -966,14 +966,17 @@ obtaining image or font from this X server.  See \fIX(1)\fP.
 .B "-dispose \fI<method>"\fP
 \fRGIF disposal method
 
+The Disposal Method indicates the way in which the graphic is to
+be treated after being displayed.
+
 Here are the valid methods:
 
 
-     0     No disposal specified.
-     1     Do not dispose between frames.
-     2     Overwrite frame with background color
-           from header.
-     3     Overwrite with previous frame.
+Unsdefined      No disposal specified.
+None            Do not dispose between frames.
+Background      Overwrite the image area with background color
+Previous        Overwrite the image area with what was there
+                prior to rendering the image.
 .TP
 .B "-dissolve \fI<percent>"\fP
 \fRdissolve an image into another by the given percent
