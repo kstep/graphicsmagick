@@ -5886,7 +5886,9 @@ MagickExport void SetImage(Image *image,const Quantum opacity)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  SetImageClipMask() associates a clip mask with the image.  The clip mask
-%  must be the same dimensions as the image.
+%  must be the same dimensions as the image.  Set any pixel component of
+%  the clip mask to TransparentOpacity to prevent that corresponding image
+%  pixel component from being updated when SyncImagePixels() is applied.
 %
 %  The format of the SetImageClipMask method is:
 %
