@@ -327,25 +327,29 @@ int main(int argc,char **argv)
           if ((strncmp("background",option+1,5) == 0) ||
               (strncmp("bg",option+1,2) == 0))
             {
+              image_info.background_color=(char *) NULL;
               montage_info.background_color=(char *) NULL;
               if (*option == '-')
                 {
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing color",option);
-                  montage_info.background_color=argv[i];
+                  CloneString(&image_info.background_color,argv[i]);
+                  CloneString(&montage_info.background_color,argv[i]);
                 }
               break;
             }
           if (strncmp("bordercolor",option+1,7) == 0)
             {
+              image_info.border_color=(char *) NULL;
               montage_info.border_color=(char *) NULL;
               if (*option == '-')
                 {
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing color",option);
-                  montage_info.border_color=argv[i];
+                  CloneString(&image_info.border_color,argv[i]);
+                  CloneString(&montage_info.border_color,argv[i]);
                 }
               break;
             }
@@ -530,7 +534,7 @@ int main(int argc,char **argv)
                   i++;
                   if ((i == argc) || !IsGeometry(argv[i]))
                     MagickError(OptionError,"Missing geometry",option);
-                  image_info.density=argv[i];
+                  CloneString(&image_info.density,argv[i]);
                 }
               break;
             }
@@ -542,7 +546,7 @@ int main(int argc,char **argv)
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing server name",option);
-                  image_info.server_name=argv[i];
+                  CloneString(&image_info.server_name,argv[i]);
                 }
               break;
             }
@@ -631,9 +635,9 @@ int main(int argc,char **argv)
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing font name",option);
-                  image_info.font=argv[i];
+                  CloneString(&image_info.font,argv[i]);
+                  CloneString(&montage_info.font,image_info.font);
                 }
-              montage_info.font=image_info.font;
               break;
             }
           if (strncmp("frame",option+1,2) == 0)
@@ -645,7 +649,7 @@ int main(int argc,char **argv)
                   i++;
                   if ((i == argc) || !IsGeometry(argv[i]))
                     MagickError(OptionError,"Missing geometry",option);
-                  montage_info.frame=argv[i];
+                  CloneString(&montage_info.frame,argv[i]);
                 }
               break;
             }
@@ -669,7 +673,7 @@ int main(int argc,char **argv)
                   i++;
                   if ((i == argc) || !IsGeometry(argv[i]))
                     MagickError(OptionError,"Missing geometry",option);
-                  montage_info.geometry=argv[i];
+                  CloneString(&montage_info.geometry,argv[i]);
                 }
               break;
             }
@@ -772,13 +776,15 @@ int main(int argc,char **argv)
             break;
           if (strncmp("mattecolor",option+1,6) == 0)
             {
+              image_info.matte_color=(char *) NULL;
               montage_info.matte_color=(char *) NULL;
               if (*option == '-')
                 {
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing color",option);
-                  montage_info.matte_color=argv[i];
+                  CloneString(&image_info.matte_color,argv[i]);
+                  CloneString(&montage_info.matte_color,argv[i]);
                 }
               break;
             }
@@ -797,7 +803,7 @@ int main(int argc,char **argv)
                   if (Latin1Compare("frame",option) == 0)
                     {
                       mode=FrameMode;
-                      montage_info.frame=DefaultTileFrame;
+                      CloneString(&montage_info.frame,DefaultTileFrame);
                       montage_info.shadow=True;
                       break;
                     }
@@ -814,7 +820,7 @@ int main(int argc,char **argv)
                       mode=ConcatenateMode;
                       montage_info.frame=(char *) NULL;
                       montage_info.shadow=False;
-                      montage_info.geometry="+0+0";
+                      CloneString(&montage_info.geometry,"+0+0");
                       montage_info.border_width=0;
                       break;
                     }
@@ -860,8 +866,8 @@ int main(int argc,char **argv)
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing pen color",option);
-                  image_info.pen=argv[i];
-                  montage_info.pen=argv[i];
+                  CloneString(&image_info.pen,argv[i]);
+                  CloneString(&montage_info.pen,argv[i]);
                 }
               break;
             }
@@ -949,7 +955,7 @@ int main(int argc,char **argv)
                   i++;
                   if ((i == argc) || !IsGeometry(argv[i]))
                     MagickError(OptionError,"Missing geometry",option);
-                  image_info.size=argv[i];
+                  CloneString(&image_info.size,argv[i]);
                 }
               break;
             }
@@ -966,7 +972,7 @@ int main(int argc,char **argv)
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing filename",option);
-                  montage_info.texture=argv[i];
+                  CloneString(&montage_info.texture,argv[i]);
                 }
               break;
             }
@@ -978,7 +984,7 @@ int main(int argc,char **argv)
                   i++;
                   if ((i == argc) || !IsGeometry(argv[i]))
                     MagickError(OptionError,"Missing geometry",option);
-                  montage_info.tile=argv[i];
+                  CloneString(&montage_info.tile,argv[i]);
                 }
               break;
             }
@@ -990,7 +996,7 @@ int main(int argc,char **argv)
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing title",option);
-                  montage_info.title=argv[i];
+                  CloneString(&montage_info.title,argv[i]);
                 }
               break;
             }
@@ -1002,7 +1008,7 @@ int main(int argc,char **argv)
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing color",option);
-                  transparent_color=argv[i];
+                  CloneString(&transparent_color,argv[i]);
                 }
               break;
             }

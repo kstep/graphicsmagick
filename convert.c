@@ -509,7 +509,7 @@ int main(int argc,char **argv)
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing background color",option);
-                  image_info.background_color=argv[i];
+                  CloneString(&image_info.background_color,argv[i]);
                 }
               break;
             }
@@ -541,7 +541,7 @@ int main(int argc,char **argv)
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing border color",option);
-                  image_info.border_color=argv[i];
+                  CloneString(&image_info.border_color,argv[i]);
                 }
               break;
             }
@@ -719,7 +719,7 @@ int main(int argc,char **argv)
                   i++;
                   if ((i == argc) || !IsGeometry(argv[i]))
                     MagickError(OptionError,"Missing geometry",option);
-                  image_info.density=argv[i];
+                  CloneString(&image_info.density,argv[i]);
                 }
               break;
             }
@@ -745,7 +745,7 @@ int main(int argc,char **argv)
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing server name",option);
-                  image_info.server_name=argv[i];
+                  CloneString(&image_info.server_name,argv[i]);
                 }
               break;
             }
@@ -859,7 +859,7 @@ int main(int argc,char **argv)
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing font name",option);
-                  image_info.font=argv[i];
+                  CloneString(&image_info.font,argv[i]);
                 }
               break;
             }
@@ -1074,7 +1074,7 @@ int main(int argc,char **argv)
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing matte color",option);
-                  image_info.matte_color=argv[i];
+                  CloneString(&image_info.matte_color,argv[i]);
                 }
               break;
             }
@@ -1181,7 +1181,7 @@ int main(int argc,char **argv)
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing pen color",option);
-                  image_info.pen=argv[i];
+                  CloneString(&image_info.pen,argv[i]);
                 }
               break;
             }
@@ -1421,7 +1421,7 @@ int main(int argc,char **argv)
                   i++;
                   if ((i == argc) || !IsGeometry(argv[i]))
                     MagickError(OptionError,"Missing geometry",option);
-                  image_info.size=argv[i];
+                  CloneString(&image_info.size,argv[i]);
                 }
               break;
             }
@@ -1468,7 +1468,7 @@ int main(int argc,char **argv)
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing filename",option);
-                  image_info.texture=argv[i];
+                  CloneString(&image_info.texture,argv[i]);
                 }
               break;
             }
@@ -1516,7 +1516,7 @@ int main(int argc,char **argv)
                   if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
                     MagickError(OptionError,"Missing undercolor geometry",
                       option);
-                  image_info.undercolor=argv[i];
+                  CloneString(&image_info.undercolor,argv[i]);
                 }
               break;
             }
@@ -1555,7 +1555,7 @@ int main(int argc,char **argv)
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing view transform",option);
-                  image_info.view=argv[i];
+                  CloneString(&image_info.view,argv[i]);
                 }
               break;
             }

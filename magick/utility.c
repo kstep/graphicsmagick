@@ -683,6 +683,117 @@ Export void FormatString(char *string,const char *format,...)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   G e t G e o m e t r y                                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method GetGeometry parses a geometry specification and returns the
+%  width, height, x, and y values.  It also returns flags that indicates
+%  which of the four values (width, height, xoffset, yoffset) were located
+%  in the string, and whether the x and y values are negative.  In addition,
+%  there are flags to report any meta characters (%, !, <, and >).
+%
+%  The format of the GetGeometry routine is:
+%
+%      flags=GetGeometry(image_geometry,x,y,width,height)
+%
+%  A description of each parameter follows:
+%
+%    o flags:  Method GetGeometry returns a bitmask that indicates
+%      which of the four values were located in the geometry string.
+%
+%    o image_geometry:  Specifies a character string representing the geometry
+%      specification.
+%
+%    o x,y:  A pointer to an integer.  The x and y offset as determined by
+%      the geometry specification is returned here.
+%
+%    o width,height:  A pointer to an unsigned integer.  The width and height
+%      as determined by the geometry specification is returned here.
+%
+%
+*/
+Export int GetGeometry(const char *image_geometry,int *x,int *y,
+  unsigned int *width,unsigned int *height)
+{
+  char
+    geometry[MaxTextExtent];
+
+  int
+    flags;
+
+  register char
+    *p;
+
+  /*
+    Ensure the image geometry is valid.
+  */
+  assert(x != (int *) NULL);
+  assert(y != (int *) NULL);
+  assert(width != (unsigned int *) NULL);
+  assert(height != (unsigned int *) NULL);
+  if ((image_geometry == (char *) NULL) || (*image_geometry == '\0'))
+    return(NoValue);
+  /*
+    Remove whitespaces and % and ! characters from geometry specification.
+  */
+  (void) strcpy(geometry,image_geometry);
+  flags=AspectValue;
+  p=geometry;
+  while (Extent(p) > 0)
+  {
+    if (isspace((int) (*p)))
+      (void) strcpy(p,p+1);
+    else
+      switch (*p)
+      {
+        case '%':
+        {
+          flags|=PercentValue;
+          (void) strcpy(p,p+1);
+          break;
+        }
+        case '!':
+        {
+          flags&=(~AspectValue);
+          (void) strcpy(p,p+1);
+          break;
+        }
+        case '<':
+        {
+          flags|=LessValue;
+          (void) strcpy(p,p+1);
+          break;
+        }
+        case '>':
+        {
+          flags|=GreaterValue;
+          (void) strcpy(p,p+1);
+          break;
+        }
+        default:
+          p++;
+      }
+  }
+  /*
+    Parse geometry using XParseGeometry.
+  */
+  flags|=XParseGeometry(geometry,x,y,width,height);
+  if (((flags & WidthValue) != 0) && (flags & HeightValue) == 0)
+    {
+      *height=(*width);
+      flags|=HeightValue;
+    }
+  return(flags);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   G l o b E x p r e s s i o n                                               %
 %                                                                             %
 %                                                                             %

@@ -94,7 +94,7 @@
 %    -map type          display image using this Standard Colormap
 %    -matte             store matte channel if the image has one
 %    -monochrome        transform image to black and white
-%    -negate            replace every pixel with its complementary color 
+%    -negate            replace every pixel with its complementary color
 %    -page geometry     size and location of an image canvas
 %    -quality value     JPEG/MIFF/PNG compression level
 %    -raise value       lighten/darken image edges to create a 3-D effect
@@ -310,6 +310,7 @@ int main(int argc,char **argv)
     image_info;
 
   int
+    image_number,
     status,
     x;
 
@@ -323,7 +324,7 @@ int main(int argc,char **argv)
   unsigned int
     first_scene,
     *image_marker,
-    image_number,
+    last_image,
     last_scene,
     scene;
 
@@ -352,7 +353,7 @@ int main(int argc,char **argv)
   last_scene=0;
   GetImageInfo(&image_info);
   image_marker=(unsigned int *) AllocateMemory((argc+1)*sizeof(unsigned int));
-  if (image_marker == (unsigned int *) NULL) 
+  if (image_marker == (unsigned int *) NULL)
     MagickError(ResourceLimitError,"Unable to display image",
       "Memory allocation failed");
   for (i=0; i <= argc; i++)
@@ -460,7 +461,7 @@ int main(int argc,char **argv)
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing color",option);
-                  resource_info.background_color=argv[i];
+                  CloneString(&resource_info.background_color,argv[i]);
                 }
               break;
             }
@@ -482,7 +483,7 @@ int main(int argc,char **argv)
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing color",option);
-                  resource_info.border_color=argv[i];
+                  CloneString(&resource_info.border_color,argv[i]);
                 }
               break;
             }
@@ -658,7 +659,7 @@ int main(int argc,char **argv)
                   i++;
                   if ((i == argc) || !IsGeometry(argv[i]))
                     MagickError(OptionError,"Missing geometry",option);
-                  image_info.density=argv[i];
+                  CloneString(&image_info.density,argv[i]);
                 }
               break;
             }
@@ -1421,7 +1422,10 @@ int main(int argc,char **argv)
           */
           DestroyImages(image);
           if (!(state & FormerImageState))
-            image_marker[i]=image_number++;
+            {
+              last_image=image_number;
+              image_marker[i]=image_number++;
+            }
           else
             {
               /*
@@ -1430,8 +1434,7 @@ int main(int argc,char **argv)
               for (i--; i > 0; i--)
                 if (image_marker[i] == (image_number-2))
                   break;
-              if (image_number != 0)
-                image_number--;
+              image_number--;
             }
           if (state & ExitState)
             break;
@@ -1440,7 +1443,18 @@ int main(int argc,char **argv)
     /*
       Determine if we should proceed to the first image.
     */
-    if (image_number != 0)
+    if (image_number < 0)
+      {
+        if (state & FormerImageState)
+          {
+            for (i=1; i < (argc-2); i++)
+              if (image_marker[i] == last_image)
+                break;
+            image_number=image_marker[i]+1;
+          }
+        continue;
+      }
+    if (image_number > 0)
       if ((i == (argc-1)) || (argc == 1))
         if (!(state & ExitState))
           if (resource_info.window_id == (char *) NULL)

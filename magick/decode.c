@@ -14030,7 +14030,9 @@ Image *ReadTIFFImage(const ImageInfo *image_info)
     *text;
 
   float
-    *chromaticity;
+    *chromaticity,
+    x_resolution,
+    y_resolution;
 
   Image
     *image;
@@ -14160,8 +14162,10 @@ Image *ReadTIFFImage(const ImageInfo *image_info)
     TIFFGetFieldDefaulted(tiff,TIFFTAG_PHOTOMETRIC,&photometric);
     TIFFGetFieldDefaulted(tiff,TIFFTAG_SAMPLESPERPIXEL,&samples_per_pixel);
     TIFFGetFieldDefaulted(tiff,TIFFTAG_RESOLUTIONUNIT,&units);
-    TIFFGetFieldDefaulted(tiff,TIFFTAG_XRESOLUTION,&image->x_resolution);
-    TIFFGetFieldDefaulted(tiff,TIFFTAG_YRESOLUTION,&image->y_resolution);
+    TIFFGetFieldDefaulted(tiff,TIFFTAG_XRESOLUTION,&x_resolution);
+    TIFFGetFieldDefaulted(tiff,TIFFTAG_YRESOLUTION,&y_resolution);
+    image->x_resolution=x_resolution;
+    image->y_resolution=y_resolution;
     chromaticity=(float *) NULL;
     TIFFGetField(tiff,TIFFTAG_WHITEPOINT,&chromaticity);
     if (chromaticity != (float *) NULL)

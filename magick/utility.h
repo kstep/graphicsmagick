@@ -84,6 +84,7 @@ extern Export char
   *TranslateText(const ImageInfo *,const Image *,const char *);
 
 extern Export int
+  GetGeometry(const char *,int *,int *,unsigned int *,unsigned int *),
   GlobExpression(char *,const char *),
   Latin1Compare(const char *,const char *),
   MultilineCensus(const char *),

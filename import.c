@@ -377,7 +377,7 @@ int main(int argc,char **argv)
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing border color",option);
-                  image_info.border_color=argv[i];
+                  CloneString(&image_info.border_color,argv[i]);
                 }
               break;
             }
@@ -517,7 +517,7 @@ int main(int argc,char **argv)
                   i++;
                   if ((i == argc) || !IsGeometry(argv[i]))
                     MagickError(OptionError,"Missing geometry",option);
-                  image_info.density=argv[i];
+                  CloneString(&image_info.density,argv[i]);
                 }
               break;
             }
@@ -534,7 +534,7 @@ int main(int argc,char **argv)
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing server name",option);
-                  image_info.server_name=argv[i];
+                  CloneString(&image_info.server_name,argv[i]);
                 }
               break;
             }
@@ -779,7 +779,7 @@ int main(int argc,char **argv)
           i++;
           if (i == argc)
             MagickError(OptionError,"Missing id, name, or 'root'",option);
-          target_window=argv[i];
+          CloneString(&target_window,argv[i]);
           break;
         }
         case 'v':

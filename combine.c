@@ -444,7 +444,7 @@ int main(int argc,char **argv)
                   i++;
                   if ((i == argc) || !IsGeometry(argv[i]))
                     MagickError(OptionError,"Missing geometry",option);
-                  image_info.density=argv[i];
+                  CloneString(&image_info.density,argv[i]);
                 }
               break;
             }
@@ -456,7 +456,7 @@ int main(int argc,char **argv)
                   i++;
                   if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
                     MagickError(OptionError,"Missing geometry",option);
-                  displacement_geometry=argv[i];
+                  CloneString(&displacement_geometry,argv[i]);
                   compose=DisplaceCompositeOp;
                 }
               break;
@@ -469,7 +469,7 @@ int main(int argc,char **argv)
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing server name",option);
-                  image_info.server_name=argv[i];
+                  CloneString(&image_info.server_name,argv[i]);
                 }
               break;
             }
@@ -501,7 +501,7 @@ int main(int argc,char **argv)
               i++;
               if (i == argc)
                 MagickError(OptionError,"Missing font name",option);
-              image_info.font=argv[i];
+              CloneString(&image_info.font,argv[i]);
             }
           break;
         }
@@ -515,7 +515,7 @@ int main(int argc,char **argv)
                   i++;
                   if ((i == argc) || !IsGeometry(argv[i]))
                     MagickError(OptionError,"Missing geometry",option);
-                  geometry=argv[i];
+                  CloneString(&geometry,argv[i]);
                 }
               break;
             }
@@ -679,7 +679,7 @@ int main(int argc,char **argv)
                   i++;
                   if ((i == argc) || !IsGeometry(argv[i]))
                     MagickError(OptionError,"Missing geometry",option);
-                  image_info.size=argv[i];
+                  CloneString(&image_info.size,argv[i]);
                 }
               break;
             }

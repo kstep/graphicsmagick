@@ -3360,12 +3360,11 @@ Export char *XGetScreenDensity(Display *display)
   (void) strcpy(density,PSDensityGeometry);
   (void) sscanf(density,"%lfx%lf",&x_density,&y_density);
   (void) strcpy(geometry,PSPageGeometry);
-  (void) strcat(geometry,"~");
   width=XDisplayWidth(display,XDefaultScreen(display));
   height=XDisplayHeight(display,XDefaultScreen(display));
   x=0;
   y=0;
-  (void) ParseImageGeometry(geometry,&x,&y,&width,&height);
+  (void) GetGeometry(geometry,&x,&y,&width,&height);
   FormatString(density,"%d",(int) (Min(x_density,y_density)*
     (XDisplayHeight(display,XDefaultScreen(display))-40)/(double) height));
   return(PostscriptGeometry(density));

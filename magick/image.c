@@ -8039,12 +8039,14 @@ Export Image *MontageImages(Image *image,const MontageInfo *montage_info)
         Initialize tile geometry.
       */
       (void) strcpy(geometry,montage_info->geometry);
-      if (strchr(geometry,'%') == (char *) NULL)
-        (void) strcat(geometry,"~");
       tile_info.x=0;
       tile_info.y=0;
-      flags=ParseImageGeometry(geometry,&tile_info.x,&tile_info.y,
-        &tile_info.width,&tile_info.height);
+      if (strchr(geometry,'%') == (char *) NULL)
+        flags=GetGeometry(geometry,&tile_info.x,&tile_info.y,
+          &tile_info.width,&tile_info.height);
+      else
+        flags=ParseImageGeometry(geometry,&tile_info.x,&tile_info.y,
+          &tile_info.width,&tile_info.height);
       if ((tile_info.x == 0) && (tile_info.y == 0))
         concatenate=!((flags & WidthValue) || (flags & HeightValue));
       if (tile_info.x < 0)
@@ -9129,8 +9131,11 @@ Export void OpenImage(const ImageInfo *image_info,Image *image,const char *type)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ParseImageGeometry parse a geometry specification and returns the
-%  width and height values.
+%  Method ParseImageGeometry parses a geometry specification and returns the
+%  width, height, x, and y values.  It also returns flags that indicates
+%  which of the four values (width, height, xoffset, yoffset) were located
+%  in the string, and whether the x and y values are negative.  In addition,
+%  there are flags to report any meta characters (%, !, <, and >).
 %
 %  The format of the ParseImageGeometry routine is:
 %
@@ -9139,9 +9144,7 @@ Export void OpenImage(const ImageInfo *image_info,Image *image,const char *type)
 %  A description of each parameter follows:
 %
 %    o flags:  Method ParseImageGeometry returns a bitmask that indicates
-%      which of the four values (width, height, xoffset, and yoffset) were
-%      actually found in the string, and whether the x and y values are
-%      negative.
+%      which of the four values were located in the geometry string.
 %
 %    o image_geometry:  Specifies a character string representing the geometry
 %      specification.
@@ -9154,12 +9157,9 @@ Export void OpenImage(const ImageInfo *image_info,Image *image,const char *type)
 %
 %
 */
-Export int ParseImageGeometry(const char *image_geometry,int *x, int *y,
+Export int ParseImageGeometry(const char *geometry,int *x,int *y,
   unsigned int *width,unsigned int *height)
 {
-  char
-    geometry[MaxTextExtent];
-
   int
     delta,
     flags;
@@ -9167,13 +9167,9 @@ Export int ParseImageGeometry(const char *image_geometry,int *x, int *y,
   RectangleInfo
     media_info;
 
-  register char
-    *p;
-
   unsigned int
     former_height,
-    former_width,
-    tilde;
+    former_width;
 
   /*
     Ensure the image geometry is valid.
@@ -9182,69 +9178,14 @@ Export int ParseImageGeometry(const char *image_geometry,int *x, int *y,
   assert(y != (int *) NULL);
   assert(width != (unsigned int *) NULL);
   assert(height != (unsigned int *) NULL);
-  if ((image_geometry == (char *) NULL) || (*image_geometry == '\0'))
+  if ((geometry == (char *) NULL) || (*geometry == '\0'))
     return(NoValue);
-  /*
-    Remove whitespaces and % and ! characters from geometry specification.
-  */
-  (void) strcpy(geometry,image_geometry);
-  tilde=False;
-  flags=AspectValue;
-  p=geometry;
-  while (Extent(p) > 0)
-  {
-    if (isspace((int) (*p)))
-      (void) strcpy(p,p+1);
-    else
-      switch (*p)
-      {
-        case '%':
-        {
-          flags|=PercentValue;
-          (void) strcpy(p,p+1);
-          break;
-        }
-        case '!':
-        {
-          flags&=(~AspectValue);
-          (void) strcpy(p,p+1);
-          break;
-        }
-        case '<':
-        {
-          flags|=LessValue;
-          (void) strcpy(p,p+1);
-          break;
-        }
-        case '>':
-        {
-          flags|=GreaterValue;
-          (void) strcpy(p,p+1);
-          break;
-        }
-        case '~':
-        {
-          tilde=True;
-          (void) strcpy(p,p+1);
-          break;
-        }
-        default:
-          p++;
-      }
-  }
   /*
     Parse geometry using XParseGeometry.
   */
   former_width=(*width);
   former_height=(*height);
-  flags|=XParseGeometry(geometry,x,y,width,height);
-  if (((flags & WidthValue) != 0) && (flags & HeightValue) == 0)
-    {
-      *height=(*width);
-      flags|=HeightValue;
-    }
-  if (tilde)
-    return(flags);
+  flags=GetGeometry(geometry,x,y,width,height);
   if (flags & PercentValue)
     {
       int
@@ -9315,8 +9256,8 @@ Export int ParseImageGeometry(const char *image_geometry,int *x, int *y,
   media_info.height=(*height);
   media_info.x=(*x);
   media_info.y=(*y);
-  (void) XParseGeometry(geometry,&media_info.x,&media_info.y,
-    &media_info.width,&media_info.height);
+  (void) GetGeometry(geometry,&media_info.x,&media_info.y,&media_info.width,
+    &media_info.height);
   if ((flags & XValue) == 0)
     {
       /*

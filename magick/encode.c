@@ -3330,7 +3330,9 @@ unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
     magenta,
     yellow,
     x,
-    y;
+    y,
+    flags,
+    sans_offset;
 
   JSAMPLE
     *jpeg_pixels;
@@ -3355,7 +3357,9 @@ unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
     jpeg_error;
 
   unsigned int
-    packets;
+    packets,
+    x_resolution,
+    y_resolution;
 
   /*
     Open image file.
@@ -3404,12 +3408,22 @@ unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
         }
     }
   jpeg_set_defaults(&jpeg_info);
+  flags=NoValue;
+  x_resolution=72;
+  y_resolution=72;
+  if (image_info->density != (char *) NULL)
+    flags=XParseGeometry(image_info->density,&sans_offset,&sans_offset,
+      &x_resolution,&y_resolution);
+  if (flags & WidthValue)
+    image->x_resolution=x_resolution;
+  if (flags & HeightValue)
+    image->y_resolution=y_resolution;
+  jpeg_info.density_unit=1;  /* default to DPI */
   if ((image->x_resolution != 0) && (image->y_resolution != 0))
     {
       /*
         Set image resolution.
       */
-      jpeg_info.density_unit=0;
       jpeg_info.X_density=(short) image->x_resolution;
       jpeg_info.Y_density=(short) image->y_resolution;
       if (image->units == PixelsPerInchResolution)
@@ -4812,8 +4826,7 @@ unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
     else
       (void) strcpy(geometry,PCLPageGeometry);
   (void) ParseImageGeometry(geometry,&x,&y,&width,&height);
-  (void) strcat(geometry,"~");
-  (void) ParseImageGeometry(geometry,&media_info.x,&media_info.y,
+  (void) GetGeometry(geometry,&media_info.x,&media_info.y,
     &media_info.width,&media_info.height);
   page_size=2;
   if ((media_info.width == 540) && (media_info.height == 720))
@@ -5591,8 +5604,7 @@ unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
           else
             (void) strcpy(geometry,PDFPageGeometry);
       }
-    (void) strcat(geometry,"~");
-    (void) ParseImageGeometry(geometry,&media_info.x,&media_info.y,
+    (void) GetGeometry(geometry,&media_info.x,&media_info.y,
       &media_info.width,&media_info.height);
     /*
       Scale relative to dots-per-inch.
