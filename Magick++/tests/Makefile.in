@@ -85,6 +85,7 @@ DLLDFLAGS = @DLLDFLAGS@
 DLLTOOL = @DLLTOOL@
 DOTDecodeDelegate = @DOTDecodeDelegate@
 DVIDecodeDelegate = @DVIDecodeDelegate@
+ECHO = @ECHO@
 EXEEXT = @EXEEXT@
 EchoDelegate = @EchoDelegate@
 EditorDelegate = @EditorDelegate@
