@@ -3414,12 +3414,11 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
     primitive_info[j].method=FloodfillMethod;
     primitive_info[j].text=(char *) NULL;
     if (active)
-      (void) WriteBlobString(image,"\">\n");
       {
         FormatString(message,"\" transform=\"matrix(%g %g %g %g %g %g)\">\n",
           affine.sx,affine.rx,affine.ry,affine.sy,affine.tx,affine.ty);
-       (void) WriteBlobString(image,message);
-     }
+        (void) WriteBlobString(image,message);
+      }
     active=False;
     switch (primitive_type)
     {
