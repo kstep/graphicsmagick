@@ -78,7 +78,7 @@ MagickExport const char *GetMagickCopyright(void)
 %
 %  A description of each parameter follows:
 %
-%    o version: The ImageMagick version is returned as a number.
+%    o version: The GraphicsMagick version is returned as a number.
 %
 */
 MagickExport const char *GetMagickVersion(unsigned long *version)

@@ -1,3 +1,9 @@
+2004-03-06  Vladimir Lukianov  <lvm@integrum.ru>
+
+	* lib/Thread.cpp (lock): Use MsgWaitForMultipleObjects() rather than
+	WaitForSingleObject() in order to avoid possible deadlock when
+	application code directly or indirectly creates windows.
+
 2004-02-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Image.cpp (interlaceType): Retrieve interlace setting from

@@ -297,7 +297,7 @@ static inline size_t ReadBlobStream(Image *image,const size_t length,void **data
 %    o blob_info: Specifies a pointer to a BlobInfo structure.
 %
 %    o blob: The address of a character stream in one of the image formats
-%      understood by ImageMagick.
+%      understood by GraphicsMagick.
 %
 %    o length: This size_t integer reflects the length in bytes of the blob.
 %
@@ -444,7 +444,7 @@ MagickExport unsigned int BlobToFile(const char *filename,const void *blob,
 %    o image_info: The image info.
 %
 %    o blob: The address of a character stream in one of the image formats
-%      understood by ImageMagick.
+%      understood by GraphicsMagick.
 %
 %    o length: This size_t integer reflects the length in bytes of the blob.
 %
@@ -2472,7 +2472,7 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
 %    o image_info: The image info.
 %
 %    o blob: The address of a character stream in one of the image formats
-%      understood by ImageMagick.
+%      understood by GraphicsMagick.
 %
 %    o length: This size_t integer reflects the length in bytes of the blob.
 %

@@ -1439,11 +1439,16 @@ MagickExport int NTGhostscriptLoadDLL(void)
 
   memset((void*)&gs_vectors, 0, sizeof(GhostscriptVectors));
 
-  gs_vectors.exit=(int (MagickDLLCall *)(gs_main_instance*))lt_dlsym(gs_dll_handle,"gsapi_exit");
-  gs_vectors.init_with_args=(int (MagickDLLCall *)(gs_main_instance *, int, char **))(lt_dlsym(gs_dll_handle,"gsapi_init_with_args"));
-  gs_vectors.new_instance=(int (MagickDLLCall *)(gs_main_instance **, void *))(lt_dlsym(gs_dll_handle,"gsapi_new_instance"));
-  gs_vectors.run_string=(int (MagickDLLCall *)(gs_main_instance *, const char *, int, int *))(lt_dlsym(gs_dll_handle,"gsapi_run_string"));
-  gs_vectors.delete_instance=(void (MagickDLLCall *)(gs_main_instance *))(lt_dlsym(gs_dll_handle,"gsapi_delete_instance"));
+  gs_vectors.exit=(int (MagickDLLCall *)(gs_main_instance*))
+    lt_dlsym(gs_dll_handle,"gsapi_exit");
+  gs_vectors.init_with_args=(int (MagickDLLCall *)(gs_main_instance *, int, char **))
+    (lt_dlsym(gs_dll_handle,"gsapi_init_with_args"));
+  gs_vectors.new_instance=(int (MagickDLLCall *)(gs_main_instance **, void *))
+    (lt_dlsym(gs_dll_handle,"gsapi_new_instance"));
+  gs_vectors.run_string=(int (MagickDLLCall *)(gs_main_instance *, const char *, int, int *))
+    (lt_dlsym(gs_dll_handle,"gsapi_run_string"));
+  gs_vectors.delete_instance=(void (MagickDLLCall *)(gs_main_instance *))
+    (lt_dlsym(gs_dll_handle,"gsapi_delete_instance"));
 
   if ((gs_vectors.exit==NULL) ||
       (gs_vectors.init_with_args==NULL) ||
@@ -1640,6 +1645,10 @@ MagickExport unsigned char *NTResourceToBlob(const char *id)
     handle=GetModuleHandle(0);
   if (!handle)
     return((char *) NULL);
+  /*
+    Locate a resource matching the specified type and name in the
+    specified module.
+  */
   resource=FindResource(handle,id,"IMAGEMAGICK");
   if (!resource)
   {
@@ -1649,14 +1658,23 @@ MagickExport unsigned char *NTResourceToBlob(const char *id)
   }
   (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
     "Found: windows resource \"%.1024s\"",id);
+  /*
+    Load resource into global memory.
+  */
   global=LoadResource(handle,resource);
   if (!global)
     return((char *) NULL);
+  /*
+    Obtain the size (in bytes) of the specified resource.
+  */
   length=SizeofResource(handle,resource);
+  /*
+    Lock the resource in memory.
+  */
   value=(unsigned char *) LockResource(global);
   if (!value)
     {
-      FreeResource(global);
+      FreeResource(global); /* Obsolete 16 bit API */
       return((char *) NULL);
     }
   blob=MagickAllocateMemory(unsigned char *,length+1);
@@ -1665,8 +1683,8 @@ MagickExport unsigned char *NTResourceToBlob(const char *id)
       (void) memcpy(blob,value,length);
       blob[length]='\0';
     }
-  UnlockResource(global);
-  FreeResource(global);
+  UnlockResource(global); /* Obsolete 16 bit API with no replacement */
+  FreeResource(global); /* Obsolete 16 bit API */
   return(blob);
 }
 
@@ -1735,7 +1753,8 @@ MagickExport int NTSystemComman(const char *command)
     return(-1);
   if (background_process)
     return(status == 0);
-  status=WaitForSingleObject(process_info.hProcess,INFINITE);
+  status=MsgWaitForMultipleObjects(1, &process_info.hProcess, TRUE, INFINITE,
+                                   QS_ALLEVENTS);
   if (status != WAIT_OBJECT_0)
     return(status);
   status=GetExitCodeProcess(process_info.hProcess,&child_status);

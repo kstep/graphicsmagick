@@ -53,9 +53,23 @@
 </tr>
 </table>
 <p>
+2004-03-06  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/nt_base.c (NTSystemComman): Use
+        MsgWaitForMultipleObjects() rather than WaitForSingleObject() in
+        order to avoid possible deadlock when application code directly or
+        indirectly creates windows.
+
+</UL>
+<p>
 2004-02-28  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> magick/animate.c (XMagickCommand): URL should point to
+        http://graphicsmagick.org/.<BR>
+  <LI> magick/display.c (XMagickCommand): URL should point to
+        http://graphicsmagick.org/.<BR>
   <LI> magick/image.c (DisplayImages): Changes to fix memory leaks in
         X11 commands had bugs which seriously broke DisplayImages.  Now
         DisplayImages works properly again.
