@@ -940,7 +940,7 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
       status=True;
       p=getenv("TT_FONT_PATH");
 #if defined(TT_FONT_PATH)
-      if (p != (char *) NULL)
+      if (p == (char *) NULL)
         p=TT_FONT_PATH;
 #endif
       if (p != (char *) NULL)
