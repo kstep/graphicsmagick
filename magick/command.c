@@ -10211,7 +10211,7 @@ MagickExport void ImportUsage(void)
       "-colors value        preferred number of colors in the image",
       "-colorspace type     alternate image colorspace",
       "-comment string      annotate image with comment",
-      "-compress type       image compression tyhpe",
+      "-compress type       image compression type",
       "-crop geometry       preferred size and location of the cropped image",
       "-debug events        display copious debugging information",
       "-delay value         display the next image after pausing",

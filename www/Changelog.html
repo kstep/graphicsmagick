@@ -53,12 +53,29 @@
 </tr>
 </table>
 <p>
+2003-05-31  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/viff.c (RegisterVIFFImage): Module definition for "XV"
+        was missing.<BR>
+  <LI> coders/ps2.c (RegisterPS2Image): Module definition for "PS2" was
+        missing.<BR>
+  <LI> coders/jpeg.c (RegisterJPEGImage): Module definition for "JPEG"
+        was missing.<BR>
+  <LI> coders/html.c (RegisterHTMLImage): Module definition for "HTML"
+        was missing.<BR>
+  <LI> coders/bmp.c (RegisterBMPImage): Module names for "BMP2" and
+        "BMP3" should be "BMP".
+
+</UL>
+<p>
 2003-05-28  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
   <LI> magick/command.c (MogrifyImageCommand): Wrong exception
         macro was being invoked.  Steps have been taken to ensure that
-        this doesn't happen again.
+        this doesn't happen again.<BR>
+        (ImportUsage): Fix spelling of 'type'.
 
 </UL>
 <p>

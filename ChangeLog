@@ -1,8 +1,22 @@
+2003-05-31  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/viff.c (RegisterVIFFImage): Module definition for "XV"
+	was missing.
+	* coders/ps2.c (RegisterPS2Image): Module definition for "PS2" was
+	missing.
+	* coders/jpeg.c (RegisterJPEGImage): Module definition for "JPEG"
+	was missing.
+	* coders/html.c (RegisterHTMLImage): Module definition for "HTML"
+	was missing.
+	* coders/bmp.c (RegisterBMPImage): Module names for "BMP2" and
+	"BMP3" should be "BMP".
+
 2003-05-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/command.c (MogrifyImageCommand): Wrong exception
 	macro was being invoked.  Steps have been taken to ensure that
 	this doesn't happen again.
+	(ImportUsage): Fix spelling of 'type'.
 
 2003-05-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 

@@ -754,10 +754,12 @@ ModuleExport void RegisterVIFFImage(void)
   entry->description=AcquireString("Khoros Visualization image");
   entry->module=AcquireString("VIFF");
   (void) RegisterMagickInfo(entry);
+
   entry=SetMagickInfo("XV");
   entry->decoder=(DecoderHandler) ReadVIFFImage;
   entry->encoder=(EncoderHandler) WriteVIFFImage;
   entry->description=AcquireString("Khoros Visualization image");
+  entry->module=AcquireString("VIFF");
   (void) RegisterMagickInfo(entry);
 }
 
