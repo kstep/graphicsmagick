@@ -40,6 +40,7 @@ MAGICK_BASE_SRCS = \
 	blob.c \
 	cache.c \
 	cache_view.c \
+	channel.c \
 	color.c \
 	command.c \
 	composite.c \
@@ -132,6 +133,7 @@ pkginclude_HEADERS = \
 	cache.h \
 	cache.h \
 	cache_view.h \
+	channel.h \
 	color.h \
 	command.h \
 	command.h \

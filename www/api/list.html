@@ -1,338 +1,381 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"><HTML>
-<HEAD>
-<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=utf-8">
-<STYLE>
-<!--
-@page { size: 8.5in 11in }
-TD P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 12pt }
-P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 12pt }
-H2 { color: #000000 }
-A:link { color: #0085c0 }
-A:visited { color: #800080 }
--->
-</STYLE>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>list - Image list support</title>
+<link rev="made" href="mailto:bfriesen@scooby.simplesystems.org" />
+</head>
 
-<TITLE>list - Image list support</TITLE>
-<LINK REV="made" HREF="mailto:bfriesen@shaggy.simplesystems.org">
-</HEAD>
+<body style="background-color: white">
 
-<BODY LANG="en-US" TEXT="#000000" LINK="#0085c0" VLINK="#800080" BGCOLOR="#ffffff">
-
-<A NAME="__index__"></A>
+<P><a name="__index__"></a></P>
 <!-- INDEX BEGIN -->
 
-<UL>
+<ul>
 
-	<LI><A HREF="#name">
-NAME</A>
-	<LI><A HREF="#synopsis">
-SYNOPSIS</A>
-	<LI><A HREF="#function descriptions">
-FUNCTION 
-DESCRIPTIONS</A>
-	<UL>
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#function_descriptions">FUNCTION DESCRIPTIONS</a></li>
+	<ul>
 
-		<LI><A HREF="#appendimagetolist">AppendImageToList</A>
-		<LI><A HREF="#cloneimagelist">CloneImageList</A>
-		<LI><A HREF="#deleteimagefromlist">DeleteImageFromList</A>
-		<LI><A HREF="#destroyimagelist">DestroyImageList</A>
-		<LI><A HREF="#getfirstimageinlist">GetFirstImageInList</A>
-		<LI><A HREF="#getimagefromlist">GetImageFromList</A>
-		<LI><A HREF="#getimageindexinlist">GetImageIndexInList</A>
-		<LI><A HREF="#getimagelistlength">GetImageListLength</A>
-		<LI><A HREF="#getlastimageinlist">GetLastImageInList</A>
-		<LI><A HREF="#getnextimageinlist">GetNextImageInList</A>
-		<LI><A HREF="#getpreviousimageinlist">GetPreviousImageInList</A>
-		<LI><A HREF="#imagelisttoarray">ImageListToArray</A>
-		<LI><A HREF="#insertimageinlist">InsertImageInList</A>
-		<LI><A HREF="#newimagelist">NewImageList</A>
-		<LI><A HREF="#prependimagetolist">PrependImageToList</A>
-		<LI><A HREF="#removefirstimagefromlist">RemoveFirstImageFromList</A>
-		<LI><A HREF="#removelastimagefromlist">RemoveLastImageFromList</A>
-		<LI><A HREF="#replaceimageinlist">ReplaceImageInList</A>
-		<LI><A HREF="#reverseimagelist">ReverseImageList</A>
-		<LI><A HREF="#spliceimageintolist">SpliceImageIntoList</A>
-		<LI><A HREF="#splitimagelist">SplitImageList</A>
-	</UL>
+		<li><a href="#appendimagetolist">AppendImageToList</a></li>
+		<li><a href="#cloneimagelist">CloneImageList</a></li>
+		<li><a href="#deleteimagefromlist">DeleteImageFromList</a></li>
+		<li><a href="#destroyimagelist">DestroyImageList</a></li>
+		<li><a href="#getfirstimageinlist">GetFirstImageInList</a></li>
+		<li><a href="#getimagefromlist">GetImageFromList</a></li>
+		<li><a href="#getimageindexinlist">GetImageIndexInList</a></li>
+		<li><a href="#getimagelistlength">GetImageListLength</a></li>
+		<li><a href="#getlastimageinlist">GetLastImageInList</a></li>
+		<li><a href="#getnextimageinlist">GetNextImageInList</a></li>
+		<li><a href="#getpreviousimageinlist">GetPreviousImageInList</a></li>
+		<li><a href="#imagelisttoarray">ImageListToArray</a></li>
+		<li><a href="#insertimageinlist">InsertImageInList</a></li>
+		<li><a href="#newimagelist">NewImageList</a></li>
+		<li><a href="#prependimagetolist">PrependImageToList</a></li>
+		<li><a href="#removefirstimagefromlist">RemoveFirstImageFromList</a></li>
+		<li><a href="#removelastimagefromlist">RemoveLastImageFromList</a></li>
+		<li><a href="#replaceimageinlist">ReplaceImageInList</a></li>
+		<li><a href="#reverseimagelist">ReverseImageList</a></li>
+		<li><a href="#spliceimageintolist">SpliceImageIntoList</a></li>
+		<li><a href="#splitimagelist">SplitImageList</a></li>
+	</ul>
 
-</UL>
+</ul>
 <!-- INDEX END -->
 
-<HR>
+<hr />
 <P>
-<H2><A NAME="name">
-NAME</A></H2>
+</P>
+<h1><a name="name">NAME</a></h1>
 <P>list - Image list support</P>
 <P>
-<HR>
-<H2><A NAME="synopsis">
-SYNOPSIS</A></H2>
-<P><STRONG>AppendImageToList</STRONG>( Image *images, Image *image );</P>
-<P>Image * <STRONG>CloneImageList</STRONG>( const Image *images, ExceptionInfo *exception );</P>
-<P><STRONG>DeleteImageFromList</STRONG>( Image ** images );</P>
-<P>void  <STRONG>DestroyImageList</STRONG>( Image *image );</P>
-<P>Image * <STRONG>GetFirstImageInList</STRONG>( const Image *images );</P>
-<P>Image * <STRONG>GetImageFromList</STRONG>( const Image *images, const long offset );</P>
-<P>long  <STRONG>GetImageIndexInList</STRONG>( const Image *images );</P>
-<P>unsigned long  <STRONG>GetImageListLength</STRONG>( const Image *images );</P>
-<P>Image * <STRONG>GetLastImageInList</STRONG>( const Image *images );</P>
-<P>Image * <STRONG>GetNextImageInList</STRONG>( const Image *images );</P>
-<P>Image * <STRONG>GetPreviousImageInList</STRONG>( const Image *images );</P>
-<P>Image **  <STRONG>ImageListToArray</STRONG>( const Image *images, ExceptionInfo *exception );</P>
-<P><STRONG>InsertImageInList</STRONG>( Image ** images, Image *image );</P>
-<P>Image * <STRONG>NewImageList</STRONG>( void );</P>
-<P><STRONG>PrependImageToList</STRONG>( Image *images, Image *image );</P>
-<P>Image * <STRONG>RemoveFirstImageFromList</STRONG>( Image ** images );</P>
-<P>Image * <STRONG>RemoveLastImageFromList</STRONG>( Image ** images );</P>
-<P><STRONG>ReplaceImageInList</STRONG>( Image ** images, Image *image );</P>
-<P><STRONG>ReverseImageList</STRONG>( const Image ** images );</P>
-<P><STRONG>SpliceImageIntoList</STRONG>( Image ** images, const unsigned long length, Image *splice );</P>
-<P>Image * <STRONG>SplitImageList</STRONG>( Image *images );</P>
+</P>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<P><strong>AppendImageToList</strong>( Image *images, Image *image );</P>
+<P>Image * <strong>CloneImageList</strong>( const Image *images, ExceptionInfo *exception );</P>
+<P><strong>DeleteImageFromList</strong>( Image ** images );</P>
+<P>void  <strong>DestroyImageList</strong>( Image *image );</P>
+<P>Image * <strong>GetFirstImageInList</strong>( const Image *images );</P>
+<P>Image * <strong>GetImageFromList</strong>( const Image *images, const long offset );</P>
+<P>long  <strong>GetImageIndexInList</strong>( const Image *images );</P>
+<P>unsigned long  <strong>GetImageListLength</strong>( const Image *images );</P>
+<P>Image * <strong>GetLastImageInList</strong>( const Image *images );</P>
+<P>Image * <strong>GetNextImageInList</strong>( const Image *images );</P>
+<P>Image * <strong>GetPreviousImageInList</strong>( const Image *images );</P>
+<P>Image **  <strong>ImageListToArray</strong>( const Image *images, ExceptionInfo *exception );</P>
+<P><strong>InsertImageInList</strong>( Image ** images, Image *image );</P>
+<P>Image * <strong>NewImageList</strong>( void );</P>
+<P><strong>PrependImageToList</strong>( Image *images, Image *image );</P>
+<P>Image * <strong>RemoveFirstImageFromList</strong>( Image ** images );</P>
+<P>Image * <strong>RemoveLastImageFromList</strong>( Image ** images );</P>
+<P><strong>ReplaceImageInList</strong>( Image ** images, Image *image );</P>
+<P><strong>ReverseImageList</strong>( const Image ** images );</P>
+<P><strong>SpliceImageIntoList</strong>( Image ** images, const unsigned long length, Image *splice );</P>
+<P>Image * <strong>SplitImageList</strong>( Image *images );</P>
 <P>
-<HR>
-<H2><A NAME="function descriptions">
-FUNCTION 
-DESCRIPTIONS</A></H2>
+</P>
+<hr />
+<h1><a name="function_descriptions">FUNCTION DESCRIPTIONS</a></h1>
 <P>
-<H3><A NAME="appendimagetolist">AppendImageToList</A></H3>
+</P>
+<h2><a name="appendimagetolist">AppendImageToList</a></h2>
 <blockquote>AppendImageToList() appends an image to the end of the list. </blockquote><P>The format of the AppendImageToList method is:</P>
-<blockquote>AppendImageToList ( <A HREF="types.html#Image">Image</A> *images, <A HREF="types.html#Image">Image</A> *image ); </blockquote><P>
-A description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<DD><P></P><DT><STRONG><A NAME="item_o_images%3A">images:</A></STRONG><BR>
+<blockquote>AppendImageToList ( <A HREF="types.html#Image">Image</A> *images, <A HREF="types.html#Image">Image</A> *image ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong><a name="item_o_images_3a">images:</a></strong><br />
+</dt>
 <DD>
 The image list.
+</dd>
 <P></P>
-<DD><P></P><DT><STRONG><A NAME="item_o_image%3A">image:</A></STRONG><BR>
+<dt><strong><a name="item_o_image_3a">image:</a></strong><br />
+</dt>
 <DD>
 The image.
-<P></P></DL></DL>
+</dd>
+<P></P></dl>
 <P>
-<H3><A NAME="cloneimagelist">CloneImageList</A></H3>
+</P>
+<h2><a name="cloneimagelist">CloneImageList</a></h2>
 <blockquote>CloneImageList() returns a duplicate of the image list. </blockquote><P>The format of the CloneImageList method is:</P>
-<blockquote><A HREF="types.html#Image">Image</A> *CloneImageList ( const <A HREF="types.html#Image">Image</A> *images, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>
-A description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<DD><P></P><DT><STRONG>images:</STRONG><BR>
+<blockquote><A HREF="types.html#Image">Image</A> *CloneImageList ( const <A HREF="types.html#Image">Image</A> *images, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>images:</strong><br />
+</dt>
 <DD>
 The image list.
+</dd>
 <P></P>
-<DD><P></P><DT><STRONG><A NAME="item_o_exception%3A">exception:</A></STRONG><BR>
+<dt><strong><a name="item_o_exception_3a">exception:</a></strong><br />
+</dt>
 <DD>
 Return any errors or warnings in this structure.
-<P></P></DL></DL>
+</dd>
+<P></P></dl>
 <P>
-<H3><A NAME="deleteimagefromlist">DeleteImageFromList</A></H3>
+</P>
+<h2><a name="deleteimagefromlist">DeleteImageFromList</a></h2>
 <blockquote>DeleteImageFromList() deletes an image from the list. </blockquote><P>The format of the DeleteImageFromList method is:</P>
-<blockquote>DeleteImageFromList ( <A HREF="types.html#Image">Image</A> **images ); </blockquote><P>
-A description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<DD><P></P><DT><STRONG>images:</STRONG><BR>
+<blockquote>DeleteImageFromList ( <A HREF="types.html#Image">Image</A> **images ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>images:</strong><br />
+</dt>
 <DD>
 The image list.
-<P></P></DL></DL>
+</dd>
+<P></P></dl>
 <P>
-<H3><A NAME="destroyimagelist">DestroyImageList</A></H3>
+</P>
+<h2><a name="destroyimagelist">DestroyImageList</a></h2>
 <blockquote>DestroyImageList() destroys an image list. </blockquote><P>The format of the DestroyImageList method is:</P>
-<blockquote>void DestroyImageList ( <A HREF="types.html#Image">Image</A> *image ); </blockquote><P>
-A description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<DD><P></P><DT><STRONG>image:</STRONG><BR>
+<blockquote>void DestroyImageList ( <A HREF="types.html#Image">Image</A> *image ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>image:</strong><br />
+</dt>
 <DD>
 The image sequence.
-<P></P></DL></DL>
+</dd>
+<P></P></dl>
 <P>
-<H3><A NAME="getfirstimageinlist">GetFirstImageInList</A></H3>
+</P>
+<h2><a name="getfirstimageinlist">GetFirstImageInList</a></h2>
 <blockquote>GetFirstImageInList() returns a pointer to the first image in the list </blockquote><P>The format of the GetFirstImageInList method is:</P>
-<blockquote><A HREF="types.html#Image">Image</A> *GetFirstImageInList ( const <A HREF="types.html#Image">Image</A> *images ); </blockquote><P>
-A description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<DD><P></P><DT><STRONG>images:</STRONG><BR>
+<blockquote><A HREF="types.html#Image">Image</A> *GetFirstImageInList ( const <A HREF="types.html#Image">Image</A> *images ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>images:</strong><br />
+</dt>
 <DD>
 The image list.
-<P></P></DL></DL>
+</dd>
+<P></P></dl>
 <P>
-<H3><A NAME="getimagefromlist">GetImageFromList</A></H3>
+</P>
+<h2><a name="getimagefromlist">GetImageFromList</a></h2>
 <blockquote>GetImageFromList() returns an image at the specified offset from the list. </blockquote><P>The format of the GetImageFromList method is:</P>
-<blockquote><A HREF="types.html#Image">Image</A> *GetImageFromList ( const <A HREF="types.html#Image">Image</A> *images, const long offset ); </blockquote><P>
-A description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<DD><P></P><DT><STRONG>images:</STRONG><BR>
+<blockquote><A HREF="types.html#Image">Image</A> *GetImageFromList ( const <A HREF="types.html#Image">Image</A> *images, const long offset ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>images:</strong><br />
+</dt>
 <DD>
 The image list.
+</dd>
 <P></P>
-<DD><P></P><DT><STRONG><A NAME="item_o_offset%3A">offset:</A></STRONG><BR>
+<dt><strong><a name="item_o_offset_3a">offset:</a></strong><br />
+</dt>
 <DD>
 The position within the list.
-<P></P></DL></DL>
+</dd>
+<P></P></dl>
 <P>
-<H3><A NAME="getimageindexinlist">GetImageIndexInList</A></H3>
+</P>
+<h2><a name="getimageindexinlist">GetImageIndexInList</a></h2>
 <blockquote>GetImageIndexInList() returns the offset in the list of the specified image. </blockquote><P>The format of the GetImageIndexInList method is:</P>
-<blockquote>long GetImageIndexInList ( const <A HREF="types.html#Image">Image</A> *images ); </blockquote><P>
-A description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<DD><P></P><DT><STRONG>images:</STRONG><BR>
+<blockquote>long GetImageIndexInList ( const <A HREF="types.html#Image">Image</A> *images ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>images:</strong><br />
+</dt>
 <DD>
 The image list.
-<P></P></DL></DL>
+</dd>
+<P></P></dl>
 <P>
-<H3><A NAME="getimagelistlength">GetImageListLength</A></H3>
+</P>
+<h2><a name="getimagelistlength">GetImageListLength</a></h2>
 <blockquote>GetImageListLength() returns the length of the list ( the number of images in the list ) . </blockquote><P>The format of the GetImageListLength method is:</P>
-<blockquote>unsigned long GetImageListLength ( const <A HREF="types.html#Image">Image</A> *images ); </blockquote><P>
-A description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<DD><P></P><DT><STRONG>images:</STRONG><BR>
+<blockquote>unsigned long GetImageListLength ( const <A HREF="types.html#Image">Image</A> *images ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>images:</strong><br />
+</dt>
 <DD>
 The image list.
-<P></P></DL></DL>
+</dd>
+<P></P></dl>
 <P>
-<H3><A NAME="getlastimageinlist">GetLastImageInList</A></H3>
+</P>
+<h2><a name="getlastimageinlist">GetLastImageInList</a></h2>
 <blockquote>GetLastImageInList() returns a pointer to the last image in the list </blockquote><P>The format of the GetLastImageInList method is:</P>
-<blockquote><A HREF="types.html#Image">Image</A> *GetLastImageInList ( const <A HREF="types.html#Image">Image</A> *images ); </blockquote><P>
-A description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<DD><P></P><DT><STRONG>images:</STRONG><BR>
+<blockquote><A HREF="types.html#Image">Image</A> *GetLastImageInList ( const <A HREF="types.html#Image">Image</A> *images ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>images:</strong><br />
+</dt>
 <DD>
 The image list.
-<P></P></DL></DL>
+</dd>
+<P></P></dl>
 <P>
-<H3><A NAME="getnextimageinlist">GetNextImageInList</A></H3>
+</P>
+<h2><a name="getnextimageinlist">GetNextImageInList</a></h2>
 <blockquote>GetNextImageInList() returns the next image in the list. </blockquote><P>The format of the GetNextImageInList method is:</P>
-<blockquote><A HREF="types.html#Image">Image</A> *GetNextImageInList ( const <A HREF="types.html#Image">Image</A> *images ); </blockquote><P>
-A description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<DD><P></P><DT><STRONG>images:</STRONG><BR>
+<blockquote><A HREF="types.html#Image">Image</A> *GetNextImageInList ( const <A HREF="types.html#Image">Image</A> *images ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>images:</strong><br />
+</dt>
 <DD>
 The image list.
-<P></P></DL></DL>
+</dd>
+<P></P></dl>
 <P>
-<H3><A NAME="getpreviousimageinlist">GetPreviousImageInList</A></H3>
+</P>
+<h2><a name="getpreviousimageinlist">GetPreviousImageInList</a></h2>
 <blockquote>GetPreviousImageInList() returns the previous image in the list. </blockquote><P>The format of the GetPreviousImageInList method is:</P>
-<blockquote><A HREF="types.html#Image">Image</A> *GetPreviousImageInList ( const <A HREF="types.html#Image">Image</A> *images ); </blockquote><P>
-A description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<DD><P></P><DT><STRONG>images:</STRONG><BR>
+<blockquote><A HREF="types.html#Image">Image</A> *GetPreviousImageInList ( const <A HREF="types.html#Image">Image</A> *images ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>images:</strong><br />
+</dt>
 <DD>
 The image list.
-<P></P></DL></DL>
+</dd>
+<P></P></dl>
 <P>
-<H3><A NAME="imagelisttoarray">ImageListToArray</A></H3>
+</P>
+<h2><a name="imagelisttoarray">ImageListToArray</a></h2>
 <blockquote>ImageListToArray() is a convenience method that converts an image list to a sequential array. For example, </blockquote><blockquote>group = ImageListToArray ( images, exception ); for ( i = 0; i < n; i++ ) puts ( group[i]->filename ) ;; </blockquote><P>The format of the ImageListToArray method is:</P>
-<blockquote><A HREF="types.html#Image">Image</A> **ImageListToArray ( const <A HREF="types.html#Image">Image</A> *images, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>
-A description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<DD><P></P><DT><STRONG>image:</STRONG><BR>
+<blockquote><A HREF="types.html#Image">Image</A> **ImageListToArray ( const <A HREF="types.html#Image">Image</A> *images, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>image:</strong><br />
+</dt>
 <DD>
 The image list.
+</dd>
 <P></P>
-<DD><P></P><DT><STRONG>exception:</STRONG><BR>
+<dt><strong>exception:</strong><br />
+</dt>
 <DD>
 Return any errors or warnings in this structure.
-<P></P></DL></DL>
+</dd>
+<P></P></dl>
 <P>
-<H3><A NAME="insertimageinlist">InsertImageInList</A></H3>
+</P>
+<h2><a name="insertimageinlist">InsertImageInList</a></h2>
 <blockquote>InsertImageInList() inserts an image in the list. </blockquote><P>The format of the InsertImageInList method is:</P>
-<blockquote>InsertImageInList ( <A HREF="types.html#Image">Image</A> **images, <A HREF="types.html#Image">Image</A> *image ); </blockquote><P>
-A description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<DD><P></P><DT><STRONG>images:</STRONG><BR>
+<blockquote>InsertImageInList ( <A HREF="types.html#Image">Image</A> **images, <A HREF="types.html#Image">Image</A> *image ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>images:</strong><br />
+</dt>
 <DD>
 The image list.
+</dd>
 <P></P>
-<DD><P></P><DT><STRONG>image:</STRONG><BR>
+<dt><strong>image:</strong><br />
+</dt>
 <DD>
 The image.
-<P></P></DL></DL>
+</dd>
+<P></P></dl>
 <P>
-<H3><A NAME="newimagelist">NewImageList</A></H3>
+</P>
+<h2><a name="newimagelist">NewImageList</a></h2>
 <blockquote>NewImageList() creates an empty image list. </blockquote><P>The format of the NewImageList method is:</P>
 <blockquote><A HREF="types.html#Image">Image</A> *NewImageList ( void ); </blockquote><P>
-<H3><A NAME="prependimagetolist">PrependImageToList</A></H3>
+</P>
+<h2><a name="prependimagetolist">PrependImageToList</a></h2>
 <blockquote>PrependImageToList() prepends the image to the beginning of the list. </blockquote><P>The format of the PrependImageToList method is:</P>
-<blockquote>PrependImageToList ( <A HREF="types.html#Image">Image</A> *images, <A HREF="types.html#Image">Image</A> *image ); </blockquote><P>
-A description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<DD><P></P><DT><STRONG>images:</STRONG><BR>
+<blockquote>PrependImageToList ( <A HREF="types.html#Image">Image</A> *images, <A HREF="types.html#Image">Image</A> *image ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>images:</strong><br />
+</dt>
 <DD>
 The image list.
+</dd>
 <P></P>
-<DD><P></P><DT><STRONG>image:</STRONG><BR>
+<dt><strong>image:</strong><br />
+</dt>
 <DD>
 The image.
-<P></P></DL></DL>
+</dd>
+<P></P></dl>
 <P>
-<H3><A NAME="removefirstimagefromlist">RemoveFirstImageFromList</A></H3>
+</P>
+<h2><a name="removefirstimagefromlist">RemoveFirstImageFromList</a></h2>
 <blockquote>RemoveFirstImageFromList() removes an image from the beginning of the list. </blockquote><P>The format of the RemoveFirstImageFromList method is:</P>
-<blockquote><A HREF="types.html#Image">Image</A> *RemoveFirstImageFromList ( <A HREF="types.html#Image">Image</A> **images ); </blockquote><P>
-A description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<DD><P></P><DT><STRONG>images:</STRONG><BR>
+<blockquote><A HREF="types.html#Image">Image</A> *RemoveFirstImageFromList ( <A HREF="types.html#Image">Image</A> **images ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>images:</strong><br />
+</dt>
 <DD>
 The image list.
-<P></P></DL></DL>
+</dd>
+<P></P></dl>
 <P>
-<H3><A NAME="removelastimagefromlist">RemoveLastImageFromList</A></H3>
+</P>
+<h2><a name="removelastimagefromlist">RemoveLastImageFromList</a></h2>
 <blockquote>RemoveLastImageFromList() removes the last image from the list. </blockquote><P>The format of the RemoveLastImageFromList method is:</P>
-<blockquote><A HREF="types.html#Image">Image</A> *RemoveLastImageFromList ( <A HREF="types.html#Image">Image</A> **images ); </blockquote><P>
-A description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<DD><P></P><DT><STRONG>images:</STRONG><BR>
+<blockquote><A HREF="types.html#Image">Image</A> *RemoveLastImageFromList ( <A HREF="types.html#Image">Image</A> **images ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>images:</strong><br />
+</dt>
 <DD>
 The image list.
-<P></P></DL></DL>
+</dd>
+<P></P></dl>
 <P>
-<H3><A NAME="replaceimageinlist">ReplaceImageInList</A></H3>
+</P>
+<h2><a name="replaceimageinlist">ReplaceImageInList</a></h2>
 <blockquote>ReplaceImageInList() replaces an image in the list. </blockquote><P>The format of the ReplaceImageInList method is:</P>
-<blockquote>ReplaceImageInList ( <A HREF="types.html#Image">Image</A> **images, <A HREF="types.html#Image">Image</A> *image ); </blockquote><P>
-A description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<DD><P></P><DT><STRONG>images:</STRONG><BR>
+<blockquote>ReplaceImageInList ( <A HREF="types.html#Image">Image</A> **images, <A HREF="types.html#Image">Image</A> *image ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>images:</strong><br />
+</dt>
 <DD>
 The image list.
+</dd>
 <P></P>
-<DD><P></P><DT><STRONG>image:</STRONG><BR>
+<dt><strong>image:</strong><br />
+</dt>
 <DD>
 The image.
-<P></P></DL></DL>
+</dd>
+<P></P></dl>
 <P>
-<H3><A NAME="reverseimagelist">ReverseImageList</A></H3>
+</P>
+<h2><a name="reverseimagelist">ReverseImageList</a></h2>
 <blockquote>ReverseImageList() reverses the image list. </blockquote><P>The format of the ReverseImageList method is:</P>
-<blockquote>ReverseImageList ( const <A HREF="types.html#Image">Image</A> **images ); </blockquote><P>
-A description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<DD><P></P><DT><STRONG>images:</STRONG><BR>
+<blockquote>ReverseImageList ( const <A HREF="types.html#Image">Image</A> **images ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>images:</strong><br />
+</dt>
 <DD>
 The image list.
-<P></P></DL></DL>
+</dd>
+<P></P></dl>
 <P>
-<H3><A NAME="spliceimageintolist">SpliceImageIntoList</A></H3>
+</P>
+<h2><a name="spliceimageintolist">SpliceImageIntoList</a></h2>
 <blockquote>SpliceImageIntoList() removes 'length' images from the list and replaces them with the specified splice. </blockquote><P>The format of the SpliceImageIntoList method is:</P>
-<blockquote>SpliceImageIntoList ( <A HREF="types.html#Image">Image</A> **images, const unsigned long length, <A HREF="types.html#Image">Image</A> *splice ); </blockquote><P>
-A description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<DD><P></P><DT><STRONG>images:</STRONG><BR>
+<blockquote>SpliceImageIntoList ( <A HREF="types.html#Image">Image</A> **images, const unsigned long length, <A HREF="types.html#Image">Image</A> *splice ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>images:</strong><br />
+</dt>
 <DD>
 The image list.
+</dd>
 <P></P>
-<DD><P></P><DT><STRONG><A NAME="item_o_length%3A">length:</A></STRONG><BR>
+<dt><strong><a name="item_o_length_3a">length:</a></strong><br />
+</dt>
 <DD>
 The length of the image list to remove.
+</dd>
 <P></P>
-<DD><P></P><DT><STRONG><A NAME="item_o_splice%3A">splice:</A></STRONG><BR>
+<dt><strong><a name="item_o_splice_3a">splice:</a></strong><br />
+</dt>
 <DD>
 Replace the removed image list with this list.
-<P></P></DL></DL>
+</dd>
+<P></P></dl>
 <P>
-<H3><A NAME="splitimagelist">SplitImageList</A></H3>
+</P>
+<h2><a name="splitimagelist">SplitImageList</a></h2>
 <blockquote>SplitImageList() splits an image into two lists. </blockquote><P>The format of the SplitImageList method is:</P>
-<blockquote><A HREF="types.html#Image">Image</A> *SplitImageList ( <A HREF="types.html#Image">Image</A> *images ); </blockquote><P>
-A description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<DD><P></P><DT><STRONG>images:</STRONG><BR>
+<blockquote><A HREF="types.html#Image">Image</A> *SplitImageList ( <A HREF="types.html#Image">Image</A> *images ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>images:</strong><br />
+</dt>
 <DD>
 The image list.
-</DL></DL>
+</dd>
+</dl>
 
-</BODY>
+</body>
 
-</HTML>
+</html>

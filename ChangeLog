@@ -1,3 +1,10 @@
+2004-07-24  Bob Friesenhahn <bfriesen@simple.dallas.tx.us>  <bfriesen@simple.dallas.tx.us>
+
+	* tiff/libtiff/tif_lzw.c: Replace with version which supports LZW encoding.
+	* magick/channel.c: New source file.
+	(ExportImageChannel): New function to export an image channel.
+	(ImportImageChannel): New function to import an image channel.
+
 2004-07-20  Mike Chiarappa  <mikechiarappa@libero.it>
 	* lcms/src/cmsio1.c: Test [testcms.c] related to lcms 1.13 fail with error 
 	  #12288 when perform "Checking saved linearization devicelink".

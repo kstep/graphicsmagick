@@ -21,6 +21,49 @@
 </tr>
 </table>
 <p>
+2004-07-24  Bob Friesenhahn &lt;bfriesen@simple.dallas.tx.us&gt;  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> tiff/libtiff/tif_lzw.c: Replace with version which supports LZW encoding.
+  <LI> magick/channel.c: New source file.
+        (ExportImageChannel): New function to export an image channel.
+        (ImportImageChannel): New function to import an image channel.
+
+</UL>
+<p>
+2004-07-20  Mike Chiarappa  &lt;mikechiarappa@libero.it&gt;
+<UL>
+  <LI> lcms/src/cmsio1.c: Test [testcms.c] related to lcms 1.13 fail with error
+          #12288 when perform "Checking saved linearization devicelink".
+          Fixed function __cmsSaveProfile().
+          "...malloc(0) is implementation dependent and may return non NULL
+          pointer on some compilers, like VC++ and gcc. This is not the case
+          of Borland C++ Builder" - Thanks to Marti' Maria that have supplied me
+          this patched file: this will be part of the next lcms 1.14 which probabily
+          will be released on summer's end.
+
+</UL>
+<p>
+2004-07-20  Mike Chiarappa  &lt;mikechiarappa@libero.it&gt;
+<UL>
+  <LI> lcms/include/lcms.h: Modified to achieve BCBMagick DLL compilation.
+          Included modifications was introduced in GM in 2004-01-16 and
+          probabily lost with latest update of library.
+
+</UL>
+<p>
+2004-07-20  Mike Chiarappa  &lt;mikechiarappa@libero.it&gt;
+
+<UL>
+  <LI> BCBMagick: Updated lcms to version 1.13.
+          Modified files: BCBMagick\All\bcbMagick.mak; BCBMagick\lcms\BCB6\GM_lcms.bpr;
+          BCBMagick\lcms\BCB6\lcms.bpg; BCBMagick\lcms\BCB6\lcms.bpr;
+          BCBMagick\lcms\BCB6\testcms.bpr
+          Deleted files: BCBMagick\lcms\BCB6\lcms.cpp; BCBMagick\lcms\BCB6\testcms.cpp
+          Added file: BCBMagick\lcms\BCB6\lcms.bpf
+
+</UL>
+<p>
 2004-07-19  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

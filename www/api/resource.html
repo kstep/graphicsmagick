@@ -1,132 +1,132 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"><HTML>
-<HEAD>
-<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=utf-8">
-<STYLE>
-<!--
-@page { size: 8.5in 11in }
-TD P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 12pt }
-P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 12pt }
-H2 { color: #000000 }
-A:link { color: #0085c0 }
-A:visited { color: #800080 }
--->
-</STYLE>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>resource - Set resource consumption limits</title>
+<link rev="made" href="mailto:bfriesen@scooby.simplesystems.org" />
+</head>
 
-<TITLE>resource - Set resource consumption limits</TITLE>
-<LINK REV="made" HREF="mailto:bfriesen@shaggy.simplesystems.org">
-</HEAD>
+<body style="background-color: white">
 
-<BODY LANG="en-US" TEXT="#000000" LINK="#0085c0" VLINK="#800080" BGCOLOR="#ffffff">
-
-<A NAME="__index__"></A>
+<P><a name="__index__"></a></P>
 <!-- INDEX BEGIN -->
 
-<UL>
+<ul>
 
-	<LI><A HREF="#name">
-NAME</A>
-	<LI><A HREF="#synopsis">
-SYNOPSIS</A>
-	<LI><A HREF="#function descriptions">
-FUNCTION 
-DESCRIPTIONS</A>
-	<UL>
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#function_descriptions">FUNCTION DESCRIPTIONS</a></li>
+	<ul>
 
-		<LI><A HREF="#acquiremagickresource">AcquireMagickResource</A>
-		<LI><A HREF="#getmagickresource">GetMagickResource</A>
-		<LI><A HREF="#liberatemagickresource">LiberateMagickResource</A>
-		<LI><A HREF="#listmagickresourceinfo">ListMagickResourceInfo</A>
-		<LI><A HREF="#setmagickresourcelimit">SetMagickResourceLimit</A>
-	</UL>
+		<li><a href="#acquiremagickresource">AcquireMagickResource</a></li>
+		<li><a href="#getmagickresource">GetMagickResource</a></li>
+		<li><a href="#liberatemagickresource">LiberateMagickResource</a></li>
+		<li><a href="#listmagickresourceinfo">ListMagickResourceInfo</a></li>
+		<li><a href="#setmagickresourcelimit">SetMagickResourceLimit</a></li>
+	</ul>
 
-</UL>
+</ul>
 <!-- INDEX END -->
 
-<HR>
+<hr />
 <P>
-<H2><A NAME="name">
-NAME</A></H2>
+</P>
+<h1><a name="name">NAME</a></h1>
 <P>resource - Set resource consumption limits (e.g. memory)</P>
 <P>
-<HR>
-<H2><A NAME="synopsis">
-SYNOPSIS</A></H2>
-<P>unsigned int  <STRONG>AcquireMagickResource</STRONG>( const ResourceType type, const magick_int64_t size );</P>
-<P>unsigned long  <STRONG>GetMagickResource</STRONG>( const ResourceType type );</P>
-<P>void  <STRONG>LiberateMagickResource</STRONG>( const ResourceType type, const magick_int64_t size );</P>
-<P>unsigned int  <STRONG>ListMagickResourceInfo</STRONG>( 
-FILE *file, ExceptionInfo *exception );</P>
-<P>void  <STRONG>SetMagickResourceLimit</STRONG>( const ResourceType type, const unsigned long limit );</P>
+</P>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<P>unsigned int  <strong>AcquireMagickResource</strong>( const ResourceType type, const magick_int64_t size );</P>
+<P>unsigned long  <strong>GetMagickResource</strong>( const ResourceType type );</P>
+<P>void  <strong>LiberateMagickResource</strong>( const ResourceType type, const magick_int64_t size );</P>
+<P>unsigned int  <strong>ListMagickResourceInfo</strong>( FILE *file, ExceptionInfo *exception );</P>
+<P>void  <strong>SetMagickResourceLimit</strong>( const ResourceType type, const unsigned long limit );</P>
 <P>
-<HR>
-<H2><A NAME="function descriptions">
-FUNCTION 
-DESCRIPTIONS</A></H2>
+</P>
+<hr />
+<h1><a name="function_descriptions">FUNCTION DESCRIPTIONS</a></h1>
 <P>
-<H3><A NAME="acquiremagickresource">AcquireMagickResource</A></H3>
-<blockquote>AcquireMagickResource() acquires resources of the specified type. True is returned if the specified resource is available otherwise False. </blockquote><blockquote>The format of the AcquireMagickResource() method is: </blockquote><blockquote>unsigned int AcquireMagickResource ( const <A HREF="types.html#ResourceType">ResourceType</A> type, const magick_int64_t size ); </blockquote><P>
-A description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<DD><P></P><DT><STRONG><A NAME="item_o_type%3A">type:</A></STRONG><BR>
+</P>
+<h2><a name="acquiremagickresource">AcquireMagickResource</a></h2>
+<blockquote>AcquireMagickResource() acquires resources of the specified type. True is returned if the specified resource is available otherwise False. </blockquote><blockquote>The format of the AcquireMagickResource() method is: </blockquote><blockquote>unsigned int AcquireMagickResource ( const <A HREF="types.html#ResourceType">ResourceType</A> type, const magick_int64_t size ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong><a name="item_o_type_3a">type:</a></strong><br />
+</dt>
 <DD>
 The type of resource.
+</dd>
 <P></P>
-<DD><P></P><DT><STRONG><A NAME="item_o_size%3A">size:</A></STRONG><BR>
+<dt><strong><a name="item_o_size_3a">size:</a></strong><br />
+</dt>
 <DD>
 The number of bytes needed from for this resource.
-<P></P></DL></DL>
+</dd>
+<P></P></dl>
 <P>
-<H3><A NAME="getmagickresource">GetMagickResource</A></H3>
-<blockquote>GetMagickResource() returns the the specified resource in megabytes. </blockquote><blockquote>The format of the GetMagickResource() method is: </blockquote><blockquote>unsigned long GetMagickResource ( const <A HREF="types.html#ResourceType">ResourceType</A> type ); </blockquote><P>
-A description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<DD><P></P><DT><STRONG>type:</STRONG><BR>
+</P>
+<h2><a name="getmagickresource">GetMagickResource</a></h2>
+<blockquote>GetMagickResource() returns the the specified resource in megabytes. </blockquote><blockquote>The format of the GetMagickResource() method is: </blockquote><blockquote>unsigned long GetMagickResource ( const <A HREF="types.html#ResourceType">ResourceType</A> type ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>type:</strong><br />
+</dt>
 <DD>
 The type of resource.
-<P></P></DL></DL>
+</dd>
+<P></P></dl>
 <P>
-<H3><A NAME="liberatemagickresource">LiberateMagickResource</A></H3>
-<blockquote>LiberateMagickResource() liberates resources of the specified type. </blockquote><blockquote>The format of the LiberateMagickResource() method is: </blockquote><blockquote>void LiberateMagickResource ( const <A HREF="types.html#ResourceType">ResourceType</A> type, const magick_int64_t size ); </blockquote><P>
-A description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<DD><P></P><DT><STRONG>type:</STRONG><BR>
+</P>
+<h2><a name="liberatemagickresource">LiberateMagickResource</a></h2>
+<blockquote>LiberateMagickResource() liberates resources of the specified type. </blockquote><blockquote>The format of the LiberateMagickResource() method is: </blockquote><blockquote>void LiberateMagickResource ( const <A HREF="types.html#ResourceType">ResourceType</A> type, const magick_int64_t size ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>type:</strong><br />
+</dt>
 <DD>
 The type of resource.
+</dd>
 <P></P>
-<DD><P></P><DT><STRONG>size:</STRONG><BR>
+<dt><strong>size:</strong><br />
+</dt>
 <DD>
 The size of the resource.
-<P></P></DL></DL>
+</dd>
+<P></P></dl>
 <P>
-<H3><A NAME="listmagickresourceinfo">ListMagickResourceInfo</A></H3>
+</P>
+<h2><a name="listmagickresourceinfo">ListMagickResourceInfo</a></h2>
 <P>Method ListMagickResourceInfo lists the resource info to a file.</P>
 <P>The format of the ListMagickResourceInfo method is:</P>
-<blockquote>unsigned int ListMagickResourceInfo ( FILE *file, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>
-A description of each parameter follows.</P>
-<DL><DT><DD><DL>
-<DD><P></P><DT><STRONG><A NAME="item_o_file%3A">file:</A></STRONG><BR>
+<blockquote>unsigned int ListMagickResourceInfo ( FILE *file, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows.</P>
+<dl>
+<dt><strong><a name="item_o_file_3a">file:</a></strong><br />
+</dt>
 <DD>
-An pointer to a 
-FILE.
+An pointer to a FILE.
+</dd>
 <P></P>
-<DD><P></P><DT><STRONG><A NAME="item_o_exception%3A">exception:</A></STRONG><BR>
+<dt><strong><a name="item_o_exception_3a">exception:</a></strong><br />
+</dt>
 <DD>
 Return any errors or warnings in this structure.
-<P></P></DL></DL>
+</dd>
+<P></P></dl>
 <P>
-<H3><A NAME="setmagickresourcelimit">SetMagickResourceLimit</A></H3>
-<blockquote>SetMagickResourceLimit() sets the limit for a particular resource in megabytes. </blockquote><blockquote>The format of the SetMagickResourceLimit() method is: </blockquote><blockquote>void SetMagickResourceLimit ( const <A HREF="types.html#ResourceType">ResourceType</A> type, const unsigned long limit ); </blockquote><P>
-A description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<DD><P></P><DT><STRONG>type:</STRONG><BR>
+</P>
+<h2><a name="setmagickresourcelimit">SetMagickResourceLimit</a></h2>
+<blockquote>SetMagickResourceLimit() sets the limit for a particular resource in megabytes. </blockquote><blockquote>The format of the SetMagickResourceLimit() method is: </blockquote><blockquote>void SetMagickResourceLimit ( const <A HREF="types.html#ResourceType">ResourceType</A> type, const unsigned long limit ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>type:</strong><br />
+</dt>
 <DD>
 The type of resource.
+</dd>
 <P></P>
-<DD><P></P><DT><STRONG><A NAME="item_o_limit%3A">limit:</A></STRONG><BR>
+<dt><strong><a name="item_o_limit_3a">limit:</a></strong><br />
+</dt>
 <DD>
 The maximum limit for the resource.
-</DL></DL>
+</dd>
+</dl>
 
-</BODY>
+</body>
 
-</HTML>
+</html>

@@ -3,7 +3,7 @@
 #
 # Copyright Bob Friesenhahn, 1999, 2000, 2002, 2004
 #
-AUTOMAKE_OPTIONS = 1.8 foreign
+AUTOMAKE_OPTIONS = 1.8 foreign nostdinc
 
 AM_CPPFLAGS = \
 	-I$(top_builddir) -I$(top_srcdir)/Magick++/lib \

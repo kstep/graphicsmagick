@@ -14,12 +14,21 @@ using namespace std;
 
 using namespace Magick;
 
+//
+// Some compilers (e.g. older Tru64 UNIX) lack ios::binary
+//
+#if defined(MISSING_STD_IOS_BINARY)
+#  define IOS_IN_BINARY ios::in
+#else
+#  define IOS_IN_BINARY ios::in | ios::binary
+#endif
+
 // A derived Blob class to exercise updateNoCopy()
 class myBlob : public Blob
 {
 public:
   // Construct from open binary stream
-  myBlob( std::ifstream &stream_ )
+  myBlob( ifstream &stream_ )
     : Blob()
     {
       unsigned char* blobData = new unsigned char[100000];
@@ -71,7 +80,7 @@ int main( int /*argc*/, char ** argv)
 
         // Read raw data from file into BLOB
         testimage = srcdir + "test_image.miff";
-        ifstream in( testimage.c_str(), ios::in | ios::binary );
+        ifstream in( testimage.c_str(), IOS_IN_BINARY );
         if( !in )
           {
             cout << "Failed to open file " << testimage << " for input!" << endl;
@@ -203,7 +212,7 @@ int main( int /*argc*/, char ** argv)
 
         // Read raw data from file into BLOB
         testimage = srcdir + "test_image.miff";
-        ifstream in( testimage.c_str(), ios::in | ios::binary );
+        ifstream in( testimage.c_str(), IOS_IN_BINARY );
         if( !in )
           {
             cout << "Failed to open file for input!" << endl;

@@ -359,46 +359,46 @@ extern MagickExport WarningHandler
 #endif /* defined(MAGICK_IMPLEMENTATION) */
 
 #define ThrowBinaryException(severity_,reason_,description_) \
-{ \
+do { \
   if (image != (Image *) NULL) \
     { \
       ThrowException(&image->exception,severity_,reason_,description_); \
     } \
   return(False); \
-}
+} while (0);
 #define ThrowBinaryException2(severity_,reason_,description_) \
-{ \
+do { \
   if (image != (Image *) NULL) \
     { \
       ThrowException2(&image->exception,severity_,reason_,description_); \
     } \
   return(False); \
-}
+} while (0);
 #define ThrowBinaryException3(severity_,reason_,description_) \
-{ \
+do { \
   if (image != (Image *) NULL) \
     { \
       ThrowException3(&image->exception,severity_,reason_,description_); \
     } \
   return(False); \
-}
+} while (0);
 #define ThrowImageException(code_,reason_,description_) \
-{ \
+do { \
   ThrowException(exception,code_,reason_,description_); \
   return((Image *) NULL); \
-}
+} while (0);
 #define ThrowImageException2(code_,reason_,description_) \
-{ \
+do { \
   ThrowException2(exception,code_,reason_,description_); \
   return((Image *) NULL); \
-}
+} while (0);
 #define ThrowImageException3(code_,reason_,description_) \
-{ \
+do { \
   ThrowException3(exception,code_,reason_,description_); \
   return((Image *) NULL); \
-}
+} while (0);
 #define ThrowReaderException(code_,reason_,image_) \
-{ \
+do { \
   ThrowException(exception,code_,reason_,image_ ? (image_)->filename : 0); \
   if (image_) \
     { \
@@ -406,9 +406,9 @@ extern MagickExport WarningHandler
        DestroyImageList(image_); \
     } \
   return((Image *) NULL); \
-}
+} while (0);
 #define ThrowWriterException(code_,reason_,image_) \
-{ \
+do { \
   assert(image_ != (Image *) NULL); \
   ThrowException(&(image_)->exception,code_,reason_,(image_)->filename); \
   if (image_info->adjoin) \
@@ -416,9 +416,9 @@ extern MagickExport WarningHandler
       (image_)=(image_)->previous; \
   CloseBlob(image_); \
   return(False); \
-}
+} while (0);
 #define ThrowWriterException2(code_,reason_,image_) \
-{ \
+do { \
   assert(image_ != (Image *) NULL); \
   ThrowException2(&(image_)->exception,code_,reason_,(image_)->filename); \
   if (image_info->adjoin) \
@@ -426,9 +426,9 @@ extern MagickExport WarningHandler
       (image_)=(image_)->previous; \
   CloseBlob(image_); \
   return(False); \
-}
+} while (0);
 #define ThrowWriterException3(code_,reason_,image_) \
-{ \
+do { \
   assert(image_ != (Image *) NULL); \
   ThrowException3(&(image_)->exception,code_,reason_,(image_)->filename); \
   if (image_info->adjoin) \
@@ -436,7 +436,7 @@ extern MagickExport WarningHandler
       (image_)=(image_)->previous; \
   CloseBlob(image_); \
   return(False); \
-}
+} while (0);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

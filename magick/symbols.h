@@ -144,6 +144,7 @@
 #define DestroySemaphoreInfo GmDestroySemaphoreInfo
 #define DestroyTemporaryFiles GmDestroyTemporaryFiles
 #define DestroyTypeInfo GmDestroyTypeInfo
+#define ExportImageChannel GmExportImageChannel
 #define XDestroyX11Resources GmXDestroyX11Resources
 #define XDestroyXWindows GmXDestroyXWindows
 #define DetachBlob GmDetachBlob
@@ -410,6 +411,7 @@
 #define ImageToFile GmImageToFile
 #define ImplodeImage GmImplodeImage
 #define ImportImageCommand GmImportImageCommand
+#define ImportImageChannel GmImportImageChannel
 #define ImportUsage GmImportUsage
 #define InitializeLogInfo GmInitializeLogInfo
 #define InitializeMagick GmInitializeMagick

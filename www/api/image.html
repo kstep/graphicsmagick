@@ -1,852 +1,955 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"><HTML>
-<HEAD>
-<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=utf-8">
-<STYLE>
-<!--
-@page { size: 8.5in 11in }
-TD P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 12pt }
-P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 12pt }
-H2 { color: #000000 }
-A:link { color: #0085c0 }
-A:visited { color: #800080 }
--->
-</STYLE>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>image - Miscellaneous image methods</title>
+<link rev="made" href="mailto:bfriesen@scooby.simplesystems.org" />
+</head>
 
-<TITLE>image - Miscellaneous image methods</TITLE>
-<LINK REV="made" HREF="mailto:bfriesen@shaggy.simplesystems.org">
-</HEAD>
+<body style="background-color: white">
 
-<BODY LANG="en-US" TEXT="#000000" LINK="#0085c0" VLINK="#800080" BGCOLOR="#ffffff">
-
-<A NAME="__index__"></A>
+<P><a name="__index__"></a></P>
 <!-- INDEX BEGIN -->
 
-<UL>
+<ul>
 
-	<LI><A HREF="#name">
-NAME</A>
-	<LI><A HREF="#synopsis">
-SYNOPSIS</A>
-	<LI><A HREF="#function descriptions">
-FUNCTION 
-DESCRIPTIONS</A>
-	<UL>
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#function_descriptions">FUNCTION DESCRIPTIONS</a></li>
+	<ul>
 
-		<LI><A HREF="#accessdefinition">AccessDefinition</A>
-		<LI><A HREF="#adddefinitions">AddDefinitions</A>
-		<LI><A HREF="#allocateimage">AllocateImage</A>
-		<LI><A HREF="#allocateimagecolormap">AllocateImageColormap</A>
-		<LI><A HREF="#allocatenextimage">AllocateNextImage</A>
-		<LI><A HREF="#animateimages">AnimateImages</A>
-		<LI><A HREF="#appendimages">AppendImages</A>
-		<LI><A HREF="#averageimages">AverageImages</A>
-		<LI><A HREF="#catchimageexception">CatchImageException</A>
-		<LI><A HREF="#channelimage">ChannelImage</A>
-		<LI><A HREF="#clippathimage">ClipPathImage</A>
-		<LI><A HREF="#cloneimage">CloneImage</A>
-		<LI><A HREF="#cloneimageinfo">CloneImageInfo</A>
-		<LI><A HREF="#cyclecolormapimage">CycleColormapImage</A>
-		<LI><A HREF="#describeimage">DescribeImage</A>
-		<LI><A HREF="#destroyimage">DestroyImage</A>
-		<LI><A HREF="#destroyimageinfo">DestroyImageInfo</A>
-		<LI><A HREF="#displayimages">DisplayImages</A>
-		<LI><A HREF="#getimagechanneldepth">GetImageChannelDepth</A>
-		<LI><A HREF="#getimageclipmask">GetImageClipMask</A>
-		<LI><A HREF="#getimagedepth">GetImageDepth</A>
-		<LI><A HREF="#getimageexception">GetImageException</A>
-		<LI><A HREF="#getimagegeometry">GetImageGeometry</A>
-		<LI><A HREF="#getimageinfo">GetImageInfo</A>
-		<LI><A HREF="#getimagestatistics">GetImageStatistics</A>
-		<LI><A HREF="#getimagetype">GetImageType</A>
-		<LI><A HREF="#grayscalepseudoclassimage">GrayscalePseudoClassImage</A>
-		<LI><A HREF="#isimagesequal">IsImagesEqual</A>
-		<LI><A HREF="#istaintimage">IsTaintImage</A>
-		<LI><A HREF="#modifyimage">ModifyImage</A>
-		<LI><A HREF="#plasmaimage">PlasmaImage</A>
-		<LI><A HREF="#quantumoperatorimage">QuantumOperatorImage</A>
-		<LI><A HREF="#quantumoperatorregionimage">QuantumOperatorRegionImage</A>
-		<LI><A HREF="#referenceimage">ReferenceImage</A>
-		<LI><A HREF="#removedefinitions">RemoveDefinitions</A>
-		<LI><A HREF="#setimage">SetImage</A>
-		<LI><A HREF="#setimagechanneldepth">SetImageChannelDepth</A>
-		<LI><A HREF="#setimageclipmask">SetImageClipMask</A>
-		<LI><A HREF="#setimagedepth">SetImageDepth</A>
-		<LI><A HREF="#setimageopacity">SetImageOpacity</A>
-		<LI><A HREF="#setimagetype">SetImageType</A>
-		<LI><A HREF="#textureimage">TextureImage</A>
-	</UL>
+		<li><a href="#accessdefinition">AccessDefinition</a></li>
+		<li><a href="#adddefinitions">AddDefinitions</a></li>
+		<li><a href="#allocateimage">AllocateImage</a></li>
+		<li><a href="#allocateimagecolormap">AllocateImageColormap</a></li>
+		<li><a href="#allocatenextimage">AllocateNextImage</a></li>
+		<li><a href="#animateimages">AnimateImages</a></li>
+		<li><a href="#appendimages">AppendImages</a></li>
+		<li><a href="#averageimages">AverageImages</a></li>
+		<li><a href="#catchimageexception">CatchImageException</a></li>
+		<li><a href="#clippathimage">ClipPathImage</a></li>
+		<li><a href="#cloneimage">CloneImage</a></li>
+		<li><a href="#cloneimageinfo">CloneImageInfo</a></li>
+		<li><a href="#cyclecolormapimage">CycleColormapImage</a></li>
+		<li><a href="#describeimage">DescribeImage</a></li>
+		<li><a href="#destroyimage">DestroyImage</a></li>
+		<li><a href="#destroyimageinfo">DestroyImageInfo</a></li>
+		<li><a href="#displayimages">DisplayImages</a></li>
+		<li><a href="#getimageclipmask">GetImageClipMask</a></li>
+		<li><a href="#getimagedepth">GetImageDepth</a></li>
+		<li><a href="#getimageexception">GetImageException</a></li>
+		<li><a href="#getimagegeometry">GetImageGeometry</a></li>
+		<li><a href="#getimageinfo">GetImageInfo</a></li>
+		<li><a href="#getimagestatistics">GetImageStatistics</a></li>
+		<li><a href="#getimagetype">GetImageType</a></li>
+		<li><a href="#grayscalepseudoclassimage">GrayscalePseudoClassImage</a></li>
+		<li><a href="#isimagesequal">IsImagesEqual</a></li>
+		<li><a href="#istaintimage">IsTaintImage</a></li>
+		<li><a href="#modifyimage">ModifyImage</a></li>
+		<li><a href="#plasmaimage">PlasmaImage</a></li>
+		<li><a href="#quantumoperatorimage">QuantumOperatorImage</a></li>
+		<li><a href="#quantumoperatorregionimage">QuantumOperatorRegionImage</a></li>
+		<li><a href="#referenceimage">ReferenceImage</a></li>
+		<li><a href="#removedefinitions">RemoveDefinitions</a></li>
+		<li><a href="#setimage">SetImage</a></li>
+		<li><a href="#setimageclipmask">SetImageClipMask</a></li>
+		<li><a href="#setimagedepth">SetImageDepth</a></li>
+		<li><a href="#setimageopacity">SetImageOpacity</a></li>
+		<li><a href="#setimagetype">SetImageType</a></li>
+		<li><a href="#textureimage">TextureImage</a></li>
+	</ul>
 
-</UL>
+</ul>
 <!-- INDEX END -->
 
-<HR>
+<hr />
 <P>
-<H2><A NAME="name">
-NAME</A></H2>
+</P>
+<h1><a name="name">NAME</a></h1>
 <P>image - Miscellaneous image methods</P>
 <P>
-<HR>
-<H2><A NAME="synopsis">
-SYNOPSIS</A></H2>
-<P>const char * <STRONG>AccessDefinition</STRONG>( const ImageInfo *image_info, const char *magick, const char *key );</P>
-<P>void  <STRONG>AddDefinitions</STRONG>( ImageInfo *image_info, const char *options );</P>
-<P>Image * <STRONG>AllocateImage</STRONG>( const ImageInfo *image_info );</P>
-<P>unsigned int  <STRONG>AllocateImageColormap</STRONG>( Image *image, const unsigned long colors );</P>
-<P>void  <STRONG>AllocateNextImage</STRONG>( const ImageInfo *image_info, Image *image );</P>
-<P>unsigned int  <STRONG>AnimateImages</STRONG>( const ImageInfo *image_info, Image *image );</P>
-<P>Image * <STRONG>AppendImages</STRONG>( const Image *image, const unsigned int stack, ExceptionInfo *exception );</P>
-<P>Image * <STRONG>AverageImages</STRONG>( Image *image, ExceptionInfo *exception );</P>
-<P>ExceptionType  <STRONG>CatchImageException</STRONG>( Image *image );</P>
-<P>unsigned int  <STRONG>ChannelImage</STRONG>( Image *image, const ChannelType channel );</P>
-<P>unsigned int  <STRONG>ClipPathImage</STRONG>( Image *image, const char *pathname, const unsigned int inside );</P>
-<P>Image * <STRONG>CloneImage</STRONG>( const Image *image, const unsigned long columns, const unsigned long rows, const unsigned int orphan, ExceptionInfo *exception );</P>
-<P>ImageInfo * <STRONG>CloneImageInfo</STRONG>( const ImageInfo *image_info );</P>
-<P><STRONG>CycleColormapImage</STRONG>( Image *image, const int amount );</P>
-<P>void  <STRONG>DescribeImage</STRONG>( Image *image, 
-FILE *file, const unsigned int verbose );</P>
-<P>void  <STRONG>DestroyImage</STRONG>( Image *image );</P>
-<P>void  <STRONG>DestroyImageInfo</STRONG>( ImageInfo *image_info );</P>
-<P>unsigned int  <STRONG>DisplayImages</STRONG>( const ImageInfo *image_info, Image *image );</P>
-<P>unsigned long  <STRONG>GetImageChannelDepth</STRONG>( const Image *image, const ChannelType channel, ExceptionInfo *exception );</P>
-<P>Image * <STRONG>GetImageClipMask</STRONG>( const Image *image, ExceptionInfo *exception );</P>
-<P>unsigned long  <STRONG>GetImageDepth</STRONG>( const Image *image, ExceptionInfo *exception );</P>
-<P>void  <STRONG>GetImageException</STRONG>( Image *image, ExceptionInfo *exception );</P>
-<P>int  <STRONG>GetImageGeometry</STRONG>( const Image *image, const char *geometry, const unsigned int size_to_fit, RectangleInfo *region_info );</P>
-<P>void  <STRONG>GetImageInfo</STRONG>( ImageInfo *image_info );</P>
-<P>MagickPassFail  <STRONG>GetImageStatistics</STRONG>( const Image *image, ImageStatistics *statistics ExceptionInfo *exception );</P>
-<P>ImageType  <STRONG>GetImageType</STRONG>( const Image *image, ExceptionInfo *exception );</P>
-<P>void  <STRONG>GrayscalePseudoClassImage</STRONG>( Image *image );</P>
-<P>unsigned int  <STRONG>IsImagesEqual</STRONG>( Image *image, const Image *reference );</P>
-<P>unsigned int  <STRONG>IsTaintImage</STRONG>( const Image *image );</P>
-<P><STRONG>ModifyImage</STRONG>( Image *image, ExceptionInfo *exception );</P>
-<P>unsigned int  <STRONG>PlasmaImage</STRONG>( Image *image, const SegmentInfo *segment, unsigned long attenuate, unsigned long depth );</P>
-<P>MagickPassFail  <STRONG>QuantumOperatorImage</STRONG>( Image *image, ChannelType channel, QuantumOperator operator, double rvalue );</P>
-<P>MagickPassFail  <STRONG>QuantumOperatorRegionImage</STRONG>( Image *image, long x, long y, unsigned long columns, unsigned long rows, ChannelType channel, QuantumOperator quantum_operator, double rvalue );</P>
-<P>Image * <STRONG>ReferenceImage</STRONG>( Image *image );</P>
-<P>void  <STRONG>RemoveDefinitions</STRONG>( ImageInfo *image_info, const char *options );</P>
-<P>void  <STRONG>SetImage</STRONG>( Image *image, const Quantum opacity );</P>
-<P>unsigned int  <STRONG>SetImageClipMask</STRONG>( Image *image, const Image *clip_mask );</P>
-<P>unsigned int  <STRONG>SetImageDepth</STRONG>( Image *image, const unsigned long depth );</P>
-<P>void  <STRONG>SetImageOpacity</STRONG>( Image *image, const unsigned int opacity );</P>
-<P><STRONG>SetImageType</STRONG>( Image *image, const ImageType image_type );</P>
-<P>unsigned int  <STRONG>TextureImage</STRONG>( Image *image, const Image *texture );</P>
+</P>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<P>const char * <strong>AccessDefinition</strong>( const ImageInfo *image_info, const char *magick, const char *key );</P>
+<P>void  <strong>AddDefinitions</strong>( ImageInfo *image_info, const char *options );</P>
+<P>Image * <strong>AllocateImage</strong>( const ImageInfo *image_info );</P>
+<P>unsigned int  <strong>AllocateImageColormap</strong>( Image *image, const unsigned long colors );</P>
+<P>void  <strong>AllocateNextImage</strong>( const ImageInfo *image_info, Image *image );</P>
+<P>unsigned int  <strong>AnimateImages</strong>( const ImageInfo *image_info, Image *image );</P>
+<P>Image * <strong>AppendImages</strong>( const Image *image, const unsigned int stack, ExceptionInfo *exception );</P>
+<P>Image * <strong>AverageImages</strong>( Image *image, ExceptionInfo *exception );</P>
+<P>ExceptionType  <strong>CatchImageException</strong>( Image *image );</P>
+<P>unsigned int  <strong>ClipPathImage</strong>( Image *image, const char *pathname, const unsigned int inside );</P>
+<P>Image * <strong>CloneImage</strong>( const Image *image, const unsigned long columns, const unsigned long rows, const unsigned int orphan, ExceptionInfo *exception );</P>
+<P>ImageInfo * <strong>CloneImageInfo</strong>( const ImageInfo *image_info );</P>
+<P><strong>CycleColormapImage</strong>( Image *image, const int amount );</P>
+<P>void  <strong>DescribeImage</strong>( Image *image, FILE *file, const unsigned int verbose );</P>
+<P>void  <strong>DestroyImage</strong>( Image *image );</P>
+<P>void  <strong>DestroyImageInfo</strong>( ImageInfo *image_info );</P>
+<P>unsigned int  <strong>DisplayImages</strong>( const ImageInfo *image_info, Image *image );</P>
+<P>Image * <strong>GetImageClipMask</strong>( const Image *image, ExceptionInfo *exception );</P>
+<P>unsigned long  <strong>GetImageDepth</strong>( const Image *image, ExceptionInfo *exception );</P>
+<P>void  <strong>GetImageException</strong>( Image *image, ExceptionInfo *exception );</P>
+<P>int  <strong>GetImageGeometry</strong>( const Image *image, const char *geometry, const unsigned int size_to_fit, RectangleInfo *region_info );</P>
+<P>void  <strong>GetImageInfo</strong>( ImageInfo *image_info );</P>
+<P>MagickPassFail  <strong>GetImageStatistics</strong>( const Image *image, ImageStatistics *statistics ExceptionInfo *exception );</P>
+<P>ImageType  <strong>GetImageType</strong>( const Image *image, ExceptionInfo *exception );</P>
+<P>void  <strong>GrayscalePseudoClassImage</strong>( Image *image );</P>
+<P>unsigned int  <strong>IsImagesEqual</strong>( Image *image, const Image *reference );</P>
+<P>unsigned int  <strong>IsTaintImage</strong>( const Image *image );</P>
+<P><strong>ModifyImage</strong>( Image *image, ExceptionInfo *exception );</P>
+<P>unsigned int  <strong>PlasmaImage</strong>( Image *image, const SegmentInfo *segment, unsigned long attenuate, unsigned long depth );</P>
+<P>MagickPassFail  <strong>QuantumOperatorImage</strong>( Image *image, ChannelType channel, QuantumOperator operator, double rvalue );</P>
+<P>MagickPassFail  <strong>QuantumOperatorRegionImage</strong>( Image *image, long x, long y, unsigned long columns, unsigned long rows, ChannelType channel, QuantumOperator quantum_operator, double rvalue );</P>
+<P>Image * <strong>ReferenceImage</strong>( Image *image );</P>
+<P>void  <strong>RemoveDefinitions</strong>( ImageInfo *image_info, const char *options );</P>
+<P>void  <strong>SetImage</strong>( Image *image, const Quantum opacity );</P>
+<P>unsigned int  <strong>SetImageClipMask</strong>( Image *image, const Image *clip_mask );</P>
+<P>unsigned int  <strong>SetImageDepth</strong>( Image *image, const unsigned long depth );</P>
+<P>void  <strong>SetImageOpacity</strong>( Image *image, const unsigned int opacity );</P>
+<P><strong>SetImageType</strong>( Image *image, const ImageType image_type );</P>
+<P>unsigned int  <strong>TextureImage</strong>( Image *image, const Image *texture );</P>
 <P>
-<HR>
-<H2><A NAME="function descriptions">
-FUNCTION 
-DESCRIPTIONS</A></H2>
+</P>
+<hr />
+<h1><a name="function_descriptions">FUNCTION DESCRIPTIONS</a></h1>
 <P>
-<H3><A NAME="accessdefinition">AccessDefinition</A></H3>
+</P>
+<h2><a name="accessdefinition">AccessDefinition</a></h2>
 <blockquote>AccessDefinition() searches the definitions for an entry matching the specified magick and key. NULL is returned if no matching entry is found. </blockquote><P>The format of the AccessDefinition method is:</P>
-<blockquote>const char *AccessDefinition ( const <A HREF="types.html#ImageInfo">ImageInfo</A> *image_info, const char *magick, const char *key ); </blockquote><P>
-A description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<DD><P></P><DT><STRONG><A NAME="item_o_image_info%3A">image_info:</A></STRONG><BR>
+<blockquote>const char *AccessDefinition ( const <A HREF="types.html#ImageInfo">ImageInfo</A> *image_info, const char *magick, const char *key ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong><a name="item_o_image_info_3a">image_info:</a></strong><br />
+</dt>
 <DD>
 The image info.
+</dd>
 <P></P>
-<DD><P></P><DT><STRONG><A NAME="item_o_magick%3A">magick:</A></STRONG><BR>
+<dt><strong><a name="item_o_magick_3a">magick:</a></strong><br />
+</dt>
 <DD>
-Format 
-ID.  This is usually the same as the coder name.
+Format ID.  This is usually the same as the coder name.
+</dd>
 <P></P>
-<DD><P></P><DT><STRONG><A NAME="item_o_key%3A">key:</A></STRONG><BR>
+<dt><strong><a name="item_o_key_3a">key:</a></strong><br />
+</dt>
 <DD>
 Key to search for.
-<P></P></DL></DL>
+</dd>
+<P></P></dl>
 <P>
-<H3><A NAME="adddefinitions">AddDefinitions</A></H3>
+</P>
+<h2><a name="adddefinitions">AddDefinitions</a></h2>
 <blockquote>AddDefinitions() adds definitions from a key/value based string to the current map of definitions in ImageInfo. Definitions may be used by coders/decoders that read and write images. </blockquote><P>The format of the AddDefinitions method is:</P>
-<blockquote>void AddDefinitions ( <A HREF="types.html#ImageInfo">ImageInfo</A> *image_info, const char *options ); </blockquote><P>
-A description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<DD><P></P><DT><STRONG>image_info:</STRONG><BR>
+<blockquote>void AddDefinitions ( <A HREF="types.html#ImageInfo">ImageInfo</A> *image_info, const char *options ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>image_info:</strong><br />
+</dt>
 <DD>
 The image info.
+</dd>
 <P></P>
-<DD><P></P><DT><STRONG><A NAME="item_o_options%3A">options:</A></STRONG><BR>
+<dt><strong><a name="item_o_options_3a">options:</a></strong><br />
+</dt>
 <DD>
-List of key/value pairs to put in the definitions map.  The format of the string is ``key1[=[value1]],key2[=[value2]],...''. 
-A missing value argument (with or without the equal sign) inserts an empty, zero length string as value for a key.
+List of key/value pairs to put in the definitions map.  The format of the string is ``key1[=[value1]],key2[=[value2]],...''. A missing value argument (with or without the equal sign) inserts an empty, zero length string as value for a key.
+</dd>
 <P></P>
-<DD><P></P><DT><STRONG><A NAME="item_o_exception%3A">exception:</A></STRONG><BR>
+<dt><strong><a name="item_o_exception_3a">exception:</a></strong><br />
+</dt>
 <DD>
 Errors result in updates to this structure.
-<P></P></DL></DL>
+</dd>
+<P></P></dl>
 <P>
-<H3><A NAME="allocateimage">AllocateImage</A></H3>
+</P>
+<h2><a name="allocateimage">AllocateImage</a></h2>
 <blockquote>AllocateImage() returns a pointer to an image structure initialized to default values. </blockquote><P>The format of the AllocateImage method is:</P>
-<blockquote><A HREF="types.html#Image">Image</A> *AllocateImage ( const <A HREF="types.html#ImageInfo">ImageInfo</A> *image_info ); </blockquote><P>
-A description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<DD><P></P><DT><STRONG>image_info:</STRONG><BR>
+<blockquote><A HREF="types.html#Image">Image</A> *AllocateImage ( const <A HREF="types.html#ImageInfo">ImageInfo</A> *image_info ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>image_info:</strong><br />
+</dt>
 <DD>
 Many of the image default values are set from this structure.  For example, filename, compression, depth, background color, and others.
-<P></P></DL></DL>
+</dd>
+<P></P></dl>
 <P>
-<H3><A NAME="allocateimagecolormap">AllocateImageColormap</A></H3>
+</P>
+<h2><a name="allocateimagecolormap">AllocateImageColormap</a></h2>
 <blockquote>AllocateImageColormap() allocates an image colormap and initializes it to a linear gray colorspace with increasing intensity. If the image already has a colormap, it is replaced. AllocateImageColormap ( ) returns True if successful, otherwise False if there is not enough memory. </blockquote><P>The format of the AllocateImageColormap method is:</P>
-<blockquote>unsigned int AllocateImageColormap ( <A HREF="types.html#Image">Image</A> *image, const unsigned long colors ); </blockquote><P>
-A description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<DD><P></P><DT><STRONG><A NAME="item_o_image%3A">image:</A></STRONG><BR>
+<blockquote>unsigned int AllocateImageColormap ( <A HREF="types.html#Image">Image</A> *image, const unsigned long colors ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong><a name="item_o_image_3a">image:</a></strong><br />
+</dt>
 <DD>
 The image.
+</dd>
 <P></P>
-<DD><P></P><DT><STRONG><A NAME="item_o_colors%3A">colors:</A></STRONG><BR>
+<dt><strong><a name="item_o_colors_3a">colors:</a></strong><br />
+</dt>
 <DD>
 The number of colors in the image colormap.
-<P></P></DL></DL>
+</dd>
+<P></P></dl>
 <P>
-<H3><A NAME="allocatenextimage">AllocateNextImage</A></H3>
+</P>
+<h2><a name="allocatenextimage">AllocateNextImage</a></h2>
 <blockquote>Use AllocateNextImage() to initialize the next image in a sequence to default values. The next member of image points to the newly allocated image. If there is a memory shortage, next is assigned NULL. </blockquote><P>The format of the AllocateNextImage method is:</P>
-<blockquote>void AllocateNextImage ( const <A HREF="types.html#ImageInfo">ImageInfo</A> *image_info, <A HREF="types.html#Image">Image</A> *image ); </blockquote><P>
-A description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<DD><P></P><DT><STRONG>image_info:</STRONG><BR>
+<blockquote>void AllocateNextImage ( const <A HREF="types.html#ImageInfo">ImageInfo</A> *image_info, <A HREF="types.html#Image">Image</A> *image ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>image_info:</strong><br />
+</dt>
 <DD>
 Many of the image default values are set from this structure.  For example, filename, compression, depth, background color, and others.
+</dd>
 <P></P>
-<DD><P></P><DT><STRONG>image:</STRONG><BR>
+<dt><strong>image:</strong><br />
+</dt>
 <DD>
 The image.
-<P></P></DL></DL>
+</dd>
+<P></P></dl>
 <P>
-<H3><A NAME="animateimages">AnimateImages</A></H3>
+</P>
+<h2><a name="animateimages">AnimateImages</a></h2>
 <blockquote>AnimateImages() repeatedly displays an image sequence to any X window screen. It returns a value other than 0 if successful. Check the exception member of image to determine the reason for any failure. </blockquote><P>The format of the AnimateImages method is:</P>
-<blockquote>unsigned int AnimateImages ( const <A HREF="types.html#ImageInfo">ImageInfo</A> *image_info, <A HREF="types.html#Image">Image</A> *image ); </blockquote><P>
-A description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<DD><P></P><DT><STRONG>image_info:</STRONG><BR>
+<blockquote>unsigned int AnimateImages ( const <A HREF="types.html#ImageInfo">ImageInfo</A> *image_info, <A HREF="types.html#Image">Image</A> *image ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>image_info:</strong><br />
+</dt>
 <DD>
 The image info.
+</dd>
 <P></P>
-<DD><P></P><DT><STRONG>image:</STRONG><BR>
+<dt><strong>image:</strong><br />
+</dt>
 <DD>
 The image.
-<P></P></DL></DL>
+</dd>
+<P></P></dl>
 <P>
-<H3><A NAME="appendimages">AppendImages</A></H3>
+</P>
+<h2><a name="appendimages">AppendImages</a></h2>
 <blockquote>The AppendImages() method takes a set of images and appends them to each other top-to-bottom if the stack parameter is true, otherwise left-to-right. </blockquote><P>The format of the AppendImage method is:</P>
-<blockquote><A HREF="types.html#Image">Image</A> *AppendImages ( const <A HREF="types.html#Image">Image</A> *image, const unsigned int stack, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>
-A description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<DD><P></P><DT><STRONG>image:</STRONG><BR>
+<blockquote><A HREF="types.html#Image">Image</A> *AppendImages ( const <A HREF="types.html#Image">Image</A> *image, const unsigned int stack, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>image:</strong><br />
+</dt>
 <DD>
 The image sequence.
+</dd>
 <P></P>
-<DD><P></P><DT><STRONG><A NAME="item_o_stack%3A">stack:</A></STRONG><BR>
+<dt><strong><a name="item_o_stack_3a">stack:</a></strong><br />
+</dt>
 <DD>
-
 A value other than 0 stacks the images top-to-bottom.
+</dd>
 <P></P>
-<DD><P></P><DT><STRONG>exception:</STRONG><BR>
+<dt><strong>exception:</strong><br />
+</dt>
 <DD>
 Return any errors or warnings in this structure.
-<P></P></DL></DL>
+</dd>
+<P></P></dl>
 <P>
-<H3><A NAME="averageimages">AverageImages</A></H3>
-<P>The <CODE>Average()</CODE> method takes a set of images and averages them together.  Each image in the set must have the same width and height.  <CODE>Average()</CODE> returns a single image with each corresponding pixel component of each image averaged.  On failure, a 
-NULL image is returned and exception describes the reason for the failure.</P>
+</P>
+<h2><a name="averageimages">AverageImages</a></h2>
+<P>The <code>Average()</code> method takes a set of images and averages them together.  Each image in the set must have the same width and height.  <code>Average()</code> returns a single image with each corresponding pixel component of each image averaged.  On failure, a NULL image is returned and exception describes the reason for the failure.</P>
 <P>The format of the AverageImage method is:</P>
-<blockquote><A HREF="types.html#Image">Image</A> *AverageImages ( <A HREF="types.html#Image">Image</A> *image, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>
-A description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<DD><P></P><DT><STRONG>image:</STRONG><BR>
+<blockquote><A HREF="types.html#Image">Image</A> *AverageImages ( <A HREF="types.html#Image">Image</A> *image, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>image:</strong><br />
+</dt>
 <DD>
 The image sequence.
+</dd>
 <P></P>
-<DD><P></P><DT><STRONG>exception:</STRONG><BR>
+<dt><strong>exception:</strong><br />
+</dt>
 <DD>
 Return any errors or warnings in this structure.
-<P></P></DL></DL>
+</dd>
+<P></P></dl>
 <P>
-<H3><A NAME="catchimageexception">CatchImageException</A></H3>
+</P>
+<h2><a name="catchimageexception">CatchImageException</a></h2>
 <blockquote>CatchImageException() returns if no exceptions are found in the image sequence, otherwise it determines the most severe exception and reports it as a warning or error depending on the severity. </blockquote><P>The format of the CatchImageException method is:</P>
-<blockquote><A HREF="types.html#ExceptionType">ExceptionType</A> CatchImageException ( <A HREF="types.html#Image">Image</A> *image ); </blockquote><P>
-A description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<DD><P></P><DT><STRONG>image:</STRONG><BR>
+<blockquote><A HREF="types.html#ExceptionType">ExceptionType</A> CatchImageException ( <A HREF="types.html#Image">Image</A> *image ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>image:</strong><br />
+</dt>
 <DD>
 An image sequence.
-<P></P></DL></DL>
+</dd>
+<P></P></dl>
 <P>
-<H3><A NAME="channelimage">ChannelImage</A></H3>
-<P>Transform an image so that the resulting image is a grayscale image based on a specified image channel.  The resulting image is returned in the 
-RGB colorspace.  This function does not force or assume an input image colorspace so it may be used to extract channels from images in colorspaces other than 
-RGB or 
-CMYK.  For example, if the image is currently transformed to the 
-HWB colorspace, the 
-'B' channel may be extracted by specifying RedChannel as the ChannelType argument.</P>
-<P>The format of the ChannelImage method is:</P>
-<blockquote>unsigned int ChannelImage ( <A HREF="types.html#Image">Image</A> *image, const <A HREF="types.html#ChannelType">ChannelType</A> channel ); </blockquote><P>
-A description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<DD><P></P><DT><STRONG>image:</STRONG><BR>
-<DD>
-The image.
-<P></P>
-<DD><P></P><DT><STRONG><A NAME="item_o_channel%3A">channel:</A></STRONG><BR>
-<DD>
-Identify which channel to extract: Red, Cyan, Green, Magenta, Blue, Yellow, or Opacity.
-<P></P></DL></DL>
-<P>
-<H3><A NAME="clippathimage">ClipPathImage</A></H3>
+</P>
+<h2><a name="clippathimage">ClipPathImage</a></h2>
 <blockquote>ClipPathImage() sets the image clip mask based any clipping path information if it exists. </blockquote><P>The format of the ClipPathImage method is:</P>
-<blockquote>unsigned int ClipPathImage ( <A HREF="types.html#Image">Image</A> *image, const char *pathname, const unsigned int inside ); </blockquote><P>
-A description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<DD><P></P><DT><STRONG>image:</STRONG><BR>
+<blockquote>unsigned int ClipPathImage ( <A HREF="types.html#Image">Image</A> *image, const char *pathname, const unsigned int inside ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>image:</strong><br />
+</dt>
 <DD>
 The image.
+</dd>
 <P></P>
-<DD><P></P><DT><STRONG><A NAME="item_o_pathname%3A">pathname:</A></STRONG><BR>
+<dt><strong><a name="item_o_pathname_3a">pathname:</a></strong><br />
+</dt>
 <DD>
 name of clipping path resource.  If name is preceded by #, use clipping path numbered by name.
+</dd>
 <P></P>
-<DD><P></P><DT><STRONG><A NAME="item_o_inside%3A">inside:</A></STRONG><BR>
+<dt><strong><a name="item_o_inside_3a">inside:</a></strong><br />
+</dt>
 <DD>
 if non-zero, later operations take effect inside clipping path.  Otherwise later operations take effect outside clipping path.
-<P></P></DL></DL>
+</dd>
+<P></P></dl>
 <P>
-<H3><A NAME="cloneimage">CloneImage</A></H3>
+</P>
+<h2><a name="cloneimage">CloneImage</a></h2>
 <blockquote>CloneImage() copies an image and returns the copy as a new image object. If the specified columns and rows is 0, an exact copy of the image is returned, otherwise the pixel data is undefined and must be initialized with the SetImagePixels ( ) and SyncImagePixels ( ) methods. On failure, a NULL image is returned and exception describes the reason for the failure. </blockquote><P>The format of the CloneImage method is:</P>
-<blockquote><A HREF="types.html#Image">Image</A> *CloneImage ( const <A HREF="types.html#Image">Image</A> *image, const unsigned long columns, const unsigned long rows, const unsigned int orphan, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>
-A description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<DD><P></P><DT><STRONG>image:</STRONG><BR>
+<blockquote><A HREF="types.html#Image">Image</A> *CloneImage ( const <A HREF="types.html#Image">Image</A> *image, const unsigned long columns, const unsigned long rows, const unsigned int orphan, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>image:</strong><br />
+</dt>
 <DD>
 The image.
+</dd>
 <P></P>
-<DD><P></P><DT><STRONG><A NAME="item_o_columns%3A">columns:</A></STRONG><BR>
+<dt><strong><a name="item_o_columns_3a">columns:</a></strong><br />
+</dt>
 <DD>
 The number of columns in the cloned image.
+</dd>
 <P></P>
-<DD><P></P><DT><STRONG><A NAME="item_o_rows%3A">rows:</A></STRONG><BR>
+<dt><strong><a name="item_o_rows_3a">rows:</a></strong><br />
+</dt>
 <DD>
 The number of rows in the cloned image.
+</dd>
 <P></P>
-<DD><P></P><DT><STRONG><A NAME="item_o_orphan%3A">orphan:</A></STRONG><BR>
+<dt><strong><a name="item_o_orphan_3a">orphan:</a></strong><br />
+</dt>
 <DD>
-With a value other than 0, the cloned image is an orphan.  An orphan is a stand-alone image that is not assocated with an image list.  In effect, the next and previous members of the cloned image is set to 
-NULL.
+With a value other than 0, the cloned image is an orphan.  An orphan is a stand-alone image that is not assocated with an image list.  In effect, the next and previous members of the cloned image is set to NULL.
+</dd>
 <P></P>
-<DD><P></P><DT><STRONG>exception:</STRONG><BR>
+<dt><strong>exception:</strong><br />
+</dt>
 <DD>
 Return any errors or warnings in this structure.
-<P></P></DL></DL>
+</dd>
+<P></P></dl>
 <P>
-<H3><A NAME="cloneimageinfo">CloneImageInfo</A></H3>
+</P>
+<h2><a name="cloneimageinfo">CloneImageInfo</a></h2>
 <blockquote>CloneImageInfo() makes a copy of the given image info structure. If NULL is specified, a new image info structure is created initialized to default values. </blockquote><P>The format of the CloneImageInfo method is:</P>
-<blockquote><A HREF="types.html#ImageInfo">ImageInfo</A> *CloneImageInfo ( const <A HREF="types.html#ImageInfo">ImageInfo</A> *image_info ); </blockquote><P>
-A description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<DD><P></P><DT><STRONG>image_info:</STRONG><BR>
+<blockquote><A HREF="types.html#ImageInfo">ImageInfo</A> *CloneImageInfo ( const <A HREF="types.html#ImageInfo">ImageInfo</A> *image_info ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>image_info:</strong><br />
+</dt>
 <DD>
 The image info.
-<P></P></DL></DL>
+</dd>
+<P></P></dl>
 <P>
-<H3><A NAME="cyclecolormapimage">CycleColormapImage</A></H3>
-<P><CODE>CycleColormap()</CODE> displaces an image's colormap by a given number of positions.  If you cycle the colormap a number of times you can produce a psychodelic effect.</P>
+</P>
+<h2><a name="cyclecolormapimage">CycleColormapImage</a></h2>
+<P><code>CycleColormap()</code> displaces an image's colormap by a given number of positions.  If you cycle the colormap a number of times you can produce a psychodelic effect.</P>
 <P>The format of the CycleColormapImage method is:</P>
-<blockquote>CycleColormapImage ( <A HREF="types.html#Image">Image</A> *image, const int amount ); </blockquote><P>
-A description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<DD><P></P><DT><STRONG>image:</STRONG><BR>
+<blockquote>CycleColormapImage ( <A HREF="types.html#Image">Image</A> *image, const int amount ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>image:</strong><br />
+</dt>
 <DD>
 The image.
+</dd>
 <P></P>
-<DD><P></P><DT><STRONG><A NAME="item_o_amount%3A">amount:</A></STRONG><BR>
+<dt><strong><a name="item_o_amount_3a">amount:</a></strong><br />
+</dt>
 <DD>
 Offset the colormap this much.
-<P></P></DL></DL>
+</dd>
+<P></P></dl>
 <P>
-<H3><A NAME="describeimage">DescribeImage</A></H3>
+</P>
+<h2><a name="describeimage">DescribeImage</a></h2>
 <blockquote>DescribeImage() describes an image by printing its attributes to the file. Attributes include the image width, height, size, and others. </blockquote><P>The format of the DescribeImage method is:</P>
-<blockquote>void DescribeImage ( <A HREF="types.html#Image">Image</A> *image, FILE *file, const unsigned int verbose ); </blockquote><P>
-A description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<DD><P></P><DT><STRONG>image:</STRONG><BR>
+<blockquote>void DescribeImage ( <A HREF="types.html#Image">Image</A> *image, FILE *file, const unsigned int verbose ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>image:</strong><br />
+</dt>
 <DD>
 The image.
+</dd>
 <P></P>
-<DD><P></P><DT><STRONG><A NAME="item_o_file%3A">file:</A></STRONG><BR>
+<dt><strong><a name="item_o_file_3a">file:</a></strong><br />
+</dt>
 <DD>
 The file, typically stdout.
+</dd>
 <P></P>
-<DD><P></P><DT><STRONG><A NAME="item_o_verbose%3A">verbose:</A></STRONG><BR>
+<dt><strong><a name="item_o_verbose_3a">verbose:</a></strong><br />
+</dt>
 <DD>
-
 A value other than zero prints more detailed information about the image.
-<P></P></DL></DL>
+</dd>
+<P></P></dl>
 <P>
-<H3><A NAME="destroyimage">DestroyImage</A></H3>
+</P>
+<h2><a name="destroyimage">DestroyImage</a></h2>
 <blockquote>DestroyImage() dereferences an image, deallocating memory associated with the image if the reference count becomes zero. </blockquote><P>The format of the DestroyImage method is:</P>
-<blockquote>void DestroyImage ( <A HREF="types.html#Image">Image</A> *image ); </blockquote><P>
-A description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<DD><P></P><DT><STRONG>image:</STRONG><BR>
+<blockquote>void DestroyImage ( <A HREF="types.html#Image">Image</A> *image ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>image:</strong><br />
+</dt>
 <DD>
 The image.
-<P></P></DL></DL>
+</dd>
+<P></P></dl>
 <P>
-<H3><A NAME="destroyimageinfo">DestroyImageInfo</A></H3>
+</P>
+<h2><a name="destroyimageinfo">DestroyImageInfo</a></h2>
 <blockquote>DestroyImageInfo() deallocates memory associated with a <A HREF="types.html#ImageInfo">ImageInfo</A> structure. </blockquote><P>The format of the DestroyImageInfo method is:</P>
-<blockquote>void DestroyImageInfo ( <A HREF="types.html#ImageInfo">ImageInfo</A> *image_info ); </blockquote><P>
-A description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<DD><P></P><DT><STRONG>image_info:</STRONG><BR>
+<blockquote>void DestroyImageInfo ( <A HREF="types.html#ImageInfo">ImageInfo</A> *image_info ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>image_info:</strong><br />
+</dt>
 <DD>
 The image info.
-<P></P></DL></DL>
+</dd>
+<P></P></dl>
 <P>
-<H3><A NAME="displayimages">DisplayImages</A></H3>
+</P>
+<h2><a name="displayimages">DisplayImages</a></h2>
 <blockquote>DisplayImages() displays an image sequence to any X window screen. It returns a value other than 0 if successful. Check the exception member of image to determine the reason for any failure. </blockquote><P>The format of the DisplayImages method is:</P>
-<blockquote>unsigned int DisplayImages ( const <A HREF="types.html#ImageInfo">ImageInfo</A> *image_info, <A HREF="types.html#Image">Image</A> *image ); </blockquote><P>
-A description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<DD><P></P><DT><STRONG>image_info:</STRONG><BR>
+<blockquote>unsigned int DisplayImages ( const <A HREF="types.html#ImageInfo">ImageInfo</A> *image_info, <A HREF="types.html#Image">Image</A> *image ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>image_info:</strong><br />
+</dt>
 <DD>
 The image info.
+</dd>
 <P></P>
-<DD><P></P><DT><STRONG>image:</STRONG><BR>
+<dt><strong>image:</strong><br />
+</dt>
 <DD>
 The image.
-<P></P></DL></DL>
+</dd>
+<P></P></dl>
 <P>
-<H3><A NAME="getimagechanneldepth">GetImageChannelDepth</A></H3>
-<blockquote>GetImageChannelDepth() returns the minimum bit depth required to store the specified image channel without actual loss of color resolution. Pixel components are stored in a <A HREF="types.html#Quantum">Quantum</A>, which is 8, 16, or 32 bits depending on the QuantumDepth value set when the software is compiled. GetImageChannelDepth ( ) returns the smallest modulus storage size which supports the scale of the pixel within the range ( i.e. no information is lost ) . As an example, the value one is returned for a bilevel channel since only one bit of resolution is required to represent a bilevel channel. </blockquote><P>The format of the GetImageChannelDepth method is:</P>
-<blockquote>unsigned long GetImageChannelDepth ( const <A HREF="types.html#Image">Image</A> *image, const <A HREF="types.html#ChannelType">ChannelType</A> channel, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>
-A description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<DD><P></P><DT><STRONG>image:</STRONG><BR>
-<DD>
-The image.
-<P></P>
-<DD><P></P><DT><STRONG>channel:</STRONG><BR>
-<DD>
-Channel to test.
-<P></P>
-<DD><P></P><DT><STRONG>exception:</STRONG><BR>
-<DD>
-Return any errors or warnings in this structure.
-<P></P></DL></DL>
-<P>
-<H3><A NAME="getimageclipmask">GetImageClipMask</A></H3>
-<P>GetImageClipMask returns a reference-counted copy of the current image clip mask.  This copy must be deallocated using <CODE>DestroyImage()</CODE> once it is no longer needed.  If the image does not have an associated clip mask, then 
-NULL is returned.  Use <CODE>SetImageClipMask()</CODE> to add a clip mask to an image, or remove a clip mask.</P>
-<P>If a component of the clip mask is set to TransparentOpacity (maximum value) then the corresponding image pixel component will not be updated when <CODE>SyncImagePixels()</CODE> is applied.  The clip mask may be used to constrain the results of an image processing operation to a region of the image.  Regions outside those allowed by the clip mask may be processed, but only pixel quantums allowed by the clip mask will actually be updated.</P>
+</P>
+<h2><a name="getimageclipmask">GetImageClipMask</a></h2>
+<P>GetImageClipMask returns a reference-counted copy of the current image clip mask.  This copy must be deallocated using <code>DestroyImage()</code> once it is no longer needed.  If the image does not have an associated clip mask, then NULL is returned.  Use <code>SetImageClipMask()</code> to add a clip mask to an image, or remove a clip mask.</P>
+<P>If a component of the clip mask is set to TransparentOpacity (maximum value) then the corresponding image pixel component will not be updated when <code>SyncImagePixels()</code> is applied.  The clip mask may be used to constrain the results of an image processing operation to a region of the image.  Regions outside those allowed by the clip mask may be processed, but only pixel quantums allowed by the clip mask will actually be updated.</P>
 <P>The clip mask protects the DirectClass pixels and PseudoClass pixel indexes from modification.  The clip mask does *not* protect the image colormap since the image colormap is globally shared by all pixels in a PseudoClass image.</P>
 <P>The format of the GetImageClipMask method is</P>
-<blockquote><A HREF="types.html#Image">Image</A> *GetImageClipMask ( const <A HREF="types.html#Image">Image</A> *image, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>
-A descripton of each parameter follows:</P>
-<DL><DT><DD><DL>
-<DD><P></P><DT><STRONG>image:</STRONG><BR>
+<blockquote><A HREF="types.html#Image">Image</A> *GetImageClipMask ( const <A HREF="types.html#Image">Image</A> *image, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A descripton of each parameter follows:</P>
+<dl>
+<dt><strong>image:</strong><br />
+</dt>
 <DD>
 The image.
+</dd>
 <P></P>
-<DD><P></P><DT><STRONG>exception:</STRONG><BR>
+<dt><strong>exception:</strong><br />
+</dt>
 <DD>
 Reason for failure.
-<P></P></DL></DL>
+</dd>
+<P></P></dl>
 <P>
-<H3><A NAME="getimagedepth">GetImageDepth</A></H3>
+</P>
+<h2><a name="getimagedepth">GetImageDepth</a></h2>
 <blockquote>GetImageDepth() returns the minimum bit depth of the image required to ensure that data is not lost in the red, green, blue, and opacity, channels. Pixel components are stored in a <A HREF="types.html#Quantum">Quantum</A>, which is 8, 16, or 32 bits depending on the QuantumDepth value set when the software is compiled. GetImageDepth ( ) returns the smallest modulus storage size which supports the scale of the pixel within the range ( i.e. no information is lost ) . As an example, the value one is returned for a black and white image since only one bit of resolution is required to represent a black and white image. </blockquote><P>The format of the GetImageDepth method is:</P>
-<blockquote>unsigned long GetImageDepth ( const <A HREF="types.html#Image">Image</A> *image, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>
-A description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<DD><P></P><DT><STRONG>image:</STRONG><BR>
+<blockquote>unsigned long GetImageDepth ( const <A HREF="types.html#Image">Image</A> *image, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>image:</strong><br />
+</dt>
 <DD>
 The image.
+</dd>
 <P></P>
-<DD><P></P><DT><STRONG>exception:</STRONG><BR>
+<dt><strong>exception:</strong><br />
+</dt>
 <DD>
 Return any errors or warnings in this structure.
-<P></P></DL></DL>
+</dd>
+<P></P></dl>
 <P>
-<H3><A NAME="getimageexception">GetImageException</A></H3>
+</P>
+<h2><a name="getimageexception">GetImageException</a></h2>
 <blockquote>GetImageException() traverses an image sequence and returns any error more severe than noted by the exception parameter. </blockquote><P>The format of the GetImageException method is:</P>
-<blockquote>void GetImageException ( <A HREF="types.html#Image">Image</A> *image, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>
-A description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<DD><P></P><DT><STRONG>image:</STRONG><BR>
+<blockquote>void GetImageException ( <A HREF="types.html#Image">Image</A> *image, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>image:</strong><br />
+</dt>
 <DD>
 Specifies a pointer to a list of one or more images.
+</dd>
 <P></P>
-<DD><P></P><DT><STRONG>exception:</STRONG><BR>
+<dt><strong>exception:</strong><br />
+</dt>
 <DD>
 return the highest severity exception.
-<P></P></DL></DL>
+</dd>
+<P></P></dl>
 <P>
-<H3><A NAME="getimagegeometry">GetImageGeometry</A></H3>
+</P>
+<h2><a name="getimagegeometry">GetImageGeometry</a></h2>
 <blockquote>GetImageGeometry() returns a region as defined by the geometry string with respect to the image and its gravity. </blockquote><P>The format of the GetImageGeometry method is:</P>
-<blockquote>int GetImageGeometry ( const <A HREF="types.html#Image">Image</A> *image, const char *geometry, const unsigned int size_to_fit, <A HREF="types.html#RectangleInfo">RectangleInfo</A> *region_info ); </blockquote><P>
-A description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<DD><P></P><DT><STRONG><A NAME="item_o_flags%3A">flags:</A></STRONG><BR>
+<blockquote>int GetImageGeometry ( const <A HREF="types.html#Image">Image</A> *image, const char *geometry, const unsigned int size_to_fit, <A HREF="types.html#RectangleInfo">RectangleInfo</A> *region_info ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong><a name="item_o_flags_3a">flags:</a></strong><br />
+</dt>
 <DD>
 Method GetImageGeometry returns a bitmask that indicates which of the four values were located in the geometry string.
+</dd>
 <P></P>
-<DD><P></P><DT><STRONG><A NAME="item_o_geometry%3A">geometry:</A></STRONG><BR>
+<dt><strong><a name="item_o_geometry_3a">geometry:</a></strong><br />
+</dt>
 <DD>
 The geometry (e.g.  100x100+10+10).
+</dd>
 <P></P>
-<DD><P></P><DT><STRONG><A NAME="item_o_size_to_fit%3A">size_to_fit:</A></STRONG><BR>
+<dt><strong><a name="item_o_size_to_fit_3a">size_to_fit:</a></strong><br />
+</dt>
 <DD>
-
 A value other than 0 means to scale the region so it fits within the specified width and height.
+</dd>
 <P></P>
-<DD><P></P><DT><STRONG><A NAME="item_o_region_info%3A">region_info:</A></STRONG><BR>
+<dt><strong><a name="item_o_region_info_3a">region_info:</a></strong><br />
+</dt>
 <DD>
 The region as defined by the geometry string with respect to the image and its gravity.
-<P></P></DL></DL>
+</dd>
+<P></P></dl>
 <P>
-<H3><A NAME="getimageinfo">GetImageInfo</A></H3>
+</P>
+<h2><a name="getimageinfo">GetImageInfo</a></h2>
 <blockquote>GetImageInfo() initializes image_info to default values. </blockquote><P>The format of the GetImageInfo method is:</P>
-<blockquote>void GetImageInfo ( <A HREF="types.html#ImageInfo">ImageInfo</A> *image_info ); </blockquote><P>
-A description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<DD><P></P><DT><STRONG>image_info:</STRONG><BR>
+<blockquote>void GetImageInfo ( <A HREF="types.html#ImageInfo">ImageInfo</A> *image_info ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>image_info:</strong><br />
+</dt>
 <DD>
 The image info.
-<P></P></DL></DL>
+</dd>
+<P></P></dl>
 <P>
-<H3><A NAME="getimagestatistics">GetImageStatistics</A></H3>
+</P>
+<h2><a name="getimagestatistics">GetImageStatistics</a></h2>
 <P>GetImageStatistics computes common statistics (currently maximum, minimum, mean and standard deviation) for the available image channels.  The per-channel values are returned in an ImageStatistics structure.  Statistics are normalized to the range 0.0 to 1.0.  Multiply values by MaxRGB to obtain the statistics in quantum units.  Statistics for non-existent channels are set to zero.</P>
 <P>The format of the GetImageStatistics method is:</P>
-<blockquote>MagickPassFail GetImageStatistics ( const <A HREF="types.html#Image">Image</A> *image, ImageStatistics *statistics <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>
-A description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<DD><P></P><DT><STRONG>image:</STRONG><BR>
+<blockquote>MagickPassFail GetImageStatistics ( const <A HREF="types.html#Image">Image</A> *image, ImageStatistics *statistics <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>image:</strong><br />
+</dt>
 <DD>
 The image.
+</dd>
 <P></P>
-<DD><P></P><DT><STRONG><A NAME="item_o_statistics%3A">statistics:</A></STRONG><BR>
+<dt><strong><a name="item_o_statistics_3a">statistics:</a></strong><br />
+</dt>
 <DD>
 An ImageStatistics structure to update with statistics.
+</dd>
 <P></P>
-<DD><P></P><DT><STRONG>exception:</STRONG><BR>
+<dt><strong>exception:</strong><br />
+</dt>
 <DD>
 Any errors are reported here.
-<P></P></DL></DL>
+</dd>
+<P></P></dl>
 <P>
-<H3><A NAME="getimagetype">GetImageType</A></H3>
-<blockquote>GetImageType() returns the type of image: </blockquote><PRE>
+</P>
+<h2><a name="getimagetype">GetImageType</a></h2>
+<blockquote>GetImageType() returns the type of image: </blockquote><pre>
       Bilevel        Grayscale       GrayscaleMatte
       Palette        PaletteMatte    TrueColor
-      TrueColorMatte ColorSeparation ColorSeparationMatte</PRE>
+      TrueColorMatte ColorSeparation ColorSeparationMatte</pre>
 <P>The format of the GetImageType method is:</P>
-<blockquote><A HREF="types.html#ImageType">ImageType</A> GetImageType ( const <A HREF="types.html#Image">Image</A> *image, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>
-A description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<DD><P></P><DT><STRONG>image:</STRONG><BR>
+<blockquote><A HREF="types.html#ImageType">ImageType</A> GetImageType ( const <A HREF="types.html#Image">Image</A> *image, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>image:</strong><br />
+</dt>
 <DD>
 The image.
+</dd>
 <P></P>
-<DD><P></P><DT><STRONG>exception:</STRONG><BR>
+<dt><strong>exception:</strong><br />
+</dt>
 <DD>
 Return any errors or warnings in this structure.
-<P></P></DL></DL>
+</dd>
+<P></P></dl>
 <P>
-<H3><A NAME="grayscalepseudoclassimage">GrayscalePseudoClassImage</A></H3>
+</P>
+<h2><a name="grayscalepseudoclassimage">GrayscalePseudoClassImage</a></h2>
 <P>GrayscalePseudoClassImage converts an image to a PseudoClass grayscale representation with an (optionally) compressed and sorted colormap.  Colormap is ordered by increasing intensity.</P>
 <P>The format of the GrayscalePseudoClassImage method is:</P>
-<blockquote>void GrayscalePseudoClassImage ( <A HREF="types.html#Image">Image</A> *image ); </blockquote><P>
-A description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<DD><P></P><DT><STRONG>image:</STRONG><BR>
+<blockquote>void GrayscalePseudoClassImage ( <A HREF="types.html#Image">Image</A> *image ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>image:</strong><br />
+</dt>
 <DD>
 The image.
+</dd>
 <P></P>
-<DD><P></P><DT><STRONG><A NAME="item_o_optimize_colormap%3A">optimize_colormap:</A></STRONG><BR>
+<dt><strong><a name="item_o_optimize_colormap_3a">optimize_colormap:</a></strong><br />
+</dt>
 <DD>
 If true, produce an optimimal (compact) colormap.
-<P></P></DL></DL>
+</dd>
+<P></P></dl>
 <P>
-<H3><A NAME="isimagesequal">IsImagesEqual</A></H3>
-<blockquote>IsImagesEqual() measures the difference between colors at each pixel location of two images. A value other than 0 means the colors match exactly. Otherwise an error measure is computed by summing over all pixels in an image the distance squared in RGB space between each image pixel and its corresponding pixel in the reference image. The error measure is assigned to these image members: </blockquote><DL><DT><DD><DL>
-<DD><P></P><DT><STRONG><A NAME="item_o_mean_error_per_pixel%3A">mean_error_per_pixel:</A></STRONG><BR>
+</P>
+<h2><a name="isimagesequal">IsImagesEqual</a></h2>
+<blockquote>IsImagesEqual() measures the difference between colors at each pixel location of two images. A value other than 0 means the colors match exactly. Otherwise an error measure is computed by summing over all pixels in an image the distance squared in RGB space between each image pixel and its corresponding pixel in the reference image. The error measure is assigned to these image members: </blockquote><dl>
+<dt><strong><a name="item_o_mean_error_per_pixel_3a">mean_error_per_pixel:</a></strong><br />
+</dt>
 <DD>
 The mean error for any single pixel in the image.
+</dd>
 <P></P>
-<DD><P></P><DT><STRONG><A NAME="item_o_normalized_mean_error%3A">normalized_mean_error:</A></STRONG><BR>
+<dt><strong><a name="item_o_normalized_mean_error_3a">normalized_mean_error:</a></strong><br />
+</dt>
 <DD>
 The normalized mean quantization error for any single pixel in the image.  This distance measure is normalized to a range between 0 and 1.  It is independent of the range of red, green, and blue values in the image.
+</dd>
 <P></P>
-<DD><P></P><DT><STRONG><A NAME="item_o_normalized_maximum_error%3A">normalized_maximum_error:</A></STRONG><BR>
+<dt><strong><a name="item_o_normalized_maximum_error_3a">normalized_maximum_error:</a></strong><br />
+</dt>
 <DD>
 The normalized maximum quantization error for any single pixel in the image.  This distance measure is normalized to a range between 0 and 1.  It is independent of the range of red, green, and blue values in your image.
-<P></P></DL></DL>
-<P>
-A small normalized mean square error, accessed as image-&gt;normalized_mean_error, suggests the images are very similiar in spatial layout and color.</P>
+</dd>
+<P></P></dl>
+<P>A small normalized mean square error, accessed as image-&gt;normalized_mean_error, suggests the images are very similiar in spatial layout and color.</P>
 <P>The format of the IsImagesEqual method is:</P>
-<blockquote>unsigned int IsImagesEqual ( <A HREF="types.html#Image">Image</A> *image, const <A HREF="types.html#Image">Image</A> *reference ); </blockquote><P>
-A description of each parameter follows.</P>
-<DL><DT><DD><DL>
-<DD><P></P><DT><STRONG>image:</STRONG><BR>
+<blockquote>unsigned int IsImagesEqual ( <A HREF="types.html#Image">Image</A> *image, const <A HREF="types.html#Image">Image</A> *reference ); </blockquote><P>A description of each parameter follows.</P>
+<dl>
+<dt><strong>image:</strong><br />
+</dt>
 <DD>
 The image.
+</dd>
 <P></P>
-<DD><P></P><DT><STRONG><A NAME="item_o_reference%3A">reference:</A></STRONG><BR>
+<dt><strong><a name="item_o_reference_3a">reference:</a></strong><br />
+</dt>
 <DD>
 The reference image.
-<P></P></DL></DL>
+</dd>
+<P></P></dl>
 <P>
-<H3><A NAME="istaintimage">IsTaintImage</A></H3>
+</P>
+<h2><a name="istaintimage">IsTaintImage</a></h2>
 <blockquote>IsTaintImage() returns a value other than 0 if any pixel in the image has been altered since it was first constituted. </blockquote><P>The format of the IsTaintImage method is:</P>
-<blockquote>unsigned int IsTaintImage ( const <A HREF="types.html#Image">Image</A> *image ); </blockquote><P>
-A description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<DD><P></P><DT><STRONG>image:</STRONG><BR>
+<blockquote>unsigned int IsTaintImage ( const <A HREF="types.html#Image">Image</A> *image ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>image:</strong><br />
+</dt>
 <DD>
 The image.
-<P></P></DL></DL>
+</dd>
+<P></P></dl>
 <P>
-<H3><A NAME="modifyimage">ModifyImage</A></H3>
+</P>
+<h2><a name="modifyimage">ModifyImage</a></h2>
 <blockquote>ModifyImage() ensures that there is only a single reference to the image to be modified, updating the provided image pointer to point to a clone of the original image if necessary. </blockquote><P>The format of the ModifyImage method is:</P>
-<blockquote>ModifyImage ( <A HREF="types.html#Image">Image</A> *image, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>
-A description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<DD><P></P><DT><STRONG>image:</STRONG><BR>
+<blockquote>ModifyImage ( <A HREF="types.html#Image">Image</A> *image, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>image:</strong><br />
+</dt>
 <DD>
 The image.
+</dd>
 <P></P>
-<DD><P></P><DT><STRONG>exception:</STRONG><BR>
+<dt><strong>exception:</strong><br />
+</dt>
 <DD>
 Return any errors or warnings in this structure.
-<P></P></DL></DL>
+</dd>
+<P></P></dl>
 <P>
-<H3><A NAME="plasmaimage">PlasmaImage</A></H3>
+</P>
+<h2><a name="plasmaimage">PlasmaImage</a></h2>
 <blockquote>PlasmaImage() initializes an image with plasma fractal values. The image must be initialized with a base color and the random number generator seeded before this method is called. </blockquote><P>The format of the PlasmaImage method is:</P>
-<blockquote>unsigned int PlasmaImage ( <A HREF="types.html#Image">Image</A> *image, const <A HREF="types.html#SegmentInfo">SegmentInfo</A> *segment, unsigned long attenuate, unsigned long depth ); </blockquote><P>
-A description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<DD><P></P><DT><STRONG>image:</STRONG><BR>
+<blockquote>unsigned int PlasmaImage ( <A HREF="types.html#Image">Image</A> *image, const <A HREF="types.html#SegmentInfo">SegmentInfo</A> *segment, unsigned long attenuate, unsigned long depth ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>image:</strong><br />
+</dt>
 <DD>
 The image.
+</dd>
 <P></P>
-<DD><P></P><DT><STRONG><A NAME="item_o_segment%3A">segment:</A></STRONG><BR>
+<dt><strong><a name="item_o_segment_3a">segment:</a></strong><br />
+</dt>
 <DD>
 Define the region to apply plasma fractals values.
+</dd>
 <P></P>
-<DD><P></P><DT><STRONG><A NAME="item_o_attenuate%3A">attenuate:</A></STRONG><BR>
+<dt><strong><a name="item_o_attenuate_3a">attenuate:</a></strong><br />
+</dt>
 <DD>
 Define the plasma attenuation factor.
+</dd>
 <P></P>
-<DD><P></P><DT><STRONG><A NAME="item_o_depth%3A">depth:</A></STRONG><BR>
+<dt><strong><a name="item_o_depth_3a">depth:</a></strong><br />
+</dt>
 <DD>
 Limit the plasma recursion depth.
-<P></P></DL></DL>
+</dd>
+<P></P></dl>
 <P>
-<H3><A NAME="quantumoperatorimage">QuantumOperatorImage</A></H3>
+</P>
+<h2><a name="quantumoperatorimage">QuantumOperatorImage</a></h2>
 <blockquote>QuantumOperatorImage() performs the requested integer arithmetic operation on the selected channels of the image. </blockquote><P>The format of the QuantumOperatorImage method is:</P>
-<blockquote>MagickPassFail QuantumOperatorImage ( <A HREF="types.html#Image">Image</A> *image, <A HREF="types.html#ChannelType">ChannelType</A> channel, QuantumOperator operator, double rvalue ); </blockquote><P>
-A description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<DD><P></P><DT><STRONG>image:</STRONG><BR>
+<blockquote>MagickPassFail QuantumOperatorImage ( <A HREF="types.html#Image">Image</A> *image, <A HREF="types.html#ChannelType">ChannelType</A> channel, QuantumOperator operator, double rvalue ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>image:</strong><br />
+</dt>
 <DD>
 The image.
+</dd>
 <P></P>
-<DD><P></P><DT><STRONG>channel:</STRONG><BR>
+<dt><strong><a name="item_o_channel_3a">channel:</a></strong><br />
+</dt>
 <DD>
 Channel to operate on.
+</dd>
 <P></P>
-<DD><P></P><DT><STRONG><A NAME="item_o_quantum_operator%3A">quantum_operator:</A></STRONG><BR>
+<dt><strong><a name="item_o_quantum_operator_3a">quantum_operator:</a></strong><br />
+</dt>
 <DD>
 arithmetic or bitwise operator to use (AddQuantumOp, AndQuantumOp, DivideQuantumOp, LShiftQuantumOp, MultiplyQuantumOp, OrQuantumOp, RShiftQuantumOp, SubtractQuantumOp, XorQuantumOp).
+</dd>
 <P></P>
-<DD><P></P><DT><STRONG><A NAME="item_o_rvalue%3A">rvalue:</A></STRONG><BR>
+<dt><strong><a name="item_o_rvalue_3a">rvalue:</a></strong><br />
+</dt>
 <DD>
 Operator argument.
+</dd>
 <P></P>
-<DD><P></P><DT><STRONG>exception:</STRONG><BR>
+<dt><strong>exception:</strong><br />
+</dt>
 <DD>
 Updated with error description.
-<P></P></DL></DL>
+</dd>
+<P></P></dl>
 <P>
-<H3><A NAME="quantumoperatorregionimage">QuantumOperatorRegionImage</A></H3>
+</P>
+<h2><a name="quantumoperatorregionimage">QuantumOperatorRegionImage</a></h2>
 <blockquote>QuantumOperatorRegionImage() performs the requested integer arithmetic operation on the selected channels of the image over the specified region. </blockquote><P>The format of the QuantumOperatorRegionImage method is:</P>
-<blockquote>MagickPassFail QuantumOperatorRegionImage ( <A HREF="types.html#Image">Image</A> *image, long x, long y, unsigned long columns, unsigned long rows, <A HREF="types.html#ChannelType">ChannelType</A> channel, QuantumOperator quantum_operator, double rvalue ); </blockquote><P>
-A description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<DD><P></P><DT><STRONG>image:</STRONG><BR>
+<blockquote>MagickPassFail QuantumOperatorRegionImage ( <A HREF="types.html#Image">Image</A> *image, long x, long y, unsigned long columns, unsigned long rows, <A HREF="types.html#ChannelType">ChannelType</A> channel, QuantumOperator quantum_operator, double rvalue ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>image:</strong><br />
+</dt>
 <DD>
 The image.
+</dd>
 <P></P>
-<DD><P></P><DT><STRONG>channel:</STRONG><BR>
+<dt><strong>channel:</strong><br />
+</dt>
 <DD>
 Channel to operate on.
+</dd>
 <P></P>
-<DD><P></P><DT><STRONG><A NAME="item_o_x%3A">x:</A></STRONG><BR>
+<dt><strong><a name="item_o_x_3a">x:</a></strong><br />
+</dt>
 <DD>
 Ordinate of left row of region.
+</dd>
 <P></P>
-<DD><P></P><DT><STRONG><A NAME="item_o_y%3A">y:</A></STRONG><BR>
+<dt><strong><a name="item_o_y_3a">y:</a></strong><br />
+</dt>
 <DD>
 Orginate of top column of region.
+</dd>
 <P></P>
-<DD><P></P><DT><STRONG>columns:</STRONG><BR>
+<dt><strong>columns:</strong><br />
+</dt>
 <DD>
 Width of region.
+</dd>
 <P></P>
-<DD><P></P><DT><STRONG>rows:</STRONG><BR>
+<dt><strong>rows:</strong><br />
+</dt>
 <DD>
 Height of region.
+</dd>
 <P></P>
-<DD><P></P><DT><STRONG>quantum_operator:</STRONG><BR>
+<dt><strong>quantum_operator:</strong><br />
+</dt>
 <DD>
 arithmetic or bitwise operator to use (AddQuantumOp, AndQuantumOp, DivideQuantumOp, LShiftQuantumOp, MultiplyQuantumOp, OrQuantumOp, RShiftQuantumOp, SubtractQuantumOp, XorQuantumOp).
+</dd>
 <P></P>
-<DD><P></P><DT><STRONG>rvalue:</STRONG><BR>
+<dt><strong>rvalue:</strong><br />
+</dt>
 <DD>
 Operator argument.
+</dd>
 <P></P>
-<DD><P></P><DT><STRONG>exception:</STRONG><BR>
+<dt><strong>exception:</strong><br />
+</dt>
 <DD>
 Updated with error description.
-<P></P></DL></DL>
+</dd>
+<P></P></dl>
 <P>
-<H3><A NAME="referenceimage">ReferenceImage</A></H3>
+</P>
+<h2><a name="referenceimage">ReferenceImage</a></h2>
 <blockquote>ReferenceImage() increments the reference count associated with an image returning a pointer to the image. </blockquote><P>The format of the ReferenceImage method is:</P>
-<blockquote><A HREF="types.html#Image">Image</A> *ReferenceImage ( <A HREF="types.html#Image">Image</A> *image ); </blockquote><P>
-A description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<DD><P></P><DT><STRONG>image:</STRONG><BR>
+<blockquote><A HREF="types.html#Image">Image</A> *ReferenceImage ( <A HREF="types.html#Image">Image</A> *image ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>image:</strong><br />
+</dt>
 <DD>
 The image.
-<P></P></DL></DL>
+</dd>
+<P></P></dl>
 <P>
-<H3><A NAME="removedefinitions">RemoveDefinitions</A></H3>
+</P>
+<h2><a name="removedefinitions">RemoveDefinitions</a></h2>
 <blockquote>RemoveDefinitions() removes definitions from the current map of definitions in ImageInfo. Definitions may be used by coders/decoders that read and write images. RemoveDefinitions ( ) returns true only if the specified keys are present in the map and are actually removed. </blockquote><P>The format of the RemoveDefinitions method is:</P>
-<blockquote>void RemoveDefinitions ( <A HREF="types.html#ImageInfo">ImageInfo</A> *image_info, const char *options ); </blockquote><P>
-A description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<DD><P></P><DT><STRONG>image_info:</STRONG><BR>
+<blockquote>void RemoveDefinitions ( <A HREF="types.html#ImageInfo">ImageInfo</A> *image_info, const char *options ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>image_info:</strong><br />
+</dt>
 <DD>
 The image info.
+</dd>
 <P></P>
-<DD><P></P><DT><STRONG><A NAME="item_o_keys%3A">keys:</A></STRONG><BR>
+<dt><strong><a name="item_o_keys_3a">keys:</a></strong><br />
+</dt>
 <DD>
-List of keys to remove from the definitions map.  The format of the string is ``key1,key2,...''. 
-A special key, *, removes all the key/value pairs in the definitions map.  This key always succeeds.
+List of keys to remove from the definitions map.  The format of the string is ``key1,key2,...''. A special key, *, removes all the key/value pairs in the definitions map.  This key always succeeds.
+</dd>
 <P></P>
-<DD><P></P><DT><STRONG>exception:</STRONG><BR>
+<dt><strong>exception:</strong><br />
+</dt>
 <DD>
 Errors result in updates to this structure.
-<P></P></DL></DL>
+</dd>
+<P></P></dl>
 <P>
-<H3><A NAME="setimage">SetImage</A></H3>
+</P>
+<h2><a name="setimage">SetImage</a></h2>
 <blockquote>SetImage() sets the red, green, and blue components of each pixel to the image background color and the opacity component to the specified level of transparency. The background color is defined by the background_color member of the image. </blockquote><P>The format of the SetImage method is:</P>
-<blockquote>void SetImage ( <A HREF="types.html#Image">Image</A> *image, const <A HREF="types.html#Quantum">Quantum</A> opacity ); </blockquote><P>
-A description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<DD><P></P><DT><STRONG>image:</STRONG><BR>
+<blockquote>void SetImage ( <A HREF="types.html#Image">Image</A> *image, const <A HREF="types.html#Quantum">Quantum</A> opacity ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>image:</strong><br />
+</dt>
 <DD>
 The image.
+</dd>
 <P></P>
-<DD><P></P><DT><STRONG><A NAME="item_o_opacity%3A">opacity:</A></STRONG><BR>
+<dt><strong><a name="item_o_opacity_3a">opacity:</a></strong><br />
+</dt>
 <DD>
 Set each pixel to this level of transparency.
-<P></P></DL></DL>
+</dd>
+<P></P></dl>
 <P>
-<H3><A NAME="setimagechanneldepth">SetImageChannelDepth</A></H3>
-<blockquote>SetImageChannelDepth() translates the pixel quantums in the specified channel so that if they are later divided to fit within the specified bit depth, that no additional information is lost ( i.e. no remainder resulting from the division ) . Note that any subsequent image processing is likely to increase the effective depth of the image channels. A non-zero value is returned if the operation is successful. Check the exception member of image to determine the cause for any failure. </blockquote><P>The format of the SetImageChannelDepth method is:</P>
-<PRE>
-    unsigned int GetImageChannelDepth(const Image *image,
-                  const ChannelType channel,const unsigned int depth)</PRE>
-<P>
-A description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<DD><P></P><DT><STRONG>image:</STRONG><BR>
-<DD>
-The image to update.
-<P></P>
-<DD><P></P><DT><STRONG>channel:</STRONG><BR>
-<DD>
-Channel to modify.
-<P></P>
-<DD><P></P><DT><STRONG>depth:</STRONG><BR>
-<DD>
-Desired channel depth (range 1 to QuantumDepth)
-<P></P></DL></DL>
-<P>
-<H3><A NAME="setimageclipmask">SetImageClipMask</A></H3>
-<blockquote>SetImageClipMask() associates a clip mask with the image. The clip mask must be the same dimensions as the image. </blockquote><P>If a component of the clip mask is set to TransparentOpacity (maximum value) then the corresponding image pixel component will not be updated when <CODE>SyncImagePixels()</CODE> is applied.  The clip mask may be used to constrain the results of an image processing operation to a region of the image.  Regions outside those allowed by the clip mask may be processed, but only pixel quantums allowed by the clip mask will actually be updated.</P>
+</P>
+<h2><a name="setimageclipmask">SetImageClipMask</a></h2>
+<blockquote>SetImageClipMask() associates a clip mask with the image. The clip mask must be the same dimensions as the image. </blockquote><P>If a component of the clip mask is set to TransparentOpacity (maximum value) then the corresponding image pixel component will not be updated when <code>SyncImagePixels()</code> is applied.  The clip mask may be used to constrain the results of an image processing operation to a region of the image.  Regions outside those allowed by the clip mask may be processed, but only pixel quantums allowed by the clip mask will actually be updated.</P>
 <P>The clip mask protects the DirectClass pixels and PseudoClass pixel indexes from modification.  The clip mask does *not* protect the image colormap since the image colormap is globally shared by all pixels in a PseudoClass image.</P>
 <P>The format of the SetImageClipMask method is:</P>
-<blockquote>unsigned int SetImageClipMask ( <A HREF="types.html#Image">Image</A> *image, const <A HREF="types.html#Image">Image</A> *clip_mask ); </blockquote><P>
-A description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<DD><P></P><DT><STRONG>image:</STRONG><BR>
+<blockquote>unsigned int SetImageClipMask ( <A HREF="types.html#Image">Image</A> *image, const <A HREF="types.html#Image">Image</A> *clip_mask ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>image:</strong><br />
+</dt>
 <DD>
 The image.
+</dd>
 <P></P>
-<DD><P></P><DT><STRONG><A NAME="item_o_clip_mask%3A">clip_mask:</A></STRONG><BR>
+<dt><strong><a name="item_o_clip_mask_3a">clip_mask:</a></strong><br />
+</dt>
 <DD>
 The image clip mask.
-<P></P></DL></DL>
+</dd>
+<P></P></dl>
 <P>
-<H3><A NAME="setimagedepth">SetImageDepth</A></H3>
+</P>
+<h2><a name="setimagedepth">SetImageDepth</a></h2>
 <blockquote>SetImageDepth() translates the pixel quantums across all of the channels so that if they are later divided to fit within the specified bit depth, that no additional information is lost ( i.e. no remainder will result from the division ) . Note that any subsequent image processing is likely to increase the effective depth of the image channels. A non-zero value is returned if the operation is successful. Check the exception member of image to determine the cause for any failure. </blockquote><P>The format of the SetImageDepth method is:</P>
-<blockquote>unsigned int SetImageDepth ( <A HREF="types.html#Image">Image</A> *image, const unsigned long depth ); </blockquote><P>
-A description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<DD><P></P><DT><STRONG>image:</STRONG><BR>
+<blockquote>unsigned int SetImageDepth ( <A HREF="types.html#Image">Image</A> *image, const unsigned long depth ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>image:</strong><br />
+</dt>
 <DD>
 The image to update.
+</dd>
 <P></P>
-<DD><P></P><DT><STRONG>depth:</STRONG><BR>
+<dt><strong>depth:</strong><br />
+</dt>
 <DD>
 Desired image depth (range 1 to QuantumDepth)
-<P></P></DL></DL>
+</dd>
+<P></P></dl>
 <P>
-<H3><A NAME="setimageopacity">SetImageOpacity</A></H3>
+</P>
+<h2><a name="setimageopacity">SetImageOpacity</a></h2>
 <blockquote>SetImageOpacity() attenuates the opacity channel of an image. If the image pixels are opaque, they are set to the specified opacity level. Otherwise, the pixel opacity values are blended with the supplied transparency value. </blockquote><P>The format of the SetImageOpacity method is:</P>
-<blockquote>void SetImageOpacity ( <A HREF="types.html#Image">Image</A> *image, const unsigned int opacity ); </blockquote><P>
-A description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<DD><P></P><DT><STRONG>image:</STRONG><BR>
+<blockquote>void SetImageOpacity ( <A HREF="types.html#Image">Image</A> *image, const unsigned int opacity ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>image:</strong><br />
+</dt>
 <DD>
 The image.
+</dd>
 <P></P>
-<DD><P></P><DT><STRONG>opacity:</STRONG><BR>
+<dt><strong>opacity:</strong><br />
+</dt>
 <DD>
 The level of transparency: 0 is fully opaque and MaxRGB is fully transparent.
-<P></P></DL></DL>
+</dd>
+<P></P></dl>
 <P>
-<H3><A NAME="setimagetype">SetImageType</A></H3>
-<blockquote>SetImageType() sets the type of image. Choose from these types: </blockquote><PRE>
+</P>
+<h2><a name="setimagetype">SetImageType</a></h2>
+<blockquote>SetImageType() sets the type of image. Choose from these types: </blockquote><pre>
       Bilevel        Grayscale       GrayscaleMatte
       Palette        PaletteMatte    TrueColor
       TrueColorMatte ColorSeparation ColorSeparationMatte
-      OptimizeType</PRE>
+      OptimizeType</pre>
 <P>The format of the SetImageType method is:</P>
-<blockquote>SetImageType ( <A HREF="types.html#Image">Image</A> *image, const <A HREF="types.html#ImageType">ImageType</A> image_type ); </blockquote><P>
-A description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<DD><P></P><DT><STRONG>image:</STRONG><BR>
+<blockquote>SetImageType ( <A HREF="types.html#Image">Image</A> *image, const <A HREF="types.html#ImageType">ImageType</A> image_type ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>image:</strong><br />
+</dt>
 <DD>
 The image.
+</dd>
 <P></P>
-<DD><P></P><DT><STRONG><A NAME="item_o_image_type%3A">image_type:</A></STRONG><BR>
+<dt><strong><a name="item_o_image_type_3a">image_type:</a></strong><br />
+</dt>
 <DD>
 Image type.
-<P></P></DL></DL>
+</dd>
+<P></P></dl>
 <P>
-<H3><A NAME="textureimage">TextureImage</A></H3>
+</P>
+<h2><a name="textureimage">TextureImage</a></h2>
 <blockquote>TextureImage() repeatedly tiles the texture image across and down the image canvas. False is returned if an error is encountered. </blockquote><P>The format of the TextureImage method is:</P>
-<blockquote>unsigned int TextureImage ( <A HREF="types.html#Image">Image</A> *image, const <A HREF="types.html#Image">Image</A> *texture ); </blockquote><P>
-A description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<DD><P></P><DT><STRONG>image:</STRONG><BR>
+<blockquote>unsigned int TextureImage ( <A HREF="types.html#Image">Image</A> *image, const <A HREF="types.html#Image">Image</A> *texture ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>image:</strong><br />
+</dt>
 <DD>
 The image.
+</dd>
 <P></P>
-<DD><P></P><DT><STRONG><A NAME="item_o_texture%3A">texture:</A></STRONG><BR>
+<dt><strong><a name="item_o_texture_3a">texture:</a></strong><br />
+</dt>
 <DD>
 This image is the texture to layer on the background.
-</DL></DL>
+</dd>
+</dl>
 
-</BODY>
+</body>
 
-</HTML>
+</html>

@@ -1,3 +1,13 @@
+2004-07-22  Bob Friesenhahn <bfriesen@simple.dallas.tx.us>  <bfriesen@simple.dallas.tx.us>
+
+	* demo/Makefile.am (AUTOMAKE_OPTIONS): Added nostdinc in order
+	to avoid accidentally using magick/list.h when including <list>.
+	* tests/Makefile.am (AUTOMAKE_OPTIONS): Added nostdinc in order
+	to avoid accidentally using magick/list.h when including <list>.
+	* tests/readWriteBlob.cpp: If MISSING_STD_IOS_BINARY is defined,
+	then ios::binary is not used.  Use simple ifstream rather than
+	std::ifstream since we are already using the std namespace.
+
 2004-06-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Magick++/Include.h: Disable unavoidable warnings under

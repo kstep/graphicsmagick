@@ -103,7 +103,7 @@ am_readWriteImages_OBJECTS = readWriteImages.$(OBJEXT)
 readWriteImages_OBJECTS = $(am_readWriteImages_OBJECTS)
 readWriteImages_LDADD = $(LDADD)
 readWriteImages_DEPENDENCIES = ../lib/libGraphicsMagick++.la
-DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)/magick -I$(top_builddir)/magick
+DEFAULT_INCLUDES = 
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
 @AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/appendImages.Po \
@@ -306,6 +306,7 @@ MAGICK_API_CFLAGS = @MAGICK_API_CFLAGS@
 MAGICK_API_CPPFLAGS = @MAGICK_API_CPPFLAGS@
 MAGICK_API_LDFLAGS = @MAGICK_API_LDFLAGS@
 MAGICK_API_LIBS = @MAGICK_API_LIBS@
+MAGICK_API_PC_CPPFLAGS = @MAGICK_API_PC_CPPFLAGS@
 MAGICK_COMPAT_FALSE = @MAGICK_COMPAT_FALSE@
 MAGICK_COMPAT_TRUE = @MAGICK_COMPAT_TRUE@
 MAGICK_DEP_LIBS = @MAGICK_DEP_LIBS@
@@ -469,7 +470,7 @@ xml2_config = @xml2_config@
 #
 # Copyright Bob Friesenhahn, 1999, 2000, 2002, 2004
 #
-AUTOMAKE_OPTIONS = 1.8 foreign
+AUTOMAKE_OPTIONS = 1.8 foreign nostdinc
 AM_CPPFLAGS = \
 	-I$(top_builddir) -I$(top_srcdir)/Magick++/lib \
 	-I$(top_srcdir) $(MAGICK_API_CPPFLAGS)

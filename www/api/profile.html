@@ -1,0 +1,160 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>profile - Manipulate embedded profiles</title>
+<link rev="made" href="mailto:bfriesen@scooby.simplesystems.org" />
+</head>
+
+<body style="background-color: white">
+
+<P><a name="__index__"></a></P>
+<!-- INDEX BEGIN -->
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#function_descriptions">FUNCTION DESCRIPTIONS</a></li>
+	<ul>
+
+		<li><a href="#deleteimageprofile">DeleteImageProfile</a></li>
+		<li><a href="#getimageprofile">GetImageProfile</a></li>
+		<li><a href="#profileimage">ProfileImage</a></li>
+		<li><a href="#setimageprofile">SetImageProfile</a></li>
+	</ul>
+
+</ul>
+<!-- INDEX END -->
+
+<hr />
+<P>
+</P>
+<h1><a name="name">NAME</a></h1>
+<P>profile - Manipulate embedded profiles</P>
+<P>
+</P>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<P>unsigned int  <strong>DeleteImageProfile</strong>( Image *image, const char *name );</P>
+<P>const unsigned char * <strong>GetImageProfile</strong>( const Image *image, const char *name, size_t *length );</P>
+<P>unsigned int  <strong>ProfileImage</strong>( Image *image, const char *name, const unsigned char *profile, const size_t length, unsigned int clone );</P>
+<P>unsigned int  <strong>SetImageProfile</strong>( Image *image, const char *name, const unsigned char *profile, const size_t length );</P>
+<P>
+</P>
+<hr />
+<h1><a name="function_descriptions">FUNCTION DESCRIPTIONS</a></h1>
+<P>
+</P>
+<h2><a name="deleteimageprofile">DeleteImageProfile</a></h2>
+<P>DeleteImageProfile removes a named profile from the image.</P>
+<P>The format of the DeleteImageProfile method is:</P>
+<blockquote>unsigned int DeleteImageProfile ( <A HREF="types.html#Image">Image</A> *image, const char *name ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong><a name="item_o_image_3a">image:</a></strong><br />
+</dt>
+<DD>
+The image.
+</dd>
+<P></P>
+<dt><strong><a name="item_o_name_3a">name:</a></strong><br />
+</dt>
+<DD>
+Profile name.  Valid names are ``8BIM'', ``ICM'', &amp; ``IPTC'' or a generic profile name.
+</dd>
+<P></P></dl>
+<P>
+</P>
+<h2><a name="getimageprofile">GetImageProfile</a></h2>
+<P>GetImageProfile returns a pointer to the named image profile if it is present.  A null pointer is returned if the named profile is not present.</P>
+<P>The format of the GetImageProfile method is:</P>
+<blockquote>const unsigned char *GetImageProfile ( const <A HREF="types.html#Image">Image</A> *image, const char *name, size_t *length ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>image:</strong><br />
+</dt>
+<DD>
+The image.
+</dd>
+<P></P>
+<dt><strong>name:</strong><br />
+</dt>
+<DD>
+Profile name.  Valid names are ``8BIM'', ``ICM'', &amp; ``IPTC'' or an existing generic profile name.
+</dd>
+<P></P>
+<dt><strong><a name="item_o_length_3a">length:</a></strong><br />
+</dt>
+<DD>
+Updated with profile length if profile is present.
+</dd>
+<P></P></dl>
+<P>
+</P>
+<h2><a name="profileimage">ProfileImage</a></h2>
+<blockquote>ProfileImage() adds or removes a ICM, IPTC, or generic profile from an image. If the profile is NULL, it is removed from the image otherwise added. Use a name of ' *' and a profile of NULL to remove all profiles from the image. Ownership of the profile is transferred to GraphicsMagick ( it should not be altered or deallocated ) unless the clone option is set to True. </blockquote><P>The format of the ProfileImage method is:</P>
+<blockquote>unsigned int ProfileImage ( <A HREF="types.html#Image">Image</A> *image, const char *name, const unsigned char *profile, const size_t length, unsigned int clone ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>image:</strong><br />
+</dt>
+<DD>
+The image.
+</dd>
+<P></P>
+<dt><strong>name:</strong><br />
+</dt>
+<DD>
+Name of profile to add or remove: ICM, IPTC, or generic profile.
+</dd>
+<P></P>
+<dt><strong><a name="item_o_profile_3a">profile:</a></strong><br />
+</dt>
+<DD>
+The profile.
+</dd>
+<P></P>
+<dt><strong>length:</strong><br />
+</dt>
+<DD>
+The length of the profile.
+</dd>
+<P></P>
+<dt><strong><a name="item_o_clone_3a">clone:</a></strong><br />
+</dt>
+<DD>
+If set True, then copy the profile rather than taking ownership of it.
+</dd>
+<P></P></dl>
+<P>
+</P>
+<h2><a name="setimageprofile">SetImageProfile</a></h2>
+<P>SetImageProfile adds a named profile to the image.  If a profile with the same name already exists, then it is replaced.  If a null profile address is supplied, then an existing profile is removed.  The profile is copied into the image.  Note that this function does not execute CMS color profiles.  Any existing CMS color profile is simply replaced.  Use the <code>ProfileImage()</code> function in order to execute a CMS color profile.</P>
+<P>The format of the SetImageProfile method is:</P>
+<blockquote>unsigned int SetImageProfile ( <A HREF="types.html#Image">Image</A> *image, const char *name, const unsigned char *profile, const size_t length ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>image:</strong><br />
+</dt>
+<DD>
+The image.
+</dd>
+<P></P>
+<dt><strong>name:</strong><br />
+</dt>
+<DD>
+Profile name.  Valid names are ``8BIM'', ``ICM'', &amp; ``IPTC'' or an generic profile name.
+</dd>
+<P></P>
+<dt><strong>profile:</strong><br />
+</dt>
+<DD>
+Address of profile to add.  Pass zero to remove an existing profile.
+</dd>
+<P></P>
+<dt><strong>length:</strong><br />
+</dt>
+<DD>
+The length of the profile.
+</dd>
+</dl>
+
+</body>
+
+</html>

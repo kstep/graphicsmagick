@@ -1040,11 +1040,6 @@ extern MagickExport int
 extern MagickExport RectangleInfo
   GetImageBoundingBox(const Image *,ExceptionInfo *exception);
 
-/* Functions which return unsigned int as value */
-extern MagickExport unsigned int
-  GetImageChannelDepth(const Image *image,
-    const ChannelType channel, ExceptionInfo *exception);
-
 /* Functions which return unsigned int as a True/False boolean value */
 extern MagickExport MagickBool
   IsImagesEqual(Image *,const Image *),
@@ -1057,7 +1052,6 @@ extern MagickExport MagickPassFail
     ExceptionInfo *exception),
   AllocateImageColormap(Image *,const unsigned long),
   AnimateImages(const ImageInfo *image_info,Image *image),
-  ChannelImage(Image *,const ChannelType),
   ClipImage(Image *),
   ClipPathImage(Image *,const char *,const unsigned int),
   CycleColormapImage(Image *image,const int amount),
@@ -1076,8 +1070,6 @@ extern MagickExport MagickPassFail
     const double rvalue,ExceptionInfo *exception),
   RemoveDefinitions(const ImageInfo *image_info,const char *options),
   RGBTransformImage(Image *,const ColorspaceType),
-  SetImageChannelDepth(Image *image,
-    const ChannelType channel, const unsigned int depth),
   SetImageClipMask(Image *image,const Image *clip_mask),
   SetImageDepth(Image *,const unsigned long),
   SetImageInfo(ImageInfo *,const unsigned int,ExceptionInfo *),

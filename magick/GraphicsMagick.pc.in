@@ -7,6 +7,5 @@ includedir=@includedir@
 Name: GraphicsMagick
 Version: @PACKAGE_VERSION@
 Description: GraphicsMagick image processing library
-Requires:
-Libs: @MAGICK_API_LDFLAGS@ @MAGICK_API_LIBS@
-Cflags: @MAGICK_API_CPPFLAGS@
+Libs: -L${libdir} -lGraphicsMagick
+Cflags: -I${includedir}/GraphicsMagick @MAGICK_API_PC_CPPFLAGS@

@@ -1,0 +1,166 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>channel - Image channel functions</title>
+<link rev="made" href="mailto:bfriesen@scooby.simplesystems.org" />
+</head>
+
+<body style="background-color: white">
+
+<P><a name="__index__"></a></P>
+<!-- INDEX BEGIN -->
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#function_descriptions">FUNCTION DESCRIPTIONS</a></li>
+	<ul>
+
+		<li><a href="#channelimage">ChannelImage</a></li>
+		<li><a href="#exportimagechannel">ExportImageChannel</a></li>
+		<li><a href="#getimagechanneldepth">GetImageChannelDepth</a></li>
+		<li><a href="#importimagechannel">ImportImageChannel</a></li>
+		<li><a href="#setimagechanneldepth">SetImageChannelDepth</a></li>
+	</ul>
+
+</ul>
+<!-- INDEX END -->
+
+<hr />
+<P>
+</P>
+<h1><a name="name">NAME</a></h1>
+<P>channel - Image channel functions</P>
+<P>
+</P>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<P>unsigned int  <strong>ChannelImage</strong>( Image *image, const ChannelType channel );</P>
+<P>Image * <strong>ExportImageChannel</strong>( const Image *image, const ChannelType channel, ExceptionInfo *exception );</P>
+<P>unsigned long  <strong>GetImageChannelDepth</strong>( const Image *image, const ChannelType channel, ExceptionInfo *exception );</P>
+<P>MagickPassFail  <strong>ImportImageChannel</strong>( const Image *src_image, Image *dst_image, const ChannelType channel );</P>
+<P>MagickPassFail  <strong>SetImageChannelDepth</strong>( Image *image, const ChannelType channel, const unsigned int depth );</P>
+<P>
+</P>
+<hr />
+<h1><a name="function_descriptions">FUNCTION DESCRIPTIONS</a></h1>
+<P>
+</P>
+<h2><a name="channelimage">ChannelImage</a></h2>
+<P>Transform an image so that the resulting image is a grayscale image based on a specified image channel.  The resulting image is returned in the RGB colorspace.  This function does not force or assume an input image colorspace so it may be used to extract channels from images in colorspaces other than RGB or CMYK.  For example, if the image is currently transformed to the HWB colorspace, the 'B' channel may be extracted by specifying RedChannel as the ChannelType argument.</P>
+<P>The format of the ChannelImage method is:</P>
+<blockquote>unsigned int ChannelImage ( <A HREF="types.html#Image">Image</A> *image, const <A HREF="types.html#ChannelType">ChannelType</A> channel ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong><a name="item_o_image_3a">image:</a></strong><br />
+</dt>
+<DD>
+The image.
+</dd>
+<P></P>
+<dt><strong><a name="item_o_channel_3a">channel:</a></strong><br />
+</dt>
+<DD>
+Identify which channel to extract: Red, Cyan, Green, Magenta, Blue, Yellow, or Opacity.
+</dd>
+<P></P></dl>
+<P>
+</P>
+<h2><a name="exportimagechannel">ExportImageChannel</a></h2>
+<blockquote>ExportImageChannel() exports a specified image channel as a new image. </blockquote><P>The format of the ExportImageChannel method is:</P>
+<blockquote><A HREF="types.html#Image">Image</A> *ExportImageChannel ( const <A HREF="types.html#Image">Image</A> *image, const <A HREF="types.html#ChannelType">ChannelType</A> channel, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>image:</strong><br />
+</dt>
+<DD>
+The source image.
+</dd>
+<P></P>
+<dt><strong>channel:</strong><br />
+</dt>
+<DD>
+The image channel to export
+</dd>
+<P></P>
+<dt><strong><a name="item_o_exception_3a">exception:</a></strong><br />
+</dt>
+<DD>
+Return any errors or warnings in this structure.
+</dd>
+<P></P></dl>
+<P>
+</P>
+<h2><a name="getimagechanneldepth">GetImageChannelDepth</a></h2>
+<blockquote>GetImageChannelDepth() returns the minimum bit depth required to store the specified image channel without actual loss of color resolution. Pixel components are stored in a <A HREF="types.html#Quantum">Quantum</A>, which is 8, 16, or 32 bits depending on the QuantumDepth value set when the software is compiled. GetImageChannelDepth ( ) returns the smallest modulus storage size which supports the scale of the pixel within the range ( i.e. no information is lost ) . As an example, the value one is returned for a bilevel channel since only one bit of resolution is required to represent a bilevel channel. </blockquote><P>The format of the GetImageChannelDepth method is:</P>
+<blockquote>unsigned long GetImageChannelDepth ( const <A HREF="types.html#Image">Image</A> *image, const <A HREF="types.html#ChannelType">ChannelType</A> channel, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>image:</strong><br />
+</dt>
+<DD>
+The image.
+</dd>
+<P></P>
+<dt><strong>channel:</strong><br />
+</dt>
+<DD>
+Channel to test.
+</dd>
+<P></P>
+<dt><strong>exception:</strong><br />
+</dt>
+<DD>
+Return any errors or warnings in this structure.
+</dd>
+<P></P></dl>
+<P>
+</P>
+<h2><a name="importimagechannel">ImportImageChannel</a></h2>
+<blockquote>ImportImageChannel() imports an image into the specified image channel. </blockquote><P>The format of the ImportImageChannel method is:</P>
+<blockquote>MagickPassFail ImportImageChannel ( const <A HREF="types.html#Image">Image</A> *src_image, <A HREF="types.html#Image">Image</A> *dst_image, const <A HREF="types.html#ChannelType">ChannelType</A> channel ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong><a name="item_o_src_image_3a">src_image:</a></strong><br />
+</dt>
+<DD>
+The image to use as the replacement image channel.
+</dd>
+<P></P>
+<dt><strong><a name="item_o_dst_image_3a">dst_image:</a></strong><br />
+</dt>
+<DD>
+The image to import the channel into.
+</dd>
+<P></P>
+<dt><strong>channel:</strong><br />
+</dt>
+<DD>
+The image channel to import
+</dd>
+<P></P></dl>
+<P>
+</P>
+<h2><a name="setimagechanneldepth">SetImageChannelDepth</a></h2>
+<blockquote>SetImageChannelDepth() translates the pixel quantums in the specified channel so that if they are later divided to fit within the specified bit depth, that no additional information is lost ( i.e. no remainder resulting from the division ) . Note that any subsequent image processing is likely to increase the effective depth of the image channels. A non-zero value is returned if the operation is successful. Check the exception member of image to determine the cause for any failure. </blockquote><P>The format of the SetImageChannelDepth method is:</P>
+<blockquote>MagickPassFail SetImageChannelDepth ( <A HREF="types.html#Image">Image</A> *image, const <A HREF="types.html#ChannelType">ChannelType</A> channel, const unsigned int depth ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>image:</strong><br />
+</dt>
+<DD>
+The image to update.
+</dd>
+<P></P>
+<dt><strong>channel:</strong><br />
+</dt>
+<DD>
+Channel to modify.
+</dd>
+<P></P>
+<dt><strong><a name="item_o_depth_3a">depth:</a></strong><br />
+</dt>
+<DD>
+Desired channel depth (range 1 to QuantumDepth)
+</dd>
+</dl>
+
+</body>
+
+</html>

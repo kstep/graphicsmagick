@@ -21,6 +21,19 @@
 </tr>
 </table>
 <p>
+2004-07-22  Bob Friesenhahn &lt;bfriesen@simple.dallas.tx.us&gt;  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> demo/Makefile.am (AUTOMAKE_OPTIONS): Added nostdinc in order
+        to avoid accidentally using magick/list.h when including &lt;list&gt;.
+  <LI> tests/Makefile.am (AUTOMAKE_OPTIONS): Added nostdinc in order
+        to avoid accidentally using magick/list.h when including &lt;list&gt;.
+  <LI> tests/readWriteBlob.cpp: If MISSING_STD_IOS_BINARY is defined,
+        then ios::binary is not used.  Use simple ifstream rather than
+        std::ifstream since we are already using the std namespace.
+
+</UL>
+<p>
 2004-06-03  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
