@@ -65,7 +65,7 @@ typedef struct _ResourceInfo
   long double
     memory,
     disk,
-    memory_map;
+    map;
 } ResourceInfo;
 
 /*
@@ -112,21 +112,21 @@ MagickExport void AcquireMagickResource(const ResourceType type,
     {
       if (resource_info.memory == ResourceInfinity)
         break;
-      resource_info.memory-=size;
+      resource_info.memory-=(double) size;
       break;
     }
     case DiskResource:
     {
       if (resource_info.disk == ResourceInfinity)
         break;
-      resource_info.disk-=size;
+      resource_info.disk-=(double) size;
       break;
     }
     case MapResource:
     {
-      if (resource_info.memory_map == ResourceInfinity)
+      if (resource_info.map == ResourceInfinity)
         break;
-      resource_info.memory_map-=size;
+      resource_info.map-=(double) size;
       break;
     }
     default:
@@ -146,7 +146,7 @@ MagickExport void AcquireMagickResource(const ResourceType type,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method DestroyMagickResources() destroys the resource environment.
+%  DestroyMagickResources() destroys the resource environment.
 %
 %  The format of the DestroyMagickResources() method is:
 %
@@ -171,8 +171,8 @@ MagickExport void DestroyMagickResources(void)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetMagickResource() returns the available size for the specified
-%  resource in megabytes.
+%  GetMagickResource() returns the usage for the specified resource in
+%  megabytes.
 %
 %  The format of the GetMagickResource() method is:
 %
@@ -199,18 +199,18 @@ MagickExport unsigned long GetMagickResource(const ResourceType type)
       break;
     }
     case DiskResource:
-		{
+    {
       usage=(unsigned long) (resource_info.disk/1024.0/1024.0+0.5);
       break;
-		}
+    }
     case MapResource:
-		{
-  		usage=(unsigned long) (resource_info.memory_map/1024.0/1024.0+0.5);
+    {
+      usage=(unsigned long) (resource_info.map/1024.0/1024.0+0.5);
       break;
-		}
+    }
     default:
     {
-		  usage=0;
+      usage=0;
       break;
     }
   }
@@ -229,7 +229,7 @@ MagickExport unsigned long GetMagickResource(const ResourceType type)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  LiberateMagickResource() liberates resources for the specified type.
+%  LiberateMagickResource() liberates resources of the specified type.
 %
 %  The format of the LiberateMagickResource() method is:
 %
@@ -253,24 +253,25 @@ MagickExport void LiberateMagickResource(const ResourceType type,
     {
       if (resource_info.memory == ResourceInfinity)
         break;
-      resource_info.memory+=size;
+      resource_info.memory+=(double) size;
       break;
     }
     case DiskResource:
     {
       if (resource_info.disk == ResourceInfinity)
         break;
-      resource_info.disk+=size;
+      resource_info.disk+=(double) size;
       break;
     }
     case MapResource:
     {
-      if (resource_info.memory_map == ResourceInfinity)
+      if (resource_info.map == ResourceInfinity)
         break;
-      resource_info.memory_map+=size;
+      resource_info.map+=(double) size;
       break;
     }
-    default: break;
+    default:
+      break;
   }
   LiberateSemaphoreInfo(&resource_semaphore);
 }
@@ -319,7 +320,7 @@ MagickExport void SetMagickResourceLimit(const ResourceType type,
     }
     case MapResource:
     {
-      resource_info.memory_map=1024.0*1024.0*(double) limit;
+      resource_info.map=1024.0*1024.0*(double) limit;
       break;
     }
     default:
