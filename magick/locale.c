@@ -95,7 +95,7 @@ const char *NTFormatMessage(DWORD id, ...)
   buffer = (LPVOID) NULL; /* stop compiler from complaining */
   FormatString(temp,"%.1024s%.1024s%.1024s",SetClientPath((char *) NULL),
     DirectorySeparator,SetClientFilename((char *) NULL));
-  if (IsAccessible(temp))
+  if (IsAccessibleNoLogging(temp))
     handle=GetModuleHandle(temp);
   else
     handle=GetModuleHandle(0);
