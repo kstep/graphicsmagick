@@ -72,6 +72,7 @@
 %    -contrast            enhance or reduce the image contrast
 %    -crop geometry       preferred size and location of the cropped image
 %    -cycle amount        cycle the image colormap
+%    -deconstruct         break down an image sequence into constituent parts
 %    -delay value         display the next image after pausing
 %    -density geometry    vertical and horizontal density of the image
 %    -depth value         depth of the image
@@ -269,6 +270,7 @@ static void Usage(const char *client_name)
       "-crop geometry       preferred size and location of the cropped image",
       "-cycle amount        cycle the image colormap",
       "-delay value         display the next image after pausing",
+      "-deconstruct         break down an image sequence into constituent parts",
       "-density geometry    vertical and horizontal density of the image",
       "-depth value         depth of the image",
       "-despeckle           reduce the speckles within an image",
@@ -406,6 +408,7 @@ int main(int argc,char **argv)
   unsigned int
     average,
     coalesce,
+    deconstruct,
     morph,
     global_colormap,
     scene;
@@ -424,6 +427,7 @@ int main(int argc,char **argv)
   append=0;
   average=False;
   coalesce=False;
+  deconstruct=False;
   morph=0;
   filename=(char *) NULL;
   global_colormap=False;
@@ -694,6 +698,11 @@ int main(int argc,char **argv)
         }
         case 'd':
         {
+          if (strncmp("deconstruct",option+1,3) == 0)
+            {
+              deconstruct=(*option == '-');
+              break;
+            }
           if (strncmp("delay",option+1,3) == 0)
             {
               image_info.delay=(char *) NULL;
@@ -1628,6 +1637,8 @@ int main(int argc,char **argv)
     }
   if (coalesce)
     CoalesceImages(image);
+  if (deconstruct)
+    DeconstructImages(image);
   if (global_colormap)
     (void) MapImages(image,(Image *) NULL,image_info.dither);
   /*

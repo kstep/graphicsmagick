@@ -737,6 +737,7 @@ extern Export void
   CondenseImage(Image *),
   ContrastImage(Image *,const unsigned int),
   CycleColormapImage(Image *,const int),
+  DeconstructImages(Image *),
   DescribeImage(Image *,FILE *,const unsigned int),
   DestroyAnnotateInfo(AnnotateInfo *),
   DestroyImage(Image *),

@@ -364,6 +364,7 @@ static struct
     { "Stereo", { {"image", ImageReference} } },
     { "Stegano", { {"image", ImageReference}, {"offset", IntegerReference} } },
     { "Coalesce", },
+    { "Deconstruct", },
   };
 
 /*
@@ -3354,6 +3355,8 @@ Mogrify(ref,...)
     SteganoImage       = 128
     Coalesce           = 129
     CoalesceImage      = 130
+    Deconstruct        = 131
+    DeconstructImage   = 132
     MogrifyRegion      = 666
   PPCODE:
   {
@@ -4508,6 +4511,11 @@ Mogrify(ref,...)
         case 65:  /* Coalesce */
         {
           CoalesceImages(image);
+          break;
+        }
+        case 66:  /* Deconstruct */
+        {
+          DeconstructImages(image);
           break;
         }
       }

@@ -1,1 +1,35 @@
-Improve support for derived classes of Blob
+Items large and small which remain to be done before Magick++ 1.0
+--------------------------------------------------------------------
+
+* Support an efficient yet simple way to manipulate image pixels and
+  colormap (if pseudocolor) via an array style mechanism. Probably
+  support image as a two-dimensional array of a derived class of
+  Magick::Color. This is a complex problem which will take time to
+  resolve since ImageMagick images are of six distinct varieties not
+  including the many colorspaces the pixels can be represented in.
+
+* Support manipulating IPTC profiles directly. Bill Radcliffe
+  <BillR@corbis.com> has agreed to write a container class to support
+  this.
+
+* Support reading an image from a BLOB in memory for at least one
+  format. Bill Radcliffe <BillR@corbis.com> has done work in this area.
+
+* Port to CodeWarrior under NT
+
+* Port to Sun Workshop 5.0 under Solaris
+
+
+Items which will require the aid of volunteers
+--------------------------------------------------------------------
+
+* Port to Borland C++ Builder 4.0
+
+* Port to KAI C++ (multi-platform) compiler
+
+* Port to HP-UX aCC
+
+* Port to SGI C++ compiler
+
+* Provide integration with Blitz++ (http://monet.uwaterloo.ca/blitz/).
+  Not sure what it would do other than aid with manipulating pixels.

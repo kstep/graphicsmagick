@@ -82,20 +82,15 @@ const Magick::Color& Magick::Color::operator = ( std::string x11color_ )
 {
   isValid ( false );
 
-//   cout << "ColorIn:" << x11color_ << endl;
   MagickLib::ColorPacket target_color;
   if ( Magick::QueryColorDatabase( x11color_, target_color ) )
     {
-//       cout << "ColorOut:" << hex << setw(4) << target_color.red
-// 	   << hex << setw(4) << target_color.green
-// 	   << hex << setw(4) << target_color.blue
-// 	   << endl;
       redQuantum( XDownScale(target_color.red) );
       greenQuantum( XDownScale(target_color.green) );
       blueQuantum( XDownScale(target_color.blue) );
 
       if ( target_color.flags & MagickLib::DoMatte )
-	// MagickLib::DoMatte is set if alpha was set by QueryColorDatabase()
+	// MagickLib::DoMatte is set if alpha was set by XQueryColorDatabase()
 	alphaQuantum(  XDownScale(target_color.index) );
       else
 	// If alpha is not set, then set to MaxRGB (Opaque) since that

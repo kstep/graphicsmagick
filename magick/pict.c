@@ -1083,10 +1083,10 @@ Export Image *ReadPICTImage(const ImageInfo *image_info)
                     }
                   else
                     {
-                      red=UpScale(*p);
-                      green=UpScale(*(p+tiled_image->columns));
-                      blue=UpScale(*(p+2*tiled_image->columns));
-                      index=UpScale(*(p+3*tiled_image->columns));
+                      index=UpScale(*p);
+                      red=UpScale(*(p+tiled_image->columns));
+                      green=UpScale(*(p+2*tiled_image->columns));
+                      blue=UpScale(*(p+3*tiled_image->columns));
                     }
                   p++;
                 }
@@ -1548,10 +1548,10 @@ Export unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
             {
               if (QuantumTick(y,image->rows))
                 ProgressMonitor(SaveImageText,y,image->rows);
-              red=scanline;
-              green=scanline+image->columns;
-              blue=scanline+2*image->columns;
-              index=scanline+3*image->columns;
+              index=scanline;
+              red=scanline+image->columns;
+              green=scanline+2*image->columns;
+              blue=scanline+3*image->columns;
               count+=EncodeImage(image,scanline,bytes_per_line,packed_scanline);
               x=0;
               y++;

@@ -75,12 +75,29 @@ void Magick::Blob::update ( const void* data_, unsigned long length_ )
   _blobRef = new Magick::BlobRef( data_, length_ );
 }
 
+// Update object contents, using supplied pointer directly (no copy)
+// Any existing data in the object is deallocated.  The user must
+// ensure that the pointer supplied is not deleted or otherwise
+// modified after it has been supplied to this method.
+void Magick::Blob::updateNoCopy ( void* data_, unsigned long length_ )
+{
+  if ( --_blobRef->_refCount == 0 )
+    {
+      // Delete old blob reference with associated data
+      delete _blobRef;
+    }
+  _blobRef = new Magick::BlobRef( 0, 0 );
+  _blobRef->_data   = data_;
+  _blobRef->_length = length_;
+}
+
 //
 // Implementation of Magick::BlobRef
 //
 
-// Construct with data
-Magick::BlobRef::BlobRef ( const void* data_, unsigned long length_ )
+// Construct with data, making private copy of data
+Magick::BlobRef::BlobRef ( const void* data_,
+			   unsigned long length_ )
   : _data(0),
     _length(length_),
     _refCount(0)

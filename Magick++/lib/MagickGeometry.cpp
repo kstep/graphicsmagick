@@ -160,31 +160,31 @@ Magick::Geometry::operator = ( const std::string &geometry_ )
   unsigned int height_val = 0;
   int flags = Magick::GetGeometry ( geometry, x, y, width_val, height_val );
 
-  if ( ( flags & WidthValue ) != 0 )
+  if ( ( flags & MagickLib::WidthValue ) != 0 )
     {
       _width = width_val;
       isValid( true );
     }
 
-  if ( ( flags & HeightValue ) != 0 )
+  if ( ( flags & MagickLib::HeightValue ) != 0 )
     _height = height_val;
 
-  if ( ( flags & XValue ) != 0 )
+  if ( ( flags & MagickLib::XValue ) != 0 )
     {
       _xOff = ::abs(x);
       isValid( true );
     }
 
-  if ( ( flags & YValue ) != 0 )
+  if ( ( flags & MagickLib::YValue ) != 0 )
     {
       _yOff = ::abs(y);
       isValid( true );
     }
 
-  if ( ( flags & XNegative ) != 0 )	
+  if ( ( flags & MagickLib::XNegative ) != 0 )	
     _xNegative = true;
 
-  if ( ( flags & YNegative ) != 0 )
+  if ( ( flags & MagickLib::YNegative ) != 0 )
     _yNegative = true;
 
   if ( ( flags & MagickLib::PercentValue ) != 0 )

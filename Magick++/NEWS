@@ -1,3 +1,8 @@
+(0.8.3)
+  * Ported to ImageMagick 4.2.6.
+  * Blob supports default constructor.
+  * New Blob method updateNoCopy() to support efficient initialization by
+    derived class.
 (0.8.2)
   * Uses libtool 1.3 to build library under Unix and Cygwin (static lib only).
   * Added Blob class to support supplying formatted binary data to methods.

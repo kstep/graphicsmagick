@@ -217,7 +217,7 @@ Export Image *ChopImage(const Image *image,const RectangleInfo *chop_info)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
-%     C o a l e s c e I m a g e                                               %
+%     C o a l e s c e I m a g e s                                             %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -228,7 +228,7 @@ Export Image *ChopImage(const Image *image,const RectangleInfo *chop_info)
 %
 %  The format of the CoalesceImages routine is:
 %
-%      CoalesceImages(image)
+%      CoalesceImages(images)
 %
 %  A description of each parameter follows:
 %
@@ -237,17 +237,18 @@ Export Image *ChopImage(const Image *image,const RectangleInfo *chop_info)
 %      coalesced.
 %
 */
-Export void CoalesceImages(Image *image)
+Export void CoalesceImages(Image *images)
 {
+  char
+    geometry[MaxTextExtent];
+
   Image
-    *cloned_image;
+    *cloned_image,
+    *image;
 
   int
     x,
     y;
-
-  register Image
-    *p;
 
   unsigned int
     matte,
@@ -260,56 +261,60 @@ Export void CoalesceImages(Image *image)
   /*
     Coalesce the image sequence.
   */
-  assert(image != (Image *) NULL);
-  for (p=image->next; p != (Image *) NULL; p=p->next)
+  assert(images != (Image *) NULL);
+  if (images->next == (Image *) NULL)
+    {
+      MagickWarning(OptionWarning,"Unable to coalesce images",
+        "image sequence required");
+      return;
+    }
+  for (image=images->next; image != (Image *) NULL; image=image->next)
   {
-    char
-      geometry[MaxTextExtent];
-
-    assert(p->previous != (Image *) NULL);
+    assert(image->previous != (Image *) NULL);
     x=0;
     y=0;
-    if (p->previous->page != (char *) NULL)
-      (void) ParseGeometry(p->previous->page,&x,&y,&sans,&sans);
+    if (image->previous->page != (char *) NULL)
+      (void) ParseGeometry(image->previous->page,&x,&y,&sans,&sans);
     previous_box.x1=x;
     previous_box.y1=y;
     x=0;
     y=0;
-    if (p->page != (char *) NULL)
-      (void) ParseGeometry(p->page,&x,&y,&sans,&sans);
-    if ((x <= previous_box.x1) && (y <= previous_box.y1) && !p->matte &&
-        (x+p->columns >= (p->previous->columns+previous_box.x1)) &&
-        (y+p->rows >= (p->previous->rows+previous_box.y1)))
-      continue; /* because p completely obscures p->previous */
+    if (image->page != (char *) NULL)
+      (void) ParseGeometry(image->page,&x,&y,&sans,&sans);
+    if ((x <= previous_box.x1) && (y <= previous_box.y1) && !image->matte &&
+        (x+image->columns >= (image->previous->columns+previous_box.x1)) &&
+        (y+image->rows >= (image->previous->rows+previous_box.y1)))
+      continue; /* because image completely obscures previous */
     bounding_box.x1=x < previous_box.x1 ? x : previous_box.x1;
     bounding_box.y1=y < previous_box.y1 ? y : previous_box.y1;
-    bounding_box.x2=(x+p->columns) > (previous_box.x1+p->previous->columns) ?
-      x+p->columns : previous_box.x1+p->previous->columns;
-    bounding_box.y2=(y+p->rows) > (previous_box.y1+p->previous->rows) ?
-      y+p->rows : previous_box.y1+p->previous->rows;
-    p->orphan=True;
-    cloned_image=CloneImage(p,p->columns,p->rows,True);
-    p->orphan=False;
+    bounding_box.x2=
+      (x+image->columns) > (previous_box.x1+image->previous->columns) ?
+      x+image->columns : previous_box.x1+image->previous->columns;
+    bounding_box.y2=(y+image->rows) > (previous_box.y1+image->previous->rows) ?
+      y+image->rows : previous_box.y1+image->previous->rows;
+    image->orphan=True;
+    cloned_image=CloneImage(image,image->columns,image->rows,True);
+    image->orphan=False;
     if (cloned_image == (Image *) NULL)
       {
-        MagickWarning(ResourceLimitWarning,"Unable to coalesce image",
+        MagickWarning(ResourceLimitWarning,"Unable to coalesce images",
           "Memory allocation failed for cloned image");
         return;
       }
-    p->columns=(unsigned int) (bounding_box.x2-bounding_box.x1);
-    p->rows=(unsigned int) (bounding_box.y2-bounding_box.y1);
-    assert(p->columns > 0 && p->rows > 0);
-    p->packets=p->columns*p->rows;
-    p->pixels=(RunlengthPacket *) ReallocateMemory((char *)
-      p->pixels,p->packets*sizeof(RunlengthPacket));
-    if (p->pixels == (RunlengthPacket *) NULL)
+    image->columns=(unsigned int) (bounding_box.x2-bounding_box.x1);
+    image->rows=(unsigned int) (bounding_box.y2-bounding_box.y1);
+    assert(image->columns > 0 && image->rows > 0);
+    image->packets=image->columns*image->rows;
+    image->pixels=(RunlengthPacket *) ReallocateMemory((char *)
+      image->pixels,image->packets*sizeof(RunlengthPacket));
+    if (image->pixels == (RunlengthPacket *) NULL)
       {
-        MagickWarning(ResourceLimitWarning,"Unable to coalesce image",
+        MagickWarning(ResourceLimitWarning,"Unable to coalesce images",
           "Memory reallocation failed");
         return;
       }
-    if (p->page != (char *) NULL)
-       FreeMemory((char *) p->page);
+    if (image->page != (char *) NULL)
+       FreeMemory((char *) image->page);
     if ((((bounding_box.x1 != x) && (bounding_box.y1 != y)) &&
         ((bounding_box.x1 != previous_box.x1) &&
          (bounding_box.y1 != previous_box.y1))) ||
@@ -325,20 +330,21 @@ Export void CoalesceImages(Image *image)
          (bounding_box.y1 != y)) &&
         ((bounding_box.x2 != previous_box.x2) &&
          (bounding_box.y1 != previous_box.y1))))
-      p->matte=True;
-    matte=p->matte;
-    SetImage(p);
-    CompositeImage(p,ReplaceCompositeOp,p->previous,(int) (previous_box.x1-
-      bounding_box.x1),(int) (previous_box.y1-bounding_box.y1));
-    CompositeImage(p,cloned_image->matte ? OverCompositeOp : ReplaceCompositeOp,
+      image->matte=True;
+    matte=image->matte;
+    SetImage(image);
+    CompositeImage(image,ReplaceCompositeOp,image->previous,
+      (int) (previous_box.x1-bounding_box.x1),
+      (int) (previous_box.y1-bounding_box.y1));
+    CompositeImage(image,
+      cloned_image->matte ? OverCompositeOp : ReplaceCompositeOp,
       cloned_image,(int) (x-bounding_box.x1),(int) (y-bounding_box.y1));
     cloned_image->orphan=True;
     DestroyImage(cloned_image);
-    FormatString(geometry,"%ux%u%+d%+d",p->columns,p->rows,
+    FormatString(geometry,"%ux%u%+d%+d",image->columns,image->rows,
       (int) bounding_box.x1,(int) bounding_box.y1);
-    p->page=PostscriptGeometry(geometry);
-    p->matte=matte;
-    CondenseImage(p);
+    image->page=PostscriptGeometry(geometry);
+    image->matte=matte;
   }
 }
 
@@ -626,6 +632,189 @@ Export Image *CropImage(const Image *image,const RectangleInfo *crop_info)
   cropped_image->pixels=(RunlengthPacket *) ReallocateMemory((char *)
     cropped_image->pixels,cropped_image->packets*sizeof(RunlengthPacket));
   return(cropped_image);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%     D e c o n s t r u c t I m a g e s                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method DeconstructImages breaks down an image sequence into constituent
+%  parts.  This is useful %  for creating GIF or MNG animation sequences.
+%
+%  The format of the DeconstructImages routine is:
+%
+%      DeconstructImages(images)
+%
+%  A description of each parameter follows:
+%
+%    o images: The address of a structure of type Image;  returned from
+%      ReadImage.  It points to the first image in the group to be
+%      deconstructed.
+%
+*/
+Export void DeconstructImages(Image *images)
+{
+  char
+    geometry[MaxTextExtent];
+
+  Image
+    *deconstructed_image,
+    *image;
+
+  int
+    x,
+    y;
+
+  RectangleInfo
+    *bounding_box;
+
+  register int
+    i;
+
+  register RunlengthPacket
+    *p,
+    *q;
+
+  assert(images != (Image *) NULL);
+  if (images->next == (Image *) NULL)
+    {
+      MagickWarning(OptionWarning,"Unable to disntegrate images",
+        "image sequence required");
+      return;
+    }
+  /*
+    Ensure the images are the same size.
+  */
+  for (image=images; image != (Image *) NULL; image=image->next)
+  {
+    if ((image->columns != images->columns) ||
+        (image->rows != images->rows))
+      {
+        MagickWarning(OptionWarning,"Unable to disintegrate images",
+          "images are not the same size");
+        return;
+      }
+  }
+  if (!UncondenseImage(images))
+    return;
+  /*
+    Allocate memory.
+  */
+  bounding_box=(RectangleInfo *)
+    AllocateMemory(GetNumberScenes(images)*sizeof(RectangleInfo));
+  if (bounding_box == (RectangleInfo *) NULL)
+    {
+      MagickWarning(OptionWarning,"Unable to disintegrate images",
+        "Memory allocation failed");
+      return;
+    }
+  /*
+    Compute the bounding box for each image in the sequence.
+  */
+  i=0;
+  for (image=images->next; image != (Image *) NULL; image=image->next)
+  {
+    assert(image->previous != (Image *) NULL);
+    if (!UncondenseImage(image))
+      {
+        FreeMemory((char *) bounding_box);
+        return;
+      }
+    /*
+      Set bounding box to the image dimensions.
+    */
+    for (x=0; x < (int) image->columns; x++)
+    {
+      p=image->pixels+x;
+      q=image->previous->pixels+x;
+      for (y=0; y < (int) image->rows; y++)
+      {
+        if (!ColorMatch(*p,*q,image->fuzz))
+          break;
+        p+=image->columns;
+        q+=image->columns;
+      }
+      if (y < (int) image->rows)
+        break;
+    }
+    bounding_box[i].x=x;
+    for (y=0; y < (int) image->rows; y++)
+    {
+      p=image->pixels+y*image->columns;
+      q=image->previous->pixels+y*image->previous->columns;
+      for (x=0; x < (int) image->columns; x++)
+      {
+        if (!ColorMatch(*p,*q,image->fuzz))
+          break;
+        p++;
+        q++;
+      }
+      if (x < (int) image->columns)
+        break;
+    }
+    bounding_box[i].y=y;
+    for (x=image->columns-1; x >= 0; x--)
+    {
+      p=image->pixels+x;
+      q=image->previous->pixels+x;
+      for (y=0; y < (int) image->rows; y++)
+      {
+        if (!ColorMatch(*p,*q,image->fuzz))
+          break;
+        p+=image->columns;
+        q+=image->columns;
+      }
+      if (y < (int) image->rows)
+        break;
+    }
+    bounding_box[i].width=x-bounding_box[i].x;
+    for (y=image->rows-1; y >= 0; y--)
+    {
+      p=image->pixels+y*image->columns;
+      q=image->previous->pixels+y*image->previous->columns;
+      for (x=0; x < (int) image->columns; x++)
+      {
+        if (!ColorMatch(*p,*q,image->fuzz))
+          break;
+        p++;
+        q++;
+      }
+      if (x < (int) image->columns)
+        break;
+    }
+    bounding_box[i].height=y-bounding_box[i].y;
+    i++;
+  }
+  /*
+    Deconstruct the image sequence.
+  */
+  i=0;
+  for (image=images->next; image != (Image *) NULL; image=image->next)
+  {
+    image->orphan=True;
+    deconstructed_image=CropImage(image,&bounding_box[i]);
+    image->orphan=False;
+    if (deconstructed_image == (Image *) NULL)
+      return;
+    FreeMemory(image->pixels);
+    image->columns=deconstructed_image->columns;
+    image->rows=deconstructed_image->rows;
+    image->packets=deconstructed_image->packets;
+    image->pixels=deconstructed_image->pixels;
+    deconstructed_image->pixels=(RunlengthPacket *) NULL;
+    DestroyImage(deconstructed_image);
+    FormatString(geometry,"%ux%u%+d%+d",image->columns,image->rows,
+      bounding_box[i].x,bounding_box[i].y);
+    image->page=PostscriptGeometry(geometry);
+    i++;
+  }
+  FreeMemory((char *) bounding_box);
 }
 
 /*

@@ -27,10 +27,10 @@ namespace Magick
     Blob ( const Blob& blob_ );
 
     // Destructor (reference counted)
-    virtual ~Blob ();
+    virtual       ~Blob ();
 
     // Assignment operator (reference counted)
-    Blob operator= ( const Blob& blob_ );
+    Blob          operator= ( const Blob& blob_ );
 
     // Update object contents, making a copy of the supplied data.
     // Any existing data in the object is deallocated.
@@ -41,6 +41,14 @@ namespace Magick
 
     // Obtain data length
     unsigned long length ( void ) const;
+    
+  protected:
+
+    // Update object contents, using supplied pointer directly (no
+    // copy) Any existing data in the object is deallocated.  The user
+    // must ensure that the pointer supplied is not deleted or
+    // otherwise modified after it has been supplied to this method.
+    void          updateNoCopy ( void* data_, unsigned long length_ );
 
   private:
     BlobRef * _blobRef;
@@ -56,7 +64,7 @@ namespace Magick
     // There are no public methods in this class
 
   private:
-    // Construct with data
+    // Construct with data, making private copy of data
     BlobRef ( const void* data_, unsigned long length_ );
 
     // Destructor (actually destroys data)

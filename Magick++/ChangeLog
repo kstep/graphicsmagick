@@ -1,3 +1,18 @@
+1999-05-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/MagickBlob.cpp (updateNoCopy): New method to allow derived
+ 	classes to insert data into the base class without making a copy
+ 	of the data. This represents a transfer of ownership of the data
+ 	from the derived class to the base class.
+
+1999-05-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/MagickColor.cpp (operator =): Adapted to new ImageMagick
+ 	4.2.6 as of 5/23/99 which removes X11 compatability functions.
+
+	* lib/MagickGeometry.cpp (operator =): Adapted to new ImageMagick
+ 	4.2.6 as of 5/23/99 which removes X11 compatability functions.
+
 1999-05-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/MagickBlob.cpp (Blob): Support default constructor for Blob.
