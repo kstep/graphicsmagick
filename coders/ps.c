@@ -1234,6 +1234,9 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
             /*
               Dump image as bitmap.
             */
+            if ((image->storage_class == DirectClass) ||
+                !IsMonochromeImage(image,&image->exception))
+              SetImageType(image,BilevelType);
             polarity=Intensity(&image->colormap[0]) > (0.5*MaxRGB);
             if (image->colors == 2)
               polarity=Intensity(&image->colormap[1]) >
