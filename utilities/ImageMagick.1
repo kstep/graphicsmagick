@@ -344,6 +344,13 @@ If the \fB-append\fP
 option appears after all of the input images, all images are appended.
 
 .TP
+.B "-authenticate \fI<string>"\fP
+\fRdecrypt image with this password
+
+Use this option to supply a password for decrypting an image or an
+image sequence, if it is being read from a format such as PDF that supports
+encryption.  Encrypting images being written is not supported.
+.TP
 .B "-average"
 \fRaverage a set of images
 
