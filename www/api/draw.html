@@ -150,32 +150,32 @@
 <p>void  <strong>DrawComposite</strong>( DrawContext context, const CompositeOperator composite_operator, const double x, const double y, const double width, const double height, const Image *image );</p>
 <p>void  <strong>DrawDestroyContext</strong>( DrawContext context );</p>
 <p>void  <strong>DrawEllipse</strong>( DrawContext context, const double ox, const double oy, const double rx, const double ry, const double start, const double end );</p>
-<p>void  <strong>DrawGetClipPath</strong>( DrawContext context, char ** clip_path );</p>
-<p>void  <strong>DrawGetClipRule</strong>( DrawContext context, FillRule *fill_rule );</p>
-<p>void  <strong>DrawGetClipUnits</strong>( DrawContext context, ClipPathUnits *clip_units );</p>
-<p>void  <strong>DrawGetFillColor</strong>( DrawContext context, PixelPacket ** fill_color );</p>
-<p>void  <strong>DrawGetFillOpacity</strong>( DrawContext context, double *fill_opacity );</p>
-<p>void  <strong>DrawGetFillRule</strong>( DrawContext context, FillRule *fill_rule );</p>
-<p>void  <strong>DrawGetFont</strong>( DrawContext context, char ** font_name );</p>
-<p>void  <strong>DrawGetFontFamily</strong>( DrawContext context, char ** font_family );</p>
-<p>void  <strong>DrawGetFontSize</strong>( DrawContext context, double *pointsize );</p>
-<p>void  <strong>DrawGetFontStretch</strong>( DrawContext context, StretchType *font_stretch );</p>
-<p>void  <strong>DrawGetFontStyle</strong>( DrawContext context, StyleType *style );</p>
-<p>void  <strong>DrawGetFontWeight</strong>( DrawContext context, unsigned long *font_weight );</p>
-<p>void  <strong>DrawGetGravity</strong>( DrawContext context, GravityType *gravity );</p>
-<p>void  <strong>DrawGetStrokeAntialias</strong>( DrawContext context, unsigned int *stroke_antialias );</p>
-<p>void  <strong>DrawGetStrokeColor</strong>( DrawContext context, PixelPacket *stroke_color );</p>
-<p>void  <strong>DrawGetStrokeDashArray</strong>( DrawContext context, size_t *num_elems, double ** dasharray );</p>
-<p>void  <strong>DrawGetStrokeDashOffset</strong>( DrawContext context, double *dash_offset );</p>
-<p>void  <strong>DrawGetStrokeLineCap</strong>( DrawContext context, LineCap *linecap );</p>
-<p>void  <strong>DrawGetStrokeLineJoin</strong>( DrawContext context, LineJoin *linejoin );</p>
-<p>void  <strong>DrawGetStrokeMiterLimit</strong>( DrawContext context, unsigned long *miterlimit );</p>
-<p>void  <strong>DrawGetStrokeOpacity</strong>( DrawContext context, double *stroke_opacity );</p>
-<p>void  <strong>DrawGetStrokeWidth</strong>( DrawContext context, double *stroke_width );</p>
-<p>void  <strong>DrawGetTextAntialias</strong>( DrawContext context, unsigned int *text_antialias );</p>
-<p>void  <strong>DrawGetTextDecoration</strong>( DrawContext context, DecorationType *decoration );</p>
-<p>void  <strong>DrawGetTextEncoding</strong>( DrawContext context, char ** encoding );</p>
-<p>void  <strong>DrawGetTextUnderColor</strong>( DrawContext context, PixelPacket *under_color );</p>
+<p>char * <strong>DrawGetClipPath</strong>( DrawContext context );</p>
+<p>FillRule  <strong>DrawGetClipRule</strong>( DrawContext context );</p>
+<p>ClipPathUnits  <strong>DrawGetClipUnits</strong>( DrawContext context );</p>
+<p>PixelPacket  <strong>DrawGetFillColor</strong>( DrawContext context );</p>
+<p>double  <strong>DrawGetFillOpacity</strong>( DrawContext context );</p>
+<p>FillRule  <strong>DrawGetFillRule</strong>( DrawContext context );</p>
+<p>char * <strong>DrawGetFont</strong>( DrawContext context );</p>
+<p>char * <strong>DrawGetFontFamily</strong>( DrawContext context );</p>
+<p>double  <strong>DrawGetFontSize</strong>( DrawContext context );</p>
+<p>StretchType  <strong>DrawGetFontStretch</strong>( DrawContext context );</p>
+<p>StyleType  <strong>DrawGetFontStyle</strong>( DrawContext context );</p>
+<p>unsigned long  <strong>DrawGetFontWeight</strong>( DrawContext context );</p>
+<p>GravityType  <strong>DrawGetGravity</strong>( DrawContext context );</p>
+<p>unsigned int  <strong>DrawGetStrokeAntialias</strong>( DrawContext context );</p>
+<p>PixelPacket  <strong>DrawGetStrokeColor</strong>( DrawContext context );</p>
+<p>double * <strong>DrawGetStrokeDashArray</strong>( DrawContext context, size_t *num_elems );</p>
+<p>double  <strong>DrawGetStrokeDashOffset</strong>( DrawContext context );</p>
+<p>LineCap  <strong>DrawGetStrokeLineCap</strong>( DrawContext context );</p>
+<p>LineJoin  <strong>DrawGetStrokeLineJoin</strong>( DrawContext context );</p>
+<p>unsigned long  <strong>DrawGetStrokeMiterLimit</strong>( DrawContext context );</p>
+<p>double  <strong>DrawGetStrokeOpacity</strong>( DrawContext context );</p>
+<p>double  <strong>DrawGetStrokeWidth</strong>( DrawContext context );</p>
+<p>unsigned int  <strong>DrawGetTextAntialias</strong>( DrawContext context );</p>
+<p>DecorationType  <strong>DrawGetTextDecoration</strong>( DrawContext context );</p>
+<p>char * <strong>DrawGetTextEncoding</strong>( DrawContext context );</p>
+<p>PixelPacket  <strong>DrawGetTextUnderColor</strong>( DrawContext context );</p>
 <p>void  <strong>DrawLine</strong>( DrawContext context, const double sx, const double sy, const double ex, const double ey );</p>
 <p>void  <strong>DrawMatte</strong>( DrawContext context, const double x, const double y, const PaintMethod paint_method );</p>
 <p>void  <strong>DrawPathClose</strong>( DrawContext context );</p>
@@ -428,19 +428,13 @@ perimeter y ordinate
 <p>
 </p>
 <h2><a name="drawgetclippath">DrawGetClipPath</a></h2>
-<blockquote>DrawGetClipPath() obtains the current clipping path. </blockquote><p>The format of the DrawGetClipPath method is:</p>
-<blockquote>void DrawGetClipPath ( DrawContext context, char **clip_path ); </blockquote><p>A description of each parameter follows:</p>
+<blockquote>DrawGetClipPath() obtains the current clipping path ID. The value returned must be deallocated by the user when it is no longer needed. </blockquote><p>The format of the DrawGetClipPath method is:</p>
+<blockquote>char *DrawGetClipPath ( DrawContext context ); </blockquote><p>A description of each parameter follows:</p>
 <dl>
 <dt><strong>o context:</strong><br />
 </dt>
 <dd>
 drawing context
-</dd>
-<p></p>
-<dt><strong><a name="item_o_clip_path%3a">o clip_path:</a></strong><br />
-</dt>
-<dd>
-Address of pointer to update with clip-path string.  Pointer value is set to NULL if there is no clip-path present.  String must be freed with <code>LiberateMemory()</code> by user once it is no longer needed.
 </dd>
 <p></p></dl>
 <p>
@@ -455,7 +449,7 @@ Address of pointer to update with clip-path string.  Pointer value is set to NUL
 drawing context
 </dd>
 <p></p>
-<dt><strong>o clip_path:</strong><br />
+<dt><strong><a name="item_o_clip_path%3a">o clip_path:</a></strong><br />
 </dt>
 <dd>
 name of clipping path to associate with image
@@ -464,19 +458,13 @@ name of clipping path to associate with image
 <p>
 </p>
 <h2><a name="drawgetcliprule">DrawGetClipRule</a></h2>
-<blockquote>DrawGetClipRule() obtains the current polygon fill rule to be used by the clipping path. </blockquote><p>The format of the DrawGetClipRule method is:</p>
-<blockquote>void DrawGetClipRule ( DrawContext context, FillRule *fill_rule ); </blockquote><p>A description of each parameter follows:</p>
+<blockquote>DrawGetClipRule() returns the current polygon fill rule to be used by the clipping path. </blockquote><p>The format of the DrawGetClipRule method is:</p>
+<blockquote>FillRule DrawGetClipRule ( DrawContext context ); </blockquote><p>A description of each parameter follows:</p>
 <dl>
 <dt><strong>o context:</strong><br />
 </dt>
 <dd>
 drawing context
-</dd>
-<p></p>
-<dt><strong><a name="item_o_fill_rule%3a">o fill_rule:</a></strong><br />
-</dt>
-<dd>
-Addess of object to update with fill rule
 </dd>
 <p></p></dl>
 <p>
@@ -491,7 +479,7 @@ Addess of object to update with fill rule
 drawing context
 </dd>
 <p></p>
-<dt><strong>o fill_rule:</strong><br />
+<dt><strong><a name="item_o_fill_rule%3a">o fill_rule:</a></strong><br />
 </dt>
 <dd>
 fill rule (EvenOddRule or NonZeroRule)
@@ -500,19 +488,13 @@ fill rule (EvenOddRule or NonZeroRule)
 <p>
 </p>
 <h2><a name="drawgetclipunits">DrawGetClipUnits</a></h2>
-<blockquote>DrawGetClipUnits() obtains the interpretation of clip path units. </blockquote><p>The format of the DrawGetClipUnits method is:</p>
-<blockquote>void DrawGetClipUnits ( DrawContext context, ClipPathUnits *clip_units ); </blockquote><p>A description of each parameter follows:</p>
+<blockquote>DrawGetClipUnits() returns the interpretation of clip path units. </blockquote><p>The format of the DrawGetClipUnits method is:</p>
+<blockquote>ClipPathUnits DrawGetClipUnits ( DrawContext context ); </blockquote><p>A description of each parameter follows:</p>
 <dl>
 <dt><strong>o context:</strong><br />
 </dt>
 <dd>
 drawing context
-</dd>
-<p></p>
-<dt><strong><a name="item_o_clip_units%3a">o clip_units:</a></strong><br />
-</dt>
-<dd>
-Address of ClipPathUnits.
 </dd>
 <p></p></dl>
 <p>
@@ -527,7 +509,7 @@ Address of ClipPathUnits.
 drawing context
 </dd>
 <p></p>
-<dt><strong>o clip_units:</strong><br />
+<dt><strong><a name="item_o_clip_units%3a">o clip_units:</a></strong><br />
 </dt>
 <dd>
 units to use (UserSpace, UserSpaceOnUse, or ObjectBoundingBox)
@@ -650,24 +632,18 @@ ending rotation in degrees
 <p>
 </p>
 <h2><a name="drawgetfillcolor">DrawGetFillColor</a></h2>
-<blockquote>DrawGetFillColor() obtains the fill color to be used for drawing filled objects. </blockquote><p>The format of the DrawGetFillColor method is:</p>
-<blockquote>void DrawGetFillColor ( DrawContext context, <A HREF="types/PixelPacket.html">PixelPacket</A> **fill_color ); </blockquote><p>A description of each parameter follows:</p>
+<blockquote>DrawGetFillColor() returns the fill color used for drawing filled objects. </blockquote><p>The format of the DrawGetFillColor method is:</p>
+<blockquote><A HREF="types/PixelPacket.html">PixelPacket</A> DrawGetFillColor ( DrawContext context ); </blockquote><p>A description of each parameter follows:</p>
+<p>
+</p>
+<h2><a name="drawsetfillcolor">DrawSetFillColor</a></h2>
 <dl>
 <dt><strong>o context:</strong><br />
 </dt>
 <dd>
 drawing context
 </dd>
-<p></p>
-<dt><strong><a name="item_o_fill_color%3a">o fill_color:</a></strong><br />
-</dt>
-<dd>
-Address of object to set
-</dd>
 <p></p></dl>
-<p>
-</p>
-<h2><a name="drawsetfillcolor">DrawSetFillColor</a></h2>
 <blockquote>DrawSetFillColor() sets the fill color to be used for drawing filled objects. </blockquote><p>The format of the DrawSetFillColor method is:</p>
 <blockquote>void DrawSetFillColor ( DrawContext context, const <A HREF="types/PixelPacket.html">PixelPacket</A> *fill_color ); </blockquote><p>A description of each parameter follows:</p>
 <dl>
@@ -677,7 +653,7 @@ Address of object to set
 drawing context
 </dd>
 <p></p>
-<dt><strong>o fill_color:</strong><br />
+<dt><strong><a name="item_o_fill_color%3a">o fill_color:</a></strong><br />
 </dt>
 <dd>
 fill color
@@ -722,19 +698,13 @@ URL to use to obtain fill pattern.
 <p>
 </p>
 <h2><a name="drawgetfillopacity">DrawGetFillOpacity</a></h2>
-<blockquote>DrawGetFillOpacity() obtains the opacity to use when drawing using the fill color or fill texture. Fully opaque is 1.0. </blockquote><p>The format of the DrawGetFillOpacity method is:</p>
-<blockquote>void DrawGetFillOpacity ( DrawContext context, double *fill_opacity ); </blockquote><p>A description of each parameter follows:</p>
+<blockquote>DrawGetFillOpacity() returns the opacity used when drawing using the fill color or fill texture. Fully opaque is 1.0. </blockquote><p>The format of the DrawGetFillOpacity method is:</p>
+<blockquote>double DrawGetFillOpacity ( DrawContext context ); </blockquote><p>A description of each parameter follows:</p>
 <dl>
 <dt><strong>o context:</strong><br />
 </dt>
 <dd>
 drawing context
-</dd>
-<p></p>
-<dt><strong><a name="item_o_fill_opacity%3a">o fill_opacity:</a></strong><br />
-</dt>
-<dd>
-address of fill opacity
 </dd>
 <p></p></dl>
 <p>
@@ -749,7 +719,7 @@ address of fill opacity
 drawing context
 </dd>
 <p></p>
-<dt><strong>o fill_opacity:</strong><br />
+<dt><strong><a name="item_o_fill_opacity%3a">o fill_opacity:</a></strong><br />
 </dt>
 <dd>
 fill opacity
@@ -758,24 +728,18 @@ fill opacity
 <p>
 </p>
 <h2><a name="drawgetfillrule">DrawGetFillRule</a></h2>
-<blockquote>DrawGetFillRule() obtains the fill rule to use while drawing polygons. </blockquote><p>The format of the DrawGetFillRule method is:</p>
-<blockquote>void DrawGetFillRule ( DrawContext context, FillRule *fill_rule ); </blockquote><p>A description of each parameter follows:</p>
+<blockquote>DrawGetFillRule() returns the fill rule used while drawing polygons. </blockquote><p>The format of the DrawGetFillRule method is:</p>
+<blockquote>FillRule DrawGetFillRule ( DrawContext context ); </blockquote><p>A description of each parameter follows:</p>
+<p>
+</p>
+<h2><a name="drawsetfillrule">DrawSetFillRule</a></h2>
 <dl>
 <dt><strong>o context:</strong><br />
 </dt>
 <dd>
 drawing context
 </dd>
-<p></p>
-<dt><strong>o fill_rule:</strong><br />
-</dt>
-<dd>
-address of fill rule (EvenOddRule or NonZeroRule)
-</dd>
 <p></p></dl>
-<p>
-</p>
-<h2><a name="drawsetfillrule">DrawSetFillRule</a></h2>
 <blockquote>DrawSetFillRule() sets the fill rule to use while drawing polygons. </blockquote><p>The format of the DrawSetFillRule method is:</p>
 <blockquote>void DrawSetFillRule ( DrawContext context, const FillRule fill_rule ); </blockquote><p>A description of each parameter follows:</p>
 <dl>
@@ -794,8 +758,20 @@ fill rule (EvenOddRule or NonZeroRule)
 <p>
 </p>
 <h2><a name="drawgetfont">DrawGetFont</a></h2>
-<blockquote>DrawGetFont() obtains the fully-sepecified font used when annotating with text. </blockquote><p>The format of the DrawGetFont method is:</p>
-<blockquote>void DrawGetFont ( DrawContext context, char **font_name ); </blockquote><p>A description of each parameter follows:</p>
+<blockquote>DrawGetFont() returns a null-terminaged string specifying the font used when annotating with text. The value returned must be freed by the user when no longer needed. </blockquote><p>The format of the DrawGetFont method is:</p>
+<blockquote>char *DrawGetFont ( DrawContext context ); </blockquote><p>A description of each parameter follows:</p>
+<p>
+</p>
+<h2><a name="drawsetfont">DrawSetFont</a></h2>
+<dl>
+<dt><strong>o context:</strong><br />
+</dt>
+<dd>
+drawing context
+</dd>
+<p></p></dl>
+<blockquote>DrawSetFont() sets the fully-sepecified font to use when annotating with text. </blockquote><p>The format of the DrawSetFont method is:</p>
+<blockquote>void DrawSetFont ( DrawContext context, const char *font_name ); </blockquote><p>A description of each parameter follows:</p>
 <dl>
 <dt><strong>o context:</strong><br />
 </dt>
@@ -806,32 +782,26 @@ drawing context
 <dt><strong><a name="item_o_font_name%3a">o font_name:</a></strong><br />
 </dt>
 <dd>
-address of pointer to store address of font name string.  Set to NULL if there is no font name set.  Value must be freed by the user when no longer needed.
-</dd>
-<p></p></dl>
-<p>
-</p>
-<h2><a name="drawsetfont">DrawSetFont</a></h2>
-<blockquote>DrawSetFont() sets the fully-sepecified font to use when annotating with text. </blockquote><p>The format of the DrawSetFont method is:</p>
-<blockquote>void DrawSetFont ( DrawContext context, const char *font_name ); </blockquote><p>A description of each parameter follows:</p>
-<dl>
-<dt><strong>o context:</strong><br />
-</dt>
-<dd>
-drawing context
-</dd>
-<p></p>
-<dt><strong>o font_name:</strong><br />
-</dt>
-<dd>
 font name
 </dd>
 <p></p></dl>
 <p>
 </p>
 <h2><a name="drawgetfontfamily">DrawGetFontFamily</a></h2>
-<blockquote>DrawGetFontFamily() obtains the font family to use when annotating with text. </blockquote><p>The format of the DrawGetFontFamily method is:</p>
-<blockquote>void DrawGetFontFamily ( DrawContext context, char **font_family ); </blockquote><p>A description of each parameter follows:</p>
+<blockquote>DrawGetFontFamily() returns the font family to use when annotating with text. The value returned must be freed by the user when it is no longer needed. </blockquote><p>The format of the DrawGetFontFamily method is:</p>
+<blockquote>char *DrawGetFontFamily ( DrawContext context ); </blockquote><p>A description of each parameter follows:</p>
+<p>
+</p>
+<h2><a name="drawsetfontfamily">DrawSetFontFamily</a></h2>
+<dl>
+<dt><strong>o context:</strong><br />
+</dt>
+<dd>
+drawing context
+</dd>
+<p></p></dl>
+<blockquote>DrawSetFontFamily() sets the font family to use when annotating with text. </blockquote><p>The format of the DrawSetFontFamily method is:</p>
+<blockquote>void DrawSetFontFamily ( DrawContext context, const char *font_family ); </blockquote><p>A description of each parameter follows:</p>
 <dl>
 <dt><strong>o context:</strong><br />
 </dt>
@@ -842,32 +812,26 @@ drawing context
 <dt><strong><a name="item_o_font_family%3a">o font_family:</a></strong><br />
 </dt>
 <dd>
-Address of pointer to place font family string.  Value is set to NULL if the font family is not set.  The value must be freed by the user when it is no longer needed.
-</dd>
-<p></p></dl>
-<p>
-</p>
-<h2><a name="drawsetfontfamily">DrawSetFontFamily</a></h2>
-<blockquote>DrawSetFontFamily() sets the font family to use when annotating with text. </blockquote><p>The format of the DrawSetFontFamily method is:</p>
-<blockquote>void DrawSetFontFamily ( DrawContext context, const char *font_family ); </blockquote><p>A description of each parameter follows:</p>
-<dl>
-<dt><strong>o context:</strong><br />
-</dt>
-<dd>
-drawing context
-</dd>
-<p></p>
-<dt><strong>o font_family:</strong><br />
-</dt>
-<dd>
 font family
 </dd>
 <p></p></dl>
 <p>
 </p>
 <h2><a name="drawgetfontsize">DrawGetFontSize</a></h2>
-<blockquote>DrawGetFontSize() obtains the font pointsize used when annotating with text. </blockquote><p>The format of the DrawGetFontSize method is:</p>
-<blockquote>void DrawGetFontSize ( DrawContext context, double *pointsize ); </blockquote><p>A description of each parameter follows:</p>
+<blockquote>DrawGetFontSize() returns the font pointsize used when annotating with text. </blockquote><p>The format of the DrawGetFontSize method is:</p>
+<blockquote>double DrawGetFontSize ( DrawContext context ); </blockquote><p>A description of each parameter follows:</p>
+<p>
+</p>
+<h2><a name="drawsetfontsize">DrawSetFontSize</a></h2>
+<dl>
+<dt><strong>o context:</strong><br />
+</dt>
+<dd>
+drawing context
+</dd>
+<p></p></dl>
+<blockquote>DrawSetFontSize() sets the font pointsize to use when annotating with text. </blockquote><p>The format of the DrawSetFontSize method is:</p>
+<blockquote>void DrawSetFontSize ( DrawContext context, const double pointsize ); </blockquote><p>A description of each parameter follows:</p>
 <dl>
 <dt><strong>o context:</strong><br />
 </dt>
@@ -878,32 +842,26 @@ drawing context
 <dt><strong><a name="item_o_pointsize%3a">o pointsize:</a></strong><br />
 </dt>
 <dd>
-address to place value
-</dd>
-<p></p></dl>
-<p>
-</p>
-<h2><a name="drawsetfontsize">DrawSetFontSize</a></h2>
-<blockquote>DrawSetFontSize() sets the font pointsize to use when annotating with text. </blockquote><p>The format of the DrawSetFontSize method is:</p>
-<blockquote>void DrawSetFontSize ( DrawContext context, const double pointsize ); </blockquote><p>A description of each parameter follows:</p>
-<dl>
-<dt><strong>o context:</strong><br />
-</dt>
-<dd>
-drawing context
-</dd>
-<p></p>
-<dt><strong>o pointsize:</strong><br />
-</dt>
-<dd>
 text pointsize
 </dd>
 <p></p></dl>
 <p>
 </p>
 <h2><a name="drawgetfontstretch">DrawGetFontStretch</a></h2>
-<blockquote>DrawGetFontStretch() obtains the font stretch used when annotating with text. </blockquote><p>The format of the DrawGetFontStretch method is:</p>
-<blockquote>void DrawGetFontStretch ( DrawContext context, StretchType *font_stretch ); </blockquote><p>A description of each parameter follows:</p>
+<blockquote>DrawGetFontStretch() returns the font stretch used when annotating with text. </blockquote><p>The format of the DrawGetFontStretch method is:</p>
+<blockquote>StretchType DrawGetFontStretch ( DrawContext context ); </blockquote><p>A description of each parameter follows:</p>
+<p>
+</p>
+<h2><a name="drawsetfontstretch">DrawSetFontStretch</a></h2>
+<dl>
+<dt><strong>o context:</strong><br />
+</dt>
+<dd>
+drawing context
+</dd>
+<p></p></dl>
+<blockquote>DrawSetFontStretch() sets the font stretch to use when annotating with text. The AnyStretch enumeration acts as a wild-card "don't care" option. </blockquote><p>The format of the DrawSetFontStretch method is:</p>
+<blockquote>void DrawSetFontStretch ( DrawContext context, const StretchType font_stretch ); </blockquote><p>A description of each parameter follows:</p>
 <dl>
 <dt><strong>o context:</strong><br />
 </dt>
@@ -914,32 +872,26 @@ drawing context
 <dt><strong><a name="item_o_font_stretch%3a">o font_stretch:</a></strong><br />
 </dt>
 <dd>
-address to place font stretch
-</dd>
-<p></p></dl>
-<p>
-</p>
-<h2><a name="drawsetfontstretch">DrawSetFontStretch</a></h2>
-<blockquote>DrawSetFontStretch() sets the font stretch to use when annotating with text. The AnyStretch enumeration acts as a wild-card "don't care" option. </blockquote><p>The format of the DrawSetFontStretch method is:</p>
-<blockquote>void DrawSetFontStretch ( DrawContext context, const StretchType font_stretch ); </blockquote><p>A description of each parameter follows:</p>
-<dl>
-<dt><strong>o context:</strong><br />
-</dt>
-<dd>
-drawing context
-</dd>
-<p></p>
-<dt><strong>o font_stretch:</strong><br />
-</dt>
-<dd>
 font stretch (NormalStretch, UltraCondensedStretch, CondensedStretch, SemiCondensedStretch, SemiExpandedStretch, ExpandedStretch, ExtraExpandedStretch, UltraExpandedStretch, AnyStretch)
 </dd>
 <p></p></dl>
 <p>
 </p>
 <h2><a name="drawgetfontstyle">DrawGetFontStyle</a></h2>
-<blockquote>DrawGetFontStyle() obtains the font style used when annotating with text. </blockquote><p>The format of the DrawGetFontStyle method is:</p>
-<blockquote>void DrawGetFontStyle ( DrawContext context, StyleType *style ); </blockquote><p>A description of each parameter follows:</p>
+<blockquote>DrawGetFontStyle() returns the font style used when annotating with text. </blockquote><p>The format of the DrawGetFontStyle method is:</p>
+<blockquote>StyleType DrawGetFontStyle ( DrawContext context ); </blockquote><p>A description of each parameter follows:</p>
+<p>
+</p>
+<h2><a name="drawsetfontstyle">DrawSetFontStyle</a></h2>
+<dl>
+<dt><strong>o context:</strong><br />
+</dt>
+<dd>
+drawing context
+</dd>
+<p></p></dl>
+<blockquote>DrawSetFontStyle() sets the font style to use when annotating with text. The AnyStyle enumeration acts as a wild-card "don't care" option. </blockquote><p>The format of the DrawSetFontStyle method is:</p>
+<blockquote>void DrawSetFontStyle ( DrawContext context, const StyleType style ); </blockquote><p>A description of each parameter follows:</p>
 <dl>
 <dt><strong>o context:</strong><br />
 </dt>
@@ -950,32 +902,26 @@ drawing context
 <dt><strong><a name="item_o_style%3a">o style:</a></strong><br />
 </dt>
 <dd>
-address to place value
-</dd>
-<p></p></dl>
-<p>
-</p>
-<h2><a name="drawsetfontstyle">DrawSetFontStyle</a></h2>
-<blockquote>DrawSetFontStyle() sets the font style to use when annotating with text. The AnyStyle enumeration acts as a wild-card "don't care" option. </blockquote><p>The format of the DrawSetFontStyle method is:</p>
-<blockquote>void DrawSetFontStyle ( DrawContext context, const StyleType style ); </blockquote><p>A description of each parameter follows:</p>
-<dl>
-<dt><strong>o context:</strong><br />
-</dt>
-<dd>
-drawing context
-</dd>
-<p></p>
-<dt><strong>o style:</strong><br />
-</dt>
-<dd>
 font style (NormalStyle, ItalicStyle, ObliqueStyle, AnyStyle)
 </dd>
 <p></p></dl>
 <p>
 </p>
 <h2><a name="drawgetfontweight">DrawGetFontWeight</a></h2>
-<blockquote>DrawGetFontWeight() obtains the font weight used when annotating with text. </blockquote><p>The format of the DrawGetFontWeight method is:</p>
-<blockquote>void DrawGetFontWeight ( DrawContext context, unsigned long *font_weight ); </blockquote><p>A description of each parameter follows:</p>
+<blockquote>DrawGetFontWeight() returns the font weight used when annotating with text. </blockquote><p>The format of the DrawGetFontWeight method is:</p>
+<blockquote>unsigned long DrawGetFontWeight ( DrawContext context ); </blockquote><p>A description of each parameter follows:</p>
+<p>
+</p>
+<h2><a name="drawsetfontweight">DrawSetFontWeight</a></h2>
+<dl>
+<dt><strong>o context:</strong><br />
+</dt>
+<dd>
+drawing context
+</dd>
+<p></p></dl>
+<blockquote>DrawSetFontWeight() sets the font weight to use when annotating with text. </blockquote><p>The format of the DrawSetFontWeight method is:</p>
+<blockquote>void DrawSetFontWeight ( DrawContext context, const unsigned long font_weight ); </blockquote><p>A description of each parameter follows:</p>
 <dl>
 <dt><strong>o context:</strong><br />
 </dt>
@@ -986,48 +932,24 @@ drawing context
 <dt><strong><a name="item_o_font_weight%3a">o font_weight:</a></strong><br />
 </dt>
 <dd>
-address to place value
-</dd>
-<p></p></dl>
-<p>
-</p>
-<h2><a name="drawsetfontweight">DrawSetFontWeight</a></h2>
-<blockquote>DrawSetFontWeight() sets the font weight to use when annotating with text. </blockquote><p>The format of the DrawSetFontWeight method is:</p>
-<blockquote>void DrawSetFontWeight ( DrawContext context, const unsigned long font_weight ); </blockquote><p>A description of each parameter follows:</p>
-<dl>
-<dt><strong>o context:</strong><br />
-</dt>
-<dd>
-drawing context
-</dd>
-<p></p>
-<dt><strong>o font_weight:</strong><br />
-</dt>
-<dd>
 font weight (valid range 100-900)
 </dd>
 <p></p></dl>
 <p>
 </p>
 <h2><a name="drawgetgravity">DrawGetGravity</a></h2>
-<blockquote>DrawGetGravity() obtains the text placement gravity used when annotating with text. </blockquote><p>The format of the DrawGetGravity method is:</p>
-<blockquote>void DrawGetGravity ( DrawContext context, <A HREF="types/Enumerations.html#GravityType">GravityType</A> *gravity ); </blockquote><p>A description of each parameter follows:</p>
+<blockquote>DrawGetGravity() returns the text placement gravity used when annotating with text. </blockquote><p>The format of the DrawGetGravity method is:</p>
+<blockquote><A HREF="types/Enumerations.html#GravityType">GravityType</A> DrawGetGravity ( DrawContext context ); </blockquote><p>A description of each parameter follows:</p>
+<p>
+</p>
+<h2><a name="drawsetgravity">DrawSetGravity</a></h2>
 <dl>
 <dt><strong>o context:</strong><br />
 </dt>
 <dd>
 drawing context
 </dd>
-<p></p>
-<dt><strong><a name="item_o_gravity%3a">o gravity:</a></strong><br />
-</dt>
-<dd>
-address to place value
-</dd>
 <p></p></dl>
-<p>
-</p>
-<h2><a name="drawsetgravity">DrawSetGravity</a></h2>
 <blockquote>DrawSetGravity() sets the text placement gravity to use when annotating with text. </blockquote><p>The format of the DrawSetGravity method is:</p>
 <blockquote>void DrawSetGravity ( DrawContext context, const <A HREF="types/Enumerations.html#GravityType">GravityType</A> gravity ); </blockquote><p>A description of each parameter follows:</p>
 <dl>
@@ -1037,7 +959,7 @@ address to place value
 drawing context
 </dd>
 <p></p>
-<dt><strong>o gravity:</strong><br />
+<dt><strong><a name="item_o_gravity%3a">o gravity:</a></strong><br />
 </dt>
 <dd>
 positioning gravity (NorthWestGravity, NorthGravity, NorthEastGravity, WestGravity, CenterGravity, EastGravity, SouthWestGravity, SouthGravity, SouthEastGravity)
@@ -2153,19 +2075,13 @@ offset:
 <p>
 </p>
 <h2><a name="drawgetstrokecolor">DrawGetStrokeColor</a></h2>
-<blockquote>DrawGetStrokeColor() obtains the color used for stroking object outlines. </blockquote><p>The format of the DrawGetStrokeColor method is:</p>
-<blockquote>void DrawGetStrokeColor ( DrawContext context, <A HREF="types/PixelPacket.html">PixelPacket</A> *stroke_color ); </blockquote><p>A description of each parameter follows:</p>
+<blockquote>DrawGetStrokeColor() returns the color used for stroking object outlines. </blockquote><p>The format of the DrawGetStrokeColor method is:</p>
+<blockquote><A HREF="types/PixelPacket.html">PixelPacket</A> DrawGetStrokeColor ( DrawContext context ); </blockquote><p>A description of each parameter follows:</p>
 <dl>
 <dt><strong>o context:</strong><br />
 </dt>
 <dd>
 drawing context
-</dd>
-<p></p>
-<dt><strong><a name="item_o_stroke_color%3a">o stroke_color:</a></strong><br />
-</dt>
-<dd>
-address to place stroke color
 </dd>
 <p></p></dl>
 <p>
@@ -2180,7 +2096,7 @@ address to place stroke color
 drawing context
 </dd>
 <p></p>
-<dt><strong>o stroke_color:</strong><br />
+<dt><strong><a name="item_o_stroke_color%3a">o stroke_color:</a></strong><br />
 </dt>
 <dd>
 stroke color
@@ -2225,8 +2141,20 @@ URL specifying pattern ID (e.g.  ``#pattern_id'')
 <p>
 </p>
 <h2><a name="drawgetstrokeantialias">DrawGetStrokeAntialias</a></h2>
-<blockquote>DrawGetStrokeAntialias() obtains the current stroke antialias setting. Stroked outlines are antialiased by default. When antialiasing is disabled stroked pixels are thresholded to determine if the stroke color or underlying canvas color should be used. </blockquote><p>The format of the DrawGetStrokeAntialias method is:</p>
-<blockquote>void DrawGetStrokeAntialias ( DrawContext context, unsigned int *stroke_antialias ); </blockquote><p>A description of each parameter follows:</p>
+<blockquote>DrawGetStrokeAntialias() returns the current stroke antialias setting. Stroked outlines are antialiased by default. When antialiasing is disabled stroked pixels are thresholded to determine if the stroke color or underlying canvas color should be used. </blockquote><p>The format of the DrawGetStrokeAntialias method is:</p>
+<blockquote>unsigned int DrawGetStrokeAntialias ( DrawContext context ); </blockquote><p>A description of each parameter follows:</p>
+<p>
+</p>
+<h2><a name="drawsetstrokeantialias">DrawSetStrokeAntialias</a></h2>
+<dl>
+<dt><strong>o context:</strong><br />
+</dt>
+<dd>
+drawing context
+</dd>
+<p></p></dl>
+<blockquote>DrawSetStrokeAntialias() controls whether stroked outlines are antialiased. Stroked outlines are antialiased by default. When antialiasing is disabled stroked pixels are thresholded to determine if the stroke color or underlying canvas color should be used. </blockquote><p>The format of the DrawSetStrokeAntialias method is:</p>
+<blockquote>void DrawSetStrokeAntialias ( DrawContext context, const unsigned int stroke_antialias ); </blockquote><p>A description of each parameter follows:</p>
 <dl>
 <dt><strong>o context:</strong><br />
 </dt>
@@ -2237,32 +2165,14 @@ drawing context
 <dt><strong><a name="item_o_stroke_antialias%3a">o stroke_antialias:</a></strong><br />
 </dt>
 <dd>
-address to place value
-</dd>
-<p></p></dl>
-<p>
-</p>
-<h2><a name="drawsetstrokeantialias">DrawSetStrokeAntialias</a></h2>
-<blockquote>DrawSetStrokeAntialias() controls whether stroked outlines are antialiased. Stroked outlines are antialiased by default. When antialiasing is disabled stroked pixels are thresholded to determine if the stroke color or underlying canvas color should be used. </blockquote><p>The format of the DrawSetStrokeAntialias method is:</p>
-<blockquote>void DrawSetStrokeAntialias ( DrawContext context, const unsigned int stroke_antialias ); </blockquote><p>A description of each parameter follows:</p>
-<dl>
-<dt><strong>o context:</strong><br />
-</dt>
-<dd>
-drawing context
-</dd>
-<p></p>
-<dt><strong>o stroke_antialias:</strong><br />
-</dt>
-<dd>
 set to false (zero) to disable antialiasing
 </dd>
 <p></p></dl>
 <p>
 </p>
 <h2><a name="drawgetstrokedasharray">DrawGetStrokeDashArray</a></h2>
-<blockquote>DrawGetStrokeDashArray() obtains the pattern of dashes and gaps used to stroke paths. The strokeDashArray represents an array of numbers that specify the lengths of alternating dashes and gaps in pixels. If an odd number of values is provided, then the list of values is repeated to yield an even number of values. If the value returned in num_elems is zero, then no stroke dash array is defined. </blockquote><p>The format of the DrawGetStrokeDashArray method is:</p>
-<blockquote>void DrawGetStrokeDashArray ( DrawContext context, size_t *num_elems, double **dasharray ); </blockquote><p>A description of each parameter follows:</p>
+<blockquote>DrawGetStrokeDashArray() returns an array representing the pattern of dashes and gaps used to stroke paths ( see DrawSetStrokeDashArray ) . The array must be freed once it is no longer required by the user. </blockquote><p>The format of the DrawGetStrokeDashArray method is:</p>
+<blockquote>double *DrawGetStrokeDashArray ( DrawContext context, size_t *num_elems ); </blockquote><p>A description of each parameter follows:</p>
 <dl>
 <dt><strong>o context:</strong><br />
 </dt>
@@ -2274,12 +2184,6 @@ drawing context
 </dt>
 <dd>
 address to place number of elements in dash array
-</dd>
-<p></p>
-<dt><strong><a name="item_o_dasharray%3a">o dasharray:</a></strong><br />
-</dt>
-<dd>
-address to place array of dash array values
 </dd>
 <p></p></dl>
 <p>
@@ -2301,7 +2205,7 @@ drawing context
 number of elements in dash array
 </dd>
 <p></p>
-<dt><strong>o dasharray:</strong><br />
+<dt><strong><a name="item_o_dasharray%3a">o dasharray:</a></strong><br />
 </dt>
 <dd>
 dash array values
@@ -2311,19 +2215,13 @@ dash array values
 </p>
 <h2><a name="drawgetstrokedashoffset">DrawGetStrokeDashOffset</a></h2>
 <p>*/</p>
-<blockquote>DrawGetStrokeDashOffset() obtains the offset into the dash pattern to start the dash. </blockquote><p>The format of the DrawGetStrokeDashOffset method is:</p>
-<blockquote>void DrawGetStrokeDashOffset ( DrawContext context, double *dash_offset ); </blockquote><p>A description of each parameter follows:</p>
+<blockquote>DrawGetStrokeDashOffset() returns the offset into the dash pattern to start the dash. </blockquote><p>The format of the DrawGetStrokeDashOffset method is:</p>
+<blockquote>double DrawGetStrokeDashOffset ( DrawContext context ); </blockquote><p>A description of each parameter follows:</p>
 <dl>
 <dt><strong>o context:</strong><br />
 </dt>
 <dd>
 drawing context
-</dd>
-<p></p>
-<dt><strong><a name="item_o_dash_offset%3a">o dash_offset:</a></strong><br />
-</dt>
-<dd>
-address to write dash offset
 </dd>
 <p></p></dl>
 <p>
@@ -2338,7 +2236,7 @@ address to write dash offset
 drawing context
 </dd>
 <p></p>
-<dt><strong>o dash_offset:</strong><br />
+<dt><strong><a name="item_o_dash_offset%3a">o dash_offset:</a></strong><br />
 </dt>
 <dd>
 dash offset
@@ -2347,19 +2245,13 @@ dash offset
 <p>
 </p>
 <h2><a name="drawgetstrokelinecap">DrawGetStrokeLineCap</a></h2>
-<blockquote>DrawGetStrokeLineCap() obtains the shape to be used at the end of open subpaths when they are stroked. Values of LineCap are UndefinedCap, ButtCap, RoundCap, and SquareCap. </blockquote><p>The format of the DrawGetStrokeLineCap method is:</p>
-<blockquote>void DrawGetStrokeLineCap ( DrawContext context, LineCap *linecap ); </blockquote><p>A description of each parameter follows:</p>
+<blockquote>DrawGetStrokeLineCap() returns the shape to be used at the end of open subpaths when they are stroked. Values of LineCap are UndefinedCap, ButtCap, RoundCap, and SquareCap. </blockquote><p>The format of the DrawGetStrokeLineCap method is:</p>
+<blockquote>LineCap DrawGetStrokeLineCap ( DrawContext context ); </blockquote><p>A description of each parameter follows:</p>
 <dl>
 <dt><strong>o context:</strong><br />
 </dt>
 <dd>
 drawing context
-</dd>
-<p></p>
-<dt><strong><a name="item_o_linecap%3a">o linecap:</a></strong><br />
-</dt>
-<dd>
-address to write linecap style
 </dd>
 <p></p></dl>
 <p>
@@ -2375,7 +2267,7 @@ address to write linecap style
 drawing context
 </dd>
 <p></p>
-<dt><strong>o linecap:</strong><br />
+<dt><strong><a name="item_o_linecap%3a">o linecap:</a></strong><br />
 </dt>
 <dd>
 linecap style
@@ -2385,19 +2277,13 @@ linecap style
 </p>
 <h2><a name="drawgetstrokelinejoin">DrawGetStrokeLineJoin</a></h2>
 <p>*/</p>
-<blockquote>DrawGetStrokeLineJoin() obtains the shape to be used at the corners of paths ( or other vector shapes ) when they are stroked. Values of LineJoin are UndefinedJoin, MiterJoin, RoundJoin, and BevelJoin. </blockquote><p>The format of the DrawGetStrokeLineJoin method is:</p>
-<blockquote>void DrawGetStrokeLineJoin ( DrawContext context, LineJoin *linejoin ); </blockquote><p>A description of each parameter follows:</p>
+<blockquote>DrawGetStrokeLineJoin() returns the shape to be used at the corners of paths ( or other vector shapes ) when they are stroked. Values of LineJoin are UndefinedJoin, MiterJoin, RoundJoin, and BevelJoin. </blockquote><p>The format of the DrawGetStrokeLineJoin method is:</p>
+<blockquote>LineJoin DrawGetStrokeLineJoin ( DrawContext context ); </blockquote><p>A description of each parameter follows:</p>
 <dl>
 <dt><strong>o context:</strong><br />
 </dt>
 <dd>
 drawing context
-</dd>
-<p></p>
-<dt><strong><a name="item_o_linejoin%3a">o linejoin:</a></strong><br />
-</dt>
-<dd>
-address to write line join style
 </dd>
 <p></p></dl>
 <p>
@@ -2413,7 +2299,7 @@ address to write line join style
 drawing context
 </dd>
 <p></p>
-<dt><strong>o linejoin:</strong><br />
+<dt><strong><a name="item_o_linejoin%3a">o linejoin:</a></strong><br />
 </dt>
 <dd>
 line join style
@@ -2423,19 +2309,13 @@ line join style
 </p>
 <h2><a name="drawgetstrokemiterlimit">DrawGetStrokeMiterLimit</a></h2>
 <p>*/</p>
-<blockquote>DrawGetStrokeMiterLimit() obtains the miter limit. When two line segments meet at a sharp angle and miter joins have been specified for 'lineJoin', it is possible for the miter to extend far beyond the thickness of the line stroking the path. The miterLimit' imposes a limit on the ratio of the miter length to the 'lineWidth'. </blockquote><p>The format of the DrawGetStrokeMiterLimit method is:</p>
-<blockquote>void DrawGetStrokeMiterLimit ( DrawContext context, unsigned long *miterlimit ); </blockquote><p>A description of each parameter follows:</p>
+<blockquote>DrawGetStrokeMiterLimit() returns the miter limit. When two line segments meet at a sharp angle and miter joins have been specified for 'lineJoin', it is possible for the miter to extend far beyond the thickness of the line stroking the path. The miterLimit' imposes a limit on the ratio of the miter length to the 'lineWidth'. </blockquote><p>The format of the DrawGetStrokeMiterLimit method is:</p>
+<blockquote>unsigned long DrawGetStrokeMiterLimit ( DrawContext context ); </blockquote><p>A description of each parameter follows:</p>
 <dl>
 <dt><strong>o context:</strong><br />
 </dt>
 <dd>
 drawing context
-</dd>
-<p></p>
-<dt><strong><a name="item_o_miterlimit%3a">o miterlimit:</a></strong><br />
-</dt>
-<dd>
-address to save miter limit
 </dd>
 <p></p></dl>
 <p>
@@ -2451,7 +2331,7 @@ address to save miter limit
 drawing context
 </dd>
 <p></p>
-<dt><strong>o miterlimit:</strong><br />
+<dt><strong><a name="item_o_miterlimit%3a">o miterlimit:</a></strong><br />
 </dt>
 <dd>
 miter limit
@@ -2461,8 +2341,20 @@ miter limit
 </p>
 <h2><a name="drawgetstrokeopacity">DrawGetStrokeOpacity</a></h2>
 <p>*/</p>
-<blockquote>DrawGetStrokeOpacity() obtains the opacity of stroked object outlines. </blockquote><p>The format of the DrawGetStrokeOpacity method is:</p>
-<blockquote>void DrawGetStrokeOpacity ( DrawContext context, double *stroke_opacity ); </blockquote><p>A description of each parameter follows:</p>
+<blockquote>DrawGetStrokeOpacity() returns the opacity of stroked object outlines. </blockquote><p>The format of the DrawGetStrokeOpacity method is:</p>
+<blockquote>double DrawGetStrokeOpacity ( DrawContext context ); </blockquote><p>A description of each parameter follows:</p>
+<p>
+</p>
+<h2><a name="drawsetstrokeopacity">DrawSetStrokeOpacity</a></h2>
+<dl>
+<dt><strong>o context:</strong><br />
+</dt>
+<dd>
+drawing context
+</dd>
+<p></p></dl>
+<blockquote>DrawSetStrokeOpacity() specifies the opacity of stroked object outlines. </blockquote><p>The format of the DrawSetStrokeOpacity method is:</p>
+<blockquote>void DrawSetStrokeOpacity ( DrawContext context, const double stroke_opacity ); </blockquote><p>A description of each parameter follows:</p>
 <dl>
 <dt><strong>o context:</strong><br />
 </dt>
@@ -2473,43 +2365,19 @@ drawing context
 <dt><strong><a name="item_o_stroke_opacity%3a">o stroke_opacity:</a></strong><br />
 </dt>
 <dd>
-address to save stroke opacity.
-</dd>
-<p></p></dl>
-<p>
-</p>
-<h2><a name="drawsetstrokeopacity">DrawSetStrokeOpacity</a></h2>
-<blockquote>DrawSetStrokeOpacity() specifies the opacity of stroked object outlines. </blockquote><p>The format of the DrawSetStrokeOpacity method is:</p>
-<blockquote>void DrawSetStrokeOpacity ( DrawContext context, const double stroke_opacity ); </blockquote><p>A description of each parameter follows:</p>
-<dl>
-<dt><strong>o context:</strong><br />
-</dt>
-<dd>
-drawing context
-</dd>
-<p></p>
-<dt><strong>o stroke_opacity:</strong><br />
-</dt>
-<dd>
 stroke opacity.  The value 1.0 is opaque.
 </dd>
 <p></p></dl>
 <p>
 </p>
 <h2><a name="drawgetstrokewidth">DrawGetStrokeWidth</a></h2>
-<blockquote>DrawGetStrokeWidth() obtains the width of the stroke used to draw object outlines. </blockquote><p>The format of the DrawGetStrokeWidth method is:</p>
-<blockquote>void DrawGetStrokeWidth ( DrawContext context, double *stroke_width ); </blockquote><p>A description of each parameter follows:</p>
+<blockquote>DrawGetStrokeWidth() returns the width of the stroke used to draw object outlines. </blockquote><p>The format of the DrawGetStrokeWidth method is:</p>
+<blockquote>double DrawGetStrokeWidth ( DrawContext context ); </blockquote><p>A description of each parameter follows:</p>
 <dl>
 <dt><strong>o context:</strong><br />
 </dt>
 <dd>
 drawing context
-</dd>
-<p></p>
-<dt><strong><a name="item_o_stroke_width%3a">o stroke_width:</a></strong><br />
-</dt>
-<dd>
-address to save stroke width
 </dd>
 <p></p></dl>
 <p>
@@ -2524,7 +2392,7 @@ address to save stroke width
 drawing context
 </dd>
 <p></p>
-<dt><strong>o stroke_width:</strong><br />
+<dt><strong><a name="item_o_stroke_width%3a">o stroke_width:</a></strong><br />
 </dt>
 <dd>
 stroke width
@@ -2533,19 +2401,13 @@ stroke width
 <p>
 </p>
 <h2><a name="drawgettextantialias">DrawGetTextAntialias</a></h2>
-<blockquote>DrawGetTextAntialias() obtains the current text antialias setting, which determines whether text is antialiased. Text is antialiased by default. </blockquote><p>The format of the DrawGetTextAntialias method is:</p>
-<blockquote>void DrawGetTextAntialias ( DrawContext context, unsigned int *text_antialias ); </blockquote><p>A description of each parameter follows:</p>
+<blockquote>DrawGetTextAntialias() returns the current text antialias setting, which determines whether text is antialiased. Text is antialiased by default. </blockquote><p>The format of the DrawGetTextAntialias method is:</p>
+<blockquote>unsigned int DrawGetTextAntialias ( DrawContext context ); </blockquote><p>A description of each parameter follows:</p>
 <dl>
 <dt><strong>o context:</strong><br />
 </dt>
 <dd>
 drawing context
-</dd>
-<p></p>
-<dt><strong><a name="item_o_text_antialias%3a">o text_antialias:</a></strong><br />
-</dt>
-<dd>
-address to save antialias boolean.
 </dd>
 <p></p></dl>
 <p>
@@ -2560,7 +2422,7 @@ address to save antialias boolean.
 drawing context
 </dd>
 <p></p>
-<dt><strong>o text_antialias:</strong><br />
+<dt><strong><a name="item_o_text_antialias%3a">o text_antialias:</a></strong><br />
 </dt>
 <dd>
 antialias boolean.  Set to false (0) to disable antialiasing.
@@ -2569,19 +2431,13 @@ antialias boolean.  Set to false (0) to disable antialiasing.
 <p>
 </p>
 <h2><a name="drawgettextdecoration">DrawGetTextDecoration</a></h2>
-<blockquote>DrawGetTextDecoration() obtains the decoration to be applied when annotating with text. </blockquote><p>The format of the DrawGetTextDecoration method is:</p>
-<blockquote>void DrawGetTextDecoration ( DrawContext context, DecorationType *decoration ); </blockquote><p>A description of each parameter follows:</p>
+<blockquote>DrawGetTextDecoration() returns the decoration applied when annotating with text. </blockquote><p>The format of the DrawGetTextDecoration method is:</p>
+<blockquote>DecorationType DrawGetTextDecoration ( DrawContext context ); </blockquote><p>A description of each parameter follows:</p>
 <dl>
 <dt><strong>o context:</strong><br />
 </dt>
 <dd>
 drawing context
-</dd>
-<p></p>
-<dt><strong><a name="item_o_decoration%3a">o decoration:</a></strong><br />
-</dt>
-<dd>
-address to save text decoration.  One of NoDecoration, UnderlineDecoration, OverlineDecoration, or LineThroughDecoration
 </dd>
 <p></p></dl>
 <p>
@@ -2596,7 +2452,7 @@ address to save text decoration.  One of NoDecoration, UnderlineDecoration, Over
 drawing context
 </dd>
 <p></p>
-<dt><strong>o decoration:</strong><br />
+<dt><strong><a name="item_o_decoration%3a">o decoration:</a></strong><br />
 </dt>
 <dd>
 text decoration.  One of NoDecoration, UnderlineDecoration, OverlineDecoration, or LineThroughDecoration
@@ -2605,19 +2461,13 @@ text decoration.  One of NoDecoration, UnderlineDecoration, OverlineDecoration, 
 <p>
 </p>
 <h2><a name="drawgettextencoding">DrawGetTextEncoding</a></h2>
-<blockquote>DrawGetTextEncoding() obtains specifies the code set used for text annotations. </blockquote><p>The format of the DrawGetTextEncoding method is:</p>
-<blockquote>void DrawGetTextEncoding ( DrawContext context, char **encoding ); </blockquote><p>A description of each parameter follows:</p>
+<blockquote>DrawGetTextEncoding() returns a null-terminated string which specifies the code set used for text annotations. The string must be freed by the user once it is no longer required. </blockquote><p>The format of the DrawGetTextEncoding method is:</p>
+<blockquote>char *DrawGetTextEncoding ( DrawContext context ); </blockquote><p>A description of each parameter follows:</p>
 <dl>
 <dt><strong>o context:</strong><br />
 </dt>
 <dd>
 drawing context
-</dd>
-<p></p>
-<dt><strong><a name="item_o_encoding%3a">o encoding:</a></strong><br />
-</dt>
-<dd>
-address specifiying pointer to record string specifying text encoding.  If the value is not set, then the string pointer is set to NULL.
 </dd>
 <p></p></dl>
 <p>
@@ -2633,7 +2483,7 @@ address specifiying pointer to record string specifying text encoding.  If the v
 drawing context
 </dd>
 <p></p>
-<dt><strong>o encoding:</strong><br />
+<dt><strong><a name="item_o_encoding%3a">o encoding:</a></strong><br />
 </dt>
 <dd>
 character string specifying text encoding
@@ -2643,19 +2493,13 @@ character string specifying text encoding
 </p>
 <h2><a name="drawgettextundercolor">DrawGetTextUnderColor</a></h2>
 <p>*/</p>
-<blockquote>DrawGetTextUnderColor() obtains the color of a background rectangle to place under text annotations. </blockquote><p>The format of the DrawGetTextUnderColor method is:</p>
-<blockquote>void DrawGetTextUnderColor ( DrawContext context, <A HREF="types/PixelPacket.html">PixelPacket</A> *under_color ); </blockquote><p>A description of each parameter follows:</p>
+<blockquote>DrawGetTextUnderColor() returns the color of a background rectangle to place under text annotations. </blockquote><p>The format of the DrawGetTextUnderColor method is:</p>
+<blockquote><A HREF="types/PixelPacket.html">PixelPacket</A> DrawGetTextUnderColor ( DrawContext context ); </blockquote><p>A description of each parameter follows:</p>
 <dl>
 <dt><strong>o context:</strong><br />
 </dt>
 <dd>
 drawing context
-</dd>
-<p></p>
-<dt><strong><a name="item_o_under_color%3a">o under_color:</a></strong><br />
-</dt>
-<dd>
-address to save text under-color
 </dd>
 <p></p></dl>
 <p>
@@ -2670,7 +2514,7 @@ address to save text under-color
 drawing context
 </dd>
 <p></p>
-<dt><strong>o under_color:</strong><br />
+<dt><strong><a name="item_o_under_color%3a">o under_color:</a></strong><br />
 </dt>
 <dd>
 text under color

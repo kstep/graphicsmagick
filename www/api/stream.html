@@ -33,8 +33,8 @@
 </p>
 <hr />
 <h1><a name="synopsis">SYNOPSIS</a></h1>
-<p>Image * <strong>ReadStream</strong>( const ImageInfo *image_info, void(* Stream )( const Image *, const void *, const size_t ), ExceptionInfo *exception );</p>
-<p>unsigned int  <strong>WriteStream</strong>( const ImageInfo *image_info, Image *, int(* Stream )( const Image *, const void *, const size_t ));</p>
+<p>Image * <strong>ReadStream</strong>( const ImageInfo *image_info, StreamHandler stream, ExceptionInfo *exception );</p>
+<p>unsigned int  <strong>WriteStream</strong>( const ImageInfo *image_info, Image *, StreamHandler stream );</p>
 <p>
 </p>
 <hr />
@@ -42,7 +42,7 @@
 <p>
 </p>
 <h2><a name="readstream">ReadStream</a></h2>
-<blockquote>ReadStream() makes the image pixels available to a user supplied callback method immediately upon reading a scanline with the ReadImage ( ) method. </blockquote><blockquote>The format of the ReadStream() method is: </blockquote><blockquote><A HREF="types/Image.html">Image</A> *ReadStream ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, void ( *Stream ) ( const <A HREF="types/Image.html">Image</A> *, const void *, const size_t ), <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><p>A description of each parameter follows:</p>
+<blockquote>ReadStream() makes the image pixels available to a user supplied callback method immediately upon reading a scanline with the ReadImage ( ) method. </blockquote><blockquote>The format of the ReadStream() method is: </blockquote><blockquote><A HREF="types/Image.html">Image</A> *ReadStream ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, StreamHandler stream, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><p>A description of each parameter follows:</p>
 <dl>
 <dt><strong><a name="item_o_image_info%3a">o image_info:</a></strong><br />
 </dt>
@@ -65,7 +65,7 @@ Return any errors or warnings in this structure.
 <p>
 </p>
 <h2><a name="writestream">WriteStream</a></h2>
-<blockquote>WriteStream() makes the image pixels available to a user supplied callback method immediately upon writing pixel data with the WriteImage ( ) method. </blockquote><blockquote>The format of the WriteStream() method is: </blockquote><blockquote>unsigned int WriteStream ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, <A HREF="types/Image.html">Image</A> *, int ( *Stream ) ( const <A HREF="types/Image.html">Image</A> *, const void *, const size_t ) ); </blockquote><p>A description of each parameter follows:</p>
+<blockquote>WriteStream() makes the image pixels available to a user supplied callback method immediately upon writing pixel data with the WriteImage ( ) method. </blockquote><blockquote>The format of the WriteStream() method is: </blockquote><blockquote>unsigned int WriteStream ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, <A HREF="types/Image.html">Image</A> *, StreamHandler stream ); </blockquote><p>A description of each parameter follows:</p>
 <dl>
 <dt><strong>o image_info:</strong><br />
 </dt>

@@ -105,7 +105,7 @@ static ResourceInfo
 %
 %  The format of the AcquireMagickResource() method is:
 %
-%      unsigned  int AcquireMagickResource(const ResourceType type,
+%      unsigned int AcquireMagickResource(const ResourceType type,
 %        const off_t size)
 %
 %  A description of each parameter follows:
