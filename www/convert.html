@@ -917,7 +917,7 @@ width=15><b><font face="Helvetica, Arial"
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Choices are: <em>None</em>, <em>BZip</em>, <em>Fax</em>,
 <em>Group4</em>,
-<em>JPEG</em>,
+<em>JPEG</em>, <em>Lossless</em>,
 <em>LZW</em>, <em>RLE</em> or <em>Zip</em>.
 </font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
@@ -925,10 +925,13 @@ Specify <strong>+compress</strong> to store the binary image in an uncompressed 
 The default is the compression type of the specified image file.
 </font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-If LZW compression is specified but LZW compression has not been enabled,
+If <em>LZW</em> compression is specified but LZW compression has not been enabled,
 the image data will be written
 in an uncompressed LZW format that can be read by LZW decoders.  This
 may result in larger-than-expected GIF files.</font></td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+<em>"Lossless"</em> refers to lossless JPEG, which is only available if
+the JPEG library has been patched to support it.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -1581,11 +1584,6 @@ Similarly, if only the height is specified (e.g., <tt>-geometry x256</tt>),
 the width is chosen to maintain the aspect ratio. 
 </font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-If the <em>x offset</em> is negative, the offset is measured leftward
-from the right edge of the
-image to the right edge of the region being specified.
-Similarly, negative <em>y offset</em> is measured between the bottom edges.</font></td></tr></table>
-<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 To specify a percentage width or height instead, append %. The image size
 is multiplied by the width and height percentages to obtain the final image
 dimensions. To increase the size of an image, use a value greater than
@@ -1810,6 +1808,26 @@ set of colors from an image file with this option. Use
 all images provided on the command line to a single optimal set of colors
 that best represent all the images.
 </font></td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#9EBAC6">
+<img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#FFFFFF"><font size="+1">
+    <a name="-mask">-mask</a> <i>&lt;filename&gt;</i>
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Specify a clipping mask</td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+The image read from the file is used as a clipping mask.  It must have
+the same dimensions as the image being masked.</font></td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+If the mask image contains an opacity channel, the opacity of each pixel is
+used to define the mask.  Otherwise, the intensity (gray level) of each
+pixel is used.</font></td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+Use <strong>+mask</strong> to remove the clipping mask.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -2062,8 +2080,10 @@ relative to the lower left hand corner of the page by
 <tt>-page 612x792&gt;</tt>, for example, to center the
 image within the page. If the image size exceeds the Postscript page, it
 is reduced to fit the page.
-Unlike in <strong>-geometry</strong>, a positive <strong>y</strong> <em>offset</em> is measured
-upward from the bottom edge of the page, and negative offsets are not treated
+Positive <strong>x</strong> and
+<strong>y</strong> <em>offset</em> are measured
+rightward and upward from the bottom left corner of the page, Unlike
+in <strong>-geometry</strong>, negative offsets are not treated
 specially.  They simply specify leftward and downward distances from the lower
 left hand corner of the page.
 </font></td></tr></table>
@@ -2307,7 +2327,7 @@ width=15><b><font face="Helvetica, Arial"
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>resize and locate an image</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 This is an alias for the <strong>-geometry</strong> option and it behaves in the
-same manner. If the <strong>-filter</strong> option preceded the <strong>-resize</strong>
+same manner. If the <strong>-filter</strong> option precedes the <strong>-resize</strong>
 option, the specified filter is used.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>

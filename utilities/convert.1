@@ -694,7 +694,7 @@ with 0 for any pixel matching in color to pixel location (0,0), otherwise
 
 Choices are: \fINone\fP, \fIBZip\fP, \fIFax\fP,
 \fIGroup4\fP,
-\fIJPEG\fP,
+\fIJPEG\fP, \fILossless\fP,
 \fILZW\fP, \fIRLE\fP or \fIZip\fP.
 
 
@@ -702,10 +702,13 @@ Specify \fB+compress\fP to store the binary image in an uncompressed format.
 The default is the compression type of the specified image file.
 
 
-If LZW compression is specified but LZW compression has not been enabled,
+If \fILZW\fP compression is specified but LZW compression has not been enabled,
 the image data will be written
 in an uncompressed LZW format that can be read by LZW decoders.  This
 may result in larger-than-expected GIF files.
+
+\fI"Lossless"\fP refers to lossless JPEG, which is only available if
+the JPEG library has been patched to support it.
 .TP
 .B "-contrast"
 \fRenhance or reduce the image contrast
@@ -1119,11 +1122,6 @@ Similarly, if only the height is specified (e.g., -geometry x256),
 the width is chosen to maintain the aspect ratio. 
 
 
-If the \fIx offset\fP is negative, the offset is measured leftward
-from the right edge of the
-image to the right edge of the region being specified.
-Similarly, negative \fIy offset\fP is measured between the bottom edges.
-
 To specify a percentage width or height instead, append %. The image size
 is multiplied by the width and height percentages to obtain the final image
 dimensions. To increase the size of an image, use a value greater than
@@ -1267,6 +1265,18 @@ set of colors from an image file with this option. Use
 all images provided on the command line to a single optimal set of colors
 that best represent all the images.
 
+.TP
+.B "-mask \fI<filename>"\fP
+\fRSpecify a clipping mask
+
+The image read from the file is used as a clipping mask.  It must have
+the same dimensions as the image being masked.
+
+If the mask image contains an opacity channel, the opacity of each pixel is
+used to define the mask.  Otherwise, the intensity (gray level) of each
+pixel is used.
+
+Use \fB+mask\fP to remove the clipping mask.
 .TP
 .B "-matte"
 \fRstore matte channel if the image has one
@@ -1421,8 +1431,10 @@ relative to the lower left hand corner of the page by
 -page 612x792>, for example, to center the
 image within the page. If the image size exceeds the Postscript page, it
 is reduced to fit the page.
-Unlike in \fB-geometry\fP, a positive \fBy\fP \fIoffset\fP is measured
-upward from the bottom edge of the page, and negative offsets are not treated
+Positive \fBx\fP and
+\fBy\fP \fIoffset\fP are measured
+rightward and upward from the bottom left corner of the page, Unlike
+in \fB-geometry\fP, negative offsets are not treated
 specially.  They simply specify leftward and downward distances from the lower
 left hand corner of the page.
 
@@ -1568,7 +1580,7 @@ restart from its original state, use the \fB-copy\fP option.
 \fRresize and locate an image
 
 This is an alias for the \fB-geometry\fP option and it behaves in the
-same manner. If the \fB-filter\fP option preceded the \fB-resize\fP
+same manner. If the \fB-filter\fP option precedes the \fB-resize\fP
 option, the specified filter is used.
 .TP
 .B "-roll \fI{+-}<x offset>{+-}<y offset>"\fP
