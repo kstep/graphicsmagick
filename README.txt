@@ -610,13 +610,13 @@ Windows NT/95 VISUAL C++ 6.0 COMPILATION
   directory under VisualMagick and open the configure.dsw workspace.
   Set the build configuration to "Release" under the
 
-      "Build..., Set Active Configuration..."  menu
+      "Build..., Set Active Configuration..."  menu.
 
   Build and execute the configure program and follow the instructions.
   You should probably not change any of the defaults unless you have a
   specific reason to do so.
 
-  After creating you build environment you can proceed to open the DSW
+  After creating your build environment you can proceed to open the DSW
   file that was generated and build everything from there.
 
   In the final DSW file you will find a project call "All". In order to
@@ -629,7 +629,7 @@ Windows NT/95 VISUAL C++ 6.0 COMPILATION
        Right click on the All project and select "Set As Active Project"
     2) Select "Build..., Clean"
     3) Select "Build..., Build"
-    4) Go get some coffee unless you have a very fast machine.
+    4) Go get some coffee unless you have a very fast machine!.
 
   The "Clean" step is needed in order to make sure that all of the
   target support libraries are updated with any patches needed to
