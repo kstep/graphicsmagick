@@ -56,26 +56,23 @@ MinReal+j*0 = white          MaxReal+j*0 = black
 MinReal+j*MinComplex = blue  MaxReal+j*MinComplex = black
 */
 
-
-typedef unsigned long DWORD;
-typedef unsigned short WORD;
 typedef struct {
         char identific[125];
         char idx[3];
-        DWORD unknown0;
-        DWORD ObjectSize;
-        DWORD unknown1;
-        DWORD unknown2;
+        unsigned long unknown0;
+        unsigned long ObjectSize;
+        unsigned long unknown1;
+        unsigned long unknown2;
 
-        DWORD StructureFlag;
-        DWORD unknown3;
-        DWORD unknown4;
-        DWORD DimFlag;
+        unsigned long StructureFlag;
+        unsigned long unknown3;
+        unsigned long unknown4;
+        unsigned long DimFlag;
 
-        DWORD SizeX;
-        DWORD SizeY;
-        WORD Flag1;
-        WORD NameFlag;
+        unsigned long SizeX;
+        unsigned long SizeY;
+        unsigned short Flag1;
+        unsigned short NameFlag;
         } MATHeader;
 
 
@@ -116,9 +113,9 @@ register IndexPacket *indexes;
        break;
            for (x=0; x < (long) image->columns; x++)
               {
-              q->red=XDownscale(*(WORD *)p);
-              q->green=XDownscale(*(WORD *)p);
-              q->blue=XDownscale(*(WORD *)p);
+              q->red=XDownscale(*(unsigned short *)p);
+              q->green=XDownscale(*(unsigned short *)p);
+              q->blue=XDownscale(*(unsigned short *)p);
         p+=2;
               q++;
               }
@@ -204,8 +201,8 @@ register PixelPacket *q;
 }
 
 
-/*This function reads one block of WORDS*/
-void ReadBlobWordLSB(Image *I,size_t len,WORD *data)
+/*This function reads one block of unsigned shortS*/
+void ReadBlobWordLSB(Image *I,size_t len,unsigned short *data)
 {
 while(len>=2)
    {
@@ -290,8 +287,8 @@ static Image *ReadMATImage(const ImageInfo *image_info,ExceptionInfo *exception)
   Image *image,*rotated_image;
   unsigned int status;
   MATHeader MATLAB_HDR;
-  DWORD size,filepos;
-  DWORD CellType;
+  unsigned long size,filepos;
+  unsigned long CellType;
   int i,x;
   long ldblk;
   unsigned char *BImgBuff=NULL;
@@ -427,7 +424,7 @@ NoMemory:  ThrowReaderException(ResourceLimitError,"Memory allocation failed",
         {
   switch(CellType)
       {
-      case 4:ReadBlobWordLSB(image,ldblk,(WORD *)BImgBuff);
+      case 4:ReadBlobWordLSB(image,ldblk,(unsigned short *)BImgBuff);
        InsertRow(BImgBuff,i,image);
        break;
       case 9:ReadBlobDoublesLSB(image,ldblk,(double *)BImgBuff);

@@ -60,7 +60,7 @@
 */
 #define BI_JPEG  4
 #define BI_PNG  5
-#if !defined(WIN32)
+#if !defined(WIN32) || defined(__MINGW32__)
 #define BI_RGB  0
 #define BI_RLE8  1
 #define BI_RLE4  2

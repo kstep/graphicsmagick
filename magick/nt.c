@@ -291,6 +291,7 @@ int lt_dlinit(void)
 */
 void *lt_dlopen(char *filename)
 {
+#if defined(HasMODULES)
 #define MaxPathElements  31
 
   char
@@ -339,6 +340,9 @@ void *lt_dlopen(char *filename)
     p=q+1;
   }
   return(handle);
+#else
+  return((void *) NULL);
+#endif
 }
 
 /*
@@ -365,7 +369,9 @@ void *lt_dlopen(char *filename)
 */
 void lt_dlclose(void *handle)
 {
+#if defined(HasMODULES)
   FreeLibrary(handle);
+#endif
 }
 
 /*
@@ -395,6 +401,7 @@ void lt_dlclose(void *handle)
 */
 void *lt_dlsym(void *h,char *s)
 {
+#if defined(HasMODULES)
   LPFNDLLFUNC1
     lpfnDllFunc1;
 
@@ -402,6 +409,9 @@ void *lt_dlsym(void *h,char *s)
   if (!lpfnDllFunc1)
     return((void *) NULL);
   return((void *) lpfnDllFunc1);
+#else
+  return((void*) NULL);
+#endif
 }
 
 /*

@@ -115,21 +115,21 @@ MagickExport void *AcquireMemory(const size_t size)
 %
 */
 MagickExport void *CloneMemory(void *destination,const void *source,
-	const size_t size)
+  const size_t size)
 {
-	register unsigned char
-		*q;
+  register unsigned char
+    *q;
 
-	register const unsigned char
-		*p;
+  register const unsigned char
+    *p;
 
   register long
-		i;
+    i;
 
   assert(destination != (void *) NULL);
   assert(source != (const void *) NULL);
   p=(const unsigned char *) source;
-	q=(unsigned char *) destination;
+  q=(unsigned char *) destination;
   if (((q < p) && ((q+size) < p)) || ((q > p) && ((p+size) < q)))
     return(memcpy(destination,source,size));
   if (p == q)
