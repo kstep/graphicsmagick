@@ -169,7 +169,7 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
     ThrowReaderException(FileOpenWarning,"Unable to open file",image);
-  if ((image->file == stdin) || image->pipe)
+  if ((image->file == stdin) || image->pipet)
     {
       FILE
         *file;
@@ -799,7 +799,7 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
   status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
     ThrowWriterException(FileOpenWarning,"Unable to open file",image);
-  if ((image->file != stdout) && !image->pipe)
+  if ((image->file != stdout) && !image->pipet)
     (void) remove(image->filename);
   else
     {
