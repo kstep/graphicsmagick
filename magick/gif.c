@@ -231,12 +231,12 @@ static unsigned int DecodeImage(Image *image,const short int opacity)
               continue;
             }
           in_code=code;
-          if (code == available)
+          if (code >= available)
             {
               *top_stack++=first;
               code=old_code;
             }
-          while (code > clear)
+          while (code >= clear)
           {
             *top_stack++=suffix[code];
             code=prefix[code];
@@ -270,19 +270,23 @@ static unsigned int DecodeImage(Image *image,const short int opacity)
     }
     if (!SyncPixelCache(image))
       break;
+    if (x < image->columns)
+      break;
     if (image->previous == (Image *) NULL)
       if (QuantumTick(y,image->rows))
         ProgressMonitor(LoadImageText,y,image->rows);
   }
-  image->compression=LZWCompression;
-  image->matte=opacity >= 0;
-  /*
-    Free decoder memory.
-  */
   FreeMemory(pixel_stack);
   FreeMemory(suffix);
   FreeMemory(prefix);
   FreeMemory(packet);
+  image->compression=LZWCompression;
+  image->matte=opacity >= 0;
+  if (y < image->rows)
+    {
+      MagickWarning(CorruptImageWarning,"Corrupt GIF image",image->filename);
+      return(False);
+    }
   if (image->interlace != NoInterlace)
     {
       Image
