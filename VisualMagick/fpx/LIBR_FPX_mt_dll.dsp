@@ -44,7 +44,7 @@ RSC=rc.exe
 # PROP Target_Dir ""
 LIB32=link.exe -lib
 # ADD BASE CPP /nologo /MT /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /YX /c
-# ADD CPP /nologo /MD /w /W0 /GX /O2 /I "..\..\fpx\basics" /I "..\..\fpx\fpx" /I "..\..\fpx\jpeg" /I "..\..\fpx\ole" /I "..\..\fpx\ri_image" /I "..\..\fpx\macdeps" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "TOOLKIT" /D "_MBCS" /D "WIN32_LEAN_AND_MEAN" /D "DOS" /D "USE_OLE" /D NO_FW=0 /D LP_FW=1 /D XVT_FW=2 /D FRAMEWORK=NO_FW /D "TOOLKIT_FlashPix" /D "TOOLKIT_FLASHPIX" /D "USE_UNICODE" /D "_UNICODE" /YX /FD /c
+# ADD CPP /nologo /MD /w /W0 /GX /O2 /I "..\..\fpx\basics" /I "..\..\fpx\fpx" /I "..\..\fpx\jpeg" /I "..\..\fpx\ole" /I "..\..\fpx\ri_image" /I "..\..\fpx\macdeps" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "TOOLKIT" /D "_MBCS" /D "WIN32_LEAN_AND_MEAN" /D "DOS" /D "USE_OLE" /D NO_FW=0 /D LP_FW=1 /D XVT_FW=2 /D FRAMEWORK=NO_FW /D "TOOLKIT_FlashPix" /D "TOOLKIT_FLASHPIX" /D "USE_UNICODE" /D "_UNICODE" /D "_VISUALC_" /D "_IMAGE_MAGICK_FPX_" /D "_FPXLIB_" /YX /FD /c
 # ADD BASE MTL /nologo /D "NDEBUG" /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
@@ -72,7 +72,7 @@ LINK32=link.exe
 # PROP Target_Dir ""
 LIB32=link.exe -lib
 # ADD BASE CPP /nologo /MTd /W3 /Gm /GX /Zi /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /YX /c
-# ADD CPP /nologo /MDd /w /W0 /Gm /GX /Zi /Od /I "..\..\fpx\basics" /I "..\..\fpx\fpx" /I "..\..\fpx\jpeg" /I "..\..\fpx\ole" /I "..\..\fpx\ri_image" /I "..\..\fpx\macdeps" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "TOOLKIT" /D "_MBCS" /D "WIN32_LEAN_AND_MEAN" /D "DOS" /D "USE_OLE" /D NO_FW=0 /D LP_FW=1 /D XVT_FW=2 /D FRAMEWORK=NO_FW /D "TOOLKIT_FlashPix" /D "TOOLKIT_FLASHPIX" /D "USE_UNICODE" /D "_UNICODE" /YX /FD /c
+# ADD CPP /nologo /MDd /w /W0 /Gm /GX /Zi /Od /I "..\..\fpx\basics" /I "..\..\fpx\fpx" /I "..\..\fpx\jpeg" /I "..\..\fpx\ole" /I "..\..\fpx\ri_image" /I "..\..\fpx\macdeps" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "TOOLKIT" /D "_MBCS" /D "WIN32_LEAN_AND_MEAN" /D "DOS" /D "USE_OLE" /D NO_FW=0 /D LP_FW=1 /D XVT_FW=2 /D FRAMEWORK=NO_FW /D "TOOLKIT_FlashPix" /D "TOOLKIT_FLASHPIX" /D "USE_UNICODE" /D "_UNICODE" /D "_VISUALC_" /D "_IMAGE_MAGICK_FPX_" /D "_FPXLIB_" /YX /FD /c
 # ADD BASE MTL /nologo /D "_DEBUG" /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
