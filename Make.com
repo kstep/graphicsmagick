@@ -86,7 +86,7 @@ $    define/nolog magickshr 'f$environment("default")'magickshr.exe
 $    write sys$output "Shareable image logical MAGICKSHR defined:"
 $    show logi magickshr
 $ else
-$    link_libraries := [.magick]libMagick.olb/lib, -
+$    link_libraries := [-.magick]libMagick.olb/lib, -
   [.coders]libCoders.olb/lib, -
   sys$library:libjpeg.olb/lib, -
   sys$library:libpng.olb/lib, -
