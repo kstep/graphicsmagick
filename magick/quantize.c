@@ -1859,6 +1859,7 @@ unsigned int QuantizationError(Image *image)
     Initialize measurement.
   */
   assert(image != (Image *) NULL);
+  image->total_colors=GetNumberColors(image,(FILE *) NULL);
   image->mean_error_per_pixel=0;
   image->normalized_mean_error=0.0;
   image->normalized_maximum_error=0.0;

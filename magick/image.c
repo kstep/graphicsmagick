@@ -172,10 +172,6 @@ Export Image *AllocateImage(const ImageInfo *image_info)
   allocated_image->color_profile.info=(unsigned char *) NULL;
   allocated_image->iptc_profile.length=0;
   allocated_image->iptc_profile.info=(unsigned char *) NULL;
-  allocated_image->normalized_maximum_error=0.0;
-  allocated_image->normalized_mean_error=0.0;
-  allocated_image->mean_error_per_pixel=0;
-  allocated_image->signature=(char *) NULL;
   allocated_image->pixels=(RunlengthPacket *) NULL;
   allocated_image->packet=(RunlengthPacket *) NULL;
   allocated_image->packets=0;
@@ -202,6 +198,11 @@ Export Image *AllocateImage(const ImageInfo *image_info)
   allocated_image->matte_color.green=XDownScale(color.green);
   allocated_image->matte_color.blue=XDownScale(color.blue);
   allocated_image->matte_color.index=Transparent;
+  allocated_image->total_colors=0;
+  allocated_image->normalized_mean_error=0.0;
+  allocated_image->normalized_maximum_error=0.0;
+  allocated_image->mean_error_per_pixel=0;
+  allocated_image->signature=(char *) NULL;
   *allocated_image->magick_filename='\0';
   allocated_image->magick_columns=0;
   allocated_image->magick_rows=0;
@@ -814,9 +815,9 @@ Export Image *AverageImages(Image *images)
   /*
     Initialize average image attributes.
   */
-  ((Image *) images)->orphan=True;
+  images->orphan=True;
   averaged_image=CloneImage(images,images->columns,images->rows,False);
-  ((Image *) images)->orphan=False;
+  images->orphan=False;
   if (averaged_image == (Image *) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Unable to average image",
@@ -3283,14 +3284,21 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
           (void) fprintf(file,"%ux%u%+d%+d ",image->columns,image->rows,x,y);
         }
       if (image->class == DirectClass)
-        (void) fprintf(file,"DirectClass ");
-      else
         {
+          (void) fprintf(file,"DirectClass ");
+          if (image->total_colors != 0)
+            (void) fprintf(file,"%luc ",image->total_colors);
+        }
+      else
+        if (image->total_colors <= image->colors)
           (void) fprintf(file,"PseudoClass %uc ",image->colors);
-          if (image->normalized_maximum_error != 0.0)
+        else
+          {
+            (void) fprintf(file,"PseudoClass %lu=>%uc ",image->total_colors,
+              image->colors);
             (void) fprintf(file,"%u/%.6f/%.6fe ",image->mean_error_per_pixel,
               image->normalized_mean_error,image->normalized_maximum_error);
-        }
+          }
       if (image->filesize != 0)
         {
           if (image->filesize >= (1 << 24))
@@ -12682,12 +12690,8 @@ static double Blackman(const double x)
   return(0.42+0.50*cos(M_PI*x)+0.08*cos(2.0*M_PI*x));
 }
 
-static double Catrom(const double xx)
+static double Catrom(double x)
 {
-  register int
-    x;
-
-  x=xx;
   if (x < 0)
     x=(-x);
   if (x < 1.0)
@@ -12697,12 +12701,8 @@ static double Catrom(const double xx)
   return(0.0);
 }
 
-static double Cubic(const double xx)
+static double Cubic(double x)
 {
-  register int
-    x;
-
-  x=xx;
   if (x < 0)
     x=(-x);
   if (x < 1.0)
@@ -12730,12 +12730,8 @@ static double Hamming(const double x)
   return(0.54+0.46*cos(M_PI*x));
 }
 
-static double Hermite(const double xx)
+static double Hermite(double x)
 {
-  register int
-    x;
-
-  x=xx;
   if (x < 0)
     x=(-x);
   if (x < 1.0)
@@ -12743,24 +12739,16 @@ static double Hermite(const double xx)
   return(0.0);
 }
 
-static double Sinc(const double xx)
+static double Sinc(double x)
 {
-  register int
-    x;
-
-  x=xx;
   x*=M_PI;
   if (x != 0.0)
     return(sin(x)/x);
   return(1.0);
 }
 
-static double Lanczos(const double xx)
+static double Lanczos(double x)
 {
-  register int
-    x;
-
-  x=xx;
   if (x < 0)
     x=(-x);
   if (x < 3.0)
@@ -12768,18 +12756,14 @@ static double Lanczos(const double xx)
   return(0.0);
 }
 
-static double Mitchell(const double xx)
+static double Mitchell(double x)
 {
   double
     b,
     c;
 
-  register int
-    x;
-
   b=1.0/3.0;
   c=1.0/3.0;
-  x=xx;
   if (x < 0)
     x=(-x);
   if (x < 1.0)
@@ -12796,12 +12780,8 @@ static double Mitchell(const double xx)
   return(0.0);
 }
 
-static double Quadratic(const double xx)
+static double Quadratic(double x)
 {
-  register int
-    x;
-
-  x=xx;
   if (x < 0)
     x=(-x);
   if (x < 0.5)
@@ -12814,12 +12794,8 @@ static double Quadratic(const double xx)
   return(0.0);
 }
 
-static double Triangle(const double xx)
+static double Triangle(double x)
 {
-  register int
-    x;
-
-  x=xx;
   if (x < 0.0)
     x=(-x);
   if (x < 1.0)

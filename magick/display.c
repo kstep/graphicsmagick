@@ -11879,7 +11879,6 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   manager_hints=windows->manager_hints;
   root_window=XRootWindow(display,visual_info->screen);
   loaded_image=(Image *) NULL;
-  displayed_image->tainted=False;
   if (resource_info->debug)
     {
       (void) fprintf(stderr,"Image: %.1024s[%u] %ux%u ",
@@ -11891,6 +11890,7 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
     }
   XMakeStandardColormap(display,visual_info,resource_info,displayed_image,
     map_info,pixel_info);
+  displayed_image->tainted=False;
   /*
     Initialize graphic context.
   */

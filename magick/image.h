@@ -391,13 +391,6 @@ typedef struct _Image
     x_resolution,
     y_resolution;
 
-  unsigned int
-    mean_error_per_pixel;
-
-  double
-    normalized_mean_error,
-    normalized_maximum_error;
-
   char
     *signature;
 
@@ -433,6 +426,16 @@ typedef struct _Image
 
   FilterType
     filter;
+
+  unsigned long
+    total_colors;
+
+  unsigned int
+    mean_error_per_pixel;
+
+  double
+    normalized_mean_error,
+    normalized_maximum_error;
 
   long int
     magick_time;

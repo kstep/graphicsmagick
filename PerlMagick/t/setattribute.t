@@ -4,7 +4,7 @@
 #
 # Contributed by Bob Friesenhahn <bfriesen@simple.dallas.tx.us>
 #
-BEGIN { $| = 1; $test=1, print "1..111)\n"; }
+BEGIN { $| = 1; $test=1, print "1..91)\n"; }
 END {print "not ok 1\n" unless $loaded;}
 use Image::Magick;
 $loaded=1;
@@ -32,42 +32,6 @@ testSetAttribute('input.miff','bordercolor','#807060');
 
 ++$test;
 testSetAttribute('input.miff','colormap[20]','#807060');
-
-++$test;
-testSetAttribute('input.miff','colorspace','RGB');
-
-++$test;
-testSetAttribute('input.miff','colorspace','Gray');
-
-++$test;
-testSetAttribute('input.miff','colorspace','Transparent');
-
-++$test;
-testSetAttribute('input.miff','colorspace','OHTA');
-
-++$test;
-testSetAttribute('input.miff','colorspace','XYZ');
-
-++$test;
-testSetAttribute('input.miff','colorspace','YCbCr');
-
-++$test;
-testSetAttribute('input.miff','colorspace','YCC');
-
-++$test;
-testSetAttribute('input.miff','colorspace','YIQ');
-
-++$test;
-testSetAttribute('input.miff','colorspace','YPbPr');
-
-++$test;
-testSetAttribute('input.miff','colorspace','YUV');
-
-++$test;
-testSetAttribute('input.miff','colorspace','CMYK');
-
-++$test;
-testSetAttribute('input.miff','colors',64);
 
 ++$test;
 testSetAttribute('input.miff','compress','None');
@@ -316,30 +280,6 @@ testSetAttribute('input.miff','tile','some value');
 
 ++$test;
 testSetAttribute('input.miff','texture','granite:');
-
-++$test;
-testSetAttribute('input.miff','treedepth',0);
-
-++$test;
-testSetAttribute('input.miff','treedepth',1);
-
-++$test;
-testSetAttribute('input.miff','treedepth',2);
-
-++$test;
-testSetAttribute('input.miff','treedepth',3);
-
-++$test;
-testSetAttribute('input.miff','treedepth',4);
-
-++$test;
-testSetAttribute('input.miff','treedepth',5);
-
-++$test;
-testSetAttribute('input.miff','treedepth',6);
-
-++$test;
-testSetAttribute('input.miff','treedepth',7);
 
 ++$test;
 testSetAttribute('input.miff','verbose','True');

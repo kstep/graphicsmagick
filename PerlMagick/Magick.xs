@@ -1022,7 +1022,6 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
                     SvPV(sval,na));
                   return;
                 }
-              info->quantize_info->colorspace=(ColorspaceType) sp;
               for ( ; image; image=image->next)
                 if ((ColorspaceType) sp == CMYKColorspace)
                   RGBTransformImage(image,CMYKColorspace);
@@ -1030,13 +1029,6 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
                   if ((ColorspaceType) sp == CMYKColorspace)
                     TransformRGBImage(image,RGBColorspace);
             }
-          return;
-        }
-      if (strEQcase(attribute,"colors"))
-        {
-  colors:
-          if (info && !(info->quantize_info->number_colors=SvIV(sval)))
-            info->quantize_info->number_colors=MaxRGB+1;
           return;
         }
       if (strEQcase(attribute,"compres"))
@@ -1109,7 +1101,6 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
                   return;
                 }
               info->image_info->dither=sp;
-              info->quantize_info->dither=sp;
             }
           return;
         }
@@ -1289,13 +1280,6 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
             info->image_info->monochrome=sp;
           return;
         }
-      break;
-    }
-    case 'N':
-    case 'n':
-    {
-      if (strEQcase(attribute,"number"))
-        goto colors;
       break;
     }
     case 'O':
@@ -1485,12 +1469,6 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
             CloneString(&info->image_info->texture,SvPV(sval,na));
           return;
         }
-     if (strEQcase(attribute,"tree"))
-       {
-         if (info)
-           info->quantize_info->tree_depth=SvIV(sval);
-         return;
-       }
       break;
     }
     case 'U':
@@ -2679,7 +2657,7 @@ Get(ref,...)
             }
           if (strEQcase(attribute,"colorspace"))
             {
-              j=info ? info->quantize_info->colorspace : RGBColorspace;
+              j=image ? image->colorspace : RGBColorspace;
               s=newSViv(j);
               if ((j >= 0) && (j < NumberOf(ColorspaceTypes)-1))
                 {
@@ -2688,13 +2666,10 @@ Get(ref,...)
                 }
               break;
             }
-          if (strEQcase(attribute,"colors"))  /* same as number */
+          if (strEQcase(attribute,"colors"))
             {
-              if (info && info->quantize_info->number_colors)
-                s=newSViv(info->quantize_info->number_colors);
-              else
-                if (image)
-                  s=newSViv(image->colors);
+              if (image)
+                s=newSViv(GetNumberColors(image,(FILE *) NULL));
               break;
             }
           if (strEQcase(attribute,"colormap"))
@@ -2743,6 +2718,12 @@ Get(ref,...)
                 if (image)
                   s=newSViv(image->delay);
               break;
+            }
+          if (strEQcase(attribute,"depth"))
+            {
+              if (image)
+                s=newSViv(image->depth);
+              return;
             }
           if (strEQcase(attribute,"dither"))
             {
@@ -2975,15 +2956,6 @@ Get(ref,...)
         case 'N':
         case 'n':
         {
-          if (strEQcase(attribute,"number"))  /* same as colors */
-            {
-              if (info && info->quantize_info->number_colors)
-                s=newSViv(info->quantize_info->number_colors);
-              else
-               if (image)
-                 s=newSViv(image->colors);
-              break;
-            }
           if (strEQcase(attribute,"normalized_max"))
             {
               if (image)
@@ -3211,18 +3183,6 @@ Get(ref,...)
                 s=newSVpv(image->text,0);
               break;
             }
-          if (strEQcase(attribute,"total"))
-            {
-              if (image)
-                s=newSViv(GetNumberColors(image,(FILE *) NULL));
-              break;
-            }
-         if (strEQcase(attribute,"tree"))
-           {
-             if (info)
-               s=newSViv(info->quantize_info->tree_depth);
-             break;
-           }
           if (strEQcase(attribute,"type"))
             {
               if (!image)

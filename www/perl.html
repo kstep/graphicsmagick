@@ -909,13 +909,8 @@ Image Attributes
   <td>color name (e.g. red) or hex value (e.g. #ccc) at position <i>i</i></td>
 </tr>
 <tr>
-  <td>colors</td>
-  <td><i>integer<i></td>
-  <td>preferred number of colors in the image</td>
-</tr>
-<tr>
   <td>colorspace</td>
-  <td>{RGB, Gray, Transparent, OHTA, XYZ, YCbCr, YCC, YIQ, YPbPr, YUV, CMYK}</td>
+  <td>{RGB, CMYK}</td>
   <td>type of colorspace</td>
 </tr>
 <tr>
@@ -935,11 +930,6 @@ Image Attributes
   <td>vertical and horizontal resolution in pixels of the image</td>
 </tr>
 <tr>
-  <td>depth</td>
-  <td><i>integer</i></td>
-  <td>image depth</td>
-</tr>
-<tr>
   <td>dispose</td>
   <td><i>{1, 2, 3, 4}</i></td>
   <td>GIF disposal method</td>
@@ -947,7 +937,7 @@ Image Attributes
 <tr>
   <td>dither</td>
   <td>{True, False}</td>
-  <td>apply Floyd/Steinberg error diffusion to the image</td>
+  <td>apply error diffusion to the image</td>
 </tr>
 <tr>
   <td>display</td>
@@ -1101,11 +1091,6 @@ Image Attributes
   <td>name of texture to tile onto the image background</td>
 </tr>
 <tr>
-  <td>treedepth</td>
-  <td><i>{0, 1, 2, 3, 4, 5, 6, 7, 8}<i></td>
-  <td> depth of the color classification tree</td>
-</tr>
-<tr>
   <td>units</td>
   <td>{ Undefined, PixelsPerInch, PixelsPerCentimeters}</td>
   <td>units of image resolution</td>
@@ -1185,6 +1170,11 @@ Image Attributes
   <td>image class</td>
 </tr>
 <tr>
+  <td>colors</td>
+  <td><i>integer<i></td>
+  <td>number of unique colors in the image</td>
+</tr>
+<tr>
   <td>comment</td>
   <td><i>string</i></td>
   <td>image comment</td>
@@ -1193,6 +1183,11 @@ Image Attributes
   <td>columns</td>
   <td><i>integer</i></td>
   <td>image width</td>
+</tr>
+<tr>
+  <td>depth</td>
+  <td><i>integer</i></td>
+  <td>image depth</td>
 </tr>
 <tr>
   <td>directory</td>
@@ -1278,11 +1273,6 @@ Image Attributes
   <td>text</td>
   <td><i>string</i></td>
   <td>any text associated with the image</td>
-</tr>
-<tr>
-  <td>total_colors</td>
-  <td><i>integer<i></td>
-  <td>number of colors in the image</td>
 </tr>
 <tr>
   <td>type</td>
