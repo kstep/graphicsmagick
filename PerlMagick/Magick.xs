@@ -523,7 +523,6 @@ static struct PackageInfo *ClonePackageInfo(struct PackageInfo *info)
   clone_info=(struct PackageInfo *) AcquireMemory(sizeof(struct PackageInfo));
   if (!info)
     {
-      InitializeMagick(PackageName);
       clone_info->image_info=CloneImageInfo((ImageInfo *) NULL);
       clone_info->draw_info=
         CloneDrawInfo(clone_info->image_info,(DrawInfo *) NULL);
@@ -2052,6 +2051,7 @@ MODULE = Image::Magick PACKAGE = Image::Magick
 PROTOTYPES: ENABLE
 
 BOOT:
+  InitializeMagick(PackageName);
   SetWarningHandler(MagickWarningHandler);
   SetErrorHandler(MagickErrorHandler);
   { MY_CXT_INIT; }
