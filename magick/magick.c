@@ -573,15 +573,6 @@ MagickExport void InitializeMagick(const char *path)
   InitializeSemaphore();
   (void) getcwd(directory,MaxTextExtent);
   (void) SetClientPath(directory);
-#if !defined(WIN32)
-  if (path != (const char *) NULL)
-    {
-      GetPathComponent(path,HeadPath,filename);
-      (void) SetClientPath(filename);
-      GetPathComponent(path,BasePath,filename);
-      (void) SetClientName(filename);
-    }
-#else
   if (path != (const char *) NULL)
     {
       GetPathComponent(path,HeadPath,filename);
@@ -589,7 +580,8 @@ MagickExport void InitializeMagick(const char *path)
       GetPathComponent(path,TailPath,filename);
       (void) SetClientName(filename);
     }
-  else
+#if !defined(WIN32)
+  if (path == (const char *) NULL)
     {
       char
         *execution_path;
@@ -600,21 +592,21 @@ MagickExport void InitializeMagick(const char *path)
       GetPathComponent(execution_path,TailPath,filename);
       (void) SetClientName(filename);
       LiberateMemory((void **) &execution_path);
-      InitializeTracingCriticalSection();
-#if defined(_DEBUG)
-      {
-        int
-          debug;
-
-        debug=_CrtSetDbgFlag(_CRTDBG_REPORT_FLAG);
-        debug|=_CRTDBG_CHECK_ALWAYS_DF;
-        debug|=_CRTDBG_DELAY_FREE_MEM_DF;
-        debug|=_CRTDBG_LEAK_CHECK_DF;
-        // debug=_CrtSetDbgFlag(debug);
-        // _ASSERTE(_CrtCheckMemory());  // use this to check condition of memory
-      }
-#endif
     }
+    InitializeTracingCriticalSection();
+#if defined(_DEBUG)
+    {
+      int
+        debug;
+
+      debug=_CrtSetDbgFlag(_CRTDBG_REPORT_FLAG);
+      debug|=_CRTDBG_CHECK_ALWAYS_DF;
+      debug|=_CRTDBG_DELAY_FREE_MEM_DF;
+      debug|=_CRTDBG_LEAK_CHECK_DF;
+      // debug=_CrtSetDbgFlag(debug);
+      // _ASSERTE(_CrtCheckMemory());  // use this to check condition of memory
+    }
+#endif
 #endif
 }
 
