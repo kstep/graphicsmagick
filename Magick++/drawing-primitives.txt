@@ -36,6 +36,7 @@ image (Over|In|Out|Atop|Xor|Plus|Minus|Add|Subtract|Difference|
        |Clear) x,y width,height filename
 line startX,startY endX,endY
 matte x,y (point|replace|floodfill|filltoborder|reset)
+offset  ???
 opacity fill stroke
 path 'SVG-compatible path arguments'
 point x,y
@@ -43,8 +44,8 @@ polygon x1,y1, x2,y2, x3,y3, ..., xN,yN
 polyline x1,y1, x2,y2, x3,y3, ..., xN,yN
 pop clip-path
 pop defs
+pop gradient
 pop graphic-context
-pop linear-gradient
 pop pattern
 push clip-path %s  (%s is the name of the clip path)
 push defs
@@ -71,7 +72,7 @@ stroke-width linewidth
 text x,y "some text"
 text-antialias (0|1)
 translate x,y
-viewbox (e.g. "viewbox 0 0 640 480")
+viewbox x1,y1 x1,y2 (e.g. "viewbox 0 0 640 480")
 
 Pattern syntax (saving and restoring context)
 ---------------------------------------------
