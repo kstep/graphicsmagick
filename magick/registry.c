@@ -107,10 +107,10 @@ MagickExport unsigned int DeleteMagickRegistry(const long id)
   AcquireSemaphoreInfo(&registry_semaphore);
   for (p=registry_list; p != (RegistryInfo *) NULL; p=p->next)
   {
-    if (p->id == id)
+    if (id == p->id)
       {
         registry_info=p;
-        switch (p->type)
+        switch (registry_info->type)
         {
           case ImageRegistryType:
           {
@@ -226,18 +226,15 @@ MagickExport const void *GetMagickRegistry(const long id,RegistryType *type,
   register RegistryInfo
     *p;
 
-  registry_info=(RegistryInfo *) NULL;
   AcquireSemaphoreInfo(&registry_semaphore);
-  for (p=registry_list; p != (RegistryInfo *) NULL; )
-  {
-    if (p->id == id)
+  for (p=registry_list; p != (RegistryInfo *) NULL; p=p->next)
+    if (id == p->id)
       {
         registry_info=p;
         break;
       }
-  }
   DestroySemaphoreInfo(registry_semaphore);
-  if (registry_info == (RegistryInfo *) NULL)
+  if (p == (RegistryInfo *) NULL)
     return((RegistryInfo *) NULL);
   *type=registry_info->type;
   *length=registry_info->length;
@@ -256,7 +253,7 @@ MagickExport const void *GetMagickRegistry(const long id,RegistryType *type,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  SetMagickRegistry() sets a blob into the registry and returns a unique ID.
-%  If an error occurs, an ID of -1 is returned.
+%  If an error occurs, -1 is returned.
 %
 %  The format of the SetMagickRegistry method is:
 %
