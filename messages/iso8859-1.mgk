@@ -1,14 +1,24 @@
 <?xml version="1.0"?>
 <messagemap>
-  <locale name="Posix">
-    <Resource>
-      <Limit>
-        <Warning>
-          <message name="MemoryAllocationFailed">
-            Memory Allocation Failed
+  <locale name="iso8859-1">
+    <cache>
+      <error>
+        <message name="pixel-cache-is-not-open">
+          Pixel cache is not open
+        </message>
+      </error>
+    </cache>
+    <resource>
+      <limit>
+        <error>
+          <message name="memory-allocation-failed">
+            Memory allocation failed
           </message>
-        </Warning>
-      </Limit>
-    </Resource>
+          <message name="unable-to-clone-image">
+            Unable to clone image
+          </message>
+        </error>
+      </limit>
+    </resource>
   </locale>
 </messagemap>
