@@ -840,9 +840,10 @@ dnl First see if there is a library
       AC_CHECK_LIB(freetype,FT_Init_FreeType,LIB_TTF='-lfreetype',,)
       if test "$LIB_TTF" != ''
       then
-         passed=`expr $passed + 1`
+        passed=`expr $passed + 1`
       else
-         LDFLAGS="$OLD_LDFLAGS"
+        failed=`expr $failed + 1`
+        LDFLAGS="$OLD_LDFLAGS"
       fi
     fi
 
@@ -858,8 +859,8 @@ dnl Now test for the headers
     then
 	passed=`expr $passed + 1`
     else
-        CPPFLAGS="$OLD_CPPFLAGS"
 	failed=`expr $failed + 1`
+        CPPFLAGS="$OLD_CPPFLAGS"
     fi
 
     AC_MSG_CHECKING(if FreeType package is complete)
