@@ -2708,13 +2708,13 @@ MagickExport void XGetPixelPacket(Display *display,
     Set highlight color.
   */
   pixel->highlight_color.red=(unsigned short)
-    ((pixel->matte_color.red*ScaleQuantumToShort(HighlightModulate))/65535UL+
+    ((pixel->matte_color.red*ScaleQuantumToShort(HighlightModulate))/65537+
      (ScaleQuantumToShort(MaxRGB-HighlightModulate)));
   pixel->highlight_color.green=(unsigned short)
-    ((pixel->matte_color.green*ScaleQuantumToShort(HighlightModulate))/65535UL+
+    ((pixel->matte_color.green*ScaleQuantumToShort(HighlightModulate))/65537+
      (ScaleQuantumToShort(MaxRGB-HighlightModulate)));
   pixel->highlight_color.blue=(unsigned short)
-    ((pixel->matte_color.blue*ScaleQuantumToShort(HighlightModulate))/65535UL+
+    ((pixel->matte_color.blue*ScaleQuantumToShort(HighlightModulate))/65537+
      (ScaleQuantumToShort(MaxRGB-HighlightModulate)));
   pixel->highlight_color.pixel=XStandardPixel(map_info,&pixel->highlight_color);
   pixel->highlight_color.flags=DoRed | DoGreen | DoBlue;
@@ -2722,33 +2722,33 @@ MagickExport void XGetPixelPacket(Display *display,
     Set shadow color.
   */
   pixel->shadow_color.red=(unsigned short)
-    ((pixel->matte_color.red*ScaleQuantumToShort(ShadowModulate))/65535UL);
+    ((pixel->matte_color.red*ScaleQuantumToShort(ShadowModulate))/65537);
   pixel->shadow_color.green=(unsigned short)
-    ((pixel->matte_color.green*ScaleQuantumToShort(ShadowModulate))/65535UL);
+    ((pixel->matte_color.green*ScaleQuantumToShort(ShadowModulate))/65537);
   pixel->shadow_color.blue=(unsigned short)
-    ((pixel->matte_color.blue*ScaleQuantumToShort(ShadowModulate))/65535UL);
+    ((pixel->matte_color.blue*ScaleQuantumToShort(ShadowModulate))/65537);
   pixel->shadow_color.pixel=XStandardPixel(map_info,&pixel->shadow_color);
   pixel->shadow_color.flags=DoRed | DoGreen | DoBlue;
   /*
     Set depth color.
   */
   pixel->depth_color.red=(unsigned short)
-    ((pixel->matte_color.red*ScaleQuantumToShort(DepthModulate))/65535UL);
+    ((pixel->matte_color.red*ScaleQuantumToShort(DepthModulate))/65537);
   pixel->depth_color.green=(unsigned short)
-    ((pixel->matte_color.green*ScaleQuantumToShort(DepthModulate))/65535UL);
+    ((pixel->matte_color.green*ScaleQuantumToShort(DepthModulate))/65537);
   pixel->depth_color.blue=(unsigned short)
-    ((pixel->matte_color.blue*ScaleQuantumToShort(DepthModulate))/65535UL);
+    ((pixel->matte_color.blue*ScaleQuantumToShort(DepthModulate))/65537);
   pixel->depth_color.pixel=XStandardPixel(map_info,&pixel->depth_color);
   pixel->depth_color.flags=DoRed | DoGreen | DoBlue;
   /*
     Set trough color.
   */
   pixel->trough_color.red=(unsigned short)
-    ((pixel->matte_color.red*ScaleQuantumToShort(TroughModulate))/65535UL);
+    ((pixel->matte_color.red*ScaleQuantumToShort(TroughModulate))/65537);
   pixel->trough_color.green=(unsigned short)
-    ((pixel->matte_color.green*ScaleQuantumToShort(TroughModulate))/65535UL);
+    ((pixel->matte_color.green*ScaleQuantumToShort(TroughModulate))/65537);
   pixel->trough_color.blue=(unsigned short)
-    ((pixel->matte_color.blue*ScaleQuantumToShort(TroughModulate))/65535UL);
+    ((pixel->matte_color.blue*ScaleQuantumToShort(TroughModulate))/65537);
   pixel->trough_color.pixel=XStandardPixel(map_info,&pixel->trough_color);
   pixel->trough_color.flags=DoRed | DoGreen | DoBlue;
   /*
