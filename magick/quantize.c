@@ -369,11 +369,11 @@ static unsigned int Assignment(CubeInfo *cube_info,Image *image)
   register const NodeInfo
     *node_info;
 
+  register IndexPacket
+    index;
+
   register PixelPacket
     *q;
-
-  register unsigned short
-    index;
 
   unsigned int
     dither,
@@ -400,7 +400,7 @@ static unsigned int Assignment(CubeInfo *cube_info,Image *image)
   if ((cube_info->quantize_info->colorspace != TransparentColorspace) &&
       (image->colorspace != CMYKColorspace))
     image->class=PseudoClass;
-  image->colors=(unsigned int) cube_info->colors;
+  image->colors=cube_info->colors;
   /*
     Create a reduced color image.
   */
@@ -755,7 +755,7 @@ static void ClosestColor(CubeInfo *cube_info,const NodeInfo *node_info)
           if (distance_squared < cube_info->distance)
             {
               cube_info->distance=distance_squared;
-              cube_info->color_number=(unsigned short) node_info->color_number;
+              cube_info->color_number=node_info->color_number;
             }
         }
     }
@@ -810,13 +810,13 @@ static void DefineColormap(CubeInfo *cube_info,NodeInfo *node_info)
         Colormap entry is defined by the mean color in this cube.
       */
       number_unique=node_info->number_unique;
-      cube_info->colormap[cube_info->colors].red=(Quantum)
-        ((node_info->total_red+number_unique/2)/number_unique);
-      cube_info->colormap[cube_info->colors].green=(Quantum)
-        ((node_info->total_green+number_unique/2)/number_unique);
-      cube_info->colormap[cube_info->colors].blue=(Quantum)
-        ((node_info->total_blue+number_unique/2)/number_unique);
-      node_info->color_number=(unsigned int) cube_info->colors++;
+      cube_info->colormap[cube_info->colors].red=
+        (node_info->total_red+number_unique/2)/number_unique;
+      cube_info->colormap[cube_info->colors].green=
+        (node_info->total_green+number_unique/2)/number_unique;
+      cube_info->colormap[cube_info->colors].blue=
+        (node_info->total_blue+number_unique/2)/number_unique;
+      node_info->color_number=cube_info->colors++;
     }
 }
 
@@ -946,14 +946,14 @@ static void Dither(CubeInfo *cube_info,Image *image,
   register CubeInfo
     *p;
 
+  register IndexPacket
+    index;
+
   register int
     i;
 
   register PixelPacket
     *q;
-
-  unsigned short
-    index;
 
   p=cube_info;
   if ((p->x >= 0) && (p->x < (int) image->columns) &&
@@ -1013,7 +1013,7 @@ static void Dither(CubeInfo *cube_info,Image *image,
       /*
         Assign pixel to closest colormap entry.
       */
-      index=(unsigned short) p->cache[i];
+      index=p->cache[i];
       if (image->class == PseudoClass)
         *image->indexes=index;
       if (!cube_info->quantize_info->measure_error)
@@ -1025,9 +1025,9 @@ static void Dither(CubeInfo *cube_info,Image *image,
       */
       for (i=0; i < (ErrorQueueLength-1); i++)
         p->error[i]=p->error[i+1];
-      p->error[i].red=red-image->colormap[index].red;
-      p->error[i].green=green-image->colormap[index].green;
-      p->error[i].blue=blue-image->colormap[index].blue;
+      p->error[i].red=(int) (red-image->colormap[index].red);
+      p->error[i].green=(int) (green-image->colormap[index].green);
+      p->error[i].blue=(int) (blue-image->colormap[index].blue);
     }
   switch (direction)
   {
@@ -1196,7 +1196,7 @@ static unsigned int GetCubeInfo(CubeInfo *cube_info,
   for (i=0; i <= MaxRGB; i++)
   {
     cube_info->range_limit[i]=0;
-    cube_info->range_limit[i+(MaxRGB+1)]=(Quantum) i;
+    cube_info->range_limit[i+(MaxRGB+1)]=i;
     cube_info->range_limit[i+(MaxRGB+1)*2]=MaxRGB;
   }
   cube_info->range_limit+=(MaxRGB+1);
@@ -1212,7 +1212,7 @@ static unsigned int GetCubeInfo(CubeInfo *cube_info,
   for (i=0; i < ErrorQueueLength; i++)
   {
     cube_info->weights[ErrorQueueLength-i-1]=1.0/weight;
-    weight*=exp(log((double) MaxRGB+1)/(ErrorQueueLength-1.0));
+    weight*=exp(log((double) MaxRGB+1.0)/(ErrorQueueLength-1.0));
   }
   /*
     Normalize the weighting factors.
@@ -1939,12 +1939,11 @@ Export unsigned int QuantizationError(Image *image)
   /*
     Compute final error statistics.
   */
-  image->mean_error_per_pixel=(unsigned int)
-    (total_error/(image->columns*image->rows));
-  image->normalized_mean_error=
-    (image->mean_error_per_pixel)/(3.0*(MaxRGB+1)*(MaxRGB+1));
-  image->normalized_maximum_error=
-    maximum_error_per_pixel/(3.0*(MaxRGB+1)*(MaxRGB+1));
+  image->mean_error_per_pixel=total_error/(image->columns*image->rows);
+  image->normalized_mean_error=image->mean_error_per_pixel/
+    (3.0*(MaxRGB+1)*(MaxRGB+1));
+  image->normalized_maximum_error=maximum_error_per_pixel/
+    (3.0*(MaxRGB+1)*(MaxRGB+1));
   cube_info.squares-=MaxRGB;
   FreeMemory(cube_info.squares);
   return(True);
