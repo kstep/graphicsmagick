@@ -895,7 +895,7 @@ static unsigned int RenderTruetype(Image *image,
           (int) ceil(point.y+y-0.5),1,1);
         if (q == (PixelPacket *) NULL)
           break;
-        opacity=((unsigned long) (MaxRGB-UpScale(*p)*
+        opacity=MaxRGB-((unsigned long) (UpScale(*p)*
           (MaxRGB-fill_color.opacity))/MaxRGB);
         q->red=((unsigned long) (fill_color.red*(MaxRGB-opacity)+
           q->red*opacity)/MaxRGB);
@@ -1082,7 +1082,7 @@ static unsigned int RenderPostscript(Image *image,
       break;
     for (x=0; x < (int) annotate_image->columns; x++)
     {
-      q->opacity=((unsigned long) (Intensity(*q)*
+      q->opacity=MaxRGB-((unsigned long) ((MaxRGB-Intensity(*q))*
         (MaxRGB-fill_color.opacity))/MaxRGB);
       q->red=fill_color.red;
       q->green=fill_color.green;
