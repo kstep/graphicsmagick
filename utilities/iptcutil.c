@@ -249,11 +249,6 @@ void formatString(FILE *ofile, const char *s, int len)
       fputs("&quot;", ofile);
       break;
     default:
-      //if (iscntrl(c))
-      //  fprintf(ofile, "&#%d;", c);
-      //else
-      //  putc(*s, ofile);
-
       if (isprint(c))
         putc(*s, ofile);
       else
@@ -573,7 +568,7 @@ int format8BIM(FILE *ifile, FILE *ofile)
           buffer[i] = c;
         }
         buffer[4] = 0;
-        if (strcmp(buffer, "8BIM") == 0)
+        if (strcmp((const char *)buffer, "8BIM") == 0)
           foundOSType = 1;
 	    }
 	  else
@@ -628,7 +623,7 @@ int format8BIM(FILE *ifile, FILE *ofile)
     }
 
     /* now finish up by formatting this binary data into ASCII equivalent */
-    if (strlen(PString) > 0)
+    if (strlen((const char *)PString) > 0)
 	    fprintf(ofile, "8BIM#%d#%s=", ID, PString);
     else
 	    fprintf(ofile, "8BIM#%d=", ID);
@@ -678,7 +673,7 @@ char *super_fgets(char *b, int *blen, FILE *file)
         b=(char *) realloc((char *) b,(len+2));
         if (b == (char *) NULL)
           break;
-        q=b+tlen;
+        q=(unsigned char*)b+tlen;
       }
     *q=(unsigned char) c;
   }
