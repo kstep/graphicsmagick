@@ -62,26 +62,33 @@ AC_CANONICAL_HOST
 # dmalloc is available at ftp://ftp.letters.com/src/dmalloc/dmalloc.tar.gz
 AM_WITH_DMALLOC
 
+# Enable prof-based profiling support
+AC_ARG_ENABLE(prof,
+	      [  --enable-prof           enable prof source profiling support (default is no)],
+	      [with_prof=$enableval],
+	      [with_prof='no'])
+
 # Enable gprof-based profiling support
 AC_ARG_ENABLE(gprof,
 	      [  --enable-gprof          enable gprof source profiling support (default is no)],
 	      [with_gprof=$enableval],
 	      [with_gprof='no'])
-if test "$with_gprof" = 'yes' && test "$libtool_build_shared_libs" = 'yes'
-then
-  echo "Warning: Can not profile code using shared libraries"
-  with_gprof='no'
-fi
 
 # Enable gcov-based profiling support
 AC_ARG_ENABLE(gcov,
 	      [  --enable-gcov           enable gcov source profiling support (default is no)],
 	      [with_gcov=$enableval],
 	      [with_gcov='no'])
-if test "$with_gcov" = 'yes' && test "$libtool_build_shared_libs" = 'yes'
+
+with_profiling='no'
+if test "$with_prof" = 'yes' || test "$with_gprof" = 'yes' || test "$with_gcov" = 'yes'
 then
-  echo "Warning: Can not profile code using shared libraries"
-  with_gcov='no'
+  with_profiling='yes'
+
+  if test "$libtool_build_shared_libs" = 'yes'
+  then
+    echo "Warning: Can not profile code using shared libraries"
+  fi
 fi
 
 # Enable LZW compression.
@@ -406,6 +413,7 @@ then
     fi
 fi
 
+
 #
 # Check for ZLIB
 #
@@ -522,6 +530,14 @@ AC_SUBST(X11STUBSLA)
 AC_SUBST(X11STUBSLIB)
 
 #
+# If profiling, then check for -ldl and dlopen (required for Solaris & gcc)
+#
+if test "$with_profiling" = 'yes'
+then
+  AC_CHECK_LIB(dl,dlopen,LIBS="-ldl $LIBS",,)
+fi
+
+#
 # Check for Display Postscript
 #
 have_dps='no'
@@ -557,6 +573,7 @@ then
     CPPFLAGS=$O_CPPFLAGS
     fi
 fi
+
 
 #
 # Check for FlashPIX
@@ -1153,9 +1170,18 @@ fi
 #
 
 have_socks='no'
-XTP_LIBS="$LIB_SFIO"
+XTP_LIBS="$XTP_LIBS $LIBS_INITIAL"
+XTP_LIBS="$LIB_SFIO $XTP_LIBS"
 XTP_DEFS=''
 XTP_FTP='ftp'
+
+AC_CHECK_LIB(socket,socket,XTP_LIBS="-lsocket $XTP_LIBS",,)
+AC_CHECK_LIB(nsl,gethostbyname,XTP_LIBS="-lnsl $XTP_LIBS",,)
+# If profiling, then check for -ldl and dlopen (required for Solaris & gcc)
+if test "$with_profiling" = 'yes'
+then
+  AC_CHECK_LIB(dl,dlopen,XTP_LIBS="-ldl $XTP_LIBS",,)
+fi
 if test "$with_socks" = 'yes'
 then
   have_socks_header='no'
@@ -1164,30 +1190,37 @@ then
   AC_CHECK_LIB(socks5,SOCKSinit,have_socks_lib='yes',have_socks_lib='no',)
   if test $have_socks_header = 'yes' && test $have_socks_lib = 'yes'
   then
-    XTP_LIBS="$XTP_LIBS -lsocks5"
-    XTP_DEFS="$XTP_DEFS -DSOCKS"
+    XTP_LIBS="-lsocks5 $XTP_LIBS"
+    XTP_DEFS="-DSOCKS $XTP_DEFS "
     have_socks='yes'
   fi
   AC_PATH_PROGS(XTP_FTP,rftp ftp,,)
 fi
+
 XTP_DEFS="$XTP_DEFS -DXTP_FTP=\"\\\"$XTP_FTP\\\"\""
-AC_CHECK_LIB(nsl,gethostbyname,XTP_LIBS="$XTP_LIBS -lnsl",,)
-AC_CHECK_LIB(socket,socket,XTP_LIBS="$XTP_LIBS -lsocket",,)
-XTP_LIBS="$XTP_LIBS $LIBS_INITIAL"
 AC_SUBST(XTP_LIBS)dnl
 AC_SUBST(XTP_DEFS)dnl
+
+# Add '-p' if prof source profiling support enabled
+if test "$with_prof" = 'yes'
+then
+  CFLAGS="-p $CFLAGS"
+  LDFLAGS="-p $LDFLAGS"
+fi
 
 # Add '-pg' if gprof source profiling support enabled
 if test "$with_gprof" = 'yes'
 then
-  CFLAGS="$CFLAGS -pg"
+  CFLAGS="-pg $CFLAGS"
+  LDFLAGS="-pg $LDFLAGS"
 fi
 
 # Add '-ftest-coverage -fprofile-arcs' if gcov source profiling support enabled
 # This is a gcc-specific feature
 if test "$with_gcov" = 'yes'
 then
-  CFLAGS="$CFLAGS -ftest-coverage -fprofile-arcs"
+  CFLAGS="-ftest-coverage -fprofile-arcs  $CFLAGS"
+  LDFLAGS="-ftest-coverage -fprofile-arcs $LDFLAGS"
 fi
 
 #

@@ -105,14 +105,24 @@
 unsigned int WriteAVSImage(const ImageInfo *image_info,Image *image)
 {
   register int
-    i,
-    j;
+    runlength,
+    x,
+    y;
 
   register RunlengthPacket
     *p;
 
+  register unsigned char
+    *q;
+
+  unsigned char
+    *pixels;
+
   unsigned int
     scene;
+
+  unsigned short
+    value;
 
   /*
     Open output image file.
@@ -124,25 +134,46 @@ unsigned int WriteAVSImage(const ImageInfo *image_info,Image *image)
   do
   {
     /*
+      Allocate memory for pixels.
+    */
+    pixels=(unsigned char *)
+      AllocateMemory(image->columns*sizeof(RunlengthPacket));
+    if (pixels == (unsigned char *) NULL)
+      {
+        MagickWarning(ResourceLimitWarning,"Unable to write AVS image",
+          "Memory allocation failed");
+        return(False);
+      }
+    /*
       Initialize raster file header.
     */
     MSBFirstWriteLong(image->columns,image->file);
     MSBFirstWriteLong(image->rows,image->file);
     p=image->pixels;
-    for (i=0; i < image->packets; i++)
+    runlength=p->length+1;
+    for (y=0; y < image->rows; y++)
     {
-      for (j=0; j <= ((int) p->length); j++)
+      q=pixels;
+      for (x=0; x < image->columns; x++)
       {
-        (void) fputc(image->matte ? DownScale(p->index) : Opaque,image->file);
-        (void) fputc(DownScale(p->red),image->file);
-        (void) fputc(DownScale(p->green),image->file);
-        (void) fputc(DownScale(p->blue),image->file);
+        if (runlength != 0)
+          runlength--;
+        else
+          {
+            p++;
+            runlength=p->length;
+          }
+        *q++=DownScale(image->matte ? p->index : Opaque);
+        *q++=DownScale(p->red);
+        *q++=DownScale(p->green);
+        *q++=DownScale(p->blue);
       }
-      p++;
+      (void) fwrite((char *) pixels,1,q-pixels,image->file);
       if (image->previous == (Image *) NULL)
-        if (QuantumTick(i,image->packets))
-          ProgressMonitor(SaveImageText,i,image->packets);
+        if (QuantumTick(y,image->rows))
+          ProgressMonitor(SaveImageText,y,image->rows);
     }
+    FreeMemory((char *) pixels);
     if (image->next == (Image *) NULL)
       break;
     image->next->file=image->file;
@@ -1550,7 +1581,7 @@ unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
     for (j=0; j <= (int) p->length; j++)
     {
       if (fpx_info.numberOfComponents == 1)
-        WriteQuantum(p->red,q)
+        WriteQuantum(Intensity(*p),q)
       else
         {
           WriteQuantum(p->red,q);
@@ -4293,14 +4324,24 @@ unsigned int WriteMONOImage(const ImageInfo *image_info,Image *image)
 unsigned int WriteMTVImage(const ImageInfo *image_info,Image *image)
 {
   register int
-    i,
-    j;
+    runlength,
+    x,
+    y;
 
   register RunlengthPacket
     *p;
 
+  register unsigned char
+    *q;
+
+  unsigned char
+    *pixels;
+
   unsigned int
     scene;
+
+  unsigned short
+    value;
 
   /*
     Open output image file.
@@ -4312,23 +4353,44 @@ unsigned int WriteMTVImage(const ImageInfo *image_info,Image *image)
   do
   {
     /*
-      Convert MIFF to MTV raster pixels.
+      Allocate memory for pixels.
+    */
+    pixels=(unsigned char *)
+      AllocateMemory(image->columns*sizeof(RunlengthPacket));
+    if (pixels == (unsigned char *) NULL)
+      {
+        MagickWarning(ResourceLimitWarning,"Unable to write MTV image",
+          "Memory allocation failed");
+        return(False);
+      }
+    /*
+      Initialize raster file header.
     */
     (void) fprintf(image->file,"%u %u\n",image->columns,image->rows);
     p=image->pixels;
-    for (i=0; i < image->packets; i++)
+    runlength=p->length+1;
+    for (y=0; y < image->rows; y++)
     {
-      for (j=0; j <= ((int) p->length); j++)
+      q=pixels;
+      for (x=0; x < image->columns; x++)
       {
-        (void) fputc(DownScale(p->red),image->file);
-        (void) fputc(DownScale(p->green),image->file);
-        (void) fputc(DownScale(p->blue),image->file);
+        if (runlength != 0)
+          runlength--;
+        else
+          {
+            p++;
+            runlength=p->length;
+          }
+        *q++=DownScale(p->red);
+        *q++=DownScale(p->green);
+        *q++=DownScale(p->blue);
       }
-      p++;
+      (void) fwrite((char *) pixels,1,q-pixels,image->file);
       if (image->previous == (Image *) NULL)
-        if (QuantumTick(i,image->packets))
-          ProgressMonitor(SaveImageText,i,image->packets);
+        if (QuantumTick(y,image->rows))
+          ProgressMonitor(SaveImageText,y,image->rows);
     }
+    FreeMemory((char *) pixels);
     if (image->next == (Image *) NULL)
       break;
     image->next->file=image->file;
@@ -7392,23 +7454,59 @@ unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
       }
       case '6':
       {
+        register int
+          runlength,
+          x,
+          y;
+
+        register unsigned char
+          *q;
+
+        unsigned char
+          *pixels;
+
+        unsigned short
+          value;
+
+        /*
+          Allocate memory for pixels.
+        */
+        pixels=(unsigned char *)
+          AllocateMemory(image->columns*sizeof(RunlengthPacket));
+        if (pixels == (unsigned char *) NULL)
+          {
+            MagickWarning(ResourceLimitWarning,"Unable to write pnm image",
+              "Memory allocation failed");
+            return(False);
+          }
         /*
           Convert image to a PNM image.
         */
         (void) fprintf(image->file,"%u\n",DownScale(MaxRGB));
-        for (i=0; i < image->packets; i++)
+        p=image->pixels;
+        runlength=p->length+1;
+        for (y=0; y < image->rows; y++)
         {
-          for (j=0; j <= ((int) p->length); j++)
+          q=pixels;
+          for (x=0; x < image->columns; x++)
           {
-            (void) fputc(DownScale(p->red),image->file);
-            (void) fputc(DownScale(p->green),image->file);
-            (void) fputc(DownScale(p->blue),image->file);
+            if (runlength != 0)
+              runlength--;
+            else
+              {
+                p++;
+                runlength=p->length;
+              }
+            *q++=DownScale(p->red);
+            *q++=DownScale(p->green);
+            *q++=DownScale(p->blue);
           }
-          p++;
+          (void) fwrite((char *) pixels,1,q-pixels,image->file);
           if (image->previous == (Image *) NULL)
-            if (QuantumTick(i,image->packets))
-              ProgressMonitor(SaveImageText,i,image->packets);
+            if (QuantumTick(y,image->rows))
+              ProgressMonitor(SaveImageText,y,image->rows);
         }
+        FreeMemory((char *) pixels);
         break;
       }
       case '7':
@@ -10294,31 +10392,61 @@ unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
     x=0;
     if (!IsPseudoClass(image) && !IsGrayImage(image))
       {
+        register int
+          runlength,
+          y;
+
+        register unsigned char
+          *q;
+
+        unsigned char
+          *pixels;
+
+        unsigned short
+          value;
+
+        /*
+          Allocate memory for pixels.
+        */
+        pixels=(unsigned char *)
+          AllocateMemory(image->columns*sizeof(RunlengthPacket));
+        if (pixels == (unsigned char *) NULL)
+          {
+            MagickWarning(ResourceLimitWarning,"Unable to write AVS image",
+              "Memory allocation failed");
+            return(False);
+          }
         /*
           Convert DirectClass packet to SUN RGB pixel.
         */
-        for (i=0; i < image->packets; i++)
+        p=image->pixels;
+        runlength=p->length+1;
+        for (y=0; y < image->rows; y++)
         {
-          for (j=0; j <= ((int) p->length); j++)
+          q=pixels;
+          for (x=0; x < image->columns; x++)
           {
-            if (image->matte)
-              (void) fputc(DownScale(p->index),image->file);
-            (void) fputc(DownScale(p->red),image->file);
-            (void) fputc(DownScale(p->green),image->file);
-            (void) fputc(DownScale(p->blue),image->file);
-            x++;
-            if (x == image->columns)
+            if (runlength != 0)
+              runlength--;
+            else
               {
-                if ((image->columns % 2) != 0)
-                  (void) fputc(0,image->file); /* pad scanline */
-                x=0;
+                p++;
+                runlength=p->length;
               }
+            if (image->matte)
+              *q++=DownScale(p->index);
+            *q++=DownScale(p->red);
+            *q++=DownScale(p->green);
+            *q++=DownScale(p->blue);
           }
-          p++;
+          if ((image->columns % 2) != 0)
+            WriteQuantum(0,q);  /* pad scanline */
+          (void) fwrite((char *) pixels,1,q-pixels,image->file);
           if (image->previous == (Image *) NULL)
-            if (QuantumTick(i,image->packets))
-              ProgressMonitor(SaveImageText,i,image->packets);
+            if (QuantumTick(y,image->rows))
+              ProgressMonitor(SaveImageText,y,image->rows);
         }
+        FreeMemory((char *) pixels);
       }
     else
       if (IsMonochromeImage(image))
@@ -11098,11 +11226,11 @@ unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
                 /*
                   Convert DirectClass packets to contiguous RGB scanlines.
                 */
-                WriteQuantum(p->red,q);
-                WriteQuantum(p->green,q);
-                WriteQuantum(p->blue,q);
+                *q++=DownScale(p->red);
+                *q++=DownScale(p->green);
+                *q++=DownScale(p->blue);
                 if (image->matte)
-                  WriteQuantum(p->index,q);
+                  *q++=DownScale(p->index);
                 x++;
                 if (x == image->columns)
                   {
@@ -11821,10 +11949,21 @@ unsigned int WriteVICARImage(const ImageInfo *image_info,Image *image)
 
   register int
     i,
-    j;
+    runlength,
+    x,
+    y;
 
   register RunlengthPacket
     *p;
+
+  register unsigned char
+    *q;
+
+  unsigned char
+    *pixels;
+
+  unsigned short
+    value;
 
   /*
     Open output image file.
@@ -11833,7 +11972,7 @@ unsigned int WriteVICARImage(const ImageInfo *image_info,Image *image)
   if (image->file == (FILE *) NULL)
     PrematureExit(FileOpenWarning,"Unable to open file",image);
   /*
-    Make a header.
+    Write header.
   */
   FormatString(header,"LBLSIZE=            FORMAT='BYTE'  TYPE='IMAGE'");
   FormatString(header+Extent(header),"  BUFSIZE=20000  DIM=2  EOL=0");
@@ -11855,18 +11994,40 @@ unsigned int WriteVICARImage(const ImageInfo *image_info,Image *image)
   */
   (void) fprintf(image->file, "%-*s",label_size,header);
   /*
-    Convert MIFF to VICAR raster pixels.
+    Allocate memory for pixels.
   */
-  RGBTransformImage(image,GRAYColorspace);
+  pixels=(unsigned char *)
+    AllocateMemory(image->columns*sizeof(RunlengthPacket));
+  if (pixels == (unsigned char *) NULL)
+    {
+      MagickWarning(ResourceLimitWarning,"Unable to write AVS image",
+        "Memory allocation failed");
+      return(False);
+    }
+  /*
+    Write VICAR pixels.
+  */
   p=image->pixels;
-  for (i=0; i < image->packets; i++)
+  runlength=p->length+1;
+  for (y=0; y < image->rows; y++)
   {
-    for (j=0; j <= ((int) p->length); j++)
-      (void) fputc(p->red,image->file);
-    p++;
-    if (QuantumTick(i,image->packets))
-      ProgressMonitor(SaveImageText,i,image->packets);
+    q=pixels;
+    for (x=0; x < image->columns; x++)
+    {
+      if (runlength != 0)
+        runlength--;
+      else
+        {
+          p++;
+          runlength=p->length;
+        }
+      *q++=DownScale(Intensity(*p));
+    }
+    (void) fwrite((char *) pixels,1,q-pixels,image->file);
+    if (QuantumTick(y,image->rows))
+      ProgressMonitor(SaveImageText,y,image->rows);
   }
+  FreeMemory((char *) pixels);
   CloseImage(image);
   return(True);
 }
@@ -13003,16 +13164,20 @@ unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
 */
 unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
 {
-  int
-    x;
-
   register int
     i,
-    j,
-    k;
+    runlength,
+    x,
+    y;
 
   register RunlengthPacket
     *p;
+
+  register unsigned char
+    *q;
+
+  unsigned char
+    *pixels;
 
   unsigned int
     bits_per_pixel,
@@ -13021,6 +13186,9 @@ unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
 
   unsigned long
     lsb_first;
+
+  unsigned short
+    value;
 
   XWDFileHeader
     xwd_header;
@@ -13114,36 +13282,51 @@ unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
       FreeMemory((char *) colors);
     }
   /*
+    Allocate memory for pixels.
+  */
+  pixels=(unsigned char *)
+    AllocateMemory(image->columns*sizeof(RunlengthPacket));
+  if (pixels == (unsigned char *) NULL)
+    {
+      MagickWarning(ResourceLimitWarning,"Unable to write AVS image",
+        "Memory allocation failed");
+      return(False);
+    }
+  /*
     Convert MIFF to XWD raster pixels.
   */
   scanline_pad=(unsigned int)
     (bytes_per_line-((image->columns*bits_per_pixel) >> 3));
-  x=0;
   p=image->pixels;
-  for (i=0; i < image->packets; i++)
+  runlength=p->length+1;
+  for (y=0; y < image->rows; y++)
   {
-    for (j=0; j <= ((int) p->length); j++)
+    q=pixels;
+    for (x=0; x < image->columns; x++)
     {
-      if (image->class == PseudoClass)
-        (void) fputc(p->index,image->file);
+      if (runlength != 0)
+        runlength--;
       else
         {
-          (void) fputc(DownScale(p->red),image->file);
-          (void) fputc(DownScale(p->green),image->file);
-          (void) fputc(DownScale(p->blue),image->file);
+          p++;
+          runlength=p->length;
         }
-      x++;
-      if (x == image->columns)
+      if (image->class == PseudoClass)
+        WriteQuantum(p->index,q)
+      else
         {
-          for (k=0; k < scanline_pad; k++)
-            (void) fputc(0,image->file);
-          x=0;
+          WriteQuantum(p->red,q);
+          WriteQuantum(p->green,q);
+          WriteQuantum(p->blue,q);
         }
     }
-    p++;
-    if (QuantumTick(i,image->packets))
-      ProgressMonitor(SaveImageText,i,image->packets);
+    for (i=0; i < scanline_pad; i++)
+      WriteQuantum(0,q);
+    (void) fwrite((char *) pixels,1,q-pixels,image->file);
+    if (QuantumTick(y,image->rows))
+      ProgressMonitor(SaveImageText,y,image->rows);
   }
+  FreeMemory((char *) pixels);
   CloseImage(image);
   return(True);
 }

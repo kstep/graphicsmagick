@@ -1142,9 +1142,10 @@ Image *ReadDCMImage(const ImageInfo *image_info)
 #include "dicom.h"
 
   char
+    implicit_vr[3],
     magick[128],
     photometric[MaxTextExtent],
-    vr[3];
+    explicit_vr[3];
 
   Image
     *image;
@@ -1233,7 +1234,7 @@ Image *ReadDCMImage(const ImageInfo *image_info)
   number_scenes=1;
   samples_per_pixel=1;
   significant_bits=0;
-  vr[2]='\0';
+  explicit_vr[2]='\0';
   width=0;
   while ((group != 0x7FE0) || (element != 0x0010))
   {
@@ -1243,6 +1244,7 @@ Image *ReadDCMImage(const ImageInfo *image_info)
     image->offset=ftell(image->file);
     group=LSBFirstReadShort(image->file);
     element=LSBFirstReadShort(image->file);
+    quantum=0;
     /*
       Find corresponding VR for this group and element.
     */
@@ -1250,13 +1252,16 @@ Image *ReadDCMImage(const ImageInfo *image_info)
       if ((group == dicom_info[i].group) &&
           (element == dicom_info[i].element))
         break;
-    quantum=0;
-    ReadData((char *) vr,1,2,image->file);
-    if (strcmp(dicom_info[i].vr,vr) == 0)
+    (void) strcpy(implicit_vr,dicom_info[i].vr);
+    ReadData((char *) explicit_vr,1,2,image->file);
+    if (strcmp(implicit_vr,"xs") == 0)
+      if (isupper(*explicit_vr) && isupper(*(explicit_vr+1)))
+        (void) strcpy(implicit_vr,explicit_vr);
+    if (strcmp(implicit_vr,explicit_vr) == 0)
       {
         quantum=2;
-        if ((strcmp(vr,"OB") == 0) || (strcmp(vr,"OW") == 0) ||
-            (strcmp(vr,"SQ") == 0))
+        if ((strcmp(explicit_vr,"OB") == 0) ||
+            (strcmp(explicit_vr,"OW") == 0) || (strcmp(explicit_vr,"SQ") == 0))
           {
             (void) LSBFirstReadShort(image->file);
             quantum=4;
@@ -1264,14 +1269,15 @@ Image *ReadDCMImage(const ImageInfo *image_info)
       }
     else
       {
-        if (strcmp(dicom_info[i].vr,"xs") != 0)
+        if (strcmp(implicit_vr,"xs") != 0)
           (void) fseek(image->file,(off_t) -2,SEEK_CUR);
         else
-          if ((strcmp(vr,"SS") == 0) || (strcmp(vr,"US") == 0))
+          if ((strcmp(explicit_vr,"SS") == 0) ||
+              (strcmp(explicit_vr,"US") == 0))
             quantum=2;
           else
             (void) fseek(image->file,(off_t) -2,SEEK_CUR);
-        if (strcmp(dicom_info[i].vr,"SQ") != 0)
+        if (strcmp(implicit_vr,"SQ") != 0)
           quantum=4;
       }
     datum=0;
@@ -1283,49 +1289,52 @@ Image *ReadDCMImage(const ImageInfo *image_info)
     quantum=0;
     length=1;
     if (datum != 0)
-      if ((strcmp(dicom_info[i].vr,"SS") == 0) ||
-          (strcmp(dicom_info[i].vr,"US") == 0))
+      if ((strcmp(implicit_vr,"SS") == 0) ||
+          (strcmp(implicit_vr,"US") == 0))
         switch (datum)
         {
-          case 2:  
+          case 2:
           default:
           {
-            quantum=2;  
+            quantum=2;
+            datum=datum/2;
+            length=datum;
             break;
           }
-          case 4:  
+          case 4:
           {
-            quantum=4;  
+            quantum=4;
             break;
           }
-          case 8:  
+          case 8:
           {
-            quantum=2;  
+            quantum=2;
             length=4;
             break;
           }
         }
       else
-        if ((strcmp(dicom_info[i].vr,"UL") == 0) ||
-            (strcmp(dicom_info[i].vr,"SL") == 0) ||
-            (strcmp(dicom_info[i].vr,"FL") == 0)) 
+        if ((strcmp(implicit_vr,"UL") == 0) ||
+            (strcmp(implicit_vr,"SL") == 0) ||
+            (strcmp(implicit_vr,"FL") == 0))
           quantum=4;
         else
-          if (strcmp(dicom_info[i].vr,"FD") == 0)
+          if (strcmp(implicit_vr,"FD") == 0)
             quantum=4;
           else
-            if (strcmp(dicom_info[i].vr,"xs") != 0)
+            if (strcmp(implicit_vr,"xs") != 0)
               {
                 quantum=1;
                 length=datum;
               }
             else
-              if ((strcmp(vr,"SS") == 0) || (strcmp(vr,"US") == 0))
+              if ((strcmp(explicit_vr,"SS") == 0) ||
+                  (strcmp(explicit_vr,"US") == 0))
                 quantum=2;
               else
                 {
                   quantum=2;
-                  datum=datum/2; 
+                  datum=datum/2;
                   length=datum;
                 }
     if (image_info->verbose)
@@ -1675,6 +1684,8 @@ Image *ReadDCMImage(const ImageInfo *image_info)
     /*
       Proceed to next image.
     */
+    if (feof(image->file))
+      break;
     if (image_info->subrange != 0)
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
         break;
@@ -9691,7 +9702,7 @@ Image *ReadPNGImage(const ImageInfo *image_info)
             {
               char
                 *delay;
-  
+
               delay=(char *) NULL;
               PNGTextChunk(ping_info,i,&delay);
               image->delay=atoi(delay);
@@ -16257,7 +16268,7 @@ Image *ReadXImage(const ImageInfo *image_info)
 {
   XImportInfo
     ximage_info;
-		
+
   XGetImportInfo(&ximage_info);
   return(XImportImage(image_info,&ximage_info));
 }

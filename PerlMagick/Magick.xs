@@ -89,11 +89,19 @@ extern "C" {
 #define ImageReference  (char **) 3
 #define IntegerReference  (char **) 1
 #define MaxArguments  12
-#define na  PL_na
 #define NumberOf(array)  (sizeof(array)/sizeof(*array))
 #define PackageName   "Image::Magick"
 #define StringReference  (char **) 0
+
+/*
+  Perl 5.006 no longer defines na and sv_undef.
+*/
+#ifndef na
+#define na  PL_na
+#endif
+#ifndef sv_undef
 #define sv_undef  PL_sv_undef
+#endif
 
 /*
   Typedef and structure declarations.
