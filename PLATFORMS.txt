@@ -1,0 +1,91 @@
+This file provides platform specific portability notes which don't
+belong in README.txt. Usually ImageMagick compiles fine according to the
+procedures described in README.txt, but sometimes a platform related
+oddity causes a failure.
+
+FreeBSD 3.X and 4.X
+===================
+
+  Problem
+  
+    ImageMagick does not run after it is installed. The system does not
+    see an installed shared library until the 'ltconfig' command has
+    been executed (as root) using the correct options.
+
+  Indications
+  
+    System fails to find shared library needed by ImageMagick.
+
+  Solution
+  
+    Either reboot the system (which automatically runs ldconfig) or read
+    the ldconfig manual page to see how invoke it to refresh its cache.
+
+Digital Unix and OSF/1
+======================
+
+  Problem
+  
+    Digital Unix provides an outdated JPEG shared library as part of the
+    system.
+    
+  Indications
+
+    ImageMagick fails to link.
+
+  Solution
+  
+    Ensure that the JPEG library you installed is used. Be sure to
+    install the JPEG library as a shared library.
+
+Solaris 2.X
+============
+
+  Problem
+  
+    An outdated delegate library is used rather than the one just
+    installed.
+    
+  Indications
+  
+    o Failure to link
+    o Failure to run properly
+    o The command 'ldd `which convert`' lists the wrong library.
+  
+  Solution
+
+    If the problem library is a shared library (.so extension) then
+    install your own library as a shared library. Then add the required
+    -L and -R options to find your shared library at both link and run
+    time. For example, if your library is is installed in /usr/local/lib:
+      
+      configure LDFLAGS='-L/usr/local/lib -R/usr/local/lib' 
+
+  Problem
+
+    An outdated libtiff.so (libtiff.so.3) is installed in
+    /usr/openwin/lib. This library may be used by accident rather than
+    the intended libtiff.so, or libtiff.a. In particular, the linker
+    generally considers linking against a shared library before it
+    considers static libraries, so the system libtiff.so may be used
+    even though there is an installed libtiff.a earlier in the linker
+    search path.
+
+  Indications
+  
+    ImageMagick fails to link or load TIFF files.
+
+  Solution
+
+    o Install libtiff as a shared library, and make sure that LDFLAGS
+      contains the required -L and -R options to find your shared
+      library at both link and run time. For example, if libtiff.so is
+      installed in /usr/local/lib:
+      
+      configure LDFLAGS='-L/usr/local/lib -R/usr/local/lib'
+
+    or
+      
+    o Remove /usr/openwin/lib/libtiff.so.3. Note that if you take this
+      step, some tools like 'imagetool' and 'pageview' will stop working.
+
