@@ -67,7 +67,7 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method CloneImageList returns a duplicate of the specified image list.
+%  CloneImageList() returns a duplicate of the specified image list.
 %
 %  The format of the CloneImageList method is:
 %
@@ -180,8 +180,7 @@ MagickExport void DestroyImageList(Image *image)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method GetImageList returns an image at the specified position in the image
-%  list.
+%  GetImageList() returns an image at the specified position in the image list.
 %
 %  The format of the GetImageList method is:
 %
@@ -229,7 +228,7 @@ MagickExport Image *GetImageList(Image *images,const unsigned long n,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method GetImageListSize returns the number of images in the image list.
+%  GetImageListSize() returns the number of images in the image list.
 %
 %  The format of the GetImageListSize method is:
 %
@@ -374,7 +373,7 @@ MagickExport Image **ListToGroupImage(const Image *image,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method NetImageList starts a number image list simply by returning NULL.
+%  NewImageList() starts a number image list simply by returning NULL.
 %
 %  The format of the NewImageList method is:
 %
@@ -397,7 +396,7 @@ MagickExport Image *NewImageList(void)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method PopImageList removes the first image in the list and returns it.
+%  PopImageList() removes the first image in the list and returns it.
 %
 %  The format of the PopImageList method is:
 %
@@ -439,7 +438,7 @@ MagickExport Image *PopImageList(Image **images)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method PushImageList adds the image to the end of the image list.
+%  PushImageList() adds the image to the end of the image list.
 %
 %  The format of the PushImageList method is:
 %
@@ -490,8 +489,7 @@ MagickExport unsigned int PushImageList(Image **images,const Image *image,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method SetImageList inserts an image into the list at the specified
-%  position.
+%  SetImageList() inserts an image into the list at the specified position.
 %
 %  The format of the SetImageList method is:
 %
