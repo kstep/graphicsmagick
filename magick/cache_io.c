@@ -684,7 +684,7 @@ Export unsigned int ReadCachePixels(CacheHandle cache_handle,
 
   assert(cache_handle != (CacheHandle *) NULL);
   cache_info=(CacheInfo *) cache_handle;
-  offset(off_t) =region_info->y*cache_info->columns+region_info->x;
+  offset=(off_t) region_info->y*cache_info->columns+region_info->x;
   for (y=0; y < (int) region_info->height; y++)
   {
     if (cache_info->pixels != (PixelPacket *) NULL)
