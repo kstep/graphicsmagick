@@ -3697,7 +3697,7 @@ Get(ref,...)
                     char
                       geometry[MaxTextExtent];
 
-                    FormatString(geometry,"%ux%u%+d%+d",image->page.width,
+                    FormatString(geometry,"%lux%lu%+ld%+ld",image->page.width,
                       image->page.height,image->page.x,image->page.y);
                     s=newSVpv(geometry,0);
                   }
@@ -4535,7 +4535,7 @@ Mogrify(ref,...)
       {
         default:
         {
-          FormatString(message,"%d",(long) ix);
+          FormatString(message,"%ld",(long) ix);
           MagickError(OptionError,"UnrecognizedPerlMagickMethod",message);
           goto ReturnIt;
         }
@@ -4948,7 +4948,7 @@ Mogrify(ref,...)
                 argument_list[9].int_reference=0;
               if (!attribute_flag[10])
                 argument_list[10].int_reference=0;
-              FormatString(message,"%+d%+d",argument_list[9].int_reference,
+              FormatString(message,"%+ld%+ld",argument_list[9].int_reference,
                 argument_list[10].int_reference);
               (void) CloneString(&draw_info->geometry,message);
             }
@@ -6816,9 +6816,9 @@ Ping(ref,...)
       EXTEND(sp,4*count);
       for (next=image; next; next=next->next)
       {
-        FormatString(message,"%u",next->columns);
+        FormatString(message,"%lu",next->columns);
         PUSHs(sv_2mortal(newSVpv(message,0)));
-        FormatString(message,"%u",next->rows);
+        FormatString(message,"%lu",next->rows);
         PUSHs(sv_2mortal(newSVpv(message,0)));
         FormatString(message,"%lu",(unsigned long) GetBlobSize(next));
         PUSHs(sv_2mortal(newSVpv(message,0)));

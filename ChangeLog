@@ -1,4 +1,8 @@
 2002-12-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+	* PerlMagick/Magick.xs: Fixed FormatString() format
+	problems identified by the compiler.
+
+2002-12-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 	* magick/image.h: Moved function prototypes for functions
 	implemented in code modules other than image.c to seperate
 	header files with names based on the implementation files.
