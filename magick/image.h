@@ -690,6 +690,7 @@ extern MagickExport void
   DestroyMagick(void),
   DestroyMagickInfo(void),
   DestroyMontageInfo(MontageInfo *),
+  GetColorTuple(const Image *,const PixelPacket *,unsigned int,char *),
   GetImageException(Image *,ExceptionInfo *),
   GetImageInfo(ImageInfo *),
   GetMontageInfo(const ImageInfo *,MontageInfo *),

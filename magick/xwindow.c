@@ -6429,6 +6429,9 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
 */
 MagickExport void XMakeMagnifyImage(Display *display,XWindows *windows)
 {
+  char
+    tuple[MaxTextExtent];
+
   int
     y;
 
@@ -6813,27 +6816,9 @@ MagickExport void XMakeMagnifyImage(Display *display,XWindows *windows)
     Show center pixel color.
   */
   color=GetOnePixel(windows->image.image,windows->magnify.x,windows->magnify.y);
-  if (windows->image.image->matte)
-    {
-      if (windows->image.image->depth > 8)
-        FormatString(text," %+d%+d  (%u,%u,%u,%u) ",windows->magnify.x,
-          windows->magnify.y,color.red,color.green,color.blue,color.opacity);
-      else
-        FormatString(text," %+d%+d  (%lu,%lu,%lu,%lu) ",windows->magnify.x,
-          windows->magnify.y,Downscale(color.red),Downscale(color.green),
-          Downscale(color.blue),Downscale(color.opacity));
-    }
-  else
-    {
-      color.opacity=OpaqueOpacity;
-      if (windows->image.image->depth > 8)
-        FormatString(text," %+d%+d  (%u,%u,%u) ",windows->magnify.x,
-          windows->magnify.y,color.red,color.green,color.blue);
-      else
-        FormatString(text," %+d%+d  (%lu,%lu,%lu) ",windows->magnify.x,
-          windows->magnify.y,Downscale(color.red),Downscale(color.green),
-          Downscale(color.blue));
-    }
+  GetColorTuple(windows->image.image,&color,False,tuple);
+  FormatString(text," %+d%+d  %.1024s ",windows->magnify.x,windows->magnify.y,
+    tuple);
   height=windows->magnify.font_info->ascent+windows->magnify.font_info->descent;
   x=windows->magnify.font_info->max_bounds.width >> 1;
   y=windows->magnify.font_info->ascent+(height >> 2);

@@ -542,6 +542,68 @@ MagickExport char **GetColorList(const char *pattern,int *number_colors)
 %                                                                             %
 %                                                                             %
 %                                                                             %
++   G e t C o l o r T u p l e                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetColorTuple() returns a color as a color tuple string.
+%
+%  The format of the GetColorTuple method is:
+%
+%      GetColorTuple(const Image *image,const PixelPacket *color,
+%        unsigned int hex,char *tuple)
+%
+%  A description of each parameter follows.
+%
+%    o image: The image.
+%
+%    o color: The color.
+%
+%    o hex: A value other than zero returns the tuple in a hexidecimal format.
+%
+%    o tuple: Return the color tuple as this string.
+%
+%
+*/
+MagickExport void GetColorTuple(const Image *image,const PixelPacket *color,
+  unsigned int hex,char *tuple)
+{
+  assert(image != (const Image *) NULL);
+  assert(image->signature == MagickSignature);
+  assert(color != (const PixelPacket *) NULL);
+  assert(tuple != (char *) NULL);
+  if (image->depth <= 8)
+    {
+      if (image->matte)
+        {
+          FormatString(tuple,
+            hex ? "#%02lx%02lx%02lx%02lx" : "(%3lu,%3lu,%3lu,%3lu)",
+            Downscale(color->red),Downscale(color->green),
+            Downscale(color->blue),Downscale(color->opacity));
+          return;
+        }
+      FormatString(tuple,hex ? "#%02lx%02lx%02lx" : "(%3lu,%3lu,%3lu)",
+        Downscale(color->red),Downscale(color->green),Downscale(color->blue));
+      return;
+    }
+  if (image->matte)
+    {
+      FormatString(tuple,hex ? "#%04x%04x%04x%04x" : "(%5u,%5u,%5u,%5u)",
+        color->red,color->green,color->blue,color->opacity);
+      return;
+    }
+  FormatString(tuple,hex ? "#%04x%04x%04x" : "(%5u,%5u,%5u)",color->red,
+    color->green,color->blue);
+  return;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 +   G e t C u b e I n f o                                                     %
 %                                                                             %
 %                                                                             %
@@ -822,7 +884,8 @@ static void Histogram(const Image *image,CubeInfo *cube_info,
   if (node_info->level == MaxTreeDepth)
     {
       char
-        name[MaxTextExtent];
+        name[MaxTextExtent],
+        tuple[MaxTextExtent];
 
       register ColorPacket
         *p;
@@ -833,8 +896,8 @@ static void Histogram(const Image *image,CubeInfo *cube_info,
       p=node_info->list;
       for (i=0; i < (long) node_info->number_unique; i++)
       {
-        (void) fprintf(file,"%10lu: (%5d,%5d,%5d)  ",p->count,
-          p->pixel.red,p->pixel.green,p->pixel.blue);
+        GetColorTuple(image,&p->pixel,False,tuple);
+        (void) fprintf(file,"%10lu: %.1024s  ",p->count,tuple);
         (void) fprintf(file,"  ");
         (void) QueryColorname(image,&p->pixel,SVGCompliance,name,exception);
         (void) fprintf(file,"%.1024s",name);
@@ -1517,23 +1580,7 @@ MagickExport unsigned int QueryColorname(const Image *image,
         return(True);
       }
     }
-  if (!image->matte || (color->opacity == OpaqueOpacity))
-    {
-      if (image->depth <= 8)
-        FormatString(name,"#%02lx%02lx%02lx",Downscale(color->red),
-          Downscale(color->green),Downscale(color->blue));
-      else
-        FormatString(name,"#%04x%04x%04x",(unsigned int) color->red,
-          (unsigned int) color->green,(unsigned int) color->blue);
-      return(False);
-    }
-  if (image->depth <= 8)
-    FormatString(name,"#%02lx%02lx%02lx%02lx",Downscale(color->red),
-      Downscale(color->green),Downscale(color->blue),
-      Downscale(color->opacity));
-  else
-    FormatString(name,"#%04x%04x%04x%04x",color->red,color->green,color->blue,
-      color->opacity);
+  GetColorTuple(image,color,True,name);
   return(False);
 }
 
