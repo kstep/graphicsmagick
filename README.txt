@@ -638,7 +638,11 @@ MAGICK DELEGATES
       to read the HTML image format.
 
     o ImageMagick requires the JBIG-Kit software available via
-      anonymous FTP as
+      HTTP from
+
+          http://www.cl.cam.ac.uk/~mgk25/jbigkit/
+
+      or via anonymous FTP as
 
           ftp://ftp.informatik.uni-erlangen.de/pub/doc/ISO/JBIG/
 
