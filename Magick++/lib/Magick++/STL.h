@@ -2165,9 +2165,8 @@ namespace Magick
 
     insertImages( morphedImages_, images, options );
 
-    LastError* errPtr = LastError::instance();
-    if ( errPtr->isError() )
-      errPtr->throwException();
+    LastError lastError;
+    lastError.throwException();
   }
 
   // Quantize colors in images using current quantization settings
@@ -2206,10 +2205,9 @@ namespace Magick
     options.fileName( imageSpec_ );
     MagickLib::Image* images =  MagickLib::ReadImage( options.imageInfo() );
     insertImages( sequence_, images, options );
-  
-    LastError* errPtr = LastError::instance();
-    if ( errPtr->isError() )
-      errPtr->throwException();
+
+    LastError lastError;
+    lastError.throwException();
   }
   template <class Container>
   void readImages( Container *sequence_,
@@ -2220,9 +2218,8 @@ namespace Magick
 						       blob_.length() );
     insertImages( sequence_, images, options );
 
-    LastError* errPtr = LastError::instance();
-    if ( errPtr->isError() )
-      errPtr->throwException();
+    LastError lastError;
+    lastError.throwException();
   }
 
   // Write
@@ -2254,9 +2251,8 @@ namespace Magick
     if ( errorStat != false )
       return;
 
-    LastError* errPtr = LastError::instance();
-    if ( errPtr->isError() )
-      errPtr->throwException();
+    LastError lastError;
+    lastError.throwException();
   }
   // Write images to BLOB
   template <class InputIterator>
@@ -2284,9 +2280,8 @@ namespace Magick
     first_->magick( origMagick );
     first_->adjoin( origAdjoin );
 
-    LastError* errPtr = LastError::instance();
-    if ( errPtr->isError() )
-      errPtr->throwException();
+    LastError lastError;
+    lastError.throwException();
   }
 
   template <class InputIterator>
@@ -2295,7 +2290,7 @@ namespace Magick
 
     MagickLib::Image* previous = (MagickLib::Image*) NULL;
     int scene = 0;
-    for ( InputIterator iter = first_; iter != last_; iter++ )
+    for ( InputIterator iter = first_; iter != last_; ++iter )
       {
 	// Unless we reduce the reference count to one, the same image
 	// structure may occur more than once in the container, causing
@@ -2312,7 +2307,7 @@ namespace Magick
 	  previous->next = current;
 
 	current->scene=scene;
-	scene++;
+	++scene;
 
 	previous = current;
       }
@@ -2321,7 +2316,7 @@ namespace Magick
   template <class InputIterator>
   void unlinkImages( InputIterator first_,
 		     InputIterator last_ ) {
-    for( InputIterator iter = first_; iter != last_; iter++ )
+    for( InputIterator iter = first_; iter != last_; ++iter )
       {
 	MagickLib::Image* image = iter->image();
 	image->previous = (MagickLib::Image*) NULL;

@@ -5,9 +5,28 @@
 // Definition of Image, the representation of a single image in Magick++
 //
 
-
 #if !defined(Image_header)
 #define Image_header
+
+#if 0
+// Instantiated from within methods which want to modify image data
+class ModifyImage
+{
+    ModifyImage( Image& image_ );
+};
+
+// Instantiated from within methods which want to replace image data
+class ReplaceImage
+{
+    ReplaceImage( Image& image_, MagickLib::Image* replacement_ );
+};
+
+// Instantiated from within methods which want to read image data
+class ReadImage
+{
+    ReadImage( Image& image_ );
+};
+#endif // out
 
 #include <string>
 #include <list>
@@ -720,9 +739,6 @@ namespace Magick
     MagickLib::ImageInfo * imageInfo( void );
     const MagickLib::ImageInfo * constImageInfo( void ) const;
 
-    // Retrieve last error object
-    LastError& lastError( void ) const;
-
     // Replace current image (reference counted)
     MagickLib::Image* replaceImage ( MagickLib::Image* replacement_ );
 
@@ -735,7 +751,6 @@ namespace Magick
   private:
 
     ImageRef *      _imgRef;
-    LastError *     _lastError;
   };
 
 
@@ -834,13 +849,6 @@ inline MagickLib::ImageInfo* Magick::Image::imageInfo( void )
 inline const MagickLib::ImageInfo * Magick::Image::constImageInfo( void ) const
 {
   return _imgRef->options()->imageInfo();
-}
-
-// Access last error object
-inline Magick::LastError& Magick::Image::lastError( void ) const
-{
-  // Cast to allow updates from const methods
-  return const_cast<Magick::LastError&>(*_lastError);
 }
 
 #endif // Image_header

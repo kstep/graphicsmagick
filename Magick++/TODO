@@ -20,25 +20,18 @@ Items large and small which remain to be done before Magick++ 1.0
   <BillR@corbis.com> has agreed to write a container class to support
   this.
 
-* Add thread-safety.  The main impact here is with error reporting
-  which is synchronous through a function call (ImageMagick design).
-  By ensuring that only one error may be reported at a time, and 
-  storing the error report in thread-specific storage, Magick++
-  will become thread safe provided that only one thread works on an
-  image at one time (one thread per image).
+* Add useful thread-safety.
 
-  Another issue with thread-safety is that the image reference
-  count must be protected, however, even if the reference count is
-  protected, this is insufficient to ensure that the current
-  revision of the image is not being processed while its data is
-  being cloned to a new image for modification. This is
-  particularly tricky since the user is not necessarily aware of
-  the various image references.
+  To accomplish useful thread-safety I believe the following is
+  required:
 
-  Perhaps the correct solution is to simply add a global
-  readers/writers lock to the Image class which protects against
-  any simultaneous update, and protects against reading the object
-  while it is being modified.
+  - Updates to _refCount in the ImageRef object must be locked.
+
+  - Within the ImageMagick error/warning callbacks, thread specific
+    data is used to save the error associated with the current thread.
+
+  - After the ImageMagick function returns, the thread specific data
+    is checked for an error associated with the current thread.
 
 * Integrate with GdkMagick.
 

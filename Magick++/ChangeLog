@@ -1,3 +1,10 @@
+2000-01-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/LastError.cpp: Complete re-implementation of LastError so
+ 	that it hides its implementation.  Also assures that all memory is
+ 	explicitly deallocated at program exit to avoid the appearance of
+ 	a leak.
+
 2000-01-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Image.cpp (size): Bug-fix. Set image columns and rows as

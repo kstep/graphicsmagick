@@ -356,6 +356,8 @@ Image.lo Image.o : Image.cpp Magick++/Image.h Magick++/Blob.h \
 	Magick++/LastError.h Magick++/Functions.h
 LastError.lo LastError.o : LastError.cpp Magick++/Include.h \
 	Magick++/LastError.h Magick++/Exception.h
+LastError2.lo LastError2.o : LastError2.cpp Magick++/Include.h \
+	Magick++/LastError2.h Magick++/Exception.h
 Montage.lo Montage.o : Montage.cpp Magick++/Montage.h Magick++/Color.h \
 	Magick++/Include.h Magick++/Geometry.h Magick++/Functions.h
 Options.lo Options.o : Options.cpp Magick++/Options.h Magick++/Color.h \
