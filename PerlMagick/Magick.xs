@@ -6227,7 +6227,6 @@ Montage(ref,...)
     if (transparent_color.opacity != TransparentOpacity)
       for (next=image; next; next=next->next)
         TransparentImage(next,transparent_color,TransparentOpacity);
-    (void) SetImageInfo(info->image_info,False,&image->exception);
     for (next=image; next; next=next->next)
     {
       sv=newSViv((IV) next);
