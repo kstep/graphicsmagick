@@ -276,7 +276,7 @@ extern "C" {
 #define IsGray(color)  \
   (((color).red == (color).green) && ((color).green == (color).blue))
 #define MagickIncarnate(x)  InitializeMagick(x)
-#define MagickEpsilon  2.2204460492503131e-16
+#define MagickEpsilon  1.0e-12
 #define MagickPI  3.14159265358979323846264338327950288419716939937510
 #define Max(x,y)  (((x) > (y)) ? (x) : (y))
 #define Min(x,y)  (((x) < (y)) ? (x) : (y))
