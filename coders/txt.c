@@ -97,6 +97,7 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   char
     filename[MaxTextExtent],
     geometry[MaxTextExtent],
+    *p,
     text[MaxTextExtent];
 
   double
@@ -112,7 +113,7 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   long
     count,
-		offset;
+    offset;
 
   RectangleInfo
     page;
@@ -185,11 +186,11 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   FormatString(geometry,"0x0%+ld%+ld",page.x,page.y);
   (void) CloneString(&draw_info->geometry,geometry);
   status=GetTypeMetrics(image,draw_info,&metrics);
-	if (status == False)
+  if (status == False)
     ThrowReaderException(DelegateWarning,"Unable to get type metrics",image);
   (void) strncpy(filename,image_info->filename,MaxTextExtent-1);
-  (void) ReadBlobString(image,text);
-  for (offset=2*page.y; ReadBlobString(image,text) != (char *) NULL; )
+  p=ReadBlobString(image,text);
+  for (offset=2*page.y; p != (char *) NULL; )
   {
     /*
       Annotate image with text.
@@ -197,11 +198,12 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     text[strlen(text)]='\0';
     (void) ConcatenateString(&draw_info->text,text);
     (void) ConcatenateString(&draw_info->text,"\\n");
-    offset+=metrics.height;
+    offset+=metrics.ascent-metrics.descent;
     if (image->previous == (Image *) NULL)
       if (QuantumTick(offset,image->rows))
         MagickMonitor(LoadImageText,offset,image->rows);
-    if (offset < image->rows)
+    p=ReadBlobString(image,text);
+    if ((offset < image->rows) && (p != (char *) NULL))
       continue;
     if (texture != (Image *) NULL)
       {
@@ -213,11 +215,13 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
         (void) SetMonitorHandler(handler);
       }
     (void) AnnotateImage(image,draw_info);
-    *draw_info->text='\0';
-    offset=2*page.y;
+    if (p == (char *) NULL)
+      break;
     /*
       Page is full-- allocate next image structure.
     */
+    *draw_info->text='\0';
+    offset=2*page.y;
     AllocateNextImage(image_info,image);
     if (image->next == (Image *) NULL)
       {

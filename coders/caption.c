@@ -179,7 +179,7 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
     i++;
   }
   if (image->rows == 0)
-    image->rows=(unsigned long) ((i+1)*metrics.height);
+    image->rows=(unsigned long) ((i+1)*(metrics.ascent-metrics.descent));
   SetImage(image,OpaqueOpacity);
   /*
     Draw caption.

@@ -127,7 +127,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
       for ( ; GetTypeMetrics(image,draw_info,&metrics); draw_info->pointsize*=2)
       {
         width=(unsigned long) floor(metrics.width+metrics.max_advance/2+0.5);
-        height=(unsigned long) floor(metrics.height+0.5);
+        height=(unsigned long) floor(metrics.ascent-metrics.descent+0.5);
         if (((image->columns != 0) && (width >= image->columns)) ||
             ((image->rows != 0) && (height >= image->rows)))
           break;
@@ -135,7 +135,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
       for ( ; GetTypeMetrics(image,draw_info,&metrics); draw_info->pointsize--)
       {
         width=(unsigned long) floor(metrics.width+metrics.max_advance/2+0.5);
-        height=(unsigned long) floor(metrics.height+0.5);
+        height=(unsigned long) floor(metrics.ascent-metrics.descent+0.5);
         if ((image->columns != 0) && (width <= image->columns) &&
            ((image->rows == 0) || (height <= image->rows)))
           break;
@@ -155,7 +155,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
       floor(metrics.width+metrics.max_advance/2+0.5);
   if (image->rows == 0)
     {
-      image->rows=(unsigned long) floor(metrics.height+0.5);
+      image->rows=(unsigned long) floor(metrics.ascent-metrics.descent+0.5);
       FormatString(geometry,"+%g+%g",image->columns/2.0-metrics.width/2.0,
         metrics.ascent);
     }

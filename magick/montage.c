@@ -480,7 +480,8 @@ MagickExport Image *MontageImages(const Image *images,
   title=TranslateText(image_info,image_list[0],montage_info->title);
   title_offset=0;
   if (montage_info->title != (char *) NULL)
-    title_offset=2*metrics.height*MultilineCensus(title)+2*tile_info.y;
+    title_offset=2*(metrics.ascent-metrics.descent)*MultilineCensus(title)+
+      2*tile_info.y;
   number_lines=0;
   for (i=0; i < (long) number_images; i++)
   {
@@ -522,8 +523,9 @@ MagickExport Image *MontageImages(const Image *images,
         {
           x_offset=0;
           height=concatenate ? max_height : tile_info.height;
-          y_offset+=height+(tile_info.y+border_width)*2+(metrics.height+4)*
-            number_lines+(montage_info->shadow ? 4 : 0)+(concatenate ? 0 : 2);
+          y_offset+=height+(tile_info.y+border_width)*2+(metrics.ascent-
+            metrics.descent+4)*number_lines+(montage_info->shadow ? 4 : 0)+
+            (concatenate ? 0 : 2);
           if (y_offset > (long) bounds.height)
             bounds.height=y_offset;
           max_height=0;
@@ -553,8 +555,9 @@ MagickExport Image *MontageImages(const Image *images,
     y_offset=(long) title_offset;
     FormatString(montage->montage,"%ldx%ld%+ld%+ld",
       (long) (tile_info.width+(tile_info.x+border_width)*2),
-      (long) (tile_info.height+(tile_info.y+border_width)*2+(metrics.height+4)*
-      number_lines+(montage_info->shadow ? 4 : 0)),x_offset,y_offset);
+      (long) (tile_info.height+(tile_info.y+border_width)*2+(metrics.ascent-
+      metrics.descent+4)*number_lines+(montage_info->shadow ? 4 : 0)),x_offset,
+      y_offset);
     *montage->directory='\0';
     for (tile=0; tile < tiles_per_page; tile++)
     {
@@ -573,9 +576,9 @@ MagickExport Image *MontageImages(const Image *images,
         /*
           Annotate composite image with title.
         */
-        FormatString(geometry,"%lux%lu%+ld%+ld",montage->columns,
-          (unsigned long) (2*metrics.height),0,(long) (metrics.height+
-          tile_info.y+4+metrics.ascent));
+        FormatString(geometry,"%lux%lu%+ld%+ld",montage->columns,(unsigned long)
+          (2*(metrics.ascent-metrics.descent)),0,(long) ((metrics.ascent-
+          metrics.descent)+tile_info.y+4+metrics.ascent));
         (void) CloneString(&draw_info->geometry,geometry);
         (void) CloneString(&draw_info->text,title);
         (void) AnnotateImage(montage,draw_info);
@@ -651,7 +654,7 @@ MagickExport Image *MontageImages(const Image *images,
           tile_info.height=height+2*frame_info.height;
           attribute=GetImageAttribute(image,"label");
           if (attribute != (const ImageAttribute *) NULL)
-            tile_info.height+=(metrics.height+4)*
+            tile_info.height+=(metrics.ascent-metrics.descent+4)*
               MultilineCensus(attribute->value);
           frame_image=FrameImage(image,&tile_info,exception);
           if (frame_image != (Image *) NULL)
@@ -718,11 +721,11 @@ MagickExport Image *MontageImages(const Image *images,
               */
               FormatString(geometry,"%lux%lu%+ld%+ld",
                 (montage_info->frame ? image->columns : width)-2*border_width,
-                (unsigned long) (metrics.height+4)*
+                (unsigned long) (metrics.ascent-metrics.descent+4)*
                 MultilineCensus(attribute->value),x_offset+border_width,
                 (montage_info->frame ? y_offset+height+border_width+2 :
                 y_offset+tile_info.height+border_width+(montage_info->shadow ?
-                4 : 0))+(long) metrics.height);
+                4 : 0))+(long) (metrics.ascent-metrics.descent));
               (void) CloneString(&draw_info->geometry,geometry);
               (void) CloneString(&draw_info->text,attribute->value);
               (void) AnnotateImage(montage,draw_info);
@@ -732,8 +735,8 @@ MagickExport Image *MontageImages(const Image *images,
       if (((tile+1) == tiles_per_page) || (((tile+1) % tiles_per_row) == 0))
         {
           x_offset=tile_info.x;
-          y_offset+=height+(tile_info.y+border_width)*2+(metrics.height+4)*
-            number_lines+(montage_info->shadow ? 4 : 0);
+          y_offset+=height+(tile_info.y+border_width)*2+(metrics.ascent-
+            metrics.descent+4)*number_lines+(montage_info->shadow ? 4 : 0);
           max_height=0;
         }
       DestroyImage(image);

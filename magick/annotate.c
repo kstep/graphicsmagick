@@ -163,6 +163,7 @@ MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
     status;
 
   unsigned long
+    height,
     number_lines;
 
   /*
@@ -199,6 +200,11 @@ MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
       &geometry.width,&geometry.height);
   annotate=CloneDrawInfo((ImageInfo *) NULL,draw_info);
   clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
+  (void) CloneString(&annotate->text," ");
+  status=GetTypeMetrics(image,annotate,&metrics);
+  if (status == False)
+    return(status);
+  height=metrics.ascent-metrics.descent;
   matte=image->matte;
   status=True;
   for (i=0; textlist[i] != (char *) NULL; i++)
@@ -209,98 +215,90 @@ MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
       Position text relative to image.
     */
     (void) CloneString(&annotate->text,textlist[i]);
-    status=GetTypeMetrics(image,annotate,&metrics);
-    if (status == False)
-      break;
     switch (annotate->gravity)
     {
       case ForgetGravity:
       case NorthWestGravity:
       default:
       {
-        offset.x=geometry.x+i*draw_info->affine.ry*metrics.height;
-        offset.y=geometry.y+i*draw_info->affine.sy*metrics.height;
+        offset.x=geometry.x+i*draw_info->affine.ry*height;
+        offset.y=geometry.y+i*draw_info->affine.sy*height;
         break;
       }
       case NorthGravity:
       {
-        offset.x=geometry.x+geometry.width/2+i*draw_info->affine.ry*
-          metrics.height-draw_info->affine.sx*metrics.width/2;
-        offset.y=geometry.y+i*draw_info->affine.sy*metrics.height-
-          draw_info->affine.rx*metrics.width/2;
+        offset.x=geometry.x+geometry.width/2+i*draw_info->affine.ry*height-
+          draw_info->affine.sx*metrics.width/2;
+        offset.y=geometry.y+i*draw_info->affine.sy*height-draw_info->affine.rx*
+          metrics.width/2;
         break;
       }
       case NorthEastGravity:
       {
-        offset.x=(geometry.width == 0 ? 1 : -1)*geometry.x+geometry.width+
-          i*draw_info->affine.ry*metrics.height-draw_info->affine.sx*
+        offset.x=(geometry.width == 0 ? 1 : -1)*geometry.x+geometry.width+i*
+          draw_info->affine.ry*height-draw_info->affine.sx*metrics.width;
+        offset.y=geometry.y+i*draw_info->affine.sy*height-draw_info->affine.rx*
           metrics.width;
-        offset.y=geometry.y+i*draw_info->affine.sy*metrics.height-
-          draw_info->affine.rx*metrics.width;
         break;
       }
       case WestGravity:
       {
-        offset.x=geometry.x+i*draw_info->affine.ry*metrics.height+
-          draw_info->affine.ry*(metrics.ascent+metrics.descent-
-          (number_lines-1)*metrics.height)/2;
-        offset.y=geometry.y+geometry.height/2+i*draw_info->affine.sy*
-          metrics.height+draw_info->affine.sy*(metrics.ascent+
-          metrics.descent-(number_lines-1)*metrics.height)/2;
+        offset.x=geometry.x+i*draw_info->affine.ry*height+draw_info->affine.ry*
+          (metrics.ascent+metrics.descent-(number_lines-1)*height)/2;
+        offset.y=geometry.y+geometry.height/2+i*draw_info->affine.sy*height+
+          draw_info->affine.sy*(metrics.ascent+metrics.descent-(number_lines-1)*
+          height)/2;
         break;
       }
       case StaticGravity:
       case CenterGravity:
       {
-        offset.x=geometry.x+geometry.width/2+i*draw_info->affine.ry*
-          metrics.height-draw_info->affine.sx*metrics.width/2+
-          draw_info->affine.ry*(metrics.ascent+metrics.descent-
-          (number_lines-1)*metrics.height)/2;
-        offset.y=geometry.y+geometry.height/2+i*draw_info->affine.sy*
-          metrics.height-draw_info->affine.rx*metrics.width/2+
-          draw_info->affine.sy*(metrics.ascent+metrics.descent-
-          (number_lines-1)*metrics.height)/2;
+        offset.x=geometry.x+geometry.width/2+i*draw_info->affine.ry*height-
+          draw_info->affine.sx*metrics.width/2+draw_info->affine.ry*
+          (metrics.ascent+metrics.descent-(number_lines-1)*height)/2;
+        offset.y=geometry.y+geometry.height/2+i*draw_info->affine.sy*height-
+          draw_info->affine.rx*metrics.width/2+draw_info->affine.sy*
+          (metrics.ascent+metrics.descent-(number_lines-1)*height)/2;
         break;
       }
       case EastGravity:
       {
-        offset.x=(geometry.width == 0 ? 1 : -1)*geometry.x+geometry.width+
-          i*draw_info->affine.ry*metrics.height-draw_info->affine.sx*
-          metrics.width+draw_info->affine.ry*(metrics.ascent+metrics.descent-
-          (number_lines-1)*metrics.height)/2;
-        offset.y=geometry.y+geometry.height/2+i*draw_info->affine.sy*
-          metrics.height-draw_info->affine.rx*metrics.width+
-          draw_info->affine.sy*(metrics.ascent+metrics.descent-
-          (number_lines-1)*metrics.height)/2;
+        offset.x=(geometry.width == 0 ? 1 : -1)*geometry.x+geometry.width+i*
+          draw_info->affine.ry*height-draw_info->affine.sx*metrics.width+
+          draw_info->affine.ry*(metrics.ascent+metrics.descent-(number_lines-1)*
+          height)/2;
+        offset.y=geometry.y+geometry.height/2+i*draw_info->affine.sy*height-
+          draw_info->affine.rx*metrics.width+draw_info->affine.sy*
+          (metrics.ascent+metrics.descent-(number_lines-1)*height)/2;
         break;
       }
       case SouthWestGravity:
       {
-        offset.x=geometry.x+i*draw_info->affine.ry*metrics.height-
-          draw_info->affine.ry*(number_lines-1)*metrics.height;
-        offset.y=(geometry.height == 0 ? 1 : -1)*geometry.y+geometry.height+
-          i*draw_info->affine.sy*metrics.height-draw_info->affine.sy*
-          (number_lines-1)*metrics.height;
+        offset.x=geometry.x+i*draw_info->affine.ry*height-draw_info->affine.ry*
+          (number_lines-1)*height;
+        offset.y=(geometry.height == 0 ? 1 : -1)*geometry.y+geometry.height+i*
+          draw_info->affine.sy*height-draw_info->affine.sy*(number_lines-1)*
+          height;
         break;
       }
       case SouthGravity:
       {
         offset.x=geometry.x+geometry.width/2+i*draw_info->affine.ry*
-          metrics.height-draw_info->affine.sx*metrics.width/2-
-          draw_info->affine.ry*(number_lines-1)*metrics.height;
-        offset.y=(geometry.height == 0 ? 1 : -1)*geometry.y+geometry.height+
-          i*draw_info->affine.sy*metrics.height-draw_info->affine.rx*
-          metrics.width/2-draw_info->affine.sy*(number_lines-1)*metrics.height;
+          height-draw_info->affine.sx*metrics.width/2-
+          draw_info->affine.ry*(number_lines-1)*height;
+        offset.y=(geometry.height == 0 ? 1 : -1)*geometry.y+geometry.height+i*
+          draw_info->affine.sy*height-draw_info->affine.rx*
+          metrics.width/2-draw_info->affine.sy*(number_lines-1)*height;
         break;
       }
       case SouthEastGravity:
       {
-        offset.x=(geometry.width == 0 ? 1 : -1)*geometry.x+geometry.width+
-          i*draw_info->affine.ry*metrics.height-draw_info->affine.sx*
-          metrics.width-draw_info->affine.ry*(number_lines-1)*metrics.height;
-        offset.y=(geometry.height == 0 ? 1 : -1)*geometry.y+geometry.height+
-          i*draw_info->affine.sy*metrics.height-draw_info->affine.rx*
-          metrics.width-draw_info->affine.sy*(number_lines-1)*metrics.height;
+        offset.x=(geometry.width == 0 ? 1 : -1)*geometry.x+geometry.width+i*
+          draw_info->affine.ry*height-draw_info->affine.sx*metrics.width-
+          draw_info->affine.ry*(number_lines-1)*height;
+        offset.y=(geometry.height == 0 ? 1 : -1)*geometry.y+geometry.height+i*
+          draw_info->affine.sy*height-draw_info->affine.rx*metrics.width-
+          draw_info->affine.sy*(number_lines-1)*height;
         break;
       }
     }
@@ -308,24 +306,24 @@ MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
     {
       case LeftAlign:
       {
-        offset.x=geometry.x+i*draw_info->affine.ry*metrics.height;
-        offset.y=geometry.y+i*draw_info->affine.sy*metrics.height;
+        offset.x=geometry.x+i*draw_info->affine.ry*height;
+        offset.y=geometry.y+i*draw_info->affine.sy*height;
         break;
       }
       case CenterAlign:
       {
-        offset.x=geometry.x+i*draw_info->affine.ry*metrics.height-
-          draw_info->affine.sx*metrics.width/2;
-        offset.y=geometry.y+i*draw_info->affine.sy*metrics.height-
-          draw_info->affine.rx*metrics.width/2;
+        offset.x=geometry.x+i*draw_info->affine.ry*height-draw_info->affine.sx*
+          metrics.width/2;
+        offset.y=geometry.y+i*draw_info->affine.sy*height-draw_info->affine.rx*
+          metrics.width/2;
         break;
       }
       case RightAlign:
       {
-        offset.x=geometry.x+i*draw_info->affine.ry*metrics.height-
-          draw_info->affine.sx*metrics.width;
-        offset.y=geometry.y+i*draw_info->affine.sy*metrics.height-
-          draw_info->affine.rx*metrics.width;
+        offset.x=geometry.x+i*draw_info->affine.ry*height-draw_info->affine.sx*
+          metrics.width;
+        offset.y=geometry.y+i*draw_info->affine.sy*height-draw_info->affine.rx*
+          metrics.width;
         break;
       }
       default:
@@ -341,7 +339,7 @@ MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
           metrics.max_advance/4.0;
         clone_info->affine.ty=offset.y-draw_info->affine.sy*metrics.ascent;
         FormatString(primitive,"rectangle 0,0 %g,%g",metrics.width+
-          metrics.max_advance/2.0,metrics.height);
+          metrics.max_advance/2.0,height);
         (void) CloneString(&clone_info->primitive,primitive);
         (void) DrawImage(image,clone_info);
       }
@@ -371,8 +369,8 @@ MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
       break;
     if (annotate->decorate == LineThroughDecoration)
       {
-        clone_info->affine.ty-=draw_info->affine.sy*
-          (metrics.ascent+metrics.descent)/2.0-metrics.underline_position/2.0;
+        clone_info->affine.ty-=draw_info->affine.sy*height/2.0-
+          metrics.underline_position/2.0;
         (void) CloneString(&clone_info->primitive,primitive);
         (void) DrawImage(image,clone_info);
       }
