@@ -4946,10 +4946,10 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
        Write MNG BACK chunk and global bKGD chunk, if the image is transparent
        or does not cover the entire frame.
      */
-     if (image->matte || image->page.x > 0 || image->page.y > 0 ||
+     if (adjoin && (image->matte || image->page.x > 0 || image->page.y > 0 ||
          (image->page.width && (image->page.width+image->page.x < page.width))
          || (image->page.height && (image->page.height+image->page.y
-         < page.height)))
+         < page.height))))
        {
          (void) WriteBlobMSBULong(image,6L);
          PNGType(chunk,mng_BACK);
@@ -5012,6 +5012,8 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
 
     IsPalette=image->storage_class==PseudoClass && image->colors <= 256;
 
+    if (adjoin)
+    {
 #if defined(PNG_WRITE_EMPTY_PLTE_SUPPORTED) || \
     defined(PNG_MNG_FEATURES_SUPPORTED)
     /*
@@ -5086,6 +5088,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
              (void) WriteBlobMSBULong(image,crc32(0,chunk,16));
           }
       }
+    }
     /*
       Allocate the PNG structures
     */
@@ -5964,10 +5967,9 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     MagickMonitor(SaveImagesText,scene++,GetImageListSize(image));
   } while (adjoin);
   if (adjoin)
-    while (image->previous != (Image *) NULL)
-      image=image->previous;
-  if (adjoin)
     {
+      while (image->previous != (Image *) NULL)
+        image=image->previous;
       /*
         Write the MEND chunk.
       */
