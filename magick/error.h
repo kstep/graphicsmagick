@@ -28,7 +28,7 @@ extern int
   Error typedef declarations.
 */
 typedef void
-  (*ErrorHandler)(const unsigned int,const char *,const char *);
+  (*ErrorHandler)(const ErrorType,const char *,const char *);
 
 /*
   Error declarations.
