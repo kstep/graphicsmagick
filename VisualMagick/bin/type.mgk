@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
 <typemap>
-  <include "type-ghostscript.mgk" />
-  <include "type-windows.mgk" />
+  <include file="type-ghostscript.mgk">
+  <include file="type-windows.mgk">
 </typemap>
