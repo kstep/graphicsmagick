@@ -47,7 +47,7 @@ sub testRead {
 # Test reading a file which requires a file size to read (GRAY, RGB, CMYK)
 # or supports multiple resolutions (JBIG, JPEG, PCD)
 #
-# Usage: testReadSized( read filename, size, depth, expected md5 [, expected md5_16] );
+# Usage: testRead( read filename, size, depth, expected md5 [, expected md5_16] );
 #
 sub testReadSized {
   my( $infile, $size, $depth, $md5, $md5_16 ) =  @_;
@@ -170,7 +170,7 @@ sub testReadWrite {
 #
 # .e.g
 #
-# testReadWriteNoVerify( 'input.jpg', 'output.jpg', q/quality=>80, 'interlace'=>'None'/ );
+# testReadWrite( 'input.jpg', 'output.jpg', q/quality=>80, 'interlace'=>'None'/ );
 #
 # If the read of the written image is not what is expected, the
 # written image is preserved.  Otherwise, the written image is
