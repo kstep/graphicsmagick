@@ -434,11 +434,122 @@ MagickExport void MgkDrawSetGravity(MgkDrawContext context,
   if (p != NULL)
     MgkDrawPrintf(context, "gravity %s\n", p);
 }
-MagickExport void MgkDrawImage(MgkDrawContext context, const double x,
-                               const double y, const double width,
-                               const double height, const Image * image,
-                               const CompositeOperator composition)
+MagickExport void MgkDrawImage(MgkDrawContext context,
+                               const CompositeOperator composite_operator,
+                               const double x, const double y,
+                               const double width, const double height,
+                               const Image * image )
 {
+
+}
+MagickExport void MgkDrawImageFile(MgkDrawContext context,
+                                   const CompositeOperator composite_operator,
+                                   const double x, const double y,
+                                   const double width, const double height,
+                                   const char * filespec )
+{
+  const char *p = NULL;
+
+  switch (composite_operator)
+    {
+    case AddCompositeOp:
+      p = "Add";
+      break;
+    case AtopCompositeOp:
+      p = "Atop";
+      break;
+    case BumpmapCompositeOp:
+      p = "Bumpmap";
+      break;
+    case ClearCompositeOp:
+      p = "Clear";
+      break;
+    case ColorizeCompositeOp:
+      p = "Colorize";
+      break;
+    case CopyBlueCompositeOp:
+      p = "CopyBlue";
+      break;
+    case CopyCompositeOp:
+      p = "Copy";
+      break;
+    case CopyGreenCompositeOp:
+      p = "CopyGreen";
+      break;
+    case CopyOpacityCompositeOp:
+      p = "CopyOpacity";
+      break;
+    case CopyRedCompositeOp:
+      p = "CopyRed";
+      break;
+    case DarkenCompositeOp:
+      p = "Darken";
+      break;
+    case DifferenceCompositeOp:
+      p = "Difference";
+      break;
+    case DisplaceCompositeOp:
+      p = "Displace";
+      break;
+    case DissolveCompositeOp:
+      p = "Dissolve";
+      break;
+    case HueCompositeOp:
+      p = "Hue";
+      break;
+    case InCompositeOp:
+      p = "In";
+      break;
+    case LightenCompositeOp:
+      p = "Lighten";
+      break;
+    case LuminizeCompositeOp:
+      p = "Luminize";
+      break;
+    case MinusCompositeOp:
+      p = "Minus";
+      break;
+    case ModulateCompositeOp:
+      p = "Modulate";
+      break;
+    case MultiplyCompositeOp:
+      p = "Multiply";
+      break;
+    case NoCompositeOp:
+      p = "No";
+      break;
+    case OutCompositeOp:
+      p = "Out";
+      break;
+    case OverCompositeOp:
+      p = "Over";
+      break;
+    case OverlayCompositeOp:
+      p = "Overlay";
+      break;
+    case PlusCompositeOp:
+      p = "Plus";
+      break;
+    case SaturateCompositeOp:
+      p = "Saturate";
+      break;
+    case ScreenCompositeOp:
+      p = "Screen";
+      break;
+    case SubtractCompositeOp:
+      p = "Subtract";
+      break;
+    case ThresholdCompositeOp:
+      p = "Threshold";
+      break;
+    case XorCompositeOp:
+      p = "Xor";
+      break;
+    }
+
+  if (p != NULL)
+    MgkDrawPrintf(context, "image %s %.10g,%.10g %.10g,%.10g %s\n",
+                  p, x, y, width, height, filespec);
 }
 MagickExport void MgkDrawLine(MgkDrawContext context, const double sx,
                               const double sy, const double ex, const double ey)
