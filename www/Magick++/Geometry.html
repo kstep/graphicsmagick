@@ -29,25 +29,25 @@ respectively. Both types of offsets are measured from the indicated edge
 of the object to the corresponding edge of the image. The X offset may
 be specified in the following ways:
 <br>&nbsp;
-<table BORDER CELLSPACING=3 WIDTH="100%" NOSAVE >
-<tr NOSAVE>
+<table BORDER CELLSPACING=3 WIDTH="100%" >
+<tr>
 <td>+<i>xoffset</i></td>
 
-<td NOSAVE>The left edge of the object is to be placed <i>xoffset</i> pixels
+<td>The left edge of the object is to be placed <i>xoffset</i> pixels
 in from the <b>left edge </b>of the image.</td>
 </tr>
 
-<tr NOSAVE>
+<tr>
 <td>-<i>xoffset</i></td>
 
-<td NOSAVE>The right edge of the object is to be placed <i>xoffset</i>
+<td>The right edge of the object is to be placed <i>xoffset</i>
 pixels in from the <b>right edge </b>of the image.</td>
 </tr>
 </table>
 
 <p>The Y offset has similar meanings:
 <br>&nbsp;
-<table BORDER WIDTH="100%" NOSAVE >
+<table BORDER WIDTH="100%" >
 <tr>
 <td>+<i>yoffset</i></td>
 
@@ -67,7 +67,7 @@ the <b>bottom edge</b> of the image.</td>
 either <i>xoffset</i> or <i>yoffset</i> both must be present. Objects can
 be placed in the four corners of the image using the following specifications:
 <br>&nbsp;
-<table BORDER WIDTH="100%" NOSAVE >
+<table BORDER WIDTH="100%" >
 <tr>
 <td>+0+0</td>
 
@@ -86,10 +86,10 @@ be placed in the four corners of the image using the following specifications:
 <td>lower right hand corner.</td>
 </tr>
 
-<tr NOSAVE>
+<tr>
 <td>+0-0</td>
 
-<td NOSAVE>lower left hand corner.</td>
+<td>lower left hand corner.</td>
 </tr>
 </table>
 
@@ -105,7 +105,7 @@ cause the API call to fail. </tt>The available qualifiers are shown in
 the following table:
 <br>&nbsp;
 <br>&nbsp;
-<table BORDER WIDTH="100%" NOSAVE >
+<table BORDER WIDTH="100%" >
 <caption><b>ImageMagick Geometry Qualifiers</b></caption>
 
 <tr>
@@ -167,13 +167,13 @@ Instead, substitute the geometry specification "<tt>792x1224>"</tt> when
 11x17 output is desired.
 <p>An example of a Postscript page size specification is <tt>"letter+43+43>"</tt>.
 <br>&nbsp;
-<table BORDER NOSAVE >
+<table BORDER >
 <caption>
 <center><b>Postscript Page Size Nicknames</b></center>
 </caption>
 
-<tr NOSAVE>
-<td NOSAVE>
+<tr>
+<td>
 <center><b>Postscript Page Size Nickname</b></center>
 </td>
 
@@ -560,7 +560,7 @@ Geometry provides methods to initialize its value from strings, from a
 set of parameters, or via attributes. The methods available for use in
 Geometry are shown in the following table:
 <br>&nbsp;
-<table BORDER WIDTH="100%" NOSAVE >
+<table BORDER WIDTH="100%" >
 <caption><b>Geometry Methods</b></caption>
 
 <tr>
@@ -581,10 +581,10 @@ Geometry are shown in the following table:
 </td>
 </tr>
 
-<tr NOSAVE>
-<td ROWSPAN="3" NOSAVE>Geometry</td>
+<tr>
+<td ROWSPAN="3">Geometry</td>
 
-<td ROWSPAN="3" BGCOLOR="#666666" NOSAVE>&nbsp;</td>
+<td ROWSPAN="3" BGCOLOR="#666666">&nbsp;</td>
 
 <td>unsigned int width_, unsigned int height_, unsigned int xOff_ = 0,
 unsigned int yOff_ = 0, bool xNegative_ = false, bool yNegative_ = false</td>
@@ -604,14 +604,14 @@ unsigned int yOff_ = 0, bool xNegative_ = false, bool yNegative_ = false</td>
 <td>Construct geometry from C string</td>
 </tr>
 
-<tr NOSAVE>
-<td ROWSPAN="2" NOSAVE>width</td>
+<tr>
+<td ROWSPAN="2">width</td>
 
-<td NOSAVE>void</td>
+<td>void</td>
 
 <td>unsigned int width_</td>
 
-<td ROWSPAN="2" NOSAVE>Width</td>
+<td ROWSPAN="2">Width</td>
 </tr>
 
 <tr>
@@ -620,14 +620,14 @@ unsigned int yOff_ = 0, bool xNegative_ = false, bool yNegative_ = false</td>
 <td>void</td>
 </tr>
 
-<tr NOSAVE>
-<td ROWSPAN="2" NOSAVE>height</td>
+<tr>
+<td ROWSPAN="2">height</td>
 
-<td NOSAVE>void</td>
+<td>void</td>
 
 <td>unsigned int height_</td>
 
-<td ROWSPAN="2" NOSAVE>Height</td>
+<td ROWSPAN="2">Height</td>
 </tr>
 
 <tr>
@@ -636,14 +636,14 @@ unsigned int yOff_ = 0, bool xNegative_ = false, bool yNegative_ = false</td>
 <td>void</td>
 </tr>
 
-<tr NOSAVE>
-<td ROWSPAN="2" NOSAVE>xOff</td>
+<tr>
+<td ROWSPAN="2">xOff</td>
 
 <td>void</td>
 
 <td>unsigned int xOff_</td>
 
-<td ROWSPAN="2" NOSAVE>X offset from origin</td>
+<td ROWSPAN="2">X offset from origin</td>
 </tr>
 
 <tr>
@@ -652,14 +652,14 @@ unsigned int yOff_ = 0, bool xNegative_ = false, bool yNegative_ = false</td>
 <td>void</td>
 </tr>
 
-<tr NOSAVE>
-<td ROWSPAN="2" NOSAVE>yOff</td>
+<tr>
+<td ROWSPAN="2">yOff</td>
 
 <td>void</td>
 
 <td>unsigned int yOff_</td>
 
-<td ROWSPAN="2" NOSAVE>Y offset from origin</td>
+<td ROWSPAN="2">Y offset from origin</td>
 </tr>
 
 <tr>
@@ -668,14 +668,14 @@ unsigned int yOff_ = 0, bool xNegative_ = false, bool yNegative_ = false</td>
 <td>void</td>
 </tr>
 
-<tr NOSAVE>
-<td ROWSPAN="2" NOSAVE>xNegative</td>
+<tr>
+<td ROWSPAN="2">xNegative</td>
 
 <td>void</td>
 
 <td>bool xNegative_</td>
 
-<td ROWSPAN="2" NOSAVE>Sign of X offset negative? (X origin at right)</td>
+<td ROWSPAN="2">Sign of X offset negative? (X origin at right)</td>
 </tr>
 
 <tr>
@@ -684,14 +684,14 @@ unsigned int yOff_ = 0, bool xNegative_ = false, bool yNegative_ = false</td>
 <td>void</td>
 </tr>
 
-<tr NOSAVE>
-<td ROWSPAN="2" NOSAVE>yNegative</td>
+<tr>
+<td ROWSPAN="2">yNegative</td>
 
 <td>void</td>
 
 <td>bool yNegative_</td>
 
-<td ROWSPAN="2" NOSAVE>Sign of Y offset negative? (Y origin at bottom)</td>
+<td ROWSPAN="2">Sign of Y offset negative? (Y origin at bottom)</td>
 </tr>
 
 <tr>
@@ -700,14 +700,14 @@ unsigned int yOff_ = 0, bool xNegative_ = false, bool yNegative_ = false</td>
 <td>void</td>
 </tr>
 
-<tr NOSAVE>
-<td ROWSPAN="2" NOSAVE>percent</td>
+<tr>
+<td ROWSPAN="2">percent</td>
 
 <td>void</td>
 
 <td>bool percent_</td>
 
-<td ROWSPAN="2" NOSAVE>Width and height are expressed as percentages</td>
+<td ROWSPAN="2">Width and height are expressed as percentages</td>
 </tr>
 
 <tr>
@@ -716,14 +716,14 @@ unsigned int yOff_ = 0, bool xNegative_ = false, bool yNegative_ = false</td>
 <td>void</td>
 </tr>
 
-<tr NOSAVE>
-<td ROWSPAN="2" NOSAVE>aspect</td>
+<tr>
+<td ROWSPAN="2">aspect</td>
 
 <td>void</td>
 
 <td>bool aspect_</td>
 
-<td ROWSPAN="2" NOSAVE>Resize without preserving aspect ratio (!)</td>
+<td ROWSPAN="2">Resize without preserving aspect ratio (!)</td>
 </tr>
 
 <tr>
@@ -732,14 +732,14 @@ unsigned int yOff_ = 0, bool xNegative_ = false, bool yNegative_ = false</td>
 <td>void</td>
 </tr>
 
-<tr NOSAVE>
-<td ROWSPAN="2" NOSAVE>greater</td>
+<tr>
+<td ROWSPAN="2">greater</td>
 
 <td>void</td>
 
 <td>bool greater_</td>
 
-<td ROWSPAN="2" NOSAVE>Resize if image is greater than size (>)</td>
+<td ROWSPAN="2">Resize if image is greater than size (>)</td>
 </tr>
 
 <tr>
@@ -748,14 +748,14 @@ unsigned int yOff_ = 0, bool xNegative_ = false, bool yNegative_ = false</td>
 <td>void</td>
 </tr>
 
-<tr NOSAVE>
-<td ROWSPAN="2" NOSAVE>less</td>
+<tr>
+<td ROWSPAN="2">less</td>
 
 <td>void</td>
 
 <td>bool less_</td>
 
-<td ROWSPAN="2" NOSAVE>Resize if image is less than size (&lt;)</td>
+<td ROWSPAN="2">Resize if image is less than size (&lt;)</td>
 </tr>
 
 <tr>
@@ -764,14 +764,14 @@ unsigned int yOff_ = 0, bool xNegative_ = false, bool yNegative_ = false</td>
 <td>void</td>
 </tr>
 
-<tr NOSAVE>
-<td ROWSPAN="2" NOSAVE>isValid</td>
+<tr>
+<td ROWSPAN="2">isValid</td>
 
 <td>void</td>
 
 <td>bool isValid_</td>
 
-<td ROWSPAN="2" NOSAVE>Does object contain valid geometry?</td>
+<td ROWSPAN="2">Does object contain valid geometry?</td>
 </tr>
 
 <tr>

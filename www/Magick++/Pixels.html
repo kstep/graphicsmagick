@@ -1,6 +1,7 @@
-<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
-<html>
-<head>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+  "http://www.w3.org/TR/html4/loose.dtd">
+<HTML>
+<HEAD>
    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
    <meta name="Author" content="Bob Friesenhahn">
    <meta name="GENERATOR" content="Mozilla/4.78 [en] (X11; U; SunOS 5.6 sun4u) [Netscape]">
@@ -46,9 +47,9 @@ This means that the pointer should never be passed to delete() or free().
 addressed, and updated, as shown in the following example, which produces
 an image similar to the one on the right (minus lines and text):
 <br>&nbsp;
-<table BORDER=0 WIDTH="100%" NOSAVE >
-<tr NOSAVE>
-<td NOSAVE><font face="Courier New,Courier"><font size=-1><font color="#000099">&nbsp;
+<table BORDER=0 WIDTH="100%" >
+<tr>
+<td><font face="Courier New,Courier"><font size=-1><font color="#000099">&nbsp;
 </font><font color="#FF0000">// Create base image</font></font></font>
 <br><font face="Courier New,Courier"><font color="#000099"><font size=-1>&nbsp;&nbsp;
 Image image(Geometry(254,218), "white");</font></font></font>
@@ -110,7 +111,7 @@ view.sync();</font></font></font></td>
 
 <p><i>Pixels</i> supports the following methods:
 <br>&nbsp;
-<table BORDER WIDTH="100%" NOSAVE >
+<table BORDER WIDTH="100%" >
 <caption><b>Pixel Cache Methods</b></caption>
 
 <tr>
@@ -146,14 +147,14 @@ transferred back to the image via <i>sync</i>. The value returned is intended
 for pixel access only. It should never be deallocated.</font></td>
 </tr>
 
-<tr NOSAVE>
+<tr>
 <td>
 <center><a NAME="set"></a><font size=-1>set</font></center>
 </td>
 
 <td><font size=-1><a href="PixelPacket.html">PixelPacket</a>*</font></td>
 
-<td NOSAVE><font size=-1>int x_, int y_, unsigned int columns_, unsigned
+<td><font size=-1>int x_, int y_, unsigned int columns_, unsigned
 int rows_</font></td>
 
 <td><font size=-1>Allocates a pixel cache region to store image pixels

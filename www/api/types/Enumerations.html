@@ -16,7 +16,7 @@ Enumerations</h1></center>
 
 <table BORDER=0 WIDTH="100%" >
 <tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../../../images/right_triangle.png" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>Contents</font></font></font></b></td>
+<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../../../images/right_triangle.png" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">Contents</font></font></font></b></td>
 </tr>
 </table>
 
@@ -66,12 +66,12 @@ Enumerations</h1></center>
 
 <table BORDER=0 WIDTH="100%" >
 <tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../../../images/right_triangle.png" ALT=">" BORDER=0 height=14 width=15><a NAME="ClassType"></a><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>ClassType</font></font></font></b></td>
+<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../../../images/right_triangle.png" ALT=">" BORDER=0 height=14 width=15><a NAME="ClassType"></a><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">ClassType</font></font></font></b></td>
 </tr>
 </table>
 
 <p><i>ClassType</i> specifies the image storage class.
-<table BORDER WIDTH="100%" BGCOLOR="#CCCCCC" NOSAVE >
+<table BORDER WIDTH="100%" BGCOLOR="#CCCCCC" >
 <caption>
 <center><b>ClassType</b></center>
 </caption>
@@ -86,16 +86,16 @@ Enumerations</h1></center>
 </td>
 </tr>
 
-<tr NOSAVE>
-<td NOSAVE>UndefinedClass</td>
+<tr>
+<td>UndefinedClass</td>
 
 <td>Unset value.</td>
 </tr>
 
-<tr NOSAVE>
+<tr>
 <td>DirectClass</td>
 
-<td NOSAVE>Image is composed of pixels which represent literal color values.</td>
+<td>Image is composed of pixels which represent literal color values.</td>
 </tr>
 
 <tr>
@@ -108,7 +108,7 @@ Enumerations</h1></center>
 <br>&nbsp;
 <table BORDER=0 WIDTH="100%" >
 <tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../../../images/right_triangle.png" ALT=">" BORDER=0 height=14 width=15><a NAME="ColorspaceType"></a><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>ColorspaceType</font></font></font></b></td>
+<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../../../images/right_triangle.png" ALT=">" BORDER=0 height=14 width=15><a NAME="ColorspaceType"></a><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">ColorspaceType</font></font></font></b></td>
 </tr>
 </table>
 
@@ -129,7 +129,7 @@ and <i>GRAYColorspace</i> may be specified. The
 is only applicable when writing TIFF, JPEG, and Adobe Photoshop bitmap
 (PSD) files.
 <br>&nbsp;
-<table BORDER WIDTH="100%" BGCOLOR="#CCCCCC" NOSAVE >
+<table BORDER WIDTH="100%" BGCOLOR="#CCCCCC" >
 <caption><b>ColorspaceType</b></caption>
 
 <tr>
@@ -142,20 +142,20 @@ is only applicable when writing TIFF, JPEG, and Adobe Photoshop bitmap
 </td>
 </tr>
 
-<tr NOSAVE>
-<td NOSAVE>UndefinedColorspace</td>
+<tr>
+<td>UndefinedColorspace</td>
 
 <td>Unset value.</td>
 </tr>
 
-<tr NOSAVE>
-<td NOSAVE>RGBColorspace</td>
+<tr>
+<td>RGBColorspace</td>
 
 <td>Red-Green-Blue colorspace.</td>
 </tr>
 
-<tr NOSAVE>
-<td NOSAVE>GRAYColorspace</td>
+<tr>
+<td>GRAYColorspace</td>
 
 <td>&nbsp;</td>
 </tr>
@@ -228,7 +228,7 @@ or emulsion, normally on a white surface.</td>
 <br>&nbsp;
 <table BORDER=0 WIDTH="100%" >
 <tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../../../images/right_triangle.png" ALT=">" BORDER=0 height=14 width=15><a NAME="CompositeOperator"></a><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>CompositeOperator</font></font></font></b></td>
+<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../../../images/right_triangle.png" ALT=">" BORDER=0 height=14 width=15><a NAME="CompositeOperator"></a><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">CompositeOperator</font></font></font></b></td>
 </tr>
 </table>
 
@@ -237,7 +237,7 @@ used to compose a <i>composite image</i> with an <i>image</i>. By default,
 each of the composite image pixels are replaced by the corresponding image
 tile pixel. Specify <i>CompositeOperator</i> to select a different algorithm.
 <br>&nbsp;
-<table BORDER WIDTH="100%" BGCOLOR="#CCCCCC" NOSAVE >
+<table BORDER WIDTH="100%" BGCOLOR="#CCCCCC" >
 <caption><b>CompositeOperator</b></caption>
 
 <tr>
@@ -250,16 +250,16 @@ tile pixel. Specify <i>CompositeOperator</i> to select a different algorithm.
 </td>
 </tr>
 
-<tr NOSAVE>
-<td NOSAVE>UndefinedCompositeOp</td>
+<tr>
+<td>UndefinedCompositeOp</td>
 
 <td>Unset value.</td>
 </tr>
 
-<tr NOSAVE>
+<tr>
 <td>OverCompositeOp</td>
 
-<td NOSAVE>The result is the union of the the two image shapes with the
+<td>The result is the union of the the two image shapes with the
 <i>composite
 image</i> obscuring <i>image</i> in the region of overlap.</td>
 </tr>
@@ -271,8 +271,8 @@ image</i> obscuring <i>image</i> in the region of overlap.</td>
 None of the image data of <i>image</i> is included in the result.</td>
 </tr>
 
-<tr NOSAVE>
-<td NOSAVE>OutCompositeOp</td>
+<tr>
+<td>OutCompositeOp</td>
 
 <td>The resulting image is <i>composite image</i> with the shape of <i>image</i>
 cut out.</td>
@@ -386,7 +386,7 @@ must be 0).</td>
 <br>&nbsp;
 <table BORDER=0 WIDTH="100%" >
 <tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../../../images/right_triangle.png" ALT=">" BORDER=0 height=14 width=15><a NAME="CompressionType"></a><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>CompressionType</font></font></font></b></td>
+<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../../../images/right_triangle.png" ALT=">" BORDER=0 height=14 width=15><a NAME="CompressionType"></a><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">CompressionType</font></font></font></b></td>
 </tr>
 </table>
 
@@ -396,7 +396,7 @@ of the available compression types. If the compression type specified is
 incompatable with the image, ImageMagick selects a compression type compatable
 with the image type.
 <br>&nbsp;
-<table BORDER WIDTH="100%" BGCOLOR="#CCCCCC" NOSAVE >
+<table BORDER WIDTH="100%" BGCOLOR="#CCCCCC" >
 <caption><b>CompressionType</b></caption>
 
 <tr>
@@ -415,16 +415,16 @@ with the image type.
 <td>Unset value.</td>
 </tr>
 
-<tr NOSAVE>
-<td NOSAVE>NoCompression</td>
+<tr>
+<td>NoCompression</td>
 
 <td>No compression</td>
 </tr>
 
-<tr NOSAVE>
-<td NOSAVE>BZipCompression</td>
+<tr>
+<td>BZipCompression</td>
 
-<td NOSAVE>BZip (Burrows-Wheeler block-sorting text compression algorithm
+<td>BZip (Burrows-Wheeler block-sorting text compression algorithm
 and Huffman coding)&nbsp; as used by bzip2 utilities</td>
 </tr>
 
@@ -468,7 +468,7 @@ and Huffman coding)&nbsp; as used by bzip2 utilities</td>
 <br>&nbsp;
 <table BORDER=0 WIDTH="100%" >
 <tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../../../images/right_triangle.png" ALT=">" BORDER=0 height=14 width=15><a NAME="FilterTypes"></a><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>FilterTypes</font></font></font></b></td>
+<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../../../images/right_triangle.png" ALT=">" BORDER=0 height=14 width=15><a NAME="FilterTypes"></a><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">FilterTypes</font></font></font></b></td>
 </tr>
 </table>
 
@@ -482,7 +482,7 @@ much faster but may show artifacts when the image is re-sized or around
 diagonal lines. The only way to be sure is to test the filter with sample
 images.
 <br>&nbsp;
-<table BORDER WIDTH="100%" BGCOLOR="#CCCCCC" NOSAVE >
+<table BORDER WIDTH="100%" BGCOLOR="#CCCCCC" >
 <caption><b>FilterTypes</b></caption>
 
 <tr>
@@ -495,8 +495,8 @@ images.
 </td>
 </tr>
 
-<tr NOSAVE>
-<td NOSAVE>UndefinedFilter</td>
+<tr>
+<td>UndefinedFilter</td>
 
 <td>Unset value.</td>
 </tr>
@@ -519,14 +519,14 @@ images.
 <td>Triangle Filter</td>
 </tr>
 
-<tr NOSAVE>
-<td NOSAVE>HermiteFilter</td>
+<tr>
+<td>HermiteFilter</td>
 
 <td>Hermite Filter</td>
 </tr>
 
-<tr NOSAVE>
-<td NOSAVE>HanningFilter</td>
+<tr>
+<td>HanningFilter</td>
 
 <td>Hanning Filter</td>
 </tr>
@@ -595,7 +595,7 @@ images.
 <br>&nbsp;
 <table BORDER=0 WIDTH="100%" >
 <tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../../../images/right_triangle.png" ALT=">" BORDER=0 height=14 width=15><a NAME="GravityType"></a><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>GravityType</font></font></font></b></td>
+<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../../../images/right_triangle.png" ALT=">" BORDER=0 height=14 width=15><a NAME="GravityType"></a><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">GravityType</font></font></font></b></td>
 </tr>
 </table>
 
@@ -605,7 +605,7 @@ way to locate objects irrespective of the size of the bounding region,
 in other words, you don't need to provide absolute coordinates in order
 to position an object. A common default for gravity is <i>NorthWestGravity</i>.
 <br>&nbsp;
-<table BORDER WIDTH="100%" BGCOLOR="#CCCCCC" NOSAVE >
+<table BORDER WIDTH="100%" BGCOLOR="#CCCCCC" >
 <caption><b>GravityType</b></caption>
 
 <tr>
@@ -630,8 +630,8 @@ to position an object. A common default for gravity is <i>NorthWestGravity</i>.
 <td>Position object at top-left of region.</td>
 </tr>
 
-<tr NOSAVE>
-<td NOSAVE>NorthGravity</td>
+<tr>
+<td>NorthGravity</td>
 
 <td>Postiion object at top-center of region</td>
 </tr>
@@ -648,8 +648,8 @@ to position an object. A common default for gravity is <i>NorthWestGravity</i>.
 <td>Position object at left-center of region</td>
 </tr>
 
-<tr NOSAVE>
-<td NOSAVE>CenterGravity</td>
+<tr>
+<td>CenterGravity</td>
 
 <td>Position object at center of region</td>
 </tr>
@@ -682,13 +682,13 @@ to position an object. A common default for gravity is <i>NorthWestGravity</i>.
 <br>&nbsp;
 <table BORDER=0 WIDTH="100%" >
 <tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../../../images/right_triangle.png" ALT=">" BORDER=0 height=14 width=15><a NAME="ImageType"></a><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>ImageType</font></font></font></b></td>
+<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../../../images/right_triangle.png" ALT=">" BORDER=0 height=14 width=15><a NAME="ImageType"></a><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">ImageType</font></font></font></b></td>
 </tr>
 </table>
 
 <p><i>ImageType</i> indicates the type classification of the image.
 <br>&nbsp;
-<table BORDER WIDTH="100%" BGCOLOR="#CCCCCC" NOSAVE >
+<table BORDER WIDTH="100%" BGCOLOR="#CCCCCC" >
 <caption><b>ImageType</b></caption>
 
 <tr>
@@ -713,14 +713,14 @@ to position an object. A common default for gravity is <i>NorthWestGravity</i>.
 <td>Monochrome image</td>
 </tr>
 
-<tr NOSAVE>
-<td NOSAVE>GrayscaleType</td>
+<tr>
+<td>GrayscaleType</td>
 
 <td>Grayscale image</td>
 </tr>
 
-<tr NOSAVE>
-<td NOSAVE>PaletteType</td>
+<tr>
+<td>PaletteType</td>
 
 <td>Indexed color (palette) image</td>
 </tr>
@@ -753,7 +753,7 @@ to position an object. A common default for gravity is <i>NorthWestGravity</i>.
 <br>&nbsp;
 <table BORDER=0 WIDTH="100%" >
 <tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../../../images/right_triangle.png" ALT=">" BORDER=0 height=14 width=15><a NAME="InterlaceType"></a><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>InterlaceType</font></font></font></b></td>
+<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../../../images/right_triangle.png" ALT=">" BORDER=0 height=14 width=15><a NAME="InterlaceType"></a><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">InterlaceType</font></font></font></b></td>
 </tr>
 </table>
 
@@ -766,7 +766,7 @@ resolution increasing over time.
 <p>Use <i>LineInterlace</i> or <i>PlaneInterlace</i> to create an interlaced
 GIF or progressive JPEG image.
 <br>&nbsp;
-<table BORDER WIDTH="100%" BGCOLOR="#CCCCCC" NOSAVE >
+<table BORDER WIDTH="100%" BGCOLOR="#CCCCCC" >
 <caption><b>InterlaceType</b></caption>
 
 <tr>
@@ -785,14 +785,14 @@ GIF or progressive JPEG image.
 <td>Unset value.</td>
 </tr>
 
-<tr NOSAVE>
-<td NOSAVE>NoInterlace</td>
+<tr>
+<td>NoInterlace</td>
 
 <td>Don't interlace image (RGBRGBRGBRGBRGBRGB...)</td>
 </tr>
 
-<tr NOSAVE>
-<td NOSAVE>LineInterlace</td>
+<tr>
+<td>LineInterlace</td>
 
 <td>Use scanline interlacing (RRR...GGG...BBB...RRR...GGG...BBB...)</td>
 </tr>
@@ -814,7 +814,7 @@ to individual files (e.g. image.R, image.G, and image.B)</td>
 <br>&nbsp;
 <table BORDER=0 WIDTH="100%" >
 <tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../../../images/right_triangle.png" ALT=">" BORDER=0 height=14 width=15><a NAME="LayerType"></a><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>LayerType</font></font></font></b></td>
+<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../../../images/right_triangle.png" ALT=">" BORDER=0 height=14 width=15><a NAME="LayerType"></a><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">LayerType</font></font></font></b></td>
 </tr>
 </table>
 
@@ -823,7 +823,7 @@ Use
 <i>LayerType</i> when extracting a layer from an image. <i>MatteLayer</i>
 is useful for extracting the opacity values from an image.
 <br>&nbsp;
-<table BORDER WIDTH="100%" BGCOLOR="#CCCCCC" NOSAVE >
+<table BORDER WIDTH="100%" BGCOLOR="#CCCCCC" >
 <caption><b>LayerType</b></caption>
 
 <tr>
@@ -842,14 +842,14 @@ is useful for extracting the opacity values from an image.
 <td>Unset value.</td>
 </tr>
 
-<tr NOSAVE>
-<td NOSAVE>RedLayer</td>
+<tr>
+<td>RedLayer</td>
 
 <td>Select red layer</td>
 </tr>
 
-<tr NOSAVE>
-<td NOSAVE>GreenLayer</td>
+<tr>
+<td>GreenLayer</td>
 
 <td>Select green layer</td>
 </tr>
@@ -870,14 +870,14 @@ is useful for extracting the opacity values from an image.
 <br>&nbsp;
 <table BORDER=0 WIDTH="100%" >
 <tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../../../images/right_triangle.png" ALT=">" BORDER=0 height=14 width=15><a NAME="NoiseType"></a><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>NoiseType</font></font></font></b></td>
+<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../../../images/right_triangle.png" ALT=">" BORDER=0 height=14 width=15><a NAME="NoiseType"></a><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">NoiseType</font></font></font></b></td>
 </tr>
 </table>
 
 <p><i>NoiseType</i> is used as an argument to select the type of noise
 to be added to the image.
 <br>&nbsp;
-<table BORDER COLS=2 WIDTH="100%" BGCOLOR="#CCCCCC" NOSAVE >
+<table BORDER COLS=2 WIDTH="100%" BGCOLOR="#CCCCCC" >
 <caption><b>NoiseType</b></caption>
 
 <tr>
@@ -902,10 +902,10 @@ to be added to the image.
 <td>Gaussian noise</td>
 </tr>
 
-<tr NOSAVE>
-<td NOSAVE>MultiplicativeGaussianNoise</td>
+<tr>
+<td>MultiplicativeGaussianNoise</td>
 
-<td NOSAVE>Multiplicative Gaussian noise</td>
+<td>Multiplicative Gaussian noise</td>
 </tr>
 
 <tr>
@@ -930,14 +930,14 @@ to be added to the image.
 <br>&nbsp;
 <table BORDER=0 WIDTH="100%" >
 <tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../../../images/right_triangle.png" ALT=">" BORDER=0 height=14 width=15><a NAME="PaintMethod"></a><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>PaintMethod</font></font></font></b></td>
+<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../../../images/right_triangle.png" ALT=">" BORDER=0 height=14 width=15><a NAME="PaintMethod"></a><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">PaintMethod</font></font></font></b></td>
 </tr>
 </table>
 
 <p><i>PaintMethod</i> specifies how pixel colors are to be replaced in
 the image. It is used to select the pixel-filling algorithm employed.
 <br>&nbsp;
-<table BORDER WIDTH="100%" BGCOLOR="#CCCCCC" NOSAVE >
+<table BORDER WIDTH="100%" BGCOLOR="#CCCCCC" >
 <caption><b>PaintMethod</b></caption>
 
 <tr>
@@ -962,10 +962,10 @@ the image. It is used to select the pixel-filling algorithm employed.
 <td>Replace color for all image pixels matching color at point.</td>
 </tr>
 
-<tr NOSAVE>
-<td NOSAVE>FloodfillMethod</td>
+<tr>
+<td>FloodfillMethod</td>
 
-<td NOSAVE>Replace color for pixels surrounding point until encountering
+<td>Replace color for pixels surrounding point until encountering
 pixel that fails to match color at point.</td>
 </tr>
 
@@ -986,7 +986,7 @@ matching border color.</td>
 <br>&nbsp;
 <table BORDER=0 WIDTH="100%" >
 <tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../../../images/right_triangle.png" ALT=">" BORDER=0 height=14 width=15><a NAME="QuantumType"></a><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>QuantumType</font></font></font></b></td>
+<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../../../images/right_triangle.png" ALT=">" BORDER=0 height=14 width=15><a NAME="QuantumType"></a><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">QuantumType</font></font></font></b></td>
 </tr>
 </table>
 
@@ -997,7 +997,7 @@ depends on whether the Image pixels are in RGB format, RGBA format, or
 CMYK format. The pixel Quantum size is determined by the Image depth (eight
 or sixteen bits).
 <br>&nbsp;
-<table BORDER COLS=2 WIDTH="100%" BGCOLOR="#CCCCCC" NOSAVE >
+<table BORDER COLS=2 WIDTH="100%" BGCOLOR="#CCCCCC" >
 <caption><b>RGB(A) Image Quantums</b></caption>
 
 <tr>
@@ -1043,7 +1043,7 @@ or sixteen bits).
 
 <br>&nbsp;
 <br>&nbsp;
-<table BORDER COLS=2 WIDTH="100%" BGCOLOR="#CCCCCC" NOSAVE >
+<table BORDER COLS=2 WIDTH="100%" BGCOLOR="#CCCCCC" >
 <caption><b>CMY(K) Image Quantum</b></caption>
 
 <tr>
@@ -1082,7 +1082,7 @@ or sixteen bits).
 </table>
 
 <br>&nbsp;
-<table BORDER COLS=2 WIDTH="100%" BGCOLOR="#CCCCCC" NOSAVE >
+<table BORDER COLS=2 WIDTH="100%" BGCOLOR="#CCCCCC" >
 <caption><b>Grayscale Image Quantums</b></caption>
 
 <tr>
@@ -1109,7 +1109,7 @@ or sixteen bits).
 </table>
 
 <br>&nbsp;
-<table BORDER COLS=2 WIDTH="100%" BGCOLOR="#CCCCCC" NOSAVE >
+<table BORDER COLS=2 WIDTH="100%" BGCOLOR="#CCCCCC" >
 <caption><b>Entire Pixels (Expressed in Byte Order)</b></caption>
 
 <tr>
@@ -1122,8 +1122,8 @@ or sixteen bits).
 </td>
 </tr>
 
-<tr NOSAVE>
-<td NOSAVE>RGBQuantum</td>
+<tr>
+<td>RGBQuantum</td>
 
 <td>RGB pixel (24 or 48 octets)</td>
 </tr>
@@ -1144,7 +1144,7 @@ or sixteen bits).
 <br>&nbsp;
 <table BORDER=0 WIDTH="100%" >
 <tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../../../images/right_triangle.png" ALT=">" BORDER=0 height=14 width=15><a NAME="RenderingIntent"></a><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>RenderingIntent</font></font></font></b></td>
+<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../../../images/right_triangle.png" ALT=">" BORDER=0 height=14 width=15><a NAME="RenderingIntent"></a><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">RenderingIntent</font></font></font></b></td>
 </tr>
 </table>
 
@@ -1158,7 +1158,7 @@ It applies specifically to that profile in the sequence and not to the
 entire sequence. Typically, the user or application will set the rendering
 intent dynamically at runtime or embedding time."
 <br>&nbsp;
-<table BORDER WIDTH="100%" BGCOLOR="#CCCCCC" NOSAVE >
+<table BORDER WIDTH="100%" BGCOLOR="#CCCCCC" >
 <caption><b>RenderingIntent</b></caption>
 
 <tr>
@@ -1177,10 +1177,10 @@ intent dynamically at runtime or embedding time."
 <td>Unset value.</td>
 </tr>
 
-<tr NOSAVE>
-<td NOSAVE>SaturationIntent</td>
+<tr>
+<td>SaturationIntent</td>
 
-<td NOSAVE>A rendering intent that specifies the saturation of the pixels
+<td>A rendering intent that specifies the saturation of the pixels
 in the image is preserved perhaps at the expense of accuracy in hue and
 lightness.</td>
 </tr>
@@ -1209,14 +1209,14 @@ preserved but colorimetric accuracy might not be preserved.</td>
 <br>&nbsp;
 <table BORDER=0 WIDTH="100%" >
 <tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../../../images/right_triangle.png" ALT=">" BORDER=0 height=14 width=15><a NAME="ResolutionType"></a><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>ResolutionType</font></font></font></b></td>
+<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../../../images/right_triangle.png" ALT=">" BORDER=0 height=14 width=15><a NAME="ResolutionType"></a><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">ResolutionType</font></font></font></b></td>
 </tr>
 </table>
 
 <p>By default, ImageMagick defines resolutions in pixels per inch. <i>ResolutionType</i>
 provides a means to adjust this.
 <br>&nbsp;
-<table BORDER WIDTH="100%" BGCOLOR="#CCCCCC" NOSAVE >
+<table BORDER WIDTH="100%" BGCOLOR="#CCCCCC" >
 <caption>
 <center><b>ResolutionType</b></center>
 </caption>
@@ -1231,14 +1231,14 @@ provides a means to adjust this.
 </td>
 </tr>
 
-<tr NOSAVE>
-<td NOSAVE>UndefinedResolution</td>
+<tr>
+<td>UndefinedResolution</td>
 
 <td>Unset value.</td>
 </tr>
 
-<tr NOSAVE>
-<td NOSAVE>PixelsPerInchResolution</td>
+<tr>
+<td>PixelsPerInchResolution</td>
 
 <td>Density specifications are specified in units of pixels per inch (english
 units).</td>
@@ -1254,7 +1254,7 @@ units).</td>
 
 <p>
 <hr>
-<p><a href="../../../ImageMagick.html"><img SRC="../../../images/home.png" ALT="Home Page" BORDER=0 height=40 width=40 align=CENTER></a><font size=-2>
+<p><a href="../../../ImageMagick.html"><img SRC="../../../images/home.png" ALT="Home Page" BORDER=0 height=40 width=40 align=MIDDLE></a><font size="-2">
 Image manipulation software that works like magic.</font>
 </body>
 </html>

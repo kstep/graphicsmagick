@@ -1,6 +1,7 @@
-<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
-<html>
-<head>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+  "http://www.w3.org/TR/html4/loose.dtd">
+<HTML>
+<HEAD>
    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
    <meta name="GENERATOR" content="Mozilla/4.78 [en] (X11; U; SunOS 5.6 sun4u) [Netscape]">
    <meta name="Author" content="Bob Friesenhahn">
@@ -228,7 +229,7 @@ a file, a URL, or an encoded image (e.g. JPEG) contained in an in-memory
 The available Image constructors are shown in the following table:
 <br>&nbsp;
 <br>&nbsp;
-<table BORDER WIDTH="100%" BGCOLOR="#FFFFFF" NOSAVE >
+<table BORDER WIDTH="100%" BGCOLOR="#FFFFFF" >
 <caption><b>Image Constructors</b></caption>
 
 <tr>
@@ -257,11 +258,11 @@ specific scene from a multi-frame image.</font></td>
 color</font></td>
 </tr>
 
-<tr NOSAVE>
+<tr>
 <td><a NAME="constructor_blob"></a><font size=-1>const <a href="Blob.html">Blob</a>
 &amp;blob_</font></td>
 
-<td ROWSPAN="5" NOSAVE><font size=-1>Construct Image by reading from encoded
+<td ROWSPAN="5"><font size=-1>Construct Image by reading from encoded
 image data contained in an in-memory <a href="Blob.html">BLOB</a>. Depending
 on the constructor arguments, the Blob <a href="#size">size</a>, <a href="#depth">depth</a>,
 <a href="#magick">magick</a>
@@ -311,7 +312,7 @@ data, use</font>
 <p><font size=-1>&nbsp;&nbsp; Image image( 640, 480, "RGB", 0, pixels );</font>
 <p><font size=-1>The parameters are as follows:</font>
 <br>&nbsp;
-<table BORDER=0 WIDTH="100%" NOSAVE >
+<table BORDER=0 WIDTH="100%" >
 <tr>
 <td><font size=-1>width_</font></td>
 
@@ -324,10 +325,10 @@ data, use</font>
 <td><font size=-1>Height in pixels of the image.</font></td>
 </tr>
 
-<tr NOSAVE>
+<tr>
 <td><font size=-1>map_</font></td>
 
-<td NOSAVE><font size=-1>This character string can be any combination or
+<td><font size=-1>This character string can be any combination or
 order of R = red, G = green, B = blue, A = alpha, C = cyan, Y = yellow
 M = magenta, and K = black. The ordering reflects the order of the pixels
 in the supplied pixel array.</font></td>
@@ -362,11 +363,11 @@ interface</a>, which provides a multi-image abstraction on top of <i>Image</i>,
 must be used.
 <p>The operations supported by Image are shown in the following table:
 <br>&nbsp;
-<table BORDER NOSAVE >
+<table BORDER >
 <caption>Image Image Manipulation Methods</caption>
 
-<tr ALIGN=CENTER NOSAVE>
-<td NOSAVE><b>Method</b></td>
+<tr ALIGN=CENTER>
+<td><b>Method</b></td>
 
 <td><b>Signature(s)</b></td>
 
@@ -383,8 +384,8 @@ must be used.
 <td><font size=-1>Add noise to image with specified noise type.</font></td>
 </tr>
 
-<tr NOSAVE>
-<td ROWSPAN="4" NOSAVE>
+<tr>
+<td ROWSPAN="4">
 <center><a NAME="annotate"></a><font size=-1>annotate</font></center>
 </td>
 
@@ -461,8 +462,8 @@ for&nbsp; example, is useful for extracting the opacity values from an
 image.</font></td>
 </tr>
 
-<tr NOSAVE>
-<td NOSAVE>
+<tr>
+<td>
 <center><a NAME="charcoal"></a><font size=-1>charcoal</font></center>
 </td>
 
@@ -486,8 +487,8 @@ deviation of the Laplacian, in pixels.</font></td>
 image)</font></td>
 </tr>
 
-<tr NOSAVE>
-<td ROWSPAN="2" NOSAVE>
+<tr>
+<td ROWSPAN="2">
 <center><a NAME="colorize"></a><font size=-1>colorize</font></center>
 </td>
 
@@ -520,8 +521,8 @@ image&nbsp; attributes by embedding <a href="FormatCharacters.html">special
 format characters.</a></font></td>
 </tr>
 
-<tr NOSAVE>
-<td ROWSPAN="3" NOSAVE>
+<tr>
+<td ROWSPAN="3">
 <center><a NAME="composite"></a><font size=-1>composite</font></center>
 </td>
 
@@ -530,7 +531,7 @@ int xOffset_, int yOffset_,
 <a href="Enumerations.html#CompositeOperator">CompositeOperator</a>
 compose_ = <i>InCompositeOp</i></font></td>
 
-<td NOSAVE><font size=-1>Compose an image onto the current image at offset
+<td><font size=-1>Compose an image onto the current image at offset
 specified by <i>xOffset_</i>, <i>yOffset_ </i>using the composition algorithm
 specified by <i>compose_</i>.&nbsp;</font></td>
 </tr>
@@ -624,8 +625,8 @@ display) then the original image will be altered. Use a copy of the original
 if this is a problem.</font></td>
 </tr>
 
-<tr NOSAVE>
-<td ROWSPAN="2" NOSAVE>
+<tr>
+<td ROWSPAN="2">
 <center><a NAME="draw"></a><font size=-1>draw</font></center>
 </td>
 
@@ -655,14 +656,14 @@ is the radius of the pixel neighborhood.. Specify a radius of zero for
 automatic radius selection.</font></td>
 </tr>
 
-<tr NOSAVE>
-<td NOSAVE>
+<tr>
+<td>
 <center><a NAME="emboss"></a><font size=-1>emboss</font></center>
 </td>
 
 <td><font size=-1>const double radius_ = 1, const double sigma_ = 0.5</font></td>
 
-<td NOSAVE><font size=-1>Emboss image (hilight edges with 3D effect). The
+<td><font size=-1>Emboss image (hilight edges with 3D effect). The
 <i>radius_</i>
 parameter specifies the radius of the Gaussian, in pixels, not counting
 the center pixel.&nbsp; The <i>sigma_</i> parameter specifies the standard
@@ -709,8 +710,8 @@ deviation of the Laplacian, in pixels.</font></td>
 <td><font size=-1>Flip image (reflect each scanline in the vertical direction)</font></td>
 </tr>
 
-<tr NOSAVE>
-<td ROWSPAN="4" NOSAVE>
+<tr>
+<td ROWSPAN="4">
 <center><a NAME="floodFillColor"></a><font size=-1>floodFill-</font>
 <br><font size=-1>Color</font></center>
 </td>
@@ -718,7 +719,7 @@ deviation of the Laplacian, in pixels.</font></td>
 <td><font size=-1>unsigned int x_, unsigned int y_, const <a href="Color.html">Color</a>
 &amp;fillColor_</font></td>
 
-<td ROWSPAN="2" NOSAVE><font size=-1>Flood-fill color across pixels that
+<td ROWSPAN="2"><font size=-1>Flood-fill color across pixels that
 match the color of the target pixel and are neighbors of the target pixel.
 Uses current fuzz setting when determining color match.</font></td>
 </tr>
@@ -728,11 +729,11 @@ Uses current fuzz setting when determining color match.</font></td>
 const <a href="Color.html">Color</a> &amp;fillColor_</font></td>
 </tr>
 
-<tr NOSAVE>
+<tr>
 <td><font size=-1>unsigned int x_, unsigned int y_, const <a href="Color.html">Color</a>
 &amp;fillColor_, const <a href="Color.html">Color</a> &amp;borderColor_</font></td>
 
-<td ROWSPAN="2" NOSAVE><font size=-1>Flood-fill color across pixels starting
+<td ROWSPAN="2"><font size=-1>Flood-fill color across pixels starting
 at target-pixel and stopping at pixels matching specified border color.
 Uses current fuzz setting when determining color match.</font></td>
 </tr>
@@ -753,15 +754,15 @@ const PaintMethod method_</font></td>
 of target pixel(x,y) with replacement opacity value using method.</font></td>
 </tr>
 
-<tr NOSAVE>
-<td ROWSPAN="4" NOSAVE>
+<tr>
+<td ROWSPAN="4">
 <center><a NAME="floodFillTexture"></a><font size=-1>floodFill-</font>
 <br><font size=-1>Texture</font></center>
 </td>
 
 <td><font size=-1>unsigned int x_, unsigned int y_,&nbsp; const Image &amp;texture_</font></td>
 
-<td ROWSPAN="2" NOSAVE><font size=-1>Flood-fill texture across pixels that
+<td ROWSPAN="2"><font size=-1>Flood-fill texture across pixels that
 match the color of the target pixel and are neighbors of the target pixel.
 Uses current fuzz setting when determining color match.</font></td>
 </tr>
@@ -771,11 +772,11 @@ Uses current fuzz setting when determining color match.</font></td>
 const Image &amp;texture_</font></td>
 </tr>
 
-<tr NOSAVE>
+<tr>
 <td><font size=-1>unsigned int x_, unsigned int y_, const Image &amp;texture_,
 const <a href="Color.html">Color</a> &amp;borderColor_</font></td>
 
-<td ROWSPAN="2" NOSAVE><font size=-1>Flood-fill texture across pixels starting
+<td ROWSPAN="2"><font size=-1>Flood-fill texture across pixels starting
 at target-pixel and stopping at pixels matching specified border color.
 Uses current fuzz setting when determining color match.</font></td>
 </tr>
@@ -795,15 +796,15 @@ const Image &amp;texture_, const <a href="Color.html">Color</a> &amp;borderColor
 <td><font size=-1>Flop image (reflect each scanline in the horizontal direction)</font></td>
 </tr>
 
-<tr NOSAVE>
-<td ROWSPAN="2" NOSAVE>
+<tr>
+<td ROWSPAN="2">
 <center><a NAME="frame"></a><font size=-1>frame</font></center>
 </td>
 
 <td><font size=-1>const <a href="Geometry.html">Geometry</a> &amp;geometry_
 = "25x25+6+6"</font></td>
 
-<td ROWSPAN="2" NOSAVE><font size=-1>Add decorative frame around image</font></td>
+<td ROWSPAN="2"><font size=-1>Add decorative frame around image</font></td>
 </tr>
 
 <tr>
@@ -811,8 +812,8 @@ const Image &amp;texture_, const <a href="Color.html">Color</a> &amp;borderColor
 y_, int innerBevel_ = 0, int outerBevel_ = 0</font></td>
 </tr>
 
-<tr NOSAVE>
-<td ROWSPAN="2" NOSAVE>
+<tr>
+<td ROWSPAN="2">
 <center><a NAME="gamma"></a><font size=-1>gamma</font></center>
 </td>
 
@@ -1019,14 +1020,14 @@ and <a href="#fileSize">fileSize</a> attributes are valid after invoking
 ping.&nbsp; The image data is not valid after calling ping.</font></td>
 </tr>
 
-<tr NOSAVE>
+<tr>
 <td>
 <center><a NAME="quantize"></a><font size=-1>quantize</font></center>
 </td>
 
 <td><font size=-1>bool measureError_ = false</font></td>
 
-<td NOSAVE><font size=-1>Quantize image (reduce number of colors). Set
+<td><font size=-1>Quantize image (reduce number of colors). Set
 measureError_ to true in order to calculate error attributes.</font></td>
 </tr>
 
@@ -1042,8 +1043,8 @@ measureError_ to true in order to calculate error attributes.</font></td>
 to give a 3-D raised or lowered effect)</font></td>
 </tr>
 
-<tr NOSAVE>
-<td ROWSPAN="8" NOSAVE>
+<tr>
+<td ROWSPAN="8">
 <center><a NAME="read"></a><font size=-1>read</font></center>
 </td>
 
@@ -1064,10 +1065,10 @@ which is the next resolution greater or equal to the specified size. This
 may result in memory and time savings.</font></td>
 </tr>
 
-<tr NOSAVE>
+<tr>
 <td><font size=-1>const <a href="Blob.html">Blob</a> &amp;blob_</font></td>
 
-<td ROWSPAN="5" NOSAVE><font size=-1>Read encoded image of specified size
+<td ROWSPAN="5"><font size=-1>Read encoded image of specified size
 from an in-memory
 <a href="Blob.html">BLOB</a> into current object. Depending
 on the method arguments, the Blob size, depth, and format may also be specified.
@@ -1078,7 +1079,7 @@ specified. ImageMagick can usually automatically detect the image's format.
 When a format can't be automatically detected, the format must be specified.</font></td>
 </tr>
 
-<tr NOSAVE>
+<tr>
 <td><font size=-1>const <a href="Blob.html">Blob</a> &amp;blob_, const
 <a href="Geometry.html">Geometry</a>
 &amp;size_</font></td>
@@ -1115,7 +1116,7 @@ use</font>
 <p><font size=-1>&nbsp; image.read( 640, 480, "RGB", 0, pixels );</font>
 <p><font size=-1>The parameters are as follows:</font>
 <br>&nbsp;
-<table BORDER=0 WIDTH="100%" NOSAVE >
+<table BORDER=0 WIDTH="100%" >
 <tr>
 <td><font size=-1>width_</font></td>
 
@@ -1128,10 +1129,10 @@ use</font>
 <td><font size=-1>Height in pixels of the image.</font></td>
 </tr>
 
-<tr NOSAVE>
-<td NOSAVE><font size=-1>map_</font></td>
+<tr>
+<td><font size=-1>map_</font></td>
 
-<td NOSAVE><font size=-1>This character string can be any combination or
+<td><font size=-1>This character string can be any combination or
 order of R = red, G = green, B = blue, A = alpha, C = cyan, Y = yellow
 M = magenta, and K = black. The ordering reflects the order of the pixels
 in the supplied pixel array.</font></td>
@@ -1155,14 +1156,14 @@ equal the area specified by the width_ and height_ values and type_ parameters.<
 </td>
 </tr>
 
-<tr NOSAVE>
-<td ROWSPAN="2" NOSAVE>
+<tr>
+<td ROWSPAN="2">
 <center><a NAME="reduceNoise"></a><font size=-1>reduceNoise</font></center>
 </td>
 
 <td><font size=-1>void</font></td>
 
-<td ROWSPAN="2" NOSAVE><font size=-1>Reduce noise in image using a noise
+<td ROWSPAN="2"><font size=-1>Reduce noise in image using a noise
 peak elimination filter.</font></td>
 </tr>
 
@@ -1232,12 +1233,12 @@ you can&nbsp; expect&nbsp; a&nbsp; smoother second derivative.&nbsp; The
 default is 1.5.</font></td>
 </tr>
 
-<tr NOSAVE>
+<tr>
 <td>
 <center><a NAME="shade"></a><font size=-1>shade</font></center>
 </td>
 
-<td NOSAVE><font size=-1>double azimuth_ = 30, double elevation_ = 30,</font>
+<td><font size=-1>double azimuth_ = 30, double elevation_ = 30,</font>
 <br><font size=-1>bool colorShading_ = false</font></td>
 
 <td><font size=-1>Shade image using distant light source. Specify <i>azimuth_</i>
@@ -1288,14 +1289,14 @@ axis. Empty triangles left over from shearing the&nbsp; image&nbsp; are
 filled&nbsp; with&nbsp; the&nbsp; color&nbsp; defined as <i>borderColor</i>.&nbsp;</font></td>
 </tr>
 
-<tr NOSAVE>
+<tr>
 <td>
 <center><a NAME="solarize"></a><font size=-1>solarize</font></center>
 </td>
 
 <td><font size=-1>double factor_ = 50.0</font></td>
 
-<td NOSAVE><font size=-1>Solarize image (similar to effect seen when exposing
+<td><font size=-1>Solarize image (similar to effect seen when exposing
 a photographic film to light during the development process)</font></td>
 </tr>
 
@@ -1361,14 +1362,14 @@ red-blue glasses (Red image on left, blue on right)</font></td>
 <td><font size=-1>Threshold image</font></td>
 </tr>
 
-<tr NOSAVE>
-<td ROWSPAN="2" NOSAVE>
+<tr>
+<td ROWSPAN="2">
 <center><a NAME="transform"></a><font size=-1>transform</font></center>
 </td>
 
 <td><font size=-1>const <a href="Geometry.html">Geometry</a> &amp;imageGeometry_</font></td>
 
-<td ROWSPAN="2" NOSAVE><font size=-1>Transform image based on image and
+<td ROWSPAN="2"><font size=-1>Transform image based on image and
 crop geometries. Crop geometry is optional.</font></td>
 </tr>
 
@@ -1427,8 +1428,8 @@ to apply the diffence amount.</font></td>
 <td><font size=-1>Alter an image along a sine wave.</font></td>
 </tr>
 
-<tr NOSAVE>
-<td ROWSPAN="5" NOSAVE>
+<tr>
+<td ROWSPAN="5">
 <center><a NAME="write"></a><font size=-1>write</font></center>
 </td>
 
@@ -1441,10 +1442,10 @@ original image or quantization has been requested, the original image will
 be quantized to fewer colors. Use a copy of the original if this is a problem.</font></td>
 </tr>
 
-<tr NOSAVE>
+<tr>
 <td><font size=-1><a href="Blob.html">Blob</a> *blob_</font></td>
 
-<td ROWSPAN="3" NOSAVE><font size=-1>Write image to a in-memory <a href="Blob.html">BLOB</a>
+<td ROWSPAN="3"><font size=-1>Write image to a in-memory <a href="Blob.html">BLOB</a>
 stored in <i>blob_</i>. The <i>magick</i>_ parameter specifies the image
 format to write (defaults to <a href="#magick">magick</a> ). The depth_
 parameter species the image depth (defaults to <a href="#depth">depth</a>).</font>
@@ -1475,7 +1476,7 @@ scanline 1 of a 640x480 image as character data in red-green-blue order:</font>
 <p><font size=-1>&nbsp; image.write(0,0,640,1,"RGB",0,pixels);</font>
 <p><font size=-1>The parameters are as follows:</font>
 <br>&nbsp;
-<table BORDER=0 WIDTH="100%" NOSAVE >
+<table BORDER=0 WIDTH="100%" >
 <tr>
 <td><font size=-1>x_</font></td>
 
@@ -1502,10 +1503,10 @@ extract.</font></td>
 <td><font size=-1>Height in pixels of the region to extract.</font></td>
 </tr>
 
-<tr NOSAVE>
+<tr>
 <td><font size=-1>map_</font></td>
 
-<td NOSAVE><font size=-1>This character string can be any combination or
+<td><font size=-1>This character string can be any combination or
 order of R = red, G = green, B = blue, A = alpha, C = cyan, Y = yellow,
 M = magenta, and K = black. The ordering reflects the order of the pixels
 in the supplied pixel array.</font></td>
@@ -1549,7 +1550,7 @@ all methods return attributes by value.
 <p>The supported image attributes and the method arguments required to
 obtain them are shown in the following table:
 <br>&nbsp;
-<table BORDER NOSAVE >
+<table BORDER >
 <caption>Image Image Attributes</caption>
 
 <tr>
@@ -1603,17 +1604,17 @@ obtain them are shown in the following table:
 or TrueType fonts. Enabled by default.</font></td>
 </tr>
 
-<tr NOSAVE>
+<tr>
 <td>
 <center><a NAME="animationDelay"></a><font size=-1>animation-</font>
 <br><font size=-1>Delay</font></center>
 </td>
 
-<td NOSAVE><font size=-1>unsigned int (0 to 65535)</font></td>
+<td><font size=-1>unsigned int (0 to 65535)</font></td>
 
 <td><font size=-1>void</font></td>
 
-<td NOSAVE><font size=-1>unsigned int delay_</font></td>
+<td><font size=-1>unsigned int delay_</font></td>
 
 <td><font size=-1>Time in 1/100ths of a second (0 to 65535) which must
 expire before displaying the next image in an animated sequence. This option
@@ -1668,21 +1669,21 @@ loop extension) for.</font></td>
 not modify image pixels.</font></td>
 </tr>
 
-<tr NOSAVE>
+<tr>
 <td>
 <center><a NAME="baseColumns"></a><font size=-1>baseColumns</font></center>
 </td>
 
-<td NOSAVE><font size=-1>unsigned int</font></td>
+<td><font size=-1>unsigned int</font></td>
 
 <td><font size=-1>void</font></td>
 
-<td BGCOLOR="#666666" NOSAVE><font size=-1>&nbsp;</font></td>
+<td BGCOLOR="#666666"><font size=-1>&nbsp;</font></td>
 
 <td><font size=-1>Base image width (before transformations)</font></td>
 </tr>
 
-<tr NOSAVE>
+<tr>
 <td>
 <center><a NAME="baseFilename"></a><font size=-1>baseFilename</font></center>
 </td>
@@ -1691,12 +1692,12 @@ not modify image pixels.</font></td>
 
 <td><font size=-1>void</font></td>
 
-<td BGCOLOR="#666666" NOSAVE><font size=-1>&nbsp;</font></td>
+<td BGCOLOR="#666666"><font size=-1>&nbsp;</font></td>
 
 <td><font size=-1>Base image filename (before transformations)</font></td>
 </tr>
 
-<tr NOSAVE>
+<tr>
 <td>
 <center><a NAME="baseRows"></a><font size=-1>baseRows</font></center>
 </td>
@@ -1705,7 +1706,7 @@ not modify image pixels.</font></td>
 
 <td><font size=-1>void</font></td>
 
-<td BGCOLOR="#666666" NOSAVE><font size=-1>&nbsp;</font></td>
+<td BGCOLOR="#666666"><font size=-1>&nbsp;</font></td>
 
 <td><font size=-1>Base image height (before transformations)</font></td>
 </tr>
@@ -1724,14 +1725,14 @@ not modify image pixels.</font></td>
 <td><font size=-1>Image border color</font></td>
 </tr>
 
-<tr NOSAVE>
+<tr>
 <td><a NAME="boundingBox"></a><font size=-1>boundingBox</font></td>
 
 <td><font size=-1>Geometry</font></td>
 
 <td><font size=-1>void</font></td>
 
-<td BGCOLOR="#666666" NOSAVE><font size=-1>&nbsp;</font></td>
+<td BGCOLOR="#666666"><font size=-1>&nbsp;</font></td>
 
 <td><font size=-1>Return smallest bounding box enclosing non-border pixels.
 The current fuzz value is used when discriminating between pixels. This
@@ -1752,12 +1753,12 @@ is the crop bounding box used by crop(Geometry(0,0)).</font></td>
 <td><font size=-1>Base color that annotation text is rendered on.</font></td>
 </tr>
 
-<tr NOSAVE>
+<tr>
 <td><a NAME="cacheThreshold"></a><font size=-1>cacheThreshold</font></td>
 
 <td><font size=-1>unsigned int</font></td>
 
-<td BGCOLOR="#666666" NOSAVE><font size=-1>&nbsp;</font></td>
+<td BGCOLOR="#666666"><font size=-1>&nbsp;</font></td>
 
 <td><font size=-1>unsigned int</font></td>
 
@@ -1826,7 +1827,7 @@ is a static method and the attribute it sets is shared by all Image objects.</fo
 <td><font size=-1>Chromaticity white point (e.g. x=0.3127, y=0.329)</font></td>
 </tr>
 
-<tr NOSAVE>
+<tr>
 <td>
 <center><a NAME="classType"></a><font size=-1>classType</font></center>
 </td>
@@ -1835,7 +1836,7 @@ is a static method and the attribute it sets is shared by all Image objects.</fo
 
 <td><font size=-1>void</font></td>
 
-<td NOSAVE><font size=-1>&nbsp;<a href="Enumerations.html#ClassType">ClassType</a>
+<td><font size=-1>&nbsp;<a href="Enumerations.html#ClassType">ClassType</a>
 class_</font></td>
 
 <td><font size=-1>Image storage class.&nbsp; Note that conversion from
@@ -1911,7 +1912,7 @@ pixel colors. Image pixels are always stored as RGB(A) except for the case
 of CMY(K).</font></td>
 </tr>
 
-<tr NOSAVE>
+<tr>
 <td>
 <center><a NAME="columns"></a><font size=-1>columns</font></center>
 </td>
@@ -1920,12 +1921,12 @@ of CMY(K).</font></td>
 
 <td><font size=-1>void</font></td>
 
-<td BGCOLOR="#666666" NOSAVE><font size=-1>&nbsp;</font></td>
+<td BGCOLOR="#666666"><font size=-1>&nbsp;</font></td>
 
 <td><font size=-1>Image width</font></td>
 </tr>
 
-<tr NOSAVE>
+<tr>
 <td>
 <center><a NAME="comment"></a><font size=-1>comment</font></center>
 </td>
@@ -1934,7 +1935,7 @@ of CMY(K).</font></td>
 
 <td><font size=-1>void</font></td>
 
-<td BGCOLOR="#666666" NOSAVE><font size=-1>&nbsp;</font></td>
+<td BGCOLOR="#666666"><font size=-1>&nbsp;</font></td>
 
 <td><font size=-1>Image comment</font></td>
 </tr>
@@ -2016,7 +2017,7 @@ depths. Defaults to the quantum depth that ImageMagick is compiled with.</font><
 <td><font size=-1>Image file name.</font></td>
 </tr>
 
-<tr NOSAVE>
+<tr>
 <td>
 <center><a NAME="fileSize"></a><font size=-1>fileSize</font></center>
 </td>
@@ -2025,7 +2026,7 @@ depths. Defaults to the quantum depth that ImageMagick is compiled with.</font><
 
 <td><font size=-1>void</font></td>
 
-<td BGCOLOR="#666666" NOSAVE><font size=-1>&nbsp;</font></td>
+<td BGCOLOR="#666666"><font size=-1>&nbsp;</font></td>
 
 <td><font size=-1>Number of bytes of the image on disk</font></td>
 </tr>
@@ -2107,7 +2108,7 @@ a&nbsp; Postscript font name (e.g. "helvetica").</font></td>
 <td><font size=-1>Text rendering font point size</font></td>
 </tr>
 
-<tr NOSAVE>
+<tr>
 <td>
 <center><a NAME="fontTypeMetrics"></a><font size=-1>fontTypeMetrics</font></center>
 </td>
@@ -2117,7 +2118,7 @@ a&nbsp; Postscript font name (e.g. "helvetica").</font></td>
 <td><font size=-1>const std::string &amp;text_, <a href="TypeMetric.html">TypeMetric</a>
 *metrics</font></td>
 
-<td BGCOLOR="#666666" NOSAVE><font size=-1>&nbsp;</font></td>
+<td BGCOLOR="#666666"><font size=-1>&nbsp;</font></td>
 
 <td><font size=-1>Update metrics with font type metrics using specified
 <i>text</i>,
@@ -2125,7 +2126,7 @@ and current <a href="#font">font</a> and <a href="#fontPointsize">fontPointSize<
 settings.</font></td>
 </tr>
 
-<tr NOSAVE>
+<tr>
 <td>
 <center><a NAME="format"></a><font size=-1>format</font></center>
 </td>
@@ -2134,12 +2135,12 @@ settings.</font></td>
 
 <td><font size=-1>void</font></td>
 
-<td BGCOLOR="#666666" NOSAVE><font size=-1>&nbsp;</font></td>
+<td BGCOLOR="#666666"><font size=-1>&nbsp;</font></td>
 
 <td><font size=-1>Long form image format description.</font></td>
 </tr>
 
-<tr NOSAVE>
+<tr>
 <td>
 <center><a NAME="gamma"></a><font size=-1>gamma</font></center>
 </td>
@@ -2148,7 +2149,7 @@ settings.</font></td>
 
 <td><font size=-1>void</font></td>
 
-<td BGCOLOR="#666666" NOSAVE><font size=-1>&nbsp;</font></td>
+<td BGCOLOR="#666666"><font size=-1>&nbsp;</font></td>
 
 <td><font size=-1>Gamma level of the image. The same color image displayed
 on two different&nbsp; workstations&nbsp; may&nbsp; look&nbsp; different
@@ -2156,7 +2157,7 @@ due to differences in the display monitor.&nbsp; Use gamma correction&nbsp;
 to&nbsp; adjust&nbsp; for this&nbsp; color&nbsp; difference.</font></td>
 </tr>
 
-<tr NOSAVE>
+<tr>
 <td>
 <center><a NAME="geometry"></a><font size=-1>geometry</font></center>
 </td>
@@ -2165,7 +2166,7 @@ to&nbsp; adjust&nbsp; for this&nbsp; color&nbsp; difference.</font></td>
 
 <td><font size=-1>void</font></td>
 
-<td BGCOLOR="#666666" NOSAVE><font size=-1>&nbsp;</font></td>
+<td BGCOLOR="#666666"><font size=-1>&nbsp;</font></td>
 
 <td><font size=-1>Preferred size of the image when encoding.</font></td>
 </tr>
@@ -2263,7 +2264,7 @@ Press Telecommunications Council</a> for IPTC profiles.</font></td>
 <td><font size=-1>Image label</font></td>
 </tr>
 
-<tr NOSAVE>
+<tr>
 <td>
 <center><a NAME="magick"></a><font size=-1>magick</font></center>
 </td>
@@ -2272,7 +2273,7 @@ Press Telecommunications Council</a> for IPTC profiles.</font></td>
 
 <td><font size=-1>void</font></td>
 
-<td NOSAVE><font size=-1>&nbsp;const string &amp;magick_</font></td>
+<td><font size=-1>&nbsp;const string &amp;magick_</font></td>
 
 <td><font size=-1>Get image format (e.g. "GIF")</font></td>
 </tr>
@@ -2306,7 +2307,7 @@ matte channel if&nbsp; the image has one otherwise create an opaque one.</font><
 <td><font size=-1>Image matte (transparent) color</font></td>
 </tr>
 
-<tr NOSAVE>
+<tr>
 <td>
 <center><a NAME="meanErrorPerPixel"></a><font size=-1>meanError-</font>
 <br><font size=-1>PerPixel</font></center>
@@ -2316,7 +2317,7 @@ matte channel if&nbsp; the image has one otherwise create an opaque one.</font><
 
 <td><font size=-1>void</font></td>
 
-<td BGCOLOR="#666666" NOSAVE><font size=-1>&nbsp;</font></td>
+<td BGCOLOR="#666666"><font size=-1>&nbsp;</font></td>
 
 <td><font size=-1>The mean error per pixel computed when an image is color
 reduced. This parameter is only valid if verbose is set to true and the
@@ -2337,7 +2338,7 @@ image has just been quantized.</font></td>
 <td><font size=-1>Transform the image to black and white</font></td>
 </tr>
 
-<tr NOSAVE>
+<tr>
 <td>
 <center><a NAME="montageGeometry"></a><font size=-1>montage-</font>
 <br><font size=-1>Geometry</font></center>
@@ -2347,13 +2348,13 @@ image has just been quantized.</font></td>
 
 <td><font size=-1>void</font></td>
 
-<td BGCOLOR="#666666" NOSAVE><font size=-1>&nbsp;</font></td>
+<td BGCOLOR="#666666"><font size=-1>&nbsp;</font></td>
 
-<td NOSAVE><font size=-1>Tile size and offset within an image montage.
+<td><font size=-1>Tile size and offset within an image montage.
 Only valid for montage images.</font></td>
 </tr>
 
-<tr NOSAVE>
+<tr>
 <td>
 <center><a NAME="normalizedMaxError"></a><font size=-1>normalized-</font>
 <br><font size=-1>MaxError</font></center>
@@ -2363,14 +2364,14 @@ Only valid for montage images.</font></td>
 
 <td><font size=-1>void</font></td>
 
-<td BGCOLOR="#666666" NOSAVE><font size=-1>&nbsp;</font></td>
+<td BGCOLOR="#666666"><font size=-1>&nbsp;</font></td>
 
 <td><font size=-1>The normalized max error per pixel computed when an image
 is color reduced. This parameter is only valid if verbose is set to true
 and the image has just been quantized.</font></td>
 </tr>
 
-<tr NOSAVE>
+<tr>
 <td>
 <center><a NAME="normalizedMeanError"></a><font size=-1>normalized-</font>
 <br><font size=-1>MeanError</font></center>
@@ -2380,14 +2381,14 @@ and the image has just been quantized.</font></td>
 
 <td><font size=-1>void</font></td>
 
-<td BGCOLOR="#666666" NOSAVE><font size=-1>&nbsp;</font></td>
+<td BGCOLOR="#666666"><font size=-1>&nbsp;</font></td>
 
 <td><font size=-1>The normalized mean error per pixel computed when an
 image is color reduced. This parameter is only valid if verbose is set
 to true and the image has just been quantized.</font></td>
 </tr>
 
-<tr NOSAVE>
+<tr>
 <td>
 <center><a NAME="packets"></a><font size=-1>packets</font></center>
 </td>
@@ -2396,13 +2397,13 @@ to true and the image has just been quantized.</font></td>
 
 <td><font size=-1>void</font></td>
 
-<td BGCOLOR="#666666" NOSAVE><font size=-1>&nbsp;</font></td>
+<td BGCOLOR="#666666"><font size=-1>&nbsp;</font></td>
 
 <td><font size=-1>The number of runlength-encoded packets in</font>
 <br><font size=-1>the image</font></td>
 </tr>
 
-<tr NOSAVE>
+<tr>
 <td>
 <center><a NAME="packetSize"></a><font size=-1>packetSize</font></center>
 </td>
@@ -2411,7 +2412,7 @@ to true and the image has just been quantized.</font></td>
 
 <td><font size=-1>void</font></td>
 
-<td BGCOLOR="#666666" NOSAVE><font size=-1>&nbsp;</font></td>
+<td BGCOLOR="#666666"><font size=-1>&nbsp;</font></td>
 
 <td><font size=-1>The number of bytes in each pixel packet</font></td>
 </tr>
@@ -2601,7 +2602,7 @@ units_</font></td>
 <td><font size=-1>Units of image resolution</font></td>
 </tr>
 
-<tr NOSAVE>
+<tr>
 <td>
 <center><a NAME="rows"></a><font size=-1>rows</font></center>
 </td>
@@ -2610,7 +2611,7 @@ units_</font></td>
 
 <td><font size=-1>void</font></td>
 
-<td BGCOLOR="#666666" NOSAVE><font size=-1>&nbsp;</font></td>
+<td BGCOLOR="#666666"><font size=-1>&nbsp;</font></td>
 
 <td><font size=-1>The number of pixel rows in the image</font></td>
 </tr>
@@ -2629,7 +2630,7 @@ units_</font></td>
 <td><font size=-1>Image scene number</font></td>
 </tr>
 
-<tr NOSAVE>
+<tr>
 <td>
 <center><a NAME="signature"></a><font size=-1>signature</font></center>
 </td>
@@ -2638,7 +2639,7 @@ units_</font></td>
 
 <td><font size=-1>bool force_ = false</font></td>
 
-<td BGCOLOR="#666666" NOSAVE><font size=-1>&nbsp;</font></td>
+<td BGCOLOR="#666666"><font size=-1>&nbsp;</font></td>
 
 <td><font size=-1>Image MD5 signature. Set force_ to 'true' to force re-computation
 of signature.</font></td>
@@ -2831,7 +2832,7 @@ one)</font></td>
 <td><font size=-1>Tile name</font></td>
 </tr>
 
-<tr NOSAVE>
+<tr>
 <td>
 <center><a NAME="totalColors"></a><font size=-1>totalColors</font></center>
 </td>
@@ -2840,12 +2841,12 @@ one)</font></td>
 
 <td><font size=-1>void</font></td>
 
-<td BGCOLOR="#666666" NOSAVE><font size=-1>&nbsp;</font></td>
+<td BGCOLOR="#666666"><font size=-1>&nbsp;</font></td>
 
 <td><font size=-1>Number of colors in the image</font></td>
 </tr>
 
-<tr NOSAVE>
+<tr>
 <td>
 <center><a NAME="type"></a><font size=-1>type</font></center>
 </td>
@@ -2854,7 +2855,7 @@ one)</font></td>
 
 <td><font size=-1>void</font></td>
 
-<td BGCOLOR="#FFFFFF" NOSAVE><font size=-1><a href="Enumerations.html#ImageType">ImageType</a></font></td>
+<td BGCOLOR="#FFFFFF"><font size=-1><a href="Enumerations.html#ImageType">ImageType</a></font></td>
 
 <td><font size=-1>Image type.</font></td>
 </tr>
@@ -2902,7 +2903,7 @@ one)</font></td>
 image from</font></td>
 </tr>
 
-<tr NOSAVE>
+<tr>
 <td>
 <center><a NAME="xResolution"></a><font size=-1>xResolution</font></center>
 </td>
@@ -2911,12 +2912,12 @@ image from</font></td>
 
 <td><font size=-1>void</font></td>
 
-<td BGCOLOR="#666666" NOSAVE><font size=-1>&nbsp;</font></td>
+<td BGCOLOR="#666666"><font size=-1>&nbsp;</font></td>
 
 <td><font size=-1>x resolution of the image</font></td>
 </tr>
 
-<tr NOSAVE>
+<tr>
 <td>
 <center><a NAME="yResolution"></a><font size=-1>yResolution</font></center>
 </td>
@@ -2925,7 +2926,7 @@ image from</font></td>
 
 <td><font size=-1>void</font></td>
 
-<td BGCOLOR="#666666" NOSAVE><font size=-1>&nbsp;</font></td>
+<td BGCOLOR="#666666"><font size=-1>&nbsp;</font></td>
 
 <td><font size=-1>y resolution of the image</font></td>
 </tr>
@@ -2960,9 +2961,9 @@ the pixels in the cache to a foreign pixel representation according to
 the format specified by <i>QuantumTypes</i>.
 <p>The pixel region is effectively a small image in which the pixels may
 be accessed, addressed, and updated, as shown in the following example:
-<table BORDER=0 WIDTH="100%" NOSAVE >
-<tr NOSAVE>
-<td NOSAVE><font face="Courier New,Courier"><font color="#000099"><font size=-1>Image
+<table BORDER=0 WIDTH="100%" >
+<tr>
+<td><font face="Courier New,Courier"><font color="#000099"><font size=-1>Image
 image("cow.png");</font></font></font>
 <br><font face="Courier New,Courier"><font color="#FF0000"><font size=-1>//
 Obtain pixel region with size 60x40, and top origin at 20x30</font></font></font>
@@ -2991,7 +2992,7 @@ Save updated pixel cache back to underlying image</font></font></font>
 
 <p>The image cache supports the following methods:
 <br>&nbsp;
-<table BORDER WIDTH="100%" NOSAVE >
+<table BORDER WIDTH="100%" >
 <caption>Image Cache Methods</caption>
 
 <tr>
@@ -3076,14 +3077,14 @@ defined by the specified rectangular region. Modified pixels may be subsequently
 transferred back to the image via syncPixels.</font></td>
 </tr>
 
-<tr NOSAVE>
+<tr>
 <td>
 <center><a NAME="setPixels"></a><font size=-1>setPixels</font></center>
 </td>
 
 <td><font size=-1><a href="PixelPacket.html">PixelPacket</a>*</font></td>
 
-<td NOSAVE><font size=-1>int x_, int y_, unsigned int columns_, unsigned
+<td><font size=-1>int x_, int y_, unsigned int columns_, unsigned
 int rows_</font></td>
 
 <td><font size=-1>Allocates a pixel cache region to store image pixels

@@ -1,6 +1,7 @@
-<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
-<html>
-<head>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+  "http://www.w3.org/TR/html4/loose.dtd">
+<HTML>
+<HEAD>
    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
    <meta name="GENERATOR" content="Mozilla/4.78 [en] (X11; U; SunOS 5.6 sun4u) [Netscape]">
    <meta name="Author" content="Bob Friesenhahn">
@@ -69,7 +70,7 @@ imageList.begin(), imageList.end() );</font></tt>
 <p>The available Magick++ specific STL algorithms for operating on sequences
 of image frames are shown in the following table:
 <br>&nbsp;
-<table BORDER WIDTH="100%" NOSAVE >
+<table BORDER WIDTH="100%" >
 <caption><b>Magick++ STL Algorithms</b></caption>
 
 <tr>
@@ -265,8 +266,8 @@ The <i>mosicImage_</i> argument is updated with a mosaic constructed from
 the image sequence represented by <i>first_</i> through <i>last_</i>.</font></td>
 </tr>
 
-<tr NOSAVE>
-<td ROWSPAN="2" NOSAVE>
+<tr>
+<td ROWSPAN="2">
 <center><a NAME="readImages"></a><font size=-1>readImages</font></center>
 </td>
 
@@ -286,8 +287,8 @@ the string <i>imageSpec_</i>.</font></td>
 (appending to container sequence_) from <a href="Blob.html">Blob</a> blob_.</font></td>
 </tr>
 
-<tr NOSAVE>
-<td ROWSPAN="2" NOSAVE>
+<tr>
+<td ROWSPAN="2">
 <center><a NAME="writeImages"></a><font size=-1>writeImages</font></center>
 </td>
 
@@ -368,11 +369,11 @@ compatable with each synonymous method in the Image class.
 <p>The unary function objects that Magick++ provides to support manipulating
 images are shown in the following table:
 <br>&nbsp;
-<table BORDER NOSAVE >
+<table BORDER >
 <caption><b>Magick++ Unary Function Objects For Image Manipulation</b></caption>
 
-<tr ALIGN=CENTER NOSAVE>
-<td NOSAVE><b>Function Object</b></td>
+<tr ALIGN=CENTER>
+<td><b>Function Object</b></td>
 
 <td><b>Constructor Signatures(s)</b></td>
 
@@ -389,8 +390,8 @@ images are shown in the following table:
 <td><font size=-1>Add noise to image with specified noise type.</font></td>
 </tr>
 
-<tr NOSAVE>
-<td ROWSPAN="4" NOSAVE>
+<tr>
+<td ROWSPAN="4">
 <center><a NAME="annotateImage"></a><font size=-1>annotateImage</font></center>
 </td>
 
@@ -478,8 +479,8 @@ deviation of the Laplacian, in pixels.</font></td>
 image)</font></td>
 </tr>
 
-<tr NOSAVE>
-<td ROWSPAN="2" NOSAVE>
+<tr>
+<td ROWSPAN="2">
 <center><a NAME="colorizeImage"></a><font size=-1>colorizeImage</font></center>
 </td>
 
@@ -513,8 +514,8 @@ image&nbsp; attributes by embedding <a href="FormatCharacters.html">special
 format characters.</a></font></td>
 </tr>
 
-<tr NOSAVE>
-<td ROWSPAN="2" NOSAVE>
+<tr>
+<td ROWSPAN="2">
 <center><a NAME="compositeImage"></a><font size=-1>compositeImage</font></center>
 </td>
 
@@ -523,7 +524,7 @@ int xOffset_, int yOffset_,
 <a href="Enumerations.html#CompositeOperator">CompositeOperator</a>
 compose_ = <i>InCompositeOp</i></font></td>
 
-<td ROWSPAN="2" NOSAVE><font size=-1>Compose an image onto another at specified
+<td ROWSPAN="2"><font size=-1>Compose an image onto another at specified
 offset and using specified algorithm</font></td>
 </tr>
 
@@ -585,8 +586,8 @@ compose_ = <i>InCompositeOp</i></font></td>
 <td><font size=-1>Despeckle image (reduce speckle noise)</font></td>
 </tr>
 
-<tr NOSAVE>
-<td ROWSPAN="2" NOSAVE>
+<tr>
+<td ROWSPAN="2">
 <center><a NAME="drawImage"></a><font size=-1>drawImage</font></center>
 </td>
 
@@ -616,14 +617,14 @@ is the radius of the pixel neighborhood.. Specify a radius of zero for
 automatic radius selection.</font></td>
 </tr>
 
-<tr NOSAVE>
-<td NOSAVE>
+<tr>
+<td>
 <center><a NAME="embossImage"></a><font size=-1>embossImage</font></center>
 </td>
 
 <td><font size=-1>const double radius_ = 1, const double sigma_ = 0.5</font></td>
 
-<td NOSAVE><font size=-1>Emboss image (hilight edges with 3D effect). The
+<td><font size=-1>Emboss image (hilight edges with 3D effect). The
 radius_ parameter specifies the radius of the Gaussian, in pixels, not
 counting the center pixel.&nbsp; The sigma_ parameter specifies the standard
 deviation of the Laplacian, in pixels.</font></td>
@@ -659,8 +660,8 @@ deviation of the Laplacian, in pixels.</font></td>
 <td><font size=-1>Flip image (reflect each scanline in the vertical direction)</font></td>
 </tr>
 
-<tr NOSAVE>
-<td ROWSPAN="4" NOSAVE>
+<tr>
+<td ROWSPAN="4">
 <center><a NAME="floodFillColorImage"></a><font size=-1>floodFill-</font>
 <br><font size=-1>ColorImage</font></center>
 </td>
@@ -668,7 +669,7 @@ deviation of the Laplacian, in pixels.</font></td>
 <td><font size=-1>unsigned int x_, unsigned int y_, const <a href="Color.html">Color</a>
 &amp;fillColor_</font></td>
 
-<td ROWSPAN="2" NOSAVE><font size=-1>Flood-fill color across pixels that
+<td ROWSPAN="2"><font size=-1>Flood-fill color across pixels that
 match the color of the target pixel and are neighbors of the target pixel.
 Uses current fuzz setting when determining color match.</font></td>
 </tr>
@@ -678,11 +679,11 @@ Uses current fuzz setting when determining color match.</font></td>
 const <a href="Color.html">Color</a> &amp;fillColor_</font></td>
 </tr>
 
-<tr NOSAVE>
+<tr>
 <td><font size=-1>unsigned int x_, unsigned int y_, const <a href="Color.html">Color</a>
 &amp;fillColor_, const <a href="Color.html">Color</a> &amp;borderColor_</font></td>
 
-<td ROWSPAN="2" NOSAVE><font size=-1>Flood-fill color across pixels starting
+<td ROWSPAN="2"><font size=-1>Flood-fill color across pixels starting
 at target-pixel and stopping at pixels matching specified border color.
 Uses current fuzz setting when determining color match.</font></td>
 </tr>
@@ -693,8 +694,8 @@ const <a href="Color.html">Color</a> &amp;fillColor_, const <a href="Color.html"
 &amp;borderColor_</font></td>
 </tr>
 
-<tr NOSAVE>
-<td ROWSPAN="4" NOSAVE>
+<tr>
+<td ROWSPAN="4">
 <center><a NAME="floodFillTextureImage"></a><font size=-1>floodFill-</font>
 <br><font size=-1>TextureImage</font></center>
 </td>
@@ -702,7 +703,7 @@ const <a href="Color.html">Color</a> &amp;fillColor_, const <a href="Color.html"
 <td><font size=-1>unsigned int x_, unsigned int y_,&nbsp; const <a href="Image.html">Image</a>
 &amp;texture_</font></td>
 
-<td ROWSPAN="2" NOSAVE><font size=-1>Flood-fill texture across pixels that
+<td ROWSPAN="2"><font size=-1>Flood-fill texture across pixels that
 match the color of the target pixel and are neighbors of the target pixel.
 Uses current fuzz setting when determining color match.</font></td>
 </tr>
@@ -712,11 +713,11 @@ Uses current fuzz setting when determining color match.</font></td>
 const Image &amp;texture_</font></td>
 </tr>
 
-<tr NOSAVE>
+<tr>
 <td><font size=-1>unsigned int x_, unsigned int y_, const Image &amp;texture_,
 const <a href="Color.html">Color</a> &amp;borderColor_</font></td>
 
-<td ROWSPAN="2" NOSAVE><font size=-1>Flood-fill texture across pixels starting
+<td ROWSPAN="2"><font size=-1>Flood-fill texture across pixels starting
 at target-pixel and stopping at pixels matching specified border color.
 Uses current fuzz setting when determining color match.</font></td>
 </tr>
@@ -736,15 +737,15 @@ const Image &amp;texture_, const <a href="Color.html">Color</a> &amp;borderColor
 <td><font size=-1>Flop image (reflect each scanline in the horizontal direction)</font></td>
 </tr>
 
-<tr NOSAVE>
-<td ROWSPAN="2" NOSAVE>
+<tr>
+<td ROWSPAN="2">
 <center><a NAME="frameImage"></a><font size=-1>frameImage</font></center>
 </td>
 
 <td><font size=-1>const <a href="Geometry.html">Geometry</a> &amp;geometry_
 = "25x25+6+6"</font></td>
 
-<td ROWSPAN="2" NOSAVE><font size=-1>Add decorative frame around image</font></td>
+<td ROWSPAN="2"><font size=-1>Add decorative frame around image</font></td>
 </tr>
 
 <tr>
@@ -752,8 +753,8 @@ const Image &amp;texture_, const <a href="Color.html">Color</a> &amp;borderColor
 y_, int innerBevel_ = 0, int outerBevel_ = 0</font></td>
 </tr>
 
-<tr NOSAVE>
-<td ROWSPAN="2" NOSAVE>
+<tr>
+<td ROWSPAN="2">
 <center><a NAME="gammaImage"></a><font size=-1>gammaImage</font></center>
 </td>
 
@@ -949,14 +950,14 @@ const <a href="Color.html">Color</a> &amp;penColor_</font></td>
 penColor_.</font></td>
 </tr>
 
-<tr NOSAVE>
+<tr>
 <td>
 <center><a NAME="quantizeImage"></a><font size=-1>quantizeImage</font></center>
 </td>
 
 <td><font size=-1>bool measureError_ = false</font></td>
 
-<td NOSAVE><font size=-1>Quantize image (reduce number of colors). Set
+<td><font size=-1>Quantize image (reduce number of colors). Set
 measureError_ to true in order to calculate error attributes.</font></td>
 </tr>
 
@@ -972,15 +973,15 @@ measureError_ to true in order to calculate error attributes.</font></td>
 to give a 3-D raised or lowered effect)</font></td>
 </tr>
 
-<tr NOSAVE>
-<td ROWSPAN="2" NOSAVE>
+<tr>
+<td ROWSPAN="2">
 <center><a NAME="reduceNoiseImage"></a><font size=-1>reduceNoise-</font>
 <br><font size=-1>Image</font></center>
 </td>
 
 <td><font size=-1>void</font></td>
 
-<td ROWSPAN="2" NOSAVE><font size=-1>Reduce noise in image using a noise
+<td ROWSPAN="2"><font size=-1>Reduce noise in image using a noise
 peak elimination filter.</font></td>
 </tr>
 
@@ -1050,12 +1051,12 @@ you can&nbsp; expect&nbsp; a&nbsp; smoother second derivative.&nbsp; The
 default is 1.5.</font></td>
 </tr>
 
-<tr NOSAVE>
+<tr>
 <td>
 <center><a NAME="shadeImage"></a><font size=-1>shadeImage</font></center>
 </td>
 
-<td NOSAVE><font size=-1>double azimuth_ = 30, double elevation_ = 30,</font>
+<td><font size=-1>double azimuth_ = 30, double elevation_ = 30,</font>
 <br><font size=-1>bool colorShading_ = false</font></td>
 
 <td><font size=-1>Shade image using distant light source. Specify <i>azimuth_</i>
@@ -1106,14 +1107,14 @@ axis. Empty triangles left over from shearing the&nbsp; image&nbsp; are
 filled&nbsp; with&nbsp; the&nbsp; color&nbsp; defined as <i>borderColor</i>.&nbsp;</font></td>
 </tr>
 
-<tr NOSAVE>
+<tr>
 <td>
 <center><a NAME="solarizeImage"></a><font size=-1>solarizeImage</font></center>
 </td>
 
 <td><font size=-1>double factor_</font></td>
 
-<td NOSAVE><font size=-1>Solarize image (similar to effect seen when exposing
+<td><font size=-1>Solarize image (similar to effect seen when exposing
 a photographic film to light during the development process)</font></td>
 </tr>
 
@@ -1179,14 +1180,14 @@ red-blue glasses (Red image on left, blue on right)</font></td>
 <td><font size=-1>Threshold image</font></td>
 </tr>
 
-<tr NOSAVE>
-<td ROWSPAN="2" NOSAVE>
+<tr>
+<td ROWSPAN="2">
 <center><a NAME="transformImage"></a><font size=-1>transformImage</font></center>
 </td>
 
 <td><font size=-1>const <a href="Geometry.html">Geometry</a> &amp;imageGeometry_</font></td>
 
-<td ROWSPAN="2" NOSAVE><font size=-1>Transform image based on image and
+<td ROWSPAN="2"><font size=-1>Transform image based on image and
 crop geometries. Crop geometry is optional.</font></td>
 </tr>
 
@@ -1251,7 +1252,7 @@ transparentImage( "red" )&nbsp; );</font></tt>
 "animation.gif" );</font></tt>
 <p>The available function objects for setting image attributes are
 <br>&nbsp;
-<table BORDER NOSAVE >
+<table BORDER >
 <caption>Image Image Attributes</caption>
 
 <tr>
@@ -1297,15 +1298,15 @@ transparentImage( "red" )&nbsp; );</font></tt>
 or TrueType fonts. Enabled by default.</font></td>
 </tr>
 
-<tr NOSAVE>
+<tr>
 <td>
 <center><a NAME="animationDelay"></a><font size=-1>animation-</font>
 <br><font size=-1>DelayImage</font></center>
 </td>
 
-<td NOSAVE><font size=-1>unsigned int (0 to 65535)</font></td>
+<td><font size=-1>unsigned int (0 to 65535)</font></td>
 
-<td NOSAVE><font size=-1>unsigned int delay_</font></td>
+<td><font size=-1>unsigned int delay_</font></td>
 
 <td><font size=-1>Time in 1/100ths of a second (0 to 65535) which must
 expire before displaying the next image in an animated sequence. This option
@@ -1661,14 +1662,14 @@ if argument is false.</font></td>
 See <a href="Drawable.html">Drawable</a>.</font></td>
 </tr>
 
-<tr NOSAVE>
+<tr>
 <td>
 <center><a NAME="magick"></a><font size=-1>magickImage</font></center>
 </td>
 
 <td><font size=-1>std::string</font></td>
 
-<td NOSAVE><font size=-1>&nbsp;const std::string &amp;magick_</font></td>
+<td><font size=-1>&nbsp;const std::string &amp;magick_</font></td>
 
 <td><font size=-1>Get image format (e.g. "GIF")</font></td>
 </tr>

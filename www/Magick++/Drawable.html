@@ -1,6 +1,7 @@
-<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
-<html>
-<head>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+  "http://www.w3.org/TR/html4/loose.dtd">
+<HTML>
+<HEAD>
    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
    <meta name="GENERATOR" content="Mozilla/4.72 [en] (X11; U; SunOS 5.6 sun4u) [Netscape]">
    <meta name="Author" content="Bob Friesenhahn">
@@ -111,11 +112,11 @@ completed drawing list</font></tt>
 which represents a pair of x,y coodinates.&nbsp; The methods provided by
 the Coordinate structure are shown in the following table:</font>
 <br>&nbsp;
-<table BORDER WIDTH="100%" NOSAVE >
+<table BORDER WIDTH="100%" >
 <caption>Coordinate Structure Methods</caption>
 
-<tr NOSAVE>
-<td NOSAVE>
+<tr>
+<td>
 <center><b>Method/Member</b></center>
 </td>
 
@@ -128,8 +129,8 @@ the Coordinate structure are shown in the following table:</font>
 </td>
 </tr>
 
-<tr NOSAVE>
-<td ROWSPAN="2" NOSAVE>
+<tr>
+<td ROWSPAN="2">
 <center><font size=-1>Coordinate</font></center>
 </td>
 
@@ -144,18 +145,18 @@ the Coordinate structure are shown in the following table:</font>
 <td><font size=-1>Constructor, setting <i>first</i> &amp; <i>second</i></font></td>
 </tr>
 
-<tr NOSAVE>
-<td NOSAVE>
+<tr>
+<td>
 <center><font size=-1>x</font></center>
 </td>
 
 <td><font size=-1>double x_</font></td>
 
-<td NOSAVE><font size=-1>x coordinate member</font></td>
+<td><font size=-1>x coordinate member</font></td>
 </tr>
 
-<tr NOSAVE>
-<td NOSAVE>
+<tr>
+<td>
 <center><font size=-1>y</font></center>
 </td>
 
@@ -168,7 +169,7 @@ the Coordinate structure are shown in the following table:</font>
 <p><font color="#000000">The Drawable classes are shown in the following
 table:</font>
 <br>&nbsp;
-<table BORDER WIDTH="100%" NOSAVE >
+<table BORDER WIDTH="100%" >
 <caption><b>Drawable Classes</b></caption>
 
 <tr>
@@ -260,8 +261,8 @@ whereas filltoborder recolors any neighbor pixel that is not the border
 color. Finally, reset recolors all pixels.</font></td>
 </tr>
 
-<tr NOSAVE>
-<td ROWSPAN="3" NOSAVE>
+<tr>
+<td ROWSPAN="3">
 <center><a NAME="DrawableCompositeImage"></a><font size=-1>DrawableCompositeImage</font></center>
 </td>
 
@@ -536,15 +537,15 @@ is used to pop the current graphic context, the options in effect during
 the last <i>DrawablePushGraphicContext</i> operation.</font></td>
 </tr>
 
-<tr NOSAVE>
-<td NOSAVE>
+<tr>
+<td>
 <center><a NAME="DrawableRectangle"></a><font size=-1>DrawableRectangle</font></center>
 </td>
 
 <td><font size=-1>double upperLeftX_, double upperLeftY_, double lowerRightX_,
 double lowerRightY</font></td>
 
-<td NOSAVE><font size=-1>Draw a rectangle using <i>stroke</i> color and
+<td><font size=-1>Draw a rectangle using <i>stroke</i> color and
 thickness from upper-left coordinates to lower-right coordinates.&nbsp;
 If a <i>fill</i> color is specified, then the object is filled.</font></td>
 </tr>
@@ -668,14 +669,14 @@ UndefinedJoin, MiterJoin, RoundJoin, and BevelJoin.</font></td>
 <td><font size=-1>Set width to use when drawing lines or object outlines.</font></td>
 </tr>
 
-<tr NOSAVE>
-<td NOSAVE>
+<tr>
+<td>
 <center><a NAME="DrawableText"></a><font size=-1>DrawableText</font></center>
 </td>
 
 <td><font size=-1>double x_, double y_, std::string text_</font></td>
 
-<td NOSAVE><font size=-1>Annotate image with text using <i>stroke</i> color,
+<td><font size=-1>Annotate image with text using <i>stroke</i> color,
 font, font pointsize, and <i>box</i> color (text background color), at
 specified coordinates. If text contains <a href="FormatCharacters.html">special
 format characters</a> the image filename, type, width, height, or other
@@ -728,7 +729,7 @@ must begin with either one of the "moveto" commands or one of the "arc"
 commands. Subsequent "moveto" commands (i.e., when the "moveto" is not
 the first command) represent the start of a new subpath:
 <br>&nbsp;
-<table BORDER WIDTH="100%" NOSAVE >
+<table BORDER WIDTH="100%" >
 <caption><b>Moveto Classes</b></caption>
 
 <tr>
@@ -745,14 +746,14 @@ the first command) represent the start of a new subpath:
 </td>
 </tr>
 
-<tr NOSAVE>
-<td ROWSPAN="2" NOSAVE>
+<tr>
+<td ROWSPAN="2">
 <center><a NAME="PathMovetoAbs"></a><font size=-1>PathMovetoAbs</font></center>
 </td>
 
 <td><font size=-1>const Magick::Coordinate &amp;coordinate_</font></td>
 
-<td ROWSPAN="4" NOSAVE><font size=-1>Start a new sub-path at the given
+<td ROWSPAN="4"><font size=-1>Start a new sub-path at the given
 coordinate.&nbsp; <i>PathMovetoAbs</i> indicates that absolute coordinates
 will follow; <i>PathMovetoRel</i> indicates that relative coordinates will
 follow. If a relative moveto appears as the first element of the path,
@@ -765,8 +766,8 @@ lineto commands.</font></td>
 <td><font size=-1>const std::list&lt;Magick::Coordinate> &amp;coordinates_</font></td>
 </tr>
 
-<tr NOSAVE>
-<td ROWSPAN="2" NOSAVE>
+<tr>
+<td ROWSPAN="2">
 <center><a NAME="PathMovetoRel"></a><font size=-1>PathMovetoRel</font></center>
 </td>
 
@@ -783,7 +784,7 @@ The "closepath" command</h3>
 The "closepath" command causes an automatic straight line to be drawn from
 the current point to the initial point of the current subpath:
 <br>&nbsp;
-<table BORDER WIDTH="100%" NOSAVE >
+<table BORDER WIDTH="100%" >
 <caption><b>Closepath Classes</b></caption>
 
 <tr>
@@ -818,7 +819,7 @@ The "lineto" commands</h3>
 The various "lineto" commands draw straight lines from the current point
 to a new point:
 <br>&nbsp;
-<table BORDER WIDTH="100%" NOSAVE >
+<table BORDER WIDTH="100%" >
 <caption><b>Lineto Classes</b></caption>
 
 <tr>
@@ -835,14 +836,14 @@ to a new point:
 </td>
 </tr>
 
-<tr NOSAVE>
-<td ROWSPAN="2" NOSAVE>
+<tr>
+<td ROWSPAN="2">
 <center><a NAME="PathLinetoAbs"></a><font size=-1>PathLinetoAbs</font></center>
 </td>
 
 <td><font size=-1>const Magick::Coordinate&amp; coordinate_</font></td>
 
-<td ROWSPAN="4" NOSAVE><font size=-1>Draw a line from the current point
+<td ROWSPAN="4"><font size=-1>Draw a line from the current point
 to the given coordinate which becomes the new current point.&nbsp; <i>PathLinetoAbs</i>
 indicates that absolute coordinates are used; <i>PathLinetoRel</i> indicates
 that relative coordinates are used. A number of coordinates pairs may be
@@ -854,8 +855,8 @@ new current point is set to the final set of coordinates provided.</font></td>
 <td><font size=-1>const std::list&lt;Magick::Coordinate> &amp;coordinates_</font></td>
 </tr>
 
-<tr NOSAVE>
-<td ROWSPAN="2" NOSAVE>
+<tr>
+<td ROWSPAN="2">
 <center><a NAME="PathLinetoRel"></a><font size=-1>PathLinetoRel</font></center>
 </td>
 
@@ -866,14 +867,14 @@ new current point is set to the final set of coordinates provided.</font></td>
 <td><font size=-1>const std::list&lt;Magick::Coordinate> &amp;coordinates_</font></td>
 </tr>
 
-<tr NOSAVE>
+<tr>
 <td>
 <center><a NAME="PathLinetoHorizontalAbs"></a><font size=-1>PathLinetoHorizontalAbs</font></center>
 </td>
 
 <td><font size=-1>double x_</font></td>
 
-<td ROWSPAN="2" NOSAVE><font size=-1>Draws a horizontal line from the current
+<td ROWSPAN="2"><font size=-1>Draws a horizontal line from the current
 point (cpx, cpy) to (x, cpy). <i>PathLinetoHorizontalAbs</i> indicates
 that absolute coordinates are supplied; <i>PathLinetoHorizontalRel</i>
 indicates that relative coordinates are supplied. At the end of the command,
@@ -888,14 +889,14 @@ the new current point becomes (x, cpy) for the final value of x.</font></td>
 <td><font size=-1>double x_</font></td>
 </tr>
 
-<tr NOSAVE>
+<tr>
 <td>
 <center><a NAME="PathLinetoVerticalAbs"></a><font size=-1>PathLinetoVerticalAbs</font></center>
 </td>
 
 <td><font size=-1>double y_</font></td>
 
-<td ROWSPAN="2" NOSAVE><font size=-1>Draws a vertical line from the current
+<td ROWSPAN="2"><font size=-1>Draws a vertical line from the current
 point (cpx, cpy) to (cpx, y). <i>PathLinetoVerticalAbs</i> indicates that
 absolute coordinates are supplied; <i>PathLinetoVerticalRel</i> indicates
 that relative coordinates are supplied.&nbsp; At the end of the command,
@@ -940,7 +941,7 @@ double x2_, double y2_,</tt>
 double x_, double y_ );</tt>
 <p>The commands are as follows:
 <br>&nbsp;
-<table BORDER WIDTH="100%" NOSAVE >
+<table BORDER WIDTH="100%" >
 <caption>
 <center><b>Cubic B&eacute;zier Curve Classes</b></center>
 </caption>
@@ -959,14 +960,14 @@ double x_, double y_ );</tt>
 </td>
 </tr>
 
-<tr NOSAVE>
-<td ROWSPAN="2" NOSAVE>
+<tr>
+<td ROWSPAN="2">
 <center><a NAME="PathCurvetoAbs"></a><font size=-1>PathCurvetoAbs</font></center>
 </td>
 
 <td><font size=-1>const Magick::PathCurvetoArgs &amp;args_</font></td>
 
-<td ROWSPAN="4" NOSAVE><font size=-1>Draws a cubic B&eacute;zier curve
+<td ROWSPAN="4"><font size=-1>Draws a cubic B&eacute;zier curve
 from the current point to (x,y) using (x1,y1) as the control point at the
 beginning of the curve and (x2,y2) as the control point at the end of the
 curve. <i>PathCurvetoAbs</i> indicates that absolutecoordinates will follow;
@@ -980,8 +981,8 @@ current point becomes the final (x,y) coordinate pair used in the polybezier.</f
 <td><font size=-1>const std::list&lt;Magick::PathCurvetoArgs> &amp;args_</font></td>
 </tr>
 
-<tr NOSAVE>
-<td ROWSPAN="2" NOSAVE>
+<tr>
+<td ROWSPAN="2">
 <center><a NAME="PathCurvetoRel"></a><font size=-1>PathCurvetoRel</font></center>
 </td>
 
@@ -992,14 +993,14 @@ current point becomes the final (x,y) coordinate pair used in the polybezier.</f
 <td><font size=-1>const std::list&lt;Magick::PathCurvetoArgs> &amp;args_</font></td>
 </tr>
 
-<tr NOSAVE>
-<td ROWSPAN="2" NOSAVE>
+<tr>
+<td ROWSPAN="2">
 <center><a NAME="PathSmoothCurvetoAbs"></a><font size=-1>PathSmoothCurvetoAbs</font></center>
 </td>
 
 <td><font size=-1>const Magick::Coordinate &amp;coordinates_</font></td>
 
-<td ROWSPAN="4" NOSAVE><font size=-1>Draws a cubic B&eacute;zier curve
+<td ROWSPAN="4"><font size=-1>Draws a cubic B&eacute;zier curve
 from the current point to (x,y). The first control point is assumed to
 be the reflection of the second control point on the previous command relative
 to the current point. (If there is no previous command or if the previous
@@ -1017,8 +1018,8 @@ current point becomes the final (x,y) coordinate pair used in the polybezier.</f
 <td><font size=-1>const std::list&lt;Magick::Coordinate> &amp;coordinates_</font></td>
 </tr>
 
-<tr NOSAVE>
-<td ROWSPAN="2" NOSAVE>
+<tr>
+<td ROWSPAN="2">
 <center><a NAME="PathSmoothCurvetoRel"></a><font size=-1>PathSmoothCurvetoRel</font></center>
 </td>
 
@@ -1040,7 +1041,7 @@ double x_, double y_ );</tt>
 <p>The quadratic B&eacute;zier commands are as follows:
 <br>&nbsp;
 <br>&nbsp;
-<table BORDER WIDTH="100%" NOSAVE >
+<table BORDER WIDTH="100%" >
 <caption><b>Quadratic B&eacute;zier Curve Classes</b></caption>
 
 <tr>
@@ -1057,14 +1058,14 @@ double x_, double y_ );</tt>
 </td>
 </tr>
 
-<tr NOSAVE>
-<td ROWSPAN="2" NOSAVE>
+<tr>
+<td ROWSPAN="2">
 <center><a NAME="PathQuadraticCurvetoAbs"></a>PathQuadraticCurvetoAbs</center>
 </td>
 
 <td>const Magick::PathQuadraticCurvetoArgs &amp;args_</td>
 
-<td ROWSPAN="4" NOSAVE>Draws a quadratic B&eacute;zier curve from the current
+<td ROWSPAN="4">Draws a quadratic B&eacute;zier curve from the current
 point to (x,y) using (x1,y1) as the control point. <i>PathQuadraticCurvetoAbs</i>
 indicates that absolute coordinates will follow; <i>PathQuadraticCurvetoRel</i>
 indicates that relative coordinates will follow. Multiple sets of coordinates
@@ -1076,8 +1077,8 @@ current point becomes the final (x,y) coordinate pair used in the polybezier.</t
 <td>const std::list&lt;Magick::PathQuadraticCurvetoArgs> &amp;args_</td>
 </tr>
 
-<tr NOSAVE>
-<td ROWSPAN="2" NOSAVE>
+<tr>
+<td ROWSPAN="2">
 <center><a NAME="PathQuadraticCurvetoRel"></a>PathQuadraticCurvetoRel</center>
 </td>
 
@@ -1088,14 +1089,14 @@ current point becomes the final (x,y) coordinate pair used in the polybezier.</t
 <td>const std::list&lt;Magick::PathQuadraticCurvetoArgs> &amp;args_</td>
 </tr>
 
-<tr NOSAVE>
-<td ROWSPAN="2" NOSAVE>
+<tr>
+<td ROWSPAN="2">
 <center><a NAME="PathSmoothQuadraticCurvetoAbs"></a>PathSmoothQuadraticCurvetoAbs</center>
 </td>
 
 <td>const Magick::Coordinate &amp;coordinate_</td>
 
-<td ROWSPAN="4" NOSAVE>Draws a quadratic B&eacute;zier curve from the current
+<td ROWSPAN="4">Draws a quadratic B&eacute;zier curve from the current
 point to (x,y). The control point is assumed to be the reflection of the
 control point on the previous
 <br>command relative to the current point. (If there is no previous command
@@ -1113,8 +1114,8 @@ polybezier.</td>
 <td>const std::list&lt;Magick::Coordinate> &amp;coordinates_</td>
 </tr>
 
-<tr NOSAVE>
-<td ROWSPAN="2" NOSAVE>
+<tr>
+<td ROWSPAN="2">
 <center><a NAME="PathSmoothQuadraticCurvetoRel"></a>PathSmoothQuadraticCurvetoRel</center>
 </td>
 
@@ -1137,7 +1138,7 @@ double xAxisRotation_, bool largeArcFlag_,</tt>
 bool sweepFlag_, double x_, double y_ );</tt>
 <p>The elliptical arc commands are as follows:
 <br>&nbsp;
-<table BORDER WIDTH="100%" NOSAVE >
+<table BORDER WIDTH="100%" >
 <caption>
 <center><b>Elliptical Arc Curve Classes</b></center>
 </caption>
@@ -1156,14 +1157,14 @@ bool sweepFlag_, double x_, double y_ );</tt>
 </td>
 </tr>
 
-<tr NOSAVE>
-<td ROWSPAN="2" NOSAVE>
+<tr>
+<td ROWSPAN="2">
 <center><a NAME="PathArcAbs"></a><font size=-1>PathArcAbs</font></center>
 </td>
 
 <td><font size=-1>const Magick::PathArcArgs &amp;coordinates_</font></td>
 
-<td ROWSPAN="4" NOSAVE><font size=-1>Draws an elliptical arc from the current
+<td ROWSPAN="4"><font size=-1>Draws an elliptical arc from the current
 point to (x, y). The size and orientation of the ellipse are defined by
 two radii (<i>radiusX</i>, <i>radiusY</i>) and an <i>xAxisRotation</i>,
 which indicates how the ellipse as a whole is rotated relative to the current
@@ -1179,8 +1180,8 @@ the arc matching a clock-wise rotation.</font></td>
 <td><font size=-1>const std::list&lt;Magick::PathArcArgs> &amp;coordinates_</font></td>
 </tr>
 
-<tr NOSAVE>
-<td ROWSPAN="2" NOSAVE>
+<tr>
+<td ROWSPAN="2">
 <center><a NAME="PathArcRel"></a><font size=-1>PathArcRel</font></center>
 </td>
 
