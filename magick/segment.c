@@ -459,8 +459,8 @@ static unsigned int Classify(Image *image,short **extrema,
   /*
     Speed up distance calculations.
   */
-  squares=(double *)
-    AcquireMemory((ScaleQuantumToByte(MaxRGB)+ScaleQuantumToByte(MaxRGB)+1)*sizeof(double));
+  squares=(double *) AcquireMemory((ScaleQuantumToByte(MaxRGB)+
+    ScaleQuantumToByte(MaxRGB)+1)*sizeof(double));
   if (squares == (double *) NULL)
     ThrowBinaryException(ResourceLimitError,"Memory allocation failed",
       image->filename);
@@ -1479,8 +1479,10 @@ MagickExport unsigned int SegmentImage(Image *image,
   assert(image->signature == MagickSignature);
   for (i=0; i < MaxDimension; i++)
   {
-    histogram[i]=(long *) AcquireMemory((ScaleQuantumToByte(MaxRGB)+1)*sizeof(long));
-    extrema[i]=(short *) AcquireMemory((ScaleQuantumToByte(MaxRGB)+1)*sizeof(short));
+    histogram[i]=(long *)
+      AcquireMemory((ScaleQuantumToByte(MaxRGB)+1)*sizeof(long));
+    extrema[i]=(short *)
+      AcquireMemory((ScaleQuantumToByte(MaxRGB)+1)*sizeof(short));
     if ((histogram[i] == (long *) NULL) || (extrema[i] == (short *) NULL))
       {
         for (i-- ; i >= 0; i--)

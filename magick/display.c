@@ -2048,8 +2048,10 @@ static unsigned int XColorEditImage(Display *display,
                   if (FuzzyColorMatch((*image)->colormap+i,&target,(*image)->fuzz))
                     {
                       (*image)->colormap[i].red=ScaleQuantumToShort(color.red);
-                      (*image)->colormap[i].green=ScaleQuantumToShort(color.green);
-                      (*image)->colormap[i].blue=ScaleQuantumToShort(color.blue);
+                      (*image)->colormap[i].green=
+                        ScaleQuantumToShort(color.green);
+                      (*image)->colormap[i].blue=
+                        ScaleQuantumToShort(color.blue);
                     }
                 SyncImage(*image);
               }
@@ -2623,7 +2625,8 @@ static unsigned int XCompositeImage(Display *display,
         Create mattes for blending.
       */
       SetImageOpacity(composite_image,OpaqueOpacity);
-      opacity=(Quantum) (ScaleQuantumToByte(MaxRGB)-(ScaleQuantumToByte(MaxRGB)*blend)/100);
+      opacity=(Quantum) (ScaleQuantumToByte(MaxRGB)-
+        ((long) ScaleQuantumToByte(MaxRGB)*blend)/100);
       SetImageType(image,TrueColorMatteType);
       for (y=0; y < (long) image->rows; y++)
       {
