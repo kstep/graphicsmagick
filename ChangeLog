@@ -6,6 +6,7 @@
 	test failure reason [strerror(errno)]. Also log test success.
 	* VisualMagick/bin/delegates.mgk: -DSAFER does not work with
 	Ghostscript 8.0.
+	* magick/module.c: Needed to conditionally include nt_feature.h.
 
 2003-03-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 

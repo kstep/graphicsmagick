@@ -55,6 +55,9 @@
   Include declarations.
 */
 #include "studio.h"
+#if defined(WIN32) || defined(__CYGWIN__)
+# include "nt_feature.h"
+#endif
 #include "blob.h"
 #include "log.h"
 #include "magic.h"
