@@ -258,8 +258,7 @@ MagickExport unsigned int EqualizeImage(Image *image)
   low=map[0];
   high=map[MaxRGB];
   for (i=0; i <= MaxRGB; i++)
-    equalize_map[i]=(Quantum)
-      ((((double) (map[i]-low))*MaxRGB)/Max(high-low,1));
+    equalize_map[i]=(((double) (map[i]-low))*MaxRGB)/Max(high-low,1);
   LiberateMemory((void **) &map);
   /*
     Stretch the histogram.

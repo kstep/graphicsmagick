@@ -488,8 +488,8 @@ MagickExport PixelPacket InterpolateColor(Image *image,const double x_offset,
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  x=x_offset;
-  y=y_offset;
+  x=x_offset+0.5;
+  y=y_offset+0.5;
   if ((x < -1.0) || (x >= image->columns) || (y < -1.0) || (y >= image->rows))
     return(image->background_color);
   p=image->background_color;
@@ -508,11 +508,11 @@ MagickExport PixelPacket InterpolateColor(Image *image,const double x_offset,
   y-=floor(y);
   alpha=1.0-x;
   beta=1.0-y;
-  color.red=beta*(alpha*p.red+x*q.red)+y*(alpha*r.red+x*s.red);
-  color.green=beta*(alpha*p.green+x*q.green)+y*(alpha*r.green+x*s.green);
-  color.blue=beta*(alpha*p.blue+x*q.blue)+y*(alpha*r.blue+x*s.blue);
+  color.red=beta*(alpha*p.red+x*q.red)+y*(alpha*r.red+x*s.red)+0.5;
+  color.green=beta*(alpha*p.green+x*q.green)+y*(alpha*r.green+x*s.green)+0.5;
+  color.blue=beta*(alpha*p.blue+x*q.blue)+y*(alpha*r.blue+x*s.blue)+0.5;
   color.opacity=
-    beta*(alpha*p.opacity+x*q.opacity)+y*(alpha*r.opacity+x*s.opacity);
+    beta*(alpha*p.opacity+x*q.opacity)+y*(alpha*r.opacity+x*s.opacity)+0.5;
   return(color);
 }
 

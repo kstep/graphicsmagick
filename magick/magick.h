@@ -108,7 +108,6 @@
 #define HAVE_MMAP
 #define HasXML
 #define HasLCMS
-//#define HasLZW
 #endif
 
 #define MagickSignature  0xcafe

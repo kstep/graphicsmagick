@@ -326,7 +326,7 @@ static void XShearImage(Image *image,const double degrees,
       }
     step=(int) floor(displacement);
     alpha=MaxRGB*(displacement-step);
-    if (alpha == 0)
+    if (alpha == 0.0)
       {
         /*
           No fractional displacement-- just copy.
@@ -572,7 +572,7 @@ static void YShearImage(Image *image,const double degrees,
       }
     step=(int) floor(displacement);
     alpha=MaxRGB*(displacement-step);
-    if (alpha == 0)
+    if (alpha == 0.0)
       {
         /*
           No fractional displacement-- just copy the pixels.

@@ -1597,7 +1597,7 @@ static void GeneratePath(PrimitiveInfo *primitive_info,const char *path)
         do
         {
           pixels[0]=point;
-          for (i=1; i < 4; i++)
+          for (i=1; i <= 3; i++)
           {
             x=strtod(p,&p);
             if (*p == ',')
@@ -1610,7 +1610,7 @@ static void GeneratePath(PrimitiveInfo *primitive_info,const char *path)
             pixels[i]=last;
           }
           point=last;
-          for (i=0; i < 4; i++)
+          for (i=0; i <= 3; i++)
             (q+i)->pixel=pixels[i];
           q->coordinates=4;
           GenerateBezier(q);
