@@ -2213,7 +2213,7 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
         histogram[i]=0;
       for (i=0; i < width; i++)
       {
-        r=p-(width-i)*image->columns-i;
+        r=p-(width-i-1)*image->columns-i-1;
         for (j=0; j < (2*i+1); j++)
         {
           k=Intensity(*r);
@@ -2225,7 +2225,7 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
             }
           r++;
         }
-        r=p+(width-i)*image->columns-i;
+        r=p+(width-i-1)*image->columns-i-1;
         for (j=0; j < (2*i+1); j++)
         {
           k=Intensity(*r);
