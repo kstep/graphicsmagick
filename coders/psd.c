@@ -912,7 +912,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
 					size_t blend_dest = ReadBlobMSBLong(image);
 					  if(logging)
 						{
-						  (void) LogMagickEvent(CoderEvent,__MagickMethod,
+						  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
 										"        source(%x), dest(%x)",
 										blend_source, blend_dest);
 						}
@@ -960,8 +960,8 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
 				if ((count == 0) || (LocaleNCompare(alsig,"8BIM",4) != 0)) {
 				  if(logging)
 					{
-					  (void) LogMagickEvent(CoderEvent,__MagickMethod,"  adjustment layer type was %.4s instead of 8BIM", alsig);
-					  (void) LogMagickEvent(CoderEvent,__MagickMethod,"return");
+					  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  adjustment layer type was %.4s instead of 8BIM", alsig);
+					  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"return");
 					}
 				  ThrowReaderException(CorruptImageError,"NotAPSDImageFile",image);
 				}
@@ -969,7 +969,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
 				length=ReadBlobMSBLong(image);
 				  if(logging)
 					{
-					  (void) LogMagickEvent(CoderEvent,__MagickMethod,
+					  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
 											"      adjustment layer key: %.4s, data length=%ld",
 											alkey, length);
 					}
@@ -1065,7 +1065,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
               long
                 k;
 
-			  (void) LogMagickEvent(CoderEvent,__MagickMethod,"      layer data is empty");
+			  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"      layer data is empty");
 
               /*
                 A layer without data.
@@ -1081,7 +1081,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
               /*
                 Read RLE compressed data.
               */
-			  (void) LogMagickEvent(CoderEvent,__MagickMethod,"      layer data is RLE compressed");
+			  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"      layer data is RLE compressed");
 
               for (y=0; y < (long) layer_info[i].image->rows; y++)
                 (void) ReadBlobMSBShort(layer_info[i].image);
@@ -1093,7 +1093,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           /*
             Read uncompressed pixel data as separate planes.
           */
-		  (void) LogMagickEvent(CoderEvent,__MagickMethod,"      layer data is uncompressed");
+		  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"      layer data is uncompressed");
           packet_size=1;
           if (layer_info[i].image->storage_class == PseudoClass)
             {

@@ -198,7 +198,7 @@ MagickExport void GetRandomKey(unsigned char *key,const size_t length)
       int
         file;
 
-      pid_t
+      long
         pid;
 
       time_t
@@ -232,7 +232,7 @@ MagickExport void GetRandomKey(unsigned char *key,const size_t length)
       }
 #endif
       pid=getpid();
-      DistillRandomEvent((const unsigned char *) &pid,sizeof(pid_t));
+      DistillRandomEvent((const unsigned char *) &pid,sizeof(long));
       DistillRandomEvent((const unsigned char *) *roulette,
         sizeof(unsigned long *));
       file=open("/dev/random",O_RDONLY | O_BINARY,0777);
