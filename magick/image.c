@@ -1756,7 +1756,7 @@ MagickExport void DescribeImage(Image *image,FILE *file,
           (void) fprintf(file,"PseudoClass %uc ",image->colors);
         else
           {
-            (void) fprintf(file,"PseudoClass %ld=>%luc ",image->total_colors,
+            (void) fprintf(file,"PseudoClass %lu=>%uc ",image->total_colors,
               image->colors);
             (void) fprintf(file,"%d/%.6f/%.6fe ",
               (int) image->mean_error_per_pixel,image->normalized_mean_error,
