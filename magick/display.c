@@ -54,6 +54,7 @@
   Include declarations.
 */
 #include "studio.h"
+#if defined(HasX11)
 #include "attribute.h"
 #include "blob.h"
 #include "cache.h"
@@ -73,7 +74,6 @@
 #include "utility.h"
 #include "version.h"
 #include "xwindow.h"
-#if defined(HasX11)
 #include "display.h"
 
 /*

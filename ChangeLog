@@ -1,3 +1,17 @@
+2003-02-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/preview.c (WritePreviewImage): Re-wrote so that
+ 	MogrifyImage() is no longer used. Resize image outside of the loop
+ 	to improve performance.
+
+2003-02-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/effect.c (ShadeImage): Use PixelIntensityToDouble macro.
+
+	* magick/image.h (PixelIntensityToDouble): Added
+ 	PixelIntensityToDouble macro to handle the case where pixel
+ 	intensity is used for floating arithmetic.
+
 2003-01-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* Makefile.am: Distribute files ChangeLog, INSTALL-mac.txt,

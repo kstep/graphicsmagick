@@ -1987,6 +1987,7 @@ MagickExport Image *ReduceNoiseImage(const Image *image,const double radius,
 %
 %
 */
+
 MagickExport Image *ShadeImage(const Image *image,const unsigned int gray,
   double azimuth,double elevation,ExceptionInfo *exception)
 {
@@ -2059,12 +2060,12 @@ MagickExport Image *ShadeImage(const Image *image,const unsigned int gray,
       /*
         Determine the surface normal and compute shading.
       */
-      normal.x=(double) PixelIntensity(s0-1)+(double) PixelIntensity(s1-1)+
-        (double) PixelIntensity(s2-1)-(double) PixelIntensity(s0+1)-
-        (double) PixelIntensity(s1+1)-(double) PixelIntensity(s2+1);
-      normal.y=(double) PixelIntensity(s2-1)+(double) PixelIntensity(s2)+
-        (double) PixelIntensity(s2+1)-(double) PixelIntensity(s0-1)-
-        (double) PixelIntensity(s0)-(double) PixelIntensity(s0+1);
+      normal.x=PixelIntensityToDouble(s0-1)+ PixelIntensityToDouble(s1-1)+
+        PixelIntensityToDouble(s2-1)-PixelIntensityToDouble(s0+1)-
+        PixelIntensityToDouble(s1+1)-PixelIntensityToDouble(s2+1);
+      normal.y=PixelIntensityToDouble(s2-1)+PixelIntensityToDouble(s2)+
+        PixelIntensityToDouble(s2+1)-PixelIntensityToDouble(s0-1)-
+        PixelIntensityToDouble(s0)-PixelIntensityToDouble(s0+1);
       if ((normal.x == 0.0) && (normal.y == 0.0))
         shade=light.z;
       else

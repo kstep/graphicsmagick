@@ -2723,7 +2723,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
                 if (LocaleCompare("JPEG",option) == 0)
                   image_info->preview_type=JPEGPreview;
                 if (image_info->preview_type == UndefinedPreview)
-                  ThrowConvertException(OptionError,"UnrecognizedInterlaceType",
+                  ThrowConvertException(OptionError,"UnrecognizedPreviewType",
                      option);
               }
             break;

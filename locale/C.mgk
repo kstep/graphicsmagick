@@ -1091,6 +1091,9 @@
       <Message name="UnrecognizedPerlMagickMethod">
         Unrecognized PerlMagick method
       </Message>
+      <Message name="UnrecognizedPreviewType">
+        Unrecognized preview type
+      </Message>
       <Message name="UnrecognizedType">
         Unrecognized type
       </Message>

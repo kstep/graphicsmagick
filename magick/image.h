@@ -44,13 +44,11 @@ extern "C" {
   Premultiply by 1024 to obtain integral values, and then divide
   result by 1024 by shifting to the right by 10 bits.
 */
-#define PixelIntensity(pixel) ((unsigned long) \
-   (((unsigned int)306U*(pixel)->red+601U*(pixel)->green+117U*(pixel)->blue) \
-   >> 10))
-#define PixelIntensityToQuantum(pixel) ((Quantum) \
-   (((unsigned int)306U*(pixel)->red+601U*(pixel)->green+117U*(pixel)->blue) \
-   >> 10))
-
+#define PixelIntensity(pixel) ((unsigned int) \
+   (((unsigned int)306U*(pixel)->red+ \
+     (unsigned int)601U*(pixel)->green+ \
+     (unsigned int)117U*(pixel)->blue) \
+    >> 10U))
 typedef unsigned char Quantum;
 typedef gm_int32_t QuantumArithType;
 typedef gm_int64_t QuantumSumType;
@@ -75,13 +73,11 @@ typedef gm_int64_t QuantumSumType;
   Premultiply by 1024 to obtain integral values, and then divide
   result by 1024 by shifting to the right by 10 bits.
 */
-#define PixelIntensity(pixel) ((unsigned long) \
-   (((unsigned int)306U*(pixel)->red+601U*(pixel)->green+117U*(pixel)->blue) \
-   >> 10))
-#define PixelIntensityToQuantum(pixel) ((Quantum) \
-   (((unsigned int)306U*(pixel)->red+601U*(pixel)->green+117U*(pixel)->blue) \
-   >> 10))
-
+#define PixelIntensity(pixel) ((unsigned int) \
+   (((unsigned int)306U*(pixel)->red+ \
+     (unsigned int)601U*(pixel)->green+ \
+     (unsigned int)117U*(pixel)->blue) \
+    >> 10U))
 typedef unsigned short Quantum;
 typedef gm_int32_t QuantumArithType;
 typedef gm_int64_t QuantumSumType;
@@ -102,13 +98,15 @@ typedef gm_int64_t QuantumSumType;
 #define ScaleShortToQuantum(value)  ((Quantum) (65537UL*(value)))
 #define ScaleToQuantum(value)  ((unsigned long) (16843009UL*(value)))
 /*
-  i=0.299*red+0.587*green+0.114*blue
+  intensity=0.299*red+0.587*green+0.114*blue.
+  Premultiply by 1024 to obtain integral values, and then divide
+  result by 1024.
 */
-#define PixelIntensity(pixel) ((unsigned long) \
-  (0.299*(pixel)->red+0.587*(pixel)->green+0.114*(pixel)->blue+0.5))
-#define PixelIntensityToQuantum(pixel) ((Quantum) \
-  (0.299*(pixel)->red+0.587*(pixel)->green+0.114*(pixel)->blue+0.5))
-
+#define PixelIntensity(pixel) ((unsigned int) \
+   (((double)306.0*(pixel)->red+ \
+     (double)601.0*(pixel)->green+ \
+     (double)117.0*(pixel)->blue) \
+    / 1024.0))
 typedef unsigned int Quantum;
 typedef gm_int64_t QuantumArithType;
 typedef double QuantumSumType;
@@ -118,6 +116,8 @@ typedef double QuantumSumType;
 
 #define ColorMatch(p,q) (((p)->red == (q)->red) && \
   ((p)->green == (q)->green) && ((p)->blue == (q)->blue))
+#define PixelIntensityToQuantum(pixel) ((Quantum)PixelIntensity(pixel))
+#define PixelIntensityToDouble(pixel) ((double)PixelIntensity(pixel))
 #define OpaqueOpacity  0UL
 #define TransparentOpacity  MaxRGB
 /*

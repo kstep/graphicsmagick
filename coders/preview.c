@@ -57,12 +57,18 @@
 #include "attribute.h"
 #include "blob.h"
 #include "color.h"
-#include "command.h"
 #include "constitute.h"
+#include "decorate.h"
+#include "effect.h"
+#include "enhance.h"
+#include "fx.h"
 #include "magick.h"
 #include "monitor.h"
 #include "montage.h"
+#include "quantize.h"
 #include "resize.h"
+#include "shear.h"
+#include "transform.h"
 #include "utility.h"
 
 /*
@@ -175,7 +181,6 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
 #define PreviewImageText  "  Creating image preview...  "
 
   char
-    *commands[NumberTiles+6],
     factor[MaxTextExtent],
     label[MaxTextExtent];
 
@@ -190,13 +195,12 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
   Image
     *images,
     *montage_image,
-    *preview_image;
+    *preview_image,
+    *master_image,
+    *temp_image;
 
   ImageInfo
     *clone_info;
-
-  int
-    argc;
 
   long
     y;
@@ -235,7 +239,6 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
   clone_info=CloneImageInfo(image_info);
   clone_info->quality=0;
   colors=2;
-  commands[0]=SetClientName((char *) NULL);
   degrees=0;
   gamma=(-0.2f);
   SetGeometry(image,&geometry);
@@ -248,10 +251,13 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
   threshold=0.0;
   x=0;
   y=0;
+  master_image=ResizeImage(image,geometry.width,geometry.height,
+                           TriangleFilter,1.0,&image->exception);
+  if (master_image == (Image *) NULL)
+    return False;
   for (i=0; i < NumberTiles; i++)
   {
-    preview_image=ResizeImage(image,geometry.width,geometry.height,
-      TriangleFilter,1.0,&image->exception);
+    preview_image=CloneImage(master_image,0,0,True,&image->exception);
     if (preview_image == (Image *) NULL)
       break;
     (void) SetImageAttribute(preview_image,"label",DefaultTileLabel);
@@ -262,7 +268,6 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
         AppendImageToList(&images,preview_image);
         continue;
       }
-    argc=1;
     handler=SetMonitorHandler((MonitorHandler) NULL);
     switch (image_info->preview_type)
     {
@@ -270,8 +275,12 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
       {
         FormatString(factor,"%.1f",degrees+=45.0);
         FormatString(label,"rotate %.1024s",factor);
-        commands[argc++]=(char *) "-rotate";
-        commands[argc++]=factor;
+        temp_image=RotateImage(preview_image,degrees,&image->exception);
+        if (temp_image != (Image *) NULL)
+          {
+            DestroyImage(preview_image);
+            preview_image=temp_image;
+          }
         break;
       }
       case ShearPreview:
@@ -279,8 +288,12 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
         degrees+=10.0;
         FormatString(factor,"%.1fx%.1f",degrees,2.0*degrees);
         FormatString(label,"shear %.1024s",factor);
-        commands[argc++]=(char *) "-shear";
-        commands[argc++]=factor;
+        temp_image=ShearImage(preview_image,degrees,2.0*degrees,&image->exception);
+        if (temp_image != (Image *) NULL)
+          {
+            DestroyImage(preview_image);
+            preview_image=temp_image;
+          }
         break;
       }
       case RollPreview:
@@ -289,32 +302,33 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
         y=(long) ((i+1)*preview_image->rows)/NumberTiles;
         FormatString(factor,"%+ld%+ld",x,y);
         FormatString(label,"roll %.1024s",factor);
-        commands[argc++]=(char *) "-roll";
-        commands[argc++]=factor;
+        temp_image=RollImage(preview_image,x,y,&image->exception);
+        if (temp_image != (Image *) NULL)
+          {
+            DestroyImage(preview_image);
+            preview_image=temp_image;
+          }
         break;
       }
       case HuePreview:
       {
         FormatString(factor,"100/100/%g",2.0*percentage);
         FormatString(label,"modulate %.1024s",factor);
-        commands[argc++]=(char *) "-modulate";
-        commands[argc++]=factor;
+        (void) ModulateImage(preview_image,factor);
         break;
       }
       case SaturationPreview:
       {
         FormatString(factor,"100/%g",2.0*percentage);
         FormatString(label,"modulate %.1024s",factor);
-        commands[argc++]=(char *) "-modulate";
-        commands[argc++]=factor;
+        (void) ModulateImage(preview_image,factor);
         break;
       }
       case BrightnessPreview:
       {
         FormatString(factor,"%g",2.0*percentage);
         FormatString(label,"modulate %.1024s",factor);
-        commands[argc++]=(char *) "-modulate";
-        commands[argc++]=factor;
+        (void) ModulateImage(preview_image,factor);
         break;
       }
       case GammaPreview:
@@ -322,47 +336,67 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
       {
         FormatString(factor,"%g",gamma+=0.4f);
         FormatString(label,"gamma %.1024s",factor);
-        commands[argc++]=(char *) "-gamma";
-        commands[argc++]=factor;
+        (void) GammaImage(preview_image,factor);
         break;
       }
       case SpiffPreview:
       {
         for (x=0; x < i; x++)
-          commands[argc++]=(char *) "-contrast";
+          (void) ContrastImage(preview_image,True);
         FormatString(label,"-contrast %ld",i+1);
         break;
       }
       case DullPreview:
       {
         for (x=0; x < i; x++)
-          commands[argc++]=(char *) "+contrast";
+          (void) ContrastImage(preview_image,False);
         FormatString(label,"+contrast %ld",i+1);
         break;
       }
       case GrayscalePreview:
       {
+        QuantizeInfo
+          quantize_info;
+
+        GetQuantizeInfo(&quantize_info);
         FormatString(factor,"%lu",colors);
-        colors<<=1;
         FormatString(label,"colors %.1024s",factor);
-        commands[argc++]=(char *) "-colorspace";
-        commands[argc++]=(char *) "gray";
-        commands[argc++]=(char *) "-colors";
-        commands[argc++]=factor;
+        (void) RGBTransformImage(preview_image,GRAYColorspace);
+        quantize_info.number_colors=colors;
+        quantize_info.colorspace=GRAYColorspace;
+        quantize_info.dither=image_info->dither;
+        quantize_info.tree_depth=8;
+        (void) QuantizeImage(&quantize_info,preview_image);
+        colors<<=1;
         break;
       }
       case QuantizePreview:
       {
-        FormatString(factor,"%lu",colors<<=1);
+        QuantizeInfo
+          quantize_info;
+
+        GetQuantizeInfo(&quantize_info);
+        FormatString(factor,"%lu",colors);
         FormatString(label,"colors %.1024s",factor);
-        commands[argc++]=(char *) "-colors";
-        commands[argc++]=factor;
+        quantize_info.number_colors=colors;
+        quantize_info.colorspace=preview_image->colorspace;
+        quantize_info.dither=image_info->dither;
+        quantize_info.tree_depth=8;
+        (void) QuantizeImage(&quantize_info,preview_image);
+        colors<<=1;
         break;
       }
       case DespecklePreview:
       {
         for (x=0; x < i; x++)
-          commands[argc++]=(char *) "-despeckle";
+          {
+            temp_image=DespeckleImage(preview_image,&image->exception);
+            if (temp_image != (Image *) NULL)
+              {
+                DestroyImage(preview_image);
+                preview_image=temp_image;
+              }
+          }
         FormatString(label,"despeckle %ld",i+1);
         break;
       }
@@ -370,42 +404,77 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
       {
         FormatString(factor,"%gx%g",radius,sigma);
         FormatString(label,"noise %.1024s",factor);
-        commands[argc++]=(char *) "-noise";
-        commands[argc++]=factor;
+        temp_image=ReduceNoiseImage(preview_image,radius,&image->exception);
+        if (temp_image != (Image *) NULL)
+          {
+            DestroyImage(preview_image);
+            preview_image=temp_image;
+          }
         break;
       }
       case AddNoisePreview:
       {
+        NoiseType
+          noise;
+
         switch ((int) x)
         {
-          case 0: (void) strcpy(factor,"uniform"); break;
-          case 1: (void) strcpy(factor,"Gaussian"); break;
-          case 2: (void) strcpy(factor,"multiplicative"); break;
-          case 3: (void) strcpy(factor,"impulse"); break;
-          case 4: (void) strcpy(factor,"laplacian"); break;
-          case 5: (void) strcpy(factor,"Poisson"); break;
-          default: (void) strcpy(preview_image->magick,"NULL"); break;
+          case 0:
+            (void) strcpy(factor,"uniform");
+            noise=UniformNoise;
+            break;
+          case 1:
+            (void) strcpy(factor,"Gaussian");
+            noise=GaussianNoise;
+            break;
+          case 2:
+            (void) strcpy(factor,"multiplicative");
+            noise=MultiplicativeGaussianNoise;
+            break;
+          case 3:
+            (void) strcpy(factor,"impulse");
+            noise=ImpulseNoise;
+            break;
+          case 4:
+            (void) strcpy(factor,"laplacian");
+            noise=LaplacianNoise;
+            break;
+          case 5:
+            (void) strcpy(factor,"Poisson");
+            noise=PoissonNoise;
+            break;
+          default:
+            (void) strcpy(preview_image->magick,"NULL");
+            noise=UniformNoise;
+            break;
         }
         x++;
         FormatString(label,"+noise %.1024s",factor);
-        commands[argc++]=(char *) "+noise";
-        commands[argc++]=factor;
+        (void) AddNoiseImage(preview_image,noise,&image->exception);
         break;
       }
       case SharpenPreview:
       {
         FormatString(factor,"%gx%g",radius,sigma);
         FormatString(label,"sharpen %.1024s",factor);
-        commands[argc++]=(char *) "-sharpen";
-        commands[argc++]=factor;
+        temp_image=SharpenImage(preview_image,radius,sigma,&image->exception);
+        if (temp_image != (Image *) NULL)
+          {
+            DestroyImage(preview_image);
+            preview_image=temp_image;
+          }
         break;
       }
       case BlurPreview:
       {
         FormatString(factor,"%gx%g",radius,sigma);
         FormatString(label,"-blur %.1024s",factor);
-        commands[argc++]=(char *) "-blur";
-        commands[argc++]=factor;
+        temp_image=BlurImage(preview_image,radius,sigma,&image->exception);
+        if (temp_image != (Image *) NULL)
+          {
+            DestroyImage(preview_image);
+            preview_image=temp_image;
+          }
         break;
       }
       case ThresholdPreview:
@@ -413,57 +482,77 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
         FormatString(factor,"%lu",(unsigned long)
           ((percentage*((double) MaxRGB+1.0))/100));
         FormatString(label,"threshold %.1024s",factor);
-        commands[argc++]=(char *) "-threshold";
-        commands[argc++]=factor;
+        (void ) ThresholdImage(preview_image,(percentage*((double) MaxRGB+1.0))/100);
         break;
       }
       case EdgeDetectPreview:
       {
         FormatString(factor,"%gx%g",radius,sigma);
         FormatString(label,"edge %.1024s",factor);
-        commands[argc++]=(char *) "-edge";
-        commands[argc++]=factor;
+        temp_image=EdgeImage(preview_image,radius,&image->exception);
+        if (temp_image != (Image *) NULL)
+          {
+            DestroyImage(preview_image);
+            preview_image=temp_image;
+          }
         break;
       }
       case SpreadPreview:
       {
         FormatString(factor,"%ld",i+1);
         FormatString(label,"spread %.1024s",factor);
-        commands[argc++]=(char *) "-spread";
-        commands[argc++]=factor;
+        temp_image=SpreadImage(preview_image,i+1,&image->exception);
+        if (temp_image != (Image *) NULL)
+          {
+            DestroyImage(preview_image);
+            preview_image=temp_image;
+          }
         break;
       }
       case SolarizePreview:
       {
         FormatString(factor,"%g",percentage);
         FormatString(label,"solarize %.1024s",factor);
-        commands[argc++]=(char *) "-solarize";
-        commands[argc++]=factor;
+        SolarizeImage(preview_image,percentage);
         break;
       }
       case ShadePreview:
       {
         if (i == 0)
           {
-            FormatString(factor,"30.0x30.0");
+            FormatString(factor,"30x30");
             FormatString(label,"+shade %.1024s",factor);
-            commands[argc++]=(char *) "+shade";
-            commands[argc++]=factor;
+            temp_image=ShadeImage(preview_image,False,30,30,&image->exception);
+            if (temp_image != (Image *) NULL)
+              {
+                DestroyImage(preview_image);
+                preview_image=temp_image;
+              }
             break;
           }
         degrees+=10.0;
         FormatString(factor,"%gx%g",degrees,degrees);
         FormatString(label,"shade %.1024s",factor);
-        commands[argc++]=(char *) "-shade";
-        commands[argc++]=factor;
+        temp_image=ShadeImage(preview_image,True,degrees,degrees,&image->exception);
+        if (temp_image != (Image *) NULL)
+          {
+            DestroyImage(preview_image);
+            preview_image=temp_image;
+          }
         break;
       }
       case RaisePreview:
       {
+        RectangleInfo
+          raise_info;
+
+        raise_info.width=2*i+2;
+        raise_info.height=2*i+2;
+        raise_info.x=0;
+        raise_info.y=0;
         FormatString(factor,"%ldx%ld",2*i+2,2*i+2);
         FormatString(label,"raise %.1024s",factor);
-        commands[argc++]=(char *) "-raise";
-        commands[argc++]=factor;
+        RaiseImage(preview_image,&raise_info,True);
         break;
       }
       case SegmentPreview:
@@ -471,24 +560,33 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
         threshold+=0.4f;
         FormatString(factor,"%.1fx%.1f",threshold,threshold);
         FormatString(label,"segment %.1024s",factor);
-        commands[argc++]=(char *) "-colors";
-        commands[argc++]=factor;
+        (void) SegmentImage(preview_image,preview_image->colorspace,False,
+                            threshold,threshold);
         break;
       }
       case SwirlPreview:
       {
-        FormatString(factor,"%.1f",degrees+=45.0);
+        FormatString(factor,"%.1f",degrees);
         FormatString(label,"swirl %.1024s",factor);
-        commands[argc++]=(char *) "-swirl";
-        commands[argc++]=factor;
+        temp_image=SwirlImage(preview_image,degrees,&image->exception);
+        if (temp_image != (Image *) NULL)
+          {
+            DestroyImage(preview_image);
+            preview_image=temp_image;
+          }
+        degrees+=45.0;
         break;
       }
       case ImplodePreview:
       {
         FormatString(factor,"%.1f",percentage/100.0);
         FormatString(label,"implode %.1024s",factor);
-        commands[argc++]=(char *) "-implode";
-        commands[argc++]=factor;
+        temp_image=ImplodeImage(preview_image,percentage/100.0,&image->exception);
+        if (temp_image != (Image *) NULL)
+          {
+            DestroyImage(preview_image);
+            preview_image=temp_image;
+          }
         break;
       }
       case WavePreview:
@@ -496,24 +594,36 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
         degrees+=5.0;
         FormatString(factor,"%.1fx%.1f",0.5*degrees,2.0*degrees);
         FormatString(label,"wave %.1024s",factor);
-        commands[argc++]=(char *) "-wave";
-        commands[argc++]=factor;
+        temp_image=WaveImage(preview_image,0.5*degrees,2.0*degrees,&image->exception);
+        if (temp_image != (Image *) NULL)
+          {
+            DestroyImage(preview_image);
+            preview_image=temp_image;
+          }
         break;
       }
       case OilPaintPreview:
       {
         FormatString(factor,"%g",0.5*(i+1));
         FormatString(label,"paint %.1024s",factor);
-        commands[argc++]=(char *) "-paint";
-        commands[argc++]=factor;
+        temp_image=OilPaintImage(preview_image,0.5*(i+1),&image->exception);
+        if (temp_image != (Image *) NULL)
+          {
+            DestroyImage(preview_image);
+            preview_image=temp_image;
+          }
         break;
       }
       case CharcoalDrawingPreview:
       {
         FormatString(factor,"%gx%g",radius,sigma);
         FormatString(label,"charcoal %.1024s",factor);
-        commands[argc++]=(char *) "-charcoal";
-        commands[argc++]=factor;
+        temp_image=CharcoalImage(preview_image,radius,sigma,&image->exception);
+        if (temp_image != (Image *) NULL)
+          {
+            DestroyImage(preview_image);
+            preview_image=temp_image;
+          }
         break;
       }
       case JPEGPreview:
@@ -557,14 +667,14 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
     percentage+=12.5;
     radius+=0.5;
     sigma+=0.25;
-    commands[argc++]=(char *) "-label";
-    commands[argc++]=label;
-    (void) MogrifyImage(clone_info,argc,commands,&preview_image);
+    (void) SetImageAttribute(preview_image,"label",(char *) NULL);
+    (void) SetImageAttribute(preview_image,"label",label);
     (void) SetMonitorHandler(handler);
     AppendImageToList(&images,preview_image);
     if (!MagickMonitor(PreviewImageText,i,NumberTiles,&image->exception))
       break;
   }
+  DestroyImage(master_image);
   DestroyImageInfo(clone_info);
   if (images == (Image *) NULL)
     return(False);
