@@ -385,6 +385,17 @@ DOCDIRS = images www www/api www/api/types www/Magick++
 @WITH_PERL_TRUE@PERLMAKEFILE = $(PERLMAGICK)/Makefile
 
 @WITH_PERL_DYNAMIC_FALSE@@WITH_PERL_STATIC_TRUE@@WITH_PERL_TRUE@PERLSTATICNAME = PerlMagick
+
+# txt2html requires perl.
+@WITH_PERL_TRUE@TXT2HTMLTARGETS = \
+@WITH_PERL_TRUE@	$(top_srcdir)/www/Changelog.html \
+@WITH_PERL_TRUE@	$(top_srcdir)/www/INSTALL-mac.html \
+@WITH_PERL_TRUE@	$(top_srcdir)/www/INSTALL-unix.html \
+@WITH_PERL_TRUE@	$(top_srcdir)/www/INSTALL-vms.html \
+@WITH_PERL_TRUE@	$(top_srcdir)/www/INSTALL-windows.html \
+@WITH_PERL_TRUE@	$(top_srcdir)/www/NEWS.html \
+@WITH_PERL_TRUE@	$(top_srcdir)/www/README.html
+
 subdir = .
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
@@ -896,14 +907,7 @@ perl-sources:
 @WITH_PERL_FALSE@clean-perl:
 @WITH_PERL_FALSE@distclean-perl:
 
-all-local: \
-	$(top_srcdir)/www/Changelog.html \
-	$(top_srcdir)/www/INSTALL-mac.html \
-	$(top_srcdir)/www/INSTALL-unix.html \
-	$(top_srcdir)/www/INSTALL-vms.html \
-	$(top_srcdir)/www/INSTALL-windows.html \
-	$(top_srcdir)/www/NEWS.html \
-	$(top_srcdir)/www/README.html
+all-local: @MAINTAINER_MODE_TRUE@ $(TXT2HTMLTARGETS)
 
 # Install PerlMagick
 install-exec-local: install-exec-perl

@@ -645,7 +645,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     method=0;
     if ((image->storage_class == DirectClass) || image->matte)
       {
-        method=2;
+        method=3;
         if (photometric == PHOTOMETRIC_RGB)
           if ((samples_per_pixel >= 2) && (interlace == PLANARCONFIG_CONTIG))
             method=1;
@@ -948,7 +948,111 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         LiberateMemory((void **) &scanline);
         break;
       }
-      case 2:
+    case 2:
+      {
+        /*
+          Read tiled TIFF
+        */
+        register uint32
+          *p;
+        
+        uint32
+          *tile_pixels,
+          tile_columns,
+          tile_rows;
+        
+        unsigned long
+          tile_total_pixels;
+        
+        /*
+          Obtain tile geometry
+        */
+        if(!TIFFGetField(tiff,TIFFTAG_TILEWIDTH,&tile_columns)
+           || !TIFFGetField(tiff,TIFFTAG_TILELENGTH,&tile_rows))
+          {
+            ThrowReaderException(CoderError,"SourceImageNotTiled",image)
+          }
+        tile_total_pixels=tile_columns*tile_rows;
+        logging && LogMagickEvent(CoderEvent,GetMagickModule(),"Reading TIFF tiles ...");
+        logging && LogMagickEvent(CoderEvent,GetMagickModule(),
+          "TIFF tile geometry %ux%u, %lu pixels",(unsigned int)tile_columns,
+            (unsigned int)tile_rows, tile_total_pixels);
+        
+        /*
+          Allocate tile buffer
+        */
+        tile_pixels=(uint32*) AcquireMemory(tile_columns*tile_rows*sizeof (uint32));
+        for (y=0; y < (long) image->rows; y+=tile_rows)
+          {
+            /*
+              Retrieve a tile height's worth of rows
+            */
+            PixelPacket
+              *strip;
+
+            unsigned int
+              tile_columns_remaining,
+              tile_rows_remaining;
+
+            /* Compute remaining tile rows */
+            if (y+tile_rows < image->rows)
+              tile_rows_remaining=tile_rows;
+            else
+              tile_rows_remaining=image->rows-y;
+
+            strip=SetImagePixels(image,0,y,image->columns,tile_rows_remaining);
+            if (strip == (PixelPacket *) NULL)
+              break;
+            for (x=0; x < image->columns; x+=tile_columns)
+              {
+                register unsigned int
+                  tile_column,
+                  tile_row;
+
+                /* Obtain one tile.  Origin is bottom left of tile.  */
+                if (!TIFFReadRGBATile(tiff,x,y,tile_pixels))
+                  break;
+
+                /* Compute remaining tile columns */
+                if (x+tile_columns < image->columns)
+                  tile_columns_remaining=tile_columns;
+                else
+                  tile_columns_remaining=image->columns-x;
+
+                /*
+                  Transfer tile to image
+                */
+                p=tile_pixels+(tile_rows-tile_rows_remaining)*tile_columns;
+                q=strip+(x+(tile_rows_remaining-1)*image->columns);
+                for ( tile_row=tile_rows_remaining; tile_row > 0; tile_row--)
+                  {
+                    for (tile_column=0; tile_column < tile_columns_remaining; tile_column++)
+                      {
+                        q->red=ScaleCharToQuantum(TIFFGetR(*p));
+                        q->green=ScaleCharToQuantum(TIFFGetG(*p));
+                        q->blue=ScaleCharToQuantum(TIFFGetB(*p));
+                        if (image->matte)
+                          q->opacity=(Quantum) ScaleCharToQuantum(TIFFGetA(*p));
+                        q++;
+                        p++;
+                      }
+                    p+=tile_columns-tile_columns_remaining;
+                    q-=(image->columns+tile_columns_remaining);
+                  }
+              }
+            
+            if (!SyncImagePixels(image))
+              break;
+            if (image->previous == (Image *) NULL)
+              if (QuantumTick(y,image->rows))
+                if (!MagickMonitor(LoadImageText,y,image->rows,exception))
+                  break;
+          }
+        LiberateMemory((void **) &tile_pixels);
+        
+        break;
+      }
+      case 3:
       default:
       {
         register uint32
@@ -987,16 +1091,25 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           if (q == (PixelPacket *) NULL)
             break;
           q+=image->columns-1;
-          for (x=0; x < (long) image->columns; x++)
-          {
-            q->red=ScaleCharToQuantum(TIFFGetR(*p));
-            q->green=ScaleCharToQuantum(TIFFGetG(*p));
-            q->blue=ScaleCharToQuantum(TIFFGetB(*p));
-            if (image->matte)
-              q->opacity=(Quantum) ScaleCharToQuantum(TIFFGetA(*p));
-            p--;
-            q--;
-          }
+          if (image->matte)
+            for (x=(long) image->columns; x > 0; x--)
+              {
+                q->red=ScaleCharToQuantum(TIFFGetR(*p));
+                q->green=ScaleCharToQuantum(TIFFGetG(*p));
+                q->blue=ScaleCharToQuantum(TIFFGetB(*p));
+                q->opacity=(Quantum) ScaleCharToQuantum(TIFFGetA(*p));
+                p--;
+                q--;
+              }
+          else
+            for (x=(long) image->columns; x > 0; x--)
+              {
+                q->red=ScaleCharToQuantum(TIFFGetR(*p));
+                q->green=ScaleCharToQuantum(TIFFGetG(*p));
+                q->blue=ScaleCharToQuantum(TIFFGetB(*p));
+                p--;
+                q--;
+              }
           if (!SyncImagePixels(image))
             break;
           if (image->previous == (Image *) NULL)

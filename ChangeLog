@@ -1,4 +1,16 @@
+2003-02-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/tiff.c (ReadTIFFImage): Add optimized support for
+	reading tiled TIFFs.
+
+2003-02-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/tiff.c (ReadTIFFImage): Optimize RGBA transfer loop.
+
 2003-02-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/render.c (DrawPrimitive): Return DrawPolygonPrimitive
+	status (edit transferred from ImageMagick).
 
 	* magick/utility.c (GetMagickGeometry): Scaling to an area now
 	preserves the image aspect ratio.

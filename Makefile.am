@@ -175,7 +175,9 @@ clean-perl:
 distclean-perl:
 endif # WITH_PERL
 
-all-local: \
+if WITH_PERL
+# txt2html requires perl.
+TXT2HTMLTARGETS= \
 	$(top_srcdir)/www/Changelog.html \
 	$(top_srcdir)/www/INSTALL-mac.html \
 	$(top_srcdir)/www/INSTALL-unix.html \
@@ -183,6 +185,9 @@ all-local: \
 	$(top_srcdir)/www/INSTALL-windows.html \
 	$(top_srcdir)/www/NEWS.html \
 	$(top_srcdir)/www/README.html
+endif # WITH_PERL
+
+all-local: @MAINTAINER_MODE_TRUE@ $(TXT2HTMLTARGETS)
 
 # Install PerlMagick
 install-exec-local: install-exec-perl

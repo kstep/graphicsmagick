@@ -3944,7 +3944,7 @@ MagickExport unsigned int DrawPrimitive(Image *image,const DrawInfo *draw_info,
           status|=DrawStrokePolygon(image,draw_info,primitive_info);
           break;
         }
-      (void) DrawPolygonPrimitive(image,draw_info,primitive_info);
+      status=DrawPolygonPrimitive(image,draw_info,primitive_info);
       break;
     }
   }
