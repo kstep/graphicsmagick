@@ -26,6 +26,7 @@
   <module magick="HTM" name="HTML" />
   <module magick="HTTP" name="URL" />
   <module magick="ICB" name="TGA" />
+  <module magick="ICC" name="META" />
   <module magick="ICM" name="META" />
   <module magick="ICO" name="ICON" />
   <module magick="IMPLICIT" name="MIFF" />

@@ -922,7 +922,8 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
       DetachBlob(buff->blob);
       DestroyImage(buff);
     }
-  if (LocaleCompare(image_info->magick,"ICM") == 0)
+  if ((LocaleCompare(image_info->magick,"ICC") == 0) ||
+      (LocaleCompare(image_info->magick,"ICM") == 0))
     {
       buff=AllocateImage((ImageInfo *) NULL);
       if (buff == (Image *) NULL)
@@ -1056,6 +1057,14 @@ ModuleExport void RegisterMETAImage(void)
   entry->module=AllocateString("APP1");
   (void) RegisterMagickInfo(entry);
 
+  entry=SetMagickInfo("ICC");
+  entry->decoder=ReadMETAImage;
+  entry->encoder=WriteMETAImage;
+  entry->adjoin=False;
+  entry->description=AllocateString("ICC Color Profile");
+  entry->module=AllocateString("ICC");
+  (void) RegisterMagickInfo(entry);
+
   entry=SetMagickInfo("ICM");
   entry->decoder=ReadMETAImage;
   entry->encoder=WriteMETAImage;
@@ -1107,6 +1116,7 @@ ModuleExport void UnregisterMETAImage(void)
   (void) UnregisterMagickInfo("8BIM");
   (void) UnregisterMagickInfo("8BIMTEXT");
   (void) UnregisterMagickInfo("APP1");
+  (void) UnregisterMagickInfo("ICC");
   (void) UnregisterMagickInfo("ICM");
   (void) UnregisterMagickInfo("IPTC");
 }
@@ -1860,7 +1870,8 @@ static unsigned int WriteMETAImage(const ImageInfo *image_info,Image *image)
       }
       ThrowWriterException(FileOpenError,"No APP1 data is available",image)
     }
-  if (LocaleCompare(image_info->magick,"ICM") == 0)
+  if ((LocaleCompare(image_info->magick,"ICC") == 0) ||
+      (LocaleCompare(image_info->magick,"ICM") == 0))
     {
       /*
         Write ICM image.
