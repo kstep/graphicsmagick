@@ -1177,8 +1177,7 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if ((LocaleCompare("mono",option+1) == 0) ||
-              (LocaleCompare("monochrome",option+1) == 0))
+          if (LocaleCompare("monochrome",option+1) == 0)
             {
               image_info->monochrome=(*option == '-');
               break;

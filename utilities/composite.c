@@ -1055,8 +1055,7 @@ int main(int argc,char **argv)
         {
           if (LocaleCompare("matte",option+1) == 0)
             break;
-          if ((LocaleCompare("mono",option+1) == 0) ||
-              (LocaleCompare("monochrome",option+1) == 0))
+          if (LocaleCompare("monochrome",option+1) == 0)
             break;
           MagickError(OptionError,"Unrecognized option",option);
           break;
