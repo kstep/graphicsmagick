@@ -1,3 +1,11 @@
+2003-07-31  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/xwindow.c, magick/xwindow.h: Incorporate patch from John
+	Cristy's ImageMagick to eliminate conditional dependence of
+	magick/xwindow.h on <X11/extensions/XShm.h>.
+	* magick/magick_config_api.h.in: HasSharedMemory define no longer
+	needed.
+
 2003-07-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* www/programming.html: Update Rmagick URL.

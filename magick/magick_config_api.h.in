@@ -3,9 +3,6 @@
 /* Define if you have X11 library */
 #undef HasX11
 
-/* X11 server supports shared memory extension */
-#undef HasSharedMemory
-
 /* Number of bits in a pixel Quantum (8/16/32) */
 #undef QuantumDepth
 

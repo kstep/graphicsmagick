@@ -46,9 +46,6 @@ extern "C" {
 # include <keysym.h>
 # include <XWDFile.h>
 #endif
-#if defined(HasSharedMemory)
-# include <X11/extensions/XShm.h>
-#endif
 #include "magick/quantize.h"
 #include "magick/PreRvIcccm.h"
 
@@ -440,10 +437,8 @@ typedef struct _XWindowInfo
   XWindowChanges
     window_changes;
 
-#if defined(HasSharedMemory)
-  XShmSegmentInfo
-    segment_info[2];
-#endif
+  void
+    *segment_info;
 
   int
     mask;
