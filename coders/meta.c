@@ -34,10 +34,10 @@
 /*
   Include declarations.
 */
-#include "magick/studio.h"
-#include "magick/blob.h"
-#include "magick/magick.h"
-#include "magick/utility.h"
+#include "studio.h"
+#include "blob.h"
+#include "magick.h"
+#include "utility.h"
 
 /*
   Forward declarations.
@@ -117,7 +117,7 @@ static unsigned int IsMETA(const unsigned char *magick,const size_t length)
 %      reading.  A null image is returned if there is a memory shortage or
 %      if the image cannot be read.
 %
-%    o image_info: Specifies a pointer to a ImageInfo structure.
+%    o image_info: Specifies a pointer to an ImageInfo structure.
 %
 %    o exception: return any errors or warnings in this structure.
 %
@@ -479,6 +479,267 @@ static long parse8BIM(Image *ifile, Image *ofile)
   return outputlen;
 }
 
+static char *super_fgets_w(char **b, int *blen, Image *file)
+{
+  int
+    c,
+    len;
+
+  unsigned char
+    *q;
+
+  len=*blen;
+  //DebugString("META CODER super_fgets_w #1\n");
+  for (q=(unsigned char *) (*b); ; q++)
+  {
+    c=ReadBlobLSBShort(file);
+    if (c == ((unsigned short) ~0) || c == '\n')
+      break;
+   if (EOFBlob(file))
+      break;
+   if ((q-(unsigned char *) (*b)+1) >= (int) len)
+      {
+        int
+          tlen;
+
+        tlen=q-(unsigned char *) (*b);
+        len<<=1;
+        ReacquireMemory((void **) b,(len+2));
+        if ((*b) == (char *) NULL)
+          break;
+        q=(unsigned char*) (*b)+tlen;
+      }
+    *q=(unsigned char) c;
+  }
+  //DebugString("META CODER super_fgets_w #2\n");
+  *blen=0;
+  if ((*b) != (char *) NULL)
+    {
+      int
+        tlen;
+
+      tlen=q-(unsigned char *) (*b);
+      if (tlen == 0)
+        return (char *) NULL;
+      (*b)[tlen] = '\0';
+      *blen=++tlen;
+    }
+  //DebugString("META CODER super_fgets_w #3\n");
+  return (*b);
+}
+
+static long parse8BIMW(Image *ifile, Image *ofile)
+{
+  char
+    brkused,
+    quoted,
+    *line,
+    *token,
+    *newstr,
+    *name;
+
+  int
+    state,
+    next;
+
+  unsigned char
+    dataset;
+
+  unsigned int
+    recnum;
+
+  int
+    inputlen = BUFFER_SZ;
+
+  long
+    savedolen = 0L,
+    outputlen = 0L;
+
+  ExtendedSignedIntegralType
+    savedpos,
+    currentpos;
+
+  TokenInfo
+    token_info;
+
+  dataset = 0;
+  recnum = 0;
+  line = (char *) AcquireMemory(inputlen);
+  name = token = (char *)NULL;
+  savedpos = 0;
+  DebugString("META CODER Parse8BIM\n");
+  while(super_fgets_w(&line,&inputlen,ifile)!=NULL)
+  {
+    state=0;
+    next=0;
+
+    //DebugString("META CODER Parse8BIM: %s (%d)\n",line, inputlen);
+    token = (char *) AcquireMemory(inputlen);
+    newstr = (char *) AcquireMemory(inputlen);
+    while (Tokenizer(&token_info, 0, token, inputlen, line,
+          (char *) "", (char *) "=",
+      (char *) "\"", 0, &brkused,&next,&quoted)==0)
+    {
+      if (state == 0)
+        {
+          int
+            state,
+            next;
+
+          char
+            brkused,
+            quoted;
+
+          state=0;
+          next=0;
+          while(Tokenizer(&token_info, 0, newstr, inputlen, token, (char *) "",
+            (char *) "#", (char *) "", 0, &brkused, &next, &quoted)==0)
+          {
+            switch (state)
+            {
+              case 0:
+                if (strcmp(newstr,"8BIM")==0)
+                  dataset = 255;
+                else
+                  dataset = (unsigned char) atoi(newstr);
+                break;
+              case 1:
+                recnum = atoi(newstr);
+                break;
+              case 2:
+                name = (char *) AcquireMemory(strlen(newstr)+1);
+                if (name)
+                  strcpy(name,newstr);
+                break;
+            }
+            state++;
+          }
+        }
+      else
+        if (state == 1)
+          {
+            int
+              next;
+
+            unsigned long
+              len;
+
+            char
+              brkused,
+              quoted;
+
+            next=0;
+            len = strlen(token);
+            while (Tokenizer(&token_info,0, newstr, inputlen, token, (char *) "",
+              (char *) "&", (char *) "", 0, &brkused, &next, &quoted)==0)
+            {
+              if (brkused && next > 0)
+                {
+                  char
+                    *s = &token[next-1];
+
+                  len -= convertHTMLcodes(s, strlen(s));
+                }
+            }
+
+            if (dataset == 255)
+              {
+                unsigned char
+                  nlen = 0;
+
+                int
+                  i;
+
+                if (savedolen > 0)
+                  {
+                    long diff = outputlen - savedolen;
+                    currentpos = TellBlob(ofile);
+                    SeekBlob(ofile,savedpos,SEEK_SET);
+                    WriteBlobMSBLong(ofile,diff);
+                    SeekBlob(ofile,currentpos,SEEK_SET);
+                    savedolen = 0L;
+                  }
+                if (outputlen & 1)
+                  {
+                    WriteBlobByte(ofile,0x00);
+                    outputlen++;
+                  }
+                WriteBlobString(ofile,"8BIM");
+                WriteBlobMSBShort(ofile,recnum);
+                outputlen += 6;
+                if (name)
+                  nlen = strlen(name);
+                WriteBlobByte(ofile,nlen);
+                outputlen++;
+                for (i=0; i<nlen; i++)
+                  WriteBlobByte(ofile,name[i]);
+                outputlen += nlen;
+                if (!(nlen&1))
+                  {
+                    WriteBlobByte(ofile,0x00);
+                    outputlen++;
+                  }
+                if (recnum != IPTC_ID)
+                  {
+                    WriteBlobMSBLong(ofile, len);
+                    outputlen += 4;
+
+                    next=0;
+                    outputlen += len;
+                    while (len--)
+                      WriteBlobByte(ofile,token[next++]);
+
+                    if (outputlen & 1)
+                      {
+                        WriteBlobByte(ofile,0x00);
+                        outputlen++;
+                      }
+                  }
+                else
+                  {
+                    /* patch in a fake length for now and fix it later */
+                    savedpos = TellBlob(ofile);
+                    WriteBlobMSBLong(ofile,0xFFFFFFFFUL);
+                    outputlen += 4;
+                    savedolen = outputlen;
+                  }
+              }
+            else
+              {
+                if (len <= 0x7FFF)
+                  {
+                    WriteBlobByte(ofile,0x1c);
+                    WriteBlobByte(ofile,dataset);
+                    WriteBlobByte(ofile,recnum & 255);
+                    WriteBlobMSBShort(ofile,len);
+                    outputlen += 5;
+                    next=0;
+                    outputlen += len;
+                    while (len--)
+                      WriteBlobByte(ofile,token[next++]);
+                  }
+              }
+          }
+      state++;
+    }
+    LiberateMemory((void **) &token);
+    LiberateMemory((void **) &newstr);
+    LiberateMemory((void **) &name);
+  }
+  LiberateMemory((void **) &line);
+  if (savedolen > 0)
+    {
+      long diff = outputlen - savedolen;
+
+      currentpos = TellBlob(ofile);
+      SeekBlob(ofile,savedpos,SEEK_SET);
+      WriteBlobMSBLong(ofile,diff);
+      SeekBlob(ofile,currentpos,SEEK_SET);
+      savedolen = 0L;
+    }
+  return outputlen;
+}
+
 /* some defines for the different JPEG block types */
 #define M_SOF0  0xC0            /* Start Of Frame N */
 #define M_SOF1  0xC1            /* N indicates which compression process */
@@ -524,7 +785,6 @@ static int jpeg_transfer_1(Image *ifile, Image *ofile)
   return c;
 }
 
-#ifdef META_JPEG_STRIP_SUPPORTED /* Currently unused */
 static int jpeg_skip_1(Image *ifile)
 {
   int c;
@@ -534,7 +794,6 @@ static int jpeg_skip_1(Image *ifile)
     return EOF;
   return c;
 }
-#endif
 
 static int jpeg_read_remaining(Image *ifile, Image *ofile)
 {
@@ -609,7 +868,6 @@ static int jpeg_nextmarker(Image *ifile, Image *ofile)
   return c;
 }
 
-#ifdef META_JPEG_STRIP_SUPPORTED /* Currently unused */
 static int jpeg_skip_till_marker(Image *ifile, int marker)
 {
   int c, i;
@@ -636,7 +894,6 @@ static int jpeg_skip_till_marker(Image *ifile, int marker)
   } while (c != marker);
   return c;
 }
-#endif
 
 static char psheader[] = "\xFF\xED\0\0Photoshop 3.0\08BIM\x04\x04\0\0\0\0";
 
@@ -710,7 +967,6 @@ static int jpeg_embed(Image *ifile, Image *ofile, Image *iptc)
   return 1;
 }
 
-#ifdef META_JPEG_STRIP_SUPPORTED /* Currently unused */
 /* handle stripping the APP13 data out of a JPEG */
 static void jpeg_strip(Image *ifile, Image *ofile)
 {
@@ -724,9 +980,7 @@ static void jpeg_strip(Image *ifile, Image *ofile)
     jpeg_read_remaining(ifile, ofile);
   }
 }
-#endif
 
-#ifdef META_JPEG_STRIP_SUPPORTED /* Currently unused */
 /* Extract any APP13 binary data into a file. */
 static int jpeg_extract(Image *ifile, Image *ofile)
 {
@@ -749,7 +1003,6 @@ static int jpeg_extract(Image *ifile, Image *ofile)
   }
   return 1;
 }
-#endif
 
 static Image *ReadMETAImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
@@ -804,6 +1057,13 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
       if (LocaleCompare(image_info->magick,"8BIMTEXT") == 0)
         {
           length=parse8BIM(image, buff);
+          if (length & 1)
+            WriteBlobByte(buff,0x0);
+        }
+      else if (LocaleCompare(image_info->magick,"8BIMWTEXT") == 0)
+        {
+          length=parse8BIMW(image, buff);
+          DebugString("META CODER Parse8BIMW returned: %ld\n",length);
           if (length & 1)
             WriteBlobByte(buff,0x0);
         }
@@ -889,6 +1149,8 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
                 image)
             }
           AttachBlob(iptc->blob,pinfo->info,pinfo->length);
+          DebugString("META CODER APP1JPEG embed: 0x%08lx (%d)\n",
+            (unsigned long)pinfo->info, pinfo->length);
           result=jpeg_embed(image,buff,iptc);
           DetachBlob(iptc->blob);
           DestroyImage(iptc);
@@ -995,6 +1257,9 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
           if (length & 1)
             WriteBlobByte(buff,0x0);
         }
+      else if (LocaleCompare(image_info->magick,"IPTCWTEXT") == 0)
+        {
+        }
       else
         {
           for ( ; ; )
@@ -1064,6 +1329,15 @@ ModuleExport void RegisterMETAImage(void)
   entry->adjoin=False;
   entry->seekable_stream=True;
   entry->description=AllocateString("Photoshop resource text format");
+  entry->module=AllocateString("META");
+  (void) RegisterMagickInfo(entry);
+
+  entry=SetMagickInfo("8BIMWTEXT");
+  entry->decoder=(DecoderHandler) ReadMETAImage;
+  entry->encoder=(EncoderHandler) WriteMETAImage;
+  entry->adjoin=False;
+  entry->seekable_stream=True;
+  entry->description=AllocateString("Photoshop resource wide text format");
   entry->module=AllocateString("META");
   (void) RegisterMagickInfo(entry);
 
@@ -1138,6 +1412,15 @@ ModuleExport void RegisterMETAImage(void)
   entry->description=AllocateString("IPTC Newsphoto text format");
   entry->module=AllocateString("META");
   (void) RegisterMagickInfo(entry);
+
+  entry=SetMagickInfo("IPTCWTEXT");
+  entry->decoder=(DecoderHandler) ReadMETAImage;
+  entry->encoder=(EncoderHandler) WriteMETAImage;
+  entry->adjoin=False;
+  entry->seekable_stream=True;
+  entry->description=AllocateString("IPTC Newsphoto text format");
+  entry->module=AllocateString("META");
+  (void) RegisterMagickInfo(entry);
 }
 
 /*
@@ -1163,6 +1446,7 @@ ModuleExport void UnregisterMETAImage(void)
 {
   (void) UnregisterMagickInfo("8BIM");
   (void) UnregisterMagickInfo("8BIMTEXT");
+  (void) UnregisterMagickInfo("8BIMWTEXT");
   (void) UnregisterMagickInfo("ICC");
   (void) UnregisterMagickInfo("ICCTEXT");
   (void) UnregisterMagickInfo("APP1");
@@ -1197,9 +1481,9 @@ ModuleExport void UnregisterMETAImage(void)
 %      False is returned if there is a memory shortage or if the image file
 %      fails to write.
 %
-%    o image_info: Specifies a pointer to a ImageInfo structure.
+%    o image_info: Specifies a pointer to an ImageInfo structure.
 %
-%    o image: A pointer to an Image structure.
+%    o image: A pointer to a Image structure.
 %
 %
 */
@@ -1861,6 +2145,10 @@ static unsigned int WriteMETAImage(const ImageInfo *image_info,Image *image)
       CloseBlob(image);
       return(True);
     }
+  if (LocaleCompare(image_info->magick,"8BIMWTEXT") == 0)
+    {
+      return(False);
+    }
   if (LocaleCompare(image_info->magick,"IPTCTEXT") == 0)
     {
       Image
@@ -1893,6 +2181,10 @@ static unsigned int WriteMETAImage(const ImageInfo *image_info,Image *image)
       DestroyImage(buff);
       CloseBlob(image);
       return(True);
+    }
+  if (LocaleCompare(image_info->magick,"IPTCWTEXT") == 0)
+    {
+      return(False);
     }
   if ((LocaleCompare(image_info->magick,"APP1") == 0) ||
       (LocaleCompare(image_info->magick,"EXIF") == 0) ||
