@@ -222,6 +222,8 @@ Export MagickInfo *GetMagickInfo(const char *tag)
     }
   if (tag == (char *) NULL)
     return(magick_info_list);
+  if(*tag == '\0')
+    return((MagickInfo *) NULL);
   for (p=magick_info_list; p != (MagickInfo *) NULL; p=p->next)
     if (LocaleCompare(p->tag,tag) == 0)
       return(p);
