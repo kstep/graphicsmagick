@@ -217,6 +217,9 @@ MICRO_VERSION = @MICRO_VERSION@
 # Additional files to distribute
 EXTRA_DIST = modules.mgk
 
+# Headers which are not installed but which are distributed
+noinst_HEADERS = mng.h
+
 # Where modules are installed
 @WITH_MODULES_TRUE@pkgdir = @WITH_MODULES_TRUE@$(libdir)/ImageMagick/modules/coders
 
@@ -883,6 +886,8 @@ $(wbmp_la_SOURCES) $(x_la_SOURCES) $(xbm_la_SOURCES) $(xc_la_SOURCES) \
 $(xpm_la_SOURCES) $(xwd_la_SOURCES) $(yuv_la_SOURCES)
 DATA =  $(pkg_DATA) $(pkgdata_DATA)
 
+HEADERS =  $(noinst_HEADERS)
+
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 DEP_FILES =  @AMDEP@ $(DEPDIR)/8bim.Plo $(DEPDIR)/avs.Plo \
 $(DEPDIR)/bmp.Plo $(DEPDIR)/cache.Plo $(DEPDIR)/cmyk.Plo \
@@ -906,7 +911,7 @@ $(DEPDIR)/tim.Plo $(DEPDIR)/ttf.Plo $(DEPDIR)/txt.Plo $(DEPDIR)/uil.Plo \
 $(DEPDIR)/uyvy.Plo $(DEPDIR)/vicar.Plo $(DEPDIR)/vid.Plo \
 $(DEPDIR)/viff.Plo $(DEPDIR)/wbmp.Plo $(DEPDIR)/x.Plo $(DEPDIR)/xbm.Plo \
 $(DEPDIR)/xc.Plo $(DEPDIR)/xpm.Plo $(DEPDIR)/xwd.Plo $(DEPDIR)/yuv.Plo
-DIST_COMMON =  Makefile.am Makefile.in
+DIST_COMMON =  $(noinst_HEADERS) Makefile.am Makefile.in
 
 
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -1408,7 +1413,7 @@ install: install-am
 uninstall-am: uninstall-pkgLTLIBRARIES uninstall-pkgDATA \
 		uninstall-pkgdataDATA
 uninstall: uninstall-am
-all-am: Makefile $(LTLIBRARIES) $(DATA)
+all-am: Makefile $(LTLIBRARIES) $(DATA) $(HEADERS)
 all-redirect: all-am
 install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) INSTALL_STRIP_FLAG=-s install

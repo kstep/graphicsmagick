@@ -56,6 +56,9 @@ endif # WITH_MODULES
 # Additional files to distribute
 EXTRA_DIST = modules.mgk
 
+# Headers which are not installed but which are distributed
+noinst_HEADERS =  mng.h
+
 if WITH_MODULES
 # Where modules are installed
 pkgdir = $(libdir)/ImageMagick/modules/coders
