@@ -518,7 +518,7 @@ Export void SignatureImage(Image *image)
       *q++=XUpScale(p->green);
       *q++=XUpScale(p->blue) >> 8;
       *q++=XUpScale(p->blue);
-      if (image->matte)
+      if (image->matte || (image->colorspace == CMYKColorspace))
         {
           *q++=XUpScale(p->opacity) >> 8;
           *q++=XUpScale(p->opacity);
