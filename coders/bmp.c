@@ -1,4 +1,4 @@
-/* 
+/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -491,7 +491,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
       bmp_info.offset_bits=ReadBlobLSBLong(image);
       count=ReadBlob(image,2,(char *) magick);
     }
-    if ((count == 0) || 
+    if ((count == 0) ||
         ((LocaleNCompare((char *) magick,"BM",2) != 0) &&
          (LocaleNCompare((char *) magick,"CI",2) != 0)))
       ThrowReaderException(CorruptImageWarning,"Not a BMP image file",image);
