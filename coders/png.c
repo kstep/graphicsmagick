@@ -3601,7 +3601,6 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 magnified_width > image->columns)
               {
                 Image
-                  *clone_image,
                   *large_image;
 
                 int
