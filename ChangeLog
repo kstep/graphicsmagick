@@ -1,5 +1,13 @@
 2003-04-14  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* configure.ac: Define PERLMAINCC to be the C compiler
+	if there are no C++ dependencies, or the C++ compiler
+	if there are C++ dependencies.
+	* PerlMagick/Makefile.PL.in: Use PERLMAINCC to compile
+	and link perlmain.c.  This allows using the C++ compiler
+	to link, which is useful when the build depends on C++
+	libraries like libfpx.
+	* ltmain.sh: Updated to libtool 1.5 release.
 	* Makefile.am ($(PERLMAGICK)/$(PERLSTATICNAME)): Add
 	rules to make sure that static PerlMagick is linked
 	against the current GraphicsMagick library.

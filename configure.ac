@@ -40,6 +40,7 @@ CFLAGS_INITIAL=$CFLAGS
 CPPFLAGS_INITIAL=$CPPFLAGS
 LDFLAGS_INITIAL=$LDFLAGS
 LIBS_INITIAL=$LIBS
+PERLMAINCC=$CC
 
 #
 # Evaluate shell variable equivalents to Makefile directory variables
@@ -1110,6 +1111,7 @@ then
 	AC_DEFINE(HasFPX,1,Define if you have FlashPIX library)
 	AC_MSG_RESULT(yes)
         have_fpx='yes'
+        PERLMAINCC="$CXX"
     fi
     else
         AC_MSG_RESULT(no)
@@ -1676,6 +1678,10 @@ AM_CONDITIONAL(HasWMF, test "$have_wmf" = 'yes')
 AC_SUBST(LIB_WMF)
 AC_SUBST(LIB_WMF_DEPS)
 
+#
+# Substitute compiler name to build/link PerlMagick
+#
+AC_SUBST(PERLMAINCC)
 
 #
 # Configure install Paths
