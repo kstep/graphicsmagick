@@ -400,7 +400,8 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
       }
       case ThresholdPreview:
       {
-        FormatString(factor,"%d",(int) ((percentage*(MaxRGB+1))/100));
+        FormatString(factor,"%lu",(unsigned long)
+          ((percentage*((double) MaxRGB+1.0))/100));
         FormatString(label,"threshold %.1024s",factor);
         commands[argc++]=(char *) "-threshold";
         commands[argc++]=factor;

@@ -1365,11 +1365,11 @@ MagickExport unsigned int CompositeImage(Image *image,
               continue;
             }
           x_displace=(horizontal_scale*(PixelIntensityToQuantum(p)-
-            (0.5*(MaxRGB+1))))/(0.5*(MaxRGB+1));
+            (((double) MaxRGB+1.0)/2.0)))/(((double) MaxRGB+1.0)/2.0);
           y_displace=x_displace;
           if (composite_image->matte)
             y_displace=(vertical_scale*((double) p->opacity-
-              ((double) (MaxRGB+1)/2.0)))/((double) (MaxRGB+1)/2.0);
+              (((double) MaxRGB+1.0)/2.0)))/(((double) MaxRGB+1.0)/2.0);
           *r=InterpolateColor(image,x_offset+x+x_displace,y_offset+y+y_displace,
             &image->exception);
           p++;
@@ -1421,7 +1421,7 @@ MagickExport unsigned int CompositeImage(Image *image,
   /*
     Composite image.
   */
-  midpoint=((MaxRGB+1)+((MaxRGB+1) >> 8))/2;
+  midpoint=(((double) MaxRGB+1.0)+(((double) MaxRGB+1.0)/256))/2.0;
   for (y=0; y < (long) image->rows; y++)
   {
     if (y < y_offset)
