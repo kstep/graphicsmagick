@@ -16,6 +16,65 @@ extern "C" {
   Typedef declaractions.
 */
 typedef void* Cache;
+
+typedef struct _NexusInfo
+{
+  unsigned int
+    available,
+    columns,
+    rows;
+
+  int
+    x,
+    y;
+
+  off_t
+    length;
+
+  void
+    *line;
+
+  PixelPacket
+    *pixels;
+
+  IndexPacket
+    *indexes;
+} NexusInfo;
+
+typedef struct _CacheInfo
+{
+  ClassType
+#if defined(__cplusplus) || defined(c_plusplus)
+    c_class;
+#else
+    class;
+#endif
+
+  CacheType
+    type;
+
+  unsigned int
+    columns,
+    rows;
+
+  PixelPacket
+    *pixels;
+
+  IndexPacket
+    *indexes;
+
+  unsigned int
+    persist;
+
+  char
+    filename[MaxTextExtent];
+
+  int
+    file;
+
+  NexusInfo
+    *nexus;
+} CacheInfo;
 
 /*
   Exported interfaces.
