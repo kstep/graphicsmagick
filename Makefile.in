@@ -357,7 +357,7 @@ AUTOMAKE_OPTIONS = 1.7.2 dist-zip dist-bzip2 foreign
 @WITH_MAGICK_PLUS_PLUS_TRUE@MAGICK_PLUS_PLUS = Magick++
 
 # Directories to include in distribution
-DIST_SUBDIRS = ltdl coders magick utilities tests Magick++
+DIST_SUBDIRS = ltdl coders filters magick utilities tests Magick++
 
 @WITH_LTDL_TRUE@LTDL = ltdl
 @WITH_LTDL_FALSE@LTDL = 
