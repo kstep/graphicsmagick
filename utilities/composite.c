@@ -1080,7 +1080,7 @@ int main(int argc,char **argv)
   */
   (void) strcpy(combine_image->filename,write_filename);
   SetImageInfo(image_info,True,&combine_image->exception);
-  status=WriteImage(image_info,image);
+  status=WriteImage(image_info,combine_image);
   if (status == False)
     CatchImageException(combine_image);
   if (image_info->verbose)
