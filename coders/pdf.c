@@ -1160,39 +1160,25 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
           }
           case JPEGCompression:
           {
-            char
-              filename[MaxTextExtent];
-
-            FILE
-              *file;
-
             Image
               *jpeg_image;
 
-            int
-              c;
+            size_t
+              length;
+
+            void
+              *blob;
 
             /*
-              Write image to temporary file in JPEG format.
+              Write image in JPEG format.
             */
-            TemporaryFilename(filename);
             jpeg_image=CloneImage(image,0,0,True,&image->exception);
             if (jpeg_image == (Image *) NULL)
-              ThrowWriterException(DelegateError,
-                "Unable to clone image",image);
-            (void) FormatString(jpeg_image->filename,"jpeg:%.1024s",filename);
-            status=WriteImage(image_info,jpeg_image);
+              ThrowWriterException(DelegateError,"Unable to clone image",image);
+            blob=ImageToBlob(image_info,jpeg_image,&length,&image->exception);
+            (void) WriteBlob(image,length,blob);
             DestroyImage(jpeg_image);
-            if (status == False)
-              ThrowWriterException(DelegateError,"Unable to write image",
-                image);
-            file=fopen(filename,ReadBinaryType);
-            if (file == (FILE *) NULL)
-              ThrowWriterException(FileOpenError,"Unable to open file",image);
-            for (c=fgetc(file); c != EOF; c=fgetc(file))
-              (void) WriteBlobByte(image,c);
-            (void) fclose(file);
-            (void) remove(filename);
+            LiberateMemory((void **) &blob);
             break;
           }
           case RunlengthEncodedCompression:
@@ -1273,39 +1259,25 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
         {
           case JPEGCompression:
           {
-            char
-              filename[MaxTextExtent];
-
-            FILE
-              *file;
-
             Image
               *jpeg_image;
 
-            int
-              c;
+            size_t
+              length;
+
+            void
+              *blob;
 
             /*
-              Write image to temporary file in JPEG format.
+              Write image in JPEG format.
             */
-            TemporaryFilename(filename);
             jpeg_image=CloneImage(image,0,0,True,&image->exception);
             if (jpeg_image == (Image *) NULL)
-              ThrowWriterException(DelegateError,
-                "Unable to clone image",image);
-            (void) FormatString(jpeg_image->filename,"jpeg:%.1024s",filename);
-            status=WriteImage(image_info,jpeg_image);
+              ThrowWriterException(DelegateError,"Unable to clone image",image);
+            blob=ImageToBlob(image_info,jpeg_image,&length,&image->exception);
+            (void) WriteBlob(image,length,blob);
             DestroyImage(jpeg_image);
-            if (status == False)
-              ThrowWriterException(DelegateError,"Unable to write image",
-                image);
-            file=fopen(filename,ReadBinaryType);
-            if (file == (FILE *) NULL)
-              ThrowWriterException(FileOpenError,"Unable to open file",image);
-            for (c=fgetc(file); c != EOF; c=fgetc(file))
-              (void) WriteBlobByte(image,c);
-            (void) fclose(file);
-            (void) remove(filename);
+            LiberateMemory((void **) &blob);
             break;
           }
           case RunlengthEncodedCompression:
@@ -1517,16 +1489,14 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
       &geometry.width,&geometry.height);
     clone_image=CloneImage(image,0,0,True,&image->exception);
     if (clone_image == (Image *) NULL)
-      ThrowWriterException(ResourceLimitError,"Unable to scale image",
-        image);
+      ThrowWriterException(ResourceLimitError,"Unable to scale image",image);
     if (clone_image->storage_class == PseudoClass)
       clone_image->filter=PointFilter;
     tile_image=ZoomImage(clone_image,geometry.width,geometry.height,
       &image->exception);
     DestroyImage(clone_image);
     if (tile_image == (Image *) NULL)
-      ThrowWriterException(ResourceLimitError,"Unable to scale image",
-        image);
+      ThrowWriterException(ResourceLimitError,"Unable to scale image",image);
     xref[object++]=TellBlob(image);
     FormatString(buffer,"%lu 0 obj\n",object);
     (void) WriteBlobString(image,buffer);
@@ -1534,7 +1504,16 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     switch (compression)
     {
       case NoCompression: FormatString(buffer,CFormat,"ASCII85Decode"); break;
-      case JPEGCompression: FormatString(buffer,CFormat,"DCTDecode"); break;
+      case JPEGCompression:
+      {
+        FormatString(buffer,CFormat,"DCTDecode"); 
+        (void) WriteBlobString(image,buffer);
+        if (image->colorspace != CMYKColorspace)
+          break;
+        (void) strcpy(buffer,"/Decode[1 0 1 0 1 0 1 0]\n");
+        (void) WriteBlobString(image,buffer);
+        break;
+      }
       case LZWCompression: FormatString(buffer,CFormat,"LZWDecode"); break;
       case ZipCompression: FormatString(buffer,CFormat,"FlateDecode"); break;
       case FaxCompression:
@@ -1582,39 +1561,25 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
           }
           case JPEGCompression:
           {
-            char
-              filename[MaxTextExtent];
-
-            FILE
-              *file;
-
             Image
               *jpeg_image;
 
-            int
-              c;
+            size_t
+              length;
+
+            void
+              *blob;
 
             /*
-              Write image to temporary file in JPEG format.
+              Write image in JPEG format.
             */
-            TemporaryFilename(filename);
-            jpeg_image=CloneImage(tile_image,0,0,True,&image->exception);
+            jpeg_image=CloneImage(image,0,0,True,&image->exception);
             if (jpeg_image == (Image *) NULL)
-              ThrowWriterException(DelegateError,"Unable to clone image",
-                image);
-            (void) FormatString(jpeg_image->filename,"jpeg:%.1024s",filename);
-            status=WriteImage(image_info,jpeg_image);
+              ThrowWriterException(DelegateError,"Unable to clone image",image);
+            blob=ImageToBlob(image_info,jpeg_image,&length,&image->exception);
+            (void) WriteBlob(image,length,blob);
             DestroyImage(jpeg_image);
-            if (status == False)
-              ThrowWriterException(DelegateError,"Unable to write image",
-                image);
-            file=fopen(filename,ReadBinaryType);
-            if (file == (FILE *) NULL)
-              ThrowWriterException(FileOpenError,"Unable to open file",image);
-            for (c=fgetc(file); c != EOF; c=fgetc(file))
-              (void) WriteBlobByte(image,c);
-            (void) fclose(file);
-            (void) remove(filename);
+            LiberateMemory((void **) &blob);
             break;
           }
           case RunlengthEncodedCompression:
@@ -1692,39 +1657,25 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
         {
           case JPEGCompression:
           {
-            char
-              filename[MaxTextExtent];
-
-            FILE
-              *file;
-
             Image
               *jpeg_image;
 
-            int
-              c;
+            size_t
+              length;
+
+            void
+              *blob;
 
             /*
-              Write image to temporary file in JPEG format.
+              Write image in JPEG format.
             */
-            TemporaryFilename(filename);
-            jpeg_image=CloneImage(tile_image,0,0,True,&image->exception);
+            jpeg_image=CloneImage(image,0,0,True,&image->exception);
             if (jpeg_image == (Image *) NULL)
-              ThrowWriterException(DelegateError,"Unable to clone image",
-                image);
-            (void) FormatString(jpeg_image->filename,"jpeg:%.1024s",filename);
-            status=WriteImage(image_info,jpeg_image);
+              ThrowWriterException(DelegateError,"Unable to clone image",image);
+            blob=ImageToBlob(image_info,jpeg_image,&length,&image->exception);
+            (void) WriteBlob(image,length,blob);
             DestroyImage(jpeg_image);
-            if (status == False)
-              ThrowWriterException(DelegateError,"Unable to write image",
-                image);
-            file=fopen(filename,ReadBinaryType);
-            if (file == (FILE *) NULL)
-              ThrowWriterException(FileOpenError,"Unable to open file",image);
-            for (c=fgetc(file); c != EOF; c=fgetc(file))
-              (void) WriteBlobByte(image,c);
-            (void) fclose(file);
-            (void) remove(filename);
+            LiberateMemory((void **) &blob);
             break;
           }
           case RunlengthEncodedCompression:
