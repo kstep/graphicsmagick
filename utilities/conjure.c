@@ -93,20 +93,17 @@ static void ConjureUsage(void)
   static const char
     *options[]=
     {
-      "-debug    display copious debugging information",
-      "-help     print program options",
-      "-verbose  print detailed information about the image",
+      "-debug events        display copious debugging information",
+      "-help                print program options",
+      "-verbose             print detailed information about the image",
       (char *) NULL
     };
 
   const char
     **p;
 
-  unsigned int
-    version;
-
-  (void) printf("Version: %.1024s\n",GetMagickVersion(&version));
-  (void) printf("Copyright: %.1024s\n\n",MagickCopyright);
+  (void) printf("Version: %.1024s\n",GetMagickVersion((unsigned long *) NULL));
+  (void) printf("Copyright: %.1024s\n\n",GetMagickCopyright());
   (void) printf("Usage: %.1024s [options ...] file [ [options ...] file ...]\n",
     SetClientName((char *) NULL));
   (void) printf("\nWhere options include:\n");
@@ -170,7 +167,14 @@ int main(int argc,char **argv)
       {
         if (LocaleCompare("debug",option+1) == 0)
           {
-            image_info->debug=(*option == '-');
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  MagickFatalError(OptionFatalError,"Missing event mask",
+                    option);
+                (void) SetLogEventMask(argv[i]);
+              }
             continue;
           }
         if (LocaleCompare("help",option+1) == 0)

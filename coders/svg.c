@@ -97,9 +97,6 @@ typedef struct _SVGInfo
   FILE
     *file;
 
-  unsigned int
-    debug;
-
   ExceptionInfo
     *exception;
 
@@ -371,9 +368,8 @@ static int SVGIsStandalone(void *context)
   /*
     Is this document tagged standalone?
   */
+  LogMagickEvent(CoderEvent,"  SAX.SVGIsStandalone()");
   svg_info=(SVGInfo *) context;
-  if (svg_info->debug)
-    (void) fprintf(stdout,"  SAX.SVGIsStandalone()\n");
   return(svg_info->document->standalone == 1);
 }
 
@@ -385,9 +381,8 @@ static int SVGHasInternalSubset(void *context)
   /*
     Does this document has an internal subset?
   */
+  LogMagickEvent(CoderEvent,"  SAX.SVGHasInternalSubset()");
   svg_info=(SVGInfo *) context;
-  if (svg_info->debug)
-    (void) fprintf(stdout,"  SAX.SVGHasInternalSubset()\n");
   return(svg_info->document->intSubset != NULL);
 }
 
@@ -399,9 +394,8 @@ static int SVGHasExternalSubset(void *context)
   /*
     Does this document has an external subset?
   */
+  LogMagickEvent(CoderEvent,"  SAX.SVGHasExternalSubset()");
   svg_info=(SVGInfo *) context;
-  if (svg_info->debug)
-    (void) fprintf(stdout,"  SAX.SVGHasExternalSubset()\n");
   return(svg_info->document->extSubset != NULL);
 }
 
@@ -414,16 +408,11 @@ static void SVGInternalSubset(void *context,const xmlChar *name,
   /*
     Does this document has an internal subset?
   */
+  LogMagickEvent(CoderEvent,"  SAX.internalSubset(%.1024s, %.1024s, %.1024s)",
+    (char *) name,
+		(external_id != (const xmlChar *) NULL ? (char *) external_id : "none"),
+		(system_id != (const xmlChar *) NULL ? (char *) system_id : "none"));
   svg_info=(SVGInfo *) context;
-  if (svg_info->debug)
-    {
-      (void) fprintf(stdout,"  SAX.internalSubset(%.1024s",name);
-      if (external_id != NULL)
-        (void) fprintf(stdout,"  , %.1024s",external_id);
-      if (system_id != NULL)
-        (void) fprintf(stdout,"  , %.1024s",system_id);
-      (void) fprintf(stdout,"  \n");
-    }
   (void) xmlCreateIntSubset(svg_info->document,name,external_id,system_id);
 }
 
@@ -442,19 +431,10 @@ static xmlParserInputPtr SVGResolveEntity(void *context,
     not resolve the entities, in that case the ENTITY_REF nodes are
     built in the structure (and the parameter values).
   */
+  LogMagickEvent(CoderEvent,"  SAX.resolveEntity(%.1024s, %.1024s)",
+		(public_id != (const xmlChar *) NULL ? (char *) public_id : "none"),
+		(system_id != (const xmlChar *) NULL ? (char *) system_id : "none"));
   svg_info=(SVGInfo *) context;
-  if (svg_info->debug)
-    {
-      (void) fprintf(stdout,"  SAX.resolveEntity(");
-      if (public_id != NULL)
-        (void) fprintf(stdout,"  %.1024s",(char *) public_id);
-      else
-        (void) fprintf(stdout,"   ");
-      if (system_id != NULL)
-        (void) fprintf(stdout,"  , %.1024s)\n",(char *) system_id);
-      else
-        (void) fprintf(stdout,"  , )\n");
-    }
   stream=xmlLoadExternalEntity((const char *) system_id,(const char *)
     public_id,svg_info->parser);
   return(stream);
@@ -468,9 +448,8 @@ static xmlEntityPtr SVGGetEntity(void *context,const xmlChar *name)
   /*
     Get an entity by name.
   */
+  LogMagickEvent(CoderEvent,"  SAX.SVGGetEntity(%.1024s)",name);
   svg_info=(SVGInfo *) context;
-  if (svg_info->debug)
-    (void) fprintf(stdout,"  SAX.SVGGetEntity(%.1024s)\n",name);
   return(xmlGetDocEntity(svg_info->document,name));
 }
 
@@ -482,9 +461,8 @@ static xmlEntityPtr SVGGetParameterEntity(void *context,const xmlChar *name)
   /*
     Get a parameter entity by name.
   */
+  LogMagickEvent(CoderEvent,"  SAX.getParameterEntity(%.1024s)",name);
   svg_info=(SVGInfo *) context;
-  if (svg_info->debug)
-    (void) fprintf(stdout,"  SAX.getParameterEntity(%.1024s)\n",name);
   return(xmlGetParameterEntity(svg_info->document,name));
 }
 
@@ -497,12 +475,11 @@ static void SVGEntityDeclaration(void *context,const xmlChar *name,int type,
   /*
     An entity definition has been parsed.
   */
+  LogMagickEvent(CoderEvent,
+    "  SAX.entityDecl(%.1024s, %d, %.1024s, %.1024s, %.1024s)",name,type,
+    public_id != (xmlChar *) NULL ? (char *) public_id : "none",
+    system_id != (xmlChar *) NULL ? (char *) system_id : "none",content);
   svg_info=(SVGInfo *) context;
-  if (svg_info->debug)
-    (void) fprintf(stdout,
-      "  SAX.entityDecl(%.1024s, %d, %.1024s, %.1024s, %.1024s)\n",name,type,
-      public_id ? (char *) public_id : "none",
-      system_id ? (char *) system_id : "none",content);
   if (svg_info->parser->inSubset == 1)
     (void) xmlAddDocEntity(svg_info->document,name,type,public_id,system_id,
       content);
@@ -529,11 +506,10 @@ static void SVGAttributeDeclaration(void *context,const xmlChar *element,
   /*
     An attribute definition has been parsed.
   */
+  LogMagickEvent(CoderEvent,
+    "  SAX.attributeDecl(%.1024s, %.1024s, %d, %d, %.1024s, ...)",element,
+    name,type,value,default_value);
   svg_info=(SVGInfo *) context;
-  if (svg_info->debug)
-    (void) fprintf(stdout,
-      "  SAX.attributeDecl(%.1024s, %.1024s, %d, %d, %.1024s, ...)\n",element,
-      name,type,value,default_value);
   fullname=(xmlChar *) NULL;
   prefix=(xmlChar *) NULL;
   parser=svg_info->parser;
@@ -565,9 +541,8 @@ static void SVGElementDeclaration(void *context,const xmlChar *name,int type,
   /*
     An element definition has been parsed.
   */
+  LogMagickEvent(CoderEvent,"  SAX.elementDecl(%.1024s, %d, ...)",name,type);
   svg_info=(SVGInfo *) context;
-  if (svg_info->debug)
-    (void) fprintf(stdout,"  SAX.elementDecl(%.1024s, %d, ...)\n",name,type);
   parser=svg_info->parser;
   if (parser->inSubset == 1)
     (void) xmlAddElementDecl(&parser->vctxt,svg_info->document->intSubset,
@@ -590,12 +565,11 @@ static void SVGNotationDeclaration(void *context,const xmlChar *name,
   /*
     What to do when a notation declaration has been parsed.
   */
+  LogMagickEvent(CoderEvent,
+    "  SAX.notationDecl(%.1024s, %.1024s, %.1024s)",name,
+    public_id != (const xmlChar *) NULL ? (char *) public_id : "none",
+    system_id != (const xmlChar *) NULL ? (char *) system_id : "none");
   svg_info=(SVGInfo *) context;
-  if (svg_info->debug)
-    (void) fprintf(stdout,
-      "  SAX.notationDecl(%.1024s, %.1024s, %.1024s)\n",(char *) name,
-      public_id ? (char *) public_id : "none",
-      system_id ? (char *) system_id : "none");
   parser=svg_info->parser;
   if (parser->inSubset == 1)
     (void) xmlAddNotationDecl(&parser->vctxt,svg_info->document->intSubset,
@@ -615,12 +589,11 @@ static void SVGUnparsedEntityDeclaration(void *context,const xmlChar *name,
   /*
     What to do when an unparsed entity declaration is parsed.
   */
+  LogMagickEvent(CoderEvent,
+    "  SAX.unparsedEntityDecl(%.1024s, %.1024s, %.1024s, %.1024s)",name,
+    public_id != (xmlChar *) NULL ? (char *) public_id : "none",
+    system_id != (xmlChar *) NULL ? (char *) system_id : "none",notation);
   svg_info=(SVGInfo *) context;
-  if (svg_info->debug)
-    (void) fprintf(stdout,
-      "  SAX.unparsedEntityDecl(%.1024s, %.1024s, %.1024s, %.1024s)\n",
-      (char *) name,public_id ? (char *) public_id : "none",
-      system_id ? (char *) system_id : "none",(char *) notation);
   (void) xmlAddDocEntity(svg_info->document,name,
     XML_EXTERNAL_GENERAL_UNPARSED_ENTITY,public_id,system_id,notation);
 
@@ -634,9 +607,8 @@ static void SVGSetDocumentLocator(void *context,xmlSAXLocatorPtr location)
   /*
     Receive the document locator at startup, actually xmlDefaultSAXLocator.
   */
+  LogMagickEvent(CoderEvent,"  SAX.setDocumentLocator()");
   svg_info=(SVGInfo *) context;
-  if (svg_info->debug)
-    (void) fprintf(stdout,"  SAX.setDocumentLocator()\n");
 }
 
 static void SVGStartDocument(void *context)
@@ -650,9 +622,8 @@ static void SVGStartDocument(void *context)
   /*
     Called when the document start being processed.
   */
+  LogMagickEvent(CoderEvent,"  SAX.startDocument()");
   svg_info=(SVGInfo *) context;
-  if (svg_info->debug)
-    (void) fprintf(stdout,"  SAX.startDocument()\n");
   GetExceptionInfo(svg_info->exception);
   parser=svg_info->parser;
   svg_info->document=xmlNewDoc(parser->version);
@@ -673,9 +644,8 @@ static void SVGEndDocument(void *context)
   /*
     Called when the document end has been detected.
   */
+  LogMagickEvent(CoderEvent,"  SAX.endDocument()");
   svg_info=(SVGInfo *) context;
-  if (svg_info->debug)
-    (void) fprintf(stdout,"  SAX.endDocument()\n");
   if (svg_info->scale != (double *) NULL)
     LiberateMemory((void **) &svg_info->scale);
   if (svg_info->text != (char *) NULL)
@@ -714,9 +684,8 @@ static void SVGStartElement(void *context,const xmlChar *name,
   /*
     Called when an opening tag has been processed.
   */
+  LogMagickEvent(CoderEvent,"  SAX.startElement(%.1024s",name);
   svg_info=(SVGInfo *) context;
-  if (svg_info->debug)
-    (void) fprintf(stdout,"  SAX.startElement(%.1024s",(char *) name);
   svg_info->n++;
   ReacquireMemory((void **) &svg_info->scale,(svg_info->n+1)*sizeof(double));
   if (svg_info->scale == (double *) NULL)
@@ -1032,11 +1001,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
     {
       keyword=(const char *) attributes[i];
       value=(const char *) attributes[i+1];
-      if (svg_info->debug)
-        {
-          (void) fprintf(stdout,"  , %.1024s='",keyword);
-          (void) fprintf(stdout,"  %.1024s'",value);
-        }
+      LogMagickEvent(CoderEvent,"    %.1024s = %.1024s",keyword,value);
       switch (*keyword)
       {
         case 'A':
@@ -1174,15 +1139,13 @@ static void SVGStartElement(void *context,const xmlChar *name,
                 transform;
 
               IdentityAffine(&transform);
-              if (svg_info->debug)
-                (void) fprintf(stdout,"  \n");
+              LogMagickEvent(CoderEvent,"  ");
               tokens=GetTransformTokens(context,value,&number_tokens);
               for (j=0; j < (number_tokens-1); j+=2)
               {
                 keyword=(char *) tokens[j];
                 value=(char *) tokens[j+1];
-                if (svg_info->debug)
-                  (void) fprintf(stdout,"    %.1024s: %.1024s\n",keyword,value);
+                LogMagickEvent(CoderEvent,"    %.1024s: %.1024s",keyword,value);
                 current=transform;
                 IdentityAffine(&affine);
                 switch (*keyword)
@@ -1483,15 +1446,13 @@ static void SVGStartElement(void *context,const xmlChar *name,
             }
           if (LocaleCompare(keyword,"style") == 0)
             {
-              if (svg_info->debug)
-                (void) fprintf(stdout,"  \n");
+              LogMagickEvent(CoderEvent,"  ");
               tokens=GetStyleTokens(context,value,&number_tokens);
               for (j=0; j < (number_tokens-1); j+=2)
               {
                 keyword=(char *) tokens[j];
                 value=(char *) tokens[j+1];
-                if (svg_info->debug)
-                  (void) fprintf(stdout,"    %.1024s: %.1024s\n",keyword,value);
+                LogMagickEvent(CoderEvent,"    %.1024s: %.1024s",keyword,value);
                 switch (*keyword)
                 {
                   case 'C':
@@ -1745,15 +1706,13 @@ static void SVGStartElement(void *context,const xmlChar *name,
                 transform;
 
               IdentityAffine(&transform);
-              if (svg_info->debug)
-                (void) fprintf(stdout,"  \n");
+              LogMagickEvent(CoderEvent,"  ");
               tokens=GetTransformTokens(context,value,&number_tokens);
               for (j=0; j < (number_tokens-1); j+=2)
               {
                 keyword=(char *) tokens[j];
                 value=(char *) tokens[j+1];
-                if (svg_info->debug)
-                  (void) fprintf(stdout,"    %.1024s: %.1024s\n",keyword,value);
+                LogMagickEvent(CoderEvent,"    %.1024s: %.1024s",keyword,value);
                 current=transform;
                 IdentityAffine(&affine);
                 switch (*keyword)
@@ -2023,8 +1982,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
           svg_info->height=page.height;
         }
     }
-  if (svg_info->debug)
-    (void) fprintf(stdout,"  )\n");
+  LogMagickEvent(CoderEvent,"  )");
   LiberateMemory((void **) &units);
   if (color != (char *) NULL)
     LiberateMemory((void **) &color);
@@ -2038,9 +1996,8 @@ static void SVGEndElement(void *context,const xmlChar *name)
   /*
     Called when the end of an element has been detected.
   */
+  LogMagickEvent(CoderEvent,"  SAX.endElement(%.1024s)",name);
   svg_info=(SVGInfo *) context;
-  if (svg_info->debug)
-    (void) fprintf(stdout,"  SAX.endElement(%.1024s)\n",(char *) name);
   switch (*name)
   {
     case 'C':
@@ -2309,14 +2266,8 @@ static void SVGCharacters(void *context,const xmlChar *c,int length)
   /*
     Receiving some characters from the parser.
   */
+  LogMagickEvent(CoderEvent,"  SAX.characters(%.1024s,%d)",c,length);
   svg_info=(SVGInfo *) context;
-  if (svg_info->debug)
-    {
-      (void) fprintf(stdout,"  SAX.characters(");
-      for (i=0; (i < length) && (i < 30); i++)
-        (void) fprintf(stdout,"  %c",c[i]);
-      (void) fprintf(stdout,"  , %d)\n",length);
-    }
   if (svg_info->text != (char *) NULL)
     ReacquireMemory((void **) &svg_info->text,strlen(svg_info->text)+length+1);
   else
@@ -2344,9 +2295,8 @@ static void SVGReference(void *context,const xmlChar *name)
   /*
     Called when an entity reference is detected.
   */
+  LogMagickEvent(CoderEvent,"  SAX.reference(%.1024s)",name);
   svg_info=(SVGInfo *) context;
-  if (svg_info->debug)
-    (void) fprintf(stdout,"  SAX.reference(%.1024s)\n",name);
   parser=svg_info->parser;
   if (*name == '#')
     (void) xmlAddChild(parser->node,xmlNewCharRef(svg_info->document,name));
@@ -2362,10 +2312,8 @@ static void SVGIgnorableWhitespace(void *context,const xmlChar *c,int length)
   /*
     Receiving some ignorable whitespaces from the parser.
   */
+  LogMagickEvent(CoderEvent,"  SAX.ignorableWhitespace(%.30s, %d)",c,length);
   svg_info=(SVGInfo *) context;
-  if (svg_info->debug)
-    (void) fprintf(stdout,"  SAX.ignorableWhitespace(%.30s, %d)\n",(char *) c,
-      length);
 }
 
 static void SVGProcessingInstructions(void *context,const xmlChar *target,
@@ -2377,10 +2325,9 @@ static void SVGProcessingInstructions(void *context,const xmlChar *target,
   /*
     A processing instruction has been parsed.
   */
+  LogMagickEvent(CoderEvent,"  SAX.processingInstruction(%.1024s, %.1024s)",
+    target,data);
   svg_info=(SVGInfo *) context;
-  if (svg_info->debug)
-    (void) fprintf(stdout,"  SAX.processingInstruction(%.1024s, %.1024s)\n",
-      (char *) target,(char *) data);
 }
 
 static void SVGComment(void *context,const xmlChar *value)
@@ -2391,9 +2338,8 @@ static void SVGComment(void *context,const xmlChar *value)
   /*
     A comment has been parsed.
   */
+  LogMagickEvent(CoderEvent,"  SAX.comment(%.1024s)",value);
   svg_info=(SVGInfo *) context;
-  if (svg_info->debug)
-    (void) fprintf(stdout,"  SAX.comment(%.1024s)\n",value);
   if (svg_info->comment != (char *) NULL)
     (void) ConcatenateString(&svg_info->comment,"\n");
   (void) ConcatenateString(&svg_info->comment,(char *) value);
@@ -2416,11 +2362,8 @@ static void SVGWarning(void *context,const char *format,...)
   */
   va_start(operands,format);
   svg_info=(SVGInfo *) context;
-  if (svg_info->debug)
-    {
-      (void) fprintf(stdout,"  SAX.warning: ");
-      (void) vfprintf(stdout,format,operands);
-    }
+  LogMagickEvent(CoderEvent,"  SAX.warning: ");
+  LogMagickEvent(CoderEvent,format,operands);
 #if !defined(HAVE_VSNPRINTF)
   (void) vsprintf(reason,format,operands);
 #else
@@ -2447,11 +2390,8 @@ static void SVGError(void *context,const char *format,...)
   */
   va_start(operands,format);
   svg_info=(SVGInfo *) context;
-  if (svg_info->debug)
-    {
-      (void) fprintf(stdout,"  SAX.error: ");
-      (void) vfprintf(stdout,format,operands);
-    }
+  LogMagickEvent(CoderEvent,"  SAX.error: ");
+  LogMagickEvent(CoderEvent,format,operands);
 #if !defined(HAVE_VSNPRINTF)
   (void) vsprintf(reason,format,operands);
 #else
@@ -2475,9 +2415,8 @@ static void SVGCDataBlock(void *context,const xmlChar *value,int length)
   /*
     Called when a pcdata block has been parsed.
   */
+  LogMagickEvent(CoderEvent,"  SAX.pcdata(%.1024s, %d)",value,length);
   svg_info=(SVGInfo *) context;
-  if (svg_info->debug)
-    (void) fprintf(stdout,"  SAX.pcdata(%.1024s, %d)\n",(char *) value,length);
   parser=svg_info->parser;
   child=xmlGetLastChild(parser->node);
   if ((child != (xmlNodePtr) NULL) && (child->type == XML_CDATA_SECTION_NODE))
@@ -2504,18 +2443,13 @@ static void SVGExternalSubset(void *context,const xmlChar *name,
     input;
 
   /*
-    Does this document has an enternal subset?
+    Does this document has an external subset?
   */
+  LogMagickEvent(CoderEvent,
+    "  SAX.externalSubset(%.1024s, %.1024s, %.1024s)",name,
+    (external_id != (const xmlChar *) NULL ? (char *) external_id : "none"),
+		(system_id != (const xmlChar *) NULL ? (char *) system_id : "none"));
   svg_info=(SVGInfo *) context;
-  if (svg_info->debug)
-    {
-      (void) fprintf(stdout,"  SAX.InternalSubset(%.1024s",name);
-      if (external_id != NULL)
-        (void) fprintf(stdout,"  , %.1024s",external_id);
-      if (system_id != NULL)
-        (void) fprintf(stdout,"  , %.1024s",system_id);
-      (void) fprintf(stdout,"\n");
-    }
   parser=svg_info->parser;
   if (((external_id == NULL) && (system_id == NULL)) ||
       (!parser->validate || !parser->wellFormed || !svg_info->document))
@@ -2642,7 +2576,6 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   (void) memset(&svg_info,0,sizeof(SVGInfo));
   svg_info.file=file;
-  svg_info.debug=image_info->debug;
   svg_info.exception=exception;
   svg_info.image=image;
   svg_info.image_info=image_info;
@@ -2662,8 +2595,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     (void) CloneString(&svg_info.size,image_info->size);
   if (image_info->page != (char *) NULL)
     (void) CloneString(&svg_info.page,image_info->page);
-  if (svg_info.debug)
-    (void) fprintf(stdout,"begin SAX\n");
+  LogMagickEvent(CoderEvent,"begin SAX");
   (void) xmlSubstituteEntitiesDefault(1);
   SAXHandler=(&SAXModules);
   svg_info.parser=xmlCreatePushParserCtxt(SAXHandler,&svg_info,(char *) NULL,0,
@@ -2680,8 +2612,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   }
   (void) xmlParseChunk(svg_info.parser," ",1,True);
   xmlFreeParserCtxt(svg_info.parser);
-  if (svg_info.debug)
-    (void) fprintf(stdout,"end SAX\n");
+  LogMagickEvent(CoderEvent,"end SAX");
   xmlCleanupParser();
   (void) fclose(file);
   CloseBlob(image);

@@ -729,8 +729,6 @@ static void ChopPathComponents(char *path,const unsigned long components)
 
   if (*path == '\0')
     return;
-  if (magick_debug)
-    (void) fprintf(stdout,"original path  \"%s\"\n",path);
   p=path+strlen(path);
   if (*p == *DirectorySeparator)
     *p='\0';
@@ -740,8 +738,6 @@ static void ChopPathComponents(char *path,const unsigned long components)
         *p='\0';
         count++;
       }
-  if (magick_debug)
-    (void) fprintf(stdout,"chopped path  \"%s\"\n",path);
 }
 #endif
 
@@ -753,8 +749,8 @@ MagickExport void *GetConfigureBlob(const char *filename,char *path,
   assert(length != (size_t *) NULL);
   assert(exception != (ExceptionInfo *) NULL);
   (void) strncpy(path,filename,MaxTextExtent-1);
-  if (magick_debug)
-    (void) fprintf(stdout,"Searching for configure file \"%s\" ...\n",filename);
+  LogMagickEvent(ConfigureEvent,"Searching for configure file \"%s\" ...",
+    filename);
 #if defined(UseInstalledImageMagick)
 #if defined(WIN32)
   {
@@ -883,8 +879,8 @@ MagickExport void *GetModuleBlob(const char *filename,char *path,size_t *length,
   assert(length != (size_t *) NULL);
   assert(exception != (ExceptionInfo *) NULL);
   (void) strncpy(path,filename,MaxTextExtent-1);
-  if (magick_debug)
-    (void) fprintf(stdout,"Searching for module file \"%s\" ...\n", filename);
+  LogMagickEvent(ConfigureEvent,"Searching for module file \"%s\" ...",
+    filename);
 #if defined(UseInstalledImageMagick)
 #if defined(WIN32)
   {
@@ -1020,8 +1016,7 @@ MagickExport void *GetTypeBlob(const char *filename,char *path,
   assert(exception != (ExceptionInfo *) NULL);
   debug=getenv("MAGICK_DEBUG") != (char *) NULL;
   (void) strncpy(path,filename,MaxTextExtent-1);
-  if (magick_debug)
-    (void) fprintf(stdout,"Searching for type file \"%s\" ...\n",filename);
+  LogMagickEvent(ConfigureEvent,"Searching for type file \"%s\" ...",filename);
   if (getenv("MAGICK_FONT_PATH") != (char *) NULL)
     {
       /*

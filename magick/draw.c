@@ -790,7 +790,7 @@ MagickExport void DrawArc(DrawContext context,
 %
 %      void DrawBezier(DrawContext context, const size_t num_coords,
 %                      const PointInfo *coordinates)
-%      
+%
 %  A description of each parameter follows:
 %
 %    o context: drawing context
@@ -935,7 +935,7 @@ MagickExport void DrawSetClipRule(DrawContext context,
   if(context->filter_off || (CurrentContext->fill_rule != fill_rule))
     {
       CurrentContext->fill_rule = fill_rule;
-      
+
       switch (fill_rule)
         {
         case EvenOddRule:
@@ -947,7 +947,7 @@ MagickExport void DrawSetClipRule(DrawContext context,
         default:
           break;
         }
-      
+
       if (p != NULL)
         MvgPrintf(context, "clip-rule %s\n", p);
     }
@@ -1137,7 +1137,7 @@ MagickExport void DrawComment(DrawContext context,const char* comment)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DrawDestroyContext() frees all resources associated with the drawing 
+%  DrawDestroyContext() frees all resources associated with the drawing
 %  context. Once the drawing context has been freed, it should not be used
 %  any further unless it re-allocated.
 %
@@ -2186,7 +2186,7 @@ MagickExport void DrawLine(DrawContext context,
 %
 %    o y: y ordinate
 %
-%    o paint_method: 
+%    o paint_method:
 %
 */
 MagickExport void DrawMatte(DrawContext context,
@@ -2930,7 +2930,7 @@ MagickExport void DrawPathFinish(DrawContext context)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DrawPathLineToAbsolute() draws a line path from the current point to the 
+%  DrawPathLineToAbsolute() draws a line path from the current point to the
 %  given coordinate using absolute coordinates. The coordinate then becomes
 %  the new current point.
 %
@@ -2986,7 +2986,7 @@ MagickExport void DrawPathLineToAbsolute(DrawContext context,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DrawPathLineToRelative() draws a line path from the current point to the 
+%  DrawPathLineToRelative() draws a line path from the current point to the
 %  given coordinate using relative coordinates. The coordinate then becomes
 %  the new current point.
 %
@@ -3506,7 +3506,7 @@ MagickExport void DrawPopDefs(DrawContext context)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DrawPopGraphicContext() destroys the current context returning to the 
+%  DrawPopGraphicContext() destroys the current context returning to the
 %  previously pushed context. Multiple contexts may exist. It is an error
 %  to attempt to pop more contexts than have been pushed, and it is proper
 %  form to pop all contexts which have been pushed.
@@ -3862,8 +3862,7 @@ MagickExport int DrawRender(const DrawContext context)
   assert(context->signature == MagickSignature);
 
   CurrentContext->primitive = context->mvg;
-  if(CurrentContext->debug)
-    (void) fprintf(stdout,"MVG:\n'%s'\n",context->mvg);
+  LogMagickEvent(RenderEvent,"MVG:\n'%s'\n",context->mvg);
   DrawImage(context->image, CurrentContext);
   CurrentContext->primitive = (char *) NULL;
 
@@ -4358,28 +4357,28 @@ MagickExport void DrawSetStrokeDashArray(DrawContext context,
 {
   register const double
     *p;
-  
+
   register double
     *q;
-  
+
   unsigned int
     updated = False,
     n_new = 0,
     n_old = 0;
-  
+
   assert(context != (DrawContext)NULL);
   assert(context->signature == MagickSignature);
-  
+
   p = dasharray;
   if( p != (const double *) NULL )
     while( *p++ != 0)
       n_new++;
-  
+
   q = CurrentContext->dash_pattern;
   if( q != (const double *) NULL )
     while( *q++ != 0)
       n_old++;
-  
+
   if( (n_old == 0) && (n_new == 0) )
     {
       updated = False;
@@ -4400,12 +4399,12 @@ MagickExport void DrawSetStrokeDashArray(DrawContext context,
             break;
           }
     }
-  
+
   if( context->filter_off || updated )
     {
       if(CurrentContext->dash_pattern != (double*)NULL)
         LiberateMemory((void **) &CurrentContext->dash_pattern);
-      
+
       if( n_new != 0)
         {
           CurrentContext->dash_pattern = (double *)
@@ -4424,7 +4423,7 @@ MagickExport void DrawSetStrokeDashArray(DrawContext context,
                                  "Memory allocation failed")
             }
         }
-      
+
       MvgPrintf(context, "stroke-dasharray ");
       if ( n_new == 0 )
         MvgPrintf(context, "none");
@@ -4697,7 +4696,7 @@ MagickExport void DrawSetStrokeOpacity(DrawContext context,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DrawSetStrokeWidth() sets the width of the stroke used to draw object 
+%  DrawSetStrokeWidth() sets the width of the stroke used to draw object
 %  outlines.
 %
 %  The format of the DrawSetStrokeWidth method is:
@@ -4778,7 +4777,7 @@ MagickExport void DrawSetTextAntialias(DrawContext context,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DrawSetTextDecoration() specifies a decoration to be applied when 
+%  DrawSetTextDecoration() specifies a decoration to be applied when
 %  annotating with text.
 %
 %  The format of the DrawSetTextDecoration method is:
@@ -4947,7 +4946,7 @@ MagickExport void DrawSetTextUnderColorString(DrawContext context,
     pixel_packet;
 
   if(QueryColorDatabase(under_color,&pixel_packet,&context->image->exception))
-    DrawSetTextUnderColor(context,&pixel_packet);  
+    DrawSetTextUnderColor(context,&pixel_packet);
 }
 
 /*

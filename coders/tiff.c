@@ -952,6 +952,14 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     image=image->previous;
   return(image);
 }
+#else
+static Image *ReadTIFFImage(const ImageInfo *image_info,
+  ExceptionInfo *exception)
+{
+  ThrowException(exception,MissingDelegateError,"TIFF library is not available",
+    image_info->filename);
+  return((Image *) NULL);
+}
 #endif
 
 /*
@@ -992,29 +1000,23 @@ ModuleExport void RegisterTIFFImage(void)
   FormatString(version,"%d",TIFF_VERSION);
 #endif
   entry=SetMagickInfo("PTIF");
-#if defined(HasTIFF)
   entry->decoder=ReadTIFFImage;
   entry->encoder=WritePTIFImage;
-#endif
   entry->adjoin=False;
   entry->description=AcquireString("Pyramid encoded TIFF");
   entry->module=AcquireString("TIFF");
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("TIF");
-#if defined(HasTIFF)
   entry->decoder=ReadTIFFImage;
   entry->encoder=WriteTIFFImage;
-#endif
   entry->description=AcquireString(TIFFDescription);
   if (*version != '\0')
     entry->version=AcquireString(version);
   entry->module=AcquireString("TIFF");
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("TIFF");
-#if defined(HasTIFF)
   entry->decoder=ReadTIFFImage;
   entry->encoder=WriteTIFFImage;
-#endif
   entry->magick=IsTIFF;
   entry->description=AcquireString(TIFFDescription);
   if (*version != '\0')
@@ -1655,7 +1657,8 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
     attribute=GetImageAttribute(image,"model");
     if (attribute != (const ImageAttribute *) NULL)
       (void) TIFFSetField(tiff,TIFFTAG_MODEL,attribute->value);
-    (void) TIFFSetField(tiff,TIFFTAG_SOFTWARE,MagickVersion);
+    (void) TIFFSetField(tiff,TIFFTAG_SOFTWARE,
+      GetMagickVersion((unsigned long *) NULL));
     (void) TIFFSetField(tiff,TIFFTAG_DOCUMENTNAME,image->filename);
     attribute=GetImageAttribute(image,"copyright");
     if (attribute != (const ImageAttribute *) NULL)
@@ -1941,5 +1944,11 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
       CloseBlob(image);
     }
   return(True);
+}
+#else
+static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
+{
+  ThrowBinaryException(MissingDelegateError,"TIFF library is not available",
+    image->filename);
 }
 #endif

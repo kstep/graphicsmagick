@@ -246,7 +246,6 @@ MagickExport DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
   clone_info->bounds=draw_info->bounds;
   clone_info->clip_units=draw_info->clip_units;
   clone_info->render=draw_info->render;
-  clone_info->debug=draw_info->debug;
   clone_info->opacity=draw_info->opacity;
   return(clone_info);
 }
@@ -594,7 +593,7 @@ static int CompareEdges(const void *x,const void *y)
 }
 #endif
 
-static void PrintPolygonInfo(const PolygonInfo *polygon_info)
+static void LogPolygonInfo(const PolygonInfo *polygon_info)
 {
   register EdgeInfo
     *p;
@@ -603,19 +602,22 @@ static void PrintPolygonInfo(const PolygonInfo *polygon_info)
     i,
     j;
 
-  (void) fprintf(stdout,"    begin active-edge\n");
+  LogMagickEvent(RenderEvent,"    begin active-edge");
   p=polygon_info->edges;
   for (i=0; i < polygon_info->number_edges; i++)
   {
-    (void) fprintf(stdout,"      edge %lu:\n      direction: %s\n      "
-      "ghostline: %s\n      bounds: %g,%g - %g,%g\n",i,
-      p->direction ? "down" : "up",p->ghostline ? "transparent" : "opaque",
+    LogMagickEvent(RenderEvent,"      edge %lu:",i);
+    LogMagickEvent(RenderEvent,"      direction: %s",
+      p->direction ? "down" : "up");
+    LogMagickEvent(RenderEvent,"      ghostline: %s",
+			p->ghostline ? "transparent" : "opaque");
+    LogMagickEvent(RenderEvent,"       bounds: %g,%g - %g,%g",
       p->bounds.x1,p->bounds.y1,p->bounds.x2,p->bounds.y2);
     for (j=0; j < p->number_points; j++)
-      (void) fprintf(stdout,"        %g,%g\n",p->points[j].x,p->points[j].y);
+      LogMagickEvent(RenderEvent,"        %g,%g",p->points[j].x,p->points[j].y);
     p++;
   }
-  (void) fprintf(stdout,"    end active-edge\n");
+  LogMagickEvent(RenderEvent,"    end active-edge");
 }
 
 static void ReversePoints(PointInfo *points,const int number_points)
@@ -637,7 +639,7 @@ static void ReversePoints(PointInfo *points,const int number_points)
 static PolygonInfo *ConvertPathToPolygon(const DrawInfo *draw_info,
   const PathInfo *path_info)
 {
-  int
+  long
     direction,
     edge,
     ghostline,
@@ -818,8 +820,8 @@ static PolygonInfo *ConvertPathToPolygon(const DrawInfo *draw_info,
   polygon_info->number_edges=edge;
   qsort(polygon_info->edges,polygon_info->number_edges,sizeof(EdgeInfo),
     CompareEdges);
-  if (draw_info->debug)
-    PrintPolygonInfo(polygon_info);
+  if (IsEventLogging())
+    LogPolygonInfo(polygon_info);
   return(polygon_info);
 }
 
@@ -854,18 +856,18 @@ static PolygonInfo *ConvertPathToPolygon(const DrawInfo *draw_info,
 %
 */
 
-static void PrintPathInfo(const PathInfo *path_info)
+static void LogPathInfo(const PathInfo *path_info)
 {
   register const PathInfo
     *p;
 
-  (void) fprintf(stdout,"    begin vector-path\n");
+  LogMagickEvent(RenderEvent,"    begin vector-path");
   for (p=path_info; p->code != EndCode; p++)
-    (void) fprintf(stdout,"      %g,%g %s\n",p->point.x,p->point.y,
+    LogMagickEvent(RenderEvent,"      %g,%g %s",p->point.x,p->point.y,
       p->code == GhostlineCode ? "moveto ghostline" :
       p->code == OpenCode ? "moveto open" : p->code == MoveToCode ? "moveto" :
       p->code == LineToCode ? "lineto" : "?");
-  (void) fprintf(stdout,"    end vector-path\n");
+  LogMagickEvent(RenderEvent,"    end vector-path");
 }
 
 static PathInfo *ConvertPrimitiveToPath(const DrawInfo *draw_info,
@@ -953,8 +955,8 @@ static PathInfo *ConvertPrimitiveToPath(const DrawInfo *draw_info,
   path_info[n].code=EndCode;
   path_info[n].point.x=0.0;
   path_info[n].point.y=0.0;
-  if (draw_info->debug)
-    PrintPathInfo(path_info);
+  if (IsEventLogging())
+    LogPathInfo(path_info);
   return(path_info);
 }
 
@@ -1373,7 +1375,6 @@ static void DrawBoundingRectangles(Image *image,const DrawInfo *draw_info,
     bounds;
 
   clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
-  clone_info->debug=False;
   (void) QueryColorDatabase("#000000ff",&clone_info->fill,&image->exception);
   resolution.x=72.0;
   resolution.y=72.0;
@@ -1513,8 +1514,7 @@ MagickExport unsigned int DrawClipPath(Image *image,const DrawInfo *draw_info,
   (void) QueryColorDatabase("none",&image->clip_mask->background_color,
     &image->exception);
   SetImage(image->clip_mask,TransparentOpacity);
-  if (draw_info->debug)
-    (void) fprintf(stdout,"\nbegin clip-path %.1024s\n",draw_info->clip_path);
+  LogMagickEvent(RenderEvent,"\nbegin clip-path %.1024s",draw_info->clip_path);
   clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
   (void) CloneString(&clone_info->primitive,attribute->value);
   (void) QueryColorDatabase("white",&clone_info->fill,&image->exception);
@@ -1522,8 +1522,7 @@ MagickExport unsigned int DrawClipPath(Image *image,const DrawInfo *draw_info,
   status=DrawImage(image->clip_mask,clone_info);
   (void) NegateImage(image->clip_mask,False);
   DestroyDrawInfo(clone_info);
-  if (draw_info->debug)
-    (void) fprintf(stdout,"end clip-path\n\n");
+  LogMagickEvent(RenderEvent,"end clip-path");
   return(status);
 }
 
@@ -1583,9 +1582,6 @@ static unsigned int DrawDashPolygon(const DrawInfo *draw_info,
   register long
     i;
 
-  TimerInfo
-    timer;
-
   unsigned int
     status;
 
@@ -1593,11 +1589,7 @@ static unsigned int DrawDashPolygon(const DrawInfo *draw_info,
     number_vertices;
 
   assert(draw_info != (const DrawInfo *) NULL);
-  if (draw_info->debug)
-    {
-      GetTimerInfo(&timer);
-      (void) fprintf(stdout,"    begin draw-dash\n");
-    }
+  LogMagickEvent(RenderEvent,"    begin draw-dash");
   clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
   clone_info->miterlimit=0;
   for (i=0; primitive_info[i].primitive != UndefinedPrimitive; i++);
@@ -1684,8 +1676,7 @@ static unsigned int DrawDashPolygon(const DrawInfo *draw_info,
   }
   LiberateMemory((void **) &dash_polygon);
   DestroyDrawInfo(clone_info);
-  if (draw_info->debug)
-    (void) fprintf(stdout,"    end draw-dash (%.2fu)\n",GetUserTime(&timer));
+  LogMagickEvent(RenderEvent,"    end draw-dash");
   return(status);
 }
 
@@ -1787,9 +1778,6 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
   size_t
     length;
 
-  TimerInfo
-    timer;
-
   unsigned int
     status;
 
@@ -1806,11 +1794,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
   assert(draw_info->primitive != (char *) NULL);
   if (*draw_info->primitive == '\0')
     return(False);
-  if (draw_info->debug)
-    {
-      GetTimerInfo(&timer);
-      (void) fprintf(stdout,"begin draw-image\n");
-    }
+  LogMagickEvent(RenderEvent,"begin draw-image");
   if (*draw_info->primitive != '@')
     primitive=TranslateText((ImageInfo *) NULL,image,draw_info->primitive);
   else
@@ -2895,8 +2879,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       }
     if (primitive_type == UndefinedPrimitive)
       {
-        if (graphic_context[n]->debug)
-          (void) fprintf(stdout,"  %.*s\n",(int) (q-p),p);
+        LogMagickEvent(RenderEvent,"  %.*s",(int) (q-p),p);
         continue;
       }
     /*
@@ -3169,8 +3152,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
     }
     if (primitive_info == (PrimitiveInfo *) NULL)
       break;
-    if (graphic_context[n]->debug)
-      (void) fprintf(stdout,"  %.*s\n",(int) (q-p),p);
+    LogMagickEvent(RenderEvent,"  %.*s",(int) (q-p),p);
     if (status == False)
       break;
     primitive_info[i].primitive=UndefinedPrimitive;
@@ -3211,8 +3193,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       LiberateMemory((void **) &primitive_info->text);
     MagickMonitor(RenderImageText,q-primitive,(off_t) primitive_extent);
   }
-  if (graphic_context[n]->debug)
-    (void) fprintf(stdout,"end draw-image (%.2fu)\n",GetUserTime(&timer));
+  LogMagickEvent(RenderEvent,"end draw-image");
   /*
     Free resources.
   */
@@ -3299,17 +3280,15 @@ MagickExport unsigned int DrawPatternPath(Image *image,const DrawInfo *draw_info
   (void) QueryColorDatabase("none",&(*pattern)->background_color,
     &image->exception);
   SetImage(*pattern,OpaqueOpacity);
-  if (draw_info->debug)
-    (void) fprintf(stdout,"\nbegin pattern-path %.1024s %.1024s\n",name,
-      geometry->value);
+  LogMagickEvent(RenderEvent,"begin pattern-path %.1024s %.1024s",name,
+    geometry->value);
   clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
   clone_info->fill_pattern=(Image *) NULL;
   clone_info->stroke_pattern=(Image *) NULL;
   (void) CloneString(&clone_info->primitive,path->value);
   status=DrawImage(*pattern,clone_info);
   DestroyDrawInfo(clone_info);
-  if (draw_info->debug)
-    (void) fprintf(stdout,"end pattern-path\n\n");
+  LogMagickEvent(RenderEvent,"end pattern-path");
   return(status);
 }
 
@@ -3598,13 +3577,7 @@ static unsigned int DrawPolygonPrimitive(Image *image,const DrawInfo *draw_info,
   LiberateMemory((void **) &path_info);
   if (polygon_info == (PolygonInfo *) NULL)
     return(False);
-  if (draw_info->debug > 1)
-    DrawBoundingRectangles(image,draw_info,polygon_info);
-  if (draw_info->debug)
-    {
-      GetTimerInfo(&timer);
-      (void) fprintf(stdout,"    begin draw-polygon\n");
-    }
+  LogMagickEvent(RenderEvent,"    begin draw-polygon");
   fill=(primitive_info->method == FillToBorderMethod) ||
     (primitive_info->method == FloodfillMethod);
   fill_color=draw_info->fill;
@@ -3658,9 +3631,7 @@ static unsigned int DrawPolygonPrimitive(Image *image,const DrawInfo *draw_info,
         if (!SyncImagePixels(image))
           break;
       }
-      if (draw_info->debug)
-        (void) fprintf(stdout,"    end draw-polygon (%.2fu)\n",
-          GetUserTime(&timer));
+      LogMagickEvent(RenderEvent,"    end draw-polygon");
       return(True);
     }
   /*
@@ -3711,8 +3682,7 @@ static unsigned int DrawPolygonPrimitive(Image *image,const DrawInfo *draw_info,
     if (!SyncImagePixels(image))
       break;
   }
-  if (draw_info->debug)
-    (void) fprintf(stdout,"    end draw-polygon (%.2fu)\n",GetUserTime(&timer));
+  LogMagickEvent(RenderEvent,"    end draw-polygon");
   DestroyPolygonInfo(polygon_info);
   return(True);
 }
@@ -3747,7 +3717,7 @@ static unsigned int DrawPolygonPrimitive(Image *image,const DrawInfo *draw_info,
 %
 */
 
-static void PrintPrimitiveInfo(const PrimitiveInfo *primitive_info)
+static void LogPrimitiveInfo(const PrimitiveInfo *primitive_info)
 {
   char
     *methods[] =
@@ -3779,30 +3749,30 @@ static void PrintPrimitiveInfo(const PrimitiveInfo *primitive_info)
   {
     case PointPrimitive:
     {
-      (void) fprintf(stdout,"PointPrimitive %ld,%ld %s\n",x,y,
+      LogMagickEvent(RenderEvent,"PointPrimitive %ld,%ld %s",x,y,
         methods[primitive_info->method]);
       return;
     }
     case ColorPrimitive:
     {
-      (void) fprintf(stdout,"ColorPrimitive %ld,%ld %s\n",x,y,
+      LogMagickEvent(RenderEvent,"ColorPrimitive %ld,%ld %s",x,y,
         methods[primitive_info->method]);
       return;
     }
     case MattePrimitive:
     {
-      (void) fprintf(stdout,"MattePrimitive %ld,%ld %s\n",x,y,
+      LogMagickEvent(RenderEvent,"MattePrimitive %ld,%ld %s",x,y,
         methods[primitive_info->method]);
       return;
     }
     case TextPrimitive:
     {
-      (void) fprintf(stdout,"TextPrimitive %ld,%ld\n",x,y);
+      LogMagickEvent(RenderEvent,"TextPrimitive %ld,%ld",x,y);
       return;
     }
     case ImagePrimitive:
     {
-      (void) fprintf(stdout,"ImagePrimitive %ld,%ld\n",x,y);
+      LogMagickEvent(RenderEvent,"ImagePrimitive %ld,%ld",x,y);
       return;
     }
     default:
@@ -3817,15 +3787,16 @@ static void PrintPrimitiveInfo(const PrimitiveInfo *primitive_info)
     if (coordinates <= 0)
       {
         coordinates=(long) primitive_info[i].coordinates;
-        (void) fprintf(stdout,"    begin open (%ld)\n",coordinates);
+        LogMagickEvent(RenderEvent,"    begin open (%ld)",coordinates);
         p=point;
       }
     point=primitive_info[i].point;
     if ((fabs(q.x-point.x) > MagickEpsilon) ||
         (fabs(q.y-point.y) > MagickEpsilon))
-      (void) fprintf(stdout,"      %ld: %g,%g\n",coordinates,point.x,point.y);
+      LogMagickEvent(RenderEvent,"      %ld: %g,%g",coordinates,
+        point.x,point.y);
     else
-      (void) fprintf(stdout,"      %ld: %g,%g (duplicate)\n",coordinates,
+      LogMagickEvent(RenderEvent,"      %ld: %g,%g (duplicate)",coordinates,
         point.x,point.y);
     q=point;
     coordinates--;
@@ -3833,9 +3804,9 @@ static void PrintPrimitiveInfo(const PrimitiveInfo *primitive_info)
       continue;
     if ((fabs(p.x-point.x) > MagickEpsilon) ||
         (fabs(p.y-point.y) > MagickEpsilon))
-      (void) fprintf(stdout,"    end last (%ld)\n",coordinates);
+      LogMagickEvent(RenderEvent,"    end last (%ld)",coordinates);
     else
-      (void) fprintf(stdout,"    end open (%ld)\n",coordinates);
+      LogMagickEvent(RenderEvent,"    end open (%ld)",coordinates);
   }
 }
 
@@ -3855,20 +3826,13 @@ MagickExport unsigned int DrawPrimitive(Image *image,const DrawInfo *draw_info,
   register PixelPacket
     *q;
 
-  TimerInfo
-    timer;
-
   unsigned int
     status;
 
-  if (draw_info->debug)
-    {
-      GetTimerInfo(&timer);
-      (void) fprintf(stdout,"  begin draw-primitive\n");
-      (void) fprintf(stdout,"    affine: %g,%g,%g,%g,%g,%g\n",
-        draw_info->affine.sx,draw_info->affine.rx,draw_info->affine.ry,
-        draw_info->affine.sy,draw_info->affine.tx,draw_info->affine.ty);
-    }
+  LogMagickEvent(RenderEvent,"  begin draw-primitive");
+  LogMagickEvent(RenderEvent,"    affine: %g,%g,%g,%g,%g,%g",
+    draw_info->affine.sx,draw_info->affine.rx,draw_info->affine.ry,
+    draw_info->affine.sy,draw_info->affine.tx,draw_info->affine.ty);
   status=True;
   x=(long) ceil(primitive_info->point.x-0.5);
   y=(long) ceil(primitive_info->point.y-0.5);
@@ -4121,8 +4085,8 @@ MagickExport unsigned int DrawPrimitive(Image *image,const DrawInfo *draw_info,
       DrawInfo
         *clone_info;
 
-      if (draw_info->debug)
-        PrintPrimitiveInfo(primitive_info);
+      if (IsEventLogging())
+        LogPrimitiveInfo(primitive_info);
       scale=ExpandAffine(&draw_info->affine);
       if ((draw_info->dash_pattern != (double *) NULL) &&
           (scale*draw_info->stroke_width > MagickEpsilon) &&
@@ -4172,8 +4136,7 @@ MagickExport unsigned int DrawPrimitive(Image *image,const DrawInfo *draw_info,
       break;
     }
   }
-  if (draw_info->debug)
-    (void) fprintf(stdout,"  end draw-primitive (%.2fu)\n",GetUserTime(&timer));
+  LogMagickEvent(RenderEvent,"  end draw-primitive");
   return(status);
 }
 
@@ -4240,9 +4203,6 @@ static unsigned int DrawStrokePolygon(Image *image,const DrawInfo *draw_info,
     *p,
     *q;
 
-  TimerInfo
-    timer;
-
   unsigned int
     closed_path,
     status;
@@ -4250,11 +4210,7 @@ static unsigned int DrawStrokePolygon(Image *image,const DrawInfo *draw_info,
   /*
     Draw stroked polygon.
   */
-  if (draw_info->debug)
-    {
-      GetTimerInfo(&timer);
-      (void) fprintf(stdout,"    begin draw-stroke-polygon\n");
-    }
+  LogMagickEvent(RenderEvent,"    begin draw-stroke-polygon");
   clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
   clone_info->fill=draw_info->stroke;
   clone_info->stroke.opacity=TransparentOpacity;
@@ -4275,9 +4231,7 @@ static unsigned int DrawStrokePolygon(Image *image,const DrawInfo *draw_info,
       }
   }
   DestroyDrawInfo(clone_info);
-  if (draw_info->debug)
-    (void) fprintf(stdout,"    end draw-stroke-polygon (%.2fu)\n",
-      GetUserTime(&timer));
+  LogMagickEvent(RenderEvent,"    end draw-stroke-polygon");
   return(status);
 }
 
@@ -4341,7 +4295,6 @@ MagickExport void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
   if (clone_info->server_name != (char *) NULL)
     draw_info->server_name=AllocateString(clone_info->server_name);
   draw_info->render=True;
-  draw_info->debug=clone_info->debug;
   draw_info->signature=MagickSignature;
   DestroyImageInfo(clone_info);
 }

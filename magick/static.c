@@ -61,13 +61,13 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   E x e c u t t e S t a t i c M o d u l e P r o c e s s                     %
+%   E x e c u t e S t a t i c M o d u l e P r o c e s s                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ExecuteStaticModuleProcess() 
+%  ExecuteStaticModuleProcess() is just a template method.
 %
 %  The format of the ExecuteStaticModuleProcess method is:
 %
@@ -76,9 +76,9 @@
 %
 %  A description of each parameter follows:
 %
-%    tag: The module tag.
+%    o tag: The module tag.
 %
-%    image: The image.
+%    o image: The image.
 %
 %    o argc: The number of elements in the argument vector.
 %

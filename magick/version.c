@@ -3,20 +3,19 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%           IIIII  DDDD   EEEEE  N   N  TTTTT  IIIII  FFFFF  Y   Y            %
-%             I    D   D  E      NN  N    T      I    F       Y Y             %
-%             I    D   D  EEE    N N N    T      I    FFF      Y              %
-%             I    D   D  E      N  NN    T      I    F        Y              %
-%           IIIII  DDDD   EEEEE  N   N    T    IIIII  F        Y              %
+%               V   V  EEEEE  RRRR   SSSSS  IIIII   OOO   N   N               %
+%               V   V  E      R   R  SS       I    O   O  NN  N               %
+%               V   V  EEE    RRRR    SSS     I    O   O  N N N               %
+%                V V   E      R R       SS    I    O   O  N  NN               %
+%                 V    EEEEE  R  R   SSSSS  IIIII   OOO   N   N               %
 %                                                                             %
 %                                                                             %
-%               Identify an Image Format and Characteristics.                 %
+%                         ImageMagick Version Methods                         %
 %                                                                             %
 %                                                                             %
-%                                                                             %
-%                           Software Design                                   %
-%                             John Cristy                                     %
-%                            September 1994                                   %
+%                              Software Design                                %
+%                                John Cristy                                  %
+%                               September 2002                                %
 %                                                                             %
 %                                                                             %
 %  Copyright (C) 2002 ImageMagick Studio, a non-profit organization dedicated %
@@ -47,67 +46,54 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Identify describes the format and characteristics of one or more image
-%  files.  It will also report if an image is incomplete or corrupt.
-%
 %
 */
 
+#include "studio.h"
+
 /*
-  Include declarations.
+  Define declarations.
 */
-#include "magick/studio.h"
+#define MagickCopyright  "Copyright (C) 2002 ImageMagick Studio LLC"
+#define MagickLibVersion  0x0551
+#define MagickLibVersionText  "5.5.1"
+#define MagickLibVersionNumber  5,5,1,0
+#if (QuantumDepth == 8)
+#define MagickQuantumDepth  "Q8"
+#elif (QuantumDepth == 16)
+#define MagickQuantumDepth  "Q16"
+#elif (QuantumDepth == 32)
+#define MagickQuantumDepth  "Q32"
+#else
+#define MagickQuantumDepth  "Q?"
+#endif
+#define MagickReleaseDate  "10/01/02"
+#define MagickVersion "ImageMagick " MagickLibVersionText " " \
+  MagickReleaseDate " " MagickQuantumDepth " " MagickWebSite
+#define MagickWebSite  "http://www.imagemagick.org"
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   I d e n t i f y U s a g e                                                 %
+%   G e t M a g i c k C o p y r i g h t                                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  IdentifyUsage() displays the program command syntax.
+%  GetMagickCopyright() returns the ImageMagick API copyright as a string.
 %
-%  The format of the IdentifyUsage method is:
+%  The format of the GetMagickCopyright method is:
 %
-%      void IdentifyUsage()
+%      const char *GetMagickCopyright(void)
 %
 %
 */
-static void IdentifyUsage(void)
+MagickExport const char *GetMagickCopyright(void)
 {
-  const char
-    **p;
-
-  static const char
-    *options[]=
-    {
-      "-authenticate value  decrypt image with this password",
-      "-cache threshold     megabytes of memory available to the pixel cache",
-      "-debug events        display copious debugging information",
-      "-density geometry    horizontal and vertical density of the image",
-      "-depth value         image depth",
-      "-format \"string\"   output formatted image characteristics",
-      "-help                print program options",
-      "-interlace type      None, Line, Plane, or Partition",
-      "-size geometry       width and height of image",
-      "-sampling_factor geometry",
-      "                     horizontal and vertical sampling factor",
-      "-verbose             print detailed information about the image",
-      (char *) NULL
-    };
-
-  (void) printf("Version: %.1024s\n",GetMagickVersion((unsigned long *) NULL));
-  (void) printf("Copyright: %.1024s\n\n",GetMagickCopyright());
-  (void) printf("Usage: %.1024s [options ...] file [ [options ...] "
-    "file ... ]\n",SetClientName((char *) NULL));
-  (void) printf("\nWhere options include:\n");
-  for (p=options; *p != (char *) NULL; p++)
-    (void) printf("  %.1024s\n",*p);
-  Exit(0);
+  return(MagickCopyright);
 }
 
 /*
@@ -115,66 +101,27 @@ static void IdentifyUsage(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%  M a i n                                                                    %
+%   G e t M a g i c k V e r s i o n                                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
+%  GetMagickVersion() returns the ImageMagick API version as a string and
+%  as a number.
+%
+%  The format of the GetMagickVersion method is:
+%
+%      const char *GetMagickVersion(unsigned long *version)
+%
+%  A description of each parameter follows:
+%
+%    o version: The ImageMagick version is returned as a number.
 %
 */
-int main(int argc,char **argv)
+MagickExport const char *GetMagickVersion(unsigned long *version)
 {
-  char
-    *option,
-    *text;
-
-  ExceptionInfo
-    exception;
-
-  ImageInfo
-    *image_info;
-
-  register int
-    i;
-
-  unsigned int
-    status;
-
-  text=(char *) NULL;
-  ReadCommandlLine(argc,&argv);
-  for (i=1; i < argc; i++)
-  {
-    option=argv[i];
-    if ((strlen(option) == 1) || ((*option != '-') && (*option != '+')))
-      continue;
-    if (LocaleCompare("help",option+1) == 0)
-      IdentifyUsage();
-    if (LocaleCompare("?",option+1) == 0)
-      IdentifyUsage();
-  }
-  InitializeMagick(*argv);
-  status=ExpandFilenames(&argc,&argv);
-  if (status == False)
-    MagickFatalError(ResourceLimitFatalError,"Memory allocation failed",
-      (char *) NULL);
-  if (argc < 2)
-    IdentifyUsage();
-  image_info=CloneImageInfo((ImageInfo *) NULL);
-  GetExceptionInfo(&exception);
-  status=IdentifyImageCommand(image_info,argc,argv,&text,&exception);
-  if (exception.severity != UndefinedException)
-    CatchException(&exception);
-  if (text != (char *) NULL)
-    {
-      (void) fputs(text,stdout);
-      (void) fputc('\n',stdout);
-      LiberateMemory((void **) &text);
-    }
-  DestroyImageInfo(image_info);
-  DestroyExceptionInfo(&exception);
-  DestroyMagick();
-  LiberateMemory((void **) &argv);
-  Exit(!status);
-  return(False);
+  if (version != (unsigned long *) NULL)
+    *version=MagickLibVersion;
+  return(MagickVersion);
 }

@@ -109,7 +109,6 @@ typedef struct _DrawInfo
     opacity;
 
   unsigned int
-    debug,
     render;
 
   unsigned long

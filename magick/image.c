@@ -1153,7 +1153,6 @@ MagickExport ImageInfo *CloneImageInfo(const ImageInfo *image_info)
   clone_info->group=image_info->group;
   clone_info->ping=image_info->ping;
   clone_info->verbose=image_info->verbose;
-  clone_info->debug=image_info->debug;
   if (image_info->view != (char *) NULL)
     clone_info->view=AllocateString(image_info->view);
   if (image_info->authenticate != (char *) NULL)
@@ -3350,11 +3349,6 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
       }
       case 'd':
       {
-        if (LocaleCompare("debug",option+1) == 0)
-          {
-            draw_info->debug=(*option == '-');
-            continue;
-          }
         if (LocaleCompare("delay",option+1) == 0)
           {
             double

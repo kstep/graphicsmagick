@@ -118,6 +118,7 @@ extern "C" {
 # include "magick/delegate.h"
 # include "magick/module.h"
 # include "magick/monitor.h"
+# include "magick/log.h"
 # include "magick/version.h"
 #else
 # include "classify.h"
@@ -143,6 +144,7 @@ extern "C" {
 # include "delegate.h"
 # include "module.h"
 # include "monitor.h"
+# include "log.h"
 # include "version.h"
 #endif
 

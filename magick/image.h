@@ -483,8 +483,7 @@ typedef struct _ImageInfo
 
   unsigned int
     ping,
-    verbose,
-    debug;
+    verbose;
 
   char
     *view,
@@ -541,9 +540,6 @@ extern MagickExport const char
   *SaveImageText,
   *SaveImagesText;
 
-extern MagickExport unsigned int
-  magick_debug;
-
 extern MagickExport const unsigned long
   DefaultCompressionQuality;
 
@@ -554,8 +550,7 @@ extern MagickExport char
   **GetColorList(const char *,int *);
 
 extern MagickExport const char
-  *GetImageMagick(const unsigned char *,const size_t),
-  *GetMagickVersion(unsigned int *);
+  *GetImageMagick(const unsigned char *,const size_t);
 
 extern MagickExport const ColorInfo
   *GetColorInfo(const char *,ExceptionInfo *);

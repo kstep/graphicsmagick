@@ -402,7 +402,7 @@ static OSErr HGetVInfo(short volume_index,StringPtr volume_name,short *volume,
 
   OSErr
     result;
-  
+
   unsigned long
     blocksize;
 
@@ -427,7 +427,7 @@ static OSErr HGetVInfo(short volume_index,StringPtr volume_name,short *volume,
   *total_bytes=allocation_blocks*blocksize;
   return(result);
 }
- 
+
 MagickExport unsigned int MACIsMagickConflict(const char *magick)
 {
   unsigned long
@@ -446,7 +446,7 @@ MagickExport unsigned int MACIsMagickConflict(const char *magick)
 
   StringPtr
     p;
-  
+
   assert(magick != (char *) NULL);
   p=(StringPtr) &volume_name;
   for (index=(-1); ; index--)
@@ -1396,7 +1396,7 @@ MagickExport void SetApplicationType(const char *filename,const char *magick,
 
   Str255
     name;
-   
+
   assert(filename != (char *) NULL);
   assert(magick != (const char *) NULL);
   filetype='    ';

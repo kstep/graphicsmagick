@@ -55,3 +55,31 @@
 */
 #include "studio.h"
 
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   G e t L o c a l e M e s s a g e                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetLocaleMessage() returns a string that matches the message in locale
+%  if the user.
+%
+%  The format of the GetLocaleMessage method is:
+%
+%      const char *GetLocaleMessage(const char *source)
+%
+%  A description of each parameter follows:
+%
+%    o message: The message.
+%
+%
+*/
+MagickExport const char *GetLocaleMessage(const char *message)
+{
+  return(message);
+}

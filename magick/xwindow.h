@@ -261,7 +261,6 @@ typedef struct _XResourceInfo
     border_width,
     color_recovery,
     confirm_exit,
-    debug,
     delay;
 
   char

@@ -260,12 +260,12 @@ AM_CPPFLAGS = @LIBRARY_EXTRA_CPPFLAGS@
 
 # Library base sources
 MAGICK_BASE_SRCS = memory.c blob.c cache.c locale.c error.c monitor.c \
-  constitute.c image.c composite.c list.c color.c quantize.c segment.c \
-	resize.c transform.c shear.c enhance.c effect.c fx.c decorate.c annotate.c \
-	type.c draw.c render.c montage.c semaphore.c attribute.c signature.c \
-	compress.c command.c gem.c registry.c magic.c magick.c delegate.c module.c \
-	static.c timer.c utility.c cache_view.c stream.c animate.c display.c \
-	widget.c xwindow.c PreRvIcccm.c
+	constitute.c image.c composite.c list.c color.c quantize.c segment.c \
+	resize.c transform.c shear.c enhance.c effect.c fx.c decorate.c \
+	annotate.c type.c draw.c render.c montage.c semaphore.c attribute.c \
+	signature.c compress.c command.c gem.c registry.c magic.c magick.c \
+	delegate.c module.c static.c log.c timer.c utility.c cache_view.c \
+	stream.c animate.c display.c widget.c xwindow.c PreRvIcccm.c version.c
 
 
 # Platform specific source files that may appear in the library
@@ -287,16 +287,16 @@ bin_SCRIPTS = Magick-config
 # Headers which are installed
 include_HEADERS = PreRvIcccm.h api.h attribute.h blob.h cache.h \
   cache_view.h classify.h command.h compress.h magick_config.h delegate.h \
-  draw.h render.h error.h gem.h image.h list.h magic.h magick.h \
-	module.h monitor.h quantize.h registry.h semaphore.h timer.h utility.h \
-	version.h widget.h xwindow.h
+  draw.h render.h error.h gem.h image.h list.h log.h magic.h magick.h \
+  module.h monitor.h quantize.h registry.h semaphore.h timer.h utility.h \
+  version.h widget.h xwindow.h
 
 
 # Headers which are not installed but which are distributed
 noinst_HEADERS = animate.h display.h mac.h ntbase.h ntfeature.h studio.h vms.h
 
 # Additional files to distribute
-EXTRA_DIST = $(ALLMANPAGES) colors.mgk magic.mgk Magick-config.in \
+EXTRA_DIST = $(ALLMANPAGES) colors.mgk log.mgk magic.mgk Magick-config.in \
   Magick-config.in Make.com mac.c ntbase.c ntfeature.c vms.c $(MAGICK_BASE_SRCS)
 
 
@@ -304,7 +304,7 @@ EXTRA_DIST = $(ALLMANPAGES) colors.mgk magic.mgk Magick-config.in \
 pkgdir = $(libdir)/ImageMagick
 
 # Architecture-dependent data files installed into ImageMagick/lib
-pkg_DATA = colors.mgk magic.mgk
+pkg_DATA = colors.mgk log.mgk magic.mgk
 
 # Architecture independent data files installed into ImageMagick/share
 pkgdata_DATA = 
@@ -327,9 +327,9 @@ am__objects_1 = memory.lo blob.lo cache.lo locale.lo error.lo monitor.lo \
 	enhance.lo effect.lo fx.lo decorate.lo annotate.lo type.lo \
 	draw.lo render.lo montage.lo semaphore.lo attribute.lo \
 	signature.lo compress.lo command.lo gem.lo registry.lo magic.lo \
-	magick.lo delegate.lo module.lo static.lo timer.lo utility.lo \
-	cache_view.lo stream.lo animate.lo display.lo widget.lo \
-	xwindow.lo PreRvIcccm.lo
+	magick.lo delegate.lo module.lo static.lo log.lo timer.lo \
+	utility.lo cache_view.lo stream.lo animate.lo display.lo \
+	widget.lo xwindow.lo PreRvIcccm.lo version.lo
 @CYGWIN_BUILD_FALSE@@WIN32_NATIVE_BUILD_FALSE@am__objects_2 =
 @CYGWIN_BUILD_TRUE@@WIN32_NATIVE_BUILD_FALSE@am__objects_2 = \
 @CYGWIN_BUILD_TRUE@@WIN32_NATIVE_BUILD_FALSE@	ntfeature.lo
@@ -359,18 +359,19 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/enhance.Plo ./$(DEPDIR)/error.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/fx.Plo ./$(DEPDIR)/gem.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/image.Plo ./$(DEPDIR)/list.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/locale.Plo ./$(DEPDIR)/magic.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/magick.Plo ./$(DEPDIR)/memory.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/module.Plo ./$(DEPDIR)/monitor.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/montage.Plo ./$(DEPDIR)/ntbase.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/ntfeature.Plo ./$(DEPDIR)/quantize.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/registry.Plo ./$(DEPDIR)/render.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/resize.Plo ./$(DEPDIR)/segment.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/semaphore.Plo ./$(DEPDIR)/shear.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/signature.Plo ./$(DEPDIR)/static.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/stream.Plo ./$(DEPDIR)/timer.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/transform.Plo ./$(DEPDIR)/type.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/utility.Plo ./$(DEPDIR)/widget.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/locale.Plo ./$(DEPDIR)/log.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/magic.Plo ./$(DEPDIR)/magick.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/memory.Plo ./$(DEPDIR)/module.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/monitor.Plo ./$(DEPDIR)/montage.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/ntbase.Plo ./$(DEPDIR)/ntfeature.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/quantize.Plo ./$(DEPDIR)/registry.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/render.Plo ./$(DEPDIR)/resize.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/segment.Plo ./$(DEPDIR)/semaphore.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/shear.Plo ./$(DEPDIR)/signature.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/static.Plo ./$(DEPDIR)/stream.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/timer.Plo ./$(DEPDIR)/transform.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/type.Plo ./$(DEPDIR)/utility.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/version.Plo ./$(DEPDIR)/widget.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/xwindow.Plo
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
@@ -504,6 +505,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/image.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/list.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/locale.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/log.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/magic.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/magick.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/memory.Plo@am__quote@
@@ -526,6 +528,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/transform.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/type.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/utility.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/version.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/widget.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xwindow.Plo@am__quote@
 

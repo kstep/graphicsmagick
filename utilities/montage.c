@@ -95,9 +95,9 @@ static void MontageUsage(void)
       "-colorspace type     alternate image colorsapce",
       "-comment string      annotate image with comment",
       "-compose operator    composite operator",
-      "-compress type       image compression type",
+      "-compress type       image compression tyhpe",
       "-crop geometry       preferred size and location of the cropped image",
-      "-debug               display copious debugging information",
+      "-debug events        display copious debugging information",
       "-density geometry    horizontal and vertical density of the image",
       "-depth value         image depth",
       "-display server      query font from this X server",
@@ -143,11 +143,8 @@ static void MontageUsage(void)
       (char *) NULL
     };
 
-  unsigned int
-    version;
-
-  (void) printf("Version: %.1024s\n",GetMagickVersion(&version));
-  (void) printf("Copyright: %.1024s\n\n",MagickCopyright);
+  (void) printf("Version: %.1024s\n",GetMagickVersion((unsigned long *) NULL));
+  (void) printf("Copyright: %.1024s\n\n",GetMagickCopyright());
   (void) printf("Usage: %.1024s [options ...] file [ [options ...] file ...]\n",
     SetClientName((char *) NULL));
   (void) printf("\nWhere options include: \n");

@@ -115,10 +115,10 @@ static void DisplayUsage(void)
       "-colors value        preferred number of colors in the image",
       "-colorspace type     alternate image colorspace",
       "-comment string      annotate image with comment",
-      "-compress type       image compression type",
+      "-compress type       image compression tyhpe",
       "-contrast            enhance or reduce the image contrast",
       "-crop geometry       preferred size and location of the cropped image",
-      "-debug               display copious debugging information",
+      "-debug events        display copious debugging information",
       "-delay value         display the next image after pausing",
       "-density geometry    horizontal and vertical density of the image",
       "-depth value         image depth",
@@ -169,11 +169,8 @@ static void DisplayUsage(void)
       (char *) NULL
     };
 
-  unsigned int
-    version;
-
-  (void) printf("Version: %.1024s\n",GetMagickVersion(&version));
-  (void) printf("Copyright: %.1024s\n\n",MagickCopyright);
+  (void) printf("Version: %.1024s\n",GetMagickVersion((unsigned long *) NULL));
+  (void) printf("Copyright: %.1024s\n\n",GetMagickCopyright());
   (void) printf("Usage: %.1024s [options ...] file [ [options ...] file ...]\n",
     SetClientName((char *) NULL));
   (void) printf("\nWhere options include: \n");
@@ -802,7 +799,14 @@ int main(int argc,char **argv)
       {
         if (LocaleCompare("debug",option+1) == 0)
           {
-            resource_info.debug=(*option == '-');
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  MagickFatalError(OptionFatalError,"Missing event mask",
+                    option);
+                (void) SetLogEventMask(argv[i]);
+              }
             break;
           }
         if (LocaleCompare("delay",option+1) == 0)

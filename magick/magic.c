@@ -53,7 +53,7 @@
 */
 #include "studio.h"
 
-/*  
+/*
   Define declarations.
 */
 #define MagicFilename  "magic.mgk"
@@ -408,7 +408,7 @@ static unsigned int ReadConfigureFile(const char *basename,
       continue;
     GetToken(q,&q,token);
     GetToken(q,&q,token);
-    switch (*keyword) 
+    switch (*keyword)
     {
       case 'N':
       case 'n':

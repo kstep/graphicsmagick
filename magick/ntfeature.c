@@ -282,7 +282,7 @@ MagickExport TypeInfo* NTGetTypeList( void )
               {
                 type_info->weight=100;
               }
-          
+
             else if ( (LocaleCompare(token,"ExtraLight") == 0) ||
                       (LocaleCompare(token,"UltraLight") == 0) )
               {
@@ -449,7 +449,7 @@ MagickExport TypeInfo* NTGetTypeList( void )
 */
 MagickExport HBITMAP ImageToHBITMAP(Image* image)
 {
-	unsigned long 
+	unsigned long
 		nPixels;
 
     long
@@ -480,7 +480,7 @@ MagickExport HBITMAP ImageToHBITMAP(Image* image)
     memSize = nPixels * bitmap.bmBitsPixel;
     theBitsH = (HANDLE) GlobalAlloc (GMEM_MOVEABLE | GMEM_DDESHARE, memSize);
     if (theBitsH == NULL)
-      return( NULL ); 
+      return( NULL );
     else {
       RGBQUAD * theBits = (RGBQUAD *) GlobalLock((HGLOBAL) theBitsH);
       RGBQUAD *pDestPixel = theBits;

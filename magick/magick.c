@@ -56,12 +56,6 @@
 #include "studio.h"
 
 /*
-  Image const declarations.
-*/
-unsigned int
-  magick_debug = False;
-
-/*
   Global declarations.
 */
 static MagickInfo
@@ -97,6 +91,7 @@ MagickExport void DestroyMagick(void)
   DestroyModuleInfo();
   DestroyMagicInfo();
   DestroyMagickInfo();
+  DestroyLogInfo();
   DestroyConstitute();
   DestroyMagickRegistry();
   DestroyCache();
@@ -299,36 +294,6 @@ MagickExport const MagickInfo *GetMagickInfo(const char *name,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   G e t M a g i c k V e r s i o n                                           %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  GetMagickVersion() returns the ImageMagick API version as a string and
-%  as a number.
-%
-%  The format of the GetMagickVersion method is:
-%
-%      const char *GetMagickVersion(unsigned int *version)
-%
-%  A description of each parameter follows:
-%
-%    o version: The ImageMagick version is returned as a number.
-%
-*/
-MagickExport const char *GetMagickVersion(unsigned int *version)
-{
-  assert(version != (unsigned int *) NULL);
-  *version=MagickLibVersion;
-  return(MagickVersion);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   I n i t i a l i z e M a g i c k                                           %
 %                                                                             %
 %                                                                             %
@@ -354,7 +319,7 @@ MagickExport void InitializeMagick(const char *path)
 
   (void) setlocale(LC_ALL,"");
   InitializeSemaphore();
-  magick_debug=getenv("MAGICK_DEBUG") != (char *) NULL;
+  (void) SetLogEventMask(getenv("MAGICK_DEBUG"));
   *execution_path='\0';
 #if !defined(UseInstalledImageMagick)
 #if defined(POSIX) || defined(WIN32)
@@ -405,7 +370,7 @@ MagickExport void InitializeMagick(const char *path)
 #if defined(WIN32)
     InitializeTracingCriticalSection();
 #if defined(_DEBUG)
-    if (magick_debug)
+    if (IsEventLogging())
       {
         int
           debug;

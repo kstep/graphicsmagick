@@ -595,7 +595,14 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
       {
         if (LocaleCompare("debug",option+1) == 0)
           {
-            image_info->debug=(*option == '-');
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  ThrowCompositeException(OptionError,"Missing event mask",
+                    option);
+                (void) SetLogEventMask(argv[i]);
+              }
             break;
           }
         if (LocaleCompare("density",option+1) == 0)
@@ -1718,7 +1725,14 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
           break;
         if (LocaleCompare("debug",option+1) == 0)
           {
-            image_info->debug=(*option == '-');
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  ThrowConvertException(OptionError,"Missing event mask",
+                    option);
+                (void) SetLogEventMask(argv[i]);
+              }
             break;
           }
         if (LocaleCompare("delay",option+1) == 0)
@@ -3113,7 +3127,14 @@ MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
       {
         if (LocaleCompare("debug",option+1) == 0)
           {
-            image_info->debug=(*option == '-');
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  ThrowIdentifyException(OptionError,"Missing event mask",
+                    option);
+                (void) SetLogEventMask(argv[i]);
+              }
             break;
           }
         if (LocaleCompare("density",option+1) == 0)
@@ -3700,7 +3721,14 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
       {
         if (LocaleCompare("debug",option+1) == 0)
           {
-            image_info->debug=(*option == '-');
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  ThrowMogrifyException(OptionError,"Missing event mask",
+                    option);
+                (void) SetLogEventMask(argv[i]);
+              }
             break;
           }
         if (LocaleCompare("delay",option+1) == 0)
@@ -5210,7 +5238,14 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
       {
         if (LocaleCompare("debug",option+1) == 0)
           {
-            image_info->debug=(*option == '-');
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  ThrowMontageException(OptionError,"Missing event mask",
+                    option);
+                (void) SetLogEventMask(argv[i]);
+              }
             break;
           }
         if (LocaleCompare("density",option+1) == 0)

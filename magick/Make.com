@@ -40,6 +40,7 @@ $call Make enhance.c
 $call Make error.c
 $call Make fx.c
 $call Make gem.c
+$call Make log.c
 $call Make image.c
 $call Make list.c
 $call Make semaphore.c
@@ -63,6 +64,7 @@ $call Make timer.c
 $call Make transform.c
 $call Make type.c
 $call Make utility.c
+$call Make version.c
 $call Make vms.c
 $call Make widget.c
 $call Make xwindow.c
@@ -70,8 +72,8 @@ $library/create libMagick.olb memory,blob,cache,locale,error,monitor,command, -
   constitute,image,composite,list,color,quantize,segment,resize,transform, -
   shear,enhance,effect,fx,decorate,annotate,type,draw,render,montage, -
   semaphore,attribute,signature,compress,gem,registry,magic,magick,delegate, -
-  module,static,timer,utility,cache_view,stream,animate,display,widget, -
-  xwindow,PreRvIcccm,vms
+  module,static,log,timer,utility,cache_view,stream,animate,display,widget, -
+  xwindow,PreRvIcccm,version,vms
 $exit
 $
 $Make: subroutine

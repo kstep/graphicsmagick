@@ -900,7 +900,8 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     time_meridian->tm_min,time_meridian->tm_sec);
   FormatString(buffer,"/CreationDate (%.1024s)\n",date);
   (void) WriteBlobString(image,buffer);
-  FormatString(buffer,"/Producer (%.1024s)\n",EscapeParenthesis(MagickVersion));
+  FormatString(buffer,"/Producer (%.1024s)\n",
+    EscapeParenthesis(GetMagickVersion((unsigned long *) NULL)));
   (void) WriteBlobString(image,buffer);
   (void) WriteBlobString(image,">>\n");
   (void) WriteBlobString(image,"endobj\n");

@@ -87,7 +87,7 @@ Win2K, WinME, NT, Win98, Win95 Install:
 
   Download
 
-      ftp://ftp.imagemagick.org/pub/ImageMagick/binaries/ImageMagick-5.4.8-win2k.exe
+      ftp://ftp.imagemagick.org/pub/ImageMagick/binaries/ImageMagick-xp.exe
 
   and execute it (or "open" it from your browser) to start the installation
   program.

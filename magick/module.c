@@ -700,7 +700,7 @@ MagickExport unsigned int OpenModule(const char *module,
   handle=(ModuleHandle) NULL;
   module_file=TagToModule(module_name);
   *path='\0';
-  if ((module_list != (ModuleInfo *) NULL) && 
+  if ((module_list != (ModuleInfo *) NULL) &&
       (module_list->path != (char *) NULL))
     GetPathComponent(module_list->path,HeadPath,path);
   (void) strcat(path,DirectorySeparator);

@@ -861,18 +861,18 @@ char *NTGetLastError(void)
 /* Portions of the following code fall under the following copyright: */
 
 /* Copyright (C) 2000-2002, Ghostgum Software Pty Ltd.  All rights reserved.
-  
+
   Permission is hereby granted, free of charge, to any person obtaining
-  a copy of this file ("Software"), to deal in the Software without 
-  restriction, including without limitation the rights to use, copy, 
-  modify, merge, publish, distribute, sublicense, and/or sell copies of 
-  this Software, and to permit persons to whom this file is furnished to 
-  do so, subject to the following conditions: 
+  a copy of this file ("Software"), to deal in the Software without
+  restriction, including without limitation the rights to use, copy,
+  modify, merge, publish, distribute, sublicense, and/or sell copies of
+  this Software, and to permit persons to whom this file is furnished to
+  do so, subject to the following conditions:
 
   This Software is distributed with NO WARRANTY OF ANY KIND.  No author
   or distributor accepts any responsibility for the consequences of using it,
   or for whether it serves any particular purpose or works at all, unless he
-  or she says so in writing.  
+  or she says so in writing.
 
   The above copyright notice and this permission notice shall be included
   in all copies or substantial portions of the Software.
@@ -887,7 +887,7 @@ char *NTGetLastError(void)
  * Store results starting at pver + 1 + offset.
  * Returns total number of versions in pver.
  */
-static int NTGhostscriptProductVersions(int *pver, int offset, 
+static int NTGhostscriptProductVersions(int *pver, int offset,
     const char *gs_productfamily)
 {
   HKEY
@@ -934,8 +934,8 @@ static int NTGhostscriptProductVersions(int *pver, int offset,
 }
 
 /* Query registry to find which versions of Ghostscript are installed.
- * Return version numbers in an integer array.   
- * On entry, the first element in the array must be the array size 
+ * Return version numbers in an integer array.
+ * On entry, the first element in the array must be the array size
  * in elements.
  * If all is well, TRUE is returned.
  * On exit, the first element is set to the number of Ghostscript
@@ -946,7 +946,7 @@ static int NTGhostscriptProductVersions(int *pver, int offset,
  *
  * If Ghostscript is not installed at all, return FALSE
  * and set pver[0] to 0.
- * If the array is not large enough, return FALSE 
+ * If the array is not large enough, return FALSE
  * and set pver[0] to the number of Ghostscript versions installed.
  */
 
@@ -980,7 +980,7 @@ static int NTGhostscriptEnumerateVersions(int *pver)
  * name, ptr, plen and return values are the same as in gp_getenv();
  */
 
-static int  NTGetRegistryValue(HKEY hkeyroot, const char *key, const char *name, 
+static int  NTGetRegistryValue(HKEY hkeyroot, const char *key, const char *name,
     char *ptr, int *plen)
 {
   HKEY
@@ -1018,7 +1018,7 @@ static int  NTGetRegistryValue(HKEY hkeyroot, const char *key, const char *name,
   return 1;  /* not found */
 }
 
-static int NTGhostscriptGetProductString(int gs_revision, const char *name, 
+static int NTGhostscriptGetProductString(int gs_revision, const char *name,
     char *ptr, int len, const char *gs_productfamily)
 {
   /* If using Win32, look in the registry for a value with
@@ -1046,7 +1046,7 @@ static int NTGhostscriptGetProductString(int gs_revision, const char *name,
     return FALSE;
   }
 
-  sprintf(dotversion, "%d.%02d", 
+  sprintf(dotversion, "%d.%02d",
           (int)(gs_revision / 100), (int)(gs_revision % 100));
   sprintf(key, "Software\\%s\\%s", gs_productfamily, dotversion);
 
@@ -1146,7 +1146,7 @@ MagickExport int NTGhostscriptDLL(char *path, int path_length)
   gsver = NTGetLatestGhostscript();
   if ((gsver == FALSE) || (gsver < GS_MINIMUM_VERSION))
     return FALSE;
-    
+
   if (!NTGhostscriptGetString(gsver, "GS_DLL", buf, sizeof(buf)))
     return FALSE;
 
@@ -1222,7 +1222,7 @@ MagickExport int NTGhostscriptEXE(char *path, int path_length)
   gsver = NTGetLatestGhostscript();
   if ((gsver == FALSE) || (gsver < GS_MINIMUM_VERSION))
     return FALSE;
-    
+
   if (!NTGhostscriptGetString(gsver, "GS_DLL", buf, sizeof(buf)))
     return FALSE;
 
@@ -1276,7 +1276,7 @@ MagickExport int NTGhostscriptFonts(char *path, int path_length)
   gsver = NTGetLatestGhostscript();
   if ((gsver == FALSE) || (gsver < GS_MINIMUM_VERSION))
     return FALSE;
-    
+
   if (!NTGhostscriptGetString(gsver, "GS_LIB", buf, sizeof(buf)))
     return FALSE;
 
@@ -1423,7 +1423,7 @@ MagickExport char *NTRegistryKeyLookup(const char *key)
   /* Can probably append MagickLibVersionText to string for efficiency */
   if (reg_key == (HKEY) INVALID_HANDLE_VALUE) {
     res = RegOpenKeyExA (HKEY_LOCAL_MACHINE, "SOFTWARE\\ImageMagick", 0, KEY_READ, &reg_key);
-    
+
     if (res == ERROR_SUCCESS)
       res = RegOpenKeyExA (reg_key, MagickLibVersionText, 0, KEY_READ, &reg_key);
 

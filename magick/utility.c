@@ -2027,33 +2027,19 @@ MagickExport int GlobExpression(const char *expression,const char *pattern)
 */
 MagickExport unsigned int IsAccessible(const char *filename)
 {
-  FILE
-    *file;
-
-  unsigned int
+  int
     status;
 
-  /*
-    Return False if the file cannot be opened.
-  */
+  struct stat
+    file_info;
+
   if ((filename == (const char *) NULL) || (*filename == '\0'))
     return(False);
-  status=False;
-  file=fopen(filename,"r");
-  if (file != (FILE *) NULL)
-    {
-      (void) fgetc(file);
-      status=!feof(file) && !ferror(file);
-      (void) fclose(file);
-    }
-  if (magick_debug)
-    {
-      (void) fprintf(stdout,"  %.1024s",filename);
-      if (status == False)
-        (void) fprintf(stdout," [%.1024s]",strerror(errno));
-      (void) fprintf(stdout,".\n");
-    }
-  return(status);
+  status=stat(filename,&file_info);
+  if (status != 0)
+    return(False);
+  LogMagickEvent(ConfigureEvent,"  %.1024s [%.1024s]",filename,strerror(errno));
+  return(S_ISREG(file_info.st_mode));
 }
 
 /*
@@ -2067,12 +2053,12 @@ MagickExport unsigned int IsAccessible(const char *filename)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method IsDirectory returns -1 if the filename does not exist, 0 if the
-%  filename represents a file, and 1 if the filename represents a directory.
+%  IsDirectory() returns -1 if the directory does not exist, 0 if the
+%  directory represents a file, and 1 if the filename represents a directory.
 %
 %  The format of the IsAccessible method is:
 %
-%      int IsDirectory(const char *filename)
+%      int IsDirectory(const char *directory)
 %
 %  A description of each parameter follows.
 %
@@ -2080,12 +2066,12 @@ MagickExport unsigned int IsAccessible(const char *filename)
 %      0 if the filename represents a file, and 1 if the filename represents
 %      a directory.
 %
-%   o  filename:  Specifies a pointer to an array of characters.  The unique
+%   o  directory:  Specifies a pointer to an array of characters.  The unique
 %      file name is returned in this array.
 %
 %
 */
-static int IsDirectory(const char *filename)
+static int IsDirectory(const char *directory)
 {
   int
     status;
@@ -2093,8 +2079,9 @@ static int IsDirectory(const char *filename)
   struct stat
     file_info;
 
-  assert(filename != (const char *) NULL);
-  status=stat(filename,&file_info);
+  if ((directory == (const char *) NULL) || (*directory == '\0'))
+    return(False);
+  status=stat(directory,&file_info);
   if (status != 0)
     return(-1);
   return(S_ISDIR(file_info.st_mode));

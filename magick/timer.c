@@ -281,7 +281,7 @@ MagickExport void ResetTimer(TimerInfo *time_info)
   assert(time_info->signature == MagickSignature);
   StopTimer(time_info);
   time_info->elapsed.stop=0.0;
-  time_info->user.stop=0.0;  
+  time_info->user.stop=0.0;
 }
 
 /*

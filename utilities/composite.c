@@ -91,8 +91,8 @@ static void CompositeUsage(void)
       "-colorspace type     alternate image colorspace",
       "-comment string      annotate image with comment",
       "-compose operator    composite operator",
-      "-compress type       image compression type",
-      "-debug               display copious debugging information",
+      "-compress type       image compression tyhpe",
+      "-debug events        display copious debugging information",
       "-density geometry    horizontal and vertical density of the image",
       "-depth value         image depth",
       "-displace geometry   shift image pixels defined by a displacement map",
@@ -136,11 +136,8 @@ static void CompositeUsage(void)
       (char *) NULL
     };
 
-  unsigned int
-    version;
-
-  (void) printf("Version: %.1024s\n",GetMagickVersion(&version));
-  (void) printf("Copyright: %.1024s\n\n",MagickCopyright);
+  (void) printf("Version: %.1024s\n",GetMagickVersion((unsigned long *) NULL));
+  (void) printf("Copyright: %.1024s\n\n",GetMagickCopyright());
   (void) printf("Usage: %.1024s [options ...] image [options ...] composite\n"
     "  [ [options ...] mask ] [options ...] composite\n",
     SetClientName((char *) NULL));
