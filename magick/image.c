@@ -3381,6 +3381,8 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
   assert(image_info->signature == MagickSignature);
   assert(image != (Image **) NULL);
   assert((*image)->signature == MagickSignature);
+  if (argc <= 1)
+    return(True);
   for (i=0; i < argc; i++)
     if (strlen(argv[i]) > (MaxTextExtent/2-1))
       MagickError(OptionWarning,"Option length exceeds limit",argv[i]);
@@ -3405,7 +3407,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
   /*
     Transmogrify the image.
   */
-  for (i=0; i < argc; i++)
+  for (i=1; i < argc; i++)
   {
     option=argv[i];
     if ((strlen(option) <= 1) || ((*option != '-') && (*option != '+')))
@@ -5100,11 +5102,13 @@ MagickExport unsigned int MogrifyImages(const ImageInfo *image_info,
   assert(image_info->signature == MagickSignature);
   assert(images != (Image **) NULL);
   assert((*images)->signature == MagickSignature);
+  if (argc <= 1)
+    return(True);
   number_images=GetImageListSize(*images);
   if (number_images == 1)
     return(MogrifyImage(image_info,argc,argv,images));
   scene=False;
-  for (i=0; i < argc; i++)
+  for (i=1; i < argc; i++)
   {
     option=argv[i];
     if ((strlen(option) <= 1) || ((*option != '-') && (*option != '+')))
