@@ -6348,7 +6348,6 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
     {
-      CloseBlob(image);
       DestroyImage(image);
       return(False);
     }
