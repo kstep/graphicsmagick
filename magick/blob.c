@@ -1236,6 +1236,11 @@ Export unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
                       ReadMode,&image->blob_info.length);
                     image->blob_info.mapped=
                       image->blob_info.data != (void *) NULL;
+                    if (image->blob_info.mapped)
+                      {
+                        (void) fclose(image->file);
+                        image->file=(FILE *) NULL;
+                      }
                   }
               }
           }
