@@ -16,7 +16,7 @@ typedef enum
   UndefinedResource,
   MemoryResource,
   MapResource,
-  DiskResource;
+  DiskResource
 } ResourceType;
 
 /*
