@@ -232,7 +232,7 @@ static char
   },
   *ImageTypes[] =
   {
-    "Undefined", "Bilevel", "Grayscale", "GrayscaleMatte" "Palette",
+    "Undefined", "Bilevel", "Grayscale", "GrayscaleMatte", "Palette",
     "PaletteMatte", "TrueColor", "TrueColorMatte", "ColorSeparation",
     "ColorSeparationMatte", "Optimize", (char *) NULL
   },
