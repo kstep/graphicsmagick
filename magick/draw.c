@@ -3447,7 +3447,7 @@ static unsigned int DrawPrimitive(Image *image,const DrawInfo *draw_info,
       LiberateMemory((void **) &path_info);
       if (polygon_info == (PolygonInfo *) NULL)
         return(False);
-      if (draw_info->debug)
+      if (draw_info->debug > 1)
         DrawBoundingRectangles(draw_info,polygon_info,image);
       scale=ExpandAffine(&draw_info->affine);
       if ((draw_info->dash_pattern != (unsigned *) NULL) &&
