@@ -1753,12 +1753,17 @@ static unsigned int ReadConfigurationFile(const char *basename,
       {
         if (LocaleCompare((char *) keyword,"compliance") == 0)
           {
+            long
+              compliance;
+
+            compliance=color_list->compliance;
             if (GlobExpression(token,"*SVG*"))
-              color_list->compliance|=SVGCompliance;
+              compliance|=SVGCompliance;
             if (GlobExpression(token,"*X11*"))
-              color_list->compliance|=X11Compliance;
+              compliance|=X11Compliance;
             if (GlobExpression(token,"*XPM*"))
-              color_list->compliance|=XPMCompliance;
+              compliance|=XPMCompliance;
+            color_list->compliance=(ComplianceType) compliance;
             break;
           }
         break;
