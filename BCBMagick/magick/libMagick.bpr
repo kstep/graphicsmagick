@@ -1,0 +1,187 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!-- C++Builder XML Project -->
+<PROJECT>
+  <MACROS>
+    <VERSION value="BCB.06.00"/>
+    <PROJECT value="libMagick.lib"/>
+    <OBJFILES value="animate.obj annotate.obj attribute.obj blob.obj cache.obj cache_view.obj 
+      color.obj command.obj composite.obj compress.obj constitute.obj 
+      decorate.obj delegate.obj deprecate.obj display.obj draw.obj effect.obj enhance.obj 
+      error.obj fx.obj gem.obj image.obj list.obj locale.obj log.obj magic.obj 
+      magick.obj memory.obj module.obj monitor.obj montage.obj nt_base.obj 
+      nt_feature.obj paint.obj PreRvIcccm.obj quantize.obj registry.obj 
+      render.obj resize.obj resource.obj segment.obj semaphore.obj shear.obj 
+      signature.obj static.obj stream.obj tempfile.obj timer.obj transform.obj 
+      type.obj utility.obj version.obj widget.obj xwindow.obj 
+      ..\filters\analyze.obj"/>
+    <RESFILES value=""/>
+    <DEFFILE value=""/>
+    <RESDEPEN value="$(RESFILES)"/>
+    <LIBFILES value=""/>
+    <LIBRARIES value=""/>
+    <PACKAGES value=""/>
+    <PATHCPP value=".;..\filters"/>
+    <PATHPAS value=".;"/>
+    <PATHRC value=".;"/>
+    <PATHASM value=".;"/>
+    <LINKER value="TLib"/>
+    <USERDEFINES value="WIN32"/>
+    <SYSDEFINES value="NO_STRICT"/>
+    <MAINSOURCE value="libMagick.bpf"/>
+    <INCLUDEPATH value="D:\filters;..;..\bzlib;..\filters;..\magick;..\ttf\include;..\lcms\include;..\zlib;$(BCB)\include"/>
+    <LIBPATH value="..\filters;D:\filters;$(BCB)\lib\obj;$(BCB)\lib"/>
+    <WARNINGS value="-w-sus -w-spa -w-rch -w-pia -w-pch -w-par -w-csu -w-ccc -w-aus"/>
+    <LISTFILE value="libMagick"/>
+    <OTHERFILES value=""/>
+  </MACROS>
+  <OPTIONS>
+    <CFLAG1 value="-O2 -Vx -Ve -X- -a8 -b- -k- -vi -c -tW -tWM"/>
+    <PFLAGS value="-$Y- -$L- -$D- -$A8 -v -JPHNE -M"/>
+    <AFLAGS value="/mx /w2 /zn"/>
+    <LFLAGS value="/P64 /0"/>
+    <OTHERFILES value=""/>
+  </OPTIONS>
+  <LINKER>
+    <ALLOBJ value="$(OBJFILES)"/>
+    <ALLLIB value=""/>
+    <OTHERFILES value=""/>
+  </LINKER>
+  <FILELIST>
+      <FILE FILENAME="libMagick.bpf" FORMNAME="" UNITNAME="libMagick" CONTAINERID="BPF" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="animate.c" FORMNAME="" UNITNAME="animate.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="annotate.c" FORMNAME="" UNITNAME="annotate.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="attribute.c" FORMNAME="" UNITNAME="attribute.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="blob.c" FORMNAME="" UNITNAME="blob.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="cache.c" FORMNAME="" UNITNAME="cache.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="cache_view.c" FORMNAME="" UNITNAME="cache_view.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="color.c" FORMNAME="" UNITNAME="color.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="command.c" FORMNAME="" UNITNAME="command.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="composite.c" FORMNAME="" UNITNAME="composite.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="compress.c" FORMNAME="" UNITNAME="compress.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="constitute.c" FORMNAME="" UNITNAME="constitute.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="decorate.c" FORMNAME="" UNITNAME="decorate.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="delegate.c" FORMNAME="" UNITNAME="delegate.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="deprecate.c" FORMNAME="" UNITNAME="deprecate.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="display.c" FORMNAME="" UNITNAME="display.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="draw.c" FORMNAME="" UNITNAME="draw.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="effect.c" FORMNAME="" UNITNAME="effect.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="enhance.c" FORMNAME="" UNITNAME="enhance.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="error.c" FORMNAME="" UNITNAME="error.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="fx.c" FORMNAME="" UNITNAME="fx.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="gem.c" FORMNAME="" UNITNAME="gem.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="image.c" FORMNAME="" UNITNAME="image.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="list.c" FORMNAME="" UNITNAME="list.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="locale.c" FORMNAME="" UNITNAME="locale.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="log.c" FORMNAME="" UNITNAME="log.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="magic.c" FORMNAME="" UNITNAME="magic.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="magick.c" FORMNAME="" UNITNAME="magick.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="memory.c" FORMNAME="" UNITNAME="memory.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="module.c" FORMNAME="" UNITNAME="module.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="monitor.c" FORMNAME="" UNITNAME="monitor.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="montage.c" FORMNAME="" UNITNAME="montage.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="nt_base.c" FORMNAME="" UNITNAME="nt_base.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="nt_feature.c" FORMNAME="" UNITNAME="nt_feature.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="paint.c" FORMNAME="" UNITNAME="paint.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="PreRvIcccm.c" FORMNAME="" UNITNAME="PreRvIcccm.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="quantize.c" FORMNAME="" UNITNAME="quantize.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="registry.c" FORMNAME="" UNITNAME="registry.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="render.c" FORMNAME="" UNITNAME="render.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="resize.c" FORMNAME="" UNITNAME="resize.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="resource.c" FORMNAME="" UNITNAME="resource.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="segment.c" FORMNAME="" UNITNAME="segment.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="semaphore.c" FORMNAME="" UNITNAME="semaphore.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="shear.c" FORMNAME="" UNITNAME="shear.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="signature.c" FORMNAME="" UNITNAME="signature.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="static.c" FORMNAME="" UNITNAME="static.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="stream.c" FORMNAME="" UNITNAME="stream.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="tempfile.c" FORMNAME="" UNITNAME="tempfile" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="timer.c" FORMNAME="" UNITNAME="timer.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="transform.c" FORMNAME="" UNITNAME="transform.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="type.c" FORMNAME="" UNITNAME="type.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="utility.c" FORMNAME="" UNITNAME="utility.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="version.c" FORMNAME="" UNITNAME="version.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="widget.c" FORMNAME="" UNITNAME="widget.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="xwindow.c" FORMNAME="" UNITNAME="xwindow.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\filters\analyze.c" FORMNAME="" UNITNAME="analyze" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+  </FILELIST>
+  <BUILDTOOLS>
+  </BUILDTOOLS>
+
+  <IDEOPTIONS>
+[Version Info]
+IncludeVerInfo=0
+AutoIncBuild=0
+MajorVer=1
+MinorVer=0
+Release=0
+Build=0
+Debug=0
+PreRelease=0
+Special=0
+Private=0
+DLL=0
+Locale=1040
+CodePage=1252
+
+[Version Info Keys]
+CompanyName=
+FileDescription=
+FileVersion=1.0.0.0
+InternalName=
+LegalCopyright=
+LegalTrademarks=
+OriginalFilename=
+ProductName=
+ProductVersion=1.0.0.0
+Comments=
+
+[HistoryLists\hlIncludePath]
+Count=1
+Item0=..;..\bzlib;..\filters;..\magick;..\ttf\include;..\lcms\include;..\zlib;$(BCB)\include
+
+[HistoryLists\hlLibraryPath]
+Count=1
+Item0=D:\filters;$(BCB)\lib\obj;$(BCB)\lib
+
+[HistoryLists\hlDebugSourcePath]
+Count=1
+Item0=$(BCB)\source\vcl
+
+[HistoryLists\hlConditionals]
+Count=1
+Item0=WIN32
+
+[HistoryLists\hlTlibPageSize]
+Count=1
+Item0=0x0040
+
+[HistoryLists\hlTlibListFile]
+Count=1
+Item0=libMagick
+
+[Debugging]
+DebugSourceDirs=$(BCB)\source\vcl
+
+[Parameters]
+RunParams=
+Launcher=
+UseLauncher=0
+DebugCWD=
+HostApplication=
+RemoteHost=
+RemotePath=
+RemoteLauncher=
+RemoteCWD=
+RemoteDebug=0
+
+[Compiler]
+ShowInfoMsgs=0
+LinkDebugVcl=0
+LinkCGLIB=0
+
+[Language]
+ActiveLang=
+ProjectLang=
+RootDir=
+  </IDEOPTIONS>
+</PROJECT>

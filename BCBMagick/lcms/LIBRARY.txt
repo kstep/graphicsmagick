@@ -1,0 +1,4 @@
+#ECF - this file contains additional configuration info.
+DEFINE = _LCMSLIB_
+DEFINE = __CONSOLE__
+EXCLUDE = acconfig.h

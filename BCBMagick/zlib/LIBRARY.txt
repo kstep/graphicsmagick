@@ -1,0 +1,5 @@
+#ECF - this file contains additional configuration info.
+EXCLUDE = maketree.c
+EXCLUDE = minigzip.c
+EXCLUDE = example.c
+SOURCE = zlib.rc
