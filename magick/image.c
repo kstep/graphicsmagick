@@ -5198,28 +5198,25 @@ MagickExport int ParseImageGeometry(const char *geometry,long *x,long *y,
     }
   if (!(flags & AspectValue) && 
 	    ((*width != former_width) || (*height != former_height)))
-    {
-      double
-        scale_factor;
+    if ((former_width != 0) && (former_height != 0))
+      {
+        double
+          scale_factor;
 
-      /*
-        Respect aspect ratio of the image.
-      */
-      scale_factor=1.0;
-      if ((former_width*former_height) != 0)
-        { 
-          if (((flags & WidthValue) != 0) && (flags & HeightValue) != 0)
-            { 
-              scale_factor=(double) *width/former_width;
-              if (scale_factor > ((double) *height/former_height))
-                scale_factor=(double) *height/former_height;
-            }  
-          else 
-            if ((flags & WidthValue) != 0)
-              scale_factor=(double) *width/former_width;
-            else
+        /*
+          Respect aspect ratio of the image.
+        */
+        if (((flags & WidthValue) != 0) && (flags & HeightValue) != 0)
+          { 
+            scale_factor=(double) *width/former_width;
+            if (scale_factor > ((double) *height/former_height))
               scale_factor=(double) *height/former_height;
-        } 
+          }  
+        else 
+          if ((flags & WidthValue) != 0)
+            scale_factor=(double) *width/former_width;
+          else
+            scale_factor=(double) *height/former_height;
       *width=(unsigned long) floor(scale_factor*former_width+0.5);
       *height=(unsigned long) floor(scale_factor*former_height+0.5);
     }
