@@ -333,6 +333,7 @@ static int ReadMagicConfigurationFile(const char* path)
                 goto syntax_error;
             }
           ++list_index;
+          magic_test_list[list_index]=(MagicTest*)NULL;
           continue;
           
           syntax_error :
