@@ -1262,12 +1262,9 @@ Export unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
           }
         if (!image->blob_info.mapped)
           image->file=(FILE *) fopen(filename,type);
-        if (image->file != (FILE *) NULL)
-          {
-            (void) SeekBlob(image,0L,SEEK_END);
-            image->filesize=TellBlob(image);
-            (void) SeekBlob(image,0L,SEEK_SET);
-          }
+        (void) SeekBlob(image,0L,SEEK_END);
+        image->filesize=TellBlob(image);
+        (void) SeekBlob(image,0L,SEEK_SET);
       }
   image->status=False;
   if (*type == 'r')
