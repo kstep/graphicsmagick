@@ -31,9 +31,9 @@ font-weight (all|normal|bold|100|200|300|400|500|600|700|800|900)
 gradient-units (userSpace|userSpaceOnUse|objectBoundingBox)
 gravity (NorthWest|North|NorthEast|West|Center|East|SouthWest|
          South|SouthEast)
-image (Over|In|Out|Atop|Xor|Plus|Minus|Add|Subtract|Difference|
-       Multiply|Bumpmap|Copy|CopyRed|CopyGreen|CopyBlue|CopyOpacity
-       |Clear) x,y width,height filename
+image (Add|Atop|Bumpmap|Clear|CopyBlue|CopyGreen|CopyOpacity|CopyRed|
+       Copy|Difference|In|Minus|Multiply|Out|Over|Plus|Subtract|Xor)
+       x,y width,height filename
 line startX,startY endX,endY
 matte x,y (point|replace|floodfill|filltoborder|reset)
 offset  ???

@@ -1,3 +1,8 @@
+2002-03-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Drawable.cpp (DrawableCompositeImage): Had failed to
+ 	initialize width and height in object to image width and height.
+
 2002-02-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Magick++/STL.h (endianImage): New class to specify the

@@ -458,6 +458,8 @@ Magick::DrawableCompositeImage::DrawableCompositeImage ( double x_, double y_,
     _height(0),
     _image(new Image(filename_))
 {
+  _width=_image->columns();
+  _height=_image->rows();
 }
 Magick::DrawableCompositeImage::DrawableCompositeImage ( double x_, double y_,
                                                          const Image &image_ )
@@ -468,6 +470,8 @@ Magick::DrawableCompositeImage::DrawableCompositeImage ( double x_, double y_,
     _height(0),
     _image(new Image(image_))
 {
+  _width=_image->columns();
+  _height=_image->rows();
 }
 Magick::DrawableCompositeImage::~DrawableCompositeImage( void )
 {
