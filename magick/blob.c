@@ -1658,7 +1658,7 @@ Export unsigned int UnmapBlob(void *map,const size_t length)
 
   status=munmap(map,length);
   if (status == -1)
-    MagickError(BlobWarning,"Unable to unmap file",(char *) NULL);
+    MagickWarning(BlobWarning,"Unable to unmap file",(char *) NULL);
   return(status);
 #else
   return(-1);

@@ -7074,6 +7074,7 @@ Export void TransformRGBImage(Image *image,const ColorspaceType colorspace)
     *blue_map,
     green,
     *green_map,
+    max_value,
     red,
     *red_map;
 
@@ -7147,6 +7148,7 @@ Export void TransformRGBImage(Image *image,const ColorspaceType colorspace)
         "Memory allocation failed");
       return;
     }
+  max_value=MaxRGB;
   switch (colorspace)
   {
     case OHTAColorspace:
@@ -7198,6 +7200,7 @@ Export void TransformRGBImage(Image *image,const ColorspaceType colorspace)
         green_map[i+B]=2.28900*(i-(double) UpScale(156));
         blue_map[i+B]=0.0;
       }
+      max_value=UpScale(350);
       break;
     }
     case XYZColorspace:
@@ -7272,6 +7275,7 @@ Export void TransformRGBImage(Image *image,const ColorspaceType colorspace)
         green_map[i+B]=2.2179*(i-(double) UpScale(156));
         blue_map[i+B]=0.0;
       }
+      max_value=UpScale(350);
       break;
     }
     case YIQColorspace:
@@ -7373,11 +7377,26 @@ Export void TransformRGBImage(Image *image,const ColorspaceType colorspace)
         for (x=0; x < (int) image->columns; x++)
         {
           red=red_map[q->red+R]+green_map[q->green+R]+blue_map[q->blue+R];
+          red=red < 0 ? 0 : red > max_value ? max_value : red;
           green=red_map[q->red+G]+green_map[q->green+G]+blue_map[q->blue+G];
+          green=green < 0 ? 0 : green > max_value ? max_value : green;
           blue=red_map[q->red+B]+green_map[q->green+B]+blue_map[q->blue+B];
-          q->red=red < 0 ? 0 : red > MaxRGB ? MaxRGB : red;
-          q->green=green < 0 ? 0 : green > MaxRGB ? MaxRGB : green;
-          q->blue=blue < 0 ? 0 : blue > MaxRGB ? MaxRGB : blue;
+          blue=blue < 0 ? 0 : blue > max_value ? max_value : blue;
+          if (colorspace == sRGBColorspace)
+            {
+              red=UpScale(sRGBMap[DownScale((int) red)]);
+              green=UpScale(sRGBMap[DownScale((int) green)]);
+              blue=UpScale(sRGBMap[DownScale((int) blue)]);
+            }
+          if (colorspace == YCCColorspace)
+            {
+              red=UpScale(YCCMap[DownScale((int) red)]);
+              green=UpScale(YCCMap[DownScale((int) green)]);
+              blue=UpScale(YCCMap[DownScale((int) blue)]);
+            }
+          q->red=red;
+          q->green=green;
+          q->blue=blue;
           q++;
         }
         if (!SyncPixelCache(image))
@@ -7397,16 +7416,30 @@ Export void TransformRGBImage(Image *image,const ColorspaceType colorspace)
         red=red_map[image->colormap[i].red+R]+
           green_map[image->colormap[i].green+R]+
           blue_map[image->colormap[i].blue+R];
+        red=red < 0 ? 0 : red > max_value ? max_value : red;
         green=red_map[image->colormap[i].red+G]+
           green_map[image->colormap[i].green+G]+
           blue_map[image->colormap[i].blue+G];
+        green=green < 0 ? 0 : green > max_value ? max_value : green;
         blue=red_map[image->colormap[i].red+B]+
           green_map[image->colormap[i].green+B]+
           blue_map[image->colormap[i].blue+B];
-        image->colormap[i].red=red < 0 ? 0 : red > MaxRGB ? MaxRGB : red;
-        image->colormap[i].green=
-          green < 0 ? 0 : green > MaxRGB ? MaxRGB : green;
-        image->colormap[i].blue=blue < 0 ? 0 : blue > MaxRGB ? MaxRGB : blue;
+        blue=blue < 0 ? 0 : blue > max_value ? max_value : blue;
+        if (colorspace == sRGBColorspace)
+          {
+            red=UpScale(sRGBMap[DownScale((int) red)]);
+            green=UpScale(sRGBMap[DownScale((int) green)]);
+            blue=UpScale(sRGBMap[DownScale((int) blue)]);
+          }
+        if (colorspace == YCCColorspace)
+          {
+            red=UpScale(YCCMap[DownScale((int) red)]);
+            green=UpScale(YCCMap[DownScale((int) green)]);
+            blue=UpScale(YCCMap[DownScale((int) blue)]);
+          }
+        image->colormap[i].red=red;
+        image->colormap[i].green=green;
+        image->colormap[i].blue=blue;
       }
       SyncImage(image);
       break;

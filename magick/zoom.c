@@ -330,7 +330,6 @@ Export Image *MagnifyImage(Image *image)
       return((Image *) NULL);
     }
   magnify_image->class=DirectClass;
-SetImage(magnify_image);
   /*
     Allocate image buffer and scanline buffer for 4 rows of the image.
   */
