@@ -381,7 +381,7 @@ MagickExport unsigned int GammaImage(Image *image,const char *gamma)
   if (gamma_map == (PixelPacket *) NULL)
     ThrowBinaryException(ResourceLimitWarning,"Unable to gamma correct image",
       "Memory allocation failed");
-  memset(gamma_map,0,(MaxRGB+1)*sizeof(PixelPacket));
+  (void) memset(gamma_map,0,(MaxRGB+1)*sizeof(PixelPacket));
   for (i=0; i <= MaxRGB; i++)
   {
     if (red_gamma != 0.0)

@@ -1342,7 +1342,7 @@ MagickExport Image *ReadWMFImage(const ImageInfo *image_info,
   /*
     Initialize the bitmap header info.
   */
-  memset(&DIBinfo,0,sizeof(BITMAPINFO));
+  (void) memset(&DIBinfo,0,sizeof(BITMAPINFO));
   DIBinfo.bmiHeader.biSize=sizeof(BITMAPINFOHEADER);
   DIBinfo.bmiHeader.biWidth=image->columns;
   DIBinfo.bmiHeader.biHeight=(-1)*image->rows;
