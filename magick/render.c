@@ -1393,7 +1393,8 @@ static void DrawBoundingRectangles(Image *image,const DrawInfo *draw_info,
       if (count != 2)
         resolution.y=resolution.x;
     }
-  mid=(resolution.x/72.0)*clone_info->stroke_width/2.0;
+  mid=(resolution.x/72.0)*ExpandAffine(&clone_info->affine)*
+    clone_info->stroke_width/2.0;
   if (polygon_info != (PolygonInfo *) NULL)
     {
       bounds=polygon_info->edges[0].bounds;
@@ -3598,7 +3599,7 @@ static unsigned int DrawPolygonPrimitive(Image *image,const DrawInfo *draw_info,
     (primitive_info->method == FloodfillMethod);
   fill_color=draw_info->fill;
   stroke_color=draw_info->stroke;
-  mid=draw_info->stroke_width/2.0;
+  mid=ExpandAffine(&draw_info->affine)*draw_info->stroke_width/2.0;
   bounds=polygon_info->edges[0].bounds;
   for (i=1; i < polygon_info->number_edges; i++)
   {
@@ -4105,7 +4106,7 @@ MagickExport unsigned int DrawPrimitive(Image *image,const DrawInfo *draw_info,
         LogPrimitiveInfo(primitive_info);
       scale=ExpandAffine(&draw_info->affine);
       if ((draw_info->dash_pattern != (double *) NULL) &&
-          (draw_info->stroke_width > MagickEpsilon) &&
+          ((scale*draw_info->stroke_width) > MagickEpsilon) &&
           (draw_info->stroke.opacity != TransparentOpacity))
         {
           /*
@@ -4119,7 +4120,7 @@ MagickExport unsigned int DrawPrimitive(Image *image,const DrawInfo *draw_info,
           (void) DrawDashPolygon(draw_info,primitive_info,image);
           break;
         }
-      mid=draw_info->stroke_width/2.0;
+      mid=ExpandAffine(&draw_info->affine)*draw_info->stroke_width/2.0;
       if ((mid > 1.0) && (draw_info->stroke.opacity != TransparentOpacity))
         {
           unsigned int
@@ -5507,7 +5508,7 @@ static PrimitiveInfo *TraceStrokePolygon(const DrawInfo *draw_info,
         slope.p=dy.p/dx.p;
         inverse_slope.p=(-1.0/slope.p);
       }
-  mid=draw_info->stroke_width/2.0;
+  mid=ExpandAffine(&draw_info->affine)*draw_info->stroke_width/2.0;
   miterlimit=draw_info->miterlimit*draw_info->miterlimit*mid*mid;
   if ((draw_info->linecap == SquareCap) && !closed_path)
     TraceSquareLinecap(polygon_primitive,number_vertices,mid);
