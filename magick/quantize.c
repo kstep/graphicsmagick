@@ -550,7 +550,6 @@ static unsigned int Classification(CubeInfo *cube_info,Image *image)
     red;
 
   register int
-    i,
     x;
 
   register PixelPacket

@@ -506,9 +506,6 @@ static void DestroyList(const NodeInfo *node_info)
 */
 static NodeInfo *GetNodeInfo(CubeInfo *color_cube,const unsigned int level)
 {
-  register int
-    i;
-
   NodeInfo
     *node_info;
 

@@ -93,9 +93,6 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
   AnnotateInfo
     *annotate_info;
 
-  char
-    geometry[MaxTextExtent];
-
   Image
     *image;
 
