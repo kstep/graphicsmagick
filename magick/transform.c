@@ -1007,7 +1007,7 @@ MagickExport unsigned int ProfileImage(Image *image,const char *name,
   if (name == (const char *) NULL)
     ThrowBinaryException(ResourceLimitError,"Unable to add/remove profile",
       "no profile name was given");
-  if ((profile == (const void *) NULL) || (length == 0))
+  if ((profile == (const unsigned char *) NULL) || (length == 0))
     {
       /*
         Remove an ICM, IPTC, or generic profile from the image.

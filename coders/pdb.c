@@ -667,7 +667,7 @@ static unsigned char *EncodeRLE(unsigned char *destination,
 
 static unsigned int WritePDBImage(const ImageInfo *image_info,Image *image)
 {
-  char
+  int
     bits;
 
   long
