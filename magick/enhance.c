@@ -173,10 +173,8 @@ MagickExport unsigned int EqualizeImage(Image *image)
 {
 #define EqualizeImageText  "  Equalizing image...  "
 
-  int
-    j;
-
   long
+    j,
     y;
 
   Quantum
@@ -192,10 +190,8 @@ MagickExport unsigned int EqualizeImage(Image *image)
   register PixelPacket
     *q;
 
-  unsigned int
-    high,
+  unsigned long
     *histogram,
-    low,
     *map;
 
   /*
@@ -203,18 +199,17 @@ MagickExport unsigned int EqualizeImage(Image *image)
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  histogram=(unsigned int *) AcquireMemory((MaxRGB+1)*sizeof(unsigned int));
-  map=(unsigned int *) AcquireMemory((MaxRGB+1)*sizeof(unsigned int));
+  histogram=(unsigned long *) AcquireMemory((MaxRGB+1)*sizeof(unsigned long));
+  map=(unsigned long *) AcquireMemory((MaxRGB+1)*sizeof(unsigned long));
   equalize_map=(Quantum *) AcquireMemory((MaxRGB+1)*sizeof(Quantum));
-  if ((histogram == (unsigned int *) NULL) || (map == (unsigned int *) NULL) ||
-      (equalize_map == (Quantum *) NULL))
+  if ((histogram == (unsigned long *) NULL) ||
+      (map == (unsigned long *) NULL) || (equalize_map == (Quantum *) NULL))
     ThrowBinaryException(ResourceLimitWarning,"Unable to equalize image",
       "Memory allocation failed");
   /*
     Form histogram.
   */
-  for (i=0; i <= MaxRGB; i++)
-    histogram[i]=0;
+  memset(histogram,0,(MaxRGB+1)*sizeof(unsigned long));
   for (y=0; y < (long) image->rows; y++)
   {
     p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
@@ -222,7 +217,7 @@ MagickExport unsigned int EqualizeImage(Image *image)
       break;
     for (x=0; x < (long) image->columns; x++)
     {
-      histogram[Intensity(p)]++;
+      histogram[(long) Intensity(p)]++;
       p++;
     }
   }
@@ -236,20 +231,18 @@ MagickExport unsigned int EqualizeImage(Image *image)
     map[i]=j;
   }
   LiberateMemory((void **) &histogram);
-  if (map[MaxRGB] == 0)
+  if ((map[0] == map[MaxRGB]) || (map[MaxRGB] == 0))
     {
       LiberateMemory((void **) &equalize_map);
       LiberateMemory((void **) &map);
-      return(False);
+      return(True);
     }
   /*
     Equalize.
   */
-  low=map[0];
-  high=map[MaxRGB];
   for (i=0; i <= MaxRGB; i++)
-    equalize_map[i]=(Quantum)
-      ((((double) (map[i]-low))*MaxRGB)/Max(high-low,1));
+    equalize_map[i]=(unsigned long)
+      ((MaxRGB*(map[i]-map[0]))/(map[MaxRGB]-map[0]));
   LiberateMemory((void **) &map);
   /*
     Stretch the histogram.

@@ -745,15 +745,12 @@ MagickExport void Modulate(const double percent_hue,
   else
     if (saturation > 1.0)
       saturation=1.0;
-  if (hue != -1.0)
-    {
-      hue*=(0.01+MagickEpsilon)*percent_hue;
-      if (hue < 0.0)
-        hue+=1.0;
-      else
-        if (hue > 1.0)
-          hue-=1.0;
-    }
+  hue*=(0.01+MagickEpsilon)*percent_hue;
+  if (hue < 0.0)
+    hue+=1.0;
+  else
+    if (hue > 1.0)
+      hue-=1.0;
   HSLTransform(hue,saturation,brightness,red,green,blue);
 }
 
