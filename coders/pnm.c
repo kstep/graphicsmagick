@@ -209,7 +209,7 @@ static unsigned int PNMInteger(Image *image,const unsigned int base)
     value+=c-'0';
     c=ReadBlobByte(image);
     if (c == EOF)
-      return(0);
+      return(value);
   }
   while (isdigit(c));
   return(value);
@@ -307,7 +307,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if ((format != '3') && (format != '6'))
       {
         image->storage_class=PseudoClass;
-        image->colors=max_value+1;
+        image->colors=max_value > MaxRGB ? MaxRGB+1 : max_value+1;
       }
     number_pixels=image->columns*image->rows;
     if (number_pixels == 0)
@@ -342,19 +342,18 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 }
           }
       }
-    else
-      if (max_value != MaxRGB)
-        {
-          /*
-            Compute pixel scaling table.
-          */
-          scale=(Quantum *) AcquireMemory((max_value+1)*sizeof(Quantum));
-          if (scale == (Quantum *) NULL)
-            ThrowReaderException(ResourceLimitWarning,
-              "Memory allocation failed",image);
-          for (i=0; i <= (long) max_value; i++)
-            scale[i]=(Quantum) ((MaxRGB*i+(max_value >> 1))/max_value);
-        }
+    if (image->storage_class != PseudoClass || max_value > MaxRGB)
+      {
+        /*
+          Compute pixel scaling table.
+        */
+        scale=(Quantum *) AcquireMemory((max_value+1)*sizeof(Quantum));
+        if (scale == (Quantum *) NULL)
+          ThrowReaderException(ResourceLimitWarning,
+            "Memory allocation failed",image);
+        for (i=0; i <= (long) max_value; i++)
+            scale[i]=(Quantum) ((double) (MaxRGB*i)/max_value +.001);
+      }
     if (image_info->ping && (image_info->subrange != 0))
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
         break;
@@ -401,7 +400,15 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           indexes=GetIndexes(image);
           for (x=0; x < (long) image->columns; x++)
           {
-            index=ValidateColormapIndex(image,PNMInteger(image,10));
+            unsigned short
+              input;
+
+            input=PNMInteger(image,10);
+            if (scale != (Quantum *) NULL)
+                index=scale[input];
+            else
+                index=input;
+            index=ValidateColormapIndex(image,index);
             indexes[x]=index;
             *q++=image->colormap[index];
           }
@@ -923,6 +930,8 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
             if (QuantumTick(y,image->rows))
               MagickMonitor(SaveImageText,y,image->rows);
         }
+        if (i != 36)
+          (void) WriteBlobByte(image,'\n');
         break;
       }
       case '2':
@@ -957,6 +966,8 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
             if (QuantumTick(y,image->rows))
               MagickMonitor(SaveImageText,y,image->rows);
         }
+        if (i != 12)
+          (void) WriteBlobByte(image,'\n');
         break;
       }
       case '3':
@@ -992,6 +1003,8 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
             if (QuantumTick(y,image->rows))
               MagickMonitor(SaveImageText,y,image->rows);
         }
+        if (i != 4)
+          (void) WriteBlobByte(image,'\n');
         break;
       }
       case '4':
