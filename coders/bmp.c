@@ -56,6 +56,53 @@
 #include "defines.h"
 
 /*
+  Typedef declarations.
+*/
+typedef struct _BMPInfo
+{
+  unsigned long
+    file_size;
+
+  unsigned short
+    reserved[2];
+
+  unsigned long
+    offset_bits,
+    size;
+
+  long
+    width,
+    height;
+
+  unsigned short
+    planes,
+    bits_per_pixel;
+
+  unsigned long
+    compression,
+    image_size,
+    x_pixels,
+    y_pixels,
+    number_colors,
+    colors_important;
+
+  unsigned short
+    red_mask,
+    green_mask,
+    blue_mask,
+    alpha_mask;
+
+  long
+    colorspace;
+
+  PointInfo
+    red_primary,
+    green_primary,
+    blue_primary,
+    gamma_scale;
+} BMPInfo;
+
+/*
   Forward declarations.
 */
 static unsigned int
@@ -392,52 +439,8 @@ static unsigned int IsBMP(const unsigned char *magick,const unsigned int length)
 */
 static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
-  typedef struct _BMPHeader
-  {
-    unsigned long
-      file_size;
-
-    unsigned short
-      reserved[2];
-
-    unsigned long
-      offset_bits,
-      size;
-
-    long
-      width,
-      height;
-
-    unsigned short
-      planes,
-      bits_per_pixel;
-
-    unsigned long
-      compression,
-      image_size,
-      x_pixels,
-      y_pixels,
-      number_colors,
-      colors_important;
-
-    unsigned short
-      red_mask,
-      green_mask,
-      blue_mask,
-      alpha_mask;
-
-    long
-      colorspace;
-
-    PointInfo
-      red_primary,
-      green_primary,
-      blue_primary,
-      gamma_scale;
-  } BMPHeader;
-
-  BMPHeader
-    bmp_header;
+  BMPInfo
+    bmp_info;
 
   Image
     *image;
@@ -493,82 +496,82 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     start_position=TellBlob(image)-2;
     if ((status == False) || (LocaleNCompare((char *) magick,"BM",2) != 0))
       ThrowReaderException(CorruptImageWarning,"Not a BMP image file",image);
-    bmp_header.file_size=LSBFirstReadLong(image);
-    bmp_header.reserved[0]=LSBFirstReadShort(image);
-    bmp_header.reserved[1]=LSBFirstReadShort(image);
-    bmp_header.offset_bits=LSBFirstReadLong(image);
-    bmp_header.size=LSBFirstReadLong(image);
-    if (bmp_header.size == 12)
+    bmp_info.file_size=LSBFirstReadLong(image);
+    bmp_info.reserved[0]=LSBFirstReadShort(image);
+    bmp_info.reserved[1]=LSBFirstReadShort(image);
+    bmp_info.offset_bits=LSBFirstReadLong(image);
+    bmp_info.size=LSBFirstReadLong(image);
+    if (bmp_info.size == 12)
       {
         /*
           OS/2 BMP image file.
         */
-        bmp_header.width=LSBFirstReadShort(image);
-        bmp_header.height=LSBFirstReadShort(image);
-        bmp_header.planes=LSBFirstReadShort(image);
-        bmp_header.bits_per_pixel=LSBFirstReadShort(image);
-        bmp_header.x_pixels=0;
-        bmp_header.y_pixels=0;
-        bmp_header.number_colors=0;
-        bmp_header.compression=0;
-        bmp_header.image_size=0;
+        bmp_info.width=LSBFirstReadShort(image);
+        bmp_info.height=LSBFirstReadShort(image);
+        bmp_info.planes=LSBFirstReadShort(image);
+        bmp_info.bits_per_pixel=LSBFirstReadShort(image);
+        bmp_info.x_pixels=0;
+        bmp_info.y_pixels=0;
+        bmp_info.number_colors=0;
+        bmp_info.compression=0;
+        bmp_info.image_size=0;
       }
     else
       {
         /*
           Microsoft Windows BMP image file.
         */
-        bmp_header.width=LSBFirstReadLong(image);
-        bmp_header.height=LSBFirstReadLong(image);
-        bmp_header.planes=LSBFirstReadShort(image);
-        bmp_header.bits_per_pixel=LSBFirstReadShort(image);
-        bmp_header.compression=LSBFirstReadLong(image);
-        bmp_header.image_size=LSBFirstReadLong(image);
-        bmp_header.x_pixels=LSBFirstReadLong(image);
-        bmp_header.y_pixels=LSBFirstReadLong(image);
-        bmp_header.number_colors=LSBFirstReadLong(image);
-        bmp_header.colors_important=LSBFirstReadLong(image);
-        for (i=0; i < ((int) bmp_header.size-40); i++)
+        bmp_info.width=LSBFirstReadLong(image);
+        bmp_info.height=LSBFirstReadLong(image);
+        bmp_info.planes=LSBFirstReadShort(image);
+        bmp_info.bits_per_pixel=LSBFirstReadShort(image);
+        bmp_info.compression=LSBFirstReadLong(image);
+        bmp_info.image_size=LSBFirstReadLong(image);
+        bmp_info.x_pixels=LSBFirstReadLong(image);
+        bmp_info.y_pixels=LSBFirstReadLong(image);
+        bmp_info.number_colors=LSBFirstReadLong(image);
+        bmp_info.colors_important=LSBFirstReadLong(image);
+        for (i=0; i < ((int) bmp_info.size-40); i++)
           (void) ReadByte(image);
-        if ((bmp_header.compression == 3) &&
-            ((bmp_header.bits_per_pixel == 16) ||
-             (bmp_header.bits_per_pixel == 32)))
+        if ((bmp_info.compression == 3) &&
+            ((bmp_info.bits_per_pixel == 16) ||
+             (bmp_info.bits_per_pixel == 32)))
           {
-            bmp_header.red_mask=LSBFirstReadShort(image);
-            bmp_header.green_mask=LSBFirstReadShort(image);
-            bmp_header.blue_mask=LSBFirstReadShort(image);
-            if (bmp_header.size > 40)
+            bmp_info.red_mask=LSBFirstReadShort(image);
+            bmp_info.green_mask=LSBFirstReadShort(image);
+            bmp_info.blue_mask=LSBFirstReadShort(image);
+            if (bmp_info.size > 40)
               {
                 /*
                   Read color management information.
                 */
-                bmp_header.alpha_mask=LSBFirstReadShort(image);
-                bmp_header.colorspace=LSBFirstReadLong(image);
-                bmp_header.red_primary.x=LSBFirstReadLong(image);
-                bmp_header.red_primary.y=LSBFirstReadLong(image);
-                bmp_header.red_primary.z=LSBFirstReadLong(image);
-                bmp_header.green_primary.x=LSBFirstReadLong(image);
-                bmp_header.green_primary.y=LSBFirstReadLong(image);
-                bmp_header.green_primary.z=LSBFirstReadLong(image);
-                bmp_header.blue_primary.x=LSBFirstReadLong(image);
-                bmp_header.blue_primary.y=LSBFirstReadLong(image);
-                bmp_header.blue_primary.z=LSBFirstReadLong(image);
-                bmp_header.gamma_scale.x=LSBFirstReadShort(image);
-                bmp_header.gamma_scale.y=LSBFirstReadShort(image);
-                bmp_header.gamma_scale.z=LSBFirstReadShort(image);
+                bmp_info.alpha_mask=LSBFirstReadShort(image);
+                bmp_info.colorspace=LSBFirstReadLong(image);
+                bmp_info.red_primary.x=LSBFirstReadLong(image);
+                bmp_info.red_primary.y=LSBFirstReadLong(image);
+                bmp_info.red_primary.z=LSBFirstReadLong(image);
+                bmp_info.green_primary.x=LSBFirstReadLong(image);
+                bmp_info.green_primary.y=LSBFirstReadLong(image);
+                bmp_info.green_primary.z=LSBFirstReadLong(image);
+                bmp_info.blue_primary.x=LSBFirstReadLong(image);
+                bmp_info.blue_primary.y=LSBFirstReadLong(image);
+                bmp_info.blue_primary.z=LSBFirstReadLong(image);
+                bmp_info.gamma_scale.x=LSBFirstReadShort(image);
+                bmp_info.gamma_scale.y=LSBFirstReadShort(image);
+                bmp_info.gamma_scale.z=LSBFirstReadShort(image);
               }
           }
       }
-    image->matte=bmp_header.bits_per_pixel == 32;
-    image->columns=(unsigned int) bmp_header.width;
-    image->rows=(unsigned int) AbsoluteValue(bmp_header.height);
+    image->matte=bmp_info.bits_per_pixel == 32;
+    image->columns=(unsigned int) bmp_info.width;
+    image->rows=(unsigned int) AbsoluteValue(bmp_info.height);
     image->depth=8;
-    if ((bmp_header.number_colors != 0) || (bmp_header.bits_per_pixel < 16))
+    if ((bmp_info.number_colors != 0) || (bmp_info.bits_per_pixel < 16))
       {
         image->storage_class=PseudoClass;
-        image->colors=(unsigned int) bmp_header.number_colors;
+        image->colors=(unsigned int) bmp_info.number_colors;
         if (image->colors == 0)
-          image->colors=1 << bmp_header.bits_per_pixel;
+          image->colors=1 << bmp_info.bits_per_pixel;
       }
     if (image_info->ping)
       {
@@ -594,43 +597,42 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
           ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
             image);
         packet_size=4;
-        if (bmp_header.size == 12)
+        if (bmp_info.size == 12)
           packet_size=3;
-        (void) ReadBlob(image,packet_size*image->colors,
-          (char *) bmp_colormap);
+        (void) ReadBlob(image,packet_size*image->colors,(char *) bmp_colormap);
         p=bmp_colormap;
         for (i=0; i < (int) image->colors; i++)
         {
           image->colormap[i].blue=UpScale(*p++);
           image->colormap[i].green=UpScale(*p++);
           image->colormap[i].red=UpScale(*p++);
-          if (bmp_header.size != 12)
+          if (bmp_info.size != 12)
             p++;
         }
         FreeMemory((void **) &bmp_colormap);
       }
-    while (TellBlob(image) < (int) (start_position+bmp_header.offset_bits))
+    while (TellBlob(image) < (int) (start_position+bmp_info.offset_bits))
       (void) ReadByte(image);
     /*
       Read image data.
     */
-    if (bmp_header.compression == 2)
-      bmp_header.bits_per_pixel<<=1;
-    bytes_per_line=((image->columns*bmp_header.bits_per_pixel+31)/32)*4;
+    if (bmp_info.compression == 2)
+      bmp_info.bits_per_pixel<<=1;
+    bytes_per_line=4*((image->columns*bmp_info.bits_per_pixel+31)/32);
     image_size=bytes_per_line*image->rows;
     pixels=(unsigned char *) AllocateMemory(image_size);
     if (pixels == (unsigned char *) NULL)
       ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
         image);
-    if ((bmp_header.compression == 0) || (bmp_header.compression == 3))
+    if ((bmp_info.compression == 0) || (bmp_info.compression == 3))
       (void) ReadBlob(image,image_size,(char *) pixels);
     else
       {
         /*
           Convert run-length encoded raster pixels.
         */
-        status=DecodeImage(image,(unsigned int) bmp_header.compression,
-          (unsigned int) bmp_header.width,image->rows,pixels);
+        status=DecodeImage(image,(unsigned int) bmp_info.compression,
+          (unsigned int) bmp_info.width,image->rows,pixels);
         if (status == False)
           ThrowReaderException(CorruptImageWarning,"runlength decoding failed",
             image);
@@ -639,12 +641,12 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
       Initialize image structure.
     */
     image->units=PixelsPerCentimeterResolution;
-    image->x_resolution=bmp_header.x_pixels/100.0;
-    image->y_resolution=bmp_header.y_pixels/100.0;
+    image->x_resolution=bmp_info.x_pixels/100.0;
+    image->y_resolution=bmp_info.y_pixels/100.0;
     /*
       Convert BMP raster image to pixel packets.
     */
-    switch (bmp_header.bits_per_pixel)
+    switch (bmp_info.bits_per_pixel)
     {
       case 1:
       {
@@ -728,7 +730,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Convert PseudoColor scanline.
         */
-        if ((bmp_header.compression == 1) || (bmp_header.compression == 2))
+        if ((bmp_info.compression == 1) || (bmp_info.compression == 2))
           bytes_per_line=image->columns;
         for (y=image->rows-1; y >= 0; y--)
         {
@@ -761,7 +763,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
           Convert PseudoColor scanline.
         */
         image->storage_class=DirectClass;
-        if (bmp_header.compression == 1)
+        if (bmp_info.compression == 1)
           bytes_per_line=image->columns << 1;
         for (y=image->rows-1; y >= 0; y--)
         {
@@ -820,7 +822,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         ThrowReaderException(CorruptImageWarning,"Not a BMP image file",image);
     }
     FreeMemory((void **) &pixels);
-    if (bmp_header.height < 0)
+    if (bmp_info.height < 0)
       {
         Image
           *flipped_image;
@@ -973,35 +975,8 @@ ModuleExport void UnregisterBMPImage(void)
 */
 static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
 {
-  typedef struct _BMPHeader
-  {
-    unsigned long
-      file_size;
-
-    unsigned short
-      reserved[2];
-
-    unsigned long
-      offset_bits,
-      size,
-      width,
-      height;
-
-    unsigned short
-      planes,
-      bit_count;
-
-    unsigned long
-      compression,
-      image_size,
-      x_pixels,
-      y_pixels,
-      number_colors,
-      colors_important;
-  } BMPHeader;
-
-  BMPHeader
-    bmp_header;
+  BMPInfo
+    bmp_info;
 
   int
     y;
@@ -1041,8 +1016,8 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
       Initialize BMP raster file header.
     */
     TransformRGBImage(image,RGBColorspace);
-    bmp_header.file_size=14+40;
-    bmp_header.offset_bits=14+40;
+    bmp_info.file_size=14+40;
+    bmp_info.offset_bits=14+40;
     if ((LocaleCompare(image_info->magick,"BMP24") == 0) ||
         (!IsPseudoClass(image) && !IsGrayImage(image)))
       {
@@ -1050,56 +1025,56 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
           Full color BMP raster.
         */
         image->storage_class=DirectClass;
-        bmp_header.number_colors=0;
-        bmp_header.bit_count=image->matte ? 32 : 24;
-        bytes_per_line=4*((image->columns*bmp_header.bit_count+31)/32);
+        bmp_info.number_colors=0;
+        bmp_info.bits_per_pixel=image->matte ? 32 : 24;
+        bytes_per_line=4*((image->columns*bmp_info.bits_per_pixel+31)/32);
       }
     else
       {
         /*
           Colormapped BMP raster.
         */
-        bmp_header.bit_count=8;
+        bmp_info.bits_per_pixel=8;
         bytes_per_line=image->columns+(image->columns % 2 ? 1 : 0);
         if (IsMonochromeImage(image))
           {
-            bmp_header.bit_count=1;
-            bytes_per_line=4*((image->columns*bmp_header.bit_count+31)/32);
+            bmp_info.bits_per_pixel=1;
+            bytes_per_line=4*((image->columns*bmp_info.bits_per_pixel+31)/32);
           }
-        bmp_header.file_size+=4*(1 << bmp_header.bit_count);
-        bmp_header.offset_bits+=4*(1 << bmp_header.bit_count);
-        bmp_header.number_colors=1 << bmp_header.bit_count;
+        bmp_info.file_size+=4*(1 << bmp_info.bits_per_pixel);
+        bmp_info.offset_bits+=4*(1 << bmp_info.bits_per_pixel);
+        bmp_info.number_colors=1 << bmp_info.bits_per_pixel;
       }
-    bmp_header.reserved[0]=0;
-    bmp_header.reserved[1]=0;
-    bmp_header.size=40;
-    bmp_header.width=image->columns;
-    bmp_header.height=image->rows;
-    bmp_header.planes=1;
-    bmp_header.compression=0;
-    bmp_header.image_size=bytes_per_line*image->rows;
-    bmp_header.file_size+=bmp_header.image_size;
-    bmp_header.x_pixels=75*39;
-    bmp_header.y_pixels=75*39;
+    bmp_info.reserved[0]=0;
+    bmp_info.reserved[1]=0;
+    bmp_info.size=40;
+    bmp_info.width=image->columns;
+    bmp_info.height=image->rows;
+    bmp_info.planes=1;
+    bmp_info.compression=0;
+    bmp_info.image_size=bytes_per_line*image->rows;
+    bmp_info.file_size+=bmp_info.image_size;
+    bmp_info.x_pixels=75*39;
+    bmp_info.y_pixels=75*39;
     if (image->units == PixelsPerInchResolution)
       {
-        bmp_header.x_pixels=(unsigned long) (100.0*image->x_resolution/2.54);
-        bmp_header.y_pixels=(unsigned long) (100.0*image->y_resolution/2.54);
+        bmp_info.x_pixels=(unsigned long) (100.0*image->x_resolution/2.54);
+        bmp_info.y_pixels=(unsigned long) (100.0*image->y_resolution/2.54);
       }
     if (image->units == PixelsPerCentimeterResolution)
       {
-        bmp_header.x_pixels=(unsigned long) (100.0*image->x_resolution);
-        bmp_header.y_pixels=(unsigned long) (100.0*image->y_resolution);
+        bmp_info.x_pixels=(unsigned long) (100.0*image->x_resolution);
+        bmp_info.y_pixels=(unsigned long) (100.0*image->y_resolution);
       }
-    bmp_header.colors_important=bmp_header.number_colors;
+    bmp_info.colors_important=bmp_info.number_colors;
     /*
       Convert MIFF to BMP raster pixels.
     */
-    pixels=(unsigned char *) AllocateMemory(bmp_header.image_size);
+    pixels=(unsigned char *) AllocateMemory(bmp_info.image_size);
     if (pixels == (unsigned char *) NULL)
       ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
         image);
-    switch (bmp_header.bit_count)
+    switch (bmp_info.bits_per_pixel)
     {
       case 1:
       {
@@ -1206,7 +1181,7 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
         break;
       }
     }
-    if (bmp_header.bit_count == 8)
+    if (bmp_info.bits_per_pixel == 8)
       if (image_info->compression != NoCompression)
         {
           unsigned int
@@ -1216,7 +1191,7 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
             Convert run-length encoded raster pixels.
           */
           packets=(unsigned int)
-            ((bytes_per_line*(bmp_header.height+2)+1) << 1);
+            ((bytes_per_line*(bmp_info.height+2)+1) << 1);
           bmp_data=(unsigned char *) AllocateMemory(packets);
           if (pixels == (unsigned char *) NULL)
             {
@@ -1224,33 +1199,33 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
               ThrowWriterException(ResourceLimitWarning,
                 "Memory allocation failed",image);
             }
-          bmp_header.file_size-=bmp_header.image_size;
-          bmp_header.image_size=
+          bmp_info.file_size-=bmp_info.image_size;
+          bmp_info.image_size=
             EncodeImage(pixels,image->columns,image->rows,bmp_data);
-          bmp_header.file_size+=bmp_header.image_size;
+          bmp_info.file_size+=bmp_info.image_size;
           FreeMemory((void **) &pixels);
           pixels=bmp_data;
-          bmp_header.compression=1;
+          bmp_info.compression=1;
         }
     /*
       Write BMP header.
     */
     (void) WriteBlob(image,2,"BM");
-    (void) LSBFirstWriteLong(image,bmp_header.file_size);
-    (void) LSBFirstWriteShort(image,bmp_header.reserved[0]);
-    (void) LSBFirstWriteShort(image,bmp_header.reserved[1]);
-    (void) LSBFirstWriteLong(image,bmp_header.offset_bits);
-    (void) LSBFirstWriteLong(image,bmp_header.size);
-    (void) LSBFirstWriteLong(image,bmp_header.width);
-    (void) LSBFirstWriteLong(image,bmp_header.height);
-    (void) LSBFirstWriteShort(image,bmp_header.planes);
-    (void) LSBFirstWriteShort(image,bmp_header.bit_count);
-    (void) LSBFirstWriteLong(image,bmp_header.compression);
-    (void) LSBFirstWriteLong(image,bmp_header.image_size);
-    (void) LSBFirstWriteLong(image,bmp_header.x_pixels);
-    (void) LSBFirstWriteLong(image,bmp_header.y_pixels);
-    (void) LSBFirstWriteLong(image,bmp_header.number_colors);
-    (void) LSBFirstWriteLong(image,bmp_header.colors_important);
+    (void) LSBFirstWriteLong(image,bmp_info.file_size);
+    (void) LSBFirstWriteShort(image,bmp_info.reserved[0]);
+    (void) LSBFirstWriteShort(image,bmp_info.reserved[1]);
+    (void) LSBFirstWriteLong(image,bmp_info.offset_bits);
+    (void) LSBFirstWriteLong(image,bmp_info.size);
+    (void) LSBFirstWriteLong(image,bmp_info.width);
+    (void) LSBFirstWriteLong(image,bmp_info.height);
+    (void) LSBFirstWriteShort(image,bmp_info.planes);
+    (void) LSBFirstWriteShort(image,bmp_info.bits_per_pixel);
+    (void) LSBFirstWriteLong(image,bmp_info.compression);
+    (void) LSBFirstWriteLong(image,bmp_info.image_size);
+    (void) LSBFirstWriteLong(image,bmp_info.x_pixels);
+    (void) LSBFirstWriteLong(image,bmp_info.y_pixels);
+    (void) LSBFirstWriteLong(image,bmp_info.number_colors);
+    (void) LSBFirstWriteLong(image,bmp_info.colors_important);
     if (image->storage_class == PseudoClass)
       {
         unsigned char
@@ -1260,7 +1235,7 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
           Dump colormap to file.
         */
         bmp_colormap=(unsigned char *)
-          AllocateMemory(4*(1 << bmp_header.bit_count));
+          AllocateMemory(4*(1 << bmp_info.bits_per_pixel));
         if (bmp_colormap == (unsigned char *) NULL)
           ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
             image);
@@ -1272,18 +1247,18 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
           *q++=DownScale(image->colormap[i].red);
           *q++=(Quantum) 0x0;
         }
-        for ( ; i < (int) (1 << bmp_header.bit_count); i++)
+        for ( ; i < (int) (1 << bmp_info.bits_per_pixel); i++)
         {
           *q++=(Quantum) 0x0;
           *q++=(Quantum) 0x0;
           *q++=(Quantum) 0x0;
           *q++=(Quantum) 0x0;
         }
-        (void) WriteBlob(image,4*(1 << bmp_header.bit_count),
+        (void) WriteBlob(image,4*(1 << bmp_info.bits_per_pixel),
           (char *) bmp_colormap);
         FreeMemory((void **) &bmp_colormap);
       }
-    (void) WriteBlob(image,bmp_header.image_size,(char *) pixels);
+    (void) WriteBlob(image,bmp_info.image_size,(char *) pixels);
     FreeMemory((void **) &pixels);
     if (image->next == (Image *) NULL)
       break;

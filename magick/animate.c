@@ -552,7 +552,6 @@ MagickExport void XAnimateBackgroundImage(Display *display,
       if (coalesce_image == (Image *) NULL)
         MagickError(image->exception.severity,image->exception.message,
           image->exception.qualifier);
-      DestroyImages(image);
       image=coalesce_image;
     }
   if (resources.map_type == (char *) NULL)
@@ -1133,7 +1132,6 @@ MagickExport Image *XAnimateImages(Display *display,
       if (coalesce_image == (Image *) NULL)
         MagickError(image->exception.severity,image->exception.message,
           image->exception.qualifier);
-      DestroyImages(image);
       image=coalesce_image;
     }
   if (resource_info->map_type == (char *) NULL)
@@ -2451,7 +2449,6 @@ MagickExport Image *XAnimateImages(Display *display,
   */
   (void) getcwd(working_directory,MaxTextExtent-1);
   (void) chdir(resource_info->home_directory);
-  DestroyImages(image);
   return(nexus);
 }
 #endif

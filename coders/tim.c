@@ -92,15 +92,15 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
 #define ScaleColor5to8(x)  ((x) << 3)
 
-  typedef struct _TIMHeader
+  typedef struct _TIMInfo
   {
     unsigned long
       id,
       flag;
-  } TIMHeader;
+  } TIMInfo;
 
-  TIMHeader
-    tim_header;
+  TIMInfo
+    tim_info;
 
   Image
     *image;
@@ -148,17 +148,17 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Determine if this is a TIM file.
   */
-  tim_header.id=LSBFirstReadLong(image);
+  tim_info.id=LSBFirstReadLong(image);
   do
   {
     /*
       Verify TIM identifier.
     */
-    if (tim_header.id != 0x00000010)
+    if (tim_info.id != 0x00000010)
       ThrowReaderException(CorruptImageWarning,"Not a TIM image file",image);
-    tim_header.flag=LSBFirstReadLong(image);
-    has_clut=!!(tim_header.flag & (1 << 3));
-    pixel_mode=tim_header.flag & 0x07;
+    tim_info.flag=LSBFirstReadLong(image);
+    has_clut=!!(tim_info.flag & (1 << 3));
+    pixel_mode=tim_info.flag & 0x07;
     switch (pixel_mode)
     {
       case 0: bits_per_pixel=4; break;
@@ -337,8 +337,8 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /*
       Proceed to next image.
     */
-    tim_header.id=LSBFirstReadLong(image);
-    if (tim_header.id == 0x00000010)
+    tim_info.id=LSBFirstReadLong(image);
+    if (tim_info.id == 0x00000010)
       {
         /*
           Allocate next image structure.
@@ -352,7 +352,7 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         image=image->next;
         ProgressMonitor(LoadImagesText,TellBlob(image),image->filesize);
       }
-  } while (tim_header.id == 0x00000010);
+  } while (tim_info.id == 0x00000010);
   while (image->previous != (Image *) NULL)
     image=image->previous;
   CloseBlob(image);

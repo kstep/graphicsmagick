@@ -377,7 +377,8 @@ static unsigned int Classify(Image *image,short **extrema,
   for (cluster=head; cluster != (Cluster *) NULL; cluster=next_cluster)
   {
     next_cluster=cluster->next;
-    if ((double) cluster->count >= (cluster_threshold*count*0.01))
+    if ((cluster->count > 0) &&
+        ((double) cluster->count >= (cluster_threshold*count*0.01)))
       {
         /*
           Initialize cluster.

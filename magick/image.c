@@ -1512,7 +1512,7 @@ MagickExport unsigned int CompositeImage(Image *image,
                 &brightness);
               percent_brightness=(brightness_scale*
                 ((double) Intensity(*p)-midpoint))/midpoint;
-              brightness+=percent_brightness;
+              brightness*=percent_brightness/100.0;
               if (brightness < 0.0)
                 brightness=0.0;
               else

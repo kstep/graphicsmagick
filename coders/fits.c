@@ -138,7 +138,7 @@ static unsigned int IsFITS(const unsigned char *magick,
 static Image *ReadFITSImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
-  typedef struct _FITSHeader
+  typedef struct _FITSInfo
   {
     unsigned int
       simple;
@@ -157,7 +157,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
       max_data,
       zero,
       scale;
-  } FITSHeader;
+  } FITSInfo;
 
   char
     long_quantum[8],
@@ -169,8 +169,8 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
     scale,
     scaled_pixel;
 
-  FITSHeader
-    fits_header;
+  FITSInfo
+    fits_info;
 
   Image
     *image;
@@ -219,15 +219,15 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
   /*
     Initialize image header.
   */
-  fits_header.simple=False;
-  fits_header.bits_per_pixel=8;
-  fits_header.columns=1;
-  fits_header.rows=1;
-  fits_header.number_scenes=1;
-  fits_header.min_data=0.0;
-  fits_header.max_data=0.0;
-  fits_header.zero=0.0;
-  fits_header.scale=1.0;
+  fits_info.simple=False;
+  fits_info.bits_per_pixel=8;
+  fits_info.columns=1;
+  fits_info.rows=1;
+  fits_info.number_scenes=1;
+  fits_info.min_data=0.0;
+  fits_info.max_data=0.0;
+  fits_info.zero=0.0;
+  fits_info.scale=1.0;
   /*
     Decode image header.
   */
@@ -287,25 +287,25 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
           Assign a value to the specified keyword.
         */
         if (LocaleCompare(keyword,"SIMPLE") == 0)
-          fits_header.simple=(*value == 'T') || (*value == 't');
+          fits_info.simple=(*value == 'T') || (*value == 't');
         if (LocaleCompare(keyword,"BITPIX") == 0)
-          fits_header.bits_per_pixel=(unsigned int) atoi(value);
+          fits_info.bits_per_pixel=(unsigned int) atoi(value);
         if (LocaleCompare(keyword,"NAXIS") == 0)
-          fits_header.number_axes=(unsigned int) atoi(value);
+          fits_info.number_axes=(unsigned int) atoi(value);
         if (LocaleCompare(keyword,"NAXIS1") == 0)
-          fits_header.columns=(unsigned int) atoi(value);
+          fits_info.columns=(unsigned int) atoi(value);
         if (LocaleCompare(keyword,"NAXIS2") == 0)
-          fits_header.rows=(unsigned int) atoi(value);
+          fits_info.rows=(unsigned int) atoi(value);
         if (LocaleCompare(keyword,"NAXIS3") == 0)
-          fits_header.number_scenes=(unsigned int) atoi(value);
+          fits_info.number_scenes=(unsigned int) atoi(value);
         if (LocaleCompare(keyword,"DATAMAX") == 0)
-          fits_header.max_data=atof(value);
+          fits_info.max_data=atof(value);
         if (LocaleCompare(keyword,"DATAMIN") == 0)
-          fits_header.min_data=atof(value);
+          fits_info.min_data=atof(value);
         if (LocaleCompare(keyword,"BZERO") == 0)
-          fits_header.zero=atof(value);
+          fits_info.zero=atof(value);
         if (LocaleCompare(keyword,"BSCALE") == 0)
-          fits_header.scale=atof(value);
+          fits_info.scale=atof(value);
       }
     while (isspace(c))
     {
@@ -320,18 +320,18 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
   /*
     Verify that required image information is defined.
   */
-  if ((!fits_header.simple) || (fits_header.number_axes < 1) ||
-      (fits_header.number_axes > 4) ||
-      (fits_header.columns*fits_header.rows) == 0)
+  if ((!fits_info.simple) || (fits_info.number_axes < 1) ||
+      (fits_info.number_axes > 4) ||
+      (fits_info.columns*fits_info.rows) == 0)
     ThrowReaderException(CorruptImageWarning,"image type not supported",image);
-  for (scene=0; scene < fits_header.number_scenes; scene++)
+  for (scene=0; scene < fits_info.number_scenes; scene++)
   {
     /*
       Create linear colormap.
     */
-    image->columns=fits_header.columns;
-    image->rows=fits_header.rows;
-    image->depth=fits_header.bits_per_pixel <= 8 ? 8 : QuantumDepth;
+    image->columns=fits_info.columns;
+    image->rows=fits_info.rows;
+    image->depth=fits_info.bits_per_pixel <= 8 ? 8 : QuantumDepth;
     image->storage_class=PseudoClass;
     image->scene=scene;
     if (!AllocateImageColormap(image,MaxRGB+1))
@@ -344,7 +344,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
     /*
       Initialize image structure.
     */
-    packet_size=fits_header.bits_per_pixel/8;
+    packet_size=fits_info.bits_per_pixel/8;
     if (packet_size < 0)
       packet_size=(-packet_size);
     fits_pixels=(unsigned char *)
@@ -359,7 +359,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
     if (status == False)
       ThrowReaderException(CorruptImageWarning,
         "Insufficient image data in file",image);
-    if ((fits_header.min_data == 0.0) && (fits_header.max_data == 0.0))
+    if ((fits_info.min_data == 0.0) && (fits_info.max_data == 0.0))
       {
         /*
           Determine minimum and maximum intensity.
@@ -373,15 +373,15 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
           quantum=(quantum << 8) | (*p++);
         }
         pixel=(double) quantum;
-        if (fits_header.bits_per_pixel == 16)
+        if (fits_info.bits_per_pixel == 16)
           if (pixel > 32767)
             pixel-=65536;
-        if (fits_header.bits_per_pixel == -32)
+        if (fits_info.bits_per_pixel == -32)
           pixel=(double) (*((float *) &quantum));
-        if (fits_header.bits_per_pixel == -64)
+        if (fits_info.bits_per_pixel == -64)
           pixel=(double) (*((double *) long_quantum));
-        fits_header.min_data=pixel*fits_header.scale+fits_header.zero;
-        fits_header.max_data=pixel*fits_header.scale+fits_header.zero;
+        fits_info.min_data=pixel*fits_info.scale+fits_info.zero;
+        fits_info.max_data=pixel*fits_info.scale+fits_info.zero;
         for (i=1; i < (int) (image->columns*image->rows); i++)
         {
           long_quantum[0]=(*p);
@@ -392,26 +392,26 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
             quantum=(quantum << 8) | (*p++);
           }
           pixel=(double) quantum;
-          if (fits_header.bits_per_pixel == 16)
+          if (fits_info.bits_per_pixel == 16)
             if (pixel > 32767)
               pixel-=65536;
-          if (fits_header.bits_per_pixel == -32)
+          if (fits_info.bits_per_pixel == -32)
             pixel=(double) (*((float *) &quantum));
-          if (fits_header.bits_per_pixel == -64)
+          if (fits_info.bits_per_pixel == -64)
             pixel=(double) (*((double *) long_quantum));
-          scaled_pixel=pixel*fits_header.scale+fits_header.zero;
-          if (scaled_pixel < fits_header.min_data)
-            fits_header.min_data=scaled_pixel;
-          if (scaled_pixel > fits_header.max_data)
-            fits_header.max_data=scaled_pixel;
+          scaled_pixel=pixel*fits_info.scale+fits_info.zero;
+          if (scaled_pixel < fits_info.min_data)
+            fits_info.min_data=scaled_pixel;
+          if (scaled_pixel > fits_info.max_data)
+            fits_info.max_data=scaled_pixel;
         }
       }
     /*
       Convert FITS pixels to pixel packets.
     */
     scale=1.0;
-    if ((fits_header.max_data-fits_header.min_data) <= 1.0)
-      scale=MaxRGB/(fits_header.max_data-fits_header.min_data);
+    if ((fits_info.max_data-fits_info.min_data) <= 1.0)
+      scale=MaxRGB/(fits_info.max_data-fits_info.min_data);
     p=fits_pixels;
     for (y=image->rows-1; y >= 0; y--)
     {
@@ -429,15 +429,15 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
           quantum=(quantum << 8) | (*p++);
         }
         pixel=(double) quantum;
-        if (fits_header.bits_per_pixel == 16)
+        if (fits_info.bits_per_pixel == 16)
           if (pixel > 32767)
             pixel-=65536;
-        if (fits_header.bits_per_pixel == -32)
+        if (fits_info.bits_per_pixel == -32)
           pixel=(double) (*((float *) &quantum));
-        if (fits_header.bits_per_pixel == -64)
+        if (fits_info.bits_per_pixel == -64)
           pixel=(double) (*((double *) long_quantum));
         scaled_pixel=scale*
-          (pixel*fits_header.scale-fits_header.min_data-fits_header.zero);
+          (pixel*fits_info.scale-fits_info.min_data-fits_info.zero);
         if (scaled_pixel < 0)
           scaled_pixel=0;
         else
@@ -461,7 +461,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
     if (image_info->subrange != 0)
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
         break;
-    if (scene < (fits_header.number_scenes-1))
+    if (scene < (fits_info.number_scenes-1))
       {
         /*
           Allocate next image structure.
@@ -578,7 +578,7 @@ static unsigned int WriteFITSImage(const ImageInfo *image_info,Image *image)
 {
   char
     buffer[81],
-    *fits_header;
+    *fits_info;
 
   int
     y;
@@ -607,35 +607,35 @@ static unsigned int WriteFITSImage(const ImageInfo *image_info,Image *image)
     Allocate image memory.
   */
   packet_size=image->depth > 8 ? 2 : 1;
-  fits_header=(char *) AllocateMemory(2880);
+  fits_info=(char *) AllocateMemory(2880);
   pixels=(unsigned char *) AllocateMemory(packet_size*image->columns);
-  if ((fits_header == (char *) NULL) || (pixels == (unsigned char *) NULL))
+  if ((fits_info == (char *) NULL) || (pixels == (unsigned char *) NULL))
     ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
   /*
     Initialize image header.
   */
   for (i=0; i < 2880; i++)
-    fits_header[i]=' ';
+    fits_info[i]=' ';
   (void) strcpy(buffer,"SIMPLE  =                    T");
-  (void) strncpy(fits_header+0,buffer,Extent(buffer));
+  (void) strncpy(fits_info+0,buffer,Extent(buffer));
   FormatString(buffer,"BITPIX  =                    %d",image->depth);
-  (void) strncpy(fits_header+80,buffer,Extent(buffer));
+  (void) strncpy(fits_info+80,buffer,Extent(buffer));
   (void) strcpy(buffer,"NAXIS   =                    2");
-  (void) strncpy(fits_header+160,buffer,Extent(buffer));
+  (void) strncpy(fits_info+160,buffer,Extent(buffer));
   FormatString(buffer,"NAXIS1  =           %10u",image->columns);
-  (void) strncpy(fits_header+240,buffer,Extent(buffer));
+  (void) strncpy(fits_info+240,buffer,Extent(buffer));
   FormatString(buffer,"NAXIS2  =           %10u",image->rows);
-  (void) strncpy(fits_header+320,buffer,Extent(buffer));
+  (void) strncpy(fits_info+320,buffer,Extent(buffer));
   FormatString(buffer,"DATAMIN =           %10u",0);
-  (void) strncpy(fits_header+400,buffer,Extent(buffer));
+  (void) strncpy(fits_info+400,buffer,Extent(buffer));
   FormatString(buffer,"DATAMAX =           %10u",MaxRGB);
-  (void) strncpy(fits_header+480,buffer,Extent(buffer));
+  (void) strncpy(fits_info+480,buffer,Extent(buffer));
   (void) strcpy(buffer,"HISTORY Created by ImageMagick.");
-  (void) strncpy(fits_header+560,buffer,Extent(buffer));
+  (void) strncpy(fits_info+560,buffer,Extent(buffer));
   (void) strcpy(buffer,"END");
-  (void) strncpy(fits_header+640,buffer,Extent(buffer));
-  (void) WriteBlob(image,2880,(char *) fits_header);
-  FreeMemory((void **) &fits_header);
+  (void) strncpy(fits_info+640,buffer,Extent(buffer));
+  (void) WriteBlob(image,2880,(char *) fits_info);
+  FreeMemory((void **) &fits_info);
   /*
     Convert image to fits scale PseudoColor class.
   */

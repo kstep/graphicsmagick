@@ -583,7 +583,7 @@ static unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
     lsb_first;
 
   XWDFileHeader
-    xwd_header;
+    xwd_info;
 
   /*
     Open output image file.
@@ -595,44 +595,44 @@ static unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
   /*
     Initialize XWD file header.
   */
-  xwd_header.header_size=sz_XWDheader+Extent(image->filename)+1;
-  xwd_header.file_version=(CARD32) XWD_FILE_VERSION;
-  xwd_header.pixmap_format=(CARD32) ZPixmap;
-  xwd_header.pixmap_depth=(CARD32) (image->storage_class == DirectClass ? 24 : 8);
-  xwd_header.pixmap_width=(CARD32) image->columns;
-  xwd_header.pixmap_height=(CARD32) image->rows;
-  xwd_header.xoffset=(CARD32) 0;
-  xwd_header.byte_order=(CARD32) MSBFirst;
-  xwd_header.bitmap_unit=(CARD32) (image->storage_class == DirectClass ? 32 : 8);
-  xwd_header.bitmap_bit_order=(CARD32) MSBFirst;
-  xwd_header.bitmap_pad=(CARD32) (image->storage_class == DirectClass ? 32 : 8);
+  xwd_info.header_size=sz_XWDheader+Extent(image->filename)+1;
+  xwd_info.file_version=(CARD32) XWD_FILE_VERSION;
+  xwd_info.pixmap_format=(CARD32) ZPixmap;
+  xwd_info.pixmap_depth=(CARD32) (image->storage_class == DirectClass ? 24 : 8);
+  xwd_info.pixmap_width=(CARD32) image->columns;
+  xwd_info.pixmap_height=(CARD32) image->rows;
+  xwd_info.xoffset=(CARD32) 0;
+  xwd_info.byte_order=(CARD32) MSBFirst;
+  xwd_info.bitmap_unit=(CARD32) (image->storage_class == DirectClass ? 32 : 8);
+  xwd_info.bitmap_bit_order=(CARD32) MSBFirst;
+  xwd_info.bitmap_pad=(CARD32) (image->storage_class == DirectClass ? 32 : 8);
   bits_per_pixel=(image->storage_class == DirectClass ? 24 : 8);
-  xwd_header.bits_per_pixel=(CARD32) bits_per_pixel;
-  bytes_per_line=(CARD32) ((((xwd_header.bits_per_pixel*
-    xwd_header.pixmap_width)+((xwd_header.bitmap_pad)-1))/
-    (xwd_header.bitmap_pad))*((xwd_header.bitmap_pad) >> 3));
-  xwd_header.bytes_per_line=(CARD32) bytes_per_line;
-  xwd_header.visual_class=(CARD32)
+  xwd_info.bits_per_pixel=(CARD32) bits_per_pixel;
+  bytes_per_line=(CARD32) ((((xwd_info.bits_per_pixel*
+    xwd_info.pixmap_width)+((xwd_info.bitmap_pad)-1))/
+    (xwd_info.bitmap_pad))*((xwd_info.bitmap_pad) >> 3));
+  xwd_info.bytes_per_line=(CARD32) bytes_per_line;
+  xwd_info.visual_class=(CARD32)
     (image->storage_class == DirectClass ? DirectColor : PseudoColor);
-  xwd_header.red_mask=(CARD32) (image->storage_class == DirectClass ? 0xff0000 : 0);
-  xwd_header.green_mask=(CARD32) (image->storage_class == DirectClass ? 0xff00 : 0);
-  xwd_header.blue_mask=(CARD32) (image->storage_class == DirectClass ? 0xff : 0);
-  xwd_header.bits_per_rgb=(CARD32) (image->storage_class == DirectClass ? 24 : 8);
-  xwd_header.colormap_entries=(CARD32)
+  xwd_info.red_mask=(CARD32) (image->storage_class == DirectClass ? 0xff0000 : 0);
+  xwd_info.green_mask=(CARD32) (image->storage_class == DirectClass ? 0xff00 : 0);
+  xwd_info.blue_mask=(CARD32) (image->storage_class == DirectClass ? 0xff : 0);
+  xwd_info.bits_per_rgb=(CARD32) (image->storage_class == DirectClass ? 24 : 8);
+  xwd_info.colormap_entries=(CARD32)
     (image->storage_class == DirectClass ? 256 : image->colors);
-  xwd_header.ncolors=(image->storage_class == DirectClass ? 0 : image->colors);
-  xwd_header.window_width=(CARD32) image->columns;
-  xwd_header.window_height=(CARD32) image->rows;
-  xwd_header.window_x=0;
-  xwd_header.window_y=0;
-  xwd_header.window_bdrwidth=(CARD32) 0;
+  xwd_info.ncolors=(image->storage_class == DirectClass ? 0 : image->colors);
+  xwd_info.window_width=(CARD32) image->columns;
+  xwd_info.window_height=(CARD32) image->rows;
+  xwd_info.window_x=0;
+  xwd_info.window_y=0;
+  xwd_info.window_bdrwidth=(CARD32) 0;
   /*
     Write XWD header.
   */
   lsb_first=1;
   if (*(char *) &lsb_first)
-    MSBFirstOrderLong((char *) &xwd_header,sizeof(xwd_header));
-  (void) WriteBlob(image,sz_XWDheader,(char *) &xwd_header);
+    MSBFirstOrderLong((char *) &xwd_info,sizeof(xwd_info));
+  (void) WriteBlob(image,sz_XWDheader,(char *) &xwd_info);
   (void) WriteBlob(image,Extent(image->filename)+1,(char *) image->filename);
   if (image->storage_class == PseudoClass)
     {

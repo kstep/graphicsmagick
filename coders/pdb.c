@@ -190,7 +190,7 @@ static unsigned int IsPDB(const unsigned char *magick,const unsigned int length)
 */
 static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
-  typedef struct _PDBHeader
+  typedef struct _PDBInfo
   {
     char
       name[32];
@@ -213,7 +213,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
     short int
       number_records;
-  } PDBHeader;
+  } PDBInfo;
 
   typedef struct _PDBImage
   {
@@ -256,8 +256,8 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   long
     offset;
 
-  PDBHeader
-    pdb_header;
+  PDBInfo
+    pdb_info;
 
   PDBImage
     pdb_image;
@@ -292,22 +292,22 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Determine if this is a PDB image file.
   */
-  status=ReadBlob(image,32,pdb_header.name);
-  pdb_header.flags=MSBFirstReadShort(image);
-  pdb_header.version=MSBFirstReadShort(image);
-  pdb_header.create_time=MSBFirstReadLong(image);
-  pdb_header.modify_time=MSBFirstReadLong(image);
-  pdb_header.archive_time=MSBFirstReadLong(image);
-  pdb_header.modify_number=MSBFirstReadLong(image);
-  pdb_header.application_info=MSBFirstReadLong(image);
-  pdb_header.sort_info=MSBFirstReadLong(image);
-  pdb_header.type=MSBFirstReadLong(image);
-  pdb_header.id=MSBFirstReadLong(image);
-  pdb_header.seed=MSBFirstReadLong(image);
-  pdb_header.next_record=MSBFirstReadLong(image);
-  pdb_header.number_records=MSBFirstReadShort(image);
-  if ((status == False) || (memcmp((char *) &pdb_header.type,"vIMG",4) != 0) ||
-      (memcmp((char *) &pdb_header.id,"View",4) != 0))
+  status=ReadBlob(image,32,pdb_info.name);
+  pdb_info.flags=MSBFirstReadShort(image);
+  pdb_info.version=MSBFirstReadShort(image);
+  pdb_info.create_time=MSBFirstReadLong(image);
+  pdb_info.modify_time=MSBFirstReadLong(image);
+  pdb_info.archive_time=MSBFirstReadLong(image);
+  pdb_info.modify_number=MSBFirstReadLong(image);
+  pdb_info.application_info=MSBFirstReadLong(image);
+  pdb_info.sort_info=MSBFirstReadLong(image);
+  pdb_info.type=MSBFirstReadLong(image);
+  pdb_info.id=MSBFirstReadLong(image);
+  pdb_info.seed=MSBFirstReadLong(image);
+  pdb_info.next_record=MSBFirstReadLong(image);
+  pdb_info.number_records=MSBFirstReadShort(image);
+  if ((status == False) || (memcmp((char *) &pdb_info.type,"vIMG",4) != 0) ||
+      (memcmp((char *) &pdb_info.id,"View",4) != 0))
     ThrowReaderException(CorruptImageWarning,"Not a PDB image file",image);
   /*
     Read record header.
@@ -323,7 +323,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       (void) ReadByte(image);
       (void) ReadByte(image);
     }
-  if (pdb_header.number_records > 1)
+  if (pdb_info.number_records > 1)
     {
       offset=MSBFirstReadLong(image);
       (void) ReadBlob(image,3,tag);

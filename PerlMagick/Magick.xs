@@ -4670,11 +4670,11 @@ Mogrify(ref,...)
           if (first)
             {
               if (!attribute_flag[1])
-                argument_list[1].double_reference=1.0;
+                argument_list[1].double_reference=100.0;
               if (!attribute_flag[2])
-                argument_list[2].double_reference=1.0;
+                argument_list[2].double_reference=100.0;
               if (!attribute_flag[3])
-                argument_list[3].double_reference=1.0;
+                argument_list[3].double_reference=100.0;
               FormatString(message,"%lf/%lf/%lf",
                 argument_list[1].double_reference,
                 argument_list[2].double_reference,

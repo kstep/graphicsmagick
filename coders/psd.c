@@ -336,7 +336,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       *image;
   } LayerInfo;
 
-  typedef struct _PSDHeader
+  typedef struct _PSDInfo
   {
     char
       signature[4];
@@ -355,7 +355,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     unsigned short
       depth,
       mode;
-  } PSDHeader;
+  } PSDInfo;
 
   char
     type[4];
@@ -374,8 +374,8 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     length,
     size;
 
-  PSDHeader
-    psd_header;
+  PSDInfo
+    psd_info;
 
   register int
     i,
@@ -407,31 +407,31 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Read image header.
   */
-  status=ReadBlob(image,4,(char *) psd_header.signature);
-  psd_header.version=MSBFirstReadShort(image);
+  status=ReadBlob(image,4,(char *) psd_info.signature);
+  psd_info.version=MSBFirstReadShort(image);
   if ((status == False) ||
-      (LocaleNCompare(psd_header.signature,"8BPS",4) != 0) ||
-      (psd_header.version != 1))
+      (LocaleNCompare(psd_info.signature,"8BPS",4) != 0) ||
+      (psd_info.version != 1))
     ThrowReaderException(CorruptImageWarning,"Not a PSD image file",image);
-  (void) ReadBlob(image,6,(char *) psd_header.reserved);
-  psd_header.channels=MSBFirstReadShort(image);
-  psd_header.rows=MSBFirstReadLong(image);
-  psd_header.columns=MSBFirstReadLong(image);
-  psd_header.depth=MSBFirstReadShort(image);
-  psd_header.mode=MSBFirstReadShort(image);
+  (void) ReadBlob(image,6,(char *) psd_info.reserved);
+  psd_info.channels=MSBFirstReadShort(image);
+  psd_info.rows=MSBFirstReadLong(image);
+  psd_info.columns=MSBFirstReadLong(image);
+  psd_info.depth=MSBFirstReadShort(image);
+  psd_info.mode=MSBFirstReadShort(image);
   /*
     Initialize image.
   */
-  if (psd_header.mode == CMYKMode)
+  if (psd_info.mode == CMYKMode)
     image->colorspace=CMYKColorspace;
   else
-    image->matte=psd_header.channels >= 4;
-  image->columns=psd_header.columns;
-  image->rows=psd_header.rows;
-  image->depth=psd_header.depth <= 8 ? 8 : QuantumDepth;
+    image->matte=psd_info.channels >= 4;
+  image->columns=psd_info.columns;
+  image->rows=psd_info.rows;
+  image->depth=psd_info.depth <= 8 ? 8 : QuantumDepth;
   length=MSBFirstReadLong(image);
-  if ((psd_header.mode == BitmapMode) || (psd_header.mode == GrayscaleMode) ||
-      (psd_header.mode == IndexedMode) || (length > 0))
+  if ((psd_info.mode == BitmapMode) || (psd_info.mode == GrayscaleMode) ||
+      (psd_info.mode == IndexedMode) || (length > 0))
     {
       /*
         Create colormap.
@@ -527,7 +527,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
             ThrowReaderException(ResourceLimitWarning,
               "Memory allocation failed",image);
           }
-        if (psd_header.mode == CMYKMode)
+        if (psd_info.mode == CMYKMode)
           layer_info[i].image->colorspace=CMYKColorspace;
         else
           layer_info[i].image->matte=layer_info[i].channels >= 4;
@@ -676,9 +676,9 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       /*
         Read Packbit encoded pixel data as separate planes.
       */
-      for (i=0; i < (int) (image->rows*psd_header.channels); i++)
+      for (i=0; i < (int) (image->rows*psd_info.channels); i++)
         (void) MSBFirstReadShort(image);
-      for (i=0; i < (int) psd_header.channels; i++)
+      for (i=0; i < (int) psd_info.channels; i++)
         (void) DecodeImage(image,i);
     }
   else
@@ -698,13 +698,13 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       else
         if (image->depth > 8)
           packet_size++;
-      for (i=0; i < psd_header.channels; i++)
+      for (i=0; i < psd_info.channels; i++)
         channel_map[i]=!image->matte ? i : i-1;
       scanline=(unsigned char *) AllocateMemory(packet_size*image->columns);
       if (scanline == (unsigned char *) NULL)
         ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
           image);
-      for (i=0; i < (int) psd_header.channels; i++)
+      for (i=0; i < (int) psd_info.channels; i++)
       {
         for (y=0; y < (int) image->rows; y++)
         {
@@ -781,7 +781,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   }
   image->matte=False;
   if (image->colorspace != CMYKColorspace)
-    image->matte=psd_header.channels >= 4;
+    image->matte=psd_info.channels >= 4;
   CloseBlob(image);
   return(image);
 }

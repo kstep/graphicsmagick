@@ -1325,8 +1325,8 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
 #define MaxCount  128
 #define PictCropRegionOp  0x01
 #define PictEndOfPictureOp  0xff
-#define PictHeaderOp  0x0C00
-#define PictHeaderSize  512
+#define PictInfoOp  0x0C00
+#define PictInfoSize  512
 #define PictPixmapOp  0x9A
 #define PictPICTOp  0x98
 #define PictVersion  0x11
@@ -1432,7 +1432,7 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
   if ((image->storage_class == DirectClass) ||
       (LocaleCompare(image_info->magick,"PICT24") == 0))
     bytes_per_line*=image->matte ? 4 : 3;
-  buffer=(unsigned char *) AllocateMemory(PictHeaderSize);
+  buffer=(unsigned char *) AllocateMemory(PictInfoSize);
   packed_scanline=(unsigned char *) AllocateMemory(row_bytes+MaxCount);
   scanline=(unsigned char *) AllocateMemory(row_bytes);
   if ((buffer == (unsigned char *) NULL) ||
@@ -1442,9 +1442,9 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
   /*
     Write header, header size, size bounding box, version, and reserved.
   */
-  for (i=0; i < PictHeaderSize; i++)
+  for (i=0; i < PictInfoSize; i++)
     buffer[i]=0;
-  (void) WriteBlob(image,PictHeaderSize,buffer);
+  (void) WriteBlob(image,PictInfoSize,buffer);
   MSBFirstWriteShort(image,0);
   MSBFirstWriteShort(image,size_rectangle.top);
   MSBFirstWriteShort(image,size_rectangle.left);
@@ -1452,7 +1452,7 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
   MSBFirstWriteShort(image,size_rectangle.bottom);
   MSBFirstWriteShort(image,PictVersion);
   MSBFirstWriteShort(image,0x02ff);
-  MSBFirstWriteShort(image,PictHeaderOp);
+  MSBFirstWriteShort(image,PictInfoOp);
   /*
     Write full size of the file, resolution, frame bounding box, and reserved.
   */

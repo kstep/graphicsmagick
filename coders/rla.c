@@ -99,7 +99,7 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
       top;
   } WindowFrame;
 
-  typedef struct _RLAHeader
+  typedef struct _RLAInfo
   {
     WindowFrame
       window,
@@ -154,7 +154,7 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
     long
       next;
-  } RLAHeader;
+  } RLAInfo;
 
   Image
     *image;
@@ -178,8 +178,8 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
   register PixelPacket
     *q;
 
-  RLAHeader
-    rla_header;
+  RLAInfo
+    rla_info;
 
   unsigned char
     byte;
@@ -194,55 +194,55 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
   status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
     ThrowReaderException(FileOpenWarning,"Unable to open file",image);
-  rla_header.window.left=MSBFirstReadShort(image);
-  rla_header.window.right=MSBFirstReadShort(image);
-  rla_header.window.bottom=MSBFirstReadShort(image);
-  rla_header.window.top=MSBFirstReadShort(image);
-  rla_header.active_window.left=MSBFirstReadShort(image);
-  rla_header.active_window.right=MSBFirstReadShort(image);
-  rla_header.active_window.bottom=MSBFirstReadShort(image);
-  rla_header.active_window.top=MSBFirstReadShort(image);
-  rla_header.frame=MSBFirstReadShort(image);
-  rla_header.storage_type=MSBFirstReadShort(image);
-  rla_header.number_channels=MSBFirstReadShort(image);
-  rla_header.number_matte_channels=MSBFirstReadShort(image);
-  if (rla_header.number_channels == 0)
-    rla_header.number_channels=3;
-  rla_header.number_channels+=rla_header.number_matte_channels;
-  rla_header.number_auxiliary_channels=MSBFirstReadShort(image);
-  rla_header.revision=MSBFirstReadShort(image);
-  (void) ReadBlob(image,16,(char *) rla_header.gamma);
-  (void) ReadBlob(image,24,(char *) rla_header.red_primary);
-  (void) ReadBlob(image,24,(char *) rla_header.green_primary);
-  (void) ReadBlob(image,24,(char *) rla_header.blue_primary);
-  (void) ReadBlob(image,24,(char *) rla_header.white_point);
-  rla_header.job_number=(long) MSBFirstReadLong(image);
-  (void) ReadBlob(image,128,(char *) rla_header.name);
-  (void) ReadBlob(image,128,(char *) rla_header.description);
-  (void) ReadBlob(image,64,(char *) rla_header.program);
-  (void) ReadBlob(image,32,(char *) rla_header.machine);
-  (void) ReadBlob(image,32,(char *) rla_header.user);
-  (void) ReadBlob(image,20,(char *) rla_header.date);
-  (void) ReadBlob(image,24,(char *) rla_header.aspect);
-  (void) ReadBlob(image,8,(char *) rla_header.aspect_ratio);
-  (void) ReadBlob(image,32,(char *) rla_header.chan);
-  rla_header.field=MSBFirstReadShort(image);
-  (void) ReadBlob(image,12,(char *) rla_header.time);
-  (void) ReadBlob(image,32,(char *) rla_header.filter);
-  rla_header.bits_per_channel=MSBFirstReadShort(image);
-  rla_header.matte_type=MSBFirstReadShort(image);
-  rla_header.matte_bits=MSBFirstReadShort(image);
-  rla_header.auxiliary_type=MSBFirstReadShort(image);
-  rla_header.auxiliary_bits=MSBFirstReadShort(image);
-  (void) ReadBlob(image,32,(char *) rla_header.auxiliary);
-  (void) ReadBlob(image,36,(char *) rla_header.space);
-  rla_header.next=(long) MSBFirstReadLong(image);
+  rla_info.window.left=MSBFirstReadShort(image);
+  rla_info.window.right=MSBFirstReadShort(image);
+  rla_info.window.bottom=MSBFirstReadShort(image);
+  rla_info.window.top=MSBFirstReadShort(image);
+  rla_info.active_window.left=MSBFirstReadShort(image);
+  rla_info.active_window.right=MSBFirstReadShort(image);
+  rla_info.active_window.bottom=MSBFirstReadShort(image);
+  rla_info.active_window.top=MSBFirstReadShort(image);
+  rla_info.frame=MSBFirstReadShort(image);
+  rla_info.storage_type=MSBFirstReadShort(image);
+  rla_info.number_channels=MSBFirstReadShort(image);
+  rla_info.number_matte_channels=MSBFirstReadShort(image);
+  if (rla_info.number_channels == 0)
+    rla_info.number_channels=3;
+  rla_info.number_channels+=rla_info.number_matte_channels;
+  rla_info.number_auxiliary_channels=MSBFirstReadShort(image);
+  rla_info.revision=MSBFirstReadShort(image);
+  (void) ReadBlob(image,16,(char *) rla_info.gamma);
+  (void) ReadBlob(image,24,(char *) rla_info.red_primary);
+  (void) ReadBlob(image,24,(char *) rla_info.green_primary);
+  (void) ReadBlob(image,24,(char *) rla_info.blue_primary);
+  (void) ReadBlob(image,24,(char *) rla_info.white_point);
+  rla_info.job_number=(long) MSBFirstReadLong(image);
+  (void) ReadBlob(image,128,(char *) rla_info.name);
+  (void) ReadBlob(image,128,(char *) rla_info.description);
+  (void) ReadBlob(image,64,(char *) rla_info.program);
+  (void) ReadBlob(image,32,(char *) rla_info.machine);
+  (void) ReadBlob(image,32,(char *) rla_info.user);
+  (void) ReadBlob(image,20,(char *) rla_info.date);
+  (void) ReadBlob(image,24,(char *) rla_info.aspect);
+  (void) ReadBlob(image,8,(char *) rla_info.aspect_ratio);
+  (void) ReadBlob(image,32,(char *) rla_info.chan);
+  rla_info.field=MSBFirstReadShort(image);
+  (void) ReadBlob(image,12,(char *) rla_info.time);
+  (void) ReadBlob(image,32,(char *) rla_info.filter);
+  rla_info.bits_per_channel=MSBFirstReadShort(image);
+  rla_info.matte_type=MSBFirstReadShort(image);
+  rla_info.matte_bits=MSBFirstReadShort(image);
+  rla_info.auxiliary_type=MSBFirstReadShort(image);
+  rla_info.auxiliary_bits=MSBFirstReadShort(image);
+  (void) ReadBlob(image,32,(char *) rla_info.auxiliary);
+  (void) ReadBlob(image,36,(char *) rla_info.space);
+  rla_info.next=(long) MSBFirstReadLong(image);
   /*
     Initialize image structure.
   */
-  image->matte=rla_header.number_matte_channels != 0;
-  image->columns=rla_header.active_window.right-rla_header.active_window.left;
-  image->rows=rla_header.active_window.top-rla_header.active_window.bottom;
+  image->matte=rla_info.number_matte_channels != 0;
+  image->columns=rla_info.active_window.right-rla_info.active_window.left;
+  image->rows=rla_info.active_window.top-rla_info.active_window.bottom;
   if (image_info->ping)
     {
       CloseBlob(image);
@@ -251,8 +251,8 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
   scanlines=(long *) AllocateMemory(image->rows*sizeof(long));
   if (scanlines == (long *) NULL)
     ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
-  if (*rla_header.description != '\0')
-    (void) SetImageAttribute(image,"Comment",rla_header.description);
+  if (*rla_info.description != '\0')
+    (void) SetImageAttribute(image,"Comment",rla_info.description);
   /*
     Read offsets to each scanline data.
   */
@@ -265,7 +265,7 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
   for (y=0; y < (int) image->rows; y++)
   {
     (void) SeekBlob(image,scanlines[image->rows-y-1],SEEK_SET);
-    for (channel=0; channel < (int) rla_header.number_channels; channel++)
+    for (channel=0; channel < (int) rla_info.number_channels; channel++)
     {
       length=MSBFirstReadShort(image);
       while (length > 0)

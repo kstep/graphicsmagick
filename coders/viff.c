@@ -159,7 +159,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
 #define VFF_TYP_FLOAT  5
 #define VFF_TYP_DOUBLE  9
 
-  typedef struct _ViffHeader
+  typedef struct _ViffInfo
   {
     unsigned char
       identifier,
@@ -200,7 +200,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
       map_enable,
       maps_per_cycle,
       color_space_model;
-  } ViffHeader;
+  } ViffInfo;
 
   double
     min_value,
@@ -239,8 +239,8 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
     lsb_first,
     max_packets;
 
-  ViffHeader
-    viff_header;
+  ViffInfo
+    viff_info;
 
   /*
     Open image file.
@@ -252,131 +252,131 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
   /*
     Read VIFF header (1024 bytes).
   */
-  status=ReadBlob(image,1,(char *) &viff_header.identifier);
+  status=ReadBlob(image,1,(char *) &viff_info.identifier);
   do
   {
     /*
       Verify VIFF identifier.
     */
-    if ((status == False) || ((unsigned char) viff_header.identifier != 0xab))
+    if ((status == False) || ((unsigned char) viff_info.identifier != 0xab))
       ThrowReaderException(CorruptImageWarning,"Not a VIFF raster",image);
     /*
       Initialize VIFF image.
     */
     (void) ReadBlob(image,7,(char *) buffer);
-    viff_header.file_type=buffer[0];
-    viff_header.release=buffer[1];
-    viff_header.version=buffer[2];
-    viff_header.machine_dependency=buffer[3];
-    (void) ReadBlob(image,512,(char *) viff_header.comment);
-    viff_header.comment[511]='\0';
-    if (Extent(viff_header.comment) > 4)
-      (void) SetImageAttribute(image,"Comment",viff_header.comment);
-    if ((viff_header.machine_dependency == VFF_DEP_DECORDER) ||
-        (viff_header.machine_dependency == VFF_DEP_NSORDER))
+    viff_info.file_type=buffer[0];
+    viff_info.release=buffer[1];
+    viff_info.version=buffer[2];
+    viff_info.machine_dependency=buffer[3];
+    (void) ReadBlob(image,512,(char *) viff_info.comment);
+    viff_info.comment[511]='\0';
+    if (Extent(viff_info.comment) > 4)
+      (void) SetImageAttribute(image,"Comment",viff_info.comment);
+    if ((viff_info.machine_dependency == VFF_DEP_DECORDER) ||
+        (viff_info.machine_dependency == VFF_DEP_NSORDER))
       {
-        viff_header.rows=LSBFirstReadLong(image);
-        viff_header.columns=LSBFirstReadLong(image);
-        viff_header.subrows=LSBFirstReadLong(image);
-        viff_header.x_offset=LSBFirstReadLong(image);
-        viff_header.y_offset=LSBFirstReadLong(image);
-        viff_header.x_bits_per_pixel=(float) LSBFirstReadLong(image);
-        viff_header.y_bits_per_pixel=(float) LSBFirstReadLong(image);
-        viff_header.location_type=LSBFirstReadLong(image);
-        viff_header.location_dimension=LSBFirstReadLong(image);
-        viff_header.number_of_images=LSBFirstReadLong(image);
-        viff_header.number_data_bands=LSBFirstReadLong(image);
-        viff_header.data_storage_type=LSBFirstReadLong(image);
-        viff_header.data_encode_scheme=LSBFirstReadLong(image);
-        viff_header.map_scheme=LSBFirstReadLong(image);
-        viff_header.map_storage_type=LSBFirstReadLong(image);
-        viff_header.map_rows=LSBFirstReadLong(image);
-        viff_header.map_columns=LSBFirstReadLong(image);
-        viff_header.map_subrows=LSBFirstReadLong(image);
-        viff_header.map_enable=LSBFirstReadLong(image);
-        viff_header.maps_per_cycle=LSBFirstReadLong(image);
-        viff_header.color_space_model=LSBFirstReadLong(image);
+        viff_info.rows=LSBFirstReadLong(image);
+        viff_info.columns=LSBFirstReadLong(image);
+        viff_info.subrows=LSBFirstReadLong(image);
+        viff_info.x_offset=LSBFirstReadLong(image);
+        viff_info.y_offset=LSBFirstReadLong(image);
+        viff_info.x_bits_per_pixel=(float) LSBFirstReadLong(image);
+        viff_info.y_bits_per_pixel=(float) LSBFirstReadLong(image);
+        viff_info.location_type=LSBFirstReadLong(image);
+        viff_info.location_dimension=LSBFirstReadLong(image);
+        viff_info.number_of_images=LSBFirstReadLong(image);
+        viff_info.number_data_bands=LSBFirstReadLong(image);
+        viff_info.data_storage_type=LSBFirstReadLong(image);
+        viff_info.data_encode_scheme=LSBFirstReadLong(image);
+        viff_info.map_scheme=LSBFirstReadLong(image);
+        viff_info.map_storage_type=LSBFirstReadLong(image);
+        viff_info.map_rows=LSBFirstReadLong(image);
+        viff_info.map_columns=LSBFirstReadLong(image);
+        viff_info.map_subrows=LSBFirstReadLong(image);
+        viff_info.map_enable=LSBFirstReadLong(image);
+        viff_info.maps_per_cycle=LSBFirstReadLong(image);
+        viff_info.color_space_model=LSBFirstReadLong(image);
       }
     else
       {
-        viff_header.rows=MSBFirstReadLong(image);
-        viff_header.columns=MSBFirstReadLong(image);
-        viff_header.subrows=MSBFirstReadLong(image);
-        viff_header.x_offset=MSBFirstReadLong(image);
-        viff_header.y_offset=MSBFirstReadLong(image);
-        viff_header.x_bits_per_pixel=(float) MSBFirstReadLong(image);
-        viff_header.y_bits_per_pixel=(float) MSBFirstReadLong(image);
-        viff_header.location_type=MSBFirstReadLong(image);
-        viff_header.location_dimension=MSBFirstReadLong(image);
-        viff_header.number_of_images=MSBFirstReadLong(image);
-        viff_header.number_data_bands=MSBFirstReadLong(image);
-        viff_header.data_storage_type=MSBFirstReadLong(image);
-        viff_header.data_encode_scheme=MSBFirstReadLong(image);
-        viff_header.map_scheme=MSBFirstReadLong(image);
-        viff_header.map_storage_type=MSBFirstReadLong(image);
-        viff_header.map_rows=MSBFirstReadLong(image);
-        viff_header.map_columns=MSBFirstReadLong(image);
-        viff_header.map_subrows=MSBFirstReadLong(image);
-        viff_header.map_enable=MSBFirstReadLong(image);
-        viff_header.maps_per_cycle=MSBFirstReadLong(image);
-        viff_header.color_space_model=MSBFirstReadLong(image);
+        viff_info.rows=MSBFirstReadLong(image);
+        viff_info.columns=MSBFirstReadLong(image);
+        viff_info.subrows=MSBFirstReadLong(image);
+        viff_info.x_offset=MSBFirstReadLong(image);
+        viff_info.y_offset=MSBFirstReadLong(image);
+        viff_info.x_bits_per_pixel=(float) MSBFirstReadLong(image);
+        viff_info.y_bits_per_pixel=(float) MSBFirstReadLong(image);
+        viff_info.location_type=MSBFirstReadLong(image);
+        viff_info.location_dimension=MSBFirstReadLong(image);
+        viff_info.number_of_images=MSBFirstReadLong(image);
+        viff_info.number_data_bands=MSBFirstReadLong(image);
+        viff_info.data_storage_type=MSBFirstReadLong(image);
+        viff_info.data_encode_scheme=MSBFirstReadLong(image);
+        viff_info.map_scheme=MSBFirstReadLong(image);
+        viff_info.map_storage_type=MSBFirstReadLong(image);
+        viff_info.map_rows=MSBFirstReadLong(image);
+        viff_info.map_columns=MSBFirstReadLong(image);
+        viff_info.map_subrows=MSBFirstReadLong(image);
+        viff_info.map_enable=MSBFirstReadLong(image);
+        viff_info.maps_per_cycle=MSBFirstReadLong(image);
+        viff_info.color_space_model=MSBFirstReadLong(image);
       }
     for (i=0; i < 420; i++)
       (void) ReadByte(image);
-    image->columns=(unsigned int) viff_header.rows;
-    image->rows=(unsigned int) viff_header.columns;
-    image->depth=viff_header.x_bits_per_pixel <= 8 ? 8 : QuantumDepth;
+    image->columns=(unsigned int) viff_info.rows;
+    image->rows=(unsigned int) viff_info.columns;
+    image->depth=viff_info.x_bits_per_pixel <= 8 ? 8 : QuantumDepth;
     /*
       Verify that we can read this VIFF image.
     */
-    if ((viff_header.columns*viff_header.rows) == 0)
+    if ((viff_info.columns*viff_info.rows) == 0)
       ThrowReaderException(CorruptImageWarning,
         "Image column or row size is not supported",image);
-    if ((viff_header.data_storage_type != VFF_TYP_BIT) &&
-        (viff_header.data_storage_type != VFF_TYP_1_BYTE) &&
-        (viff_header.data_storage_type != VFF_TYP_2_BYTE) &&
-        (viff_header.data_storage_type != VFF_TYP_4_BYTE) &&
-        (viff_header.data_storage_type != VFF_TYP_FLOAT) &&
-        (viff_header.data_storage_type != VFF_TYP_DOUBLE))
+    if ((viff_info.data_storage_type != VFF_TYP_BIT) &&
+        (viff_info.data_storage_type != VFF_TYP_1_BYTE) &&
+        (viff_info.data_storage_type != VFF_TYP_2_BYTE) &&
+        (viff_info.data_storage_type != VFF_TYP_4_BYTE) &&
+        (viff_info.data_storage_type != VFF_TYP_FLOAT) &&
+        (viff_info.data_storage_type != VFF_TYP_DOUBLE))
       ThrowReaderException(CorruptImageWarning,
         "Data storage type is not supported",image);
-    if (viff_header.data_encode_scheme != VFF_DES_RAW)
+    if (viff_info.data_encode_scheme != VFF_DES_RAW)
       ThrowReaderException(CorruptImageWarning,
         "Data encoding scheme is not supported",image);
-    if ((viff_header.map_storage_type != VFF_MAPTYP_NONE) &&
-        (viff_header.map_storage_type != VFF_MAPTYP_1_BYTE) &&
-        (viff_header.map_storage_type != VFF_MAPTYP_2_BYTE) &&
-        (viff_header.map_storage_type != VFF_MAPTYP_4_BYTE) &&
-        (viff_header.map_storage_type != VFF_MAPTYP_FLOAT) &&
-        (viff_header.map_storage_type != VFF_MAPTYP_DOUBLE))
+    if ((viff_info.map_storage_type != VFF_MAPTYP_NONE) &&
+        (viff_info.map_storage_type != VFF_MAPTYP_1_BYTE) &&
+        (viff_info.map_storage_type != VFF_MAPTYP_2_BYTE) &&
+        (viff_info.map_storage_type != VFF_MAPTYP_4_BYTE) &&
+        (viff_info.map_storage_type != VFF_MAPTYP_FLOAT) &&
+        (viff_info.map_storage_type != VFF_MAPTYP_DOUBLE))
       ThrowReaderException(CorruptImageWarning,
         "Map storage type is not supported",image);
-    if ((viff_header.color_space_model != VFF_CM_NONE) &&
-        (viff_header.color_space_model != VFF_CM_ntscRGB) &&
-        (viff_header.color_space_model != VFF_CM_genericRGB))
+    if ((viff_info.color_space_model != VFF_CM_NONE) &&
+        (viff_info.color_space_model != VFF_CM_ntscRGB) &&
+        (viff_info.color_space_model != VFF_CM_genericRGB))
       ThrowReaderException(CorruptImageWarning,
         "Colorspace model is not supported",image);
-    if (viff_header.location_type != VFF_LOC_IMPLICIT)
+    if (viff_info.location_type != VFF_LOC_IMPLICIT)
       ThrowReaderException(CorruptImageWarning,
         "Location type is not supported",image);
-    if (viff_header.number_of_images != 1)
+    if (viff_info.number_of_images != 1)
       ThrowReaderException(CorruptImageWarning,
         "Number of images is not supported",image);
-    if (viff_header.map_rows == 0)
-      viff_header.map_scheme=VFF_MS_NONE;
-    switch (viff_header.map_scheme)
+    if (viff_info.map_rows == 0)
+      viff_info.map_scheme=VFF_MS_NONE;
+    switch (viff_info.map_scheme)
     {
       case VFF_MS_NONE:
       {
-        if (viff_header.number_data_bands < 3)
+        if (viff_info.number_data_bands < 3)
           {
             /*
               Create linear color ramp.
             */
-            if (viff_header.data_storage_type == VFF_TYP_BIT)
+            if (viff_info.data_storage_type == VFF_TYP_BIT)
               image->colors=2;
             else
-              image->colors=1 << (viff_header.number_data_bands*QuantumDepth);
+              image->colors=1 << (viff_info.number_data_bands*QuantumDepth);
             if (!AllocateImageColormap(image,image->colors))
               ThrowReaderException(ResourceLimitWarning,
                 "Memory allocation failed",image);
@@ -392,7 +392,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
         /*
           Allocate VIFF colormap.
         */
-        switch (viff_header.map_storage_type)
+        switch (viff_info.map_storage_type)
         {
           case VFF_MAPTYP_1_BYTE: bytes_per_pixel=1; break;
           case VFF_MAPTYP_2_BYTE: bytes_per_pixel=2; break;
@@ -401,12 +401,12 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
           case VFF_MAPTYP_DOUBLE: bytes_per_pixel=8; break;
           default: bytes_per_pixel=1; break;
         }
-        image->colors=(unsigned int) viff_header.map_columns;
+        image->colors=(unsigned int) viff_info.map_columns;
         if (!AllocateImageColormap(image,image->colors))
           ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
             image);
         viff_colormap=(unsigned char *)
-          AllocateMemory(bytes_per_pixel*image->colors*viff_header.map_rows);
+          AllocateMemory(bytes_per_pixel*image->colors*viff_info.map_rows);
         if (viff_colormap == (unsigned char *) NULL)
           ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
             image);
@@ -414,31 +414,31 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
           Read VIFF raster colormap.
         */
         (void) ReadBlob(image,bytes_per_pixel*
-          image->colors*viff_header.map_rows,(char *) viff_colormap);
+          image->colors*viff_info.map_rows,(char *) viff_colormap);
         lsb_first=1;
         if (*(char *) &lsb_first &&
-            ((viff_header.machine_dependency != VFF_DEP_DECORDER) &&
-             (viff_header.machine_dependency != VFF_DEP_NSORDER)))
-          switch (viff_header.map_storage_type)
+            ((viff_info.machine_dependency != VFF_DEP_DECORDER) &&
+             (viff_info.machine_dependency != VFF_DEP_NSORDER)))
+          switch (viff_info.map_storage_type)
           {
             case VFF_MAPTYP_2_BYTE:
             {
               MSBFirstOrderShort((char *) viff_colormap,(unsigned int)
-                (bytes_per_pixel*image->colors*viff_header.map_rows));
+                (bytes_per_pixel*image->colors*viff_info.map_rows));
               break;
             }
             case VFF_MAPTYP_4_BYTE:
             case VFF_MAPTYP_FLOAT:
             {
               MSBFirstOrderLong((char *) viff_colormap,(unsigned int)
-                (bytes_per_pixel*image->colors*viff_header.map_rows));
+                (bytes_per_pixel*image->colors*viff_info.map_rows));
               break;
             }
             default: break;
           }
-        for (i=0; i < (int) (viff_header.map_rows*image->colors); i++)
+        for (i=0; i < (int) (viff_info.map_rows*image->colors); i++)
         {
-          switch (viff_header.map_storage_type)
+          switch (viff_info.map_storage_type)
           {
             case VFF_MAPTYP_2_BYTE: value=((short *) viff_colormap)[i]; break;
             case VFF_MAPTYP_4_BYTE: value=((int *) viff_colormap)[i]; break;
@@ -471,7 +471,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
     /*
       Allocate VIFF pixels.
     */
-    switch (viff_header.data_storage_type)
+    switch (viff_info.data_storage_type)
     {
       case VFF_TYP_2_BYTE: bytes_per_pixel=2; break;
       case VFF_TYP_4_BYTE: bytes_per_pixel=4; break;
@@ -479,11 +479,11 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
       case VFF_TYP_DOUBLE: bytes_per_pixel=8; break;
       default: bytes_per_pixel=1; break;
     }
-    if (viff_header.data_storage_type == VFF_TYP_BIT)
-      max_packets=((viff_header.columns+7) >> 3)*viff_header.rows;
+    if (viff_info.data_storage_type == VFF_TYP_BIT)
+      max_packets=((viff_info.columns+7) >> 3)*viff_info.rows;
     else
       max_packets=
-        viff_header.columns*viff_header.rows*viff_header.number_data_bands;
+        viff_info.columns*viff_info.rows*viff_info.number_data_bands;
     viff_pixels=(unsigned char *)
       AllocateMemory(bytes_per_pixel*max_packets*sizeof(Quantum));
     if (viff_pixels == (unsigned char *) NULL)
@@ -492,9 +492,9 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
     (void) ReadBlob(image,bytes_per_pixel*max_packets,(char *) viff_pixels);
     lsb_first=1;
     if (*(char *) &lsb_first &&
-        ((viff_header.machine_dependency != VFF_DEP_DECORDER) &&
-         (viff_header.machine_dependency != VFF_DEP_NSORDER)))
-      switch (viff_header.data_storage_type)
+        ((viff_info.machine_dependency != VFF_DEP_DECORDER) &&
+         (viff_info.machine_dependency != VFF_DEP_NSORDER)))
+      switch (viff_info.data_storage_type)
       {
         case VFF_TYP_2_BYTE:
         {
@@ -513,7 +513,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
       }
     min_value=0.0;
     scale_factor=1.0;
-    if (viff_header.map_scheme == VFF_MS_NONE)
+    if (viff_info.map_scheme == VFF_MS_NONE)
       {
         double
           max_value;
@@ -521,7 +521,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
         /*
           Determine scale factor.
         */
-        switch (viff_header.data_storage_type)
+        switch (viff_info.data_storage_type)
         {
           case VFF_TYP_2_BYTE: value=((short *) viff_pixels)[0]; break;
           case VFF_TYP_4_BYTE: value=((int *) viff_pixels)[0]; break;
@@ -533,7 +533,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
         min_value=value;
         for (i=0; i < (int) max_packets; i++)
         {
-          switch (viff_header.data_storage_type)
+          switch (viff_info.data_storage_type)
           {
             case VFF_TYP_2_BYTE: value=((short *) viff_pixels)[i]; break;
             case VFF_TYP_4_BYTE: value=((int *) viff_pixels)[i]; break;
@@ -564,7 +564,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
     p=(unsigned char *) viff_pixels;
     for (i=0; i < (int) max_packets; i++)
     {
-      switch (viff_header.data_storage_type)
+      switch (viff_info.data_storage_type)
       {
         case VFF_TYP_2_BYTE: value=((short *) viff_pixels)[i]; break;
         case VFF_TYP_4_BYTE: value=((int *) viff_pixels)[i]; break;
@@ -572,7 +572,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
         case VFF_TYP_DOUBLE: value=((double *) viff_pixels)[i]; break;
         default: value=viff_pixels[i]; break;
       }
-      if (viff_header.map_scheme == VFF_MS_NONE)
+      if (viff_info.map_scheme == VFF_MS_NONE)
         {
           value=(value-min_value)*scale_factor;
           if (value > MaxRGB)
@@ -587,11 +587,11 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
     /*
       Initialize image structure.
     */
-    image->matte=(viff_header.number_data_bands == 4);
+    image->matte=(viff_info.number_data_bands == 4);
     image->storage_class=
-      (viff_header.number_data_bands < 3 ? PseudoClass : DirectClass);
-    image->columns=(unsigned int) viff_header.rows;
-    image->rows=(unsigned int) viff_header.columns;
+      (viff_info.number_data_bands < 3 ? PseudoClass : DirectClass);
+    image->columns=(unsigned int) viff_info.rows;
+    image->rows=(unsigned int) viff_info.columns;
     if (image_info->ping)
       {
         CloseBlob(image);
@@ -601,7 +601,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
       Convert VIFF raster image to pixel packets.
     */
     p=(unsigned char *) viff_pixels;
-    if (viff_header.data_storage_type == VFF_TYP_BIT)
+    if (viff_info.data_storage_type == VFF_TYP_BIT)
       {
         unsigned int
           polarity;
@@ -701,8 +701,8 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
     if (image_info->subrange != 0)
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
         break;
-    status=ReadBlob(image,1,(char *) &viff_header.identifier);
-    if ((status == True) && (viff_header.identifier == 0xab))
+    status=ReadBlob(image,1,(char *) &viff_info.identifier);
+    if ((status == True) && (viff_info.identifier == 0xab))
       {
         /*
           Allocate next image structure.
@@ -716,7 +716,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
         image=image->next;
         ProgressMonitor(LoadImagesText,TellBlob(image),image->filesize);
       }
-  } while ((status == True) && (viff_header.identifier == 0xab));
+  } while ((status == True) && (viff_info.identifier == 0xab));
   while (image->previous != (Image *) NULL)
     image=image->previous;
   CloseBlob(image);
@@ -833,7 +833,7 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
 #define VFF_TYP_BIT  0
 #define VFF_TYP_1_BYTE  1
 
-  typedef struct _ViffHeader
+  typedef struct _ViffInfo
   {
     char
       identifier,
@@ -872,7 +872,7 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
       map_enable,
       maps_per_cycle,
       color_space_model;
-  } ViffHeader;
+  } ViffInfo;
 
   ImageAttribute
     *attribute;
@@ -904,8 +904,8 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
   unsigned long
     packets;
 
-  ViffHeader
-    viff_header;
+  ViffInfo
+    viff_info;
 
   /*
     Open output image file.
@@ -920,62 +920,62 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
       Initialize VIFF image structure.
     */
     TransformRGBImage(image,RGBColorspace);
-    viff_header.identifier=(char) 0xab;
-    viff_header.file_type=1;
-    viff_header.release=1;
-    viff_header.version=3;
-    viff_header.machine_dependency=VFF_DEP_IEEEORDER;  /* IEEE byte ordering */
-    *viff_header.comment='\0';
+    viff_info.identifier=(char) 0xab;
+    viff_info.file_type=1;
+    viff_info.release=1;
+    viff_info.version=3;
+    viff_info.machine_dependency=VFF_DEP_IEEEORDER;  /* IEEE byte ordering */
+    *viff_info.comment='\0';
     attribute=GetImageAttribute(image,"Comment");
     if (attribute != (ImageAttribute *) NULL)
       {
-        (void) strncpy(viff_header.comment,attribute->value,
+        (void) strncpy(viff_info.comment,attribute->value,
           Min(Extent(attribute->value),511));
-        viff_header.comment[Min(Extent(attribute->value),511)]='\0';
+        viff_info.comment[Min(Extent(attribute->value),511)]='\0';
       }
-    viff_header.rows=image->columns;
-    viff_header.columns=image->rows;
-    viff_header.subrows=0;
-    viff_header.x_offset=(~0);
-    viff_header.y_offset=(~0);
-    viff_header.x_bits_per_pixel=0;
-    viff_header.y_bits_per_pixel=0;
-    viff_header.location_type=VFF_LOC_IMPLICIT;
-    viff_header.location_dimension=0;
-    viff_header.number_of_images=1;
-    viff_header.data_encode_scheme=VFF_DES_RAW;
-    viff_header.map_scheme=VFF_MS_NONE;
-    viff_header.map_storage_type=VFF_MAPTYP_NONE;
-    viff_header.map_rows=0;
-    viff_header.map_columns=0;
-    viff_header.map_subrows=0;
-    viff_header.map_enable=1;  /* no colormap */
-    viff_header.maps_per_cycle=0;
+    viff_info.rows=image->columns;
+    viff_info.columns=image->rows;
+    viff_info.subrows=0;
+    viff_info.x_offset=(~0);
+    viff_info.y_offset=(~0);
+    viff_info.x_bits_per_pixel=0;
+    viff_info.y_bits_per_pixel=0;
+    viff_info.location_type=VFF_LOC_IMPLICIT;
+    viff_info.location_dimension=0;
+    viff_info.number_of_images=1;
+    viff_info.data_encode_scheme=VFF_DES_RAW;
+    viff_info.map_scheme=VFF_MS_NONE;
+    viff_info.map_storage_type=VFF_MAPTYP_NONE;
+    viff_info.map_rows=0;
+    viff_info.map_columns=0;
+    viff_info.map_subrows=0;
+    viff_info.map_enable=1;  /* no colormap */
+    viff_info.maps_per_cycle=0;
     if (!IsPseudoClass(image) && !IsGrayImage(image))
       {
         /*
           Full color VIFF raster.
         */
-        viff_header.number_data_bands=image->matte ? 4 : 3;
-        viff_header.color_space_model=VFF_CM_genericRGB;
-        viff_header.data_storage_type=VFF_TYP_1_BYTE;
-        packets=image->columns*image->rows*viff_header.number_data_bands;
+        viff_info.number_data_bands=image->matte ? 4 : 3;
+        viff_info.color_space_model=VFF_CM_genericRGB;
+        viff_info.data_storage_type=VFF_TYP_1_BYTE;
+        packets=image->columns*image->rows*viff_info.number_data_bands;
       }
     else
       {
-        viff_header.number_data_bands=1;
-        viff_header.color_space_model=VFF_CM_NONE;
-        viff_header.data_storage_type=VFF_TYP_1_BYTE;
+        viff_info.number_data_bands=1;
+        viff_info.color_space_model=VFF_CM_NONE;
+        viff_info.data_storage_type=VFF_TYP_1_BYTE;
         packets=image->columns*image->rows;
         if (!IsGrayImage(image))
           {
             /*
               Colormapped VIFF raster.
             */
-            viff_header.map_scheme=VFF_MS_ONEPERBAND;
-            viff_header.map_storage_type=VFF_MAPTYP_1_BYTE;
-            viff_header.map_rows=3;
-            viff_header.map_columns=image->colors;
+            viff_info.map_scheme=VFF_MS_ONEPERBAND;
+            viff_info.map_storage_type=VFF_MAPTYP_1_BYTE;
+            viff_info.map_rows=3;
+            viff_info.map_columns=image->colors;
           }
         else
           if (image->colors == 2)
@@ -983,46 +983,46 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
               /*
                 Monochrome VIFF raster.
               */
-              viff_header.data_storage_type=VFF_TYP_BIT;
+              viff_info.data_storage_type=VFF_TYP_BIT;
               packets=((image->columns+7) >> 3)*image->rows;
             }
       }
     /*
       Write VIFF image header (pad to 1024 bytes).
     */
-    buffer[0]=viff_header.identifier;
-    buffer[1]=viff_header.file_type;
-    buffer[2]=viff_header.release;
-    buffer[3]=viff_header.version;
-    buffer[4]=viff_header.machine_dependency;
-    buffer[5]=viff_header.reserve[0];
-    buffer[6]=viff_header.reserve[1];
-    buffer[7]=viff_header.reserve[2];
+    buffer[0]=viff_info.identifier;
+    buffer[1]=viff_info.file_type;
+    buffer[2]=viff_info.release;
+    buffer[3]=viff_info.version;
+    buffer[4]=viff_info.machine_dependency;
+    buffer[5]=viff_info.reserve[0];
+    buffer[6]=viff_info.reserve[1];
+    buffer[7]=viff_info.reserve[2];
     (void) WriteBlob(image,8,(char *) buffer);
-    (void) WriteBlob(image,512,(char *) viff_header.comment);
-    MSBFirstWriteLong(image,viff_header.rows);
-    MSBFirstWriteLong(image,viff_header.columns);
-    MSBFirstWriteLong(image,viff_header.subrows);
-    MSBFirstWriteLong(image,(unsigned long) viff_header.x_offset);
-    MSBFirstWriteLong(image,(unsigned long) viff_header.y_offset);
-    viff_header.x_bits_per_pixel=(63 << 24) | (128 << 16);
-    MSBFirstWriteLong(image,(unsigned long) viff_header.x_bits_per_pixel);
-    viff_header.y_bits_per_pixel=(63 << 24) | (128 << 16);
-    MSBFirstWriteLong(image,(unsigned long) viff_header.y_bits_per_pixel);
-    MSBFirstWriteLong(image,viff_header.location_type);
-    MSBFirstWriteLong(image,viff_header.location_dimension);
-    MSBFirstWriteLong(image,viff_header.number_of_images);
-    MSBFirstWriteLong(image,viff_header.number_data_bands);
-    MSBFirstWriteLong(image,viff_header.data_storage_type);
-    MSBFirstWriteLong(image,viff_header.data_encode_scheme);
-    MSBFirstWriteLong(image,viff_header.map_scheme);
-    MSBFirstWriteLong(image,viff_header.map_storage_type);
-    MSBFirstWriteLong(image,viff_header.map_rows);
-    MSBFirstWriteLong(image,viff_header.map_columns);
-    MSBFirstWriteLong(image,viff_header.map_subrows);
-    MSBFirstWriteLong(image,viff_header.map_enable);
-    MSBFirstWriteLong(image,viff_header.maps_per_cycle);
-    MSBFirstWriteLong(image,viff_header.color_space_model);
+    (void) WriteBlob(image,512,(char *) viff_info.comment);
+    MSBFirstWriteLong(image,viff_info.rows);
+    MSBFirstWriteLong(image,viff_info.columns);
+    MSBFirstWriteLong(image,viff_info.subrows);
+    MSBFirstWriteLong(image,(unsigned long) viff_info.x_offset);
+    MSBFirstWriteLong(image,(unsigned long) viff_info.y_offset);
+    viff_info.x_bits_per_pixel=(63 << 24) | (128 << 16);
+    MSBFirstWriteLong(image,(unsigned long) viff_info.x_bits_per_pixel);
+    viff_info.y_bits_per_pixel=(63 << 24) | (128 << 16);
+    MSBFirstWriteLong(image,(unsigned long) viff_info.y_bits_per_pixel);
+    MSBFirstWriteLong(image,viff_info.location_type);
+    MSBFirstWriteLong(image,viff_info.location_dimension);
+    MSBFirstWriteLong(image,viff_info.number_of_images);
+    MSBFirstWriteLong(image,viff_info.number_data_bands);
+    MSBFirstWriteLong(image,viff_info.data_storage_type);
+    MSBFirstWriteLong(image,viff_info.data_encode_scheme);
+    MSBFirstWriteLong(image,viff_info.map_scheme);
+    MSBFirstWriteLong(image,viff_info.map_storage_type);
+    MSBFirstWriteLong(image,viff_info.map_rows);
+    MSBFirstWriteLong(image,viff_info.map_columns);
+    MSBFirstWriteLong(image,viff_info.map_subrows);
+    MSBFirstWriteLong(image,viff_info.map_enable);
+    MSBFirstWriteLong(image,viff_info.maps_per_cycle);
+    MSBFirstWriteLong(image,viff_info.color_space_model);
     for (i=0; i < 420; i++)
       (void) WriteByte(image,'\0');
     /*

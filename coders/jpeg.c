@@ -550,7 +550,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   jpeg_set_marker_processor(&jpeg_info,JPEG_COM,ReadComment);
   jpeg_set_marker_processor(&jpeg_info,ICC_MARKER,ReadColorProfile);
   jpeg_set_marker_processor(&jpeg_info,IPTC_MARKER,ReadNewsProfile);
-  i=jpeg_read_header(&jpeg_info,True);
+  i=jpeg_read_info(&jpeg_info,True);
   if (jpeg_info.out_color_space == JCS_CMYK)
     image->colorspace=CMYKColorspace;
   if (jpeg_info.saw_JFIF_marker)
@@ -1039,12 +1039,6 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
   jpeg_info.input_components=3;
   jpeg_info.data_precision=image->depth <= 8 ? 8 : 12;
   jpeg_info.in_color_space=JCS_RGB;
-  if (LocaleCompare(image_info->magick,"JPEG24") != 0)
-    if (IsGrayImage(image))
-      {
-        jpeg_info.input_components=1;
-        jpeg_info.in_color_space=JCS_GRAYSCALE;
-      }
   if (((image_info->colorspace != UndefinedColorspace) ||
        (image->colorspace != CMYKColorspace)) &&
        (image_info->colorspace != CMYKColorspace))
@@ -1056,6 +1050,12 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
       if (image->colorspace != CMYKColorspace)
         RGBTransformImage(image,CMYKColorspace);
     }
+  if (LocaleCompare(image_info->magick,"JPEG24") != 0)
+    if (IsGrayImage(image))
+      {
+        jpeg_info.input_components=1;
+        jpeg_info.in_color_space=JCS_GRAYSCALE;
+      }
   jpeg_set_defaults(&jpeg_info);
   flags=NoValue;
   x_resolution=72;

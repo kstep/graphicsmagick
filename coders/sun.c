@@ -224,7 +224,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #define RT_ENCODED  2
 #define RT_FORMAT_RGB  3
 
-  typedef struct _SUNHeader
+  typedef struct _SUNInfo
   {
     unsigned long
       magic,
@@ -235,7 +235,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
       type,
       maptype,
       maplength;
-  } SUNHeader;
+  } SUNInfo;
 
   Image
     *image;
@@ -257,8 +257,8 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
   register unsigned char
     *p;
 
-  SUNHeader
-    sun_header;
+  SUNInfo
+    sun_info;
 
   unsigned char
     *sun_data,
@@ -278,43 +278,43 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Read SUN raster header.
   */
-  sun_header.magic=MSBFirstReadLong(image);
+  sun_info.magic=MSBFirstReadLong(image);
   do
   {
     /*
       Verify SUN identifier.
     */
-    if (sun_header.magic != 0x59a66a95)
+    if (sun_info.magic != 0x59a66a95)
       ThrowReaderException(CorruptImageWarning,"Not a SUN raster image",image);
-    sun_header.width=MSBFirstReadLong(image);
-    sun_header.height=MSBFirstReadLong(image);
-    sun_header.depth=MSBFirstReadLong(image);
-    sun_header.length=MSBFirstReadLong(image);
-    sun_header.type=MSBFirstReadLong(image);
-    sun_header.maptype=MSBFirstReadLong(image);
-    sun_header.maplength=MSBFirstReadLong(image);
-    image->columns=(unsigned int) sun_header.width;
-    image->rows=(unsigned int) sun_header.height;
-    image->depth=sun_header.depth <= 8 ? 8 : QuantumDepth;
-    if (sun_header.depth < 24)
+    sun_info.width=MSBFirstReadLong(image);
+    sun_info.height=MSBFirstReadLong(image);
+    sun_info.depth=MSBFirstReadLong(image);
+    sun_info.length=MSBFirstReadLong(image);
+    sun_info.type=MSBFirstReadLong(image);
+    sun_info.maptype=MSBFirstReadLong(image);
+    sun_info.maplength=MSBFirstReadLong(image);
+    image->columns=(unsigned int) sun_info.width;
+    image->rows=(unsigned int) sun_info.height;
+    image->depth=sun_info.depth <= 8 ? 8 : QuantumDepth;
+    if (sun_info.depth < 24)
       {
         image->storage_class=PseudoClass;
-        image->colors=sun_header.maplength;
-        if (sun_header.maptype == RMT_NONE)
-          image->colors=1 << sun_header.depth;
-        if (sun_header.maptype == RMT_EQUAL_RGB)
-          image->colors=(unsigned int) sun_header.maplength/3;
+        image->colors=sun_info.maplength;
+        if (sun_info.maptype == RMT_NONE)
+          image->colors=1 << sun_info.depth;
+        if (sun_info.maptype == RMT_EQUAL_RGB)
+          image->colors=(unsigned int) sun_info.maplength/3;
       }
     if (image_info->ping)
       {
         CloseBlob(image);
         return(image);
       }
-    switch (sun_header.maptype)
+    switch (sun_info.maptype)
     {
       case RMT_NONE:
       {
-        if (sun_header.depth < 24)
+        if (sun_info.depth < 24)
           {
             /*
               Create linear color ramp.
@@ -360,11 +360,11 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Read SUN raster colormap.
         */
-        sun_colormap=(unsigned char *) AllocateMemory(sun_header.maplength);
+        sun_colormap=(unsigned char *) AllocateMemory(sun_info.maplength);
         if (sun_colormap == (unsigned char *) NULL)
           ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
             image);
-        (void) ReadBlob(image,(unsigned int) sun_header.maplength,
+        (void) ReadBlob(image,(unsigned int) sun_info.maplength,
           (char *) sun_colormap);
         FreeMemory((void **) &sun_colormap);
         break;
@@ -373,16 +373,16 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
         ThrowReaderException(CorruptImageWarning,
           "Colormap type is not supported",image);
     }
-    sun_data=(unsigned char *) AllocateMemory(sun_header.length);
+    sun_data=(unsigned char *) AllocateMemory(sun_info.length);
     if (sun_data == (unsigned char *) NULL)
       ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
         image);
-    status=ReadBlob(image,(unsigned int) sun_header.length,(char *) sun_data);
-    if ((status == False) && (sun_header.type != RT_ENCODED))
+    status=ReadBlob(image,(unsigned int) sun_info.length,(char *) sun_data);
+    if ((status == False) && (sun_info.type != RT_ENCODED))
       ThrowReaderException(CorruptImageWarning,"Unable to read image data",
         image);
     sun_pixels=sun_data;
-    if (sun_header.type == RT_ENCODED)
+    if (sun_info.type == RT_ENCODED)
       {
         unsigned int
           height;
@@ -390,8 +390,8 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Read run-length encoded raster pixels.
         */
-        height=(unsigned int) sun_header.height;
-        bytes_per_line=(2*sun_header.width*sun_header.depth+15)/16;
+        height=(unsigned int) sun_info.height;
+        bytes_per_line=(2*sun_info.width*sun_info.depth+15)/16;
         sun_pixels=(unsigned char *) AllocateMemory(bytes_per_line*height);
         if (sun_pixels == (unsigned char *) NULL)
           ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
@@ -402,14 +402,14 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /*
       Initialize image structure.
     */
-    image->matte=(sun_header.depth == 32);
-    image->columns=(unsigned int) sun_header.width;
-    image->rows=(unsigned int) sun_header.height;
+    image->matte=(sun_info.depth == 32);
+    image->columns=(unsigned int) sun_info.width;
+    image->rows=(unsigned int) sun_info.height;
     /*
       Convert SUN raster image to pixel packets.
     */
     p=sun_pixels;
-    if (sun_header.depth == 1)
+    if (sun_info.depth == 1)
       for (y=0; y < (int) image->rows; y++)
       {
         q=SetImagePixels(image,0,y,image->columns,1);
@@ -464,7 +464,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
           {
             if (image->matte)
               q->opacity=MaxRGB-UpScale(*p++);
-            if (sun_header.type == RT_STANDARD)
+            if (sun_info.type == RT_STANDARD)
               {
                 q->blue=UpScale(*p++);
                 q->green=UpScale(*p++);
@@ -501,8 +501,8 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (image_info->subrange != 0)
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
         break;
-    sun_header.magic=MSBFirstReadLong(image);
-    if (sun_header.magic == 0x59a66a95)
+    sun_info.magic=MSBFirstReadLong(image);
+    if (sun_info.magic == 0x59a66a95)
       {
         /*
           Allocate next image structure.
@@ -516,7 +516,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
         image=image->next;
         ProgressMonitor(LoadImagesText,TellBlob(image),image->filesize);
       }
-  } while (sun_header.magic == 0x59a66a95);
+  } while (sun_info.magic == 0x59a66a95);
   while (image->previous != (Image *) NULL)
     image=image->previous;
   CloseBlob(image);
@@ -628,7 +628,7 @@ static unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
 #define RT_STANDARD  1
 #define RT_FORMAT_RGB  3
 
-  typedef struct _SUNHeader
+  typedef struct _SUNInfo
   {
     unsigned long
       magic,
@@ -639,7 +639,7 @@ static unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
       type,
       maptype,
       maplength;
-  } SUNHeader;
+  } SUNInfo;
 
   int
     y;
@@ -654,8 +654,8 @@ static unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
   register PixelPacket
     *p;
 
-  SUNHeader
-    sun_header;
+  SUNInfo
+    sun_info;
 
   unsigned int
     scene,
@@ -674,20 +674,20 @@ static unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
       Initialize SUN raster file header.
     */
     TransformRGBImage(image,RGBColorspace);
-    sun_header.magic=0x59a66a95;
-    sun_header.width=image->columns;
-    sun_header.height=image->rows;
-    sun_header.type=(image->storage_class == DirectClass ? RT_FORMAT_RGB : RT_STANDARD);
-    sun_header.maptype=RMT_NONE;
-    sun_header.maplength=0;
+    sun_info.magic=0x59a66a95;
+    sun_info.width=image->columns;
+    sun_info.height=image->rows;
+    sun_info.type=(image->storage_class == DirectClass ? RT_FORMAT_RGB : RT_STANDARD);
+    sun_info.maptype=RMT_NONE;
+    sun_info.maplength=0;
     if (!IsPseudoClass(image) && !IsGrayImage(image))
       {
         /*
           Full color SUN raster.
         */
-        sun_header.depth=(image->matte ? 32 : 24);
-        sun_header.length=image->columns*image->rows*(image->matte ? 4 : 3);
-        sun_header.length+=image->columns & 0x01 ? image->rows : 0;
+        sun_info.depth=(image->matte ? 32 : 24);
+        sun_info.length=image->columns*image->rows*(image->matte ? 4 : 3);
+        sun_info.length+=image->columns & 0x01 ? image->rows : 0;
       }
     else
       if (IsMonochromeImage(image))
@@ -695,9 +695,9 @@ static unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
           /*
             Monochrome SUN raster.
           */
-          sun_header.depth=1;
-          sun_header.length=((image->columns+7) >> 3)*image->rows;
-          sun_header.length+=((image->columns/8)+(image->columns % 8 ? 1 : 0)) %
+          sun_info.depth=1;
+          sun_info.length=((image->columns+7) >> 3)*image->rows;
+          sun_info.length+=((image->columns/8)+(image->columns % 8 ? 1 : 0)) %
             2 ? image->rows : 0;
         }
       else
@@ -705,23 +705,23 @@ static unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
           /*
             Colormapped SUN raster.
           */
-          sun_header.depth=8;
-          sun_header.length=image->columns*image->rows;
-          sun_header.length+=image->columns & 0x01 ? image->rows : 0;
-          sun_header.maptype=RMT_EQUAL_RGB;
-          sun_header.maplength=image->colors*3;
+          sun_info.depth=8;
+          sun_info.length=image->columns*image->rows;
+          sun_info.length+=image->columns & 0x01 ? image->rows : 0;
+          sun_info.maptype=RMT_EQUAL_RGB;
+          sun_info.maplength=image->colors*3;
         }
     /*
       Write SUN header.
     */
-    MSBFirstWriteLong(image,sun_header.magic);
-    MSBFirstWriteLong(image,sun_header.width);
-    MSBFirstWriteLong(image,sun_header.height);
-    MSBFirstWriteLong(image,sun_header.depth);
-    MSBFirstWriteLong(image,sun_header.length);
-    MSBFirstWriteLong(image,sun_header.type);
-    MSBFirstWriteLong(image,sun_header.maptype);
-    MSBFirstWriteLong(image,sun_header.maplength);
+    MSBFirstWriteLong(image,sun_info.magic);
+    MSBFirstWriteLong(image,sun_info.width);
+    MSBFirstWriteLong(image,sun_info.height);
+    MSBFirstWriteLong(image,sun_info.depth);
+    MSBFirstWriteLong(image,sun_info.length);
+    MSBFirstWriteLong(image,sun_info.type);
+    MSBFirstWriteLong(image,sun_info.maptype);
+    MSBFirstWriteLong(image,sun_info.maplength);
     /*
       Convert MIFF to SUN raster pixels.
     */

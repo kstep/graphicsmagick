@@ -118,7 +118,7 @@ static Image *ReadIconImage(const ImageInfo *image_info,ExceptionInfo *exception
       directory[MaxIcons];
   } IconFile;
 
-  typedef struct _IconHeader
+  typedef struct _IconInfo
   {
     unsigned long
       size,
@@ -136,13 +136,13 @@ static Image *ReadIconImage(const ImageInfo *image_info,ExceptionInfo *exception
       y_pixels,
       number_colors,
       colors_important;
-  } IconHeader;
+  } IconInfo;
 
   IconFile
     icon_file;
 
-  IconHeader
-    icon_header;
+  IconInfo
+    icon_info;
 
   Image
     *image;
@@ -201,20 +201,20 @@ static Image *ReadIconImage(const ImageInfo *image_info,ExceptionInfo *exception
       Verify Icon identifier.
     */
     (void) SeekBlob(image,icon_file.directory[i].offset,SEEK_SET);
-    icon_header.size=LSBFirstReadLong(image);
-    icon_header.width=LSBFirstReadLong(image);
-    icon_header.height=LSBFirstReadLong(image);
-    icon_header.planes=LSBFirstReadShort(image);
-    icon_header.bits_per_pixel=LSBFirstReadShort(image);
-    icon_header.compression=LSBFirstReadLong(image);
-    icon_header.image_size=LSBFirstReadLong(image);
-    icon_header.x_pixels=LSBFirstReadLong(image);
-    icon_header.y_pixels=LSBFirstReadLong(image);
-    icon_header.number_colors=LSBFirstReadLong(image);
-    icon_header.colors_important=LSBFirstReadLong(image);
-    image->columns=(unsigned int) icon_header.width;
-    image->rows=(unsigned int) icon_header.height;
-    if (!AllocateImageColormap(image,1 << icon_header.bits_per_pixel))
+    icon_info.size=LSBFirstReadLong(image);
+    icon_info.width=LSBFirstReadLong(image);
+    icon_info.height=LSBFirstReadLong(image);
+    icon_info.planes=LSBFirstReadShort(image);
+    icon_info.bits_per_pixel=LSBFirstReadShort(image);
+    icon_info.compression=LSBFirstReadLong(image);
+    icon_info.image_size=LSBFirstReadLong(image);
+    icon_info.x_pixels=LSBFirstReadLong(image);
+    icon_info.y_pixels=LSBFirstReadLong(image);
+    icon_info.number_colors=LSBFirstReadLong(image);
+    icon_info.colors_important=LSBFirstReadLong(image);
+    image->columns=(unsigned int) icon_info.width;
+    image->rows=(unsigned int) icon_info.height;
+    if (!AllocateImageColormap(image,1 << icon_info.bits_per_pixel))
       ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
         image);
     if (image_info->ping)
@@ -244,7 +244,7 @@ static Image *ReadIconImage(const ImageInfo *image_info,ExceptionInfo *exception
     */
     image->columns=icon_file.directory[i].width;
     image->rows=icon_file.directory[i].height;
-    switch (icon_header.bits_per_pixel)
+    switch (icon_info.bits_per_pixel)
     {
       case 1:
       {

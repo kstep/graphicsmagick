@@ -58,7 +58,7 @@
 /*
   Typedef declarations.
 */
-typedef struct _PCXHeader
+typedef struct _PCXInfo
 {
   unsigned char
     identifier,
@@ -84,7 +84,7 @@ typedef struct _PCXHeader
 
   unsigned char
     colormap_signature;
-} PCXHeader;
+} PCXInfo;
 
 /*
   Forward declarations.
@@ -216,8 +216,8 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     pcx_packets,
     y;
 
-  PCXHeader
-    pcx_header;
+  PCXInfo
+    pcx_info;
 
   register IndexPacket
     *indexes;
@@ -280,50 +280,50 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
   if (page_table != (unsigned long *) NULL)
     (void) SeekBlob(image,page_table[0],SEEK_SET);
-  status=ReadBlob(image,1,(char *) &pcx_header.identifier);
+  status=ReadBlob(image,1,(char *) &pcx_info.identifier);
   for (id=1; id < 1024; id++)
   {
     /*
       Verify PCX identifier.
     */
-    pcx_header.version=ReadByte(image);
-    if ((status == False) || (pcx_header.identifier != 0x0a) ||
-        ((pcx_header.version != 2) && (pcx_header.version != 3) &&
-         (pcx_header.version != 5)))
+    pcx_info.version=ReadByte(image);
+    if ((status == False) || (pcx_info.identifier != 0x0a) ||
+        ((pcx_info.version != 2) && (pcx_info.version != 3) &&
+         (pcx_info.version != 5)))
       ThrowReaderException(CorruptImageWarning,"Not a PCX image file",image);
-    pcx_header.encoding=ReadByte(image);
-    pcx_header.bits_per_pixel=ReadByte(image);
-    pcx_header.left=LSBFirstReadShort(image);
-    pcx_header.top=LSBFirstReadShort(image);
-    pcx_header.right=LSBFirstReadShort(image);
-    pcx_header.bottom=LSBFirstReadShort(image);
-    pcx_header.horizontal_resolution=LSBFirstReadShort(image);
-    pcx_header.vertical_resolution=LSBFirstReadShort(image);
+    pcx_info.encoding=ReadByte(image);
+    pcx_info.bits_per_pixel=ReadByte(image);
+    pcx_info.left=LSBFirstReadShort(image);
+    pcx_info.top=LSBFirstReadShort(image);
+    pcx_info.right=LSBFirstReadShort(image);
+    pcx_info.bottom=LSBFirstReadShort(image);
+    pcx_info.horizontal_resolution=LSBFirstReadShort(image);
+    pcx_info.vertical_resolution=LSBFirstReadShort(image);
     /*
       Read PCX raster colormap.
     */
-    image->columns=(pcx_header.right-pcx_header.left)+1;
-    image->rows=(pcx_header.bottom-pcx_header.top)+1;
-    image->depth=pcx_header.bits_per_pixel <= 8 ? 8 : QuantumDepth;
+    image->columns=(pcx_info.right-pcx_info.left)+1;
+    image->rows=(pcx_info.bottom-pcx_info.top)+1;
+    image->depth=pcx_info.bits_per_pixel <= 8 ? 8 : QuantumDepth;
     image->units=PixelsPerInchResolution;
-    image->x_resolution=pcx_header.horizontal_resolution;
-    image->y_resolution=pcx_header.vertical_resolution;
+    image->x_resolution=pcx_info.horizontal_resolution;
+    image->y_resolution=pcx_info.vertical_resolution;
     image->colors=16;
     pcx_colormap=(unsigned char *) AllocateMemory(3*256);
     if (pcx_colormap == (unsigned char *) NULL)
       ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
         image);
     (void) ReadBlob(image,3*image->colors,(char *) pcx_colormap);
-    pcx_header.reserved=ReadByte(image);
-    pcx_header.planes=ReadByte(image);
-    if ((pcx_header.bits_per_pixel != 8) || (pcx_header.planes == 1))
-      if ((pcx_header.version == 3) || (pcx_header.version == 5) ||
-	  ((pcx_header.bits_per_pixel*pcx_header.planes) == 1))
-        image->colors=1 << (pcx_header.bits_per_pixel*pcx_header.planes);
+    pcx_info.reserved=ReadByte(image);
+    pcx_info.planes=ReadByte(image);
+    if ((pcx_info.bits_per_pixel != 8) || (pcx_info.planes == 1))
+      if ((pcx_info.version == 3) || (pcx_info.version == 5) ||
+	  ((pcx_info.bits_per_pixel*pcx_info.planes) == 1))
+        image->colors=1 << (pcx_info.bits_per_pixel*pcx_info.planes);
     if (!AllocateImageColormap(image,image->colors))
       ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
         image);
-    if (pcx_header.planes != 1)
+    if (pcx_info.planes != 1)
       image->storage_class=DirectClass;
     if (image_info->ping)
       {
@@ -340,16 +340,16 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       image->colormap[i].green=UpScale(*p++);
       image->colormap[i].blue=UpScale(*p++);
     }
-    pcx_header.bytes_per_line=LSBFirstReadShort(image);
-    pcx_header.palette_info=LSBFirstReadShort(image);
+    pcx_info.bytes_per_line=LSBFirstReadShort(image);
+    pcx_info.palette_info=LSBFirstReadShort(image);
     for (i=0; i < 58; i++)
       (void) ReadByte(image);
     /*
       Read image data.
     */
-    pcx_packets=image->rows*pcx_header.bytes_per_line*pcx_header.planes;
+    pcx_packets=image->rows*pcx_info.bytes_per_line*pcx_info.planes;
     pcx_pixels=(unsigned char *) AllocateMemory(pcx_packets);
-    scanline=(unsigned char *) AllocateMemory(image->columns*pcx_header.planes);
+    scanline=(unsigned char *) AllocateMemory(image->columns*pcx_info.planes);
     if ((pcx_pixels == (unsigned char *) NULL) ||
         (scanline == (unsigned char *) NULL))
       ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
@@ -377,10 +377,10 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
     }
     if (image->storage_class == DirectClass)
-      image->matte=pcx_header.planes > 3;
+      image->matte=pcx_info.planes > 3;
     else
-      if ((pcx_header.version == 5) ||
-	  ((pcx_header.bits_per_pixel*pcx_header.planes) == 1))
+      if ((pcx_info.version == 5) ||
+	  ((pcx_info.bits_per_pixel*pcx_info.planes) == 1))
         {
           /*
             Initialize image colormap.
@@ -388,7 +388,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (image->colors > 256)
             ThrowReaderException(CorruptImageWarning,
               "PCX colormap exceeded 256 colors",image);
-          if ((pcx_header.bits_per_pixel*pcx_header.planes) == 1)
+          if ((pcx_info.bits_per_pixel*pcx_info.planes) == 1)
             {
               /*
                 Monochrome colormap.
@@ -406,7 +406,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 /*
                   256 color images have their color map at the end of the file.
                 */
-                pcx_header.colormap_signature=ReadByte(image);
+                pcx_info.colormap_signature=ReadByte(image);
                 (void) ReadBlob(image,3*image->colors,(char *) pcx_colormap);
                 p=pcx_colormap;
                 for (i=0; i < (int) image->colors; i++)
@@ -423,17 +423,17 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     */
     for (y=0; y < (int) image->rows; y++)
     {
-      p=pcx_pixels+(y*pcx_header.bytes_per_line*pcx_header.planes);
+      p=pcx_pixels+(y*pcx_info.bytes_per_line*pcx_info.planes);
       q=SetImagePixels(image,0,y,image->columns,1);
       if (q == (PixelPacket *) NULL)
         break;
       indexes=GetIndexes(image);
       r=scanline;
       if (image->storage_class == DirectClass)
-        for (i=0; i < (int) pcx_header.planes; i++)
+        for (i=0; i < (int) pcx_info.planes; i++)
         {
           r=scanline+i;
-          for (x=0; x < pcx_header.bytes_per_line; x++)
+          for (x=0; x < pcx_info.bytes_per_line; x++)
           {
             switch (i)
             {
@@ -459,18 +459,18 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 break;
               }
             }
-            r+=pcx_header.planes;
+            r+=pcx_info.planes;
           }
         }
       else
-        if (pcx_header.planes > 1)
+        if (pcx_info.planes > 1)
           {
             for (x=0; x < (int) image->columns; x++)
               *r++=0;
-            for (i=0; i < (int) pcx_header.planes; i++)
+            for (i=0; i < (int) pcx_info.planes; i++)
             {
               r=scanline;
-              for (x=0; x < pcx_header.bytes_per_line; x++)
+              for (x=0; x < pcx_info.bytes_per_line; x++)
               {
                  bits=(*p++);
                  for (mask=0x80; mask != 0; mask>>=1)
@@ -483,7 +483,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
             }
           }
         else
-          switch (pcx_header.bits_per_pixel)
+          switch (pcx_info.bits_per_pixel)
           {
             case 1:
             {
@@ -581,8 +581,8 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (page_table[id] == 0)
       break;
     (void) SeekBlob(image,page_table[id],SEEK_SET);
-    status=ReadBlob(image,1,(char *) &pcx_header.identifier);
-    if ((status == True) && (pcx_header.identifier == 0x0a))
+    status=ReadBlob(image,1,(char *) &pcx_info.identifier);
+    if ((status == True) && (pcx_info.identifier == 0x0a))
       {
         /*
           Allocate next image structure.
@@ -710,8 +710,8 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
   int
     y;
 
-  PCXHeader
-    pcx_header;
+  PCXInfo
+    pcx_info;
 
   register IndexPacket
     *indexes;
@@ -770,52 +770,52 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
     /*
       Initialize PCX raster file header.
     */
-    pcx_header.identifier=0x0a;
-    pcx_header.version=5;
-    pcx_header.encoding=1;
-    pcx_header.bits_per_pixel=8;
+    pcx_info.identifier=0x0a;
+    pcx_info.version=5;
+    pcx_info.encoding=1;
+    pcx_info.bits_per_pixel=8;
     if (IsMonochromeImage(image))
-      pcx_header.bits_per_pixel=1;
-    pcx_header.left=0;
-    pcx_header.top=0;
-    pcx_header.right=image->columns-1;
-    pcx_header.bottom=image->rows-1;
-    pcx_header.horizontal_resolution=(short) image->columns;
-    pcx_header.vertical_resolution=(short) image->rows;
+      pcx_info.bits_per_pixel=1;
+    pcx_info.left=0;
+    pcx_info.top=0;
+    pcx_info.right=image->columns-1;
+    pcx_info.bottom=image->rows-1;
+    pcx_info.horizontal_resolution=(short) image->columns;
+    pcx_info.vertical_resolution=(short) image->rows;
     if (image->units == PixelsPerInchResolution)
       {
-        pcx_header.horizontal_resolution=(short) image->x_resolution;
-        pcx_header.vertical_resolution=(short) image->y_resolution;
+        pcx_info.horizontal_resolution=(short) image->x_resolution;
+        pcx_info.vertical_resolution=(short) image->y_resolution;
       }
     if (image->units == PixelsPerCentimeterResolution)
       {
-        pcx_header.horizontal_resolution=(short) (2.54*image->x_resolution);
-        pcx_header.vertical_resolution=(short) (2.54*image->y_resolution);
+        pcx_info.horizontal_resolution=(short) (2.54*image->x_resolution);
+        pcx_info.vertical_resolution=(short) (2.54*image->y_resolution);
       }
-    pcx_header.reserved=0;
-    pcx_header.planes=1;
+    pcx_info.reserved=0;
+    pcx_info.planes=1;
     if (!IsPseudoClass(image))
       {
-        pcx_header.planes=3;
+        pcx_info.planes=3;
         if (image->matte)
-          pcx_header.planes++;
+          pcx_info.planes++;
       }
-    pcx_header.bytes_per_line=(image->columns*pcx_header.bits_per_pixel+7)/8;
-    pcx_header.palette_info=1;
-    pcx_header.colormap_signature=0x0c;
+    pcx_info.bytes_per_line=(image->columns*pcx_info.bits_per_pixel+7)/8;
+    pcx_info.palette_info=1;
+    pcx_info.colormap_signature=0x0c;
     /*
       Write PCX header.
     */
-    (void) WriteByte(image,pcx_header.identifier);
-    (void) WriteByte(image,pcx_header.version);
-    (void) WriteByte(image,pcx_header.encoding);
-    (void) WriteByte(image,pcx_header.bits_per_pixel);
-    LSBFirstWriteShort(image,(unsigned int) pcx_header.left);
-    LSBFirstWriteShort(image,(unsigned int) pcx_header.top);
-    LSBFirstWriteShort(image,(unsigned int) pcx_header.right);
-    LSBFirstWriteShort(image,(unsigned int) pcx_header.bottom);
-    LSBFirstWriteShort(image,(unsigned int) pcx_header.horizontal_resolution);
-    LSBFirstWriteShort(image,(unsigned int) pcx_header.vertical_resolution);
+    (void) WriteByte(image,pcx_info.identifier);
+    (void) WriteByte(image,pcx_info.version);
+    (void) WriteByte(image,pcx_info.encoding);
+    (void) WriteByte(image,pcx_info.bits_per_pixel);
+    LSBFirstWriteShort(image,(unsigned int) pcx_info.left);
+    LSBFirstWriteShort(image,(unsigned int) pcx_info.top);
+    LSBFirstWriteShort(image,(unsigned int) pcx_info.right);
+    LSBFirstWriteShort(image,(unsigned int) pcx_info.bottom);
+    LSBFirstWriteShort(image,(unsigned int) pcx_info.horizontal_resolution);
+    LSBFirstWriteShort(image,(unsigned int) pcx_info.vertical_resolution);
     /*
       Dump colormap to file.
     */
@@ -834,13 +834,13 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
         *q++=DownScale(image->colormap[i].blue);
       }
     (void) WriteBlob(image,3*16,(char *) pcx_colormap);
-    (void) WriteByte(image,pcx_header.reserved);
-    (void) WriteByte(image,pcx_header.planes);
-    LSBFirstWriteShort(image,(unsigned int) pcx_header.bytes_per_line);
-    LSBFirstWriteShort(image,(unsigned int) pcx_header.palette_info);
+    (void) WriteByte(image,pcx_info.reserved);
+    (void) WriteByte(image,pcx_info.planes);
+    LSBFirstWriteShort(image,(unsigned int) pcx_info.bytes_per_line);
+    LSBFirstWriteShort(image,(unsigned int) pcx_info.palette_info);
     for (i=0; i < 58; i++)
       (void) WriteByte(image,'\0');
-    packets=image->rows*pcx_header.bytes_per_line*pcx_header.planes;
+    packets=image->rows*pcx_info.bytes_per_line*pcx_info.planes;
     pcx_pixels=(unsigned char *) AllocateMemory(packets);
     if (pcx_pixels == (unsigned char *) NULL)
       ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
@@ -853,13 +853,13 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
         */
         for (y=0; y < (int) image->rows; y++)
         {
-          q=pcx_pixels+(y*pcx_header.bytes_per_line*pcx_header.planes);
-          for (i=0; i < (int) pcx_header.planes; i++)
+          q=pcx_pixels+(y*pcx_info.bytes_per_line*pcx_info.planes);
+          for (i=0; i < (int) pcx_info.planes; i++)
           {
             p=GetImagePixels(image,0,y,image->columns,1);
             if (p == (PixelPacket *) NULL)
               break;
-            for (x=0; x < pcx_header.bytes_per_line; x++)
+            for (x=0; x < pcx_info.bytes_per_line; x++)
             {
               switch (i)
               {
@@ -893,14 +893,14 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
         }
       }
     else
-      if (pcx_header.bits_per_pixel > 1)
+      if (pcx_info.bits_per_pixel > 1)
         for (y=0; y < (int) image->rows; y++)
         {
           p=GetImagePixels(image,0,y,image->columns,1);
           if (p == (PixelPacket *) NULL)
             break;
           indexes=GetIndexes(image);
-          q=pcx_pixels+y*pcx_header.bytes_per_line;
+          q=pcx_pixels+y*pcx_info.bytes_per_line;
           for (x=0; x < (int) image->columns; x++)
             *q++=indexes[x];
           if (image->previous == (Image *) NULL)
@@ -929,7 +929,7 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
             indexes=GetIndexes(image);
             bit=0;
             byte=0;
-            q=pcx_pixels+y*pcx_header.bytes_per_line;
+            q=pcx_pixels+y*pcx_info.bytes_per_line;
             for (x=0; x < (int) image->columns; x++)
             {
               byte<<=1;
@@ -956,12 +956,12 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
     */
     for (y=0; y < (int) image->rows; y++)
     {
-      q=pcx_pixels+(y*pcx_header.bytes_per_line*pcx_header.planes);
-      for (i=0; i < (int) pcx_header.planes; i++)
+      q=pcx_pixels+(y*pcx_info.bytes_per_line*pcx_info.planes);
+      for (i=0; i < (int) pcx_info.planes; i++)
       {
         previous=(*q++);
         count=1;
-        for (x=0; x < (pcx_header.bytes_per_line-1); x++)
+        for (x=0; x < (pcx_info.bytes_per_line-1); x++)
         {
           packet=(*q++);
           if ((packet == previous) && (count < 63))
@@ -988,7 +988,7 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
           ProgressMonitor(SaveImageText,y,image->rows);
       }
     }
-    (void) WriteByte(image,pcx_header.colormap_signature);
+    (void) WriteByte(image,pcx_info.colormap_signature);
     (void) WriteBlob(image,3*256,(char *) pcx_colormap);
     FreeMemory((void **) &pcx_pixels);
     FreeMemory((void **) &pcx_colormap);
