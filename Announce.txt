@@ -1,6 +1,6 @@
 The ImageMagick Studio LLC development group announces the release of
-ImageMagick 5.4.0.  Version 5.4.0 is a bug-fix release to resolve bugs
-reported against 5.3.9.
+ImageMagick 5.4.0. Version 5.4.0 is a feature release but also resolves
+bugs reported against 5.3.9.
 
 ImageMagick is a robust collection of tools and libraries to read,
 write, and manipulate an image in many image formats (over 72 major
@@ -19,43 +19,62 @@ available.  ImageMagick is available for free, may be used to support
 both open and proprietary applications, and may be redistributed
 without fee.
 
-Significant changes from the 5.3.8.2 release (see release ChangeLog
+Significant changes from the 5.3.9 release (see release ChangeLog
 for details):
 
-  o Many bugs fixed which were reported via the ImageMagick bug
-    tracking system, or via the mailing lists.
+  o General:
 
-  o ImageMagick is now optimized when compiled as a 64-bit application
-    using the LP64 data model in which pointers and longs are increased
-    to 64-bits. This allows power users who have access to 64-bit
-    machines with large memory to process extremely large images (>2GB)
-    entirely in main memory rather than as a memory-mapped temporary
-    file. The use of main memory provides an observed performance
-    improvement on the order of 18 times over use of a temporary file.
+    - Many bugs fixed which were reported via the ImageMagick bug
+      tracking system, or via the mailing lists.
 
-  o Added a MATLAB encoder contributed by Jaroslav Fojtik.
+    - MPEG is now read via the MPEG2 library to improve efficiency.
 
-  o Text drawing now handles UTF8-encoding.
+    - WMF support now works with libwmf 0.2.2, which may be compiled
+      under Windows.
 
-  o PingImage() now reports attributes for all images in an image
-    sequence.
+    - Most delegate library dependencies (e.g. libtiff) are moved to
+      loadable modules, and the module inter-dependencies on delegate
+      libraries have been minimized. This removes most link-time
+      dependencies from programs which depend on libMagick.so.
 
-  o C++ API enhancements (since 5.3.8):
+    - Security enhancements added to protect against buffer overflow.
 
-    - Added interfaces to obtain image format support information.
+  o Utilities enhancements:
 
-    - Image 'depth' method now inspects (or modifies) image pixels.
+    - 'convert' now supports a '-channel' option, with enumerations
+      'Cyan', 'Magenta', 'Yellow', and 'Black'.
 
-    - Support added for adjusting overall image opacity.
+    - The '-draw' command now accepts a command of the form
+      'decorate color' to specify the text underbox color.
 
-    - Support added for adjusting image storage type (e.g.
-      TrueColor --> GrayScale).
+  o C API enhancements:
 
-    - Fixed long-standing bug with Blob design that caused it to
-      improperly mix use of memory allocation systems. User may now
-      specify memory allocator used for supplied Blob.
+    - Desired image type (e.g. 'GrayscaleType') may be set via the
+      ImageInfo 'type' member.
 
-    - Image colorMap method automatically extends the colormap.
+    - CloneImage() now uses an implicit referenced counted pixel cache.
+      This eliminates the overhead caused by cloning an image which is
+      never modified, or when the original image is not further modified.
+
+    - New function 'AcquireImagePixels' supports obtaining a read-only
+      view of image pixels.
+
+    - Functions that can treat an image as read only now accept a
+      'const Image *' parameter rather than 'Image *'.
+
+    - Stroke dash pattern specifications are now of type 'double'
+      rather than 'unsigned int' in order to support specification
+      of non-integral patterns.
+
+  o C++ API enhancements:
+
+    - Added the Image::boundingBox method to return the smallest
+      bounding box enclosing non-border pixels.
+
+    - Added the Image::getConstIndexes method to return read-only pixel
+      indexes.
+
+    - Added the Image::getConstPixels method to return read-only pixels.
 
 The ImageMagick WWW page is
 
@@ -65,9 +84,8 @@ ImageMagick 5.4.0 is available via ftp as
 
   ftp://ftp.imagemagick.org/pub/ImageMagick/ImageMagick-5.4.0.tar.gz
 
-If ftp.imagemagick.org is overloaded (very likely), check the list of
-mirrors at http://www.imagemagick.org/www/archives.html for other
-mirrors. 
+If ftp.imagemagick.org is overloaded, check the list of mirrors at
+http://www.imagemagick.org/www/archives.html for other mirrors.
 
 ImageMagick is developed by the members of the ImageMagick Studio
 team:
@@ -87,4 +105,5 @@ Alexander Zimmermann  - Linux binary distributions.
 Jaroslav Fojtik       - CUT, ART, and MATLAB coder modules.
 
 There are many other individual contributors, some of whom made
-contributions to ImageMagick but shall remain nameless anyway.
+significant contributions to ImageMagick but shall remain anonymous.
+
