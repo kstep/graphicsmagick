@@ -106,7 +106,7 @@ Export void DestroyMagickInfo()
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   G e t M a g i c k L i s t                                                 %
+%   G e t M a g i c k I n f o                                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -185,38 +185,37 @@ Export MagickInfo *GetMagickInfo(const char *tag)
         {
           void (*func)(void);
 
-          /* Load module */
-          printf("Loading %s\n", file_list[i]);
-          if( ( handle=lt_dlopen(file_list[i]) ) == 0)
-            {
-              printf("ERROR: failed to load module %s: %s\n", file_list[i], lt_dlerror());
-              continue;
-              /*exit(1);*/
-            }
+	  /* Load module */
+	  printf("Loading %s\n", file_list[i]);
+	  if( ( handle=lt_dlopen(file_list[i]) ) == 0)
+	    {
+	      printf("ERROR: failed to load module %s: %s\n", file_list[i], lt_dlerror());
+	      continue;
+	      /*exit(1);*/
+	    }
 
-          /* Locate and execute RegisterFORMATImage function */
-          strcpy(func_name, "Register");
-          base_name = BaseFilename( file_list[i] );
-          Latin1Upper(base_name);
+	  /* Locate and execute RegisterFORMATImage function */
+	  strcpy(func_name, "Register");
+	  base_name = BaseFilename( file_list[i] );
+	  Latin1Upper(base_name);
 
-          /* Hack due to 8BIM vs bim.c naming difference */
-          if(!strcmp("BIM", base_name))
-             strcat(func_name,"8");
+	  /* Hack due to 8BIM vs bim.c naming difference */
+	  if(!strcmp("BIM", base_name))
+	     strcat(func_name,"8");
 
-          strcat(func_name,base_name);
-          FreeMemory(base_name);
-          strcat(func_name, "Image");
+	  strcat(func_name,base_name);
+	  FreeMemory(base_name);
+	  strcat(func_name, "Image");
 
-          func=(void (*)(void))lt_dlsym(handle, func_name);
-          if (func == NULL)
-            {
-              printf("ERROR: failed to find symbol : %s\n", lt_dlerror());
-              continue;
-            }
-          func();
-
-          /*ListMagickInfo(stdout);*/
-
+#if 0
+	  func=(void (*)(void))lt_dlsym(handle, func_name);
+	  if (func == NULL)
+	    {
+	      printf("ERROR: failed to find symbol : %s\n", lt_dlerror());
+	      continue;
+	    }
+	  func();
+#endif
         }
       FreeMemory(func_name);
       FreeMemory(coder_dir);
