@@ -82,6 +82,11 @@ else
 pkg_LTLIBRARIES   =
 endif # WITH_MODULES
 
+# APP1 module
+app1_la_SOURCES      = app1.c
+app1_la_LDFLAGS      = -no-undefined -module -avoid-version
+app1_la_LIBADD       = ../magick/libMagick.la
+
 # ART module
 art_la_SOURCES      = art.c
 art_la_LDFLAGS      = -no-undefined -module -avoid-version
