@@ -2,13 +2,12 @@
 <html>
 <head>
    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-   <meta name="GENERATOR" content="Mozilla/4.61 [en] (X11; U; SunOS 5.6 sun4u) [Netscape]">
+   <meta name="GENERATOR" content="Mozilla/4.72 [en] (X11; U; SunOS 5.6 sun4u) [Netscape]">
    <meta name="Author" content="Bob Friesenhahn">
    <meta name="Description" content="Description of AnnotateInfo structure members.">
    <title>ImageMagick AnnotateInfo Structure</title>
 </head>
-<body bgcolor="#FFFFFF" text="#000000" link="#1F00FF" alink="#FF0000"
-  vlink="#9900DD">
+<body text="#000000" bgcolor="#FFFFFF" link="#1F00FF" vlink="#9900DD" alink="#FF0000">
 
 <center>
 <h1>
@@ -52,20 +51,15 @@ text.
 
 <td>Annotate image with text.</td>
 </tr>
-
-<tr>
-<td><a href="../draw.html#DrawImage">DrawImage()</a></td>
-
-<td>Draw on image with text using texture.</td>
-</tr>
 </table>
 
-<p>Since the AnnotateInfo structure can be difficult to understand by itself,
-it is described in the context of the two methods which use it as shown
-in the following tables:
+<p>The public members of AnnotateInfo are shown in the following table.
+Many of these members are most easily set by setting the equivalent parameter
+in <a href="ImageInfo.html">ImageInfo</a>, and then initializing the structure
+using <i>GetAnnotateInfo()</i>.
 <br>&nbsp;
 <table BORDER WIDTH="100%" BGCOLOR="#CCCCCC" NOSAVE >
-<caption><b>&nbsp;AnnotateInfo Structure Members Supporting AnnotateImage()</b></caption>
+<caption><b>&nbsp;AnnotateInfo Structure Members</b></caption>
 
 <tr NOSAVE>
 <td NOSAVE>
@@ -82,11 +76,60 @@ in the following tables:
 </tr>
 
 <tr NOSAVE>
-<td>degrees</td>
+<td>affine</td>
 
-<td NOSAVE>double</td>
+<td NOSAVE><a href="AffineInfo.html">AffineInfo</a></td>
 
-<td>Text rotation in degrees.</td>
+<td>Coordinate transformation (rotation, scaling, and translation).</td>
+</tr>
+
+<tr>
+<td>antialias</td>
+
+<td>unsigned int</td>
+
+<td>Set to True (non-zero) to obtain anti-aliased text rendering.</td>
+</tr>
+
+<tr>
+<td>box</td>
+
+<td><a href="PixelPacket.html">PixelPacket</a></td>
+
+<td>Text solid background color.</td>
+</tr>
+
+<tr>
+<td>decorate</td>
+
+<td>DecorationType</td>
+
+<td>Text decoration type.</td>
+</tr>
+
+<tr>
+<td>density</td>
+
+<td>char *</td>
+
+<td>Text rendering density in DPI (effects scaling font according to pointsize).
+E.g. "72x72"</td>
+</tr>
+
+<tr>
+<td>fill</td>
+
+<td><a href="PixelPacket.html">PixelPacket</a></td>
+
+<td>Text internal fill (within outline) color.</td>
+</tr>
+
+<tr>
+<td>font</td>
+
+<td>char *</td>
+
+<td>Font to use when rendering text.</td>
 </tr>
 
 <tr NOSAVE>
@@ -94,15 +137,31 @@ in the following tables:
 
 <td NOSAVE>char *</td>
 
-<td>Text placement coordinate (e.g. "340x230")</td>
+<td>Text placement coordinate (e.g. "340x230").</td>
 </tr>
 
 <tr>
 <td>gravity</td>
 
-<td><a href="Enumerations.html#GravityType">unsigned int</a></td>
+<td><a href="Enumerations.html#GravityType">GravityType</a></td>
 
 <td>Text placement preference (e.g. NorthWestGravity).</td>
+</tr>
+
+<tr>
+<td>pointsize</td>
+
+<td>double</td>
+
+<td>Font size (also see <i>density</i>).</td>
+</tr>
+
+<tr>
+<td>stroke</td>
+
+<td><a href="PixelPacket.html">PixelPacket</a></td>
+
+<td>Text outline color.</td>
 </tr>
 
 <tr>
@@ -115,46 +174,9 @@ type, width, height, or scene number by embedding special format characters.</td
 </tr>
 </table>
 
-<br>&nbsp;
-<table BORDER WIDTH="100%" BGCOLOR="#CCCCCC" NOSAVE >
-<caption><b>AnnotateInfo Structure Members Supporting DrawImage()</b></caption>
-
-<tr>
-<td>
-<center><b>Member</b></center>
-</td>
-
-<td>
-<center><b>Type</b></center>
-</td>
-
-<td>
-<center><b>Description</b></center>
-</td>
-</tr>
-
-<tr>
-<td>primitive</td>
-
-<td>char *</td>
-
-<td>Text drawing primitive (e.g "text 100,100 Cockatoo").</td>
-</tr>
-
-<tr>
-<td>tile</td>
-
-<td><a href="Image.html">Image</a> *</td>
-
-<td>Image texture to draw with. Use an image containing a single color
-(e.g. a 1x1 image) to draw in a solid color.</td>
-</tr>
-</table>
-
-<p><hr>
-<p><a href="../../../ImageMagick.html"><img SRC="../../../images/home.png"
-  ALT="Home Page" BORDER=0 height=40 width=40 align=CENTER></a><font size=-2>
-  Image manipulation software that works like magic.</font></dl>
-
+<p>
+<hr>
+<p><a href="../../../ImageMagick.html"><img SRC="../../../images/home.png" ALT="Home Page" BORDER=0 height=40 width=40 align=CENTER></a><font size=-2>
+Image manipulation software that works like magic.</font>
 </body>
 </html>
