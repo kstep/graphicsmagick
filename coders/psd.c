@@ -1444,7 +1444,7 @@ compute_layer_info:
 		  (void) WriteBlobMSBLong(image, 0);
 		  (void) WriteBlobMSBLong(image, 0);
 
-		  sprintf(&(layer_name[1]), "L%02d", layer_count++ ); layer_name[0] = 3;
+		  sprintf((char *) &(layer_name[1]), "L%02d", layer_count++ ); layer_name[0] = 3;
 		  (void) WriteBlobByte(image, 3);
 		  (void) WriteBlob(image, 3, &layer_name[1]);
 

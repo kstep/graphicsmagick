@@ -207,7 +207,7 @@ static void MSLInternalSubset(void *context,const xmlChar *name,
   msl_info=(MSLInfo *) context;
   if (msl_info->debug)
     {
-      (void) fprintf(stdout,"  SAX.internalSubset(%.1024s",name);
+      (void) fprintf(stdout,"  SAX.internalSubset(%.1024s",(char *) name);
       if (external_id != NULL)
         (void) fprintf(stdout,"  , %.1024s",external_id);
       if (system_id != NULL)
@@ -260,7 +260,7 @@ static xmlEntityPtr MSLGetEntity(void *context,const xmlChar *name)
   */
   msl_info=(MSLInfo *) context;
   if (msl_info->debug)
-    (void) fprintf(stdout,"  SAX.MSLGetEntity(%.1024s)\n",name);
+    (void) fprintf(stdout,"  SAX.MSLGetEntity(%.1024s)\n",(char *) name);
   return(xmlGetDocEntity(msl_info->document,name));
 }
 
@@ -274,7 +274,7 @@ static xmlEntityPtr MSLGetParameterEntity(void *context,const xmlChar *name)
   */
   msl_info=(MSLInfo *) context;
   if (msl_info->debug)
-    (void) fprintf(stdout,"  SAX.getParameterEntity(%.1024s)\n",name);
+    (void) fprintf(stdout,"  SAX.getParameterEntity(%.1024s)\n",(char *) name);
   return(xmlGetParameterEntity(msl_info->document,name));
 }
 
@@ -563,7 +563,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
     case 'B':
     case 'b':
     {
-      if (LocaleCompare(name, "blur") == 0)
+      if (LocaleCompare((char *) name, "blur") == 0)
       {
         double  radius = 0.0,
             sigma = 1.0;
@@ -571,7 +571,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
         if (msl_info->image[n] == (Image *) NULL)
         {
           ThrowException(msl_info->exception,OptionWarning,
-          "no images defined",name);
+          "no images defined",(char *) name);
           break;
         }
         /*
@@ -583,7 +583,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
           {
           keyword=(const char *) attributes[i++];
           CloneString(&value,TranslateText(msl_info->image_info[n],
-            msl_info->attributes[n],attributes[i]));
+            msl_info->attributes[n],(char *) attributes[i]));
           switch (*keyword)
           {
             case 'R':
@@ -635,7 +635,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
         break;
         }
       }
-      else if (LocaleCompare(name,"border") == 0)
+      else if (LocaleCompare((char *) name,"border") == 0)
       {
         /* init the values */
         width = height = 6;  /* this is the value that Magick++ uses */
@@ -644,7 +644,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
         if (msl_info->image[n] == (Image *) NULL)
         {
           ThrowException(msl_info->exception,OptionWarning,
-          "no images defined",name);
+          "no images defined",(char *) name);
           break;
         }
         /*
@@ -656,7 +656,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
           {
           keyword=(const char *) attributes[i++];
           CloneString(&value,TranslateText(msl_info->image_info[n],
-            msl_info->attributes[n],attributes[i]));
+            msl_info->attributes[n],(char *) attributes[i]));
           switch (*keyword)
           {
             case 'F':
@@ -748,7 +748,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
   case 'C':
   case 'c':
     {
-      if (LocaleCompare(name, "charcoal") == 0)
+      if (LocaleCompare((char *) name, "charcoal") == 0)
       {
         double  radius = 0.0,
             sigma = 1.0;
@@ -756,7 +756,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
         if (msl_info->image[n] == (Image *) NULL)
         {
           ThrowException(msl_info->exception,OptionWarning,
-          "no images defined",name);
+          "no images defined",(char *) name);
           break;
         }
         /*
@@ -768,7 +768,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
           {
           keyword=(const char *) attributes[i++];
           CloneString(&value,TranslateText(msl_info->image_info[n],
-            msl_info->attributes[n],attributes[i]));
+            msl_info->attributes[n],(char *) attributes[i]));
           switch (*keyword)
           {
             case 'R':
@@ -820,7 +820,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
         break;
         }
       }
-      else if (LocaleCompare(name,"chop") == 0)
+      else if (LocaleCompare((char *) name,"chop") == 0)
       {
         /* init the values */
         width=msl_info->image[n]->columns;
@@ -830,7 +830,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
         if (msl_info->image[n] == (Image *) NULL)
         {
           ThrowException(msl_info->exception,OptionWarning,
-          "no images defined",name);
+          "no images defined",(char *) name);
           break;
         }
         if (attributes == (const xmlChar **) NULL)
@@ -839,7 +839,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
         {
         keyword=(const char *) attributes[i++];
         CloneString(&value,TranslateText(msl_info->image_info[n],
-          msl_info->attributes[n],attributes[i]));
+          msl_info->attributes[n],(char *) attributes[i]));
         switch (*keyword)
         {
           case 'G':
@@ -935,7 +935,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
 
         break;
       }
-      else if (LocaleCompare(name, "composite") == 0 )
+      else if (LocaleCompare((char *) name, "composite") == 0 )
       {
         Image *
           srcImage = (Image*)NULL;
@@ -949,7 +949,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
         if (msl_info->image[n] == (Image *) NULL)
         {
           ThrowException(msl_info->exception,OptionWarning,
-                  "no images defined",name);
+                  "no images defined",(char *) name);
           break;
         }
         if (attributes == (const xmlChar **) NULL)
@@ -958,7 +958,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
         {
           keyword=(const char *) attributes[i++];
           CloneString(&value,TranslateText(msl_info->image_info[n],
-                  msl_info->attributes[n],attributes[i]));
+                  msl_info->attributes[n],(char *) attributes[i]));
           switch (*keyword)
           {
             case 'C':
@@ -1198,11 +1198,11 @@ static void MSLStartElement(void *context,const xmlChar *name,
           break;
         } else
           ThrowException(msl_info->exception,OptionWarning,
-                  "no composite image defined",name);
+                  "no composite image defined",(char *) name);
 
         break;
       }
-      else if (LocaleCompare(name,"crop") == 0)
+      else if (LocaleCompare((char *) name,"crop") == 0)
       {
         /* init the values */
         width=msl_info->image[n]->columns;
@@ -1212,7 +1212,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
         if (msl_info->image[n] == (Image *) NULL)
         {
           ThrowException(msl_info->exception,OptionWarning,
-          "no images defined",name);
+          "no images defined",(char *) name);
           break;
         }
         if (attributes == (const xmlChar **) NULL)
@@ -1221,7 +1221,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
         {
         keyword=(const char *) attributes[i++];
         CloneString(&value,TranslateText(msl_info->image_info[n],
-          msl_info->attributes[n],attributes[i]));
+          msl_info->attributes[n],(char *) attributes[i]));
         switch (*keyword)
         {
           case 'G':
@@ -1323,12 +1323,12 @@ static void MSLStartElement(void *context,const xmlChar *name,
   case 'D':
   case 'd':
     {
-      if (LocaleCompare(name, "despeckle") == 0)
+      if (LocaleCompare((char *) name, "despeckle") == 0)
       {
         if (msl_info->image[n] == (Image *) NULL)
         {
           ThrowException(msl_info->exception,OptionWarning,
-                  "no images defined",name);
+                  "no images defined",(char *) name);
           break;
         }
 
@@ -1353,14 +1353,14 @@ static void MSLStartElement(void *context,const xmlChar *name,
   case 'E':
   case 'e':
     {
-      if (LocaleCompare(name, "edge") == 0)
+      if (LocaleCompare((char *) name, "edge") == 0)
       {
         double  radius = 0.0;
 
         if (msl_info->image[n] == (Image *) NULL)
         {
           ThrowException(msl_info->exception,OptionWarning,
-            "no images defined",name);
+            "no images defined",(char *) name);
           break;
         }
         /*
@@ -1372,7 +1372,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
           {
           keyword=(const char *) attributes[i++];
           CloneString(&value,TranslateText(msl_info->image_info[n],
-            msl_info->attributes[n],attributes[i]));
+            msl_info->attributes[n],(char *) attributes[i]));
           switch (*keyword)
           {
             case 'R':
@@ -1412,7 +1412,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
         break;
         }
       }
-      else if (LocaleCompare(name, "emboss") == 0)
+      else if (LocaleCompare((char *) name, "emboss") == 0)
       {
         double  radius = 0.0,
             sigma = 1.0;
@@ -1420,7 +1420,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
         if (msl_info->image[n] == (Image *) NULL)
         {
           ThrowException(msl_info->exception,OptionWarning,
-          "no images defined",name);
+          "no images defined",(char *) name);
           break;
         }
         /*
@@ -1432,7 +1432,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
           {
           keyword=(const char *) attributes[i++];
           CloneString(&value,TranslateText(msl_info->image_info[n],
-            msl_info->attributes[n],attributes[i]));
+            msl_info->attributes[n],(char *) attributes[i]));
           switch (*keyword)
           {
             case 'R':
@@ -1484,12 +1484,12 @@ static void MSLStartElement(void *context,const xmlChar *name,
         break;
         }
       }
-      else if (LocaleCompare(name, "enhance") == 0)
+      else if (LocaleCompare((char *) name, "enhance") == 0)
       {
         if (msl_info->image[n] == (Image *) NULL)
         {
           ThrowException(msl_info->exception,OptionWarning,
-                  "no images defined",name);
+                  "no images defined",(char *) name);
           break;
         }
 
@@ -1508,12 +1508,12 @@ static void MSLStartElement(void *context,const xmlChar *name,
           break;
         }
       }
-      else if (LocaleCompare(name, "equalize") == 0)
+      else if (LocaleCompare((char *) name, "equalize") == 0)
       {
         if (msl_info->image[n] == (Image *) NULL)
         {
           ThrowException(msl_info->exception,OptionWarning,
-                  "no images defined",name);
+                  "no images defined",(char *) name);
           break;
         }
 
@@ -1531,12 +1531,12 @@ static void MSLStartElement(void *context,const xmlChar *name,
   case 'F':
   case 'f':
     {
-      if (LocaleCompare(name, "flatten") == 0)
+      if (LocaleCompare((char *) name, "flatten") == 0)
       {
         if (msl_info->image[n] == (Image *) NULL)
         {
           ThrowException(msl_info->exception,OptionWarning,
-                  "no images defined",name);
+                  "no images defined",(char *) name);
           break;
         }
 
@@ -1555,12 +1555,12 @@ static void MSLStartElement(void *context,const xmlChar *name,
           break;
         }
       }
-      else if (LocaleCompare(name, "flip") == 0)
+      else if (LocaleCompare((char *) name, "flip") == 0)
       {
         if (msl_info->image[n] == (Image *) NULL)
         {
           ThrowException(msl_info->exception,OptionWarning,
-                  "no images defined",name);
+                  "no images defined",(char *) name);
           break;
         }
 
@@ -1579,12 +1579,12 @@ static void MSLStartElement(void *context,const xmlChar *name,
           break;
         }
       }
-      else if (LocaleCompare(name, "flop") == 0)
+      else if (LocaleCompare((char *) name, "flop") == 0)
       {
         if (msl_info->image[n] == (Image *) NULL)
         {
           ThrowException(msl_info->exception,OptionWarning,
-                  "no images defined",name);
+                  "no images defined",(char *) name);
           break;
         }
 
@@ -1603,7 +1603,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
           break;
         }
       }
-      else if (LocaleCompare(name,"frame") == 0)
+      else if (LocaleCompare((char *) name,"frame") == 0)
       {
         /* init the values */
         width = height = 25;  /* these are the values that Magick++ uses */
@@ -1612,7 +1612,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
         if (msl_info->image[n] == (Image *) NULL)
         {
           ThrowException(msl_info->exception,OptionWarning,
-          "no images defined",name);
+          "no images defined",(char *) name);
           break;
         }
         /*
@@ -1624,7 +1624,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
           {
           keyword=(const char *) attributes[i++];
           CloneString(&value,TranslateText(msl_info->image_info[n],
-            msl_info->attributes[n],attributes[i]));
+            msl_info->attributes[n],(char *) attributes[i]));
           switch (*keyword)
           {
             case 'F':
@@ -1765,7 +1765,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
     case 'G':
     case 'g':
     {
-    if (LocaleCompare(name, "gamma") == 0)
+    if (LocaleCompare((char *) name, "gamma") == 0)
     {
       double
         gammaRed = 0, gammaGreen = 0, gammaBlue = 0;
@@ -1773,7 +1773,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
       if (msl_info->image[n] == (Image *) NULL)
       {
         ThrowException(msl_info->exception,OptionWarning,
-                "no images defined",name);
+                "no images defined",(char *) name);
         break;
       }
       if (attributes == (const xmlChar **) NULL)
@@ -1781,7 +1781,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
       for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
       {
         keyword=(const char *) attributes[i++];
-        CloneString(&value,attributes[i]);
+        CloneString(&value,(char *) attributes[i]);
         (void) strncpy(key,value,MaxTextExtent-1);
         switch (*keyword)
         {
@@ -1839,12 +1839,12 @@ static void MSLStartElement(void *context,const xmlChar *name,
         GammaImage ( msl_info->image[n], gamma );
       }
     }
-      else if (LocaleCompare(name,"get") == 0)
+      else if (LocaleCompare((char *) name,"get") == 0)
         {
           if (msl_info->image[n] == (Image *) NULL)
             {
               ThrowException(msl_info->exception,OptionWarning,
-                "no images defined",name);
+                "no images defined",(char *) name);
               break;
             }
           if (attributes == (const xmlChar **) NULL)
@@ -1852,7 +1852,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
           for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
           {
             keyword=(const char *) attributes[i++];
-            CloneString(&value,attributes[i]);
+            CloneString(&value,(char *) attributes[i]);
             (void) strncpy(key,value,MaxTextExtent-1);
             switch (*keyword)
             {
@@ -1890,7 +1890,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
           }
           break;
         }
-    else if (LocaleCompare(name, "group") == 0)
+    else if (LocaleCompare((char *) name, "group") == 0)
     {
       msl_info->nGroups++;
       ReacquireMemory((void**) &msl_info->group_info, (msl_info->nGroups+1)*sizeof(MSLGroupInfo));
@@ -1902,7 +1902,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
     case 'I':
     case 'i':
     {
-      if (LocaleCompare(name,"image") == 0)
+      if (LocaleCompare((char *) name,"image") == 0)
         {
           long
             n;
@@ -1915,7 +1915,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
           {
             keyword=(const char *) attributes[i++];
             CloneString(&value,TranslateText(msl_info->image_info[n],
-              msl_info->attributes[n],attributes[i]));
+              msl_info->attributes[n],(char *) attributes[i]));
             switch (*keyword)
             {
       case 'B':
@@ -2005,7 +2005,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
           }
           break;
         }
-      else if (LocaleCompare(name,"implode") == 0)
+      else if (LocaleCompare((char *) name,"implode") == 0)
       {
         /* init the values */
         double  amount = 0;
@@ -2013,7 +2013,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
         if (msl_info->image[n] == (Image *) NULL)
         {
           ThrowException(msl_info->exception,OptionWarning,
-          "no images defined",name);
+          "no images defined",(char *) name);
           break;
         }
         if (attributes == (const xmlChar **) NULL)
@@ -2022,7 +2022,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
         {
         keyword=(const char *) attributes[i++];
         CloneString(&value,TranslateText(msl_info->image_info[n],
-          msl_info->attributes[n],attributes[i]));
+          msl_info->attributes[n],(char *) attributes[i]));
         switch (*keyword)
         {
           case 'A':
@@ -2067,12 +2067,12 @@ static void MSLStartElement(void *context,const xmlChar *name,
   case 'M':
   case 'm':
     {
-      if (LocaleCompare(name, "magnify") == 0)
+      if (LocaleCompare((char *) name, "magnify") == 0)
       {
         if (msl_info->image[n] == (Image *) NULL)
         {
           ThrowException(msl_info->exception,OptionWarning,
-                  "no images defined",name);
+                  "no images defined",(char *) name);
           break;
         }
 
@@ -2091,7 +2091,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
           break;
         }
       }
-      else if (LocaleCompare(name,"medianfilter") == 0)
+      else if (LocaleCompare((char *) name,"medianfilter") == 0)
       {
         /* init the values */
         unsigned int  radius = 0;
@@ -2099,7 +2099,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
         if (msl_info->image[n] == (Image *) NULL)
         {
           ThrowException(msl_info->exception,OptionWarning,
-          "no images defined",name);
+          "no images defined",(char *) name);
           break;
         }
         if (attributes == (const xmlChar **) NULL)
@@ -2108,7 +2108,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
         {
         keyword=(const char *) attributes[i++];
         CloneString(&value,TranslateText(msl_info->image_info[n],
-          msl_info->attributes[n],attributes[i]));
+          msl_info->attributes[n],(char *) attributes[i]));
         switch (*keyword)
         {
           case 'R':
@@ -2147,12 +2147,12 @@ static void MSLStartElement(void *context,const xmlChar *name,
         break;
         }
       }
-      else if (LocaleCompare(name, "minify") == 0)
+      else if (LocaleCompare((char *) name, "minify") == 0)
       {
         if (msl_info->image[n] == (Image *) NULL)
         {
           ThrowException(msl_info->exception,OptionWarning,
-                  "no images defined",name);
+                  "no images defined",(char *) name);
           break;
         }
 
@@ -2171,7 +2171,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
           break;
         }
       }
-      else if (LocaleCompare(name, "msl") == 0 )
+      else if (LocaleCompare((char *) name, "msl") == 0 )
       {
         /*
           This is our base element.
@@ -2186,12 +2186,12 @@ static void MSLStartElement(void *context,const xmlChar *name,
   case 'N':
   case 'n':
     {
-      if (LocaleCompare(name, "normalize") == 0)
+      if (LocaleCompare((char *) name, "normalize") == 0)
       {
         if (msl_info->image[n] == (Image *) NULL)
         {
           ThrowException(msl_info->exception,OptionWarning,
-                  "no images defined",name);
+                  "no images defined",(char *) name);
           break;
         }
 
@@ -2209,7 +2209,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
   case 'O':
   case 'o':
     {
-      if (LocaleCompare(name, "oilpaint") == 0)
+      if (LocaleCompare((char *) name, "oilpaint") == 0)
       {
         /* init the values */
         unsigned int  radius = 3;
@@ -2217,7 +2217,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
         if (msl_info->image[n] == (Image *) NULL)
         {
           ThrowException(msl_info->exception,OptionWarning,
-          "no images defined",name);
+          "no images defined",(char *) name);
           break;
         }
         if (attributes == (const xmlChar **) NULL)
@@ -2226,7 +2226,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
         {
         keyword=(const char *) attributes[i++];
         CloneString(&value,TranslateText(msl_info->image_info[n],
-          msl_info->attributes[n],attributes[i]));
+          msl_info->attributes[n],(char *) attributes[i]));
         switch (*keyword)
         {
           case 'R':
@@ -2271,7 +2271,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
     case 'P':
     case 'p':
     {
-      if (LocaleCompare(name,"print") == 0)
+      if (LocaleCompare((char *) name,"print") == 0)
         {
       /* print does not require an image to be present! */
 
@@ -2281,7 +2281,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
           {
             keyword=(const char *) attributes[i++];
             CloneString(&value,TranslateText(msl_info->image_info[n],
-              msl_info->attributes[n],attributes[i]));
+              msl_info->attributes[n],(char *) attributes[i]));
             switch (*keyword)
             {
               case 'O':
@@ -2312,7 +2312,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
     case 'R':
     case 'r':
     {
-      if (LocaleCompare(name,"read") == 0)
+      if (LocaleCompare((char *) name,"read") == 0)
         {
           if (attributes == (const xmlChar **) NULL)
             break;
@@ -2320,7 +2320,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
           {
             keyword=(const char *) attributes[i++];
             CloneString(&value,TranslateText(msl_info->image_info[n],
-              msl_info->attributes[n],attributes[i]));
+              msl_info->attributes[n],(char *) attributes[i]));
             switch (*keyword)
             {
               case 'F':
@@ -2381,7 +2381,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
           }
           break;
         }
-    else if (LocaleCompare(name, "reducenoise") == 0 )
+    else if (LocaleCompare((char *) name, "reducenoise") == 0 )
     {
         /* init the values */
         unsigned int  radius = 0;
@@ -2389,7 +2389,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
         if (msl_info->image[n] == (Image *) NULL)
         {
           ThrowException(msl_info->exception,OptionWarning,
-          "no images defined",name);
+          "no images defined",(char *) name);
           break;
         }
         if (attributes == (const xmlChar **) NULL)
@@ -2398,7 +2398,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
         {
         keyword=(const char *) attributes[i++];
         CloneString(&value,TranslateText(msl_info->image_info[n],
-          msl_info->attributes[n],attributes[i]));
+          msl_info->attributes[n],(char *) attributes[i]));
         switch (*keyword)
         {
           case 'R':
@@ -2437,7 +2437,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
         break;
         }
     }
-      else if (LocaleCompare(name,"resize") == 0)
+      else if (LocaleCompare((char *) name,"resize") == 0)
         {
       /* init the values */
       width=msl_info->image[n]->columns;
@@ -2448,7 +2448,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
           if (msl_info->image[n] == (Image *) NULL)
             {
               ThrowException(msl_info->exception,OptionWarning,
-                "no images defined",name);
+                "no images defined",(char *) name);
               break;
             }
           if (attributes == (const xmlChar **) NULL)
@@ -2457,7 +2457,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
           {
             keyword=(const char *) attributes[i++];
             CloneString(&value,TranslateText(msl_info->image_info[n],
-              msl_info->attributes[n],attributes[i]));
+              msl_info->attributes[n],(char *) attributes[i]));
             switch (*keyword)
             {
         case 'B':
@@ -2582,7 +2582,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
 
           break;
         }
-      else if (LocaleCompare(name,"roll") == 0)
+      else if (LocaleCompare((char *) name,"roll") == 0)
       {
         /* init the values */
         width=msl_info->image[n]->columns;
@@ -2592,7 +2592,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
         if (msl_info->image[n] == (Image *) NULL)
         {
           ThrowException(msl_info->exception,OptionWarning,
-          "no images defined",name);
+          "no images defined",(char *) name);
           break;
         }
         if (attributes == (const xmlChar **) NULL)
@@ -2601,7 +2601,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
         {
         keyword=(const char *) attributes[i++];
         CloneString(&value,TranslateText(msl_info->image_info[n],
-          msl_info->attributes[n],attributes[i]));
+          msl_info->attributes[n],(char *) attributes[i]));
         switch (*keyword)
         {
           case 'G':
@@ -2666,7 +2666,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
 
         break;
       }
-      else if (LocaleCompare(name,"rotate") == 0)
+      else if (LocaleCompare((char *) name,"rotate") == 0)
       {
         /* init the values */
         double  degrees = 0;
@@ -2674,7 +2674,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
         if (msl_info->image[n] == (Image *) NULL)
         {
           ThrowException(msl_info->exception,OptionWarning,
-          "no images defined",name);
+          "no images defined",(char *) name);
           break;
         }
         if (attributes == (const xmlChar **) NULL)
@@ -2683,7 +2683,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
         {
         keyword=(const char *) attributes[i++];
         CloneString(&value,TranslateText(msl_info->image_info[n],
-          msl_info->attributes[n],attributes[i]));
+          msl_info->attributes[n],(char *) attributes[i]));
         switch (*keyword)
         {
           case 'D':
@@ -2730,7 +2730,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
   case 'S':
   case 's':
     {
-      if (LocaleCompare(name,"sample") == 0)
+      if (LocaleCompare((char *) name,"sample") == 0)
       {
         /* init the values */
         width=msl_info->image[n]->columns;
@@ -2740,7 +2740,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
         if (msl_info->image[n] == (Image *) NULL)
         {
           ThrowException(msl_info->exception,OptionWarning,
-          "no images defined",name);
+          "no images defined",(char *) name);
           break;
         }
         if (attributes == (const xmlChar **) NULL)
@@ -2749,7 +2749,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
         {
         keyword=(const char *) attributes[i++];
         CloneString(&value,TranslateText(msl_info->image_info[n],
-          msl_info->attributes[n],attributes[i]));
+          msl_info->attributes[n],(char *) attributes[i]));
         switch (*keyword)
         {
           case 'G':
@@ -2814,7 +2814,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
 
         break;
       }
-      else if (LocaleCompare(name,"scale") == 0)
+      else if (LocaleCompare((char *) name,"scale") == 0)
       {
         /* init the values */
         width=msl_info->image[n]->columns;
@@ -2824,7 +2824,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
         if (msl_info->image[n] == (Image *) NULL)
         {
           ThrowException(msl_info->exception,OptionWarning,
-          "no images defined",name);
+          "no images defined",(char *) name);
           break;
         }
         if (attributes == (const xmlChar **) NULL)
@@ -2833,7 +2833,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
         {
         keyword=(const char *) attributes[i++];
         CloneString(&value,TranslateText(msl_info->image_info[n],
-          msl_info->attributes[n],attributes[i]));
+          msl_info->attributes[n],(char *) attributes[i]));
         switch (*keyword)
         {
           case 'G':
@@ -2898,12 +2898,12 @@ static void MSLStartElement(void *context,const xmlChar *name,
 
         break;
       }
-      else if (LocaleCompare(name, "set") == 0)
+      else if (LocaleCompare((char *) name, "set") == 0)
       {
         if (msl_info->image[n] == (Image *) NULL)
         {
           ThrowException(msl_info->exception,OptionWarning,
-                  "no images defined",name);
+                  "no images defined",(char *) name);
           break;
         }
 
@@ -2913,7 +2913,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
         {
           keyword=(const char *) attributes[i++];
           CloneString(&value,TranslateText(msl_info->image_info[n],
-                msl_info->attributes[n],attributes[i]));
+                msl_info->attributes[n],(char *) attributes[i]));
           switch (*keyword)
           {
             case 'B':
@@ -3040,7 +3040,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
         }
         break;
       }
-      else if (LocaleCompare(name, "sharpen") == 0)
+      else if (LocaleCompare((char *) name, "sharpen") == 0)
       {
         double  radius = 0.0,
             sigma = 1.0;
@@ -3048,7 +3048,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
         if (msl_info->image[n] == (Image *) NULL)
         {
           ThrowException(msl_info->exception,OptionWarning,
-          "no images defined",name);
+          "no images defined",(char *) name);
           break;
         }
         /*
@@ -3060,7 +3060,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
           {
           keyword=(const char *) attributes[i++];
           CloneString(&value,TranslateText(msl_info->image_info[n],
-            msl_info->attributes[n],attributes[i]));
+            msl_info->attributes[n],(char *) attributes[i]));
           switch (*keyword)
           {
             case 'R':
@@ -3112,7 +3112,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
         break;
         }
       }
-      else if (LocaleCompare(name,"shave") == 0)
+      else if (LocaleCompare((char *) name,"shave") == 0)
       {
         /* init the values */
         width = height = 0;
@@ -3121,7 +3121,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
         if (msl_info->image[n] == (Image *) NULL)
         {
           ThrowException(msl_info->exception,OptionWarning,
-          "no images defined",name);
+          "no images defined",(char *) name);
           break;
         }
         if (attributes == (const xmlChar **) NULL)
@@ -3130,7 +3130,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
         {
         keyword=(const char *) attributes[i++];
         CloneString(&value,TranslateText(msl_info->image_info[n],
-          msl_info->attributes[n],attributes[i]));
+          msl_info->attributes[n],(char *) attributes[i]));
         switch (*keyword)
         {
           case 'G':
@@ -3203,7 +3203,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
 
         break;
       }
-      else if (LocaleCompare(name,"shear") == 0)
+      else if (LocaleCompare((char *) name,"shear") == 0)
       {
         /* init the values */
         width=msl_info->image[n]->columns;
@@ -3213,7 +3213,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
         if (msl_info->image[n] == (Image *) NULL)
         {
           ThrowException(msl_info->exception,OptionWarning,
-          "no images defined",name);
+          "no images defined",(char *) name);
           break;
         }
         if (attributes == (const xmlChar **) NULL)
@@ -3222,7 +3222,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
         {
         keyword=(const char *) attributes[i++];
         CloneString(&value,TranslateText(msl_info->image_info[n],
-          msl_info->attributes[n],attributes[i]));
+          msl_info->attributes[n],(char *) attributes[i]));
         switch (*keyword)
         {
           case 'X':
@@ -3275,7 +3275,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
 
         break;
       }
-      else if (LocaleCompare(name,"solarize") == 0)
+      else if (LocaleCompare((char *) name,"solarize") == 0)
       {
         /* init the values */
         int  threshold = 0;
@@ -3283,7 +3283,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
         if (msl_info->image[n] == (Image *) NULL)
         {
           ThrowException(msl_info->exception,OptionWarning,
-          "no images defined",name);
+          "no images defined",(char *) name);
           break;
         }
         if (attributes == (const xmlChar **) NULL)
@@ -3292,7 +3292,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
         {
         keyword=(const char *) attributes[i++];
         CloneString(&value,TranslateText(msl_info->image_info[n],
-          msl_info->attributes[n],attributes[i]));
+          msl_info->attributes[n],(char *) attributes[i]));
         switch (*keyword)
         {
           case 'T':
@@ -3324,7 +3324,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
         break;
         }
       }
-      else if (LocaleCompare(name,"spread") == 0)
+      else if (LocaleCompare((char *) name,"spread") == 0)
       {
         /* init the values */
         unsigned int  radius = 0;
@@ -3332,7 +3332,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
         if (msl_info->image[n] == (Image *) NULL)
         {
           ThrowException(msl_info->exception,OptionWarning,
-          "no images defined",name);
+          "no images defined",(char *) name);
           break;
         }
         if (attributes == (const xmlChar **) NULL)
@@ -3341,7 +3341,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
         {
         keyword=(const char *) attributes[i++];
         CloneString(&value,TranslateText(msl_info->image_info[n],
-          msl_info->attributes[n],attributes[i]));
+          msl_info->attributes[n],(char *) attributes[i]));
         switch (*keyword)
         {
           case 'R':
@@ -3380,7 +3380,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
         break;
         }
       }
-      else if (LocaleCompare(name,"stegano") == 0)
+      else if (LocaleCompare((char *) name,"stegano") == 0)
       {
         Image *
           watermark = (Image*)NULL;
@@ -3388,7 +3388,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
         if (msl_info->image[n] == (Image *) NULL)
         {
           ThrowException(msl_info->exception,OptionWarning,
-          "no images defined",name);
+          "no images defined",(char *) name);
           break;
         }
         if (attributes == (const xmlChar **) NULL)
@@ -3397,7 +3397,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
         {
         keyword=(const char *) attributes[i++];
         CloneString(&value,TranslateText(msl_info->image_info[n],
-          msl_info->attributes[n],attributes[i]));
+          msl_info->attributes[n],(char *) attributes[i]));
         switch (*keyword)
         {
           case 'I':
@@ -3448,7 +3448,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
           ThrowException(msl_info->exception,OptionWarning,
             "Missing watermark image",keyword);
       }
-      else if (LocaleCompare(name,"stereo") == 0)
+      else if (LocaleCompare((char *) name,"stereo") == 0)
       {
         Image *
           stereoImage = (Image*)NULL;
@@ -3456,7 +3456,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
         if (msl_info->image[n] == (Image *) NULL)
         {
           ThrowException(msl_info->exception,OptionWarning,
-          "no images defined",name);
+          "no images defined",(char *) name);
           break;
         }
         if (attributes == (const xmlChar **) NULL)
@@ -3465,7 +3465,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
         {
         keyword=(const char *) attributes[i++];
         CloneString(&value,TranslateText(msl_info->image_info[n],
-          msl_info->attributes[n],attributes[i]));
+          msl_info->attributes[n],(char *) attributes[i]));
         switch (*keyword)
         {
           case 'I':
@@ -3516,7 +3516,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
           ThrowException(msl_info->exception,OptionWarning,
             "Missing stereo image",keyword);
       }
-      else if (LocaleCompare(name,"swirl") == 0)
+      else if (LocaleCompare((char *) name,"swirl") == 0)
       {
         /* init the values */
         double  degrees = 0;
@@ -3524,7 +3524,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
         if (msl_info->image[n] == (Image *) NULL)
         {
           ThrowException(msl_info->exception,OptionWarning,
-          "no images defined",name);
+          "no images defined",(char *) name);
           break;
         }
         if (attributes == (const xmlChar **) NULL)
@@ -3533,7 +3533,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
         {
         keyword=(const char *) attributes[i++];
         CloneString(&value,TranslateText(msl_info->image_info[n],
-          msl_info->attributes[n],attributes[i]));
+          msl_info->attributes[n],(char *) attributes[i]));
         switch (*keyword)
         {
           case 'D':
@@ -3580,7 +3580,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
   case 'T':
   case 't':
     {
-      if (LocaleCompare(name,"texture") == 0)
+      if (LocaleCompare((char *) name,"texture") == 0)
       {
         Image *
           textureImage = (Image*)NULL;
@@ -3622,7 +3622,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
         {
         keyword=(const char *) attributes[i++];
         CloneString(&value,TranslateText(msl_info->image_info[n],
-          msl_info->attributes[n],attributes[i]));
+          msl_info->attributes[n],(char *) attributes[i]));
         switch (*keyword)
         {
           case 'I':
@@ -3666,7 +3666,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
           ThrowException(msl_info->exception,OptionWarning,
             "Missing texture image",keyword);
       }
-      else if (LocaleCompare(name,"threshold") == 0)
+      else if (LocaleCompare((char *) name,"threshold") == 0)
       {
         /* init the values */
         int  threshold = 0;
@@ -3674,7 +3674,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
         if (msl_info->image[n] == (Image *) NULL)
         {
           ThrowException(msl_info->exception,OptionWarning,
-          "no images defined",name);
+          "no images defined",(char *) name);
           break;
         }
         if (attributes == (const xmlChar **) NULL)
@@ -3683,7 +3683,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
         {
         keyword=(const char *) attributes[i++];
         CloneString(&value,TranslateText(msl_info->image_info[n],
-          msl_info->attributes[n],attributes[i]));
+          msl_info->attributes[n],(char *) attributes[i]));
         switch (*keyword)
         {
           case 'T':
@@ -3715,12 +3715,12 @@ static void MSLStartElement(void *context,const xmlChar *name,
         break;
         }
       }
-      else if (LocaleCompare(name, "transparent") == 0)
+      else if (LocaleCompare((char *) name, "transparent") == 0)
       {
         if (msl_info->image[n] == (Image *) NULL)
         {
           ThrowException(msl_info->exception,OptionWarning,
-                  "no images defined",name);
+                  "no images defined",(char *) name);
           break;
         }
         if (attributes == (const xmlChar **) NULL)
@@ -3729,7 +3729,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
         {
           keyword=(const char *) attributes[i++];
           CloneString(&value,TranslateText(msl_info->image_info[n],
-                msl_info->attributes[n],attributes[i]));
+                msl_info->attributes[n],(char *) attributes[i]));
           switch (*keyword)
           {
             case 'C':
@@ -3759,12 +3759,12 @@ static void MSLStartElement(void *context,const xmlChar *name,
         }
         break;
       }
-      else if (LocaleCompare(name, "trim") == 0)
+      else if (LocaleCompare((char *) name, "trim") == 0)
       {
         if (msl_info->image[n] == (Image *) NULL)
         {
           ThrowException(msl_info->exception,OptionWarning,
-                  "no images defined",name);
+                  "no images defined",(char *) name);
           break;
         }
 
@@ -3795,12 +3795,12 @@ static void MSLStartElement(void *context,const xmlChar *name,
     case 'W':
     case 'w':
     {
-      if (LocaleCompare(name,"write") == 0)
+      if (LocaleCompare((char *) name,"write") == 0)
         {
           if (msl_info->image[n] == (Image *) NULL)
             {
               ThrowException(msl_info->exception,OptionWarning,
-                "no images defined",name);
+                "no images defined",(char *) name);
               break;
             }
           if (attributes == (const xmlChar **) NULL)
@@ -3809,7 +3809,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
           {
             keyword=(const char *) attributes[i++];
             CloneString(&value,TranslateText(msl_info->image_info[n],
-              msl_info->attributes[n],attributes[i]));
+              msl_info->attributes[n],(char *) attributes[i]));
             switch (*keyword)
             {
               case 'F':
@@ -3868,7 +3868,7 @@ static void MSLEndElement(void *context,const xmlChar *name)
     case 'G':
     case 'g':
     {
-      if (LocaleCompare(name, "group") == 0 )
+      if (LocaleCompare((char *) name, "group") == 0 )
       {
         if (msl_info->group_info[msl_info->nGroups-1].numImages > 0 )
         {
@@ -3890,7 +3890,7 @@ static void MSLEndElement(void *context,const xmlChar *name)
     case 'I':
     case 'i':
     {
-      if (LocaleCompare(name, "image") == 0)
+      if (LocaleCompare((char *) name, "image") == 0)
         MSLPopImage(msl_info);
     }
     break;
@@ -3898,7 +3898,7 @@ static void MSLEndElement(void *context,const xmlChar *name)
     case 'M':
     case 'm':
     {
-      if (LocaleCompare(name, "msl") == 0 )
+      if (LocaleCompare((char *) name, "msl") == 0 )
       {
         /*
           This is our base element.
@@ -3948,7 +3948,7 @@ static void MSLReference(void *context,const xmlChar *name)
   */
   msl_info=(MSLInfo *) context;
   if (msl_info->debug)
-    (void) fprintf(stdout,"  SAX.reference(%.1024s)\n",name);
+    (void) fprintf(stdout,"  SAX.reference(%.1024s)\n",(char *) name);
   parser=msl_info->parser;
   if (*name == '#')
     (void) xmlAddChild(parser->node,xmlNewCharRef(msl_info->document,name));
@@ -4108,7 +4108,7 @@ static void MSLExternalSubset(void *context,const xmlChar *name,
   msl_info=(MSLInfo *) context;
   if (msl_info->debug)
     {
-      (void) fprintf(stdout,"  SAX.InternalSubset(%.1024s",name);
+      (void) fprintf(stdout,"  SAX.InternalSubset(%.1024s",(char *) name);
       if (external_id != NULL)
         (void) fprintf(stdout,"  , %.1024s",external_id);
       if (system_id != NULL)
