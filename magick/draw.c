@@ -1789,23 +1789,33 @@ static void DrawPolygonPrimitive(const DrawInfo *draw_info,
     q=GetImagePixels(image,x,y,(int) floor(bounds.x2-0.5)-x+1,1);
     if (q == (PixelPacket *) NULL)
       break;
-    for ( ; x <= (int) floor(bounds.x2-0.5); x++)
+    switch (primitive_info->coordinates)
     {
-      /*
-        Compute the stroke and fill opacity values.
-      */
-      fill_opacity=0.0;
-      stroke_opacity=0.0;
-      subpath_opacity=0.0;
-      if (primitive_info->coordinates <= 1)
+      case 0:
+        break;
+      case 1:
+      {
+        /*
+          Point.
+        */
+        for ( ; x <= (int) floor(bounds.x2-0.5); x++)
         {
           if ((x == (int) ceil(primitive_info->point.x-0.5)) &&
               (y == (int) ceil(primitive_info->point.y-0.5)))
-            stroke_opacity=1.0;
+            *q=stroke_color;
+          q++;
         }
-      else
+      }
+      default:
+      {
+        /*
+          Polygon or line.
+        */
+        for ( ; x <= (int) floor(bounds.x2-0.5); x++)
         {
-          winding_number=fill ? GetWindingNumber(polygon_info,x,y) : 0;
+          fill_opacity=0.0;
+          stroke_opacity=0.0;
+          subpath_opacity=0.0;
           for (i=0; i < polygon_info->number_edges; i++)
           {
             p=polygon_info->edges+i;
@@ -1820,8 +1830,7 @@ static void DrawPolygonPrimitive(const DrawInfo *draw_info,
               continue;
             if (x < (p->bounds.x1-mid-0.5))
               continue;
-            j=p->highwater > 0 ? p->highwater : 1;
-            for ( ; j < p->number_points; j++)
+            for (j=Max(p->highwater,1) ; j < p->number_points; j++)
             {
               if ((p->points[j-1].y-mid-0.5) > y)
                 break;
@@ -1867,6 +1876,7 @@ static void DrawPolygonPrimitive(const DrawInfo *draw_info,
             {
               if (subpath_opacity > 0.0)
                 fill_opacity=subpath_opacity;
+              winding_number=GetWindingNumber(polygon_info,x,y);
               if (draw_info->fill_rule != NonZeroRule)
                 {
                   if (AbsoluteValue(winding_number) & 0x01)
@@ -1876,42 +1886,49 @@ static void DrawPolygonPrimitive(const DrawInfo *draw_info,
                 if (AbsoluteValue(winding_number) > 0)
                   fill_opacity=1.0;
             }
-        }
-      if (draw_info->tile != (Image *) NULL)
-        fill_color=GetOnePixel(draw_info->tile,x % draw_info->tile->columns,
-          y % draw_info->tile->rows);
-      if ((fill_opacity != 0.0) && (fill_color.opacity != TransparentOpacity))
-        {
-          /*
-            Fill.
-          */
-          fill_opacity=MaxRGB-fill_opacity*(MaxRGB-fill_color.opacity);
-          q->red=(Quantum) (alpha*(fill_color.red*(MaxRGB-fill_opacity)+
-            q->red*fill_opacity));
-          q->green=(Quantum) (alpha*(fill_color.green*(MaxRGB-fill_opacity)+
-            q->green*fill_opacity));
-          q->blue=(Quantum) (alpha*(fill_color.blue*(MaxRGB-fill_opacity)+
-            q->blue*fill_opacity));
-          q->opacity=(Quantum) (alpha*(fill_color.opacity*(MaxRGB-fill_opacity)+
-            q->opacity*fill_opacity));
-        }
-      if ((stroke_opacity != 0.0) &&
-          (stroke_color.opacity != TransparentOpacity))
-        {
+          if (fill_opacity != 0.0)
+            {
+              if (draw_info->tile != (Image *) NULL)
+                fill_color=GetOnePixel(draw_info->tile,x %
+                  draw_info->tile->columns,y % draw_info->tile->rows);
+              if (fill_color.opacity != TransparentOpacity)
+                {
+                  /*
+                    Fill.
+                  */
+                  fill_opacity=MaxRGB-fill_opacity*(MaxRGB-fill_color.opacity);
+                  q->red=(Quantum) (alpha*(fill_color.red*
+                    (MaxRGB-fill_opacity)+q->red*fill_opacity));
+                  q->green=(Quantum) (alpha*(fill_color.green*
+                    (MaxRGB-fill_opacity)+q->green*fill_opacity));
+                  q->blue=(Quantum) (alpha*(fill_color.blue*
+                    (MaxRGB-fill_opacity)+q->blue*fill_opacity));
+                  q->opacity=(Quantum) (alpha*(fill_color.opacity*
+                    (MaxRGB-fill_opacity)+q->opacity*fill_opacity));
+                }
+            }
+          if ((stroke_opacity == 0.0) ||
+              (stroke_color.opacity == TransparentOpacity))
+            {
+              q++;
+              continue;
+            }
           /*
             Stroke.
           */
           stroke_opacity=MaxRGB-stroke_opacity*(MaxRGB-stroke_color.opacity);
-          q->red=(Quantum) (alpha*(stroke_color.red*(MaxRGB-stroke_opacity)+
-            q->red*stroke_opacity));
-          q->green=(Quantum) (alpha*(stroke_color.green*(MaxRGB-stroke_opacity)+
-            q->green*stroke_opacity));
-          q->blue=(Quantum) (alpha*(stroke_color.blue*(MaxRGB-stroke_opacity)+
-            q->blue*stroke_opacity));
+          q->red=(Quantum) (alpha*(stroke_color.red*
+            (MaxRGB-stroke_opacity)+q->red*stroke_opacity));
+          q->green=(Quantum) (alpha*(stroke_color.green*
+            (MaxRGB-stroke_opacity)+q->green*stroke_opacity));
+          q->blue=(Quantum) (alpha*(stroke_color.blue*
+            (MaxRGB-stroke_opacity)+q->blue*stroke_opacity));
           q->opacity=(Quantum) (alpha*(stroke_color.opacity*(MaxRGB-
             stroke_opacity)+q->opacity*stroke_opacity));
+          q++;
         }
-      q++;
+        break;
+      }
     }
     if (!SyncImagePixels(image))
       break;
