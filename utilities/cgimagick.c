@@ -103,7 +103,7 @@ static void Usage(const char *client_name)
     to the first unprocessed character.  Returns the result.
     -------------------------------------------------------------------------*/
 
-int decode_hex (const char **input,size_t outmax)
+int DecodeHex (const char **input,size_t outmax)
 {
     static char
         hex_to_bin [128] = {
@@ -142,7 +142,7 @@ int decode_hex (const char **input,size_t outmax)
 }
 
 /*  ---------------------------------------------------------------------[<]-
-    Function: http_unescape
+    Function: HttpUnescape
 
     Synopsis: Removes HTTP escaping from a string.  See http_escape() for
     details of the escaping algorithm.  If the result string is NULL,
@@ -152,7 +152,7 @@ int decode_hex (const char **input,size_t outmax)
     not stored.
     ---------------------------------------------------------------------[>]-*/
 
-char *http_unescape(char *string,char *result)
+char *HttpUnescape(char *string,char *result)
 {
   char
     *target;                          /*  Where we store the result        */
@@ -168,7 +168,7 @@ char *http_unescape(char *string,char *result)
           && string [1] && string [2])
       {
         string++;
-        *target = decode_hex ((const char **) &string, 2);
+        *target = DecodeHex ((const char **) &string, 2);
         if (*target != '\r')
           target++;                   /*  We do not store CRs              */
       }
@@ -179,43 +179,6 @@ char *http_unescape(char *string,char *result)
         else
           *target++ = *string;        /*  Otherwise just copy              */
 
-        string++;
-      }
-  }
-  *target = '\0';                     /*  Terminate target string          */
-  return (result);
-}
-
-
-/*  ---------------------------------------------------------------------[<]-
-    Function: http_unescape_hex
-
-    Synopsis: Removes HTTP hex escaping from a URL string, by expanding any
-    sequences of characters %xx.
-    ---------------------------------------------------------------------[>]-*/
-
-char *http_unescape_hex(char *string,char *result)
-{
-  char
-    *target;                          /*  Where we store the result        */
-
-  assert(string != (char *) NULL);
-  if (!result)                        /*  If result string is null,        */
-    result = string;                  /*    modify in place                */
-  target = result;
-
-  while (*string)
-  {
-    if (*string == '%'                /*  Unescape %xx sequence            */
-      &&   string [1] && string [2])
-      {
-        string++;
-        *target = decode_hex ((const char **) &string, 2);
-        target++;             
-      }
-    else
-      {
-        *target++ = *string;          /*  Otherwise just copy              */
         string++;
       }
   }
@@ -268,54 +231,6 @@ char *cgi_get_input(int iMethod)
     strncpy (strRetBuf, getenv ("QUERY_STRING"), (iStdinLen + 1));
 
   return (*strHead? strHead: NULL);
-}
-
-/*  ---------------------------------------------------------------------[<]-
-    Function: env_get_string
-
-    Synopsis: Translates the specified environment variable and returns a
-    static string containing the value.  If the variable is not defined in
-    the environment, returns the specified default value.  Note: if you
-    want to use the value in a program you should use strdupl() to make a
-    copy.  The environment variable name is always translated into upper
-    case.  The default value may be NULL.
-
-    Examples:
-    config_file = strdupl (env_get_string ("config", "default.cfg"));
-    ---------------------------------------------------------------------[>]-*/
-
-char *env_get_string(const char *name,const char *default_value)
-{
-  char
-    *variable_name,
-    *variable_value;
-
-  variable_name = AllocateString (name);
-  LocaleUpper (variable_name);
-  variable_value = getenv (variable_name);
-  FreeMemory((void **) &variable_name);
-  return (variable_value? variable_value: (char *) default_value);
-}
-
-/*  ---------------------------------------------------------------------[<]-
-    Function: env_get_number
-
-    Synopsis: Translates the specified environment variable and returns the
-    long numeric value of the string.  If the variable is not defined in
-    the environment, returns the specified default value.  The environment
-    variable name is always translated into upper case.
-
-    Examples:
-    max_retries = env_get_number ("retries", 5);
-    ---------------------------------------------------------------------[>]-*/
-
-long env_get_number(const char *name,long default_value)
-{
-  char
-    *variable_value;
-
-  variable_value = env_get_string (name, NULL);
-  return (variable_value? atol (variable_value): default_value);
 }
 
 #define IsCGIDelimiter(c)  (((c) == '&') || ((c) == '=') || ((c) == '\0'))
@@ -405,7 +320,7 @@ unsigned int CGIToArgv(const char *text,int *argc,char ***argv)
         /*
           Convert any special HTML codes in place back to ASCII
         */
-        http_unescape(vector[i], (char *) NULL);
+        HttpUnescape(vector[i], (char *) NULL);
         i++;
       }
     q++;
@@ -501,7 +416,7 @@ int main(int argc,char **argv)
                 fwrite(blob_data,1,blob_length,stdout);
                 argc_hw = i+1;
                 argv_hw = &argv[argc_hw];
-               }
+              }
           }
         }
     }
