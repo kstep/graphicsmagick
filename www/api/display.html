@@ -49,7 +49,7 @@
 <H2><A NAME="xdisplaybackgroundimage">XDisplayBackgroundImage</A></H2>
 <P>Method XDisplayBackgroundImage displays an image in the background of a window.</P>
 <P>The format of the XDisplayBackgroundImage method is:</P>
-<blockquote>unsigned int XDisplayBackgroundImage ( Display *display, XResourceInfo *resource_info, <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
+<blockquote>unsigned int XDisplayBackgroundImage ( Display *display, <A HREF="types/XResourceInfo.html">XResourceInfo</A> *resource_info, <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG><A NAME="item_o_status%3A">status:</A></STRONG><BR>
@@ -76,7 +76,7 @@ Specifies a pointer to a Image structure; returned from ReadImage.
 <FONT SIZE=-1>X11.</FONT>  
 <FONT SIZE=-1>A</FONT> new image is created and returned if the user interactively transforms the displayed image.</P>
 <P>The format of the XDisplayImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *XDisplayImage ( Display *display, XResourceInfo *resource_info, char **argv, int argc, <A HREF="types/Image.html">Image</A> **image, unsigned long *state ); </blockquote><P>
+<blockquote><A HREF="types/Image.html">Image</A> *XDisplayImage ( Display *display, <A HREF="types/XResourceInfo.html">XResourceInfo</A> *resource_info, char **argv, int argc, <A HREF="types/Image.html">Image</A> **image, unsigned long *state ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG><A NAME="item_o_loaded_image%3A">loaded_image:</A></STRONG><BR>

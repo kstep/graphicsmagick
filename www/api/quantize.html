@@ -62,7 +62,7 @@
 <P>Method CloneQuantizeInfo makes a duplicate of the given quantize info structure, or if quantize info is 
 <FONT SIZE=-1>NULL,</FONT> a new one.</P>
 <P>The format of the CloneQuantizeInfo method is:</P>
-<blockquote>QuantizeInfo *CloneQuantizeInfo ( const QuantizeInfo *quantize_info ); </blockquote><P>
+<blockquote><A HREF="types/QuantizeInfo.html">QuantizeInfo</A> *CloneQuantizeInfo ( const <A HREF="types/QuantizeInfo.html">QuantizeInfo</A> *quantize_info ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG><A NAME="item_o_clone_info%3A">clone_info:</A></STRONG><BR>
@@ -78,7 +78,7 @@ a structure of type info.
 <H2><A NAME="destroyquantizeinfo">DestroyQuantizeInfo</A></H2>
 <P>Method DestroyQuantizeInfo deallocates memory associated with an QuantizeInfo structure.</P>
 <P>The format of the DestroyQuantizeInfo method is:</P>
-<blockquote>DestroyQuantizeInfo ( QuantizeInfo *quantize_info ); </blockquote><P>
+<blockquote>DestroyQuantizeInfo ( <A HREF="types/QuantizeInfo.html">QuantizeInfo</A> *quantize_info ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>quantize_info:</STRONG><BR>
@@ -89,7 +89,7 @@ Specifies a pointer to an QuantizeInfo structure.
 <H2><A NAME="getquantizeinfo">GetQuantizeInfo</A></H2>
 <P>Method GetQuantizeInfo initializes the QuantizeInfo structure.</P>
 <P>The format of the GetQuantizeInfo method is:</P>
-<blockquote>GetQuantizeInfo ( QuantizeInfo *quantize_info ); </blockquote><P>
+<blockquote>GetQuantizeInfo ( <A HREF="types/QuantizeInfo.html">QuantizeInfo</A> *quantize_info ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>quantize_info:</STRONG><BR>
@@ -163,7 +163,7 @@ The address of a byte (8 bits) array of run-length encoded pixel data of your re
 <H2><A NAME="quantizeimage">QuantizeImage</A></H2>
 <P>Method QuantizeImage analyzes the colors within a reference image and chooses a fixed number of colors to represent the image.  The goal of the algorithm is to minimize the difference between the input and output image while minimizing the processing time.</P>
 <P>The format of the QuantizeImage method is:</P>
-<blockquote>unsigned int QuantizeImage ( const QuantizeInfo *quantize_info, <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
+<blockquote>unsigned int QuantizeImage ( const <A HREF="types/QuantizeInfo.html">QuantizeInfo</A> *quantize_info, <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>quantize_info:</STRONG><BR>
@@ -178,7 +178,7 @@ Specifies a pointer to a Image structure.
 <H2><A NAME="quantizeimages">QuantizeImages</A></H2>
 <P>QuantizeImages analyzes the colors within a set of reference images and chooses a fixed number of colors to represent the set.  The goal of the algorithm is to minimize the difference between the input and output images while minimizing the processing time.</P>
 <P>The format of the QuantizeImages method is:</P>
-<blockquote>unsigned int QuantizeImages ( const QuantizeInfo *quantize_info, <A HREF="types/Image.html">Image</A> *images ); </blockquote><P>
+<blockquote>unsigned int QuantizeImages ( const <A HREF="types/QuantizeInfo.html">QuantizeInfo</A> *quantize_info, <A HREF="types/Image.html">Image</A> *images ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>quantize_info:</STRONG><BR>

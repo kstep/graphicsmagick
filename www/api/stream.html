@@ -1,0 +1,74 @@
+<HTML>
+<HEAD>
+<TITLE>stream - Image Pixel FIFO</TITLE>
+<LINK REV="made" HREF="mailto:magick@wizards.dupont.com">
+</HEAD>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#1F00FF" alink="#FF0000"  vlink="#9900DD">
+
+<A NAME="__index__"></A>
+<!-- INDEX BEGIN -->
+
+<UL>
+
+	<LI><A HREF="#name">
+<FONT SIZE=-1>NAME</FONT></A></LI>
+	<LI><A HREF="#synopsis">
+<FONT SIZE=-1>SYNOPSIS</FONT></A></LI>
+	<LI><A HREF="#function descriptions">
+<FONT SIZE=-1>FUNCTION</FONT> 
+<FONT SIZE=-1>DESCRIPTIONS</FONT></A></LI>
+	<UL>
+
+		<LI><A HREF="#streamimage">StreamImage</A></LI>
+	</UL>
+
+</UL>
+<!-- INDEX END -->
+
+<HR>
+<P>
+<H1><A NAME="name">
+<FONT SIZE=-1>NAME</FONT></A></H1>
+<P>stream - Image Pixel 
+<FONT SIZE=-1>FIFO</FONT></P>
+<P>
+<A HREF="#__index__"><SMALL>page index</SMALL></A>
+<HR>
+<H1><A NAME="synopsis">
+<FONT SIZE=-1>SYNOPSIS</FONT></A></H1>
+<P>unsigned int  <STRONG>StreamImage</STRONG>( const ImageInfo *image_info, void(* Stream )( const Image *), ExceptionInfo *exception );</P>
+<P>
+<A HREF="#__index__"><SMALL>page index</SMALL></A>
+<HR>
+<H1><A NAME="function descriptions">
+<FONT SIZE=-1>FUNCTION</FONT> 
+<FONT SIZE=-1>DESCRIPTIONS</FONT></A></H1>
+<P>
+<H2><A NAME="streamimage">StreamImage</A></H2>
+<P>Method StreamImage makes the image pixels available to a user supplied callback method immediately upon reading a scanline with the <CODE>ReadImage</CODE> method.</P>
+<P>The format of the StreamImage method is:</P>
+<blockquote>unsigned int StreamImage ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, void ( *Stream ) ( const <A HREF="types/Image.html">Image</A> *), <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
+<DL><DL>
+<p><dt><STRONG><A NAME="item_o_status%3A">status:</A></STRONG><BR>
+<DD>
+Method StreamImage returns True if the image pixels are streamed to the user supplied callback method otherwise False.
+<P></P>
+<p><dt><STRONG><A NAME="item_o_image_info%3A">image_info:</A></STRONG><BR>
+<DD>
+Specifies a pointer to an ImageInfo structure.
+<P></P>
+<p><dt><STRONG><A NAME="item_o_stream%3A">stream:</A></STRONG><BR>
+<DD>
+a callback method.
+<P></P>
+<p><dt><STRONG><A NAME="item_o_exception%3A">exception:</A></STRONG><BR>
+<DD>
+return any errors or warnings in this structure.
+</DL></DL>
+<P><A HREF="#__index__"><SMALL>page index</SMALL></A></P>
+
+</BODY>
+
+</HTML>
