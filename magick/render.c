@@ -1244,8 +1244,6 @@ static AffineMatrix InverseAffineMatrix(const AffineMatrix *affine)
 static unsigned int DrawAffineImage(Image *image,const Image *composite,
   const AffineMatrix *affine)
 {
-#define DrawAffineImageText  "  Affine transform image...  "
-
   AffineMatrix
     inverse_affine;
 
@@ -1302,8 +1300,6 @@ static unsigned int DrawAffineImage(Image *image,const Image *composite,
     }
     if (!SyncImagePixels(image))
       break;
-    if (QuantumTick(y,image->rows))
-      MagickMonitor(DrawAffineImageText,y,image->rows);
   }
   return(True);
 }
