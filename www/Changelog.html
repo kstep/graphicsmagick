@@ -23,6 +23,18 @@ ImageMagick Changes</font></font></font></b></td>
 <dl>
 <dd>
 <pre>
+2002-07-04  Cristy  &lt;cristy@mystic.es.dupont.com&gt;
+  * Semaphore.c will compile now when pthreads are not present.
+  * 8-Bit Quantum PCD images now read correctly.
+
+2002-07-01  Cristy  &lt;cristy@mystic.es.dupont.com&gt;
+  * ImageMagick 5.4.7 released.
+
+2002-06-30  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+  * magick/nt.c (readdir): Make readdir re-entrant for each instance
+    of DIR.  This should improve thread safety.
+  * ltdl/ltdl.c : Support building as DLL under Win32.
+
 2002-06-20  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
   * Update to use Automake 1.6.2
 
