@@ -499,8 +499,8 @@ man_MANS = $(ALLMANPAGES)
 subdir = magick
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = magick_config.h magick_config_api.h
-CONFIG_CLEAN_FILES = magick_types.h GraphicsMagick-config \
-	GraphicsMagick.pc version.h
+CONFIG_CLEAN_FILES = GraphicsMagick-config GraphicsMagick.pc \
+	magick_types.h version.h
 LTLIBRARIES = $(lib_LTLIBRARIES)
 
 @WITH_LTDL_FALSE@@WITH_MODULES_TRUE@libGraphicsMagick_la_DEPENDENCIES =
@@ -637,11 +637,11 @@ $(srcdir)/magick_config_api.h.in: @MAINTAINER_MODE_TRUE@ $(top_srcdir)/configure
 
 distclean-hdr:
 	-rm -f magick_config.h stamp-h1 magick_config_api.h stamp-h2
-magick_types.h: $(top_builddir)/config.status magick_types.h.in
-	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@
 GraphicsMagick-config: $(top_builddir)/config.status GraphicsMagick-config.in
 	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@
 GraphicsMagick.pc: $(top_builddir)/config.status GraphicsMagick.pc.in
+	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@
+magick_types.h: $(top_builddir)/config.status magick_types.h.in
 	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@
 version.h: $(top_builddir)/config.status version.h.in
 	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@

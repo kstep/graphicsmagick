@@ -2430,35 +2430,36 @@ AC_SUBST(MAGICK_API_LDFLAGS)
 AC_SUBST(MAGICK_API_LIBS)
 
 AC_OUTPUT( \
+        GraphicsMagick.spec \
+        Magick++/Makefile \
+        Magick++/bin/GraphicsMagick++-config \
+        Magick++/bin/Makefile \
+        Magick++/demo/Makefile \
+        Magick++/lib/GraphicsMagick++.pc \
+        Magick++/lib/Magick++/Makefile \
+        Magick++/lib/Makefile \
+        Magick++/tests/Makefile \
         Makefile \
-        magick/Makefile \
-        coders/delegates.mgk \
+        PerlMagick/Magick.pm \
+        PerlMagick/Makefile.PL \
         coders/Makefile \
-        utilities/Makefile \
-        tests/Makefile \
+        coders/delegates.mgk \
         coders/type-ghostscript.mgk \
         coders/type-solaris.mgk \
         coders/type-windows.mgk \
         coders/type.mgk \
         filters/Makefile \
         ltdl/Makefile \
-        magick/magick_types.h \
         magick/GraphicsMagick-config \
         magick/GraphicsMagick.pc \
+        magick/Makefile \
+        magick/magick_types.h \
         magick/version.h \
-        wand/Makefile \
-        wand/GraphicsMagickWand.pc \
+        tests/Makefile \
+        utilities/Makefile \
         wand/GraphicsMagickWand-config \
-        Magick++/Makefile \
-        Magick++/bin/GraphicsMagick++-config \
-        Magick++/bin/Makefile \
-        Magick++/demo/Makefile \
-        Magick++/lib/GraphicsMagick++.pc \
-        Magick++/lib/Makefile \
-        Magick++/lib/Magick++/Makefile \
-        Magick++/tests/Makefile \
-        PerlMagick/Magick.pm \
-        PerlMagick/Makefile.PL )
+        wand/GraphicsMagickWand.pc \
+        wand/Makefile )
 rm -f magick-version
 
 echo ""

@@ -41,7 +41,7 @@ pkgdatadir = @MagickSharePath@
 pkgdata_DATA = Copyright.txt
 
 # Additional files to distribute
-EXTRA_DIST = ChangeLog Copyright.txt GraphicsMagick.spec INSTALL-mac.txt \
+EXTRA_DIST = ChangeLog Copyright.txt INSTALL-mac.txt \
 	INSTALL-unix.txt INSTALL-vms.txt INSTALL-windows.txt TODO.txt \
 	index.html Magickshr.opt Make.com NEWS PLATFORMS.txt \
 	README.txt lndir.sh version.sh winpath.sh

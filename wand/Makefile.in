@@ -409,7 +409,7 @@ subdir = wand
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/magick/magick_config.h \
 	$(top_builddir)/magick/magick_config_api.h
-CONFIG_CLEAN_FILES = GraphicsMagickWand.pc GraphicsMagickWand-config
+CONFIG_CLEAN_FILES = GraphicsMagickWand-config GraphicsMagickWand.pc
 LTLIBRARIES = $(lib_LTLIBRARIES)
 
 libGraphicsMagickWand_la_DEPENDENCIES = \
@@ -465,9 +465,9 @@ $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am  $(top_srcdir)/configu
 	  $(AUTOMAKE) --gnu  wand/Makefile
 Makefile: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ $(am__depfiles_maybe)
-GraphicsMagickWand.pc: $(top_builddir)/config.status GraphicsMagickWand.pc.in
-	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@
 GraphicsMagickWand-config: $(top_builddir)/config.status GraphicsMagickWand-config.in
+	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@
+GraphicsMagickWand.pc: $(top_builddir)/config.status GraphicsMagickWand.pc.in
 	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@
 libLTLIBRARIES_INSTALL = $(INSTALL)
 install-libLTLIBRARIES: $(lib_LTLIBRARIES)

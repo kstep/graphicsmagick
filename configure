@@ -39457,7 +39457,7 @@ MAGICK_API_LIBS="-lGraphicsMagick $MAGICK_DEP_LIBS"
 
 
 
-                                                                                                                                                                                                                                                                                                  ac_config_files="$ac_config_files Makefile magick/Makefile coders/delegates.mgk coders/Makefile utilities/Makefile tests/Makefile coders/type-ghostscript.mgk coders/type-solaris.mgk coders/type-windows.mgk coders/type.mgk filters/Makefile ltdl/Makefile magick/magick_types.h magick/GraphicsMagick-config magick/GraphicsMagick.pc magick/version.h wand/Makefile wand/GraphicsMagickWand.pc wand/GraphicsMagickWand-config Magick++/Makefile Magick++/bin/GraphicsMagick++-config Magick++/bin/Makefile Magick++/demo/Makefile Magick++/lib/GraphicsMagick++.pc Magick++/lib/Makefile Magick++/lib/Magick++/Makefile Magick++/tests/Makefile PerlMagick/Magick.pm PerlMagick/Makefile.PL"
+                                                                                                                                                                                                                                                                                                            ac_config_files="$ac_config_files GraphicsMagick.spec Magick++/Makefile Magick++/bin/GraphicsMagick++-config Magick++/bin/Makefile Magick++/demo/Makefile Magick++/lib/GraphicsMagick++.pc Magick++/lib/Magick++/Makefile Magick++/lib/Makefile Magick++/tests/Makefile Makefile PerlMagick/Magick.pm PerlMagick/Makefile.PL coders/Makefile coders/delegates.mgk coders/type-ghostscript.mgk coders/type-solaris.mgk coders/type-windows.mgk coders/type.mgk filters/Makefile ltdl/Makefile magick/GraphicsMagick-config magick/GraphicsMagick.pc magick/Makefile magick/magick_types.h magick/version.h tests/Makefile utilities/Makefile wand/GraphicsMagickWand-config wand/GraphicsMagickWand.pc wand/Makefile"
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
 # tests run on this system so they can be shared between configure
@@ -40223,35 +40223,36 @@ for ac_config_target in $ac_config_targets
 do
   case "$ac_config_target" in
   # Handling of arguments.
+  "GraphicsMagick.spec" ) CONFIG_FILES="$CONFIG_FILES GraphicsMagick.spec" ;;
+  "Magick++/Makefile" ) CONFIG_FILES="$CONFIG_FILES Magick++/Makefile" ;;
+  "Magick++/bin/GraphicsMagick++-config" ) CONFIG_FILES="$CONFIG_FILES Magick++/bin/GraphicsMagick++-config" ;;
+  "Magick++/bin/Makefile" ) CONFIG_FILES="$CONFIG_FILES Magick++/bin/Makefile" ;;
+  "Magick++/demo/Makefile" ) CONFIG_FILES="$CONFIG_FILES Magick++/demo/Makefile" ;;
+  "Magick++/lib/GraphicsMagick++.pc" ) CONFIG_FILES="$CONFIG_FILES Magick++/lib/GraphicsMagick++.pc" ;;
+  "Magick++/lib/Magick++/Makefile" ) CONFIG_FILES="$CONFIG_FILES Magick++/lib/Magick++/Makefile" ;;
+  "Magick++/lib/Makefile" ) CONFIG_FILES="$CONFIG_FILES Magick++/lib/Makefile" ;;
+  "Magick++/tests/Makefile" ) CONFIG_FILES="$CONFIG_FILES Magick++/tests/Makefile" ;;
   "Makefile" ) CONFIG_FILES="$CONFIG_FILES Makefile" ;;
-  "magick/Makefile" ) CONFIG_FILES="$CONFIG_FILES magick/Makefile" ;;
-  "coders/delegates.mgk" ) CONFIG_FILES="$CONFIG_FILES coders/delegates.mgk" ;;
+  "PerlMagick/Magick.pm" ) CONFIG_FILES="$CONFIG_FILES PerlMagick/Magick.pm" ;;
+  "PerlMagick/Makefile.PL" ) CONFIG_FILES="$CONFIG_FILES PerlMagick/Makefile.PL" ;;
   "coders/Makefile" ) CONFIG_FILES="$CONFIG_FILES coders/Makefile" ;;
-  "utilities/Makefile" ) CONFIG_FILES="$CONFIG_FILES utilities/Makefile" ;;
-  "tests/Makefile" ) CONFIG_FILES="$CONFIG_FILES tests/Makefile" ;;
+  "coders/delegates.mgk" ) CONFIG_FILES="$CONFIG_FILES coders/delegates.mgk" ;;
   "coders/type-ghostscript.mgk" ) CONFIG_FILES="$CONFIG_FILES coders/type-ghostscript.mgk" ;;
   "coders/type-solaris.mgk" ) CONFIG_FILES="$CONFIG_FILES coders/type-solaris.mgk" ;;
   "coders/type-windows.mgk" ) CONFIG_FILES="$CONFIG_FILES coders/type-windows.mgk" ;;
   "coders/type.mgk" ) CONFIG_FILES="$CONFIG_FILES coders/type.mgk" ;;
   "filters/Makefile" ) CONFIG_FILES="$CONFIG_FILES filters/Makefile" ;;
   "ltdl/Makefile" ) CONFIG_FILES="$CONFIG_FILES ltdl/Makefile" ;;
-  "magick/magick_types.h" ) CONFIG_FILES="$CONFIG_FILES magick/magick_types.h" ;;
   "magick/GraphicsMagick-config" ) CONFIG_FILES="$CONFIG_FILES magick/GraphicsMagick-config" ;;
   "magick/GraphicsMagick.pc" ) CONFIG_FILES="$CONFIG_FILES magick/GraphicsMagick.pc" ;;
+  "magick/Makefile" ) CONFIG_FILES="$CONFIG_FILES magick/Makefile" ;;
+  "magick/magick_types.h" ) CONFIG_FILES="$CONFIG_FILES magick/magick_types.h" ;;
   "magick/version.h" ) CONFIG_FILES="$CONFIG_FILES magick/version.h" ;;
-  "wand/Makefile" ) CONFIG_FILES="$CONFIG_FILES wand/Makefile" ;;
-  "wand/GraphicsMagickWand.pc" ) CONFIG_FILES="$CONFIG_FILES wand/GraphicsMagickWand.pc" ;;
+  "tests/Makefile" ) CONFIG_FILES="$CONFIG_FILES tests/Makefile" ;;
+  "utilities/Makefile" ) CONFIG_FILES="$CONFIG_FILES utilities/Makefile" ;;
   "wand/GraphicsMagickWand-config" ) CONFIG_FILES="$CONFIG_FILES wand/GraphicsMagickWand-config" ;;
-  "Magick++/Makefile" ) CONFIG_FILES="$CONFIG_FILES Magick++/Makefile" ;;
-  "Magick++/bin/GraphicsMagick++-config" ) CONFIG_FILES="$CONFIG_FILES Magick++/bin/GraphicsMagick++-config" ;;
-  "Magick++/bin/Makefile" ) CONFIG_FILES="$CONFIG_FILES Magick++/bin/Makefile" ;;
-  "Magick++/demo/Makefile" ) CONFIG_FILES="$CONFIG_FILES Magick++/demo/Makefile" ;;
-  "Magick++/lib/GraphicsMagick++.pc" ) CONFIG_FILES="$CONFIG_FILES Magick++/lib/GraphicsMagick++.pc" ;;
-  "Magick++/lib/Makefile" ) CONFIG_FILES="$CONFIG_FILES Magick++/lib/Makefile" ;;
-  "Magick++/lib/Magick++/Makefile" ) CONFIG_FILES="$CONFIG_FILES Magick++/lib/Magick++/Makefile" ;;
-  "Magick++/tests/Makefile" ) CONFIG_FILES="$CONFIG_FILES Magick++/tests/Makefile" ;;
-  "PerlMagick/Magick.pm" ) CONFIG_FILES="$CONFIG_FILES PerlMagick/Magick.pm" ;;
-  "PerlMagick/Makefile.PL" ) CONFIG_FILES="$CONFIG_FILES PerlMagick/Makefile.PL" ;;
+  "wand/GraphicsMagickWand.pc" ) CONFIG_FILES="$CONFIG_FILES wand/GraphicsMagickWand.pc" ;;
+  "wand/Makefile" ) CONFIG_FILES="$CONFIG_FILES wand/Makefile" ;;
   "depfiles" ) CONFIG_COMMANDS="$CONFIG_COMMANDS depfiles" ;;
   "magick/magick_config.h" ) CONFIG_HEADERS="$CONFIG_HEADERS magick/magick_config.h" ;;
   "magick/magick_config_api.h" ) CONFIG_HEADERS="$CONFIG_HEADERS magick/magick_config_api.h" ;;

@@ -1,3 +1,10 @@
+2003-07-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* GraphicsMagick.spec.in: Replaced GraphicsMagick.spec with
+	GraphicsMagick.spec.in, which is configured to produce
+	GraphicsMagick.spec.
+	* configure.ac: Configure GraphicsMagick.spec.
+
 2003-07-29  Troy Edwards  <vallimar@sexorcisto.net>
 
 	* GraphicsMagick.spec: Updated to CVS build. Added the

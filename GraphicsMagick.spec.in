@@ -1,13 +1,13 @@
 # Define this to '0' for release builds.
-%define DATE	20030728
+%define DATE	1
 # Allow for selectively disabling from commandline
 %{!?quant:%define quant 8}
 %{!?perlm:%define perlm 1}
 %{!?cplus:%define cplus 1}
 
 Summary: An X application for displaying and manipulating images.
-Name: GraphicsMagick
-Version: 1.1
+Name: @PACKAGE_NAME@
+Version: @PACKAGE_VERSION@
 %if %{DATE} > 0
 Release: 0.%{DATE}
 %else
@@ -16,11 +16,7 @@ Release: 1
 %endif
 License: freeware
 Group: X11/Applications/Graphics
-%if %{DATE} > 0
-Source: ftp://ftp.GraphicsMagick.org/pub/%{name}/%{name}-%{version}-%{DATE}.tar.bz2
-%else
-Source: ftp://ftp.GraphicsMagick.org/pub/%{name}/%{name}-%{version}.tar.bz2
-%endif
+Source: ftp://ftp.GraphicsMagick.org/pub/%{name}/%{name}-@PACKAGE_VERSION@@PACKAGE_VERSION_ADDENDUM@.tar.bz2
 Url: http://www.GraphicsMagick.org/
 Buildroot: %{_tmppath}/%{name}-%{version}-root
 BuildPrereq: bzip2-devel, freetype-devel, libjpeg-devel, libpng-devel
@@ -29,17 +25,20 @@ BuildPrereq: freetype-devel >= 2.0.1
 Requires: bzip2, freetype, libjpeg, libpng, zlib
 
 %description
-GraphicsMagick(TM) is an image display and manipulation tool for the X
-Window System. GraphicsMagick can read and write JPEG, TIFF, PNM, GIF,
-and Photo CD image formats. It can resize, rotate, sharpen, color
-reduce, or add special effects to an image, and when finished you can
-either save the completed work in the original format or a different
-one. GraphicsMagick also includes command line programs for creating
-animated or transparent .gifs, creating composite images, creating
-thumbnail images, and more.
+GraphicsMagick(TM) provides a powerful image manipulation and
+translation utility. It is capable of displaying still images and
+animations using the X Window system, provides a simple interface for
+interactively editing images, and is capable of importing selected
+windows or the entire desktop. GraphicsMagick can read and write over
+88 image formats, including JPEG, TIFF, WMF, SVG, PNG, PNM, GIF, and
+Photo CD. It can resize, rotate, sharpen, color reduce, or add special
+effects to the image and save the result to any supported format.
+GraphicsMagick may be used to create animated or transparent .gifs,
+create composite images, create thumbnail images, and much, much,
+more.
 
 GraphicsMagick is one of your choices if you need a program to manipulate
-and dis play images. If you want to develop your own applications
+and display images. If you want to develop your own applications
 which use GraphicsMagick code or APIs, you need to install
 GraphicsMagick-devel as well.
 
@@ -55,7 +54,7 @@ manipulation program.
 
 If you want to create applications that will use GraphicsMagick code or
 APIs, you need to install GraphicsMagick-devel as well as GraphicsMagick.
-You do noy need to install it if you just want to use GraphicsMagick,
+You do not need to install it if you just want to use GraphicsMagick,
 however.
 
 %if %{perlm}
@@ -106,7 +105,7 @@ GraphicsMagick C interface, however.
 
 %prep
 %if %{DATE} > 0
-%setup -q -n %{name}-%{version}-%{DATE}
+%setup -q -n %{name}-@PACKAGE_VERSION@@PACKAGE_VERSION_ADDENDUM@
 %else
 %setup -q
 %endif
