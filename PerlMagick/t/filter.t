@@ -76,13 +76,13 @@ testFilter('input.miff', 'Edge',
 testFilter('input.miff', 'Emboss',
   q/3/,
   '8b322f279343c309ab2b6875ff5a45f4f7f0b18f958782ea89799bd26c72db90',
-  '0f989782ed2b9c6eeb1889e41c76e72be4330edfbf04536639566fdcb5f48fae');
+  'b53a9b585ea3b2ff7ca74a15ba18bb8f7603a386321bc4447c4717c22f9cac9f');
 
 ++$test;
 testFilter('input.miff', 'Equalize',
   q/ /,
   'eef347707dd430c87fc90f63445fe4bf4e59e64d60d51db43cb9aae57f960e48',
-  '17e317a255885296bbd7bcd6db79d99605826c60e4df8e51fd9930c28b072e02');
+  'bf72fd0405f36f30c2ad2d4934c05d0aaa5132dba7f9fd866e82c26cf7e9c791');
 
 ++$test;
 testFilter('input.miff', 'Flip',
