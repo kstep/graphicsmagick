@@ -1133,7 +1133,6 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
   {
     /*
       Initialize BMP raster file header.
-      To Do: Write BMP version 4.0 if transparency is present.
     */
     (void) TransformRGBImage(image,RGBColorspace);
     bmp_info.file_size=14+40;
