@@ -2069,7 +2069,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
             }
             case 16:
             {
-#if (QuantumDepth == 16)
+#if (QuantumDepth == 16 && WORDS_BIGENDIAN)
               memcpy(r,p,image->columns*sizeof(Quantum));
 #else
               for (x=0; x < (int) image->columns; x++)
