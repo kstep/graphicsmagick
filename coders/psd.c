@@ -366,24 +366,27 @@ static CompositeOperator PSDBlendModeToCompositeOperator(const char *mode)
   return(OverCompositeOp);
 }
 
-static unsigned long CompositeOperatorToPSDBlendMode(CompositeOperator inOp)
+static char * CompositeOperatorToPSDBlendMode(CompositeOperator inOp)
 {
-	unsigned long	outMode = 'norm';
+	char*	outMode = "norm";
 
 	switch ( inOp )
 	{
-		case OverCompositeOp:		outMode = 'norm';	break;
-		case MultiplyCompositeOp:	outMode = 'mul ';	break;
-		case DissolveCompositeOp:	outMode = 'diss';	break;
-		case DifferenceCompositeOp:	outMode = 'diff';	break;
-		case DarkenCompositeOp:		outMode = 'dark';	break;
-		case LightenCompositeOp:	outMode = 'lite';	break;
-		case HueCompositeOp:		outMode = 'hue ';	break;
-		case SaturateCompositeOp:	outMode = 'sat ';	break;
-		case ColorizeCompositeOp:	outMode = 'colr';	break;
-		case LuminizeCompositeOp:	outMode = 'lum ';	break;
-		case ScreenCompositeOp:		outMode = 'scrn';	break;
-		case OverlayCompositeOp:	outMode = 'over';	break;
+		case OverCompositeOp:		outMode = "norm";	break;
+		case MultiplyCompositeOp:	outMode = "mul ";	break;
+		case DissolveCompositeOp:	outMode = "diss";	break;
+		case DifferenceCompositeOp:	outMode = "diff";	break;
+		case DarkenCompositeOp:		outMode = "dark";	break;
+		case LightenCompositeOp:	outMode = "lite";	break;
+		case HueCompositeOp:		outMode = "hue ";	break;
+		case SaturateCompositeOp:	outMode = "sat ";	break;
+		case ColorizeCompositeOp:	outMode = "colr";	break;
+		case LuminizeCompositeOp:	outMode = "lum ";	break;
+		case ScreenCompositeOp:		outMode = "scrn";	break;
+		case OverlayCompositeOp:	outMode = "over";	break;
+
+		default:
+			outMode = "norm";
 /*
 
   if (LocaleNCompare(mode,"hLit",4) == 0)
@@ -1250,6 +1253,12 @@ static unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
     packet_size,
     status;
 
+  ImageAttribute 
+	*theAttr;
+
+  char 
+    *value = NULL;
+
   Image
 	  * tmp_image = (Image *) NULL,
 	  * base_image = force_white_background ? image : image->next;
@@ -1434,8 +1443,8 @@ compute_layer_info:
 			 (void) WriteBlobMSBLong(image, channel_size);
 			}
 			
-		  (void) WriteBlobMSBLong(image, '8BIM');
-		  (void) WriteBlobMSBLong(image, CompositeOperatorToPSDBlendMode(tmp_image->compose));
+		  (void) WriteBlob(image, 4, "8BIM");
+		  (void) WriteBlob(image, 4, CompositeOperatorToPSDBlendMode(tmp_image->compose));
 		  (void) WriteBlobByte(image, 255);		/* BOGUS: layer opacity */
 		  (void) WriteBlobByte(image, 0);
 		  (void) WriteBlobByte(image, 1);		/* BOGUS: layer attributes - visible, etc. */
@@ -1445,10 +1454,16 @@ compute_layer_info:
 		  (void) WriteBlobMSBLong(image, 0);
 		  (void) WriteBlobMSBLong(image, 0);
 
-		  sprintf((char *) &(layer_name[1]), "L%02d", layer_count++ ); layer_name[0] = 3;
-		  (void) WriteBlobByte(image, 3);
-		  (void) WriteBlob(image, 3, &layer_name[1]);
-
+          theAttr = (ImageAttribute *)GetImageAttribute(tmp_image, "[layer-name]");
+          if (theAttr) {
+			  sprintf((char *) &(layer_name[1]), "%04s", theAttr->value );
+			  (void) WriteBlobByte(image, 3);
+			  (void) WriteBlob(image, 3, &layer_name[1]);			
+		  } else {
+			  sprintf((char *) &(layer_name[1]), "L%02d", layer_count++ );
+			  (void) WriteBlobByte(image, 3);
+			  (void) WriteBlob(image, 3, &layer_name[1]);			
+		  }
 		  tmp_image = tmp_image->next;
 	  };
 
