@@ -190,20 +190,14 @@ MagickExport Image *FrameImage(Image *image,const FrameInfo *frame_info,
   assert(image->signature == MagickSignature);
   assert(frame_info != (FrameInfo *) NULL);
   if ((frame_info->outer_bevel < 0) || (frame_info->inner_bevel < 0))
-    {
-      ThrowException(exception,OptionWarning,"Unable to frame image",
-        "bevel width is negative");
-      return((Image *) NULL);
-    }
+    ThrowImageException(OptionWarning,"Unable to frame image",
+      "bevel width is negative");
   bevel_width=frame_info->outer_bevel+frame_info->inner_bevel;
   width=(int) frame_info->width-frame_info->x-bevel_width;
   height=(int) frame_info->height-frame_info->y-bevel_width;
   if ((width < (int) image->columns) || (height < (int) image->rows))
-    {
-      ThrowException(exception,OptionWarning,"Unable to frame image",
-        "frame is less than image size");
-      return((Image *) NULL);
-    }
+    ThrowImageException(OptionWarning,"Unable to frame image",
+      "frame is less than image size");
   /*
     Initialize framed image attributes.
   */
@@ -246,53 +240,49 @@ MagickExport Image *FrameImage(Image *image,const FrameInfo *frame_info,
   height=frame_info->outer_bevel+(frame_info->y-bevel_width)+
     frame_info->inner_bevel;
   q=SetImagePixels(frame_image,0,0,frame_image->columns,Max(height,1));
-  if (q == (PixelPacket *) NULL)
+  if (q != (PixelPacket *) NULL)
     {
-      DestroyImage(frame_image);
-      return((Image *) NULL);
-    }
-  for (y=0; y < frame_info->outer_bevel; y++)
-  {
-    for (x=0; x < (int) (frame_image->columns-y); x++)
-      if (x < y)
-        *q++=highlight;
-      else
-        *q++=accentuate;
-    for ( ; x < (int) frame_image->columns; x++)
-      *q++=shadow;
-  }
-  for (y=0; y < (int) (frame_info->y-bevel_width); y++)
-  {
-    for (x=0; x < frame_info->outer_bevel; x++)
-      *q++=highlight;
-    for (x=0; x < (int) (frame_image->columns-2*frame_info->outer_bevel); x++)
-      *q++=matte;
-    for (x=0; x < frame_info->outer_bevel; x++)
-      *q++=shadow;
-  }
-  for (y=0; y < frame_info->inner_bevel; y++)
-  {
-    for (x=0; x < frame_info->outer_bevel; x++)
-      *q++=highlight;
-    for (x=0; x < (int) (frame_info->x-bevel_width); x++)
-      *q++=matte;
-    for (x=0; x < (int) (image->columns+(frame_info->inner_bevel << 1)-y); x++)
-      if (x < y)
-        *q++=shadow;
-      else
-        *q++=trough;
-    for ( ; x < (int) (image->columns+(frame_info->inner_bevel << 1)); x++)
-      *q++=highlight;
-    width=frame_info->width-frame_info->x-image->columns-bevel_width;
-    for (x=0; x < width; x++)
-      *q++=matte;
-    for (x=0; x < frame_info->outer_bevel; x++)
-      *q++=shadow;
-  }
-  if (!SyncImagePixels(frame_image))
-    {
-      DestroyImage(frame_image);
-      return((Image *) NULL);
+      for (y=0; y < frame_info->outer_bevel; y++)
+      {
+        for (x=0; x < (int) (frame_image->columns-y); x++)
+          if (x < y)
+            *q++=highlight;
+          else
+            *q++=accentuate;
+        for ( ; x < (int) frame_image->columns; x++)
+          *q++=shadow;
+      }
+      for (y=0; y < (int) (frame_info->y-bevel_width); y++)
+      {
+        for (x=0; x < frame_info->outer_bevel; x++)
+          *q++=highlight;
+        width=frame_image->columns-2*frame_info->outer_bevel;
+        for (x=0; x < (int) width; x++)
+          *q++=matte;
+        for (x=0; x < frame_info->outer_bevel; x++)
+          *q++=shadow;
+      }
+      for (y=0; y < frame_info->inner_bevel; y++)
+      {
+        for (x=0; x < frame_info->outer_bevel; x++)
+          *q++=highlight;
+        for (x=0; x < (int) (frame_info->x-bevel_width); x++)
+          *q++=matte;
+        width=image->columns+(frame_info->inner_bevel << 1)-y;
+        for (x=0; x < (int) width; x++)
+          if (x < y)
+            *q++=shadow;
+          else
+            *q++=trough;
+        for ( ; x < (int) (image->columns+(frame_info->inner_bevel << 1)); x++)
+          *q++=highlight;
+        width=frame_info->width-frame_info->x-image->columns-bevel_width;
+        for (x=0; x < width; x++)
+          *q++=matte;
+        for (x=0; x < frame_info->outer_bevel; x++)
+          *q++=shadow;
+      }
+      (void) SyncImagePixels(frame_image);
     }
   /*
     Draw sides of ornamental border.
@@ -337,10 +327,7 @@ MagickExport Image *FrameImage(Image *image,const FrameInfo *frame_info,
   q=SetImagePixels(frame_image,0,frame_image->rows-Max(height,1),
     frame_image->columns,Max(height,1));
   if (q == (PixelPacket *) NULL)
-    {
-      DestroyImage(frame_image);
-      return((Image *) NULL);
-    }
+    return(frame_image);
   for (y=frame_info->inner_bevel-1; y >= 0; y--)
   {
     for (x=0; x < frame_info->outer_bevel; x++)
@@ -380,11 +367,7 @@ MagickExport Image *FrameImage(Image *image,const FrameInfo *frame_info,
       else
         *q++=trough;
   }
-  if (!SyncImagePixels(frame_image))
-    {
-      DestroyImage(frame_image);
-      return((Image *) NULL);
-    }
+  (void) SyncImagePixels(frame_image);
   return(frame_image);
 }
 
