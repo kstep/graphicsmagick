@@ -1558,17 +1558,21 @@ MagickExport void DrawPopGraphicContext(DrawContext context)
   assert(context != (DrawContext)NULL);
   assert(context->signature == MagickSignature);
 
+  if(context->index == 0)
+    {
+      ThrowDrawException(CorruptImageError,"unbalanced graphic context push/pop",NULL);
+    }
+
   if(context->index > 0)
     {
-
-#if 0
       /* Destroy clip path if not same in preceding context */
       if (CurrentContext->clip_path != (char *) NULL)
         if (LocaleCompare(CurrentContext->clip_path,
                           context->graphic_context[context->index-1]->clip_path) != 0)
-          (void) SetImageClipMask(image,(Image *) NULL);
-#endif
+          (void) SetImageClipMask(context->image,(Image *) NULL);
+
       DestroyDrawInfo(CurrentContext);
+      CurrentContext=(DrawInfo*)NULL;
       context->index--;
       
       context->indent_depth--;
@@ -1617,7 +1621,8 @@ MagickExport void DrawPushGraphicContext(DrawContext context)
                   (context->index+1)*sizeof(DrawInfo *));
   if (context->graphic_context == (DrawInfo **) NULL)
     {
-      /* FIXME error */
+      ThrowDrawException(ResourceLimitError, "Unable to draw image",
+                         "Memory allocation failed");
     }
   CurrentContext=
     CloneDrawInfo((ImageInfo *) NULL,context->graphic_context[context->index-1]);
