@@ -597,10 +597,10 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
 #define WriteRunlengthPacket(image,pixel,length,p) \
 { \
   if (image->matte && (p->opacity == TransparentOpacity)) \
-    FormatString(buffer,"ffffff%02lx",Min(length,0xff)); \
+    FormatString(buffer,"ffffff%02x",(int) Min(length,0xff)); \
   else \
-    FormatString(buffer,"%02lx%02lx%02lx%02lx",Downscale(pixel.red), \
-      Downscale(pixel.green),Downscale(pixel.blue),Min(length,0xff)); \
+    FormatString(buffer,"%02x%02x%02x%02x",Downscale(pixel.red), \
+      Downscale(pixel.green),Downscale(pixel.blue),(int) Min(length,0xff)); \
   (void) WriteBlobString(image,buffer); \
 }
 
@@ -1211,7 +1211,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                 break;
               for (x=0; x < (long) image->columns; x++)
               {
-                FormatString(buffer,"%02lx",Downscale(Intensity(p)));
+                FormatString(buffer,"%02x",Downscale(Intensity(p)));
                 (void) WriteBlobString(image,buffer);
                 i++;
                 if (i == 36)
@@ -1364,7 +1364,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                   if (image->matte && (p->opacity == TransparentOpacity))
                     (void) strcpy(buffer,"ffffff");
                   else
-                    FormatString(buffer,"%02lx%02lx%02lx",
+                    FormatString(buffer,"%02x%02x%02x",
                       Downscale(p->red),Downscale(p->green),Downscale(p->blue));
                   (void) WriteBlobString(image,buffer);
                   i++;
@@ -1400,7 +1400,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
           (void) WriteBlobString(image,buffer);
           for (i=0; i < (long) image->colors; i++)
           {
-            FormatString(buffer,"%02lx%02lx%02lx\n",
+            FormatString(buffer,"%02x%02x%02x\n",
               Downscale(image->colormap[i].red),
               Downscale(image->colormap[i].green),
               Downscale(image->colormap[i].blue));

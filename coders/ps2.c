@@ -1029,7 +1029,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
           (void) WriteBlobString(image,buffer);
           for (i=0; i < (long) image->colors; i++)
           {
-            FormatString(buffer,"%02lx%02lx%02lx\n",
+            FormatString(buffer,"%02x%02x%02x\n",
               Downscale(image->colormap[i].red),
               Downscale(image->colormap[i].green),
               Downscale(image->colormap[i].blue));

@@ -927,7 +927,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
         /*
           Convert image to a PGM image.
         */
-        FormatString(buffer,"%ld\n",
+        FormatString(buffer,"%u\n",
           image->depth > 8 ? MaxRGB : Downscale(MaxRGB));
         (void) WriteBlobString(image,buffer);
         i=0;
@@ -939,7 +939,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
           for (x=0; x < (long) image->columns; x++)
           {
             index=Intensity(p);
-            FormatString(buffer," %ld",
+            FormatString(buffer," %u",
               image->depth > 8 ? index : Downscale(index));
             (void) WriteBlobString(image,buffer);
             i++;
@@ -963,7 +963,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
         /*
           Convert image to a PNM image.
         */
-        FormatString(buffer,"%ld\n",
+        FormatString(buffer,"%u\n",
           image->depth > 8 ? MaxRGB : Downscale(MaxRGB));
         (void) WriteBlobString(image,buffer);
         i=0;
@@ -974,7 +974,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
             break;
           for (x=0; x < (long) image->columns; x++)
           {
-            FormatString(buffer," %ld %ld %ld",
+            FormatString(buffer," %u %u %u",
               image->depth > 8 ? p->red : Downscale(p->red),
               image->depth > 8 ? p->green : Downscale(p->green),
               image->depth > 8 ? p->blue : Downscale(p->blue));
@@ -1044,7 +1044,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
         /*
           Convert image to a PGM image.
         */
-        FormatString(buffer,"%ld\n",Downscale(MaxRGB));
+        FormatString(buffer,"%u\n",Downscale(MaxRGB));
         (void) WriteBlobString(image,buffer);
         for (y=0; y < (long) image->rows; y++)
         {
@@ -1085,7 +1085,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
         /*
           Convert image to a PNM image.
         */
-        FormatString(buffer,"%ld\n",Downscale(MaxRGB));
+        FormatString(buffer,"%u\n",Downscale(MaxRGB));
         (void) WriteBlobString(image,buffer);
         for (y=0; y < (long) image->rows; y++)
         {
