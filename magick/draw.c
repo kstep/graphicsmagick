@@ -1232,13 +1232,13 @@ static unsigned int DrawClipPath(Image *image,DrawInfo *draw_info)
       SetImageClipMask(image,clip_mask);
       DestroyImage(clip_mask);
     }
+  SetImage(image->clip_mask,TransparentOpacity);
   if (draw_info->debug)
     (void) fprintf(stdout,"\nbegin clip-path %.1024s\n",draw_info->clip_path);
   clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
   CloneString(&clone_info->primitive,attribute->value);
   (void) QueryColorDatabase("black",&clone_info->fill);
   clone_info->clip_path=(char *) NULL;
-  SetImage(image->clip_mask,TransparentOpacity);
   status=DrawImage(image->clip_mask,clone_info);
   draw_info->clip_units=clone_info->clip_units;
   DestroyDrawInfo(clone_info);
