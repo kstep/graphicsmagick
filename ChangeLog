@@ -1,3 +1,6 @@
+2002-10-14  Cristy  <cristy@mystic.es.dupont.com>
+  * ImageMagick 5.5.1 released.
+
 2002-10-12  Bob Friesenhahn <bfriesen@simple.dallas.tx.us>
   * Use ImageMagick release number to allow multiple ImageMagick releases
     to co-exist without interference on the same machine.
