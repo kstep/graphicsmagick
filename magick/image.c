@@ -2192,33 +2192,31 @@ MagickExport unsigned long GetImageDepth(const Image *image,
 #if (QuantumDepth == 8)
   return(QuantumDepth);
 #endif
-  if (QuantumDepth == 32)
+#if (QuantumDepth == 32)
+  for (y=0; y < (long) image->rows; y++)
+  {
+    p=AcquireImagePixels(image,0,y,image->columns,1,exception);
+    if (p == (const PixelPacket *) NULL)
+      break;
+    for (x=0; x < (long) image->columns; x++)
     {
-      for (y=0; y < (long) image->rows; y++)
-      {
-        p=AcquireImagePixels(image,0,y,image->columns,1,exception);
-        if (p == (const PixelPacket *) NULL)
+      if (p->red != ScaleShortToQuantum(ScaleQuantumToShort(p->red)))
+        break;
+      if (p->green != ScaleShortToQuantum(ScaleQuantumToShort(p->green)))
+        break;
+      if (p->blue != ScaleShortToQuantum(ScaleQuantumToShort(p->blue)))
+        break;
+      if (image->matte)
+        if (p->opacity != ScaleShortToQuantum(ScaleQuantumToShort(p->opacity)))
           break;
-        for (x=0; x < (long) image->columns; x++)
-        {
-          if (p->red != ScaleShortToQuantum(ScaleQuantumToShort(p->red)))
-            break;
-          if (p->green != ScaleShortToQuantum(ScaleQuantumToShort(p->green)))
-            break;
-          if (p->blue != ScaleShortToQuantum(ScaleQuantumToShort(p->blue)))
-            break;
-          if (image->matte)
-            if (p->opacity !=
-                ScaleShortToQuantum(ScaleQuantumToShort(p->opacity)))
-              break;
-          p++;
-        }
-        if (x < (long) image->columns)
-          break;
-      }
-      if (y < (long) image->rows)
-        return(QuantumDepth);
+      p++;
     }
+    if (x < (long) image->columns)
+      break;
+  }
+  if (y < (long) image->rows)
+    return(QuantumDepth);
+#endif
   for (y=0; y < (long) image->rows; y++)
   {
     p=AcquireImagePixels(image,0,y,image->columns,1,exception);
@@ -2704,7 +2702,7 @@ MagickExport unsigned int IsImagesEqual(Image *image,Image *reference)
       pixel.blue=p->blue-(double) q->blue;
       if (image->matte)
         pixel.opacity=p->opacity-(double) q->opacity;
-			else
+      else
         for (count=1; (x+count) < (long) image->columns; count++)
           if (!ColorMatch(p,p+count))
             break;
@@ -5272,7 +5270,7 @@ MagickExport unsigned int RGBTransformImage(Image *image,
   long
     y;
 
-	PrimaryInfo
+  PrimaryInfo
     primary_info;
 
   register long
