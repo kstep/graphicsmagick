@@ -1,12 +1,12 @@
 #
 # Top Makefile for Magick++
 #
-# Copyright Bob Friesenhahn, 1999
+# Copyright Bob Friesenhahn, 1999, 2000
 #
-AUTOMAKE_OPTIONS = 1.2 dist-zip #readme-alpha
+AUTOMAKE_OPTIONS = 1.4 dist-zip #readme-alpha
 
 # Additional files to distribute
-EXTRA_DIST = ltcf-c.sh ltcf-cxx.sh
+EXTRA_DIST = ltcf-c.sh ltcf-cxx.sh ltcf-gcj.sh
 
 SUBDIRS = lib tests demo
 

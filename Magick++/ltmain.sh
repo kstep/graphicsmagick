@@ -55,7 +55,7 @@ modename="$progname"
 PROGRAM=ltmain.sh
 PACKAGE=libtool
 VERSION=1.4a
-TIMESTAMP=" (1.641.2.78 2000/08/26 13:16:18)"
+TIMESTAMP=" (1.641.2.79 2000/08/27 11:14:32)"
 
 default_mode=
 help="Try \`$progname --help' for more information."
@@ -1046,6 +1046,18 @@ EOF
 	continue
 	;;
 
+      # The native IRIX linker understands -LANG:*, -LIST:* and -LNO:*
+      # so, if we see these flags be careful not to treat them like -L
+      -L[A-Z][A-Z]*:*)
+	case $with_gcc/$host in
+	no/*-*-irix*)
+	  compile_command="$compile_command $arg"
+	  finalize_command="$finalize_command $arg"
+	  ;;
+	esac
+	continue
+	;;
+       
       -L*)
 	dir=`$echo "X$arg" | $Xsed -e 's/^-L//'`
 	# We need an absolute path.

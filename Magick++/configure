@@ -3034,22 +3034,40 @@ CFLAGS="$lt_save_CFLAGS"
 # clobbered by the next message.
 exec 5>>./config.log
 
-	
+LIBTOOL_DEPS=$LIBTOOL_DEPS" $ac_aux_dir/ltcf-gcj.sh"
+lt_save_CC="$CC"
+lt_save_CFLAGS="$CFLAGS"
+AR="$AR" LTCC="$CC" CC="$GCJ" CFLAGS="$GCJFLAGS" CPPFLAGS="" \
+MAGIC="$MAGIC" LDFLAGS="$LDFLAGS" LIBS="$LIBS" \
+LN_S="$LN_S" NM="$NM" RANLIB="$RANLIB" STRIP="$STRIP" \
+AS="$AS" DLLTOOL="$DLLTOOL" OBJDUMP="$OBJDUMP" \
+objext="$OBJEXT" exeext="$EXEEXT" reload_flag="$reload_flag" \
+deplibs_check_method="$deplibs_check_method" \
+file_magic_cmd="$file_magic_cmd" \
+${CONFIG_SHELL-/bin/sh} $ac_aux_dir/ltconfig -o libtool $libtool_flags \
+--build="$build" --add-tag=GCJ $ac_aux_dir/ltcf-gcj.sh $host \
+|| { echo "configure: error: libtool tag configuration failed" >&2; exit 1; }
+CC="$lt_save_CC"
+CFLAGS="$lt_save_CFLAGS"
+
+# Redirect the config.log output again, so that the ltconfig log is not
+# clobbered by the next message.
+exec 5>>./config.log
 
 #
 # Obtain ImageMagick compilation options from installed Magick-config script.
 #
-echo "configure:2780: checking pre-processor flags" >&5
+echo "configure:2797: checking pre-processor flags" >&5
 echo $ECHO_N "checking pre-processor flags... $ECHO_C" >&6
 # If -DHAVE_CONFIG_H is not specified, then QuantumLeap doesn't work.
 CPPFLAGS="$CPPFLAGS -DHAVE_CONFIG_H "`Magick-config --cppflags`
-echo "configure:2784: result: "$CPPFLAGS"" >&5
+echo "configure:2801: result: "$CPPFLAGS"" >&5
 echo "$ECHO_T"""$CPPFLAGS"" >&6
 
-echo "configure:2786: checking linker flags" >&5
+echo "configure:2803: checking linker flags" >&5
 echo $ECHO_N "checking linker flags... $ECHO_C" >&6
 LDFLAGS="$LDFLAGS "`Magick-config --ldflags`
-echo "configure:2789: result: "$LDFLAGS"" >&5
+echo "configure:2806: result: "$LDFLAGS"" >&5
 echo "$ECHO_T"""$LDFLAGS"" >&6
 
 #AC_MSG_CHECKING(libraries)
@@ -3060,7 +3078,7 @@ LIBS="$LIBS -lMagick"
 # Add configure option --enable-maintainer-mode which enables dependency
 # checking and generation useful to package maintainers.  This is made an
 # option to avoid confusing end users.
-echo "configure:2798: checking whether to enable maintainer-specific portions of Makefiles" >&5
+echo "configure:2815: checking whether to enable maintainer-specific portions of Makefiles" >&5
 echo $ECHO_N "checking whether to enable maintainer-specific portions of Makefiles... $ECHO_C" >&6
     # Check whether --enable-maintainer-mode or --disable-maintainer-mode was given.
 if test "${enable_maintainer_mode+set}" = set; then
@@ -3069,7 +3087,7 @@ if test "${enable_maintainer_mode+set}" = set; then
 else
   USE_MAINTAINER_MODE=no
 fi
-  echo "configure:2807: result: $USE_MAINTAINER_MODE" >&5
+  echo "configure:2824: result: $USE_MAINTAINER_MODE" >&5
 echo "$ECHO_T""$USE_MAINTAINER_MODE" >&6
 
 if test $USE_MAINTAINER_MODE = yes; then
@@ -3081,7 +3099,7 @@ else
 fi
   MAINT=$MAINTAINER_MODE_TRUE
 
-echo "configure:2817: checking host system type" >&5
+echo "configure:2834: checking host system type" >&5
 echo $ECHO_N "checking host system type... $ECHO_C" >&6
 if test "x$ac_cv_host" = "x" || (test "x$host" != "xNONE" && test "x$host" != "x$ac_cv_host_alias"); then
 
@@ -3109,7 +3127,7 @@ else
   echo $ECHO_N "(cached) $ECHO_C" >&6
 fi
 
-echo "configure:2841: result: $ac_cv_host" >&5
+echo "configure:2858: result: $ac_cv_host" >&5
 echo "$ECHO_T""$ac_cv_host" >&6
 
 host=$ac_cv_host
@@ -3380,6 +3398,8 @@ if test -n "\$CONFIG_FILES"; then
   # Protect against being on the right side of a sed subst in config.status.
   sed 's/%@/@@/; s/@%/@@/; s/%;t t\$/@;t t/; /@;t t\$/s/[\\\\&%]/\\\\&/g;
    s/@@/%@/; s/@@/@%/; s/@;t t\$/%;t t/' >\$ac_cs_root.subs <<\\CEOF
+s%@GCJ@%$GCJ%;t t
+s%@GCJFLAGS@%$GCJFLAGS%;t t
 s%@SHELL@%$SHELL%;t t
 s%@exec_prefix@%$exec_prefix%;t t
 s%@prefix@%$prefix%;t t

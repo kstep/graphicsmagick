@@ -1,5 +1,7 @@
 #### This script is meant to be sourced by ltconfig.
 
+# $Id$
+
 # ltcf-cxx.sh - Create a C++ compiler specific configuration
 #
 # Copyright (C) 1996-1999,2000 Free Software Foundation, Inc.

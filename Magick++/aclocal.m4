@@ -1179,6 +1179,29 @@ AC_DEFUN(AM_PROG_NM, [indir([AC_PROG_NM])])dnl
 dnl This is just to silence aclocal about the macro not being used
 ifelse([AC_DISABLE_FAST_INSTALL])dnl
 
+ifdef([AM_PROG_GCJ],,[
+# Stolen from automake
+AC_DEFUN([AM_PROG_GCJ],[
+  AC_CHECK_PROGS(GCJ, gcj, gcj)
+  dnl Automake uses ``='' in the test below, it seems wrong
+  if test "x${GCJFLAGS+set}" != xset; then
+    GCJFLAGS="-g -O2"
+  fi
+  AC_SUBST(GCJFLAGS)
+])])
+
+dnl Check for Java compiler.
+dnl For now we only handle the GNU compiler.
+
+AC_DEFUN(AM_PROG_GCJ,[
+AC_CHECK_PROGS(GCJ, gcj, gcj)
+test -z "$GCJ" && AC_MSG_ERROR([no acceptable gcj found in \$PATH])
+if test "x${GCJFLAGS+set}" = xset; then
+   GCJFLAGS="-g -O2"
+fi
+AC_SUBST(GCJFLAGS)
+])
+
 # Add --enable-maintainer-mode option to configure.
 # From Jim Meyering
 
