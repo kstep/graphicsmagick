@@ -2053,12 +2053,9 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
 #if defined(SIGBUS)
   (void) signal(SIGBUS,CacheSignalHandler);
 #endif
-  if (cache_info->type == MemoryMappedCache)
-    FormatString(message,"memory-mapped pixel cache %lumb (%.1024s)",
-      (unsigned long) (cache_info->length/1024/1024),cache_info->filename);
-  else
-    FormatString(message,"disk pixel cache %lumb (%.1024s)",
-      (unsigned long) (cache_info->length/1024/1024),cache_info->filename);
+  FormatString(message,"%.1024s pixel cache %lumb (%.1024s)",
+    cache_info->type == MemoryMappedCache ? "memory-mapped" : "disk",
+    (unsigned long) (cache_info->length/1024/1024),cache_info->filename);
   LogMagickEvent(CacheEvent,message);
   return(True);
 }
