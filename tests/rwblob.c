@@ -231,6 +231,12 @@ int main ( int argc, char **argv )
   if ( !strcmp( "P7", format ) )
        fuzz_factor = 15;
 
+  if ( !strcmp( "PAL", format ) )
+    fuzz_factor = 1;
+
+  if ( !strcmp( "PS", format ) )
+       fuzz_factor = 1;
+
   if ( !strcmp( "PCD", format ) )
     fuzz_factor = 8;
 
