@@ -2670,8 +2670,8 @@ void Magick::Image::modifyImage( void )
   GetExceptionInfo( &exceptionInfo );
   MagickLib::Image* newImage =
     CloneImage( image,
-		image->columns,
-		image->rows,
+		0,
+		0,
 		true,
 		&exceptionInfo);
   replaceImage( newImage );

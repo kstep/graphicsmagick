@@ -169,12 +169,12 @@ int main( int /*argc*/, char ** argv)
     example.gamma( 1.6 );
     images.push_back( example );
 
-    cout << "  gradation ..." << endl;
-    Image gradation;
-    gradation.size( "130x194" );
-    gradation.read( "gradation:#20a0ff-#ffff00" );
-    gradation.label( "Gradation" );
-    images.push_back( gradation );
+    cout << "  gradient ..." << endl;
+    Image gradient;
+    gradient.size( "130x194" );
+    gradient.read( "gradient:#20a0ff-#ffff00" );
+    gradient.label( "Gradient" );
+    images.push_back( gradient );
 
     cout << "  grayscale ..." << endl;
     example = model;
