@@ -1,3 +1,7 @@
+2002-12-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+	* magick/enhance.c: Report appropriate message while leveling
+	image.
+
 2002-12-18  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
 	* Sync png.c and fx.c with IM-5.5.3.  "gm convert -list format"
 	now includes zlib version info among the PNG info.

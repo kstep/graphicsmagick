@@ -590,7 +590,7 @@ MagickExport unsigned int LevelImage(Image *image,const char *levels)
         if (!SyncImagePixels(image))
           break;
         if (QuantumTick(y,image->rows))
-          if (!MagickMonitor(GammaImageText,y,image->rows,&image->exception))
+          if (!MagickMonitor(LevelImageText,y,image->rows,&image->exception))
             break;
       }
       break;
@@ -750,7 +750,7 @@ MagickExport unsigned int LevelImageChannel(Image *image,
         if (!SyncImagePixels(image))
           break;
         if (QuantumTick(y,image->rows))
-          if (!MagickMonitor(GammaImageText,y,image->rows,&image->exception))
+          if (!MagickMonitor(LevelImageText,y,image->rows,&image->exception))
             break;
       }
       break;
