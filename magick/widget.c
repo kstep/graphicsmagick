@@ -1492,12 +1492,10 @@ static void XSetTextColor(Display *display,const XWindowInfo *window_info,
           XWhitePixel(display,window_info->screen));
       return;
     }
-  foreground=(int) (0.299*window_info->pixel_info->foreground_color.red+
-    0.587*window_info->pixel_info->foreground_color.green+
-    0.114*window_info->pixel_info->foreground_color.blue);
-  matte=(int) (0.299*window_info->pixel_info->matte_color.red+
-    0.587*window_info->pixel_info->matte_color.green+
-    0.114*window_info->pixel_info->matte_color.blue);
+  foreground=(int) ScaleShortToQuantum(
+    XIntensity(&window_info->pixel_info->foreground_color));
+  matte=(int) ScaleShortToQuantum(
+    XIntensity(&window_info->pixel_info->matte_color));
   if (AbsoluteValue(foreground-matte) > (MaxRGB >> 3))
     (void) XSetForeground(display,window_info->widget_context,
       window_info->pixel_info->foreground_color.pixel);
@@ -2008,7 +2006,7 @@ MagickExport void XColorBrowserWidget(Display *display,XWindows *windows,
           (unsigned int) windows->widget.visual_info->colormap_size,
           &windows->widget.pixel_info->matte_color);
         mode_info.text=colorname;
-        FormatString(mode_info.text,"#%02X%02X%02X",
+        FormatString(mode_info.text,"#%02x%02x%02x",
           ScaleShortToQuantum(windows->widget.pixel_info->matte_color.red),
           ScaleShortToQuantum(windows->widget.pixel_info->matte_color.green),
           ScaleShortToQuantum(windows->widget.pixel_info->matte_color.blue));
