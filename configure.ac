@@ -401,7 +401,7 @@ builddir=`pwd`
 # Most delegates have includes in the same directory as the library, but not all ...
 #
 # Includes
-for dir in bzlib fpx hdf/src jasper jbig/libjbig jpeg lcms/src mpeg2/include png tiff/libtiff ttf/include wmf/include xml zlib
+for dir in bzlib fpx hdf/hdf/src jasper jbig/libjbig jpeg lcms/src mpeg2/include png tiff/libtiff ttf/include wmf/include xml zlib
 do
   if test -d "$builddir/$dir"
   then
@@ -415,7 +415,7 @@ do
 done
 
 # Libraries
-for dir in bzlib fpx/obj hdf/src jasper jbig/libjbig jpeg lcms/src png mpeg2/libmpeg2 tiff/libtiff ttf/objs wmf/src xml zlib
+for dir in bzlib fpx/obj hdf/hdf/src jasper jbig/libjbig jpeg lcms/src png mpeg2/libmpeg2 tiff/libtiff ttf/objs wmf/src xml zlib
 do
   if test -d "$builddir/$dir"
   then
@@ -1088,28 +1088,34 @@ have_hdf='no'
 LIB_HDF=''
 if test "$with_hdf" != 'no'
 then
-    AC_MSG_CHECKING(for HDF support )
+    AC_MSG_CHECKING(for HDF components )
     AC_MSG_RESULT()
     failed=0;
     passed=0;
-    AC_CHECK_HEADER(hdf5.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
-    AC_CHECK_LIB(hdf5,H5FDread,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
+    AC_CHECK_HEADERS(hdf.h hdf/hdf.h)
+    if test "$ac_cv_header_hdf_h" = 'yes' -o "$ac_cv_header_hdf_hdf_h" = 'yes'
+    then
+        passed=`expr $passed + 1`
+    else
+        failed=`expr $failed + 1`
+    fi
+    AC_CHECK_LIB(df,DFANputlabel,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
     AC_MSG_CHECKING(if HDF package is complete)
     if test $passed -gt 0
     then
     if test $failed -gt 0
     then
-	AC_MSG_RESULT(no -- some components failed test)
+        AC_MSG_RESULT(no -- some components failed test)
         have_hdf='no (failed tests)'
     else
-	LIB_HDF='-lhdf5'
-	LIBS="$LIB_HDF $LIBS"
-	AC_DEFINE(HasHDF,,Define if you have HDF library)
-	AC_MSG_RESULT(yes)
+        LIB_HDF='-ldf'
+        LIBS="$LIB_HDF $LIBS"
+        AC_DEFINE(HasHDF,,Define if you have HDF library)
+        AC_MSG_RESULT(yes)
         have_hdf='yes'
     fi
     else
-        AC_MSG_RESULT(no)
+    AC_MSG_RESULT(no)
     fi
 fi
 AM_CONDITIONAL(HasHDF, test "$have_hdf" != 'no')
