@@ -592,12 +592,14 @@ unsigned int Magick::Options::subRange ( void ) const
 // Annotation text encoding (e.g. "UTF-16")
 void Magick::Options::textEncoding ( const std::string &encoding_ )
 {
-  // FIXME
+  CloneString(&_drawInfo->encoding, encoding_.c_str());
 }
 std::string Magick::Options::textEncoding ( void ) const
 {
-  // FIXME
-  return std::string("UTF-16");
+  if ( _drawInfo->encoding && *_drawInfo->encoding )
+    return std::string( _drawInfo->encoding );
+  
+  return std::string();
 }
 
 void Magick::Options::tileName ( const std::string &tileName_ )
