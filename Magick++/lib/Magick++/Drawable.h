@@ -2406,7 +2406,7 @@ private:
 class MagickDLLDecl PathQuadraticCurvetoArgs
 {
 public:
-  PathQuadraticCurvetoArgs::PathQuadraticCurvetoArgs( void );
+  PathQuadraticCurvetoArgs( void );
 
   PathQuadraticCurvetoArgs( double x1_, double y1_,
                             double x_, double y_ );

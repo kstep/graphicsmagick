@@ -1906,7 +1906,7 @@ namespace Magick
 	// Calculate quantization error
 	if ( measureError_ )
 	  {
-	    MagickLib::GetImageQuantizationError( image );
+	    MagickLib::GetImageQuantizeError( image );
 	    if ( image->exception.severity > MagickLib::UndefinedException )
 	      {
 		unlinkImages( first_, last_ );
@@ -2049,7 +2049,7 @@ namespace Magick
       {
 	// Calculate quantization error
 	if ( measureError_ )
-	  MagickLib::GetImageQuantizationError( image );
+	  MagickLib::GetImageQuantizeError( image );
 
 	// Update DirectClass representation of pixels
 	MagickLib::SyncImage( image );
@@ -2066,7 +2066,8 @@ namespace Magick
   void readImages( Container *sequence_,
 		   const std::string &imageSpec_ ) {
     MagickLib::ImageInfo *imageInfo = MagickLib::CloneImageInfo(0);
-    strcpy(imageInfo->filename,imageSpec_.c_str());
+    imageSpec_.copy( imageInfo->filename, MaxTextExtent-1 );
+    imageInfo->filename[ imageSpec_.length() ] = 0;
     MagickLib::ExceptionInfo exceptionInfo;
     MagickLib::GetExceptionInfo( &exceptionInfo );
     MagickLib::Image* images =  MagickLib::ReadImage( imageInfo, &exceptionInfo );
