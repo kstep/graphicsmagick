@@ -8098,13 +8098,13 @@ else
   failed=`expr $failed + 1`
 fi
 
-echo "$as_me:8101: checking for xmlParseExternalEntity in -lxml" >&5
-echo $ECHO_N "checking for xmlParseExternalEntity in -lxml... $ECHO_C" >&6
+echo "$as_me:8101: checking for xmlParseExternalEntity in -lxml2" >&5
+echo $ECHO_N "checking for xmlParseExternalEntity in -lxml2... $ECHO_C" >&6
 if test "${ac_cv_lib_xml_xmlParseExternalEntity+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
   ac_check_lib_save_LIBS=$LIBS
-LIBS="-lxml  $LIBS"
+LIBS="-lxml2 $LIBS"
 cat >conftest.$ac_ext <<_ACEOF
 #line 8109 "configure"
 #include "confdefs.h"
@@ -8162,7 +8162,7 @@ echo $ECHO_N "checking if XML package is complete... $ECHO_C" >&6
 echo "${ECHO_T}no -- some components failed test" >&6
         have_xml='no (failed tests)'
     else
-	LIB_XML='-lxml'
+	LIB_XML='-lxml2'
 	LIBS="$LIB_XML $LIBS"
 
 cat >>confdefs.h <<\EOF

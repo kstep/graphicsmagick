@@ -1022,7 +1022,7 @@ then
     failed=0;
     passed=0;
     AC_CHECK_HEADER(libxml/parser.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
-    AC_CHECK_LIB(xml,xmlParseExternalEntity,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
+    AC_CHECK_LIB(xml2,xmlParseExternalEntity,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
     AC_MSG_CHECKING(if XML package is complete)
     if test $passed -gt 0
     then
@@ -1031,7 +1031,7 @@ then
 	AC_MSG_RESULT(no -- some components failed test)
         have_xml='no (failed tests)'
     else
-	LIB_XML='-lxml'
+	LIB_XML='-lxml2'
 	LIBS="$LIB_XML $LIBS"
 	AC_DEFINE(HasXML,,Define if you have XML library)
 	AC_MSG_RESULT(yes)
