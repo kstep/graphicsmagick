@@ -7,6 +7,8 @@
 
 #define MAGICK_IMPLEMENTATION
 
+#include "Magick++/Thread.h"
+#include "Magick++/Exception.h"
 #include "Magick++/Pixels.h"
 
 namespace Magick

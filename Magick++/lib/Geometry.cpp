@@ -142,23 +142,31 @@ Magick::Geometry::Geometry ( void )
 /* virtual */ const Magick::Geometry&
 Magick::Geometry::operator = ( const std::string &geometry_ )
 {
-  std::string geometry(geometry_);
+  char
+    geom[MaxTextExtent];
 
   // If argument does not start with digit, presume that it is a
   // page-size specification that needs to be converted to an
   // equivalent geometry specification using PostscriptGeometry()
-  if ( geometry[0] != '-' &&
-       geometry[0] != '+' &&
-       !isdigit((int)geometry[0]) )
+  strcpy(geom,geometry_.c_str());
+  if ( geom[0] != '-' &&
+       geom[0] != '+' &&
+       !isdigit((int)geom[0]) )
     {
-      geometry =  Magick::PostscriptGeometry( geometry );
+      char *pageptr = PostscriptGeometry( geom );
+      if ( pageptr )
+	{
+	  strcpy(geom,pageptr);
+	  DestroyPostscriptGeometry( pageptr );
+	}
     }
 
   int x = 0;
   int y = 0;
   unsigned int width_val = 0;
   unsigned int height_val = 0;
-  int flags = Magick::GetGeometry ( geometry, x, y, width_val, height_val );
+  int flags = GetGeometry ( geom,
+			    &x, &y, &width_val, &height_val );
 
   if ( ( flags & WidthValue ) != 0 )
     {

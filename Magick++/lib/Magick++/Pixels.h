@@ -8,10 +8,8 @@
 #if !defined(Pixels_header)
 #define Pixels_header
 
-#include "Magick++/Include.h"
 #include "Magick++/Color.h"
 #include "Magick++/Image.h"
-#include "Magick++/Exception.h"
 
 namespace Magick
 {

@@ -341,7 +341,9 @@ void Magick::Image::composite ( const Image &compositeImage_,
 
   Geometry offset( 0, 0, xOffset_, yOffset_ );
 
-  Magick::ParseImageGeometry ( offset, x, y, width, height );
+  ParseImageGeometry (((std::string)offset).c_str(),
+		      &x, &y,
+		      &width, &height );
 
   CompositeImage( image(),
 		  compose_,
@@ -359,7 +361,10 @@ void Magick::Image::composite ( const Image &compositeImage_,
   int y = offset_.yOff();
   unsigned int width = columns();
   unsigned int height = rows();
-  Magick::ParseImageGeometry ( offset_, x, y, width, height );
+
+  ParseImageGeometry (((std::string)offset_).c_str(),
+		      &x, &y,
+		      &width, &height );
 
   CompositeImage( image(),
 		  compose_,
@@ -1103,7 +1108,10 @@ void Magick::Image::sample ( const Geometry &geometry_ )
   int y = 0;
   unsigned int width = columns();
   unsigned int height = rows();
-  Magick::ParseImageGeometry ( geometry_, x, y, width, height );
+
+  ParseImageGeometry (((std::string)geometry_).c_str(),
+		      &x, &y,
+		      &width, &height );
 
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
@@ -1120,7 +1128,10 @@ void Magick::Image::scale ( const Geometry &geometry_ )
   int y = 0;
   unsigned int width = columns();
   unsigned int height = rows();
-  Magick::ParseImageGeometry ( geometry_, x, y, width, height );
+
+  ParseImageGeometry (((std::string)geometry_).c_str(),
+		      &x, &y,
+		      &width, &height );
 
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
@@ -1390,7 +1401,10 @@ void Magick::Image::zoom( const Geometry &geometry_ )
   int y = 0;
   unsigned int width = columns();
   unsigned int height = rows();
-  Magick::ParseImageGeometry ( geometry_, x, y, width, height );
+
+  ParseImageGeometry (((std::string)geometry_).c_str(),
+		      &x, &y,
+		      &width, &height );
 
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );

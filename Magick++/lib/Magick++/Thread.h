@@ -21,7 +21,7 @@ struct win32_mutex {
 #endif
 #endif
 
-#include "Magick++/Include.h"
+#include "Magick++/Exception.h"
 
 #if defined(HasPTHREADS)
 # include <pthread.h>
