@@ -589,16 +589,8 @@ static unsigned long Read32u(int morder, void *ilong)
 }
 
 #define DE_STACK_SIZE 16
-#if !defined(macintosh) && !defined(WIN32)
-#  define EXIT_DELIMITER "\n"
-#else
-#  if defined(macintosh)
-#    define EXIT_DELIMITER "\r"
-#  endif
-#  if defined(WIN32)
-#    define EXIT_DELIMITER "\r\n"
-#  endif
-#endif
+
+#define EXIF_DELIMITER "\n"
 
 static int GenerateEXIFAttribute(Image *image,const char *spec)
 {
@@ -682,7 +674,7 @@ static int GenerateEXIFAttribute(Image *image,const char *spec)
 
       tag=0;
       key++;
-      n=Extent(key);
+      n=strlen(key);
       if (n != 4)
         return(False);
       else
@@ -896,8 +888,8 @@ static int GenerateEXIFAttribute(Image *image,const char *spec)
               char
                 *desc;
 
-              if (Extent(final) > 0)
-                ConcatenateString(&final,EXIT_DELIMITER);
+              if (strlen(final) > 0)
+                ConcatenateString(&final,EXIF_DELIMITER);
               desc=(char *) NULL;
               switch (all)
               {
@@ -953,7 +945,7 @@ static int GenerateEXIFAttribute(Image *image,const char *spec)
           }
     }
   } while (level>0);
-  if (Extent(final) <= 0)
+  if (strlen(final) <= 0)
     ConcatenateString(&final,"unknown");
   SetImageAttribute(image,spec,(const char *) final);
   LiberateMemory((void **) &final);
