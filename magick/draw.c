@@ -1441,7 +1441,10 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
     current;
 
   char
+    key[2*MaxTextExtent],
     keyword[MaxTextExtent],
+    geometry[MaxTextExtent],
+    name[MaxTextExtent],
     pattern[MaxTextExtent],
     *primitive,
     *q,
@@ -1466,6 +1469,9 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
 
   PrimitiveType
     primitive_type;
+
+  RectangleInfo
+    bounds;
 
   register char
     *p;
@@ -2088,8 +2094,6 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
                 GetToken(q,&q,token);
                 (void) strncpy(type,token,MaxTextExtent-1);
                 GetToken(q,&q,token);
-                if (*token == ',')
-                  GetToken(q,&q,token);
                 GetToken(q,&q,token);
                 if (*token == ',')
                   GetToken(q,&q,token);
@@ -2126,15 +2130,22 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
               }
             if (LocaleCompare("pattern",token) == 0)
               {
-                char
-                  geometry[MaxTextExtent],
-                  key[2*MaxTextExtent],
-                  name[MaxTextExtent];
-
                 GetToken(q,&q,token);
                 (void) strncpy(name,token,MaxTextExtent-1);
                 GetToken(q,&q,token);
-                (void) strncpy(geometry,token,MaxTextExtent-1);
+                bounds.x=atof(token);
+                GetToken(q,&q,token);
+                if (*token == ',')
+                  GetToken(q,&q,token);
+                bounds.y=atof(token);
+                GetToken(q,&q,token);
+                if (*token == ',')
+                  GetToken(q,&q,token);
+                bounds.width=atof(token);
+                GetToken(q,&q,token);
+                if (*token == ',')
+                  GetToken(q,&q,token);
+                bounds.height=atof(token);
                 for (p=q; *q != '\0'; )
                 {
                   GetToken(q,&q,token);
@@ -2150,6 +2161,8 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
                 FormatString(key,"[%.1024s]",name);
                 (void) SetImageAttribute(image,key,token);
                 FormatString(key,"[%.1024s-geometry]",name);
+                FormatString(geometry,"%lux%lu%+ld%+ld",bounds.width,
+                  bounds.height,bounds.x,bounds.y);
                 (void) SetImageAttribute(image,key,geometry);
                 GetToken(q,&q,token);
                 break;

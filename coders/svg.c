@@ -85,10 +85,10 @@ char
 typedef struct _BoundingBox
 {
   double
-    width,
-    height,
     x,
-    y;
+    y,
+    width,
+    height;
 } BoundingBox;
 
 typedef struct _ElementInfo
