@@ -3702,6 +3702,15 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
 
     switch (*p)
     {
+      case 'a':
+      {
+        if (clone_info->authenticate == (char *) NULL)
+          (void) strcpy(q,"null");
+        else
+          FormatString(q,"%.1024s",clone_info->authenticate);
+        q=translated_text+strlen(translated_text);
+        break;
+      }
       case 'b':
       {
         if (GetBlobSize(image) >= (1 << 24))

@@ -92,6 +92,7 @@ static void ImportUsage(void)
     *options[]=
     {
       "-adjoin              join images into a single multi-image file",
+      "-authenticate value  decrypt image with this password",
       "-border              include image borders in the output image",
       "-cache threshold     megabytes of memory available to the pixel cache",
       "-colors value        preferred number of colors in the image",
@@ -339,6 +340,19 @@ int main(int argc,char **argv)
         if (LocaleCompare("adjoin",option+1) == 0)
           {
             image_info->adjoin=(*option == '-');
+            break;
+          }
+        if (LocaleCompare("authenticate",option+1) == 0)
+          {
+            (void) CloneString(&image_info->authenticate,(char *) NULL);
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  ThrowCompositeException(OptionError,"Missing password",
+                    option);
+                (void) CloneString(&image_info->authenticate,argv[i]);
+              }
             break;
           }
         MagickFatalError(OptionFatalError,"Unrecognized option",option);

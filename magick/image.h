@@ -487,7 +487,8 @@ typedef struct _ImageInfo
     debug;
 
   char
-    *view;
+    *view,
+    *authenticate;
 
   Image
     *attributes;

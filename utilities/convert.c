@@ -88,6 +88,7 @@ static void ConvertUsage(void)
       "-affine matrix       affine transform matrix",
       "-antialias           remove pixel-aliasing",
       "-append              append an image sequence",
+      "-authenticate value  decrypt image with this password",
       "-average             average an image sequence",
       "-background color    background color",
       "-blur geometry       blur the image",

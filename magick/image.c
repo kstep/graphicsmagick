@@ -1156,6 +1156,8 @@ MagickExport ImageInfo *CloneImageInfo(const ImageInfo *image_info)
   clone_info->debug=image_info->debug;
   if (image_info->view != (char *) NULL)
     clone_info->view=AllocateString(image_info->view);
+  if (image_info->authenticate != (char *) NULL)
+    clone_info->authenticate=AllocateString(image_info->authenticate);
   if (image_info->attributes != (Image *) NULL)
     clone_info->attributes=CloneImage(image_info->attributes,0,0,True,
       &image_info->attributes->exception);
@@ -1941,6 +1943,8 @@ MagickExport void DestroyImageInfo(ImageInfo *image_info)
     LiberateMemory((void **) &image_info->density);
   if (image_info->view != (char *) NULL)
     LiberateMemory((void **) &image_info->view);
+  if (image_info->authenticate != (char *) NULL)
+    LiberateMemory((void **) &image_info->authenticate);
   if (image_info->attributes != (Image *) NULL)
     DestroyImage(image_info->attributes);
   if (image_info->cache != (void *) NULL)

@@ -88,6 +88,7 @@ static void MontageUsage(void)
     {
       "-adjoin              join images into a single multi-image file",
       "-affine matrix       affine transform matrix",
+      "-authenticate value  decrypt image with this password",
       "-blur factor         apply a filter to blur the image",
       "-cache threshold     megabytes of memory available to the pixel cache",
       "-colors value        preferred number of colors in the image",

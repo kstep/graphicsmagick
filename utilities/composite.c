@@ -85,6 +85,7 @@ static void CompositeUsage(void)
     *options[]=
     {
       "-affine matrix       affine transform matrix",
+      "-authenticate value  decrypt image with this password",
       "-cache threshold     number of megabytes available to the pixel cache",
       "-colors value        preferred number of colors in the image",
       "-colorspace type     alternate image colorspace",

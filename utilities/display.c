@@ -107,6 +107,7 @@ static void DisplayUsage(void)
     },
     *options[]=
     {
+      "-authenticate value  decrypt image with this password",
       "-backdrop            display image centered on a backdrop",
       "-border geometry     surround image with a border of color",
       "-cache threshold     megabytes of memory available to the pixel cache",
@@ -573,6 +574,24 @@ int main(int argc,char **argv)
     j=k+1;
     switch (*(option+1))
     {
+      case 'a':
+      {
+        if (LocaleCompare("authenticate",option+1) == 0)
+          {
+            (void) CloneString(&image_info->authenticate,(char *) NULL);
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  ThrowCompositeException(OptionError,"Missing password",
+                    option);
+                (void) CloneString(&image_info->authenticate,argv[i]);
+              }
+            break;
+          }
+        MagickFatalError(OptionFatalError,"Unrecognized option",option);
+        break;
+      }
       case 'b':
       {
         if (LocaleCompare("backdrop",option+1) == 0)

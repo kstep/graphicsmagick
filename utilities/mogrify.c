@@ -85,6 +85,7 @@ static void MogrifyUsage(void)
     {
       "-affine matrix       affine transform matrix",
       "-antialias           remove pixel-aliasing",
+      "-authenticate value  decrypt image with this password",
       "-background color    background color",
       "-blur radius         blur the image",
       "-border geometry     surround image with a border of color",

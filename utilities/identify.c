@@ -85,17 +85,18 @@ static void IdentifyUsage(void)
   static const char
     *options[]=
     {
-      "-cache threshold   megabytes of memory available to the pixel cache",
-      "-debug             display copious debugging information",
-      "-density geometry  horizontal and vertical density of the image",
-      "-depth value       image depth",
+      "-authenticate value  decrypt image with this password",
+      "-cache threshold     megabytes of memory available to the pixel cache",
+      "-debug               display copious debugging information",
+      "-density geometry    horizontal and vertical density of the image",
+      "-depth value         image depth",
       "-format \"string\"   output formatted image characteristics",
-      "-help              print program options",
-      "-interlace type    None, Line, Plane, or Partition",
-      "-size geometry     width and height of image",
+      "-help                print program options",
+      "-interlace type      None, Line, Plane, or Partition",
+      "-size geometry       width and height of image",
       "-sampling_factor geometry",
       "                     horizontal and vertical sampling factor",
-      "-verbose           print detailed information about the image",
+      "-verbose             print detailed information about the image",
       (char *) NULL
     };
 

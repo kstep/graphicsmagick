@@ -396,6 +396,19 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
               }
             break;
           }
+        if (LocaleCompare("authenticate",option+1) == 0)
+          {
+            (void) CloneString(&image_info->authenticate,(char *) NULL);
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  ThrowCompositeException(OptionError,"Missing password",
+                    option);
+                (void) CloneString(&image_info->authenticate,argv[i]);
+              }
+            break;
+          }
         ThrowCompositeException(OptionError,"Unrecognized option",option);
       }
       case 'b':
@@ -1424,6 +1437,19 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
           }
         if (LocaleCompare("append",option+1) == 0)
           break;
+        if (LocaleCompare("authenticate",option+1) == 0)
+          {
+            (void) CloneString(&image_info->authenticate,(char *) NULL);
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  ThrowCompositeException(OptionError,"Missing password",
+                    option);
+                (void) CloneString(&image_info->authenticate,argv[i]);
+              }
+            break;
+          }
         if (LocaleCompare("average",option+1) == 0)
           break;
         ThrowConvertException(OptionError,"Unrecognized option",option);
@@ -3392,6 +3418,19 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
             image_info->antialias=(*option == '-');
             break;
           }
+        if (LocaleCompare("authenticate",option+1) == 0)
+          {
+            (void) CloneString(&image_info->authenticate,(char *) NULL);
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  ThrowCompositeException(OptionError,"Missing password",
+                    option);
+                (void) CloneString(&image_info->authenticate,argv[i]);
+              }
+            break;
+          }
         ThrowMogrifyException(OptionWarning,"Unrecognized option",option);
       }
       case 'b':
@@ -4916,8 +4955,19 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
             image_info->adjoin=(*option == '-');
             break;
           }
-        if (LocaleCompare("transform",option+1) == 0)
-          break;
+        if (LocaleCompare("authenticate",option+1) == 0)
+          {
+            (void) CloneString(&image_info->authenticate,(char *) NULL);
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  ThrowCompositeException(OptionError,"Missing password",
+                    option);
+                (void) CloneString(&image_info->authenticate,argv[i]);
+              }
+            break;
+          }
         ThrowMontageException(OptionError,"Unrecognized option",option);
       }
       case 'b':
