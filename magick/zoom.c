@@ -573,6 +573,8 @@ MagickExport Image *MinifyImage(const Image *image,ExceptionInfo *exception)
 %    Mitchell Point      Quandratic
 %    Sinc     Triangle
 %
+%  ResizeImage() was inspired by Paul Heckbert's zoom program.
+%
 %  The format of the ResizeImage method is:
 %
 %      Image *ResizeImage(Image *image,const unsigned long columns,
@@ -788,7 +790,6 @@ static unsigned int HorizontalFilter(const Image *source,Image *destination,
 
   register IndexPacket
     *indexes;
-
 
   register long
     i,
