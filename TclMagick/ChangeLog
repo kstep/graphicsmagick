@@ -1,3 +1,11 @@
+2004-01-07  David N. Welton  <davidw@dedasys.com>
+
+	* ChangeLog: Undid CRLF line-end formatting.
+
+	* unix/configure.in: Updated configure system from latest Tcl
+	sample extension.  Added a few things to configure.in to pick up
+	flags from GraphicsMagickWand-config, which must be in the PATH.
+
 2004-01-07  Rolf Schroedter <rolf.schroedter@dlr.de>
 
 	* API rename: CloneImage --> GetImage
