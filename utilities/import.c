@@ -255,9 +255,9 @@ int main(int argc,char **argv)
   /*
     Initialize command line arguments.
   */
-  SetNotifyHandlers;
-  client_name=SetClientName(*argv);
   ReadCommandlLine(argc,&argv);
+  MagickIncarnate(*argv);
+  client_name=SetClientName((char *) NULL);
   status=ExpandFilenames(&argc,&argv);
   if (status == False)
     MagickError(ResourceLimitError,"Memory allocation failed",(char *) NULL);
@@ -290,6 +290,7 @@ int main(int argc,char **argv)
   /*
     Get user defaults from X resource database.
   */
+  SetNotifyHandlers;
   display=XOpenDisplay(server_name);
   if (display == (Display *) NULL)
     MagickError(OptionError,"Unable to connect to X server",

@@ -73,6 +73,7 @@ extern MagickExport char
   **ListFiles(const char *,const char *,int *),
   *PostscriptGeometry(const char *),
   *SetClientName(const char *),
+  *SetClientPath(const char *),
   **StringToArgv(const char *,int *),
   **StringToList(const char *),
   *TranslateText(const ImageInfo *,Image *,const char *);
@@ -85,7 +86,7 @@ extern MagickExport int
   MultilineCensus(const char *),
   SystemCommand(const unsigned int,const char *),
   Tokenizer(TokenInfo *,unsigned,char *,int,char *,char *,char *,char *,
-               char,char *,int *,char *);
+    char,char *,int *,char *);
 
 extern MagickExport unsigned int
   CloneString(char **,const char *),

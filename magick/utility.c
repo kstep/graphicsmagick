@@ -193,20 +193,17 @@ MagickExport char *BaseFilename(const char *name)
     Get basename of client.
   */
   assert(name != (char *) NULL);
-  basename=(char *) AllocateMemory(strlen(name)+1);
-  if (basename == (char *) NULL)
-    MagickError(ResourceLimitError,"Unable to get base filename",
-      "Memory allocation failed");
-  (void) strcpy(basename,name);
+  basename=AllocateString(name);
   p=basename+(Extent(basename)-1);
   while (p > basename)
   {
-    if (IsBasenameSeparator(*p))
+    if (!IsBasenameSeparator(*p))
       {
-        (void) strcpy(basename,p+1);
-        break;
+        p--;
+        continue;
       }
-    p--;
+    (void) strcpy(basename,p+1);
+    break;
   }
   /*
     Delete any extension.
@@ -214,12 +211,13 @@ MagickExport char *BaseFilename(const char *name)
   p=basename+(Extent(basename)-1);
   while (p > basename)
   {
-    if (*p == '.')
+    if (*p != '.')
       {
-        *p='\0';
-        break;
+        p--;
+        continue;
       }
-    p--;
+    *p='\0';
+    break;
   }
   return(basename);
 }
@@ -446,7 +444,7 @@ MagickExport unsigned short *ConvertTextToUnicode(const char *text,int *count)
 %
 %  The format of the ExpandFilename function is:
 %
-%      ExpandFilename(filename)
+%      ExpandFilename(char *filename)
 %
 %  A description of each parameter follows:
 %
@@ -526,7 +524,7 @@ MagickExport void ExpandFilename(char *filename)
 %
 %  The format of the ExpandFilenames function is:
 %
-%      status=ExpandFilenames(argc,argv)
+%      status=ExpandFilenames(int *argc,char ***argv)
 %
 %  A description of each parameter follows:
 %
@@ -2038,18 +2036,47 @@ MagickExport char *SetClientName(const char *name)
   static char
     client_name[MaxTextExtent] = "Magick";
 
-  if (name != (char *) NULL)
-    {
-      char
-        *basename;
-
-      basename=BaseFilename(name);
-      (void) strcpy(client_name,basename);
-      (void) setlocale(LC_ALL,"");
-      (void) setlocale(LC_NUMERIC,"C");
-      FreeMemory((void **) &basename);
-    }
+  if (name == (char *) NULL)
+    return(client_name);
+  (void) strcpy(client_name,name);
   return(client_name);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   S e t C l i e n t P a t h                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method SetClientPath sets the client path if the name is specified.
+%  Otherwise the current client path is returned.
+%
+%  The format of the SetClientPath method is:
+%
+%      char *SetClientPath(const char *path)
+%
+%  A description of each parameter follows:
+%
+%    o client_path: Method SetClientPath returns the current client path.
+%
+%    o status: Specifies the new client path.
+%
+%
+*/
+MagickExport char *SetClientPath(const char *path)
+{
+  static char
+    client_path[MaxTextExtent] = ".";
+
+  if (path == (char *) NULL)
+    return(client_path);
+  (void) strcpy(client_path,path);
+  return(client_path);
 }
 
 /*

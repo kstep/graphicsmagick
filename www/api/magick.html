@@ -24,6 +24,7 @@
 		<LI><A HREF="#getimagemagick">GetImageMagick</A></LI>
 		<LI><A HREF="#getmagickinfo">GetMagickInfo</A></LI>
 		<LI><A HREF="#listmagickinfo">ListMagickInfo</A></LI>
+		<LI><A HREF="#magickincarnate">MagickIncarnate</A></LI>
 		<LI><A HREF="#registermagickinfo">RegisterMagickInfo</A></LI>
 		<LI><A HREF="#setmagickinfo">SetMagickInfo</A></LI>
 		<LI><A HREF="#unregistermagickinfo">UnregisterMagickInfo</A></LI>
@@ -46,6 +47,7 @@
 <P>MagickInfo * <STRONG>GetMagickInfo</STRONG>( const char *tag );</P>
 <P>void  <STRONG>ListMagickInfo</STRONG>( 
 <FONT SIZE=-1>FILE</FONT> *file );</P>
+<P><STRONG>MagickIncarnate</STRONG>( const char *path );</P>
 <P>MagickInfo * <STRONG>RegisterMagickInfo</STRONG>( MagickInfo *entry );</P>
 <P>MagickInfo * <STRONG>SetMagickInfo</STRONG>( const char *tag );</P>
 <P>unsigned int  <STRONG>UnregisterMagickInfo</STRONG>( const char *tag );</P>
@@ -102,6 +104,17 @@ a character string that represents the image format we are looking for.
 
 <FONT SIZE=-1>A</FONT> pointer to a 
 <FONT SIZE=-1>FILE</FONT> structure.
+<P></P></DL></DL>
+<P>
+<H2><A NAME="magickincarnate">MagickIncarnate</A></H2>
+<P>Method MagickIncarnate initializes the ImageMagick environment.</P>
+<P>The format of the MagickIncarnate function is:</P>
+<blockquote>MagickIncarnate ( const char *path ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
+<DL><DL>
+<p><dt><STRONG><A NAME="item_o_path%3A">path:</A></STRONG><BR>
+<DD>
+Specifies a pointer to the execution path of the current ImageMagick client.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="registermagickinfo">RegisterMagickInfo</A></H2>

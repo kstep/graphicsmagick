@@ -358,6 +358,84 @@ MagickExport void ListMagickInfo(FILE *file)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   M a g i c k I n c a r n a t e                                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method MagickIncarnate initializes the ImageMagick environment.
+%
+%  The format of the MagickIncarnate function is:
+%
+%      MagickIncarnate(const char *path)
+%
+%  A description of each parameter follows:
+%
+%    o path: Specifies a pointer to the execution path of the current
+%      ImageMagick client.
+%
+%
+*/
+MagickExport void MagickIncarnate(const char *path)
+{
+  char
+    directory[MaxTextExtent],
+    magick[MaxTextExtent];
+
+  (void) getcwd(directory,MaxTextExtent);
+  (void) SetClientPath(directory);
+  if (path != (const char *) NULL)
+    {
+      char
+        *filename;
+
+      register char
+        *p;
+
+      /*
+        Set client path.
+      */
+      filename=AllocateString(path);
+      p=filename+(Extent(filename)-1);
+      while (p > filename)
+      {
+        if (!IsBasenameSeparator(*p))
+          {
+            p--;
+            continue;
+          }
+        *p='\0';
+        SetClientPath(filename);
+        (void) strcpy(filename,p+1);
+        break;
+      }
+      /*
+        Set client name.
+      */
+      p=filename+(Extent(filename)-1);
+      while (p > filename)
+      {
+        if (*p == '.')
+          {
+            *p='\0';
+            break;
+          }
+        p--;
+      }
+      SetClientName(filename);
+      FreeMemory((void **) &filename);
+    }
+  (void) setlocale(LC_ALL,"");
+  (void) setlocale(LC_NUMERIC,"C");
+  (void) SetImageMagic("NULL",MaxTextExtent,magick);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   R e g i s t e r M a g i c k I n f o                                       %
 %                                                                             %
 %                                                                             %

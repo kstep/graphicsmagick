@@ -226,7 +226,8 @@ int main(int argc,char **argv)
     Initialize command line arguments.
   */
   ReadCommandlLine(argc,&argv);
-  client_name=SetClientName(*argv);
+  MagickIncarnate(*argv);
+  client_name=SetClientName((char *) NULL);
   status=ExpandFilenames(&argc,&argv);
   if (status == False)
     MagickError(ResourceLimitError,"Memory allocation failed",(char *) NULL);

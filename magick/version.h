@@ -12,10 +12,10 @@ extern "C" {
 #define MagickLibVersion  0x0521
 #if defined(QuantumLeap)
 #define MagickVersion  \
-  "@(#)ImageMagick 5.2.1 00/08/15 Q:16 cristy@mystic.es.dupont.com"
+  "@(#)ImageMagick 5.2.1 00/07/15 Q:16 cristy@mystic.es.dupont.com"
 #else
 #define MagickVersion  \
-  "@(#)ImageMagick 5.2.1 00/08/15 Q:8 cristy@mystic.es.dupont.com"
+  "@(#)ImageMagick 5.2.1 00/07/15 Q:8 cristy@mystic.es.dupont.com"
 #endif
 
 #if defined(__cplusplus) || defined(c_plusplus)

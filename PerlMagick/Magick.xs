@@ -453,7 +453,7 @@ static struct PackageInfo *ClonePackageInfo(struct PackageInfo *info)
   cloned_info=(struct PackageInfo *) AllocateMemory(sizeof(struct PackageInfo));
   if (!info)
     {
-      (void) SetClientName(client_name);
+      MagickIncarnate(client_name);
       cloned_info->image_info=CloneImageInfo((ImageInfo *) NULL);
       cloned_info->quantize_info=CloneQuantizeInfo((QuantizeInfo *) NULL);
       return(cloned_info);
