@@ -498,7 +498,7 @@ MagickExport const ModuleInfo *GetModuleInfo(const char *name,
       if (lt_dlinit() != 0)
         MagickFatalError(DelegateFatalError,
           "Unable to initialize module loader",lt_dlerror());
-      OpenStaticModules();
+      RegisterStaticModules();
       (void) ReadConfigureFile(ModuleFilename,0,exception);
     }
   LiberateSemaphoreInfo(&module_semaphore);

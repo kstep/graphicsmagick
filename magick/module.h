@@ -70,7 +70,7 @@ extern MagickExport void
   DestroyModuleInfo(void);
 
 extern void
-  OpenStaticModules(void);
+  RegisterStaticModules(void);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

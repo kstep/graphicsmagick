@@ -53,6 +53,11 @@
   Include declarations.
 */
 #include "studio.h"
+/* 
+ *   Forward declarations.
+ *   */     
+static unsigned int
+  WriteMGKImage(const ImageInfo *,Image *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -161,6 +166,7 @@ ModuleExport void RegisterMGKImage(void)
 
   entry=SetMagickInfo("MGK");
   entry->decoder=ReadMGKImage;
+  entry->encoder=WriteMGKImage;
   entry->adjoin=False;
   entry->stealth=True;
   entry->description=AcquireString("Magick Configure File");
@@ -190,4 +196,55 @@ ModuleExport void RegisterMGKImage(void)
 ModuleExport void UnregisterMGKImage(void)
 {
   (void) UnregisterMagickInfo("MGK");
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   W r i t e M G K I m a g e                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  WriteMGKImage() writes a Magick Configure File as C source.
+%
+%  The format of the WriteMGKImage method is:
+%
+%      unsigned int WriteMGKImage(const ImageInfo *image_info,Image *image)
+%
+%  A description of each parameter follows.
+%
+%    o status: Method WriteMGKImage return True if the image is written.
+%      False is returned is there is a memory shortage or if the image file
+%      fails to write.
+%
+%    o image_info: Specifies a pointer to an ImageInfo structure.
+%
+%    o image:  A pointer to a Image structure.
+%
+%
+*/
+static unsigned int WriteMGKImage(const ImageInfo *image_info,Image *image)
+{
+  const ImageAttribute
+		*attribute;
+
+  unsigned int
+    status;
+
+  assert(image_info != (const ImageInfo *) NULL);
+  assert(image_info->signature == MagickSignature);
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  attribute=GetImageAttribute(image,"[mgk]");
+  if (attribute == (const ImageAttribute *) NULL)
+    ThrowWriterException(ConfigureError,"No required [mgk] image attribute",
+      image);
+  status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
+  if (status == False)
+    ThrowWriterException(FileOpenError,"Unable to open file",image);
+  return(False);
 }

@@ -23,7 +23,6 @@ $call Make art.c
 $call Make avi.c
 $call Make avs.c
 $call Make bmp.c
-$call Make c.c
 $call Make caption.c
 $call Make clipboard.c
 $call Make cmyk.c
@@ -113,7 +112,7 @@ $call Make xcf.c
 $call Make xpm.c
 $call Make xwd.c
 $call Make yuv.c
-$library/create libCoders.olb art,avi,avs,bmp,c,clipboard,cmyk,cut,dcm,dib, -
+$library/create libCoders.olb art,avi,avs,bmp,clipboard,cmyk,cut,dcm,dib, -
   dps,dpx,emf,ept,fax,fits,fpx,gif,gradient,gray,hdf,histogram,html,icon, -
   jbig,jpeg,jp2,label,caption,palm,logo,map,mat,matte,meta,mgk,miff,mpc,mpr, -
   msl,mpeg,mono,mtv,mvg,null,otb,pcd,pcl,pcx,pdb,pdf,pict,pix,plasma,png, -

@@ -39,7 +39,7 @@ MAGICK_GDI32_MODULES =
 endif
 
 MAGICK_CODER_SRCS = \
-  art.c avi.c avs.c bmp.c c.c caption.c clipboard.c cmyk.c cut.c dcm.c \
+  art.c avi.c avs.c bmp.c caption.c clipboard.c cmyk.c cut.c dcm.c \
   dib.c dps.c dpx.c emf.c ept.c fax.c fits.c fpx.c gif.c gradient.c \
   gray.c hdf.c histogram.c html.c icon.c jbig.c jp2.c jpeg.c label.c \
   logo.c map.c mat.c matte.c meta.c mgk.c miff.c mono.c mpc.c mpeg.c mpr.c \
