@@ -358,6 +358,7 @@ MagickExport MagickInfo *GetMagickInfo(const char *tag)
       RegisterTTFImage();
       RegisterTXTImage();
       RegisterUILImage();
+      RegisterURLImage();
       RegisterUYVYImage();
       RegisterVICARImage();
       RegisterVIDImage();

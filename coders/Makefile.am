@@ -38,8 +38,8 @@ MAGICK_CODER_SRCS = art.c avi.c avs.c 8bim.c bmp.c cmyk.c cut.c dcm.c dps.c \
   mpc.c mtv.c mvg.c null.c pcd.c pcl.c pcx.c pdb.c pdf.c pict.c pix.c plasma.c \
   png.c pnm.c preview.c ps.c ps2.c ps3.c psd.c pwp.c rgb.c rla.c rle.c sct.c \
   sfw.c sgi.c stegano.c sun.c svg.c tga.c tiff.c tile.c tim.c ttf.c txt.c \
-  uil.c uyvy.c vicar.c vid.c viff.c wbmp.c wmf.c wpg.c x.c xbm.c xc.c xpm.c \
-  xwd.c yuv.c
+  uil.c url.c uyvy.c vicar.c vid.c viff.c wbmp.c wmf.c wpg.c x.c xbm.c xc.c \
+  xpm.c xwd.c yuv.c
 
 MAJOR_VERSION=@MAJOR_VERSION@
 MINOR_VERSION=@MINOR_VERSION@
@@ -75,7 +75,7 @@ pkg_LTLIBRARIES   = 8bim.la art.la avi.la avs.la bmp.la mpc.la cmyk.la cut.la \
   null.la pcd.la pcl.la pcx.la pdb.la pdf.la pict.la pix.la plasma.la \
   png.la pnm.la preview.la ps.la ps2.la ps3.la psd.la pwp.la rgb.la rla.la \
   rle.la sct.la sfw.la sgi.la stegano.la sun.la svg.la tga.la tiff.la \
-  tile.la tim.la ttf.la txt.la uil.la uyvy.la vicar.la vid.la viff.la \
+  tile.la tim.la ttf.la txt.la uil.la url.la uyvy.la vicar.la vid.la viff.la \
   wbmp.la wmf.la wpg.la x.la xbm.la xc.la xpm.la xwd.la yuv.la
 else
 pkg_LTLIBRARIES   =
@@ -410,6 +410,11 @@ txt_la_LIBADD       = ../magick/libMagick.la
 uil_la_SOURCES      = uil.c
 uil_la_LDFLAGS      = -no-undefined -module -avoid-version
 uil_la_LIBADD       = ../magick/libMagick.la
+
+# SVG module
+url_la_SOURCES      = url.c
+url_la_LDFLAGS      = -no-undefined -module -avoid-version
+url_la_LIBADD       = ../magick/libMagick.la @LIB_XML@ @LIB_ZLIB@
 
 # UYVY module
 uyvy_la_SOURCES     = uyvy.c

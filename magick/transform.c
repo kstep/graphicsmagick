@@ -911,7 +911,7 @@ MagickExport unsigned int ProfileImage(Image *image,const char *profile_name,
   DestroyImageInfo(image_info);
   if (profile_image == (Image *) NULL)
     return(False);
-  if (profile_image->iptc_profile.length > 0)
+  if (profile_image->iptc_profile.length != 0)
     {
       if (image->iptc_profile.length != 0)
         LiberateMemory((void **) &image->iptc_profile.info);
@@ -920,7 +920,7 @@ MagickExport unsigned int ProfileImage(Image *image,const char *profile_name,
       profile_image->iptc_profile.length=0;
       profile_image->iptc_profile.info=(unsigned char *) NULL;
     }
-  if (profile_image->color_profile.length > 0)
+  if (profile_image->color_profile.length != 0)
     {
       if (image->color_profile.length != 0)
         {
@@ -1016,7 +1016,7 @@ MagickExport unsigned int ProfileImage(Image *image,const char *profile_name,
       profile_image->color_profile.length=0;
       profile_image->color_profile.info=(unsigned char *) NULL;
     }
-  if (profile_image->generic_profiles > 0)
+  if (profile_image->generic_profiles != 0)
     {
       unsigned int
         number_profiles;

@@ -814,6 +814,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
             delay=(header[2] << 8) | header[1];
             if ((header[0] & 0x01) == 1)
               opacity=header[3];
+            image->matte=opacity >= 0;
             break;
           }
           case 0xfe:
@@ -897,6 +898,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       Read image attributes.
     */
     image->storage_class=PseudoClass;
+    image->compression=LZWCompression;
     page.x=ReadBlobLSBShort(image);
     page.y=ReadBlobLSBShort(image);
     image->columns=ReadBlobLSBShort(image);
@@ -917,8 +919,6 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     iterations=1;
     if (image_info->ping)
       {
-        if (opacity >= 0)
-          image->matte=True;
         CloseBlob(image);
         return(image);
       }
@@ -980,8 +980,6 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /*
       Decode image.
     */
-    image->compression=LZWCompression;
-    image->matte=opacity >= 0;
     status=DecodeImage(image,opacity,exception);
     if (status == False)
       ThrowBinaryException(CorruptImageWarning,"Corrupt GIF image",

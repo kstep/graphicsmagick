@@ -1540,10 +1540,10 @@ MagickExport void DescribeImage(Image *image,FILE *file,
         if ((x < (int) image->columns) || (y < (int) image->rows))
           {
             if (image->depth == 8)
-              (void) fprintf(file,"  Opacity: (%3d,%3d,%3d) #%02x%02x%02x\n",
+              (void) fprintf(file,"  Opacity: (%3d,%3d,%3d)\t#%02x%02x%02x\n",
                 p->red,p->green,p->blue,p->red,p->green,p->blue);
             else
-              (void) fprintf(file,"  Opacity: (%5d,%5d,%5d) #%04x%04x%04x\n",
+              (void) fprintf(file,"  Opacity: (%5d,%5d,%5d)\t#%04x%04x%04x\n",
                 p->red,p->green,p->blue,p->red,p->green,p->blue);
           }
       }
@@ -1574,7 +1574,7 @@ MagickExport void DescribeImage(Image *image,FILE *file,
       for (i=0; i < (int) image->colors; i++)
       {
         (void) fprintf(file,"    %d: (%3d,%3d,%3d)",i,p->red,p->green,p->blue);
-        (void) fprintf(file,"  ");
+        (void) fprintf(file,"\t");
         (void) QueryColorName(p,name);
         (void) fprintf(file,"  %.1024s",name);
         (void) fprintf(file,"\n");

@@ -3,11 +3,11 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%                            TTTTT  TTTTT  FFFFF                              %
-%                              T      T    F                                  %
-%                              T      T    FFF                                %
-%                              T      T    F                                  %
-%                              T      T    F                                  %
+%                            U   U  RRRR   L                                  %
+%                            U   U  R   R  L                                  %
+%                            U   U  RRRR   L                                  %
+%                            U   U  R R    L                                  %
+%                             UUU   R  R   LLLLL                              %
 %                                                                             %
 %                                                                             %
 %                    Read/Write ImageMagick Image Format.                     %
@@ -15,7 +15,8 @@
 %                                                                             %
 %                              Software Design                                %
 %                                John Cristy                                  %
-%                                 July 1992                                   %
+%                              Bill Radcliffe                                 %
+%                                March 2000                                   %
 %                                                                             %
 %                                                                             %
 %  Copyright (C) 2001 ImageMagick Studio, a non-profit organization dedicated %
@@ -54,31 +55,41 @@
 */
 #include "magick.h"
 #include "defines.h"
+#if defined(HasXML)
+#ifdef WIN32
+#include <win32config.h>
+#endif
+#include <libxml/parser.h>
+#include <libxml/xmlmemory.h>
+#include <libxml/nanoftp.h>
+#include <libxml/nanohttp.h>
+#endif
 
+#if defined(HasXML)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   R e a d T T F I m a g e                                                   %
+%   R e a d U R L I m a g e                                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ReadTTFImage reads a TrueType font file and returns it.  It
+%  Method ReadURLImage reads a Scalable Vector Gaphics file and returns it.  It
 %  allocates the memory necessary for the new Image structure and returns a
 %  pointer to the new image.
 %
-%  The format of the ReadTTFImage method is:
+%  The format of the ReadURLImage method is:
 %
-%      Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
+%      Image *ReadURLImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
-%    o image:  Method ReadTTFImage returns a pointer to the image after
-%      reading.  A null image is returned if there is a memory shortage or
-%      if the image cannot be read.
+%    o image:  Method ReadURLImage returns a pointer to the image after
+%      reading. A null image is returned if there is a memory shortage or if
+%      the image cannot be read.
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
 %
@@ -86,11 +97,25 @@
 %
 %
 */
-static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
+
+static void GetFTPData(void *userdata,const char *data,int length)
+{
+  FILE
+    *file;
+
+  file=(FILE *) userdata;
+  if (file == (FILE *) NULL)
+    return;
+  if (length <= 0)
+    return;
+  (void) fwrite(data,length,1,file);
+}
+
+static Image *ReadURLImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   char
-    filename[MaxTextExtent],
-    geometry[MaxTextExtent];
+    buffer[MaxTextExtent],
+    filename[MaxTextExtent];
 
   FILE
     *file;
@@ -102,116 +127,107 @@ static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *clone_info;
 
   int
-    y;
+    length;
 
-  register int
-    i;
+  void
+    *context;
 
-  unsigned int
-    status;
-
-  /*
-    Open image file.
-  */
-  image=AllocateImage(image_info);
-  status=OpenBlob(image_info,image,ReadBinaryType);
-  if (status == False)
-    ThrowReaderException(FileOpenWarning,"Unable to open file",image);
-  /*
-    Open draw file.
-  */
-  TemporaryFilename(filename);
-  file=fopen(filename,"w");
+  image=(Image *) NULL;
+  clone_info=CloneImageInfo(image_info);
+  TemporaryFilename(clone_info->filename);
+  file=fopen(clone_info->filename,WriteBinaryType);
   if (file == (FILE *) NULL)
     ThrowReaderException(FileOpenWarning,"Unable to open file",image);
-  y=0;
-  (void) fprintf(file,"font @%s\n",image_info->filename);
-  (void) fprintf(file,"font-size 18\n");
-  (void) fprintf(file,"text +10%+d 'abcdefghijklmnopqrstuvwxyz'\n",y+=20);
-  (void) fprintf(file,"text +10%+d 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'\n",y+=20);
-  (void) fprintf(file,"text +10%+d '1234567890.:,;(:*!?\")'\n",y+=20);
-  y+=20;
-  for (i=12; i <= 72; i+=6)
-  {
-    y+=i+12;
-    (void) fprintf(file,"font-size 18\n");
-    (void) fprintf(file,"text +10+%d '%d'\n",y,i);
-    (void) fprintf(file,"font-size %d",i);
-    (void) fprintf(file,
-      "text +50+%d 'That which does not destroy me, only makes me stronger.'\n",
-      y);
-    if (i >= 24)
-      i+=6;
-  }
+  (void) strcpy(filename,image_info->magick);
+  (void) strcat(filename,":");
+  LocaleLower(filename);
+  (void) strcat(filename,image_info->filename);
+  if (LocaleCompare(clone_info->magick,"ftp") != 0)
+    {
+      char
+        *type;
+
+      type=(char *) NULL;
+      context=xmlNanoHTTPOpen(filename,&type);
+      if (context != (void *) NULL)
+        {
+          while ((length=xmlNanoHTTPRead(context,buffer,MaxTextExtent)) > 0)
+            (void) fwrite(buffer,MaxTextExtent,1,file);
+          xmlNanoHTTPClose(context);
+          xmlFree(type);
+          xmlNanoHTTPCleanup();
+        }
+    }
+  else
+    {
+      xmlNanoFTPInit();
+      context=xmlNanoFTPNewCtxt(filename);
+      if (context != (void *) NULL)
+        {
+          if (xmlNanoFTPConnect(context) >= 0)
+            {
+              xmlNanoFTPGet(context,GetFTPData,(void *) file,(char *) NULL);
+              xmlNanoFTPClose(context);
+            }
+        }
+    }
   (void) fclose(file);
-  CloseBlob(image);
-  DestroyImage(image);
-  /*
-    Draw image.
-  */
-  clone_info=CloneImageInfo(image_info);
-  FormatString(geometry,"800x480");
-  CloneString(&clone_info->size,geometry);
-  FormatString(clone_info->filename,"mvg:%.1024s",filename);
   image=ReadImage(clone_info,exception);
-  if (image != (Image *) NULL)
-    (void) strcpy(image->filename,image_info->filename);
-  (void) remove(filename);
+  (void) remove(clone_info->filename);
   DestroyImageInfo(clone_info);
   return(image);
 }
+#else
+static Image *ReadURLImage(const ImageInfo *image_info,ExceptionInfo *exception)
+{
+  ThrowException(exception,MissingDelegateWarning,
+    "XML library is not available",image_info->filename);
+  return((Image *) NULL);
+}
+#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   R e g i s t e r T T F I m a g e                                           %
+%   R e g i s t e r U R L I m a g e                                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method RegisterTTFImage adds attributes for the TTF image format to
+%  Method RegisterURLImage adds attributes for the URL image format to
 %  the list of supported formats.  The attributes include the image format
 %  tag, a method to read and/or write the format, whether the format
 %  supports the saving of more than one frame to the same file or blob,
 %  whether the format supports native in-memory I/O, and a brief
 %  description of the format.
 %
-%  The format of the RegisterTTFImage method is:
+%  The format of the RegisterURLImage method is:
 %
-%      RegisterTTFImage(void)
+%      RegisterURLImage(void)
 %
 */
-ModuleExport void RegisterTTFImage(void)
+ModuleExport void RegisterURLImage(void)
 {
   MagickInfo
     *entry;
 
-  entry=SetMagickInfo("TTF");
-  entry->decoder=ReadTTFImage;
-  entry->adjoin=False;
-  entry->description=AllocateString("TrueType font");
-  entry->module=AllocateString("TTF");
+  entry=SetMagickInfo("HTTP");
+  entry->decoder=ReadURLImage;
+  entry->description=AllocateString("Uniform Resource Locator");
+  entry->module=AllocateString("URL");
   RegisterMagickInfo(entry);
-  entry=SetMagickInfo("AFM");
-  entry->decoder=ReadTTFImage;
-  entry->adjoin=False;
-  entry->description=AllocateString("TrueType font");
-  entry->module=AllocateString("TTF");
+  entry=SetMagickInfo("FTP");
+  entry->decoder=ReadURLImage;
+  entry->description=AllocateString("Uniform Resource Locator");
+  entry->module=AllocateString("URL");
   RegisterMagickInfo(entry);
-  entry=SetMagickInfo("PFB");
-  entry->decoder=ReadTTFImage;
-  entry->adjoin=False;
-  entry->description=AllocateString("TrueType font");
-  entry->module=AllocateString("TTF");
-  RegisterMagickInfo(entry);
-  entry=SetMagickInfo("PFM");
-  entry->decoder=ReadTTFImage;
-  entry->adjoin=False;
-  entry->description=AllocateString("TrueType font");
-  entry->module=AllocateString("TTF");
+  entry=SetMagickInfo("FILE");
+  entry->decoder=ReadURLImage;
+  entry->description=AllocateString("Uniform Resource Locator");
+  entry->module=AllocateString("URL");
   RegisterMagickInfo(entry);
 }
 
@@ -220,24 +236,23 @@ ModuleExport void RegisterTTFImage(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   U n r e g i s t e r T T F I m a g e                                       %
+%   U n r e g i s t e r U R L I m a g e                                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method UnregisterTTFImage removes format registrations made by the
-%  TTF module from the list of supported formats.
+%  Method UnregisterURLImage removes format registrations made by the
+%  URL module from the list of supported formats.
 %
-%  The format of the UnregisterTTFImage method is:
+%  The format of the UnregisterURLImage method is:
 %
-%      UnregisterTTFImage(void)
+%      UnregisterURLImage(void)
 %
 */
-ModuleExport void UnregisterTTFImage(void)
+ModuleExport void UnregisterURLImage(void)
 {
-  UnregisterMagickInfo("TTF");
-  UnregisterMagickInfo("AFM");
-  UnregisterMagickInfo("PFB");
-  UnregisterMagickInfo("PFM");
+  UnregisterMagickInfo("HTTP");
+  UnregisterMagickInfo("FTP");
+  UnregisterMagickInfo("FILE");
 }

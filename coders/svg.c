@@ -2295,7 +2295,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   ThrowException(exception,MissingDelegateWarning,
-    "SVG library is not available",image_info->filename);
+    "XML library is not available",image_info->filename);
   return((Image *) NULL);
 }
 #endif
@@ -2365,6 +2365,7 @@ ModuleExport void RegisterSVGImage(void)
 ModuleExport void UnregisterSVGImage(void)
 {
   UnregisterMagickInfo("SVG");
+  UnregisterMagickInfo("XML");
 }
 
 #if defined(HasAUTOTRACE)
