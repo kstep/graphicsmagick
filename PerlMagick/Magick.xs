@@ -1328,6 +1328,12 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
           DestroyPostscriptGeometry(p);
           return;
         }
+      if (strEQcase(attribute,"pen"))
+        {
+          if (info)
+            (void) QueryColorDatabase(SvPV(sval,na),&info->image_info->fill);
+          return;
+        }
       if (strEQcase(attribute,"pixel"))
         {
           int
@@ -3009,6 +3015,15 @@ Get(ref,...)
                   }
               break;
             }
+          if (strEQcase(attribute,"pen"))
+            {
+              if (info)
+                {
+                  (void) QueryColorName(&info->image_info->pen,color);
+                  s=newSVpv(color,0);
+                }
+              break;
+            }
           if (strEQcase(attribute,"pipe"))
             {
               if (image)
@@ -4159,8 +4174,8 @@ Mogrify(ref,...)
             (void) CloneString(&annotate_info->text,
               argument_list[0].string_reference);
           if (attribute_flag[4])
-            (void) CloneString(&annotate_info->box,
-              argument_list[4].string_reference);
+            (void) QueryColorDatabase(argument_list[4].string_reference,
+              &annotate_info->box);
           if (attribute_flag[5])
             (void) QueryColorDatabase(argument_list[5].string_reference,
               &annotate_info->stroke);

@@ -3048,9 +3048,6 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
     x,
     y;
 
-  PixelPacket
-    target_color;
-
   QuantizeInfo
     quantize_info;
 
@@ -3112,9 +3109,8 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
       }
     if (LocaleNCompare("-background",option,6) == 0)
       {
-        (void) QueryColorDatabase(argv[++i],&target_color);
-        clone_info->background_color=target_color;
-        (*image)->background_color=target_color;
+        (void) QueryColorDatabase(argv[++i],&clone_info->background_color);
+        (*image)->background_color=clone_info->background_color;
         continue;
       }
     if (LocaleNCompare("-blur",option,4) == 0)
@@ -3165,14 +3161,12 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
       }
     if (LocaleNCompare("-bordercolor",option,8) == 0)
       {
-        (void) QueryColorDatabase(argv[++i],&target_color);
-        clone_info->border_color=target_color;
-        (*image)->border_color=target_color;
+        (void) QueryColorDatabase(argv[++i],&clone_info->border_color);
+        (*image)->border_color=clone_info->border_color;
         continue;
       }
     if (LocaleCompare("-box",option) == 0)
       {
-        (void) CloneString(&draw_info->box,argv[++i]);
         (void) QueryColorDatabase(argv[++i],&draw_info->box);
         continue;
       }
@@ -3712,9 +3706,8 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
       }
     if (LocaleNCompare("-mattecolor",option,7) == 0)
       {
-        (void) QueryColorDatabase(argv[++i],&target_color);
-        clone_info->matte_color=target_color;
-        (*image)->matte_color=target_color;
+        (void) QueryColorDatabase(argv[++i],&clone_info->matte_color);
+        (*image)->matte_color=clone_info->matte_color;
         continue;
       }
     if (LocaleNCompare("-median",option,4) == 0)
