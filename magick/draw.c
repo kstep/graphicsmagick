@@ -99,9 +99,7 @@ typedef struct _PrimitiveInfo
   Forward declarations
 */
 static double
-  GenerateCircle(PrimitiveInfo *,PointInfo,PointInfo);
-
-static Quantum
+  GenerateCircle(PrimitiveInfo *,PointInfo,PointInfo),
   InsidePrimitive(PrimitiveInfo *,const DrawInfo *,const PointInfo *,const int,
     Image *);
 
@@ -519,6 +517,7 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
   double
     alpha,
     mid,
+    opacity,
     radius;
 
   DrawInfo
@@ -541,9 +540,6 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
 
   PrimitiveType
     primitive_type;
-
-  Quantum
-    opacity;
 
   register char
     *p;
@@ -676,7 +672,7 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       }
     if (LocaleCompare("opacity",keyword) == 0)
       {
-        (void) sscanf(p,"%u%n",&clone_info->opacity,&n);
+        (void) sscanf(p,"%lf%n",&clone_info->opacity,&n);
         p+=n;
         continue;
       }
@@ -1195,12 +1191,12 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
             if (clone_info->tile != (Image *) NULL)
               color=GetOnePixel(clone_info->tile,x % clone_info->tile->columns,
                 y % clone_info->tile->rows);
-            color.opacity*=clone_info->opacity/100;
+            color.opacity*=clone_info->opacity/100.0;
             if ((opacity == Transparent) || (color.opacity == Transparent))
               break;
             if (!clone_info->antialias)
               opacity=Opaque;
-            if (clone_info->opacity == 100)
+            if (clone_info->opacity == 100.0)
               {
                 q->red=alpha*(color.red*opacity+q->red*(Opaque-opacity));
                 q->green=alpha*(color.green*opacity+q->green*(Opaque-opacity));
@@ -1222,7 +1218,7 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
         }
         opacity=InsidePrimitive(primitive_info,clone_info,&target,False,image);
         color=clone_info->stroke;
-        color.opacity*=clone_info->opacity/100;
+        color.opacity*=clone_info->opacity/100.0;
         if ((opacity == Transparent) || (color.opacity == Transparent))
           {
             q++;
@@ -1230,7 +1226,7 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
           }
         if (!clone_info->antialias)
           opacity=Opaque;
-        if (clone_info->opacity == 100)
+        if (clone_info->opacity == 100.0)
           {
             q->red=alpha*(color.red*opacity+q->red*(Opaque-opacity));
             q->green=alpha*(color.green*opacity+q->green*(Opaque-opacity));
@@ -1921,9 +1917,9 @@ Export void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
   assert(draw_info != (DrawInfo *) NULL);
   draw_info->primitive=(char *) NULL;
   draw_info->font=AllocateString(image_info->font);
-  draw_info->opacity=100;
   draw_info->antialias=image_info->antialias;
   draw_info->gravity=NorthWestGravity;
+  draw_info->opacity=100.0;
   draw_info->linewidth=1.0;
   draw_info->pointsize=image_info->pointsize;
   draw_info->translate.x=0.0;
@@ -1957,7 +1953,7 @@ Export void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
 %
 %  The format of the InsidePrimitive method is:
 %
-%      unsigned int InsidePrimitive(PrimitiveInfo *primitive_info,
+%      double InsidePrimitive(PrimitiveInfo *primitive_info,
 %        const DrawInfo *draw_info,const PointInfo *pixel,const int fill,
 %        Image *image)
 %
@@ -2007,8 +2003,8 @@ static double DistanceToLine(const PointInfo *pixel,const PointInfo *p,
   return(alpha*alpha+beta*beta);
 }
 
-static Quantum PixelOnLine(const PointInfo *pixel,const PointInfo *p,
-  const PointInfo *q,const double mid,const unsigned int opacity)
+static double PixelOnLine(const PointInfo *pixel,const PointInfo *p,
+  const PointInfo *q,const double mid,const double opacity)
 {
   register double
     alpha,
@@ -2026,12 +2022,12 @@ static Quantum PixelOnLine(const PointInfo *pixel,const PointInfo *p,
   if (distance <= (alpha*alpha))
     {
       alpha=sqrt(distance)-mid-0.5;
-      return((Quantum) Max(opacity,Opaque*alpha*alpha));
+      return(Max(opacity,Opaque*alpha*alpha));
     }
   return(opacity);
 }
 
-static Quantum InsidePrimitive(PrimitiveInfo *primitive_info,
+static double InsidePrimitive(PrimitiveInfo *primitive_info,
   const DrawInfo *draw_info,const PointInfo *pixel,const int fill,Image *image)
 {
   PixelPacket
@@ -2042,14 +2038,12 @@ static Quantum InsidePrimitive(PrimitiveInfo *primitive_info,
     beta,
     distance,
     mid,
+    opacity,
     radius;
 
   register PrimitiveInfo
     *p,
     *q;
-
-  register Quantum
-    opacity;
 
   PixelPacket
     target;

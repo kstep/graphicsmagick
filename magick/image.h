@@ -428,11 +428,11 @@ typedef struct _DrawInfo
     *font;
 
   unsigned int
-    opacity,
     antialias,
     gravity;
 
   double
+    opacity,
     linewidth,
     pointsize;
 
