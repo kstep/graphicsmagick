@@ -1,3 +1,14 @@
+2003-08-05  William Radcliffe  <billr@corbis.com>
+
+	* coders/locale.c: Added several new formats to this coder to
+	generate windows message resource format messages and also to
+	generates a new header file format that will support a table
+	based version of the other magick/locale.c.
+
+2003-08-05  William Radcliffe  <billr@corbis.com>
+
+	* coders/xtrn.c: Minor code cleanup
+
 2003-08-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* configure.ac: Only configure C and C++ libtool tags.
