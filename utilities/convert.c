@@ -119,6 +119,7 @@
 %    -opaque color        change this color to the fill color
 %    -page geometry       size and location of an image canvas
 %    -paint radius        simulate an oil painting
+%    -ping                efficiently determine image attributes
 %    -pointsize value     pointsize of Postscript font
 %    -preview type        image preview type
 %    -profile filename    add ICM or IPTC information profile to image
@@ -319,6 +320,7 @@ static void Usage()
       "-opaque color        change this color to the fill color",
       "-page geometry       size and location of an image canvas",
       "-paint radius        simulate an oil painting",
+      "-ping                efficiently determine image attributes",
       "-pointsize value     pointsize of Postscript font",
       "-preview type        image preview type",
       "-profile filename    add ICM or IPTC information profile to image",
@@ -430,10 +432,11 @@ int main(int argc,char **argv)
     coalesce,
     deconstruct,
     doexit,
+    global_colormap,
     flatten,
     morph,
     mosaic,
-    global_colormap,
+    ping,
     scene,
     status;
 
@@ -481,6 +484,7 @@ int main(int argc,char **argv)
   image_info=CloneImageInfo((ImageInfo *) NULL);
   (void) strcpy(image_info->filename,argv[argc-1]);
   SetImageInfo(image_info,True,&exception);
+  ping=False;
   option=(char *) NULL;
   scene=0;
   /*
@@ -498,7 +502,10 @@ int main(int argc,char **argv)
         */
         filename=argv[i];
         (void) strcpy(image_info->filename,filename);
-        next_image=ReadImage(image_info,&exception);
+        if (ping)
+          next_image=PingImage(image_info,&exception);
+        else
+          next_image=ReadImage(image_info,&exception);
         if (exception.severity != UndefinedException)
           MagickWarning(exception.severity,exception.reason,
             exception.description);
@@ -1418,7 +1425,7 @@ int main(int argc,char **argv)
             }
           if (LocaleNCompare("ping",option+1,2) == 0)
             {
-              MagickWarning(OptionError,"Deprecated option",option);
+              ping=(*option == '-');
               break;
             }
           if (LocaleNCompare("pointsize",option+1,2) == 0)
