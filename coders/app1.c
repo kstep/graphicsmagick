@@ -91,7 +91,7 @@ static unsigned int
 %
 */
 static unsigned int IsAPP1(const unsigned char *magick,
-  const unsigned int length)
+  const unsigned long length)
 {
   if (length < 4)
     return(False);

@@ -5,6 +5,7 @@
 void OpenStaticModules(void)
 {
 #if !defined(HasMODULES)
+  RegisterAPP1Image();
   Register8BIMImage();
   RegisterARTImage();
   RegisterAVIImage();
