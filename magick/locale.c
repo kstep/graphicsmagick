@@ -1153,6 +1153,9 @@ const char *GetLocaleMessage(const char *tag)
       if (p - tp == 14 && !LocaleNCompare(tp, "MissingCommand", 14))
         return *np ? tag : "Missing command";
       else
+      if (p - tp == 22 && !LocaleNCompare(tp, "MissingCompressQuality", 22))
+        return *np ? tag : "Missing compression quality";
+      else
       if (p - tp == 14 && !LocaleNCompare(tp, "MissingDegrees", 14))
         return *np ? tag : "Missing degrees";
       else
