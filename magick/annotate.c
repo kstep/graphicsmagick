@@ -54,9 +54,14 @@
 #if defined(__MINGW32__)
 #  undef interface  /* Remove interface define */
 #endif
-#include "freetype/freetype.h"
-#include "freetype/ftglyph.h"
-#include "freetype/ftoutln.h"
+#if defined(HAVE_FT2BUILD_H)
+   /* Some libwmf/FreeType installs are broken in that the FreeType
+     headers don't work without including <ft2build.h> first */
+#  include <ft2build.h>
+#endif /* defined(HAVE_FT2BUILD_H) */
+#include <freetype/freetype.h>
+#include <freetype/ftglyph.h>
+#include <freetype/ftoutln.h>
 #endif
 
 /*

@@ -1,3 +1,10 @@
+2003-12-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* configure.ac: <ft2build.h> is an optional prerequisite for
+	<freetype/freetype.h> and <libwmf/ipa.h> so include it when
+	testing for these headers.
+	* magick/annotate.c: Include <ft2build.h> if it is available.
+
 2003-12-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* wand/wandtest.c: Ported from latest ImageMagick version.

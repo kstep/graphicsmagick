@@ -18,6 +18,7 @@ For 1.1 Release
  o Add a Magick++ method to set/update/remove defines (-define).
  o GM is not linking under Cygwin due to missing SYSV IPC functions
    (from -lcygipc).
+ o Fix exeption logging (map to warning & error logging)
 
 For Future Release
 ==================

@@ -109,9 +109,6 @@
 /* define if the compiler supports the explicit keyword */
 #undef HAVE_EXPLICIT
 
-/* Define to 1 if you have the <freetype/freetype.h> header file. */
-#undef HAVE_FREETYPE_FREETYPE_H
-
 /* Define to 1 if fseeko (and presumably ftello) exists and is declared. */
 #undef HAVE_FSEEKO
 

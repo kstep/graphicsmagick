@@ -1668,8 +1668,11 @@ dnl First see if there is a library
     fi
 
 dnl Now test for the headers
-    AC_CHECK_HEADERS(freetype/freetype.h)
-    if test "$ac_cv_header_freetype_freetype_h" = 'yes'
+    # Some Freetype installs appear to require that <ft2build.h> be
+    # included prior to including <freetype/freetype.h>.  Oops!
+    AC_CHECK_HEADER([ft2build.h],[FT2BUILD_H='#include <ft2build.h>'],[ft2build=''],[])
+    AC_CHECK_HEADER(freetype/freetype.h,[have_freetype_h='yes'],[have_freetype_h='no'],[$FT2BUILD_H])
+    if test "$have_freetype_h" = 'yes'
     then
 	passed=`expr $passed + 1`
     else
@@ -1688,6 +1691,10 @@ dnl Now test for the headers
 	else
 	    LIBS="$LIB_TTF $LIBS"
 	    AC_DEFINE(HasTTF,1,Define if you have FreeType (TrueType font) library)
+            if test "$ac_cv_header_ft2build_h" = 'yes'
+            then
+              AC_DEFINE([HAVE_FT2BUILD_H],[1],[Define to 1 if you have the <ft2build.h> header file.])
+             fi
 	    AC_MSG_RESULT(yes)
 	    have_ttf='yes'
 	fi
@@ -1881,7 +1888,7 @@ then
   have_libwmflite='no'
   have_libwmf_ipa_h='no'
 
-  AC_CHECK_HEADER(libwmf/ipa.h,have_libwmf_ipa_h='yes',)
+  AC_CHECK_HEADER([libwmf/ipa.h],[have_libwmf_ipa_h='yes'],[$FT2BUILD_H])
   if test "$have_libwmf_ipa_h" = 'yes'
   then
 
@@ -1889,10 +1896,6 @@ then
     if test "$have_libwmflite" = 'yes'
     then
       AC_DEFINE(HasWMFlite,1,Define if you have wmflite library)
-
-      # Some libwmf installs appear to require that <ft2build.h> be
-      # included prior to including <libwmf/ipa.h>.  Oops!
-      AC_CHECK_HEADERS([ft2build.h])
 
       LIB_WMF='-lwmflite'
       LIBS="$LIB_WMF $LIBS"
