@@ -789,7 +789,7 @@ static int ReadOneLayer( Image* image, XCFDocInfo* inDocInfo, XCFLayerInfo* outL
   }
 
 	/* clear the image based on the layer opacity */
-  	SetImage(outLayer->image,255-outLayer->opacity);
+  	SetImage(outLayer->image,(Quantum)(255-outLayer->opacity));
 
   /* read the hierarchy and layer mask offsets */
 	hierarchy_offset = ReadBlobMSBLong(image);
@@ -1352,6 +1352,7 @@ ModuleExport void UnregisterXCFImage(void)
 */
 static unsigned int WriteXCFImage(const ImageInfo *image_info,Image *image)
 {
+#if 0
   long
     y;
 
@@ -1391,7 +1392,6 @@ static unsigned int WriteXCFImage(const ImageInfo *image_info,Image *image)
     ThrowWriterException(FileOpenWarning,"Unable to open file",image);
   scene=0;
 
-#if 0
   do
   {
     /*
@@ -1631,8 +1631,8 @@ static unsigned int WriteXCFImage(const ImageInfo *image_info,Image *image)
   if (image_info->adjoin)
     while (image->previous != (Image *) NULL)
       image=image->previous;
-#endif
 
   CloseBlob(image);
+#endif
   return(True);
 }
