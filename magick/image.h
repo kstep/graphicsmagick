@@ -71,6 +71,7 @@ typedef struct _AnnotateInfo
     *box;
 
   unsigned int
+    antialias,
     pointsize,
     gravity;
 
@@ -233,18 +234,16 @@ typedef struct _ImageInfo
   */
   char
     *server_name,
-    *box,
     *font,
     *pen,
     *texture,
     *density;
 
+  unsigned int
+    antialias;
+
   double
     pointsize;
-
-  unsigned int
-    linewidth,
-    antialias;
 
   int
     fuzz;
@@ -305,6 +304,9 @@ typedef struct _MontageInfo
     *pen,
     *font;
 
+  unsigned int
+    gravity;
+
   PixelPacket
     background_color,
     border_color,
@@ -315,7 +317,6 @@ typedef struct _MontageInfo
 
   unsigned int
     border_width,
-    gravity,
     shadow;
 
   CompositeOperator
@@ -534,11 +535,14 @@ typedef struct _DrawInfo
 {
   char
     *primitive,
-    *pen;
+    *font,
+    *pen,
+    *box;
 
   unsigned int
+    antialias,
     linewidth,
-    antialias;
+    gravity;
 
   PixelPacket
     border_color;

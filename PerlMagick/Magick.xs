@@ -3521,17 +3521,11 @@ Mogrify(ref,...)
     MogrifyRegion      = 666
   PPCODE:
   {
-    AnnotateInfo
-      *annotate_info;
-
     char
       *attribute,
       attribute_flag[MaxArguments],
       *commands[10],
       message[MaxTextExtent];
-
-    DrawInfo
-      *draw_info;
 
     ExceptionInfo
       exception;
@@ -3564,8 +3558,7 @@ Mogrify(ref,...)
       i;
 
     struct PackageInfo
-      *info,
-      *package_info;
+      *info;
 
     struct Methods
       *rp;
@@ -3582,7 +3575,6 @@ Mogrify(ref,...)
       number_images;
 
     reference_vector=NULL;
-    package_info=(struct PackageInfo *) NULL;
     region_image=NULL;
     number_images=0;
     base=2;
@@ -3593,8 +3585,6 @@ Mogrify(ref,...)
         goto ReturnIt;
       }
     reference=SvRV(ST(0));
-    annotate_info=(AnnotateInfo *) NULL;
-    draw_info=(DrawInfo *) NULL;
     region_info.width=0;
     region_info.height=0;
     region_info.x=0;
@@ -4109,88 +4099,85 @@ Mogrify(ref,...)
           break;
         case 33:  /* Annotate */
         {
-          if (first)
+          AnnotateInfo
+            *annotate_info;
+
+          if (attribute_flag[1])
+            (void) CloneString(&info->image_info->font,
+              argument_list[1].string_reference);
+          if (attribute_flag[2])
+            info->image_info->pointsize=argument_list[2].double_reference;
+          if (attribute_flag[3])
+            (void) CloneString(&info->image_info->density,
+              argument_list[3].string_reference);
+          if (attribute_flag[5])
+            (void) CloneString(&info->image_info->pen,
+              argument_list[5].string_reference);
+          if (attribute_flag[7])
+            (void) CloneString(&info->image_info->server_name,
+              argument_list[7].string_reference);
+          annotate_info=CloneAnnotateInfo(info->image_info,
+            (AnnotateInfo *) NULL);
+          if (attribute_flag[0])
+            (void) CloneString(&annotate_info->text,
+              argument_list[0].string_reference);
+          if (attribute_flag[4])
+            (void) CloneString(&annotate_info->box,
+              argument_list[4].string_reference);
+          if (attribute_flag[6])
+            (void) CloneString(&annotate_info->geometry,
+              argument_list[6].string_reference);
+          if (attribute_flag[8] || attribute_flag[9])
             {
-              package_info=ClonePackageInfo(info);
-              if (attribute_flag[1])
-                (void) CloneString(&package_info->image_info->font,
-                  argument_list[1].string_reference);
-              if (attribute_flag[2])
-                package_info->image_info->pointsize=
-                  argument_list[2].double_reference;
-              if (attribute_flag[3])
-                (void) CloneString(&package_info->image_info->density,
-                  argument_list[3].string_reference);
-              if (attribute_flag[4])
-                (void) CloneString(&package_info->image_info->box,
-                  argument_list[4].string_reference);
-              if (attribute_flag[5])
-                (void) CloneString(&package_info->image_info->pen,
-                  argument_list[5].string_reference);
-              if (attribute_flag[7])
-                (void) CloneString(&package_info->image_info->server_name,
-                  argument_list[7].string_reference);
-              annotate_info=CloneAnnotateInfo(package_info->image_info,
-                (AnnotateInfo *) NULL);
-              if (attribute_flag[0])
-                (void) CloneString(&annotate_info->text,
-                  argument_list[0].string_reference);
-              if (attribute_flag[6])
-                (void) CloneString(&annotate_info->geometry,
-                  argument_list[6].string_reference);
-              if (attribute_flag[8] || attribute_flag[9])
-                {
-                  if (!attribute_flag[8])
-                    argument_list[8].int_reference=0;
-                  if (!attribute_flag[9])
-                    argument_list[9].int_reference=0;
-                  FormatString(message,"%+d%+d",argument_list[8].int_reference,
-                    argument_list[9].int_reference);
-                  (void) CloneString(&annotate_info->geometry,message);
-                }
-              if (attribute_flag[10])
-                annotate_info->gravity=argument_list[10].int_reference;
-              if (attribute_flag[11])
-                annotate_info->degrees=argument_list[11].double_reference;
+              if (!attribute_flag[8])
+                argument_list[8].int_reference=0;
+              if (!attribute_flag[9])
+                argument_list[9].int_reference=0;
+              FormatString(message,"%+d%+d",argument_list[8].int_reference,
+                argument_list[9].int_reference);
+              (void) CloneString(&annotate_info->geometry,message);
             }
+          if (attribute_flag[10])
+            annotate_info->gravity=argument_list[10].int_reference;
+          if (attribute_flag[11])
+            annotate_info->degrees=argument_list[11].double_reference;
           AnnotateImage(image,annotate_info);
+          DestroyAnnotateInfo(annotate_info);
           break;
         }
         case 34:  /* ColorFloodfill */
         {
+          DrawInfo
+            *draw_info;
+
           PixelPacket
             *pixel,
             target;
 
-          if (first)
-            {
-              package_info=ClonePackageInfo(info);
-              if (attribute_flag[0])
-                (void) ParseGeometry(argument_list[0].string_reference,
-                  &rectangle_info.x,&rectangle_info.y,&rectangle_info.width,
-                  &rectangle_info.height);
-              if (attribute_flag[1])
-                 rectangle_info.x=argument_list[1].int_reference;
-              if (attribute_flag[2])
-                 rectangle_info.y=argument_list[2].int_reference;
-              if (attribute_flag[3])
-                (void) CloneString(&package_info->image_info->pen,
-                  argument_list[3].string_reference);
-              if (attribute_flag[4])
-                QueryColorDatabase(argument_list[4].string_reference,
-                  &border_color);
-              draw_info=CloneDrawInfo(package_info->image_info,
-                (DrawInfo *) NULL);
-            }
+          if (attribute_flag[0])
+            (void) ParseGeometry(argument_list[0].string_reference,
+              &rectangle_info.x,&rectangle_info.y,&rectangle_info.width,
+              &rectangle_info.height);
+          if (attribute_flag[1])
+             rectangle_info.x=argument_list[1].int_reference;
+          if (attribute_flag[2])
+             rectangle_info.y=argument_list[2].int_reference;
+          if (attribute_flag[3])
+            (void) CloneString(&info->image_info->pen,
+              argument_list[3].string_reference);
+          if (attribute_flag[4])
+            QueryColorDatabase(argument_list[4].string_reference,&border_color);
           pixel=GetPixelCache(image,rectangle_info.x % image->columns,
             rectangle_info.y % image->rows,1,1);
           if (pixel != (PixelPacket *) NULL)
             target=(*pixel);
           if (attribute_flag[4])
             target=border_color;
+          draw_info=CloneDrawInfo(info->image_info,(DrawInfo *) NULL);
           ColorFloodfillImage(image,&target,draw_info->tile,
             rectangle_info.x,rectangle_info.y,
             attribute_flag[4] ? FillToBorderMethod : FloodfillMethod);
+          DestroyDrawInfo(draw_info);
           break;
         }
         case 35:  /* Composite */
@@ -4310,24 +4297,19 @@ Mogrify(ref,...)
         }
         case 38:  /* Draw */
         {
-          if (first)
-            {
-              package_info=ClonePackageInfo(info);
-              if (attribute_flag[3])
-                (void) CloneString(&package_info->image_info->pen,
-                  argument_list[3].string_reference);
-              if (attribute_flag[4])
-                package_info->image_info->linewidth=
-                  argument_list[4].int_reference;
-              if (attribute_flag[5])
-                (void) CloneString(&package_info->image_info->server_name,
-                  argument_list[5].string_reference);
-              if (attribute_flag[6])
-                (void) QueryColorDatabase(argument_list[6].string_reference,
-                  &package_info->image_info->border_color);
-              draw_info=CloneDrawInfo(package_info->image_info,
-                (DrawInfo *) NULL);
-            }
+          DrawInfo
+            *draw_info;
+
+          if (attribute_flag[3])
+            (void) CloneString(&info->image_info->pen,
+              argument_list[3].string_reference);
+          if (attribute_flag[5])
+            (void) CloneString(&info->image_info->server_name,
+              argument_list[5].string_reference);
+          if (attribute_flag[6])
+            (void) QueryColorDatabase(argument_list[6].string_reference,
+              &info->image_info->border_color);
+          draw_info=CloneDrawInfo(info->image_info,(DrawInfo *) NULL);
           (void) CloneString(&draw_info->primitive,"Point");
           if (attribute_flag[0] && (argument_list[0].int_reference > 0))
             (void) CloneString(&draw_info->primitive,
@@ -4344,7 +4326,10 @@ Mogrify(ref,...)
               (void) strcat(draw_info->primitive,
                 MethodTypes[argument_list[2].int_reference]);
             }
+          if (attribute_flag[4])
+            draw_info->linewidth=argument_list[4].int_reference;
           DrawImage(image,draw_info);
+          DestroyDrawInfo(draw_info);
           break;
         }
         case 39:  /* Equalize */
@@ -4727,12 +4712,6 @@ Mogrify(ref,...)
       if (*pv)
         pv++;
     }
-    if (annotate_info)
-      DestroyAnnotateInfo(annotate_info);
-    if (draw_info)
-      DestroyDrawInfo(draw_info);
-    if (package_info)
-      DestroyPackageInfo(package_info);
 
   ReturnIt:
     if (reference_vector)

@@ -141,7 +141,7 @@ Export DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
 
   cloned_info=(DrawInfo *) AllocateMemory(sizeof(DrawInfo));
   if (cloned_info == (DrawInfo *) NULL)
-    MagickError(ResourceLimitError,"Unable to clone annotate info",
+    MagickError(ResourceLimitError,"Unable to clone draw info",
       "Memory allocation failed");
   if (draw_info == (DrawInfo *) NULL)
     {
@@ -151,8 +151,12 @@ Export DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
   *cloned_info=(*draw_info);
   if (draw_info->primitive != (char *) NULL)
     cloned_info->primitive=AllocateString(draw_info->primitive);
+  if (draw_info->font != (char *) NULL)
+    cloned_info->font=AllocateString(draw_info->font);
   if (draw_info->pen != (char *) NULL)
     cloned_info->pen=AllocateString(draw_info->pen);
+  if (draw_info->box != (char *) NULL)
+    cloned_info->box=AllocateString(draw_info->box);
   if (draw_info->tile != (Image *) NULL)
     {
       cloned_info->tile=CloneImage(draw_info->tile,draw_info->tile->columns,
@@ -446,9 +450,15 @@ Export void DestroyDrawInfo(DrawInfo *draw_info)
   if (draw_info->primitive != (char *) NULL)
     FreeMemory(draw_info->primitive);
   draw_info->primitive=(char *) NULL;
+  if (draw_info->font != (char *) NULL)
+    FreeMemory(draw_info->font);
+  draw_info->font=(char *) NULL;
   if (draw_info->pen != (char *) NULL)
     FreeMemory(draw_info->pen);
   draw_info->pen=(char *) NULL;
+  if (draw_info->box != (char *) NULL)
+    FreeMemory(draw_info->box);
+  draw_info->box=(char *) NULL;
   if (draw_info->tile != (Image *) NULL)
     DestroyImage(draw_info->tile);
   draw_info->tile=(Image *) NULL;
@@ -1105,16 +1115,22 @@ Export void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
   ImageInfo
     *clone_info;
 
+  /*
+    Initialize draw attributes.
+  */
   assert(draw_info != (DrawInfo *) NULL);
-  clone_info=CloneImageInfo(image_info);
   draw_info->primitive=(char *) NULL;
-  draw_info->pen=AllocateString(clone_info->pen);
-  draw_info->linewidth=clone_info->linewidth;
-  draw_info->antialias=clone_info->antialias;
-  draw_info->border_color=clone_info->border_color;
+  draw_info->font=AllocateString(image_info->font);
+  draw_info->pen=AllocateString(image_info->pen);
+  draw_info->box=(char *) NULL;
+  draw_info->antialias=image_info->antialias;
+  draw_info->linewidth=1;
+  draw_info->gravity=ForgetGravity;
+  draw_info->border_color=image_info->border_color;
   /*
     Get tile.
   */
+  clone_info=CloneImageInfo(image_info);
   if (draw_info->pen == (char *) NULL)
     (void) strcpy(clone_info->filename,"xc:black");
   else
@@ -1581,7 +1597,11 @@ static unsigned int InsidePrimitive(PrimitiveInfo *primitive_info,
               if (isspace((int) *r) && (*(r-1) != '\\'))
                 break;
         annotate=CloneAnnotateInfo((ImageInfo *) NULL,(AnnotateInfo *) NULL);
-/*        annotate->pen=AllocateString(draw_info->pen);*/
+        annotate->font=AllocateString(draw_info->font);
+        annotate->pen=AllocateString(draw_info->pen);
+        annotate->box=AllocateString(draw_info->box);
+        annotate->antialias=draw_info->antialias;
+        annotate->gravity=draw_info->gravity;
         (void) strncpy(annotate->text,p->text,r-p->text);
         annotate->text[r-p->text]='\0';
         FormatString(annotate->geometry,"%+f%+f",p->pixel.x,p->pixel.y);

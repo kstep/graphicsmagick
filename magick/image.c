@@ -906,8 +906,6 @@ Export ImageInfo *CloneImageInfo(const ImageInfo *image_info)
     clone_info->page=AllocateString(image_info->page);
   if (image_info->server_name != (char *) NULL)
     clone_info->server_name=AllocateString(image_info->server_name);
-  if (image_info->box != (char *) NULL)
-    clone_info->box=AllocateString(image_info->box);
   if (image_info->font != (char *) NULL)
     clone_info->font=AllocateString(image_info->font);
   if (image_info->pen != (char *) NULL)
@@ -2695,15 +2693,9 @@ Export void DestroyImageInfo(ImageInfo *image_info)
   if (image_info->texture != (char *) NULL)
     FreeMemory(image_info->texture);
   image_info->texture=(char *) NULL;
-  if (image_info->box != (char *) NULL)
-    FreeMemory(image_info->box);
-  image_info->box=(char *) NULL;
   if (image_info->font != (char *) NULL)
     FreeMemory(image_info->font);
   image_info->font=(char *) NULL;
-  if (image_info->pen != (char *) NULL)
-    FreeMemory(image_info->pen);
-  image_info->pen=(char *) NULL;
   if (image_info->view != (char *) NULL)
     FreeMemory(image_info->view);
   image_info->view=(char *) NULL;
@@ -2892,14 +2884,12 @@ Export void GetImageInfo(ImageInfo *image_info)
     Annotation members.
   */
   image_info->server_name=(char *) NULL;
-  image_info->box=(char *) NULL;
   image_info->font=(char *) NULL;
   image_info->pen=(char *) NULL;
   image_info->texture=(char *) NULL;
   image_info->density=(char *) NULL;
-  image_info->linewidth=1;
-  image_info->pointsize=atof(DefaultPointSize);
   image_info->antialias=True;
+  image_info->pointsize=atof(DefaultPointSize);
   image_info->fuzz=0;
   (void) QueryColorDatabase(BackgroundColor,&image_info->background_color);
   (void) QueryColorDatabase(BorderColor,&image_info->border_color);
@@ -3876,6 +3866,9 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
     *geometry,
     *option;
 
+  DrawInfo
+    *draw_info;
+
   ExceptionInfo
     error;
 
@@ -3904,7 +3897,6 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
     i;
 
   unsigned int
-    gravity,
     matte,
     height,
     width;
@@ -3921,9 +3913,9 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
     Initialize method variables.
   */
   clone_info=CloneImageInfo(image_info);
+  draw_info=CloneDrawInfo(clone_info,(DrawInfo *) NULL);
   GetQuantizeInfo(&quantize_info);
   geometry=(char *) NULL;
-  gravity=ForgetGravity;
   map_image=(Image *) NULL;
   quantize_info.number_colors=0;
   quantize_info.tree_depth=0;
@@ -3951,6 +3943,7 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
     if (strncmp("antialias",option+1,3) == 0)
       {
         clone_info->antialias=(*option == '-');
+        draw_info->antialias=(*option == '-');
         continue;
       }
     if (strncmp("-background",option,6) == 0)
@@ -4015,7 +4008,7 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
       }
     if (Latin1Compare("-box",option) == 0)
       {
-        (void) CloneString(&clone_info->box,argv[++i]);
+        (void) CloneString(&draw_info->box,argv[++i]);
         continue;
       }
     if (strncmp("-charcoal",option,3) == 0)
@@ -4209,16 +4202,11 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
       }
     if (strncmp("-draw",option,3) == 0)
       {
-        DrawInfo
-          *draw_info;
-
         /*
           Draw image.
         */
-        draw_info=CloneDrawInfo(clone_info,(DrawInfo *) NULL);
         (void) CloneString(&draw_info->primitive,argv[++i]);
         DrawImage(*image,draw_info);
-        DestroyDrawInfo(draw_info);
         continue;
       }
     if (strncmp("-edge",option,3) == 0)
@@ -4394,6 +4382,7 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
     if (Latin1Compare("-font",option) == 0)
       {
         (void) CloneString(&clone_info->font,argv[++i]);
+        (void) CloneString(&draw_info->font,argv[++i]);
         continue;
       }
     if (strncmp("gamma",option+1,3) == 0)
@@ -4450,28 +4439,28 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
       }
     if (strncmp("gravity",option+1,2) == 0)
       {
-        gravity=NorthWestGravity;
+        draw_info->gravity=NorthWestGravity;
         if (*option == '-')
           {
             option=argv[++i];
             if (Latin1Compare("NorthWest",option) == 0)
-              gravity=NorthWestGravity;
+              draw_info->gravity=NorthWestGravity;
             if (Latin1Compare("North",option) == 0)
-              gravity=NorthGravity;
+              draw_info->gravity=NorthGravity;
             if (Latin1Compare("NorthEast",option) == 0)
-              gravity=NorthEastGravity;
+              draw_info->gravity=NorthEastGravity;
             if (Latin1Compare("West",option) == 0)
-              gravity=WestGravity;
+              draw_info->gravity=WestGravity;
             if (Latin1Compare("Center",option) == 0)
-              gravity=CenterGravity;
+              draw_info->gravity=CenterGravity;
             if (Latin1Compare("East",option) == 0)
-              gravity=EastGravity;
+              draw_info->gravity=EastGravity;
             if (Latin1Compare("SouthWest",option) == 0)
-              gravity=SouthWestGravity;
+              draw_info->gravity=SouthWestGravity;
             if (Latin1Compare("South",option) == 0)
-              gravity=SouthGravity;
+              draw_info->gravity=SouthGravity;
             if (Latin1Compare("SouthEast",option) == 0)
-              gravity=SouthEastGravity;
+              draw_info->gravity=SouthEastGravity;
           }
         continue;
       }
@@ -4525,7 +4514,7 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
       }
     if (strncmp("-linewidth",option,3) == 0)
       {
-        clone_info->linewidth=atoi(argv[++i]);
+        draw_info->linewidth=atoi(argv[++i]);
         continue;
       }
     if (Latin1Compare("-map",option) == 0)
@@ -5105,6 +5094,7 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
   */
   if (geometry != (char *) NULL)
     FreeMemory(geometry);
+  DestroyDrawInfo(draw_info);
   DestroyImageInfo(clone_info);
   CloseCache((*image)->cache);
   return((*image)->exception.severity == UndefinedException);
