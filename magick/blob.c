@@ -586,6 +586,7 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
       DestroyImageInfo(clone_info);
       blob=image->blob->data;
       *length=image->blob->extent;
+      RewindBlob(image->blob);
       return(blob);
     }
   /*

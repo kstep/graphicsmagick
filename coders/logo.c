@@ -3997,6 +3997,7 @@ static unsigned int WriteLOGOImage(const ImageInfo *image_info,Image *image)
       DestroyImage(logo_image);
       ThrowWriterException(FileOpenWarning,"Unable to write blob",image);
     }
+  DestroyImage(logo_image);
   (void) WriteBlobString(image,"/*\n");
   (void) WriteBlobString(image,"  Logo image declaration.\n");
   (void) WriteBlobString(image,"*/\n");
@@ -4018,8 +4019,8 @@ static unsigned int WriteLOGOImage(const ImageInfo *image_info,Image *image)
       }
     p++;
   }
+  LiberateMemory((void **) &blob);
   (void) WriteBlobString(image,"\n  };\n");
-  DestroyImage(logo_image);
   CloseBlob(image);
   return(True);
 }

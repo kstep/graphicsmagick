@@ -1598,6 +1598,7 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
       WriteBlob(image,length,blob);
       if (length & 0x01)
         (void) WriteBlobByte(image,'\0');
+      LiberateMemory((void **) &blob);
     }
   /*
     Write picture opcode, row bytes, and picture bounding box, and version.
