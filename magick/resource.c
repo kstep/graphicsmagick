@@ -197,7 +197,7 @@ MagickExport off_t GetMagickResources(const ResourceType type)
     case CacheResource: size=resource_info.cache; break;
     case DiskResource: size=resource_info.disk; break;
     case MemoryMapResource: size=resource_info.memory_map; break;
-		default: break;
+		default: size=0; break;
   }
   LiberateSemaphoreInfo(&resource_semaphore);
   return(size);

@@ -17,7 +17,7 @@ typedef enum
   MemoryResource,
   CacheResource,
   DiskResource,
-  MemoryMappedResource
+  MemoryMapResource
 } ResourceType;
 
 typedef struct _ResourceInfo
