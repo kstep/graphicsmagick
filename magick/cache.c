@@ -1621,7 +1621,7 @@ static unsigned int ModifyCache(Image *image)
   if (y < (long) image->rows)
     {
       ThrowBinaryException(CacheWarning,"Unable to clone cache",
-        image->filename);
+        image->filename)
       return(False);
     }
   return(True);
@@ -1677,6 +1677,8 @@ MagickExport unsigned int OpenCache(Image *image)
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(image->cache != (void *) NULL);
+  if ((image->columns == 0) || (image->rows == 0))
+    return(False);
   if (cache_memory == ~0)
     {
       char
@@ -2141,10 +2143,8 @@ MagickExport PixelPacket *SetCacheNexus(Image *image,const long x,const long y,
   assert(image->signature == MagickSignature);
   if (ModifyCache(image) == False)
     return((PixelPacket *) NULL);
-  if ((image->storage_class != GetCacheClass(image->cache)) ||
-      (image->colorspace != GetCacheColorspace(image->cache)))
-    if (OpenCache(image) == False)
-      return((PixelPacket *) NULL);
+  if (SyncCache(image) == False)
+    return((PixelPacket *) NULL);
   /*
     Validate pixel cache geometry.
   */
@@ -2433,6 +2433,44 @@ MagickExport void SetPixelCacheMethods(AcquirePixelHandler acquire_pixel,
   get_one_pixel_from_handler=get_one_pixel_from;
   close_pixel_handler=close_pixel;
   destroy_pixel_handler=destroy_pixel;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   S y n c C a c h e                                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method SyncCache() synchronizes the image with the pixel cache.
+%
+%  The format of the SyncCache() method is:
+%
+%      unsigned int SyncCache(Image *image)
+%
+%  A description of each parameter follows:
+%
+%    o status: Method SyncCache returns True if the pixel cache is synchronized
+%      successfully otherwise False.
+%
+%    o image: The image.
+%
+%
+*/
+MagickExport unsigned int SyncCache(Image *image)
+{
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  assert(image->cache != (void *) NULL);
+  if ((image->storage_class != GetCacheClass(image->cache)) ||
+      (image->colorspace != GetCacheColorspace(image->cache)))
+    if (OpenCache(image) == False)
+      return(False);
+  return(True);
 }
 
 /*

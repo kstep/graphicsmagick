@@ -6046,6 +6046,7 @@ MagickExport void SetImageType(Image *image,const ImageType image_type)
     default:
       break;
   }
+  SyncCache(image);
 }
 
 /*
