@@ -203,7 +203,7 @@
 #define ExceptionQueueLength  16
 #define MaxNodes  266817
 
-#define ColorToNodeId(red,green,blue,index) ((unsigned long) \
+#define ColorToNodeId(red,green,blue,index) ((unsigned int) \
             (((ScaleQuantumToChar(red) >> index) & 0x01) << 2 | \
              ((ScaleQuantumToChar(green) >> index) & 0x01) << 1 | \
              ((ScaleQuantumToChar(blue) >> index) & 0x01)))
@@ -392,7 +392,7 @@ static unsigned int AssignImageColors(CubeInfo *cube_info,Image *image)
   unsigned int
     dither;
 
-  unsigned long
+  unsigned int
     id;
 
   /*
@@ -580,7 +580,9 @@ static unsigned int ClassifyImageColors(CubeInfo *cube_info,const Image *image,
 
   unsigned long
     index,
-    level,
+    level;
+
+  unsigned int
     id;
 
   /*
@@ -819,7 +821,7 @@ MagickExport QuantizeInfo *CloneQuantizeInfo(const QuantizeInfo *quantize_info)
 static void ClosestColor(Image *image,CubeInfo *cube_info,
   const NodeInfo *node_info)
 {
-  register unsigned long
+  register unsigned int
     id;
 
   /*
@@ -933,7 +935,7 @@ MagickExport void CompressImageColormap(Image *image)
 */
 static void DefineImageColormap(Image *image,NodeInfo *node_info)
 {
-  register unsigned long
+  register unsigned int
     id;
 
   /*
@@ -1123,7 +1125,7 @@ static unsigned int Dither(CubeInfo *cube_info,Image *image,
           register NodeInfo
             *node_info;
 
-          register unsigned long
+          register unsigned int
             id;
 
           /*
@@ -1964,7 +1966,7 @@ static void PruneChild(CubeInfo *cube_info,const NodeInfo *node_info)
   NodeInfo
     *parent;
 
-  register long
+  register unsigned int
     id;
 
   /*
@@ -2014,7 +2016,7 @@ static void PruneChild(CubeInfo *cube_info,const NodeInfo *node_info)
 */
 static void PruneLevel(CubeInfo *cube_info,const NodeInfo *node_info)
 {
-  register long
+  register unsigned int
     id;
 
   /*
@@ -2057,7 +2059,7 @@ static void PruneLevel(CubeInfo *cube_info,const NodeInfo *node_info)
 */
 static void PruneToCubeDepth(CubeInfo *cube_info,const NodeInfo *node_info)
 {
-  register long
+  register unsigned int
     id;
 
   /*
@@ -2338,7 +2340,7 @@ MagickExport unsigned int QuantizeImages(const QuantizeInfo *quantize_info,
 */
 static void Reduce(CubeInfo *cube_info,const NodeInfo *node_info)
 {
-  register unsigned long
+  register unsigned int
     id;
 
   /*

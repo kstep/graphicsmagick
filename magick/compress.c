@@ -656,7 +656,7 @@ MagickExport unsigned int HuffmanEncodeImage(const ImageInfo *image_info,
   bit>>=1;  \
   if ((bit & 0xff) == 0)   \
     {  \
-      if (LocaleCompare(image_info->magick,"FAX") == 0) \
+      if (is_fax == True) \
         (void) WriteBlobByte(image,byte);  \
       else \
         Ascii85Encode(image,(unsigned long) byte); \
@@ -670,6 +670,7 @@ MagickExport unsigned int HuffmanEncodeImage(const ImageInfo *image_info,
 
   int
     k,
+    is_fax,
     runlength;
 
   long
@@ -709,8 +710,11 @@ MagickExport unsigned int HuffmanEncodeImage(const ImageInfo *image_info,
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  width=image->columns;
+  is_fax=False;
   if (LocaleCompare(image_info->magick,"FAX") == 0)
+    is_fax=True;
+  width=image->columns;
+  if (is_fax == True)
     width=Max(image->columns,1728);
   scanline=(unsigned char *) AcquireMemory(width+1);
   if (scanline == (unsigned char *) NULL)
@@ -722,7 +726,7 @@ MagickExport unsigned int HuffmanEncodeImage(const ImageInfo *image_info,
   SetImageType(huffman_image,BilevelType);
   byte=0;
   bit=0x80;
-  if (LocaleCompare(image_info->magick,"FAX") != 0)
+  if (is_fax == False)
     Ascii85Initialize(image);
   else
     {
@@ -741,7 +745,7 @@ MagickExport unsigned int HuffmanEncodeImage(const ImageInfo *image_info,
     polarity=(PixelIntensityToQuantum(&huffman_image->colormap[0]) <
       PixelIntensityToQuantum(&huffman_image->colormap[1]) ? 0x00 : 0x01);
   q=scanline;
-  for (i=0; i < (long) width; i++)
+  for (i=(long) width; i > 0; i--)
     *q++=(unsigned char) polarity;
   q=scanline;
   for (y=0; y < (long) huffman_image->rows; y++)
@@ -828,12 +832,12 @@ MagickExport unsigned int HuffmanEncodeImage(const ImageInfo *image_info,
   */
   if (bit != 0x80)
     {
-      if (LocaleCompare(image_info->magick,"FAX") == 0)
+      if (is_fax == True)
         (void) WriteBlobByte(image,byte);
       else
         Ascii85Encode(image,(unsigned long) byte);
     }
-  if (LocaleCompare(image_info->magick,"FAX") != 0)
+  if (is_fax == False)
     Ascii85Flush(image);
   DestroyImage(huffman_image);
   LiberateMemory((void **) &scanline);

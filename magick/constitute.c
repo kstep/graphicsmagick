@@ -64,6 +64,18 @@
 #include "stream.h"
 #include "utility.h"
 
+/*
+  Type definitions
+*/
+typedef enum
+{
+  RedMapQuantum,
+  GreenMapQuantum,
+  BlueMapQuanum,
+  OpacityMapQuantum,
+  IntensityMapQuantum
+} MapQuantumType;
+
 static SemaphoreInfo
   *constitute_semaphore = (SemaphoreInfo *) NULL;
 
@@ -122,6 +134,7 @@ static Image
 %
 %
 */
+
 MagickExport Image *ConstituteImage(const unsigned long width,
   const unsigned long height,const char *map,const StorageType type,
   const void *pixels,ExceptionInfo *exception)
@@ -134,6 +147,9 @@ MagickExport Image *ConstituteImage(const unsigned long width,
 
   PixelPacket
     *q;
+
+  MapQuantumType
+    switch_map[MaxTextExtent/sizeof(MapQuantumType)];
 
   register IndexPacket
     *indexes;
@@ -160,39 +176,78 @@ MagickExport Image *ConstituteImage(const unsigned long width,
       "NonzeroWidthAndHeightRequired");
   image->columns=width;
   image->rows=height;
+
+  /*
+    Prepare a validated and more efficient version of the map.
+  */
   length=strlen(map);
+  length=Min(length,sizeof(switch_map)/sizeof(MapQuantumType));
   for (i=0; i < (long) length; i++)
-    switch (map[i])
     {
-      case 'a':
-      case 'A':
-      {
-        image->matte=True;
-        break;
-      }
-      case 'c':
-      case 'C':
-      case 'm':
-      case 'M':
-      case 'y':
-      case 'Y':
-      case 'k':
-      case 'K':
-      {
-        image->colorspace=CMYKColorspace;
-        break;
-      }
-      case 'i':
-      case 'I':
-      {
-        if (!AllocateImageColormap(image,MaxColormapSize))
-          ThrowImageException(ResourceLimitError,"MemoryAllocationFailed",
-            "UnableToConstituteImage");
-        break;
-      }
-      default:
-        break;
+      switch ((int) toupper(map[i]))
+        {
+        case 'R':
+          {
+            switch_map[i]=RedMapQuantum;
+            break;
+          }
+        case 'G':
+          {
+            switch_map[i]=GreenMapQuantum;
+            break;
+          }
+        case 'B':
+          {
+            switch_map[i]=BlueMapQuanum;
+            break;
+          }
+        case 'A':
+          {
+            switch_map[i]=OpacityMapQuantum;
+            image->matte=True;
+            break;
+          }
+        case 'C':
+          {
+            image->colorspace=CMYKColorspace;
+            switch_map[i]=RedMapQuantum;
+            break;
+          }
+        case 'M':
+          {
+            image->colorspace=CMYKColorspace;
+            switch_map[i]=GreenMapQuantum;
+            break;
+          }
+        case 'Y':
+          {
+            image->colorspace=CMYKColorspace;
+            switch_map[i]=BlueMapQuanum;
+            break;
+          }
+        case 'K':
+          {
+            image->colorspace=CMYKColorspace;
+            switch_map[i]=OpacityMapQuantum;
+            break;
+          }
+        case 'I':
+          {
+            if (!AllocateImageColormap(image,MaxColormapSize))
+              ThrowImageException(ResourceLimitError,"MemoryAllocationFailed",
+                "UnableToConstituteImage");
+            switch_map[i]=IntensityMapQuantum;
+            break;
+          }
+        default:
+          {
+            DestroyImage(image);
+            ThrowImageException(OptionError,"UnrecognizedPixelMap",map)
+              break;
+          }
+        }
     }
+
   /*
     Transfer the pixels from the pixel data array to the image.
   */
@@ -214,41 +269,29 @@ MagickExport Image *ConstituteImage(const unsigned long width,
         {
           for (i=0; i < (long) length; i++)
           {
-            switch (map[i])
+            switch (switch_map[i])
             {
-              case 'r':
-              case 'R':
-              case 'c':
-              case 'C':
+              case RedMapQuantum:
               {
                 q->red=ScaleCharToQuantum(*p++);
                 break;
               }
-              case 'g':
-              case 'G':
-              case 'm':
-              case 'M':
+              case GreenMapQuantum:
               {
                 q->green=ScaleCharToQuantum(*p++);
                 break;
               }
-              case 'b':
-              case 'B':
-              case 'y':
-              case 'Y':
+              case BlueMapQuanum:
               {
                 q->blue=ScaleCharToQuantum(*p++);
                 break;
               }
-              case 'a':
-              case 'A':
-              case 'k':
-              case 'K':
+              case OpacityMapQuantum:
               {
                 q->opacity=ScaleCharToQuantum(*p++);
                 break;
               }
-              case 'I':
+              case IntensityMapQuantum:
               {
                 indexes[x]=ScaleCharToQuantum(*p++);
                 q->red=image->colormap[indexes[x]].red;
@@ -286,41 +329,29 @@ MagickExport Image *ConstituteImage(const unsigned long width,
         {
           for (i=0; i < (long) length; i++)
           {
-            switch (map[i])
+            switch (switch_map[i])
             {
-              case 'r':
-              case 'R':
-              case 'c':
-              case 'C':
+              case RedMapQuantum:
               {
                 q->red=ScaleShortToQuantum(*p++);
                 break;
               }
-              case 'g':
-              case 'G':
-              case 'm':
-              case 'M':
+              case GreenMapQuantum:
               {
                 q->green=ScaleShortToQuantum(*p++);
                 break;
               }
-              case 'b':
-              case 'B':
-              case 'y':
-              case 'Y':
+              case BlueMapQuanum:
               {
                 q->blue=ScaleShortToQuantum(*p++);
                 break;
               }
-              case 'a':
-              case 'A':
-              case 'k':
-              case 'K':
+              case OpacityMapQuantum:
               {
                 q->opacity=ScaleShortToQuantum(*p++);
                 break;
               }
-              case 'I':
+              case IntensityMapQuantum:
               {
                 indexes[x]=ScaleShortToQuantum(*p++);
                 q->red=image->colormap[indexes[x]].red;
@@ -358,41 +389,29 @@ MagickExport Image *ConstituteImage(const unsigned long width,
         {
           for (i=0; i < (long) length; i++)
           {
-            switch (map[i])
+            switch (switch_map[i])
             {
-              case 'r':
-              case 'R':
-              case 'c':
-              case 'C':
+              case RedMapQuantum:
               {
                 q->red=ScaleLongToQuantum(*p++);
                 break;
               }
-              case 'g':
-              case 'G':
-              case 'm':
-              case 'M':
+              case GreenMapQuantum:
               {
                 q->green=ScaleLongToQuantum(*p++);
                 break;
               }
-              case 'b':
-              case 'B':
-              case 'y':
-              case 'Y':
+              case BlueMapQuanum:
               {
                 q->blue=ScaleLongToQuantum(*p++);
                 break;
               }
-              case 'a':
-              case 'A':
-              case 'k':
-              case 'K':
+              case OpacityMapQuantum:
               {
                 q->opacity=ScaleLongToQuantum(*p++);
                 break;
               }
-              case 'I':
+              case IntensityMapQuantum:
               {
                 indexes[x]=ScaleLongToQuantum(*p++);
                 q->red=image->colormap[indexes[x]].red;
@@ -430,41 +449,29 @@ MagickExport Image *ConstituteImage(const unsigned long width,
         {
           for (i=0; i < (long) length; i++)
           {
-            switch (map[i])
+            switch (switch_map[i])
             {
-              case 'r':
-              case 'R':
-              case 'c':
-              case 'C':
+              case RedMapQuantum:
               {
                 q->red=ScaleLongToQuantum(*p++);
                 break;
               }
-              case 'g':
-              case 'G':
-              case 'm':
-              case 'M':
+              case GreenMapQuantum:
               {
                 q->green=(Quantum) (*p++);
                 break;
               }
-              case 'b':
-              case 'B':
-              case 'y':
-              case 'Y':
+              case BlueMapQuanum:
               {
                 q->blue=ScaleLongToQuantum(*p++);
                 break;
               }
-              case 'a':
-              case 'A':
-              case 'k':
-              case 'K':
+              case OpacityMapQuantum:
               {
                 q->opacity=ScaleLongToQuantum(*p++);
                 break;
               }
-              case 'I':
+              case IntensityMapQuantum:
               {
                 indexes[x]=ScaleLongToQuantum(*p++);
                 q->red=image->colormap[indexes[x]].red;
@@ -502,41 +509,29 @@ MagickExport Image *ConstituteImage(const unsigned long width,
         {
           for (i=0; i < (long) length; i++)
           {
-            switch (map[i])
+            switch (switch_map[i])
             {
-              case 'r':
-              case 'R':
-              case 'c':
-              case 'C':
+              case RedMapQuantum:
               {
                 q->red=(Quantum) ((float) MaxRGB*(*p++));
                 break;
               }
-              case 'g':
-              case 'G':
-              case 'm':
-              case 'M':
+              case GreenMapQuantum:
               {
                 q->green=(Quantum) ((float) MaxRGB*(*p++));
                 break;
               }
-              case 'b':
-              case 'B':
-              case 'y':
-              case 'Y':
+              case BlueMapQuanum:
               {
                 q->blue=(Quantum) ((float) MaxRGB*(*p++));
                 break;
               }
-              case 'a':
-              case 'A':
-              case 'k':
-              case 'K':
+              case OpacityMapQuantum:
               {
                 q->opacity=(Quantum) ((float) MaxRGB*(*p++));
                 break;
               }
-              case 'I':
+              case IntensityMapQuantum:
               {
                 indexes[x]=(Quantum) ((float) MaxRGB*(*p++));
                 q->red=image->colormap[indexes[x]].red;
@@ -574,41 +569,29 @@ MagickExport Image *ConstituteImage(const unsigned long width,
         {
           for (i=0; i < (long) length; i++)
           {
-            switch (map[i])
+            switch (switch_map[i])
             {
-              case 'r':
-              case 'R':
-              case 'c':
-              case 'C':
+              case RedMapQuantum:
               {
                 q->red=(Quantum) ((double) MaxRGB*(*p++));
                 break;
               }
-              case 'g':
-              case 'G':
-              case 'm':
-              case 'M':
+              case GreenMapQuantum:
               {
                 q->green=(Quantum) ((double) MaxRGB*(*p++));
                 break;
               }
-              case 'b':
-              case 'B':
-              case 'y':
-              case 'Y':
+              case BlueMapQuanum:
               {
                 q->blue=(Quantum) ((double) MaxRGB*(*p++));
                 break;
               }
-              case 'a':
-              case 'A':
-              case 'k':
-              case 'K':
+              case OpacityMapQuantum:
               {
                 q->opacity=(Quantum) ((double) MaxRGB*(*p++));
                 break;
               }
-              case 'I':
+              case IntensityMapQuantum:
               {
                 indexes[x]=(Quantum) ((double) MaxRGB*(*p++));
                 q->red=image->colormap[indexes[x]].red;
@@ -676,9 +659,9 @@ MagickExport void DestroyConstitute(void)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  DispatchImage() extracts pixel data from an image and returns it to you.
-%  The method returns False on success otherwise True if an error is
-%  encountered.  The data is returned as char, short int, int, long, float,
-%  or double in the order specified by map.
+%  The method returns False on success or True if an error is encountered.
+%  The data is returned as char, short int, int, long, float, or double in
+%  the order specified by map.
 %
 %  Suppose we want want to extract the first scanline of a 640x480 image as
 %  character data in red-green-blue order:
@@ -731,32 +714,81 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
   register const PixelPacket
     *p;
 
+  MapQuantumType
+    switch_map[MaxTextExtent/sizeof(MapQuantumType)];
+
   size_t
     length;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   length=strlen(map);
+  length=Min(length,sizeof(switch_map)/sizeof(MapQuantumType));
+
+  /*
+    Prepare a validated and more efficient version of the map.
+  */
+
   for (i=0; i < (long) length; i++)
-    switch (map[i])
     {
-      case 'c':
-      case 'C':
-      case 'm':
-      case 'M':
-      case 'y':
-      case 'Y':
-      case 'k':
-      case 'K':
-      {
-        if (image->colorspace == CMYKColorspace)
-          break;
-        ThrowException(exception,OptionError,"ColorSeparatedImageRequired",map);
-        return(False);
-      }
-      default:
-        break;
+      switch ((int) toupper(map[i]))
+        {
+        case 'R':
+          {
+            switch_map[i]=RedMapQuantum;
+            break;
+          }
+        case 'G':
+          {
+            switch_map[i]=GreenMapQuantum;
+            break;
+          }
+        case 'B':
+          {
+            switch_map[i]=BlueMapQuanum;
+            break;
+          }
+        case 'A':
+          {
+            switch_map[i]=OpacityMapQuantum;
+            break;
+          }
+        case 'C':
+          {
+            switch_map[i]=RedMapQuantum;
+            break;
+          }
+        case 'M':
+          {
+            switch_map[i]=GreenMapQuantum;
+            break;
+          }
+        case 'Y':
+          {
+            switch_map[i]=BlueMapQuanum;
+            break;
+          }
+        case 'K':
+          {
+            switch_map[i]=OpacityMapQuantum;
+            if (image->colorspace == CMYKColorspace)
+              break;
+            ThrowException(exception,OptionError,"ColorSeparatedImageRequired",map);
+            return(False);
+          }
+        case 'I':
+          {
+            switch_map[i]=IntensityMapQuantum;
+            break;
+          }
+        default:
+          {
+            ThrowException(exception,OptionError,"UnrecognizedPixelMap",map);
+            return(False);
+          }
+        }
     }
+
   switch (type)
   {
     case CharPixel:
@@ -776,40 +808,27 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
           {
             switch (map[i])
             {
-              case 'r':
-              case 'R':
-              case 'c':
-              case 'C':
+              case RedMapQuantum:
               {
                 *q++=ScaleQuantumToChar(p->red);
                 break;
               }
-              case 'g':
-              case 'G':
-              case 'm':
-              case 'M':
+              case GreenMapQuantum:
               {
                 *q++=ScaleQuantumToChar(p->green);
                 break;
               }
-              case 'b':
-              case 'B':
-              case 'y':
-              case 'Y':
+              case BlueMapQuanum:
               {
                 *q++=ScaleQuantumToChar(p->blue);
                 break;
               }
-              case 'a':
-              case 'A':
-              case 'k':
-              case 'K':
+              case OpacityMapQuantum:
               {
                 *q++=ScaleQuantumToChar(p->opacity);
                 break;
               }
-              case 'i':
-              case 'I':
+              case IntensityMapQuantum:
               {
                 *q++=ScaleQuantumToChar(PixelIntensityToQuantum(p));
                 break;
@@ -843,40 +862,27 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
           {
             switch (map[i])
             {
-              case 'r':
-              case 'R':
-              case 'c':
-              case 'C':
+              case RedMapQuantum:
               {
                 *q++=ScaleQuantumToShort(p->red);
                 break;
               }
-              case 'g':
-              case 'G':
-              case 'm':
-              case 'M':
+              case GreenMapQuantum:
               {
                 *q++=ScaleQuantumToShort(p->green);
                 break;
               }
-              case 'b':
-              case 'B':
-              case 'y':
-              case 'Y':
+              case BlueMapQuanum:
               {
                 *q++=ScaleQuantumToShort(p->blue);
                 break;
               }
-              case 'a':
-              case 'A':
-              case 'k':
-              case 'K':
+              case OpacityMapQuantum:
               {
                 *q++=ScaleQuantumToShort(p->opacity);
                 break;
               }
-              case 'i':
-              case 'I':
+              case IntensityMapQuantum:
               {
                 *q++=ScaleQuantumToShort(PixelIntensityToQuantum(p));
                 break;
@@ -910,40 +916,27 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
           {
             switch (map[i])
             {
-              case 'r':
-              case 'R':
-              case 'c':
-              case 'C':
+              case RedMapQuantum:
               {
                 *q++=ScaleQuantumToLong(p->red);
                 break;
               }
-              case 'g':
-              case 'G':
-              case 'm':
-              case 'M':
+              case GreenMapQuantum:
               {
                 *q++=ScaleQuantumToLong(p->green);
                 break;
               }
-              case 'b':
-              case 'B':
-              case 'y':
-              case 'Y':
+              case BlueMapQuanum:
               {
                 *q++=ScaleQuantumToLong(p->blue);
                 break;
               }
-              case 'a':
-              case 'A':
-              case 'k':
-              case 'K':
+              case OpacityMapQuantum:
               {
                 *q++=ScaleQuantumToLong(p->opacity);
                 break;
               }
-              case 'i':
-              case 'I':
+              case IntensityMapQuantum:
               {
                 *q++=ScaleQuantumToLong(PixelIntensityToQuantum(p));
                 break;
@@ -977,40 +970,27 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
           {
             switch (map[i])
             {
-              case 'r':
-              case 'R':
-              case 'c':
-              case 'C':
+              case RedMapQuantum:
               {
                 *q++=ScaleQuantumToLong(p->red);
                 break;
               }
-              case 'g':
-              case 'G':
-              case 'm':
-              case 'M':
+              case GreenMapQuantum:
               {
                 *q++=ScaleQuantumToLong(p->green);
                 break;
               }
-              case 'b':
-              case 'B':
-              case 'y':
-              case 'Y':
+              case BlueMapQuanum:
               {
                 *q++=ScaleQuantumToLong(p->blue);
                 break;
               }
-              case 'a':
-              case 'A':
-              case 'k':
-              case 'K':
+              case OpacityMapQuantum:
               {
                 *q++=ScaleQuantumToLong(p->opacity);
                 break;
               }
-              case 'i':
-              case 'I':
+              case IntensityMapQuantum:
               {
                 *q++=ScaleQuantumToLong(PixelIntensityToQuantum(p));
                 break;
@@ -1044,40 +1024,27 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
           {
             switch (map[i])
             {
-              case 'r':
-              case 'R':
-              case 'c':
-              case 'C':
+              case RedMapQuantum:
               {
                 *q++=(float) p->red/MaxRGB;
                 break;
               }
-              case 'g':
-              case 'G':
-              case 'm':
-              case 'M':
+              case GreenMapQuantum:
               {
                 *q++=(float) p->green/MaxRGB;
                 break;
               }
-              case 'b':
-              case 'B':
-              case 'y':
-              case 'Y':
+              case BlueMapQuanum:
               {
                 *q++=(float) p->blue/MaxRGB;
                 break;
               }
-              case 'a':
-              case 'A':
-              case 'k':
-              case 'K':
+              case OpacityMapQuantum:
               {
                 *q++=(float) p->opacity/MaxRGB;
                 break;
               }
-              case 'i':
-              case 'I':
+              case IntensityMapQuantum:
               {
                 *q++=(float) PixelIntensityToQuantum(p)/MaxRGB;
                 break;
@@ -1111,40 +1078,27 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
           {
             switch (map[i])
             {
-              case 'r':
-              case 'R':
-              case 'c':
-              case 'C':
+              case RedMapQuantum:
               {
                 *q++=(double) p->red/MaxRGB;
                 break;
               }
-              case 'g':
-              case 'G':
-              case 'm':
-              case 'M':
+              case GreenMapQuantum:
               {
                 *q++=(double) p->green/MaxRGB;
                 break;
               }
-              case 'b':
-              case 'B':
-              case 'y':
-              case 'Y':
+              case BlueMapQuanum:
               {
                 *q++=(double) p->blue/MaxRGB;
                 break;
               }
-              case 'a':
-              case 'A':
-              case 'k':
-              case 'K':
+              case OpacityMapQuantum:
               {
                 *q++=(double) p->opacity/MaxRGB;
                 break;
               }
-              case 'i':
-              case 'I':
+              case IntensityMapQuantum:
               {
                 *q++=(double) PixelIntensityToQuantum(p)/MaxRGB;
                 break;
@@ -1948,7 +1902,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
 %
 %    o image: The image.
 %
-%    o quantum_tyep: Declare which pixel components to transfer (red, green,
+%    o quantum_type: Declare which pixel components to transfer (red, green,
 %      blue, opacity, RGB, or RGBA).
 %
 %    o source:  The pixel components are transferred from this buffer.

@@ -63,6 +63,11 @@
   Define declarations.
 */
 #define ColorFilename  "colors.mgk"
+
+#define ColorToNodeId(red,green,blue,index) ((unsigned int) \
+            (((ScaleQuantumToChar(red) >> index) & 0x01) << 2 | \
+             ((ScaleQuantumToChar(green) >> index) & 0x01) << 1 | \
+             ((ScaleQuantumToChar(blue) >> index) & 0x01)))
 
 /*
   Declare color map.
@@ -806,10 +811,7 @@ MagickExport unsigned long GetNumberColors(const Image *image,FILE *file,
       index=MaxTreeDepth-1;
       for (level=1; level <= MaxTreeDepth; level++)
       {
-        id=(unsigned int)
-          (((ScaleQuantumToChar(p->red) >> index) & 0x01) << 2 |
-           ((ScaleQuantumToChar(p->green) >> index) & 0x01) << 1 |
-           ((ScaleQuantumToChar(p->blue) >> index) & 0x01));
+        id=ColorToNodeId(p->red,p->green,p->blue,index);
         if (node_info->child[id] == (NodeInfo *) NULL)
           {
             node_info->child[id]=GetNodeInfo(cube_info,level);
@@ -977,7 +979,6 @@ MagickExport unsigned int IsGrayImage(const Image *image,
     *p;
 
   register long
-    i,
     x;
 
   assert(image != (Image *) NULL);
@@ -992,7 +993,7 @@ MagickExport unsigned int IsGrayImage(const Image *image,
         p=AcquireImagePixels(image,0,y,image->columns,1,exception);
         if (p == (const PixelPacket *) NULL)
           return(False);
-        for (x=0; x < (long) image->columns; x++)
+        for (x=(long) image->columns; x > 0; x--)
         {
           if (!IsGray(*p))
             return(False);
@@ -1003,9 +1004,13 @@ MagickExport unsigned int IsGrayImage(const Image *image,
     }
     case PseudoClass:
     {
-      for (i=0; i < (long) image->colors; i++)
-        if (!IsGray(image->colormap[i]))
-          return(False);
+      p=image->colormap;
+      for (x=(long) image->colors; x > 0; x--)
+        {
+          if (!IsGray(*p))
+            return(False);
+          p++;
+        }
       break;
     }
   }
@@ -1049,7 +1054,6 @@ MagickExport unsigned int IsMonochromeImage(const Image *image,
     *p;
 
   register long
-    i,
     x;
 
   assert(image != (Image *) NULL);
@@ -1064,11 +1068,9 @@ MagickExport unsigned int IsMonochromeImage(const Image *image,
         p=AcquireImagePixels(image,0,y,image->columns,1,exception);
         if (p == (const PixelPacket *) NULL)
           return(False);
-        for (x=0; x < (long) image->columns; x++)
+        for (x=(long) image->columns; x > 0; x--)
         {
-          if (!IsGray(*p))
-            return(False);
-          if ((p->red != 0) && (p->red != MaxRGB))
+          if ((!IsGray(*p)) || ((p->red != 0) && (p->red != MaxRGB)))
             return(False);
           p++;
         }
@@ -1077,12 +1079,12 @@ MagickExport unsigned int IsMonochromeImage(const Image *image,
     }
     case PseudoClass:
     {
-      for (i=0; i < (long) image->colors; i++)
+      p=image->colormap;
+      for (x=(long) image->colors; x > 0; x--)
       {
-        if (!IsGray(image->colormap[i]))
+        if ((!IsGray(*p)) || ((p->red != 0) && (p->red != MaxRGB)))
           return(False);
-        if ((image->colormap[i].red != 0) && (image->colormap[i].red != MaxRGB))
-          return(False);
+        p++;
       }
       break;
     }
@@ -1142,7 +1144,7 @@ MagickExport unsigned int IsOpaqueImage(const Image *image,
     p=AcquireImagePixels(image,0,y,image->columns,1,exception);
     if (p == (const PixelPacket *) NULL)
       return(False);
-    for (x=0; x < (long) image->columns; x++)
+    for (x=(long) image->columns; x > 0; x--)
     {
       if (p->opacity != OpaqueOpacity)
         return(False);
@@ -1203,9 +1205,11 @@ MagickExport unsigned int IsPaletteImage(const Image *image,
     i;
 
   unsigned long
-    id,
     index,
     level;
+
+  unsigned int
+    id;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -1237,10 +1241,7 @@ MagickExport unsigned int IsPaletteImage(const Image *image,
       index=MaxTreeDepth-1;
       for (level=1; level < MaxTreeDepth; level++)
       {
-        id=(unsigned int)
-          (((ScaleQuantumToChar(p->red) >> index) & 0x01) << 2 |
-           ((ScaleQuantumToChar(p->green) >> index) & 0x01) << 1 |
-           ((ScaleQuantumToChar(p->blue) >> index) & 0x01));
+        id=ColorToNodeId(p->red,p->green,p->blue,index);
         if (node_info->child[id] == (NodeInfo *) NULL)
           {
             node_info->child[id]=GetNodeInfo(cube_info,level);

@@ -1,5 +1,18 @@
 2003-01-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/constitute.c (ConstituteImage): Simplified the switch
+ 	statement for inner loops by creating a simplified map in advance.
+	(DispatchImage): Simplified the switch statement for inner loops
+ 	by creating a simplified map in advance.
+
+	* magick/compress.c (HuffmanEncodeImage): Test and cache the
+ 	return value of LocaleCompare(image_info->magick,"FAX") so that
+ 	LocaleCompare is not executed repeatedly in the output loop.
+
+	* magick/color.c (IsGrayImage): Optimized loops.
+	(IsMonochromeImage): Optimized loops.
+	(IsOpaqueImage): Optimized loop.
+
 	* magick/delegate.c (InvokePostscriptDelegate): When using the
 	Ghostscript library, identify the library as "[ghostscript library]"
 	rather then "gsdll32" so that -verbose prints something useful for
