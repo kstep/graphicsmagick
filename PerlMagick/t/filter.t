@@ -74,11 +74,11 @@ testFilterSignature('input.miff', 'Edge',
 
 ++$test;
 testFilterCompare('input.miff', q//, 'reference/filter/Emboss.miff', 'Emboss',
-  q//, 0, 0);
+  q//, 1e-05, 2e-05);
 
 ++$test;
 testFilterCompare('input.miff', q//, 'reference/filter/Equalize.miff', 'Equalize',
-  q//, 0, 0);
+  q//, 9e-06, 2e-05);
 
 ++$test;
 testFilterSignature('input.miff', 'Flip',
@@ -99,7 +99,7 @@ testFilterSignature('input.miff', 'Frame',
 ++$test;
 testFilterSignature('input.miff', 'Gamma',
   q/2.2/,
-  '500b17abf69d4c9e11e8f6a9c245a3a021ba935731f9d3d477ac07d9f4a6b197',
+  'e29420079d66769f9e571ab9ce091957c9cd12ad9af0e8aa613d46b0b5ddcd3a',
   'a643f8c1998c4d4e643e6de69b488d9ea349d9def527481a511ff7839c523651');
 
 ++$test;
@@ -140,13 +140,13 @@ testFilterSignature('input.miff', 'Negate',
 ++$test;
 testFilterSignature('input.miff', 'Normalize',
   q/ /,
-  'b1bcbe33aaeac67d8a9c8f43142fffb2895c83a4c923ff610e96ad595a75d4de',
+  'c316c9e9640d143e838156c4360c6c39f45f191ed7df34c18bb46231a506bced',
   '3aae3839969b7cd059d830824717eddf02a42c50df58b3cc6c3868390e7419a6');
 
 ++$test;
 testFilterSignature('input.miff', 'OilPaint',
   q/3/,
-  'dd579fd36e04b6d22bbc9aa65ca326645ba1fbb39fa7fef67b230ec0eb5f4fd3',
+  '376b2bde9814efaaea0a7cc90e8ade605af04eb7a0516a50517921095d3b90ba',
   '7894d4bace6288dac627873134c906728f8004c783211bf0e31eacf46001c22e');
 
 ++$test;

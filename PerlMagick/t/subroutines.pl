@@ -70,11 +70,11 @@ sub testRead {
       $magick=$image->Get('magick');
       $signature=$image->Get('signature');
       if ( ( $signature ne $md5 ) and ( $signature ne $md5_16 ) ) {
-        print "Image: $infile, signatures do not match.\n";
-        print "       Computed: $signature\n";
-        print "       Expected: $md5\n";
+	print "Image: $infile, signatures do not match.\n";
+	print "     Computed: $signature\n";
+	print "     Expected: $md5\n";
         if ( $md5 ne $md5_16 ) {
-          print "      if 16-bit: $md5_16\n";
+          print "     if 16-bit: $md5_16\n";
         }
         ++$failure;
         #$image->Display();
@@ -106,10 +106,10 @@ sub testRead {
             $signature=$image->Get('signature');
             if ( ( $signature ne $md5 ) and ( $signature ne $md5_16 ) ) {
               print "Image: $infile, signatures do not match.\n";
-              print "       Computed: $signature\n";
-              print "       Expected: $md5\n";
+              print "     Computed: $signature\n";
+              print "     Expected: $md5\n";
               if ( $md5 ne $md5_16 ) {
-                print "      if 16-bit: $md5_16\n";
+		print "     if 16-bit: $md5_16\n";
               }
               #$image->Display();
               ++$failure;
@@ -253,10 +253,10 @@ sub testReadSized {
     $signature=$image->Get('signature');
     if ( ( $signature ne $md5 ) and ( $signature ne $md5_16 ) ) {
       print "Image: $infile, signatures do not match.\n";
-      print "       Computed: $signature\n";
-      print "       Expected: $md5\n";
+      print "     Computed: $signature\n";
+      print "     Expected: $md5\n";
       if ( $md5 ne $md5_16 ) {
-         print "      if 16-bit: $md5_16\n";
+	print "     if 16-bit: $md5_16\n";
       }
       #$image->Display();
       print "not ok $test\n";
@@ -324,10 +324,10 @@ sub testReadWrite {
         $signature=$image->Get('signature');
         if ( ( $signature ne $md5 ) and ( $signature ne $md5_16 ) ) {
           print "Image: $infile, signatures do not match.\n";
-          print "       Computed: $signature\n";
-          print "       Expected: $md5\n";
+          print "     Computed: $signature\n";
+          print "     Expected: $md5\n";
           if ( $md5 ne $md5_16 ) {
-             print "      if 16-bit: $md5_16\n";
+	    print "     if 16-bit: $md5_16\n";
           }
           print "not ok $test\n";
         } else {
@@ -611,10 +611,10 @@ sub testReadWriteSized {
         $signature=$image->Get('signature');
         if ( ( $signature ne $md5 ) and ( $signature ne $md5_16 ) ) {
           print "Image: $infile, signatures do not match.\n";
-          print "       Computed: $signature\n";
-          print "       Expected: $md5\n";
+          print "     Computed: $signature\n";
+          print "     Expected: $md5\n";
           if ( $md5 ne $md5_16 ) {
-             print "   if 16-bit: $md5_16\n";
+	    print "     if 16-bit: $md5_16\n";
           }
           print "not ok $test\n";
           #$image->Display();
@@ -771,10 +771,10 @@ sub testMontage {
     if ( defined( $signature ) ) {
       if ( ( $signature ne $md5 ) and ( $signature ne $md5_16 ) ) {
           print "Test $test, signatures do not match.\n";
-          print "       Computed: $signature\n";
-          print "       Expected: $md5\n";
+          print "     Computed: $signature\n";
+          print "     Expected: $md5\n";
           if ( $md5 ne $md5_16 ) {
-             print "   if 16-bit: $md5_16\n";
+	    print "  if 16-bit: $md5_16\n";
           }
         
         $status = $montage->Write("test_${test}_out.miff");
@@ -838,8 +838,8 @@ sub testFilterSignature {
   if ( defined( $signature ) ) {
     if ( ( $signature ne $md5 ) and ( $signature ne $md5_16 ) ) {
       print "Test $test, signatures do not match.\n";
-      print "       Computed: $signature\n";
-      print "       Expected: $md5\n";
+      print "     Computed: $signature\n";
+      print "     Expected: $md5\n";
       if ( $md5 ne $md5_16 ) {
          print "   if 16-bit: $md5_16\n";
       }
@@ -901,7 +901,9 @@ sub testFilterCompare {
 
   $srcimage->set(depth=>8);
   #$srcimage->Display();
-#  $srcimage->write(filename=>"$refimage_name", compression=>'None');
+#  if ("$filter" eq "Emboss") {
+#    $srcimage->write(filename=>"$refimage_name", compression=>'None');
+#  }
 
   $status=$refimage->ReadImage("$refimage_name");
   if ("$status")

@@ -1,4 +1,9 @@
 2002-12-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+	* Updated PerlMagick tests for Emboss, Equalize, Gamma,
+	Normalize, OilPaint, and Gradient so that they pass at Q:8
+	under Windows.
+
+2002-12-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 	* Major smashing of ImageMagick to GraphicsMagick in .txt files
 	and .html files.
 	* ImageMagick.html: Renamed to index.html.

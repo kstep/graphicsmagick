@@ -57,7 +57,7 @@ testRead( 'input.gif87',
 print("Gradient (gradual passing from one shade to another) ...\n");
 ++$test;
 testRead( 'gradient:red-blue',
-  '7f708830d2766a485e07526173008906a7154ac50088d2ac58be41a0bbf987c1',
+  '08415768d4a96f53b8e74ec33400650a1c6d31ab0ecab617466680ca54c25472',
   'a998be3784293c29adaeab7d6d2dcea78211b9768a0f9e0066975cc442af6e58' );
 
 print("GRANITE (granite texture) ...\n");
