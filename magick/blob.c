@@ -719,7 +719,7 @@ MagickExport off_t GetBlobSize(const Image *image)
 */
 
 #if !defined(UseInstalledImageMagick) && defined(POSIX)
-static void ChopBlobComponents(char *path,const unsigned long components)
+static void ChopPathComponents(char *path,const unsigned long components)
 {
   long
     count;
@@ -727,13 +727,9 @@ static void ChopBlobComponents(char *path,const unsigned long components)
   register char
     *p;
 
-  size_t
-    length;
-
   if (magick_debug)
     (void) fprintf(stdout,"original path  \"%s\"\n",path);
-  length=strlen(path);
-  p=path+length;
+  p=path+strlen(path)-1;
   if (*p == *DirectorySeparator)
     *p='\0';
   for (count=0; (count < (long) components) && (p > path); p--)
@@ -803,7 +799,7 @@ MagickExport void *GetConfigureBlob(const char *filename,char *path,
         Search based on executable directory if directory is known.
       */
       (void) strncpy(prefix,SetClientPath((char *) NULL),MaxTextExtent-1);
-      ChopBlobComponents(prefix,1,debug);
+      ChopPathComponents(prefix,1,debug);
       FormatString(path,"%.1024s/lib/ImageMagick/%.1024s",prefix,filename);
 #else
       FormatString(path,"%.1024s%s%.1024s",SetClientPath((char *) NULL),
@@ -939,7 +935,7 @@ MagickExport void *GetModuleBlob(const char *filename,char *path,size_t *length,
         Search based on executable directory if directory is known.
       */
       (void) strncpy(prefix,SetClientPath((char *) NULL),MaxTextExtent-1);
-      ChopBlobComponents(prefix,1,debug);
+      ChopPathComponents(prefix,1,debug);
       FormatString(path,"%.1024s/lib/ImageMagick/modules/coders/%.1024s",
         prefix,filename);
 #else
@@ -1084,7 +1080,7 @@ MagickExport void *GetTypeBlob(const char *filename,char *path,
         Search based on executable directory if directory is known.
       */
       (void) strncpy(prefix,SetClientPath((char *) NULL),MaxTextExtent-1);
-      ChopBlobComponents(prefix,1,debug);
+      ChopPathComponents(prefix,1,debug);
       FormatString(path,"%.1024s/lib/ImageMagick/%.1024s",prefix,filename);
 #else
       FormatString(path,"%.1024s%s%.1024s",SetClientPath((char *) NULL),
