@@ -1,3 +1,7 @@
+2003-09-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/map.c: Added formal documentation for methods.
+
 2003-09-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/emf.c: Changed NotAnEMFFile to ImproperImageHeader.
