@@ -989,7 +989,6 @@ static unsigned int RenderPostscript(Image *image,
     if (point.y > extent.y)
       extent.y=point.y;
   }
-
   (void) fprintf(file,"%g %g moveto\n",identity ? 0.0 : extent.x/2.0,
     extent.y/2.0);
   (void) fprintf(file,"%g %g scale\n",annotate_info->pointsize,
@@ -1055,8 +1054,8 @@ static unsigned int RenderPostscript(Image *image,
   metrics->ppem.x=(resolution.y/72.0)*ExpandAffine(&annotate_info->affine)*
     annotate_info->pointsize;
   metrics->ppem.y=metrics->ppem.x;
-  metrics->ascent=0.908*metrics->ppem.x;
-  metrics->descent=(int) metrics->ppem.y/-4.75;
+  metrics->ascent=metrics->ppem.x;
+  metrics->descent=(int) metrics->ppem.y/-5;
   metrics->width=annotate_image->columns/ExpandAffine(&annotate_info->affine);
   metrics->height=1.152*metrics->ppem.x;
   metrics->max_advance=metrics->ppem.x;
@@ -1085,7 +1084,7 @@ static unsigned int RenderPostscript(Image *image,
       break;
   }
   CompositeImage(image,OverCompositeOp,annotate_image,(int) ceil(offset->x-0.5),
-    (int) ceil(offset->y-metrics->ascent-metrics->descent-1.5));
+    (int) ceil(offset->y-(metrics->ascent+metrics->descent)-0.5));
   DestroyImage(annotate_image);
   return(True);
 }
