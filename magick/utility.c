@@ -1028,7 +1028,8 @@ MagickExport int GetGeometry(const char *image_geometry,long *x,long *y,
 {
   char
     geometry[MaxTextExtent],
-    *p;
+    *p,
+    *q;
 
   int
     flags;
@@ -1104,18 +1105,17 @@ MagickExport int GetGeometry(const char *image_geometry,long *x,long *y,
     p++;
   if ((*p != '+') && (*p != '-') && (*p != 'x') && (*p != 'X'))
     {
-      char
-        *q;
-
       /*
         Parse width.
       */
+      q=p;
       bounds.width=(unsigned long) floor(strtol(p,&q,10)+0.5);
+      if (p != q)
+        flags|=WidthValue;
       if ((*q == 'x') || (*q == 'X'))
         p=q;
       else
         bounds.width=(unsigned long) floor(strtod(p,&p)+0.5);
-      flags|=WidthValue;
     }
   if ((*p == 'x') || (*p == 'X'))
     {
@@ -1123,43 +1123,53 @@ MagickExport int GetGeometry(const char *image_geometry,long *x,long *y,
         Parse height.
       */
       p++;
+      q=p;
       bounds.height=(unsigned long) floor(strtod(p,&p)+0.5);
-      flags|=HeightValue;
+      if (p != q)
+        flags|=HeightValue;
     }
   if ((*p == '+') || (*p == '-'))
     {
       /*
         Parse x value.
       */
-      if (*p == '-')
+      if (*p == '+')
         {
           p++;
-          bounds.x=(long) ceil(-strtod(p,&p)-0.5);
-          flags|=XNegative;
-        }
+          q=p;
+          bounds.x=(long) ceil(strtod(p,&p)-0.5);
+        } 
       else
         {
           p++;
-          bounds.x=(long) ceil(strtod(p,&p)-0.5);
+          q=p;
+          bounds.x=(long) ceil(-strtod(p,&p)-0.5);
+          if (p != q)
+            flags|=XNegative;
         }
-      flags|=XValue;
+      if (p != q)
+        flags|=XValue;
       if ((*p == '+') || (*p == '-'))
         {
           /*
             Parse y value.
           */
-          if (*p == '-')
+          if (*p == '+')
             {
               p++;
-              bounds.y=(long) ceil(-strtod(p,&p)-0.5);
-              flags|=YNegative;
+              q=p;
+              bounds.y=(long) ceil(strtod(p,&p)-0.5);
             }
           else
             {
               p++;
-              bounds.y=(long) ceil(strtod(p,&p)-0.5);
+              q=p;
+              bounds.y=(long) ceil(-strtod(p,&p)-0.5);
+              if (p != q)
+                flags|=YNegative;
             }
-          flags|=YValue;
+          if (p != q)
+            flags|=YValue;
         }
     }
   if (*p != '\0')
