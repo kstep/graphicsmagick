@@ -3735,6 +3735,7 @@ Mogrify(ref,...)
               continue;
             }
         }
+      GetExceptionInfo(&exception);
       switch (ix)
       {
         default:
