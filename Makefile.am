@@ -40,12 +40,12 @@ MAGICK_PLUS_PLUS=Magick++
 endif # WITH_MAGICK_PLUS_PLUS
 
 # Directories to include in distribution
-DIST_SUBDIRS=delegates ltdl coders magick utilities tests Magick++
+DIST_SUBDIRS=ltdl coders magick utilities tests Magick++
 
 if WITH_MODULES
-SUBDIRS = delegates ltdl magick coders utilities tests $(MAGICK_PLUS_PLUS)
+SUBDIRS = ltdl magick coders utilities tests $(MAGICK_PLUS_PLUS)
 else
-SUBDIRS = delegates coders magick utilities tests $(MAGICK_PLUS_PLUS)
+SUBDIRS = coders magick utilities tests $(MAGICK_PLUS_PLUS)
 endif # WITH_MODULES
 
 # Architecture independent data files installed in the package's data directory

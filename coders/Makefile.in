@@ -1588,6 +1588,18 @@ install uninstall-am uninstall all-redirect all-am all install-strip \
 installdirs mostlyclean-generic distclean-generic clean-generic \
 maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
+# Install delegates files
+install-data-delegates:
+        $(mkinstalldirs) $(pkglibdir)
+        $(INSTALL_DATA) delegates.mgk $(pkglibdir)
+
+# Uninstall delegates files
+uninstall-data-delegates:
+        rm -f $(pkglibdir)/delegates.mgk
+
+install-exec-local: install-data-delegates
+
+uninstall-local: uninstall-data-delegates
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

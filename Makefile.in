@@ -210,9 +210,9 @@ AUTOMAKE_OPTIONS = 1.4 dist-zip dist-bzip2 foreign
 @WITH_MAGICK_PLUS_PLUS_TRUE@MAGICK_PLUS_PLUS = @WITH_MAGICK_PLUS_PLUS_TRUE@Magick++
 
 # Directories to include in distribution
-DIST_SUBDIRS = delegates ltdl coders magick utilities tests Magick++
-@WITH_MODULES_TRUE@SUBDIRS = @WITH_MODULES_TRUE@delegates ltdl magick coders utilities tests $(MAGICK_PLUS_PLUS)
-@WITH_MODULES_FALSE@SUBDIRS = @WITH_MODULES_FALSE@delegates coders magick utilities tests $(MAGICK_PLUS_PLUS)
+DIST_SUBDIRS = ltdl coders magick utilities tests Magick++
+@WITH_MODULES_TRUE@SUBDIRS = @WITH_MODULES_TRUE@ltdl magick coders utilities tests $(MAGICK_PLUS_PLUS)
+@WITH_MODULES_FALSE@SUBDIRS = @WITH_MODULES_FALSE@coders magick utilities tests $(MAGICK_PLUS_PLUS)
 
 # Architecture independent data files installed in the package's data directory
 pkgdata_DATA = Copyright.txt QuickStart.txt
