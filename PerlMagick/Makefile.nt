@@ -22,27 +22,47 @@ WriteMakefile(
 );
 
 #
-# Add a target for building an ActiveState ppm distribution module
+# Add a targets for building ActiveState ppm distribution modules 
+# Dylan Beattie <dylan@zepler.org>, April 2002
+#
 # Requires tar, gzip, and zip.  This produces PerlMagick.zip
 # Get GNU tar and gzip from http://sourceware.cygnus.com/
 # Get Win32 command line PKZIP from http://www.pkware.com/ 
 # and rename PKZIP.EXE to ZIP.EXE and PKUNZIP.EXE to UNZIP.EXE
 # Make sure tar.exe, gzip.exe and zip.exe are in your system path
 #
+# 'nmake ppm' will include only the PerlMagick module
+# 'nmake ppm-full' also includes all ImageMagick DLLs and MGK files
+
 sub MY::postamble
 {
         '
-ppm: ppd all
+ppm: ppd pure_all htmlifypods manifypods
         if exist PerlMagick.zip del PerlMagick.zip
         $(TAR) $(TARFLAGS) Image-Magick.tar blib
-        $(COMPRESS) Image-Magick.tar
-        if exist x86 del x86 /qf
+        $(COMPRESS) -q Image-Magick.tar
+        if exist x86 del x86 /f /q
         if exist x86 rd x86
         md x86
         copy Image-Magick.tar$(SUFFIX) x86
         del Image-Magick.tar$(SUFFIX)
         if exist ppm-readme.txt copy ppm-readme.txt readme
         $(ZIP) $(ZIPFLAGS) PerlMagick.zip readme Image-Magick.ppd x86/Image-Magick.tar$(SUFFIX)
+        del x86\Image-Magick.tar$(SUFFIX)
+        rd x86
+ppm-full: ppd pure_all htmlifypods manifypods
+        if exist PerlMagick-full.zip del PerlMagick-full.zip
+        copy ..\VisualMagick\bin\*.dll blib\arch\auto\Image\Magick
+        copy ..\VisualMagick\bin\*.mgk blib\arch\auto\Image\Magick
+        $(TAR) $(TARFLAGS) Image-Magick.tar blib
+        $(COMPRESS) -q Image-Magick.tar
+        if exist x86 del x86 /f /q
+        if exist x86 rd x86
+        md x86
+        copy Image-Magick.tar$(SUFFIX) x86
+        del Image-Magick.tar$(SUFFIX)
+        if exist ppm-readme.txt copy ppm-readme.txt readme
+        $(ZIP) $(ZIPFLAGS) PerlMagick-full.zip readme Image-Magick.ppd x86/Image-Magick.tar$(SUFFIX)
         del x86\Image-Magick.tar$(SUFFIX)
         rd x86
         '
