@@ -36,25 +36,23 @@
   Include declarations.
 */
 #include "magick/studio.h"
+#if defined(HasXML)
 #include "magick/blob.h"
 #include "magick/constitute.h"
 #include "magick/magick.h"
 #include "magick/tempfile.h"
 #include "magick/utility.h"
-#if defined(HasXML)
-#  if defined(WIN32)
-#    if defined(__MINGW32__)
-#      define _MSC_VER
-#    endif
-#    include <win32config.h>
+#if defined(WIN32)
+#  if defined(__MINGW32__)
+#    define _MSC_VER
 #  endif
-#  include <libxml/parser.h>
-#  include <libxml/xmlmemory.h>
-#  include <libxml/nanoftp.h>
-#  include <libxml/nanohttp.h>
+#  include <win32config.h>
 #endif
+#include <libxml/parser.h>
+#include <libxml/xmlmemory.h>
+#include <libxml/nanoftp.h>
+#include <libxml/nanohttp.h>
 
-#if defined(HasXML)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -189,15 +187,7 @@ static Image *ReadURLImage(const ImageInfo *image_info,ExceptionInfo *exception)
   DestroyImageInfo(clone_info);
   return(image);
 }
-#else
-static Image *ReadURLImage(const ImageInfo *image_info,ExceptionInfo *exception)
-{
-  ThrowException(exception,CoderError,
-    "GraphicsMagick must be linked with XML library to support URLs",
-    image_info->filename);
-  return((Image *) NULL);
-}
-#endif
+#endif /* defined(HasXML) */
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -224,6 +214,7 @@ static Image *ReadURLImage(const ImageInfo *image_info,ExceptionInfo *exception)
 */
 ModuleExport void RegisterURLImage(void)
 {
+#if defined(HasXML)
   MagickInfo
     *entry;
 
@@ -245,6 +236,7 @@ ModuleExport void RegisterURLImage(void)
   entry->module=AcquireString("URL");
   entry->stealth=True;
   (void) RegisterMagickInfo(entry);
+#endif /* defined(HasXML) */
 }
 
 /*
@@ -268,7 +260,9 @@ ModuleExport void RegisterURLImage(void)
 */
 ModuleExport void UnregisterURLImage(void)
 {
+#if defined(HasXML)
   (void) UnregisterMagickInfo("HTTP");
   (void) UnregisterMagickInfo("FTP");
   (void) UnregisterMagickInfo("FILE");
+#endif /* defined(HasXML) */
 }

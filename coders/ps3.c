@@ -841,7 +841,7 @@ static unsigned int ZLIBEncodeImage(Image *image,const size_t length,
 {
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  ThrowBinaryException(CoderError,ZipLibraryIsNotAvailable,image->filename);
+  ThrowBinaryException(MissingDelegateError,ZipLibraryIsNotAvailable,image->filename);
   return(False);
 }
 #endif

@@ -4,6 +4,32 @@
 </HEAD>
 <BODY TEXT="#000000" BGCOLOR="#FFFFFF" LINK="#0000EE" VLINK="#551A8B" ALINK="#FF0000">
 <p>
+2003-09-01  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> tests/Makefile.am: Add build support for colorHistogram.cpp.
+  <LI> tests/colorHistogram.cpp: New test program to test retrieving
+        color histograms from the image using colorHistogram().
+  <LI> lib/Magick++/STL.h (colorHistogram): Added new template function
+        to retrieve a color histogram into a user-provided container.
+        Verified to work when using STL &lt;vector&gt; and &lt;map&gt; as the target
+        container types.  When &lt;map&gt; is used, a user-specified color may
+        be used to perform lookups in the map to obtain the usage count for
+        that color.<BR>
+  <LI> lib/Color.cpp (operator &gt;=): Insufficient resolution was being
+        provided in order to reliably sort color objects in STL
+        containers.  The updated algorithm should be fail-safe.
+
+</UL>
+<p>
+2003-08-31  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Image.cpp (channelDepth): New method to set or get the
+        modulus depth for a specified channel.
+
+</UL>
+<p>
 2003-08-29  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

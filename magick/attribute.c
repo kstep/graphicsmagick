@@ -424,7 +424,7 @@ static int Generate8BIMAttribute(Image *image,const char *key)
     newlines, so use a newline as terminater to get the full
     name.
   */
-  count=sscanf(key,"8BIM:%ld,%ld:%[^\n]",&start,&stop,name);
+  count=sscanf(key,"8BIM:%d,%d:%[^\n]",&start,&stop,name);
   if ((count != 2) && (count != 3))
     return(False);
   if (count == 2)

@@ -542,10 +542,10 @@ WandExport MagickWand *MagickAverageImages(MagickWand *wand)
 %    o threshold: The pixel wand.
 %
 */
-#if defined(NOT_IMPLEMENTED)
 WandExport unsigned int MagickBlackThresholdImage(MagickWand *wand,
   const PixelWand *threshold)
 {
+#if defined(NOT_IMPLEMENTED)
   char
     thresholds[MaxTextExtent];
 
@@ -563,8 +563,10 @@ WandExport unsigned int MagickBlackThresholdImage(MagickWand *wand,
   if (status == False)
     InheritException(&wand->exception,&wand->image->exception);
   return(status);
-}
+#else
+  return False;
 #endif
+}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -2153,10 +2155,10 @@ WandExport unsigned int MagickFrameImage(MagickWand *wand,
 %    o expression: The expression.
 %
 */
-#if defined(NOT_IMPLEMENTED)
 WandExport unsigned int MagickFxImageChannel(MagickWand *wand,
   const MagickWand *fx_wand,const ChannelType channel,const char *expression)
 {
+#if defined(NOT_IMPLEMENTED)
   unsigned int
     status;
 
@@ -2169,8 +2171,10 @@ WandExport unsigned int MagickFxImageChannel(MagickWand *wand,
   if (status == False)
     InheritException(&wand->exception,&wand->image->exception);
   return(status);
-}
+#else
+  return False;
 #endif
+}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -2203,9 +2207,9 @@ WandExport unsigned int MagickFxImageChannel(MagickWand *wand,
 %    o gamme: Define the level of gamma correction.
 %
 */
-#if defined(NOT_IMPLEMENTED)
 WandExport unsigned int MagickGammaImage(MagickWand *wand,const double gamma)
 {
+#if defined(NOT_IMPLEMENTED)
   unsigned int
     status;
 
@@ -2217,8 +2221,10 @@ WandExport unsigned int MagickGammaImage(MagickWand *wand,const double gamma)
   if (status == False)
     InheritException(&wand->exception,&wand->image->exception);
   return(status);
-}
+#else
+  return False;
 #endif
+}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -2254,10 +2260,10 @@ WandExport unsigned int MagickGammaImage(MagickWand *wand,const double gamma)
 %    o level: Define the level of gamma correction.
 %
 */
-#if defined(NOT_IMPLEMENTED)
 WandExport unsigned int MagickGammaImageChannel(MagickWand *wand,
   const ChannelType channel,const double gamma)
 {
+#if defined(NOT_IMPLEMENTED)
   unsigned int
     status;
 
@@ -2269,8 +2275,10 @@ WandExport unsigned int MagickGammaImageChannel(MagickWand *wand,
   if (status == False)
     InheritException(&wand->exception,&wand->image->exception);
   return(status);
-}
+#else
+  return False;
 #endif
+}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -4257,10 +4265,10 @@ WandExport unsigned int MagickNegateImage(MagickWand *wand,
 %    o gray: If True, only negate grayscale pixels within the image.
 %
 */
-#if defined(NOT_IMPLEMENTED)
 WandExport unsigned int MagickNegateImageChannel(MagickWand *wand,
   const ChannelType channel,const unsigned int gray)
 {
+#if defined(NOT_IMPLEMENTED)
   unsigned int
     status;
 
@@ -4272,8 +4280,10 @@ WandExport unsigned int MagickNegateImageChannel(MagickWand *wand,
   if (status == False)
     InheritException(&wand->exception,&wand->image->exception);
   return(status);
-}
+#else
+  return False;
 #endif
+}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -4527,10 +4537,10 @@ WandExport unsigned int MagickPingImage(MagickWand *wand,const char *filename)
 %    o preview: The preview type.
 %
 */
-#if defined(NOT_IMPLEMENTED)
 WandExport MagickWand *MagickPreviewImages(MagickWand *wand,
   const PreviewType preview)
 {
+#if defined(NOT_IMPLEMENTED)
   Image
     *preview_image;
 
@@ -4542,8 +4552,10 @@ WandExport MagickWand *MagickPreviewImages(MagickWand *wand,
   if (preview_image == (Image *) NULL)
     return((MagickWand *) NULL);
   return(CloneMagickWand(wand,preview_image));
-}
+#else
+  return False;
 #endif
+}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -6826,9 +6838,9 @@ WandExport MagickWand *MagickStereoImage(MagickWand *wand,
 %    o wand: The magick wand.
 %
 */
-#if defined(NOT_IMPLEMENTED)
 WandExport unsigned int MagickStripImage(MagickWand *wand)
 {
+#if defined(NOT_IMPLEMENTED)
   unsigned int
     status;
 
@@ -6840,8 +6852,10 @@ WandExport unsigned int MagickStripImage(MagickWand *wand)
   if (status == False)
     InheritException(&wand->exception,&wand->image->exception);
   return(status);
-}
+#else
+  return False;
 #endif
+}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -7008,10 +7022,10 @@ WandExport unsigned int MagickThresholdImage(MagickWand *wand,
 %    o opacity: The opacity pixel wand.
 %
 */
-#if defined(NOT_IMPLEMENTED)
 WandExport unsigned int MagickTintImage(MagickWand *wand,
   const PixelWand *tint,const PixelWand *opacity)
 {
+#if defined(NOT_IMPLEMENTED)
   char
     percent_opaque[MaxTextExtent];
 
@@ -7037,8 +7051,10 @@ WandExport unsigned int MagickTintImage(MagickWand *wand,
   ReplaceImageInList(&wand->image,tint_image);
   wand->images=GetFirstImageInList(wand->image);
   return(True);
-}
+#else
+  return False;
 #endif
+}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -7331,10 +7347,10 @@ WandExport unsigned int MagickWaveImage(MagickWand *wand,const double amplitude,
 %    o threshold: The pixel wand.
 %
 */
-#if defined(NOT_IMPLEMENTED)
 WandExport unsigned int MagickWhiteThresholdImage(MagickWand *wand,
   const PixelWand *threshold)
 {
+#if defined(NOT_IMPLEMENTED)
   char
     thresholds[MaxTextExtent];
 
@@ -7352,8 +7368,10 @@ WandExport unsigned int MagickWhiteThresholdImage(MagickWand *wand,
   if (status == False)
     InheritException(&wand->exception,&wand->image->exception);
   return(status);
-}
+#else
+  return False;
 #endif
+}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

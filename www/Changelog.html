@@ -53,9 +53,24 @@
 </tr>
 </table>
 <p>
+2003-09-02  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/attribute.c (Generate8BIMAttribute): Fix sscanf argument
+        type mis-match.<BR>
+  <LI> coders/ps3.c (ZLIBEncodeImage): Fix mis-classified
+        ZipLibraryIsNotAvailable error report.
+  <LI> coders/url.c (RegisterURLImage): Only register URL format
+        support if libxml2 is available.
+  <LI> coders/msl.c (RegisterMSLImage): Only register MSL format
+        support if libxml2 is available.
+
+</UL>
+<p>
 2003-09-01  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> coders/histogram.c (WriteHISTOGRAMImage): Remove a useless loop.
   <LI> coders/wpg.c: Applied patch from Fojtik Jaroslav to support
         reading WPGs which use the EXT token.
 

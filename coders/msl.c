@@ -37,6 +37,7 @@
   Include declarations.
 */
 #include "magick/studio.h"
+#if defined(HasXML)
 #include "magick/attribute.h"
 #include "magick/blob.h"
 #include "magick/color.h"
@@ -55,18 +56,16 @@
 #include "magick/shear.h"
 #include "magick/transform.h"
 #include "magick/utility.h"
-#if defined(HasXML)
-#  if defined(WIN32)
-#    if defined(__MINGW32__)
-#      define _MSC_VER
-#    endif
-#    include <win32config.h>
+#if defined(WIN32)
+#  if defined(__MINGW32__)
+#    define _MSC_VER
 #  endif
-#  include <libxml/parser.h>
-#  include <libxml/xmlmemory.h>
-#  include <libxml/parserInternals.h>
-#  include <libxml/xmlerror.h>
+#  include <win32config.h>
 #endif
+#include <libxml/parser.h>
+#include <libxml/xmlmemory.h>
+#include <libxml/parserInternals.h>
+#include <libxml/xmlerror.h>
 
 /*
   Typedef declaractions.
@@ -100,13 +99,11 @@ typedef struct _MSLInfo
   MSLGroupInfo
     *group_info;
 
-#if defined(HasXML)
   xmlParserCtxtPtr
     parser;
 
   xmlDocPtr
     document;
-#endif
 } MSLInfo;
 
 /*
@@ -115,7 +112,6 @@ typedef struct _MSLInfo
 static unsigned int
   WriteMSLImage(const ImageInfo *,Image *);
 
-#if defined(HasXML)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -4046,14 +4042,7 @@ static Image *ReadMSLImage(const ImageInfo *image_info,ExceptionInfo *exception)
   (void) ProcessMSLScript(image_info,&image,exception);
   return(image);
 }
-#else
-static Image *ReadMSLImage(const ImageInfo *image_info,ExceptionInfo *exception)
-{
-  ThrowException(exception,CoderError,
-    XMLLibraryIsNotAvailable,image_info->filename);
-  return((Image *) NULL);
-}
-#endif
+#endif /* defined(HasXML) */
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -4080,6 +4069,7 @@ static Image *ReadMSLImage(const ImageInfo *image_info,ExceptionInfo *exception)
 */
 ModuleExport void RegisterMSLImage(void)
 {
+#if defined(HasXML)
   MagickInfo
     *entry;
 
@@ -4089,6 +4079,7 @@ ModuleExport void RegisterMSLImage(void)
   entry->description=AcquireString("Magick Scripting Language");
   entry->module=AcquireString("MSL");
   (void) RegisterMagickInfo(entry);
+#endif /* defined(HasXML) */
 }
 
 /*
@@ -4112,7 +4103,9 @@ ModuleExport void RegisterMSLImage(void)
 */
 ModuleExport void UnregisterMSLImage(void)
 {
+#if defined(HasXML)
   (void) UnregisterMagickInfo("MSL");
+#endif /* defined(HasXML) */
 }
 
 /*
@@ -4155,10 +4148,4 @@ static unsigned int WriteMSLImage(const ImageInfo *image_info,Image *image)
   (void) ProcessMSLScript(image_info,&image,&image->exception);
   return(True);
 }
-#else
-static unsigned int WriteMSLImage(const ImageInfo *image_info,Image *image)
-{
-  ThrowBinaryException(MissingDelegateError,XMLLibraryIsNotAvailable,
-    image->filename);
-}
-#endif
+#endif /* defined(HasXML) */

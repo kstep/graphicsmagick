@@ -1,3 +1,14 @@
+2003-09-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/attribute.c (Generate8BIMAttribute): Fix sscanf argument
+	type mis-match.
+	* coders/ps3.c (ZLIBEncodeImage): Fix mis-classified
+	ZipLibraryIsNotAvailable error report.
+	* coders/url.c (RegisterURLImage): Only register URL format
+	support if libxml2 is available.
+	* coders/msl.c (RegisterMSLImage): Only register MSL format
+	support if libxml2 is available.
+
 2003-09-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/histogram.c (WriteHISTOGRAMImage): Remove a useless loop.
