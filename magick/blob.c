@@ -1132,8 +1132,8 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
   image->status=False;
   if (*type == 'r')
     {
-      image->next=NewImageList();
-      image->previous=NewImageList();
+      image->next=(Image *) NULL;
+      image->previous=(Image *) NULL;
     }
   return((image->file != (FILE *) NULL) || (image->blob->data != NULL));
 }

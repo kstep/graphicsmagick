@@ -886,8 +886,8 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
   if (orphan)
     {
       clone_image->exempt=True;
-      clone_image->previous=NewImageList();
-      clone_image->next=NewImageList();
+      clone_image->previous=(Image *) NULL;
+      clone_image->next=(Image *) NULL;
     }
   if (clone_image->previous != (Image *) NULL)
     clone_image->previous->next=clone_image;
@@ -969,7 +969,7 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
   clone_image->montage=(char *) NULL;
   clone_image->directory=(char *) NULL;
   clone_image->semaphore=(SemaphoreInfo *) NULL;
-  clone_image->clip_mask=NewImageList();
+  clone_image->clip_mask=(Image *) NULL;
   GetExceptionInfo(&clone_image->exception);
   clone_image->reference_count=1;
   GetCacheInfo(&clone_image->cache);
@@ -1941,7 +1941,7 @@ MagickExport void DescribeImage(Image *image,FILE *file,
   (void) fprintf(file,"  Depth: %lu bits-per-pixel component\n",
     GetImageDepth(image,&image->exception));
   x=0;
-  p=NewImageList();
+  p=(Image *) NULL;
   if ((image->matte && (strcmp(image->magick,"GIF") != 0)) || image->taint)
     {
       register const PixelPacket
@@ -3342,7 +3342,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
   clone_info=CloneImageInfo(image_info);
   draw_info=CloneDrawInfo(clone_info,(DrawInfo *) NULL);
   GetQuantizeInfo(&quantize_info);
-  map_image=NewImageList();
+  map_image=(Image *) NULL;
   quantize_info.number_colors=0;
   quantize_info.tree_depth=0;
   quantize_info.dither=True;
@@ -3353,7 +3353,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
         quantize_info.tree_depth=8;
         quantize_info.colorspace=GRAYColorspace;
       }
-  region_image=NewImageList();
+  region_image=(Image *) NULL;
   region_info.width=(*image)->columns;
   region_info.height=(*image)->rows;
   region_info.x=0;
@@ -5827,7 +5827,7 @@ MagickExport unsigned int SetImageClipMask(Image *image,Image *clip_mask)
     DestroyImage(image->clip_mask);
   if (clip_mask == (Image *) NULL)
     {
-      image->clip_mask=NewImageList();
+      image->clip_mask=(Image *) NULL;
       return(True);
     }
   image->clip_mask=CloneImage(clip_mask,0,0,True,&clip_mask->exception);

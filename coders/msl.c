@@ -4295,7 +4295,7 @@ static Image *ReadMSLImage(const ImageInfo *image_info,ExceptionInfo *exception)
   assert(image_info->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  image=NewImageList();
+  image=(Image *) NULL;
   (void) ProcessMSLScript(image_info,&image,exception);
   return(image);
 }

@@ -1466,7 +1466,7 @@ MagickExport void TransformImage(Image **image,const char *crop_geometry,
         }
       crop_info.width=width;
       crop_info.height=height;
-      crop_image=NewImageList();
+      crop_image=(Image *) NULL;
       if ((width == 0) || (height == 0) ||
           ((flags & XValue) != 0) || ((flags & YValue) != 0))
         crop_image=CropImage(transform_image,&crop_info,&(*image)->exception);
@@ -1480,7 +1480,7 @@ MagickExport void TransformImage(Image **image,const char *crop_geometry,
             /*
               Crop repeatedly to create uniform subimages.
             */
-            next_image=NewImageList();
+            next_image=(Image *) NULL;
             for (y=0; y < (long) transform_image->rows; y+=height)
             {
               for (x=0; x < (long) transform_image->columns; x+=width)

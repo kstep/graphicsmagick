@@ -129,7 +129,7 @@ static Image *ReadURLImage(const ImageInfo *image_info,ExceptionInfo *exception)
   void
     *context;
 
-  image=NewImageList();
+  image=(Image *) NULL;
   clone_info=CloneImageInfo(image_info);
   DetachBlob(clone_info->blob);
   TemporaryFilename(clone_info->filename);

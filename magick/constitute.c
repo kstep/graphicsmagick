@@ -2046,7 +2046,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
   /*
     Call appropriate image reader based on image type.
   */
-  image=NewImageList();
+  image=(Image *) NULL;
   magick_info=GetMagickInfo(clone_info->magick,exception);
   if ((magick_info != (const MagickInfo *) NULL) &&
       (magick_info->decoder !=
@@ -2089,7 +2089,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
       (void) InvokeDelegate(clone_info,image,clone_info->magick,(char *) NULL,
         exception);
       DestroyImageList(image);
-      image=NewImageList();
+      image=(Image *) NULL;
       clone_info->temporary=True;
       (void) SetImageInfo(clone_info,False,exception);
       magick_info=GetMagickInfo(clone_info->magick,exception);
@@ -2143,7 +2143,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
       /*
         User specified subimages (e.g. image.miff[1,3-5,7-6,2]).
       */
-      subimages=NewImageList();
+      subimages=(Image *) NULL;
       target=atol(clone_info->tile);
       for (p=clone_info->tile; *p != '\0'; p+=Max(offset,1))
       {
@@ -2181,7 +2181,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
         }
       }
       DestroyImageList(image);
-      image=NewImageList();
+      image=(Image *) NULL;
       if (subimages == (Image *) NULL)
         ThrowException(exception,OptionWarning,
           "Subimage specification returns no images",clone_info->filename);
@@ -2219,7 +2219,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
           if (!retain)
             {
               DestroyImage(image);
-              image=NewImageList();
+              image=(Image *) NULL;
             }
           break;
         }
@@ -2325,7 +2325,7 @@ static Image *ReadImages(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Read the images into a linked list.
   */
-  image=NewImageList();
+  image=(Image *) NULL;
   clone_info=CloneImageInfo(image_info);
   for (i=1; i < number_images; i++)
   {

@@ -372,7 +372,7 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
       (void) strncpy(image->filename,filename,MaxTextExtent-1);
       AppendImageFormat("gif",image->filename);
       next=image->next;
-      image->next=NewImageList();
+      image->next=(Image *) NULL;
       (void) strcpy(image->magick,"GIF");
       (void) WriteImage(clone_info,image);
       image->next=next;

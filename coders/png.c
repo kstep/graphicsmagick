@@ -3389,7 +3389,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
               AcquireMemory(sizeof(MngBuffer));
             if (mng_info->ob[object_id] != (MngBuffer *) NULL)
               {
-                mng_info->ob[object_id]->image=NewImageList();
+                mng_info->ob[object_id]->image=(Image *) NULL;
                 mng_info->ob[object_id]->reference_count=1;
               }
           }

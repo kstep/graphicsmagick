@@ -3844,7 +3844,7 @@ MagickExport Image *XGetWindowImage(Display *display,const Window window,
       /*
         Get X image for each window in the list.
       */
-      image=NewImageList();
+      image=(Image *) NULL;
       for (id=0; id < number_windows; id++)
       {
         /*
@@ -7823,7 +7823,7 @@ MagickExport void XMakeWindow(Display *display,Window parent,char **argv,
       window_info->shared_memory=False;
 #endif
     }
-  window_info->image=NewImageList();
+  window_info->image=(Image *) NULL;
   window_info->destroy=False;
 }
 

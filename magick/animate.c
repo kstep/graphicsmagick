@@ -113,7 +113,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
   /*
     Process user command.
   */
-  nexus=NewImageList();
+  nexus=(Image *) NULL;
   switch (command_type)
   {
     case OpenCommand:
@@ -179,7 +179,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       clone_info=CloneImageInfo(resource_info->image_info);
       if (clone_info == (ImageInfo *) NULL)
         break;
-      image=NewImageList();
+      image=(Image *) NULL;
       handler=(MonitorHandler) NULL;
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
@@ -566,7 +566,7 @@ MagickExport void XAnimateBackgroundImage(Display *display,
   */
   if (window_info.id == root_window)
     (void) XDestroyWindowColors(display,root_window);
-  coalesce_image=NewImageList();
+  coalesce_image=(Image *) NULL;
   if (image->next != (Image *)NULL)
     {
       Image
@@ -1176,7 +1176,7 @@ MagickExport Image *XAnimateImages(Display *display,
   class_hints=windows->class_hints;
   manager_hints=windows->manager_hints;
   root_window=XRootWindow(display,visual_info->screen);
-  coalesce_image=NewImageList();
+  coalesce_image=(Image *) NULL;
   if (image->next != (Image *)NULL)
     {
       Image
@@ -1250,7 +1250,7 @@ MagickExport Image *XAnimateImages(Display *display,
   /*
     Initialize Standard Colormap.
   */
-  nexus=NewImageList();
+  nexus=(Image *) NULL;
   display_image=images[0];
   (void) TransformRGBImage(display_image,RGBColorspace);
   for (scene=0; scene < (int) number_scenes; scene++)
@@ -1698,7 +1698,7 @@ MagickExport Image *XAnimateImages(Display *display,
   /*
     Respond to events.
   */
-  nexus=NewImageList();
+  nexus=(Image *) NULL;
   scene=0;
   first_scene=0;
   image=images[0];
