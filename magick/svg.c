@@ -143,7 +143,7 @@ static unsigned int GetToken(Image *image,char **token,int *c,
     length,
     quote;
 
-  length=1;
+  length=MaxTextExtent;
   p=(*token);
   for (*p='\0'; *c != EOF; )
   {
@@ -152,9 +152,9 @@ static unsigned int GetToken(Image *image,char **token,int *c,
     quote=(*c) == '"';
     for ( ; ; )
     {
-      if ((*c == '\n') || (*c == '\r'))
+      if ((*c == '\n') || (*c == '\r') || (*c == '\t'))
         *c=' ';
-      if (Extent(*token) >= (length-MaxTextExtent-1))
+      if (Extent(*token) >= (length-1))
         {
           length<<=1;
           *token=(char *) ReallocateMemory(*token,length);
@@ -189,7 +189,7 @@ static unsigned int GetToken(Image *image,char **token,int *c,
   return(True);
 }
 
-Export char **StringToTokens(const char *text,int *number_tokens)
+ModuleExport char **StringToTokens(const char *text,int *number_tokens)
 {
   char
     **tokens;
@@ -344,7 +344,28 @@ static void BezierSmoothPoints(PointInfo *input, PointInfo *output, int outlen)
 #endif
 }
 
-#define BezierQuantum  1
+PointInfo Bezier4(PointInfo *pixels,double mu)
+{
+  double mum1,mum13,mu3;
+  PointInfo p;
+  PointInfo p1,p2,p3,p4;
+
+  p1=pixels[0];
+  p2=pixels[1];
+  p3=pixels[2];
+  p4=pixels[3];
+
+  mum1 = 1 - mu;
+  mum13 = mum1 * mum1 * mum1;
+  mu3 = mu * mu * mu;
+
+  p.x = mum13*p1.x + 3*mu*mum1*mum1*p2.x + 3*mu*mu*mum1*p3.x + mu3*p4.x;
+  p.y = mum13*p1.y + 3*mu*mum1*mum1*p2.y + 3*mu*mu*mum1*p3.y + mu3*p4.y;
+
+  return(p);
+}
+
+#define BezierQuantum  2
 
 static char *TraversePath(const char *data)
 {
@@ -381,9 +402,6 @@ static char *TraversePath(const char *data)
       case 'c':
       case 'C':
       {
-        PointInfo
-          newpixels[BezierCoordinates];
-      
         register int
           i;
       
@@ -408,10 +426,10 @@ static char *TraversePath(const char *data)
           p+=n;
         }
 
-        BezierSmoothPoints(pixels, newpixels, BezierQuantum);
-        for (i=0; i < BezierCoordinates; i++)
+        for (i=0; i <= BezierCoordinates*BezierQuantum; i++)
         {
-          (void) FormatString(points,"%g,%g ",newpixels[i].x,newpixels[i].y);
+          lastp=Bezier4(pixels,((double)i/(BezierCoordinates*BezierQuantum)));
+          (void) FormatString(points,"%g,%g ",lastp.x,lastp.y);
           if (!ConcatenateString(&path,points))
             return((char *) NULL);
         }
@@ -453,10 +471,10 @@ static char *TraversePath(const char *data)
         for (i=0; i < BezierCoordinates; i++)
           pixels[i]=newpixels[i];
 
-        BezierSmoothPoints(pixels, newpixels, BezierQuantum);
-        for (i=0; i < BezierCoordinates; i++)
+        for (i=0; i <= BezierCoordinates; i++)
         {
-          (void) FormatString(points,"%g,%g ",newpixels[i].x,newpixels[i].y);
+          lastp=Bezier4(newpixels,((double)i/BezierCoordinates));
+          (void) FormatString(points,"%g,%g ",lastp.x,lastp.y);
           if (!ConcatenateString(&path,points))
             return((char *) NULL);
         }
@@ -1044,8 +1062,8 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
   (void) CloneString(&draw_info->primitive,filename);
   status=DrawImage(image,draw_info);
-puts(filename); if (0)
-  (void) remove(filename+1);
+  /* puts(filename); if (0) */
+  /* (void) remove(filename+1); */
   if (status == False)
     ThrowReaderException(CorruptImageWarning,"Unable to read SVG image",image);
   DestroyDrawInfo(draw_info);
@@ -1075,7 +1093,7 @@ puts(filename); if (0)
 %      RegisterSVGImage(void)
 %
 */
-Export void RegisterSVGImage(void)
+ModuleExport void RegisterSVGImage(void)
 {
   MagickInfo
     *entry;
@@ -1113,7 +1131,7 @@ Export void RegisterSVGImage(void)
 %      UnregisterSVGImage(void)
 %
 */
-Export void UnregisterSVGImage(void)
+ModuleExport void UnregisterSVGImage(void)
 {
   UnregisterMagickInfo("SVG");
 }
