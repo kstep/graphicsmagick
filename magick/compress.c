@@ -1011,8 +1011,7 @@ MagickExport unsigned int LZWEncodeImage(Image *image,const size_t length,
 {
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  ThrowBinaryException(DelegateError,"LZWEncodingNotEnabled",
-    (char *) NULL)
+  ThrowBinaryException(DelegateError,"LZWEncodingNotEnabled",(char *) NULL)
 }
 #endif
 

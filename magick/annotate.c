@@ -181,7 +181,7 @@ MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
   text=TranslateText((ImageInfo *) NULL,image,draw_info->text);
   if (text == (char *) NULL)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-      "unable to annotate image");
+      "UnableToAnnotateImage");
   textlist=StringToList(text);
   LiberateMemory((void **) &text);
   if (textlist == (char **) NULL)
@@ -194,7 +194,7 @@ MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
   text=(char *) AcquireMemory(length+MaxTextExtent);
   if (text == (char *) NULL)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-      "unable to annotate image");
+      "UnableToAnnotateImage");
   SetGeometry(image,&geometry);
   if (draw_info->geometry != (char *) NULL)
     (void) GetGeometry(draw_info->geometry,&geometry.x,&geometry.y,
@@ -1669,7 +1669,7 @@ static unsigned int RenderX11(Image *image,const DrawInfo *draw_info,
       map_info=XAllocStandardColormap();
       if (map_info == (XStandardColormap *) NULL)
         ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-          "unable to allocate colormap");
+          "UnableToAllocateColormap");
       /*
         Initialize visual info.
       */
@@ -1767,7 +1767,7 @@ static unsigned int RenderX11(Image *image,const DrawInfo *draw_info,
   status=XAnnotateImage(display,&pixel,&annotate_info,image);
   if (status == 0)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-      "unable to annotate image");
+      "UnableToAnnotateImage");
   return(True);
 }
 #else

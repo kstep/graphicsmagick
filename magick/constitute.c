@@ -153,7 +153,7 @@ MagickExport Image *ConstituteImage(const unsigned long width,
     return((Image *) NULL);
   if ((width == 0) || (height == 0))
     ThrowBinaryException(OptionError,"UnableToConstituteImage",
-      "Non-zero width and height required");
+      "NonzeroWidthAndHeightRequired");
   image->columns=width;
   image->rows=height;
   length=strlen(map);
@@ -183,7 +183,7 @@ MagickExport Image *ConstituteImage(const unsigned long width,
       {
         if (!AllocateImageColormap(image,MaxColormapSize))
           ThrowImageException(ResourceLimitError,"MemoryAllocationFailed",
-            "Unable to constitute image");
+            "UnableToConstituteImage");
         break;
       }
       default:

@@ -203,7 +203,7 @@ MagickExport IndexPacket ConstrainColormapIndex(Image *image,
   assert(image->signature == MagickSignature);
   if (index < image->colors)
     return((IndexPacket) index);
-  ThrowException(&image->exception,CorruptImageError,"invalid colormap index",
+  ThrowException(&image->exception,CorruptImageError,"InvalidColormapIndex",
     image->filename);
   return(0);
 }
@@ -456,7 +456,7 @@ MagickExport const ColorInfo *GetColorInfo(const char *name,
     if (LocaleCompare(colorname,p->name) == 0)
       break;
   if (p == (ColorInfo *) NULL)
-    ThrowException(exception,OptionWarning,"Unrecognized color",name);
+    ThrowException(exception,OptionWarning,"UnrecognizedColor",name);
   else
     if (p != color_list)
       {
@@ -794,7 +794,7 @@ MagickExport unsigned long GetNumberColors(const Image *image,FILE *file,
   if (cube_info == (CubeInfo *) NULL)
     {
       ThrowException(exception,ResourceLimitError,"MemoryAllocationFailed",
-        "unable to determine the number of image colors");
+        "UnableToDetermineTheNumberOfImageColors");
       return(0);
     }
   for (y=0; y < (long) image->rows; y++)
@@ -822,7 +822,7 @@ MagickExport unsigned long GetNumberColors(const Image *image,FILE *file,
               {
                 ThrowException(exception,ResourceLimitError,
                   "MemoryAllocationFailed",
-                  "unable to determine the number of image colors");
+                  "UnableToDetermineTheNumberOfImageColors");
                 return(0);
               }
           }
@@ -847,7 +847,7 @@ MagickExport unsigned long GetNumberColors(const Image *image,FILE *file,
           {
             ThrowException(exception,ResourceLimitError,
               "MemoryAllocationFailed",
-              "unable to determine the number of image colors");
+              "UnableToDetermineTheNumberOfImageColors");
             return(0);
           }
         node_info->list[i].pixel=(*p);
@@ -1225,7 +1225,7 @@ MagickExport unsigned int IsPaletteImage(const Image *image,
   if (cube_info == (CubeInfo *) NULL)
     {
       ThrowException(exception,ResourceLimitError,"MemoryAllocationFailed",
-        "unable to determine image class");
+        "UnableToDetermineImageClass");
       return(False);
     }
   for (y=0; y < (long) image->rows; y++)
@@ -1252,7 +1252,7 @@ MagickExport unsigned int IsPaletteImage(const Image *image,
             if (node_info->child[id] == (NodeInfo *) NULL)
               {
                 ThrowException(exception,ResourceLimitError,
-									"MemoryAllocationFailed","unable to determine image class");
+									"MemoryAllocationFailed","UnableToDetermineImageClass");
                 return(False);
               }
           }
@@ -1275,7 +1275,7 @@ MagickExport unsigned int IsPaletteImage(const Image *image,
           if (node_info->list == (ColorPacket *) NULL)
             {
               ThrowException(exception,ResourceLimitError,
-								"MemoryAllocationFailed","unable to determine image class");
+								"MemoryAllocationFailed","UnableToDetermineImageClass");
               return(False);
             }
           node_info->list[i].pixel=(*p);

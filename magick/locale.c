@@ -100,12 +100,13 @@ const char *GetLocaleMessage(const char *tag)
    if ( (!locale &&
          ( (!(locale = setlocale(LC_CTYPE, 0)) || *locale == '\0') &&
            (!(locale = getenv("LC_ALL"))       || *locale == '\0') &&
+           (!(locale = getenv("LC_MESSAGES"))     || *locale == '\0') &&
            (!(locale = getenv("LC_CTYPE"))     || *locale == '\0') &&
            (!(locale = getenv("LANG"))         || *locale == '\0') ) )
          || !LocaleCompare(locale, "C"))
       locale = "C";
 
-   if (!LocaleNCompare(locale,"en_us",5))
+   if (!LocaleNCompare(locale,"en_US",5))
       locale = "C";
 
    tp = locale;
@@ -130,6 +131,9 @@ const char *GetLocaleMessage(const char *tag)
             return tag;
 
           case 'u':  case 'U':
+            if (p - tp == 18 && !LocaleNCompare(tp, "UnableToCreateBlob", 18))
+              return *np ? tag : "Unable to create blob";
+            else
             if (p - tp == 16 && !LocaleNCompare(tp, "UnableToOpenFile", 16))
               return *np ? tag : "Unable to open file";
             else
@@ -911,6 +915,9 @@ const char *GetLocaleMessage(const char *tag)
             return tag;
 
           case 'u':  case 'U':
+            if (p - tp == 27 && !LocaleNCompare(tp, "UnableToCreateTemporaryFile", 27))
+              return *np ? tag : "Unable to temporary file";
+            else
             if (p - tp == 16 && !LocaleNCompare(tp, "UnableToOpenFile", 16))
               return *np ? tag : "Unable to open file";
             else
@@ -1209,6 +1216,18 @@ const char *GetLocaleMessage(const char *tag)
           default:
             return tag;
 
+          case 'b':  case 'B':
+            if (p - tp == 20 && !LocaleNCompare(tp, "BevelWidthIsNegative", 20))
+              return *np ? tag : "bevel width is negative";
+            else
+              return tag;
+
+          case 'f':  case 'F':
+            if (p - tp == 24 && !LocaleNCompare(tp, "FrameIsLessThanImageSize", 24))
+              return *np ? tag : "frame is less than image size";
+            else
+              return tag;
+
           case 'g':  case 'G':
             if (p - tp == 25 && !LocaleNCompare(tp, "GeometryDimensionsAreZero", 25))
               return *np ? tag : "Geometry dimensions are zero";
@@ -1222,6 +1241,12 @@ const char *GetLocaleMessage(const char *tag)
             if (p - tp == 23 && !LocaleNCompare(tp, "ImagesAreNotTheSameSize", 23))
               return *np ? tag : "Images are not the same size";
             else
+            if (p - tp == 29 && !LocaleNCompare(tp, "ImageSizeMustExceedBevelWidth", 29))
+              return *np ? tag : "size must exceed bevel width";
+            else
+            if (p - tp == 22 && !LocaleNCompare(tp, "ImageSmallerThanRadius", 22))
+              return *np ? tag : "image smaller than radius";
+            else
             if (p - tp == 17 && !LocaleNCompare(tp, "InvalidColorspace", 17))
               return *np ? tag : "Invalid image colorspace";
             else
@@ -1231,32 +1256,14 @@ const char *GetLocaleMessage(const char *tag)
             if (p - tp == 18 && !LocaleNCompare(tp, "InvalidCompression", 18))
               return *np ? tag : "Invalid image compression";
             else
-            if (p - tp == 20 && !LocaleNCompare(tp, "InvalidDisposeMethod", 20))
-              return *np ? tag : "Invalid dispose method";
-            else
-            if (p - tp == 17 && !LocaleNCompare(tp, "InvalidEndianType", 17))
-              return *np ? tag : "Invalid endian type";
-            else
-            if (p - tp == 18 && !LocaleNCompare(tp, "InvalidImageFilter", 18))
-              return *np ? tag : "Invalid image filter";
-            else
-            if (p - tp == 21 && !LocaleNCompare(tp, "InvalidImageInterlace", 21))
-              return *np ? tag : "Invalid image interlace";
-            else
-            if (p - tp == 16 && !LocaleNCompare(tp, "InvalidImageMode", 16))
-              return *np ? tag : "Invalid image mode";
-            else
-            if (p - tp == 16 && !LocaleNCompare(tp, "InvalidImageType", 16))
-              return *np ? tag : "Invalid image type";
-            else
             if (p - tp == 15 && !LocaleNCompare(tp, "InvalidPixelMap", 15))
               return *np ? tag : "Invalid pixel map";
             else
-            if (p - tp == 19 && !LocaleNCompare(tp, "InvalidResourceType", 19))
-              return *np ? tag : "Invalid resource type";
-            else
-            if (p - tp == 25 && !LocaleNCompare(tp, "InvalidVirtualPixelMethod", 25))
-              return *np ? tag : "Invalid virtual pixel method";
+              return tag;
+
+          case 'k':  case 'K':
+            if (p - tp == 22 && !LocaleNCompare(tp, "KernelRadiusIsTooSmall", 22))
+              return *np ? tag : "kernel radius is too small";
             else
               return tag;
 
@@ -1264,11 +1271,29 @@ const char *GetLocaleMessage(const char *tag)
             if (p - tp == 19 && !LocaleNCompare(tp, "MissingAffineMatrix", 19))
               return *np ? tag : "Missing affine matrix";
             else
+            if (p - tp == 16 && !LocaleNCompare(tp, "MissingAmplitude", 16))
+              return *np ? tag : "Missing amplitude";
+            else
             if (p - tp == 22 && !LocaleNCompare(tp, "MissingAnImageFilename", 22))
               return *np ? tag : "Missing an image filename";
             else
+            if (p - tp == 15 && !LocaleNCompare(tp, "MissingArgument", 15))
+              return *np ? tag : "Missing argument";
+            else
+            if (p - tp == 14 && !LocaleNCompare(tp, "MissingAzimuth", 14))
+              return *np ? tag : "Missing azimuth";
+            else
             if (p - tp == 22 && !LocaleNCompare(tp, "MissingBackgroundColor", 22))
               return *np ? tag : "Missing background color";
+            else
+            if (p - tp == 17 && !LocaleNCompare(tp, "MissingBevelWidth", 17))
+              return *np ? tag : "Missing bevel width";
+            else
+            if (p - tp == 18 && !LocaleNCompare(tp, "MissingBorderColor", 18))
+              return *np ? tag : "Missing border color";
+            else
+            if (p - tp == 20 && !LocaleNCompare(tp, "MissingColorizeValue", 20))
+              return *np ? tag : "Missing colorize value";
             else
             if (p - tp == 13 && !LocaleNCompare(tp, "MissingColors", 13))
               return *np ? tag : "Missing colors";
@@ -1276,8 +1301,20 @@ const char *GetLocaleMessage(const char *tag)
             if (p - tp == 14 && !LocaleNCompare(tp, "MissingComment", 14))
               return *np ? tag : "Missing comment";
             else
+            if (p - tp == 25 && !LocaleNCompare(tp, "MissingCompressionQuality", 25))
+              return *np ? tag : "Missing compression quality";
+            else
+            if (p - tp == 18 && !LocaleNCompare(tp, "MissingCycleAmount", 18))
+              return *np ? tag : "Missing an cycle amount";
+            else
+            if (p - tp == 12 && !LocaleNCompare(tp, "MissingDelay", 12))
+              return *np ? tag : "Missing delay";
+            else
             if (p - tp == 20 && !LocaleNCompare(tp, "MissingDisposeMethod", 20))
               return *np ? tag : "Missing dispose method";
+            else
+            if (p - tp == 20 && !LocaleNCompare(tp, "MissingDissolveValue", 20))
+              return *np ? tag : "Missing dissolve value";
             else
             if (p - tp == 23 && !LocaleNCompare(tp, "MissingDrawingPrimitive", 23))
               return *np ? tag : "Missing drawing primitive";
@@ -1306,17 +1343,38 @@ const char *GetLocaleMessage(const char *tag)
             if (p - tp == 17 && !LocaleNCompare(tp, "MissingImageDepth", 17))
               return *np ? tag : "Missing image depth";
             else
+            if (p - tp == 18 && !LocaleNCompare(tp, "MissingImageFrames", 18))
+              return *np ? tag : "Missing image frames";
+            else
             if (p - tp == 17 && !LocaleNCompare(tp, "MissingImageGamma", 17))
               return *np ? tag : "Missing image gamma";
             else
+            if (p - tp == 22 && !LocaleNCompare(tp, "MissingImageIterations", 22))
+              return *np ? tag : "Missing image iterations";
+            else
             if (p - tp == 17 && !LocaleNCompare(tp, "MissingImageLabel", 17))
               return *np ? tag : "Missing image label";
+            else
+            if (p - tp == 19 && !LocaleNCompare(tp, "MissingImageProfile", 19))
+              return *np ? tag : "Missing image profile";
             else
             if (p - tp == 20 && !LocaleNCompare(tp, "MissingImageRotation", 20))
               return *np ? tag : "Missing image rotation";
             else
             if (p - tp == 17 && !LocaleNCompare(tp, "MissingImageScene", 17))
               return *np ? tag : "Missing image scene";
+            else
+            if (p - tp == 20 && !LocaleNCompare(tp, "MissingImplodeAmount", 20))
+              return *np ? tag : "Missing an implode amount";
+            else
+            if (p - tp == 15 && !LocaleNCompare(tp, "MissingListName", 15))
+              return *np ? tag : "Missing list name";
+            else
+            if (p - tp == 17 && !LocaleNCompare(tp, "MissingMatteColor", 17))
+              return *np ? tag : "Missing matte color";
+            else
+            if (p - tp == 18 && !LocaleNCompare(tp, "MissingOpaqueColor", 18))
+              return *np ? tag : "Missing opaque color";
             else
             if (p - tp == 19 && !LocaleNCompare(tp, "MissingPageGeometry", 19))
               return *np ? tag : "Missing page geometry";
@@ -1339,11 +1397,20 @@ const char *GetLocaleMessage(const char *tag)
             if (p - tp == 19 && !LocaleNCompare(tp, "MissingResourceType", 19))
               return *np ? tag : "Missing resource type";
             else
+            if (p - tp == 16 && !LocaleNCompare(tp, "MissingSeedValue", 16))
+              return *np ? tag : "Missing seed value";
+            else
             if (p - tp == 17 && !LocaleNCompare(tp, "MissingServerName", 17))
               return *np ? tag : "Missing server name";
             else
+            if (p - tp == 19 && !LocaleNCompare(tp, "MissingSpreadAmount", 19))
+              return *np ? tag : "Missing an spread amount";
+            else
             if (p - tp == 16 && !LocaleNCompare(tp, "MissingThreshold", 16))
               return *np ? tag : "Missing threshold";
+            else
+            if (p - tp == 11 && !LocaleNCompare(tp, "MissingTile", 11))
+              return *np ? tag : "Missing tile";
             else
             if (p - tp == 12 && !LocaleNCompare(tp, "MissingTitle", 12))
               return *np ? tag : "Missing title";
@@ -1381,6 +1448,9 @@ const char *GetLocaleMessage(const char *tag)
             if (p - tp == 21 && !LocaleNCompare(tp, "NoImageVectorGraphics", 21))
               return *np ? tag : "No image vector graphics";
             else
+            if (p - tp == 29 && !LocaleNCompare(tp, "NonzeroWidthAndHeightRequired", 29))
+              return *np ? tag : "Non-zero width and height required";
+            else
             if (p - tp == 21 && !LocaleNCompare(tp, "NoProfileNameWasGiven", 21))
               return *np ? tag : "No profile name was given";
             else
@@ -1408,6 +1478,9 @@ const char *GetLocaleMessage(const char *tag)
             if (p - tp == 19 && !LocaleNCompare(tp, "UnableToFilterImage", 19))
               return *np ? tag : "Unable to filter image";
             else
+            if (p - tp == 27 && !LocaleNCompare(tp, "UnableToFormatImageMetadata", 27))
+              return *np ? tag : "unable to format image meta data";
+            else
             if (p - tp == 18 && !LocaleNCompare(tp, "UnableToFrameImage", 18))
               return *np ? tag : "Unable to frame image";
             else
@@ -1426,11 +1499,53 @@ const char *GetLocaleMessage(const char *tag)
             if (p - tp == 21 && !LocaleNCompare(tp, "UnrecognizedAttribute", 21))
               return *np ? tag : "Unrecognized attribute";
             else
+            if (p - tp == 23 && !LocaleNCompare(tp, "UnrecognizedChannelType", 23))
+              return *np ? tag : "Unrecognized channel type";
+            else
+            if (p - tp == 17 && !LocaleNCompare(tp, "UnrecognizedColor", 17))
+              return *np ? tag : "Unrecognized color";
+            else
+            if (p - tp == 25 && !LocaleNCompare(tp, "UnrecognizedDisposeMethod", 25))
+              return *np ? tag : "Unrecognized dispose method";
+            else
             if (p - tp == 19 && !LocaleNCompare(tp, "UnrecognizedElement", 19))
               return *np ? tag : "Unrecognized element";
             else
+            if (p - tp == 22 && !LocaleNCompare(tp, "UnrecognizedEndianType", 22))
+              return *np ? tag : "Unrecognized endian type";
+            else
+            if (p - tp == 23 && !LocaleNCompare(tp, "UnrecognizedGravityType", 23))
+              return *np ? tag : "Unrecognized gravity type";
+            else
+            if (p - tp == 23 && !LocaleNCompare(tp, "UnrecognizedImageFilter", 23))
+              return *np ? tag : "Unrecognized image filter";
+            else
+            if (p - tp == 26 && !LocaleNCompare(tp, "UnrecognizedImageInterlace", 26))
+              return *np ? tag : "Unrecognized image interlace";
+            else
+            if (p - tp == 21 && !LocaleNCompare(tp, "UnrecognizedImageMode", 21))
+              return *np ? tag : "Unrecognized image mode";
+            else
+            if (p - tp == 21 && !LocaleNCompare(tp, "UnrecognizedImageType", 21))
+              return *np ? tag : "Unrecognized image type";
+            else
+            if (p - tp == 22 && !LocaleNCompare(tp, "UnrecognizedIntentType", 22))
+              return *np ? tag : "Unrecognized intent type";
+            else
+            if (p - tp == 20 && !LocaleNCompare(tp, "UnrecognizedListType", 20))
+              return *np ? tag : "Unrecognized list type";
+            else
             if (p - tp == 18 && !LocaleNCompare(tp, "UnrecognizedOption", 18))
               return *np ? tag : "Unrecognized option";
+            else
+            if (p - tp == 24 && !LocaleNCompare(tp, "UnrecognizedResourceType", 24))
+              return *np ? tag : "Unrecognized resource type";
+            else
+            if (p - tp == 16 && !LocaleNCompare(tp, "UnrecognizedType", 16))
+              return *np ? tag : "Unrecognized list type";
+            else
+            if (p - tp == 30 && !LocaleNCompare(tp, "UnrecognizedVirtualPixelMethod", 30))
+              return *np ? tag : "Unrecognized virtual pixel method";
             else
               return tag;
           }
@@ -1504,11 +1619,59 @@ const char *GetLocaleMessage(const char *tag)
                   return tag;
 
               case 'u':  case 'U':
+                if (p - tp == 24 && !LocaleNCompare(tp, "UnableToAllocateColormap", 24))
+                  return *np ? tag : "Unable to allocate colormap";
+                else
+                if (p - tp == 21 && !LocaleNCompare(tp, "UnableToAnnotateImage", 21))
+                  return *np ? tag : "Unable to annotate image";
+                else
+                if (p - tp == 17 && !LocaleNCompare(tp, "UnableToBlurImage", 17))
+                  return *np ? tag : "unable to blur image";
+                else
+                if (p - tp == 23 && !LocaleNCompare(tp, "UnableToConstituteImage", 23))
+                  return *np ? tag : "unable to constitute image";
+                else
                 if (p - tp == 22 && !LocaleNCompare(tp, "UnableToCreateColormap", 22))
                   return *np ? tag : "Unable to create colormap";
                 else
+                if (p - tp == 22 && !LocaleNCompare(tp, "UnableToDespeckleImage", 22))
+                  return *np ? tag : "unable to despeckle image";
+                else
+                if (p - tp == 27 && !LocaleNCompare(tp, "UnableToDetermineImageClass", 27))
+                  return *np ? tag : "unable to determine image class";
+                else
+                if (p - tp == 39 && !LocaleNCompare(tp, "UnableToDetermineTheNumberOfImageColors", 39))
+                  return *np ? tag : "unable to determine the number of image colors";
+                else
+                if (p - tp == 19 && !LocaleNCompare(tp, "UnableToDrawOnImage", 19))
+                  return *np ? tag : "unable to draw on image";
+                else
+                if (p - tp == 17 && !LocaleNCompare(tp, "UnableToEdgeImage", 17))
+                  return *np ? tag : "unable to edge image";
+                else
+                if (p - tp == 19 && !LocaleNCompare(tp, "UnableToEmbossImage", 19))
+                  return *np ? tag : "unable to emboss image";
+                else
                 if (p - tp == 19 && !LocaleNCompare(tp, "UnableToManageColor", 19))
                   return *np ? tag : "Unable to manage color";
+                else
+                if (p - tp == 25 && !LocaleNCompare(tp, "UnableToMedianFilterImage", 25))
+                  return *np ? tag : "unable to median filter image";
+                else
+                if (p - tp == 23 && !LocaleNCompare(tp, "UnableToMotionBlurImage", 23))
+                  return *np ? tag : "unable to motion blur image";
+                else
+                if (p - tp == 24 && !LocaleNCompare(tp, "UnableToNoiseFilterImage", 24))
+                  return *np ? tag : "unable to noise filter image";
+                else
+                if (p - tp == 19 && !LocaleNCompare(tp, "UnableToSelectImage", 19))
+                  return *np ? tag : "unable to select image";
+                else
+                if (p - tp == 20 && !LocaleNCompare(tp, "UnableToSharpenImage", 20))
+                  return *np ? tag : "unable to sharpen image";
+                else
+                if (p - tp == 22 && !LocaleNCompare(tp, "UnableToThresholdImage", 22))
+                  return *np ? tag : "unable to threshold image";
                 else
                   return tag;
               }

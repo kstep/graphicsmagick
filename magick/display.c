@@ -3723,7 +3723,7 @@ static unsigned int XDrawEditImage(Display *display,
   if (coordinate_info == (XPoint *) NULL)
     {
       MagickError(ResourceLimitError,"MemoryAllocationFailed",
-        "unable to draw on image");
+        "UnableToDrawOnImage");
       return(False);
     }
   /*
@@ -4332,7 +4332,7 @@ static unsigned int XDrawEditImage(Display *display,
             max_coordinates*sizeof(XPoint));
           if (coordinate_info == (XPoint *) NULL)
             MagickError(ResourceLimitError,"MemoryAllocationFailed",
-              "unable to draw on image");
+              "UnableToDrawOnImage");
           break;
         }
         case Expose:
@@ -4359,7 +4359,7 @@ static unsigned int XDrawEditImage(Display *display,
             max_coordinates*sizeof(XPoint));
           if (coordinate_info == (XPoint *) NULL)
             MagickError(ResourceLimitError,"MemoryAllocationFailed",
-              "unable to draw on image");
+              "UnableToDrawOnImage");
           break;
         }
         default:
@@ -7951,15 +7951,14 @@ static Image *XOpenImage(Display *display,XResourceInfo *resource_info,
       status=XGetCommand(display,windows->image.id,&files,&count);
       if (!status)
         {
-          MagickError(XServerError,"UnableToGetProperty",
-            "unable to select image");
+          MagickError(XServerError,"UnableToGetProperty","UnableToSelectImage");
           return((Image *) NULL);
         }
       filelist=(char **) AcquireMemory(count*sizeof(char *));
       if (filelist == (char **) NULL)
         {
           MagickError(ResourceLimitError,"MemoryAllocationFailed",
-            "unable to select image");
+            "UnableToSelectImage");
           (void) XFreeStringList(files);
           return((Image *) NULL);
         }
@@ -11223,8 +11222,7 @@ static Image *XVisualDirectoryImage(Display *display,
   filelist=(char **) AcquireMemory(sizeof(char *));
   if (filelist == (char **) NULL)
     {
-      MagickError(ResourceLimitError,"MemoryAllocationFailed",
-        (char *) NULL);
+      MagickError(ResourceLimitError,"MemoryAllocationFailed",(char *) NULL);
       return((Image *) NULL);
     }
   number_files=1;
@@ -11235,8 +11233,7 @@ static Image *XVisualDirectoryImage(Display *display,
       if (number_files == 0)
         MagickError(ImageError,"NoImagesWereFound",filenames);
       else
-        MagickError(ResourceLimitError,"MemoryAllocationFailed",
-          filenames);
+        MagickError(ResourceLimitError,"MemoryAllocationFailed",filenames);
       return((Image *) NULL);
     }
   /*

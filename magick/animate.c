@@ -162,8 +162,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       filelist=(char **) AcquireMemory(sizeof(char *));
       if (filelist == (char **) NULL)
         {
-          MagickError(ResourceLimitError,"MemoryAllocationFailed",
-            (char *) NULL);
+          MagickError(ResourceLimitError,"MemoryAllocationFailed",filenames);
           return((Image *) NULL);
         }
       number_files=1;
