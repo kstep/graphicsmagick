@@ -237,7 +237,8 @@ MagickExport Image *ColorizeImage(const Image *image,const char *opacity,
     if (!SyncImagePixels(colorize_image))
       break;
     if (QuantumTick(y,image->rows))
-      MagickMonitor(ColorizeImageText,y,image->rows);
+      if (!MagickMonitor(ColorizeImageText,y,image->rows,exception))
+        break;
   }
   return(colorize_image);
 }
@@ -376,7 +377,8 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
     if (!SyncImagePixels(convolve_image))
       break;
     if (QuantumTick(y,convolve_image->rows))
-      MagickMonitor(ConvolveImageText,y,convolve_image->rows);
+      if (!MagickMonitor(ConvolveImageText,y,convolve_image->rows,exception))
+        break;
   }
   return(convolve_image);
 }
@@ -507,7 +509,8 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
     if (!SyncImagePixels(implode_image))
       break;
     if (QuantumTick(y,image->rows))
-      MagickMonitor(ImplodeImageText,y,image->rows);
+      if (!MagickMonitor(ImplodeImageText,y,image->rows,exception))
+        break;
   }
   return(implode_image);
 }
@@ -603,7 +606,8 @@ MagickExport Image *MorphImages(const Image *image,
           }
         morph_images->next->previous=morph_images;
         morph_images=morph_images->next;
-        MagickMonitor(MorphImageText,i,number_frames);
+        if (!MagickMonitor(MorphImageText,i,number_frames,exception))
+          break;
       }
       while (morph_images->previous != (Image *) NULL)
         morph_images=morph_images->previous;
@@ -671,7 +675,8 @@ MagickExport Image *MorphImages(const Image *image,
     morph_images->next->previous=morph_images;
     morph_images=morph_images->next;
     (void) SetMonitorHandler(handler);
-    MagickMonitor(MorphImageText,scene,GetImageListSize(image));
+    if (!MagickMonitor(MorphImageText,scene,GetImageListSize(image),exception))
+      break;
     scene++;
   }
   while (morph_images->previous != (Image *) NULL)
@@ -806,7 +811,8 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
     if (!SyncImagePixels(paint_image))
       break;
     if (QuantumTick(y,image->rows))
-      MagickMonitor(OilPaintImageText,y,image->rows);
+      if (!MagickMonitor(OilPaintImageText,y,image->rows,exception))
+        break;
   }
   LiberateMemory((void **) &histogram);
   return(paint_image);
@@ -879,7 +885,8 @@ MagickExport void SolarizeImage(Image *image,const double threshold)
         if (!SyncImagePixels(image))
           break;
         if (QuantumTick(y,image->rows))
-          MagickMonitor(SolarizeImageText,y,image->rows);
+          if (!MagickMonitor(SolarizeImageText,y,image->rows,&image->exception))
+            break;
       }
       break;
     }
@@ -1023,7 +1030,8 @@ MagickExport Image *SteganoImage(const Image *image,const Image *watermark,
       }
     }
     if (QuantumTick(i,QuantumDepth))
-      MagickMonitor(SteganoImageText,i,QuantumDepth);
+      if (!MagickMonitor(SteganoImageText,i,QuantumDepth,exception))
+        break;
   }
   if (stegano_image->storage_class == PseudoClass)
     SyncImage(stegano_image);
@@ -1124,7 +1132,8 @@ MagickExport Image *StereoImage(const Image *image,const Image *offset_image,
     if (!SyncImagePixels(stereo_image))
       break;
     if (QuantumTick(y,stereo_image->rows))
-      MagickMonitor(StereoImageText,y,stereo_image->rows);
+      if (!MagickMonitor(StereoImageText,y,stereo_image->rows,exception))
+        break;
   }
   return(stereo_image);
 }
@@ -1249,7 +1258,8 @@ MagickExport Image *SwirlImage(const Image *image,double degrees,
     if (!SyncImagePixels(swirl_image))
       break;
     if (QuantumTick(y,image->rows))
-      MagickMonitor(SwirlImageText,y,image->rows);
+      if (!MagickMonitor(SwirlImageText,y,image->rows,exception))
+        break;
   }
   return(swirl_image);
 }
@@ -1351,7 +1361,8 @@ MagickExport Image *WaveImage(const Image *image,const double amplitude,
     if (!SyncImagePixels(wave_image))
       break;
     if (QuantumTick(y,wave_image->rows))
-      MagickMonitor(WaveImageText,y,wave_image->rows);
+      if (!MagickMonitor(WaveImageText,y,wave_image->rows,exception))
+        break;
   }
   SetImageVirtualPixelMethod(image,virtual_pixel_method);
   LiberateMemory((void **) &sine_map);

@@ -3313,7 +3313,8 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               break;
             if (image->previous == (Image *) NULL)
               if (QuantumTick(y,image->rows))
-                MagickMonitor(LoadImageText,y,image->rows);
+                if (!MagickMonitor(LoadImageText,y,image->rows,&image->exception))
+                  break;
           }
         }
       }
@@ -3418,7 +3419,8 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
-              MagickMonitor(LoadImageText,y,image->rows);
+              if (!MagickMonitor(LoadImageText,y,image->rows,&image->exception))
+                break;
         }
         if (image->storage_class == PseudoClass)
           {
@@ -3446,7 +3448,8 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             return((Image *) NULL);
           }
         image=image->next;
-        MagickMonitor(LoadImagesText,TellBlob(image),GetBlobSize(image));
+        if (!MagickMonitor(LoadImagesText,TellBlob(image),GetBlobSize(image),exception))
+          break;
       }
   }
   /*

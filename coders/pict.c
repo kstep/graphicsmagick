@@ -1124,7 +1124,8 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
                 p+=(pixmap.component_count-1)*tile_image->columns;
               if (destination.bottom == (long) image->rows)
                 if (QuantumTick(y,tile_image->rows))
-                  MagickMonitor(LoadImageText,y,tile_image->rows);
+                  if (!MagickMonitor(LoadImageText,y,tile_image->rows,&image->exception))
+                    break;
             }
             (void) LiberateMemory((void **) &pixels);
             if (tile_image != image)
@@ -1137,7 +1138,8 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
                 DestroyImage(tile_image);
               }
             if (destination.bottom != (long) image->rows)
-              MagickMonitor(LoadImageText,destination.bottom,image->rows);
+              if (!MagickMonitor(LoadImageText,destination.bottom,image->rows,&image->exception))
+                break;
             break;
           }
           case 0xa1:
@@ -1730,7 +1732,8 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
         scanline[x]=indexes[x];
       count+=EncodeImage(image,scanline,row_bytes & 0x7FFF,packed_scanline);
       if (QuantumTick(y,image->rows))
-        MagickMonitor(SaveImageText,y,image->rows);
+        if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+          break;
     }
   else
     if (image->compression == JPEGCompression)
@@ -1777,7 +1780,8 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
           }
           count+=EncodeImage(image,scanline,row_bytes & 0x7FFF,packed_scanline);
           if (QuantumTick(y,image->rows))
-            MagickMonitor(SaveImageText,y,image->rows);
+            if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+              break;
         }
       }
   if (count & 0x1)

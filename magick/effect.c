@@ -138,7 +138,8 @@ MagickExport Image *AddNoiseImage(const Image *image,const NoiseType noise_type,
     if (!SyncImagePixels(noise_image))
       break;
     if (QuantumTick(y,image->rows))
-      MagickMonitor(AddNoiseImageText,y,image->rows);
+      if (!MagickMonitor(AddNoiseImageText,y,image->rows,exception))
+        break;
   }
   return(noise_image);
 }
@@ -426,7 +427,8 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
     if (!SyncImagePixels(blur_image))
       break;
     if (QuantumTick(y,blur_image->rows+blur_image->columns))
-      MagickMonitor(BlurImageText,y,blur_image->rows+blur_image->columns);
+      if (!MagickMonitor(BlurImageText,y,blur_image->rows+blur_image->columns,exception))
+        break;
   }
   /*
     Blur the image columns.
@@ -441,8 +443,8 @@ MagickExport Image *BlurImage(const Image *image,const double radius,
     if (!SyncImagePixels(blur_image))
       break;
     if (QuantumTick(blur_image->rows+x,blur_image->rows+blur_image->columns))
-      MagickMonitor(BlurImageText,blur_image->rows+x,
-        blur_image->rows+blur_image->columns);
+      if (!MagickMonitor(BlurImageText,blur_image->rows+x,blur_image->rows+blur_image->columns,exception))
+        break;
   }
   LiberateMemory((void **) &scanline);
   LiberateMemory((void **) &kernel);
@@ -563,7 +565,8 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
     (void) memset(buffer,0,length);
     for (i=0; i < 4; i++)
     {
-      MagickMonitor(DespeckleImageText,4*layer+i,15);
+      if (!MagickMonitor(DespeckleImageText,4*layer+i,15,exception))
+        break;
       Hull(X[i],Y[i],image->columns,image->rows,pixels,buffer,1);
       Hull(-X[i],-Y[i],image->columns,image->rows,pixels,buffer,1);
       Hull(-X[i],-Y[i],image->columns,image->rows,pixels,buffer,-1);
@@ -893,7 +896,8 @@ MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
     if (!SyncImagePixels(enhance_image))
       break;
     if (QuantumTick(y,image->rows))
-      MagickMonitor(EnhanceImageText,y,image->rows-2);
+      if (!MagickMonitor(EnhanceImageText,y,image->rows-2,exception))
+        break;
   }
   return(enhance_image);
 }
@@ -1287,7 +1291,8 @@ MagickExport Image *MedianFilterImage(const Image *image,const double radius,
     if (!SyncImagePixels(median_image))
       break;
     if (QuantumTick(y,median_image->rows))
-      MagickMonitor(MedianFilterImageText,y,median_image->rows);
+      if (!MagickMonitor(MedianFilterImageText,y,median_image->rows,exception))
+        break;
   }
   LiberateMemory((void **) &skiplist);
   return(median_image);
@@ -1487,7 +1492,8 @@ MagickExport Image *MotionBlurImage(const Image *image,const double radius,
     if (!SyncImagePixels(blur_image))
       break;
     if (QuantumTick(y,image->rows))
-      MagickMonitor(BlurImageText,y,image->rows);
+      if (!MagickMonitor(BlurImageText,y,image->rows,exception))
+        break;
   }
   LiberateMemory((void **) &kernel);
   LiberateMemory((void **) &offsets);
@@ -1655,7 +1661,8 @@ MagickExport Image *ReduceNoiseImage(const Image *image,const double radius,
     if (!SyncImagePixels(noise_image))
       break;
     if (QuantumTick(y,noise_image->rows))
-      MagickMonitor(ReduceNoiseImageText,y,noise_image->rows);
+      if (!MagickMonitor(ReduceNoiseImageText,y,noise_image->rows,exception))
+        break;
   }
   LiberateMemory((void **) &skiplist);
   return(noise_image);
@@ -1808,7 +1815,8 @@ MagickExport Image *ShadeImage(const Image *image,
     if (!SyncImagePixels(shade_image))
       break;
     if (QuantumTick(y,image->rows))
-      MagickMonitor(ShadeImageText,y,image->rows);
+      if (!MagickMonitor(ShadeImageText,y,image->rows,exception))
+        break;
   }
   return(shade_image);
 }
@@ -1977,7 +1985,8 @@ MagickExport Image *SpreadImage(const Image *image,const unsigned int radius,
     if (!SyncImagePixels(spread_image))
       break;
     if (QuantumTick(y,image->rows))
-      MagickMonitor(SpreadImageText,y,image->rows);
+      if (!MagickMonitor(SpreadImageText,y,image->rows,exception))
+        break;
   }
   return(spread_image);
 }
@@ -2084,7 +2093,8 @@ MagickExport unsigned int ThresholdImage(Image *image,const char *threshold)
     if (!SyncImagePixels(image))
       break;
     if (QuantumTick(y,image->rows))
-      MagickMonitor(ThresholdImageText,y,image->rows);
+      if (!MagickMonitor(ThresholdImageText,y,image->rows,&image->exception))
+        break;
   }
   return(True);
 }
@@ -2200,7 +2210,8 @@ MagickExport Image *UnsharpMaskImage(const Image *image,const double radius,
     if (!SyncImagePixels(sharp_image))
       break;
     if (QuantumTick(y,image->rows))
-      MagickMonitor(SharpenImageText,y,image->rows);
+      if (!MagickMonitor(SharpenImageText,y,image->rows,exception))
+        break;
   }
   return(sharp_image);
 }

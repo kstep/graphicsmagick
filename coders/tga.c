@@ -412,7 +412,8 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
         break;
       if (image->previous == (Image *) NULL)
         if (QuantumTick(y,image->rows))
-          MagickMonitor(LoadImageText,y,image->rows);
+          if (!MagickMonitor(LoadImageText,y,image->rows,&image->exception))
+            break;
     }
     if (EOFBlob(image))
       ThrowReaderException(CorruptImageError,"Unexpected end-of-file",image);
@@ -438,7 +439,8 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
             return((Image *) NULL);
           }
         image=image->next;
-        MagickMonitor(LoadImagesText,TellBlob(image),GetBlobSize(image));
+        if (!MagickMonitor(LoadImagesText,TellBlob(image),GetBlobSize(image),exception))
+          break;
       }
   } while (status == True);
   while (image->previous != (Image *) NULL)
@@ -757,13 +759,15 @@ static unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
       (void) WriteBlob(image,q-targa_pixels,(char *) targa_pixels);
       if (image->previous == (Image *) NULL)
         if (QuantumTick(y,image->rows))
-          MagickMonitor(SaveImageText,y,image->rows);
+          if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+            break;
     }
     LiberateMemory((void **) &targa_pixels);
     if (image->next == (Image *) NULL)
       break;
     image=GetNextImage(image);
-    MagickMonitor(SaveImagesText,scene++,GetImageListSize(image));
+    if (!MagickMonitor(SaveImagesText,scene++,GetImageListSize(image),&image->exception))
+      break;
   } while (image_info->adjoin);
   if (image_info->adjoin)
     while (image->previous != (Image *) NULL)

@@ -266,7 +266,8 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (!SyncImagePixels(image))
             break;
           if (QuantumTick(y,image->rows))
-            MagickMonitor(LoadImageText,image->rows-y-1,image->rows);
+            if (!MagickMonitor(LoadImageText,image->rows-y-1,image->rows,&image->exception))
+              break;
         }
         break;
       }
@@ -287,7 +288,8 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (!SyncImagePixels(image))
             break;
           if (QuantumTick(y,image->rows))
-            MagickMonitor(LoadImageText,image->rows-y-1,image->rows);
+            if (!MagickMonitor(LoadImageText,image->rows-y-1,image->rows,&image->exception))
+              break;
         }
         break;
       }
@@ -314,7 +316,8 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (!SyncImagePixels(image))
             break;
           if (QuantumTick(y,image->rows))
-            MagickMonitor(LoadImageText,image->rows-y-1,image->rows);
+            if (!MagickMonitor(LoadImageText,image->rows-y-1,image->rows,&image->exception))
+              break;
         }
         break;
       }
@@ -339,7 +342,8 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (!SyncImagePixels(image))
             break;
           if (QuantumTick(y,image->rows))
-            MagickMonitor(LoadImageText,image->rows-y-1,image->rows);
+            if (!MagickMonitor(LoadImageText,image->rows-y-1,image->rows,&image->exception))
+              break;
         }
         break;
       }
@@ -367,7 +371,8 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             return((Image *) NULL);
           }
         image=image->next;
-        MagickMonitor(LoadImagesText,TellBlob(image),GetBlobSize(image));
+        if (!MagickMonitor(LoadImagesText,TellBlob(image),GetBlobSize(image),exception))
+          break;
       }
   } while (tim_info.id == 0x00000010);
   while (image->previous != (Image *) NULL)

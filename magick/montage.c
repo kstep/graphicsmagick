@@ -374,7 +374,8 @@ MagickExport Image *MontageImages(const Image *images,
     DestroyImage(image);
     image_list[i]=zoom_image;
     (void) SetMonitorHandler(handler);
-    MagickMonitor(TileImageText,i,number_images);
+    if (!MagickMonitor(TileImageText,i,number_images,&image->exception))
+      break;
   }
   if (i < (long) number_images)
     {
@@ -746,7 +747,8 @@ MagickExport Image *MontageImages(const Image *images,
         }
       DestroyImage(image);
       (void) SetMonitorHandler(handler);
-      MagickMonitor(MontageImageText,tiles,total_tiles);
+      if (!MagickMonitor(MontageImageText,tiles,total_tiles,&image->exception))
+        break;
       tiles++;
     }
     if ((i+1) < (long) images_per_page)

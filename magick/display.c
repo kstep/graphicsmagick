@@ -11284,7 +11284,8 @@ static Image *XVisualDirectoryImage(Display *display,
           }
       }
     (void) SetMonitorHandler(handler);
-    MagickMonitor(LoadImageText,i,number_files);
+    if (!MagickMonitor(LoadImageText,i,number_files,&image->exception))
+      break;
   }
   DestroyImageInfo(clone_info);
   LiberateMemory((void **) &filelist);

@@ -807,7 +807,8 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
     if (!SyncImagePixels(image))
       break;
     if (QuantumTick(y,image->rows))
-      MagickMonitor(LoadImageText,y,image->rows);
+      if (!MagickMonitor(LoadImageText,y,image->rows,&image->exception))
+        break;
   }
   if (image->colorspace == CMYKColorspace)
     {
@@ -1352,7 +1353,8 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
           }
           (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
           if (QuantumTick(y,image->rows))
-            MagickMonitor(SaveImageText,y,image->rows);
+            if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+              break;
         }
       else
         if ((jpeg_info.in_color_space == JCS_RGB) ||
@@ -1372,7 +1374,8 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
             }
             (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
             if (QuantumTick(y,image->rows))
-              MagickMonitor(SaveImageText,y,image->rows);
+              if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+                break;
           }
         else
           for (y=0; y < (long) image->rows; y++)
@@ -1394,7 +1397,8 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
             }
             (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
             if (QuantumTick(y,image->rows))
-              MagickMonitor(SaveImageText,y,image->rows);
+              if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+                break;
           }
     }
   else
@@ -1412,7 +1416,8 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
         }
         (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
         if (QuantumTick(y,image->rows))
-          MagickMonitor(SaveImageText,y,image->rows);
+          if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+            break;
       }
     else
       if ((jpeg_info.in_color_space == JCS_RGB) ||
@@ -1432,7 +1437,8 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
           }
           (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
           if (QuantumTick(y,image->rows))
-            MagickMonitor(SaveImageText,y,image->rows);
+            if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+              break;
         }
       else
         for (y=0; y < (long) image->rows; y++)
@@ -1454,7 +1460,8 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
           }
           (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
           if (QuantumTick(y,image->rows))
-            MagickMonitor(SaveImageText,y,image->rows);
+            if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+              break;
         }
   jpeg_finish_compress(&jpeg_info);
   /*

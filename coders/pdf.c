@@ -466,9 +466,9 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   FormatString(command,delegate_info->commands,clone_info->antialias ? 4 : 1,
     clone_info->antialias ? 4 : 1,geometry,density,options,clone_info->filename,
     postscript_filename);
-  MagickMonitor(RenderPostscriptText,0,8);
+  (void) MagickMonitor(RenderPostscriptText,0,8,&image->exception);
   status=InvokePostscriptDelegate(clone_info->verbose,command);
-  MagickMonitor(RenderPostscriptText,7,8);
+  (void) MagickMonitor(RenderPostscriptText,7,8,&image->exception);
   if (status)
     {
       (void) remove(postscript_filename);
@@ -1140,7 +1140,8 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
               }
               if (image->previous == (Image *) NULL)
                 if (QuantumTick(y,image->rows))
-                  MagickMonitor(SaveImageText,y,image->rows);
+                  if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+                    break;
             }
             if (compression == ZipCompression)
               status=ZLIBEncodeImage(image,length,image_info->quality,pixels);
@@ -1177,7 +1178,8 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
               }
               if (image->previous == (Image *) NULL)
                 if (QuantumTick(y,image->rows))
-                  MagickMonitor(SaveImageText,y,image->rows);
+                  if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+                    break;
             }
             Ascii85Flush(image);
             break;
@@ -1252,7 +1254,8 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
               }
               if (image->previous == (Image *) NULL)
                 if (QuantumTick(y,image->rows))
-                  MagickMonitor(SaveImageText,y,image->rows);
+                  if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+                    break;
             }
             if (compression == ZipCompression)
               status=ZLIBEncodeImage(image,length,image_info->quality,pixels);
@@ -1299,7 +1302,8 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
               }
               if (image->previous == (Image *) NULL)
                 if (QuantumTick(y,image->rows))
-                  MagickMonitor(SaveImageText,y,image->rows);
+                  if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+                    break;
             }
             Ascii85Flush(image);
             break;
@@ -1338,7 +1342,8 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                   *q++=indexes[x];
                 if (image->previous == (Image *) NULL)
                   if (QuantumTick(y,image->rows))
-                    MagickMonitor(SaveImageText,y,image->rows);
+                    if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+                      break;
               }
               if (compression == ZipCompression)
                 status=ZLIBEncodeImage(image,length,image_info->quality,pixels);
@@ -1372,7 +1377,8 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                   Ascii85Encode(image,indexes[x]);
                 if (image->previous == (Image *) NULL)
                   if (QuantumTick(y,image->rows))
-                    MagickMonitor(SaveImageText,y,image->rows);
+                    if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+                      break;
               }
               Ascii85Flush(image);
               break;
@@ -1831,7 +1837,8 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     if (image->next == (Image *) NULL)
       break;
     image=GetNextImage(image);
-    MagickMonitor(SaveImagesText,scene++,GetImageListSize(image));
+    if (!MagickMonitor(SaveImagesText,scene++,GetImageListSize(image),&image->exception))
+      break;
   } while (image_info->adjoin);
   if (image_info->adjoin)
     while (image->previous != (Image *) NULL)

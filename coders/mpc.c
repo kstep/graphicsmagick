@@ -822,7 +822,8 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
             return((Image *) NULL);
           }
         image=image->next;
-        MagickMonitor(LoadImagesText,TellBlob(image),GetBlobSize(image));
+        if (!MagickMonitor(LoadImagesText,TellBlob(image),GetBlobSize(image),exception))
+          break;
       }
   } while (c != EOF);
   while (image->previous != (Image *) NULL)
@@ -1258,7 +1259,8 @@ static unsigned int WriteMPCImage(const ImageInfo *image_info,Image *image)
     if (image->next == (Image *) NULL)
       break;
     image=GetNextImage(image);
-    MagickMonitor(SaveImagesText,scene++,GetImageListSize(image));
+    if (!MagickMonitor(SaveImagesText,scene++,GetImageListSize(image),&image->exception))
+      break;
   } while (image_info->adjoin);
   if (image_info->adjoin)
     while (image->previous != (Image *) NULL)

@@ -547,6 +547,7 @@ extern MagickExport unsigned int
   XGetWindowColor(Display *,XWindows *,char *),
   XMakeImage(Display *,const XResourceInfo *,XWindowInfo *,Image *,
     unsigned int,unsigned int),
+  XMagickMonitor(const char *,const off_t,const size_t,ExceptionInfo *),
   XQueryColorDatabase(const char *,XColor *);
 
 extern MagickExport void
@@ -580,7 +581,6 @@ extern MagickExport void
     XStandardColormap *,XPixelInfo *),
   XMakeWindow(Display *,Window,char **,int,XClassHint *,XWMHints *,
     XWindowInfo *),
-  XMagickMonitor(const char *,const off_t,const size_t),
   XQueryPosition(Display *,const Window,int *,int *),
   XRefreshWindow(Display *,const XWindowInfo *,const XEvent *),
   XRemoteCommand(Display *,const char *,const char *),

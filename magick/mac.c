@@ -1224,7 +1224,8 @@ MagickExport Image *ReadPICTImage(const ImageInfo *image_info,
     if (!SyncImagePixels(image))
       break;
     if (QuantumTick(y,image->rows))
-      MagickMonitor(LoadImageText,y,image->rows);
+      if (!MagickMonitor(LoadImageText,y,image->rows,&image->exception))
+        break;
   }
   UnlockPixels(GetGWorldPixMap(graphic_world));
   SetGWorld(port,device);

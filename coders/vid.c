@@ -176,7 +176,8 @@ static Image *ReadVIDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
       }
     (void) SetMonitorHandler(handler);
-    MagickMonitor(LoadImageText,i,number_files);
+    if (!MagickMonitor(LoadImageText,i,number_files,&image->exception))
+      break;
   }
   DestroyImageInfo(clone_info);
   LiberateMemory((void **) &filelist);

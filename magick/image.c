@@ -492,7 +492,8 @@ MagickExport Image *AppendImages(const Image *image,const unsigned int stack,
           SetImageType(append_image,TrueColorType);
         (void) CompositeImage(append_image,CopyCompositeOp,next,0,y);
         y+=next->rows;
-        MagickMonitor(AppendImageText,scene,GetImageListSize(image));
+        if (!MagickMonitor(AppendImageText,scene,GetImageListSize(image),exception))
+          break;
         scene++;
       }
       return(append_image);
@@ -507,7 +508,8 @@ MagickExport Image *AppendImages(const Image *image,const unsigned int stack,
       SetImageType(append_image,TrueColorType);
     (void) CompositeImage(append_image,CopyCompositeOp,next,x,0);
     x+=next->columns;
-    MagickMonitor(AppendImageText,scene++,GetImageListSize(image));
+    if (!MagickMonitor(AppendImageText,scene++,GetImageListSize(image),exception))
+      break;
   }
   return(append_image);
 }
@@ -651,7 +653,8 @@ MagickExport Image *AverageImages(const Image *image,ExceptionInfo *exception)
     if (!SyncImagePixels(average_image))
       break;
     if (QuantumTick(y,average_image->rows))
-      MagickMonitor(AverageImageText,y,average_image->rows);
+      if (!MagickMonitor(AverageImageText,y,average_image->rows,exception))
+        break;
   }
   LiberateMemory((void **) &pixels);
   return(average_image);
@@ -800,7 +803,8 @@ MagickExport unsigned int ChannelImage(Image *image,const ChannelType channel)
     if (!SyncImagePixels(image))
       break;
     if (QuantumTick(y,image->rows))
-      MagickMonitor(ChannelImageText,y,image->rows);
+      if (!MagickMonitor(ChannelImageText,y,image->rows,&image->exception))
+        break;
   }
   return(True);
 }
@@ -2599,7 +2603,8 @@ MagickExport unsigned int GradientImage(Image *image,
     if (!SyncImagePixels(image))
       break;
     if (QuantumTick(y,image->rows))
-      MagickMonitor(LoadImageText,y,image->rows);
+      if (!MagickMonitor(LoadImageText,y,image->rows,&image->exception))
+        break;
   }
   return(True);
 }
@@ -4830,7 +4835,8 @@ MagickExport unsigned int MogrifyImages(const ImageInfo *image_info,
       DescribeImage(image,stdout,False);
     PushImageList(&mogrify_images,image,&image->exception);
     DestroyImage(image);
-    MagickMonitor(MogrifyImageText,i,number_images);
+    if (!MagickMonitor(MogrifyImageText,i,number_images,&image->exception))
+      break;
   }
   /*
     Apply options to the entire image list.
@@ -5696,7 +5702,8 @@ MagickExport unsigned int RGBTransformImage(Image *image,
         if (!SyncImagePixels(image))
           break;
         if (QuantumTick(y,image->rows))
-          MagickMonitor(RGBTransformImageText,y,image->rows);
+          if (!MagickMonitor(RGBTransformImageText,y,image->rows,&image->exception))
+            break;
       }
       break;
     }
@@ -6742,7 +6749,8 @@ MagickExport void TextureImage(Image *image,const Image *texture)
     for (x=0; x < (long) image->columns; x+=texture->columns)
       (void) CompositeImage(image,CopyCompositeOp,texture,x,y);
     if (QuantumTick(y,image->rows))
-      MagickMonitor(TextureImageText,y,image->rows);
+      if (!MagickMonitor(TextureImageText,y,image->rows,&image->exception))
+        break;
   }
 }
 
@@ -7200,7 +7208,8 @@ MagickExport unsigned int TransformRGBImage(Image *image,
         if (!SyncImagePixels(image))
           break;
         if (QuantumTick(y,image->rows))
-          MagickMonitor(TransformRGBImageText,y,image->rows);
+          if (!MagickMonitor(TransformRGBImageText,y,image->rows,&image->exception))
+            break;
       }
       break;
     }

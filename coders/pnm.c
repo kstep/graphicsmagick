@@ -390,7 +390,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
-              MagickMonitor(LoadImageText,y,image->rows);
+              if (!MagickMonitor(LoadImageText,y,image->rows,&image->exception))
+                break;
         }
         break;
       }
@@ -427,7 +428,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
-              MagickMonitor(LoadImageText,y,image->rows);
+              if (!MagickMonitor(LoadImageText,y,image->rows,&image->exception))
+                break;
         }
         break;
       }
@@ -461,7 +463,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
-              MagickMonitor(LoadImageText,y,image->rows);
+              if (!MagickMonitor(LoadImageText,y,image->rows,&image->exception))
+                break;
         }
         break;
       }
@@ -498,7 +501,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
-              MagickMonitor(LoadImageText,y,image->rows);
+              if (!MagickMonitor(LoadImageText,y,image->rows,&image->exception))
+                break;
         }
         if (EOFBlob(image))
           ThrowReaderException(CorruptImageError,"Unexpected end-of-file",
@@ -558,7 +562,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
-              MagickMonitor(LoadImageText,y,image->rows);
+              if (!MagickMonitor(LoadImageText,y,image->rows,&image->exception))
+                break;
         }
         LiberateMemory((void **) &pixels);
         if (EOFBlob(image))
@@ -627,7 +632,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
-              MagickMonitor(LoadImageText,y,image->rows);
+              if (!MagickMonitor(LoadImageText,y,image->rows,&image->exception))
+                break;
         }
         LiberateMemory((void **) &pixels);
         handler=SetMonitorHandler((MonitorHandler) NULL);
@@ -671,7 +677,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             return((Image *) NULL);
           }
         image=image->next;
-        MagickMonitor(LoadImagesText,TellBlob(image),GetBlobSize(image));
+        if (!MagickMonitor(LoadImagesText,TellBlob(image),GetBlobSize(image),exception))
+          break;
       }
   } while ((count != 0) && (format == 'P'));
   while (image->previous != (Image *) NULL)
@@ -934,7 +941,8 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
           }
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
-              MagickMonitor(SaveImageText,y,image->rows);
+              if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+                break;
         }
         if (i != 0)
           (void) WriteBlobByte(image,'\n');
@@ -973,7 +981,8 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
           }
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
-              MagickMonitor(SaveImageText,y,image->rows);
+              if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+                break;
         }
         if (i != 0)
           (void) WriteBlobByte(image,'\n');
@@ -1013,7 +1022,8 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
           }
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
-              MagickMonitor(SaveImageText,y,image->rows);
+              if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+                break;
         }
         if (i != 0)
           (void) WriteBlobByte(image,'\n');
@@ -1060,7 +1070,8 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
             (void) WriteBlobByte(image,byte << (8-bit));
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
-              MagickMonitor(SaveImageText,y,image->rows);
+              if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+                break;
         }
         break;
       }
@@ -1094,7 +1105,8 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
             }
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
-              MagickMonitor(SaveImageText,y,image->rows);
+              if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+                break;
         }
         break;
       }
@@ -1152,7 +1164,8 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
           (void) WriteBlob(image,q-pixels,(char *) pixels);
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
-              MagickMonitor(SaveImageText,y,image->rows);
+              if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+                break;
         }
         LiberateMemory((void **) &pixels);
         break;
@@ -1265,7 +1278,8 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
           if (i == 2)
             i=0;
           if (QuantumTick(y,image->rows))
-            MagickMonitor(SaveImageText,y,image->rows);
+            if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+              break;
         }
         /*
           Free allocated memory.
@@ -1283,7 +1297,8 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
     if (image->next == (Image *) NULL)
       break;
     image=GetNextImage(image);
-    MagickMonitor(SaveImagesText,scene++,GetImageListSize(image));
+    if (!MagickMonitor(SaveImagesText,scene++,GetImageListSize(image),&image->exception))
+      break;
   } while (image_info->adjoin);
   if (image_info->adjoin)
     while (image->previous != (Image *) NULL)

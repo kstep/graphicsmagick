@@ -210,7 +210,8 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         if (number_files <= 5)
           continue;
         (void) SetMonitorHandler(handler);
-        MagickMonitor(LoadImageText,i,number_files);
+        if (!MagickMonitor(LoadImageText,i,number_files,&image->exception))
+          break;
       }
       DestroyExceptionInfo(&exception);
       DestroyImageInfo(clone_info);

@@ -336,7 +336,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   FormatString(command,delegate_info->commands,image_info->antialias ? 4 : 1,
     image_info->antialias ? 4 : 1,geometry,density,options,image_info->filename,
     postscript_filename);
-  MagickMonitor(RenderPostscriptText,0,8);
+  (void) MagickMonitor(RenderPostscriptText,0,8,&image->exception);
   status=InvokePostscriptDelegate(image_info->verbose,command);
   if (!IsAccessible(image_info->filename))
     {
@@ -351,7 +351,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
       status=InvokePostscriptDelegate(image_info->verbose,command);
     }
   (void) remove(postscript_filename);
-  MagickMonitor(RenderPostscriptText,7,8);
+  (void) MagickMonitor(RenderPostscriptText,7,8,&image->exception);
   if (status)
     {
       /*
@@ -1150,7 +1150,8 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
               }
               if (image->previous == (Image *) NULL)
                 if (QuantumTick(y,image->rows))
-                  MagickMonitor(SaveImageText,y,image->rows);
+                  if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+                    break;
             }
           }
         else
@@ -1211,7 +1212,8 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                 };
               if (image->previous == (Image *) NULL)
                 if (QuantumTick(y,image->rows))
-                  MagickMonitor(SaveImageText,y,image->rows);
+                  if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+                    break;
             }
           }
         if (count != 0)
@@ -1267,7 +1269,8 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                 WriteRunlengthPacket(image,pixel,length,p);
                 if (image->previous == (Image *) NULL)
                   if (QuantumTick(y,image->rows))
-                    MagickMonitor(SaveImageText,y,image->rows);
+                    if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+                      break;
               }
               break;
             }
@@ -1303,7 +1306,8 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                 }
                 if (image->previous == (Image *) NULL)
                   if (QuantumTick(y,image->rows))
-                    MagickMonitor(SaveImageText,y,image->rows);
+                    if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+                      break;
               }
               break;
             }
@@ -1378,7 +1382,8 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                 (void) WriteBlobString(image,buffer);
                 if (image->previous == (Image *) NULL)
                   if (QuantumTick(y,image->rows))
-                    MagickMonitor(SaveImageText,y,image->rows);
+                    if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+                      break;
               }
               break;
             }
@@ -1410,7 +1415,8 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                 }
                 if (image->previous == (Image *) NULL)
                   if (QuantumTick(y,image->rows))
-                    MagickMonitor(SaveImageText,y,image->rows);
+                    if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+                      break;
               }
               break;
             }
@@ -1423,7 +1429,8 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
     if (image->next == (Image *) NULL)
       break;
     image=GetNextImage(image);
-    MagickMonitor(SaveImagesText,scene++,GetImageListSize(image));
+    if (!MagickMonitor(SaveImagesText,scene++,GetImageListSize(image),&image->exception))
+      break;
   } while (image_info->adjoin);
   if (image_info->adjoin)
     while (image->previous != (Image *) NULL)

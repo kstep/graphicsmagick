@@ -851,7 +851,8 @@ MagickExport unsigned long GetNumberColors(const Image *image,FILE *file,
       p++;
     }
     if (QuantumTick(y,image->rows))
-      MagickMonitor(ComputeImageColorsText,y,image->rows);
+      if (!MagickMonitor(ComputeImageColorsText,y,image->rows,exception))
+        break;
   }
   if (file != (FILE *) NULL)
     {
@@ -930,8 +931,7 @@ static void Histogram(const Image *image,CubeInfo *cube_info,
         p++;
       }
       if (QuantumTick(cube_info->progress,cube_info->colors))
-        MagickMonitor(HistogramImageText,cube_info->progress,
-          cube_info->colors);
+        MagickMonitor(HistogramImageText,cube_info->progress,cube_info->colors,exception);
       cube_info->progress++;
     }
 }

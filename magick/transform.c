@@ -187,7 +187,8 @@ MagickExport Image *ChopImage(const Image *image,const RectangleInfo *chop_info,
     if (!SyncImagePixels(chop_image))
       break;
     if (QuantumTick(y,image->rows))
-      MagickMonitor(ChopImageText,y,image->rows);
+      if (!MagickMonitor(ChopImageText,y,image->rows,exception))
+        break;
   }
   /*
     Extract chop image.
@@ -216,7 +217,8 @@ MagickExport Image *ChopImage(const Image *image,const RectangleInfo *chop_info,
     if (!SyncImagePixels(chop_image))
       break;
     if (QuantumTick(i,image->rows))
-      MagickMonitor(ChopImageText,i,image->rows);
+      if (!MagickMonitor(ChopImageText,i,image->rows,exception))
+        break;
   }
   return(chop_image);
 }
@@ -447,7 +449,8 @@ MagickExport Image *CropImage(const Image *image,const RectangleInfo *geometry,
     if (!SyncImagePixels(crop_image))
       break;
     if (QuantumTick(y,crop_image->rows))
-      MagickMonitor(CropImageText,y,crop_image->rows-1);
+      if (!MagickMonitor(CropImageText,y,crop_image->rows-1,exception))
+        break;
   }
   if (y < (long) crop_image->rows)
     {
@@ -785,7 +788,8 @@ MagickExport Image *FlipImage(const Image *image,ExceptionInfo *exception)
     if (status == False)
       break;
     if (QuantumTick(y,flip_image->rows))
-      MagickMonitor(FlipImageText,y,flip_image->rows);
+      if (!MagickMonitor(FlipImageText,y,flip_image->rows,exception))
+        break;
   }
   return(flip_image);
 }
@@ -877,7 +881,8 @@ MagickExport Image *FlopImage(const Image *image,ExceptionInfo *exception)
     if (status == False)
       break;
     if (QuantumTick(y,flop_image->rows))
-      MagickMonitor(FlopImageText,y,flop_image->rows);
+      if (!MagickMonitor(FlopImageText,y,flop_image->rows,exception))
+        break;
   }
   return(flop_image);
 }
@@ -968,7 +973,8 @@ MagickExport Image *MosaicImages(const Image *image,ExceptionInfo *exception)
   {
     (void) CompositeImage(mosaic_image,CopyCompositeOp,next,next->page.x,
       next->page.y);
-    MagickMonitor(MosaicImageText,scene++,GetImageListSize(image));
+    if (!MagickMonitor(MosaicImageText,scene++,GetImageListSize(image),exception))
+      break;
   }
   return(mosaic_image);
 }
@@ -1359,7 +1365,8 @@ MagickExport Image *RollImage(const Image *image,const long x_offset,
         break;
     }
     if (QuantumTick(y,image->rows))
-      MagickMonitor(RollImageText,y,image->rows);
+      if (!MagickMonitor(RollImageText,y,image->rows,exception))
+        break;
   }
   return(roll_image);
 }

@@ -753,7 +753,8 @@ static unsigned int WritePICONImage(const ImageInfo *image_info,Image *image)
       (y == (long) (picon->rows-1) ? "" : ","));
     (void) WriteBlobString(image,buffer);
     if (QuantumTick(y,picon->rows))
-      MagickMonitor(SaveImageText,y,picon->rows);
+      if (!MagickMonitor(SaveImageText,y,picon->rows,&image->exception))
+        break;
   }
   DestroyImage(picon);
   (void) WriteBlobString(image,"};\n");
@@ -972,7 +973,8 @@ static unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
       (y == (long) (image->rows-1) ? "" : ","));
     (void) WriteBlobString(image,buffer);
     if (QuantumTick(y,image->rows))
-      MagickMonitor(SaveImageText,y,image->rows);
+      if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+        break;
   }
   (void) WriteBlobString(image,"};\n");
   CloseBlob(image);

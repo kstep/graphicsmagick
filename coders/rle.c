@@ -449,7 +449,8 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
-              MagickMonitor(LoadImageText,y,image->rows);
+              if (!MagickMonitor(LoadImageText,y,image->rows,&image->exception))
+                break;
         }
       }
     else
@@ -500,7 +501,8 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 break;
               if (image->previous == (Image *) NULL)
                 if (QuantumTick(y,image->rows))
-                  MagickMonitor(LoadImageText,y,image->rows);
+                  if (!MagickMonitor(LoadImageText,y,image->rows,&image->exception))
+                    break;
             }
             SyncImage(image);
           }
@@ -526,7 +528,8 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 break;
               if (image->previous == (Image *) NULL)
                 if (QuantumTick(y,image->rows))
-                  MagickMonitor(LoadImageText,y,image->rows);
+                  if (!MagickMonitor(LoadImageText,y,image->rows,&image->exception))
+                    break;
             }
             LiberateMemory((void **) &image->colormap);
             image->colormap=(PixelPacket *) NULL;
@@ -559,7 +562,8 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
             return((Image *) NULL);
           }
         image=image->next;
-        MagickMonitor(LoadImagesText,TellBlob(image),GetBlobSize(image));
+        if (!MagickMonitor(LoadImagesText,TellBlob(image),GetBlobSize(image),exception))
+          break;
       }
   } while ((count != 0) && (memcmp(magick,"\122\314",2) == 0));
   while (image->previous != (Image *) NULL)

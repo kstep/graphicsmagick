@@ -380,7 +380,8 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (!SyncImagePixels(image))
             break;
           if (QuantumTick(y,image->rows))
-            MagickMonitor(LoadImageText,y,image->rows);
+            if (!MagickMonitor(LoadImageText,y,image->rows,&image->exception))
+              break;
         }
       else
         for (y=0; y < (long) image->rows; y++)
@@ -402,7 +403,8 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (!SyncImagePixels(image))
             break;
           if (QuantumTick(y,image->rows))
-            MagickMonitor(LoadImageText,y,image->rows);
+            if (!MagickMonitor(LoadImageText,y,image->rows,&image->exception))
+              break;
         }
       break;
     }
@@ -440,7 +442,8 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (!SyncImagePixels(image))
           break;
         if (QuantumTick(y,image->rows))
-          MagickMonitor(LoadImageText,y,image->rows);
+          if (!MagickMonitor(LoadImageText,y,image->rows,&image->exception))
+            break;
       }
       break;
     }

@@ -421,7 +421,8 @@ MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
     if (!SyncImagePixels(magnify_image))
       break;
     if (QuantumTick(y,image->rows))
-      MagickMonitor(MagnifyImageText,y,image->rows);
+      if (!MagickMonitor(MagnifyImageText,y,image->rows,exception))
+        break;
   }
   p=GetImagePixels(magnify_image,0,(long) (2*image->rows-2),
     magnify_image->columns,1);
@@ -538,7 +539,8 @@ MagickExport Image *MinifyImage(const Image *image,ExceptionInfo *exception)
     if (!SyncImagePixels(minify_image))
       break;
     if (QuantumTick(y,image->rows))
-      MagickMonitor(MinifyImageText,y,minify_image->rows);
+      if (!MagickMonitor(MinifyImageText,y,minify_image->rows,exception))
+        break;
   }
   return(minify_image);
 }
@@ -864,7 +866,8 @@ static unsigned int HorizontalFilter(const Image *source,Image *destination,
     if (!SyncImagePixels(destination))
       break;
     if (QuantumTick(*quantum,span))
-      MagickMonitor(ResizeImageText,*quantum,span);
+      if (!MagickMonitor(ResizeImageText,*quantum,span,exception))
+        break;
     (*quantum)++;
   }
   return(x == (long) destination->columns);
@@ -986,7 +989,8 @@ static unsigned int VerticalFilter(const Image *source,Image *destination,
     if (!SyncImagePixels(destination))
       break;
     if (QuantumTick(*quantum,span))
-      MagickMonitor(ResizeImageText,*quantum,span);
+      if (!MagickMonitor(ResizeImageText,*quantum,span,exception))
+        break;
     (*quantum)++;
   }
   return(y == (long) destination->rows);
@@ -1265,7 +1269,8 @@ MagickExport Image *SampleImage(const Image *image,const unsigned long columns,
     if (!SyncImagePixels(sample_image))
       break;
     if (QuantumTick(y,sample_image->rows))
-      MagickMonitor(SampleImageText,y,sample_image->rows);
+      if (!MagickMonitor(SampleImageText,y,sample_image->rows,exception))
+        break;
   }
   LiberateMemory((void **) &y_offset);
   LiberateMemory((void **) &x_offset);
@@ -1606,7 +1611,8 @@ MagickExport Image *ScaleImage(const Image *image,const unsigned long columns,
     if (!SyncImagePixels(scale_image))
       break;
     if (QuantumTick(y,scale_image->rows))
-      MagickMonitor(ScaleImageText,y,scale_image->rows);
+      if (!MagickMonitor(ScaleImageText,y,scale_image->rows,exception))
+        break;
   }
   /*
     Free allocated memory.

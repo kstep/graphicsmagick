@@ -333,7 +333,7 @@ static Image *ReadEPTImage(const ImageInfo *image_info,
   FormatString(command,delegate_info->commands,image_info->antialias ? 4 : 1,
     image_info->antialias ? 4 : 1,geometry,density,options,image_info->filename,
     postscript_filename);
-  MagickMonitor(RenderPostscriptText,0,8);
+  (void) MagickMonitor(RenderPostscriptText,0,8,&image->exception);
   status=InvokePostscriptDelegate(image_info->verbose,command);
   if (!IsAccessible(image_info->filename))
     {
@@ -348,7 +348,7 @@ static Image *ReadEPTImage(const ImageInfo *image_info,
       status=InvokePostscriptDelegate(image_info->verbose,command);
     }
   (void) remove(postscript_filename);
-  MagickMonitor(RenderPostscriptText,7,8);
+  (void) MagickMonitor(RenderPostscriptText,7,8,&image->exception);
   if (status)
     {
       /*

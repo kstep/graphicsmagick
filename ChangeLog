@@ -1,3 +1,6 @@
+2002-09-21  Cristy  <cristy@mystic.es.dupont.com>
+  * Added 'exception' parameter to the ImageMagick progress monitor API.
+
 2002-09-21  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
   * The xcf decoder would sometimes create artifacts when reading RLE-encoded
     grayscale images, due to the green and blue samples not being defined.

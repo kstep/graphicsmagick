@@ -316,7 +316,8 @@ static unsigned int WriteHISTOGRAMImage(const ImageInfo *image_info,
     if (!SyncImagePixels(histogram_image))
       break;
     if (QuantumTick(x,histogram_image->columns))
-      MagickMonitor(SaveImageText,x,histogram_image->columns);
+      if (!MagickMonitor(SaveImageText,x,histogram_image->columns,&image->exception))
+        break;
   }
   /*
     Free memory resources.

@@ -559,7 +559,8 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
     (void) SetMonitorHandler(handler);
     PushImageList(&images,preview_image,&image->exception);
     DestroyImage(preview_image);
-    MagickMonitor(PreviewImageText,i,NumberTiles);
+    if (!MagickMonitor(PreviewImageText,i,NumberTiles,&image->exception))
+      break;
   }
   DestroyImageInfo(clone_info);
   if (images == (Image *) NULL)

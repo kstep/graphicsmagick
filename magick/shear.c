@@ -355,7 +355,8 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
         if (!SyncImagePixels(rotate_image))
           break;
         if (QuantumTick(y,image->rows))
-          MagickMonitor(RotateImageText,y,image->rows);
+          if (!MagickMonitor(RotateImageText,y,image->rows,exception))
+            break;
       }
       break;
     }
@@ -381,7 +382,8 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
         if (!SyncImagePixels(rotate_image))
           break;
         if (QuantumTick(y,image->rows))
-          MagickMonitor(RotateImageText,y,image->rows);
+          if (!MagickMonitor(RotateImageText,y,image->rows,exception))
+            break;
       }
       Swap(page.width,page.height);
       Swap(page.x,page.y);
@@ -412,7 +414,8 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
         if (!SyncImagePixels(rotate_image))
           break;
         if (QuantumTick(y,image->rows))
-          MagickMonitor(RotateImageText,y,image->rows);
+          if (!MagickMonitor(RotateImageText,y,image->rows,exception))
+            break;
       }
       page.x=(long) (page.width-rotate_image->columns-page.x);
       page.y=(long) (page.height-rotate_image->rows-page.y);
@@ -441,7 +444,8 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
         if (!SyncImagePixels(rotate_image))
           break;
         if (QuantumTick(y,image->rows))
-          MagickMonitor(RotateImageText,y,image->rows);
+          if (!MagickMonitor(RotateImageText,y,image->rows,exception))
+            break;
       }
       Swap(page.width,page.height);
       Swap(page.x,page.y);
@@ -662,7 +666,8 @@ static void XShearImage(Image *image,const double degrees,
     if (!SyncImagePixels(image))
       break;
     if (QuantumTick(y,height))
-      MagickMonitor(XShearImageText,y,height);
+      if (!MagickMonitor(XShearImageText,y,height,&image->exception))
+        break;
   }
 }
 
@@ -853,7 +858,8 @@ static void YShearImage(Image *image,const double degrees,
     if (!SyncImagePixels(image))
       break;
     if (QuantumTick(y,width))
-      MagickMonitor(YShearImageText,y,width);
+      if (!MagickMonitor(YShearImageText,y,width,&image->exception))
+        break;
   }
 }
 

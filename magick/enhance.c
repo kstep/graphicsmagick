@@ -128,9 +128,13 @@ MagickExport unsigned int ContrastImage(Image *image,const unsigned int sharpen)
         if (QuantumTick(y,image->rows))
           {
             if (sharpen)
-              MagickMonitor(SharpenContrastImageText,y,image->rows);
+              {
+                if (!MagickMonitor(SharpenContrastImageText,y,image->rows,&image->exception))
+                  break;
+              }
             else
-              MagickMonitor(DullContrastImageText,y,image->rows);
+              if (!MagickMonitor(DullContrastImageText,y,image->rows,&image->exception))
+                break;
           }
       }
       break;
@@ -293,7 +297,8 @@ MagickExport unsigned int EqualizeImage(Image *image)
         if (!SyncImagePixels(image))
           break;
         if (QuantumTick(y,image->rows))
-          MagickMonitor(EqualizeImageText,y,image->rows);
+          if (!MagickMonitor(EqualizeImageText,y,image->rows,&image->exception))
+            break;
       }
       break;
     }
@@ -433,7 +438,8 @@ MagickExport unsigned int GammaImage(Image *image,const char *level)
         if (!SyncImagePixels(image))
           break;
         if (QuantumTick(y,image->rows))
-          MagickMonitor(GammaImageText,y,image->rows);
+          if (!MagickMonitor(GammaImageText,y,image->rows,&image->exception))
+            break;
       }
       break;
     }
@@ -572,7 +578,8 @@ MagickExport unsigned int LevelImage(Image *image,const char *levels)
         if (!SyncImagePixels(image))
           break;
         if (QuantumTick(y,image->rows))
-          MagickMonitor(GammaImageText,y,image->rows);
+          if (!MagickMonitor(GammaImageText,y,image->rows,&image->exception))
+            break;
       }
       break;
     }
@@ -678,7 +685,8 @@ MagickExport unsigned int ModulateImage(Image *image,const char *modulate)
         if (!SyncImagePixels(image))
           break;
         if (QuantumTick(y,image->rows))
-          MagickMonitor(ModulateImageText,y,image->rows);
+          if (!MagickMonitor(ModulateImageText,y,image->rows,&image->exception))
+            break;
       }
       break;
     }
@@ -769,7 +777,8 @@ MagickExport unsigned int NegateImage(Image *image,const unsigned int grayscale)
         if (!SyncImagePixels(image))
           break;
         if (QuantumTick(y,image->rows))
-          MagickMonitor(NegateImageText,y,image->rows);
+          if (!MagickMonitor(NegateImageText,y,image->rows,&image->exception))
+            break;
       }
       break;
     }
@@ -1099,7 +1108,8 @@ MagickExport unsigned int NormalizeImage(Image *image)
         if (!SyncImagePixels(image))
           break;
         if (QuantumTick(y,image->rows))
-          MagickMonitor(NormalizeImageText,y,image->rows);
+          if (!MagickMonitor(NormalizeImageText,y,image->rows,&image->exception))
+            break;
       }
       break;
     }

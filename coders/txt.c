@@ -209,7 +209,8 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     offset+=(long) (metrics.ascent-metrics.descent);
     if (image->previous == (Image *) NULL)
       if (QuantumTick(offset,image->rows))
-        MagickMonitor(LoadImageText,offset,image->rows);
+        if (!MagickMonitor(LoadImageText,offset,image->rows,&image->exception))
+          break;
     p=ReadBlobString(image,text);
     if ((offset < (long) image->rows) && (p != (char *) NULL))
       continue;
@@ -241,7 +242,8 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image=image->next;
     (void) strncpy(image->filename,filename,MaxTextExtent-1);
     SetImage(image,OpaqueOpacity);
-    MagickMonitor(LoadImagesText,TellBlob(image),GetBlobSize(image));
+    if (!MagickMonitor(LoadImagesText,TellBlob(image),GetBlobSize(image),exception))
+      break;
   }
   if (texture != (Image *) NULL)
     {
@@ -421,14 +423,16 @@ static unsigned int WriteTXTImage(const ImageInfo *image_info,Image *image)
         (void) WriteBlobByte(image,'\n');
         if (image->previous == (Image *) NULL)
           if (QuantumTick(y,image->rows))
-            MagickMonitor(SaveImageText,y,image->rows);
+            if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+              break;
         p++;
       }
     }
     if (image->next == (Image *) NULL)
       break;
     image=GetNextImage(image);
-    MagickMonitor(SaveImagesText,scene++,GetImageListSize(image));
+    if (!MagickMonitor(SaveImagesText,scene++,GetImageListSize(image),&image->exception))
+      break;
   } while (image_info->adjoin);
   if (image_info->adjoin)
     while (image->previous != (Image *) NULL)

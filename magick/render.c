@@ -3204,7 +3204,8 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       }
     if (primitive_info->text != (char *) NULL)
       LiberateMemory((void **) &primitive_info->text);
-    MagickMonitor(RenderImageText,q-primitive,(off_t) primitive_extent);
+    if (!MagickMonitor(RenderImageText,q-primitive,(off_t) primitive_extent,&image->exception))
+      break;
   }
   LogMagickEvent(RenderEvent,"end draw-image");
   /*
@@ -4583,7 +4584,8 @@ MagickExport unsigned int OpaqueImage(Image *image,const PixelPacket target,
         if (!SyncImagePixels(image))
           break;
         if (QuantumTick(y,image->rows))
-          MagickMonitor(OpaqueImageText,y,image->rows);
+          if (!MagickMonitor(OpaqueImageText,y,image->rows,&image->exception))
+            break;
       }
       break;
     }
@@ -4597,7 +4599,8 @@ MagickExport unsigned int OpaqueImage(Image *image,const PixelPacket target,
         if (FuzzyColorMatch(&image->colormap[i],&target,image->fuzz))
           image->colormap[i]=fill;
         if (QuantumTick(i,image->colors))
-          MagickMonitor(OpaqueImageText,i,image->colors);
+          if (!MagickMonitor(OpaqueImageText,i,image->colors,&image->exception))
+            break;
       }
       SyncImage(image);
       break;
@@ -5875,7 +5878,8 @@ MagickExport unsigned int TransparentImage(Image *image,
     if (!SyncImagePixels(image))
       break;
     if (QuantumTick(y,image->rows))
-      MagickMonitor(TransparentImageText,y,image->rows);
+      if (!MagickMonitor(TransparentImageText,y,image->rows,&image->exception))
+        break;
   }
   return(True);
 }

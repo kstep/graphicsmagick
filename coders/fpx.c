@@ -490,7 +490,8 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (!SyncImagePixels(image))
       break;
     if (QuantumTick(y,image->rows))
-      MagickMonitor(LoadImageText,y,image->rows);
+      if (!MagickMonitor(LoadImageText,y,image->rows,&image->exception))
+        break;
   }
   LiberateMemory((void **) &scanline);
   (void) FPX_CloseImage(flashpix);
@@ -1012,7 +1013,8 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
     if (fpx_status != FPX_OK)
       break;
     if (QuantumTick(y,image->rows))
-      MagickMonitor(SaveImageText,y,image->rows);
+      if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+        break;
   }
   if (image_info->view != (char *) NULL)
     {

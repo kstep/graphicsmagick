@@ -242,7 +242,8 @@ static Image *ReadSCTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if ((image->columns % 2) != 0)
       (void) ReadBlobByte(image);  /* pad */
     if (QuantumTick(y,image->rows))
-      MagickMonitor(LoadImageText,y,image->rows);
+      if (!MagickMonitor(LoadImageText,y,image->rows,&image->exception))
+        break;
   }
   if (EOFBlob(image))
     ThrowReaderException(CorruptImageError,"Unexpected end-of-file",image);

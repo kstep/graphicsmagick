@@ -281,7 +281,8 @@ static unsigned int DecodeImage(Image *image,unsigned char *luma,
         }
         length=pcd_length[plane];
         if (QuantumTick(row,image->rows))
-          MagickMonitor(DecodeImageText,row,image->rows);
+          if (!MagickMonitor(DecodeImageText,row,image->rows,&image->exception))
+            break;
         continue;
       }
     /*
@@ -639,7 +640,8 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
             image=image->next;
           }
         (void) SetMonitorHandler(handler);
-        MagickMonitor(LoadImageText,j-1,number_images);
+        if (!MagickMonitor(LoadImageText,j-1,number_images,&image->exception))
+          break;
       }
       LiberateMemory((void **) &chroma2);
       LiberateMemory((void **) &chroma1);
@@ -725,7 +727,8 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (!SyncImagePixels(image))
       break;
     if (QuantumTick(y,image->rows))
-      MagickMonitor(LoadImageText,y,image->rows);
+      if (!MagickMonitor(LoadImageText,y,image->rows,&image->exception))
+        break;
   }
   LiberateMemory((void **) &chroma2);
   LiberateMemory((void **) &chroma1);
@@ -971,7 +974,8 @@ static unsigned int WritePCDTile(const ImageInfo *image_info,Image *image,
       q++;
     }
     if (QuantumTick(y,tile_image->rows))
-      MagickMonitor(SaveImageText,y,tile_image->rows);
+      if (!MagickMonitor(SaveImageText,y,tile_image->rows,&image->exception))
+        break;
   }
   for (i=0; i < 0x800; i++)
     (void) WriteBlobByte(image,'\0');

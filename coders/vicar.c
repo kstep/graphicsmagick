@@ -282,7 +282,8 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
     if (!SyncImagePixels(image))
       break;
     if (QuantumTick(y,image->rows))
-      MagickMonitor(LoadImageText,y,image->rows);
+      if (!MagickMonitor(LoadImageText,y,image->rows,&image->exception))
+        break;
   }
   LiberateMemory((void **) &scanline);
   if (EOFBlob(image))
@@ -441,7 +442,8 @@ static unsigned int WriteVICARImage(const ImageInfo *image_info,Image *image)
     (void) WriteBlob(image,image->columns,scanline);
     if (image->previous == (Image *) NULL)
       if (QuantumTick(y,image->rows))
-        MagickMonitor(SaveImageText,y,image->rows);
+        if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+          break;
   }
   LiberateMemory((void **) &scanline);
   CloseBlob(image);

@@ -374,7 +374,8 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
     }
     if (QuantumTick(y,image->rows))
-      MagickMonitor(LoadImageText,y,image->rows);
+      if (!MagickMonitor(LoadImageText,y,image->rows,&image->exception))
+        break;
   }
   if (EOFBlob(image))
     ThrowReaderException(CorruptImageError,"Unexpected end-of-file",image);

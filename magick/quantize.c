@@ -299,7 +299,7 @@ static void
   DefineImageColormap(Image *,NodeInfo *),
   HilbertCurve(CubeInfo *,Image *,const unsigned long,const unsigned int),
   PruneLevel(CubeInfo *,const NodeInfo *),
-  ReduceImageColors(CubeInfo *,const unsigned long);
+  ReduceImageColors(CubeInfo *,const unsigned long,ExceptionInfo *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -439,7 +439,8 @@ static unsigned int AssignImageColors(CubeInfo *cube_info,Image *image)
       if (!SyncImagePixels(image))
         break;
       if (QuantumTick(y,image->rows))
-        MagickMonitor(AssignImageText,y,image->rows);
+        if (!MagickMonitor(AssignImageText,y,image->rows,&image->exception))
+          break;
     }
   if ((cube_info->quantize_info->number_colors == 2) &&
       (cube_info->quantize_info->colorspace == GRAYColorspace))
@@ -631,7 +632,8 @@ static unsigned int ClassifyImageColors(CubeInfo *cube_info,const Image *image,
       p+=count;
     }
     if (QuantumTick(y,image->rows))
-      MagickMonitor(ClassifyImageText,y,image->rows);
+      if (!MagickMonitor(ClassifyImageText,y,image->rows,exception))
+        break;
   }
   return(True);
 }
@@ -1843,7 +1845,8 @@ MagickExport unsigned int OrderedDitherImage(Image *image)
     if (!SyncImagePixels(image))
       break;
     if (QuantumTick(y,image->rows))
-      MagickMonitor(DitherImageText,y,image->rows);
+      if (!MagickMonitor(DitherImageText,y,image->rows,&image->exception))
+        break;
   }
   return(True);
 }
@@ -2025,7 +2028,7 @@ MagickExport unsigned int QuantizeImage(const QuantizeInfo *quantize_info,
       /*
         Reduce the number of colors in the image.
       */
-      ReduceImageColors(cube_info,number_colors);
+      ReduceImageColors(cube_info,number_colors,&image->exception);
       status=AssignImageColors(cube_info,image);
       if (quantize_info->colorspace != RGBColorspace)
         (void) TransformRGBImage(image,quantize_info->colorspace);
@@ -2154,14 +2157,15 @@ MagickExport unsigned int QuantizeImages(const QuantizeInfo *quantize_info,
       break;
     image=image->next;
     (void) SetMonitorHandler(handler);
-    MagickMonitor(ClassifyImageText,i,number_images);
+    if (!MagickMonitor(ClassifyImageText,i,number_images,&image->exception))
+      break;
   }
   if (status != False)
     {
       /*
         Reduce the number of colors in an image sequence.
       */
-      ReduceImageColors(cube_info,number_colors);
+      ReduceImageColors(cube_info,number_colors,&image->exception);
       image=images;
       for (i=0; image != (Image *) NULL; i++)
       {
@@ -2173,7 +2177,8 @@ MagickExport unsigned int QuantizeImages(const QuantizeInfo *quantize_info,
           (void) TransformRGBImage(image,quantize_info->colorspace);
         image=image->next;
         (void) SetMonitorHandler(handler);
-        MagickMonitor(AssignImageText,i,number_images);
+        if (!MagickMonitor(AssignImageText,i,number_images,&image->exception))
+          break;
       }
     }
   DestroyCubeInfo(cube_info);
@@ -2277,7 +2282,8 @@ static void Reduce(CubeInfo *cube_info,const NodeInfo *node_info)
 %
 %  The format of the ReduceImageColors method is:
 %
-%      ReduceImageColors(CubeInfo *cube_info,const unsigned int number_colors)
+%      ReduceImageColors(CubeInfo *cube_info,const unsigned int number_colors,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
@@ -2288,10 +2294,11 @@ static void Reduce(CubeInfo *cube_info,const NodeInfo *node_info)
 %      colors allocated to the colormap may be less than this value, but
 %      never more.
 %
+%    o exception: Return any errors or warnings in this structure.
 %
 */
 static void ReduceImageColors(CubeInfo *cube_info,
-  const unsigned long number_colors)
+  const unsigned long number_colors,ExceptionInfo *exception)
 {
 #define ReduceImageText  "  Reducing image colors...  "
 
@@ -2306,6 +2313,7 @@ static void ReduceImageColors(CubeInfo *cube_info,
     cube_info->next_threshold=cube_info->root->quantize_error-1;
     cube_info->colors=0;
     Reduce(cube_info,cube_info->root);
-    MagickMonitor(ReduceImageText,span-cube_info->colors,span-number_colors+1);
+    if (!MagickMonitor(ReduceImageText,span-cube_info->colors,span-number_colors+1,exception))
+      break;
   }
 }

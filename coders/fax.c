@@ -322,7 +322,8 @@ static unsigned int WriteFAXImage(const ImageInfo *image_info,Image *image)
     if (image->next == (Image *) NULL)
       break;
     image=GetNextImage(image);
-    MagickMonitor(SaveImagesText,scene++,GetImageListSize(image));
+    if (!MagickMonitor(SaveImagesText,scene++,GetImageListSize(image),&image->exception))
+      break;
   } while (clone_info->adjoin);
   DestroyImageInfo(clone_info);
   if (image_info->adjoin)

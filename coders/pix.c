@@ -199,7 +199,8 @@ static Image *ReadPIXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (!SyncImagePixels(image))
         break;
       if (image->previous == (Image *) NULL)
-        MagickMonitor(LoadImageText,y,image->rows);
+        if (!MagickMonitor(LoadImageText,y,image->rows,&image->exception))
+          break;
     }
     if (image->storage_class == PseudoClass)
       SyncImage(image);
@@ -230,7 +231,8 @@ static Image *ReadPIXImage(const ImageInfo *image_info,ExceptionInfo *exception)
             return((Image *) NULL);
           }
         image=image->next;
-        MagickMonitor(LoadImagesText,TellBlob(image),GetBlobSize(image));
+        if (!MagickMonitor(LoadImagesText,TellBlob(image),GetBlobSize(image),exception))
+          break;
       }
   } while (status == True);
   while (image->previous != (Image *) NULL)

@@ -408,7 +408,8 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
       break;
     if (image->previous == (Image *) NULL)
       if (QuantumTick(y,image->rows))
-        MagickMonitor(LoadImageText,y,image->rows);
+        if (!MagickMonitor(LoadImageText,y,image->rows,&image->exception))
+          break;
   }
   for (i=0; i < (long) number_components; i++)
     jas_matrix_destroy(pixels[i]);
@@ -674,7 +675,8 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
         (unsigned int) image->columns,1,pixels[i]);
     if (image->previous == (Image *) NULL)
       if (QuantumTick(y,image->rows))
-        MagickMonitor(SaveImageText,y,image->rows);
+        if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+          break;
   }
   for (i=0; i < (long) number_components; i++)
     jas_matrix_destroy(pixels[i]);

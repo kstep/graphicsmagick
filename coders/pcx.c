@@ -571,7 +571,8 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
         break;
       if (image->previous == (Image *) NULL)
         if (QuantumTick(y,image->rows))
-          MagickMonitor(LoadImageText,y,image->rows);
+          if (!MagickMonitor(LoadImageText,y,image->rows,&image->exception))
+            break;
     }
     if (image->storage_class == PseudoClass)
       SyncImage(image);
@@ -603,7 +604,8 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
             return((Image *) NULL);
           }
         image=image->next;
-        MagickMonitor(LoadImagesText,TellBlob(image),GetBlobSize(image));
+        if (!MagickMonitor(LoadImagesText,TellBlob(image),GetBlobSize(image),exception))
+          break;
       }
   }
   if (page_table != (off_t *) NULL)
@@ -909,7 +911,8 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
             }
           }
           if (QuantumTick(y,image->rows))
-            MagickMonitor(SaveImageText,y,image->rows);
+            if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+              break;
         }
       }
     else
@@ -925,7 +928,8 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
             *q++=indexes[x];
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
-              MagickMonitor(SaveImageText,y,image->rows);
+              if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+                break;
         }
       else
         {
@@ -968,7 +972,8 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
               *q++=byte << (8-bit);
             if (image->previous == (Image *) NULL)
               if (QuantumTick(y,image->rows))
-                MagickMonitor(SaveImageText,y,image->rows);
+                if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+                  break;
           }
         }
     /*
@@ -1005,7 +1010,8 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
           }
         (void) WriteBlobByte(image,previous);
         if (QuantumTick(y,image->rows))
-          MagickMonitor(SaveImageText,y,image->rows);
+          if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+            break;
       }
     }
     (void) WriteBlobByte(image,pcx_info.colormap_signature);
@@ -1015,7 +1021,8 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
     if (image->next == (Image *) NULL)
       break;
     image=GetNextImage(image);
-    MagickMonitor(SaveImagesText,scene++,GetImageListSize(image));
+    if (!MagickMonitor(SaveImagesText,scene++,GetImageListSize(image),&image->exception))
+      break;
     if (scene >= 1023)
       break;
   } while (image_info->adjoin);

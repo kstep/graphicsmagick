@@ -198,7 +198,8 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
-              MagickMonitor(LoadImageText,y,image->rows);
+              if (!MagickMonitor(LoadImageText,y,image->rows,&image->exception))
+                break;
         }
         count=image->tile_info.height-image->rows-image->tile_info.y;
         for (i=0; i < (long) count; i++)
@@ -235,7 +236,8 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
-              MagickMonitor(LoadImageText,y,image->rows);
+              if (!MagickMonitor(LoadImageText,y,image->rows,&image->exception))
+                break;
         }
         count=image->tile_info.height-image->rows-image->tile_info.y;
         for (i=0; i < (long) count; i++)
@@ -275,7 +277,8 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(i,span))
-              MagickMonitor(LoadImageText,i,span);
+              if (!MagickMonitor(LoadImageText,i,span,&image->exception))
+                break;
           i++;
         }
         count=image->tile_info.height-image->rows-image->tile_info.y;
@@ -302,7 +305,8 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(i,span))
-              MagickMonitor(LoadImageText,i,span);
+              if (!MagickMonitor(LoadImageText,i,span,&image->exception))
+                break;
           i++;
         }
         count=image->tile_info.height-image->rows-image->tile_info.y;
@@ -329,7 +333,8 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(i,span))
-              MagickMonitor(LoadImageText,i,span);
+              if (!MagickMonitor(LoadImageText,i,span,&image->exception))
+                break;
           i++;
         }
         count=image->tile_info.height-image->rows-image->tile_info.y;
@@ -364,7 +369,8 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 break;
               if (image->previous == (Image *) NULL)
                 if (QuantumTick(i,span))
-                  MagickMonitor(LoadImageText,i,span);
+                  if (!MagickMonitor(LoadImageText,i,span,&image->exception))
+                    break;
               i++;
             }
             count=image->tile_info.height-image->rows-image->tile_info.y;
@@ -400,7 +406,8 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
             return((Image *) NULL);
           }
         image=image->next;
-        MagickMonitor(LoadImagesText,TellBlob(image),GetBlobSize(image));
+        if (!MagickMonitor(LoadImagesText,TellBlob(image),GetBlobSize(image),exception))
+          break;
       }
   } while (count != 0);
   LiberateMemory((void **) &scanline);
@@ -584,7 +591,8 @@ static unsigned int WriteRGBImage(const ImageInfo *image_info,Image *image)
             }
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
-              MagickMonitor(SaveImageText,y,image->rows);
+              if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+                break;
         }
         break;
       }
@@ -610,7 +618,8 @@ static unsigned int WriteRGBImage(const ImageInfo *image_info,Image *image)
               (void) WriteBlob(image,image->columns,pixels);
             }
           if (QuantumTick(y,image->rows))
-            MagickMonitor(SaveImageText,y,image->rows);
+            if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
+              break;
         }
         break;
       }
@@ -643,7 +652,8 @@ static unsigned int WriteRGBImage(const ImageInfo *image_info,Image *image)
             if (status == False)
               ThrowWriterException(FileOpenError,"Unable to open file",image);
           }
-        MagickMonitor(SaveImageText,100,400);
+        if (!MagickMonitor(SaveImageText,100,400,&image->exception))
+          break;
         for (y=0; y < (long) image->rows; y++)
         {
           p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
@@ -660,7 +670,8 @@ static unsigned int WriteRGBImage(const ImageInfo *image_info,Image *image)
             if (status == False)
               ThrowWriterException(FileOpenError,"Unable to open file",image);
           }
-        MagickMonitor(SaveImageText,200,400);
+        if (!MagickMonitor(SaveImageText,200,400,&image->exception))
+          break;
         for (y=0; y < (long) image->rows; y++)
         {
           p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
@@ -671,7 +682,8 @@ static unsigned int WriteRGBImage(const ImageInfo *image_info,Image *image)
         }
         if (LocaleCompare(image_info->magick,"RGBA") == 0)
           {
-            MagickMonitor(SaveImageText,300,400);
+            if (!MagickMonitor(SaveImageText,300,400,&image->exception))
+              break;
             if (image_info->interlace == PartitionInterlace)
               {
                 CloseBlob(image);
@@ -694,14 +706,16 @@ static unsigned int WriteRGBImage(const ImageInfo *image_info,Image *image)
           }
         if (image_info->interlace == PartitionInterlace)
           (void) strncpy(image->filename,image_info->filename,MaxTextExtent-1);
-        MagickMonitor(SaveImageText,400,400);
+        if (!MagickMonitor(SaveImageText,400,400,&image->exception))
+          break;
         break;
       }
     }
     if (image->next == (Image *) NULL)
       break;
     image=GetNextImage(image);
-    MagickMonitor(SaveImagesText,scene++,GetImageListSize(image));
+    if (!MagickMonitor(SaveImagesText,scene++,GetImageListSize(image),&image->exception))
+      break;
   } while (image_info->adjoin);
   LiberateMemory((void **) &pixels);
   if (image_info->adjoin)
