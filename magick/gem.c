@@ -817,7 +817,7 @@ MagickExport double Permutate(const long n,const long k)
 */
 
 MagickExport inline PixelPacket AlphaComposite(const PixelPacket *p,
-  const Quantum alpha,const PixelPacket *q,const Quantum beta)
+  const unsigned long alpha,const PixelPacket *q,const unsigned long beta)
 {
   double
     gamma;
@@ -855,12 +855,12 @@ MagickExport inline unsigned int ColorMatch(const PixelPacket *color,
   return(False);
 }
 
-MagickExport inline Quantum Downscale(const Quantum quantum)
+MagickExport inline Quantum Downscale(const unsigned long quantum)
 {
 #if QuantumDepth == 8
-  return(quantum);
+  return((Quantum) quantum);
 #else
-  return(quantum/257);
+  return((Quantum) (quantum/257L));
 #endif
 }
 
@@ -869,30 +869,30 @@ MagickExport inline Quantum Intensity(const PixelPacket *pixel)
   return((9798L*pixel->red+19235L*pixel->green+3735L*pixel->blue)/32768L);
 }
 
-MagickExport inline Quantum Upscale(const Quantum quantum)
+MagickExport inline Quantum Upscale(const unsigned long quantum)
 {
 #if QuantumDepth == 8
-  return(quantum);
+  return((Quantum) quantum);
 #else
-  return(257*quantum);
+  return((Quantum) (257L*quantum));
 #endif
 }
 
-MagickExport inline unsigned short XDownscale(const unsigned short quantum)
+MagickExport inline unsigned short XDownscale(const unsigned long quantum)
 {
 #if QuantumDepth == 8
-  return(quantum/257);
+  return((unsigned short) (quantum/257L));
 #else
-  return(quantum);
+  return((unsigned short) quantum);
 #endif
 }
 
-MagickExport inline unsigned short XUpscale(const unsigned short quantum)
+MagickExport inline unsigned short XUpscale(const unsigned long quantum)
 {
 #if QuantumDepth == 8
-  return(257*quantum);
+  return((unsigned short) (257L*quantum));
 #else
-  return(quantum);
+  return((unsigned short) quantum);
 #endif
 }
 
