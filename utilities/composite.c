@@ -193,6 +193,8 @@ int main(int argc,char **argv)
     option=argv[i];
     if ((strlen(option) == 1) || ((*option != '-') && (*option != '+')))
       continue;
+    if (LocaleCompare("debug",option+1) == 0)
+      (void) SetLogEventMask(argv[++i]);
     if (LocaleCompare("help",option+1) == 0)
       CompositeUsage();
     if (LocaleCompare("version",option+1) == 0)
