@@ -1036,9 +1036,14 @@ By default, the width and height are maximum values. That is, the image
 is expanded or contracted to fit the width and height value while maintaining
 the aspect ratio of the image. <em>Append an exclamation point to the geometry
 to force the image size to exactly the size you specify</em>. For example,
-if you specify <strong>640x480!</strong> the image width is set to 640 pixels and
-height to 480. If only one factor is specified, both the width and height
-assume the value.
+if you specify <tt>640x480!</tt> the image width is set to 640 pixels and
+height to 480.
+</font></td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+If only the width is specified, the width assumes the
+value and the height is chosen to maintain the aspect ratio of the image.
+Similarly, if only the height is specified (e.g., <tt>-geometry x256</tt>),
+the width is chosen to maintain the aspect ratio. 
 </font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 To specify a percentage width or height instead, append %. The image size
@@ -1048,19 +1053,18 @@ dimensions. To increase the size of an image, use a value greater than
 100.
 </font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-Use <strong>@</strong> to specify the maximum area in pixels of an image.
+Use <tt>@</tt> to specify the maximum area in pixels of an image.
 </font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-Use <strong>&gt;</strong> to change the dimensions of the image <em>only</em> if
-its size exceeds the geometry specification. <strong>&lt;</strong> resizes the image
+Use <tt>&gt;</tt> to change the dimensions of the image <em>only</em> if
+its size exceeds the geometry specification. <tt>&lt;</tt> resizes the image
 <em>only</em>
 if its dimensions is less than the geometry specification. For example,
-if you specify <strong>'640x480&gt;'</strong> and the image size is 512x512, the image
+if you specify <tt>'640x480&gt;'</tt> and the image size is 512x512, the image
 size does not change. However, if the image is 1024x1024, it is resized
-to 640x480.
-</font></td></tr></table>
-<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-There are 72 pixels per inch in PostScript coordinates.
+to 640x480.  Enclose the geometry specification in quotation marks to
+prevent the <tt>&gt;</tt> or <tt>&gt;</tt> from being interpreted by your shell
+as a file redirection.
 </font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
