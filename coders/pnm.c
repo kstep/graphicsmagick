@@ -971,11 +971,9 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
             break;
           for (x=0; x < (long) image->columns; x++)
           {
-            FormatString(buffer,"%d ",
-              image->depth > 8 ? p->red : DownScale(p->red));
-            FormatString(buffer,"%d ",
-              image->depth > 8 ? p->green : DownScale(p->green));
-            FormatString(buffer,"%d ",
+            FormatString(buffer,"%d %d %d",
+              image->depth > 8 ? p->red : DownScale(p->red),
+              image->depth > 8 ? p->green : DownScale(p->green),
               image->depth > 8 ? p->blue : DownScale(p->blue));
             (void) WriteBlobString(image,buffer);
             i++;
