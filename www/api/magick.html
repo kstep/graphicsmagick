@@ -49,7 +49,7 @@
 <P><STRONG>DestroyMagick</STRONG>( void );</P>
 <P>void  <STRONG>DestroyMagickInfo</STRONG>( void );</P>
 <P>const char * <STRONG>GetImageMagick</STRONG>( const unsigned char *magick, const size_t length );</P>
-<P>char * <STRONG>GetMagickConfigurePath</STRONG>( const char *filename );</P>
+<P>char * <STRONG>GetMagickConfigurePath</STRONG>( const char *filename, ExceptionInfo *exception );</P>
 <P>const MagickInfo * <STRONG>GetMagickInfo</STRONG>( const char *name, Exception *exception );</P>
 <P>const char * <STRONG>GetMagickVersion</STRONG>( unsigned int *version );</P>
 <P><STRONG>InitializeMagick</STRONG>( const char *path );</P>
@@ -88,6 +88,7 @@ The length of the binary string.
 <H2><A NAME="getmagickconfigurepath">GetMagickConfigurePath</A></H2>
 <blockquote>GetMagickConfigurePath() searches a number of pre-defined locations for the specified ImageMagick configuration file and returns the path. The search order follows: </blockquote><PRE>
            &lt;current directory&gt;/
+           Windows Resource
            &lt;client path&gt;/
            $MAGICK_HOME/
            $HOME/.magick/
@@ -95,7 +96,7 @@ The length of the binary string.
            MagickModulesPath
            MagickSharePath</PRE>
 <P>The format of the GetMagickConfigurePath method is:</P>
-<blockquote>char *GetMagickConfigurePath ( const char *filename ); </blockquote><P>
+<blockquote>char *GetMagickConfigurePath ( const char *filename, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <dd><p></p><dt><STRONG><A NAME="item_o_path%3A">path:</A></STRONG><BR>
@@ -107,6 +108,10 @@ Method GetMagickConfigurePath returns the path if the configuration file is foun
 <DD>
 
 <FONT SIZE=-1>A</FONT> character string representing the desired configuration file.
+<P></P>
+<dd><p></p><dt><STRONG><A NAME="item_o_exception%3A">exception:</A></STRONG><BR>
+<DD>
+Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="getmagickinfo">GetMagickInfo</A></H2>
@@ -118,7 +123,7 @@ Method GetMagickConfigurePath returns the path if the configuration file is foun
 <DD>
 The image format we are looking for.
 <P></P>
-<dd><p></p><dt><STRONG><A NAME="item_o_exception%3A">exception:</A></STRONG><BR>
+<dd><p></p><dt><STRONG>exception:</STRONG><BR>
 <DD>
 Return any errors or warnings in this structure.
 <P></P></DL></DL>
