@@ -229,33 +229,35 @@ MagickExport const PixelPacket *AcquireCacheNexus(const Image *image,
   region.width=columns;
   region.height=rows;
   pixels=SetNexus(image,&region,nexus);
-  if (IsNexusInCore(image->cache,nexus))
-    if ((x >= 0) && (x < cache_info->columns))
-      return(pixels);
-  offset=y*cache_info->columns+x;
-  span=(rows-1)*cache_info->columns+columns-1;
-  number_pixels=cache_info->columns*cache_info->rows;
-  if ((offset >= 0) && (offset+span) <= (off_t) number_pixels)
-    if ((x >= 0) && (x < cache_info->columns))
-      {
-        unsigned int
-          status;
-
-        /*
-          Pixel request is inside cache extents.
-        */
-        status=ReadCachePixels(image->cache,nexus);
-        if ((image->storage_class == PseudoClass) ||
-            (image->colorspace == CMYKColorspace))
-          status|=ReadCacheIndexes(image->cache,nexus);
-        if (status == False)
-          {
-            ThrowException(exception,CacheError,
-              "Unable to acquire pixels from cache",image->filename);
-            return((PixelPacket *) NULL);
-          }
+  if ((x >= 0) && (x < cache_info->columns))
+    {
+      if (IsNexusInCore(image->cache,nexus))
         return(pixels);
-      }
+      offset=y*cache_info->columns+x;
+      span=(rows-1)*cache_info->columns+columns-1;
+      number_pixels=cache_info->columns*cache_info->rows;
+      if ((offset >= 0) && (offset+span) <= (off_t) number_pixels)
+        {
+          unsigned int
+            status;
+
+          /*
+            Pixel request is inside cache extents.
+          */
+          status=ReadCachePixels(image->cache,nexus);
+          if ((image->storage_class == PseudoClass) ||
+              (image->colorspace == CMYKColorspace))
+            status|=ReadCacheIndexes(image->cache,nexus);
+          if (status == False)
+            {
+              ThrowException(exception,CacheError,
+                "Unable to acquire pixels from cache",image->filename);
+              return((PixelPacket *) NULL);
+            }
+          return(pixels);
+        }
+      return((const PixelPacket *) NULL);
+    }
   /*
     Pixel request is outside cache extents.
   */
