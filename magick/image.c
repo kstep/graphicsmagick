@@ -3553,15 +3553,14 @@ MagickExport void GrayscalePseudoClassImage(Image *image,
 MagickExport unsigned int IsImagesEqual(Image *image,const Image *reference)
 {
   double
+    difference,
     distance,
+    distance_squared,
     maximum_error_per_pixel,
     mean_error_per_pixel,
     number_pixels,
     normalize,
     total_error;
-
-  DoublePixelPacket
-    pixel;
 
   long
     y;
@@ -3597,36 +3596,26 @@ MagickExport unsigned int IsImagesEqual(Image *image,const Image *reference)
   number_pixels=(double) image->columns*image->rows;
   maximum_error_per_pixel=0.0;
   total_error=0.0;
-  pixel.opacity=0.0;
   for (y=0; y < (long) image->rows; y++)
   {
     p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
     q=AcquireImagePixels(reference,0,y,reference->columns,1,&image->exception);
     if (p == (const PixelPacket *) NULL)
       break;
-    if (!image->matte)
-      for (x=(long) image->columns; x > 0; x--)
+    for (x=(long) image->columns; x > 0; x--)
       {
-        pixel.red=(p->red-(double) q->red)/MaxRGB;
-        pixel.green=(p->green-(double) q->green)/MaxRGB;
-        pixel.blue=(p->blue-(double) q->blue)/MaxRGB;
-        distance=sqrt(pixel.red*pixel.red+pixel.green*pixel.green+
-          pixel.blue*pixel.blue);
-        total_error+=distance;
-        if (distance > maximum_error_per_pixel)
-          maximum_error_per_pixel=distance;
-        p++;
-        q++;
-      }
-    else
-      for (x=(long) image->columns; x > 0; x--)
-      {
-        pixel.red=(p->red-(double) q->red)/MaxRGB;
-        pixel.green=(p->green-(double) q->green)/MaxRGB;
-        pixel.blue=(p->blue-(double) q->blue)/MaxRGB;
-        pixel.opacity=(p->opacity-(double) q->opacity)/MaxRGB;
-        distance=sqrt(pixel.red*pixel.red+pixel.green*pixel.green+
-          pixel.blue*pixel.blue+pixel.opacity*pixel.opacity);
+        difference=(p->red-(double) q->red)/MaxRGB;
+        distance_squared=(difference*difference);
+        difference=(p->green-(double) q->green)/MaxRGB;
+        distance_squared+=(difference*difference);
+        difference=(p->blue-(double) q->blue)/MaxRGB;
+        distance_squared+=(difference*difference);
+        if (image->matte)
+          {
+            difference=(p->opacity-(double) q->opacity)/MaxRGB;
+            distance_squared+=(difference*difference);
+          }
+        distance=sqrt(distance_squared);
         total_error+=distance;
         if (distance > maximum_error_per_pixel)
           maximum_error_per_pixel=distance;

@@ -4,6 +4,16 @@
 </HEAD>
 <BODY TEXT="#000000" BGCOLOR="#FFFFFF" LINK="#0000EE" VLINK="#551A8B" ALINK="#FF0000">
 <p>
+2004-01-04  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> tests/Makefile.am: coderInfo test is expected to fail for moby
+        builds when the package is not yet installed since a .la file
+        exists in the coders directory, but there is no associated .so
+        file.  Therefore failures of the coderInfo test are now ignored.
+
+</UL>
+<p>
 2003-12-27  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

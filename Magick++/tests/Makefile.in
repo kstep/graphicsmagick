@@ -778,19 +778,18 @@ uninstall-am: uninstall-info-am
 	tags uninstall uninstall-am uninstall-info-am
 
 
-# FIXME: MinGW needs Windows path form of srcdir here (or pass as command argument)
 check:
 	@$(RUNENV) SRCDIR=$(SRCDIR) ./exceptions
 	@$(RUNENV) SRCDIR=$(SRCDIR) ./attributes
 	@$(RUNENV) SRCDIR=$(SRCDIR) ./appendImages
 	@$(RUNENV) SRCDIR=$(SRCDIR) ./averageImages
 	@$(RUNENV) SRCDIR=$(SRCDIR) ./coalesceImages
-	-@$(RUNENV) SRCDIR=$(SRCDIR) ./coderInfo # Fails to work uninstalled for moby build.
+	-@$(RUNENV) SRCDIR=$(SRCDIR) ./coderInfo # Test fails for moby build since no .so file exists.
 	@$(RUNENV) SRCDIR=$(SRCDIR) ./color
 	@$(RUNENV) SRCDIR=$(SRCDIR) ./colorHistogram > colorHistogram.txt
 	@$(RUNENV) SRCDIR=$(SRCDIR) ./montageImages
 	@$(RUNENV) SRCDIR=$(SRCDIR) ./morphImages
-	-@$(RUNENV) SRCDIR=$(SRCDIR) ./readWriteBlob # HP compiler fails on this one.
+	-@$(RUNENV) SRCDIR=$(SRCDIR) ./readWriteBlob # HP compiler fails on this one due to libxml2!
 	@$(RUNENV) SRCDIR=$(SRCDIR) ./readWriteImages
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

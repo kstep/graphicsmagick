@@ -1,5 +1,6 @@
 2004-01-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/image.c (IsImagesEqual): Simplified implementation.
 	* magick/magick.c: Removed some unused code.
 	* contrib/win32/ATL7/ImageMagickObject/ImageMagickObject.cpp
 	(IDispatch): Comment out InitializeSemaphore() so code compiles.
