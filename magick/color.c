@@ -741,8 +741,8 @@ static void Histogram(const Image *image,CubeInfo *cube_info,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method IsGrayImage returns True if the image is grayscale otherwise False
-%  is returned.
+%  IsGrayImage() returns True if all the pixels in the image have the same
+%  red, green, and blue intensities.
 %
 %  The format of the IsGrayImage method is:
 %
@@ -814,9 +814,9 @@ MagickExport unsigned int IsGrayImage(const Image *image,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method IsMonochromeImage returns True if the image is monochrome otherwise
-%  False is returned.  If the image is DirectClass and grayscale (including
-%  monochrome), it is demoted to PseudoClass.
+%  IsMonochromeImage() returns True if all the pixels in the image have
+%  the same red, green, and blue intensities and the intensity is either
+%  0 or MaxRGB.
 %
 %  The format of the IsMonochromeImage method is:
 %
@@ -824,9 +824,6 @@ MagickExport unsigned int IsGrayImage(const Image *image,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
-%
-%    o status: Method IsMonochromeImage returns True if the image is
-%      monochrome otherwise False is returned.
 %
 %    o image: The image.
 %
@@ -895,8 +892,8 @@ MagickExport unsigned int IsMonochromeImage(const Image *image,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method IsOpaqueImage returns False if the image has one or more pixels that
-%  are transparent otherwise True is returned.
+%  IsOpaqueImage() returns True if any of the pixels in the image have an
+%  opacity value other than opaque (0).
 %
 %  The format of the IsOpaqueImage method is:
 %
