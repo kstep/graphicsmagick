@@ -22,7 +22,7 @@ chdir 't/ttf' || die 'Cd failed';
 print("Default ImageMagick read ...\n");
 testRead( 'input.ttf',
   '2b85dc551fa9427eb0714c21377b06f6caaa4622e7b3446a2ae98590a1a9f01e',
-  '1afe96e1ed0d725a983d0b2ae69b858b74ee3845077bad6ecba710c3a82b66e8' );
+  '4082650fe3956d93b20629436c7847384e305cad5c8ee8d8c0b37737a5f6a00b' );
 
 #
 # 2) Test drawing text using font
@@ -31,7 +31,7 @@ testRead( 'input.ttf',
 print("Draw text using font ...\n");
 $infile = 'input.ttf';
 $md5    = '12ef36dd1d83ec6b8adbf39732a0f301bcd90286d1d94bdc62708a057f71a514';
-$md5_16 = 'ac8dde7a01e76a008bf4a6b84c286beb91b69b7b46f523e89b3ccd5fbf338ddf';
+$md5_16 = '4c580faec96a3478385755ca7e97f86e3ac891ec998acef01f8f78c455cc6512';
 
 $image=Image::Magick->new;
 $status=$image->Set(font=>"\@$infile", pen=>'#0000FF', pointsize=>14);

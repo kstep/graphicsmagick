@@ -943,9 +943,9 @@ static int TraceCubicBezier(FT_Vector *p,FT_Vector *q,FT_Vector *to,
     path[MaxTextExtent];
 
   affine=draw_info->affine;
-  FormatString(path,"C%g,%g %g,%g %g,%g",affine.tx+(p->x+32)/64,
-    affine.ty-(p->y+32)/64,affine.tx+(q->x+32)/64,affine.ty-(q->y+32)/64,
-    affine.tx+(to->x+32)/64,affine.ty-(to->y+32)/64);
+  FormatString(path,"C%g,%g %g,%g %g,%g",affine.tx+(p->x/64.0),
+    affine.ty+(-p->y/64.0),affine.tx+(q->x/64.0),affine.ty+(-q->y/64.0),
+    affine.tx+(to->x/64.0),affine.ty+(-to->y/64.0));
   (void) ConcatenateString(&draw_info->primitive,path);
   return(0);
 }
@@ -959,7 +959,7 @@ static int TraceLineTo(FT_Vector *to,DrawInfo *draw_info)
     path[MaxTextExtent];
 
   affine=draw_info->affine;
-  FormatString(path,"L%g,%g",affine.tx+(to->x+32)/64,affine.ty-(to->y+32)/64);
+  FormatString(path,"L%g,%g",affine.tx+(to->x/64.0),affine.ty+(-to->y/64.0));
   (void) ConcatenateString(&draw_info->primitive,path);
   return(0);
 }
@@ -973,7 +973,7 @@ static int TraceMoveTo(FT_Vector *to,DrawInfo *draw_info)
     path[MaxTextExtent];
 
   affine=draw_info->affine;
-  FormatString(path,"M%g,%g",affine.tx+(to->x+32)/64,affine.ty-(to->y+32)/64);
+  FormatString(path,"M%g,%g",affine.tx+(to->x/64.0),affine.ty+(-to->y/64.0));
   (void) ConcatenateString(&draw_info->primitive,path);
   return(0);
 }
@@ -988,8 +988,9 @@ static int TraceQuadraticBezier(FT_Vector *control,FT_Vector *to,
     path[MaxTextExtent];
 
   affine=draw_info->affine;
-  FormatString(path,"Q%g,%g %g,%g",affine.tx+(control->x+32)/64,affine.ty-
-    (control->y+32)/64,affine.tx+(to->x+32)/64,affine.ty-(to->y+32)/64);
+  FormatString(path,"Q%g,%g %g,%g",affine.tx+(control->x/64.0),
+    affine.ty+(-control->y/64.0),affine.tx+(to->x/64.0),
+    affine.ty+(-to->y/64.0));
   (void) ConcatenateString(&draw_info->primitive,path);
   return(0);
 }
@@ -1136,22 +1137,22 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
       if (i != 2)
         resolution.y=resolution.x;
     }
-  (void) FT_Set_Char_Size(face,(FT_F26Dot6) (64*draw_info->pointsize),
-    (FT_F26Dot6) (64*draw_info->pointsize),(FT_UInt) resolution.x,
+  (void) FT_Set_Char_Size(face,(FT_F26Dot6) (64.0*draw_info->pointsize),
+    (FT_F26Dot6) (64.0*draw_info->pointsize),(FT_UInt) resolution.x,
     (FT_UInt) resolution.y);
   metrics->pixels_per_em.x=face->size->metrics.x_ppem;
   metrics->pixels_per_em.y=face->size->metrics.y_ppem;
-  metrics->ascent=(double) (face->size->metrics.ascender+32)/64;
-  metrics->descent=(double) (face->size->metrics.descender+32)/64;
+  metrics->ascent=(double) face->size->metrics.ascender/64.0;
+  metrics->descent=(double) face->size->metrics.descender/64.0;
   metrics->width=0;
-  metrics->height=(double) (face->size->metrics.height+32)/64;
-  metrics->max_advance=(double) (face->size->metrics.max_advance+32)/64;
-  metrics->bounds.x1=(double) ((1L << 30)-1);
-  metrics->bounds.y1=(double) ((1L << 30)-1);
-  metrics->bounds.x2=(double) ((-((1L << 30)-1)));
-  metrics->bounds.y2=(double) ((-((1L << 30)-1)));
-  metrics->underline_position=(face->underline_position+32)/64;
-  metrics->underline_thickness=(face->underline_thickness+32)/64;
+  metrics->height=(double) face->size->metrics.height/64.0;
+  metrics->max_advance=(double) face->size->metrics.max_advance/64.0;
+  metrics->bounds.x1=65536.0;
+  metrics->bounds.y1=65536.0;
+  metrics->bounds.x2=(-65536.0);
+  metrics->bounds.y2=(-65536.0);
+  metrics->underline_position=face->underline_position/64.0;
+  metrics->underline_thickness=face->underline_thickness/64.0;
   /*
     Convert to Unicode.
   */
@@ -1197,6 +1198,18 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
     status=FT_Get_Glyph(face->glyph,&glyph.image);
     if (status != False)
       continue;
+    if (render)
+      if ((draw_info->stroke.opacity != TransparentOpacity) ||
+          (draw_info->stroke_pattern != (Image *) NULL))
+        {
+          /*
+            Trace the glyph.
+          */
+          clone_info->affine.tx=glyph.origin.x/64.0;
+          clone_info->affine.ty=glyph.origin.y/64.0;
+          (void) FT_Outline_Decompose(&((FT_OutlineGlyph)
+            glyph.image)->outline,&OutlineMethods,clone_info);
+        }
     FT_Glyph_Get_CBox(glyph.image,0,&bounds);
     if (bounds.xMin < metrics->bounds.x1)
       metrics->bounds.x1=bounds.xMin;
@@ -1206,18 +1219,6 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
       metrics->bounds.x2=bounds.xMax;
     if (bounds.yMax > metrics->bounds.y2)
       metrics->bounds.y2=bounds.yMax;
-    if (render)
-      if ((draw_info->stroke.opacity != TransparentOpacity) ||
-          (draw_info->stroke_pattern != (Image *) NULL))
-        {
-          /*
-            Trace the glyph.
-          */
-          clone_info->affine.tx=(glyph.origin.x+32)/64;
-          clone_info->affine.ty=(glyph.origin.y+32)/64;
-          (void) FT_Outline_Decompose(&((FT_OutlineGlyph)
-            glyph.image)->outline,&OutlineMethods,clone_info);
-        }
     FT_Vector_Transform(&glyph.origin,&affine);
     (void) FT_Glyph_Transform(glyph.image,&affine,&glyph.origin);
     if (render)
@@ -1288,18 +1289,18 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
             }
           }
       }
-    origin.x+=face->glyph->metrics.horiAdvance;
+    origin.x+=face->glyph->advance.x;
     if (origin.x > metrics->width)
       metrics->width=origin.x;
     if (last_glyph.id != 0)
       FT_Done_Glyph(last_glyph.image);
     last_glyph=glyph;
   }
-  metrics->width=(metrics->width+32)/64;
-  metrics->bounds.x1=(metrics->bounds.x1+32)/64;
-  metrics->bounds.y1=(metrics->bounds.y1+32)/64;
-  metrics->bounds.x2=(metrics->bounds.x2+32)/64;
-  metrics->bounds.y2=(metrics->bounds.y2+32)/64;
+  metrics->width/=64.0;
+  metrics->bounds.x1/=64.0;
+  metrics->bounds.y1/=64.0;
+  metrics->bounds.x2/=64.0;
+  metrics->bounds.y2/=64.0;
   if (render)
     if ((draw_info->stroke.opacity != TransparentOpacity) ||
         (draw_info->stroke_pattern != (Image *) NULL))
