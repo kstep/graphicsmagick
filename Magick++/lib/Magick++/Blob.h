@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999, 2001
+// Copyright Bob Friesenhahn, 1999, 2000, 2001
 //
 // Reference counted container class for Binary Large Objects (BLOBs)
 //
@@ -21,6 +21,13 @@ namespace Magick
     friend class Image;
 
   public:
+
+    enum Allocator
+    {
+      MallocAllocator,
+      NewAllocator
+    };
+
     // Default constructor
     Blob ( void );
 
@@ -44,7 +51,11 @@ namespace Magick
     // copy). Any existing data in the object is deallocated.  The user
     // must ensure that the pointer supplied is not deleted or
     // otherwise modified after it has been supplied to this method.
-    void          updateNoCopy ( void* data_, size_t length_ );
+    // Specify allocator_ as "MallocAllocator" if memory is allocated
+    // via the C language malloc() function, or "NewAllocator" if
+    // memory is allocated via C++ 'new'.
+    void          updateNoCopy ( void* data_, size_t length_,
+                                 Allocator allocator_ = NewAllocator );
 
     // Obtain pointer to data
     const void*   data ( void ) const;
@@ -78,10 +89,11 @@ namespace Magick
     BlobRef (const BlobRef&);
     BlobRef operator= (const BlobRef&);
 
-    void *        _data;     // Blob data
-    size_t        _length;   // Blob length
-    int           _refCount; // Reference count
-    MutexLock     _mutexLock;// Mutex lock
+    void *          _data;     // Blob data
+    size_t          _length;   // Blob length
+    Blob::Allocator _allocator; // Memory allocation system in use
+    int             _refCount; // Reference count
+    MutexLock       _mutexLock;// Mutex lock
   };
 
 } // namespace Magick

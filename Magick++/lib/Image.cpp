@@ -1570,7 +1570,7 @@ void Magick::Image::write ( Blob *blob_ )
 			    &length,
 			    &exceptionInfo);
   throwException( exceptionInfo );
-  blob_->updateNoCopy( data, length );
+  blob_->updateNoCopy( data, length, Blob::MallocAllocator );
   throwImageException();
 }
 void Magick::Image::write ( Blob *blob_,
@@ -1586,7 +1586,7 @@ void Magick::Image::write ( Blob *blob_,
 			    &length,
 			    &exceptionInfo);
   throwException( exceptionInfo );
-  blob_->updateNoCopy( data, length );
+  blob_->updateNoCopy( data, length, Blob::MallocAllocator );
   throwImageException();
 }
 void Magick::Image::write ( Blob *blob_,
@@ -1604,7 +1604,7 @@ void Magick::Image::write ( Blob *blob_,
 			    &length,
 			    &exceptionInfo);
   throwException( exceptionInfo );
-  blob_->updateNoCopy( data, length );
+  blob_->updateNoCopy( data, length, Blob::MallocAllocator );
   throwImageException();
 }
 

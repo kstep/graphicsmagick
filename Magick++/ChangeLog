@@ -1,3 +1,11 @@
+2001-09-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Image.cpp (write(Blob)): Tell blob to use malloc allocator.
+
+	* lib/Blob.cpp (updateNoCopy): Added parameter so that user can
+ 	specify the allocation system (malloc or new) the memory came
+ 	from.  Defaults to C++ memory allocator.
+
 2001-09-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Image.cpp (fileSize): Decided to change return type to off_t

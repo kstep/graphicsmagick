@@ -27,7 +27,8 @@ public:
       stream_.read( reinterpret_cast<char*>(blobData), 100000 );
       size_t blobLen =  stream_.gcount();
       // Insert data into blob
-      updateNoCopy( reinterpret_cast<void*>(blobData), blobLen );
+      updateNoCopy( reinterpret_cast<void*>(blobData), blobLen,
+                    Blob::NewAllocator );
     }
 };
 
