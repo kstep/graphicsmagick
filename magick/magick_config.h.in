@@ -79,6 +79,9 @@
 /* Define to 1 if you have the <freetype/freetype.h> header file. */
 #undef HAVE_FREETYPE_FREETYPE_H
 
+/* Define to 1 if fseeko (and presumably ftello) exists and is declared. */
+#undef HAVE_FSEEKO
+
 /* Define to 1 if you have the `getcwd' function. */
 #undef HAVE_GETCWD
 
@@ -114,6 +117,17 @@
 
 /* Define if you have the libdl library or equivalent. */
 #undef HAVE_LIBDL
+
+/* Define to 1 if long double works and has more range or precision than
+   double. */
+#undef HAVE_LONG_DOUBLE
+
+/* Define to 1 if you support file names longer than 14 characters. */
+#undef HAVE_LONG_FILE_NAMES
+
+/* Define to 1 if your system has a working `malloc' function, and to 0
+   otherwise. */
+#undef HAVE_MALLOC
 
 /* Define to 1 if you have the <malloc.h> header file. */
 #undef HAVE_MALLOC_H
@@ -166,6 +180,10 @@
 /* Define to 1 if you have the `readdir' function. */
 #undef HAVE_READDIR
 
+/* Define to 1 if your system has a working `realloc' function, and to 0
+   otherwise. */
+#undef HAVE_REALLOC
+
 /* Define to 1 if you have the `rindex' function. */
 #undef HAVE_RINDEX
 
@@ -180,6 +198,10 @@
 
 /* define if the compiler supports static_cast<> */
 #undef HAVE_STATIC_CAST
+
+/* Define to 1 if `stat' has the bug that it succeeds when given the
+   zero-length file name argument. */
+#undef HAVE_STAT_EMPTY_STRING_BUG
 
 /* define if the compiler supports ISO C++ standard library */
 #undef HAVE_STD
@@ -204,6 +226,10 @@
 
 /* Define to 1 if you have the `strcmp' function. */
 #undef HAVE_STRCMP
+
+/* Define to 1 if you have the `strcoll' function and it is properly defined.
+   */
+#undef HAVE_STRCOLL
 
 /* Define to 1 if you have the `strerror' function. */
 #undef HAVE_STRERROR
@@ -342,6 +368,10 @@
 /* Define if you have zlib compression library */
 #undef HasZLIB
 
+/* Define to 1 if `lstat' dereferences a symlink specified with a trailing
+   slash. */
+#undef LSTAT_FOLLOWS_SLASHED_SYMLINK
+
 /* Define if the OS needs help to load dependent libraries for dlopen(). */
 #undef LTDL_DLOPEN_DEPLIBS
 
@@ -365,8 +395,15 @@
 /* Directory where architecture-dependent files live. */
 #undef MagickLibPath
 
+/* Subdirectory of lib where ImageMagick architecture dependent files are
+   installed */
+#undef MagickLibSubdir
+
 /* Location of coder modules */
 #undef MagickModulesPath
+
+/* Subdirectory of lib where ImageMagick modules are installed */
+#undef MagickModulesSubdir
 
 /* Directory where architecture-independent files live. */
 #undef MagickSharePath
@@ -429,6 +466,9 @@
 /* Define to 1 if the X Window System is missing or not being used. */
 #undef X_DISPLAY_MISSING
 
+/* Define to 1 to make fseeko visible on some hosts (e.g. glibc 2.2). */
+#undef _LARGEFILE_SOURCE
+
 /* Define to empty if `const' does not conform to ANSI C. */
 #undef const
 
@@ -439,6 +479,9 @@
    if it is not supported. */
 #undef inline
 
+/* Define to rpl_malloc if the replacement function should be used. */
+#undef malloc
+
 /* Define to `int' if <sys/types.h> does not define. */
 #undef mode_t
 
@@ -448,5 +491,12 @@
 /* Define to `int' if <sys/types.h> does not define. */
 #undef pid_t
 
+/* Define to rpl_realloc if the replacement function should be used. */
+#undef realloc
+
 /* Define to `unsigned' if <sys/types.h> does not define. */
 #undef size_t
+
+/* Define to empty if the keyword `volatile' does not work. Warning: valid
+   code using `volatile' can become incorrect without. Disable with care. */
+#undef volatile

@@ -459,7 +459,7 @@ ac_includes_default="\
 # include <unistd.h>
 #endif"
 
-ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS build build_cpu build_vendor build_os host host_cpu host_vendor host_os target target_cpu target_vendor target_os MAJOR_VERSION MINOR_VERSION MICRO_VERSION INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA CYGPATH_W PACKAGE VERSION ACLOCAL AUTOCONF AUTOMAKE AUTOHEADER MAKEINFO AMTAR install_sh STRIP ac_ct_STRIP INSTALL_STRIP_PROGRAM AWK SET_MAKE PREFIX_DIR EXEC_PREFIX_DIR BIN_DIR SBIN_DIR LIBEXEC_DIR DATA_DIR SYSCONF_DIR SHAREDSTATE_DIR LOCALSTATE_DIR LIB_DIR INCLUDE_DIR OLDINCLUDE_DIR INFO_DIR MAN_DIR WinPathScript CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT DEPDIR am__include am__quote AMDEP_TRUE AMDEP_FALSE AMDEPBACKSLASH CCDEPMODE am__fastdepCC_TRUE am__fastdepCC_FALSE CPP LD LN_S LIB_GDI32 HasWINGDI32_TRUE HasWINGDI32_FALSE WIN32_NATIVE_BUILD_TRUE WIN32_NATIVE_BUILD_FALSE CYGWIN_BUILD_TRUE CYGWIN_BUILD_FALSE EGREP INSTALL_LTDL_TRUE INSTALL_LTDL_FALSE CONVENIENCE_LTDL_TRUE CONVENIENCE_LTDL_FALSE LIBADD_DL INCLTDL LIBLTDL ECHO RANLIB ac_ct_RANLIB DLLTOOL ac_ct_DLLTOOL AS ac_ct_AS OBJDUMP ac_ct_OBJDUMP CXX CXXFLAGS ac_ct_CXX CXXDEPMODE am__fastdepCXX_TRUE am__fastdepCXX_FALSE CXXCPP F77 FFLAGS ac_ct_F77 LIBTOOL LIBTOOL_DEPS WITH_MODULES_TRUE WITH_MODULES_FALSE DLLDFLAGS MAINTAINER_MODE_TRUE MAINTAINER_MODE_FALSE MAINT HasLZW_TRUE HasLZW_FALSE PERL_MAKE_OPTIONS LIBSTDCLDFLAGS MODULE_EXTRA_CPPFLAGS LIBRARY_EXTRA_CPPFLAGS LIB_LF LIBOBJS POW_LIB WITH_MAGICK_PLUS_PLUS_TRUE WITH_MAGICK_PLUS_PLUS_FALSE CCMALLOCDelegate LIB_MATH LIB_THREAD HasZLIB_TRUE HasZLIB_FALSE LIB_ZLIB HasBZLIB_TRUE HasBZLIB_FALSE LIB_BZLIB X_CFLAGS X_PRE_LIBS X_LIBS X_EXTRA_LIBS HasX11_TRUE HasX11_FALSE LIB_X11 LIB_XEXT LIB_XT LIB_DL HasDPS_TRUE HasDPS_FALSE LIB_DPS HasFPX_TRUE HasFPX_FALSE LIB_FPX HasLCMS_TRUE HasLCMS_FALSE LIB_LCMS HasPNG_TRUE HasPNG_FALSE LIB_PNG HasJPEG_TRUE HasJPEG_FALSE LIB_JPEG HasJP2_TRUE HasJP2_FALSE LIB_JP2 HasGS_TRUE HasGS_FALSE LIB_GS HasMPEG2_TRUE HasMPEG2_FALSE LIB_MPEG2 freetype_config HasTTF_TRUE HasTTF_FALSE LIB_TTF HasTIFF_TRUE HasTIFF_FALSE LIB_TIFF HasHDF_TRUE HasHDF_FALSE LIB_HDF HasJBIG_TRUE HasJBIG_FALSE LIB_JBIG xml2_config HasXML_TRUE HasXML_FALSE LIB_XML HasWMF_TRUE HasWMF_FALSE LIB_WMF LIB_WMF_DEPS MagickSharePath AutotraceDecodeDelegate BZIPDelegate BrowseDelegate CGMDecodeDelegate CatDelegate DOTDecodeDelegate DVIDecodeDelegate EchoDelegate EditorDelegate FIGDecodeDelegate GnuplotDecodeDelegate HPGLDecodeDelegate HTMLDecodeDelegate ILBMDecodeDelegate ILBMEncodeDelegate LPDelegate LPRDelegate LZWDecodeDelegate LZWEncodeDelegate LaunchDelegate MANDelegate MPEGDecodeDelegate MPEGEncodeDelegate MVDelegate PGPDecodeDelegate POVDelegate PSDelegate RADDecodeDelegate RLEEncodeDelegate RMDelegate SCANDecodeDelegate TXTDelegate WMFDecodeDelegate WWWDecodeDelegate ZipDelegate PrintDelegate TXT2HTML HasTXT2HTML_TRUE HasTXT2HTML_FALSE windows_font_dir ghostscript_font_dir type_include_files ConvertDelegate MogrifyDelegate ShowImageDelegate GSMonoDevice GSPDFDevice GSPSDevice GSColorDevice GSEPSDevice PERL WITH_PERL_TRUE WITH_PERL_FALSE WITH_PERL_STATIC_TRUE WITH_PERL_STATIC_FALSE WITH_PERL_DYNAMIC_TRUE WITH_PERL_DYNAMIC_FALSE MAGICKLIB DELEGATES MAGICK_DEP_LIBS LTLIBOBJS'
+ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS build build_cpu build_vendor build_os host host_cpu host_vendor host_os target target_cpu target_vendor target_os MAJOR_VERSION MINOR_VERSION MICRO_VERSION INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA CYGPATH_W PACKAGE VERSION ACLOCAL AUTOCONF AUTOMAKE AUTOHEADER MAKEINFO AMTAR install_sh STRIP ac_ct_STRIP INSTALL_STRIP_PROGRAM AWK SET_MAKE PREFIX_DIR EXEC_PREFIX_DIR BIN_DIR SBIN_DIR LIBEXEC_DIR DATA_DIR SYSCONF_DIR SHAREDSTATE_DIR LOCALSTATE_DIR LIB_DIR INCLUDE_DIR OLDINCLUDE_DIR INFO_DIR MAN_DIR WinPathScript CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT DEPDIR am__include am__quote AMDEP_TRUE AMDEP_FALSE AMDEPBACKSLASH CCDEPMODE am__fastdepCC_TRUE am__fastdepCC_FALSE CPP LD LN_S LIB_GDI32 HasWINGDI32_TRUE HasWINGDI32_FALSE WIN32_NATIVE_BUILD_TRUE WIN32_NATIVE_BUILD_FALSE CYGWIN_BUILD_TRUE CYGWIN_BUILD_FALSE EGREP INSTALL_LTDL_TRUE INSTALL_LTDL_FALSE CONVENIENCE_LTDL_TRUE CONVENIENCE_LTDL_FALSE LIBADD_DL INCLTDL LIBLTDL ECHO RANLIB ac_ct_RANLIB DLLTOOL ac_ct_DLLTOOL AS ac_ct_AS OBJDUMP ac_ct_OBJDUMP CXX CXXFLAGS ac_ct_CXX CXXDEPMODE am__fastdepCXX_TRUE am__fastdepCXX_FALSE CXXCPP F77 FFLAGS ac_ct_F77 LIBTOOL LIBTOOL_DEPS WITH_MODULES_TRUE WITH_MODULES_FALSE DLLDFLAGS MAINTAINER_MODE_TRUE MAINTAINER_MODE_FALSE MAINT HasLZW_TRUE HasLZW_FALSE PERL_MAKE_OPTIONS LIBSTDCLDFLAGS MODULE_EXTRA_CPPFLAGS LIBRARY_EXTRA_CPPFLAGS LIB_LF LIBOBJS POW_LIB WITH_MAGICK_PLUS_PLUS_TRUE WITH_MAGICK_PLUS_PLUS_FALSE CCMALLOCDelegate LIB_MATH LIB_THREAD HasZLIB_TRUE HasZLIB_FALSE LIB_ZLIB HasBZLIB_TRUE HasBZLIB_FALSE LIB_BZLIB X_CFLAGS X_PRE_LIBS X_LIBS X_EXTRA_LIBS HasX11_TRUE HasX11_FALSE LIB_X11 LIB_XEXT LIB_XT LIB_DL HasDPS_TRUE HasDPS_FALSE LIB_DPS HasFPX_TRUE HasFPX_FALSE LIB_FPX HasLCMS_TRUE HasLCMS_FALSE LIB_LCMS HasPNG_TRUE HasPNG_FALSE LIB_PNG HasJPEG_TRUE HasJPEG_FALSE LIB_JPEG HasJP2_TRUE HasJP2_FALSE LIB_JP2 HasGS_TRUE HasGS_FALSE LIB_GS HasMPEG2_TRUE HasMPEG2_FALSE LIB_MPEG2 freetype_config HasTTF_TRUE HasTTF_FALSE LIB_TTF HasTIFF_TRUE HasTIFF_FALSE LIB_TIFF HasHDF_TRUE HasHDF_FALSE LIB_HDF HasJBIG_TRUE HasJBIG_FALSE LIB_JBIG xml2_config HasXML_TRUE HasXML_FALSE LIB_XML HasWMF_TRUE HasWMF_FALSE LIB_WMF LIB_WMF_DEPS MagickLibPath MagickModulesPath MagickSharePath AutotraceDecodeDelegate BZIPDelegate BrowseDelegate CGMDecodeDelegate CatDelegate DOTDecodeDelegate DVIDecodeDelegate EchoDelegate EditorDelegate FIGDecodeDelegate GnuplotDecodeDelegate HPGLDecodeDelegate HTMLDecodeDelegate ILBMDecodeDelegate ILBMEncodeDelegate LPDelegate LPRDelegate LZWDecodeDelegate LZWEncodeDelegate LaunchDelegate MANDelegate MPEGDecodeDelegate MPEGEncodeDelegate MVDelegate PGPDecodeDelegate POVDelegate PSDelegate RADDecodeDelegate RLEEncodeDelegate RMDelegate SCANDecodeDelegate TXTDelegate WMFDecodeDelegate WWWDecodeDelegate ZipDelegate PrintDelegate TXT2HTML HasTXT2HTML_TRUE HasTXT2HTML_FALSE windows_font_dir ghostscript_font_dir type_include_files ConvertDelegate MogrifyDelegate ShowImageDelegate GSMonoDevice GSPDFDevice GSPSDevice GSColorDevice GSEPSDevice PERL WITH_PERL_TRUE WITH_PERL_FALSE WITH_PERL_STATIC_TRUE WITH_PERL_STATIC_FALSE WITH_PERL_DYNAMIC_TRUE WITH_PERL_DYNAMIC_FALSE MAGICKLIB DELEGATES MAGICK_DEP_LIBS LTLIBOBJS'
 ac_subst_files=''
 
 # Initialize some variables set by options.
@@ -1090,8 +1090,6 @@ Optional Packages:
   --without-zlib          disable ZLIB support
   --with-libstdc=DIR      use libstdc++ in DIR (for GNU C++)
   --with-x                use the X Window System
-  --with-share-path=DIR   Alternate path to share directory
-                          (default share/ImageMagick)
 
 Some influential environment variables:
   CC          C compiler command
@@ -3409,7 +3407,55 @@ fi
 
 
 # check for system services
-C_SYS_LONG_FILE_NAMES
+echo "$as_me:$LINENO: checking for long file names" >&5
+echo $ECHO_N "checking for long file names... $ECHO_C" >&6
+if test "${ac_cv_sys_long_file_names+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  ac_cv_sys_long_file_names=yes
+# Test for long file names in all the places we know might matter:
+#      .		the current directory, where building will happen
+#      $prefix/lib	where we will be installing things
+#      $exec_prefix/lib	likewise
+# eval it to expand exec_prefix.
+#      $TMPDIR		if set, where it might want to write temporary files
+# if $TMPDIR is not set:
+#      /tmp		where it might want to write temporary files
+#      /var/tmp		likewise
+#      /usr/tmp		likewise
+if test -n "$TMPDIR" && test -d "$TMPDIR" && test -w "$TMPDIR"; then
+  ac_tmpdirs=$TMPDIR
+else
+  ac_tmpdirs='/tmp /var/tmp /usr/tmp'
+fi
+for ac_dir in  . $ac_tmpdirs `eval echo $prefix/lib $exec_prefix/lib` ; do
+  test -d $ac_dir || continue
+  test -w $ac_dir || continue # It is less confusing to not echo anything here.
+  ac_xdir=$ac_dir/cf$$
+  (umask 077 && mkdir $ac_xdir 2>/dev/null) || continue
+  ac_tf1=$ac_xdir/conftest9012345
+  ac_tf2=$ac_xdir/conftest9012346
+  (echo 1 >$ac_tf1) 2>/dev/null
+  (echo 2 >$ac_tf2) 2>/dev/null
+  ac_val=`cat $ac_tf1 2>/dev/null`
+  if test ! -f $ac_tf1 || test "$ac_val" != 1; then
+    ac_cv_sys_long_file_names=no
+    rm -rf $ac_xdir 2>/dev/null
+    break
+  fi
+  rm -rf $ac_xdir 2>/dev/null
+done
+fi
+echo "$as_me:$LINENO: result: $ac_cv_sys_long_file_names" >&5
+echo "${ECHO_T}$ac_cv_sys_long_file_names" >&6
+if test $ac_cv_sys_long_file_names = yes; then
+
+cat >>confdefs.h <<\_ACEOF
+#define HAVE_LONG_FILE_NAMES 1
+_ACEOF
+
+fi
+
 
 #
 # Tests for Windows
@@ -4590,8 +4636,8 @@ osf3* | osf4* | osf5*)
   version_type=osf
   need_lib_prefix=no
   need_version=no
-  soname_spec='${libname}${release}.so'
-  library_names_spec='${libname}${release}.so$versuffix ${libname}${release}.so $libname.so'
+  soname_spec='${libname}${release}.so$major'
+  library_names_spec='${libname}${release}.so$versuffix ${libname}${release}.so$major $libname.so'
   shlibpath_var=LD_LIBRARY_PATH
   sys_lib_search_path_spec="/usr/shlib /usr/ccs/lib /usr/lib/cmplrs/cc /usr/lib /usr/local/lib /var/shlib"
   sys_lib_dlsearch_path_spec="$sys_lib_search_path_spec"
@@ -4859,6 +4905,9 @@ hpux*) # Its linker distinguishes data from code symbols
   ;;
 irix* | nonstopux*)
   symcode='[BCDEGRST]'
+  ;;
+osf*)
+  symcode='[BCDEGQRST]'
   ;;
 solaris* | sysv5*)
   symcode='[BDT]'
@@ -5535,7 +5584,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 5538 "configure"
+#line 5587 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -6886,7 +6935,6 @@ bsdi4*)
 cygwin* | mingw* | pw32*)
   lt_cv_deplibs_check_method='file_magic file format pei*-i386(.*architecture: i386)?'
   lt_cv_file_magic_cmd='$OBJDUMP -f'
-  lt_cv_deplibs_check_method=pass_all
   ;;
 
 darwin* | rhapsody*)
@@ -6900,7 +6948,6 @@ darwin* | rhapsody*)
     lt_cv_file_magic_test_file='/usr/lib/libSystem.dylib'
     ;;
   esac
-  lt_cv_deplibs_check_method=pass_all
   ;;
 
 freebsd*)
@@ -7086,7 +7133,7 @@ ia64-*-hpux*)
   ;;
 *-*-irix6*)
   # Find out which ABI we are using.
-  echo '#line 7087 "configure"' > conftest.$ac_ext
+  echo '#line 7136 "configure"' > conftest.$ac_ext
   if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -7455,9 +7502,9 @@ echo "${ECHO_T}$lt_cv_need_dllmain" >&6
   case $host/$CC in
   *-*-cygwin*/gcc*-mno-cygwin*|*-*-mingw*)
     # old mingw systems require "-dll" to link a DLL, while more recent ones
-    # require "-mdll"
+    # require "-mdll" (and still newer ones would rather have "-shared")
     SAVE_CFLAGS="$CFLAGS"
-    CFLAGS="$CFLAGS -mdll"
+    CFLAGS="$CFLAGS -shared"
     echo "$as_me:$LINENO: checking how to link DLLs" >&5
 echo $ECHO_N "checking how to link DLLs... $ECHO_C" >&6
 if test "${lt_cv_cc_dll_switch+set}" = set; then
@@ -7487,11 +7534,43 @@ if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
   ac_status=$?
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); }; }; then
+  lt_cv_cc_dll_switch=-shared
+else
+  echo "$as_me: failed program was:" >&5
+cat conftest.$ac_ext >&5
+
+	  CFLAGS="$SAVE_CFLAGS -mdll"
+	cat >conftest.$ac_ext <<_ACEOF
+#line $LINENO "configure"
+#include "confdefs.h"
+
+int
+main ()
+{
+
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
+  (eval $ac_link) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } &&
+         { ac_try='test -s conftest$ac_exeext'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
   lt_cv_cc_dll_switch=-mdll
 else
   echo "$as_me: failed program was:" >&5
 cat conftest.$ac_ext >&5
 lt_cv_cc_dll_switch=-dll
+fi
+rm -f conftest.$ac_objext conftest$ac_exeext conftest.$ac_ext
 fi
 rm -f conftest.$ac_objext conftest$ac_exeext conftest.$ac_ext
 fi
@@ -8180,7 +8259,7 @@ fi
 
 
 # Provide some information about the compiler.
-echo "$as_me:8181:" \
+echo "$as_me:8262:" \
      "checking for Fortran 77 compiler version" >&5
 ac_compiler=`set X $ac_compile; echo $2`
 { (eval echo "$as_me:$LINENO: \"$ac_compiler --version </dev/null >&5\"") >&5
@@ -8405,6 +8484,9 @@ hpux*) # Its linker distinguishes data from code symbols
   ;;
 irix* | nonstopux*)
   symcode='[BCDEGRST]'
+  ;;
+osf*)
+  symcode='[BCDEGQRST]'
   ;;
 solaris* | sysv5*)
   symcode='[BDT]'
@@ -10002,9 +10084,8 @@ if test -z "$aix_libpath"; then aix_libpath="/usr/lib:/lib"; fi
     openbsd*)
       hardcode_direct=yes
       hardcode_shlibpath_var=no
-
       if test -z "`echo __ELF__ | $CC -E - | grep __ELF__`" || test "$host_os-$host_cpu" = "openbsd2.8-powerpc"; then
-	archive_cmds='$CC -shared $pic_flag -o $lib $libobjs $deplibs $linker_flags'
+	archive_cmds='$CC -shared $pic_flag -o $lib $libobjs $deplibs $compiler_flags'
 	hardcode_libdir_flag_spec='${wl}-rpath,$libdir'
 	export_dynamic_flag_spec='${wl}-E'
       else
@@ -10014,7 +10095,7 @@ if test -z "$aix_libpath"; then aix_libpath="/usr/lib:/lib"; fi
 	   hardcode_libdir_flag_spec='-R$libdir'
 	   ;;
 	 *)
-	   archive_cmds='$CC -shared $pic_flag -o $lib $libobjs $deplibs $linker_flags'
+	   archive_cmds='$CC -shared $pic_flag -o $lib $libobjs $deplibs $compiler_flags'
 	   hardcode_libdir_flag_spec='${wl}-rpath,$libdir'
 	   ;;
        esac
@@ -10677,8 +10758,8 @@ osf3* | osf4* | osf5*)
   version_type=osf
   need_lib_prefix=no
   need_version=no
-  soname_spec='${libname}${release}.so'
-  library_names_spec='${libname}${release}.so$versuffix ${libname}${release}.so $libname.so'
+  soname_spec='${libname}${release}.so$major'
+  library_names_spec='${libname}${release}.so$versuffix ${libname}${release}.so$major $libname.so'
   shlibpath_var=LD_LIBRARY_PATH
   sys_lib_search_path_spec="/usr/shlib /usr/ccs/lib /usr/lib/cmplrs/cc /usr/lib /usr/local/lib /var/shlib"
   sys_lib_dlsearch_path_spec="$sys_lib_search_path_spec"
@@ -11162,7 +11243,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 11163 "configure"
+#line 11246 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -11260,7 +11341,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 11261 "configure"
+#line 11344 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -13876,8 +13957,8 @@ osf3* | osf4* | osf5*)
   version_type=osf
   need_lib_prefix=no
   need_version=no
-  soname_spec='${libname}${release}.so'
-  library_names_spec='${libname}${release}.so$versuffix ${libname}${release}.so $libname.so'
+  soname_spec='${libname}${release}.so$major'
+  library_names_spec='${libname}${release}.so$versuffix ${libname}${release}.so$major $libname.so'
   shlibpath_var=LD_LIBRARY_PATH
   sys_lib_search_path_spec="/usr/shlib /usr/ccs/lib /usr/lib/cmplrs/cc /usr/lib /usr/local/lib /var/shlib"
   sys_lib_dlsearch_path_spec="$sys_lib_search_path_spec"
@@ -14361,7 +14442,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 14362 "configure"
+#line 14445 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -14459,7 +14540,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 14460 "configure"
+#line 14543 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -15910,9 +15991,8 @@ if test -z "$aix_libpath"; then aix_libpath="/usr/lib:/lib"; fi
     openbsd*)
       hardcode_direct_F77=yes
       hardcode_shlibpath_var_F77=no
-
       if test -z "`echo __ELF__ | $CC -E - | grep __ELF__`" || test "$host_os-$host_cpu" = "openbsd2.8-powerpc"; then
-	archive_cmds_F77='$CC -shared $pic_flag -o $lib $libobjs $deplibs $linker_flags'
+	archive_cmds_F77='$CC -shared $pic_flag -o $lib $libobjs $deplibs $compiler_flags'
 	hardcode_libdir_flag_spec_F77='${wl}-rpath,$libdir'
 	export_dynamic_flag_spec_F77='${wl}-E'
       else
@@ -15922,7 +16002,7 @@ if test -z "$aix_libpath"; then aix_libpath="/usr/lib:/lib"; fi
 	   hardcode_libdir_flag_spec_F77='-R$libdir'
 	   ;;
 	 *)
-	   archive_cmds_F77='$CC -shared $pic_flag -o $lib $libobjs $deplibs $linker_flags'
+	   archive_cmds_F77='$CC -shared $pic_flag -o $lib $libobjs $deplibs $compiler_flags'
 	   hardcode_libdir_flag_spec_F77='${wl}-rpath,$libdir'
 	   ;;
        esac
@@ -16585,8 +16665,8 @@ osf3* | osf4* | osf5*)
   version_type=osf
   need_lib_prefix=no
   need_version=no
-  soname_spec='${libname}${release}.so'
-  library_names_spec='${libname}${release}.so$versuffix ${libname}${release}.so $libname.so'
+  soname_spec='${libname}${release}.so$major'
+  library_names_spec='${libname}${release}.so$versuffix ${libname}${release}.so$major $libname.so'
   shlibpath_var=LD_LIBRARY_PATH
   sys_lib_search_path_spec="/usr/shlib /usr/ccs/lib /usr/lib/cmplrs/cc /usr/lib /usr/local/lib /var/shlib"
   sys_lib_dlsearch_path_spec="$sys_lib_search_path_spec"
@@ -18021,9 +18101,8 @@ if test -z "$aix_libpath"; then aix_libpath="/usr/lib:/lib"; fi
     openbsd*)
       hardcode_direct_GCJ=yes
       hardcode_shlibpath_var_GCJ=no
-
       if test -z "`echo __ELF__ | $CC -E - | grep __ELF__`" || test "$host_os-$host_cpu" = "openbsd2.8-powerpc"; then
-	archive_cmds_GCJ='$CC -shared $pic_flag -o $lib $libobjs $deplibs $linker_flags'
+	archive_cmds_GCJ='$CC -shared $pic_flag -o $lib $libobjs $deplibs $compiler_flags'
 	hardcode_libdir_flag_spec_GCJ='${wl}-rpath,$libdir'
 	export_dynamic_flag_spec_GCJ='${wl}-E'
       else
@@ -18033,7 +18112,7 @@ if test -z "$aix_libpath"; then aix_libpath="/usr/lib:/lib"; fi
 	   hardcode_libdir_flag_spec_GCJ='-R$libdir'
 	   ;;
 	 *)
-	   archive_cmds_GCJ='$CC -shared $pic_flag -o $lib $libobjs $deplibs $linker_flags'
+	   archive_cmds_GCJ='$CC -shared $pic_flag -o $lib $libobjs $deplibs $compiler_flags'
 	   hardcode_libdir_flag_spec_GCJ='${wl}-rpath,$libdir'
 	   ;;
        esac
@@ -18696,8 +18775,8 @@ osf3* | osf4* | osf5*)
   version_type=osf
   need_lib_prefix=no
   need_version=no
-  soname_spec='${libname}${release}.so'
-  library_names_spec='${libname}${release}.so$versuffix ${libname}${release}.so $libname.so'
+  soname_spec='${libname}${release}.so$major'
+  library_names_spec='${libname}${release}.so$versuffix ${libname}${release}.so$major $libname.so'
   shlibpath_var=LD_LIBRARY_PATH
   sys_lib_search_path_spec="/usr/shlib /usr/ccs/lib /usr/lib/cmplrs/cc /usr/lib /usr/local/lib /var/shlib"
   sys_lib_dlsearch_path_spec="$sys_lib_search_path_spec"
@@ -19181,7 +19260,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 19182 "configure"
+#line 19263 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -19279,7 +19358,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 19280 "configure"
+#line 19361 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -20274,19 +20353,6 @@ _ACEOF
     DLLDFLAGS=-export-dynamic
 
   fi
-  im_cv_x_coder_modules="${LIB_DIR}/ImageMagick/modules/coders/"
-  MagickModulesPath="${im_cv_x_coder_modules}"
-  if test "$native_win32_build" = 'yes'
-  then
-    MagickModulesPath=`$WinPathScript "$MagickModulesPath" 1`
-  fi
-
-cat >>confdefs.h <<_ACEOF
-#define MagickModulesPath "$MagickModulesPath"
-_ACEOF
-
-
-
 fi
 
 # Enable build using delegate libraries built in subdirectories rather than installed
@@ -32864,37 +32930,60 @@ fi
 
 
 #
-# Configure Delegates
+# Configure install Paths
 #
 
-# Directory where configured ImageMagick/delegates.mgk lives
-# (default /usr/local/lib/ImageMagick).
-
-MagickLibPath="${LIB_DIR}/ImageMagick/"
-if test "$native_win32_build" = 'yes'
-then
-  MagickLibPath=`$WinPathScript "$MagickLibPath" 1`
-fi
+# Subdirectory under lib to place ImageMagick lib files
+MagickLibSubdir="ImageMagick-$MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION"
 
 cat >>confdefs.h <<_ACEOF
-#define MagickLibPath "$MagickLibPath"
+#define MagickLibSubdir "$MagickLibSubdir"
 _ACEOF
 
 
-# Directory where magic.mgk lives. (default /usr/local/share/ImageMagick)
+# Path to ImageMagick lib
+MagickLibPath="${LIB_DIR}/${MagickLibSubdir}/"
+MagickLibPathDefine="${MagickLibPath}"
+if test "$native_win32_build" = 'yes'
+then
+  MagickLibPathDefine=`$WinPathScript "$MagickLibPathDefine" 1`
+fi
 
-# Check whether --with-share-path or --without-share-path was given.
-if test "${with_share_path+set}" = set; then
-  withval="$with_share_path"
-  MagickSharePath="${with_share_path}/"
-else
-  MagickSharePath="${DATA_DIR}/ImageMagick/"
-   MagickSharePathDefine="$MagickSharePath"
- if test "$native_win32_build" = 'yes'
- then
-   MagickSharePathDefine=`$WinPathScript "$MagickSharePathDefine" 1`
- fi
-fi;
+cat >>confdefs.h <<_ACEOF
+#define MagickLibPath "$MagickLibPathDefine"
+_ACEOF
+
+
+
+# Subdirectory under lib to place ImageMagick module files
+MagickModulesSubdir="${MagickLibSubdir}/modules/coders"
+
+cat >>confdefs.h <<_ACEOF
+#define MagickModulesSubdir "$MagickModulesSubdir"
+_ACEOF
+
+
+# Path to ImageMagick coder module files
+MagickModulesPath="${LIB_DIR}/${MagickModulesSubdir}/"
+MagickModulesPathDefine="${MagickModulesPath}"
+if test "$native_win32_build" = 'yes'
+then
+  MagickModulesPathDefine=`$WinPathScript "$MagickModulesPathDefine" 1`
+fi
+
+cat >>confdefs.h <<_ACEOF
+#define MagickModulesPath "$MagickModulesPathDefine"
+_ACEOF
+
+
+
+# Path to ImageMagick share files
+MagickSharePath="${DATA_DIR}/ImageMagick/"
+MagickSharePathDefine="$MagickSharePath"
+if test "$native_win32_build" = 'yes'
+then
+  MagickSharePathDefine=`$WinPathScript "$MagickSharePathDefine" 1`
+fi
 
 cat >>confdefs.h <<_ACEOF
 #define MagickSharePath "$MagickSharePathDefine"
@@ -35936,6 +36025,8 @@ s,@HasWMF_TRUE@,$HasWMF_TRUE,;t t
 s,@HasWMF_FALSE@,$HasWMF_FALSE,;t t
 s,@LIB_WMF@,$LIB_WMF,;t t
 s,@LIB_WMF_DEPS@,$LIB_WMF_DEPS,;t t
+s,@MagickLibPath@,$MagickLibPath,;t t
+s,@MagickModulesPath@,$MagickModulesPath,;t t
 s,@MagickSharePath@,$MagickSharePath,;t t
 s,@AutotraceDecodeDelegate@,$AutotraceDecodeDelegate,;t t
 s,@BZIPDelegate@,$BZIPDelegate,;t t

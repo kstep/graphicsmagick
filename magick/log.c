@@ -260,7 +260,8 @@ static void *GetLogBlob(const char *filename,char *path,size_t *length,
       */
       (void) strncpy(prefix,SetClientPath((char *) NULL),MaxTextExtent-1);
       ChopPathComponents(prefix,1);
-      FormatString(path,"%.1024s/lib/ImageMagick/%.1024s",prefix,filename);
+      FormatString(path,"%.1024s/lib/%s/%.1024s",prefix,MagickLibSubdir,
+        filename);
 #else
       FormatString(path,"%.1024s%s%.1024s",SetClientPath((char *) NULL),
         DirectorySeparator,filename);
@@ -274,8 +275,8 @@ static void *GetLogBlob(const char *filename,char *path,size_t *length,
         Search MAGICK_HOME.
       */
 #if defined(POSIX)
-      FormatString(path,"%.1024s/lib/ImageMagick/%.1024s",getenv("MAGICK_HOME"),
-        filename);
+      FormatString(path,"%.1024s/lib/%s/%.1024s",getenv("MAGICK_HOME"),
+        MagickLibSubdir,filename);
 #else
       FormatString(path,"%.1024s%s%.1024s",getenv("MAGICK_HOME"),
         DirectorySeparator,filename);

@@ -56,7 +56,7 @@ modename="$progname"
 PROGRAM=ltmain.sh
 PACKAGE=libtool
 VERSION=1.4e
-TIMESTAMP=" (1.1128 2002/07/31 20:31:13)"
+TIMESTAMP=" (1.1134 2002/10/04 15:34:50)"
 
 default_mode=
 help="Try \`$progname --help' for more information."
@@ -478,7 +478,7 @@ if test -z "$show_help"; then
     if test -n "$available_tags" && test -z "$tagname"; then
       case $base_compile in
       # Blanks in the command may have been stripped by the calling shell,
-      # but not from the CC environment variable when ltconfig was run.
+      # but not from the CC environment variable when configure was run.
       " $CC "* | "$CC "* | " `$echo $CC` "* | "`$echo $CC` "*) ;;
       # Blanks at the start of $base_compile will cause this to fail
       # if we don't check for them as well.
@@ -776,7 +776,7 @@ EOF
       # It is impossible to link a dll without this setting, and
       # we shouldn't force the makefile maintainer to figure out
       # which system we are compiling for in order to pass an extra
-      # flag for every libtool invokation.
+      # flag for every libtool invocation.
       # allow_undefined=no
 
       # FIXME: Unfortunately, there are problems with the above when trying
@@ -1223,18 +1223,6 @@ EOF
 	continue
 	;;
 
-      # Pass -m32 and -m64 to gcc for SPARC Solaris targets to
-      # control 32/64 bit linkage.
-      -m32 | -m64)
-	case $with_gcc/$host in
-	yes/sparc-sun-solaris2*)
-          compile_command="$compile_command $arg"
-	  compiler_flags="$compiler_flags $arg"
-	  ;;
-	esac
-	continue
-	;;
-
       -module)
 	module=yes
 	continue
@@ -1536,7 +1524,7 @@ EOF
     if test -n "$available_tags" && test -z "$tagname"; then
       case $base_compile in
       # Blanks in the command may have been stripped by the calling shell,
-      # but not from the CC environment variable when ltconfig was run.
+      # but not from the CC environment variable when configure was run.
       "$CC "* | " $CC "* | "`$echo $CC` "* | " `$echo $CC` "*) ;;
       # Blanks at the start of $base_compile will cause this to fail
       # if we don't check for them as well.
@@ -1626,7 +1614,7 @@ EOF
       # the link line twice: once before the "normal" libs
       # (-lcygwin -luser32 -lkernel32 -ladvapi32 -lshell32) and
       # once AFTER those.  However, the "eliminate dup deps"
-      # proceedure keeps only the LAST duplicate -- thus
+      # procedure keeps only the LAST duplicate -- thus
       # messing up the order, since after dup elimination
       # -lgcc comes AFTER -lcygwin.  In normal C operation,
       # you don't notice the problem, because -lgcc isn't
@@ -2697,7 +2685,7 @@ EOF
 	  ;;
 
 	osf)
-	  major=`expr $current - $age`
+	  major=.`expr $current - $age`
 	  versuffix=".$current.$age.$revision"
 	  verstring="$current.$age.$revision"
 
@@ -2889,7 +2877,7 @@ EOF
 	  # This might be a little naive.  We might want to check
 	  # whether the library exists or not.  But this is on
 	  # osf3 & osf4 and I'm not really sure... Just
-	  # implementing what was already the behaviour.
+	  # implementing what was already the behavior.
 	  newdeplibs=$deplibs
 	  ;;
 	test_compile)
@@ -2930,7 +2918,7 @@ EOF
 	      fi
 	    done
 	  else
-	    # Error occured in the first compile.  Let's try to salvage
+	    # Error occurred in the first compile.  Let's try to salvage
 	    # the situation: Compile a separate program for each library.
 	    for i in $deplibs; do
 	      name="`expr $i : '-l\(.*\)'`"
@@ -4305,7 +4293,7 @@ fi\
 	  oldobjs="$libobjs_save"
 	  build_libtool_libs=no
 	else
-	  oldobjs="$oldobjs$old_deplibs $non_pic_objects"
+	  oldobjs="$old_deplibs $non_pic_objects"
 	fi
 	addlibs="$old_convenience"
       fi
@@ -5196,7 +5184,7 @@ relink_command=\"$relink_command\""
 	eval "export $shlibpath_var"
       fi
 
-      # Restore saved enviroment variables
+      # Restore saved environment variables
       if test "${save_LC_ALL+set}" = set; then
 	LC_ALL="$save_LC_ALL"; export LC_ALL
       fi

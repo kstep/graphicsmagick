@@ -238,6 +238,8 @@ MODULE_EXTRA_CPPFLAGS = @MODULE_EXTRA_CPPFLAGS@
 MPEGDecodeDelegate = @MPEGDecodeDelegate@
 MPEGEncodeDelegate = @MPEGEncodeDelegate@
 MVDelegate = @MVDelegate@
+MagickLibPath = @MagickLibPath@
+MagickModulesPath = @MagickModulesPath@
 MagickSharePath = @MagickSharePath@
 MogrifyDelegate = @MogrifyDelegate@
 OBJDUMP = @OBJDUMP@
@@ -407,7 +409,7 @@ EXTRA_DIST = $(ALLMANPAGES) colors.mgk log.mgk magic.mgk Magick-config.in \
 
 
 # Where configuration files get installed
-pkgdir = $(libdir)/ImageMagick
+pkgdir = @MagickLibPath@
 
 # Architecture-dependent data files installed into ImageMagick/lib
 pkg_DATA = colors.mgk log.mgk magic.mgk

@@ -71,7 +71,10 @@ noinst_HEADERS =
 LIBMAGICK = ../magick/libMagick.la
 
 # Where modules are installed
-pkgdir = $(libdir)/ImageMagick/modules/coders
+pkgdir = @MagickModulesPath@
+
+# Where config files get installed
+pkglibdir = @MagickLibPath@
 
 if WITH_MODULES
 

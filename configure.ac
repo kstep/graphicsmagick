@@ -198,15 +198,6 @@ then
     DLLDFLAGS=-export-dynamic
     AC_SUBST(DLLDFLAGS)
   fi
-  im_cv_x_coder_modules="${LIB_DIR}/ImageMagick/modules/coders/"
-  MagickModulesPath="${im_cv_x_coder_modules}"
-  if test "$native_win32_build" = 'yes'
-  then
-    MagickModulesPath=`$WinPathScript "$MagickModulesPath" 1`
-  fi
-  AC_DEFINE_UNQUOTED(MagickModulesPath,"$MagickModulesPath",Location of coder modules)
-
-
 fi
 
 # Enable build using delegate libraries built in subdirectories rather than installed
@@ -1597,30 +1588,44 @@ AC_SUBST(LIB_WMF_DEPS)
 
 
 #
-# Configure Delegates
+# Configure install Paths
 #
 
-# Directory where configured ImageMagick/delegates.mgk lives
-# (default /usr/local/lib/ImageMagick).
+# Subdirectory under lib to place ImageMagick lib files
+MagickLibSubdir="ImageMagick-$MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION"
+AC_DEFINE_UNQUOTED(MagickLibSubdir,"$MagickLibSubdir",Subdirectory of lib where ImageMagick architecture dependent files are installed)
 
-MagickLibPath="${LIB_DIR}/ImageMagick/"
+# Path to ImageMagick lib
+MagickLibPath="${LIB_DIR}/${MagickLibSubdir}/"
+MagickLibPathDefine="${MagickLibPath}"
 if test "$native_win32_build" = 'yes'
 then
-  MagickLibPath=`$WinPathScript "$MagickLibPath" 1`
+  MagickLibPathDefine=`$WinPathScript "$MagickLibPathDefine" 1`
 fi
-AC_DEFINE_UNQUOTED(MagickLibPath,"$MagickLibPath",Directory where architecture-dependent files live.)
+AC_DEFINE_UNQUOTED(MagickLibPath,"$MagickLibPathDefine",Directory where architecture-dependent files live.)
+AC_SUBST(MagickLibPath)
 
-# Directory where magic.mgk lives. (default /usr/local/share/ImageMagick)
-AC_ARG_WITH(share-path,
-[  --with-share-path=DIR   Alternate path to share directory
-                          (default share/ImageMagick)],
- MagickSharePath="${with_share_path}/",
-   MagickSharePath="${DATA_DIR}/ImageMagick/"
-   MagickSharePathDefine="$MagickSharePath"
- if test "$native_win32_build" = 'yes'
- then
-   MagickSharePathDefine=`$WinPathScript "$MagickSharePathDefine" 1`
- fi)
+# Subdirectory under lib to place ImageMagick module files
+MagickModulesSubdir="${MagickLibSubdir}/modules/coders"
+AC_DEFINE_UNQUOTED(MagickModulesSubdir,"$MagickModulesSubdir",Subdirectory of lib where ImageMagick modules are installed)
+
+# Path to ImageMagick coder module files
+MagickModulesPath="${LIB_DIR}/${MagickModulesSubdir}/"
+MagickModulesPathDefine="${MagickModulesPath}"
+if test "$native_win32_build" = 'yes'
+then
+  MagickModulesPathDefine=`$WinPathScript "$MagickModulesPathDefine" 1`
+fi
+AC_DEFINE_UNQUOTED(MagickModulesPath,"$MagickModulesPathDefine",Location of coder modules)
+AC_SUBST(MagickModulesPath)
+
+# Path to ImageMagick share files
+MagickSharePath="${DATA_DIR}/ImageMagick/"
+MagickSharePathDefine="$MagickSharePath"
+if test "$native_win32_build" = 'yes'
+then
+  MagickSharePathDefine=`$WinPathScript "$MagickSharePathDefine" 1`
+fi
 AC_DEFINE_UNQUOTED(MagickSharePath,"$MagickSharePathDefine",Directory where architecture-independent files live.)
 AC_SUBST(MagickSharePath)
 

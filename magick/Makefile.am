@@ -99,7 +99,7 @@ EXTRA_DIST = $(ALLMANPAGES) colors.mgk log.mgk magic.mgk Magick-config.in \
   Magick-config.in Make.com mac.c nt_base.c nt_feature.c vms.c $(MAGICK_BASE_SRCS)
 
 # Where configuration files get installed
-pkgdir = $(libdir)/ImageMagick
+pkgdir = @MagickLibPath@
 
 # Architecture-dependent data files installed into ImageMagick/lib
 pkg_DATA = colors.mgk log.mgk magic.mgk
