@@ -73,12 +73,6 @@
 #endif
 
 /*
-  Constant declaractions.
-*/
-const char
-  *FontFilename = "fonts.mgk";
-
-/*
   Static declarations.
 */
 static FontInfo
@@ -91,7 +85,7 @@ static SemaphoreInfo *
   Forward declarations.
 */
 static unsigned int
-  ReadFonts(void),
+  ReadFonts(const char *),
   RenderFont(Image *,const DrawInfo *,const PointInfo *,
     const unsigned int,FontMetric *),
   RenderPostscript(Image *,const DrawInfo *,const PointInfo *,
@@ -480,7 +474,7 @@ MagickExport FontInfo *GetFontInfo(char *name)
       /*
         Read fonts.
       */
-      (void) ReadFonts();
+      (void) ReadFonts("fonts.mgk");
       atexit(DestroyFontInfo);
     }
   LiberateSemaphore(&font_semaphore);
@@ -563,17 +557,19 @@ MagickExport unsigned int GetFontMetrics(Image *image,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ReadFonts reads the fonts configuration file which maps font names
+%  Method ReadFonts reads the font configuration file which maps font names
 %  with Type1 or TrueType glyph files on disk.
 %
 %  The format of the ReadFonts method is:
 %
-%      unsigned int ReadFonts(void)
+%      unsigned int ReadFonts(const char *filename)
 %
 %  A description of each parameter follows:
 %
 %    o status: Method ReadFonts returns True if at least one font is defined
 %      otherwise False.
+%
+%    o filename:  The font configuration filename.
 %
 %
 */
@@ -698,7 +694,7 @@ static void ParseFonts(void *context,const xmlChar *name,
   font_info->previous=p;
 }
 
-static unsigned int ReadFonts(void)
+static unsigned int ReadFonts(const char *filename)
 {
   xmlSAXHandler
     SAXHandlerStruct =
@@ -750,7 +746,7 @@ static unsigned int ReadFonts(void)
   xmlSAXHandlerPtr
     SAXHandler;
 
-  path=GetMagickConfigurePath(FontFilename);
+  path=GetMagickConfigurePath(filename);
   if (path == (char *) NULL)
     return(False);
   file=fopen(path,"r");
@@ -761,7 +757,7 @@ static unsigned int ReadFonts(void)
     Initialize fonts.
   */
   SAXHandler=(&SAXHandlerStruct);
-  parser=xmlCreatePushParserCtxt(SAXHandler,NULL,(char *) NULL,0,FontFilename);
+  parser=xmlCreatePushParserCtxt(SAXHandler,NULL,(char *) NULL,0,filename);
   while (fgets(buffer,MaxTextExtent,file) != (char *) NULL)
   {
     n=Extent(buffer);
@@ -779,7 +775,7 @@ static unsigned int ReadFonts(void)
   return(fonts == (FontInfo *) NULL);
 }
 #else
-static unsigned int ReadFonts(void)
+static unsigned int ReadFonts(const char *filename)
 {
   return(False);
 }

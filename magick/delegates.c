@@ -62,12 +62,6 @@
 #include "defines.h"
 
 /*
-  Constant declaractions.
-*/
-const char
-  *DelegateFilename = "delegates.mgk";
-
-/*
   Global declaractions.
 */
 static DelegateInfo
@@ -80,7 +74,7 @@ static SemaphoreInfo
   Forward declaractions.
 */
 static unsigned int
-  ReadDelegates(void);
+  ReadDelegates(const char *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -175,7 +169,7 @@ MagickExport DelegateInfo *GetDelegateInfo(const char *decode_tag,
       /*
         Read delegates.
       */
-      (void) ReadDelegates();
+      (void) ReadDelegates("delegates.mgk");
       atexit(DestroyDelegateInfo);
     }
   LiberateSemaphore(&delegate_semaphore);
@@ -585,16 +579,18 @@ MagickExport unsigned int ListDelegateInfo(FILE *file)
 %
 %  The format of the ReadDelegates method is:
 %
-%      unsigned int ReadDelegates(void)
+%      unsigned int ReadDelegates(const char *filename)
 %
 %  A description of each parameter follows:
 %
 %    o status: Method ReadDelegates returns True if at least one delegate
 %      is defined otherwise False.
 %
+%    o filename:  The delegate configuration filename.
+%
 %
 */
-static unsigned int ReadDelegates(void)
+static unsigned int ReadDelegates(const char *filename)
 {
   char
     *path,
@@ -612,7 +608,7 @@ static unsigned int ReadDelegates(void)
   /*
     Read delegate file.
   */
-  path=GetMagickConfigurePath(DelegateFilename);
+  path=GetMagickConfigurePath(filename);
   if (path == (char *) NULL)
     return(False);
   file=fopen(path,"r");

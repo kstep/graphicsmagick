@@ -57,16 +57,13 @@
 #include "magic.h"
 
 /*
-  Constant declaractions.
-*/
-const char
-  *MagicFilename = "magic.mgk";
-
-/*
   Global declarations.
 */
 static MagicInfo
   **magic_list = (MagicInfo **) NULL;
+
+static SemaphoreInfo
+  *magic_semaphore = (SemaphoreInfo *) NULL;
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -79,8 +76,7 @@ static MagicInfo
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method DestroyMagicInfo deallocates memory associated with the MagicInfo
-%  list.
+%  Method DestroyMagicInfo deallocates memory associated with the magic list.
 %
 %  The format of the DestroyMagicInfo method is:
 %
@@ -103,6 +99,7 @@ MagickExport void DestroyMagicInfo(void)
 
   if (magic_list == (MagicInfo **) NULL)
     return;
+  AcquireSemaphore(&magic_semaphore);
   for (i=0; magic_list[i] != (MagicInfo *) NULL; i++)
   {
     LiberateMemory((void **) &magic_list[i]->tag);
@@ -116,6 +113,7 @@ MagickExport void DestroyMagicInfo(void)
     LiberateMemory((void **) &magic_list[i]);
   }
   LiberateMemory((void **) &magic_list);
+  LiberateSemaphore(&magic_semaphore);
 }
 
 #if defined(__cplusplus) || defined(c_plusplus)
@@ -456,7 +454,6 @@ static unsigned int ReadMagicConfigureFiles(const char *filename)
   FormatString(path,"%.1024s",filename);
   status|=ReadMagicConfigureFile(path);
   LiberateMemory((void **) &path);
-  atexit(DestroyMagicInfo);
   return(status);
 }
 
@@ -520,13 +517,17 @@ MagickExport unsigned int SetImageMagic(const unsigned char *magick,
       (void) strcpy(magic,q);
       return(True);
     }
+  AcquireSemaphore(&magic_semaphore);
   if (magic_list == (MagicInfo **) NULL)
-    if (ReadMagicConfigureFiles(MagicFilename) == False)
-      {
+    {
+      if (ReadMagicConfigureFiles("magic.mgk") == False)
         MagickWarning(FileOpenWarning,"no magic configuration file found",
-          MagicFilename);
-        return(False);
-      }
+          "magic.mgk");
+      atexit(DestroyMagicInfo);
+    }
+  LiberateSemaphore(&magic_semaphore);
+  if (magic_list == (MagicInfo **) NULL)
+    return(False);
   for (i=0; magic_list[i] != (MagicInfo *) NULL; i++)
   {
     switch (magic_list[i]->member->method)
