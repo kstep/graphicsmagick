@@ -1053,7 +1053,6 @@ static void wmf_magick_draw_text(wmfAPI * API, wmfDrawText_t * draw_text)
     angle = 0,			/* text rotation angle */
     bbox_height,		/* bounding box height */
     bbox_width,			/* bounding box width */
-    font_weight,		/* Font weight, 100 - 900 */
     pointsize = 0;		/* pointsize to output font with desired height */
 
   TypeMetric
@@ -1081,7 +1080,7 @@ static void wmf_magick_draw_text(wmfAPI * API, wmfDrawText_t * draw_text)
     double dx,
       dy;
 
-    if ((draw_text->BR.x > draw_text->TL.x) && (draw_text->BR.y > draw_text->TL.y))
+    if( draw_text->flags)
       {
         TL = draw_text->TL;
         BR = draw_text->BR;
@@ -1110,11 +1109,6 @@ static void wmf_magick_draw_text(wmfAPI * API, wmfDrawText_t * draw_text)
   /* Convert font_height to equivalent pointsize */
   pointsize = magick_font_pointsize( API, font, draw_text->str, draw_text->font_height);
 
-  if( WMF_FONT_WEIGHT(font) == 0 )
-    font_weight = magick_font_weight(WMF_FONT_NAME(font));
-  else
-    font_weight = WMF_FONT_WEIGHT(font);
-
   /* Save graphic context */
   magick_mvg_printf(API, "push graphic-context\n");
 
@@ -1123,6 +1117,8 @@ static void wmf_magick_draw_text(wmfAPI * API, wmfDrawText_t * draw_text)
   printf("Text                    = \"%s\"\n", draw_text->str);
   /* printf("WMF_FONT_NAME:          = \"%s\"\n", WMF_FONT_NAME(font)); */
   printf("WMF_FONT_PSNAME:        = \"%s\"\n", WMF_FONT_PSNAME(font));
+  printf("Bounding box            TL=%.10g,%.10g BR=%.10g,%.10g\n",
+         TL.x, TL.y, BR.x, BR.y );
   /* printf("Text box                = %.10gx%.10g\n", bbox_width, bbox_height); */
   /* printf("WMF_FONT_HEIGHT         = %i\n", (int)WMF_FONT_HEIGHT(font)); */
   printf("Pointsize               = %.10g\n", pointsize);
@@ -1145,9 +1141,6 @@ static void wmf_magick_draw_text(wmfAPI * API, wmfDrawText_t * draw_text)
       ImageInfo
         *image_info;
       
-      double
-        text_width;
-      
       image_info = CloneImageInfo((ImageInfo *) NULL);
       CloneString(&image_info->font, WMF_FONT_PSNAME(font));
       image_info->pointsize = pointsize;
@@ -1156,29 +1149,27 @@ static void wmf_magick_draw_text(wmfAPI * API, wmfDrawText_t * draw_text)
       
       if (GetTypeMetrics(image, &draw_info, &metrics) != False)
         {
+#if !defined(HasWMFlite)
           /* Center the text if it is not yet centered and should be */
-          if ((WMF_DC_TEXTALIGN(draw_text->dc) & TA_CENTER) &&
-              (point.x < (BL.x + 1)))
+          if ((WMF_DC_TEXTALIGN(draw_text->dc) & TA_CENTER))
             {
-              
-              text_width = metrics.width
-                * (ddata->scale_y / ddata->scale_x);
+              double
+                text_width = metrics.width * (ddata->scale_y / ddata->scale_x);
               
               point.x += bbox_width / 2 - text_width / 2;
             }
+#endif
         }
     }
 
   /* Draw bounding-box background color */
-  /* if (WMF_DC_OPAQUE(draw_text->dc)) */
-
 if(draw_text->flags)
   printf("rectangle %.10g,%.10g %.10g,%.10g\n",
          XC(draw_text->TL.x),YC(draw_text->TL.y),
          XC(draw_text->BR.x),YC(draw_text->BR.y));
 
   /* Draw bounding-box background color (META_EXTTEXTOUT mode) */
-  if( draw_text->flags & ETO_OPAQUE)
+  if (draw_text->flags & ETO_OPAQUE)
     {
       wmfRGB
         *box = WMF_DC_BACKGROUND(draw_text->dc);
@@ -1293,9 +1284,9 @@ if(draw_text->flags)
           ulBR,			/* bottom right of underline rectangle */
           ulTL;			/* top left of underline rectangle */
 
-        line_height =
-          Max(((double) 1 / (ddata->scale_x)),
-              ((double) AbsoluteValue(metrics.ascent)) * 0.13 * font_weight/900);
+        line_height = ((double)1/(ddata->scale_x))*metrics.underline_thickness;
+        if(metrics.underline_thickness < 1.5)
+          line_height *= 0.55;
         ulTL.x = 0;
         ulTL.y = AbsoluteValue(metrics.descent) - line_height;
         ulBR.x = metrics.width;
@@ -1315,9 +1306,9 @@ if(draw_text->flags)
           ulBR,			/* bottom right of strikeout rectangle */
           ulTL;			/* top left of strikeout rectangle */
 
-        line_height =
-          Max(((double) 1 / (ddata->scale_x)),
-              ((double) AbsoluteValue(metrics.ascent)) * 0.13 * font_weight/900);
+        line_height = ((double)1/(ddata->scale_x))*metrics.underline_thickness;
+        if(metrics.underline_thickness < 1.5)
+          line_height *= 0.55;
         ulTL.x = 0;
         ulTL.y = -(((double) metrics.ascent) / 2 + line_height / 2);
         ulBR.x = metrics.width;
@@ -1331,6 +1322,18 @@ if(draw_text->flags)
 
   /* Restore graphic context */
   magick_mvg_printf(API, "pop graphic-context\n");
+
+#if 1
+  magick_mvg_printf(API, "push graphic-context\n");
+  magick_mvg_printf(API, "stroke red\n");
+  magick_mvg_printf(API, "fill none\n");
+  magick_mvg_printf(API, "rectangle %.10g,%.10g %.10g,%.10g\n",
+                    XC(TL.x), YC(TL.y),
+                    XC(BR.x), YC(BR.y));
+  magick_mvg_printf(API, "stroke none\n");
+  magick_mvg_printf(API, "pop graphic-context\n");
+#endif
+
 }
 
 static void wmf_magick_udata_init(wmfAPI * API, wmfUserData_t * userdata)
@@ -1766,27 +1769,21 @@ static double magick_font_pointsize( wmfAPI* API, wmfFont* font, char* str, doub
 
   if (GetTypeMetrics(image, &draw_info, &metrics) != False)
     {
-      if (strlen(str) <= 1)
-        {
-          /* For individual characters, FONT_HEIGHT appears to
-             specify the hight of the ascent only so calculate final
-	   pointsize based on ratio of ascent to ascent+descent */
-          pointsize = font_height *
-            ((double) font_height /
-             (metrics.ascent + AbsoluteValue(metrics.descent)));
-          draw_info.pointsize = pointsize;
-        }
-      else
-        {
-          /* For multi-character strings, the height metric seems to
-             offer the best pointsize estimation */
-          pointsize =
-            font_height * ((double) font_height / (metrics.height));
-          draw_info.pointsize = pointsize;
-        }
-    }
+      pointsize = (font_height *
+        ((double) font_height / (metrics.ascent + AbsoluteValue(metrics.descent))));
 
-  return pointsize;
+      draw_info.pointsize = pointsize;
+      if (GetTypeMetrics(image, &draw_info, &metrics) != False)
+        pointsize *= (font_height / (metrics.ascent + AbsoluteValue(metrics.descent)));
+      pointsize *= 1.068966; /* Magic number computed through trial and error */
+    }
+#if 0
+  printf("String    = %s\n", str);
+  printf("Font      = %s\n", WMF_FONT_PSNAME(font));
+  printf("Pointsize = %.10g\n", pointsize);
+#endif
+
+  return floor(pointsize);
 }
 
 /* Estimate weight based on font name */
@@ -1873,6 +1870,7 @@ static float magick_font_stringwidth( wmfAPI* API, wmfFont* font, char* str)
 
 #if 0
   printf("\nmagick_font_stringwidth\n");
+  printf("string                  = \"%s\"\n", str);
   printf("WMF_FONT_NAME           = \"%s\"\n", WMF_FONT_NAME(font));
   printf("WMF_FONT_PSNAME         = \"%s\"\n", WMF_FONT_PSNAME(font));
   printf("stringwidth             = %.10g\n", stringwidth);
@@ -2215,7 +2213,7 @@ static long wmf_magick_tell(void* context)
   return (long)TellBlob((Image*)context);
 }
 
-static Image *ReadWMFImage2(const ImageInfo * image_info, ExceptionInfo * exception)
+static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * exception)
 {
   Image
     *image;
@@ -2550,20 +2548,20 @@ ModuleExport void RegisterWMFImage(void)
     *entry;
 
   entry = SetMagickInfo("WMF");
-  entry->decoder = ReadWMFImage2;
+  entry->decoder = ReadWMFImage;
   entry->description = AllocateString("Windows Meta File");
   entry->blob_support = False;
   entry->module = AllocateString("WMF");
   (void) RegisterMagickInfo(entry);
 #if defined(HasWIN32WMFAPI)
   entry = SetMagickInfo("EMF");
-  entry->decoder = ReadWMFImage;
+  entry->decoder = ReadEMFImage;
   entry->description = AllocateString("Windows WIN32 API renderred Enhanced Meta File");
   entry->blob_support = False;
   entry->module = AllocateString("WMF");
   (void) RegisterMagickInfo(entry);
   entry = SetMagickInfo("WMFWIN32");
-  entry->decoder = ReadWMFImage;
+  entry->decoder = ReadEMFImage;
   entry->description = AllocateString("Windows WIN32 API renderred Meta File");
   entry->blob_support = False;
   entry->module = AllocateString("WMFWIN32");

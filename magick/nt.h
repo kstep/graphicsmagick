@@ -74,7 +74,7 @@ extern MagickExport char
   *NTGetLastError(void);
 
 MagickExport Image
-  *ReadWMFImage(const ImageInfo *,ExceptionInfo *);
+  *ReadEMFImage(const ImageInfo *,ExceptionInfo *);
 
 extern MagickExport int
   Exit(int),

@@ -1054,28 +1054,28 @@ MagickExport struct dirent *readdir(DIR *entry)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%  R e a d W M F I m a g e                                                    %
+%  R e a d E M F I m a g e                                                    %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ReadWMFImage reads an Microsoft Windows MetaFile/WMF image
-%  file using the Windows API and returns it.  It allocates the
-%  memory necessary for the new Image structure and returns a pointer to
-%  the new image.
+%  Method ReadEMFImage reads an Microsoft Windows Enhanced MetaFile (EMF) or
+%  Windows MetaFile (WMF) file using the Windows API and returns it.  It
+%  allocates the memory necessary for the new Image structure and returns a
+%  pointer to the new image.
 %
 %  This method was written and contributed by spd@daphne.cps.unizar.es
 %  (feel free to copy and use it as you want. No warranty).
 %
-%  The format of the ReadWMFImage method is:
+%  The format of the ReadEMFImage method is:
 %
-%      Image *ReadWMFImage(const ImageInfo *image_info,
+%      Image *ReadEMFImage(const ImageInfo *image_info,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
-%    o image:  Method ReadWMFImage returns a pointer to the image after
+%    o image:  Method ReadEMFImage returns a pointer to the image after
 %      reading.  A null image is returned if there is a a memory shortage or
 %      if the image cannot be read.
 %
@@ -1221,7 +1221,7 @@ static HENHMETAFILE ReadEnhMetaFile(const char *szFileName,long *width,
 
 #define CENTIMETERS_INCH 2.54
 
-MagickExport Image *ReadWMFImage(const ImageInfo *image_info,
+MagickExport Image *ReadEMFImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
   BITMAPINFO
