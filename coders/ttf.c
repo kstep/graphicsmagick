@@ -252,13 +252,6 @@ ModuleExport void RegisterTTFImage(void)
   entry->description=AllocateString("TrueType font");
   entry->module=AllocateString("TTF");
   (void) RegisterMagickInfo(entry);
-  entry=SetMagickInfo("AFM");
-  entry->decoder=ReadTTFImage;
-  entry->magick=IsTTF;
-  entry->adjoin=False;
-  entry->description=AllocateString("TrueType font");
-  entry->module=AllocateString("TTF");
-  (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("PFA");
   entry->decoder=ReadTTFImage;
   entry->magick=IsTTF;
@@ -267,13 +260,6 @@ ModuleExport void RegisterTTFImage(void)
   entry->module=AllocateString("TTF");
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("PFB");
-  entry->decoder=ReadTTFImage;
-  entry->magick=IsTTF;
-  entry->adjoin=False;
-  entry->description=AllocateString("TrueType font");
-  entry->module=AllocateString("TTF");
-  (void) RegisterMagickInfo(entry);
-  entry=SetMagickInfo("PFM");
   entry->decoder=ReadTTFImage;
   entry->magick=IsTTF;
   entry->adjoin=False;
@@ -304,8 +290,6 @@ ModuleExport void RegisterTTFImage(void)
 ModuleExport void UnregisterTTFImage(void)
 {
   (void) UnregisterMagickInfo("TTF");
-  (void) UnregisterMagickInfo("AFM");
   (void) UnregisterMagickInfo("PFA");
   (void) UnregisterMagickInfo("PFB");
-  (void) UnregisterMagickInfo("PFM");
 }
