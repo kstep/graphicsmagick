@@ -3695,6 +3695,33 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 magn_methx=mng_info->magn_methx;
                 magn_methy=mng_info->magn_methy;
 
+#if (QuantumDepth == 32)
+#define QM unsigned short
+                if (magn_methx != 1 || magn_methy != 1)
+                  {
+                  /* 
+                     Scale pixels to unsigned shorts to prevent
+                     overflow of intermediate values of interpolations
+                  */
+                     for (y=0; y < (long) image->rows; y++)
+                     {
+                       q=GetImagePixels(image,0,y,image->columns,1);
+                       for (x=0; x < (long) image->columns; x++)
+                       {
+                          q->red=ScaleQuantumToShort(q->red);
+                          q->green=ScaleQuantumToShort(q->green);
+                          q->blue=ScaleQuantumToShort(q->blue);
+                          q->opacity=ScaleQuantumToShort(q->opacity);
+                          q++;
+                       }
+                       if (!SyncImagePixels(image))
+                         break;
+                     }
+                  }
+#else
+#define QM Quantum
+#endif
+
                 if (image->matte)
                    SetImage(large_image,TransparentOpacity);
                 else
@@ -3775,16 +3802,16 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                           else
                             {
                               /* Interpolate */
-                              (*q).red=(Quantum) (((QuantumPrecision) (2*i*((*n).red
-                                 -(*p).red)+m))/((QuantumPrecision) (m*2))+(*p).red);
-                              (*q).green=(Quantum) (((QuantumPrecision) (2*i*((*n).green
-                                 -(*p).green)+m))/((QuantumPrecision) (m*2))+(*p).green);
-                              (*q).blue=(Quantum) (((QuantumPrecision) (2*i*((*n).blue
-                                 -(*p).blue)+m))/((QuantumPrecision) (m*2))+(*p).blue);
+                              (*q).red=(QM) (((long) (2*i*((*n).red
+                                 -(*p).red)+m))/((long) (m*2))+(*p).red);
+                              (*q).green=(QM) (((long) (2*i*((*n).green
+                                 -(*p).green)+m))/((long) (m*2))+(*p).green);
+                              (*q).blue=(QM) (((long) (2*i*((*n).blue
+                                 -(*p).blue)+m))/((long) (m*2))+(*p).blue);
                               if (image->matte)
-                                 (*q).opacity=(Quantum) (((QuantumPrecision)
+                                 (*q).opacity=(QM) (((long)
                                  (2*i*((*n).opacity-(*p).opacity)+m))
-                                 /((QuantumPrecision) (m*2))+(*p).opacity);
+                                 /((long) (m*2))+(*p).opacity);
                             }
                           if (magn_methy == 4)
                             {
@@ -3804,8 +3831,8 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                              *q=(*n);
                           if (magn_methy == 5)
                             {
-                              (*q).opacity=(Quantum) (((QuantumPrecision) (2*i*((*n).opacity
-                                 -(*p).opacity)+m))/((QuantumPrecision) (m*2))+(*p).opacity);
+                              (*q).opacity=(QM) (((long) (2*i*((*n).opacity
+                                 -(*p).opacity)+m))/((long) (m*2))+(*p).opacity);
                             }
                         }
                       n++;
@@ -3861,14 +3888,14 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                           else
                             {
                               /* Interpolate */
-                              (*q).red=(Quantum) ((2*i*((*n).red-(*p).red)+m)
-                                 /((QuantumPrecision) (m*2))+(*p).red);
-                              (*q).green=(Quantum) ((2*i*((*n).green-(*p).green)
-                                 +m)/((QuantumPrecision) (m*2))+(*p).green);
-                              (*q).blue=(Quantum) ((2*i*((*n).blue-(*p).blue)+m)
-                                 /((QuantumPrecision) (m*2))+(*p).blue);
+                              (*q).red=(QM) ((2*i*((*n).red-(*p).red)+m)
+                                 /((long) (m*2))+(*p).red);
+                              (*q).green=(QM) ((2*i*((*n).green-(*p).green)
+                                 +m)/((long) (m*2))+(*p).green);
+                              (*q).blue=(QM) ((2*i*((*n).blue-(*p).blue)+m)
+                                 /((long) (m*2))+(*p).blue);
                               if (image->matte)
-                                 (*q).opacity=(Quantum) ((2*i*((*n).opacity
+                                 (*q).opacity=(QM) ((2*i*((*n).opacity
                                    -(*p).opacity)+m)/((long) (m*2))
                                    +(*p).opacity);
                             }
@@ -3891,8 +3918,8 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                           if (magn_methx == 5)
                             {
                               /* Interpolate */
-                              (*q).opacity=(Quantum) ((2*i*((*n).opacity
-                                 -(*p).opacity)+m) /((QuantumPrecision) (m*2))
+                              (*q).opacity=(QM) ((2*i*((*n).opacity
+                                 -(*p).opacity)+m) /((long) (m*2))
                                  +(*p).opacity);
                             }
                         }
@@ -3904,6 +3931,28 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   if (!SyncImagePixels(image))
                     break;
                 }
+#if (QuantumDepth == 32)
+              if (magn_methx != 1 || magn_methy != 1)
+                {
+                /* 
+                   Rescale pixels to Quantum
+                */
+                   for (y=0; y < (long) image->rows; y++)
+                   {
+                     q=GetImagePixels(image,0,y,image->columns,1);
+                     for (x=0; x < (long) image->columns; x++)
+                     {
+                        q->red=ScaleShortToQuantum(q->red);
+                        q->green=ScaleShortToQuantum(q->green);
+                        q->blue=ScaleShortToQuantum(q->blue);
+                        q->opacity=ScaleShortToQuantum(q->opacity);
+                        q++;
+                     }
+                     if (!SyncImagePixels(image))
+                       break;
+                   }
+                }
+#endif
               }
           }
 
