@@ -574,6 +574,10 @@ MagickExport void InitializeMagick(const char *path)
   {
     char
       *execution_path;
+#if defined(_DEBUG)
+    int
+      debug;
+#endif
 
     execution_path=NTGetExecutionPath();
     GetPathComponent(execution_path,HeadPath,filename);
@@ -583,9 +587,6 @@ MagickExport void InitializeMagick(const char *path)
     LiberateMemory((void **) &execution_path);
     InitializeTracingCriticalSection();
 #if defined(_DEBUG)
-    int
-      debug;
-
     debug=_CrtSetDbgFlag(_CRTDBG_REPORT_FLAG);
     debug|=_CRTDBG_CHECK_ALWAYS_DF;
     debug|=_CRTDBG_DELAY_FREE_MEM_DF;
