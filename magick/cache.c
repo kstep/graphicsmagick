@@ -623,8 +623,8 @@ static void DestroyCacheInfo(Cache cache)
   CacheInfo
     *cache_info;
 
-  unsigned int
-    destroy;
+  long
+    reference_count;
 
   unsigned long
     number_pixels;
@@ -632,13 +632,11 @@ static void DestroyCacheInfo(Cache cache)
   assert(cache != (Cache) NULL);
   cache_info=(CacheInfo *) cache;
   assert(cache_info->signature == MagickSignature);
-  destroy=False;
   AcquireSemaphoreInfo(&cache_info->semaphore);
   cache_info->reference_count--;
-  if (cache_info->reference_count == 0)
-    destroy=True;
+  reference_count=cache_info->reference_count;
   LiberateSemaphoreInfo(&cache_info->semaphore);
-  if (!destroy)
+  if (reference_count > 0)
     return;
   number_pixels=cache_info->columns*cache_info->rows;
   switch (cache_info->type)
