@@ -26,16 +26,12 @@
 #if !defined(False)
 # define False 0
 #endif
-static void ScribbleImage ( Image *image,  ExceptionInfo *exception)
+static void ScribbleImage ( ImageInfo* image_info, Image *image)
 {
   DrawContext
     context;
 
-  ImageInfo
-    *image_info;
-  
-  image_info = CloneImageInfo((ImageInfo*)NULL);
-  context = DrawAllocateContext();
+  context = DrawAllocateContext(image_info, image);
   
   DrawPushGraphicContext(context);
   {
@@ -352,7 +348,7 @@ static void ScribbleImage ( Image *image,  ExceptionInfo *exception)
   }
   DrawPopGraphicContext(context);
 
-  DrawRender(context, image_info, image);
+  DrawRender(context);
   DrawDestroyContext(context);
 }
 
@@ -362,7 +358,7 @@ int main ( int argc, char **argv )
   char outfile[MaxTextExtent];
   int rows, columns = 0;
   char size[MaxTextExtent];
-  ImageInfo imageInfo;
+  ImageInfo *image_info;
   ExceptionInfo exception;
 
   if ( argc != 2 )
@@ -383,30 +379,30 @@ int main ( int argc, char **argv )
    */
   columns=596;
   rows=842;
-  GetImageInfo( &imageInfo );
+  image_info=CloneImageInfo((ImageInfo*)NULL);
   GetExceptionInfo( &exception );
   FormatString(size, "%dx%d", columns, rows);
-  CloneString(&imageInfo.size, size);
-  strcpy( imageInfo.filename, "xc:white");
-  canvas = ReadImage ( &imageInfo, &exception );
+  CloneString(&image_info->size, size);
+  strcpy( image_info->filename, "xc:white");
+  canvas = ReadImage ( image_info, &exception );
   if ( canvas == (Image *)NULL )
     {
-      printf ( "Failed to read canvas image %s\n", imageInfo.filename );
+      printf ( "Failed to read canvas image %s\n", image_info->filename );
       MagickError(exception.severity,exception.reason,exception.description);
     }
 
   /*
    * Scribble on image
    */
-  ScribbleImage( canvas, &exception );
+  ScribbleImage( image_info, canvas );
 
   /*
    * Save image to file
    */
-  strncpy( canvas->filename, outfile, sizeof(imageInfo.filename)-1);
-  WriteImage ( &imageInfo, canvas );
+  strncpy( canvas->filename, outfile, sizeof(image_info->filename)-1);
+  WriteImage ( image_info, canvas );
 
   DestroyImage( canvas );
-  canvas = (Image*)NULL;
+  DestroyImageInfo( image_info );
   return 0;
 }

@@ -17,11 +17,10 @@ extern "C" {
 typedef struct _DrawContext *DrawContext;
 
 extern MagickExport DrawContext
-  DrawAllocateContext(void);
+  DrawAllocateContext(const ImageInfo *image_info, Image *image);
 
 extern MagickExport int
-  DrawRender(const DrawContext context,
-             const ImageInfo *image_info, Image *image);
+  DrawRender(const DrawContext context);
 
 extern MagickExport void
   DrawAnnotation(DrawContext context,
