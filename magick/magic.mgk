@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <magicmap>
+  <magic name="AVI" offset="0" target="RIFF" />
   <magic name="8BIM" offset="0" target="8BIM" />
   <magic name="BMP" offset="0" target="BA" />
   <magic name="BMP" offset="0" target="BM" />
