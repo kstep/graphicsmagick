@@ -1,3 +1,7 @@
+2002-12-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+	* magick/image.c: Fix ChannelImage() so that it does not
+	destroy CMYK(A) channels by forcing RGB.
+
 2002-12-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 	* magick/version.h: Changed to release 1.0.0.
 	* magick/nt_base.c: Changed "ImageMagick" to "GraphicsMagick" so
