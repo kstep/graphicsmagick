@@ -3894,7 +3894,7 @@ Get(ref,...)
             {
               if (!image)
                 break;
-              j=(long) GetVirtualPixelMethod(image);
+              j=(long) GetImageVirtualPixelMethod(image);
               s=newSViv(j);
               if ((j >= 0) && (j < (long) NumberOf(VirtualPixelMethods)-1))
                 {
