@@ -133,7 +133,6 @@ typedef struct _StreamInfo
 %  The format of the DecodeImage method is:
 %
 %      unsigned int DecodeImage(Image *image,const unsigned int compression,
-%        const unsigned int number_columns,const unsigned int number_rows,
 %        unsigned char *pixels)
 %
 %  A description of each parameter follows:
@@ -146,19 +145,12 @@ typedef struct _StreamInfo
 %    o compression:  A value of 1 means the compressed pixels are runlength
 %      encoded for a 256-color bitmap.  A value of 2 means a 16-color bitmap.
 %
-%    o number_columns:  An integer value that is the number of columns or
-%      width in pixels of your source image.
-%
-%    o number_rows:  An integer value that is the number of rows or
-%      heigth in pixels of your source image.
-%
 %    o pixels:  The address of a byte (8 bits) array of pixel data created by
 %      the decoding process.
 %
 %
 */
 static unsigned int DecodeImage(Image *image,const unsigned int compression,
-  const unsigned int number_columns,const unsigned int number_rows,
   unsigned char *pixels)
 {
   int
@@ -175,12 +167,11 @@ static unsigned int DecodeImage(Image *image,const unsigned int compression,
 
   assert(image != (Image *) NULL);
   assert(pixels != (unsigned char *) NULL);
-  for (i=0; i < (int) (number_columns*number_rows); i++)
-    pixels[i]=0;
+  memset(pixels,0,image->columns*image->rows);
   byte=0;
   x=0;
   q=pixels;
-  for (y=0; y < (int) number_rows; )
+  for (y=0; y < (int) image->rows; )
   {
     count=ReadBlobByte(image);
     if (count == EOF)
@@ -217,7 +208,7 @@ static unsigned int DecodeImage(Image *image,const unsigned int compression,
             */
             x=0;
             y++;
-            q=pixels+y*number_columns;
+            q=pixels+y*image->columns;
             break;
           }
           case 0x02:
@@ -227,7 +218,7 @@ static unsigned int DecodeImage(Image *image,const unsigned int compression,
             */
             x+=ReadBlobByte(image);
             y+=ReadBlobByte(image);
-            q=pixels+y*number_columns+x;
+            q=pixels+y*image->columns+x;
             break;
           }
           default:
@@ -262,8 +253,8 @@ static unsigned int DecodeImage(Image *image,const unsigned int compression,
           }
         }
       }
-    if (QuantumTick(y,number_rows))
-      MagickMonitor(LoadImageText,y,number_rows);
+    if (QuantumTick(y,image->rows))
+      MagickMonitor(LoadImageText,y,image->rows);
   }
   (void) ReadBlobByte(image);  /* end of line */
   (void) ReadBlobByte(image);
@@ -412,6 +403,8 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
       break;
     id[4]='\0';
     chunk_size=ReadBlobLSBLong(image);
+    if (chunk_size == 0)
+      break;
     if (chunk_size & 0x01)
       chunk_size++;
     if (image_info->verbose)
@@ -419,7 +412,7 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
         (void) fprintf(stdout,"AVI cid %s\n",id);
         (void) fprintf(stdout,"  chunk size %u\n",chunk_size);
       }
-    if (LocaleCompare(id,"00dc") == 0)
+    if ((LocaleCompare(id,"00db") == 0) || (LocaleCompare(id,"00dc") == 0))
       {
         /*
           Initialize image structure.
@@ -429,22 +422,22 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
         image->units=PixelsPerCentimeterResolution;
         image->x_resolution=bmp_info.x_pixels/100.0;
         image->y_resolution=bmp_info.y_pixels/100.0;
-        if (!AllocateImageColormap(image,number_colors))
-          ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
-            image);
-        memcpy(image->colormap,colormap,image->colors*sizeof(PixelPacket));
+        if (!AllocateImageColormap(image,number_colors ? number_colors : 256))
+          ThrowReaderException(ResourceLimitWarning,
+            "Memory allocation failed",image);
+        if (number_colors != 0)
+          memcpy(image->colormap,colormap,number_colors*sizeof(PixelPacket));
         bytes_per_line=4*((image->columns*bmp_info.bits_per_pixel+31)/32);
         pixels=(unsigned char *) AcquireMemory(bytes_per_line*image->rows);
-        status=DecodeImage(image,1,avi_info.width,avi_info.height,pixels);
-        if (status == False)
-          ThrowReaderException(CorruptImageWarning,"unable to runlength decode",
-            image);
-        /*
-          Initialize image structure.
-        */
-        image->units=PixelsPerCentimeterResolution;
-        image->x_resolution=bmp_info.x_pixels/100.0;
-        image->y_resolution=bmp_info.y_pixels/100.0;
+        if (LocaleCompare(id,"00db") == 0)
+          (void) ReadBlob(image,bytes_per_line*image->rows,(char *) pixels);
+        else
+          {
+            status=DecodeImage(image,1,pixels);
+            if (status == False)
+              ThrowReaderException(CorruptImageWarning,
+                "unable to runlength decode",image);
+          }
         /*
           Convert BMP raster image to pixel packets.
         */
@@ -531,9 +524,8 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
           {
             /*
               Convert PseudoColor scanline.
-            if ((bmp_info.compression == 1) || (bmp_info.compression == 2))
             */
-              bytes_per_line=image->columns;
+            bytes_per_line=image->columns;
             for (y=image->rows-1; y >= 0; y--)
             {
               p=pixels+(image->rows-y-1)*bytes_per_line;
@@ -783,6 +775,12 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
             stream_info.data_handler);
         continue;
       }
+    if (LocaleCompare(id,"strn") == 0)
+      {
+        for ( ; chunk_size > 0; chunk_size--)
+          (void) ReadBlobByte(image);
+        continue;
+      }
     if (LocaleCompare(id,"vedt") == 0)
       {
         for ( ; chunk_size > 0; chunk_size--)
@@ -790,7 +788,9 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
         continue;
       }
     FormatString(message,"AVI support for chunk %.1024s not yet available",id);
-    ThrowReaderException(CorruptImageWarning,message,image);
+    ThrowException(&image->exception,CorruptImageWarning,message,
+      image->filename);
+    break;
   }
   while (image->previous != (Image *) NULL)
     image=image->previous;
