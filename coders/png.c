@@ -1526,6 +1526,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       (void) ReadBlob(image,8,magic_number);
       if (memcmp(magic_number,"\212MNG\r\n\032\n",8) != 0)
         ThrowReaderException(CorruptImageError,"NotAMNGImageFile",image);
+    }
       first_mng_object=True;
       mng_info->basi_warning=False;
       mng_info->clon_warning=False;
@@ -1578,7 +1579,6 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         mng_info->loop_iteration[i]=0;
         mng_info->loop_jump[i]=0;
       }
-    }
   mng_type=0;
 #ifdef MNG_INSERT_LAYERS
   insert_layers=False;  /* should be False when converting or mogrifying */
