@@ -55,59 +55,67 @@
 #include <time.h>
 #include "studio.h"
 
-  typedef struct _PDBInfo
-  {
-    char
-      name[32];
+/*
+  Typedef declarations.
+*/
+typedef struct _PDBInfo
+{
+  char
+    name[32];
 
-    short int
-      attributes,
-      version;
+  short int
+    attributes,
+    version;
 
-    unsigned long
-      create_time,
-      modify_time,
-      archive_time,
-      modify_number,
-      application_info,
-      sort_info;
+  unsigned long
+    create_time,
+    modify_time,
+    archive_time,
+    modify_number,
+    application_info,
+    sort_info;
 
-    char
-      type[4],  /* database type identifier "vIMG" */
-      id[4];    /* database creator identifier "View" */
+  char
+    type[4],  /* database type identifier "vIMG" */
+    id[4];    /* database creator identifier "View" */
 
-    unsigned long
-      seed,
-      next_record;
+  unsigned long
+    seed,
+    next_record;
 
-    short int
-      number_records;
-  } PDBInfo;
+  short int
+    number_records;
+} PDBInfo;
 
-  typedef struct _PDBImage
-  {
-    char
-      name[32],
-      version,
-      type;
+typedef struct _PDBImage
+{
+  char
+    name[32],
+    version,
+    type;
 
-    unsigned long
-      reserved_1,
-      note;
+  unsigned long
+    reserved_1,
+    note;
 
-    short int
-      x_last,
-      y_last;
+  short int
+    x_last,
+    y_last;
 
-    unsigned long
-      reserved_2;
+  unsigned long
+    reserved_2;
 
-    short int
-      x_anchor,
-      y_anchor,
-      width,
-      height;
-  } PDBImage;
+  short int
+    x_anchor,
+    y_anchor,
+    width,
+    height;
+} PDBImage;
+/*
+  Forward declarations.
+*/
+static unsigned int
+  WritePDBImage(const ImageInfo *,Image *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -243,10 +251,9 @@ static unsigned int IsPDB(const unsigned char *magick,const size_t length)
 */
 static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
-
   char
-    tag[3],
-    record_type;
+    record_type,
+    tag[3];
 
   Image
     *image;
@@ -258,11 +265,11 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
     offset,
     y;
 
-  PDBInfo
-    pdb_info;
-
   PDBImage
     pdb_image;
+
+  PDBInfo
+    pdb_info;
 
   register IndexPacket
     *indexes;
@@ -314,28 +321,22 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   pdb_info.sort_info=ReadBlobMSBLong(image);
   (void) ReadBlob(image,4,pdb_info.type);
   (void) ReadBlob(image,4,pdb_info.id);
-    if (image_info->debug) {
-    (void) fprintf(stderr, "pdb_info.name=%s\n", pdb_info.name);
-  }
   if ((count == 0) || (memcmp(pdb_info.type,"vIMG",4) != 0) ||
       (memcmp(pdb_info.id,"View",4) != 0))
-    ThrowReaderException(CorruptImageWarning,"Not a supported PDB image file",image);
+    ThrowReaderException(CorruptImageWarning,"Not a supported PDB image file",
+      image);
   pdb_info.seed=ReadBlobMSBLong(image);
   pdb_info.next_record=ReadBlobMSBLong(image);
   pdb_info.number_records=ReadBlobMSBShort(image);
-  if (image_info->debug) {
-    (void) fprintf(stderr, "pdb_info.seed=%ld\n", pdb_info.seed);
-    (void) fprintf(stderr, "pdb_info.nextRecordListID=%ld\n", pdb_info.next_record);
-    (void) fprintf(stderr, "pdb_info.number_records=%d\n", pdb_info.number_records);
-  }
-  if (0 != pdb_info.next_record)
-    ThrowReaderException(CorruptImageWarning, "Multiple Record List PDB Unsupported", image);
+  if (pdb_info.next_record != 0)
+    ThrowReaderException(CorruptImageWarning,
+      "Multiple Record List PDB Unsupported",image);
   /*
     Read record header.
   */
   offset=(long) ReadBlobMSBLong(image);
   (void) ReadBlob(image,3,tag);
-  record_type=ReadBlobByte(image);  /* RecordEntry attributes */
+  record_type=ReadBlobByte(image);
   if (((record_type != 0x00) && (record_type != 0x01)) ||
       (memcmp(tag,"\x40\x6f\x80",3) != 0))
     ThrowReaderException(CorruptImageError,"Corrupt PDB image file",image);
@@ -351,8 +352,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       record_type=ReadBlobByte(image);
       if (((record_type != 0x00) && (record_type != 0x01)) ||
           (memcmp(tag,"\x40\x6f\x80",3) != 0))
-        ThrowReaderException(CorruptImageError,"Corrupt PDB image file",
-          image);
+        ThrowReaderException(CorruptImageError,"Corrupt PDB image file",image);
       if ((offset-TellBlob(image)) == 6)
         {
           (void) ReadBlobByte(image);
@@ -393,26 +393,23 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   pixels=(unsigned char *) AcquireMemory(packets+256);
   if (pixels == (unsigned char *) NULL)
     ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
-      if (image_info->debug) {
-    (void) fprintf(stderr, "pdb_image.version, type: %x, %x\n", pdb_image.version, pdb_image.type);
-    (void) fprintf(stderr, "pdb_image.width, height: %d, %d\n", pdb_image.width, pdb_image.height);
-    (void) fprintf(stderr, "bits_per_pixel: %d\n", bits_per_pixel);
-    (void) fprintf(stderr, "packets: %ld\n", packets);
-  }
-
-  switch (pdb_image.version) {
+  switch (pdb_image.version)
+	{
     case 0:
-    image->compression = NoCompression;
-    (void) ReadBlob(image,packets,(char *) pixels);
-    break;
+    {
+      image->compression=NoCompression;
+      (void) ReadBlob(image,packets,(char *) pixels);
+      break;
+    }
     case 1:
-    image->compression = RunlengthEncodedCompression;
-    (void) DecodeImage(image,pixels,packets);
-    break;
+    {
+      image->compression=RunlengthEncodedCompression;
+      (void) DecodeImage(image,pixels,packets);
+      break;
+    }
     default:
       ThrowReaderException(CorruptImageWarning,"Unknown compression type",image)
   }
-
   p=pixels;
   switch (bits_per_pixel)
   {
@@ -567,323 +564,6 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   E n c o d e R L E                                                         %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method EncodeRLE packs the packed image pixels into runlength-encoded
-%  pixel packets.
-%
-%  The format of the DecodeImage method is:
-%
-%      unsigned char *EncodeRLE(unsigned char *outbuff, unsigned char *inbuff,
-%               unsigned int literal, unsigned int repeated)
-%
-%  A description of each parameter follows:
-%
-%    o status:  Method EncodeRLE returns an updated index to the end of
-%      the output buffer.
-%
-%    o outbuff: Index into output buffer.
-%
-%    o inbuff:  Pointer to the uncompressed data.
-%
-%    o literal:  Count of non-repeated characters in inbuff.
-%
-%    o repeated:  Count of repeated characters in inbuff
-%
-%
-*/
-unsigned char *EncodeRLE(unsigned char *outbuff, unsigned char *inbuff,
-  unsigned int literal, unsigned int repeated)
-{
-  if (literal > 0)
-    *outbuff++ = literal - 1;
-  memcpy(outbuff, inbuff, literal);
-  outbuff += literal;
-
-  if (repeated > 0) {
-    *outbuff++ = 0x80 | (repeated - 1);
-    *outbuff++ = inbuff[literal];
-  }
-
-  return(outbuff);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   W r i t e P D B I m a g e                                                 %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method WritePDBImage writes an image
-%
-%  The format of the WritePDBImage method is:
-%
-%      unsigned int WritePDBImage(const ImageInfo *image_info,Image *image)
-%
-%  A description of each parameter follows.
-%
-%    o status: Method WritePDBImage return True if the image is written.
-%      False is returned is there is a memory shortage or if the image file
-%      fails to write.
-%
-%    o image_info: Specifies a pointer to an ImageInfo structure.
-%
-%    o image:  A pointer to a Image structure.
-%
-%
-*/
-static unsigned int WritePDBImage(const ImageInfo *image_info,Image *image)
-{
-  PDBInfo
-    pdb_info;
-
-  PDBImage
-    pdb_image;
-
-  char
-    xx;
-
-  unsigned char
-    *scanline,
-    *rleBuff,
-    *pdbImageBuff,
-    *pdbImageEnd;
-
-  unsigned int
-    bits_per_pixel,
-    packet_size,
-    status,
-    literal,
-    repeated;
-
-  unsigned long
-    x, y,
-    packets;
-
-  const ImageAttribute
-    *comment;
-
-  /*
-    Open output image file.
-  */
-  assert(image_info != (const ImageInfo *) NULL);
-  assert(image_info->signature == MagickSignature);
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  status=OpenBlob(image_info,image,WriteBinaryType,&image->exception);
-  if (status == False)
-    ThrowWriterException(FileOpenWarning,"Unable to open file",image);
-  (void) TransformRGBImage(image,RGBColorspace);
-
-  bits_per_pixel = image_info->depth;
-  if (GetImageType(image, &image->exception) == BilevelType) bits_per_pixel = 1;
-  if (bits_per_pixel != 1 && bits_per_pixel != 2)
-    bits_per_pixel = 4;
-
-  if (image_info->debug) {
-    (void) fprintf(stderr, "image->filename=%s\n", image->filename);
-    (void) fprintf(stderr, "image->depth=%ld\n", image->depth);
-    (void) fprintf(stderr, "image_info->filename=%s\n", image_info->filename);
-    (void) fprintf(stderr, "image_info->depth=%ld\n", image_info->depth);
-  }
-
-  memset(pdb_info.name, 0, 32);
-  strncpy(pdb_info.name, image_info->filename, 32);
-  pdb_info.attributes=0;
-  pdb_info.version=0;
-  pdb_info.create_time=time(NULL);
-  pdb_info.modify_time=pdb_info.create_time;
-  pdb_info.archive_time=0;
-  pdb_info.modify_number=0;
-  pdb_info.application_info=0;
-  pdb_info.sort_info=0;
-  memcpy(pdb_info.type, "vIMG", 4);
-  memcpy(pdb_info.id, "View", 4);
-  pdb_info.seed = 0;
-  pdb_info.next_record = 0;
-
-  comment=GetImageAttribute(image,"comment");
-  pdb_info.number_records = (comment == (ImageAttribute *) NULL ? 1 : 2);
-
-  (void) WriteBlob(image, 32, pdb_info.name);
-  (void) WriteBlobMSBShort(image, pdb_info.attributes);
-  (void) WriteBlobMSBShort(image, pdb_info.version);
-  (void) WriteBlobMSBLong(image, pdb_info.create_time);
-  (void) WriteBlobMSBLong(image, pdb_info.modify_time);
-  (void) WriteBlobMSBLong(image, pdb_info.archive_time);
-  (void) WriteBlobMSBLong(image, pdb_info.modify_number);
-  (void) WriteBlobMSBLong(image, pdb_info.application_info);
-  (void) WriteBlobMSBLong(image, pdb_info.sort_info);
-  (void) WriteBlob(image, 4, pdb_info.type);
-  (void) WriteBlob(image, 4, pdb_info.id);
-  (void) WriteBlobMSBLong(image, pdb_info.seed);
-  (void) WriteBlobMSBLong(image, pdb_info.next_record);
-  (void) WriteBlobMSBShort(image, pdb_info.number_records);
-
-  strncpy(pdb_image.name, pdb_info.name, 32);
-  pdb_image.version = 1;  /* RLE Compressed */
-
-  switch(bits_per_pixel) {
-    case 1: pdb_image.type = 0xff; break;  /* monochrome */
-    case 2: pdb_image.type = 0x00; break;  /* 2 bit gray */
-    default: pdb_image.type = 0x02;  /* 4 bit gray */
-  }
-
-  pdb_image.reserved_1 = 0;
-  pdb_image.note = 0;
-  pdb_image.x_last = 0;
-  pdb_image.y_last = 0;
-  pdb_image.reserved_2 = 0;
-  pdb_image.x_anchor = 0xffff;
-  pdb_image.y_anchor = 0xffff;
-
-  if (image->columns % 16) {  /* Width should be multiple of 16 */
-    pdb_image.width = (image->columns/16 + 1)*16;
-  }
-  else {
-    pdb_image.width = image->columns;
-  }
-  pdb_image.height = image->rows;
-
-  packets = (bits_per_pixel*image->columns/8)*image->rows;
-  pdbImageBuff = (unsigned char *) AcquireMemory(packets + packets/128);
-  if (pdbImageBuff == (unsigned char *) NULL)
-    ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
-  rleBuff = (unsigned char *) AcquireMemory(256);
-  if (rleBuff == (unsigned char *) NULL)
-    ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
-  packet_size=image->depth > 8 ? 2: 1;
-  scanline=(unsigned char *) AcquireMemory(packet_size*image->columns);
-  if (scanline == (unsigned char *) NULL)
-    ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
-    image);
-  (void) TransformRGBImage(image,RGBColorspace);
-
-  /*
-  Convert to GRAY raster scanline.
-  */
-  xx = 8/bits_per_pixel - 1;  /* start at most significant bits */
-  literal = 0;
-  repeated = 0;
-  pdbImageEnd = pdbImageBuff;
-  rleBuff[0] = 0x00;
-  for (y=0; y < (long) image->rows; y++) {  /* Generate RLE encoded data */
-    if (NULL == AcquireImagePixels(image,0,y,image->columns,1,&image->exception))
-      break;
-    (void) PopImagePixels(image,GrayQuantum,scanline);
-
-    for (x=0; x < pdb_image.width; x++) {
-      if (x < image->columns) {  /* This column exists in the image */
-        rleBuff[literal + repeated] |=
-          (0xff - scanline[x*packet_size]) >> (8 - bits_per_pixel) <<
-          xx*bits_per_pixel;
-      }
-
-      if (--xx < 0) {  /* Completed a full byte of data */
-        if ((literal + repeated > 0) &&
-          (rleBuff[literal + repeated] == rleBuff[literal + repeated - 1])) {
-          if (0 == repeated) {
-            literal--;
-            repeated++;
-          }
-          repeated++;
-          if (0x7f < repeated) {
-            pdbImageEnd = EncodeRLE(pdbImageEnd, rleBuff, literal, repeated);
-            literal = 0;
-            repeated = 0;
-          }
-        }
-        else {
-          if (2 < repeated) {
-            pdbImageEnd = EncodeRLE(pdbImageEnd, rleBuff, literal, repeated);
-            rleBuff[0] = rleBuff[literal + repeated];
-            literal = 0;
-          }
-          else {
-            literal += repeated;  /* move 2 or fewer repeats into literal */
-          }
-
-          literal++;
-          repeated = 0;
-
-          if (0x7f < literal) {
-            pdbImageEnd = EncodeRLE(pdbImageEnd, rleBuff, (literal < 0x80 ? literal : 0x80), 0);
-            memmove(rleBuff, rleBuff + literal + repeated, 0x80);
-            literal -= 0x80;
-          }
-
-        }
-
-        xx = 8/bits_per_pixel - 1;
-        rleBuff[literal + repeated] = 0x00;
-      }
-    }
-    if (QuantumTick(y,image->rows))
-      MagickMonitor(SaveImageText,y,image->rows);
-  }
-  pdbImageEnd = EncodeRLE(pdbImageEnd, rleBuff, literal, repeated);
-  LiberateMemory((void **) &scanline);
-  LiberateMemory((void **) &rleBuff);
-
-  /* Write the Image record header */
-  (void) WriteBlobMSBLong(image, TellBlob(image) + 8*pdb_info.number_records);
-  (void) WriteBlobByte(image, 0x40);
-  (void) WriteBlobByte(image, 0x6f);
-  (void) WriteBlobByte(image, 0x80);
-  (void) WriteBlobByte(image, 0);
-
-  if (pdb_info.number_records > 1) {
-    /* Write the comment record header */
-    if (image_info->debug) {
-      (void) fprintf(stderr, "Image size=%d\n", pdbImageEnd - pdbImageBuff);
-    }
-    (void) WriteBlobMSBLong(image, TellBlob(image) + 8 + 58 + pdbImageEnd - pdbImageBuff);
-    (void) WriteBlobByte(image, 0x40);
-    (void) WriteBlobByte(image, 0x6f);
-    (void) WriteBlobByte(image, 0x80);
-    (void) WriteBlobByte(image, 1);
-  }
-
-  /* Write the Image data */
-  (void) WriteBlob(image, 32, pdb_image.name);
-  (void) WriteBlobByte(image, pdb_image.version);
-  (void) WriteBlobByte(image, pdb_image.type);
-  (void) WriteBlobMSBLong(image, pdb_image.reserved_1);
-  (void) WriteBlobMSBLong(image, pdb_image.note);
-  (void) WriteBlobMSBShort(image, pdb_image.x_last);
-  (void) WriteBlobMSBShort(image, pdb_image.y_last);
-  (void) WriteBlobMSBLong(image, pdb_image.reserved_2);
-  (void) WriteBlobMSBShort(image, pdb_image.x_anchor);
-  (void) WriteBlobMSBShort(image, pdb_image.y_anchor);
-  (void) WriteBlobMSBShort(image, pdb_image.width);
-  (void) WriteBlobMSBShort(image, pdb_image.height);
-
-  (void) WriteBlob(image, pdbImageEnd - pdbImageBuff, pdbImageBuff);
-  LiberateMemory((void **) &pdbImageBuff);
-
-  if (pdb_info.number_records > 1) {
-    /* Write the comment data */
-    WriteBlobString(image, comment->value);
-  }
-
-  CloseBlob(image);
-  return(True);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   R e g i s t e r P D B I m a g e                                           %
 %                                                                             %
 %                                                                             %
@@ -938,4 +618,270 @@ ModuleExport void RegisterPDBImage(void)
 ModuleExport void UnregisterPDBImage(void)
 {
   (void) UnregisterMagickInfo("PDB");
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   W r i t e P D B I m a g e                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method WritePDBImage writes an image
+%
+%  The format of the WritePDBImage method is:
+%
+%      unsigned int WritePDBImage(const ImageInfo *image_info,Image *image)
+%
+%  A description of each parameter follows.
+%
+%    o status: Method WritePDBImage return True if the image is written.
+%      False is returned is there is a memory shortage or if the image file
+%      fails to write.
+%
+%    o image_info: Specifies a pointer to an ImageInfo structure.
+%
+%    o image:  A pointer to a Image structure.
+%
+%
+*/
+
+static unsigned char *EncodeRLE(unsigned char *destination,
+  unsigned char *source,unsigned int literal,unsigned int repeat)
+{
+  if (literal > 0)
+    *destination++=literal-1;
+  memcpy(destination,source,literal);
+  destination+=literal;
+  if (repeat > 0)
+    {
+      *destination++=0x80 | (repeat-1);
+      *destination++=source[literal];
+    }
+  return(destination);
+}
+
+static unsigned int WritePDBImage(const ImageInfo *image_info,Image *image)
+{
+  char
+    bits;
+
+  long
+    y;
+
+  PDBImage
+    pdb_image;
+
+  PDBInfo
+    pdb_info;
+
+  register long
+    x;
+
+  unsigned char
+    *buffer,
+    *p,
+    *q,
+    *scanline;
+
+  unsigned int
+    bits_per_pixel,
+    status,
+    literal,
+    repeat;
+
+  unsigned long
+    packet_size,
+    packets;
+
+  const ImageAttribute
+    *comment;
+
+  /*
+    Open output image file.
+  */
+  assert(image_info != (const ImageInfo *) NULL);
+  assert(image_info->signature == MagickSignature);
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  status=OpenBlob(image_info,image,WriteBinaryType,&image->exception);
+  if (status == False)
+    ThrowWriterException(FileOpenWarning,"Unable to open file",image);
+  (void) TransformRGBImage(image,RGBColorspace);
+  bits_per_pixel=image_info->depth;
+  if (GetImageType(image,&image->exception) == BilevelType)
+    bits_per_pixel=1;
+  if ((bits_per_pixel != 1) && (bits_per_pixel != 2))
+    bits_per_pixel=4;
+  memset(pdb_info.name,0,32);
+  strncpy(pdb_info.name,image_info->filename,32);
+  pdb_info.attributes=0;
+  pdb_info.version=0;
+  pdb_info.create_time=time(NULL);
+  pdb_info.modify_time=pdb_info.create_time;
+  pdb_info.archive_time=0;
+  pdb_info.modify_number=0;
+  pdb_info.application_info=0;
+  pdb_info.sort_info=0;
+  memcpy(pdb_info.type,"vIMG",4);
+  memcpy(pdb_info.id,"View",4);
+  pdb_info.seed=0;
+  pdb_info.next_record=0;
+  comment=GetImageAttribute(image,"comment");
+  pdb_info.number_records=(comment == (ImageAttribute *) NULL ? 1 : 2);
+  (void) WriteBlob(image,32,pdb_info.name);
+  (void) WriteBlobMSBShort(image,pdb_info.attributes);
+  (void) WriteBlobMSBShort(image,pdb_info.version);
+  (void) WriteBlobMSBLong(image,pdb_info.create_time);
+  (void) WriteBlobMSBLong(image,pdb_info.modify_time);
+  (void) WriteBlobMSBLong(image,pdb_info.archive_time);
+  (void) WriteBlobMSBLong(image,pdb_info.modify_number);
+  (void) WriteBlobMSBLong(image,pdb_info.application_info);
+  (void) WriteBlobMSBLong(image,pdb_info.sort_info);
+  (void) WriteBlob(image,4,pdb_info.type);
+  (void) WriteBlob(image,4,pdb_info.id);
+  (void) WriteBlobMSBLong(image,pdb_info.seed);
+  (void) WriteBlobMSBLong(image,pdb_info.next_record);
+  (void) WriteBlobMSBShort(image,pdb_info.number_records);
+  (void) strncpy(pdb_image.name, pdb_info.name, 32);
+  pdb_image.version=1;  /* RLE Compressed */
+  switch(bits_per_pixel)
+	{
+    case 1: pdb_image.type=(char) 0xff; break;  /* monochrome */
+    case 2: pdb_image.type=(char) 0x00; break;  /* 2 bit gray */
+    default: pdb_image.type=(char) 0x02;  /* 4 bit gray */
+  }
+  pdb_image.reserved_1=0;
+  pdb_image.note=0;
+  pdb_image.x_last=0;
+  pdb_image.y_last=0;
+  pdb_image.reserved_2=0;
+  pdb_image.x_anchor=(short) 0xffff;
+  pdb_image.y_anchor=(short) 0xffff;
+  pdb_image.width = image->columns;
+  if (image->columns % 16)
+    pdb_image.width=16*(image->columns/16+1);
+  pdb_image.height=image->rows;
+  packets=(bits_per_pixel*image->columns/8)*image->rows;
+  p=(unsigned char *) AcquireMemory(packets+packets/128);
+  if (p == (unsigned char *) NULL)
+    ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
+  buffer=(unsigned char *) AcquireMemory(256);
+  if (buffer == (unsigned char *) NULL)
+    ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
+  packet_size=image->depth > 8 ? 2: 1;
+  scanline=(unsigned char *) AcquireMemory(packet_size*image->columns);
+  if (scanline == (unsigned char *) NULL)
+    ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
+  (void) TransformRGBImage(image,RGBColorspace);
+  /*
+    Convert to GRAY raster scanline.
+  */
+  bits=8/bits_per_pixel-1;  /* start at most significant bits */
+  literal=0;
+  repeat=0;
+  q=p;
+  buffer[0]=0x00;
+  for (y=0; y < (long) image->rows; y++)
+  {
+    if (!AcquireImagePixels(image,0,y,image->columns,1,&image->exception))
+      break;
+    (void) PopImagePixels(image,GrayQuantum,scanline);
+    for (x=0; x < pdb_image.width; x++)
+    {
+      if (x < image->columns)
+        buffer[literal+repeat]|=(0xff-scanline[x*packet_size]) >>
+          (8-bits_per_pixel) << bits*bits_per_pixel;
+      bits--;
+      if (bits < 0)
+        {
+          if (((literal+repeat) > 0) &&
+              (buffer[literal+repeat] == buffer[literal+repeat-1]))
+            {
+              if (repeat == 0)
+                {
+                  literal--;
+                  repeat++;
+                }
+              repeat++;
+              if (0x7f < repeat)
+                {
+                  q=EncodeRLE(q,buffer,literal,repeat);
+                  literal=0;
+                  repeat=0;
+                }
+            }
+          else
+            {
+              if (repeat >= 2)
+                literal+=repeat;
+              else
+                {
+                  q=EncodeRLE(q,buffer,literal,repeat);
+                  buffer[0]=buffer[literal+repeat];
+                  literal=0;
+                }
+              literal++;
+              repeat=0;
+              if (0x7f < literal)
+                {
+                  q=EncodeRLE(q,buffer,(literal < 0x80 ? literal : 0x80),0);
+                  CloneMemory(buffer,buffer+literal+repeat,0x80);
+                  literal-=0x80;
+                }
+            }
+        bits=8/bits_per_pixel-1;
+        buffer[literal+repeat]=0x00;
+      }
+    }
+    if (QuantumTick(y,image->rows))
+      MagickMonitor(SaveImageText,y,image->rows);
+  }
+  q=EncodeRLE(q,buffer,literal,repeat);
+  LiberateMemory((void **) &scanline);
+  LiberateMemory((void **) &buffer);
+  /*
+    Write the Image record header.
+  */
+  (void) WriteBlobMSBLong(image,TellBlob(image)+8*pdb_info.number_records);
+  (void) WriteBlobByte(image,0x40);
+  (void) WriteBlobByte(image,0x6f);
+  (void) WriteBlobByte(image,0x80);
+  (void) WriteBlobByte(image,0);
+  if (pdb_info.number_records > 1)
+    {
+      /*
+        Write the comment record header.
+      */
+      (void) WriteBlobMSBLong(image,TellBlob(image)+8+58+q-p);
+      (void) WriteBlobByte(image,0x40);
+      (void) WriteBlobByte(image,0x6f);
+      (void) WriteBlobByte(image,0x80);
+      (void) WriteBlobByte(image,1);
+    }
+  /*
+	 Write the Image data.
+  */
+  (void) WriteBlob(image,32,pdb_image.name);
+  (void) WriteBlobByte(image,pdb_image.version);
+  (void) WriteBlobByte(image,pdb_image.type);
+  (void) WriteBlobMSBLong(image,pdb_image.reserved_1);
+  (void) WriteBlobMSBLong(image,pdb_image.note);
+  (void) WriteBlobMSBShort(image,pdb_image.x_last);
+  (void) WriteBlobMSBShort(image,pdb_image.y_last);
+  (void) WriteBlobMSBLong(image,pdb_image.reserved_2);
+  (void) WriteBlobMSBShort(image,pdb_image.x_anchor);
+  (void) WriteBlobMSBShort(image,pdb_image.y_anchor);
+  (void) WriteBlobMSBShort(image,pdb_image.width);
+  (void) WriteBlobMSBShort(image,pdb_image.height);
+  (void) WriteBlob(image,q-p,p);
+  LiberateMemory((void **) &p);
+  if (pdb_info.number_records > 1)
+    WriteBlobString(image,comment->value);
+  CloseBlob(image);
+  return(True);
 }
