@@ -1362,7 +1362,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,const int ar
         p->next=next_image;
         continue;
       }
-    if (j != (k+1))
+    if ((image != (Image *) NULL) && (j != (k+1))
       {
         status&=MogrifyImages(image_info,i-j,argv+j,&image);
         (void) CatchImageException(image);
@@ -3334,7 +3334,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,const int ar
         }
         continue;
       }
-    if (j != (k+1))
+    if ((image != (Image *) NULL) && (j != (k+1))
       {
         status&=MogrifyImages(image_info,i-j,argv+j,&image);
         (void) CatchImageException(image);
