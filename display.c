@@ -1495,7 +1495,6 @@ int main(int argc,char **argv)
       XRetainWindowColors(display,XRootWindow(display,XDefaultScreen(display)));
       XSync(display,False);
     }
-  DestroyImages(image);
   DestroyDelegateInfo();
   FreeMemory(argv);
   Exit(0);
