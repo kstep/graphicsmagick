@@ -136,7 +136,7 @@ MagickExport unsigned int ContrastImage(Image *image,const unsigned int sharpen)
             else
               status=MagickMonitor(DullContrastImageText,y,image->rows,
                 &image->exception);
-            if (status == False);
+            if (status == False)
               break;
           }
       }

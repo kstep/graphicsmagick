@@ -3204,7 +3204,9 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       }
     if (primitive_info->text != (char *) NULL)
       LiberateMemory((void **) &primitive_info->text);
-    if (!MagickMonitor(RenderImageText,q-primitive,(off_t) primitive_extent,&image->exception))
+    status=MagickMonitor(RenderImageText,q-primitive,(off_t) primitive_extent,
+      &image->exception);
+    if (status == False)
       break;
   }
   LogMagickEvent(RenderEvent,"end draw-image");

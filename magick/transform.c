@@ -927,7 +927,8 @@ MagickExport Image *MosaicImages(const Image *image,ExceptionInfo *exception)
     *next;
 
   unsigned int
-    scene;
+    scene,
+    status;
 
   /*
     Determine mosaic bounding box.
@@ -973,7 +974,9 @@ MagickExport Image *MosaicImages(const Image *image,ExceptionInfo *exception)
   {
     (void) CompositeImage(mosaic_image,CopyCompositeOp,next,next->page.x,
       next->page.y);
-    if (!MagickMonitor(MosaicImageText,scene++,GetImageListSize(image),exception))
+    status=MagickMonitor(MosaicImageText,scene++,GetImageListSize(image),
+      exception);
+    if (status == False)
       break;
   }
   return(mosaic_image);
