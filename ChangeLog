@@ -1,5 +1,6 @@
 2004-05-20  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* ltmain.sh: Fix to allow exe wrapper to work under MinGW.
 	* wand/magick_compat.c (QueryMagickColor): Fixed wrong DLL export.
 	* wand/magick_wand.c: Fixed some wrong DLL exports.
 
