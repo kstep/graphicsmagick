@@ -222,8 +222,14 @@ static int          util_append_mvg(wmfAPI * API, char *format, ...);
 static void         util_draw_arc(wmfAPI * API, wmfDrawArc_t * draw_arc,magick_arc_t finish);
 static int          util_font_weight( const char* font );
 static double       util_pointsize( wmfAPI* API, wmfFont* font, char* str, double font_height);
+static void         util_clip_pop( wmfAPI* API );
+static void         util_clip_push( wmfAPI* API, unsigned long id );
 static void         util_context_pop( wmfAPI* API );
 static void         util_context_push( wmfAPI* API );
+static void         util_defs_pop( wmfAPI* API );
+static void         util_defs_push( wmfAPI* API );
+static void         util_pattern_pop( wmfAPI* API );
+static void         util_pattern_push( wmfAPI* API, unsigned long id, unsigned long columns, unsigned long rows );
 static long         util_registry_add(wmfAPI * API, const Image *image, ExceptionInfo *exception);
 static const Image* util_registry_get(wmfAPI * API, const long id, ExceptionInfo *exception);
 static void         util_registry_remove(wmfAPI * API, const long id);
@@ -287,6 +293,24 @@ static void ipa_rop_draw(wmfAPI * API, wmfROP_Draw_t * rop_draw)
   util_context_pop(API);
 }
 
+static void util_clip_pop( wmfAPI* API )
+{
+  wmf_magick_t
+    *ddata = WMF_MAGICK_GetData(API);
+  
+  ddata->push_depth--;
+  util_append_mvg(API, "pop clip-path\n");
+}
+
+static void util_clip_push( wmfAPI* API, unsigned long id )
+{
+  wmf_magick_t
+    *ddata = WMF_MAGICK_GetData(API);
+ 
+  util_append_mvg(API, "push clip-path clip_%lu\n", id);
+  ddata->push_depth++;
+}
+
 /* Pop graphic context */
 static void util_context_pop( wmfAPI* API )
 {
@@ -304,6 +328,46 @@ static void util_context_push( wmfAPI* API )
     *ddata = WMF_MAGICK_GetData(API);
  
   util_append_mvg(API, "push graphic-context\n");
+  ddata->push_depth++;
+}
+
+static void util_defs_pop( wmfAPI* API )
+{
+  wmf_magick_t
+    *ddata = WMF_MAGICK_GetData(API);
+  
+  ddata->push_depth--;
+  util_append_mvg(API, "pop defs\n");
+}
+
+static void util_defs_push( wmfAPI* API )
+{
+  wmf_magick_t
+    *ddata = WMF_MAGICK_GetData(API);
+ 
+  util_append_mvg(API, "push defs\n");
+  ddata->push_depth++;
+}
+
+static void util_pattern_pop( wmfAPI* API )
+{
+  wmf_magick_t
+    *ddata = WMF_MAGICK_GetData(API);
+  
+  ddata->push_depth--;
+  util_append_mvg(API, "pop pattern\n");
+}
+
+static void util_pattern_push( wmfAPI* API,
+                               unsigned long id,
+                               unsigned long columns,
+                               unsigned long rows )
+{
+  wmf_magick_t
+    *ddata = WMF_MAGICK_GetData(API);
+ 
+  util_append_mvg(API, "push pattern brush_%lu 0,0, %lu,%lu\n",
+                  id, columns, rows);
   ddata->push_depth++;
 }
 
@@ -563,7 +627,7 @@ static void ipa_device_begin(wmfAPI * API)
   util_append_mvg(API, "viewbox 0 0 %u %u\n", ddata->image->columns,
         ddata->image->rows);
 
-  util_append_mvg(API, "# Created by ImageMagick %s http://www.imagemagick.org\n",
+  util_append_mvg(API, "#Created by ImageMagick %s http://www.imagemagick.org\n",
                     MagickLibVersionText);
 
   /* Scale width and height to image */
@@ -631,13 +695,12 @@ static void ipa_device_begin(wmfAPI * API)
           id = util_registry_add(API, image, &exception);
           if( id > -1 )
             {
-              util_append_mvg(API, "push defs\n");
-              util_append_mvg(API, "push pattern brush_%lu 0,0, %lu,%lu\n",
-                                ddata->pattern_id, image->columns, image->rows);
+              util_defs_push(API);
+              util_pattern_push(API, ddata->pattern_id, image->columns, image->rows);
               util_append_mvg(API, "image Copy 0,0 %lu,%lu 'mpri:%li'\n",
                                 image->columns, image->rows, id);
-              util_append_mvg(API, "pop pattern\n");
-              util_append_mvg(API, "pop defs\n");
+              util_pattern_pop(API);
+              util_defs_pop(API);
               util_append_mvg(API, "fill url(#brush_%lu)\n", ddata->pattern_id);
               ++ddata->pattern_id;
 
@@ -1032,8 +1095,8 @@ static void ipa_region_clip(wmfAPI *API, wmfPolyRectangle_t *poly_rect)
 
       /* Define clip path */
       ddata->clip_path_id++;
-      util_append_mvg(API, "push defs\n");
-      util_append_mvg(API, "push clip-path clip_%lu\n", ddata->clip_path_id);
+      util_defs_push(API);
+      util_clip_push(API, ddata->clip_path_id);
       util_context_push(API);
       for (i = 0; i < poly_rect->count; i++)
         {
@@ -1042,8 +1105,8 @@ static void ipa_region_clip(wmfAPI *API, wmfPolyRectangle_t *poly_rect)
                             XC(poly_rect->BR[i].x), YC(poly_rect->BR[i].y));
         }
       util_context_pop(API);
-      util_append_mvg(API, "pop clip-path\n");
-      util_append_mvg(API, "pop defs\n");
+      util_clip_pop(API);
+      util_defs_pop(API);
 
       /* Push context for new clip paths */
       util_context_push(API);
@@ -1464,107 +1527,107 @@ static void util_set_brush(wmfAPI * API, wmfDC * dc)
          ignored */
       {
         util_append_mvg(API, "fill #%02x%02x%02x\n",
-                          (int) WMF_BRUSH_COLOR(brush)->r,
-                          (int) WMF_BRUSH_COLOR(brush)->g,
-                          (int) WMF_BRUSH_COLOR(brush)->b);
-  break;
+                        (int) WMF_BRUSH_COLOR(brush)->r,
+                        (int) WMF_BRUSH_COLOR(brush)->g,
+                        (int) WMF_BRUSH_COLOR(brush)->b);
+        break;
       }
     case BS_HOLLOW /* 1 */:    /* BS_HOLLOW & BS_NULL share enum */
       /* WMF_BRUSH_COLOR and WMF_BRUSH_HATCH ignored */
       {
         util_append_mvg(API, "fill none\n");
-  break;
+        break;
       }
     case BS_HATCHED /* 2 */:
       /* WMF_BRUSH_COLOR specifies the hatch color, WMF_BRUSH_HATCH
          specifies the hatch brush style. If WMF_DC_OPAQUE, then
          WMF_DC_BACKGROUND specifies hatch background color.  */
       {
-        util_append_mvg(API, "push defs\n");
-  util_append_mvg(API, "push pattern brush_%lu 0,0 8,8\n", ddata->pattern_id);
-  util_context_push(API);
-
-  if (WMF_DC_OPAQUE(dc))
+        util_defs_push(API);
+        util_pattern_push(API, ddata->pattern_id, 8, 8);
+        util_context_push(API);
+        
+        if (WMF_DC_OPAQUE(dc))
           {
             util_append_mvg(API, "fill #%02x%02x%02x\n",
-                              (int) WMF_DC_BACKGROUND(dc)->r,
-                              (int) WMF_DC_BACKGROUND(dc)->g,
-                              (int) WMF_DC_BACKGROUND(dc)->b);
+                            (int) WMF_DC_BACKGROUND(dc)->r,
+                            (int) WMF_DC_BACKGROUND(dc)->g,
+                            (int) WMF_DC_BACKGROUND(dc)->b);
             util_append_mvg(API, "rectangle 0,0 7,7\n");
           }
-
-  util_append_mvg(API, "stroke-antialias 0\n");
-  util_append_mvg(API, "stroke-width 1\n");
-
-  util_append_mvg(API, "stroke #%02x%02x%02x\n",
-                          (int) WMF_BRUSH_COLOR(brush)->r,
-                          (int) WMF_BRUSH_COLOR(brush)->g,
-                          (int) WMF_BRUSH_COLOR(brush)->b);
-
-  switch ((unsigned int) WMF_BRUSH_HATCH(brush))
+        
+        util_append_mvg(API, "stroke-antialias 0\n");
+        util_append_mvg(API, "stroke-width 1\n");
+        
+        util_append_mvg(API, "stroke #%02x%02x%02x\n",
+                        (int) WMF_BRUSH_COLOR(brush)->r,
+                        (int) WMF_BRUSH_COLOR(brush)->g,
+                        (int) WMF_BRUSH_COLOR(brush)->b);
+        
+        switch ((unsigned int) WMF_BRUSH_HATCH(brush))
           {
-
-    case HS_HORIZONTAL:  /* ----- */
-      {
-        util_append_mvg(API, "line 0,3 7,3\n");
-        break;
-      }
-    case HS_VERTICAL:  /* ||||| */
-      {
-        util_append_mvg(API, "line 3,0 3,7\n");
-        break;
-      }
-    case HS_FDIAGONAL:  /* \\\\\ */
-      {
-        util_append_mvg(API, "line 0,0 7,7\n");
-        break;
-      }
-    case HS_BDIAGONAL:  /* ///// */
-      {
-        util_append_mvg(API, "line 0,7 7,0\n");
-        break;
-      }
-    case HS_CROSS:  /* +++++ */
-      {
-        util_append_mvg(API, "line 0,3 7,3\n");
-        util_append_mvg(API, "line 3,0 3,7\n");
-        break;
-      }
-    case HS_DIAGCROSS:  /* xxxxx */
-      {
-        util_append_mvg(API, "line 0,0 7,7\n");
-        util_append_mvg(API, "line 0,7 7,0\n");
-        break;
-      }
-    default:
-      {
-      }
+            
+          case HS_HORIZONTAL:  /* ----- */
+            {
+              util_append_mvg(API, "line 0,3 7,3\n");
+              break;
+            }
+          case HS_VERTICAL:  /* ||||| */
+            {
+              util_append_mvg(API, "line 3,0 3,7\n");
+              break;
+            }
+          case HS_FDIAGONAL:  /* \\\\\ */
+            {
+              util_append_mvg(API, "line 0,0 7,7\n");
+              break;
+            }
+          case HS_BDIAGONAL:  /* ///// */
+            {
+              util_append_mvg(API, "line 0,7 7,0\n");
+              break;
+            }
+          case HS_CROSS:  /* +++++ */
+            {
+              util_append_mvg(API, "line 0,3 7,3\n");
+              util_append_mvg(API, "line 3,0 3,7\n");
+              break;
+            }
+          case HS_DIAGCROSS:  /* xxxxx */
+            {
+              util_append_mvg(API, "line 0,0 7,7\n");
+              util_append_mvg(API, "line 0,7 7,0\n");
+              break;
+            }
+          default:
+            {
+            }
           }
-  util_context_pop(API);
-  util_append_mvg(API, "pop pattern\n");
-        util_append_mvg(API, "pop defs\n");
-  util_append_mvg(API, "fill 'url(#brush_%lu)'\n", ddata->pattern_id);
-  ++ddata->pattern_id;
-  break;
+        util_context_pop(API);
+        util_pattern_pop(API);
+        util_defs_pop(API);
+        util_append_mvg(API, "fill 'url(#brush_%lu)'\n", ddata->pattern_id);
+        ++ddata->pattern_id;
+        break;
       }
     case BS_PATTERN /* 3 */:
       /* WMF_BRUSH_COLOR ignored, WMF_BRUSH_HATCH provides handle to
          bitmap */
       {
-  printf("util_set_brush: BS_PATTERN not supported\n");
-  break;
+        printf("util_set_brush: BS_PATTERN not supported\n");
+        break;
       }
     case BS_INDEXED /* 4 */:
       {
-  printf("util_set_brush: BS_INDEXED not supported\n");
-  break;
+        printf("util_set_brush: BS_INDEXED not supported\n");
+        break;
       }
     case BS_DIBPATTERN /* 5 */:
       {
-  wmfBMP
+        wmfBMP
           *brush_bmp = WMF_BRUSH_BITMAP(brush);
 
-  if (brush_bmp && brush_bmp->data != 0)
+        if (brush_bmp && brush_bmp->data != 0)
           {
             const char
               *mode;
@@ -1606,7 +1669,7 @@ static void util_set_brush(wmfAPI * API, wmfDC * dc)
               case SRCERASE:  /* dest = source AND (NOT dest) */
                 break;
               case NOTSRCCOPY:  /* dest = (NOT source) */
-/*                 NegateImage(image, False); */
+                /*                 NegateImage(image, False); */
                 /* mode = "Copy"; */
                 break;
               case NOTSRCERASE:  /* dest = (NOT source) AND (NOT dest) */
@@ -1634,13 +1697,12 @@ static void util_set_brush(wmfAPI * API, wmfDC * dc)
 
             if( *id > -1 )
               {
-                util_append_mvg(API, "push defs\n");
-                util_append_mvg(API, "push pattern brush_%lu 0,0, %u,%u\n",
-                                  ddata->pattern_id, brush_bmp->width, brush_bmp->height);
+                util_defs_push(API);
+                util_pattern_push(API, ddata->pattern_id, brush_bmp->width, brush_bmp->height);
                 util_append_mvg(API, "image %s 0,0 %u,%u 'mpri:%li'\n",
-                                  mode, brush_bmp->width, brush_bmp->height, *id);
-                util_append_mvg(API, "pop pattern\n");
-                util_append_mvg(API, "pop defs\n");
+                                mode, brush_bmp->width, brush_bmp->height, *id);
+                util_pattern_pop(API);
+                util_defs_pop(API);
                 util_append_mvg(API, "fill url(#brush_%lu)\n", ddata->pattern_id);
                 ++ddata->pattern_id;
               }
@@ -1648,27 +1710,27 @@ static void util_set_brush(wmfAPI * API, wmfDC * dc)
               ThrowException(&ddata->image->exception,exception.severity,
                              exception.reason,exception.description);
           }
-  else
-    printf("util_set_brush: no BMP image data!\n");
+        else
+          printf("util_set_brush: no BMP image data!\n");
 
-  break;
+        break;
       }
     case BS_DIBPATTERNPT /* 6 */:
       /* WMF_BRUSH_COLOR ignored, WMF_BRUSH_HATCH provides pointer to
          DIB */
       {
-  printf("util_set_brush: BS_DIBPATTERNPT not supported\n");
-  break;
+        printf("util_set_brush: BS_DIBPATTERNPT not supported\n");
+        break;
       }
     case BS_PATTERN8X8 /* 7 */:
       {
-  printf("util_set_brush: BS_PATTERN8X8 not supported\n");
-  break;
+        printf("util_set_brush: BS_PATTERN8X8 not supported\n");
+        break;
       }
     case BS_DIBPATTERN8X8 /* 8 */:
       {
-  printf("util_set_brush: BS_DIBPATTERN8X8 not supported\n");
-  break;
+        printf("util_set_brush: BS_DIBPATTERN8X8 not supported\n");
+        break;
       }
     default:
       {
