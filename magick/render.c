@@ -4847,7 +4847,7 @@ MagickExport void TraceCircle(PrimitiveInfo *primitive_info,
   offset.x=radius;
   offset.y=radius;
   degrees.x=0.0;
-  degrees.y=360.0-MagickEpsilon;
+  degrees.y=359.999999999;
   TraceEllipse(primitive_info,start,offset,degrees);
 }
 
