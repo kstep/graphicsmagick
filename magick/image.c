@@ -7599,19 +7599,15 @@ MagickExport unsigned int TransformRGBImage(Image *image,
                 ScaleToQuantum(350) : blue+0.5;
               if (colorspace == sRGBColorspace)
                 {
-                  q->red=(Quantum)
-                    ScaleToQuantum(sRGBMap[(long) ScaleQuantum(red)]);
+                  q->red=(Quantum) ScaleToQuantum(sRGBMap[ScaleQuantum(red)]);
                   q->green=(Quantum)
-                    ScaleToQuantum(sRGBMap[(long) ScaleQuantum(green)]);
-                  q->blue=(Quantum)
-                    ScaleToQuantum(sRGBMap[(long) ScaleQuantum(blue)]);
+                    ScaleToQuantum(sRGBMap[ScaleQuantum(green)]);
+                  q->blue=(Quantum) ScaleToQuantum(sRGBMap[ScaleQuantum(blue)]);
                   break;
                 }
-              q->red=(Quantum) ScaleToQuantum(YCCMap[(long) ScaleQuantum(red)]);
-              q->green=(Quantum)
-                ScaleToQuantum(YCCMap[(long) ScaleQuantum(green)]);
-              q->blue=(Quantum)
-                ScaleToQuantum(YCCMap[(long) ScaleQuantum(blue)]);
+              q->red=(Quantum) ScaleToQuantum(YCCMap[ScaleQuantum(red)]);
+              q->green=(Quantum) ScaleToQuantum(YCCMap[ScaleQuantum(green)]);
+              q->blue=(Quantum) ScaleToQuantum(YCCMap[ScaleQuantum(blue)]);
               break;
             }
             default:
@@ -7664,19 +7660,19 @@ MagickExport unsigned int TransformRGBImage(Image *image,
             if (colorspace == sRGBColorspace)
               {
                 image->colormap[i].red=(Quantum)
-                  ScaleToQuantum(sRGBMap[(long) ScaleQuantum(red)]);
+                  ScaleToQuantum(sRGBMap[ScaleQuantum(red)]);
                 image->colormap[i].green=(Quantum)
-                  ScaleToQuantum(sRGBMap[(long) ScaleQuantum(green)]);
+                  ScaleToQuantum(sRGBMap[ScaleQuantum(green)]);
                 image->colormap[i].blue=(Quantum)
-                  ScaleToQuantum(sRGBMap[(long) ScaleQuantum(blue)]);
+                  ScaleToQuantum(sRGBMap[ScaleQuantum(blue)]);
                 break;
               }
             image->colormap[i].red=(Quantum)
-              ScaleToQuantum(YCCMap[(long) ScaleQuantum(red)]);
+              ScaleToQuantum(YCCMap[ScaleQuantum(red)]);
             image->colormap[i].green=(Quantum)
-              ScaleToQuantum(YCCMap[(long) ScaleQuantum(green)]);
+              ScaleToQuantum(YCCMap[ScaleQuantum(green)]);
             image->colormap[i].blue=(Quantum)
-              ScaleToQuantum(YCCMap[(long) ScaleQuantum(blue)]);
+              ScaleToQuantum(YCCMap[ScaleQuantum(blue)]);
             break;
           }
           default:
