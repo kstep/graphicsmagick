@@ -259,10 +259,10 @@ MagickExport Quantum GenerateNoise(const Quantum pixel,
       register long
         i;
 
-      for (i=0; alpha > exp(-SigmaPoisson*pixel); i++)
+      for (i=0; alpha > exp(-SigmaPoisson*Downscale(pixel)); i++)
       {
         beta=(double) (rand() & NoiseMask)/NoiseMask;
-        alpha=alpha*beta;
+        alpha*=beta;
       }
       value=i/SigmaPoisson;
       break;
