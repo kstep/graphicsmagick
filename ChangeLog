@@ -1,3 +1,6 @@
+2002-04-30  Cristy  <cristy@mystic.es.dupont.com>
+  * ImageMagick, version 5.4.5, released.
+
 2002-04-20  Cristy  <cristy@mystic.es.dupont.com>
   * Added magic string detection for the FPX format (patch provided by
     Marc).
