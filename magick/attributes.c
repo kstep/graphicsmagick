@@ -202,7 +202,7 @@ MagickExport ImageAttribute *GetImageAttribute(const Image *image,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   G e t I m a g e I n f i A t t r i b u t e                                 %
+%   G e t I m a g e I n f o A t t r i b u t e                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
