@@ -87,7 +87,6 @@ MagickExport Image *CloneImageList(const Image *images,ExceptionInfo *exception)
     *clone_images,
     *image;
 
-  assert(images != (Image *) NULL);
   if (images == (Image *) NULL)
     return((Image *) NULL);
   assert(images->signature == MagickSignature);
@@ -99,7 +98,7 @@ MagickExport Image *CloneImageList(const Image *images,ExceptionInfo *exception)
       {
         if (clone_images != (Image *) NULL)
           DestroyImageList(clone_images);
-        break;
+        return((Image *) NULL);
       }
     if (clone_images == (Image *) NULL)
       {
@@ -144,29 +143,21 @@ MagickExport void DestroyImages(Image *image)
   DestroyImageList(image);
 }
 
-MagickExport void DestroyImageList(Image *image)
+MagickExport void DestroyImageList(Image *images)
 {
   Image
-    *next;
+    *image;
 
-  /*
-    Proceed to the top of the image list.
-  */
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  while (image->previous != (Image *) NULL)
-    image=image->previous;
-  do
+  if (images == (Image *) NULL)
+    return((Image *) NULL);
+  assert(images->signature == MagickSignature);
+  while (images->previous != (Image *) NULL)
+    images=images->previous;
+  for (image=images; images != (Image *) NULL; image=images)
   {
-    /*
-      Destroy this image.
-    */
-    next=image->next;
-    if (next != (Image *)NULL)
-      next->previous=(Image *) NULL;
+    images=images->next;
     DestroyImage(image);
-    image=next;
-  } while (image != (Image *) NULL);
+  }
 }
 
 /*
@@ -184,7 +175,7 @@ MagickExport void DestroyImageList(Image *image)
 %
 %  The format of the GetImageList method is:
 %
-%      Image *GetImageList(constconst  Image *images,const unsigned long n,
+%      Image *GetImageList(const Image *images,const unsigned long n,
 %        ExceptionInfo *esception)
 %
 %  A description of each parameter follows:
