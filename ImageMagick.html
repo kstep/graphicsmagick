@@ -6,15 +6,24 @@
 	<META NAME="GENERATOR" CONTENT="OpenOffice.org 1.0  (Win32)">
 	<META NAME="CREATED" CONTENT="20020718;11000900">
 	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
-	<META NAME="CHANGED" CONTENT="20020805;13424011">
+	<META NAME="CHANGED" CONTENT="20020806;14112421">
 	<META NAME="DESCRIPTION" CONTENT="ImageMagick is a robust collection of tools and libraries to read, write, and manipulate an image in any of the more popular image formats including GIF, JPEG, PNG, PDF, and Photo CD.  With ImageMagick you can create GIFs dynamically making it suitable for Web applications.  You can also resize, rotate, sharpen, color reduce, or add special effects to an image and save your completed work in the same or differing image format.">
 	<META NAME="KEYWORDS" CONTENT="ImageMagick, Image Magick, Image Magic, PerlMagick, Perl Magick, Perl Magic, CineMagick, PixelMagick, Pixel Magic, WebMagick, Web Magic, visualization, image processing, software development, simulation, image, software, AniMagick, Animagic,  Magick++">
 	<STYLE>
 	<!--
 		@page { size: 21.59cm 27.94cm }
-		TD P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 11pt }
-		P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 11pt }
-		TH P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 11pt }
+		TD P { color: #000000 }
+		TD P.western { font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 12pt }
+		TD P.cjk { font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 11pt }
+		TD P.ctl { font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 11pt }
+		P { color: #000000 }
+		P.western { font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 12pt }
+		P.cjk { font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 11pt }
+		P.ctl { font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 11pt }
+		TH P { color: #ffffff }
+		TH P.western { font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 12pt }
+		TH P.cjk { font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 11pt }
+		TH P.ctl { font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 11pt }
 		A:link { color: #0085c0 }
 		A:visited { color: #800080 }
 	-->
@@ -25,14 +34,14 @@
 <FORM ACTION="http://www.google.com/search">
 	<INPUT TYPE=HIDDEN NAME="domains" VALUE="www.imagemagick.org">
 	<INPUT TYPE=HIDDEN NAME="sitesearch" VALUE="www.imagemagick.org">
-	<P>Search the Web for an ImageMagick topic: <INPUT TYPE=TEXT NAME="q" SIZE=25 MAXLENGTH=255>
+	<P CLASS="western">Search this site for an ImageMagick topic: <INPUT TYPE=TEXT NAME="q" SIZE=25 MAXLENGTH=255>
 	<INPUT TYPE=SUBMIT NAME="sa" VALUE="Search"> 
 	</P>
 </FORM>
 <HR>
-<P>ImageMagick<FONT SIZE=1><SUP>TM</SUP></FONT> is a robust
-collection of tools and libraries offered under a liberal usage
-<A HREF="www/Copyright.html">license</A> to read, write, and
+<P CLASS="western">ImageMagick<FONT SIZE=1><SUP>TM</SUP></FONT> is a
+robust collection of tools and libraries offered under a liberal
+usage <A HREF="www/Copyright.html">license</A> to read, write, and
 manipulate an image in many image <A HREF="www/formats.html">formats</A>
 (over 68 major formats) including popular formats like TIFF, JPEG,
 PNG, PDF, PhotoCD, and GIF. With ImageMagick you can create images
@@ -42,8 +51,8 @@ image and save your completed work in the same or differing image
 format. Image processing operations are available from the command
 line, as well as through C, C++, Perl, or Java programming
 interfaces.</P>
-<P>Here are just a few <A HREF="images/examples.jpg">examples</A> of
-what ImageMagick can do:</P>
+<P CLASS="western">Here are just a few <A HREF="images/examples.jpg">examples</A>
+of what ImageMagick can do:</P>
 <DL>
 	<DD>
 	<TABLE WIDTH=95% BORDER=0 CELLPADDING=0 CELLSPACING=0>
@@ -52,93 +61,97 @@ what ImageMagick can do:</P>
 		<COL WIDTH=88*>
 		<TR VALIGN=TOP>
 			<TD WIDTH=2%>
-				<P><IMG SRC="images/ball.png" NAME="Graphic13" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0></P>
+				<P CLASS="western"><IMG SRC="images/ball.png" NAME="Graphic13" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0></P>
 			</TD>
 			<TD WIDTH=63%>
-				<P>Convert an image from one format to another (e.g. TIFF to
-				JPEG)</P>
+				<P CLASS="western">Convert an image from one format to another
+				(e.g. TIFF to JPEG)</P>
 			</TD>
 			<TD ROWSPAN=9 WIDTH=34%>
-				<P ALIGN=LEFT><A HREF="www/archives.html"><IMG SRC="images/magick.png" NAME="Graphic23" ALT="Image Magick" ALIGN=RIGHT WIDTH=229 HEIGHT=236 BORDER=0></A><BR>
+				<P CLASS="western" ALIGN=LEFT><A HREF="www/archives.html"><IMG SRC="images/magick.png" NAME="Graphic23" ALT="Image Magick" ALIGN=RIGHT WIDTH=229 HEIGHT=236 BORDER=0></A><BR>
 				</P>
 			</TD>
 		</TR>
 		<TR VALIGN=TOP>
 			<TD WIDTH=2%>
-				<P><IMG SRC="images/ball.png" NAME="Graphic14" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0></P>
+				<P CLASS="western"><IMG SRC="images/ball.png" NAME="Graphic14" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0></P>
 			</TD>
 			<TD WIDTH=63%>
-				<P>Resize, rotate, sharpen, color reduce, or add special effects
-				to an image 
+				<P CLASS="western">Resize, rotate, sharpen, color reduce, or add
+				special effects to an image 
 				</P>
 			</TD>
 		</TR>
 		<TR VALIGN=TOP>
 			<TD WIDTH=2%>
-				<P><IMG SRC="images/ball.png" NAME="Graphic15" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0></P>
+				<P CLASS="western"><IMG SRC="images/ball.png" NAME="Graphic15" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0></P>
 			</TD>
 			<TD WIDTH=63%>
-				<P>Create a montage of image thumbnails 
+				<P CLASS="western">Create a montage of image thumbnails 
 				</P>
 			</TD>
 		</TR>
 		<TR VALIGN=TOP>
 			<TD WIDTH=2%>
-				<P><IMG SRC="images/ball.png" NAME="Graphic16" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0></P>
+				<P CLASS="western"><IMG SRC="images/ball.png" NAME="Graphic16" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0></P>
 			</TD>
 			<TD WIDTH=63%>
-				<P>Create a transparent image suitable for use on the Web 
+				<P CLASS="western">Create a transparent image suitable for use on
+				the Web 
 				</P>
 			</TD>
 		</TR>
 		<TR VALIGN=TOP>
 			<TD WIDTH=2%>
-				<P><IMG SRC="images/ball.png" NAME="Graphic17" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0></P>
+				<P CLASS="western"><IMG SRC="images/ball.png" NAME="Graphic17" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0></P>
 			</TD>
 			<TD WIDTH=63%>
-				<P>Turn a group of images into a GIF animation sequence 
+				<P CLASS="western">Turn a group of images into a GIF animation
+				sequence 
 				</P>
 			</TD>
 		</TR>
 		<TR VALIGN=TOP>
 			<TD WIDTH=2%>
-				<P><IMG SRC="images/ball.png" NAME="Graphic18" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0></P>
+				<P CLASS="western"><IMG SRC="images/ball.png" NAME="Graphic18" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0></P>
 			</TD>
 			<TD WIDTH=63%>
-				<P>Create a composite image by combining several separate images 
+				<P CLASS="western">Create a composite image by combining several
+				separate images 
 				</P>
 			</TD>
 		</TR>
 		<TR VALIGN=TOP>
 			<TD WIDTH=2%>
-				<P><IMG SRC="images/ball.png" NAME="Graphic19" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0></P>
+				<P CLASS="western"><IMG SRC="images/ball.png" NAME="Graphic19" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0></P>
 			</TD>
 			<TD WIDTH=63%>
-				<P>Draw shapes or text on an image 
+				<P CLASS="western">Draw shapes or text on an image 
 				</P>
 			</TD>
 		</TR>
 		<TR VALIGN=TOP>
 			<TD WIDTH=2%>
-				<P><IMG SRC="images/ball.png" NAME="Graphic20" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0></P>
+				<P CLASS="western"><IMG SRC="images/ball.png" NAME="Graphic20" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0></P>
 			</TD>
 			<TD WIDTH=63%>
-				<P>Decorate an image with a border or frame 
+				<P CLASS="western">Decorate an image with a border or frame 
 				</P>
 			</TD>
 		</TR>
 		<TR VALIGN=TOP>
 			<TD WIDTH=2%>
-				<P><IMG SRC="images/ball.png" NAME="Graphic22" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0></P>
+				<P CLASS="western"><IMG SRC="images/ball.png" NAME="Graphic22" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0></P>
 			</TD>
 			<TD WIDTH=63%>
-				<P>Describe the format and characteristics of an image</P>
+				<P CLASS="western">Describe the format and characteristics of an
+				image</P>
 			</TD>
 		</TR>
 	</TABLE>
 </DL>
-<P>You can access ImageMagick functions directly from the command
-line using the ImageMagick tools convert , <A HREF="www/mogrify.html">mogrify</A>
+<P CLASS="western">You can access ImageMagick functions directly from
+the command line using the ImageMagick tools convert , <A HREF="www/mogrify.html">mogrify</A>
 , <A HREF="www/montage.html">montage</A> , <A HREF="www/composite.html">composite</A>
 , or <A HREF="www/identify.html">identify</A> . Use the <A HREF="www/display.html">display</A>
 program to interactively manipulate your images or <A HREF="www/animate.html">animate</A>
@@ -149,51 +162,51 @@ application development environment: <A HREF="www/perl.html">Perl</A>
 , <A HREF="http://pythonmagick.procoders.net/">Python</A>, or <A HREF="www/archives.html">Java</A>
 . These programs, and much more, are discussed in detail. Just follow
 the appropriate link on this page.</P>
-<P>You can <A HREF="www/magick-list.html">subscribe</A> to the
-mailing list. Here you can ask questions and get advice from other
-<B>ImageMagick</B> users and see announcements of bug fixes,
+<P CLASS="western">You can <A HREF="www/magick-list.html">subscribe</A>
+to the mailing list. Here you can ask questions and get advice from
+other <B>ImageMagick</B> users and see announcements of bug fixes,
 enhancements, and new releases. 
 </P>
-<P>ImageMagick is <A HREF="www/Copyright.html">copyright</A>
+<P CLASS="western">ImageMagick is <A HREF="www/Copyright.html">copyright</A>
 ImageMagick Studio LLC, a non-profit organization. ImageMagick is
 available for free, may be used to support both open and proprietary
 applications, and may be redistributed without fee. 
 </P>
-<P>The ImageMagick logo is copyright <A HREF="http://www.greetme.com/">Pineapple
+<P CLASS="western">The ImageMagick logo is copyright <A HREF="http://www.greetme.com/">Pineapple
 USA Inc</A> . It is freely distributable, however, modifications to
 the logo are not permitted.</P>
 <TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=0>
 	<COL WIDTH=256*>
 	<TR>
 		<TD WIDTH=100% BGCOLOR="#52799e">
-			<P><IMG SRC="images/right_triangle.png" NAME="Graphic42" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0><B><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">Obtaining
+			<P CLASS="western"><IMG SRC="images/right_triangle.png" NAME="Graphic42" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0><B><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">Obtaining
 			ImageMagick</FONT></FONT></B></P>
 		</TD>
 	</TR>
 </TABLE>
-<P>ImageMagick is quite portable, and compiles under almost every
-general purpose operating system that runs on 32-bit or 64-bit CPUs.
-ImageMagick is available for virtually any Unix or Unix-like system,
-including Linux. It also runs under <A HREF="www/windows.html">Windows</A>
+<P CLASS="western">ImageMagick is quite portable, and compiles under
+almost every general purpose operating system that runs on 32-bit or
+64-bit CPUs. ImageMagick is available for virtually any Unix or
+Unix-like system, including Linux. It also runs under <A HREF="www/windows.html">Windows</A>
 '95 and later ('95, '98, ME, NT 4.0, 2000, and XP), Macintosh (MacOS
 9 and 10), VMS, and OS/2.</P>
-<P>ImageMagick files are available from a large number of ftp and
-http <A HREF="www/archives.html">mirror sites</A>. 
+<P CLASS="western">ImageMagick files are available from a large
+number of ftp and http <A HREF="www/archives.html">mirror sites</A>. 
 </P>
-<P>Besides the mirror sites, developers may obtain the ImageMagick
-source code via <A HREF="www/cvs.html">anonymous CVS</A>.</P>
-<P>The entire source and binary distribution is also available for
-order on <A HREF="www/cd.html">CD</A>. 
+<P CLASS="western">Besides the mirror sites, developers may obtain
+the ImageMagick source code via <A HREF="www/cvs.html">anonymous CVS</A>.</P>
+<P CLASS="western">The entire source and binary distribution is also
+available for order on <A HREF="www/cd.html">CD</A>. 
 </P>
 <TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=2>
 	<TR>
 		<TD BGCOLOR="#52799e">
-			<P><IMG SRC="images/right_triangle.png" NAME="Graphic11" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0><B><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">ImageMagick
+			<P CLASS="western"><IMG SRC="images/right_triangle.png" NAME="Graphic11" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0><B><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">ImageMagick
 			Utilities</FONT></FONT></B></P>
 		</TD>
 	</TR>
 </TABLE>
-<P>ImageMagick provides a powerful set of <A HREF="www/tools.html">command
+<P CLASS="western">ImageMagick provides a powerful set of <A HREF="www/tools.html">command
 line utilities</A>. These utilities use a consistent set of <A HREF="www/ImageMagick.html">options</A>.
 The available utilities and links to their documentation are shown in
 the following table:</P>
@@ -204,99 +217,102 @@ the following table:</P>
 		<COL WIDTH=191*>
 		<TR VALIGN=TOP>
 			<TH WIDTH=26% BGCOLOR="#52799e">
-				<P><FONT COLOR="#ffffff"><SPAN STYLE="background: transparent">Utility</SPAN></FONT></P>
+				<P CLASS="western"><FONT COLOR="#ffffff"><SPAN STYLE="background: transparent">Utility</SPAN></FONT></P>
 			</TH>
 			<TH WIDTH=74% BGCOLOR="#52799e">
-				<P><FONT COLOR="#ffffff"><SPAN STYLE="background: transparent">Description</SPAN></FONT></P>
+				<P CLASS="western"><FONT COLOR="#ffffff"><SPAN STYLE="background: transparent">Description</SPAN></FONT></P>
 			</TH>
 		</TR>
 		<TR VALIGN=TOP>
 			<TD WIDTH=26%>
-				<P ALIGN=LEFT><A HREF="www/animate.html">animate</A></P>
+				<P CLASS="western" ALIGN=LEFT><A HREF="www/animate.html">animate</A></P>
 			</TD>
 			<TD WIDTH=74%>
-				<P>animate a sequence of images</P>
+				<P CLASS="western">animate a sequence of images</P>
 			</TD>
 		</TR>
 		<TR VALIGN=TOP>
 			<TD WIDTH=26%>
-				<P ALIGN=LEFT><A HREF="www/composite.html">composite</A></P>
+				<P CLASS="western" ALIGN=LEFT><A HREF="www/composite.html">composite</A></P>
 			</TD>
 			<TD WIDTH=74%>
-				<P>composite images together</P>
+				<P CLASS="western">composite images together</P>
 			</TD>
 		</TR>
 		<TR VALIGN=TOP>
 			<TD WIDTH=26%>
-				<P ALIGN=LEFT><A HREF="www/conjure.html">conjure</A></P>
+				<P CLASS="western" ALIGN=LEFT><A HREF="www/conjure.html">conjure</A></P>
 			</TD>
 			<TD WIDTH=74%>
-				<P>execute a Magick Scripting Language (MSL) script</P>
+				<P CLASS="western">execute a Magick Scripting Language (MSL)
+				script</P>
 			</TD>
 		</TR>
 		<TR VALIGN=TOP>
 			<TD WIDTH=26%>
-				<P ALIGN=LEFT><A HREF="www/convert.html">convert</A></P>
+				<P CLASS="western" ALIGN=LEFT><A HREF="www/convert.html">convert</A></P>
 			</TD>
 			<TD WIDTH=74%>
-				<P>convert an image or sequence of images</P>
+				<P CLASS="western">convert an image or sequence of images</P>
 			</TD>
 		</TR>
 		<TR VALIGN=TOP>
 			<TD WIDTH=26%>
-				<P ALIGN=LEFT><A HREF="www/display.html">display</A></P>
+				<P CLASS="western" ALIGN=LEFT><A HREF="www/display.html">display</A></P>
 			</TD>
 			<TD WIDTH=74%>
-				<P>display an image on a workstation running X</P>
+				<P CLASS="western">display an image on a workstation running X</P>
 			</TD>
 		</TR>
 		<TR VALIGN=TOP>
 			<TD WIDTH=26%>
-				<P ALIGN=LEFT><A HREF="www/identify.html">identify</A></P>
+				<P CLASS="western" ALIGN=LEFT><A HREF="www/identify.html">identify</A></P>
 			</TD>
 			<TD WIDTH=74%>
-				<P>describe an image or image sequence</P>
+				<P CLASS="western">describe an image or image sequence</P>
 			</TD>
 		</TR>
 		<TR VALIGN=TOP>
 			<TD WIDTH=26%>
-				<P ALIGN=LEFT><A HREF="www/import.html">import</A></P>
+				<P CLASS="western" ALIGN=LEFT><A HREF="www/import.html">import</A></P>
 			</TD>
 			<TD WIDTH=74%>
-				<P>capture an application or X server screen</P>
+				<P CLASS="western">capture an application or X server screen</P>
 			</TD>
 		</TR>
 		<TR VALIGN=TOP>
 			<TD WIDTH=26%>
-				<P ALIGN=LEFT><A HREF="www/mogrify.html">mogrify</A></P>
+				<P CLASS="western" ALIGN=LEFT><A HREF="www/mogrify.html">mogrify</A></P>
 			</TD>
 			<TD WIDTH=74%>
-				<P>transform an image or sequence of images</P>
+				<P CLASS="western">transform an image or sequence of images</P>
 			</TD>
 		</TR>
 		<TR VALIGN=TOP>
 			<TD WIDTH=26%>
-				<P ALIGN=LEFT><A HREF="www/montage.html">montage</A></P>
+				<P CLASS="western" ALIGN=LEFT><A HREF="www/montage.html">montage</A></P>
 			</TD>
 			<TD WIDTH=74%>
-				<P>create a composite image (in a grid) from seperate images</P>
+				<P CLASS="western">create a composite image (in a grid) from
+				seperate images</P>
 			</TD>
 		</TR>
 	</TABLE>
 </DL>
-<P STYLE="margin-left: 2cm"><BR><BR>
+<P CLASS="western" STYLE="margin-left: 2cm"><BR><BR>
 </P>
 <TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=0>
 	<COL WIDTH=256*>
 	<TR>
 		<TD WIDTH=100% BGCOLOR="#52799e">
-			<P><IMG SRC="images/right_triangle.png" NAME="Graphic12" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0><B><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">ImageMagick
+			<P CLASS="western"><IMG SRC="images/right_triangle.png" NAME="Graphic12" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0><B><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">ImageMagick
 			Programming Interfaces</FONT></FONT></B></P>
 		</TD>
 	</TR>
 </TABLE>
-<P>ImageMagick capabilities may be accessed from many languages and
-scripting environnments as shown in the following table: 
+<P CLASS="western">ImageMagick capabilities may be accessed from many
+languages and scripting environnments as shown in the following
+table: 
 </P>
 <DL>
 	<DD>
@@ -305,121 +321,123 @@ scripting environnments as shown in the following table:
 		<COL WIDTH=208*>
 		<TR VALIGN=TOP>
 			<TH WIDTH=19% BGCOLOR="#52799e">
-				<P><FONT COLOR="#ffffff"><SPAN STYLE="background: transparent">Language</SPAN></FONT></P>
+				<P CLASS="western"><FONT COLOR="#ffffff"><SPAN STYLE="background: transparent">Language</SPAN></FONT></P>
 			</TH>
 			<TH WIDTH=81% BGCOLOR="#52799e">
-				<P><FONT COLOR="#ffffff"><SPAN STYLE="background: transparent">Description</SPAN></FONT></P>
+				<P CLASS="western"><FONT COLOR="#ffffff"><SPAN STYLE="background: transparent">Description</SPAN></FONT></P>
 			</TH>
 		</TR>
 		<TR VALIGN=TOP>
 			<TD WIDTH=19%>
-				<P ALIGN=LEFT><A HREF="www/api.html">C</A></P>
+				<P CLASS="western" ALIGN=LEFT><A HREF="www/api.html">C</A></P>
 			</TD>
 			<TD WIDTH=81%>
-				<P>C is the core programming interface to ImageMagick 
-				</P>
-			</TD>
-		</TR>
-		<TR VALIGN=TOP>
-			<TD WIDTH=19%>
-				<P ALIGN=LEFT><A HREF="www/Magick++/index.html">C++</A></P>
-			</TD>
-			<TD WIDTH=81%>
-				<P>Magick++ provides an object-oriented C++ interface to
+				<P CLASS="western">C is the core programming interface to
 				ImageMagick 
 				</P>
 			</TD>
 		</TR>
 		<TR VALIGN=TOP>
 			<TD WIDTH=19%>
-				<P ALIGN=LEFT><A HREF="www/perl.html">Perl</A></P>
+				<P CLASS="western" ALIGN=LEFT><A HREF="www/Magick++/index.html">C++</A></P>
 			</TD>
 			<TD WIDTH=81%>
-				<P>PerlMagick provides an object-oriented Perl interface to
-				ImageMagick</P>
-			</TD>
-		</TR>
-		<TR VALIGN=TOP>
-			<TD WIDTH=19%>
-				<P ALIGN=LEFT><A HREF="http://pythonmagick.procoders.net/">Python</A></P>
-			</TD>
-			<TD WIDTH=81%>
-				<P>PythonMagick an object-oriented Python interface to
-				ImageMagick 
+				<P CLASS="western">Magick++ provides an object-oriented C++
+				interface to ImageMagick 
 				</P>
 			</TD>
 		</TR>
 		<TR VALIGN=TOP>
 			<TD WIDTH=19%>
-				<P ALIGN=LEFT><A HREF="http://www.yeo.nu:81/jmagick/">Java</A></P>
+				<P CLASS="western" ALIGN=LEFT><A HREF="www/perl.html">Perl</A></P>
 			</TD>
 			<TD WIDTH=81%>
-				<P>JMagick provides an object-oriented Java interface to
-				ImageMagick</P>
+				<P CLASS="western">PerlMagick provides an object-oriented Perl
+				interface to ImageMagick</P>
 			</TD>
 		</TR>
 		<TR VALIGN=TOP>
 			<TD WIDTH=19%>
-				<P ALIGN=LEFT>Visual Basic</P>
+				<P CLASS="western" ALIGN=LEFT><A HREF="http://pythonmagick.procoders.net/">Python</A></P>
 			</TD>
 			<TD WIDTH=81%>
-				<P>The ImageMagickObject OLE control supports access from Visual
-				Basic programs under Microsoft Windows.</P>
+				<P CLASS="western">PythonMagick an object-oriented Python
+				interface to ImageMagick 
+				</P>
 			</TD>
 		</TR>
 		<TR VALIGN=TOP>
 			<TD WIDTH=19%>
-				<P ALIGN=LEFT>Windows Script Host (WSH)</P>
+				<P CLASS="western" ALIGN=LEFT><A HREF="http://www.yeo.nu:81/jmagick/">Java</A></P>
 			</TD>
 			<TD WIDTH=81%>
-				<P>The ImageMagickObject OLE control supports access from WSH
-				(cscript and wscript) under Microsoft Windows.</P>
+				<P CLASS="western">JMagick provides an object-oriented Java
+				interface to ImageMagick</P>
 			</TD>
 		</TR>
 		<TR VALIGN=TOP>
 			<TD WIDTH=19%>
-				<P ALIGN=LEFT><A HREF="http://www.lazerware.com/imagemagick/">Macintosh
+				<P CLASS="western" ALIGN=LEFT>Visual Basic</P>
+			</TD>
+			<TD WIDTH=81%>
+				<P CLASS="western">The ImageMagickObject OLE control supports
+				access from Visual Basic programs under Microsoft Windows.</P>
+			</TD>
+		</TR>
+		<TR VALIGN=TOP>
+			<TD WIDTH=19%>
+				<P CLASS="western" ALIGN=LEFT>Windows Script Host (WSH)</P>
+			</TD>
+			<TD WIDTH=81%>
+				<P CLASS="western">The ImageMagickObject OLE control supports
+				access from WSH (cscript and wscript) under Microsoft Windows.</P>
+			</TD>
+		</TR>
+		<TR VALIGN=TOP>
+			<TD WIDTH=19%>
+				<P CLASS="western" ALIGN=LEFT><A HREF="http://www.lazerware.com/imagemagick/">Macintosh
 				Scripting Interface</A></P>
 			</TD>
 			<TD WIDTH=81%>
-				<P>A scripting interface for the Mac</P>
+				<P CLASS="western">A scripting interface for the Mac</P>
 			</TD>
 		</TR>
 		<TR VALIGN=TOP>
 			<TD WIDTH=19%>
-				<P ALIGN=LEFT><A HREF="http://www.alagad.com/index.cfm/name-products">ColdFusion</A></P>
+				<P CLASS="western" ALIGN=LEFT><A HREF="http://www.alagad.com/index.cfm/name-products">ColdFusion</A></P>
 			</TD>
 			<TD WIDTH=81%>
-				<P>The Alagad Magick Tag for ColdFusion is a free, open source,
-				ColdFusion Custom Tag.</P>
+				<P CLASS="western">The Alagad Magick Tag for ColdFusion is a
+				free, open source, ColdFusion Custom Tag.</P>
 			</TD>
 		</TR>
 		<TR VALIGN=TOP>
 			<TD WIDTH=19%>
-				<P ALIGN=LEFT><A HREF="http://www.simplesystems.org/PtcMagick/">PtcMagick
+				<P CLASS="western" ALIGN=LEFT><A HREF="http://www.simplesystems.org/PtcMagick/">PtcMagick
 				</A>
 				</P>
 			</TD>
 			<TD WIDTH=81%>
-				<P>A C++ interface between ImageMagick and OpenPTC 
+				<P CLASS="western">A C++ interface between ImageMagick and
+				OpenPTC 
 				</P>
 			</TD>
 		</TR>
 	</TABLE>
 </DL>
-<P>Some of these languages and scripting environments are supported
-by ImageMagick Studio while others are developed and supported by
-third parties.</P>
+<P CLASS="western">Some of these languages and scripting environments
+are supported by ImageMagick Studio while others are developed and
+supported by third parties.</P>
 <TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=0>
 	<COL WIDTH=256*>
 	<TR>
 		<TD WIDTH=100% BGCOLOR="#52799e">
-			<P><IMG SRC="images/right_triangle.png" NAME="Graphic21" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0><B><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">ImageMagick
+			<P CLASS="western"><IMG SRC="images/right_triangle.png" NAME="Graphic21" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0><B><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">ImageMagick
 			Topics</FONT></FONT></B></P>
 		</TD>
 	</TR>
 </TABLE>
-<P>Topics related to ImageMagick:</P>
+<P CLASS="western">Topics related to ImageMagick:</P>
 <DL>
 	<DD>
 	<TABLE WIDTH=90% BORDER=0 CELLPADDING=4 CELLSPACING=0>
@@ -427,77 +445,82 @@ third parties.</P>
 		<COL WIDTH=162*>
 		<TR VALIGN=TOP>
 			<TD WIDTH=37%>
-				<P ALIGN=LEFT><A HREF="www/Magick.html">Frequently Asked
-				Questions</A> 
+				<P CLASS="western" ALIGN=LEFT><A HREF="www/Magick.html">Frequently
+				Asked Questions</A> 
 				</P>
 			</TD>
 			<TD WIDTH=63%>
-				<P>Provides answers to questions which are often asked about
-				ImageMagick.</P>
+				<P CLASS="western">Provides answers to questions which are often
+				asked about ImageMagick.</P>
 			</TD>
 		</TR>
 		<TR VALIGN=TOP>
 			<TD WIDTH=37%>
-				<P ALIGN=LEFT><A HREF="www/new.html">What's New </A>
+				<P CLASS="western" ALIGN=LEFT><A HREF="www/new.html">What's New </A>
 				</P>
 			</TD>
 			<TD WIDTH=63%>
-				<P>Provides a high-level view of enhancements made to ImageMagick
-				over the years.</P>
+				<P CLASS="western">Provides a high-level view of enhancements
+				made to ImageMagick over the years.</P>
 			</TD>
 		</TR>
 		<TR VALIGN=TOP>
 			<TD WIDTH=37%>
-				<P ALIGN=LEFT><A HREF="www/Changelog.html">Recent Changes</A></P>
+				<P CLASS="western" ALIGN=LEFT><A HREF="www/Changelog.html">Recent
+				Changes</A></P>
 			</TD>
 			<TD WIDTH=63%>
-				<P>Provides a change-log view of ImageMagick source code and
-				feature changes.</P>
+				<P CLASS="western">Provides a change-log view of ImageMagick
+				source code and feature changes.</P>
 			</TD>
 		</TR>
 		<TR VALIGN=TOP>
 			<TD WIDTH=37%>
-				<P ALIGN=LEFT><A HREF="www/help.html">How You Can Help</A></P>
+				<P CLASS="western" ALIGN=LEFT><A HREF="www/help.html">How You Can
+				Help</A></P>
 			</TD>
 			<TD WIDTH=63%>
-				<P>Describes how you can contribute to the ImageMagick project.</P>
+				<P CLASS="western">Describes how you can contribute to the
+				ImageMagick project.</P>
 			</TD>
 		</TR>
 		<TR VALIGN=TOP>
 			<TD WIDTH=37%>
-				<P ALIGN=LEFT><A HREF="mailto:magick-bugs@imagemagick.org?subject=ImageMagick Bug Report">Reporting
+				<P CLASS="western" ALIGN=LEFT><A HREF="mailto:magick-bugs@imagemagick.org?subject=ImageMagick Bug Report">Reporting
 				Bugs</A></P>
 			</TD>
 			<TD WIDTH=63%>
-				<P>Bugs should be reported by posting to the Magick-bugs mailing
-				list. But first you must <A HREF="http://studio.imagemagick.org/mailman/listinfo/magick-bugs">subscribe
+				<P CLASS="western">Bugs should be reported by posting to the
+				Magick-bugs mailing list. But first you must <A HREF="http://studio.imagemagick.org/mailman/listinfo/magick-bugs">subscribe
 				to the list</A>!</P>
 			</TD>
 		</TR>
 		<TR VALIGN=TOP>
 			<TD WIDTH=37%>
-				<P ALIGN=LEFT><A HREF="www/miff.html">Magick Image File Format</A><A HREF="http://www.yeo.nu:81/jmagick/">
-				</A>
+				<P CLASS="western" ALIGN=LEFT><A HREF="www/miff.html">Magick
+				Image File Format</A><A HREF="http://www.yeo.nu:81/jmagick/"> </A>
 				</P>
 			</TD>
 			<TD WIDTH=63%>
-				<P>Provides a detailed description of the MIFF file format.</P>
+				<P CLASS="western">Provides a detailed description of the MIFF
+				file format.</P>
 			</TD>
 		</TR>
 		<TR VALIGN=TOP>
 			<TD WIDTH=37%>
-				<P ALIGN=LEFT><A HREF="www/quantize.html">ImageMagick's Color
-				Reduction Algorithm</A> 
+				<P CLASS="western" ALIGN=LEFT><A HREF="www/quantize.html">ImageMagick's
+				Color Reduction Algorithm</A> 
 				</P>
 			</TD>
 			<TD WIDTH=63%>
-				<P>Provides a detailed description of the algorithm used by
-				ImageMagick to reduce the number of colors in an image.</P>
+				<P CLASS="western">Provides a detailed description of the
+				algorithm used by ImageMagick to reduce the number of colors in
+				an image.</P>
 			</TD>
 		</TR>
 	</TABLE>
 </DL>
-<P>Here are some uses of ImageMagick:</P>
+<P CLASS="western">Here are some uses of ImageMagick:</P>
 <DL>
 	<DD>
 	<TABLE WIDTH=90% BORDER=0 CELLPADDING=4 CELLSPACING=0>
@@ -505,49 +528,49 @@ third parties.</P>
 		<COL WIDTH=162*>
 		<TR VALIGN=TOP>
 			<TD WIDTH=37%>
-				<P ALIGN=LEFT><A HREF="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">ImageMagick
+				<P CLASS="western" ALIGN=LEFT><A HREF="http://www.imagemagick.org/MagickStudio/scripts/MagickStudio.cgi">ImageMagick
 				Studio</A></P>
 			</TD>
 			<TD WIDTH=63%>
-				<P>ImageMagick Studio provides an interactive web interface to
-				process images.</P>
+				<P CLASS="western">ImageMagick Studio provides an interactive web
+				interface to process images.</P>
 			</TD>
 		</TR>
 		<TR VALIGN=TOP>
 			<TD WIDTH=37%>
-				<P ALIGN=LEFT><A HREF="http://webmagick.sourceforge.net/">WebMagick
+				<P CLASS="western" ALIGN=LEFT><A HREF="http://webmagick.sourceforge.net/">WebMagick
 				Image Navigator</A><A HREF="www/new.html"> </A>
 				</P>
 			</TD>
 			<TD WIDTH=63%>
-				<P>WebMagick creates photo albums for the Web.</P>
+				<P CLASS="western">WebMagick creates photo albums for the Web.</P>
 			</TD>
 		</TR>
 		<TR VALIGN=TOP>
 			<TD WIDTH=37%>
-				<P ALIGN=LEFT><A HREF="http://www.wisdom.weizmann.ac.il/~bill/animate/index.html">Motif
+				<P CLASS="western" ALIGN=LEFT><A HREF="http://www.wisdom.weizmann.ac.il/~bill/animate/index.html">Motif
 				GUI for Animate</A><A HREF="www/Changelog.html"> </A>
 				</P>
 			</TD>
 			<TD WIDTH=63%>
-				<P>A Motif GUI for the animate program.</P>
+				<P CLASS="western">A Motif GUI for the animate program.</P>
 			</TD>
 		</TR>
 		<TR VALIGN=TOP>
 			<TD WIDTH=37%>
-				<P ALIGN=LEFT><A HREF="ftp://ftp.imagemagick.org/pub/ImageMagick/perl/ScreamerMagick-1.0.tar.gz">3-D
+				<P CLASS="western" ALIGN=LEFT><A HREF="ftp://ftp.imagemagick.org/pub/ImageMagick/perl/ScreamerMagick-1.0.tar.gz">3-D
 				Web Screamers</A></P>
 			</TD>
 			<TD WIDTH=63%>
-				<P>ScreamerMagick provides a CGI (Web) interface for creating 3D
-				'screamers' (cool text logos) using <A HREF="http://www.povray.org/">POV-Ray</A>
+				<P CLASS="western">ScreamerMagick provides a CGI (Web) interface
+				for creating 3D 'screamers' (cool text logos) using <A HREF="http://www.povray.org/">POV-Ray</A>
 				and ImageMagick. This is a greay way to test your CPU!</P>
 			</TD>
 		</TR>
 	</TABLE>
 </DL>
-<P>The following publications provide an in-depth coverage of
-ImageMagick topics: 
+<P CLASS="western">The following publications provide an in-depth
+coverage of ImageMagick topics: 
 </P>
 <DL>
 	<DD>
@@ -556,11 +579,11 @@ ImageMagick topics:
 		<COL WIDTH=162*>
 		<TR VALIGN=TOP>
 			<TD WIDTH=37%>
-				<P ALIGN=LEFT><A HREF="http://www.manning.com/verbruggen/">Graphics
+				<P CLASS="western" ALIGN=LEFT><A HREF="http://www.manning.com/verbruggen/">Graphics
 				Programming with Perl</A></P>
 			</TD>
 			<TD WIDTH=63%>
-				<P>Writen by<!--StartFragment --> <A HREF="http://www.manning.com/verbruggen/#author"><B>Martien
+				<P CLASS="western">Writen by<!--StartFragment --> <A HREF="http://www.manning.com/verbruggen/#author"><B>Martien
 				Verbruggen<!--EndFragment--></B></A>. Covers use of ImageMagick's
 				PerlMagick, and other Perl graphic interfaces for graphical
 				programming tasks.</P>
@@ -568,28 +591,29 @@ ImageMagick topics:
 		</TR>
 		<TR VALIGN=TOP>
 			<TD WIDTH=37%>
-				<P ALIGN=LEFT><A HREF="http://www.oreilly.com/catalog/prowg/">Programming
+				<P CLASS="western" ALIGN=LEFT><A HREF="http://www.oreilly.com/catalog/prowg/">Programming
 				Web Graphics with Perl &amp; GNU Software</A></P>
 			</TD>
 			<TD WIDTH=63%>
-				<P>Written by<!--StartFragment --> <A HREF="http://www.oreillynet.com/cs/catalog/view/au/508?x-t=book.view">Shawn&nbsp;Wallace<!--EndFragment--></A>
+				<P CLASS="western">Written by<!--StartFragment --> <A HREF="http://www.oreillynet.com/cs/catalog/view/au/508?x-t=book.view">Shawn&nbsp;Wallace<!--EndFragment--></A>
 				. Covers use of ImageMagick's utilities and PerlMagick, as well
 				as other tools for creating Web graphics.</P>
 			</TD>
 		</TR>
 	</TABLE>
 </DL>
-<P STYLE="margin-left: 2cm; margin-bottom: 0cm"><BR>
+<P CLASS="western" STYLE="margin-left: 2cm; margin-bottom: 0cm"><BR>
 </P>
 <TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=2>
 	<TR>
 		<TD BGCOLOR="#52799e">
-			<P><IMG SRC="images/right_triangle.png" NAME="Graphic36" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0><B><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">ImageMagick
+			<P CLASS="western"><IMG SRC="images/right_triangle.png" NAME="Graphic36" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0><B><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">ImageMagick
 			Sponsors</FONT></FONT></B></P>
 		</TD>
 	</TR>
 </TABLE>
-<P>We want to thank these sponsors of the ImageMagick project: 
+<P CLASS="western">We want to thank these sponsors of the ImageMagick
+project: 
 </P>
 <DL>
 	<DD>
@@ -598,35 +622,35 @@ ImageMagick topics:
 		<COL WIDTH=180*>
 		<TR>
 			<TD WIDTH=30% BGCOLOR="#d0d0d0">
-				<P ALIGN=CENTER><FONT COLOR="#0085c0"><A HREF="http://www.corbis.com/"><FONT COLOR="#0085c0"><IMG SRC="images/corbis.png" NAME="Graphic37" ALT="Corbis" ALIGN=BOTTOM WIDTH=145 HEIGHT=39 BORDER=1></FONT></A></FONT></P>
+				<P CLASS="western" ALIGN=CENTER><FONT COLOR="#0085c0"><A HREF="http://www.corbis.com/"><FONT COLOR="#0085c0"><IMG SRC="images/corbis.png" NAME="Graphic37" ALT="Corbis" ALIGN=BOTTOM WIDTH=145 HEIGHT=39 BORDER=1></FONT></A></FONT></P>
 			</TD>
 			<TD WIDTH=70% BGCOLOR="#9ebac6">
-				<P>The place for pictures online.</P>
+				<P CLASS="western">The place for pictures online.</P>
 			</TD>
 		</TR>
 		<TR>
 			<TD WIDTH=30% BGCOLOR="#d0d0d0">
-				<P ALIGN=CENTER><FONT COLOR="#0085c0"><A HREF="http://www.authentica.com/"><FONT COLOR="#0085c0"><IMG SRC="images/authentica.jpg" NAME="Graphic38" ALT="Authentica" ALIGN=BOTTOM WIDTH=168 HEIGHT=68 BORDER=1></FONT></A></FONT></P>
+				<P CLASS="western" ALIGN=CENTER><FONT COLOR="#0085c0"><A HREF="http://www.authentica.com/"><FONT COLOR="#0085c0"><IMG SRC="images/authentica.jpg" NAME="Graphic38" ALT="Authentica" ALIGN=BOTTOM WIDTH=168 HEIGHT=68 BORDER=1></FONT></A></FONT></P>
 			</TD>
 			<TD WIDTH=70% BGCOLOR="#9ebac6">
-				<P>Protect your sensitive business information across the
-				Internet.&nbsp;</P>
+				<P CLASS="western">Protect your sensitive business information
+				across the Internet.&nbsp;</P>
 			</TD>
 		</TR>
 		<TR>
 			<TD WIDTH=30% BGCOLOR="#d0d0d0">
-				<P ALIGN=CENTER><FONT COLOR="#0085c0"><A HREF="http://www.appligent.com/"><FONT COLOR="#0085c0"><IMG SRC="images/appligent.jpg" NAME="Graphic39" ALT="Appligent" ALIGN=BOTTOM WIDTH=196 HEIGHT=67 BORDER=1></FONT></A></FONT></P>
+				<P CLASS="western" ALIGN=CENTER><FONT COLOR="#0085c0"><A HREF="http://www.appligent.com/"><FONT COLOR="#0085c0"><IMG SRC="images/appligent.jpg" NAME="Graphic39" ALT="Appligent" ALIGN=BOTTOM WIDTH=196 HEIGHT=67 BORDER=1></FONT></A></FONT></P>
 			</TD>
 			<TD WIDTH=70% BGCOLOR="#9ebac6">
-				<P>Technology provider for e-Paper solutions.</P>
+				<P CLASS="western">Technology provider for e-Paper solutions.</P>
 			</TD>
 		</TR>
 	</TABLE>
 </DL>
-<P>You or your company may want to <A HREF="www/sponsor.html">sponsor</A>
+<P CLASS="western">You or your company may want to <A HREF="www/sponsor.html">sponsor</A>
 the ImageMagick project as well.</P>
 <HR>
-<P><A HREF="mailto:magick-users@imagemagick.org"><IMG SRC="images/mail.png" NAME="Graphic40" ALT="Mail" ALIGN=MIDDLE WIDTH=40 HEIGHT=40 BORDER=0></A><FONT SIZE=1>Image
+<P CLASS="western"><A HREF="mailto:magick-users@imagemagick.org"><IMG SRC="images/mail.png" NAME="Graphic40" ALT="Mail" ALIGN=MIDDLE WIDTH=40 HEIGHT=40 BORDER=0></A><FONT SIZE=1>Image
 manipulation software that works like magic.</FONT> 
 </P>
 </BODY>
