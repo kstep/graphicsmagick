@@ -250,8 +250,6 @@ static unsigned int Classify(Image *image,short **extrema,
 
   int
     count,
-    j,
-    k,
     y;
 
   PixelPacket
@@ -270,6 +268,10 @@ static unsigned int Classify(Image *image,short **extrema,
   register PixelPacket
     *p,
     *q;
+
+  size_t
+    j,
+    k;
 
   unsigned int
     number_clusters;
@@ -517,7 +519,7 @@ static unsigned int Classify(Image *image,short **extrema,
             Compute fuzzy membership.
           */
           local_minima=0.0;
-          for (j=0; j < (int) image->colors; j++)
+          for (j=0; j < image->colors; j++)
           {
             sum=0.0;
             p=image->colormap+j;
@@ -526,7 +528,7 @@ static unsigned int Classify(Image *image,short **extrema,
               squares[(int) DownScale(q->green)-(int) DownScale(p->green)]+
               squares[(int) DownScale(q->blue)-(int) DownScale(p->blue)];
             numerator=sqrt(distance_squared);
-            for (k=0; k < (int) image->colors; k++)
+            for (k=0; k < image->colors; k++)
             {
               p=image->colormap+k;
               distance_squared=

@@ -109,7 +109,7 @@ static void
 */
 static void FinalizeSignature(SignatureInfo *signature_info)
 {
-  int
+  long
     count;
 
   unsigned long
@@ -121,7 +121,7 @@ static void FinalizeSignature(SignatureInfo *signature_info)
   */
   low_order=signature_info->low_order;
   high_order=signature_info->high_order;
-  count=(int) ((low_order >> 3) & 0x3f);
+  count=((low_order >> 3) & 0x3f);
   signature_info->message[count++]=0x80;
   if (count <= (SignatureSize-8))
     memset(signature_info->message+count,0,SignatureSize-8-count);
