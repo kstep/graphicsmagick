@@ -713,9 +713,7 @@ MagickExport unsigned int HuffmanEncodeImage(const ImageInfo *image_info,
   huffman_image=CloneImage(image,0,0,True,&image->exception);
   if (huffman_image == (Image *) NULL)
     return(False);
-  if ((huffman_image->storage_class == DirectClass) ||
-       !IsMonochromeImage(huffman_image,&image->exception))
-    SetImageType(huffman_image,BilevelType);
+  SetImageType(huffman_image,BilevelType);
   byte=0;
   bit=0x80;
   if (LocaleCompare(image_info->magick,"FAX") != 0)

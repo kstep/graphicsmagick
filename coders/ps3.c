@@ -145,9 +145,7 @@ static unsigned int Huffman2DEncodeImage(const ImageInfo *image_info,
   huffman_image=CloneImage(image,0,0,True,&image->exception);
   if (huffman_image == (Image *) NULL)
     return(False);
-  if ((huffman_image->storage_class == DirectClass) ||
-       !IsMonochromeImage(huffman_image,&image->exception))
-    SetImageType(huffman_image,BilevelType);
+  SetImageType(huffman_image,BilevelType);
   TemporaryFilename(filename);
   FormatString(huffman_image->filename,"tiff:%s",filename);
   clone_info=CloneImageInfo(image_info);
@@ -414,9 +412,7 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
         (compression != RunlengthEncodedCompression))
       image->storage_class=DirectClass;
     if (compression == FaxCompression)
-      if ((image->storage_class == DirectClass) ||
-          !IsMonochromeImage(image,&image->exception))
-        SetImageType(image,BilevelType);
+      SetImageType(image,BilevelType);
     /*
       Scale image to size of Postscript page.
     */

@@ -144,9 +144,7 @@ static unsigned int Huffman2DEncodeImage(const ImageInfo *image_info,
   huffman_image=CloneImage(image,0,0,True,&image->exception);
   if (huffman_image == (Image *) NULL)
     return(False);
-  if ((huffman_image->storage_class == DirectClass) ||
-       !IsMonochromeImage(huffman_image,&image->exception))
-    SetImageType(huffman_image,BilevelType);
+  SetImageType(huffman_image,BilevelType);
   TemporaryFilename(filename);
   FormatString(huffman_image->filename,"tiff:%s",filename);
   clone_info=CloneImageInfo(image_info);

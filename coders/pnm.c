@@ -849,9 +849,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
       if (LocaleCompare(image_info->magick,"PBM") == 0)
         {
           format=4;
-          if ((image->storage_class == DirectClass) ||
-              !IsMonochromeImage(image,&image->exception))
-            SetImageType(image,BilevelType);
+          SetImageType(image,BilevelType);
         }
       else
         if ((LocaleCompare(image_info->magick,"PNM") == 0) &&

@@ -375,8 +375,7 @@ static unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
             ThrowWriterException(ResourceLimitError,"Unable to resize image",
               image);
         }
-      if (!IsMonochromeImage(monochrome_image,&monochrome_image->exception))
-        SetImageType(monochrome_image,BilevelType);
+      SetImageType(monochrome_image,BilevelType);
       FormatString(buffer,"\033*r%lus%luT",monochrome_image->columns,
         monochrome_image->rows);
       (void) WriteBlobString(image,buffer);
