@@ -266,7 +266,8 @@ static unsigned int CompressCache(Cache cache)
     y;
 
   off_t
-    count;
+    count,
+    length;
 
   assert(cache != (Cache) NULL);
   cache_info=(CacheInfo *) cache;
@@ -284,8 +285,8 @@ static unsigned int CompressCache(Cache cache)
   file=gzopen(filename,WriteBinaryType);
   if (file == (gzFile) NULL)
     return(False);
-  count=cache_info->columns*Max(sizeof(IndexPacket),sizeof(PixelPacket));
-  pixels=(char *) AcquireMemory(count);
+  length=cache_info->columns*Max(sizeof(IndexPacket),sizeof(PixelPacket));
+  pixels=(char *) AcquireMemory(length);
   if (pixels == (char *) NULL)
     {
       (void) gzclose(file);
@@ -2204,7 +2205,8 @@ static unsigned int UncompressCache(Cache cache)
     y;
 
   off_t
-    count;
+    count,
+    length;
 
   assert(cache != (Cache) NULL);
   cache_info=(CacheInfo *) cache;
@@ -2223,8 +2225,8 @@ static unsigned int UncompressCache(Cache cache)
   file=gzopen(filename,ReadBinaryType);
   if (file == (gzFile) NULL)
     return(False);
-  count=cache_info->columns*Max(sizeof(IndexPacket),sizeof(PixelPacket));
-  pixels=(char *) AcquireMemory(count);
+  length=cache_info->columns*Max(sizeof(IndexPacket),sizeof(PixelPacket));
+  pixels=(char *) AcquireMemory(length);
   if (pixels == (char *) NULL)
     {
       (void) gzclose(file);
