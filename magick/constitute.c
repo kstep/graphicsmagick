@@ -2367,9 +2367,55 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
   /*
     Call appropriate image reader based on image type.
   */
-  magick_info=GetMagickInfo(clone_info->magick,exception);
-  if (exception->severity > UndefinedException)
-    return (False);
+  {
+    ExceptionInfo
+      module_exception,
+      delegate_exception;
+    
+    GetExceptionInfo(&module_exception);
+    GetExceptionInfo(&delegate_exception);
+    magick_info=GetMagickInfo(clone_info->magick,&module_exception);
+    delegate_info=(const DelegateInfo *) NULL;
+    if ((magick_info == (const MagickInfo *) NULL) ||
+        (magick_info->decoder == NULL))
+      delegate_info=GetDelegateInfo(clone_info->magick,(char *) NULL,&delegate_exception);
+    
+    if (((magick_info == (const MagickInfo *) NULL) ||
+         (magick_info->decoder == NULL)) &&
+        ((delegate_info == (const DelegateInfo *) NULL) ||
+         (delegate_info->decode == NULL)))
+      {
+        if (module_exception.severity != UndefinedException)
+          CopyException(exception,&module_exception);
+        else if (delegate_exception.severity != UndefinedException)
+          CopyException(exception,&delegate_exception);
+        else
+          {
+            /*
+              Try to choose a useful error type
+            */
+            if (clone_info->filename[0] == 0)
+              {
+                ThrowException(exception,MissingDelegateError,
+                               NoDecodeDelegateForThisImageFormat,clone_info->magick);
+              }
+            else if (IsAccessibleAndNotEmpty(clone_info->filename))
+              {
+                ThrowException(exception,MissingDelegateError,
+                               NoDecodeDelegateForThisImageFormat,clone_info->filename);
+              }
+            else
+              {
+              ThrowException(exception,FileOpenError,UnableToOpenFile,
+                             clone_info->filename);
+              }
+          }
+      }
+
+    DestroyExceptionInfo(&module_exception);
+    DestroyExceptionInfo(&delegate_exception);
+  }
+
   if ((magick_info != (const MagickInfo *) NULL) &&
       magick_info->seekable_stream)
     {
@@ -2423,31 +2469,8 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
     }
   else
     {
-      delegate_info=GetDelegateInfo(clone_info->magick,(char *) NULL,exception);
-      if ((delegate_info == (const DelegateInfo *) NULL) ||
-          (exception->severity != UndefinedException))
+      if (delegate_info == (const DelegateInfo *) NULL)
         {
-          if (exception->severity == UndefinedException)
-          {
-            /*
-              Try to choose a useful error type
-            */
-            if (clone_info->filename[0] == 0)
-              {
-                ThrowException(exception,MissingDelegateError,
-                  NoDecodeDelegateForThisImageFormat,clone_info->magick);
-              }
-            else if (IsAccessibleAndNotEmpty(clone_info->filename))
-              {
-                ThrowException(exception,MissingDelegateError,
-                   NoDecodeDelegateForThisImageFormat,clone_info->filename);
-              }
-            else
-              {
-                ThrowException(exception,FileOpenError,UnableToOpenFile,
-                  clone_info->filename);
-              }
-            }
           if (clone_info->temporary)
             RemoveTemporaryInputFile(clone_info);
           DestroyImageInfo(clone_info);

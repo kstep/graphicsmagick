@@ -1,3 +1,10 @@
+2004-03-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/constitute.c (ReadImage): If module loading reported an
+	error, ReadImage immediately returned an error rather than trying
+	to use a delegate defined by delegates.mgk.  Perhaps this version
+	works better.
+
 2004-03-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* version.sh: Updated version to 1.1Beta1
