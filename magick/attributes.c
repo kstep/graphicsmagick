@@ -220,7 +220,8 @@ Export unsigned int SetImageAttribute(Image *image,const char *key,
         }
       if (p->next != (ImageAttribute *) NULL)
         p->next->previous=p->previous;
-      FreeMemory((void *) &p);
+      attribute=p;
+      FreeMemory((void *) &attribute);
       return(True);
     }
   if (Latin1Compare(key,"Label") == 0)

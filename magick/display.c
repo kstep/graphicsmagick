@@ -11433,8 +11433,7 @@ Export unsigned int XDisplayBackgroundImage(Display *display,
     Initialize Standard Colormap.
   */
   resources.colormap=SharedColormap;
-  XMakeStandardColormap(display,visual_info,&resources,image,map_info,
-    &pixel);
+  XMakeStandardColormap(display,visual_info,&resources,image,map_info,&pixel);
   /*
     Graphic context superclass.
   */

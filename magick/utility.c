@@ -2322,14 +2322,14 @@ Export void TemporaryFilename(char *filename)
   *filename='\0';
 #if !defined(vms) && !defined(macintosh) && !defined(WIN32)
   {
-    register char
-      *p;
+    char
+      *name;
 
-    p=(char *) tempnam((char *) NULL,TemporaryTemplate);
-    if (p != (char *) NULL)
+    name=(char *) tempnam((char *) NULL,TemporaryTemplate);
+    if (name != (char *) NULL)
       {
-        (void) strcpy(filename,p);
-        FreeMemory((void *) &p);
+        (void) strcpy(filename,name);
+        FreeMemory((void *) &name);
       }
   }
 #else

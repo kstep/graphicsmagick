@@ -503,6 +503,9 @@ Export MagickInfo *SetMagickInfo(const char *tag)
 */
 Export unsigned int UnregisterMagickInfo(const char *tag)
 {
+  MagickInfo
+    *magick_info;
+
   register MagickInfo
     *p;
 
@@ -524,7 +527,8 @@ Export unsigned int UnregisterMagickInfo(const char *tag)
           }
         if (p->next != (MagickInfo *) NULL)
           p->next->previous=p->previous;
-        FreeMemory((void *) &p);
+        magick_info=p;
+        FreeMemory((void *) &magick_info);
         return(True);
     }
   }

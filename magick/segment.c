@@ -256,8 +256,7 @@ static unsigned int Classify(Image *image,short **extrema,
     y;
 
   register double
-    distance_squared,
-    *squares;
+    distance_squared;
 
   register IndexPacket
     *indexes;
@@ -449,17 +448,6 @@ static unsigned int Classify(Image *image,short **extrema,
       (void) fprintf(stderr,"\n");
     }
   /*
-    Speed up distance calculations.
-  */
-  squares=(double *)
-    AllocateMemory((DownScale(MaxRGB)+DownScale(MaxRGB)+1)*sizeof(double));
-  if (squares == (double *) NULL)
-    ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
-      image->filename);
-  squares+=DownScale(MaxRGB);
-  for (i=(-(int) DownScale(MaxRGB)); i <= (int) DownScale(MaxRGB); i++)
-    squares[i]=i*i;
-  /*
     Allocate image colormap.
   */
   colormap=(PixelPacket *)
@@ -508,6 +496,11 @@ static unsigned int Classify(Image *image,short **extrema,
           }
       if (cluster == (Cluster *) NULL)
         {
+          int
+            blue,
+            green,
+            red;
+
           /*
             Compute fuzzy membership.
           */
@@ -516,18 +509,18 @@ static unsigned int Classify(Image *image,short **extrema,
           {
             sum=0.0;
             p=image->colormap+j;
-            distance_squared=
-              squares[(int) DownScale(q->red)-(int) DownScale(p->red)]+
-              squares[(int) DownScale(q->green)-(int) DownScale(p->green)]+
-              squares[(int) DownScale(q->blue)-(int) DownScale(p->blue)];
+            red=DownScale(q->red)-(int) DownScale(p->red);
+            green=DownScale(q->green)-(int) DownScale(p->green);
+            blue=DownScale(q->blue)-(int) DownScale(p->blue);
+            distance_squared=red*red+green*green+blue*blue;
             numerator=sqrt(distance_squared);
             for (k=0; k < (int) image->colors; k++)
             {
               p=image->colormap+k;
-              distance_squared=
-                squares[(int) DownScale(q->red)-(int) DownScale(p->red)]+
-                squares[(int) DownScale(q->green)-(int) DownScale(p->green)]+
-                squares[(int) DownScale(q->blue)-(int) DownScale(p->blue)];
+              red=DownScale(q->red)-(int) DownScale(p->red);
+              green=DownScale(q->green)-(int) DownScale(p->green);
+              blue=DownScale(q->blue)-(int) DownScale(p->blue);
+              distance_squared=red*red+green*green+blue*blue;
               ratio=numerator/sqrt(distance_squared);
               sum+=pow(ratio,(double) (2.0/(weighting_exponent-1.0)));
             }
@@ -557,8 +550,6 @@ static unsigned int Classify(Image *image,short **extrema,
     next_cluster=cluster->next;
     FreeMemory((void *) &cluster);
   }
-  squares-=(int) DownScale(MaxRGB);
-  FreeMemory((void *) &squares);
   return(True);
 }
 

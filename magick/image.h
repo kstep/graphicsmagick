@@ -50,6 +50,39 @@ typedef unsigned char Quantum;
 /*
   Typedef declarations.
 */
+typedef struct _PointInfo
+{
+  double
+    x,
+    y,
+    z;
+} PointInfo;
+
+typedef struct _PixelPacket
+{
+#if defined(WORDS_BIGENDIAN)
+  Quantum
+    red,
+    green,
+    blue,
+    opacity;
+#else
+#if defined(WIN32)
+  Quantum
+    blue,
+    green,
+    red,
+    opacity;
+#else
+  Quantum
+    opacity,
+    red,
+    green,
+    blue;
+#endif
+#endif
+} PixelPacket;
+
 typedef struct _RectangleInfo
 {
   unsigned int
@@ -104,6 +137,15 @@ typedef struct _BlobInfo
 
 typedef void* Cache;
 
+typedef struct _ChromaticityInfo
+{
+  PointInfo
+    red_primary,
+    green_primary,
+    blue_primary,
+    white_point;
+} ChromaticityInfo;
+
 typedef struct _ColorlistInfo
 {
   char
@@ -156,147 +198,6 @@ typedef struct _ImageAttribute
 
 typedef unsigned short IndexPacket;
 
-typedef struct _PixelPacket
-{
-#if defined(WORDS_BIGENDIAN)
-  Quantum
-    red,
-    green,
-    blue,
-    opacity;
-#else
-#if defined(WIN32)
-  Quantum
-    blue,
-    green,
-    red,
-    opacity;
-#else
-  Quantum
-    opacity,
-    red,
-    green,
-    blue;
-#endif
-#endif
-} PixelPacket;
-
-typedef struct _ImageInfo
-{
-  /*
-    Blob member.
-  */
-  BlobInfo
-    blob;
-
-  /*
-    File and image dimension members.
-  */
-  FILE
-    *file;
-
-  char
-    filename[MaxTextExtent],
-    magick[MaxTextExtent],
-    unique[MaxTextExtent],
-    zero[MaxTextExtent];
-
-  unsigned int
-    temporary,
-    adjoin,
-    subimage,
-    subrange,
-    depth;
-
-  char
-    *size,
-    *tile,
-    *page;
-
-  InterlaceType
-    interlace;
-
-  ResolutionType
-    units;
-
-  /*
-    Compression members.
-  */
-  CompressionType
-    compression;
-
-  unsigned int
-    quality;
-
-  /*
-    Annotation members.
-  */
-  char
-    *server_name,
-    *font,
-    *pen,
-    *texture,
-    *density;
-
-  unsigned int
-    antialias;
-
-  double
-    pointsize;
-
-  int
-    fuzz;
-
-  PixelPacket
-    background_color,
-    border_color,
-    matte_color;
-
-  /*
-    Color reduction members.
-  */
-  unsigned int
-    dither,
-    monochrome;
-
-  ColorspaceType
-    colorspace;
-
-  /*
-    Animation members.
-  */
-  char
-    *dispose,
-    *delay,
-    *iterations;
-
-  unsigned int
-    decode_all_MNG_objects,
-    coalesce_frames,
-    insert_backdrops;
-
-  /*
-    Miscellaneous members.
-  */
-  unsigned int
-    verbose;
-
-  PreviewType
-    preview_type;
-
-  char
-    *view;
-
-  long
-    group;
-
-  unsigned int
-    ping;
-
-  int
-    (*fifo)(void *,const void *,size_t,ExceptionInfo *);
-} ImageInfo;
-
 typedef struct _MontageInfo
 {
   char
@@ -325,23 +226,6 @@ typedef struct _MontageInfo
     border_color,
     matte_color;
 } MontageInfo;
-
-typedef struct _PointInfo
-{
-  double
-    x,
-    y,
-    z;
-} PointInfo;
-
-typedef struct _ChromaticityInfo
-{
-  PointInfo
-    red_primary,
-    green_primary,
-    blue_primary,
-    white_point;
-} ChromaticityInfo;
 
 typedef struct _ProfileInfo
 {
@@ -553,6 +437,122 @@ typedef struct _DrawInfo
   Image
     *tile;
 } DrawInfo;
+
+typedef struct _ImageInfo
+{
+  /*
+    Blob member.
+  */
+  BlobInfo
+    blob;
+
+  /*
+    File and image dimension members.
+  */
+  FILE
+    *file;
+
+  char
+    filename[MaxTextExtent],
+    magick[MaxTextExtent],
+    unique[MaxTextExtent],
+    zero[MaxTextExtent];
+
+  unsigned int
+    temporary,
+    adjoin,
+    subimage,
+    subrange,
+    depth;
+
+  char
+    *size,
+    *tile,
+    *page;
+
+  InterlaceType
+    interlace;
+
+  ResolutionType
+    units;
+
+  /*
+    Compression members.
+  */
+  CompressionType
+    compression;
+
+  unsigned int
+    quality;
+
+  /*
+    Annotation members.
+  */
+  char
+    *server_name,
+    *font,
+    *pen,
+    *texture,
+    *density;
+
+  unsigned int
+    antialias;
+
+  double
+    pointsize;
+
+  int
+    fuzz;
+
+  PixelPacket
+    background_color,
+    border_color,
+    matte_color;
+
+  /*
+    Color reduction members.
+  */
+  unsigned int
+    dither,
+    monochrome;
+
+  ColorspaceType
+    colorspace;
+
+  /*
+    Animation members.
+  */
+  char
+    *dispose,
+    *delay,
+    *iterations;
+
+  unsigned int
+    decode_all_MNG_objects,
+    coalesce_frames,
+    insert_backdrops;
+
+  /*
+    Miscellaneous members.
+  */
+  unsigned int
+    verbose;
+
+  PreviewType
+    preview_type;
+
+  char
+    *view;
+
+  long
+    group;
+
+  unsigned int
+    ping;
+
+  void
+    (*fifo)(Image *,PixelPacket *,IndexPacket *);
+} ImageInfo;
 
 typedef struct _MagickInfo
 {

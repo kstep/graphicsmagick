@@ -2900,8 +2900,7 @@ Export void GetImageInfo(ImageInfo *image_info)
   image_info->view=(char *) NULL;
   image_info->group=0L;
   image_info->ping=False;
-  image_info->fifo=
-    (int (*)(void *,const void *,size_t,ExceptionInfo *)) NULL;
+  image_info->fifo=(void (*)(Image *,PixelPacket *,IndexPacket *)) NULL;
 }
 
 /*
