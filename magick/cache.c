@@ -1732,6 +1732,9 @@ static unsigned int ModifyCache(Image *image)
   register PixelPacket
     *q;
 
+  size_t
+    length;
+
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(image->cache != (Cache) NULL);
@@ -1748,6 +1751,7 @@ static unsigned int ModifyCache(Image *image)
     MagickFatalError(ResourceLimitFatalError,"Unable to clone image",
       "Memory allocation failed");
   *clone_image=(*image);
+  length=clone_image->columns*sizeof(PixelPacket);
   GetCacheInfo(&image->cache);
   for (y=0; y < (long) image->rows; y++)
   {
@@ -1755,7 +1759,7 @@ static unsigned int ModifyCache(Image *image)
     q=SetImagePixels(image,0,y,image->columns,1);
     if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
-    (void) memcpy(q,p,clone_image->columns*sizeof(PixelPacket));
+    (void) memcpy(q,p,length);
     clone_indexes=GetIndexes(clone_image);
     indexes=GetIndexes(image);
     if ((clone_indexes != (IndexPacket *) NULL) &&
@@ -2709,7 +2713,7 @@ static PixelPacket *SetNexus(const Image *image,const RectangleInfo *region,
   if (nexus_info->staging == (PixelPacket *) NULL)
     nexus_info->staging=(PixelPacket *) AcquireMemory(offset);
   else
-    if (nexus_info->length != offset)
+    if (nexus_info->length < offset)
       ReacquireMemory((void **) &nexus_info->staging,offset);
   if (nexus_info->staging == (PixelPacket *) NULL)
     MagickFatalError(ResourceLimitFatalError,"Memory allocation failed",
