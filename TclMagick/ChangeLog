@@ -1,4 +1,18 @@
+2003-12-17  David N. Welton  <davidw@dedasys.com>
+
+	* source/TclMagick.h: Updated to latest working TclMagick.h.
+
+	* source/TkMagick.c: Added TkMagick.c, a bridge between TclMagick
+	and Tk.
+
+	* source/TclMagick.c: Updated to latest file from work done by
+	Rolf and myself.
+
 2003-12-16  David N. Welton  <davidw@dedasys.com>
+
+	* LICENSE: Added BSD style license with Rolf's name in it.
+
+	* README: Added README file.
 
 	* ChangeLog: started adding TclMagick code to GraphicsMagick CVS.
 
