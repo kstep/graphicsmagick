@@ -3,7 +3,7 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%                 RRRR   EEEEE  N   N  DDDDD  EEEEE  RRRR                     %
+%                 RRRR   EEEEE  N   N  DDDD   EEEEE  RRRR                     %
 %                 R   R  E      NN  N  D   D  E      R   R                    %
 %                 RRRR   EEE    N N N  D   D  EEE    RRRR                     %
 %                 R R    E      N  NN  D   D  E      R R                      %
