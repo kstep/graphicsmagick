@@ -2736,8 +2736,9 @@ static inline int GetWindingNumber(const PolygonInfo *polygon_info,
       }
     if (polygon_info->edges[i].bounds.x1 > x)
       continue;
-    j=polygon_info->edges[i].highwater > 0 ?
-      polygon_info->edges[i].highwater: 1;
+    j=1;
+    if (polygon_info->edges[i].highwater > 0)
+      j=polygon_info->edges[i].highwater;
     for ( ; j < polygon_info->edges[i].number_points; j++)
       if (polygon_info->edges[i].points[j].y > y)
         break;
