@@ -324,10 +324,10 @@ static void DestroyCacheInfo(Cache cache)
     case MemoryCache:
     {
       LiberateMemory((void **) &cache_info->pixels);
+      (void) GetCacheMemory(number_pixels*sizeof(PixelPacket));
       if ((cache_info->storage_class == PseudoClass) ||
           (cache_info->colorspace == CMYKColorspace))
         (void) GetCacheMemory(number_pixels*sizeof(IndexPacket));
-      (void) GetCacheMemory(number_pixels*sizeof(PixelPacket));
       break;
     }
     case MemoryMappedCache:
@@ -1107,6 +1107,7 @@ MagickExport unsigned int OpenCache(Image *image)
           cache_info->colorspace=image->colorspace;
           cache_info->type=MemoryCache;
           cache_info->pixels=(PixelPacket *) allocation;
+          cache_info->indexes=(IndexPacket *) NULL;
           if ((cache_info->storage_class == PseudoClass) ||
               (cache_info->colorspace == CMYKColorspace))
             cache_info->indexes=(IndexPacket *)
