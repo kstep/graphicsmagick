@@ -153,9 +153,9 @@ MagickExport Image *BlobToImage(const ImageInfo *image_info,const void *blob,
         image_info->magick);
       return((Image *) NULL);
     }
+  GetExceptionInfo(exception);
   clone_info=CloneImageInfo(image_info);
   AttachBlob(clone_info->blob,blob,length);
-  GetExceptionInfo(exception);
   (void) SetImageInfo(clone_info,False,exception);
   magick_info=GetMagickInfo(clone_info->magick,exception);
   if (magick_info == (const MagickInfo *) NULL)
@@ -1109,6 +1109,72 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
       image->previous=(Image *) NULL;
     }
   return((image->file != (FILE *) NULL) || (image->blob->data != NULL));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   P i n g B l o b                                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  PingBlob() returns all the attributes of an image or image sequence
+%  except for the pixels.  It is much faster and consumes far less memory
+%  than BlobToImage().  On failure, a NULL image is returned and exception
+%  describes the reason for the failure.
+%
+%
+%  The format of the PingBlob method is:
+%
+%      Image *PingBlob(const ImageInfo *image_info,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image_info: Ping the image defined by the file or filename members of
+%      this structure.
+%
+%    o exception: Return any errors or warnings in this structure.
+%
+%
+*/
+
+static int StreamHandler(const Image *image,const void *pixels,
+  const size_t columns)
+{
+  return(True);
+}
+
+MagickExport Image *PingBlob(const ImageInfo *image_info,const void *blob,
+  const size_t length,ExceptionInfo *exception)
+{
+  Image
+    *image;
+
+  ImageInfo
+    *clone_info;
+
+  assert(image_info != (ImageInfo *) NULL);
+  assert(image_info->signature == MagickSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+  if ((blob == (const void *) NULL) || (length == 0))
+    {
+      ThrowException(exception,BlobWarning,"Unrecognized image format",
+        image_info->magick);
+      return((Image *) NULL);
+    }
+  GetExceptionInfo(exception);
+  clone_info=CloneImageInfo(image_info);
+  AttachBlob(clone_info->blob,blob,length);
+  clone_info->ping=True;
+  if (clone_info->size == (char *) NULL)
+    clone_info->size=AllocateString(DefaultTileGeometry);
+  image=ReadStream(clone_info,&StreamHandler,exception);
+  DestroyImageInfo(clone_info);
+  return(image);
 }
 
 /*

@@ -1169,7 +1169,7 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  PingImage() returns all the attributes of an image or image sequence
-%  except for the pixels.  It is much faster and consumes far less memory 
+%  except for the pixels.  It is much faster and consumes far less memory
 %  than ReadImage().  On failure, a NULL image is returned and exception
 %  describes the reason for the failure.
 %
@@ -2363,8 +2363,8 @@ static Image *ReadImages(const ImageInfo *image_info,ExceptionInfo *exception)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Use Write() to write an image or an image sequence to a file or 
-%  filehandle.  Write() returns 0 is there is a memory shortage or if the 
+%  Use Write() to write an image or an image sequence to a file or
+%  filehandle.  Write() returns 0 is there is a memory shortage or if the
 %  image cannot be written.  Check the exception member of image to determine
 %  the cause for any failure.
 %

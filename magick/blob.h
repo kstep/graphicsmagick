@@ -19,7 +19,8 @@ extern MagickExport char
   *ReadBlobString(Image *,char *);
 
 extern MagickExport Image
-  *BlobToImage(const ImageInfo *,const void *,const size_t,ExceptionInfo *);
+  *BlobToImage(const ImageInfo *,const void *,const size_t,ExceptionInfo *),
+  *PingBlob(const ImageInfo *,const void *,const size_t,ExceptionInfo *);
 
 extern MagickExport int
   EOFBlob(const Image *),
