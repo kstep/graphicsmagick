@@ -20,14 +20,14 @@
 <FONT SIZE=-1>DESCRIPTIONS</FONT></A></LI>
 	<UL>
 
+		<LI><A HREF="#attachblob">AttachBlob</A></LI>
 		<LI><A HREF="#blobtoimage">BlobToImage</A></LI>
 		<LI><A HREF="#cloneblobinfo">CloneBlobInfo</A></LI>
 		<LI><A HREF="#destroyblobinfo">DestroyBlobInfo</A></LI>
+		<LI><A HREF="#detachblob">DetachBlob</A></LI>
 		<LI><A HREF="#filetoblob">FileToBlob</A></LI>
 		<LI><A HREF="#getblobinfo">GetBlobInfo</A></LI>
 		<LI><A HREF="#imagetoblob">ImageToBlob</A></LI>
-		<LI><A HREF="#rewindblob">RewindBlob</A></LI>
-		<LI><A HREF="#setblobquantum">SetBlobQuantum</A></LI>
 	</UL>
 
 </UL>
@@ -42,19 +42,38 @@
 <HR>
 <H1><A NAME="synopsis">
 <FONT SIZE=-1>SYNOPSIS</FONT></A></H1>
+<P>void  <STRONG>AttachBlob</STRONG>( BlobInfo *blob_info, const void *blob, const size_t length );</P>
 <P>Image * <STRONG>BlobToImage</STRONG>( const ImageInfo *image_info, const void *blob, const size_t length, ExceptionInfo *exception );</P>
 <P>BlobInfo * <STRONG>CloneBlobInfo</STRONG>( const BlobInfo *blob_info );</P>
 <P>void  <STRONG>DestroyBlobInfo</STRONG>( BlobInfo *blob );</P>
+<P>void  <STRONG>DetachBlob</STRONG>( BlobInfo *blob_info );</P>
 <P>void * <STRONG>FileToBlob</STRONG>( const char *filename, size_t *length, ExceptionInfo *exception );</P>
-<P>void  <STRONG>GetBlobInfo</STRONG>( BlobInfo *blob );</P>
+<P>void  <STRONG>GetBlobInfo</STRONG>( BlobInfo *blob_info );</P>
 <P>void * <STRONG>ImageToBlob</STRONG>( const ImageInfo *image_info, Image *image, size_t *length, ExceptionInfo *exception );</P>
-<P>void  <STRONG>RewindBlob</STRONG>( BlobInfo *blob );</P>
-<P>void  <STRONG>SetBlobQuantum</STRONG>( BlobInfo *blob, const size_t quantum );</P>
 <P>
 <HR>
 <H1><A NAME="function descriptions">
 <FONT SIZE=-1>FUNCTION</FONT> 
 <FONT SIZE=-1>DESCRIPTIONS</FONT></A></H1>
+<P>
+<H2><A NAME="attachblob">AttachBlob</A></H2>
+<P>Method AttachBlob attaches a blob to the BlobInfo structure.</P>
+<P>The format of the AttachBlob method is:</P>
+<blockquote>void AttachBlob ( <A HREF="types/BlobInfo.html">BlobInfo</A> *blob_info, const void *blob, const size_t length ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
+<DL><DL>
+<p><dt><STRONG><A NAME="item_o_blob_info%3A">blob_info:</A></STRONG><BR>
+<DD>
+Specifies a pointer to a BlobInfo structure.
+<P></P>
+<p><dt><STRONG><A NAME="item_o_blob%3A">blob:</A></STRONG><BR>
+<DD>
+The address of a character stream in one of the image formats understood by ImageMagick.
+<P></P>
+<p><dt><STRONG><A NAME="item_o_length%3A">length:</A></STRONG><BR>
+<DD>
+This size_t integer reflects the length in bytes of the blob.
+<P></P></DL></DL>
 <P>
 <H2><A NAME="blobtoimage">BlobToImage</A></H2>
 <P>Method BlobToImage implements direct to memory image formats.  It returns the blob as an image.</P>
@@ -71,11 +90,11 @@ Method BlobToImage returns an image from the supplied blob.  If an error occurs
 <DD>
 The image info..
 <P></P>
-<p><dt><STRONG><A NAME="item_o_blob%3A">blob:</A></STRONG><BR>
+<p><dt><STRONG>blob:</STRONG><BR>
 <DD>
 The address of a character stream in one of the image formats understood by ImageMagick.
 <P></P>
-<p><dt><STRONG><A NAME="item_o_length%3A">length:</A></STRONG><BR>
+<p><dt><STRONG>length:</STRONG><BR>
 <DD>
 This size_t integer reflects the length in bytes of the blob.
 <P></P>
@@ -112,6 +131,17 @@ a structure of type info.
 Specifies a pointer to a BlobInfo structure.
 <P></P></DL></DL>
 <P>
+<H2><A NAME="detachblob">DetachBlob</A></H2>
+<P>Method DetachBlob detaches a blob from the BlobInfo structure.</P>
+<P>The format of the DetachBlob method is:</P>
+<blockquote>void DetachBlob ( <A HREF="types/BlobInfo.html">BlobInfo</A> *blob_info ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
+<DL><DL>
+<p><dt><STRONG>blob_info:</STRONG><BR>
+<DD>
+Specifies a pointer to a BlobInfo structure.
+<P></P></DL></DL>
+<P>
 <H2><A NAME="filetoblob">FileToBlob</A></H2>
 <P>Method FileToBlob returns the contents of a file as a blob.  It returns the file as a blob and its length.</P>
 <P>The format of the FileToBlob method is:</P>
@@ -139,10 +169,10 @@ Return any errors or warnings in this structure.
 <H2><A NAME="getblobinfo">GetBlobInfo</A></H2>
 <P>Method GetBlobInfo initializes the BlobInfo structure.</P>
 <P>The format of the GetBlobInfo method is:</P>
-<blockquote>void GetBlobInfo ( <A HREF="types/BlobInfo.html">BlobInfo</A> *blob ); </blockquote><P>
+<blockquote>void GetBlobInfo ( <A HREF="types/BlobInfo.html">BlobInfo</A> *blob_info ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG>blob:</STRONG><BR>
+<p><dt><STRONG>blob_info:</STRONG><BR>
 <DD>
 Specifies a pointer to a BlobInfo structure.
 <P></P></DL></DL>
@@ -178,34 +208,6 @@ This pointer to a size_t integer sets the initial length of the blob.  On return
 <p><dt><STRONG>exception:</STRONG><BR>
 <DD>
 Return any errors or warnings in this structure.
-<P></P></DL></DL>
-<P>
-<H2><A NAME="rewindblob">RewindBlob</A></H2>
-<P>Method RewindBlob rewinds the BlobInfo structure.</P>
-<P>The format of the RewindBlob method is:</P>
-<blockquote>void RewindBlob ( <A HREF="types/BlobInfo.html">BlobInfo</A> *blob ); </blockquote><P>
-<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DL>
-<p><dt><STRONG>blob:</STRONG><BR>
-<DD>
-Specifies a pointer to a BlobInfo structure.
-<P></P></DL></DL>
-<P>
-<H2><A NAME="setblobquantum">SetBlobQuantum</A></H2>
-<P>Method SetBlobQuantum set the current value of the blob quantum.  This is the size in bytes to add to a blob when writing to a blob exceeds its current length.</P>
-<P>The format of the SetBlobQuantum method is:</P>
-<blockquote>void SetBlobQuantum ( <A HREF="types/BlobInfo.html">BlobInfo</A> *blob, const size_t quantum ); </blockquote><P>
-<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DL>
-<p><dt><STRONG>blob:</STRONG><BR>
-<DD>
-
-<FONT SIZE=-1>A</FONT> pointer to a BlobInfo structure.
-<P></P>
-<p><dt><STRONG><A NAME="item_o_quantum%3A">quantum:</A></STRONG><BR>
-<DD>
-
-<FONT SIZE=-1>A</FONT> size_t that reflects the number of bytes to increase a blob.
 </DL></DL>
 
 </BODY>

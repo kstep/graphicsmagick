@@ -2458,7 +2458,7 @@ MagickExport unsigned int PlasmaImage(Image *image,const SegmentInfo *segment,
 %
 %  The format of the ReduceNoiseImage method is:
 %
-%      Image *ReduceNoiseImage(Image *image,const double,
+%      Image *ReduceNoiseImage(Image *image,const double radius,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
