@@ -118,7 +118,7 @@ fi
 
 # Enable build using delegate libraries built in subdirectories rather than installed
 # delegate libraries (bzlib fpx hdf jasper jbig jpeg lcms mpeg2 png tiff ttf wmf xml zlib)
-AC_ARG_ENABLE(delegate_build,
+AC_ARG_ENABLE(delegate-build,
 	      [  --enable-delegate-build enable using delegate libs in subdirectories
                           (default disabled)],
 	      [with_delegate_build=$enableval],
