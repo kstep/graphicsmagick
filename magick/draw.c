@@ -1585,7 +1585,7 @@ Export void MatteFloodfillImage(Image *image,const RunlengthPacket *target,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
-%     O p a g u e I m a g e                                                   %
+%     O p a q u e I m a g e                                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
