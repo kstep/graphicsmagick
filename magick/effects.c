@@ -2467,7 +2467,7 @@ Export Image *SharpenImage(Image *image,const unsigned int order,
   {
     for (u=(-(int) order/2); u <= ((int) order/2); u++)
     {
-      kernel[i]=(i % 2 ? -1 : 1)*exp(-(double) v*v-u*u);
+      kernel[i]=(-1.0)*exp(-(double) v*v-u*u);
       i++;
     }
   }

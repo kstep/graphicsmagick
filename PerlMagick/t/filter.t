@@ -209,7 +209,7 @@ testFilter('input.miff', 'Shade',
 ++$test;
 testFilter('input.miff', 'Sharpen',
   q/3/,
-  'b849cbe4301ccbd71494a3e596f01b7d',
+  '087e8130210a07139b7fcb9d0b7d5eff',
   'b96d206387adfbd8a3a9d6b0f7fc109c');
 
 ++$test;
