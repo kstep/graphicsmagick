@@ -88,7 +88,7 @@ noinst_HEADERS = animate.h stash.h defines.h display.h mac.h mng.h modules.h\
 
 # Additional files to distribute
 EXTRA_DIST = $(ALLMANPAGES) Imakefile Magick-config.in Make.com mac.c \
-  modules.mgk nt.c vms.c $(MAGICK_BASE_SRCS)
+  magic.mgk modules.mgk nt.c vms.c $(MAGICK_BASE_SRCS)
 
 #
 # Libtool Modules
