@@ -116,9 +116,6 @@ int main(int argc,char **argv)
   ExceptionInfo
     exception;
 
-  Image
-    *image;
-
   ImageInfo
     *image_info;
 
@@ -211,6 +208,10 @@ int main(int argc,char **argv)
       return(False);
     }
 
+  /* watch out -- the following replaces the contents of argv with a new
+     pointer that is now managed by and must be freed by the code that
+     follows
+   */
   status=ExpandFilenames(&argc,&argv);
   if (status == False)
     MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
@@ -282,7 +283,9 @@ int main(int argc,char **argv)
   DestroyImageInfo(image_info);
   DestroyExceptionInfo(&exception);
   DestroyMagick();
-  argv--;
+  /* This looks suspicious, but this is NOT the real argv. It was replaced
+     by the call to ExpandFilenames earlier
+   */
   LiberateMemory((void **) &argv);
   Exit(!status);
   return(False);
