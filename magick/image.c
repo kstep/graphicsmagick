@@ -1062,6 +1062,56 @@ MagickExport ImageInfo *CloneImageInfo(const ImageInfo *image_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   C l o n e I m a g e L i s t                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method CloneImageList returns a duplicate of the specified image list.
+%
+%  The format of the PopImageList method is:
+%
+%      Image *CloneImageList(const Image *images,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o images: The image list.
+%
+%    o exception: Return any errors or warnings in this structure.
+%
+%
+*/
+MagickExport Image *CloneImageList(const Image *images,ExceptionInfo *exception)
+{
+  Image
+    *clone_images,
+		*image;
+
+  assert(images != (Image *) NULL);
+  if (images == (Image *) NULL)
+    return((Image *) NULL);
+  assert(images->signature == MagickSignature);
+  clone_images=NewImageList();
+  for ( ; images != (Image *) NULL; images=images->next)
+  {
+	  image=CloneImage(images,0,0,True,exception);
+    if (image == (Image *) NULL)
+		  {
+		    if (clone_images != (Image *) NULL)
+          DestroyImages(clone_images)
+        break;
+		  }
+    PushImageList(&clone_images,image,exception);
+  }
+  return(clone_images);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   C o m p o s i t e I m a g e                                               %
 %                                                                             %
 %                                                                             %
@@ -5524,12 +5574,12 @@ MagickExport unsigned int PushImageList(Image **images,const Image *image,
   assert(image->signature == MagickSignature);
   if ((*images) == (Image *) NULL)
     {
-      *images=CloneImage(image,0,0,True,exception);
+      *images=CloneImageList(image,exception);
       return(*images != (Image *) NULL);
     }
   assert((*images)->signature == MagickSignature);
   for (next=(*images); next->next != (Image *) NULL; next=next->next);
-  next->next=CloneImage(image,0,0,True,exception);
+  next->next=CloneImageList(image,exception);
   if (next->next == (Image *) NULL)
     return(False);
   next->next->previous=next;
@@ -5567,7 +5617,7 @@ MagickExport unsigned int PushImageList(Image **images,const Image *image,
 %
 */
 MagickExport unsigned int SetImageList(Image **images,const Image *image,
-	const unsigned long n,ExceptionInfo exception)
+	const unsigned long n,ExceptionInfo *exception)
 {
 	Image
 		*next;
@@ -5582,7 +5632,7 @@ MagickExport unsigned int SetImageList(Image **images,const Image *image,
     {
       if (n > 0)
         return(False);
-      *images=CloneImage(image,0,0,True,exception);
+      *images=CloneImageList(image,exception);
       return(*images != (Image *) NULL);
     }
   assert((*images)->signature == MagickSignature);
@@ -5592,7 +5642,7 @@ MagickExport unsigned int SetImageList(Image **images,const Image *image,
       break;
   if (next == (Image *) NULL)
     return(False);
-  next->next=CloneImage(image,0,0,True,exception);
+  next->next=CloneImageList(image,exception);
   if (next->next == (Image *) NULL)
     return(False);
   next->next->previous=next;
