@@ -170,7 +170,7 @@ typedef struct _CompositeOptionInfo
 */
 static unsigned int CompositeImages(ImageInfo *image_info,
   CompositeOptionInfo *option_info,const int argc,char **argv,
-    Image **composite_ref,Image **mask_ref,Image **image)
+  Image **composite_ref,Image **mask_ref,Image **image)
 {
   long
     x,
@@ -262,8 +262,7 @@ static unsigned int CompositeImages(ImageInfo *image_info,
             *stego_image;
 
           (*image)->offset=option_info->stegano-1;
-          stego_image=SteganoImage(*image,composite_image,
-                                    &(*image)->exception);
+          stego_image=SteganoImage(*image,composite_image,&(*image)->exception);
           if (stego_image != (Image *) NULL)
             {
               DestroyImages(*image);
@@ -276,8 +275,8 @@ static unsigned int CompositeImages(ImageInfo *image_info,
             Image
               *stereo_image;
 
-            stereo_image=StereoImage(*image,composite_image,
-                                      &(*image)->exception);
+            stereo_image=
+              StereoImage(*image,composite_image,&(*image)->exception);
             if (stereo_image != (Image *) NULL)
               {
                 DestroyImages(*image);
@@ -291,8 +290,7 @@ static unsigned int CompositeImages(ImageInfo *image_info,
                 Tile the composite image.
               */
               for (y=0; y < (long) (*image)->rows; y+=composite_image->rows)
-                for (x=0; x < (long) (*image)->columns;
-                      x+=composite_image->columns)
+                for (x=0; x < (long) (*image)->columns; x+=composite_image->columns)
                 {
                   status=CompositeImage(*image,option_info->compose,
                     composite_image,x,y);
@@ -376,8 +374,8 @@ static unsigned int CompositeImages(ImageInfo *image_info,
                   break;
                 }
               }
-              status=CompositeImage(*image,option_info->compose,
-                                 composite_image,x,y);
+              status=
+                CompositeImage(*image,option_info->compose,composite_image,x,y);
               CatchImageException(*image);
             }
       (*image)->matte=matte;
@@ -569,16 +567,16 @@ int main(int argc,char **argv)
   memset(&option_info,0,sizeof(CompositeOptionInfo));
   option_info.dissolve=0.0;
   option_info.compose=OverCompositeOp;
-  composite_image=NewImageList();
+  composite_image=(Image *) NULL;
   option_info.displace_geometry=(char *) NULL;
   GetExceptionInfo(&exception);
   option_info.geometry=(char *) NULL;
   option_info.gravity=NorthWestGravity;
-  image=NewImageList();
+  image=(Image *) NULL;
   image_info=CloneImageInfo((ImageInfo *) NULL);
   (void) strncpy(image_info->filename,argv[argc-1],MaxTextExtent-1);
   (void) SetImageInfo(image_info,True,&exception);
-  mask_image=NewImageList();
+  mask_image=(Image *) NULL;
   option_info.stegano=0;
   option_info.stereo=False;
   option_info.tile=False;

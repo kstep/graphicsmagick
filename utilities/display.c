@@ -1415,7 +1415,7 @@ int main(int argc,char **argv)
                     {
                       DestroyImageList(image);
                       image=nexus->next;
-                      nexus=NewImageList();
+                      nexus=(Image *) NULL;
                     }
                   else
                     {

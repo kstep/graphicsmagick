@@ -326,7 +326,7 @@ int main(int argc,char **argv)
   */
   GetExceptionInfo(&exception);
   first_scene=0;
-  image=NewImageList();
+  image=(Image *) NULL;
   last_scene=0;
   image_info=CloneImageInfo((ImageInfo *) NULL);
   (void) strncpy(image_info->filename,argv[argc-1],MaxTextExtent-1);

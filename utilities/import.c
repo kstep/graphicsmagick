@@ -925,7 +925,7 @@ int main(int argc,char **argv)
   (void) sleep(resource_info.pause);
   image_info->colorspace=quantize_info->colorspace;
   image_info->dither=quantize_info->dither;
-  image=NewImageList();
+  image=(Image *) NULL;
   for (i=0; i < (long) Max(number_scenes,1); i++)
   {
     next_image=XImportImage(image_info,&ximage_info);
