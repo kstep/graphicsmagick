@@ -84,6 +84,7 @@ $call Make rgb.c
 $call Make rla.c
 $call Make rle.c
 $call Make segment.c
+$call Make sct.c
 $call Make sfw.c
 $call Make sgi.c
 $call Make shear.c
@@ -124,7 +125,7 @@ $library/create libmagick.olb PreRvIcccm.obj,animate.obj,annotate.obj, -
   montage.obj,mtv.obj,null.obj,pcd.obj,pcl.obj,pcx.obj, -
   pdf.obj,pict.obj,pix.obj,plasma.obj,png.obj,pnm.obj, -
   preview.obj,ps.obj,ps2.obj,ps3.obj,psd.obj,pwp.obj,quantize.obj, -
-  rgb.obj,rla.obj,rle.obj,segment.obj,sfw.obj,sgi.obj,shear.obj, -
+  rgb.obj,rla.obj,rle.obj,segment.obj,sct.obj,sfw.obj,sgi.obj,shear.obj, -
   signature.obj,stegano.obj,sun.obj,tga.obj,tiff.obj,tile.obj, -
   tim.obj,transform.obj,ttf.obj,txt.obj,uil.obj,utility.obj, -
   uyvy.obj,vicar.obj,vid.obj,viff.obj,vms.obj,widget.obj,x.obj, -

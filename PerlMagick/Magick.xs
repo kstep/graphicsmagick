@@ -74,6 +74,7 @@ extern "C" {
 #include "EXTERN.h"
 #include "perl.h"
 #include "XSUB.h"
+#undef tainted
 #include <magick/magick.h>
 #include <magick/defines.h>
 #include <setjmp.h>
