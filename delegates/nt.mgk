@@ -6,7 +6,7 @@
   <delegate decode="compress" restrain="True" command='|uncompress -c "%i"' />
   <delegate decode="dot" command='dot -Tps "%i" -o "%o"' />
   <delegate decode="dvi" command='dvips -q -o "%o" "%i"' />
-  <delegate decode="edit" restrain="True" command='/usr/X11R6/bin/xterm -title "Edit Image Comment" -e vi "%o"' />
+  <delegate decode="edit" restrain="True" command='notepad "%o"' />
   <delegate decode="emf" command='wmftopng "%i" "%o"' />
   <delegate decode="eps" encode="pdf" mode="bi" command='gswin32c -q -dBATCH -dMaxBitmap=300000000 -dNOPAUSE -dSAFER -sDEVICE=pdfwrite -sOutputFile=%o -- "%i" -c quit' />
   <delegate decode="eps" encode="ps" mode="bi" command='gswin32c -q -dBATCH -dMaxBitmap=300000000 -dNOPAUSE -dSAFER -sDEVICE=pswrite -sOutputFile=%o -- "%i" -c quit' />
@@ -31,7 +31,7 @@
   <delegate decode="pov" command='povray "+i"%i"" +o"%o" +fn%q +w%w +h%h +a -q9 -kfi"%s" -kff"%n"\nconvert -concatenate "%o*.png" "%o"' />
   <delegate decode="ps" encode="eps" mode="bi" command='gswin32c -q -dBATCH -dMaxBitmap=300000000 -dNOPAUSE -dSAFER -sDEVICE=epswrite -sOutputFile=%o -- "%i" -c quit' />
   <delegate decode="ps" encode="pdf" mode="bi" command='gswin32c -q -dBATCH -dMaxBitmap=300000000 -dNOPAUSE -dSAFER -sDEVICE=pdfwrite -sOutputFile=%o -- "%i" -c quit' />
-  <delegate decode="ps" encode="print" mode="encode" command='lpr "%i"' />
+  <delegate decode="pcl" encode="print" mode="encode" command='print "%i"' />
   <delegate decode="rad" command='ra_ppm -g 1.0 "%i" "%o"' />
   <delegate decode="rgba" encode="rle" mode="encode" command='mogrify -flip -size %wx%h "rgba:%i"\nrawtorle -w %w -h %h -n 4 -o "%o" "%i"' />
   <delegate decode="scan" command='scanimage -d "%i" > "%o"' />
