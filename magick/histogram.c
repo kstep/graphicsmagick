@@ -178,11 +178,10 @@ Export unsigned int WriteHISTOGRAMImage(const ImageInfo *image_info,
   else
     (void) ParseGeometry(HistogramDensity,&sans_offset,&sans_offset,
       &width,&height);
-  histogram_image=CloneImage(image,Max(width,DownScale(MaxRGB+1)),height,True);
+  histogram_image=CloneImage(image,width,height,True);
   if (histogram_image == (Image *) NULL)
     WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
   histogram_image->class=DirectClass;
-  SetImage(histogram_image);
   /*
     Allocate histogram count arrays.
   */
@@ -236,16 +235,17 @@ Export unsigned int WriteHISTOGRAMImage(const ImageInfo *image_info,
     if (blue[x] > maximum)
       blue[x]=maximum;
   }
+  scale=(double) histogram_image->rows/maximum;
   /*
     Initialize histogram image.
   */
-  scale=(double) histogram_image->rows/maximum;
+  (void) QueryColorDatabase("black",&histogram_image->background_color);
+  SetImage(histogram_image);
   for (x=0; x < (int) histogram_image->columns; x++)
   {
-    q=SetPixelCache(histogram_image,x,0,1,histogram_image->rows);
+    q=GetPixelCache(histogram_image,x,0,1,histogram_image->rows);
     if (q == (PixelPacket *) NULL)
       break;
-    q=histogram_image->pixels;
     y=histogram_image->rows-(int) (scale*red[x]);
     p=q+y;
     for ( ; y < (int) histogram_image->rows; y++)
