@@ -83,10 +83,8 @@ static char
 */
 typedef struct _ColorPacket
 {
-  Quantum
-    red,
-    green,
-    blue;
+  PixelPacket
+    pixel;
 
   unsigned short
     index;
@@ -352,8 +350,8 @@ static void DestroyColorList(const NodeInfo *node_info)
 %
 %
 */
-MagickExport unsigned int FuzzyColorMatch(const PixelPacket *p,const PixelPacket *q,
-  const double fuzz)
+MagickExport unsigned int FuzzyColorMatch(const PixelPacket *p,
+  const PixelPacket *q,const double fuzz)
 {
   register double
     blue,
@@ -656,38 +654,6 @@ static NodeInfo *GetNodeInfo(CubeInfo *cube_info,const unsigned int level)
 %
 %
 */
-
-static unsigned int XFuzzyColorMatch(const PixelPacket *color,
-  const ColorPacket *target,const double distance)
-{
-  double
-    blue,
-    green,
-    red;
-
-  register double
-    p,
-    q;
-
-  if ((distance == 0.0) && (color->red == target->red) &&
-      (color->green == target->green) && (color->blue == target->blue))
-    return(True);
-  q=distance*distance;
-  red=(double) (color->red-target->red);
-  p=red*red;
-  if (p > q)
-    return(False);
-  green=(double) (color->green-target->green);
-  p+=green*green;
-  if (p > q)
-    return(False);
-  blue=(double) (color->blue-target->blue);
-  p+=blue*blue;
-  if (p > q)
-    return(False);
-  return(True);
-}
-
 MagickExport unsigned long GetNumberColors(const Image *image,FILE *file,
   ExceptionInfo *exception)
 {
@@ -763,7 +729,7 @@ MagickExport unsigned long GetNumberColors(const Image *image,FILE *file,
         if (level != MaxTreeDepth)
           continue;
         for (i=0; i < (long) node_info->number_unique; i++)
-           if (XFuzzyColorMatch(p,node_info->list+i,0))
+           if (FuzzyColorMatch(p,&node_info->list[i].pixel,0))
              break;
         if (i < (long) node_info->number_unique)
           {
@@ -782,9 +748,7 @@ MagickExport unsigned long GetNumberColors(const Image *image,FILE *file,
               "memory allocation failed");
             return(0);
           }
-        node_info->list[i].red=p->red;
-        node_info->list[i].green=p->green;
-        node_info->list[i].blue=p->blue;
+        node_info->list[i].pixel=(*p);
         node_info->list[i].count=1;
         node_info->number_unique++;
         cube_info->colors++;
@@ -851,9 +815,6 @@ static void Histogram(const Image *image,CubeInfo *cube_info,
       char
         name[MaxTextExtent];
 
-      PixelPacket
-        color;
-
       register ColorPacket
         *p;
 
@@ -864,12 +825,9 @@ static void Histogram(const Image *image,CubeInfo *cube_info,
       for (i=0; i < (long) node_info->number_unique; i++)
       {
         (void) fprintf(file,"%10lu: (%5d,%5d,%5d)  ",p->count,
-          p->red,p->green,p->blue);
+          p->pixel.red,p->pixel.green,p->pixel.blue);
         (void) fprintf(file,"  ");
-        color.red=p->red;
-        color.green=p->green;
-        color.blue=p->blue;
-        (void) QueryColorname(image,&color,AllCompliance,name,exception);
+        (void) QueryColorname(image,&p->pixel,AllCompliance,name,exception);
         (void) fprintf(file,"%.1024s",name);
         (void) fprintf(file,"\n");
         p++;
@@ -1196,7 +1154,7 @@ MagickExport unsigned int IsPaletteImage(const Image *image,
         index--;
       }
       for (i=0; i < (long) node_info->number_unique; i++)
-        if (XFuzzyColorMatch(p,node_info->list+i,0))
+        if (FuzzyColorMatch(p,&node_info->list[i].pixel,0))
           break;
       if (i == (long) node_info->number_unique)
         {
@@ -1214,9 +1172,7 @@ MagickExport unsigned int IsPaletteImage(const Image *image,
                 "Unable to determine image class","Memory allocation failed");
               return(False);
             }
-          node_info->list[i].red=p->red;
-          node_info->list[i].green=p->green;
-          node_info->list[i].blue=p->blue;
+          node_info->list[i].pixel=(*p);
           node_info->list[i].index=(unsigned short) cube_info->colors++;
           node_info->number_unique++;
           if (cube_info->colors > 256)
