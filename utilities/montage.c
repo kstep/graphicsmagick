@@ -352,8 +352,7 @@ int main(int argc,char **argv)
         }
         case 'b':
         {
-          if ((LocaleCompare("background",option+1) == 0) ||
-              (LocaleCompare("bg",option+1) == 0))
+          if (LocaleCompare("background",option+1) == 0)
             {
               if (*option == '-')
                 {
