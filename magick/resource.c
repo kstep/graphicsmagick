@@ -81,14 +81,14 @@ typedef struct _ResourceInfo
 /*
   Global declarations.
 */
-static ResourceInfo
+static SemaphoreInfo
+  *resource_semaphore = (SemaphoreInfo *) NULL;
+
+static volatile ResourceInfo
   resource_info =
   {
     0, 0, 0, 512, 1024, ResourceInfinity
   };
-
-static SemaphoreInfo
-  *resource_semaphore = (SemaphoreInfo *) NULL;
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
