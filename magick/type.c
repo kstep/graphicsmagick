@@ -313,7 +313,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
     GetToken(q,&q,token);
     if (*token == '\0')
       break;
-    FormatString(keyword,"%.1024s",token);
+    strncpy(keyword,token,MaxTextExtent-1);
     if (LocaleCompare(keyword,"<!") == 0)
       {
         /*
@@ -321,6 +321,23 @@ static unsigned int ReadConfigurationFile(const char *basename,
         */
         while ((*token != '>') && (*q != '\0'))
           GetToken(q,&q,token);
+        continue;
+      }
+    if (LocaleCompare(keyword,"<include") == 0)
+      {
+        /*
+          Include.
+        */
+        while ((*token != '>') && (*q != '\0'))
+        {
+          strncpy(keyword,token,MaxTextExtent-1);
+          GetToken(q,&q,token);
+          if (*token != '=')
+            continue;
+          GetToken(q,&q,token);
+          if (LocaleCompare(keyword,"file") == 0)
+            (void) ReadConfigurationFile(token,exception);
+        }
         continue;
       }
     if (LocaleCompare(keyword,"<type") == 0)
