@@ -717,7 +717,7 @@ static unsigned int ConvertUtility(int argc,char **argv)
             PushImageList(&image_list,image,&exception);
             DestroyImageList(image);
             image=(Image *) NULL;
-            j=k+1;
+            j=i;
             break;
           }
         if (LocaleCompare("cycle",option+1) == 0)
@@ -1535,7 +1535,7 @@ static unsigned int ConvertUtility(int argc,char **argv)
                 PushImageList(&image_list,image,&exception);
                 DestroyImageList(image);
                 image=(Image *) NULL;
-                j=k+1;
+                j=i;
               }
             break;
           }
