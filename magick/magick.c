@@ -586,6 +586,7 @@ MagickExport MagickInfo *RegisterMagickInfo(MagickInfo *entry)
           p=p->previous;
           UnregisterMagickInfo(entry->tag);
         }
+      break;
     }
   if (magick_list == (MagickInfo *) NULL)
     {
