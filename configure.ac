@@ -1717,6 +1717,7 @@ AC_SUBST(DELEGATES)
 if test "$with_prof" = 'yes'
 then
   CFLAGS="-p $CFLAGS"
+  CXXFLAGS="-p $CXXFLAGS"
   LDFLAGS="-p $LDFLAGS"
 fi
 
@@ -1724,6 +1725,7 @@ fi
 if test "$with_gprof" = 'yes'
 then
   CFLAGS="-pg $CFLAGS"
+  CXXFLAGS="-pg $CXXFLAGS"
   LDFLAGS="-pg $LDFLAGS"
 fi
 
@@ -1732,6 +1734,7 @@ fi
 if test "$with_gcov" = 'yes'
 then
   CFLAGS="-ftest-coverage -fprofile-arcs  $CFLAGS"
+  CXXFLAGS="-ftest-coverage -fprofile-arcs  $CXXFLAGS"
   LDFLAGS="-ftest-coverage -fprofile-arcs $LDFLAGS"
 fi
 
