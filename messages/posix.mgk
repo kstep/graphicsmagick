@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<messagemap>
+  <locale name="Posix">
+    <Resource>
+      <Limit>
+        <Warning>
+          <message name="MemoryAllocationFailed">
+            Memory Allocation Failed
+          </message>
+        </Warning>
+      </Limit>
+    </Resource>
+  </locale>
+</messagemap>

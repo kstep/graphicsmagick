@@ -352,6 +352,7 @@ MagickExport void InitializeMagick(const char *path)
   char
     execution_path[MaxTextExtent];
 
+  (void) setlocale(LC_ALL,"");
   InitializeSemaphore();
   magick_debug=getenv("MAGICK_DEBUG") != (char *) NULL;
   *execution_path='\0';

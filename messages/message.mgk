@@ -1,4 +1,4 @@
 <?xml version="1.0"?>
 <typemap>
-  <include language="english" file="english.mgk" />
+  <include locale="posix" file="posix.mgk" />
 </typemap>

@@ -2449,8 +2449,6 @@ MagickExport void XGetAnnotateInfo(XAnnotateInfo *annotate_info)
   *annotate_info->geometry='\0';
   annotate_info->previous=(XAnnotateInfo *) NULL;
   annotate_info->next=(XAnnotateInfo *) NULL;
-  (void) setlocale(LC_ALL,"");
-  (void) setlocale(LC_NUMERIC,"C");
   (void) XSupportsLocale();
   (void) XSetLocaleModifiers("");
 }
