@@ -489,16 +489,16 @@ Export char **ListModules(void)
     **module_list_tmp,
     *p,
     *q;
-
-  int
-    i,
-    newentry,
-    path_index;
 #else
   char
     **module_list,
     **module_list_tmp;
 #endif
+
+  int
+    i,
+    newentry,
+    path_index;
 
   DIR
     *directory;

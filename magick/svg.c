@@ -385,8 +385,7 @@ static char *TraversePath(const char *data)
           newpixels[BezierCoordinates];
       
         register int
-          i,
-          j;
+          i;
       
         /*
           Compute bezier points.
@@ -427,8 +426,7 @@ static char *TraversePath(const char *data)
           newpixels[BezierCoordinates];
       
         register int
-          i,
-          j;
+          i;
 
         /*
           Compute bezier points.
@@ -1077,7 +1075,7 @@ puts(filename); if (0)
 %      RegisterSVGImage(void)
 %
 */
-Export void RegisterSVGImage(void)
+ModuleExport void RegisterSVGImage(void)
 {
   MagickInfo
     *entry;
@@ -1115,7 +1113,7 @@ Export void RegisterSVGImage(void)
 %      UnregisterSVGImage(void)
 %
 */
-Export void UnregisterSVGImage(void)
+ModuleExport void UnregisterSVGImage(void)
 {
   UnregisterMagickInfo("SVG");
 }
