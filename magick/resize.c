@@ -74,6 +74,13 @@ typedef struct _FilterInfo
 } FilterInfo;
 
 /*
+  Forward declarations.
+*/
+static Image
+  *ThumbnailImage(const Image *,const unsigned long,const unsigned long,
+    ExceptionInfo *);
+
+/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -1077,7 +1084,7 @@ MagickExport Image *ResizeImage(const Image *image,const unsigned long columns,
       if ((x_factor*y_factor) > 0.01)
         i=(long) LanczosFilter;
       else
-        i=(long) BoxFilter;
+        return(ThumbnailImage(image,columns,rows,exception));
   x_support=blur*Max(1.0/x_factor,1.0)*filters[i].support;
   y_support=blur*Max(1.0/y_factor,1.0)*filters[i].support;
   support=Max(x_support,y_support);
@@ -1135,7 +1142,7 @@ MagickExport Image *ResizeImage(const Image *image,const unsigned long columns,
     {
       DestroyImage(resize_image);
       ThrowImageException(ResourceLimitError,"MemoryAllocationFailed",
-        "UnableToResizeImage");
+        "UnableToResizeImage")
     }
   return(resize_image);
 }
@@ -1627,6 +1634,53 @@ MagickExport Image *ScaleImage(const Image *image,const unsigned long columns,
     LiberateMemory((void **) &scanline);
   LiberateMemory((void **) &x_vector);
   return(scale_image);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   T h u m b n a i l I m a g e                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ThumbnailImage() changes the size of an image to the given dimensions.
+%  This method was designed by Bob Friesenhahn as a low cost thumbnail
+%  generator.
+%
+%  The format of the ThumbnailImage method is:
+%
+%      Image *ThumbnailImage(const Image *image,const unsigned long columns,
+%        const unsigned long rows,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image: The image.
+%
+%    o columns: The number of columns in the scaled image.
+%
+%    o rows: The number of rows in the scaled image.
+%
+%    o exception: Return any errors or warnings in this structure.
+%
+%
+*/
+static Image *ThumbnailImage(const Image *image,const unsigned long columns,
+  const unsigned long rows,ExceptionInfo *exception)
+{
+  Image
+    *sample_image,
+    *thumbnail_image;
+
+  sample_image=SampleImage(image,5*columns,5*rows,exception);
+  if (sample_image == (Image *) NULL)
+    return((Image *) NULL);
+  thumbnail_image=ScaleImage(sample_image,columns,rows,exception);
+  DestroyImage(sample_image);
+  return(thumbnail_image);
 }
 
 /*
