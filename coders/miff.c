@@ -58,11 +58,11 @@
 #include "magick.h"
 #include "monitor.h"
 #include "utility.h"
-#if defined(HasBZLIB)
-#include "bzlib.h"
-#endif
 #if defined(HasZLIB)
 #include "zlib.h"
+#endif
+#if defined(HasBZLIB)
+#include "bzlib.h"
 #endif
 
 /*
@@ -156,6 +156,9 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
     keyword[MaxTextExtent],
     *values;
 
+  double
+    version;
+
   Image
     *image;
 
@@ -164,6 +167,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
 
   int
     c,
+    code,
     length;
 
   long
@@ -224,7 +228,9 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
       DestroyImage(image);
       return((Image *) NULL);
     }
+  code=0;
   *id='\0';
+  version=0.0;
   do
   {
     /*
@@ -351,13 +357,12 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
               {
                 if (LocaleCompare(keyword,"class") == 0)
                   {
+                    image->storage_class=UndefinedClass;
                     if (LocaleCompare(values,"PseudoClass") == 0)
                       image->storage_class=PseudoClass;
                     else
                       if (LocaleCompare(values,"DirectClass") == 0)
                         image->storage_class=DirectClass;
-                      else
-                        image->storage_class=UndefinedClass;
                     break;
                   }
                 if (LocaleCompare(keyword,"colors") == 0)
@@ -367,6 +372,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                   }
                 if (LocaleCompare(keyword,"colorspace") == 0)
                   {
+                    image->colorspace=UndefinedColorspace;
                     if (LocaleCompare(values,"CMYK") == 0)
                       image->colorspace=CMYKColorspace;
                     else
@@ -376,6 +382,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                   }
                 if (LocaleCompare(keyword,"compression") == 0)
                   {
+                    image->compression=UndefinedCompression;
                     if (LocaleCompare(values,"Zip") == 0)
                       image->compression=ZipCompression;
                     else
@@ -385,8 +392,6 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                         if ((LocaleCompare(values,"RLE") == 0) ||
                             (LocaleCompare(values,"RunlengthEncoded") == 0))
                           image->compression=RLECompression;
-                        else
-                          image->compression=UndefinedCompression;
                     break;
                   }
                 if (LocaleCompare(keyword,"columns") == 0)
@@ -422,8 +427,6 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                       else
                         if (LocaleCompare(values,"Previous") == 0)
                           image->dispose=PreviousDispose;
-                        else
-                          image->dispose=UndefinedDispose;
                     break;
                   }
                 (void) SetImageAttribute(image,keyword,
@@ -561,6 +564,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                   }
                 if (LocaleCompare(keyword,"rendering-intent") == 0)
                   {
+                    image->rendering_intent=UndefinedIntent;
                     if (LocaleCompare(values,"Saturation") == 0)
                       image->rendering_intent=SaturationIntent;
                     else
@@ -572,8 +576,6 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
                         else
                           if (LocaleCompare(values,"relative") == 0)
                             image->rendering_intent=RelativeIntent;
-                          else
-                            image->rendering_intent=UndefinedIntent;
                     break;
                   }
                 if (LocaleCompare(keyword,"resolution") == 0)
@@ -608,14 +610,24 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
               {
                 if (LocaleCompare(keyword,"units") == 0)
                   {
-                    if (LocaleCompare(values,"undefined") == 0)
-                      image->units=UndefinedResolution;
+                    image->units=UndefinedResolution;
+                    if (LocaleCompare(values,"pixels-per-inch") == 0)
+                      image->units=PixelsPerInchResolution;
                     else
-                      if (LocaleCompare(values,"pixels-per-inch") == 0)
-                        image->units=PixelsPerInchResolution;
-                      else
-                        if (LocaleCompare(values,"pixels-per-centimeter") == 0)
-                          image->units=PixelsPerCentimeterResolution;
+                      if (LocaleCompare(values,"pixels-per-centimeter") == 0)
+                        image->units=PixelsPerCentimeterResolution;
+                    break;
+                  }
+                (void) SetImageAttribute(image,keyword,
+                  *values == '{' ? values+1 : values);
+                break;
+              }
+              case 'v':
+              case 'V':
+              {
+                if (LocaleCompare(keyword,"version") == 0)
+                  {
+                    version=atof(values);
                     break;
                   }
                 (void) SetImageAttribute(image,keyword,
@@ -815,8 +827,8 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
     if (image->compression == RLECompression)
       packet_size+=image->depth/8;
     pixels=(unsigned char *) AcquireMemory(packet_size*image->columns);
-    compress_pixels=(unsigned char *)
-      AcquireMemory((size_t) (1.01*packet_size*image->columns+600));
+    length=(size_t) (1.01*packet_size*image->columns+600);
+    compress_pixels=(unsigned char *) AcquireMemory(length);
     if ((pixels == (unsigned char *) NULL) ||
         (compress_pixels == (unsigned char *) NULL))
       ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image);
@@ -825,25 +837,12 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
     */
     quantum_type=RGBQuantum;
     if (image->storage_class == PseudoClass)
-      {
-        if (!image->matte)
-          quantum_type=IndexQuantum;
-        else
-          quantum_type=IndexAlphaQuantum;
-      }
+      quantum_type=image->matte ? IndexAlphaQuantum : IndexQuantum;
     else
       if (image->colorspace == CMYKColorspace)
-        {
-          if (!image->matte)
-            quantum_type=CMYKQuantum;
-          else
-            quantum_type=CMYKAQuantum;
-        }
+        quantum_type=image->matte ? CMYKAQuantum : CMYKQuantum;
       else
-        if (!image->matte)
-          quantum_type=RGBQuantum;
-        else
-          quantum_type=RGBAQuantum;
+        quantum_type=image->matte ? RGBAQuantum : RGBQuantum;
     index=0;
     length=0;
     for (y=0; y < (long) image->rows; y++)
@@ -859,10 +858,11 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
         {
           if (y == 0)
             {
-              zip_info.zalloc=NULL;
-              zip_info.zfree=NULL;
-              zip_info.opaque=NULL;
-              (void) inflateInit(&zip_info);
+              zip_info.zalloc=(alloc_func) NULL;
+              zip_info.zfree=(free_func) NULL;
+              zip_info.opaque=(voidpf) NULL;
+              code=inflateInit(&zip_info);
+              status|=code >= 0;
               zip_info.avail_in=0;
             }
           zip_info.next_out=pixels;
@@ -873,17 +873,20 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
               {
                 zip_info.next_in=compress_pixels;
                 length=(int) (1.01*packet_size*image->columns+12);
-                zip_info.avail_in=(uInt)
-                  ReadBlob(image,length,zip_info.next_in);
+                if (version != 0)
+                  length=ReadBlobMSBLong(image);
+                zip_info.avail_in=ReadBlob(image,length,zip_info.next_in);
               }
             if (inflate(&zip_info,Z_NO_FLUSH) == Z_STREAM_END)
               break;
           } while (zip_info.avail_out != 0);
           if (y == (long) (image->rows-1))
             {
-              (void) SeekBlob(image,-((ExtendedSignedIntegralType)
-                zip_info.avail_in),SEEK_CUR);
-              status=!inflateEnd(&zip_info);
+              if (version == 0)
+                (void) SeekBlob(image,-((ExtendedSignedIntegralType)
+                  zip_info.avail_in),SEEK_CUR);
+              code=inflateEnd(&zip_info);
+              status|=code >= 0;
             }
           (void) PushImagePixels(image,quantum_type,pixels);
           break;
@@ -897,7 +900,8 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
               bzip_info.bzalloc=NULL;
               bzip_info.bzfree=NULL;
               bzip_info.opaque=NULL;
-              (void) BZ2_bzDecompressInit(&bzip_info,image_info->verbose,False);
+              code=BZ2_bzDecompressInit(&bzip_info,image_info->verbose,False);
+              status|=code >= 0;
               bzip_info.avail_in=0;
             }
           bzip_info.next_out=(char *) pixels;
@@ -907,18 +911,21 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
             if (bzip_info.avail_in == 0)
               {
                 bzip_info.next_in=(char *) compress_pixels;
-                length=(int) (1.01*packet_size*image->columns+12);
-                bzip_info.avail_in=(unsigned int)
-                  ReadBlob(image,length,bzip_info.next_in);
+                length=(int) (1.01*packet_size*image->columns+600);
+                if (version != 0)
+                  length=ReadBlobMSBLong(image);
+                bzip_info.avail_in=ReadBlob(image,length,bzip_info.next_in);
               }
             if (BZ2_bzDecompress(&bzip_info) == BZ_STREAM_END)
               break;
           } while (bzip_info.avail_out != 0);
           if (y == (long) (image->rows-1))
             {
-              (void) SeekBlob(image,-((ExtendedSignedIntegralType)
-                bzip_info.avail_in),SEEK_CUR);
-              status=!BZ2_bzDecompressEnd(&bzip_info);
+              if (version == 0)
+                (void) SeekBlob(image,-((ExtendedSignedIntegralType)
+                  bzip_info.avail_in),SEEK_CUR);
+              code=BZ2_bzDecompressEnd(&bzip_info);
+              status|=code >= 0;
             }
           (void) PushImagePixels(image,quantum_type,pixels);
           break;
@@ -1113,13 +1120,13 @@ ModuleExport void RegisterMIFFImage(void)
 
   *version='\0';
 #if defined(MagickLibVersionText)
-  (void) strncpy(version,MagickLibVersionText,MaxTextExtent >> 1);
+  (void) strncpy(version,MagickLibVersionText,MaxTextExtent-1);
 #if defined(ZLIB_VERSION)
-  (void) strcat(version," with Zlib ");
+  (void) strncat(version," with Zlib ",MaxTextExtent-strlen(version)-1);
   (void) strncat(version,ZLIB_VERSION,MaxTextExtent-strlen(version)-1);
 #endif
 #if defined(HasBZLIB)
-  (void) strcat(version," and BZlib");
+  (void) strncat(version," and BZlib",MaxTextExtent-strlen(version)-1);
 #endif
 #endif
   entry=SetMagickInfo("MIFF");
@@ -1317,6 +1324,9 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
   IndexPacket
     index;
 
+  int
+    code;
+
   long
     y;
 
@@ -1372,6 +1382,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
   compression=image->compression;
   if (image_info->compression != UndefinedCompression)
     compression=image_info->compression;
+  code=0;
   scene=0;
   do
   {
@@ -1385,10 +1396,9 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
     else
       if (image->colorspace != CMYKColorspace)
         (void) RGBTransformImage(image,CMYKColorspace);
+    packet_size=image->depth/8;
     if (image->storage_class == DirectClass)
       packet_size=3*image->depth/8;
-    else
-      packet_size=image->depth/8;
     if (image->colorspace == CMYKColorspace)
       packet_size+=image->depth/8;
     if (image->matte)
@@ -1397,7 +1407,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
       packet_size+=image->depth/8;
     length=packet_size*image->columns;
     pixels=(unsigned char *) AcquireMemory(length);
-    length=(size_t) 1.01*packet_size*image->columns+600;
+    length=(size_t) (1.01*packet_size*image->columns+600);
     if ((compression == BZipCompression) || (compression == ZipCompression))
       if (length != (unsigned int) length)
         compression=NoCompression;
@@ -1408,7 +1418,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
     /*
       Write MIFF header.
     */
-    (void) WriteBlobString(image,"id=ImageMagick\n");
+    (void) WriteBlobString(image,"id=ImageMagick  version=1.0\n");
     if (image->storage_class == PseudoClass)
       FormatString(buffer,"class=PseudoClass  colors=%lu  matte=%.1024s\n",
         image->colors,image->matte ? "True" : "False");
@@ -1676,24 +1686,23 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
     quantum_type=RGBQuantum;
     if (image->storage_class == PseudoClass)
       {
+        quantum_type=IndexAlphaQuantum;
         if (!image->matte)
           quantum_type=IndexQuantum;
-        else
-          quantum_type=IndexAlphaQuantum;
       }
     else
       if (image->colorspace == CMYKColorspace)
         {
+          quantum_type=CMYKAQuantum;
           if (!image->matte)
             quantum_type=CMYKQuantum;
-          else
-            quantum_type=CMYKAQuantum;
         }
       else
-        if (!image->matte)
-          quantum_type=RGBQuantum;
-        else
+        {
           quantum_type=RGBAQuantum;
+          if (!image->matte)
+            quantum_type=RGBQuantum;
+        }
     status=True;
     for (y=0; y < (long) image->rows; y++)
     {
@@ -1709,10 +1718,11 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
         {
           if (y == 0)
             {
-              zip_info.zalloc=NULL;
-              zip_info.zfree=NULL;
-              zip_info.opaque=NULL;
-              (void) deflateInit(&zip_info,(int) Min(image_info->quality/10,9));
+              zip_info.zalloc=(alloc_func) NULL;
+              zip_info.zfree=(free_func) NULL;
+              zip_info.opaque=(voidpf) NULL;
+              code=deflateInit(&zip_info,(int) Min(image_info->quality/10,9));
+              status|=code >= 0;
             }
           zip_info.next_in=pixels;
           zip_info.avail_in=(uInt) (packet_size*image->columns);
@@ -1721,10 +1731,14 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
           {
             zip_info.next_out=compress_pixels;
             zip_info.avail_out=(uInt) (1.01*packet_size*image->columns+12);
-            status=!deflate(&zip_info,Z_NO_FLUSH);
+            code=deflate(&zip_info,Z_NO_FLUSH);
+            status|=code >= 0;
             length=zip_info.next_out-compress_pixels;
-            if (zip_info.next_out != compress_pixels)
-              (void) WriteBlob(image,length,compress_pixels);
+            if (length != 0)
+              {
+                (void) WriteBlobMSBLong(image,length);
+                (void) WriteBlob(image,length,compress_pixels);
+              }
           } while (zip_info.avail_in != 0);
           if (y == (long) (image->rows-1))
             {
@@ -1732,10 +1746,12 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
               {
                 zip_info.next_out=compress_pixels;
                 zip_info.avail_out=(uInt) (1.01*packet_size*image->columns+12);
-                status=!deflate(&zip_info,Z_FINISH);
-                if (zip_info.next_out == compress_pixels)
-                  break;
+                code=deflate(&zip_info,Z_FINISH);
+                status|=code >= 0;
                 length=zip_info.next_out-compress_pixels;
+                if (length == 0)
+                  break;
+                (void) WriteBlobMSBLong(image,length);
                 (void) WriteBlob(image,length,compress_pixels);
               }
               status=!deflateEnd(&zip_info);
@@ -1751,8 +1767,9 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
               bzip_info.bzalloc=NULL;
               bzip_info.bzfree=NULL;
               bzip_info.opaque=NULL;
-              (void) BZ2_bzCompressInit(&bzip_info,
+              code=BZ2_bzCompressInit(&bzip_info,
                 (int) Min(image_info->quality/10,9),image_info->verbose,0);
+              status|=code >= 0;
             }
           bzip_info.next_in=(char *) pixels;
           bzip_info.avail_in=(unsigned int) (packet_size*image->columns);
@@ -1760,11 +1777,16 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
           do
           {
             bzip_info.next_out=(char *) compress_pixels;
-            bzip_info.avail_out=(unsigned int) (packet_size*image->columns+600);
-            (void) BZ2_bzCompress(&bzip_info,BZ_RUN);
+            bzip_info.avail_out=(unsigned int)
+              (1.01*packet_size*image->columns+600);
+            code=BZ2_bzCompress(&bzip_info,BZ_FLUSH);
+            status|=code >= 0;
             length=bzip_info.next_out-(char *) compress_pixels;
-            if (bzip_info.next_out != (char *) compress_pixels)
-              (void) WriteBlob(image,length,compress_pixels);
+            if (length != 0)
+              {
+                (void) WriteBlobMSBLong(image,length);
+                (void) WriteBlob(image,length,compress_pixels);
+              }
           } while (bzip_info.avail_in != 0);
           if (y == (long) (image->rows-1))
             {
@@ -1772,11 +1794,13 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
               {
                 bzip_info.next_out=(char *) compress_pixels;
                 bzip_info.avail_out=(unsigned int)
-                  (packet_size*image->columns+600);
-                (void) BZ2_bzCompress(&bzip_info,BZ_FINISH);
-                if (bzip_info.next_out == (char *) compress_pixels)
-                  break;
+                  (1.01*packet_size*image->columns+600);
+                code=BZ2_bzCompress(&bzip_info,BZ_FINISH);
+                status|=code >= 0;
                 length=bzip_info.next_out-(char *) compress_pixels;
+                if (length == 0)
+                  break;
+                (void) WriteBlobMSBLong(image,length);
                 (void) WriteBlob(image,length,compress_pixels);
               }
               status=!BZ2_bzCompressEnd(&bzip_info);
