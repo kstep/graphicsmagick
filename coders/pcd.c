@@ -205,7 +205,7 @@ static unsigned int DecodeImage(Image *image,unsigned char *luma,
       PCDGetBits(16);
       r->sequence=(sum & 0xffff) << 16;
       PCDGetBits(8);
-      r->key=sum & 0xff;
+      r->key=(unsigned char) (sum & 0xff);
       r->mask=(~((((unsigned int) 1) << (32-r->length))-1));
       r++;
     }

@@ -781,7 +781,7 @@ static unsigned int WritePDBImage(const ImageInfo *image_info,Image *image)
   /*
     Convert to GRAY raster scanline.
   */
-  bits=8/bits_per_pixel-1;  /* start at most significant bits */
+  bits=8/(long) bits_per_pixel-1;  /* start at most significant bits */
   literal=0;
   repeat=0;
   q=p;
@@ -834,7 +834,7 @@ static unsigned int WritePDBImage(const ImageInfo *image_info,Image *image)
                   literal-=0x80;
                 }
             }
-        bits=8/bits_per_pixel-1;
+        bits=8/(long) bits_per_pixel-1;
         buffer[literal+repeat]=0x00;
       }
     }
