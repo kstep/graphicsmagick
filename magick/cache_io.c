@@ -203,7 +203,8 @@ Export void DestroyCacheInfo(CacheHandle cache_handle)
       FreeMemory(cache_info->indexes);
       free_memory+=cache_info->number_pixels*sizeof(IndexPacket);
     }
-  GetCacheInfo(&cache_handle);
+  FreeMemory(cache_info);
+  cache_handle=(void *) NULL;
 }
 
 /*
