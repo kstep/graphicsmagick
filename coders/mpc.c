@@ -157,6 +157,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *p;
 
   unsigned int
+    quantum_depth,
     status;
 
   /*
@@ -520,6 +521,18 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 *values == '{' ? values+1 : values);
               break;
             }
+            case 'q':
+            case 'Q':
+            {
+              if (LocaleCompare(keyword,"quantum-depth") == 0)
+                {
+                  quantum_depth=atoi(values) <= 8 ? 8 : 16;
+                  break;
+                }
+              (void) SetImageAttribute(image,keyword,
+                *values == '{' ? values+1 : values);
+              break;
+            }
             case 'r':
             case 'R':
             {
@@ -631,7 +644,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
       (image->rows == 0) || (*cache_info->cache_filename == '\0'))
     ThrowReaderException(CorruptImageWarning,"Incorrect image header in file",
       image);
-  if (image->depth != QuantumDepth)
+  if (quantum_depth != QuantumDepth)
     ThrowReaderException(CacheWarning,"Inconsistent peristent cache depth",
       image);
   if (!IsAccessible(cache_info->cache_filename))

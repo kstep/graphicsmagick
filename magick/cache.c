@@ -1637,7 +1637,8 @@ MagickExport unsigned int WriteCacheInfo(Image *image)
   if (file == (FILE *) NULL)
     return(False);
   (void) fprintf(file,"id=MagickCache\n");
-  (void) fprintf(file,"cache=%.1024s\n",cache_info->cache_filename);
+  (void) fprintf(file,"cache=%.1024s  quantum-depth=%d\n",
+    cache_info->cache_filename,QuantumDepth);
   if (image->storage_class == PseudoClass)
     (void) fprintf(file,"class=PseudoClass  colors=%u  matte=%s\n",
       image->colors,image->matte ? "True" : "False");
