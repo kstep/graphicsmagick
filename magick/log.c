@@ -572,6 +572,7 @@ MagickExport unsigned int LogMagickEvent(const LogEventType type,
     case X11Event: domain="X11"; break;
     case CacheEvent: domain="Cache"; break;
     case BlobEvent: domain="Blob"; break;
+    case UserEvent: domain="User"; break;
     default: domain="UnknownEvent"; break;
   }
   va_start(operands,format);
@@ -782,6 +783,10 @@ static unsigned int ReadConfigureFile(const char *basename,
               log_info->events=NoEvents;
             if (GlobExpression(token,"*[Rr]ender*"))
               log_info->events|=RenderEvent;
+            if (GlobExpression(token,"*[U]ser*"))
+              log_info->events|=UserEvent;
+            if (GlobExpression(token,"*[X]11*"))
+              log_info->events|=X11Event;
             break;
           }
         break;
@@ -912,6 +917,8 @@ MagickExport unsigned long SetLogEventMask(const char *events)
     log_info->events=NoEvents;
   if (GlobExpression(events,"*[Rr]ender*"))
     log_info->events|=RenderEvent;
+  if (GlobExpression(events,"*[U]ser*"))
+    log_info->events|=UserEvent;
   if (GlobExpression(events,"*[X]11*"))
     log_info->events|=X11Event;
   LiberateSemaphoreInfo(&log_semaphore);
