@@ -315,7 +315,7 @@ static unsigned int ConvertImages(ImageInfo *image_info,Image **image,
   scene=option_info->scene;
   while ((*image)->previous != (Image *) NULL)
     (*image)=(*image)->previous;
-  status=MogrifyImages(image_info,argc-1,argv,image);
+  status=!MogrifyImages(image_info,argc-1,argv,image);
   (void) CatchImageException(*image);
   if (option_info->append != 0)
     {
@@ -436,7 +436,7 @@ static unsigned int ConvertImages(ImageInfo *image_info,Image **image,
   (void) SetImageInfo(image_info,True,exception);
   for (p=(*image); p != (Image *) NULL; p=p->next)
   {
-    status|=!WriteImage(image_info,p);
+    status|=WriteImage(image_info,p);
     (void) CatchImageException(p);
     if (image_info->adjoin)
       break;
