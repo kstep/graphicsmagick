@@ -1,3 +1,11 @@
+2002-12-17  Cristy  <cristy@mystic.es.dupont.com>
+	* * SVG element 'stroke-dasharray: 0' no longer causes a
+	segmentation fault.
+
+2002-12-17  Cristy  <cristy@mystic.es.dupont.com>
+	* CoaleseceImage() properly handles a dispose method of
+	BackgroundDispose.
+
 2002-12-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 	* configure.ac: Updated to substitute for @GMDelegate@.
 	* magick/effect.c: Changed AdaptiveThresholdImage offset

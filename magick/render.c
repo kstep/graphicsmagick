@@ -3882,6 +3882,7 @@ MagickExport unsigned int DrawPrimitive(Image *image,const DrawInfo *draw_info,
         LogPrimitiveInfo(primitive_info);
       scale=ExpandAffine(&draw_info->affine);
       if ((draw_info->dash_pattern != (double *) NULL) &&
+          (draw_info->dash_pattern[0] != 0.0) &&
           ((scale*draw_info->stroke_width) > MagickEpsilon) &&
           (draw_info->stroke.opacity != TransparentOpacity))
         {
