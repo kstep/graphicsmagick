@@ -4185,9 +4185,6 @@ static Image *ReadMSLImage(const ImageInfo *image_info,ExceptionInfo *exception)
   long
     n;
 
-  register int
-    i;
-
   MSLInfo
     msl_info;
 
