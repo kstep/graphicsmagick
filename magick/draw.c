@@ -75,7 +75,7 @@ typedef enum
   PathLineToHorizontalOperation,                /* H|h x+ */
   PathLineToOperation,                          /* L|l (x y)+ */
   PathLineToVerticalOperation,                  /* V|v y+ */
-  PathMoveToOperation,                          /* M|m (x y)+ */
+  PathMoveToOperation                           /* M|m (x y)+ */
 }
 PathOperation;
 
