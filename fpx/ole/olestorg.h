@@ -60,7 +60,7 @@
               OLEStorage(REFCLSID classID, OLEFile * parentFile, IStorage * currentStorage);
               OLEStorage(OLEFile  * parentFile, IStorage * currentStorage, List * theOpenOLEObjList);
     
-              ~OLEStorage();
+              virtual ~OLEStorage();
     
     // The following methods return true if success (ok) and false otherwise (!ok)
     

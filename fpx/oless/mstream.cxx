@@ -186,19 +186,18 @@ void FreeBuffer(BYTE *pb)
 CMStream::CMStream(
     ILockBytes **pplstParent,
     USHORT uSectorShift)
-    :_uSectorShift(uSectorShift),
-     _uSectorSize( (USHORT) (1 << uSectorShift) ),
-     _uSectorMask((USHORT) (_uSectorSize - 1)),
-     _pplstParent(pplstParent),
-     _hdr(uSectorShift),
-     _fatDif( (USHORT) (1<<uSectorShift) ),
-     _fat(SIDFAT, (USHORT) (1<<uSectorShift), uSectorShift),
-     _dir((USHORT) (1 << uSectorShift)),
-     _fatMini(SIDMINIFAT, (USHORT) (1 << uSectorShift), uSectorShift)
+    : _pplstParent(pplstParent),
+      _hdr(uSectorShift),
+      _dir((USHORT) (1 << uSectorShift)),
+      _fat(SIDFAT, (USHORT) (1<<uSectorShift), uSectorShift),
+      _fatDif( (USHORT) (1<<uSectorShift) ),
+      _fatMini(SIDMINIFAT, (USHORT) (1 << uSectorShift), uSectorShift),
+      _uSectorSize( (USHORT) (1 << uSectorShift) ),
+      _uSectorShift(uSectorShift),
+      _uSectorMask((USHORT) (_uSectorSize - 1))
 {
-    
-    _pdsministream = NULL;
-    _pmpt = NULL;
+  _pdsministream = NULL;
+  _pmpt = NULL;
 }
 
 

@@ -63,11 +63,7 @@
   PSystemToolkit* GtheSystemToolkit = NULL;
 
 //  ------------------------------------------------------------------------------------------------
-#ifdef _WINDOWS
-  #pragma code_seg ("SystemToolkit")
-#else
-  #pragma segment SystemToolkit
-#endif
+
 //  ------------------------------------------------------------------------------------------------
 
 //  ------------------------------------------------------------------------------------------------
@@ -608,6 +604,8 @@ Boolean Toolkit_Interleave (Pixel* source, long width, long height)
       incchannel = width*height;
       incline    = 0;
       break;
+    case Interleaving_Pixel:
+      break;
   }
   
   // init pointers
@@ -658,14 +656,17 @@ Boolean Toolkit_UnInterleave (Pixel* source, Pixel* dest, long sourceWidth, long
 
   // update parameters according to the interleaving option
   switch (GtheSystemToolkit->interleaving) {
-    case Interleaving_Line:
-      incchannel = sourceWidth;
-      incline    = 3*sourceWidth + (sourceWidth - destWidth);
-      break;
-    case Interleaving_Channel:
-      incchannel = sourceWidth*sourceHeight;
-      incline    = (sourceWidth-destWidth);
-      break;
+  case Interleaving_Line:
+    incchannel = sourceWidth;
+    incline    = 3*sourceWidth + (sourceWidth - destWidth);
+    break;
+  case Interleaving_Channel:
+    incchannel = sourceWidth*sourceHeight;
+    incline    = (sourceWidth-destWidth);
+    break;
+  default:
+    {
+    }
   }
   
   // init pointers

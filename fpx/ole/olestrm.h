@@ -45,7 +45,7 @@
   public:
     // Create an OLEStream object from parent storage. 
         OLEStream(OLEStorage * parentStorage, LPSTREAM currentStream);
-        ~OLEStream();
+        virtual ~OLEStream();
     
     // Generic OLE stream read function
     virtual Boolean Read( void *, unsigned long );

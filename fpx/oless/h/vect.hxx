@@ -134,14 +134,14 @@ private:
 
 
 inline CPagedVector::CPagedVector(const SID sid)
-: _sid(sid),
-  _pmpt(NULL),
+: _pmpt(NULL),
+  _sid(sid),
+  _ulSize(0),
+  _ulAllocSize(0),
+  _pmsParent(NULL),
   _amp(NULL),
-  _avb(NULL),
-  _pmsParent(NULL)
+  _avb(NULL)
 {
-    _ulSize = 0;
-    _ulAllocSize = 0;
 }
 
 #endif //__VECT_HXX__

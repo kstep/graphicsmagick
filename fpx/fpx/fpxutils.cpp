@@ -34,11 +34,7 @@
 //  ---------
 
 //  ----------------------------------------------------------------------------
-#ifdef _WINDOWS
-  #pragma code_seg ("FlashPixUtils")
-#else 
-  #pragma segment FlashPixUtils
-#endif
+
 //  ----------------------------------------------------------------------------
 
 //  ----------------------------------------------------------------------------
@@ -76,25 +72,25 @@ void  GetImageInfoName  (char * buffer)
 void  GetResolutionName (char * buffer, unsigned long resNum)
 {
   if (buffer)
-    sprintf (buffer, FMT_ResolutionName, resNum);
+    sprintf (buffer, FMT_ResolutionName, (int) resNum);
 }
 
 void  GetSubImageHdrName (char * buffer, unsigned long imgNum)
 {
   if (buffer)
-    sprintf (buffer, FMT_SubImageHdrName, imgNum);
+    sprintf (buffer, FMT_SubImageHdrName, (int) imgNum);
 }
 
 void  GetSubImageDataName (char * buffer, unsigned long imgNum)
 {
   if (buffer)
-    sprintf (buffer, FMT_SubImageDataName, imgNum);
+    sprintf (buffer, FMT_SubImageDataName, (int) imgNum);
 }
 
 void  GetSupportDataName (char * buffer, unsigned long imgNum)
 {
   if (buffer)
-    sprintf (buffer, FMT_SupportDataName, imgNum);
+    sprintf (buffer, FMT_SupportDataName, (int) imgNum);
 }
 
 void  GetICCProfileName (char * buffer, unsigned short imgNum)
@@ -118,25 +114,25 @@ void  GetGlobalInfoName (char * buffer)
 void  GetImageDescName  (char * buffer, unsigned long index)
 {
   if (buffer)
-    sprintf (buffer, FMT_ImageDescription, StreamPrefix, index);
+    sprintf (buffer, FMT_ImageDescription, StreamPrefix, (int) index);
 }
 
 void  GetImageStoreName (char * buffer, unsigned long index)
 {
   if (buffer)
-    sprintf (buffer, FMT_ImageStore, index);
+    sprintf (buffer, FMT_ImageStore, (int) index);
 }
 
 void  GetTransformName  (char * buffer, unsigned long index)
 {
   if (buffer)
-    sprintf (buffer, FMT_Transform, StreamPrefix, index);
+    sprintf (buffer, FMT_Transform, StreamPrefix, (int) index);
 }
 
 void  GetOperationName  (char * buffer, unsigned long index)
 {
   if (buffer)
-    sprintf (buffer, FMT_Operation, StreamPrefix, index);
+    sprintf (buffer, FMT_Operation, StreamPrefix, (int) index);
 }
 
 

@@ -41,11 +41,6 @@
   List * openRootStorageList = NULL; 
   
 //  ----------------------------------------------------------------------------
-#ifdef _WINDOWS
-  #pragma code_seg ("OLECore")
-#else
-  #pragma segment OLECore
-#endif
 
 //  ----------------------------------------------------------------------------
 //  Methods of OLECore
@@ -1576,7 +1571,7 @@ DICTIONARY* AllocDICTIONARY(long elemCount)
   pDict->cbEntries = elemCount; 
   
   // Initialize the array of entries.
-  for(long i = 0; i < pDict->cbEntries; i++) {
+  for(unsigned long i = 0; i < pDict->cbEntries; i++) {
     pDict->rgEntry[i].dwPropID  = 0;
     pDict->rgEntry[i].cb    = 0;
     pDict->rgEntry[i].sz    = 0;
@@ -1594,7 +1589,7 @@ void  DeleteDICTIONARY(DICTIONARY* pDict)
   
   if (pDict->rgEntry) {
     // Deallocate all of the strings contained in the array of entries 
-    for(long i = 0; i < pDict->cbEntries; i++)
+    for(unsigned long i = 0; i < pDict->cbEntries; i++)
       if( pDict->rgEntry[i].sz )
         delete [] pDict->rgEntry[i].sz;
   

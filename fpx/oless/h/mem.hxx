@@ -23,7 +23,7 @@ class CAllocator: public IMalloc
 {
 public:
     inline CAllocator();
-    inline ~CAllocator();
+    virtual inline ~CAllocator();
 
     // IMalloc Methods
     STDMETHOD_(ULONG,AddRef)    ( void );

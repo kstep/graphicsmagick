@@ -11,11 +11,7 @@
 //  For conditions of distribution and use, see copyright notice
 //  in Flashpix.h
 //  ----------------------------------------------------------------------------
-#ifdef _WINDOWS
-  #pragma code_seg ("PResolutionLevel")
-#else
-  #pragma segment PResolutionLevel
-#endif
+
 //  ----------------------------------------------------------------------------
 
 //  ----------------------------------------------------------------------------
@@ -82,7 +78,6 @@
   
   register long TILE_WIDTH = fatherFile->tileWidth;
   register long TILE_SHIFT = fatherFile->log2TileWidth;
-  register long TILE_MASK  = fatherFile->maskTileWidth;
 
   // Compute number of tiles in height and width
   nbTilesH    = (short)((height + TILE_WIDTH - 1) >> TILE_SHIFT);
@@ -487,7 +482,7 @@ FPXStatus PResolutionLevel::ReadRectangle (long x0, long y0, long x1, long y1, P
     tile = tiles + (Y>>TILE_SHIFT)*nbTilesW + (X>>TILE_SHIFT);
     while (X <= x1) {
       // read a rectangle in a tile, if a fatal error occur stop the loop
-      if (currentStatus = tile->ReadRectangle (cur_pix, w, h, rowOffset, x, y)) 
+      if ((currentStatus = tile->ReadRectangle (cur_pix, w, h, rowOffset, x, y))) 
         if (currentStatus == FPX_MEMORY_ALLOCATION_FAILED)
           return currentStatus;     // Stop if no memory available
         else                // otherwise
@@ -562,7 +557,7 @@ FPXStatus PResolutionLevel::Read(long* px, long* py, Pixel* table)
       for (i = 0; i < 16; ++i, ++table) {
         if ((px[i] < cropx1) && (py[i] < cropy1) && (px[i] >= cropx0) && (py[i] >= cropy0)) {
           tile = tiles + (py[i] >> TILE_SHIFT) * nbTilesW + (px[i] >> TILE_SHIFT);
-          if (readStatus = tile->Read())
+          if ((readStatus = tile->Read()))
             status = readStatus;
           if (!tile->pixels) {      // If error reading data
             *table = BACKGROUND;
@@ -585,7 +580,7 @@ FPXStatus PResolutionLevel::Read(long* px, long* py, Pixel* table)
       for(i = 0; i < 16; ++i, ++table) {
         if ((px[i] < cropx1) && (py[i] < cropy1) && (px[i] >= cropx0) && (py[i] >= cropy0)) {
           tile = tiles + (py[i] >> TILE_SHIFT) * nbTilesW + (px[i] >> TILE_SHIFT);
-          if (readStatus = tile->Read())
+          if ((readStatus = tile->Read()))
             status = readStatus;
           if (!tile->pixels) {      // If error reading data
             *table = BACKGROUND;
@@ -614,7 +609,7 @@ FPXStatus PResolutionLevel::Read(long* px, long* py, Pixel* table)
         long index;
         for(i = 0; i < 16; ++i, ++table) {
           tile = tiles + (py[i] >> TILE_SHIFT) * nbTilesW + (px[i] >> TILE_SHIFT);
-          if (readStatus = tile->Read())
+          if ((readStatus = tile->Read()))
             status = readStatus;
           if (!tile->pixels) {    // If error reading data
             *table = BACKGROUND;
@@ -636,7 +631,7 @@ FPXStatus PResolutionLevel::Read(long* px, long* py, Pixel* table)
       } else {
         for(i = 0; i < 16; ++i, ++table) {
           tile = tiles + (py[i] >> TILE_SHIFT) * nbTilesW + (px[i] >> TILE_SHIFT);
-          if (readStatus = tile->Read())
+          if ((readStatus = tile->Read()))
             status = readStatus;
           if (!tile->pixels) {    // If error reading data
             *table = BACKGROUND;
@@ -651,7 +646,7 @@ FPXStatus PResolutionLevel::Read(long* px, long* py, Pixel* table)
     // ----- table[] is included within a single tile -> Optimization of the reading loop -----//
   
       tile = tiles + q * nbTilesW + p;
-      if (readStatus = tile->Read())
+      if ((readStatus = tile->Read()))
         status = readStatus;
       if (!tile->pixels) {      // If error reading data
         for (i = 0; i < 16; ++i, ++table)
@@ -802,7 +797,7 @@ FPXStatus PResolutionLevel::ReadInterpolated (long* px, long* py, Pixel* table)
       (xi != (bx >> TILE_SHIFT))  || (yi != (by >> TILE_SHIFT))) {
     FPXStatus readStatus = FPX_OK;
     for (index = 0; index < 16; index++)
-      if( readStatus = ReadMeanInterpolated (px[index], py[index], table[index]))
+      if( (readStatus = ReadMeanInterpolated (px[index], py[index], table[index])) )
         status = readStatus;    
     return (status);
   }
@@ -1474,13 +1469,13 @@ FPXStatus PResolutionLevel::ReadInARectangle(Pixel* bufferOut, short pixelsPerLi
   FPXStatus   status = FPX_OK;
 
   register long  TILE_WIDTH = fatherFile->tileWidth;
-  register long  TILE_SHIFT = fatherFile->log2TileWidth;
        Pixel BACKGROUND = fatherFile->backgroundUsed;
   unsigned char alphaOffset = fatherFile->alphaOffset;
   BACKGROUND.rouge  = 0xFF;
 
   // Set use of alpha channel
-  if ((useAlphaChannel && fatherFile->existAlphaChannel) || (fatherFile->useAlphaChannel) || (isAlpha & premultiplied))
+  if ((useAlphaChannel && fatherFile->existAlphaChannel) ||
+      (fatherFile->useAlphaChannel) || (isAlpha & premultiplied))
     useAlphaChannel = true;
   else
     useAlphaChannel = false;

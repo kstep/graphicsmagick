@@ -40,7 +40,7 @@
     public:
                OLEFile (const char* theFilename, const char* theStorageName = NULL);
                OLEFile (const FicNom& filefic, const char* theStorageName = NULL);
-              ~OLEFile ();
+              virtual ~OLEFile ();
 
           Boolean GetCLSID (CLSID* classID);
           Boolean GetFileSize (unsigned long* size);

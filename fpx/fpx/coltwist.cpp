@@ -311,7 +311,7 @@ void PColorTwist::ApplyToBuffer(unsigned char* buffer, long size)
       if (c1 < 0)
         *red_pixel = 0;
       else {
-        if (c1 > (sizeof (PyccToSrgbLUT) - 1))    // PTCH_201 changed "portfolioLut"
+        if ((unsigned int) c1 > (sizeof (PyccToSrgbLUT) - 1))    // PTCH_201 changed "portfolioLut"
           c1 = (sizeof (PyccToSrgbLUT) - 1);    // PTCH_201   to "PyccToSrgbLUT"
         *red_pixel = PyccToSrgbLUT[c1];       // PTCH_201   in these 3 lines
       }
@@ -320,7 +320,7 @@ void PColorTwist::ApplyToBuffer(unsigned char* buffer, long size)
       if (c2 < 0)
         *green_pixel = 0;
       else {
-        if (c2 > (sizeof (PyccToSrgbLUT) - 1))    // PTCH_201 chg'ed "portfolioLut"
+        if ((unsigned int) c2 > (sizeof (PyccToSrgbLUT) - 1))    // PTCH_201 chg'ed "portfolioLut"
           c2 = (sizeof (PyccToSrgbLUT) - 1);    // PTCH_201   to "PyccToSrgbLUT"
         *green_pixel = PyccToSrgbLUT[c2];     // PTCH_201   in these 3 lines
       }
@@ -329,7 +329,7 @@ void PColorTwist::ApplyToBuffer(unsigned char* buffer, long size)
       if (c3 < 0)
         *blue_pixel = 0;
       else {
-        if (c3 > (sizeof (PyccToSrgbLUT) - 1))    // PTCH_201 chg'ed "portfolioLut"
+        if ((unsigned int) c3 > (sizeof (PyccToSrgbLUT) - 1))    // PTCH_201 chg'ed "portfolioLut"
           c3 = (sizeof (PyccToSrgbLUT) - 1);    // PTCH_201   to "PyccToSrgbLUT"
         *blue_pixel = PyccToSrgbLUT[c3];      // PTCH_201   in these 3 lines
       }

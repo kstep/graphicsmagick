@@ -70,7 +70,7 @@
   
   public:
                 OLEPropertySet(const GUID& classID, OLEStorage * parentStorage, LPSTREAM currentStream);
-                ~OLEPropertySet();
+                virtual ~OLEPropertySet();
     
     virtual Boolean     GetProperty(DWORD propID, OLEProperty ** ppNewProperty); 
     virtual Boolean     NewProperty( DWORD propID, DWORD propType, OLEProperty ** ppNewProperty );
@@ -97,7 +97,7 @@
                 // Use this constructor when creating a section
                 OLEPropertySection( OLEPropertySet * parentPropSet, const GUID& theSecID );
 
-                ~OLEPropertySection();
+                virtual ~OLEPropertySection();
   
   protected:
     virtual Boolean     GetProperty(DWORD propID, OLEProperty ** ppNewProperty ); 

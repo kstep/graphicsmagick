@@ -54,11 +54,7 @@
 //  ---------
 
 //  ----------------------------------------------------------------------------
-#ifdef _WINDOWS
-  #pragma code_seg ("OLEStorage")
-#else
-  #pragma segment OLEStorage
-#endif
+
 //  ----------------------------------------------------------------------------
 
 //  ----------------------------------------------------------------------------
@@ -344,16 +340,16 @@ Boolean OLEStorage::OpenStorage(const char * name, OLEStorage ** currentStorage,
       // Open the names storage
       err = oleStorage->OpenStorage(OLE_STR(name), 0, mode, NULL, 0, &ppStg);
 #ifdef macintosh
-  #ifndef powerc
+#ifndef powerc
       if( (ppStg == NULL) && (mode == OLE_READWRITE_MODE))
-  #else
-      if (FAILED(err) && (mode == OLE_READWRITE_MODE))
-  #endif
 #else
-      if (FAILED(err) && (mode == OLE_READWRITE_MODE))
+        if (FAILED(err) && (mode == OLE_READWRITE_MODE))
 #endif
-        // Try to open at least in read mode if the read/write failed
-        err = oleStorage->OpenStorage(OLE_STR(name), 0, OLE_READ_ONLY_MODE, NULL, 0, &ppStg);
+#else
+          if (FAILED(err) && (mode == OLE_READWRITE_MODE))
+#endif
+            // Try to open at least in read mode if the read/write failed
+            err = oleStorage->OpenStorage(OLE_STR(name), 0, OLE_READ_ONLY_MODE, NULL, 0, &ppStg);
         
       // Exit if error
       if (FAILED(err))
@@ -370,12 +366,17 @@ Boolean OLEStorage::OpenStorage(const char * name, OLEStorage ** currentStorage,
 
       CLSID idCustomMoniker = ID_CustomMoniker;
       if (statstg.clsid == idCustomMoniker) {
-      
+
         // Create a custom link handle
-        if ((customLink = new OLECustomLink(&OLEStorage(this,ppStg))) == NULL) {
-          lastError = (short) STG_E_INSUFFICIENTMEMORY; 
-          fpxStatus = FPX_MEMORY_ALLOCATION_FAILED;
-          goto error_set;       // CHG_FILE_ERR - jump past re-set of error value
+        {
+          OLEStorage oleStorage(this,ppStg);
+          customLink = new OLECustomLink(&oleStorage);
+          if (customLink == 0)
+            {
+              lastError = (short) STG_E_INSUFFICIENTMEMORY; 
+              fpxStatus = FPX_MEMORY_ALLOCATION_FAILED;
+              goto error_set;       // CHG_FILE_ERR - jump past re-set of error value
+            }
         }
         
         // Release the current storage (useless now we've read the custom link inside...)
@@ -429,13 +430,13 @@ Boolean OLEStorage::OpenStorage(const char * name, OLEStorage ** currentStorage,
   
   return TRUE;
 
-error:
+ error:
   // Handle all the error cases at once
   if (FAILED(err)) {
     lastError = TranslateOLEError(err);
     fpxStatus = OLEtoFPXError(err);
   }
-error_set:                    // CHG_FILE_ERR - jump here to preserve error value
+ error_set:                    // CHG_FILE_ERR - jump here to preserve error value
   if (ppStg)
     ppStg->Release();
   if (customLink)
@@ -925,7 +926,6 @@ Boolean OLEStorage::CopyTo( IStorage * pStorage )
 {
   HRESULT err = NOERROR;
   if (oleStorage) {
-    LPSTORAGE pStg = NULL;
     if ( FAILED(err = oleStorage->CopyTo(0, NULL, NULL, pStorage)) ) {
       lastError = TranslateOLEError(err);
       fpxStatus = OLEtoFPXError(err);

@@ -35,7 +35,7 @@ class CDocFileIterator : public PDocFileIterator
 public:
     CDocFileIterator(void);
     SCODE Init(CStgHandle *ph);
-    ~CDocFileIterator(void);
+    virtual ~CDocFileIterator(void);
     
     virtual SCODE GetNext(STATSTGW *pstatstg);
     virtual SCODE BufferGetNext(SIterBuffer *pib);

@@ -41,11 +41,6 @@
 //  ---------
 
 //  ----------------------------------------------------------------------------
-#ifdef _WINDOWS
-  #pragma code_seg ("OLEFiles")
-#else 
-  #pragma segment OLEFiles
-#endif
 
 //  ----------------------------------------------------------------------------
  
@@ -57,8 +52,8 @@ static OLECHAR * AsciiToOLECHAR(const char * filename); // PTCH_WS_FIX - added p
 
 
 OLEFile::OLEFile(const FicNom& filefic, const char* theStorageName) 
-      : fileFic(filefic),
-        isReadOnly(FALSE)
+      : isReadOnly(FALSE),
+        fileFic(filefic)        
 {
   fileFic.CopyToCStr(fileName);
 
@@ -74,8 +69,8 @@ OLEFile::OLEFile(const FicNom& filefic, const char* theStorageName)
 
 
 OLEFile::OLEFile(const char* theFilename, const char* theStorageName) 
-        : fileFic(theFilename),
-          isReadOnly(FALSE)
+        : isReadOnly(FALSE),
+          fileFic(theFilename)
 {
   setFPXStatus(FPX_OK);
   strcpy(fileName, theFilename);

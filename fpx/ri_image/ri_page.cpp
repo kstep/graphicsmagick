@@ -47,11 +47,7 @@
 //  ---------
 
 //  ------------------------------------------------------------------------------------------------
-#ifdef _WINDOWS
-  #pragma code_seg ("PageIVUE")
-#else
-  #pragma segment PageIVUE
-#endif
+
 //  ------------------------------------------------------------------------------------------------
 
 //  ------------------------------------------------------------------------------------------------
@@ -196,7 +192,6 @@ PageImage::~PageImage ()
   
   // Free memory buffer
   if (buffer) {
-    long lineLength = (pixWidth/4 + 1) * 4;
     FastDeleteArray(buffer,Pixel);
   }
   return;
@@ -447,7 +442,7 @@ FPXStatus PageImage::ReadRectangle(long left, long top, long right, long bottom,
         float x1 = (float)(i+4)/resolution + xOrigin05;
         float y0 = (float)(numLine)  /resolution + yOrigin05;
         float y1 = (float)(numLine+4)/resolution + yOrigin05;
-        if(readStatus = image->Read4x4Points (x0, y0, x1, y1, pix)) // CHG_FILE_ERR - if error
+        if((readStatus = image->Read4x4Points (x0, y0, x1, y1, pix))) // CHG_FILE_ERR - if error
           status = readStatus;                  //  then copy it to 'status'
         BlockMove(pix,dest,4*sizeof(Pixel));
         BlockMove(pix+4,dest+lineSize,4*sizeof(Pixel));

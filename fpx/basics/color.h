@@ -171,38 +171,46 @@
 //  Inline methods
 //  --------------
 
-  inline Couleur::Couleur() : rouge(0), vert(0), bleu(0), cyan(COL_INVALID), magenta(COL_INVALID),
-                              jaune(COL_INVALID), noir(COL_INVALID)
+  inline Couleur::Couleur()
+    : rouge(0),
+      vert(0),
+      bleu(0),
+      cyan(COL_INVALID),
+      magenta(COL_INVALID),
+      jaune(COL_INVALID),
+      noir(COL_INVALID)
   
   {
   }
 
-  inline Couleur::Couleur(const Couleur& col)
-  
+  inline Couleur::Couleur(const Couleur& col)  
   {
     BlockMove (&col, this, sizeof *this);
   }
 
-  inline Couleur::Couleur(const Pixel& pixel) : cyan(COL_INVALID), magenta(COL_INVALID),
-                          jaune(COL_INVALID), noir(COL_INVALID)
-  
+  inline Couleur::Couleur(const Pixel& pixel)
+    : cyan(COL_INVALID),
+      magenta(COL_INVALID),
+      jaune(COL_INVALID),
+      noir(COL_INVALID)
   {
     rouge = pixel.rouge;
     vert  = pixel.vert;
     bleu  = pixel.bleu;
   }
   
-  inline Couleur::Couleur(const NPixel& pixel) : cyan(COL_INVALID), magenta(COL_INVALID),
-                           jaune(COL_INVALID), noir(COL_INVALID)
-  
+  inline Couleur::Couleur(const NPixel& pixel)
+    : cyan(COL_INVALID),
+      magenta(COL_INVALID),
+      jaune(COL_INVALID),
+      noir(COL_INVALID)
   {
     rouge = pixel.Red();
     vert  = pixel.Green();
     bleu  = pixel.Blue();
   }
   
-  inline Couleur::operator Pixel() const
-  
+  inline Couleur::operator Pixel() const  
   {
     Pixel pixel;
     
@@ -215,7 +223,6 @@
   }
   
   inline Couleur::operator NPixel() const
-  
   {
     NPixel  pixel;
     
@@ -228,11 +235,10 @@
   }
   
 
-  inline CouleurCMYKtransparente::CouleurCMYKtransparente () : c(0), m(0), y(0), k(0), presence(0x1000)
+  inline CouleurCMYKtransparente::CouleurCMYKtransparente ()
+    : presence(0x1000), c(0), m(0), y(0), k(0)
   {
   }
-
-
 
   inline CouleurCMYKtransparente::CouleurCMYKtransparente (short c, short m, short y, short k, short presence)
   {

@@ -50,7 +50,7 @@ public:
     CFileILB(const TCHAR *pszName, 
              DWORD grfMode,
              BOOL fOpenFile=TRUE);
-    ~CFileILB();
+    virtual ~CFileILB();
 
     SCODE Open(DWORD grfMode);
     SCODE Create(DWORD grfMode);

@@ -67,7 +67,7 @@
   {
     public:
       OLECustomLink (OLEStorage*  theInitialStorage);
-      ~OLECustomLink ();
+      virtual ~OLECustomLink ();
            
       IStorage* GetLinkedIStorage ();
            

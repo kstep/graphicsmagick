@@ -48,24 +48,32 @@
 //  ------------------------------------------------------------------------------------------------
 
 CouleurRGB::CouleurRGB()
-
 {
   // null
 }
 
-Couleur::Couleur(ComposanteC r, ComposanteC g, ComposanteC b) : rouge(r), vert(g), bleu(b),
-                          cyan(COL_INVALID), magenta(COL_INVALID),
-                          jaune(COL_INVALID), noir(COL_INVALID)
-
+Couleur::Couleur(ComposanteC r, ComposanteC g, ComposanteC b)
+  : rouge(r),
+    vert(g),
+    bleu(b),
+    cyan(COL_INVALID),
+    magenta(COL_INVALID),
+    jaune(COL_INVALID),
+    noir(COL_INVALID)
+  
 {
 }
 
-Couleur::Couleur(ComposanteC y, ComposanteC m, ComposanteC c, ComposanteC k) : rouge(COL_INVALID), vert(COL_INVALID), bleu(COL_INVALID),
-                                        jaune(y), magenta(m), cyan(c), noir(k)
-
+Couleur::Couleur(ComposanteC y, ComposanteC m, ComposanteC c, ComposanteC k)
+  : rouge(COL_INVALID),
+    vert(COL_INVALID),
+    bleu(COL_INVALID),
+    cyan(c),
+    magenta(m),
+    jaune(y),
+    noir(k)
 {
 }
-
 
 //  ------------------------------------------------------------------------------------------------
 //  External Functions 

@@ -11,11 +11,7 @@
 //  For conditions of distribution and use, see copyright notice
 //  in Flashpix.h
 //  ----------------------------------------------------------------------------
-#ifdef _WINDOWS
-  #pragma code_seg ("FPXBaselineIO")
-#else
-  #pragma segment FPXBaselineIO
-#endif
+
 //  ----------------------------------------------------------------------------
 
 //  ----------------------------------------------------------------------------
@@ -1201,8 +1197,8 @@ FPXStatus FPX_SetAlphaType (
               FPXImageHandle*      theFPX,
               FPXPreComputedAlpha  theAlphaType)
 {
-  FPXImageHandle* handle = theFPX;
-  FPXPreComputedAlpha  a = theAlphaType;
+  //  FPXImageHandle* handle = theFPX;
+  //  FPXPreComputedAlpha  a = theAlphaType;
   return FPX_UNIMPLEMENTED_FUNCTION;
 }
 
@@ -1211,8 +1207,8 @@ FPXStatus FPX_GetAlphaType (
               FPXImageHandle*      theFPX,
               FPXPreComputedAlpha* theAlphaType)
 {
-  FPXImageHandle* handle = theFPX;
-  FPXPreComputedAlpha*  a = theAlphaType;
+  // FPXImageHandle* handle = theFPX;
+  // FPXPreComputedAlpha*  a = theAlphaType;
   return FPX_UNIMPLEMENTED_FUNCTION;
 }
 
@@ -1378,18 +1374,17 @@ FPXStatus FPX_SetJPEGCompression (
 
 // Create a fpx file
 FPXStatus CreateImageByFilename (
-              FicNom&             fileName,
-        unsigned long         width,
+              FicNom&               fileName,
+              unsigned long         width,
               unsigned long         height,
-              unsigned long         tileWidth,      // not implemented in Baseline (always 64)
-              unsigned long         tileHeight,     // not implemented in Baseline (always 64)
+              unsigned long         /*tileWidth*/,      // not implemented in Baseline (always 64)
+              unsigned long         /*tileHeight*/,     // not implemented in Baseline (always 64)
               FPXColorspace         colorspace,
               FPXBackground         backgroundColor,
               FPXCompressionOption  compressOption, 
               FPXImageHandle**      theFPX)
 {
   FPXStatus status = FPX_OK;
-  long w = tileWidth = tileHeight;
   
   // CHG_FILE_ERR2 - clear the errors list, so we only get new error reports
   GtheSystemToolkit->DeleteErrorsList();
@@ -1487,28 +1482,27 @@ FPXStatus FPX_CreateImageByFilename (
 #endif
 
 FPXStatus FPX_CreateImageByStorage (
-              IStorage*            owningStorage,
-              char*                storageName,
-              unsigned long        width,
-              unsigned long        height,
-              unsigned long        tileWidth,     // not implemented in Baseline (always 64)
-              unsigned long        tileHeight,      // not implemented in Baseline (always 64)
-              FPXColorspace        colorspace,
-              FPXBackground        backgroundColor,
-              FPXCompressionOption compressOption,
-              FPXImageHandle**     theFPX)
+                                    IStorage*            owningStorage,
+                                    char*                storageName,
+                                    unsigned long        width,
+                                    unsigned long        height,
+                                    unsigned long        /*tileWidth*/,     // not implemented in Baseline (always 64)
+                                    unsigned long        /*tileHeight*/,      // not implemented in Baseline (always 64)
+                                    FPXColorspace        colorspace,
+                                    FPXBackground        backgroundColor,
+                                    FPXCompressionOption compressOption,
+                                    FPXImageHandle**     theFPX)
 {
-// BEGIN: djk 052297 AI17850
+  // BEGIN: djk 052297 AI17850
   // Check params
   if (!(theFPX && owningStorage))
     return FPX_ERROR;
   
   // Satisfy failure conditions
   *theFPX = NULL;
-// END: djk 052297 AI17850
+  // END: djk 052297 AI17850
   
   FPXStatus status = FPX_OK;
-  long a = tileWidth = tileHeight;
   
   // Convert the color space into a Baseline space
   FPXBaselineColorSpace baseSpace;
@@ -1517,99 +1511,99 @@ FPXStatus FPX_CreateImageByStorage (
   // Convert the background color into a Baseline (32 bits per pixel, 8 bits per channel) value
 #ifdef _WINDOWS
   unsigned long backColor = ((unsigned char)(backgroundColor.color1_value) <<  0) | 
-                  ((unsigned char)(backgroundColor.color2_value) <<  8) | 
-                  ((unsigned char)(backgroundColor.color3_value) << 16) | 
-                  ((unsigned char)(backgroundColor.color4_value) << 24);
+    ((unsigned char)(backgroundColor.color2_value) <<  8) | 
+    ((unsigned char)(backgroundColor.color3_value) << 16) | 
+    ((unsigned char)(backgroundColor.color4_value) << 24);
   backColor = backColor << (8 * (4 - colorspace.numberOfComponents));
 #else
   unsigned long backColor = ((unsigned char)(backgroundColor.color1_value) << 24) | 
-                  ((unsigned char)(backgroundColor.color2_value) << 16) | 
-                  ((unsigned char)(backgroundColor.color3_value) <<  8) | 
-                   (unsigned char)(backgroundColor.color4_value);
+    ((unsigned char)(backgroundColor.color2_value) << 16) | 
+    ((unsigned char)(backgroundColor.color3_value) <<  8) | 
+    (unsigned char)(backgroundColor.color4_value);
   backColor = backColor >> (8 * (4 - colorspace.numberOfComponents));
 #endif
-// BEGIN: djk 052297 AI17850: handle sub-storages correctly
+  // BEGIN: djk 052297 AI17850: handle sub-storages correctly
   const CLSID clsidFpxRoot = ID_ImageView;
   OLEStorage* theowningStorage = NULL;
   OLEStorage* theSubStorage = NULL;
 
   if (storageName)
-  {
-    // Create an object wrap around the storage
-    theowningStorage = new OLEStorage(
-      (OLEStorage *)(NULL),
-      owningStorage);
-    if (!theowningStorage)
     {
-      // Couldn't create storage wrapper
-      return FPX_MEMORY_ALLOCATION_FAILED;
+      // Create an object wrap around the storage
+      theowningStorage = new OLEStorage(
+                                        (OLEStorage *)(NULL),
+                                        owningStorage);
+      if (!theowningStorage)
+        {
+          // Couldn't create storage wrapper
+          return FPX_MEMORY_ALLOCATION_FAILED;
+        }
+
+      // Create the sub-storage as an FPX Root
+      Boolean bRes;
+      bRes = theowningStorage->CreateStorage(
+                                             (CLSID) clsidFpxRoot,
+                                             (const char*) storageName,
+                                             &theSubStorage);
+
+      // We're done with the parent storage now; release it
+      status = theowningStorage->getFPXStatus();
+      delete theowningStorage; theowningStorage = NULL;
+
+      // See if we actually got the sub-storage
+      if (!bRes)
+        return status;
+
+      // Create the ImageView
+      *theFPX = new PFlashPixImageView(
+                                       theSubStorage,
+                                       (const char*) NULL,
+                                       width,
+                                       height,
+                                       (float) DEFAULT_RESOLUTION,
+                                       baseSpace,
+                                       backColor,
+                                       compressOption,
+                                       TRUE,
+                                       colorspace.isUncalibrated);
     }
-
-    // Create the sub-storage as an FPX Root
-    Boolean bRes;
-    bRes = theowningStorage->CreateStorage(
-      (CLSID) clsidFpxRoot,
-      (const char*) storageName,
-      &theSubStorage);
-
-    // We're done with the parent storage now; release it
-    status = theowningStorage->getFPXStatus();
-    delete theowningStorage; theowningStorage = NULL;
-
-    // See if we actually got the sub-storage
-    if (!bRes)
-      return status;
-
-    // Create the ImageView
-    *theFPX = new PFlashPixImageView(
-      theSubStorage,
-      (const char*) NULL,
-      width,
-      height,
-      (float) DEFAULT_RESOLUTION,
-      baseSpace,
-      backColor,
-      compressOption,
-      TRUE,
-      colorspace.isUncalibrated);
-  }
   else
-  {
-    // The specified storage is to become an FPX Root.
-    // Create an object wrap around the storage and set the CLSID for FPX
-    theowningStorage = new OLEStorage(
-      (CLSID) clsidFpxRoot,
-      (OLEStorage *)(NULL),
-      owningStorage);
-    if (!theowningStorage)
     {
-      // Couldn't create storage wrapper
-      return FPX_MEMORY_ALLOCATION_FAILED;
-    }
+      // The specified storage is to become an FPX Root.
+      // Create an object wrap around the storage and set the CLSID for FPX
+      theowningStorage = new OLEStorage(
+                                        (CLSID) clsidFpxRoot,
+                                        (OLEStorage *)(NULL),
+                                        owningStorage);
+      if (!theowningStorage)
+        {
+          // Couldn't create storage wrapper
+          return FPX_MEMORY_ALLOCATION_FAILED;
+        }
 
-    // Create the ImageView at the specified storage
-    *theFPX = new PFlashPixImageView(
-      theowningStorage,
-      (const char*) NULL,
-      width,
-      height,
-      (float) DEFAULT_RESOLUTION,
-      baseSpace,
-      backColor,
-      compressOption,
-      TRUE,
-      colorspace.isUncalibrated);
-  }
+      // Create the ImageView at the specified storage
+      *theFPX = new PFlashPixImageView(
+                                       theowningStorage,
+                                       (const char*) NULL,
+                                       width,
+                                       height,
+                                       (float) DEFAULT_RESOLUTION,
+                                       baseSpace,
+                                       backColor,
+                                       compressOption,
+                                       TRUE,
+                                       colorspace.isUncalibrated);
+    }
   
   // See if we actually got the ImageView
   if (*theFPX == NULL)
-  {
-    // Couldn't create ImageView; clean up
-    delete theSubStorage; theSubStorage = NULL;
-    delete theowningStorage; theowningStorage = NULL;
-    status = FPX_MEMORY_ALLOCATION_FAILED;
-  }
-// END: djk 052297 AI17850: handle sub-storages correctly
+    {
+      // Couldn't create ImageView; clean up
+      delete theSubStorage; theSubStorage = NULL;
+      delete theowningStorage; theowningStorage = NULL;
+      status = FPX_MEMORY_ALLOCATION_FAILED;
+    }
+  // END: djk 052297 AI17850: handle sub-storages correctly
   else {
     PFileFlashPixIO* image =  (PFileFlashPixIO*)((*theFPX)->GetImage());
     if (image == NULL)
@@ -1631,7 +1625,7 @@ FPXStatus FPX_CreateImageByStorage (
 //  index during open. This allows support for some non-core files that have
 //  multiple visible output images.
 FPXStatus OpenImageByFilename (
-              FicNom&        fileName,
+              FicNom&          fileName,
               char*            storagePathInFile, // for the moment, only the root storage is considered
               unsigned long    visibleOutputIndex,
               unsigned long*   width,
@@ -1899,8 +1893,8 @@ FPXStatus CreateImageWithViewByFilename (
               FicNom&              fileName,
               unsigned long          width,
               unsigned long          height,
-              unsigned long          tileWidth,       // not implemented in Baseline (always 64)
-              unsigned long          tileHeight,      // not implemented in Baseline (always 64)
+              unsigned long          /*tileWidth*/,       // not implemented in Baseline (always 64)
+              unsigned long          /*tileHeight*/,      // not implemented in Baseline (always 64)
               FPXColorspace          colorspace,
               FPXBackground          backgroundColor,
               FPXCompressionOption   compressOption,
@@ -1913,7 +1907,6 @@ FPXStatus CreateImageWithViewByFilename (
               FPXImageHandle**       theFPX)
 {
   FPXStatus status = FPX_OK;
-  long a = tileWidth = tileHeight; 
   
   // CHG_FILE_ERR2 - clear the errors list, so we only get new error reports
   GtheSystemToolkit->DeleteErrorsList();
@@ -2045,8 +2038,8 @@ FPXStatus FPX_CreateImageWithViewByStorage (
               char*                  storageName,
               unsigned long          width,
               unsigned long          height,
-              unsigned long          tileWidth,
-              unsigned long          tileHeight,
+              unsigned long          /*tileWidth*/,
+              unsigned long          /*tileHeight*/,
               FPXColorspace          colorspace,
               FPXBackground          backgroundColor,
               FPXCompressionOption   compressOption,
@@ -2059,7 +2052,6 @@ FPXStatus FPX_CreateImageWithViewByStorage (
               FPXImageHandle**       theFPX)
 {
   FPXStatus status = FPX_OK;
-  long a = tileWidth = tileHeight; 
   
   // Convert the color space into a Baseline space
   FPXBaselineColorSpace baseSpace;
@@ -2281,9 +2273,9 @@ FPXStatus FPX_SetPath(
               unsigned short  thePathIndex,
               FPXPath*        thePath)
 {
-  FPXImageHandle *handle = theFPX; 
-  short     p = thePathIndex;
-  FPXPath*  path= thePath; 
+//   FPXImageHandle *handle = theFPX; 
+//   short     p = thePathIndex;
+//   FPXPath*  path= thePath; 
   return FPX_UNIMPLEMENTED_FUNCTION;
 }
 
@@ -2292,9 +2284,9 @@ FPXStatus FPX_GetPath(
               unsigned short  thePathIndex,
               FPXPath**       thePath)
 {
-  FPXImageHandle *handle = theFPX; 
-  short  p = thePathIndex;
-  FPXPath**   path= thePath; 
+//   FPXImageHandle *handle = theFPX; 
+//   short  p = thePathIndex;
+//   FPXPath**   path= thePath; 
   return FPX_UNIMPLEMENTED_FUNCTION;
 }
 
@@ -2680,10 +2672,9 @@ FPXStatus FPX_GetGlobalInformation(
   return status;
 }
 
-
-/****************************************************************************/
-/* EXTENSION LIST MANAGEMENT
-/****************************************************************************/
+//////////////////////////////////////////////////////////////////////////////
+// EXTENSION LIST MANAGEMENT
+//////////////////////////////////////////////////////////////////////////////
 
 FPXStatus FPX_GetExtensionDescription (
               FPXImageHandle*             theFPX,

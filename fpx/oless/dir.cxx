@@ -170,8 +170,8 @@ SCODE CDirSect::Init(USHORT cbSector)
 //--------------------------------------------------------------------------
 
 CDirectory::CDirectory(USHORT cbSector)
-        : _pmsParent(NULL),
-          _dv(cbSector)
+        : _dv(cbSector),
+          _pmsParent(NULL)
 {
     _cdsTable = _cdeEntries = 0;
     _sidFirstFree = 0;
@@ -221,7 +221,6 @@ SCODE CDirectory::GetFree(SID* psid)
     msfDebugOut((DEB_DIR,"In CDirectory::GetFree()\n"));
 
     SCODE sc = S_OK;
-    SID sidRet = NOSTREAM;
     CDirSect * pds;
 
     DIRINDEX ipdsStart;
@@ -913,7 +912,6 @@ SCODE CDirectory::DestroyAllChildren(
     SCODE sc;
     CDirEntry *pdeParent, *pdeChild;
     SID sidChild;
-    CDfName dfnChild;
 
     for (;;)
     {

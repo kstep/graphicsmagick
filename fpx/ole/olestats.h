@@ -38,7 +38,7 @@
   public:
     // This constructor creates a OLE statstg object from an open storage
             OLEEnumStatstg(OLEStorage * parentStorage, IEnumSTATSTG * currentEnumStatstg);
-            ~OLEEnumStatstg();
+            virtual ~OLEEnumStatstg();
     
     // This function returns true if next object exists, the information is 
     // returned the STATSTG object

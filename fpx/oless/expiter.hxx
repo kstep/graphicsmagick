@@ -32,7 +32,7 @@ interface CExposedIterator : public IEnumSTATSTG
 {
 public:
     CExposedIterator(CExposedDocFile *ppdf, CDfName *pKey);
-    ~CExposedIterator(void);
+    virtual ~CExposedIterator(void);
 
     // From IUnknown
     STDMETHOD(QueryInterface)(REFIID iid, void **ppvObj);

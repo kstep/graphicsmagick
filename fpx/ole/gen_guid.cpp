@@ -69,7 +69,7 @@ static void GetENETAddress(unsigned char *ENETaddress)
   // MPPParamBlock thePB;
   short i;
   char linkAddr[7];
-  char zoneName[34];
+  // char zoneName[34];
   // OSErr err;
   
   linkAddr[0] = 0x08;

@@ -11,11 +11,7 @@
 //  For conditions of distribution and use, see copyright notice
 //  in Flashpix.h
 //  ----------------------------------------------------------------------------
-#ifdef _WINDOWS
-#  pragma code_seg ("PHierarchicalImage")
-#else
-#  pragma segment PHierarchicalImage
-#endif
+
 //  ----------------------------------------------------------------------------
 
 //  ----------------------------------------------------------------------------
@@ -373,6 +369,7 @@ FPXStatus PHierarchicalImage::WriteRectangle (long x0, long y0, long x1, long y1
     register long i, j;
     register unsigned char *src, *dst, *ptrPix;
     
+    src = dst = ptrPix = 0;
     // cut the rectangle in sub-rectangles to avoid to create a big buffer 
     // in memory when converting the interleaving.
     // These sub-rectangles have the size of a tile because writing tiles is optimum.
@@ -404,6 +401,8 @@ FPXStatus PHierarchicalImage::WriteRectangle (long x0, long y0, long x1, long y1
           case Interleaving_Channel:
             ptrPix = (unsigned char *)(pix);
             ptrPix += (subY0-y0)*pixWidth + (subX0-x0);
+            break;
+          case Interleaving_Pixel:
             break;
           }
           // compute the Uninterleaving in the sub-rectangle
@@ -951,10 +950,17 @@ FPXStatus PHierarchicalImage::ReadMean (long xi, long yi, Pixel& pix, long level
 // another, one can say that if the pixels are equal, there is no dispersion of the alpha channel, otherwise
 // there is some. That way, we avoid effective dispersion computation.
 // CAUTION : coordinates must be discrete with 12 bits precision (1 << 12).
-Boolean PHierarchicalImage::DispersionAlphaChannel (long xNW, long yNW, long xNE, long yNE, long xSW, long ySW, long xSE, long ySE, long levelSubImage)
+Boolean PHierarchicalImage::DispersionAlphaChannel (long xNW,
+                                                    long yNW,
+                                                    long /*xNE*/,
+                                                    long /*yNE*/,
+                                                    long /*xSW*/,
+                                                    long /*ySW*/,
+                                                    long xSE,
+                                                    long ySE,
+                                                    long levelSubImage)
 {
   Boolean dispersion = false;
-  long a = xNE = yNE = xSW = ySW; 
   
   if ((Status() == 0) && nbSubImages) {
   
@@ -990,7 +996,7 @@ Boolean PHierarchicalImage::DispersionAlphaChannel (long xNW, long yNW, long xNE
                                 dispersion = !(alphaMax == 0);
                                 }
                                 }
-                                /**/
+    */
     // Compute central point (>>1) and convert for ReadMean() (>>12)
     // ReadMean() requires discrete coordinates with 0 bits precision
     long xi = (xNW + xSE) >> 13;

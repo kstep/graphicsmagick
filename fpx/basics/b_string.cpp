@@ -62,7 +62,7 @@ Chaine::Chaine(const Chaine& laChaine)
 
 {
   long size = laChaine.Longueur()+1;
-  size = (size > sizeof(Chaine) ? sizeof(Chaine) : size);
+  size = ((unsigned long) size > sizeof(Chaine) ? sizeof(Chaine) : size);
   BlockMove(&laChaine,this,size); 
 }
 

@@ -141,14 +141,16 @@ Boolean obj_Compresseur32Vers24::Compresse(Ptr  uncompressedData, short width, s
 
 
 // Decompress
-Boolean obj_Compresseur32Vers24::Decompresse(Ptr uncompressedData, short width, short height,
-                           Ptr compressedData,   long compressedSize)
+Boolean obj_Compresseur32Vers24::Decompresse(Ptr uncompressedData,
+                                             short width,
+                                             short height,
+                                             Ptr compressedData,
+                                             long compressedSize)
 {
   int     nbPixels = width * height;
   long      i, j;
   unsigned char*  pixelCompressed   = (unsigned char*)(compressedData);   // Input Data
   unsigned char*  pixelDecompressed = (unsigned char*)(uncompressedData);   // Output Data
-  long size = compressedSize; 
   
   // Check the parameters
   assert(uncompressedData != NULL);

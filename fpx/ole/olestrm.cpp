@@ -56,11 +56,7 @@
 //  ---------
 
 //  ----------------------------------------------------------------------------
-#ifdef _WINDOWS
-  #pragma code_seg ("OLEStream")
-#else
-  #pragma segment OLEStream
-#endif
+
 //  ----------------------------------------------------------------------------
 
 //  ----------------------------------------------------------------------------
@@ -2338,7 +2334,7 @@ Boolean OLEStream::VTtoString(VARIANT *variant, char **ppsz)
       }
 
       sprintf(psz, "%08X-%04X-%04X-%02X%02X-%02X%02X%02X%02X%02X%02X",
-          pclsid->Data1, pclsid->Data2, pclsid->Data3,
+          (unsigned int) pclsid->Data1, pclsid->Data2, pclsid->Data3,
           pclsid->Data4[0], pclsid->Data4[1], pclsid->Data4[2], 
           pclsid->Data4[3], pclsid->Data4[4], pclsid->Data4[5],
           pclsid->Data4[6], pclsid->Data4[7]);
@@ -2648,7 +2644,7 @@ Boolean OLEStream::VTtoString(BYTE *pData, DWORD vtType, char **ppsz)
       }
 
       sprintf(psz, "%08X-%04X-%04X-%02X%02X-%02X%02X%02X%02X%02X%02X",
-          pclsid->Data1, pclsid->Data2, pclsid->Data3,
+          (unsigned int) pclsid->Data1, pclsid->Data2, pclsid->Data3,
           pclsid->Data4[0], pclsid->Data4[1], pclsid->Data4[2], 
           pclsid->Data4[3], pclsid->Data4[4], pclsid->Data4[5],
           pclsid->Data4[6], pclsid->Data4[7]);

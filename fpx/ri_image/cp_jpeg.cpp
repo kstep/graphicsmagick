@@ -394,8 +394,6 @@ Boolean PCompressorSinColor::Compress(unsigned char *  uncompressedData,
                         unsigned char ** pcompressedData, 
                         long* sizeCompressed)
 {
-  register long   numberofpixel = width * height;
-  
   // Allocate the data buffer if it doesn't exist
   if ( !dataBufPresent ) {
     dataBuffer = new unsigned char[sizeof(Pixel)]; 
@@ -424,7 +422,6 @@ Boolean PCompressorSinColor::Decompress(unsigned char* uncompressedData,
                       long sizeCompressed)
 {
   register long   numberofpixel = width * height;
-  register long   buflen = numberofpixel * sizeof(Pixel);
   unsigned char alphaValue = 0; 
   
   if ( sizeCompressed == 4 ) {

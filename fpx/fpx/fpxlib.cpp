@@ -11,11 +11,7 @@
 //  For conditions of distribution and use, see copyright notice
 //  in Flashpix.h
 //  ----------------------------------------------------------------------------
-#ifdef _WINDOWS
-  #pragma code_seg ("FPXBaselineView")
-#else
-  #pragma segment FPXBaselineView
-#endif
+
 //  ----------------------------------------------------------------------------
 
 //  Includes
@@ -852,6 +848,9 @@ FPXStatus FPX_ReadPage (
         case 0:
           image.UpdateDescriptor();
           break;
+      default:
+        {
+        }
       }
     }
   }
@@ -887,6 +886,9 @@ FPXStatus FPX_ReadPageLine (
         case 0:
           line.UpdateDescriptor();
           break;
+      default:
+        {
+        }
       }
     }
   }

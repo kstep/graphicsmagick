@@ -92,12 +92,14 @@ CFat::CFat(SID sid, USHORT cbSector, USHORT uSectorShift)
 : _fv( sid,
        (USHORT) (cbSector >> 2),  // 4 bytes per entry
        (USHORT) (cbSector >> 2) ), 
+  _pmsParent(NULL),
+  _sid(sid),
   // left shift this amount for FAT
   _uFatShift((USHORT) (uSectorShift - 2) ),   
   // (# entries per sector) - 1
   _uFatMask( (USHORT) ((cbSector >> 2) - 1)), 
-  _sid(sid),
-  _pmsParent(NULL),
+  _cfsTable(0),
+  _ulFreeSects(0),
   _sectFirstFree( (SECT) 0),
   _sectMax(ENDOFCHAIN)
 {
@@ -1018,9 +1020,7 @@ SCODE CFat::CountFree(ULONG * pulRet)
             for (isect = isectStart; isect < _fv.GetSectTable(); isect++)
             {
                 SECT sectCurrent = pfs->GetSect(isect);
-                SECT sectNew = PairToSect(ipfs, isect);
-                
-
+                PairToSect(ipfs, isect);
                 
                 if (sectCurrent == FREESECT)
                 {

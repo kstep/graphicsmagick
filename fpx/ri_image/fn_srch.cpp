@@ -98,12 +98,11 @@ OSErr FicNomSearchIVUE::SearchStrategy ()
     return fnfErr;
 }
 
-Boolean FicNomSearchIVUE::SelectImage (SearchImagePref searchImagePref, OSType typeA, OSType typeB)
+Boolean FicNomSearchIVUE::SelectImage (SearchImagePref /*searchImagePref*/,
+                                       OSType /*typeA*/, OSType /*typeB*/)
 
 {
   Boolean found = FALSE;
   
-  SearchImagePref ser = searchImagePref;  
-  OSType type = typeA = typeB; 
   return found;
 }

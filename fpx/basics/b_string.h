@@ -266,7 +266,7 @@ inline Chaine63::operator unsigned char*() const
 inline Chaine63::Chaine63(const Chaine& laChaine)
 {
   long size = laChaine.Longueur()+1;
-  size = (size > sizeof(Chaine63) ? sizeof(Chaine63) : size);
+  size = (size > (long) sizeof(Chaine63) ? sizeof(Chaine63) : size);
   BlockMove(&laChaine,this,size); 
 }
   
@@ -305,7 +305,7 @@ inline int operator!= (const Chaine63& s1, const Chaine63& s2)
 inline Chaine::Chaine(const Chaine63& laChaine)
 {
   long size = laChaine.Longueur()+2;  //+2 because of length field AND '/0' in string itself
-  size = (size > sizeof(Chaine) ? sizeof(Chaine) : size);
+  size = (size > (long) sizeof(Chaine) ? sizeof(Chaine) : size);
   BlockMove(&laChaine,this,size); 
 }
   

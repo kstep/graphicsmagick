@@ -11,11 +11,6 @@
 //  For conditions of distribution and use, see copyright notice
 //  in Flashpix.h
 //  ----------------------------------------------------------------------------
-#ifdef _WINDOWS
-  #pragma code_seg ("PTileFlashPix")
-#else
-  #pragma segment PTileFlashPix
-#endif
 
 //  ----------------------------------------------------------------------------
   #include "ptil_fpx.h"
@@ -214,13 +209,11 @@ TLC_IdCodec PTileFlashPix::ConvertCompressionOption ()
 // Returns: FPX_FILE_WRITE_ERROR
 //
 FPXStatus PTileFlashPix::WriteRawTile (FPXCompressionOption   compressOption, 
-                    unsigned char     compressQuality,
-                  long          compressSubtype,
-                    unsigned long     dataLength,
-                    void*         data)
+                                       unsigned char          compressQuality,
+                                       long                   compressSubtype,
+                                       unsigned long          dataLength,
+                                       void*                  data)
 {
-  register long   TILE_WIDTH = fatherSubImage->fatherFile->tileWidth;
-
   Boolean   wasLocked, ok;
   FPXStatus   status = FPX_OK;
 
@@ -232,14 +225,13 @@ FPXStatus PTileFlashPix::WriteRawTile (FPXCompressionOption   compressOption,
 
   wasLocked = IsLocked();
   Lock(); 
-  PFlashPixFile* fileFPX = (PFlashPixFile*)(fatherSubImage->fatherFile->filePtr);
   OLEHeaderStream *subStreamData = ((PResolutionFlashPix*)fatherSubImage)->GetSubStreamData();
 
   // If the tile has never been written, reset the compression with the one passed in parameter
   if ( posPixelFic < 0 && !tileInitialize ) {
-    compression       = compressOption; 
-    idCodec         = ConvertCompressionOption();
-    qualityFactor     = compressQuality;
+    compression         = compressOption; 
+    idCodec             = ConvertCompressionOption();
+    qualityFactor       = compressQuality;
     compressionSubtype  = compressSubtype;
   }
 
@@ -251,7 +243,7 @@ FPXStatus PTileFlashPix::WriteRawTile (FPXCompressionOption   compressOption,
   // CAUTION : go to the end of the file if the new tile is bigger than the old one
   // NO GARBAGE COLLECTION WITHIN THE FILE
 
-  if ((posPixelFic < 0) || (tileSize < dataLength)) {
+  if ((posPixelFic < 0) || ((unsigned long) tileSize < dataLength)) {
     ok = subStreamData->GetEndOfFile(&posPixelFic);
     posPixelFic;
   }
@@ -496,7 +488,7 @@ FPXStatus PTileFlashPix::Write()
         
         
       // Set the jpeg parameters
-      if ( status = (FPXStatus)((PCompressorJPEG *)monCompresseur)->SetCompressionParameters( 
+      if ( (status = (FPXStatus)((PCompressorJPEG *)monCompresseur)->SetCompressionParameters( 
                       GET_InterleaveType(compressionSubtype),
                       GET_ChromaSubSample(compressionSubtype),
                       // GET_InternalColorConv(compressionSubtype),
@@ -506,7 +498,7 @@ FPXStatus PTileFlashPix::Write()
                       nbChannels,
                       NULL,
                       0,
-                      FALSE )) {
+                      FALSE ))) {
         fileFPX->CompressionError();  // Compression failed => Signal error
         posPixelFic = -1;       // Compression failed => Delete reference pointer
         assert (false);
@@ -886,7 +878,7 @@ FPXStatus PTileFlashPix::ReadRawPixels()
             goto RETURN;
           }
           // Set the jpeg parameters
-          if ( status = (FPXStatus)((PCompressorJPEG *)monDecompresseur)->SetCompressionParameters( 
+          if ( (status = (FPXStatus)((PCompressorJPEG *)monDecompresseur)->SetCompressionParameters( 
                   GET_InterleaveType(compressionSubtype),
                   GET_ChromaSubSample(compressionSubtype),
                   GET_InternalColorConv(compressionSubtype),
@@ -895,14 +887,14 @@ FPXStatus PTileFlashPix::ReadRawPixels()
                   nbChannels,
                   jpegHeader,                 
                   headerSize,
-                  TRUE )) { 
+                  TRUE ))) { 
             status = (FPXStatus)jpegErrorToFPXerror( status);
             goto RETURN;
           }
 
           // Do the JPEG decompression
-          if ( status = (FPXStatus)((PCompressorJPEG *)monDecompresseur)->Decompress((unsigned char *)entireTile, 
-              (short) TILE_WIDTH,(short) TILE_WIDTH, (unsigned char*)decompressBuffer, tileSize) ) {
+          if ( (status = (FPXStatus)((PCompressorJPEG *)monDecompresseur)->Decompress((unsigned char *)entireTile, 
+              (short) TILE_WIDTH,(short) TILE_WIDTH, (unsigned char*)decompressBuffer, tileSize) ) ) {
             status = (FPXStatus)jpegErrorToFPXerror( status);
             goto RETURN;
           }
@@ -947,7 +939,7 @@ FPXStatus PTileFlashPix::ReadRawPixels()
       decompressorIsMissing = true;         // look for the decompressor
 
       // Check if the tile is valid 
-      if ( compression == 0xFFFFFFFF ) 
+      if ( (unsigned long) compression == 0xFFFFFFFF ) 
         break;
 
       monDecompresseur = (*tousLesCodecs)[idCodec];
@@ -1082,7 +1074,7 @@ FPXStatus PTileFlashPix::Read()
   FPXStatus   status = FPX_OK;
   
   // Check if the pixels are already cached, or if they have been modified
-  FPXBaselineColorSpace base = ((PResolutionFlashPix*)fatherSubImage)->baseSpace;
+  //  FPXBaselineColorSpace base = ((PResolutionFlashPix*)fatherSubImage)->baseSpace;
   FPXBaselineColorSpace used = ((PFileFlashPixIO*)fatherSubImage->fatherFile)->usedSpace;
 
   
@@ -1101,7 +1093,7 @@ FPXStatus PTileFlashPix::Read()
   }
   if (needNewPixels == true)        // If a new set of 'pixels' needs to be made
     if (rawPixels == NULL)        //  and we don't have any raw pixels cached
-      if (status = ReadRawPixels()) //  then read-in it's  uncompressed data
+      if ((status = ReadRawPixels())) //  then read-in it's  uncompressed data
         return status;
                       // If there are no viewing/display modifications 
   if (needNewPixels == false) {     //  and we don't need to update pixels
@@ -1176,6 +1168,9 @@ FPXStatus PTileFlashPix::Read()
           colorTwist =  ycctoYCC8 * colorTwist * YCC8toycc;
           colorTwist.UseAlphaChannel();
           break; }
+      default:
+        {
+        }
       }
       colorTwist.ApplyToPixelBuffer( pixels, pixelsSpace, width * height);
     }
@@ -1693,12 +1688,12 @@ Boolean PTileFlashPix::ReadHeader(PFlashPixFile* filePtr, unsigned char** pJpegH
 // ------------------------------------------------------------------------------
 // Write jpeg table to image content property set.
 //
-Boolean PTileFlashPix::WriteHeader(PFlashPixFile* filePtr, unsigned char* jpegHeader, 
-    unsigned long headerSize )
+Boolean PTileFlashPix::WriteHeader(PFlashPixFile* filePtr,
+                                   unsigned char* jpegHeader, 
+                                   unsigned long headerSize )
 {
   OLEProperty*  aProp;
   OLEBlob     jpegTable; 
-
 
   // Get jpeg table index and make sure it is in 0 - 255 range
   unsigned char JPEGtableSelector = ((PResolutionFlashPix*)fatherSubImage)->compressTableGroup;

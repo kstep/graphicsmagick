@@ -31,10 +31,10 @@
 //--------------------------------------------------------------------------
 
 CDIFat::CDIFat(USHORT cbSector)
-:   _pmsParent(NULL),
-    _fv( SIDDIF,
+  : _fv( SIDDIF,
          (FSOFFSET) (cbSector / sizeof(SECT)),
-         (FSOFFSET) ((cbSector / sizeof(SECT)) - 1) )
+         (FSOFFSET) ((cbSector / sizeof(SECT)) - 1) ),
+    _pmsParent(NULL)
 {
     msfDebugOut((DEB_TRACE,"In CDIFat constructor\n"));
     _cfsTable = 0;

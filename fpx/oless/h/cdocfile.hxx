@@ -48,7 +48,7 @@ public:
       CDfName const *dfnName,
       BOOL const fCreate);
     
-    inline ~CDocFile(void);
+    virtual inline ~CDocFile(void);
 
     void AddRef(void);
     inline void DecRef(void);
@@ -98,8 +98,10 @@ public:
                               DFLUID luidSet,
                               DWORD const dwType,
                               CDirectStream **ppStream)
-    { UNREFERENCED_PARM(dwType);
-    return CreateStream(pdfnName, df, luidSet, ppStream); }
+    {
+      UNREFERENCED_PARM(dwType);
+      return CreateStream(pdfnName, df, luidSet, ppStream);
+    }
 
     SCODE GetStream(CDfName const *pdfnName,
                     DFLAGS const df,
@@ -108,8 +110,10 @@ public:
                            DFLAGS const df,
                            DWORD const dwType,
                            CDirectStream **ppStream)
-    { UNREFERENCED_PARM(dwType);
-    return GetStream(pdfnName, df, ppStream); }
+    {
+      UNREFERENCED_PARM(dwType);
+      return GetStream(pdfnName, df, ppStream);
+    }
 
     inline void ReturnStream(CDirectStream *pstm);
 

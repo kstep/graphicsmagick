@@ -126,7 +126,7 @@ public:
     SCODE Init( CStgHandle *pstgh,
                 CDfName const *pdfn,
                 BOOL const fCreate);
-    ~CDirectStream();
+    virtual ~CDirectStream();
 
     void AddRef();
     

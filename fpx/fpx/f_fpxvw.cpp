@@ -294,7 +294,7 @@ void PFileFlashPixView::Init ()
       //  in visible outputs. This will support non-core images such as those
       //  with multiple frames
       FPXLongArray  visibleOutputs = (FPXLongArray)(*aProp);
-      if (visibleOutputIndex >= visibleOutputs.length) {
+      if ((unsigned long) visibleOutputIndex >= visibleOutputs.length) {
         visibleOutputIndex = 0;
         err = TRUE;
       }
@@ -341,7 +341,7 @@ void PFileFlashPixView::Init ()
             GUID transformGuid = ID_Transform;
             
             if (rootStorage->OpenPropertySet (transformGuid, objectName, 
-                      &transformPropertySet, mode)) {
+                                              &transformPropertySet, mode)) {
               transformPropertySet->Revert();
 
               if (GetTransformProperty (PID_InputObjectList, &aProp)) {
@@ -408,7 +408,7 @@ void PFileFlashPixView::Init ()
     // Extension List property set (optional)
     GUID extensionGuid = ID_Extension;
     if (rootStorage->OpenPropertySet(extensionGuid, extensionName, &extensionListPropertySet, 
-              mode)) 
+                                     mode)) 
       extensionListPropertySet->Revert();
     else
       extensionListPropertySet = NULL;
@@ -619,7 +619,8 @@ HRESULT StringFromCLSID(REFCLSID clsid, LPOLESTR FAR* lplpsz)
     WORD  Data5 = clsid.Data4[2]<<8 & clsid.Data4[3];  
     DWORD Data6 = clsid.Data4[4]<<24 & clsid.Data4[5]<<16 & clsid.Data4[6]<<8 & clsid.Data4[7];
 
-    sprintf(lpsz, "{%08x-%04x-%04x-%04x-%04x%08x}", clsid.Data1, clsid.Data2, clsid.Data3, Data4, Data5, Data6);
+    sprintf(lpsz, "{%08x-%04x-%04x-%04x-%04x%08x}", (unsigned int) clsid.Data1, clsid.Data2,
+            clsid.Data3, Data4, Data5, (unsigned int) Data6);
     INIT_OLESTR(*lplpsz, lpsz);
     return S_OK;
 }

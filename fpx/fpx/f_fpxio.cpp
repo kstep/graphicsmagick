@@ -735,17 +735,17 @@ FPXStatus PFileFlashPixIO::FlushModifiedTiles ( )
 //  ----------------------------------------------------------------------------
 // Read the tile data from the file without decompression
 FPXStatus PFileFlashPixIO::ReadRawTile (
-          unsigned long       resolution, 
-          unsigned long       whichTile, 
-          FPXCompressionOption*   compressOption, 
-          unsigned char*      compressQuality,
-          long*           compressSubtype,
-          unsigned long*      dataLength,
-          void**          data)
+          unsigned long          resolution, 
+          unsigned long          whichTile, 
+          FPXCompressionOption*  compressOption, 
+          unsigned char*         compressQuality,
+          long*                  compressSubtype,
+          unsigned long*         dataLength,
+          void**                 data)
 {
   FPXStatus status = FPX_OK;
   
-  if (resolution >= nbSubImages)
+  if (resolution >= (unsigned long) nbSubImages)
     status = FPX_INVALID_RESOLUTION;
   else
     status = ((PResolutionFlashPix*)(subImages[resolution]))->ReadRawTile (whichTile, compressOption, compressQuality, compressSubtype, dataLength, data);
@@ -757,17 +757,17 @@ FPXStatus PFileFlashPixIO::ReadRawTile (
 //  ----------------------------------------------------------------------------
 // Write the tile data in the file without compression
 FPXStatus PFileFlashPixIO::WriteRawTile (
-          unsigned long       resolution, 
-          unsigned long       whichTile, 
+          unsigned long         resolution, 
+          unsigned long         whichTile, 
           FPXCompressionOption  compressOption, 
-          unsigned char       compressQuality,
-          long          compressSubtype,
-          unsigned long       dataLength,
-          void*           data)
+          unsigned char         compressQuality,
+          long                  compressSubtype,
+          unsigned long         dataLength,
+          void*                 data)
 {
   FPXStatus status = FPX_OK;
   
-  if (resolution >= nbSubImages)
+  if (resolution >= (unsigned long) nbSubImages)
     status = FPX_INVALID_RESOLUTION;
   else
     status = ((PResolutionFlashPix*)(subImages[resolution]))->WriteRawTile (whichTile, compressOption, compressQuality, compressSubtype, dataLength, data);

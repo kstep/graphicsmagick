@@ -11,11 +11,7 @@
 //  For conditions of distribution and use, see copyright notice
 //  in Flashpix.h
 //  ----------------------------------------------------------------------------
-#ifdef _WINDOWS
-  #pragma code_seg ("BufferDesc")
-#else
-  #pragma segment BufferDesc
-#endif
+
 #ifndef BufferDesc_h
   #include "buffdesc.h"
 #endif
@@ -812,6 +808,8 @@ void CreateFPXColorSpace (FPXBaselineColorSpace baseSpace, FPXColorspace* colorS
       colorSpace->theComponents[0].myDataType = DATA_TYPE_UNSIGNED_BYTE;
       break;
       }
+    case NON_AUTHORIZED_SPACE:
+      break;
   }
 }
 
@@ -1012,6 +1010,8 @@ void ConvertPixelBuffer(unsigned char* buffer, long size, FPXBaselineColorSpace 
         case SPACE_32_BITS_O:
           ConvertRGBtoMonochrome(buffer+1,size);
           break;
+        case NON_AUTHORIZED_SPACE:
+          break;
       }
       break;
     case SPACE_32_BITS_ARGB:
@@ -1054,6 +1054,8 @@ void ConvertPixelBuffer(unsigned char* buffer, long size, FPXBaselineColorSpace 
         case SPACE_32_BITS_O:
           ConvertRGBtoMonochrome(buffer+1,size);
           // InitByteTo0(buffer,size); now we prefer to preserve the alpha channel if any
+          break;
+        case NON_AUTHORIZED_SPACE:
           break;
       }
       break;
@@ -1099,6 +1101,8 @@ void ConvertPixelBuffer(unsigned char* buffer, long size, FPXBaselineColorSpace 
           ConvertRGBtoMonochrome(buffer+1,size);
           // InitByteTo0(buffer,size); now we prefer to preserve the alpha channel if any
           break;
+        case NON_AUTHORIZED_SPACE:
+          break;
       }
       break;
     case SPACE_32_BITS_YCC:
@@ -1143,6 +1147,8 @@ void ConvertPixelBuffer(unsigned char* buffer, long size, FPXBaselineColorSpace 
           break;
         case SPACE_32_BITS_O:
           ConvertYCCtoMonochrome(buffer+1,size);
+          break;
+        case NON_AUTHORIZED_SPACE:
           break;
       }
       break;
@@ -1192,6 +1198,8 @@ void ConvertPixelBuffer(unsigned char* buffer, long size, FPXBaselineColorSpace 
           ConvertYCCtoMonochrome(buffer+1,size);
           // InitByteTo0(buffer,size); now we prefer to preserve the alpha channel if any
           break;
+        case NON_AUTHORIZED_SPACE:
+          break;
       }
       break;
     case SPACE_32_BITS_YCCA:
@@ -1240,6 +1248,8 @@ void ConvertPixelBuffer(unsigned char* buffer, long size, FPXBaselineColorSpace 
           ConvertYCCtoMonochrome(buffer+1,size);
           // InitByteTo0(buffer,size); now we prefer to preserve the alpha channel if any
           break;
+        case NON_AUTHORIZED_SPACE:
+          break;
       }
       break;
     case SPACE_32_BITS_M:
@@ -1281,6 +1291,8 @@ void ConvertPixelBuffer(unsigned char* buffer, long size, FPXBaselineColorSpace 
           break;
         case SPACE_32_BITS_O:
           // Nothing to do
+          break;
+        case NON_AUTHORIZED_SPACE:
           break;
       }
       break;
@@ -1327,6 +1339,8 @@ void ConvertPixelBuffer(unsigned char* buffer, long size, FPXBaselineColorSpace 
         case SPACE_32_BITS_O:
           // InitByteTo0(buffer+2,size); now we prefer to preserve the alpha channel if any
           break;
+        case NON_AUTHORIZED_SPACE:
+          break;
       }
       break;
     case SPACE_32_BITS_MA:
@@ -1370,8 +1384,13 @@ void ConvertPixelBuffer(unsigned char* buffer, long size, FPXBaselineColorSpace 
           Shift8BitsRight(buffer,size);
           // InitByteTo0(buffer,size); now we prefer to preserve the alpha channel if any
           break;
+        case NON_AUTHORIZED_SPACE:
+          break;
       }
       break;
+  default:
+    {
+    }
   }
 }
 
@@ -1605,7 +1624,8 @@ void writeDIB24(unsigned char *obp, unsigned char *pic24, unsigned long w, unsig
 
 void writeDIB1(unsigned char *obp, unsigned char *pic8, unsigned long w, unsigned long h)
 {
-  long i, j, padw;
+  unsigned long j, padw;
+  long i;
   unsigned char *pp;
 
   padw = ((w + 3)/4) * 4;  /* 'w', padded to be a multiple of 32 */

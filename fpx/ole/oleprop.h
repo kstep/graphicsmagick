@@ -87,7 +87,7 @@
                         OLEPropertySection *parentPropSection, 
                         DWORD properID, 
                         DWORD properType);
-                  ~OLEProperty();
+                  virtual ~OLEProperty();
     
     // Set the variant structure to zero
     virtual   void      Clear()               {  V_R8(&val) = 0;    }; 

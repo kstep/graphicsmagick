@@ -1944,7 +1944,7 @@ BOOL CExposedDocFile::IsAtOrAbove(CExposedDocFile *pdf)
         if (pdfPar == pdf)
             break;
     }
-    while (pdfPar = pdfPar->_pdfParent);
+    while ((pdfPar = pdfPar->_pdfParent));
     return pdfPar == pdf;
 }
 

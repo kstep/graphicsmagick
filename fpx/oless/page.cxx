@@ -68,10 +68,13 @@ void CMSFPage::ByteSwap(void)
 CMSFPageTable::CMSFPageTable( CMStream *const pmsParent,
                               const ULONG cMinPages,
                               const ULONG cMaxPages)
-    : _pmsParent(pmsParent), _cActivePages(0), _cPages(0),
-      _pmpCurrent(NULL),
+    : _pmsParent(pmsParent),
       _cbSector(pmsParent->GetSectorSize()),
-      _cMinPages(cMinPages), _cMaxPages(cMaxPages),
+      _cMinPages(cMinPages),
+      _cMaxPages(cMaxPages),
+      _cActivePages(0),
+      _cPages(0),
+      _pmpCurrent(NULL),
       _cReferences(1)    
 {
 }

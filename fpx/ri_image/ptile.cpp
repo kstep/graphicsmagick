@@ -18,11 +18,7 @@
 //  For conditions of distribution and use, see copyright notice
 //  in Flashpix.h
 //  ----------------------------------------------------------------------------
-#ifdef _WINDOWS
-  #pragma code_seg ("PTile")
-#else
-  #pragma segment PTile
-#endif
+
 //  ----------------------------------------------------------------------------
 
 //  ----------------------------------------------------------------------------
@@ -315,7 +311,8 @@ static void ConvolGaussian4 (Pixel* source, long width, long height, Pixel* dest
 //
 //
 
-static void ConvolGaussian3 (Pixel* source, long width, long height, Pixel* dest, long pixelsPerLine)
+static void ConvolGaussian3 (Pixel* source, long width, long height,
+                             Pixel* dest, long pixelsPerLine)
 
 {
   // Simplification when width or height too small for the kernel
@@ -534,7 +531,8 @@ void PTile::InitializeCreate (PResolutionLevel* father, long width, long height,
 // Initialize a tile with file assignment
 // Use this constructor in Read mode
 
-void PTile::InitializeRead (PResolutionLevel* father, long offset, long sizetile, long id, long compression, long nouse)
+void PTile::InitializeRead (PResolutionLevel* father, long offset, long sizetile,
+                            long id, long /*compression*/, long /*nouse*/)
 
 {
   fatherSubImage    = father;   // Point to the father sub-image
@@ -551,7 +549,6 @@ void PTile::InitializeRead (PResolutionLevel* father, long offset, long sizetile
   identifier      = id;
   previous      = NULL;
   next        = NULL;
-  long a = compression = nouse; 
   
   register long TILE_WIDTH = fatherSubImage->fatherFile->tileWidth;
   register long TILE_MASK  = fatherSubImage->fatherFile->maskTileWidth;
@@ -618,7 +615,7 @@ long PTile::AllocateRawPixels ()
 long PTile::AllocatePixelMemory( Pixel **memAddress)
 {
   long  numFreeBytes;
-  long  tileSize  = fatherSubImage->fatherFile->tileSize;
+  //  long  tileSize  = fatherSubImage->fatherFile->tileSize;
   long  sizeNeeded  = width * height * sizeof( Pixel);      // PTCH_101 new
 
   *memAddress = NULL;
@@ -727,7 +724,7 @@ long PTile::FindOldestTileBuffer( PTile **foundTile, long *isRawPixelsBuffer, lo
   while (currTile) {
 //    if ( !currTile->IsLocked()) {                          PTCH_101 rep
     if ( !currTile->IsLocked()                          // PTCH_101 new
-     && ((currTile->width * currTile->height * sizeof( Pixel)) >= minSize)) { // PTCH_101 new
+     && ((currTile->width * currTile->height * sizeof( Pixel)) >= (unsigned long) minSize)) { // PTCH_101 new
       if (currTile->rawPixels) {
         oldestTime = currTile->rawPixelsTime;
         *isRawPixelsBuffer = 1;
@@ -747,7 +744,7 @@ long PTile::FindOldestTileBuffer( PTile **foundTile, long *isRawPixelsBuffer, lo
   while (currTile) {
 //    if (!currTile->IsLocked()) {                           PTCH_101 rep
     if ( !currTile->IsLocked()                          // PTCH_101 new
-     && ((currTile->width * currTile->height * sizeof( Pixel)) >= minSize)) { // PTCH_101 new
+     && ((currTile->width * currTile->height * sizeof( Pixel)) >= (unsigned long) minSize)) { // PTCH_101 new
       if (currTile->rawPixels)
         if (currTile->rawPixelsTime < oldestTime) {
           *foundTile = currTile;
@@ -1233,7 +1230,6 @@ FPXStatus PTile::Convolution (Pixel* pix, long srcWidth, long srcHeight, long qu
 
 {
   Pixel   *pt;
-  Boolean   existAlpha = fatherSubImage->fatherFile->existAlphaChannel;
   short   halfTileWidth = (short ) ((fatherSubImage->fatherFile->tileWidth) >> 1);
   short     writtenWidth, writtenHeight;
   FPXStatus status = FPX_OK;

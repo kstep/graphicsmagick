@@ -145,11 +145,11 @@ void Fichier::CloseFileWhenDelete()
 void Fichier::Ouverture(const FicNom& fNom, mode_Ouverture mode, OSType fileSignature)
 
 {
+
+#ifdef macintosh
   OSErr   err       = noErr;
   Boolean targetIsFolder  = FALSE;
   Boolean wasAliased    = FALSE;
-  
-#ifdef macintosh
   FSSpec myFSSpec;
 
   // Check that the name doesn't begin with a period 

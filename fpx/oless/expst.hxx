@@ -66,7 +66,7 @@ public:
                const CDfName *pdfn,
                const ULONG ulPos);
 
-    inline ~CExposedStream(void);
+    virtual inline ~CExposedStream(void);
 
     // From IUnknown
     STDMETHOD(QueryInterface)(REFIID iid, void **ppvObj);

@@ -11,11 +11,7 @@
 //  For conditions of distribution and use, see copyright notice
 //  in Flashpix.h
 //  ----------------------------------------------------------------------------
-#ifdef _WINDOWS
-  #pragma code_seg ("FPXImageView")
-#else
-  #pragma segment FPXImageView
-#endif
+
 //  ----------------------------------------------------------------------------
   #include "fpximgvw.h"
 //  ----------------------------------------------------------------------------
@@ -366,15 +362,14 @@ PFlashPixImageView::PFlashPixImageView (OLEStorage* theOwningStorage, const char
 // Open the file in Read/Write mode (but not Create)
 // CHG_VIS_OUT - added visibleOutputIndex argument to be passed to PFileFlashPixView
 PFlashPixImageView::PFlashPixImageView (FicNom& refName, const char* theStorageName, 
-                    mode_Ouverture openMode, long visibleOutputIndex, 
-                    PSearchHookObject* hook, FPXStatus *fpxStatus) 
-                : ViewImage(refName),
-                  readOnlyFile(FALSE)
+                                        mode_Ouverture openMode, long visibleOutputIndex, 
+                                        PSearchHookObject* /*hook*/, FPXStatus *fpxStatus) 
+  : ViewImage(refName),
+    readOnlyFile(FALSE)
 {
   CLSID idBaseline  = ID_Baseline;
   CLSID idImageView = ID_ImageView;
   CLSID id;
-  PSearchHookObject* h = hook;
 
   internalBuffer = NULL; 
   internalBufSize = 0; 
@@ -401,7 +396,7 @@ PFlashPixImageView::PFlashPixImageView (FicNom& refName, const char* theStorageN
     // If this is a FPX Image View object:
     char sourceImageName [33];
     filePtr = new PFileFlashPixView (refName, theStorageName, openMode,
-                    visibleOutputIndex);      // Open the Image View
+                                     visibleOutputIndex);      // Open the Image View
     if (filePtr == NULL) {
       return;
     }
@@ -1199,9 +1194,8 @@ void PFlashPixImageView::InitOperationPropertySet(FPXOperation* theOperation)
 
 
 //  ----------------------------------------------------------------------------
-void PFlashPixImageView::InitExtensionListPropertySet(FPXExtensionDescription* theExtension)
+void PFlashPixImageView::InitExtensionListPropertySet(FPXExtensionDescription* /*theExtension*/)
 {
-  FPXExtensionDescription* e = theExtension; 
   // Not implemented yet...
 }
 
@@ -1768,19 +1762,17 @@ FPXStatus PFlashPixImageView::GetOperationPropertySet(FPXOperation* theOperation
 
 
 //  ------------------------------------------------------------------------------------
-FPXStatus PFlashPixImageView::SetExtensionListPropertySet(FPXExtensionDescription* theExtension, char* extensionName)
+FPXStatus PFlashPixImageView::SetExtensionListPropertySet(FPXExtensionDescription* /*theExtension*/,
+                                                          char* /*extensionName*/)
 {
-  FPXExtensionDescription* e = theExtension; 
-  char* n = extensionName; 
   return FPX_UNIMPLEMENTED_FUNCTION;
 }
 
 
 //  ------------------------------------------------------------------------------------
-FPXStatus PFlashPixImageView::GetExtensionListPropertySet(FPXExtensionDescription* theExtension, char* extensionName)
+FPXStatus PFlashPixImageView::GetExtensionListPropertySet(FPXExtensionDescription* /*theExtension*/,
+                                                          char* /*extensionName*/)
 {
-  FPXExtensionDescription* e = theExtension; 
-  char* n = extensionName; 
   return FPX_UNIMPLEMENTED_FUNCTION;
 }
 

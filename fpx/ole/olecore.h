@@ -36,7 +36,6 @@
 
 // These strings are used to print the types of the properties in the test code
 
-
 static const char* variantName[] =
 {
     "VT_EMPTY",     // 0
@@ -166,7 +165,7 @@ const GUID BlankGUID = { 0, 0, 0, { 0, 0,  0,  0,  0,  0,  0,  0 } };
   
     public:
                OLECore();
-               ~OLECore();
+               virtual ~OLECore();
               
           OSErr   Error() { return lastError; };      
           OSErr     TranslateOLEError(HRESULT err);  // Translate the scode message 

@@ -92,7 +92,7 @@ public:
   Fichier(int fd, mode_Ouverture mode,
           unsigned long tailleBuf, const obj_Signature &fileSignature);
 
-  ~Fichier();
+  virtual ~Fichier();
   FicNom          GetFileName() const;
   // Sorry, I couldn't find anything else to be able
   // to access the resource fork of a file being
@@ -241,23 +241,23 @@ protected:
   unsigned long   offsetFin;
   unsigned long   offsetEndOfFile;
 
-  const   mode_Ouverture  modeOuverture;              // Open mode
+  const   mode_Ouverture  modeOuverture;// Open mode
 
-  Boolean         temporary;                  // True if file is to be deleted when closed
-  Boolean         fatalError;                 // == true if a non corrected error occurred
+  Boolean         temporary;		// True if file is to be deleted when closed
+  Boolean         fatalError;		// == true if a non corrected error occurred
   // since file is open
 #ifdef macintosh
-  short           refNum;           // File reference number
-  FicNom          vraiNom,                    // Name asked by the user
-    nomActuel;                  // Name used at that time
+  short           refNum;		// File reference number
+  FicNom          vraiNom,		// Name asked by the user
+    		  nomActuel;		// Name used at that time
 #else
 
-  int           handle;           // File descriptor
-  FicNom          vraiNom;                    // Name asked by the user
-  char            cname[255];         // UNIX path name to the file
+  int             handle;		// File descriptor
+  FicNom          vraiNom;		// Name asked by the user
+  char            cname[255];		// UNIX path name to the file
 #endif
-  Boolean     closeWhenDelete;      // Flag indicating if we have to close the handle
-  // when deleting the object (for IVUE Toolkit)
+  Boolean     closeWhenDelete;		// Flag indicating if we have to close the handle
+  					// when deleting the object (for IVUE Toolkit)
 };
 
 

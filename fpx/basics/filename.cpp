@@ -438,9 +438,10 @@ long FicNom::PlaceDisponible() const
 // Get the size of the file (in KBytes)
 OSErr FicNom::GetSize(long* sizeInKBytes)
 {
-  OSErr err = noErr;
   
 #ifdef macintosh
+  OSErr err = noErr;
+
   HParamBlockRec  myHPB;
   
   myHPB.fileParam.ioNamePtr  = (StringPtr)(&(nom));
@@ -463,10 +464,11 @@ OSErr FicNom::GetSize(long* sizeInKBytes)
 
 OSErr FicNom::Empty(Boolean* empty)
 {
-  OSErr err = noErr;
   *empty = FALSE;
   
 #ifdef macintosh
+  OSErr err = noErr;
+
   long sizeInBytes;
   HParamBlockRec  myHPB;
   myHPB.fileParam.ioNamePtr  = (StringPtr)(&(nom));

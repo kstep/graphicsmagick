@@ -55,7 +55,7 @@
     // This constructor creates a OLEHeaderStream from an open storage based 
     // on given class ID and stream
             OLEHeaderStream(const GUID& clsID, OLEStorage * parentStorage, LPSTREAM currentStream);
-            ~OLEHeaderStream();
+            virtual ~OLEHeaderStream();
     
     // Read the stream header of the stream 
     virtual void  ReadHeader(); 

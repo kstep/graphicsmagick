@@ -129,6 +129,9 @@ static void ComputeChannelColor(DWORD* channelColor, FPXColorspace colorSpace, l
       case MONOCHROME:
         space = ColorSpace_Monochrome;
         break;
+    default:
+      {
+      }
     }
   }
   
@@ -629,6 +632,9 @@ FPXStatus PResolutionFlashPix::SetResolutionDescription()
   //    case Convolution_FlashPix:        // Recommended filter (still to be defined...)
   //      decimation = DecimationStandard;
   //      break;
+    default:
+      {
+      }
     }
     if (identifier == 0)          // For the high resolution level, there is no decimation
       decimation = 0;
@@ -838,24 +844,24 @@ FPXStatus PResolutionFlashPix::Write()
 //  ----------------------------------------------------------------------------
 // Read the tile data from the file without decompression
 FPXStatus PResolutionFlashPix::ReadRawTile (
-          unsigned long       whichTile, 
-          FPXCompressionOption*   compressOption, 
-          unsigned char*      compressQuality,
-          long*           compressSubtype,
-          unsigned long*      dataLength,
-          void**          data)
+          unsigned long          whichTile, 
+          FPXCompressionOption*  compressOption, 
+          unsigned char*         compressQuality,
+          long*                  compressSubtype,
+          unsigned long*         dataLength,
+          void**                 data)
 {
   FPXStatus status = FPX_OK;
 
   // Read and allocate tile pointers if necessary
   if (!HasBeenUsed()) {
     status = ReadHeaderStream();
-      if(status != FPX_OK)
-          return status;
+    if(status != FPX_OK)
+      return status;
   }
 
   if (status == 0) {
-    long nbTiles = nbTilesW * nbTilesH;
+    unsigned long nbTiles = nbTilesW * nbTilesH;
     if (whichTile >= nbTiles)
       status = FPX_BAD_COORDINATES;
     else {
@@ -884,7 +890,7 @@ FPXStatus PResolutionFlashPix::WriteRawTile (
     status = UpdateHeaderStream();
   
   if (status == FPX_OK) {
-    long nbTiles = nbTilesW * nbTilesH;
+    unsigned long nbTiles = nbTilesW * nbTilesH;
     if (whichTile >= nbTiles)
       status = FPX_BAD_COORDINATES;
     else {
