@@ -1,3 +1,6 @@
+2002-04-06  Glenn Randers-Pehrson <randeg@alum.pri.edu>
+  *  Added CCIS-601 4:2:2 YUV format read-write support.
+
 2002-03-28  Cristy  <cristy@mystic.es.dupont.com>
   * ImageToBlob() only returned the first frame of a multi-frame image.
 
