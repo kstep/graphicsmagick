@@ -506,7 +506,7 @@ int main(int argc,char **argv)
                     image_info->compression=LosslessJPEGCompression;
                   if (LocaleCompare("LZW",option) == 0)
                     image_info->compression=LZWCompression;
-                  if (LocaleCompare("RunlengthEncoded",option) == 0)
+                  if (LocaleCompare("RLE",option) == 0)
                     image_info->compression=RunlengthEncodedCompression;
                   if (LocaleCompare("Zip",option) == 0)
                     image_info->compression=ZipCompression;

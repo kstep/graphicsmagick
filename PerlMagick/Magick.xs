@@ -191,7 +191,7 @@ static char
   *CompressionTypes[] =
   {
     "Undefined", "None", "BZip", "Fax", "Group4", "JPEG", "LosslessJPEG",
-    "LZW", "Runlength", "Zip", (char *) NULL
+    "LZW", "RLE", "Zip", (char *) NULL
   },
   *FilterTypess[] =
   {

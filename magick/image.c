@@ -3368,7 +3368,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
                   compression=LosslessJPEGCompression;
                 if (LocaleCompare("LZW",option) == 0)
                   compression=LZWCompression;
-                if (LocaleCompare("RunlengthEncoded",option) == 0)
+                if (LocaleCompare("RLE",option) == 0)
                   compression=RunlengthEncodedCompression;
                 if (LocaleCompare("Zip",option) == 0)
                   compression=ZipCompression;
