@@ -1047,6 +1047,11 @@ AC_SUBST(XCFDecodeDelegate)
 AC_SUBST(ZipDelegate)
 
 # Figure out what drivers Ghostscript supports (if available)
+GSColorDevice=ppmraw
+GSMonoDevice=pbmraw
+GSPDFDevice=pdfwrite
+GSPSDevice=pswrite
+GSEPSDevice=epswrite
 if test $have_gs = 'yes'
 then
 
@@ -1063,7 +1068,6 @@ then
       GSColorDevice=ppmraw
     fi
   fi
-  AC_SUBST(GSColorDevice)
   AC_MSG_RESULT($GSColorDevice)
 
   # GSMonoDevice
@@ -1074,7 +1078,6 @@ then
   else
     GSMonoDevice=ppmraw
   fi
-  AC_SUBST(GSMonoDevice)
   AC_MSG_RESULT($GSMonoDevice)
 
   # GSPDFDevice
@@ -1085,7 +1088,6 @@ then
   else
     GSPDFDevice=nodevice
   fi
-  AC_SUBST(GSPDFDevice)
   AC_MSG_RESULT($GSPDFDevice)
 
   # GSPSDevice
@@ -1096,7 +1098,6 @@ then
   else
     GSPSDevice=nodevice
   fi
-  AC_SUBST(GSPSDevice)
   AC_MSG_RESULT($GSPSDevice)
 
   # GSEPSDevice
@@ -1107,10 +1108,15 @@ then
   else
     GSEPSDevice=nodevice
   fi
-  AC_SUBST(GSEPSDevice)
   AC_MSG_RESULT($GSEPSDevice)
 
 fi
+
+AC_SUBST(GSMonoDevice)
+AC_SUBST(GSPDFDevice)
+AC_SUBST(GSPSDevice)
+AC_SUBST(GSColorDevice)
+AC_SUBST(GSEPSDevice)
 
 #
 # PerlMagick-related configuration

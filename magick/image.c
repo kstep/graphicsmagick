@@ -1280,6 +1280,11 @@ Export void CompositeImage(Image *image,const CompositeOperator compose,
       break;
     for (x=0; x < width; x++)
     {
+      if ((x+x_offset) < 0)
+        {
+          p++;
+          continue;
+        }
       opacity=q->opacity;
       switch (compose)
       {
