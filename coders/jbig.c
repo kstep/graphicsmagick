@@ -371,6 +371,9 @@ static void JBIGEncode(unsigned char *pixels,size_t length,void *data)
 
 static unsigned int WriteJBIGImage(const ImageInfo *image_info,Image *image)
 {
+  double
+    jbig_lib_version;
+
   long
     y;
 
@@ -412,6 +415,7 @@ static unsigned int WriteJBIGImage(const ImageInfo *image_info,Image *image)
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
     ThrowWriterException(FileOpenError,UnableToOpenFile,image);
+  jbig_lib_version=strtod(JBG_VERSION, (char **)NULL);
   scene=0;
   do
   {
@@ -484,8 +488,13 @@ static unsigned int WriteJBIGImage(const ImageInfo *image_info,Image *image)
         (void) jbg_enc_lrlmax(&jbig_info,x_resolution,y_resolution);
       }
     (void) jbg_enc_lrange(&jbig_info,-1,-1);
-    jbg_enc_options(&jbig_info,JBG_ILEAVE | JBG_SMID,JBG_TPDON | JBG_TPBON |
-      JBG_DPON,0,-1,-1);
+    jbg_enc_options(&jbig_info, /* Encoder state */
+                    JBG_ILEAVE| JBG_SMID, /* Order */
+                    JBG_TPDON | JBG_TPBON | JBG_DPON, /* Options */
+                    /* Lines per stripe in resolution layer 0. (was -1)*/
+                    (jbig_lib_version < 1.6 ? -1 : 0),
+                    -1, /* mx */
+                    -1); /* my */
     /*
       Write JBIG image.
     */
