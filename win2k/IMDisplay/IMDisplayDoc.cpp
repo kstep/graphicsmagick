@@ -111,7 +111,7 @@ BOOL CIMDisplayDoc::DoReadImage( void )
     // Image may still be usable if there is a warning
     catch(Magick::Warning warning)
     {
-        DoDisplayError("DoReadImage",warning.what());
+      DoDisplayWarning("DoReadImage",warning.what());
     }
 
     // Image is not usable
@@ -129,6 +129,9 @@ BOOL CIMDisplayDoc::DoReadImage( void )
 	return FALSE;
     }
 
+    // Ensure that image is in RGB space
+    m_pImage.colorSpace(RGBColorspace);
+
     EndWaitCursor();
 
     return TRUE;
@@ -142,6 +145,19 @@ BOOL CIMDisplayDoc::DoReadImage( void )
 void CIMDisplayDoc::DoDisplayError(CString szFunction, CString szCause)
 {
     CString szMsg;
-    szMsg.Format("IMDisplayDoc function [%s] encountered an error.\n%s",szFunction,szCause);
+    szMsg.Format("IMDisplayDoc function [%s] reported an error.\n%s",szFunction,szCause);
     AfxMessageBox(szMsg,MB_OK);
 }
+
+//-----------------------------------------------------------------------
+// DoDisplayWarning()
+// Display the cause of any unhandle warning exceptions.
+//-----------------------------------------------------------------------
+
+void CIMDisplayDoc::DoDisplayWarning(CString szFunction, CString szCause)
+{
+    CString szMsg;
+    szMsg.Format("IMDisplayDoc function [%s] reported a warning.\n%s",szFunction,szCause);
+    AfxMessageBox(szMsg,MB_OK);
+}
+
