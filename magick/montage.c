@@ -270,15 +270,18 @@ MagickExport Image *MontageImages(const Image *images,
     frame_info;
 
   Image
-	  *image,
+    *image,
     **image_list,
     **master_list,
     *montage,
     *texture,
-		*zoom_image;
+    *zoom_image;
 
   ImageInfo
     *image_info;
+
+  int
+    flags;
 
   long
     x,
@@ -297,7 +300,7 @@ MagickExport Image *MontageImages(const Image *images,
 
   RectangleInfo
     bounds,
-		geometry,
+    geometry,
     tile_info;
 
   size_t
@@ -333,7 +336,7 @@ MagickExport Image *MontageImages(const Image *images,
   assert(montage_info->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-	number_images=GetImageListSize(images);
+  number_images=GetImageListSize(images);
   master_list=ImageListToArray(images,exception);
   if (master_list == (Image **) NULL)
     ThrowImageException(ResourceLimitWarning,"Unable to create montage",
@@ -344,8 +347,8 @@ MagickExport Image *MontageImages(const Image *images,
     image=image_list[i];
     handler=SetMonitorHandler((MonitorHandler) NULL);
     SetGeometry(image,&geometry);
-    (void) ParseImageGeometry(montage_info->geometry,&geometry.x,&geometry.y,
-			&geometry.width,&geometry.height);
+    flags=ParseImageGeometry(montage_info->geometry,&geometry.x,&geometry.y,
+      &geometry.width,&geometry.height);
     zoom_image=ZoomImage(image,geometry.width,geometry.height,exception);
     if (zoom_image == (Image *) NULL)
       break;
@@ -384,7 +387,7 @@ MagickExport Image *MontageImages(const Image *images,
       tiles_per_column=number_images;
       x=0;
       y=0;
-      (void) ParseGeometry(montage_info->tile,&x,&y,&tiles_per_row,
+      flags=ParseGeometry(montage_info->tile,&x,&y,&tiles_per_row,
         &tiles_per_column);
     }
   /*
@@ -394,15 +397,14 @@ MagickExport Image *MontageImages(const Image *images,
   bevel_width=0;
   if (montage_info->frame != (char *) NULL)
     {
-      int
-        flags;
-
-      frame_info.width=0;
-      frame_info.height=0;
-      frame_info.outer_bevel=0;
-      frame_info.inner_bevel=0;
-      flags=ParseGeometry(montage_info->frame,&frame_info.outer_bevel,
-        &frame_info.inner_bevel,&frame_info.width,&frame_info.height);
+      SetGeometry(image_list[0],&geometry);
+      geometry.width=geometry.height;
+      flags=ParseImageGeometry(montage_info->frame,&geometry.x,&geometry.y,
+        &geometry.width,&geometry.height);
+      frame_info.width=geometry.width;
+      frame_info.height=geometry.height;
+      frame_info.x=geometry.x;
+      frame_info.y=geometry.y;
       if ((flags & HeightValue) == 0)
         frame_info.height=frame_info.width;
       if ((flags & XValue) == 0)
@@ -421,9 +423,6 @@ MagickExport Image *MontageImages(const Image *images,
   concatenate=False;
   if (montage_info->geometry != (char *) NULL)
     {
-      int
-        flags;
-
       /*
         Initialize tile geometry.
       */
@@ -541,7 +540,7 @@ MagickExport Image *MontageImages(const Image *images,
       count+=strlen(image_list[tile]->filename)+1;
     montage->directory=(char *) AcquireMemory(count);
     if ((montage->montage == (char *) NULL) ||
-		    (montage->directory == (char *) NULL))
+        (montage->directory == (char *) NULL))
       ThrowImageException(ResourceLimitWarning,"Unable to create montage",
         "Memory allocation failed");
     x_offset=0;
