@@ -159,7 +159,7 @@ static void lt_dlclose(void *handle)
 
 static const char *lt_dlerror(void)
 {
-  return((const char *) NULL);
+  return("");
 }
 
 static void *lt_dlsym(void *handle,char *symbol)
