@@ -86,9 +86,18 @@ static int MagickToPhoto(
 	return myMagickError(interp, wand);
     }
 
+#if TCL_MAJOR_VERSION <= 8 && TCL_MINOR_VERSION <= 4
     Tk_PhotoPutBlock(photohandle, &magickblock, 0, 0,
 		     magickblock.width, magickblock.height,
 		     TK_PHOTO_COMPOSITE_SET);
+#else
+    if (Tk_PhotoPutBlock(interp, photohandle, &magickblock,
+			 0, 0, magickblock.width, magickblock.height,
+			 TK_PHOTO_COMPOSITE_SET) != TCL_OK) {
+	ckfree(magickblock.pixelPtr);
+	return TCL_ERROR;
+    }
+#endif /* TCL_MAJOR_VERSION <= 8 && TCL_MINOR_VERSION <= 4 */
 
     ckfree(magickblock.pixelPtr);
     return TCL_OK;

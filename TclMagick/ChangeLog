@@ -1,5 +1,11 @@
 2004-12-16  David N. Welton  <davidw@dedasys.com>
 
+	* generic/TkMagick.c (MagickToPhoto): Added ifdef'ed
+	Tk_PhotoPutBlock to make things work with Tk 8.5.  Thanks to
+	George Staplin for reporting the problem.
+
+	* configure.ac: Bumped version number.
+
 	* generic/Makefile.am (libTkMagick_la_CPPFLAGS): Added
 	TK_XINCLUDES.  Thanks to George Staplin for reporting the problem.
 
