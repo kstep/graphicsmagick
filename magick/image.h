@@ -773,7 +773,6 @@ extern MagickExport unsigned int
   SyncImagePixels(Image *),
   ThresholdImage(Image *,const double),
   TransformRGBImage(Image *,const ColorspaceType),
-  TransmitImage(Image *,ImageInfo *,const TransmitType,void *,void *),
   TransparentImage(Image *,const PixelPacket,const unsigned int),
   UnregisterMagickInfo(const char *),
   WriteImage(const ImageInfo *,Image *),
