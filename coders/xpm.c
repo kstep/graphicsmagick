@@ -666,7 +666,8 @@ static unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
   if (image->storage_class == PseudoClass)
     {
       CompressColormap(image);
-      colors=image->colors;
+      if (image->matte)
+         transparent=True;
     }
   else
     {
@@ -701,26 +702,26 @@ static unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
       GetQuantizeInfo(&quantize_info);
       quantize_info.dither=image_info->dither;
       (void) QuantizeImage(&quantize_info,image);
-      colors=image->colors;
-      if (transparent)
+    }
+  colors=image->colors;
+  if (transparent)
+    {
+      colors++;
+      for (y=0; y < (int) image->rows; y++)
+      {
+        p=GetImagePixels(image,0,y,image->columns,1);
+        if (p == (PixelPacket *) NULL)
+          break;
+        indexes=GetIndexes(image);
+        for (x=0; x < (int) image->columns; x++)
         {
-          colors++;
-          for (y=0; y < (int) image->rows; y++)
-          {
-            p=GetImagePixels(image,0,y,image->columns,1);
-            if (p == (PixelPacket *) NULL)
-              break;
-            indexes=GetIndexes(image);
-            for (x=0; x < (int) image->columns; x++)
-            {
-              if (p->opacity == TransparentOpacity)
-                indexes[x]=image->colors;
-              p++;
-            }
-            if (!SyncImagePixels(image))
-              break;
-          }
+          if (p->opacity == TransparentOpacity)
+            indexes[x]=image->colors;
+          p++;
         }
+        if (!SyncImagePixels(image))
+          break;
+      }
     }
   image->depth=8;
   /*
