@@ -992,6 +992,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
   register int
     i;
 
+  GetExceptionInfo(&exception);
   switch (*attribute)
   {
     case 'A':
@@ -2223,6 +2224,8 @@ BlobToImage(ref,...)
       **keep,
       **list;
 
+    ExceptionInfo
+      exception;
 
     HV
       *hv;
@@ -2297,11 +2300,9 @@ BlobToImage(ref,...)
     error_jump=(&error_jmp);
     if (setjmp(error_jmp))
       goto ReturnIt;
+    GetExceptionInfo(&exception);
     for (i=number_images=0; i < n; i++)
     {
-      ExceptionInfo
-        exception;
-
       image=BlobToImage(info->image_info,list[i],length[i],&exception);
       if (image == (Image *) NULL)
         MagickWarning(exception.severity,exception.reason,exception.description);
@@ -3636,6 +3637,9 @@ ImageToBlob(ref,...)
     char
       filename[MaxTextExtent];
 
+    ExceptionInfo
+      exception;
+
     Image
       *image,
       *next;
@@ -3690,11 +3694,9 @@ ImageToBlob(ref,...)
       next->scene=scene++;
     }
     SetImageInfo(package_info->image_info,True,&image->exception);
+    GetExceptionInfo(&exception);
     for (next=image; next; next=next->next)
     {
-      ExceptionInfo
-        exception;
-
       length=0;
       blob=ImageToBlob(package_info->image_info,next,&length,&exception);
       if (blob == (void *) NULL)
