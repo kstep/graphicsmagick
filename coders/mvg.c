@@ -155,8 +155,10 @@ static Image *ReadMVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if ((image->columns == 0) || (image->rows == 0))
     {
       char
-        *p,
         primitive[MaxTextExtent];
+
+      register char
+        *p;
 
       SegmentInfo
         bounds;
@@ -172,11 +174,11 @@ static Image *ReadMVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         ThrowReaderException(FileOpenWarning,"Unable to open file",image);
       while (ReadBlobString(image,primitive) != (char *) NULL)
       {
-        for( p=primitive; (*p == ' ' || *p == '\t'); ++p);
+        for (p=primitive; (*p == ' ') || (*p == '\t'); p++);
         if (LocaleNCompare(BoundingBox,p,strlen(BoundingBox)) != 0)
           continue;
-        (void) sscanf(p,"viewbox %lf %lf %lf %lf",&bounds.x1,
-          &bounds.y1,&bounds.x2,&bounds.y2);
+        (void) sscanf(p,"viewbox %lf %lf %lf %lf",&bounds.x1,&bounds.y1,
+          &bounds.x2,&bounds.y2);
         image->columns=(unsigned long) (bounds.x2-bounds.x1+0.5);
         image->rows=(unsigned long) (bounds.y2-bounds.y1+0.5);
         break;
