@@ -87,7 +87,7 @@ static WarningHandler
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  CatchException() returns if no exceptions is found otherwise it reports
-%  the  exception as a warning, error, or fatal depending on the severity.
+%  the exception as a warning, error, or fatal depending on the severity.
 %
 %  The format of the CatchException method is:
 %
