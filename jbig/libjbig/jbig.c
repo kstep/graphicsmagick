@@ -41,6 +41,7 @@
 #ifdef DEBUG
 #include <stdio.h>
 #else
+#undef NDEBUG
 #define NDEBUG
 #endif
 
