@@ -1,3 +1,8 @@
+2002-08-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+  * Under Windows, define UseInstalledImageMagick to locate
+    components using the registry rather than scanning the
+    filesystem.
+
 2002-08-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
   * Added DrawSetTextEncoding() function to specify text
     encoding (e.g. "UTF-8").
