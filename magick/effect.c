@@ -1232,7 +1232,7 @@ MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
   distance=r->opacity-(int) pixel.opacity; \
   distance_squared+= \
     (double) (3.0*(MaxRGB+1)-1.0-mean)*distance*distance/MaxRGB; \
-  if (distance_squared < (10.0*(1L << QuantumDepth))) \
+  if (distance_squared < (MaxRGB*MaxRGB/25)) \
     { \
       aggregate.red+=(weight)*r->red; \
       aggregate.green+=(weight)*r->green; \
