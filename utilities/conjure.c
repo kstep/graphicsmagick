@@ -162,7 +162,7 @@ int main(int argc,char **argv)
   ImageInfo
     *image_info;
 
-  register int
+  register long
     i;
 
   unsigned int

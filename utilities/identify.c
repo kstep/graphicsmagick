@@ -175,17 +175,15 @@ int IdentifyUtility(int argc,char **argv)
   ImageInfo
     *image_info;
 
-  int
-    x;
-
   long
     count,
-    number_images;
+    number_images,
+    x;
 
   register Image
     *p;
 
-  register int
+  register long
     i;
 
   unsigned int
@@ -270,7 +268,7 @@ int IdentifyUtility(int argc,char **argv)
                 if (*option == '-')
                   {
                     i++;
-                    if ((i == argc) || !sscanf(argv[i],"%d",&x))
+                    if ((i == argc) || !sscanf(argv[i],"%ld",&x))
                       MagickError(OptionError,"Missing image depth",option);
                     image_info->depth=atol(argv[i]);
                   }

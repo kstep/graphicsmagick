@@ -233,8 +233,10 @@ static void ConcatenateImages(int argc,char **argv)
     *input,
     *output;
 
-  register int
-    c,
+  int
+	  c;
+
+  register long
     i;
 
   /*
@@ -645,6 +647,9 @@ static unsigned int ConvertUtility(int argc,char **argv)
     *filename,
     *option;
 
+  ConvertOptions
+    option_info;
+
   double
     sans;
 
@@ -658,17 +663,14 @@ static unsigned int ConvertUtility(int argc,char **argv)
   ImageInfo
     *image_info;
 
-  int
+  long
     j,
     x;
-
-  ConvertOptions
-    option_info;
 
   register Image
     *p;
 
-  register int
+  register long
     i;
 
   unsigned int
@@ -744,7 +746,7 @@ static unsigned int ConvertUtility(int argc,char **argv)
               if (*option == '-')
                 {
                   i++;
-                  if ((i == argc) || !sscanf(argv[i],"%d",&x))
+                  if ((i == argc) || !sscanf(argv[i],"%ld",&x))
                     MagickError(OptionError,"Missing matrix",option);
                 }
               break;
@@ -784,7 +786,7 @@ static unsigned int ConvertUtility(int argc,char **argv)
           if (LocaleCompare("blur",option+1) == 0)
             {
               i++;
-              if ((i == argc) || !sscanf(argv[i],"%d",&x))
+              if ((i == argc) || !sscanf(argv[i],"%ld",&x))
                 MagickError(OptionError,"Missing geometry",option);
               break;
             }
@@ -903,7 +905,7 @@ static unsigned int ConvertUtility(int argc,char **argv)
               if (*option == '-')
                 {
                   i++;
-                  if ((i == argc) || !sscanf(argv[i],"%d",&x))
+                  if ((i == argc) || !sscanf(argv[i],"%ld",&x))
                     MagickError(OptionError,"Missing value",option);
                 }
               break;
@@ -913,7 +915,7 @@ static unsigned int ConvertUtility(int argc,char **argv)
               if (*option == '-')
                 {
                   i++;
-                  if ((i == argc) || !sscanf(argv[i],"%d",&x))
+                  if ((i == argc) || !sscanf(argv[i],"%ld",&x))
                     MagickError(OptionError,"Missing colors",option);
                 }
               break;
@@ -1052,7 +1054,7 @@ static unsigned int ConvertUtility(int argc,char **argv)
               if (*option == '-')
                 {
                   i++;
-                  if ((i == argc) || !sscanf(argv[i],"%d",&x))
+                  if ((i == argc) || !sscanf(argv[i],"%ld",&x))
                     MagickError(OptionError,"Missing amount",option);
                 }
               break;
@@ -1077,7 +1079,7 @@ static unsigned int ConvertUtility(int argc,char **argv)
               if (*option == '-')
                 {
                   i++;
-                  if ((i == argc) || !sscanf(argv[i],"%d",&x))
+                  if ((i == argc) || !sscanf(argv[i],"%ld",&x))
                     MagickError(OptionError,"Missing delay",option);
                 }
               break;
@@ -1100,7 +1102,7 @@ static unsigned int ConvertUtility(int argc,char **argv)
               if (*option == '-')
                 {
                   i++;
-                  if ((i == argc) || !sscanf(argv[i],"%d",&x))
+                  if ((i == argc) || !sscanf(argv[i],"%ld",&x))
                     MagickError(OptionError,"Missing image depth",option);
                   image_info->depth=atol(argv[i]);
                 }
@@ -1125,7 +1127,7 @@ static unsigned int ConvertUtility(int argc,char **argv)
               if (*option == '-')
                 {
                   i++;
-                  if ((i == argc) || !sscanf(argv[i],"%d",&x))
+                  if ((i == argc) || !sscanf(argv[i],"%ld",&x))
                     MagickError(OptionError,"Missing method",option);
                 }
               break;
@@ -1275,7 +1277,7 @@ static unsigned int ConvertUtility(int argc,char **argv)
               if (*option == '-')
                 {
                   i++;
-                  if ((i == argc) || !sscanf(argv[i],"%d",&x))
+                  if ((i == argc) || !sscanf(argv[i],"%ld",&x))
                     MagickError(OptionError,"Missing distance",option);
                   image_info->fuzz=StringToDouble(argv[i],MaxRGB);
                 }
@@ -1296,7 +1298,7 @@ static unsigned int ConvertUtility(int argc,char **argv)
           if (LocaleCompare("gaussian",option+1) == 0)
             {
               i++;
-              if ((i == argc) || !sscanf(argv[i],"%d",&x))
+              if ((i == argc) || !sscanf(argv[i],"%ld",&x))
                 MagickError(OptionError,"Missing geometry",option);
               break;
             }
@@ -1528,7 +1530,7 @@ static unsigned int ConvertUtility(int argc,char **argv)
               if (*option == '-')
                 {
                   i++;
-                  if ((i == argc) || !sscanf(argv[i],"%d",&x))
+                  if ((i == argc) || !sscanf(argv[i],"%ld",&x))
                     MagickError(OptionError,"Missing iterations",option);
                 }
               break;
@@ -1577,7 +1579,7 @@ static unsigned int ConvertUtility(int argc,char **argv)
               if (*option == '-')
                 {
                   i++;
-                  if ((i == argc) || !sscanf(argv[i],"%d",&x))
+                  if ((i == argc) || !sscanf(argv[i],"%ld",&x))
                     MagickError(OptionError,"Missing radius",option);
                 }
               break;
@@ -1603,7 +1605,7 @@ static unsigned int ConvertUtility(int argc,char **argv)
               if (*option == '-')
                 {
                   i++;
-                  if ((i == argc) || !sscanf(argv[i],"%d",&x))
+                  if ((i == argc) || !sscanf(argv[i],"%ld",&x))
                     MagickError(OptionError,"Missing frames",option);
                   option_info.morph=atol(argv[i]);
                 }
@@ -1686,7 +1688,7 @@ static unsigned int ConvertUtility(int argc,char **argv)
               if (*option == '-')
                 {
                   i++;
-                  if ((i == argc) || !sscanf(argv[i],"%d",&x))
+                  if ((i == argc) || !sscanf(argv[i],"%ld",&x))
                     MagickError(OptionError,"Missing radius",option);
                 }
               break;
@@ -1714,7 +1716,7 @@ static unsigned int ConvertUtility(int argc,char **argv)
               if (*option == '-')
                 {
                   i++;
-                  if ((i == argc) || !sscanf(argv[i],"%d",&x))
+                  if ((i == argc) || !sscanf(argv[i],"%ld",&x))
                     MagickError(OptionError,"Missing size",option);
                   image_info->pointsize=atof(argv[i]);
                 }
@@ -1821,7 +1823,7 @@ static unsigned int ConvertUtility(int argc,char **argv)
               if (*option == '-')
                 {
                   i++;
-                  if ((i == argc) || !sscanf(argv[i],"%d",&x))
+                  if ((i == argc) || !sscanf(argv[i],"%ld",&x))
                     MagickError(OptionError,"Missing quality",option);
                   image_info->quality=atol(argv[i]);
                 }
@@ -1835,7 +1837,7 @@ static unsigned int ConvertUtility(int argc,char **argv)
           if (LocaleCompare("raise",option+1) == 0)
             {
               i++;
-              if ((i == argc) || !sscanf(argv[i],"%d",&x))
+              if ((i == argc) || !sscanf(argv[i],"%ld",&x))
                 MagickError(OptionError,"Missing bevel width",option);
               break;
             }
@@ -1924,7 +1926,7 @@ static unsigned int ConvertUtility(int argc,char **argv)
               if (*option == '-')
                 {
                   i++;
-                  if ((i == argc) || !sscanf(argv[i],"%d",&x))
+                  if ((i == argc) || !sscanf(argv[i],"%ld",&x))
                     MagickError(OptionError,"Missing scene number",option);
                 }
               option_info.scene=atol(argv[i]);
@@ -1935,7 +1937,7 @@ static unsigned int ConvertUtility(int argc,char **argv)
               if (*option == '-')
                 {
                   i++;
-                  if ((i == argc) || !sscanf(argv[i],"%d",&x))
+                  if ((i == argc) || !sscanf(argv[i],"%ld",&x))
                     MagickError(OptionError,"Missing value",option);
                 }
               srand(atoi(argv[i]));
@@ -1954,14 +1956,14 @@ static unsigned int ConvertUtility(int argc,char **argv)
           if (LocaleCompare("shade",option+1) == 0)
             {
               i++;
-              if ((i == argc) || !sscanf(argv[i],"%d",&x))
+              if ((i == argc) || !sscanf(argv[i],"%ld",&x))
                 MagickError(OptionError,"Missing azimuth",option);
               break;
             }
           if (LocaleCompare("sharpen",option+1) == 0)
             {
               i++;
-              if ((i == argc) || !sscanf(argv[i],"%d",&x))
+              if ((i == argc) || !sscanf(argv[i],"%ld",&x))
                 MagickError(OptionError,"Missing geometry",option);
               break;
             }
@@ -1999,7 +2001,7 @@ static unsigned int ConvertUtility(int argc,char **argv)
               if (*option == '-')
                 {
                   i++;
-                  if ((i == argc) || !sscanf(argv[i],"%d",&x))
+                  if ((i == argc) || !sscanf(argv[i],"%ld",&x))
                     MagickError(OptionError,"Missing threshold",option);
                 }
               break;
@@ -2009,7 +2011,7 @@ static unsigned int ConvertUtility(int argc,char **argv)
               if (*option == '-')
                 {
                   i++;
-                  if ((i == argc) || !sscanf(argv[i],"%d",&x))
+                  if ((i == argc) || !sscanf(argv[i],"%ld",&x))
                     MagickError(OptionError,"Missing amount",option);
                 }
               break;
@@ -2029,7 +2031,7 @@ static unsigned int ConvertUtility(int argc,char **argv)
               if (*option == '-')
                 {
                   i++;
-                  if ((i == argc) || !sscanf(argv[i],"%d",&x))
+                  if ((i == argc) || !sscanf(argv[i],"%ld",&x))
                     MagickError(OptionError,"Missing size",option);
                 }
               break;
@@ -2066,7 +2068,7 @@ static unsigned int ConvertUtility(int argc,char **argv)
               if (*option == '-')
                 {
                   i++;
-                  if ((i == argc) || !sscanf(argv[i],"%d",&x))
+                  if ((i == argc) || !sscanf(argv[i],"%ld",&x))
                     MagickError(OptionError,"Missing value",option);
                 }
               break;
@@ -2093,7 +2095,7 @@ static unsigned int ConvertUtility(int argc,char **argv)
               if (*option == '-')
                 {
                   i++;
-                  if ((i == argc) || !sscanf(argv[i],"%d",&x))
+                  if ((i == argc) || !sscanf(argv[i],"%ld",&x))
                     MagickError(OptionError,"Missing depth",option);
                 }
               break;
@@ -2196,7 +2198,7 @@ static unsigned int ConvertUtility(int argc,char **argv)
           if (LocaleCompare("wave",option+1) == 0)
             {
               i++;
-              if ((i == argc) || !sscanf(argv[i],"%d",&x))
+              if ((i == argc) || !sscanf(argv[i],"%ld",&x))
                 MagickError(OptionError,"Missing amplitude",option);
               break;
             }

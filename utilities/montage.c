@@ -303,14 +303,12 @@ static unsigned int MontageUtility(int argc,char **argv)
   ImageInfo
     *image_info;
 
-  int
-    j,
-    x;
-
   long
     first_scene,
+    j,
     last_scene,
-    scene;
+    scene,
+    x;
 
   MontageInfo
     *montage_info;
@@ -318,7 +316,7 @@ static unsigned int MontageUtility(int argc,char **argv)
   QuantizeInfo
     quantize_info;
 
-  register int
+  register long
     i;
 
   unsigned int
@@ -381,7 +379,7 @@ static unsigned int MontageUtility(int argc,char **argv)
               if (*option == '-')
                 {
                   i++;
-                  if ((i == argc) || !sscanf(argv[i],"%d",&x))
+                  if ((i == argc) || !sscanf(argv[i],"%ld",&x))
                     MagickError(OptionError,"Missing geometry",option);
                 }
               break;
@@ -404,7 +402,7 @@ static unsigned int MontageUtility(int argc,char **argv)
               if (*option == '-')
                 {
                   i++;
-                  if ((i == argc) || !sscanf(argv[i],"%d",&x))
+                  if ((i == argc) || !sscanf(argv[i],"%ld",&x))
                     MagickError(OptionError,"Missing width",option);
                   montage_info->border_width=atol(argv[i]);
                 }
@@ -433,7 +431,7 @@ static unsigned int MontageUtility(int argc,char **argv)
               if (*option == '-')
                 {
                   i++;
-                  if ((i == argc) || !sscanf(argv[i],"%d",&x))
+                  if ((i == argc) || !sscanf(argv[i],"%ld",&x))
                     MagickError(OptionError,"Missing colors",option);
                   quantize_info.number_colors=atol(argv[i]);
                 }
@@ -614,7 +612,7 @@ static unsigned int MontageUtility(int argc,char **argv)
               if (*option == '-')
                 {
                   i++;
-                  if ((i == argc) || !sscanf(argv[i],"%d",&x))
+                  if ((i == argc) || !sscanf(argv[i],"%ld",&x))
                     MagickError(OptionError,"Missing image depth",option);
                   image_info->depth=atol(argv[i]);
                 }
@@ -637,7 +635,7 @@ static unsigned int MontageUtility(int argc,char **argv)
               if (*option == '-')
                 {
                   i++;
-                  if ((i == argc) || !sscanf(argv[i],"%d",&x))
+                  if ((i == argc) || !sscanf(argv[i],"%ld",&x))
                     MagickError(OptionError,"Missing method",option);
                 }
               break;
@@ -778,6 +776,7 @@ static unsigned int MontageUtility(int argc,char **argv)
               GravityType
                 gravity;
 
+              gravity=ForgetGravity;
               if (*option == '-')
                 {
                   i++;
@@ -970,7 +969,7 @@ static unsigned int MontageUtility(int argc,char **argv)
               if (*option == '-')
                 {
                   i++;
-                  if ((i == argc) || !sscanf(argv[i],"%d",&x))
+                  if ((i == argc) || !sscanf(argv[i],"%ld",&x))
                     MagickError(OptionError,"Missing size",option);
                   image_info->pointsize=atof(argv[i]);
                   montage_info->pointsize=atof(argv[i]);
@@ -988,7 +987,7 @@ static unsigned int MontageUtility(int argc,char **argv)
               if (*option == '-')
                 {
                   i++;
-                  if ((i == argc) || !sscanf(argv[i],"%d",&x))
+                  if ((i == argc) || !sscanf(argv[i],"%ld",&x))
                     MagickError(OptionError,"Missing quality",option);
                   image_info->quality=atol(argv[i]);
                 }
@@ -1028,7 +1027,7 @@ static unsigned int MontageUtility(int argc,char **argv)
               if (*option == '-')
                 {
                   i++;
-                  if ((i == argc) || !sscanf(argv[i],"%d",&x))
+                  if ((i == argc) || !sscanf(argv[i],"%ld",&x))
                     MagickError(OptionError,"Missing scene number",option);
                   first_scene=atol(argv[i]);
                   last_scene=first_scene;
@@ -1046,7 +1045,7 @@ static unsigned int MontageUtility(int argc,char **argv)
               if (*option == '-')
                 {
                   i++;
-                  if ((i == argc) || !sscanf(argv[i],"%d",&x))
+                  if ((i == argc) || !sscanf(argv[i],"%ld",&x))
                     MagickError(OptionError,"Missing geometry",option);
                 }
               break;
@@ -1080,7 +1079,7 @@ static unsigned int MontageUtility(int argc,char **argv)
               if (*option == '-')
                 {
                   i++;
-                  if ((i == argc) || !sscanf(argv[i],"%d",&x))
+                  if ((i == argc) || !sscanf(argv[i],"%ld",&x))
                     MagickError(OptionError,"Missing size",option);
                 }
               break;
@@ -1145,7 +1144,7 @@ static unsigned int MontageUtility(int argc,char **argv)
               if (*option == '-')
                 {
                   i++;
-                  if ((i == argc) || !sscanf(argv[i],"%d",&x))
+                  if ((i == argc) || !sscanf(argv[i],"%ld",&x))
                     MagickError(OptionError,"Missing depth",option);
                   quantize_info.tree_depth=atoi(argv[i]);
                 }

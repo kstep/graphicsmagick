@@ -243,10 +243,11 @@ int main(int argc,char **argv)
     *image_info;
 
   int
-    x;
+	  z;
 
   long
-    snapshots;
+    snapshots,
+    x;
 
   QuantizeInfo
     *quantize_info;
@@ -254,7 +255,7 @@ int main(int argc,char **argv)
   register Image
     *p;
 
-  register int
+  register long
     i;
 
   unsigned int
@@ -311,7 +312,7 @@ int main(int argc,char **argv)
   if (display == (Display *) NULL)
     MagickError(OptionError,"Unable to connect to X server",
       XDisplayName(server_name));
- (void) XSetErrorHandler(XError);
+  (void) XSetErrorHandler(XError);
   client_name=SetClientName((char *) NULL);
   resource_database=XGetResourceDatabase(display,client_name);
   XGetImportInfo(&ximage_info);
@@ -325,8 +326,8 @@ int main(int argc,char **argv)
   resource_info.pause=0;
   resource_value=
     XGetResourceInstance(resource_database,client_name,"delay","6");
-  (void) XParseGeometry(resource_value,&x,&x,&resource_info.delay,
-    &resource_info.pause);
+  (void) XParseGeometry(resource_value,&z,&z,&resource_info.delay,
+	  &resource_info.pause);
   image_info->density=XGetResourceInstance(resource_database,client_name,
     "density",(char *) NULL);
   resource_value=
@@ -431,7 +432,7 @@ int main(int argc,char **argv)
               if (*option == '-')
                 {
                   i++;
-                  if ((i == argc) || !sscanf(argv[i],"%d",&x))
+                  if ((i == argc) || !sscanf(argv[i],"%ld",&x))
                     MagickError(OptionError,"Missing colors",option);
                   quantize_info->number_colors=atol(argv[i]);
                 }
@@ -550,10 +551,10 @@ int main(int argc,char **argv)
               if (*option == '-')
                 {
                   i++;
-                  if ((i == argc) || !sscanf(argv[i],"%d",&x))
+                  if ((i == argc) || !sscanf(argv[i],"%ld",&x))
                     MagickError(OptionError,"Missing seconds",option);
-                  (void) XParseGeometry(argv[i],&x,&x,&resource_info.delay,
-                    &resource_info.pause);
+                  (void) XParseGeometry(argv[i],&z,&z,
+                    &resource_info.delay,&resource_info.pause);
                 }
               break;
             }
@@ -575,7 +576,7 @@ int main(int argc,char **argv)
               if (*option == '-')
                 {
                   i++;
-                  if ((i == argc) || !sscanf(argv[i],"%d",&x))
+                  if ((i == argc) || !sscanf(argv[i],"%ld",&x))
                     MagickError(OptionError,"Missing image depth",option);
                   image_info->depth=atol(argv[i]);
                 }
@@ -603,7 +604,7 @@ int main(int argc,char **argv)
               if (*option == '-')
                 {
                   i++;
-                  if ((i == argc) || !sscanf(argv[i],"%d",&x))
+                  if ((i == argc) || !sscanf(argv[i],"%ld",&x))
                     MagickError(OptionError,"Missing method",option);
                 }
               break;
@@ -743,7 +744,7 @@ int main(int argc,char **argv)
               if (*option == '-')
                 {
                   i++;
-                  if ((i == argc) || !sscanf(argv[i],"%d",&x))
+                  if ((i == argc) || !sscanf(argv[i],"%ld",&x))
                     MagickError(OptionError,"Missing size",option);
                   image_info->pointsize=atof(argv[i]);
                 }
@@ -760,7 +761,7 @@ int main(int argc,char **argv)
               if (*option == '-')
                 {
                   i++;
-                  if ((i == argc) || !sscanf(argv[i],"%d",&x))
+                  if ((i == argc) || !sscanf(argv[i],"%ld",&x))
                     MagickError(OptionError,"Missing quality",option);
                   image_info->quality=atol(argv[i]);
                 }
@@ -829,7 +830,7 @@ int main(int argc,char **argv)
             {
               (void) strcpy(argv[i]+1,"sans");
               i++;
-              if ((i == argc) || !sscanf(argv[i],"%d",&x))
+              if ((i == argc) || !sscanf(argv[i],"%ld",&x))
                 MagickError(OptionError,"Missing snaps value",option);
               snapshots=atol(argv[i]);
               break;
@@ -855,7 +856,7 @@ int main(int argc,char **argv)
               if (*option == '-')
                 {
                   i++;
-                  if ((i == argc) || !sscanf(argv[i],"%d",&x))
+                  if ((i == argc) || !sscanf(argv[i],"%ld",&x))
                     MagickError(OptionError,"Missing depth",option);
                   quantize_info->tree_depth=atoi(argv[i]);
                 }

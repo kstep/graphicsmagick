@@ -455,6 +455,9 @@ unsigned int CompositeUtility(int argc,char **argv)
     *option,
     *write_filename;
 
+  CompositeOptions
+    option_info;
+
   double
     sans;
 
@@ -469,16 +472,11 @@ unsigned int CompositeUtility(int argc,char **argv)
   ImageInfo
     *image_info;
 
-  int
-    j;
-
   long
+    j,
     x;
 
-  CompositeOptions
-    option_info;
-
-  register int
+  register long
     i;
 
   unsigned int

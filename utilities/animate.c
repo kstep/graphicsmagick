@@ -272,14 +272,12 @@ int main(int argc,char **argv)
   ImageInfo
     *image_info;
 
-  int
-    j,
-    x;
-
   long
     first_scene,
+    j,
     last_scene,
-    scene;
+    scene,
+    x;
 
   QuantizeInfo
     *quantize_info;
@@ -287,7 +285,7 @@ int main(int argc,char **argv)
   register Image
     *p;
 
-  register int
+  register long
     i;
 
   unsigned int
@@ -436,7 +434,7 @@ int main(int argc,char **argv)
               if (*option == '-')
                 {
                   i++;
-                  if ((i == argc) || !sscanf(argv[i],"%d",&x))
+                  if ((i == argc) || !sscanf(argv[i],"%ld",&x))
                     MagickError(OptionError,"Missing width",option);
                   resource_info.border_width=atoi(argv[i]);
                 }
@@ -484,7 +482,7 @@ int main(int argc,char **argv)
               if (*option == '-')
                 {
                   i++;
-                  if ((i == argc) || !sscanf(argv[i],"%d",&x))
+                  if ((i == argc) || !sscanf(argv[i],"%ld",&x))
                     MagickError(OptionError,"Missing colors",option);
                   quantize_info->number_colors=atol(argv[i]);
                 }
@@ -558,7 +556,7 @@ int main(int argc,char **argv)
               if (*option == '-')
                 {
                   i++;
-                  if ((i == argc) || !sscanf(argv[i],"%d",&x))
+                  if ((i == argc) || !sscanf(argv[i],"%ld",&x))
                     MagickError(OptionError,"Missing seconds",option);
                 }
               break;
@@ -581,7 +579,7 @@ int main(int argc,char **argv)
               if (*option == '-')
                 {
                   i++;
-                  if ((i == argc) || !sscanf(argv[i],"%d",&x))
+                  if ((i == argc) || !sscanf(argv[i],"%ld",&x))
                     MagickError(OptionError,"Missing image depth",option);
                   image_info->depth=atol(argv[i]);
                 }
@@ -783,7 +781,7 @@ int main(int argc,char **argv)
               if (*option == '-')
                 {
                   i++;
-                  if ((i == argc) || !sscanf(argv[i],"%d",&x))
+                  if ((i == argc) || !sscanf(argv[i],"%ld",&x))
                     MagickError(OptionError,"Missing seconds",option);
                 }
               resource_info.pause=atoi(argv[i]);
@@ -820,7 +818,7 @@ int main(int argc,char **argv)
               if (*option == '-')
                 {
                   i++;
-                  if ((i == argc) || !sscanf(argv[i],"%d",&x))
+                  if ((i == argc) || !sscanf(argv[i],"%ld",&x))
                     MagickError(OptionError,"Missing scene number",option);
                   first_scene=atol(argv[i]);
                   last_scene=first_scene;
@@ -880,7 +878,7 @@ int main(int argc,char **argv)
               if (*option == '-')
                 {
                   i++;
-                  if ((i == argc) || !sscanf(argv[i],"%d",&x))
+                  if ((i == argc) || !sscanf(argv[i],"%ld",&x))
                     MagickError(OptionError,"Missing depth",option);
                   quantize_info->tree_depth=atoi(argv[i]);
                 }
