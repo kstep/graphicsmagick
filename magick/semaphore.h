@@ -29,7 +29,7 @@ extern "C" {
   Typedef declarations.
 */
 struct
-   SemaphoreInfo;
+  SemaphoreInfo;
 
 typedef struct SemaphoreInfo SemaphoreInfo;
 
@@ -41,10 +41,10 @@ extern MagickExport int
   UnlockSemaphore(SemaphoreInfo *);
 
 extern MagickExport SemaphoreInfo
-   *AllocateSemaphoreInfo(void);
+  *AllocateSemaphoreInfo(void);
 
 extern MagickExport void
-   DestroySemaphoreInfo(SemaphoreInfo *);
+  DestroySemaphoreInfo(SemaphoreInfo *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
