@@ -42,7 +42,7 @@ INCLUDES = -I$(top_srcdir)
 libMagick_la_LDFLAGS = -version-info $(MAJOR_VERSION):$(MINOR_VERSION)$(MICRO_VERSION):0
 
 # Library sources
-libMagick_la_SOURCES = PreRvIcccm.c animate.c annotate.c avs.c blob.h bmp.c \
+libMagick_la_SOURCES = PreRvIcccm.c animate.c annotate.c avs.c blob.c bmp.c \
   cmyk.c colors.c compress.c dcm.c decorate.c delegates.c display.c dps.c \
   draw.c effects.c enhance.c ept.c error.c fax.c fits.c fpx.c gems.c gif.c \
   gradation.c gray.c hdf.c histogram.c html.c icc.c icon.c image.c \
