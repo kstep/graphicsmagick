@@ -254,7 +254,8 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
       {
         for (x=0; x < frame_info->outer_bevel; x++)
           *q++=highlight;
-        for (x=0; x < (long) (frame_image->columns-2*frame_info->outer_bevel); x++)
+        width=(long) (frame_image->columns-2*frame_info->outer_bevel);
+        for (x=0; x < (long) width; x++)
           *q++=matte;
         for (x=0; x < frame_info->outer_bevel; x++)
           *q++=shadow;
