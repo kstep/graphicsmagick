@@ -20,18 +20,11 @@ typedef void* Cache;
 /*
   Exported interfaces.
 */
-extern Export CacheType
-  GetCacheType(const Cache);
-
 extern Export ClassType
   GetCacheClassType(const Cache);
 
 extern Export IndexPacket
   *GetNexusIndexes(const Cache,const unsigned int);
-
-extern Export off_t
-  GetCacheMemory(const off_t),
-  GetCacheThreshold(void);
 
 extern Export PixelPacket
   *GetNexusPixels(const Cache,const unsigned int),
@@ -47,12 +40,9 @@ extern Export unsigned int
   WriteCacheIndexes(Cache,const unsigned int);
 
 extern Export void
-  CloseCache(Cache),
-  DestroyCacheInfo(Cache),
   DestroyCacheNexus(Cache,const unsigned int),
   GetCacheInfo(Cache *),
   SetCacheThreshold(const off_t),
-  SetCacheType(Cache,const CacheType),
   SetPixelCacheMethods(void);
 
 #if defined(__cplusplus) || defined(c_plusplus)
