@@ -56,6 +56,11 @@
 2003-04-19  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> magick/command.c: Add argument expansion and deallocation code
+        to command functions which lacked this functionality.
+        Replace calls to Exit with a return to the invoking function.
+  <LI> utilities/gm.c: Expect each subcommand to expand and deallocate
+        its own argument list.  Treat subcommands more similarly.
   <LI> magick/magick.c (InitializeMagick): Seed the random number
         generator.<BR>
   <LI> magick/utility.c (ExpandFilenames): Handle tilde expansion

@@ -132,7 +132,7 @@ int main(int argc,char **argv)
 
   unsigned int
     help_wanted,
-    status;
+    status=True;
 
   InitializeMagick(*argv);
 
@@ -183,77 +183,40 @@ int main(int argc,char **argv)
   argc--;
   argv++;
 
+  GetExceptionInfo(&exception);
+  image_info=CloneImageInfo((ImageInfo *) NULL);
+
   option=argv[0];
 
   if (LocaleCompare("animate",option) == 0 ||
       LocaleCompare("animate",option+1) == 0)
     {
       SetClientName("animate");
-      status=AnimateImageCommand(argc,argv);
-      Exit(!status);
-      return(False);
+      if (help_wanted)
+        AnimateUsage();
+      else
+        status=AnimateImageCommand(argc,argv);
+    }
+
+  else if (LocaleCompare("composite",option) == 0 ||
+      LocaleCompare("composite",option+1) == 0)
+    {
+      SetClientName("composite");
+      if (help_wanted)
+        CompositeUsage();
+      else
+        status=CompositeImageCommand(image_info,argc,argv,(char **) NULL,
+          &exception);
     }
 
   else if (LocaleCompare("conjure",option) == 0 ||
       LocaleCompare("conjure",option+1) == 0)
     {
       SetClientName("conjure");
-      status=ConjureImageCommand(argc,argv);
-      Exit(!status);
-      return(False);
-    }
-
-  else if (LocaleCompare("display",option) == 0 ||
-      LocaleCompare("display",option+1) == 0)
-    {
-      SetClientName("display");
-      status=DisplayImageCommand(argc,argv);
-      Exit(!status);
-      return(False);
-    }
-
-  else if (LocaleCompare("import",option) == 0 ||
-      LocaleCompare("import",option+1) == 0)
-    {
-      SetClientName("import");
-      status=ImportImageCommand(argc,argv);
-      Exit(!status);
-      return(False);
-    }
-
-  /* watch out -- the following replaces the contents of argv with a new
-     pointer that is now managed by and must be freed by the code that
-     follows
-   */
-  status=ExpandFilenames(&argc,&argv);
-  if (status == False)
-    MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
-      (char *) NULL);
-
-#if 0
-  /* Debug code for listing expanded argument list */
-  {
-    int
-      z;
-
-    for (z=0; z<argc; z++)
-      {
-        printf("Arg[%d] = %s\n",z,argv[z]);
-      }
-  }
-#endif
-
-  GetExceptionInfo(&exception);
-  image_info=CloneImageInfo((ImageInfo *) NULL);
-
-  if (LocaleCompare("composite",option) == 0 ||
-      LocaleCompare("composite",option+1) == 0)
-    {
-      SetClientName("composite");
       if (help_wanted)
-        CompositeUsage();
-      status=CompositeImageCommand(image_info,argc,argv,(char **) NULL,
-          &exception);
+        ConjureUsage();
+      else
+        status=ConjureImageCommand(argc,argv);
     }
 
   else if (LocaleCompare("convert",option) == 0 ||
@@ -262,28 +225,19 @@ int main(int argc,char **argv)
       SetClientName("convert");
       if (help_wanted)
         ConvertUsage();
-      status=ConvertImageCommand(image_info,argc,argv,(char **) NULL,
+      else
+        status=ConvertImageCommand(image_info,argc,argv,(char **) NULL,
           &exception);
     }
 
-  else if (LocaleCompare("mogrify",option) == 0 ||
-      LocaleCompare("mogrify",option+1) == 0)
+  else if (LocaleCompare("display",option) == 0 ||
+      LocaleCompare("display",option+1) == 0)
     {
-      SetClientName("mogrify");
+      SetClientName("display");
       if (help_wanted)
-        MogrifyUsage();
-      status=MogrifyImageCommand(image_info,argc,argv,(char **) NULL,
-        &exception);
-    }
-
-  else if (LocaleCompare("montage",option) == 0 ||
-      LocaleCompare("montage",option+1) == 0)
-    {
-      SetClientName("montage");
-      if (help_wanted)
-        MontageUsage();
-      status=MontageImageCommand(image_info,argc,argv,(char **) NULL,
-          &exception);
+        DisplayUsage();
+      else
+        status=DisplayImageCommand(argc,argv);
     }
 
   else if (LocaleCompare("identify",option) == 0 ||
@@ -292,17 +246,52 @@ int main(int argc,char **argv)
       SetClientName("identify");
       if (help_wanted)
         IdentifyUsage();
-      text=(char *) NULL;
-      status=IdentifyImageCommand(image_info,argc,argv,&text,&exception);
-      if (text != (char *) NULL)
+      else
         {
-          (void) fputs(text,stdout);
-          (void) fputc('\n',stdout);
-          LiberateMemory((void **) &text);
+          text=(char *) NULL;
+          status=IdentifyImageCommand(image_info,argc,argv,&text,&exception);
+          if (text != (char *) NULL)
+            {
+              (void) fputs(text,stdout);
+              (void) fputc('\n',stdout);
+              LiberateMemory((void **) &text);
+            }
         }
     }
 
-   else
+  else if (LocaleCompare("import",option) == 0 ||
+      LocaleCompare("import",option+1) == 0)
+    {
+      SetClientName("import");
+      if (help_wanted)
+        ImportUsage();
+      else
+        status=ImportImageCommand(argc,argv);
+    }
+
+  else if (LocaleCompare("mogrify",option) == 0 ||
+      LocaleCompare("mogrify",option+1) == 0)
+    {
+      SetClientName("mogrify");
+      if (help_wanted)
+        MogrifyUsage();
+      else
+        status=MogrifyImageCommand(image_info,argc,argv,(char **) NULL,
+          &exception);
+    }
+
+  else if (LocaleCompare("montage",option) == 0 ||
+      LocaleCompare("montage",option+1) == 0)
+    {
+      SetClientName("montage");
+      if (help_wanted)
+        MontageUsage();
+      else
+        status=MontageImageCommand(image_info,argc,argv,(char **) NULL,
+          &exception);
+    }
+
+  else
     GMUsage();
 
   if (exception.severity != UndefinedException)
@@ -310,10 +299,7 @@ int main(int argc,char **argv)
   DestroyImageInfo(image_info);
   DestroyExceptionInfo(&exception);
   DestroyMagick();
-  /* This looks suspicious, but this is NOT the real argv. It was replaced
-     by the call to ExpandFilenames earlier
-   */
-  LiberateMemory((void **) &argv);
+
   Exit(!status);
   return(False);
 }
