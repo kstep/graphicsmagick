@@ -1,3 +1,16 @@
+2005-01-11  David N. Welton  <davidw@dedasys.com>
+
+	* ltmain.sh: I'm not terribly happy about including this, but not
+	having it causes problems, and there is an exception to the GPL,
+	so I guess it's ok.
+
+	* generic/Makefile.am: Install libraries to package directory.
+
+	* pkgIndex.tcl: Use the packages in the current directory.
+
+	* genconf.sh: Slightly improved script to work with different
+	versions of autotools.
+
 2005-01-08  David N. Welton  <davidw@dedasys.com>
 
 	* generic/TclMagick.c: Added patch from George Peter Staplin
