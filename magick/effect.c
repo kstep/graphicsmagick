@@ -1696,15 +1696,14 @@ MagickExport Image *ReduceNoiseImage(const Image *image,const double radius,
 %
 %  The format of the ShadeImage method is:
 %
-%      Image *ShadeImage(const Image *image,const unsigned int color_shading,
+%      Image *ShadeImage(const Image *image,const unsigned int gray,
 %        double azimuth,double elevation,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image: The image.
 %
-%    o color_shading: A value other than zero shades the red, green, and blue
-%      components of the image.
+%    o gray: A value other than zero shades the intensity of each pixel.
 %
 %    o azimuth, elevation:  Define the light source direction.
 %
@@ -1712,9 +1711,8 @@ MagickExport Image *ReduceNoiseImage(const Image *image,const double radius,
 %
 %
 */
-MagickExport Image *ShadeImage(const Image *image,
-  const unsigned int color_shading,double azimuth,double elevation,
-  ExceptionInfo *exception)
+MagickExport Image *ShadeImage(const Image *image,const unsigned int gray,
+  double azimuth,double elevation,ExceptionInfo *exception)
 {
 #define ShadeImageText  "  Shade image...  "
 
@@ -1805,7 +1803,7 @@ MagickExport Image *ShadeImage(const Image *image,
                 shade=distance/sqrt(normal_distance);
             }
         }
-      if (!color_shading)
+      if (gray)
         {
           q->red=(Quantum) shade;
           q->green=(Quantum) shade;
