@@ -59,7 +59,7 @@ print("Gradient (gradual passing from one shade to another) ...\n");
 ++$test;
 testRead( 'gradient:red-blue',
   'b59b8d1863f6d7c5f70a870d13b4c93f0f0ce78ef64634d774ef3fea28becda3',
-  '82743c736c9dd32298ed634b319629dada58e8c79122dd257cb853f62c25e6b3' );
+  '1b36b81f78e0355e6aef8d4573959abad03938b86f4ed51dfcf6733ba64745b7' );
 
 print("GRANITE (granite texture) ...\n");
 #
@@ -86,7 +86,7 @@ print("Xv's visual schnauzer format. ...\n");
 ++$test;
 testRead( 'input_p7.p7',
   '301a99abfa2c6a362734dc2aef62ba89275a26af7d2826ebdb1d95f74c2bb7cb',
-  '695d593f146dd8f1be86cf79a5148bfc700c6701f13d4eee2df76f1c94d7f17e' );
+  '5adfa668a99c5b9112d27fd0d9de55a0a49ea35e62d6f3ae9c5348d25a7a62b1' );
 
 print("NULL (white image) ...\n");
 ++$test;
@@ -259,4 +259,4 @@ testReadSized( 'input_70x46.uyvy',
    '70x46',
    0,
    '6224cda325acd0633c5d6dbfe7665ba068f5e7ffa3c9ed527f9d0b636d2f7562',
-   '9fef5433f387ca90c297beab1ccad854265cb32fa24bc753ade260dd0b3776a8' );
+   'a478a8ce322c110281c2e5a388a81b063dbdb726b09222c9bf3a32f174d88dfc' );

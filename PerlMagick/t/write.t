@@ -93,7 +93,7 @@ testReadWrite( 'P7:input_p7.p7',
   'P7:output_p7.p7',
   q//,
   'ad121fd0a5607216901181d97c9c093301fd1743735a3e29456d2f8e8232f767',
-  '11bcbd58063ca1f558272e48c1a831d361b28dc7bac5d8e752aaaba4d0d5b234' );
+  '83934fd2053634dece6c41a8565e134989839c5d4868d01b28a92996581e034f' );
 
 print("Portable bitmap format (black and white), ASCII format ...\n");
 ++$test;
