@@ -85,6 +85,7 @@ void OpenStaticModules(void)
   RegisterXImage();
   RegisterXBMImage();
   RegisterXCImage();
+  RegisterXCFImage(),
   RegisterXPMImage();
   RegisterXWDImage();
   RegisterYUVImage();
