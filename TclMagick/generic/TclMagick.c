@@ -15,9 +15,9 @@
 #include "TclMagick.h"
 #include <wand/magick_wand.h>
 
-#define TCLMAGICK_VERSION_STR "0.3"
+#define TCLMAGICK_VERSION_STR "0.31"
 #define TCLMAGICK_VERSION_HI  0
-#define TCLMAGICK_VERSION_LO  3
+#define TCLMAGICK_VERSION_LO  31
 
 /**********************************************************************/
 /* Workaround for bugs: */
@@ -298,12 +298,12 @@ static int magickCmd(
     int index, stat, result;
 
     static CONST char *subCmds[] = {
-        "create",        "delete", "names", "type", "types",
-        "resourcelimit", "fonts",  "formats",
+        "create",        "delete", "names",   "type",    "types",
+        "resourcelimit", "fonts",  "formats", "version", "library",
         (char *) NULL};
     enum subIndex {
-        TM_CREATE,   TM_DELETE, TM_NAMES, TM_TYPE, TM_TYPES,
-        TM_RESOURCE, TM_FONTS,  TM_FORMATS,
+        TM_CREATE,   TM_DELETE, TM_NAMES,   TM_TYPE,    TM_TYPES,
+        TM_RESOURCE, TM_FONTS,  TM_FORMATS, TM_VERSION, TM_LIBRARY
     };
     static CONST char *resourceNames[] = {
         "undefined", "area", "disk",
@@ -522,6 +522,112 @@ static int magickCmd(
 	MagickRelinquishMemory(fonts); /* Free TclMagick resource */
 
         break;
+    }
+
+    case TM_VERSION:    /* magick version */
+    {
+	if( objc != 2) {
+	    Tcl_WrongNumArgs(interp, 2, objv, NULL);
+	    return TCL_ERROR;
+	}
+	Tcl_SetResult(interp, TCLMAGICK_VERSION_STR, TCL_VOLATILE);
+
+	break;
+    }
+
+    case TM_LIBRARY:    /* magick library ?-option? */
+    {
+	static CONST char *options[] = {
+	    "-copyright",    "-date",  "-name",
+	    "-quantumdepth", "-url",   "-version", "-versionstr",
+	    (char *) NULL
+	};
+        char  buf[40];
+        const char *str;
+        unsigned long depth=0, version=0;
+
+        if( objc > 3) {
+	    Tcl_WrongNumArgs(interp, 2, objv, "?-option?");
+	    return TCL_ERROR;
+	}
+	/*
+	 * If called without parameters, return a list of
+	 * -option value -option value ...
+	 */
+	if( objc == 2 ) {
+	    Tcl_Obj *listPtr = Tcl_NewListObj(0, NULL);
+
+            str = MagickGetCopyright();
+	    Tcl_ListObjAppendElement(interp, listPtr, Tcl_NewStringObj(options[0], strlen(options[0])));
+	    Tcl_ListObjAppendElement(interp, listPtr, Tcl_NewStringObj(str, strlen(str)));
+
+            str = MagickGetReleaseDate();
+	    Tcl_ListObjAppendElement(interp, listPtr, Tcl_NewStringObj(options[1], strlen(options[1])));
+	    Tcl_ListObjAppendElement(interp, listPtr, Tcl_NewStringObj(str, strlen(str)));
+
+            str = MagickGetPackageName();
+	    Tcl_ListObjAppendElement(interp, listPtr, Tcl_NewStringObj(options[2], strlen(options[2])));
+	    Tcl_ListObjAppendElement(interp, listPtr, Tcl_NewStringObj(str, strlen(str)));
+
+            str = MagickGetQuantumDepth(&depth);
+	    Tcl_ListObjAppendElement(interp, listPtr, Tcl_NewStringObj(options[3], strlen(options[3])));
+	    Tcl_ListObjAppendElement(interp, listPtr, Tcl_NewLongObj(depth));
+
+            str = MagickGetHomeURL();
+	    Tcl_ListObjAppendElement(interp, listPtr, Tcl_NewStringObj(options[4], strlen(options[4])));
+	    Tcl_ListObjAppendElement(interp, listPtr, Tcl_NewStringObj(str, strlen(str)));
+
+            str = MagickGetVersion(&version);
+            sprintf( buf, "%d.%d.%d", version >> 8, (version >> 4) & 0x0F, version & 0x0F);
+	    Tcl_ListObjAppendElement(interp, listPtr, Tcl_NewStringObj(options[5], strlen(options[5])));
+	    Tcl_ListObjAppendElement(interp, listPtr, Tcl_NewStringObj(buf, strlen(buf)));
+	    Tcl_ListObjAppendElement(interp, listPtr, Tcl_NewStringObj(options[6], strlen(options[6])));
+	    Tcl_ListObjAppendElement(interp, listPtr, Tcl_NewStringObj(str, strlen(str)));
+
+	    Tcl_SetObjResult(interp, listPtr);
+        } else {
+            int idx;
+
+            if (Tcl_GetIndexFromObj(interp, objv[2], options, "-option", 0, &idx) != TCL_OK) {
+	        return TCL_ERROR;
+            }
+            switch( idx ) {
+            case 0: /* -copyright */
+                str = MagickGetCopyright();
+                Tcl_SetObjResult(interp, Tcl_NewStringObj(str, strlen(str)));
+                break;
+            case 1: /* -date */
+                str = MagickGetReleaseDate();
+                Tcl_SetObjResult(interp, Tcl_NewStringObj(str, strlen(str)));
+                break;
+            case 2: /* -name */
+                str = MagickGetPackageName();
+                Tcl_SetObjResult(interp, Tcl_NewStringObj(str, strlen(str)));
+                break;
+            case 3: /* -quantumdepth */
+                MagickGetQuantumDepth(&depth);
+                Tcl_SetObjResult(interp, Tcl_NewLongObj(depth));
+                break;
+            case 4: /* -url */
+                str = MagickGetHomeURL();
+                Tcl_SetObjResult(interp, Tcl_NewStringObj(str, strlen(str)));
+                break;
+            case 5: /* -version */
+                MagickGetVersion(&version);
+                sprintf( buf, "%d.%d.%d", version >> 8, (version >> 4) & 0x0F, version & 0x0F);
+                Tcl_SetObjResult(interp, Tcl_NewStringObj(buf, strlen(buf)));
+                break;
+            case 6: /* -versionstr */
+                str = MagickGetVersion(&version);
+                Tcl_SetObjResult(interp, Tcl_NewStringObj(str, strlen(str)));
+                break;
+            default:
+                break;
+            }
+
+        }
+
+	break;
     }
 
     } /* switch(index) */
@@ -1124,33 +1230,38 @@ static int wandObjCmd(
 	break;
     }
 
-    case TM_ANNOTATE:       /* annotate draw ?x y? ?txt? */
-    case TM_ANNOTATE_IMAGE: /* AnnotateImage draw ?x y? ?txt? */
+    case TM_ANNOTATE:       /* annotate draw ?x y? ?angle? txt */
+    case TM_ANNOTATE_IMAGE: /* AnnotateImage draw ?x y? ?angle? txt */
         {
 	    char	*name;
 	    DrawingWand	*drawPtr;
-            double      x=0, y=0;
+            double      x=0.0, y=0.0, angle=0.0;
             char        *txt="";
 
-            if( (objc < 3) || (objc > 6) || (objc == 4) ) {
-                Tcl_WrongNumArgs(interp, 2, objv, "draw ?x=0 y=0? ?txt=\"\"?");
+            if( (objc < 4) || (objc > 7) || (objc == 5) ) {
+                Tcl_WrongNumArgs(interp, 2, objv, "draw ?x=0.0 y=0.0? ?angle=0.0? txt");
                 return TCL_ERROR;
             }
             name = Tcl_GetString(objv[2]);
             if( (drawPtr = findDrawingWand(interp, name)) == NULL ) {
 		return TCL_ERROR;
 	    }
-            if( (objc > 3) && ((stat = Tcl_GetDoubleFromObj(interp, objv[3], &x)) != TCL_OK) ) {
-                return stat;
+            if( objc >= 6 ) {	/* we have parameters x y */
+                if( (stat = Tcl_GetDoubleFromObj(interp, objv[3], &x)) != TCL_OK ) {
+                    return stat;
+		}
+                if( (stat = Tcl_GetDoubleFromObj(interp, objv[4], &y)) != TCL_OK ) {
+                    return stat;
+		}
             }
-            if( (objc > 4) && ((stat = Tcl_GetDoubleFromObj(interp, objv[4], &y)) != TCL_OK) ) {
-                return stat;
+            if( objc == 7 ) {	/* we have parameter angle */
+                if( (stat = Tcl_GetDoubleFromObj(interp, objv[5], &angle)) != TCL_OK ) {
+                    return stat;
+		}
             }
-            if( objc > 5 ) {
-                name = Tcl_GetString(objv[5]);
-            }
+            name = Tcl_GetString(objv[objc-1]);
 
-            result = MagickAnnotateImage(wandPtr, drawPtr, x, y, txt);
+            result = MagickAnnotateImage(wandPtr, drawPtr, x, y, angle, txt);
             if (!result) {
                 return myMagickError(interp, wandPtr);
             }

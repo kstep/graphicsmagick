@@ -55,7 +55,7 @@ Deleting the Magick object also deletes the command.
   </tr>
   <tr>
     <td>magick resourcelimit resource ?limit?</td>
-    <td># MagickGet/SetResourceLimits</td>
+    <td>MagickGet/SetResourceLimits</td>
   </tr>
   <tr>
     <td><div align="left">
@@ -70,7 +70,7 @@ Deleting the Magick object also deletes the command.
     <td><div align="left"></div>
       <div align="left">magick fonts ?pattern? <br>
     </div></td>
-    <td><div align="left"># MagickQueryFonts</div></td>
+    <td><div align="left">MagickQueryFonts</div></td>
   </tr>
   <tr>
     <td><div align="left">
@@ -85,7 +85,7 @@ Deleting the Magick object also deletes the command.
     <td><div align="left"></div>
       <div align="left">magick formats ?pattern? <br>
 </div></td>
-    <td><div align="left"># MagickQueryFormats</div></td>
+    <td><div align="left">MagickQueryFormats</div></td>
   </tr>
   <tr>
     <td><div align="left">
@@ -95,6 +95,44 @@ Deleting the Magick object also deletes the command.
       </ul>
     </div></td>
     <td><div align="left"></div></td>
+  </tr>
+  <tr>
+    <td>magick library<br>
+magick library -copyright<br>
+magick library -date<br>
+magick library -name<br>
+magick library -quantumdepth<br>
+magick library -url<br>
+magick library -version<br>
+magick library -versionstr</td>
+    <td># Returns all options <br>
+      MagickGetCopyright<br>
+      MagickGetReleaseDate<br>
+      MagickGetPackageName<br>
+      MagickGetQuantumDepth<br>
+      MagickGetHomeURL<br>
+      MagickGetVersion<br>
+      MagickGetVersion</td>
+  </tr>
+  <tr>
+    <td><ul>
+        <li>Without -option the return is a list of all -option value ... pairs</li>
+        <li> -quantumdepth returns an integer</li>
+        <li>-version returns a string like &quot;5.5.8&quot;</li>
+        <li>-versionstr returns the complete MagickGetVersion()</li>
+        <li>all others return a string  </li>
+    </ul></td>
+    <td>&nbsp;</td>
+  </tr>
+  <tr>
+    <td>magick version </td>
+    <td><p># Return TclMagick version</p>    </td>
+  </tr>
+  <tr>
+    <td><ul>
+      <li>return string version </li>
+    </ul></td>
+    <td>&nbsp;</td>
   </tr>
 </table>
 <h2>MagickWand object subcommands </h2>
@@ -172,8 +210,9 @@ Deleting the Magick object also deletes the command.
     <td><div align="left"></div></td>
   </tr>
   <tr>
-    <td><div align="left"></div>      <div align="left">wandName annotate draw <br>
-      wandName AnnotateImage draw<br>
+    <td><div align="left"></div>      
+    <div align="left">wandName annotate draw ?x y? ?angle? text<br>
+      wandName AnnotateImage draw ?x y? ?angle? text<br>
     </div></td>
     <td><div align="left">MagickAnnotateImage<br>
       MagickAnnotateImage</div></td>
@@ -182,6 +221,9 @@ Deleting the Magick object also deletes the command.
     <td><div align="left">
       <ul>
         <li>DrawingWand draw</li>
+        <li>double x, y (default=0.0)</li>
+        <li>double angle (default=0.0) </li>
+        <li>string text </li>
       </ul>
     </div></td>
     <td><div align="left"></div></td>
