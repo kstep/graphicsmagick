@@ -647,7 +647,7 @@ static unsigned short *EncodeUnicode(const char *text,size_t *count)
       {
         *count=strlen(text);
         for (i=0; i < (long) *count; i++)
-          unicode[i]=(unsigned char) text[i];
+          unicode[i]=(unsigned short) text[i];
         return(unicode);
       }
     *q=(unsigned short) c;
