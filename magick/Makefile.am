@@ -46,10 +46,10 @@ libMagick_la_LDFLAGS = -version-info $(MAJOR_VERSION):$(MINOR_VERSION)$(MICRO_VE
 # Library base sources
 MAGICK_BASE_SRCS=PreRvIcccm.c animate.c annotate.c attributes.c blob.c \
   cache_view.c colors.c compress.c constitute.c decorate.c delegates.c \
-  display.c draw.c effects.c enhance.c error.c gems.c image.c magick.c \
-  memory.c modules.c monitor.c montage.c quantize.c segment.c shear.c \
-  signature.c stash.c stream.c timer.c transform.c utility.c widget.c \
-  xwindows.c zoom.c
+  display.c draw.c effects.c enhance.c error.c gems.c image.c magic.c \
+  magick.c memory.c modules.c monitor.c montage.c quantize.c segment.c \
+  shear.c signature.c stash.c stream.c timer.c transform.c utility.c \
+  widget.c xwindows.c zoom.c
 
 # Library coder sources
 MAGICK_CODER_SRCS=avs.c 8bim.c bmp.c cache.c cmyk.c dcm.c dps.c ept.c fax.c \
@@ -99,6 +99,9 @@ pkgdir = $(libdir)/ImageMagick/modules/coders
 
 # Architecture-dependent data files installed with modules
 pkg_DATA = modules.mgk
+
+# Architecture independent data files installed in the package's data directory
+pkgdata_DATA = magic.mgk
 
 # Modules which are to be built
 if WITH_MODULES

@@ -213,10 +213,10 @@ libMagick_la_LDFLAGS = -version-info $(MAJOR_VERSION):$(MINOR_VERSION)$(MICRO_VE
 # Library base sources
 MAGICK_BASE_SRCS = PreRvIcccm.c animate.c annotate.c attributes.c blob.c \
   cache_view.c colors.c compress.c constitute.c decorate.c delegates.c \
-  display.c draw.c effects.c enhance.c error.c gems.c image.c magick.c \
-  memory.c modules.c monitor.c montage.c quantize.c segment.c shear.c \
-  signature.c stash.c stream.c timer.c transform.c utility.c widget.c \
-  xwindows.c zoom.c
+  display.c draw.c effects.c enhance.c error.c gems.c image.c magic.c \
+  magick.c memory.c modules.c monitor.c montage.c quantize.c segment.c \
+  shear.c signature.c stash.c stream.c timer.c transform.c utility.c \
+  widget.c xwindows.c zoom.c
 
 
 # Library coder sources
@@ -266,6 +266,9 @@ pkgdir = $(libdir)/ImageMagick/modules/coders
 
 # Architecture-dependent data files installed with modules
 pkg_DATA = modules.mgk
+
+# Architecture independent data files installed in the package's data directory
+pkgdata_DATA = magic.mgk
 
 # Modules which are to be built
 @WITH_MODULES_TRUE@@HasDPS_TRUE@DSP_LA = @WITH_MODULES_TRUE@@HasDPS_TRUE@dps.la
@@ -735,28 +738,29 @@ label_la_OBJECTS =  $(am_label_la_OBJECTS)
 @WITH_MODULES_FALSE@annotate.lo attributes.lo blob.lo cache_view.lo \
 @WITH_MODULES_FALSE@colors.lo compress.lo constitute.lo decorate.lo \
 @WITH_MODULES_FALSE@delegates.lo display.lo draw.lo effects.lo \
-@WITH_MODULES_FALSE@enhance.lo error.lo gems.lo image.lo magick.lo \
-@WITH_MODULES_FALSE@memory.lo modules.lo monitor.lo montage.lo \
-@WITH_MODULES_FALSE@quantize.lo segment.lo shear.lo signature.lo \
-@WITH_MODULES_FALSE@stash.lo stream.lo timer.lo transform.lo utility.lo \
-@WITH_MODULES_FALSE@widget.lo xwindows.lo zoom.lo avs.lo 8bim.lo bmp.lo \
-@WITH_MODULES_FALSE@cache.lo cmyk.lo dcm.lo dps.lo ept.lo fax.lo \
-@WITH_MODULES_FALSE@fits.lo fpx.lo gif.lo gradation.lo gray.lo hdf.lo \
-@WITH_MODULES_FALSE@histogram.lo html.lo icc.lo icon.lo iptc.lo jbig.lo \
-@WITH_MODULES_FALSE@jpeg.lo label.lo logo.lo map.lo matte.lo miff.lo \
-@WITH_MODULES_FALSE@mono.lo mtv.lo pcd.lo pcl.lo pcx.lo pdb.lo pdf.lo \
-@WITH_MODULES_FALSE@pict.lo pix.lo png.lo plasma.lo pnm.lo preview.lo \
-@WITH_MODULES_FALSE@ps.lo ps2.lo ps3.lo psd.lo pwp.lo rgb.lo rla.lo \
-@WITH_MODULES_FALSE@rle.lo sct.lo sfw.lo sgi.lo stegano.lo sun.lo \
-@WITH_MODULES_FALSE@svg.lo tga.lo tiff.lo tile.lo tim.lo ttf.lo txt.lo \
-@WITH_MODULES_FALSE@uil.lo uyvy.lo vicar.lo vid.lo viff.lo wbmp.lo x.lo \
-@WITH_MODULES_FALSE@xbm.lo xc.lo xpm.lo xwd.lo yuv.lo
+@WITH_MODULES_FALSE@enhance.lo error.lo gems.lo image.lo magic.lo \
+@WITH_MODULES_FALSE@magick.lo memory.lo modules.lo monitor.lo \
+@WITH_MODULES_FALSE@montage.lo quantize.lo segment.lo shear.lo \
+@WITH_MODULES_FALSE@signature.lo stash.lo stream.lo timer.lo \
+@WITH_MODULES_FALSE@transform.lo utility.lo widget.lo xwindows.lo \
+@WITH_MODULES_FALSE@zoom.lo avs.lo 8bim.lo bmp.lo cache.lo cmyk.lo \
+@WITH_MODULES_FALSE@dcm.lo dps.lo ept.lo fax.lo fits.lo fpx.lo gif.lo \
+@WITH_MODULES_FALSE@gradation.lo gray.lo hdf.lo histogram.lo html.lo \
+@WITH_MODULES_FALSE@icc.lo icon.lo iptc.lo jbig.lo jpeg.lo label.lo \
+@WITH_MODULES_FALSE@logo.lo map.lo matte.lo miff.lo mono.lo mtv.lo \
+@WITH_MODULES_FALSE@pcd.lo pcl.lo pcx.lo pdb.lo pdf.lo pict.lo pix.lo \
+@WITH_MODULES_FALSE@png.lo plasma.lo pnm.lo preview.lo ps.lo ps2.lo \
+@WITH_MODULES_FALSE@ps3.lo psd.lo pwp.lo rgb.lo rla.lo rle.lo sct.lo \
+@WITH_MODULES_FALSE@sfw.lo sgi.lo stegano.lo sun.lo svg.lo tga.lo \
+@WITH_MODULES_FALSE@tiff.lo tile.lo tim.lo ttf.lo txt.lo uil.lo uyvy.lo \
+@WITH_MODULES_FALSE@vicar.lo vid.lo viff.lo wbmp.lo x.lo xbm.lo xc.lo \
+@WITH_MODULES_FALSE@xpm.lo xwd.lo yuv.lo
 @WITH_MODULES_TRUE@am_libMagick_la_OBJECTS =  PreRvIcccm.lo animate.lo \
 @WITH_MODULES_TRUE@annotate.lo attributes.lo blob.lo cache_view.lo \
 @WITH_MODULES_TRUE@colors.lo compress.lo constitute.lo decorate.lo \
 @WITH_MODULES_TRUE@delegates.lo display.lo draw.lo effects.lo \
-@WITH_MODULES_TRUE@enhance.lo error.lo gems.lo image.lo magick.lo \
-@WITH_MODULES_TRUE@memory.lo modules.lo monitor.lo montage.lo \
+@WITH_MODULES_TRUE@enhance.lo error.lo gems.lo image.lo magic.lo \
+@WITH_MODULES_TRUE@magick.lo memory.lo modules.lo monitor.lo montage.lo \
 @WITH_MODULES_TRUE@quantize.lo segment.lo shear.lo signature.lo \
 @WITH_MODULES_TRUE@stash.lo stream.lo timer.lo transform.lo utility.lo \
 @WITH_MODULES_TRUE@widget.lo xwindows.lo zoom.lo
@@ -938,7 +942,7 @@ $(txt_la_SOURCES) $(uil_la_SOURCES) $(uyvy_la_SOURCES) \
 $(vicar_la_SOURCES) $(vid_la_SOURCES) $(viff_la_SOURCES) \
 $(wbmp_la_SOURCES) $(x_la_SOURCES) $(xbm_la_SOURCES) $(xc_la_SOURCES) \
 $(xpm_la_SOURCES) $(xwd_la_SOURCES) $(yuv_la_SOURCES)
-DATA =  $(pkg_DATA)
+DATA =  $(pkg_DATA) $(pkgdata_DATA)
 
 HEADERS =  $(include_HEADERS) $(noinst_HEADERS)
 
@@ -957,27 +961,28 @@ $(DEPDIR)/gradation.Plo $(DEPDIR)/gray.Plo $(DEPDIR)/hdf.Plo \
 $(DEPDIR)/histogram.Plo $(DEPDIR)/html.Plo $(DEPDIR)/icc.Plo \
 $(DEPDIR)/icon.Plo $(DEPDIR)/image.Plo $(DEPDIR)/iptc.Plo \
 $(DEPDIR)/jbig.Plo $(DEPDIR)/jpeg.Plo $(DEPDIR)/label.Plo \
-$(DEPDIR)/logo.Plo $(DEPDIR)/magick.Plo $(DEPDIR)/map.Plo \
-$(DEPDIR)/matte.Plo $(DEPDIR)/memory.Plo $(DEPDIR)/miff.Plo \
-$(DEPDIR)/modules.Plo $(DEPDIR)/monitor.Plo $(DEPDIR)/mono.Plo \
-$(DEPDIR)/montage.Plo $(DEPDIR)/mtv.Plo $(DEPDIR)/pcd.Plo \
-$(DEPDIR)/pcl.Plo $(DEPDIR)/pcx.Plo $(DEPDIR)/pdb.Plo $(DEPDIR)/pdf.Plo \
-$(DEPDIR)/pict.Plo $(DEPDIR)/pix.Plo $(DEPDIR)/plasma.Plo \
-$(DEPDIR)/png.Plo $(DEPDIR)/pnm.Plo $(DEPDIR)/preview.Plo \
-$(DEPDIR)/ps.Plo $(DEPDIR)/ps2.Plo $(DEPDIR)/ps3.Plo $(DEPDIR)/psd.Plo \
-$(DEPDIR)/pwp.Plo $(DEPDIR)/quantize.Plo $(DEPDIR)/rgb.Plo \
-$(DEPDIR)/rla.Plo $(DEPDIR)/rle.Plo $(DEPDIR)/sct.Plo \
-$(DEPDIR)/segment.Plo $(DEPDIR)/sfw.Plo $(DEPDIR)/sgi.Plo \
-$(DEPDIR)/shear.Plo $(DEPDIR)/signature.Plo $(DEPDIR)/stash.Plo \
-$(DEPDIR)/stegano.Plo $(DEPDIR)/stream.Plo $(DEPDIR)/sun.Plo \
-$(DEPDIR)/svg.Plo $(DEPDIR)/tga.Plo $(DEPDIR)/tiff.Plo \
-$(DEPDIR)/tile.Plo $(DEPDIR)/tim.Plo $(DEPDIR)/timer.Plo \
-$(DEPDIR)/transform.Plo $(DEPDIR)/ttf.Plo $(DEPDIR)/txt.Plo \
-$(DEPDIR)/uil.Plo $(DEPDIR)/utility.Plo $(DEPDIR)/uyvy.Plo \
-$(DEPDIR)/vicar.Plo $(DEPDIR)/vid.Plo $(DEPDIR)/viff.Plo \
-$(DEPDIR)/wbmp.Plo $(DEPDIR)/widget.Plo $(DEPDIR)/x.Plo \
-$(DEPDIR)/xbm.Plo $(DEPDIR)/xc.Plo $(DEPDIR)/xpm.Plo $(DEPDIR)/xwd.Plo \
-$(DEPDIR)/xwindows.Plo $(DEPDIR)/yuv.Plo $(DEPDIR)/zoom.Plo
+$(DEPDIR)/logo.Plo $(DEPDIR)/magic.Plo $(DEPDIR)/magick.Plo \
+$(DEPDIR)/map.Plo $(DEPDIR)/matte.Plo $(DEPDIR)/memory.Plo \
+$(DEPDIR)/miff.Plo $(DEPDIR)/modules.Plo $(DEPDIR)/monitor.Plo \
+$(DEPDIR)/mono.Plo $(DEPDIR)/montage.Plo $(DEPDIR)/mtv.Plo \
+$(DEPDIR)/pcd.Plo $(DEPDIR)/pcl.Plo $(DEPDIR)/pcx.Plo $(DEPDIR)/pdb.Plo \
+$(DEPDIR)/pdf.Plo $(DEPDIR)/pict.Plo $(DEPDIR)/pix.Plo \
+$(DEPDIR)/plasma.Plo $(DEPDIR)/png.Plo $(DEPDIR)/pnm.Plo \
+$(DEPDIR)/preview.Plo $(DEPDIR)/ps.Plo $(DEPDIR)/ps2.Plo \
+$(DEPDIR)/ps3.Plo $(DEPDIR)/psd.Plo $(DEPDIR)/pwp.Plo \
+$(DEPDIR)/quantize.Plo $(DEPDIR)/rgb.Plo $(DEPDIR)/rla.Plo \
+$(DEPDIR)/rle.Plo $(DEPDIR)/sct.Plo $(DEPDIR)/segment.Plo \
+$(DEPDIR)/sfw.Plo $(DEPDIR)/sgi.Plo $(DEPDIR)/shear.Plo \
+$(DEPDIR)/signature.Plo $(DEPDIR)/stash.Plo $(DEPDIR)/stegano.Plo \
+$(DEPDIR)/stream.Plo $(DEPDIR)/sun.Plo $(DEPDIR)/svg.Plo \
+$(DEPDIR)/tga.Plo $(DEPDIR)/tiff.Plo $(DEPDIR)/tile.Plo \
+$(DEPDIR)/tim.Plo $(DEPDIR)/timer.Plo $(DEPDIR)/transform.Plo \
+$(DEPDIR)/ttf.Plo $(DEPDIR)/txt.Plo $(DEPDIR)/uil.Plo \
+$(DEPDIR)/utility.Plo $(DEPDIR)/uyvy.Plo $(DEPDIR)/vicar.Plo \
+$(DEPDIR)/vid.Plo $(DEPDIR)/viff.Plo $(DEPDIR)/wbmp.Plo \
+$(DEPDIR)/widget.Plo $(DEPDIR)/x.Plo $(DEPDIR)/xbm.Plo $(DEPDIR)/xc.Plo \
+$(DEPDIR)/xpm.Plo $(DEPDIR)/xwd.Plo $(DEPDIR)/xwindows.Plo \
+$(DEPDIR)/yuv.Plo $(DEPDIR)/zoom.Plo
 DIST_COMMON =  $(include_HEADERS) $(noinst_HEADERS) ./stamp-h.in \
 Magick-config.in Makefile.am Makefile.in config.h.in
 
@@ -1365,6 +1370,24 @@ uninstall-pkgDATA:
 	  rm -f $(DESTDIR)$(pkgdir)/$$f; \
 	done
 
+install-pkgdataDATA: $(pkgdata_DATA)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(pkgdatadir)
+	@list='$(pkgdata_DATA)'; for p in $$list; do \
+	  if test -f "$$p"; then d= ; else d="$(srcdir)/"; fi; \
+	  f="`echo $$p | sed -e 's|^.*/||'`"; \
+	  echo " $(INSTALL_DATA) $$d$$p $(DESTDIR)$(pkgdatadir)/$$f"; \
+	  $(INSTALL_DATA) $$d$$p $(DESTDIR)$(pkgdatadir)/$$f; \
+	done
+
+uninstall-pkgdataDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(pkgdata_DATA)'; for p in $$list; do \
+	  f="`echo $$p | sed -e 's|^.*/||'`"; \
+	  echo " rm -f $(DESTDIR)$(pkgdatadir)/$$f"; \
+	  rm -f $(DESTDIR)$(pkgdatadir)/$$f; \
+	done
+
 install-includeHEADERS: $(include_HEADERS)
 	@$(NORMAL_INSTALL)
 	$(mkinstalldirs) $(DESTDIR)$(includedir)
@@ -1458,6 +1481,7 @@ maintainer-clean-tags:
 @AMDEP@include $(DEPDIR)/jpeg.Plo
 @AMDEP@include $(DEPDIR)/label.Plo
 @AMDEP@include $(DEPDIR)/logo.Plo
+@AMDEP@include $(DEPDIR)/magic.Plo
 @AMDEP@include $(DEPDIR)/magick.Plo
 @AMDEP@include $(DEPDIR)/map.Plo
 @AMDEP@include $(DEPDIR)/matte.Plo
@@ -1584,7 +1608,7 @@ install-exec-am: install-libLTLIBRARIES install-binSCRIPTS
 install-exec: install-exec-am
 
 install-data-am: install-pkgLTLIBRARIES install-pkgDATA \
-		install-includeHEADERS
+		install-pkgdataDATA install-includeHEADERS
 install-data: install-data-am
 
 install-am: all-am
@@ -1592,7 +1616,7 @@ install-am: all-am
 install: install-am
 uninstall-am: uninstall-libLTLIBRARIES uninstall-pkgLTLIBRARIES \
 		uninstall-binSCRIPTS uninstall-pkgDATA \
-		uninstall-includeHEADERS
+		uninstall-pkgdataDATA uninstall-includeHEADERS
 uninstall: uninstall-am
 all-am: Makefile $(LTLIBRARIES) $(SCRIPTS) $(DATA) $(HEADERS) config.h
 all-redirect: all-am
@@ -1601,7 +1625,7 @@ install-strip:
 installdirs:
 	$(mkinstalldirs)  $(DESTDIR)$(libdir) $(DESTDIR)$(pkgdir) \
 		$(DESTDIR)$(bindir) $(DESTDIR)$(pkgdir) \
-		$(DESTDIR)$(includedir)
+		$(DESTDIR)$(pkgdatadir) $(DESTDIR)$(includedir)
 
 
 mostlyclean-generic:
@@ -1656,9 +1680,10 @@ uninstall-pkgLTLIBRARIES install-pkgLTLIBRARIES mostlyclean-compile \
 distclean-compile clean-compile maintainer-clean-compile \
 mostlyclean-libtool distclean-libtool clean-libtool \
 maintainer-clean-libtool uninstall-binSCRIPTS install-binSCRIPTS \
-uninstall-pkgDATA install-pkgDATA uninstall-includeHEADERS \
-install-includeHEADERS tags mostlyclean-tags distclean-tags clean-tags \
-maintainer-clean-tags mostlyclean-depend distclean-depend clean-depend \
+uninstall-pkgDATA install-pkgDATA uninstall-pkgdataDATA \
+install-pkgdataDATA uninstall-includeHEADERS install-includeHEADERS \
+tags mostlyclean-tags distclean-tags clean-tags maintainer-clean-tags \
+mostlyclean-depend distclean-depend clean-depend \
 maintainer-clean-depend distdir info-am info dvi-am dvi check check-am \
 installcheck-am installcheck all-recursive-am install-exec-am \
 install-exec install-data-am install-data install-am install \
