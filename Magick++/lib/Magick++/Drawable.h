@@ -55,28 +55,29 @@ namespace Magick
     //
     // Drawable Objects
     //
-    
-    // Point
-    void point ( double x_, double y_ );
-    void point ( const Coordinate &coordinate_ );
-    
-    // Line
-    void line ( double startX_, double startY_,
-		double endX_, double endY_ );
-    void line ( const Coordinate &startCoordinate_,
-		const Coordinate &endCoordinate_ );
-    
-    // Rectangle
-    void rectangle ( double upperLeftX_, double upperLeftY_,
-		     double lowerRightX_, double lowerRightY );
-    void rectangle ( const Coordinate &upperLeftCoordinate_,
-		     const Coordinate &lowerRightCoordinate_ );
+
+    // Arc
+    void arc ( double startX_, double startY_,
+               double endX_, double endY_,
+               double startDegrees, double endDegrees_ );
+    void arc ( const Coordinate &startCoordinate_,
+               const Coordinate &endCoordinate_,
+               const Coordinate &rotation_ );
+
+    // Bezier curve (Coordinate list must contain at least three members)
+    void bezier ( const std::list<Magick::Coordinate> &coordinates_ );
 
     // Circle
     void circle ( double originX_, double originY_,
 		  double perimX_, double perimY_ );
     void circle ( const Coordinate &originCoordinate_,
 		  const Coordinate &perimCoordinate_ );
+
+    // Colorize at point using PaintMethod
+    void color ( double x_, double y_,
+		 PaintMethod paintMethod_ );
+    void color ( const Coordinate &coordinate_,
+		 PaintMethod paintMethod_ );
 
     // Ellipse
     void ellipse ( double originX_, double originY_, 
@@ -86,36 +87,55 @@ namespace Magick
 		   double width_, double height_,
 		   double arcStart_, double arcEnd_ );
 
-    // Polygon (Coordinate list must contain at least three members)
-    void polygon ( const std::list<Magick::Coordinate> &coordinates_ );
-    
-    // Bezier curve (Coordinate list must contain at least three members)
-    void bezier ( const std::list<Magick::Coordinate> &coordinates_ );
-    
-    // Colorize at point using PaintMethod
-    void color ( double x_, double y_,
-		 PaintMethod paintMethod_ );
-    void color ( const Coordinate &coordinate_,
-		 PaintMethod paintMethod_ );
-    
-    // Change pixel matte value to transparent using PaintMethod
-    void matte ( double x_, double y_,
-		 PaintMethod paintMethod_ );
-    void matte ( const Coordinate &coordinate_,
-		 PaintMethod paintMethod_ );
-    
-    // Draw text at point
-    void text ( double x_, double y_,
-		std::string text_ );
-    void text ( const Coordinate &coordinate_,
-		std::string text_ );
-    
     // Draw image at point
     void image ( double x_, double y_,
 		 const std::string &image_ );
     void image ( const Coordinate &coordinate_,
 		 const std::string &image_ );
-    
+
+    // Line
+    void line ( double startX_, double startY_,
+		double endX_, double endY_ );
+    void line ( const Coordinate &startCoordinate_,
+		const Coordinate &endCoordinate_ );
+
+    // Change pixel matte value to transparent using PaintMethod
+    void matte ( double x_, double y_,
+		 PaintMethod paintMethod_ );
+    void matte ( const Coordinate &coordinate_,
+		 PaintMethod paintMethod_ );
+
+// path
+
+    // Point
+    void point ( double x_, double y_ );
+    void point ( const Coordinate &coordinate_ );
+
+    // Polygon (Coordinate list must contain at least three members)
+    void polygon ( const std::list<Magick::Coordinate> &coordinates_ );
+
+// polyline
+
+    // Rectangle
+    void rectangle ( double upperLeftX_, double upperLeftY_,
+                     double lowerRightX_, double lowerRightY );
+    void rectangle ( const Coordinate &upperLeftCoordinate_,
+                     const Coordinate &lowerRightCoordinate_ );
+
+    // RoundRectangle
+    void roundRectangle ( double centerX_, double centerY_,
+                          double width_, double hight_,
+                          double cornerWidth_, double cornerHeight_);
+    void roundRectangle ( const Coordinate &centerCoordinate_,
+                          const Coordinate &rectangleDimension_,
+                          const Coordinate &cornerDimension_);
+
+    // Draw text at point
+    void text ( double x_, double y_,
+		std::string text_ );
+    void text ( const Coordinate &coordinate_,
+		std::string text_ );
+     
     //
     // Following accessors are for internal use only
     //

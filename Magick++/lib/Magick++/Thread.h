@@ -17,12 +17,12 @@ struct win32_mutex {
 	HANDLE id;
 };
 
-#include "Magick++/Include.h"
-
 // This is a binary semphore -- increase for a counting semaphore
 #define MAXSEMLEN	1
 #endif
 #endif
+
+#include "Magick++/Include.h"
 
 #if defined(HasPTHREADS)
 # include <pthread.h>
