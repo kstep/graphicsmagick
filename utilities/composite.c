@@ -314,58 +314,59 @@ static unsigned int CompositeImages(ImageInfo *image_info,
             y+=(*image)->rows;
           if ((flags & HeightValue) == 0)
             height-=2*y > (long) height ? height : 2*y;
-          switch (option_info->gravity)
-          {
-            case NorthWestGravity:
-              break;
-            case NorthGravity:
+          if ((flags & XValue) || (flags & YValue))
+            switch (option_info->gravity)
             {
-              x+=(int) (0.5*width-composite_image->columns/2);
-              break;
+              case NorthWestGravity:
+                break;
+              case NorthGravity:
+              {
+                x+=(int) (0.5*width-composite_image->columns/2);
+                break;
+              }
+              case NorthEastGravity:
+              {
+                x+=width-composite_image->columns;
+                break;
+              }
+              case WestGravity:
+              {
+                y+=(int) (0.5*height-composite_image->rows/2);
+                break;
+              }
+              case ForgetGravity:
+              case StaticGravity:
+              case CenterGravity:
+              default:
+              {
+                x+=(int) (0.5*width-composite_image->columns/2);
+                y+=(int) (0.5*height-composite_image->rows/2);
+                break;
+              }
+              case EastGravity:
+              {
+                x+=width-composite_image->columns;
+                y+=(int) (0.5*height-composite_image->rows/2);
+                break;
+              }
+              case SouthWestGravity:
+              {
+                y+=height-composite_image->rows;
+                break;
+              }
+              case SouthGravity:
+              {
+                x+=(int) (0.5*width-composite_image->columns/2);
+                y+=height-composite_image->rows;
+                break;
+              }
+              case SouthEastGravity:
+              {
+                x+=width-composite_image->columns;
+                y+=height-composite_image->rows;
+                break;
+              }
             }
-            case NorthEastGravity:
-            {
-              x+=width-composite_image->columns;
-              break;
-            }
-            case WestGravity:
-            {
-              y+=(int) (0.5*height-composite_image->rows/2);
-              break;
-            }
-            case ForgetGravity:
-            case StaticGravity:
-            case CenterGravity:
-            default:
-            {
-              x+=(int) (0.5*width-composite_image->columns/2);
-              y+=(int) (0.5*height-composite_image->rows/2);
-              break;
-            }
-            case EastGravity:
-            {
-              x+=width-composite_image->columns;
-              y+=(int) (0.5*height-composite_image->rows/2);
-              break;
-            }
-            case SouthWestGravity:
-            {
-              y+=height-composite_image->rows;
-              break;
-            }
-            case SouthGravity:
-            {
-              x+=(int) (0.5*width-composite_image->columns/2);
-              y+=height-composite_image->rows;
-              break;
-            }
-            case SouthEastGravity:
-            {
-              x+=width-composite_image->columns;
-              y+=height-composite_image->rows;
-              break;
-            }
-          }
           status=
             CompositeImage(*image,option_info->compose,composite_image,x,y);
           CatchImageException(*image);
