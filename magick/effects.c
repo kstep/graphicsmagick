@@ -1085,7 +1085,7 @@ MagickExport Image *EmbossImage(Image *image,const double radius,
     for (u=(-width/2); u <= (width/2); u++)
     {
       kernel[i]=(u < 0 || v < 0 ? -8.0 : 8.0)*
-        exp((double) -(u*u+v*v)/(sigma*sigma));
+        exp(-(double) (u*u+v*v)/(sigma*sigma));
       if (u == j)
         kernel[i]=0.0;
       i++;
@@ -1334,7 +1334,7 @@ MagickExport Image *GaussianBlurImage(Image *image,const double radius,
   {
     for (u=(-width/2); u <= (width/2); u++)
     {
-      kernel[i]=exp((double) -(u*u+v*v)/(sigma*sigma));
+      kernel[i]=exp(-(double) (u*u+v*v)/(sigma*sigma));
       i++;
     }
   }
@@ -2810,7 +2810,7 @@ MagickExport Image *SharpenImage(Image *image,const double radius,
   {
     for (u=(-width/2); u <= (width/2); u++)
     {
-      kernel[i]=exp((double) -(u*u+v*v)/(sigma*sigma));
+      kernel[i]=exp(-(double) (u*u+v*v)/(sigma*sigma));
       normalize+=kernel[i];
       i++;
     }
