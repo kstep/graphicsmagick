@@ -6263,6 +6263,8 @@ QueryColor(ref,...)
         EXTEND(sp,i);
         for (p=color_info; p != (ColorInfo *) NULL; p=p->next)
         {
+          if (p->stealth)
+            continue;
           if (p->name == (char *) NULL)
             {
               PUSHs(&sv_undef);
@@ -6403,6 +6405,8 @@ QueryFont(ref,...)
         EXTEND(sp,i);
         for (p=type_info; p != (TypeInfo *) NULL; p=p->next)
         {
+          if (p->stealth)
+            continue;
           if (p->name == (char *) NULL)
             {
               PUSHs(&sv_undef);
