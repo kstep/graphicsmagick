@@ -956,13 +956,17 @@ int main(int argc,char **argv)
     }
   }
   if (image == (Image *) NULL)
-    MagickError(OptionError,"Missing an image file name",(char *) NULL);
-  while (image->previous != (Image *) NULL)
-    image=image->previous;
-  status&=MogrifyImages(image_info,i-j,argv+j,&image);
-  (void) CatchImageException(image);
-  PushImageList(&image_list,image,&exception);
-  DestroyImageList(image);
+    {
+      status&=MogrifyImages(image_info,i-j,argv+j,&image_list);
+      (void) CatchImageException(image_list);
+    }
+  else
+    {
+      status&=MogrifyImages(image_info,i-j,argv+j,&image);
+      (void) CatchImageException(image);
+      PushImageList(&image_list,image,&exception);
+      DestroyImageList(image);
+    }
   if (resource_info.window_id != (char *) NULL)
     XAnimateBackgroundImage(display,&resource_info,image_list);
   else

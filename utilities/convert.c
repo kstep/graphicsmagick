@@ -1876,12 +1876,20 @@ static unsigned int ConvertUtility(int argc,char **argv)
       }
     }
   }
-  if ((i != (argc-1)) || (image == (Image *) NULL))
+  if (i != (argc-1))
     MagickError(OptionError,"Missing an image file name",(char *) NULL);
-  status&=MogrifyImages(image_info,i-j,argv+j,&image);
-  (void) CatchImageException(image);
-  PushImageList(&image_list,image,&exception);
-  DestroyImageList(image);
+  if (image == (Image *) NULL)
+    {
+      status&=MogrifyImages(image_info,i-j,argv+j,&image_list);
+      (void) CatchImageException(image_list);
+    }
+  else
+    {
+      status&=MogrifyImages(image_info,i-j,argv+j,&image);
+      (void) CatchImageException(image);
+      PushImageList(&image_list,image,&exception);
+      DestroyImageList(image);
+    }
   status&=WriteImages(image_info,image_list,argv[argc-1],&exception);
   DestroyImageList(image_list);
   DestroyImageInfo(image_info);

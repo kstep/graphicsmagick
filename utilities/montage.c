@@ -213,8 +213,8 @@ static unsigned int MontageUtility(int argc,char **argv)
 
   long
     first_scene,
-  	j,
-  	k,
+    j,
+    k,
     last_scene,
     scene,
     x;
@@ -1188,17 +1188,20 @@ static unsigned int MontageUtility(int argc,char **argv)
       }
     }
   }
-  if ((i != (argc-1)) || (image == (Image *) NULL))
+  if (i != (argc-1))
     MagickError(OptionError,"Missing an image file name",(char *) NULL);
-  while (image->previous != (Image *) NULL)
-    image=image->previous;
-  /*
-    Create composite image.
-  */
-  status&=MogrifyImages(image_info,i-j,argv+j,&image);
-  (void) CatchImageException(image);
-  PushImageList(&image_list,image,&exception);
-  DestroyImageList(image);
+  if (image == (Image *) NULL)
+    {
+      status&=MogrifyImages(image_info,i-j,argv+j,&image_list);
+      (void) CatchImageException(image_list);
+    }
+  else
+    {
+      status&=MogrifyImages(image_info,i-j,argv+j,&image);
+      (void) CatchImageException(image);
+      PushImageList(&image_list,image,&exception);
+      DestroyImageList(image);
+    }
   (void) strncpy(montage_info->filename,argv[argc-1],MaxTextExtent-1);
   montage_image=MontageImages(image_list,montage_info,&exception);
   if (montage_image == (Image *) NULL)
