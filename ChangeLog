@@ -1,3 +1,9 @@
+2002-12-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+	* Enable the module loading code for shared/DLL builds
+	regardless of whether the build is a "modules" build. This
+	allows users to add their own modules without requiring the use
+	of a special "modules" build.
+
 2002-12-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 	* magick/image.h: Backed out arbitrary name change from
 	ChannelThresholdImage() to ThresholdImageChannel() that snuck in

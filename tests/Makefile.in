@@ -269,6 +269,8 @@ TXTDelegate = @TXTDelegate@
 VERSION = @VERSION@
 WIN32_NATIVE_BUILD_FALSE = @WIN32_NATIVE_BUILD_FALSE@
 WIN32_NATIVE_BUILD_TRUE = @WIN32_NATIVE_BUILD_TRUE@
+WITH_LTDL_FALSE = @WITH_LTDL_FALSE@
+WITH_LTDL_TRUE = @WITH_LTDL_TRUE@
 WITH_MAGICK_PLUS_PLUS_FALSE = @WITH_MAGICK_PLUS_PLUS_FALSE@
 WITH_MAGICK_PLUS_PLUS_TRUE = @WITH_MAGICK_PLUS_PLUS_TRUE@
 WITH_MODULES_FALSE = @WITH_MODULES_FALSE@
@@ -349,7 +351,7 @@ INCLUDES = -I../ -I$(top_srcdir) -I../magick
 #
 check_PROGRAMS = drawtest rwblob rwfile
 
-LDADD = ../magick/libMagick.la
+LDADD = ../magick/libGraphicsMagick.la
 
 rwblob_SOURCES = rwblob.c
 
@@ -518,17 +520,17 @@ check_PROGRAMS = drawtest$(EXEEXT) rwblob$(EXEEXT) rwfile$(EXEEXT)
 am_drawtest_OBJECTS = drawtest.$(OBJEXT)
 drawtest_OBJECTS = $(am_drawtest_OBJECTS)
 drawtest_LDADD = $(LDADD)
-drawtest_DEPENDENCIES = ../magick/libMagick.la
+drawtest_DEPENDENCIES = ../magick/libGraphicsMagick.la
 drawtest_LDFLAGS =
 am_rwblob_OBJECTS = rwblob.$(OBJEXT)
 rwblob_OBJECTS = $(am_rwblob_OBJECTS)
 rwblob_LDADD = $(LDADD)
-rwblob_DEPENDENCIES = ../magick/libMagick.la
+rwblob_DEPENDENCIES = ../magick/libGraphicsMagick.la
 rwblob_LDFLAGS =
 am_rwfile_OBJECTS = rwfile.$(OBJEXT)
 rwfile_OBJECTS = $(am_rwfile_OBJECTS)
 rwfile_LDADD = $(LDADD)
-rwfile_DEPENDENCIES = ../magick/libMagick.la
+rwfile_DEPENDENCIES = ../magick/libGraphicsMagick.la
 rwfile_LDFLAGS =
 
 DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)/magick

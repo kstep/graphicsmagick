@@ -76,13 +76,21 @@ MAGICK_PLATFORM_SRCS =
 endif # if CYGWIN_BUILD
 endif # if WIN32_NATIVE_BUILD
 
+#
 # Library sources
+#
+if WITH_LTDL
+LIB_LTDL=$(LIBLTDL)
+else
+LIB_LTDL=
+endif
+
 if WITH_MODULES
 libGraphicsMagick_la_SOURCES = $(MAGICK_BASE_SRCS) $(MAGICK_PLATFORM_SRCS)
-libGraphicsMagick_la_LIBADD = @MAGICK_DEP_LIBS@ $(LIBLTDL)
+libGraphicsMagick_la_LIBADD = @MAGICK_DEP_LIBS@ $(LIB_LTDL)
 else
 libGraphicsMagick_la_SOURCES = $(MAGICK_BASE_SRCS) $(MAGICK_PLATFORM_SRCS)
-libGraphicsMagick_la_LIBADD = ../coders/libCoders.la @MAGICK_DEP_LIBS@
+libGraphicsMagick_la_LIBADD = ../coders/libCoders.la @MAGICK_DEP_LIBS@ $(LIB_LTDL)
 endif # WITH_MODULES
 
 # Binary scripts

@@ -114,7 +114,7 @@ MagickExport unsigned int ExecuteStaticModuleProcess(const char *tag,
 */
 MagickExport void RegisterStaticModules(void)
 {
-#if !defined(HasMODULES)
+#if !defined(BuildMagickModules)
   RegisterARTImage();
   RegisterAVIImage();
   RegisterAVSImage();
@@ -206,5 +206,5 @@ MagickExport void RegisterStaticModules(void)
   RegisterXPMImage();
   RegisterXWDImage();
   RegisterYUVImage();
-#endif
+#endif /* !defined(BuildMagickModules) */
 }

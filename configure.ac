@@ -175,20 +175,35 @@ then
 fi
 
 #
-# Enable support for modules
-# Only support modules if we are building shared libraries
+# Enable support for building loadable modules
+#
 AC_ARG_WITH(modules,
 	      [  --with-modules          enable support for dynamically loadable modules],
 	      [with_modules=$withval],
 	      [with_modules='no'])
-if test "$with_modules" != 'no' && test "$libtool_build_shared_libs" = 'no'
-then
-  with_modules='no'
+
+# Only allow building loadable modules if we are building shared libraries
+if test "$with_modules" != 'no' ; then
+  if test "$libtool_build_shared_libs" = 'no' ; then
+    AC_MSG_WARN([Modules may only be built if building shared libraries is enabled.])
+    with_modules='no'
+  fi
+fi
+if test "$with_modules" != 'no' ; then
+  AC_DEFINE(BuildMagickModules,1,Define if coders and filters are to be built as modules.)
 fi
 AM_CONDITIONAL(WITH_MODULES, test "$with_modules" != 'no')
-if test "$with_modules" != 'no'
-then
-  AC_DEFINE(HasLTDL,,Define if using libltdl to create dynamically loadable modules)
+
+# Enable building/use of libltdl if we are building shared libraries regardless
+# of whether modules are built or not.
+with_ltdl='no'
+if test "$libtool_build_shared_libs" != 'no' ; then
+  with_ltdl='yes'
+fi
+
+AM_CONDITIONAL(WITH_LTDL, test "$with_ltdl" != 'no')
+if test "$with_ltdl" != 'no' ; then
+  AC_DEFINE(HasLTDL,1,Define if using libltdl to support dynamically loadable modules)
 
   # Set DLLDFLAGS
   if test X"$enable_shared" = Xyes; then
@@ -802,7 +817,7 @@ LIB_THREAD=''
 if test "$with_threads" != 'no'
 then
   AC_CHECK_LIB(pthread,pthread_attr_init,
-    [AC_DEFINE(HasPTHREADS,,Define if you have Posix thread methods.)
+    [AC_DEFINE(HasPTHREADS,1,Define if you have Posix thread methods.)
      LIB_THREAD="-lpthread"
      DEF_THREAD="-D_REENTRANT"],,)
   LIBS="$LIB_THREAD $LIBS"
@@ -840,7 +855,7 @@ then
     else
       LIB_ZLIB='-lz'
       LIBS="$LIB_ZLIB $LIBS"
-      AC_DEFINE(HasZLIB,,Define if you have zlib compression library)
+      AC_DEFINE(HasZLIB,1,Define if you have zlib compression library)
       AC_MSG_RESULT(yes)
       have_zlib='yes'
     fi
@@ -875,7 +890,7 @@ then
     else
       LIB_BZLIB='-lbz2'
       LIBS="$LIB_BZLIB $LIBS"
-      AC_DEFINE(HasBZLIB,,Define if you have the bzip2 library)
+      AC_DEFINE(HasBZLIB,1,Define if you have the bzip2 library)
       AC_MSG_RESULT(yes)
       have_bzlib='yes'
     fi
@@ -899,12 +914,12 @@ then
   LIBS="$LIB_X11 $LIBS"
   CPPFLAGS="$CPPFLAGS $X_CFLAGS"
 
-  AC_DEFINE(HasX11,,Define if you have X11 library)dnl
+  AC_DEFINE(HasX11,1,Define if you have X11 library)dnl
 
   AC_CHECK_LIB(Xext,XShmAttach,LIB_XEXT='-lXext',,)
-  AC_CHECK_LIB(Xext,XShmAttach,AC_DEFINE(HasSharedMemory,,X11 server supports shared memory extension),,)
+  AC_CHECK_LIB(Xext,XShmAttach,AC_DEFINE(HasSharedMemory,1,X11 server supports shared memory extension),,)
   AC_CHECK_LIB(Xext,XShapeCombineMask,LIB_XEXT='-lXext',,)
-  AC_CHECK_LIB(Xext,XShapeCombineMask,AC_DEFINE(HasShape,,X11 server supports shape extension),,)
+  AC_CHECK_LIB(Xext,XShapeCombineMask,AC_DEFINE(HasShape,1,X11 server supports shape extension),,)
 
   LIBS="$LIB_XEXT $LIBS"
 fi
@@ -956,7 +971,7 @@ then
     else
 	LIB_DPS='-ldpstk -ldps'
 	LIBS="$LIB_DPS $LIBS"
-	AC_DEFINE(HasDPS,,Define if you have Display Postscript)
+	AC_DEFINE(HasDPS,1,Define if you have Display Postscript)
 	AC_MSG_RESULT(yes)
 	have_dps='yes'
     fi
@@ -993,7 +1008,7 @@ then
     else
 	LIB_FPX='-lfpx'
 	LIBS="$LIB_FPX $LIBS"
-	AC_DEFINE(HasFPX,,Define if you have FlashPIX library)
+	AC_DEFINE(HasFPX,1,Define if you have FlashPIX library)
 	AC_MSG_RESULT(yes)
         have_fpx='yes'
     fi
@@ -1042,7 +1057,7 @@ then
     else
 	LIB_LCMS='-llcms'
 	LIBS="$LIB_LCMS $LIBS"
-	AC_DEFINE(HasLCMS,,Define if you have LCMS library)
+	AC_DEFINE(HasLCMS,1,Define if you have LCMS library)
 	AC_MSG_RESULT(yes)
 	have_lcms='yes'
     fi
@@ -1076,7 +1091,7 @@ then
     else
 	LIB_PNG='-lpng'
 	LIBS="$LIB_PNG $LIBS"
-	AC_DEFINE(HasPNG,,Define if you have PNG library)
+	AC_DEFINE(HasPNG,1,Define if you have PNG library)
 	AC_MSG_RESULT(yes)
 	have_png='yes'
     fi
@@ -1140,7 +1155,7 @@ fi
     else
 	LIB_JPEG='-ljpeg'
 	LIBS="$LIB_JPEG $LIBS"
-	AC_DEFINE(HasJPEG,,Define if you have JPEG library)
+	AC_DEFINE(HasJPEG,1,Define if you have JPEG library)
 	AC_MSG_RESULT(yes)
         have_jpeg='yes'
     fi
@@ -1174,7 +1189,7 @@ then
     else
 	LIB_JP2='-ljasper'
 	LIBS="$LIB_JP2 $LIBS"
-	AC_DEFINE(HasJP2,,Define if you have JPEG version 2 "Jasper" library)
+	AC_DEFINE(HasJP2,1,Define if you have JPEG version 2 "Jasper" library)
 	AC_MSG_RESULT(yes)
 	have_jp2='yes'
 	AC_CHECK_HEADERS(jp2conf.h)
@@ -1211,7 +1226,7 @@ then
     else
 	LIB_GS='-lgs'
 	LIBS="$LIB_GS $LIBS"
-	AC_DEFINE(HasGS,,Define if you have Ghostscript library)
+	AC_DEFINE(HasGS,1,Define if you have Ghostscript library)
 	AC_MSG_RESULT(yes)
 	have_gslib='yes'
     fi
@@ -1245,7 +1260,7 @@ AC_SUBST(LIB_GS)
 #     else
 # 	LIB_MPEG2='-lmpeg2'
 # 	LIBS="$LIB_MPEG2 $LIBS"
-# 	AC_DEFINE(HasMPEG2,,Define if you have MPEG2 library)
+# 	AC_DEFINE(HasMPEG2,1,Define if you have MPEG2 library)
 # 	AC_MSG_RESULT(yes)
 # 	have_mpeg2='yes'
 #     fi
@@ -1318,7 +1333,7 @@ dnl Now test for the headers
 	    have_ttf='no (failed tests)'
 	else
 	    LIBS="$LIB_TTF $LIBS"
-	    AC_DEFINE(HasTTF,,Define if you have FreeType (TrueType font) library)
+	    AC_DEFINE(HasTTF,1,Define if you have FreeType (TrueType font) library)
 	    AC_MSG_RESULT(yes)
 	    have_ttf='yes'
 	fi
@@ -1353,7 +1368,7 @@ then
     else
 	LIB_TIFF='-ltiff'
 	LIBS="$LIB_TIFF $LIBS"
-	AC_DEFINE(HasTIFF,,Define if you have TIFF library)
+	AC_DEFINE(HasTIFF,1,Define if you have TIFF library)
 	AC_MSG_RESULT(yes)
 	have_tiff='yes'
 	AC_CHECK_HEADERS(tiffconf.h)
@@ -1394,7 +1409,7 @@ AC_SUBST(LIB_TIFF)
 #     else
 #         LIB_HDF='-ldf'
 #         LIBS="$LIB_HDF $LIBS"
-#         AC_DEFINE(HasHDF,,Define if you have HDF library)
+#         AC_DEFINE(HasHDF,1,Define if you have HDF library)
 #         AC_MSG_RESULT(yes)
 #         have_hdf='yes'
 #     fi
@@ -1428,7 +1443,7 @@ then
     else
 	LIB_JBIG='-ljbig'
 	LIBS="$LIB_JBIG $LIBS"
-	AC_DEFINE(HasJBIG,,Define if you have JBIG library)
+	AC_DEFINE(HasJBIG,1,Define if you have JBIG library)
 	AC_MSG_RESULT(yes)
         have_jbig='yes'
     fi
@@ -1480,7 +1495,7 @@ then
     else
 	LIB_XML='-lxml2'
 	LIBS="$LIB_XML $LIBS"
-	AC_DEFINE(HasXML,,Define if you have XML library)
+	AC_DEFINE(HasXML,1,Define if you have XML library)
 	AC_MSG_RESULT(yes)
         have_xml='yes'
     fi
@@ -1515,7 +1530,7 @@ then
     AC_CHECK_LIB(wmflite,wmf_lite_create,have_libwmflite='yes',,)
     if test "$have_libwmflite" = 'yes'
     then
-      AC_DEFINE(HasWMFlite,,Define if you have wmflite library)
+      AC_DEFINE(HasWMFlite,1,Define if you have wmflite library)
 
       LIB_WMF='-lwmflite'
       LIBS="$LIB_WMF $LIBS"
@@ -1533,7 +1548,7 @@ then
       AC_CHECK_LIB(wmf,wmf_api_create,have_libwmf='yes',,$LIB_WMF_DEPS)
       if test "$have_libwmf" = 'yes'
       then
-        AC_DEFINE(HasWMF,,Define if you have wmf library)
+        AC_DEFINE(HasWMF,1,Define if you have wmf library)
         LIB_WMF='-lwmf'
         LIBS="$LIB_WMF $LIBS"
         have_wmf='yes'

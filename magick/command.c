@@ -2396,13 +2396,13 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
                         (void) ListMagicInfo((FILE *) NULL,exception);
                         break;
                       }
-#if defined(HasMODULES)
+#if defined(SupportMagickModules)
                     if (LocaleCompare("Module",option) == 0)
                       {
                         (void) ListModuleInfo((FILE *) NULL,exception);
                         break;
                       }
-#endif /* HasMODULES */
+#endif /* SupportMagickModules */
                     ThrowConvertException(OptionError,"UnrecognizedListType",
                       option)
                   }
@@ -4551,13 +4551,13 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
                         (void) ListMagicInfo((FILE *) NULL,exception);
                         break;
                       }
-#if defined(HasMODULES)
+#if defined(SupportMagickModules)
                     if (LocaleCompare("Module",option) == 0)
                       {
                         (void) ListModuleInfo((FILE *) NULL,exception);
                         break;
                       }
-#endif /* HasMODULES */
+#endif /* SupportMagickModules */
                     ThrowMogrifyException(OptionError,"UnrecognizedListType",
                       option)
                   }

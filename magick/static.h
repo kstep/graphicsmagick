@@ -8,7 +8,7 @@
 extern "C" {
 #endif
 
-#if !defined(HasMODULES)
+#if !defined(BuildMagickModules)
 extern ModuleExport void
   RegisterARTImage(void),
   RegisterAVIImage(void),
@@ -262,7 +262,7 @@ extern ModuleExport void
   UnregisterXVImage(void),
   UnregisterXWDImage(void),
   UnregisterYUVImage(void);
-#endif /* !defined(HasMODULES) */
+#endif /* !defined(BuildMagickModules) */
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

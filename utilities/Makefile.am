@@ -60,13 +60,13 @@ MANPAGES = $(ALLMANPAGES)
 bin_PROGRAMS = gm
 
 # Libtool libraries, dependencies, and linker flags used by most executables
-if WITH_MODULES
+if WITH_LTDL
 COMMONLDADD	= $(MAGICK_LIB) $(top_builddir)/ltdl/libltdlc.la
 COMMONLDFLAGS	= @LDFLAGS@ @DLLDFLAGS@
 else
 COMMONLDADD	= $(MAGICK_LIB)
 COMMONLDFLAGS	= @LDFLAGS@
-endif # WITH_MODULES
+endif # WITH_LTDL
 
 gm_LDADD           = $(COMMONLDADD)
 gm_LDFLAGS         = $(COMMONLDFLAGS)

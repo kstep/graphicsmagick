@@ -272,6 +272,8 @@ TXTDelegate = @TXTDelegate@
 VERSION = @VERSION@
 WIN32_NATIVE_BUILD_FALSE = @WIN32_NATIVE_BUILD_FALSE@
 WIN32_NATIVE_BUILD_TRUE = @WIN32_NATIVE_BUILD_TRUE@
+WITH_LTDL_FALSE = @WITH_LTDL_FALSE@
+WITH_LTDL_TRUE = @WITH_LTDL_TRUE@
 WITH_MAGICK_PLUS_PLUS_FALSE = @WITH_MAGICK_PLUS_PLUS_FALSE@
 WITH_MAGICK_PLUS_PLUS_TRUE = @WITH_MAGICK_PLUS_PLUS_TRUE@
 WITH_MODULES_FALSE = @WITH_MODULES_FALSE@
@@ -349,9 +351,12 @@ AUTOMAKE_OPTIONS = 1.7.2 dist-zip dist-bzip2 foreign
 
 # Directories to include in distribution
 DIST_SUBDIRS = ltdl coders magick utilities tests Magick++
-@WITH_MODULES_FALSE@SUBDIRS = coders magick $(MAGICK_PLUS_PLUS) utilities tests
 
-@WITH_MODULES_TRUE@SUBDIRS = ltdl magick coders $(MAGICK_PLUS_PLUS) utilities tests
+@WITH_LTDL_TRUE@LTDL = ltdl
+@WITH_LTDL_FALSE@LTDL = 
+@WITH_MODULES_FALSE@SUBDIRS = $(LTDL) coders magick $(MAGICK_PLUS_PLUS) utilities tests
+
+@WITH_MODULES_TRUE@SUBDIRS = $(LTDL) magick coders $(MAGICK_PLUS_PLUS) utilities tests
 pkgdata_DATA = Copyright.txt QuickStart.txt
 
 # Additional files to distribute

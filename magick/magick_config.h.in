@@ -1,5 +1,8 @@
 /* magick/magick_config.h.in.  Generated from configure.ac by autoheader.  */
 
+/* Define if coders and filters are to be built as modules. */
+#undef BuildMagickModules
+
 /* Define if C compiler supports __func__ */
 #undef HAS___func__
 
@@ -249,7 +252,7 @@
 /* Define if you have LCMS library */
 #undef HasLCMS
 
-/* Define if using libltdl to create dynamically loadable modules */
+/* Define if using libltdl to support dynamically loadable modules */
 #undef HasLTDL
 
 /* Include LZW compression */

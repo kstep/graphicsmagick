@@ -83,12 +83,14 @@
 /*
   Declare module map.
 */
+#if defined(SupportMagickModules)
 static char
   *ModuleMap = (char *)
     "<?xml version=\"1.0\"?>"
     "<modulemap>"
     "  <module />"
     "</modulemap>";
+#endif /* defined(SupportMagickModules) */
 
 /*
   Global declarations.
@@ -105,12 +107,14 @@ static ModuleInfo
 /*
   Forward declarations.
 */
+#if defined(SupportMagickModules)
 static char
   *TagToProcess(const char *);
 
 static CoderInfo
   *RegisterModule(CoderInfo *,ExceptionInfo *),
   *SetCoderInfo(const char *);
+#endif /* defined(SupportMagickModules) */
 
 static unsigned int
   ReadConfigureFile(const char *,const unsigned long,ExceptionInfo *),
@@ -136,7 +140,7 @@ static unsigned int
 %
 */
 
-#if !defined(HasMODULES)
+#if !defined(SupportMagickModules)
 #if !defined(WIN32)
 static int lt_dlexit(void)
 {
@@ -148,10 +152,12 @@ static int lt_dlinit(void)
   return(0);
 }
 
+#if defined(SupportMagickModules)
 static void *lt_dlopen(char *filename)
 {
   return((void *) NULL);
 }
+#endif /* defined(SupportMagickModules) */
 
 static void lt_dlclose(void *handle)
 {
@@ -255,7 +261,7 @@ MagickExport void DestroyModuleInfo(void)
 MagickExport unsigned int ExecuteModuleProcess(const char *tag,Image **image,
   const int argc,char **argv)
 {
-#if defined(HasMODULES)
+#if defined(SupportMagickModules)
   char
     *module_name;
 
@@ -392,6 +398,7 @@ MagickExport const CoderInfo *GetCoderInfo(const char *tag,
 %    o exception: Return any errors or warnings in this structure.
 %
 */
+#if defined(SupportMagickModules)
 static char **GetModuleList(ExceptionInfo *exception)
 {
   char
@@ -453,6 +460,7 @@ static char **GetModuleList(ExceptionInfo *exception)
   (void) closedir(directory);
   return(modules);
 }
+#endif /* defined(SupportMagickModules) */
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -670,7 +678,7 @@ static void ModuleToTag(const char *filename,const char *format,char *module)
 MagickExport unsigned int OpenModule(const char *module,
   ExceptionInfo *exception)
 {
-#if defined(HasMODULES)
+#if defined(SupportMagickModules)
   {
     char
       message[MaxTextExtent],
@@ -782,7 +790,7 @@ MagickExport unsigned int OpenModule(const char *module,
 MagickExport unsigned int OpenModules(ExceptionInfo *exception)
 {
   (void) GetMagickInfo((char *) NULL,exception);
-#if defined(HasMODULES)
+#if defined(SupportMagickModules)
   {
     char
       **modules;
@@ -847,7 +855,7 @@ MagickExport unsigned int OpenModules(ExceptionInfo *exception)
 static unsigned int ReadConfigureFile(const char *basename,
   const unsigned long depth,ExceptionInfo *exception)
 {
-#if defined(HasMODULES)
+#if defined(SupportMagickModules)
   char
     keyword[MaxTextExtent],
     path[MaxTextExtent],
@@ -1029,6 +1037,7 @@ static unsigned int ReadConfigureFile(const char *basename,
 %
 %
 */
+#if defined(SupportMagickModules)
 static CoderInfo *RegisterModule(CoderInfo *entry,ExceptionInfo *exception)
 {
   register CoderInfo
@@ -1091,6 +1100,7 @@ static CoderInfo *RegisterModule(CoderInfo *entry,ExceptionInfo *exception)
   LiberateSemaphoreInfo(&module_semaphore);
   return(entry);
 }
+#endif /* defined(SupportMagickModules) */
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1120,6 +1130,7 @@ static CoderInfo *RegisterModule(CoderInfo *entry,ExceptionInfo *exception)
 %
 %
 */
+#if defined(SupportMagickModules)
 static CoderInfo *SetCoderInfo(const char *tag)
 {
   CoderInfo
@@ -1135,6 +1146,7 @@ static CoderInfo *SetCoderInfo(const char *tag)
   entry->signature=MagickSignature;
   return(entry);
 }
+#endif /* defined(SupportMagickModules) */
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1211,6 +1223,7 @@ MagickExport char *TagToModule(const char *tag)
 %      processing dynamically loadable module.
 %
 */
+#if defined(SupportMagickModules)
 static char *TagToProcess(const char *tag)
 {
   char
@@ -1226,6 +1239,7 @@ static char *TagToProcess(const char *tag)
 #endif
   return(module_name);
 }
+#endif /* defined(SupportMagickModules) */
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -29,7 +29,7 @@
 
 AUTOMAKE_OPTIONS = 1.6.2 foreign
 
-if WITH_MODULES
+if WITH_LTDL
 
 if INSTALL_LTDL
 include_HEADERS = ltdl.h
@@ -42,7 +42,7 @@ if CONVENIENCE_LTDL
 noinst_LTLIBRARIES = libltdlc.la
 endif
 
-endif # WITH_MODULES
+endif # WITH_LTDL
 
 EXTRA_DIST = ltdl.h
 

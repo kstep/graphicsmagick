@@ -310,28 +310,34 @@ extern "C" {
   Define system symbols if not already defined.
 */
 #if !defined(STDIN_FILENO)
-#define STDIN_FILENO  0x00
+#  define STDIN_FILENO  0x00
 #endif
 
 #if !defined(O_BINARY)
-#define O_BINARY  0x00
+#  define O_BINARY  0x00
 #endif
 
 #if !defined(MAP_FAILED)
-#define MAP_FAILED      ((void *) -1)
+#  define MAP_FAILED      ((void *) -1)
 #endif
 
-#if defined(HasLTDL) || defined(_MAGICKMOD_)
-#define HasMODULES
+#if defined(HasLTDL) || ( defined(WIN32) && defined(_DLL) )
+#  define SupportMagickModules
 #endif
+
+#if defined(_MAGICKMOD_)
+#  undef BuildMagickModules
+#  define BuildMagickModules
+#endif
+
 
 /*
   I/O defines.
 */
 #if defined(WIN32) && !defined(Windows95)
-#define MagickSeek(file,offset,whence)  _lseeki64(file,offset,whence)
+#  define MagickSeek(file,offset,whence)  _lseeki64(file,offset,whence)
 #else
-#define MagickSeek(file,offset,whence)  lseek(file,offset,whence)
+#  define MagickSeek(file,offset,whence)  lseek(file,offset,whence)
 #endif
 
 #if defined(__cplusplus) || defined(c_plusplus)

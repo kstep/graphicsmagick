@@ -270,6 +270,8 @@ TXTDelegate = @TXTDelegate@
 VERSION = @VERSION@
 WIN32_NATIVE_BUILD_FALSE = @WIN32_NATIVE_BUILD_FALSE@
 WIN32_NATIVE_BUILD_TRUE = @WIN32_NATIVE_BUILD_TRUE@
+WITH_LTDL_FALSE = @WITH_LTDL_FALSE@
+WITH_LTDL_TRUE = @WITH_LTDL_TRUE@
 WITH_MAGICK_PLUS_PLUS_FALSE = @WITH_MAGICK_PLUS_PLUS_FALSE@
 WITH_MAGICK_PLUS_PLUS_TRUE = @WITH_MAGICK_PLUS_PLUS_TRUE@
 WITH_MODULES_FALSE = @WITH_MODULES_FALSE@
@@ -377,12 +379,17 @@ EXTRA_libGraphicsMagick_la_SOURCES = nt_base.c nt_feature.c
 @WIN32_NATIVE_BUILD_TRUE@MAGICK_PLATFORM_SRCS = nt_base.c nt_feature.c
 @CYGWIN_BUILD_FALSE@@WIN32_NATIVE_BUILD_FALSE@MAGICK_PLATFORM_SRCS = 
 @CYGWIN_BUILD_TRUE@@WIN32_NATIVE_BUILD_FALSE@MAGICK_PLATFORM_SRCS = nt_feature.c
+
+#
+# Library sources
+#
+@WITH_LTDL_TRUE@LIB_LTDL = $(LIBLTDL)
+@WITH_LTDL_FALSE@LIB_LTDL = 
 @WITH_MODULES_FALSE@libGraphicsMagick_la_SOURCES = $(MAGICK_BASE_SRCS) $(MAGICK_PLATFORM_SRCS)
 
-# Library sources
 @WITH_MODULES_TRUE@libGraphicsMagick_la_SOURCES = $(MAGICK_BASE_SRCS) $(MAGICK_PLATFORM_SRCS)
-@WITH_MODULES_FALSE@libGraphicsMagick_la_LIBADD = ../coders/libCoders.la @MAGICK_DEP_LIBS@
-@WITH_MODULES_TRUE@libGraphicsMagick_la_LIBADD = @MAGICK_DEP_LIBS@ $(LIBLTDL)
+@WITH_MODULES_FALSE@libGraphicsMagick_la_LIBADD = ../coders/libCoders.la @MAGICK_DEP_LIBS@ $(LIB_LTDL)
+@WITH_MODULES_TRUE@libGraphicsMagick_la_LIBADD = @MAGICK_DEP_LIBS@ $(LIB_LTDL)
 
 # Binary scripts
 bin_SCRIPTS = GraphicsMagick-config
@@ -423,9 +430,12 @@ CONFIG_HEADER = magick_config.h
 CONFIG_CLEAN_FILES = GraphicsMagick-config
 LTLIBRARIES = $(lib_LTLIBRARIES)
 
-@WITH_MODULES_TRUE@libGraphicsMagick_la_DEPENDENCIES =
-@WITH_MODULES_FALSE@libGraphicsMagick_la_DEPENDENCIES = \
-@WITH_MODULES_FALSE@	../coders/libCoders.la
+@WITH_LTDL_FALSE@@WITH_MODULES_TRUE@libGraphicsMagick_la_DEPENDENCIES =
+@WITH_LTDL_FALSE@@WITH_MODULES_FALSE@libGraphicsMagick_la_DEPENDENCIES = \
+@WITH_LTDL_FALSE@@WITH_MODULES_FALSE@	../coders/libCoders.la
+@WITH_LTDL_TRUE@@WITH_MODULES_TRUE@libGraphicsMagick_la_DEPENDENCIES =
+@WITH_LTDL_TRUE@@WITH_MODULES_FALSE@libGraphicsMagick_la_DEPENDENCIES = \
+@WITH_LTDL_TRUE@@WITH_MODULES_FALSE@	../coders/libCoders.la
 am__libGraphicsMagick_la_SOURCES_DIST = memory.c blob.c cache.c locale.c \
 	error.c monitor.c constitute.c image.c composite.c list.c \
 	color.c quantize.c segment.c resize.c transform.c shear.c \
