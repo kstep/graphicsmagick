@@ -4703,7 +4703,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
           }
         if (LocaleCompare("-pen",option) == 0)
           {
-            (void) QueryColorDatabase(argv[i++],&draw_info->fill,
+            (void) QueryColorDatabase(argv[++i],&draw_info->fill,
               &(*image)->exception);
             continue;
           }
