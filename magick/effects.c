@@ -3069,7 +3069,7 @@ MagickExport Image *SteganoImage(Image *image,Image *watermark,
     return((Image *) NULL);
   if (stegano_image->storage_class == PseudoClass)
     {
-      if (stegano_image->colors > ((MaxRGB+1) >> 1))
+      if (stegano_image->colors > 128)
         stegano_image->storage_class=DirectClass;
       else
         {
