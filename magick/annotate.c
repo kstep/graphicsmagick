@@ -1265,9 +1265,8 @@ static unsigned int RenderFreetype(Image *image,const DrawInfo *draw_info,
                     q++;
                     continue;
                   }
-                if (!image->matte)
-                  q->opacity=OpaqueOpacity;
-                *q=AlphaComposite(&fill_color,opacity,q,q->opacity);
+                *q=AlphaComposite(&fill_color,opacity,q,
+                                  image->matte ? q->opacity : OpaqueOpacity);
                 if (!active)
                   (void) SyncImagePixels(image);
                 p++;
