@@ -468,8 +468,7 @@ MagickExport unsigned int ColorFloodfillImage(Image *image,
                 }
                 default:
                 {
-                  *q=AlphaComposite(OverCompositeOp,&color,color.opacity,q,
-                    q->opacity);
+                  AlphaComposite(&color,color.opacity,q,q->opacity);
                   break;
                 }
               }
@@ -2783,8 +2782,7 @@ static void DrawPolygonPrimitive(const DrawInfo *draw_info,
               }
               default:
               {
-                *q=AlphaComposite(OverCompositeOp,&fill_color,fill_opacity,q,
-                  q->opacity);
+                AlphaComposite(&fill_color,fill_opacity,q,q->opacity);
                 break;
               }
             }
@@ -2802,8 +2800,7 @@ static void DrawPolygonPrimitive(const DrawInfo *draw_info,
             }
             default:
             {
-              *q=AlphaComposite(OverCompositeOp,&stroke_color,stroke_opacity,
-                q,q->opacity);
+              AlphaComposite(&stroke_color,stroke_opacity,q,q->opacity);
               break;
             }
           }
@@ -3020,8 +3017,7 @@ static unsigned int DrawPrimitive(const DrawInfo *draw_info,
                 }
                 default:
                 {
-                  *q=AlphaComposite(OverCompositeOp,&color,color.opacity,q,
-                    q->opacity);
+                  AlphaComposite(&color,color.opacity,q,q->opacity);
                   break;
                 }
               }

@@ -137,6 +137,15 @@ extern "C" {
   Define declarations.
 */
 #define AbsoluteValue(x)  ((x) < 0 ? -(x) : (x))
+#define AlphaComposite(p,alpha,q,beta) \
+  (q)->red=(Quantum) (((double) (MaxRGB-(alpha))*(p)->red+ \
+    (double) (alpha)*(MaxRGB-(beta))*(q)->red/MaxRGB)/MaxRGB+0.5); \
+  (q)->green=(Quantum) (((double) (MaxRGB-(alpha))*(p)->green+ \
+    (double) (alpha)*(MaxRGB-(beta))*(q)->green/MaxRGB)/MaxRGB+0.5); \
+  (q)->blue=(Quantum) (((double) (MaxRGB-(alpha))*(p)->blue+ \
+    (double) (alpha)*(MaxRGB-(beta))*(q)->blue/MaxRGB)/MaxRGB+0.5); \
+  (q)->opacity=(Quantum) (((double) (MaxRGB-(alpha))+ \
+    (double) (alpha)*(MaxRGB-(beta))/MaxRGB)/MaxRGB+0.5)
 #define CloseImage(image)  CloseBlob(image)
 #define ColorMatch(color,target,distance) \
   (((distance) == 0) ? \
