@@ -549,7 +549,7 @@ MagickExport unsigned int InvokePostscriptDelegate(const unsigned int verbose,
     }
   if (verbose)
     {
-      (void) fputs("gsdll32",stdout);
+      (void) fputs("[ghostscript library]",stdout);
       (void) fputs(strchr(command,' '),stdout);
     }
   status=(gs_func->new_instance)(&interpreter,(void *) NULL);

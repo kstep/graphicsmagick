@@ -1,0 +1,13 @@
+In late November 2002, GraphicsMagick was created as a branch of
+ImageMagick several days before the ImageMagick 5.5.2 release.
+
+The objectives of GraphicsMagick are to:
+
+  o Use an open development model.
+  o Encourage new developers to join the project.
+  o Avoid unnecessary source code "churn".
+  o Establish and preserve a stable API.
+  o Use efficient coding practices which result in fast code.
+  o Use a release process which assures a working product.
+  o Maintain an accurate ChangeLog.
+

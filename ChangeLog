@@ -1,4 +1,13 @@
+2003-01-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/delegate.c (InvokePostscriptDelegate): When using the
+	Ghostscript library, identify the library as "[ghostscript library]"
+	rather then "gsdll32" so that -verbose prints something useful for
+	both Windows and Unix.
+
 2003-01-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* NEWS: New file.
 
 	* magick/montage.c (MontageImages): Use ThumbnailImage() rather
  	than ZoomImage() to resize montage thumbnails provided that the

@@ -2712,11 +2712,11 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
       if (!magick_info->thread_support)
         AcquireSemaphoreInfo(&constitute_semaphore);
       LogMagickEvent(CoderEvent,GetMagickModule(),
-        "Invoking decoder for \"%.1024s\" (%.1024s)",magick_info->name,
+        "Invoking \"%.1024s\" decoder (%.1024s)",magick_info->name,
         magick_info->description);
       image=(magick_info->decoder)(clone_info,exception);
       LogMagickEvent(CoderEvent,GetMagickModule(),
-        "Returned from decoder for \"%.1024s\"",magick_info->name);
+        "Returned from \"%.1024s\" decoder",magick_info->name);
       if (!magick_info->thread_support)
         LiberateSemaphoreInfo(&constitute_semaphore);
     }
@@ -2769,11 +2769,11 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
       if (!magick_info->thread_support)
         AcquireSemaphoreInfo(&constitute_semaphore);
       LogMagickEvent(CoderEvent,GetMagickModule(),
-        "Invoking decoder for \"%.1024s\" (%.1024s)",magick_info->name,
+        "Invoking \"%.1024s\" decoder (%.1024s)",magick_info->name,
         magick_info->description);
       image=(magick_info->decoder)(clone_info,exception);
       LogMagickEvent(CoderEvent,GetMagickModule(),
-        "Returned from decoder for \"%.1024s\"",magick_info->name);
+        "Returned from \"%.1024s\" decoder",magick_info->name);
       if (!magick_info->thread_support)
         LiberateSemaphoreInfo(&constitute_semaphore);
     }
@@ -3134,11 +3134,11 @@ MagickExport unsigned int WriteImage(const ImageInfo *image_info,Image *image)
       if (!magick_info->thread_support)
         AcquireSemaphoreInfo(&constitute_semaphore);
       LogMagickEvent(CoderEvent,GetMagickModule(),
-        "Invoking encoder for \"%.1024s\" (%.1024s)",magick_info->name,
+        "Invoking \"%.1024s\" encoder (%.1024s)",magick_info->name,
         magick_info->description);
       status=(magick_info->encoder)(clone_info,image);
       LogMagickEvent(CoderEvent,GetMagickModule(),
-        "Returned from encoder for \"%.1024s\"",magick_info->name);
+        "Returned from \"%.1024s\" decoder",magick_info->name);
       if (!magick_info->thread_support)
         LiberateSemaphoreInfo(&constitute_semaphore);
     }

@@ -8,36 +8,24 @@ Utilities
 
 Library
 
-  * Implement font mapping subsystem to map font names to font
-    files.
-
   * Implement API support to compose and interpret IPTC records.
-
-  * Implement clipping mask support MVG and SVG.
 
   * Implement gradient fills for MVG and SVG.
 
   * Implement image filters for MVG and SVG.
 
-  * Support drawing using embedded (inline) images.
-
-  * Re-implement function of existing .mgk configuration files
-    in XML form.
+  * Implement support for accessing pluggable vector graphics back-ends
+    via the draw.h APIs.
 
 Coders
-
-  * Investigate supporting the DjVu
-    (http://www.djvu.com/products/djvu.html) library.
-
-  * Add support for Exif extensions to the JPEG and TIFF coders.
-
-  * Support JNG (JPEG network graphics) format.
 
   * Support reading and writing the CALS raster format (military
     standard MIL-PRF-28002C).
 
   * Support reading single-page Encapsulated Postscript, Postscript, and
     Portable Document Format into native (MVG) vector form (ala pstoedit).
+
+  * Support writing valid SVG files.
 
   * Support writing vector EPS files.
 
@@ -47,3 +35,5 @@ Coders
 
   * Support reading and writing Windows Extended Metafont (EMF) files.
 
+  * Support reading images from the TWAIN scanner interface under
+    Windows and MAC.
