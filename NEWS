@@ -17,6 +17,7 @@ Significant changes associated with GraphicsMagick 1.1 (Under development)
     * PSD fix for index calculation when QuantumDepth>8.
     * Validate that geometry specifications only include allowed characters.
     * SGI fix to save compression type while writing.
+    * EXIF attributes were not being retrieved when requested.
 
   Performance improvements:
     * Texture tiling is now 7X faster.
