@@ -60,13 +60,16 @@
   Global declarations.
 */
 static off_t
-  cache_threshold = PixelCacheThreshold;
+  cache_threshold = 0;
 
 /*
   Declare pixel cache interfaces.
 */
 static IndexPacket
   *GetIndexesFromCache(const Image *);
+
+static off_t
+  GetCacheMemory(const off_t);
 
 static PixelPacket
   GetOnePixelFromCache(Image *,const int,const int),
@@ -273,7 +276,7 @@ static void DestroyCacheInfo(Cache cache)
 %
 %    o cache: Specifies a pointer to a Cache structure.
 %
-%    o id: specifies which cache nexus to destroy. 
+%    o id: specifies which cache nexus to destroy.
 %
 %
 */
@@ -412,7 +415,7 @@ MagickExport void GetCacheInfo(Cache *cache)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   G e t C a c h e M e m o r y                                               %
++   G e t C a c h e M e m o r y                                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -432,10 +435,10 @@ MagickExport void GetCacheInfo(Cache *cache)
 %
 %
 */
-MagickExport off_t GetCacheMemory(const off_t memory)
+static off_t GetCacheMemory(const off_t memory)
 {
   static off_t
-    free_memory = PixelCacheThreshold*1024*1024;
+    free_memory = 0;
 
 #if defined(HasPTHREADS)
   static pthread_mutex_t
@@ -553,7 +556,7 @@ static IndexPacket *GetIndexesFromCache(const Image *image)
 %
 %    o cache: Specifies a pointer to a Cache structure.
 %
-%    o id: specifies which cache nexus to return the colormap indexes. 
+%    o id: specifies which cache nexus to return the colormap indexes.
 %
 %
 */
@@ -598,7 +601,7 @@ MagickExport IndexPacket *GetNexusIndexes(const Cache cache,
 %    o pixels: Method GetNexusPixels returns the indexes associated with the
 %      the specified cache nexus.
 %
-%    o id: specifies which cache nexus to return the pixels. 
+%    o id: specifies which cache nexus to return the pixels.
 %
 %
 %
@@ -780,7 +783,7 @@ static PixelPacket *GetPixelsFromCache(const Image *image)
 %    o status: Method IsNexusInCore returns True if the pixels are non-strided
 %      and in core, otherwise False.
 %
-%    o id: specifies which cache nexus to return the pixels. 
+%    o id: specifies which cache nexus to return the pixels.
 %
 %
 %
@@ -864,6 +867,23 @@ MagickExport unsigned int OpenCache(Cache cache,const ClassType class_type,
     *allocation;
 
   assert(cache != (Cache) NULL);
+  if (GetCacheMemory(0) == 0)
+    {
+      off_t
+        threshold;
+
+      /*
+        Set cache memory threshold.
+      */
+      threshold=PixelCacheThreshold;
+      if (getenv("MAGIGK_CACHE_THRESHOLD") != (char *) NULL)
+        threshold=atoi(getenv("MAGIGK_CACHE_THRESHOLD"));
+#if defined(_SC_PAGESIZE) && defined(_SC_PHYS_PAGES)
+      if (threshold > (sysconf(_SC_PAGESIZE)*sysconf(_SC_PHYS_PAGES/1048576)))
+        threshold=sysconf(_SC_PAGESIZE)*sysconf(_SC_PHYS_PAGES)/1048576;
+#endif
+      SetCacheThreshold(threshold);
+    }
   cache_info=(CacheInfo *) cache;
   number_pixels=cache_info->columns*cache_info->rows;
   length=number_pixels*sizeof(PixelPacket);
@@ -1006,7 +1026,7 @@ MagickExport unsigned int OpenCache(Cache cache,const ClassType class_type,
 %
 %    o cache: Specifies a pointer to a CacheInfo structure.
 %
-%    o id: specifies which cache nexus to read the colormap indexes. 
+%    o id: specifies which cache nexus to read the colormap indexes.
 %
 %
 */
@@ -1103,7 +1123,7 @@ MagickExport unsigned int ReadCacheIndexes(Cache cache,const unsigned int id)
 %
 %    o cache: Specifies a pointer to a CacheInfo structure.
 %
-%    o id: specifies which cache nexus to read the pixels. 
+%    o id: specifies which cache nexus to read the pixels.
 %
 %
 */
@@ -1201,7 +1221,7 @@ MagickExport void SetCacheThreshold(const off_t threshold)
   off_t
     offset;
 
-  offset=1024*1024*(cache_threshold-threshold);
+  offset=1048576*(cache_threshold-threshold);
   (void) GetCacheMemory(-offset);
   cache_threshold=threshold;
 }
@@ -1232,7 +1252,7 @@ MagickExport void SetCacheThreshold(const off_t threshold)
 %
 %    o cache: Specifies a pointer to a Cache structure.
 %
-%    o id: specifies which cache nexus to set. 
+%    o id: specifies which cache nexus to set.
 %
 %    o region: A pointer to the RectangleInfo structure that defines the
 %      region of this particular cache nexus.
@@ -1478,7 +1498,7 @@ static unsigned int SyncPixelCache(Image *image)
 %
 %    o cache: Specifies a pointer to a CacheInfo structure.
 %
-%    o id: specifies which cache nexus to write the colormap indexes. 
+%    o id: specifies which cache nexus to write the colormap indexes.
 %
 %
 */
@@ -1575,7 +1595,7 @@ MagickExport unsigned int WriteCacheIndexes(Cache cache,const unsigned int id)
 %
 %    o cache: Specifies a pointer to a Cache structure.
 %
-%    o id: specifies which cache nexus to write the pixels. 
+%    o id: specifies which cache nexus to write the pixels.
 %
 %
 */

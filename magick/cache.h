@@ -85,9 +85,6 @@ extern MagickExport ClassType
 extern MagickExport IndexPacket
   *GetNexusIndexes(const Cache,const unsigned int);
 
-extern MagickExport off_t
-  GetCacheMemory(const off_t);
-
 extern MagickExport PixelPacket
   *GetNexusPixels(const Cache,const unsigned int),
   *SetCacheNexus(Cache,const unsigned int,const RectangleInfo *);
