@@ -654,7 +654,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
       else
         if (jpeg_info.out_color_space == JCS_GRAYSCALE)
           {
-            index=GETJSAMPLE(*p++) >> 4;
+            index=GETJSAMPLE(*p++);
             indexes[x]=index;
             *q=image->colormap[index];
           }
