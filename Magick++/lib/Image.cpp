@@ -2861,9 +2861,15 @@ void Magick::Image::transformSkewY ( double skewy_ )
   options()->transformSkewY( skewy_ );
 }
 
+// Image representation type
 Magick::ImageType Magick::Image::type ( void ) const
 {
   return static_cast<Magick::ImageType>(MagickLib::GetImageType(const_cast<MagickLib::Image *>(constImage())));
+}
+void Magick::Image::type ( Magick::ImageType type_)
+{
+  modifyImage();
+  SetImageType( image(), type_ );
 }
 
 void Magick::Image::verbose ( bool verboseFlag_ )

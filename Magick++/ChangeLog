@@ -1,3 +1,10 @@
+2001-09-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Magick++/STL.h (typeImage): New function object to set image
+ 	type.
+
+	* lib/Image.cpp (type): Added ability to set image type.
+
 2001-09-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Image.cpp (write(Blob)): Tell blob to use malloc allocator.

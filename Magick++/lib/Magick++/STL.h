@@ -1953,6 +1953,21 @@ namespace Magick
     const std::string _tileName;
   };
 
+  // Image storage type
+  class typeImage : public std::unary_function<Image&,void>
+  {
+  public:
+    typeImage( Magick::ImageType type_ )
+      : _type( type_ ) { }
+
+    void operator()( Image &image_ )
+      {
+	image_.type( _type );
+      }
+  private:
+    const Magick::ImageType _type;
+  };
+
 
   // Print detailed information about the image
   class verboseImage : public std::unary_function<Image&,void>

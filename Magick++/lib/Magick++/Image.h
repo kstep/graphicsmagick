@@ -866,8 +866,13 @@ namespace Magick
     // Skew to use in Y axis when annotating with text or drawing
     void            transformSkewY ( double skewy_ );
 
-    // Image type
+    // Image representation type.
+    //   Available types:
+    //    Bilevel        Grayscale       GrayscaleMatte
+    //    Palette        PaletteMatte    TrueColor
+    //    TrueColorMatte ColorSeparation ColorSeparationMatte
     ImageType       type ( void ) const;
+    void            type ( ImageType type_ );
 
     // Print detailed information about the image
     void            verbose ( bool verboseFlag_ );
