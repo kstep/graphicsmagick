@@ -1576,6 +1576,8 @@ MagickExport void DescribeImage(Image *image,FILE *file,
     case TrueColorMatteType:
       (void) fprintf(file,"true color with transparency"); break;
     case ColorSeparationType: (void) fprintf(file,"color separated"); break;
+    case ColorSeparationMatteType:
+      (void) fprintf(file,"color separated with transparency"); break;
     default: (void) fprintf(file,"undefined"); break;
   }
   (void) fprintf(file,"\n");
@@ -2527,7 +2529,10 @@ MagickExport ImageType GetImageType(Image *image)
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   if (image->colorspace == CMYKColorspace)
-    return(ColorSeparationType);
+    if (!image->matte)
+      return(ColorSeparationType);
+    else
+      return(ColorSeparationMatteType);
   if (IsMonochromeImage(image))
     return(BilevelType);
   if (IsGrayImage(image))
@@ -4465,6 +4470,8 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
                   image_type=TrueColorMatteType;
                 if (LocaleCompare("ColorSeparation",option) == 0)
                   image_type=ColorSeparationType;
+                if (LocaleCompare("ColorSeparationMatte",option) == 0)
+                  image_type=ColorSeparationMatteType;
                 SetImageType(*image,image_type);
               }
             continue;
@@ -5964,6 +5971,12 @@ MagickExport void SetImageType(Image *image,const ImageType image_type)
       break;
     }
     case ColorSeparationType:
+    {
+      if (image->colorspace != CMYKColorspace)
+        RGBTransformImage(image,CMYKColorspace);
+      break;
+    }
+    case ColorSeparationMatteType:
     {
       if (image->colorspace != CMYKColorspace)
         RGBTransformImage(image,CMYKColorspace);

@@ -214,7 +214,8 @@ typedef enum
   PaletteMatteType,
   TrueColorType,
   TrueColorMatteType,
-  ColorSeparationType
+  ColorSeparationType,
+  ColorSeparationMatteType
 } ImageType;
 
 typedef enum
