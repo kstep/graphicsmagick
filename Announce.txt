@@ -1,6 +1,6 @@
 The ImageMagick Studio LLC development group announces the release of
 ImageMagick 5.4.5.  Version 5.4.5 is a feature release but also resolves
-bugs reported against 5.4.3.
+bugs reported against 5.4.4.
 
 ImageMagick is a robust collection of tools and libraries to read, write,
 and manipulate an image in many image formats (over 72 major formats)
@@ -21,9 +21,6 @@ Significant changes from the 5.4.2 release (see release ChangeLog
 for details):
 
   o General:
-
-    - Many internal improvements to improve speed.  Regression tests run
-      20% faster than 5.4.3.
 
     - See ImageMagick-5.4.5/ChangeLog.
 
