@@ -27,9 +27,6 @@
 /* Define if you have the `dld' library (-ldld). */
 #undef HAVE_LIBDLD
 
-/* Define if you have the `pthread' library (-lpthread). */
-#undef HAVE_LIBPTHREAD
-
 /* Define if you have the <malloc.h> header file. */
 #undef HAVE_MALLOC_H
 
@@ -65,9 +62,6 @@
 
 /* Define if you have the `strrchr' function. */
 #undef HAVE_STRRCHR
-
-/* Define if you have Posix thread methods. */
-#undef HasPTHREADS
 
 /* Define to the sub-directory in which libtool stores uninstalled libraries.
    */

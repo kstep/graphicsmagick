@@ -26,62 +26,11 @@ AM_CONFIG_HEADER(config.h)
 AM_MAINTAINER_MODE
 
 AC_PROG_CC
-AC_PROG_CC_STDC
 AC_C_CONST
 AC_C_INLINE
 
-#
-# Find Posix threads library
-#
-LIB_THREAD=''
-AC_CHECK_LIB(pthread,pthread_attr_init,
-  [AC_DEFINE(HasPTHREADS,,Define if you have Posix thread methods.)
-   LIB_THREAD="-lpthread"
-   DEF_THREAD="-D_REENTRANT"],,)
-LIBS="$LIB_THREAD $LIBS"
-CPPFLAGS="$DEF_THREAD $CPPFLAGS"
-AC_SUBST(LIB_THREAD)
-
-# Disable support for largefiles
-AC_ARG_WITH(largefiles,
-	      [  --without-largefiles    disable support for large (64 bit) file offsets],
-	      [with_largefiles=$withval],
-	      [with_largefiles='yes'])
-
-#
-# Check for large file support
-#
-LIB_LF=''
-if test "$with_largefiles" = 'yes'
-then
-  AC_MSG_CHECKING(whether large file support needs explicit enabling)
-  result='no'
-  getconf='getconf LFS_CFLAGS'
-  if ($getconf) >/dev/null 2>&1
-  then
-    CPPFLAGS="$CPPFLAGS "`$getconf`
-    result='yes'
-  fi
-  getconf='getconf LFS_LDFLAGS'
-  if ($getconf) >/dev/null 2>&1
-  then
-    LDFLAGS="$LDFLAGS "`$getconf`
-    result='yes'
-  fi
-  getconf='getconf LFS_LIBS'
-  if ($getconf) >/dev/null 2>&1
-  then
-    LIB_LF=`$getconf`
-    LIBS="$LIB_LF $LIBS"
-    result='yes'
-  fi
-  AC_MSG_RESULT($result)
-fi
-AC_SUBST(LIB_LF)
-
-
 AC_LIBTOOL_WIN32_DLL
-AC_PROG_LIBTOOL
+AM_PROG_LIBTOOL
 AC_SUBST(LIBTOOL_DEPS)
 
 AC_LIB_LTDL

@@ -11,8 +11,9 @@ dnl even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 dnl PARTICULAR PURPOSE.
 
 
-# serial 42 AC_PROG_LIBTOOL
-AC_DEFUN(AC_PROG_LIBTOOL,
+# serial 44 AC_PROG_LIBTOOL
+AC_DEFUN(AC_PROG_LIBTOOL,[AC_REQUIRE([_AC_PROG_LIBTOOL])])
+AC_DEFUN(_AC_PROG_LIBTOOL,
 [AC_REQUIRE([AC_LIBTOOL_SETUP])dnl
 
 # Save cache, so that ltconfig can load it
@@ -20,13 +21,13 @@ AC_CACHE_SAVE
 
 # Actually configure libtool.  ac_aux_dir is where install-sh is found.
 AR="$AR" CC="$CC" CFLAGS="$CFLAGS" CPPFLAGS="$CPPFLAGS" \
-FILE="$FILE" LD="$LD" LDFLAGS="$LDFLAGS" LIBS="$LIBS" \
+MAGIC="$MAGIC" LD="$LD" LDFLAGS="$LDFLAGS" LIBS="$LIBS" \
 LN_S="$LN_S" NM="$NM" RANLIB="$RANLIB" STRIP="$STRIP" \
 AS="$AS" DLLTOOL="$DLLTOOL" OBJDUMP="$OBJDUMP" \
 objext="$OBJEXT" exeext="$EXEEXT" reload_flag="$reload_flag" \
 deplibs_check_method="$deplibs_check_method" file_magic_cmd="$file_magic_cmd" \
 ${CONFIG_SHELL-/bin/sh} $ac_aux_dir/ltconfig --no-reexec \
-$libtool_flags --no-verify --build="$build" $ac_aux_dir/ltmain.sh $lt_target \
+$libtool_flags --no-verify --build="$build" $ac_aux_dir/ltmain.sh $host \
 || AC_MSG_ERROR([libtool configure failed])
 
 # Reload cache, that may have been modified by ltconfig
@@ -64,15 +65,10 @@ dnl
 # Only perform the check for file, if the check method requires it
 case "$deplibs_check_method" in
 file_magic*)
-  if test "$file_magic_cmd" = '$FILE'; then
-    AC_PATH_FILE
+  if test "$file_magic_cmd" = '${MAGIC}'; then
+    AC_PATH_MAGIC
   fi
   ;;
-esac
-
-case "$target" in
-NONE) lt_target="$host" ;;
-*) lt_target="$target" ;;
 esac
 
 AC_CHECK_TOOL(RANLIB, ranlib, :)
@@ -102,7 +98,7 @@ test x"$pic_mode" = xno && libtool_flags="$libtool_flags --prefer-non-pic"
 
 # Some flags need to be propagated to the compiler or linker for good
 # libtool support.
-case "$lt_target" in
+case "$host" in
 *-*-irix6*)
   # Find out which ABI we are using.
   echo '[#]line __oline__ "configure"' > conftest.$ac_ext
@@ -151,7 +147,7 @@ ifdef([AC_PROVIDE_AC_LIBTOOL_WIN32_DLL],
       DllMain (0, 0, 0);],
       [lt_cv_need_dllmain=no],[lt_cv_need_dllmain=yes])])
 
-  case "$lt_target/$CC" in
+  case "$host/$CC" in
   *-*-cygwin*/gcc*-mno-cygwin*|*-*-mingw*)
     # old mingw systems require "-dll" to link a DLL, while more recent ones
     # require "-mdll"
@@ -272,24 +268,31 @@ esac],
 enable_fast_install=AC_ENABLE_FAST_INSTALL_DEFAULT)dnl
 ])
 
-# AC_ENABLE_FAST_INSTALL - set the default to --disable-fast-install
+# AC_DISABLE_FAST_INSTALL - set the default to --disable-fast-install
 AC_DEFUN(AC_DISABLE_FAST_INSTALL, [AC_BEFORE([$0],[AC_LIBTOOL_SETUP])dnl
 AC_ENABLE_FAST_INSTALL(no)])
+
+# AC_LIBTOOL_PICMODE - implement the --with-pic flag
+# Usage: AC_LIBTOOL_PICMODE[(MODE)]
+#   Where MODE is either `yes' or `no'.  If omitted, it defaults to
+#   `both'.
+AC_DEFUN(AC_LIBTOOL_PICMODE, [AC_BEFORE([$0],[AC_LIBTOOL_SETUP])dnl
+pic_mode=ifelse($#,1,$1,default)])
 
 
 # AC_PATH_TOOL_PREFIX - find a file program which can recognise shared library
 AC_DEFUN(AC_PATH_TOOL_PREFIX,
 [AC_MSG_CHECKING([for $1])
-AC_CACHE_VAL(lt_cv_path_FILE,
-[case "$FILE" in
+AC_CACHE_VAL(lt_cv_path_MAGIC,
+[case "$MAGIC" in
   /*)
-  lt_cv_path_FILE="$FILE" # Let the user override the test with a path.
+  lt_cv_path_MAGIC="$MAGIC" # Let the user override the test with a path.
   ;;
   ?:/*)
-  ac_cv_path_FILE="$FILE" # Let the user override the test with a dos path.
+  ac_cv_path_MAGIC="$MAGIC" # Let the user override the test with a dos path.
   ;;
   *)
-  ac_save_file="$FILE"
+  ac_save_MAGIC="$MAGIC"
   IFS="${IFS=   }"; ac_save_ifs="$IFS"; IFS=":"
 dnl $ac_dummy forces splitting on constant user-supplied paths.
 dnl POSIX.2 word splitting is done only on the output of word expansions,
@@ -298,12 +301,12 @@ dnl not every word.  This closes a longstanding sh security hole.
   for ac_dir in $ac_dummy; do
     test -z "$ac_dir" && ac_dir=.
     if test -f $ac_dir/$1; then
-      lt_cv_path_FILE="$ac_dir/$1"
+      lt_cv_path_MAGIC="$ac_dir/$1"
       if test -n "$file_magic_test_file"; then
 	case "$deplibs_check_method" in
 	"file_magic "*)
 	  file_magic_regex="`expr \"$deplibs_check_method\" : \"file_magic \(.*\)\"`"
-	  FILE="$lt_cv_path_FILE"
+	  MAGIC="$lt_cv_path_MAGIC"
 	  if eval $file_magic_cmd \$file_magic_test_file 2> /dev/null |
 	    egrep "$file_magic_regex" > /dev/null; then
 	    :
@@ -327,27 +330,27 @@ EOF
     fi
   done
   IFS="$ac_save_ifs"
-  FILE="$ac_save_file"
+  MAGIC="$ac_save_MAGIC"
   ;;
 esac])
-FILE="$lt_cv_path_FILE"
-if test -n "$FILE"; then
-  AC_MSG_RESULT($FILE)
+MAGIC="$lt_cv_path_MAGIC"
+if test -n "$MAGIC"; then
+  AC_MSG_RESULT($MAGIC)
 else
   AC_MSG_RESULT(no)
 fi
 ])
 
 
-# AC_PATH_FILE - find a file program which can recognise a shared library
-AC_DEFUN(AC_PATH_FILE,
+# AC_PATH_MAGIC - find a file program which can recognise a shared library
+AC_DEFUN(AC_PATH_MAGIC,
 [AC_REQUIRE([AC_CHECK_TOOL_PREFIX])dnl
 AC_PATH_TOOL_PREFIX(${ac_tool_prefix}file, /usr/bin:$PATH)
-if test -z "$lt_cv_path_FILE"; then
+if test -z "$lt_cv_path_MAGIC"; then
   if test -n "$ac_tool_prefix"; then
     AC_PATH_TOOL_PREFIX(file, /usr/bin:$PATH)
   else
-    FILE=:
+    MAGIC=:
   fi
 fi
 ])
@@ -365,7 +368,7 @@ ac_prog=ld
 if test "$ac_cv_prog_gcc" = yes; then
   # Check if gcc -print-prog-name=ld gives a path.
   AC_MSG_CHECKING([for ld used by GCC])
-  case $lt_target in
+  case $host in
   *-*-mingw*)
     # gcc leaves a trailing carriage return which upsets mingw
     ac_prog=`($CC -print-prog-name=ld) 2>&5 | tr -d '\015'` ;;
@@ -455,7 +458,7 @@ test -n "$reload_flag" && reload_flag=" $reload_flag"
 AC_DEFUN(AC_DEPLIBS_CHECK_METHOD,
 [AC_CACHE_CHECK([how to recognise dependant libraries],
 lt_cv_deplibs_check_method,
-[lt_cv_file_magic_cmd='$FILE'
+[lt_cv_file_magic_cmd='${MAGIC}'
 lt_cv_file_magic_test_file=
 lt_cv_deplibs_check_method='unknown'
 # Need to set the preceding variable on all platforms that support
@@ -470,7 +473,11 @@ lt_cv_deplibs_check_method='unknown'
 # whether `pass_all' will *always* work, you probably want this one.
 
 case "$host_os" in
-aix4* | beos*)
+aix4*)
+  lt_cv_deplibs_check_method=pass_all
+  ;;
+
+beos*)
   lt_cv_deplibs_check_method=pass_all
   ;;
 
@@ -478,6 +485,7 @@ bsdi4*)
   changequote(,)dnl
   lt_cv_deplibs_check_method='file_magic ELF [0-9][0-9]*-bit [ML]SB (shared object|dynamic lib)'
   changequote([, ])dnl
+  lt_cv_file_magic_cmd='/usr/bin/file -L'
   lt_cv_file_magic_test_file=/shlib/libc.so
   ;;
 
@@ -491,11 +499,29 @@ freebsd*)
   freebsd-elf*)
     lt_cv_deplibs_check_method=pass_all
     ;;
+  *)
+    case "$host_cpu" in
+    i*86 )
+      changequote(,)dnl
+      lt_cv_deplibs_check_method=='file_magic OpenBSD/i[3-9]86 demand paged shared library'
+      changequote([, ])dnl
+      lt_cv_file_magic_cmd=/usr/bin/file
+      lt_cv_file_magic_test_file=`echo /usr/lib/libc.so.*`
+      ;;
+    esac
+    ;;
   esac
   ;;
 
 gnu*)
   lt_cv_deplibs_check_method=pass_all
+  ;;
+
+hpux10.20*)
+  # TODO:  Does this work for hpux-11 too?
+  lt_cv_deplibs_check_method='file_magic (s[0-9][0-9][0-9]|PA-RISC[0-9].[0-9]) shared library'
+  lt_cv_file_magic_cmd=/usr/bin/file
+  lt_cv_file_magic_test_file=/usr/lib/libc.sl
   ;;
 
 irix5* | irix6*)
@@ -524,7 +550,7 @@ irix5* | irix6*)
 # This must be Linux ELF.
 linux-gnu*)
   case "$host_cpu" in
-  alpha* | i*86 | sparc* )
+  alpha* | i*86 | powerpc* | sparc* | ia64* )
     lt_cv_deplibs_check_method=pass_all ;;
   *)
     # glibc up to 2.1.1 does not perform some relocations on ARM
@@ -533,6 +559,17 @@ linux-gnu*)
     changequote([, ])dnl
   esac
   lt_cv_file_magic_test_file=`echo /lib/libc.so* /lib/libc-*.so`
+  ;;
+
+netbsd*)
+  if echo __ELF__ | $CC -E - | grep __ELF__ > /dev/null; then :
+  else
+    changequote(,)dnl
+    lt_cv_deplibs_check_method='file_magic ELF [0-9][0-9]*-bit [LM]SB shared object'
+    changequote([, ])dnl
+    lt_cv_file_magic_cmd='/usr/bin/file -L'
+    lt_cv_file_magic_test_file=`echo /usr/lib/libc.so*`
+  fi
   ;;
 
 osf3* | osf4* | osf5*)
@@ -609,7 +646,7 @@ AC_MSG_RESULT([$NM])
 AC_DEFUN(AC_CHECK_LIBM,
 [AC_REQUIRE([AC_CANONICAL_HOST])dnl
 LIBM=
-case "$lt_target" in
+case "$host" in
 *-*-beos* | *-*-cygwin*)
   # These system don't have libm
   ;;
@@ -624,31 +661,35 @@ esac
 ])
 
 # AC_LIBLTDL_CONVENIENCE[(dir)] - sets LIBLTDL to the link flags for
-# the libltdl convenience library, adds --enable-ltdl-convenience to
-# the configure arguments.  Note that LIBLTDL is not AC_SUBSTed, nor
-# is AC_CONFIG_SUBDIRS called.  If DIR is not provided, it is assumed
-# to be `${top_builddir}/libltdl'.  Make sure you start DIR with
-# '${top_builddir}/' (note the single quotes!) if your package is not
-# flat, and, if you're not using automake, define top_builddir as
-# appropriate in the Makefiles.
+# the libltdl convenience library and INCLTDL to the include flags for
+# the libltdl header and adds --enable-ltdl-convenience to the
+# configure arguments.  Note that LIBLTDL and INCLTDL are not
+# AC_SUBSTed, nor is AC_CONFIG_SUBDIRS called.  If DIR is not
+# provided, it is assumed to be `libltdl'.  LIBLTDL will be prefixed
+# with '${top_builddir}/' and INCLTDL will be prefixed with
+# '${top_srcdir}/' (note the single quotes!).  If your package is not
+# flat and you're not using automake, define top_builddir and
+# top_srcdir appropriately in the Makefiles.
 AC_DEFUN(AC_LIBLTDL_CONVENIENCE, [AC_BEFORE([$0],[AC_LIBTOOL_SETUP])dnl
   case "$enable_ltdl_convenience" in
   no) AC_MSG_ERROR([this package needs a convenience libltdl]) ;;
   "") enable_ltdl_convenience=yes
       ac_configure_args="$ac_configure_args --enable-ltdl-convenience" ;;
   esac
-  LIBLTDL=ifelse($#,1,$1,['${top_builddir}/libltdl'])/libltdlc.la
-  INCLTDL=ifelse($#,1,-I$1,['-I${top_srcdir}/libltdl'])
+  LIBLTDL='${top_builddir}/'ifelse($#,1,[$1],['libltdl'])/libltdlc.la
+  INCLTDL='-I${top_srcdir}/'ifelse($#,1,[$1],['libltdl'])
 ])
 
 # AC_LIBLTDL_INSTALLABLE[(dir)] - sets LIBLTDL to the link flags for
-# the libltdl installable library, and adds --enable-ltdl-install to
-# the configure arguments.  Note that LIBLTDL is not AC_SUBSTed, nor
-# is AC_CONFIG_SUBDIRS called.  If DIR is not provided, it is assumed
-# to be `${top_builddir}/libltdl'.  Make sure you start DIR with
-# '${top_builddir}/' (note the single quotes!) if your package is not
-# flat, and, if you're not using automake, define top_builddir as
-# appropriate in the Makefiles.
+# the libltdl installable library and INCLTDL to the include flags for
+# the libltdl header and adds --enable-ltdl-install to the configure
+# arguments.  Note that LIBLTDL and INCLTDL are not AC_SUBSTed, nor is
+# AC_CONFIG_SUBDIRS called.  If DIR is not provided and an installed
+# libltdl is not found, it is assumed to be `libltdl'.  LIBLTDL will
+# be prefixed with '${top_builddir}/' and INCLTDL will be prefixed
+# with '${top_srcdir}/' (note the single quotes!).  If your package is
+# not flat and you're not using automake, define top_builddir and
+# top_srcdir appropriately in the Makefiles.
 # In the future, this macro may have to be called after AC_PROG_LIBTOOL.
 AC_DEFUN(AC_LIBLTDL_INSTALLABLE, [AC_BEFORE([$0],[AC_LIBTOOL_SETUP])dnl
   AC_CHECK_LIB(ltdl, main,
@@ -661,8 +702,8 @@ AC_DEFUN(AC_LIBLTDL_INSTALLABLE, [AC_BEFORE([$0],[AC_LIBTOOL_SETUP])dnl
   ])
   if test x"$enable_ltdl_install" = x"yes"; then
     ac_configure_args="$ac_configure_args --enable-ltdl-install"
-    LIBLTDL=ifelse($#,1,$1,['${top_builddir}/libltdl'])/libltdl.la
-    INCLTDL=ifelse($#,1,-I$1,['-I${top_srcdir}/libltdl'])
+    LIBLTDL='${top_builddir}/'ifelse($#,1,[$1],['libltdl'])/libltdl.la
+    INCLTDL='-I${top_srcdir}/'ifelse($#,1,[$1],['libltdl'])
   else
     ac_configure_args="$ac_configure_args --enable-ltdl-install=no"
     LIBLTDL="-lltdl"

@@ -1,6 +1,6 @@
 # Makefile.in generated automatically by automake 1.4a from Makefile.am
 
-# Copyright (C) 1994, 1995-9, 2000 Free Software Foundation, Inc.
+# Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
 # with or without modifications, as long as this notice is preserved.
@@ -30,6 +30,8 @@ infodir = @infodir@
 mandir = @mandir@
 includedir = @includedir@
 oldincludedir = /usr/include
+
+DESTDIR =
 
 pkgdatadir = $(datadir)/@PACKAGE@
 pkglibdir = $(libdir)/@PACKAGE@
@@ -73,8 +75,6 @@ EXEEXT = @EXEEXT@
 LIBADD_DL = @LIBADD_DL@
 LIBTOOL = @LIBTOOL@
 LIBTOOL_DEPS = @LIBTOOL_DEPS@
-LIB_LF = @LIB_LF@
-LIB_THREAD = @LIB_THREAD@
 LN_S = @LN_S@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
@@ -128,17 +128,17 @@ LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDF
 DIST_SOURCES =  $(libltdl_la_SOURCES) $(libltdlc_la_SOURCES)
 HEADERS =  $(include_HEADERS) $(noinst_HEADERS)
 
-depcomp = 
 DIST_COMMON =  README $(include_HEADERS) $(noinst_HEADERS) \
-../config.guess ../config.sub ../install-sh ../ltconfig ../ltmain.sh \
-../missing ../mkinstalldirs ./stamp-h.in COPYING.LIB Makefile.am \
-Makefile.in acconfig.h acinclude.m4 aclocal.m4 config.h.in configure \
-configure.in
+../config.guess ../config.sub ../depcomp ../install-sh ../ltconfig \
+../ltmain.sh ../missing ../mkinstalldirs ./stamp-h.in COPYING.LIB \
+Makefile.am Makefile.in acconfig.h acinclude.m4 aclocal.m4 config.h.in \
+configure configure.in
 
 
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 
 GZIP_ENV = --best
+depcomp = 
 SOURCES = $(libltdl_la_SOURCES) $(libltdlc_la_SOURCES)
 OBJECTS = $(am_libltdl_la_OBJECTS) $(am_libltdlc_la_OBJECTS)
 
@@ -287,7 +287,7 @@ ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
 	  done | \
 	  $(AWK) '    { files[$$0] = 1; } \
 	       END { for (i in files) print i; }'`; \
-	mkid -fID $$unique $(LISP)
+	mkid -f$$here/ID $$unique $(LISP)
 
 TAGS:  $(HEADERS) $(SOURCES) config.h.in $(TAGS_DEPENDENCIES) \
 		$(TAGS_FILES) $(LISP)
@@ -368,12 +368,11 @@ distdir: $(DISTFILES)
 	@for file in $(DISTFILES); do \
 	  d=$(srcdir); \
 	  if test -d $$d/$$file; then \
-	    cp -pR $$d/$$file $(distdir) \
-	    || exit 1; \
+	    cp -pR $$d/$$file $(distdir); \
 	  else \
 	    test -f $(distdir)/$$file \
-	    || cp -p $$d/$$file $(distdir)/$$file \
-	    || exit 1; \
+	    || ln $$d/$$file $(distdir)/$$file 2> /dev/null \
+	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
 info-am:
