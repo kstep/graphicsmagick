@@ -204,9 +204,13 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       archive_time,
       modify_number,
       application_info,
-      sort_info,
-      type,
-      id,
+      sort_info;
+
+    char
+      type[4],	/* database type identifier "vIMG" */
+      id[4];		/* database creator identifier "View" */
+
+    unsigned long
       seed,
       next_record;
 
@@ -307,13 +311,13 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   pdb_info.modify_number=ReadBlobMSBLong(image);
   pdb_info.application_info=ReadBlobMSBLong(image);
   pdb_info.sort_info=ReadBlobMSBLong(image);
-  pdb_info.type=ReadBlobMSBLong(image);
-  pdb_info.id=ReadBlobMSBLong(image);
+  (void) ReadBlob(image,4,pdb_info.type);
+  (void) ReadBlob(image,4,pdb_info.id);
   pdb_info.seed=ReadBlobMSBLong(image);
   pdb_info.next_record=ReadBlobMSBLong(image);
   pdb_info.number_records=ReadBlobMSBShort(image);
-  if ((count == 0) || (memcmp((char *) &pdb_info.type,"vIMG",4) != 0) ||
-      (memcmp((char *) &pdb_info.id,"View",4) != 0))
+  if ((count == 0) || (memcmp(pdb_info.type,"vIMG",4) != 0) ||
+      (memcmp(pdb_info.id,"View",4) != 0))
     ThrowReaderException(CorruptImageWarning,"Not a PDB image file",image);
   /*
     Read record header.
