@@ -55,7 +55,7 @@
 */
 #include "magick.h"
 #include "defines.h"
-#if defined(HasLTDL)
+#if defined(HasLTDL) || defined(_MAGICKMOD_)
 #  include "modules.h"
 #endif
 
@@ -139,7 +139,7 @@ Export MagickInfo *GetMagickInfo(const char *tag)
 
   if (magick_info_list == (MagickInfo *) NULL)
     {
-#if defined(HasLTDL)
+#if defined(HasLTDL) || defined(_MAGICKMOD_)
       /* Initialize ltdl */
       InitializeModules();
 
@@ -263,7 +263,7 @@ Export void ListMagickInfo(FILE *file)
   register MagickInfo
     *p;
 
-#if defined(HasLTDL)
+#if defined(HasLTDL) || defined(_MAGICKMOD_)
       /* Initialize ltdl */
       InitializeModules();
 
