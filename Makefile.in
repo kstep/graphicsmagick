@@ -433,7 +433,7 @@ EXTRA_DIST = ChangeLog Copyright.txt INSTALL-mac.txt \
 
 
 # Non-Automake subdirectories to distribute
-DISTDIRS = images locale scenes scripts www PerlMagick
+DISTDIRS = images locale scenes scripts www PerlMagick TclMagick
 
 #
 # Additional install rules

@@ -47,7 +47,7 @@ EXTRA_DIST = ChangeLog Copyright.txt INSTALL-mac.txt \
 	README.txt lndir.sh version.sh winpath.sh
 
 # Non-Automake subdirectories to distribute
-DISTDIRS = images locale scenes scripts www PerlMagick
+DISTDIRS = images locale scenes scripts www PerlMagick TclMagick
 dist-hook:
 	( \
 	  builddir=`pwd` ; \

@@ -1,3 +1,7 @@
+2004-01-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* Makefile.am (DISTDIRS): Distribute TclMagick subdirectory.
+
 2004-01-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* wand/magick_wand.c: Ported over the latest ImageMagick Wand API
