@@ -9,8 +9,8 @@
 	BMPs.  Decided to allow this after four readers (including Windows
 	XP) displayed the image using the proper colormap.
 	(WriteBMPImage): BMP2 encoder was writing colormap using wrong format.
-
 	* images: Updated logo images to GraphicsMagick
+	* Added PDF Sages to web page as a sponsor.
 
 2002-02-08  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
 
