@@ -117,10 +117,11 @@ public:
   HRESULT DispatchToImage(IDispatch* pdisp,CComObject<CMagickImage>** ppMagickImage);
   HRESULT UnknownToImage(IUnknown* pdisp,CComObject<CMagickImage>** ppMagickImage);
   HRESULT Execute(unsigned int (*func)(ImageInfo *image_info,
-    const int argc,char **argv,char **text,ExceptionInfo *exception),char **text);
+    const int argc,char **argv,char **text,ExceptionInfo *exception),
+      char **text,ExceptionInfo *exception);
 	HRESULT Perform(unsigned int (*func)(ImageInfo *image_info,
     const int argc,char **argv,char **text,ExceptionInfo *exception),
-      SAFEARRAY **pArrayVar,VARIANT *pVar2);
+      SAFEARRAY **pArrayVar,VARIANT *pVar2,ExceptionInfo *exception);
   LPTSTR StrChr(LPTSTR lpsz, TCHAR ch);
 public:
 	CComPtr<IRequest> m_piRequest;					//Request Object

@@ -521,14 +521,26 @@ STDMETHODIMP CMagickImage::Convert(SAFEARRAY **pArrayVar, VARIANT *pVar)
 
   HRESULT hr;
 
+  ExceptionInfo
+    exception;
+
+  char
+    message_text[MaxTextExtent];
+
   EmptyArgs();
   AddArgs(L"-convert");
-  hr = Perform(ConvertImageCommand,pArrayVar,pVar);
+  GetExceptionInfo(&exception);
+  hr = Perform(ConvertImageCommand,pArrayVar,pVar,&exception);
 	if (FAILED(hr))
     {
       hr = MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,dwErrorBase+1001);
-      Error(A2W("The Convert operation failed"),IID_IMagickImage,hr);
+      FormatString(message_text,"convert: %d: %.1024s: %.1024s",
+        exception.severity,
+        exception.reason ? exception.reason : "unknown",
+        exception.description ? exception.description : "unknown");
+      Error(A2W(message_text),IID_IMagickImage,hr);
     }
+  DestroyExceptionInfo(&exception);
   return hr;
 }
 
@@ -538,14 +550,26 @@ STDMETHODIMP CMagickImage::Composite(SAFEARRAY **pArrayVar, VARIANT *pVar)
 
   HRESULT hr;
 
+  ExceptionInfo
+    exception;
+
+  char
+    message_text[MaxTextExtent];
+
   EmptyArgs();
   AddArgs(L"-composite");
-  hr = Perform(CompositeImageCommand,pArrayVar,pVar);
+  GetExceptionInfo(&exception);
+  hr = Perform(CompositeImageCommand,pArrayVar,pVar,&exception);
 	if (FAILED(hr))
     {
       hr = MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,dwErrorBase+1002);
-      Error(A2W("The Composite operation failed"),IID_IMagickImage,hr);
+      FormatString(message_text,"composite: %d: %.1024s: %.1024s",
+        exception.severity,
+        exception.reason ? exception.reason : "unknown",
+        exception.description ? exception.description : "unknown");
+      Error(A2W(message_text),IID_IMagickImage,hr);
     }
+  DestroyExceptionInfo(&exception);
   return hr;
 }
 
@@ -555,14 +579,26 @@ STDMETHODIMP CMagickImage::Mogrify(SAFEARRAY **pArrayVar, VARIANT *pVar)
 
   HRESULT hr;
 
+  ExceptionInfo
+    exception;
+
+  char
+    message_text[MaxTextExtent];
+
   EmptyArgs();
   AddArgs(L"-mogrify");
-  hr = Perform(MogrifyImageCommand,pArrayVar,pVar);
+  GetExceptionInfo(&exception);
+  hr = Perform(MogrifyImageCommand,pArrayVar,pVar,&exception);
 	if (FAILED(hr))
     {
       hr = MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,dwErrorBase+1003);
-      Error(A2W("The Mogrify operation failed"),IID_IMagickImage,hr);
+      FormatString(message_text,"mogrify: %d: %.1024s: %.1024s",
+        exception.severity,
+        exception.reason ? exception.reason : "unknown",
+        exception.description ? exception.description : "unknown");
+      Error(A2W(message_text),IID_IMagickImage,hr);
     }
+  DestroyExceptionInfo(&exception);
   return hr;
 }
 
@@ -572,14 +608,26 @@ STDMETHODIMP CMagickImage::Montage(SAFEARRAY **pArrayVar, VARIANT *pVar)
 
   HRESULT hr;
 
+  ExceptionInfo
+    exception;
+
+  char
+    message_text[MaxTextExtent];
+
   EmptyArgs();
   AddArgs(L"-montage");
-  hr = Perform(MontageImageCommand,pArrayVar,pVar);
+  GetExceptionInfo(&exception);
+  hr = Perform(MontageImageCommand,pArrayVar,pVar,&exception);
 	if (FAILED(hr))
     {
       hr = MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,dwErrorBase+1004);
-      Error(A2W("The Montage operation failed"),IID_IMagickImage,hr);
+      FormatString(message_text,"montage: %d: %.1024s: %.1024s",
+        exception.severity,
+        exception.reason ? exception.reason : "unknown",
+        exception.description ? exception.description : "unknown");
+      Error(A2W(message_text),IID_IMagickImage,hr);
     }
+  DestroyExceptionInfo(&exception);
   return hr;
 }
 
@@ -589,20 +637,32 @@ STDMETHODIMP CMagickImage::Identify(SAFEARRAY **pArrayVar, VARIANT *pVar)
 
   HRESULT hr;
 
+  ExceptionInfo
+    exception;
+
+  char
+    message_text[MaxTextExtent];
+
   EmptyArgs();
   AddArgs(L"-identify");
-  hr = Perform(IdentifyImageCommand,pArrayVar,pVar);
+  GetExceptionInfo(&exception);
+  hr = Perform(IdentifyImageCommand,pArrayVar,pVar,&exception);
 	if (FAILED(hr))
     {
       hr = MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,dwErrorBase+1005);
-      Error(A2W("The Identify operation failed"),IID_IMagickImage,hr);
+      FormatString(message_text,"identify: %d: %.1024s: %.1024s",
+        exception.severity,
+        exception.reason ? exception.reason : "unknown",
+        exception.description ? exception.description : "unknown");
+      Error(A2W(message_text),IID_IMagickImage,hr);
     }
+  DestroyExceptionInfo(&exception);
   return hr;
 }
 
 HRESULT CMagickImage::Perform(unsigned int (*func)(ImageInfo *image_info,
   const int argc,LPTSTR *argv,LPTSTR *text,ExceptionInfo *exception),
-  SAFEARRAY **pArrayVar, VARIANT *pVar)
+  SAFEARRAY **pArrayVar, VARIANT *pVar,ExceptionInfo *exception)
 {
   USES_CONVERSION;
 
@@ -982,7 +1042,7 @@ HRESULT CMagickImage::Perform(unsigned int (*func)(ImageInfo *image_info,
 #ifdef DO_DEBUG
 	DebugString("CMagickImage - Perform before execute\n");
 #endif
-  hr = Execute(func,&text);
+  hr = Execute(func,&text,exception);
 #ifdef DO_DEBUG
 	DebugString("CMagickImage - Perform after execute\n");
 #endif
@@ -1103,12 +1163,10 @@ void CMagickImage::fatalerrorhandler(const ExceptionType error,const char *messa
 }
 
 HRESULT CMagickImage::Execute(unsigned int (*func)(ImageInfo *image_info,
-  const int argc,char **argv,char **text,ExceptionInfo *exception),char **s)
+  const int argc,char **argv,char **text,ExceptionInfo *exception),char **s,
+    ExceptionInfo *exception)
 {
   unsigned int retcode = 0;
-
-  ExceptionInfo
-    exception;
 
   ImageInfo
     *image_info;
@@ -1116,11 +1174,9 @@ HRESULT CMagickImage::Execute(unsigned int (*func)(ImageInfo *image_info,
   /*
     Set defaults.
   */
-  GetExceptionInfo(&exception);
   image_info=CloneImageInfo((ImageInfo *) NULL);
-  retcode = (func)(image_info, GetArgc(), GetArgv(), s, &exception);
+  retcode = (func)(image_info, GetArgc(), GetArgv(), s, exception);
   DestroyImageInfo(image_info);
-  DestroyExceptionInfo(&exception);
   if (!retcode)
     return E_UNEXPECTED;
   return S_OK;
