@@ -720,6 +720,8 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     TransformRGBImage(image,sRGBColorspace);
   else
     TransformRGBImage(image,YCCColorspace);
+  if (EOFBlob(image))
+    ThrowReaderException(CorruptImageWarning,"Unexpected end-of-file",image);
   if ((rotate == 1) || (rotate == 3))
     {
       double
@@ -752,8 +754,6 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image->chromaticity.white_point.y=0.3290f;
   image->chromaticity.white_point.z=1.0000f;
   image->gamma=0.5;
-  if (EOFBlob(image))
-    ThrowReaderException(CorruptImageWarning,"Unexpected end-of-file",image);
   CloseBlob(image);
   return(image);
 }
