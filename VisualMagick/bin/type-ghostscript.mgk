@@ -9,8 +9,8 @@
     style="normal"
     stretch="normal"
     format="type1"
-    metrics="c:\gs\fonts\a010013l.afm"
-    glyphs="c:\gs\fonts\a010013l.pfb"
+    metrics="@ghostscript_font_dir@a010013l.afm"
+    glyphs="@ghostscript_font_dir@a010013l.pfb"
     />
   <type
     name="AvantGarde-BookOblique"
@@ -21,8 +21,8 @@
     style="oblique"
     stretch="normal"
     format="type1"
-    metrics="c:\gs\fonts\a010033l.afm"
-    glyphs="c:\gs\fonts\a010033l.pfb"
+    metrics="@ghostscript_font_dir@a010033l.afm"
+    glyphs="@ghostscript_font_dir@a010033l.pfb"
     />
   <type
     name="AvantGarde-Demi"
@@ -33,8 +33,8 @@
     style="normal"
     stretch="normal"
     format="type1"
-    metrics="c:\gs\fonts\a010015l.afm"
-    glyphs="c:\gs\fonts\a010015l.pfb"
+    metrics="@ghostscript_font_dir@a010015l.afm"
+    glyphs="@ghostscript_font_dir@a010015l.pfb"
     />
   <type
     name="AvantGarde-DemiOblique"
@@ -45,8 +45,8 @@
     style="oblique"
     stretch="normal"
     format="type1"
-    metrics="c:\gs\fonts\a010035l.afm"
-    glyphs="c:\gs\fonts\a010035l.pfb"
+    metrics="@ghostscript_font_dir@a010035l.afm"
+    glyphs="@ghostscript_font_dir@a010035l.pfb"
     />
   <type
     name="Bookman-Demi"
@@ -57,8 +57,8 @@
     style="normal"
     stretch="normal"
     format="type1"
-    metrics="c:\gs\fonts\b018015l.afm"
-    glyphs="c:\gs\fonts\b018015l.pfb"
+    metrics="@ghostscript_font_dir@b018015l.afm"
+    glyphs="@ghostscript_font_dir@b018015l.pfb"
     />
   <type
     name="Bookman-DemiItalic"
@@ -69,8 +69,8 @@
     style="italic"
     stretch="normal"
     format="type1"
-    metrics="c:\gs\fonts\b018035l.afm"
-    glyphs="c:\gs\fonts\b018035l.pfb"
+    metrics="@ghostscript_font_dir@b018035l.afm"
+    glyphs="@ghostscript_font_dir@b018035l.pfb"
     />
   <type
     name="Bookman-Light"
@@ -81,8 +81,8 @@
     style="normal"
     stretch="normal"
     format="type1"
-    metrics="c:\gs\fonts\b018012l.afm"
-    glyphs="c:\gs\fonts\b018012l.pfb"
+    metrics="@ghostscript_font_dir@b018012l.afm"
+    glyphs="@ghostscript_font_dir@b018012l.pfb"
     />
   <type
     name="Bookman-LightItalic"
@@ -93,8 +93,8 @@
     style="italic"
     stretch="normal"
     format="type1"
-    metrics="c:\gs\fonts\b018032l.afm"
-    glyphs="c:\gs\fonts\b018032l.pfb"
+    metrics="@ghostscript_font_dir@b018032l.afm"
+    glyphs="@ghostscript_font_dir@b018032l.pfb"
     />
   <type
     name="Courier"
@@ -105,8 +105,8 @@
     style="normal"
     stretch="normal"
     format="type1"
-    metrics="c:\gs\fonts\n022003l.afm"
-    glyphs="c:\gs\fonts\n022003l.pfb"
+    metrics="@ghostscript_font_dir@n022003l.afm"
+    glyphs="@ghostscript_font_dir@n022003l.pfb"
     />
   <type
     name="Courier-Bold"
@@ -117,8 +117,8 @@
     style="normal"
     stretch="normal"
     format="type1"
-    metrics="c:\gs\fonts\n022004l.afm"
-    glyphs="c:\gs\fonts\n022004l.pfb"
+    metrics="@ghostscript_font_dir@n022004l.afm"
+    glyphs="@ghostscript_font_dir@n022004l.pfb"
     />
   <type
     name="Courier-Oblique"
@@ -129,8 +129,8 @@
     style="oblique"
     stretch="normal"
     format="type1"
-    metrics="c:\gs\fonts\n022023l.afm"
-    glyphs="c:\gs\fonts\n022023l.pfb"
+    metrics="@ghostscript_font_dir@n022023l.afm"
+    glyphs="@ghostscript_font_dir@n022023l.pfb"
     />
   <type
     name="Courier-BoldOblique"
@@ -141,8 +141,8 @@
     style="oblique"
     stretch="normal"
     format="type1"
-    metrics="c:\gs\fonts\n022024l.afm"
-    glyphs="c:\gs\fonts\n022024l.pfb"
+    metrics="@ghostscript_font_dir@n022024l.afm"
+    glyphs="@ghostscript_font_dir@n022024l.pfb"
     />
   <type
     name="Helvetica"
@@ -153,8 +153,8 @@
     style="normal"
     stretch="normal"
     format="type1"
-    metrics="c:\gs\fonts\n019003l.afm"
-    glyphs="c:\gs\fonts\n019003l.pfb"
+    metrics="@ghostscript_font_dir@n019003l.afm"
+    glyphs="@ghostscript_font_dir@n019003l.pfb"
     />
   <type
     name="Helvetica-Bold"
@@ -165,8 +165,8 @@
     style="normal"
     stretch="normal"
     format="type1"
-    metrics="c:\gs\fonts\n019004l.afm"
-    glyphs="c:\gs\fonts\n019004l.pfb"
+    metrics="@ghostscript_font_dir@n019004l.afm"
+    glyphs="@ghostscript_font_dir@n019004l.pfb"
     />
   <type
     name="Helvetica-Oblique"
@@ -177,8 +177,8 @@
     style="italic"
     stretch="normal"
     format="type1"
-    metrics="c:\gs\fonts\n019023l.afm"
-    glyphs="c:\gs\fonts\n019023l.pfb"
+    metrics="@ghostscript_font_dir@n019023l.afm"
+    glyphs="@ghostscript_font_dir@n019023l.pfb"
     />
   <type
     name="Helvetica-BoldOblique"
@@ -189,8 +189,8 @@
     style="italic"
     stretch="normal"
     format="type1"
-    metrics="c:\gs\fonts\n019024l.afm"
-    glyphs="c:\gs\fonts\n019024l.pfb"
+    metrics="@ghostscript_font_dir@n019024l.afm"
+    glyphs="@ghostscript_font_dir@n019024l.pfb"
     />
   <type
     name="Helvetica-Narrow"
@@ -201,8 +201,8 @@
     style="normal"
     stretch="condensed"
     format="type1"
-    metrics="c:\gs\fonts\n019043l.afm"
-    glyphs="c:\gs\fonts\n019043l.pfb"
+    metrics="@ghostscript_font_dir@n019043l.afm"
+    glyphs="@ghostscript_font_dir@n019043l.pfb"
     />
   <type
     name="Helvetica-Narrow-Oblique"
@@ -213,8 +213,8 @@
     style="oblique"
     stretch="condensed"
     format="type1"
-    metrics="c:\gs\fonts\n019063l.afm"
-    glyphs="c:\gs\fonts\n019063l.pfb"
+    metrics="@ghostscript_font_dir@n019063l.afm"
+    glyphs="@ghostscript_font_dir@n019063l.pfb"
     />
   <type
     name="Helvetica-Narrow-Bold"
@@ -225,8 +225,8 @@
     style="normal"
     stretch="condensed"
     format="type1"
-    metrics="c:\gs\fonts\n019044l.afm"
-    glyphs="c:\gs\fonts\n019044l.pfb"
+    metrics="@ghostscript_font_dir@n019044l.afm"
+    glyphs="@ghostscript_font_dir@n019044l.pfb"
     />
   <type
     name="Helvetica-Narrow-BoldOblique"
@@ -237,8 +237,8 @@
     style="oblique"
     stretch="condensed"
     format="type1"
-    metrics="c:\gs\fonts\n019064l.afm"
-    glyphs="c:\gs\fonts\n019064l.pfb"
+    metrics="@ghostscript_font_dir@n019064l.afm"
+    glyphs="@ghostscript_font_dir@n019064l.pfb"
     />
   <type
     name="NewCenturySchlbk-Roman"
@@ -249,8 +249,8 @@
     style="normal"
     stretch="normal"
     format="type1"
-    metrics="c:\gs\fonts\c059013l.afm"
-    glyphs="c:\gs\fonts\c059013l.pfb"
+    metrics="@ghostscript_font_dir@c059013l.afm"
+    glyphs="@ghostscript_font_dir@c059013l.pfb"
     />
   <type
     name="NewCenturySchlbk-Italic"
@@ -261,8 +261,8 @@
     style="italic"
     stretch="normal"
     format="type1"
-    metrics="c:\gs\fonts\c059033l.afm"
-    glyphs="c:\gs\fonts\c059033l.pfb"
+    metrics="@ghostscript_font_dir@c059033l.afm"
+    glyphs="@ghostscript_font_dir@c059033l.pfb"
     />
   <type
     name="NewCenturySchlbk-Bold"
@@ -273,8 +273,8 @@
     style="normal"
     stretch="normal"
     format="type1"
-    metrics="c:\gs\fonts\c059016l.afm"
-    glyphs="c:\gs\fonts\c059016l.pfb"
+    metrics="@ghostscript_font_dir@c059016l.afm"
+    glyphs="@ghostscript_font_dir@c059016l.pfb"
     />
   <type
     name="NewCenturySchlbk-BoldItalic"
@@ -285,8 +285,8 @@
     style="italic"
     stretch="normal"
     format="type1"
-    metrics="c:\gs\fonts\c059036l.afm"
-    glyphs="c:\gs\fonts\c059036l.pfb"
+    metrics="@ghostscript_font_dir@c059036l.afm"
+    glyphs="@ghostscript_font_dir@c059036l.pfb"
     />
   <type
     name="Palatino-Roman"
@@ -297,8 +297,8 @@
     style="normal"
     stretch="normal"
     format="type1"
-    metrics="c:\gs\fonts\p052003l.afm"
-    glyphs="c:\gs\fonts\p052003l.pfb"
+    metrics="@ghostscript_font_dir@p052003l.afm"
+    glyphs="@ghostscript_font_dir@p052003l.pfb"
     />
   <type
     name="Palatino-Italic"
@@ -309,8 +309,8 @@
     style="italic"
     stretch="normal"
     format="type1"
-    metrics="c:\gs\fonts\p052023l.afm"
-    glyphs="c:\gs\fonts\p052023l.pfb"
+    metrics="@ghostscript_font_dir@p052023l.afm"
+    glyphs="@ghostscript_font_dir@p052023l.pfb"
     />
   <type
     name="Palatino-Bold"
@@ -321,8 +321,8 @@
     style="normal"
     stretch="normal"
     format="type1"
-    metrics="c:\gs\fonts\p052004l.afm"
-    glyphs="c:\gs\fonts\p052004l.pfb"
+    metrics="@ghostscript_font_dir@p052004l.afm"
+    glyphs="@ghostscript_font_dir@p052004l.pfb"
     />
   <type
     name="Palatino-BoldItalic"
@@ -333,8 +333,8 @@
     style="italic"
     stretch="normal"
     format="type1"
-    metrics="c:\gs\fonts\p052024l.afm"
-    glyphs="c:\gs\fonts\p052024l.pfb"
+    metrics="@ghostscript_font_dir@p052024l.afm"
+    glyphs="@ghostscript_font_dir@p052024l.pfb"
     />
   <type
     name="Times-Roman"
@@ -345,8 +345,8 @@
     style="normal"
     stretch="normal"
     format="type1"
-    metrics="c:\gs\fonts\n021003l.afm"
-    glyphs="c:\gs\fonts\n021003l.pfb"
+    metrics="@ghostscript_font_dir@n021003l.afm"
+    glyphs="@ghostscript_font_dir@n021003l.pfb"
     />
   <type
     name="Times-Bold"
@@ -357,8 +357,8 @@
     style="normal"
     stretch="normal"
     format="type1"
-    metrics="c:\gs\fonts\n021004l.afm"
-    glyphs="c:\gs\fonts\n021004l.pfb"
+    metrics="@ghostscript_font_dir@n021004l.afm"
+    glyphs="@ghostscript_font_dir@n021004l.pfb"
     />
   <type
     name="Times-Italic"
@@ -369,8 +369,8 @@
     style="italic"
     stretch="normal"
     format="type1"
-    metrics="c:\gs\fonts\n021023l.afm"
-    glyphs="c:\gs\fonts\n021023l.pfb"
+    metrics="@ghostscript_font_dir@n021023l.afm"
+    glyphs="@ghostscript_font_dir@n021023l.pfb"
     />
   <type
     name="Times-BoldItalic"
@@ -381,8 +381,8 @@
     style="italic"
     stretch="normal"
     format="type1"
-    metrics="c:\gs\fonts\n021024l.afm"
-    glyphs="c:\gs\fonts\n021024l.pfb"
+    metrics="@ghostscript_font_dir@n021024l.afm"
+    glyphs="@ghostscript_font_dir@n021024l.pfb"
     />
   <type
     name="Symbol"
@@ -393,8 +393,8 @@
     style="normal"
     stretch="normal"
     format="type1"
-    metrics="c:\gs\fonts\s050000l.afm"
-    glyphs="c:\gs\fonts\s050000l.pfb"
+    metrics="@ghostscript_font_dir@s050000l.afm"
+    glyphs="@ghostscript_font_dir@s050000l.pfb"
     version="0.1"
     encoding="AdobeCustom" />
 </typemap>
