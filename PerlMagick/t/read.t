@@ -158,6 +158,10 @@ print("Khoros Visualization image file ...\n");
 ++$test;
 testRead( 'input.viff', '1135eda0cb17e0d7553452624242da47');
 
+print("WBMP (Wireless Bitmap (level 0) image) ...\n");
+++$test;
+testRead( 'input.wbmp', '08e6568a927130d4317c85665d0dc929');
+
 print("X Windows system bitmap (black and white only) ...\n");
 ++$test;
 testRead( 'input.xbm', 'a93499e5e2d0e9ae717abbd4ddc994e9');
