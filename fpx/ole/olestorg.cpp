@@ -12,9 +12,15 @@
 //  in Flashpix.h 
 
   #include  <stdio.h>
-  #include  <iostream.h>
-  #include  <fstream.h>
 
+#if defined(USE_LEGACY_INCLUDES)
+#  include <iostream.h>
+#  include <fstream.h>
+#else
+#  include <iostream>
+#  include <fstream>
+   using namespace std;
+#endif
 
 #ifndef OLECommun_h
   #include "olecomm.h"

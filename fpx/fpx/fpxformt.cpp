@@ -11,11 +11,7 @@
 //  For conditions of distribution and use, see copyright notice
 //  in Flashpix.h
 //  ----------------------------------------------------------------------------
-#ifdef _WINDOWS
-  #pragma code_seg ("FlashPixFormat")
-#else
-  #pragma segment FlashPixFormat
-#endif
+
 //  ----------------------------------------------------------------------------
   #include "fpxformt.h"
 //  ----------------------------------------------------------------------------
@@ -34,7 +30,13 @@
 
   #include  <string.h>
   #include  <stdio.h>
-  #include  <fstream.h>
+
+#if defined(USE_LEGACY_INCLUDES)
+#  include <fstream.h>
+#else
+#  include <fstream>
+   using namespace std;
+#endif
   
 #ifdef macintosh
   #include  <Errors.h>

@@ -24,8 +24,16 @@
 
   #include  <stdio.h>
   #include  <stdlib.h>
-  #include  <fstream.h>
-  #include  <iostream.h>
+
+#if defined(USE_LEGACY_INCLUDES)
+#  include <iostream.h>
+#  include <fstream.h>
+#else
+#  include <iostream>
+#  include <fstream>
+   using namespace std;
+#endif
+
 #ifdef macintosh
   #include  <coguid.h>
 #endif

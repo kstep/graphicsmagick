@@ -885,7 +885,7 @@ STDMETHODIMP CExposedStream::UnlockRegion(ULARGE_INTEGER libOffset,
 
 STDMETHODIMP CExposedStream::Commit(DWORD grfCommitFlags)
 {
-    SCODE sc, scSem = STG_E_INUSE;
+    SCODE sc;
     olDebugOut((DEB_ITRACE, "In  CExposedStream::Commit(%lu)\n",
                 grfCommitFlags));
     olLog(("%p::In  CExposedStream::Commit(%lx)\n", this, grfCommitFlags));

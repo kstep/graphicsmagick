@@ -30,7 +30,13 @@
 //  Includes
 //  --------
   #include  <stdio.h>
-  #include  <iostream.h>
+
+#if defined(USE_LEGACY_INCLUDES)
+#  include <iostream.h>
+#else
+#  include <iostream>
+   using namespace std;
+#endif
 
 #ifndef OLECommun_h
   #include "olecomm.h"

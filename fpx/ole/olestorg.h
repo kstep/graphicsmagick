@@ -12,17 +12,22 @@
 //  in Flashpix.h
 //  ----------------------------------------------------------------------------
 
-  #ifndef OLEStorages_h
-  #define OLEStorages_h
+#ifndef OLEStorages_h
+#  define OLEStorages_h
   
 //  ----------------------------------------------------------------------------
 
 //  Includes
 //  --------
-  #include <fstream.h>
+#if defined(USE_LEGACY_INCLUDES)
+#  include <fstream.h>
+#else
+#  include <fstream>
+   using namespace std;
+#endif
 
 #ifndef OLECore_h
-  #include  "olecore.h"
+#  include  "olecore.h"
 #endif
   class OLEEnumStatstg;
   class OLEFile;

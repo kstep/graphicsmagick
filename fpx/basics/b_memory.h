@@ -25,9 +25,10 @@
   #include  <stddef.h>
   #include  <stdlib.h>
 
-// Windows includes new.h only for Visual C++ 4.0 and later
-#if !defined(_WIN32) || (defined(_WIN32) && _MSC_VER >= 1000)
-  #include  <new.h>
+#if defined(USE_LEGACY_INCLUDES)
+# include  <new.h>
+#else
+# include <new>
 #endif
 
 //  Constantes

@@ -21,7 +21,13 @@
 
   #include  <string.h>
   #include  <stdio.h>
-  #include  <fstream.h>
+
+#if defined(USE_LEGACY_INCLUDES)
+#  include <fstream.h>
+#else
+#  include <fstream>
+   using namespace std;
+#endif
   
 #ifdef macintosh
   #include  <Errors.h>
