@@ -1443,7 +1443,7 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 # Set version
 MAJOR_VERSION=5
 MINOR_VERSION=4
-MICRO_VERSION=8
+MICRO_VERSION=9
 echo "configuring ImageMagick $MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION"
 ac_aux_dir=
 for ac_dir in $srcdir $srcdir/.. $srcdir/../..; do
