@@ -240,9 +240,6 @@
 /* Define if you have the <unistd.h> header file.  */
 #undef HAVE_UNISTD_H
 
-/* define if compiled symbols have a leading underscore */
-#undef WITH_SYMBOL_UNDERSCORE
-
 /* Define if using the dmalloc debugging malloc package */
 #undef WITH_DMALLOC
 

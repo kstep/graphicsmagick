@@ -153,6 +153,7 @@ RLEEncodeDelegate = @RLEEncodeDelegate@
 RMDelegate = @RMDelegate@
 SCANDecodeDelegate = @SCANDecodeDelegate@
 ShowImageDelegate = @ShowImageDelegate@
+USE_SYMBOL_UNDERSCORE = @USE_SYMBOL_UNDERSCORE@
 VERSION = @VERSION@
 WMFDecodeDelegate = @WMFDecodeDelegate@
 WWWDecodeDelegate = @WWWDecodeDelegate@

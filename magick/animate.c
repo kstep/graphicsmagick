@@ -286,7 +286,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         User requested help.
       */
       XTextViewWidget(display,resource_info,windows,False,
-        "Help Viewer - Animate",ImageMagickHelp);
+        "Help Viewer - Animate",AnimateHelp);
       break;
     }
     case BrowseDocumentationCommand:

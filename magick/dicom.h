@@ -15,7 +15,7 @@ typedef struct _DicomInfo
     *description;
 } DicomInfo;
 
-static const DicomInfo
+const DicomInfo
   dicom_info[] =
   {
     { 0x0000, 0x0000, "UL", "Group Length" },

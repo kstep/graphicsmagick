@@ -21,8 +21,8 @@ extern "C" {
 /*
   Static declarations.
 */
-static const char
-  *ImageMagickHelp[]=
+const char
+  *AnimateHelp[]=
   {
     "BUTTONS",
     "",
@@ -119,16 +119,6 @@ typedef enum
 #define HighlightHeight  8
 #define ShadowWidth  8
 #define ShadowHeight  8
-
-static const unsigned char
-  HighlightBitmap[] =
-  {
-    0xaa, 0x55, 0xaa, 0x55, 0xaa, 0x55, 0xaa, 0x55
-  },
-  ShadowBitmap[] =
-  {
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
-  };
 
 /*
   Function prototypes.

@@ -6847,7 +6847,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         User requested help.
       */
       XTextViewWidget(display,resource_info,windows,False,
-        "Help Viewer - Display",ImageMagickHelp);
+        "Help Viewer - Display",DisplayHelp);
       break;
     }
     case BrowseDocumentationCommand:

@@ -2725,7 +2725,7 @@ Get(ref,...)
             {
               if (image)
                 s=newSViv(image->depth);
-              return;
+              break;
             }
           if (strEQcase(attribute,"dither"))
             {

@@ -78,6 +78,16 @@ const char
   *ForegroundColor = "#000",  /* black */
   *MatteColor = "#bdbdbd";  /* gray */
 
+const unsigned char
+  HighlightBitmap[8] =
+  {
+    0xaa, 0x55, 0xaa, 0x55, 0xaa, 0x55, 0xaa, 0x55
+  },
+  ShadowBitmap[8] =
+  {
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+  };
+
 const unsigned int
   DefaultState = 0x0000,
   EscapeState = 0x0001,
