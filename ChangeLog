@@ -1,3 +1,23 @@
+2003-05-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/magick.c (InitializeMagick): Improved the signal handling
+	and registration method. Signal handlers are only registered for a
+	signal if the current signal handling disposition for that signal
+	is set to the default (SIG_DFL). When a signal is caught,
+	DestroyMagick is invoked, the handling for the signal is set back
+	to SIG_DFL, and then the signal is re-raised to trigger the
+	default handler for that signal. This causes the process to behave
+	as closely to the default as possible (e.g. generating a core
+	file) while ensuring that DestroyMagick is executed. This also
+	ensures that signal handlers registered by API users are not
+	overridden by invoking InitializeMagick.
+	* configure.ac: Added tests for sigemptyset and
+	sigaction.
+	Add a check for the return type of signal handlers.
+	Test for the 'raise' function.
+	* www/formats.html: Add an entry for CUR, Microsoft
+	Cursor Icon format.
+
 2003-05-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/semaphore.c (struct SemaphoreInfo): Added

@@ -665,6 +665,11 @@ AC_CHECK_TYPE(pid_t, int)
 # If the system does not provide a 'size_t', use 'unsigned int' instead
 AC_CHECK_TYPE(size_t, unsigned)
 
+# If `signal.h' declares signal as returning a pointer to a function
+# returning void, define RETSIGTYPE to be void; otherwise, define it
+# to be int.
+AC_TYPE_SIGNAL
+
 # Test for C compiler __func__ support
 if test "$ac_cv_have___func__" != 'yes' ; then
 AC_CACHE_CHECK(for C compiler __func__ support, ac_cv_have___func__,
@@ -693,8 +698,9 @@ fi
 #
 ########
 AC_FUNC_MMAP
-AC_CHECK_FUNCS([ftime getexecname getc_unlocked getpagesize mkstemp poll pread \
-  pwrite putc_unlocked select tempnam times strerror sysconf vsprintf vsnprintf])
+AC_CHECK_FUNCS([ftime getexecname getc_unlocked getpagesize mkstemp poll \
+  pread pwrite putc_unlocked raise select tempnam times sigemptyset sigaction \
+  strerror sysconf vsprintf vsnprintf])
 
 ########
 #

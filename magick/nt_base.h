@@ -43,6 +43,7 @@ extern "C" {
 #define RW_OK 6
 #define HAVE_VSNPRINTF 1
 #define HAVE_TEMPNAM 1
+#define HAVE_RAISE 1
 
 #if !defined(chsize)
 # if defined(__BORLANDC__)

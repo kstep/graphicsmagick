@@ -164,6 +164,9 @@
 /* Define to 1 if you have the `pwrite' function. */
 #undef HAVE_PWRITE
 
+/* Define to 1 if you have the `raise' function. */
+#undef HAVE_RAISE
+
 /* Define to 1 if you have the `readdir' function. */
 #undef HAVE_READDIR
 
@@ -175,6 +178,12 @@
 
 /* Define if you have the shl_load function. */
 #undef HAVE_SHL_LOAD
+
+/* Define to 1 if you have the `sigaction' function. */
+#undef HAVE_SIGACTION
+
+/* Define to 1 if you have the `sigemptyset' function. */
+#undef HAVE_SIGEMPTYSET
 
 /* define if the compiler supports static_cast<> */
 #undef HAVE_STATIC_CAST
@@ -393,6 +402,9 @@
 
 /* Number of bits in a pixel Quantum (8/16/32) */
 #undef QuantumDepth
+
+/* Define as the return type of signal handlers (`int' or `void'). */
+#undef RETSIGTYPE
 
 /* The size of a `int', as computed by sizeof. */
 #undef SIZEOF_INT
