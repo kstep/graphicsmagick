@@ -96,8 +96,8 @@
 %
 */
 MagickExport const PixelPacket *AcquireCacheView(const ViewInfo *view,
-  const long x,const long y,const unsigned long columns,const unsigned long rows,
-  ExceptionInfo *exception)
+  const long x,const long y,const unsigned long columns,
+  const unsigned long rows,ExceptionInfo *exception)
 {
   assert(view != (ViewInfo *) NULL);
   assert(view->signature == MagickSignature);

@@ -956,7 +956,8 @@ static int GenerateEXIFAttribute(Image *image,const char *spec)
   return(True);
 }
 
-MagickExport ImageAttribute *GetImageAttribute(const Image *image,const char *key)
+MagickExport ImageAttribute *GetImageAttribute(const Image *image,
+  const char *key)
 {
   register ImageAttribute
     *p;
@@ -1015,7 +1016,7 @@ MagickExport ImageAttribute *GetImageAttribute(const Image *image,const char *ke
 */
 MagickExport ImageAttribute *GetImageClippingPathAttribute(const Image *image)
 {
-  return GetImageAttribute(image,"8BIM:1999,2998");
+  return(GetImageAttribute(image,"8BIM:1999,2998"));
 }
 
 /*

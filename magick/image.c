@@ -353,7 +353,8 @@ MagickExport void AllocateNextImage(const ImageInfo *image_info,Image *image)
 %
 %
 */
-MagickExport unsigned int AnimateImages(const ImageInfo *image_info,Image *image)
+MagickExport unsigned int AnimateImages(const ImageInfo *image_info,
+  Image *image)
 {
   char
     *client_name;
@@ -385,7 +386,8 @@ MagickExport unsigned int AnimateImages(const ImageInfo *image_info,Image *image
   return(image->exception.severity == UndefinedException);
 }
 #else
-MagickExport unsigned int AnimateImages(const ImageInfo *image_info,Image *image)
+MagickExport unsigned int AnimateImages(const ImageInfo *image_info,
+  Image *image)
 {
   assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
@@ -2429,7 +2431,8 @@ MagickExport void DestroyImages(Image *image)
 %
 %
 */
-MagickExport unsigned int DisplayImages(const ImageInfo *image_info,Image *image)
+MagickExport unsigned int DisplayImages(const ImageInfo *image_info,
+  Image *image)
 {
   char
     *client_name;
@@ -2473,7 +2476,8 @@ MagickExport unsigned int DisplayImages(const ImageInfo *image_info,Image *image
   return(image->exception.severity != UndefinedException);
 }
 #else
-MagickExport unsigned int DisplayImages(const ImageInfo *image_info,Image *image)
+MagickExport unsigned int DisplayImages(const ImageInfo *image_info,
+  Image *image)
 {
   assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
@@ -3213,7 +3217,7 @@ MagickExport Image **ListToGroupImage(const Image *image,
 %
 %
 */
-MagickExport void ModifyImage(Image** image,ExceptionInfo *exception)
+MagickExport void ModifyImage(Image **image,ExceptionInfo *exception)
 {
   Image
     *clone_image;

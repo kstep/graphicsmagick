@@ -169,9 +169,9 @@ static SyncPixelHandler
 %
 %
 */
-MagickExport const PixelPacket *AcquireCacheNexus(const Image *image,const long x,
-  const long y,const unsigned long columns,const unsigned long rows,
-  const unsigned long id,ExceptionInfo *exception)
+MagickExport const PixelPacket *AcquireCacheNexus(const Image *image,
+  const long x,const long y,const unsigned long columns,
+  const unsigned long rows,const unsigned long id,ExceptionInfo *exception)
 {
   CacheInfo
     *cache_info;
@@ -273,8 +273,8 @@ MagickExport const PixelPacket *AcquireCacheNexus(const Image *image,const long 
 %
 */
 MagickExport const PixelPacket *AcquireImagePixels(const Image *image,
-  const long x,const long y,const unsigned long columns,const unsigned long rows,
-  ExceptionInfo *exception)
+  const long x,const long y,const unsigned long columns,
+  const unsigned long rows,ExceptionInfo *exception)
 {
   if (acquire_pixel_handler == (AcquirePixelHandler) NULL)
     return((const PixelPacket *) NULL);

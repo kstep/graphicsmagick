@@ -585,7 +585,8 @@ MagickExport XFontStruct *XBestFont(Display *display,
 %
 %
 */
-MagickExport void XBestIconSize(Display *display,XWindowInfo *window,Image *image)
+MagickExport void XBestIconSize(Display *display,XWindowInfo *window,
+  Image *image)
 {
   double
     scale_factor;
@@ -2370,8 +2371,7 @@ MagickExport void XFreeResources(Display *display,XVisualInfo *visual_info,
 %
 */
 MagickExport void XFreeStandardColormap(Display *display,
-  const XVisualInfo *visual_info,XStandardColormap *map_info,
-  XPixelInfo *pixel)
+  const XVisualInfo *visual_info,XStandardColormap *map_info,XPixelInfo *pixel)
 {
   /*
     Free colormap.

@@ -438,7 +438,7 @@ static int SceneCompare(const void *x,const void *y)
 #endif
 
 MagickExport void XAnimateBackgroundImage(Display *display,
-  XResourceInfo *resource_info, Image *image)
+  XResourceInfo *resource_info,Image *image)
 {
   char
     geometry[MaxTextExtent],
