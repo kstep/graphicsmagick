@@ -1184,9 +1184,11 @@ static void ipa_draw_text(wmfAPI * API, wmfDrawText_t * draw_text)
 {
   double    
     angle = 0,      /* text rotation angle */
+#if !defined(HasWMFlite)
     bbox_height,    /* bounding box height */
-    bbox_width,      /* bounding box width */
-    pointsize = 0;    /* pointsize to output font with desired height */
+    bbox_width,     /* bounding box width */
+#endif
+    pointsize = 0;  /* pointsize to output font with desired height */
 
   TypeMetric
     metrics;
@@ -1210,8 +1212,6 @@ static void ipa_draw_text(wmfAPI * API, wmfDrawText_t * draw_text)
 
   /* Choose bounding box and calculate its width and height */
   {
-    double dx,
-      dy;
 
     if( draw_text->flags)
       {
@@ -1229,12 +1229,20 @@ static void ipa_draw_text(wmfAPI * API, wmfDrawText_t * draw_text)
         TR = draw_text->bbox.TR;
         BL = draw_text->bbox.BL;
       }
-    dx = ((TR.x - TL.x) + (BR.x - BL.x)) / 2;
-    dy = ((TR.y - TL.y) + (BR.y - BL.y)) / 2;
-    bbox_width = sqrt(dx * dx + dy * dy);
-    dx = ((BL.x - TL.x) + (BR.x - TR.x)) / 2;
-    dy = ((BL.y - TL.y) + (BR.y - TR.y)) / 2;
-    bbox_height = sqrt(dx * dx + dy * dy);
+#if !defined(HasWMFlite)
+    {
+      double
+        dx,
+        dy;
+
+      dx = ((TR.x - TL.x) + (BR.x - BL.x)) / 2;
+      dy = ((TR.y - TL.y) + (BR.y - BL.y)) / 2;
+      bbox_width = sqrt(dx * dx + dy * dy);
+      dx = ((BL.x - TL.x) + (BR.x - TR.x)) / 2;
+      dy = ((BL.y - TL.y) + (BR.y - TR.y)) / 2;
+      bbox_height = sqrt(dx * dx + dy * dy);
+    }
+#endif
   }
 
   font = WMF_DC_FONT(draw_text->dc);
@@ -1730,8 +1738,10 @@ static void util_set_pen(wmfAPI * API, wmfDC * dc)
     pixel_width;
 
   unsigned int
-    pen_style,
-    pen_type;
+    pen_style;
+
+/*   unsigned int */
+/*     pen_type; */
 
   pen = WMF_DC_PEN(dc);
 
@@ -1746,7 +1756,7 @@ static void util_set_pen(wmfAPI * API, wmfDC * dc)
   pen_width = Max(pen_width, pixel_width*0.8);
 
   pen_style = (unsigned int) WMF_PEN_STYLE(pen);
-  pen_type = (unsigned int) WMF_PEN_TYPE(pen);
+  /* pen_type = (unsigned int) WMF_PEN_TYPE(pen); */
 
   /* Pen style specified? */
   if (pen_style == PS_NULL)

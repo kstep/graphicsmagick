@@ -68,7 +68,7 @@
 MagickExport void Contrast(const int sign,Quantum *red,Quantum *green,
   Quantum *blue)
 {
-  const static double
+  static const double
     alpha=0.5+MagickEpsilon;
 
   double

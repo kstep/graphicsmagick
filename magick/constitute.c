@@ -228,7 +228,6 @@ MagickExport Image *ConstituteImage(const unsigned long width,
           {
             DestroyImage(image);
             ThrowImageException(OptionError,UnrecognizedPixelMap,map)
-              break;
           }
         }
     }

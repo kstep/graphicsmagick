@@ -1173,8 +1173,7 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
     **labels;
 
   const char
-    **q,
-    *value;
+    **q;
 
   CompressionType
     compression;
@@ -1588,7 +1587,7 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
     (void) WriteBlobString(image,image->matte ? "true\n" : "false\n");
 
     /* Render with imagemask operator? */
-    if (((value=AccessDefinition(image_info,"ps","imagemask")) != 0) &&
+    if (((AccessDefinition(image_info,"ps","imagemask")) != 0) &&
         IsMonochromeImage(image,&image->exception))
       (void) WriteBlobString(image,"true\n");
     else

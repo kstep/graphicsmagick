@@ -124,7 +124,7 @@ static unsigned int
   VersionCommand(ImageInfo *image_info,int argc,char **argv,
                  char **metadata,ExceptionInfo *exception);
 
-const static CommandInfo commands[] =
+static const CommandInfo commands[] =
   {
 #if defined(HasX11)
     { "animate", "animate a sequence of images",
@@ -2042,7 +2042,6 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
           {
             CompositeUsage();
             ThrowCompositeException(OptionError,UsageError,NULL);
-            break;
           }
         ThrowCompositeException(OptionError,UnrecognizedOption,option)
       }

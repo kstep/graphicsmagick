@@ -656,11 +656,11 @@ static unsigned int FindMagickModule(const char *filename,
   */
   if (IsAccessible(path))
     return(True);
-#endif /* End defined(UseInstalledMagick) */
   if (exception->severity < ConfigureError)
     ThrowException(exception,ConfigureError,UnableToAccessModuleFile,
       filename);
   return(False);
+#endif /* End defined(UseInstalledMagick) */
 }
 #endif /* #if defined(SupportMagickModules) */
 

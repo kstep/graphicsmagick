@@ -986,9 +986,6 @@ static unsigned int ReadConfigureFile(const char *basename,
 #endif /* defined(WIN32) */
               } /* LocaleCompare */
             break;
-          } /*  case 'c': */
-          {
-            break;
           }
         case 'D':
         case 'd':

@@ -305,10 +305,10 @@ static void *GetTypeBlob(const char *filename,char *path,size_t *length,
     if (resource)
       return resource;
   }
-#endif
-#endif
+#endif /* defined(WIN32) */
   ThrowException(exception,ConfigureError,UnableToAccessFontFile,filename);
   return 0;
+#endif /* defined(UseInstalledMagick) */
 }
 
 /*

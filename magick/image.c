@@ -971,8 +971,8 @@ MagickExport unsigned int ChannelImage(Image *image,const ChannelType channel)
               q->opacity=OpaqueOpacity;
               q++;
             }
-          break;
           image->matte=False;
+          break;
         }
       default:
         {

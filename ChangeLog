@@ -1,5 +1,8 @@
 2003-10-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* various: Edits to eliminate minor issues detected by SGI C compiler.
+	* coders/ps3.c (WritePS3Image): Variable 'value was set but never
+	used so it is removed.
 	* magick/image.c (RGBTransformPacket): Removed inline request
 	since this function is too big to inline.
 	* magick/animate.c (XAnimateBackgroundImage): Fixed a GCC 3.X
