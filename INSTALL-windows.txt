@@ -1,4 +1,4 @@
-Important Notes
+IMPORTANT NOTES
 
   On some platforms VISUAL C++ 7.0 fails with an internal compiler
   error while compiling image.c.  The workaround to this problem is to
@@ -10,7 +10,7 @@ Important Notes
    o Select "C/C++"->"Optimization"->"Floating-Point Consistency"
    o Select "Improve Consistency (/Op)"
 
-Windows Win2K/95 VISUAL C++ 6.0 and 7.0 COMPILATION
+WINDOWS WIN2K/95 VISUAL C++ 6.0 AND 7.0 COMPILATION
 
   The Visual C++ distribution targeted at Windows XP, Win2K, or Windows 95
   does not provide any stock workspace (DSW) or project files (DSP) except
@@ -130,7 +130,7 @@ Windows Win2K/95 VISUAL C++ 6.0 and 7.0 COMPILATION
   anything to any of the global SYSTEM or SYSTEM32 areas in the operating
   system installation.
 
-  NOTE #1:
+  Note #1:
 
   The Visual C++ distribution of GraphicsMagick comes with the Magick++
   C++ wrapper by default. This add-on layer has a large number of demo
@@ -206,7 +206,7 @@ Windows Win2K/95 VISUAL C++ 6.0 and 7.0 COMPILATION
     GraphicsMagick\VisualMagick\contrib\win32\MFC\NtMagick
       (project - DSP)
 
-  NOTE #2:
+  Note #2:
 
   The GraphicsMagick distribution is very modular. The default
   configuration is there to get you rolling, but you need to make some
@@ -236,7 +236,7 @@ Windows Win2K/95 VISUAL C++ 6.0 and 7.0 COMPILATION
   were the exe program is run from in order to find all of the files as
   well as the DLL's it needs.
 
-  ENVIRONMENT VARIABLES:
+ENVIRONMENT VARIABLES
 
   You can use the "System" control panel to allow you to add and delete
   what is in any of the environment variables. You can even have user

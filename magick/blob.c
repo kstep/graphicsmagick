@@ -315,9 +315,7 @@ MagickExport unsigned int BlobToFile(const char *filename,const void *blob,
   assert(blob != (const void *) NULL);
   (void) LogMagickEvent(BlobEvent,GetMagickModule(),
     "Copying memory BLOB to file %s\n",filename);
-  file=open(filename,O_WRONLY | O_CREAT | O_BINARY | O_EXCL,0777);
-  if (file == -1)
-    file=open(filename,O_WRONLY | O_CREAT | O_BINARY,0777);
+  file=open(filename,O_WRONLY | O_CREAT | O_TRUNC | O_BINARY,0777);
   if (file == -1)
     {
       ThrowException(exception,BlobError,"UnableToWriteBlob",filename);
@@ -1399,9 +1397,7 @@ MagickExport unsigned int ImageToFile(Image *image,const char *filename,
   (void) LogMagickEvent(BlobEvent,GetMagickModule(),
     "Copying from Blob stream to file %s",filename);
 
-  file=open(filename,O_WRONLY | O_CREAT | O_BINARY | O_EXCL,0777);
-  if (file == -1)
-    file=open(filename,O_WRONLY | O_CREAT | O_BINARY,0777);
+  file=open(filename,O_WRONLY | O_CREAT | O_TRUNC | O_BINARY,0777);
   if (file == -1)
     {
       ThrowException(exception,BlobError,"UnableToWriteBlob",filename);

@@ -16,6 +16,11 @@
 2003-03-12  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> magick/blob.c (BlobToFile): Truncate while opening file.
+        (ImageToFile): Truncate while opening file.
+  <LI> magick/annotate.c (RenderFreetype): Missing freetype library
+        should result in a MissingDelegateError type rather than a
+        DelegateError type.<BR>
   <LI> INSTALL-windows.txt: Added a note regarding a workaround for
         internal compiler errors while compiling image.c when using
         Visual C++ 7.0.<BR>

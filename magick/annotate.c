@@ -1315,7 +1315,7 @@ static unsigned int RenderFreetype(Image *image,const DrawInfo *draw_info,
 static unsigned int RenderFreetype(Image *image,const DrawInfo *draw_info,
   const char *encoding,const PointInfo *offset,TypeMetric *metrics)
 {
-  ThrowBinaryException(DelegateError,"FreeTypeLibraryIsNotAvailable",
+  ThrowBinaryException(MissingDelegateError,"FreeTypeLibraryIsNotAvailable",
     draw_info->font)
 }
 #endif
