@@ -21,6 +21,19 @@
 </tr>
 </table>
 <p>
+2004-05-16  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/image.h (ImageInfo): New 'progress' monitor to indicate
+        if progress monitor and busy cursor are enabled while displaying
+        an image.  Defaults to True.<BR>
+  <LI> magick/display.c, magick/xwindow.c: Use +progress to disable
+        progress monitor and busy cursor.
+  <LI> magick/command.c (MogrifyUsage): Usage didn't list -operator.
+        (ConvertUsage): Usage didn't list -operator.
+
+</UL>
+<p>
 2004-05-15  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

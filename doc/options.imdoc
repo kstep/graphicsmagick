@@ -3233,8 +3233,25 @@ in the <i>APP1</i> profile), use
 
 </utils>
 
+<!-- ------------ -progress ------------------------------------------ -->
 
+<utils apps=display>
+<dopt>+progress</opt>
 
+<abs>disable progress monitor and busy cursor</abs>
+
+<pp>
+By default, when an image is displayed, a progress monitor bar is shown
+in the top left corner of an existing image display window, and the
+current cursor is replaced with an hourglass cursor. Use <s>+progress</s>
+to disable the progress monitor and busy cursor during display operations.
+While the progress monitor is disabled for all operations, the busy
+cursor continues to be enabled for non-display operations such as image
+processing. This option is useful for non-interactive display operations,
+or when a "clean" look is desired.
+</pp>
+
+</utils>
 
 <!-- ------------ -quality ------------------------------------------ -->
 

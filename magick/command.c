@@ -4768,6 +4768,8 @@ MagickExport void ConvertUsage(void)
       "-noise radius        add or reduce noise in an image",
       "-normalize           transform image to span the full range of colors",
       "-opaque color        change this color to the fill color",
+      "-operator channel operator rvalue",
+      "                     apply a mathematical or bitwise operator to channel",
       "-ordered-dither channeltype NxN",
       "                     ordered dither the image",
       "-page geometry       size and location of an image canvas",
@@ -5089,6 +5091,7 @@ MagickExport void DisplayUsage(void)
       "-negate              replace every pixel with its complementary color",
       "-noop                do not apply options to image",
       "-page geometry       size and location of an image canvas",
+      "+progress            disable progress monitor and busy cursor",
       "-quality value       JPEG/MIFF/PNG compression level",
       "-raise value         lighten/darken image edges to create a 3-D effect",
       "-remote command      execute a command in an remote display process",
@@ -6182,6 +6185,11 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
                     option);
                 image_info->page=GetPageGeometry(argv[i]);
               }
+            break;
+          }
+        if (LocaleCompare("progress",option+1) == 0)
+          {
+            resource_info.image_info->progress=(*option == '-');
             break;
           }
         MagickFatalError(OptionFatalError,UnrecognizedOption,option);
@@ -11647,6 +11655,8 @@ MagickExport void MogrifyUsage(void)
       "-noise radius        add or reduce noise in an image.",
       "-normalize           transform image to span the full range of colors",
       "-opaque color        change this color to the fill color",
+      "-operator channel operator rvalue",
+      "                     apply a mathematical or bitwise operator to channel",
       "-ordered-dither channeltype NxN",
       "                     ordered dither the image",
       "-page geometry       size and location of an image canvas",

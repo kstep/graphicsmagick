@@ -868,7 +868,7 @@ typedef struct _ImageInfo
   CompressionType
     compression;             /* Image compression to use while decoding */
 
-  unsigned int
+  MagickBool
     temporary,               /* Remove file "filename" once it has been read. */
     adjoin,                  /* If True, join multiple frames into one file */
     antialias;               /* If True, antialias while rendering */
@@ -914,9 +914,10 @@ typedef struct _ImageInfo
     border_color,            /* Border color (color surrounding frame) */
     matte_color;             /* Matte color (frame color) */
 
-  unsigned int
+  MagickBool
     dither,                  /* If true, dither image while writing */
-    monochrome;              /* If true, use monochrome format */
+    monochrome,              /* If true, use monochrome format */
+    progress;                /* If true, show progress indication */
 
   ColorspaceType
     colorspace;              /* Colorspace representations of image pixels */

@@ -2431,6 +2431,19 @@ in the \fIAPP1\fP profile), use
 
     gm convert cockatoo.jpg exifdata.app1
 .TP
+.B "+progress"
+\fRdisable progress monitor and busy cursor
+
+By default, when an image is displayed, a progress monitor bar is shown
+in the top left corner of an existing image display window, and the
+current cursor is replaced with an hourglass cursor. Use \fB+progress\fP
+to disable the progress monitor and busy cursor during display operations.
+While the progress monitor is disabled for all operations, the busy
+cursor continues to be enabled for non-display operations such as image
+processing. This option is useful for non-interactive display operations,
+or when a "clean" look is desired.
+
+.TP
 .B "-quality \fI<value>"\fP
 \fRJPEG/MIFF/PNG compression level
 
@@ -4662,6 +4675,9 @@ Options, above.
 .TP
 .B "-process \fI<command>"\fP
 \fRprocess a sequence of images using a process module
+.TP
+.B "+progress"
+\fRdisable display progress monitor and busy cursor
 .TP
 .B "-profile \fI<filename>"\fP
 \fRadd ICM, IPTC, or generic profile  to image
@@ -8233,4 +8249,4 @@ authorization from the GraphicsMagick Group.\fP
 \fBAdditional copyrights and licenses apply to this software. You should
 have received a copy of Copyright.txt with this package, which describes
 additional copyrights and licenses which apply to this software;
-otherwise see http://www.graphicsmagick.org/www/Copyright.html.\fB
+otherwise see http://www.graphicsmagick.org/www/Copyright.html.\fP

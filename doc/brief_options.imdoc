@@ -464,6 +464,10 @@ display image using this type.</abs>
 <lopt>-process <command></opt>
 <abs>process a sequence of images using a process module</abs>
 </utils>
+<utils apps=convert>
+<lopt>+progress</opt>
+<abs>disable display progress monitor and busy cursor</abs>
+</utils>
 <utils apps=composite,convert,mogrify>
 <lopt>-profile <filename></opt>
 <abs>add ICM, IPTC, or generic profile  to image</abs>

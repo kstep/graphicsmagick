@@ -1443,6 +1443,7 @@ MagickExport ImageInfo *CloneImageInfo(const ImageInfo *image_info)
   clone_info->border_color=image_info->border_color;
   clone_info->matte_color=image_info->matte_color;
   clone_info->dither=image_info->dither;
+  clone_info->progress=image_info->progress;
   clone_info->monochrome=image_info->monochrome;
   clone_info->colorspace=image_info->colorspace;
   clone_info->type=image_info->type;
@@ -3161,6 +3162,7 @@ MagickExport void GetImageInfo(ImageInfo *image_info)
   image_info->antialias=True;
   image_info->pointsize=12;
   image_info->dither=True;
+  image_info->progress=True;
   GetExceptionInfo(&exception);
   (void) QueryColorDatabase(BackgroundColor,&image_info->background_color,
     &exception);

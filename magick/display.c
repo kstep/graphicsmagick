@@ -1091,7 +1091,11 @@ static unsigned int XBackgroundImage(Display *display,
     return(False);
   (void) XMagickCommand(display,resource_info,windows,ApplyCommand,image);
   XInfoWidget(display,windows,BackgroundImageText);
-  XSetCursorState(display,windows,True);
+  /*
+    Display hourglass cursor if progress indication enabled.
+  */
+  if (resource_info->image_info->progress)
+    XSetCursorState(display,windows,True);
   XCheckRefreshWindows(display,windows);
   background_resources=(*resource_info);
   background_resources.window_id=window_id;
@@ -2738,9 +2742,13 @@ static unsigned int XConfigureImage(Display *display,
   x=0;
   y=0;
   /*
+    Display hourglass cursor if progress indication enabled.
+  */
+  if (resource_info->image_info->progress)
+    XSetCursorState(display,windows,True);
+  /*
     Resize image to fit Image window dimensions.
   */
-  XSetCursorState(display,windows,True);
   (void) XFlush(display);
   if (((int) width != windows->image.ximage->width) ||
       ((int) height != windows->image.ximage->height))
@@ -7405,12 +7413,16 @@ static void XMakePanImage(Display *display,XResourceInfo *resource_info,
     status;
 
   /*
-    Create and display image for panning icon.
+    Display hourglass cursor if progress indication enabled.
   */
-  XSetCursorState(display,windows,True);
+  if (resource_info->image_info->progress)
+    XSetCursorState(display,windows,True);
   XCheckRefreshWindows(display,windows);
   windows->pan.x=windows->image.x;
   windows->pan.y=windows->image.y;
+  /*
+    Create and display image for panning icon.
+  */
   status=XMakeImage(display,resource_info,&windows->pan,image,
     windows->pan.width,windows->pan.height);
   if (status == False)
@@ -12222,8 +12234,18 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   windows=XSetWindows((XWindows *) ~0);
   if (windows != (XWindows *) NULL)
     {
+      /*
+        Change to the working directory.
+      */
       (void) chdir(working_directory);
-      monitor_handler=SetMonitorHandler(XMagickMonitor);
+      /*
+        Set the progress monitor if progress monitoring is requested.
+      */
+      if (resource_info->image_info->progress)
+        monitor_handler=SetMonitorHandler(XMagickMonitor);
+      /*
+        Set the warning and signal handlers.
+      */
       warning_handler=resource_info->display_warnings ?
         SetErrorHandler(XWarning) : SetErrorHandler((ErrorHandler) NULL);
       warning_handler=resource_info->display_warnings ?
@@ -12722,10 +12744,14 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   if (!windows->image.mapped || (windows->backdrop.id != (Window) NULL))
     (void) XMapWindow(display,windows->image.id);
   /*
-    Set our progress monitor and warning handlers.
+    Set progress monitor if progress monitoring requested.
   */
-  if (monitor_handler == (MonitorHandler) NULL)
+  if ((resource_info->image_info->progress) &&
+      (monitor_handler == (MonitorHandler) NULL))
     monitor_handler=SetMonitorHandler(XMagickMonitor);
+  /*
+    Set warning and signal handlers.
+  */
   if (warning_handler == (WarningHandler) NULL)
     {
       warning_handler=resource_info->display_warnings ?
@@ -13749,7 +13775,11 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
         (void) XDestroyWindow(display,windows->image.id);
         windows->image.id=(Window) NULL;
       }
-  XSetCursorState(display,windows,True);
+  /*
+    Enable application cursor if progress indication enabled.
+  */
+  if (resource_info->image_info->progress)
+    XSetCursorState(display,windows,True);
   XCheckRefreshWindows(display,windows);
   if (!resource_info->immutable || (display_image->next != (Image *) NULL))
     if ((*state & FormerImageState) || (*state & NextImageState))
