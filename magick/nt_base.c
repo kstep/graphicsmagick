@@ -677,7 +677,7 @@ int lt_dlsetsearchpath(const char *path)
 {
   if (lt_slsearchpath)
     {
-      (void) MagickFreeMemory(lt_slsearchpath);
+      MagickFreeMemory(lt_slsearchpath);
       lt_slsearchpath=(char *) NULL;
     }
   if (path != (char *) NULL)
