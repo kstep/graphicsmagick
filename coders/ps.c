@@ -532,12 +532,6 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
       DownScale(pixel.green),DownScale(pixel.blue), \
       (unsigned long) Min(length,0xff)); \
   (void) WriteBlobString(image,buffer); \
-  i++; \
-  if (i == 9) \
-    { \
-      (void) WriteBlobByte(image,'\n'); \
-      i=0; \
-    } \
 }
 
   static const char 
@@ -561,7 +555,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
       "  %   length: number of pixels minus one of this color (optional).",
       "  %",
       "  currentfile color_packet readhexstring pop pop",
-      "  compression 0 gt",
+      "  compression 0 eq",
       "  {",
       "    /number_pixels 3 def",
       "  }",
@@ -620,7 +614,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
       "  color_packet 2 get 0.114 mul add",
       "  cvi",
       "  /gray_packet exch def",
-      "  compression 0 gt",
+      "  compression 0 eq",
       "  {",
       "    /number_pixels 1 def",
       "  }",
@@ -652,7 +646,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
       "  color_packet 2 get 0.114 mul add",
       "  cvi",
       "  /gray_packet exch def",
-      "  compression 0 gt",
+      "  compression 0 eq",
       "  {",
       "    /number_pixels 1 def",
       "  }",
@@ -679,7 +673,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
       "  currentfile byte readhexstring pop 0 get",
       "  /offset exch 3 mul def",
       "  /color_packet colormap offset 3 getinterval def",
-      "  compression 0 gt",
+      "  compression 0 eq",
       "  {",
       "    /number_pixels 3 def",
       "  }",
@@ -762,7 +756,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
       "  %   image label.",
       "  %   image columns & rows.",
       "  %   class: 0-DirectClass or 1-PseudoClass.",
-      "  %   compression: 0-RunlengthEncodedCompression or 1-NoCompression.",
+      "  %   compression: 0-none or 1-RunlengthEncoded.",
       "  %   hex color packets.",
       "  %",
       "  gsave",
@@ -1128,7 +1122,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
         */
         FormatString(buffer,"%u %u\n%d\n%d\n",image->columns,image->rows,
           (int) (image->storage_class == PseudoClass),
-          (int) (image_info->compression == NoCompression));
+          (int) (image_info->compression == RunlengthEncodedCompression));
         (void) WriteBlobString(image,buffer);
         switch (image_info->compression)
         {
@@ -1153,7 +1147,15 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                 else
                   {
                     if (x > 0)
-                      WriteRunlengthPacket(image,pixel,length,p);
+                      {
+                        WriteRunlengthPacket(image,pixel,length,p);
+                        i++;
+                        if (i == 9)
+                          {
+                            (void) WriteBlobByte(image,'\n');
+                            i=0;
+                          }
+                      }
                     length=0;
                   }
                 pixel=(*p);
@@ -1306,7 +1308,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
           */
           FormatString(buffer,"%u %u\n%d\n%d\n0\n",image->columns,image->rows,
             (int) (image->storage_class == PseudoClass),
-            (int) (image_info->compression == NoCompression));
+            (int) (image_info->compression == RunlengthEncodedCompression));
           (void) WriteBlobString(image,buffer);
           /*
             Dump number of colors and colormap.
@@ -1336,7 +1338,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                   break;
                 indexes=GetIndexes(image);
                 index=(*indexes);
-                length=0;
+                length=255;
                 for (x=0; x < (int) image->columns; x++)
                 {
                   if ((index == indexes[x]) && (length < 255) &&
@@ -1344,14 +1346,17 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                     length++;
                   else
                     {
-                      FormatString(buffer,"%02x%02x",(unsigned int)
-                        index,(unsigned int) Min(length,0xff));
-                      (void) WriteBlobString(image,buffer);
-                      i++;
-                      if (i == 18)
+                      if (x > 0)
                         {
-                          (void) WriteBlobByte(image,'\n');
-                          i=0;
+                          FormatString(buffer,"%02x%02x",(unsigned int)
+                            index,(unsigned int) Min(length,0xff));
+                          (void) WriteBlobString(image,buffer);
+                          i++;
+                          if (i == 18)
+                            {
+                              (void) WriteBlobByte(image,'\n');
+                              i=0;
+                            }
                         }
                       length=0;
                     }
@@ -1363,6 +1368,9 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                   if (QuantumTick(y,image->rows))
                     MagickMonitor(SaveImageText,y,image->rows);
               }
+              FormatString(buffer,"%02x%02x",(unsigned int) index,
+                (unsigned int) Min(length,0xff));
+              (void) WriteBlobString(image,buffer);
               break;
             }
             case NoCompression:
