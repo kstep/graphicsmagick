@@ -342,6 +342,9 @@ Export void GetBlobInfo(BlobInfo *blob_info)
 */
 Export char *GetStringBlob(Image *image,char *string)
 {
+  int
+    c;
+
   register int
     i;
 
@@ -350,7 +353,10 @@ Export char *GetStringBlob(Image *image,char *string)
     return(fgets((char *) string,MaxTextExtent,image->file));
   for (i=0; i < (MaxTextExtent-1); i++)
   {
-    string[i]=ReadByte(image);
+    c=ReadByte(image);
+    if (c == EOF)
+      return((char *) NULL);
+    string[i]=c;
     if ((string[i] == '\n') || (string[i] == '\r'))
       break;
   }
@@ -1213,7 +1219,7 @@ Export int ReadByte(Image *image)
   assert(image != (Image *) NULL);
   count=ReadBlob(image,1,(char *) &value);
   if (count == 0)
-    return((int) ~0);
+    return(EOF);
   return(value);
 }
 

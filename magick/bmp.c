@@ -121,7 +121,7 @@ static unsigned int DecodeImage(Image *image,const unsigned int compression,
   for (y=0; y < (int) number_rows; )
   {
     count=ReadByte(image);
-    if (count < 0)
+    if (count == EOF)
       return(False);
     if (count != 0)
       {

@@ -836,7 +836,6 @@ Export void ListMagickInfo(FILE *file)
 %        unsigned int (*magick)(const unsigned char *,const unsigned int),
 %        const unsigned int adjoin,const unsigned int blob_support,
 %        const char *description)
-%        blob_support,description))
 %
 %  A description of each parameter follows:
 %
