@@ -514,7 +514,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       image->units=PixelsPerInchResolution;
     if (units == RESUNIT_CENTIMETER)
       image->units=PixelsPerCentimeterResolution;
-    value=0;
+    value=image->scene;
     TIFFGetFieldDefaulted(tiff,TIFFTAG_PAGENUMBER,&value,&pages);
     image->scene=value;
     if (TIFFGetField(tiff,TIFFTAG_ARTIST,&text) == 1)
@@ -1441,7 +1441,11 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
     }
     TIFFSetField(tiff,TIFFTAG_PHOTOMETRIC,photometric);
     TIFFSetField(tiff,TIFFTAG_COMPRESSION,compress_tag);
+#if defined(WORDS_BIGENDIAN)
     TIFFSetField(tiff,TIFFTAG_FILLORDER,FILLORDER_MSB2LSB);
+#else
+    TIFFSetField(tiff,TIFFTAG_FILLORDER,FILLORDER_LSB2MSB);
+#endif
     TIFFSetField(tiff,TIFFTAG_ORIENTATION,ORIENTATION_TOPLEFT);
     TIFFSetField(tiff,TIFFTAG_PLANARCONFIG,PLANARCONFIG_CONTIG);
     if (photometric == PHOTOMETRIC_RGB)

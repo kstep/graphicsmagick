@@ -215,8 +215,8 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Set the page geometry.
   */
-  dx_resolution=72.0;
-  dy_resolution=72.0;
+  dx_resolution=72.27;
+  dy_resolution=72.27;
   if ((image->x_resolution == 0.0) || (image->y_resolution == 0.0))
     {
      (void) strcpy(density,PSDensityGeometry);
@@ -229,8 +229,8 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   page.height=792;
   page.x=0;
   page.y=0;
-  (void) ParseImageGeometry(PSPageGeometry,&page.x,&page.y,
-    &page.width,&page.height);
+  (void) ParseImageGeometry(PSPageGeometry,&page.x,&page.y,&page.width,
+    &page.height);
   portrait=True;
   /*
     Determine page geometry from the PDF media box.
@@ -283,8 +283,8 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     (void) ParseImageGeometry(image_info->page,&page.x,&page.y,
       &page.width,&page.height);
   FormatString(geometry,"%ux%u",
-    (unsigned int) ((page.width*image->x_resolution+0.5)/dx_resolution),
-    (unsigned int) ((page.height*image->y_resolution+0.5)/dy_resolution));
+    (unsigned int) ceil(page.width*image->x_resolution/dx_resolution),
+    (unsigned int) ceil(page.height*image->y_resolution/dy_resolution));
   if (ferror(file))
     {
       (void) fclose(file);
@@ -690,9 +690,9 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     /*
       Scale relative to dots-per-inch.
     */
-    dx_resolution=72.0;
-    dy_resolution=72.0;
-    x_resolution=72.0;
+    dx_resolution=72.27;
+    dy_resolution=72.27;
+    x_resolution=72.27;
     (void) strcpy(density,PSDensityGeometry);
     count=sscanf(density,"%lfx%lf",&x_resolution,&y_resolution);
     if (count != 2)

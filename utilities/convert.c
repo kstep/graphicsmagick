@@ -343,7 +343,7 @@ static void Usage()
       "-tile filename       tile image when filling a graphic primitive",
       "-transparent color   make this color transparent within the image",
       "-treedepth value     depth of the color color tree",
-      "-units type          Inch, Centimeter, or Undefined",
+      "-units type          PixelsPerInch, PixelsPerCentimeter, or Undefined",
       "-verbose             print detailed information about the image",
       "-view                FlashPix viewing transforms",
       "-wave geometry       alter an image along a sine wave",

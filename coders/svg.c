@@ -258,17 +258,17 @@ static double GetUserSpaceCoordinateValue(const SVGInfo *svg_info,
       return(value*svg_info->width/svg_info->scale[n]/scale/100.0);
     }
   if (LocaleNCompare(p,"cm",2) == 0)
-    return(72.0/2.54*value/svg_info->scale[n]);
+    return(72.27/2.54*value/svg_info->scale[n]);
   if (LocaleNCompare(p,"em",2) == 0)
     return(svg_info->pointsize*value/svg_info->scale[n]);
   if (LocaleNCompare(p,"ex",2) == 0)
     return(svg_info->pointsize*value/svg_info->scale[n]/2.0);
   if (LocaleNCompare(p,"in",2) == 0)
-    return(72.0*value/svg_info->scale[n]);
+    return(72.27*value/svg_info->scale[n]);
   if (LocaleNCompare(p,"mm",2) == 0)
-    return(72.0/25.4*value/svg_info->scale[n]);
+    return(72.27/25.4*value/svg_info->scale[n]);
   if (LocaleNCompare(p,"pc",2) == 0)
-    return(72.0/6.0*value/svg_info->scale[n]);
+    return(72.27/6.0*value/svg_info->scale[n]);
   if (LocaleNCompare(p,"pt",2) == 0)
     return(value/svg_info->scale[n]);
   if (LocaleNCompare(p,"px",2) == 0)
@@ -2225,9 +2225,9 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   svg_info.scale[0]=1.0;
   IdentityAffine(&svg_info.affine);
   svg_info.affine.sx=
-    image->x_resolution == 0.0 ? 1.0 : image->x_resolution/72.0;
+    image->x_resolution == 0.0 ? 1.0 : image->x_resolution/72.27;
   svg_info.affine.sy=
-    image->y_resolution == 0.0 ? 1.0 : image->y_resolution/72.0;
+    image->y_resolution == 0.0 ? 1.0 : image->y_resolution/72.27;
   svg_info.bounds.width=image->columns;
   svg_info.bounds.height=image->rows;
   if (image_info->size != (char *) NULL)

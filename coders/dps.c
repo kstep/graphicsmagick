@@ -202,7 +202,7 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   screen=ScreenOfDisplay(display,visual_info->screen);
   pixels_per_point=XDPSPixelsPerPoint(screen);
   if ((image->x_resolution != 0.0) && (image->y_resolution != 0.0))
-    pixels_per_point=Min(image->x_resolution,image->y_resolution)/72.0;
+    pixels_per_point=Min(image->x_resolution,image->y_resolution)/72.27;
   status=XDPSCreatePixmapForEPSF((DPSContext) NULL,screen,image->file,
     visual_info->depth,pixels_per_point,&pixmap,&bits_per_pixel,&page);
   if ((status == dps_status_failure) || (status == dps_status_no_extension))

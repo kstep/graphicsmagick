@@ -1100,8 +1100,8 @@ static void DrawBoundingRectangles(const DrawInfo *draw_info,
   clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
   clone_info->debug=False;
   QueryColorDatabase("none",&clone_info->fill);
-  resolution.x=72.0;
-  resolution.y=72.0;
+  resolution.x=72.27;
+  resolution.y=72.27;
   if (clone_info->density != (char *) NULL)
     {
       int
@@ -1111,7 +1111,7 @@ static void DrawBoundingRectangles(const DrawInfo *draw_info,
       if (count != 2)
         resolution.y=resolution.x;
     }
-  mid=(resolution.x/72.0)*ExpandAffine(&clone_info->affine)*
+  mid=(resolution.x/72.27)*ExpandAffine(&clone_info->affine)*
     clone_info->stroke_width/2.0;
   if (polygon_info != (PolygonInfo *) NULL)
     {

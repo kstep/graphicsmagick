@@ -1073,8 +1073,6 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
     *attribute;
 
   int
-    flags,
-    sans_offset,
     y;
 
   JSAMPLE
@@ -1164,16 +1162,19 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
         jpeg_info.in_color_space=JCS_GRAYSCALE;
       }
   jpeg_set_defaults(&jpeg_info);
-  flags=NoValue;
-  x_resolution=72;
-  y_resolution=72;
+  x_resolution=72.27;
+  y_resolution=72.27;
   if (image_info->density != (char *) NULL)
-    flags=ParseGeometry(image_info->density,&sans_offset,&sans_offset,
-      &x_resolution,&y_resolution);
-  if (flags & WidthValue)
-    image->x_resolution=x_resolution;
-  if (flags & HeightValue)
-    image->y_resolution=y_resolution;
+    {
+      int
+        count;
+
+      count=sscanf(image_info->density,"%lfx%lf",&x_resolution,&y_resolution);
+      if (count != 2)
+        y_resolution=x_resolution;
+    }
+  image->x_resolution=x_resolution;
+  image->y_resolution=y_resolution;
   jpeg_info.density_unit=1;  /* default to DPI */
   if ((image->x_resolution != 0) && (image->y_resolution != 0))
     {

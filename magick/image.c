@@ -74,7 +74,7 @@ const char
   *LoadImageText = "  Loading image...  ",
   *LoadImagesText = "  Loading images...  ",
   *MatteColor = "#bdbdbd",  /* gray */
-  *PSDensityGeometry = "72x72",
+  *PSDensityGeometry = "72.27x72.27",
   *PSPageGeometry = "612x792>",
   *ReadBinaryType = "rb",
   *ReadBinaryUnbufferedType = "rbu",
@@ -221,7 +221,7 @@ MagickExport Image *AllocateImage(const ImageInfo *image_info)
 %  Method AllocateImageColormap allocates an Image colormap and initializes it.
 %  The minimum number of colormap cells allocated is 256.
 %
-%  The format of the AllocateNextImage method is:
+%  The format of the AllocateImageColormap method is:
 %
 %      unsigned int AllocateImageColormap(Image *image,
 %        const unsigned int colors)

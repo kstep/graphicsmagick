@@ -134,8 +134,8 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Set the page geometry.
   */
-  dx_resolution=72.0;
-  dy_resolution=72.0;
+  dx_resolution=72.27;
+  dy_resolution=72.27;
   if ((image->x_resolution == 0.0) || (image->y_resolution == 0.0))
     {
       char
@@ -159,9 +159,9 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Initialize Image structure.
   */
   image->columns=(unsigned int)
-    (((page.width*image->x_resolution)/dx_resolution)+0.5);
+    ceil(((page.width*image->x_resolution)/dx_resolution)+0.5);
   image->rows=(unsigned int)
-    (((page.height*image->y_resolution)/dy_resolution)+0.5);
+    ceil(((page.height*image->y_resolution)/dy_resolution)+0.5);
   (void) QueryColorDatabase("#c0c0c0",&image->background_color);
   texture=(Image *) NULL;
   if (image_info->texture != (char *) NULL)

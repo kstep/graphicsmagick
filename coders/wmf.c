@@ -235,7 +235,7 @@ static int WmfMmHeight(CSTRUCT *cstruct)
   double
     y_resolution;
 
-  y_resolution=72;
+  y_resolution=72.27;
 
   if(IMG_PTR->y_resolution > 0)
     y_resolution=IMG_PTR->y_resolution;
@@ -248,7 +248,7 @@ static int WmfMmWidth(CSTRUCT *cstruct)
   double
     x_resolution;
   
-  x_resolution=72;
+  x_resolution=72.27;
 
   if(IMG_PTR->x_resolution > 0)
     x_resolution=IMG_PTR->x_resolution;
@@ -888,7 +888,7 @@ static void WmfDrawText(CSTRUCT *cstruct, char *str, RECT *arect,
   rotate = cstruct->dc->font->lfEscapement;
   angle = (double)(-cstruct->dc->font->lfEscapement)/10.0 * PI / 180;
 
-  y_resolution=72;
+  y_resolution=72.27;
   if(IMG_PTR->y_resolution > 0)
     y_resolution=IMG_PTR->y_resolution;
   fontoffset=0;
@@ -926,7 +926,7 @@ static void WmfDrawText(CSTRUCT *cstruct, char *str, RECT *arect,
   *gravity='\0';
   if(textalign & TA_TOP)
     {
-      fontoffset=(pointsize*y_resolution)/72;
+      fontoffset=(pointsize*y_resolution)/72.27;
       if(textalign & TA_LEFT)
         strcpy(gravity,"NorthWest");
       else if(textalign & TA_CENTER)
@@ -946,7 +946,7 @@ static void WmfDrawText(CSTRUCT *cstruct, char *str, RECT *arect,
     }
   else if(textalign & TA_BASELINE)
     {
-      fontoffset=(pointsize*y_resolution)/(72*2);
+      fontoffset=(pointsize*y_resolution)/(72.27*2);
       if(textalign & TA_RIGHT)
         strcpy(gravity,"South");
       else if(textalign & TA_CENTER)
@@ -957,7 +957,7 @@ static void WmfDrawText(CSTRUCT *cstruct, char *str, RECT *arect,
   else
     {
       /* Default gravity is NorthWest */
-      fontoffset=(pointsize*y_resolution)/72;
+      fontoffset=(pointsize*y_resolution)/72.27;
     }
   if(*gravity!='\0')
     {
@@ -1226,8 +1226,8 @@ static void WmfSetPmfSize(CSTRUCT *cstruct, HMETAFILE file)
     x_resolution,
     y_resolution;
   
-  x_resolution=72;
-  y_resolution=72;
+  x_resolution=72.27;
+  y_resolution=72.27;
 
   if(IMG_PTR->x_resolution > 0)
     x_resolution=IMG_PTR->x_resolution;

@@ -248,9 +248,9 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
     /*
       Scale relative to dots-per-inch.
     */
-    dx_resolution=72.0;
-    dy_resolution=72.0;
-    x_resolution=72.0;
+    dx_resolution=72.27;
+    dy_resolution=72.27;
+    x_resolution=72.27;
     (void) strcpy(density,PSDensityGeometry);
     count=sscanf(density,"%lfx%lf",&x_resolution,&y_resolution);
     if (count != 2)
@@ -262,9 +262,9 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
           y_resolution=x_resolution;
       }
     x_scale=(width*dx_resolution)/x_resolution;
-    width=(unsigned int) (x_scale+0.5);
+    width=(unsigned int) ceil(x_scale+0.5);
     y_scale=(height*dy_resolution)/y_resolution;
-    height=(unsigned int) (y_scale+0.5);
+    height=(unsigned int) ceil(y_scale+0.5);
     if (page == 1)
       {
         /*
