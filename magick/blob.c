@@ -1487,7 +1487,9 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
           }
       if (command != (char *) NULL)
         {
-          if (*type == 'r')
+          if (*type != 'r')
+            FormatString(filename,"|%.1024s",command);
+          else
             {
               FILE
                 *file;
