@@ -1003,7 +1003,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
       media_info.width,media_info.height);
     (void) WriteBlobString(image,buffer);
     FormatString(buffer,"/CropBox [%ld %ld %ld %d]\n",geometry.x,geometry.y,
-      image->columns+geometry.x,image->rows+geometry.y);
+      geometry.x+geometry.width,geometry.y+geometry.height);
     (void) WriteBlobString(image,buffer);
     FormatString(buffer,"/Contents %lu 0 R\n",object+1);
     (void) WriteBlobString(image,buffer);
