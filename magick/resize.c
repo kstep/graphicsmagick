@@ -1694,12 +1694,12 @@ static Image *ThumbnailImage(const Image *image,const unsigned long columns,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ZoomImage creates a new image that is a scaled size of an
-%  existing one.  It allocates the memory necessary for the new Image
-%  structure and returns a pointer to the new image.  The Point filter gives
-%  fast pixel replication, Triangle is equivalent to bi-linear interpolation,
-%  and Mitchel giver slower, very high-quality results.  See Graphic Gems III
-%  for details on this algorithm.
+%  ZoomImage() creates a new image that is a scaled size of an existing one.
+%  It allocates the memory necessary for the new Image structure and returns
+%  a pointer to the new image.  The Point filter gives fast pixel replication,
+%  Triangle is equivalent to bi-linear interpolation, and Mitchel giver slower,
+%  very high-quality results.  See Graphic Gems III for details on this
+%  algorithm.
 %
 %  The filter member of the Image structure specifies which image filter to
 %  use. Blur specifies the blur factor where > 1 is blurry, < 1 is sharp.
