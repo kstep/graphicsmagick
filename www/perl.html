@@ -2013,6 +2013,7 @@ Use
 &nbsp;&nbsp;&nbsp;&nbsp; $image->QueryFontMetrics(<i>parameters</i>);</pre>
 Where <i>parameters</i> is any parameter of the <a href="#mani">Annotate</a>
 method. The return values are
+<p>
 <ul>
 <li>
 character width, expressed in integer pixels.</li>
@@ -2046,28 +2047,6 @@ or hex value and returns their respective red, green, and blue color values:
 name or hex value;</dd>
 
 <pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $name = $image->QueryColorName('rgba(80,60,0,0)');</pre>
-<p>
-PerlMagick relies on a number of external configuration files including:
-<i>color</i>, <i>font</i>, <i>format</i>, <i>magic</i>, and <i>module</i>.
-Use <tt>QueryConfiguration</tt> to get attributes associated with a 
-particular color, font, image format, image magic, or module alias like this:
-
-<pre>
-&nbsp;&nbsp;&nbsp; ($red, $green, $blue, $opacity, $compliance) = $image->QueryConfiguration(color => 'red');
-&nbsp;&nbsp;&nbsp; ($family, $alias, $description, $format, $weight, $glyphs, $metrics, $version) =
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp $image->QueryConfiguration(font => 'Helvetica');
-&nbsp;&nbsp;&nbsp; ($adjoin, $blob_support, $raw, $description, $module) = $image->QueryConfiguration(format => 'gif');
-&nbsp;&nbsp;&nbsp; ($offset, $target) = $image->QueryConfiguration(magic => 'gif');
-&nbsp;&nbsp;&nbsp; ($alias) = $image->QueryConfiguration(module => 'jpeg');
-</pre>
-
-To get a list of the keys associated with a particular list use a value
-of '*':
-
-<pre>
-&nbsp;&nbsp;&nbsp; @keys = $image->QueryConfiguration(color => '*');
-</pre>
-
 <p>
 Use <tt>RemoteCommand</tt> to send a command to an already running <a href="display.html">display</a>
 or <a href="animate.html">animate</a> application. The only parameter is
