@@ -209,7 +209,7 @@ print("X Windows system bitmap (black and white only) ...\n");
 testReadWrite( 'XBM:input.xbm',
   'XBM:output.xbm',
   q//,
-  '86cf46ab9d620aa85eba722d777cc97e30df51916b2380df3cbc2685614d1222');
+  '1ddd7b41df1b8db30bc5d2cf073a0b4cb9fa9147c29b1a9055b8081ca489c848');
 
 print("X Windows system pixmap file (color) ...\n");
 ++$test;
