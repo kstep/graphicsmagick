@@ -321,8 +321,14 @@ MagickExport void *GetMagickRegistry(const long id,RegistryType *type,
       default:
       {
         blob=(void *) AcquireMemory(registry_info->length);
-        if (blob != (void *) NULL)
-          (void) memcpy(blob,registry_info->blob,registry_info->length);
+        if (blob == (void *) NULL)
+          {
+            ThrowException(exception,RegistryWarning,"Unable to get registry",
+              "Memory allocation failed");
+            break;
+          }
+        (void) memcpy(blob,registry_info->blob,registry_info->length);
+        break;
       }
     }
     *type=registry_info->type;
