@@ -182,7 +182,8 @@ MagickExport MagicInfo *GetMagicInfo(const unsigned char *magic,
       atexit(DestroyMagicInfo);
     }
   LiberateSemaphore(&magic_semaphore);
-  if (length == 0)
+  if ((magic == (const unsigned char *) NULL) ||
+      (LocaleCompare(magic,"*") == 0))
     return(magic_list);
   /*
     Search for requested magic.
@@ -228,16 +229,16 @@ MagickExport unsigned int ListMagicInfo(FILE *file,ExceptionInfo *exception)
 
   if (file == (const FILE *) NULL)
     file=stdout;
-  (void) fprintf(file,"ImageMagick understands these magic strings.\n");
-  (void) GetMagicInfo((unsigned char *) NULL,0,exception);
-  if (magic_list == (MagicInfo *) NULL)
+  (void) fprintf(file,"ImageMagick understands these magic strings:\n");
+  p=GetMagicInfo("*",0,exception);
+  if (p == (MagicInfo *) NULL)
     return(False);
-  if (magic_list->filename != (char *) NULL)
-    (void) fprintf(file,"\nFilename: %.1024s\n\n",magic_list->filename);
+  if (p->filename != (char *) NULL)
+    (void) fprintf(file,"\nFilename: %.1024s\n\n",p->filename);
   (void) fprintf(file,"Name      Offset Target\n");
   (void) fprintf(file,"-------------------------------------------------------"
     "------------------------\n");
-  for (p=magic_list; p != (MagicInfo *) NULL; p=p->next)
+  for ( ; p != (MagicInfo *) NULL; p=p->next)
   {
     (void) fprintf(file,"%.1024s",p->name);
     for (i=Extent(p->name); i <= 9; i++)

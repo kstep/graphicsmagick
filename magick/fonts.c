@@ -189,7 +189,7 @@ MagickExport FontInfo *GetFontInfo(const char *name,ExceptionInfo *exception)
       atexit(DestroyFontInfo);
     }
   LiberateSemaphore(&font_semaphore);
-  if (LocaleCompare(name,"*") == 0)
+  if ((name == (const char *) NULL) || (LocaleCompare(name,"*") == 0))
     return(font_list);
   /*
     Search for requested font.
