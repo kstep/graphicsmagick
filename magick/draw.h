@@ -11,6 +11,9 @@
 extern "C" {
 #endif
 
+#include "render.h"
+
+
 typedef struct _DrawContext *DrawContext;
 
 extern MagickExport DrawContext
