@@ -628,15 +628,15 @@ int main(int argc,char **argv)
                   if (i == argc)
                     MagickError(OptionError,"Missing type",option);
                   option=argv[i];
-                  channel=UndefinedLayer;
+                  channel=UndefinedChannel;
                   if (LocaleCompare("Red",option) == 0)
-                    channel=RedLayer;
+                    channel=RedChannel;
                   if (LocaleCompare("Green",option) == 0)
-                    channel=GreenLayer;
+                    channel=GreenChannel;
                   if (LocaleCompare("Blue",option) == 0)
-                    channel=BlueLayer;
+                    channel=BlueChannel;
                   if (LocaleCompare("Matte",option) == 0)
-                    channel=MatteLayer;
+                    channel=MatteChannel;
                   if (channel == UndefinedChannel)
                     MagickError(OptionError,"Invalid channel type",option);
                 }
