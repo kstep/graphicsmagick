@@ -92,8 +92,10 @@ MagickExport unsigned int ExecuteStaticModuleProcess(const char *tag,
   Image **image,const int argc,char **argv)
 {
 #if !defined(BuildMagickModules)
+# if !defined(_VISUALC_)
   if (LocaleCompare("analyze",tag) == 0)
     return AnalyzeImage(image,argc,argv);
+#endif
 #endif
   return(False);
 }

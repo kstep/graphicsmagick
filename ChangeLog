@@ -4,6 +4,8 @@
 	exit program. Clean-up to avoid any appearance of leaks.
 	* tests/rwfile.c (main): Add -pause option to require keypress to
 	exit program. Clean-up to avoid any appearance of leaks.
+	* magick/static.c: Don't bind in process filter functions for
+	Visual C++ since the build environment doesn't support it yet.
 
 2003-03-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
