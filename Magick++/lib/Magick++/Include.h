@@ -375,7 +375,6 @@ namespace Magick
   using MagickLib::DespeckleImage;
   using MagickLib::DestroyDrawInfo;
   using MagickLib::DestroyExceptionInfo;
-  using MagickLib::DestroyImage;
   using MagickLib::DestroyImageInfo;
   using MagickLib::DestroyImageList;
   using MagickLib::DestroyMagick;
@@ -417,6 +416,7 @@ namespace Magick
   using MagickLib::GetMagickInfo;
   using MagickLib::GetMagickRegistry;
   using MagickLib::GetNumberColors;
+  using MagickLib::GetPageGeometry;
   using MagickLib::GetPixels;
   using MagickLib::GetQuantizeInfo;
   using MagickLib::GetTypeMetrics;
@@ -456,7 +456,6 @@ namespace Magick
   using MagickLib::PercentValue;
   using MagickLib::PingImage;
   using MagickLib::PopImagePixels;
-  using MagickLib::PostscriptGeometry;
   using MagickLib::ProfileInfo;
   using MagickLib::PushImagePixels;
   using MagickLib::QuantizationError;

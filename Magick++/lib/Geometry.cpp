@@ -193,9 +193,10 @@ Magick::Geometry::operator = ( const std::string &geometry_ )
   strcpy(geom,geometry_.c_str());
   if ( geom[0] != '-' &&
        geom[0] != '+' &&
+       geom[0] != 'x' &&
        !isdigit(static_cast<int>(geom[0])))
     {
-      char *pageptr = PostscriptGeometry( geom );
+      char *pageptr = GetPageGeometry( geom );
       if ( pageptr )
 	{
 	  strcpy(geom,pageptr);

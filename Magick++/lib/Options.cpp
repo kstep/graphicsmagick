@@ -182,7 +182,7 @@ void Magick::Options::fillPattern ( const MagickLib::Image *fillPattern_ )
 {
   if ( _drawInfo->fill_pattern )
     {
-      DestroyImage( _drawInfo->fill_pattern );
+      DestroyImageList( _drawInfo->fill_pattern );
       _drawInfo->fill_pattern = 0;
     }
 
@@ -334,7 +334,7 @@ void Magick::Options::strokePattern ( const MagickLib::Image *strokePattern_ )
 {
   if ( _drawInfo->stroke_pattern )
     {
-      DestroyImage( _drawInfo->stroke_pattern );
+      DestroyImageList( _drawInfo->stroke_pattern );
       _drawInfo->stroke_pattern = 0;
     }
 

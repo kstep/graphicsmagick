@@ -4,8 +4,11 @@ Magick++ release number increments even if there are no changes associated
 with Magick++ itself.
 
 (5.4.3)
+  * Bugfix for Magick::Exception memory leak.
   * Bugfix for DrawableGravity class (had stopped working).
   * Bugfix for Image antiAlias() method (wasn't working).
+  * Reimplemented image registration code (which passes image via
+    DrawableCompositeImage).
 
 (5.4.2)
   * TypeMetric class revamped to match current ImageMagick type metrics

@@ -1,3 +1,10 @@
+2002-01-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Options.cpp : Use DestroyImageList() rather than DestroyImage().
+
+	* lib/Geometry.cpp (operator =): Use GetPageGeometry() rather than
+ 	PostscriptGeometry() to parse geometry specifications containing a
+ 	page size.
 
 2002-01-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
