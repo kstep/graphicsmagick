@@ -20,6 +20,7 @@
 		<LI><A HREF="#ConvertTextToUnicode">ConvertTextToUnicode</A>
 		<LI><A HREF="#ExpandFilename">ExpandFilename</A>
 		<LI><A HREF="#ExpandFilenames">ExpandFilenames</A>
+		<LI><A HREF="#FormatString">FormatString</A>
 		<LI><A HREF="#GlobExpression">GlobExpression</A>
 		<LI><A HREF="#IsAccessible">IsAccessible</A>
 		<LI><A HREF="#IsDirectory">IsDirectory</A>
@@ -75,6 +76,9 @@ unicode=<STRONG>ConvertTextToUnicode</STRONG>(text,count)
 
 <P>
 status=<STRONG>ExpandFilenames</STRONG>(argc,argv)
+
+<P>
+<STRONG>FormatString</STRONG>(string,format,...)
 
 <P>
 <STRONG>GlobExpression</STRONG>(expression,pattern)
@@ -282,6 +286,31 @@ argument vector.
 <DT><STRONG>argv:</STRONG><DD>
 <P>
 Specifies a pointer to a text array containing the command line arguments.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="FormatString">FormatString</A></H2>
+<P>
+Method FormatString prints formatted output of a variable argument list.
+
+<P>
+The format of the FormatString routine is:
+
+<P>
+<PRE>         FormatString(string,format,...)
+</PRE>
+<P>
+A description of each parameter follows.
+
+<DL><DL>
+<DT><STRONG>string:</STRONG><DD>
+<P>
+Method FormatString returns the formatted string in this character buffer.
+
+<DT><STRONG>format:</STRONG><DD>
+<P>
+A string describing the format to use to write the remaining arguments.
 
 </DL></DL>
 <P>

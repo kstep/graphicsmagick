@@ -1777,14 +1777,14 @@ Export void XDisplayImageInfo(Display *display,
     (void) strcat(text,"  class: PseudoClass\n");
   if (image->class == PseudoClass)
     {
+      char
+        name[MaxTextExtent];
+
       ColorPacket
         *p;
 
       register int
         i;
-
-      register XColorlist
-        *q;
 
       /*
         Display image colormap.
@@ -1797,14 +1797,10 @@ Export void XDisplayImageInfo(Display *display,
       p=image->colormap;
       for (i=0; i < image->colors; i++)
       {
-        FormatString(text,"%s    %d: (%3d,%3d,%3d)  "HexColorFormat,text,i,
-          p->red,p->green,p->blue,(unsigned int) p->red,
-          (unsigned int) p->green,(unsigned int) p->blue);
-        for (q=Colorlist; q->name != (char *) NULL; q++)
-          if ((DownScale(p->red) == q->red) &&
-              (DownScale(p->green) == q->green) &&
-              (DownScale(p->blue) == q->blue))
-            FormatString(text,"%s  %s",text,q->name);
+        FormatString(text,"%s    %d: (%3d,%3d,%3d)  ",text,i,p->red,p->green,
+          p->blue);
+        (void) QueryColorName(p,name);
+        (void) FormatString(text,"%s  %s",text,name);
         (void) strcat(text,"\n");
         p++;
       }

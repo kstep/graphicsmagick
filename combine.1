@@ -478,6 +478,14 @@ In addition to width and height, use \fB-size\fP to skip any header
 information in the image or  tell the number of colors in a \fBMAP\fP
 image file, (e.g. -size 640x512+256).
 .TP
+.B "-stegano \fIoffset\fP"
+hide watermark within an image.
+<p>
+Use an offset to start the image hiding some number of pixels from the
+beginning of the image.  Note this offset and the image size.  You will
+need this information to recover the steganographic image
+(e.g. display -size 320x256+35 stegano:image.png).
+.TP
 .B "-stereo"
 combine two image to create a stereo anaglyph.
 

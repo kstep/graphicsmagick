@@ -298,6 +298,9 @@ static struct routines {
     {	"Wave", { {"geom", P_STR}, {"ampli", P_DBL}, {"wave", P_DBL} } },
     {	"Layer", { {"layer", p_layers} } },
     {	"Condense", },
+    {	"Stereo", { {"image", P_IMG} } },
+    {	"Stegano", { {"image", P_IMG}, {"offset", P_INT} } },
+    {	"Coalesce", },
 };
 
 static SV *im_er_mes;		/* Perl variable for storing messages */
@@ -2430,6 +2433,12 @@ Mogrify(ref, ...)
 		LayerImage		= 122
 		Condense		= 123
 		CondenseImage		= 124
+		Stereo			= 125
+		StereoImage		= 126
+		Stegano			= 127
+		SteganoImage		= 128
+		Coalesce		= 129
+		CoalesceImage		= 130
 		MogrifyRegion		= 666
 	PPCODE:
 	{
@@ -3378,6 +3387,28 @@ Mogrify(ref, ...)
 		    break;
 		case 62:	/* Condense */
 		    CondenseImage(image);
+		    break;
+		case 63:	/* Stereo */
+		    if (!aflag[0])
+		    {
+			warning(OptionWarning, "Missing image in Stereo", NULV);
+			goto return_it;
+		    }
+		    image = StereoImage(image, alist[0].t_img);
+		    break;
+		case 64:	/* Stegano */
+		    if (!aflag[1])
+			alist[1].t_int = 0;
+		    if (!aflag[0])
+		    {
+			warning(OptionWarning, "Missing image in Stegano", NULV);
+			goto return_it;
+		    }
+		    image->offset = alist[1].t_int;
+		    image = SteganoImage(image, alist[0].t_img);
+		    break;
+		case 65:	/* Coalesce */
+		    CoalesceImages(image);
 		    break;
 		}
 

@@ -44,8 +44,8 @@
 # not.
 # 
 # If you use a less-equal-greater sign (<=>) the delegate bypasses
-# ImageMagick and directly converts the image file (this assumes you do not
-# apply any image transforms such as sizing or rotation).
+# ImageMagick and directly converts the image file if it is untainted
+# (no image manipulations such as resize or rotation).
 # 
 # Lines that begin with a pound sign (#) are comments and are ignored.
 # 
@@ -89,6 +89,9 @@ cgm=>
 
 compress=>
 	|@LZWDecodeDelegate@ -c %i
+
+dot=>
+	@DOTDecodeDelegate@ -Tps %i -o %o 
 
 dvi=>
 	@DVIDecodeDelegate@ -q -o %o %i

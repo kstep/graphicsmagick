@@ -808,6 +808,10 @@ AC_SUBST(LZWEncodeDelegate)
 AC_PATH_PROG(EditorDelegate, xterm, xterm)
 AC_SUBST(EditorDelegate)
 
+# Look for DOT format support program 'dot'
+AC_PATH_PROG(DOTDecodeDelegate, dot, dot)
+AC_SUBST(DOTDecodeDelegate)
+
 # Look for TeX DVI format support program 'dvips'
 AC_PATH_PROG(DVIDecodeDelegate, dvips, dvips)
 AC_SUBST(DVIDecodeDelegate)

@@ -38,13 +38,13 @@ delegates -
 <STRONG>DestroyDelegates</STRONG>(image_info)
 
 <P>
-command=<STRONG>GetDelegateCommand</STRONG>(image_info,image,tag,decode)
+command=<STRONG>GetDelegateCommand</STRONG>(image_info,image,decode_tag,encode_tag)
 
 <P>
-status=<STRONG>GetDelegateInfo</STRONG>(tag,decode,delegate_info)
+status=<STRONG>GetDelegateInfo</STRONG>(decode_tag,encode_tag,delegate_info)
 
 <P>
-<STRONG>InvokeDelegate</STRONG>(image_info,image,tag,decode)
+<STRONG>InvokeDelegate</STRONG>(image_info,image,decode_tag,encode_tag)
 
 <P>
 delegate_info=<STRONG>SetDelegateInfo</STRONG>(delegate_info)
@@ -85,7 +85,7 @@ tag. True is returned if a delegate is found, otherwise False.
 The format of the GetDelegateInfo routine is:
 
 <P>
-<PRE>       status=GetDelegateInfo(tag,decode,delegate_info)
+<PRE>       status=GetDelegateInfo(decode_tag,encode_tag,delegate_info)
 </PRE>
 <P>
 A description of each parameter follows:
@@ -96,14 +96,13 @@ A description of each parameter follows:
 Method GetDelegateInfo returns True if a delegate is found, otherwise
 False.
 
-<DT><STRONG>tag:</STRONG><DD>
+<DT><STRONG>decode_tag:</STRONG><DD>
 <P>
-Specifies the delegate we are searching for as a character string.
+Specifies the decode delegate we are searching for as a character string.
 
-<DT><STRONG>decode:</STRONG><DD>
+<DT><STRONG>encode_tag:</STRONG><DD>
 <P>
-An unsigned integer other than zero means to match decode tages in the
-delegate list otherwise encode tags.
+Specifies the encode delegate we are searching for as a character string.
 
 <DT><STRONG>delegate_info:</STRONG><DD>
 <P>
@@ -122,7 +121,7 @@ the appropriate image attribute and returns the resulting command.
 The format of the GetDelegateCommand routine is:
 
 <P>
-<PRE>        command=GetDelegateCommand(image_info,image,tag,decode)
+<PRE>        command=GetDelegateCommand(image_info,image,decode_tag,encode_tag)
 </PRE>
 <P>
 A description of each parameter follows:
@@ -141,14 +140,13 @@ The address of a structure of type ImageInfo.
 <P>
 The address of a structure of type Image.
 
-<DT><STRONG>tag:</STRONG><DD>
+<DT><STRONG>decode_tag:</STRONG><DD>
 <P>
-Specifies the delegate we are searching for as a character string.
+Specifies the decode delegate we are searching for as a character string.
 
-<DT><STRONG>decode:</STRONG><DD>
+<DT><STRONG>encode_tag:</STRONG><DD>
 <P>
-An unsigned integer other than zero means to match decode tages in the
-delegate list otherwise encode tags.
+Specifies the encode delegate we are searching for as a character string.
 
 </DL></DL>
 <P>
@@ -163,7 +161,7 @@ returned if the commands execute with success otherwise True.
 The format of the InvokeDelegate routine is:
 
 <P>
-<PRE>        InvokeDelegate(image_info,image,tag,decode)
+<PRE>        InvokeDelegate(image_info,image,decode_tag,encode_tag)
 </PRE>
 <P>
 A description of each parameter follows:
@@ -176,15 +174,6 @@ The address of a structure of type ImageInfo.
 <DT><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image.
-
-<DT><STRONG>tag:</STRONG><DD>
-<P>
-Specifies the delegate we are searching for as a character string.
-
-<DT><STRONG>decode:</STRONG><DD>
-<P>
-An unsigned integer other than zero means to match decode tages in the
-delegate list otherwise encode tags.
 
 </DL></DL>
 <P>

@@ -523,6 +523,13 @@ or <B>CMYK</B>.  In addition to width and height, use <B>-size</B> to skip any h
 tell the number of colors in a <B>MAP</B> image file, (e.g.
 -size 640x512+256).
 <P>
+<DT><B>-stegano</B>
+<DD>hide watermark within an image.
+<P>
+<dd>Use an offset to start the image hiding some number of pixels from the
+beginning of the image.  Note this offset and the image size.  You will
+need this information to recover the steganographic image
+(e.g. <tt>display -size 320x256+35 stegano:image.png</tt>).
 <DT><B>-stereo</B>
 <DD>combine two image to create a stereo anaglyph.
 <P>

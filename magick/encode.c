@@ -3859,6 +3859,9 @@ static unsigned int WriteMAPImage(const ImageInfo *image_info,Image *image)
 */
 static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
 {
+  char
+    color[MaxTextExtent];
+
   CompressionType
     compression;
 
@@ -4033,6 +4036,12 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
       (void) fprintf(image->file,"signature=%s\n",image->signature);
     if (image->page != (char *) NULL)
       (void) fprintf(image->file,"page=%s\n",image->page);
+    (void) QueryColorName(&image->background_color,color);
+    (void) fprintf(image->file,"background-color=%s  ",color);
+    (void) QueryColorName(&image->border_color,color);
+    (void) fprintf(image->file,"border-color=%s  ",color);
+    (void) QueryColorName(&image->matte_color,color);
+    (void) fprintf(image->file,"matte-color=%s\n",color);
     if ((image->next != (Image *) NULL) || (image->previous != (Image *) NULL))
       (void) fprintf(image->file,
         "scene=%u  iterations=%u  delay=%u  dispose=%u\n",
@@ -12238,7 +12247,9 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
     MSBFirstWriteLong(viff_header.subrows,image->file);
     MSBFirstWriteLong((unsigned long) viff_header.x_offset,image->file);
     MSBFirstWriteLong((unsigned long) viff_header.y_offset,image->file);
+    viff_header.x_bits_per_pixel=(63 << 24) | (128 << 16);
     MSBFirstWriteLong((unsigned long) viff_header.x_bits_per_pixel,image->file);
+    viff_header.y_bits_per_pixel=(63 << 24) | (128 << 16);
     MSBFirstWriteLong((unsigned long) viff_header.y_bits_per_pixel,image->file);
     MSBFirstWriteLong(viff_header.location_type,image->file);
     MSBFirstWriteLong(viff_header.location_dimension,image->file);

@@ -80,6 +80,7 @@ static char
     { "RLE", "False" },
     { "SGI", "True" },
     { "SHTML", "False" },
+    { "STEGANO", "True" },
     { "SUN", "True" },
     { "TEXT", "True" },
     { "TGA", "True" },

@@ -64,17 +64,6 @@
 /*
   Structures.
 */
-typedef struct _ColorsList
-{
-  Quantum
-    red,
-    green,
-    blue;
-
-  unsigned long
-    count;
-} ColorsList;
-
 typedef struct _NodeInfo
 {
   unsigned char
@@ -83,7 +72,7 @@ typedef struct _NodeInfo
   unsigned long
     number_unique;
 
-  ColorsList
+  ColorPacket
     *list;
 
   struct _NodeInfo
@@ -129,7 +118,7 @@ typedef struct _CubeInfo
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Procedure DestroyList traverses the color cube tree and free the list of
+%  Method DestroyList traverses the color cube tree and free the list of
 %  unique colors.
 %
 %  The format of the DestroyList routine is:
@@ -155,7 +144,7 @@ static void DestroyList(const NodeInfo *node_info)
     if (node_info->child[id] != (NodeInfo *) NULL)
       DestroyList(node_info->child[id]);
   if (node_info->level == MaxTreeDepth)
-    if (node_info->list != (ColorsList *) NULL)
+    if (node_info->list != (ColorPacket *) NULL)
       FreeMemory((char *) node_info->list);
 }
 
@@ -170,7 +159,7 @@ static void DestroyList(const NodeInfo *node_info)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Procedure Histogram traverses the color cube tree and produces a list of
+%  Method Histogram traverses the color cube tree and produces a list of
 %  unique pixel field values and the number of times each occurs in the image.
 %
 %  The format of the Histogram routine is:
@@ -204,21 +193,11 @@ static void Histogram(CubeInfo *color_cube,const NodeInfo *node_info,FILE *file)
       char
         name[MaxTextExtent];
 
-      ColorsList
+      register ColorPacket
         *p;
-
-      double
-        distance_squared,
-        min_distance;
-
-      int
-        distance;
 
       register int
         i;
-
-      register XColorlist
-        *q;
 
       p=node_info->list;
       for (i=0; i < node_info->number_unique; i++)
@@ -226,28 +205,9 @@ static void Histogram(CubeInfo *color_cube,const NodeInfo *node_info,FILE *file)
         (void) fprintf(file,"%10lu: (%3d,%3d,%3d)  #%02x%02x%02x",
           p->count,p->red,p->green,p->blue,(unsigned int) p->red,
           (unsigned int) p->green,(unsigned int) p->blue);
-        min_distance=3.0*65536.0*65536.0;
-        for (q=Colorlist; q->name != (char *) NULL; q++)
-        {
-          distance=(int) DownScale(p->red)-(int) q->red;
-          distance_squared=distance*distance;
-          distance=(int) DownScale(p->green)-(int) q->green;
-          distance_squared+=distance*distance;
-          distance=(int) DownScale(p->blue)-(int) q->blue;
-          distance_squared+=distance*distance;
-          if (distance_squared < min_distance)
-            {
-              min_distance=distance_squared;
-              (void) strcpy(name,q->name);
-            }
-        }
         (void) fprintf(file,"  ");
-        if (min_distance < 16)
-          {
-            if (min_distance > 0)
-              (void) fprintf(file,"~");
-            (void) fprintf(file,"%s",name);
-          }
+        (void) QueryColorName(p,name);
+        (void) fprintf(file,"%s",name);
         (void) fprintf(file,"\n");
       }
       if (QuantumTick(color_cube->progress,color_cube->colors))
@@ -313,7 +273,7 @@ static NodeInfo *InitializeNode(CubeInfo *color_cube,const unsigned int level)
     node_info->child[i]=(NodeInfo *) NULL;
   node_info->level=level;
   node_info->number_unique=0;
-  node_info->list=(ColorsList *) NULL;
+  node_info->list=(ColorPacket *) NULL;
   return(node_info);
 }
 
@@ -348,7 +308,7 @@ static NodeInfo *InitializeNode(CubeInfo *color_cube,const unsigned int level)
 %
 %
 */
-unsigned int IsPseudoClass(Image *image)
+Export unsigned int IsPseudoClass(Image *image)
 {
   CubeInfo
     color_cube;
@@ -428,11 +388,11 @@ unsigned int IsPseudoClass(Image *image)
           continue;
         }
       if (node_info->number_unique == 0)
-        node_info->list=(ColorsList *) AllocateMemory(sizeof(ColorsList));
+        node_info->list=(ColorPacket *) AllocateMemory(sizeof(ColorPacket));
       else
-        node_info->list=(ColorsList *)
-          ReallocateMemory(node_info->list,(j+1)*sizeof(ColorsList));
-      if (node_info->list == (ColorsList *) NULL)
+        node_info->list=(ColorPacket *)
+          ReallocateMemory(node_info->list,(j+1)*sizeof(ColorPacket));
+      if (node_info->list == (ColorPacket *) NULL)
         {
           MagickWarning(ResourceLimitWarning,"Unable to count colors",
             "Memory allocation failed");
@@ -472,6 +432,71 @@ unsigned int IsPseudoClass(Image *image)
       SyncImage(image);
     }
   return((image->class == PseudoClass) && (image->colors <= 256));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%  Q u e r y C o l o r N a m e                                                %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method QueryColorName returns the name of the color that is closest to the
+%  supplied color in RGB space.
+%
+%  The format of the QueryColorName routine is:
+%
+%      distance=QueryColorName(color,name)
+%
+%  A description of each parameter follows.
+%
+%    o distance: Method QueryColorName returns the distance-squared in RGB
+%      space as well as the color name that is at a minimum distance.
+%
+%    o color: This is a pointer to a ColorPacket structure that contains the
+%      color we are searching for.
+%
+%    o name: The name of the color that is closest to the supplied color is
+%      returned in this character buffer.
+%
+%
+*/
+Export unsigned int QueryColorName(ColorPacket *color,char *name)
+{
+  double
+    distance_squared,
+    min_distance;
+
+  register int
+    distance;
+
+  register XColorlist
+    *p;
+
+  *name='\0';
+  min_distance=3.0*65536.0*65536.0;
+  for (p=Colorlist; p->name != (char *) NULL; p++)
+  {
+    distance=(int) DownScale(color->red)-(int) p->red;
+    distance_squared=distance*distance;
+    distance=(int) DownScale(color->green)-(int) p->green;
+    distance_squared+=distance*distance;
+    distance=(int) DownScale(color->blue)-(int) p->blue;
+    distance_squared+=distance*distance;
+    if (distance_squared < min_distance)
+      {
+        min_distance=distance_squared;
+        (void) strcpy(name,p->name);
+      }
+  }
+  if (min_distance != 0)
+    FormatString(name,HexColorFormat,(unsigned int) color->red,
+      (unsigned int) color->green,(unsigned int) color->blue);
+  return((unsigned int) min_distance);
 }
 
 /*
@@ -583,11 +608,11 @@ Export void NumberColors(Image *image,FILE *file)
           continue;
         }
       if (node_info->number_unique == 0)
-        node_info->list=(ColorsList *) AllocateMemory(sizeof(ColorsList));
+        node_info->list=(ColorPacket *) AllocateMemory(sizeof(ColorPacket));
       else
-        node_info->list=(ColorsList *)
-          ReallocateMemory(node_info->list,(j+1)*sizeof(ColorsList));
-      if (node_info->list == (ColorsList *) NULL)
+        node_info->list=(ColorPacket *)
+          ReallocateMemory(node_info->list,(j+1)*sizeof(ColorPacket));
+      if (node_info->list == (ColorPacket *) NULL)
         {
           MagickWarning(ResourceLimitWarning,"Unable to count colors",
             "Memory allocation failed");

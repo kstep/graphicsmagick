@@ -74,6 +74,7 @@
 %    -quality value      JPEG/MIFF/PNG compression level
 %    -scene value        image scene number
 %    -size geometry      width and height of image
+%    -stegano offset     hide watermark within an image
 %    -stereo             combine two image to create a stereo anaglyph
 %    -tile               repeat composite operation across image
 %    -treedepth value    depth of the color classification tree
@@ -132,14 +133,15 @@ static void Usage(const char *client_name)
       "-geometry geometry  perferred size or location of the image",
       "-gravity direction  which direction to gravitate towards",
       "-interlace type     None, Line, Plane, or Partition",
-      "-label name         assign a label to an image",
+      "-label name         ssign a label to an image",
       "-matte              store matte channel if the image has one",
       "-monochrome         transform image to black and white",
-      "-negate              apply color inversion to image",
+      "-negate             apply color inversion to image",
       "-page geometry      size and location of an image canvas",
       "-quality value      JPEG/MIFF/PNG compression level",
       "-scene value        image scene number",
       "-size geometry      width and height of image",
+      "-stegano offset     hide watermark within an image",
       "-stereo             combine two image to create a stereo anaglyph",
       "-tile               repeat composite operation across image",
       "-treedepth value    depth of the color classification tree",
@@ -206,6 +208,7 @@ int main(int argc,char **argv)
     i;
 
   unsigned int
+    stegano,
     stereo,
     tile;
 
@@ -228,6 +231,7 @@ int main(int argc,char **argv)
   GetImageInfo(&image_info);
   image=(Image *) NULL;
   mask_image=(Image *) NULL;
+  stegano=0;
   stereo=False;
   tile=False;
   write_filename=argv[argc-1];
@@ -678,7 +682,19 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (strncmp("stereo",option+1,2) == 0)
+          if (strncmp("stegano",option+1,4) == 0)
+            {
+              stegano=0;
+              if (*option == '-')
+                {
+                  i++;
+                  if ((i == argc) || !sscanf(argv[i],"%d",&x))
+                    MagickError(OptionError,"Missing offset",option);
+                  stegano=atoi(argv[i])+1;
+                }
+              break;
+            }
+          if (strncmp("stereo",option+1,4) == 0)
             {
               stereo=(*option == '-');
               break;
@@ -772,98 +788,104 @@ int main(int argc,char **argv)
   /*
     Combine image.
   */
-  if (stereo)
-    combined_image=StereoImage(image,composite_image);
+  if (stegano != 0)
+    {
+      image->offset=stegano-1;
+      combined_image=SteganoImage(image,composite_image);
+    }
   else
-    if (tile)
-      {
-        /*
-          Tile the composite image.
-        */
-        for (y=0; y < image->rows; y+=composite_image->rows)
-          for (x=0; x < image->columns; x+=composite_image->columns)
-            CompositeImage(image,compose,composite_image,x,y);
-        combined_image=image;
-      }
+    if (stereo)
+      combined_image=StereoImage(image,composite_image);
     else
-      {
-        unsigned int
-          size;
-
-        /*
-          Digitally composite image.
-        */
-        size=0;
-        x=0;
-        y=0;
-        if (geometry != (char *) NULL)
-          (void) ParseImageGeometry(geometry,&x,&y,&size,&size);
-        switch (gravity)
+      if (tile)
         {
-          case NorthWestGravity:
-            break;
-          case NorthGravity:
-          {
-            x+=(image->columns-composite_image->columns) >> 1;
-            break;
-          }
-          case NorthEastGravity:
-          {
-            x+=image->columns-composite_image->columns;
-            break;
-          }
-          case WestGravity:
-          {
-            y+=(image->rows-composite_image->rows) >> 1;
-            break;
-          }
-          case ForgetGravity:
-          {
-            char
-              geometry[MaxTextExtent];
-
-            /*
-              Stretch composite to the same size as the image.
-            */
-            FormatString(geometry,"%ux%u+0+0",image->columns,image->rows);
-            TransformImage(&composite_image,(char *) NULL,geometry);
-            break;
-          }
-          case StaticGravity:
-          case CenterGravity:
-          default:
-          {
-            x+=(image->columns-composite_image->columns) >> 1;
-            y+=(image->rows-composite_image->rows) >> 1;
-            break;
-          }
-          case EastGravity:
-          {
-            x+=image->columns-composite_image->columns;
-            y+=(image->rows-composite_image->rows) >> 1;
-            break;
-          }
-          case SouthWestGravity:
-          {
-            y+=image->rows-composite_image->rows;
-            break;
-          }
-          case SouthGravity:
-          {
-            x+=(image->columns-composite_image->columns) >> 1;
-            y+=image->rows-composite_image->rows;
-            break;
-          }
-          case SouthEastGravity:
-          {
-            x+=image->columns-composite_image->columns;
-            y+=image->rows-composite_image->rows;
-            break;
-          }
+          /*
+            Tile the composite image.
+          */
+          for (y=0; y < image->rows; y+=composite_image->rows)
+            for (x=0; x < image->columns; x+=composite_image->columns)
+              CompositeImage(image,compose,composite_image,x,y);
+          combined_image=image;
         }
-        CompositeImage(image,compose,composite_image,x,y);
-        combined_image=image;
-      }
+      else
+        {
+          unsigned int
+            size;
+
+          /*
+            Digitally composite image.
+          */
+          size=0;
+          x=0;
+          y=0;
+          if (geometry != (char *) NULL)
+            (void) ParseImageGeometry(geometry,&x,&y,&size,&size);
+          switch (gravity)
+          {
+            case NorthWestGravity:
+              break;
+            case NorthGravity:
+            {
+              x+=(image->columns-composite_image->columns) >> 1;
+              break;
+            }
+            case NorthEastGravity:
+            {
+              x+=image->columns-composite_image->columns;
+              break;
+            }
+            case WestGravity:
+            {
+              y+=(image->rows-composite_image->rows) >> 1;
+              break;
+            }
+            case ForgetGravity:
+            {
+              char
+                geometry[MaxTextExtent];
+
+              /*
+                Stretch composite to the same size as the image.
+              */
+              FormatString(geometry,"%ux%u+0+0",image->columns,image->rows);
+              TransformImage(&composite_image,(char *) NULL,geometry);
+              break;
+            }
+            case StaticGravity:
+            case CenterGravity:
+            default:
+            {
+              x+=(image->columns-composite_image->columns) >> 1;
+              y+=(image->rows-composite_image->rows) >> 1;
+              break;
+            }
+            case EastGravity:
+            {
+              x+=image->columns-composite_image->columns;
+              y+=(image->rows-composite_image->rows) >> 1;
+              break;
+            }
+            case SouthWestGravity:
+            {
+              y+=image->rows-composite_image->rows;
+              break;
+            }
+            case SouthGravity:
+            {
+              x+=(image->columns-composite_image->columns) >> 1;
+              y+=image->rows-composite_image->rows;
+              break;
+            }
+            case SouthEastGravity:
+            {
+              x+=image->columns-composite_image->columns;
+              y+=image->rows-composite_image->rows;
+              break;
+            }
+          }
+          CompositeImage(image,compose,composite_image,x,y);
+          combined_image=image;
+        }
   if (combined_image == (Image *) NULL)
     MagickError(OptionError,"Missing an image file name",(char *) NULL);
   /*

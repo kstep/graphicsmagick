@@ -5326,6 +5326,12 @@ static Image *ReadLABELImage(const ImageInfo *image_info)
         q->green=XDownScale(pen_color.green);
         q->blue=XDownScale(pen_color.blue);
         q->index=(int) (Opaque*Min(*p,4))/4;
+        if (q->index == Transparent)
+          {
+            q->red=image->background_color.red;
+            q->green=image->background_color.green;
+            q->blue=image->background_color.blue;
+          }
         q->length=0;
         x++;
         if (x == image->columns)
@@ -5507,6 +5513,12 @@ static Image *ReadLABELImage(const ImageInfo *image_info)
             q->red=XDownScale(pen_color.red);
             q->green=XDownScale(pen_color.green);
             q->blue=XDownScale(pen_color.blue);
+            if (q->index == Transparent)
+              {
+                q->red=image->background_color.red;
+                q->green=image->background_color.green;
+                q->blue=image->background_color.blue;
+              }
             q++;
           }
           CondenseImage(image);
@@ -5584,6 +5596,12 @@ static Image *ReadLABELImage(const ImageInfo *image_info)
     q->red=XDownScale(pen_color.red);
     q->green=XDownScale(pen_color.green);
     q->blue=XDownScale(pen_color.blue);
+    if (q->index == Transparent)
+      {
+        q->red=image->background_color.red;
+        q->green=image->background_color.green;
+        q->blue=image->background_color.blue;
+      }
     q++;
   }
   CondenseImage(image);
@@ -5855,6 +5873,9 @@ static Image *ReadMIFFImage(const ImageInfo *image_info)
     count,
     max_packets;
 
+  XColor
+    color;
+
   /*
     Allocate image structure.
   */
@@ -5965,9 +5986,25 @@ static Image *ReadMIFFImage(const ImageInfo *image_info)
             /*
               Assign a value to the specified keyword.
             */
+            if (Latin1Compare(keyword,"background-color") == 0)
+              {
+                (void) XQueryColorDatabase(value,&color);
+                image->background_color.red=XDownScale(color.red);
+                image->background_color.green=XDownScale(color.green);
+                image->background_color.blue=XDownScale(color.blue);
+                image->background_color.index=0;
+              }
             if (Latin1Compare(keyword,"blue-primary") == 0)
               (void) sscanf(value,"%f,%f",&image->chromaticity.blue_primary.x,
                 &image->chromaticity.blue_primary.y);
+            if (Latin1Compare(keyword,"border-color") == 0)
+              {
+                (void) XQueryColorDatabase(value,&color);
+                image->border_color.red=XDownScale(color.red);
+                image->border_color.green=XDownScale(color.green);
+                image->border_color.blue=XDownScale(color.blue);
+                image->border_color.index=0;
+              }
             if (Latin1Compare(keyword,"class") == 0)
               if (Latin1Compare(value,"PseudoClass") == 0)
                 image->class=PseudoClass;
@@ -6030,6 +6067,14 @@ static Image *ReadMIFFImage(const ImageInfo *image_info)
                 image->matte=True;
               else
                 image->matte=False;
+            if (Latin1Compare(keyword,"matte-color") == 0)
+              {
+                (void) XQueryColorDatabase(value,&color);
+                image->matte_color.red=XDownScale(color.red);
+                image->matte_color.green=XDownScale(color.green);
+                image->matte_color.blue=XDownScale(color.blue);
+                image->matte_color.index=0;
+              }
             if (Latin1Compare(keyword,"montage") == 0)
               {
                 image->montage=(char *)
@@ -9565,10 +9610,9 @@ static unsigned int PNMInteger(Image *image,const unsigned int base)
               (char *) NULL);
             return(0);
           }
-        if (Latin1Compare(q,"END_OF_COMMENT") == 0)
+        if (Latin1Compare(q,"END_OF_COMMENTS") == 0)
           p=q;
         *p='\0';
-        c=fgetc(image->file);
       }
   } while (!isdigit(c));
   if (base == 2)
@@ -12440,6 +12484,131 @@ static Image *ReadSGIImage(const ImageInfo *image_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
++   R e a d S T E G A N O I m a g e                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method ReadSTEGANOImage reads a steganographic image hidden within another
+%  image type.  It allocates the memory necessary for the new Image structure
+%  and returns a pointer to the new image.
+%
+%  The format of the ReadSTEGANOImage routine is:
+%
+%      image=ReadSTEGANOImage(image_info)
+%
+%  A description of each parameter follows:
+%
+%    o image:  Method ReadSTEGANOImage returns a pointer to the image
+%      after reading.  A null image is returned if there is a a memory shortage
+%      of if the image cannot be read.
+%
+%    o image_info: Specifies a pointer to an ImageInfo structure.
+%
+%
+*/
+static Image *ReadSTEGANOImage(ImageInfo *image_info)
+{
+#define UnembedBit(byte) \
+{ \
+  q->index|=(byte & 0x01) << shift; \
+  q++; \
+  if (q >= (image->pixels+image->packets-1)) \
+    { \
+      q=image->pixels; \
+      shift--; \
+      if (shift < 0) \
+        break; \
+    } \
+}
+
+  int
+    shift;
+
+  register int
+    i;
+
+  register RunlengthPacket
+    *p,
+    *q;
+
+  Image
+    *cloned_image,
+    *image,
+    *stegano_image;
+
+  /*
+    Allocate image structure.
+  */
+  image=AllocateImage(image_info);
+  if (image == (Image *) NULL)
+    return((Image *) NULL);
+  if ((image->columns == 0) || (image->rows == 0))
+    PrematureExit(OptionWarning,"must specify image size",image);
+  /*
+    Initialize Image structure.
+  */
+  *image_info->magick='\0';
+  stegano_image=ReadImage(image_info);
+  if (stegano_image == (Image *) NULL)
+    return((Image *) NULL);
+  if (!UncondenseImage(stegano_image))
+    return((Image *) NULL);
+  stegano_image->orphan=True;
+  cloned_image=CloneImage(stegano_image,image->columns,image->rows,False);
+  stegano_image->orphan=False;
+  DestroyImage(image);
+  if (cloned_image == (Image *) NULL)
+    PrematureExit(ResourceLimitWarning,"Memory allocation failed",
+      stegano_image);
+  image=cloned_image;
+  BlackImage(image);
+  image->class=PseudoClass;
+  image->colors=1 << QuantumDepth;
+  image->colormap=(ColorPacket *)
+    AllocateMemory(image->colors*sizeof(ColorPacket));
+  if (image->colormap == (ColorPacket *) NULL)
+    PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
+  for (i=0; i < image->colors; i++)
+  {
+    image->colormap[i].red=(Quantum) ((long) (MaxRGB*i)/(image->colors-1));
+    image->colormap[i].green=(Quantum) ((long) (MaxRGB*i)/(image->colors-1));
+    image->colormap[i].blue=(Quantum) ((long) (MaxRGB*i)/(image->colors-1));
+  }
+  /*
+    Grab embedded watermark.
+  */
+  shift=QuantumDepth-1;
+  p=stegano_image->pixels+(stegano_image->offset % stegano_image->packets);
+  q=image->pixels;
+  for (i=0; i < stegano_image->packets; i++)
+  {
+    if (stegano_image->class == PseudoClass)
+      UnembedBit(p->index)
+    else
+      {
+        UnembedBit(p->red);
+        UnembedBit(p->green);
+        UnembedBit(p->blue);
+      }
+    p++;
+    if (p >= (stegano_image->pixels+stegano_image->packets-1))
+      p=stegano_image->pixels;
+    if (QuantumTick(i,stegano_image->packets))
+      ProgressMonitor(LoadImageText,i,stegano_image->packets);
+  }
+  SyncImage(image);
+  CondenseImage(image);
+  DestroyImage(stegano_image);
+  return(image);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 +   R e a d S U N I m a g e                                                   %
 %                                                                             %
 %                                                                             %
@@ -14168,6 +14337,7 @@ static Image *ReadTILEImage(ImageInfo *image_info)
     x;
 
   Image
+    *cloned_image,
     *image,
     *tiled_image;
 
@@ -14179,17 +14349,22 @@ static Image *ReadTILEImage(ImageInfo *image_info)
     return((Image *) NULL);
   if ((image->columns == 0) || (image->rows == 0))
     PrematureExit(OptionWarning,"must specify image size",image);
+  if (*image_info->filename == '\0')
+    PrematureExit(OptionWarning,"must specify an image name",image);
   /*
     Initialize Image structure.
   */
+  *image_info->magick='\0';
   tiled_image=ReadImage(image_info);
   if (tiled_image == (Image *) NULL)
     return((Image *) NULL);
   tiled_image->orphan=True;
-  image=CloneImage(tiled_image,image->columns,image->rows,False);
+  cloned_image=CloneImage(tiled_image,image->columns,image->rows,False);
   tiled_image->orphan=False;
-  if (image == (Image *) NULL)
+  DestroyImage(image);
+  if (cloned_image == (Image *) NULL)
     PrematureExit(ResourceLimitWarning,"Memory allocation failed",tiled_image);
+  image=cloned_image;
   (void) strcpy(image->filename,image_info->filename);
   /*
     Tile texture onto image.
@@ -17787,6 +17962,11 @@ Export Image *ReadImage(ImageInfo *image_info)
       if (Latin1Compare(image_info->magick,"SGI") == 0)
         {
           image=ReadSGIImage(image_info);
+          break;
+        }
+      if (Latin1Compare(image_info->magick,"STEGANO") == 0)
+        {
+          image=ReadSTEGANOImage(image_info);
           break;
         }
       if (Latin1Compare(image_info->magick,"SUN") == 0)

@@ -802,13 +802,13 @@ Export Image *AverageImages(Image *images)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
-%     N e g a t e I m a g e                                                   %
+%     B l a c k I m a g e                                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method BlackImage inializes the reference image to all black pixels.
+%  Method BlackImage initializes the reference image to all black pixels.
 %
 %  The format of the BlackImage routine is:
 %
@@ -1168,6 +1168,100 @@ Export void CloseImage(Image *image)
       for ( ; image != (Image *) NULL; image=image->next)
         image->file=(FILE *) NULL;
     }
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%     C o a l e s c e I m a g e                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method CoalesceImages merges a sequence of images.  This is useful for GIF
+%  animation sequences that have page offsets and disposal methods.
+%
+%  The format of the CoalesceImages routine is:
+%
+%      CoalesceImages(image)
+%
+%  A description of each parameter follows:
+%
+%    o image: The address of a structure of type Image;  returned from
+%      ReadImage.
+%
+%
+*/
+Export void CoalesceImages(Image *image)
+{
+  Image
+    *cloned_image,
+    *p;
+
+  int
+    x,
+    y;
+
+  unsigned int
+    sans;
+
+  assert(image != (Image *) NULL);
+  /*
+    Determine if all the images in the sequence are the same size.
+  */
+  for (p=image->next; p != (Image *) NULL; p=p->next)
+    if ((p->columns != p->previous->columns) || 
+        (p->rows != p->previous->rows))
+      break;
+  if (p == (Image *) NULL)
+    return;
+  /*
+    Coalesce the image sequence.
+  */
+  image->matte=False;
+  if (image->page)
+    {
+      FreeMemory((char *) image->page);
+      image->page=(char *) NULL;
+    }
+  for (p=image->next; p != (Image *) NULL; p=p->next)
+  {
+    x=0;
+    y=0;
+    (void) XParseGeometry(p->page,&x,&y,&sans,&sans);
+    p->orphan=True;
+    cloned_image=CloneImage(p,p->columns,p->rows,True);
+    p->orphan=False;
+    if (cloned_image == (Image *) NULL)
+      {
+        MagickWarning(ResourceLimitWarning,"Unable to coalesce image",
+          "Memory allocation failed");
+        return;
+      }
+    p->matte=False;
+    p->columns=p->previous->columns;
+    p->rows=p->previous->rows;
+    p->packets=p->columns*p->rows;
+    p->pixels=(RunlengthPacket *) ReallocateMemory((char *)
+      p->pixels,p->packets*sizeof(RunlengthPacket));
+    if (p->pixels == (RunlengthPacket *) NULL)
+      {
+        MagickWarning(ResourceLimitWarning,"Unable to coalesce image",
+          "Memory allocation failed");
+        return;
+      }
+    if (p->page)
+      {
+        FreeMemory((char *) p->page);
+        p->page=(char *) NULL;
+      }
+    CompositeImage(p,ReplaceCompositeOp,p->previous,0,0);
+    CompositeImage(p,OverCompositeOp,cloned_image,x,y);
+    DestroyImage(cloned_image);
+    CondenseImage(p);
+  }
 }
 
 /*
@@ -2971,21 +3065,11 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
       char
         name[MaxTextExtent];
 
-      ColorPacket
+      register ColorPacket
         *p;
-
-      double
-        distance_squared,
-        min_distance;
-
-      int
-        distance;
 
       register int
         i;
-
-      register XColorlist
-        *q;
 
       /*
         Display image colormap.
@@ -2993,31 +3077,10 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
       p=image->colormap;
       for (i=0; i < image->colors; i++)
       {
-        (void) fprintf(file,"    %d: (%3d,%3d,%3d)  "HexColorFormat,i,p->red,
-          p->green,p->blue,(unsigned int) p->red,(unsigned int) p->green,
-          (unsigned int) p->blue);
-        min_distance=3.0*65536.0*65536.0;
-        for (q=Colorlist; q->name != (char *) NULL; q++)
-        {
-          distance=(int) DownScale(p->red)-(int) q->red;
-          distance_squared=(unsigned int) (distance*distance);
-          distance=(int) DownScale(p->green)-(int) q->green;
-          distance_squared+=(unsigned int) (distance*distance);
-          distance=(int) DownScale(p->blue)-(int) q->blue;
-          distance_squared+=(unsigned int) (distance*distance);
-          if (distance_squared < min_distance)
-            {
-              min_distance=distance_squared;
-              (void) strcpy(name,q->name);
-            }
-        }
+        (void) fprintf(file,"    %d: (%3d,%3d,%3d)",i,p->red,p->green,p->blue);
         (void) fprintf(file,"  ");
-        if (min_distance < 16)
-          {
-            if (min_distance > 0)
-              (void) fprintf(file,"~");
-            (void) fprintf(file,"%s",name);
-          }
+        (void) QueryColorName(p,name);
+        (void) fprintf(file,"  %s",name);
         (void) fprintf(file,"\n");
         p++;
       }
@@ -9312,6 +9375,8 @@ Export void SetImageInfo(ImageInfo *image_info,unsigned int rectify)
     (void) strcpy(image_info->magick,"FITS");
   if (strncmp(magick,"\261\150\336\72",4) == 0)
     (void) strcpy(image_info->magick,"DCX");
+  if (strncmp(magick,"digraph",7) == 0)
+    (void) strcpy(image_info->magick,"DOT");
   if (strncmp(magick,"DFAX",4) == 0)
     (void) strcpy(image_info->magick,"FAX");
   if (strncmp(magick,"SIMPLE",6) == 0)
@@ -9521,6 +9586,140 @@ Export void SortColormapByIntensity(Image *image)
     p++;
   }
   FreeMemory((char *) pixels);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   S t e g a n o I m a g e                                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method SteganoImage hides a digital watermark within the image.
+%
+%  The format of the SteganoImage routine is:
+%
+%      stegano_image=SteganoImage(image,watermark)
+%
+%  A description of each parameter follows:
+%
+%    o stegano_image: Method SteganoImage returns a pointer to the
+%      steganographic image with the watermark hidden.  A null image is
+%      returned if there is a memory shortage.
+%
+%    o image: The address of a structure of type Image.
+%
+%    o watermark: The address of a structure of type Image.
+%
+%
+*/
+Export Image *SteganoImage(Image *image,Image *watermark)
+{
+#define EmbedBit(byte) \
+{ \
+  byte&=(~0x01); \
+  byte|=(Intensity(*r) >> shift) & 0x01; \
+  r++; \
+  if (r >= (watermark->pixels+watermark->packets-1)) \
+    { \
+      r=watermark->pixels; \
+      shift--; \
+      if (shift < 0) \
+        break; \
+    } \
+}
+#define SteganoImageText  "  Hiding image...  "
+
+  Image
+    *stegano_image;
+
+  int
+    shift;
+
+  register int
+    i;
+
+  register RunlengthPacket
+    *p,
+    *q,
+    *r;
+
+  assert(image != (Image *) NULL);
+  assert(watermark != (Image *) NULL);
+  if (!UncondenseImage(image))
+    return((Image *) NULL);
+  if (!UncondenseImage(watermark))
+    return((Image *) NULL);
+  /*
+    Initialize steganographic image attributes.
+  */
+  stegano_image=CloneImage(image,image->columns,image->rows,True);
+  if (stegano_image == (Image *) NULL)
+    {
+      MagickWarning(ResourceLimitWarning,
+        "Unable to create steganographic image","Memory allocation failed");
+      return((Image *) NULL);
+    }
+  if (stegano_image->class == PseudoClass)
+    if (stegano_image->colors > ((MaxRGB+1) >> 1))
+      stegano_image->class=DirectClass;
+    else
+      {
+        /*
+          Shift colormap to make room for information hiding.
+        */
+        stegano_image->colors<<=1;
+        stegano_image->colormap=(ColorPacket *) ReallocateMemory((char *)
+          stegano_image->colormap,stegano_image->colors*sizeof(ColorPacket));
+        if (stegano_image->colormap == (ColorPacket *) NULL)
+          {
+            MagickWarning(ResourceLimitWarning,
+              "Unable to create steganographic image",
+              "Memory allocation failed");
+            DestroyImage(stegano_image);
+            return((Image *) NULL);
+          }
+        for (i=stegano_image->colors-1; i >= 0; i--)
+          stegano_image->colormap[i]=stegano_image->colormap[i >> 1];
+        q=stegano_image->pixels;
+        for (i=0; i < stegano_image->packets; i++)
+        {
+          q->index<<=1;
+          q++;
+        }
+      }
+  /*
+    Hide watermark in low-order bits of image.
+  */
+  shift=QuantumDepth-1;
+  p=image->pixels+(image->offset % image->packets);
+  q=stegano_image->pixels+(stegano_image->offset % stegano_image->packets);
+  r=watermark->pixels;
+  for (i=0; i < image->packets; i++)
+  {
+    if (image->class == PseudoClass)
+      EmbedBit(q->index)
+    else
+      {
+        EmbedBit(q->red);
+        EmbedBit(q->green);
+        EmbedBit(q->blue);
+      }
+    p++;
+    q++;
+    if (p >= (image->pixels+image->packets-1))
+      {
+        p=image->pixels;
+        q=stegano_image->pixels;
+      }
+    if (QuantumTick(i,image->packets))
+      ProgressMonitor(SteganoImageText,i,image->packets);
+  }
+  return(stegano_image);
 }
 
 /*

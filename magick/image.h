@@ -328,6 +328,9 @@ typedef struct _ColorPacket
 
   unsigned short
     index;
+
+  unsigned long
+    count;
 } ColorPacket;
 
 typedef struct _ContributionInfo
@@ -732,6 +735,7 @@ extern Export Image
   *SharpenImage(Image *,double),
   *ShearImage(Image *,double,double,const unsigned int),
   *SpreadImage(Image *,unsigned int),
+  *SteganoImage(Image *,Image *),
   *StereoImage(Image *,Image *),
   *SwirlImage(Image *,double),
   *WaveImage(Image *,double,double),
@@ -754,6 +758,7 @@ extern Export unsigned int
   QuantizationError(Image *),
   QuantizeImage(QuantizeInfo *,Image *),
   QuantizeImages(QuantizeInfo *,Image *),
+  QueryColorName(ColorPacket *,char *),
   SegmentImage(Image *,const unsigned int,const unsigned int,const double,
     const double),
   UncondenseImage(Image *),
@@ -765,6 +770,7 @@ extern Export void
   AnnotateImage(Image *,AnnotateInfo *),
   BlackImage(Image *),
   CloseImage(Image *),
+  CoalesceImages(Image *),
   ColorFloodfillImage(Image *,const RunlengthPacket *,const ColorPacket *,int x,
     int y,const PaintMethod),
   ColorizeImage(Image *,char *,char *),

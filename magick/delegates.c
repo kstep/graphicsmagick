@@ -474,6 +474,7 @@ Export unsigned int InvokeDelegate(const ImageInfo *image_info,Image *image,
         /*
           Write parameter file (see mpeg2encode documentation for details).
         */
+        CoalesceImages(image);
         mpeg=Latin1Compare(delegate_info.encode_tag,"M2V") != 0;
         file=fopen(image_info->unique,"w");
         if (file == (FILE *) NULL)

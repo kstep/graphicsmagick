@@ -62,6 +62,7 @@
 %    -border geometry     surround image with a border of color
 %    -box color           color for annotation bounding box
 %    -charcoal factor     simulate a charcoal drawing
+%    -coalesce            merge a sequence of images
 %    -colorize value      colorize the image with the pen color
 %    -colors value        preferred number of colors in the image
 %    -colorspace type     alternate image colorspace
@@ -420,6 +421,7 @@ static void Usage(const char *client_name)
       "-border geometry     surround image with a border of color",
       "-box color           color for annotation bounding box",
       "-charcoal factor     simulate a charcoal drawing",
+      "-coalesce            merge a sequence of images",
       "-colorize value      colorize the image with the pen color",
       "-colors value        preferred number of colors in the image",
       "-colorspace type     alternate image colorspace",
@@ -555,6 +557,7 @@ int main(int argc,char **argv)
 
   unsigned int
     average,
+    coalesce,
     morph,
     global_colormap,
     scene;
@@ -568,6 +571,7 @@ int main(int argc,char **argv)
     Usage(client_name);
   append=0;
   average=False;
+  coalesce=False;
   morph=0;
   filename=(char *) NULL;
   image=(Image *) NULL;
@@ -724,6 +728,11 @@ int main(int argc,char **argv)
                   if ((i == argc) || !sscanf(argv[i],"%f",(float *) &x))
                     MagickError(OptionError,"Missing factor",option);
                 }
+              break;
+            }
+          if (strncmp("coalesce",option+1,3) == 0)
+            {
+              coalesce=(*option == '-');
               break;
             }
           if (strncmp("colorize",option+1,7) == 0)
@@ -1706,6 +1715,8 @@ int main(int argc,char **argv)
           image=morphed_image;
         }
     }
+  if (coalesce)
+    CoalesceImages(image);
   if (global_colormap)
     (void) MapImages(image,(Image *) NULL,image_info.dither);
   /*
