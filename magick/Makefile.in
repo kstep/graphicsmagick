@@ -1,6 +1,6 @@
 # Makefile.in generated automatically by automake 1.4a from Makefile.am
 
-# Copyright (C) 1994, 1995-9, 2000 Free Software Foundation, Inc.
+# Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
 # with or without modifications, as long as this notice is preserved.
@@ -240,8 +240,8 @@ noinst_HEADERS = animate.h stash.h defines.h display.h mac.h magic.h \
 
 
 # Additional files to distribute
-EXTRA_DIST = $(ALLMANPAGES) Imakefile Magick-config.in Make.com mac.c \
-  magic.mgk nt.c vms.c $(MAGICK_BASE_SRCS)
+EXTRA_DIST = $(ALLMANPAGES) Magick-config.in Make.com mac.c magic.mgk nt.c \
+  vms.c $(MAGICK_BASE_SRCS)
 
 
 # Where modules are installed
@@ -301,6 +301,14 @@ DATA =  $(pkg_DATA) $(pkgdata_DATA)
 
 HEADERS =  $(include_HEADERS) $(noinst_HEADERS)
 
+DIST_COMMON =  $(include_HEADERS) $(noinst_HEADERS) $(pkg_DATA) \
+$(pkgdata_DATA) ./stamp-h.in Magick-config.in Makefile.am Makefile.in \
+config.h.in
+
+
+DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
+
+GZIP_ENV = --best
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 DEP_FILES =  @AMDEP@ $(DEPDIR)/PreRvIcccm.Plo $(DEPDIR)/animate.Plo \
 $(DEPDIR)/annotate.Plo $(DEPDIR)/attributes.Plo $(DEPDIR)/blob.Plo \
@@ -315,13 +323,6 @@ $(DEPDIR)/shear.Plo $(DEPDIR)/signature.Plo $(DEPDIR)/stash.Plo \
 $(DEPDIR)/stream.Plo $(DEPDIR)/timer.Plo $(DEPDIR)/transform.Plo \
 $(DEPDIR)/utility.Plo $(DEPDIR)/widget.Plo $(DEPDIR)/xwindows.Plo \
 $(DEPDIR)/zoom.Plo
-DIST_COMMON =  $(include_HEADERS) $(noinst_HEADERS) ./stamp-h.in \
-Magick-config.in Makefile.am Makefile.in config.h.in
-
-
-DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
-
-GZIP_ENV = --best
 SOURCES = $(libMagick_la_SOURCES)
 OBJECTS = $(am_libMagick_la_OBJECTS)
 
@@ -331,7 +332,7 @@ all: all-redirect
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
 	cd $(top_srcdir) && $(AUTOMAKE) --foreign magick/Makefile
 
-Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
+Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status $(BUILT_SOURCES)
 	cd $(top_builddir) \
 	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
@@ -505,7 +506,7 @@ ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
 	  done | \
 	  $(AWK) '    { files[$$0] = 1; } \
 	       END { for (i in files) print i; }'`; \
-	mkid -fID $$unique $(LISP)
+	mkid -f$$here/ID $$unique $(LISP)
 
 TAGS:  $(HEADERS) $(SOURCES) config.h.in $(TAGS_DEPENDENCIES) \
 		$(TAGS_FILES) $(LISP)
@@ -528,6 +529,20 @@ distclean-tags:
 	-rm -f TAGS ID
 
 maintainer-clean-tags:
+
+distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)/$(subdir)
+
+distdir: $(DISTFILES)
+	@for file in $(DISTFILES); do \
+	  d=$(srcdir); \
+	  if test -d $$d/$$file; then \
+	    cp -pR $$d/$$file $(distdir); \
+	  else \
+	    test -f $(distdir)/$$file \
+	    || cp -p $$d/$$file $(distdir)/$$file || :; \
+	  fi; \
+	done
+	$(MAKE) $(AM_MAKEFLAGS) top_distdir="$(top_distdir)" distdir="$(distdir)" dist-hook
 
 @AMDEP@include $(DEPDIR)/PreRvIcccm.Plo
 @AMDEP@include $(DEPDIR)/animate.Plo
@@ -581,13 +596,13 @@ maintainer-clean-depend:
 @AMDEP@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP@	depfile='$(DEPDIR)/$*.Po' tmpdepfile='$(DEPDIR)/$*.TPo' @AMDEPBACKSLASH@
 @AMDEP@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-	$(COMPILE) -c -o $@ `test -f $< || echo '$(srcdir)/'`$<
+	$(COMPILE) -c -o $@ $<
 
 .c.lo:
 @AMDEP@	source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
 @AMDEP@	depfile='$(DEPDIR)/$*.Plo' tmpdepfile='$(DEPDIR)/$*.TPlo' @AMDEPBACKSLASH@
 @AMDEP@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-	$(LTCOMPILE) -c -o $@ `test -f $< || echo '$(srcdir)/'`$<
+	$(LTCOMPILE) -c -o $@ $<
 
 .c.obj:
 @AMDEP@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
@@ -595,22 +610,6 @@ maintainer-clean-depend:
 @AMDEP@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 	$(COMPILE) -c -o $@ `cygpath -w $<`
 
-
-distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)/$(subdir)
-
-distdir: $(DISTFILES)
-	@for file in $(DISTFILES); do \
-	  d=$(srcdir); \
-	  if test -d $$d/$$file; then \
-	    cp -pR $$d/$$file $(distdir) \
-	    || exit 1; \
-	  else \
-	    test -f $(distdir)/$$file \
-	    || cp -p $$d/$$file $(distdir)/$$file \
-	    || exit 1; \
-	  fi; \
-	done
-	$(MAKE) $(AM_MAKEFLAGS) top_distdir="$(top_distdir)" distdir="$(distdir)" dist-hook
 info-am:
 info: info-am
 dvi-am:
@@ -694,8 +693,8 @@ maintainer-clean-libtool uninstall-binSCRIPTS install-binSCRIPTS \
 uninstall-pkgDATA install-pkgDATA uninstall-pkgdataDATA \
 install-pkgdataDATA uninstall-includeHEADERS install-includeHEADERS \
 tags mostlyclean-tags distclean-tags clean-tags maintainer-clean-tags \
-mostlyclean-depend distclean-depend clean-depend \
-maintainer-clean-depend distdir info-am info dvi-am dvi check check-am \
+distdir mostlyclean-depend distclean-depend clean-depend \
+maintainer-clean-depend info-am info dvi-am dvi check check-am \
 installcheck-am installcheck all-recursive-am install-exec-am \
 install-exec install-data-am install-data install-am install \
 uninstall-am uninstall all-redirect all-am all install-strip \

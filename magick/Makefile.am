@@ -79,8 +79,8 @@ noinst_HEADERS = animate.h stash.h defines.h display.h mac.h magic.h \
   modules.h nt.h vms.h
 
 # Additional files to distribute
-EXTRA_DIST = $(ALLMANPAGES) Imakefile Magick-config.in Make.com mac.c \
-  magic.mgk nt.c vms.c $(MAGICK_BASE_SRCS)
+EXTRA_DIST = $(ALLMANPAGES) Magick-config.in Make.com mac.c magic.mgk nt.c \
+  vms.c $(MAGICK_BASE_SRCS)
 
 # Where modules are installed
 pkgdir = $(libdir)/ImageMagick/modules/coders

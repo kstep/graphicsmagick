@@ -113,9 +113,8 @@ Export Image *BorderImage(Image *image,const RectangleInfo *border_info,
   matte_color=image->matte_color;
   image->matte_color=image->border_color;
   bordered_image=FrameImage(image,&frame_info,exception);
+  bordered_image->matte_color=matte_color;
   image->matte_color=matte_color;
-  if (bordered_image != (Image *) NULL)
-    bordered_image->matte_color=matte_color;
   return(bordered_image);
 }
 

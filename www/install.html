@@ -211,17 +211,9 @@ If you do not have <tt>gunzip</tt>, it is available on <a href="ftp://prep.ai.mi
 
 <br>&nbsp;
 <p>&nbsp;
-<p>There are currently two mechanisms available to create makefiles to
-build <b>ImageMagick</b>:
-<ul>
-<li>
-GNU configure:</li>
-
-<p><br>This option is easiest to use and is recommended when ImageMagick
-is to be installed outside of the X11 distribution or working imake configuration
-files are not available. Use of <tt>configure</tt> enables automated configuration,
-building, and installation of
-<a href="perl.html">PerlMagick</a>.
+<p>
+Use <tt>configure</tt> to automatically configure, build, and install 
+<a href="../ImageMagick.html">ImageMagick</a>.
 <p>If you are willing to accept configure's default options, type:
 <pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ./configure</pre>
 and watch the configure script output to verify that it finds everything
@@ -395,33 +387,6 @@ to see (and why) so the failure you are observing can be identified and
 resolved.
 <br>&nbsp;
 <br>&nbsp;
-<li>
-X11 Imake:</li>
-
-<p><br>Use this option if working imake configuration files are available,
-the package is to be installed where ever imake installs things (usually
-the X11 distribution directory), and you don't mind editing a configuration
-file. Use of this scheme requires a seperate step to install <b>PerlMagick</b>
-(see the README file in the
-<b>PerlMagick</b> subdirectory).
-<p>Edit <tt>Magick.tmpl</tt> and set the variables to suit your local environment.
-Now type:
-<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ./confingure
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; xmkmf
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; make Makefiles</pre>
-or just
-<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ./confingure
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; xmkmf -a</pre>
-If you are using X11R6 imake. Here, GNU configure is used to initialize
-the <tt>delegates/delegates.mgk</tt> file.
-<p>Note, <i>ImageMagick requires an ANSI compiler</i>. If the compile fails,
-first check to ensure your compile is ANSI compatible. If it fails for
-some other reason, try
-<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cd magick
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; make -k
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cd ..
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; make -k</pre>
-&nbsp;</ul>
 
 <dd>
 To confirm your build of the <b>ImageMagick</b> distribution was successful,
@@ -774,155 +739,6 @@ or ZLIB compressed MIFF images.</dd>
 to Compile</font></font></font></b></td>
 </tr>
 </table>
-
-<dd>
-The following procedure describes how to build ImageMagick extension libraries
-in subdirectories of the ImageMagick directory. An alternative to these
-procedures is to install one or more of these under your system's regular
-include/lib directory (e.g. the directory specified by <tt>--prefix</tt>
-to configure or <tt>/usr/local</tt>). This allows the libraries to be shared
-by other packages. When using the configure script, the two schemes may
-be mixed. Also, please note that when the configure option <tt>--enable-shared</tt>
-is not disabled, these procedures must be supplemented with whatever compilation
-flags are required on your system to generate PIC code. In the case of
-gcc, this usually means that <tt>-fPIC</tt> must be added to the compiler
-options (i.e. CFLAGS) when building each delegate library.</dd>
-
-<dd>
-To display images in the <b>HDF, JPEG, PNG</b>, <b>TIFF</b> or
-<b>TTF</b>
-format, get the respective archives and build <b>ImageMagick</b> as follows:</dd>
-
-<dl>
-<dt>
-HDF</dt>
-
-<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cd ImageMagick
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; gunzip -c HDF4.1r3.tar.gz | tar xvf -
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mv HDF4.1r3 hdf
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cd hdf
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; configure
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; make -k hdf-libnofortran
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cd ..</pre>
-</dl>
-
-<dl>
-<dt>
-JBIG</dt>
-
-<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cd ImageMagick
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; gunzip -c jbigkit-1.1.tar.gz | tar xvof -
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mv jbig-kit jbig
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cd jbig
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; make
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cd ..</pre>
-</dl>
-
-<dl>
-<dt>
-JPEG</dt>
-
-<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cd ImageMagick
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; gunzip -c jpegsrc.v6b.tar.gz | tar xvof -
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mv jpeg-6b jpeg
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cd jpeg
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; configure
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; make
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cd ..</pre>
-</dl>
-
-<dl>
-<dt>
-PNG</dt>
-
-<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cd ImageMagick
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; gunzip -c libpng-1.0.3.tar.gz | tar xvf -
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mv libpng-1.0.3 png
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cd png
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; make
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cd ..</pre>
-</dl>
-
-<dl>
-<dt>
-TIFF</dt>
-
-<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cd ImageMagick
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; gunzip -c tiff-v3.5.4.tar.gz | tar xvof -
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mv tiff-v3.5.4 tiff
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cd tiff
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ./configure
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; make
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cd ..</pre>
-</dl>
-
-<dl>
-<dt>
-TTF</dt>
-
-<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cd ImageMagick
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; gunzip -c freetype-1.3.1.tar.gz | tar xvof -
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mv freetype-1.3.1 ttf
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cd ttf
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ./configure -disable-shared
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; make
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cd ..</pre>
-</dl>
-
-<dl>
-<dt>
-ZLIB</dt>
-
-<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cd ImageMagick
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; gunzip -c zlib-1.1.3.tar.gz | tar xvf -
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mv zlib-1.1.3.tar.gz zlib
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cd zlib
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; make
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cd ..</pre>
-</dl>
-
-<dd>
-If your computer system supports shared libraries you must type</dd>
-
-<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; make install</pre>
-
-<dd>
-Finally, perform the following:</dd>
-
-<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cd ImageMagick
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <i>edit Magick.tmpl and define Has???? as instructed
-</i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; xmkmf
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; make Makefiles
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; make clean
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; make</pre>
-
-<dd>
-If prefer to use <tt>configure</tt> rather than Imake:</dd>
-
-<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; configure
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; make clean
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; make -k</pre>
-
-<dd>
-If the compile fails due to a function redefinition it may be that either
-<tt>jpeg/jconfig.h</tt>
-or <tt>mpeg/mpeg.h</tt> is redefining
-<tt>const</tt>. Fix this problem
-and try again.</dd>
-
-<dd>
-You can now convert or display images in the JPEG, TIFF, PNG, etc. image
-formats.</dd>
-
-<dd>
-If you have <b>HDF, JBIG, JPEG, PNG,</b> and <b>TIFF</b> sources installed
-as directed above, you can also type</dd>
-
-<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Install sun</pre>
-
-<dd>
-Substitute the appropriate machine type (<i>aix, hpux, sgi</i>, etc).</dd>
-</dl>
 
 <dl><i><a href="#contents">Back to Contents</a></i>
 <br>&nbsp;
