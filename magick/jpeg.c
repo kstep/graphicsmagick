@@ -739,10 +739,10 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
 */
 Export void RegisterJPEGImage(void)
 {
+#if defined(HasJPEG)
   MagickInfo
     *entry;
 
-#if defined(HasJPEG)
   entry=SetMagickInfo("JPEG24");
   entry->decoder=ReadJPEGImage;
   entry->encoder=WriteJPEGImage;

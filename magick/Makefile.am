@@ -48,16 +48,16 @@ MAGICK_BASE_SRCS=PreRvIcccm.c animate.c annotate.c attributes.c blob.c \
   cache.c cache_view.c colors.c compress.c constitute.c decorate.c delegates.c \
   display.c draw.c effects.c enhance.c error.c gems.c gradation.c histogram.c \
   html.c image.c label.c magick.c map.c matte.c memory.c monitor.c montage.c \
-  pixel_cache.c quantize.c segment.c shear.c signature.c stegano.c stream.c \
+  quantize.c segment.c shear.c signature.c stegano.c stream.c \
   timer.c transform.c ttf.c utility.c widget.c xwindows.c zoom.c
 
 # Library coder sources
 MAGICK_CODER_SRCS=avs.c bim.c bmp.c cmyk.c dcm.c dps.c ept.c fax.c fits.c \
-  fpx.c gif.c gray.c hdf.c icc.c icon.c iptc.c jbig.c jpeg.c logo.c miff.c \
-  mono.c mtv.c pcd.c pcl.c pcx.c pdb.c pdf.c pict.c pix.c png.c plasma.c \
-  pnm.c preview.c ps.c ps2.c ps3.c psd.c pwp.c rgb.c rla.c rle.c sct.c sfw.c \
-  sgi.c sun.c tga.c tiff.c tile.c tim.c txt.c uil.c uyvy.c vicar.c vid.c \
-  viff.c wbmp.c x.c xbm.c xc.c xpm.c xwd.c yuv.c
+  fpx.c gif.c gray.c hdf.c icc.c icon.c iptc.c jbig.c jpeg.c logo.c mgk.c \
+  miff.c mono.c mtv.c pcd.c pcl.c pcx.c pdb.c pdf.c pict.c pix.c png.c \
+  plasma.c pnm.c preview.c ps.c ps2.c ps3.c psd.c pwp.c rgb.c rla.c rle.c \
+  sct.c sfw.c sgi.c sun.c tga.c tiff.c tile.c tim.c txt.c uil.c uyvy.c vicar.c \
+  vid.c viff.c wbmp.c x.c xbm.c xc.c xpm.c xwd.c yuv.c
 
 # Library sources
 if WITH_MODULES
@@ -76,13 +76,12 @@ endif # WITH_MODULES
 bin_SCRIPTS = Magick-config
 
 # Headers which are installed
-include_HEADERS = PreRvIcccm.h api.h attributes.h blob.h cache_view.h \
+include_HEADERS = PreRvIcccm.h api.h attributes.h blob.h cache.h cache_view.h \
   classify.h compress.h config.h delegates.h error.h gems.h image.h magick.h \
   memory.h monitor.h quantize.h timer.h utility.h version.h widget.h xwindows.h
 
 # Headers which are not installed but which are distributed
-noinst_HEADERS = animate.h cache.h defines.h display.h mac.h mng.h nt.h \
-  vms.h
+noinst_HEADERS = animate.h cache.h defines.h display.h mac.h mng.h nt.h vms.h
 
 # Additional files to distribute
 EXTRA_DIST = $(ALLMANPAGES) Imakefile Magick-config.in Make.com mac.c nt.c \

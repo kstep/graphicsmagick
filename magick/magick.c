@@ -249,6 +249,7 @@ Export MagickInfo *GetMagickInfo(const char *tag)
       RegisterLOGOImage();
       RegisterMAPImage();
       RegisterMATTEImage();
+      RegisterMGKImage();
       RegisterMIFFImage();
       RegisterMONOImage();
       RegisterMTVImage();

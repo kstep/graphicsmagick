@@ -101,7 +101,6 @@ ILBMDecodeDelegate = @ILBMDecodeDelegate@
 ILBMEncodeDelegate = @ILBMEncodeDelegate@
 INCLTDL = @INCLTDL@
 LD = @LD@
-LDFLAGS = @LDFLAGS@
 LIBLTDL = @LIBLTDL@
 LIBTOOL = @LIBTOOL@
 LIB_BZLIB = @LIB_BZLIB@
@@ -262,6 +261,7 @@ CONFIG_CLEAN_FILES =
 check_PROGRAMS =  rwblob$(EXEEXT) rwfile$(EXEEXT)
 
 DEFS = @DEFS@ -I. -I$(srcdir) -I../magick
+LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 am_rwblob_OBJECTS =  rwblob.$(OBJEXT)
 rwblob_OBJECTS =  $(am_rwblob_OBJECTS)

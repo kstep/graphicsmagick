@@ -65,30 +65,30 @@
   Forward declarations.
 */
 static unsigned int
-  WriteMIFFImage(const ImageInfo *,Image *);
+  WriteMGKImage(const ImageInfo *,Image *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   I s M I F F                                                               %
+%   I s M G K                                                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method IsMIFF returns True if the image format type, identified by the
-%  magick string, is MIFF.
+%  Method IsMGK returns True if the image format type, identified by the
+%  magick string, is an ImageMagick Cache image.
 %
-%  The format of the IsMIFF method is:
+%  The format of the IsMGK method is:
 %
-%      unsigned int IsMIFF(const unsigned char *magick,
+%      unsigned int IsMGK(const unsigned char *magick,
 %        const unsigned int length)
 %
 %  A description of each parameter follows:
 %
-%    o status:  Method IsMIFF returns True if the image format type is MIFF.
+%    o status:  Method IsMGK returns True if the image format type is Cache.
 %
 %    o magick: This string is generally the first few bytes of an image file
 %      or blob.
@@ -97,14 +97,14 @@ static unsigned int
 %
 %
 */
-static unsigned int IsMIFF(const unsigned char *magick,
+static unsigned int IsMGK(const unsigned char *magick,
   const unsigned int length)
 {
   if (length < 14)
     return(False);
-  if (strncmp((char *) magick,"id=ImageMagick",14) == 0)
+  if (strncmp((char *) magick,"id=MagickCache",14) == 0)
     return(True);
-  if (strncmp((char *) magick,"Id=ImageMagick",14) == 0)
+  if (strncmp((char *) magick,"Id=MagickCache",14) == 0)
     return(True);
   return(False);
 }
@@ -114,25 +114,26 @@ static unsigned int IsMIFF(const unsigned char *magick,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   R e a d M I F F I m a g e                                                 %
+%   R e a d M G K I m a g e                                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ReadMIFFImage reads a MIFF image file and returns it.  It
-%  allocates the memory necessary for the new Image structure and returns a
+%  Method ReadMGKImage reads an ImageMagick Cache image file and returns it.
+%  It allocates the memory necessary for the new Image structure and returns a
 %  pointer to the new image.
 %
-%  The format of the ReadMIFFImage method is:
+%  The format of the ReadMGKImage method is:
 %
-%      Image *ReadMIFFImage(const ImageInfo *image_info,ExceptionInfo *exception)
+%      Image *ReadMGKImage(const ImageInfo *image_info,
+%        ExceptionInfo *exception)
 %
 %  Decompression code contributed by Kyle Shorter.
 %
 %  A description of each parameter follows:
 %
-%    o image: Method ReadMIFFImage returns a pointer to the image after
+%    o image: Method ReadMGKImage returns a pointer to the image after
 %      reading.  A null image is returned if there is a memory shortage or
 %      if the image cannot be read.
 %
@@ -142,7 +143,7 @@ static unsigned int IsMIFF(const unsigned char *magick,
 %
 %
 */
-static Image *ReadMIFFImage(const ImageInfo *image_info,ExceptionInfo *exception)
+static Image *ReadMGKImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
 #if defined(HasBZLIB)
   bz_stream
@@ -438,7 +439,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
     /*
       Verify that required image information is defined.
     */
-    if ((strcmp(id,"ImageMagick") != 0) || (image->class == UndefinedClass) ||
+    if ((strcmp(id,"MagickCache") != 0) || (image->class == UndefinedClass) ||
         (image->compression == UndefinedCompression) || (image->columns == 0) ||
         (image->rows == 0))
       ThrowReaderException(CorruptImageWarning,
@@ -761,36 +762,34 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   R e g i s t e r M I F F I m a g e                                         %
+%   R e g i s t e r M G K I m a g e                                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method RegisterMIFFImage adds attributes for the MIFF image format to
+%  Method RegisterMGKImage adds attributes for the Cache image format to
 %  the list of supported formats.  The attributes include the image format
 %  tag, a method to read and/or write the format, whether the format
 %  supports the saving of more than one frame to the same file or blob,
 %  whether the format supports native in-memory I/O, and a brief
 %  description of the format.
 %
-%  The format of the RegisterMIFFImage method is:
+%  The format of the RegisterMGKImage method is:
 %
-%      RegisterMIFFImage(void)
+%      RegisterMGKImage(void)
 %
 */
-Export void RegisterMIFFImage(void)
+Export void RegisterMGKImage(void)
 {
   MagickInfo
     *entry;
 
-  entry=SetMagickInfo("IMPLICIT");
-  RegisterMagickInfo(entry);
-  entry=SetMagickInfo("MIFF");
-  entry->decoder=ReadMIFFImage;
-  entry->encoder=WriteMIFFImage;
-  entry->magick=IsMIFF;
-  entry->description=AllocateString("Magick image format");
+  entry=SetMagickInfo("MGK");
+  entry->decoder=ReadMGKImage;
+  entry->encoder=WriteMGKImage;
+  entry->magick=IsMGK;
+  entry->description=AllocateString("Magick Cache image format");
   RegisterMagickInfo(entry);
 }
 
@@ -799,23 +798,23 @@ Export void RegisterMIFFImage(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   W r i t e M I F F I m a g e                                               %
+%   W r i t e M G K I m a g e                                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method WriteMIFFImage writes a MIFF image to a file.
+%  Method WriteMGKImage writes an ImageMagick Cache image to a file.
 %
-%  The format of the WriteMIFFImage method is:
+%  The format of the WriteMGKImage method is:
 %
-%      unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
+%      unsigned int WriteMGKImage(const ImageInfo *image_info,Image *image)
 %
 %  Compression code contributed by Kyle Shorter.
 %
 %  A description of each parameter follows:
 %
-%    o status: Method WriteMIFFImage return True if the image is written.
+%    o status: Method WriteMGKImage return True if the image is written.
 %      False is returned if there is a memory shortage or if the image file
 %      fails to write.
 %
@@ -825,7 +824,7 @@ Export void RegisterMIFFImage(void)
 %
 %
 */
-static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
+static unsigned int WriteMGKImage(const ImageInfo *image_info,Image *image)
 {
 #if defined(HasBZLIB)
   bz_stream
@@ -887,7 +886,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
   if (status == False)
     ThrowWriterException(FileOpenWarning,"Unable to open file",image);
   (void) IsPseudoClass(image);
-  (void) strcpy((char *) image_info->magick,"MIFF");
+  (void) strcpy((char *) image_info->magick,"MGK");
   compression=image->compression;
   if (image_info->compression != UndefinedCompression)
     compression=image_info->compression;
@@ -913,7 +912,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
       ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
         image);
     /*
-      Write MIFF header.
+      Write Cache header.
     */
     if (((image_info->colorspace != UndefinedColorspace) ||
          (image->colorspace != CMYKColorspace)) &&
@@ -922,7 +921,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
     else
       if (image->colorspace != CMYKColorspace)
         RGBTransformImage(image,CMYKColorspace);
-    (void) strcpy(buffer,"Id=ImageMagick\n");
+    (void) strcpy(buffer,"Id=MagickCache\n");
     (void) WriteBlob(image,strlen(buffer),buffer);
     if (image->class == PseudoClass)
       (void) sprintf(buffer,"Class=PseudoClass  Colors=%u  Matte=%s\n",

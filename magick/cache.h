@@ -52,7 +52,8 @@ extern Export void
   DestroyCacheNexus(Cache,const unsigned int),
   GetCacheInfo(Cache *),
   SetCacheThreshold(const off_t),
-  SetCacheType(Cache,const CacheType);
+  SetCacheType(Cache,const CacheType),
+  SetPixelCacheMethods(void);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
