@@ -233,7 +233,7 @@ BEGIN
     ICON            IDR_MAINFRAME,IDC_STATIC,11,17,20,20
     LTEXT           "IMDisplay Version 1.0",IDC_STATIC,40,10,119,8,
                     SS_NOPREFIX
-    LTEXT           "Copyright (C) 2001",IDC_STATIC,40,25,119,8
+    LTEXT           "Copyright (C) 2002 ImageMagick Studio",IDC_STATIC,40,25,119,8
     DEFPUSHBUTTON   "OK",IDOK,178,7,50,14,WS_GROUP
 END
 
@@ -313,11 +313,11 @@ BEGIN
     BEGIN
         BLOCK "040904B0"
         BEGIN
-            VALUE "CompanyName", "\0"
+            VALUE "CompanyName", "ImageMagick Studio\0"
             VALUE "FileDescription", "IMDisplay MFC Application\0"
             VALUE "FileVersion", "1, 0, 0, 1\0"
             VALUE "InternalName", "IMDisplay\0"
-            VALUE "LegalCopyright", "Copyright (C) 2001\0"
+            VALUE "LegalCopyright", "Copyright (C) 2002 ImageMagick Studio\0"
             VALUE "LegalTrademarks", "\0"
             VALUE "OriginalFilename", "IMDisplay.EXE\0"
             VALUE "ProductName", "IMDisplay Application\0"
