@@ -288,6 +288,18 @@ Package=<4>
 
 ###############################################################################
 
+Project: "rwblob"=.\tests\rwblob.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
 Project: "rwfile"=.\tests\rwfile.dsp - Package Owner=<4>
 
 Package=<5>
