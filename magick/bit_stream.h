@@ -48,10 +48,11 @@ extern "C" {
 
   /*
     Return the requested number of bits from the current position in a
-    bit stream.
+    bit stream. Stream is read in most-significant bit/byte "big endian"
+    order.
   */
-  static inline unsigned int BitStreamRead(BitStreamReadHandle *bit_stream,
-                                           const unsigned int requested_bits)
+  static inline unsigned int BitStreamMSBRead(BitStreamReadHandle *bit_stream,
+                                              const unsigned int requested_bits)
   {
     register unsigned int
       remaining_quantum_bits,
@@ -109,11 +110,12 @@ extern "C" {
 
   /*
     Write quantum using the specified number of bits at the current
-    position in the bit stream.
+    position in the bit stream. Stream is written in most-significant
+    bit/byte "big endian" order.
   */
-  static inline void BitStreamWrite(BitStreamWriteHandle *bit_stream,
-                                    const unsigned int requested_bits,
-                                    const unsigned int quantum)
+  static inline void BitStreamMSBWrite(BitStreamWriteHandle *bit_stream,
+                                       const unsigned int requested_bits,
+                                       const unsigned int quantum)
   {
     register unsigned int
       remaining_quantum_bits = requested_bits;

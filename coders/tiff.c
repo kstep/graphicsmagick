@@ -935,7 +935,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           for (x = (long) width; x > 0 ; x--)
             {
               /* index */
-              quantum=BitStreamRead(&stream,bits_per_sample);
+              quantum=BitStreamMSBRead(&stream,bits_per_sample);
 #if QuantumDepth < 16
               if (bits_per_sample > QuantumDepth)
                 quantum /= index_scale;
@@ -945,7 +945,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
               if (image->matte)
                 {
                   /* matte */
-                  quantum = BitStreamRead(&stream,bits_per_sample);
+                  quantum = BitStreamMSBRead(&stream,bits_per_sample);
                   if (QuantumDepth > bits_per_sample)
                     quantum = quantum * matte_scale;
                   else
@@ -2397,12 +2397,12 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
                       /* PHOTOMETRIC_MINISBLACK */
                       quantum=p->red/scale;
 
-                    BitStreamWrite(&bit_stream,bits_per_sample,quantum);
+                    BitStreamMSBWrite(&bit_stream,bits_per_sample,quantum);
                     if (samples_per_pixel == 2)
                       /* with opacity sample */
                       {
                         quantum=(MaxRGB - p->opacity)/scale;
-                        BitStreamWrite(&bit_stream,bits_per_sample,quantum);
+                        BitStreamMSBWrite(&bit_stream,bits_per_sample,quantum);
                       }
                     p++;
                   }
@@ -2413,12 +2413,12 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
                 indexes=GetIndexes(image);
                 for (x= image->columns; x > 0; --x)
                   {
-                    BitStreamWrite(&bit_stream,bits_per_sample,*indexes++);
+                    BitStreamMSBWrite(&bit_stream,bits_per_sample,*indexes++);
                     if (samples_per_pixel == 2)
                       /* with opacity sample */
                       {
                         quantum=(MaxRGB - p->opacity)/scale;
-                        BitStreamWrite(&bit_stream,bits_per_sample,quantum);
+                        BitStreamMSBWrite(&bit_stream,bits_per_sample,quantum);
                         p++;
                       }
                   }

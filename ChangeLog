@@ -1,5 +1,11 @@
 2004-01-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/tiff.c: Adjust for bitstream API function renaming.
+	* magick/bit_stream.h: Rename BitStreamRead() to
+	BitStreamMSBRead() to indicate that it reads most significant bits
+	first ("big endian" order).  Rename BitStreamWrite() to
+	BitStreamMSBWrite() to indicate that it writes most significant
+	bits first ("big endian" order).
 	* wand/magick_wand.c: Updated to lastest ImageMagick API.
 
 2004-01-26  Mike Chiarappa  <mikechiarappa@libero.it>
