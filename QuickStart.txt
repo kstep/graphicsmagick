@@ -5,25 +5,22 @@ Configuration Files:
   searches in the following order, and will use the first configuration
   file found:
 
-      MagickModulesPath
+      <current directory>/
+      <client path>/
       $HOME/.magick/
       $MAGICK_HOME/
-      <program execution path>/
       MagickLibPath
+      MagickModulesPath
       MagickSharePath
-      X11ConfigurePath
 
   Where MagickSharePath, MagickLibPath, and MagickModulesPath are
   defined by the configure program on Unix, and default to
   /usr/local/share/ImageMagick/, /usr/local/lib/ImageMagick/ and
   /usr/local/lib/ImageMagick/modules/coders/ respectively.
-  X11ConfigurePath defines where to find the X11 color database,
-  rgb.txt. It defaults to /usr/X11R6/lib and is set to its actual path
-  by the configure program.
 
-  MagickLibPath, MagickModulesPath, and X11ConfigurePath are
-  defined under Win32, VMS, and Macintosh as c:\ImageMagick\, sys$login,
-  and the current directory respectively.
+  MagickLibPath and MagickModulesPath, and are defined under Win32, VMS, and
+  Macintosh as c:\ImageMagick\, sys$login, and the current directory
+  respectively.
 
 
 Environment Variables:

@@ -4368,66 +4368,6 @@ CPPFLAGS="$CPPFLAGS -I$INCLUDE_DIR"
 includedir="$includedir/magick"
 
 #
-# Find the X11 RGB database
-#
-echo "$as_me:4373: checking for X11 configure files" >&5
-echo $ECHO_N "checking for X11 configure files... $ECHO_C" >&6
-if test "${im_cv_x_configure+set}" = set; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-  # Look for the header file in a standard set of common directories.
-# Check X11 before X11Rn because it is often a symlink to the current release.
-  for ac_dir in               \
-    /lib/usr/lib/X11	  \
-    /usr/X11/lib          \
-    /usr/X11R4/lib        \
-    /usr/X11R5/lib        \
-    /usr/X11R6/lib        \
-    /usr/X386/lib         \
-    /usr/XFree86/lib/X11  \
-    /usr/athena/lib       \
-    /usr/lib              \
-    /usr/lib/X11          \
-    /usr/lib/X11R4        \
-    /usr/lib/X11R5        \
-    /usr/lib/X11R6        \
-    /usr/local/X11/lib    \
-    /usr/local/X11R4/lib  \
-    /usr/local/X11R5/lib  \
-    /usr/local/X11R6/lib  \
-    /usr/local/lib        \
-    /usr/local/lib/X11    \
-    /usr/local/lib/X11R4  \
-    /usr/local/lib/X11R5  \
-    /usr/local/lib/X11R6  \
-    /usr/local/x11r5/lib  \
-    /usr/lpp/Xamples/lib  \
-    /usr/openwin/lib      \
-    /usr/openwin/share/lib \
-    /usr/unsupported/lib  \
-    /usr/x386/lib         \
-    ; \
-  do
-    if test -f "$ac_dir/X11/rgb.txt"
-    then
-        im_cv_x_configure="$ac_dir/X11/"
-	break
-    elif test -f "$ac_dir/rgb.txt"
-    then
-        im_cv_x_configure="$ac_dir/"
-        break
-    fi
-
-  done
-fi
-echo "$as_me:4423: result: $im_cv_x_configure" >&5
-echo "${ECHO_T}$im_cv_x_configure" >&6
-
-cat >>confdefs.h <<EOF
-#define X11ConfigurePath "$im_cv_x_configure"
-EOF
-
-#
 # Save initial user-tunable values
 #
 CC_INITIAL=$CC

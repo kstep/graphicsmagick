@@ -66,9 +66,6 @@
 /* Increase max color value from 255 to 65535 */
 #undef QuantumLeap
 
-/* Location of X11 RGB database */
-#undef X11ConfigurePath
-
 /* Define if you have the bzip2 library */
 #undef HasBZLIB
 

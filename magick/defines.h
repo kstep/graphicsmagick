@@ -39,9 +39,6 @@ extern "C" {
 #define PreferencesDefaults  "~/."
 #define ProcessPendingEvents(text)
 #define ReadCommandlLine(argc,argv)
-#if !defined(X11ConfigurePath)
-#define X11ConfigurePath  "/usr/X11R6/lib/X11/"
-#endif
 #define SetNotifyHandlers
 #define TemporaryTemplate  "magick"
 #else
@@ -65,9 +62,6 @@ extern "C" {
 #define PreferencesDefaults  "decw$user_defaults:"
 #define ProcessPendingEvents(text)
 #define ReadCommandlLine(argc,argv)
-#if !defined(X11ConfigurePath)
-#define X11ConfigurePath  "sys$common:[sysmgr]rgb.dat"
-#endif
 #define SetNotifyHandlers
 #endif
 
@@ -90,9 +84,6 @@ extern "C" {
 #define MagickSharePath  ""
 #define PreferencesDefaults  "~/."
 #define ReadCommandlLine(argc,argv)  argc=ccommand(argv); puts(MagickVersion);
-#if !defined(X11ConfigurePath)
-#define X11ConfigurePath  "../xlib/lib/X11/"
-#endif
 #define SetNotifyHandlers \
   SetErrorHandler(MACErrorHandler); \
   SetWarningHandler(MACWarningHandler)
@@ -120,9 +111,6 @@ extern "C" {
 #define PreferencesDefaults  "~/."
 #define ProcessPendingEvents(text)
 #define ReadCommandlLine(argc,argv)
-#if !defined(X11ConfigurePath)
-#define X11ConfigurePath  "c:\\ImageMagick\\"
-#endif
 #define SetNotifyHandlers \
   SetErrorHandler(NTErrorHandler); \
   SetWarningHandler(NTWarningHandler)

@@ -864,7 +864,6 @@ Windows Win2K/95 VISUAL C++ 6.0 COMPILATION
   defines.h has 
 
       #define MagickConfigurePath  "c:\\ImageMagick\\"
-    #define X11ConfigurePath  "c:\\ImageMagick\\rgb.txt"
 
   NOTE #3:
 
