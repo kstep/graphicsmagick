@@ -176,7 +176,7 @@ AUTOMAKE_OPTIONS = 1.4 dist-zip
 # Additional files to distribute
 EXTRA_DIST = 
 
-SUBDIRS = lib tests demo
+SUBDIRS = bin lib tests demo
 
 # Non-Automake subdirectories to distribute
 DISTDIRS = doc

@@ -13310,8 +13310,9 @@ fi
 
 ac_config_files="$ac_config_files Makefile delegates/delegates.mgk delegates/Makefile magick/Makefile \
   coders/Makefile utilities/Makefile tests/Makefile magick/Magick-config \
-  Magick++/Makefile Magick++/lib/Makefile Magick++/lib/Magick++/Makefile \
-  Magick++/demo/Makefile Magick++/tests/Makefile
+  Magick++/bin/Makefile Magick++/bin/Magick++-config Magick++/Makefile \
+  Magick++/lib/Makefile Magick++/lib/Magick++/Makefile \
+  Magick++/demo/Makefile Magick++/tests/Makefile \
   PerlMagick/Makefile.PL"
 trap '' 1 2 15
 cat >confcache <<\EOF
@@ -13532,6 +13533,8 @@ Try \`$me --help' for more information."; exit 1 ;;
   'utilities/Makefile' ) CONFIG_FILES="$CONFIG_FILES utilities/Makefile" ;;
   'tests/Makefile' ) CONFIG_FILES="$CONFIG_FILES tests/Makefile" ;;
   'magick/Magick-config' ) CONFIG_FILES="$CONFIG_FILES magick/Magick-config" ;;
+  'Magick++/bin/Makefile' ) CONFIG_FILES="$CONFIG_FILES Magick++/bin/Makefile" ;;
+  'Magick++/bin/Magick++-config' ) CONFIG_FILES="$CONFIG_FILES Magick++/bin/Magick++-config" ;;
   'Magick++/Makefile' ) CONFIG_FILES="$CONFIG_FILES Magick++/Makefile" ;;
   'Magick++/lib/Makefile' ) CONFIG_FILES="$CONFIG_FILES Magick++/lib/Makefile" ;;
   'Magick++/lib/Magick++/Makefile' ) CONFIG_FILES="$CONFIG_FILES Magick++/lib/Magick++/Makefile" ;;
