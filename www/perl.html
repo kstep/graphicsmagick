@@ -266,7 +266,7 @@ a red pixel in the center. Try
 Or suppose you want to convert your color image to grayscale:
 <pre>&nbsp;&nbsp;&nbsp; $image->Quantize(colorspace=>'gray');</pre>
 Here we annotate an image with a Taipai TrueType font:
-<pre>&nbsp;&nbsp;&nbsp; $text = "\\0x17ef\\0x30ec\\0x25ec\\0x23ef\\0x17ec";
+<pre>&nbsp;&nbsp;&nbsp; $text = '\0x17ef\0x30ec\0x25ec\0x23ef\0x17ec';
 &nbsp;&nbsp;&nbsp; $image->Annotate(font=>'@kai.ttf', pointsize=>40, stroke=>'green', text=>$text);</pre>
 Other clever things you can do with <b>PerlMagick</b> objects include
 <pre>&nbsp;&nbsp;&nbsp; $i = $#$p"+1";&nbsp;&nbsp; # return the number of images associated with object p

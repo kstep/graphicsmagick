@@ -631,17 +631,17 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
         {
           if (jpeg_info.out_color_space == JCS_GRAYSCALE)
             {
-              index=GETJSAMPLE(*p++) >> 4;
+              index=GETJSAMPLE(*p++)/16;
               indexes[x]=index;
               *q=image->colormap[index];
             }
           else
             {
-              q->red=(Quantum) (GETJSAMPLE(*p++) >> 4);
-              q->green=(Quantum) (GETJSAMPLE(*p++) >> 4);
-              q->blue=(Quantum) (GETJSAMPLE(*p++) >> 4);
+              q->red=(Quantum) (GETJSAMPLE(*p++)/16);
+              q->green=(Quantum) (GETJSAMPLE(*p++)/16);
+              q->blue=(Quantum) (GETJSAMPLE(*p++)/16);
               if (image->colorspace == CMYKColorspace)
-                q->opacity=(Quantum) (GETJSAMPLE(*p++) >> 4);
+                q->opacity=(Quantum) (GETJSAMPLE(*p++)/16);
             }
         }
       else
@@ -1124,7 +1124,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
           q=jpeg_pixels;
           for (x=0; x < (int) image->columns; x++)
           {
-            *q++=(JSAMPLE) (Intensity(*p) >> 4);
+            *q++=(JSAMPLE) (Intensity(*p)/16);
             p++;
           }
           (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
@@ -1141,9 +1141,9 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
             q=jpeg_pixels;
             for (x=0; x < (int) image->columns; x++)
             {
-              *q++=(JSAMPLE) (p->red >> 4);
-              *q++=(JSAMPLE) (p->green >> 4);
-              *q++=(JSAMPLE) (p->blue >> 4);
+              *q++=(JSAMPLE) (p->red/16);
+              *q++=(JSAMPLE) (p->green/16);
+              *q++=(JSAMPLE) (p->blue/16);
               p++;
             }
             (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
@@ -1162,10 +1162,10 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
               /*
                 Convert DirectClass packets to contiguous CMYK scanlines.
               */
-              *q++=(JSAMPLE) (MaxRGB-(p->red >> 4));
-              *q++=(JSAMPLE) (MaxRGB-(p->green >> 4));
-              *q++=(JSAMPLE) (MaxRGB-(p->blue >> 4));
-              *q++=(JSAMPLE) (MaxRGB-(p->opacity >> 4));
+              *q++=(JSAMPLE) (MaxRGB-(p->red/16));
+              *q++=(JSAMPLE) (MaxRGB-(p->green/16));
+              *q++=(JSAMPLE) (MaxRGB-(p->blue/16));
+              *q++=(JSAMPLE) (MaxRGB-(p->opacity/16));
               p++;
             }
             (void) jpeg_write_scanlines(&jpeg_info,scanline,1);

@@ -2406,11 +2406,9 @@ MagickExport Image *ShadeImage(Image *image,const unsigned int color_shading,
         Determine the surface normal and compute shading.
       */
       normal.x=Intensity(*(s0-1))+Intensity(*(s1-1))+Intensity(*(s2-1))-
-        (double) Intensity(*(s0+1))-(double) Intensity(*(s1+1))-
-        (double) Intensity(*(s2+1));
+        Intensity(*(s0+1))-Intensity(*(s1+1))-Intensity(*(s2+1));
       normal.y=Intensity(*(s2-1))+Intensity(*s2)+Intensity(*(s2+1))-
-        (double) Intensity(*(s0-1))-(double) Intensity(*s0)-
-        (double) Intensity(*(s0+1));
+        Intensity(*(s0-1))-Intensity(*s0)-Intensity(*(s0+1));
       if ((normal.x == 0) && (normal.y == 0))
         shade=light.z;
       else
@@ -2758,7 +2756,7 @@ MagickExport Image *SteganoImage(Image *image,Image *watermark,
   if (q == (PixelPacket *) NULL) \
     break;  \
   (byte)&=(~0x01); \
-  (byte)|=(Intensity(*q) >> shift) & 0x01; \
+  (byte)|=((unsigned int) (Intensity(*q)) >> shift) & 0x01; \
   j++; \
   if (j == (watermark->columns*watermark->rows)) \
     { \

@@ -399,7 +399,7 @@ typedef struct _Image
     delay,
     iterations;
 
-  int
+  double
     fuzz;
 
   FilterTypes
@@ -564,7 +564,7 @@ typedef struct _ImageInfo
     pointsize,
     affine[6];
 
-  int
+  double
     fuzz;
 
   PixelPacket

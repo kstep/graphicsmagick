@@ -31,7 +31,7 @@ testFilter('input.miff', 'Chop',
 
 ++$test;
 testFilter('input.miff', 'ColorFloodfill',
-  q/geometry=>+10+10,pen=>black/,
+  q/geometry=>+25+45,fill=>black/,
   'a8f72ee2ed80304df33760c65a14b5e4',
   '12643c99ecf96cf1d7e8f5cc62b13c78');
 
@@ -73,7 +73,7 @@ testFilter('input.miff', 'Edge',
 ++$test;
 testFilter('input.miff', 'Emboss',
   q/3/,
-  '08f4ee64dcf16fb7ce9be112d535379c',
+  '78e12fe165b663b50e73be49bf999ab5',
   '817529f3213a24f68989c3a327cb82a7');
 
 ++$test;
@@ -123,7 +123,7 @@ testFilter('input.miff', 'Magnify',
 
 ++$test;
 testFilter('input.miff', 'MatteFloodfill',
-  q/geometry=>+10+10,matte=>Opaque/,
+  q/geometry=>'+25+45',matte=>Opaque/,
   'bc674b55340d90afc4c01ea31f47a686',
   '6f55ec5c0a6e1472ea54c4320d3a9030');
 
@@ -203,7 +203,7 @@ testFilter('input.miff', 'Segment',
 ++$test;
 testFilter('input.miff', 'Shade',
   q/30x30/,
-  'b306584435d209023ced321daee65af7',
+  '2ffc4271ce6735055208d52642de8b75',
   'f958c014337453f741ffcbea791005ed');
 
 ++$test;

@@ -184,7 +184,7 @@ MagickExport Image *AllocateImage(const ImageInfo *image_info)
   allocate_image->dispose=0;
   allocate_image->delay=0;
   allocate_image->iterations=1;
-  allocate_image->fuzz=0;
+  allocate_image->fuzz=0.0;
   allocate_image->filter=LanczosFilter;
   allocate_image->blur=1.0;
   allocate_image->total_colors=0;
@@ -1054,22 +1054,20 @@ MagickExport unsigned int CompositeImage(Image *image,
   const CompositeOperator compose,Image *composite_image,const int x_offset,
   const int y_offset)
 {
-  int
-    y;
-
   double
     alpha,
     blue,
     green,
     midpoint,
     opacity,
-    red;
+    red,
+    shade;
+
+  int
+    y;
 
   PixelPacket
     color;
-
-  Quantum
-    shade;
 
   register IndexPacket
     *composite_indexes,
@@ -1184,8 +1182,8 @@ MagickExport unsigned int CompositeImage(Image *image,
               q++;
               continue;
             }
-          x_displace=(horizontal_scale*((double) Intensity(*p)-
-            ((MaxRGB+1)/2)))/((MaxRGB+1)/2);
+          x_displace=
+            (horizontal_scale*(Intensity(*p)-((MaxRGB+1)/2)))/((MaxRGB+1)/2);
           y_displace=x_displace;
           if (composite_image->matte)
             y_displace=(vertical_scale*((double) p->opacity-
@@ -1532,8 +1530,8 @@ MagickExport unsigned int CompositeImage(Image *image,
               color=(*q);
               TransformHSL(color.red,color.green,color.blue,&hue,&saturation,
                 &brightness);
-              percent_brightness=(brightness_scale*
-                ((double) Intensity(*p)-midpoint))/midpoint;
+              percent_brightness=
+                (brightness_scale*(Intensity(*p)-midpoint))/midpoint;
               brightness*=percent_brightness/100.0;
               if (brightness < 0.0)
                 brightness=0.0;
@@ -2531,7 +2529,7 @@ MagickExport void GetImageInfo(ImageInfo *image_info)
   image_info->pointsize=atof(DefaultPointSize);
   for (i=0; i < 6; i++)
     image_info->affine[i]=(i == 0) || (i == 3) ? 1.0 : 0.0;
-  image_info->fuzz=0;
+  image_info->fuzz=0.0;
   (void) QueryColorDatabase("none",&image_info->stroke);
   (void) QueryColorDatabase("none",&image_info->fill);
   (void) QueryColorDatabase("#ffffff",&image_info->background_color);
@@ -3688,7 +3686,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
       }
     if (LocaleNCompare("-fuzz",option,3) == 0)
       {
-        (*image)->fuzz=atoi(argv[++i]);
+        (*image)->fuzz=atof(argv[++i]);
         continue;
       }
     if (LocaleCompare("-font",option) == 0)
@@ -5667,7 +5665,7 @@ static int IntensityCompare(const void *x,const void *y)
 
   color_1=(PixelPacket *) x;
   color_2=(PixelPacket *) y;
-  return((int) Intensity(*color_2)-(int) Intensity(*color_1));
+  return(Intensity(*color_2)-Intensity(*color_1));
 }
 
 MagickExport unsigned int SortColormapByIntensity(Image *image)

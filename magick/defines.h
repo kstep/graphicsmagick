@@ -140,19 +140,18 @@ extern "C" {
    (((color).red == (target).red) && \
     ((color).green == (target).green) && \
     ((color).blue == (target).blue)) : \
-   ((unsigned long) ((((int) (color).red-(int) (target).red)* \
-      ((int) (color).red-(int) (target).red))+ \
-     (((int) (color).green-(int) (target).green)* \
-      ((int) (color).green-(int) (target).green))+ \
-     (((int) (color).blue-(int) (target).blue)* \
-      ((int) (color).blue-(int) (target).blue))) <= \
-      (unsigned long) (distance*distance)))
+   ((((double) (color).red-(double) (target).red)* \
+      ((double) (color).red-(double) (target).red))+ \
+     (((double) (color).green-(double) (target).green)* \
+      ((double) (color).green-(double) (target).green))+ \
+     (((double) (color).blue-(double) (target).blue)* \
+      ((double) (color).blue-(double) (target).blue))) <= (distance*distance))
 #define Extent(string)  ((int) strlen(string))
 #define False  0
 #define DegreesToRadians(x) ((x)*M_PI/180.0)
-#define Intensity(color)  ((unsigned long) \
-  ((0.299*(color).red+0.587*(color).green+0.1140000000000001*(color).blue)))
-#define IsFaxImage(color)  \
+#define Intensity(color)  ((0.299*(double) (color).red+0.587* \
+  (double) (color).green+0.114*(double) (color).blue))
+#define IsFaxImage(color) \
   (IsMonochromeImage(image) && ((image)->columns <= 2560))
 #define IsGray(color)  \
   (((color).red == (color).green) && ((color).green == (color).blue))

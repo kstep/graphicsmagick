@@ -7194,7 +7194,8 @@ MagickExport void XMakeStandardColormap(Display *display,
       else
         for (i=0; i < (int) image->colors; i++)
         {
-          gray_value=Intensity(gamma_map[Intensity(image->colormap[i])]);
+          gray_value=
+            Intensity(gamma_map[(int) Intensity(image->colormap[i])]);
           color.red=XUpScale(gray_value);
           color.green=XUpScale(gray_value);
           color.blue=XUpScale(gray_value);
@@ -7321,7 +7322,7 @@ MagickExport void XMakeStandardColormap(Display *display,
             {
               index=diversity[i].index;
               gray_value=
-                Intensity(gamma_map[Intensity(image->colormap[index])]);
+                Intensity(gamma_map[(int) Intensity(image->colormap[index])]);
               color.red=XUpScale(gray_value);
               color.green=XUpScale(gray_value);
               color.blue=XUpScale(gray_value);
@@ -7364,7 +7365,7 @@ MagickExport void XMakeStandardColormap(Display *display,
             {
               index=diversity[i].index;
               gray_value=
-                Intensity(gamma_map[Intensity(image->colormap[index])]);
+                Intensity(gamma_map[(int) Intensity(image->colormap[index])]);
               color.red=XUpScale(gray_value);
               color.green=XUpScale(gray_value);
               color.blue=XUpScale(gray_value);
@@ -7452,7 +7453,8 @@ MagickExport void XMakeStandardColormap(Display *display,
       else
         for (i=0; i < (int) image->colors; i++)
         {
-          gray_value=Intensity(gamma_map[Intensity(image->colormap[i])]);
+          gray_value=
+            Intensity(gamma_map[(int) Intensity(image->colormap[i])]);
           color.red=XUpScale(gray_value);
           color.green=XUpScale(gray_value);
           color.blue=XUpScale(gray_value);
