@@ -107,8 +107,8 @@ MagickExport void DestroyModuleInfo(void)
     entry=p;
     p=p->next;
     if (entry->tag != (char *) NULL)
-      FreeMemory((void **) &entry->tag);
-    FreeMemory((void **) &entry);
+      LiberateMemory((void **) &entry->tag);
+    LiberateMemory((void **) &entry);
   }
   module_list=(ModuleInfo *) NULL;
 }
@@ -185,7 +185,7 @@ MagickExport unsigned int ExecuteModuleProcess(const char *tag,Image *image,
         status=(*method)(image,argc,argv);
       lt_dlclose(handle);
     }
-  FreeMemory((void **) &module_name);
+  LiberateMemory((void **) &module_name);
   return(status);
 }
 
@@ -234,17 +234,17 @@ MagickExport void ExitModules(void)
       {
         entry=alias;
         alias=alias->next;
-        FreeMemory((void **) &entry->alias);
-        FreeMemory((void **) &entry->module);
-        FreeMemory((void **) &entry);
+        LiberateMemory((void **) &entry->alias);
+        LiberateMemory((void **) &entry->module);
+        LiberateMemory((void **) &entry);
       }
       module_aliases=(ModuleAliases *) NULL;
       /*
         Free memory associated with module directory search list.
       */
       for (i=0; module_path[i]; i++)
-        FreeMemory((void **) &module_path[i]);
-      FreeMemory((void**) &module_path);
+        LiberateMemory((void **) &module_path[i]);
+      LiberateMemory((void**) &module_path);
     }
   module_list=(ModuleInfo *) NULL;
 }
@@ -351,7 +351,7 @@ MagickExport void InitializeModules(void)
     Read one or more module configuration files.
   */
   i=0;
-  module_path=(char **) AllocateMemory((MaxPathElements+1)*sizeof(char *));
+  module_path=(char **) AcquireMemory((MaxPathElements+1)*sizeof(char *));
   if (module_path == (char **) NULL)
     MagickError(ResourceLimitError,"Unable to allocate module path",
       "Memory allocation failed");
@@ -407,7 +407,7 @@ MagickExport void InitializeModules(void)
       }
       if (match != False)
         continue;
-      entry=(ModuleAliases *) AllocateMemory(sizeof(ModuleAliases));
+      entry=(ModuleAliases *) AcquireMemory(sizeof(ModuleAliases));
       if (entry == (ModuleAliases*) NULL)
         continue;
       entry->alias=AllocateString(alias);
@@ -471,7 +471,7 @@ MagickExport char **ListModules(void)
 
   j=0;
   max_entries=255;
-  module_list=(char **) AllocateMemory((max_entries+1)*sizeof(char *));
+  module_list=(char **) AcquireMemory((max_entries+1)*sizeof(char *));
   if (module_list == (char **)NULL)
     return((char **) NULL);
   module_list[j]=(char *) NULL;
@@ -491,7 +491,7 @@ MagickExport char **ListModules(void)
       if (j >= max_entries)
         {
           max_entries<<=1;
-          ReallocateMemory((void **) &module_list,max_entries*sizeof(char *));
+          ReacquireMemory((void **) &module_list,max_entries*sizeof(char *));
           if (module_list == (char **) NULL)
             break;
         }
@@ -594,10 +594,10 @@ MagickExport int OpenModule(const char *module)
       continue;
     FormatString(message,"failed to load module \"%s\"",module_load_path);
     MagickWarning(MissingDelegateWarning,message,lt_dlerror());
-    FreeMemory((void **) &module_file);
+    LiberateMemory((void **) &module_file);
     return(False);
   }
-  FreeMemory((void **) &module_file);
+  LiberateMemory((void **) &module_file);
   if (handle == 0)
     return(False);
   /*
@@ -670,8 +670,8 @@ MagickExport int OpenModules(void)
     Free resources.
   */
   for (i=0; module_list[i]; i++)
-    FreeMemory((void **) &module_list[i]);
-  FreeMemory((void **) &module_list);
+    LiberateMemory((void **) &module_list[i]);
+  LiberateMemory((void **) &module_list);
   return(True);
 }
 
@@ -801,7 +801,7 @@ MagickExport ModuleInfo *SetModuleInfo(const char *tag)
     *entry;
 
   assert(tag != (const char *) NULL);
-  entry=(ModuleInfo *) AllocateMemory(sizeof(ModuleInfo));
+  entry=(ModuleInfo *) AcquireMemory(sizeof(ModuleInfo));
   if (entry == (ModuleInfo *) NULL)
     MagickError(ResourceLimitError,"Unable to allocate module info",
       "Memory allocation failed");
@@ -843,7 +843,7 @@ char *TagToModule(const char *tag)
     *module_name;
 
   assert(tag != (char *) NULL);
-  module_name=(char *) AllocateMemory(MaxTextExtent);
+  module_name=(char *) AcquireMemory(MaxTextExtent);
   if (module_name == (char *) NULL)
     MagickError(ResourceLimitError,"Unable to get module name",
       "Memory allocation failed");
@@ -960,7 +960,7 @@ MagickExport int UnregisterModuleInfo(const char *tag)
   {
     if (LocaleCompare(p->tag,tag) != 0)
       continue;
-    FreeMemory((void **) &p->tag);
+    LiberateMemory((void **) &p->tag);
     if (p->previous != (ModuleInfo *) NULL)
       p->previous->next=p->next;
     else
@@ -972,7 +972,7 @@ MagickExport int UnregisterModuleInfo(const char *tag)
     if (p->next != (ModuleInfo *) NULL)
       p->next->previous=p->previous;
     module_info=p;
-    FreeMemory((void **) &module_info);
+    LiberateMemory((void **) &module_info);
     return(True);
   }
   return(False);

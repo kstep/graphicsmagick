@@ -164,10 +164,10 @@ static unsigned int ReadColorProfile(char *text,long int length,Image *image)
   p=(unsigned char *) text;
   if (image->color_profile.length != 0)
     {
-      FreeMemory((void **) &image->color_profile.info);
+      LiberateMemory((void **) &image->color_profile.info);
       image->color_profile.length=0;
     }
-  image->color_profile.info=(unsigned char *) AllocateMemory(length);
+  image->color_profile.info=(unsigned char *) AcquireMemory(length);
   if (image->color_profile.info == (unsigned char *) NULL)
     ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
       image->filename);
@@ -189,7 +189,7 @@ static unsigned int ReadNewsProfile(char *text,long int length,Image *image,
   p=(unsigned char *) text;
   if (image->iptc_profile.length != 0)
     {
-      FreeMemory((void **) &image->iptc_profile.info);
+      LiberateMemory((void **) &image->iptc_profile.info);
       image->iptc_profile.length=0;
       image->iptc_profile.info=(unsigned char *) NULL;
     }
@@ -199,7 +199,7 @@ static unsigned int ReadNewsProfile(char *text,long int length,Image *image,
         Handle IPTC tag.
       */
       length*=4;
-      image->iptc_profile.info=(unsigned char *) AllocateMemory(length);
+      image->iptc_profile.info=(unsigned char *) AcquireMemory(length);
       if (image->iptc_profile.info == (unsigned char *) NULL)
         ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
           image->filename);
@@ -225,7 +225,7 @@ static unsigned int ReadNewsProfile(char *text,long int length,Image *image,
     return(False);
   if (image->iptc_profile.length != 0)
     {
-      FreeMemory((void **) &image->iptc_profile.info);
+      LiberateMemory((void **) &image->iptc_profile.info);
       image->iptc_profile.length=0;
     }
 #if defined(GET_ONLY_IPTC_DATA)
@@ -241,7 +241,7 @@ static unsigned int ReadNewsProfile(char *text,long int length,Image *image,
   length=(p[0] << 24) | (p[1] << 16) | (p[2] << 8) | p[3];
   p+=4;
 #endif
-  image->iptc_profile.info=(unsigned char *) AllocateMemory(length);
+  image->iptc_profile.info=(unsigned char *) AcquireMemory(length);
   if (image->iptc_profile.info == (unsigned char *) NULL)
     ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
       image->filename);
@@ -555,8 +555,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           Convert TIFF image to PseudoClass MIFF image.
         */
         packet_size=bits_per_sample > 8 ? 2 : 1;
-        quantum_scanline=(unsigned char *) AllocateMemory(packet_size*width);
-        scanline=(unsigned char *) AllocateMemory(2*TIFFScanlineSize(tiff)+4);
+        quantum_scanline=(unsigned char *) AcquireMemory(packet_size*width);
+        scanline=(unsigned char *) AcquireMemory(2*TIFFScanlineSize(tiff)+4);
         if ((quantum_scanline == (unsigned char *) NULL) ||
             (scanline == (unsigned char *) NULL))
           {
@@ -745,8 +745,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             if (QuantumTick(y,image->rows))
               ProgressMonitor(LoadImageText,y,image->rows);
         }
-        FreeMemory((void **) &scanline);
-        FreeMemory((void **) &quantum_scanline);
+        LiberateMemory((void **) &scanline);
+        LiberateMemory((void **) &quantum_scanline);
         break;
       }
       case 1:
@@ -754,7 +754,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         /*
           Convert TIFF image to DirectClass MIFF image.
         */
-        scanline=(unsigned char *) AllocateMemory(2*TIFFScanlineSize(tiff)+4);
+        scanline=(unsigned char *) AcquireMemory(2*TIFFScanlineSize(tiff)+4);
         if (scanline == (unsigned char *) NULL)
           {
             TIFFClose(tiff);
@@ -815,7 +815,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             if (QuantumTick(y,image->rows))
               ProgressMonitor(LoadImageText,y,image->rows);
         }
-        FreeMemory((void **) &scanline);
+        LiberateMemory((void **) &scanline);
         break;
       }
       case 2:
@@ -834,7 +834,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           &sample_info);
         image->matte=
           ((extra_samples == 1) && (sample_info[0] == EXTRASAMPLE_ASSOCALPHA));
-        pixels=(uint32 *) AllocateMemory((image->columns*image->rows+
+        pixels=(uint32 *) AcquireMemory((image->columns*image->rows+
           image->columns)*sizeof(uint32));
         if (pixels == (uint32 *) NULL)
           {
@@ -848,7 +848,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         status=TIFFReadRGBAImage(tiff,image->columns,image->rows,pixels,0);
         if (status == False)
           {
-            FreeMemory((void **) &pixels);
+            LiberateMemory((void **) &pixels);
             TIFFClose(tiff);
 #if defined(HasPTHREADS)
             pthread_mutex_unlock(&tiff_mutex);
@@ -882,7 +882,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             if (QuantumTick(y,image->rows))
               ProgressMonitor(LoadImageText,y,image->rows);
         }
-        FreeMemory((void **) &pixels);
+        LiberateMemory((void **) &pixels);
         break;
       }
     }
@@ -1071,7 +1071,7 @@ static void WriteNewsProfile(TIFF *tiff,int type,Image *image)
       */
       length=image->iptc_profile.length;
       roundup=4-(length & 0x03); /* round up for long word alignment */
-      profile=(unsigned char *) AllocateMemory(length+roundup);
+      profile=(unsigned char *) AcquireMemory(length+roundup);
       if ((length == 0) || (profile == (unsigned char *) NULL))
         return;
       memcpy(profile,image->iptc_profile.info,length);
@@ -1081,7 +1081,7 @@ static void WriteNewsProfile(TIFF *tiff,int type,Image *image)
       if (TIFFIsByteSwapped(tiff))
         TIFFSwabArrayOfLong((uint32 *) profile,length);
       TIFFSetField(tiff,type,(uint32) (length+roundup),(void *) profile);
-      FreeMemory((void **) &profile);
+      LiberateMemory((void **) &profile);
       return;
     }
   /*
@@ -1090,7 +1090,7 @@ static void WriteNewsProfile(TIFF *tiff,int type,Image *image)
 #if defined(GET_ONLY_IPTC_DATA)
   length=image->iptc_profile.length;
   roundup=(length & 0x01); /* round up for Photoshop */
-  profile=(unsigned char *) AllocateMemory(length+roundup+12);
+  profile=(unsigned char *) AcquireMemory(length+roundup+12);
   if ((length == 0) || (profile == (unsigned char *) NULL))
     memcpy(profile,"8BIM\04\04\0\0",8);
   profile[8]=(length >> 24) & 0xff;
@@ -1107,7 +1107,7 @@ static void WriteNewsProfile(TIFF *tiff,int type,Image *image)
   if (length == 0)
     return;
   roundup=(length & 0x01); /* round up for Photoshop */
-  profile=(unsigned char *) AllocateMemory(length+roundup);
+  profile=(unsigned char *) AcquireMemory(length+roundup);
   if (profile == (unsigned char *) NULL)
     return;
   memcpy(profile,image->iptc_profile.info,length);
@@ -1115,7 +1115,7 @@ static void WriteNewsProfile(TIFF *tiff,int type,Image *image)
     profile[length+roundup]=0;
   TIFFSetField(tiff,type,(uint32) length+roundup,(void *) profile);
 #endif
-  FreeMemory((void **) &profile);
+  LiberateMemory((void **) &profile);
 }
 #endif
 
@@ -1141,11 +1141,11 @@ static int TIFFWritePixels(TIFF *tiff,tdata_t scanline,uint32 row,
     return(TIFFWriteScanline(tiff,scanline,row,sample));
   if (scanlines == (unsigned char *) NULL)
     scanlines=(unsigned char *)
-      AllocateMemory(image->tile_info.height*TIFFScanlineSize(tiff));
+      AcquireMemory(image->tile_info.height*TIFFScanlineSize(tiff));
   if (scanlines == (unsigned char *) NULL)
     return(-1);
   if (tile_pixels == (unsigned char *) NULL)
-    tile_pixels=(unsigned char *)AllocateMemory(TIFFTileSize(tiff));
+    tile_pixels=(unsigned char *)AcquireMemory(TIFFTileSize(tiff));
   if (tile_pixels == (unsigned char *) NULL)
     return(-1);
   /*
@@ -1191,9 +1191,9 @@ static int TIFFWritePixels(TIFF *tiff,tdata_t scanline,uint32 row,
       /*
         Free memory resources.
       */
-      FreeMemory((void **) &scanlines);
+      LiberateMemory((void **) &scanlines);
       scanlines=(unsigned char *) NULL;
-      FreeMemory((void **) &tile_pixels);
+      LiberateMemory((void **) &tile_pixels);
       tile_pixels=(unsigned char *) NULL;
     }
   return(status);
@@ -1524,7 +1524,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
     /*
       Write image scanlines.
     */
-    scanline=(unsigned char *) AllocateMemory(2*TIFFScanlineSize(tiff)+4);
+    scanline=(unsigned char *) AcquireMemory(2*TIFFScanlineSize(tiff)+4);
     if (scanline == (unsigned char *) NULL)
       ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
         image);
@@ -1635,11 +1635,11 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
           Colormapped TIFF image.
         */
         blue=(unsigned short *)
-          AllocateMemory((1 << image->depth)*sizeof(unsigned short));
+          AcquireMemory((1 << image->depth)*sizeof(unsigned short));
         green=(unsigned short *)
-          AllocateMemory((1 << image->depth)*sizeof(unsigned short));
+          AcquireMemory((1 << image->depth)*sizeof(unsigned short));
         red=(unsigned short *)
-          AllocateMemory((1 << image->depth)*sizeof(unsigned short));
+          AcquireMemory((1 << image->depth)*sizeof(unsigned short));
         if ((blue == (unsigned short *) NULL) ||
             (green == (unsigned short *) NULL) ||
             (red == (unsigned short *) NULL))
@@ -1661,9 +1661,9 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
           blue[i]=0;
         }
         TIFFSetField(tiff,TIFFTAG_COLORMAP,red,green,blue);
-        FreeMemory((void **) &red);
-        FreeMemory((void **) &green);
-        FreeMemory((void **) &blue);
+        LiberateMemory((void **) &red);
+        LiberateMemory((void **) &green);
+        LiberateMemory((void **) &blue);
       }
       default:
       {
@@ -1740,7 +1740,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
         break;
       }
     }
-    FreeMemory((void **) &scanline);
+    LiberateMemory((void **) &scanline);
     if (image_info->verbose == True)
       TIFFPrintDirectory(tiff,stderr,False);
     TIFFWriteDirectory(tiff);

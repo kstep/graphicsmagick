@@ -977,7 +977,7 @@ int main(int argc,char **argv)
         loaded_image=XAnimateImages(display,&resource_info,argv,argc,image);
       }
     }
-  FreeMemory((void **) &argv);
+  LiberateMemory((void **) &argv);
   Exit(0);
 #endif
   return(False);

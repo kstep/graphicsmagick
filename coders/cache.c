@@ -192,7 +192,7 @@ static Image *ReadCACHEImage(const ImageInfo *image_info,
       Decode image header;  header terminates one character beyond a ':'.
     */
     length=MaxTextExtent;
-    values=(char *) AllocateMemory(length);
+    values=(char *) AcquireMemory(length);
     if (values == (char *) NULL)
       ThrowReaderException(ResourceLimitWarning,"Unable to allocate memory",
         image);
@@ -214,7 +214,7 @@ static Image *ReadCACHEImage(const ImageInfo *image_info,
             Read comment-- any text between { }.
           */
           length=MaxTextExtent;
-          comment=(char *) AllocateMemory(length);
+          comment=(char *) AcquireMemory(length);
           p=comment;
           for ( ; comment != (char *) NULL; p++)
           {
@@ -225,7 +225,7 @@ static Image *ReadCACHEImage(const ImageInfo *image_info,
               {
                 *p='\0';
                 length<<=1;
-                ReallocateMemory((void **) &comment,length);
+                ReacquireMemory((void **) &comment,length);
                 if (comment == (char *) NULL)
                   break;
                 p=comment+Extent(comment);
@@ -237,7 +237,7 @@ static Image *ReadCACHEImage(const ImageInfo *image_info,
               "Memory allocation failed",image);
           *p='\0';
           (void) SetImageAttribute(image,"Comment",comment);
-          FreeMemory((void **) &comment);
+          LiberateMemory((void **) &comment);
           c=ReadByte(image);
         }
       else
@@ -263,7 +263,7 @@ static Image *ReadCACHEImage(const ImageInfo *image_info,
                 {
                   *p='\0';
                   length<<=1;
-                  ReallocateMemory((void **) &values,length);
+                  ReacquireMemory((void **) &values,length);
                   if (values == (char *) NULL)
                     break;
                   p=values+Extent(values);
@@ -555,7 +555,7 @@ static Image *ReadCACHEImage(const ImageInfo *image_info,
       while (isspace(c))
         c=ReadByte(image);
     }
-    FreeMemory((void **) &values);
+    LiberateMemory((void **) &values);
     (void) ReadByte(image);
     /*
       Verify that required image information is defined.
@@ -578,7 +578,7 @@ static Image *ReadCACHEImage(const ImageInfo *image_info,
         /*
           Image directory.
         */
-        image->directory=(char *) AllocateMemory(MaxTextExtent);
+        image->directory=(char *) AcquireMemory(MaxTextExtent);
         if (image->directory == (char *) NULL)
           ThrowReaderException(CorruptImageWarning,"Unable to read image data",
             image);
@@ -591,7 +591,7 @@ static Image *ReadCACHEImage(const ImageInfo *image_info,
               /*
                 Allocate more memory for the image directory.
               */
-              ReallocateMemory((void **) &image->directory,
+              ReacquireMemory((void **) &image->directory,
                 (Extent(image->directory)+MaxTextExtent+1));
               if (image->directory == (char *) NULL)
                 ThrowReaderException(CorruptImageWarning,
@@ -608,7 +608,7 @@ static Image *ReadCACHEImage(const ImageInfo *image_info,
           Color profile.
         */
         image->color_profile.info=(unsigned char *)
-          AllocateMemory(image->color_profile.length);
+          AcquireMemory(image->color_profile.length);
         if (image->color_profile.info == (unsigned char *) NULL)
           ThrowReaderException(CorruptImageWarning,
             "Unable to read color profile",image);
@@ -644,7 +644,7 @@ static Image *ReadCACHEImage(const ImageInfo *image_info,
             */
             packet_size=image->colors > 256 ? 6 : 3;
             colormap=(unsigned char *)
-              AllocateMemory(packet_size*image->colors);
+              AcquireMemory(packet_size*image->colors);
             if (colormap == (unsigned char *) NULL)
               ThrowReaderException(ResourceLimitWarning,
                 "Memory allocation failed",image);
@@ -667,7 +667,7 @@ static Image *ReadCACHEImage(const ImageInfo *image_info,
                 image->colormap[i].blue=(*p++ << 8);
                 image->colormap[i].blue|=(*p++);
               }
-            FreeMemory((void **) &colormap);
+            LiberateMemory((void **) &colormap);
           }
       }
     /*
@@ -694,7 +694,7 @@ static Image *ReadCACHEImage(const ImageInfo *image_info,
       Initialize cache nexus.
     */
     cache_info->nexus=(NexusInfo *)
-      AllocateMemory((cache_info->rows+1)*sizeof(NexusInfo));
+      AcquireMemory((cache_info->rows+1)*sizeof(NexusInfo));
     if (cache_info->nexus == (NexusInfo *) NULL)
       MagickError(ResourceLimitError,"Memory allocation failed",
         "unable to allocate cache nexus");
@@ -1066,7 +1066,7 @@ static unsigned int WriteCACHEImage(const ImageInfo *image_info,Image *image)
           Allocate colormap.
         */
         packet_size=image->colors > 256 ? 6 : 3;
-        colormap=(unsigned char *) AllocateMemory(packet_size*image->colors);
+        colormap=(unsigned char *) AcquireMemory(packet_size*image->colors);
         if (colormap == (unsigned char *) NULL)
           ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
             image);
@@ -1092,7 +1092,7 @@ static unsigned int WriteCACHEImage(const ImageInfo *image_info,Image *image)
             *q++=image->colormap[i].blue  & 0xff;
           }
         (void) WriteBlob(image,packet_size*image->colors,colormap);
-        FreeMemory((void **) &colormap);
+        LiberateMemory((void **) &colormap);
       }
     if (image->next == (Image *) NULL)
       break;

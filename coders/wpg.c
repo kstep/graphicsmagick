@@ -56,7 +56,10 @@
 #define WORD  unsigned
 #define BYTE  unsigned char
 #endif
-
+
+/*
+  Forward declarations.
+*/
 typedef struct
 	{
 	DWORD FileId;
@@ -118,7 +121,45 @@ typedef struct {
        } WPGPSl1Record;	
   
 
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   I s W P G                                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method IsWPG returns True if the image format type, identified by the
+%  magick string, is WPG.
+%
+%  The format of the IsWPG method is:
+%
+%      unsigned int IsWPG(const unsigned char *magick,
+%        const unsigned int length)
+%
+%  A description of each parameter follows:
+%
+%    o status:  Method IsWPG returns True if the image format type is WPG.
+%
+%    o magick: This string is generally the first few bytes of an image file
+%      or blob.
+%
+%    o length: Specifies the length of the magick string.
+%
+%
+*/
+static unsigned int IsWPG(const unsigned char *magick,const unsigned int length)
+{
+  if (length < 4) return(False);
+  if (LocaleNCompare((char *) magick,"\377WPC",4) == 0)
+	return(True);
+  return(False);
+}
 
+
 
 static void Rd_WP_DWORD(Image *image, DWORD *d)
 {
@@ -319,14 +360,11 @@ BYTE *BImgBuff;
 
 long ldblk;
 
-/*if(dirty(image)) return(-1);  //Not Enough memory */
-/*if AlineProc<>nil then AlineProc^.InitPassing(p.y,'Loading WPG');*/
-
  x=0;
  y=0;
 
  ldblk=((long)image->depth*image->columns+7)/8;
- BImgBuff=malloc(ldblk);
+ BImgBuff=(unsigned char *) malloc(ldblk);
  if(BImgBuff==NULL) return(-2);
 
  while(y<image->rows)
@@ -410,13 +448,8 @@ fclose(f);
 
 if((clone_info->file=fopen(clone_info->filename,"r"))==NULL) goto FINISH_UNL;
 image2=ReadImage(clone_info,&exception);
+/*if(clone_info->file!=NULL) {fclose(clone_info->file);clone_info->file=NULL;}*/    
 
-if(clone_info->file!=NULL)
-    {
-    fclose(clone_info->file);
-    clone_info->file=NULL;
-    }
-    
 if(image2!=NULL) 	/* Allocate next image structure. */
     {
     while(image->previous!=NULL)
@@ -607,7 +640,7 @@ NoMemory:		ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
 		 else {
 		      if(image->depth<24)
 			if( image->colors<(1<<image->depth) && image->depth!=24 )
-			    ReallocateMemory((void **)&image->colormap,(1<<image->depth)*sizeof(PixelPacket));
+			    ReacquireMemory((void **)&image->colormap,(1<<image->depth)*sizeof(PixelPacket));
 		      }
 
 		 if(UnpackWPGRaster(image)<0) /* The raster cannot be unpacked */
@@ -691,16 +724,18 @@ NoMemory:		ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
 	     else {
 		  if(image->depth<24)
 		    if( image->colors<(1<<image->depth) && image->depth!=24 )
-			 ReallocateMemory((void **)&image->colormap,(1<<image->depth)*sizeof(PixelPacket));
+			 ReacquireMemory((void **)&image->colormap,(1<<image->depth)*sizeof(PixelPacket));
 		  }
 
              ldblk=((long)image->depth*image->columns+7)/8;
-	     if( (BImgBuff=malloc(ldblk))==NULL) goto NoMemory;
+	     if( (BImgBuff=(unsigned char *) malloc(ldblk))==NULL) goto NoMemory;
 
 	     for(i=0;i<image->rows;i++)
 		{
 		ReadBlob(image,ldblk,(char *)BImgBuff);
+//		if(fread(BImgBuff,ldblk,1,f)!=1) {goto KONEC;}
 		InsertRow(BImgBuff,i,image);
+	//	AlineProc(i,p);
 		}
 	     if(BImgBuff) free(BImgBuff);
 	     
@@ -774,6 +809,8 @@ ModuleExport void RegisterWPGImage(void)
 
   entry=SetMagickInfo("WPG");
   entry->decoder=ReadWPGImage;
+//  entry->encoder=WriteWPGImage;
+  entry->magick=IsWPG;
   entry->description=AllocateString("Word Perfect Graphics");
   entry->module=AllocateString("WPG");
   RegisterMagickInfo(entry);

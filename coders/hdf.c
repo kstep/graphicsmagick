@@ -219,7 +219,7 @@ static Image *ReadHDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
     packet_size=image->storage_class == DirectClass ? 3 : 1;
     hdf_pixels=(unsigned char *)
-      AllocateMemory(packet_size*image->columns*image->rows);
+      AcquireMemory(packet_size*image->columns*image->rows);
     if (hdf_pixels == (unsigned char *) NULL)
       ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
         image);
@@ -234,7 +234,7 @@ static Image *ReadHDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (!AllocateImageColormap(image,image->colors))
           ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
             image);
-        hdf_palette=(unsigned char *) AllocateMemory(768);
+        hdf_palette=(unsigned char *) AcquireMemory(768);
         if (hdf_palette == (unsigned char *) NULL)
           ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
             image);
@@ -259,7 +259,7 @@ static Image *ReadHDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
             image->colormap[i].green=(Quantum) UpScale(i);
             image->colormap[i].blue=(Quantum) UpScale(i);
           }
-        FreeMemory((void **) &hdf_palette);
+        LiberateMemory((void **) &hdf_palette);
         p=hdf_pixels;
         for (y=0; y < (int) image->rows; y++)
         {
@@ -315,12 +315,12 @@ static Image *ReadHDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
           Read the image label.
         */
         length+=MaxTextExtent;
-        label=(char *) AllocateMemory(length);
+        label=(char *) AcquireMemory(length);
         if (label != (char *) NULL)
           {
             DFANgetlabel(image->filename,DFTAG_RIG,reference,label,length);
             (void) SetImageAttribute(image,"Label",label);
-            FreeMemory((void **) &label);
+            LiberateMemory((void **) &label);
           }
       }
     length=DFANgetdesclen(image->filename,DFTAG_RIG,reference);
@@ -333,15 +333,15 @@ static Image *ReadHDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
           Read the image comments.
         */
         length+=MaxTextExtent;
-        comments=(char *) AllocateMemory(length);
+        comments=(char *) AcquireMemory(length);
         if (comments != (char *) NULL)
           {
             DFANgetdesc(image->filename,DFTAG_RIG,reference,comments,length);
             (void) SetImageAttribute(image,"Comment",comments);
-            FreeMemory((void **) &comments);
+            LiberateMemory((void **) &comments);
           }
       }
-    FreeMemory((void **) &hdf_pixels);
+    LiberateMemory((void **) &hdf_pixels);
     if (image->storage_class == PseudoClass)
       SyncImage(image);
     /*
@@ -530,7 +530,7 @@ static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
     TransformRGBImage(image,RGBColorspace);
     packet_size=image->storage_class == DirectClass ? 3 : 11;
     hdf_pixels=(unsigned char *)
-      AllocateMemory(packet_size*image->columns*image->rows);
+      AcquireMemory(packet_size*image->columns*image->rows);
     if (hdf_pixels == (unsigned char *) NULL)
       ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
         image);
@@ -684,7 +684,7 @@ static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
             unsigned char
               *hdf_palette;
 
-            hdf_palette=(unsigned char *) AllocateMemory(768);
+            hdf_palette=(unsigned char *) AcquireMemory(768);
             if (hdf_palette == (unsigned char *) NULL)
               ThrowWriterException(ResourceLimitWarning,
                 "Memory allocation failed",image);
@@ -696,7 +696,7 @@ static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
               *q++=DownScale(image->colormap[i].blue);
             }
             (void) DFR8setpalette(hdf_palette);
-            FreeMemory((void **) &hdf_palette);
+            LiberateMemory((void **) &hdf_palette);
             q=hdf_pixels;
             for (y=0; y < (int) image->rows; y++)
             {
@@ -730,7 +730,7 @@ static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
     if (attribute != (ImageAttribute *) NULL)
       (void) DFANputdesc(image->filename,DFTAG_RIG,reference,attribute->value,
         Extent(attribute->value)+1);
-    FreeMemory((void **) &hdf_pixels);
+    LiberateMemory((void **) &hdf_pixels);
     if (image->next == (Image *) NULL)
       break;
     image=GetNextImage(image);

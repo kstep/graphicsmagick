@@ -141,17 +141,17 @@ Bool XSupportsLocale()
 */
 XClassHint *XAllocClassHint)
 {
-  return((XClassHint *) AllocateMemory(sizeof(XClassHint)));
+  return((XClassHint *) AcquireMemory(sizeof(XClassHint)));
 }
 
 XIconSize *XAllocIconSize)
 {
-  return((XIconSize *) AllocateMemory(sizeof(XIconSize)));
+  return((XIconSize *) AcquireMemory(sizeof(XIconSize)));
 }
 
 XSizeHints *XAllocSizeHints)
 {
-  return((XSizeHints *) AllocateMemory(sizeof(XSizeHints)));
+  return((XSizeHints *) AcquireMemory(sizeof(XSizeHints)));
 }
 
 Status XReconfigureWMWindow(Display *display,Window window,int screen_number,
@@ -162,12 +162,12 @@ Status XReconfigureWMWindow(Display *display,Window window,int screen_number,
 
 XStandardColormap *XAllocStandardColormap)
 {
-  return((XStandardColormap *) AllocateMemory(sizeof(XStandardColormap)));
+  return((XStandardColormap *) AcquireMemory(sizeof(XStandardColormap)));
 }
 
 XWMHints *XAllocWMHints)
 {
-  return((XWMHints *) AllocateMemory(sizeof(XWMHints)));
+  return((XWMHints *) AcquireMemory(sizeof(XWMHints)));
 }
 
 Status XGetGCValues(Display *display,GC gc,unsigned long mask,
@@ -300,7 +300,7 @@ int XStringListToTextProperty(char **argv,int argc,XTextProperty *property)
   protocol.value=NULL;
   if (number_bytes <= 0)
     {
-      protocol.value=(unsigned char *) AllocateMemory(1);
+      protocol.value=(unsigned char *) AcquireMemory(1);
       if (!protocol.value)
         return(False);
       *protocol.value='\0';
@@ -310,7 +310,7 @@ int XStringListToTextProperty(char **argv,int argc,XTextProperty *property)
       register char
         *buffer;
 
-      buffer=(char *) AllocateMemory(number_bytes);
+      buffer=(char *) AcquireMemory(number_bytes);
       if (buffer == (char *) NULL)
         return(False);
       protocol.value=(unsigned char *) buffer;

@@ -121,10 +121,10 @@ static Image *ReadVIDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Expand the filename.
   */
   image=AllocateImage(image_info);
-  list=(char **) AllocateMemory(sizeof(char *));
+  list=(char **) AcquireMemory(sizeof(char *));
   if (list == (char **) NULL)
     ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
-  list[0]=(char *) AllocateMemory(Extent(image_info->filename)+1);
+  list[0]=(char *) AcquireMemory(Extent(image_info->filename)+1);
   if (list[0] == (char *) NULL)
     ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
   (void) strcpy(list[0],image_info->filename);
@@ -147,7 +147,7 @@ static Image *ReadVIDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     handler=SetMonitorHandler((MonitorHandler) NULL);
     (void) strcpy(clone_info->filename,filelist[i]);
     next_image=ReadImage(clone_info,exception);
-    FreeMemory((void **) &filelist[i]);
+    LiberateMemory((void **) &filelist[i]);
     if (next_image != (Image *) NULL)
       {
         (void) SetImageAttribute(next_image,"Label",DefaultTileLabel);
@@ -165,7 +165,7 @@ static Image *ReadVIDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     ProgressMonitor(LoadImageText,i,number_files);
   }
   DestroyImageInfo(clone_info);
-  FreeMemory((void **) &filelist);
+  LiberateMemory((void **) &filelist);
   if (image == (Image *) NULL)
     ThrowReaderException(CorruptImageWarning,"unable to read VID image",image);
   while (image->previous != (Image *) NULL)
@@ -179,8 +179,8 @@ static Image *ReadVIDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (montage_image == (Image *) NULL)
     ThrowReaderException(CorruptImageWarning,"unable to read VID image",image);
   DestroyImages(image);
-  FreeMemory((void **) &list[0]);
-  FreeMemory((void **) &list);
+  LiberateMemory((void **) &list[0]);
+  LiberateMemory((void **) &list);
   return(montage_image);
 }
 

@@ -215,7 +215,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
       Decode image header;  header terminates one character beyond a ':'.
     */
     length=MaxTextExtent;
-    values=(char *) AllocateMemory(length);
+    values=(char *) AcquireMemory(length);
     if (values == (char *) NULL)
       ThrowReaderException(ResourceLimitWarning,"Unable to allocate memory",
         image);
@@ -235,7 +235,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
             Read comment-- any text between { }.
           */
           length=MaxTextExtent;
-          comment=(char *) AllocateMemory(length);
+          comment=(char *) AcquireMemory(length);
           p=comment;
           for ( ; comment != (char *) NULL; p++)
           {
@@ -246,7 +246,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
               {
                 *p='\0';
                 length<<=1;
-                ReallocateMemory((void **) &comment,length);
+                ReacquireMemory((void **) &comment,length);
                 if (comment == (char *) NULL)
                   break;
                 p=comment+Extent(comment);
@@ -258,7 +258,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
               "Memory allocation failed",image);
           *p='\0';
           (void) SetImageAttribute(image,"Comment",comment);
-          FreeMemory((void **) &comment);
+          LiberateMemory((void **) &comment);
           c=ReadByte(image);
         }
       else
@@ -284,7 +284,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
                 {
                   *p='\0';
                   length<<=1;
-                  ReallocateMemory((void **) &values,length);
+                  ReacquireMemory((void **) &values,length);
                   if (values == (char *) NULL)
                     break;
                   p=values+Extent(values);
@@ -576,7 +576,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
       while (isspace(c))
         c=ReadByte(image);
     }
-    FreeMemory((void **) &values);
+    LiberateMemory((void **) &values);
     (void) ReadByte(image);
     /*
       Verify that required image information is defined.
@@ -599,7 +599,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
         /*
           Image directory.
         */
-        image->directory=(char *) AllocateMemory(MaxTextExtent);
+        image->directory=(char *) AcquireMemory(MaxTextExtent);
         if (image->directory == (char *) NULL)
           ThrowReaderException(CorruptImageWarning,"Unable to read image data",
             image);
@@ -612,7 +612,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
               /*
                 Allocate more memory for the image directory.
               */
-              ReallocateMemory((void **) &image->directory,
+              ReacquireMemory((void **) &image->directory,
                 (Extent(image->directory)+MaxTextExtent+1));
               if (image->directory == (char *) NULL)
                 ThrowReaderException(CorruptImageWarning,
@@ -629,7 +629,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
           Color profile.
         */
         image->color_profile.info=(unsigned char *)
-          AllocateMemory(image->color_profile.length);
+          AcquireMemory(image->color_profile.length);
         if (image->color_profile.info == (unsigned char *) NULL)
           ThrowReaderException(CorruptImageWarning,
             "Unable to read color profile",image);
@@ -642,7 +642,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
           IPTC profile.
         */
         image->iptc_profile.info=(unsigned char *)
-          AllocateMemory(image->iptc_profile.length);
+          AcquireMemory(image->iptc_profile.length);
         if (image->iptc_profile.info == (unsigned char *) NULL)
           ThrowReaderException(CorruptImageWarning,
             "Unable to read IPTC profile",image);
@@ -678,7 +678,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
             */
             packet_size=image->colors > 256 ? 6 : 3;
             colormap=(unsigned char *)
-              AllocateMemory(packet_size*image->colors);
+              AcquireMemory(packet_size*image->colors);
             if (colormap == (unsigned char *) NULL)
               ThrowReaderException(ResourceLimitWarning,
                 "Memory allocation failed",image);
@@ -701,7 +701,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
                 image->colormap[i].blue=(*p++ << 8);
                 image->colormap[i].blue|=(*p++);
               }
-            FreeMemory((void **) &colormap);
+            LiberateMemory((void **) &colormap);
           }
       }
     /*
@@ -715,9 +715,9 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
       packet_size+=image->depth > 8 ? 2 : 1;
     if (image->compression == RunlengthEncodedCompression)
       packet_size+=image->depth > 8 ? 2 : 1;
-    pixels=(unsigned char *) AllocateMemory(packet_size*image->columns);
+    pixels=(unsigned char *) AcquireMemory(packet_size*image->columns);
     compressed_pixels=(unsigned char *)
-      AllocateMemory((size_t) (1.01*packet_size*image->columns+600));
+      AcquireMemory((size_t) (1.01*packet_size*image->columns+600));
     if ((pixels == (unsigned char *) NULL) ||
         (compressed_pixels == (unsigned char *) NULL))
       ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
@@ -873,8 +873,8 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
       if (!SyncImagePixels(image))
         break;
     }
-    FreeMemory((void **) &pixels);
-    FreeMemory((void **) &compressed_pixels);
+    LiberateMemory((void **) &pixels);
+    LiberateMemory((void **) &compressed_pixels);
     if (status == False)
       {
         DestroyImages(image);
@@ -1087,9 +1087,9 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
       packet_size+=image->depth > 8 ? 2 : 1;
     if (compression == RunlengthEncodedCompression)
       packet_size+=image->depth > 8 ? 2 : 1;
-    pixels=(unsigned char *) AllocateMemory(packet_size*image->columns);
+    pixels=(unsigned char *) AcquireMemory(packet_size*image->columns);
     compressed_pixels=(unsigned char *)
-      AllocateMemory((size_t) 1.01*packet_size*image->columns+600);
+      AcquireMemory((size_t) 1.01*packet_size*image->columns+600);
     if ((pixels == (unsigned char *) NULL) ||
         (compressed_pixels == (unsigned char *) NULL))
       ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
@@ -1291,7 +1291,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
           Allocate colormap.
         */
         packet_size=image->colors > 256 ? 6 : 3;
-        colormap=(unsigned char *) AllocateMemory(packet_size*image->colors);
+        colormap=(unsigned char *) AcquireMemory(packet_size*image->colors);
         if (colormap == (unsigned char *) NULL)
           ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
             image);
@@ -1317,7 +1317,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
             *q++=image->colormap[i].blue  & 0xff;
           }
         (void) WriteBlob(image,packet_size*image->colors,colormap);
-        FreeMemory((void **) &colormap);
+        LiberateMemory((void **) &colormap);
       }
     /*
       Write image pixels to file.
@@ -1502,8 +1502,8 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
         if (QuantumTick(y,image->rows))
           ProgressMonitor(SaveImageText,y,image->rows);
     }
-    FreeMemory((void **) &pixels);
-    FreeMemory((void **) &compressed_pixels);
+    LiberateMemory((void **) &pixels);
+    LiberateMemory((void **) &compressed_pixels);
     if (image->next == (Image *) NULL)
       break;
     image=GetNextImage(image);

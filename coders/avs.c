@@ -149,7 +149,7 @@ static Image *ReadAVSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /*
       Convert AVS raster image to pixel packets.
     */
-    pixels=(unsigned char *) AllocateMemory(4*image->columns);
+    pixels=(unsigned char *) AcquireMemory(4*image->columns);
     if (pixels == (unsigned char *) NULL)
       ThrowReaderException(CorruptImageWarning,"Unable to allocate memory",
         image);
@@ -178,7 +178,7 @@ static Image *ReadAVSImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (QuantumTick(y,image->rows))
           ProgressMonitor(LoadImageText,y,image->rows);
     }
-    FreeMemory((void **) &pixels);
+    LiberateMemory((void **) &pixels);
     /*
       Proceed to next image.
     */
@@ -335,7 +335,7 @@ static unsigned int WriteAVSImage(const ImageInfo *image_info,Image *image)
       Allocate memory for pixels.
     */
     pixels=(unsigned char *)
-      AllocateMemory(image->columns*sizeof(PixelPacket));
+      AcquireMemory(image->columns*sizeof(PixelPacket));
     if (pixels == (unsigned char *) NULL)
       ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
         image);
@@ -361,7 +361,7 @@ static unsigned int WriteAVSImage(const ImageInfo *image_info,Image *image)
         if (QuantumTick(y,image->rows))
           ProgressMonitor(SaveImageText,y,image->rows);
     }
-    FreeMemory((void **) &pixels);
+    LiberateMemory((void **) &pixels);
     if (image->next == (Image *) NULL)
       break;
     image=GetNextImage(image);

@@ -396,7 +396,7 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
           Allocate pixel array.
         */
         number_packets=4*image->columns*image->rows;
-        pixels=(unsigned char *) AllocateMemory(number_packets);
+        pixels=(unsigned char *) AcquireMemory(number_packets);
         if (pixels == (unsigned char *) NULL)
           ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
             image);
@@ -434,7 +434,7 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
             CloseBlob(image);
             return(False);
           }
-        FreeMemory((void **) &pixels);
+        LiberateMemory((void **) &pixels);
         break;
       }
       case NoCompression:

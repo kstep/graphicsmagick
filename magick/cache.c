@@ -223,7 +223,7 @@ static void DestroyCacheInfo(Cache cache)
   {
     case MemoryCache:
     {
-      FreeMemory((void **) &cache_info->pixels);
+      LiberateMemory((void **) &cache_info->pixels);
       if (cache_info->storage_class == PseudoClass)
         (void) GetCacheMemory(number_pixels*sizeof(IndexPacket));
       (void) GetCacheMemory(number_pixels*sizeof(PixelPacket));
@@ -256,9 +256,9 @@ static void DestroyCacheInfo(Cache cache)
     {
       for (id=0; id <= cache_info->rows; id++)
         DestroyCacheNexus(cache,id);
-      FreeMemory((void **) &cache_info->nexus);
+      LiberateMemory((void **) &cache_info->nexus);
     }
-  FreeMemory((void **) &cache_info);
+  LiberateMemory((void **) &cache_info);
 }
 
 /*
@@ -300,7 +300,7 @@ MagickExport void DestroyCacheNexus(Cache cache,const unsigned int id)
   nexus=cache_info->nexus+id;
   nexus->available=True;
   if (nexus->line != (void *) NULL)
-    FreeMemory((void **) &nexus->line);
+    LiberateMemory((void **) &nexus->line);
   nexus->line=(void *) NULL;
 }
 
@@ -402,7 +402,7 @@ MagickExport void GetCacheInfo(Cache *cache)
     *cache_info;
 
   assert(cache != (Cache) NULL);
-  cache_info=(CacheInfo *) AllocateMemory(sizeof(CacheInfo));
+  cache_info=(CacheInfo *) AcquireMemory(sizeof(CacheInfo));
   if (cache_info == (CacheInfo *) NULL)
     MagickError(ResourceLimitError,"Memory allocation failed",
       "unable to allocate cache info");
@@ -923,7 +923,7 @@ MagickExport unsigned int OpenCache(Cache cache,const ClassType storage_class,
         Allocate cache nexus.
       */
       cache_info->nexus=(NexusInfo *)
-        AllocateMemory((cache_info->rows+1)*sizeof(NexusInfo));
+        AcquireMemory((cache_info->rows+1)*sizeof(NexusInfo));
       if (cache_info->nexus == (NexusInfo *) NULL)
         MagickError(ResourceLimitError,"Memory allocation failed",
           "unable to allocate cache nexus");
@@ -948,10 +948,10 @@ MagickExport unsigned int OpenCache(Cache cache,const ClassType storage_class,
       ((cache_info->type == UndefinedCache) && (length <= GetCacheMemory(0))))
     {
       if (cache_info->storage_class == UndefinedClass)
-        allocation=AllocateMemory(length);
+        allocation=AcquireMemory(length);
       else
         {
-          ReallocateMemory((void **) &cache_info->pixels,length);
+          ReacquireMemory((void **) &cache_info->pixels,length);
           if (cache_info->pixels == (void *) NULL)
             return(False);
           allocation=cache_info->pixels;
@@ -1319,10 +1319,10 @@ MagickExport PixelPacket *SetCacheNexus(Cache cache,const unsigned int id,
   if (cache_info->storage_class == PseudoClass)
     length+=number_pixels*sizeof(IndexPacket);
   if (nexus->line == (void *) NULL)
-    nexus->line=AllocateMemory(length);
+    nexus->line=AcquireMemory(length);
   else
     if (nexus->length != length)
-      ReallocateMemory((void **) &nexus->line,length);
+      ReacquireMemory((void **) &nexus->line,length);
   if (nexus->line == (void *) NULL)
     MagickError(ResourceLimitError,"Memory allocation failed",
       "unable to allocate cache nexus");

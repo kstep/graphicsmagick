@@ -174,7 +174,7 @@ static unsigned int DecodeImage(Image *image,unsigned char *luma,
   assert(luma != (unsigned char *) NULL);
   assert(chroma1 != (unsigned char *) NULL);
   assert(chroma2 != (unsigned char *) NULL);
-  buffer=(unsigned char *) AllocateMemory(0x800);
+  buffer=(unsigned char *) AcquireMemory(0x800);
   if (buffer == (unsigned char *) NULL)
     ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
       (char *) NULL);
@@ -185,10 +185,10 @@ static unsigned int DecodeImage(Image *image,unsigned char *luma,
   {
     PCDGetBits(8);
     length=(accumulator & 0xff)+1;
-    pcd_table[i]=(PCDTable *) AllocateMemory(length*sizeof(PCDTable));
+    pcd_table[i]=(PCDTable *) AcquireMemory(length*sizeof(PCDTable));
     if (pcd_table[i] == (PCDTable *) NULL)
       {
-        FreeMemory((void **) &buffer);
+        LiberateMemory((void **) &buffer);
         ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
           (char *) NULL);
       }
@@ -199,7 +199,7 @@ static unsigned int DecodeImage(Image *image,unsigned char *luma,
       r->length=(accumulator & 0xff)+1;
       if (r->length > 16)
         {
-          FreeMemory((void **) &buffer);
+          LiberateMemory((void **) &buffer);
           return(False);
         }
       PCDGetBits(16);
@@ -304,8 +304,8 @@ static unsigned int DecodeImage(Image *image,unsigned char *luma,
     Free memory.
   */
   for (i=0; i < (image->columns > 1536 ? 3 : 1); i++)
-    FreeMemory((void **) &pcd_table[i]);
-  FreeMemory((void **) &buffer);
+    LiberateMemory((void **) &pcd_table[i]);
+  LiberateMemory((void **) &buffer);
   return(True);
 }
 
@@ -468,7 +468,7 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Determine if this is a PCD file.
   */
-  header=(unsigned char *) AllocateMemory(3*0x800);
+  header=(unsigned char *) AcquireMemory(3*0x800);
   if (header == (unsigned char *) NULL)
     ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
   status=ReadBlob(image,3*0x800,(char *) header);
@@ -478,7 +478,7 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     ThrowReaderException(CorruptImageWarning,"Not a PCD image file",image);
   rotate=header[0x0e02] & 0x03;
   number_images=(header[10] << 8) | header[11];
-  FreeMemory((void **) &header);
+  LiberateMemory((void **) &header);
   /*
     Determine resolution by subimage specification.
   */
@@ -528,9 +528,9 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Allocate luma and chroma memory.
   */
-  chroma1=(unsigned char *) AllocateMemory(image->columns*image->rows+1);
-  chroma2=(unsigned char *) AllocateMemory(image->columns*image->rows+1);
-  luma=(unsigned char *) AllocateMemory(image->columns*image->rows+1);
+  chroma1=(unsigned char *) AcquireMemory(image->columns*image->rows+1);
+  chroma2=(unsigned char *) AcquireMemory(image->columns*image->rows+1);
+  luma=(unsigned char *) AcquireMemory(image->columns*image->rows+1);
   if ((chroma1 == (unsigned char *) NULL) ||
       (chroma2 == (unsigned char *) NULL) || (luma == (unsigned char *) NULL))
     ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
@@ -628,9 +628,9 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
         (void) SetMonitorHandler(handler);
         ProgressMonitor(LoadImageText,j-1,number_images);
       }
-      FreeMemory((void **) &chroma2);
-      FreeMemory((void **) &chroma1);
-      FreeMemory((void **) &luma);
+      LiberateMemory((void **) &chroma2);
+      LiberateMemory((void **) &chroma1);
+      LiberateMemory((void **) &luma);
       while (image->previous != (Image *) NULL)
         image=image->previous;
       overview_image=OverviewImage(image_info,image,exception);
@@ -714,9 +714,9 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (QuantumTick(y,image->rows))
       ProgressMonitor(LoadImageText,y,image->rows);
   }
-  FreeMemory((void **) &chroma2);
-  FreeMemory((void **) &chroma1);
-  FreeMemory((void **) &luma);
+  LiberateMemory((void **) &chroma2);
+  LiberateMemory((void **) &chroma1);
+  LiberateMemory((void **) &luma);
   if (LocaleCompare(image_info->magick,"PCDS") == 0)
     TransformRGBImage(image,sRGBColorspace);
   else

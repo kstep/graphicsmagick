@@ -227,7 +227,7 @@ static Image *ReadIconImage(const ImageInfo *image_info,
     /*
       Read Icon raster colormap.
     */
-    icon_colormap=(unsigned char *) AllocateMemory(4*image->colors);
+    icon_colormap=(unsigned char *) AcquireMemory(4*image->colors);
     if (icon_colormap == (unsigned char *) NULL)
       ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
         image);
@@ -240,7 +240,7 @@ static Image *ReadIconImage(const ImageInfo *image_info,
       image->colormap[x].red=UpScale(*p++);
       p++;
     }
-    FreeMemory((void **) &icon_colormap);
+    LiberateMemory((void **) &icon_colormap);
     /*
       Convert Icon raster image to pixel packets.
     */

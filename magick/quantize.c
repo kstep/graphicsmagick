@@ -378,9 +378,9 @@ static unsigned int Assignment(CubeInfo *cube_info,Image *image)
   */
   if (image->colormap == (PixelPacket *) NULL)
     image->colormap=(PixelPacket *)
-      AllocateMemory(cube_info->colors*sizeof(PixelPacket));
+      AcquireMemory(cube_info->colors*sizeof(PixelPacket));
   else
-    ReallocateMemory((void **) &image->colormap,
+    ReacquireMemory((void **) &image->colormap,
       cube_info->colors*sizeof(PixelPacket));
   if (image->colormap == (PixelPacket *) NULL)
     ThrowBinaryException(ResourceLimitWarning,"Unable to quantize image",
@@ -674,7 +674,7 @@ MagickExport QuantizeInfo *CloneQuantizeInfo(const QuantizeInfo *quantize_info)
   QuantizeInfo
     *clone_info;
 
-  clone_info=(QuantizeInfo *) AllocateMemory(sizeof(QuantizeInfo));
+  clone_info=(QuantizeInfo *) AcquireMemory(sizeof(QuantizeInfo));
   if (clone_info == (QuantizeInfo *) NULL)
     MagickError(ResourceLimitError,"Unable to clone quantize info",
       "Memory allocation failed");
@@ -849,14 +849,14 @@ static void DestroyCubeInfo(CubeInfo *cube_info)
   do
   {
     nodes=cube_info->node_queue->next;
-    FreeMemory((void **) &cube_info->node_queue);
+    LiberateMemory((void **) &cube_info->node_queue);
     cube_info->node_queue=nodes;
   } while (cube_info->node_queue != (Nodes *) NULL);
   cube_info->squares-=MaxRGB;
-  FreeMemory((void **) &cube_info->squares);
+  LiberateMemory((void **) &cube_info->squares);
   if (!cube_info->quantize_info->dither)
     return;
-  FreeMemory((void **) &cube_info->cache);
+  LiberateMemory((void **) &cube_info->cache);
 }
 
 /*
@@ -887,7 +887,7 @@ MagickExport void DestroyQuantizeInfo(QuantizeInfo *quantize_info)
 {
   assert(quantize_info != (QuantizeInfo *) NULL);
   assert(quantize_info->signature == MagickSignature);
-  FreeMemory((void **) &quantize_info);
+  LiberateMemory((void **) &quantize_info);
 }
 
 /*
@@ -1162,7 +1162,7 @@ static unsigned int GetCubeInfo(CubeInfo *cube_info,
   */
   cube_info->root=GetNodeInfo(cube_info,0,0,(NodeInfo *) NULL);
   cube_info->squares=(double *)
-    AllocateMemory((MaxRGB+MaxRGB+1)*sizeof(double));
+    AcquireMemory((MaxRGB+MaxRGB+1)*sizeof(double));
   if ((cube_info->root == (NodeInfo *) NULL) ||
       (cube_info->squares == (double *) NULL))
     return(False);
@@ -1178,7 +1178,7 @@ static unsigned int GetCubeInfo(CubeInfo *cube_info,
   /*
     Initialize dither resources.
   */
-  cube_info->cache=(int *) AllocateMemory((1 << 18)*sizeof(int));
+  cube_info->cache=(int *) AcquireMemory((1 << 18)*sizeof(int));
   if (cube_info->cache == (int *) NULL)
     return(False);
   /*
@@ -1255,7 +1255,7 @@ static NodeInfo *GetNodeInfo(CubeInfo *cube_info,const unsigned int id,
       /*
         Allocate a new nodes of nodes.
       */
-      nodes=(Nodes *) AllocateMemory(sizeof(Nodes));
+      nodes=(Nodes *) AcquireMemory(sizeof(Nodes));
       if (nodes == (Nodes *) NULL)
         return((NodeInfo *) NULL);
       nodes->next=cube_info->node_queue;
@@ -1682,12 +1682,12 @@ static unsigned int OrderedDitherImage(Image *image)
   NormalizeImage(image);
   image->storage_class=PseudoClass;
   image->colors=2;
-  colormap=(PixelPacket *) AllocateMemory(image->colors*sizeof(PixelPacket));
+  colormap=(PixelPacket *) AcquireMemory(image->colors*sizeof(PixelPacket));
   if (colormap == (PixelPacket *) NULL)
     ThrowBinaryException(ResourceLimitWarning,"Unable to dither image",
       "Memory allocation failed");
   if (image->colormap != (PixelPacket *) NULL)
-    FreeMemory((void **) &image->colormap);
+    LiberateMemory((void **) &image->colormap);
   image->colormap=colormap;
   image->colormap[0].red=0;
   image->colormap[0].green=0;
@@ -1900,7 +1900,7 @@ MagickExport unsigned int QuantizationError(Image *image)
   image->normalized_maximum_error=0.0;
   if (image->storage_class == DirectClass)
     return(True);
-  cube_info.squares=(double *) AllocateMemory((MaxRGB+MaxRGB+1)*sizeof(double));
+  cube_info.squares=(double *) AcquireMemory((MaxRGB+MaxRGB+1)*sizeof(double));
   if (cube_info.squares == (double *) NULL)
     ThrowBinaryException(ResourceLimitWarning,"Unable to measure error",
       "Memory allocation failed");
@@ -1940,7 +1940,7 @@ MagickExport unsigned int QuantizationError(Image *image)
   image->normalized_maximum_error=maximum_error_per_pixel/
     (3.0*(MaxRGB+1)*(MaxRGB+1));
   cube_info.squares-=MaxRGB;
-  FreeMemory((void **) &cube_info.squares);
+  LiberateMemory((void **) &cube_info.squares);
   return(True);
 }
 

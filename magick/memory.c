@@ -61,29 +61,29 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   A l l o c a t e M e m o r y                                               %
+%   A c q u i r e M e m o r y                                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method AllocateMemory returns a pointer to a block of at least size bytes
+%  Method AcquireMemory returns a pointer to a block of at least size bytes
 %  suitably aligned for any use.
 %
-%  The format of the AllocateMemory method is:
+%  The format of the AcquireMemory method is:
 %
-%      void *AllocateMemory(const size_t size)
+%      void *AcquireMemory(const size_t size)
 %
 %  A description of each parameter follows:
 %
-%    o memory: Method AllocateMemory returns a pointer to a block of at
+%    o memory: Method AcquireMemory returns a pointer to a block of at
 %      least size bytes suitably aligned for any use.
 %
 %    o size: Specifies the size of the memory to return.
 %
 %
 */
-MagickExport void *AllocateMemory(const size_t size)
+MagickExport void *AcquireMemory(const size_t size)
 {
   void
     *allocation;
@@ -98,17 +98,17 @@ MagickExport void *AllocateMemory(const size_t size)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   F r e e M e m o r y                                                       %
+%   L i b e r a t e M e m o r y                                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method FreeMemory frees memory that has already been allocated.
+%  Method LiberateMemory frees memory that has already been allocated.
 %
-%  The format of the FreeMemory method is:
+%  The format of the LiberateMemory method is:
 %
-%      void FreeMemory(void **memory)
+%      void LiberateMemory(void **memory)
 %
 %  A description of each parameter follows:
 %
@@ -116,7 +116,7 @@ MagickExport void *AllocateMemory(const size_t size)
 %
 %
 */
-MagickExport void FreeMemory(void **memory)
+MagickExport void LiberateMemory(void **memory)
 {
   assert(memory != (void **) NULL);
   if (*memory == (void *) NULL)
@@ -130,30 +130,30 @@ MagickExport void FreeMemory(void **memory)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   R e a l l o c a t e M e m o r y                                           %
+%   R e a c q u i r e M e m o r y                                             %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ReallocateMemory changes the size of the memory and returns a
+%  Method ReacquireMemory changes the size of the memory and returns a
 %  pointer to the (possibly moved) block.  The contents will be unchanged up
 %  to the lesser of the new and old sizes.
 %
-%  The format of the ReallocateMemory method is:
+%  The format of the ReacquireMemory method is:
 %
-%      void ReallocateMemory(void **memory,const size_t size)
+%      void ReacquireMemory(void **memory,const size_t size)
 %
 %  A description of each parameter follows:
 %
-%    o memory: Method ReallocateMemory returns a pointer to a block of at
+%    o memory: Method ReacquireMemory returns a pointer to a block of at
 %      least size bytes suitably aligned for any use.
 %
 %    o size: Specifies the size of the memory to return.
 %
 %
 */
-MagickExport void ReallocateMemory(void **memory,const size_t size)
+MagickExport void ReacquireMemory(void **memory,const size_t size)
 {
   void
     *allocation;
@@ -161,11 +161,11 @@ MagickExport void ReallocateMemory(void **memory,const size_t size)
   assert(memory != (void **) NULL);
   if (*memory == (void *) NULL)
     {
-      *memory=AllocateMemory(size);
+      *memory=AcquireMemory(size);
       return;
     }
   allocation=realloc(*memory,size);
   if (allocation == (void *) NULL)
-    FreeMemory((void **) memory);
+    LiberateMemory((void **) memory);
   *memory=allocation;
 }

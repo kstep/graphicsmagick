@@ -348,7 +348,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
     if (packet_size < 0)
       packet_size=(-packet_size);
     fits_pixels=(unsigned char *)
-      AllocateMemory(packet_size*image->columns*image->rows);
+      AcquireMemory(packet_size*image->columns*image->rows);
     if (fits_pixels == (unsigned char *) NULL)
       ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
         image);
@@ -452,7 +452,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
       if (QuantumTick(y,image->rows))
         ProgressMonitor(LoadImageText,y,image->rows);
     }
-    FreeMemory((void **) &fits_pixels);
+    LiberateMemory((void **) &fits_pixels);
     /*
       Proceed to next image.
     */
@@ -607,8 +607,8 @@ static unsigned int WriteFITSImage(const ImageInfo *image_info,Image *image)
     Allocate image memory.
   */
   packet_size=image->depth > 8 ? 2 : 1;
-  fits_info=(char *) AllocateMemory(2880);
-  pixels=(unsigned char *) AllocateMemory(packet_size*image->columns);
+  fits_info=(char *) AcquireMemory(2880);
+  pixels=(unsigned char *) AcquireMemory(packet_size*image->columns);
   if ((fits_info == (char *) NULL) || (pixels == (unsigned char *) NULL))
     ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
   /*
@@ -635,7 +635,7 @@ static unsigned int WriteFITSImage(const ImageInfo *image_info,Image *image)
   (void) strcpy(buffer,"END");
   (void) strncpy(fits_info+640,buffer,Extent(buffer));
   (void) WriteBlob(image,2880,(char *) fits_info);
-  FreeMemory((void **) &fits_info);
+  LiberateMemory((void **) &fits_info);
   /*
     Convert image to fits scale PseudoColor class.
   */
@@ -649,7 +649,7 @@ static unsigned int WriteFITSImage(const ImageInfo *image_info,Image *image)
     if (QuantumTick(image->rows-y-1,image->rows))
       ProgressMonitor(SaveImageText,image->rows-y-1,image->rows);
   }
-  FreeMemory((void **) &pixels);
+  LiberateMemory((void **) &pixels);
   CloseBlob(image);
   return(True);
 }

@@ -431,9 +431,9 @@ MagickExport unsigned int HuffmanDecodeImage(Image *image)
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  mb_hash=(HuffmanTable **) AllocateMemory(HashSize*sizeof(HuffmanTable *));
-  mw_hash=(HuffmanTable **) AllocateMemory(HashSize*sizeof(HuffmanTable *));
-  scanline=(unsigned char *) AllocateMemory(image->columns);
+  mb_hash=(HuffmanTable **) AcquireMemory(HashSize*sizeof(HuffmanTable *));
+  mw_hash=(HuffmanTable **) AcquireMemory(HashSize*sizeof(HuffmanTable *));
+  scanline=(unsigned char *) AcquireMemory(image->columns);
   if ((mb_hash == (HuffmanTable **) NULL) ||
       (mw_hash == (HuffmanTable **) NULL) ||
       (scanline == (unsigned char *) NULL))
@@ -599,9 +599,9 @@ MagickExport unsigned int HuffmanDecodeImage(Image *image)
   /*
     Free decoder memory.
   */
-  FreeMemory((void **) &mw_hash);
-  FreeMemory((void **) &mb_hash);
-  FreeMemory((void **) &scanline);
+  LiberateMemory((void **) &mw_hash);
+  LiberateMemory((void **) &mb_hash);
+  LiberateMemory((void **) &scanline);
   return(True);
 }
 
@@ -706,7 +706,7 @@ MagickExport unsigned int HuffmanEncodeImage(const ImageInfo *image_info,
   width=image->columns;
   if (LocaleCompare(image_info->magick,"FAX") == 0)
     width=Max(image->columns,1728);
-  scanline=(unsigned char *) AllocateMemory(width+1);
+  scanline=(unsigned char *) AcquireMemory(width+1);
   if (scanline == (unsigned char *) NULL)
     ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
       (char *) NULL);
@@ -844,7 +844,7 @@ MagickExport unsigned int HuffmanEncodeImage(const ImageInfo *image_info,
     Ascii85Flush(image);
   if (huffman_image != image)
     DestroyImage(huffman_image);
-  FreeMemory((void **) &scanline);
+  LiberateMemory((void **) &scanline);
   return(True);
 }
 
@@ -964,7 +964,7 @@ MagickExport unsigned int Huffman2DEncodeImage(ImageInfo *image_info,
   for (i=1; i < (int) TIFFNumberOfStrips(tiff); i++)
     if (byte_count[i] > strip_size)
       strip_size=byte_count[i];
-  buffer=(unsigned char *) AllocateMemory(strip_size);
+  buffer=(unsigned char *) AcquireMemory(strip_size);
   if (buffer == (unsigned char *) NULL)
     {
       TIFFClose(tiff);
@@ -986,7 +986,7 @@ MagickExport unsigned int Huffman2DEncodeImage(ImageInfo *image_info,
       Ascii85Encode(image,(unsigned int) buffer[j]);
     Ascii85Flush(image);
   }
-  FreeMemory((void **) &buffer);
+  LiberateMemory((void **) &buffer);
   TIFFClose(tiff);
   (void) remove(filename);
   return(True);
@@ -1087,7 +1087,7 @@ MagickExport unsigned int LZWEncodeImage(Image *image,
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(pixels != (unsigned char *) NULL);
-  table=(TableType *) AllocateMemory((1 << 12)*sizeof(TableType));
+  table=(TableType *) AcquireMemory((1 << 12)*sizeof(TableType));
   if (table == (TableType *) NULL)
     return(False);
   /*
@@ -1168,7 +1168,7 @@ MagickExport unsigned int LZWEncodeImage(Image *image,
   if (number_bits != 0)
     Ascii85Encode(image,accumulator >> 24);
   Ascii85Flush(image);
-  FreeMemory((void **) &table);
+  LiberateMemory((void **) &table);
   return(True);
 }
 #else
@@ -1234,7 +1234,7 @@ MagickExport unsigned int PackbitsEncodeImage(Image *image,
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(pixels != (unsigned char *) NULL);
-  packbits=(unsigned char *) AllocateMemory(128);
+  packbits=(unsigned char *) AcquireMemory(128);
   if (packbits == (unsigned char *) NULL)
     ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
       (char *) NULL);
@@ -1317,7 +1317,7 @@ MagickExport unsigned int PackbitsEncodeImage(Image *image,
   }
   Ascii85Encode(image,128);  /* EOD marker */
   Ascii85Flush(image);
-  FreeMemory((void **) &packbits);
+  LiberateMemory((void **) &packbits);
   return(True);
 }
 
@@ -1383,7 +1383,7 @@ MagickExport unsigned int ZLIBEncodeImage(Image *image,
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   compressed_packets=(unsigned long) (1.001*number_pixels+12);
-  compressed_pixels=(unsigned char *) AllocateMemory(compressed_packets);
+  compressed_pixels=(unsigned char *) AcquireMemory(compressed_packets);
   if (compressed_pixels == (unsigned char *) NULL)
     ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
       (char *) NULL);
@@ -1414,7 +1414,7 @@ MagickExport unsigned int ZLIBEncodeImage(Image *image,
         Ascii85Encode(image,compressed_pixels[i]);
       Ascii85Flush(image);
     }
-  FreeMemory((void **) &compressed_pixels);
+  LiberateMemory((void **) &compressed_pixels);
   return(!status);
 }
 #else

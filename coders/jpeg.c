@@ -288,9 +288,9 @@ static boolean ReadColorProfile(j_decompress_ptr jpeg_info)
   length-=14;
   image=(Image *) jpeg_info->client_data;
   if (image->color_profile.length == 0)
-    image->color_profile.info=(unsigned char *) AllocateMemory(length);
+    image->color_profile.info=(unsigned char *) AcquireMemory(length);
   else
-    ReallocateMemory((void **) &image->color_profile.info,
+    ReacquireMemory((void **) &image->color_profile.info,
       image->color_profile.length+length);
   if (image->color_profile.info == (unsigned char *) NULL)
     ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
@@ -326,7 +326,7 @@ static boolean ReadComment(j_decompress_ptr jpeg_info)
   length=GetCharacter(jpeg_info) << 8;
   length+=GetCharacter(jpeg_info);
   length-=2;
-  comment=(char *) AllocateMemory(length+1);
+  comment=(char *) AcquireMemory(length+1);
   if (comment == (char *) NULL)
     ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
       (char *) NULL);
@@ -338,7 +338,7 @@ static boolean ReadComment(j_decompress_ptr jpeg_info)
     *p++=GetCharacter(jpeg_info);
   *p='\0';
   (void) SetImageAttribute(image,"Comment",comment);
-  FreeMemory((void **) &comment);
+  LiberateMemory((void **) &comment);
   return(True);
 }
 
@@ -413,11 +413,11 @@ static boolean ReadNewsProfile(j_decompress_ptr jpeg_info)
     return(True);
   image=(Image *) jpeg_info->client_data;
   if (image->iptc_profile.length != 0)
-    ReallocateMemory((void **) &image->iptc_profile.info,length+tag_length);
+    ReacquireMemory((void **) &image->iptc_profile.info,length+tag_length);
   else
     {
       image->iptc_profile.info=(unsigned char *)
-        AllocateMemory(length+tag_length);
+        AcquireMemory(length+tag_length);
       if (image->iptc_profile.info != (unsigned char *) NULL)
         image->iptc_profile.length=0;
     }
@@ -541,7 +541,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   if (setjmp(error_recovery))
     {
       if (jpeg_pixels != (JSAMPLE *) NULL)
-        FreeMemory((void **) &jpeg_pixels);
+        LiberateMemory((void **) &jpeg_pixels);
       jpeg_destroy_decompress(&jpeg_info);
       ThrowReaderException(CorruptImageWarning,"Corrupt JPEG image",image);
     }
@@ -610,7 +610,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
       ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
         image);
   jpeg_pixels=(JSAMPLE *)
-    AllocateMemory(jpeg_info.output_components*image->columns*sizeof(JSAMPLE));
+    AcquireMemory(jpeg_info.output_components*image->columns*sizeof(JSAMPLE));
   if (jpeg_pixels == (JSAMPLE *) NULL)
     ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
   /*
@@ -693,7 +693,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   */
   (void) jpeg_finish_decompress(&jpeg_info);
   jpeg_destroy_decompress(&jpeg_info);
-  FreeMemory((void **) &jpeg_pixels);
+  LiberateMemory((void **) &jpeg_pixels);
   CloseBlob(image);
   return(image);
 }
@@ -908,7 +908,7 @@ static void WriteColorProfile(j_compress_ptr jpeg_info,Image *image)
   for (i=0; i < (int) image->color_profile.length; i+=65519)
   {
     length=Min(image->color_profile.length-i,65519);
-    profile=(unsigned char *) AllocateMemory(length+14);
+    profile=(unsigned char *) AcquireMemory(length+14);
     if (profile == (unsigned char *) NULL)
       break;
     (void) strcpy((char *) profile,"ICC_PROFILE");
@@ -917,7 +917,7 @@ static void WriteColorProfile(j_compress_ptr jpeg_info,Image *image)
     for (j=0; j < (int) length; j++)
       profile[j+14]=image->color_profile.info[i+j];
     jpeg_write_marker(jpeg_info,ICC_MARKER,profile,(unsigned int) length+14);
-    FreeMemory((void **) &profile);
+    LiberateMemory((void **) &profile);
   }
 }
 
@@ -948,7 +948,7 @@ static void WriteNewsProfile(j_compress_ptr jpeg_info,Image *image)
   {
     length=Min(image->iptc_profile.length-i,65500);
     roundup=(length & 0x01); /* round up for Photoshop */
-    profile=(unsigned char *) AllocateMemory(length+roundup+tag_length);
+    profile=(unsigned char *) AcquireMemory(length+roundup+tag_length);
     if (profile == (unsigned char *) NULL)
       break;
 #ifdef GET_ONLY_IPTC_DATA
@@ -965,7 +965,7 @@ static void WriteNewsProfile(j_compress_ptr jpeg_info,Image *image)
       profile[length+tag_length]=0;
     jpeg_write_marker(jpeg_info,IPTC_MARKER,profile,(unsigned int)
       length+roundup+tag_length);
-    FreeMemory((void **) &profile);
+    LiberateMemory((void **) &profile);
   }
 }
 
@@ -1109,7 +1109,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
     Convert MIFF to JPEG raster pixels.
   */
   jpeg_pixels=(JSAMPLE *)
-    AllocateMemory(jpeg_info.input_components*image->columns*sizeof(JSAMPLE));
+    AcquireMemory(jpeg_info.input_components*image->columns*sizeof(JSAMPLE));
   if (jpeg_pixels == (JSAMPLE *) NULL)
     ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
   scanline[0]=(JSAMPROW) jpeg_pixels;
@@ -1236,7 +1236,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
     Free memory.
   */
   jpeg_destroy_compress(&jpeg_info);
-  FreeMemory((void **) &jpeg_pixels);
+  LiberateMemory((void **) &jpeg_pixels);
   CloseBlob(image);
   return(True);
 }

@@ -164,7 +164,7 @@ static Image *Read8BIMImage(const ImageInfo *image_info,
     Read 8BIM image.
   */
   length=MaxTextExtent;
-  image->iptc_profile.info=(unsigned char *) AllocateMemory(length+2);
+  image->iptc_profile.info=(unsigned char *) AcquireMemory(length+2);
   for (q=image->iptc_profile.info; image->iptc_profile.info; q++)
   {
     c=ReadByte(image);
@@ -174,7 +174,7 @@ static Image *Read8BIMImage(const ImageInfo *image_info,
       {
         image->iptc_profile.length=q-image->iptc_profile.info;
         length<<=1;
-        ReallocateMemory((void **) &image->iptc_profile.info,length+2);
+        ReacquireMemory((void **) &image->iptc_profile.info,length+2);
         if (image->iptc_profile.info == (unsigned char *) NULL)
           break;
         q=image->iptc_profile.info+image->iptc_profile.length;

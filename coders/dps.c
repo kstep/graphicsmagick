@@ -241,7 +241,7 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Get the colormap colors.
   */
-  colors=(XColor *) AllocateMemory(visual_info->colormap_size*sizeof(XColor));
+  colors=(XColor *) AcquireMemory(visual_info->colormap_size*sizeof(XColor));
   if (colors == (XColor *) NULL)
     {
       DestroyImage(image);
@@ -400,7 +400,7 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (!AllocateImageColormap(image,visual_info->colormap_size))
         {
           DestroyImage(image);
-          FreeMemory((void **) &colors);
+          LiberateMemory((void **) &colors);
           XDestroyImage(dps_image);
           XFreeResources(display,visual_info,map_info,(XPixelInfo *) NULL,
             (XFontStruct *) NULL,&resource_info,(XWindowInfo *) NULL);
@@ -431,7 +431,7 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
       break;
     }
   }
-  FreeMemory((void **) &colors);
+  LiberateMemory((void **) &colors);
   XDestroyImage(dps_image);
   if (image->storage_class == PseudoClass)
     SyncImage(image);

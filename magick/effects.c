@@ -202,7 +202,7 @@ MagickExport Image *BlurImage(Image *image,const unsigned int order,
   if ((order % 2) == 0)
     ThrowImageException(ResourceLimitWarning,"Unable to blur image",
       "kernel order must be an odd number");
-  kernel=(double *) AllocateMemory(order*order*sizeof(double));
+  kernel=(double *) AcquireMemory(order*order*sizeof(double));
   if (kernel == (double *) NULL)
     ThrowImageException(ResourceLimitWarning,"Unable to blur image",
       "Memory allocation failed");
@@ -217,7 +217,7 @@ MagickExport Image *BlurImage(Image *image,const unsigned int order,
   }
   kernel[i/2]=13.0/order;
   blur_image=ConvolveImage(image,order,kernel,exception);
-  FreeMemory((void **) &kernel);
+  LiberateMemory((void **) &kernel);
   return(blur_image);
 }
 
@@ -580,11 +580,11 @@ MagickExport Image *DespeckleImage(Image *image,ExceptionInfo *exception)
     Allocate image buffers.
   */
   packets=(image->columns+2)*(image->rows+2);
-  red=(Quantum *) AllocateMemory(packets*sizeof(Quantum));
-  green=(Quantum *) AllocateMemory(packets*sizeof(Quantum));
-  blue=(Quantum *) AllocateMemory(packets*sizeof(Quantum));
-  matte=(Quantum *) AllocateMemory(packets*sizeof(Quantum));
-  buffer=(Quantum *) AllocateMemory(packets*sizeof(Quantum));
+  red=(Quantum *) AcquireMemory(packets*sizeof(Quantum));
+  green=(Quantum *) AcquireMemory(packets*sizeof(Quantum));
+  blue=(Quantum *) AcquireMemory(packets*sizeof(Quantum));
+  matte=(Quantum *) AcquireMemory(packets*sizeof(Quantum));
+  buffer=(Quantum *) AcquireMemory(packets*sizeof(Quantum));
   if ((red == (Quantum *) NULL) || (green == (Quantum *) NULL) ||
       (blue == (Quantum *) NULL) || (matte == (Quantum *) NULL) ||
       (buffer == (Quantum *) NULL))
@@ -688,11 +688,11 @@ MagickExport Image *DespeckleImage(Image *image,ExceptionInfo *exception)
   /*
     Free memory.
   */
-  FreeMemory((void **) &buffer);
-  FreeMemory((void **) &matte);
-  FreeMemory((void **) &blue);
-  FreeMemory((void **) &green);
-  FreeMemory((void **) &red);
+  LiberateMemory((void **) &buffer);
+  LiberateMemory((void **) &matte);
+  LiberateMemory((void **) &blue);
+  LiberateMemory((void **) &green);
+  LiberateMemory((void **) &red);
   return(despeckle_image);
 }
 
@@ -749,7 +749,7 @@ MagickExport Image *EdgeImage(Image *image,const unsigned int order,
   if ((order % 2) == 0)
     ThrowImageException(ResourceLimitWarning,"Unable to edge image",
       "kernel order must be an odd number");
-  kernel=(double *) AllocateMemory(order*order*sizeof(double));
+  kernel=(double *) AcquireMemory(order*order*sizeof(double));
   if (kernel == (double *) NULL)
     ThrowImageException(ResourceLimitWarning,"Unable to detect edges",
       "Memory allocation failed");
@@ -757,7 +757,7 @@ MagickExport Image *EdgeImage(Image *image,const unsigned int order,
     kernel[i]=(-1.0);
   kernel[i/2]=order*order-1.0;
   edge_image=ConvolveImage(image,order,kernel,exception);
-  FreeMemory((void **) &kernel);
+  LiberateMemory((void **) &kernel);
   return(edge_image);
 }
 
@@ -819,7 +819,7 @@ MagickExport Image *EmbossImage(Image *image,const unsigned int order,
   if ((order % 2) == 0)
     ThrowImageException(ResourceLimitWarning,"Unable to convolve image",
       "kernel order must be an odd number");
-  kernel=(double *) AllocateMemory(order*order*sizeof(double));
+  kernel=(double *) AcquireMemory(order*order*sizeof(double));
   if (kernel == (double *) NULL)
     ThrowImageException(ResourceLimitWarning,"Unable to emboss image",
       "Memory allocation failed");
@@ -839,7 +839,7 @@ MagickExport Image *EmbossImage(Image *image,const unsigned int order,
   emboss_image=ConvolveImage(image,order,kernel,exception);
   if (emboss_image != (Image *) NULL)
     EqualizeImage(emboss_image);
-  FreeMemory((void **) &kernel);
+  LiberateMemory((void **) &kernel);
   return(emboss_image);
 }
 
@@ -1140,8 +1140,8 @@ MagickExport Image *GaussianBlurImage(Image *image,const double width,
     Build convolution kernel.
   */
   radius=ceil(width);
-  kernel=(double *) AllocateMemory((radius+1)*sizeof(double));
-  scanline=(PixelPacket *) AllocateMemory(radius*sizeof(PixelPacket));
+  kernel=(double *) AcquireMemory((radius+1)*sizeof(double));
+  scanline=(PixelPacket *) AcquireMemory(radius*sizeof(PixelPacket));
   if ((kernel == (double *) NULL) || (scanline == (PixelPacket *) NULL))
     {
       DestroyImage(blur_image);
@@ -1268,8 +1268,8 @@ MagickExport Image *GaussianBlurImage(Image *image,const double width,
   /*
     Free resources.
   */
-  FreeMemory((void **) &kernel);
-  FreeMemory((void **) &scanline);
+  LiberateMemory((void **) &kernel);
+  LiberateMemory((void **) &scanline);
   return(blur_image);
 }
 
@@ -1534,7 +1534,7 @@ MagickExport Image *MedianFilterImage(Image *image,const unsigned int order,
   /*
     Allocate window.
   */
-  window=(PixelPacket *) AllocateMemory(order*order*sizeof(PixelPacket));
+  window=(PixelPacket *) AcquireMemory(order*order*sizeof(PixelPacket));
   if (window == (PixelPacket *) NULL)
     {
       DestroyImage(median_image);
@@ -1820,7 +1820,7 @@ MagickExport Image *OilPaintImage(Image *image,const unsigned int radius,
   /*
     Allocate histogram and scanline.
   */
-  histogram=(unsigned int *) AllocateMemory((MaxRGB+1)*sizeof(unsigned int));
+  histogram=(unsigned int *) AcquireMemory((MaxRGB+1)*sizeof(unsigned int));
   if (histogram == (unsigned int *) NULL)
     {
       DestroyImage(paint_image);
@@ -1894,7 +1894,7 @@ MagickExport Image *OilPaintImage(Image *image,const unsigned int radius,
     if (QuantumTick(y,image->rows))
       ProgressMonitor(OilPaintImageText,y,image->rows);
   }
-  FreeMemory((void **) &histogram);
+  LiberateMemory((void **) &histogram);
   return(paint_image);
 }
 
@@ -2180,7 +2180,7 @@ MagickExport Image *ReduceNoiseImage(Image *image,const unsigned int order,
   /*
     Allocate window.
   */
-  window=(PixelPacket *) AllocateMemory(order*order*sizeof(PixelPacket));
+  window=(PixelPacket *) AcquireMemory(order*order*sizeof(PixelPacket));
   if (window == (PixelPacket *) NULL)
     {
       DestroyImage(noise_image);
@@ -2510,7 +2510,7 @@ MagickExport Image *SharpenImage(Image *image,const unsigned int order,
   if ((order % 2) == 0)
     ThrowImageException(ResourceLimitWarning,"Unable to sharpen image",
       "kernel order must be an odd number");
-  kernel=(double *) AllocateMemory(order*order*sizeof(double));
+  kernel=(double *) AcquireMemory(order*order*sizeof(double));
   if (kernel == (double *) NULL)
     ThrowImageException(ResourceLimitWarning,"Unable to sharpen image",
       "Memory allocation failed");
@@ -2525,7 +2525,7 @@ MagickExport Image *SharpenImage(Image *image,const unsigned int order,
   }
   kernel[i/2]=13.0/order;
   sharpen_image=ConvolveImage(image,order,kernel,exception);
-  FreeMemory((void **) &kernel);
+  LiberateMemory((void **) &kernel);
   return(sharpen_image);
 }
 
@@ -2811,7 +2811,7 @@ MagickExport Image *SteganoImage(Image *image,Image *watermark,
             Shift colormap to make room for information hiding.
           */
           stegano_image->colors<<=1;
-          ReallocateMemory((void **) stegano_image->colormap,
+          ReacquireMemory((void **) stegano_image->colormap,
             stegano_image->colors*sizeof(PixelPacket));
           if (stegano_image->colormap == (PixelPacket *) NULL)
             {
@@ -3159,12 +3159,12 @@ MagickExport unsigned int ThresholdImage(Image *image,const double threshold)
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  colormap=(PixelPacket *) AllocateMemory(2*sizeof(PixelPacket));
+  colormap=(PixelPacket *) AcquireMemory(2*sizeof(PixelPacket));
   if (colormap == (PixelPacket *) NULL)
     ThrowBinaryException(ResourceLimitWarning,"Unable to threshold image",
       "Memory allocation failed");
   if (image->colormap != (PixelPacket *) NULL)
-    FreeMemory((void **) &image->colormap);
+    LiberateMemory((void **) &image->colormap);
   image->storage_class=PseudoClass;
   image->colors=2;
   image->colormap=colormap;
@@ -3265,7 +3265,7 @@ MagickExport Image *WaveImage(Image *image,const double amplitude,
   /*
     Allocate sine map.
   */
-  sine_map=(double *) AllocateMemory(wave_image->columns*sizeof(double));
+  sine_map=(double *) AcquireMemory(wave_image->columns*sizeof(double));
   if (sine_map == (double *) NULL)
     {
       DestroyImage(wave_image);
@@ -3292,6 +3292,6 @@ MagickExport Image *WaveImage(Image *image,const double amplitude,
     if (QuantumTick(y,wave_image->rows))
       ProgressMonitor(WaveImageText,y,wave_image->rows);
   }
-  FreeMemory((void **) &sine_map);
+  LiberateMemory((void **) &sine_map);
   return(wave_image);
 }

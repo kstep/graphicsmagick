@@ -101,12 +101,12 @@ MagickExport void DestroyMagicInfo(void)
     for (member=magic_list[i]->member; member != (MagicInfoMember *) NULL; )
     {
       entry=member;
-      FreeMemory((void **) &entry->argument);
-      FreeMemory((void **) &entry);
+      LiberateMemory((void **) &entry->argument);
+      LiberateMemory((void **) &entry);
       member=member->next;
     }
   }
-  FreeMemory((void **) &magic_list[i]);
+  LiberateMemory((void **) &magic_list[i]);
 }
 
 /*
@@ -170,7 +170,7 @@ static int ReadMagicConfigurationFile(const char *filename)
   if (file == (FILE *) NULL)
     return(False);
   magic_list=(MagicInfo **)
-    AllocateMemory(MagicInfoListExtent*sizeof(MagicInfo *));
+    AcquireMemory(MagicInfoListExtent*sizeof(MagicInfo *));
   if (magic_list == (MagicInfo **) NULL)
     MagickError(ResourceLimitError,"Unable to allocate image",
       "Memory allocation failed");
@@ -191,7 +191,7 @@ static int ReadMagicConfigurationFile(const char *filename)
     tag[j]='\0';
     if (*p == '\0')
       goto eol_error;
-    magic_list[i]=(MagicInfo *) AllocateMemory(sizeof(MagicInfo));
+    magic_list[i]=(MagicInfo *) AcquireMemory(sizeof(MagicInfo));
     if (magic_list[i] == (MagicInfo *) NULL)
       MagickError(ResourceLimitError,"Unable to allocate image",
         "Memory allocation failed");
@@ -206,7 +206,7 @@ static int ReadMagicConfigurationFile(const char *filename)
         p++;
       if (*p == '\0')
         goto eol_error;
-      test_member=(MagicInfoMember *) AllocateMemory(sizeof(MagicInfoMember));
+      test_member=(MagicInfoMember *) AcquireMemory(sizeof(MagicInfoMember));
       if (test_member == (MagicInfoMember *) NULL)
         MagickError(ResourceLimitError,"Unable to allocate image",
           "Memory allocation failed");
@@ -229,7 +229,7 @@ static int ReadMagicConfigurationFile(const char *filename)
             *argument;
 
           argument=(StringMethodArgument *)
-            AllocateMemory(sizeof(StringMethodArgument));
+            AcquireMemory(sizeof(StringMethodArgument));
           if (argument == (StringMethodArgument*)NULL)
             MagickError(ResourceLimitError,"Unable to allocate image",
               "Memory allocation failed");

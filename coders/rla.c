@@ -248,7 +248,7 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
       CloseBlob(image);
       return(image);
     }
-  scanlines=(long *) AllocateMemory(image->rows*sizeof(long));
+  scanlines=(long *) AcquireMemory(image->rows*sizeof(long));
   if (scanlines == (long *) NULL)
     ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
   if (*rla_info.description != '\0')

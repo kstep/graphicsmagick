@@ -96,10 +96,10 @@ MagickExport void DestroyImageAttributes(Image *image)
     attribute=p;
     p=p->next;
     if (attribute->key != (char *) NULL)
-      FreeMemory((void **) &attribute->key);
+      LiberateMemory((void **) &attribute->key);
     if (attribute->value != (char *) NULL)
-      FreeMemory((void **) &attribute->value);
-    FreeMemory((void **) &attribute);
+      LiberateMemory((void **) &attribute->value);
+    LiberateMemory((void **) &attribute);
   }
   image->attributes=(ImageAttribute *) NULL;
 }
@@ -165,13 +165,13 @@ static void GetIPTCAttribute(Image *image,const char *key)
       continue;
     length=image->iptc_profile.info[i+3] << 8;
     length|=image->iptc_profile.info[i+4];
-    attribute=(char *) AllocateMemory(length+1);
+    attribute=(char *) AcquireMemory(length+1);
     if (attribute == (char *) NULL)
       continue;
     (void) strncpy(attribute,(char *) image->iptc_profile.info+i+5,length);
     attribute[length]='\0';
     SetImageAttribute(image,key,(const char *) attribute);
-    FreeMemory((void **) &attribute);
+    LiberateMemory((void **) &attribute);
   }
 }
 
@@ -257,9 +257,9 @@ MagickExport unsigned int SetImageAttribute(Image *image,const char *key,
       if (p == (ImageAttribute *) NULL)
         return(False);
       if (p->key != (char *) NULL)
-        FreeMemory((void **) &p->key);
+        LiberateMemory((void **) &p->key);
       if (p->value != (char *) NULL)
-        FreeMemory((void **) &p->value);
+        LiberateMemory((void **) &p->value);
       if (p->previous != (ImageAttribute *) NULL)
         p->previous->next=p->next;
       else
@@ -271,7 +271,7 @@ MagickExport unsigned int SetImageAttribute(Image *image,const char *key,
       if (p->next != (ImageAttribute *) NULL)
         p->next->previous=p->previous;
       attribute=p;
-      FreeMemory((void **) &attribute);
+      LiberateMemory((void **) &attribute);
       return(True);
     }
   if (*value == '\0')
@@ -282,7 +282,7 @@ MagickExport unsigned int SetImageAttribute(Image *image,const char *key,
     while (SetImageAttribute(image,"Label",(char *) NULL) != False);
   if (LocaleCompare(key,"Signature") == 0)
     while (SetImageAttribute(image,"Signature",(char *) NULL) != False);
-  attribute=(ImageAttribute *) AllocateMemory(sizeof(ImageAttribute));
+  attribute=(ImageAttribute *) AcquireMemory(sizeof(ImageAttribute));
   if (attribute == (ImageAttribute *) NULL)
     return(False);
   attribute->key=AllocateString(key);
@@ -358,7 +358,7 @@ void StoreImageAttribute(Image *image,char *text)
   length=MaxTextExtent;
   next=0;
   state=0;
-  token=(char *) AllocateMemory(length);
+  token=(char *) AcquireMemory(length);
   if (token == (char *) NULL)
     MagickError(ResourceLimitError,"Unable to parse attribute",
       "Memory allocation failed");
@@ -386,10 +386,10 @@ void StoreImageAttribute(Image *image,char *text)
   if ((state > 1) && (key != (char *) NULL) && (value != (char *) NULL))
     SetImageAttribute(image,key,value);
   if (token != (char *) NULL)
-    FreeMemory((void **) &token);
+    LiberateMemory((void **) &token);
   if (key != (char *) NULL)
-    FreeMemory((void **) &key);
+    LiberateMemory((void **) &key);
   if (value != (char *) NULL)
-    FreeMemory((void **) &value);
+    LiberateMemory((void **) &value);
   return;
 }

@@ -146,7 +146,7 @@ MagickExport unsigned int AnnotateImage(Image *image,
         "Memory allocation failed");
     }
   textlist=StringToList(text);
-  FreeMemory((void **) &text);
+  LiberateMemory((void **) &text);
   if (textlist == (char **) NULL)
     {
       DestroyAnnotateInfo(clone_info);
@@ -157,7 +157,7 @@ MagickExport unsigned int AnnotateImage(Image *image,
     if (Extent(textlist[i]) > (int) length)
       length=Extent(textlist[i]);
   number_lines=i;
-  text=(char *) AllocateMemory(length+MaxTextExtent);
+  text=(char *) AcquireMemory(length+MaxTextExtent);
   if (text == (char *) NULL)
     {
       DestroyAnnotateInfo(clone_info);
@@ -201,14 +201,14 @@ MagickExport unsigned int AnnotateImage(Image *image,
   {
     if (*textlist[i] == '\0')
       {
-        FreeMemory((void **) &textlist[i]);
+        LiberateMemory((void **) &textlist[i]);
         continue;
       }
     /*
       Convert text to image.
     */
     FormatString(label,"label:%.1024s",textlist[i]);
-    FreeMemory((void **) &textlist[i]);
+    LiberateMemory((void **) &textlist[i]);
     (void) strcpy(image_info->filename,label);
     annotate_image=ReadImage(image_info,&image->exception);
     if (annotate_image == (Image *) NULL)
@@ -354,10 +354,10 @@ MagickExport unsigned int AnnotateImage(Image *image,
   image->matte=matte;
   DestroyImageInfo(image_info);
   DestroyAnnotateInfo(clone_info);
-  FreeMemory((void **) &text);
+  LiberateMemory((void **) &text);
   for ( ; textlist[i] != (char *) NULL; i++)
-    FreeMemory((void **) &textlist[i]);
-  FreeMemory((void **) &textlist);
+    LiberateMemory((void **) &textlist[i]);
+  LiberateMemory((void **) &textlist);
   return(True);
 }
 
@@ -397,7 +397,7 @@ MagickExport AnnotateInfo *CloneAnnotateInfo(const ImageInfo *image_info,
   AnnotateInfo
     *clone_info;
 
-  clone_info=(AnnotateInfo *) AllocateMemory(sizeof(AnnotateInfo));
+  clone_info=(AnnotateInfo *) AcquireMemory(sizeof(AnnotateInfo));
   if (clone_info == (AnnotateInfo *) NULL)
     MagickError(ResourceLimitError,"Unable to clone annotate info",
       "Memory allocation failed");
@@ -447,14 +447,14 @@ MagickExport void DestroyAnnotateInfo(AnnotateInfo *annotate_info)
   assert(annotate_info != (AnnotateInfo *) NULL);
   assert(annotate_info->signature == MagickSignature);
   if (annotate_info->geometry != (char *) NULL)
-    FreeMemory((void **) &annotate_info->geometry);
+    LiberateMemory((void **) &annotate_info->geometry);
   if (annotate_info->text != (char *) NULL)
-    FreeMemory((void **) &annotate_info->text);
+    LiberateMemory((void **) &annotate_info->text);
   if (annotate_info->font != (char *) NULL)
-    FreeMemory((void **) &annotate_info->font);
+    LiberateMemory((void **) &annotate_info->font);
   if (annotate_info->font_name != (char *) NULL)
-    FreeMemory((void **) &annotate_info->font_name);
-  FreeMemory((void **) &annotate_info);
+    LiberateMemory((void **) &annotate_info->font_name);
+  LiberateMemory((void **) &annotate_info);
 }
 
 /*

@@ -236,7 +236,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Read image colormaps.
         */
-        colormap=(unsigned char *) AllocateMemory(number_colormaps*map_length);
+        colormap=(unsigned char *) AcquireMemory(number_colormaps*map_length);
         if (colormap == (unsigned char *) NULL)
           ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
             image);
@@ -257,14 +257,14 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
           Read image comment.
         */
         length=LSBFirstReadShort(image);
-        comment=(char *) AllocateMemory(length);
+        comment=(char *) AcquireMemory(length);
         if (comment == (char *) NULL)
           ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
             image);
         (void) ReadBlob(image,length-1,comment);
         comment[length-1]='\0';
         (void) SetImageAttribute(image,"Comment",comment);
-        FreeMemory((void **) &comment);
+        LiberateMemory((void **) &comment);
         if ((length & 0x01) == 0)
           (void) ReadByte(image);
       }
@@ -274,7 +274,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (image->matte)
       number_planes++;
     rle_pixels=(unsigned char *)
-      AllocateMemory(image->columns*image->rows*number_planes);
+      AcquireMemory(image->columns*image->rows*number_planes);
     if (rle_pixels == (unsigned char *) NULL)
       ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
         image);
@@ -509,15 +509,15 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 if (QuantumTick(y,image->rows))
                   ProgressMonitor(LoadImageText,y,image->rows);
             }
-            FreeMemory((void **) &image->colormap);
+            LiberateMemory((void **) &image->colormap);
             image->colormap=(PixelPacket *) NULL;
             image->storage_class=DirectClass;
             image->colors=0;
           }
       }
     if (number_colormaps != 0)
-      FreeMemory((void **) &colormap);
-    FreeMemory((void **) &rle_pixels);
+      LiberateMemory((void **) &colormap);
+    LiberateMemory((void **) &rle_pixels);
     /*
       Proceed to next image.
     */

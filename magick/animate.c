@@ -158,7 +158,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       /*
         Expand the filenames.
       */
-      filelist=(char **) AllocateMemory(sizeof(char *));
+      filelist=(char **) AcquireMemory(sizeof(char *));
       if (filelist == (char **) NULL)
         {
           MagickWarning(ResourceLimitWarning,"Memory allocation failed",
@@ -232,7 +232,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       *state&=(~AutoReverseAnimationState);
       basename=BaseFilename((*image)->filename);
       FormatString(windows->image.name,"ImageMagick: %.1024s",basename);
-      FreeMemory((void **) &basename);
+      LiberateMemory((void **) &basename);
       if (resource_info->title != (char *) NULL)
         windows->image.name=
           TranslateText(resource_info->image_info,*image,resource_info->title);
@@ -732,9 +732,9 @@ MagickExport void XAnimateBackgroundImage(Display *display,
   /*
     Initialize image pixmaps structure.
   */
-  window_info.pixmaps=(Pixmap *) AllocateMemory(number_scenes*sizeof(Pixmap));
+  window_info.pixmaps=(Pixmap *) AcquireMemory(number_scenes*sizeof(Pixmap));
   window_info.matte_pixmaps=(Pixmap *)
-    AllocateMemory(number_scenes*sizeof(Pixmap));
+    AcquireMemory(number_scenes*sizeof(Pixmap));
   if ((window_info.pixmaps == (Pixmap *) NULL) ||
       (window_info.matte_pixmaps == (Pixmap *) NULL))
     MagickError(ResourceLimitError,"Unable to animate images",
@@ -1294,8 +1294,8 @@ MagickExport Image *XAnimateImages(Display *display,
   */
   if (windows->image.id != (Window) NULL)
     {
-      FreeMemory((void **) &windows->image.name);
-      FreeMemory((void **) &windows->image.icon_name);
+      LiberateMemory((void **) &windows->image.name);
+      LiberateMemory((void **) &windows->image.icon_name);
     }
   XGetWindowInfo(display,visual_info,map_info,pixel,font_info,
     resource_info,&windows->image);
@@ -1313,8 +1313,8 @@ MagickExport Image *XAnimateImages(Display *display,
       /*
         Window name is the base of the filename.
       */
-      windows->image.name=(char *) AllocateMemory(MaxTextExtent);
-      windows->image.icon_name=(char *) AllocateMemory(MaxTextExtent);
+      windows->image.name=(char *) AcquireMemory(MaxTextExtent);
+      windows->image.icon_name=(char *) AcquireMemory(MaxTextExtent);
       if ((windows->image.name == NULL) || (windows->image.icon_name == NULL))
         MagickError(ResourceLimitError,"Unable to create Image window",
           "Memory allocation failed");
@@ -1478,13 +1478,13 @@ MagickExport Image *XAnimateImages(Display *display,
     Initialize Widget window.
   */
   if (windows->widget.id != (Window) NULL)
-    FreeMemory((void **) &windows->widget.name);
+    LiberateMemory((void **) &windows->widget.name);
   XGetWindowInfo(display,visual_info,map_info,pixel,font_info,
     resource_info,&windows->widget);
   FormatString(resource_name,"%.1024s.widget",resource_info->client_name);
   windows->widget.geometry=XGetResourceClass(resource_info->resource_database,
     resource_name,"geometry",(char *) NULL);
-  windows->widget.name=(char *) AllocateMemory(MaxTextExtent);
+  windows->widget.name=(char *) AcquireMemory(MaxTextExtent);
   if (windows->widget.name == NULL)
     MagickError(ResourceLimitError,"Unable to create Image window",
       "Memory allocation failed");
@@ -1513,10 +1513,10 @@ MagickExport Image *XAnimateImages(Display *display,
     Initialize popup window.
   */
   if (windows->popup.id != (Window) NULL)
-    FreeMemory((void **) &windows->popup.name);
+    LiberateMemory((void **) &windows->popup.name);
   XGetWindowInfo(display,visual_info,map_info,pixel,font_info,
     resource_info,&windows->popup);
-  windows->popup.name=(char *) AllocateMemory(MaxTextExtent);
+  windows->popup.name=(char *) AcquireMemory(MaxTextExtent);
   if (windows->popup.name == NULL)
     MagickError(ResourceLimitError,"Unable to create Image window",
       "Memory allocation failed");
@@ -1568,9 +1568,9 @@ MagickExport Image *XAnimateImages(Display *display,
   */
   XMapWindow(display,windows->image.id);
   windows->image.pixmaps=(Pixmap *)
-    AllocateMemory(number_scenes*sizeof(Pixmap));
+    AcquireMemory(number_scenes*sizeof(Pixmap));
   windows->image.matte_pixmaps=(Pixmap *)
-    AllocateMemory(number_scenes*sizeof(Pixmap));
+    AcquireMemory(number_scenes*sizeof(Pixmap));
   if ((windows->image.pixmaps == (Pixmap *) NULL) ||
       (windows->image.matte_pixmaps == (Pixmap *) NULL))
     MagickError(ResourceLimitError,"Unable to animate images",
@@ -2379,9 +2379,9 @@ MagickExport Image *XAnimateImages(Display *display,
       XFreePixmap(display,windows->image.matte_pixmaps[scene]);
     windows->image.matte_pixmaps[scene]=(Pixmap) NULL;
   }
-  FreeMemory((void **) &windows->image.pixmaps);
+  LiberateMemory((void **) &windows->image.pixmaps);
   windows->image.pixmaps=(Pixmap *) NULL;
-  FreeMemory((void **) &windows->image.matte_pixmaps);
+  LiberateMemory((void **) &windows->image.matte_pixmaps);
   windows->image.matte_pixmaps=(Pixmap *) NULL;
   if (nexus == (Image *) NULL)
     {
@@ -2431,13 +2431,13 @@ MagickExport Image *XAnimateImages(Display *display,
       XFree((void *) visual_info);
       XFree((void *) icon_map);
       XFree((void *) map_info);
-      FreeMemory((void **) &windows->popup.name);
-      FreeMemory((void **) &windows->widget.name);
-      FreeMemory((void **) &windows->image.icon_name);
-      FreeMemory((void **) &windows->image.name);
-      FreeMemory((void **) &windows->icon_resources);
-      FreeMemory((void **) &windows->icon_pixel);
-      FreeMemory((void **) &windows->pixel_info);
+      LiberateMemory((void **) &windows->popup.name);
+      LiberateMemory((void **) &windows->widget.name);
+      LiberateMemory((void **) &windows->image.icon_name);
+      LiberateMemory((void **) &windows->image.name);
+      LiberateMemory((void **) &windows->icon_resources);
+      LiberateMemory((void **) &windows->icon_pixel);
+      LiberateMemory((void **) &windows->pixel_info);
       (void) signal(SIGSEGV,SIG_DFL);
       (void) signal(SIGINT,SIG_DFL);
       (void) XSetWindows((XWindows *) NULL);

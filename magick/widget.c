@@ -1875,9 +1875,9 @@ MagickExport void XColorBrowserWidget(Display *display,XWindows *windows,
         else
           {
             for (i=0; i < colors; i++)
-              FreeMemory((void **) &colorlist[i]);
+              LiberateMemory((void **) &colorlist[i]);
             if (colorlist != (char **) NULL)
-              FreeMemory((void **) &colorlist);
+              LiberateMemory((void **) &colorlist);
             colorlist=checklist;
             colors=number_colors;
           }
@@ -2644,9 +2644,9 @@ MagickExport void XColorBrowserWidget(Display *display,XWindows *windows,
     Free color list.
   */
   for (i=0; i < colors; i++)
-    FreeMemory((void **) &colorlist[i]);
+    LiberateMemory((void **) &colorlist[i]);
   if (colorlist != (char **) NULL)
-    FreeMemory((void **) &colorlist);
+    LiberateMemory((void **) &colorlist);
   if ((*reply == '\0') || (strchr(reply,'-') != (char *) NULL))
     return;
   status=XParseColor(display,windows->widget.map_info->colormap,reply,&color);
@@ -2870,9 +2870,9 @@ MagickExport int XCommandWidget(Display *display,XWindows *windows,
         Allocate selection info memory.
       */
       if (selection_info != (XWidgetInfo *) NULL)
-        FreeMemory((void **) &selection_info);
+        LiberateMemory((void **) &selection_info);
       selection_info=(XWidgetInfo *)
-        AllocateMemory(number_selections*sizeof(XWidgetInfo));
+        AcquireMemory(number_selections*sizeof(XWidgetInfo));
       if (selection_info == (XWidgetInfo *) NULL)
         {
           MagickWarning(ResourceLimitWarning,"Unable to create Command Widget",
@@ -4504,9 +4504,9 @@ MagickExport void XFileBrowserWidget(Display *display,XWindows *windows,
             break;
           }
         for (i=0; i < files; i++)
-          FreeMemory((void **) &filelist[i]);
+          LiberateMemory((void **) &filelist[i]);
         if (filelist != (char **) NULL)
-          FreeMemory((void **) &filelist);
+          LiberateMemory((void **) &filelist);
         filelist=checklist;
         files=number_files;
         /*
@@ -5280,9 +5280,9 @@ MagickExport void XFileBrowserWidget(Display *display,XWindows *windows,
     Free file list.
   */
   for (i=0; i < files; i++)
-    FreeMemory((void **) &filelist[i]);
+    LiberateMemory((void **) &filelist[i]);
   if (filelist != (char **) NULL)
-    FreeMemory((void **) &filelist);
+    LiberateMemory((void **) &filelist);
   if (*reply == '~')
     ExpandFilename(reply);
 }
@@ -5439,7 +5439,7 @@ MagickExport void XFontBrowserWidget(Display *display,XWindows *windows,
     Sort font list in ascending order.
   */
   listhead=fontlist;
-  fontlist=(char **) AllocateMemory(fonts*sizeof(char **));
+  fontlist=(char **) AcquireMemory(fonts*sizeof(char **));
   if (fontlist == (char **) NULL)
     {
       XNoticeWidget(display,windows,"Unable to view fonts:",
@@ -5708,7 +5708,7 @@ MagickExport void XFontBrowserWidget(Display *display,XWindows *windows,
           else
             {
               XFreeFontNames(listhead);
-              FreeMemory((void **) &fontlist);
+              LiberateMemory((void **) &fontlist);
               fontlist=checklist;
               fonts=number_fonts;
             }
@@ -5716,7 +5716,7 @@ MagickExport void XFontBrowserWidget(Display *display,XWindows *windows,
           Sort font list in ascending order.
         */
         listhead=fontlist;
-        fontlist=(char **) AllocateMemory(fonts*sizeof(char **));
+        fontlist=(char **) AcquireMemory(fonts*sizeof(char **));
         if (fontlist == (char **) NULL)
           {
             XNoticeWidget(display,windows,"Unable to view fonts:",
@@ -6461,7 +6461,7 @@ MagickExport void XFontBrowserWidget(Display *display,XWindows *windows,
     Free font list.
   */
   XFreeFontNames(listhead);
-  FreeMemory((void **) &fontlist);
+  LiberateMemory((void **) &fontlist);
 }
 
 /*

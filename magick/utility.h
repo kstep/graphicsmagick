@@ -99,16 +99,16 @@ extern MagickExport unsigned short
   *ConvertTextToUnicode(const char *,int *);
 
 extern MagickExport void
-  *AllocateMemory(const size_t),
+  *AcquireMemory(const size_t),
   AppendImageFormat(const char *,char *),
   DestroyPostscriptGeometry(char *),
   ExpandFilename(char *),
-  FreeMemory(void **),
   FormatString(char *,const char *,...),
+  LiberateMemory(void **),
   LocaleLower(char *),
   LocaleUpper(char *),
   LocaleFilename(char *),
-  ReallocateMemory(void **,const size_t),
+  ReacquireMemory(void **,const size_t),
   Strip(char *),
   TemporaryFilename(char *);
 

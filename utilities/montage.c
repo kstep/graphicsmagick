@@ -1228,6 +1228,6 @@ int main(int argc,char **argv)
   DestroyImages(montage_image);
   DestroyMontageInfo(montage_info);
   DestroyImageInfo(image_info);
-  FreeMemory((void **) &argv);
+  LiberateMemory((void **) &argv);
   return(False);
 }

@@ -189,7 +189,7 @@ static void GetFontInfo(TT_Face face,TT_Face_Properties *face_properties,
   */
   if (face_properties->num_Names == 0)
     return;
-  label=(char *) AllocateMemory(face_properties->num_Names*MaxTextExtent);
+  label=(char *) AcquireMemory(face_properties->num_Names*MaxTextExtent);
   if (label == (char *) NULL)
     return;
   *label='\0';
@@ -206,9 +206,9 @@ static void GetFontInfo(TT_Face face,TT_Face_Properties *face_properties,
     *p='\0';
     break;
   }
-  ReallocateMemory((void **) &label,strlen(label)+1);
+  ReacquireMemory((void **) &label,strlen(label)+1);
   (void) SetImageAttribute(image,"Label",label);
-  FreeMemory((void **) &label);
+  LiberateMemory((void **) &label);
 }
 
 static void RenderGlyph(TT_Raster_Map *canvas,TT_Raster_Map *character,
@@ -422,7 +422,7 @@ static Image *RenderFreetype(const ImageInfo *image_info,const char *text,
     Convert to Unicode.
   */
   unicode=ConvertTextToUnicode(text,&length);
-  glyphs=(TGlyph *) AllocateMemory(length*sizeof(TGlyph));
+  glyphs=(TGlyph *) AcquireMemory(length*sizeof(TGlyph));
   if ((unicode == (unsigned short *) NULL) || (glyphs == (TGlyph *) NULL))
     {
       FT_Done_FreeType(library);
@@ -535,8 +535,8 @@ static Image *RenderFreetype(const ImageInfo *image_info,const char *text,
   */
   for (i=0; i < length; i++)
     FT_Done_Glyph(glyphs[i].image);
-  FreeMemory((void **) &glyphs);
-  FreeMemory((void **) &unicode);
+  LiberateMemory((void **) &glyphs);
+  LiberateMemory((void **) &unicode);
   FT_Done_Face(face);
   FT_Done_FreeType(library);
   return(image);
@@ -716,7 +716,7 @@ static Image *RenderFreetype(const ImageInfo *image_info,const char *text,
       number_glyphs=face_properties.num_Glyphs;
       character_map=False;
     }
-  glyphs=(TT_Glyph *) AllocateMemory(MaxGlyphs*sizeof(TT_Glyph));
+  glyphs=(TT_Glyph *) AcquireMemory(MaxGlyphs*sizeof(TT_Glyph));
   if (glyphs == (TT_Glyph *) NULL)
     ThrowReaderException(DelegateWarning,"Memory allocation failed",image);
   for (i=0; i < MaxGlyphs; i++)
@@ -759,7 +759,7 @@ static Image *RenderFreetype(const ImageInfo *image_info,const char *text,
   canvas.flow=TT_Flow_Down;
   canvas.cols=canvas.width;
   canvas.size=canvas.rows*canvas.width;
-  canvas.bitmap=(void *) AllocateMemory(canvas.size);
+  canvas.bitmap=(void *) AcquireMemory(canvas.size);
   if (!canvas.bitmap)
     ThrowReaderException(DelegateWarning,"Memory allocation failed",image);
   p=(unsigned char *) canvas.bitmap;
@@ -770,7 +770,7 @@ static Image *RenderFreetype(const ImageInfo *image_info,const char *text,
   character.flow=TT_Flow_Down;
   character.cols=character.width;
   character.size=character.rows*character.width;
-  character.bitmap=(void *) AllocateMemory(character.size);
+  character.bitmap=(void *) AcquireMemory(character.size);
   if (!character.bitmap)
     ThrowReaderException(DelegateWarning,"Memory allocation failed",image);
   x=0;
@@ -868,12 +868,12 @@ static Image *RenderFreetype(const ImageInfo *image_info,const char *text,
   /*
     Free TrueType resources.
   */
-  FreeMemory((void **) &canvas.bitmap);
-  FreeMemory((void **) &character.bitmap);
+  LiberateMemory((void **) &canvas.bitmap);
+  LiberateMemory((void **) &character.bitmap);
   for (i=0; i < MaxGlyphs; i++)
     TT_Done_Glyph(glyphs[i]);
-  FreeMemory((void **) &glyphs);
-  FreeMemory((void **) &unicode);
+  LiberateMemory((void **) &glyphs);
+  LiberateMemory((void **) &unicode);
   TT_Done_Instance(instance);
   TT_Close_Face(face);
   TT_Done_FreeType(engine);
@@ -1320,11 +1320,11 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
         {
           ThrowException(exception,FileOpenWarning,
             "Unable to read label data from file",&(image_info->filename[1]));
-          FreeMemory((void **) &label);
+          LiberateMemory((void **) &label);
           return((Image *) NULL);
         }
       length=MaxTextExtent;
-      s=(char *) AllocateMemory(length);
+      s=(char *) AcquireMemory(length);
       q=s;
       while (s != (char *) NULL)
       {
@@ -1337,7 +1337,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
           {
             *q='\0';
             length<<=1;
-            ReallocateMemory((void **) &s,length);
+            ReacquireMemory((void **) &s,length);
             if (s == (char *) NULL)
               break;
             q=s+Extent(s);
@@ -1349,7 +1349,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
         {
           ThrowException(exception,FileOpenWarning,
             "Unable to read label data from file","Memory allocation failed");
-          FreeMemory((void **) &label);
+          LiberateMemory((void **) &label);
           return((Image *) NULL);
         }
       *q='\0';
@@ -1365,7 +1365,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
         image=RenderX11(image_info,label,exception);
       else
         image=RenderPostscript(image_info,label,exception);
-  FreeMemory((void **) &label);
+  LiberateMemory((void **) &label);
   return(image);
 }
 

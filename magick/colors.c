@@ -1219,7 +1219,7 @@ static void DestroyList(const NodeInfo *node_info)
     if (node_info->child[id] != (NodeInfo *) NULL)
       DestroyList(node_info->child[id]);
   if (node_info->list != (ColorPacket *) NULL)
-    FreeMemory((void **) &node_info->list);
+    LiberateMemory((void **) &node_info->list);
 }
 
 /*
@@ -1342,9 +1342,9 @@ MagickExport unsigned long GetNumberColors(Image *image,FILE *file)
             continue;
           }
         if (node_info->number_unique == 0)
-          node_info->list=(ColorPacket *) AllocateMemory(sizeof(ColorPacket));
+          node_info->list=(ColorPacket *) AcquireMemory(sizeof(ColorPacket));
         else
-          ReallocateMemory((void **) &node_info->list,
+          ReacquireMemory((void **) &node_info->list,
             (i+1)*sizeof(ColorPacket));
         if (node_info->list == (ColorPacket *) NULL)
           {
@@ -1378,7 +1378,7 @@ MagickExport unsigned long GetNumberColors(Image *image,FILE *file)
   do
   {
     nodes=color_cube.node_list->next;
-    FreeMemory((void **) &color_cube.node_list);
+    LiberateMemory((void **) &color_cube.node_list);
     color_cube.node_list=nodes;
   }
   while (color_cube.node_list != (Nodes *) NULL);
@@ -1503,7 +1503,7 @@ static NodeInfo *InitializeNode(CubeInfo *color_cube,const unsigned int level)
       /*
         Allocate a new nodes of nodes.
       */
-      nodes=(Nodes *) AllocateMemory(sizeof(Nodes));
+      nodes=(Nodes *) AcquireMemory(sizeof(Nodes));
       if (nodes == (Nodes *) NULL)
         return((NodeInfo *) NULL);
       nodes->next=color_cube->node_list;
@@ -1793,9 +1793,9 @@ MagickExport unsigned int IsPseudoClass(Image *image)
             Add this unique color to the color list.
           */
           if (node_info->number_unique == 0)
-            node_info->list=(ColorPacket *) AllocateMemory(sizeof(ColorPacket));
+            node_info->list=(ColorPacket *) AcquireMemory(sizeof(ColorPacket));
           else
-            ReallocateMemory((void **) &node_info->list,
+            ReacquireMemory((void **) &node_info->list,
               (i+1)*sizeof(ColorPacket));
           if (node_info->list == (ColorPacket *) NULL)
             ThrowBinaryException(ResourceLimitWarning,
@@ -1821,9 +1821,9 @@ MagickExport unsigned int IsPseudoClass(Image *image)
       image->colors=color_cube.colors;
       if (image->colormap == (PixelPacket *) NULL)
         image->colormap=(PixelPacket *)
-          AllocateMemory(image->colors*sizeof(PixelPacket));
+          AcquireMemory(image->colors*sizeof(PixelPacket));
       else
-        ReallocateMemory((void **) &image->colormap,
+        ReacquireMemory((void **) &image->colormap,
           image->colors*sizeof(PixelPacket));
       if (image->colormap == (PixelPacket *) NULL)
         ThrowBinaryException(ResourceLimitWarning,
@@ -1870,7 +1870,7 @@ MagickExport unsigned int IsPseudoClass(Image *image)
   do
   {
     nodes=color_cube.node_list->next;
-    FreeMemory((void **) &color_cube.node_list);
+    LiberateMemory((void **) &color_cube.node_list);
     color_cube.node_list=nodes;
   } while (color_cube.node_list != (Nodes *) NULL);
   return((image->storage_class == PseudoClass) && (image->colors <= 256));

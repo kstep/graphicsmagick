@@ -102,7 +102,7 @@ MagickExport void closedir(DIR *entry)
 {
   assert(entry != (DIR *) NULL);
   FindClose(entry->hSearch);
-  FreeMemory((void **) &entry);
+  LiberateMemory((void **) &entry);
 }
 
 /*
@@ -236,7 +236,7 @@ void lt_dlsetsearchpath(char *path)
 {
   if (lt_slsearchpath)
     {
-      (void) FreeMemory((void **) &lt_slsearchpath);
+      (void) LiberateMemory((void **) &lt_slsearchpath);
       lt_slsearchpath=(char *) NULL;
     }
   if (path != (char *) NULL)
@@ -938,7 +938,7 @@ MagickExport DIR *opendir(char *path)
   assert(path != (char *) NULL);
   (void) strcpy(file_specification,path);
   (void) strcat(file_specification,DirectorySeparator);
-  entry=(DIR *) AllocateMemory(sizeof(DIR));
+  entry=(DIR *) AcquireMemory(sizeof(DIR));
   if (entry != (DIR *) NULL)
     { 
       entry->firsttime=TRUE;
@@ -950,7 +950,7 @@ MagickExport DIR *opendir(char *path)
       entry->hSearch=FindFirstFile(file_specification,&entry->Win32FindData);
       if (entry->hSearch == INVALID_HANDLE_VALUE)
         {
-          FreeMemory((void **) &entry);
+          LiberateMemory((void **) &entry);
           return (DIR *)NULL;
         }
     }

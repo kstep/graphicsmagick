@@ -221,7 +221,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Read XPM file.
   */
   length=MaxTextExtent;
-  xpm_buffer=(char *) AllocateMemory(length);
+  xpm_buffer=(char *) AcquireMemory(length);
   p=xpm_buffer;
   if (xpm_buffer != (char *) NULL)
     while (GetStringBlob(image,p) != (char *) NULL)
@@ -235,7 +235,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if ((p-xpm_buffer+MaxTextExtent+1) < length)
         continue;
       length<<=1;
-      ReallocateMemory((void **) &xpm_buffer,length);
+      ReacquireMemory((void **) &xpm_buffer,length);
       if (xpm_buffer == (char *) NULL)
         break;
       p=xpm_buffer+Extent(xpm_buffer);
@@ -288,7 +288,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   }
   xpm_buffer[i]='\0';
   textlist=StringToList(xpm_buffer);
-  FreeMemory((void **) &xpm_buffer);
+  LiberateMemory((void **) &xpm_buffer);
   if (textlist == (char **) NULL)
     ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
   /*
@@ -300,20 +300,20 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       ((image->columns*image->rows*image->colors) == 0))
     {
       for (i=0; textlist[i] != (char *) NULL; i++)
-        FreeMemory((void **) &textlist[i]);
-      FreeMemory((void **) &textlist);
+        LiberateMemory((void **) &textlist[i]);
+      LiberateMemory((void **) &textlist);
       ThrowReaderException(CorruptImageWarning,"Not a XPM image file",image);
     }
   image->depth=8;
   /*
     Initialize image structure.
   */
-  keys=(char **) AllocateMemory(image->colors*sizeof(char *));
+  keys=(char **) AcquireMemory(image->colors*sizeof(char *));
   if (!AllocateImageColormap(image,image->colors) || (keys == (char **) NULL))
     {
       for (i=0; textlist[i] != (char *) NULL; i++)
-        FreeMemory((void **) &textlist[i]);
-      FreeMemory((void **) &textlist);
+        LiberateMemory((void **) &textlist[i]);
+      LiberateMemory((void **) &textlist);
       ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
         image);
     }
@@ -327,13 +327,13 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     p=textlist[i++];
     if (p == (char *) NULL)
       break;
-    keys[x]=(char *) AllocateMemory(width+1);
+    keys[x]=(char *) AcquireMemory(width+1);
     if (keys[x] == (char *) NULL)
       {
         for (i=0; textlist[i] != (char *) NULL; i++)
-          FreeMemory((void **) &textlist[i]);
-        FreeMemory((void **) &textlist);
-        FreeMemory((void **) &keys);
+          LiberateMemory((void **) &textlist[i]);
+        LiberateMemory((void **) &textlist);
+        LiberateMemory((void **) &keys);
         ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
           image);
       }
@@ -366,8 +366,8 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (x < (int) image->colors)
     {
       for (i=0; textlist[i] != (char *) NULL; i++)
-        FreeMemory((void **) &textlist[i]);
-      FreeMemory((void **) &textlist);
+        LiberateMemory((void **) &textlist[i]);
+      LiberateMemory((void **) &textlist);
       ThrowReaderException(CorruptImageWarning,"Corrupt XPM image file",image);
     }
   if (image_info->ping)
@@ -410,11 +410,11 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Free resources.
   */
   for (x=0; x < (int) image->colors; x++)
-    FreeMemory((void **) &keys[x]);
-  FreeMemory((void **) &keys);
+    LiberateMemory((void **) &keys[x]);
+  LiberateMemory((void **) &keys);
   for (i=0; textlist[i] != (char *) NULL; i++)
-    FreeMemory((void **) &textlist[i]);
-  FreeMemory((void **) &textlist);
+    LiberateMemory((void **) &textlist[i]);
+  LiberateMemory((void **) &textlist);
   CloseBlob(image);
   return(image);
 }

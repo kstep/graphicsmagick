@@ -2897,7 +2897,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         else
           if ((quantum != 0) && (length > 0))
             {
-              data=(unsigned char *) AllocateMemory(quantum*(length+1));
+              data=(unsigned char *) AcquireMemory(quantum*(length+1));
               if (data == (unsigned char *) NULL)
                 ThrowReaderException(ResourceLimitWarning,
                   "Memory allocation failed",image);
@@ -3026,7 +3026,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             colors=length/bytes_per_pixel;
             datum=colors;
             graymap=(unsigned short *)
-              AllocateMemory(colors*sizeof(unsigned short));
+              AcquireMemory(colors*sizeof(unsigned short));
             if (graymap == (unsigned short *) NULL)
               ThrowReaderException(ResourceLimitWarning,
                 "Unable to create graymap",image);
@@ -3098,7 +3098,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             (void) fprintf(stdout,"\n");
           }
       }
-    FreeMemory((void **) &data);
+    LiberateMemory((void **) &data);
   }
   if ((width == 0) || (height == 0))
     ThrowReaderException(CorruptImageWarning,"Not a DCM image file",image);
@@ -3149,7 +3149,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       /*
         Compute pixel scaling table.
       */
-      scale=(Quantum *) AllocateMemory((max_value+1)*sizeof(Quantum));
+      scale=(Quantum *) AcquireMemory((max_value+1)*sizeof(Quantum));
       if (scale == (Quantum *) NULL)
         ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
           image);
@@ -3320,7 +3320,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Free scale resource.
   */
   if (scale != (Quantum *) NULL)
-    FreeMemory((void **) &scale);
+    LiberateMemory((void **) &scale);
   while (image->previous != (Image *) NULL)
     image=image->previous;
   CloseBlob(image);

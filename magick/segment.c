@@ -293,12 +293,12 @@ static unsigned int Classify(Image *image,short **extrema,
         */
         if (head != (Cluster *) NULL)
           {
-            cluster->next=(Cluster *) AllocateMemory(sizeof(Cluster));
+            cluster->next=(Cluster *) AcquireMemory(sizeof(Cluster));
             cluster=cluster->next;
           }
         else
           {
-            cluster=(Cluster *) AllocateMemory(sizeof(Cluster));
+            cluster=(Cluster *) AcquireMemory(sizeof(Cluster));
             head=cluster;
           }
         if (cluster == (Cluster *) NULL)
@@ -320,7 +320,7 @@ static unsigned int Classify(Image *image,short **extrema,
       /*
         No classes were identified-- create one.
       */
-      cluster=(Cluster *) AllocateMemory(sizeof(Cluster));
+      cluster=(Cluster *) AcquireMemory(sizeof(Cluster));
       if (cluster == (Cluster *) NULL)
         ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
           image->filename);
@@ -402,7 +402,7 @@ static unsigned int Classify(Image *image,short **extrema,
           head=next_cluster;
         else
           last_cluster->next=next_cluster;
-        FreeMemory((void **) &cluster);
+        LiberateMemory((void **) &cluster);
       }
   }
   number_clusters=count;
@@ -457,7 +457,7 @@ static unsigned int Classify(Image *image,short **extrema,
     Speed up distance calculations.
   */
   squares=(double *)
-    AllocateMemory((DownScale(MaxRGB)+DownScale(MaxRGB)+1)*sizeof(double));
+    AcquireMemory((DownScale(MaxRGB)+DownScale(MaxRGB)+1)*sizeof(double));
   if (squares == (double *) NULL)
     ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
       image->filename);
@@ -468,14 +468,14 @@ static unsigned int Classify(Image *image,short **extrema,
     Allocate image colormap.
   */
   colormap=(PixelPacket *)
-    AllocateMemory((unsigned int) number_clusters*sizeof(PixelPacket));
+    AcquireMemory((unsigned int) number_clusters*sizeof(PixelPacket));
   if (colormap == (PixelPacket *) NULL)
     ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
       image->filename);
   image->matte=False;
   image->storage_class=PseudoClass;
   if (image->colormap != (PixelPacket *) NULL)
-    FreeMemory((void **) &image->colormap);
+    LiberateMemory((void **) &image->colormap);
   image->colormap=colormap;
   image->colors=number_clusters;
   i=0;
@@ -560,11 +560,11 @@ static unsigned int Classify(Image *image,short **extrema,
   for (cluster=head; cluster != (Cluster *) NULL; cluster=next_cluster)
   {
     next_cluster=cluster->next;
-    FreeMemory((void **) &cluster);
+    LiberateMemory((void **) &cluster);
   }
   squares-=(int) DownScale(MaxRGB);
   free_squares=squares;
-  FreeMemory((void **) &free_squares);
+  LiberateMemory((void **) &free_squares);
   return(True);
 }
 
@@ -961,13 +961,13 @@ static IntervalTree *InitializeIntervalTree(const ZeroCrossing *zero_crossing,
   /*
     Allocate interval tree.
   */
-  list=(IntervalTree **) AllocateMemory(TreeLength*sizeof(IntervalTree *));
+  list=(IntervalTree **) AcquireMemory(TreeLength*sizeof(IntervalTree *));
   if (list == (IntervalTree **) NULL)
     return((IntervalTree *) NULL);
   /*
     The root is the entire histogram.
   */
-  root=(IntervalTree *) AllocateMemory(sizeof(IntervalTree));
+  root=(IntervalTree *) AcquireMemory(sizeof(IntervalTree));
   root->child=(IntervalTree *) NULL;
   root->sibling=(IntervalTree *) NULL;
   root->tau=0.0;
@@ -995,13 +995,13 @@ static IntervalTree *InitializeIntervalTree(const ZeroCrossing *zero_crossing,
             if (node == head)
               {
                 node->child=(IntervalTree *)
-                  AllocateMemory(sizeof(IntervalTree));
+                  AcquireMemory(sizeof(IntervalTree));
                 node=node->child;
               }
             else
               {
                 node->sibling=(IntervalTree *)
-                  AllocateMemory(sizeof(IntervalTree));
+                  AcquireMemory(sizeof(IntervalTree));
                 node=node->sibling;
               }
             node->tau=zero_crossing[i+1].tau;
@@ -1014,7 +1014,7 @@ static IntervalTree *InitializeIntervalTree(const ZeroCrossing *zero_crossing,
         }
         if (left != head->left)
           {
-            node->sibling=(IntervalTree *) AllocateMemory(sizeof(IntervalTree));
+            node->sibling=(IntervalTree *) AcquireMemory(sizeof(IntervalTree));
             node=node->sibling;
             node->tau=zero_crossing[i+1].tau;
             node->child=(IntervalTree *) NULL;
@@ -1029,7 +1029,7 @@ static IntervalTree *InitializeIntervalTree(const ZeroCrossing *zero_crossing,
   */
   Stability(root->child);
   MeanStability(root->child);
-  FreeMemory((void **) &list);
+  LiberateMemory((void **) &list);
   return(root);
 }
 
@@ -1087,7 +1087,7 @@ static void FreeNodes(const IntervalTree *node)
     return;
   FreeNodes(node->sibling);
   FreeNodes(node->child);
-  FreeMemory((void **) &node);
+  LiberateMemory((void **) &node);
 }
 
 static double OptimalTau(const long *histogram,const double max_tau,
@@ -1127,14 +1127,14 @@ static double OptimalTau(const long *histogram,const double max_tau,
   /*
     Allocate interval tree.
   */
-  list=(IntervalTree **) AllocateMemory(TreeLength*sizeof(IntervalTree *));
+  list=(IntervalTree **) AcquireMemory(TreeLength*sizeof(IntervalTree *));
   if (list == (IntervalTree **) NULL)
     return(0.0);
   /*
     Allocate zero crossing list.
   */
   count=(unsigned int) ((max_tau-min_tau)/delta_tau)+2;
-  zero_crossing=(ZeroCrossing *) AllocateMemory(count*sizeof(ZeroCrossing));
+  zero_crossing=(ZeroCrossing *) AcquireMemory(count*sizeof(ZeroCrossing));
   if (zero_crossing == (ZeroCrossing *) NULL)
     return(0.0);
   for (i=0; i < (int) count; i++)
@@ -1254,8 +1254,8 @@ static double OptimalTau(const long *histogram,const double max_tau,
     Free memory.
   */
   FreeNodes(root);
-  FreeMemory((void **) &zero_crossing);
-  FreeMemory((void **) &list);
+  LiberateMemory((void **) &zero_crossing);
+  LiberateMemory((void **) &list);
   return(average_tau);
 }
 
@@ -1454,14 +1454,14 @@ MagickExport unsigned int SegmentImage(Image *image,
   assert(image->signature == MagickSignature);
   for (i=0; i < MaxDimension; i++)
   {
-    histogram[i]=(long *) AllocateMemory((DownScale(MaxRGB)+1)*sizeof(long));
-    extrema[i]=(short *) AllocateMemory((DownScale(MaxRGB)+1)*sizeof(short));
+    histogram[i]=(long *) AcquireMemory((DownScale(MaxRGB)+1)*sizeof(long));
+    extrema[i]=(short *) AcquireMemory((DownScale(MaxRGB)+1)*sizeof(short));
     if ((histogram[i] == (long *) NULL) || (extrema[i] == (short *) NULL))
       {
         for (i-- ; i >= 0; i--)
         {
-          FreeMemory((void **) &extrema[i]);
-          FreeMemory((void **) &histogram[i]);
+          LiberateMemory((void **) &extrema[i]);
+          LiberateMemory((void **) &histogram[i]);
         }
         ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
           image->filename);
@@ -1490,8 +1490,8 @@ MagickExport unsigned int SegmentImage(Image *image,
   */
   for (i=0; i < MaxDimension; i++)
   {
-    FreeMemory((void **) &extrema[i]);
-    FreeMemory((void **) &histogram[i]);
+    LiberateMemory((void **) &extrema[i]);
+    LiberateMemory((void **) &histogram[i]);
   }
   return(status);
 }

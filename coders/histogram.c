@@ -215,9 +215,9 @@ static unsigned int WriteHISTOGRAMImage(const ImageInfo *image_info,
   /*
     Allocate histogram count arrays.
   */
-  red=(int *) AllocateMemory (histogram_image->columns*sizeof(int));
-  green=(int *) AllocateMemory (histogram_image->columns*sizeof(int));
-  blue=(int *) AllocateMemory (histogram_image->columns*sizeof(int));
+  red=(int *) AcquireMemory (histogram_image->columns*sizeof(int));
+  green=(int *) AcquireMemory (histogram_image->columns*sizeof(int));
+  blue=(int *) AcquireMemory (histogram_image->columns*sizeof(int));
   if ((red == (int *) NULL) || (green == (int *) NULL) ||
       (blue == (int *) NULL))
     {
@@ -306,9 +306,9 @@ static unsigned int WriteHISTOGRAMImage(const ImageInfo *image_info,
   /*
     Free memory resources.
   */
-  FreeMemory((void **) &blue);
-  FreeMemory((void **) &green);
-  FreeMemory((void **) &red);
+  LiberateMemory((void **) &blue);
+  LiberateMemory((void **) &green);
+  LiberateMemory((void **) &red);
   TemporaryFilename(filename);
   file=fopen(filename,WriteBinaryType);
   if (file != (FILE *) NULL)

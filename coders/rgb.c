@@ -136,7 +136,7 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       packet_size=image->depth > 8 ? 8 : 4;
     }
   scanline=(unsigned char *)
-    AllocateMemory(packet_size*image->tile_info.width);
+    AcquireMemory(packet_size*image->tile_info.width);
   if (scanline == (unsigned char *) NULL)
     ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
   if (image_info->subrange != 0)
@@ -375,7 +375,7 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
         ProgressMonitor(LoadImagesText,TellBlob(image),image->filesize);
       }
   } while (count > 0);
-  FreeMemory((void **) &scanline);
+  LiberateMemory((void **) &scanline);
   while (image->previous != (Image *) NULL)
     image=image->previous;
   CloseBlob(image);
@@ -500,7 +500,7 @@ static unsigned int WriteRGBImage(const ImageInfo *image_info,Image *image)
   packet_size=image->depth > 8 ? 6 : 3;
   if (image->matte || (LocaleCompare(image_info->magick,"RGBA") == 0))
     packet_size=image->depth > 8 ? 8 : 4;
-  pixels=(unsigned char *) AllocateMemory(packet_size*image->columns);
+  pixels=(unsigned char *) AcquireMemory(packet_size*image->columns);
   if (pixels == (unsigned char *) NULL)
     ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
   if (image_info->interlace != PartitionInterlace)
@@ -658,7 +658,7 @@ static unsigned int WriteRGBImage(const ImageInfo *image_info,Image *image)
     image=GetNextImage(image);
     ProgressMonitor(SaveImagesText,scene++,GetNumberScenes(image));
   } while (image_info->adjoin);
-  FreeMemory((void **) &pixels);
+  LiberateMemory((void **) &pixels);
   if (image_info->adjoin)
     while (image->previous != (Image *) NULL)
       image=image->previous;

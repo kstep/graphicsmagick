@@ -375,15 +375,15 @@ static unsigned int CompressColormapTransFirst(Image *image)
   assert(image != (Image *) NULL);
   if (image->storage_class != PseudoClass)
     return(True);
-  marker=(unsigned char *) AllocateMemory(image->colors);
+  marker=(unsigned char *) AcquireMemory(image->colors);
   if (marker == (unsigned char *) NULL)
     ThrowBinaryException(ResourceLimitWarning,"Unable to compress colormap",
       "Memory allocation failed");
   opacity=(unsigned short *)
-    AllocateMemory(image->colors*sizeof(unsigned short));
+    AcquireMemory(image->colors*sizeof(unsigned short));
   if (opacity == (unsigned short *) NULL)
     {
-      FreeMemory((void **) &marker);
+      LiberateMemory((void **) &marker);
       ThrowBinaryException(ResourceLimitWarning,"Unable to compress colormap",
         "Memory allocation failed");
     }
@@ -438,18 +438,18 @@ static unsigned int CompressColormapTransFirst(Image *image)
       /*
         No duplicate or unused entries, and transparency-swap not needed
       */
-      FreeMemory((void **) &marker);
-      FreeMemory((void **) &opacity);
+      LiberateMemory((void **) &marker);
+      LiberateMemory((void **) &opacity);
       return(True);
     }
   /*
     Compress colormap.
   */
-  colormap=(PixelPacket *) AllocateMemory(image->colors*sizeof(PixelPacket));
+  colormap=(PixelPacket *) AcquireMemory(image->colors*sizeof(PixelPacket));
   if (colormap == (PixelPacket *) NULL)
     {
-      FreeMemory((void **) &marker);
-      FreeMemory((void **) &opacity);
+      LiberateMemory((void **) &marker);
+      LiberateMemory((void **) &opacity);
       image->colors=number_colors;
       ThrowBinaryException(ResourceLimitWarning,"Unable to compress colormap",
         "Memory allocation failed");
@@ -457,12 +457,12 @@ static unsigned int CompressColormapTransFirst(Image *image)
   /*
     Eliminate unused colormap entries.
   */
-  map=(unsigned short *) AllocateMemory(number_colors*sizeof(unsigned short));
+  map=(unsigned short *) AcquireMemory(number_colors*sizeof(unsigned short));
   if (map == (unsigned short *) NULL)
     {
-      FreeMemory((void **) &marker);
-      FreeMemory((void **) &opacity);
-      FreeMemory((void **) &colormap);
+      LiberateMemory((void **) &marker);
+      LiberateMemory((void **) &opacity);
+      LiberateMemory((void **) &colormap);
       image->colors=number_colors;
       ThrowBinaryException(ResourceLimitWarning,"Unable to compress colormap",
         "Memory allocation failed");
@@ -498,7 +498,7 @@ static unsigned int CompressColormapTransFirst(Image *image)
         index++;
       }
   }
-  FreeMemory((void **) &marker);
+  LiberateMemory((void **) &marker);
   if (have_transparency && (opacity[0] != TransparentOpacity))
     {
       /*
@@ -526,7 +526,7 @@ static unsigned int CompressColormapTransFirst(Image *image)
           }
       }
    }
-  FreeMemory((void **) &opacity);
+  LiberateMemory((void **) &opacity);
   /*
     Remap pixels.
   */
@@ -544,8 +544,8 @@ static unsigned int CompressColormapTransFirst(Image *image)
     if (!SyncImagePixels(image))
       break;
   }
-  FreeMemory((void **) &map);
-  FreeMemory((void **) &image->colormap);
+  LiberateMemory((void **) &map);
+  LiberateMemory((void **) &image->colormap);
   image->colormap=colormap;
   return(True);
 }
@@ -888,7 +888,7 @@ static void MngInfoDiscardObject(MngInfo *mng_info,int i)
             {
               if (mng_info->ob[i]->image != (Image *) NULL)
                 DestroyImage(mng_info->ob[i]->image);
-              FreeMemory((void **) &mng_info->ob[i]);
+              LiberateMemory((void **) &mng_info->ob[i]);
             }
         }
       mng_info->ob[i]=(MngInfoBuffer *) NULL;
@@ -916,10 +916,10 @@ static void MngInfoFreeStruct(MngInfo *mng_info,int *have_mng_structure)
       for (i=1; i < MNG_MAX_OBJECTS; i++)
         MngInfoDiscardObject(mng_info,i);
       if (mng_info->global_plte != (png_colorp) NULL)
-        FreeMemory((void **) &mng_info->global_plte);
+        LiberateMemory((void **) &mng_info->global_plte);
       if (mng_info->global_sbit != (png_color_8p) NULL)
-        FreeMemory((void **) &mng_info->global_sbit);
-      FreeMemory((void **) &mng_info);
+        LiberateMemory((void **) &mng_info->global_sbit);
+      LiberateMemory((void **) &mng_info);
       *have_mng_structure=False;
     }
 }
@@ -1041,7 +1041,7 @@ extern PNG_EXPORT(png_free_ptr,png_IM_free)
   PNGARG((png_structp png_ptr,png_voidp ptr));
 png_voidp png_IM_malloc(png_structp png_ptr,png_uint_32 size)
 {
-  return((png_voidp) AllocateMemory((size_t) size));
+  return((png_voidp) AcquireMemory((size_t) size));
 }
 
 /*
@@ -1049,7 +1049,7 @@ png_voidp png_IM_malloc(png_structp png_ptr,png_uint_32 size)
 */
 static png_free_ptr png_IM_free(png_structp png_ptr,png_voidp ptr)
 {
-  FreeMemory((void **) &ptr);
+  LiberateMemory((void **) &ptr);
   return((png_free_ptr) NULL);
 }
 #endif
@@ -1191,7 +1191,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       /*
         Allocate a MngInfo structure.
       */
-      mng_info=(MngInfo *) AllocateMemory(sizeof(MngInfo));
+      mng_info=(MngInfo *) AcquireMemory(sizeof(MngInfo));
       if (mng_info == (MngInfo *) NULL)
         ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
           image);
@@ -1295,7 +1295,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
         if (length)
           {
-            chunk=(unsigned char *) AllocateMemory(length);
+            chunk=(unsigned char *) AcquireMemory(length);
             if (chunk == (unsigned char *) NULL)
               ThrowReaderException(ResourceLimitWarning,
                "Unable to allocate memory for chunk data",image);
@@ -1311,7 +1311,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (!png_memcmp(type,mng_IEND,4))
               skip_to_iend=False;
             if (length)
-              FreeMemory((void **) &chunk);
+              LiberateMemory((void **) &chunk);
             continue;
           }
 
@@ -1371,7 +1371,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             clip=default_fb=previous_fb=frame;
             for (i=0; i < MNG_MAX_OBJECTS; i++)
               mng_info->object_clip[i]=frame;
-            FreeMemory((void **) &chunk);
+            LiberateMemory((void **) &chunk);
             continue;
           }
 
@@ -1395,7 +1395,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   image->iterations=iterations;
                 term_chunk_found=True;
               }
-            FreeMemory((void **) &chunk);
+            LiberateMemory((void **) &chunk);
             continue;
           }
         if (!png_memcmp(type,mng_DEFI,4))
@@ -1420,7 +1420,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (mng_info->exists[object_id])
               if (mng_info->frozen[object_id])
                 {
-                  FreeMemory((void **) &chunk);
+                  LiberateMemory((void **) &chunk);
                   ThrowException(&image->exception,DelegateWarning,
                      "DEFI cannot redefine a frozen MNG object",(char *) NULL);
                   continue;
@@ -1447,7 +1447,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             */
             if (length>27)
               mng_info->object_clip[object_id]=mng_read_box(frame,0,&p[12]);
-            FreeMemory((void **) &chunk);
+            LiberateMemory((void **) &chunk);
             continue;
           }
         if (!png_memcmp(type,mng_bKGD,4))
@@ -1463,7 +1463,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   (unsigned short) XDownScale((p[4]<<8) | p[5]);
                 have_global_bkgd=True;
               }
-            FreeMemory((void **) &chunk);
+            LiberateMemory((void **) &chunk);
             continue;
           }
         if (!png_memcmp(type,mng_BACK,4))
@@ -1483,7 +1483,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
               }
             if (length > 8)
               mng_background_object=(p[7] << 8) | p[8];
-            FreeMemory((void **) &chunk);
+            LiberateMemory((void **) &chunk);
             continue;
           }
         if (!png_memcmp(type,mng_PLTE,4))
@@ -1498,7 +1498,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
               {
                 if (mng_info->global_plte == (png_colorp) NULL)
                   mng_info->global_plte=
-                   (png_colorp) AllocateMemory(256*sizeof(png_color));
+                   (png_colorp) AcquireMemory(256*sizeof(png_color));
                 for (i=0; i< (int) (length/3); i++)
                 {
                   mng_info->global_plte[i].red=p[3*i];
@@ -1519,7 +1519,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #endif
             else
               global_plte_length=0;
-            FreeMemory((void **) &chunk);
+            LiberateMemory((void **) &chunk);
             continue;
           }
         if (!png_memcmp(type,mng_tRNS,4))
@@ -1538,7 +1538,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
               mng_info->global_trns[i]=255;
 #endif
             global_trns_length=(int) length;
-            FreeMemory((void **) &chunk);
+            LiberateMemory((void **) &chunk);
             continue;
           }
         if (!png_memcmp(type,mng_gAMA,4))
@@ -1551,7 +1551,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
               }
             else
               have_global_gama=False;
-            FreeMemory((void **) &chunk);
+            LiberateMemory((void **) &chunk);
             continue;
           }
 
@@ -1574,7 +1574,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
               }
             else
               have_global_chrm=False;
-            FreeMemory((void **) &chunk);
+            LiberateMemory((void **) &chunk);
             continue;
           }
         if (!png_memcmp(type,mng_sRGB,4))
@@ -1589,7 +1589,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
               }
             else
               have_global_srgb=False;
-            FreeMemory((void **) &chunk);
+            LiberateMemory((void **) &chunk);
             continue;
           }
         if (!png_memcmp(type,mng_FRAM,4))
@@ -1690,7 +1690,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 if (image_info->coalesce_frames)
                   MNGCoalesce(image);
               }
-            FreeMemory((void **) &chunk);
+            LiberateMemory((void **) &chunk);
             continue;
           }
         if (!png_memcmp(type,mng_CLIP,4))
@@ -1715,7 +1715,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   mng_info->object_clip[i]=mng_read_box(box,p[4],&p[5]);
                 }
             }
-            FreeMemory((void **) &chunk);
+            LiberateMemory((void **) &chunk);
             continue;
           }
         if (!png_memcmp(type,mng_SAVE,4))
@@ -1733,7 +1733,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #endif
                 }
             if (length > 0)
-              FreeMemory((void **) &chunk);
+              LiberateMemory((void **) &chunk);
             continue;
           }
 
@@ -1762,7 +1762,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 }
               }
             if (length > 0)
-              FreeMemory((void **) &chunk);
+              LiberateMemory((void **) &chunk);
             continue;
           }
         if (!png_memcmp(type,mng_MOVE,4))
@@ -1791,7 +1791,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   mng_info->y_off[i]=new_pair.b;
                 }
             }
-            FreeMemory((void **) &chunk);
+            LiberateMemory((void **) &chunk);
             continue;
           }
 
@@ -1813,7 +1813,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 mng_info->loop_count[loop_level]=loop_iters;
               }
             mng_info->loop_iteration[loop_level]=0;
-            FreeMemory((void **) &chunk);
+            LiberateMemory((void **) &chunk);
             continue;
           }
         if (!png_memcmp(type,mng_ENDL,4))
@@ -1858,7 +1858,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                       }
                   }
               }
-            FreeMemory((void **) &chunk);
+            LiberateMemory((void **) &chunk);
             continue;
           }
         if (!png_memcmp(type,mng_CLON,4))
@@ -1890,7 +1890,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
               {
                 if (mng_info->global_sbit == (png_color_8p) NULL)
                   mng_info->global_sbit=
-                    (png_color_8p) AllocateMemory(sizeof(png_color_8));
+                    (png_color_8p) AcquireMemory(sizeof(png_color_8));
                 mng_info->global_sbit->gray=p[0];
                 mng_info->global_sbit->red=p[0];
                 mng_info->global_sbit->green=p[1];
@@ -1965,13 +1965,13 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             else
               basi_viewable=0;
 #endif
-            FreeMemory((void **) &chunk);
+            LiberateMemory((void **) &chunk);
             continue;
           }
         if (png_memcmp(type,mng_IHDR,4))
           {
             if (length > 0)
-              FreeMemory((void **) &chunk);
+              LiberateMemory((void **) &chunk);
             continue;
           }
         mng_info->exists[object_id]=True;
@@ -1981,7 +1981,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (!image_info->decode_all_MNG_objects)
               {
                 skip_to_iend=True;
-                FreeMemory((void **) &chunk);
+                LiberateMemory((void **) &chunk);
                 continue;
               }
           }
@@ -1991,7 +1991,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         */
         image_width=(unsigned int) mng_get_long(p);
         image_height=(unsigned int) mng_get_long(&p[4]);
-        FreeMemory((void **) &chunk);
+        LiberateMemory((void **) &chunk);
         if (image_info->insert_backdrops && (framing_mode == 3) &&
             ((first_mng_object == 0) || ((clip.left == 0) && (clip.top == 0) &&
               (image_width == mng_width) && (image_height == mng_height))))
@@ -2143,9 +2143,9 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         */
         png_destroy_read_struct(&ping,&ping_info,&end_info);
         if (scanlines != (unsigned char **) NULL)
-          FreeMemory((void **) &scanlines);
+          LiberateMemory((void **) &scanlines);
         if (png_pixels != (unsigned char *) NULL)
-          FreeMemory((void **) &png_pixels);
+          LiberateMemory((void **) &png_pixels);
         CloseBlob(image);
         if ((image->columns == 0) || (image->rows == 0))
           {
@@ -2444,9 +2444,9 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         return(image);
       }
     png_pixels=(unsigned char *)
-      AllocateMemory(ping_info->rowbytes*image->rows*sizeof(Quantum));
+      AcquireMemory(ping_info->rowbytes*image->rows*sizeof(Quantum));
     scanlines=(unsigned char **)
-      AllocateMemory(image->rows*sizeof(unsigned char *));
+      AcquireMemory(image->rows*sizeof(unsigned char *));
     if ((png_pixels == (unsigned char *) NULL) ||
         (scanlines == (unsigned char **) NULL))
       ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
@@ -2530,7 +2530,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Convert image to PseudoClass pixel packets.
         */
-        quantum_scanline=(Quantum *) AllocateMemory((ping_info->color_type == 4
+        quantum_scanline=(Quantum *) AcquireMemory((ping_info->color_type == 4
           ? 2 : 1) * image->columns*sizeof(Quantum));
         if (quantum_scanline == (Quantum *) NULL)
           ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
@@ -2657,7 +2657,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (QuantumTick(y,image->rows))
               ProgressMonitor(LoadImageText,y,image->rows);
         }
-        FreeMemory((void **) &quantum_scanline);
+        LiberateMemory((void **) &quantum_scanline);
       }
       if (image->storage_class == PseudoClass)
         SyncImage(image);
@@ -2734,7 +2734,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             *value;
 
           length=text[i].text_length;
-          value=(char *) AllocateMemory(length+1);
+          value=(char *) AcquireMemory(length+1);
           if (value == (char *) NULL)
             {
               ThrowException(&image->exception,ResourceLimitWarning,
@@ -2745,7 +2745,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
           (void) strncat(value,text[i].text,length);
           value[length]='\0';
           (void) SetImageAttribute(image,text[i].key,value);
-          FreeMemory((void **) &value);
+          LiberateMemory((void **) &value);
         }
       }
 #ifdef MNG_OBJECT_BUFFERS
@@ -2760,7 +2760,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
               create a new object buffer.
             */
             mng_info->ob[object_id]=(MngInfoBuffer *)
-              AllocateMemory(sizeof(MngInfoBuffer));
+              AcquireMemory(sizeof(MngInfoBuffer));
             if (mng_info->ob[object_id] != (MngInfoBuffer *) NULL)
               {
                 mng_info->ob[object_id]->image=(Image *) NULL;
@@ -2836,8 +2836,8 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       Free memory.
     */
     png_destroy_read_struct(&ping,&ping_info,&end_info);
-    FreeMemory((void **) &png_pixels);
-    FreeMemory((void **) &scanlines);
+    LiberateMemory((void **) &png_pixels);
+    LiberateMemory((void **) &scanlines);
     if (mng_type)
       {
         MngBox
@@ -3727,9 +3727,9 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
         */
         png_destroy_write_struct(&ping,&ping_info);
         if (scanlines != (unsigned char **) NULL)
-          FreeMemory((void **) &scanlines);
+          LiberateMemory((void **) &scanlines);
         if (png_pixels != (unsigned char *) NULL)
-          FreeMemory((void **) &png_pixels);
+          LiberateMemory((void **) &png_pixels);
         CloseBlob(image);
         return(False);
       }
@@ -3971,7 +3971,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
 #endif
                 number_colors=image->colors;
                 palette=(png_color *)
-                  AllocateMemory(image->colors*sizeof(png_color));
+                  AcquireMemory(image->colors*sizeof(png_color));
                 if (palette == (png_color *) NULL)
                   ThrowWriterException(ResourceLimitWarning,
                     "Memory allocation failed",image);
@@ -3989,7 +3989,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
             /*
               Identify which colormap entry is transparent.
             */
-            ping_info->trans=(unsigned char *) AllocateMemory(image->colors);
+            ping_info->trans=(unsigned char *) AcquireMemory(image->colors);
             if (ping_info->trans == (unsigned char *) NULL)
               ThrowWriterException(ResourceLimitWarning,
                 "Memory allocation failed",image);
@@ -4162,9 +4162,9 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
           rowbytes*=(image->matte ? 8 : 6);
       }
     png_pixels=(unsigned char *)
-      AllocateMemory(rowbytes*image->rows*sizeof(Quantum));
+      AcquireMemory(rowbytes*image->rows*sizeof(Quantum));
     scanlines=(unsigned char **)
-      AllocateMemory(image->rows*sizeof(unsigned char *));
+      AcquireMemory(image->rows*sizeof(unsigned char *));
     if ((png_pixels == (unsigned char *) NULL) ||
         (scanlines == (unsigned char **) NULL))
       ThrowWriterException(ResourceLimitWarning,
@@ -4273,7 +4273,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
 
       if (ping_info->num_text == 0)
         {
-          ping_info->text=(png_text *) AllocateMemory(256*sizeof(png_text));
+          ping_info->text=(png_text *) AcquireMemory(256*sizeof(png_text));
           if (ping_info->text == (png_text *) NULL)
             ThrowException(&image->exception,ResourceLimitWarning,
               "Memory allocation failed",image->filename);
@@ -4331,12 +4331,12 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     */
     if (ping_info->valid & PNG_INFO_PLTE)
       {
-        FreeMemory((void **) &ping_info->palette);
+        LiberateMemory((void **) &ping_info->palette);
         ping_info->valid&=(~PNG_INFO_PLTE);
       }
     png_destroy_write_struct(&ping,&ping_info);
-    FreeMemory((void **) &scanlines);
-    FreeMemory((void **) &png_pixels);
+    LiberateMemory((void **) &scanlines);
+    LiberateMemory((void **) &png_pixels);
     if (image->next == (Image *) NULL)
       break;
     image=GetNextImage(image);

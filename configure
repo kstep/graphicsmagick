@@ -715,7 +715,7 @@ fi
 # Set version
 MAJOR_VERSION=5
 MINOR_VERSION=2
-MICRO_VERSION=1
+MICRO_VERSION=2
 echo "configuring ImageMagick $MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION"
 ac_aux_dir=
 for ac_dir in $srcdir $srcdir/.. $srcdir/../..; do
@@ -4422,8 +4422,7 @@ rm -f conftest*
 echo "$ECHO_T""no" >&6
 	X_LIBS="$X_LIBS -R$x_libraries"
       else
-	X_LIBS="$X_LIBS -R$x_libraries"
-#	LIBS="$ac_xsave_LIBS -R $x_libraries"
+	LIBS="$ac_xsave_LIBS -R $x_libraries"
 	cat >conftest.$ac_ext <<EOF
 
 EOF

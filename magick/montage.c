@@ -92,7 +92,7 @@ MagickExport MontageInfo *CloneMontageInfo(const ImageInfo *image_info,
   MontageInfo
     *cloned_info;
 
-  cloned_info=(MontageInfo *) AllocateMemory(sizeof(MontageInfo));
+  cloned_info=(MontageInfo *) AcquireMemory(sizeof(MontageInfo));
   if (cloned_info == (MontageInfo *) NULL)
     MagickError(ResourceLimitError,"Unable to clone montage info",
       "Memory allocation failed");
@@ -144,18 +144,18 @@ MagickExport void DestroyMontageInfo(MontageInfo *montage_info)
   assert(montage_info != (MontageInfo *) NULL);
   assert(montage_info->signature == MagickSignature);
   if (montage_info->geometry != (char *) NULL)
-    FreeMemory((void **) &montage_info->geometry);
+    LiberateMemory((void **) &montage_info->geometry);
   if (montage_info->tile != (char *) NULL)
-    FreeMemory((void **) &montage_info->tile);
+    LiberateMemory((void **) &montage_info->tile);
   if (montage_info->title != (char *) NULL)
-    FreeMemory((void **) &montage_info->title);
+    LiberateMemory((void **) &montage_info->title);
   if (montage_info->frame != (char *) NULL)
-    FreeMemory((void **) &montage_info->frame);
+    LiberateMemory((void **) &montage_info->frame);
   if (montage_info->texture != (char *) NULL)
-    FreeMemory((void **) &montage_info->texture);
+    LiberateMemory((void **) &montage_info->texture);
   if (montage_info->font != (char *) NULL)
-    FreeMemory((void **) &montage_info->font);
-  FreeMemory((void **) &montage_info);
+    LiberateMemory((void **) &montage_info->font);
+  LiberateMemory((void **) &montage_info);
 }
 
 /*
@@ -590,11 +590,11 @@ MagickExport Image *MontageImages(Image *image,const MontageInfo *montage_info,
     /*
       Set montage geometry.
     */
-    montage_next->montage=(char *) AllocateMemory(MaxTextExtent);
+    montage_next->montage=(char *) AcquireMemory(MaxTextExtent);
     count=1;
     for (tile=0; tile < tiles_per_page; tile++)
       count+=Extent(next_list[tile]->filename)+1;
-    montage_next->directory=(char *) AllocateMemory(count);
+    montage_next->directory=(char *) AcquireMemory(count);
     if ((montage_next->montage == (char *) NULL) ||
         (montage_next->directory == (char *) NULL))
       {
@@ -859,8 +859,8 @@ MagickExport Image *MontageImages(Image *image,const MontageInfo *montage_info,
       }
   }
   if (texture != (Image *) NULL)
-    FreeMemory((void **) &texture);
-  FreeMemory((void **) &master_list);
+    LiberateMemory((void **) &texture);
+  LiberateMemory((void **) &master_list);
   DestroyAnnotateInfo(annotate_info);
   DestroyImageInfo(clone_info);
   while (montage_next->previous != (Image *) NULL)

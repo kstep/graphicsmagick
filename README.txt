@@ -25,7 +25,7 @@ AVAILABILITY
 
   ImageMagick is available as
 
-    ftp://ftp.wizards.dupont.com/pub/ImageMagick/ImageMagick-5.2.1.tar.gz
+    ftp://ftp.wizards.dupont.com/pub/ImageMagick/ImageMagick-5.2.2.tar.gz
 
   ImageMagick client executables are available for some platforms. See
 
@@ -72,8 +72,8 @@ UNIX/Cygwin COMPILATION
 
   Type:
 
-    gzip -dc ImageMagick-5.2.1.tar.gz | tar xvf -
-    cd ImageMagick-5.2.1
+    gzip -dc ImageMagick-5.2.2.tar.gz | tar xvf -
+    cd ImageMagick-5.2.2
 
   If you do not have gunzip(1), it is available as
   ftp.gnu.org:pub/gnu/gzip-1.2.4.shar.
@@ -563,7 +563,7 @@ VMS COMPILATION
 
   Type
 
-      unzip ImageMagick-5.2.1.zip
+      unzip ImageMagick-5.2.2.zip
       set default [.imagemagick]
       @make
       set display/create/node=node_name::
@@ -576,7 +576,7 @@ VMS COMPILATION
 
   Alternatively, get a zipped distribution (with JPEG, PNG, TIFF, TTF) from
 
-      ftp://ftp.wizards.dupont.com/pub/ImageMagick/vms/ImageMagick-5.2.1.zip
+      ftp://ftp.wizards.dupont.com/pub/ImageMagick/vms/ImageMagick-5.2.2.zip
 
   The VMS JPEG, PNG, TIFF, and TTF  source libraries are available on
   axp.psl.ku.dk in [anonymous.decwindows.lib].

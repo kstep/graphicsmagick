@@ -550,7 +550,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
   /*
     Allocate X ref memory.
   */
-  xref=(unsigned long *) AllocateMemory(2048*sizeof(unsigned long));
+  xref=(unsigned long *) AcquireMemory(2048*sizeof(unsigned long));
   if (xref == (unsigned long *) NULL)
     ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
   /*
@@ -623,7 +623,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
         (void) WriteBlob(image,strlen(buffer),buffer);
         kid_image=kid_image->next;
       }
-      ReallocateMemory((void **) &xref,(count+2048)*sizeof(unsigned long));
+      ReacquireMemory((void **) &xref,(count+2048)*sizeof(unsigned long));
       if (xref == (unsigned long *) NULL)
         ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
           image);
@@ -753,9 +753,9 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
           (void) WriteBlob(image,strlen(buffer),buffer);
           (void) strcpy(buffer,"ET\n");
           (void) WriteBlob(image,strlen(buffer),buffer);
-          FreeMemory((void **) &labels[i]);
+          LiberateMemory((void **) &labels[i]);
         }
-        FreeMemory((void **) &labels);
+        LiberateMemory((void **) &labels);
       }
     FormatString(buffer,"%g 0 0 %g %d %d cm\n",x_scale,y_scale,x,y);
     (void) WriteBlob(image,strlen(buffer),buffer);
@@ -921,7 +921,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
           */
           number_packets=(image->colorspace == CMYKColorspace ? 4 : 3)*
             image->columns*image->rows;
-          pixels=(unsigned char *) AllocateMemory(number_packets);
+          pixels=(unsigned char *) AcquireMemory(number_packets);
           if (pixels == (unsigned char *) NULL)
             ThrowWriterException(ResourceLimitWarning,
               "Memory allocation failed",image);
@@ -970,7 +970,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
               status=LZWEncodeImage(image,number_packets,pixels);
             else
               status=PackbitsEncodeImage(image,number_packets,pixels);
-          FreeMemory((void **) &pixels);
+          LiberateMemory((void **) &pixels);
           if (!status)
             {
               CloseBlob(image);
@@ -1097,7 +1097,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                 Allocate pixel array.
               */
               number_packets=image->columns*image->rows;
-              pixels=(unsigned char *) AllocateMemory(number_packets);
+              pixels=(unsigned char *) AcquireMemory(number_packets);
               if (pixels == (unsigned char *) NULL)
                 ThrowWriterException(ResourceLimitWarning,
                   "Memory allocation failed",image);
@@ -1128,7 +1128,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                   status=LZWEncodeImage(image,number_packets,pixels);
                 else
                   status=PackbitsEncodeImage(image,number_packets,pixels);
-              FreeMemory((void **) &pixels);
+              LiberateMemory((void **) &pixels);
               if (!status)
                 {
                   CloseBlob(image);
@@ -1265,7 +1265,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
           */
           number_packets=(image->colorspace == CMYKColorspace ? 4 : 3)*
             image->columns*image->rows;
-          pixels=(unsigned char *) AllocateMemory(number_packets);
+          pixels=(unsigned char *) AcquireMemory(number_packets);
           if (pixels == (unsigned char *) NULL)
             {
               DestroyImage(tile_image);
@@ -1308,7 +1308,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
               status=LZWEncodeImage(image,number_packets,pixels);
             else
               status=PackbitsEncodeImage(image,number_packets,pixels);
-          FreeMemory((void **) &pixels);
+          LiberateMemory((void **) &pixels);
           if (!status)
             {
               CloseBlob(image);
@@ -1371,7 +1371,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                 Allocate pixel array.
               */
               number_packets=((tile_image->columns+7) >> 3)*tile_image->rows;
-              pixels=(unsigned char *) AllocateMemory(number_packets);
+              pixels=(unsigned char *) AcquireMemory(number_packets);
               if (pixels == (unsigned char *) NULL)
                 {
                   DestroyImage(tile_image);
@@ -1418,7 +1418,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                   status=LZWEncodeImage(image,number_packets,pixels);
                 else
                   status=PackbitsEncodeImage(image,number_packets,pixels);
-              FreeMemory((void **) &pixels);
+              LiberateMemory((void **) &pixels);
               if (!status)
                 {
                   CloseBlob(image);
@@ -1479,7 +1479,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                 Allocate pixel array.
               */
               number_packets=tile_image->columns*tile_image->rows;
-              pixels=(unsigned char *) AllocateMemory(number_packets);
+              pixels=(unsigned char *) AcquireMemory(number_packets);
               if (pixels == (unsigned char *) NULL)
                 {
                   DestroyImage(tile_image);
@@ -1510,7 +1510,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                   status=LZWEncodeImage(image,number_packets,pixels);
                 else
                   status=PackbitsEncodeImage(image,number_packets,pixels);
-              FreeMemory((void **) &pixels);
+              LiberateMemory((void **) &pixels);
               if (!status)
                 {
                   CloseBlob(image);
@@ -1646,7 +1646,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
   (void) WriteBlob(image,strlen(buffer),buffer);
   (void) strcpy(buffer,"%%EOF\n");
   (void) WriteBlob(image,strlen(buffer),buffer);
-  FreeMemory((void **) &xref);
+  LiberateMemory((void **) &xref);
   CloseBlob(image);
   if (image->temporary)
     {

@@ -257,7 +257,7 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Note image label.
         */
-        label=(char *) AllocateMemory(summary_info.title.length+1);
+        label=(char *) AcquireMemory(summary_info.title.length+1);
         if (label == (char *) NULL)
           {
             FPX_ClearSystem();
@@ -268,7 +268,7 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
           summary_info.title.length);
         label[summary_info.title.length]='\0';
         (void) SetImageAttribute(image,"Label",label);
-        FreeMemory((void **) &label);
+        LiberateMemory((void **) &label);
       }
   if (summary_info.comments_valid)
     if ((summary_info.comments.length != 0) &&
@@ -280,7 +280,7 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Note image comment.
         */
-        comments=(char *) AllocateMemory(summary_info.comments.length+1);
+        comments=(char *) AcquireMemory(summary_info.comments.length+1);
         if (comments == (char *) NULL)
           {
             FPX_ClearSystem();
@@ -291,7 +291,7 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
           summary_info.comments.length);
         comments[summary_info.comments.length]='\0';
         (void) SetImageAttribute(image,"Comment",comments);
-        FreeMemory((void **) &comments);
+        LiberateMemory((void **) &comments);
       }
   /*
     Determine resolution by subimage specification.
@@ -339,7 +339,7 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Allocate memory for the image and pixel buffer.
   */
-  scanline=(unsigned char *) AllocateMemory(colorspace.numberOfComponents*
+  scanline=(unsigned char *) AcquireMemory(colorspace.numberOfComponents*
     image->columns*(tile_height+1));
   if (scanline == (unsigned char *) NULL)
     {
@@ -397,7 +397,7 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
             &fpx_info);
         if (fpx_status == FPX_LOW_MEMORY_ERROR)
           {
-            FreeMemory((void **) &scanline);
+            LiberateMemory((void **) &scanline);
             (void) FPX_CloseImage(flashpix);
             FPX_ClearSystem();
             ThrowReaderException(ResourceLimitWarning,
@@ -440,7 +440,7 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (QuantumTick(y,image->rows))
       ProgressMonitor(LoadImageText,y,image->rows);
   }
-  FreeMemory((void **) &scanline);
+  LiberateMemory((void **) &scanline);
   (void) FPX_CloseImage(flashpix);
   FPX_ClearSystem();
   if (image->temporary)
@@ -886,7 +886,7 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
       summary_info.title_valid=True;
       summary_info.title.length=Extent(label->value);
       summary_info.title.ptr=(unsigned char *)
-        AllocateMemory(Extent(label->value)+1);
+        AcquireMemory(Extent(label->value)+1);
       if (summary_info.title.ptr != (unsigned char *) NULL)
         (void) strcpy((char *) summary_info.title.ptr,label->value);
       else
@@ -902,7 +902,7 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
       summary_info.comments_valid=True;
       summary_info.comments.length=Extent(comment->value);
       summary_info.comments.ptr=(unsigned char *)
-        AllocateMemory(Extent(comment->value)+1);
+        AcquireMemory(Extent(comment->value)+1);
       if (summary_info.comments.ptr != (unsigned char *) NULL)
         (void) strcpy((char *) summary_info.comments.ptr,comment->value);
       else
@@ -916,7 +916,7 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
     Allocate pixels.
   */
   pixels=(unsigned char *)
-    AllocateMemory(colorspace.numberOfComponents*image->columns);
+    AcquireMemory(colorspace.numberOfComponents*image->columns);
   if (pixels == (unsigned char *) NULL)
     {
       (void) FPX_CloseImage(flashpix);
@@ -1094,7 +1094,7 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
     }
   (void) FPX_CloseImage(flashpix);
   FPX_ClearSystem();
-  FreeMemory((void **) &pixels);
+  LiberateMemory((void **) &pixels);
   if (image->temporary)
     {
       FILE

@@ -494,8 +494,8 @@ MagickExport unsigned int SignatureImage(Image *image)
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  signature=(char *) AllocateMemory(33);
-  message=(unsigned char *) AllocateMemory(8*image->columns);
+  signature=(char *) AcquireMemory(33);
+  message=(unsigned char *) AcquireMemory(8*image->columns);
   if ((signature == (char *) NULL) || (message == (unsigned char *) NULL))
     ThrowBinaryException(ResourceLimitWarning,
       "Unable to compute image signature","Memory allocation failed");
@@ -543,7 +543,7 @@ MagickExport unsigned int SignatureImage(Image *image)
   }
   *q='\0';
   (void) SetImageAttribute(image,"Signature",signature);
-  FreeMemory((void **) &signature);
-  FreeMemory((void **) &message);
+  LiberateMemory((void **) &signature);
+  LiberateMemory((void **) &message);
   return(True);
 }

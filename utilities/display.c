@@ -365,7 +365,7 @@ int main(int argc,char **argv)
   image_number=0;
   last_image=0;
   last_scene=0;
-  image_marker=(unsigned int *) AllocateMemory((argc+1)*sizeof(unsigned int));
+  image_marker=(unsigned int *) AcquireMemory((argc+1)*sizeof(unsigned int));
   if (image_marker == (unsigned int *) NULL)
     MagickError(ResourceLimitError,"Unable to display image",
       "Memory allocation failed");
@@ -1498,7 +1498,7 @@ int main(int argc,char **argv)
       XRetainWindowColors(display,XRootWindow(display,XDefaultScreen(display)));
       XSync(display,False);
     }
-  FreeMemory((void **) &argv);
+  LiberateMemory((void **) &argv);
   Exit(0);
 #endif
   return(False);

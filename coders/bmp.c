@@ -592,7 +592,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (!AllocateImageColormap(image,image->colors))
           ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
             image);
-        bmp_colormap=(unsigned char *) AllocateMemory(4*image->colors);
+        bmp_colormap=(unsigned char *) AcquireMemory(4*image->colors);
         if (bmp_colormap == (unsigned char *) NULL)
           ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
             image);
@@ -609,7 +609,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (bmp_info.size != 12)
             p++;
         }
-        FreeMemory((void **) &bmp_colormap);
+        LiberateMemory((void **) &bmp_colormap);
       }
     while (TellBlob(image) < (int) (start_position+bmp_info.offset_bits))
       (void) ReadByte(image);
@@ -620,7 +620,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
       bmp_info.bits_per_pixel<<=1;
     bytes_per_line=4*((image->columns*bmp_info.bits_per_pixel+31)/32);
     image_size=bytes_per_line*image->rows;
-    pixels=(unsigned char *) AllocateMemory(image_size);
+    pixels=(unsigned char *) AcquireMemory(image_size);
     if (pixels == (unsigned char *) NULL)
       ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
         image);
@@ -821,7 +821,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
       default:
         ThrowReaderException(CorruptImageWarning,"Not a BMP image file",image);
     }
-    FreeMemory((void **) &pixels);
+    LiberateMemory((void **) &pixels);
     if (bmp_info.height < 0)
       {
         Image
@@ -1070,7 +1070,7 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
     /*
       Convert MIFF to BMP raster pixels.
     */
-    pixels=(unsigned char *) AllocateMemory(bmp_info.image_size);
+    pixels=(unsigned char *) AcquireMemory(bmp_info.image_size);
     if (pixels == (unsigned char *) NULL)
       ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
         image);
@@ -1192,10 +1192,10 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
           */
           packets=(unsigned int)
             ((bytes_per_line*(bmp_info.height+2)+1) << 1);
-          bmp_data=(unsigned char *) AllocateMemory(packets);
+          bmp_data=(unsigned char *) AcquireMemory(packets);
           if (pixels == (unsigned char *) NULL)
             {
-              FreeMemory((void **) &pixels);
+              LiberateMemory((void **) &pixels);
               ThrowWriterException(ResourceLimitWarning,
                 "Memory allocation failed",image);
             }
@@ -1203,7 +1203,7 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
           bmp_info.image_size=
             EncodeImage(pixels,image->columns,image->rows,bmp_data);
           bmp_info.file_size+=bmp_info.image_size;
-          FreeMemory((void **) &pixels);
+          LiberateMemory((void **) &pixels);
           pixels=bmp_data;
           bmp_info.compression=1;
         }
@@ -1235,7 +1235,7 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
           Dump colormap to file.
         */
         bmp_colormap=(unsigned char *)
-          AllocateMemory(4*(1 << bmp_info.bits_per_pixel));
+          AcquireMemory(4*(1 << bmp_info.bits_per_pixel));
         if (bmp_colormap == (unsigned char *) NULL)
           ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
             image);
@@ -1256,10 +1256,10 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
         }
         (void) WriteBlob(image,4*(1 << bmp_info.bits_per_pixel),
           (char *) bmp_colormap);
-        FreeMemory((void **) &bmp_colormap);
+        LiberateMemory((void **) &bmp_colormap);
       }
     (void) WriteBlob(image,bmp_info.image_size,(char *) pixels);
-    FreeMemory((void **) &pixels);
+    LiberateMemory((void **) &pixels);
     if (image->next == (Image *) NULL)
       break;
     image=GetNextImage(image);

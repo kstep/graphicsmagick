@@ -209,20 +209,20 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     ThrowReaderException(CorruptImageWarning,"XWD header size is too small",
       image);
   length=header.header_size-sz_XWDheader;
-  comment=(char *) AllocateMemory(length+1);
+  comment=(char *) AcquireMemory(length+1);
   if (comment == (char *) NULL)
     ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
   status=ReadBlob(image,length,comment);
   comment[length]='\0';
   (void) SetImageAttribute(image,"Comment",comment);
-  FreeMemory((void **) &comment);
+  LiberateMemory((void **) &comment);
   if (status == False)
     ThrowReaderException(CorruptImageWarning,
       "Unable to read window name from dump file",image);
   /*
     Initialize the X image.
   */
-  ximage=(XImage *) AllocateMemory(sizeof(XImage));
+  ximage=(XImage *) AcquireMemory(sizeof(XImage));
   if (ximage == (XImage *) NULL)
     ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
   ximage->depth=header.pixmap_depth;
@@ -253,7 +253,7 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
         color;
 
       colors=(XColor *)
-        AllocateMemory((unsigned int) header.ncolors*sizeof(XColor));
+        AcquireMemory((unsigned int) header.ncolors*sizeof(XColor));
       if (colors == (XColor *) NULL)
         ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
           image);
@@ -287,7 +287,7 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     length=ximage->bytes_per_line*ximage->height;
   else
     length=ximage->bytes_per_line*ximage->height*ximage->depth;
-  ximage->data=(char *) AllocateMemory(length);
+  ximage->data=(char *) AcquireMemory(length);
   if (ximage->data == (char *) NULL)
     ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
   status=ReadBlob(image,length,ximage->data);
@@ -308,7 +308,7 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (image_info->ping)
     {
       if (header.ncolors != 0)
-        FreeMemory((void **) &colors);
+        LiberateMemory((void **) &colors);
       CloseBlob(image);
       return(image);
     }
@@ -442,9 +442,9 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Free image and colormap.
   */
   if (header.ncolors != 0)
-    FreeMemory((void **) &colors);
-  FreeMemory((void **) &ximage->data);
-  FreeMemory((void **) &ximage);
+    LiberateMemory((void **) &colors);
+  LiberateMemory((void **) &ximage->data);
+  LiberateMemory((void **) &ximage);
   CloseBlob(image);
   return(image);
 }
@@ -645,7 +645,7 @@ static unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
       /*
         Dump colormap to file.
       */
-      colors=(XColor *) AllocateMemory(image->colors*sizeof(XColor));
+      colors=(XColor *) AcquireMemory(image->colors*sizeof(XColor));
       if (colors == (XColor *) NULL)
         ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
           image);
@@ -672,13 +672,13 @@ static unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
         color.flags=colors[i].flags;
         (void) WriteBlob(image,sz_XWDColor,(char *) &color);
       }
-      FreeMemory((void **) &colors);
+      LiberateMemory((void **) &colors);
     }
   /*
     Allocate memory for pixels.
   */
   pixels=(unsigned char *)
-    AllocateMemory(image->columns*sizeof(PixelPacket));
+    AcquireMemory(image->columns*sizeof(PixelPacket));
   if (pixels == (unsigned char *) NULL)
     ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
   /*
@@ -712,7 +712,7 @@ static unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
       if (QuantumTick(y,image->rows))
         ProgressMonitor(SaveImageText,y,image->rows);
   }
-  FreeMemory((void **) &pixels);
+  LiberateMemory((void **) &pixels);
   CloseBlob(image);
   return(True);
 }

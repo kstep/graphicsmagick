@@ -453,10 +453,10 @@ static unsigned char *DecodeImage(const ImageInfo *image_info,Image *image,
   /*
     Allocate pixel and scanline buffer.
   */
-  pixels=(unsigned char *) AllocateMemory(row_bytes*image->rows);
+  pixels=(unsigned char *) AcquireMemory(row_bytes*image->rows);
   if (pixels == (unsigned char *) NULL)
     return((unsigned char *) NULL);
-  scanline=(unsigned char *) AllocateMemory(row_bytes);
+  scanline=(unsigned char *) AcquireMemory(row_bytes);
   if (scanline == (unsigned char *) NULL)
     return((unsigned char *) NULL);
   if (bytes_per_line < 8)
@@ -472,7 +472,7 @@ static unsigned char *DecodeImage(const ImageInfo *image_info,Image *image,
         p=ExpandBuffer(scanline,&number_pixels,bits_per_pixel);
         memcpy(q,p,number_pixels);
       }
-      FreeMemory((void **) &scanline);
+      LiberateMemory((void **) &scanline);
       return(pixels);
     }
   /*
@@ -509,7 +509,7 @@ static unsigned char *DecodeImage(const ImageInfo *image_info,Image *image,
           x+=bytes_per_pixel+1;
         }
   }
-  FreeMemory((void **) &scanline);
+  LiberateMemory((void **) &scanline);
   return(pixels);
 }
 
@@ -1082,7 +1082,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
               if (QuantumTick(y,tile_image->rows))
                 ProgressMonitor(LoadImageText,y,tile_image->rows);
           }
-          (void) FreeMemory((void **) &pixels);
+          (void) LiberateMemory((void **) &pixels);
           if (tile_image != image)
             {
               CompositeImage(image,ReplaceCompositeOp,tile_image,
@@ -1105,14 +1105,14 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
           length=MSBFirstReadShort(image);
           if (length == 0)
             break;
-          comment=(char *) AllocateMemory(length+1);
+          comment=(char *) AcquireMemory(length+1);
           if (comment == (char *) NULL)
             break;
           for (i=0; i < length; i++)
             comment[i]=ReadByte(image);
           comment[i]='\0';
           (void) SetImageAttribute(image,"Comment",comment);
-          FreeMemory((void **) &comment);
+          LiberateMemory((void **) &comment);
           break;
         }
         default:
@@ -1432,9 +1432,9 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
   if ((image->storage_class == DirectClass) ||
       (LocaleCompare(image_info->magick,"PICT24") == 0))
     bytes_per_line*=image->matte ? 4 : 3;
-  buffer=(unsigned char *) AllocateMemory(PictInfoSize);
-  packed_scanline=(unsigned char *) AllocateMemory(row_bytes+MaxCount);
-  scanline=(unsigned char *) AllocateMemory(row_bytes);
+  buffer=(unsigned char *) AcquireMemory(PictInfoSize);
+  packed_scanline=(unsigned char *) AcquireMemory(row_bytes+MaxCount);
+  scanline=(unsigned char *) AcquireMemory(row_bytes);
   if ((buffer == (unsigned char *) NULL) ||
       (packed_scanline == (unsigned char *) NULL) ||
       (scanline == (unsigned char *) NULL))
@@ -1606,9 +1606,9 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
   if (count & 0x1)
     (void) WriteByte(image,'\0');
   MSBFirstWriteShort(image,PictEndOfPictureOp);
-  FreeMemory((void **) &scanline);
-  FreeMemory((void **) &packed_scanline);
-  FreeMemory((void **) &buffer);
+  LiberateMemory((void **) &scanline);
+  LiberateMemory((void **) &packed_scanline);
+  LiberateMemory((void **) &buffer);
   CloseBlob(image);
   return(True);
 }

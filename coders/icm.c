@@ -123,7 +123,7 @@ static Image *ReadICMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Read ICM image.
   */
   length=MaxTextExtent;
-  image->color_profile.info=(unsigned char *) AllocateMemory(length);
+  image->color_profile.info=(unsigned char *) AcquireMemory(length);
   for (q=image->color_profile.info; ; q++)
   {
     c=ReadByte(image);
@@ -133,7 +133,7 @@ static Image *ReadICMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       {
         image->color_profile.length=q-image->color_profile.info;
         length<<=1;
-        ReallocateMemory((void **) &image->color_profile.info,length);
+        ReacquireMemory((void **) &image->color_profile.info,length);
         if (image->color_profile.info == (unsigned char *) NULL)
           break;
         q=image->color_profile.info+image->color_profile.length;

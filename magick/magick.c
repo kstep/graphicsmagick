@@ -100,10 +100,10 @@ MagickExport void DestroyMagickInfo(void)
   {
     entry=p;
     p=p->next;
-    FreeMemory((void **) &entry->tag);
-    FreeMemory((void **) &entry->description);
-    FreeMemory((void **) &entry->module);
-    FreeMemory((void **) &entry);
+    LiberateMemory((void **) &entry->tag);
+    LiberateMemory((void **) &entry->description);
+    LiberateMemory((void **) &entry->module);
+    LiberateMemory((void **) &entry);
   }
   magick_list=(MagickInfo *) NULL;
   LiberateSemaphore(magick_semaphore);
@@ -430,7 +430,7 @@ MagickExport void MagickIncarnate(const char *path)
         p--;
       }
       SetClientName(filename);
-      FreeMemory((void **) &filename);
+      LiberateMemory((void **) &filename);
     }
   (void) setlocale(LC_ALL,"");
   (void) setlocale(LC_NUMERIC,"C");
@@ -543,7 +543,7 @@ MagickExport MagickInfo *SetMagickInfo(const char *tag)
     *entry;
 
   assert(tag != (const char *) NULL);
-  entry=(MagickInfo *) AllocateMemory(sizeof(MagickInfo));
+  entry=(MagickInfo *) AcquireMemory(sizeof(MagickInfo));
   if (entry == (MagickInfo *) NULL)
     MagickError(ResourceLimitError,"Unable to allocate image",
       "Memory allocation failed");
@@ -612,10 +612,10 @@ MagickExport unsigned int UnregisterMagickInfo(const char *tag)
       p->previous->next=p->next;
     else
       magick_list=p->next;
-    FreeMemory((void **) &p->tag);
-    FreeMemory((void **) &p->description);
-    FreeMemory((void **) &p->module);
-    FreeMemory((void **) &p);
+    LiberateMemory((void **) &p->tag);
+    LiberateMemory((void **) &p->description);
+    LiberateMemory((void **) &p->module);
+    LiberateMemory((void **) &p);
     status=True;
     break;
   }

@@ -369,7 +369,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       return(image);
     }
   packets=(bits_per_pixel*image->columns/8)*image->rows;
-  pixels=(unsigned char *) AllocateMemory(packets+256);
+  pixels=(unsigned char *) AcquireMemory(packets+256);
   if (pixels == (unsigned char *) NULL)
     ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
   if (pdb_image.version != 0)
@@ -475,7 +475,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
     default:
       ThrowReaderException(CorruptImageWarning,"Not a PDB image file",image);
   }
-  FreeMemory((void **) &pixels);
+  LiberateMemory((void **) &pixels);
   if ((offset-TellBlob(image)) == 0)
     {
       char
@@ -495,7 +495,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       */
       c=ReadByte(image);
       length=MaxTextExtent;
-      comment=(char *) AllocateMemory(length+1);
+      comment=(char *) AcquireMemory(length+1);
       p=comment;
       if (comment != (char *) NULL)
         for ( ; c != EOF; p++)
@@ -504,7 +504,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
             {
               length<<=1;
               length+=MaxTextExtent;
-              ReallocateMemory((void **) &comment,length+1);
+              ReacquireMemory((void **) &comment,length+1);
               if (comment == (char *) NULL)
                 break;
               p=comment+Extent(comment);
@@ -517,7 +517,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
         ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
           image);
       (void) SetImageAttribute(image,"Comment",comment);
-      FreeMemory((void **) &comment);
+      LiberateMemory((void **) &comment);
     }
   CloseBlob(image);
   return(image);

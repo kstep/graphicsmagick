@@ -450,7 +450,7 @@ static struct PackageInfo *ClonePackageInfo(struct PackageInfo *info)
   struct PackageInfo
     *cloned_info;
 
-  cloned_info=(struct PackageInfo *) AllocateMemory(sizeof(struct PackageInfo));
+  cloned_info=(struct PackageInfo *) AcquireMemory(sizeof(struct PackageInfo));
   if (!info)
     {
       MagickIncarnate(client_name);
@@ -624,7 +624,7 @@ static void DestroyPackageInfo(struct PackageInfo *info)
 {
   DestroyImageInfo(info->image_info);
   DestroyQuantizeInfo(info->quantize_info);
-  FreeMemory((void **) &info);
+  LiberateMemory((void **) &info);
 }
 
 /*
@@ -800,11 +800,11 @@ static Image *GetList(SV *reference,SV ***reference_vector,int *current,
             {
               *last+=256;
               if (*reference_vector)
-                ReallocateMemory((void **) & (*reference_vector),
+                ReacquireMemory((void **) & (*reference_vector),
                   *last*sizeof(*reference_vector));
               else
                 *reference_vector=(SV **)
-                  AllocateMemory(*last*sizeof(*reference_vector));
+                  AcquireMemory(*last*sizeof(*reference_vector));
             }
         (*reference_vector)[*current]=reference;
         (*reference_vector)[++(*current)]=NULL;
@@ -2170,8 +2170,8 @@ BlobToImage(ref,...)
     number_images=0;
     error_list=newSVpv("",0);
     ac=(items < 2) ? 1 : items-1;
-    list=(char **) AllocateMemory((ac+1)*sizeof(*list));
-    length=(STRLEN *) AllocateMemory((ac+1)*sizeof(length));
+    list=(char **) AcquireMemory((ac+1)*sizeof(*list));
+    length=(STRLEN *) AcquireMemory((ac+1)*sizeof(length));
     if (!sv_isobject(ST(0)))
       {
         MagickWarning(OptionWarning,"Reference is not my type",PackageName);
@@ -2232,12 +2232,12 @@ BlobToImage(ref,...)
         for (p=keep; list[i] != *p++; )
           if (*p == NULL)
             {
-              FreeMemory((void **) &list[i]);
+              LiberateMemory((void **) &list[i]);
               break;
             }
 
   ReturnIt:
-    FreeMemory((void **) &list);
+    LiberateMemory((void **) &list);
     sv_setiv(error_list,(IV) number_images);
     SvPOK_on(error_list);
     ST(0)=sv_2mortal(error_list);
@@ -3417,7 +3417,7 @@ ImageToBlob(ref,...)
       if (blob != (char *) NULL)
         {
           PUSHs(sv_2mortal(newSVpv(blob,length)));
-          FreeMemory((void **) &blob);
+          LiberateMemory((void **) &blob);
         }
       if (package_info->image_info->adjoin)
         break;
@@ -4958,13 +4958,13 @@ Mogrify(ref,...)
             break;
           av=(AV*) argument_list[0].array_reference;
           order=sqrt(av_len(av)+1);
-          kernel=(double *) AllocateMemory(order*order*sizeof(double));
+          kernel=(double *) AcquireMemory(order*order*sizeof(double));
           for (j=0; j < (av_len(av)+1); j++)
             kernel[j]=(double) SvNV(*(av_fetch(av,j,0)));
           for ( ; j < (order*order); j++)
             kernel[j]=0.0;
           image=ConvolveImage(image,order,kernel,&exception);
-          FreeMemory((void **) &kernel);
+          LiberateMemory((void **) &kernel);
           break;
         }
         case 69:  /* Profile */
@@ -5016,7 +5016,7 @@ Mogrify(ref,...)
 
   ReturnIt:
     if (reference_vector)
-      FreeMemory((void **) &reference_vector);
+      LiberateMemory((void **) &reference_vector);
     sv_setiv(error_list,(IV) number_images);
     SvPOK_on(error_list);
     ST(0)=sv_2mortal(error_list);
@@ -5868,7 +5868,7 @@ Read(ref,...)
     number_images=0;
     error_list=newSVpv("",0);
     ac=(items < 2) ? 1 : items-1;
-    list=(char **) AllocateMemory((ac+1)*sizeof(*list));
+    list=(char **) AcquireMemory((ac+1)*sizeof(*list));
     if (!sv_isobject(ST(0)))
       {
         MagickWarning(OptionWarning,"Reference is not my type",PackageName);
@@ -5935,12 +5935,12 @@ Read(ref,...)
         for (p=keep; list[i] != *p++; )
           if (*p == NULL)
             {
-              FreeMemory((void **) &list[i]);
+              LiberateMemory((void **) &list[i]);
               break;
             }
 
   ReturnIt:
-    FreeMemory((void **) &list);
+    LiberateMemory((void **) &list);
     sv_setiv(error_list,(IV) number_images);
     SvPOK_on(error_list);
     ST(0)=sv_2mortal(error_list);

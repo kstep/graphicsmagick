@@ -183,7 +183,7 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (!AllocateImageColormap(image,pixel_mode == 1 ? 256 : 16))
           ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
             image);
-        tim_colormap=(unsigned char *) AllocateMemory(image->colors*2);
+        tim_colormap=(unsigned char *) AcquireMemory(image->colors*2);
         if (tim_colormap == (unsigned char *) NULL)
           ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
             image);
@@ -197,7 +197,7 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           image->colormap[i].green=UpScale(ScaleColor5to8((word >> 5) & 0x1f));
           image->colormap[i].red=UpScale(ScaleColor5to8(word & 0x1f));
         }
-        FreeMemory((void **) &tim_colormap);
+        LiberateMemory((void **) &tim_colormap);
       }
     /*
       Read image data.
@@ -210,7 +210,7 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image_size=2*width*height;
     bytes_per_line=width*2;
     width=(width*16)/bits_per_pixel;
-    tim_data=(unsigned char *) AllocateMemory(image_size);
+    tim_data=(unsigned char *) AcquireMemory(image_size);
     if (tim_data == (unsigned char *) NULL)
       ThrowReaderException(ResourceLimitWarning,"Unable to allocate memory",            image);
     (void) ReadBlob(image,image_size,(char *) tim_data);
@@ -333,7 +333,7 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
     if (image->storage_class == PseudoClass)
       SyncImage(image);
-    FreeMemory((void **) &tim_pixels);
+    LiberateMemory((void **) &tim_pixels);
     /*
       Proceed to next image.
     */

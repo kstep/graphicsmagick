@@ -225,7 +225,7 @@ static unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
             Map all the transparent pixels.
           */
           matte_image=(unsigned char *)
-            AllocateMemory(image->columns*image->rows);
+            AcquireMemory(image->columns*image->rows);
           if (matte_image == (unsigned char *) NULL)
             ThrowWriterException(ResourceLimitWarning,
               "Memory allocation failed",image);
@@ -266,7 +266,7 @@ static unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
           }
         }
       if (matte_image != (unsigned char *) NULL)
-        FreeMemory((void **) &matte_image);
+        LiberateMemory((void **) &matte_image);
     }
   /*
     Compute the character per pixel.

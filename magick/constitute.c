@@ -1823,7 +1823,7 @@ MagickExport Image *ReadImages(const ImageInfo *image_info,
       return((Image *) NULL);
     }
   length=MaxTextExtent;
-  command=(char *) AllocateMemory(length);
+  command=(char *) AcquireMemory(length);
   for (p=command; command != (char *) NULL; p++)
   {
     c=fgetc(file);
@@ -1833,7 +1833,7 @@ MagickExport Image *ReadImages(const ImageInfo *image_info,
       {
         *p='\0';
         length<<=1;
-        ReallocateMemory((void **) &command,length);
+        ReacquireMemory((void **) &command,length);
         if (command == (char *) NULL)
           break;
         p=command+Extent(command);
@@ -1850,7 +1850,7 @@ MagickExport Image *ReadImages(const ImageInfo *image_info,
   *p='\0';
   Strip(command);
   images=StringToArgv(command,&number_images);
-  FreeMemory((void **) &command);
+  LiberateMemory((void **) &command);
   /*
     Read the images into a linked list.
   */

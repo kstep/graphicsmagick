@@ -580,7 +580,7 @@ MagickExport Image *DeconstructImages(Image *image,ExceptionInfo *exception)
     Allocate memory.
   */
   bounding_box=(RectangleInfo *)
-    AllocateMemory(GetNumberScenes(image)*sizeof(RectangleInfo));
+    AcquireMemory(GetNumberScenes(image)*sizeof(RectangleInfo));
   if (bounding_box == (RectangleInfo *) NULL)
     ThrowImageException(OptionWarning,"Unable to deconstruct image sequence",
       "Memory allocation failed");
@@ -671,7 +671,7 @@ MagickExport Image *DeconstructImages(Image *image,ExceptionInfo *exception)
   deconstruct_image=CloneImage(image,image->columns,image->rows,True,exception);
   if (deconstruct_image == (Image *) NULL)
     {
-      FreeMemory((void **) &bounding_box);
+      LiberateMemory((void **) &bounding_box);
       return((Image *) NULL);
     }
   /*
@@ -688,7 +688,7 @@ MagickExport Image *DeconstructImages(Image *image,ExceptionInfo *exception)
     crop_next->previous=deconstruct_image;
     deconstruct_image=deconstruct_image->next;
   }
-  FreeMemory((void **) &bounding_box);
+  LiberateMemory((void **) &bounding_box);
   while (deconstruct_image->previous != (Image *) NULL)
     deconstruct_image=deconstruct_image->previous;
   return(deconstruct_image);
@@ -933,7 +933,7 @@ MagickExport unsigned int ProfileImage(Image *image,const ProfileType type,
         case ICMProfile:
         {
           if (image->color_profile.length != 0)
-            FreeMemory((void **) &image->color_profile.info);
+            LiberateMemory((void **) &image->color_profile.info);
           image->color_profile.length=0;
           image->color_profile.info=(unsigned char *) NULL;
           break;
@@ -941,7 +941,7 @@ MagickExport unsigned int ProfileImage(Image *image,const ProfileType type,
         case IPTCProfile:
         {
           if (image->iptc_profile.length != 0)
-            FreeMemory((void **) &image->iptc_profile.info);
+            LiberateMemory((void **) &image->iptc_profile.info);
           image->iptc_profile.length=0;
           image->iptc_profile.info=(unsigned char *) NULL;
           break;
@@ -963,7 +963,7 @@ MagickExport unsigned int ProfileImage(Image *image,const ProfileType type,
   if (LocaleCompare("iptc",profile->magick) == 0)
     {
       if (image->iptc_profile.length != 0)
-        FreeMemory((void **) &image->iptc_profile.info);
+        LiberateMemory((void **) &image->iptc_profile.info);
       image->iptc_profile.length=profile->iptc_profile.length;
       image->iptc_profile.info=profile->iptc_profile.info;
       profile->iptc_profile.length=0;
@@ -972,7 +972,7 @@ MagickExport unsigned int ProfileImage(Image *image,const ProfileType type,
   if (LocaleCompare("8bim",profile->magick) == 0)
     {
       if (image->iptc_profile.length != 0)
-        FreeMemory((void **) &image->iptc_profile.info);
+        LiberateMemory((void **) &image->iptc_profile.info);
       image->iptc_profile.length=profile->iptc_profile.length;
       image->iptc_profile.info=profile->iptc_profile.info;
       profile->iptc_profile.length=0;
@@ -1066,7 +1066,7 @@ MagickExport unsigned int ProfileImage(Image *image,const ProfileType type,
           cmsCloseProfile(image_profile);
           cmsCloseProfile(transform_profile);     
 #endif
-          FreeMemory((void **) &image->color_profile.info);
+          LiberateMemory((void **) &image->color_profile.info);
         }
       image->color_profile.length=profile->color_profile.length;
       image->color_profile.info=profile->color_profile.info;

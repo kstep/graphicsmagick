@@ -141,7 +141,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Allocate memory for a scanline.
   */
-  scanline=(unsigned char *) AllocateMemory(image->columns);
+  scanline=(unsigned char *) AcquireMemory(image->columns);
   if (scanline == (unsigned char *) NULL)
     ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
   do
@@ -279,7 +279,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
         ProgressMonitor(LoadImagesText,TellBlob(image),image->filesize);
       }
   } while (count > 0);
-  FreeMemory((void **) &scanline);
+  LiberateMemory((void **) &scanline);
   while (image->previous != (Image *) NULL)
     image=image->previous;
   CloseBlob(image);

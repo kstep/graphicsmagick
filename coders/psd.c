@@ -458,7 +458,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       unsigned char
         *data;
 
-      data=(unsigned char *) AllocateMemory(length);
+      data=(unsigned char *) AcquireMemory(length);
       if (data == (unsigned char *) NULL)
         ThrowReaderException(ResourceLimitWarning,
           "8BIM resource memory allocation failed",image);
@@ -484,7 +484,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       size=MSBFirstReadLong(image);
       number_layers=MSBFirstReadShort(image);
       number_layers=AbsoluteValue(number_layers);
-      layer_info=(LayerInfo *) AllocateMemory(number_layers*sizeof(LayerInfo));
+      layer_info=(LayerInfo *) AcquireMemory(number_layers*sizeof(LayerInfo));
       if (layer_info == (LayerInfo *) NULL)
         ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
           image);
@@ -564,7 +564,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 if (layer_info[i].image->depth > 8)
                   packet_size++;
               scanline=(unsigned char *)
-                AllocateMemory(packet_size*layer_info[i].image->columns+1);
+                AcquireMemory(packet_size*layer_info[i].image->columns+1);
               if (scanline == (unsigned char *) NULL)
                 ThrowReaderException(ResourceLimitWarning,
                   "Memory allocation failed",image);
@@ -611,7 +611,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 if (!SyncImagePixels(layer_info[i].image))
                   break;
               }
-              FreeMemory((void **) &scanline);
+              LiberateMemory((void **) &scanline);
             }
         }
         image->file=layer_info[i].image->file;
@@ -700,7 +700,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           packet_size++;
       for (i=0; i < psd_info.channels; i++)
         channel_map[i]=!image->matte ? i : i-1;
-      scanline=(unsigned char *) AllocateMemory(packet_size*image->columns);
+      scanline=(unsigned char *) AcquireMemory(packet_size*image->columns);
       if (scanline == (unsigned char *) NULL)
         ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
           image);
@@ -745,7 +745,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
       if (image->matte && (number_layers != 0))
         MatteImage(image,TransparentOpacity);
-      FreeMemory((void **) &scanline);
+      LiberateMemory((void **) &scanline);
     }
   if (image->colorspace == CMYKColorspace)
     {
@@ -903,7 +903,7 @@ static unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
   if (image->matte)
     packet_size+=image->depth > 8 ? 2 : 1;
   pixels=(unsigned char *)
-    AllocateMemory(packet_size*image->columns*sizeof(PixelPacket));
+    AcquireMemory(packet_size*image->columns*sizeof(PixelPacket));
   if (pixels == (unsigned char *) NULL)
     ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
   (void) WriteBlob(image,4,"8BPS");
@@ -1014,7 +1014,7 @@ static unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
           (void) WriteBlob(image,packet_size*image->columns,pixels);
         }
     }
-  FreeMemory((void **) &pixels);
+  LiberateMemory((void **) &pixels);
   CloseBlob(image);
   return(True);
 }

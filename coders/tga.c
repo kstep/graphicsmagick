@@ -218,14 +218,14 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           TGA image comment.
         */
-        comment=(char *) AllocateMemory(tga_info.id_length+1);
+        comment=(char *) AcquireMemory(tga_info.id_length+1);
         if (comment == (char *) NULL)
           ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
             image);
         (void) ReadBlob(image,tga_info.id_length,comment);
         comment[tga_info.id_length]='\0';
         (void) SetImageAttribute(image,"Comment",comment);
-        FreeMemory((void **) &comment);
+        LiberateMemory((void **) &comment);
       }
     GetPixelPacket(&pixel);
     if (tga_info.colormap_type != 0)
@@ -677,7 +677,7 @@ static unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
           Dump colormap to file (blue, green, red byte order).
         */
         targa_colormap=(unsigned char *)
-          AllocateMemory(3*targa_info.colormap_length);
+          AcquireMemory(3*targa_info.colormap_length);
         if (targa_colormap == (unsigned char *) NULL)
           ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
             image);
@@ -690,13 +690,13 @@ static unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
         }
         (void) WriteBlob(image,(int) 3*targa_info.colormap_length,
           (char *) targa_colormap);
-        FreeMemory((void **) &targa_colormap);
+        LiberateMemory((void **) &targa_colormap);
       }
     /*
       Convert MIFF to TGA raster pixels.
     */
     count=(unsigned int) (targa_info.bits_per_pixel*targa_info.width) >> 3;
-    targa_pixels=(unsigned char *) AllocateMemory(count);
+    targa_pixels=(unsigned char *) AcquireMemory(count);
     if (targa_pixels == (unsigned char *) NULL)
       ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
         image);
@@ -729,7 +729,7 @@ static unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
         if (QuantumTick(y,image->rows))
           ProgressMonitor(SaveImageText,y,image->rows);
     }
-    FreeMemory((void **) &targa_pixels);
+    LiberateMemory((void **) &targa_pixels);
     if (image->next == (Image *) NULL)
       break;
     image=GetNextImage(image);

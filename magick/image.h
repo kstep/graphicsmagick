@@ -77,19 +77,11 @@ typedef struct _PixelPacket
     blue,
     opacity;
 #else
-#if defined(WIN32)
   Quantum
     blue,
     green,
     red,
     opacity;
-#else
-  Quantum
-    opacity,
-    red,
-    green,
-    blue;
-#endif
 #endif
 } PixelPacket;
 
@@ -816,17 +808,18 @@ extern MagickExport unsigned int
   PushImagePixels(const Image *,const QuantumType,const unsigned char *),
   QueryColorDatabase(const char *,PixelPacket *),
   RaiseImage(Image *,const RectangleInfo *,const int),
+  ReadStream(const ImageInfo *,void (*)(Image *),ExceptionInfo *),
   RGBTransformImage(Image *,const ColorspaceType),
   SetImageInfo(ImageInfo *,const unsigned int),
   SignatureImage(Image *),
   SortColormapByIntensity(Image *),
-  StreamImage(const ImageInfo *,void (*)(Image *),ExceptionInfo *),
   (*SyncImagePixels)(Image *),
   ThresholdImage(Image *,const double),
   TransformRGBImage(Image *,const ColorspaceType),
   TransparentImage(Image *,const PixelPacket),
   UnregisterMagickInfo(const char *),
-  WriteImage(const ImageInfo *,Image *);
+  WriteImage(const ImageInfo *,Image *),
+  WriteStream(const ImageInfo *,Image *,void (*)(Image *));
 
 extern MagickExport void
   AllocateNextImage(const ImageInfo *,Image *),

@@ -267,7 +267,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       magic=LSBFirstReadLong(image);
       if (magic != 987654321)
         ThrowReaderException(CorruptImageWarning,"Not a DCX image file",image);
-      page_table=(unsigned long *) AllocateMemory(1024*sizeof(unsigned long));
+      page_table=(unsigned long *) AcquireMemory(1024*sizeof(unsigned long));
       if (page_table == (unsigned long *) NULL)
         ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
           image);
@@ -309,7 +309,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->x_resolution=pcx_info.horizontal_resolution;
     image->y_resolution=pcx_info.vertical_resolution;
     image->colors=16;
-    pcx_colormap=(unsigned char *) AllocateMemory(3*256);
+    pcx_colormap=(unsigned char *) AcquireMemory(3*256);
     if (pcx_colormap == (unsigned char *) NULL)
       ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
         image);
@@ -327,9 +327,9 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       image->storage_class=DirectClass;
     if (image_info->ping)
       {
-        FreeMemory((void **) &pcx_colormap);
+        LiberateMemory((void **) &pcx_colormap);
         if (page_table != (unsigned long *) NULL)
-          FreeMemory((void **) &page_table);
+          LiberateMemory((void **) &page_table);
         CloseBlob(image);
         return(image);
       }
@@ -348,8 +348,8 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       Read image data.
     */
     pcx_packets=image->rows*pcx_info.bytes_per_line*pcx_info.planes;
-    pcx_pixels=(unsigned char *) AllocateMemory(pcx_packets);
-    scanline=(unsigned char *) AllocateMemory(image->columns*pcx_info.planes);
+    pcx_pixels=(unsigned char *) AcquireMemory(pcx_packets);
+    scanline=(unsigned char *) AcquireMemory(image->columns*pcx_info.planes);
     if ((pcx_pixels == (unsigned char *) NULL) ||
         (scanline == (unsigned char *) NULL))
       ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
@@ -416,7 +416,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   image->colormap[i].blue=UpScale(*p++);
                 }
             }
-          FreeMemory((void **) &pcx_colormap);
+          LiberateMemory((void **) &pcx_colormap);
         }
     /*
       Convert PCX raster image to pixel packets.
@@ -568,8 +568,8 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
     if (image->storage_class == PseudoClass)
       SyncImage(image);
-    FreeMemory((void **) &scanline);
-    FreeMemory((void **) &pcx_pixels);
+    LiberateMemory((void **) &scanline);
+    LiberateMemory((void **) &pcx_pixels);
     /*
       Proceed to next image.
     */
@@ -598,7 +598,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
   }
   if (page_table != (unsigned long *) NULL)
-    FreeMemory((void **) &page_table);
+    LiberateMemory((void **) &page_table);
   while (image->previous != (Image *) NULL)
     image=image->previous;
   CloseBlob(image);
@@ -755,7 +755,7 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
         Write the DCX page table.
       */
       LSBFirstWriteLong(image,0x3ADE68B1L);
-      page_table=(unsigned long *) AllocateMemory(1024*sizeof(unsigned long));
+      page_table=(unsigned long *) AcquireMemory(1024*sizeof(unsigned long));
       if (page_table == (unsigned long *) NULL)
         ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
           image);
@@ -819,7 +819,7 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
     /*
       Dump colormap to file.
     */
-    pcx_colormap=(unsigned char *) AllocateMemory(3*256);
+    pcx_colormap=(unsigned char *) AcquireMemory(3*256);
     if (pcx_colormap == (unsigned char *) NULL)
       ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
         image);
@@ -841,7 +841,7 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
     for (i=0; i < 58; i++)
       (void) WriteByte(image,'\0');
     packets=image->rows*pcx_info.bytes_per_line*pcx_info.planes;
-    pcx_pixels=(unsigned char *) AllocateMemory(packets);
+    pcx_pixels=(unsigned char *) AcquireMemory(packets);
     if (pcx_pixels == (unsigned char *) NULL)
       ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
         image);
@@ -990,8 +990,8 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
     }
     (void) WriteByte(image,pcx_info.colormap_signature);
     (void) WriteBlob(image,3*256,(char *) pcx_colormap);
-    FreeMemory((void **) &pcx_pixels);
-    FreeMemory((void **) &pcx_colormap);
+    LiberateMemory((void **) &pcx_pixels);
+    LiberateMemory((void **) &pcx_colormap);
     if (image->next == (Image *) NULL)
       break;
     image=GetNextImage(image);
@@ -1012,7 +1012,7 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
       LSBFirstWriteLong(image,0x3ADE68B1L);
       for (i=0; i <= (int) scene; i++)
         LSBFirstWriteLong(image,page_table[i]);
-      FreeMemory((void **) &page_table);
+      LiberateMemory((void **) &page_table);
     }
   CloseBlob(image);
   return(True);

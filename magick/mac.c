@@ -300,7 +300,7 @@ static short BottleneckTest(PicHandle picture,CodecType *codec,int *depth,
 MagickExport void closedir(DIR *entry)
 {
   assert(entry != (DIR *) NULL);
-  FreeMemory((void **) &entry);
+  LiberateMemory((void **) &entry);
 }
 
 /*
@@ -863,7 +863,7 @@ MagickExport DIR *opendir(char *path)
       errno=error;
       return((DIR *) NULL);
     }
-  entry=(DIR *) AllocateMemory(sizeof(DIR));
+  entry=(DIR *) AcquireMemory(sizeof(DIR));
   if (entry == (DIR *) NULL)
     return((DIR *) NULL);
   entry->d_VRefNum=search_info.hFileInfo.ioVRefNum;
@@ -1137,7 +1137,7 @@ MagickExport Image *ReadPICTImage(const ImageInfo *image_info,
       image->storage_class=PseudoClass;
       image->colors=(*(picture_info.theColorTable))->ctSize;
       image->colormap=(PixelPacket *)
-        AllocateMemory(image->colors*sizeof(PixelPacket));
+        AcquireMemory(image->colors*sizeof(PixelPacket));
       if (image->colormap == (PixelPacket *) NULL)
         {
           if (picture_info.theColorTable != nil)

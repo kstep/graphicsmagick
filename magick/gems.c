@@ -476,6 +476,7 @@ MagickExport PixelPacket InterpolateColor(Image *image,const double x_offset,
     beta;
 
   PixelPacket
+    color,
     p,
     q,
     r,
@@ -489,45 +490,30 @@ MagickExport PixelPacket InterpolateColor(Image *image,const double x_offset,
   assert(image->signature == MagickSignature);
   x=x_offset;
   y=y_offset;
-  if ((x < -1) || (x >= image->columns) || (y < -1) || (y >= image->rows))
+  if ((x < -1.0) || (x >= image->columns) || (y < -1.0) || (y >= image->rows))
     return(image->background_color);
-  if ((x >= 0) && (y >= 0) && (x < (image->columns-1)) && (y < (image->rows-1)))
-    {
-      register PixelPacket
-        *t;
-
-      t=GetImagePixels(image,(int) x,(int) y,2,2);
-      if (t == (PixelPacket *) NULL)
-        return(image->background_color);
-      p=(*t++);
-      q=(*t++);
-      r=(*t++);
-      s=(*t++);
-    }
-  else
-    {
-      p=image->background_color;
-      if ((x >= 0) && (y >= 0))
-        p=GetOnePixel(image,(int) x,(int) y);
-      q=image->background_color;
-      if (((x+1) < image->columns) && (y >= 0))
-        q=GetOnePixel(image,(int) x+1,(int) y);
-      r=image->background_color;
-      if ((x >= 0) && ((y+1) < image->rows))
-        r=GetOnePixel(image,(int) x,(int) y+1);
-      s=image->background_color;
-      if (((x+1) < image->columns) && ((y+1) < image->rows))
-        s=GetOnePixel(image,(int) x+1,(int) y+1);
-    }
+  p=image->background_color;
+  if ((x >= 0.0) && (y >= 0.0))
+    p=GetOnePixel(image,(int) x,(int) y);
+  q=image->background_color;
+  if (((x+1.0) < image->columns) && (y >= 0.0))
+    q=GetOnePixel(image,(int) (x+1.0),(int) y);
+  r=image->background_color;
+  if ((x >= 0.0) && ((y+1.0) < image->rows))
+    r=GetOnePixel(image,(int) x,(int) (y+1.0));
+  s=image->background_color;
+  if (((x+1.0) < image->columns) && ((y+1.0) < image->rows))
+    s=GetOnePixel(image,(int) (x+1.0),(int) (y+1.0));
   x-=floor(x);
   y-=floor(y);
   alpha=1.0-x;
   beta=1.0-y;
-  p.red=beta*(alpha*p.red+x*q.red)+y*(alpha*r.red+x*s.red);
-  p.green=beta*(alpha*p.green+x*q.green)+y*(alpha*r.green+x*s.green);
-  p.blue=beta*(alpha*p.blue+x*q.blue)+y*(alpha*r.blue+x*s.blue);
-  p.opacity=beta*(alpha*p.opacity+x*q.opacity)+y*(alpha*r.opacity+x*s.opacity);
-  return(p);
+  color.red=beta*(alpha*p.red+x*q.red)+y*(alpha*r.red+x*s.red);
+  color.green=beta*(alpha*p.green+x*q.green)+y*(alpha*r.green+x*s.green);
+  color.blue=beta*(alpha*p.blue+x*q.blue)+y*(alpha*r.blue+x*s.blue);
+  color.opacity=
+    beta*(alpha*p.opacity+x*q.opacity)+y*(alpha*r.opacity+x*s.opacity);
+  return(color);
 }
 
 /*

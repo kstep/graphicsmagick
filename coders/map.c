@@ -140,9 +140,9 @@ static Image *ReadMAPImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (!AllocateImageColormap(image,image->offset ? image->offset : 256))
     ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
   packet_size=image->depth > 8 ? 2 : 1;
-  pixels=(unsigned char *) AllocateMemory(packet_size*image->columns);
+  pixels=(unsigned char *) AcquireMemory(packet_size*image->columns);
   packet_size=image->colors > 256 ? 6 : 3;
-  colormap=(unsigned char *) AllocateMemory(packet_size*image->colors);
+  colormap=(unsigned char *) AcquireMemory(packet_size*image->colors);
   if ((pixels == (unsigned char *) NULL) ||
       (colormap == (unsigned char *) NULL))
     ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
@@ -168,7 +168,7 @@ static Image *ReadMAPImage(const ImageInfo *image_info,ExceptionInfo *exception)
       image->colormap[i].blue=(*p++ << 8);
       image->colormap[i].blue|=(*p++);
     }
-  FreeMemory((void **) &colormap);
+  LiberateMemory((void **) &colormap);
   /*
     Read image pixels.
   */
@@ -195,7 +195,7 @@ static Image *ReadMAPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (!SyncImagePixels(image))
       break;
   }
-  FreeMemory((void **) &pixels);
+  LiberateMemory((void **) &pixels);
   CloseBlob(image);
   return(image);
 }
@@ -342,9 +342,9 @@ static unsigned int WriteMAPImage(const ImageInfo *image_info,Image *image)
       (void) QuantizeImage(&quantize_info,image);
     }
   packet_size=image->depth > 8 ? 2 : 1;
-  pixels=(unsigned char *) AllocateMemory(image->columns*packet_size);
+  pixels=(unsigned char *) AcquireMemory(image->columns*packet_size);
   packet_size=image->colors > 256 ? 6 : 3;
-  colormap=(unsigned char *) AllocateMemory(packet_size*image->colors);
+  colormap=(unsigned char *) AcquireMemory(packet_size*image->colors);
   if ((pixels == (unsigned char *) NULL) ||
       (colormap == (unsigned char *) NULL))
     ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
@@ -370,7 +370,7 @@ static unsigned int WriteMAPImage(const ImageInfo *image_info,Image *image)
       *q++=image->colormap[i].blue & 0xff;
     }
   (void) WriteBlob(image,packet_size*image->colors,(char *) colormap);
-  FreeMemory((void **) &colormap);
+  LiberateMemory((void **) &colormap);
   /*
     Write image pixels to file.
   */
@@ -389,7 +389,7 @@ static unsigned int WriteMAPImage(const ImageInfo *image_info,Image *image)
     }
     status=WriteBlob(image,q-pixels,(char *) pixels);
   }
-  FreeMemory((void **) &pixels);
+  LiberateMemory((void **) &pixels);
   CloseBlob(image);
   return(status);
 }

@@ -538,7 +538,7 @@ static unsigned int XAnnotateEditImage(Display *display,
   /*
     Initialize annotate structure.
   */
-  annotate_info=(XAnnotateInfo *) AllocateMemory(sizeof(XAnnotateInfo));
+  annotate_info=(XAnnotateInfo *) AcquireMemory(sizeof(XAnnotateInfo));
   if (annotate_info == (XAnnotateInfo *) NULL)
     return(False);
   XGetAnnotateInfo(annotate_info);
@@ -555,7 +555,7 @@ static unsigned int XAnnotateEditImage(Display *display,
   annotate_info->degrees=degrees;
   annotate_info->font_info=font_info;
   annotate_info->text=(char *)
-    AllocateMemory(windows->image.width/Max(font_info->min_bounds.width,1)+2);
+    AcquireMemory(windows->image.width/Max(font_info->min_bounds.width,1)+2);
   if (annotate_info->text == (char *) NULL)
     return(False);
   /*
@@ -817,13 +817,13 @@ static unsigned int XAnnotateEditImage(Display *display,
                 break;
               }
             annotate_info->next=(XAnnotateInfo *)
-              AllocateMemory(sizeof(XAnnotateInfo));
+              AcquireMemory(sizeof(XAnnotateInfo));
             if (annotate_info->next == (XAnnotateInfo *) NULL)
               return(False);
             *annotate_info->next=(*annotate_info);
             annotate_info->next->previous=annotate_info;
             annotate_info=annotate_info->next;
-            annotate_info->text=(char *) AllocateMemory(windows->image.width/
+            annotate_info->text=(char *) AcquireMemory(windows->image.width/
               Max(font_info->min_bounds.width,1)+2);
             if (annotate_info->text == (char *) NULL)
               return(False);
@@ -910,13 +910,13 @@ static unsigned int XAnnotateEditImage(Display *display,
               continue;
             }
           annotate_info->next=(XAnnotateInfo *)
-            AllocateMemory(sizeof(XAnnotateInfo));
+            AcquireMemory(sizeof(XAnnotateInfo));
           if (annotate_info->next == (XAnnotateInfo *) NULL)
             return(False);
           *annotate_info->next=(*annotate_info);
           annotate_info->next->previous=annotate_info;
           annotate_info=annotate_info->next;
-          annotate_info->text=(char *) AllocateMemory(windows->image.width/
+          annotate_info->text=(char *) AcquireMemory(windows->image.width/
             Max(font_info->min_bounds.width,1)+2);
           if (annotate_info->text == (char *) NULL)
             return(False);
@@ -958,8 +958,8 @@ static unsigned int XAnnotateEditImage(Display *display,
           No text on this line--  go to the next line of text.
         */
         previous_info=annotate_info->previous;
-        FreeMemory((void **) &annotate_info->text);
-        FreeMemory((void **) &annotate_info);
+        LiberateMemory((void **) &annotate_info->text);
+        LiberateMemory((void **) &annotate_info);
         annotate_info=previous_info;
         continue;
       }
@@ -1005,8 +1005,8 @@ static unsigned int XAnnotateEditImage(Display *display,
       Free up memory.
     */
     previous_info=annotate_info->previous;
-    FreeMemory((void **) &annotate_info->text);
-    FreeMemory((void **) &annotate_info);
+    LiberateMemory((void **) &annotate_info->text);
+    LiberateMemory((void **) &annotate_info);
     annotate_info=previous_info;
   }
   XSetForeground(display,annotate_context,
@@ -3676,7 +3676,7 @@ static unsigned int XDrawEditImage(Display *display,
     Allocate polygon info.
   */
   max_coordinates=2048;
-  coordinate_info=(XPoint *) AllocateMemory(max_coordinates*sizeof(XPoint));
+  coordinate_info=(XPoint *) AcquireMemory(max_coordinates*sizeof(XPoint));
   if (coordinate_info == (XPoint *) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Unable to draw on image",
@@ -4282,7 +4282,7 @@ static unsigned int XDrawEditImage(Display *display,
               break;
             }
           max_coordinates<<=1;
-          ReallocateMemory((void **) &coordinate_info,
+          ReacquireMemory((void **) &coordinate_info,
             max_coordinates*sizeof(XPoint));
           if (coordinate_info == (XPoint *) NULL)
             MagickWarning(ResourceLimitWarning,"Unable to draw on image",
@@ -4309,7 +4309,7 @@ static unsigned int XDrawEditImage(Display *display,
           if (number_coordinates < (int) max_coordinates)
             break;
           max_coordinates<<=1;
-          ReallocateMemory((void **) &coordinate_info,
+          ReacquireMemory((void **) &coordinate_info,
             max_coordinates*sizeof(XPoint));
           if (coordinate_info == (XPoint *) NULL)
             MagickWarning(ResourceLimitWarning,"Unable to draw on image",
@@ -4486,7 +4486,7 @@ static unsigned int XDrawEditImage(Display *display,
     (void) XConfigureImage(display,resource_info,windows,*image);
   }
   XSetCursorState(display,windows,False);
-  FreeMemory((void **) &coordinate_info);
+  LiberateMemory((void **) &coordinate_info);
   return(status);
 }
 
@@ -4623,7 +4623,7 @@ static void XImageCache(Display *display,XResourceInfo *resource_info,
       windows->image.window_changes.width=cache_image->columns;
       windows->image.window_changes.height=cache_image->rows;
       if (windows->image.crop_geometry != (char *) NULL)
-        FreeMemory((void **) &windows->image.crop_geometry);
+        LiberateMemory((void **) &windows->image.crop_geometry);
       windows->image.crop_geometry=cache_image->geometry;
       if (redo_image != (Image *) NULL)
         DestroyImage(redo_image);
@@ -4759,7 +4759,7 @@ static void XImageCache(Display *display,XResourceInfo *resource_info,
       cache_image->geometry=windows->image.crop_geometry;
       if (windows->image.crop_geometry != (char *) NULL)
         {
-          cache_image->geometry=(char *) AllocateMemory(MaxTextExtent);
+          cache_image->geometry=(char *) AcquireMemory(MaxTextExtent);
           if (cache_image->geometry != (char *) NULL)
             (void) strcpy(cache_image->geometry,windows->image.crop_geometry);
         }
@@ -4789,7 +4789,7 @@ static void XImageCache(Display *display,XResourceInfo *resource_info,
       windows->image.window_changes.width=redo_image->columns;
       windows->image.window_changes.height=redo_image->rows;
       if (windows->image.crop_geometry != (char *) NULL)
-        FreeMemory((void **) &windows->image.crop_geometry);
+        LiberateMemory((void **) &windows->image.crop_geometry);
       windows->image.crop_geometry=redo_image->geometry;
       DestroyImage(*image);
       *image=redo_image;
@@ -5535,7 +5535,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       TransformImage(image,windows->image.crop_geometry,image_geometry);
       if (windows->image.crop_geometry != (char *) NULL)
         {
-          FreeMemory((void **) &windows->image.crop_geometry);
+          LiberateMemory((void **) &windows->image.crop_geometry);
           windows->image.crop_geometry=(char *) NULL;
         }
       windows->image.x=0;
@@ -5575,7 +5575,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       windows->image.window_changes.height=(*image)->rows;
       if (windows->image.crop_geometry != (char *) NULL)
         {
-          FreeMemory((void **) &windows->image.crop_geometry);
+          LiberateMemory((void **) &windows->image.crop_geometry);
           windows->image.crop_geometry=(char *) NULL;
           windows->image.x=0;
           windows->image.y=0;
@@ -7877,7 +7877,7 @@ static Image *XOpenImage(Display *display,XResourceInfo *resource_info,
             "XGetCommand failed");
           return((Image *) NULL);
         }
-      filelist=(char **) AllocateMemory(count*sizeof(char *));
+      filelist=(char **) AcquireMemory(count*sizeof(char *));
       if (filelist == (char **) NULL)
         {
           MagickWarning(ResourceLimitWarning,"Unable to select image",
@@ -7892,7 +7892,7 @@ static Image *XOpenImage(Display *display,XResourceInfo *resource_info,
       filelist[j]=(char *) NULL;
       XListBrowserWidget(display,windows,&windows->widget,
         (const char **) filelist,"Load","Select Image to Load:",filename);
-      FreeMemory((void **) &filelist);
+      LiberateMemory((void **) &filelist);
       XFreeStringList(files);
     }
   if (*filename == '\0')
@@ -7981,7 +7981,7 @@ static Image *XOpenImage(Display *display,XResourceInfo *resource_info,
       if (file == (FILE *) NULL)
         return((Image *) NULL);
       length=MaxTextExtent;
-      text=(char *) AllocateMemory(length);
+      text=(char *) AcquireMemory(length);
       for (p=text ; text != (char *) NULL; p++)
       {
         c=fgetc(file);
@@ -7991,7 +7991,7 @@ static Image *XOpenImage(Display *display,XResourceInfo *resource_info,
           {
             *p='\0';
             length<<=1;
-            ReallocateMemory((void **) &text,length);
+            ReacquireMemory((void **) &text,length);
             if (text == (char *) NULL)
               break;
             p=text+Extent(text);
@@ -8015,10 +8015,10 @@ static Image *XOpenImage(Display *display,XResourceInfo *resource_info,
           XTextViewWidget(display,resource_info,windows,True,title,
             (const char **) textlist);
           for (i=0; textlist[i] != (char *) NULL; i++)
-            FreeMemory((void **) &textlist[i]);
-          FreeMemory((void **) &textlist);
+            LiberateMemory((void **) &textlist[i]);
+          LiberateMemory((void **) &textlist);
         }
-      FreeMemory((void **) &text);
+      LiberateMemory((void **) &text);
     }
   DestroyImageInfo(image_info);
   return(nexus);
@@ -10529,7 +10529,7 @@ static void XSetCropGeometry(Display *display,XWindows *windows,
       /*
         Allocate crop geometry string.
       */
-      windows->image.crop_geometry=(char *) AllocateMemory(MaxTextExtent);
+      windows->image.crop_geometry=(char *) AcquireMemory(MaxTextExtent);
       if (windows->image.crop_geometry == (char *) NULL)
         MagickError(ResourceLimitError,"Unable to crop X image",
           windows->image.name);
@@ -11177,7 +11177,7 @@ static Image *XVisualDirectoryImage(Display *display,
   /*
     Expand the filenames.
   */
-  filelist=(char **) AllocateMemory(sizeof(char *));
+  filelist=(char **) AcquireMemory(sizeof(char *));
   if (filelist == (char **) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Memory allocation failed",
@@ -11227,7 +11227,7 @@ static Image *XVisualDirectoryImage(Display *display,
     (void) CloneString(&clone_info->size,DefaultTileGeometry);
     next_image=ReadImage(clone_info,&exception);
     if (filelist[i] != filenames)
-      FreeMemory((void **) &filelist[i]);
+      LiberateMemory((void **) &filelist[i]);
     if (next_image != (Image *) NULL)
       {
         MogrifyImages(clone_info,5,commands,&next_image);
@@ -11251,7 +11251,7 @@ static Image *XVisualDirectoryImage(Display *display,
     ProgressMonitor(LoadImageText,i,number_files);
   }
   DestroyImageInfo(clone_info);
-  FreeMemory((void **) &filelist);
+  LiberateMemory((void **) &filelist);
   if (image == (Image *) NULL)
     {
       XSetCursorState(display,windows,False);
@@ -12161,8 +12161,8 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   */
   if (windows->image.id != (Window) NULL)
     {
-      FreeMemory((void **) &windows->image.name);
-      FreeMemory((void **) &windows->image.icon_name);
+      LiberateMemory((void **) &windows->image.name);
+      LiberateMemory((void **) &windows->image.icon_name);
     }
   XGetWindowInfo(display,visual_info,map_info,pixel,font_info,
     resource_info,&windows->image);
@@ -12189,8 +12189,8 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
       /*
         Window name is the base of the filename.
       */
-      windows->image.name=(char *) AllocateMemory(MaxTextExtent);
-      windows->image.icon_name=(char *) AllocateMemory(MaxTextExtent);
+      windows->image.name=(char *) AcquireMemory(MaxTextExtent);
+      windows->image.icon_name=(char *) AcquireMemory(MaxTextExtent);
       if ((windows->image.name == NULL) || (windows->image.icon_name == NULL))
         MagickError(ResourceLimitError,"Unable to create Image window",
           "Memory allocation failed");
@@ -12368,13 +12368,13 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
     Initialize Widget window.
   */
   if (windows->widget.id != (Window) NULL)
-    FreeMemory((void **) &windows->widget.name);
+    LiberateMemory((void **) &windows->widget.name);
   XGetWindowInfo(display,visual_info,map_info,pixel,font_info,
     resource_info,&windows->widget);
   FormatString(resource_name,"%.1024s.widget",resource_info->client_name);
   windows->widget.geometry=XGetResourceClass(resource_info->resource_database,
     resource_name,"geometry",(char *) NULL);
-  windows->widget.name=(char *) AllocateMemory(MaxTextExtent);
+  windows->widget.name=(char *) AcquireMemory(MaxTextExtent);
   if (windows->widget.name == NULL)
     MagickError(ResourceLimitError,"Unable to create Image window",
       "Memory allocation failed");
@@ -12403,10 +12403,10 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
     Initialize popup window.
   */
   if (windows->popup.id != (Window) NULL)
-    FreeMemory((void **) &windows->popup.name);
+    LiberateMemory((void **) &windows->popup.name);
   XGetWindowInfo(display,visual_info,map_info,pixel,font_info,
     resource_info,&windows->popup);
-  windows->popup.name=(char *) AllocateMemory(MaxTextExtent);
+  windows->popup.name=(char *) AcquireMemory(MaxTextExtent);
   if (windows->popup.name == NULL)
     MagickError(ResourceLimitError,"Unable to create Image window",
       "Memory allocation failed");
@@ -12434,14 +12434,14 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
     Initialize Magnify window and cursor.
   */
   if (windows->magnify.id != (Window) NULL)
-    FreeMemory((void **) &windows->magnify.name);
+    LiberateMemory((void **) &windows->magnify.name);
   XGetWindowInfo(display,visual_info,map_info,pixel,font_info,
     resource_info,&windows->magnify);
   windows->magnify.shared_memory=resource_info->use_shared_memory;
   FormatString(resource_name,"%.1024s.magnify",resource_info->client_name);
   windows->magnify.geometry=XGetResourceClass(resource_info->resource_database,
     resource_name,"geometry",(char *) NULL);
-  windows->magnify.name=(char *) AllocateMemory(MaxTextExtent);
+  windows->magnify.name=(char *) AcquireMemory(MaxTextExtent);
   if (windows->magnify.name == NULL)
     MagickError(ResourceLimitError,"Unable to create Magnify window",
       "Memory allocation failed");
@@ -13553,16 +13553,16 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
       XFree((void *) visual_info);
       XFree((void *) icon_map);
       XFree((void *) map_info);
-      FreeMemory((void **) &windows->popup.name);
-      FreeMemory((void **) &windows->widget.name);
-      FreeMemory((void **) &windows->magnify.name);
-      FreeMemory((void **) &windows->image.icon_name);
-      FreeMemory((void **) &windows->image.name);
+      LiberateMemory((void **) &windows->popup.name);
+      LiberateMemory((void **) &windows->widget.name);
+      LiberateMemory((void **) &windows->magnify.name);
+      LiberateMemory((void **) &windows->image.icon_name);
+      LiberateMemory((void **) &windows->image.name);
       if (resource_info->copy_image != (Image *) NULL)
         DestroyImage(resource_info->copy_image);
-      FreeMemory((void **) &windows->icon_resources);
-      FreeMemory((void **) &windows->icon_pixel);
-      FreeMemory((void **) &windows->pixel_info);
+      LiberateMemory((void **) &windows->icon_resources);
+      LiberateMemory((void **) &windows->icon_pixel);
+      LiberateMemory((void **) &windows->pixel_info);
       (void) signal(SIGSEGV,SIG_DFL);
       (void) signal(SIGINT,SIG_DFL);
       (void) XSetWindows((XWindows *) NULL);

@@ -479,7 +479,7 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
       */
       *image->filename='\0';
       clone_info->blob.extent=Max((int) *length,image->blob.quantum);
-      clone_info->blob.data=(char *) AllocateMemory(clone_info->blob.extent);
+      clone_info->blob.data=(char *) AcquireMemory(clone_info->blob.extent);
       if (clone_info->blob.data == (char *) NULL)
         {
           ThrowException(exception,BlobWarning,"Unable to create blob",
@@ -534,7 +534,7 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
       return((void *) NULL);
     }
   *length=fstat(file,&attributes) < 0 ? 0 : attributes.st_size;
-  blob=(char *) AllocateMemory(*length);
+  blob=(char *) AcquireMemory(*length);
   if (blob == (char *) NULL)
     {
       (void) remove(image->filename);
@@ -1198,7 +1198,7 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
 
       (void) strcpy(filename,p);
       command=p;
-      FreeMemory((void **) &command);
+      LiberateMemory((void **) &command);
     }
   /*
     Open image file.
@@ -1520,7 +1520,7 @@ MagickExport off_t SeekBlob(Image *image,const off_t offset,const int whence)
   if (image->blob.offset > image->blob.length)
     {
       image->blob.length=image->blob.offset;
-      ReallocateMemory((void **) &image->blob.data,image->blob.length);
+      ReacquireMemory((void **) &image->blob.data,image->blob.length);
       if (image->blob.data == (char *) NULL)
         {
           image->blob.length=0;
@@ -1764,7 +1764,7 @@ MagickExport size_t WriteBlob(Image *image,const size_t length,const void *data)
   if (length > (image->blob.extent-image->blob.offset))
     {
       image->blob.extent+=length+image->blob.quantum;
-      ReallocateMemory((void **) &image->blob.data,image->blob.extent);
+      ReacquireMemory((void **) &image->blob.data,image->blob.extent);
       if (image->blob.data == (char *) NULL)
         {
           image->blob.extent=0;

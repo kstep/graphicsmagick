@@ -146,10 +146,10 @@ static unsigned int DecodeImage(Image *image,const int opacity,
     Allocate decoder tables.
   */
   assert(image != (Image *) NULL);
-  packet=(unsigned char *) AllocateMemory(256);
-  prefix=(short *) AllocateMemory(MaxStackSize*sizeof(short));
-  suffix=(unsigned char *) AllocateMemory(MaxStackSize);
-  pixel_stack=(unsigned char *) AllocateMemory(MaxStackSize+1);
+  packet=(unsigned char *) AcquireMemory(256);
+  prefix=(short *) AcquireMemory(MaxStackSize*sizeof(short));
+  suffix=(unsigned char *) AcquireMemory(MaxStackSize);
+  pixel_stack=(unsigned char *) AcquireMemory(MaxStackSize+1);
   if ((packet == (unsigned char *) NULL) ||
       (prefix == (short *) NULL) ||
       (suffix == (unsigned char *) NULL) ||
@@ -287,10 +287,10 @@ static unsigned int DecodeImage(Image *image,const int opacity,
       if (QuantumTick(y,image->rows))
         ProgressMonitor(LoadImageText,y,image->rows);
   }
-  FreeMemory((void **) &pixel_stack);
-  FreeMemory((void **) &suffix);
-  FreeMemory((void **) &prefix);
-  FreeMemory((void **) &packet);
+  LiberateMemory((void **) &pixel_stack);
+  LiberateMemory((void **) &suffix);
+  LiberateMemory((void **) &prefix);
+  LiberateMemory((void **) &packet);
   image->compression=LZWCompression;
   image->matte=opacity >= 0;
   if (y < image->rows)
@@ -466,10 +466,10 @@ static unsigned int EncodeImage(const ImageInfo *image_info,Image *image,
     Allocate encoder tables.
   */
   assert(image != (Image *) NULL);
-  packet=(unsigned char *) AllocateMemory(256);
-  hash_code=(short *) AllocateMemory(MaxHashTable*sizeof(short));
-  hash_prefix=(short *) AllocateMemory(MaxHashTable*sizeof(short));
-  hash_suffix=(unsigned char *) AllocateMemory(MaxHashTable);
+  packet=(unsigned char *) AcquireMemory(256);
+  hash_code=(short *) AcquireMemory(MaxHashTable*sizeof(short));
+  hash_prefix=(short *) AcquireMemory(MaxHashTable*sizeof(short));
+  hash_suffix=(unsigned char *) AcquireMemory(MaxHashTable);
   if ((packet == (unsigned char *) NULL) || (hash_code == (short *) NULL) ||
       (hash_prefix == (short *) NULL) ||
       (hash_suffix == (unsigned char *) NULL))
@@ -598,10 +598,10 @@ static unsigned int EncodeImage(const ImageInfo *image_info,Image *image,
   /*
     Free encoder memory.
   */
-  FreeMemory((void **) &hash_suffix);
-  FreeMemory((void **) &hash_prefix);
-  FreeMemory((void **) &hash_code);
-  FreeMemory((void **) &packet);
+  LiberateMemory((void **) &hash_suffix);
+  LiberateMemory((void **) &hash_prefix);
+  LiberateMemory((void **) &hash_code);
+  LiberateMemory((void **) &packet);
   return(True);
 }
 
@@ -738,7 +738,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         opacity global colormap.
       */
       global_colors=1 << ((flag & 0x07)+1);
-      global_colormap=(unsigned char *) AllocateMemory(3*global_colors);
+      global_colormap=(unsigned char *) AcquireMemory(3*global_colors);
       if (global_colormap == (unsigned char *) NULL)
         ThrowReaderException(ResourceLimitWarning,
           "Unable to read image colormap file",image);
@@ -797,10 +797,10 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
               if (length <= 0)
                 break;
               if (comments != (char *) NULL)
-                ReallocateMemory((void **) &comments,Extent(comments)+length+1);
+                ReacquireMemory((void **) &comments,Extent(comments)+length+1);
               else
                 {
-                  comments=(char *) AllocateMemory(length+1);
+                  comments=(char *) AcquireMemory(length+1);
                   if (comments != (char *) NULL)
                     *comments='\0';
                 }
@@ -813,7 +813,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (comments == (char *) NULL)
               break;
             (void) SetImageAttribute(image,"Comment",comments);
-            FreeMemory((void **) &comments);
+            LiberateMemory((void **) &comments);
             break;
           }
           case 0xff:
@@ -919,7 +919,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Read local colormap.
         */
-        colormap=(unsigned char *) AllocateMemory(3*image->colors);
+        colormap=(unsigned char *) AcquireMemory(3*image->colors);
         if (colormap == (unsigned char *) NULL)
           ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
             image);
@@ -931,7 +931,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
           image->colormap[i].green=UpScale(*p++);
           image->colormap[i].blue=UpScale(*p++);
         }
-        FreeMemory((void **) &colormap);
+        LiberateMemory((void **) &colormap);
       }
     if (opacity >= (int) image->colors)
       {
@@ -955,7 +955,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         break;
   }
   if (global_colormap != (unsigned char *) NULL)
-    FreeMemory((void **) &global_colormap);
+    LiberateMemory((void **) &global_colormap);
   while (image->previous != (Image *) NULL)
     image=image->previous;
   CloseBlob(image);
@@ -1129,8 +1129,8 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
   /*
     Allocate colormap.
   */
-  global_colormap=(unsigned char *) AllocateMemory(768);
-  colormap=(unsigned char *) AllocateMemory(768);
+  global_colormap=(unsigned char *) AcquireMemory(768);
+  colormap=(unsigned char *) AcquireMemory(768);
   if ((global_colormap == (unsigned char *) NULL) ||
       (colormap == (unsigned char *) NULL))
     ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
@@ -1179,12 +1179,12 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
               Set transparent pixel.
             */
             opacity=image->colors++;
-            ReallocateMemory((void **) &image->colormap,
+            ReacquireMemory((void **) &image->colormap,
               image->colors*sizeof(PixelPacket));
             if (image->colormap == (PixelPacket *) NULL)
               {
-                FreeMemory((void **) &global_colormap);
-                FreeMemory((void **) &colormap);
+                LiberateMemory((void **) &global_colormap);
+                LiberateMemory((void **) &colormap);
                 ThrowWriterException(ResourceLimitWarning,
                   "Memory allocation failed",image);
               }
@@ -1388,8 +1388,8 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
           &image->exception);
         if (interlace_image == (Image *) NULL)
           {
-            FreeMemory((void **) &global_colormap);
-            FreeMemory((void **) &colormap);
+            LiberateMemory((void **) &global_colormap);
+            LiberateMemory((void **) &colormap);
             return(False);
           }
         i=0;
@@ -1420,8 +1420,8 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
       }
     if (status == False)
       {
-        FreeMemory((void **) &global_colormap);
-        FreeMemory((void **) &colormap);
+        LiberateMemory((void **) &global_colormap);
+        LiberateMemory((void **) &colormap);
         ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
           image);
       }
@@ -1432,8 +1432,8 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
     ProgressMonitor(SaveImagesText,scene++,GetNumberScenes(image));
   } while (image_info->adjoin);
   (void) WriteByte(image,';'); /* terminator */
-  FreeMemory((void **) &global_colormap);
-  FreeMemory((void **) &colormap);
+  LiberateMemory((void **) &global_colormap);
+  LiberateMemory((void **) &colormap);
   if (image_info->adjoin)
     while (image->previous != (Image *) NULL)
       image=image->previous;

@@ -86,8 +86,8 @@
 void closedir(DIR *directory)
 {
   assert(directory != (DIR *) NULL);
-  FreeMemory((void **) &directory->pattern);
-  FreeMemory((void **) &directory);
+  LiberateMemory((void **) &directory->pattern);
+  LiberateMemory((void **) &directory);
 }
 
 /*
@@ -122,7 +122,7 @@ DIR *opendir(char *name)
   /*
     Allocate memory for handle and the pattern.
   */
-  directory=(DIR *) AllocateMemory(sizeof(*directory));
+  directory=(DIR *) AcquireMemory(sizeof(*directory));
   if (directory == (DIR *) NULL)
     {
       errno=ENOMEM;
@@ -130,11 +130,11 @@ DIR *opendir(char *name)
     }
   if (strcmp(".",name) == 0)
     name="";
-  directory->pattern=AllocateMemory((unsigned int) (strlen(name)
+  directory->pattern=AcquireMemory((unsigned int) (strlen(name)
     +sizeof("*.*")+1));
   if (directory->pattern == (char *) NULL)
     {
-      FreeMemory((void **) &directory);
+      LiberateMemory((void **) &directory);
       errno=ENOMEM;
       return(NULL);
     }

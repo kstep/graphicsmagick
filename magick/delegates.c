@@ -107,10 +107,10 @@ MagickExport void DestroyDelegateInfo(void)
   for (p=delegates; p != (DelegateInfo *) NULL; )
   {
     if (p->commands != (char *) NULL)
-      FreeMemory((void **) &p->commands);
+      LiberateMemory((void **) &p->commands);
     delegate=p;
     p=p->next;
-    FreeMemory((void **) &delegate);
+    LiberateMemory((void **) &delegate);
   }
   delegates=(DelegateInfo *) NULL;
   LiberateSemaphore(delegate_semaphore);
@@ -272,8 +272,8 @@ MagickExport char *GetDelegateCommand(const ImageInfo *image_info,Image *image,
     Free resources.
   */
   for (i=0; commands[i] != (char *) NULL; i++)
-    FreeMemory((void **) &commands[i]);
-  FreeMemory((void **) &commands);
+    LiberateMemory((void **) &commands[i]);
+  LiberateMemory((void **) &commands);
   return(command);
 }
 
@@ -436,7 +436,7 @@ MagickExport unsigned int InvokeDelegate(const ImageInfo *image_info,
         LocaleUpper(magick);
         (void) strcpy((char *) image_info->magick,magick);
         (void) strcpy(image->magick,magick);
-        FreeMemory((void **) &magick);
+        LiberateMemory((void **) &magick);
         (void) strcpy(filename,image->filename);
         clone_info=CloneImageInfo(image_info);
         if (clone_info == (ImageInfo *) NULL)
@@ -474,10 +474,10 @@ MagickExport unsigned int InvokeDelegate(const ImageInfo *image_info,
       Execute delegate.
     */
     status=SystemCommand(image_info->verbose,command);
-    FreeMemory((void **) &command);
+    LiberateMemory((void **) &command);
     if (status != False)
       ThrowBinaryException(DelegateWarning,"delegate failed",commands[i]);
-    FreeMemory((void **) &commands[i]);
+    LiberateMemory((void **) &commands[i]);
   }
   /*
     Free resources.
@@ -485,8 +485,8 @@ MagickExport unsigned int InvokeDelegate(const ImageInfo *image_info,
   (void) remove(image_info->unique);
   (void) remove(image_info->zero);
   for ( ; commands[i] != (char *) NULL; i++)
-    FreeMemory((void **) &commands[i]);
-  FreeMemory((void **) &commands);
+    LiberateMemory((void **) &commands[i]);
+  LiberateMemory((void **) &commands);
   return(!status);
 }
 
@@ -666,11 +666,11 @@ static unsigned int ReadDelegates(const char *path,const char *directory)
             break;
           Strip(text);
           if (delegate_info.commands != (char *) NULL)
-            ReallocateMemory((void **) &delegate_info.commands,
+            ReacquireMemory((void **) &delegate_info.commands,
               (strlen(delegate_info.commands)+strlen(text)+3));
           else
             {
-              delegate_info.commands=(char *) AllocateMemory(strlen(text)+3);
+              delegate_info.commands=(char *) AcquireMemory(strlen(text)+3);
               if (delegate_info.commands != (char *) NULL)
                 *delegate_info.commands='\0';
             }
@@ -693,7 +693,7 @@ static unsigned int ReadDelegates(const char *path,const char *directory)
             Strip(delegate_info.commands);
             (void) SetDelegateInfo(&delegate_info);
             number_delegates++;
-            FreeMemory((void **) &delegate_info.commands);
+            LiberateMemory((void **) &delegate_info.commands);
           }
       }
       (void) fclose(file);
@@ -755,7 +755,7 @@ MagickExport DelegateInfo *SetDelegateInfo(DelegateInfo *delegate_info)
   /*
     Initialize new delegate.
   */
-  delegate=(DelegateInfo *) AllocateMemory(sizeof(DelegateInfo));
+  delegate=(DelegateInfo *) AcquireMemory(sizeof(DelegateInfo));
   if (delegate == (DelegateInfo *) NULL)
     return(delegates);
   (void) strcpy(delegate->decode_tag,delegate_info->decode_tag);
@@ -768,7 +768,7 @@ MagickExport DelegateInfo *SetDelegateInfo(DelegateInfo *delegate_info)
         Note commands associated with this delegate.
       */
       delegate->commands=(char *)
-        AllocateMemory(strlen(delegate_info->commands)+1);
+        AcquireMemory(strlen(delegate_info->commands)+1);
       if (delegate->commands == (char *) NULL)
         return(delegates);
       (void) strcpy(delegate->commands,delegate_info->commands);
@@ -791,9 +791,9 @@ MagickExport DelegateInfo *SetDelegateInfo(DelegateInfo *delegate_info)
         /*
           Delegate overrides an existing one with the same tags.
         */
-        FreeMemory((void **) &p->commands);
+        LiberateMemory((void **) &p->commands);
         p->commands=delegate->commands;
-        FreeMemory((void **) &delegate);
+        LiberateMemory((void **) &delegate);
         return(delegates);
       }
     if (p->next == (DelegateInfo *) NULL)

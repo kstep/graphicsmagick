@@ -164,7 +164,7 @@ static Image *ReadJBIGImage(const ImageInfo *image_info,
   /*
     Read JBIG file.
   */
-  buffer=(unsigned char *) AllocateMemory(MaxBufferSize);
+  buffer=(unsigned char *) AcquireMemory(MaxBufferSize);
   if (buffer == (unsigned char *) NULL)
     ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
   status=JBG_EAGAIN;
@@ -189,7 +189,7 @@ static Image *ReadJBIGImage(const ImageInfo *image_info,
   image->rows=(unsigned int) jbg_dec_getheight(&jbig_info);
   if (!AllocateImageColormap(image,2))
     {
-      FreeMemory((void **) &buffer);
+      LiberateMemory((void **) &buffer);
       ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
         image);
     }
@@ -234,7 +234,7 @@ static Image *ReadJBIGImage(const ImageInfo *image_info,
     Free scale resource.
   */
   jbg_dec_free(&jbig_info);
-  FreeMemory((void **) &buffer);
+  LiberateMemory((void **) &buffer);
   CloseBlob(image);
   return(image);
 }
@@ -414,7 +414,7 @@ static unsigned int WriteJBIGImage(const ImageInfo *image_info,Image *image)
     */
     TransformRGBImage(image,RGBColorspace);
     number_packets=((image->columns+7) >> 3)*image->rows;
-    pixels=(unsigned char *) AllocateMemory(number_packets);
+    pixels=(unsigned char *) AcquireMemory(number_packets);
     if (pixels == (unsigned char *) NULL)
       ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
         image);
@@ -490,7 +490,7 @@ static unsigned int WriteJBIGImage(const ImageInfo *image_info,Image *image)
     */
     jbg_enc_out(&jbig_info);
     jbg_enc_free(&jbig_info);
-    FreeMemory((void **) &pixels);
+    LiberateMemory((void **) &pixels);
     if (image->next == (Image *) NULL)
       break;
     image=GetNextImage(image);

@@ -161,8 +161,8 @@ static void DestroyPixelStream(Image *image)
   if (image->cache == (void *) NULL)
     return;
   stream_info=(StreamInfo *) image->cache;
-  FreeMemory((void **) &stream_info->stash);
-  FreeMemory((void **) &stream_info);
+  LiberateMemory((void **) &stream_info->stash);
+  LiberateMemory((void **) &stream_info);
 }
 
 /*
@@ -331,6 +331,78 @@ static PixelPacket *GetPixelsFromStream(const Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   R e a d S t r e a m                                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method ReadStream makes the image pixels available to a user supplied
+%  callback method immediately upon reading a scanline with the ReadImage()
+%  method.
+%
+%  The format of the ReadStream method is:
+%
+%      unsigned int ReadStream(const ImageInfo *image_info,
+%        void (*Stream)(const Image *),ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o status: Method ReadStream returns True if the image pixels are
+%      streamed to the user supplied callback method otherwise False.
+%
+%    o image_info: Specifies a pointer to an ImageInfo structure.
+%
+%    o stream: a callback method.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+%
+*/
+MagickExport unsigned int ReadStream(const ImageInfo *image_info,
+  void (*fifo)(Image *),ExceptionInfo *exception)
+{
+  Image
+    *image;
+
+  ImageInfo
+    *clone_info;
+
+  /*
+    Replace image pixel methods with streaming methods.
+  */
+  assert(image_info != (ImageInfo *) NULL);
+  assert(image_info->signature == MagickSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
+  CloseImagePixels=ClosePixelStream;
+  DestroyImagePixels=DestroyPixelStream;
+  GetImagePixels=GetPixelStream;
+  GetIndexes=GetIndexesFromStream;
+  GetOnePixel=GetOnePixelFromStream;
+  GetPixels=GetPixelsFromStream;
+  SetImagePixels=SetPixelStream;
+  SyncImagePixels=SyncPixelStream;
+  /*
+    Stream image pixels.
+  */
+  clone_info=CloneImageInfo(image_info);
+  clone_info->fifo=fifo;
+  image=ReadImage(clone_info,exception);
+  DestroyImageInfo(clone_info);
+  DestroyImage(image);
+  /*
+    Restore pixel cache methods.
+  */
+  SetPixelCacheMethods();
+  return(exception->severity == UndefinedException);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 +   S e t P i x e l S t r e a m                                               %
 %                                                                             %
 %                                                                             %
@@ -384,7 +456,7 @@ static PixelPacket *SetPixelStream(Image *image,const int x,const int y,
     }
   if (image->cache == (void *) NULL)
     {
-      stream_info=(StreamInfo *) AllocateMemory(sizeof(StreamInfo));
+      stream_info=(StreamInfo *) AcquireMemory(sizeof(StreamInfo));
       if (stream_info == (StreamInfo *) NULL)
         MagickError(ResourceLimitError,"Memory allocation failed",
           "unable to allocate cache info");
@@ -404,10 +476,10 @@ static PixelPacket *SetPixelStream(Image *image,const int x,const int y,
   if (image->storage_class == PseudoClass)
     length+=number_pixels*sizeof(IndexPacket);
   if (stream_info->stash == (void *) NULL)
-    stream_info->stash=AllocateMemory(length);
+    stream_info->stash=AcquireMemory(length);
   else
     if (stream_info->length != length)
-      ReallocateMemory((void **) &stream_info->stash,length);
+      ReacquireMemory((void **) &stream_info->stash,length);
   if (stream_info->stash == (void *) NULL)
     MagickError(ResourceLimitError,"Memory allocation failed",
       "unable to allocate cache info");
@@ -457,24 +529,24 @@ static unsigned int SyncPixelStream(Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   S t r e a m I m a g e                                                     %
+%   W r i t e S t r e a m                                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method StreamImage makes the image pixels available to a user supplied
-%  callback method immediately upon reading a scanline with the ReadImage()
+%  Method WriteStream makes the image pixels available to a user supplied
+%  callback method immediately upon writing a scanline with the WriteImage()
 %  method.
 %
-%  The format of the StreamImage method is:
+%  The format of the WriteStream method is:
 %
-%      unsigned int StreamImage(const ImageInfo *image_info,
-%        void (*Stream)(const Image *),ExceptionInfo *exception)
+%      unsigned int WriteStream(const ImageInfo *image_info,Image *image,
+%        void (*Stream)(const Image *))
 %
 %  A description of each parameter follows:
 %
-%    o status: Method StreamImage returns True if the image pixels are
+%    o status: Method WriteStream returns True if the image pixels are
 %      streamed to the user supplied callback method otherwise False.
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
@@ -485,22 +557,22 @@ static unsigned int SyncPixelStream(Image *image)
 %
 %
 */
-MagickExport unsigned int StreamImage(const ImageInfo *image_info,
-  void (*fifo)(Image *),ExceptionInfo *exception)
+MagickExport unsigned int WriteStream(const ImageInfo *image_info,Image *image,
+  void (*fifo)(Image *))
 {
-  Image
-    *image;
-
   ImageInfo
     *clone_info;
+
+  unsigned int
+    status;
 
   /*
     Replace image pixel methods with streaming methods.
   */
   assert(image_info != (ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
-  assert(exception != (ExceptionInfo *) NULL);
-  assert(exception->signature == MagickSignature);
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   CloseImagePixels=ClosePixelStream;
   DestroyImagePixels=DestroyPixelStream;
   GetImagePixels=GetPixelStream;
@@ -514,12 +586,11 @@ MagickExport unsigned int StreamImage(const ImageInfo *image_info,
   */
   clone_info=CloneImageInfo(image_info);
   clone_info->fifo=fifo;
-  image=ReadImage(clone_info,exception);
+  status=WriteImage(clone_info,image);
   DestroyImageInfo(clone_info);
-  DestroyImage(image);
   /*
     Restore pixel cache methods.
   */
   SetPixelCacheMethods();
-  return(exception->severity == UndefinedException);
+  return(status);
 }

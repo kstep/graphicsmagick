@@ -129,7 +129,7 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
     Allocate memory for a scanline.
   */
   packet_size=image->depth > 8 ? 2 : 1;
-  scanline=(unsigned char *) AllocateMemory(packet_size*image->tile_info.width);
+  scanline=(unsigned char *) AcquireMemory(packet_size*image->tile_info.width);
   if (scanline == (unsigned char *) NULL)
     ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
   if (image_info->subrange != 0)
@@ -203,7 +203,7 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
         ProgressMonitor(LoadImagesText,TellBlob(image),image->filesize);
       }
   } while (count > 0);
-  FreeMemory((void **) &scanline);
+  LiberateMemory((void **) &scanline);
   while (image->previous != (Image *) NULL)
     image=image->previous;
   CloseBlob(image);
@@ -331,7 +331,7 @@ static unsigned int WriteGRAYImage(const ImageInfo *image_info,Image *image)
     */
     TransformRGBImage(image,RGBColorspace);
     packet_size=image->depth > 8 ? 2: 1;
-    pixels=(unsigned char *) AllocateMemory(packet_size*image->columns);
+    pixels=(unsigned char *) AcquireMemory(packet_size*image->columns);
     if (pixels == (unsigned char *) NULL)
       ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
         image);
@@ -348,7 +348,7 @@ static unsigned int WriteGRAYImage(const ImageInfo *image_info,Image *image)
         if (QuantumTick(y,image->rows))
           ProgressMonitor(SaveImageText,y,image->rows);
     }
-    FreeMemory((void **) &pixels);
+    LiberateMemory((void **) &pixels);
     if (image->next == (Image *) NULL)
       break;
     image=GetNextImage(image);

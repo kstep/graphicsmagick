@@ -342,7 +342,7 @@ int main(int argc,char **argv)
   if ((i != argc) || (number_images == 0))
     MagickError(OptionError,"Missing an image file name",(char *) NULL);
   DestroyImageInfo(image_info);
-  FreeMemory((void **) &argv);
+  LiberateMemory((void **) &argv);
   Exit(0);
   return(False);
 }

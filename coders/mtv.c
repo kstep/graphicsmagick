@@ -151,7 +151,7 @@ static Image *ReadMTVImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /*
       Convert MTV raster image to pixel packets.
     */
-    pixels=(unsigned char *) AllocateMemory(3*image->columns);
+    pixels=(unsigned char *) AcquireMemory(3*image->columns);
     if (pixels == (unsigned char *) NULL)
       ThrowReaderException(CorruptImageWarning,"Unable to allocate memory",
         image);
@@ -178,7 +178,7 @@ static Image *ReadMTVImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (QuantumTick(y,image->rows))
           ProgressMonitor(LoadImageText,y,image->rows);
     }
-    FreeMemory((void **) &pixels);
+    LiberateMemory((void **) &pixels);
     /*
       Proceed to next image.
     */
@@ -337,7 +337,7 @@ static unsigned int WriteMTVImage(const ImageInfo *image_info,Image *image)
     */
     TransformRGBImage(image,RGBColorspace);
     pixels=(unsigned char *)
-      AllocateMemory(image->columns*sizeof(PixelPacket));
+      AcquireMemory(image->columns*sizeof(PixelPacket));
     if (pixels == (unsigned char *) NULL)
       ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
         image);
@@ -364,7 +364,7 @@ static unsigned int WriteMTVImage(const ImageInfo *image_info,Image *image)
         if (QuantumTick(y,image->rows))
           ProgressMonitor(SaveImageText,y,image->rows);
     }
-    FreeMemory((void **) &pixels);
+    LiberateMemory((void **) &pixels);
     if (image->next == (Image *) NULL)
       break;
     image=GetNextImage(image);

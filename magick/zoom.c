@@ -336,7 +336,7 @@ MagickExport Image *MagnifyImage(Image *image,ExceptionInfo *exception)
     Allocate image buffer and scanline buffer for 4 rows of the image.
   */
   scanline=(PixelPacket *)
-    AllocateMemory(magnify_image->columns*sizeof(PixelPacket));
+    AcquireMemory(magnify_image->columns*sizeof(PixelPacket));
   if (scanline == (PixelPacket *) NULL)
     {
       DestroyImage(magnify_image);
@@ -439,7 +439,7 @@ MagickExport Image *MagnifyImage(Image *image,ExceptionInfo *exception)
   if (q != (PixelPacket *) NULL)
     memcpy(q,scanline,magnify_image->columns*sizeof(PixelPacket));
   (void) SyncImagePixels(magnify_image);
-  FreeMemory((void **) &scanline);
+  LiberateMemory((void **) &scanline);
   return(magnify_image);
 }
 
@@ -661,11 +661,11 @@ MagickExport Image *SampleImage(Image *image,const unsigned int columns,
     Allocate scan line buffer and column offset buffers.
   */
   pixels=(PixelPacket *)
-    AllocateMemory(image->columns*sizeof(PixelPacket));
+    AcquireMemory(image->columns*sizeof(PixelPacket));
   index=(IndexPacket *)
-    AllocateMemory(image->columns*sizeof(IndexPacket));
-  x_offset=(double *) AllocateMemory(sample_image->columns*sizeof(double));
-  y_offset=(double *) AllocateMemory(sample_image->rows*sizeof(double));
+    AcquireMemory(image->columns*sizeof(IndexPacket));
+  x_offset=(double *) AcquireMemory(sample_image->columns*sizeof(double));
+  y_offset=(double *) AcquireMemory(sample_image->rows*sizeof(double));
   if ((pixels == (PixelPacket *) NULL) || (index == (IndexPacket *) NULL) ||
       (x_offset == (double *) NULL) || (y_offset == (double *) NULL))
     {
@@ -731,10 +731,10 @@ MagickExport Image *SampleImage(Image *image,const unsigned int columns,
     if (QuantumTick(y,sample_image->rows))
       ProgressMonitor(SampleImageText,y,sample_image->rows);
   }
-  FreeMemory((void **) &y_offset);
-  FreeMemory((void **) &x_offset);
-  FreeMemory((void **) &index);
-  FreeMemory((void **) &pixels);
+  LiberateMemory((void **) &y_offset);
+  LiberateMemory((void **) &x_offset);
+  LiberateMemory((void **) &index);
+  LiberateMemory((void **) &pixels);
   return(sample_image);
 }
 
@@ -851,14 +851,14 @@ MagickExport Image *ScaleImage(Image *image,const unsigned int columns,
   /*
     Allocate memory.
   */
-  x_vector=(ScaledPacket *) AllocateMemory(image->columns*sizeof(ScaledPacket));
+  x_vector=(ScaledPacket *) AcquireMemory(image->columns*sizeof(ScaledPacket));
   scanline=x_vector;
   if (image->rows != scale_image->rows)
     scanline=(ScaledPacket *)
-      AllocateMemory(image->columns*sizeof(ScaledPacket));
+      AcquireMemory(image->columns*sizeof(ScaledPacket));
   scale_scanline=(ScaledPacket *)
-    AllocateMemory(scale_image->columns*sizeof(ScaledPacket));
-  y_vector=(ScaledPacket *) AllocateMemory(image->columns*sizeof(ScaledPacket));
+    AcquireMemory(scale_image->columns*sizeof(ScaledPacket));
+  y_vector=(ScaledPacket *) AcquireMemory(image->columns*sizeof(ScaledPacket));
   if ((scanline == (ScaledPacket *) NULL) ||
       (scale_scanline == (ScaledPacket *) NULL) ||
       (x_vector == (ScaledPacket *) NULL) ||
@@ -1095,11 +1095,11 @@ MagickExport Image *ScaleImage(Image *image,const unsigned int columns,
   /*
     Free allocated memory.
   */
-  FreeMemory((void **) &y_vector);
-  FreeMemory((void **) &scale_scanline);
+  LiberateMemory((void **) &y_vector);
+  LiberateMemory((void **) &scale_scanline);
   if (scale_image->rows != image->rows)
-    FreeMemory((void **) &scanline);
-  FreeMemory((void **) &x_vector);
+    LiberateMemory((void **) &scanline);
+  LiberateMemory((void **) &x_vector);
   return(scale_image);
 }
 
@@ -1641,7 +1641,7 @@ MagickExport Image *ZoomImage(Image *image,const unsigned int columns,
   if (support < filters[image->filter].support)
     support=filters[image->filter].support;
   contribution=(ContributionInfo *)
-    AllocateMemory((int) (support*2+3)*sizeof(ContributionInfo));
+    AcquireMemory((int) (support*2+3)*sizeof(ContributionInfo));
   if (contribution == (ContributionInfo *) NULL)
     {
       DestroyImage(source_image);
@@ -1672,7 +1672,7 @@ MagickExport Image *ZoomImage(Image *image,const unsigned int columns,
   /*
     Free allocated memory.
   */
-  FreeMemory((void **) &contribution);
+  LiberateMemory((void **) &contribution);
   DestroyImage(source_image);
   if (status == False)
     {

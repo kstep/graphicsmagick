@@ -285,7 +285,7 @@ static Image *ReadVICARImage(const ImageInfo *image_info,ExceptionInfo *exceptio
   /*
     Initialize image structure.
   */
-  vicar_pixels=(unsigned char *) AllocateMemory(image->columns*image->rows);
+  vicar_pixels=(unsigned char *) AcquireMemory(image->columns*image->rows);
   if (vicar_pixels == (unsigned char *) NULL)
     ThrowReaderException(CorruptImageWarning,"Unable to read image data",image);
   /*
@@ -316,7 +316,7 @@ static Image *ReadVICARImage(const ImageInfo *image_info,ExceptionInfo *exceptio
     if (QuantumTick(y,image->rows))
       ProgressMonitor(LoadImageText,y,image->rows);
   }
-  FreeMemory((void **) &vicar_pixels);
+  LiberateMemory((void **) &vicar_pixels);
   CloseBlob(image);
   return(image);
 }
@@ -480,7 +480,7 @@ static unsigned int WriteVICARImage(const ImageInfo *image_info,Image *image)
     Allocate memory for pixels.
   */
   pixels=(unsigned char *)
-    AllocateMemory(image->columns*sizeof(PixelPacket));
+    AcquireMemory(image->columns*sizeof(PixelPacket));
   if (pixels == (unsigned char *) NULL)
     ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
   /*
@@ -502,7 +502,7 @@ static unsigned int WriteVICARImage(const ImageInfo *image_info,Image *image)
       if (QuantumTick(y,image->rows))
         ProgressMonitor(SaveImageText,y,image->rows);
   }
-  FreeMemory((void **) &pixels);
+  LiberateMemory((void **) &pixels);
   CloseBlob(image);
   return(True);
 }

@@ -429,7 +429,7 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
             image);
         memcpy(image->colormap,colormap,image->colors*sizeof(PixelPacket));
         bytes_per_line=4*((image->columns*bmp_info.bits_per_pixel+31)/32);
-        pixels=(unsigned char *) AllocateMemory(bytes_per_line*image->rows);
+        pixels=(unsigned char *) AcquireMemory(bytes_per_line*image->rows);
         status=DecodeImage(image,1,avi_info.width,avi_info.height,pixels);
         if (status == False)
           ThrowReaderException(CorruptImageWarning,"unable to runlength decode",
@@ -619,7 +619,7 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
             ThrowReaderException(CorruptImageWarning,"Not a avi image file",
               image);
         }
-        FreeMemory((void **) &pixels);
+        LiberateMemory((void **) &pixels);
         if (image->scene < (avi_info.total_frames-1))
           {
             /*
@@ -731,7 +731,7 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (number_colors != 0)
               {
                 colormap=(PixelPacket *)
-                  AllocateMemory(number_colors*sizeof(PixelPacket));
+                  AcquireMemory(number_colors*sizeof(PixelPacket));
                 if (colormap == (PixelPacket *) NULL)
                   ThrowReaderException(ResourceLimitWarning,
                     "Memory allocation failed",image);

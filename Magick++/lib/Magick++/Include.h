@@ -28,6 +28,7 @@
 #endif // defined(__BORLANDC__)
 
 #if defined(macintosh)
+#  undef HAVE_IOSFWD
 #  undef HAVE_SYS_TYPES_H
 #  include <stat.mac.h>  // Needed for off_t
 #endif // defined(macintosh)

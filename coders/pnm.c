@@ -167,7 +167,7 @@ static unsigned int PNMInteger(Image *image,const unsigned int base)
           Read comment.
         */
         length=MaxTextExtent;
-        comment=(char *) AllocateMemory(length+strlen(P7Comment)+1);
+        comment=(char *) AcquireMemory(length+strlen(P7Comment)+1);
         p=comment;
         offset=p-comment;
         if (comment != (char *) NULL)
@@ -177,7 +177,7 @@ static unsigned int PNMInteger(Image *image,const unsigned int base)
               {
                 length<<=1;
                 length+=MaxTextExtent;
-                ReallocateMemory((void **) &comment,length+strlen(P7Comment)+1);
+                ReacquireMemory((void **) &comment,length+strlen(P7Comment)+1);
                 if (comment == (char *) NULL)
                   break;
                 p=comment+Extent(comment);
@@ -192,7 +192,7 @@ static unsigned int PNMInteger(Image *image,const unsigned int base)
         if (LocaleCompare(q,P7Comment) == 0)
           *q='\0';
         (void) SetImageAttribute(image,"Comment",comment);
-        FreeMemory((void **) &comment);
+        LiberateMemory((void **) &comment);
         continue;
       }
   } while (!isdigit(c));
@@ -335,7 +335,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           /*
             Compute pixel scaling table.
           */
-          scale=(Quantum *) AllocateMemory((max_value+1)*sizeof(Quantum));
+          scale=(Quantum *) AcquireMemory((max_value+1)*sizeof(Quantum));
           if (scale == (Quantum *) NULL)
             ThrowReaderException(ResourceLimitWarning,
               "Memory allocation failed",image);
@@ -475,7 +475,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           Convert PGM raw image to pixel packets.
         */
         packets=image->depth <= 8 ? 1 : 2;
-        pixels=(unsigned char *) AllocateMemory(packets*image->columns);
+        pixels=(unsigned char *) AcquireMemory(packets*image->columns);
         if (pixels == (unsigned char *) NULL)
           ThrowReaderException(CorruptImageWarning,"Unable to allocate memory",
             image);
@@ -511,7 +511,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (QuantumTick(y,image->rows))
               ProgressMonitor(LoadImageText,y,image->rows);
         }
-        FreeMemory((void **) &pixels);
+        LiberateMemory((void **) &pixels);
         break;
       }
       case '6':
@@ -520,7 +520,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           Convert PNM raster image to pixel packets.
         */
         packets=image->depth <= 8 ? 3 : 6;
-        pixels=(unsigned char *) AllocateMemory(packets*image->columns);
+        pixels=(unsigned char *) AcquireMemory(packets*image->columns);
         if (pixels == (unsigned char *) NULL)
           ThrowReaderException(CorruptImageWarning,"Unable to allocate memory",
             image);
@@ -568,7 +568,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (QuantumTick(y,image->rows))
               ProgressMonitor(LoadImageText,y,image->rows);
         }
-        FreeMemory((void **) &pixels);
+        LiberateMemory((void **) &pixels);
         handler=SetMonitorHandler((MonitorHandler) NULL);
         (void) SetMonitorHandler(handler);
         break;
@@ -577,7 +577,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         ThrowReaderException(CorruptImageWarning,"Not a PNM image file",image);
     }
     if (scale != (Quantum *) NULL)
-      FreeMemory((void **) &scale);
+      LiberateMemory((void **) &scale);
     if (EOFBlob(image))
       ThrowReaderException(CorruptImageWarning,"not enough pixels",image);
     /*
@@ -1054,7 +1054,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
           Allocate memory for pixels.
         */
         pixels=(unsigned char *)
-          AllocateMemory(image->columns*sizeof(PixelPacket));
+          AcquireMemory(image->columns*sizeof(PixelPacket));
         if (pixels == (unsigned char *) NULL)
           ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
             image);
@@ -1081,7 +1081,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
             if (QuantumTick(y,image->rows))
               ProgressMonitor(SaveImageText,y,image->rows);
         }
-        FreeMemory((void **) &pixels);
+        LiberateMemory((void **) &pixels);
         break;
       }
       case '7':
@@ -1121,11 +1121,11 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
           for (j=0; j < 16; j++)
           {
             red_map[i][j]=(unsigned short *)
-              AllocateMemory(256*sizeof(unsigned short));
+              AcquireMemory(256*sizeof(unsigned short));
             green_map[i][j]=(unsigned short *)
-              AllocateMemory(256*sizeof(unsigned short));
+              AcquireMemory(256*sizeof(unsigned short));
             blue_map[i][j]=(unsigned short *)
-              AllocateMemory(256*sizeof(unsigned short));
+              AcquireMemory(256*sizeof(unsigned short));
             if ((red_map[i][j] == (unsigned short *) NULL) ||
                 (green_map[i][j] == (unsigned short *) NULL) ||
                 (blue_map[i][j] == (unsigned short *) NULL))
@@ -1200,9 +1200,9 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
         for (i=0; i < 2; i++)
           for (j=0; j < 16; j++)
           {
-            FreeMemory((void **) &green_map[i][j]);
-            FreeMemory((void **) &blue_map[i][j]);
-            FreeMemory((void **) &red_map[i][j]);
+            LiberateMemory((void **) &green_map[i][j]);
+            LiberateMemory((void **) &blue_map[i][j]);
+            LiberateMemory((void **) &red_map[i][j]);
           }
         break;
       }

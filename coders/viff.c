@@ -406,7 +406,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
           ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
             image);
         viff_colormap=(unsigned char *)
-          AllocateMemory(bytes_per_pixel*image->colors*viff_info.map_rows);
+          AcquireMemory(bytes_per_pixel*image->colors*viff_info.map_rows);
         if (viff_colormap == (unsigned char *) NULL)
           ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
             image);
@@ -461,7 +461,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
                 image->colormap[i % image->colors].blue=
                   UpScale((unsigned int) value);
         }
-        FreeMemory((void **) &viff_colormap);
+        LiberateMemory((void **) &viff_colormap);
         break;
       }
       default:
@@ -485,7 +485,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
       max_packets=
         viff_info.columns*viff_info.rows*viff_info.number_data_bands;
     viff_pixels=(unsigned char *)
-      AllocateMemory(bytes_per_pixel*max_packets*sizeof(Quantum));
+      AcquireMemory(bytes_per_pixel*max_packets*sizeof(Quantum));
     if (viff_pixels == (unsigned char *) NULL)
       ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
         image);
@@ -692,7 +692,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
                 ProgressMonitor(LoadImageText,y,image->rows);
           }
         }
-    FreeMemory((void **) &viff_pixels);
+    LiberateMemory((void **) &viff_pixels);
     if (image->storage_class == PseudoClass)
       SyncImage(image);
     /*
@@ -1028,7 +1028,7 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
     /*
       Convert MIFF to VIFF raster pixels.
     */
-    viff_pixels=(unsigned char *) AllocateMemory(packets);
+    viff_pixels=(unsigned char *) AcquireMemory(packets);
     if (viff_pixels == (unsigned char *) NULL)
       ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
         image);
@@ -1071,7 +1071,7 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
           /*
             Dump colormap to file.
           */
-          viff_colormap=(unsigned char *) AllocateMemory(3*image->colors);
+          viff_colormap=(unsigned char *) AcquireMemory(3*image->colors);
           if (viff_colormap == (unsigned char *) NULL)
             ThrowWriterException(ResourceLimitWarning,
               "Memory allocation failed",image);
@@ -1083,7 +1083,7 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
           for (i=0; i < (int) image->colors; i++)
             *q++=DownScale(image->colormap[i].blue);
           (void) WriteBlob(image,3*image->colors,(char *) viff_colormap);
-          FreeMemory((void **) &viff_colormap);
+          LiberateMemory((void **) &viff_colormap);
           /*
             Convert PseudoClass packet to VIFF colormapped pixels.
           */
@@ -1169,7 +1169,7 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
             }
           }
     (void) WriteBlob(image,packets,(char *) viff_pixels);
-    FreeMemory((void **) &viff_pixels);
+    LiberateMemory((void **) &viff_pixels);
     if (image->next == (Image *) NULL)
       break;
     image=GetNextImage(image);

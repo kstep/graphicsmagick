@@ -20,9 +20,9 @@
 <FONT SIZE=-1>DESCRIPTIONS</FONT></A></LI>
 	<UL>
 
-		<LI><A HREF="#allocatememory">AllocateMemory</A></LI>
-		<LI><A HREF="#freememory">FreeMemory</A></LI>
-		<LI><A HREF="#reallocatememory">ReallocateMemory</A></LI>
+		<LI><A HREF="#acquirememory">AcquireMemory</A></LI>
+		<LI><A HREF="#liberatememory">LiberateMemory</A></LI>
+		<LI><A HREF="#reacquirememory">ReacquireMemory</A></LI>
 	</UL>
 
 </UL>
@@ -37,34 +37,34 @@
 <HR>
 <H1><A NAME="synopsis">
 <FONT SIZE=-1>SYNOPSIS</FONT></A></H1>
-<P>void * <STRONG>AllocateMemory</STRONG>( const size_t size );</P>
-<P>void  <STRONG>FreeMemory</STRONG>( void ** memory );</P>
-<P>void  <STRONG>ReallocateMemory</STRONG>( void ** memory, const size_t size );</P>
+<P>void * <STRONG>AcquireMemory</STRONG>( const size_t size );</P>
+<P>void  <STRONG>LiberateMemory</STRONG>( void ** memory );</P>
+<P>void  <STRONG>ReacquireMemory</STRONG>( void ** memory, const size_t size );</P>
 <P>
 <HR>
 <H1><A NAME="function descriptions">
 <FONT SIZE=-1>FUNCTION</FONT> 
 <FONT SIZE=-1>DESCRIPTIONS</FONT></A></H1>
 <P>
-<H2><A NAME="allocatememory">AllocateMemory</A></H2>
-<P>Method AllocateMemory returns a pointer to a block of at least size bytes suitably aligned for any use.</P>
-<P>The format of the AllocateMemory method is:</P>
-<blockquote>void *AllocateMemory ( const size_t size ); </blockquote><P>
+<H2><A NAME="acquirememory">AcquireMemory</A></H2>
+<P>Method AcquireMemory returns a pointer to a block of at least size bytes suitably aligned for any use.</P>
+<P>The format of the AcquireMemory method is:</P>
+<blockquote>void *AcquireMemory ( const size_t size ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG><A NAME="item_o_memory%3A">memory:</A></STRONG><BR>
 <DD>
-Method AllocateMemory returns a pointer to a block of at least size bytes suitably aligned for any use.
+Method AcquireMemory returns a pointer to a block of at least size bytes suitably aligned for any use.
 <P></P>
 <p><dt><STRONG><A NAME="item_o_size%3A">size:</A></STRONG><BR>
 <DD>
 Specifies the size of the memory to return.
 <P></P></DL></DL>
 <P>
-<H2><A NAME="freememory">FreeMemory</A></H2>
-<P>Method FreeMemory frees memory that has already been allocated.</P>
-<P>The format of the FreeMemory method is:</P>
-<blockquote>void FreeMemory ( void **memory ); </blockquote><P>
+<H2><A NAME="liberatememory">LiberateMemory</A></H2>
+<P>Method LiberateMemory frees memory that has already been allocated.</P>
+<P>The format of the LiberateMemory method is:</P>
+<blockquote>void LiberateMemory ( void **memory ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG><A NAME="item_o_span%3A">span:</A></STRONG><BR>
@@ -72,15 +72,15 @@ Specifies the size of the memory to return.
 Specifies the pointer to a block memory to free for reuse.
 <P></P></DL></DL>
 <P>
-<H2><A NAME="reallocatememory">ReallocateMemory</A></H2>
-<P>Method ReallocateMemory changes the size of the memory and returns a pointer to the (possibly moved) block.  The contents will be unchanged up to the lesser of the new and old sizes.</P>
-<P>The format of the ReallocateMemory method is:</P>
-<blockquote>void ReallocateMemory ( void **memory, const size_t size ); </blockquote><P>
+<H2><A NAME="reacquirememory">ReacquireMemory</A></H2>
+<P>Method ReacquireMemory changes the size of the memory and returns a pointer to the (possibly moved) block.  The contents will be unchanged up to the lesser of the new and old sizes.</P>
+<P>The format of the ReacquireMemory method is:</P>
+<blockquote>void ReacquireMemory ( void **memory, const size_t size ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>memory:</STRONG><BR>
 <DD>
-Method ReallocateMemory returns a pointer to a block of at least size bytes suitably aligned for any use.
+Method ReacquireMemory returns a pointer to a block of at least size bytes suitably aligned for any use.
 <P></P>
 <p><dt><STRONG>size:</STRONG><BR>
 <DD>

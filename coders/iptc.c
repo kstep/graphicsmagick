@@ -170,7 +170,7 @@ static Image *ReadIPTCImage(const ImageInfo *image_info,
   */
   length=MaxTextExtent;
   tag_length=12;
-  data=(unsigned char *) AllocateMemory(length+2);
+  data=(unsigned char *) AcquireMemory(length+2);
   if (data == (unsigned char *) NULL)
     ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
   memcpy(data,"8BIM\04\04\0\0\0\0\0\0",tag_length);
@@ -185,7 +185,7 @@ static Image *ReadIPTCImage(const ImageInfo *image_info,
       {
         image->iptc_profile.length=q-data;
         length<<=1;
-        ReallocateMemory((void **) &data,length+2);
+        ReacquireMemory((void **) &data,length+2);
         if (data == (unsigned char *) NULL)
           break;
         q=data+image->iptc_profile.length;

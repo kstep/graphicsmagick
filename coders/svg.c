@@ -256,7 +256,7 @@ static char **StringToTokens(const char *text,int *number_tokens)
         (*number_tokens)++;
     }
   }
-  tokens=(char **) AllocateMemory((*number_tokens+1)*sizeof(char *));
+  tokens=(char **) AcquireMemory((*number_tokens+1)*sizeof(char *));
   if (tokens == (char **) NULL)
     MagickError(ResourceLimitError,"Unable to convert string to tokens",
       "Memory allocation failed");
@@ -293,7 +293,7 @@ static char **StringToTokens(const char *text,int *number_tokens)
             if (!isspace((int) *q) && ((*(q-1) == ':') || (*(q-1) == ';')))
               break;
           }
-    tokens[i]=(char *) AllocateMemory(q-p+1);
+    tokens[i]=(char *) AcquireMemory(q-p+1);
     if (tokens[i] == (char *) NULL)
       MagickError(ResourceLimitError,"Unable to convert string to tokens",
         "Memory allocation failed");
@@ -613,7 +613,7 @@ static void SVGStartDocument(void *context)
   svg_info->width=640;
   svg_info->height=480;
   svg_info->graphic_context=(GraphicContext *)
-    AllocateMemory(sizeof(GraphicContext));
+    AcquireMemory(sizeof(GraphicContext));
   if (svg_info->graphic_context == (GraphicContext *) NULL)
     MagickError(ResourceLimitError,"Unable to allocate memory",(char *) NULL);
   svg_info->graphic_context[0].fill=AllocateString("none");
@@ -647,17 +647,17 @@ static void SVGEndDocument(void *context)
     (void) fprintf(stdout,"SAX.endDocument()\n");
   for (i=0; i <= svg_info->n; i++)
   {
-    FreeMemory((void **) &svg_info->graphic_context[i].fill);
-    FreeMemory((void **) &svg_info->graphic_context[i].stroke);
-    FreeMemory((void **) &svg_info->graphic_context[i].font);
+    LiberateMemory((void **) &svg_info->graphic_context[i].fill);
+    LiberateMemory((void **) &svg_info->graphic_context[i].stroke);
+    LiberateMemory((void **) &svg_info->graphic_context[i].font);
   }
-  FreeMemory((void **) &svg_info->graphic_context);
+  LiberateMemory((void **) &svg_info->graphic_context);
   if (svg_info->text != (char *) NULL)
-    FreeMemory((void **) &svg_info->text);
+    LiberateMemory((void **) &svg_info->text);
   if (svg_info->vertices != (char *) NULL)
-    FreeMemory((void **) &svg_info->vertices);
+    LiberateMemory((void **) &svg_info->vertices);
   if (svg_info->url != (char *) NULL)
-    FreeMemory((void **) &svg_info->url);
+    LiberateMemory((void **) &svg_info->url);
 }
 
 static void SVGStartElement(void *context,const xmlChar *name,
@@ -696,7 +696,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
   if (svg_info->verbose)
     (void) fprintf(stdout,"SAX.startElement(%s",(char *) name);
   svg_info->n++;
-  ReallocateMemory((void **) &svg_info->graphic_context,
+  ReacquireMemory((void **) &svg_info->graphic_context,
     (svg_info->n+1)*sizeof(GraphicContext));
   if (svg_info->graphic_context == (GraphicContext *) NULL)
     return;
@@ -873,8 +873,8 @@ static void SVGStartElement(void *context,const xmlChar *name,
               }
           }
           for (j=0; j < number_tokens; j++)
-            FreeMemory((void **) &tokens[j]);
-          FreeMemory((void **) &tokens);
+            LiberateMemory((void **) &tokens[j]);
+          LiberateMemory((void **) &tokens);
           continue;
         }
       if (LocaleCompare(keyword,"transform") == 0)
@@ -951,8 +951,8 @@ static void SVGStartElement(void *context,const xmlChar *name,
             q->affine[5]=current[1]*affine[4]+current[3]*affine[5]+current[5];
           }
           for (j=0; j < number_tokens; j++)
-            FreeMemory((void **) &tokens[j]);
-          FreeMemory((void **) &tokens);
+            LiberateMemory((void **) &tokens[j]);
+          LiberateMemory((void **) &tokens);
           continue;
         }
       if (LocaleCompare(keyword,"verts") == 0)
@@ -1120,9 +1120,9 @@ static void SVGEndElement(void *context,const xmlChar *name)
   for (i=0; i < 6; i++)
     (void) fprintf(svg_info->file,"%g ",p->affine[i]);
   (void) fprintf(svg_info->file,"\n");
-  FreeMemory((void **) &p->fill);
-  FreeMemory((void **) &p->stroke);
-  FreeMemory((void **) &p->font);
+  LiberateMemory((void **) &p->fill);
+  LiberateMemory((void **) &p->stroke);
+  LiberateMemory((void **) &p->font);
   svg_info->n--;
   if (LocaleCompare((char *) name,"circle") == 0)
     {
@@ -1209,9 +1209,9 @@ static void SVGCharacters(void *context,const xmlChar *c,int length)
       (void) fprintf(stdout,", %d)\n",length);
     }
   if (svg_info->text == (char *) NULL)
-    svg_info->text=(char *) AllocateMemory(length+1);
+    svg_info->text=(char *) AcquireMemory(length+1);
   else
-    ReallocateMemory((void **) &svg_info->text,length+1);
+    ReacquireMemory((void **) &svg_info->text,length+1);
   if (svg_info->text == (char *) NULL)
     return;
   for (i=0; i < length; i++)
@@ -1548,7 +1548,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Free resources.
   */
   if (svg_info.comment != (char *) NULL)
-    FreeMemory((void **) &svg_info.comment);
+    LiberateMemory((void **) &svg_info.comment);
   return(image);
 }
 #else

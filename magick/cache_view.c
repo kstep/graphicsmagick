@@ -92,7 +92,7 @@ MagickExport void CloseCacheView(ViewInfo *view)
   assert(view->signature == MagickSignature);
   image=view->image;
   DestroyCacheNexus(image->cache,view->id);
-  FreeMemory((void **) &view);
+  LiberateMemory((void **) &view);
 }
 
 /*
@@ -287,7 +287,7 @@ MagickExport ViewInfo *OpenCacheView(Image *image)
           return((ViewInfo *) NULL);
         }
     }
-  view=(ViewInfo *) AllocateMemory(sizeof(ViewInfo));
+  view=(ViewInfo *) AcquireMemory(sizeof(ViewInfo));
   if (view == (ViewInfo *) NULL)
     MagickError(ResourceLimitError,"Unable to allocate cache view",
       "Memory allocation failed");

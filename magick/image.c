@@ -122,7 +122,7 @@ MagickExport Image *AllocateImage(const ImageInfo *image_info)
   /*
     Allocate image structure.
   */
-  allocate_image=(Image *) AllocateMemory(sizeof(Image));
+  allocate_image=(Image *) AcquireMemory(sizeof(Image));
   if (allocate_image == (Image *) NULL)
     MagickError(ResourceLimitError,"Unable to allocate image",
       "Memory allocation failed");
@@ -322,7 +322,7 @@ MagickExport unsigned int AllocateImageColormap(Image *image,
   image->storage_class=PseudoClass;
   image->colors=colors;
   image->colormap=(PixelPacket *)
-    AllocateMemory(Max(colors,256)*sizeof(PixelPacket));
+    AcquireMemory(Max(colors,256)*sizeof(PixelPacket));
   if (image->colormap == (PixelPacket *) NULL)
     return(False);
   for (i=0; i < (int) colors; i++)
@@ -696,7 +696,7 @@ MagickExport Image *AverageImages(Image *image,ExceptionInfo *exception)
     Allocate sum accumulation buffer.
   */
   sum=(SumPacket *)
-    AllocateMemory(image->columns*image->rows*sizeof(SumPacket));
+    AcquireMemory(image->columns*image->rows*sizeof(SumPacket));
   if (sum == (SumPacket *) NULL)
     ThrowImageException(ResourceLimitWarning,"Unable to average image sequence",
       "Memory allocation failed");
@@ -713,7 +713,7 @@ MagickExport Image *AverageImages(Image *image,ExceptionInfo *exception)
   average_image=CloneImage(image,image->columns,image->rows,True,exception);
   if (average_image == (Image *) NULL)
     {
-      FreeMemory((void **) &sum);
+      LiberateMemory((void **) &sum);
       return((Image *) NULL);
     }
   average_image->storage_class=DirectClass;
@@ -764,7 +764,7 @@ MagickExport Image *AverageImages(Image *image,ExceptionInfo *exception)
     if (QuantumTick(y,average_image->rows))
       ProgressMonitor(AverageImageText,y,average_image->rows);
   }
-  FreeMemory((void **) &sum);
+  LiberateMemory((void **) &sum);
   return(average_image);
 }
 
@@ -829,7 +829,7 @@ MagickExport Image *CloneImage(Image *image,const unsigned int columns,
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  clone_image=(Image *) AllocateMemory(sizeof(Image));
+  clone_image=(Image *) AcquireMemory(sizeof(Image));
   if (clone_image == (Image *) NULL)
     return((Image *) NULL);
   /*
@@ -844,7 +844,7 @@ MagickExport Image *CloneImage(Image *image,const unsigned int columns,
         Allocate and copy the image colormap.
       */
       length=image->colors*sizeof(PixelPacket);
-      clone_image->colormap=(PixelPacket *) AllocateMemory(length);
+      clone_image->colormap=(PixelPacket *) AcquireMemory(length);
       if (clone_image->colormap == (PixelPacket *) NULL)
         ThrowImageException(ResourceLimitWarning,"Unable to clone image",
           "Memory allocation failed");
@@ -856,7 +856,7 @@ MagickExport Image *CloneImage(Image *image,const unsigned int columns,
         Allocate and copy the image ICC profile.
       */
       length=image->color_profile.length;
-      clone_image->color_profile.info=(unsigned char *) AllocateMemory(length);
+      clone_image->color_profile.info=(unsigned char *) AcquireMemory(length);
       if (clone_image->color_profile.info == (unsigned char *) NULL)
         ThrowImageException(ResourceLimitWarning,"Unable to clone image",
           "Memory allocation failed");
@@ -868,7 +868,7 @@ MagickExport Image *CloneImage(Image *image,const unsigned int columns,
         Allocate and copy the image IPTC profile.
       */
       length=image->iptc_profile.length;
-      clone_image->iptc_profile.info=(unsigned char *) AllocateMemory(length);
+      clone_image->iptc_profile.info=(unsigned char *) AcquireMemory(length);
       if (clone_image->iptc_profile.info == (unsigned char *) NULL)
         ThrowImageException(ResourceLimitWarning,"Unable to clone image",
           "Memory allocation failed");
@@ -980,7 +980,7 @@ MagickExport ImageInfo *CloneImageInfo(const ImageInfo *image_info)
   ImageInfo
     *clone_info;
 
-  clone_info=(ImageInfo *) AllocateMemory(sizeof(ImageInfo));
+  clone_info=(ImageInfo *) AcquireMemory(sizeof(ImageInfo));
   if (clone_info == (ImageInfo *) NULL)
     MagickError(ResourceLimitError,"Unable to clone image info",
       "Memory allocation failed");
@@ -1996,7 +1996,7 @@ MagickExport void DescribeImage(Image *image,FILE *file,
         (void) fprintf(file,"    %s:\n",tag);
         length=image->iptc_profile.info[++i] << 8;
         length|=image->iptc_profile.info[++i];
-        text=(char *) AllocateMemory(length+1);
+        text=(char *) AcquireMemory(length+1);
         if (text != (char *) NULL)
           {
             char
@@ -2013,11 +2013,11 @@ MagickExport void DescribeImage(Image *image,FILE *file,
                 for (j=0; textlist[j] != (char *) NULL; j++)
                 {
                   (void) fprintf(file,"  %s\n",textlist[j]);
-                  FreeMemory((void **) &textlist[j]);
+                  LiberateMemory((void **) &textlist[j]);
                 }
-                FreeMemory((void **) &textlist);
+                LiberateMemory((void **) &textlist);
               }
-            FreeMemory((void **) &text);
+            LiberateMemory((void **) &text);
           }
       }
     }
@@ -2223,24 +2223,24 @@ MagickExport void DestroyImage(Image *image)
     Deallocate the image montage directory.
   */
   if (image->montage != (char *) NULL)
-    FreeMemory((void **) &image->montage);
+    LiberateMemory((void **) &image->montage);
   if (image->directory != (char *) NULL)
-    FreeMemory((void **) &image->directory);
+    LiberateMemory((void **) &image->directory);
   /*
     Deallocate the image colormap.
   */
   if (image->colormap != (PixelPacket *) NULL)
-    FreeMemory((void **) &image->colormap);
+    LiberateMemory((void **) &image->colormap);
   /*
     Deallocate the image ICC profile.
   */
   if (image->color_profile.length > 0)
-    FreeMemory((void **) &image->color_profile.info);
+    LiberateMemory((void **) &image->color_profile.info);
   /*
     Deallocate the image IPTC profile.
   */
   if (image->iptc_profile.length > 0)
-    FreeMemory((void **) &image->iptc_profile.info);
+    LiberateMemory((void **) &image->iptc_profile.info);
   /*
     Deallocate the image text attributes.
   */
@@ -2272,7 +2272,7 @@ MagickExport void DestroyImage(Image *image)
             image->next->previous=(Image *) NULL;
         }
     }
-  FreeMemory((void **) &image);
+  LiberateMemory((void **) &image);
 }
 
 /*
@@ -2304,28 +2304,28 @@ MagickExport void DestroyImageInfo(ImageInfo *image_info)
   assert(image_info != (ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
   if (image_info->server_name != (char *) NULL)
-    FreeMemory((void **) &image_info->server_name);
+    LiberateMemory((void **) &image_info->server_name);
   if (image_info->size != (char *) NULL)
-    FreeMemory((void **) &image_info->size);
+    LiberateMemory((void **) &image_info->size);
   if (image_info->tile != (char *) NULL)
-    FreeMemory((void **) &image_info->tile);
+    LiberateMemory((void **) &image_info->tile);
   if (image_info->page != (char *) NULL)
-    FreeMemory((void **) &image_info->page);
+    LiberateMemory((void **) &image_info->page);
   if (image_info->density != (char *) NULL)
-    FreeMemory((void **) &image_info->density);
+    LiberateMemory((void **) &image_info->density);
   if (image_info->dispose != (char *) NULL)
-    FreeMemory((void **) &image_info->dispose);
+    LiberateMemory((void **) &image_info->dispose);
   if (image_info->delay != (char *) NULL)
-    FreeMemory((void **) &image_info->delay);
+    LiberateMemory((void **) &image_info->delay);
   if (image_info->iterations != (char *) NULL)
-    FreeMemory((void **) &image_info->iterations);
+    LiberateMemory((void **) &image_info->iterations);
   if (image_info->texture != (char *) NULL)
-    FreeMemory((void **) &image_info->texture);
+    LiberateMemory((void **) &image_info->texture);
   if (image_info->font != (char *) NULL)
-    FreeMemory((void **) &image_info->font);
+    LiberateMemory((void **) &image_info->font);
   if (image_info->view != (char *) NULL)
-    FreeMemory((void **) &image_info->view);
-  FreeMemory((void **) &image_info);
+    LiberateMemory((void **) &image_info->view);
+  LiberateMemory((void **) &image_info);
 }
 
 /*
@@ -3044,7 +3044,7 @@ MagickExport Image **ListToGroupImage(Image *image,unsigned int *number_images)
   next=(Image *) image;
   for (i=0; next != (Image *) NULL; i++)
     next=next->next;
-  images=(Image **) AllocateMemory(i*sizeof(Image *));
+  images=(Image **) AcquireMemory(i*sizeof(Image *));
   if (images == (Image **) NULL)
     MagickError(ResourceLimitWarning,"Unable to convert image list",
       "Memory allocation failed");
@@ -4007,7 +4007,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
           token_info;
 
         length=Extent(argv[++i]);
-        token=(char *) AllocateMemory(length+1);
+        token=(char *) AcquireMemory(length+1);
         if (token == (char *) NULL)
           continue;
         next=0;
@@ -4022,7 +4022,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             argv=&(arguments[next]);
             ExecuteModuleProcess((const char *) token,*image,1,&argv);
           }
-        FreeMemory((void **) &token);
+        LiberateMemory((void **) &token);
         continue;
       }
 #endif
@@ -4435,7 +4435,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
     Free resources.
   */
   if (geometry != (char *) NULL)
-    FreeMemory((void **) &geometry);
+    LiberateMemory((void **) &geometry);
   DestroyDrawInfo(draw_info);
   DestroyImageInfo(clone_info);
   CloseImagePixels(*image);
@@ -4952,9 +4952,9 @@ MagickExport unsigned int RGBTransformImage(Image *image,
   /*
     Allocate the tables.
   */
-  x_map=(double *) AllocateMemory(3*(MaxRGB+1)*sizeof(double));
-  y_map=(double *) AllocateMemory(3*(MaxRGB+1)*sizeof(double));
-  z_map=(double *) AllocateMemory(3*(MaxRGB+1)*sizeof(double));
+  x_map=(double *) AcquireMemory(3*(MaxRGB+1)*sizeof(double));
+  y_map=(double *) AcquireMemory(3*(MaxRGB+1)*sizeof(double));
+  z_map=(double *) AcquireMemory(3*(MaxRGB+1)*sizeof(double));
   if ((x_map == (double *) NULL) || (y_map == (double *) NULL) ||
       (z_map == (double *) NULL))
     ThrowBinaryException(ResourceLimitWarning,
@@ -5288,9 +5288,9 @@ MagickExport unsigned int RGBTransformImage(Image *image,
   /*
     Free allocate memory.
   */
-  FreeMemory((void **) &z_map);
-  FreeMemory((void **) &y_map);
-  FreeMemory((void **) &x_map);
+  LiberateMemory((void **) &z_map);
+  LiberateMemory((void **) &y_map);
+  LiberateMemory((void **) &x_map);
   return(True);
 }
 
@@ -5433,7 +5433,7 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
         continue;
       if (!IsGeometry(q+1))
         break;
-      tile=(char *) AllocateMemory(p-q);
+      tile=(char *) AcquireMemory(p-q);
       if (tile == (char *) NULL)
         break;
       (void) strncpy(tile,q+1,p-q-1);
@@ -5441,7 +5441,7 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
       *q='\0';
       p=q;
       (void) CloneString(&image_info->tile,tile);
-      FreeMemory((void **) &tile);
+      LiberateMemory((void **) &tile);
       if (!IsSubimage(image_info->tile,True))
         break;
       /*
@@ -5455,7 +5455,7 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
         Swap(image_info->subimage,image_info->subrange);
       else
         {
-          FreeMemory((void **) &image_info->tile);
+          LiberateMemory((void **) &image_info->tile);
           image_info->tile=(char *) NULL;
         }
       image_info->subrange-=image_info->subimage-1;
@@ -5668,7 +5668,7 @@ MagickExport unsigned int SortColormapByIntensity(Image *image)
     Allocate memory for pixel indexes.
   */
   pixels=(unsigned short *)
-    AllocateMemory(image->colors*sizeof(unsigned short));
+    AcquireMemory(image->colors*sizeof(unsigned short));
   if (pixels == (unsigned short *) NULL)
     ThrowBinaryException(MissingDelegateWarning,"Unable to sort colormap",
       "Memory allocation failed");
@@ -5700,7 +5700,7 @@ MagickExport unsigned int SortColormapByIntensity(Image *image)
       *q++=image->colormap[index];
     }
   }
-  FreeMemory((void **) &pixels);
+  LiberateMemory((void **) &pixels);
   return(True);
 }
 
@@ -6074,9 +6074,9 @@ MagickExport unsigned int TransformRGBImage(Image *image,
   /*
     Allocate the tables.
   */
-  red_map=(double *) AllocateMemory(3*(MaxRGB+1)*sizeof(double));
-  green_map=(double *) AllocateMemory(3*(MaxRGB+1)*sizeof(double));
-  blue_map=(double *) AllocateMemory(3*(MaxRGB+1)*sizeof(double));
+  red_map=(double *) AcquireMemory(3*(MaxRGB+1)*sizeof(double));
+  green_map=(double *) AcquireMemory(3*(MaxRGB+1)*sizeof(double));
+  blue_map=(double *) AcquireMemory(3*(MaxRGB+1)*sizeof(double));
   if ((red_map == (double *) NULL) || (green_map == (double *) NULL) ||
       (blue_map == (double *) NULL))
     ThrowBinaryException(MissingDelegateWarning,
@@ -6405,8 +6405,8 @@ MagickExport unsigned int TransformRGBImage(Image *image,
   /*
     Free allocate memory.
   */
-  FreeMemory((void **) &blue_map);
-  FreeMemory((void **) &green_map);
-  FreeMemory((void **) &red_map);
+  LiberateMemory((void **) &blue_map);
+  LiberateMemory((void **) &green_map);
+  LiberateMemory((void **) &red_map);
   return(True);
 }

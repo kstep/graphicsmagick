@@ -149,7 +149,7 @@ MagickExport DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
   DrawInfo
     *cloned_info;
 
-  cloned_info=(DrawInfo *) AllocateMemory(sizeof(DrawInfo));
+  cloned_info=(DrawInfo *) AcquireMemory(sizeof(DrawInfo));
   if (cloned_info == (DrawInfo *) NULL)
     MagickError(ResourceLimitError,"Unable to clone draw info",
       "Memory allocation failed");
@@ -255,7 +255,7 @@ MagickExport unsigned int ColorFloodfillImage(Image *image,
   if (ColorMatch(draw_info->fill,target,image->fuzz))
     return(False);
   segment_stack=(SegmentInfo *)
-    AllocateMemory(MaxStacksize*sizeof(SegmentInfo));
+    AcquireMemory(MaxStacksize*sizeof(SegmentInfo));
   if (segment_stack == (SegmentInfo *) NULL)
     ThrowBinaryException(ResourceLimitWarning,"Unable to floodfill image",
       image->filename);
@@ -443,7 +443,7 @@ MagickExport unsigned int ColorFloodfillImage(Image *image,
       }
     }
   image->storage_class=DirectClass;
-  FreeMemory((void **) &segment_stack);
+  LiberateMemory((void **) &segment_stack);
   return(True);
 }
 
@@ -476,12 +476,12 @@ MagickExport void DestroyDrawInfo(DrawInfo *draw_info)
   assert(draw_info != (DrawInfo *) NULL);
   assert(draw_info->signature == MagickSignature);
   if (draw_info->primitive != (char *) NULL)
-    FreeMemory((void **) &draw_info->primitive);
+    LiberateMemory((void **) &draw_info->primitive);
   if (draw_info->font != (char *) NULL)
-    FreeMemory((void **) &draw_info->font);
+    LiberateMemory((void **) &draw_info->font);
   if (draw_info->tile != (Image *) NULL)
     DestroyImage(draw_info->tile);
-  FreeMemory((void **) &draw_info);
+  LiberateMemory((void **) &draw_info);
 }
 
 /*
@@ -596,7 +596,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
             primitive+1);
         }
       length=MaxTextExtent;
-      primitive=(char *) AllocateMemory(length);
+      primitive=(char *) AcquireMemory(length);
       q=primitive;
       while (primitive != (char *) NULL)
       {
@@ -607,7 +607,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
           {
             *q='\0';
             length<<=1;
-            ReallocateMemory((void **) &primitive,length);
+            ReacquireMemory((void **) &primitive,length);
             if (primitive == (char *) NULL)
               break;
             q=primitive+Extent(primitive);
@@ -628,11 +628,11 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
   */
   number_points=2048;
   primitive_info=(PrimitiveInfo *)
-    AllocateMemory(number_points*sizeof(PrimitiveInfo));
+    AcquireMemory(number_points*sizeof(PrimitiveInfo));
   if (primitive_info == (PrimitiveInfo *) NULL)
     {
       if (indirection)
-        FreeMemory((void **) &primitive);
+        LiberateMemory((void **) &primitive);
       DestroyDrawInfo(clone_info);
       ThrowBinaryException(ResourceLimitWarning,"Unable to draw image",
         "Memory allocation failed");
@@ -820,12 +820,12 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       if (i < (int) (number_points-Max(BezierQuantum*BezierQuantum*x,360)-1))
         continue;
       number_points<<=1;
-      ReallocateMemory((void **) &primitive_info,
+      ReacquireMemory((void **) &primitive_info,
         number_points*sizeof(PrimitiveInfo));
       if (primitive_info != (PrimitiveInfo *) NULL)
         continue;
       if (indirection)
-        FreeMemory((void **) &primitive);
+        LiberateMemory((void **) &primitive);
       DestroyDrawInfo(clone_info);
       ThrowBinaryException(ResourceLimitWarning,"Unable to draw image",
         "Memory allocation failed");
@@ -983,12 +983,12 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
         if (i < (number_points-BezierQuantum*BezierQuantum*Extent(path)-1))
           {
             number_points+=BezierQuantum*BezierQuantum*Extent(path);
-            ReallocateMemory((void **) &primitive_info,
+            ReacquireMemory((void **) &primitive_info,
               number_points*sizeof(PrimitiveInfo));
             if (primitive_info == (PrimitiveInfo *) NULL)
               {
                 if (indirection)
-                  FreeMemory((void **) &primitive);
+                  LiberateMemory((void **) &primitive);
                 DestroyDrawInfo(clone_info);
                 ThrowBinaryException(ResourceLimitWarning,
                   "Unable to draw image","Memory allocation failed");
@@ -1294,9 +1294,9 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
   /*
     Free resources.
   */
-  FreeMemory((void **) &primitive_info);
+  LiberateMemory((void **) &primitive_info);
   if (indirection)
-    FreeMemory((void **) &primitive);
+    LiberateMemory((void **) &primitive);
   DestroyDrawInfo(clone_info);
   if (primitive_type == UndefinedPrimitive)
     ThrowBinaryException(OptionWarning,
@@ -1392,8 +1392,8 @@ static void GenerateBezier(PrimitiveInfo *primitive_info)
   p=primitive_info;
   control_points=BezierQuantum*p->coordinates;
   coefficients=(double *)
-    AllocateMemory(p->coordinates*sizeof(double));
-  points=(PointInfo *) AllocateMemory(control_points*sizeof(PointInfo));
+    AcquireMemory(p->coordinates*sizeof(double));
+  points=(PointInfo *) AcquireMemory(control_points*sizeof(PointInfo));
   if ((coefficients == (double *) NULL) || (points == (PointInfo *) NULL))
     MagickError(ResourceLimitWarning,"Unable to draw image",
       "Memory allocation failed");
@@ -1437,8 +1437,8 @@ static void GenerateBezier(PrimitiveInfo *primitive_info)
   p->pixel=last;
   p++;
   primitive_info->coordinates=p-primitive_info;
-  FreeMemory((void **) &points);
-  FreeMemory((void **) &coefficients);
+  LiberateMemory((void **) &points);
+  LiberateMemory((void **) &coefficients);
 }
 
 static double GenerateCircle(PrimitiveInfo *primitive_info,PointInfo start,
@@ -2430,7 +2430,7 @@ static double IntersectPrimitive(PrimitiveInfo *primitive_info,
         annotate->fill=draw_info->fill;
         annotate->stroke=draw_info->stroke;
         annotate->box=draw_info->box;
-        annotate->text=(char *) AllocateMemory(r-p->text+1);
+        annotate->text=(char *) AcquireMemory(r-p->text+1);
         if (annotate->text == (char *) NULL)
           MagickError(ResourceLimitError,"Unable to annotate image",
             "Memory allocation failed");
@@ -2532,7 +2532,7 @@ MagickExport unsigned int MatteFloodfillImage(Image *image,
     Allocate segment stack.
   */
   segment_stack=(SegmentInfo *)
-    AllocateMemory(MaxStacksize*sizeof(SegmentInfo));
+    AcquireMemory(MaxStacksize*sizeof(SegmentInfo));
   if (segment_stack == (SegmentInfo *) NULL)
     ThrowBinaryException(ResourceLimitWarning,"Unable to floodfill image",
       image->filename);
@@ -2635,7 +2635,7 @@ MagickExport unsigned int MatteFloodfillImage(Image *image,
       start=x;
     } while (x <= x2);
   }
-  FreeMemory((void **) &segment_stack);
+  LiberateMemory((void **) &segment_stack);
   return(True);
 }
 

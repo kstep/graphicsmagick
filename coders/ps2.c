@@ -579,9 +579,9 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
         {
           FormatString(buffer,"%.1024s \n",labels[i]);
           (void) WriteBlob(image,strlen(buffer),buffer);
-          FreeMemory((void **) &labels[i]);
+          LiberateMemory((void **) &labels[i]);
         }
-        FreeMemory((void **) &labels);
+        LiberateMemory((void **) &labels);
       }
     FormatString(buffer,"%u %u\n%u\n%d\n%d\n",image->columns,image->rows,
       IsPseudoClass(image),(int) (image->colorspace == CMYKColorspace),
@@ -639,7 +639,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
           */
           number_packets=(image->colorspace == CMYKColorspace ? 4 : 3)*
             image->columns*image->rows;
-          pixels=(unsigned char *) AllocateMemory(number_packets);
+          pixels=(unsigned char *) AcquireMemory(number_packets);
           if (pixels == (unsigned char *) NULL)
             ThrowWriterException(ResourceLimitWarning,
               "Memory allocation failed",image);
@@ -693,7 +693,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
               CloseBlob(image);
               return(False);
             }
-          FreeMemory((void **) &pixels);
+          LiberateMemory((void **) &pixels);
           break;
         }
         case NoCompression:
@@ -830,7 +830,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
                 Allocate pixel array.
               */
               number_packets=image->columns*image->rows;
-              pixels=(unsigned char *) AllocateMemory(number_packets);
+              pixels=(unsigned char *) AcquireMemory(number_packets);
               if (pixels == (unsigned char *) NULL)
                 ThrowWriterException(ResourceLimitWarning,
                   "Memory allocation failed",image);
@@ -861,7 +861,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
                   status=LZWEncodeImage(image,number_packets,pixels);
                 else
                   status=PackbitsEncodeImage(image,number_packets,pixels);
-              FreeMemory((void **) &pixels);
+              LiberateMemory((void **) &pixels);
               if (!status)
                 {
                   CloseBlob(image);

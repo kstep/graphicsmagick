@@ -869,7 +869,7 @@ int main(int argc,char **argv)
   if (image_info->verbose)
     DescribeImage(image,stderr,False);
   DestroyImages(image);
-  FreeMemory((void **) &argv);
+  LiberateMemory((void **) &argv);
   Exit(0);
 #endif
   return(False);

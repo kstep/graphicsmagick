@@ -266,7 +266,7 @@ static Image *ReadXBMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if ((image->columns % 16) && ((image->columns % 16) < 9)  && (version == 10))
     padding=1;
   bytes_per_line=(image->columns+7)/8+padding;
-  data=(unsigned char *) AllocateMemory(bytes_per_line*image->rows);
+  data=(unsigned char *) AcquireMemory(bytes_per_line*image->rows);
   if (data == (unsigned char *) NULL)
     ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
   /*
@@ -354,7 +354,7 @@ static Image *ReadXBMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (QuantumTick(y,image->rows))
       ProgressMonitor(LoadImageText,y,image->rows);
   }
-  FreeMemory((void **) &data);
+  LiberateMemory((void **) &data);
   SyncImage(image);
   CloseBlob(image);
   return(image);
@@ -585,6 +585,6 @@ static unsigned int WriteXBMImage(const ImageInfo *image_info,Image *image)
   (void) strcpy(buffer,"};\n");
   (void) WriteBlob(image,strlen(buffer),buffer);
   CloseBlob(image);
-  FreeMemory((void **) &basename);
+  LiberateMemory((void **) &basename);
   return(True);
 }

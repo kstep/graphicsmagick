@@ -213,9 +213,9 @@ MagickExport unsigned int EqualizeImage(Image *image)
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  histogram=(unsigned int *) AllocateMemory((MaxRGB+1)*sizeof(unsigned int));
-  map=(unsigned int *) AllocateMemory((MaxRGB+1)*sizeof(unsigned int));
-  equalize_map=(Quantum *) AllocateMemory((MaxRGB+1)*sizeof(Quantum));
+  histogram=(unsigned int *) AcquireMemory((MaxRGB+1)*sizeof(unsigned int));
+  map=(unsigned int *) AcquireMemory((MaxRGB+1)*sizeof(unsigned int));
+  equalize_map=(Quantum *) AcquireMemory((MaxRGB+1)*sizeof(Quantum));
   if ((histogram == (unsigned int *) NULL) || (map == (unsigned int *) NULL) ||
       (equalize_map == (Quantum *) NULL))
     ThrowBinaryException(ResourceLimitWarning,"Unable to equalize image",
@@ -245,11 +245,11 @@ MagickExport unsigned int EqualizeImage(Image *image)
     j+=histogram[i];
     map[i]=j;
   }
-  FreeMemory((void **) &histogram);
+  LiberateMemory((void **) &histogram);
   if (map[MaxRGB] == 0)
     {
-      FreeMemory((void **) &equalize_map);
-      FreeMemory((void **) &map);
+      LiberateMemory((void **) &equalize_map);
+      LiberateMemory((void **) &map);
       return(False);
     }
   /*
@@ -260,7 +260,7 @@ MagickExport unsigned int EqualizeImage(Image *image)
   for (i=0; i <= MaxRGB; i++)
     equalize_map[i]=(Quantum)
       ((((double) (map[i]-low))*MaxRGB)/Max(high-low,1));
-  FreeMemory((void **) &map);
+  LiberateMemory((void **) &map);
   /*
     Stretch the histogram.
   */
@@ -306,7 +306,7 @@ MagickExport unsigned int EqualizeImage(Image *image)
       break;
     }
   }
-  FreeMemory((void **) &equalize_map);
+  LiberateMemory((void **) &equalize_map);
   return(True);
 }
 
@@ -381,7 +381,7 @@ MagickExport unsigned int GammaImage(Image *image,const char *gamma)
   /*
     Allocate and initialize gamma maps.
   */
-  gamma_map=(PixelPacket *) AllocateMemory((MaxRGB+1)*sizeof(PixelPacket));
+  gamma_map=(PixelPacket *) AcquireMemory((MaxRGB+1)*sizeof(PixelPacket));
   if (gamma_map == (PixelPacket *) NULL)
     ThrowBinaryException(ResourceLimitWarning,"Unable to gamma correct image",
       "Memory allocation failed");
@@ -455,7 +455,7 @@ MagickExport unsigned int GammaImage(Image *image,const char *gamma)
   }
   if (image->gamma != 0.0)
     image->gamma*=(red_gamma+green_gamma+blue_gamma)/3.0;
-  FreeMemory((void **) &gamma_map);
+  LiberateMemory((void **) &gamma_map);
   return(True);
 }
 
@@ -726,8 +726,8 @@ MagickExport unsigned int NormalizeImage(Image *image)
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  histogram=(int *) AllocateMemory((MaxRGB+1)*sizeof(int));
-  normalize_map=(Quantum *) AllocateMemory((MaxRGB+1)*sizeof(Quantum));
+  histogram=(int *) AcquireMemory((MaxRGB+1)*sizeof(int));
+  normalize_map=(Quantum *) AcquireMemory((MaxRGB+1)*sizeof(Quantum));
   if ((histogram == (int *) NULL) || (normalize_map == (Quantum *) NULL))
     ThrowBinaryException(ResourceLimitWarning,"Unable to normalize image",
       "Memory allocation failed");
@@ -845,7 +845,7 @@ MagickExport unsigned int NormalizeImage(Image *image)
       break;
     }
   }
-  FreeMemory((void **) &normalize_map);
-  FreeMemory((void **) &histogram);
+  LiberateMemory((void **) &normalize_map);
+  LiberateMemory((void **) &histogram);
   return(True);
 }

@@ -239,9 +239,9 @@ MagickExport void DestroyExceptionInfo(ExceptionInfo *exception)
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   if (exception->message != (char *) NULL)
-    FreeMemory((void **) &exception->message);
+    LiberateMemory((void **) &exception->message);
   if (exception->qualifier != (char *) NULL)
-    FreeMemory((void **) &exception->qualifier);
+    LiberateMemory((void **) &exception->qualifier);
 }
 
 /*

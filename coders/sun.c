@@ -336,7 +336,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (!AllocateImageColormap(image,image->colors))
           ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
             image);
-        sun_colormap=(unsigned char *) AllocateMemory(image->colors);
+        sun_colormap=(unsigned char *) AcquireMemory(image->colors);
         if (sun_colormap == (unsigned char *) NULL)
           ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
             image);
@@ -349,7 +349,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
         (void) ReadBlob(image,image->colors,(char *) sun_colormap);
         for (i=0; i < (int) image->colors; i++)
           image->colormap[i].blue=UpScale(sun_colormap[i]);
-        FreeMemory((void **) &sun_colormap);
+        LiberateMemory((void **) &sun_colormap);
         break;
       }
       case RMT_RAW:
@@ -360,20 +360,20 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Read SUN raster colormap.
         */
-        sun_colormap=(unsigned char *) AllocateMemory(sun_info.maplength);
+        sun_colormap=(unsigned char *) AcquireMemory(sun_info.maplength);
         if (sun_colormap == (unsigned char *) NULL)
           ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
             image);
         (void) ReadBlob(image,(unsigned int) sun_info.maplength,
           (char *) sun_colormap);
-        FreeMemory((void **) &sun_colormap);
+        LiberateMemory((void **) &sun_colormap);
         break;
       }
       default:
         ThrowReaderException(CorruptImageWarning,
           "Colormap type is not supported",image);
     }
-    sun_data=(unsigned char *) AllocateMemory(sun_info.length);
+    sun_data=(unsigned char *) AcquireMemory(sun_info.length);
     if (sun_data == (unsigned char *) NULL)
       ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
         image);
@@ -392,12 +392,12 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
         */
         height=(unsigned int) sun_info.height;
         bytes_per_line=(2*sun_info.width*sun_info.depth+15)/16;
-        sun_pixels=(unsigned char *) AllocateMemory(bytes_per_line*height);
+        sun_pixels=(unsigned char *) AcquireMemory(bytes_per_line*height);
         if (sun_pixels == (unsigned char *) NULL)
           ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
             image);
         (void) DecodeImage(sun_data,bytes_per_line,height,sun_pixels);
-        FreeMemory((void **) &sun_data);
+        LiberateMemory((void **) &sun_data);
       }
     /*
       Initialize image structure.
@@ -494,7 +494,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
         }
     if (image->storage_class == PseudoClass)
       SyncImage(image);
-    FreeMemory((void **) &sun_pixels);
+    LiberateMemory((void **) &sun_pixels);
     /*
       Proceed to next image.
     */
@@ -739,7 +739,7 @@ static unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
           Allocate memory for pixels.
         */
         pixels=(unsigned char *)
-          AllocateMemory(image->columns*sizeof(PixelPacket));
+          AcquireMemory(image->columns*sizeof(PixelPacket));
         if (pixels == (unsigned char *) NULL)
           ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
             image);
@@ -768,7 +768,7 @@ static unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
             if (QuantumTick(y,image->rows))
               ProgressMonitor(SaveImageText,y,image->rows);
         }
-        FreeMemory((void **) &pixels);
+        LiberateMemory((void **) &pixels);
       }
     else
       if (IsMonochromeImage(image))
