@@ -153,8 +153,8 @@ static double J1(const double x)
   q=Qone[8];
   for (i=7; i >= 0; i--)
   {
-    p*=x*x+Pone[i];
-    q*=x*x+Qone[i];
+    p=p*x*x+Pone[i];
+    q=p*x*x+Qone[i];
   }
   return(p/q);
 }
