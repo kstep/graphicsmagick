@@ -704,7 +704,7 @@ static void DestroyCacheInfo(Cache cache)
     case MemoryCache:
     {
       LiberateMemory((void **) &cache_info->pixels);
-      (void) GetCacheMemory(-length);
+      (void) GetCacheMemory(-(off_t) length);
       break;
     }
     case MemoryMappedCache:
