@@ -242,7 +242,7 @@ static void         util_set_pen(wmfAPI * API, wmfDC * dc);
 /* Progress callback */
 int magick_progress_callback (void* context,float quantum)
 {
-  MagickMonitor((char*)context,quantum,1.0);
+  MagickMonitor((char*)context,(off_t)floor(quantum*100),100);
   return 0;
 }
 
