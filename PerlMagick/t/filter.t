@@ -47,7 +47,7 @@ testFilter('input.miff', 'Colorize',
 ++$test;
 testFilter('input.miff', 'Contrast',
   q/1/,
-  'd08ed6c865778c2d50cc1485ed58bf01',
+  'c2156d2134de57d98a03fe8ffdf0a3cd',
   'e4dc79d4309f1c7cded302a52b57614c');
 
 ++$test;
@@ -58,7 +58,7 @@ testFilter('input.miff', 'Crop',
 ++$test;
 testFilter('input.miff', 'Despeckle',
   q/ /,
-  'f4e6ed6a3dd1696e78fc69a761802f01',
+  '79b2523ae5fb8d6c3219efedfc5c97f2',
   'a0648ef96fc3a4bb20daf366d96659c6');
 
 ++$test;
@@ -76,7 +76,7 @@ testFilter('input.miff', 'Emboss',
 ++$test;
 testFilter('input.miff', 'Equalize',
   q/ /,
-  '4731d138fa4bf61a12911686b3bebf85',
+  'e7c25176f93a087008197e82104ab3cb',
   '658fdb444984fd0505e22649d051d8a9');
 
 ++$test;
@@ -133,7 +133,7 @@ testFilter('input.miff', 'Minify',
 ++$test;
 testFilter('input.miff', 'Modulate',
   q/60/,
-  '88a1399d6d592ac08ac96e3778f66fbb',
+  '9f6e4d0ecb962edbc7b845d6864974eb',
   '50dcb2e4f39f65ae5dd2b0e048845c09');
 
 ++$test;
@@ -249,7 +249,7 @@ testFilter('input.miff', 'Wave',
 ++$test;
 testFilter('input.miff', 'Zoom',
   q/geometry=>50%,filter=>Point/,
-  '7f2ece454edfd8555c4f071a87547eb4',
+  '06d1e8f076fecb9a4b121b7f1d8f6057',
   '9e78d6fcaf019530500dff7078a23efc');
 
 ++$test;
