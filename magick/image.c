@@ -12925,13 +12925,13 @@ static void HorizontalFilter(Image *source,Image *destination,double x_factor,
       support=0.5;
       scale_factor=1.0;
     }
-  support+=1e-7;
+  support+=1.e-7;
   for (x=0; x < (int) destination->columns; x++)
   {
     sum=0.0;
     n=0;
     center=(double) x/x_factor;
-    for (i=(int) (center-support+0.5); i <= (int) (center+support+0.5); i++)
+    for (i=(int) (center-support+0.5); i < (int) (center+support+0.5); i++)
     {
       j=i;
       if (j < 0)
@@ -12940,9 +12940,8 @@ static void HorizontalFilter(Image *source,Image *destination,double x_factor,
         if (j >= (int) source->columns)
           j=(source->columns << 1)-j-1;
       contribution_info[n].pixel=j;
-      contribution_info[n].weight=
-        filter_info->function(((double) i-center+0.5)/scale_factor);
-      contribution_info[n].weight/=scale_factor;
+      contribution_info[n].weight=filter_info->function(
+        ((double) i-center+0.5)/scale_factor)/scale_factor;
       sum+=contribution_info[n].weight;
       n++;
     }
@@ -13029,14 +13028,14 @@ static void VerticalFilter(Image *source,Image *destination,double y_factor,
       support=0.5;
       scale_factor=1.0;
     }
-  support+=1e-7;
+  support+=1.e-7;
   q=destination->pixels;
   for (y=0; y < (int) destination->rows; y++)
   {
     sum=0.0;
     n=0;
     center=(double) y/y_factor;
-    for (i=(int) (center-support+0.5); i <= (int) (center+support+0.5); i++)
+    for (i=(int) (center-support+0.5); i < (int) (center+support+0.5); i++)
     {
       j=i;
       if (j < 0)
@@ -13045,9 +13044,8 @@ static void VerticalFilter(Image *source,Image *destination,double y_factor,
         if (j >= (int) source->rows)
           j=(source->rows << 1)-j-1;
       contribution_info[n].pixel=j;
-      contribution_info[n].weight=
-        filter_info->function(((double) i-center+0.5)/scale_factor);
-      contribution_info[n].weight/=scale_factor;
+      contribution_info[n].weight=filter_info->function(
+        ((double) i-center+0.5)/scale_factor)/scale_factor;
       sum+=contribution_info[n].weight;
       n++;
     }
