@@ -62,7 +62,7 @@ color="#FFFFFF"><font size="+1">Synopsis</font></font></font></b></td>
 </table>
 <dl>
 <dd>
-<b>conjure</b> <i>file</i> [ <i>file</i> ... ]</dd>
+<b>conjure</b> [ options ] script_file.msl</dd>
 </dl>
 <i><a href="#top">Back to Contents</a></i>
 <br>&nbsp;
@@ -108,73 +108,21 @@ invoked with
 </pre>
 </dd>
 
-<dd>
-Most/all operations will closely follow the key/value pairs defined in
-PerlMagick.
-</dd>
-
-<dd>
-You can define any keyword/value pair on the command line.  The script
-use this information by returning a value for any string that contains
-%[keyword] (e.g. -geometry 400x400; %[geometry] returns 400x400.
-</dd>
-
-<dd>
-<strong>&lt;image&gt;</strong> defines a new image object and
-<strong>&lt;/image&gt;</strong> destroys it.  It is intended that ny
-keyword recognized by PerlMagick's SetAttribute() is recognized, although
-only <em>size</em> is currently recognized:
-</dd>
-
-<dd>
-<pre>
-    &lt;image size="400x400">
-</pre>
-</dd>
-
-<dd>
-<pre>
-    &lt;read filename="filename"/>
-</pre>
-</dd>
-
-<dd>
-reads a new image.  To read two images use
-</dd>
-
-<dd>
-<pre>
-     &lt;read filename="image.gif" filename="image.png" /&lt;
-</pre>
-</dd>
-
-<dd>
-or
-
-<dd>
-<pre>
-      &lt;read filename="image.gif" /&lt;
-      &lt;read filename="image.png" /&lt;
-</pre>
-</dd>
-
-<dd>
-<strong>&lt;get&gt;</strong>gets any attribute recognized by PerlMagick's
-GetAttribute() and stores it as an image attribute for later use:
-
-<dd>
-<pre>
-     &lt;get width="base-width" height="base-height" /&lt;
-     &lt;print output="Image size is %[base-width]x%[base-height].\n" /&lt;
-</pre>
-</dd>
-
-<dd>
-The only image operator so far is &lt;resize&gt;.
-</dd>
-
-
-<dd>
+<dd>All operations will closely follow the key/value pairs defined in PerlMagick, unless otherwise noted.</dd>
+			<dd>
+			<dd>You can also define your own keyword/value pairs on the command line. The script can then use this information when setting values by including %[keyword] in the string.  For example, if you included &quot;-geometry 400x400&quot; on the command line, then any string containing &quot;%[geometry]&quot; would have 400x400 substituted.  This can be either an entire string, such as geometry=&quot;%[geometry]&quot; or part of a string such as filename=&quot;%[basename].png&quot;.</dd>
+			<dd>
+			<dd>
+			<dd>
+			<dd>
+			<dd>
+			<dd>
+			<dd>
+			<dd>
+			<dd>
+			<dd>
+			<dd>
+			<dd>
 <strong>Conjure</strong> is in the early stages of development as of
 December 2001.
 </dd>
@@ -285,45 +233,117 @@ color="#FFFFFF"><font size="+1"
 </table>
 
 <dl>
-<dd>
-The Magick Scripting Language (MSL) presently defines the following
-keywords and values:
-</dd>
+<dd>The Magick Scripting Language (MSL) presently defines the following elements and their attributes:</dd>
+				<dd>
+			<dd><strong>&lt;image&gt;</strong>
+			<dd><strong>&lt;image&gt;</strong> defines a new image object and <strong>&lt;/image&gt;</strong> destroys it. Because of this, if you wish to reference multiple &quot;subimages&quot;&nbsp;(aka pages or layers), you can embed one &lt;<strong>image</strong>&gt; element inside of another. For example:
+				<dd>
+				<pre>  &lt;image&gt;
+					    &lt;read filename=&quot;input.png&quot; /&gt;
+					    &lt;get width=&quot;base-width&quot; height=&quot;base-height&quot; /&gt;
+					    &lt;image height=&quot;base-height&quot; width=&quot;base-width&quot;&gt;
+					       &lt;label&gt;this is a simple label&lt;label/&gt;
+					    &lt;image /&gt;
+					    &lt;write filename=&quot;output.mng&quot; /&gt;
+					  &lt;/image&gt;
+</pre>
+			<dd>It is intended that any keyword recognized by PerlMagick's SetAttribute() is recognized, although only <em>size</em> is currently recognized:
 
-<dd>
-<ul>
-<li>border (fill, geometry, height, width)
-<li>blur (radius, sigma)
-<li>charcoal (radius, sigma)
-<li>chop (geometry, height, width, x, y)
-<li>crop (geometry, height, width, x, y)
-<li>despeckle
-<li>emboss (radius, sigma)
-<li>enhance
-<li>equalize
-<li>flip
-<li>flop
-<li>frame (fill, geometry, height, width, x, y, inner, outer)
-<li>get
-<li>image
-<li>magnify
-<li>minify
-<li>normalize
-<li>print
-<li>read
-<li>resize (blur, filter, height, width)
-<li>roll (geometry, x, y)
-<li>rotate (degrees)
-<li>sample (geometry, height, width)
-<li>write
-</ul>
-</dd>
-</dl>
+			<pre>
+    &lt;image size=&quot;400x400&quot;&gt;
 
-<p>&nbsp;
-<br>&nbsp;
-<br>
-<a NAME="auth"></a>
+</pre>
+			<dd><strong>&lt;read&gt;</strong>
+			<dd><strong>&lt;read&gt; </strong>reads a new image from a disk file.
+
+			<pre>    &lt;read filename=image.gife&quot;/&gt;
+</pre>
+			<dd>To read two images use
+			<pre>   &lt;read filename=&quot;image.gif&quot;&gt;
+    &lt;read filename=&quot;image.png&gt;&lt;
+</pre>
+			<dd>
+			<dd>
+			<dd><strong>&lt;write&gt;</strong>
+			<dd><strong>&lt;write&gt; </strong>writes the image(s) to disk, either as a single file or multiple ones if necessary.
+			<dl>
+				<pre>    writed filename=image.tiffe&quot;/&gt;
+</pre>
+				<dd>
+			</dl>
+			<dd><strong>&lt;get&gt;</strong>
+			<dd><strong>&lt;get&gt;</strong>gets any attribute recognized by PerlMagick's GetAttribute() and stores it as an image attribute for later use. Currently only <em>width</em> and <em>height</em> are supported.
+
+			<pre>
+     &lt;get width=&quot;base-width&quot; height=&quot;base-height&quot; &gt;&lt;
+     &lt;print output=&quot;Image size is %[base-width]x%[base-height].\n&quot; &gt;&lt;
+
+</pre>
+			<dd>
+			<dd><strong>&lt;border&gt;</strong>
+			<dd>fill, geometry, height, width
+			<dd><strong>&lt;blur&gt;</strong>
+			<dd>radius, sigma
+			<dd><strong>&lt;charcoal&gt;</strong>
+			<dd>radius, sigma
+			<dd><strong>&lt;chop&gt;</strong>
+			<dd>geometry, height, width, x, y
+			<dd><strong>&lt;crop&gt;</strong>
+			<dd>geometry, height, width, x, y
+			<dd><strong>&lt;despeckle&gt;</strong>
+			<dd><strong>&lt;emboss&gt;</strong>
+			<dd>radius, sigma
+			<dd><strong>&lt;enhance&gt;</strong>
+			<dd><strong>&lt;equalize&gt;</strong>
+			<dd><strong>&lt;flip&gt;</strong>
+			<dd><strong>&lt;flop&gt;</strong>
+			<dd><strong>&lt;frame&gt;</strong>
+			<dd>fill, geometry, height, width, x, y, inner, outer
+			<dd><strong>&lt;get&gt;</strong>
+			<dd><strong>&lt;image&gt;</strong>
+			<dd><strong>&lt;magnify&gt;</strong>
+			<dd><strong>&lt;minify&gt;</strong>
+			<dd><strong>&lt;normalize&gt;</strong>
+			<dd><strong>&lt;print&gt;</strong>
+			<dd>output
+			<dd><strong>&lt;read&gt;</strong>
+			<dd><strong>&lt;resize&gt;</strong>
+			<dd>blur, filter, height, width
+			<dd><strong>&lt;roll&gt;</strong>
+			<dd>geometry, x, y
+			<dd><strong>&lt;rotate&gt;</strong>
+			<dd>degrees
+			<dd><strong>&lt;sample&gt;</strong>
+			<dd>geometry, height, width
+			<dd><strong>&lt;scale&gt;</strong>
+			<dd>geometry, height, width
+			<dd><strong>&lt;sharpen&gt;</strong>
+			<dd>radius, sigma
+			<dd><strong>&lt;shave&gt;</strong>
+			<dd>geometry, height, width
+			<dd><strong>&lt;shear&gt;</strong>
+			<dd>x, y
+			<dd><strong>&lt;solarize&gt;</strong>
+			<dd>threshold
+			<dd><strong>&lt;spread&gt;</strong>
+			<dd>radius
+			<dd><strong>&lt;swirl&gt;</strong>
+			<dd>degrees
+			<dd><strong>&lt;threshold&gt;</strong>
+			<dd>threshold
+			<dd><strong>&lt;trim&gt;</strong>
+			<dd><strong>&lt;write&gt;</strong>
+			<dl>
+				
+			</dl>
+			<dl>
+				
+			</dl>
+			<dd>
+		</dl>
+
+<p>&nbsp;&nbsp;<br>
+			<a NAME="auth"></a>
 <table BORDER=0 WIDTH="100%" >
 <tr>
 <td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.png"
@@ -332,10 +352,11 @@ ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"
 </tr>
 </table>
 
-<dl><dd>
-<i>John Cristy</i>, <i><a href="mailto:magick-users@imagemagick.org"
->magick-users@imagemagick.org</a>, ImageMagick Studio</i>.</dd>
-</dl>
+<dl><dd></dd>
+			<dd><i>John Cristy</i>, <i><a href="mailto:magick-users@imagemagick.org">magick-users@imagemagick.org</a>, ImageMagick Studio</i>.
+			<dd><i>Leonard Rosenthol</i>, <i><a href="mailto:magick-users@imagemagick.org"
+>leonardr@lazerware.com</a>, ImageMagick Studio</i>.
+		</dl>
 <i><a href="#top">Back to Contents</a></i>
 <br>&nbsp;
 <br>
@@ -349,7 +370,7 @@ ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"
 </table>
 
 <dl><dd>
-<b>Copyright (C) 2002 ImageMagick Studio</b></dd>
+<b>Copyright (C) 2001-2002 ImageMagick Studio</b></dd>
 <dd>
 <p>
 <b>Permission is hereby granted, free of charge, to any person obtaining
