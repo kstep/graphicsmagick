@@ -238,12 +238,18 @@ static void WmfCopyXpm(CSTRUCT *cstruct,
                        unsigned short dest_w, unsigned short dest_h,
                        char *filename, unsigned int dwROP)
 {
+  puts("WmfCopyXpm() not implemented");
+#if 0
   /* FIXME: this trivial implementation only implements pixel
      replacement and ignores ROP entirely.  More support is needed in
      ImageMagick to support setting the fill style.
 
      Also, if this is based on a temporary file, how is this temporary
-     file cleaned up, and who creates it?  */
+     file cleaned up, and who creates it?
+
+     This API should simply pass a pointer to the unprocessed
+     in-memory BMP!
+  */
   char
     buff[MaxTextExtent];
 
@@ -255,6 +261,7 @@ static void WmfCopyXpm(CSTRUCT *cstruct,
           (int)dest_h,
           filename);
   ExtendMVG(cstruct, buff);
+#endif
 }
 
 /*
@@ -735,7 +742,51 @@ static void WmfDrawRectangle(CSTRUCT *cstruct, WMFRECORD *wmfrecord)
 /* Draw a rectangle with rounded corners */
 static void WmfDrawRoundRectangle(CSTRUCT *cstruct, WMFRECORD *wmfrecord)
 {
-  puts("WmfDrawRoundRectangle() not implemented");
+  char
+    buff[MaxTextExtent];
+
+  double
+    ch,
+    cw,
+    x1,
+    y1,
+    x2,
+    y2;
+
+  ExtendMVG(cstruct, "push graphic-context\n");
+  if ((cstruct->dc->brush!=NULL) && (cstruct->dc->brush->lbStyle != BS_NULL))
+    {
+      sprintf(buff, "fill #%02x%02x%02x\n",
+              (cstruct->dc->brush->lbColor[0]& 0x00FF),
+              (cstruct->dc->brush->lbColor[0]& 0xFF00)>>8,
+              (cstruct->dc->brush->lbColor[1]& 0x00FF)
+              );
+      ExtendMVG(cstruct, buff);
+    }
+  else
+    ExtendMVG(cstruct, "fill none\n");
+
+  if (cstruct->dc->pen->lopnStyle != PS_NULL)
+    {
+      sprintf(buff, "stroke #%02x%02x%02x\n",
+              (cstruct->dc->pen->lopnColor[0]& 0x00FF),
+              ((cstruct->dc->pen->lopnColor[0]& 0xFF00)>>8),
+              (cstruct->dc->pen->lopnColor[1]& 0x00FF)
+              );
+      ExtendMVG(cstruct, buff);
+    }
+  else
+    ExtendMVG(cstruct, "stroke none\n");
+
+  x1 = NormX(wmfrecord->Parameters[5]+(cstruct->dc->pen->lopnWidth/2),cstruct); /* left */
+  y1 = NormY(wmfrecord->Parameters[4]+(cstruct->dc->pen->lopnWidth/2),cstruct); /* top */
+  x2 = NormX(wmfrecord->Parameters[3]-(cstruct->dc->pen->lopnWidth/2),cstruct); /* right */
+  y2 = NormY(wmfrecord->Parameters[2]-(cstruct->dc->pen->lopnWidth/2),cstruct); /* bottom */
+  cw = ScaleX(wmfrecord->Parameters[1],cstruct); /* ell_width */
+  ch = ScaleY(wmfrecord->Parameters[0],cstruct); /* ell_height */
+  sprintf(buff,"roundrectangle %f,%f %f,%f %f,%f\n",x1,y1,x2,y2, cw, ch);
+  ExtendMVG(cstruct, buff);
+  ExtendMVG(cstruct, "pop graphic-context\n");
 }
 
 /* Draw a simple arc */
@@ -798,9 +849,40 @@ static void WmfExtFloodFill(CSTRUCT *cstruct, WMFRECORD *wmfrecord)
   ExtendMVG(cstruct, "pop graphic-context\n");
 }
 
+/* Draw filled but borderless rectangle */
 static void WmfFillOpaque(CSTRUCT *cstruct, WMFRECORD *wmfrecord)
 {
-  puts("WmfFillOpaque() not implemented");
+  char
+    buff[MaxTextExtent];
+
+  double
+    x1,
+    y1,
+    x2,
+    y2;
+
+  ExtendMVG(cstruct, "push graphic-context\n");
+
+  /* Set fill color */
+  sprintf(buff, "fill #%02x%02x%02x\n",
+          (cstruct->dc->bgcolor[0]& 0x00FF),
+          (cstruct->dc->bgcolor[0]& 0xFF00)>>8,
+          (cstruct->dc->bgcolor[1]& 0x00FF)
+          );
+  ExtendMVG(cstruct, buff);
+
+  /* Unset stroke color */
+  ExtendMVG(cstruct, "stroke none\n");
+
+  /* Add rectangle primitive and points */
+  x1 = NormX(wmfrecord->Parameters[4]+(cstruct->dc->pen->lopnWidth/2),cstruct);
+  y1 = NormY(wmfrecord->Parameters[5]+(cstruct->dc->pen->lopnWidth/2),cstruct);
+  x2 = NormX(wmfrecord->Parameters[6]-(cstruct->dc->pen->lopnWidth/2),cstruct);
+  y2 = NormY(wmfrecord->Parameters[7]-(cstruct->dc->pen->lopnWidth/2),cstruct);
+  sprintf(buff,"rectangle %f,%f %f,%f\n",x1,y1,x2,y2);
+  ExtendMVG(cstruct, buff);
+
+  ExtendMVG(cstruct, "pop graphic-context\n");
 }
 
 /* Perform finishing steps */
@@ -816,7 +898,7 @@ static void WmfFloodFill(CSTRUCT *cstruct, WMFRECORD *wmfrecord)
 
   ExtendMVG(cstruct, "push graphic-context\n");
 
-  /* Set stroke (border) color */
+  /* Set fill color */
   sprintf(buff, "fill #%02x%02x%02x\n",
           (wmfrecord->Parameters[0]& 0x00FF),
           (wmfrecord->Parameters[0]& 0xFF00)>>8,
@@ -841,12 +923,44 @@ static void WmfNoClipRect(CSTRUCT *cstruct)
 /* Paint rectangular region using brush color */
 static void WmfPaintRgn(CSTRUCT *cstruct, WINEREGION *rgn)
 {
-  puts("WmfPaintRgn() not implemented");
+  /* FIXME: this is probably supposed to be drawing with texture rather than solid color */
+  char
+    buff[MaxTextExtent];
+
+  double
+    x1,
+    y1,
+    x2,
+    y2;
+
+  ExtendMVG(cstruct, "push graphic-context\n");
+  if ((cstruct->dc->brush!=NULL) && (cstruct->dc->brush->lbStyle != BS_NULL))
+    {
+      sprintf(buff, "fill #%02x%02x%02x\n",
+              (cstruct->dc->brush->lbColor[0]& 0x00FF),
+              (cstruct->dc->brush->lbColor[0]& 0xFF00)>>8,
+              (cstruct->dc->brush->lbColor[1]& 0x00FF)
+              );
+      ExtendMVG(cstruct, buff);
+    }
+  else
+    ExtendMVG(cstruct, "fill none\n");
+
+    ExtendMVG(cstruct, "stroke none\n");
+
+  /* Add rectangle primitive and points */
+  x1 = NormX(rgn->extents.left,cstruct);
+  y1 = NormY(rgn->extents.top,cstruct);
+  x2 = NormX(rgn->extents.left,cstruct)+ScaleX(rgn->extents.right-rgn->extents.left,cstruct);
+  y2 = NormY(rgn->extents.top,cstruct)+ScaleY(rgn->extents.bottom-rgn->extents.top,cstruct);
+  sprintf(buff,"rectangle %f,%f %f,%f\n",x1,y1,x2,y2);
+  ExtendMVG(cstruct, buff);
+  ExtendMVG(cstruct, "pop graphic-context\n");
 }
 
 static void WmfParseROP(CSTRUCT *cstruct, unsigned int dwROP,
-                 unsigned short x, unsigned short y,
-                 unsigned short width, unsigned short height)
+                        unsigned short x, unsigned short y,
+                        unsigned short width, unsigned short height)
 {
   puts("WmfParseROP() not implemented");
 }
@@ -1030,6 +1144,7 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       draw_info = (DrawInfo*)AcquireMemory(sizeof(DrawInfo));
       GetDrawInfo( local_info, draw_info );
       draw_info->primitive=(char*)cstruct->userdata;
+puts(draw_info->primitive);
       DrawImage(image,draw_info);
       draw_info->primitive = (char*)NULL;
       DestroyDrawInfo(draw_info);
