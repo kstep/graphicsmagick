@@ -77,7 +77,7 @@ extern WandExport void
   *ResizeMagickMemory(void *memory,const size_t size),
    SetGeometryInfo(GeometryInfo *geometry_info);
 
-extern MagickExport int
+extern WandExport int
   FormatMagickString(char *,const size_t,const char *,...)
     __attribute__((format (printf,3,4)));
 
@@ -88,7 +88,7 @@ extern WandExport unsigned int
   ParseAbsoluteGeometry(const char *geometry,RectangleInfo *region_info),
   ParseGeometry(const char *geometry,GeometryInfo *geometry_info);
 
-extern MagickExport size_t
+extern WandExport size_t
   ConcatenateMagickString(char *,const char *,const size_t),
   CopyMagickString(char *,const char *,const size_t);
 

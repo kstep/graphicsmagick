@@ -78,6 +78,7 @@
 #  define putc putc_unlocked
 #endif
 
+#if defined(HAVE_MMAP)
 static const char *BlobMapModeToString(MapMode map_mode)
 {
   char
@@ -97,6 +98,7 @@ static const char *BlobMapModeToString(MapMode map_mode)
   }
   return mode_string;
 }
+#endif /* defined(HAVE_MMAP) */
 
 static const char *BlobModeToString(BlobMode blob_mode)
 {

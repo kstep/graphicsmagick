@@ -1,5 +1,10 @@
 2003-09-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/blob.c (BlobMapModeToString): Only include this static
+	function if HAVE_MMAP is defined.
+	* coders/locale.c (WriteLOCALEImage): Fix FormatString argument
+	type inconsistencies.
+	* wand/magick_compat.h: Change MagickExport to WandExport.
 	* coders/jpeg.c, coders/locale.c, coders/meta.c, coders/miff.c,
 	coders/palm.c, coders/pict.c, coders/svg.c, coders/tiff.c,
 	coders/topol.c, magick/cache.c, magick/display.c, magick/image.c,

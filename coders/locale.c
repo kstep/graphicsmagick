@@ -913,7 +913,8 @@ static unsigned int WriteLOCALEImage(const ImageInfo *image_info,Image *image)
                   index++;
                 }
             }
-            FormatString(text, "#define MGK_%s%s%s%s %ld",fields[0],fields[1],fields[2],fields[3],i+1);
+            FormatString(text, "#define MGK_%s%s%s%s %d",fields[0],fields[1],
+              fields[2],fields[3],i+1);
             WriteBlobStringWithEOL(image,text);
           }
       }
@@ -1007,8 +1008,9 @@ static unsigned int WriteLOCALEImage(const ImageInfo *image_info,Image *image)
             FormatString(severity, "%s%s%s",fields[0], fields[1], fields[2]);
             if (LocaleCompare(severity,last) != 0)
               {
-                FormatString(text, "    { \"%s%s%s/%s\", %ld, %s },", fields[0],
-                  strlen(fields[0]) ? "/" : "", fields[1], fields[2], i, severity);
+                FormatString(text, "    { \"%s%s%s/%s\", %d, %s },", fields[0],
+                  strlen(fields[0]) ? "/" : "", fields[1], fields[2], i,
+                  severity);
                 WriteBlobStringWithEOL(image,text);
                 strncpy(last,severity,MaxTextExtent-1);
               }
@@ -1049,7 +1051,7 @@ static unsigned int WriteLOCALEImage(const ImageInfo *image_info,Image *image)
                   index++;
                 }
             }
-            FormatString(text, "    { \"%s\", %ld },", fields[3], i+1);
+            FormatString(text, "    { \"%s\", %d },", fields[3], i+1);
             WriteBlobStringWithEOL(image,text);
           }
       }

@@ -56,6 +56,17 @@
 2003-09-10  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> magick/blob.c (BlobMapModeToString): Only include this static
+        function if HAVE_MMAP is defined.
+  <LI> coders/locale.c (WriteLOCALEImage): Fix FormatString argument
+        type inconsistencies.<BR>
+  <LI> wand/magick_compat.h: Change MagickExport to WandExport.
+  <LI> coders/jpeg.c, coders/locale.c, coders/meta.c, coders/miff.c,
+        coders/palm.c, coders/pict.c, coders/svg.c, coders/tiff.c,
+        coders/topol.c, magick/cache.c, magick/display.c, magick/image.c,
+        magick/widget.c: Removed unused values, changed storage types, or
+        added explicit casts, in order to reduce the number of "REMARK"s
+        when using the SGI IRIX compiler.
   <LI> magick/render.c (DrawClipPath): Fix memory leak of
         clone_info-&gt;clip_path.  Problem reported by Vladimir
         &lt;lvm@integrum.ru&gt;.<BR>
