@@ -290,9 +290,8 @@ MagickExport Image *CoalesceImages(const Image *image,ExceptionInfo *exception)
     coalesce_image->delay=next->delay;
     coalesce_image->start_loop=next->start_loop;
     (void) CompositeImage(coalesce_image,next->matte ? OverCompositeOp :
-      CopyCompositeOp,next,next->page.x,
-      /* correct for SouthWest gravity */
-      (long) next->page.height-next->page.y-(long) next->rows);
+      CopyCompositeOp,next,next->page.x,(long) next->page.height-
+      next->page.y-(long) next->rows);
     (void) memset(&coalesce_image->page,0,sizeof(RectangleInfo));
   }
   while (coalesce_image->previous != (Image *) NULL)
@@ -692,7 +691,6 @@ MagickExport Image *FlattenImages(const Image *image,ExceptionInfo *exception)
   */
   for (next=image->next; next != (Image *) NULL; next=next->next)
     (void) CompositeImage(flatten_image,next->compose,next,next->page.x,
-      /* correct for SouthWest gravity */
       (long) next->page.height-next->page.y-(long) next->rows);
   return(flatten_image);
 }
@@ -951,7 +949,6 @@ MagickExport Image *MosaicImages(const Image *image,ExceptionInfo *exception)
   for (next=image; next != (Image *) NULL; next=next->next)
   {
     (void) CompositeImage(mosaic_image,CopyCompositeOp,next,next->page.x,
-      /* correct for SouthWest gravity */
       (long) next->page.height-next->page.y-(long) next->rows);
     MagickMonitor(MosaicImageText,scene++,GetImageListSize(image));
   }
