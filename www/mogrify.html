@@ -125,6 +125,11 @@ To convert all the TIFF files in a particular directory to JPEG, use:
     mogrify -format jpeg *.tiff
 </pre>
 <p>
+To convert a directory full of JPEG images to thumbnails, use:
+<pre>
+    convert -size 120x120 *.jpg -geometry 120x120 +profile '*'
+</pre>
+<p>
 To scale an image of a cockatoo to exactly 640 pixels in width and 480
 pixels in height, use: 
 <pre>

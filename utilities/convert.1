@@ -21,6 +21,11 @@ process. \fBConvert\fP recognizes the image formats listed in
 
 .SH EXAMPLES
 
+To make a thumbnail of a JPEG image, use:
+
+    convert -size 120x120 cockatoo.jpg -geometry 120x120
+            +profile '*' thumbnail.jpg
+
 To convert a \fIMIFF\fP image of a cockatoo to a SUN raster image, use:
 
     convert cockatoo.miff sun:cockatoo.ras
@@ -107,6 +112,9 @@ For a more detailed description of each option, see
 .TP
 .B "-bordercolor \fI<color>"\fP
 \fRthe border color
+.TP
+.B "-box \fI<color>"\fP
+\fRset the color of the annotation bounding box
 .TP
 .B "-cache \fI<threshold>"\fP
 \fRmegabytes of memory available to the pixel cache
@@ -410,9 +418,6 @@ For a more detailed description of each option, see
 .TP
 .B "-type \fI<type>"\fP
 \fRthe image type
-.TP
-.B "-undercolor \fI<color>"\fP
-\fRset the color of the annotation bounding box
 .TP
 .B "-units \fI<type>"\fP
 \fRthe type of image resolution

@@ -122,6 +122,11 @@ color="#FFFFFF"><font size="+1">
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
 <p>
+To make a thumbnail of a JPEG image, use:
+<pre>
+    convert -size 120x120 cockatoo.jpg -geometry 120x120 +profile '*' thumbnail.jpg
+</pre>
+<p>
 To convert a <em>MIFF</em> image of a cockatoo to a SUN raster image, use:
 <pre>
     convert cockatoo.miff sun:cockatoo.ras
