@@ -278,8 +278,7 @@ MagickExport ViewInfo *OpenCacheView(Image *image)
       /*
         Allocate pixel cache.
       */
-      status=
-        OpenCache(image->cache,image->storage_class,image->columns,image->rows);
+      status=OpenCache(image);
       if (status == False)
         {
           ThrowException(&image->exception,CacheWarning,

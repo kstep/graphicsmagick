@@ -46,6 +46,9 @@ typedef struct _CacheInfo
   ClassType
     storage_class;
 
+  ColorspaceType
+    colorspace;
+
   CacheType
     type;
 
@@ -80,7 +83,10 @@ typedef struct _CacheInfo
   MagickExported interfaces.
 */
 extern MagickExport ClassType
-  GetCacheClassType(const Cache);
+  GetCacheClass(const Cache);
+
+extern MagickExport ColorspaceType
+  GetCacheColorspace(const Cache);
 
 extern MagickExport IndexPacket
   *GetNexusIndexes(const Cache,const unsigned int);
@@ -92,7 +98,7 @@ extern MagickExport PixelPacket
 extern MagickExport unsigned int
   GetCacheNexus(Cache),
   IsNexusInCore(const Cache,const unsigned int),
-  OpenCache(Cache,const ClassType,const unsigned int,const unsigned int),
+  OpenCache(Image *),
   ReadCachePixels(Cache,const unsigned int),
   ReadCacheIndexes(Cache,const unsigned int),
   WriteCacheInfo(Image *),

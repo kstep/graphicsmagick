@@ -258,14 +258,16 @@ static unsigned int CompressCache(Cache cache)
     if (gzwrite(file,pixels,count) != count)
       break;
   }
-  if ((cache_info->storage_class == PseudoClass) && (y == cache_info->rows))
-    for (y=0; y < (int) cache_info->rows; y++)
-    {
-      count=read(cache_info->file,pixels,
-        cache_info->columns*sizeof(IndexPacket));
-      if (gzwrite(file,pixels,count) != count)
-        break;
-    }
+  if (y == cache_info->rows)
+    if ((cache_info->storage_class == PseudoClass) ||
+        (cache_info->colorspace != RGBColorspace))
+      for (y=0; y < (int) cache_info->rows; y++)
+      {
+        count=read(cache_info->file,pixels,
+          cache_info->columns*sizeof(IndexPacket));
+        if (gzwrite(file,pixels,count) != count)
+          break;
+      }
   LiberateMemory((void **) &pixels);
   (void) gzclose(file);
   if (y != cache_info->rows)
@@ -321,7 +323,8 @@ static void DestroyCacheInfo(Cache cache)
     case MemoryCache:
     {
       LiberateMemory((void **) &cache_info->pixels);
-      if (cache_info->storage_class == PseudoClass)
+      if ((cache_info->storage_class == PseudoClass) ||
+          (cache_info->colorspace != RGBColorspace))
         (void) GetCacheMemory(number_pixels*sizeof(IndexPacket));
       (void) GetCacheMemory(number_pixels*sizeof(PixelPacket));
       break;
@@ -335,7 +338,8 @@ static void DestroyCacheInfo(Cache cache)
         Unmap memory-mapped pixels and indexes.
       */
       length=number_pixels*sizeof(PixelPacket);
-      if (cache_info->storage_class == PseudoClass)
+      if ((cache_info->storage_class == PseudoClass) ||
+          (cache_info->colorspace != RGBColorspace))
         length+=number_pixels*sizeof(IndexPacket);
       (void) UnmapBlob(cache_info->pixels,length);
     }
@@ -449,27 +453,27 @@ static void DestroyPixelCache(Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   G e t C a c h e C l a s s T y p e                                         %
++   G e t C a c h e C l a s s                                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method GetCacheClassType returns the class type of the pixel cache.
+%  Method GetCacheClass returns the class type of the pixel cache.
 %
-%  The format of the GetCacheClassType method is:
+%  The format of the GetCacheClass method is:
 %
-%      ClassType GetCacheClassType(Cache cache)
+%      ClassType GetCacheClass(Cache cache)
 %
 %  A description of each parameter follows:
 %
-%    o type: Method GetCacheClassType returns DirectClass or PseudoClass.
+%    o type: Method GetCacheClass returns DirectClass or PseudoClass.
 %
 %    o cache: Specifies a pointer to a Cache structure.
 %
 %
 */
-MagickExport ClassType GetCacheClassType(const Cache cache)
+MagickExport ClassType GetCacheClass(const Cache cache)
 {
   CacheInfo
     *cache_info;
@@ -478,6 +482,42 @@ MagickExport ClassType GetCacheClassType(const Cache cache)
   cache_info=(CacheInfo *) cache;
   assert(cache_info->signature == MagickSignature);
   return(cache_info->storage_class);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   G e t C a c h e C o l o r s p a c e                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method GetCacheColorspace returns the class type of the pixel cache.
+%
+%  The format of the GetCacheColorspace method is:
+%
+%      Colorspace GetCacheColorspace(Cache cache)
+%
+%  A description of each parameter follows:
+%
+%    o type: Method GetCacheColorspace returns DirectClass or PseudoClass.
+%
+%    o cache: Specifies a pointer to a Cache structure.
+%
+%
+*/
+MagickExport ColorspaceType GetCacheColorspace(const Cache cache)
+{
+  CacheInfo
+    *cache_info;
+
+  assert(cache != (Cache) NULL);
+  cache_info=(CacheInfo *) cache;
+  assert(cache_info->signature == MagickSignature);
+  return(cache_info->colorspace);
 }
 
 /*
@@ -515,6 +555,7 @@ MagickExport void GetCacheInfo(Cache *cache)
       "unable to allocate cache info");
   memset(cache_info,0,sizeof(CacheInfo));
   cache_info->storage_class=UndefinedClass;
+  cache_info->colorspace=RGBColorspace;
   cache_info->type=UndefinedCache;
   cache_info->file=(-1);
   cache_info->signature=MagickSignature;
@@ -826,7 +867,8 @@ static PixelPacket *GetPixelCache(Image *image,const int x,const int y,
   if (IsNexusInCore(image->cache,0))
     return(pixels);
   status=ReadCachePixels(image->cache,0);
-  if (image->storage_class == PseudoClass)
+  if ((image->storage_class == PseudoClass) ||
+      (image->colorspace != RGBColorspace))
     status|=ReadCacheIndexes(image->cache,0);
   if (status == False)
     {
@@ -942,28 +984,18 @@ MagickExport unsigned int IsNexusInCore(const Cache cache,const unsigned int id)
 %
 %  The format of the OpenCache method is:
 %
-%      unsigned int OpenCache(Cache cache,const ClassType storage_class,
-%        const unsigned int columns,const unsigned int rows)
+%      unsigned int OpenCache(Image *image)
 %
 %  A description of each parameter follows:
 %
 %    o status: Method OpenCache returns True if the pixel cache is
 %      initialized successfully otherwise False.
 %
-%    o cache: Specifies a pointer to a Cache structure.
-%
-%    o storage_class: DirectClass or PseudoClass.
-%
-%    o columns: This unsigned integer defines the number of columns in the
-%      pixel cache.
-%
-%    o rows: This unsigned integer defines the number of rows in the pixel
-%      cache.
+%    o image: The address of a structure of type Image.
 %
 %
 */
-MagickExport unsigned int OpenCache(Cache cache,const ClassType storage_class,
-  const unsigned int columns,const unsigned int rows)
+MagickExport unsigned int OpenCache(Image *image)
 {
   CacheInfo
     *cache_info;
@@ -981,7 +1013,10 @@ MagickExport unsigned int OpenCache(Cache cache,const ClassType storage_class,
   void
     *allocation;
 
-  assert(cache != (Cache) NULL);
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  if (image->cache == (void *) NULL)
+    return;
   if (cache_threshold == ~0)
     {
       off_t
@@ -999,11 +1034,12 @@ MagickExport unsigned int OpenCache(Cache cache,const ClassType storage_class,
 #endif
       SetCacheThreshold(threshold);
     }
-  cache_info=(CacheInfo *) cache;
+  cache_info=(CacheInfo *) image->cache;
   assert(cache_info->signature == MagickSignature);
   number_pixels=cache_info->columns*cache_info->rows;
   length=number_pixels*sizeof(PixelPacket);
-  if (cache_info->storage_class == PseudoClass)
+  if ((cache_info->storage_class == PseudoClass) ||
+      (cache_info->colorspace != RGBColorspace))
     length+=number_pixels*sizeof(IndexPacket);
   if (cache_info->storage_class != UndefinedClass)
     {
@@ -1015,8 +1051,8 @@ MagickExport unsigned int OpenCache(Cache cache,const ClassType storage_class,
       if (cache_info->type == MemoryMappedCache)
         (void) UnmapBlob(cache_info->pixels,(size_t) length);
     }
-  cache_info->rows=rows;
-  cache_info->columns=columns;
+  cache_info->rows=image->rows;
+  cache_info->columns=image->columns;
   number_pixels=cache_info->columns*cache_info->rows;
   if (cache_info->nexus == (NexusInfo *) NULL)
     {
@@ -1046,7 +1082,8 @@ MagickExport unsigned int OpenCache(Cache cache,const ClassType storage_class,
       cache_info->nexus[0].available=False;
     }
   length=number_pixels*sizeof(PixelPacket);
-  if (storage_class == PseudoClass)
+  if ((image->storage_class == PseudoClass) ||
+      (image->colorspace != RGBColorspace))
     length+=number_pixels*sizeof(IndexPacket);
   if ((cache_info->type == MemoryCache) ||
       ((cache_info->type == UndefinedCache) && (length <= GetCacheMemory(0))))
@@ -1066,10 +1103,12 @@ MagickExport unsigned int OpenCache(Cache cache,const ClassType storage_class,
             Create in-memory pixel cache.
           */
           (void) GetCacheMemory(-length);
-          cache_info->storage_class=storage_class;
+          cache_info->storage_class=image->storage_class;
+          cache_info->colorspace=image->colorspace;
           cache_info->type=MemoryCache;
           cache_info->pixels=(PixelPacket *) allocation;
-          if (cache_info->storage_class == PseudoClass)
+          if ((cache_info->storage_class == PseudoClass) ||
+              (cache_info->colorspace != RGBColorspace))
             cache_info->indexes=(IndexPacket *)
               (cache_info->pixels+number_pixels);
           return(True);
@@ -1085,7 +1124,7 @@ MagickExport unsigned int OpenCache(Cache cache,const ClassType storage_class,
       cache_info->file=open(cache_info->cache_filename,O_RDWR | O_CREAT |
         O_BINARY,0777);
       if (cache_info->file == -1)
-        (void) UncompressCache(cache);
+        (void) UncompressCache(image->cache);
       if (cache_info->file == -1)
         return(False);
     }
@@ -1098,7 +1137,8 @@ else
   if (write(cache_info->file,&null,sizeof(null)) == -1)
     return(False);
 #endif
-  cache_info->storage_class=storage_class;
+  cache_info->storage_class=image->storage_class;
+  cache_info->colorspace=image->colorspace;
   cache_info->type=DiskCache;
   if (cache_threshold != 0)
     {
@@ -1110,10 +1150,11 @@ else
         {
           cache_info->type=MemoryMappedCache;
           cache_info->pixels=(PixelPacket *) allocation;
-          if (cache_info->storage_class == PseudoClass)
+          if ((cache_info->storage_class == PseudoClass) ||
+              (cache_info->colorspace != RGBColorspace))
             cache_info->indexes=(IndexPacket *)
               (cache_info->pixels+number_pixels);
-          CloseCache(cache);
+          CloseCache(image->cache);
         }
     }
   return(True);
@@ -1170,7 +1211,8 @@ MagickExport unsigned int ReadCacheIndexes(Cache cache,const unsigned int id)
   assert(cache != (Cache) NULL);
   cache_info=(CacheInfo *) cache;
   assert(cache_info->signature == MagickSignature);
-  if (cache_info->storage_class != PseudoClass)
+  if ((cache_info->storage_class != PseudoClass) &&
+      (cache_info->colorspace == RGBColorspace))
     return(False);
   nexus=cache_info->nexus+id;
   offset=nexus->y*cache_info->columns+nexus->x;
@@ -1416,7 +1458,8 @@ MagickExport PixelPacket *SetCacheNexus(Cache cache,const unsigned int id,
         */
         nexus->pixels=cache_info->pixels+nexus->y*cache_info->columns+nexus->x;
         nexus->indexes=(IndexPacket *) NULL;
-        if (cache_info->storage_class == PseudoClass)
+        if ((cache_info->storage_class == PseudoClass) ||
+            (cache_info->colorspace != RGBColorspace))
           nexus->indexes=
             cache_info->indexes+nexus->y*cache_info->columns+nexus->x;
         return(nexus->pixels);
@@ -1426,7 +1469,8 @@ MagickExport PixelPacket *SetCacheNexus(Cache cache,const unsigned int id,
   */
   number_pixels=nexus->columns*nexus->rows;
   length=number_pixels*sizeof(PixelPacket);
-  if (cache_info->storage_class == PseudoClass)
+  if ((cache_info->storage_class == PseudoClass) ||
+      (cache_info->colorspace != RGBColorspace))
     length+=number_pixels*sizeof(IndexPacket);
   if (nexus->line == (void *) NULL)
     nexus->line=AcquireMemory(length);
@@ -1494,13 +1538,13 @@ static PixelPacket *SetPixelCache(Image *image,const int x,const int y,
   if ((x < 0) || (y < 0) || ((x+columns) > (int) image->columns) ||
       ((y+rows) > (int) image->rows) || (columns == 0) || (rows == 0))
     return((PixelPacket *) NULL);
-  if (image->storage_class != GetCacheClassType(image->cache))
+  if ((image->storage_class != GetCacheClass(image->cache)) ||
+      (image->colorspace != GetCacheColorspace(image->cache)))
     {
       /*
         Allocate pixel cache.
       */
-      status=OpenCache(image->cache,image->storage_class,image->columns,
-        image->rows);
+      status=OpenCache(image);
       if (status == False)
         {
           ThrowException(&image->exception,CacheWarning,
@@ -1590,7 +1634,8 @@ static unsigned int SyncPixelCache(Image *image)
   if (IsNexusInCore(image->cache,0))
     return(True);
   status=WriteCachePixels(image->cache,0);
-  if (image->storage_class == PseudoClass)
+  if ((image->storage_class == PseudoClass) ||
+      (image->colorspace != RGBColorspace))
     status|=WriteCacheIndexes(image->cache,0);
   if (status == False)
     ThrowBinaryException(CacheWarning,"Unable to sync pixel cache",
@@ -1670,13 +1715,15 @@ static unsigned int UncompressCache(Cache cache)
     if (write(cache_info->file,pixels,count) != count)
       break;
   }
-  if ((cache_info->storage_class == PseudoClass) && (y == cache_info->rows))
-    for (y=0; y < (int) cache_info->rows; y++)
-    {
-      count=gzread(file,pixels,cache_info->columns*sizeof(IndexPacket));
-      if (write(cache_info->file,pixels,count) != count)
-        break;
-    }
+  if (y == cache_info->rows)
+    if ((cache_info->storage_class == PseudoClass) ||
+        (cache_info->colorspace != RGBColorspace))
+      for (y=0; y < (int) cache_info->rows; y++)
+      {
+        count=gzread(file,pixels,cache_info->columns*sizeof(IndexPacket));
+        if (write(cache_info->file,pixels,count) != count)
+          break;
+      }
   LiberateMemory((void **) &pixels);
   (void) gzclose(file);
   (void) remove(filename);
@@ -1737,7 +1784,8 @@ MagickExport unsigned int WriteCacheIndexes(Cache cache,const unsigned int id)
   assert(cache != (Cache) NULL);
   cache_info=(CacheInfo *) cache;
   assert(cache_info->signature == MagickSignature);
-  if (cache_info->storage_class != PseudoClass)
+  if ((cache_info->storage_class != PseudoClass) &&
+      (cache_info->colorspace == RGBColorspace))
     return(False);
   nexus=cache_info->nexus+id;
   indexes=nexus->indexes;
