@@ -560,8 +560,8 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
       }
     image->matte=bmp_info.bits_per_pixel == 32;
-    image->columns= bmp_info.width;
-    image->rows= AbsoluteValue(bmp_info.height);
+    image->columns=bmp_info.width;
+    image->rows=AbsoluteValue(bmp_info.height);
     image->depth=8;
     if ((bmp_info.number_colors != 0) || (bmp_info.bits_per_pixel < 16))
       {

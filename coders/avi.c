@@ -414,11 +414,22 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
     if ((LocaleCompare(id,"00db") == 0) || (LocaleCompare(id,"00dc") == 0))
       {
+	if (LocaleCompare(bmp_info.compression,"MJPG") == 0)
+          {
+            FormatString(message,"AVI compression %.1024s not yet supported",
+              bmp_info.compression);
+            ThrowException(exception,CorruptImageWarning,message,
+              image->filename);
+            for ( ; chunk_size != 0; chunk_size--)
+              (void) ReadBlobByte(image);
+            continue;
+          }
         /*
           Initialize image structure.
         */
-        image->columns= avi_info.width;
-        image->rows= avi_info.height;
+        image->columns=avi_info.width;
+        image->rows=avi_info.height;
+        image->depth=8;
         image->units=PixelsPerCentimeterResolution;
         image->x_resolution=bmp_info.x_pixels/100.0;
         image->y_resolution=bmp_info.y_pixels/100.0;
@@ -697,12 +708,6 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
         */
         if (image_info->verbose)
           (void) fprintf(stdout,"  Stream fcc\n");
-        if (LocaleCompare(stream_info.data_type,"auds") == 0)
-          continue;
-        if (LocaleCompare(stream_info.data_type,"pads") == 0)
-          continue;
-        if (LocaleCompare(stream_info.data_type,"txts") == 0)
-          continue;
         if (LocaleCompare(stream_info.data_type,"vids") == 0)
           {
             bmp_info.size=ReadBlobLSBLong(image);
@@ -744,6 +749,8 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 bmp_info.compression);
             continue;
           }
+        for ( ; chunk_size != 0; chunk_size--)
+          (void) ReadBlobByte(image);
         continue;
       }
     if (LocaleCompare(id,"strh") == 0)
@@ -785,14 +792,14 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
           (void) ReadBlobByte(image);
         continue;
       }
-    FormatString(message,"AVI support for chunk %.1024s not yet available",id);
+    FormatString(message,"AVI chunk %.1024s not yet supported",id);
     ThrowException(exception,CorruptImageWarning,message,image->filename);
-    break;
+    for ( ; chunk_size != 0; chunk_size--)
+      (void) ReadBlobByte(image);
+    continue;
   }
   while (image->previous != (Image *) NULL)
     image=image->previous;
-  if (EOFBlob(image))
-    ThrowReaderException(CorruptImageWarning,"Unexpected end-of-file",image);
   CloseBlob(image);
   if ((image->columns == 0) || (image->rows == 0))
     {
