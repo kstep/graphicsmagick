@@ -1,0 +1,77 @@
+FAQ for Visualmagick:
+
+- What is Visualmagick?
+
+Visualmagick is a system for buidling ImageMagick using the standard
+Microsoft VisualC++ 6.0 IDE environment. The heart of this system is a
+configuration program called configure.exe. This is really a tongue-in-
+cheek reference to the configure program on UNIX that does the same kind
+of thing. On UNIX, people are accustomed to running configure from the
+command line and having it create a complete set of build scripts and
+makefiles. The VisualMagick configure program take the form of a set of
+dialogs that create all of the projects and workspaces to build the whole
+ImageMagick system using the VisualC++ 6.0 IDE.
+
+The main issue with VisualC++ environment is that is has lots of variations
+for both compiling, and linking. Most systems pick a particular way to
+deploy and then force everyone to use the particular method. For example,
+a library would only compile as a DLL and require the use of multi-threaded
+C runtimes. The creation of this wizard is an attempt to provide the most
+frequently needed ways of building the library and its associated utiliey
+programs as well as provide a way to do the same for your own applications
+and plug-ins.
+
+In order to use configure you have to compile it and link it using the
+VisualMagick\configure\configure.dsw workspace. (See README.txt for details)
+
+- What versions of VisualC++ does VisualMagick support?
+
+Only Visual C++ 6.0 with any service packs. We are starting to look at the
+.Net stuff now, but nothing has been done
+
+- What are all the almost empty dir's good for?
+
+These directories tell configure.exe what directories in the Imagemagick 
+package, are inclued in the projects. The configure.exe program uses the
+structure in the level immediately above the configure directory to scan for
+files to be added to projects. The assumptions is that a directory has files
+that are to be included into either a library of to build an application.
+
+This method of defining projects is a kind of hack, but it works surprisingly
+well. Most libraries put their source code into a single directory, and the
+ImageMagick package is no exception.
+
+The configure program on UNIX is far more sophisticated and use text files
+and scripting to accomplish the same thing. We could do the same on Windows
+but it would be a whole lot more work, so we leave this project up to a more
+ambitious person.
+
+- What is the X11 option on the first page.
+
+You could say that X11 (Or XWindows) is the unix way to do windows. However, 
+it is possible to install an X11 server on your windows machine. Anyway, 
+this option allows you to use the header files for your X11 server during 
+compilation. If you do not have X11, do not know what it is, or don't want 
+to have anything to do with it, select to use the "X11 stubs". This will 
+allow you to compile without having any X11, yet the compiled library will 
+use it if it is available.
+
+Note: Without an X11 server, the included 'display' and 'animate' program 
+will not work.
+
+- What does 'decorate exe files with build options' mean? 
+
+In Visual C++, you can build using "Debug" settings, or "Release" settings.
+For the Imagemagick dll's, debug settings create dll's that include DB in 
+their name, Release builds have RL in their name. This is need since all 
+files end up in the same dir (.\bin), so they would overwrite each other 
+if this wasn't the case. This is also true for the demo programs, however 
+the debug builds here might not be of interest to most people. Also, the 
+names for these utilities might be hardcoded into some scripts people have 
+made etc. If you want to keep them apart anyway, select this option to 
+include DB and RL in their names to. (If you select this, don't forget that 
+everywhere the documentation talks about e.g. convert.exe, you will have
+convertRL.exe
+
+FAQ written by Arnt Witteveen (Arnt.Witteveen@iname.com) (22/12/2000)
+Reviewed by Bill Radcliffe (BillR@corbis.com) (...)
