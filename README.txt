@@ -478,11 +478,11 @@ MAGICK DELEGATES
       to read the TIFF image format.  It in turn optionally requires
       the JPEG and ZLIB libraries.
 
-    o ImageMagick requires the ZLIB library from
+    o ImageMagick requires wmftogif available from
 
-          http://www.cdrom.com/pub/infozip/zlib/index.html
+          http://www.csn.ul.ie/~caolan/docs/libwmf.html
 
-      to read or write the PNG or Zip compressed MIFF images.
+      to read the Windows Meta File image format.
 
     o ImageMagick requires GET(1) available via the Web as
 
@@ -492,6 +492,18 @@ MAGICK DELEGATES
       resource locator (URL).  If you do not have a HTTP server, you
       can use xtp(1), available in the ImageMagick distribution, for
       URL's whose protocol is FTP.
+
+    o ImageMagick requires an X server for display and animate to work
+      properly.  There is a free X server available for Windows and
+      Macintosh at
+
+        http://www.microimages.com/freestuf/mix/
+
+    o ImageMagick requires the ZLIB library from
+
+          http://www.cdrom.com/pub/infozip/zlib/index.html
+
+      to read or write the PNG or Zip compressed MIFF images.
 
     o ImageMagick requires SOCKS version 5 available via the Web at
 
@@ -507,12 +519,6 @@ MAGICK DELEGATES
       use your own or get samples from
 
           http://the-tech.mit.edu/KPT/
-
-    o ImageMagick requires an X server for display and animate to work
-      properly.  There is a free X server available for Windows and
-      Macintosh at
-
-        http://www.microimages.com/freestuf/mix/
 
 
 HOW TO COMPILE

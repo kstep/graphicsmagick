@@ -201,6 +201,9 @@ scan=>
 shtml=>
 	html2ps -o %o %i
 
+wmf=>
+	wmftogif %i %o
+
 yuv<=m2v
 	mpeg2encode %u %o
 	rm -f %i*.yuv %u*

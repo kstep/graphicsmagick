@@ -841,6 +841,7 @@ AC_PATH_PROG(HTMLDecodeDelegate, html2ps, html2ps)
 AC_PATH_PROG(POVDelegate, povray, povray)
 AC_PATH_PROG(RLEEncodeDelegate, rawtorle, rawtorle)
 AC_PATH_PROG(SCANDecodeDelegate, scanimage, scanimage)
+AC_PATH_PROG(WMFDecodeDelegate, wmftogif, wmftogif)
 AC_PATH_PROG(WWWDecodeDelegate, GET, GET)
 
 # Installed ImageMagick utiltity paths
@@ -890,6 +891,7 @@ then
   RMDelegate='rm'
   SCANDecodeDelegate='scanimage'
   ShowImageDelegate='display'
+  WMFDecodeDelegate='wmftogif'
   WWWDecodeDelegate='GET'
   ZipDelegate='gzip'
 fi
@@ -925,6 +927,7 @@ AC_SUBST(RLEEncodeDelegate)
 AC_SUBST(RMDelegate)
 AC_SUBST(SCANDecodeDelegate)
 AC_SUBST(ShowImageDelegate)
+AC_SUBST(WMFDecodeDelegate)
 AC_SUBST(WWWDecodeDelegate)
 AC_SUBST(ZipDelegate)
 

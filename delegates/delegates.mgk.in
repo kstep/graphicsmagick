@@ -203,6 +203,9 @@ scan=>
 shtml=>
 	@HTMLDecodeDelegate@ -o %o %i
 
+wmf=>
+	@WMFDecodeDelegate@ %i %o
+
 yuv<=m2v
 	@MPEGEncodeDelegate@ %u %o
 	@ConvertDelegate@ -concatenate %i*.yuv %u

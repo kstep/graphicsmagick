@@ -1382,6 +1382,34 @@ Export Image *ReadDCMImage(const ImageInfo *image_info)
           }
     switch (group)
     {
+      case 0x0002:
+      {
+        switch (element)
+        {
+          case 0x0010:
+          {
+            /*
+              Transfer Syntax.
+            */
+            if (strcmp((char *) data,"1.2.840.10008.1.2.2") == 0)
+              PrematureExit(CorruptImageWarning,
+                "big endian byte order not supported",image);
+            if (strcmp((char *) data,"1.2.840.10008.1.2.5") == 0)
+              PrematureExit(CorruptImageWarning,"RLE compression not supported",
+                image);
+            if (strcmp((char *) data,"1.2.840.10008.1.2.4.70") == 0)
+              PrematureExit(CorruptImageWarning,
+                "lossless JPEG compression not supported",image);
+            if (strcmp((char *) data,"1.2.840.10008.1.2.4.50") == 0)
+              PrematureExit(CorruptImageWarning,
+                "lossy jpeg compression not supported",image);
+            break;
+          }
+          default:
+            break;
+        }
+        break;
+      }
       case 0x0028:
       {
         switch (element)
@@ -5713,6 +5741,9 @@ Export Image *ReadLABELImage(const ImageInfo *image_info)
   if (*local_info->font == '@')
     {
 #if defined(HasTTF)
+      char
+        *path;
+
       int
         character_map,
         length,
@@ -5774,6 +5805,21 @@ Export Image *ReadLABELImage(const ImageInfo *image_info)
       if (error)
         PrematureExit(DelegateWarning,"Cannot initialize TTF engine",image);
       error=TT_Open_Face(engine,local_info->font+1,&face);
+      path=getenv("TT_FONT_PATH");
+      if (error && (path != (char *) NULL))
+        {
+          char
+            filename[MaxTextExtent];
+
+          /*
+            Try Truetype font path.
+          */
+          (void) strcpy(filename,path);
+          if (strncmp(filename+(strlen(filename)-1),DirectorySeparator,1))
+            (void) strcat(filename,DirectorySeparator);
+          (void) strcat(filename,local_info->font+1);
+          error=TT_Open_Face(engine,filename,&face);
+        }
       if (error)
         {
           /*

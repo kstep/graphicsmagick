@@ -80,7 +80,7 @@ extern "C" {
 #endif
 #if defined(WIN32)
 #define ApplicationDefaults  "c:\\ImageMagick\\"
-#define DelegatePath  "c:/ImageMagick/"
+#define DelegatePath  "c:\\ImageMagick\\"
 #define DirectorySeparator  "\\"
 #define EditorOptions ""
 #undef isatty

@@ -32,7 +32,7 @@ testReadWrite( 'AVS:input.avs',
 testReadWrite( 'BMP:input.bmp',
                'BMP:output.bmp',
                q//,
-               '6279036ddfcb3283be277a0db887f2b3' );
+               '38526324ab0f8a811221ac5088919bd6' );
 
 #
 # Microsoft Windows 24-bit bitmap image file

@@ -147,6 +147,7 @@ RMDelegate = @RMDelegate@
 SCANDecodeDelegate = @SCANDecodeDelegate@
 ShowImageDelegate = @ShowImageDelegate@
 VERSION = @VERSION@
+WMFDecodeDelegate = @WMFDecodeDelegate@
 WWWDecodeDelegate = @WWWDecodeDelegate@
 X11STUBSDIR = @X11STUBSDIR@
 X11STUBSLA = @X11STUBSLA@

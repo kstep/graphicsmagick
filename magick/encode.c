@@ -4633,7 +4633,25 @@ Export unsigned int WritePCDImage(const ImageInfo *image_info,Image *image)
   /*
     Write PCD image header.
   */
-  for (i=0; i < 0x800; i++)
+  for (i=0; i < 32; i++)
+    (void) fputc(0xff,pcd_image->file);
+  for (i=0; i < 4; i++)
+    (void) fputc(0x0e,pcd_image->file);
+  for (i=0; i < 8; i++)
+    (void) fputc('\0',pcd_image->file);
+  for (i=0; i < 4; i++)
+    (void) fputc(0x01,pcd_image->file);
+  for (i=0; i < 4; i++)
+    (void) fputc(0x05,pcd_image->file);
+  for (i=0; i < 8; i++)
+    (void) fputc('\0',pcd_image->file);
+  for (i=0; i < 4; i++)
+    (void) fputc(0x0A,pcd_image->file);
+  for (i=0; i < 36; i++)
+    (void) fputc('\0',pcd_image->file);
+  for (i=0; i < 4; i++)
+    (void) fputc(0x01,pcd_image->file);
+  for (i=0; i < 1944; i++)
     (void) fputc('\0',pcd_image->file);
   (void) fwrite("PCD_IPI",1,7,pcd_image->file);
   (void) fputc(0x06,pcd_image->file);

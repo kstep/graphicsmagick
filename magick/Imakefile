@@ -91,6 +91,8 @@ install-shlib: $(SHLIB)
 
 install:: all
 
+install:: all
+
 clean::
 	-$(RM) $(ARLIB) $(SHLIB)
 

@@ -1462,6 +1462,7 @@ Export void CloseImage(Image *image)
       for ( ; image != (Image *) NULL; image=image->next)
         image->file=(FILE *) NULL;
     }
+  errno=0;
 }
 
 /*
