@@ -744,9 +744,6 @@ MagickExport void InitializeMagick(const char *path)
   /* Initialize semaphores */
   InitializeSemaphore();
 
-#if defined(WIN32)
-  InitializeTracingCriticalSection();
-#endif
   /*
     Set logging flags using value of MAGICK_DEBUG if it is set in
     the environment.
