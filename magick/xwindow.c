@@ -8010,12 +8010,12 @@ MagickExport void XRefreshWindow(Display *display,const XWindowInfo *window,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method XRemoteCommand forces a remote display(1) to display the specified
+%  XRemoteCommand() forces a remote display(1) to display the specified
 %  image filename.
 %
 %  The format of the XRemoteCommand method is:
 %
-%      void XRemoteCommand(Display *display,const char *window,
+%      unsigned int XRemoteCommand(Display *display,const char *window,
 %        const char *filename)
 %
 %  A description of each parameter follows:
@@ -8029,7 +8029,7 @@ MagickExport void XRefreshWindow(Display *display,const XWindowInfo *window,
 %
 %
 */
-MagickExport void XRemoteCommand(Display *display,const char *window,
+MagickExport unsigned int XRemoteCommand(Display *display,const char *window,
   const char *filename)
 {
   Atom
@@ -8046,7 +8046,7 @@ MagickExport void XRemoteCommand(Display *display,const char *window,
     {
       MagickError(XServerError,"Unable to connect to X server",
         (char *) NULL);
-      return;
+      return(False);
     }
   remote_atom=XInternAtom(display,"IM_PROTOCOLS",False);
   remote_window=(Window) NULL;
@@ -8066,9 +8066,9 @@ MagickExport void XRemoteCommand(Display *display,const char *window,
     remote_window=XWindowByProperty(display,root_window,remote_atom);
   if (remote_window == (Window) NULL)
     {
-      MagickError(XServerError,"Unable to connect to remote Display",
+      MagickError(XServerError,"Unable to connect to remote display",
         (char *) NULL);
-      return;
+      return(False);
     }
   /*
     Send remote command.
@@ -8077,6 +8077,7 @@ MagickExport void XRemoteCommand(Display *display,const char *window,
   (void) XChangeProperty(display,remote_window,remote_atom,XA_STRING,8,
     PropModeReplace,(unsigned char *) filename,(int) strlen(filename));
   (void) XSync(display,False);
+  return(True);
 }
 
 /*

@@ -548,7 +548,8 @@ extern MagickExport unsigned int
   XMakeImage(Display *,const XResourceInfo *,XWindowInfo *,Image *,
     unsigned int,unsigned int),
   XMagickMonitor(const char *,const off_t,const size_t,ExceptionInfo *),
-  XQueryColorDatabase(const char *,XColor *);
+  XQueryColorDatabase(const char *,XColor *),
+  XRemoteCommand(Display *,const char *,const char *);
 
 extern MagickExport void
   XAnimateBackgroundImage(Display *,XResourceInfo *,Image *),
@@ -583,7 +584,6 @@ extern MagickExport void
     XWindowInfo *),
   XQueryPosition(Display *,const Window,int *,int *),
   XRefreshWindow(Display *,const XWindowInfo *,const XEvent *),
-  XRemoteCommand(Display *,const char *,const char *),
   XRetainWindowColors(Display *,const Window),
   XSignalHandler(int),
   XSetCursorState(Display *,XWindows *,const unsigned int),
