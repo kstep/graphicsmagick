@@ -769,46 +769,36 @@ MagickExport unsigned int GetTypeMetrics(Image *image,const DrawInfo *draw_info,
 static unsigned int RenderType(Image *image,const DrawInfo *draw_info,
   const PointInfo *offset,TypeMetric *metrics)
 {
-  char
-    *encoding;
-
   const TypeInfo
     *type_info;
 
   DrawInfo
-    *clone_info;
+   *clone_info;
 
   unsigned int
     status;
 
-  type_info=GetTypeInfoByFamily(draw_info->family,draw_info->style,
-    draw_info->stretch,draw_info->weight,&image->exception);
-  if (draw_info->font != (char *) NULL)
-    type_info=GetTypeInfo(draw_info->font,&image->exception);
-  clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
-  encoding=(char *) NULL;
-  if (type_info != (const TypeInfo *) NULL)
-    {
-      if (type_info->glyphs != (char *) NULL)
-        (void) CloneString(&clone_info->font,type_info->glyphs);
-      if (type_info->encoding != (char *) NULL)
-        (void) CloneString(&encoding,type_info->encoding);
-      status=RenderFreetype(image,clone_info,encoding,offset,metrics);
-    }
+  if (draw_info->font == (char *) NULL)
+    type_info=GetTypeInfoByFamily(draw_info->family,draw_info->style,
+      draw_info->stretch,draw_info->weight,&image->exception);
   else
-    if ((clone_info->font != (char *) NULL) && (*clone_info->font == '@'))
-      {
-        (void) CloneString(&clone_info->font,clone_info->font+1);
-        status=RenderFreetype(image,clone_info,encoding,offset,metrics);
-      }
-    else
-      if ((clone_info->font != (char *) NULL) && (*clone_info->font == '-'))
-        status=RenderX11(image,clone_info,offset,metrics);
-      else
-        if (IsAccessible(clone_info->font))
-          status=RenderFreetype(image,clone_info,encoding,offset,metrics);
-        else
-          status=RenderPostscript(image,clone_info,offset,metrics);
+    {
+      if (*draw_info->font == '@')
+        return(RenderFreetype(image,draw_info,(char *) NULL,offset,metrics));
+      if (*draw_info->font == '-')
+        return(RenderX11(image,draw_info,offset,metrics));
+      if (IsAccessible(draw_info->font))
+        return(RenderFreetype(image,draw_info,(char *) NULL,offset,metrics));
+      type_info=GetTypeInfoByFamily(draw_info->family,draw_info->style,
+        draw_info->stretch,draw_info->weight,&image->exception);
+      type_info=GetTypeInfo(draw_info->font,&image->exception);
+    }
+  if (type_info == (const TypeInfo *) NULL)
+    return(RenderPostscript(image,draw_info,offset,metrics));
+  clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
+  if (type_info->glyphs != (char *) NULL)
+    (void) CloneString(&clone_info->font,type_info->glyphs);
+  status=RenderFreetype(image,clone_info,type_info->encoding,offset,metrics);
   DestroyDrawInfo(clone_info);
   return(status);
 }
@@ -944,9 +934,6 @@ static unsigned int RenderFreetype(Image *image,const DrawInfo *draw_info,
       image;
   } GlyphInfo;
 
-  char
-    font[MaxTextExtent];
-
   double
     opacity;
 
@@ -1030,13 +1017,15 @@ static unsigned int RenderFreetype(Image *image,const DrawInfo *draw_info,
   if (status)
     ThrowBinaryException(DelegateError,"Unable to open freetype library",
       draw_info->font);
-  status=FT_New_Face(library,draw_info->font,0,&face);
+  if (*draw_info->font != '@')
+    status=FT_New_Face(library,draw_info->font,0,&face);
+  else
+    status=FT_New_Face(library,draw_info->font+1,0,&face);
   if (status != 0)
     {
       (void) FT_Done_FreeType(library);
       ThrowBinaryException(DelegateError,"Unable to read font",draw_info->font)
     }
-  (void) strncpy(font,draw_info->font,MaxTextExtent-1);
   if (face->num_charmaps != 0)
     status=FT_Set_Charmap(face,face->charmaps[0]);
   encoding_type=ft_encoding_none;
