@@ -1207,7 +1207,7 @@ static Image *RenderX11(const ImageInfo *image_info,const char *text,
       break;
     for (x=0; x < (int) image->columns; x++)
     {
-      q->opacity=(Quantum) Intensity(*q);
+      q->opacity=(Quantum) (MaxRGB-Intensity(*q));
       q->red=image_info->fill.red;
       q->green=image_info->fill.green;
       q->blue=image_info->fill.blue;

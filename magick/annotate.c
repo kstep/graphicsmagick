@@ -95,6 +95,9 @@ MagickExport unsigned int AnnotateImage(Image *image,
     *text,
     **textlist;
 
+  double
+    font_height;
+
   Image
     *annotate_image;
 
@@ -102,7 +105,6 @@ MagickExport unsigned int AnnotateImage(Image *image,
     *image_info;
 
   int
-    font_height,
     x,
     y;
 
@@ -223,11 +225,11 @@ MagickExport unsigned int AnnotateImage(Image *image,
           q=GetImagePixels(annotate_image,0,0,annotate_image->columns,1);
         else
           if (annotate_info->decorate == UnderlineDecoration)
-            q=GetImagePixels(annotate_image,0,(int) annotate_image->rows-1,
-              annotate_image->columns,1);
+            q=GetImagePixels(annotate_image,0,(int)
+              (2.0*annotate_image->rows/3.0),annotate_image->columns,1);
           else
-            q=GetImagePixels(annotate_image,0,(int) (0.5*annotate_image->rows),
-              annotate_image->columns,1);
+            q=GetImagePixels(annotate_image,0,(int)
+              (annotate_image->rows/3.0),annotate_image->columns,1);
         if (q != (PixelPacket *) NULL)
           {
             register int
@@ -257,8 +259,7 @@ MagickExport unsigned int AnnotateImage(Image *image,
     /*
       Composite text onto the image.
     */
-    font_height=(int) (clone_info->affine.sx*annotate_info->pointsize+
-      clone_info->affine.sy*annotate_info->pointsize);
+    font_height=clone_info->affine.sx*annotate_info->pointsize;
     point.x=clone_info->affine.sx*annotate_info->pointsize;
     point.y=clone_info->affine.sy*annotate_info->pointsize;
     switch (clone_info->gravity)
