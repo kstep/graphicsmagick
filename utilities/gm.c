@@ -75,6 +75,7 @@ static void PrintUsage(void)
 int main(int argc,char **argv)
 {
   char
+    command[MaxTextExtent],
     *text;
 
   ExceptionInfo
@@ -93,7 +94,7 @@ int main(int argc,char **argv)
   InitializeMagick(argv[0]);
 #endif
 
-  SetClientName(argv[0]);
+  (void) SetClientName(argv[0]);
   if (argc < 2)
     {
       PrintUsage();
@@ -104,7 +105,7 @@ int main(int argc,char **argv)
     /*
       Support traditional alternate names for GraphicsMagick subcommands.
     */
-    static const char *alternate_names [] =
+    static const char *command_names [] =
       {
         "animate",
         "composite",
@@ -118,23 +119,20 @@ int main(int argc,char **argv)
         NULL
       };
 
-    char
-      command_filename[MaxTextExtent];
-
     unsigned int
       i;
 
-    GetPathComponent(argv[0],BasePath,command_filename);
-    for (i=0; alternate_names[i]; i++)
-      if (LocaleCompare(command_filename,alternate_names[i]) == 0)
+    GetPathComponent(argv[0],BasePath,command);
+    for (i=0; command_names[i]; i++)
+      if (LocaleCompare(command,command_names[i]) == 0)
         break;
 
-    if (alternate_names[i])
+    if (command_names[i])
       {
         /*
           Set command name to alternate name.
         */
-        argv[0]=alternate_names[i];
+        argv[0]=command;
       }
     else
       {
