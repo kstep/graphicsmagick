@@ -43,7 +43,7 @@
 <HR>
 <H1><A NAME="synopsis">
 <FONT SIZE=-1>SYNOPSIS</FONT></A></H1>
-<P><STRONG>CatchImageException</STRONG>( Image *image );</P>
+<P>ExceptionType  <STRONG>CatchImageException</STRONG>( Image *image );</P>
 <P>void  <STRONG>DestroyExceptionInfo</STRONG>( ExceptionInfo *exception );</P>
 <P><STRONG>GetExceptionInfo</STRONG>( ExceptionInfo *exception );</P>
 <P>void  <STRONG>GetImageException</STRONG>( Image *image, ExceptionInfo *exception );</P>
@@ -60,7 +60,7 @@
 <P>
 <H2><A NAME="catchimageexception">CatchImageException</A></H2>
 <blockquote>CatchImageException() returns if no exceptions are found in the image sequence, otherwise it determines the most severe exception and reports it as a warning or error depending on the severity. </blockquote><P>The format of the CatchImageException method is:</P>
-<blockquote>CatchImageException ( <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
+<blockquote><A HREF="types/Enumerations.html#ExceptionType">ExceptionType</A> CatchImageException ( <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <dd><p></p><dt><STRONG><A NAME="item_o_image%3A">image:</A></STRONG><BR>

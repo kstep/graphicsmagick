@@ -152,7 +152,7 @@ The image.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="appendimages">AppendImages</A></H2>
-<blockquote>The AppendImages() method takes a set of images and appends them to each other. All the input images must have the same width or height. Images of the same width are stacked top-to-bottom. Images with the same height are stacked left-to-right. </blockquote><P>The format of the AppendImage method is:</P>
+<blockquote>The AppendImages() method takes a set of images and appends them to each other top-to-bottom if the stack parameter is true, otherwise left-to-right. </blockquote><P>The format of the AppendImage method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *AppendImages ( const <A HREF="types/Image.html">Image</A> *image, const unsigned int stack, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DT><DD><DL>
@@ -163,7 +163,7 @@ The image sequence.
 <dd><p></p><dt><STRONG><A NAME="item_o_stack%3A">stack:</A></STRONG><BR>
 <DD>
 
-<FONT SIZE=-1>A</FONT> value other than 0 stacks the images of the same width and the same height top-to-bottom.
+<FONT SIZE=-1>A</FONT> value other than 0 stacks the images top-to-bottom.
 <P></P>
 <dd><p></p><dt><STRONG><A NAME="item_o_exception%3A">exception:</A></STRONG><BR>
 <DD>
@@ -352,7 +352,7 @@ The image.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="getimagedepth">GetImageDepth</A></H2>
-<blockquote>GetImageDepth() returns the depth of the image, either 8 or 16 bits. By default, pixels components are stored as 16-bit two byte unsigned short integers that range in value from 0 to 65535. However, if all the pixels have lower-order bytes of zero, the image is considered to have a depth of 8-bit. </blockquote><P>The format of the GetImageDepth method is:</P>
+<blockquote>GetImageDepth() returns the depth of the image, either 8 or 16 bits. By default, pixels components are stored as 16-bit two byte unsigned short integers that range in value from 0 to 65535. However, If all the pixels have lower-order bytes that are identical to their higher-order bytes, the image depth is 8-bit. </blockquote><P>The format of the GetImageDepth method is:</P>
 <blockquote>unsigned long GetImageDepth ( const <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DT><DD><DL>

@@ -2684,9 +2684,9 @@ MagickExport RectangleInfo GetImageBoundingBox(const Image *image,
 %
 %  GetImageDepth() returns the depth of the image, either 8 or 16 bits.  By
 %  default, pixels components are stored as 16-bit two byte unsigned short
-%  integers that range in value from 0 to 65535.  However, if all the pixels
-%  have lower-order bytes of zero, the image is considered to have a depth of
-%  8-bit.
+%  integers that range in value from 0 to 65535.  However, If all the pixels
+%  have lower-order bytes that are identical to their higher-order bytes, the
+%  image depth is 8-bit.
 %
 %  The format of the GetImageDepth method is:
 %
