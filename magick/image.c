@@ -1762,7 +1762,7 @@ MagickExport void DescribeImage(Image *image,FILE *file,
           {
             (void) fprintf(file,"PseudoClass %ld=>%uc ",
               (long) image->total_colors,image->colors);
-            (void) fprintf(file,"%g/%g/%ge ",image->mean_error_per_pixel,
+            (void) fprintf(file,"%d/%g/%ge ",(int) image->mean_error_per_pixel,
               image->normalized_mean_error,image->normalized_maximum_error);
           }
       (void) fprintf(file,"%u-bit ",image->depth);
@@ -1885,8 +1885,8 @@ MagickExport void DescribeImage(Image *image,FILE *file,
       }
     }
   if (image->mean_error_per_pixel != 0.0)
-    (void) fprintf(file,"  Mean Exception Per Pixel: %g\n",
-      image->mean_error_per_pixel);
+    (void) fprintf(file,"  Mean Exception Per Pixel: %d\n",
+      (int) image->mean_error_per_pixel);
   if (image->normalized_mean_error != 0.0)
     (void) fprintf(file,"  Normalized Mean Exception: %g\n",
       image->normalized_mean_error);
