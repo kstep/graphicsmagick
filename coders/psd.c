@@ -997,6 +997,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
         layer_info[i].image=CloneImage(image,layer_info[i].page.width,
                                        layer_info[i].page.height,
                                        True,&image->exception);
+        layer_info[i].image->blob=ReferenceBlob(image->blob);
         if (layer_info[i].image == (Image *) NULL)
           {
             for (j=0; j < i; j++)

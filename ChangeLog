@@ -1,4 +1,8 @@
 2002-12-11  Cristy  <cristy@mystic.es.dupont.com>
+	* coders/psd.c: Reference cloned image Blob (not sure why needed
+	but must be important).
+
+2002-12-11  Cristy  <cristy@mystic.es.dupont.com>
 	* magick/ehnance.c: Fixed LevelImage() to accept percent
 	black/white points (.i.e. 90%).
 	* magick/enhance.c: Added LevelImageChannel().
