@@ -4308,8 +4308,8 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
                 /*
                   Add noise to image.
                 */
-                noise_type=UniformNoise;
                 option=argv[++i];
+                noise_type=UniformNoise;
                 if (LocaleCompare("Gaussian",option) == 0)
                   noise_type=GaussianNoise;
                 if (LocaleCompare("multiplicative",option) == 0)
