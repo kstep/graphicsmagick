@@ -360,7 +360,11 @@ namespace Magick
   class DrawableBezier : public DrawableBase
   {
   public:
+    // Construct from coordinates
     DrawableBezier ( const std::list<Magick::Coordinate> &coordinates_ );
+
+    // Copy constructor
+    DrawableBezier ( const DrawableBezier& original_ );
 
     // Operator to invoke equivalent draw API call
     void operator()( MagickLib::DrawContext context_ ) const;
@@ -730,9 +734,9 @@ namespace Magick
   class DrawableFillColor : public DrawableBase
   {
   public:
-    DrawableFillColor ( const Color &color_ )
-      : _color(color_)
-      { }
+    DrawableFillColor ( const Color &color_ );
+
+    DrawableFillColor ( const DrawableFillColor& original_ );
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
@@ -824,25 +828,13 @@ namespace Magick
   class DrawableFont : public DrawableBase
   {
   public:
-    DrawableFont ( const std::string &font_ )
-      : _font(font_),
-        _family(),
-        _style(AnyStyle),
-        _weight(400),
-        _stretch(NormalStretch)
-      {
-      }
+    DrawableFont ( const std::string &font_ );
+
     DrawableFont ( const std::string &family_,
                    StyleType style_,
                    const unsigned long weight_,
-                   StretchType stretch_ )
-      : _font(),
-        _family(family_),
-        _style(style_),
-        _weight(weight_),
-        _stretch(stretch_)
-      {
-      }
+                   StretchType stretch_ );
+    DrawableFont ( const DrawableFont& original_ );
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
@@ -1025,9 +1017,9 @@ namespace Magick
   class DrawablePath : public DrawableBase
   {
   public:
-    DrawablePath ( const std::list<Magick::VPath> &path_ )
-      : _path(path_)
-      { }
+    DrawablePath ( const std::list<Magick::VPath> &path_ );
+
+    DrawablePath ( const DrawablePath& original_ );
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
@@ -1122,6 +1114,8 @@ namespace Magick
   public:
     DrawablePolygon ( const std::list<Magick::Coordinate> &coordinates_ );
 
+    DrawablePolygon ( const DrawablePolygon& original_ );
+
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
@@ -1141,6 +1135,8 @@ namespace Magick
   {
   public:
     DrawablePolyline ( const std::list<Magick::Coordinate> &coordinates_ );
+
+    DrawablePolyline ( const DrawablePolyline& original_ );
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
@@ -1218,13 +1214,9 @@ namespace Magick
   {
   public:
     DrawablePushPattern ( const std::string &id_, long x_, long y_,
-                          long width_, long height_ )
-      : _id(id_),
-        _x(x_),
-        _y(y_),
-        _width(width_),
-        _height(height_)
-      { }
+                          long width_, long height_ );
+
+    DrawablePushPattern ( const DrawablePushPattern& original_ );
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
@@ -1236,7 +1228,7 @@ namespace Magick
       }
 
   private:
-    std::string	_id;
+    std::string         _id;
     long		_x;
     long		_y;
     long		_width;
@@ -1723,9 +1715,9 @@ namespace Magick
   class DrawableStrokeColor : public DrawableBase
   {
   public:
-    DrawableStrokeColor ( const Color &color_ )
-      : _color(color_)
-      { }
+    DrawableStrokeColor ( const Color &color_ );
+
+    DrawableStrokeColor ( const DrawableStrokeColor& original_ );
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
@@ -1817,12 +1809,9 @@ namespace Magick
   class DrawableText : public DrawableBase
   {
   public:
-    DrawableText ( double x_, double y_,
-                   const std::string &text_ )
-      : _x(x_),
-        _y(y_),
-        _text(text_)
-      { }
+    DrawableText ( const double x_, const double y_, const std::string &text_ );
+
+    DrawableText ( const DrawableText& original_ );
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
@@ -1862,8 +1851,8 @@ namespace Magick
       }
 
   private:
-    double _x;
-    double _y;
+    double      _x;
+    double      _y;
     std::string _text;
   };
 
@@ -2098,12 +2087,13 @@ namespace Magick
   {
   public:
     // Draw a single arc segment
-    PathArcAbs ( const Magick::PathArcArgs &coordinates_ )
-      : _coordinates(1,coordinates_) { }
+    PathArcAbs ( const PathArcArgs &coordinates_ );
 
     // Draw multiple arc segments
-    PathArcAbs ( const std::list<Magick::PathArcArgs> &coordinates_ )
-      : _coordinates(coordinates_) { }
+    PathArcAbs ( const std::list<Magick::PathArcArgs> &coordinates_ );
+
+    // Copy constructor
+    PathArcAbs ( const PathArcAbs& original_ );
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
@@ -2122,12 +2112,12 @@ namespace Magick
   {
   public:
     // Draw a single arc segment
-    PathArcRel ( const Magick::PathArcArgs &coordinates_ )
-      : _coordinates(1,coordinates_) { }
+    PathArcRel ( const PathArcArgs &coordinates_ );
 
     // Draw multiple arc segments
-    PathArcRel ( const std::list<Magick::PathArcArgs> &coordinates_ )
-      : _coordinates(coordinates_) { }
+    PathArcRel ( const std::list<Magick::PathArcArgs> &coordinates_ );
+
+    PathArcRel ( const PathArcRel& original_ );
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
@@ -2244,12 +2234,12 @@ namespace Magick
   {
   public:
     // Draw a single curve
-    PathCurvetoAbs ( const Magick::PathCurvetoArgs &args_ )
-      : _args(1,args_) { }
+    PathCurvetoAbs ( const PathCurvetoArgs &args_ );
 
     // Draw multiple curves
-    PathCurvetoAbs ( const std::list<Magick::PathCurvetoArgs> &args_ )
-      : _args(args_) { }
+    PathCurvetoAbs ( const std::list<Magick::PathCurvetoArgs> &args_ );
+
+    PathCurvetoAbs ( const PathCurvetoAbs& original_ );
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
@@ -2268,12 +2258,13 @@ namespace Magick
   {
   public:
     // Draw a single curve
-    PathCurvetoRel ( const Magick::PathCurvetoArgs &args_ )
-      : _args(1,args_) { }
+    PathCurvetoRel ( const PathCurvetoArgs &args_ );
 
     // Draw multiple curves
-    PathCurvetoRel ( const std::list<Magick::PathCurvetoArgs> &args_ )
-      : _args(args_) { }
+    PathCurvetoRel ( const std::list<Magick::PathCurvetoArgs> &args_ );
+
+    // Copy constructor
+    PathCurvetoRel ( const PathCurvetoRel& original_ );
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
@@ -2292,12 +2283,13 @@ namespace Magick
   {
   public:
     // Draw a single curve
-    PathSmoothCurvetoAbs ( const Magick::Coordinate &coordinates_ )
-      : _coordinates(1,coordinates_) { }
+    PathSmoothCurvetoAbs ( const Magick::Coordinate &coordinates_ );
 
     // Draw multiple curves
-    PathSmoothCurvetoAbs ( const std::list<Magick::Coordinate> &coordinates_ )
-      : _coordinates(coordinates_) { }
+    PathSmoothCurvetoAbs ( const std::list<Magick::Coordinate> &coordinates_ );
+
+    // Copy constructor
+    PathSmoothCurvetoAbs ( const PathSmoothCurvetoAbs& original_ );
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
@@ -2316,12 +2308,13 @@ namespace Magick
   {
   public:
     // Draw a single curve
-    PathSmoothCurvetoRel ( const Magick::Coordinate &coordinates_ )
-      : _coordinates(1,coordinates_) { }
+    PathSmoothCurvetoRel ( const Coordinate &coordinates_ );
 
     // Draw multiple curves
-    PathSmoothCurvetoRel ( const std::list<Magick::Coordinate> &coordinates_ )
-      : _coordinates(coordinates_) { }
+    PathSmoothCurvetoRel ( const std::list<Magick::Coordinate> &coordinates_ );
+
+    // Copy constructor
+    PathSmoothCurvetoRel ( const PathSmoothCurvetoRel& original_ );
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
@@ -2398,12 +2391,13 @@ namespace Magick
   {
   public:
     // Draw a single curve
-    PathQuadraticCurvetoAbs ( const Magick::PathQuadraticCurvetoArgs &args_ )
-      : _args(1,args_) { }
+    PathQuadraticCurvetoAbs ( const Magick::PathQuadraticCurvetoArgs &args_ );
 
     // Draw multiple curves
-    PathQuadraticCurvetoAbs ( const std::list<Magick::PathQuadraticCurvetoArgs> &args_ )
-      : _args(args_) { }
+    PathQuadraticCurvetoAbs ( const std::list<Magick::PathQuadraticCurvetoArgs> &args_ );
+
+    // Copy constructor
+    PathQuadraticCurvetoAbs ( const PathQuadraticCurvetoAbs& original_ );
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
@@ -2422,12 +2416,13 @@ namespace Magick
   {
   public:
     // Draw a single curve
-    PathQuadraticCurvetoRel ( const Magick::PathQuadraticCurvetoArgs &args_ )
-      : _args(1,args_) { }
+    PathQuadraticCurvetoRel ( const Magick::PathQuadraticCurvetoArgs &args_ );
 
     // Draw multiple curves
-    PathQuadraticCurvetoRel ( const std::list<Magick::PathQuadraticCurvetoArgs> &args_ )
-      : _args(args_) { }
+    PathQuadraticCurvetoRel ( const std::list<Magick::PathQuadraticCurvetoArgs> &args_ );
+
+    // Copy constructor
+    PathQuadraticCurvetoRel ( const PathQuadraticCurvetoRel& original_ );
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
@@ -2446,12 +2441,13 @@ namespace Magick
   {
   public:
     // Draw a single curve
-    PathSmoothQuadraticCurvetoAbs ( const Magick::Coordinate &coordinate_ )
-      : _coordinates(1,coordinate_) { }
+    PathSmoothQuadraticCurvetoAbs ( const Magick::Coordinate &coordinate_ );
 
     // Draw multiple curves
-    PathSmoothQuadraticCurvetoAbs ( const std::list<Magick::Coordinate> &coordinates_ )
-      : _coordinates(coordinates_) { }
+    PathSmoothQuadraticCurvetoAbs ( const std::list<Magick::Coordinate> &coordinates_ );
+
+    // Copy constructor
+    PathSmoothQuadraticCurvetoAbs ( const PathSmoothQuadraticCurvetoAbs& original_ );
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
@@ -2470,12 +2466,13 @@ namespace Magick
   {
   public:
     // Draw a single curve
-    PathSmoothQuadraticCurvetoRel ( const Magick::Coordinate &coordinate_ )
-      : _coordinates(1,coordinate_) { }
+    PathSmoothQuadraticCurvetoRel ( const Magick::Coordinate &coordinate_ );
 
     // Draw multiple curves
-    PathSmoothQuadraticCurvetoRel ( const std::list<Magick::Coordinate> &coordinates_ )
-      : _coordinates(coordinates_) { }
+    PathSmoothQuadraticCurvetoRel ( const std::list<Magick::Coordinate> &coordinates_ );
+
+    // Copy constructor
+    PathSmoothQuadraticCurvetoRel ( const PathSmoothQuadraticCurvetoRel& original_ );
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
@@ -2498,12 +2495,13 @@ namespace Magick
   {
   public:
     // Draw to a single point
-    PathLinetoAbs ( const Magick::Coordinate& coordinate_  )
-      : _coordinates(1,coordinate_) { }
+    PathLinetoAbs ( const Magick::Coordinate& coordinate_  );
 
     // Draw to multiple points
-    PathLinetoAbs ( const std::list<Magick::Coordinate> &coordinates_ )
-      : _coordinates(coordinates_) { }
+    PathLinetoAbs ( const std::list<Magick::Coordinate> &coordinates_ );
+
+    // Copy constructor
+    PathLinetoAbs ( const PathLinetoAbs& original_ );
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
@@ -2520,12 +2518,13 @@ namespace Magick
   {
   public:
     // Draw to a single point
-    PathLinetoRel ( const Magick::Coordinate& coordinate_  )
-      : _coordinates(1,coordinate_) { }
+    PathLinetoRel ( const Magick::Coordinate& coordinate_ );
 
     // Draw to multiple points
-    PathLinetoRel ( const std::list<Magick::Coordinate> &coordinates_ )
-      : _coordinates(coordinates_) { }
+    PathLinetoRel ( const std::list<Magick::Coordinate> &coordinates_ );
+
+    // Copy constructor
+    PathLinetoRel ( const PathLinetoRel& original_ );
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
@@ -2652,12 +2651,13 @@ namespace Magick
   {
   public:
     // Simple moveto
-    PathMovetoAbs ( const Magick::Coordinate &coordinate_ )
-      : _coordinates(1,coordinate_) { }
+    PathMovetoAbs ( const Magick::Coordinate &coordinate_ );
 
     // Moveto followed by implicit linetos
-    PathMovetoAbs ( const std::list<Magick::Coordinate> &coordinates_ )
-      : _coordinates(coordinates_) { }
+    PathMovetoAbs ( const std::list<Magick::Coordinate> &coordinates_ );
+
+    // Copy constructor
+    PathMovetoAbs ( const PathMovetoAbs& original_ );
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
@@ -2674,12 +2674,13 @@ namespace Magick
   {
   public:
     // Simple moveto
-    PathMovetoRel ( const Magick::Coordinate &coordinate_ )
-      : _coordinates(1,coordinate_) { }
+    PathMovetoRel ( const Magick::Coordinate &coordinate_ );
 
     // Moveto followed by implicit linetos
-    PathMovetoRel ( const std::list<Magick::Coordinate> &coordinates_ )
-      : _coordinates(coordinates_) { }
+    PathMovetoRel ( const std::list<Magick::Coordinate> &coordinates_ );
+
+    // Copy constructor
+    PathMovetoRel ( const PathMovetoRel& original_ );
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;

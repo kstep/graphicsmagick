@@ -161,9 +161,17 @@ void Magick::DrawableArc::operator()( MagickLib::DrawContext context_ ) const
   DrawArc( context_, _startX, _startY, _endX, _endY, _startDegrees, _endDegrees );
 }
 
-// Bezier curve (Coordinate list must contain at least three members)
+//
+// Bezier curve
+//
+// Construct from coordinates (Coordinate list must contain at least three members)
 Magick::DrawableBezier::DrawableBezier ( const std::list<Magick::Coordinate> &coordinates_ )
   : _coordinates(coordinates_)
+{
+}
+// Copy constructor
+Magick::DrawableBezier::DrawableBezier( const Magick::DrawableBezier& original_ )
+  : _coordinates(original_._coordinates)
 {
 }
 void Magick::DrawableBezier::operator()( MagickLib::DrawContext context_ ) const
@@ -287,8 +295,8 @@ Magick::DrawableCompositeImage::DrawableCompositeImage ( double x_, double y_,
 }
 Magick::DrawableCompositeImage::DrawableCompositeImage ( double x_, double y_,
                                                          double width_, double height_,
-                                                         const Image &image_,
-                                                         CompositeOperator composition_ )
+                                                         const Magick::Image &image_,
+                                                         Magick::CompositeOperator composition_ )
   : _composition(composition_),
     _x(x_),
     _y(y_),
@@ -310,7 +318,7 @@ Magick::DrawableCompositeImage::DrawableCompositeImage ( double x_, double y_,
 }
 Magick::DrawableCompositeImage::DrawableCompositeImage ( double x_, double y_,
                                                          double width_, double height_,
-                                                         const Image &image_ )
+                                                         const Magick::Image &image_ )
   :_composition(CopyCompositeOp),
    _x(x_),
    _y(y_),
@@ -332,7 +340,7 @@ Magick::DrawableCompositeImage::DrawableCompositeImage ( double x_, double y_,
   _height=_image->rows();
 }
 Magick::DrawableCompositeImage::DrawableCompositeImage ( double x_, double y_,
-                                                         const Image &image_ )
+                                                         const Magick::Image &image_ )
   : _composition(CopyCompositeOp),
     _x(x_),
     _y(y_),
@@ -384,7 +392,7 @@ std::string Magick::DrawableCompositeImage::filename( void ) const
   return _image->fileName();
 }
 
-void Magick::DrawableCompositeImage::image( const Image &image_ )
+void Magick::DrawableCompositeImage::image( const Magick::Image &image_ )
 {
   delete _image;
   _image = new Image(image_);
@@ -409,6 +417,45 @@ void Magick::DrawableCompositeImage::operator()( MagickLib::DrawContext context_
   DrawComposite( context_, _composition, _x, _y, _width, _height, _image->constImage() );
 }
 
+// Specify drawing fill color
+Magick::DrawableFillColor::DrawableFillColor( const Magick::Color &color_ )
+  : _color(color_)
+{
+}
+Magick::DrawableFillColor::DrawableFillColor( const Magick::DrawableFillColor& original_ )
+  : _color(original_._color)
+{
+}
+
+// Specify text font
+Magick::DrawableFont::DrawableFont ( const std::string &font_ )
+  : _font(font_),
+    _family(),
+    _style(Magick::AnyStyle),
+    _weight(400),
+    _stretch(Magick::NormalStretch)
+{
+}
+Magick::DrawableFont::DrawableFont ( const std::string &family_,
+                                     Magick::StyleType style_,
+                                     const unsigned long weight_,
+                                     Magick::StretchType stretch_ )
+  : _font(),
+    _family(family_),
+    _style(style_),
+    _weight(weight_),
+    _stretch(stretch_)
+{
+}
+Magick::DrawableFont::DrawableFont ( const Magick::DrawableFont& original_ )
+  : _font(original_._font),
+    _family(original_._family),
+    _style(original_._style),
+    _weight(original_._weight),
+    _stretch(original_._stretch)
+{
+}
+
 // Line
 void Magick::DrawableLine::operator()( MagickLib::DrawContext context_ ) const
 {
@@ -419,6 +466,16 @@ void Magick::DrawableLine::operator()( MagickLib::DrawContext context_ ) const
 void Magick::DrawableMatte::operator()( MagickLib::DrawContext context_ ) const
 {
   DrawMatte( context_, _x, _y, _paintMethod );
+}
+
+// Drawable Path
+Magick::DrawablePath::DrawablePath ( const std::list<Magick::VPath> &path_ )
+  : _path(path_)
+{
+}
+Magick::DrawablePath::DrawablePath ( const Magick::DrawablePath& original_ )
+  : _path(original_._path)
+{
 }
 
 // Point
@@ -436,6 +493,10 @@ void Magick::DrawablePointSize::operator()( MagickLib::DrawContext context_ ) co
 // Polygon (Coordinate list must contain at least three members)
 Magick::DrawablePolygon::DrawablePolygon ( const std::list<Magick::Coordinate> &coordinates_ )
   : _coordinates(coordinates_)
+{
+}
+Magick::DrawablePolygon::DrawablePolygon ( const Magick::DrawablePolygon& original_ )
+  : _coordinates(original_._coordinates)
 {
 }
 void Magick::DrawablePolygon::operator()( MagickLib::DrawContext context_ ) const
@@ -461,6 +522,10 @@ void Magick::DrawablePolygon::operator()( MagickLib::DrawContext context_ ) cons
 // Polyline (Coordinate list must contain at least three members)
 Magick::DrawablePolyline::DrawablePolyline ( const std::list<Magick::Coordinate> &coordinates_ )
   : _coordinates(coordinates_)
+{
+}
+Magick::DrawablePolyline::DrawablePolyline ( const Magick::DrawablePolyline& original_ )
+  : _coordinates(original_._coordinates)
 {
 }
 void Magick::DrawablePolyline::operator()( MagickLib::DrawContext context_ ) const
@@ -502,6 +567,23 @@ void Magick::DrawablePopPattern::operator()( MagickLib::DrawContext context_ ) c
 }
 
 // Push Pattern definition
+Magick::DrawablePushPattern::DrawablePushPattern ( const std::string &id_, long x_, long y_,
+                                                   long width_, long height_ )
+  : _id(id_),
+    _x(x_),
+    _y(y_),
+    _width(width_),
+    _height(height_)
+{
+}
+Magick::DrawablePushPattern::DrawablePushPattern ( const Magick::DrawablePushPattern& original_ )
+  : _id(original_._id),
+    _x(original_._x),
+    _y(original_._y),
+    _width(original_._width),
+    _height(original_._height)
+{
+}
 void Magick::DrawablePushPattern::operator()( MagickLib::DrawContext context_ ) const
 {
   DrawPushPattern( context_, _id.c_str(), _x, _y, _width, _height );
@@ -653,6 +735,14 @@ void Magick::DrawableMiterLimit::operator()( MagickLib::DrawContext context_ ) c
 }
 
 // Stroke color
+Magick::DrawableStrokeColor::DrawableStrokeColor ( const Magick::Color &color_ )
+  : _color(color_)
+{
+}
+Magick::DrawableStrokeColor::DrawableStrokeColor ( const Magick::DrawableStrokeColor& original_ )
+  : _color(original_._color)
+{
+}
 void Magick::DrawableStrokeColor::operator()( MagickLib::DrawContext context_ ) const
 {
   PixelPacket color = static_cast<PixelPacket>(_color);
@@ -678,6 +768,19 @@ void Magick::DrawableStrokeWidth::operator()( MagickLib::DrawContext context_ ) 
 }
 
 // Draw text at point
+Magick::DrawableText::DrawableText ( const double x_, const double y_,
+                                     const std::string &text_ )
+  : _x(x_),
+    _y(y_),
+    _text(text_)
+{
+}
+Magick::DrawableText::DrawableText( const Magick::DrawableText& original_ )
+  : _x(original_._x),
+    _y(original_._y),
+    _text(original_._text)
+{
+}
 void Magick::DrawableText::operator()( MagickLib::DrawContext context_ ) const
 {
   DrawAnnotation( context_, _x, _y, reinterpret_cast<const unsigned char*>(_text.c_str()) );
@@ -706,6 +809,18 @@ void Magick::DrawableViewbox::operator()( MagickLib::DrawContext context_ ) cons
 //
 
 // Path Arc
+Magick::PathArcAbs::PathArcAbs ( const Magick::PathArcArgs &coordinates_ )
+  : _coordinates(1,coordinates_)
+{
+}
+Magick::PathArcAbs::PathArcAbs ( const std::list<Magick::PathArcArgs> &coordinates_ )
+  : _coordinates(coordinates_)
+{
+}
+Magick::PathArcAbs::PathArcAbs ( const Magick::PathArcAbs& original_ )
+  : _coordinates(original_._coordinates)
+{
+}
 void Magick::PathArcAbs::operator()( MagickLib::DrawContext context_ ) const
 {
   for( std::list<Magick::PathArcArgs>::const_iterator p = _coordinates.begin();
@@ -715,6 +830,19 @@ void Magick::PathArcAbs::operator()( MagickLib::DrawContext context_ ) const
                                    p->xAxisRotation(), p->largeArcFlag(),
                                    p->sweepFlag(), p->x(), p->y() );
     }
+}
+
+Magick::PathArcRel::PathArcRel ( const Magick::PathArcArgs &coordinates_ )
+  : _coordinates(1,coordinates_)
+{
+}
+Magick::PathArcRel::PathArcRel ( const std::list<Magick::PathArcArgs> &coordinates_ )
+  : _coordinates(coordinates_)
+{
+}
+Magick::PathArcRel::PathArcRel ( const Magick::PathArcRel& original_ )
+  : _coordinates(original_._coordinates)
+{
 }
 void Magick::PathArcRel::operator()( MagickLib::DrawContext context_ ) const
 {
@@ -738,6 +866,18 @@ void Magick::PathClosePath::operator()( MagickLib::DrawContext context_ ) const
 //
 // Path Curveto (Cubic Bezier)
 //
+Magick::PathCurvetoAbs::PathCurvetoAbs ( const Magick::PathCurvetoArgs &args_ )
+  : _args(1,args_)
+{
+}
+Magick::PathCurvetoAbs::PathCurvetoAbs ( const std::list<Magick::PathCurvetoArgs> &args_ )
+  : _args(args_)
+{
+}
+Magick::PathCurvetoAbs::PathCurvetoAbs ( const Magick::PathCurvetoAbs& original_ )
+ : _args(original_._args)
+{
+}
 void Magick::PathCurvetoAbs::operator()( MagickLib::DrawContext context_ ) const
 {
   for( std::list<Magick::PathCurvetoArgs>::const_iterator p = _args.begin();
@@ -747,6 +887,18 @@ void Magick::PathCurvetoAbs::operator()( MagickLib::DrawContext context_ ) const
                                p->x(), p->y() );
     }
 }
+Magick::PathCurvetoRel::PathCurvetoRel ( const Magick::PathCurvetoArgs &args_ )
+  : _args(1,args_)
+{
+}
+Magick::PathCurvetoRel::PathCurvetoRel ( const std::list<Magick::PathCurvetoArgs> &args_ )
+  : _args(args_)
+{
+}
+Magick::PathCurvetoRel::PathCurvetoRel ( const Magick::PathCurvetoRel& original_ )
+  : _args(original_._args)
+{
+}
 void Magick::PathCurvetoRel::operator()( MagickLib::DrawContext context_ ) const
 {
   for( std::list<Magick::PathCurvetoArgs>::const_iterator p = _args.begin();
@@ -755,6 +907,18 @@ void Magick::PathCurvetoRel::operator()( MagickLib::DrawContext context_ ) const
       DrawPathCurveToRelative( context_, p->x1(), p->y1(), p->x2(), p->y2(),
                                p->x(), p->y() );
     }
+}
+Magick::PathSmoothCurvetoAbs::PathSmoothCurvetoAbs ( const Magick::Coordinate &coordinates_ )
+  : _coordinates(1,coordinates_)
+{
+}
+Magick::PathSmoothCurvetoAbs::PathSmoothCurvetoAbs ( const std::list<Magick::Coordinate> &coordinates_ )
+  : _coordinates(coordinates_)
+{
+}
+Magick::PathSmoothCurvetoAbs::PathSmoothCurvetoAbs ( const Magick::PathSmoothCurvetoAbs& original_ )
+  : _coordinates(original_._coordinates)
+{
 }
 void Magick::PathSmoothCurvetoAbs::operator()( MagickLib::DrawContext context_ ) const
 {
@@ -767,6 +931,18 @@ void Magick::PathSmoothCurvetoAbs::operator()( MagickLib::DrawContext context_ )
       if(p != _coordinates.end() )
         DrawPathCurveToSmoothAbsolute( context_, x2, y2, p->x(), p->y() );
     }
+}
+Magick::PathSmoothCurvetoRel::PathSmoothCurvetoRel ( const Magick::Coordinate &coordinates_ )
+  : _coordinates(1,coordinates_)
+{
+}
+Magick::PathSmoothCurvetoRel::PathSmoothCurvetoRel ( const std::list<Magick::Coordinate> &coordinates_ )
+  : _coordinates(coordinates_)
+{
+}
+Magick::PathSmoothCurvetoRel::PathSmoothCurvetoRel ( const Magick::PathSmoothCurvetoRel& original_ )
+  : _coordinates(original_._coordinates)
+{
 }
 void Magick::PathSmoothCurvetoRel::operator()( MagickLib::DrawContext context_ ) const
 {
@@ -784,6 +960,18 @@ void Magick::PathSmoothCurvetoRel::operator()( MagickLib::DrawContext context_ )
 //
 // Quadratic Curveto (Quadratic Bezier)
 //
+Magick::PathQuadraticCurvetoAbs::PathQuadraticCurvetoAbs ( const Magick::PathQuadraticCurvetoArgs &args_ )
+  : _args(1,args_)
+{
+}
+Magick::PathQuadraticCurvetoAbs::PathQuadraticCurvetoAbs ( const std::list<Magick::PathQuadraticCurvetoArgs> &args_ )
+  : _args(args_)
+{
+}
+Magick::PathQuadraticCurvetoAbs::PathQuadraticCurvetoAbs ( const Magick::PathQuadraticCurvetoAbs& original_ )
+  : _args(original_._args)
+{
+}
 void Magick::PathQuadraticCurvetoAbs::operator()( MagickLib::DrawContext context_ ) const
 {
   for( std::list<Magick::PathQuadraticCurvetoArgs>::const_iterator p = _args.begin();
@@ -791,6 +979,19 @@ void Magick::PathQuadraticCurvetoAbs::operator()( MagickLib::DrawContext context
     {
       DrawPathCurveToQuadraticBezierAbsolute( context_, p->x1(), p->y1(), p->x(), p->y() );
     }
+}
+
+Magick::PathQuadraticCurvetoRel::PathQuadraticCurvetoRel ( const Magick::PathQuadraticCurvetoArgs &args_ )
+  : _args(1,args_)
+{
+}
+Magick::PathQuadraticCurvetoRel::PathQuadraticCurvetoRel ( const std::list<Magick::PathQuadraticCurvetoArgs> &args_ )
+  : _args(args_)
+{
+}
+Magick::PathQuadraticCurvetoRel::PathQuadraticCurvetoRel ( const Magick::PathQuadraticCurvetoRel& original_ )
+  : _args(original_._args)
+{
 }
 void Magick::PathQuadraticCurvetoRel::operator()( MagickLib::DrawContext context_ ) const
 {
@@ -800,6 +1001,18 @@ void Magick::PathQuadraticCurvetoRel::operator()( MagickLib::DrawContext context
       DrawPathCurveToQuadraticBezierRelative( context_, p->x1(), p->y1(), p->x(), p->y() );
     }
 }
+Magick::PathSmoothQuadraticCurvetoAbs::PathSmoothQuadraticCurvetoAbs ( const Magick::Coordinate &coordinate_ )
+  : _coordinates(1,coordinate_)
+{
+}
+Magick::PathSmoothQuadraticCurvetoAbs::PathSmoothQuadraticCurvetoAbs ( const std::list<Magick::Coordinate> &coordinates_ )
+  : _coordinates(coordinates_)
+{
+}
+Magick::PathSmoothQuadraticCurvetoAbs::PathSmoothQuadraticCurvetoAbs ( const Magick::PathSmoothQuadraticCurvetoAbs& original_ )
+  : _coordinates(original_._coordinates)
+{
+}
 void Magick::PathSmoothQuadraticCurvetoAbs::operator()( MagickLib::DrawContext context_ ) const
 {
   for( std::list<Magick::Coordinate>::const_iterator p = _coordinates.begin();
@@ -807,6 +1020,18 @@ void Magick::PathSmoothQuadraticCurvetoAbs::operator()( MagickLib::DrawContext c
     {
       DrawPathCurveToQuadraticBezierSmoothAbsolute( context_, p->x(), p->y() );
     }
+}
+Magick::PathSmoothQuadraticCurvetoRel::PathSmoothQuadraticCurvetoRel ( const Magick::Coordinate &coordinate_ )
+  : _coordinates(1,coordinate_)
+{
+}
+Magick::PathSmoothQuadraticCurvetoRel::PathSmoothQuadraticCurvetoRel ( const std::list<Magick::Coordinate> &coordinates_ )
+  : _coordinates(coordinates_)
+{
+}
+Magick::PathSmoothQuadraticCurvetoRel::PathSmoothQuadraticCurvetoRel ( const PathSmoothQuadraticCurvetoRel& original_ )
+  : _coordinates(original_._coordinates)
+{
 }
 void Magick::PathSmoothQuadraticCurvetoRel::operator()( MagickLib::DrawContext context_ ) const
 {
@@ -820,7 +1045,18 @@ void Magick::PathSmoothQuadraticCurvetoRel::operator()( MagickLib::DrawContext c
 //
 // Path Lineto
 //
-
+Magick::PathLinetoAbs::PathLinetoAbs ( const Magick::Coordinate& coordinate_  )
+  : _coordinates(1,coordinate_)
+{
+}
+Magick::PathLinetoAbs::PathLinetoAbs ( const std::list<Magick::Coordinate> &coordinates_ )
+  : _coordinates(coordinates_)
+{
+}
+Magick::PathLinetoAbs::PathLinetoAbs ( const Magick::PathLinetoAbs& original_ )
+  : _coordinates(original_._coordinates)
+{
+}
 void Magick::PathLinetoAbs::operator()( MagickLib::DrawContext context_ ) const
 {
   for( std::list<Magick::Coordinate>::const_iterator p = _coordinates.begin();
@@ -828,6 +1064,18 @@ void Magick::PathLinetoAbs::operator()( MagickLib::DrawContext context_ ) const
     {
       DrawPathLineToAbsolute( context_, p->x(), p->y() );
     }
+}
+Magick::PathLinetoRel::PathLinetoRel ( const Magick::Coordinate& coordinate_  )
+  : _coordinates(1,coordinate_)
+{
+}
+Magick::PathLinetoRel::PathLinetoRel ( const std::list<Magick::Coordinate> &coordinates_ )
+  : _coordinates(coordinates_)
+{
+}
+Magick::PathLinetoRel::PathLinetoRel ( const Magick::PathLinetoRel& original_ )
+  : _coordinates(original_._coordinates)
+{
 }
 void Magick::PathLinetoRel::operator()( MagickLib::DrawContext context_ ) const
 {
@@ -868,6 +1116,18 @@ void Magick::PathLinetoVerticalRel::operator()( MagickLib::DrawContext context_ 
 // Path Moveto
 //
 
+Magick::PathMovetoAbs::PathMovetoAbs ( const Magick::Coordinate &coordinate_ )
+  : _coordinates(1,coordinate_)
+{
+}
+Magick::PathMovetoAbs::PathMovetoAbs ( const std::list<Magick::Coordinate> &coordinates_ )
+  : _coordinates(coordinates_)
+{
+}
+Magick::PathMovetoAbs::PathMovetoAbs ( const Magick::PathMovetoAbs& original_ )
+  : _coordinates(original_._coordinates)
+{
+}
 void Magick::PathMovetoAbs::operator()( MagickLib::DrawContext context_ ) const
 {
   for( std::list<Magick::Coordinate>::const_iterator p = _coordinates.begin();
@@ -875,6 +1135,18 @@ void Magick::PathMovetoAbs::operator()( MagickLib::DrawContext context_ ) const
     {
       DrawPathMoveToAbsolute( context_, p->x(), p->y() );
     }
+}
+Magick::PathMovetoRel::PathMovetoRel ( const Magick::Coordinate &coordinate_ )
+  : _coordinates(1,coordinate_)
+{
+}
+Magick::PathMovetoRel::PathMovetoRel ( const std::list<Magick::Coordinate> &coordinates_ )
+  : _coordinates(coordinates_)
+{
+}
+Magick::PathMovetoRel::PathMovetoRel ( const Magick::PathMovetoRel& original_ )
+  : _coordinates(original_._coordinates)
+{
 }
 void Magick::PathMovetoRel::operator()( MagickLib::DrawContext context_ ) const
 {
