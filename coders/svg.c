@@ -2364,9 +2364,11 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
 
   char
     buffer[MaxTextExtent],
+    fill[MaxTextExtent],
     keyword[MaxTextExtent],
     *primitive,
     *q,
+    stroke[MaxTextExtent],
     value[MaxTextExtent];
 
   double
@@ -2437,10 +2439,7 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
   (void) WriteBlobString(image,
     "<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 20000802//EN\"\n");
   (void) WriteBlobString(image,
-    "\"http://www.w3.org/TR/2000/CR-SVG-20000802/DTD/svg-20000802.dtd\">\n");
-  (void) FormatString(buffer,"<svg width=%u height=%u>\n",
-    image->columns,image->rows);
-  (void) WriteBlobString(image,buffer);
+    "  \"http://www.w3.org/TR/2000/CR-SVG-20000802/DTD/svg-20000802.dtd\">\n");
   status=True;
   if (graphic_context[n]->debug)
     (void) fprintf(stdout,"begin vector-graphics\n");
@@ -2987,16 +2986,24 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
       {
         if (LocaleCompare("viewbox",keyword) == 0)
           {
-            (void) strtod(q,&q);
+            RectangleInfo
+              viewbox;
+
+            viewbox.x=strtod(q,&q);
             if (*q == ',')
               q++;
-            (void) strtod(q,&q);
+            viewbox.y=strtod(q,&q);
             if (*q == ',')
               q++;
-            (void) strtod(q,&q);
+            viewbox.width=strtod(q,&q);
             if (*q == ',')
               q++;
-            (void) strtod(q,&q);
+            viewbox.height=strtod(q,&q);
+            (void) FormatString(buffer,
+              "<svg width=\"%u\" height=\"%u\" viewBox=\"%d %d %u %u\">\n",
+              image->columns,image->rows,viewbox.x,viewbox.y,
+              viewbox.width,viewbox.height);
+            (void) WriteBlobString(image,buffer);
             break;
           }
         status=False;
@@ -3073,6 +3080,17 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
     primitive_info[j].coordinates=x;
     primitive_info[j].method=FloodfillMethod;
     primitive_info[j].text=(char *) NULL;
+    QueryColorName(&graphic_context[n]->fill,fill);
+    QueryColorName(&graphic_context[n]->stroke,stroke);
+    (void) FormatString(buffer,
+      "<g style=\"fill:%s; stroke:%s; stroke-width:%g\"\n",
+      fill,stroke,graphic_context[n]->stroke_width);
+    (void) WriteBlobString(image,buffer);
+    (void) FormatString(buffer,"  transform=\"matrix(%g,%g,%g,%g,%g,%g)\">\n",
+      graphic_context[n]->affine.sx,graphic_context[n]->affine.rx,
+      graphic_context[n]->affine.ry,graphic_context[n]->affine.sy,
+      graphic_context[n]->affine.tx,graphic_context[n]->affine.ty);
+    (void) WriteBlobString(image,buffer);
     switch (primitive_type)
     {
       case PointPrimitive:
@@ -3101,6 +3119,12 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
             status=False;
             break;
           }
+        (void) FormatString(buffer,
+          "  <rect x=\"%g\" y=\"%g\" width=\"%g\" height=\"%g\"/>\n",
+          primitive_info[j].point.x,primitive_info[j].point.y,
+          primitive_info[j+1].point.x-primitive_info[j].point.x,
+          primitive_info[j+1].point.y-primitive_info[j].point.y);
+        (void) WriteBlobString(image,buffer);
         break;
       }
       case RoundRectanglePrimitive:
@@ -3347,6 +3371,7 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
         break;
       }
     }
+    (void) WriteBlobString(image,"</g>\n");
     if (primitive_info == (PrimitiveInfo *) NULL)
       break;
     if (graphic_context[n]->debug)
@@ -3365,7 +3390,7 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
   }
   if (graphic_context[n]->debug)
     (void) fprintf(stdout,"end vector-graphics\n");
-  (void) WriteBlobString(image,"</svg>");
+  (void) WriteBlobString(image,"</svg>\n");
   /*
     Free resources.
   */
