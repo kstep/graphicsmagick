@@ -68,7 +68,7 @@ Unix/Linux/Cygwin Install:
       /opt/ImageMagick/convert
 
 
-Win2K, NT, Win98, Win95 Install:
+Win2K, WinME, NT, Win98, Win95 Install:
 
   Download
 
