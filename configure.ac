@@ -937,8 +937,9 @@ then
        AC_CHECK_PROGS(freetype_config,freetype-config,)dnl
        if test -n "$freetype_config"
        then
-          LDFLAGS=-L`freetype-config --prefix`/lib" $LDFLAGS" 2> /dev/null
-          CPPFLAGS=`freetype-config --cflags`" $CPPFLAGS" 2> /dev/null
+          freetype_prefix=`freetype-config --prefix`
+          LDFLAGS="-L${freetype_prefix}/lib $LDFLAGS" 2> /dev/null
+          CPPFLAGS="-I${freetype_prefix}/include/freetype2 $CPPFLAGS" 2> /dev/null
        fi
     fi
 
@@ -953,12 +954,6 @@ dnl First see if there is a library
         failed=`expr $failed + 1`
         LDFLAGS="$OLD_LDFLAGS"
       fi
-    fi
-
-dnl Next see what magic is required for the headers
-    if test "$LIB_TTF" != ''
-    then
-      CPPFLAGS=`freetype-config --cflags`" $CPPFLAGS" 2> /dev/null
     fi
 
 dnl Now test for the headers
@@ -1103,8 +1098,24 @@ have_xml='no'
 LIB_XML=''
 if test "$with_xml" != 'no'
 then
+    OLD_LDFLAGS=$LDFLAGS
+    OLD_CPPFLAGS=$CPPFLAGS
     AC_MSG_CHECKING(for XML support )
     AC_MSG_RESULT()
+    xml2_config=''
+    AC_CHECK_PROGS(xml2_config,xml2-config,)dnl
+    if test -n "$xml2_config"
+    then
+        # Debian installs libxml headers under /usr/include/libxml2/libxml with
+        # the shared library installed under /usr/lib, whereas the package
+        # installs itself under $prefix/libxml and $prefix/lib.
+        xml2_prefix=`xml2-config --prefix`
+        if test -d "${xml2_prefix}/include/libxml2"
+        then
+          CPPFLAGS="-I${xml2_prefix}/include/libxml2 $CPPFLAGS" 2> /dev/null
+        fi
+        LDFLAGS="-L${xml2_prefix}/lib $LDFLAGS" 2> /dev/null
+     fi
     failed=0;
     passed=0;
     AC_CHECK_HEADER(libxml/parser.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
@@ -1116,6 +1127,8 @@ then
     then
 	AC_MSG_RESULT(no -- some components failed test)
         have_xml='no (failed tests)'
+        LDFLAGS=OLD_LDFLAGS
+        CPPFLAGS=OLD_CPPFLAGS
     else
 	LIB_XML='-lxml2'
 	LIBS="$LIB_XML $LIBS"

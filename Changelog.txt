@@ -1,3 +1,6 @@
+2001-10-02
+        * Find libxml headers under Debian Linux (bug ID 921).
+
 2001-10-02  Cristy  <cristy@mystic.es.dupont.com>
 	* Fixed assertion error on drawing stroked text.
 
