@@ -40,7 +40,6 @@ conjure - process a Magick Scripting Language (MSL) script
 syntax is subject to change!</strong>
 </p>
      </td></tr></table>
-&lt;html&gt;
      <table BORDER=0 WIDTH="100%"> 
      <tr> 
      <td ALIGN=LEFT BGCOLOR="#52799E"><img 
@@ -72,7 +71,6 @@ syntax is subject to change!</strong>
 </dt>
 </dl>
      </td></tr></table>
-&lt;/html&gt;
      <table BORDER=0 WIDTH="100%"> 
      <tr> 
      <td ALIGN=LEFT BGCOLOR="#52799E"><img 
@@ -169,199 +167,6 @@ This can be either an entire string, such as
 geometry="%[dimensions]" or part of a string such as
 filename="%[basename].png".
 </p>
-     </td></tr></table>
-     <p>
-     <i><a href="#top">Back to Contents</a></i> 
-     &nbsp;</p>
-     <table BORDER=0 WIDTH="100%"> 
-     <tr> 
-     <td ALIGN=LEFT BGCOLOR="#52799E"><img 
-     SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
-     height=14 width=15><b><font face="Helvetica, Arial"><font 
-     color="#FFFFFF"><font size="+1">
-<a NAME="msl">Magick Scripting Language</a>
-     </font></font></font></b></td></tr></table>
-     <table width="94%" border="0" cellspacing="0" cellpadding="8">
-     <tr><td width="3%"><br></td><td>
-<p>
-The Magick Scripting Language (MSL) presently defines the following
-elements and their attributes:
-</p>
-<dl>
-<dt>&lt;image&gt;</dt>
-<dd>Define a new image object.
-<strong>&lt;/image&gt;</strong> destroys it. Because of this, if you wish
-to reference multiple "subimages" (aka pages or layers),
-you can embed one <strong>image</strong> element inside of
-another. For example:
-</dd>
-<dd>
-<pre>
-    &lt;image&gt;
-    &lt;read filename="input.png" /&gt;
-    &lt;get width="base-width" height="base-height" /&gt;
-    &lt;image height="base-height" width="base-width"&gt;
-    &lt;label&gt;this is a simple label&lt;label/&gt;
-    &lt;image /&gt;
-    &lt;write filename="output.mng" /&gt;
-    &lt;/image&gt;
-</pre>
-</dd>
-<dd>
-<pre>
-    &lt;image size="400x400" /&gt;
-</pre>
-</dd>
-<dt>&lt;group&gt;</dt>
-<dd>Define a new group of image objects.
-By default, images are only valid for the life of
-their <strong>&lt;image&gt;</strong> element.
-</dd>
-<dd>
-<pre>
-    &lt;image&gt;   -- create the image
-    .....     -- do stuff with it
-    &lt;/image&gt;  -- dispose of the image
-</pre>
-</dd>
-<dd>
-However, in a group, all images in that group will stay 
-around for the life of the group:
-</dd>
-<dd>
-<pre>
-    &lt;group&gt;                   -- start a group
-        &lt;image&gt;               -- create an image
-        ....                  -- do stuff
-        &lt;/image&gt;              -- NOOP
-        &lt;image&gt;               -- create another image
-        ....                  -- do more stuff
-        &lt;/image&gt;              -- NOOP
-        &lt;write filename
-             ="image.mng" /&gt;  -- output
-    &lt;/group&gt;                  -- dispose of both images
-</pre>
-</dd>
-<dt>&lt;read&gt;</dt>
-<dd>Read a new image from a disk file.
-</dd>
-<dd>
-<pre>
-    &lt;read filename="image.gif" /&gt;
-</pre>
-</dd>
-<dd>To read two images use
-</dd>
-<dd>
-<pre>
-    &lt;read filename="image.gif" /&gt;
-    &lt;read filename="image.png" /&gt;
-</pre>
-</dd>
-<dd>
-<dt>&lt;write&gt;</dt>
-<dd>Write the image(s) to disk, either as
-a single multiple-image file or multiple ones if necessary.
-</dd>
-<dd>
-<pre>
-     &lt;write filename=image.tiff" /&gt;
-</pre>
-</dd>
-<dt>&lt;set&gt;</dt>
-<dd>opacity (can handle percentage values, e.g., 50%, but
-UNFORTUNATELY, you have to do %%!), background,
-bordercolor, mattecolor, clip-mask, colorspace (RGB, CMYK, Gray),
-density, magick</dd>
-<dt>&lt;get&gt;</dt>
-<dd>Gets any attribute recognized by
-PerlMagick's GetAttribute() and stores it as an image attribute for later
-use. Currently only <em>width</em> and <em>height</em> are supported.
-</dd>
-<dd>
-<pre>
-    &lt;get width="base-width" height="base-height" /&gt;
-    &lt;print output=
-      "Image size: %[base-width]x%[base-height].\n" /&gt;
-</pre>
-</dd>
-<dt>&lt;border&gt;</dt>
-    <dd>fill, geometry, height, width</dd>
-<dt>&lt;blur&gt;</dt>
-    <dd>radius, sigma</dd>
-<dt>&lt;charcoal&gt;</dt>
-    <dd>radius, sigma</dd>
-<dt>&lt;chop&gt;</dt>
-    <dd>geometry, height, width, x, y</dd>
-<dt>&lt;composite&gt;</dt>
-    <dd>compose, gravity</dd>
-<dt>&lt;crop&gt;</dt>
-    <dd>geometry, height, width, x, y</dd>
-<dt>&lt;despeckle&gt;</dt>
-<dt>&lt;edge&gt;</dt>
-    <dd>radius</dd>
-<dt>&lt;emboss&gt;</dt>
-    <dd>radius, sigma</dd>
-<dt>&lt;enhance&gt;</dt>
-<dt>&lt;equalize&gt;</dt>
-<dt>&lt;flatten&gt;</dt>
-<dt>&lt;flip&gt;</dt>
-<dt>&lt;flop&gt;</dt>
-<dt>&lt;frame&gt;</dt>
-    <dd>fill, geometry, height, width, x, y, inner, outer</dd>
-<dt>&lt;gamma&gt;</dt>
-    <dd>red, green, blue</dd>
-<dt>&lt;get&gt;</dt>
-<dt>&lt;image&gt;</dt>
-<dt>&lt;implode&gt;</dt>
-    <dd>amount</dd>
-<dt>&lt;magnify&gt;</dt>
-<dt>&lt;medianfilter&gt;</dt>
-    <dd>radius</dd>
-<dt>&lt;minify&gt;</dt>
-<dt>&lt;normalize&gt;</dt>
-<dt>&lt;oilpaint&gt;</dt>
-    <dd>radius</dd>
-<dt>&lt;print&gt;</dt>
-    <dd>output</dd>
-<dt>&lt;read&gt;</dt>
-<dt>&lt;reducenoise&gt;</dt>
-    <dd>radius</dd>
-<dt>&lt;resize&gt;</dt>
-    <dd>blur, filter, height, width</dd>
-<dt>&lt;roll&gt;</dt>
-    <dd>geometry, x, y</dd>
-<dt>&lt;rotate&gt;</dt>
-    <dd>degrees</dd>
-<dt>&lt;sample&gt;</dt>
-    <dd>geometry, height, width</dd>
-<dt>&lt;scale&gt;</dt>
-    <dd>geometry, height, width</dd>
-<dt>&lt;sharpen&gt;</dt>
-    <dd>radius, sigma</dd>
-<dt>&lt;shave&gt;</dt>
-    <dd>geometry, height, width</dd>
-<dt>&lt;shear&gt;</dt>
-    <dd>x, y</dd>
-<dt>&lt;solarize&gt;</dt>
-    <dd>threshold</dd>
-<dt>&lt;spread&gt;</dt>
-    <dd>radius</dd>
-<dt>&lt;stegano&gt;</dt>
-    <dd>image</dd>
-<dt>&lt;stereo&gt;</dt>
-    <dd>image</dd>
-<dt>&lt;swirl&gt;</dt>
-    <dd>degrees</dd>
-<dt>texture&gt;</dt>
-    <dd>image</dd>
-<dt>&lt;threshold&gt;</dt>
-    <dd>threshold</dd>
-<dt>&lt;transparent&gt;</dt>
-    <dd>color</dd>
-<dt>&lt;trim&gt;</dt>
-</dl>
-     </td></tr></table>
      <table BORDER=0 WIDTH="94%">
      <tr>
      <td width="3%"><br></td> 
@@ -406,6 +211,10 @@ If <strong>-colors</strong> is also specified, the total unique colors in the im
 and color reduction error values are printed. Refer to <a href="quantize.html">quantize</a>
 for a description of these values.
 </font></td></tr></table>
+     </td></tr></table>
+     <p>
+     <i><a href="#top">Back to Contents</a></i> 
+     &nbsp;</p>
      <table BORDER=0 WIDTH="100%"> 
      <tr> 
      <td ALIGN=LEFT BGCOLOR="#52799E"><img 
@@ -422,25 +231,25 @@ elements and their attributes:
 <dt>&lt;image&gt;</dt>
 <dd>Define a new image object.
 <strong>&lt;/image&gt;</strong> destroys it. Because of this, if you wish
-to reference multiple &amp;quot;subimages&amp;quot;&amp;nbsp;(aka pages or layers),
+to reference multiple "subimages" (aka pages or layers),
 you can embed one <strong>image</strong> element inside of
 another. For example:
 </dd>
 <dd>
 <pre>
     &lt;image&gt;
-    &lt;read filename=&amp;quot;input.png&amp;quot; /&gt;
-    &lt;get width=&amp;quot;base-width&amp;quot; height=&amp;quot;base-height&amp;quot; /&gt;
-    &lt;image height=&amp;quot;base-height&amp;quot; width=&amp;quot;base-width&amp;quot;&gt;
+    &lt;read filename="input.png" /&gt;
+    &lt;get width="base-width" height="base-height" /&gt;
+    &lt;image height="base-height" width="base-width"&gt;
     &lt;label&gt;this is a simple label&lt;label/&gt;
     &lt;image /&gt;
-    &lt;write filename=&amp;quot;output.mng&amp;quot; /&gt;
+    &lt;write filename="output.mng" /&gt;
     &lt;/image&gt;
 </pre>
 </dd>
 <dd>
 <pre>
-    &lt;image size=&amp;quot;400x400&amp;quot; /&gt;
+    &lt;image size="400x400" /&gt;
 </pre>
 </dd>
 <dt>&lt;group&gt;
@@ -451,7 +260,7 @@ their <strong>&lt;image&gt;</strong>element.
 <dd>
 <pre>
     &lt;image&gt;   -- creates the image
-    .....        -- do stuff with it
+    .....     -- do stuff with it
     &lt;/image&gt;  -- dispose of the image
 </pre>
 </dd>
@@ -571,11 +380,16 @@ ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"
 </tr>
 </table>
 
-<dl><dd>
+<dl>
+<dd>
 <i>John Cristy</i>, <i><a href="mailto:magick-users@imagemagick.org"
 >magick-users@imagemagick.org</a>, ImageMagick Studio</i>.</dd>
+<dd>
+<i>Leonard Rosenthol</i>, <i><a href="mailto:magick-users@imagemagick.org"
+>leonardr@lazerware.com</a>, ImageMagick Studio</i>.
 </dl>
 <i><a href="#top">Back to Contents</a></i>
+
 <br>&nbsp;
 <br>
 <a NAME="copy"></a>
