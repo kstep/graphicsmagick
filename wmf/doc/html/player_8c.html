@@ -78,7 +78,7 @@ for bounding-box return
 <p>
 </td></tr>
 </table>
-</dl>Before the metafile can be played, it must be scanned - see <a class="el" href="api_8h.html#a24">wmf_scan</a>().
+</dl>Before the metafile can be played, it must be scanned - see <a class="el" href="api_8h.html#a26">wmf_scan</a>().
 <p>
 The first time (and only the first time) the metafile is played, it first calls <b>device_open()</b> for the device layer specified (and initialized) in <a class="el" href="api_8h.html#a21">wmf_api_create</a>(). Then, and also each subsequent time the metafile is played, it calls <b>device_begin()</b>, plays the metafile (with calls to various other device layer functions), and finally it calls <b>device_end()</b>. <b>device_close()</b> is only ever called via <a class="el" href="api_8h.html#a22">wmf_api_destroy</a>().
 <p>
@@ -259,14 +259,14 @@ height return
 <p>
 </td></tr>
 </table>
-</dl><a class="el" href="api_8h.html#a26">wmf_size</a>() returns image width in <code>*width</code> and image height in <code>*height</code>. If supplied, the metafile header values are used, otherwise the width and height found by <a class="el" href="api_8h.html#a24">wmf_scan</a>() are used.
+</dl><a class="el" href="api_8h.html#a28">wmf_size</a>() returns image width in <code>*width</code> and image height in <code>*height</code>. If supplied, the metafile header values are used, otherwise the width and height found by <a class="el" href="api_8h.html#a26">wmf_scan</a>() are used.
 <p>
 <dl compact><dt>
 <b>Returns: </b><dd>
 Returns the library error state (<b>wmf_E_None</b> on success). Possible library error state of <b>wmf_E_Glitch</b> (the metafile has not been scanned). </dl>    </td>
   </tr>
 </table>
-<hr><address><small>Generated at Sun Oct 28 12:22:55 2001 for libwmf by
+<hr><address><small>Generated at Sun Oct 28 14:12:04 2001 for libwmf by
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.gif" alt="doxygen" align="middle" border=0 
 width=110 height=53></a>1.2.9.1 written by <a href="mailto:dimitri@stack.nl">Dimitri van Heesch</a>,

@@ -1,0 +1,4 @@
+This directory contains the sources for trio, a set of string IO functions that
+can be used in case the local C library doesn't support them.
+
+I came across it in the xml2 distribution.

@@ -125,60 +125,6 @@ struct _BMPInfo
 	PointInfo gamma_scale;
 };
 
-/* font.h
- */
-static void ipa_font_add_wmf (wmfAPI*,wmfFontMap*);
-static void ipa_font_add_sub (wmfAPI*,wmfMapping*);
-static void ipa_font_add_ps (wmfAPI*,wmfMapping*);
-static void ipa_font_add_cache (wmfAPI*,wmfFT_CacheEntry*);
-static void ipa_font_add_api (wmfAPI*,char*);
-
-static float ipa_char_position (wmfAPI*,wmfFont*,char*,char*);
-
-static wmfXML_FontInfo* ipa_font_sys_map (wmfAPI*,wmfFont*);
-static FT_Face          ipa_font_sys_face (wmfAPI*,wmfFont*,wmfXML_FontInfo*);
-
-#ifdef HAVE_EXPAT
-static void exml_start (void*,const char*,const char**);
-static void exmlfontmap_read (wmfAPI*,wmfXML_FontData*,char*);
-
-typedef struct _EXML_FontData EXML_FontData;
-
-struct _EXML_FontData
-{	wmfAPI* API;
-
-	wmfXML_FontData* FD;
-};
-#endif /* HAVE_EXPAT */
-
-#ifdef HAVE_XML2
-static void xml2_start (void*,const char*,const char**);
-static void xml2fontmap_read (wmfAPI*,wmfXML_FontData*,char*);
-
-typedef struct _XML2_FontData XML2_FontData;
-
-struct _XML2_FontData
-{	wmfAPI* API;
-
-	wmfXML_FontData* FD;
-};
-#endif /* HAVE_XML2 */
-
-static void            ipa_font_gs_file (wmfAPI* API,wmfGS_FontData* FD,char* file);
-static void            ipa_font_gs_add (wmfAPI* API,wmfGS_FontData* FD,char* name,char* alias);
-static char*           ipa_font_gs_alias (wmfAPI* API,wmfGS_FontData* FD,char* name);
-static char*           ipa_font_gs_readline (wmfAPI* API,FILE* in);
-static wmfGS_FontInfo* ipa_font_gs_map (wmfAPI* API,wmfFont* font);
-static FT_Face         ipa_font_gs_face (wmfAPI* API,wmfFont* font,wmfGS_FontInfo* FI);
-
-static FT_Face ipa_font_face (wmfAPI* API,wmfFont* font,char* ps_name);
-static FT_Face ipa_font_face_open (wmfAPI* API,char* ps_name,char* glyphs,char* metrics);
-static FT_Face ipa_font_face_cached (wmfAPI* API,wmfFont* font,char* ps_name);
-
-static char* ipa_font_path_find (wmfAPI* API,char* file_name);
-
-static char* ipa_font_std (wmfAPI* API,wmfFont* font);
-
 /* ipa.c
  */
 typedef struct _ipa_page_info ipa_page_info;

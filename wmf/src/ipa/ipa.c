@@ -39,8 +39,6 @@
 
 #include "ipa/ipa.h"
 #include "ipa/ipa/bmp.h"   /* Provides default bitmap functionality */
-#include "ipa/ipa/color.h" /* Provides named colors & color functions */
-#include "ipa/ipa/font.h"  /* Provides default font support */
 
 #define NPageTypes 11
 

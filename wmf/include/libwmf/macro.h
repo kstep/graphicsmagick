@@ -212,16 +212,6 @@
 #define WMF_FONT_NAME(F)        ((F)->lfFaceName)
 
 /**
- * WMF_FONT_PSNAME(wmfFont* F) -> (char*) font name to use in postscript output
- */
-#define WMF_FONT_PSNAME(F)      ((F)->ps_name)
-
-/**
- * WMF_FONT_FTFACE(wmfFont* F) -> (FT_Face) freetype(2) font face
- */
-#define WMF_FONT_FTFACE(F)      ((F)->ft_face)
-
-/**
  * WMF_TEXT_SET_UNDERLINE(wmfFont* F,(U8) ?? whether to underline (?? how thick))
  */
 #define WMF_TEXT_SET_UNDERLINE(F,Z)   (F)->lfUnderline = (Z)

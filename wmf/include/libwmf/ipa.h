@@ -36,16 +36,9 @@ typedef struct _wmfBMP                 wmfBMP;
 typedef struct _wmfBrush               wmfBrush;
 typedef struct _wmfPen                 wmfPen;
 typedef struct _wmfFont                wmfFont;
+
 typedef struct _wmfFontData            wmfFontData;
-typedef struct _wmfFT_Mapping          wmfFT_Mapping;
-typedef struct _wmfFT_CacheEntry       wmfFT_CacheEntry;
 typedef struct _wmfColorData           wmfColorData;
-
-typedef struct _wmfGS_FontData         wmfGS_FontData;
-typedef struct _wmfGS_FontInfo         wmfGS_FontInfo;
-
-typedef struct _wmfXML_FontData        wmfXML_FontData;
-typedef struct _wmfXML_FontInfo        wmfXML_FontInfo;
 
 typedef struct _wmfDC                  wmfDC;
 
@@ -64,8 +57,8 @@ typedef struct _wmfUserData_t          wmfUserData_t;
 
 typedef struct _wmfFunctionReference   wmfFunctionReference;
 
-typedef void (*wmfMap)        (wmfAPI*,wmfFont*);
-typedef void (*wmfCharDrawer) (wmfAPI*,wmfDrawText_t*);
+typedef float (*wmfStringWidth) (wmfAPI*,wmfFont*,char*);
+typedef void  (*wmfMap)         (wmfAPI*,wmfFont*);
 
 /* Device-layer device-independent default functions
  */
@@ -79,17 +72,6 @@ extern wmfBMP wmf_ipa_bmp_copy (wmfAPI*,wmfBMP*,unsigned int,unsigned int);
 extern int    wmf_ipa_bmp_color (wmfAPI*,wmfBMP*,wmfRGB*,unsigned int,unsigned int);
 extern void   wmf_ipa_bmp_setcolor (wmfAPI*,wmfBMP*,wmfRGB*,unsigned char,unsigned int,unsigned int);
 extern int    wmf_ipa_bmp_interpolate (wmfAPI*,wmfBMP*,wmfRGB*,float,float);
-
-extern void  wmf_ipa_font_init (wmfAPI*,wmfAPI_Options*);
-extern void  wmf_ipa_font_map_gs (wmfAPI*,wmfGS_FontData*,char*);
-extern void  wmf_ipa_font_map_xml (wmfAPI*,wmfXML_FontData*,char*);
-extern void  wmf_ipa_font_map_set (wmfAPI*,wmfMap);
-extern void  wmf_ipa_font_map (wmfAPI*,wmfFont*);
-extern void  wmf_ipa_font_dir (wmfAPI*,char*);
-extern float wmf_ipa_font_stringwidth (wmfAPI*,wmfFont*,char*);
-extern char* wmf_ipa_font_lookup (wmfAPI*,char*);
-
-extern void wmf_ipa_draw_text (wmfAPI*,wmfDrawText_t*,wmfCharDrawer);
 
 extern void          wmf_ipa_color_init (wmfAPI*);
 extern void          wmf_ipa_color_add (wmfAPI*,wmfRGB*);
@@ -159,72 +141,31 @@ struct _wmfFont
 
 	char* lfFaceName;
 
-	char* ps_name;
-
-	FT_Face ft_face;
+	void* user_data;
 };
 
-struct _wmfFT_Mapping
-{	char* name;
-	char* mapping;
-
-	FT_Encoding encoding;
-	FT_Face     face;
-};
-
-struct _wmfFT_CacheEntry
-{	char* name;
-	char* path;
-
-	FT_Face face;
-};
-
-struct _wmfGS_FontData
-{	unsigned int max;
-	unsigned int len;
-
-	wmfGS_FontInfo* FI;
-};
-
-struct _wmfGS_FontInfo
-{	char* name;
-	char* alias;
-};
-
-struct _wmfXML_FontData
-{	unsigned int max;
-	unsigned int len;
-
-	wmfXML_FontInfo* FI;
-};
-
-struct _wmfXML_FontInfo
-{	char* format;
-	char* metrics;
-	char* glyphs;
-	char* name;
-	char* fullname;
-	char* familyname;
-	char* weight;
-	char* version;
-	char* alias;
-};
-
+/**
+ * API->font_data is a pointer to a wmfFontData. wmf_api_create () sets this up automatically, but
+ * wmf_lite_create () does not. If you use wmf_lite_create () then you \b must create your own
+ * wmfFontData. \b libwmflite requires you to define \p map and \p stringwidth functions but the
+ * rest of these fields are ignored (they are only used by \b libwmf).
+ */
 struct _wmfFontData
-{	wmfMap map;
+{	/**
+	 * Necessary field: exactly what the function does is irrelevant.
+	 */
+	wmfMap map;
 
-	char** fontdirs;
+	/**
+	 * Necessary field: returns width of specified string in points, assuming (unstretched)
+	 * font size of 1pt.
+	 */
+	wmfStringWidth stringwidth;
 
-	wmfFontMap*    wmf; /* {0,*}-terminated list: wmf-font-name -> ps-font-name */
-	wmfMapping*    sub; /* {0,*}-terminated list: wmf-font-name substring equiv */
-	wmfFT_Mapping* ps;  /* {0,*}-terminated list: ps-font-name -> pfb-file-root */
-
-	wmfFT_CacheEntry* cache; /* {0,*}-terminated list: path / font-face cache */
-
-	wmfGS_FontData  GS; /* structure for ghostscript font info */
-	wmfXML_FontData FD; /* structure for system font info */
-
-	FT_Library Library;
+	/**
+	 * A handle for data, unused by libwmflite
+	 */
+	void* user_data;
 };
 
 struct _wmfColorData

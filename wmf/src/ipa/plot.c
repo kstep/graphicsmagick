@@ -74,6 +74,12 @@ void wmf_plot_function (wmfAPI* API)
 
 	plot_t* plot = 0;
 
+	if ((API->flags & API_STANDARD_INTERFACE) == 0)
+	{	WMF_ERROR (API,"Can't use this device layer with 'lite' interface!");
+		API->err = wmf_E_DeviceError;
+		return;
+	}
+
 /* IPA function reference links
  */
 	FR->device_open    = wmf_plot_device_open;

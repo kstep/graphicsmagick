@@ -1,6 +1,6 @@
 Summary: library and utilities for displaying and converting metafile images
 Name: libwmf
-Version: 0.2.2
+Version: 0.2.3
 Release: 1
 Copyright: LGPL
 Group: System Environment/Libraries
@@ -44,10 +44,14 @@ make install
 /usr/bin/wmf2x
 /usr/bin/wmf2magick
 /usr/bin/libwmf-fontmap
-/usr/lib/libwmf-0.2.so.2.0.0
-/usr/lib/libwmf-0.2.so.2
+/usr/lib/libwmf-0.2.so.3.0.0
+/usr/lib/libwmf-0.2.so.3
 /usr/lib/libwmf.so
 /usr/lib/libwmf.la
+/usr/lib/libwmflite-0.2.so.3.0.0
+/usr/lib/libwmflite-0.2.so.3
+/usr/lib/libwmflite.so
+/usr/lib/libwmflite.la
 /usr/share/libwmf/fonts/n019003l.afm
 /usr/share/libwmf/fonts/n019003l.pfb
 /usr/share/libwmf/fonts/n019004l.afm
@@ -299,6 +303,25 @@ make install
 /usr/share/doc/libwmf/html/struct__gd__t.html
 /usr/share/doc/libwmf/html/struct__wmfImage.html
 /usr/share/doc/libwmf/html/struct__wmf__foreign__t.html
+/usr/share/doc/libwmf/html/include_2libwmf_2api_8h.html
+/usr/share/doc/libwmf/html/src_2api_8h.html
+/usr/share/doc/libwmf/html/bbuf_8h.html
+/usr/share/doc/libwmf/html/font_8c.html
+/usr/share/doc/libwmf/html/include_2libwmf_2font_8h.html
+/usr/share/doc/libwmf/html/src_2font_8h.html
+/usr/share/doc/libwmf/html/src_2ipa_2fig_2font_8h.html
+/usr/share/doc/libwmf/html/src_2ipa_2ipa_2font_8h.html
+/usr/share/doc/libwmf/html/src_2ipa_2x_2font_8h.html
+/usr/share/doc/libwmf/html/src_2ipa_2xgd_2font_8h.html
+/usr/share/doc/libwmf/html/stream_8h.html
+/usr/share/doc/libwmf/html/wmf_8c.html
+/usr/share/doc/libwmf/html/struct__wmfBBufFileInfo.html
+/usr/share/doc/libwmf/html/struct__wmfBBufMemInfo.html
+/usr/share/doc/libwmf/html/struct__wmfDefaultStream.html
+/usr/share/doc/libwmf/html/struct__wmfDefaultZtream.html
+/usr/share/doc/libwmf/html/struct__wmfFontmapData.html
+/usr/share/doc/libwmf/html/struct__wmfIPAFont.html
+/usr/share/doc/libwmf/html/struct__wmfMemoryManager.html
 
 %files devel
 %defattr(-,root,root)
@@ -328,3 +351,4 @@ make install
 /usr/include/libwmf/magick.h
 /usr/include/libwmf/foreign.h
 /usr/lib/libwmf.a
+/usr/lib/libwmflite.a

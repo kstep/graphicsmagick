@@ -74,6 +74,12 @@ void wmf_eps_function (wmfAPI* API)
 
 	wmfFunctionReference* FR = (wmfFunctionReference*) API->function_reference;
 
+	if ((API->flags & API_STANDARD_INTERFACE) == 0)
+	{	WMF_ERROR (API,"Can't use this device layer with 'lite' interface!");
+		API->err = wmf_E_DeviceError;
+		return;
+	}
+
 /* IPA function reference links
  */
 	FR->device_open    = wmf_eps_device_open;
@@ -178,7 +184,7 @@ static void wmf_eps_draw_text (wmfAPI* API,wmfDrawText_t* draw_text)
 
 	wmf_stream_printf (API,out,"gsave %% wmf_[eps_]draw_text\n");
 
-	wmf_stream_printf (API,out,"/%s findfont %f scalefont setfont\n",font->ps_name,size);
+	wmf_stream_printf (API,out,"/%s findfont %f scalefont setfont\n",WMF_FONT_PSNAME (font),size);
 
 	wmf_stream_printf (API,out,"%f %f translate 1 -1 scale %f rotate ",draw_text->pt.x,draw_text->pt.y,theta);
 	wmf_stream_printf (API,out,"%f 1 scale\n",ratio);

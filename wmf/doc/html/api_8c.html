@@ -8,8 +8,8 @@
 <a class="qindex" href="index.html">Main Page</a> &nbsp; <a class="qindex" href="classes.html">Alphabetical List</a> &nbsp; <a class="qindex" href="annotated.html">Data Structures</a> &nbsp; <a class="qindex" href="files.html">File List</a> &nbsp; <a class="qindex" href="functions.html">Data Fields</a> &nbsp; <a class="qindex" href="globals.html">Globals</a> &nbsp; </center>
 <hr><h1>api.c File Reference</h1><table border=0 cellpadding=0 cellspacing=0>
 <tr><td colspan=2><br><h2>Functions</h2></td></tr>
-<tr><td nowrap align=right valign=top><a class="el" href="types_8h.html#a5">wmf_error_t</a>&nbsp;</td><td valign=bottom><a class="el" href="api_8c.html#a0">wmf_api_create</a> (<a class="el" href="types_8h.html#a22">wmfAPI</a> **API_return, unsigned long flags, <a class="el" href="types_8h.html#a21">wmfAPI_Options</a> *options)</td></tr>
-<tr><td nowrap align=right valign=top><a class="el" href="types_8h.html#a5">wmf_error_t</a>&nbsp;</td><td valign=bottom><a class="el" href="api_8c.html#a1">wmf_api_destroy</a> (<a class="el" href="types_8h.html#a22">wmfAPI</a> *API)</td></tr>
+<tr><td nowrap align=right valign=top><a class="el" href="types_8h.html#a5">wmf_error_t</a>&nbsp;</td><td valign=bottom><a class="el" href="api_8c.html#a0">wmf_lite_create</a> (<a class="el" href="types_8h.html#a22">wmfAPI</a> **API_return, unsigned long flags, <a class="el" href="types_8h.html#a21">wmfAPI_Options</a> *options)</td></tr>
+<tr><td nowrap align=right valign=top><a class="el" href="types_8h.html#a5">wmf_error_t</a>&nbsp;</td><td valign=bottom><a class="el" href="api_8c.html#a1">wmf_lite_destroy</a> (<a class="el" href="types_8h.html#a22">wmfAPI</a> *API)</td></tr>
 <tr><td nowrap align=right valign=top>void&nbsp;</td><td valign=bottom><a class="el" href="api_8c.html#a2">wmf_assert</a> (<a class="el" href="types_8h.html#a22">wmfAPI</a> *API, char *file, int line)</td></tr>
 <tr><td nowrap align=right valign=top>void&nbsp;</td><td valign=bottom><a class="el" href="api_8c.html#a3">wmf_error</a> (<a class="el" href="types_8h.html#a22">wmfAPI</a> *API, char *file, int line, char *msg)</td></tr>
 <tr><td nowrap align=right valign=top>void&nbsp;</td><td valign=bottom><a class="el" href="api_8c.html#a4">wmf_debug</a> (<a class="el" href="types_8h.html#a22">wmfAPI</a> *API, char *file, int line, char *msg)</td></tr>
@@ -23,123 +23,9 @@
 <tr><td nowrap align=right valign=top>char *&nbsp;</td><td valign=bottom><a class="el" href="api_8c.html#a12">wmf_str_append</a> (<a class="el" href="types_8h.html#a22">wmfAPI</a> *API, char *pre, char *post)</td></tr>
 <tr><td nowrap align=right valign=top>char *&nbsp;</td><td valign=bottom><a class="el" href="api_8c.html#a13">wmf_strstr</a> (const char *haystack, const char *needle)</td></tr>
 <tr><td nowrap align=right valign=top>void&nbsp;</td><td valign=bottom><a class="el" href="api_8c.html#a14">wmf_status_function</a> (<a class="el" href="types_8h.html#a22">wmfAPI</a> *API, void *context, <a class="el" href="types_8h.html#a13">wmfStatus</a> function)</td></tr>
-<tr><td nowrap align=right valign=top>char *&nbsp;</td><td valign=bottom><a class="el" href="api_8c.html#a17">wmf_help</a> ()</td></tr>
-<tr><td nowrap align=right valign=top>unsigned long&nbsp;</td><td valign=bottom><a class="el" href="api_8c.html#a18">wmf_strbuf_grow</a> (<a class="el" href="types_8h.html#a22">wmfAPI</a> *API)</td></tr>
+<tr><td nowrap align=right valign=top>unsigned long&nbsp;</td><td valign=bottom><a class="el" href="api_8c.html#a15">wmf_strbuf_grow</a> (<a class="el" href="types_8h.html#a22">wmfAPI</a> *API)</td></tr>
 </table>
 <hr><h2>Function Documentation</h2>
-<a name="a0" doxytag="api.c::wmf_api_create"></a><p>
-<table width="100%" cellpadding="2" cellspacing="0" border="0">
-  <tr>
-    <td class="md">
-      <table cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <td class="md" nowrap valign="top"> 
-<a class="el" href="types_8h.html#a5">wmf_error_t</a> wmf_api_create 
-          </td>
-          <td class="md">(&nbsp</td>
-          <td class="md"><a class="el" href="types_8h.html#a22">wmfAPI</a> **          </td>
-          <td class="mdname"> <em>API_return</em>,           </td>
-        </tr>
-        <tr>
-          <td></td>
-          <td></td>
-          <td class="md">        <tr>
-          <td></td>
-          <td></td>
-          <td class="md">unsigned long          </td>
-          <td class="mdname"> <em>flags</em>,           </td>
-        </tr>
-        <tr>
-          <td></td>
-          <td></td>
-          <td class="md">        <tr>
-          <td></td>
-          <td></td>
-          <td class="md"><a class="el" href="types_8h.html#a21">wmfAPI_Options</a> *          </td>
-          <td class="mdname"> <em>options</em>          </td>
-        </tr>
-        <tr>
-          <td></td>
-          <td class="md">)&nbsp</td>
-          <td class="md" colspan="2">          </td>
-        </tr>
-
-      </table>
-    </td>
-  </tr>
-</table>
-<table cellspacing=5 cellpadding=0 border=0>
-  <tr>
-    <td>
-      &nbsp;
-    </td>
-    <td>
-
-<p>
-Creates and initializes an instance of the <b>libwmf</b> library for a specified device layer.<dl compact><dt>
-Parameters: <dd>
-<table border=0 cellspacing=2 cellpadding=0>
-<tr><td valign=top><em>API_return
-</em>&nbsp;</td><td>
-pointer to a wmfAPI* (the API handle use henceforth) </td></tr>
-<tr><td valign=top><em>flags
-</em>&nbsp;</td><td>
-bitwise OR of WMF_OPT_ options </td></tr>
-<tr><td valign=top><em>options
-</em>&nbsp;</td><td>
-pointer to wmfAPI_Options structure
-<p>
-</td></tr>
-</table>
-</dl>This is the first and necessary step when using <b>libwmf</b>. Options are passed via the wmfAPI_Options structure and <code>flags</code>. wmf_api_create allocates the wmfAPI structure and initializes the color and font tables, the metafile player, and the device layer. If successful then the pointer to the wmfAPI structure is returned via <code>API_return</code>, otherwise all allocated memory is released and the library exits with an appropriate error.
-<p>
-<dl compact><dt>
-<b>Returns: </b><dd>
-The error state of the library: <b>wmf_E_None</b> indicates successful creation and initialization of the library, and <code>*API_return</code> will be non-zero. For any other error value <code>*API_return</code> will be zero. </dl>    </td>
-  </tr>
-</table>
-<a name="a1" doxytag="api.c::wmf_api_destroy"></a><p>
-<table width="100%" cellpadding="2" cellspacing="0" border="0">
-  <tr>
-    <td class="md">
-      <table cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <td class="md" nowrap valign="top"> 
-<a class="el" href="types_8h.html#a5">wmf_error_t</a> wmf_api_destroy 
-          </td>
-          <td class="md">(&nbsp</td>
-          <td class="md"><a class="el" href="types_8h.html#a22">wmfAPI</a> *          </td>
-          <td class="mdname"> <em>API</em>          </td>
-          <td class="md">)&nbsp;</td>
-          <td class="md">          </td>
-        </tr>
-
-      </table>
-    </td>
-  </tr>
-</table>
-<table cellspacing=5 cellpadding=0 border=0>
-  <tr>
-    <td>
-      &nbsp;
-    </td>
-    <td>
-
-<p>
-Close the device layer, if open, and release all allocated memory attached to the memory manager.<dl compact><dt>
-Parameters: <dd>
-<table border=0 cellspacing=2 cellpadding=0>
-<tr><td valign=top><em>API
-</em>&nbsp;</td><td>
-the API handle
-<p>
-</td></tr>
-</table>
-</dl><dl compact><dt>
-<b>Returns: </b><dd>
-The final error state of the library. </dl>    </td>
-  </tr>
-</table>
 <a name="a2" doxytag="api.c::wmf_assert"></a><p>
 <table width="100%" cellpadding="2" cellspacing="0" border="0">
   <tr>
@@ -206,7 +92,7 @@ line number
 </table>
 </dl>This should only be called via the macro <a class="el" href="api_8h.html#a2">WMF_ASSERT</a>(API,&lt;expr&gt;) which is defined (for debug builds only) as: <div class="fragment"><pre>
 #define WMF_ASSERT(Z,M) if (!(M)) wmf_assert (Z,__FILE__,__LINE__)
-</pre></div> i.e., if &lt;expr&gt; evaluates to 0 then call <a class="el" href="api_8h.html#a63">wmf_assert</a>() with current file name and line number.     </td>
+</pre></div> i.e., if &lt;expr&gt; evaluates to 0 then call <a class="el" href="api_8h.html#a65">wmf_assert</a>() with current file name and line number.     </td>
   </tr>
 </table>
 <a name="a7" doxytag="api.c::wmf_calloc"></a><p>
@@ -273,7 +159,7 @@ size in bytes of memory required by one element
 <p>
 </td></tr>
 </table>
-</dl>With syntax similar to calloc(), <a class="el" href="api_8h.html#a38">wmf_calloc</a>() allocates <code>number</code> * <code>size</code> bytes of memory and adds a reference to it in the memory manager's list. To free the memory, use <a class="el" href="api_8h.html#a40">wmf_free</a>().
+</dl>With syntax similar to calloc(), <a class="el" href="api_8h.html#a40">wmf_calloc</a>() allocates <code>number</code> * <code>size</code> bytes of memory and adds a reference to it in the memory manager's list. To free the memory, use <a class="el" href="api_8h.html#a42">wmf_free</a>().
 <p>
 <dl compact><dt>
 <b>Returns: </b><dd>
@@ -356,7 +242,7 @@ message to print
 <p>
 </td></tr>
 </table>
-</dl>This should only be called via the macro <a class="el" href="api_8h.html#a1">WMF_DEBUG</a>(API,msg) which (in debug builds only) calls <a class="el" href="api_8h.html#a61">wmf_debug</a>() with the current file name and line number.     </td>
+</dl>This should only be called via the macro <a class="el" href="api_8h.html#a1">WMF_DEBUG</a>(API,msg) which (in debug builds only) calls <a class="el" href="api_8h.html#a63">wmf_debug</a>() with the current file name and line number.     </td>
   </tr>
 </table>
 <a name="a10" doxytag="api.c::wmf_detach"></a><p>
@@ -490,7 +376,7 @@ message to print
 <p>
 </td></tr>
 </table>
-</dl>This should only be called via the macro <a class="el" href="api_8h.html#a0">WMF_ERROR</a>(API,msg) which calls <a class="el" href="api_8h.html#a60">wmf_error</a>() with the current file name and line number.     </td>
+</dl>This should only be called via the macro <a class="el" href="api_8h.html#a0">WMF_ERROR</a>(API,msg) which calls <a class="el" href="api_8h.html#a62">wmf_error</a>() with the current file name and line number.     </td>
   </tr>
 </table>
 <a name="a9" doxytag="api.c::wmf_free"></a><p>
@@ -548,18 +434,93 @@ pointer to memory previously allocated via the API
 </dl>Syntax is similar to free().     </td>
   </tr>
 </table>
-<a name="a17" doxytag="api.c::wmf_help"></a><p>
+<a name="a0" doxytag="api.c::wmf_lite_create"></a><p>
 <table width="100%" cellpadding="2" cellspacing="0" border="0">
   <tr>
     <td class="md">
       <table cellpadding="0" cellspacing="0" border="0">
         <tr>
           <td class="md" nowrap valign="top"> 
-char* wmf_help 
+<a class="el" href="types_8h.html#a5">wmf_error_t</a> wmf_lite_create 
           </td>
           <td class="md">(&nbsp</td>
-          <td class="md">void          </td>
-          <td class="mdname">          </td>
+          <td class="md"><a class="el" href="types_8h.html#a22">wmfAPI</a> **          </td>
+          <td class="mdname"> <em>API_return</em>,           </td>
+        </tr>
+        <tr>
+          <td></td>
+          <td></td>
+          <td class="md">        <tr>
+          <td></td>
+          <td></td>
+          <td class="md">unsigned long          </td>
+          <td class="mdname"> <em>flags</em>,           </td>
+        </tr>
+        <tr>
+          <td></td>
+          <td></td>
+          <td class="md">        <tr>
+          <td></td>
+          <td></td>
+          <td class="md"><a class="el" href="types_8h.html#a21">wmfAPI_Options</a> *          </td>
+          <td class="mdname"> <em>options</em>          </td>
+        </tr>
+        <tr>
+          <td></td>
+          <td class="md">)&nbsp</td>
+          <td class="md" colspan="2">          </td>
+        </tr>
+
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing=5 cellpadding=0 border=0>
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+Creates and initializes an instance of the <b>libwmf</b> library (lite interface) for a specified device layer.<dl compact><dt>
+Parameters: <dd>
+<table border=0 cellspacing=2 cellpadding=0>
+<tr><td valign=top><em>API_return
+</em>&nbsp;</td><td>
+pointer to a wmfAPI* (the API handle use henceforth) </td></tr>
+<tr><td valign=top><em>flags
+</em>&nbsp;</td><td>
+bitwise OR of WMF_OPT_ options </td></tr>
+<tr><td valign=top><em>options
+</em>&nbsp;</td><td>
+pointer to wmfAPI_Options structure
+<p>
+</td></tr>
+</table>
+</dl>This is the first and necessary step when using <b>libwmf</b>. Options are passed via the wmfAPI_Options structure and <code>flags</code>. wmf_api_create allocates the wmfAPI structure and initializes the color tables, the metafile player, and the device layer. If successful then the pointer to the wmfAPI structure is returned via <code>API_return</code>, otherwise all allocated memory is released and the library exits with an appropriate error.
+<p>
+wmf_lite_create () ignores command line arguments, if any are given, and does <b>not</b> attempt to set up font mapping.
+<p>
+The library should be closed using the corresponding wmf_lite_destroy () function.
+<p>
+<dl compact><dt>
+<b>Returns: </b><dd>
+The error state of the library: <b>wmf_E_None</b> indicates successful creation and initialization of the library, and <code>*API_return</code> will be non-zero. For any other error value <code>*API_return</code> will be zero. </dl>    </td>
+  </tr>
+</table>
+<a name="a1" doxytag="api.c::wmf_lite_destroy"></a><p>
+<table width="100%" cellpadding="2" cellspacing="0" border="0">
+  <tr>
+    <td class="md">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top"> 
+<a class="el" href="types_8h.html#a5">wmf_error_t</a> wmf_lite_destroy 
+          </td>
+          <td class="md">(&nbsp</td>
+          <td class="md"><a class="el" href="types_8h.html#a22">wmfAPI</a> *          </td>
+          <td class="mdname"> <em>API</em>          </td>
           <td class="md">)&nbsp;</td>
           <td class="md">          </td>
         </tr>
@@ -576,26 +537,18 @@ char* wmf_help
     <td>
 
 <p>
-<div class="fragment"><pre> 
-Additional wmf-related options:
-
-  --wmf-error[=yes|no]            switch for error reports.
-  --wmf-debug[=yes|no]            switch for debug reports, if any.
-  --wmf-ignore-nonfatal[=yes|no]  switch to ignore (some) non-fatal errors.
-  --wmf-diagnostics               emit diagnostic information.
-  --wmf-fontdir=&lt;path&gt;            add &lt;path&gt; to list of font directories.
-  --wmf-sys-fonts                 use system fonts, if any found.
-  --wmf-sys-fontmap=&lt;file&gt;        use system xml-fontmap file &lt;file&gt;.
-  --wmf-xtra-fonts                use non-system fonts, if any found.
-  --wmf-xtra-fontmap=&lt;file&gt;       use non-system xml-fontmap file &lt;file&gt;.
-  --wmf-gs-fontmap=&lt;file&gt;         use ghostscript file &lt;file&gt;.
-
-Report bugs to &lt;http://www.wvware.com/&gt;.
-</pre></div>
+Close the device layer, if open, and release all allocated memory attached to the memory manager.<dl compact><dt>
+Parameters: <dd>
+<table border=0 cellspacing=2 cellpadding=0>
+<tr><td valign=top><em>API
+</em>&nbsp;</td><td>
+the API handle
 <p>
-<dl compact><dt>
+</td></tr>
+</table>
+</dl><dl compact><dt>
 <b>Returns: </b><dd>
-Returns the above as a string. </dl>    </td>
+The final error state of the library. </dl>    </td>
   </tr>
 </table>
 <a name="a6" doxytag="api.c::wmf_malloc"></a><p>
@@ -650,7 +603,7 @@ size in bytes of memory required
 <p>
 </td></tr>
 </table>
-</dl>With syntax similar to malloc(), <a class="el" href="api_8h.html#a37">wmf_malloc</a>() allocates <code>size</code> bytes of memory and adds a reference to it in the memory manager's list. To free the memory, use <a class="el" href="api_8h.html#a40">wmf_free</a>().
+</dl>With syntax similar to malloc(), <a class="el" href="api_8h.html#a39">wmf_malloc</a>() allocates <code>size</code> bytes of memory and adds a reference to it in the memory manager's list. To free the memory, use <a class="el" href="api_8h.html#a42">wmf_free</a>().
 <p>
 <dl compact><dt>
 <b>Returns: </b><dd>
@@ -718,7 +671,7 @@ message to print
 <p>
 </td></tr>
 </table>
-</dl>With syntax similar to printf(), <a class="el" href="api_8h.html#a62">wmf_printf</a>() prints formatted output to the debug stream.     </td>
+</dl>With syntax similar to printf(), <a class="el" href="api_8h.html#a64">wmf_printf</a>() prints formatted output to the debug stream.     </td>
   </tr>
 </table>
 <a name="a8" doxytag="api.c::wmf_realloc"></a><p>
@@ -785,7 +738,7 @@ new size in bytes of memory required
 <p>
 </td></tr>
 </table>
-</dl>With syntax similar to realloc(), <a class="el" href="api_8h.html#a39">wmf_realloc</a>() allocates <code>size</code> bytes of memory and adds a reference to it in the memory manager's list. To free the memory, use <a class="el" href="api_8h.html#a40">wmf_free</a>(). If <code>mem</code> is zero, this is equivalent to a call to <a class="el" href="api_8h.html#a37">wmf_malloc</a>(). If <code>size</code> is zero, the memory is released via <a class="el" href="api_8h.html#a40">wmf_free</a>().
+</dl>With syntax similar to realloc(), <a class="el" href="api_8h.html#a41">wmf_realloc</a>() allocates <code>size</code> bytes of memory and adds a reference to it in the memory manager's list. To free the memory, use <a class="el" href="api_8h.html#a42">wmf_free</a>(). If <code>mem</code> is zero, this is equivalent to a call to <a class="el" href="api_8h.html#a39">wmf_malloc</a>(). If <code>size</code> is zero, the memory is released via <a class="el" href="api_8h.html#a42">wmf_free</a>().
 <p>
 <dl compact><dt>
 <b>Returns: </b><dd>
@@ -923,14 +876,14 @@ a string
 <p>
 </td></tr>
 </table>
-</dl><a class="el" href="api_8h.html#a43">wmf_str_append</a>() allocates the necessary memory via <a class="el" href="api_8h.html#a37">wmf_malloc</a>(), copies <code>pre</code> into the string and appends <code>post</code>. Use <a class="el" href="api_8h.html#a40">wmf_free</a>() to free the string.
+</dl><a class="el" href="api_8h.html#a45">wmf_str_append</a>() allocates the necessary memory via <a class="el" href="api_8h.html#a39">wmf_malloc</a>(), copies <code>pre</code> into the string and appends <code>post</code>. Use <a class="el" href="api_8h.html#a42">wmf_free</a>() to free the string.
 <p>
 <dl compact><dt>
 <b>Returns: </b><dd>
 Pointer to new string, or zero on failure. Sets error state <b>wmf_E_InsMem</b> on failure, or <b>wmf_E_Glitch</b> if str is zero. </dl>    </td>
   </tr>
 </table>
-<a name="a18" doxytag="api.c::wmf_strbuf_grow"></a><p>
+<a name="a15" doxytag="api.c::wmf_strbuf_grow"></a><p>
 <table width="100%" cellpadding="2" cellspacing="0" border="0">
   <tr>
     <td class="md">
@@ -967,11 +920,11 @@ the API handle
 <p>
 </td></tr>
 </table>
-</dl><b>libwmf</b> maintains an internal buffer for string operations. <a class="el" href="api_8h.html#a45">wmf_strbuf_grow</a>() increases the size by 64.
+</dl><b>libwmf</b> maintains an internal buffer for string operations. <a class="el" href="api_8h.html#a47">wmf_strbuf_grow</a>() increases the size by 64.
 <p>
 <dl compact><dt>
 <b>Returns: </b><dd>
-Returns the new size of the buffer. Uses <a class="el" href="api_8h.html#a39">wmf_realloc</a>(), so may set <b>wmf_E_InsMem</b> on failure. </dl>    </td>
+Returns the new size of the buffer. Uses <a class="el" href="api_8h.html#a41">wmf_realloc</a>(), so may set <b>wmf_E_InsMem</b> on failure. </dl>    </td>
   </tr>
 </table>
 <a name="a11" doxytag="api.c::wmf_strdup"></a><p>
@@ -1026,7 +979,7 @@ a string
 <p>
 </td></tr>
 </table>
-</dl>With syntax similar to strdup(), <a class="el" href="api_8h.html#a42">wmf_strdup</a>() allocates the necessary memory via <a class="el" href="api_8h.html#a37">wmf_malloc</a>() and copies the string. Use <a class="el" href="api_8h.html#a40">wmf_free</a>() to free the string.
+</dl>With syntax similar to strdup(), <a class="el" href="api_8h.html#a44">wmf_strdup</a>() allocates the necessary memory via <a class="el" href="api_8h.html#a39">wmf_malloc</a>() and copies the string. Use <a class="el" href="api_8h.html#a42">wmf_free</a>() to free the string.
 <p>
 <dl compact><dt>
 <b>Returns: </b><dd>
@@ -1085,14 +1038,14 @@ a substring to search for in haystack
 <p>
 </td></tr>
 </table>
-</dl>With syntax identical to strstr(), <a class="el" href="api_8h.html#a44">wmf_strstr</a>() searches for string <code>needle</code> in string <code>haystack</code>.
+</dl>With syntax identical to strstr(), <a class="el" href="api_8h.html#a46">wmf_strstr</a>() searches for string <code>needle</code> in string <code>haystack</code>.
 <p>
 <dl compact><dt>
 <b>Returns: </b><dd>
 Pointer to substring <code>needle</code> found in <code>haystack</code>, or zero if not found. </dl>    </td>
   </tr>
 </table>
-<hr><address><small>Generated at Sun Oct 28 12:22:52 2001 for libwmf by
+<hr><address><small>Generated at Sun Oct 28 14:12:00 2001 for libwmf by
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.gif" alt="doxygen" align="middle" border=0 
 width=110 height=53></a>1.2.9.1 written by <a href="mailto:dimitri@stack.nl">Dimitri van Heesch</a>,

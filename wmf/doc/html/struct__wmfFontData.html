@@ -10,132 +10,14 @@
 <p>
 <table border=0 cellpadding=0 cellspacing=0>
 <tr><td colspan=2><br><h2>Data Fields</h2></td></tr>
-<tr><td nowrap align=right valign=top><a class="el" href="ipa_8h.html#a27">wmfMap</a>&nbsp;</td><td valign=bottom><a class="el" href="struct__wmfFontData.html#m0">map</a></td></tr>
-<tr><td nowrap align=right valign=top>char **&nbsp;</td><td valign=bottom><a class="el" href="struct__wmfFontData.html#m1">fontdirs</a></td></tr>
-<tr><td nowrap align=right valign=top><a class="el" href="types_8h.html#a17">wmfFontMap</a> *&nbsp;</td><td valign=bottom><a class="el" href="struct__wmfFontData.html#m2">wmf</a></td></tr>
-<tr><td nowrap align=right valign=top><a class="el" href="types_8h.html#a16">wmfMapping</a> *&nbsp;</td><td valign=bottom><a class="el" href="struct__wmfFontData.html#m3">sub</a></td></tr>
-<tr><td nowrap align=right valign=top><a class="el" href="ipa_8h.html#a6">wmfFT_Mapping</a> *&nbsp;</td><td valign=bottom><a class="el" href="struct__wmfFontData.html#m4">ps</a></td></tr>
-<tr><td nowrap align=right valign=top><a class="el" href="ipa_8h.html#a7">wmfFT_CacheEntry</a> *&nbsp;</td><td valign=bottom><a class="el" href="struct__wmfFontData.html#m5">cache</a></td></tr>
-<tr><td nowrap align=right valign=top><a class="el" href="ipa_8h.html#a9">wmfGS_FontData</a>&nbsp;</td><td valign=bottom><a class="el" href="struct__wmfFontData.html#m6">GS</a></td></tr>
-<tr><td nowrap align=right valign=top><a class="el" href="ipa_8h.html#a11">wmfXML_FontData</a>&nbsp;</td><td valign=bottom><a class="el" href="struct__wmfFontData.html#m7">FD</a></td></tr>
-<tr><td nowrap align=right valign=top>FT_Library&nbsp;</td><td valign=bottom><a class="el" href="struct__wmfFontData.html#m8">Library</a></td></tr>
+<tr><td nowrap align=right valign=top><a class="el" href="ipa_8h.html#a22">wmfMap</a>&nbsp;</td><td valign=bottom><a class="el" href="struct__wmfFontData.html#m0">map</a></td></tr>
+<tr><td nowrap align=right valign=top><a class="el" href="ipa_8h.html#a21">wmfStringWidth</a>&nbsp;</td><td valign=bottom><a class="el" href="struct__wmfFontData.html#m1">stringwidth</a></td></tr>
+<tr><td nowrap align=right valign=top>void *&nbsp;</td><td valign=bottom><a class="el" href="struct__wmfFontData.html#m2">user_data</a></td></tr>
 </table>
+<hr><a name="_details"></a><h2>Detailed Description</h2>
+API-&gt;font_data is a pointer to a wmfFontData. wmf_api_create () sets this up automatically, but wmf_lite_create () does not. If you use wmf_lite_create () then you <b>must</b> create your own wmfFontData. <b>libwmflite</b> requires you to define <code><a class="el" href="struct__wmfFontData.html#m0">map</a></code> and <code><a class="el" href="struct__wmfFontData.html#m1">stringwidth</a></code> functions but the rest of these fields are ignored (they are only used by <b>libwmf)</b>. 
+<p>
 <hr><h2>Field Documentation</h2>
-<a name="m7" doxytag="_wmfFontData::FD"></a><p>
-<table width="100%" cellpadding="2" cellspacing="0" border="0">
-  <tr>
-    <td class="md">
-      <table cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <td class="md" nowrap valign="top"> 
-<a class="el" href="ipa_8h.html#a11">wmfXML_FontData</a> _wmfFontData::FD
-      </table>
-    </td>
-  </tr>
-</table>
-<table cellspacing=5 cellpadding=0 border=0>
-  <tr>
-    <td>
-      &nbsp;
-    </td>
-    <td>
-
-<p>
-    </td>
-  </tr>
-</table>
-<a name="m6" doxytag="_wmfFontData::GS"></a><p>
-<table width="100%" cellpadding="2" cellspacing="0" border="0">
-  <tr>
-    <td class="md">
-      <table cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <td class="md" nowrap valign="top"> 
-<a class="el" href="ipa_8h.html#a9">wmfGS_FontData</a> _wmfFontData::GS
-      </table>
-    </td>
-  </tr>
-</table>
-<table cellspacing=5 cellpadding=0 border=0>
-  <tr>
-    <td>
-      &nbsp;
-    </td>
-    <td>
-
-<p>
-    </td>
-  </tr>
-</table>
-<a name="m8" doxytag="_wmfFontData::Library"></a><p>
-<table width="100%" cellpadding="2" cellspacing="0" border="0">
-  <tr>
-    <td class="md">
-      <table cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <td class="md" nowrap valign="top"> 
-FT_Library _wmfFontData::Library
-      </table>
-    </td>
-  </tr>
-</table>
-<table cellspacing=5 cellpadding=0 border=0>
-  <tr>
-    <td>
-      &nbsp;
-    </td>
-    <td>
-
-<p>
-    </td>
-  </tr>
-</table>
-<a name="m5" doxytag="_wmfFontData::cache"></a><p>
-<table width="100%" cellpadding="2" cellspacing="0" border="0">
-  <tr>
-    <td class="md">
-      <table cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <td class="md" nowrap valign="top"> 
-<a class="el" href="ipa_8h.html#a7">wmfFT_CacheEntry</a>* _wmfFontData::cache
-      </table>
-    </td>
-  </tr>
-</table>
-<table cellspacing=5 cellpadding=0 border=0>
-  <tr>
-    <td>
-      &nbsp;
-    </td>
-    <td>
-
-<p>
-    </td>
-  </tr>
-</table>
-<a name="m1" doxytag="_wmfFontData::fontdirs"></a><p>
-<table width="100%" cellpadding="2" cellspacing="0" border="0">
-  <tr>
-    <td class="md">
-      <table cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <td class="md" nowrap valign="top"> 
-char** _wmfFontData::fontdirs
-      </table>
-    </td>
-  </tr>
-</table>
-<table cellspacing=5 cellpadding=0 border=0>
-  <tr>
-    <td>
-      &nbsp;
-    </td>
-    <td>
-
-<p>
-    </td>
-  </tr>
-</table>
 <a name="m0" doxytag="_wmfFontData::map"></a><p>
 <table width="100%" cellpadding="2" cellspacing="0" border="0">
   <tr>
@@ -143,7 +25,7 @@ char** _wmfFontData::fontdirs
       <table cellpadding="0" cellspacing="0" border="0">
         <tr>
           <td class="md" nowrap valign="top"> 
-<a class="el" href="ipa_8h.html#a27">wmfMap</a> _wmfFontData::map
+<a class="el" href="ipa_8h.html#a22">wmfMap</a> _wmfFontData::map
       </table>
     </td>
   </tr>
@@ -156,17 +38,17 @@ char** _wmfFontData::fontdirs
     <td>
 
 <p>
-    </td>
+Necessary field: exactly what the function does is irrelevant.     </td>
   </tr>
 </table>
-<a name="m4" doxytag="_wmfFontData::ps"></a><p>
+<a name="m1" doxytag="_wmfFontData::stringwidth"></a><p>
 <table width="100%" cellpadding="2" cellspacing="0" border="0">
   <tr>
     <td class="md">
       <table cellpadding="0" cellspacing="0" border="0">
         <tr>
           <td class="md" nowrap valign="top"> 
-<a class="el" href="ipa_8h.html#a6">wmfFT_Mapping</a>* _wmfFontData::ps
+<a class="el" href="ipa_8h.html#a21">wmfStringWidth</a> _wmfFontData::stringwidth
       </table>
     </td>
   </tr>
@@ -179,17 +61,17 @@ char** _wmfFontData::fontdirs
     <td>
 
 <p>
-    </td>
+Necessary field: returns width of specified string in points, assuming (unstretched) font size of 1pt.     </td>
   </tr>
 </table>
-<a name="m3" doxytag="_wmfFontData::sub"></a><p>
+<a name="m2" doxytag="_wmfFontData::user_data"></a><p>
 <table width="100%" cellpadding="2" cellspacing="0" border="0">
   <tr>
     <td class="md">
       <table cellpadding="0" cellspacing="0" border="0">
         <tr>
           <td class="md" nowrap valign="top"> 
-<a class="el" href="types_8h.html#a16">wmfMapping</a>* _wmfFontData::sub
+void* _wmfFontData::user_data
       </table>
     </td>
   </tr>
@@ -202,35 +84,12 @@ char** _wmfFontData::fontdirs
     <td>
 
 <p>
-    </td>
-  </tr>
-</table>
-<a name="m2" doxytag="_wmfFontData::wmf"></a><p>
-<table width="100%" cellpadding="2" cellspacing="0" border="0">
-  <tr>
-    <td class="md">
-      <table cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <td class="md" nowrap valign="top"> 
-<a class="el" href="types_8h.html#a17">wmfFontMap</a>* _wmfFontData::wmf
-      </table>
-    </td>
-  </tr>
-</table>
-<table cellspacing=5 cellpadding=0 border=0>
-  <tr>
-    <td>
-      &nbsp;
-    </td>
-    <td>
-
-<p>
-    </td>
+A handle for data, unused by libwmflite     </td>
   </tr>
 </table>
 <hr>The documentation for this struct was generated from the following file:<ul>
 <li><a class="el" href="ipa_8h.html">ipa.h</a></ul>
-<hr><address><small>Generated at Sun Oct 28 12:22:57 2001 for libwmf by
+<hr><address><small>Generated at Sun Oct 28 14:12:06 2001 for libwmf by
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.gif" alt="doxygen" align="middle" border=0 
 width=110 height=53></a>1.2.9.1 written by <a href="mailto:dimitri@stack.nl">Dimitri van Heesch</a>,

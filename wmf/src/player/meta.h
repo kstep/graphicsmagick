@@ -2300,6 +2300,7 @@ static void meta_dc_restore (wmfAPI* API,wmfRecord* Record)
 static void meta_text (wmfAPI* API,wmfRecord* Record)
 {	wmfPlayer_t*          P  = (wmfPlayer_t*)          API->player_data;
 	wmfFunctionReference* FR = (wmfFunctionReference*) API->function_reference;
+	wmfFontData*          FD = (wmfFontData*)          API->font_data;
 
 	wmfRecord str_record;
 	wmfRecord lpDx_record;
@@ -2491,7 +2492,7 @@ static void meta_text (wmfAPI* API,wmfRecord* Record)
 	}
 	drawtext.str[length] = '\0';
 
-	width = wmf_ipa_font_stringwidth (API,font,drawtext.str);
+	width = FD->stringwidth (API,font,drawtext.str);
 
 	width = (float) ((double) width * drawtext.font_height * drawtext.font_ratio);
 
@@ -2696,7 +2697,7 @@ static void meta_text (wmfAPI* API,wmfRecord* Record)
 			d_pt = wmf_D_Coord_translate (API,l_pt);
 			d_pt.x -= o_pt.x;
 			d_pt.y -= o_pt.y;
-			width = wmf_ipa_font_stringwidth (API,font,drawtext.str);
+			width = FD->stringwidth (API,font,drawtext.str);
 			width = (float) ((double) width * drawtext.font_height * ratio);
 			if (d_pt.x < width)
 			{	drawtext.font_ratio = ratio * (d_pt.x / width);
@@ -2973,6 +2974,8 @@ static void meta_font_create (wmfAPI* API,wmfRecord* Record)
 	fontname[length] = '\0';
 
 	WMF_FONT_SET_NAME (font,fontname); /* must not free fontname */
+
+	font->user_data = 0;
 
 	FD->map (API,font); /* Determine/Load freetype face */
 

@@ -1,5 +1,5 @@
 /* libwmf ("wmfdefs.h"): library for wmf conversion
-   Copyright (C) 2000 - various; see CREDITS, ChangeLog, and sources
+   Copyright (C) 2000,2001 - various; see CREDITS, ChangeLog, and sources
 
    The libwmf Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public License as
@@ -25,6 +25,7 @@
 #include "libwmf/api.h"
 #include "libwmf/defs.h"
 #include "libwmf/ipa.h"
+#include "libwmf/font.h"
 #include "libwmf/color.h"
 #include "libwmf/macro.h"
 
@@ -34,8 +35,11 @@
 
 /* API flags: flags to lie in range (1<<20) to (1<<31)
  */
-#define API_DEVICE_OPEN    (1<<20)
-#define API_FTLIBRARY_OPEN (1<<21)
+#define API_DEVICE_OPEN        (1<<20)
+#define API_FTLIBRARY_OPEN     (1<<21)
+#define API_FILE_OPEN          (1<<22)
+
+#define API_STANDARD_INTERFACE (1<<31)
 
 /* API-independent defs & macros *only*
  */

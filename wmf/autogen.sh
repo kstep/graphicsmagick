@@ -13,7 +13,7 @@ xlc )
 esac
 
 echo "Running: libtoolize"
-libtoolize --force || {
+libtoolize --force --copy || {
 	echo "**Error**: libtoolize failed.";
 	exit 1;
 }

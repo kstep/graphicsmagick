@@ -143,7 +143,26 @@ DOCUMENTATION = \
 	xgd_8h.html \
 	struct__gd__t.html \
 	struct__wmfImage.html \
-	struct__wmf__foreign__t.html
+	struct__wmf__foreign__t.html \
+	include_2libwmf_2api_8h.html \
+	src_2api_8h.html \
+	bbuf_8h.html \
+	font_8c.html \
+	include_2libwmf_2font_8h.html \
+	src_2font_8h.html \
+	src_2ipa_2fig_2font_8h.html \
+	src_2ipa_2ipa_2font_8h.html \
+	src_2ipa_2x_2font_8h.html \
+	src_2ipa_2xgd_2font_8h.html \
+	stream_8h.html \
+	wmf_8c.html \
+	struct__wmfBBufFileInfo.html \
+	struct__wmfBBufMemInfo.html \
+	struct__wmfDefaultStream.html \
+	struct__wmfDefaultZtream.html \
+	struct__wmfFontmapData.html \
+	struct__wmfIPAFont.html \
+	struct__wmfMemoryManager.html
 
 htmldoc_DATA = $(DOCUMENTATION)
 

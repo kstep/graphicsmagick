@@ -81,6 +81,12 @@ void wmf_x_function (wmfAPI* API)
 
 	wmfFunctionReference* FR = (wmfFunctionReference*) API->function_reference;
 
+	if ((API->flags & API_STANDARD_INTERFACE) == 0)
+	{	WMF_ERROR (API,"Can't use this device layer with 'lite' interface!");
+		API->err = wmf_E_DeviceError;
+		return;
+	}
+
 /* IPA function reference links
  */
 	FR->device_open    = wmf_x_device_open;

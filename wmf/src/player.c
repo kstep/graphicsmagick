@@ -1,5 +1,5 @@
 /* libwmf (player.c): library for wmf conversion
-   Copyright (C) 2000 - various; see CREDITS, ChangeLog, and sources
+   Copyright (C) 2000,2001 - various; see CREDITS, ChangeLog, and sources
 
    The libwmf Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public License as
@@ -315,8 +315,20 @@ static wmf_error_t PlayMetaFile (wmfAPI* API)
 
 /* Can SetDefaults go in player_init ??
  */
+	if (FD == 0)
+	{	WMF_ERROR (API,"Glitch! No font engine interface!");
+		API->err = wmf_E_Glitch;
+		return (API->err);
+	}
+
 	if (FD->map == 0)
 	{	WMF_ERROR (API,"Glitch! No font-mapper!");
+		API->err = wmf_E_Glitch;
+		return (API->err);
+	}
+
+	if (FD->stringwidth == 0)
+	{	WMF_ERROR (API,"Glitch! No string width function!");
 		API->err = wmf_E_Glitch;
 		return (API->err);
 	}

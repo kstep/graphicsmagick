@@ -93,7 +93,7 @@ static void wmf_gd_draw_text (wmfAPI* API,wmfDrawText_t* draw_text)
 
 	font = WMF_DC_FONT (draw_text->dc);
 
-	face = font->ft_face;
+	face = WMF_FONT_FTFACE (font);
 
 	font_height = gd_height (API,(float)  draw_text->font_height);
 	font_ratio  = gd_width  (API,(float) (draw_text->font_height * draw_text->font_ratio));

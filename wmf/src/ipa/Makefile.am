@@ -4,10 +4,7 @@ LDFLAGS = @LDFLAGS@
 
 DEFS = @DEFS@ @WMF_DEFS@ \
 	-DPACKAGE=\"@PACKAGE@\" \
-	-DVERSION=\"@VERSION@\" \
-	-DWMF_SYS_FONTMAP=\"@WMF_SYS_FONTMAP@\" \
-	-DWMF_XTRA_FONTMAP=\"@WMF_XTRA_FONTMAP@\" \
-	-DWMF_GS_FONTMAP=\"@WMF_GS_FONTMAP@\"
+	-DVERSION=\"@VERSION@\"
 
 if LIBWMF_OPT_SYS_GD
 GDHDRS = 
@@ -29,8 +26,6 @@ libipa_la_LDFLAGS =
 
 IPAHEADERS = \
 	ipa/bmp.h \
-	ipa/font.h \
-	ipa/color.h \
 	ipa.h
 
 EPSHEADERS = \

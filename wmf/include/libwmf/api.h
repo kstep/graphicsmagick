@@ -39,6 +39,16 @@ extern wmf_error_t wmf_api_create (wmfAPI**,unsigned long,wmfAPI_Options*);
 extern wmf_error_t wmf_api_destroy (wmfAPI*);
 
 /**
+ * Initializes library - 'lite' interface only
+ */
+wmf_error_t wmf_lite_create (wmfAPI**,unsigned long,wmfAPI_Options*);
+
+/**
+ * Possibly completes output, and otherwise frees all allocated memory - 'lite' interface only
+ */
+wmf_error_t wmf_lite_destroy (wmfAPI*);
+
+/**
  * Reads the header of the current metafile
  */
 extern wmf_error_t wmf_header_read (wmfAPI*);

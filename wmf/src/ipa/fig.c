@@ -83,6 +83,12 @@ void wmf_fig_function (wmfAPI* API)
 
 	int i;
 
+	if ((API->flags & API_STANDARD_INTERFACE) == 0)
+	{	WMF_ERROR (API,"Can't use this device layer with 'lite' interface!");
+		API->err = wmf_E_DeviceError;
+		return;
+	}
+
 /* IPA function reference links
  */
 	FR->device_open    = wmf_fig_device_open;

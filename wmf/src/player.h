@@ -1,5 +1,5 @@
 /* libwmf ("player.h"): library for wmf conversion
-   Copyright (C) 2000 - various; see CREDITS, ChangeLog, and sources
+   Copyright (C) 2000,2001 - various; see CREDITS, ChangeLog, and sources
 
    The libwmf Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public License as

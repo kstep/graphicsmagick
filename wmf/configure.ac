@@ -13,7 +13,7 @@ dnl
 #
 WMF_MAJOR_VERSION=0
 WMF_MINOR_VERSION=2
-WMF_MICRO_VERSION=2
+WMF_MICRO_VERSION=3
 WMF_INTERFACE_AGE=0
 WMF_BINARY_AGE=0
 WMF_VERSION=$WMF_MAJOR_VERSION.$WMF_MINOR_VERSION.$WMF_MICRO_VERSION
@@ -88,26 +88,6 @@ AC_EXEEXT
 AC_OBJEXT
 AC_MINGW32
 # End Tests for Windows
-
-# Special Release Mode Run-Time Config
-# Current compatibility: libtool-1.4.2
-# 
-release_mode="no"
-if test "$release_mode" = "yes"; then
-	os_name=`uname`
-	if test "x$os_name" = "xDarwin"; then
-		top_srcdir=`dirname $0`
-		echo ""
-		echo -n "Detected Darwin... "
-		if test -w "$top_srcdir"; then
-			echo "Fixing ltmain.sh"
-			(cd "$top_srcdir" && cp -f patches/lt142main.sh ltmain.sh && patch -p0 < patches/lt142macosx.patch)
-		else
-			echo "Warning: Unable to fix ltmain.sh - linking may fail!"
-		fi
-		echo ""
-	fi
-fi
 
 dnl Checks for programs.
 
@@ -189,6 +169,9 @@ if [ test "x$check_for_vfscanf" = "xyes" ]; then
 fi
 
 AM_CONDITIONAL(LIBWMF_OPT_TRIO,[ test "x$require_trio" = "xyes" ])
+
+dnl - but always define this; the re-definitions are selective anyway...
+AC_DEFINE(TRIO_REPLACE_STDIO,1,[If any *printf/*scanf functions are missing, cover them with trio functions])
 
 dnl Checks for libraries, etc.
 
@@ -844,7 +827,6 @@ src/Makefile
 src/extra/Makefile
 src/extra/trio/Makefile
 src/extra/gd/Makefile
-src/api/Makefile
 src/ipa/Makefile
 src/convert/Makefile
 libwmf-config
