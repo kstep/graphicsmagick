@@ -92,6 +92,8 @@ static unsigned int
 */
 static Image *ReadMVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
+#define BoundingBox  "ViewBox"
+
   char
     filename[MaxTextExtent];
 
@@ -106,10 +108,24 @@ static Image *ReadMVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   image=AllocateImage(image_info);
   (void) strcpy(image->filename,image_info->filename);
-  if (image->columns == 0)
-    image->columns=640;
-  if (image->rows == 0)
-    image->rows=480;
+  if ((image->columns == 0) || (image->rows == 0))
+    {
+      char
+        primitive[MaxTextExtent];
+
+      SegmentInfo
+        bounds;
+ 
+      while (GetStringBlob(image,primitive) != (char *) NULL)
+      {
+        if (LocaleNCompare(BoundingBox,primitive,Extent(BoundingBox)) != 0)
+          continue;
+        (void) sscanf(primitive,"viewbox %lf %lf %lf %lf",&bounds.x1,
+          &bounds.y1,&bounds.x2,&bounds.y2);
+        image->columns=bounds.x2-bounds.x1;
+        image->rows=bounds.y2-bounds.y1;
+      }
+    }
   SetImage(image,OpaqueOpacity);
   draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
   (void) strcpy(filename,"@");

@@ -717,7 +717,8 @@ static void SVGStartElement(void *context,const xmlChar *name,
     MagickError(ResourceLimitError,"Unable to convert SVG image",
       "Memory allocation failed");
   svg_info->scale[svg_info->n]=svg_info->scale[svg_info->n-1];
-  (void) fprintf(svg_info->file,"push graphic-context\n");
+  if (LocaleCompare((char *) name,"svg") != 0)
+    (void) fprintf(svg_info->file,"push graphic-context\n");
   color=AllocateString("none");
   font_family=(char *) NULL;
   font_style=(char *) NULL;
@@ -1498,6 +1499,9 @@ static void SVGStartElement(void *context,const xmlChar *name,
           if (svg_info->y_resolution != 0.0)
             page.height=(unsigned int)
               ceil(((page.height*svg_info->y_resolution)/72.0)-0.5);
+          (void) fprintf(svg_info->file,"viewbox %g %g %g %g\n",
+            svg_info->view_box.x,svg_info->view_box.y,svg_info->view_box.width,
+            svg_info->view_box.height);
           (void) fprintf(svg_info->file,"affine %g 0.0 0.0 %g 0.0 0.0\n",
             (double) page.width/svg_info->view_box.width,
             (double) page.height/svg_info->view_box.height);
@@ -1665,7 +1669,8 @@ static void SVGEndElement(void *context,const xmlChar *name)
   }
   if (svg_info->text != (char *) NULL)
     *svg_info->text='\0';
-  (void) fprintf(svg_info->file,"pop graphic-context\n");
+  if (LocaleCompare((char *) name,"svg") != 0)
+    (void) fprintf(svg_info->file,"pop graphic-context\n");
   svg_info->n--;
 }
 

@@ -1451,6 +1451,26 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
         status=True;
         break;
       }
+      case 'v':
+      case 'V':
+      {
+        if (LocaleCompare("viewbox",keyword) == 0)
+          {
+            (void) strtod(q,&q);
+            if (*q == ',')
+              q++;
+            (void) strtod(q,&q);
+            if (*q == ',')
+              q++;
+            (void) strtod(q,&q);
+            if (*q == ',')
+              q++;
+            (void) strtod(q,&q);
+            break;
+          }
+        status=True;
+        break;
+      }
       default:
       {
         status=True;
