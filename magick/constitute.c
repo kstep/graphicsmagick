@@ -1272,8 +1272,8 @@ MagickExport unsigned int PopImagePixels(Image *image,
             *q++=DownScale(p->red);
             *q++=DownScale(p->green);
             *q++=DownScale(p->blue);
-            *q++=DownScale(p->opacity);
             *q++=DownScale(indexes[x]);
+            *q++=DownScale(p->opacity);
             p++;
           }
           break;
@@ -1286,10 +1286,10 @@ MagickExport unsigned int PopImagePixels(Image *image,
         *q++=p->green;
         *q++=p->blue >> 8;
         *q++=p->blue;
-        *q++=p->opacity >> 8;
-        *q++=p->opacity;
         *q++=indexes[x] >> 8;
         *q++=indexes[x];
+        *q++=p->opacity >> 8;
+        *q++=p->opacity;
         p++;
       }
       break;
@@ -1651,8 +1651,8 @@ MagickExport unsigned int PushImagePixels(Image *image,
             q->red=UpScale(*p++);
             q->green=UpScale(*p++);
             q->blue=UpScale(*p++);
-            q->opacity=UpScale(*p++);
             indexes[x]=UpScale(*p++);
+            q->opacity=UpScale(*p++);
             q++;
           }
           break;
@@ -1665,9 +1665,9 @@ MagickExport unsigned int PushImagePixels(Image *image,
         p+=2;
         q->blue=XDownScale((*p << 8) | *(p+1));
         p+=2;
-        q->opacity=XDownScale((*p << 8) | *(p+1));
-        p+=2;
         indexes[x]=XDownScale((*p << 8) | *(p+1));
+        p+=2;
+        q->opacity=XDownScale((*p << 8) | *(p+1));
         p+=2;
         q++;
       }
