@@ -425,6 +425,10 @@ inline MagickExport void HSLTransform(const double hue,const double saturation,
 %  Method HWBTransform converts a (hue, whiteness, blackness) to a
 %  (red, green, blue) triple.
 %
+%  Algorithm derived from "HWB: A more intuitive hue-based color model."
+%  Alvy Ray Smith and Eric Ray Lyons, Journal of Graphics Tools, Volume 1
+%  Number 1, 1996.  http://www.acm.org/jgt/papers/SmithLyons96/
+%
 %  The format of the HWBTransformImage method is:
 %
 %      void HWBTransform(const double hue,const double whiteness,
@@ -790,6 +794,10 @@ inline MagickExport void TransformHSL(const Quantum red,const Quantum green,
 %
 %  Method TransformHWB converts a (red, green, blue) to a
 %  (hue, whiteness, blackness) triple.
+%
+%  Algorithm derived from "HWB: A more intuitive hue-based color model."
+%  Alvy Ray Smith and Eric Ray Lyons, Journal of Graphics Tools, Volume 1
+%  Number 1, 1996.  http://www.acm.org/jgt/papers/SmithLyons96/
 %
 %  The format of the TransformHWB method is:
 %

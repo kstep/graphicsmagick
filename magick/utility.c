@@ -1268,8 +1268,29 @@ MagickExport int GetGeometry(const char *image_geometry,long *x,long *y,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  GetMagickGeometry() is similar to GetGeometry() except the returned
-%  geometry is modified as determined by the meta characters:  %, !, <,
-%  and >.
+%  geometry is modified as determined by the meta characters:  %, @, !,
+%  <, and >, as well as +x, and +y offsets.  The geometry string has the
+%  form:
+%
+%      <width>x<height>{+-}<x>{+-}<y>{%}{@} {!}{<}{>}
+%
+%  For example, the string "640x480>" is a valid geometry string.
+%
+%  The interpretation of the geometry string parameters are as follows:
+%    %: The geometry width and height parameters are interpreted as a
+%       percentage of the supplied width and height parameters.
+%    @: The geometry parameter represents the desired total area (i.e.
+%       width x height) of the final image.
+%    !: Force the width and height values to be absolute values.  The
+%       original image aspect ratio is not maintained.
+%    <: Update the provided width and height parameters if its dimensions
+%       are less than the geometry specification.
+%    >: Update the provided width and height parameters if its dimensions
+%       are greater than the geometry specification.
+%
+%  Any supplied offset parameters are used to adjust the image width,
+%  height, and x/y offset values as required to center the scaled image
+%  into the region specified by the supplied width and height.
 %
 %  The format of the GetMagickGeometry method is:
 %
@@ -1279,7 +1300,8 @@ MagickExport int GetGeometry(const char *image_geometry,long *x,long *y,
 %  A description of each parameter follows:
 %
 %    o flags:  Method GetMagickGeometry returns a bitmask that indicates
-%      which of the four values were located in the geometry string.
+%      which of the five values (PercentValue, AspectValue, LessValue,
+%      GreaterValue, AreaValue) were located in the geometry string.
 %
 %    o image_geometry:  Specifies a character string representing the geometry
 %      specification.
@@ -1299,11 +1321,7 @@ MagickExport int GetMagickGeometry(const char *geometry,long *x,long *y,
     flags;
 
   long
-    count,
-    delta;
-
-  RectangleInfo
-    media_info;
+    count;
 
   unsigned long
     former_height,
@@ -1408,53 +1426,64 @@ MagickExport int GetMagickGeometry(const char *geometry,long *x,long *y,
       if (former_height > *height)
         *height=former_height;
     }
-  media_info.width=(*width);
-  media_info.height=(*height);
-  media_info.x=(*x);
-  media_info.y=(*y);
-  (void) GetGeometry(geometry,&media_info.x,&media_info.y,&media_info.width,
-    &media_info.height);
-  if ((flags & XValue) == 0)
+
+#if 0  
     {
-      /*
-        Center image in the X direction.
-      */
-      delta=(long) (media_info.width-(*width));
-      if (delta >= 0)
-        *x=delta >> 1;
-    }
-  else
-    if ((flags & XNegative) != 0)
-      *x+=media_info.width-(*width);
-  if ((flags & YValue) == 0)
-    {
-      /*
-        Center image in the Y direction.
-      */
-      delta=(long) (media_info.height-(*height));
-      if (delta >= 0)
-        *y=delta >> 1;
-    }
-  else
-    if ((flags & YNegative) != 0)
-      *y+=media_info.height-(*height);
-  if (flags & GreaterValue)
-    {
-      if ((*width+((*x) << 1)) > media_info.width)
+      RectangleInfo
+        media_info;
+
+      long
+        delta;
+
+      media_info.width=(*width);
+      media_info.height=(*height);
+      media_info.x=(*x);
+      media_info.y=(*y);
+      (void) GetGeometry(geometry,&media_info.x,&media_info.y,&media_info.width,
+                         &media_info.height);
+      if ((flags & XValue) == 0)
         {
-          if ((long) *width > ((*x) << 1))
-            *width-=(*x) << 1;
-          if ((long) *height > ((*y) << 1))
-            *height-=(*y) << 1;
+          /*
+            Center image in the X direction.
+          */
+          delta=(long) (media_info.width-(*width));
+          if (delta >= 0)
+            *x=delta >> 1;
         }
-      if ((*height+((*y) << 1)) > media_info.height)
+      else
+        if ((flags & XNegative) != 0)
+          *x+=media_info.width-(*width);
+      if ((flags & YValue) == 0)
         {
-          if ((long) *width > ((*x) << 1))
-            *width-=(*x) << 1;
-          if ((long) *height > ((*y) << 1))
-            *height-=(*y) << 1;
+          /*
+            Center image in the Y direction.
+          */
+          delta=(long) (media_info.height-(*height));
+          if (delta >= 0)
+            *y=delta >> 1;
+        }
+      else
+        if ((flags & YNegative) != 0)
+          *y+=media_info.height-(*height);
+      if (flags & GreaterValue)
+        {
+          if ((*width+((*x) << 1)) > media_info.width)
+            {
+              if ((long) *width > ((*x) << 1))
+                *width-=(*x) << 1;
+              if ((long) *height > ((*y) << 1))
+                *height-=(*y) << 1;
+            }
+          if ((*height+((*y) << 1)) > media_info.height)
+            {
+              if ((long) *width > ((*x) << 1))
+                *width-=(*x) << 1;
+              if ((long) *height > ((*y) << 1))
+                *height-=(*y) << 1;
+            }
         }
     }
+#endif
   return(flags);
 }
 
@@ -1469,8 +1498,10 @@ MagickExport int GetMagickGeometry(const char *geometry,long *x,long *y,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetPageGeometry() replaces any page mneumonic with the equivalent size in
-%  picas.
+%  GetPageGeometry() returns a new geometry string, with any embedded page
+%  mneumonic in the original geometry string replaced with the equivalent
+%  size in picas. For example, the geometry string "A4+36+36" is translated
+%  to "595x842+36+36" in the returned value.
 %
 %  The format of the GetPageGeometry method is:
 %
@@ -1478,9 +1509,7 @@ MagickExport int GetMagickGeometry(const char *geometry,long *x,long *y,
 %
 %  A description of each parameter follows.
 %
-%   o  page_geometry:  Specifies a pointer to an array of characters.
-%      The string is either a Postscript page name (e.g. A4) or a postscript
-%      page geometry (e.g. 612x792+36+36).
+%   o  page_geometry:  The geometry string to translate.
 %
 %
 */

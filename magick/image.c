@@ -3221,8 +3221,8 @@ static const size_t
 
 static const char *ColorspaceTypeToString(const ColorspaceType colorspace)
 {
-  const char *
-    log_colorspace = "Unknown";
+  const char
+    *log_colorspace = "Unknown";
   
   switch (colorspace)
     {
@@ -3267,6 +3267,9 @@ static const char *ColorspaceTypeToString(const ColorspaceType colorspace)
       break;
     case HSLColorspace:
       log_colorspace="HSL";
+      break;
+    case HWBColorspace:
+      log_colorspace="HWB";
       break;
     }
   return log_colorspace;
@@ -3394,8 +3397,20 @@ MagickExport unsigned int RGBTransformImage(Image *image,
       return(True);
     }
 
-  if (colorspace == HSLColorspace)
+  if (colorspace == HSLColorspace || colorspace == HWBColorspace)
     {
+      void (*transform)(const Quantum,const Quantum,const Quantum,
+        double *,double *,double *);
+
+      switch (colorspace)
+        {
+        case HSLColorspace:
+        default:
+          transform=TransformHSL;
+        case HWBColorspace:
+          transform=TransformHWB;
+        }
+
       switch (image->storage_class)
         {
         case DirectClass:
@@ -3419,14 +3434,14 @@ MagickExport unsigned int RGBTransformImage(Image *image,
                 for (x=(long) image->columns; x > 0; x--)
                   {
                     double
-                      hue,
-                      saturation,
-                      luminosity;
+                      p1, /* H */
+                      p2, /* S or W */
+                      p3; /* L or B */
 
-                    TransformHSL(q->red,q->green,q->blue,&hue,&saturation,&luminosity);
-                    q->red=(Quantum) RndToInt(hue*MaxRGB);
-                    q->green=(Quantum) RndToInt(saturation*MaxRGB);
-                    q->blue=(Quantum) RndToInt(luminosity*MaxRGB);
+                    (transform)(q->red,q->green,q->blue,&p1,&p2,&p3);
+                    q->red=(Quantum) RndToInt(p1*MaxRGB);
+                    q->green=(Quantum) RndToInt(p2*MaxRGB);
+                    q->blue=(Quantum) RndToInt(p3*MaxRGB);
                     q++;
                   }
                 if (!SyncImagePixels(image))
@@ -3449,14 +3464,14 @@ MagickExport unsigned int RGBTransformImage(Image *image,
             for (i=(long) image->colors; i > 0; i--)
               {
                 double
-                  hue,
-                  saturation,
-                  luminosity;
-
-                TransformHSL(q->red,q->green,q->blue,&hue,&saturation,&luminosity);
-                q->red=(Quantum) RndToInt(hue*MaxRGB);
-                q->green=(Quantum) RndToInt(saturation*MaxRGB);
-                q->blue=(Quantum) RndToInt(luminosity*MaxRGB);
+                  p1, /* H */
+                  p2, /* S or W */
+                  p3; /* L or B */
+                
+                (transform)(q->red,q->green,q->blue,&p1,&p2,&p3);
+                q->red=(Quantum) RndToInt(p1*MaxRGB);
+                q->green=(Quantum) RndToInt(p2*MaxRGB);
+                q->blue=(Quantum) RndToInt(p3*MaxRGB);
                 q++;
               }
             SyncImage(image);
@@ -5150,8 +5165,20 @@ MagickExport unsigned int TransformRGBImage(Image *image,
       return(True);
     }
 
-  if (colorspace == HSLColorspace)
+  if (colorspace == HSLColorspace || colorspace == HWBColorspace)
     {
+      void (*transform)(const double,const double,const double,
+        Quantum *,Quantum *,Quantum *);
+
+      switch (colorspace)
+        {
+        case HSLColorspace:
+        default:
+          transform=HSLTransform;
+        case HWBColorspace:
+          transform=HWBTransform;
+        }
+
       switch (image->storage_class)
         {
         case DirectClass:
@@ -5174,7 +5201,7 @@ MagickExport unsigned int TransformRGBImage(Image *image,
                   break;
                 for (x=(long) image->columns; x > 0; x--)
                   {
-                    HSLTransform((double)q->red/MaxRGB,(double)q->green/MaxRGB,
+                    (transform)((double)q->red/MaxRGB,(double)q->green/MaxRGB,
                       (double)q->blue/MaxRGB,&q->red,&q->green,&q->blue);
                     q++;
                   }
@@ -5197,7 +5224,7 @@ MagickExport unsigned int TransformRGBImage(Image *image,
             q=image->colormap;
             for (i=(long) image->colors; i > 0; i--)
               {
-                HSLTransform((double)q->red/MaxRGB,(double)q->green/MaxRGB,
+                (transform)((double)q->red/MaxRGB,(double)q->green/MaxRGB,
                   (double)q->blue/MaxRGB,&q->red,&q->green,&q->blue);
                 q++;
               }

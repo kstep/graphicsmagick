@@ -509,6 +509,8 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
                   image_info->colorspace=GRAYColorspace;
                 if (LocaleCompare("hsl",option) == 0)
                   image_info->colorspace=HSLColorspace;
+                if (LocaleCompare("hwb",option) == 0)
+                  image_info->colorspace=HWBColorspace;
                 if (LocaleCompare("ohta",option) == 0)
                   image_info->colorspace=OHTAColorspace;
                 if (LocaleCompare("rgb",option) == 0)
@@ -1778,6 +1780,8 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
                   image_info->colorspace=GRAYColorspace;
                 if (LocaleCompare("hsl",option) == 0)
                   image_info->colorspace=HSLColorspace;
+                if (LocaleCompare("hwb",option) == 0)
+                  image_info->colorspace=HWBColorspace;
                 if (LocaleCompare("ohta",option) == 0)
                   image_info->colorspace=OHTAColorspace;
                 if (LocaleCompare("rgb",option) == 0)
@@ -3945,6 +3949,8 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
               }
             if (LocaleCompare("hsl",option) == 0)
               quantize_info.colorspace=HSLColorspace;
+            if (LocaleCompare("hwb",option) == 0)
+              quantize_info.colorspace=HWBColorspace;
             if (LocaleCompare("ohta",option) == 0)
               quantize_info.colorspace=OHTAColorspace;
             if (LocaleCompare("rgb",option) == 0)
@@ -6243,6 +6249,8 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
                   image_info->colorspace=GRAYColorspace;
                 if (LocaleCompare("hsl",option) == 0)
                   image_info->colorspace=HSLColorspace;
+                if (LocaleCompare("hwb",option) == 0)
+                  image_info->colorspace=HWBColorspace;
                 if (LocaleCompare("ohta",option) == 0)
                   image_info->colorspace=OHTAColorspace;
                 if (LocaleCompare("rgb",option) == 0)
@@ -7842,6 +7850,8 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
                   }
                 if (LocaleCompare("hsl",option) == 0)
                   quantize_info.colorspace=HSLColorspace;
+                if (LocaleCompare("hwb",option) == 0)
+                  quantize_info.colorspace=HWBColorspace;
                 if (LocaleCompare("ohta",option) == 0)
                   quantize_info.colorspace=OHTAColorspace;
                 if (LocaleCompare("rgb",option) == 0)
@@ -9272,6 +9282,8 @@ MagickExport unsigned int AnimateImageCommand(int argc,char **argv)
                   }
                 if (LocaleCompare("hsl",option) == 0)
                   quantize_info->colorspace=HSLColorspace;
+                if (LocaleCompare("hwb",option) == 0)
+                  quantize_info->colorspace=HWBColorspace;
                 if (LocaleCompare("ohta",option) == 0)
                   quantize_info->colorspace=OHTAColorspace;
                 if (LocaleCompare("rgb",option) == 0)
@@ -10191,6 +10203,8 @@ MagickExport unsigned int ImportImageCommand(int argc,char **argv)
                   }
                 if (LocaleCompare("hsl",option) == 0)
                   quantize_info->colorspace=HSLColorspace;
+                if (LocaleCompare("hwb",option) == 0)
+                  quantize_info->colorspace=HWBColorspace;
                 if (LocaleCompare("ohta",option) == 0)
                   quantize_info->colorspace=OHTAColorspace;
                 if (LocaleCompare("rgb",option) == 0)
@@ -11606,6 +11620,8 @@ MagickExport unsigned int DisplayImageCommand(int argc,char **argv)
                   }
                 if (LocaleCompare("hsl",option) == 0)
                   quantize_info->colorspace=HSLColorspace;
+                if (LocaleCompare("hwb",option) == 0)
+                  quantize_info->colorspace=HWBColorspace;
                 if (LocaleCompare("ohta",option) == 0)
                   quantize_info->colorspace=OHTAColorspace;
                 if (LocaleCompare("rgb",option) == 0)

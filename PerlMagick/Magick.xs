@@ -204,7 +204,7 @@ static char
   *ColorspaceTypes[] =
   {
     "Undefined", "RGB", "Gray", "Transparent", "OHTA", "XYZ", "YCbCr",
-    "YCC", "YIQ", "YPbPr", "YUV", "CMYK", "sRGB", "HSL", (char *) NULL
+    "YCC", "YIQ", "YPbPr", "YUV", "CMYK", "sRGB", "HSL", "HWB", (char *) NULL
   },
   *CompositeTypes[] =
   {

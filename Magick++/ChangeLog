@@ -1,3 +1,8 @@
+2003-01-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Magick++/Include.h: Add HSL and HWB colorspace
+ 	transformation support.
+
 2003-01-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Image.cpp (colorSpace): Support colorspace transforms

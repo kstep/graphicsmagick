@@ -2508,7 +2508,7 @@ MagickExport unsigned int PushImagePixels(Image *image,
               }
             break;
           }
-        if (image->depth <= 8)
+        if (image->depth <= 16)
           {
             for (x = (long) number_pixels; x > 0; --x)
               {

@@ -121,6 +121,7 @@ extern MagickExport int
 
 extern MagickExport size_t
   ReadBlob(Image *,const size_t,void *),
+  ReadBlobZC(Image *,const size_t,void **),
   WriteBlob(Image *,const size_t,const void *),
   WriteBlobByte(Image *,const unsigned long),
   WriteBlobLSBLong(Image *,const unsigned long),

@@ -59,6 +59,7 @@
 #include "color.h"
 #include "constitute.h"
 #include "cache.h"
+#include "log.h"
 #include "magick.h"
 #include "monitor.h"
 #include "utility.h"
@@ -147,6 +148,526 @@ static unsigned int IsMIFF(const unsigned char *magick,const size_t length)
 %
 %
 */
+
+static const char* ClassTypeToString(const ClassType class_type)
+{
+  const char
+    *log_class_type="Unknown";
+
+  switch (class_type)
+    {
+    case UndefinedClass:
+      log_class_type="Undefined";
+      break;
+    case DirectClass:
+      log_class_type="Direct";
+      break;
+    case PseudoClass:
+      log_class_type="Pseudo";
+      break;
+    }
+  return log_class_type;
+}
+
+static const char* CompressionTypeToString(const CompressionType compression_type)
+{
+  const char
+    *log_compression_type="Unknown";
+
+  switch (compression_type)
+    {
+    case UndefinedCompression:
+      log_compression_type="Undefined";
+      break;
+    case NoCompression:
+      log_compression_type="No";
+      break;
+    case BZipCompression:
+      log_compression_type="BZip";
+      break;
+    case FaxCompression:
+      log_compression_type="Fax";
+      break;
+    case Group4Compression:
+      log_compression_type="Group4";
+      break;
+    case JPEGCompression:
+      log_compression_type="JPEG";
+      break;
+    case LosslessJPEGCompression:
+      log_compression_type="Lossless JPEG";
+      break;
+    case LZWCompression:
+      log_compression_type="LZW";
+      break;
+    case RLECompression:
+      log_compression_type="RLE";
+      break;
+    case ZipCompression:
+      log_compression_type="Zip";
+      break;
+    }
+  return log_compression_type;
+}
+
+static unsigned int PushImageRLEPixels(Image *image,
+ const QuantumType quantum_type,const unsigned char *source)
+{
+
+  register const unsigned char
+    *p;
+
+  register unsigned int
+    quantum;
+
+  register int
+    length;
+
+  register IndexPacket
+    index,
+    *indexes;
+
+  register long
+    x;
+
+  register PixelPacket
+    pixel;
+
+  register PixelPacket
+    *q;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  assert(source != (const unsigned char *) NULL);
+
+  p=source;
+  q=GetPixels(image);
+  length=0;
+  index=0;
+  indexes=GetIndexes(image);
+
+  pixel.red=0;
+  pixel.green=0;
+  pixel.blue=0;
+  pixel.opacity=TransparentOpacity;
+  
+  switch (quantum_type)
+    {
+    case IndexQuantum:
+      {
+        /*
+          PseudoClass
+        */
+        switch (image->depth)
+          {
+          case 8:
+            {
+              for (x=(long) image->columns; x > 0; x--)
+                {
+                  if (length == 0)
+                    {
+                      index=(*p++);
+                      VerifyColormapIndex(image,index);
+                      pixel=image->colormap[index];
+                      length=(*p++)+1;
+                    }
+                  length--;
+                  *indexes++=index;
+                  *q++=pixel;
+                }
+              break;
+            }
+          case 16:
+            {
+              for (x=(long) image->columns; x > 0; x--)
+                {
+                  if (length == 0)
+                    {
+                      index=(*p++ << 8);
+                      index|=(*p++);
+                      VerifyColormapIndex(image,index);
+                      pixel=image->colormap[index];
+                      length=(*p++)+1;
+                    }
+                  length--;
+                  *indexes++=index;
+                  *q++=pixel;
+                }
+              break;
+            }
+          case 32:
+            {
+              for (x=(long) image->columns; x > 0; x--)
+                {
+                  if (length == 0)
+                    {
+                      index=(*p++ << 24);
+                      index|=(*p++ << 16);
+                      index|=(*p++ << 8);
+                      index|=(*p++);
+                      VerifyColormapIndex(image,index);
+                      pixel=image->colormap[index];
+                      length=(*p++)+1;
+                    }
+                  length--;
+                  *indexes++=index;
+                  *q++=pixel;
+                }
+            }
+            break;
+          }
+        break;
+      }
+    case CMYKAQuantum:
+      {
+        /*
+          Directclass CMYK & matte
+        */
+        switch (image->depth)
+          {
+          case 8:
+            {
+              for (x=(long) image->columns; x > 0; x--)
+                {
+                  if (length == 0)
+                    {
+                      pixel.red=ScaleCharToQuantum(*p++);
+                      pixel.green=ScaleCharToQuantum(*p++);
+                      pixel.blue=ScaleCharToQuantum(*p++);
+                      pixel.opacity=ScaleCharToQuantum(*p++);
+                      index=(IndexPacket) ScaleCharToQuantum(*p++);
+                      length=(*p++)+1;
+                    }
+                  length--;
+                  *indexes++=index;
+                  *q++=pixel;
+                }
+              break;
+            }
+          case 16:
+            {
+              for (x=(long) image->columns; x > 0; x--)
+                {
+                  if (length == 0)
+                    {
+                      quantum=(*p++ << 8);
+                      quantum|=(*p++);
+                      pixel.red=ScaleShortToQuantum(quantum);
+                      quantum=(*p++ << 8);
+                      quantum|=(*p++);
+                      pixel.green=ScaleShortToQuantum(quantum);
+                      quantum=(*p++ << 8);
+                      quantum|=(*p++);
+                      pixel.blue=ScaleShortToQuantum(quantum);
+                      quantum=(*p++ << 8);
+                      quantum|=(*p++);
+                      pixel.opacity=ScaleShortToQuantum(quantum);
+                      quantum=(*p++ << 8);
+                      quantum|=(*p++);
+                      index=ScaleShortToQuantum(quantum);
+                      length=(*p++)+1;
+                    }
+                  length--;
+                  *indexes++=index;
+                  *q++=pixel;
+                }
+              break;
+            }
+          case 32:
+            {
+              for (x=(long) image->columns; x > 0; x--)
+                {
+                  if (length == 0)
+                    {
+                      quantum=(*p++ << 24);
+                      quantum|=(*p++ << 16);
+                      quantum|=(*p++ << 8);
+                      quantum|=(*p++);
+                      pixel.red=ScaleLongToQuantum(quantum);
+                      quantum=(*p++ << 24);
+                      quantum|=(*p++ << 16);
+                      quantum|=(*p++ << 8);
+                      quantum|=(*p++);
+                      pixel.green=ScaleLongToQuantum(quantum);
+                      quantum=(*p++ << 24);
+                      quantum|=(*p++ << 16);
+                      quantum|=(*p++ << 8);
+                      quantum|=(*p++);
+                      pixel.blue=ScaleLongToQuantum(quantum);
+                      quantum=(*p++ << 24);
+                      quantum|=(*p++ << 16);
+                      quantum|=(*p++ << 8);
+                      quantum|=(*p++);
+                      pixel.opacity=ScaleLongToQuantum(quantum);
+                      quantum=(*p++ << 24);
+                      quantum|=(*p++ << 16);
+                      quantum|=(*p++ << 8);
+                      quantum|=(*p++);
+                      index=(IndexPacket) ScaleLongToQuantum(quantum);
+                      length=(*p++)+1;
+                    }
+                  length--;
+                  indexes[x]=index;
+                  *q++=pixel;
+                }
+              break;
+            }
+          }
+        break;
+      }
+    case CMYKQuantum:
+      {
+        /*
+          Directclass CMYK without matte
+        */
+        switch (image->depth)
+          {
+          case 8:
+            {
+              for (x=(long) image->columns; x > 0; x--)
+                {
+                  if (length == 0)
+                    {
+                      pixel.red=ScaleCharToQuantum(*p++);
+                      pixel.green=ScaleCharToQuantum(*p++);
+                      pixel.blue=ScaleCharToQuantum(*p++);
+                      pixel.opacity=ScaleCharToQuantum(*p++);
+                      length=(*p++)+1;
+                    }
+                  length--;
+                  *q++=pixel;
+                }
+              break;
+            }
+          case 16:
+            {
+              for (x=(long) image->columns; x > 0; x--)
+                {
+                  if (length == 0)
+                    {
+                      quantum=(*p++ << 8);
+                      quantum|=(*p++);
+                      pixel.red=ScaleShortToQuantum(quantum);
+                      quantum=(*p++ << 8);
+                      quantum|=(*p++);
+                      pixel.green=ScaleShortToQuantum(quantum);
+                      quantum=(*p++ << 8);
+                      quantum|=(*p++);
+                      pixel.blue=ScaleShortToQuantum(quantum);
+                      quantum=(*p++ << 8);
+                      quantum|=(*p++);
+                      pixel.opacity=ScaleShortToQuantum(quantum);
+                      length=(*p++)+1;
+                    }
+                  length--;
+                  *q++=pixel;
+                }
+              break;
+            }
+          case 32:
+            {
+              for (x=(long) image->columns; x > 0; x--)
+                {
+                  if (length == 0)
+                    {
+                      quantum=(*p++ << 24);
+                      quantum|=(*p++ << 16);
+                      quantum|=(*p++ << 8);
+                      quantum|=(*p++);
+                      pixel.red=ScaleLongToQuantum(quantum);
+                      quantum=(*p++ << 24);
+                      quantum|=(*p++ << 16);
+                      quantum|=(*p++ << 8);
+                      quantum|=(*p++);
+                      pixel.green=ScaleLongToQuantum(quantum);
+                      quantum=(*p++ << 24);
+                      quantum|=(*p++ << 16);
+                      quantum|=(*p++ << 8);
+                      quantum|=(*p++);
+                      pixel.blue=ScaleLongToQuantum(quantum);
+                      quantum=(*p++ << 24);
+                      quantum|=(*p++ << 16);
+                      quantum|=(*p++ << 8);
+                      quantum|=(*p++);
+                      pixel.opacity=ScaleLongToQuantum(quantum);
+                      length=(*p++)+1;
+                    }
+                  length--;
+                  *q++=pixel;
+                }
+              break;
+            }
+          }
+        break;
+      }
+    case RGBAQuantum:
+      {
+        /*
+          Directclass RGB with matte
+        */
+        switch (image->depth)
+          {
+          case 8:
+            {
+              for (x=(long) image->columns; x > 0; x--)
+                {
+                  if (length == 0)
+                    {
+                      pixel.red=ScaleCharToQuantum(*p++);
+                      pixel.green=ScaleCharToQuantum(*p++);
+                      pixel.blue=ScaleCharToQuantum(*p++);
+                      pixel.opacity=ScaleCharToQuantum(*p++);
+                      length=(*p++)+1;
+                    }
+                  length--;
+                  *q++=pixel;
+                }
+              break;
+            }
+          case 16:
+            {
+              for (x=(long) image->columns; x > 0; x--)
+                {
+                  if (length == 0)
+                    {
+                      quantum=(*p++ << 8);
+                      quantum|=(*p++);
+                      pixel.red=ScaleShortToQuantum(quantum);
+                      quantum=(*p++ << 8);
+                      quantum|=(*p++);
+                      pixel.green=ScaleShortToQuantum(quantum);
+                      quantum=(*p++ << 8);
+                      quantum|=(*p++);
+                      pixel.blue=ScaleShortToQuantum(quantum);
+                      quantum=(*p++ << 8);
+                      quantum|=(*p++);
+                      pixel.opacity=ScaleShortToQuantum(quantum);
+                      length=(*p++)+1;
+                    }
+                  length--;
+                  *q++=pixel;
+                }
+              break;
+            }
+          case 32:
+            {
+              for (x=(long) image->columns; x > 0; x--)
+                {
+                  if (length == 0)
+                    {
+                      quantum=(*p++ << 24);
+                      quantum|=(*p++ << 16);
+                      quantum|=(*p++ << 8);
+                      quantum|=(*p++);
+                      pixel.red=ScaleLongToQuantum(quantum);
+                      quantum=(*p++ << 24);
+                      quantum|=(*p++ << 16);
+                      quantum|=(*p++ << 8);
+                      quantum|=(*p++);
+                      pixel.green=ScaleLongToQuantum(quantum);
+                      quantum=(*p++ << 24);
+                      quantum|=(*p++ << 16);
+                      quantum|=(*p++ << 8);
+                      quantum|=(*p++);
+                      pixel.blue=ScaleLongToQuantum(quantum);
+                      quantum=(*p++ << 24);
+                      quantum|=(*p++ << 16);
+                      quantum|=(*p++ << 8);
+                      quantum|=(*p++);
+                      pixel.opacity=ScaleLongToQuantum(quantum);
+                      length=(*p++)+1;
+                    }
+                  length--;
+                  *q++=pixel;
+                }
+              break;
+            }
+          }
+        break;
+      }
+    case RGBQuantum:
+      {
+        /*
+          Directclass RGB without matte
+        */
+        switch (image->depth)
+          {
+          case 8:
+            {
+              for (x=(long) image->columns; x > 0; x--)
+                {
+                  if (length == 0)
+                    {
+                      pixel.red=ScaleCharToQuantum(*p++);
+                      pixel.green=ScaleCharToQuantum(*p++);
+                      pixel.blue=ScaleCharToQuantum(*p++);
+                      length=(*p++)+1;
+                    }
+                  length--;
+                  *q++=pixel;
+                }
+              break;
+            }
+          case 16:
+            {
+              for (x=(long) image->columns; x > 0; x--)
+                {
+                  if (length == 0)
+                    {
+                      quantum=(*p++ << 8);
+                      quantum|=(*p++);
+                      pixel.red=ScaleShortToQuantum(quantum);
+                      quantum=(*p++ << 8);
+                      quantum|=(*p++);
+                      pixel.green=ScaleShortToQuantum(quantum);
+                      quantum=(*p++ << 8);
+                      quantum|=(*p++);
+                      pixel.blue=ScaleShortToQuantum(quantum);
+                      length=(*p++)+1;
+                    }
+                  length--;
+                  *q++=pixel;
+                }
+              break;
+            }
+          case 32:
+            {
+              for (x=(long) image->columns; x > 0; x--)
+                {
+                  if (length == 0)
+                    {
+                      quantum=(*p++ << 24);
+                      quantum|=(*p++ << 16);
+                      quantum|=(*p++ << 8);
+                      quantum|=(*p++);
+                      pixel.red=ScaleLongToQuantum(quantum);
+                      quantum=(*p++ << 24);
+                      quantum|=(*p++ << 16);
+                      quantum|=(*p++ << 8);
+                      quantum|=(*p++);
+                      pixel.green=ScaleLongToQuantum(quantum);
+                      quantum=(*p++ << 24);
+                      quantum|=(*p++ << 16);
+                      quantum|=(*p++ << 8);
+                      quantum|=(*p++);
+                      pixel.blue=ScaleLongToQuantum(quantum);
+                      length=ReadBlobByte(image)+1;
+                    }
+                  length--;
+                  *q++=pixel;
+                }
+            }
+            break;
+          }
+        break;
+      }
+    default:
+      {
+      }
+    }
+  return(True);
+}
+
 static Image *ReadMIFFImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
@@ -177,9 +698,6 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
   long
     y;
 
-  PixelPacket
-    pixel;
-
   QuantumType
     quantum_type;
 
@@ -187,8 +705,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
     *indexes;
 
   register long
-    i,
-    x;
+    i;
 
   register PixelPacket
     *q;
@@ -198,7 +715,8 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
 
   unsigned char
     *compress_pixels,
-    *pixels;
+    *pixels,
+    *pixels_p;
 
   unsigned int
     status;
@@ -675,6 +1193,12 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
         (image->compression == UndefinedCompression) || (image->columns == 0) ||
         (image->rows == 0))
       ThrowReaderException(CorruptImageError,"ImproperImageHeader",image);
+
+    LogMagickEvent(CoderEvent,GetMagickModule(),
+      "class=%sClass compression=%s matte=%s columns=%lu rows=%lu depth=%lu",
+      ClassTypeToString(image->storage_class),
+      CompressionTypeToString(image->compression),
+      image->matte ? "True" : "False",image->columns, image->rows, image->depth);
     if (image->montage != (char *) NULL)
       {
         register char
@@ -750,6 +1274,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
             image->generic_profile[i].info);
         }
       }
+
     if (image->storage_class == PseudoClass)
       {
         /*
@@ -849,205 +1374,145 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
         quantum_type=image->matte ? RGBAQuantum : RGBQuantum;
     index=0;
     length=0;
-    for (y=0; y < (long) image->rows; y++)
-    {
-      q=SetImagePixels(image,0,y,image->columns,1);
-      if (q == (PixelPacket *) NULL)
-        break;
-      indexes=GetIndexes(image);
-      switch (image->compression)
+    switch (image->compression)
       {
 #if defined(HasZLIB)
-        case ZipCompression:
+      case ZipCompression:
         {
-          if (y == 0)
+          for (y=0; y < (long) image->rows; y++)
             {
-              zip_info.zalloc=(alloc_func) NULL;
-              zip_info.zfree=(free_func) NULL;
-              zip_info.opaque=(voidpf) NULL;
-              code=inflateInit(&zip_info);
-              status|=code >= 0;
-              zip_info.avail_in=0;
+              q=SetImagePixels(image,0,y,image->columns,1);
+              if (q == (PixelPacket *) NULL)
+                break;
+              indexes=GetIndexes(image);
+              if (y == 0)
+                {
+                  zip_info.zalloc=(alloc_func) NULL;
+                  zip_info.zfree=(free_func) NULL;
+                  zip_info.opaque=(voidpf) NULL;
+                  code=inflateInit(&zip_info);
+                  status|=code >= 0;
+                  zip_info.avail_in=0;
+                }
+              zip_info.next_out=pixels;
+              zip_info.avail_out=(uInt) (packet_size*image->columns);
+              do
+                {
+                  if (zip_info.avail_in == 0)
+                    {
+                      zip_info.next_in=compress_pixels;
+                      length=(int) (1.01*packet_size*image->columns+12);
+                      if (version != 0)
+                        length=ReadBlobMSBLong(image);
+                      zip_info.avail_in=ReadBlob(image,length,zip_info.next_in);
+                    }
+                  if (inflate(&zip_info,Z_NO_FLUSH) == Z_STREAM_END)
+                    break;
+                } while (zip_info.avail_out != 0);
+              if (y == (long) (image->rows-1))
+                {
+                  if (version == 0)
+                    (void) SeekBlob(image,-((ExtendedSignedIntegralType)
+                                            zip_info.avail_in),SEEK_CUR);
+                  code=inflateEnd(&zip_info);
+                  status|=code >= 0;
+                }
+              (void) PushImagePixels(image,quantum_type,pixels);
+              if (!SyncImagePixels(image))
+                break;
             }
-          zip_info.next_out=pixels;
-          zip_info.avail_out=(uInt) (packet_size*image->columns);
-          do
-          {
-            if (zip_info.avail_in == 0)
-              {
-                zip_info.next_in=compress_pixels;
-                length=(int) (1.01*packet_size*image->columns+12);
-                if (version != 0)
-                  length=ReadBlobMSBLong(image);
-                zip_info.avail_in=ReadBlob(image,length,zip_info.next_in);
-              }
-            if (inflate(&zip_info,Z_NO_FLUSH) == Z_STREAM_END)
-              break;
-          } while (zip_info.avail_out != 0);
-          if (y == (long) (image->rows-1))
-            {
-              if (version == 0)
-                (void) SeekBlob(image,-((ExtendedSignedIntegralType)
-                  zip_info.avail_in),SEEK_CUR);
-              code=inflateEnd(&zip_info);
-              status|=code >= 0;
-            }
-          (void) PushImagePixels(image,quantum_type,pixels);
           break;
-        }
+        } /* End case ZipCompression */
 #endif
 #if defined(HasBZLIB)
-        case BZipCompression:
+      case BZipCompression:
         {
-          if (y == 0)
+          for (y=0; y < (long) image->rows; y++)
             {
-              bzip_info.bzalloc=NULL;
-              bzip_info.bzfree=NULL;
-              bzip_info.opaque=NULL;
-              code=BZ2_bzDecompressInit(&bzip_info,image_info->verbose,False);
-              status|=code >= 0;
-              bzip_info.avail_in=0;
+              q=SetImagePixels(image,0,y,image->columns,1);
+              if (q == (PixelPacket *) NULL)
+                break;
+              indexes=GetIndexes(image);
+              if (y == 0)
+                {
+                  bzip_info.bzalloc=NULL;
+                  bzip_info.bzfree=NULL;
+                  bzip_info.opaque=NULL;
+                  code=BZ2_bzDecompressInit(&bzip_info,image_info->verbose,False);
+                  status|=code >= 0;
+                  bzip_info.avail_in=0;
+                }
+              bzip_info.next_out=(char *) pixels;
+              bzip_info.avail_out=(unsigned int) (packet_size*image->columns);
+              do
+                {
+                  if (bzip_info.avail_in == 0)
+                    {
+                      bzip_info.next_in=(char *) compress_pixels;
+                      length=(int) (1.01*packet_size*image->columns+600);
+                      if (version != 0)
+                        length=ReadBlobMSBLong(image);
+                      bzip_info.avail_in=ReadBlob(image,length,bzip_info.next_in);
+                    }
+                  if (BZ2_bzDecompress(&bzip_info) == BZ_STREAM_END)
+                    break;
+                } while (bzip_info.avail_out != 0);
+              if (y == (long) (image->rows-1))
+                {
+                  if (version == 0)
+                    (void) SeekBlob(image,-((ExtendedSignedIntegralType)
+                                            bzip_info.avail_in),SEEK_CUR);
+                  code=BZ2_bzDecompressEnd(&bzip_info);
+                  status|=code >= 0;
+                }
+              (void) PushImagePixels(image,quantum_type,pixels);
+              if (!SyncImagePixels(image))
+                break;
             }
-          bzip_info.next_out=(char *) pixels;
-          bzip_info.avail_out=(unsigned int) (packet_size*image->columns);
-          do
-          {
-            if (bzip_info.avail_in == 0)
-              {
-                bzip_info.next_in=(char *) compress_pixels;
-                length=(int) (1.01*packet_size*image->columns+600);
-                if (version != 0)
-                  length=ReadBlobMSBLong(image);
-                bzip_info.avail_in=ReadBlob(image,length,bzip_info.next_in);
-              }
-            if (BZ2_bzDecompress(&bzip_info) == BZ_STREAM_END)
-              break;
-          } while (bzip_info.avail_out != 0);
-          if (y == (long) (image->rows-1))
-            {
-              if (version == 0)
-                (void) SeekBlob(image,-((ExtendedSignedIntegralType)
-                  bzip_info.avail_in),SEEK_CUR);
-              code=BZ2_bzDecompressEnd(&bzip_info);
-              status|=code >= 0;
-            }
-          (void) PushImagePixels(image,quantum_type,pixels);
           break;
-        }
+        } /* End case BZipCompression */
 #endif
-        case RLECompression:
+      case RLECompression:
         {
-          if (y == 0)
+          for (y=0; y < (long) image->rows; y++)
             {
-              (void) memset(&pixel,0,sizeof(PixelPacket));
-              pixel.opacity=TransparentOpacity;
+              q=SetImagePixels(image,0,y,image->columns,1);
+              if (q == (PixelPacket *) NULL)
+                break;
+              indexes=GetIndexes(image);
+              /*
+                Collect one pixel row
+              */
+              p=pixels;
+              for (length=0; length < image->columns; )
+                {
+                  p+=ReadBlob(image,packet_size,p);
+                  length+=*(p-1)+1;
+                }
+
+              (void) PushImageRLEPixels(image,quantum_type,pixels);
+              if (!SyncImagePixels(image))
+                break;
             }
-          p=pixels;
-          for (x=0; x < (long) image->columns; x++)
-          {
-            if (length == 0)
-              {
-                if (image->storage_class != DirectClass)
-                  {
-                    index=ReadBlobByte(image);
-                    if (image->depth > 8)
-                      index=(index << 8)+ReadBlobByte(image);
-                    if (image->depth > 16)
-                      {
-                        index=(index << 8)+ReadBlobByte(image);
-                        index=(index << 8)+ReadBlobByte(image);
-                      }
-                    if (index >= image->colors)
-                      {
-                        ThrowException(&image->exception,CorruptImageError,
-                          "InvalidColormapIndex",image->filename);
-                        index=0;
-                      }
-                    pixel=image->colormap[index];
-                  }
-                else
-                  {
-                    if (image->depth <= 8)
-                      {
-                        pixel.red=ScaleCharToQuantum(ReadBlobByte(image));
-                        pixel.green=ScaleCharToQuantum(ReadBlobByte(image));
-                        pixel.blue=ScaleCharToQuantum(ReadBlobByte(image));
-                        if (image->colorspace == CMYKColorspace)
-                          {
-                            pixel.opacity=
-                              ScaleCharToQuantum(ReadBlobByte(image));
-                            if (image->matte)
-                              index=ScaleCharToQuantum(ReadBlobByte(image));
-                          }
-                        else
-                          if (image->matte)
-                            pixel.opacity=
-                              ScaleCharToQuantum(ReadBlobByte(image));
-                      }
-                    else
-                      if (image->depth <= 16)
-                        {
-                          pixel.red=ReadBlobMSBShort(image) >>
-                            (image->depth-QuantumDepth);
-                          pixel.green=ReadBlobMSBShort(image) >>
-                            (image->depth-QuantumDepth);
-                          pixel.blue=ReadBlobMSBShort(image) >>
-                            (image->depth-QuantumDepth);
-                          if (image->colorspace == CMYKColorspace)
-                            {
-                              pixel.opacity=(ReadBlobMSBShort(image) >>
-                                (image->depth-QuantumDepth));
-                              if (image->matte)
-                                index=(ReadBlobMSBShort(image) >>
-                                  (image->depth-QuantumDepth));
-                            }
-                          else
-                            if (image->matte)
-                              pixel.opacity=(ReadBlobMSBShort(image) >>
-                                (image->depth-QuantumDepth));
-                        }
-                      else
-                        {
-                          pixel.red=(Quantum) (ReadBlobMSBLong(image) >>
-                            (image->depth-QuantumDepth));
-                          pixel.green=(Quantum) (ReadBlobMSBLong(image) >>
-                            (image->depth-QuantumDepth));
-                          pixel.blue=(Quantum) (ReadBlobMSBLong(image) >>
-                            (image->depth-QuantumDepth));
-                          if (image->colorspace == CMYKColorspace)
-                            {
-                              pixel.opacity=(Quantum) (ReadBlobMSBLong(image) >>
-                                (image->depth-QuantumDepth));
-                              if (image->matte)
-                                index=(IndexPacket) (ReadBlobMSBLong(image) >>
-                                  (image->depth-QuantumDepth));
-                            }
-                          else
-                            if (image->matte)
-                              pixel.opacity=(Quantum) (ReadBlobMSBLong(image) >>
-                                (image->depth-QuantumDepth));
-                        }
-                  }
-                length=ReadBlobByte(image)+1;
-              }
-            length--;
-            if ((image->storage_class == PseudoClass) ||
-                (image->colorspace == CMYKColorspace))
-              indexes[x]=index;
-            *q++=pixel;
-          }
           break;
-        }
-        default:
+        } /* End case RLECompression */
+      default:
         {
-          (void) ReadBlob(image,packet_size*image->columns,pixels);
-          (void) PushImagePixels(image,quantum_type,pixels);
+          for (y=0; y < (long) image->rows; y++)
+            {
+              q=SetImagePixels(image,0,y,image->columns,1);
+              if (q == (PixelPacket *) NULL)
+                break;
+              indexes=GetIndexes(image);
+              pixels_p=pixels;
+              (void) ReadBlobZC(image,packet_size*image->columns,(void **)&pixels_p);
+              (void) PushImagePixels(image,quantum_type,pixels_p);
+              if (!SyncImagePixels(image))
+                break;
+            }
           break;
         }
-      }
-      if (!SyncImagePixels(image))
-        break;
-    }
+      } /* End switch (image->compression) */
     LiberateMemory((void **) &pixels);
     LiberateMemory((void **) &compress_pixels);
     if (status == False)

@@ -4244,15 +4244,23 @@ static void TraceArc(PrimitiveInfo *primitive_info,const PointInfo start,
   for (i=0; i < (long) arc_segments; i++)
   {
     beta=0.5*((alpha+(i+1)*theta/arc_segments)-(alpha+i*theta/arc_segments));
-    gamma=(8.0/3.0)*sin(0.5*beta)*sin(0.5*beta)/sin(beta);
-    points[0].x=center.x+cos((alpha+i*theta/arc_segments))-
-      gamma*sin((alpha+i*theta/arc_segments));
-    points[0].y=center.y+sin((alpha+i*theta/arc_segments))+
-      gamma*cos((alpha+i*theta/arc_segments));
-    points[2].x=center.x+cos((alpha+(i+1)*theta/arc_segments));
-    points[2].y=center.y+sin((alpha+(i+1)*theta/arc_segments));
-    points[1].x=points[2].x+gamma*sin((alpha+(i+1)*theta/arc_segments));
-    points[1].y=points[2].y-gamma*cos((alpha+(i+1)*theta/arc_segments));
+    gamma=(8.0/3.0)*sin(fmod(0.5*beta,DegreesToRadians(360.0)))*
+      sin(fmod(0.5*beta,DegreesToRadians(360.0)))/
+      sin(fmod(beta,DegreesToRadians(360.0)));
+    points[0].x=center.x+
+      cos(fmod(alpha+i*theta/arc_segments,DegreesToRadians(360.0)))-gamma*
+      sin(fmod(alpha+i*theta/arc_segments,DegreesToRadians(360.0)));
+    points[0].y=center.y+
+      sin(fmod(alpha+i*theta/arc_segments,DegreesToRadians(360.0)))+gamma*
+      cos(fmod(alpha+i*theta/arc_segments,DegreesToRadians(360.0)));
+    points[2].x=center.x+
+      cos(fmod(alpha+(i+1)*theta/arc_segments,DegreesToRadians(360.0)));
+    points[2].y=center.y+
+      sin(fmod(alpha+(i+1)*theta/arc_segments,DegreesToRadians(360.0)));
+    points[1].x=points[2].x+gamma*
+      sin(fmod(alpha+(i+1)*theta/arc_segments,DegreesToRadians(360.0)));
+    points[1].y=points[2].y-gamma*
+      cos(fmod(alpha+(i+1)*theta/arc_segments,DegreesToRadians(360.0)));
     p->point.x=(p == primitive_info) ? start.x : (p-1)->point.x;
     p->point.y=(p == primitive_info) ? start.y : (p-1)->point.y;
     (p+1)->point.x=cosine*radii.x*points[0].x-sine*radii.y*points[0].y;
@@ -4408,7 +4416,7 @@ static void TraceEllipse(PrimitiveInfo *primitive_info,const PointInfo start,
   /*
     Ellipses are just short segmented polys.
   */
-  delta=2/Max(stop.x,stop.y);
+  delta=2.0/Max(stop.x,stop.y);
   step=MagickPI/8.0;
   if (delta < (MagickPI/8.0))
     step=MagickPI/(4*ceil(MagickPI/delta/2));
@@ -4417,16 +4425,15 @@ static void TraceEllipse(PrimitiveInfo *primitive_info,const PointInfo start,
   while (y < degrees.x)
     y+=360.0;
   angle.y=DegreesToRadians(y);
-  p=primitive_info;
-  for ( ; angle.x < angle.y; angle.x+=step)
+  for (p=primitive_info; angle.x < angle.y; angle.x+=step)
   {
-    point.x=cos(angle.x)*stop.x+start.x;
-    point.y=sin(angle.x)*stop.y+start.y;
+    point.x=cos(fmod(angle.x,DegreesToRadians(360.0)))*stop.x+start.x;
+    point.y=sin(fmod(angle.x,DegreesToRadians(360.0)))*stop.y+start.y;
     TracePoint(p,point);
     p+=p->coordinates;
   }
-  point.x=cos(angle.y)*stop.x+start.x;
-  point.y=sin(angle.y)*stop.y+start.y;
+  point.x=cos(fmod(angle.y,DegreesToRadians(360.0)))*stop.x+start.x;
+  point.y=sin(fmod(angle.y,DegreesToRadians(360.0)))*stop.y+start.y;
   TracePoint(p,point);
   p+=p->coordinates;
   primitive_info->coordinates=p-primitive_info;
@@ -5216,8 +5223,10 @@ static PrimitiveInfo *TraceStrokePolygon(const DrawInfo *draw_info,
           for (j=1; j < arc_segments; j++)
           {
             delta_theta=j*(theta.q-theta.p)/arc_segments;
-            path_q[q].x=center.x+mid*cos(theta.p+delta_theta);
-            path_q[q].y=center.y+mid*sin(theta.p+delta_theta);
+            path_q[q].x=center.x+mid*
+              cos(fmod(theta.p+delta_theta,DegreesToRadians(360.0)));
+            path_q[q].y=center.y+mid*
+              sin(fmod(theta.p+delta_theta,DegreesToRadians(360.0)));
             q++;
           }
           path_q[q++]=box_q[2];
@@ -5283,8 +5292,10 @@ static PrimitiveInfo *TraceStrokePolygon(const DrawInfo *draw_info,
           for (j=1; j < arc_segments; j++)
           {
             delta_theta=j*(theta.q-theta.p)/arc_segments;
-            path_p[p].x=center.x+mid*cos(theta.p+delta_theta);
-            path_p[p].y=center.y+mid*sin(theta.p+delta_theta);
+            path_p[p].x=center.x+mid*
+              cos(fmod(theta.p+delta_theta,DegreesToRadians(360.0)));
+            path_p[p].y=center.y+mid*
+              sin(fmod(theta.p+delta_theta,DegreesToRadians(360.0)));
             p++;
           }
           path_p[p++]=box_p[2];

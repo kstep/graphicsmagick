@@ -257,6 +257,7 @@ MagickExport void GetMontageInfo(const ImageInfo *image_info,
 extern "C" {
 #endif
 
+
 static int SceneCompare(const void *x,const void *y)
 {
   Image

@@ -1846,6 +1846,7 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
                   unsigned char
                     magick[MaxTextExtent];
 
+                  setvbuf(image->blob->file,NULL,_IOFBF,16384);
                   image->blob->type=FileStream;
                   (void) fread(magick,MaxTextExtent,1,image->blob->file);
                   (void) rewind(image->blob->file);
@@ -2042,6 +2043,7 @@ MagickExport size_t ReadBlob(Image *image,const size_t length,void *data)
   assert(image->blob != (BlobInfo *) NULL);
   assert(image->blob->type != UndefinedStream);
   assert(data != (void *) NULL);
+
   count=0;
   switch (image->blob->type)
   {
@@ -2072,10 +2074,118 @@ MagickExport size_t ReadBlob(Image *image,const size_t length,void *data)
       break;
     case BlobStream:
     {
+      void
+        *source;
+
+      source=image->blob->data+image->blob->offset;
       count=Min(length,image->blob->length-image->blob->offset);
-      if (count != 0)
-        (void) memcpy(data,image->blob->data+image->blob->offset,count);
+ 
+      if (count <= 10)
+        {
+          register size_t
+            i;
+
+          for(i=count; i > 0; i--)
+            *(unsigned char*)data++=*(const unsigned char*)source++;
+        }
+      else 
+        (void) memcpy(data,source,count);
       image->blob->offset+=count;
+      if (count < length)
+        image->blob->eof=True;
+      break;
+    }
+  }
+  return(count);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++  R e a d B l o b Z C                                                        %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ReadBlobZC() reads data from the blob or image file and returns it.  It
+%  returns the number of bytes read.  Provision is made for a "zero-copy"
+%  transfer if the blob data is already in memory.
+%
+%  This method is currently EXPERIMENTAL!
+%
+%  The format of the ReadBlob method is:
+%
+%      size_t ReadBlob(Image *image,const size_t length,void *data)
+%
+%  A description of each parameter follows:
+%
+%    o count:  Method ReadBlob returns the number of bytes read.
+%
+%    o image: The image.
+%
+%    o length:  Specifies an integer representing the number of bytes
+%      to read from the file.
+%
+%    o data:  Specifies an area to place the information requested from
+%      the file.  If the data may be accessed without a copy, then
+%      the provided pointer is updated to point to the location of
+%      the data in memory, and no copy is performed.
+%
+%
+*/
+MagickExport  size_t ReadBlobZC(Image *image,const size_t length,void **data)
+{
+  size_t
+    count;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  assert(image->blob != (BlobInfo *) NULL);
+  assert(image->blob->type != UndefinedStream);
+  assert(data != (void *) NULL);
+  assert(*data != (void *) NULL);
+
+  count=0;
+  switch (image->blob->type)
+  {
+    case UndefinedStream:
+      break;
+    case FileStream:
+    case StandardStream:
+    case PipeStream:
+    {
+      count=fread(*data,1,length,image->blob->file);
+      break;
+    }
+    case ZipStream:
+    {
+#if defined(HasZLIB)
+      count=gzread(image->blob->file,*data,length);
+#endif
+      break;
+    }
+    case BZipStream:
+    {
+#if defined(HasBZLIB)
+      count=BZ2_bzread(image->blob->file,*data,length);
+#endif
+      break;
+    }
+    case FifoStream:
+      break;
+    case BlobStream:
+    {
+      void
+        *source;
+
+      source=image->blob->data+image->blob->offset;
+      count=Min(length,image->blob->length-image->blob->offset);
+      image->blob->offset+=count;
+      if (count > 0)
+        *data=source;
       if (count < length)
         image->blob->eof=True;
       break;
@@ -2115,14 +2225,16 @@ MagickExport int ReadBlobByte(Image *image)
     count;
 
   unsigned char
-    buffer[1];
+    buffer[1],
+    *buffer_p;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  count=ReadBlob(image,1,(unsigned char *) buffer);
+  buffer_p=buffer;
+  count=ReadBlobZC(image,1,(void **)&buffer_p);
   if (count == 0)
     return(EOF);
-  return(*buffer);
+  return(*buffer_p);
 }
 
 /*
@@ -2155,20 +2267,22 @@ MagickExport int ReadBlobByte(Image *image)
 MagickExport unsigned long ReadBlobLSBLong(Image *image)
 {
   unsigned char
-    buffer[4];
+    buffer[4],
+    *buffer_p;
 
   unsigned long
     value;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  value=ReadBlob(image,4,(unsigned char *) buffer);
+  buffer_p=buffer;
+  value=ReadBlobZC(image,4,(void **)&buffer_p);
   if (value == 0)
     return((unsigned long) ~0);
-  value=buffer[3] << 24;
-  value|=buffer[2] << 16;
-  value|=buffer[1] << 8;
-  value|=buffer[0];
+  value=buffer_p[3] << 24;
+  value|=buffer_p[2] << 16;
+  value|=buffer_p[1] << 8;
+  value|=buffer_p[0];
   return(value);
 }
 
@@ -2202,18 +2316,20 @@ MagickExport unsigned long ReadBlobLSBLong(Image *image)
 MagickExport unsigned short ReadBlobLSBShort(Image *image)
 {
   unsigned char
-    buffer[2];
+    buffer[2],
+    *buffer_p;
 
   unsigned short
     value;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  value=ReadBlob(image,2,(unsigned char *) buffer);
+  buffer_p=buffer;
+  value=ReadBlobZC(image,2,(void **)&buffer_p);
   if (value == 0)
     return((unsigned short) ~0);
-  value=buffer[1] << 8;
-  value|=buffer[0];
+  value=buffer_p[1] << 8;
+  value|=buffer_p[0];
   return(value);
 }
 
@@ -2248,20 +2364,22 @@ MagickExport unsigned short ReadBlobLSBShort(Image *image)
 MagickExport unsigned long ReadBlobMSBLong(Image *image)
 {
   unsigned char
-    buffer[4];
+    buffer[4],
+    *buffer_p;
 
   unsigned long
     value;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  value=ReadBlob(image,4,(unsigned char *) buffer);
+  buffer_p=buffer;
+  value=ReadBlobZC(image,4,(void **)&buffer_p);
   if (value == 0)
     return((unsigned long) ~0);
-  value=buffer[0] << 24;
-  value|=buffer[1] << 16;
-  value|=buffer[2] << 8;
-  value|=buffer[3];
+  value=buffer_p[0] << 24;
+  value|=buffer_p[1] << 16;
+  value|=buffer_p[2] << 8;
+  value|=buffer_p[3];
   return(value);
 }
 
@@ -2295,18 +2413,20 @@ MagickExport unsigned long ReadBlobMSBLong(Image *image)
 MagickExport unsigned short ReadBlobMSBShort(Image *image)
 {
   unsigned char
-    buffer[2];
+    buffer[2],
+    *buffer_p;
 
   unsigned short
     value;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  value=ReadBlob(image,2,(unsigned char *) buffer);
+  buffer_p=buffer;
+  value=ReadBlobZC(image,2,(void **)&buffer_p);
   if (value == 0)
     return((unsigned short) ~0);
-  value=buffer[0] << 8;
-  value|=buffer[1];
+  value=buffer_p[0] << 8;
+  value|=buffer_p[1];
   return(value);
 }
 

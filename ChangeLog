@@ -1,4 +1,47 @@
+2003-01-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/miff.c (ReadMIFFImage): Reading RLE-compressed MIFFs is
+ 	now about 4X faster.
+
+	* magick/blob.c (OpenBlob): Use setvbuf() to increase stdio buffer
+ 	size to 16K.  Solaris default is 1K.  This should minimize system
+ 	call overhead for accessing large files.
+	(ReadBlob): "Manually" copy data rather than using memcpy() for
+ 	very small copy sizes.
+	(ReadBlobZC): New method, similar to ReadBlob, but provides the
+	opportunity for zero copy on read.
+
+	* magick/constitute.c (PushImagePixels): CMYKA case for
+ 	image->depth=16 was comparing with 8 instead.
+
+2003-01-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/utility.c (GetMagickGeometry): Removed support for '~'
+ 	and disabled centering code until we learn where it should go (if
+ 	anywhere).
+
+	* magick/command.c : Add HWB colorspace transform support.
+
+	* PerlMagick/Magick.xs: Add HWB colorspace transform support.
+
+	* magick/image.c (RGBTransformImage): Add HWB colorspace transform
+ 	support.
+	(TransformRGBImage): Add HWB colorspace transform support.
+
 2003-01-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/utility.c (GetMagickGeometry): Add support for new new
+ 	'~' geometry string flag.  This also fixes a montage bug in which
+ 	thumbnails were mis-sized if the geometry specification incuded x
+ 	or y offsets.
+
+	* magick/image.h (GeometryFlags): Added CenterValue enumeration to
+ 	correspond with new '~' geometry string flag.  Taking
+ 	ImageMagick's lead on this.
+
+	* magick/render.c: Transferred fixes from ImageMagick for an
+ 	artifact which occured at the 360 degree point when rendering
+ 	circles, ellipses, and arcs.  Bug reported by io219@attbi.com.
 
 	* PerlMagick/Magick.xs: Add HSL colorspace transform support.
 
