@@ -2203,7 +2203,7 @@ MagickExport char **StringToArgv(const char *text,int *argc)
 %
 %
 */
-MagickExport double *StringToDouble(const char *text,const double interval)
+MagickExport double StringToDouble(const char *text,const double interval)
 {
   char
     *q;
@@ -2212,7 +2212,7 @@ MagickExport double *StringToDouble(const char *text,const double interval)
     value;
 
   value=strtod(text,&q);
-  if (strchr(q,"%") != (char *) NULL)
+  if (strchr(q,'%') != (char *) NULL)
     value*=interval/100.0;
   return(value);
 }
