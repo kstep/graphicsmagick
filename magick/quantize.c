@@ -1972,7 +1972,7 @@ MagickExport unsigned int QuantizeImage(const QuantizeInfo *quantize_info,
     }
   number_colors=quantize_info->number_colors;
   if (number_colors == 0)
-    number_colors=MaxRGB+1;
+    number_colors=256;
   if (number_colors > (MaxRGB+1))
     number_colors=MaxRGB+1;
   depth=quantize_info->tree_depth;
@@ -2085,7 +2085,7 @@ MagickExport unsigned int QuantizeImages(const QuantizeInfo *quantize_info,
     }
   number_colors=quantize_info->number_colors;
   if (number_colors == 0)
-    number_colors=MaxRGB+1;
+    number_colors=256;
   if (number_colors > (MaxRGB+1))
     number_colors=MaxRGB+1;
   depth=quantize_info->tree_depth;
