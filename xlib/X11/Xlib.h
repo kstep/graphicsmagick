@@ -1494,7 +1494,7 @@ extern char *XGetDefault(
     _Xconst char*	/* option */		  
 #endif
 );
-extern char *XDisplayName(
+extern Export char *XDisplayName(
 #if NeedFunctionPrototypes
     _Xconst char*	/* string */
 #endif
@@ -2067,7 +2067,7 @@ extern void XFreeStringList(
     char**		/* list */
 #endif
 );
-extern XSetTransientForHint(
+extern int XSetTransientForHint(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     Window		/* w */,
@@ -2077,20 +2077,20 @@ extern XSetTransientForHint(
 
 /* The following are given in alphabetical order */
 
-extern XActivateScreenSaver(
+extern int XActivateScreenSaver(
 #if NeedFunctionPrototypes
     Display*		/* display */
 #endif
 );
 
-extern XAddHost(
+extern int XAddHost(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     XHostAddress*	/* host */
 #endif
 );
 
-extern XAddHosts(
+extern int XAddHosts(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     XHostAddress*	/* hosts */,
@@ -2098,14 +2098,14 @@ extern XAddHosts(
 #endif
 );
 
-extern XAddToExtensionList(
+extern int XAddToExtensionList(
 #if NeedFunctionPrototypes
     struct _XExtData**	/* structure */,
     XExtData*		/* ext_data */
 #endif
 );
 
-extern XAddToSaveSet(
+extern int XAddToSaveSet(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     Window		/* w */
@@ -2158,7 +2158,7 @@ extern Status XAllocNamedColor(
 #endif
 );
 
-extern XAllowEvents(
+extern int XAllowEvents(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     int			/* event_mode */,
@@ -2166,19 +2166,19 @@ extern XAllowEvents(
 #endif
 );
 
-extern XAutoRepeatOff(
+extern int XAutoRepeatOff(
 #if NeedFunctionPrototypes
     Display*		/* display */
 #endif
 );
 
-extern XAutoRepeatOn(
+extern int XAutoRepeatOn(
 #if NeedFunctionPrototypes
     Display*		/* display */
 #endif
 );
 
-extern XBell(
+extern int XBell(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     int			/* percent */
@@ -2209,7 +2209,7 @@ extern int XCellsOfScreen(
 #endif
 );
 
-extern XChangeActivePointerGrab(
+extern int XChangeActivePointerGrab(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     unsigned int	/* event_mask */,
@@ -2218,7 +2218,7 @@ extern XChangeActivePointerGrab(
 #endif
 );
 
-extern XChangeGC(
+extern int XChangeGC(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     GC			/* gc */,
@@ -2227,7 +2227,7 @@ extern XChangeGC(
 #endif
 );
 
-extern XChangeKeyboardControl(
+extern int XChangeKeyboardControl(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     unsigned long	/* value_mask */,
@@ -2235,7 +2235,7 @@ extern XChangeKeyboardControl(
 #endif
 );
 
-extern XChangeKeyboardMapping(
+extern int XChangeKeyboardMapping(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     int			/* first_keycode */,
@@ -2245,7 +2245,7 @@ extern XChangeKeyboardMapping(
 #endif
 );
 
-extern XChangePointerControl(
+extern int XChangePointerControl(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     Bool		/* do_accel */,
@@ -2256,7 +2256,7 @@ extern XChangePointerControl(
 #endif
 );
 
-extern XChangeProperty(
+extern int XChangeProperty(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     Window		/* w */,
@@ -2269,7 +2269,7 @@ extern XChangeProperty(
 #endif
 );
 
-extern XChangeSaveSet(
+extern int XChangeSaveSet(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     Window		/* w */,
@@ -2277,7 +2277,7 @@ extern XChangeSaveSet(
 #endif
 );
 
-extern XChangeWindowAttributes(
+extern int XChangeWindowAttributes(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     Window		/* w */,
@@ -2335,7 +2335,7 @@ extern Bool XCheckWindowEvent(
 #endif
 );
 
-extern XCirculateSubwindows(
+extern int XCirculateSubwindows(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     Window		/* w */,
@@ -2343,21 +2343,21 @@ extern XCirculateSubwindows(
 #endif
 );
 
-extern XCirculateSubwindowsDown(
+extern int XCirculateSubwindowsDown(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     Window		/* w */
 #endif
 );
 
-extern XCirculateSubwindowsUp(
+extern int XCirculateSubwindowsUp(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     Window		/* w */
 #endif
 );
 
-extern XClearArea(
+extern int XClearArea(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     Window		/* w */,
@@ -2369,20 +2369,20 @@ extern XClearArea(
 #endif
 );
 
-extern XClearWindow(
+extern int XClearWindow(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     Window		/* w */
 #endif
 );
 
-extern XCloseDisplay(
+extern Export int XCloseDisplay(
 #if NeedFunctionPrototypes
     Display*		/* display */
 #endif
 );
 
-extern XConfigureWindow(
+extern int XConfigureWindow(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     Window		/* w */,
@@ -2397,7 +2397,7 @@ extern int XConnectionNumber(
 #endif
 );
 
-extern XConvertSelection(
+extern int XConvertSelection(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     Atom		/* selection */,
@@ -2408,7 +2408,7 @@ extern XConvertSelection(
 #endif
 );
 
-extern XCopyArea(
+extern int XCopyArea(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     Drawable		/* src */,
@@ -2423,7 +2423,7 @@ extern XCopyArea(
 #endif
 );
 
-extern XCopyGC(
+extern int XCopyGC(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     GC			/* src */,
@@ -2432,7 +2432,7 @@ extern XCopyGC(
 #endif
 );
 
-extern XCopyPlane(
+extern int XCopyPlane(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     Drawable		/* src */,
@@ -2467,7 +2467,7 @@ extern int XDefaultScreen(
 #endif
 );
 
-extern XDefineCursor(
+extern int XDefineCursor(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     Window		/* w */,
@@ -2475,7 +2475,7 @@ extern XDefineCursor(
 #endif
 );
 
-extern XDeleteProperty(
+extern int XDeleteProperty(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     Window		/* w */,
@@ -2483,14 +2483,14 @@ extern XDeleteProperty(
 #endif
 );
 
-extern XDestroyWindow(
+extern int XDestroyWindow(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     Window		/* w */
 #endif
 );
 
-extern XDestroySubwindows(
+extern int XDestroySubwindows(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     Window		/* w */
@@ -2509,7 +2509,7 @@ extern Bool XDoesSaveUnders(
 #endif
 );
 
-extern XDisableAccessControl(
+extern int XDisableAccessControl(
 #if NeedFunctionPrototypes
     Display*		/* display */
 #endif
@@ -2537,7 +2537,7 @@ extern int XDisplayHeightMM(
 #endif
 );
 
-extern XDisplayKeycodes(
+extern int XDisplayKeycodes(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     int*		/* min_keycodes_return */,
@@ -2566,7 +2566,7 @@ extern int XDisplayWidthMM(
 #endif
 );
 
-extern XDrawArc(
+extern int XDrawArc(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     Drawable		/* d */,
@@ -2580,7 +2580,7 @@ extern XDrawArc(
 #endif
 );
 
-extern XDrawArcs(
+extern int XDrawArcs(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     Drawable		/* d */,
@@ -2590,7 +2590,7 @@ extern XDrawArcs(
 #endif
 );
 
-extern XDrawImageString(
+extern int XDrawImageString(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     Drawable		/* d */,
@@ -2602,7 +2602,7 @@ extern XDrawImageString(
 #endif
 );
 
-extern XDrawImageString16(
+extern int XDrawImageString16(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     Drawable		/* d */,
@@ -2614,7 +2614,7 @@ extern XDrawImageString16(
 #endif
 );
 
-extern XDrawLine(
+extern int XDrawLine(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     Drawable		/* d */,
@@ -2626,7 +2626,7 @@ extern XDrawLine(
 #endif
 );
 
-extern XDrawLines(
+extern int XDrawLines(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     Drawable		/* d */,
@@ -2637,7 +2637,7 @@ extern XDrawLines(
 #endif
 );
 
-extern XDrawPoint(
+extern int XDrawPoint(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     Drawable		/* d */,
@@ -2647,7 +2647,7 @@ extern XDrawPoint(
 #endif
 );
 
-extern XDrawPoints(
+extern int XDrawPoints(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     Drawable		/* d */,
@@ -2658,7 +2658,7 @@ extern XDrawPoints(
 #endif
 );
 
-extern XDrawRectangle(
+extern int XDrawRectangle(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     Drawable		/* d */,
@@ -2670,7 +2670,7 @@ extern XDrawRectangle(
 #endif
 );
 
-extern XDrawRectangles(
+extern int XDrawRectangles(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     Drawable		/* d */,
@@ -2680,7 +2680,7 @@ extern XDrawRectangles(
 #endif
 );
 
-extern XDrawSegments(
+extern int XDrawSegments(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     Drawable		/* d */,
@@ -2690,7 +2690,7 @@ extern XDrawSegments(
 #endif
 );
 
-extern XDrawString(
+extern int XDrawString(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     Drawable		/* d */,
@@ -2702,7 +2702,7 @@ extern XDrawString(
 #endif
 );
 
-extern XDrawString16(
+extern int XDrawString16(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     Drawable		/* d */,
@@ -2714,7 +2714,7 @@ extern XDrawString16(
 #endif
 );
 
-extern XDrawText(
+extern int XDrawText(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     Drawable		/* d */,
@@ -2726,7 +2726,7 @@ extern XDrawText(
 #endif
 );
 
-extern XDrawText16(
+extern int XDrawText16(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     Drawable		/* d */,
@@ -2738,7 +2738,7 @@ extern XDrawText16(
 #endif
 );
 
-extern XEnableAccessControl(
+extern int XEnableAccessControl(
 #if NeedFunctionPrototypes
     Display*		/* display */
 #endif
@@ -2759,7 +2759,7 @@ extern Status XFetchName(
 #endif
 );
 
-extern XFillArc(
+extern int XFillArc(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     Drawable		/* d */,
@@ -2773,7 +2773,7 @@ extern XFillArc(
 #endif
 );
 
-extern XFillArcs(
+extern int XFillArcs(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     Drawable		/* d */,
@@ -2783,7 +2783,7 @@ extern XFillArcs(
 #endif
 );
 
-extern XFillPolygon(
+extern int XFillPolygon(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     Drawable		/* d */,
@@ -2795,7 +2795,7 @@ extern XFillPolygon(
 #endif
 );
 
-extern XFillRectangle(
+extern int XFillRectangle(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     Drawable		/* d */,
@@ -2807,7 +2807,7 @@ extern XFillRectangle(
 #endif
 );
 
-extern XFillRectangles(
+extern int XFillRectangles(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     Drawable		/* d */,
@@ -2817,33 +2817,33 @@ extern XFillRectangles(
 #endif
 );
 
-extern XFlush(
+extern int XFlush(
 #if NeedFunctionPrototypes
     Display*		/* display */
 #endif
 );
 
-extern XForceScreenSaver(
+extern int XForceScreenSaver(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     int			/* mode */
 #endif
 );
 
-extern XFree(
+extern int XFree(
 #if NeedFunctionPrototypes
     void*		/* data */
 #endif
 );
 
-extern XFreeColormap(
+extern int XFreeColormap(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     Colormap		/* colormap */
 #endif
 );
 
-extern XFreeColors(
+extern int XFreeColors(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     Colormap		/* colormap */,
@@ -2853,27 +2853,27 @@ extern XFreeColors(
 #endif
 );
 
-extern XFreeCursor(
+extern int XFreeCursor(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     Cursor		/* cursor */
 #endif
 );
 
-extern XFreeExtensionList(
+extern int XFreeExtensionList(
 #if NeedFunctionPrototypes
     char**		/* list */    
 #endif
 );
 
-extern XFreeFont(
+extern int XFreeFont(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     XFontStruct*	/* font_struct */
 #endif
 );
 
-extern XFreeFontInfo(
+extern int XFreeFontInfo(
 #if NeedFunctionPrototypes
     char**		/* names */,
     XFontStruct*	/* free_info */,
@@ -2881,32 +2881,32 @@ extern XFreeFontInfo(
 #endif
 );
 
-extern XFreeFontNames(
+extern int XFreeFontNames(
 #if NeedFunctionPrototypes
     char**		/* list */
 #endif
 );
 
-extern XFreeFontPath(
+extern int XFreeFontPath(
 #if NeedFunctionPrototypes
     char**		/* list */
 #endif
 );
 
-extern XFreeGC(
+extern int XFreeGC(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     GC			/* gc */
 #endif
 );
 
-extern XFreeModifiermap(
+extern int XFreeModifiermap(
 #if NeedFunctionPrototypes
     XModifierKeymap*	/* modmap */
 #endif
 );
 
-extern XFreePixmap(
+extern int XFreePixmap(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     Pixmap		/* pixmap */
@@ -2931,7 +2931,7 @@ extern int XGeometry(
 #endif
 );
 
-extern XGetErrorDatabaseText(
+extern int XGetErrorDatabaseText(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     _Xconst char*	/* name */,
@@ -2942,7 +2942,7 @@ extern XGetErrorDatabaseText(
 #endif
 );
 
-extern XGetErrorText(
+extern int XGetErrorText(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     int			/* code */,
@@ -2990,7 +2990,7 @@ extern Status XGetIconName(
 #endif
 );
 
-extern XGetInputFocus(
+extern int XGetInputFocus(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     Window*		/* focus_return */,
@@ -2998,14 +2998,14 @@ extern XGetInputFocus(
 #endif
 );
 
-extern XGetKeyboardControl(
+extern int XGetKeyboardControl(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     XKeyboardState*	/* values_return */
 #endif
 );
 
-extern XGetPointerControl(
+extern int XGetPointerControl(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     int*		/* accel_numerator_return */,
@@ -3022,7 +3022,7 @@ extern int XGetPointerMapping(
 #endif
 );
 
-extern XGetScreenSaver(
+extern int XGetScreenSaver(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     int*		/* timeout_return */,
@@ -3065,7 +3065,7 @@ extern Status XGetWindowAttributes(
 #endif
 );
 
-extern XGrabButton(
+extern int XGrabButton(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     unsigned int	/* button */,
@@ -3080,7 +3080,7 @@ extern XGrabButton(
 #endif
 );
 
-extern XGrabKey(
+extern int XGrabKey(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     int			/* keycode */,
@@ -3117,7 +3117,7 @@ extern int XGrabPointer(
 #endif
 );
 
-extern XGrabServer(
+extern int XGrabServer(
 #if NeedFunctionPrototypes
     Display*		/* display */
 #endif
@@ -3135,7 +3135,7 @@ extern int XHeightOfScreen(
 #endif
 );
 
-extern XIfEvent(
+extern int XIfEvent(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     XEvent*		/* event_return */,
@@ -3156,7 +3156,7 @@ extern int XImageByteOrder(
 #endif
 );
 
-extern XInstallColormap(
+extern int XInstallColormap(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     Colormap		/* colormap */
@@ -3170,7 +3170,7 @@ extern KeyCode XKeysymToKeycode(
 #endif
 );
 
-extern XKillClient(
+extern int XKillClient(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     XID			/* resource */
@@ -3193,35 +3193,35 @@ extern Status XLookupColor(
 #endif
 );
 
-extern XLowerWindow(
+extern int XLowerWindow(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     Window		/* w */
 #endif
 );
 
-extern XMapRaised(
+extern int XMapRaised(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     Window		/* w */
 #endif
 );
 
-extern XMapSubwindows(
+extern int XMapSubwindows(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     Window		/* w */
 #endif
 );
 
-extern XMapWindow(
+extern int XMapWindow(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     Window		/* w */
 #endif
 );
 
-extern XMaskEvent(
+extern int XMaskEvent(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     long		/* event_mask */,
@@ -3241,7 +3241,7 @@ extern int XMinCmapsOfScreen(
 #endif
 );
 
-extern XMoveResizeWindow(
+extern int XMoveResizeWindow(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     Window		/* w */,
@@ -3252,7 +3252,7 @@ extern XMoveResizeWindow(
 #endif
 );
 
-extern XMoveWindow(
+extern int XMoveWindow(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     Window		/* w */,
@@ -3261,14 +3261,14 @@ extern XMoveWindow(
 #endif
 );
 
-extern XNextEvent(
+extern int XNextEvent(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     XEvent*		/* event_return */
 #endif
 );
 
-extern XNoOp(
+extern int XNoOp(
 #if NeedFunctionPrototypes
     Display*		/* display */
 #endif
@@ -3293,14 +3293,14 @@ extern int XParseGeometry(
 #endif
 );
 
-extern XPeekEvent(
+extern int XPeekEvent(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     XEvent*		/* event_return */
 #endif
 );
 
-extern XPeekIfEvent(
+extern int XPeekIfEvent(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     XEvent*		/* event_return */,
@@ -3341,14 +3341,14 @@ extern int XProtocolVersion(
 );
 
 
-extern XPutBackEvent(
+extern int XPutBackEvent(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     XEvent*		/* event */
 #endif
 );
 
-extern XPutImage(
+extern int XPutImage(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     Drawable		/* d */,
@@ -3414,7 +3414,7 @@ extern Status XQueryBestTile(
 #endif
 );
 
-extern XQueryColor(
+extern int XQueryColor(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     Colormap		/* colormap */,
@@ -3422,7 +3422,7 @@ extern XQueryColor(
 #endif
 );
 
-extern XQueryColors(
+extern int XQueryColors(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     Colormap		/* colormap */,
@@ -3441,7 +3441,7 @@ extern Bool XQueryExtension(
 #endif
 );
 
-extern XQueryKeymap(
+extern int XQueryKeymap(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     char [32]		/* keys_return */
@@ -3462,7 +3462,7 @@ extern Bool XQueryPointer(
 #endif
 );
 
-extern XQueryTextExtents(
+extern int XQueryTextExtents(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     XID			/* font_ID */,
@@ -3475,7 +3475,7 @@ extern XQueryTextExtents(
 #endif
 );
 
-extern XQueryTextExtents16(
+extern int XQueryTextExtents16(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     XID			/* font_ID */,
@@ -3499,7 +3499,7 @@ extern Status XQueryTree(
 #endif
 );
 
-extern XRaiseWindow(
+extern int XRaiseWindow(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     Window		/* w */
@@ -3530,7 +3530,7 @@ extern int XReadBitmapFileData(
 #endif
 );
 
-extern XRebindKeysym(
+extern int XRebindKeysym(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     KeySym		/* keysym */,
@@ -3541,7 +3541,7 @@ extern XRebindKeysym(
 #endif
 );
 
-extern XRecolorCursor(
+extern int XRecolorCursor(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     Cursor		/* cursor */,
@@ -3550,27 +3550,27 @@ extern XRecolorCursor(
 #endif
 );
 
-extern XRefreshKeyboardMapping(
+extern int XRefreshKeyboardMapping(
 #if NeedFunctionPrototypes
     XMappingEvent*	/* event_map */    
 #endif
 );
 
-extern XRemoveFromSaveSet(
+extern int XRemoveFromSaveSet(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     Window		/* w */
 #endif
 );
 
-extern XRemoveHost(
+extern int XRemoveHost(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     XHostAddress*	/* host */
 #endif
 );
 
-extern XRemoveHosts(
+extern int XRemoveHosts(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     XHostAddress*	/* hosts */,
@@ -3578,7 +3578,7 @@ extern XRemoveHosts(
 #endif
 );
 
-extern XReparentWindow(
+extern int XReparentWindow(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     Window		/* w */,
@@ -3588,13 +3588,13 @@ extern XReparentWindow(
 #endif
 );
 
-extern XResetScreenSaver(
+extern int XResetScreenSaver(
 #if NeedFunctionPrototypes
     Display*		/* display */
 #endif
 );
 
-extern XResizeWindow(
+extern int XResizeWindow(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     Window		/* w */,
@@ -3603,7 +3603,7 @@ extern XResizeWindow(
 #endif
 );
 
-extern XRestackWindows(
+extern int XRestackWindows(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     Window*		/* windows */,
@@ -3611,14 +3611,14 @@ extern XRestackWindows(
 #endif
 );
 
-extern XRotateBuffers(
+extern int XRotateBuffers(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     int			/* rotate */
 #endif
 );
 
-extern XRotateWindowProperties(
+extern int XRotateWindowProperties(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     Window		/* w */,
@@ -3634,7 +3634,7 @@ extern int XScreenCount(
 #endif
 );
 
-extern XSelectInput(
+extern int XSelectInput(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     Window		/* w */,
@@ -3652,14 +3652,14 @@ extern Status XSendEvent(
 #endif
 );
 
-extern XSetAccessControl(
+extern int XSetAccessControl(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     int			/* mode */
 #endif
 );
 
-extern XSetArcMode(
+extern int XSetArcMode(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     GC			/* gc */,
@@ -3667,7 +3667,7 @@ extern XSetArcMode(
 #endif
 );
 
-extern XSetBackground(
+extern int XSetBackground(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     GC			/* gc */,
@@ -3675,7 +3675,7 @@ extern XSetBackground(
 #endif
 );
 
-extern XSetClipMask(
+extern int XSetClipMask(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     GC			/* gc */,
@@ -3683,7 +3683,7 @@ extern XSetClipMask(
 #endif
 );
 
-extern XSetClipOrigin(
+extern int XSetClipOrigin(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     GC			/* gc */,
@@ -3692,7 +3692,7 @@ extern XSetClipOrigin(
 #endif
 );
 
-extern XSetClipRectangles(
+extern int XSetClipRectangles(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     GC			/* gc */,
@@ -3704,14 +3704,14 @@ extern XSetClipRectangles(
 #endif
 );
 
-extern XSetCloseDownMode(
+extern int XSetCloseDownMode(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     int			/* close_mode */
 #endif
 );
 
-extern XSetCommand(
+extern int XSetCommand(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     Window		/* w */,
@@ -3720,7 +3720,7 @@ extern XSetCommand(
 #endif
 );
 
-extern XSetDashes(
+extern int XSetDashes(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     GC			/* gc */,
@@ -3730,7 +3730,7 @@ extern XSetDashes(
 #endif
 );
 
-extern XSetFillRule(
+extern int XSetFillRule(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     GC			/* gc */,
@@ -3738,7 +3738,7 @@ extern XSetFillRule(
 #endif
 );
 
-extern XSetFillStyle(
+extern int XSetFillStyle(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     GC			/* gc */,
@@ -3746,7 +3746,7 @@ extern XSetFillStyle(
 #endif
 );
 
-extern XSetFont(
+extern int XSetFont(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     GC			/* gc */,
@@ -3754,7 +3754,7 @@ extern XSetFont(
 #endif
 );
 
-extern XSetFontPath(
+extern int XSetFontPath(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     char**		/* directories */,
@@ -3762,7 +3762,7 @@ extern XSetFontPath(
 #endif
 );
 
-extern XSetForeground(
+extern int XSetForeground(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     GC			/* gc */,
@@ -3770,7 +3770,7 @@ extern XSetForeground(
 #endif
 );
 
-extern XSetFunction(
+extern int XSetFunction(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     GC			/* gc */,
@@ -3778,7 +3778,7 @@ extern XSetFunction(
 #endif
 );
 
-extern XSetGraphicsExposures(
+extern int XSetGraphicsExposures(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     GC			/* gc */,
@@ -3786,7 +3786,7 @@ extern XSetGraphicsExposures(
 #endif
 );
 
-extern XSetIconName(
+extern int XSetIconName(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     Window		/* w */,
@@ -3794,7 +3794,7 @@ extern XSetIconName(
 #endif
 );
 
-extern XSetInputFocus(
+extern int XSetInputFocus(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     Window		/* focus */,
@@ -3803,7 +3803,7 @@ extern XSetInputFocus(
 #endif
 );
 
-extern XSetLineAttributes(
+extern int XSetLineAttributes(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     GC			/* gc */,
@@ -3821,7 +3821,7 @@ extern int XSetModifierMapping(
 #endif
 );
 
-extern XSetPlaneMask(
+extern int XSetPlaneMask(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     GC			/* gc */,
@@ -3837,7 +3837,7 @@ extern int XSetPointerMapping(
 #endif
 );
 
-extern XSetScreenSaver(
+extern int XSetScreenSaver(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     int			/* timeout */,
@@ -3847,7 +3847,7 @@ extern XSetScreenSaver(
 #endif
 );
 
-extern XSetSelectionOwner(
+extern int XSetSelectionOwner(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     Atom	        /* selection */,
@@ -3856,7 +3856,7 @@ extern XSetSelectionOwner(
 #endif
 );
 
-extern XSetState(
+extern int XSetState(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     GC			/* gc */,
@@ -3867,7 +3867,7 @@ extern XSetState(
 #endif
 );
 
-extern XSetStipple(
+extern int XSetStipple(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     GC			/* gc */,
@@ -3875,7 +3875,7 @@ extern XSetStipple(
 #endif
 );
 
-extern XSetSubwindowMode(
+extern int XSetSubwindowMode(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     GC			/* gc */,
@@ -3883,7 +3883,7 @@ extern XSetSubwindowMode(
 #endif
 );
 
-extern XSetTSOrigin(
+extern int XSetTSOrigin(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     GC			/* gc */,
@@ -3892,7 +3892,7 @@ extern XSetTSOrigin(
 #endif
 );
 
-extern XSetTile(
+extern int XSetTile(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     GC			/* gc */,
@@ -3900,7 +3900,7 @@ extern XSetTile(
 #endif
 );
 
-extern XSetWindowBackground(
+extern int XSetWindowBackground(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     Window		/* w */,
@@ -3908,7 +3908,7 @@ extern XSetWindowBackground(
 #endif
 );
 
-extern XSetWindowBackgroundPixmap(
+extern int XSetWindowBackgroundPixmap(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     Window		/* w */,
@@ -3916,7 +3916,7 @@ extern XSetWindowBackgroundPixmap(
 #endif
 );
 
-extern XSetWindowBorder(
+extern int XSetWindowBorder(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     Window		/* w */,
@@ -3924,7 +3924,7 @@ extern XSetWindowBorder(
 #endif
 );
 
-extern XSetWindowBorderPixmap(
+extern int XSetWindowBorderPixmap(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     Window		/* w */,
@@ -3932,7 +3932,7 @@ extern XSetWindowBorderPixmap(
 #endif
 );
 
-extern XSetWindowBorderWidth(
+extern int XSetWindowBorderWidth(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     Window		/* w */,
@@ -3940,7 +3940,7 @@ extern XSetWindowBorderWidth(
 #endif
 );
 
-extern XSetWindowColormap(
+extern int XSetWindowColormap(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     Window		/* w */,
@@ -3948,7 +3948,7 @@ extern XSetWindowColormap(
 #endif
 );
 
-extern XStoreBuffer(
+extern int XStoreBuffer(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     _Xconst char*	/* bytes */,
@@ -3957,7 +3957,7 @@ extern XStoreBuffer(
 #endif
 );
 
-extern XStoreBytes(
+extern int XStoreBytes(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     _Xconst char*	/* bytes */,
@@ -3965,7 +3965,7 @@ extern XStoreBytes(
 #endif
 );
 
-extern XStoreColor(
+extern int XStoreColor(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     Colormap		/* colormap */,
@@ -3973,7 +3973,7 @@ extern XStoreColor(
 #endif
 );
 
-extern XStoreColors(
+extern int XStoreColors(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     Colormap		/* colormap */,
@@ -3982,7 +3982,7 @@ extern XStoreColors(
 #endif
 );
 
-extern XStoreName(
+extern int XStoreName(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     Window		/* w */,
@@ -3990,7 +3990,7 @@ extern XStoreName(
 #endif
 );
 
-extern XStoreNamedColor(
+extern int XStoreNamedColor(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     Colormap		/* colormap */,
@@ -4000,14 +4000,14 @@ extern XStoreNamedColor(
 #endif
 );
 
-extern XSync(
+extern int XSync(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     Bool		/* discard */
 #endif
 );
 
-extern XTextExtents(
+extern int XTextExtents(
 #if NeedFunctionPrototypes
     XFontStruct*	/* font_struct */,
     _Xconst char*	/* string */,
@@ -4019,7 +4019,7 @@ extern XTextExtents(
 #endif
 );
 
-extern XTextExtents16(
+extern int XTextExtents16(
 #if NeedFunctionPrototypes
     XFontStruct*	/* font_struct */,
     _Xconst XChar2b*	/* string */,
@@ -4060,14 +4060,14 @@ extern Bool XTranslateCoordinates(
 #endif
 );
 
-extern XUndefineCursor(
+extern int XUndefineCursor(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     Window		/* w */
 #endif
 );
 
-extern XUngrabButton(
+extern int XUngrabButton(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     unsigned int	/* button */,
@@ -4076,7 +4076,7 @@ extern XUngrabButton(
 #endif
 );
 
-extern XUngrabKey(
+extern int XUngrabKey(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     int			/* keycode */,
@@ -4085,48 +4085,48 @@ extern XUngrabKey(
 #endif
 );
 
-extern XUngrabKeyboard(
+extern int XUngrabKeyboard(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     Time		/* time */
 #endif
 );
 
-extern XUngrabPointer(
+extern int XUngrabPointer(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     Time		/* time */
 #endif
 );
 
-extern XUngrabServer(
+extern int XUngrabServer(
 #if NeedFunctionPrototypes
     Display*		/* display */
 #endif
 );
 
-extern XUninstallColormap(
+extern int XUninstallColormap(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     Colormap		/* colormap */
 #endif
 );
 
-extern XUnloadFont(
+extern int XUnloadFont(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     Font		/* font */
 #endif
 );
 
-extern XUnmapSubwindows(
+extern int XUnmapSubwindows(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     Window		/* w */
 #endif
 );
 
-extern XUnmapWindow(
+extern int XUnmapWindow(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     Window		/* w */
@@ -4139,7 +4139,7 @@ extern int XVendorRelease(
 #endif
 );
 
-extern XWarpPointer(
+extern int XWarpPointer(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     Window		/* src_w */,
@@ -4165,7 +4165,7 @@ extern int XWidthOfScreen(
 #endif
 );
 
-extern XWindowEvent(
+extern int XWindowEvent(
 #if NeedFunctionPrototypes
     Display*		/* display */,
     Window		/* w */,

@@ -87,7 +87,7 @@ const double
 const InterlaceType
   DefaultInterlace = NoInterlace;
 
-const unsigned int
+Export const unsigned int
   AspectValue = 0x2000,
   GreaterValue = 0x8000,
   LessValue = 0x4000,
@@ -354,6 +354,64 @@ Export void AllocateNextImage(const ImageInfo *image_info,Image *image)
   image->next->filesize=image->filesize;
   image->next->scene=image->scene+1;
   image->next->previous=image;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   A n i m a t e I m a g e s                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method AnimateImages displays one or more images to an X window.
+%
+%  The format of the AllocateNextImage routine is:
+%
+%      status=AnimateImages(image_info,image)
+%
+%  A description of each parameter follows:
+%
+%    o status: Method DisplayImages returns True if the images are displayed
+%      in an X window, otherwise False is returned.
+%
+%    o image_info: Specifies a pointer to an ImageInfo structure.
+%
+%    o image: The address of a structure of type Image.
+%
+%
+*/
+Export unsigned int AnimateImages(const ImageInfo *image_info,Image *image)
+{
+  char
+    *client_name;
+
+  Display
+    *display;
+
+  XrmDatabase
+    resource_database;
+
+  XResourceInfo
+    resource;
+
+  display=XOpenDisplay((char *) NULL);
+  if (display == (Display *) NULL)
+    return(False);
+  XSetErrorHandler(XError);
+  client_name=SetClientName((char *) NULL);
+  resource_database=XGetResourceDatabase(display,client_name);
+  XGetResourceInfo(resource_database,client_name,&resource);
+  *resource.image_info=(*image_info);
+  resource.immutable=True;
+  if (image_info->delay != (char *) NULL)
+    resource.delay=atoi(image_info->delay);
+  (void) XAnimateImages(display,&resource,&client_name,1,image);
+  XCloseDisplay(display);
+  return(True);
 }
 
 /*
@@ -3974,6 +4032,76 @@ Export void DestroyMontageInfo(MontageInfo *montage_info)
   if (montage_info->font != (char *) NULL)
     FreeMemory((char *) montage_info->font);
   montage_info->font=(char *) NULL;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   D i s p l a y I m a g e s                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method DisplayImages displays one or more images to an X window.
+%
+%  The format of the AllocateNextImage routine is:
+%
+%      status=DisplayImages(image_info,image)
+%
+%  A description of each parameter follows:
+%
+%    o status: Method DisplayImages returns True if the images are displayed
+%      in an X window, otherwise False is returned.
+%
+%    o image_info: Specifies a pointer to an ImageInfo structure.
+%
+%    o image: The address of a structure of type Image.
+%
+%
+*/
+Export unsigned int DisplayImages(const ImageInfo *image_info,Image *image)
+{
+  char
+    *client_name;
+
+  Display
+    *display;
+
+  Image
+    *next;
+
+  unsigned long
+    state;
+
+  XrmDatabase
+    resource_database;
+
+  XResourceInfo
+    resource;
+
+  display=XOpenDisplay((char *) NULL);
+  if (display == (Display *) NULL)
+    return(False);
+  XSetErrorHandler(XError);
+  client_name=SetClientName((char *) NULL);
+  resource_database=XGetResourceDatabase(display,client_name);
+  XGetResourceInfo(resource_database,client_name,&resource);
+  *resource.image_info=(*image_info);
+  resource.immutable=True;
+  if (image_info->delay != (char *) NULL)
+    resource.delay=atoi(image_info->delay);
+  for (next=image; next; next=next->next)
+  {
+    state=DefaultState;
+    (void) XDisplayImage(display,&resource,&client_name,1,&next,&state);
+    if (state & ExitState)
+      break;
+  }
+  XCloseDisplay(display);
+  return(True);
 }
 
 /*

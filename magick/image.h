@@ -472,7 +472,7 @@ extern const char
 extern const double
   SharpenFactor;
 
-extern const unsigned int
+extern Export const unsigned int
   AspectValue,
   LessValue,
   GreaterValue,
@@ -599,6 +599,8 @@ extern Export int
   ParseImageGeometry(const char *,int *,int *,unsigned int *,unsigned int *);
 
 extern Export unsigned int
+  AnimateImages(const ImageInfo *image_info,Image *image),
+  DisplayImages(const ImageInfo *image_info,Image *image),
   GetNumberScenes(const Image *),
   IsGeometry(const char *),
   IsGrayImage(Image *),
