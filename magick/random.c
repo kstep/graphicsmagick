@@ -212,15 +212,6 @@ MagickExport void GetRandomKey(unsigned char *key,const size_t length)
       DistillRandomEvent((const unsigned char *) filename,MaxTextExtent);
       seconds=time(0);
       DistillRandomEvent((const unsigned char *) &seconds,sizeof(time_t));
-#ifdef HAVE_GETTIMEOFDAY
-      {
-        struct timeval
-          timer;
-
-        (void) gettimeofday(&timer,NULL);
-        DistillRandomEvent((const unsigned char *) &timer.tv_usec,sizeof(long));
-      }
-#endif
 #if HAVE_FTIME
       {
         struct timeb

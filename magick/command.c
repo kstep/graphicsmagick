@@ -607,7 +607,7 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
                 if (LocaleCompare("Zip",option) == 0)
                   image_info->compression=ZipCompression;
                 if (image_info->compression == UndefinedCompression)
-                  ThrowCompositeException(OptionError,"UnrecognizedCompression",
+                  ThrowCompositeException(OptionError,"UnrecognizedImageCompressionion",
                     option);
               }
             break;
@@ -921,7 +921,7 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
                 if (LocaleCompare("Partition",option) == 0)
                   image_info->interlace=PartitionInterlace;
                 if (image_info->interlace == UndefinedInterlace)
-                  ThrowCompositeException(OptionError,"UnrecognizedImageInterlace",
+                  ThrowCompositeException(OptionError,"UnrecognizedInterlaceType",
                     option);
               }
             break;
@@ -1828,7 +1828,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
                 if (LocaleCompare("Zip",option) == 0)
                   image_info->compression=ZipCompression;
                 if (image_info->compression == UndefinedCompression)
-                  ThrowConvertException(OptionError,"UnrecognizedCompression",
+                  ThrowConvertException(OptionError,"UnrecognizedImageCompressionion",
                     option);
               }
             break;
@@ -2275,7 +2275,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
                 if (LocaleCompare("Partition",option) == 0)
                   image_info->interlace=PartitionInterlace;
                 if (image_info->interlace == UndefinedInterlace)
-                  ThrowConvertException(OptionError,"UnrecognizedImageInterlace",
+                  ThrowConvertException(OptionError,"UnrecognizedInterlaceType",
                     option);
               }
             break;
@@ -2694,7 +2694,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
                 if (LocaleCompare("JPEG",option) == 0)
                   image_info->preview_type=JPEGPreview;
                 if (image_info->preview_type == UndefinedPreview)
-                  ThrowConvertException(OptionError,"UnrecognizedImageInterlace",
+                  ThrowConvertException(OptionError,"UnrecognizedInterlaceType",
                      option);
               }
             break;
@@ -3466,7 +3466,7 @@ MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
                   image_info->interlace=PartitionInterlace;
                 if (image_info->interlace == UndefinedInterlace)
                   ThrowIdentifyException(OptionError,
-                    "UnrecognizedImageInterlace",option);
+                    "UnrecognizedInterlaceType",option);
               }
             break;
           }
@@ -3998,7 +3998,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
                 if (LocaleCompare("Zip",option) == 0)
                   image_info->compression=ZipCompression;
                 if (image_info->compression == UndefinedCompression)
-                  ThrowMogrifyException(OptionError,"UnrecognizedCompression",
+                  ThrowMogrifyException(OptionError,"UnrecognizedImageCompressionion",
                     option);
               }
             break;
@@ -4427,7 +4427,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
                 if (LocaleCompare("Partition",option) == 0)
                   image_info->interlace=PartitionInterlace;
                 if (image_info->interlace == UndefinedInterlace)
-                  ThrowMogrifyException(OptionError,"UnrecognizedImageInterlace",
+                  ThrowMogrifyException(OptionError,"UnrecognizedInterlaceType",
                     option);
               }
             break;
@@ -5603,7 +5603,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
                 if (LocaleCompare("Zip",option) == 0)
                   image_info->compression=ZipCompression;
                 if (image_info->compression == UndefinedCompression)
-                  ThrowMontageException(OptionError,"UnrecognizedCompression",
+                  ThrowMontageException(OptionError,"UnrecognizedImageCompressionion",
                     option);
               }
             break;
@@ -6005,7 +6005,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
                   image_info->interlace=PartitionInterlace;
                 if (image_info->interlace == UndefinedInterlace)
                   ThrowMontageException(OptionError,
-                    "UnrecognizedImageInterlace",option);
+                    "UnrecognizedInterlaceType",option);
               }
             break;
           }

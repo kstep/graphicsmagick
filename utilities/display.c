@@ -784,7 +784,7 @@ int main(int argc,char **argv)
                 if (LocaleCompare("Zip",option) == 0)
                   image_info->compression=ZipCompression;
                 if (image_info->compression == UndefinedCompression)
-                  MagickFatalError(OptionFatalError,"UnrecognizedCompressType",
+                  MagickFatalError(OptionFatalError,"UnrecognizedImageCompressionType",
                     option);
               }
             break;

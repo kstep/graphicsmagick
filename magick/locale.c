@@ -748,10 +748,10 @@ const char *GetLocaleMessage(const char *tag)
                 if (p - tp == 24 && !LocaleNCompare(tp, "UnrecognizedBitsPerPixel", 24))
                   return *np ? tag : "Unrecognized bits per pixel";
                 else
-                if (p - tp == 20 && !LocaleNCompare(tp, "UnrecognizedCompress", 20))
+                if (p - tp == 20 && !LocaleNCompare(tp, "UnrecognizedImageCompression", 20))
                   return *np ? tag : "Unrecognized compression";
                 else
-                if (p - tp == 26 && !LocaleNCompare(tp, "UnrecognizedCompressMethod", 26))
+                if (p - tp == 26 && !LocaleNCompare(tp, "UnrecognizedImageCompressionMethod", 26))
                   return *np ? tag : "Unrecognized compression method";
                 else
                 if (p - tp == 25 && !LocaleNCompare(tp, "UnrecognizedNumerOfColors", 25))
@@ -1602,7 +1602,7 @@ const char *GetLocaleMessage(const char *tag)
             if (p - tp == 27 && !LocaleNCompare(tp, "UnrecognizedComposeOperator", 27))
               return *np ? tag : "Unrecognized compose operator";
             else
-            if (p - tp == 20 && !LocaleNCompare(tp, "UnrecognizedCompress", 20))
+            if (p - tp == 20 && !LocaleNCompare(tp, "UnrecognizedImageCompression", 20))
               return *np ? tag : "Unrecognized image compression";
             else
             if (p - tp == 25 && !LocaleNCompare(tp, "UnrecognizedDisposeMethod", 25))
@@ -1620,7 +1620,7 @@ const char *GetLocaleMessage(const char *tag)
             if (p - tp == 23 && !LocaleNCompare(tp, "UnrecognizedImageFilter", 23))
               return *np ? tag : "Unrecognized image filter";
             else
-            if (p - tp == 26 && !LocaleNCompare(tp, "UnrecognizedImageInterlace", 26))
+            if (p - tp == 26 && !LocaleNCompare(tp, "UnrecognizedInterlaceType", 26))
               return *np ? tag : "Unrecognized image interlace";
             else
             if (p - tp == 21 && !LocaleNCompare(tp, "UnrecognizedImageMode", 21))
@@ -2046,7 +2046,7 @@ const char *GetLocaleMessage(const char *tag)
       if (p - tp == 26 && !LocaleNCompare(tp, "UnrecognizedColorspaceType", 26))
         return *np ? tag : "Unrecognized colorspace type";
       else
-      if (p - tp == 24 && !LocaleNCompare(tp, "UnrecognizedCompressType", 24))
+      if (p - tp == 24 && !LocaleNCompare(tp, "UnrecognizedImageCompressionType", 24))
         return *np ? tag : "unrecognized compression type";
       else
       if (p - tp == 25 && !LocaleNCompare(tp, "UnrecognizedDisposeMethod", 25))

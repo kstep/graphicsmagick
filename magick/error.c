@@ -153,12 +153,12 @@ MagickExport void CatchException(const ExceptionInfo *exception)
 %
 %  The format of the DefaultErrorHandler method is:
 %
-%      void MagickError(const ExceptionType error,const char *reason,
+%      void MagickError(const ExceptionType severity,const char *reason,
 %        const char *description)
 %
 %  A description of each parameter follows:
 %
-%    o exception: Specifies the numeric error category.
+%    o severity: Specifies the numeric error category.
 %
 %    o reason: Specifies the reason to display before terminating the
 %      program.
@@ -179,17 +179,17 @@ static const char *GetErrorMessageString(const int error_number)
   return(message);
 }
 
-static void DefaultErrorHandler(const ExceptionType error,const char *reason,
+static void DefaultErrorHandler(const ExceptionType severity,const char *reason,
   const char *description)
 {
   if (reason == (char *) NULL)
     return;
   (void) fprintf(stderr,"%.1024s: %.1024s",SetClientName((char *) NULL),
-    GetLocaleExceptionMessage(error,reason));
+    GetLocaleExceptionMessage(severity,reason));
   if (description != (char *) NULL)
     (void) fprintf(stderr," (%.1024s)",
-      GetLocaleExceptionMessage(error,description));
-  if ((error != OptionError) && errno)
+      GetLocaleExceptionMessage(severity,description));
+  if ((severity != OptionError) && errno)
     (void) fprintf(stderr," [%.1024s]",GetErrorMessageString(errno));
   (void) fprintf(stderr,".\n");
 }
@@ -210,12 +210,12 @@ static void DefaultErrorHandler(const ExceptionType error,const char *reason,
 %
 %  The format of the DefaultFatalErrorHandler method is:
 %
-%      void MagickFatalError(const ExceptionType error,const char *reason,
+%      void MagickFatalError(const ExceptionType severity,const char *reason,
 %        const char *description)
 %
 %  A description of each parameter follows:
 %
-%    o exception: Specifies the numeric error category.
+%    o severity: Specifies the numeric error category.
 %
 %    o reason: Specifies the reason to display before terminating the
 %      program.
@@ -224,7 +224,7 @@ static void DefaultErrorHandler(const ExceptionType error,const char *reason,
 %
 %
 */
-static void DefaultFatalErrorHandler(const ExceptionType error,
+static void DefaultFatalErrorHandler(const ExceptionType severity,
   const char *reason,const char *description)
 {
   if (reason == (char *) NULL)
@@ -233,11 +233,11 @@ static void DefaultFatalErrorHandler(const ExceptionType error,
     reason);
   if (description != (char *) NULL)
     (void) fprintf(stderr," (%.1024s)",description);
-  if ((error != OptionError) && errno)
+  if ((severity != OptionError) && errno)
     (void) fprintf(stderr," [%.1024s]",GetErrorMessageString(errno));
   (void) fprintf(stderr,".\n");
   DestroyMagick();
-  Exit(error);
+  Exit(severity);
 }
 
 /*
@@ -269,17 +269,17 @@ static void DefaultFatalErrorHandler(const ExceptionType error,
 %
 %
 */
-static void DefaultWarningHandler(const ExceptionType warning,
+static void DefaultWarningHandler(const ExceptionType severity,
   const char *reason,const char *description)
 {
   if (reason == (char *) NULL)
     return;
   (void) fprintf(stderr,"%.1024s: %.1024s",SetClientName((char *) NULL),
-    GetLocaleExceptionMessage(warning,reason));
+    GetLocaleExceptionMessage(severity,reason));
   if (description != (char *) NULL)
     (void) fprintf(stderr," (%.1024s)",
-      GetLocaleExceptionMessage(warning,description));
-  if ((warning != OptionWarning) && errno)
+      GetLocaleExceptionMessage(severity,description));
+  if ((severity != OptionWarning) && errno)
     (void) fprintf(stderr," [%.1024s]",GetErrorMessageString(errno));
   (void) fprintf(stderr,".\n");
 }

@@ -467,10 +467,10 @@
         <Message name="UnrecognizedBitsPerPixel">
 					Unrecognized bits per pixel
         </Message>
-        <Message name="UnrecognizedCompress">
+        <Message name="UnrecognizedImageCompression">
 					Unrecognized compression
         </Message>
-        <Message name="UnrecognizedCompressMethod">
+        <Message name="UnrecognizedImageCompressionMethod">
           Unrecognized compression method
         </Message>
         <Message name="UnrecognizedNumerOfColors">
@@ -962,6 +962,9 @@
       <Message name="NoProfileNameWasGiven">
         No profile name was given
       </Message>
+      <Message name="ReferenceIsNotMyType">
+        Reference is not my type
+      </Message>
       <Message name="SubimageSpecificationReturnsNoImages">
         Subimage specification returns no images profile name was given
       </Message>
@@ -1025,9 +1028,6 @@
       <Message name="UnrecognizedComposeOperator">
         Unrecognized compose operator
       </Message>
-      <Message name="UnrecognizedCompress">
-        Unrecognized image compression
-      </Message>
       <Message name="UnrecognizedDisposeMethod">
         Unrecognized dispose method
       </Message>
@@ -1040,11 +1040,14 @@
       <Message name="UnrecognizedGravityType">
         Unrecognized gravity type
       </Message>
+      <Message name="UnrecognizedImageCompression">
+        Unrecognized image compression
+      </Message>
       <Message name="UnrecognizedImageFilter">
         Unrecognized image filter
       </Message>
-      <Message name="UnrecognizedImageInterlace">
-        Unrecognized image interlace
+      <Message name="UnrecognizedImageFormat">
+        Unrecognized image format
       </Message>
       <Message name="UnrecognizedImageMode">
         Unrecognized image mode
@@ -1055,11 +1058,17 @@
       <Message name="UnrecognizedIntentType">
         Unrecognized intent type
       </Message>
+      <Message name="UnrecognizedInterlaceType">
+        Unrecognized interlace type
+      </Message>
       <Message name="UnrecognizedListType">
         Unrecognized list type
       </Message>
+      <Message name="UnrecognizedPerlMagickMethod">
+        Unrecognized PerlMagick method
+      </Message>
       <Message name="UnrecognizedType">
-        Unrecognized list type
+        Unrecognized type
       </Message>
       <Message name="UnrecognizedOption">
         Unrecognized option
@@ -1207,7 +1216,7 @@
       <Message name="OptionLengthExceedsLimit">
         Option length exceeds limit
       </Message>
-      <Message name="UnrecognizedCompressType">
+      <Message name="UnrecognizedImageCompressionType">
         unrecognized compression type
       </Message>
       <Message name="UnrecognizedDisposeMethod">
@@ -1371,6 +1380,9 @@
         </Message>
         <Message name="UnableToGetFromRegistry">
           unable to get from registry
+        </Message>
+        <Message name="UnableToGetPackageInfo">
+          Unable to get package info
         </Message>
         <Message name="UnableToLevelImage">
           unable to level image
