@@ -1119,6 +1119,8 @@ Export Image *ImplodeImage(Image *image,const double factor)
     Initialize implode image attributes.
   */
   assert(image != (Image *) NULL);
+  if (!image->matte)
+    MatteImage(image,Opaque);
   implode_image=CloneImage(image,image->columns,image->rows,True);
   if (implode_image == (Image *) NULL)
     {
@@ -1126,9 +1128,6 @@ Export Image *ImplodeImage(Image *image,const double factor)
         "Memory allocation failed");
       return((Image *) NULL);
     }
-  implode_image->class=DirectClass;
-  if (!image->matte)
-    MatteImage(image,Opaque);
   /*
     Compute scaling factor.
   */
@@ -2712,6 +2711,8 @@ Export Image *SwirlImage(Image *image,double degrees)
     Initialize swirl image attributes.
   */
   assert(image != (Image *) NULL);
+  if (!image->matte)
+    MatteImage(image,Opaque);
   swirl_image=CloneImage(image,image->columns,image->rows,True);
   if (swirl_image == (Image *) NULL)
     {
@@ -2719,9 +2720,6 @@ Export Image *SwirlImage(Image *image,double degrees)
         "Memory allocation failed");
       return((Image *) NULL);
     }
-  swirl_image->class=DirectClass;
-  if (!image->matte)
-    MatteImage(image,Opaque);
   /*
     Compute scaling factor.
   */
@@ -2926,6 +2924,8 @@ Export Image *WaveImage(Image *image,const double amplitude,
     Initialize waved image attributes.
   */
   assert(image != (Image *) NULL);
+  if (!image->matte)
+    MatteImage(image,Opaque);
   wave_image=CloneImage(image,image->columns,image->rows+
     (int) (2*AbsoluteValue(amplitude)),True);
   if (wave_image == (Image *) NULL)
@@ -2934,9 +2934,6 @@ Export Image *WaveImage(Image *image,const double amplitude,
         "Memory allocation failed");
       return((Image *) NULL);
     }
-  wave_image->class=DirectClass;
-  if (!image->matte)
-    MatteImage(image,Opaque);
   /*
     Allocate sine map.
   */
