@@ -571,12 +571,14 @@ namespace Magick
   using MagickLib::ImageRegistryType;
   using MagickLib::ImageToBlob;
   using MagickLib::ImplodeImage;
+  using MagickLib::IsEventLogging;
   using MagickLib::IsGeometry;
   using MagickLib::IsImagesEqual;
   using MagickLib::IsSubimage;
   using MagickLib::LessValue;
   using MagickLib::LiberateMemory;
   using MagickLib::LocaleCompare;
+  using MagickLib::LogMagickEvent;
   using MagickLib::MagickInfo;
   using MagickLib::MagickToMime;
   using MagickLib::MagnifyImage;
@@ -628,6 +630,7 @@ namespace Magick
   using MagickLib::SetCacheView;
   using MagickLib::SetClientName;
   using MagickLib::SetImage;
+  using MagickLib::SetLogEventMask;
   using MagickLib::SetImageAttribute;
   using MagickLib::SetImageClipMask;
   using MagickLib::SetImageDepth;

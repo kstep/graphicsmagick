@@ -1290,8 +1290,10 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
             }
           if (info)
             {
-              info->image_info->debug=sp != 0;
-              info->draw_info->debug=sp != 0;
+              if (sp != 0)
+                SetLogEventMask("All");
+              else
+                SetLogEventMask("None");
             }
           return;
         }

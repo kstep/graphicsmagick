@@ -24,7 +24,6 @@
 		<LI><A HREF="#destroymagickinfo">DestroyMagickInfo</A>
 		<LI><A HREF="#getimagemagick">GetImageMagick</A>
 		<LI><A HREF="#getmagickinfo">GetMagickInfo</A>
-		<LI><A HREF="#getmagickversion">GetMagickVersion</A>
 		<LI><A HREF="#initializemagick">InitializeMagick</A>
 		<LI><A HREF="#ismagickconflict">IsMagickConflict</A>
 		<LI><A HREF="#listmagickinfo">ListMagickInfo</A>
@@ -50,7 +49,6 @@
 <P>void  <STRONG>DestroyMagickInfo</STRONG>( void );</P>
 <P>const char * <STRONG>GetImageMagick</STRONG>( const unsigned char *magick, const size_t length );</P>
 <P>const MagickInfo * <STRONG>GetMagickInfo</STRONG>( const char *name, Exception *exception );</P>
-<P>const char * <STRONG>GetMagickVersion</STRONG>( unsigned int *version );</P>
 <P><STRONG>InitializeMagick</STRONG>( const char *path );</P>
 <P>unsigned int  <STRONG>IsMagickConflict</STRONG>( const char *magick );</P>
 <P>unsigned int  <STRONG>ListMagickInfo</STRONG>( 
@@ -97,16 +95,6 @@ The image format we are looking for.
 <dd><p></p><dt><STRONG><A NAME="item_o_exception%3A">exception:</A></STRONG><BR>
 <DD>
 Return any errors or warnings in this structure.
-<P></P></DL></DL>
-<P>
-<H2><A NAME="getmagickversion">GetMagickVersion</A></H2>
-<blockquote>GetMagickVersion() returns the ImageMagick API version as a string and as a number. </blockquote><P>The format of the GetMagickVersion method is:</P>
-<blockquote>const char *GetMagickVersion ( unsigned int *version ); </blockquote><P>
-<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<dd><p></p><dt><STRONG><A NAME="item_o_version%3A">version:</A></STRONG><BR>
-<DD>
-The ImageMagick version is returned as a number.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="initializemagick">InitializeMagick</A></H2>

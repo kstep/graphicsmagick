@@ -163,18 +163,16 @@ void Magick::Options::debug ( bool flag_ )
 {
   if(flag_)
     {
-      _imageInfo->debug = 1;
-      _drawInfo->debug = 1;
+      SetLogEventMask("All");
     }
   else
     {
-      _imageInfo->debug = 0;
-      _drawInfo->debug = 0;
+      SetLogEventMask("None");
     }
 }
 bool Magick::Options::debug ( void ) const
 {
-  if( _imageInfo->debug != 0 )
+  if( IsEventLogging() )
     {
       return true;
     }
