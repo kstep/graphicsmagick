@@ -227,9 +227,6 @@ typedef struct _MontageInfo
   unsigned int
     shadow;
 
-  CompositeOperator
-    compose;
-
   PixelPacket
     fill,
     stroke,
@@ -378,6 +375,9 @@ typedef struct _Image
   InterlaceType
     interlace;
 
+  CompositeOperator
+    compose;
+
   ImageAttribute
     *attributes;
 
@@ -456,7 +456,6 @@ typedef struct _ImageInfo
   unsigned int
     temporary,
     adjoin,
-    flatten,
     antialias;
 
   unsigned long

@@ -131,6 +131,7 @@ MagickExport Image *AllocateImage(const ImageInfo *image_info)
   allocate_image->depth=QuantumDepth;
   allocate_image->interlace=NoInterlace;
   allocate_image->colorspace=RGBColorspace;
+  allocate_image->compose=OverCompositeOp;
   (void) QueryColorDatabase(BackgroundColor,&allocate_image->background_color);
   (void) QueryColorDatabase(BorderColor,&allocate_image->border_color);
   (void) QueryColorDatabase(MatteColor,&allocate_image->matte_color);
@@ -3706,6 +3707,52 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             else
               (void) SetImageAttribute(*image,"comment",(char *) NULL);
             continue;
+          }
+        if (LocaleCompare("compose",option+1) == 0)
+          {
+            CompositeOperator
+              compose;
+
+            option=argv[++i];
+            compose=OverCompositeOp;
+            if (LocaleCompare("Over",option) == 0)
+              compose=OverCompositeOp;
+            if (LocaleCompare("In",option) == 0)
+              compose=InCompositeOp;
+            if (LocaleCompare("Out",option) == 0)
+              compose=OutCompositeOp;
+            if (LocaleCompare("Atop",option) == 0)
+              compose=AtopCompositeOp;
+            if (LocaleCompare("Xor",option) == 0)
+              compose=XorCompositeOp;
+            if (LocaleCompare("Plus",option) == 0)
+              compose=PlusCompositeOp;
+            if (LocaleCompare("Minus",option) == 0)
+              compose=MinusCompositeOp;
+            if (LocaleCompare("Add",option) == 0)
+              compose=AddCompositeOp;
+            if (LocaleCompare("Subtract",option) == 0)
+              compose=SubtractCompositeOp;
+            if (LocaleCompare("Difference",option) == 0)
+              compose=DifferenceCompositeOp;
+            if (LocaleCompare("Multiply",option) == 0)
+              compose=MultiplyCompositeOp;
+            if (LocaleCompare("Bumpmap",option) == 0)
+              compose=BumpmapCompositeOp;
+            if (LocaleCompare("Copy",option) == 0)
+              compose=CopyCompositeOp;
+            if (LocaleCompare("CopyRed",option) == 0)
+              compose=CopyRedCompositeOp;
+            if (LocaleCompare("CopyGreen",option) == 0)
+              compose=CopyGreenCompositeOp;
+            if (LocaleCompare("CopyBlue",option) == 0)
+              compose=CopyBlueCompositeOp;
+            if (LocaleCompare("CopyOpacity",option) == 0)
+              compose=CopyOpacityCompositeOp;
+            if (LocaleCompare("Clear",option) == 0)
+              compose=ClearCompositeOp;
+            (*image)->compose=compose;
+            break;
           }
         if (LocaleCompare("compress",option+1) == 0)
           {

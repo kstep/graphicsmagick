@@ -685,8 +685,8 @@ MagickExport Image *FlattenImages(const Image *image,ExceptionInfo *exception)
     Flatten image.
   */
   for (next=image->next; next != (Image *) NULL; next=next->next)
-    (void) CompositeImage(flatten_image,next->matte ? OverCompositeOp :
-      CopyCompositeOp,next,next->page.x,next->page.y);
+    (void) CompositeImage(flatten_image,next->compose,next,next->page.x,
+      next->page.y);
   return(flatten_image);
 }
 

@@ -5719,7 +5719,8 @@ Montage(ref,...)
                     SvPV(ST(i),na));
                   break;
                 }
-              montage_info->compose=(CompositeOperator) sp;
+              for (next=image; next; next=next->next)
+                next->compose=(CompositeOperator) sp;
               break;
             }
           break;

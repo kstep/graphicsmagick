@@ -1178,7 +1178,7 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 				QuantizeImage( &qi, image );
 			}
 		} else {
-			if ( image_info->flatten ) {
+			if ( 0 ) {
 				/* NOTE: XCF layers are REVERSED from composite order! */
 				signed int	j;
 				for (j=number_layers-1; j>=0; j--) {

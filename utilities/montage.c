@@ -519,49 +519,51 @@ int main(int argc,char **argv)
             }
           if (LocaleCompare("compose",option+1) == 0)
             {
-              montage_info->compose=CopyCompositeOp;
+              CompositeOperator
+                  compose;
+
               if (*option == '-')
                 {
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing type",option);
                   option=argv[i];
-                  montage_info->compose=UndefinedCompositeOp;
+                  compose=UndefinedCompositeOp;
                   if (LocaleCompare("Over",option) == 0)
-                    montage_info->compose=OverCompositeOp;
+                    compose=OverCompositeOp;
                   if (LocaleCompare("In",option) == 0)
-                    montage_info->compose=InCompositeOp;
+                    compose=InCompositeOp;
                   if (LocaleCompare("Out",option) == 0)
-                    montage_info->compose=OutCompositeOp;
+                    compose=OutCompositeOp;
                   if (LocaleCompare("Atop",option) == 0)
-                    montage_info->compose=AtopCompositeOp;
+                    compose=AtopCompositeOp;
                   if (LocaleCompare("Xor",option) == 0)
-                    montage_info->compose=XorCompositeOp;
+                    compose=XorCompositeOp;
                   if (LocaleCompare("Plus",option) == 0)
-                    montage_info->compose=PlusCompositeOp;
+                    compose=PlusCompositeOp;
                   if (LocaleCompare("Minus",option) == 0)
-                    montage_info->compose=MinusCompositeOp;
+                    compose=MinusCompositeOp;
                   if (LocaleCompare("Add",option) == 0)
-                    montage_info->compose=AddCompositeOp;
+                    compose=AddCompositeOp;
                   if (LocaleCompare("Subtract",option) == 0)
-                    montage_info->compose=SubtractCompositeOp;
+                    compose=SubtractCompositeOp;
                   if (LocaleCompare("Difference",option) == 0)
-                    montage_info->compose=DifferenceCompositeOp;
+                    compose=DifferenceCompositeOp;
                   if (LocaleCompare("Multiply",option) == 0)
-                    montage_info->compose=MultiplyCompositeOp;
+                    compose=MultiplyCompositeOp;
                   if (LocaleCompare("Bumpmap",option) == 0)
-                    montage_info->compose=BumpmapCompositeOp;
+                    compose=BumpmapCompositeOp;
                   if (LocaleCompare("Copy",option) == 0)
-                    montage_info->compose=CopyCompositeOp;
+                    compose=CopyCompositeOp;
                   if (LocaleCompare("CopyRed",option) == 0)
-                    montage_info->compose=CopyRedCompositeOp;
+                    compose=CopyRedCompositeOp;
                   if (LocaleCompare("CopyGreen",option) == 0)
-                    montage_info->compose=CopyGreenCompositeOp;
+                    compose=CopyGreenCompositeOp;
                   if (LocaleCompare("CopyBlue",option) == 0)
-                    montage_info->compose=CopyBlueCompositeOp;
+                    compose=CopyBlueCompositeOp;
                   if (LocaleCompare("CopyOpacity",option) == 0)
-                    montage_info->compose=CopyOpacityCompositeOp;
-                  if (montage_info->compose == UndefinedCompositeOp)
+                    compose=CopyOpacityCompositeOp;
+                  if (compose == UndefinedCompositeOp)
                     MagickError(OptionError,"Invalid compose type",option);
                 }
               break;

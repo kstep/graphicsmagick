@@ -194,7 +194,6 @@ MagickExport void GetMontageInfo(const ImageInfo *image_info,
   montage_info->font=AllocateString(image_info->font);
   montage_info->pointsize=image_info->pointsize;
   montage_info->gravity=CenterGravity;
-  montage_info->compose=OverCompositeOp;
   montage_info->fill=image_info->pen;
   (void) QueryColorDatabase("#000000ff",&montage_info->stroke);
   montage_info->background_color=image_info->background_color;
@@ -724,8 +723,8 @@ MagickExport Image *MontageImages(const Image *image,
           /*
             Composite background next with tile next.
           */
-          (void) CompositeImage(montage_next,montage_info->compose,next,
-            x_offset+x,y_offset+y);
+          (void) CompositeImage(montage_next,next->compose,next,x_offset+x,
+            y_offset+y);
           if (montage_info->shadow)
             {
               register long

@@ -1178,7 +1178,7 @@ int main(int argc,char **argv)
             }
           if (LocaleCompare("flatten",option+1) == 0)
             {
-              option_info.flatten=image_info->flatten=(*option == '-');
+              option_info.flatten=(*option == '-');
               break;
             }
           if (LocaleCompare("flip",option+1) == 0)
