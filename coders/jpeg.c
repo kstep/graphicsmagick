@@ -610,7 +610,10 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
     index;
 
   char
-    s[16];
+    s[128];
+
+  const char *
+    preserve_settings;
 
   long
     x,
@@ -772,7 +775,19 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Geometry: %dx%d",
         (int) jpeg_info.output_width,(int) jpeg_info.output_height);
     }
-  if (logging || image_info->verbose)
+/* Check for -define jpeg:preserve-settings */
+/* ImageMagick:
+  GetImageOption();
+*/
+/* GraphicsMagick */
+  preserve_settings=AccessDefinition(image_info,"jpeg","preserve-settings");
+  
+  if (logging && preserve_settings && preserve_settings[0])
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+        "  JPEG: preserve-settings=%s\n",preserve_settings);
+
+  if (logging || image_info->verbose || (preserve_settings &&
+      preserve_settings[0]))
     {
       long
         save_quality;
@@ -911,19 +926,18 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
            }
       }
       sprintf(s,"%ld",save_quality);
-      (void) SetImageAttribute(image,"[jpeg_quality]",s);
-    }
+      (void) SetImageAttribute(image,"JPEG-Quality",s);
 
-  if (logging)
-    {
+      sprintf(s,"%ld",(long)jpeg_info.out_color_space);
+      (void) SetImageAttribute(image,"JPEG-Colorspace",s);
+    
       switch (jpeg_info.out_color_space)
       {
         case JCS_CMYK:
         {
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "Colorspace: CMYK");
-          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-            "Sampling factors: (%d,%d),(%d,%d),(%d,%d),(%d,%d)",
+          sprintf(s,"(%d,%d),(%d,%d),(%d,%d),(%d,%d)",
             jpeg_info.comp_info[0].h_samp_factor,
             jpeg_info.comp_info[0].v_samp_factor,
             jpeg_info.comp_info[1].h_samp_factor,
@@ -938,8 +952,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
         {
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "Colorspace: GRAYSCALE");
-          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-            "Sampling factors: (%d,%d)",
+          sprintf(s,"(%d,%d)",
             jpeg_info.comp_info[0].h_samp_factor,
             jpeg_info.comp_info[0].v_samp_factor);
             break;
@@ -947,8 +960,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
         case JCS_RGB:
         {
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Colorspace: RGB");
-          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-            "Sampling factors: (%d,%d),(%d,%d),(%d,%d)",
+          sprintf(s,"(%d,%d),(%d,%d),(%d,%d)",
             jpeg_info.comp_info[0].h_samp_factor,
             jpeg_info.comp_info[0].v_samp_factor,
             jpeg_info.comp_info[1].h_samp_factor,
@@ -961,8 +973,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
         {
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Colorspace: %d",
             jpeg_info.out_color_space);
-          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-            "Sampling factors: (%d,%d),(%d,%d),(%d,%d),(%d,%d)",
+          sprintf(s,"(%d,%d),(%d,%d),(%d,%d),(%d,%d)",
             jpeg_info.comp_info[0].h_samp_factor,
             jpeg_info.comp_info[0].v_samp_factor,
             jpeg_info.comp_info[1].h_samp_factor,
@@ -974,7 +985,11 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
           break;
         }
       }
+      (void) SetImageAttribute(image,"JPEG-Sampling-factors",s);
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+          "Sampling Factors: %s", s);
     }
+  
   image->depth=jpeg_info.data_precision <= 8 ? 8 : 16;
   if (jpeg_info.out_color_space == JCS_GRAYSCALE)
     if (!AllocateImageColormap(image,1 << image->depth))
@@ -1386,6 +1401,10 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
   JSAMPROW
     scanline[1];
 
+  char
+   *sampling_factors,
+   *preserve_settings;
+
   long
     y;
 
@@ -1409,6 +1428,9 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
     logging,
     status;
 
+  unsigned long
+    input_colorspace,
+    quality;
   /*
     Open image file.
   */
@@ -1420,6 +1442,8 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
     ThrowWriterException(FileOpenError,UnableToOpenFile,image);
+
+
   /*
     Initialize JPEG parameters.
   */
@@ -1466,6 +1490,73 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
       break;
     }
   }
+
+  input_colorspace=UndefinedColorspace;
+  quality=image_info->quality;
+  /* Check for -define jpeg:preserve-settings */
+  /* ImageMagick:
+    GetImageOption();
+  */
+  /* GraphicsMagick */
+  preserve_settings=(char *) AccessDefinition(image_info,"jpeg",
+     "preserve-settings");
+
+  sampling_factors=image_info->sampling_factor;
+
+  if (preserve_settings[0])
+    {
+      const ImageAttribute
+        *attribute;
+
+      if (logging)
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+            "  JPEG:preserve-settings=%s",(char *) preserve_settings);
+
+      /* Retrieve input file quality */
+      attribute=GetImageAttribute(image,"JPEG-Quality");
+      if ((attribute != (const ImageAttribute *) NULL) &&
+          (attribute->value != (char *) NULL))
+        {
+          sscanf(attribute->value,"%lu",&quality);
+          if (logging)
+            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                "  Input quality=%lu",quality);
+        }
+
+      /* Retrieve input file colorspace */
+      attribute=GetImageAttribute(image,"JPEG-Colorspace");
+      if ((attribute != (const ImageAttribute *) NULL) &&
+          (attribute->value != (char *) NULL))
+        {
+          sscanf(attribute->value,"%lu",&input_colorspace);
+          if (logging)
+            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                "  Input colorspace=%lu",input_colorspace);
+        }
+
+      if (input_colorspace == jpeg_info.in_color_space)
+        {
+          /* Retrieve input sampling factors */
+          attribute=GetImageAttribute(image,"JPEG-Sampling-factors");
+          if ((attribute != (const ImageAttribute *) NULL) &&
+              (attribute->value != (char *) NULL))
+            {
+              sampling_factors=attribute->value;
+              if (logging)
+                (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                    "  Input sampling-factors=%s",sampling_factors);
+            }
+        }
+      else
+        {
+          if (logging)
+            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                "  Input colorspace (%lu) != Output colorspace (%d)",
+                input_colorspace,jpeg_info.in_color_space);
+        }
+    }
+
+
 
   if ((image_info->type != TrueColorType) &&
       (image_info->type != TrueColorMatteType) &&
@@ -1534,10 +1625,10 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
       "Interlace:  nonprogressive");
 #endif
   if ((image->compression == LosslessJPEGCompression) ||
-      (image_info->quality > 100))
+      (quality > 100))
     {
 #if defined(C_LOSSLESS_SUPPORTED)
-      if (image_info->quality < 100)
+      if (quality < 100)
         ThrowException(&image->exception,CoderWarning,LosslessToLossyJPEGConversion,(char *) NULL);
       else
         {
@@ -1545,8 +1636,8 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
             point_transform,
             predictor;
 
-          predictor=image_info->quality/100;  /* range 1-7 */
-          point_transform=image_info->quality % 20;  /* range 0-15 */
+          predictor=quality/100;  /* range 1-7 */
+          point_transform=quality % 20;  /* range 0-15 */
           jpeg_simple_lossless(&jpeg_info,predictor,point_transform);
           if (logging)
             {
@@ -1568,12 +1659,12 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
     }
   else
     {
-      jpeg_set_quality(&jpeg_info,(int) image_info->quality,True);
+      jpeg_set_quality(&jpeg_info,(int) quality,True);
       if (logging)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Quality: %lu",
-          image_info->quality);
+          quality);
     }
-  if (image_info->sampling_factor != (char *) NULL)
+  if (sampling_factors != (char *) NULL)
     {
       double
         hs[4]={1.0, 1.0, 1.0, 1.0}, 
@@ -1585,8 +1676,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
       /*
         Set sampling factors.
       */
-      count=sscanf(image_info->sampling_factor,
-        "%lfx%lf,%lfx%lf,%lfx%lf,%lfx%lf",
+      count=sscanf(sampling_factors,"%lfx%lf,%lfx%lf,%lfx%lf,%lfx%lf",
         &hs[0],&vs[0],&hs[1],&vs[1],&hs[2],&vs[2],&hs[3],&vs[3]);
 
       if (count%2 == 1)
@@ -1605,7 +1695,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
     }
    else
     {
-      if (image_info->quality >= 90)
+      if (quality >= 90)
         for (i=0; i < MAX_COMPONENTS; i++)
         {
           jpeg_info.comp_info[i].h_samp_factor=1;

@@ -1,9 +1,21 @@
+2003-12-16  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
+
+	* coders/jpeg.c: Changed stored jpeg quality attribute from
+	[jpeg-quality] to JPEG-Quality.  Added attributes JPEG-Colorspace
+	and JPEG-Sampling-factors.  Added code to save and restore
+	these attributes when "-define JPEG:preserve-settings" is
+	present in the comandline.  Quality is restored if the input
+	was a JPEG and the quality was preserved.  Sampling factors
+	are restored if the input was a JPEG, sampling factors were
+	preserved, and the colorspace for the output file is the same
+	as that of the input file.
+
 2003-12-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* TclMagick/source/configure.ac: Add an initial TclMagick
 	configure-based build environment based on a template and macros
-	from the Tcl project.  I recall that while the extension does build, it it
-	possible that it is not properly registered as a module to Tcl.
+	from the Tcl project.  I recall that while the extension does build,
+	it is possible that it is not properly registered as a module to Tcl.
 
 2003-12-14  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
