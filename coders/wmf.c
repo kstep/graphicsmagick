@@ -326,7 +326,7 @@ static void wmf_magick_bmp_draw (wmfAPI* API,wmfBMP_Draw_t* bmp_draw)
   x=bmp_draw->pt.x;
   y=bmp_draw->pt.y;
 
-  printf("x=%.10g, y=%.10g, width=%.10g, height=%.10g\n", x,y,width,height);
+/*   printf("x=%.10g, y=%.10g, width=%.10g, height=%.10g\n", x,y,width,height); */
   wmf_stream_printf (API,out,"image Copy %.10g,%.10g %.10g,%.10g '%s'\n",
                      x,y,width,height,imgspec);
 }
@@ -410,7 +410,7 @@ static void wmf_magick_bmp_read (wmfAPI* API,wmfBMP_Read_t* bmp_read)
     }
   else
     {
-      printf("rows=%ld,columns=%ld\n", image->rows, image->columns);
+      /* printf("rows=%ld,columns=%ld\n", image->rows, image->columns); */
       bmp_read->bmp.data   = image;
 /*       bmp_read->bmp.width  = (U16)image->columns; */
 /*       bmp_read->bmp.height = (U16)image->rows; */
