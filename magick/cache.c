@@ -1945,7 +1945,7 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
   if (file == -1)
     {
       LiberateMagickResource(DiskResource,cache_info->length);
-      ThrowBinaryException(CacheError,"Unable to open cache",image->filename);
+      ThrowBinaryException(CacheError,"Unable to open cache",image->filename)
     }
   if (!ExtendCache(file,cache_info->offset+cache_info->length))
     {
