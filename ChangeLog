@@ -1,19 +1,18 @@
 2002-10--1  Bob Friesenhahn <bfriesen@simple.dallas.tx.us>
-  * Added draw.h "DrawGet" equivalents to most of the "DrawSet"
-    functions.
-  * Added an array size argument to DrawSetDashPattern and got
-    rid of the zero-termination garbage.
-  o Remove 'Set' from the names of draw.h functions which update
-    the current affine transformation array (e.g. DrawSetRotate
-    becomes DrawRotate).
+  * Added draw.h "DrawGet" equivalents to most of the "DrawSet" functions.
+  * Added an array size argument to DrawSetDashPattern and got rid of
+    the zero-termination garbage.
+  o Remove 'Set' from the names of draw.h functions which update the
+    current affine transformation array (e.g. DrawSetRotate becomes
+    DrawRotate).
 
 2002-09-29  Bob Friesenhahn <bfriesen@simple.dallas.tx.us>
   * Updated to Automake 1.7.
 
 2002-09-29  Bob Friesenhahn <bfriesen@simple.dallas.tx.us>
   * Under Windows, a DllMain function which automatically initializes
-    ImageMagick (when ImageMagick is built using DLLs) may be added
-    by defining ProvideDllMain in magick_config.h
+    ImageMagick (when ImageMagick is built using DLLs) may be added by
+    defining ProvideDllMain in magick_config.h
 
 2002-09-28  Cristy  <cristy@mystic.es.dupont.com>
   * Added resource consumption methods, see magick/resource.c.
@@ -25,8 +24,8 @@
 
 2002-09-27  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
   * Added BMP2 and BMP3 output formats.
-  * Changed chromaticity primary.z from 1.0 to 1.0-(primary.x+primary.y) in
-    the PNG and PCD codecs.
+  * Changed chromaticity primary.z from 1.0 to 1.0-(primary.x+primary.y)
+    in the PNG and PCD codecs.
 
 2002-09-21  Cristy  <cristy@mystic.es.dupont.com>
   * Added 'exception' parameter to the ImageMagick progress monitor API.
