@@ -61,6 +61,8 @@
 */
 #if defined(HasXML)
 #include <libxml/parser.h>
+#include <libxml/xmlmemory.h>
+#include <libxml/parserInternals.h>
 #include <libxml/xml-error.h>
 typedef struct _ElementInfo
 {
