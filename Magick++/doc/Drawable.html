@@ -299,8 +299,9 @@ algorithm, at specified coordinates. If the <i>matte</i> attribute is set
 to <i>true</i>, then the image composition will consider an alpha channel,
 or transparency, present in the image file so that non-opaque portions
 allow part (or all) of the composite image to show through. If the specified
-<i>width</i> or <i>height</i> is zero, then the image is composited at
-its natural size, without enlargement or reduction.</font></td>
+<i>width</i>
+or <i>height</i> is zero, then the image is composited at its natural size,
+without enlargement or reduction.</font></td>
 </tr>
 
 <tr>
@@ -337,7 +338,7 @@ of the pattern array.</font></td>
 <td><font size=-1>unsigned int offset_</font></td>
 
 <td><font size=-1>Specify the distance into the dash pattern to start the
-dash. See documentation on SVG's <a href="http://www.w3.org/TR/2000/CR-SVG-20000802/painting.html#StrokeDashoffsetProperty">stroke-dashoffset</a>
+dash. See documentation on SVG's <a href="http://www.w3.org/TR/2000/CR-SVG-20001102/painting.html#StrokeDashoffsetProperty">stroke-dashoffset</a>
 property for usage details.</font></td>
 </tr>
 
@@ -374,7 +375,7 @@ is filled.</font></td>
 
 <td><font size=-1>Specify the algorithm which is to be used to determine
 what parts of the canvas are included inside the shape. See documentation
-on SVG's <a href="http://www.w3.org/TR/2000/CR-SVG-20000802/painting.html#FillRuleProperty">fill-rule</a>&nbsp;
+on SVG's <a href="http://www.w3.org/TR/2000/CR-SVG-20001102/painting.html#FillRuleProperty">fill-rule</a>&nbsp;
 property for usage details.</font></td>
 </tr>
 
@@ -707,7 +708,7 @@ image attributes may be incorporated in the text (see label()).</font></td>
 <h2>
 Vector Path Classes</h2></center>
 The vector paths supported by Magick++ are based on those supported by
-the <a href="http://www.w3.org/TR/2000/CR-SVG-20000802/paths.html">SVG
+the <a href="http://www.w3.org/TR/2000/CR-SVG-20001102/paths.html">SVG
 XML specification</a>. Vector paths are not directly drawable, they must
 first be supplied as a constructor argument to the <a href="#DrawablePath">DrawablePath</a>
 class in order to create a drawable object. The <a href="#DrawablePath">DrawablePath</a>
