@@ -15,7 +15,7 @@
  * JBIG-KIT version number
  */
 
-#define JBG_VERSION    "1.0"
+#define JBG_VERSION    "1.1"
 
 /*
  * Buffer block for SDEs which are temporarily stored by encoder
