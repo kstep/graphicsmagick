@@ -6,9 +6,9 @@ use Config;
 WriteMakefile(
     'NAME'	=> 'Image::Magick',
     'VERSION_FROM' => 'Magick.pm', # finds $VERSION
-    'LIBS'	=> ['-L/usr/local/lib -L/usr/X11R6/lib -L/home/cristy/ImageMagick/magick -lMagick    -ltiff  -ljpeg -lpng -lfpx  -lXext -lXt  -lSM -lICE -lX11  -lbz2  -lz -lpthread  -lm'],
+    'LIBS'	=> ['-L/usr/lib -L/usr/local/lib -L/usr/X11R6/lib -L/home/cristy/ImageMagick/magick -lMagick    -ltiff -lfreetype -ljpeg  -lpng  -ldpstk -ldps -lXext -lXt  -lSM -lICE -lX11  -lbz2  -lz -lpthread  -lm'],
     'DEFINE'	=> '-DHAVE_CONFIG_H',     # e.g., '-DHAVE_SOMETHING' 
-    'INC'	=> '-I../ -I.. -D_REENTRANT -D_FILE_OFFSET_BITS=64 -I/usr/local/include -I/usr/X11R6/include',
+    'INC'	=> '-I../ -I.. -I/usr/include/freetype2 -I/usr/include/freetype2 -D_REENTRANT -D_FILE_OFFSET_BITS=64 -I/usr/local/include -I/usr/X11R6/include -I/usr/X11R6/include/X11',
     ($Config{'archname'} =~ /-object$/i ? ('CAPI' => 'TRUE') : ()),
 );
 
@@ -43,7 +43,7 @@ sub MY::test
    #
    # e.g. my @DELEGATES = qw/jpeg tiff/;
    #
-   my @DELEGATES = qw/ bzlib fpx jpeg mpeg png ps tiff x zlib/;
+   my @DELEGATES = qw/ bzlib jpeg mpeg png ps tiff ttf x xfig zlib/;
 
    package MY; # so that "SUPER" works right
    my $inherited = shift->SUPER::test(@_);
