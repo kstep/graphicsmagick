@@ -5906,7 +5906,7 @@ MagickExport void SetImageOpacity(Image *image,const unsigned int opacity)
       }
       return;
     }
-  SetImageType(image,TrueColorMatteType);
+  image->matte=True;
   for (y=0; y < (long) image->rows; y++)
   {
     q=GetImagePixels(image,0,y,image->columns,1);
