@@ -240,7 +240,7 @@ static double GetUserSpaceCoordinateValue(const SVGInfo *svg_info,
   if (LocaleNCompare(p,"in",2) == 0)
     return(72.0*value/svg_info->scale[n]);
   if (LocaleNCompare(p,"mm",2) == 0)
-    return(72.0*25.4*value/svg_info->scale[n]);
+    return(72.0/25.4*value/svg_info->scale[n]);
   if (LocaleNCompare(p,"pc",2) == 0)
     return(72.0/6.0*value/svg_info->scale[n]);
   if (LocaleNCompare(p,"pt",2) == 0)
@@ -2051,7 +2051,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       break;
     (void) xmlParseChunk(svg_info.parser," ",1,False);
   }
-  (void) xmlParseChunk(svg_info.parser,(char *) NULL,0,True);
+  (void) xmlParseChunk(svg_info.parser," ",1,True);
   xmlFreeParserCtxt(svg_info.parser);
   if (svg_info.verbose)
     (void) fprintf(stdout,"end SAX\n");
