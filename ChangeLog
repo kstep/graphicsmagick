@@ -539,7 +539,7 @@
 	* PerlMagick/Magick.xs (SetAttribute): Support changing back to
 	RGB or Transparent colorspace.
 
-2002-02-10  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
+2003-02-10  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
 
 	* Brought MNG handling of final delay into compliance with MNG spec.
 
@@ -943,7 +943,7 @@
 	 "}" caused an assertion failure after reading any opaque JNG image.
 	* Added CloseBlob before returning a NULL JNG image.
 	* Merged png.c with IM-5.5.3-1, including a seemingly pointless
-	rename of SaveImagText string to SaveImageTag.
+	rename of SaveImageText string to SaveImageTag.
 
 2002-12-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 	* magick/image.c: Optimized gray x, y, z, tables creation in
@@ -957,13 +957,6 @@
 	Pass image->colorspace to TransformRGBImage().
 	* magick/nt_feature.c: Ensure that image is RGB prior to transfer
 	to HBITMAP.
-
-2002-12-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
-	* magick/image.c: Re-worked RGBTransformImage so that it is now
-	smoking fast for Q:8 and Q:16. Changed lookup tables, and all
-	per-pixel transforms to use only integer arithmetic. A
-	pre-multiplication scheme is used which should actually improve
-	the quantization error over using double arithmetic
 
 2002-12-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 	* magick/image.c: Re-worked TransformRGBImage() again so that it
@@ -1128,7 +1121,7 @@
 2002-12-12 William Radcliffe <billr@corbis.com>
 	* magick/magick.c
 	Fixed bugs in InitializeMagick, but I also heavily commented
-	the code so show what it seesm to be doing. It appears broken
+	the code so show what it seems to be doing. It appears broken
 	and needs testing on all platforms. Toward that end, I added
 	Log events so that we can see what it is doing.
 
