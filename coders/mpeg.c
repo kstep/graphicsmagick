@@ -715,6 +715,9 @@ static unsigned int WriteMPEGParameterFiles(const ImageInfo *image_info,
 
 static unsigned int WriteMPEGImage(const ImageInfo *image_info,Image *image)
 {
+  char
+    filename[MaxTextExtent];
+
   ImageInfo
     *clone_info;
 
@@ -745,10 +748,11 @@ static unsigned int WriteMPEGImage(const ImageInfo *image_info,Image *image)
     if (status == False)
       break;
   }
+  (void) strncpy(filename,image->filename,MaxTextExtent-1);
   (void) strncpy(image->filename,clone_info->unique,MaxTextExtent-1);
   status=InvokeDelegate(clone_info,image,(char *) NULL,"mpeg-encode",
     &image->exception);
-  FormatString(image->filename,"%.1024s%%d.yuv",clone_info->unique);
+  (void) strncpy(image->filename,filename,MaxTextExtent-1);
   for (p=image; p != (Image *) NULL; p=p->next)
   {
     (void) remove(p->filename);
