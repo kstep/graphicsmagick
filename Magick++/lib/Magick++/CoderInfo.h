@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 2001, 2002
+// Copyright Bob Friesenhahn, 2001, 2002, 2003
 //
 // CoderInfo Definition
 //
@@ -10,8 +10,8 @@
 #if !defined (Magick_CoderInfo_header)
 #define Magick_CoderInfo_header
 
-#include <string>
 #include "Magick++/Include.h"
+#include <string>
 
 namespace Magick
 {

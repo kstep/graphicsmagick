@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002
+// Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002, 2003
 //
 // Definition and implementation of template functions for using
 // Magick::Image with STL containers.
@@ -9,10 +9,10 @@
 #ifndef Magick_STL_header
 #define Magick_STL_header
 
+#include "Magick++/Include.h"
 #include <algorithm>
 #include <functional>
 #include <iterator>
-#include "Magick++/Include.h"
 #include "Magick++/CoderInfo.h"
 #include "Magick++/Drawable.h"
 #include "Magick++/Exception.h"

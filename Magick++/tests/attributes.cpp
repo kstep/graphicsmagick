@@ -1,14 +1,13 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002
+// Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002, 2003
 //
 // Tests for setting/getting Magick::Image attributes
 //
 
+#include <Magick++.h>
 #include <string>
 #include <iostream>
-
-#include <Magick++.h>
 
 using namespace std;
 

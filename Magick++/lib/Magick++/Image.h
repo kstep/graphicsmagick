@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002
+// Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002, 2003
 //
 // Definition of Image, the representation of a single image in Magick++
 //
@@ -8,10 +8,9 @@
 #if !defined(Magick_Image_header)
 #define Magick_Image_header
 
+#include "Magick++/Include.h"
 #include <string>
 #include <list>
-
-#include "Magick++/Include.h"
 #include "Magick++/Blob.h"
 #include "Magick++/Color.h"
 #include "Magick++/Drawable.h"

@@ -260,86 +260,83 @@ static char *TraceClippingPath(char *blob,size_t length,unsigned long columns,
     return((char *) NULL);
   message=AllocateString((char *) NULL);
   while (length != 0)
-  {
-    selector=ReadMSBShort(&blob,&length);
-    if (selector != 6)
-      {
-        /*
-          Path fill record.
-        */
-        blob+=24;
-        length-=24;
-        continue;
-      }
-    blob+=24;
-    length-=24;
-    FormatString(message,"<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>\n");
-    (void) ConcatenateString(&path,message);
-    FormatString(message,"<svg width=\"%lu\" height=\"%lu\">\n",columns,rows);
-    (void) ConcatenateString(&path,message);
-    FormatString(message,"<g>\n");
-    (void) ConcatenateString(&path,message);
-    FormatString(message,"<path style=\"fill:#ffffff;stroke:none\" d=\"\n");
-    (void) ConcatenateString(&path,message);
-    while (length != 0)
     {
       selector=ReadMSBShort(&blob,&length);
-      if (selector > 8)
-        break;
-      count=ReadMSBShort(&blob,&length);
-      blob+=22;
-      length-=22;
-      status=True;
-      while (count > 0)
-      {
-        selector=ReadMSBShort(&blob,&length);
-        if ((selector == 1) || (selector == 2) || (selector == 4) ||
-            (selector == 5))
-          {
-            for (i=0; i < 3; i++)
-            {
-              y=ReadMSBLong(&blob,&length);
-              x=ReadMSBLong(&blob,&length);
-              point[i].x=(double) x*columns/4096/4096;
-              point[i].y=(double) y*rows/4096/4096;
-            }
-            if (status)
-              {
-                FormatString(message,"M %.1f,%.1f\n",point[1].x,point[1].y);
-                for (i=0; i < 3; i++)
-                {
-                  first[i]=point[i];
-                  last[i]=point[i];
-                }
-              }
-            else
-              {
-                FormatString(message,"C %.1f,%.1f %.1f,%.1f %.1f,%.1f\n",
-                  last[2].x,last[2].y,point[0].x,point[0].y,point[1].x,
-                  point[1].y);
-                for (i=0; i < 3; i++)
-                  last[i]=point[i];
-              }
-          (void) ConcatenateString(&path,message);
-          status=False;
-          count--;
-        }
-      }
-      if (!status)
+      if (selector == 6)
         {
-          FormatString(message,"C %.1f,%.1f %.1f,%.1f %.1f,%.1f Z\n",last[2].x,
-            last[2].y,first[0].x,first[0].y,first[1].x,first[1].y);
-          (void) ConcatenateString(&path,message);
+          /*
+            Path fill record.
+          */
+          blob+=24;
+          length-=24;
+          continue;
         }
+      FormatString(message,"<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>\n");
+      (void) ConcatenateString(&path,message);
+      FormatString(message,"<svg width=\"%lu\" height=\"%lu\">\n",columns,rows);
+      (void) ConcatenateString(&path,message);
+      FormatString(message,"<g>\n");
+      (void) ConcatenateString(&path,message);
+      FormatString(message,"<path style=\"fill:#ffffff;stroke:none\" d=\"\n");
+      (void) ConcatenateString(&path,message);
+      while (length != 0)
+        {
+          if (selector > 8)
+            break;
+          count=ReadMSBShort(&blob,&length);
+          blob+=22;
+          length-=22;
+          status=True;
+          while (count > 0 && length > 0)
+            {
+              selector=ReadMSBShort(&blob,&length);
+              if ((selector == 1) || (selector == 2) || (selector == 4) ||
+                  (selector == 5))
+                {
+                  for (i=0; i < 3; i++)
+                    {
+                      y=ReadMSBLong(&blob,&length);
+                      x=ReadMSBLong(&blob,&length);
+                      point[i].x=(double) x*columns/4096/4096;
+                      point[i].y=(double) y*rows/4096/4096;
+                    }
+                  if (status)
+                    {
+                      FormatString(message,"M %.1f,%.1f\n",point[1].x,point[1].y);
+                      for (i=0; i < 3; i++)
+                        {
+                          first[i]=point[i];
+                          last[i]=point[i];
+                        }
+                    }
+                  else
+                    {
+                      FormatString(message,"C %.1f,%.1f %.1f,%.1f %.1f,%.1f\n",
+                                   last[2].x,last[2].y,point[0].x,point[0].y,point[1].x,
+                                   point[1].y);
+                      for (i=0; i < 3; i++)
+                        last[i]=point[i];
+                    }
+                  (void) ConcatenateString(&path,message);
+                  status=False;
+                  count--;
+                }
+            }
+          if (!status)
+            {
+              FormatString(message,"C %.1f,%.1f %.1f,%.1f %.1f,%.1f Z\n",last[2].x,
+                           last[2].y,first[0].x,first[0].y,first[1].x,first[1].y);
+              (void) ConcatenateString(&path,message);
+            }
+        }
+      FormatString(message,"\"/>\n");
+      (void) ConcatenateString(&path,message);
+      FormatString(message,"</g>\n");
+      (void) ConcatenateString(&path,message);
+      FormatString(message,"</svg>\n");
+      (void) ConcatenateString(&path,message);
+      break;
     }
-    FormatString(message,"\"/>\n");
-    (void) ConcatenateString(&path,message);
-    FormatString(message,"</g>\n");
-    (void) ConcatenateString(&path,message);
-    FormatString(message,"</svg>\n");
-    (void) ConcatenateString(&path,message);
-    break;
-  }
   MagickFreeMemory(message);
   return(path);
 }

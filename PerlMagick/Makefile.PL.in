@@ -36,7 +36,7 @@ WriteMakefile
    'VERSION'   => '@PACKAGE_VERSION@',
 
    # Preprocessor defines
-   'DEFINE'	=> '@DEFS@',     # e.g., '-DHAVE_SOMETHING' 
+   'DEFINE'	=> '@LFS_CPPFLAGS@  @DEFS@',     # e.g., '-DHAVE_SOMETHING' 
 
    # Header search specfication and preprocessor flags
    'INC'	=> '-I../ -I@top_srcdir@ @CPPFLAGS@',

@@ -5,12 +5,11 @@
 // Test STL coalesceImages function
 //
 
+#include <Magick++.h>
 #include <string>
 #include <iostream>
 #include <list>
 #include <vector>
-
-#include <Magick++.h>
 
 using namespace std;
 

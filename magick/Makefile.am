@@ -30,7 +30,7 @@ ALLMANPAGES = GraphicsMagick-config.1
 libGraphicsMagick_la_LDFLAGS = -no-undefined \
 	-version-info $(LIBRARY_CURRENT):$(LIBRARY_REVISION):$(LIBRARY_AGE)
 
-AM_CPPFLAGS = -I$(top_srcdir) $(INCLTDL) @LIBRARY_EXTRA_CPPFLAGS@
+AM_CPPFLAGS = -I$(top_builddir) -I$(top_srcdir) $(INCLTDL) @LIBRARY_EXTRA_CPPFLAGS@
 
 # Library base sources
 MAGICK_BASE_SRCS = memory.c blob.c cache.c locale.c error.c monitor.c \
@@ -104,7 +104,7 @@ pkginclude_HEADERS = \
 	log.h \
 	magic.h \
 	magick.h \
-	magick.h \
+	magick_types.h \
 	module.h \
 	monitor.h \
 	montage.h \
@@ -130,7 +130,6 @@ pkginclude_HEADERS = \
 noinst_HEADERS = \
 	animate.h \
 	display.h \
-	integral_types.h \
 	mac.h \
 	nt_base.h \
 	nt_feature.h \

@@ -7,11 +7,11 @@
 
 #define MAGICK_IMPLEMENTATION
 
-#include <string.h>
-
 #include "Magick++/Include.h"
 #include "Magick++/Blob.h"
 #include "Magick++/BlobRef.h"
+
+#include <string.h>
 
 //
 // Implementation of Magick::Blob

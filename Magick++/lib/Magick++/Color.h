@@ -1,14 +1,14 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002
+// Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002, 2003
 //
 // Color Implementation
 //
 #if !defined (Magick_Color_header)
 #define Magick_Color_header
 
-#include <string>
 #include "Magick++/Include.h"
+#include <string>
 
 namespace Magick
 {

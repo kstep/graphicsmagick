@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002
+// Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002, 2003
 //
 // Simple demo program for Magick++
 //
@@ -10,11 +10,10 @@
 // Max run-time size 60MB (as compared with 95MB for PerlMagick) under SPARC Solaris
 //
 
+#include <Magick++.h>
 #include <string>
 #include <iostream>
 #include <list>
-
-#include <Magick++.h>
 
 using namespace std;
 
@@ -414,7 +413,6 @@ int main( int /*argc*/, char ** argv)
       // Create logo image
       cout << "Adding logo image ..." << endl;
       Image logo( "logo:" );
-      logo.crop( "461x455+98+0" );
       logo.zoom( "45%" );
 
       // Composite logo into montage image

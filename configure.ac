@@ -321,12 +321,6 @@ then
   fi
 fi
 
-# Disable support for largefiles
-AC_ARG_ENABLE(largefile,
-	      [  --disable-largefile     disable support for large (64 bit) file offsets],
-	      [with_largefile=$enableval],
-	      [with_largefile='yes'])
-
 # Enable LZW compression.
 AC_ARG_ENABLE(lzw,
 	      [  --enable-lzw            enable LZW support (default disabled)],
@@ -579,35 +573,28 @@ AC_SUBST(LIBRARY_EXTRA_CPPFLAGS)
 #
 # Check for large file support
 #
+# Acccording to the X/Open LFS standard, setting _FILE_OFFSET_BITS to 64
+# remaps standard functions to their 64-bit equivalents.
+#
 ########
-LIB_LF=''
-if test "$with_largefile" = 'yes'
+AC_SYS_LARGEFILE
+LFS_CPPFLAGS=''
+if test "$ac_cv_sys_file_offset_bits" != 'no'
 then
-#  AC_SYS_LARGEFILE
-  AC_MSG_CHECKING(whether large file support needs explicit enabling)
-  result='no'
-  getconf='getconf LFS_CFLAGS'
-  if ($getconf) >/dev/null 2>&1
-  then
-    CPPFLAGS="$CPPFLAGS "`$getconf`
-    result='yes'
-  fi
-  getconf='getconf LFS_LDFLAGS'
-  if ($getconf) >/dev/null 2>&1
-  then
-    LDFLAGS="$LDFLAGS "`$getconf`
-    result='yes'
-  fi
-  getconf='getconf LFS_LIBS'
-  if ($getconf) >/dev/null 2>&1
-  then
-    LIB_LF=`$getconf`
-    LIBS="$LIB_LF $LIBS"
-    result='yes'
-  fi
-  AC_MSG_RESULT($result)
+  LFS_CPPFLAGS="$LFS_CPPFLAGS -D_FILE_OFFSET_BITS=$ac_cv_sys_file_offset_bits"
 fi
-AC_SUBST(LIB_LF)
+if test "$ac_cv_sys_large_files" != 'no'
+then
+  LFS_CPPFLAGS="$LFS_CPPFLAGS -D_LARGE_FILES=1"
+fi
+# If the `fseeko' function is available, define `HAVE_FSEEKO'. Define
+# `_LARGEFILE_SOURCE' if necessary.
+AC_FUNC_FSEEKO
+if test "$ac_cv_sys_largefile_source" != 'no'
+then
+  LFS_CPPFLAGS="$LFS_CPPFLAGS -D_LARGEFILE_SOURCE=1"
+fi
+AC_SUBST(LFS_CPPFLAGS)
 
 # Check standard headers
 AC_HEADER_STDC
@@ -639,27 +626,27 @@ AC_C_BIGENDIAN
 # or precision than the double type, define HAVE_LONG_DOUBLE.
 AC_C_LONG_DOUBLE
 
-# Obtain size of an 'short' and define as SIZEOF_SHORT
-AC_CHECK_SIZEOF(short)
+# Obtain size of an 'signed short' and define as SIZEOF_SHORT
+AC_CHECK_SIZEOF(signed short)
 
 # Obtain size of an 'unsigned short' and define as SIZEOF_UNSIGNED_SHORT
 AC_CHECK_SIZEOF(unsigned short)
 
-# Obtain size of an 'int' and define as SIZEOF_INT
-AC_CHECK_SIZEOF(int)
+# Obtain size of an 'signed int' and define as SIZEOF_INT
+AC_CHECK_SIZEOF(signed int)
 
 # Obtain size of an 'unsigned int' and define as SIZEOF_UNSIGNED_INT
 AC_CHECK_SIZEOF(unsigned int)
 
-# Obtain size of a 'long' and define as SIZEOF_LONG
-AC_CHECK_SIZEOF(long)
+# Obtain size of a 'signed long' and define as SIZEOF_LONG
+AC_CHECK_SIZEOF(signed long)
 
 # Obtain size of a 'unsigned long' and define as SIZEOF_UNSIGNED_LONG
 AC_CHECK_SIZEOF(unsigned long)
 
 # Obtain size of a 'long long' and define as SIZEOF_LONG_LONG.  If
 # 'long long' is not supported then the value defined is zero.
-AC_CHECK_SIZEOF(long long)
+AC_CHECK_SIZEOF(signed long long)
 
 # Obtain size of a 'unsigned long long' and define as
 # SIZEOF_UNSIGNED_LONG_LONG.  If 'unsigned long long' is not
@@ -704,6 +691,78 @@ else
  AC_MSG_RESULT(no)
 fi
 fi
+
+#
+# Compute sized types for current CPU and compiler options
+#
+
+AC_MSG_CHECKING(for signed 8-bit type)
+INT8_T='signed char'
+AC_MSG_RESULT($INT8_T)
+AC_SUBST(INT8_T)
+
+AC_MSG_CHECKING(for unsigned 8-bit type)
+UINT8_T='unsigned char'
+AC_MSG_RESULT($UINT8_T)
+AC_SUBST(UINT8_T)
+
+AC_MSG_CHECKING(for signed 16-bit type)
+INT16_T='signed short'
+AC_MSG_RESULT($INT16_T)
+AC_SUBST(INT16_T)
+
+AC_MSG_CHECKING(for unsigned 16-bit type)
+UINT16_T='unsigned short'
+AC_MSG_RESULT($UINT16_T)
+AC_SUBST(UINT16_T)
+
+AC_MSG_CHECKING(for signed 32-bit type)
+INT32_T='none'
+if test $ac_cv_sizeof_signed_int -eq 4
+then
+  INT32_T='signed int'
+elif test $ac_cv_sizeof_signed_long -eq 4
+then
+  INT32_T='signed long'
+fi
+AC_MSG_RESULT($INT32_T)
+AC_SUBST(INT32_T)
+
+AC_MSG_CHECKING(for unsigned 32-bit type)
+UINT32_T='none'
+if test $ac_cv_sizeof_unsigned_int -eq 4
+then
+  UINT32_T='unsigned int'
+elif test $ac_cv_sizeof_unsigned_long -eq 4
+then
+  UINT32_T='unsigned long'
+fi
+AC_MSG_RESULT($UINT32_T)
+AC_SUBST(UINT32_T)
+
+AC_MSG_CHECKING(for signed 64-bit type)
+INT64_T='none'
+if test $ac_cv_sizeof_signed_long -eq 8
+then
+  INT64_T='signed long'
+elif test $ac_cv_sizeof_signed_long_long -eq 8
+then
+  INT64_T='signed long long'
+fi
+AC_MSG_RESULT($INT64_T)
+AC_SUBST(INT64_T)
+
+AC_MSG_CHECKING(for unsigned 64-bit type)
+UINT64_T='none'
+if test $ac_cv_sizeof_unsigned_long -eq 8
+then
+  UINT64_T='unsigned long'
+elif test $ac_cv_sizeof_unsigned_long_long -eq 8
+then
+  UINT64_T='unsigned long long'
+fi
+AC_MSG_RESULT($UINT64_T)
+AC_SUBST(UINT64_T)
 
 ########
 #
@@ -2301,9 +2360,9 @@ fi
 #
 if test "$with_modules" != 'no'
 then
-  MAGICK_DEP_LIBS="$LIB_LCMS $LIB_TTF $LIB_GS $LIB_XEXT $LIB_X11 $LIB_BZLIB $LIB_ZLIB $LIB_GDI32 $LIB_THREAD $LIB_LF $LIB_MATH $LIB_CCMALLOC"
+  MAGICK_DEP_LIBS="$LIB_LCMS $LIB_TTF $LIB_GS $LIB_XEXT $LIB_X11 $LIB_BZLIB $LIB_ZLIB $LIB_GDI32 $LIB_THREAD $LIB_MATH $LIB_CCMALLOC"
 else
-  MAGICK_DEP_LIBS="$LIB_JBIG $LIB_LCMS $LIB_TIFF $LIB_TTF $LIB_JP2 $LIB_JPEG $LIB_GS $LIB_PNG $LIB_FPX $LIB_WMF $LIB_DPS $LIB_XEXT $LIB_X11 $LIB_BZLIB $LIB_XML $LIB_ZLIB $LIB_GDI32 $LIB_THREAD $LIB_LF $LIB_MATH $LIB_CCMALLOC"
+  MAGICK_DEP_LIBS="$LIB_JBIG $LIB_LCMS $LIB_TIFF $LIB_TTF $LIB_JP2 $LIB_JPEG $LIB_GS $LIB_PNG $LIB_FPX $LIB_WMF $LIB_DPS $LIB_XEXT $LIB_X11 $LIB_BZLIB $LIB_XML $LIB_ZLIB $LIB_GDI32 $LIB_THREAD $LIB_MATH $LIB_CCMALLOC"
 fi
 AC_SUBST(MAGICK_DEP_LIBS)
 
@@ -2359,6 +2418,7 @@ AC_OUTPUT( \
         coders/type.mgk \
         filters/Makefile \
         ltdl/Makefile \
+        magick/magick_types.h \
         magick/GraphicsMagick-config \
         magick/GraphicsMagick.pc \
         magick/version.h \
@@ -2444,6 +2504,7 @@ echo "  CFLAGS   = $CFLAGS"
 echo "  CPPFLAGS = $CPPFLAGS"
 echo "  CXX      = $CXX"
 echo "  CXXFLAGS = $CXXFLAGS"
+echo "  DEFS     = $DEFS"
 echo "  LDFLAGS  = $LDFLAGS"
 #echo "  LIBS     = $TESTED_LIBS"
 echo "  LIBS     = $MAGICK_DEP_LIBS"

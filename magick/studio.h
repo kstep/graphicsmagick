@@ -178,7 +178,7 @@ extern "C" {
 # if !defined(S_ISREG)
 #  define S_ISREG(mode) (((mode) & S_IFMT) == S_IFREG)
 # endif
-# include "magick/integral_types.h"
+# include "magick/magick_types.h"
 # include "magick/image.h"
 # include "magick/list.h"
 # if !defined(WIN32)
@@ -195,7 +195,7 @@ extern "C" {
 #  include <console.h>
 #  include <unix.h>
 # endif
-# include "magick/integral_types.h"
+# include "magick/magick_types.h"
 # include "magick/image.h"
 # include "magick/list.h"
 #endif

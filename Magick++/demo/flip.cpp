@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999
+// Copyright Bob Friesenhahn, 1999, 2003
 //
 // Demonstration of unary function-object based operations
 //
@@ -8,12 +8,11 @@
 // flipped and morphed version to "flip_out.miff".
 //
 
+#include <Magick++.h>
 #include <string>
 #include <iostream>
 #include <list>
 #include <algorithm>
-
-#include <Magick++.h>
 
 using namespace std;
 

@@ -52,6 +52,7 @@ Source: "..\..\magick\log.h"; DestDir: "{app}\include\magick"; Tasks: install_De
 Source: "..\..\magick\magic.h"; DestDir: "{app}\include\magick"; Tasks: install_Devel; Flags: ignoreversion
 Source: "..\..\magick\magick_config.h"; DestDir: "{app}\include\magick"; Tasks: install_Devel; Flags: ignoreversion
 Source: "..\..\magick\magick.h"; DestDir: "{app}\include\magick"; Tasks: install_Devel; Flags: ignoreversion
+Source: "..\..\magick\magick_types.h"; DestDir: "{app}\include\magick"; Tasks: install_Devel; Flags: ignoreversion
 Source: "..\..\magick\module.h"; DestDir: "{app}\include\magick"; Tasks: install_Devel; Flags: ignoreversion
 Source: "..\..\magick\monitor.h"; DestDir: "{app}\include\magick"; Tasks: install_Devel; Flags: ignoreversion
 Source: "..\..\magick\montage.h"; DestDir: "{app}\include\magick"; Tasks: install_Devel; Flags: ignoreversion

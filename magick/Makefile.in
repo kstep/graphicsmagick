@@ -161,8 +161,13 @@ INSTALL_LTDL_TRUE = @INSTALL_LTDL_TRUE@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
+INT16_T = @INT16_T@
+INT32_T = @INT32_T@
+INT64_T = @INT64_T@
+INT8_T = @INT8_T@
 LD = @LD@
 LDFLAGS = @LDFLAGS@
+LFS_CPPFLAGS = @LFS_CPPFLAGS@
 LIBADD_DL = @LIBADD_DL@
 LIBEXEC_DIR = @LIBEXEC_DIR@
 LIBLTDL = @LIBLTDL@
@@ -183,7 +188,6 @@ LIB_JBIG = @LIB_JBIG@
 LIB_JP2 = @LIB_JP2@
 LIB_JPEG = @LIB_JPEG@
 LIB_LCMS = @LIB_LCMS@
-LIB_LF = @LIB_LF@
 LIB_MATH = @LIB_MATH@
 LIB_PNG = @LIB_PNG@
 LIB_THREAD = @LIB_THREAD@
@@ -270,6 +274,10 @@ ShowImageDelegate = @ShowImageDelegate@
 SysCtlDelegate = @SysCtlDelegate@
 TXT2HTML = @TXT2HTML@
 TXTDelegate = @TXTDelegate@
+UINT16_T = @UINT16_T@
+UINT32_T = @UINT32_T@
+UINT64_T = @UINT64_T@
+UINT8_T = @UINT8_T@
 VERSION = @VERSION@
 WIN32_NATIVE_BUILD_FALSE = @WIN32_NATIVE_BUILD_FALSE@
 WIN32_NATIVE_BUILD_TRUE = @WIN32_NATIVE_BUILD_TRUE@
@@ -364,7 +372,7 @@ libGraphicsMagick_la_LDFLAGS = -no-undefined \
 	-version-info $(LIBRARY_CURRENT):$(LIBRARY_REVISION):$(LIBRARY_AGE)
 
 
-AM_CPPFLAGS = -I$(top_srcdir) $(INCLTDL) @LIBRARY_EXTRA_CPPFLAGS@
+AM_CPPFLAGS = -I$(top_builddir) -I$(top_srcdir) $(INCLTDL) @LIBRARY_EXTRA_CPPFLAGS@
 
 # Library base sources
 MAGICK_BASE_SRCS = memory.c blob.c cache.c locale.c error.c monitor.c \
@@ -427,7 +435,7 @@ pkginclude_HEADERS = \
 	log.h \
 	magic.h \
 	magick.h \
-	magick.h \
+	magick_types.h \
 	module.h \
 	monitor.h \
 	montage.h \
@@ -453,7 +461,6 @@ pkginclude_HEADERS = \
 noinst_HEADERS = \
 	animate.h \
 	display.h \
-	integral_types.h \
 	mac.h \
 	nt_base.h \
 	nt_feature.h \
@@ -488,7 +495,8 @@ man_MANS = $(ALLMANPAGES)
 subdir = magick
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = magick_config.h magick_config_api.h
-CONFIG_CLEAN_FILES = GraphicsMagick-config GraphicsMagick.pc version.h
+CONFIG_CLEAN_FILES = magick_types.h GraphicsMagick-config \
+	GraphicsMagick.pc version.h
 LTLIBRARIES = $(lib_LTLIBRARIES)
 
 @WITH_LTDL_FALSE@@WITH_MODULES_TRUE@libGraphicsMagick_la_DEPENDENCIES =
@@ -581,7 +589,7 @@ HEADERS = $(noinst_HEADERS) $(pkginclude_HEADERS)
 DIST_COMMON = $(noinst_HEADERS) $(pkginclude_HEADERS) \
 	GraphicsMagick-config.in GraphicsMagick.pc.in Makefile.am \
 	Makefile.in magick_config.h.in magick_config_api.h.in \
-	version.h.in
+	magick_types.h.in version.h.in
 SOURCES = $(libGraphicsMagick_la_SOURCES) $(EXTRA_libGraphicsMagick_la_SOURCES)
 
 all: $(BUILT_SOURCES) magick_config.h magick_config_api.h
@@ -625,6 +633,8 @@ $(srcdir)/magick_config_api.h.in: @MAINTAINER_MODE_TRUE@ $(top_srcdir)/configure
 
 distclean-hdr:
 	-rm -f magick_config.h stamp-h1 magick_config_api.h stamp-h2
+magick_types.h: $(top_builddir)/config.status magick_types.h.in
+	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@
 GraphicsMagick-config: $(top_builddir)/config.status GraphicsMagick-config.in
 	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@
 GraphicsMagick.pc: $(top_builddir)/config.status GraphicsMagick.pc.in

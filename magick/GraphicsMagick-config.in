@@ -33,7 +33,7 @@ while test $# -gt 0; do
       echo '@CFLAGS@'
       ;;
     --cppflags)
-      echo "-I@INCLUDE_DIR@/GraphicsMagick @CPPFLAGS@"
+      echo "-I@INCLUDE_DIR@/GraphicsMagick @LFS_CPPFLAGS@ @CPPFLAGS@"
       ;;
     --ldflags)
       echo '-L@LIB_DIR@ @LDFLAGS@'

@@ -1,3 +1,10 @@
+2003-07-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* demo/demo.cpp (main): Don't crop logo image.  *
+	* *.h, *.cpp: Include "Magick++/Include.h" before including any
+	compiler or system header in order to ensure that LFS defines are
+	properly applied. Inspired by patch from Albert Chin-A-Young.
+
 2003-06-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Magick++/Include.h: Needed to import ThrowLoggedException.

@@ -1,15 +1,14 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999, 2000, 2002
+// Copyright Bob Friesenhahn, 1999, 2000, 2002, 2003
 //
 // PerlMagick "piddle" demo re-implemented using Magick++ methods.
 // The PerlMagick "piddle" demo is written by John Cristy
 //
 
+#include <Magick++.h>
 #include <string>
 #include <iostream>
-
-#include <Magick++.h>
 
 using namespace std;
 

@@ -53,6 +53,60 @@
 </tr>
 </table>
 <p>
+2003-07-09  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> wand/GraphicsMagickWand.pc.in (prefix): Pass LFS CPPFLAGS.
+  <LI> wand/GraphicsMagickWand-config.in: Pass LFS CPPFLAGS.
+  <LI> wand/Makefile.am: Fix include path.
+  <LI> magick/GraphicsMagick.pc.in (prefix): Pass LFS CPPFLAGS.
+  <LI> magick/magick_config_api.h.in: Pass LFS configuration options
+        until the API is fixed so that it is not LFS sensitive anymore.
+  <LI> magick/GraphicsMagick-config.in: Pass LFS CPPFLAGS.
+  <LI> PerlMagick/Makefile.PL.in: Pass LFS CPPFLAGS.
+  <LI> magick/Makefile.am: Install magick_types.h.
+  <LI> magick/api.h: Include magick_types.h.
+  <LI> magick/studio.h: Include magick_types.h rather than integral_types.h.
+  <LI> VisualMagick/magick/magick_types.h.in: New header file (replacing
+        integral_types.h) to contain CPU and system-dependent primitive
+        typedefs.<BR>
+  <LI> magick/magick_types.h.in: New header file (replacing
+        integral_types.h) to contain CPU and system-dependent primitive
+        typedefs.<BR>
+  <LI> configure.ac: Use AC_SYS_LARGEFILE to test for large file
+        options. Update to determine integral typedefs for current CPU and
+        compiler options. Configure magick_types.h.
+  <LI> magick/attribute.c (TraceClippingPath): Apply patch from Lars
+        Ruben Skyum which fixes clipping path parsing for paths generated
+        by Adobe software which pre-dates the Photoshop file format
+        specification.
+
+</UL>
+<p>
+2003-07-08  William Radcliffe  &lt;billr@corbis.com&gt;
+
+<UL>
+  <LI> magick/semaphore.c: Modified the way the system handles the
+        initialization of Win32 critical sections to use a spin lock
+        on WIn32 to bootstrap the initialization of all other crtical
+        sections. This is not an issue on UNIX since static init is used.
+  <LI> magick/magic.c module.c magick.c log.c resource.c constitute.c
+        color.c cache.c delegate.c registry.c type.c: Small modifications
+        were made to eliminate the side effect of unlocking semaphores
+        as part of the releasing procedure. This also eliminated the
+        apparent bug of the system double locking certain semaphores.
+        The locked flag should now not be needed, but remains in place
+        for the time being as an added safegaurd.
+
+</UL>
+<p>
+2003-07-04  Glenn Randers-Pehrson &lt;randeg@alum.rpi.edu&gt;
+
+<UL>
+  <LI> png.c: added missing #ifdef JNG_SUPPORTED/#endif directives.
+
+</UL>
+<p>
 2003-07-04  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

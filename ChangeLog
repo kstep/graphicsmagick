@@ -1,3 +1,30 @@
+2003-07-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* wand/GraphicsMagickWand.pc.in (prefix): Pass LFS CPPFLAGS.
+	* wand/GraphicsMagickWand-config.in: Pass LFS CPPFLAGS.
+	* wand/Makefile.am: Fix include path.
+	* magick/GraphicsMagick.pc.in (prefix): Pass LFS CPPFLAGS.
+	* magick/magick_config_api.h.in: Pass LFS configuration options
+	until the API is fixed so that it is not LFS sensitive anymore.
+	* magick/GraphicsMagick-config.in: Pass LFS CPPFLAGS.
+	* PerlMagick/Makefile.PL.in: Pass LFS CPPFLAGS.
+	* magick/Makefile.am: Install magick_types.h.
+	* magick/api.h: Include magick_types.h.
+	* magick/studio.h: Include magick_types.h rather than integral_types.h.
+	* VisualMagick/magick/magick_types.h.in: New header file (replacing
+	integral_types.h) to contain CPU and system-dependent primitive
+	typedefs.
+	* magick/magick_types.h.in: New header file (replacing
+	integral_types.h) to contain CPU and system-dependent primitive
+	typedefs.
+	* configure.ac: Use AC_SYS_LARGEFILE to test for large file
+	options. Update to determine integral typedefs for current CPU and
+	compiler options. Configure magick_types.h.
+	* magick/attribute.c (TraceClippingPath): Apply patch from Lars
+	Ruben Skyum which fixes clipping path parsing for paths generated
+	by Adobe software which pre-dates the Photoshop file format
+	specification.
+
 2003-07-08  William Radcliffe  <billr@corbis.com>
 
 	* magick/semaphore.c: Modified the way the system handles the

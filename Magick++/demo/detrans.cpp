@@ -5,7 +5,7 @@
 // background color, or to create a similar looking effect without
 // transparency.
 //
-// Written by Bob Friesenhahn <bfriesen@simple.dallas.tx.us>, 2000
+// Copyright Bob Friesenhahn, 2000
 //
 // Usage: detrans color file...
 //

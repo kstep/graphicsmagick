@@ -1,15 +1,14 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 2001, 2002
+// Copyright Bob Friesenhahn, 2001, 2002, 2003
 //
 // Test Magick::CoderInfo class and Magick::coderInfoList
 //
 
+#include <Magick++.h>
 #include <string>
 #include <iostream>
 #include <list>
-
-#include <Magick++.h>
 
 using namespace std;
 

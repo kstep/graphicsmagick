@@ -17,7 +17,7 @@ LIBRARY_CURRENT    = @MAGICK_WAND_LIBRARY_CURRENT@
 LIBRARY_REVISION   = @MAGICK_WAND_LIBRARY_REVISION@
 LIBRARY_AGE        = @MAGICK_WAND_LIBRARY_AGE@
 
-AM_CPPFLAGS = -I$(top_srcdir)
+AM_CPPFLAGS = -I$(top_builddir) -I$(top_srcdir)
 
 libGraphicsMagickWand_la_SOURCES = magick_wand.c pixel_wand.c magick_compat.c
 

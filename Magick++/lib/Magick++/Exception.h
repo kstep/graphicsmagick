@@ -12,10 +12,9 @@
 #if !defined(Magick_Exception_header)
 #define Magick_Exception_header
 
+#include "Magick++/Include.h"
 #include <string>
 #include <exception>
-
-#include "Magick++/Include.h"
 
 namespace Magick
 {
