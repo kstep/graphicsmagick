@@ -4013,6 +4013,16 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
       }
       case 'p':
       {
+        if (LocaleCompare("page",option+1) == 0)
+          {
+            char
+              *geometry;
+
+            geometry=GetPageGeometry(argv[++i]);
+            (void) GetGeometry(geometry,&(*image)->page.x,&(*image)->page.y,
+              &(*image)->page.width,&(*image)->page.height);
+            LiberateMemory((void **) &geometry);
+          }
         if (LocaleCompare("paint",option+1) == 0)
           {
             double
