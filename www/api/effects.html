@@ -1,7 +1,7 @@
 <HTML>
 <HEAD>
 <TITLE>effects - ImageMagick Image Effects Methods</TITLE>
-<LINK REV="made" HREF="mailto:magick@wizards.dupont.com">
+<LINK REV="made" HREF="mailto:root@fantasia.es.dupont.com">
 </HEAD>
 
 <body bgcolor="#FFFFFF" text="#000000" link="#1F00FF" alink="#FF0000"  vlink="#9900DD">
@@ -43,6 +43,7 @@
 		<LI><A HREF="#stereoimage">StereoImage</A></LI>
 		<LI><A HREF="#swirlimage">SwirlImage</A></LI>
 		<LI><A HREF="#thresholdimage">ThresholdImage</A></LI>
+		<LI><A HREF="#unsharpmaskimage">UnsharpMaskImage</A></LI>
 		<LI><A HREF="#waveimage">WaveImage</A></LI>
 	</UL>
 
@@ -81,6 +82,7 @@
 <P>Image * <STRONG>StereoImage</STRONG>( Image *image, Image *offset_image, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>SwirlImage</STRONG>( Image *image, double degrees, ExceptionInfo *exception );</P>
 <P>unsigned int  <STRONG>ThresholdImage</STRONG>( Image *image, const double threshold );</P>
+<P>Image * <STRONG>UnsharpMaskImage</STRONG>( Image *image, const double radius, const double sigma, const double amount, const double threshold, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>WaveImage</STRONG>( Image *image, const double amplitude, const double wavelength, ExceptionInfo *exception );</P>
 <P>
 <HR>
@@ -638,6 +640,38 @@ The address of a structure of type Image; returned from ReadImage.
 <DD>
 
 <FONT SIZE=-1>A</FONT> double indicating the threshold value.
+<P></P></DL></DL>
+<P>
+<H2><A NAME="unsharpmaskimage">UnsharpMaskImage</A></H2>
+<P>Method UnsharpMaskImage creates a new image that is sharpened version of the original image using the unsharp mask algorithm.</P>
+<P>The format of the UnsharpMaskImage method is:</P>
+<blockquote><A HREF="types/Image.html">Image</A> *UnsharpMaskImage ( <A HREF="types/Image.html">Image</A> *image, const double radius, const double sigma, const double amount, const double threshold, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
+<DL><DL>
+<p><dt><STRONG><A NAME="item_o_unsharp_image%3A">unsharp_image:</A></STRONG><BR>
+<DD>
+Method UnsharpMaskImage returns a pointer to the image after it is blurred.  
+<FONT SIZE=-1>A</FONT> null image is returned if there is a memory shortage.
+<P></P>
+<p><dt><STRONG>radius:</STRONG><BR>
+<DD>
+The radius of the gaussian, in pixels, not counting the center pixel.
+<P></P>
+<p><dt><STRONG>sigma:</STRONG><BR>
+<DD>
+The standard deviation of the gaussian, in pixels.
+<P></P>
+<p><dt><STRONG>amount:</STRONG><BR>
+<DD>
+The percentage of the difference between the original and the blurred image that is added back into the original.
+<P></P>
+<p><dt><STRONG>threshold:</STRONG><BR>
+<DD>
+The threshold in pixels needed to apply the diffence amount.
+<P></P>
+<p><dt><STRONG>exception:</STRONG><BR>
+<DD>
+return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="waveimage">WaveImage</A></H2>

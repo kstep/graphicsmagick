@@ -23,9 +23,9 @@
 #include <time.h>
 #include <magick/api.h>
 
-static float CompareImage( int fuzz, Image *original, Image *final );
+static int CompareImage( int fuzz, Image *original, Image *final );
 
-static float CompareImage( int fuzz, Image *original, Image *final )
+static int CompareImage( int fuzz, Image *original, Image *final )
 {
   int
     x,
@@ -116,7 +116,7 @@ int main ( int argc, char **argv )
   char *size = NULL;
   int rows, columns = 0;
   int fuzz_factor = 0;
-  float diff = 0;
+  int diff = 0;
   ImageInfo imageInfo;
   ExceptionInfo exception;
 
@@ -264,7 +264,7 @@ int main ( int argc, char **argv )
 
   if ( CompareImage( fuzz_factor, original, final ) )
     {
-      printf( "R/W file check for format \"%s\" failed: (%2.1f%% component difference)\n", format, diff );
+      printf( "R/W file check for format \"%s\" failed: (%d%% component difference)\n", format, diff );
       fflush(stdout);
     }
 
