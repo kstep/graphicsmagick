@@ -5,6 +5,27 @@
       <Message name="PixelCacheIsNotOpen">
         Pixel cache is not open
       </Message>
+      <Message name="UnableToCloneCache">
+        Unable to clone cache
+      </Message>
+      <Message name="UnableToExtendCache">
+        Unable to extend cache
+      </Message>
+      <Message name="UnableToOpenCache">
+        Unable to open cache
+      </Message>
+      <Message name="UnableToSyncCache">
+        Unable to sync cache
+      </Message>
+      <Message name="UnableToGetCacheNexus">
+        Unable to get cache nexus
+      </Message>
+      <Message name="UnableToGetPixelsFromCache">
+        Unable to get pixels from cache
+      </Message>
+      <Message name="UnableToReadPixelCache">
+        Unable to read pixel cache
+      </Message>
     </Error>
   </Cache>
   <Resource>

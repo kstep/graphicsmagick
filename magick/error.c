@@ -615,9 +615,23 @@ MagickExport WarningHandler SetWarningHandler(WarningHandler handler)
 MagickExport void ThrowException(ExceptionInfo *exception,
   const ExceptionType severity,const char *reason,const char *description)
 {
+  char
+    tag[MaxTextExtent];
+
+	size_t
+    length;
+
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   exception->severity=(ExceptionType) severity;
-  (void) CloneString(&exception->reason,GetLocaleMessage(reason));
-  (void) CloneString(&exception->description,GetLocaleMessage(description));
+  switch (severity)
+  {
+    CacheError: (void) strcpy(tag,"Cache/Error/");
+    default: *tag='\0';
+  }
+  length=strlen(tag);
+  (void) strncpy(tag+length,reason,MaxTextExtent-length-1);
+  (void) CloneString(&exception->reason,GetLocaleMessage(tag));
+  (void) strncpy(tag+length,description,MaxTextExtent-length-1);
+  (void) CloneString(&exception->description,GetLocaleMessage(tag));
 }

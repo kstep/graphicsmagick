@@ -192,7 +192,7 @@ MagickExport const PixelPacket *AcquireCacheNexus(const Image *image,
   cache_info=(CacheInfo *) image->cache;
   if (cache_info->type == UndefinedCache)
     {
-      ThrowException(exception,CacheError,"Cache/Error/PixelCacheIsNotOpen",
+      ThrowException(exception,CacheError,"PixelCacheIsNotOpen",
         image->filename);
       return((const PixelPacket *) NULL);
     }
@@ -222,7 +222,7 @@ MagickExport const PixelPacket *AcquireCacheNexus(const Image *image,
           status|=ReadCacheIndexes(cache_info,nexus);
         if (status == False)
           {
-            ThrowException(exception,CacheError,"Unable to read pixel cache",
+            ThrowException(exception,CacheError,"UnableToReadPixelCache",
               image->filename);
             return((const PixelPacket *) NULL);
           }
@@ -235,7 +235,7 @@ MagickExport const PixelPacket *AcquireCacheNexus(const Image *image,
   image_nexus=GetNexus(cache_info);
   if (image_nexus == 0)
     {
-      ThrowException(exception,CacheError,"Unable to get cache nexus",
+      ThrowException(exception,CacheError,"UnableToGetCacheNexus",
         image->filename);
       return((const PixelPacket *) NULL);
     }
@@ -574,7 +574,7 @@ static unsigned int ClipCacheNexus(Image *image,const unsigned long nexus)
   image_nexus=GetNexus(image->cache);
   mask_nexus=GetNexus(image->clip_mask->cache);
   if ((image_nexus == 0) || (mask_nexus == 0))
-    ThrowBinaryException(CacheError,"Unable to get nexus",image->filename);
+    ThrowBinaryException(CacheError,"UnableToGetCacheNexus",image->filename);
   cache_info=(CacheInfo *) image->cache;
   nexus_info=cache_info->nexus_info+nexus;
   p=GetCacheNexus(image,nexus_info->x,nexus_info->y,nexus_info->columns,
@@ -1019,8 +1019,8 @@ MagickExport PixelPacket *GetCacheNexus(Image *image,const long x,const long y,
     status|=ReadCacheIndexes(image->cache,nexus);
   if (status == False)
     {
-      ThrowException(&image->exception,CacheError,
-        "Unable to get pixels from cache",image->filename);
+      ThrowException(&image->exception,CacheError,"UnableToGetPixelsFromCache",
+        image->filename);
       return((PixelPacket *) NULL);
     }
   return(pixels);
@@ -1732,7 +1732,7 @@ static unsigned int ModifyCache(Image *image)
   LiberateMemory((void **) &clone_image);
   LiberateSemaphoreInfo(&cache_info->semaphore);
   if ((p == (const PixelPacket *) NULL) || (y < (long) image->rows))
-    ThrowBinaryException(CacheError,"Unable to clone cache",image->filename);
+    ThrowBinaryException(CacheError,"UnableToCloneCache",image->filename);
   return(True);
 }
 
@@ -1938,14 +1938,14 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
   if (file == -1)
     {
       LiberateMagickResource(DiskResource,cache_info->length);
-      ThrowBinaryException(CacheError,"Unable to open cache",image->filename)
+      ThrowBinaryException(CacheError,"UnableToOpenCache",image->filename)
     }
   if (!ExtendCache(file,cache_info->offset+cache_info->length))
     {
       close(file);
       (void) remove(cache_info->cache_filename);
       LiberateMagickResource(DiskResource,cache_info->length);
-      ThrowBinaryException(CacheError,"Unable to extend cache",image->filename)
+      ThrowBinaryException(CacheError,"UnableToExtendCache",image->filename)
     }
   cache_info->storage_class=image->storage_class;
   cache_info->colorspace=image->colorspace;
@@ -2845,7 +2845,7 @@ MagickExport unsigned int SyncCacheNexus(Image *image,const unsigned long nexus)
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   if (image->cache == (Cache) NULL)
-    ThrowBinaryException(CacheError,"pixel cache is not open",image->filename);
+    ThrowBinaryException(CacheError,"PixelCacheIsNotOpen",image->filename);
   image->taint=True;
   if (IsNexusInCore(image->cache,nexus))
     return(True);
@@ -2857,8 +2857,7 @@ MagickExport unsigned int SyncCacheNexus(Image *image,const unsigned long nexus)
       (image->colorspace == CMYKColorspace))
     status|=WriteCacheIndexes(image->cache,nexus);
   if (status == False)
-    ThrowBinaryException(CacheError,"Unable to sync pixel cache",
-      image->filename);
+    ThrowBinaryException(CacheError,"UnableToSyncCache",image->filename);
   return(status);
 }
 
