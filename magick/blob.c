@@ -308,7 +308,7 @@ MagickExport int EOFBlob(const Image *image)
   assert(image->signature == MagickSignature);
   if (image->blob.data == (unsigned char *) NULL)
     return(feof(image->file));
-  return(image->blob.offset > image->blob.length);
+  return(image->blob.eof);
 }
 
 /*
@@ -1044,7 +1044,9 @@ MagickExport size_t ReadBlob(Image *image,const size_t length,void *data)
       count=Min(length,image->blob.length-image->blob.offset);
       if (count > 0)
         memcpy(data,image->blob.data+image->blob.offset,(size_t) count);
-      image->blob.offset+=length;
+      image->blob.offset+=count;
+      if (count < length)
+        image->blob.eof=True;
       return(count);
     }
   /*

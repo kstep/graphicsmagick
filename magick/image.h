@@ -138,6 +138,9 @@ typedef struct _BlobInfo
     extent,
     quantum;
 
+  unsigned int
+    eof;
+
   unsigned long
     signature;
 } BlobInfo;
