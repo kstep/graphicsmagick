@@ -1,3 +1,8 @@
+2003-04-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* VisualMagick/magick/magick_config.h.in: Add more documentation
+	and explanatory notes in order to lessen confusion.
+
 2003-04-04  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
 
 	* magick/command.c, utilities/gm.c: Print "help" screen for a

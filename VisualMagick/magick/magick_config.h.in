@@ -1,23 +1,43 @@
 #if defined(WIN32)
 
-// ImageMagick build feature configuration.  Please note that
+// GraphicsMagick build feature configuration.  Please note that
 // disabling a feature via this header file may not be sufficient to
 // remove any library dependencies from the build.  The VisualMagick
 // project files may need to be edited to remove libraries the feature
 // depends on.
+//
+// Note that by default GraphicsMagick is configured with a QuantumDepth
+// of eight, has LZW compression disabled, and looks for all files in
+// the directory where the executable is located.
+// The installed configuration (i.e.  the setup.exe-style installer)
+// is modifying by defining "UseInstalledImageMagick" and "ProvideDllMain".
+// If you would like to install GraphicsMagick using hard-coded paths, or
+// want to use the Windows registry to install GraphicsMagick, then
+// UseInstalledImageMagick" should be defined.
+//
+// Enabled options are of the form:
+//
+//   #define option
+//
+// while disabled options are initially in the form
+//
+//   // #undef option
+//
+// so it is necessary to remove the comment, and change "undef" to "define"
+// in order for the option to be enabled.
 
 // Specify size of PixelPacket color Quantums (8, 16, or 32)
-// A value of 8 uses half the memory than 16 and may run 30% faster,
-// but provides 256 times less color precision than a value of 16.
+// A value of 8 uses half the memory than 16 and typically runs 30% faster,
+// but provides 256 times less color resolution than a value of 16.
 #define QuantumDepth 8
 
-// Define to build an ImageMagick which uses registry settings to
+// Define to build a GraphicsMagick which uses registry settings to
 // locate installed components.
 // #undef UseInstalledImageMagick
 
 //
-// When building ImageMagick using DLLs, include a DllMain() function which
-// automatically invokes InitializeMagick(NULL), and DestroyMagick()
+// When building GraphicsMagick using DLLs, include a DllMain() function
+// which automatically invokes InitializeMagick(NULL), and DestroyMagick()
 // so that the user doesn't need to.
 //
 // #undef ProvideDllMain
@@ -56,7 +76,7 @@
 // Define to use the "little" Color Management System (LCMS) library
 #define HasLCMS
 
-// Define to support patented LZW compression
+// Define to support Unisys patented LZW compression
 // #undef HasLZW
 
 // Define to use the PNG library
@@ -75,6 +95,12 @@
 #define HasWMFlite
 
 // Define if MIT X11 is available (or stubbed)
+//
+// It is not actually necessary to use X11 or the X11 stubs library.
+// The VisualMagick configure program assumes that X11 stubs is being
+// used if X11 is not supported.  To achieve a slimmer GraphicsMagick,
+// undefine HasX11 and remove the 'xlib' project from the
+// GraphicsMagick workspace.
 #define HasX11
 
 // Define to use the GNOME XML library
