@@ -1708,12 +1708,12 @@ static void SVGEndElement(void *context,const xmlChar *name)
             *p;
 
           (void) fputc('#',svg_info->file);
-	  for (p=svg_info->text; *p != '\0'; p++)
-	  {
+          for (p=svg_info->text; *p != '\0'; p++)
+          {
             (void) fputc(*p,svg_info->file);
             if (*p == '\n')
               (void) fputc('#',svg_info->file);
-	  }
+          }
           (void) fputc('\n',svg_info->file);
           break;
         }
@@ -2510,11 +2510,8 @@ static void AffineToTransform(Image *image,AffineMatrix *affine)
         {
           if ((fabs(affine->sx-1.0) < MagickEpsilon) &&
               (fabs(affine->sy-1.0) < MagickEpsilon))
-            {
-              (void) WriteBlobString(image,"\">\n");
-              return;
-            }
-          FormatString(transform,"\" transform=\"scale(%g %g)\">\n",
+            return;
+          FormatString(transform,"\" transform=\"scale(%g,%g)",
             affine->sx,affine->sy);
           (void) WriteBlobString(image,transform);
           return;
@@ -2530,7 +2527,7 @@ static void AffineToTransform(Image *image,AffineMatrix *affine)
                 theta;
 
               theta=(180.0/M_PI)*atan2(affine->rx,affine->sx);
-              FormatString(transform,"\" transform=\"rotate(%g)\">\n",theta);
+              FormatString(transform,"\" transform=\"rotate(%g)",theta);
               (void) WriteBlobString(image,transform);
               return;
             }
@@ -2543,13 +2540,13 @@ static void AffineToTransform(Image *image,AffineMatrix *affine)
           (fabs(affine->ry) < MagickEpsilon) &&
           (fabs(affine->sy-1.0) < MagickEpsilon))
         {
-          FormatString(transform,"\" transform=\"translate(%g %g)\">\n",
+          FormatString(transform,"\" transform=\"translate(%g,%g)",
             affine->tx,affine->ty);
           (void) WriteBlobString(image,transform);
           return;
         }
     }
-  FormatString(transform,"\" transform=\"matrix(%g,%g,%g,%g,%g,%g)\">\n",
+  FormatString(transform,"\" transform=\"matrix(%g,%g,%g,%g,%g,%g)",
     affine->sx,affine->rx,affine->ry,affine->sy,affine->tx,affine->ty);
   (void) WriteBlobString(image,transform);
 }
@@ -3533,6 +3530,12 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
             (void) strncpy(primitive_info[j].text,p,q-p);
             primitive_info[j].text[q-p]='\0';
           }
+        (void) FormatString(buffer,"  <image x=\"%g\" y=\"%g\" "
+          "width=\"%g\" height=\"%g\" xlink:href=\"%s\"/>\n",
+          primitive_info[j].point.x,primitive_info[j].point.y,
+          primitive_info[j+1].point.x,primitive_info[j+1].point.y,
+          primitive_info[j].text);
+        (void) WriteBlobString(image,buffer);
         break;
       }
     }
