@@ -23,8 +23,7 @@ extern Export off_t
   GetCacheThreshold();
 
 extern Export unsigned int
-  InitializePixelCache(CacheHandle,ClassType,
-    const unsigned int,const unsigned int),
+  OpenPixelCache(CacheHandle,ClassType,const unsigned int,const unsigned int),
   ReadCachePixels(CacheHandle,RectangleInfo *,PixelPacket *),
   ReadCacheIndexes(CacheHandle,RectangleInfo *,IndexPacket *),
   WriteCachePixels(CacheHandle,RectangleInfo *,PixelPacket *),

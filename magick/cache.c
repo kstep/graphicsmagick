@@ -88,17 +88,6 @@
 %
 %
 */
-
-static inline unsigned int MatchesLastRegionRequest(Image *image,const int x,
-  const int y,const unsigned int columns,const unsigned int rows)
-{
-  if ((x == image->cache_info.x) && (y == image->cache_info.y) &&
-      (columns == image->cache_info.width) &&
-      (rows == image->cache_info.height))
-    return(True);
-  return(False);
-}
-
 Export PixelPacket *GetPixelCache(Image *image,const int x,const int y,
   const unsigned int columns,const unsigned int rows)
 {
@@ -112,7 +101,9 @@ Export PixelPacket *GetPixelCache(Image *image,const int x,const int y,
     Transfer pixels from the pixel cache.
   */
   assert(image != (Image *) NULL);
-  if (MatchesLastRegionRequest(image,x,y,columns,rows))
+  if ((x == image->cache_info.x) && (y == image->cache_info.y) &&
+      (columns == image->cache_info.width) &&
+      (rows == image->cache_info.height))
     return(image->pixels);
   if (!SetPixelCache(image,x,y,columns,rows))
     return((PixelPacket *) NULL);
@@ -141,47 +132,6 @@ Export PixelPacket *GetPixelCache(Image *image,const int x,const int y,
         }
     }
   return(image->pixels);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   O p e n P i x e l C a c h e                                               %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method OpenPixelCache returns True if the pixel cache is already
-%  opened.  Otherwise the pixel cache is created in memory or disk.
-%  False is returned if there is not enough memory or a disk error
-%  occurs.
-%
-%  The format of the OpenPixelCache method is:
-%
-%      unsigned int OpenPixelCache(Image *image)
-%
-%  A description of each parameter follows:
-%
-%    o status: Method OpenPixelCache returns True if the image pixel
-%      cache is already created or succesfully created in memory or on
-%      disk.
-%
-%    o image: The address of a structure of type Image.
-%
-%
-*/
-static unsigned int OpenPixelCache(Image *image)
-{
-  unsigned int
-    status;
-
-  assert(image != (Image *) NULL);
-  status=InitializePixelCache(image->cache_handle,image->class,image->columns,
-    image->rows);
-  return(status);
 }
 
 /*
@@ -253,7 +203,7 @@ unsigned int ReadPixelCache(Image *image,const QuantumTypes quantum,
       for (x=0; x < (int) image->columns; x++)
       {
         index=(*p++ << 8);
-	index|=(*p++);
+        index|=(*p++);
         image->indexes[x]=index;
         *q++=image->colormap[index];
       }
@@ -276,11 +226,11 @@ unsigned int ReadPixelCache(Image *image,const QuantumTypes quantum,
       for (x=0; x < (int) image->columns; x++)
       {
         index=(*p++ << 8);
-	index|=(*p++);
+        index|=(*p++);
         image->indexes[x]=index;
         *q=image->colormap[index];
         q->opacity=(*p++ << 8);
-	q->opacity|=(*p++);
+        q->opacity|=(*p++);
         q++;
       }
       break;
@@ -300,7 +250,7 @@ unsigned int ReadPixelCache(Image *image,const QuantumTypes quantum,
       for (x=0; x < (int) image->columns; x++)
       {
         index=(*p++ << 8);
-	index|=(*p++);
+        index|=(*p++);
         image->indexes[x]=index;
         *q++=image->colormap[index];
       }
@@ -323,11 +273,11 @@ unsigned int ReadPixelCache(Image *image,const QuantumTypes quantum,
       for (x=0; x < (int) image->columns; x++)
       {
         index=(*p++ << 8);
-	index|=(*p++);
+        index|=(*p++);
         image->indexes[x]=index;
         *q=image->colormap[index];
         q->opacity=(*p++ << 8);
-	q->opacity|=(*p++);
+        q->opacity|=(*p++);
         q++;
       }
       break;
@@ -505,20 +455,14 @@ unsigned int ReadPixelCache(Image *image,const QuantumTypes quantum,
 %
 %
 */
-
-static inline unsigned int MatchesLastRegionRequestSize(Image *image,
-  const off_t number_pixels)
-{
-  if ((image->cache_info.width*image->cache_info.height) < number_pixels)
-    return(True);
-  return(False);
-}
-
 Export PixelPacket *SetPixelCache(Image *image,const int x,const int y,
   const unsigned int columns,const unsigned int rows)
 {
   off_t
     number_pixels;
+
+  unsigned int
+    status;
 
   /*
     Validate pixel cache geometry.
@@ -531,37 +475,36 @@ Export PixelPacket *SetPixelCache(Image *image,const int x,const int y,
         "image does not contain the cache geometry");
       return((PixelPacket *) NULL);
     }
-  if (!OpenPixelCache(image))
+  status=
+    OpenPixelCache(image->cache_handle,image->class,image->columns,image->rows);
+  if (status == False)
     {
       MagickWarning(CacheWarning,"Unable to initialize pixel cache",
         (char *) NULL);
       return((PixelPacket *) NULL);
     }
   /*
-    Allocate buffer to get/put pixels from the pixel cache.
+    Allocate buffer to get/put pixels/indexes to/from the pixel cache.
   */
   number_pixels=columns*rows;
   if (image->pixels == (PixelPacket *) NULL)
     image->pixels=(PixelPacket *)
       AllocateMemory(number_pixels*sizeof(PixelPacket));
   else
-    if (MatchesLastRegionRequestSize(image,number_pixels))
+    if ((image->cache_info.width*image->cache_info.height) < number_pixels)
       image->pixels=(PixelPacket *)
         ReallocateMemory(image->pixels,number_pixels*sizeof(PixelPacket));
-  /*
-    Allocate buffer to get/put colormap indexes from the pixel cache.
-  */
   if (image->class == PseudoClass)
     if (image->indexes == (IndexPacket *) NULL)
       image->indexes=(IndexPacket *)
         AllocateMemory(number_pixels*sizeof(IndexPacket));
-  if (image->indexes != (IndexPacket *) NULL)
-    if (MatchesLastRegionRequestSize(image,number_pixels))
-      image->indexes=(IndexPacket *) ReallocateMemory(image->indexes,
-        number_pixels*sizeof(IndexPacket));
-  if (((image->class == PseudoClass) &&
-       (image->indexes == (IndexPacket *) NULL)) ||
-      (image->pixels == (PixelPacket *) NULL))
+    else
+      if ((image->cache_info.width*image->cache_info.height) < number_pixels)
+        image->indexes=(IndexPacket *)
+          ReallocateMemory(image->indexes,number_pixels*sizeof(IndexPacket));
+  if ((image->pixels == (PixelPacket *) NULL) ||
+      ((image->class == PseudoClass) &&
+       (image->indexes == (IndexPacket *) NULL)))
     {
       MagickWarning(CacheWarning,"Unable to set pixel cache",
         "Memory allocation failed");
@@ -588,9 +531,8 @@ Export PixelPacket *SetPixelCache(Image *image,const int x,const int y,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method SyncPixelCache saves the image pixels to the in-memory or disk
-%  cache.  The method returns True if the pixel region is set, otherwise False.
-%  See the SetPixelCache method for an example usage of SyncPixelCache.
+%  Method SyncPixelCache saves the image pixels to the in-memory or disk cache.
+%  The method returns True if the pixel region is set, otherwise False.
 %
 %  The format of the SyncPixelCache method is:
 %
@@ -608,21 +550,21 @@ Export PixelPacket *SetPixelCache(Image *image,const int x,const int y,
 Export unsigned int SyncPixelCache(Image *image)
 {
   register PixelPacket
-    *p;
+    *pixels;
 
   unsigned int
     status;
 
   assert(image != (Image *) NULL);
-  p=SetPixelCache(image,image->cache_info.x,image->cache_info.y,
+  pixels=SetPixelCache(image,image->cache_info.x,image->cache_info.y,
     image->cache_info.width,image->cache_info.height);
-  if (p == (PixelPacket *) NULL)
+  if (pixels == (PixelPacket *) NULL)
     return(False);
   /*
-    Transfer pixels to pixel cache.
+    Transfer pixels to the pixel cache.
   */
   image->tainted=True;
-  status=WriteCachePixels(image->cache_handle,&image->cache_info,p);
+  status=WriteCachePixels(image->cache_handle,&image->cache_info,pixels);
   if (status == False)
     {
       MagickWarning(CacheWarning,"Unable to sync pixel cache",(char *) NULL);

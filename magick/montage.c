@@ -323,6 +323,7 @@ Export Image *MontageImages(const Image *images,const MontageInfo *montage_info)
     x=0;
     y=0;
     (void) ParseImageGeometry(montage_info->geometry,&x,&y,&width,&height);
+    image_list[tile]->orphan=True;
     tiled_image=ZoomImage(image_list[tile],width,height);
     if (tiled_image == (Image *) NULL)
       {
@@ -331,7 +332,6 @@ Export Image *MontageImages(const Image *images,const MontageInfo *montage_info)
         (void) SetMonitorHandler(handler);
         return((Image *) NULL);
       }
-    tiled_image->exempt=True;
     image_list[tile]=tiled_image;
     (void) SetMonitorHandler(handler);
     ProgressMonitor(TileImageText,tile,number_images);
@@ -593,6 +593,7 @@ Export Image *MontageImages(const Image *images,const MontageInfo *montage_info)
               border_info.width=(width-image->columns+1) >> 1;
               border_info.height=(height-image->rows+1) >> 1;
             }
+          image->orphan=True;
           bordered_image=BorderImage(image,&border_info);
           if (bordered_image != (Image *) NULL)
             {
@@ -678,6 +679,7 @@ Export Image *MontageImages(const Image *images,const MontageInfo *montage_info)
           tile_info.width=width+2*frame_info.width;
           tile_info.height=height+2*frame_info.height+
             (font_height+4)*MultilineCensus(image->label);
+          image->orphan=True;
           framed_image=FrameImage(image,&tile_info);
           if (framed_image != (Image *) NULL)
             {

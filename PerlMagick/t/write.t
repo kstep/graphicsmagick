@@ -255,7 +255,7 @@ testReadWriteSized( 'GRAY:input_70x46.gray',
 		    8,
 		    q//,
 		    '27b8cea85c011f60024ff559096bd11f',
-                    'a4abb1d900aeca891061e0a47543c079' );
+                    '3e07d093efec1e28455d248fc68c2a06' );
 
 print("RGB format ...\n");
 ++$test;

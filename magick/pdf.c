@@ -339,6 +339,7 @@ Export Image *ReadPDFImage(const ImageInfo *image_info)
         /*
           Rotate image.
         */
+        image->orphan=True;
         rotated_image=RotateImage(image,90);
         if (rotated_image != (Image *) NULL)
           {
@@ -1121,11 +1122,11 @@ Export unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     x=0;
     y=0;
     (void) ParseImageGeometry("106x106+0+0>",&x,&y,&width,&height);
+    image->orphan=True;
     if (image->class == PseudoClass)
       tile_image=SampleImage(image,width,height);
     else
       tile_image=ZoomImage(image,width,height);
-    tile_image->exempt=True;
     if (tile_image == (Image *) NULL)
       WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
     xref[object++]=TellBlob(image);

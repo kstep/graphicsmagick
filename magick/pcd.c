@@ -754,6 +754,7 @@ Export Image *ReadPCDImage(const ImageInfo *image_info)
         Rotate image.
       */
       degrees=rotate == 1 ? -90.0 : 90.0;
+      image->orphan=True;
       rotated_image=RotateImage(image,degrees);
       if (rotated_image != (Image *) NULL)
         {
@@ -842,10 +843,10 @@ static unsigned int WritePCDTile(const ImageInfo *image_info,Image *image,
     width--;
   if ((height % 2) != 0)
     height--;
+  image->orphan=True;
   tile_image=ZoomImage(image,width,height);
   if (tile_image == (Image *) NULL)
     WriterExit(ResourceLimitWarning,"Unable to scale image",image);
-  tile_image->exempt=True;
   (void) sscanf(geometry,"%ux%u",&width,&height);
   if ((tile_image->columns != width) || (tile_image->rows != height))
     {
@@ -931,6 +932,7 @@ Export unsigned int WritePCDImage(const ImageInfo *image_info,Image *image)
       /*
         Rotate portrait to landscape.
       */
+      image->orphan=True;
       rotated_image=RotateImage(image,90.0);
       if (rotated_image == (Image *) NULL)
         WriterExit(ResourceLimitWarning,"Unable to rotate image",image);

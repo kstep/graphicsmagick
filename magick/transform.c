@@ -534,7 +534,6 @@ Export Image *CropImage(Image *image,const RectangleInfo *crop_info)
 Export Image *DeconstructImages(Image *images)
 {
   Image
-    *clone_image,
     *crop_image,
     *deconstruct_image,
     *image;
@@ -677,11 +676,8 @@ Export Image *DeconstructImages(Image *images)
   i=0;
   for (image=images->next; image != (Image *) NULL; image=image->next)
   {
-    clone_image=CloneImage(image,image->columns,image->rows,True);
-    if (clone_image == (Image *) NULL)
-      break;
-    crop_image=CropImage(clone_image,&bounding_box[i++]);
-    DestroyImage(clone_image);
+    image->orphan=True;
+    crop_image=CropImage(image,&bounding_box[i++]);
     if (crop_image == (Image *) NULL)
       break;
     deconstruct_image->next=crop_image;

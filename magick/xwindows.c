@@ -4684,6 +4684,7 @@ Export Image *XImportImage(const ImageInfo *image_info,XImportInfo *ximage_info)
           /*
             Crop image as defined by the cropping rectangle.
           */
+          image->orphan=True;
           crop_image=CropImage(image,&crop_info);
           if (crop_image != (Image *) NULL)
             {
@@ -5092,6 +5093,7 @@ Export unsigned int XMakeImage(Display *display,
           crop_info.y=0;
           (void) XParseGeometry(window->crop_geometry,&crop_info.x,
             &crop_info.y,&crop_info.width,&crop_info.height);
+          transformed_image->orphan=True;
           crop_image=CropImage(transformed_image,&crop_info);
           if (crop_image != (Image *) NULL)
             {
@@ -5109,6 +5111,7 @@ Export unsigned int XMakeImage(Display *display,
           /*
             Scale image.
           */
+          transformed_image->orphan=True;
           if ((window->pixel_info->colors != 0) || transformed_image->matte)
             zoomed_image=SampleImage(transformed_image,width,height);
           else

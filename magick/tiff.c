@@ -1124,6 +1124,7 @@ Export unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
       height=image->rows;
       do
       {
+        image->orphan=True;
         next_image=ZoomImage(image,width,height);
         if (next_image == (Image *) NULL)
           WriterExit(FileOpenWarning,"Unable to pyramid encode image",image);

@@ -169,7 +169,7 @@ Export void DestroyCacheInfo(CacheHandle cache_handle)
   CacheInfo
     *cache_info;
 
-  off_t
+  size_t
     length;
 
   assert(cache_handle != (CacheHandle) NULL);
@@ -369,23 +369,23 @@ Export off_t GetCacheThreshold()
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   I n i t i a l i z e P i x e l C a c h e                                   %
+%   O p e n P i x e l C a c h e                                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method InitializePixelCache initializes the pixel cache.
+%  Method OpenPixelCache open the pixel cache.
 %
-%  The format of the InitializePixelCache method is:
+%  The format of the OpenPixelCache method is:
 %
-%      unsigned int InitializePixelCache(CacheHandle cache_handle,
-%        ClassType type,const unsigned int columns,const unsigned int rows)
+%      unsigned int OpenPixelCache(CacheHandle cache_handle,ClassType type,
+%        const unsigned int columns,const unsigned int rows)
 %
 %  A description of each parameter follows:
 %
-%    o status: Method InitializePixelCache returns True if the pixel cache
-%      is initialized successfully otherwise False.
+%    o status: Method OpenPixelCache returns True if the pixel cache is
+%      initialized successfully otherwise False.
 %
 %    o cache_handle: Specifies a pointer to a CacheHandle structure.
 %
@@ -399,8 +399,8 @@ Export off_t GetCacheThreshold()
 %
 %
 */
-Export unsigned int InitializePixelCache(CacheHandle cache_handle,
-  ClassType type,const unsigned int columns,const unsigned int rows)
+Export unsigned int OpenPixelCache(CacheHandle cache_handle,ClassType type,
+  const unsigned int columns,const unsigned int rows)
 {
   CacheInfo
     *cache_info;
@@ -462,29 +462,28 @@ Export unsigned int InitializePixelCache(CacheHandle cache_handle,
           if (cache_info->file != (FILE *) NULL)
             {
               status=fseek(cache_info->file,length-1,SEEK_SET);
-              if (status == 0)
+              if (status != 0)
+                return(False);
+              SetCacheClassType(cache_handle,DirectClass);
+              (void) strcpy(cache_info->filename,filename);
+              (void) fputc(0,cache_info->file);
+              (void) fclose(cache_info->file);
+              cache_info->file=(FILE *) NULL;
+              cache_info->pixels=(PixelPacket *)
+                MapBlob(cache_info->filename,IOMode,&sans);
+              if (cache_info->pixels == (PixelPacket *) NULL)
                 {
-                  SetCacheClassType(cache_handle,DirectClass);
-                  (void) strcpy(cache_info->filename,filename);
-                  (void) fputc(0,cache_info->file);
-                  (void) fclose(cache_info->file);
-                  cache_info->file=(FILE *) NULL;
-                  cache_info->pixels=(PixelPacket *)
-                    MapBlob(cache_info->filename,IOMode,&sans);
-                  if (cache_info->pixels == (PixelPacket *) NULL)
+                  if (type == PseudoClass)
+                    SetCacheClassType(cache_handle,PseudoClass);
+                }
+              else
+                {
+                  cache_info->mapped=True;
+                  if (type == PseudoClass)
                     {
-                      if (type == PseudoClass)
-                        SetCacheClassType(cache_handle,PseudoClass);
-                    }
-                  else
-                    {
-                      cache_info->mapped=True;
-                      if (type == PseudoClass)
-                        {
-                          SetCacheClassType(cache_handle,PseudoClass);
-                          cache_info->indexes=(IndexPacket *)
-                            (cache_info->pixels+number_pixels);
-                        }
+                      SetCacheClassType(cache_handle,PseudoClass);
+                      cache_info->indexes=(IndexPacket *)
+                        (cache_info->pixels+number_pixels);
                     }
                 }
             }
@@ -493,8 +492,6 @@ Export unsigned int InitializePixelCache(CacheHandle cache_handle,
       cache_info->rows=rows;
       cache_info->columns=columns;
     }
-  if (GetCacheClassType(cache_handle) == UndefinedClass)
-    return(False);
   if (type == PseudoClass)
     {
       if (GetCacheClassType(cache_handle) != PseudoClass)
@@ -699,8 +696,8 @@ Export unsigned int ReadCachePixels(CacheHandle cache_handle,
         count=fseek(cache_info->file,offset*sizeof(PixelPacket),SEEK_SET);
         if (count != 0)
           return(False);
-        count=fread(pixels,sizeof(PixelPacket),region_info->width,
-          cache_info->file);
+        count=
+          fread(pixels,sizeof(PixelPacket),region_info->width,cache_info->file);
         if (count != region_info->width)
           return(False);
       }

@@ -145,6 +145,7 @@ Export unsigned int WritePREVIEWImage(const ImageInfo *image_info,Image *image)
   x=0;
   y=0;
   (void) ParseImageGeometry(DefaultPreviewGeometry,&x,&y,&width,&height);
+  image->orphan=True;
   preview_image=ZoomImage(image,width,height);
   if (preview_image == (Image *) NULL)
     WriterExit(ResourceLimitWarning,"Memory allocation failed",image);

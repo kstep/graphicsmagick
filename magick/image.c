@@ -847,7 +847,7 @@ Export Image *CloneImage(Image *image,const unsigned int columns,
       if (image->signature != (char *) NULL)
         (void) CloneString(&clone_image->signature,image->signature);
     }
-  if (orphan)
+  if (clone_image->orphan || orphan)
     {
       clone_image->exempt=True;
       clone_image->previous=(Image *) NULL;
@@ -863,6 +863,7 @@ Export Image *CloneImage(Image *image,const unsigned int columns,
       if (clone_image->next != (Image *) NULL)
         clone_image->next->previous=clone_image;
     }
+  clone_image->orphan=False;
   return(clone_image);
 }
 
