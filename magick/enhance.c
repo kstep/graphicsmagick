@@ -252,7 +252,8 @@ MagickExport unsigned int EqualizeImage(Image *image)
   }
   low=map[0];
   high=map[ScaleQuantumToShort(MaxRGB)];
-  memset(equalize_map,0,(ScaleQuantumToShort(MaxRGB)+1)*sizeof(PixelPacket));
+  memset(equalize_map,0,
+    (ScaleQuantumToShort(MaxRGB)+1)*sizeof(ShortPixelPacket));
   for (i=0; i <= ScaleQuantumToShort(MaxRGB); i++)
   {
     if (high.red != low.red)
