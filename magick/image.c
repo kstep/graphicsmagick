@@ -63,6 +63,7 @@
 #include "composite.h"
 #include "compress.h"
 #include "enhance.h"
+#include "gem.h"
 #include "log.h"
 #include "magic.h"
 #include "magick.h"
@@ -3264,6 +3265,9 @@ static const char *ColorspaceTypeToString(const ColorspaceType colorspace)
     case sRGBColorspace:
       log_colorspace="PhotoCD sRGB";
       break;
+    case HSLColorspace:
+      log_colorspace="HSL";
+      break;
     }
   return log_colorspace;
 }
@@ -3385,6 +3389,80 @@ MagickExport unsigned int RGBTransformImage(Image *image,
         if (!SyncImagePixels(image))
           break;
       }
+      LogMagickEvent(TransformEvent,GetMagickModule(),
+                     "Colorspace transform completed"); 
+      return(True);
+    }
+
+  if (colorspace == HSLColorspace)
+    {
+      switch (image->storage_class)
+        {
+        case DirectClass:
+        default:
+          {
+            ExceptionInfo
+              *exception;
+            
+            register PixelPacket
+              *q;
+            
+            /*
+              Convert DirectClass image.
+            */
+            exception=(&image->exception);
+            for (y=0; y < (long) image->rows; y++)
+              {
+                q=GetImagePixels(image,0,y,image->columns,1);
+                if (q == (PixelPacket *) NULL)
+                  break;
+                for (x=(long) image->columns; x > 0; x--)
+                  {
+                    double
+                      hue,
+                      saturation,
+                      luminosity;
+
+                    TransformHSL(q->red,q->green,q->blue,&hue,&saturation,&luminosity);
+                    q->red=(Quantum) RndToInt(hue*MaxRGB);
+                    q->green=(Quantum) RndToInt(saturation*MaxRGB);
+                    q->blue=(Quantum) RndToInt(luminosity*MaxRGB);
+                    q++;
+                  }
+                if (!SyncImagePixels(image))
+                  break;
+                if (QuantumTick(y,image->rows))
+                  if (!MagickMonitor(RGBTransformImageText,y,image->rows,exception))
+                    break;
+              }
+            break;
+          }
+        case PseudoClass:
+          {
+            /*
+              Convert PseudoClass image.
+            */
+            register PixelPacket
+              *q;
+            
+            q=image->colormap;
+            for (i=(long) image->colors; i > 0; i--)
+              {
+                double
+                  hue,
+                  saturation,
+                  luminosity;
+
+                TransformHSL(q->red,q->green,q->blue,&hue,&saturation,&luminosity);
+                q->red=(Quantum) RndToInt(hue*MaxRGB);
+                q->green=(Quantum) RndToInt(saturation*MaxRGB);
+                q->blue=(Quantum) RndToInt(luminosity*MaxRGB);
+                q++;
+              }
+            SyncImage(image);
+            break;
+          }
+        }
       LogMagickEvent(TransformEvent,GetMagickModule(),
                      "Colorspace transform completed"); 
       return(True);
@@ -5067,9 +5145,69 @@ MagickExport unsigned int TransformRGBImage(Image *image,
           break;
       }
       image->colorspace=RGBColorspace;
-      return(True);
       LogMagickEvent(TransformEvent,GetMagickModule(),
                      "Colorspace transform completed"); 
+      return(True);
+    }
+
+  if (colorspace == HSLColorspace)
+    {
+      switch (image->storage_class)
+        {
+        case DirectClass:
+        default:
+          {
+            ExceptionInfo
+              *exception;
+            
+            register PixelPacket
+              *q;
+            
+            /*
+              Convert DirectClass image.
+            */
+            exception=(&image->exception);
+            for (y=0; y < (long) image->rows; y++)
+              {
+                q=GetImagePixels(image,0,y,image->columns,1);
+                if (q == (PixelPacket *) NULL)
+                  break;
+                for (x=(long) image->columns; x > 0; x--)
+                  {
+                    HSLTransform((double)q->red/MaxRGB,(double)q->green/MaxRGB,
+                      (double)q->blue/MaxRGB,&q->red,&q->green,&q->blue);
+                    q++;
+                  }
+                if (!SyncImagePixels(image))
+                  break;
+                if (QuantumTick(y,image->rows))
+                  if (!MagickMonitor(RGBTransformImageText,y,image->rows,exception))
+                    break;
+              }
+            break;
+          }
+        case PseudoClass:
+          {
+            /*
+              Convert PseudoClass image.
+            */
+            register PixelPacket
+              *q;
+            
+            q=image->colormap;
+            for (i=(long) image->colors; i > 0; i--)
+              {
+                HSLTransform((double)q->red/MaxRGB,(double)q->green/MaxRGB,
+                  (double)q->blue/MaxRGB,&q->red,&q->green,&q->blue);
+                q++;
+              }
+            SyncImage(image);
+            break;
+          }
+        }
+      LogMagickEvent(TransformEvent,GetMagickModule(),
+                     "Colorspace transform completed"); 
+      return(True);
     }
 
   /*

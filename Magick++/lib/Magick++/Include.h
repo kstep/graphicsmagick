@@ -135,6 +135,7 @@ namespace Magick
   using MagickLib::YUVColorspace;
   using MagickLib::CMYKColorspace;
   using MagickLib::sRGBColorspace;
+  using MagickLib::HSLColorspace;
   
   // Composition operations
   using MagickLib::AddCompositeOp;

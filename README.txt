@@ -25,7 +25,7 @@ AVAILABILITY
 
 DOCUMENTATION
 
-  Open the file ImageMagick.html in a web browser, or refer to
+  Open the file index.html in a web browser, or refer to
   the manual pages for the display(1), animate(1), montage(1),
   import(1), mogrify(1), identify(1), composite(1), and convert(1)
   utilities. The ImageMagick(1) manual page provides details for utility

@@ -180,7 +180,8 @@ typedef void
   *Graphics__Magick;  /* data type for the Graphics::Magick package */
 
 /*
-  Static declarations.
+  Static declarations.  The strings in this list must be expressed
+  in the exact same order as the equivalent enumeration.
 */
 static char
   *AlignTypes[] =
@@ -203,7 +204,7 @@ static char
   *ColorspaceTypes[] =
   {
     "Undefined", "RGB", "Gray", "Transparent", "OHTA", "XYZ", "YCbCr",
-    "YCC", "YIQ", "YPbPr", "YUV", "CMYK", "sRGB", (char *) NULL
+    "YCC", "YIQ", "YPbPr", "YUV", "CMYK", "sRGB", "HSL", (char *) NULL
   },
   *CompositeTypes[] =
   {

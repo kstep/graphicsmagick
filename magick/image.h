@@ -137,7 +137,8 @@ typedef enum
   YPbPrColorspace,
   YUVColorspace,
   CMYKColorspace,
-  sRGBColorspace
+  sRGBColorspace,
+  HSLColorspace
 } ColorspaceType;
 
 typedef enum
