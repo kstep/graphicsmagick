@@ -354,7 +354,7 @@ static void BlurScanline(const double *kernel,const int width,
   }
 }
 
-static int GetBlurKernel(unsigned width,const double sigma,double **kernel)
+static int GetBlurKernel(int width,const double sigma,double **kernel)
 {
 #define KernelRank 3
 
@@ -423,7 +423,7 @@ MagickExport Image *BlurImage(Image *image,const double radius,
   assert(exception->signature == MagickSignature);
   kernel=(double *) NULL;
   if (radius > 0)
-    width=GetBlurKernel(2.0*ceil(radius)+1.0,sigma,&kernel);
+    width=GetBlurKernel((int) (2.0*ceil(radius)+1.0),sigma,&kernel);
   else
     {
       double
