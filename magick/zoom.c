@@ -768,9 +768,9 @@ static unsigned int HorizontalFilter(const Image *source,Image *destination,
   /*
     Apply filter to resize horizontally from source to destination.
   */
-  destination->storage_class=source->storage_class;
   scale=blur/x_factor;
   support=scale*filter_info->support;
+  destination->storage_class=source->storage_class;
   if (support > 0.5)
     SetImageType(destination,TrueColorType);
   else
@@ -782,7 +782,7 @@ static unsigned int HorizontalFilter(const Image *source,Image *destination,
       scale=1.0;
     }
   scale=1.0/scale;
-  center=MagickEpsilon;
+  center=0.0;
   for (x=0; x < (long) destination->columns; x++)
   {
     start=(long) Max(ceil(center-support-0.5),0);
@@ -837,7 +837,7 @@ static unsigned int HorizontalFilter(const Image *source,Image *destination,
     if (QuantumTick(*quantum,span))
       MagickMonitor(ResizeImageText,*quantum,span);
     (*quantum)++;
-    center+=1.0/x_factor;;
+    center+=1.0/x_factor+MagickEpsilon;
   }
   return(x == (long) destination->columns);
 }
@@ -881,9 +881,9 @@ static unsigned int VerticalFilter(const Image *source,Image *destination,
   /*
     Apply filter to resize vertically from source to destination.
   */
-  destination->storage_class=source->storage_class;
   scale=blur/y_factor;
   support=scale*filter_info->support;
+  destination->storage_class=source->storage_class;
   if (support > 0.5)
     SetImageType(destination,TrueColorType);
   else
@@ -895,7 +895,7 @@ static unsigned int VerticalFilter(const Image *source,Image *destination,
       scale=1.0;
     }
   scale=1.0/scale;
-  center=MagickEpsilon;
+  center=0.0;
   for (y=0; y < (long) destination->rows; y++)
   {
     start=(long) Max(ceil(center-support-0.5),0);
@@ -949,7 +949,7 @@ static unsigned int VerticalFilter(const Image *source,Image *destination,
     if (QuantumTick(*quantum,span))
       MagickMonitor(ResizeImageText,*quantum,span);
     (*quantum)++;
-    center+=1.0/y_factor;
+    center+=1.0/y_factor+MagickEpsilon;
   }
   return(y == (long) destination->rows);
 }
