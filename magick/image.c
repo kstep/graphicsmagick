@@ -6475,8 +6475,7 @@ MagickExport unsigned int SetImageType(Image *image,const ImageType image_type)
     {
       if (image->colorspace != RGBColorspace)
         TransformColorspace(image,RGBColorspace);
-      if ((image->storage_class != PseudoClass) ||
-          !IsMonochromeImage(image,&image->exception))
+      if (!IsMonochromeImage(image,&image->exception))
         {
           if (image->dither == True)
             {

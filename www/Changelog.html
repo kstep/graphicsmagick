@@ -21,6 +21,25 @@
 </tr>
 </table>
 <p>
+2005-03-12  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/image.c (SetImageType):  Bilevel image is not required to
+        be PseudoClass type.<BR>
+  <LI> coders/mpc.c (WriteMPCImage): Persist is_monochrome and
+        is_grayscale flags.<BR>
+        (ReadMPCImage): Restore is_monochrome and is_grayscale flags.
+
+</UL>
+<p>
+2005-03-09  Arne Rusek  &lt;zonk@matfyz.cz&gt;
+
+<UL>
+  <LI> magick/attribute.c (GenerateEXIFAttribute): Offset type
+        correction to fix loop termination if size_t type is not 'long'.
+
+</UL>
+<p>
 2005-03-09  Alexander Yaworsky  &lt;yaworsky@users.sourceforge.net&gt;
 
 <UL>

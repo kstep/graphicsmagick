@@ -406,6 +406,12 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     image->gamma=atof(values);
                     break;
                   }
+                if (LocaleCompare(keyword,"grayscale") == 0)
+                  {
+                    image->is_grayscale=(LocaleCompare(values,"True") == 0) ||
+                      (LocaleCompare(values,"true") == 0);
+                    break;
+                  }
                 if (LocaleCompare(keyword,"green-primary") == 0)
                   {
                     (void) sscanf(values,"%lf,%lf",
@@ -457,6 +463,12 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 if (LocaleCompare(keyword,"mean-error") == 0)
                   {
                     image->error.normalized_mean_error=atof(values);
+                    break;
+                  }
+                if (LocaleCompare(keyword,"monochrome") == 0)
+                  {
+                    image->is_monochrome=(LocaleCompare(values,"True") == 0) ||
+                      (LocaleCompare(values,"true") == 0);
                     break;
                   }
                 if (LocaleCompare(keyword,"montage") == 0)
@@ -1023,6 +1035,16 @@ static unsigned int WriteMPCImage(const ImageInfo *image_info,Image *image)
     FormatString(buffer,"columns=%lu  rows=%lu  depth=%lu\n",image->columns,
       image->rows,image->depth);
     (void) WriteBlobString(image,buffer);
+    if (image->is_monochrome != MagickFalse)
+      {
+        FormatString(buffer,"monochrome=True\n");
+        (void) WriteBlobString(image,buffer);
+      }
+    if (image->is_grayscale != MagickFalse)
+      {
+        FormatString(buffer,"grayscale=True\n");
+        (void) WriteBlobString(image,buffer);
+      }
     if ((image->x_resolution != 0) && (image->y_resolution != 0))
       {
         char
