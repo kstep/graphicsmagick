@@ -195,13 +195,14 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (status == False)
     ThrowReaderException(DelegateError,"Unable to get type metrics",image);
   (void) strncpy(filename,image_info->filename,MaxTextExtent-1);
+  if (draw_info->text != '\0')
+    *draw_info->text='\0';
   p=ReadBlobString(image,text);
   for (offset=2*page.y; p != (char *) NULL; )
   {
     /*
       Annotate image with text.
     */
-    text[strlen(text)]='\0';
     (void) ConcatenateString(&draw_info->text,text);
     (void) ConcatenateString(&draw_info->text,"\\n");
     offset+=(long) (metrics.ascent-metrics.descent);
