@@ -1,3 +1,16 @@
+2003-05-06  William Radcliffe  <billr@corbis.com>
+
+	* VisualMagick\lcms\LIBRARY.txt : a define to prevent popup message
+	box behaviour.
+	* VisualMagick\configure\ : New feature - -t consolidates all the
+	coders into on library for the static build in order to make the
+	build process tolerable.
+	* coders\xtrn.c : new support for BSTR - wdie character data
+	* coders\svg.c : put back logic that allows the -size parameter to
+	control the pixel dimensions of the output image.
+	* coders\meta.c : added support for wide character parsing of iptc
+	and 8BIM formats.
+
 2003-05-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* version.sh : Update to reflect development status.
