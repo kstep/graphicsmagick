@@ -708,13 +708,13 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
               for (x=0; x < ((long) width-7); x+=8)
               {
                 for (bit=7; bit >= 0; bit--)
-                  *r++=((*p) & (0x01 << bit) ? 0x01 : 0x00);
+                  *r++=((*p) & (0x01 << bit) ? 0x00 : 0x01);
                 p++;
               }
               if ((width % 8) != 0)
                 {
                   for (bit=7; bit >= (long) (8-(width % 8)); bit--)
-                    *r++=((*p) & (0x01 << bit) ? 0x01 : 0x00);
+                    *r++=((*p) & (0x01 << bit) ? 0x00 : 0x01);
                   p++;
                 }
               break;
