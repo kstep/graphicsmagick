@@ -1136,11 +1136,11 @@ Export Image *ImplodeImage(Image *image,const double factor)
   y_center=(double) image->rows/2.0;
   radius=x_center;
   if (image->columns > image->rows)
-    y_scale=image->columns/image->rows;
+    y_scale=(double) image->columns/image->rows;
   else
     if (image->columns < image->rows)
       {
-        x_scale=image->rows/image->columns;
+        x_scale=(double) image->rows/image->columns;
         radius=y_center;
       }
   amount=factor/10.0;
@@ -1155,14 +1155,14 @@ Export Image *ImplodeImage(Image *image,const double factor)
     q=SetPixelCache(implode_image,0,y,implode_image->columns,1);
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
-    y_distance=y_scale*((double) y-y_center);
+    y_distance=y_scale*(y-y_center);
     for (x=0; x < image->columns; x++)
     {
       /*
         Determine if the pixel is within an ellipse.
       */
       *q=(*p);
-      x_distance=x_scale*((double) x-x_center);
+      x_distance=x_scale*(x-x_center);
       distance=x_distance*x_distance+y_distance*y_distance;
       if (distance < (radius*radius))
         {
@@ -2737,10 +2737,10 @@ Export Image *SwirlImage(Image *image,double degrees)
   x_scale=1.0;
   y_scale=1.0;
   if (image->columns > image->rows)
-    y_scale=image->columns/image->rows;
+    y_scale=(double) image->columns/image->rows;
   else
     if (image->columns < image->rows)
-      x_scale=image->rows/image->columns;
+      x_scale=(double) image->rows/image->columns;
   degrees=DegreesToRadians(degrees);
   /*
     Swirl each row.
@@ -2751,14 +2751,14 @@ Export Image *SwirlImage(Image *image,double degrees)
     q=SetPixelCache(swirl_image,0,y,swirl_image->columns,1);
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
-    y_distance=y_scale*((double) y-y_center);
+    y_distance=y_scale*(y-y_center);
     for (x=0; x < image->columns; x++)
     {
       /*
         Determine if the pixel is within an ellipse.
       */
       *q=(*p);
-      x_distance=x_scale*((double) x-x_center);
+      x_distance=x_scale*(x-x_center);
       distance=x_distance*x_distance+y_distance*y_distance;
       if (distance < (radius*radius))
         {

@@ -95,7 +95,7 @@ testFilter('input.miff', 'Gamma',
 ++$test;
 testFilter('input.miff', 'Implode',
   q/60/,
-  'e0ccb026dd63abb1da662219e76980aa');
+  '3d7e8331469ab7afbbeeb1ef39f61581');
 
 ++$test;
 testFilter('input.miff', 'Layer',
@@ -195,7 +195,7 @@ testFilter('input.miff', 'Solarize',
 ++$test;
 testFilter('input.miff', 'Swirl',
   q/60/,
-  '002d5cd90a5d0bb6c30313fead11e9d8');
+  '099d55d589ff2a7fd6e970cca743818b');
 
 ++$test;
 testFilter('input.miff', 'Texture',
