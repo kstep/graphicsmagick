@@ -2398,6 +2398,7 @@ MagickExport unsigned int IsAccessible(const char *filename)
     }
 
   /* Stat succeeded, log without errno and return access flags */
+  /* FIXME: This rejects named pipes, which are valid for I/O. */
   if (S_ISREG(file_info.st_mode))
     (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
       "Found: %.1024s",filename);
