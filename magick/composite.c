@@ -426,26 +426,32 @@ MagickExport unsigned int CompositeImage(Image *image,
             base-image that is outside the overlap region. The overlap
             region will be blank.
           */
-          pixel.opacity=((double) (MaxRGB-source.opacity)*
-            destination.opacity+(double) (MaxRGB-destination.opacity)*
-            source.opacity)/MaxRGB;
-
-          pixel.red=((double) (MaxRGB-source.opacity)*destination.opacity*
-            source.red/MaxRGB+(double) (MaxRGB-destination.opacity)*
-            source.opacity*destination.red/MaxRGB)/pixel.opacity;
-          destination.red=RoundSignedToQuantum(pixel.red);
-
-          pixel.green=((double) (MaxRGB-source.opacity)*destination.opacity*
-            source.green/MaxRGB+(double) (MaxRGB-destination.opacity)*
-            source.opacity*destination.green/MaxRGB)/pixel.opacity;
-          destination.green=RoundSignedToQuantum(pixel.green);
-
-          pixel.blue=((double) (MaxRGB-source.opacity)*destination.opacity*
-            source.blue/MaxRGB+(double) (MaxRGB-destination.opacity)*
-            source.opacity*destination.blue/MaxRGB)/pixel.opacity;
-          destination.blue=RoundSignedToQuantum(pixel.blue);
-
-          destination.opacity=MaxRGB-RoundSignedToQuantum(pixel.opacity);
+          double gamma;
+          double source_alpha;
+          double dest_alpha;
+          double composite;
+          source_alpha=(double) source.opacity/MaxRGB;
+          dest_alpha=(double) destination.opacity/MaxRGB;
+          
+          gamma=(1.0-source_alpha)+(1.0-dest_alpha)-
+            2.0*(1.0-source_alpha)*(1.0-dest_alpha);
+          
+          composite=MaxRGB*(1.0-gamma);
+          destination.opacity=RoundToQuantum(composite);
+          
+          gamma=1.0/(gamma <= MagickEpsilon ? 1.0 : gamma);
+          
+          composite=((1.0-source_alpha)*source.red*dest_alpha+
+                     (1.0-dest_alpha)*destination.red*source_alpha)*gamma;
+          destination.red=RoundToQuantum(composite);
+          
+          composite=((1.0-source_alpha)*source.green*dest_alpha+
+                     (1.0-dest_alpha)*destination.green*source_alpha)*gamma;
+          destination.green=RoundToQuantum(composite);
+          
+          composite=((1.0-source_alpha)*source.blue*dest_alpha+
+                     (1.0-dest_alpha)*destination.blue*source_alpha)*gamma;
+          destination.blue=RoundToQuantum(composite);
           break;
         }
         case PlusCompositeOp:

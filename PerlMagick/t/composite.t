@@ -26,12 +26,13 @@ chdir 't' || die 'Cd failed';
 # The result of composite image + image, with overflow wrapping around
 # (mod 256).
 #
-# FIXME: Reduce maximum error
+# Maxium error is ignored since operation depends on floating-point
+# sensitive threshold.
 #
 testCompositeCompare('gradient:white-black',q/size=>"100x80"/,
                      'input.miff', q//,
                      q/, gravity=>'Center', compose=>'Add'/,
-                     'reference/composite/Add.miff',0.003,0.6);
+                     'reference/composite/Add.miff',0.003,1.0);
 #
 # Atop
 #
@@ -212,12 +213,14 @@ testCompositeCompare('gradient:white-black',q/size=>"100x80"/,
 # around (mod 256).  The add and subtract operators can be used to
 # perform reversible transformations.
 #
-# FIXME: Reduce maximum error
+# Maxium error is ignored since operation depends on floating-point
+# sensitive threshold.
+#
 ++$test;
 testCompositeCompare('gradient:white-black',q/size=>"100x80"/,
                      'input.miff', q//,
                      q/, gravity=>'Center', compose=>'Subtract'/,
-                     'reference/composite/Subtract.miff',0.005,0.9);
+                     'reference/composite/Subtract.miff',0.005,1.0);
 
 #
 # Xor
