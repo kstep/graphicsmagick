@@ -246,7 +246,7 @@ static double GetUserSpaceCoordinateValue(const SVGInfo *svg_info,
   return(value);
 }
 
-static char **GetStyleTokens(const char *text,int *number_tokens)
+static char **GetStyleTokens(void *context,const char *text,int *number_tokens)
 {
   char
     **tokens;
@@ -258,6 +258,10 @@ static char **GetStyleTokens(const char *text,int *number_tokens)
   register int
     i;
 
+  SVGInfo
+    *svg_info;
+
+  svg_info=(SVGInfo *) context;
   *number_tokens=0;
   if (text == (const char *) NULL)
     return((char **) NULL);
@@ -269,8 +273,11 @@ static char **GetStyleTokens(const char *text,int *number_tokens)
       (*number_tokens)+=2;
   tokens=(char **) AcquireMemory((*number_tokens+2)*sizeof(char *));
   if (tokens == (char **) NULL)
-    MagickFatalError(ResourceLimitFatalError,"Unable to convert string to tokens",
-      "Memory allocation failed");
+    {
+      ThrowException(svg_info->exception,ResourceLimitError,
+        "Unable to convert string to tokens","Memory allocation failed");
+      return((char **) NULL);
+    }
   /*
     Convert string to an ASCII list.
   */
@@ -294,7 +301,8 @@ static char **GetStyleTokens(const char *text,int *number_tokens)
   return(tokens);
 }
 
-static char **GetTransformTokens(const char *text,int *number_tokens)
+static char **GetTransformTokens(void *context,const char *text,
+  int *number_tokens)
 {
   char
     **tokens;
@@ -306,6 +314,10 @@ static char **GetTransformTokens(const char *text,int *number_tokens)
   register int
     i;
 
+  SVGInfo
+    *svg_info;
+
+  svg_info=(SVGInfo *) context;
   *number_tokens=0;
   if (text == (const char *) NULL)
     return((char **) NULL);
@@ -319,8 +331,11 @@ static char **GetTransformTokens(const char *text,int *number_tokens)
   }
   tokens=(char **) AcquireMemory((*number_tokens+2)*sizeof(char *));
   if (tokens == (char **) NULL)
-    MagickFatalError(ResourceLimitFatalError,"Unable to convert string to tokens",
-      "Memory allocation failed");
+    {
+      ThrowException(svg_info->exception,ResourceLimitError,
+        "Unable to convert string to tokens","Memory allocation failed");
+      return((char **) NULL);
+    }
   /*
     Convert string to an ASCII list.
   */
@@ -705,8 +720,11 @@ static void SVGStartElement(void *context,const xmlChar *name,
   svg_info->n++;
   ReacquireMemory((void **) &svg_info->scale,(svg_info->n+1)*sizeof(double));
   if (svg_info->scale == (double *) NULL)
-    MagickFatalError(ResourceLimitFatalError,"Unable to convert SVG image",
-      "Memory allocation failed");
+    {
+      ThrowException(svg_info->exception,ResourceLimitError,
+        "Unable to convert SVG image","Memory allocation failed");
+      return;
+    }
   svg_info->scale[svg_info->n]=svg_info->scale[svg_info->n-1];
   color=AllocateString("none");
   units=AllocateString("userSpaceOnUse");
@@ -1158,7 +1176,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
               IdentityAffine(&transform);
               if (svg_info->debug)
                 (void) fprintf(stdout,"  \n");
-              tokens=GetTransformTokens(value,&number_tokens);
+              tokens=GetTransformTokens(context,value,&number_tokens);
               for (j=0; j < (number_tokens-1); j+=2)
               {
                 keyword=(char *) tokens[j];
@@ -1467,7 +1485,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
             {
               if (svg_info->debug)
                 (void) fprintf(stdout,"  \n");
-              tokens=GetStyleTokens(value,&number_tokens);
+              tokens=GetStyleTokens(context,value,&number_tokens);
               for (j=0; j < (number_tokens-1); j+=2)
               {
                 keyword=(char *) tokens[j];
@@ -1729,7 +1747,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
               IdentityAffine(&transform);
               if (svg_info->debug)
                 (void) fprintf(stdout,"  \n");
-              tokens=GetTransformTokens(value,&number_tokens);
+              tokens=GetTransformTokens(context,value,&number_tokens);
               for (j=0; j < (number_tokens-1); j+=2)
               {
                 keyword=(char *) tokens[j];
@@ -2406,8 +2424,7 @@ static void SVGWarning(void *context,const char *format,...)
 #else
   (void) vsnprintf(reason,MaxTextExtent,format,operands);
 #endif
-  svg_info->exception->severity=DelegateError;
-  ThrowException(svg_info->exception,DelegateError,reason,(char *) NULL);
+  ThrowException(svg_info->exception,DelegateWarning,reason,(char *) NULL);
   va_end(operands);
 }
 
@@ -2438,8 +2455,7 @@ static void SVGError(void *context,const char *format,...)
 #else
   (void) vsnprintf(reason,MaxTextExtent,format,operands);
 #endif
-  (void) CloneString(&svg_info->exception->reason,reason);
-  ThrowException(svg_info->exception,DelegateFatalError,reason,(char *) NULL);
+  ThrowException(svg_info->exception,DelegateError,reason,(char *) NULL);
   va_end(operands);
 }
 
@@ -2634,8 +2650,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   svg_info.text=AllocateString("");
   svg_info.scale=(double *) AcquireMemory(sizeof(double));
   if (svg_info.scale == (double *) NULL)
-    MagickFatalError(ResourceLimitFatalError,"Unable to convert SVG image",
-      "Memory allocation failed");
+    ThrowReaderException(ResourceLimitError,"Memory allocation failed",image);
   svg_info.scale[0]=1.0;
   IdentityAffine(&svg_info.affine);
   svg_info.affine.sx=
