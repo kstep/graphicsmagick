@@ -1892,6 +1892,9 @@ MagickExport unsigned int QuantizationError(Image *image)
   register PixelPacket
     *p;
 
+  size_t
+    number_pixels;
+
   /*
     Initialize measurement.
   */
@@ -1933,8 +1936,8 @@ MagickExport unsigned int QuantizationError(Image *image)
   /*
     Compute final error statistics.
   */
-  image->mean_error_per_pixel=(unsigned int)
-    (total_error/(image->columns*image->rows));
+  number_pixels=image->columns*image->rows;
+  image->mean_error_per_pixel=(unsigned int) (total_error/number_pixels);
   image->normalized_mean_error=image->mean_error_per_pixel/
     (3.0*(MaxRGB+1)*(MaxRGB+1));
   image->normalized_maximum_error=maximum_error_per_pixel/

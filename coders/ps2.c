@@ -358,6 +358,9 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
   SegmentInfo
     bounds;
 
+  size_t
+    number_pixels;
+
   time_t
     timer;
 
@@ -370,9 +373,6 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
     scene,
     text_size,
     width;
-
-  unsigned long
-    number_packets;
 
   /*
     Open output image file.
@@ -673,9 +673,9 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
             /*
               Allocate pixel array.
             */
-            number_packets=(image->colorspace == CMYKColorspace ? 4 : 3)*
+            number_pixels=(image->colorspace == CMYKColorspace ? 4 : 3)*
               image->columns*image->rows;
-            pixels=(unsigned char *) AcquireMemory(number_packets);
+            pixels=(unsigned char *) AcquireMemory(number_pixels);
             if (pixels == (unsigned char *) NULL)
               ThrowWriterException(ResourceLimitWarning,
                 "Memory allocation failed",image);
@@ -717,9 +717,9 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
                   MagickMonitor(SaveImageText,y,image->rows);
             }
             if (compression == LZWCompression)
-              status=LZWEncodeImage(image,number_packets,pixels);
+              status=LZWEncodeImage(image,number_pixels,pixels);
             else
-              status=PackbitsEncodeImage(image,number_packets,pixels);
+              status=PackbitsEncodeImage(image,number_pixels,pixels);
             if (!status)
               {
                 CloseBlob(image);
@@ -797,8 +797,8 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
               /*
                 Allocate pixel array.
               */
-              number_packets=image->columns*image->rows;
-              pixels=(unsigned char *) AcquireMemory(number_packets);
+              number_pixels=image->columns*image->rows;
+              pixels=(unsigned char *) AcquireMemory(number_pixels);
               if (pixels == (unsigned char *) NULL)
                 ThrowWriterException(ResourceLimitWarning,
                   "Memory allocation failed",image);
@@ -822,9 +822,9 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
                     MagickMonitor(SaveImageText,y,image->rows);
               }
               if (compression == LZWCompression)
-                status=LZWEncodeImage(image,number_packets,pixels);
+                status=LZWEncodeImage(image,number_pixels,pixels);
               else
-                status=PackbitsEncodeImage(image,number_packets,pixels);
+                status=PackbitsEncodeImage(image,number_pixels,pixels);
               LiberateMemory((void **) &pixels);
               if (!status)
                 {

@@ -408,8 +408,6 @@ static unsigned char *DecodeImage(const ImageInfo *image_info,Image *blob,
 {
   int
     bytes_per_pixel,
-    length,
-    number_pixels,
     scanline_length,
     width,
     y;
@@ -421,6 +419,10 @@ static unsigned char *DecodeImage(const ImageInfo *image_info,Image *blob,
   register unsigned char
     *p,
     *q;
+
+  size_t
+    length,
+    number_pixels;
 
   unsigned char
     *pixels,

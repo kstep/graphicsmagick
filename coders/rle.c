@@ -159,6 +159,9 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
   register unsigned char
     *p;
 
+  size_t
+    number_pixels;
+
   unsigned char
     background_color[256],
     *colormap,
@@ -273,8 +276,8 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
     */
     if (image->matte)
       number_planes++;
-    rle_pixels=(unsigned char *)
-      AcquireMemory(image->columns*image->rows*number_planes);
+    number_pixels=image->columns*image->rows;
+    rle_pixels=(unsigned char *) AcquireMemory(number_pixels*number_planes);
     if (rle_pixels == (unsigned char *) NULL)
       ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
         image);
@@ -284,7 +287,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
           Set background color.
         */
         p=rle_pixels;
-        for (i=0; i < (int) (image->columns*image->rows); i++)
+        for (i=0; i < number_pixels; i++)
         {
           if (!image->matte)
             for (x=0; x < (int) number_planes; x++)
@@ -389,14 +392,14 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
         mask=(map_length-1);
         p=rle_pixels;
         if (number_colormaps == 1)
-          for (i=0; i < (int) (image->columns*image->rows); i++)
+          for (i=0; i < number_pixels; i++)
           {
             *p=colormap[*p & mask];
             p++;
           }
         else
           if ((number_planes >= 3) && (number_colormaps >= 3))
-            for (i=0; i < (int) (image->columns*image->rows); i++)
+            for (i=0; i < number_pixels; i++)
               for (x=0; x < (int) number_planes; x++)
               {
                 *p=colormap[x*map_length+(*p & mask)];

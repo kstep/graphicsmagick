@@ -1544,8 +1544,11 @@ MagickExport void XDisplayImageInfo(Display *display,
   register int
     i;
 
-  unsigned int
+  size_t
     bytes,
+    number_pixels;
+
+  unsigned int
     levels;
 
   assert(display != (Display *) NULL);
@@ -1607,7 +1610,8 @@ MagickExport void XDisplayImageInfo(Display *display,
   bytes=0;
   for (levels=0; undo_image != (Image *) NULL; levels++)
   {
-    bytes+=undo_image->list->columns*undo_image->list->rows*sizeof(PixelPacket);
+    number_pixels=undo_image->list->columns*undo_image->list->rows;
+    bytes+=number_pixels*sizeof(PixelPacket);
     undo_image=undo_image->previous;
   }
   (void) fprintf(file,"Undo Edit Cache\n  levels: %u\n",levels);

@@ -804,6 +804,9 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         register uint32
           *p;
 
+        size_t
+          number_pixels;
+
         uint32
           *pixels;
 
@@ -814,8 +817,9 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           &sample_info);
         image->matte=
           ((extra_samples == 1) && (sample_info[0] == EXTRASAMPLE_ASSOCALPHA));
-        pixels=(uint32 *) AcquireMemory((image->columns*image->rows+
-          6*image->columns)*sizeof(uint32));
+        number_pixels=image->columns*image->rows;
+        pixels=(uint32 *)
+          AcquireMemory((number_pixels+6*image->columns)*sizeof(uint32));
         if (pixels == (uint32 *) NULL)
           {
             TIFFClose(tiff);
@@ -827,7 +831,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         /*
           Convert image to DirectClass pixel packets.
         */
-        p=pixels+image->columns*image->rows+image->columns*sizeof(uint32)-1;
+        p=pixels+number_pixels+image->columns*sizeof(uint32)-1;
         for (y=0; y < (int) image->rows; y++)
         {
           q=SetImagePixels(image,0,y,image->columns,1);

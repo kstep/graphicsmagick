@@ -280,7 +280,7 @@ static unsigned int DecodeImage(Image *image,unsigned char *luma,
     r=pcd_table[plane];
     for (i=0; ((i < (int) length) && ((sum & r->mask) != r->sequence)); i++)
       r++;
-    if (((q-luma) > (int) (image->columns*image->rows)) ||
+    if (((q-luma) > (size_t) (image->columns*image->rows)) ||
         (r == (PCDTable *) NULL))
       {
         ThrowException(&image->exception,CorruptImageWarning,
@@ -443,6 +443,9 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *c2,
     *yy;
 
+  size_t
+    number_pixels;
+
   unsigned char
     *chroma1,
     *chroma2,
@@ -482,7 +485,7 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Determine resolution by subimage specification.
   */
-  if ((image->columns*image->rows) == 0)
+  if ((size_t) (image->columns*image->rows) == 0)
     subimage=3;
   else
     {
@@ -528,9 +531,10 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Allocate luma and chroma memory.
   */
-  chroma1=(unsigned char *) AcquireMemory(image->columns*image->rows+1);
-  chroma2=(unsigned char *) AcquireMemory(image->columns*image->rows+1);
-  luma=(unsigned char *) AcquireMemory(image->columns*image->rows+1);
+  number_pixels=image->columns*image->rows;
+  chroma1=(unsigned char *) AcquireMemory(number_pixels+1);
+  chroma2=(unsigned char *) AcquireMemory(number_pixels+1);
+  luma=(unsigned char *) AcquireMemory(number_pixels+1);
   if ((chroma1 == (unsigned char *) NULL) ||
       (chroma2 == (unsigned char *) NULL) || (luma == (unsigned char *) NULL))
     ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);

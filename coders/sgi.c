@@ -248,6 +248,9 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
   register unsigned char
     *p;
 
+  size_t
+    number_pixels;
+
   SGIInfo
     iris_info;
 
@@ -303,8 +306,9 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
       Allocate SGI pixels.
     */
     bytes_per_pixel=iris_info.bytes_per_pixel;
+    number_pixels=iris_info.columns*iris_info.rows;
     iris_pixels=(unsigned char *)
-      AcquireMemory(4*bytes_per_pixel*iris_info.columns*iris_info.rows);
+      AcquireMemory(4*bytes_per_pixel*number_pixels);
     if (iris_pixels == (unsigned char *) NULL)
       ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
         image);
@@ -743,6 +747,9 @@ static unsigned int WriteSGIImage(const ImageInfo *image_info,Image *image)
   register unsigned char
     *q;
 
+  size_t
+    number_pixels;
+
   unsigned char
     *iris_pixels,
     *packets;
@@ -801,7 +808,8 @@ static unsigned int WriteSGIImage(const ImageInfo *image_info,Image *image)
     /*
       Allocate SGI pixels.
     */
-    iris_pixels=(unsigned char *) AcquireMemory(4*image->columns*image->rows);
+    number_pixels=image->columns*image->rows;
+    iris_pixels=(unsigned char *) AcquireMemory(4*number_pixels);
     if (iris_pixels == (unsigned char *) NULL)
       ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
         image);

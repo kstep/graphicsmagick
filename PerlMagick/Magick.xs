@@ -2030,7 +2030,7 @@ Append(ref,...)
         case 'S':
         case 's':
         {
-          if (strEQcase(attribute,"stack"))
+          if (LocaleCompare(attribute,"stack") == 0)
             {
               stack=LookupStr(BooleanTypes,SvPV(ST(i),na));
               if (stack < 0)
@@ -5707,19 +5707,19 @@ Montage(ref,...)
         case 'B':
         case 'b':
         {
-          if (strEQcase(attribute,"background"))
+          if (LocaleCompare(attribute,"background") == 0)
             {
               (void) QueryColorDatabase(SvPV(ST(i),na),
                 &montage_info->background_color);
               break;
             }
-          if (strEQcase(attribute,"bordercolor"))
+          if (LocaleCompare(attribute,"bordercolor") == 0)
             {
               (void) QueryColorDatabase(SvPV(ST(i),na),
                 &montage_info->border_color);
               break;
             }
-          if (strEQcase(attribute,"borderwidth"))
+          if (LocaleCompare(attribute,"borderwidth") == 0)
             {
               montage_info->border_width=SvIV(ST(i));
               break;
@@ -5729,7 +5729,7 @@ Montage(ref,...)
         case 'C':
         case 'c':
         {
-          if (strEQcase(attribute,"compos"))
+          if (LocaleCompare(attribute,"compose") == 0)
             {
               sp=!SvPOK(ST(i)) ? SvIV(ST(i)) :
                 LookupStr(CompositeTypes,SvPV(ST(i),na));
@@ -5747,7 +5747,17 @@ Montage(ref,...)
         case 'F':
         case 'f':
         {
-          if (strEQcase(attribute,"frame"))
+          if (LocaleCompare(attribute,"fill") == 0)
+            {
+              (void) QueryColorDatabase(SvPV(ST(i),na),&montage_info->fill);
+              break;
+            }
+          if (LocaleCompare(attribute,"font") == 0)
+            {
+              (void) CloneString(&montage_info->font,SvPV(ST(i),na));
+              break;
+            }
+          if (LocaleCompare(attribute,"frame") == 0)
             {
               char
                 *p;
@@ -5763,22 +5773,12 @@ Montage(ref,...)
                 montage_info->frame=(char *) NULL;
               break;
             }
-          if (strEQcase(attribute,"fill"))
-            {
-              (void) QueryColorDatabase(SvPV(ST(i),na),&montage_info->fill);
-              break;
-            }
-          if (strEQcase(attribute,"font"))
-            {
-              (void) CloneString(&montage_info->font,SvPV(ST(i),na));
-              break;
-            }
           break;
         }
         case 'G':
         case 'g':
         {
-          if (strEQcase(attribute,"geometry"))
+          if (LocaleCompare(attribute,"geometry") == 0)
             {
               char
                 *p;
@@ -5794,7 +5794,7 @@ Montage(ref,...)
                montage_info->geometry=(char *) NULL;
              break;
            }
-         if (strEQcase(attribute,"gravity"))
+         if (LocaleCompare(attribute,"gravity") == 0)
            {
              int
                in;
@@ -5815,7 +5815,7 @@ Montage(ref,...)
         case 'L':
         case 'l':
         {
-          if (strEQcase(attribute,"label"))
+          if (LocaleCompare(attribute,"label") == 0)
             {
               for (next=image; next; next=next->next)
                 (void) SetImageAttribute(next,"Label",SvPV(ST(i),na));
@@ -5826,13 +5826,13 @@ Montage(ref,...)
         case 'M':
         case 'm':
         {
-          if (strEQcase(attribute,"mattec"))
+          if (LocaleCompare(attribute,"mattecolor") == 0)
             {
               (void) QueryColorDatabase(SvPV(ST(i),na),
                 &montage_info->matte_color);
               break;
             }
-          if (strEQcase(attribute,"mode"))
+          if (LocaleCompare(attribute,"mode") == 0)
             {
               int
                 in;
@@ -5876,7 +5876,7 @@ Montage(ref,...)
         case 'P':
         case 'p':
         {
-          if (strEQcase(attribute,"point"))
+          if (LocaleCompare(attribute,"pointsize") == 0)
             {
               montage_info->pointsize=SvIV(ST(i));
               break;
@@ -5886,7 +5886,7 @@ Montage(ref,...)
         case 'S':
         case 's':
         {
-          if (strEQcase(attribute,"shadow"))
+          if (LocaleCompare(attribute,"shadow") == 0)
             {
               sp=!SvPOK(ST(i)) ? SvIV(ST(i)) :
                 LookupStr(BooleanTypes,SvPV(ST(i),na));
@@ -5899,7 +5899,7 @@ Montage(ref,...)
              montage_info->shadow=sp;
              break;
             }
-          if (strEQcase(attribute,"stroke"))
+          if (LocaleCompare(attribute,"stroke") == 0)
             {
               (void) QueryColorDatabase(SvPV(ST(i),na),&montage_info->stroke);
               break;
@@ -5909,12 +5909,12 @@ Montage(ref,...)
         case 'T':
         case 't':
         {
-          if (strEQcase(attribute,"texture"))
+          if (LocaleCompare(attribute,"texture") == 0)
             {
               (void) CloneString(&montage_info->texture,SvPV(ST(i),na));
               break;
             }
-          if (strEQcase(attribute,"tile"))
+          if (LocaleCompare(attribute,"tile") == 0)
             {
               char *p=SvPV(ST(i),na);
               if (!IsGeometry(p))
@@ -5927,12 +5927,12 @@ Montage(ref,...)
                 montage_info->tile=(char *) NULL;
               break;
             }
-          if (strEQcase(attribute,"title"))
+          if (LocaleCompare(attribute,"title") == 0)
             {
               (void) CloneString(&montage_info->title,SvPV(ST(i),na));
               break;
             }
-          if (strEQcase(attribute,"trans"))
+          if (LocaleCompare(attribute,"transparent") == 0)
             {
               transparent_color=GetOnePixel(image,0,0);
               QueryColorDatabase(SvPV(ST(i),na),&transparent_color);
@@ -6076,7 +6076,7 @@ Morph(ref,...)
         case 'F':
         case 'f':
         {
-          if (strEQcase(attribute,"frames"))
+          if (LocaleCompare(attribute,"frames") == 0)
             {
               number_frames=SvIV(ST(i));
               break;
@@ -6634,7 +6634,7 @@ QueryFontMetrics(ref,...)
         case 'd':
         case 'D':
         {
-          if (strEQcase(attribute,"density"))
+          if (LocaleCompare(attribute,"density") == 0)
             {
               CloneString(&draw_info->density,SvPV(ST(i),na));
               break;
@@ -6644,7 +6644,7 @@ QueryFontMetrics(ref,...)
         case 'f':
         case 'F':
         {
-          if (strEQcase(attribute,"font"))
+          if (LocaleCompare(attribute,"font") == 0)
             {
               CloneString(&draw_info->font,SvPV(ST(i),na));
               break;
@@ -6654,12 +6654,12 @@ QueryFontMetrics(ref,...)
         case 'g':
         case 'G':
         {
-          if (strEQcase(attribute,"geometry"))
+          if (LocaleCompare(attribute,"geometry") == 0)
             {
               CloneString(&draw_info->geometry,SvPV(ST(i),na));
               break;
             }
-          if (strEQcase(attribute,"gravity"))
+          if (LocaleCompare(attribute,"gravity") == 0)
             {
               draw_info->gravity=(GravityType)
                 LookupStr(GravityTypes,SvPV(ST(i),na));
@@ -6670,7 +6670,7 @@ QueryFontMetrics(ref,...)
         case 'p':
         case 'P':
         {
-          if (strEQcase(attribute,"pointsize"))
+          if (LocaleCompare(attribute,"pointsize") == 0)
             {
               (void) sscanf(SvPV(ST(i),na),"%lf",&draw_info->pointsize);
               break;
@@ -6680,7 +6680,7 @@ QueryFontMetrics(ref,...)
         case 'r':
         case 'R':
         {
-          if (strEQcase(attribute,"rotate"))
+          if (LocaleCompare(attribute,"rotate") == 0)
             {
               (void) sscanf(SvPV(ST(i),na),"%lf %lf",&affine.rx,&affine.ry);
               (void) sscanf(SvPV(ST(i),na),"%lf,%lf",&affine.rx,&affine.ry);
@@ -6691,13 +6691,13 @@ QueryFontMetrics(ref,...)
         case 's':
         case 'S':
         {
-          if (strEQcase(attribute,"scale"))
+          if (LocaleCompare(attribute,"scale") == 0)
             {
               (void) sscanf(SvPV(ST(i),na),"%lf %lf",&affine.sx,&affine.sy);
               (void) sscanf(SvPV(ST(i),na),"%lf,%lf",&affine.sx,&affine.sy);
               break;
             }
-          if (strEQcase(attribute,"skew"))
+          if (LocaleCompare(attribute,"skew") == 0)
             {
               double
                 x_angle,
@@ -6716,12 +6716,12 @@ QueryFontMetrics(ref,...)
         case 't':
         case 'T':
         {
-          if (strEQcase(attribute,"text"))
+          if (LocaleCompare(attribute,"text") == 0)
             {
               CloneString(&draw_info->text,SvPV(ST(i),na));
               break;
             }
-          if (strEQcase(attribute,"translate"))
+          if (LocaleCompare(attribute,"translate") == 0)
             {
               (void) sscanf(SvPV(ST(i),na),"%lf %lf",&affine.tx,&affine.ty);
               (void) sscanf(SvPV(ST(i),na),"%lf,%lf",&affine.tx,&affine.ty);
@@ -6732,7 +6732,7 @@ QueryFontMetrics(ref,...)
         case 'x':
         case 'X':
         {
-          if (strEQcase(attribute,"x"))
+          if (LocaleCompare(attribute,"x") == 0)
             {
               (void) sscanf(SvPV(ST(i),na),"%lf",&x);
               break;
@@ -6742,7 +6742,7 @@ QueryFontMetrics(ref,...)
         case 'y':
         case 'Y':
         {
-          if (strEQcase(attribute,"y"))
+          if (LocaleCompare(attribute,"y") == 0)
             {
               (void) sscanf(SvPV(ST(i),na),"%lf",&y);
               break;
@@ -7237,7 +7237,7 @@ Transform(ref,...)
         case 'c':
         case 'C':
         {
-          if (strEQcase(attribute,"crop"))
+          if (LocaleCompare(attribute,"crop") == 0)
             {
               crop_geometry=SvPV(ST(i),na);
               break;
@@ -7248,7 +7248,7 @@ Transform(ref,...)
         case 'G':
         default:
         {
-          if (strEQcase(attribute,"geometry"))
+          if (LocaleCompare(attribute,"geometry") == 0)
             {
               geometry=SvPV(ST(i),na);
               break;

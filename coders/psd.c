@@ -96,9 +96,6 @@ static unsigned int DecodeImage(Image *image,const int channel)
   int
     count;
 
-  long
-    length;
-
   Quantum
     pixel;
 
@@ -111,6 +108,9 @@ static unsigned int DecodeImage(Image *image,const int channel)
 
   register PixelPacket
     *q;
+
+  size_t
+    length;
 
   x=0;
   length=image->columns*image->rows;

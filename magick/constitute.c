@@ -621,15 +621,19 @@ MagickExport unsigned int DispatchImage(Image *image,const int x,const int y,
   const unsigned int columns,const unsigned int rows,const char *map,
   const StorageType type,void *pixels)
 {
-  register int
-    i,
-    j;
-
   register PixelPacket
     *p;
 
+  register size_t
+    i,
+    j;
+
+  size_t
+    number_pixels;
+
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
+  number_pixels=columns*rows;
   for (i=0; i < Extent(map); i++)
     switch (map[i])
     {
@@ -660,7 +664,7 @@ MagickExport unsigned int DispatchImage(Image *image,const int x,const int y,
       if (p == (PixelPacket *) NULL)
         break;
       q=(unsigned char *) pixels;
-      for (i=0; i < (int) (columns*rows); i++)
+      for (i=0; i < number_pixels; i++)
       {
         for (j=0; j < Extent(map); j++)
         {
@@ -715,7 +719,7 @@ MagickExport unsigned int DispatchImage(Image *image,const int x,const int y,
       if (p == (PixelPacket *) NULL)
         break;
       q=(unsigned short *) pixels;
-      for (i=0; i < (int) (columns*rows); i++)
+      for (i=0; i < number_pixels; i++)
       {
         for (j=0; j < Extent(map); j++)
         {
@@ -770,7 +774,7 @@ MagickExport unsigned int DispatchImage(Image *image,const int x,const int y,
       if (p == (PixelPacket *) NULL)
         break;
       q=(unsigned int *) pixels;
-      for (i=0; i < (int) (columns*rows); i++)
+      for (i=0; i < number_pixels; i++)
       {
         for (j=0; j < Extent(map); j++)
         {
@@ -825,7 +829,7 @@ MagickExport unsigned int DispatchImage(Image *image,const int x,const int y,
       if (p == (PixelPacket *) NULL)
         break;
       q=(float *) pixels;
-      for (i=0; i < (int) (columns*rows); i++)
+      for (i=0; i < number_pixels; i++)
       {
         for (j=0; j < Extent(map); j++)
         {
@@ -880,7 +884,7 @@ MagickExport unsigned int DispatchImage(Image *image,const int x,const int y,
       if (p == (PixelPacket *) NULL)
         break;
       q=(double *) pixels;
-      for (i=0; i < (int) (columns*rows); i++)
+      for (i=0; i < number_pixels; i++)
       {
         for (j=0; j < Extent(map); j++)
         {

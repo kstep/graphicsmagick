@@ -432,7 +432,7 @@ static PixelPacket *SetPixelStream(Image *image,const int x,const int y,
   StreamInfo
     *stream_info;
 
-  off_t
+  size_t
     length,
     number_pixels;
 
@@ -472,13 +472,12 @@ static PixelPacket *SetPixelStream(Image *image,const int x,const int y,
   if (stream_info->pixels == (PixelPacket *) NULL)
     stream_info->pixels=(PixelPacket *) AcquireMemory(length);
   else
-    if ((stream_info->columns*stream_info->rows) != (columns*rows))
+    if (number_pixels != (size_t) (columns*rows))
       ReacquireMemory((void **) &stream_info->pixels,length);
   if (stream_info->pixels == (void *) NULL)
     MagickError(ResourceLimitError,"Memory allocation failed",
       "unable to allocate cache info");
-  stream_info->indexes=(IndexPacket *)
-    (stream_info->pixels+stream_info->columns*stream_info->rows);
+  stream_info->indexes=(IndexPacket *) (stream_info->pixels+number_pixels);
   return(stream_info->pixels);
 }
 

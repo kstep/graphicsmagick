@@ -536,6 +536,9 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
   register int
     i;
 
+  size_t
+    number_pixels;
+
   struct tm
     *time_meridian;
 
@@ -557,7 +560,6 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
 
   unsigned long
     length,
-    number_packets,
     *xref;
 
   /*
@@ -965,9 +967,9 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
             /*
               Allocate pixel array.
             */
-            number_packets=(image->colorspace == CMYKColorspace ? 4 : 3)*
+            number_pixels=(image->colorspace == CMYKColorspace ? 4 : 3)*
               image->columns*image->rows;
-            pixels=(unsigned char *) AcquireMemory(number_packets);
+            pixels=(unsigned char *) AcquireMemory(number_pixels);
             if (pixels == (unsigned char *) NULL)
               ThrowWriterException(ResourceLimitWarning,
                 "Memory allocation failed",image);
@@ -1002,13 +1004,13 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                   MagickMonitor(SaveImageText,y,image->rows);
             }
             if (compression == ZipCompression)
-              status=ZLIBEncodeImage(image,number_packets,image_info->quality,
+              status=ZLIBEncodeImage(image,number_pixels,image_info->quality,
                 pixels);
             else
               if (compression == LZWCompression)
-                status=LZWEncodeImage(image,number_packets,pixels);
+                status=LZWEncodeImage(image,number_pixels,pixels);
               else
-                status=PackbitsEncodeImage(image,number_packets,pixels);
+                status=PackbitsEncodeImage(image,number_pixels,pixels);
             LiberateMemory((void **) &pixels);
             if (!status)
               {
@@ -1065,8 +1067,8 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
               /*
                 Allocate pixel array.
               */
-              number_packets=image->columns*image->rows;
-              pixels=(unsigned char *) AcquireMemory(number_packets);
+              number_pixels=image->columns*image->rows;
+              pixels=(unsigned char *) AcquireMemory(number_pixels);
               if (pixels == (unsigned char *) NULL)
                 ThrowWriterException(ResourceLimitWarning,
                   "Memory allocation failed",image);
@@ -1087,13 +1089,13 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                     MagickMonitor(SaveImageText,y,image->rows);
               }
               if (compression == ZipCompression)
-                status=ZLIBEncodeImage(image,number_packets,image_info->quality,
+                status=ZLIBEncodeImage(image,number_pixels,image_info->quality,
                   pixels);
               else
                 if (compression == LZWCompression)
-                  status=LZWEncodeImage(image,number_packets,pixels);
+                  status=LZWEncodeImage(image,number_pixels,pixels);
                 else
-                  status=PackbitsEncodeImage(image,number_packets,pixels);
+                  status=PackbitsEncodeImage(image,number_pixels,pixels);
               LiberateMemory((void **) &pixels);
               if (!status)
                 {
@@ -1266,9 +1268,9 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
             /*
               Allocate pixel array.
             */
-            number_packets=(image->colorspace == CMYKColorspace ? 4 : 3)*
+            number_pixels=(image->colorspace == CMYKColorspace ? 4 : 3)*
               image->columns*image->rows;
-            pixels=(unsigned char *) AcquireMemory(number_packets);
+            pixels=(unsigned char *) AcquireMemory(number_pixels);
             if (pixels == (unsigned char *) NULL)
               {
                 DestroyImage(tile_image);
@@ -1302,13 +1304,13 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
               }
             }
             if (compression == ZipCompression)
-              status=ZLIBEncodeImage(image,number_packets,image_info->quality,
+              status=ZLIBEncodeImage(image,number_pixels,image_info->quality,
                 pixels);
             else
               if (compression == LZWCompression)
-                status=LZWEncodeImage(image,number_packets,pixels);
+                status=LZWEncodeImage(image,number_pixels,pixels);
               else
-                status=PackbitsEncodeImage(image,number_packets,pixels);
+                status=PackbitsEncodeImage(image,number_pixels,pixels);
             LiberateMemory((void **) &pixels);
             if (!status)
               {
@@ -1362,8 +1364,8 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
               /*
                 Allocate pixel array.
               */
-              number_packets=tile_image->columns*tile_image->rows;
-              pixels=(unsigned char *) AcquireMemory(number_packets);
+              number_pixels=tile_image->columns*tile_image->rows;
+              pixels=(unsigned char *) AcquireMemory(number_pixels);
               if (pixels == (unsigned char *) NULL)
                 {
                   DestroyImage(tile_image);
@@ -1384,13 +1386,13 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                   *q++=indexes[x];
               }
               if (compression == ZipCompression)
-                status=ZLIBEncodeImage(image,number_packets,image_info->quality,
+                status=ZLIBEncodeImage(image,number_pixels,image_info->quality,
                   pixels);
               else
                 if (compression == LZWCompression)
-                  status=LZWEncodeImage(image,number_packets,pixels);
+                  status=LZWEncodeImage(image,number_pixels,pixels);
                 else
-                  status=PackbitsEncodeImage(image,number_packets,pixels);
+                  status=PackbitsEncodeImage(image,number_pixels,pixels);
               LiberateMemory((void **) &pixels);
               if (!status)
                 {

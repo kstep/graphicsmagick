@@ -117,6 +117,9 @@ static Image *ReadGRADIENTImage(const ImageInfo *image_info,
   register PixelPacket
     *q;
 
+  size_t
+    number_pixels;
+
   /*
     Initialize Image structure.
   */
@@ -140,11 +143,10 @@ static Image *ReadGRADIENTImage(const ImageInfo *image_info,
   (void) QueryColorDatabase(colorname,&color);
   TransformHSL(color.red,color.green,color.blue,&hue_step,&saturation_step,
     &brightness_step);
-  hue_step=(hue_step-hue)/(double) (image->columns*image->rows);
-  saturation_step=
-    (saturation_step-saturation)/(double) (image->columns*image->rows);
-  brightness_step=
-    (brightness_step-brightness)/(double) (image->columns*image->rows);
+  number_pixels=image->columns*image->rows;
+  hue_step=(hue_step-hue)/number_pixels;
+  saturation_step=(saturation_step-saturation)/number_pixels;
+  brightness_step=(brightness_step-brightness)/number_pixels;
   /*
     Initialize image pixels.
   */

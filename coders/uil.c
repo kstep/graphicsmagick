@@ -180,6 +180,9 @@ static unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
   register PixelPacket
     *p;
 
+  size_t
+    number_pixels;
+
   unsigned int
     characters_per_pixel,
     colors,
@@ -215,8 +218,9 @@ static unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
           /*
             Map all the transparent pixels.
           */
+          number_pixels=image->columns*image->rows;
           matte_image=(unsigned char *)
-            AcquireMemory(image->columns*image->rows);
+            AcquireMemory(number_pixels*sizeof(unsigned char));
           if (matte_image == (unsigned char *) NULL)
             ThrowWriterException(ResourceLimitWarning,
               "Memory allocation failed",image);

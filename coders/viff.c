@@ -227,6 +227,9 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
   register unsigned char
     *p;
 
+  size_t
+    number_pixels;
+
   unsigned char
     buffer[7],
     *viff_pixels;
@@ -329,7 +332,8 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
     /*
       Verify that we can read this VIFF image.
     */
-    if ((viff_info.columns*viff_info.rows) == 0)
+    number_pixels=viff_info.columns*viff_info.rows;
+    if (number_pixels == 0)
       ThrowReaderException(CorruptImageWarning,
         "Image column or row size is not supported",image);
     if ((viff_info.data_storage_type != VFF_TYP_BIT) &&
@@ -482,8 +486,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
     if (viff_info.data_storage_type == VFF_TYP_BIT)
       max_packets=((viff_info.columns+7) >> 3)*viff_info.rows;
     else
-      max_packets=
-        viff_info.columns*viff_info.rows*viff_info.number_data_bands;
+      max_packets=number_pixels*viff_info.number_data_bands;
     viff_pixels=(unsigned char *)
       AcquireMemory(bytes_per_pixel*max_packets*sizeof(Quantum));
     if (viff_pixels == (unsigned char *) NULL)
@@ -659,13 +662,10 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
         }
       else
         {
-          unsigned long
-            offset;
-
           /*
             Convert DirectColor scanline.
           */
-          offset=image->columns*image->rows;
+          number_pixels=image->columns*image->rows;
           for (y=0; y < (int) image->rows; y++)
           {
             q=SetImagePixels(image,0,y,image->columns,1);
@@ -674,16 +674,16 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
             for (x=0; x < (int) image->columns; x++)
             {
               q->red=UpScale(*p);
-              q->green=UpScale(*(p+offset));
-              q->blue=UpScale(*(p+offset*2));
+              q->green=UpScale(*(p+number_pixels));
+              q->blue=UpScale(*(p+2*number_pixels));
               if (image->colors != 0)
                 {
                   q->red=image->colormap[q->red].red;
                   q->green=image->colormap[q->green].green;
                   q->blue=image->colormap[q->blue].blue;
                 }
-              q->opacity=
-                UpScale(image->matte ? MaxRGB-(*(p+offset*3)) : OpaqueOpacity);
+              q->opacity=UpScale(image->matte ?
+                MaxRGB-(*(p+number_pixels*3)) : OpaqueOpacity);
               p++;
               q++;
             }

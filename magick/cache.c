@@ -335,14 +335,12 @@ static void DestroyCacheInfo(Cache cache)
   CacheInfo
     *cache_info;
 
-  off_t
-    number_pixels;
-
   register int
     id;
 
   size_t
-    length;
+    length,
+    number_pixels;
 
   assert(cache != (Cache) NULL);
   cache_info=(CacheInfo *) cache;
@@ -1019,11 +1017,9 @@ MagickExport unsigned int OpenCache(Image *image)
   char
     null = 0;
 
-  off_t
-    number_pixels;
-
   size_t
     length,
+    number_pixels,
     offset;
 
   void
@@ -1034,7 +1030,7 @@ MagickExport unsigned int OpenCache(Image *image)
   assert(image->cache != (void *) NULL);
   if (cache_threshold == ~0)
     {
-      off_t
+      size_t
         threshold;
 
       /*
@@ -1042,7 +1038,7 @@ MagickExport unsigned int OpenCache(Image *image)
       */
       threshold=PixelCacheThreshold;
 #if defined(_SC_PAGESIZE) && defined(_SC_PHYS_PAGES)
-      threshold=(off_t) (4.0*sysconf(_SC_PAGESIZE)*
+      threshold=(size_t) (4.0*sysconf(_SC_PAGESIZE)*
         sysconf(_SC_PHYS_PAGES)/1048576);
 #endif
       if (getenv("MAGICK_CACHE_THRESHOLD") != (char *) NULL)
@@ -1215,7 +1211,6 @@ MagickExport unsigned int ReadCacheIndexes(Cache cache,const unsigned int id)
 
   off_t
     count,
-    number_pixels,
     offset;
 
   register NexusInfo
@@ -1226,6 +1221,9 @@ MagickExport unsigned int ReadCacheIndexes(Cache cache,const unsigned int id)
 
   register int
     y;
+
+  size_t
+    number_pixels;
 
   assert(cache != (Cache) NULL);
   cache_info=(CacheInfo *) cache;
@@ -1452,14 +1450,12 @@ MagickExport PixelPacket *SetCacheNexus(Image *image,const unsigned int id,
   CacheInfo
     *cache_info;
 
-  off_t
-    number_pixels;
-
   register NexusInfo
     *nexus_info;
 
   size_t
-    length;
+    length,
+    number_pixels;
 
   assert(image != (Image *) NULL);
   cache_info=(CacheInfo *) image->cache;
@@ -1680,9 +1676,6 @@ static unsigned int SyncPixelCache(Image *image)
       NexusInfo
         *nexus_info;
 
-      register int
-        i;
-
       register PixelPacket
         *p,
         *q;
@@ -1707,11 +1700,18 @@ static unsigned int SyncPixelCache(Image *image)
           register PixelPacket
             *r;
 
+          register size_t
+            i;
+
+          size_t
+            number_pixels;
+
           /*
             Apply clip mask.
           */
           r=nexus_info->pixels;
-          for (i=0; i < (int) (nexus_info->columns*nexus_info->rows); i++)
+          number_pixels=nexus_info->columns*nexus_info->rows;
+          for (i=0;  i < number_pixels; i++)
           {
             if (q->opacity == TransparentOpacity)
               *r=(*p);
@@ -1859,7 +1859,6 @@ MagickExport unsigned int WriteCacheIndexes(Cache cache,const unsigned int id)
 
   off_t
     count,
-    number_pixels,
     offset;
 
   register NexusInfo
@@ -1870,6 +1869,9 @@ MagickExport unsigned int WriteCacheIndexes(Cache cache,const unsigned int id)
 
   register int
     y;
+
+  size_t
+    number_pixels;
 
   assert(cache != (Cache) NULL);
   cache_info=(CacheInfo *) cache;

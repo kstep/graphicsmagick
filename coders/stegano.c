@@ -99,7 +99,7 @@ static Image *ReadSTEGANOImage(const ImageInfo *image_info,
   (*indexes)|=((byte) & 0x01) << shift; \
   (void) SyncImagePixels(image); \
   j++; \
-  if (j == (int) (image->columns*image->rows)) \
+  if (j == (size_t) (image->columns*image->rows)) \
     { \
       j=0; \
       shift--; \
@@ -112,7 +112,6 @@ static Image *ReadSTEGANOImage(const ImageInfo *image_info,
     *clone_info;
 
   int
-    j,
     shift,
     y;
 
@@ -121,12 +120,15 @@ static Image *ReadSTEGANOImage(const ImageInfo *image_info,
     *stegano_indexes;
 
   register int
-    i,
     x;
 
   register PixelPacket
     *p,
     *q;
+
+  size_t
+    i,
+    j;
 
   Image
     *clone_image,
@@ -166,7 +168,7 @@ static Image *ReadSTEGANOImage(const ImageInfo *image_info,
   {
     for (x=0; x < (int) stegano_image->columns; x++)
     {
-      if (i == (int) (stegano_image->columns*stegano_image->rows))
+      if (i == (size_t) (stegano_image->columns*stegano_image->rows))
         i=0;
       p=GetImagePixels(stegano_image,i % stegano_image->columns,
         i/stegano_image->columns,1,1);

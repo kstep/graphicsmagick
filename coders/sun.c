@@ -117,7 +117,7 @@ static unsigned int IsSUN(const unsigned char *magick,const unsigned int length)
 %  The format of the DecodeImage method is:
 %
 %      unsigned int DecodeImage(const unsigned char *compressed_pixels,
-%        const unsigned int length,unsigned char *pixels)
+%        const size_t length,unsigned char *pixels)
 %
 %  A description of each parameter follows:
 %
@@ -138,7 +138,7 @@ static unsigned int IsSUN(const unsigned char *magick,const unsigned int length)
 %
 */
 static unsigned int DecodeImage(const unsigned char *compressed_pixels,
-  const unsigned int length,unsigned char *pixels)
+  const size_t length,unsigned char *pixels)
 {
   register const unsigned char
     *p;
@@ -156,7 +156,7 @@ static unsigned int DecodeImage(const unsigned char *compressed_pixels,
   assert(pixels != (unsigned char *) NULL);
   p=compressed_pixels;
   q=pixels;
-  while ((p-compressed_pixels) < (int) length)
+  while ((p-compressed_pixels) < length)
   {
     byte=(*p++);
     if (byte != 128)

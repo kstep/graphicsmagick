@@ -601,6 +601,9 @@ MagickExport Image *AverageImages(Image *image,ExceptionInfo *exception)
     *p,
     *q;
 
+  size_t
+    number_pixels;
+
   SumPacket
     *sum;
 
@@ -626,7 +629,8 @@ MagickExport Image *AverageImages(Image *image,ExceptionInfo *exception)
   /*
     Allocate sum accumulation buffer.
   */
-  sum=(SumPacket *) AcquireMemory(image->columns*image->rows*sizeof(SumPacket));
+  number_pixels=image->columns*image->rows;
+  sum=(SumPacket *) AcquireMemory(number_pixels*sizeof(SumPacket));
   if (sum == (SumPacket *) NULL)
     ThrowImageException(ResourceLimitWarning,"Unable to average image sequence",
       "Memory allocation failed");
@@ -2942,6 +2946,9 @@ MagickExport unsigned int IsImagesEqual(Image *image,Image *reference)
     *p,
     *q;
 
+  size_t
+    number_pixels;
+
   /*
     Initialize measurement.
   */
@@ -2992,8 +2999,8 @@ MagickExport unsigned int IsImagesEqual(Image *image,Image *reference)
   normalize=3.0*(MaxRGB+1)*(MaxRGB+1);
   if (image->matte)
     normalize=4.0*(MaxRGB+1)*(MaxRGB+1);
-  image->mean_error_per_pixel=(unsigned int)
-    (total_error/(image->columns*image->rows));
+  number_pixels=image->columns*image->rows;
+  image->mean_error_per_pixel=(unsigned int) (total_error/number_pixels);
   image->normalized_mean_error=image->mean_error_per_pixel/normalize;
   image->normalized_maximum_error=maximum_error_per_pixel/normalize;
   return(image->normalized_mean_error == 0.0);
