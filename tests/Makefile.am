@@ -52,9 +52,9 @@ clean-local:
 
 CHECK_FILES = \
 	'LOGO:' \
-	'../PerlMagick/t/input_p4.pbm'  \
-	'../PerlMagick/t/input_p5.pgm' \
-	'../PerlMagick/t/input_p6.ppm'
+	'$(top_srcdir)/PerlMagick/t/input_p4.pbm'  \
+	'$(top_srcdir)/PerlMagick/t/input_p5.pgm' \
+	'$(top_srcdir)/PerlMagick/t/input_p6.ppm'
 
 if HasHDF
 HDF=HDF

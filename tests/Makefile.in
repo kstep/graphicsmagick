@@ -212,9 +212,9 @@ rwfile_SOURCES = rwfile.c
 
 CHECK_FILES = \
 	'LOGO:' \
-	'../PerlMagick/t/input_p4.pbm'  \
-	'../PerlMagick/t/input_p5.pgm' \
-	'../PerlMagick/t/input_p6.ppm'
+	'$(top_srcdir)/PerlMagick/t/input_p4.pbm'  \
+	'$(top_srcdir)/PerlMagick/t/input_p5.pgm' \
+	'$(top_srcdir)/PerlMagick/t/input_p6.ppm'
 
 @HasHDF_TRUE@HDF = @HasHDF_TRUE@HDF
 @HasHDF_FALSE@HDF = 
@@ -309,7 +309,7 @@ LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDF
 DIST_SOURCES =  $(rwblob_SOURCES) $(rwfile_SOURCES)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 DEP_FILES =  @AMDEP@ $(DEPDIR)/rwblob.Po $(DEPDIR)/rwfile.Po
-DIST_COMMON =  Makefile.am Makefile.in depcomp
+DIST_COMMON =  Makefile.am Makefile.in
 
 
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
