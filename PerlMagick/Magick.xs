@@ -239,9 +239,9 @@ static char
   },
   *StretchTypes[] =
   {
-    "Normal", "ultra-condensed", "extra-condensed", "condensed",
-    "semi-condensed", "semi-expanded", "expanded", "extra-expanded",
-    "ultra-expanded", "any", (char *) NULL
+    "Normal", "UltraCondensed", "ExtraCondensed", "Condensed",
+    "SemiCondensed", "SemiExpanded", "Expanded", "ExtraExpanded",
+    "UltraExpanded", "Any", (char *) NULL
   },
   *StyleTypes[] =
   {
