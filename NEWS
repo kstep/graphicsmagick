@@ -1,6 +1,6 @@
-This file was last updated on June 5, 2004.
+This file was last updated on June 6, 2004.
 
-Significant changes associated with GraphicsMagick 1.1.2 (TBD)
+Significant changes associated with GraphicsMagick 1.1.2 (released June 6, 2004)
 
   Bugs fixed:
     * The source RPM package was not installing the *-config scripts with

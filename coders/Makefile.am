@@ -515,7 +515,7 @@ wpg_la_LIBADD       = $(LIBMAGICK)
 # X module
 x_la_SOURCES        = x.c
 x_la_LDFLAGS        = $(MODULECOMMONFLAGS)
-x_la_LIBADD         = $(LIBMAGICK)
+x_la_LIBADD         = $(LIBMAGICK) $(LIB_X11)
 
 # XBM module
 xbm_la_SOURCES      = xbm.c
@@ -540,7 +540,7 @@ xpm_la_LIBADD       = $(LIBMAGICK)
 # XWD module
 xwd_la_SOURCES      = xwd.c
 xwd_la_LDFLAGS      = $(MODULECOMMONFLAGS)
-xwd_la_LIBADD       = $(LIBMAGICK)
+xwd_la_LIBADD       = $(LIBMAGICK) $(LIB_X11)
 
 # YUV module
 yuv_la_SOURCES      = yuv.c

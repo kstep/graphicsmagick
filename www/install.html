@@ -1,59 +1,26 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <HTML>
 <HEAD>
-	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=ibm437">
+	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=iso-8859-1">
 	<TITLE>GraphicsMagick Installation</TITLE>
-	<META NAME="GENERATOR" CONTENT="StarOffice 6.0  (Solaris Sparc)">
+	<META NAME="GENERATOR" CONTENT="StarOffice 7  (Solaris Sparc)">
 	<META NAME="CREATED" CONTENT="20020823;18090800">
-	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
-	<META NAME="CHANGED" CONTENT="20030406;17101800">
+	<META NAME="CHANGEDBY" CONTENT="Robert Friesenhahn">
+	<META NAME="CHANGED" CONTENT="20040418;19114100">
 	<META NAME="DESCRIPTION" CONTENT="GraphicsMagick is a robust collection of tools and libraries to read, write, and manipulate    an image in any of the more popular image formats including GIF, JPEG, PNG, PDF, and Photo CD.  With GraphicsMagick you can create GIFs dynamically    making it suitable for Web applications.  You can also resize, rotate,  sharpen, color reduce, or add special effects to an image and save your completed work in the same or differing image format.">
 	<META NAME="KEYWORDS" CONTENT="GraphicsMagick, Image Magick, Image Magic, PerlMagick, Perl Magick, Perl Magic, CineMagick, PixelMagick, Pixel Magic,    WebMagick, Web Magic, visualization, image processing, software     development, simulation, image, software, AniMagick, Animagic,    Magick++">
 	<STYLE>
 	<!--
 		@page { size: 8.5in 11in }
-		TD P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 14pt }
-		P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 14pt }
+		TD P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 12pt }
+		P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 12pt }
 		A:link { color: #0085c0 }
 		A:visited { color: #800080 }
 	-->
 	</STYLE>
 </HEAD>
-<BODY LANG="en-US" TEXT="#000000" LINK="#0085c0" VLINK="#800080" BGCOLOR="#ffffff">
-<FORM ACTION="http://www.google.com/search">
-	<INPUT TYPE=HIDDEN NAME="domains" VALUE="www.graphicsmagick.org">
-	<INPUT TYPE=HIDDEN NAME="sitesearch" VALUE="www.graphicsmagick.org">
-	<TABLE WIDTH=100% BORDER=1 BORDERCOLOR="#000000" CELLPADDING=4 CELLSPACING=0 RULES=NONE STYLE="page-break-before: always">
-		<COL WIDTH=208*>
-		<COL WIDTH=48*>
-		<TR>
-			<TD WIDTH=81%>
-				<P ALIGN=LEFT>[<A HREF="../index.html">Home</A>] [<A HREF="mission.html">Mission
-				Statement</A>] [<A HREF="development.html">Development Process</A>] [<A HREF="contribute.html">Contribute</A>] [<A HREF="download.html">Download</A>]
-				[<A HREF="">Installation</A>] [<A HREF="cvs.html">CVS</A>]
-				[<A HREF="http://sourceforge.net/mail/?group_id=73485">Mailing
-				Lists</A>] [<A HREF="FAQ.html">FAQ</A>] [<A HREF="formats.html">Formats</A>]
-				[<A HREF="NEWS.html">News</A> ] [<A HREF="Changelog.html">ChangeLog</A>]
-				[<A HREF="http://sourceforge.net/projects/graphicsmagick/">Report
-				Bugs</A>] [<A HREF="utilities.html">Utilities</A>] [<A HREF="programming.html">Programming</A>]
-				[<A HREF="books.html">Books</A>] [<A HREF="links.html">Links</A>]</P>
-			</TD>
-			<TD ROWSPAN=2 WIDTH=19%>
-				<P ALIGN=CENTER><IMG SRC="../images/gm-188x120t.png" NAME="Graphic2" ALIGN=BOTTOM WIDTH=188 HEIGHT=120 BORDER=0></P>
-			</TD>
-		</TR>
-		<TR>
-			<TD WIDTH=81%>
-				<DIV ALIGN=CENTER>
-					<P><I>Search GraphicsMagick site <INPUT TYPE=TEXT NAME="q" SIZE=25 MAXLENGTH=255>
-					<INPUT TYPE=SUBMIT NAME="sa" VALUE="Search"> </I>
-					</P>
-				</DIV>
-			</TD>
-		</TR>
-	</TABLE>
-</FORM>
-<TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=2>
+<BODY LANG="en-US" TEXT="#000000" LINK="#0085c0" VLINK="#800080" BGCOLOR="#ffffff" DIR="LTR">
+<TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=2 STYLE="page-break-before: always">
 	<TR>
 		<TD BGCOLOR="#52799e">
 			<P><IMG SRC="../images/right_triangle.png" NAME="Graphic2" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0>
@@ -62,23 +29,23 @@
 		</TD>
 	</TR>
 </TABLE>
-<P><FONT SIZE=3><FONT FACE="Verdana, Arial, Helvetica, sans-seri">Compilation
-and installation instructions are available for building
-GraphicsMagick from source code under </FONT></FONT><A HREF="INSTALL-unix.html"><FONT SIZE=3><FONT FACE="Verdana, Arial, Helvetica, sans-seri">Unix
-(including MacOS-X)</FONT></FONT></A><FONT SIZE=3><FONT FACE="Verdana, Arial, Helvetica, sans-seri">,
-</FONT></FONT><A HREF="INSTALL-vms.html"><FONT SIZE=3><FONT FACE="Verdana, Arial, Helvetica, sans-seri">VMS</FONT></FONT></A><FONT SIZE=3><FONT FACE="Verdana, Arial, Helvetica, sans-seri">,
-</FONT></FONT><A HREF="INSTALL-windows.html"><FONT SIZE=3><FONT FACE="Verdana, Arial, Helvetica, sans-seri">Windows</FONT></FONT></A><FONT SIZE=3><FONT FACE="Verdana, Arial, Helvetica, sans-seri">,
-and </FONT></FONT><A HREF="INSTALL-mac.html"><FONT SIZE=3><FONT FACE="Verdana, Arial, Helvetica, sans-seri">MacOS
-9</FONT></FONT></A><FONT SIZE=3><FONT FACE="Verdana, Arial, Helvetica, sans-seri">,
-but first you should read </FONT></FONT><A HREF="README.html"><FONT SIZE=3><FONT FACE="Verdana, Arial, Helvetica, sans-seri">these
-instructions</FONT></FONT></A><FONT SIZE=3><FONT FACE="Verdana, Arial, Helvetica, sans-seri">
-which apply to all of the platforms..</FONT></FONT></P>
-<P><FONT SIZE=3>Windows users may prefer to <A HREF="download.html">download</A>
+<P><FONT FACE="Verdana, Arial, Helvetica, sans-seri">Compilation and
+installation instructions are available for building GraphicsMagick
+from source code under </FONT><A HREF="INSTALL-unix.html"><FONT FACE="Verdana, Arial, Helvetica, sans-seri">Unix
+(including MacOS-X)</FONT></A><FONT FACE="Verdana, Arial, Helvetica, sans-seri">,
+</FONT><A HREF="INSTALL-vms.html"><FONT FACE="Verdana, Arial, Helvetica, sans-seri">VMS</FONT></A><FONT FACE="Verdana, Arial, Helvetica, sans-seri">,
+</FONT><A HREF="INSTALL-windows.html"><FONT FACE="Verdana, Arial, Helvetica, sans-seri">Windows</FONT></A><FONT FACE="Verdana, Arial, Helvetica, sans-seri">,
+and </FONT><A HREF="INSTALL-mac.html"><FONT FACE="Verdana, Arial, Helvetica, sans-seri">MacOS
+9</FONT></A><FONT FACE="Verdana, Arial, Helvetica, sans-seri">, but
+first you should read </FONT><A HREF="README.html"><FONT FACE="Verdana, Arial, Helvetica, sans-seri">these
+instructions</FONT></A> <FONT FACE="Verdana, Arial, Helvetica, sans-seri">which
+apply to all of the platforms..</FONT></P>
+<P>Windows users may prefer to <A HREF="download.html">download</A>
 the GraphicsMagick installer and install GraphicsMagick according to
-the <A HREF="windows.html">Windows installation instructions</A>.</FONT></P>
+the <A HREF="windows.html">Windows installation instructions</A>.</P>
 <HR>
-<P><A HREF="../index.html"><IMG SRC="../images/home.png" NAME="Graphic3" ALT="GraphicsMagick Home Page" ALIGN=MIDDLE WIDTH=40 HEIGHT=40 BORDER=0></A><A HREF="mailto:webmaster@graphicsmagick.org"><IMG SRC="../images/mail.png" NAME="Graphic8" ALT="GraphicsMagick Home Page" ALIGN=MIDDLE WIDTH=40 HEIGHT=40 BORDER=0></A><FONT SIZE=3><FONT FACE="Verdana, Arial, Helvetica, sans-seri">
-Image manipulation software that works like magic. </FONT></FONT>
-</P>
+<P ALIGN=CENTER><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><A HREF="Copyright.html">Copyright</A>
+<FONT FACE="Abadi Mt Condensed Extra Bold">&copy;</FONT>
+GraphicsMagick Group 2002, 2003, 2004</FONT></P>
 </BODY>
 </HTML>

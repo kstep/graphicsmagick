@@ -1,66 +1,34 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <HTML>
 <HEAD>
-	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=ibm437">
+	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=iso-8859-1">
 	<TITLE>GraphicsMagick Perl API</TITLE>
-	<META NAME="GENERATOR" CONTENT="StarOffice 6.0  (Solaris Sparc)">
+	<META NAME="GENERATOR" CONTENT="StarOffice 7  (Solaris Sparc)">
 	<META NAME="CREATED" CONTENT="20030217;19430800">
-	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
-	<META NAME="CHANGED" CONTENT="20030406;15414300">
+	<META NAME="CHANGEDBY" CONTENT="Robert Friesenhahn">
+	<META NAME="CHANGED" CONTENT="20040418;19152500">
 	<META NAME="DESCRIPTION" CONTENT="GraphicsMagick is a    robust collection of tools and libraries to read, write, and manipulate    an image in any of the more popular image formats including GIF, JPEG,    PNG, PDF, and Photo CD.  With GraphicsMagick you can create GIFs dynamically    making it suitable for Web applications.  You can also resize, rotate, sharpen, color reduce, or add special effects to an image and save your completed work in the same or differing image format.">
 	<META NAME="KEYWORDS" CONTENT="GraphicsMagick, Image Magick, Image Magic,    PerlMagick, Perl Magick, Perl Magic, CineMagick, PixelMagick, Pixel Magic,    WebMagick, Web Magic, visualization, image processing, software     development, simulation, image, software, AniMagick, Animagic,    Magick++">
 	<STYLE>
 	<!--
-		TD P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 14pt }
-		P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 14pt }
-		DD { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 14pt }
-		BLOCKQUOTE { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 14pt }
+		TD P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 12pt }
+		P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 12pt }
+		DD { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 12pt }
+		BLOCKQUOTE { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 12pt }
 		PRE { color: #000000 }
-		TH P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 14pt }
+		TH P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 12pt }
 		A:link { color: #0085c0 }
 		A:visited { color: #800080 }
 	-->
 	</STYLE>
 </HEAD>
-<BODY LANG="en-US" TEXT="#000000" LINK="#0085c0" VLINK="#800080" BGCOLOR="#ffffff">
-<FORM ACTION="http://www.google.com/search">
-	<INPUT TYPE=HIDDEN NAME="domains" VALUE="www.graphicsmagick.org">
-	<INPUT TYPE=HIDDEN NAME="sitesearch" VALUE="www.graphicsmagick.org">
-	<TABLE WIDTH=100% BORDER=1 BORDERCOLOR="#000000" CELLPADDING=4 CELLSPACING=0 RULES=NONE STYLE="page-break-before: always">
-		<COL WIDTH=208*>
-		<COL WIDTH=48*>
-		<TR>
-			<TD WIDTH=81%>
-				<P ALIGN=LEFT>[<A HREF="../index.html">Home</A>] [<A HREF="mission.html">Mission Statement</A>] [<A HREF="development.html">Development Process</A>] [<A HREF="contribute.html">Contribute</A>]
-				[<A HREF="download.html">Download</A>] [<A HREF="install.html">Installation</A>]
-				[<A HREF="cvs.html">CVS</A>] [<A HREF="http://sourceforge.net/mail/?group_id=73485">Mailing
-				Lists</A>] [<A HREF="FAQ.html">FAQ</A>] [<A HREF="formats.html">Formats</A>]
-				[<A HREF="NEWS.html">News</A> ] [<A HREF="Changelog.html">ChangeLog</A>]
-				[<A HREF="http://sourceforge.net/projects/graphicsmagick/">Report
-				Bugs</A>] [<A HREF="utilities.html">Utilities</A>]
-				[<A HREF="programming.html">Programming</A>] [<A HREF="books.html">Books</A>]
-				[<A HREF="links.html">Links</A>]</P>
-			</TD>
-			<TD ROWSPAN=2 WIDTH=19%>
-				<P ALIGN=CENTER><IMG SRC="../images/gm-188x120t.png" NAME="Graphic2" ALIGN=BOTTOM WIDTH=188 HEIGHT=120 BORDER=0></P>
-			</TD>
-		</TR>
-		<TR>
-			<TD WIDTH=81%>
-				<DIV ALIGN=CENTER>
-					<P><I>Search GraphicsMagick site <INPUT TYPE=TEXT NAME="q" SIZE=25 MAXLENGTH=255>
-					<INPUT TYPE=SUBMIT NAME="sa" VALUE="Search"> </I>
-					</P>
-				</DIV>
-			</TD>
-		</TR>
-	</TABLE>
-</FORM><A NAME="contents"></A>
+<BODY LANG="en-US" TEXT="#000000" LINK="#0085c0" VLINK="#800080" BGCOLOR="#ffffff" DIR="LTR"><A NAME="contents"></A>
 <TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=2>
 	<TR>
 		<TD BGCOLOR="#52799e">
 			<P ALIGN=LEFT><IMG SRC="../images/right_triangle.png" NAME="Graphic2" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0>
-			<B><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">Contents</FONT></FONT></B></P>
+			<B><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">GraphicsMagick
+			Perl API -- PerlMagick</FONT></FONT></B></P>
 		</TD>
 	</TR>
 </TABLE>
@@ -479,7 +447,7 @@ parameters.</BLOCKQUOTE>
 			</TD>
 			<TD>
 				<P>geometry=&gt;<I>geometry</I>, width=&gt;<I>integer</I>,
-				height=&gt;<I> integer</I>, offset=&gt;<I>integer</I></P>
+				height=&gt; <I>integer</I>, offset=&gt;<I>integer</I></P>
 			</TD>
 			<TD>
 				<P>Local adaptive thresholding. Width and height specify the size
@@ -507,7 +475,7 @@ parameters.</BLOCKQUOTE>
 			</TD>
 			<TD>
 				<P>affine=&gt;<I>array of float values</I>, translate=&gt;<I>float,
-				float</I>, scale=&gt;<I> float, float</I>, rotate=&gt;<I>float</I>,
+				float</I>, scale=&gt; <I>float, float</I>, rotate=&gt;<I>float</I>,
 				skewX=&gt;<I>float</I>, skewY=&gt;<I>float</I></P>
 			</TD>
 			<TD>
@@ -524,15 +492,15 @@ parameters.</BLOCKQUOTE>
 				Any}, stretch=&gt;{Normal, UltraCondensed, ExtraCondensed,
 				Condensed, SemiCondensed, SemiExpanded, Expanded, ExtraExpanded,
 				UltraExpanded}, weight=&gt;<I>integer</I>, pointsize=&gt;<I>integer</I>,
-				density=&gt;<I>geometry</I>, stroke=&gt;<I> <A HREF="color.html">color
-				name</A></I>, strokewidth=&gt;<I>integer</I>, fill=&gt;<A HREF="color.html"><I>color
+				density=&gt;<I>geometry</I>, stroke=&gt; <A HREF="color.html"><I>color
+				name</I></A>, strokewidth=&gt;<I>integer</I>, fill=&gt;<A HREF="color.html"><I>color
 				name</I></A>, undercolor=&gt;<A HREF="color.html"><I>color name</I></A>,
 				geometry=&gt;<I>geometry</I>, gravity=&gt;{NorthWest, North,
 				NorthEast, West, Center, East, SouthWest, South, SouthEast},
 				antialias=&gt;{true, false}, x=&gt;<I>integer</I>, y=&gt;<I>integer</I>,
 				affine=&gt;<I>array of float values</I>, translate=&gt;<I>float,
 				float</I>, scale=&gt;<I>float, float</I>, rotate=&gt;<I>float</I>.
-				skewX=&gt;<I>float</I>, skewY=&gt;<I> float</I>, align=&gt;{Left,
+				skewX=&gt;<I>float</I>, skewY=&gt; <I>float</I>, align=&gt;{Left,
 				Center, Right}, encoding=&gt;{UTF-8} 
 				</P>
 			</TD>
@@ -547,7 +515,7 @@ parameters.</BLOCKQUOTE>
 			</TD>
 			<TD>
 				<P>geometry=&gt;<I>geometry</I>, radius=&gt;<I>double</I>,
-				sigma=&gt;<I> double</I></P>
+				sigma=&gt; <I>double</I></P>
 			</TD>
 			<TD>
 				<P>blur the image with a Gaussian operator of the given radius
@@ -560,7 +528,7 @@ parameters.</BLOCKQUOTE>
 			</TD>
 			<TD>
 				<P>geometry=&gt;<I>geometry</I>, width=&gt;<I>integer</I>,
-				height=&gt;<I> integer</I>, fill=&gt;<A HREF="color.html"><I>color
+				height=&gt; <I>integer</I>, fill=&gt;<A HREF="color.html"><I>color
 				name</I></A></P>
 			</TD>
 			<TD>
@@ -596,7 +564,7 @@ parameters.</BLOCKQUOTE>
 			</TD>
 			<TD>
 				<P>geometry=&gt;<I>geometry</I>, width=&gt;<I>integer</I>,
-				height=&gt;<I> integer</I>, x=&gt;<I>integer</I>, y=&gt;<I>integer</I></P>
+				height=&gt; <I>integer</I>, x=&gt;<I>integer</I>, y=&gt;<I>integer</I></P>
 			</TD>
 			<TD>
 				<P>chop an image</P>
@@ -607,8 +575,7 @@ parameters.</BLOCKQUOTE>
 				<P>Coalesce</P>
 			</TD>
 			<TD>
-				<P><BR>
-				</P>
+				<P>&nbsp;</P>
 			</TD>
 			<TD>
 				<P>merge a sequence of images</P>
@@ -619,8 +586,7 @@ parameters.</BLOCKQUOTE>
 				<P>Clip</P>
 			</TD>
 			<TD>
-				<P><BR>
-				</P>
+				<P>&nbsp;</P>
 			</TD>
 			<TD>
 				<P>apply any clipping path information as an image clip mask.</P>
@@ -633,7 +599,7 @@ parameters.</BLOCKQUOTE>
 			<TD>
 				<P>geometry=&gt;<I>geometry</I>, x=&gt;<I>integer</I>, y=&gt;<I>integer</I>
 				, fill=&gt;<A HREF="color.html"><I>color name</I></A>,
-				bordercolor=&gt;<A HREF="color.html"><I> color name</I></A></P>
+				bordercolor=&gt;<A HREF="color.html"> <I>color name</I></A></P>
 			</TD>
 			<TD>
 				<P>changes the color value of any pixel that matches the color of
@@ -726,7 +692,7 @@ parameters.</BLOCKQUOTE>
 			</TD>
 			<TD>
 				<P>geometry=&gt;<I>geometry</I>, width=&gt;<I>integer</I>,
-				height=&gt;<I> integer</I>, x=&gt;<I>integer</I>, y=&gt;<I>integer</I></P>
+				height=&gt; <I>integer</I>, x=&gt;<I>integer</I>, y=&gt;<I>integer</I></P>
 			</TD>
 			<TD>
 				<P>crop an image</P>
@@ -748,8 +714,7 @@ parameters.</BLOCKQUOTE>
 				<P>Deconstruct</P>
 			</TD>
 			<TD>
-				<P><BR>
-				</P>
+				<P>&nbsp;</P>
 			</TD>
 			<TD>
 				<P>break down an image sequence into constituent parts</P>
@@ -760,8 +725,7 @@ parameters.</BLOCKQUOTE>
 				<P>Despeckle</P>
 			</TD>
 			<TD>
-				<P><BR>
-				</P>
+				<P>&nbsp;</P>
 			</TD>
 			<TD>
 				<P>reduce the speckles within an image</P>
@@ -775,14 +739,14 @@ parameters.</BLOCKQUOTE>
 				<P>primitive=&gt;{point, line, rectangle, arc, ellipse, circle,
 				path, polyline, polygon, bezier, color, matte, text, @<I>filename</I>},
 				points=&gt;<I>string</I> , method=&gt;<I>{Point, Replace,
-				Floodfill, FillToBorder, Reset}</I>, stroke=&gt;<A HREF="color.html"><I>
-				color name</I></A>, fill=&gt;<A HREF="color.html"><I>color name</I></A>,
-				tile=&gt;<I>image-handle</I>, strokewidth=&gt;<I>float</I>,
+				Floodfill, FillToBorder, Reset}</I>, stroke=&gt;<A HREF="color.html">
+				<I>color name</I></A>, fill=&gt;<A HREF="color.html"><I>color
+				name</I></A>, tile=&gt;<I>image-handle</I>, strokewidth=&gt;<I>float</I>,
 				antialias=&gt;{true, false}, bordercolor=&gt;<A HREF="color.html"><I>color
-				name</I></A>, x=&gt;<I> float</I>, y=&gt;<I>float</I>,
+				name</I></A>, x=&gt; <I>float</I>, y=&gt;<I>float</I>,
 				affine=&gt;<I>array of float values</I>, translate=&gt;<I>float,
-				float</I>, scale=&gt;<I> float, float</I>, rotate=&gt;<I>float</I>.
-				skewX=&gt;<I>float</I>, skewY=&gt;<I> float</I></P>
+				float</I>, scale=&gt; <I>float, float</I>, rotate=&gt;<I>float</I>.
+				skewX=&gt;<I>float</I>, skewY=&gt; <I>float</I></P>
 			</TD>
 			<TD>
 				<P>annotate an image with one or more graphic primitives</P>
@@ -806,7 +770,7 @@ parameters.</BLOCKQUOTE>
 			</TD>
 			<TD>
 				<P>geometry=&gt;<I>geometry</I>, radius=&gt;<I>double</I>,
-				sigma=&gt;<I> double</I></P>
+				sigma=&gt; <I>double</I></P>
 			</TD>
 			<TD>
 				<P>emboss the image with a convolution filter of the given radius
@@ -818,8 +782,7 @@ parameters.</BLOCKQUOTE>
 				<P>Enhance</P>
 			</TD>
 			<TD>
-				<P><BR>
-				</P>
+				<P>&nbsp;</P>
 			</TD>
 			<TD>
 				<P>apply a digital filter to enhance a noisy image</P>
@@ -830,8 +793,7 @@ parameters.</BLOCKQUOTE>
 				<P>Equalize</P>
 			</TD>
 			<TD>
-				<P><BR>
-				</P>
+				<P>&nbsp;</P>
 			</TD>
 			<TD>
 				<P>perform histogram equalization to the image</P>
@@ -842,8 +804,7 @@ parameters.</BLOCKQUOTE>
 				<P>Flatten</P>
 			</TD>
 			<TD>
-				<P><BR>
-				</P>
+				<P>&nbsp;</P>
 			</TD>
 			<TD>
 				<P>flatten a sequence of images</P>
@@ -854,8 +815,7 @@ parameters.</BLOCKQUOTE>
 				<P>Flip</P>
 			</TD>
 			<TD>
-				<P><BR>
-				</P>
+				<P>&nbsp;</P>
 			</TD>
 			<TD>
 				<P>create a <I>mirror image</I> by reflecting the image scanlines
@@ -867,8 +827,7 @@ parameters.</BLOCKQUOTE>
 				<P>Flop</P>
 			</TD>
 			<TD>
-				<P><BR>
-				</P>
+				<P>&nbsp;</P>
 			</TD>
 			<TD>
 				<P>create a <I>mirror image</I> by reflecting the image scanlines
@@ -881,8 +840,8 @@ parameters.</BLOCKQUOTE>
 			</TD>
 			<TD>
 				<P>geometry=&gt;<I>geometry</I>, width=&gt;<I>integer</I>,
-				height=&gt;<I> integer</I>, inner=&gt;<I>integer</I>,
-				outer=&gt;<I>integer</I>, fill=&gt;<A HREF="color.html"><I> color
+				height=&gt; <I>integer</I>, inner=&gt;<I>integer</I>,
+				outer=&gt;<I>integer</I>, fill=&gt;<A HREF="color.html"> <I>color
 				name</I></A></P>
 			</TD>
 			<TD>
@@ -940,8 +899,7 @@ parameters.</BLOCKQUOTE>
 				<P>Magnify</P>
 			</TD>
 			<TD>
-				<P><BR>
-				</P>
+				<P>&nbsp;</P>
 			</TD>
 			<TD>
 				<P>double the size of an image</P>
@@ -991,8 +949,7 @@ parameters.</BLOCKQUOTE>
 				<P>Minify</P>
 			</TD>
 			<TD>
-				<P><BR>
-				</P>
+				<P>&nbsp;</P>
 			</TD>
 			<TD>
 				<P>half the size of an image</P>
@@ -1004,7 +961,7 @@ parameters.</BLOCKQUOTE>
 			</TD>
 			<TD>
 				<P>brightness=&gt;<I>double</I>, saturation=&gt;<I>double</I>,
-				hue=&gt;<I> double</I></P>
+				hue=&gt; <I>double</I></P>
 			</TD>
 			<TD>
 				<P>vary the brightness, saturation, and hue of an image by the
@@ -1017,7 +974,7 @@ parameters.</BLOCKQUOTE>
 			</TD>
 			<TD>
 				<P>geometry=&gt;<I>geometry</I>, radius=&gt;<I>double</I>,
-				sigma=&gt;<I> double</I>, angle=&gt;<I>double</I></P>
+				sigma=&gt; <I>double</I>, angle=&gt;<I>double</I></P>
 			</TD>
 			<TD>
 				<P>blur the image with a Gaussian operator of the given radius
@@ -1042,8 +999,7 @@ parameters.</BLOCKQUOTE>
 				<P>Normalize</P>
 			</TD>
 			<TD>
-				<P><BR>
-				</P>
+				<P>&nbsp;</P>
 			</TD>
 			<TD>
 				<P>transform image to span the full range of color values</P>
@@ -1065,8 +1021,8 @@ parameters.</BLOCKQUOTE>
 				<P>Opaque</P>
 			</TD>
 			<TD>
-				<P>color=&gt;<A HREF="color.html"><I>color name</I></A>, fill=&gt;<A HREF="color.html"><I>
-				color name</I></A></P>
+				<P>color=&gt;<A HREF="color.html"><I>color name</I></A>, fill=&gt;<A HREF="color.html">
+				<I>color name</I></A></P>
 			</TD>
 			<TD>
 				<P>change this color to the fill color within the image</P>
@@ -1104,7 +1060,7 @@ parameters.</BLOCKQUOTE>
 			</TD>
 			<TD>
 				<P>geometry=&gt;<I>geometry</I>, width=&gt;<I>integer</I>,
-				height=&gt;<I> integer</I>, x=&gt;<I>integer</I>, y=&gt;<I>integer</I>,
+				height=&gt; <I>integer</I>, x=&gt;<I>integer</I>, y=&gt;<I>integer</I>,
 				raise=&gt;{True, False}</P>
 			</TD>
 			<TD>
@@ -1129,7 +1085,7 @@ parameters.</BLOCKQUOTE>
 			</TD>
 			<TD>
 				<P>geometry=&gt;<I>geometry</I>, width=&gt;<I>integer</I>,
-				height=&gt;<I> integer</I>, filter=&gt;{Point, Box, Triangle,
+				height=&gt; <I>integer</I>, filter=&gt;{Point, Box, Triangle,
 				Hermite, Hanning, Hamming, Blackman, Gaussian, Quadratic, Cubic,
 				Catrom, Mitchell, Lanczos, Bessel, Sinc}, blur=&gt;<I>double</I></P>
 			</TD>
@@ -1168,7 +1124,7 @@ parameters.</BLOCKQUOTE>
 			</TD>
 			<TD>
 				<P>geometry=&gt;<I>geometry</I>, width=&gt;<I>integer</I>,
-				height=&gt;<I> integer</I></P>
+				height=&gt; <I>integer</I></P>
 			</TD>
 			<TD>
 				<P>scale image with pixel sampling</P>
@@ -1180,7 +1136,7 @@ parameters.</BLOCKQUOTE>
 			</TD>
 			<TD>
 				<P>geometry=&gt;<I>geometry</I>, width=&gt;<I>integer</I>,
-				height=&gt;<I> integer</I></P>
+				height=&gt; <I>integer</I></P>
 			</TD>
 			<TD>
 				<P>scale image to desired size</P>
@@ -1193,7 +1149,7 @@ parameters.</BLOCKQUOTE>
 			<TD>
 				<P>colorspace=&gt;{RGB, Gray, Transparent, OHTA, XYZ, YCbCr, YCC,
 				YIQ, YPbPr, YUV, CMYK}, verbose={True, False}, cluster=&gt;<I>double</I>,
-				smooth=<I> double</I></P>
+				smooth= <I>double</I></P>
 			</TD>
 			<TD>
 				<P>segment an image by analyzing the histograms of the color
@@ -1206,7 +1162,7 @@ parameters.</BLOCKQUOTE>
 			</TD>
 			<TD>
 				<P>geometry=&gt;<I>geometry</I>, azimuth=&gt;<I>double</I>,
-				elevation=&gt;<I> double</I>, gray=&gt;{true, false}&nbsp;</P>
+				elevation=&gt; <I>double</I>, gray=&gt;{true, false}&nbsp;</P>
 			</TD>
 			<TD>
 				<P>shade the image using a distant light source</P>
@@ -1218,7 +1174,7 @@ parameters.</BLOCKQUOTE>
 			</TD>
 			<TD>
 				<P>geometry=&gt;<I>geometry</I>, radius=&gt;<I>double</I>,
-				sigma=&gt;<I> double</I></P>
+				sigma=&gt; <I>double</I></P>
 			</TD>
 			<TD>
 				<P>sharpen the image with a Gaussian operator of the given radius
@@ -1231,7 +1187,7 @@ parameters.</BLOCKQUOTE>
 			</TD>
 			<TD>
 				<P>geometry=&gt;<I>geometry</I>, width=&gt;<I>integer</I>,
-				height=&gt;<I> integer</I> 
+				height=&gt; <I>integer</I> 
 				</P>
 			</TD>
 			<TD>
@@ -1257,8 +1213,7 @@ parameters.</BLOCKQUOTE>
 				<P>Signature</P>
 			</TD>
 			<TD>
-				<P><BR>
-				</P>
+				<P>&nbsp;</P>
 			</TD>
 			<TD>
 				<P>generate an SHA-256 message digest for the image pixel stream</P>
@@ -1358,8 +1313,7 @@ parameters.</BLOCKQUOTE>
 				<P>Trim</P>
 			</TD>
 			<TD>
-				<P><BR>
-				</P>
+				<P>&nbsp;</P>
 			</TD>
 			<TD>
 				<P>remove edges that are the background color from the image</P>
@@ -1371,7 +1325,7 @@ parameters.</BLOCKQUOTE>
 			</TD>
 			<TD>
 				<P>geometry=&gt;<I>geometry</I>, radius=&gt;<I>double</I>,
-				sigma=&gt;<I> double</I>, amount=&gt;<I>double</I>,
+				sigma=&gt; <I>double</I>, amount=&gt;<I>double</I>,
 				threshold=&gt;<I>double</I></P>
 			</TD>
 			<TD>
@@ -1384,7 +1338,7 @@ parameters.</BLOCKQUOTE>
 			</TD>
 			<TD>
 				<P>geometry=&gt;<I>geometry</I>, amplitude=&gt;<I>double</I>,
-				wavelength=&gt;<I> double</I></P>
+				wavelength=&gt; <I>double</I></P>
 			</TD>
 			<TD>
 				<P>alter an image along a sine wave</P>
@@ -2917,7 +2871,6 @@ format, metrics, and glyphs values.</BLOCKQUOTE>
 Call QueryFormat() with no parameters to return a list of known image
 formats or specify one or more format names to get these attributes:
 adjoin, blob support, raw, decoder, encoder, description, and module.
-
 </BLOCKQUOTE>
 <PRE STYLE="margin-left: 0.39in; margin-right: 0.39in"> @formats = $image-&gt;QueryFormat();
  ($adjoin, $blob_support, $raw, $decoder, $encoder, $description, $module) = $image-&gt;QueryFormat('gif');</PRE><BLOCKQUOTE>
@@ -3414,49 +3367,11 @@ status code:
 </BLOCKQUOTE>
 <PRE STYLE="margin-left: 0.39in; margin-right: 0.39in"> $x = $image-&gt;Read('rose.png');
  $x =~ /(\d+)/;
- die &quot;unable to continue&quot; if ($1 == ResourceLimitError);</PRE><BLOCKQUOTE>
-<BR><BR>
-</BLOCKQUOTE>
-<P><A HREF="#contents">Back to Contents</A> <BR>&nbsp; &nbsp; 
-</P><A NAME="copy"></A>
-<TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=2>
-	<TR>
-		<TD BGCOLOR="#52799e">
-			<P ALIGN=LEFT><IMG SRC="../images/right_triangle.png" NAME="Graphic15" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0>
-			<B><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">Copyright</FONT></FONT></B></P>
-		</TD>
-	</TR>
-</TABLE>
-<DL>
-	<DD STYLE="margin-bottom: 0.2in">Copyright (C) 2002 GraphicsMagick
-	Group, an organization dedicated to making software imaging
-	solutions freely available.</DD><DD STYLE="margin-bottom: 0.2in">
-	Permission is hereby granted, free of charge, to any person
-	obtaining a copy of this software and associated documentation files
-	(&quot;GraphicsMagick&quot;), to deal in GraphicsMagick without
-	restriction, including without limitation the rights to use, copy,
-	modify, merge, publish, distribute, sublicense, and/or sell copies
-	of GraphicsMagick, and to permit persons to whom GraphicsMagick is
-	furnished to do so, subject to the following conditions:</DD><DD STYLE="margin-bottom: 0.2in">
-	The above copyright notice and this permission notice shall be
-	included in all copies or substantial portions of GraphicsMagick.</DD><DD STYLE="margin-bottom: 0.2in">
-	The software is provided &quot;as is&quot;, without warranty of any
-	kind, express or implied, including but not limited to the
-	warranties of merchantability, fitness for a particular purpose and
-	noninfringement. In no event shall GraphicsMagick Group be liable
-	for any claim, damages or other liability, whether in an action of
-	contract, tort or otherwise, arising from, out of or in connection
-	with GraphicsMagick or the use or other dealings in GraphicsMagick.</DD><DD STYLE="margin-bottom: 0.2in">
-	Except as contained in this notice, the name of the GraphicsMagick
-	Group shall not be used in advertising or otherwise to promote the
-	sale, use or other dealings in GraphicsMagick without prior written
-	authorization from the GraphicsMagick Group.</DD></DL>
-<P STYLE="margin-bottom: 0in">
+ die &quot;unable to continue&quot; if ($1 == ResourceLimitError);</PRE><P STYLE="margin-bottom: 0in">
 <A HREF="#contents">Back to Contents</A> 
 </P>
 <HR>
-<P><A HREF="../index.html"><IMG SRC="../images/home.png" NAME="Graphic16" ALT="GraphicsMagick Home Page" ALIGN=MIDDLE WIDTH=40 HEIGHT=40 BORDER=0></A><A HREF="mailto:webmaster@graphicsmagick.org"><IMG SRC="../images/mail.png" NAME="Graphic17" ALT="GraphicsMagick Home Page" ALIGN=MIDDLE WIDTH=40 HEIGHT=40 BORDER=0></A><FONT SIZE=1>
-Image manipulation software that works like magic.</FONT> 
-</P>
+<P ALIGN=CENTER><A HREF="Copyright.html">Copyright</A> <FONT FACE="Abadi Mt Condensed Extra Bold">&copy;</FONT>
+GraphicsMagick Group 2002, 2003, 2004</P>
 </BODY>
 </HTML>

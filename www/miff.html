@@ -1,12 +1,12 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <HTML>
 <HEAD>
-	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=ibm437">
+	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=iso-8859-1">
 	<TITLE>GraphicsMagick - MIFF File Format</TITLE>
-	<META NAME="GENERATOR" CONTENT="StarOffice 6.0  (Solaris Sparc)">
+	<META NAME="GENERATOR" CONTENT="StarOffice 7  (Solaris Sparc)">
 	<META NAME="CREATED" CONTENT="20020824;11573700">
-	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
-	<META NAME="CHANGED" CONTENT="20030406;15373300">
+	<META NAME="CHANGEDBY" CONTENT="Robert Friesenhahn">
+	<META NAME="CHANGED" CONTENT="20040418;19132000">
 	<META NAME="DESCRIPTION" CONTENT="GraphicsMagick is a robust
    collection of tools and libraries to read, write, and
    manipulate an image in any of the more popular image
@@ -19,53 +19,18 @@
 	<META NAME="KEYWORDS" CONTENT="GraphicsMagick, Image Magick,   Image Magic, PerlMagick, Perl Magick, Perl Magic,   CineMagick, PixelMagick, Pixel Magic, WebMagick, Web Magic,   visualization, image processing, software development,   simulation, image, software, AniMagick, Animagic, Magick++">
 	<STYLE>
 	<!--
-		TD P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 14pt }
-		P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 14pt }
-		DT { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 14pt }
-		DD { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 14pt }
+		TD P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 12pt }
+		P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 12pt }
+		DT { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 12pt }
+		DD { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 12pt }
 		PRE { color: #000000 }
-		TH P { color: #ffffff; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 14pt }
+		TH P { color: #ffffff; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 12pt }
 		A:link { color: #0085c0 }
 		A:visited { color: #800080 }
 	-->
 	</STYLE>
 </HEAD>
-<BODY LANG="en-US" TEXT="#000000" LINK="#0085c0" VLINK="#800080" BGCOLOR="#ffffff">
-<FORM ACTION="http://www.google.com/search">
-	<INPUT TYPE=HIDDEN NAME="domains" VALUE="www.graphicsmagick.org">
-	<INPUT TYPE=HIDDEN NAME="sitesearch" VALUE="www.graphicsmagick.org">
-	<TABLE WIDTH=100% BORDER=1 BORDERCOLOR="#000000" CELLPADDING=4 CELLSPACING=0 RULES=NONE STYLE="page-break-before: always">
-		<COL WIDTH=208*>
-		<COL WIDTH=48*>
-		<TR>
-			<TD WIDTH=81%>
-				<P ALIGN=LEFT>[<A HREF="../index.html">Home</A>] [<A HREF="mission.html">Mission Statement</A>] [<A HREF="development.html">Development Process</A>] [<A HREF="contribute.html">Contribute</A>]
-				[<A HREF="download.html">Download</A>] [<A HREF="install.html">Installation</A>]
-				[<A HREF="cvs.html">CVS</A>] [<A HREF="http://sourceforge.net/mail/?group_id=73485">Mailing
-				Lists</A>] [<A HREF="FAQ.html">FAQ</A>] [<A HREF="formats.html">Formats</A>]
-				[<A HREF="NEWS.html">News</A> ] [<A HREF="Changelog.html">ChangeLog</A>]
-				[<A HREF="http://sourceforge.net/projects/graphicsmagick/">Report
-				Bugs</A>] [<A HREF="utilities.html">Utilities</A>]
-				[<A HREF="programming.html">Programming</A>] [<A HREF="books.html">Books</A>]
-				[<A HREF="links.html">Links</A>]</P>
-			</TD>
-			<TD ROWSPAN=2 WIDTH=19%>
-				<P ALIGN=CENTER><IMG SRC="../images/gm-188x120t.png" NAME="Graphic2" ALIGN=BOTTOM WIDTH=188 HEIGHT=120 BORDER=0></P>
-			</TD>
-		</TR>
-		<TR>
-			<TD WIDTH=81%>
-				<DIV ALIGN=CENTER>
-					<P><I>Search GraphicsMagick site <INPUT TYPE=TEXT NAME="q" SIZE=25 MAXLENGTH=255>
-					<INPUT TYPE=SUBMIT NAME="sa" VALUE="Search"> </I>
-					</P>
-				</DIV>
-			</TD>
-		</TR>
-	</TABLE>
-</FORM>
-<P ALIGN=LEFT>
-</P>
+<BODY LANG="en-US" TEXT="#000000" LINK="#0085c0" VLINK="#800080" BGCOLOR="#ffffff" DIR="LTR">
 <P><B>Magick Image File Format (MIFF)</B> is a platform-independent
 format for storing bitmap images. <B>MIFF</B> is a part of the
 <A HREF="../index.html">GraphicsMagick</A> toolkit of image
@@ -279,8 +244,8 @@ combinations that may be found in a <B>MIFF</B> file:
 	<B>profile-iptc</B>=<I>value</I> 
 	</DT><DD>
 	the number of bytes in the IPTC Newsphoto profile. The profile is
-	defined by the <I>IPTC</I><EM><I> specification</I></EM>.</DD><DT>
-	<B>profile-<I>name</I></B>=<I>value</I></DT><DD STYLE="font-style: normal">
+	defined by the <I>IPTC</I><EM> <I>specification</I></EM>.</DD><DT>
+	<B>profile-<I>name</I></B>=<I>value</I></DT><DD STYLE="font-variant: normal; font-style: normal">
 	the number of bytes in the generic profile <I>name</I> where <I>name</I>
 	identifies the profile. <I>Name</I> is substituted with any LATIN-1
 	string to form a unique generic profile identifier.</DD><DT>
@@ -694,7 +659,8 @@ GraphicsMagick without prior written authorization from the
 GraphicsMagick Studio. 
 </P>
 <HR>
-<P><A HREF="../index.html"><IMG SRC="../images/home.png" NAME="Graphic5" ALT="Home Page" ALIGN=MIDDLE WIDTH=40 HEIGHT=40 BORDER=0></A><FONT SIZE=2>
-Image manipulation software that works like magic.</FONT></P>
+<P ALIGN=CENTER><A HREF="Copyright.html"><FONT SIZE=3>Copyright</FONT></A><FONT SIZE=3>
+<FONT FACE="Abadi Mt Condensed Extra Bold">&copy;</FONT>
+GraphicsMagick Group 2002, 2003, 2004</FONT></P>
 </BODY>
 </HTML>

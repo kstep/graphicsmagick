@@ -400,51 +400,73 @@ UNIX/Cygwin/MinGW COMPILATION
 
       http://xfree86.cygwin.com/
 
-    It is strongly recommended that the
-    X11R6 package be installed since this enables GraphicsMagick's X11
-    support (animate, display, and import will work) and it includes the
-    Freetype v2 DLL required to support TrueType and Postscript Type 1
-    fonts. Make sure that /usr/X11R6/bin is in your PATH prior to running
-    configure. If you are using Cygwin version 1.3.9 or later, you may
-    specify the configure option '--enable-shared' to build Cygwin DLLs.
-    Specifying '--enable-shared' is required if you want to build
-    PerlMagick under Cygwin because Cygwin does not provide the libperl.a
-    static library required to create a static PerlMagick.
+    It is strongly recommended that the X11R6 package be installed since
+    this enables GraphicsMagick's X11 support (animate, display, and
+    import will work) and it includes the Freetype v2 DLL required to
+    support TrueType and Postscript Type 1 fonts. Make sure that
+    /usr/X11R6/bin is in your PATH prior to running configure.
+
+    If you are using Cygwin version 1.3.9 or later, you may specify the
+    configure option '--enable-shared' to build Cygwin DLLs. Specifying
+    '--enable-shared' is required if you want to build PerlMagick under
+    Cygwin because Cygwin does not provide the libperl.a static library
+    required to create a static PerlMagick. Note that since C++
+    exceptions do not currently work properly when thrown from a DLL, the
+    Magick++ library is always built as a static library. Be sure to not
+    specify --disable-static if you are building the Magick++ library since
+    that would surely lead to problems.
 
   Building under MinGW & MSYS
 
     GraphicsMagick may be built using the free MinGW ("Minimalistic GNU for
-    Windows") package version 1.1, available from
+    Windows") package, available from
 
-      http://www.mingw.org
+      http://www.mingw.org/
 
-    which consists of a GNU-based (e.g. gcc) compilation toolset plus
-    headers and libraries required to build programs which are entirely
-    based on standard Microsoft Windows DLLs. MSYS provides a Unix-like
-    console shell window with sufficient functionality to run the
-    GraphicsMagick configure script and execute make.
+    which consists of a GNU-based (GCC) compilation toolset plus headers
+    and libraries required to build programs which are entirely based on
+    standard Microsoft Windows DLLs so that they may be used for
+    proprietary applications. MSYS provides a Unix-style console shell
+    window with sufficient functionality to run the GraphicsMagick
+    configure script and execute `make', `make check', and `make
+    install'. GraphicsMagick may be executed from the MSYS shell, but
+    since it is a normal Windows application, it will work just as well
+    from the Windows command line.
 
     Unlike the Cygwin build which creates programs based on a
-    Unix-emulation DLL, and which uses Unix-style paths to access
-    Windows files, the MinGW build creates native Windows console
-    applications similar to the Visual C++ build.
+    Unix-emulation DLL, and which uses Unix-style paths to access Windows
+    files, the MinGW build creates native Windows console applications
+    similar to the Visual C++ build. Run-time performance is similar to
+    the Microsoft compilers.
 
-    Please note that since the MinGW build is very new, some aspects of
-    the installation may vary from Windows user's expectations, and that
-    only a static build (no DLLs or modules) is currently supported.
+    The base MinGW package and the MSYS package should be installed.
+    Other MinGW packages are entirely optional. Once MSYS is installed a
+    MSYS icon (blue capital 'M') is added to the desktop. Double clicking
+    on this icon starts an instance of the MSYS shell.
 
-    Once MinGW & MSYS have been installed, start the MSYS console (via
-    the MSYS icon on the Windows desktop) and follow the Unix configure
-    and build instructions. Note that the default installation prefix is
+    Start the MSYS console and follow the Unix configure and build
+    instructions. The configure and build for MinGW is the same as for
+    Unix. Any additional delegate libraries (e.g. libpng) will need to be
+    built under MinGW in order to be used. These libraries should be
+    built and installed prior to configuring GraphicsMagick. While some
+    delegate libraries are easy to configure and build under MinGW,
+    others may be quite a challenge.
+
+    Since C++ exceptions do not currently work properly when thrown from
+    a DLL, the Magick++ library is always built as a static library. Be
+    sure to not specify --disable-static if you are building the Magick++
+    library since that would surely lead to problems.
+
+    Note that the default installation prefix is MSYS's notion of
     "/usr/local" which installs the package into a MSYS directory. To
     install outside of the MSYS directory tree, you may specify an
     installation prefix like "/c/GraphicsMagick" which causes the package
     to be installed under the Windows directory "C:\GraphicsMagick". The
     installation directory structure will look very much like the Unix
     installation layout (e.g. "C:\GraphicsMagick\bin",
-    "C:\GraphicsMagick\lib", "C:\GraphicsMagick\share", etc.). Any additional
-    delegate libraries (e.g. libpng) will need to be built under MinGW
-    in order to be used.
+    "C:\GraphicsMagick\lib", "C:\GraphicsMagick\share", etc.). Paths
+    which may be embedded in libraries and configuration files are
+    transformed into Windows paths so they don't depend on MSYS.
 
   Dealing with configuration failures:
 
@@ -469,17 +491,16 @@ UNIX/Cygwin/MinGW COMPILATION
     3) a delegate library is missing a function (old version?); 4)
     compilation environment is faulty.
 
-    If all reasonable corrective actions have been tried and the
-    problem appears to be due to a flaw in the configure script,
-    please send a bug report to the configure script maintainer
-    (currently bfriesen@simple.dallas.tx.us). All bug reports should
-    contain the operating system type (as reported by 'uname -a')
-    and the compiler/compiler-version. A copy of the configure script
-    output and/or the config.log file may be valuable in order to find
-    the problem. If you send a config.log, please also send a script of
-    the configure output and a description of what you expected to see
-    (and why) so the failure you are observing can be identified and
-    resolved.
+    If all reasonable corrective actions have been tried and the problem
+    appears to be due to a flaw in the configure script, please send a
+    bug report to the configure script maintainer (currently
+    bfriesen@graphicsmagick.org). All bug reports should contain the
+    operating system type (as reported by 'uname -a') and the
+    compiler/compiler-version. A copy of the configure script output
+    and/or the config.log file may be valuable in order to find the
+    problem. If you send a config.log, please also send a script of the
+    configure output and a description of what you expected to see (and
+    why) so the failure you are observing can be identified and resolved.
 
   Makefile Build Targets
 
