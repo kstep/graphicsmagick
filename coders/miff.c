@@ -862,7 +862,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
               if (!image->matte)
                 (void) PushImagePixels(image,IndexQuantum,pixels);
               else
-                (void) PushImagePixels(image,IndexOpacityQuantum,pixels);
+                (void) PushImagePixels(image,IndexAlphaQuantum,pixels);
             }
           else
             if (image->colorspace == CMYKColorspace)
@@ -1484,7 +1484,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
               if (!image->matte)
                 (void) PopImagePixels(image,IndexQuantum,pixels);
               else
-                (void) PopImagePixels(image,IndexOpacityQuantum,pixels);
+                (void) PopImagePixels(image,IndexAlphaQuantum,pixels);
             }
           else
             if (image->colorspace == CMYKColorspace)

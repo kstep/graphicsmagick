@@ -2996,7 +2996,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
               ping_info->color_type == PNG_COLOR_TYPE_GRAY_ALPHA)
             {
               image->depth=8;
-              (void) PushImagePixels(image,GrayOpacityQuantum,scanlines[y]);
+              (void) PushImagePixels(image,GrayAlphaQuantum,scanlines[y]);
               image->depth=depth;
             }
           else if (depth == 8 && ping_info->color_type == PNG_COLOR_TYPE_RGB)
@@ -3014,7 +3014,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (ping_info->color_type == PNG_COLOR_TYPE_GRAY)
             (void) PushImagePixels(image,GrayQuantum,scanlines[y]);
           else if (ping_info->color_type == PNG_COLOR_TYPE_GRAY_ALPHA)
-            (void) PushImagePixels(image,GrayOpacityQuantum,scanlines[y]);
+            (void) PushImagePixels(image,GrayAlphaQuantum,scanlines[y]);
           else if (ping_info->color_type == PNG_COLOR_TYPE_RGB_ALPHA)
             (void) PushImagePixels(image,RGBAQuantum,scanlines[y]);
           else if (ping_info->color_type == PNG_COLOR_TYPE_PALETTE)
@@ -5307,7 +5307,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
 #endif
                   }
                 else /* PseudoClass */
-                   (void) PopImagePixels(image,GrayOpacityQuantum,scanlines[y]);
+                   (void) PopImagePixels(image,GrayAlphaQuantum,scanlines[y]);
               }
             if (image->previous == (Image *) NULL)
               if (QuantumTick(y,image->rows))
@@ -5329,7 +5329,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
                     (void) PopImagePixels(image,GrayQuantum,scanlines[y]);
                 }
               else if (ping_info->color_type == PNG_COLOR_TYPE_GRAY_ALPHA)
-                (void) PopImagePixels(image,GrayOpacityQuantum,scanlines[y]);
+                (void) PopImagePixels(image,GrayAlphaQuantum,scanlines[y]);
               else if (image->matte)
                 (void) PopImagePixels(image,RGBAQuantum,scanlines[y]);
               else

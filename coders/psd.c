@@ -664,7 +664,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   (void) PushImagePixels(layer_info[i].image,BlackQuantum,
                     scanline);
                 else
-                  (void) PushImagePixels(layer_info[i].image,OpacityQuantum,
+                  (void) PushImagePixels(layer_info[i].image,AlphaQuantum,
                     scanline);
                 break;
               }
@@ -672,7 +672,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
               case -1:
               {
                 if (layer_info[i].image->colorspace == CMYKColorspace)
-                  (void) PushImagePixels(layer_info[i].image,OpacityQuantum,
+                  (void) PushImagePixels(layer_info[i].image,AlphaQuantum,
                     scanline);
                 break;
               }
@@ -806,7 +806,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
             }
             case 4:
             {
-              (void) PushImagePixels(image,OpacityQuantum,scanline);
+              (void) PushImagePixels(image,AlphaQuantum,scanline);
               break;
             }
             default:
@@ -1039,7 +1039,7 @@ static unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
       if (!image->matte)
         (void) PopImagePixels(image,IndexQuantum,pixels);
       else
-        (void) PopImagePixels(image,IndexOpacityQuantum,pixels);
+        (void) PopImagePixels(image,IndexAlphaQuantum,pixels);
       (void) WriteBlob(image,image->columns,pixels);
     }
   else
@@ -1079,7 +1079,7 @@ static unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
         {
           if (!GetImagePixels(image,0,y,image->columns,1))
             break;
-          (void) PopImagePixels(image,OpacityQuantum,pixels);
+          (void) PopImagePixels(image,AlphaQuantum,pixels);
           (void) WriteBlob(image,packet_size*image->columns,pixels);
         }
     }

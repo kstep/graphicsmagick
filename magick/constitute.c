@@ -989,7 +989,7 @@ MagickExport unsigned int PopImagePixels(Image *image,
       }
       break;
     }
-    case IndexOpacityQuantum:
+    case IndexAlphaQuantum:
     {
       if (image->colors <= 256)
         {
@@ -1030,7 +1030,7 @@ MagickExport unsigned int PopImagePixels(Image *image,
       }
       break;
     }
-    case GrayOpacityQuantum:
+    case GrayAlphaQuantum:
     {
       if (image->depth <= 8)
         {
@@ -1112,7 +1112,7 @@ MagickExport unsigned int PopImagePixels(Image *image,
       }
       break;
     }
-    case OpacityQuantum:
+    case AlphaQuantum:
     {
       if (image->colorspace == CMYKColorspace)
         {
@@ -1369,7 +1369,7 @@ MagickExport unsigned int PushImagePixels(Image *image,
       }
       break;
     }
-    case IndexOpacityQuantum:
+    case IndexAlphaQuantum:
     {
       if (image->colors <= 256)
         {
@@ -1422,7 +1422,7 @@ MagickExport unsigned int PushImagePixels(Image *image,
       }
       break;
     }
-    case GrayOpacityQuantum:
+    case GrayAlphaQuantum:
     {
       if (image->depth <= 8)
         {
@@ -1510,7 +1510,7 @@ MagickExport unsigned int PushImagePixels(Image *image,
       }
       break;
     }
-    case OpacityQuantum:
+    case AlphaQuantum:
     {
       if (image->colorspace == CMYKColorspace)
         {

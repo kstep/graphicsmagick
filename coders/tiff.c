@@ -1582,7 +1582,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
               {
                 if (!GetImagePixels(image,0,y,image->columns,1))
                   break;
-                (void) PopImagePixels(image,OpacityQuantum,scanline);
+                (void) PopImagePixels(image,AlphaQuantum,scanline);
                 if (TIFFWritePixels(tiff,(char *) scanline,y,3,image) < 0)
                   break;
               }
@@ -1678,7 +1678,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
                 if (!image->matte)
                   (void) PopImagePixels(image,IndexQuantum,scanline);
                 else
-                  (void) PopImagePixels(image,IndexOpacityQuantum,scanline);
+                  (void) PopImagePixels(image,IndexAlphaQuantum,scanline);
               if (TIFFWritePixels(tiff,(char *) scanline,y,0,image) < 0)
                 break;
               if (image->previous == (Image *) NULL)
