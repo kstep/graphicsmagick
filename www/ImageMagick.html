@@ -396,6 +396,11 @@ This is a combined list of the commandline options used by the ImageMagick
 utilities (<em>animate, composite, convert, display, identify,
 import, mogrify</em> and <em>montage</em>).
 <br>&nbsp;<br>
+<p>
+In this document, angle brackets ("&lt;&gt;") enclose variables, and curly
+brackets ("{}") enclose optional parameters. For example,
+<strong>"-fuzz &lt;distance&gt;{%}"</strong> means you could use the option "-fuzz 2%".
+<br>&nbsp;<br>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -1445,12 +1450,9 @@ options <em>before</em> the <strong>-draw</strong> option.
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
-    <a name="-edge">-edge</a> <i>&lt;order&gt;</i>
+    <a name="-edge">-edge</a> <i>&lt;radius&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>detect edges within an image</td></tr></table>
-<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-Good order values are odd numbers from 3 to 31.
-</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -1727,7 +1729,7 @@ width=15><b><font face="Helvetica, Arial"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
-    <a name="-fuzz">-fuzz</a> <i>&lt;distance</i>{<i>%</i>}<i>&gt;</i>
+    <a name="-fuzz">-fuzz</a> <i>&lt;distance&gt;</i>{<i>%</i>}<i></i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>colors within this distance are considered equal</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
@@ -1825,12 +1827,12 @@ Use <tt>@</tt> to specify the maximum area in pixels of an image.
 </font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Use <tt>&gt;</tt> to change the dimensions of the image <em>only</em> if
-its size exceeds the geometry specification. <tt>&lt;</tt> resizes the image
-<em>only</em>
-if its dimensions is less than the geometry specification. For example,
-if you specify <tt>'640x480&gt;'</tt> and the image size is 512x512, the image
-size does not change. However, if the image is 1024x1024, it is resized
-to 640x480.  Enclose the geometry specification in quotation marks to
+its width or height exceeds the geometry specification. <tt>&lt;</tt> resizes
+the image <em>only</em> if both of its dimensions are less than the geometry
+specification. For example,
+if you specify <tt>'640x480&gt;'</tt> and the image size is 256x256, the image
+size does not change. However, if the image is 512x512 or 1024x1024, it is
+resized to 480x480.  Enclose the geometry specification in quotation marks to
 prevent the <tt>&lt;</tt> or <tt>&gt;</tt> from being interpreted by your shell
 as a file redirection.
 </font></td></tr></table>
@@ -1840,7 +1842,8 @@ the same manner as in <em>X(1)</em> and the <strong>-gravity</strong> option is 
 If the <em>x</em> is negative, the offset is measured leftward
 from the right edge of the
 screen to the right edge of the image being displayed.
-Similarly, negative <em>y</em> is measured between the bottom edges.</font></td></tr></table>
+Similarly, negative <em>y</em> is measured between the bottom edges.  The
+offsets are not affected by "%"; they are always measured in pixels.</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 When used as a <em>composite</em> option, <strong>-geometry</strong>
 gives the dimensions of the image and its location with respect
@@ -1850,19 +1853,21 @@ represents the distance from the right edge of the image to the right edge of
 the composite image.  Similarly, if the <strong>-gravity</strong> option is present
 with <em>SouthWest, South,</em> or <em>SouthEast</em> gravity, <em>y</em>
 is measured between the bottom edges. Accordingly, a positive offset will
-never point in the direction outside of the image.
-</font></td></tr></table>
+never point in the direction outside of the image.  The
+offsets are not affected by "%"; they are always measured in pixels.</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 When used as a <em>convert</em>, <em>import</em> or <em>mogrify</em> option,
 <strong>-geometry</strong>
-specifies the size of the output image and the offsets, if present, are ignored.
+specifies the size of the output image.  The offsets, if present, are ignored.
 </font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 When used as a <em>montage</em> option, <strong>-geometry</strong> specifies the image
 size and border size for each tile; default is 256x256+0+0.  Negative
 offsets (border dimensions) are meaningless.  The <strong>-gravity</strong>
 option affects the placement of the image within the tile; the default
-gravity for this purpose is <em>Center</em>.
+gravity for this purpose is <em>Center</em>.  If the "%" sign appears in
+the geometry specification, the tile size is the specified percentage of
+the original dimensions of the first tile.
 </font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
@@ -2243,12 +2248,9 @@ section of <em>X(1)</em>.</font></td></tr></table>
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
-    <a name="-median">-median</a> <i>&lt;order&gt;</i>
+    <a name="-median">-median</a> <i>&lt;radius&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>apply a median filter to the image</td></tr></table>
-<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-Good order values are odd numbers from 3 to 31
-</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -2364,7 +2366,7 @@ to only negate the grayscale pixels of the image.
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
-    <a name="-noise">-noise</a> <i>&lt;value&gt;</i>
+    <a name="-noise">-noise</a> <i>&lt;radius|type&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>add or reduce noise in an image</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
@@ -2376,7 +2378,7 @@ has been found to be noise. A pixel is defined as noise if and only if
 this pixel is a maximum or minimum within the pixel window.
 </font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-Use <strong>order</strong> to specify the width of the neighborhood.
+Use <strong>radius</strong> to specify the width of the neighborhood.
 </font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Use <strong>+noise</strong> followed by a noise type to add noise to an image. Choose
