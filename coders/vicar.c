@@ -162,11 +162,8 @@ static Image *ReadVICARImage(const ImageInfo *image_info,ExceptionInfo *exceptio
   register PixelPacket
     *q;
 
-  register unsigned char
-    *p;
-
   unsigned char
-    *vicar_pixels;
+    *scanline;
 
   unsigned int
     header_length,
@@ -285,38 +282,26 @@ static Image *ReadVICARImage(const ImageInfo *image_info,ExceptionInfo *exceptio
   /*
     Initialize image structure.
   */
-  vicar_pixels=(unsigned char *) AcquireMemory(image->columns*image->rows);
-  if (vicar_pixels == (unsigned char *) NULL)
+  scanline=(unsigned char *)
+    AcquireMemory(image->columns*sizeof(unsigned char));
+  if (scanline == (unsigned char *) NULL)
     ThrowReaderException(CorruptImageWarning,"Unable to read image data",image);
   /*
     Convert VICAR pixels to pixel packets.
   */
-  status=ReadBlob(image,image->columns*image->rows,(char *) vicar_pixels);
-  if (status == False)
-    ThrowReaderException(CorruptImageWarning,"Insufficient image data in file",
-      image);
-  /*
-    Convert VICAR pixels to pixel packets.
-  */
-  p=vicar_pixels;
   for (y=0; y < (int) image->rows; y++)
   {
     q=SetImagePixels(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
-    indexes=GetIndexes(image);
-    for (x=0; x < (int) image->columns; x++)
-    {
-      index=(*p++);
-      indexes[x]=index;
-      *q++=image->colormap[index];
-    }
+    (void) ReadBlob(image,image->columns,(char *) scanline);
+    (void) PushImagePixels(image,GrayQuantum,scanline);
     if (!SyncImagePixels(image))
       break;
     if (QuantumTick(y,image->rows))
       MagickMonitor(LoadImageText,y,image->rows);
   }
-  LiberateMemory((void **) &vicar_pixels);
+  LiberateMemory((void **) &scanline);
   CloseBlob(image);
   return(image);
 }
@@ -437,11 +422,8 @@ static unsigned int WriteVICARImage(const ImageInfo *image_info,Image *image)
   register PixelPacket
     *p;
 
-  register unsigned char
-    *q;
-
   unsigned char
-    *pixels;
+    *scanline;
 
   unsigned int
     status;
@@ -453,6 +435,7 @@ static unsigned int WriteVICARImage(const ImageInfo *image_info,Image *image)
   if (status == False)
     ThrowWriterException(FileOpenWarning,"Unable to open file",image);
   TransformRGBImage(image,RGBColorspace);
+  image->depth=8;
   /*
     Write header.
   */
@@ -477,32 +460,27 @@ static unsigned int WriteVICARImage(const ImageInfo *image_info,Image *image)
   FormatString(buffer, "%-*s",label_size,header);
   (void) WriteBlobString(image,buffer);
   /*
-    Allocate memory for pixels.
+    Allocate memory for scanline.
   */
-  pixels=(unsigned char *)
+  scanline=(unsigned char *)
     AcquireMemory(image->columns*sizeof(PixelPacket));
-  if (pixels == (unsigned char *) NULL)
+  if (scanline == (unsigned char *) NULL)
     ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
   /*
-    Write VICAR pixels.
+    Write VICAR scanline.
   */
   for (y=0; y < (int) image->rows; y++)
   {
     p=GetImagePixels(image,0,y,image->columns,1);
     if (p == (PixelPacket *) NULL)
       break;
-    q=pixels;
-    for (x=0; x < (int) image->columns; x++)
-    {
-      *q++=(unsigned char) DownScale(Intensity(*p));
-      p++;
-    }
-    (void) WriteBlob(image,q-pixels,(char *) pixels);
+    (void) PopImagePixels(image,GrayQuantum,scanline);
+    (void) WriteBlob(image,image->columns,(char *) scanline);
     if (image->previous == (Image *) NULL)
       if (QuantumTick(y,image->rows))
         MagickMonitor(SaveImageText,y,image->rows);
   }
-  LiberateMemory((void **) &pixels);
+  LiberateMemory((void **) &scanline);
   CloseBlob(image);
   return(True);
 }
