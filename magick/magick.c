@@ -56,6 +56,12 @@
 #include "studio.h"
 
 /*
+  Image const declarations.
+*/
+unsigned int
+  magick_debug = False;
+
+/*
   Global declarations.
 */
 static MagickInfo
@@ -347,6 +353,7 @@ MagickExport void InitializeMagick(const char *path)
     execution_path[MaxTextExtent];
 
   InitializeSemaphore();
+  magick_debug=getenv("MAGICK_DEBUG") != (char *) NULL;
   *execution_path='\0';
 #if !defined(UseInstalledImageMagick)
 #if defined(POSIX) || defined(WIN32)
@@ -397,6 +404,7 @@ MagickExport void InitializeMagick(const char *path)
 #if defined(WIN32)
     InitializeTracingCriticalSection();
 #if defined(_DEBUG)
+    if (magick_debug)
       {
         int
           debug;

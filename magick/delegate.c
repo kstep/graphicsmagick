@@ -631,10 +631,10 @@ static unsigned int ReadConfigureFile(const char *basename,
               if (depth > 200)
                 ThrowException(exception,ConfigureError,
                   "<include /> nested too deeply",path);
-	  					else
-	  					  if (IsAccessible(path))
+              else
+                if (IsAccessible(path))
                   (void) ReadConfigureFile(path,depth+1,exception);
-								else
+                else
                   {
                     char
                       filename[MaxTextExtent];

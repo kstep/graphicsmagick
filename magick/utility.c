@@ -2028,13 +2028,18 @@ MagickExport unsigned int IsAccessible(const char *filename)
   */
   if ((filename == (const char *) NULL) || (*filename == '\0'))
     return(False);
+  status=False;
   file=fopen(filename,"r");
-  if (file == (FILE *) NULL)
-    return(False);
-  (void) fgetc(file);
-  status=!feof(file) && !ferror(file);
-  (void) fclose(file);
-  return(status);
+  if (file != (FILE *) NULL)
+    {
+      (void) fgetc(file);
+      status=!feof(file) && !ferror(file);
+      (void) fclose(file);
+    }
+  if (magick_debug)
+    (void) fprintf(stdout,"  %.1024s %s accessible",filename,
+      status ? "is" : "is not");
+  return(False);
 }
 
 /*

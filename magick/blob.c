@@ -719,8 +719,7 @@ MagickExport off_t GetBlobSize(const Image *image)
 */
 
 #if !defined(UseInstalledImageMagick) && defined(POSIX)
-static void ChopBlobComponents(char *path,const unsigned long components,
-  const unsigned int debug)
+static void ChopBlobComponents(char *path,const unsigned long components)
 {
   long
     count;
@@ -731,7 +730,7 @@ static void ChopBlobComponents(char *path,const unsigned long components,
   size_t
     length;
 
-  if (debug)
+  if (magick_debug)
     (void) fprintf(stdout,"original path  \"%s\"\n",path);
   length=strlen(path);
   p=path+length;
@@ -743,24 +742,10 @@ static void ChopBlobComponents(char *path,const unsigned long components,
         *p='\0';
         count++;
       }
-  if (debug)
+  if (magick_debug)
     (void) fprintf(stdout,"chopped path  \"%s\"\n",path);
 }
 #endif
-
-static unsigned int IsConfigureFileAccessible(const char *filename,
-  const unsigned int debug)
-{
-  if (!IsAccessible(filename))
-    {
-      if (debug)
-        (void) fprintf(stdout,"  !%s\n",filename);
-      return(False);
-    }
-  if (debug)
-    (void) fprintf(stdout,"  %s\n",filename);
-  return(True);
-}
 
 MagickExport void *GetConfigureBlob(const char *filename,char *path,
   size_t *length,ExceptionInfo *exception)
@@ -774,7 +759,7 @@ MagickExport void *GetConfigureBlob(const char *filename,char *path,
   assert(exception != (ExceptionInfo *) NULL);
   debug=getenv("MAGICK_DEBUG") != (char *) NULL;
   (void) strncpy(path,filename,MaxTextExtent-1);
-  if (debug)
+  if (magick_debug)
     (void) fprintf(stdout,"Searching for configure file \"%s\" ...\n",filename);
 #if defined(UseInstalledImageMagick)
 #if defined(WIN32)
@@ -790,7 +775,7 @@ MagickExport void *GetConfigureBlob(const char *filename,char *path,
       {
         FormatString(path,"%.1024s%s%.1024s",key_value,DirectorySeparator,
           filename);
-        if (!IsConfigureFileAccessible(path,debug))
+        if (!IsAccessible(path))
           ThrowException(exception,ConfigureError,
             "Unable to access configure file",path);
         return(FileToBlob(path,length,exception));
@@ -802,7 +787,7 @@ MagickExport void *GetConfigureBlob(const char *filename,char *path,
     Search hard coded paths.
   */
   FormatString(path,"%.1024s%.1024s",MagickLibPath,filename);
-  if (!IsConfigureFileAccessible(path,debug))
+  if (!IsAccessible(path))
     ThrowException(exception,ConfigureError,
       "Unable to access configure file",path);
   return(FileToBlob(path,length,exception));
@@ -824,7 +809,7 @@ MagickExport void *GetConfigureBlob(const char *filename,char *path,
       FormatString(path,"%.1024s%s%.1024s",SetClientPath((char *) NULL),
         DirectorySeparator,filename);
 #endif
-      if (IsConfigureFileAccessible(path,debug))
+      if (IsAccessible(path))
         return(FileToBlob(path,length,exception));
     }
   if (getenv("MAGICK_HOME") != (char *) NULL)
@@ -839,7 +824,7 @@ MagickExport void *GetConfigureBlob(const char *filename,char *path,
       FormatString(path,"%.1024s%s%.1024s",getenv("MAGICK_HOME"),
         DirectorySeparator,filename);
 #endif
-      if (IsConfigureFileAccessible(path,debug))
+      if (IsAccessible(path))
         return(FileToBlob(path,length,exception));
     }
   if (getenv("HOME") != (char *) NULL)
@@ -849,13 +834,13 @@ MagickExport void *GetConfigureBlob(const char *filename,char *path,
       */
       FormatString(path,"%.1024s%s%s%.1024s",getenv("HOME"),
         *getenv("HOME") == '/' ? "/.magick" : "",DirectorySeparator,filename);
-      if (IsConfigureFileAccessible(path,debug))
+      if (IsAccessible(path))
         return(FileToBlob(path,length,exception));
     }
   /*
     Search current directory.
   */
-  if (IsConfigureFileAccessible(path,debug))
+  if (IsAccessible(path))
     return(FileToBlob(path,length,exception));
 #if defined(WIN32)
   return(NTResourceToBlob(filename));
@@ -908,7 +893,7 @@ MagickExport void *GetModuleBlob(const char *filename,char *path,size_t *length,
   assert(exception != (ExceptionInfo *) NULL);
   debug=getenv("MAGICK_DEBUG") != (char *) NULL;
   (void) strncpy(path,filename,MaxTextExtent-1);
-  if (debug)
+  if (magick_debug)
     (void) fprintf(stdout,"Searching for module file \"%s\" ...\n", filename);
 #if defined(UseInstalledImageMagick)
 #if defined(WIN32)
@@ -924,7 +909,7 @@ MagickExport void *GetModuleBlob(const char *filename,char *path,size_t *length,
       {
         FormatString(path,"%.1024s%s%.1024s",key_value,DirectorySeparator,
           filename);
-        if (!IsConfigureFileAccessible(path,debug))
+        if (!IsAccessible(path))
           ThrowException(exception,ConfigureError,
             "Unable to access module file",path);
         return(FileToBlob(path,length,exception));
@@ -937,7 +922,7 @@ MagickExport void *GetModuleBlob(const char *filename,char *path,size_t *length,
     Search hard coded paths.
   */
   FormatString(path,"%.1024s%.1024s",MagickModulesPath,filename);
-  if (!IsConfigureFileAccessible(path,debug))
+  if (!IsAccessible(path))
     ThrowException(exception,ConfigureError,"Unable to access module file",
       path);
   return(FileToBlob(path,length,exception));
@@ -961,7 +946,7 @@ MagickExport void *GetModuleBlob(const char *filename,char *path,size_t *length,
       FormatString(path,"%.1024s%s%.1024s",SetClientPath((char *) NULL),
         DirectorySeparator,filename);
 #endif
-      if (IsConfigureFileAccessible(path,debug))
+      if (IsAccessible(path))
         return(FileToBlob(path,length,exception));
     }
   if (getenv("MAGICK_HOME") != (char *) NULL)
@@ -976,7 +961,7 @@ MagickExport void *GetModuleBlob(const char *filename,char *path,size_t *length,
       FormatString(path,"%.1024s%s%.1024s",getenv("MAGICK_HOME"),
         DirectorySeparator,filename);
 #endif
-      if (IsConfigureFileAccessible(path,debug))
+      if (IsAccessible(path))
         return(FileToBlob(path,length,exception));
     }
   if (getenv("HOME") != (char *) NULL)
@@ -986,13 +971,13 @@ MagickExport void *GetModuleBlob(const char *filename,char *path,size_t *length,
       */
       FormatString(path,"%.1024s%s%s%.1024s",getenv("HOME"),
         *getenv("HOME") == '/' ? "/.magick" : "",DirectorySeparator,filename);
-      if (IsConfigureFileAccessible(path,debug))
+      if (IsAccessible(path))
         return(FileToBlob(path,length,exception));
     }
   /*
     Search current directory.
   */
-  if (IsConfigureFileAccessible(path,debug))
+  if (IsAccessible(path))
     return(FileToBlob(path,length,exception));
 #if defined(WIN32)
   return(NTResourceToBlob(path));
@@ -1045,8 +1030,8 @@ MagickExport void *GetTypeBlob(const char *filename,char *path,
   assert(exception != (ExceptionInfo *) NULL);
   debug=getenv("MAGICK_DEBUG") != (char *) NULL;
   (void) strncpy(path,filename,MaxTextExtent-1);
-  if (debug)
-    (void) fprintf(stdout,"Searching for font file \"%s\" ...\n",filename);
+  if (magick_debug)
+    (void) fprintf(stdout,"Searching for type file \"%s\" ...\n",filename);
   if (getenv("MAGICK_FONT_PATH") != (char *) NULL)
     {
       /*
@@ -1054,7 +1039,7 @@ MagickExport void *GetTypeBlob(const char *filename,char *path,
       */
       FormatString(path,"%.1024s%s%.1024s",getenv("MAGICK_FONT_PATH"),
         DirectorySeparator,filename);
-      if (IsConfigureFileAccessible(path,debug))
+      if (IsAccessible(path))
         return(FileToBlob(path,length,exception));
     }
 #if defined(UseInstalledImageMagick)
@@ -1071,7 +1056,7 @@ MagickExport void *GetTypeBlob(const char *filename,char *path,
       {
         FormatString(path,"%.1024s%s%.1024s",key_value,DirectorySeparator,
           filename);
-        if (!IsConfigureFileAccessible(path,debug))
+        if (!IsAccessible(path))
           ThrowException(exception,ConfigureError,
             "Unable to access font file",path);
         return(FileToBlob(path,length,exception));
@@ -1083,7 +1068,7 @@ MagickExport void *GetTypeBlob(const char *filename,char *path,
     Search hard coded paths.
   */
   FormatString(path,"%.1024s%.1024s",MagickLibPath,filename);
-  if (!IsConfigureFileAccessible(path,debug))
+  if (!IsAccessible(path))
     ThrowException(exception,ConfigureError,"Unable to access font file",
       path);
   return(FileToBlob(path,length,exception));
@@ -1105,13 +1090,13 @@ MagickExport void *GetTypeBlob(const char *filename,char *path,
       FormatString(path,"%.1024s%s%.1024s",SetClientPath((char *) NULL),
         DirectorySeparator,filename);
 #endif
-      if (IsConfigureFileAccessible(path,debug))
+      if (IsAccessible(path))
         return(FileToBlob(path,length,exception));
     }
   /*
     Search current directory.
   */
-  if (IsConfigureFileAccessible(path,debug))
+  if (IsAccessible(path))
     return(FileToBlob(path,length,exception));
 #if defined(WIN32)
   return(NTResourceToBlob(filename));

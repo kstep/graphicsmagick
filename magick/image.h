@@ -541,6 +541,9 @@ extern MagickExport const char
   *SaveImageText,
   *SaveImagesText;
 
+extern MagickExport unsigned int
+  magick_debug;
+
 extern MagickExport const unsigned long
   DefaultCompressionQuality;
 
