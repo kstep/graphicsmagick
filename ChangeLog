@@ -1,4 +1,11 @@
 2002-12-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+	* magick/image.c: Re-worked RGBTransformImage so that it is now
+	smoking fast for Q:8 and Q:16. Changed lookup tables, and all
+	per-pixel transforms to use only integer arithmetic. A
+	pre-multiplication scheme is used which should actually improve
+	the quantization error over using double arithmetic
+
+2002-12-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 	* magick/image.c: Re-worked TransformRGBImage() again so that it
 	is now smoking fast for Q:8 and Q:16. Changed lookup tables, and
 	all per-pixel transforms to use only integer arithmetic. A
