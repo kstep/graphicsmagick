@@ -127,6 +127,15 @@ typedef enum
   SincFilter
 } FilterType;
 
+/* Eliminate possible conflict from <X11/Xutil.h> */
+#undef NoValue
+#undef XValue
+#undef YValue
+#undef WidthValue
+#undef HeightValue
+#undef AllValues
+#undef XNegative
+#undef YNegative
 typedef enum
 {
   NoValue = 0x0000,
