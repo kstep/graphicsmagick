@@ -136,9 +136,6 @@ MagickExport void AppendImageFormat(const char *format,char *filename)
   char
     basename[MaxTextExtent];
 
-  register char
-    *p;
-
   assert(format != (char *) NULL);
   assert(filename != (char *) NULL);
   if ((*format == '\0') || (*filename == '\0'))

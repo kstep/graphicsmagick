@@ -230,25 +230,25 @@ static unsigned int CompressCache(Cache cache)
   assert(cache != (Cache) NULL);
   cache_info=(CacheInfo *) cache;
   if (cache_info->type == MemoryCache)
-    return;
+    return(True);
   if (cache_info->file == -1)
     {
       cache_info->file=open(cache_info->cache_filename,O_RDWR | O_BINARY,0777);
       if (cache_info->file == -1)
-        return;
+        return(False);
     }
   if (lseek(cache_info->file,0,SEEK_SET) == -1)
-    return;
+    return(False);
   FormatString(filename,"%s.gz",cache_info->cache_filename);
   file=gzopen(filename,WriteBinaryType);
   if (file == (gzFile) NULL)
-    return;
+    return(False);
   count=cache_info->columns*Max(sizeof(IndexPacket),sizeof(PixelPacket));
   pixels=(char *) AcquireMemory(count);
   if (pixels == (char *) NULL)
     {
       (void) gzclose(file);
-      return;
+      return(False);
     }
   for (y=0; y < (int) cache_info->rows; y++)
   {
@@ -1641,26 +1641,26 @@ static unsigned int UncompressCache(Cache cache)
   assert(cache != (Cache) NULL);
   cache_info=(CacheInfo *) cache;
   if (cache_info->type == MemoryCache)
-    return;
+    return(True);
   if (cache_info->file == -1)
     {
       cache_info->file=open(cache_info->cache_filename,O_RDWR | O_CREAT |
         O_BINARY,0777);
       if (cache_info->file == -1)
-        return;
+        return(False);
     }
   if (lseek(cache_info->file,0,SEEK_SET) == -1)
-    return;
+    return(False);
   FormatString(filename,"%s.gz",cache_info->cache_filename);
   file=gzopen(filename,ReadBinaryType);
   if (file == (gzFile) NULL)
-    return;
+    return(False);
   count=cache_info->columns*Max(sizeof(IndexPacket),sizeof(PixelPacket));
   pixels=(char *) AcquireMemory(count);
   if (pixels == (char *) NULL)
     {
       (void) gzclose(file);
-      return;
+      return(False);
     }
   for (y=0; y < (int) cache_info->rows; y++)
   {

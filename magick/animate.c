@@ -1347,7 +1347,7 @@ MagickExport Image *XAnimateImages(Display *display,
       GetPathComponent(display_image->filename,TailPath,filename);
       FormatString(windows->image.name,"ImageMagick: %.1024s[%u of %u]",
         filename,display_image->scene,number_scenes);
-      (void) strcpy(windows->image.icon_name,p);
+      (void) strcpy(windows->image.icon_name,filename);
     }
   if (resource_info->immutable)
     windows->image.immutable=True;
