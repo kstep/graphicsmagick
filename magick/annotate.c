@@ -302,7 +302,7 @@ MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
         clone_info->fill=draw_info->box;
         clone_info->affine.tx=offset.x-draw_info->affine.ry*metrics.ascent;
         clone_info->affine.ty=offset.y-draw_info->affine.sy*metrics.ascent;
-        FormatString(primitive,"rect 0,0 %d,%d",(int) metrics.width,
+        FormatString(primitive,"rectangle 0,0 %d,%d",(int) metrics.width,
           (int) metrics.height);
         CloneString(&clone_info->primitive,primitive);
         DrawImage(image,clone_info);
