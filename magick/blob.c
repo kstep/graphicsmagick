@@ -261,12 +261,12 @@ MagickExport void CloseBlob(Image *image)
     }
   if (image->blob->data != (unsigned char *) NULL)
     {
-      image->blob->maximum_extent=image->blob->length;
+      image->blob->size=image->blob->length;
       image->blob->eof=False;
       if (image->exempt)
         return;
       if (image->blob->mapped)
-        (void) UnmapBlob(image->blob->data,image->blob->length);
+        (void) UnmapBlob(image->blob->data,image->blob->extent);
       DetachBlob(image->blob);
       if (!image->orphan)
         {
@@ -279,7 +279,7 @@ MagickExport void CloseBlob(Image *image)
     }
   if (image->file == (FILE *) NULL)
     return;
-  image->blob->maximum_extent=SizeBlob(image);
+  image->blob->size=SizeBlob(image);
   image->status=ferror(image->file);
   errno=0;
   if (image->exempt)
@@ -622,7 +622,7 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
         }
       DestroyImageInfo(clone_info);
       blob=image->blob->data;
-      *length=image->blob->extent;
+      *length=image->blob->length;
       DetachBlob(image->blob);
       return(blob);
     }
@@ -1066,7 +1066,7 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
                   }
               }
           }
-        image->blob->maximum_extent=SizeBlob(image);
+        image->blob->size=SizeBlob(image);
       }
   image->status=False;
   if (*type == 'r')
@@ -1612,7 +1612,7 @@ MagickExport off_t SizeBlob(Image *image)
   if (image->blob->data != (unsigned char *) NULL)
     return(image->blob->length);
   if (image->file == (FILE *) NULL)
-    return(image->blob->maximum_extent);
+    return(image->blob->size);
   (void) SyncBlob(image);
   return(fstat(fileno(image->file),&attributes) < 0 ? 0 : attributes.st_size);
 }
