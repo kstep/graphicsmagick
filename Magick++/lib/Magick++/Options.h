@@ -193,7 +193,7 @@ namespace Magick
     // angle and miter joins have been specified for 'lineJoin', it is
     // possible for the miter to extend far beyond the thickness of
     // the line stroking the path. The miterLimit' imposes a limit on
-    // the ratio of the miter length to the 'lineWidth'. The default
+    // the ratio of the miter length to the 'stroke_width'. The default
     // value of this parameter is 4.
     void            strokeMiterLimit ( unsigned int miterLimit_ );
     unsigned int    strokeMiterLimit ( void ) const;
@@ -244,7 +244,6 @@ namespace Magick
     // Internal implementation methods.  Please do not use.
     //
 
-    MagickLib::AnnotateInfo *  annotateInfo( void );
     MagickLib::DrawInfo*       drawInfo( void );
     MagickLib::ImageInfo *     imageInfo( void );
     MagickLib::QuantizeInfo *  quantizeInfo( void );
@@ -252,7 +251,6 @@ namespace Magick
     // Construct using raw structures
     Options( const MagickLib::ImageInfo* imageInfo_,
              const MagickLib::QuantizeInfo* quantizeInfo_,
-             const MagickLib::AnnotateInfo* annotateInfo_,
              const MagickLib::DrawInfo* drawInfo_ );
 
   protected:
@@ -262,12 +260,11 @@ namespace Magick
     // Assignment not supported
     Options operator= ( const Options& );
 
-    // Update annotation info
-    void updateAnnotateInfo( void );
+    // Update draw info
+    void updateDrawInfo( void );
 
     MagickLib::ImageInfo*        _imageInfo;
     MagickLib::QuantizeInfo*     _quantizeInfo;
-    MagickLib::AnnotateInfo*     _annotateInfo;
     MagickLib::DrawInfo*         _drawInfo;
   };
 } // namespace Magick
@@ -334,7 +331,7 @@ inline void Magick::Options::fontPointsize ( double pointSize_ )
 {
   _imageInfo->pointsize = pointSize_;
   _drawInfo->pointsize = pointSize_;
-  updateAnnotateInfo();
+  updateDrawInfo();
 }
 inline double Magick::Options::fontPointsize ( void ) const
 {
@@ -441,11 +438,11 @@ inline unsigned int Magick::Options::strokeMiterLimit ( void ) const
 // Stroke width for drawing lines, circles, ellipses, etc.
 inline void Magick::Options::strokeWidth ( double strokeWidth_ )
 {
-  _drawInfo->linewidth = strokeWidth_;
+  _drawInfo->stroke_width = strokeWidth_;
 }
 inline double Magick::Options::strokeWidth ( void ) const
 {
-  return _drawInfo->linewidth;
+  return _drawInfo->stroke_width;
 }
 
 inline void Magick::Options::subImage ( unsigned int subImage_ )
@@ -473,11 +470,6 @@ inline void Magick::Options::verbose ( bool verboseFlag_ )
 inline bool Magick::Options::verbose ( void ) const
 {
   return static_cast<bool>(_imageInfo->verbose);
-}
-
-inline MagickLib::AnnotateInfo * Magick::Options::annotateInfo( void )
-{
-  return _annotateInfo;
 }
 
 inline MagickLib::DrawInfo * Magick::Options::drawInfo( void )

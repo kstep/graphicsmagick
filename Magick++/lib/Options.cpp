@@ -4,7 +4,7 @@
 //
 // Implementation of Options
 //
-// A wrapper around AnnotateInfo, ImageInfo, and QuantizeInfo
+// A wrapper around DrawInfo, ImageInfo, and QuantizeInfo
 //
 
 #define MAGICK_IMPLEMENTATION
@@ -24,7 +24,6 @@
 Magick::Options::Options( void )
   : _imageInfo(static_cast<ImageInfo*>(AcquireMemory(sizeof(ImageInfo)))),
     _quantizeInfo(static_cast<QuantizeInfo*>(AcquireMemory(sizeof(QuantizeInfo)))),
-    _annotateInfo(static_cast<AnnotateInfo*>(AcquireMemory(sizeof(AnnotateInfo)))),
     _drawInfo(static_cast<DrawInfo*>(AcquireMemory( sizeof(DrawInfo))))
 {
   // Initialize image info with defaults
@@ -32,9 +31,6 @@ Magick::Options::Options( void )
   
   // Initialize quantization info
   GetQuantizeInfo( _quantizeInfo );
-
-  // Initialize annotate info
-  GetAnnotateInfo( _imageInfo, _annotateInfo );
 
   // Initialize drawing info
   GetDrawInfo( _imageInfo, _drawInfo );
@@ -44,7 +40,6 @@ Magick::Options::Options( void )
 Magick::Options::Options( const Magick::Options& options_ )
   : _imageInfo(CloneImageInfo( options_._imageInfo )),
     _quantizeInfo(CloneQuantizeInfo(options_._quantizeInfo)),
-    _annotateInfo(CloneAnnotateInfo(_imageInfo, options_._annotateInfo)),
     _drawInfo(CloneDrawInfo(_imageInfo, options_._drawInfo))
 {
 }
@@ -52,16 +47,13 @@ Magick::Options::Options( const Magick::Options& options_ )
 // Construct using raw structures
 Magick::Options::Options( const MagickLib::ImageInfo* imageInfo_,
                           const MagickLib::QuantizeInfo* quantizeInfo_,
-                          const MagickLib::AnnotateInfo* annotateInfo_,
                           const MagickLib::DrawInfo* drawInfo_ )
 : _imageInfo(0),
   _quantizeInfo(0),
-  _annotateInfo(0),
   _drawInfo(0)
 {
   _imageInfo = CloneImageInfo(imageInfo_);
   _quantizeInfo = CloneQuantizeInfo(quantizeInfo_);
-  _annotateInfo = CloneAnnotateInfo(imageInfo_,annotateInfo_);
   _drawInfo = CloneDrawInfo(imageInfo_,drawInfo_);
 }
 
@@ -73,9 +65,6 @@ Magick::Options::~Options()
   
   // Destroy quantization info
   DestroyQuantizeInfo( _quantizeInfo );
-
-  // Destroy annotation info
-  DestroyAnnotateInfo( _annotateInfo );
 
   // Destroy drawing info
   DestroyDrawInfo( _drawInfo );
@@ -152,11 +141,10 @@ Magick::Color Magick::Options::borderColor ( void ) const
 void Magick::Options::boxColor ( const Magick::Color &boxColor_ )
 {
   _drawInfo->box = boxColor_;
-  _annotateInfo->box = boxColor_;
 }
 Magick::Color Magick::Options::boxColor ( void ) const
 {
-  return Magick::Color( _annotateInfo->box );
+  return Magick::Color( _drawInfo->box );
 }
 
 void Magick::Options::strokeDashArray ( const unsigned int* strokeDashArray_ )
@@ -188,7 +176,7 @@ void Magick::Options::density ( const Magick::Geometry &density_ )
   else
     Magick::CloneString( &_imageInfo->density, density_ );
 
-  updateAnnotateInfo();
+  updateDrawInfo();
 }
 Magick::Geometry Magick::Options::density ( void ) const
 {
@@ -211,7 +199,7 @@ std::string Magick::Options::fileName ( void ) const
 // Color to use when drawing inside an object
 void Magick::Options::fillColor ( const Magick::Color &fillColor_ )
 {
-  _annotateInfo->fill = fillColor_;
+  _drawInfo->fill = fillColor_;
   _drawInfo->fill = fillColor_;
   _imageInfo->fill = fillColor_;
 }
@@ -233,7 +221,7 @@ void Magick::Options::font ( const std::string &font_ )
       Magick::CloneString( &_drawInfo->font, font_ );
     }
 
-  updateAnnotateInfo();
+  updateDrawInfo();
 }
 std::string Magick::Options::font ( void ) const
 {
@@ -365,7 +353,6 @@ Magick::Geometry Magick::Options::size ( void ) const
 // Color to use when drawing object outlines
 void Magick::Options::strokeColor ( const Magick::Color &strokeColor_ )
 {
-  _annotateInfo->stroke = strokeColor_;
   _drawInfo->stroke = strokeColor_;
   _imageInfo->stroke = strokeColor_;
 }
@@ -410,8 +397,7 @@ void Magick::Options::transformOrigin ( double tx_, double ty_ )
   _imageInfo->affine.tx=current.sx*affine.tx+current.ry*affine.ty+current.tx;
   _imageInfo->affine.ty=current.rx*affine.tx+current.sy*affine.ty+current.ty;
 
-  _annotateInfo->affine = _imageInfo->affine;
-  _drawInfo->affine     = _imageInfo->affine;
+  _drawInfo->affine = _imageInfo->affine;
 }
 
 // Reset transformation parameters to default
@@ -449,8 +435,7 @@ void Magick::Options::transformRotation ( double angle_ )
   _imageInfo->affine.tx=current.sx*affine.tx+current.ry*affine.ty+current.tx;
   _imageInfo->affine.ty=current.rx*affine.tx+current.sy*affine.ty+current.ty;
 
-  _annotateInfo->affine = _imageInfo->affine;
-  _drawInfo->affine     = _imageInfo->affine;
+  _drawInfo->affine = _imageInfo->affine;
 }
 
 // Scale to use when annotating with text or drawing
@@ -475,8 +460,7 @@ void Magick::Options::transformScale ( double sx_, double sy_ )
   _imageInfo->affine.tx=current.sx*affine.tx+current.ry*affine.ty+current.tx;
   _imageInfo->affine.ty=current.rx*affine.tx+current.sy*affine.ty+current.ty;
 
-  _annotateInfo->affine = _imageInfo->affine;
-  _drawInfo->affine     = _imageInfo->affine;
+  _drawInfo->affine = _imageInfo->affine;
 }
 
 // Skew to use in X axis when annotating with text or drawing
@@ -502,7 +486,7 @@ void Magick::Options::transformSkewX ( double skewx_ )
   _imageInfo->affine.tx=current.sx*affine.tx+current.ry*affine.ty+current.tx;
   _imageInfo->affine.ty=current.rx*affine.tx+current.sy*affine.ty+current.ty;
 
-  _annotateInfo->affine = _imageInfo->affine;
+  _drawInfo->affine = _imageInfo->affine;
   _drawInfo->affine = _imageInfo->affine;
 }
 
@@ -529,7 +513,6 @@ void Magick::Options::transformSkewY ( double skewy_ )
   _imageInfo->affine.tx=current.sx*affine.tx+current.ry*affine.ty+current.tx;
   _imageInfo->affine.ty=current.rx*affine.tx+current.sy*affine.ty+current.ty;
 
-  _annotateInfo->affine = _imageInfo->affine;
   _drawInfo->affine = _imageInfo->affine;
 }
 
@@ -563,16 +546,16 @@ std::string Magick::Options::x11Display ( void ) const
     return std::string();
 }
 
-// Update annotation info based on current ImageInfo
-void Magick::Options::updateAnnotateInfo( void )
+// Update draw info based on current ImageInfo
+void Magick::Options::updateDrawInfo( void )
 {
-  // Update _annotateInfo
-  AnnotateInfo* annotate_info =
-    static_cast<AnnotateInfo*>(AcquireMemory(sizeof(AnnotateInfo)));
-  if ( annotate_info )
+  // Update _drawInfo
+  DrawInfo* draw_info =
+    static_cast<DrawInfo*>(AcquireMemory(sizeof(DrawInfo)));
+  if ( draw_info )
     {
-      GetAnnotateInfo( _imageInfo, annotate_info );
-      DestroyAnnotateInfo( _annotateInfo );
-      _annotateInfo=annotate_info;
+      GetDrawInfo( _imageInfo, draw_info );
+      DestroyDrawInfo( _drawInfo );
+      _drawInfo=draw_info;
     }
 }

@@ -70,7 +70,7 @@ static MagickLib::Image *decoder( const MagickLib::ImageInfo *imageInfo_,
   if ( imageInfo_->client_data == 0 )
     return 0;
 
-  Magick::Options* options = new Magick::Options(imageInfo_,0,0,0);
+  Magick::Options* options = new Magick::Options(imageInfo_,0,0);
 //   Magick::Image image(image_, options);
 
 //   Magick::Coder* coder = static_cast<Magick::Coder*>(imageInfo_->client_data);
@@ -88,7 +88,7 @@ static unsigned int encoder( const MagickLib::ImageInfo *imageInfo_,
   if ( imageInfo_->client_data == 0 )
     return 0;
 
-  Magick::Options* options = new Magick::Options(imageInfo_,0,0,0);
+  Magick::Options* options = new Magick::Options(imageInfo_,0,0);
   Magick::Image image(image_, options);
 
   Magick::Coder* coder = static_cast<Magick::Coder*>(imageInfo_->client_data);

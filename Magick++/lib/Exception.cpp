@@ -163,13 +163,13 @@ void Magick::throwExceptionExplicit( ExceptionType error_,
     return;
   // Format error message ImageMagick-style
   std::string message = SetClientName(0);
-  if ( reason_ )
+  if ( reason_ != 0 )
     {
       message += std::string(": ");
       message += std::string(reason_);
     }
 
-  if ( description_ )
+  if ( description_ != 0 )
     message += " (" + std::string(description_) + ")";
 
 //   if ( error_ != OptionError && errno)

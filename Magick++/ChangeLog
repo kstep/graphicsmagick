@@ -1,3 +1,7 @@
+2000-12-14  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* : Adapted to ImageMagick API change which eliminates AnnotateInfo.
+
 2000-12-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Magick++/STL.h (annotateImage): Brought into sync with

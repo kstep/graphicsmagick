@@ -209,13 +209,13 @@ void Magick::Image::annotate ( const std::string &text_,
 {
   modifyImage();
 
-  AnnotateInfo *annotateInfo
-    = options()->annotateInfo();
+  DrawInfo *drawInfo
+    = options()->drawInfo();
   
-  annotateInfo->text = const_cast<char *>(text_.c_str());
+  drawInfo->text = const_cast<char *>(text_.c_str());
 
   ostrstream boundingArea;
-  annotateInfo->geometry = 0;
+  drawInfo->geometry = 0;
   if ( boundingArea_.isValid() ){
     if ( boundingArea_.width() == 0 || boundingArea_.height() == 0 )
       {
@@ -226,13 +226,13 @@ void Magick::Image::annotate ( const std::string &text_,
       {
         boundingArea << string(boundingArea_) << ends;
       }
-    annotateInfo->geometry = boundingArea.str();
-    // cout << "Annotation geometry: \"" << annotateInfo->geometry << "\"" << endl;
+    drawInfo->geometry = boundingArea.str();
+    // cout << "Annotation geometry: \"" << drawInfo->geometry << "\"" << endl;
   }
 
-  annotateInfo->gravity = gravity_;
+  drawInfo->gravity = gravity_;
 
-  AffineMatrix oaffine = annotateInfo->affine;
+  AffineMatrix oaffine = drawInfo->affine;
   if ( degrees_ != 0.0)
     {
         AffineMatrix affine;
@@ -243,27 +243,27 @@ void Magick::Image::annotate ( const std::string &text_,
         affine.tx=0.0;
         affine.ty=0.0;
 
-        AffineMatrix current = annotateInfo->affine;
+        AffineMatrix current = drawInfo->affine;
 #define DegreesToRadians(x) ((x)*3.14159265358979323846/180.0)
         affine.sx=cos(DegreesToRadians(fmod(degrees_,360.0)));
         affine.rx=sin(DegreesToRadians(fmod(degrees_,360.0)));
         affine.ry=(-sin(DegreesToRadians(fmod(degrees_,360.0))));
         affine.sy=cos(DegreesToRadians(fmod(degrees_,360.0)));
 
-        annotateInfo->affine.sx=current.sx*affine.sx+current.ry*affine.rx;
-        annotateInfo->affine.rx=current.rx*affine.sx+current.sy*affine.rx;
-        annotateInfo->affine.ry=current.sx*affine.ry+current.ry*affine.sy;
-        annotateInfo->affine.sy=current.rx*affine.ry+current.sy*affine.sy;
-        annotateInfo->affine.tx=current.sx*affine.tx+current.ry*affine.ty
+        drawInfo->affine.sx=current.sx*affine.sx+current.ry*affine.rx;
+        drawInfo->affine.rx=current.rx*affine.sx+current.sy*affine.rx;
+        drawInfo->affine.ry=current.sx*affine.ry+current.ry*affine.sy;
+        drawInfo->affine.sy=current.rx*affine.ry+current.sy*affine.sy;
+        drawInfo->affine.tx=current.sx*affine.tx+current.ry*affine.ty
           +current.tx;
     }
 
-  AnnotateImage( image(), annotateInfo );
+  AnnotateImage( image(), drawInfo );
 
   // Restore original values
-  annotateInfo->affine = oaffine;
-  annotateInfo->text = 0;
-  annotateInfo->geometry = 0;
+  drawInfo->affine = oaffine;
+  drawInfo->text = 0;
+  drawInfo->geometry = 0;
 
   throwImageException();
 }
@@ -273,17 +273,17 @@ void Magick::Image::annotate ( const std::string &text_,
 {
   modifyImage();
 
-  AnnotateInfo *annotateInfo
-    = options()->annotateInfo();
+  DrawInfo *drawInfo
+    = options()->drawInfo();
 
-  annotateInfo->text = const_cast<char *>(text_.c_str());
+  drawInfo->text = const_cast<char *>(text_.c_str());
 
-  annotateInfo->gravity = gravity_;
+  drawInfo->gravity = gravity_;
 
-  AnnotateImage( image(), annotateInfo );
+  AnnotateImage( image(), drawInfo );
 
-  annotateInfo->gravity = NorthWestGravity;
-  annotateInfo->text = 0;
+  drawInfo->gravity = NorthWestGravity;
+  drawInfo->text = 0;
 
   throwImageException();
 }
