@@ -783,11 +783,13 @@ ModuleExport void UnregisterPNMImage(void)
 static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
 {
   char
-    buffer[MaxTextExtent],
-    *magick;
+    buffer[MaxTextExtent];
 
   const ImageAttribute
     *attribute;
+
+  int
+    format;
 
   long
     j,
@@ -802,9 +804,6 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
   register long
     i,
     x;
-
-  unsigned char
-    format;
 
   unsigned int
     scene,
@@ -830,54 +829,32 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
       Write PNM file header.
     */
     (void) TransformRGBImage(image,RGBColorspace);
-    magick=(char *) image_info->magick;
-    if (LocaleCompare(magick,"PBM") == 0)
-      SetImageType(image,BilevelType);
-    if (((image->storage_class == DirectClass) ||
-         (LocaleCompare(magick,"PPM") == 0)) &&
-         (LocaleCompare(magick,"PGM") != 0))
-      {
-        /*
-          Full color PNM image.
-        */
-        format='6';
-        if ((image_info->compression == NoCompression) || (image->depth > 8))
-          format='3';
-      }
+    format=6;
+    if (LocaleCompare(image_info->magick,"PGM") == 0)
+      format=5;
     else
-      {
-        /*
-          Colormapped PNM image.
-        */
-        format='6';
-        if ((image_info->compression == NoCompression) || (image->depth > 8))
-          format='3';
-        if ((LocaleCompare(magick,"PPM") != 0) &&
+      if (LocaleCompare(image_info->magick,"PBM") == 0)
+        {
+          format=4;
+          SetImageType(image,BilevelType);
+        }
+      else
+        if ((image_info->type != TrueColorType) &&
             IsGrayImage(image,&image->exception))
           {
-            /*
-              Grayscale PNM image.
-            */
-            format='5';
-            if ((image_info->compression == NoCompression) ||
-                (image->depth > 8))
-              format='2';
-            if (LocaleCompare(magick,"PGM") != 0)
-              if (image->colors == 2)
-                {
-                  format='4';
-                  if (image_info->compression == NoCompression)
-                    format='1';
-                }
+            format=5;
+            if (IsMonochromeImage(image,&image->exception))
+              format=4;
           }
-      }
-    if (LocaleCompare(magick,"P7") == 0)
+    if ((image_info->compression == NoCompression) || (image->depth > 8))
+      format-=3;
+    if (LocaleCompare(image_info->magick,"P7") != 0)
+      FormatString(buffer,"P%d\n",format);
+    else
       {
-        format='7';
+        format=7;
         (void) strcpy(buffer,"P7 332\n");
       }
-    else
-      FormatString(buffer,"P%c\n",format);
     (void) WriteBlobString(image,buffer);
     attribute=GetImageAttribute(image,"comment");
     if (attribute != (const ImageAttribute *) NULL)
@@ -897,7 +874,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
         }
         (void) WriteBlobByte(image,'\n');
       }
-    if (format != '7')
+    if (format != 7)
       {
         FormatString(buffer,"%lu %lu\n",image->columns,image->rows);
         (void) WriteBlobString(image,buffer);
@@ -907,7 +884,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
     */
     switch (format)
     {
-      case '1':
+      case 1:
       {
         register unsigned char
           polarity;
@@ -945,7 +922,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
           (void) WriteBlobByte(image,'\n');
         break;
       }
-      case '2':
+      case 2:
       {
         /*
           Convert image to a PGM image.
@@ -981,7 +958,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
           (void) WriteBlobByte(image,'\n');
         break;
       }
-      case '3':
+      case 3:
       {
         /*
           Convert image to a PNM image.
@@ -1018,7 +995,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
           (void) WriteBlobByte(image,'\n');
         break;
       }
-      case '4':
+      case 4:
       {
         register unsigned char
           bit,
@@ -1062,7 +1039,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
         }
         break;
       }
-      case '5':
+      case 5:
       {
         /*
           Convert image to a PGM image.
@@ -1086,7 +1063,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
         }
         break;
       }
-      case '6':
+      case 6:
       {
         register unsigned char
           *q;
@@ -1131,7 +1108,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
         LiberateMemory((void **) &pixels);
         break;
       }
-      case '7':
+      case 7:
       {
         static const short int
           dither_red[2][16]=
