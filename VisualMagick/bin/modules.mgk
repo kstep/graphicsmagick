@@ -46,4 +46,5 @@
   <module name="TGA" alias="VDA"/>
   <module name="TGA" alias="VST"/>
   <module name="VIFF" alias="XV"/>
+  <module name="WMF" alias="WMFWIN32"/>
 </modulemap>
