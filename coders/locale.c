@@ -712,7 +712,7 @@ static void output_switches(Image *image,struct locale_str *locstr, int indent, 
           }
 
         p = EscapeLocaleString(xl->name);
-        FormatString(message, "%*sif (p - tp == %d && !strncasecmp(tp, \"%s\", %d))\n",
+        FormatString(message, "%*sif (p - tp == %d && !LocaleNCompare(tp, \"%s\", %d))\n",
                 indent+INDENT, "", strlen(xl->name), p, strlen(xl->name));
         WriteBlobString(image,message);
         free(p);
