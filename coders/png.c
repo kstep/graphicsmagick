@@ -131,12 +131,9 @@ static png_byte FARDATA mng_DHDR[5] = { 68,  72,  68,  82, '\0'};
 static png_byte FARDATA mng_DISC[5] = { 68,  73,  83,  67, '\0'};
 static png_byte FARDATA mng_ENDL[5] = { 69,  78,  68,  76, '\0'};
 static png_byte FARDATA mng_FRAM[5] = { 70,  82,  65,  77, '\0'};
-static png_byte FARDATA mng_IDAT[5] = { 73,  68,  65,  84, '\0'};
 static png_byte FARDATA mng_IEND[5] = { 73,  69,  78,  68, '\0'};
 static png_byte FARDATA mng_IHDR[5] = { 73,  72,  68,  82, '\0'};
-static png_byte FARDATA mng_JDAT[5] = { 74,  68,  65,  84, '\0'};
 static png_byte FARDATA mng_JHDR[5] = { 74,  72,  68,  82, '\0'};
-static png_byte FARDATA mng_JSEP[5] = { 74,  83,  69,  80, '\0'};
 static png_byte FARDATA mng_LOOP[5] = { 76,  79,  79,  80, '\0'};
 static png_byte FARDATA mng_MAGN[5] = { 77,  65,  71,  78, '\0'};
 static png_byte FARDATA mng_MEND[5] = { 77,  69,  78,  68, '\0'};
@@ -150,19 +147,25 @@ static png_byte FARDATA mng_TERM[5] = { 84,  69,  82,  77, '\0'};
 static png_byte FARDATA mng_bKGD[5] = { 98,  75,  71,  68, '\0'};
 static png_byte FARDATA mng_cHRM[5] = { 99,  72,  82,  77, '\0'};
 static png_byte FARDATA mng_gAMA[5] = {103,  65,  77,  65, '\0'};
+static png_byte FARDATA mng_pHYg[5] = {112,  72,  89, 103, '\0'};
+static png_byte FARDATA mng_pHYs[5] = {112,  72,  89, 115, '\0'};
+static png_byte FARDATA mng_sBIT[5] = {115,  66,  73,  84, '\0'};
+static png_byte FARDATA mng_sRGB[5] = {115,  82,  71,  66, '\0'};
+static png_byte FARDATA mng_tRNS[5] = {116,  82,  78,  83, '\0'};
+
+/*
+static png_byte FARDATA mng_IDAT[5] = { 73,  68,  65,  84, '\0'};
+static png_byte FARDATA mng_JDAT[5] = { 74,  68,  65,  84, '\0'};
+static png_byte FARDATA mng_JSEP[5] = { 74,  83,  69,  80, '\0'};
 static png_byte FARDATA mng_hIST[5] = {104,  73,  83,  84, '\0'};
 static png_byte FARDATA mng_iCCP[5] = {105,  67,  67,  80, '\0'};
 static png_byte FARDATA mng_iTXt[5] = {105,  84,  88, 116, '\0'};
 static png_byte FARDATA mng_oFFs[5] = {111,  70,  70, 115, '\0'};
-static png_byte FARDATA mng_pHYg[5] = {112,  72,  89, 103, '\0'};
-static png_byte FARDATA mng_pHYs[5] = {112,  72,  89, 115, '\0'};
-static png_byte FARDATA mng_sBIT[5] = {115,  66,  73,  84, '\0'};
 static png_byte FARDATA mng_sPLT[5] = {115,  80,  76,  84, '\0'};
-static png_byte FARDATA mng_sRGB[5] = {115,  82,  71,  66, '\0'};
 static png_byte FARDATA mng_tEXt[5] = {116,  69,  88, 116, '\0'};
 static png_byte FARDATA mng_tIME[5] = {116,  73,  77,  69, '\0'};
-static png_byte FARDATA mng_tRNS[5] = {116,  82,  78,  83, '\0'};
 static png_byte FARDATA mng_zTXt[5] = {122,  84,  88, 116, '\0'};
+*/
 
 typedef struct _MngBox
 {
