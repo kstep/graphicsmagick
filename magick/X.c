@@ -4758,8 +4758,6 @@ Export XWindows *XInitializeWindows(Display *display,
   windows->im_update_widget=XInternAtom(display,"IM_UPDATE_WIDGET",False);
   windows->im_update_colormap=
     XInternAtom(display,"IM_UPDATE_COLORMAP",False);
-  windows->im_update_signature=
-    XInternAtom(display,"IM_UPDATE_SIGNATURE",False);
   windows->im_former_image=XInternAtom(display,"IM_FORMER_IMAGE",False);
   windows->im_next_image=XInternAtom(display,"IM_NEXT_IMAGE",False);
   windows->im_retain_colors=XInternAtom(display,"IM_RETAIN_COLORS",False);
@@ -4788,8 +4786,6 @@ Export XWindows *XInitializeWindows(Display *display,
         windows->im_update_widget);
       (void) fprintf(stderr,"    update colormap: 0x%lx\n",
         windows->im_update_colormap);
-      (void) fprintf(stderr,"    update signature: 0x%lx\n",
-        windows->im_update_signature);
       (void) fprintf(stderr,"    former image: 0x%lx\n",
         windows->im_former_image);
       (void) fprintf(stderr,"    next image: 0x%lx\n",

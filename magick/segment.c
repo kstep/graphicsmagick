@@ -479,6 +479,7 @@ static unsigned int Classify(Image *image,short **extrema,
   /*
     Do course grain classification.
   */
+  image->tainted=True;
   q=image->pixels;
   for (i=0; i < (int) image->packets; i++)
   {

@@ -33,7 +33,7 @@ extern "C" {
 #define MaxStacksize  (1 << 15)
 #define MaxTextExtent  1664
 #define Opaque  MaxRGB
-#define PixelOffset(x,y) image->pixels+((y)*image->columns+(x))
+#define PixelOffset(x,y) image->pixels+(((int) y)*image->columns+((int) x))
 #define Push(up,left,right,delta) \
   if ((p < (segment_stack+MaxStacksize)) && (((up)+(delta)) >= 0) && \
       (((up)+(delta)) < (int) image->rows)) \
@@ -508,7 +508,7 @@ typedef struct _PrimitiveInfo
   unsigned int
     coordinates;
 
-  int
+  float
     x,
     y;
 
@@ -544,7 +544,7 @@ typedef struct _RunlengthPacket
 
 typedef struct _SegmentInfo
 {
-  int
+  float
     x1,
     y1,
     x2,
@@ -740,7 +740,7 @@ typedef struct _Image
     magick_rows;
 
   int
-    reference_count;
+    tainted;
 
   unsigned int
     orphan;

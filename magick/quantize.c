@@ -399,6 +399,7 @@ static unsigned int Assignment(CubeInfo *cube_info,QuantizeInfo *quantize_info,
   /*
     Create a reduced color image.
   */
+  image->tainted=True;
   if (quantize_info->dither)
     quantize_info->dither=!DitherImage(cube_info,image);
   p=image->pixels;

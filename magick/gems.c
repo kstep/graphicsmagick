@@ -607,8 +607,8 @@ Export Quantum InsidePrimitive(PrimitiveInfo *primitive_info,
 
          poly_opacity=Transparent;
          for (r=p; (r < q) && (poly_opacity != Opaque); r++)
-           poly_opacity=
-             InsideLinePrimitive(r,r+1,x,y,Max(opacity,poly_opacity),mid);
+           poly_opacity=InsideLinePrimitive(r,r+1,x,y,
+             (Quantum) Max(opacity,poly_opacity),mid);
          poly_opacity=InsideLinePrimitive(q,p,x,y,poly_opacity,mid);
          opacity=Max(opacity,poly_opacity);
         break;
@@ -680,7 +680,7 @@ Export Quantum InsidePrimitive(PrimitiveInfo *primitive_info,
               color;
 
             if ((x == 0) && (y == 0))
-              target=image->pixels[p->y*image->columns+p->x];
+              target=image->pixels[(int) p->y*image->columns+(int) p->x];
             color=image->pixels[y*image->columns+x];
             if (ColorMatch(color,target,(int) image->fuzz))
               opacity=Opaque;
@@ -742,7 +742,7 @@ Export Quantum InsidePrimitive(PrimitiveInfo *primitive_info,
               target;
 
             if ((x == 0) && (y == 0))
-              target=image->pixels[p->y*image->columns+p->x];
+              target=image->pixels[(int) p->y*image->columns+(int) p->x];
             color=image->pixels[y*image->columns+x];
             if (ColorMatch(color,target,(int) image->fuzz))
               image->pixels[y*image->columns+x].index=Transparent;

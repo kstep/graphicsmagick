@@ -3160,7 +3160,13 @@ Get(ref,...)
         case 'T':
         case 't':
         {
-          if (strEQcase(attribute,"package_info"))
+          if (strEQcase(attribute,"taint"))
+            {
+              if (image)
+                s=newSViv(image->tainted);
+              break;
+            }
+          if (strEQcase(attribute,"temporary"))
             {
               if (image)
                 s=newSViv(image->temporary);

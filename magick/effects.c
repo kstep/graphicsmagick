@@ -1658,8 +1658,8 @@ Export unsigned int PlasmaImage(Image *image,SegmentInfo *segment_info,
       */
       depth--;
       attenuate++;
-      x_mid=(segment_info->x1+segment_info->x2) >> 1;
-      y_mid=(segment_info->y1+segment_info->y2) >> 1;
+      x_mid=(segment_info->x1+segment_info->x2)/2;
+      y_mid=(segment_info->y1+segment_info->y2)/2;
       local_info=(*segment_info);
       local_info.x2=x_mid;
       local_info.y2=y_mid;

@@ -189,7 +189,7 @@ Export Image *AllocateImage(const ImageInfo *image_info)
   allocated_image->magick_columns=0;
   allocated_image->magick_rows=0;
   allocated_image->magick_time=time((time_t *) NULL);
-  allocated_image->reference_count=0;
+  allocated_image->tainted=False;
   allocated_image->orphan=False;
   allocated_image->previous=(Image *) NULL;
   allocated_image->list=(Image *) NULL;
@@ -467,27 +467,27 @@ Export void AnnotateImage(Image *image,AnnotateInfo *annotate_info)
       case NorthWestGravity:
       {
         annotate_info->bounds.x=x;
-        annotate_info->bounds.y=i*(annotate_info->bounds.height+2)+y;
+        annotate_info->bounds.y=i*annotate_info->bounds.height+y;
         break;
       }
       case NorthGravity:
       {
         annotate_info->bounds.x=x+(width >> 1)-(annotate_image->columns >> 1);
-        annotate_info->bounds.y=y+i*(annotate_info->bounds.height+2);
+        annotate_info->bounds.y=y+i*annotate_info->bounds.height;
         break;
       }
       case NorthEastGravity:
       {
         annotate_info->bounds.x=x+width-annotate_image->columns;
-        annotate_info->bounds.y=y+i*(annotate_info->bounds.height+2);
+        annotate_info->bounds.y=y+i*annotate_info->bounds.height;
         break;
       }
       case WestGravity:
       {
         annotate_info->bounds.x=x;
         annotate_info->bounds.y=y+(height >> 1)-
-          (number_lines*(annotate_info->bounds.height+2) >> 1)+
-          i*(annotate_info->bounds.height+2);
+          (number_lines*annotate_info->bounds.height >> 1)+
+          i*annotate_info->bounds.height;
         break;
       }
       case ForgetGravity:
@@ -497,34 +497,34 @@ Export void AnnotateImage(Image *image,AnnotateInfo *annotate_info)
       {
         annotate_info->bounds.x=x+(width >> 1)-(annotate_image->columns >> 1);
         annotate_info->bounds.y=y+(height >> 1)-
-          (number_lines*(annotate_info->bounds.height+2) >> 1)+
-          i*(annotate_info->bounds.height+2);
+          (number_lines*annotate_info->bounds.height >> 1)+
+          i*annotate_info->bounds.height;
         break;
       }
       case EastGravity:
       {
         annotate_info->bounds.x=x+width-annotate_image->columns;
         annotate_info->bounds.y=y+(height >> 1)-
-          (number_lines*(annotate_info->bounds.height+2) >> 1)+
-          i*(annotate_info->bounds.height+2);
+          (number_lines*annotate_info->bounds.height >> 1)+
+          i*annotate_info->bounds.height;
         break;
       }
       case SouthWestGravity:
       {
         annotate_info->bounds.x=x;
-        annotate_info->bounds.y=y+height-(i+1)*(annotate_info->bounds.height+2);
+        annotate_info->bounds.y=y+height-(i+1)*annotate_info->bounds.height;
         break;
       }
       case SouthGravity:
       {
         annotate_info->bounds.x=x+(width >> 1)-(annotate_image->columns >> 1);
-        annotate_info->bounds.y=y+height-(i+1)*(annotate_info->bounds.height+2);
+        annotate_info->bounds.y=y+height-(i+1)*annotate_info->bounds.height;
         break;
       }
       case SouthEastGravity:
       {
         annotate_info->bounds.x=x+width-annotate_image->columns;
-        annotate_info->bounds.y=y+height-(i+1)*(annotate_info->bounds.height+2);
+        annotate_info->bounds.y=y+height-(i+1)*annotate_info->bounds.height;
         break;
       }
     }
@@ -2030,6 +2030,7 @@ Export void CompositeImage(Image *image,const CompositeOperator compose,
   /*
     Initialize composited image.
   */
+  composite_image->tainted=True;
   p=composite_image->pixels;
   runlength=p->length+1;
   for (y=0; y < (int) composite_image->rows; y++)
@@ -2499,7 +2500,10 @@ Export Image *CloneImage(Image *image,const unsigned int columns,
   if (clone_image->pixels == (RunlengthPacket *) NULL)
     return((Image *) NULL);
   if (!clone_pixels)
-    SetImage(clone_image);
+    {
+      clone_image->tainted=True;
+      SetImage(clone_image);
+    }
   else
     {
       register RunlengthPacket
@@ -3202,6 +3206,10 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
       image->normalized_maximum_error);
   SignatureImage(image);
   (void) fprintf(file,"  signature: %.1024s\n",image->signature);
+  if (image->tainted)
+    (void) fprintf(file,"  tainted: True\n");
+  else
+    (void) fprintf(file,"  tainted: False\n");
   if (image->matte)
     (void) fprintf(file,"  matte: True\n");
   else
@@ -3972,6 +3980,7 @@ Export void DrawImage(Image *image,AnnotateInfo *annotate_info)
   /*
     Parse the primitive attributes.
   */
+  (void) XQueryColorDatabase("black",&pen_color);
   if ((annotate_info->pen == (char *) NULL) || (*annotate_info->pen != '@'))
     (void) XQueryColorDatabase(annotate_info->pen,&pen_color);
   primitive_type=UndefinedPrimitive;
@@ -4050,18 +4059,18 @@ Export void DrawImage(Image *image,AnnotateInfo *annotate_info)
           break;
         }
       if (point.x < bounds.x1)
-        bounds.x1=(int) point.x;
+        bounds.x1=point.x;
       if (point.y < bounds.y1)
-        bounds.y1=(int) point.y;
+        bounds.y1=point.y;
       if (point.x > bounds.x2)
-        bounds.x2=(int) point.x;
+        bounds.x2=point.x;
       if (point.y > bounds.y2)
-        bounds.y2=(int) point.y;
+        bounds.y2=point.y;
       primitive_info[i].primitive=primitive_type;
       primitive_info[i].method=FloodfillMethod;
       primitive_info[i].coordinates=0;
-      primitive_info[i].x=(int) point.x;
-      primitive_info[i].y=(int) point.y;
+      primitive_info[i].x=point.x;
+      primitive_info[i].y=point.y;
       p+=n;
       while (isspace((int) (*p)) || (*p == ','))
         p++;
@@ -4121,15 +4130,15 @@ Export void DrawImage(Image *image,AnnotateInfo *annotate_info)
         point.x=Max(primitive_info[j].x-radius,0);
         point.y=Max(primitive_info[j].y-radius,0);
         if (point.x < bounds.x1)
-          bounds.x1=(int) point.x;
+          bounds.x1=point.x;
         if (point.y < bounds.y1)
-          bounds.y1=(int) point.y;
+          bounds.y1=point.y;
         point.x=Min(primitive_info[j].x+radius,image->columns-1);
         point.y=Min(primitive_info[j].y+radius,image->rows-1);
         if (point.x > bounds.x2)
-          bounds.x2=(int) point.x;
+          bounds.x2=point.x;
         if (point.y > bounds.y2)
-          bounds.y2=(int) point.y;
+          bounds.y2=point.y;
         break;
       }
       case EllipsePrimitive:
@@ -4163,19 +4172,19 @@ Export void DrawImage(Image *image,AnnotateInfo *annotate_info)
           point.x=cos(DegreesToRadians(i % 360))*arc.width+arc.x;
           point.y=sin(DegreesToRadians(i % 360))*arc.height+arc.y;
           if (point.x < bounds.x1)
-            bounds.x1=(int) point.x;
+            bounds.x1=point.x;
           if (point.y < bounds.y1)
-            bounds.y1=(int) point.y;
+            bounds.y1=point.y;
           if (point.x > bounds.x2)
-            bounds.x2=(int) point.x;
+            bounds.x2=point.x;
           if (point.y > bounds.y2)
-            bounds.y2=(int) point.y;
+            bounds.y2=point.y;
           primitive_info[i].primitive=PolygonPrimitive;
           if (primitive_type == FillEllipsePrimitive)
             primitive_info[i].primitive=FillPolygonPrimitive;
           primitive_info[i].coordinates=0;
-          primitive_info[i].x=(int) point.x;
-          primitive_info[i].y=(int) point.y;
+          primitive_info[i].x=point.x;
+          primitive_info[i].y=point.y;
           i++;
           primitive_info[j].coordinates++;
         }
@@ -4311,7 +4320,7 @@ Export void DrawImage(Image *image,AnnotateInfo *annotate_info)
   image->class=DirectClass;
   for (y=bounds.y1; y <= bounds.y2; y++)
   {
-    q=image->pixels+y*image->columns+bounds.x1;
+    q=image->pixels+y*image->columns+(int) bounds.x1;
     for (x=bounds.x1; x <= bounds.x2; x++)
     {
       opacity=InsidePrimitive(primitive_info,annotate_info,x,y,image);
@@ -5067,6 +5076,7 @@ Export void GammaImage(Image *image,const char *gamma)
       gamma_map[i].blue=(Quantum)
         ((pow((double) i/MaxRGB,1.0/blue_gamma)*MaxRGB)+0.5);
   }
+  image->tainted=True;
   switch (image->class)
   {
     case DirectClass:
@@ -5614,15 +5624,11 @@ Export unsigned int IsTainted(Image *image)
   (void) strcpy(filename,image->filename);
   for (p=image; p != (Image *) NULL; p=p->next)
   {
+    if (p->tainted)
+      return(True);
     if (Latin1Compare(p->magick,magick) != 0)
       return(True);
     if (Latin1Compare(p->filename,filename) != 0)
-      return(True);
-    if (p->signature == (char *) NULL)
-      return(True);
-    (void) strcpy(signature,p->signature);
-    SignatureImage(p);
-    if (strcmp(signature,p->signature) != 0)
       return(True);
   }
   return(False);
@@ -8668,6 +8674,7 @@ Export void NegateImage(Image *image,const unsigned int grayscale)
     *p;
 
   assert(image != (Image *) NULL);
+  image->tainted=True;
   switch (image->class)
   {
     case DirectClass:
@@ -12707,7 +12714,8 @@ Export Image *ZoomImage(Image *image,const unsigned int columns,
     return((Image *) NULL);
   if ((image->columns == columns) && (image->rows == rows))
     return(CloneImage(image,columns,rows,True));
-  if (filters[image->filter].width < 0.5)
+  if ((filters[image->filter].width < columns) ||
+      (filters[image->filter].width < rows))
     return(SampleImage(image,columns,rows));
   /*
     Image must be uncompressed.

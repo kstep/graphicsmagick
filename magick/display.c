@@ -10003,9 +10003,6 @@ static unsigned int XSaveImage(Display *display,XResourceInfo *resource_info,
   status=WriteImage(&image_info,save_image);
   DestroyImage(save_image);
   XSetCursorState(display,windows,False);
-  if (status)
-    XClientMessage(display,windows->image.id,windows->im_protocols,
-      windows->im_update_signature,CurrentTime);
   return(status);
 }
 
@@ -11720,7 +11717,6 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   char
     command[MaxTextExtent],
     geometry[MaxTextExtent],
-    image_signature[MaxTextExtent],
     resource_name[MaxTextExtent];
 
   CommandType
@@ -11874,7 +11870,7 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   manager_hints=windows->manager_hints;
   root_window=XRootWindow(display,visual_info->screen);
   loaded_image=(Image *) NULL;
-  displayed_image->signature=(char *) NULL;
+  displayed_image->tainted=False;
   if (resource_info->debug)
     {
       (void) fprintf(stderr,"Image: %.1024s[%u] %ux%u ",
@@ -12333,7 +12329,6 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   if (windows->image.mapped)
     XRefreshWindow(display,&windows->image,(XEvent *) NULL);
   SignatureImage(displayed_image);
-  (void) strcpy(image_signature,displayed_image->signature);
   handler=SetMonitorHandler((MonitorHandler) NULL);
   status=XMakeImage(display,resource_info,&windows->magnify,(Image *) NULL,
     windows->magnify.width,windows->magnify.height);
@@ -12655,12 +12650,6 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
                   }
                 if (windows->backdrop.id != (Window) NULL)
                   XInstallColormap(display,map_info->colormap);
-                break;
-              }
-            if (*event.xclient.data.l == (int) windows->im_update_signature)
-              {
-                SignatureImage(displayed_image);
-                (void) strcpy(image_signature,displayed_image->signature);
                 break;
               }
             if (*event.xclient.data.l == (int) windows->im_former_image)
@@ -13240,7 +13229,7 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
         Query user if image has changed.
       */
       SignatureImage(displayed_image);
-      if (Latin1Compare(displayed_image->signature,image_signature) != 0)
+      if (displayed_image->tainted)
         {
           status=XConfirmWidget(display,windows,"Your image changed.",
             "Do you want to save it");

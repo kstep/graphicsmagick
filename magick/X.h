@@ -521,7 +521,6 @@ typedef struct _XWindows
     im_remote_command,
     im_update_widget,
     im_update_colormap,
-    im_update_signature,
     im_former_image,
     im_retain_colors,
     im_next_image,
