@@ -334,33 +334,35 @@ Export unsigned int SetImageAttribute(Image *image,const char *key,
 void StoreImageAttribute(Image *image,char *text)
 {
   char
-    brkused,
+    breaker,
     *key,
     quoted,
     *token,
     *value;
 
   int
+    length,
+    next,
     state,
-    next;
-
-  int
-    inputlen = MaxTextExtent;
+    status;
 
   TokenInfo
     token_info;
 
-  token=(char *) NULL;
+  length=MaxTextExtent;
   next=0;
   state=0;
-  token=(char *) AllocateMemory(inputlen);
+  token=(char *) AllocateMemory(length);
   if (token == (char *) NULL)
     MagickError(ResourceLimitError,"Unable to parse attribute",
       "Memory allocation failed");
-  while (Tokenizer(&token_info,0,token,inputlen,text,"","=","\'",0,&brkused,
-    &next,&quoted) == 0)
+  for ( ; ; )
   {
-    switch(state)
+    status=Tokenizer(&token_info,0,token,length,text,"","=","\'",0,&breaker,
+      &next,&quoted);
+    if (status != False)
+      break;
+    switch (state)
     {
       case 0:
       {
@@ -375,8 +377,8 @@ void StoreImageAttribute(Image *image,char *text)
     }
     state++;
   }
-  if ((state > 1) && (key != (char *)NULL) && (value != (char *)NULL))
-    SetImageAttribute(image,(const char *) key,(const char *) value);
+  if ((state > 1) && (key != (char *) NULL) && (value != (char *) NULL))
+    SetImageAttribute(image,key,value);
   if (token != (char *) NULL)
     FreeMemory((void **) &token);
   if (key != (char *) NULL)
