@@ -108,10 +108,8 @@
 #define HasBZLIB
 #define HasHDF
 #define HasFPX
-#define HasLZW
 #define HAVE_MMAP
 #define HasXML
-#define HasLZW
 #define HasLCMS
 #endif
 
