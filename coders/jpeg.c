@@ -846,26 +846,27 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
 */
 ModuleExport void RegisterJPEGImage(void)
 {
+#define JPEGDescription  "Joint Photographic Experts Group JFIF format"
+
+  char
+    version[MaxTextExtent];
+
   MagickInfo
     *entry;
 
+  *version='\0';
+#if defined(JPEG_LIB_VERSION)
+  FormatString(version,"%d",JPEG_LIB_VERSION);
+#endif
   entry=SetMagickInfo("JPEG");
   entry->thread_support=False;
   entry->decoder=ReadJPEGImage;
   entry->encoder=WriteJPEGImage;
   entry->magick=IsJPEG;
   entry->adjoin=False;
-  entry->description=
-    AcquireString("Joint Photographic Experts Group JFIF format");
-#if defined(JPEG_LIB_VERSION)
-  {
-    char
-      version[MaxTextExtent];
-
-    FormatString(version,"%d",JPEG_LIB_VERSION);
+  entry->description=AcquireString(JPEGDescription);
+  if (*version != '\0')
     entry->version=AcquireString(version);
-  }
-#endif
   entry->module=AcquireString("JPEG");
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("JPG");
@@ -873,8 +874,9 @@ ModuleExport void RegisterJPEGImage(void)
   entry->decoder=ReadJPEGImage;
   entry->encoder=WriteJPEGImage;
   entry->adjoin=False;
-  entry->description=
-    AcquireString("Joint Photographic Experts Group JFIF format");
+  entry->description=AcquireString(JPEGDescription);
+  if (*version != '\0')
+    entry->version=AcquireString(version);
   entry->module=AcquireString("JPEG");
   (void) RegisterMagickInfo(entry);
 }

@@ -1031,30 +1031,30 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
 */
 ModuleExport void RegisterMIFFImage(void)
 {
+  char
+    version[MaxTextExtent];
+
   MagickInfo
     *entry;
 
+  *version='\0';
+#if defined(MagickLibVersionText)
+  (void) strncpy(version,MagickLibVersionText,MaxTextExtent >> 1);
+#if defined(ZLIB_VERSION)
+  (void) strcat(version," with Zlib ");
+  (void) strncat(version,ZLIB_VERSION,MaxTextExtent-strlen(version)-1);
+#endif
+#if defined(HasBZLIB)
+  (void) strcat(version," and BZlib");
+#endif
+#endif
   entry=SetMagickInfo("MIFF");
   entry->decoder=ReadMIFFImage;
   entry->encoder=WriteMIFFImage;
   entry->magick=IsMIFF;
   entry->description=AcquireString("Magick Image File Format");
-#if defined(MagickLibVersionText)
-  {
-    char
-      version[MaxTextExtent];
-
-    (void) strncpy(version,MagickLibVersionText,MaxTextExtent >> 1);
-#if defined(ZLIB_VERSION)
-		(void) strcat(version," with Zlib ");
-		(void) strncat(version,ZLIB_VERSION,MaxTextExtent-strlen(version)-1);
-#endif
-#if defined(HasBZLIB)
-		(void) strcat(version," and BZlib");
-#endif
+  if (*version != '\0')
     entry->version=AcquireString(version);
-  }
-#endif
   entry->module=AcquireString("MIFF");
   (void) RegisterMagickInfo(entry);
 }

@@ -936,9 +936,18 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
 */
 ModuleExport void RegisterTIFFImage(void)
 {
+#define TIFFDescription  "Tagged Image File Format"
+
+  char
+    version[MaxTextExtent];
+
   MagickInfo
     *entry;
 
+  *version='\0';
+#if defined(TIFF_VERSION)
+  FormatString(version,"%d",TIFF_VERSION);
+#endif
   entry=SetMagickInfo("PTIF");
   entry->decoder=ReadTIFFImage;
   entry->encoder=WriteTIFFImage;
@@ -949,23 +958,18 @@ ModuleExport void RegisterTIFFImage(void)
   entry=SetMagickInfo("TIF");
   entry->decoder=ReadTIFFImage;
   entry->encoder=WriteTIFFImage;
-  entry->description=AcquireString("Tagged Image File Format");
+  entry->description=AcquireString(TIFFDescription);
+  if (*version != '\0')
+    entry->version=AcquireString(version);
   entry->module=AcquireString("TIFF");
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("TIFF");
   entry->decoder=ReadTIFFImage;
   entry->encoder=WriteTIFFImage;
   entry->magick=IsTIFF;
-  entry->description=AcquireString("Tagged Image File Format");
-#if defined(TIFF_VERSION)
-  {
-    char
-      version[MaxTextExtent];
-
-    FormatString(version,"%d",TIFF_VERSION);
+  entry->description=AcquireString(TIFFDescription);
+  if (*version != '\0')
     entry->version=AcquireString(version);
-  }
-#endif
   entry->module=AcquireString("TIFF");
   (void) RegisterMagickInfo(entry);
 }

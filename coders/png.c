@@ -4193,15 +4193,32 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 */
 ModuleExport void RegisterPNGImage(void)
 {
+  char
+    version[MaxTextExtent];
+
   MagickInfo
     *entry;
 
+  *version='\0';
+#if defined(PNG_LIBPNG_VER_STRING)
+  (void) strncpy(version,GetString(PNG_LIBPNG_VER_STRING),MaxTextExtent-2);
+# if PNG_LIBPNG_VER > 10001
+  if (LocaleCompare(PNG_LIBPNG_VER_STRING,png_get_header_ver(NULL)) != 0)
+    {
+      (void) strcat(version,",");
+      (void) strncat(version,png_get_libpng_ver(NULL),MaxTextExtent-
+        strlen(version)-1);
+    }
+#endif
+#endif
   entry=SetMagickInfo("MNG");
   entry->thread_support=False;
   entry->decoder=ReadPNGImage;
   entry->encoder=WritePNGImage;
   entry->magick=IsMNG;
   entry->description=AcquireString("Multiple-image Network Graphics");
+  if (*version != '\0')
+    entry->version=AcquireString(version);
   entry->module=AcquireString("PNG");
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("PNG");
@@ -4211,28 +4228,9 @@ ModuleExport void RegisterPNGImage(void)
   entry->magick=IsPNG;
   entry->adjoin=False;
   entry->description=AcquireString("Portable Network Graphics");
-#if defined(PNG_LIBPNG_VER_STRING)
-{
-  char
-    *version;
-
-  version=GetString(PNG_LIBPNG_VER_STRING);
-# if PNG_LIBPNG_VER > 10001
-  if (LocaleCompare(PNG_LIBPNG_VER_STRING,png_get_header_ver(NULL)) != 0)
-  {
-    /*
-      Show both compile-time and run-time library versions when they differ.
-    */
-    (void) ConcatenateString(&version,",");
-    (void) ConcatenateString(&version,png_get_libpng_ver(NULL));
-
-  }
-  entry->version=AcquireString(version);
-  LiberateMemory((void **) &version);
-# endif
-}
-#endif
   entry->module=AcquireString("PNG");
+  if (*version != '\0')
+    entry->version=AcquireString(version);
   (void) RegisterMagickInfo(entry);
 }
 
