@@ -49,62 +49,61 @@ bool Magick::Coder::magick ( const unsigned char *magick_,
   return false;
 };
 
-namespace Magick
-{
-  extern "C" {
-  static Image *decoder( const ImageInfo *imageInfo_ );
-  static unsigned int encoder( const ImageInfo *imageInfo_,
-			       Image *image_);
+extern "C" {
+  static MagickLib::Image *decoder( const MagickLib::ImageInfo *imageInfo_,
+                                    MagickLib::ExceptionInfo *exception_ );
+  static unsigned int encoder( const MagickLib::ImageInfo *imageInfo_,
+			       MagickLib::Image *image_);
   static unsigned int magick( const unsigned char *magick_,
 			      const unsigned int length_ );
-  }
 }
 
 // Image decoder callback (C linkage)
-static Image *decoder( const ImageInfo *imageInfo_ )
+static MagickLib::Image *decoder( const MagickLib::ImageInfo *imageInfo_,
+                                  MagickLib::ExceptionInfo *exception_ )
 {
-  MagickInfo* info = 0; // FIXME!
-
-  if ( info->data == 0 )
-    return (Image*)0;
-
-  // The decoder may modify ImageInfo so the original ImageInfo struct
-  // must be updated for the caller (no copy can be made).
-
-  QuantizeInfo* quantizeInfo = 
-    (QuantizeInfo*)AcquireMemory( sizeof(QuantizeInfo) );
-  GetQuantizeInfo( quantizeInfo );
-
-  Magick::Coder* coder = (Magick::Coder*)info->data;
-  coder->decoder( Magick::Options( imageInfo_, quantizeInfo ) );
-}
-
-// Image encoder callback (C linkage)
-// Returns True on success
-static unsigned int encoder( const ImageInfo *imageInfo_,
-			     Image *image_)
-{
-  MagickInfo* info = 0; // FIXME!
+  MagickLib::MagickInfo* info = 0; // FIXME!
 
   if ( info->data == 0 )
     return 0;
 
-  Magick::Coder* coder = (Magick::Coder*)info->data;
-  return static_cast<unsigned int>
-    (coder->encoder( Magick::Image( imageInfo_, image_ ) ));
+  // The decoder may modify ImageInfo so the original ImageInfo struct
+  // must be updated for the caller (no copy can be made).
+
+  MagickLib::QuantizeInfo* quantizeInfo = 
+    reinterpret_cast<MagickLib::QuantizeInfo*>(MagickLib::AcquireMemory(sizeof(MagickLib::QuantizeInfo)));
+  MagickLib::GetQuantizeInfo( quantizeInfo );
+
+  Magick::Coder* coder = static_cast<Magick::Coder*>(info->data);
+  //  coder->decoder( Magick::Options( imageInfo_, quantizeInfo ) );
+}
+
+// Image encoder callback (C linkage)
+// Returns True on success
+static unsigned int encoder( const MagickLib::ImageInfo *imageInfo_,
+			     MagickLib::Image *image_)
+{
+  MagickLib::MagickInfo* info = 0; // FIXME!
+
+  if ( info->data == 0 )
+    return 0;
+
+  Magick::Coder* coder = static_cast<Magick::Coder*>(info->data);
+//   return static_cast<unsigned int>
+//     (coder->encoder(Magick::Image( imageInfo_, image_ )));
 }
 
 // Image magick callback (C linkage)
 // Returns True on success
 static unsigned int magick( const unsigned char *magick_,
-			    const unsigned int length_ )
+                            const unsigned int length_ )
 {
-  MagickInfo* info = 0; // FIXME!
+  MagickLib::MagickInfo* info = 0; // FIXME!
 
   if ( info->data == 0 )
     return 0;
 
-  Magick::Coder* coder = (Magick::Coder*)info->data;
+  Magick::Coder* coder = static_cast<Magick::Coder*>(info->data);
   return static_cast<unsigned int>(coder->magick( magick_, length_ ));
 }
 
@@ -129,13 +128,15 @@ Magick::Coder::Coder (
 
   // Register coder callbacks
   MagickInfo* info = SetMagickInfo(tag_.c_str());
-  info->decoder = decoderSupport_ ? Magick::decoder : 0;
-  info->encoder = encoderSupport_ ? Magick::encoder : 0;
-  info->magick  = magickSupport_  ? Magick::magick  : 0;
-  info->adjoin  = (unsigned int)adjoin_;
-  info->blob_support = (unsigned int)blobSupport_;
-  info->raw     = (unsigned int)rawImage_;
+//   info->decoder = decoderSupport_ ? decoder : 0;
+//   info->encoder = encoderSupport_ ? encoder : 0;
+//   info->magick  = magickSupport_  ? magick  : 0;
+  info->adjoin  = static_cast<unsigned int>(adjoin_);
+  info->blob_support = static_cast<unsigned int>(blobSupport_);
+  info->raw     = static_cast<unsigned int>(rawImage_);
+  info->tag     = 0;
   Magick::CloneString( &info->description, description_ );
-  info->data = (void *)this; // coder object
+  info->module  = 0;
+  info->data = static_cast<void *>(this); // coder object
   RegisterMagickInfo ( info );
 }
