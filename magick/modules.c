@@ -227,22 +227,22 @@ MagickExport void DestroyModuleInfo(void)
 
 #if !defined(HasMODULES)
 #if !defined(WIN32)
-int lt_dlinit(void)
+static int lt_dlinit(void)
 {
   return(0);
 }
-void *lt_dlopen(char *filename)
+static void *lt_dlopen(char *filename)
 {
   return((void *) NULL);
 }
-void lt_dlclose(void *handle)
+static void lt_dlclose(void *handle)
 {
 }
-const char *lt_dlerror(void)
+static const char *lt_dlerror(void)
 {
   return((const char *) NULL);
 }
-void *lt_dlsym(void *handle,char *symbol)
+static void *lt_dlsym(void *handle,char *symbol)
 {
   return((void *) NULL);
 }

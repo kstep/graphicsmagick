@@ -43,7 +43,6 @@
 <HR>
 <H1><A NAME="synopsis">
 <FONT SIZE=-1>SYNOPSIS</FONT></A></H1>
-<P>filelist= <STRONG>GetColorlist</STRONG>( const char *pattern, int number_colors );</P>
 <P>number_colors= <STRONG>GetNumberColors</STRONG>( image, file );</P>
 <P>unsigned int  <STRONG>IsGrayImage</STRONG>( Image *image );</P>
 <P>status= <STRONG>IsMonochromeImage</STRONG>( image );</P>
@@ -60,14 +59,16 @@
 <FONT SIZE=-1>DESCRIPTIONS</FONT></A></H1>
 <P>
 <H2><A NAME="getcolorlist">GetColorlist</A></H2>
-<P>Method GetColorlist returns any colors that match the specified pattern and color standard.</P>
-<P>The format of the GetColorlist function is:</P>
-<blockquote>filelist=GetColorlist ( const char *pattern, int number_colors ); </blockquote><P>
+<P>Method GetColorList returns any colors that match the specified pattern and color standard.</P>
+<P>The format of the GetColorList function is:</P>
+<PRE>
+    filelist=GetColorList(const char *pattern,int number_colors)</PRE>
+<P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG><A NAME="item_o_filelist%3A">filelist:</A></STRONG><BR>
 <DD>
-Method GetColorlist returns a list of colors that match the specified pattern and color standard.
+Method GetColorList returns a list of colors that match the specified pattern and color standard.
 <P></P>
 <p><dt><STRONG><A NAME="item_o_pattern%3A">pattern:</A></STRONG><BR>
 <DD>

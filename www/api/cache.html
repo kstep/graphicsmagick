@@ -22,6 +22,7 @@
 
 		<LI><A HREF="#closepixelcache">CloseImagePixels</A></LI>
 		<LI><A HREF="#compresscache">CompressCache</A></LI>
+		<LI><A HREF="#destroycache">DestroyCache</A></LI>
 		<LI><A HREF="#destroypixelcache">DestroyImagePixels</A></LI>
 		<LI><A HREF="#getindexesfromcache">GetIndexes</A></LI>
 		<LI><A HREF="#getonepixelfromcache">GetOnePixel</A></LI>
@@ -47,6 +48,7 @@
 <FONT SIZE=-1>SYNOPSIS</FONT></A></H1>
 <P>void  <STRONG>CloseImagePixels</STRONG>( Image *image );</P>
 <P>unsigned int  <STRONG>CompressCache</STRONG>( Cache cache );</P>
+<P><STRONG>DestroyCache</STRONG>( void );</P>
 <P>void  <STRONG>DestroyImagePixels</STRONG>( Image *image );</P>
 <P>IndexPacket * <STRONG>GetIndexes</STRONG>( const Image *image );</P>
 <P>PixelPacket * <STRONG>GetOnePixel</STRONG>( const Image image, const int x, const int y );</P>
@@ -84,6 +86,10 @@ The image.
 Specifies a pointer to a Cache structure.
 <P></P></DL></DL>
 <P>
+<H2><A NAME="destroycache">DestroyCache</A></H2>
+<P>Method DestroyCache destroys the cache environment.</P>
+<P>The format of the DestroyCache method is:</P>
+<blockquote>DestroyCache ( void ); </blockquote><P>
 <H2><A NAME="destroypixelcache">DestroyImagePixels</A></H2>
 <P>Method DestroyImagePixels deallocates memory associated with the pixel cache.</P>
 <P>The format of the DestroyImagePixels method is:</P>

@@ -22,6 +22,7 @@
 
 		<LI><A HREF="#blobtoimage">BlobToImage</A></LI>
 		<LI><A HREF="#destroyblobinfo">DestroyBlobInfo</A></LI>
+		<LI><A HREF="#filetoblob">FileToBlob</A></LI>
 		<LI><A HREF="#getblobinfo">GetBlobInfo</A></LI>
 		<LI><A HREF="#imagetoblob">ImageToBlob</A></LI>
 		<LI><A HREF="#setblobquantum">SetBlobQuantum</A></LI>
@@ -41,6 +42,7 @@
 <FONT SIZE=-1>SYNOPSIS</FONT></A></H1>
 <P>Image * <STRONG>BlobToImage</STRONG>( const ImageInfo *image_info, const void *blob, const size_t length, ExceptionInfo *exception );</P>
 <P>void  <STRONG>DestroyBlobInfo</STRONG>( BlobInfo *blob );</P>
+<P>void * <STRONG>FileToBlob</STRONG>( const char *filename, size_t *length, ExceptionInfo *exception );</P>
 <P>void  <STRONG>GetBlobInfo</STRONG>( BlobInfo *blob );</P>
 <P>void * <STRONG>ImageToBlob</STRONG>( const ImageInfo *image_info, Image *image, size_t *length, ExceptionInfo *exception );</P>
 <P>void  <STRONG>SetBlobQuantum</STRONG>( BlobInfo *blob, const size_t quantum );</P>
@@ -63,7 +65,7 @@ Method BlobToImage returns an image from the supplied blob.  If an error occurs
 <P></P>
 <p><dt><STRONG><A NAME="item_o_image_info%3A">image_info:</A></STRONG><BR>
 <DD>
-Specifies a pointer to an ImageInfo structure.
+The image info..
 <P></P>
 <p><dt><STRONG><A NAME="item_o_blob%3A">blob:</A></STRONG><BR>
 <DD>
@@ -87,6 +89,30 @@ Return any errors or warnings in this structure.
 <p><dt><STRONG>blob:</STRONG><BR>
 <DD>
 Specifies a pointer to a BlobInfo structure.
+<P></P></DL></DL>
+<P>
+<H2><A NAME="filetoblob">FileToBlob</A></H2>
+<P>Method FileToBlob returns the contents of a file as a blob.  It returns the file as a blob and its length.</P>
+<P>The format of the FileToBlob method is:</P>
+<blockquote>void *FileToBlob ( const char *filename, size_t *length, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
+<DL><DL>
+<p><dt><STRONG>blob:</STRONG><BR>
+<DD>
+Method FileToBlob returns the contents of a file as a blob.  If an error occurs 
+<FONT SIZE=-1>NULL</FONT> is returned.
+<P></P>
+<p><dt><STRONG><A NAME="item_o_filename%3A">filename:</A></STRONG><BR>
+<DD>
+The filename.
+<P></P>
+<p><dt><STRONG>length:</STRONG><BR>
+<DD>
+This pointer to a size_t integer sets the initial length of the blob.  On return, it reflects the actual length of the blob.
+<P></P>
+<p><dt><STRONG>exception:</STRONG><BR>
+<DD>
+Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="getblobinfo">GetBlobInfo</A></H2>
@@ -118,7 +144,7 @@ Method ImageToBlob returns a chunk of memory written in the desired image format
 <P></P>
 <p><dt><STRONG>image_info:</STRONG><BR>
 <DD>
-Specifies a pointer to an ImageInfo structure.
+The image info..
 <P></P>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>

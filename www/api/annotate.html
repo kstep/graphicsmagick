@@ -21,7 +21,7 @@
 	<UL>
 
 		<LI><A HREF="#annotateimage">AnnotateImage</A></LI>
-		<LI><A HREF="#getfontmetrics">GetFontMetrics</A></LI>
+		<LI><A HREF="#gettypemetrics">GetTypeMetrics</A></LI>
 	</UL>
 
 </UL>
@@ -37,7 +37,7 @@
 <H1><A NAME="synopsis">
 <FONT SIZE=-1>SYNOPSIS</FONT></A></H1>
 <P>unsigned int  <STRONG>AnnotateImage</STRONG>( Image *image, DrawInfo *draw_info );</P>
-<P>unsigned int  <STRONG>GetFontMetrics</STRONG>( Image *image, const DrawInfo *draw_info, FontMetric metrics );</P>
+<P>unsigned int  <STRONG>GetTypeMetrics</STRONG>( Image *image, const DrawInfo *draw_info, TypeMetric metrics );</P>
 <P>
 <HR>
 <H1><A NAME="function descriptions">
@@ -60,23 +60,23 @@ The image.
 <P></P>
 <p><dt><STRONG><A NAME="item_o_draw_info%3A">draw_info:</A></STRONG><BR>
 <DD>
-The address of a DrawInfo structure.
+The draw info.
 <P></P></DL></DL>
 <P>
-<H2><A NAME="getfontmetrics">GetFontMetrics</A></H2>
-<P>Method GetFontMetrics returns the following information for the specified font and text:</P>
+<H2><A NAME="gettypemetrics">GetTypeMetrics</A></H2>
+<P>Method GetTypeMetrics returns the following information for the specified font and text:</P>
 <DL><DL>
 <p><dt><STRONG><A NAME="item_o">o</A></STRONG><BR>
 <DD>
 character width, expressed in integer pixels o character height, expressed in integer pixels o ascent, expressed in 26.6 fixed point pixels o descent, expressed in 26.6 fixed point pixels o text width, expressed in 26.6 fixed point pixels o text height, expressed in 26.6 fixed point pixels o maximum horizontal advance, expressed in 26.6 fixed point pixels
 <P></P></DL></DL>
-<P>The format of the GetFontMetrics method is:</P>
-<blockquote>unsigned int GetFontMetrics ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/DrawInfo.html">DrawInfo</A> *draw_info, FontMetric metrics ); </blockquote><P>
+<P>The format of the GetTypeMetrics method is:</P>
+<blockquote>unsigned int GetTypeMetrics ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/DrawInfo.html">DrawInfo</A> *draw_info, TypeMetric metrics ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>status:</STRONG><BR>
 <DD>
-Method GetFontMetrics returns True if the metrics are available otherwise False.
+Method GetTypeMetrics returns True if the metrics are available otherwise False.
 <P></P>
 <p><dt><STRONG>image:</STRONG><BR>
 <DD>
@@ -84,11 +84,11 @@ The image.
 <P></P>
 <p><dt><STRONG>draw_info:</STRONG><BR>
 <DD>
-Specifies a pointer to a DrawInfo structure.
+The draw info.
 <P></P>
 <p><dt><STRONG><A NAME="item_o_metrics%3A">metrics:</A></STRONG><BR>
 <DD>
-Method GetFontMetrics returns the font metrics.
+Method GetTypeMetrics returns the font metrics.
 </DL></DL>
 
 </BODY>
