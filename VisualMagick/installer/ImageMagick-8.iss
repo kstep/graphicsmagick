@@ -52,7 +52,7 @@
 AppName=GraphicsMagick 1.0.0 Q:8
 ; When updating the version string, remember to also update the version in
 ; the [Registry] section
-AppVerName=GraphicsMagick 1.0.0 Q:8 Beta (December 11, 2002)
+AppVerName=GraphicsMagick 1.0.0 Q:8 Beta (December 13, 2002)
 AppVersion=1.0.0
 AppCopyright=Copyright (C) 2002 GraphicsMagick Group
 AppPublisher=GraphicsMagick Group
@@ -761,7 +761,7 @@ Source: "..\..\Copyright.txt"; DestDir: "{app}"; CopyMode: alwaysoverwrite
 Source: "..\..\QuickStart.txt"; DestDir: "{app}"; CopyMode: alwaysoverwrite
 Source: "..\..\README.txt"; DestDir: "{app}"; CopyMode: alwaysoverwrite
 ; Web pages
-Source: "..\..\ImageMagick.html"; DestDir: "{app}"; CopyMode: alwaysoverwrite; Flags: isreadme
+Source: "..\..\index.html"; DestDir: "{app}"; CopyMode: alwaysoverwrite; Flags: isreadme
 Source: "..\..\images\*.jpg"; DestDir: "{app}\images"; CopyMode: alwaysoverwrite
 Source: "..\..\images\*.png"; DestDir: "{app}\images"; CopyMode: alwaysoverwrite
 Source: "..\..\www\*.c"; DestDir: "{app}\www"; CopyMode: alwaysoverwrite
@@ -866,7 +866,7 @@ Source: "..\..\Magick++\demo\*.cpp"; DestDir: "{app}\Magick++_Demo"; CopyMode: a
 Source: "..\..\Magick++\demo\*.miff"; DestDir: "{app}\Magick++_Demo"; CopyMode: alwaysoverwrite
 
 [Icons]
-Name: "{group}\GraphicsMagick Web Pages"; Filename: "{app}\ImageMagick.html"
+Name: "{group}\GraphicsMagick Web Pages"; Filename: "{app}\index.html"
 Name: "{group}\GraphicsMagick Windows Setup"; Filename: "{app}\www\windows.html"
 ; Name: "{group}\GraphicsMagick Readme"; Filename: "{app}\README.txt"
 ; Name: "{group}\GraphicsMagick Quick Start"; Filename: "{app}\QuickStart.txt"

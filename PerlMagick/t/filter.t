@@ -74,7 +74,7 @@ testFilterSignature('input.miff', 'Edge',
 
 ++$test;
 testFilterCompare('input.miff', q//, 'reference/filter/Emboss.miff', 'Emboss',
-  q//, 1e-05, 2e-05);
+  q//, 0.02, 0.5);
 
 ++$test;
 testFilterCompare('input.miff', q//, 'reference/filter/Equalize.miff', 'Equalize',
