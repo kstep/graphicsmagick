@@ -3510,7 +3510,7 @@ Get(ref,...)
 
               if (!image)
                 break;
-              SignatureImage(image);
+              (void) SignatureImage(image);
               attribute=GetImageAttribute(image,"Signature");
               if (attribute != (ImageAttribute *) NULL)
                 s=newSVpv(attribute->value,0);
@@ -5297,7 +5297,7 @@ Mogrify(ref,...)
         }
         case 51:  /* Signature */
         {
-          SignatureImage(image);
+          (void) SignatureImage(image);
           break;
         }
         case 52:  /* Solarize */
