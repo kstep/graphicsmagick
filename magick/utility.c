@@ -294,9 +294,6 @@ Export unsigned int CloneString(char **destination,const char *source)
 */
 Export unsigned int ConcatenateString(char **destination,const char *source)
 {
-  char
-    *string;
-
   assert(destination != (char **) NULL);
   if (source == (const char *) NULL)
     return(True);

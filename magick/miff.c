@@ -563,7 +563,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
       packet_size+=image->depth > 8 ? 2 : 1;
     pixels=(unsigned char *) AllocateMemory(packet_size*image->columns);
     compressed_pixels=(unsigned char *)
-      AllocateMemory(1.01*packet_size*image->columns+600);
+      AllocateMemory((size_t) (1.01*packet_size*image->columns+600));
     if ((pixels == (unsigned char *) NULL) ||
         (compressed_pixels == (unsigned char *) NULL))
       ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
@@ -907,7 +907,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
       packet_size+=image->depth > 8 ? 2 : 1;
     pixels=(unsigned char *) AllocateMemory(packet_size*image->columns);
     compressed_pixels=(unsigned char *)
-      AllocateMemory(1.01*packet_size*image->columns+600);
+      AllocateMemory((size_t) 1.01*packet_size*image->columns+600);
     if ((pixels == (unsigned char *) NULL) ||
         (compressed_pixels == (unsigned char *) NULL))
       ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",

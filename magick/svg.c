@@ -202,6 +202,7 @@ typedef struct _EllipseInfo
 } EllipseInfo;
 
   char
+    *filename,
     *keyword,
     points[MaxTextExtent],
     *primitive,
@@ -239,14 +240,8 @@ typedef struct _EllipseInfo
   register int
     i;
 
-  register unsigned char
-    *p;
-
   unsigned int
     fill,
-    height,
-    quote,
-    width,
     status;
 
   /*
@@ -270,6 +265,7 @@ typedef struct _EllipseInfo
   GetPageInfo(&page_info);
   primitive=(char *) NULL;
   fill=False;
+  filename=AllocateString(" ");
   token=AllocateString(" ");
   value=AllocateString(" ");
   vertices=AllocateString(" ");
@@ -289,7 +285,7 @@ puts(token);
     if (Latin1Compare(keyword,"angle") == 0)
       (void) sscanf(value,"%d",&ellipse.angle);
     if (Latin1Compare(keyword,"circle") == 0)
-      primitive=fill ? "CircleEllipse" : "circle";
+      primitive=fill ? "fillCircle" : "circle";
     if (Latin1Compare(keyword,"cx") == 0)
       (void) sscanf(value,"%d",&ellipse.cx);
     if (Latin1Compare(keyword,"cy") == 0)
@@ -316,8 +312,12 @@ puts(token);
         if (Latin1Compare(value+strlen(value)-2,"in") == 0)
           page_info.height=72*page_info.height;
       }
+    if (Latin1Compare(keyword,"href") == 0)
+      (void) CloneString(&filename,value);
     if (Latin1Compare(keyword,"line") == 0)
       primitive="line";
+    if (Latin1Compare(keyword,"image") == 0)
+      primitive="image";
     if (Latin1Compare(keyword,"major") == 0)
       (void) sscanf(value,"%d",&ellipse.major);
     if (Latin1Compare(keyword,"minor") == 0)
@@ -340,20 +340,30 @@ puts(token);
     if (Latin1Compare(keyword,"style") == 0)
       {
         tokens=StringToArgv(value,&number_tokens);
-        for (i=1; i < number_tokens; i++)
+        for (i=1; i < number_tokens; i+=2)
         {
-          if (Latin1Compare(tokens[i],"fill:") == 0)
+          if ((Latin1Compare(tokens[i],"fill:") == 0) ||
+              (Latin1Compare(tokens[i],"stroke:") == 0))
             {
               fill=True;
-              (void) CloneString(&draw_info->pen,tokens[i+1]);
+              i++;
+              if (Latin1Compare(tokens[i]+Extent(tokens[i])-1,";") == 0)
+                tokens[i][Extent(tokens[i])-1]='\0';
+              (void) CloneString(&draw_info->pen,tokens[i]);
               (void) FormatString(clone_info->filename,"xc:%.1024s",
                 draw_info->pen);
               if (draw_info->tile != (Image *) NULL)
                 DestroyImage(draw_info->tile);
               draw_info->tile=ReadImage(clone_info,exception);
             }
+          if (Latin1Compare(tokens[i],"font-size:") == 0)
+            (void) sscanf(tokens[i+1],"%f",&draw_info->pointsize);
+          if (Latin1Compare(tokens[i],"stroke-antialiasing:") == 0)
+            draw_info->antialias=Latin1Compare(tokens[i+1],"true");
           if (Latin1Compare(tokens[i],"stroke-width:") == 0)
             (void) sscanf(tokens[i+1],"%d",&draw_info->linewidth);
+          if (Latin1Compare(tokens[i],"text-antialiasing:") == 0)
+            draw_info->antialias=Latin1Compare(tokens[i+1],"true");
           FreeMemory((void *) &tokens[i]);
         }
         FreeMemory((void *) &tokens);
@@ -376,15 +386,15 @@ puts(token);
     if (Latin1Compare(keyword,"x") == 0)
       (void) sscanf(value,"%u",&page_info.x);
     if (Latin1Compare(keyword,"x1") == 0)
-      (void) sscanf(value,"%f",&segment.x1);
+      (void) sscanf(value,"%lf",&segment.x1);
     if (Latin1Compare(keyword,"x2") == 0)
-      (void) sscanf(value,"%f",&segment.x2);
+      (void) sscanf(value,"%lf",&segment.x2);
     if (Latin1Compare(keyword,"y") == 0)
       (void) sscanf(value,"%u",&page_info.y);
     if (Latin1Compare(keyword,"y1") == 0)
-      (void) sscanf(value,"%f",&segment.y1);
+      (void) sscanf(value,"%lf",&segment.y1);
     if (Latin1Compare(keyword,"y2") == 0)
-      (void) sscanf(value,"%f",&segment.y2);
+      (void) sscanf(value,"%lf",&segment.y2);
     if (((Latin1Compare(keyword,"/>") == 0) ||
          (Latin1Compare(keyword,"/text>") == 0)) &&
         (primitive != (char *) NULL))
@@ -435,7 +445,7 @@ puts(token);
         if (Latin1Compare(primitive,"line") == 0)
           {
             FormatString(points,"%f,%f %f,%f",segment.x1,segment.y1,
-              segment.x2, segment.y2);
+              segment.x2,segment.y2);
             (void) strcat(command,points);
           }
         if ((Latin1Compare(primitive,"polygon") == 0) ||
@@ -452,6 +462,13 @@ puts(token);
             FormatString(points,"%d,%d %d,%d",page_info.x,page_info.y,
               page_info.x+page_info.width,page_info.y+page_info.height);
             (void) strcat(command,points);
+          }
+        if (Latin1Compare(primitive,"image") == 0)
+          {
+            FormatString(points,"%d,%d",page_info.x,page_info.y);
+            (void) strcat(command,points);
+            (void) strcat(command," ");
+            (void) strcat(command,filename);
           }
         if (Latin1Compare(primitive,"text") == 0)
           {
@@ -475,6 +492,7 @@ puts(command);
   }
   DestroyDrawInfo(draw_info);
   DestroyImage(image);
+  FreeMemory((void *) &filename);
   FreeMemory((void *) &token);
   FreeMemory((void *) &value);
   FreeMemory((void *) &vertices);

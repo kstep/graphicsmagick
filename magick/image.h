@@ -105,10 +105,10 @@ typedef struct _AnnotateInfo
 
   unsigned int
     antialias,
-    pointsize,
     gravity;
 
   double
+    pointsize,
     degrees;
 
   char
@@ -431,6 +431,9 @@ typedef struct _DrawInfo
     antialias,
     linewidth,
     gravity;
+
+  double
+    pointsize;
 
   PixelPacket
     border_color;

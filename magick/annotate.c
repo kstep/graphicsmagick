@@ -487,8 +487,8 @@ Export void GetAnnotateInfo(const ImageInfo *image_info,
   annotate_info->pen=AllocateString(image_info->pen);
   annotate_info->box=(char *) NULL;
   annotate_info->antialias=image_info->antialias;
-  annotate_info->pointsize=image_info->pointsize;
   annotate_info->gravity=NorthWestGravity;
+  annotate_info->pointsize=image_info->pointsize;
   annotate_info->degrees=0.0;
   annotate_info->font_name=(char *) NULL;
   annotate_info->bounds.width=ceil(image_info->pointsize);

@@ -1215,6 +1215,7 @@ Export void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
   draw_info->antialias=image_info->antialias;
   draw_info->linewidth=1;
   draw_info->gravity=NorthWestGravity;
+  draw_info->pointsize=image_info->pointsize;
   draw_info->border_color=image_info->border_color;
   /*
     Get tile.
@@ -1695,6 +1696,7 @@ static unsigned int InsidePrimitive(PrimitiveInfo *primitive_info,
         annotate->pen=AllocateString(draw_info->pen);
         annotate->box=AllocateString(draw_info->box);
         annotate->antialias=draw_info->antialias;
+        annotate->pointsize=draw_info->pointsize;
         annotate->gravity=draw_info->gravity;
         annotate->text=AllocateString(p->text);
         annotate->geometry=AllocateString("                                  ");
