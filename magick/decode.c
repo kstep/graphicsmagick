@@ -5367,17 +5367,21 @@ Export Image *ReadJPEGImage(const ImageInfo *image_info)
   (void) jpeg_read_header(&jpeg_info,True);
   if (jpeg_info.out_color_space == JCS_CMYK)
     image->colorspace=CMYKColorspace;
-  if (jpeg_info.saw_JFIF_marker && (jpeg_info.density_unit != 0))
+  if (jpeg_info.saw_JFIF_marker)
     {
-      /*
-        Set image resolution.
-      */
-      image->x_resolution=jpeg_info.X_density;
-      image->y_resolution=jpeg_info.Y_density;
-      if (jpeg_info.density_unit == 1)
-        image->units=PixelsPerInchResolution;
-      if (jpeg_info.density_unit == 2)
-        image->units=PixelsPerCentimeterResolution;
+      if ((jpeg_info.density_unit != 0) || (jpeg_info.X_density != 1.0) ||
+          (jpeg_info.Y_density != 1.0))
+        {
+          /*
+            Set image resolution.
+          */
+          image->x_resolution=jpeg_info.X_density;
+          image->y_resolution=jpeg_info.Y_density;
+          if (jpeg_info.density_unit == 1)
+            image->units=PixelsPerInchResolution;
+          if (jpeg_info.density_unit == 2)
+            image->units=PixelsPerCentimeterResolution;
+        }
     }
   if ((image->columns*image->rows) != 0)
     {
