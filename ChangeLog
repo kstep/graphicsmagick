@@ -1,15 +1,21 @@
-2003-12-03  Bob Friesenhahn <bfriesen@simple.dallas.tx.us>  <bfriesen@simple.dallas.tx.us>
+2003-12-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/magick.c (GetMagickInfo): Fix preprocessing logic error
+	which caused moby shared library build to not register static
+	modules.
+
+2003-12-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/module.c (ExecuteModuleProcess): Add some logging.
 	* magick/static.c (ExecuteStaticModuleProcess): Add some logging.
 
-2003-11-30  Bob Friesenhahn <bfriesen@simple.dallas.tx.us>  <bfriesen@simple.dallas.tx.us>
+2003-11-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* VisualMagick/installer: Add optional build support for LZW.
 	* wand/Makefile.am: Add AUTOMAKE_OPTIONS.
 	* configure.ac: Update to Autoconf 2.59.
 
-2003-11-29  Bob Friesenhahn <bfriesen@simple.dallas.tx.us>  <bfriesen@simple.dallas.tx.us>
+2003-11-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* VisualMagick/installer/inc/tasks-install-perlmagick.isx: Update
 	to reflect that the next release will use ActivePerl 5.8.1 Build
@@ -19,18 +25,18 @@
 	directory rather than the modules directory.
 	* configure.ac: Fixes to work with latest CVS libtool.
 	* libtool.m4: Update to latest CVS libtool.
-	* magick/modulesc, magick/static.c (ExecuteStaticModuleProcess):
+	* magick/modules.c, magick/static.c (ExecuteStaticModuleProcess):
 	Fix conditional compilation logic so that "moby" shared library
 	build works again.
 	* magick/compress.c, magick/mac.c: Use existing SaveImageText and
 	LoadImageText global constants rather than separate defines.
 
-2003-11-17  Bob Friesenhahn <bfriesen@simple.dallas.tx.us>  <bfriesen@simple.dallas.tx.us>
+2003-11-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* configure.ac: Update to Autoconf 2.58.
 	* Makefile.am: Update to Automake 1.7.9.
 
-2003-11-14  Bob Friesenhahn <bfriesen@simple.dallas.tx.us>  <bfriesen@simple.dallas.tx.us>
+2003-11-14  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/draw.c (DrawComposite): Base64-encoded image was not
 	being deallocated. Bad memory leak.

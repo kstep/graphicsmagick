@@ -9468,6 +9468,8 @@ MagickExport unsigned int MogrifyImages(const ImageInfo *image_info,
             if (token == (char *) NULL)
               continue;
             next=0;
+            /* FIXME: This code truncates the last character for an
+               argument like "analyze" but works for "analyze=" */
             arguments=argv[i];
             status=Tokenizer(&token_info,0,token,length,arguments,(char *) "",
               (char *) "=",(char *) "\"",0,&breaker,&next,&quote);

@@ -53,7 +53,16 @@
 </tr>
 </table>
 <p>
-2003-12-03  Bob Friesenhahn &lt;bfriesen@simple.dallas.tx.us&gt;  &lt;bfriesen@simple.dallas.tx.us&gt;
+2003-12-04  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/magick.c (GetMagickInfo): Fix preprocessing logic error
+        which caused moby shared library build to not register static
+        modules.
+
+</UL>
+<p>
+2003-12-03  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
   <LI> magick/module.c (ExecuteModuleProcess): Add some logging.
@@ -61,7 +70,7 @@
 
 </UL>
 <p>
-2003-11-30  Bob Friesenhahn &lt;bfriesen@simple.dallas.tx.us&gt;  &lt;bfriesen@simple.dallas.tx.us&gt;
+2003-11-30  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
   <LI> VisualMagick/installer: Add optional build support for LZW.
@@ -70,7 +79,7 @@
 
 </UL>
 <p>
-2003-11-29  Bob Friesenhahn &lt;bfriesen@simple.dallas.tx.us&gt;  &lt;bfriesen@simple.dallas.tx.us&gt;
+2003-11-29  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
   <LI> VisualMagick/installer/inc/tasks-install-perlmagick.isx: Update
@@ -81,7 +90,7 @@
         directory rather than the modules directory.
   <LI> configure.ac: Fixes to work with latest CVS libtool.
   <LI> libtool.m4: Update to latest CVS libtool.
-  <LI> magick/modulesc, magick/static.c (ExecuteStaticModuleProcess):
+  <LI> magick/modules.c, magick/static.c (ExecuteStaticModuleProcess):
         Fix conditional compilation logic so that "moby" shared library
         build works again.<BR>
   <LI> magick/compress.c, magick/mac.c: Use existing SaveImageText and
@@ -89,7 +98,7 @@
 
 </UL>
 <p>
-2003-11-17  Bob Friesenhahn &lt;bfriesen@simple.dallas.tx.us&gt;  &lt;bfriesen@simple.dallas.tx.us&gt;
+2003-11-17  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
   <LI> configure.ac: Update to Autoconf 2.58.
@@ -97,7 +106,7 @@
 
 </UL>
 <p>
-2003-11-14  Bob Friesenhahn &lt;bfriesen@simple.dallas.tx.us&gt;  &lt;bfriesen@simple.dallas.tx.us&gt;
+2003-11-14  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
   <LI> magick/draw.c (DrawComposite): Base64-encoded image was not

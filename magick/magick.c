@@ -285,7 +285,8 @@ MagickExport const MagickInfo *GetMagickInfo(const char *name,
       */
       if (!GetModuleInfo((char *) NULL,exception))
         return 0;
-#else
+#endif
+#if !defined(BuildMagickModules)
       /*
         Register all static modules
       */
