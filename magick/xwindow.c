@@ -207,7 +207,9 @@ MagickExport void XDestroyXWindows(XWindows *windows)
 
   if (windows == (XWindows *) NULL)
     return;
+
   MagickFreeMemory(windows->icon_resources);
+
   if (windows->icon_pixel)
     {
       MagickFreeMemory(windows->icon_pixel->pixels);
@@ -219,6 +221,7 @@ MagickExport void XDestroyXWindows(XWindows *windows)
         XFreeGC(windows->display,windows->icon_pixel->highlight_context); /* Allocated by XCreateGC */
       MagickFreeMemory(windows->icon_pixel);
     }
+
   if (windows->pixel_info)
     {
       MagickFreeMemory(windows->pixel_info->pixels);
@@ -230,6 +233,7 @@ MagickExport void XDestroyXWindows(XWindows *windows)
         XFreeGC(windows->display,windows->pixel_info->highlight_context); /* Allocated by XCreateGC */
       MagickFreeMemory(windows->pixel_info);
     }
+
   if (windows->font_info != (XFontStruct *) NULL)
     {
       XFreeFont(windows->display,windows->font_info); /* Allocated by XLoadQueryFont */
@@ -253,21 +257,25 @@ MagickExport void XDestroyXWindows(XWindows *windows)
       XFree(windows->map_info); /* Allocated by XAllocStandardColormap */
       windows->map_info=(XStandardColormap *) NULL;
     }
+
   if(windows->icon_map != (XStandardColormap *) NULL)
     {
       XFree(windows->icon_map); /* Allocated by XAllocStandardColormap */
       windows->icon_map=(XStandardColormap *) NULL;
     }
+
   if (windows->visual_info != (XVisualInfo *) NULL)
     {
       XFree(windows->visual_info); /* Allocated by XGetVisualInfo */
       windows->visual_info=(XVisualInfo *) NULL;
     }
+
   if (windows->icon_visual != (XVisualInfo *) NULL)
     {
       XFree(windows->icon_visual); /* Allocated by XGetVisualInfo */
       windows->icon_visual=(XVisualInfo *) NULL;
     }
+
   XDestroyXWindowInfo(windows->display,&windows->context);
   XDestroyXWindowInfo(windows->display,&windows->backdrop);
   XDestroyXWindowInfo(windows->display,&windows->icon);
@@ -314,39 +322,54 @@ MagickExport void XDestroyXWindowInfo(Display *display,XWindowInfo *window)
       (void) XSync(display,False);
       window->mapped=False;
     }
+
   MagickFreeMemory(window->name);
+
   MagickFreeMemory(window->icon_name);
+
+  if (window->cursor != (Cursor) NULL)
+    {
+      (void) XFreeCursor(display,window->cursor);
+      window->cursor=(Cursor) NULL;
+    }
+
   if (window->highlight_stipple != (Pixmap) NULL)
     {
       (void) XFreePixmap(display,window->highlight_stipple);
       window->highlight_stipple=(Pixmap) NULL;
     }
+
   if (window->shadow_stipple != (Pixmap) NULL)
     {
       (void) XFreePixmap(display,window->shadow_stipple);
       window->shadow_stipple=(Pixmap) NULL;
-    }
+   }
+
   if (window->ximage != (XImage *) NULL)
     {
       XDestroyImage(window->ximage);
       window->ximage=(XImage *) NULL;
     }
+
   if (window->matte_image != (XImage *) NULL)
     {
       /* MagickFreeMemory(window->matte_image->data); ???? */
       XDestroyImage(window->matte_image);
       window->matte_image=(XImage *) NULL;
     }
+
   if (window->pixmap != (Pixmap) NULL)
     {
       (void) XFreePixmap(display,window->pixmap);
       window->pixmap=(Pixmap) NULL;
     }
+
   if (window->id != (Window) NULL)
     {
       (void) XDestroyWindow(display,window->id);
       window->id=(Window) NULL;
     }
+
   if (window->destroy)
     {
       if (window->image != (Image *) NULL)
@@ -355,6 +378,7 @@ MagickExport void XDestroyXWindowInfo(Display *display,XWindowInfo *window)
           window->image=(Image *) NULL;
         }
     }
+
   if (window->segment_info != (void *) NULL)
     {
 #if defined(HasSharedMemory)
@@ -374,6 +398,7 @@ MagickExport void XDestroyXWindowInfo(Display *display,XWindowInfo *window)
             }
         }
 #endif
+
       MagickFreeMemory(window->segment_info);
     }
 }
@@ -2912,7 +2937,8 @@ MagickExport void XGetPixelPacket(Display *display,
   packets=Max((int) pixel->colors,visual_info->colormap_size)+MaxNumberPens;
   if (pixel->pixels != (unsigned long *) NULL)
     MagickFreeMemory(pixel->pixels);
-  pixel->pixels=MagickAllocateMemory(unsigned long *,packets*sizeof(unsigned long));
+  pixel->pixels=
+    MagickAllocateMemory(unsigned long *,packets*sizeof(unsigned long));
   if (pixel->pixels == (unsigned long *) NULL)
     MagickFatalError(ResourceLimitFatalError,MemoryAllocationFailed,
       MagickMsg(XServerFatalError,UnableToGetPixelInfo));
@@ -2933,7 +2959,8 @@ MagickExport void XGetPixelPacket(Display *display,
   /*
     Set background color.
   */
-  (void) XParseColor(display,colormap,"#d6d6d6d6d6d6",&pixel->background_color);
+  (void) XParseColor(display,colormap,"#d6d6d6d6d6d6",
+                     &pixel->background_color);
   status=XParseColor(display,colormap,resource_info->background_color,
     &pixel->background_color);
   if (status == 0)

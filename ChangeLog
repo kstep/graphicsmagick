@@ -1,5 +1,7 @@
 2004-02-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/animate.c (XAnimateImages): Memory leak reduction and
+	better integration with gm command.
 	* magick/display.c (XDisplayImage): Display was leaking memory
 	like a sieve.  Now it doesn't.
 	* magick/memory.c (CloneMemory): Computation for when it is safe

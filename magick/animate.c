@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 GraphicsMagick Group
+% Copyright (C) 2003, 2004 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -1433,7 +1433,7 @@ MagickExport Image *XAnimateImages(Display *display,
       */
       windows->backdrop.x=0;
       windows->backdrop.y=0;
-      windows->backdrop.name=(char *) "GraphicsMagick Backdrop";
+      (void) CloneString(&windows->backdrop.name,"GraphicsMagick Backdrop");
       windows->backdrop.flags=USSize | USPosition;
       windows->backdrop.width=XDisplayWidth(display,visual_info->screen);
       windows->backdrop.height=XDisplayHeight(display,visual_info->screen);
@@ -1508,8 +1508,8 @@ MagickExport Image *XAnimateImages(Display *display,
   */
   XGetWindowInfo(display,visual_info,map_info,pixel,font_info,
     resource_info,&windows->info);
-  windows->info.name=(char *) "Info";
-  windows->info.icon_name=(char *) "Info";
+  (void) CloneString(&windows->info.name,"Info");
+  (void) CloneString(&windows->info.icon_name,"Info");
   windows->info.border_width=1;
   windows->info.x=2;
   windows->info.y=2;
@@ -1544,7 +1544,7 @@ MagickExport Image *XAnimateImages(Display *display,
   FormatString(resource_name,"%.1024s.command",resource_info->client_name);
   windows->command.geometry=XGetResourceClass(resource_info->resource_database,
     resource_name,"geometry",(char *) NULL);
-  windows->command.name=(char *) MagickTitle;
+  (void) CloneString(&windows->command.name,MagickTitle);
   windows->command.border_width=0;
   windows->command.flags|=PPosition;
   windows->command.attributes.event_mask=ButtonMotionMask | ButtonPressMask |
@@ -1684,7 +1684,7 @@ MagickExport Image *XAnimateImages(Display *display,
             Get pixel info for this scene.
           */
           XGetPixelPacket(display,visual_info,map_info,resource_info,
-            image_list[scene],&scene_info);
+                          image_list[scene],&scene_info);
           windows->image.pixel_info=(&scene_info);
         }
     status=XMakeImage(display,resource_info,&windows->image,image_list[scene],
@@ -1839,7 +1839,7 @@ MagickExport Image *XAnimateImages(Display *display,
             Copy X pixmap to Image window.
           */
           XGetPixelPacket(display,visual_info,map_info,resource_info,
-            image_list[scene],&scene_info);
+            image_list[scene],&scene_info); /* FIXME leak here */
           windows->image.pixel_info=(&scene_info);
           windows->image.ximage->width=(unsigned int) image->columns;
           windows->image.ximage->height=(unsigned int) image->rows;
@@ -2470,7 +2470,10 @@ MagickExport Image *XAnimateImages(Display *display,
   while (!(state & ExitState));
   MagickFreeMemory(image_list);
   if (coalesce)
-    DestroyImageList(images);
+    {
+      DestroyImageList(images);
+      images=(Image *) NULL;
+    }
   if ((windows->visual_info->storage_class == GrayScale) ||
       (windows->visual_info->storage_class == PseudoColor) ||
       (windows->visual_info->storage_class == DirectColor))
@@ -2487,7 +2490,7 @@ MagickExport Image *XAnimateImages(Display *display,
   if (!resource_info->backdrop)
     if (windows->backdrop.mapped)
       {
-        (void) XWithdrawWindow(display,windows->backdrop.id,\
+        (void) XWithdrawWindow(display,windows->backdrop.id,
           windows->backdrop.screen);
         (void) XDestroyWindow(display,windows->backdrop.id);
         windows->backdrop.id=(Window) NULL;
@@ -2502,14 +2505,13 @@ MagickExport Image *XAnimateImages(Display *display,
     if (windows->image.pixmaps[scene] != (Pixmap) NULL)
       (void) XFreePixmap(display,windows->image.pixmaps[scene]);
     windows->image.pixmaps[scene]=(Pixmap) NULL;
+
     if (windows->image.matte_pixmaps[scene] != (Pixmap) NULL)
       (void) XFreePixmap(display,windows->image.matte_pixmaps[scene]);
     windows->image.matte_pixmaps[scene]=(Pixmap) NULL;
   }
   MagickFreeMemory(windows->image.pixmaps);
-  windows->image.pixmaps=(Pixmap *) NULL;
   MagickFreeMemory(windows->image.matte_pixmaps);
-  windows->image.matte_pixmaps=(Pixmap *) NULL;
   if (nexus == (Image *) NULL)
     {
       /*
@@ -2518,20 +2520,7 @@ MagickExport Image *XAnimateImages(Display *display,
       if (windows->image.mapped)
         (void) XWithdrawWindow(display,windows->image.id,windows->image.screen);
       XDelay(display,SuspendTime);
-      for (i=0; i < (long) number_windows; i++)
-      {
-        if (magick_windows[i]->id != (Window) NULL)
-          {
-            magick_windows[i]->shared_memory=False;
-            (void) XMakeImage(display,resource_info,magick_windows[i],
-              (Image *) NULL,1,1);
-            (void) XDestroyWindow(display,magick_windows[i]->id);
-          }
-        if (magick_windows[i]->ximage != (XImage *) NULL)
-          XDestroyImage(magick_windows[i]->ximage);
-        if (magick_windows[i]->pixmap != (Pixmap) NULL)
-          (void) XFreePixmap(display,magick_windows[i]->pixmap);
-      }
+
       /*
         Free Standard Colormap.
       */
@@ -2541,34 +2530,7 @@ MagickExport Image *XAnimateImages(Display *display,
       /*
         Free X resources.
       */
-      if (resource_info->backdrop)
-        (void) XFreeCursor(display,windows->backdrop.cursor);
-      if (windows->widget.highlight_stipple != (Pixmap) NULL)
-        (void) XFreePixmap(display,windows->widget.highlight_stipple);
-      if (windows->widget.highlight_stipple != (Pixmap) NULL)
-        (void) XFreePixmap(display,windows->widget.shadow_stipple);
-      (void) XFreeGC(display,pixel->widget_context);
-      (void) XFreeGC(display,pixel->highlight_context);
-      (void) XFreeGC(display,pixel->annotate_context);
-      (void) XFreeGC(display,icon_pixel->annotate_context);
-      (void) XFreeFont(display,font_info);
-      (void) XFree((void *) class_hints);
-      (void) XFree((void *) manager_hints);
-      (void) XFree((void *) icon_visual);
-      (void) XFree((void *) visual_info);
-      (void) XFree((void *) icon_map);
-      (void) XFree((void *) map_info);
-      MagickFreeMemory(windows->popup.name);
-      MagickFreeMemory(windows->widget.name);
-      MagickFreeMemory(windows->image.icon_name);
-      MagickFreeMemory(windows->image.name);
-      MagickFreeMemory(windows->icon_resources);
-      MagickFreeMemory(windows->icon_pixel);
-      MagickFreeMemory(windows->pixel_info);
-      (void) signal(SIGSEGV,SIG_DFL);
-      (void) signal(SIGINT,SIG_DFL);
-      (void) signal(SIGTERM,SIG_DFL);
-      (void) XSetWindows((XWindows *) NULL);
+      XDestroyXWindows(windows);
     }
   (void) XSync(display,False);
   /*

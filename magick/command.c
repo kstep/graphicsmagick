@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 GraphicsMagick Group
+% Copyright (C) 2003, 2004 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 %
 % This program is covered by multiple licenses, which are described in
@@ -1193,7 +1193,8 @@ MagickExport unsigned int AnimateImageCommand(ImageInfo *image_info,
           XAnimateImages(display,&resource_info,argv,argc,image_list);
       }
     }
-  XCloseDisplay(display);
+  DestroyImageInfo(image_info);
+  DestroyQuantizeInfo(quantize_info);
   DestroyImageList(image_list);
   LiberateArgumentList(argc,argv);
   return(status);
