@@ -1227,7 +1227,7 @@ MagickExport Image *EnhanceImage(const Image *image,ExceptionInfo *exception)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GaussianBlurImage() blurs an image.  We convolve the image with a 
+%  GaussianBlurImage() blurs an image.  We convolve the image with a
 %  Gaussian operator of the given radius and standard deviation (sigma).
 %  For reasonable results, the radius should be larger than sigma.  Use a
 %  radius of 0 and GaussianBlurImage() selects a suitable radius for you
@@ -1436,9 +1436,14 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  MedianFilterImage() applies a digital filter that improves the quality 
+%  MedianFilterImage() applies a digital filter that improves the quality
 %  of a noisy image.  Each pixel is replaced by the median in a set of
-%  neighboring pixels as defined by radius. 
+%  neighboring pixels as defined by radius.
+%
+%  The algorithm was contributed by Mike Edmonds and implements an insertion
+%  sort for selecting median color-channel values.  For more on this algorithm
+%  see "Skip Lists: A probabilistic Alternative to Balanced Trees" by William
+%  Pugh in the June 1990 of Communications of the ACM.
 %
 %  The format of the MedianFilterImage method is:
 %
@@ -1456,57 +1461,254 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
 %
 */
 
-#if defined(__cplusplus) || defined(c_plusplus)
-extern "C" {
-#endif
+/*
+  Add a pixel into the skip-lists.
+*/
+#define InsertMedianList(p,pixel) \
+{ \
+  if (p->lists[0].nodes[(pixel)->red].marker == p->marker) \
+    p->lists[0].nodes[(pixel)->red].count++; \
+  else \
+    AddNodeMedianList(p,0,(pixel)->red); \
+  if (p->lists[1].nodes[(pixel)->green].marker == p->marker) \
+    p->lists[1].nodes[(pixel)->green].count++; \
+  else \
+    AddNodeMedianList(p,1,(pixel)->green); \
+  if (p->lists[2].nodes[(pixel)->blue].marker == p->marker) \
+    p->lists[2].nodes[(pixel)->blue].count++; \
+  else \
+    AddNodeMedianList(p,2,(pixel)->blue); \
+  if (p->lists[3].nodes[(pixel)->opacity].marker == p->marker) \
+    p->lists[3].nodes[(pixel)->opacity].count++; \
+  else \
+    AddNodeMedianList(p,3,(pixel)->opacity); \
+}
 
-static int BlueCompare(const void *x,const void *y)
+typedef struct _MedianListNode
 {
-  PixelPacket
-    *color_1,
-    *color_2;
+  unsigned long
+    next[QuantumDepth/2+1],
+    count,
+    marker;
+} MedianListNode;
 
-  color_1=(PixelPacket *) x;
-  color_2=(PixelPacket *) y;
-  return((int) (color_1->blue-color_2->blue));
-}
-
-static int GreenCompare(const void *x,const void *y)
+typedef struct _MedianSkipList
 {
-  PixelPacket
-    *color_1,
-    *color_2;
+  MedianListNode
+    nodes[MaxRGB+2L];
 
-  color_1=(PixelPacket *) x;
-  color_2=(PixelPacket *) y;
-  return((int) (color_1->green-color_2->green));
-}
+  int
+    level;
+} MedianSkipList;
 
-static int OpacityCompare(const void *x,const void *y)
+typedef struct _MedianPixelList
 {
-  PixelPacket
-    *color_1,
-    *color_2;
+  MedianSkipList
+    lists[4];
 
-  color_1=(PixelPacket *) x;
-  color_2=(PixelPacket *) y;
-  return((int) (color_1->opacity-color_2->opacity));
-}
+  unsigned long
+    center,
+    marker,
+    seed;
+} MedianPixelList;
 
-static int RedCompare(const void *x,const void *y)
+static void AddNodeMedianList(register MedianPixelList *p,int channel,
+  register unsigned long color)
 {
+  register MedianSkipList
+    *list;
+
+  register unsigned long
+    search;
+
+  register int
+    level;
+
+  register unsigned long
+    seed;
+
+  unsigned long
+    update[(QuantumDepth/2+1)];
+
+  /*
+    Initialize the node.
+  */
+  list=(&(p->lists[channel]));
+  list->nodes[color].marker=p->marker;
+  list->nodes[color].count=1;
+  /*
+    Determine where it belongs in the list.
+  */
+  search=(MaxRGB+1L);
+  for (level=list->level; level >= 0; level--)
+  {
+    while (list->nodes[search].next[level] < color)
+      search=list->nodes[search].next[level];
+    update[level] = search;
+  }
+  /*
+    Generate a pseudo-random level for this node.
+  */
+  seed=p->seed;
+  for (level=0; ; level++)
+  {
+    seed=seed*42893621L+1;
+    if ((seed & 0x300) != 0x300)
+      break;
+  }
+  p->seed=seed;
+  if (level > ((QuantumDepth/2+1)-1))
+    level=(QuantumDepth/2+1)-1;
+  if (level > (list->level+2))
+    level=list->level+2;
+  /*
+    If we're raising the list's level, link back to the root node.
+  */
+  while (level > list->level)
+    update[++(list->level)]=(MaxRGB+1L);
+  /*
+    Link the node into the skip-list.
+  */
+  do
+  {
+    list->nodes[color].next[level]=list->nodes[update[level]].next[level];
+    list->nodes[update[level]].next[level]=color;
+  }
+  while (level-- > 0);
+}
+
+static PixelPacket GetMedianList(register MedianPixelList *p)
+{
+  unsigned long
+    channels[4];
+
+  int
+    channel;
+
+  register MedianSkipList
+    *list;
+
+  register unsigned long
+    color,
+    count,
+    center;
+
   PixelPacket
-    *color_1,
-    *color_2;
+    pixel;
 
-  color_1=(PixelPacket *) x;
-  color_2=(PixelPacket *) y;
-  return((int) (color_1->red-color_2->red));
+  /*
+    Find the median value for each of the color.
+  */
+  center=p->center;
+  for (channel=0; channel < 4; channel++)
+  {
+    list=(&(p->lists[channel]));
+    color=(MaxRGB+1L);
+    count=0;
+    do
+    {
+      color=list->nodes[color].next[0];
+      count+=list->nodes[color].count;
+    }
+    while (count <= center);
+    channels[channel]=color;
+  }
+  pixel.red=channels[0];
+  pixel.green=channels[1];
+  pixel.blue=channels[2];
+  pixel.opacity=channels[3];
+  return(pixel);
 }
 
-#if defined(__cplusplus) || defined(c_plusplus)
+static PixelPacket GetNonpeakMedianList(register MedianPixelList *p)
+{
+  unsigned long
+    channels[4];
+
+  int
+    channel;
+
+  register MedianSkipList
+    *list;
+
+  register unsigned long
+    color;
+
+  register unsigned long
+    count,
+    center;
+
+  unsigned long
+    previous,
+    next;
+
+  PixelPacket
+    pixel;
+
+  /*
+    Finds the median value for each of the color.
+  */
+  center=p->center;
+  for (channel=0; channel < 4; channel++)
+  {
+    list=(&(p->lists[channel]));
+    color=(MaxRGB+1L);
+    next=list->nodes[color].next[0];
+    count=0;
+    do
+    {
+      previous=color;
+      color=next;
+      next=list->nodes[color].next[0];
+      count+=list->nodes[color].count;
+    }
+    while (count <= center);
+    if ((previous == (MaxRGB+1L)) && (next != (MaxRGB+1L)))
+      color=next;
+    else
+      if ((previous != (MaxRGB+1L)) && (next == (MaxRGB+1L)))
+        color=previous;
+    channels[channel]=color;
+  }
+  pixel.red=channels[0];
+  pixel.green=channels[1];
+  pixel.blue=channels[2];
+  pixel.opacity=channels[3];
+  return(pixel);
 }
-#endif
+
+static void InitializeMedianList(register MedianPixelList *p,long width)
+{
+  p->center=width*width/2;
+  p->marker=0xDEADBEEFL;
+  (void) memset((void *) p->lists,0,4*sizeof(MedianSkipList));
+}
+
+static void ResetMedianList(register MedianPixelList *p)
+{
+  register int
+    channel,
+    level;
+
+  register MedianSkipList
+    *list;
+
+  register MedianListNode
+    *root;
+
+  /*
+    Reset the skip-list.
+  */
+  for (channel=0 ; channel < 4; channel++)
+  {
+    list=(&(p->lists[channel]));
+    root=(&(list->nodes[(MaxRGB+1L)]));
+    list->level=0;
+    for (level=0; level < (QuantumDepth/2+1); level++)
+      root->next[level]=(MaxRGB+1L);
+  }
+  p->seed=p->marker++;
+}
 
 MagickExport Image *MedianFilterImage(const Image *image,const double radius,
   ExceptionInfo *exception)
@@ -1517,13 +1719,12 @@ MagickExport Image *MedianFilterImage(const Image *image,const double radius,
     *median_image;
 
   long
-    center,
     width,
+    x,
     y;
 
-  PixelPacket
-    *window,
-    *w;
+  MedianPixelList
+    *skiplist;
 
   register const PixelPacket
     *p,
@@ -1531,14 +1732,13 @@ MagickExport Image *MedianFilterImage(const Image *image,const double radius,
 
   register long
     u,
-    v,
-    x;
+    v;
 
   register PixelPacket
     *q;
 
   /*
-    Initialize mediand image attributes.
+    Initialize median image attributes.
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -1553,10 +1753,10 @@ MagickExport Image *MedianFilterImage(const Image *image,const double radius,
     return((Image *) NULL);
   median_image->storage_class=DirectClass;
   /*
-    Allocate window.
+    Allocate skip-lists.
   */
-  window=(PixelPacket *) AcquireMemory(width*width*sizeof(PixelPacket));
-  if (window == (PixelPacket *) NULL)
+  skiplist=(MedianPixelList *) AcquireMemory(sizeof(MedianPixelList));
+  if (skiplist == (MedianPixelList *) NULL)
     {
       DestroyImage(median_image);
       ThrowImageException(ResourceLimitWarning,"Unable to median filter image",
@@ -1565,7 +1765,7 @@ MagickExport Image *MedianFilterImage(const Image *image,const double radius,
   /*
     Median filter each image row.
   */
-  center=width*width/2;
+  InitializeMedianList(skiplist,width);
   for (y=0; y < (long) median_image->rows; y++)
   {
     p=AcquireImagePixels(image,-width/2,y-width/2,image->columns+width,width,
@@ -1576,30 +1776,22 @@ MagickExport Image *MedianFilterImage(const Image *image,const double radius,
     for (x=0; x < (long) median_image->columns; x++)
     {
       r=p;
-      w=window;
+      ResetMedianList(skiplist);
       for (v=0; v < width; v++)
       {
         for (u=0; u < width; u++)
-          *w++=r[u];
+          InsertMedianList(skiplist,&r[u]);
         r+=image->columns+width;
       }
-      qsort((void *) window,width*width,sizeof(PixelPacket),RedCompare);
-      q->red=window[center].red;
-      qsort((void *) window,width*width,sizeof(PixelPacket),GreenCompare);
-      q->green=window[center].green;
-      qsort((void *) window,width*width,sizeof(PixelPacket),BlueCompare);
-      q->blue=window[center].blue;
-      qsort((void *) window,width*width,sizeof(PixelPacket),OpacityCompare);
-      q->opacity=window[center].opacity;
+      *q++=GetMedianList(skiplist);
       p++;
-      q++;
     }
     if (!SyncImagePixels(median_image))
       break;
     if (QuantumTick(y,median_image->rows))
       MagickMonitor(MedianFilterImageText,y,median_image->rows);
   }
-  LiberateMemory((void **) &window);
+  LiberateMemory((void **) &skiplist);
   return(median_image);
 }
 
@@ -1986,7 +2178,7 @@ MagickExport Image *MotionBlurImage(const Image *image,const double radius,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  OilPaintImage() applies a special effect filter that simulates an oil 
+%  OilPaintImage() applies a special effect filter that simulates an oil
 %  painting.  Each pixel is replaced by the most frequent color occurring
 %  in a circular region defined by radius.
 %
@@ -2329,24 +2521,20 @@ MagickExport Image *ReduceNoiseImage(const Image *image,const double radius,
     *noise_image;
 
   long
-    center,
     width,
+    x,
     y;
 
-  PixelPacket
-    pixel,
-    *w,
-    *window;
+  MedianPixelList
+    *skiplist;
 
   register const PixelPacket
     *p,
     *r;
 
   register long
-    i,
     u,
-    v,
-    x;
+    v;
 
   register PixelPacket
     *q;
@@ -2367,10 +2555,10 @@ MagickExport Image *ReduceNoiseImage(const Image *image,const double radius,
     return((Image *) NULL);
   noise_image->storage_class=DirectClass;
   /*
-    Allocate window.
+    Allocate skip-lists.
   */
-  window=(PixelPacket *) AcquireMemory(width*width*sizeof(PixelPacket));
-  if (window == (PixelPacket *) NULL)
+  skiplist=(MedianPixelList *) AcquireMemory(sizeof(MedianPixelList));
+  if (skiplist == (MedianPixelList *) NULL)
     {
       DestroyImage(noise_image);
       ThrowImageException(ResourceLimitWarning,"Unable to noise filter image",
@@ -2379,7 +2567,7 @@ MagickExport Image *ReduceNoiseImage(const Image *image,const double radius,
   /*
     Median filter each image row.
   */
-  center=width*width/2;
+  InitializeMedianList(skiplist,width);
   for (y=0; y < (long) noise_image->rows; y++)
   {
     p=AcquireImagePixels(image,-width/2,y-width/2,image->columns+width,width,
@@ -2390,94 +2578,22 @@ MagickExport Image *ReduceNoiseImage(const Image *image,const double radius,
     for (x=0; x < (long) noise_image->columns; x++)
     {
       r=p;
-      w=window;
+      ResetMedianList(skiplist);
       for (v=0; v < width; v++)
       {
         for (u=0; u < width; u++)
-          *w++=r[u];
+          InsertMedianList(skiplist,&r[u]);
         r+=image->columns+width;
       }
-      qsort((void *) window,width*width,sizeof(PixelPacket),RedCompare);
-      pixel=window[center];
-      if (pixel.red == window[0].red)
-        {
-          for (i=1; i < (width*width-1); i++)
-            if (window[i].red != window[0].red)
-              break;
-          pixel=window[i];
-        }
-      else
-        if (pixel.red == window[width*width-1].red)
-          {
-            for (i=(width*width-2); i > 0; i--)
-              if (window[i].red != window[width*width-1].red)
-                break;
-            pixel=window[i];
-          }
-      q->red=pixel.red;
-      qsort((void *) window,width*width,sizeof(PixelPacket),GreenCompare);
-      pixel=window[center];
-      if (pixel.green == window[0].green)
-        {
-          for (i=1; i < (width*width-1); i++)
-            if (window[i].green != window[0].green)
-              break;
-          pixel=window[i];
-        }
-      else
-        if (pixel.green == window[width*width-1].green)
-          {
-            for (i=(width*width-2); i > 0; i--)
-              if (window[i].green != window[width*width-1].green)
-                break;
-            pixel=window[i];
-          }
-      q->green=pixel.green;
-      qsort((void *) window,width*width,sizeof(PixelPacket),BlueCompare);
-      pixel=window[center];
-      if (pixel.blue == window[0].blue)
-        {
-          for (i=1; i < (width*width-1); i++)
-            if (window[i].blue != window[0].blue)
-              break;
-          pixel=window[i];
-        }
-      else
-        if (pixel.blue == window[width*width-1].blue)
-          {
-            for (i=(width*width-2); i > 0; i--)
-              if (window[i].blue != window[width*width-1].blue)
-                break;
-            pixel=window[i];
-          }
-      q->blue=pixel.blue;
-      qsort((void *) window,width*width,sizeof(PixelPacket),OpacityCompare);
-      pixel=window[center];
-      if (pixel.opacity == window[0].opacity)
-        {
-          for (i=1; i < (width*width-1); i++)
-            if (window[i].opacity != window[0].opacity)
-              break;
-          pixel=window[i];
-        }
-      else
-        if (pixel.opacity == window[width*width-1].opacity)
-          {
-            for (i=(width*width-2); i > 0; i--)
-              if (window[i].opacity != window[width*width-1].opacity)
-                break;
-            pixel=window[i];
-          }
-      q->opacity=pixel.opacity;
+      *q++=GetNonpeakMedianList(skiplist);
       p++;
-      q++;
     }
     if (!SyncImagePixels(noise_image))
       break;
     if (QuantumTick(y,noise_image->rows))
       MagickMonitor(ReduceNoiseImageText,y,noise_image->rows);
   }
-  LiberateMemory((void **) &window);
+  LiberateMemory((void **) &skiplist);
   return(noise_image);
 }
 
@@ -2646,9 +2762,9 @@ MagickExport Image *ShadeImage(const Image *image,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  SharpenImage() sharpens an image.  We convolve the image with a 
+%  SharpenImage() sharpens an image.  We convolve the image with a
 %  Gaussian operator of the given radius and standard deviation (sigma).
-%  For reasonable results, radius should be larger than sigma.  Use a 
+%  For reasonable results, radius should be larger than sigma.  Use a
 %  radius of 0 and SharpenImage() selects a suitable radius for you.
 %
 %  The format of the SharpenImage method is:
@@ -2817,7 +2933,7 @@ MagickExport void SolarizeImage(Image *image,const double threshold)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  SpreadImage() is a special effects method that randomly displaces each 
+%  SpreadImage() is a special effects method that randomly displaces each
 %  pixel in a block defined by the amount parameter.
 %
 %  The format of the SpreadImage method is:
@@ -2907,7 +3023,7 @@ MagickExport Image *SpreadImage(const Image *image,const unsigned int radius,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Use SteganoImage() to hide a digital watermark within the image.  
+%  Use SteganoImage() to hide a digital watermark within the image.
 %  Recover the hidden watermark later to prove that the authenticity of
 %  an image.  Offset defines the start position within the image to hide
 %  the watermark.
@@ -3333,7 +3449,7 @@ MagickExport unsigned int ThresholdImage(Image *image,const double threshold)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  UnsharpMaskImage() sharpens an image.  We convolve the image with a 
+%  UnsharpMaskImage() sharpens an image.  We convolve the image with a
 %  Gaussian operatorof the given radius and standard deviation (sigma).
 %  For reasonable results, radius should be larger than sigma.  Use a radius
 %  of 0 and UnsharpMaskImage() selects a suitable radius for you.
@@ -3450,7 +3566,7 @@ MagickExport Image *UnsharpMaskImage(const Image *image,const double radius,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  The WaveImage() filter creates a "ripple" effect in the image by shifting 
+%  The WaveImage() filter creates a "ripple" effect in the image by shifting
 %  the pixels vertically along a sine wave whose amplitude and wavelength
 %  is specified by the given parameters.
 %
