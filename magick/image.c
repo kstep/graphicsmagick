@@ -1811,8 +1811,8 @@ MagickExport void DescribeImage(Image *image,FILE *file,
     default: (void) fprintf(file,"undefined"); break;
   }
   (void) fprintf(file,"\n");
-  (void) fprintf(file,"  Depth: %lu bits per pixel component\n",
-    GetImageDepth(image, &image->exception));
+  (void) fprintf(file,"  Depth: %lu bits-per-pixel component\n",
+    GetImageDepth(image,&image->exception));
   x=0;
   p=(Image *) NULL;
   if ((image->matte && (strcmp(image->magick,"GIF") != 0)) || image->taint)
