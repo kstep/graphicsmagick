@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999
+// Copyright Bob Friesenhahn, 1999, 2000
 //
 // Geometry implementation
 //
@@ -11,6 +11,8 @@
 #include <iostream>
 #include <iomanip>
 #include <strstream>
+
+#include <ctype.h> // for isdigit
 
 using namespace std;
 

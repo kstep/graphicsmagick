@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999
+// Copyright Bob Friesenhahn, 1999, 2000
 //
 // Definition and implementation of template functions for using
 // Magick::Image with STL containers.
@@ -38,7 +38,7 @@ namespace Magick
   void appendImages( Image *appendedImage_,
 		     InputIterator first_,
 		     InputIterator last_,
-		     bool stack_ );
+		     bool stack_ = false );
 
   // Average a set of images.
   // All the input images must be the same size in pixels.
@@ -68,8 +68,8 @@ namespace Magick
   void mapImages( InputIterator first_,
 		  InputIterator last_,
 		  const Image& mapImage_,
-		  bool dither_,
-		  bool measureError_ );
+		  bool dither_ = false,
+		  bool measureError_ = false );
 
   // Create a composite image by combining several separate images.
   template <class Container, class InputIterator>
@@ -90,7 +90,7 @@ namespace Magick
   template <class InputIterator>
   void quantizeImages( InputIterator first_,
 		       InputIterator last_,
-		       bool measureError_ );
+		       bool measureError_  = false );
 
   // Read images into existing container (appending to container)
   template <class Container>
@@ -108,13 +108,13 @@ namespace Magick
   void writeImages( InputIterator first_,
 		    InputIterator last_,
 		    const std::string &imageSpec_,
-		    bool adjoin_ );
+		    bool adjoin_ = true );
   template <class InputIterator>
   // Write images to a BLOB
   void writeImages( InputIterator first_,
 		    InputIterator last_,
 		    Blob *blob_,
-		    bool adjoin_ );
+		    bool adjoin_ = true );
 
   //
   // STL function object declarations/definitions
@@ -2048,7 +2048,7 @@ namespace Magick
   void appendImages( Image *appendedImage_,
 		     InputIterator first_,
 		     InputIterator last_,
-		     bool stack_ = false) {
+		     bool stack_ ) {
     MagickLib::ExceptionInfo exceptionInfo;
     MagickLib::GetExceptionInfo( &exceptionInfo );
     linkImages( first_, last_ );
@@ -2111,8 +2111,8 @@ namespace Magick
   void mapImages( InputIterator first_,
 		  InputIterator last_,
 		  const Image& mapImage_,
-		  bool dither_ = false,
-		  bool measureError_ = false ) {
+		  bool dither_,
+		  bool measureError_ ) {
 
     MagickLib::ExceptionInfo exceptionInfo;
     MagickLib::GetExceptionInfo( &exceptionInfo );
@@ -2263,7 +2263,7 @@ namespace Magick
   template <class InputIterator>
   void quantizeImages( InputIterator first_,
 		       InputIterator last_,
-		       bool measureError_ = false ) {
+		       bool measureError_ ) {
     linkImages( first_, last_ );
 
     MagickLib::QuantizeImages( first_->options()->quantizeInfo(),
@@ -2322,7 +2322,7 @@ namespace Magick
   void writeImages( InputIterator first_,
 		    InputIterator last_,
 		    const std::string &imageSpec_,
-		    bool adjoin_ = true ) {
+		    bool adjoin_ ) {
 
     // Save original image settings
     std::string origFileName = first_->fileName();
@@ -2356,7 +2356,7 @@ namespace Magick
   void writeImages( InputIterator first_,
 		    InputIterator last_,
 		    Blob *blob_,
-		    bool adjoin_ = true) {
+		    bool adjoin_ ) {
     // Save original image settings
     std::string origMagick = first_->magick();
     bool origAdjoin = first_->adjoin();

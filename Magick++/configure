@@ -780,7 +780,7 @@ echo "$ECHO_T""$ac_cv_emxos2" >&6
 EMXOS2=
 test "$ac_cv_emxos2" = yes && EMXOS2=yes
 
-MAGICK_RELEASE="0.9.5"		# Magick++ release
+MAGICK_RELEASE="0.9.6"		# Magick++ release
 TESTED_MAGICK_VERSION="5.2.2"	# Last tested ImageMagick release
 
 INTERFACE_CURRENT=0

@@ -1,13 +1,15 @@
 This file records noteworthy changes.
+
 (0.9.5)
   * Released with ImageMagick 5.2.2.
+
 (0.9.4)
   * Released with ImageMagick 5.2.1.
-(0.9.3)
   * Bugfix to the Pixels GetIndexes() method.
   * Adapted to ImageMagick 5.2.1's revised matte channel interpretation.
 
 (0.9.3)
+  * Released with ImageMagick 5.2
   * New class 'Pixels' to support low-level pixel access in image. New
     API supports multiple pixel views into the same image.  Number of
     available pixel views limited to the number of image rows + 1.
@@ -21,6 +23,7 @@ This file records noteworthy changes.
   * Should be thread-safe under Win32 now.
 
 (0.9.2)
+  * Released with ImageMagick 5.1.1
   * Should be thread-safe when used with POSIX threads (pthreads).
   * Added methods getPixels, setPixels, syncPixels, readPixels, and
     writePixels, in order to provide low-level access to Image pixels.
@@ -28,6 +31,7 @@ This file records noteworthy changes.
     and columns.
 
 (0.9.1)
+  * Released with ImageMagick 5.1.0
   * Added additional constructors, read, and write methods for BLOBs
     to make BLOBs easier to use.
   * Added the medianFilter() method to Image.
@@ -51,6 +55,7 @@ This file records noteworthy changes.
     ImageMagick's image cache.
 
 (0.8.9)
+  * Released with ImageMagick 4.2.9
   * Blob reference counting was totally broken, leading to a memory
     leak if it was used.  Fixed by starting reference count from one
     rather than zero.

@@ -21,7 +21,7 @@ namespace Magick
   //
   // Representation of an x,y coordinate
   //
-  typedef std::pair<const double,const double> Coordinate;
+  typedef std::pair<double,double> Coordinate;
 
   std::ostream& operator<<( std::ostream& stream_,
                             const Coordinate& coordinate_ );
