@@ -176,6 +176,7 @@ Export Image *ReadTXTImage(const ImageInfo *image_info)
   /*
     Annotate the text image.
   */
+  SetImage(image);
   GetAnnotateInfo((ImageInfo *) image_info,&annotate_info);
   (void) strcpy(filename,image_info->filename);
   offset=0;
@@ -187,8 +188,6 @@ Export Image *ReadTXTImage(const ImageInfo *image_info)
     p=GetStringBlob(image,text);
     if (p == (char *) NULL)
       break;
-    if (Extent(text) > 0)
-      text[Extent(text)-1]='\0';
     (void) CloneString(&annotate_info.text,text);
     FormatString(geometry,"%+d%+d",page_info.x,page_info.y+offset);
     (void) CloneString(&annotate_info.geometry,geometry);
