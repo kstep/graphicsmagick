@@ -1,3 +1,16 @@
+2003-10-13  Lars Skyum  <lrs@stibo.dk>
+
+	* www/GraphicsMagick.html, www/animate.html, www/composite.html,
+	www/conjure.html, www/convert.html, www/display.html, www/gm.html,
+	www/identify.html, www/import.html, www/mogrify.html,
+	www/montage.html: added documentation for "-define" command line
+	option.	
+	* doc/brief_options.imdoc, doc/options.imdoc: Added documentation
+	for "-define" command line option.
+	* doc/gmdocselect, doc/imdocselect: Changed "skipform" label in
+	sed scripts to just "skipf". Solaris sed had problems with the
+	long(?) "skipform" label.
+
 2003-10-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* doc/composite.imdoc, doc/options.imdoc, doc/GraphicsMagick.imdoc:
