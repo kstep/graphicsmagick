@@ -171,6 +171,20 @@ if this is a problem.</font></td>
 
 <tr>
 <td>
+<center><a NAME="flattenImages"></a><font size=-1>flattenImages</font></center>
+</td>
+
+<td><font size=-1>Image *flattendImage_, InputIterator first_, InputIterator
+last_</font></td>
+
+<td><font size=-1>Merge a sequence of image frames which represent image
+layers into a single composited representation. The <i>flattendImage_</i>
+parameter points to an existing Image to update with the flattened image.
+This function is useful for combining Photoshop layers into a single image.</font></td>
+</tr>
+
+<tr>
+<td>
 <center><a NAME="mapImages"></a><font size=-1>mapImages</font></center>
 </td>
 
@@ -1203,11 +1217,6 @@ transparentImage( "red" )&nbsp; );</font></tt>
 </td>
 
 <td>
-<center><b>Property</b>
-<br><b>Of</b></center>
-</td>
-
-<td>
 <center><b>Type</b></center>
 </td>
 
@@ -1225,8 +1234,6 @@ transparentImage( "red" )&nbsp; );</font></tt>
 <center><a NAME="adjoinImage"></a><font size=-1>adjoinImage</font></center>
 </td>
 
-<td><font size=-1>Image</font></td>
-
 <td><font size=-1>bool</font></td>
 
 <td><font size=-1>bool flag_</font></td>
@@ -1238,8 +1245,6 @@ transparentImage( "red" )&nbsp; );</font></tt>
 <td>
 <center><a NAME="antiAlias"></a><font size=-1>antiAliasImage</font></center>
 </td>
-
-<td><font size=-1>Options</font></td>
 
 <td><font size=-1>bool</font></td>
 
@@ -1254,9 +1259,6 @@ or TrueType fonts. Enabled by default.</font></td>
 <center><a NAME="animationDelay"></a><font size=-1>animation-</font>
 <br><font size=-1>DelayImage</font></center>
 </td>
-
-<td><font size=-1>Image &amp;</font>
-<br><font size=-1>Options</font></td>
 
 <td NOSAVE><font size=-1>unsigned int (0 to 65535)</font></td>
 
@@ -1274,9 +1276,6 @@ within Netscape.</font></td>
 <br><font size=-1>IterationsImage</font></center>
 </td>
 
-<td><font size=-1>Image &amp;</font>
-<br><font size=-1>Options</font></td>
-
 <td><font size=-1>unsigned int</font></td>
 
 <td><font size=-1>unsigned int iterations_</font></td>
@@ -1291,9 +1290,6 @@ loop extension) for.</font></td>
 <br><font size=-1>ColorImage</font></center>
 </td>
 
-<td><font size=-1>Image &amp;</font>
-<br><font size=-1>Options</font></td>
-
 <td><font size=-1><a href="Color.html">Color</a></font></td>
 
 <td><font size=-1>const <a href="Color.html">Color</a> &amp;color_</font></td>
@@ -1306,8 +1302,6 @@ loop extension) for.</font></td>
 <center><a NAME="backgroundTexture"></a><font size=-1>background-</font>
 <br><font size=-1>TextureImage</font></center>
 </td>
-
-<td><font size=-1>Options</font></td>
 
 <td><font size=-1>string</font></td>
 
@@ -1322,9 +1316,6 @@ loop extension) for.</font></td>
 <br><font size=-1>Image</font></center>
 </td>
 
-<td><font size=-1>Image &amp;</font>
-<br><font size=-1>Options</font></td>
-
 <td><font size=-1><a href="Color.html">Color</a></font></td>
 
 <td><font size=-1>&nbsp;const <a href="Color.html">Color</a> &amp;color_</font></td>
@@ -1336,8 +1327,6 @@ loop extension) for.</font></td>
 <td>
 <center><a NAME="boxColor"></a><font size=-1>boxColorImage</font></center>
 </td>
-
-<td><font size=-1>Options</font></td>
 
 <td><font size=-1><a href="Color.html">Color</a></font></td>
 
@@ -1352,8 +1341,6 @@ loop extension) for.</font></td>
 <br><font size=-1>BluePrimaryImage</font></center>
 </td>
 
-<td><font size=-1>Image</font></td>
-
 <td><font size=-1>float x &amp; y</font></td>
 
 <td><font size=-1>float x_, float y_</font></td>
@@ -1366,8 +1353,6 @@ loop extension) for.</font></td>
 <center><a NAME="chromaGreenPrimary"></a><font size=-1>chroma-</font>
 <br><font size=-1>GreenPrimaryImage</font></center>
 </td>
-
-<td><font size=-1>Image</font></td>
 
 <td><font size=-1>float x &amp; y</font></td>
 
@@ -1382,8 +1367,6 @@ loop extension) for.</font></td>
 <br><font size=-1>RedPrimaryImage</font></center>
 </td>
 
-<td><font size=-1>Image</font></td>
-
 <td><font size=-1>float x &amp; y</font></td>
 
 <td><font size=-1>float x_, float y_</font></td>
@@ -1397,8 +1380,6 @@ loop extension) for.</font></td>
 <br><font size=-1>WhitePointImage</font></center>
 </td>
 
-<td><font size=-1>Image</font></td>
-
 <td><font size=-1>float x &amp; y</font></td>
 
 <td><font size=-1>float x_, float y_</font></td>
@@ -1410,9 +1391,6 @@ loop extension) for.</font></td>
 <td>
 <center><a NAME="colorFuzz"></a><font size=-1>colorFuzzImage</font></center>
 </td>
-
-<td><font size=-1>Image &amp;</font>
-<br><font size=-1>Options</font></td>
 
 <td><font size=-1>double</font></td>
 
@@ -1429,8 +1407,6 @@ color in RGB space.</font></td>
 <center><a NAME="colorMap"></a><font size=-1>colorMapImage</font></center>
 </td>
 
-<td><font size=-1>Image</font></td>
-
 <td><font size=-1><a href="Color.html">Color</a></font></td>
 
 <td><font size=-1>unsigned int index_, const <a href="Color.html">Color</a>
@@ -1441,8 +1417,6 @@ color in RGB space.</font></td>
 
 <tr>
 <td><a NAME="colorSpaceImage"></a><font size=-1>colorSpaceImage</font></td>
-
-<td><font size=-1>Image</font></td>
 
 <td><font size=-1><a href="Enumerations.html#ColorspaceType">ColorspaceType</a></font></td>
 
@@ -1460,9 +1434,6 @@ of CMY(K).</font></td>
 <br><font size=-1>Image</font></center>
 </td>
 
-<td><font size=-1>Image &amp;</font>
-<br><font size=-1>Options</font></td>
-
 <td><font size=-1><a href="Enumerations.html#CompressionType">CompressionType</a></font></td>
 
 <td><font size=-1><a href="Enumerations.html#CompressionType">CompressionType</a>
@@ -1476,8 +1447,6 @@ type of the specified image file.</font></td>
 <td>
 <center><a NAME="density"></a><font size=-1>densityImage</font></center>
 </td>
-
-<td><font size=-1>Options</font></td>
 
 <td><font size=-1><a href="Geometry.html">Geometry</a>&nbsp; (default 72x72)</font></td>
 
@@ -1493,9 +1462,6 @@ Document page. Often used with <i>psPageSize</i>.</font></td>
 <center><a NAME="depth"></a><font size=-1>depthImage</font></center>
 </td>
 
-<td><font size=-1>Image &amp;</font>
-<br><font size=-1>Options</font></td>
-
 <td><font size=-1>&nbsp;unsigned int (8 or 16)</font></td>
 
 <td><font size=-1>unsigned int depth_</font></td>
@@ -1510,9 +1476,6 @@ is compiled with.</font></td>
 <center><a NAME="fileName"></a><font size=-1>fileNameImage</font></center>
 </td>
 
-<td><font size=-1>Image &amp;</font>
-<br><font size=-1>Options</font></td>
-
 <td><font size=-1>string</font></td>
 
 <td><font size=-1>const string &amp;fileName_</font></td>
@@ -1522,11 +1485,20 @@ is compiled with.</font></td>
 
 <tr>
 <td>
-<center><a NAME="filterType"></a><font size=-1>filterTypeImage</font></center>
+<center><a NAME="fillColorImage"></a><font size=-1>fillColorImage</font></center>
 </td>
 
-<td><font size=-1>Image &amp;</font>
-<br><font size=-1>Options</font></td>
+<td><font size=-1>Color</font></td>
+
+<td><font size=-1>const Color &amp;fillColor_</font></td>
+
+<td><font size=-1>Color to use when filling drawn objects</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="filterType"></a><font size=-1>filterTypeImage</font></center>
+</td>
 
 <td><font size=-1><a href="Enumerations.html#FilterTypes">FilterTypes</a></font></td>
 
@@ -1544,8 +1516,6 @@ been shown to produce good results when reducing images.</font></td>
 <center><a NAME="font"></a><font size=-1>fontImage</font></center>
 </td>
 
-<td><font size=-1>Options</font></td>
-
 <td><font size=-1>string</font></td>
 
 <td><font size=-1>const string &amp;font_</font></td>
@@ -1562,8 +1532,6 @@ a&nbsp; Postscript font name (e.g. "helvetica").</font></td>
 <br><font size=-1>Image</font></center>
 </td>
 
-<td><font size=-1>Options</font></td>
-
 <td><font size=-1>unsigned int</font></td>
 
 <td><font size=-1>unsigned int pointSize_</font></td>
@@ -1576,9 +1544,6 @@ a&nbsp; Postscript font name (e.g. "helvetica").</font></td>
 <center><a NAME="gifDisposeMethod"></a><font size=-1>gifDispose-</font>
 <br><font size=-1>MethodImage</font></center>
 </td>
-
-<td><font size=-1>Image &amp;</font>
-<br><font size=-1>Options</font></td>
 
 <td><font size=-1>unsigned int</font>
 <br><font size=-1>{ 0 = Disposal not specified,</font>
@@ -1599,9 +1564,6 @@ when creating a GIF animation.</font></td>
 <br><font size=-1>TypeImage</font></center>
 </td>
 
-<td><font size=-1>Image &amp;</font>
-<br><font size=-1>Options</font></td>
-
 <td><font size=-1><a href="Enumerations.html#InterlaceType">InterlaceType</a></font></td>
 
 <td><font size=-1><a href="Enumerations.html#InterlaceType">InterlaceType</a>
@@ -1620,10 +1582,21 @@ GIF or progressive JPEG image.</font></td>
 
 <tr>
 <td>
-<center><a NAME="label"></a><font size=-1>labelImage</font></center>
+<center><a NAME="isValidImage"></a><font size=-1>isValidImage</font></center>
 </td>
 
-<td><font size=-1>Image</font></td>
+<td><font size=-1>bool</font></td>
+
+<td><font size=-1>bool isValid_</font></td>
+
+<td><font size=-1>Set image validity. Valid images become empty (inValid)
+if argument is false.</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="label"></a><font size=-1>labelImage</font></center>
+</td>
 
 <td><font size=-1>string</font></td>
 
@@ -1636,8 +1609,6 @@ GIF or progressive JPEG image.</font></td>
 <td>
 <center><a NAME="lineWidth"></a><font size=-1>lineWidthImage</font></center>
 </td>
-
-<td><font size=-1>Options</font></td>
 
 <td><font size=-1>double</font></td>
 
@@ -1652,9 +1623,6 @@ See <a href="Drawable.html">Drawable</a>.</font></td>
 <center><a NAME="magick"></a><font size=-1>magickImage</font></center>
 </td>
 
-<td><font size=-1>Image &amp;</font>
-<br><font size=-1>Options</font></td>
-
 <td><font size=-1>string</font></td>
 
 <td NOSAVE><font size=-1>&nbsp;const string &amp;magick_</font></td>
@@ -1666,8 +1634,6 @@ See <a href="Drawable.html">Drawable</a>.</font></td>
 <td>
 <center><a NAME="matte"></a><font size=-1>matteImage</font></center>
 </td>
-
-<td><font size=-1>Image</font></td>
 
 <td><font size=-1>bool</font></td>
 
@@ -1682,9 +1648,6 @@ matte channel if&nbsp; the image has one otherwise create an opaque one.</font><
 <center><a NAME="matteColor"></a><font size=-1>matteColorImage</font></center>
 </td>
 
-<td><font size=-1>Image &amp;</font>
-<br><font size=-1>Options</font></td>
-
 <td><font size=-1><a href="Color.html">Color</a></font></td>
 
 <td><font size=-1>const <a href="Color.html">Color</a> &amp;matteColor_</font></td>
@@ -1698,8 +1661,6 @@ matte channel if&nbsp; the image has one otherwise create an opaque one.</font><
 <br><font size=-1>Image</font></center>
 </td>
 
-<td><font size=-1>Options</font></td>
-
 <td><font size=-1>bool</font></td>
 
 <td><font size=-1>bool flag_</font></td>
@@ -1711,9 +1672,6 @@ matte channel if&nbsp; the image has one otherwise create an opaque one.</font><
 <td>
 <center><a NAME="pageImage"></a>pageImage</center>
 </td>
-
-<td><font size=-1>Image &amp;</font>
-<br><font size=-1>Options</font></td>
 
 <td><font size=-1><a href="Geometry.html#PostscriptPageSize">Geometry</a></font></td>
 
@@ -1733,8 +1691,6 @@ for a scene in an animation)</font></td>
 <center><a NAME="penColor"></a><font size=-1>penColorImage</font></center>
 </td>
 
-<td><font size=-1>Options</font></td>
-
 <td><font size=-1><a href="Color.html">Color</a></font></td>
 
 <td><font size=-1>const <a href="Color.html">Color</a> &amp;penColor_</font></td>
@@ -1746,8 +1702,6 @@ for a scene in an animation)</font></td>
 <td>
 <center><a NAME="penTexture"></a><font size=-1>penTextureImage</font></center>
 </td>
-
-<td><font size=-1>Options</font></td>
 
 <td><font size=-1>Image</font></td>
 
@@ -1761,8 +1715,6 @@ for a scene in an animation)</font></td>
 <center><a NAME="pixelColor"></a><font size=-1>pixelColorImage</font></center>
 </td>
 
-<td><font size=-1>Image</font></td>
-
 <td><font size=-1><a href="Color.html">Color</a></font></td>
 
 <td><font size=-1>unsigned int x_, unsigned int y_, const <a href="Color.html">Color</a>
@@ -1775,9 +1727,6 @@ for a scene in an animation)</font></td>
 <td>
 <center><a NAME="psPageSize"></a><font size=-1>psPageSizeImage</font></center>
 </td>
-
-<td><font size=-1>Image &amp;</font>
-<br><font size=-1>Options</font></td>
 
 <td><font size=-1><a href="Geometry.html#PostscriptPageSize">Geometry</a></font></td>
 
@@ -1794,8 +1743,6 @@ page in pixels. This option is typically used in concert with <i>density</i>.</f
 <center><a NAME="quality"></a><font size=-1>qualityImage</font></center>
 </td>
 
-<td><font size=-1>Options</font></td>
-
 <td><font size=-1>unsigned int (0 to 100)</font></td>
 
 <td><font size=-1>unsigned int quality_</font></td>
@@ -1808,8 +1755,6 @@ page in pixels. This option is typically used in concert with <i>density</i>.</f
 <center><a NAME="quantizeColors"></a><font size=-1>quantize-</font>
 <br><font size=-1>ColorsImage</font></center>
 </td>
-
-<td><font size=-1>Options</font></td>
 
 <td><font size=-1>unsigned int</font></td>
 
@@ -1827,8 +1772,6 @@ or unused colors removed.</font></td>
 <br><font size=-1>ColorSpaceImage</font></center>
 </td>
 
-<td><font size=-1>Options</font></td>
-
 <td><font size=-1><a href="Enumerations.html#ColorspaceType">ColorspaceType</a></font></td>
 
 <td><font size=-1><a href="Enumerations.html#ColorspaceType">ColorspaceType</a>
@@ -1845,8 +1788,6 @@ These color spaces may give better results when color reducing an image.</font><
 <center><a NAME="quantizeDither"></a><font size=-1>quantize-</font>
 <br><font size=-1>DitherImage</font></center>
 </td>
-
-<td><font size=-1>Options</font></td>
 
 <td><font size=-1>bool</font></td>
 
@@ -1867,8 +1808,6 @@ be set for this option to take effect.</font></td>
 <br><font size=-1>TreeDepthImage</font></center>
 </td>
 
-<td><font size=-1>Options</font></td>
-
 <td><font size=-1>unsigned int (0 to 8)</font></td>
 
 <td><font size=-1>unsigned int treeDepth_</font></td>
@@ -1885,8 +1824,6 @@ the tree depth.</font></td>
 <br><font size=-1>IntentImage</font></center>
 </td>
 
-<td><font size=-1>Image</font></td>
-
 <td><font size=-1><a href="Enumerations.html#RenderingIntent">RenderingIntent</a></font></td>
 
 <td><font size=-1><a href="Enumerations.html#RenderingIntent">RenderingIntent</a>
@@ -1901,9 +1838,6 @@ render_</font></td>
 <br><font size=-1>UnitsImage</font></center>
 </td>
 
-<td><font size=-1>Image &amp;</font>
-<br><font size=-1>Options</font></td>
-
 <td><font size=-1><a href="Enumerations.html#ResolutionType">ResolutionType</a></font></td>
 
 <td><font size=-1><a href="Enumerations.html#ResolutionType">ResolutionType</a>
@@ -1917,8 +1851,6 @@ units_</font></td>
 <center><a NAME="scene"></a><font size=-1>sceneImage</font></center>
 </td>
 
-<td><font size=-1>Image</font></td>
-
 <td><font size=-1>unsigned int</font></td>
 
 <td><font size=-1>unsigned int scene_</font></td>
@@ -1930,8 +1862,6 @@ units_</font></td>
 <td>
 <center><a NAME="size"></a><font size=-1>sizeImage</font></center>
 </td>
-
-<td><font size=-1>Options</font></td>
 
 <td><font size=-1><a href="Geometry.html">Geometry</a></font></td>
 
@@ -1945,10 +1875,20 @@ CD, JBIG, or JPEG.</font></td>
 
 <tr>
 <td>
-<center><a NAME="subImage"></a><font size=-1>subImageImage</font></center>
+<center><a NAME="strokeColorImage"></a><font size=-1>strokeColorImage</font></center>
 </td>
 
-<td><font size=-1>Options</font></td>
+<td><font size=-1>Color</font></td>
+
+<td><font size=-1>const Color &amp;strokeColor_</font></td>
+
+<td><font size=-1>Color to use when drawing object outlines</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="subImage"></a><font size=-1>subImageImage</font></center>
+</td>
 
 <td><font size=-1>unsigned int</font></td>
 
@@ -1962,8 +1902,6 @@ CD, JBIG, or JPEG.</font></td>
 <center><a NAME="subRange"></a><font size=-1>subRangeImage</font></center>
 </td>
 
-<td><font size=-1>Options</font></td>
-
 <td><font size=-1>unsigned int</font></td>
 
 <td><font size=-1>unsigned int subRange_</font></td>
@@ -1975,8 +1913,6 @@ CD, JBIG, or JPEG.</font></td>
 <td>
 <center><a NAME="tileName"></a><font size=-1>tileNameImage</font></center>
 </td>
-
-<td><font size=-1>Options</font></td>
 
 <td><font size=-1>string</font></td>
 
@@ -1990,8 +1926,6 @@ CD, JBIG, or JPEG.</font></td>
 <center><a NAME="verbose"></a><font size=-1>verboseImage</font></center>
 </td>
 
-<td><font size=-1>Options</font></td>
-
 <td><font size=-1>bool</font></td>
 
 <td><font size=-1>bool verboseFlag_</font></td>
@@ -2004,8 +1938,6 @@ CD, JBIG, or JPEG.</font></td>
 <center><a NAME="view"></a><font size=-1>viewImage</font></center>
 </td>
 
-<td><font size=-1>Options</font></td>
-
 <td><font size=-1>string</font></td>
 
 <td><font size=-1>const string &amp;view_</font></td>
@@ -2017,8 +1949,6 @@ CD, JBIG, or JPEG.</font></td>
 <td>
 <center><a NAME="x11Display"></a><font size=-1>x11DisplayImage</font></center>
 </td>
-
-<td><font size=-1>Options</font></td>
 
 <td><font size=-1>string (e.g. "hostname:0.0")</font></td>
 

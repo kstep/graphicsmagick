@@ -1803,6 +1803,24 @@ due to the limited size of the palette (256 or 65535 colors).</font></td>
 
 <tr>
 <td>
+<center><a NAME="clipMask"></a><font size=-1>clipMask</font></center>
+</td>
+
+<td><font size=-1>Image</font></td>
+
+<td><font size=-1>void</font></td>
+
+<td><font size=-1>const Image clipMask_</font></td>
+
+<td><font size=-1>Associate a clip mask image with the current image. The
+clip mask image must have the same dimensions as the current image or an
+exception is thrown. Clipping occurs wherever pixels are transparent in
+the clip mask image. Clipping Pass an invalid image to unset an existing
+clip mask.</font></td>
+</tr>
+
+<tr>
+<td>
 <center><a NAME="colorFuzz"></a><font size=-1>colorFuzz</font></center>
 </td>
 
@@ -1834,7 +1852,9 @@ color in RGB space.</font></td>
 </tr>
 
 <tr>
-<td><a NAME="colorSpace"></a><font size=-1>colorSpace</font></td>
+<td>
+<center><a NAME="colorSpace"></a><font size=-1>colorSpace</font></center>
+</td>
 
 <td><font size=-1><a href="Enumerations.html#ColorspaceType">ColorspaceType</a>
 colorSpace_</font></td>
@@ -1980,6 +2000,20 @@ is compiled with.</font></td>
 <td><font size=-1>const Color &amp;fillColor_</font></td>
 
 <td><font size=-1>Color to use when filling drawn objects</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="fillRule"></a><font size=-1>fillRule</font></center>
+</td>
+
+<td><font size=-1><a href="Enumerations.html#FillRule">FillRule</a></font></td>
+
+<td><font size=-1>void</font></td>
+
+<td><font size=-1>const Magick::FillRule &amp;fillRule_</font></td>
+
+<td><font size=-1>Rule to use when filling drawn objects.</font></td>
 </tr>
 
 <tr>
