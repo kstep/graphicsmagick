@@ -337,26 +337,26 @@ MagickExport ModuleInfo *GetModuleInfo(const char *tag,ExceptionInfo *exception)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   L i s t M o d u l e s                                                     %
+%   G e t M o d u l e L i s t                                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ListModules returns a list containing the names of modules which may
+%  Method GetModuleList returns a list containing the names of modules which may
 %  be loaded.
 %
-%  The format of the ListModules function is:
+%  The format of the GetModuleList function is:
 %
-%      char **ListModules()
+%      char **GetModuleList()
 %
 %  A description of each parameter follows:
 %
-%    o modulelist: Method ListModules returns a list of available modules. If
+%    o modulelist: Method GetModuleList returns a list of available modules. If
 %      an error occurs a NULL list is returned.
 %
 */
-static char **ListModules(void)
+static char **GetModuleList(void)
 {
   char
     filename[MaxTextExtent],
@@ -616,7 +616,7 @@ MagickExport unsigned int OpenModules(ExceptionInfo *exception)
     Load all modules.
   */
   (void) GetMagickInfo((char *) NULL,exception);
-  modules=ListModules();
+  modules=GetModuleList();
   if (modules == (char **) NULL)
     return(False);
   p=modules;

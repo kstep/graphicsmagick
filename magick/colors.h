@@ -35,7 +35,7 @@ extern MagickExport IndexPacket
   ValidateColormapIndex(Image *,const int);
 
 extern MagickExport char
-  **GetColorlist(const char *,int *);
+  **GetColorList(const char *,int *);
 
 extern MagickExport ColorInfo
   *GetColorInfo(const char *,ExceptionInfo *);
