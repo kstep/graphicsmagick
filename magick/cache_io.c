@@ -670,6 +670,9 @@ Export unsigned int ReadCacheIndexes(CacheHandle cache_handle,
 Export unsigned int ReadCachePixels(CacheHandle cache_handle,
   RectangleInfo *region_info,PixelPacket *pixels)
 {
+  CacheInfo
+    *cache_info;
+
   register int
     y;
 
@@ -679,8 +682,8 @@ Export unsigned int ReadCachePixels(CacheHandle cache_handle,
   off_t
     offset;
 
-  CacheInfo *cache_info=(CacheInfo *) cache_handle;
-  assert(cache_info != (CacheInfo *) NULL);
+  assert(cache_handle != (CacheHandle *) NULL);
+  cache_info=(CacheInfo *) cache_handle;
   offset=region_info->y*cache_info->columns+region_info->x;
   for (y=0; y < (int) region_info->height; y++)
   {
