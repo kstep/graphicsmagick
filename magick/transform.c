@@ -547,7 +547,7 @@ MagickExport Image *DeconstructImages(Image *image,ExceptionInfo *exception)
     y;
 
   RectangleInfo
-    *bounding_box;
+    *bounds;
 
   register Image
     *next;
@@ -579,9 +579,9 @@ MagickExport Image *DeconstructImages(Image *image,ExceptionInfo *exception)
   /*
     Allocate memory.
   */
-  bounding_box=(RectangleInfo *)
+  bounds=(RectangleInfo *)
     AcquireMemory(GetNumberScenes(image)*sizeof(RectangleInfo));
-  if (bounding_box == (RectangleInfo *) NULL)
+  if (bounds == (RectangleInfo *) NULL)
     ThrowImageException(OptionWarning,"Unable to deconstruct image sequence",
       "Memory allocation failed");
   /*
@@ -609,7 +609,7 @@ MagickExport Image *DeconstructImages(Image *image,ExceptionInfo *exception)
       if (y < (int) next->rows)
         break;
     }
-    bounding_box[i].x=x;
+    bounds[i].x=x;
     for (y=0; y < (int) next->rows; y++)
     {
       p=GetImagePixels(next,0,y,next->columns,1);
@@ -626,7 +626,7 @@ MagickExport Image *DeconstructImages(Image *image,ExceptionInfo *exception)
       if (x < (int) next->columns)
         break;
     }
-    bounding_box[i].y=y;
+    bounds[i].y=y;
     for (x=next->columns-1; x >= 0; x--)
     {
       p=GetImagePixels(next,x,0,1,next->rows);
@@ -643,7 +643,7 @@ MagickExport Image *DeconstructImages(Image *image,ExceptionInfo *exception)
       if (y < (int) next->rows)
         break;
     }
-    bounding_box[i].width=x-bounding_box[i].x+1;
+    bounds[i].width=x-bounds[i].x+1;
     for (y=next->rows-1; y >= 0; y--)
     {
       p=GetImagePixels(next,0,y,next->columns,1);
@@ -660,7 +660,7 @@ MagickExport Image *DeconstructImages(Image *image,ExceptionInfo *exception)
       if (x < (int) next->columns)
         break;
     }
-    bounding_box[i].height=y-bounding_box[i].y+1;
+    bounds[i].height=y-bounds[i].y+1;
     i++;
     CloseImagePixels(next);
     CloseImagePixels(next->previous);
@@ -671,7 +671,7 @@ MagickExport Image *DeconstructImages(Image *image,ExceptionInfo *exception)
   deconstruct_image=CloneImage(image,image->columns,image->rows,True,exception);
   if (deconstruct_image == (Image *) NULL)
     {
-      LiberateMemory((void **) &bounding_box);
+      LiberateMemory((void **) &bounds);
       return((Image *) NULL);
     }
   /*
@@ -681,14 +681,14 @@ MagickExport Image *DeconstructImages(Image *image,ExceptionInfo *exception)
   for (next=image->next; next != (Image *) NULL; next=next->next)
   {
     next->orphan=True;
-    crop_next=CropImage(next,&bounding_box[i++],exception);
+    crop_next=CropImage(next,&bounds[i++],exception);
     if (crop_next == (Image *) NULL)
       break;
     deconstruct_image->next=crop_next;
     crop_next->previous=deconstruct_image;
     deconstruct_image=deconstruct_image->next;
   }
-  LiberateMemory((void **) &bounding_box);
+  LiberateMemory((void **) &bounds);
   while (deconstruct_image->previous != (Image *) NULL)
     deconstruct_image=deconstruct_image->previous;
   return(deconstruct_image);

@@ -430,7 +430,7 @@ typedef struct _Image
     taint;
 
   SegmentInfo
-    bounding_box;
+    bounds;
 
   TimerInfo
     timer;

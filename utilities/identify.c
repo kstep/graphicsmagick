@@ -166,7 +166,6 @@ int main(int argc,char **argv)
   ReadCommandlLine(argc,&argv);
   MagickIncarnate(*argv);
   client_name=SetClientName((char *) NULL);
-  /* get -format arg out of the list - it drives ExpandFilenames  nuts */
   format=(char *) NULL;
   for (i=1; i < argc; i++)
   {

@@ -4186,6 +4186,9 @@ Mogrify(ref,...)
           AnnotateInfo
             *annotate_info;
 
+          if (attribute_flag[1])
+            (void) CloneString(&info->image_info->font,
+              argument_list[1].string_reference);
           if (attribute_flag[2])
             info->image_info->pointsize=argument_list[2].double_reference;
           if (attribute_flag[3])
@@ -4194,39 +4197,6 @@ Mogrify(ref,...)
           if (attribute_flag[8])
             (void) CloneString(&info->image_info->server_name,
               argument_list[8].string_reference);
-          annotate_info=
-            CloneAnnotateInfo(info->image_info,(AnnotateInfo *) NULL);
-          if (attribute_flag[0])
-            (void) CloneString(&annotate_info->text,
-              argument_list[0].string_reference);
-          if (attribute_flag[1])
-            (void) CloneString(&annotate_info->font,
-              argument_list[1].string_reference);
-          if (attribute_flag[4])
-            (void) QueryColorDatabase(argument_list[4].string_reference,
-              &annotate_info->box);
-          if (attribute_flag[5])
-            (void) QueryColorDatabase(argument_list[5].string_reference,
-              &annotate_info->stroke);
-          if (attribute_flag[6])
-            (void) QueryColorDatabase(argument_list[6].string_reference,
-              &annotate_info->fill);
-          if (attribute_flag[7])
-            (void) CloneString(&annotate_info->geometry,
-              argument_list[7].string_reference);
-          if (attribute_flag[9] || attribute_flag[10])
-            {
-              if (!attribute_flag[9])
-                argument_list[9].int_reference=0;
-              if (!attribute_flag[10])
-                argument_list[10].int_reference=0;
-              FormatString(message,"%+d%+d",argument_list[9].int_reference,
-                argument_list[10].int_reference);
-              (void) CloneString(&annotate_info->geometry,message);
-            }
-          if (attribute_flag[11])
-            annotate_info->gravity=(GravityType)
-              argument_list[11].int_reference;
           for (j=12; j < 17; j++)
           {
             if (!attribute_flag[j])
@@ -4235,7 +4205,7 @@ Mogrify(ref,...)
             angle=argument_list[j].double_reference;
             for (k=0; k < 6; k++)
             {
-              current[k]=annotate_info->affine[k];
+              current[k]=info->image_info->affine[k];
               affine[k]=0.0;
             }
             affine[0]=1.0;
@@ -4298,19 +4268,49 @@ Mogrify(ref,...)
                 break;
               }
             }
-            annotate_info->affine[0]=
+            info->image_info->affine[0]=
               current[0]*affine[0]+current[2]*affine[1];
-            annotate_info->affine[1]=
+            info->image_info->affine[1]=
               current[1]*affine[0]+current[3]*affine[1];
-            annotate_info->affine[2]=
+            info->image_info->affine[2]=
               current[0]*affine[2]+current[2]*affine[3];
-            annotate_info->affine[3]=
+            info->image_info->affine[3]=
               current[1]*affine[2]+current[3]*affine[3];
-            annotate_info->affine[4]=
+            info->image_info->affine[4]=
               current[0]*affine[4]+current[2]*affine[5]+current[4];
-            annotate_info->affine[5]=
+            info->image_info->affine[5]=
               current[1]*affine[4]+current[3]*affine[5]+current[5];
           }
+          annotate_info=
+            CloneAnnotateInfo(info->image_info,(AnnotateInfo *) NULL);
+          if (attribute_flag[0])
+            (void) CloneString(&annotate_info->text,
+              argument_list[0].string_reference);
+          if (attribute_flag[4])
+            (void) QueryColorDatabase(argument_list[4].string_reference,
+              &annotate_info->box);
+          if (attribute_flag[5])
+            (void) QueryColorDatabase(argument_list[5].string_reference,
+              &annotate_info->stroke);
+          if (attribute_flag[6])
+            (void) QueryColorDatabase(argument_list[6].string_reference,
+              &annotate_info->fill);
+          if (attribute_flag[7])
+            (void) CloneString(&annotate_info->geometry,
+              argument_list[7].string_reference);
+          if (attribute_flag[9] || attribute_flag[10])
+            {
+              if (!attribute_flag[9])
+                argument_list[9].int_reference=0;
+              if (!attribute_flag[10])
+                argument_list[10].int_reference=0;
+              FormatString(message,"%+d%+d",argument_list[9].int_reference,
+                argument_list[10].int_reference);
+              (void) CloneString(&annotate_info->geometry,message);
+            }
+          if (attribute_flag[11])
+            annotate_info->gravity=(GravityType)
+              argument_list[11].int_reference;
           if (attribute_flag[17])
             (void) QueryColorDatabase(argument_list[17].string_reference,
               &annotate_info->fill);
@@ -4515,31 +4515,6 @@ Mogrify(ref,...)
           if (attribute_flag[7])
             (void) QueryColorDatabase(argument_list[7].string_reference,
               &info->image_info->border_color);
-          draw_info=CloneDrawInfo(info->image_info,(DrawInfo *) NULL);
-          (void) CloneString(&draw_info->primitive,"Point");
-          if (attribute_flag[0] && (argument_list[0].int_reference > 0))
-            (void) CloneString(&draw_info->primitive,
-              PrimitiveTypes[argument_list[0].int_reference]);
-          if (attribute_flag[1])
-            {
-              (void) strcat(draw_info->primitive," ");
-              (void) strcat(draw_info->primitive,
-                argument_list[1].string_reference);
-            }
-          if (attribute_flag[2])
-            {
-              (void) strcat(draw_info->primitive," ");
-              (void) strcat(draw_info->primitive,
-                MethodTypes[argument_list[2].int_reference]);
-            }
-          if (attribute_flag[3])
-            (void) QueryColorDatabase(argument_list[3].string_reference,
-              &draw_info->stroke);
-          if (attribute_flag[4])
-            (void) QueryColorDatabase(argument_list[4].string_reference,
-              &draw_info->fill);
-          if (attribute_flag[5])
-            draw_info->linewidth=argument_list[5].double_reference;
           for (j=10; j < 15; j++)
           {
             if (!attribute_flag[j])
@@ -4548,7 +4523,7 @@ Mogrify(ref,...)
             angle=argument_list[j].double_reference;
             for (k=0; k < 6; k++)
             {
-              current[k]=draw_info->affine[k];
+              current[k]=info->image_info->affine[k];
               affine[k]=(k == 0) || (k == 3) ? 1.0 : 0.0;
             }
             switch (j)
@@ -4609,15 +4584,44 @@ Mogrify(ref,...)
                 break;
               }
             }
-            draw_info->affine[0]=current[0]*affine[0]+current[2]*affine[1];
-            draw_info->affine[1]=current[1]*affine[0]+current[3]*affine[1];
-            draw_info->affine[2]=current[0]*affine[2]+current[2]*affine[3];
-            draw_info->affine[3]=current[1]*affine[2]+current[3]*affine[3];
-            draw_info->affine[4]=
+            info->image_info->affine[0]=
+              current[0]*affine[0]+current[2]*affine[1];
+            info->image_info->affine[1]=
+              current[1]*affine[0]+current[3]*affine[1];
+            info->image_info->affine[2]=
+              current[0]*affine[2]+current[2]*affine[3];
+            info->image_info->affine[3]=
+              current[1]*affine[2]+current[3]*affine[3];
+            info->image_info->affine[4]=
               current[0]*affine[4]+current[2]*affine[5]+current[4];
-            draw_info->affine[5]=
+            info->image_info->affine[5]=
               current[1]*affine[4]+current[3]*affine[5]+current[5];
           }
+          draw_info=CloneDrawInfo(info->image_info,(DrawInfo *) NULL);
+          (void) CloneString(&draw_info->primitive,"Point");
+          if (attribute_flag[0] && (argument_list[0].int_reference > 0))
+            (void) CloneString(&draw_info->primitive,
+              PrimitiveTypes[argument_list[0].int_reference]);
+          if (attribute_flag[1])
+            {
+              (void) strcat(draw_info->primitive," ");
+              (void) strcat(draw_info->primitive,
+                argument_list[1].string_reference);
+            }
+          if (attribute_flag[2])
+            {
+              (void) strcat(draw_info->primitive," ");
+              (void) strcat(draw_info->primitive,
+                MethodTypes[argument_list[2].int_reference]);
+            }
+          if (attribute_flag[3])
+            (void) QueryColorDatabase(argument_list[3].string_reference,
+              &draw_info->stroke);
+          if (attribute_flag[4])
+            (void) QueryColorDatabase(argument_list[4].string_reference,
+              &draw_info->fill);
+          if (attribute_flag[5])
+            draw_info->linewidth=argument_list[5].double_reference;
           if (attribute_flag[15])
             draw_info->tile=CloneImage(argument_list[15].image_reference,
               argument_list[15].image_reference->columns,

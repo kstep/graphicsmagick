@@ -22,6 +22,7 @@
 
 		<LI><A HREF="#destroyimageattributes">DestroyImageAttributes</A></LI>
 		<LI><A HREF="#getimageattributes">GetImageAttributes</A></LI>
+		<LI><A HREF="#getimageinfiattribute">GetImageInfiAttribute</A></LI>
 		<LI><A HREF="#setimageattributes">SetImageAttributes</A></LI>
 		<LI><A HREF="#storeimageattribute">StoreImageAttribute</A></LI>
 	</UL>
@@ -76,6 +77,32 @@ Method GetImageAttribute returns the attribute if it exists otherwise
 The address of a structure of type Image.
 <P></P>
 <p><dt><STRONG><A NAME="item_o_key%3A">key:</A></STRONG><BR>
+<DD>
+These character strings are the name of an image attribute to return.
+<P></P></DL></DL>
+<P>
+<H2><A NAME="getimageinfiattribute">GetImageInfiAttribute</A></H2>
+<P>Method GetImageInfoAttribute returns a ``fake'' attribute based on data in the image info or image structures.</P>
+<P>The format of the GetImageInfoAttribute method is:</P>
+<PRE>
+    ImageAttribute *GetImageAttribute(const Image *image,const char *key)</PRE>
+<P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
+<DL><DL>
+<p><dt><STRONG>attribute:</STRONG><BR>
+<DD>
+Method GetImageInfoAttribute returns the attribute if it exists otherwise 
+<FONT SIZE=-1>NULL.</FONT>
+<P></P>
+<p><dt><STRONG><A NAME="item_o_image_info%3A">image_info:</A></STRONG><BR>
+<DD>
+The address of a structure of type ImageInfo.
+<P></P>
+<p><dt><STRONG>image:</STRONG><BR>
+<DD>
+The address of a structure of type Image.
+<P></P>
+<p><dt><STRONG>key:</STRONG><BR>
 <DD>
 These character strings are the name of an image attribute to return.
 <P></P></DL></DL>

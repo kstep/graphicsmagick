@@ -1985,7 +1985,7 @@ MagickExport void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
   draw_info->pointsize=image_info->pointsize;
   draw_info->angle=0.0;
   for (i=0; i < 6; i++)
-    draw_info->affine[i]=(i == 0) || (i == 3) ? 1.0 : 0.0;
+    draw_info->affine[i]=image_info->affine[i];
   draw_info->fill=image_info->fill;
   draw_info->stroke=image_info->stroke;
   (void) QueryColorDatabase("none",&draw_info->box);
@@ -2416,14 +2416,14 @@ static double IntersectPrimitive(PrimitiveInfo *primitive_info,
               if (isspace((int) *r) && (*(r-1) != '\\') && (*r != '\0'))
                 break;
         clone_info=CloneImageInfo((ImageInfo *) NULL);
+        clone_info->font=AllocateString(draw_info->font);
+        clone_info->antialias=draw_info->antialias;
+        clone_info->pointsize=draw_info->pointsize;
+        for (i=0; i < 6; i++)
+          clone_info->affine[i]=draw_info->affine[i];
         annotate=CloneAnnotateInfo(clone_info,(AnnotateInfo *) NULL);
         DestroyImageInfo(clone_info);
-        annotate->font=AllocateString(draw_info->font);
-        annotate->antialias=draw_info->antialias;
-        annotate->pointsize=draw_info->pointsize;
         annotate->degrees=draw_info->angle;
-        for (i=0; i < 6; i++)
-          annotate->affine[i]=draw_info->affine[i];
         annotate->gravity=draw_info->gravity;
         annotate->decorate=draw_info->decorate;
         annotate->geometry=AllocateString("");

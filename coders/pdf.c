@@ -183,7 +183,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     c;
 
   SegmentInfo
-    bounding_box;
+    bounds;
 
   unsigned int
     height,
@@ -255,21 +255,21 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       portrait=False;
     if (LocaleNCompare(MediaBox,command,Extent(MediaBox)) != 0)
       continue;
-    count=sscanf(command,"/MediaBox [ %lf %lf %lf %lf",&bounding_box.x1,
-      &bounding_box.y1,&bounding_box.x2,&bounding_box.y2);
+    count=sscanf(command,"/MediaBox [ %lf %lf %lf %lf",&bounds.x1,
+      &bounds.y1,&bounds.x2,&bounds.y2);
     if (count != 4)
       continue;
-    if ((bounding_box.x1 > bounding_box.x2) ||
-        (bounding_box.y1 > bounding_box.y2))
+    if ((bounds.x1 > bounds.x2) ||
+        (bounds.y1 > bounds.y2))
       continue;
     /*
       Set Postscript render geometry.
     */
-    width=(unsigned int) (bounding_box.x2-bounding_box.x1);
-    if ((float) ((int) bounding_box.x2) != bounding_box.x2)
+    width=(unsigned int) (bounds.x2-bounds.x1);
+    if ((float) ((int) bounds.x2) != bounds.x2)
       width++;
-    height=(unsigned int) (bounding_box.y2-bounding_box.y1);
-    if ((float) ((int) bounding_box.y2) != bounding_box.y2)
+    height=(unsigned int) (bounds.y2-bounds.y1);
+    if ((float) ((int) bounds.y2) != bounds.y2)
       height++;
     if ((width <= box.width) && (height <= box.height))
       continue;

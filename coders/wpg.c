@@ -394,7 +394,7 @@ if(image2!=NULL) 	/* Allocate next image structure. */
     }
     
 FINISH_UNL:    
-unlink(clone_info->filename);/* */
+remove(clone_info->filename);/* */
 FINISH:
 DestroyImageInfo(clone_info);
 return(image);

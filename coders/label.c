@@ -260,7 +260,7 @@ static Image *RenderFreetype(const ImageInfo *image_info,const char *text,
     label[MaxTextExtent];
 
   FT_BBox
-    bounding_box;
+    bounds;
 
   FT_Bitmap
     *glyph;
@@ -403,10 +403,10 @@ static Image *RenderFreetype(const ImageInfo *image_info,const char *text,
   */
   origin.x=0;
   origin.y=0;
-  image->bounding_box.x1=32000;
-  image->bounding_box.x2=(-32000);
-  image->bounding_box.y1=32000;
-  image->bounding_box.y2=(-32000);
+  image->bounds.x1=32000;
+  image->bounds.x2=(-32000);
+  image->bounds.y1=32000;
+  image->bounds.y2=(-32000);
   affine.xx=65536.0*image_info->affine[0];
   affine.yx=(-65536.0*image_info->affine[1]);
   affine.xy=(-65536.0*image_info->affine[2]);
@@ -429,24 +429,24 @@ static Image *RenderFreetype(const ImageInfo *image_info,const char *text,
     bitmap_origin=origin;
     FT_Vector_Transform(&bitmap_origin,&affine);
     (void) FT_Glyph_Transform(glyphs[i].image,&affine,&bitmap_origin);
-    FT_Glyph_Get_CBox(glyphs[i].image,ft_glyph_bbox_pixels,&bounding_box);
+    FT_Glyph_Get_CBox(glyphs[i].image,ft_glyph_bbox_pixels,&bounds);
     status=FT_Glyph_To_Bitmap(&glyphs[i].image,
       image_info->antialias ? ft_render_mode_normal : ft_render_mode_mono,
       False,False);
     if (status)
       continue;
-    if (bounding_box.xMin < image->bounding_box.x1)
-      image->bounding_box.x1=bounding_box.xMin;
-    if (bounding_box.xMax > image->bounding_box.x2)
-      image->bounding_box.x2=bounding_box.xMax;
-    if (bounding_box.yMin < image->bounding_box.y1)
-      image->bounding_box.y1=bounding_box.yMin;
-    if (bounding_box.yMax > image->bounding_box.y2)
-      image->bounding_box.y2=bounding_box.yMax;
+    if (bounds.xMin < image->bounds.x1)
+      image->bounds.x1=bounds.xMin;
+    if (bounds.xMax > image->bounds.x2)
+      image->bounds.x2=bounds.xMax;
+    if (bounds.yMin < image->bounds.y1)
+      image->bounds.y1=bounds.yMin;
+    if (bounds.yMax > image->bounds.y2)
+      image->bounds.y2=bounds.yMax;
     origin.x+=face->glyph->advance.x;
   }
-  image->columns=image->bounding_box.x2-image->bounding_box.x1+1.0;
-  image->rows=image->bounding_box.y2-image->bounding_box.y1+1.0;
+  image->columns=image->bounds.x2-image->bounds.x1+1.0;
+  image->rows=image->bounds.y2-image->bounds.y1+1.0;
   SetImage(image,TransparentOpacity);
   if (face->family_name != (char *) NULL)
     {
@@ -469,8 +469,8 @@ static Image *RenderFreetype(const ImageInfo *image_info,const char *text,
     glyph=(&bitmap->bitmap);
     if ((glyph->width == 0) || (glyph->rows == 0))
       continue;
-    x=bitmap->left-image->bounding_box.x1+0.5;
-    y=image->rows-bitmap->top+image->bounding_box.y1+0.5;
+    x=bitmap->left-image->bounds.x1+0.5;
+    y=image->rows-bitmap->top+image->bounds.y1+0.5;
     q=GetImagePixels(image,x,y,glyph->width,glyph->rows);
     if (q == (PixelPacket *) NULL)
       continue;
@@ -824,11 +824,11 @@ static Image *RenderFreetype(const ImageInfo *image_info,const char *text,
             }
         }
     }
-  image->bounding_box.x1=0.0;
-  image->bounding_box.y1=0.0;
-  image->bounding_box.x2=Max(image->columns,image->rows);
-  image->bounding_box.y2=image_info->affine[0]*image_info->pointsize;
-  image->bounding_box.y2-=image->bounding_box.y2/3.0;
+  image->bounds.x2=Max(image->columns,image->rows);
+  image->bounds.y2=image_info->affine[0]*image_info->pointsize;
+  image->bounds.y2-=image->bounds.y2/3.0;
+  image->bounds.x1=0.0;
+  image->bounds.y1=(double) image->rows/-4.0;
   /*
     Free TrueType resources.
   */
@@ -1012,11 +1012,11 @@ static Image *RenderPostscript(const ImageInfo *image_info,const char *text,
     if (!SyncImagePixels(image))
       break;
   }
-  image->bounding_box.x1=0.0;
-  image->bounding_box.y1=0.0;
-  image->bounding_box.x2=Max(image->columns,image->rows);
-  image->bounding_box.y2=image_info->affine[0]*image_info->pointsize;
-  image->bounding_box.y2-=image->bounding_box.y2/3.0;
+  image->bounds.x2=Max(image->columns,image->rows);
+  image->bounds.y2=image_info->affine[0]*image_info->pointsize;
+  image->bounds.y2-=image->bounds.y2/3.0;
+  image->bounds.x1=0.0;
+  image->bounds.y1=(double) image->rows/-4.0;
   return(image);
 }
 
@@ -1228,11 +1228,11 @@ static Image *RenderX11(const ImageInfo *image_info,const char *text,
             }
         }
     }
-  image->bounding_box.x1=0.0;
-  image->bounding_box.y1=0.0;
-  image->bounding_box.x2=Max(image->columns,image->rows);
-  image->bounding_box.y2=image_info->affine[0]*image_info->pointsize;
-  image->bounding_box.y2-=image->bounding_box.y2/3.0;
+  image->bounds.x2=Max(image->columns,image->rows);
+  image->bounds.y2=image_info->affine[0]*image_info->pointsize;
+  image->bounds.y2-=image->bounds.y2/3.0;
+  image->bounds.x1=0.0;
+  image->bounds.y1=(double) image->rows/-4.0;
   return(image);
 #else
   Image

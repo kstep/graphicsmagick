@@ -112,6 +112,9 @@ MagickExport unsigned int AnnotateImage(Image *image,
     x,
     y;
 
+  PointInfo
+    offset;
+
   register int
     i;
 
@@ -226,10 +229,10 @@ MagickExport unsigned int AnnotateImage(Image *image,
         else
           if (annotate_info->decorate == UnderlineDecoration)
             q=GetImagePixels(annotate_image,0,(int)
-              annotate_image->bounding_box.y2,annotate_image->columns,1);
+              annotate_image->bounds.y2,annotate_image->columns,1);
           else
             q=GetImagePixels(annotate_image,0,(int)
-              (annotate_image->bounding_box.y2/2.0),annotate_image->columns,1);
+              (0.5*annotate_image->bounds.y2),annotate_image->columns,1);
         if (q != (PixelPacket *) NULL)
           {
             register int
@@ -264,27 +267,30 @@ MagickExport unsigned int AnnotateImage(Image *image,
     {
       case NorthWestGravity:
       {
-        clone_info->bounds.x=x;
-        clone_info->bounds.y=y+i*clone_info->bounds.height;
+        offset.x=x;
+        offset.y=y+i*clone_info->bounds.height-clone_info->bounds.height-
+          clone_info->bounds.y+2.0;
         break;
       }
       case NorthGravity:
       {
-        clone_info->bounds.x=x+(width/2.0)-(annotate_image->columns/2.0);
-        clone_info->bounds.y=y+i*clone_info->bounds.height;
+        offset.x=x+0.5*width-0.5*annotate_image->columns;
+        offset.y=y+i*clone_info->bounds.height-clone_info->bounds.height-
+          clone_info->bounds.y+2.0;
         break;
       }
       case NorthEastGravity:
       {
-        clone_info->bounds.x=width-annotate_image->columns+x;
-        clone_info->bounds.y=y+i*clone_info->bounds.height;
+        offset.x=width-annotate_image->columns+x+1.0;
+        offset.y=y+i*clone_info->bounds.height-clone_info->bounds.height-
+          clone_info->bounds.y+2.0;
         break;
       }
       case WestGravity:
       {
-        clone_info->bounds.x=x;
-        clone_info->bounds.y=y+(height/2.0)+i*clone_info->bounds.height-
-          (clone_info->bounds.height/2.0);
+        offset.x=x;
+        offset.y=y+0.5*height+i*clone_info->bounds.height-
+          0.5*clone_info->bounds.height-clone_info->bounds.y-2.0;
         break;
       }
       case ForgetGravity:
@@ -292,37 +298,34 @@ MagickExport unsigned int AnnotateImage(Image *image,
       case CenterGravity:
       default:
       {
-        clone_info->bounds.x=x+(width/2.0)-(annotate_image->columns/2.0);
-        clone_info->bounds.y=y+(height/2.0)+i*clone_info->bounds.height-
-          (clone_info->bounds.height/2.0);
+        offset.x=x+0.5*width-0.5*annotate_image->columns;
+        offset.y=y+0.5*height+i*clone_info->bounds.height-
+          0.5*clone_info->bounds.height-clone_info->bounds.y-2.0;
         break;
       }
       case EastGravity:
       {
-        clone_info->bounds.x=x+width-annotate_image->columns;
-        clone_info->bounds.y=y+(height/2.0)+i*clone_info->bounds.height-
-          (clone_info->bounds.height/2.0);
+        offset.x=x+width-annotate_image->columns+1.0;
+        offset.y=y+0.5*height+i*clone_info->bounds.height-
+          0.5*clone_info->bounds.height-clone_info->bounds.y-2.0;
         break;
       }
       case SouthWestGravity:
       {
-        clone_info->bounds.x=x;
-        clone_info->bounds.y=y+height+i*clone_info->bounds.height-
-          clone_info->bounds.height;
+        offset.x=x;
+        offset.y=y+height+i*clone_info->bounds.height;
         break;
       }
       case SouthGravity:
       {
-        clone_info->bounds.x=x+(width/2.0)-(annotate_image->columns/2.0);
-        clone_info->bounds.y=y+height+i*clone_info->bounds.height-
-          clone_info->bounds.height;
+        offset.x=x+0.5*width-0.5*annotate_image->columns;
+        offset.y=y+height+i*clone_info->bounds.height;
         break;
       }
       case SouthEastGravity:
       {
-        clone_info->bounds.x=x+width-annotate_image->columns;
-        clone_info->bounds.y=y+height-i*clone_info->bounds.height-
-          clone_info->bounds.height;
+        offset.x=x+width-annotate_image->columns+1.0;
+        offset.y=y+height-i*clone_info->bounds.height;
         break;
       }
     }
@@ -346,9 +349,8 @@ MagickExport unsigned int AnnotateImage(Image *image,
             annotate_image=box_image;
           }
       }
-    CompositeImage(image,
-      annotate_image->matte ? AnnotateCompositeOp : ReplaceCompositeOp,
-      annotate_image,clone_info->bounds.x,clone_info->bounds.y);
+    CompositeImage(image,annotate_image->matte ? AnnotateCompositeOp :
+      ReplaceCompositeOp,annotate_image,offset.x,offset.y);
     DestroyImage(annotate_image);
   }
   image->matte=matte;
@@ -515,7 +517,7 @@ MagickExport void GetAnnotateInfo(const ImageInfo *image_info,
   annotate_info->pointsize=image_info->pointsize;
   annotate_info->degrees=0.0;
   for (i=0; i < 6; i++)
-    annotate_info->affine[i]=(i == 0) || (i == 3) ? 1.0 : 0.0;
+    annotate_info->affine[i]=image_info->affine[i];
   annotate_info->fill=image_info->fill;
   annotate_info->stroke=image_info->stroke;
   (void) QueryColorDatabase("none",&annotate_info->box);
@@ -524,7 +526,7 @@ MagickExport void GetAnnotateInfo(const ImageInfo *image_info,
   annotate_info->bounds.width=ceil(image_info->pointsize);
   annotate_info->bounds.height=ceil(image_info->pointsize);
   annotate_info->bounds.x=0;
-  annotate_info->bounds.y=0;
+  annotate_info->bounds.y=annotate_info->bounds.height/4.0;
   annotate_info->signature=MagickSignature;
   if (annotate_info->font == (char *) NULL)
     return;
@@ -538,11 +540,12 @@ MagickExport void GetAnnotateInfo(const ImageInfo *image_info,
   DestroyImageInfo(clone_info);
   if (annotate_image == (Image *) NULL)
     return;
+  annotate_info->bounds.height=annotate_image->rows;
+  annotate_info->bounds.height=annotate_image->rows;
+  annotate_info->bounds.x=annotate_image->bounds.x1;
+  annotate_info->bounds.y=annotate_image->bounds.y1;
   attribute=GetImageAttribute(annotate_image,"Label");
   if (attribute != (ImageAttribute *) NULL)
     annotate_info->font_name=AllocateString(attribute->value);
-  annotate_info->bounds.width=
-    (annotate_image->columns+(strlen(Alphabet) >> 1))/strlen(Alphabet);
-  annotate_info->bounds.height=annotate_image->rows;
   DestroyImage(annotate_image);
 }

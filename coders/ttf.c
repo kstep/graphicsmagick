@@ -162,7 +162,7 @@ static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Annotate canvas with text rendered with font at different point sizes.
   */
-  y=10;
+  y=30;
   if (annotate_info->font_name != (char *) NULL)
     {
       annotate_info->pointsize=30;

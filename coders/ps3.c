@@ -191,7 +191,7 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
     *p;
 
   SegmentInfo
-    bounding_box;
+    bounds;
 
   time_t
     timer;
@@ -281,15 +281,15 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
         date[Extent(date)-1]='\0';
         FormatString(buffer,"%%%%CreationDate: (%.1024s)\n",date);
         (void) WriteBlob(image,strlen(buffer),buffer);
-        bounding_box.x1=x;
-        bounding_box.y1=y;
-        bounding_box.x2=x+width-1;
-        bounding_box.y2=y+(height+text_size)-1;
+        bounds.x1=x;
+        bounds.y1=y;
+        bounds.x2=x+width-1;
+        bounds.y2=y+(height+text_size)-1;
         if (image_info->adjoin && (image->next != (Image *) NULL))
           (void) strcpy(buffer,"%%BoundingBox: (atend)\n");
         else
           FormatString(buffer,"%%%%BoundingBox: %g %g %g %g\n",
-            bounding_box.x1,bounding_box.y1,bounding_box.x2,bounding_box.y2);
+            bounds.x1,bounds.y1,bounds.x2,bounds.y2);
         (void) WriteBlob(image,strlen(buffer),buffer);
         attribute=GetImageAttribute(image,"Label");
         if (attribute != (ImageAttribute *) NULL)
@@ -314,14 +314,14 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
     FormatString(buffer,"%%%%PageBoundingBox: %d %d %d %d\n",x,y,
       x+(int) width-1,y+(int) (height+text_size)-1);
     (void) WriteBlob(image,strlen(buffer),buffer);
-    if (x < bounding_box.x1)
-      bounding_box.x1=x;
-    if (y < bounding_box.y1)
-      bounding_box.y1=y;
-    if ((x+(int) width-1) > bounding_box.x2)
-      bounding_box.x2=x+width-1;
-    if ((y+(int) (height+text_size)-1) > bounding_box.y2)
-      bounding_box.y2=y+(height+text_size)-1;
+    if (x < bounds.x1)
+      bounds.x1=x;
+    if (y < bounds.y1)
+      bounds.y1=y;
+    if ((x+(int) width-1) > bounds.x2)
+      bounds.x2=x+width-1;
+    if ((y+(int) (height+text_size)-1) > bounds.y2)
+      bounds.y2=y+(height+text_size)-1;
     attribute=GetImageAttribute(image,"Label");
     if (attribute != (ImageAttribute *) NULL)
       {
@@ -559,7 +559,7 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
   if (page > 1)
     {
       FormatString(buffer,"%%%%BoundingBox: %g %g %g %g\n",
-        bounding_box.x1,bounding_box.y1,bounding_box.x2,bounding_box.y2);
+        bounds.x1,bounds.y1,bounds.x2,bounds.y2);
       (void) WriteBlob(image,strlen(buffer),buffer);
     }
   (void) strcpy(buffer,"%%EOF\n");

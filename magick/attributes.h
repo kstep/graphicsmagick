@@ -15,8 +15,8 @@ extern "C" {
   MagickExported text attribute methods.
 */
 extern MagickExport ImageAttribute
-  *GetImageInfoAttribute(const ImageInfo *,Image *,const char *),
-  *GetImageAttribute(const Image *,const char *);
+  *GetImageAttribute(const Image *,const char *),
+  *GetImageInfoAttribute(const ImageInfo *,Image *,const char *);
 
 extern MagickExport unsigned int
   SetImageAttribute(Image *,const char *,const char *);

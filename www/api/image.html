@@ -58,6 +58,7 @@
 		<LI><A HREF="#syncimage">SyncImage</A></LI>
 		<LI><A HREF="#textureimage">TextureImage</A></LI>
 		<LI><A HREF="#transformrgbimage">TransformRGBImage</A></LI>
+		<LI><A HREF="#transmitimage">TransmitImage</A></LI>
 	</UL>
 
 </UL>
@@ -110,6 +111,7 @@
 <P>void  <STRONG>SyncImage</STRONG>( Image *image );</P>
 <P>void  <STRONG>TextureImage</STRONG>( Image *image, Image *texture );</P>
 <P>unsigned int  <STRONG>TransformRGBImage</STRONG>( Image *image, const ColorspaceType colorspace );</P>
+<P>unsigned int  <STRONG>TransmitImage</STRONG>( Image *image, ImageInfo *image_info, const TransmitType sendmode, void *param1, void *param2 );</P>
 <P>
 <HR>
 <H1><A NAME="function descriptions">
@@ -756,6 +758,35 @@ The address of a structure of type Image; returned from ReadImage.
 <p><dt><STRONG>colorspace:</STRONG><BR>
 <DD>
 An unsigned integer value defines which colorspace to transform the image to.
+<P></P></DL></DL>
+<P>
+<H2><A NAME="transmitimage">TransmitImage</A></H2>
+<P>Method TransmitImage transmit an image to a variety of destinations.  It is used primarily in 
+<FONT SIZE=-1>CGI</FONT> and 
+<FONT SIZE=-1>ISAPI</FONT> programs to send an image to a client using either disk, blobs, streaming, or via the normal in memory image structure.</P>
+<P>The format of the TransmitImage method is:</P>
+<blockquote>unsigned int TransmitImage ( <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, const TransmitType sendmode, void *param1, void *param2 ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
+<DL><DL>
+<p><dt><STRONG>image:</STRONG><BR>
+<DD>
+The address of a structure of type Image; returned from ReadImage.
+<P></P>
+<p><dt><STRONG>image_info:</STRONG><BR>
+<DD>
+Specifies a pointer to an ImageInfo structure.
+<P></P>
+<p><dt><STRONG><A NAME="item_o_sendmode%3A">sendmode:</A></STRONG><BR>
+<DD>
+An unsigned integer value defines which transmit mode to send the image with.
+<P></P>
+<p><dt><STRONG><A NAME="item_o_param1%3A">param1:</A></STRONG><BR>
+<DD>
+An void pointer whose meaning depends on the transmit mode.
+<P></P>
+<p><dt><STRONG><A NAME="item_o_param2%3A">param2:</A></STRONG><BR>
+<DD>
+An void pointer whose meaning depends on the transmit mode.
 </DL></DL>
 
 </BODY>

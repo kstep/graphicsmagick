@@ -186,7 +186,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     i;
 
   SegmentInfo
-    bounding_box;
+    bounds;
 
   unsigned int
     eps_level,
@@ -280,29 +280,29 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     */
     count=0;
     if (LocaleNCompare(BoundingBox,command,Extent(BoundingBox)) == 0)
-      count=sscanf(command,"%%%%BoundingBox: %lf %lf %lf %lf",&bounding_box.x1,
-        &bounding_box.y1,&bounding_box.x2,&bounding_box.y2);
+      count=sscanf(command,"%%%%BoundingBox: %lf %lf %lf %lf",&bounds.x1,
+        &bounds.y1,&bounds.x2,&bounds.y2);
     if (LocaleNCompare(DocumentMedia,command,Extent(DocumentMedia)) == 0)
-      count=sscanf(command,"%%%%DocumentMedia: %*s %lf %lf",&bounding_box.x2,
-        &bounding_box.y2)+2;
+      count=sscanf(command,"%%%%DocumentMedia: %*s %lf %lf",&bounds.x2,
+        &bounds.y2)+2;
     if (LocaleNCompare(PageBoundingBox,command,Extent(PageBoundingBox)) == 0)
       count=sscanf(command,"%%%%PageBoundingBox: %lf %lf %lf %lf",
-        &bounding_box.x1,&bounding_box.y1,&bounding_box.x2,&bounding_box.y2);
+        &bounds.x1,&bounds.y1,&bounds.x2,&bounds.y2);
     if (count != 4)
       continue;
-    if ((bounding_box.x1 > bounding_box.x2) ||
-        (bounding_box.y1 > bounding_box.y2))
+    if ((bounds.x1 > bounds.x2) ||
+        (bounds.y1 > bounds.y2))
       continue;
     /*
       Set Postscript render geometry.
     */
-    FormatString(translate_geometry,"%f %f translate\n",-bounding_box.x1,
-      -bounding_box.y1);
-    width=(unsigned int) (bounding_box.x2-bounding_box.x1);
-    if ((float) ((int) bounding_box.x2) != bounding_box.x2)
+    FormatString(translate_geometry,"%f %f translate\n",-bounds.x1,
+      -bounds.y1);
+    width=(unsigned int) (bounds.x2-bounds.x1);
+    if ((float) ((int) bounds.x2) != bounds.x2)
       width++;
-    height=(unsigned int) (bounding_box.y2-bounding_box.y1);
-    if ((float) ((int) bounding_box.y2) != bounding_box.y2)
+    height=(unsigned int) (bounds.y2-bounds.y1);
+    if ((float) ((int) bounds.y2) != bounds.y2)
       height++;
     if ((width <= box.width) && (height <= box.height))
       continue;
@@ -826,7 +826,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
     i;
 
   SegmentInfo
-    bounding_box;
+    bounds;
 
   time_t
     timer;
@@ -916,15 +916,15 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
         date[Extent(date)-1]='\0';
         FormatString(buffer,"%%%%CreationDate: (%.1024s)\n",date);
         (void) WriteBlob(image,strlen(buffer),buffer);
-        bounding_box.x1=x;
-        bounding_box.y1=y;
-        bounding_box.x2=x+x_scale-1;
-        bounding_box.y2=y+(height+text_size)-1;
+        bounds.x1=x;
+        bounds.y1=y;
+        bounds.x2=x+x_scale-1;
+        bounds.y2=y+(height+text_size)-1;
         if (image_info->adjoin && (image->next != (Image *) NULL))
           (void) strcpy(buffer,"%%%%BoundingBox: (atend)\n");
         else
           FormatString(buffer,"%%%%BoundingBox: %g %g %g %g\n",
-            bounding_box.x1,bounding_box.y1,bounding_box.x2,bounding_box.y2);
+            bounds.x1,bounds.y1,bounds.x2,bounds.y2);
         (void) WriteBlob(image,strlen(buffer),buffer);
         attribute=GetImageAttribute(image,"Label");
         if (attribute != (ImageAttribute *) NULL)
@@ -1106,14 +1106,14 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
     FormatString(buffer,"%%%%PageBoundingBox: %d %d %d %d\n",x,y,
       x+(int) width,y+(int) (height+text_size));
     (void) WriteBlob(image,strlen(buffer),buffer);
-    if (x < bounding_box.x1)
-      bounding_box.x1=x;
-    if (y < bounding_box.y1)
-      bounding_box.y1=y;
-    if ((x+(int) width-1) > bounding_box.x2)
-      bounding_box.x2=x+width-1;
-    if ((y+(int) (height+text_size)-1) > bounding_box.y2)
-      bounding_box.y2=y+(height+text_size)-1;
+    if (x < bounds.x1)
+      bounds.x1=x;
+    if (y < bounds.y1)
+      bounds.y1=y;
+    if ((x+(int) width-1) > bounds.x2)
+      bounds.x2=x+width-1;
+    if ((y+(int) (height+text_size)-1) > bounds.y2)
+      bounds.y2=y+(height+text_size)-1;
     attribute=GetImageAttribute(image,"Label");
     if (attribute != (ImageAttribute *) NULL)
       {
@@ -1465,7 +1465,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
   if (page > 1)
     {
       FormatString(buffer,"%%%%BoundingBox: %g %g %g %g\n",
-        bounding_box.x1,bounding_box.y1,bounding_box.x2,bounding_box.y2);
+        bounds.x1,bounds.y1,bounds.x2,bounds.y2);
       (void) WriteBlob(image,strlen(buffer),buffer);
     }
   (void) strcpy(buffer,"%%EOF\n");

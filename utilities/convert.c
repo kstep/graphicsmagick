@@ -442,14 +442,14 @@ int main(int argc,char **argv)
   */
   if (LocaleCompare("-convert",argv[0]) == 0)
     {
-      sendmode=FileTransmitType; /* set mode to - called as a subroutine */
+      sendmode=FileTransmitType;
       client_name=SetClientName((char *) NULL);
       if (argc < 3)
         return(False);
     }
   else
     {
-      sendmode=UndefinedTransmitType; /* set mode to - called as normal executable */
+      sendmode=UndefinedTransmitType;
       ReadCommandlLine(argc,&argv);
       MagickIncarnate(*argv);
       client_name=SetClientName((char *) NULL);
@@ -1763,9 +1763,9 @@ int main(int argc,char **argv)
           if (LocaleCompare("xbdat",option+1) == 0)
             {
               i++;
-              if ((i == argc) && (sendmode>0))
+              if ((i == argc) && (sendmode != UndefinedTransmitType))
                 MagickError(OptionError,"Missing blob buffer",option);
-              param1=(void *)argv[i];
+              param1=(void *) argv[i];
               argv[i]=AllocateString("");
               sendmode=BlobTransmitType;
               break;
@@ -1773,9 +1773,9 @@ int main(int argc,char **argv)
           if (LocaleCompare("xblen",option+1) == 0)
             {
               i++;
-              if ((i == argc) && (sendmode>0))
+              if ((i == argc) && (sendmode != UndefinedTransmitType))
                 MagickError(OptionError,"Missing blob length",option);
-              param2=(void *)argv[i];
+              param2=(void *) argv[i];
               argv[i]=AllocateString("");
               sendmode=BlobTransmitType;
               break;
@@ -1783,9 +1783,9 @@ int main(int argc,char **argv)
           if (LocaleCompare("xfunc",option+1) == 0)
             {
               i++;
-              if ((i == argc) && (sendmode>0))
-                MagickError(OptionError,"Missing stream func",option);
-              param1=(void *)argv[i];
+              if ((i == argc) && (sendmode != UndefinedTransmitType))
+                MagickError(OptionError,"Missing stream method",option);
+              param1=(void *) argv[i];
               argv[i]=AllocateString("");
               sendmode=StreamTransmitType;
               break;
@@ -1793,9 +1793,9 @@ int main(int argc,char **argv)
           if (LocaleCompare("xctxt",option+1) == 0)
             {
               i++;
-              if ((i == argc) && (sendmode>0))
+              if ((i == argc) && (sendmode != UndefinedTransmitType))
                 MagickError(OptionError,"Missing stream context",option);
-              param2=(void *)argv[i];
+              param2=(void *) argv[i];
               argv[i]=AllocateString("");
               sendmode=StreamTransmitType;
               break;
@@ -1804,8 +1804,8 @@ int main(int argc,char **argv)
             {
               i++;
               if ((i == argc) && (sendmode>0))
-                MagickError(OptionError,"Missing image info ptr",option);
-              param1=(void *)argv[i];
+                MagickError(OptionError,"Missing image info",option);
+              param1=(void *) argv[i];
               argv[i]=AllocateString("");
               sendmode=ImageTransmitType;
               break;
@@ -1813,9 +1813,9 @@ int main(int argc,char **argv)
           if (LocaleCompare("ximag",option+1) == 0)
             {
               i++;
-              if ((i == argc) && (sendmode>0))
-                MagickError(OptionError,"Missing image ptr",option);
-              param2=(void *)argv[i];
+              if ((i == argc) && (sendmode != UndefinedTransmitType))
+                MagickError(OptionError,"Missing image",option);
+              param2=(void *) argv[i];
               argv[i]=AllocateString("");
               sendmode=ImageTransmitType;
               break;
@@ -1960,11 +1960,11 @@ int main(int argc,char **argv)
   }
   if (image_info->verbose)
     DescribeImage(image,stderr,False);
-  if (sendmode==ImageTransmitType)
+  if (sendmode == ImageTransmitType)
     return(True);
   DestroyImages(image);
   DestroyImageInfo(image_info);
-  if (sendmode)
+  if (sendmode != UndefinedTransmitType)
     return(True);
   LiberateMemory((void **) &argv);
   Exit(0);

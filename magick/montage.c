@@ -348,7 +348,7 @@ MagickExport Image *MontageImages(Image *image,const MontageInfo *montage_info,
     *q;
 
   RectangleInfo
-    bounding_box,
+    bounds,
     tile_info;
 
   unsigned int
@@ -559,14 +559,14 @@ MagickExport Image *MontageImages(Image *image,const MontageInfo *montage_info,
     x_offset=0;
     y_offset=title_offset;
     max_height=0;
-    bounding_box.width=0;
-    bounding_box.height=0;
+    bounds.width=0;
+    bounds.height=0;
     for (tile=0; tile < tiles_per_page; tile++)
     {
       width=concatenate ? next_list[tile]->columns : tile_info.width;
       x_offset+=width+(tile_info.x+border_width)*2;
-      if (x_offset > (int) bounding_box.width)
-        bounding_box.width=x_offset;
+      if (x_offset > (int) bounds.width)
+        bounds.width=x_offset;
       if (next_list[tile]->rows > max_height)
         max_height=next_list[tile]->rows;
       if (((tile+1) == tiles_per_page) || (((tile+1) % tiles_per_row) == 0))
@@ -575,8 +575,8 @@ MagickExport Image *MontageImages(Image *image,const MontageInfo *montage_info,
           height=concatenate ? max_height : tile_info.height;
           y_offset+=height+(tile_info.y+border_width)*2+(font_height+4)*
             number_lines+(montage_info->shadow ? 4 : 0)+(concatenate ? 0 : 2);
-          if (y_offset > (int) bounding_box.height)
-            bounding_box.height=y_offset;
+          if (y_offset > (int) bounds.height)
+            bounds.height=y_offset;
           max_height=0;
         }
     }
@@ -584,8 +584,8 @@ MagickExport Image *MontageImages(Image *image,const MontageInfo *montage_info,
       Initialize Image structure.
     */
     (void) strcpy(montage_next->filename,montage_info->filename);
-    montage_next->columns=bounding_box.width;
-    montage_next->rows=bounding_box.height;
+    montage_next->columns=bounds.width;
+    montage_next->rows=bounds.height;
     SetImage(montage_next,OpaqueOpacity);
     /*
       Set montage geometry.
@@ -823,7 +823,7 @@ MagickExport Image *MontageImages(Image *image,const MontageInfo *montage_info,
                 2*border_width,font_height,(int) (x_offset+border_width),
                 (int) (montage_info->frame ? y_offset+height+
                 2*border_width-bevel_width-2 : y_offset+tile_info.height+
-                2*border_width+(montage_info->shadow ? 4 : 0)));
+                2*border_width+(montage_info->shadow ? 4 : 0)+font_height));
               (void) CloneString(&annotate_info->geometry,geometry);
               (void) CloneString(&annotate_info->text,attribute->value);
               AnnotateImage(montage_next,annotate_info);

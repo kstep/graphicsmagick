@@ -234,14 +234,14 @@ int main(int argc,char **argv)
   */
   if (LocaleCompare("-combine",argv[0]) == 0)
     {
-      sendmode=FileTransmitType; /* set mode to - called as a subroutine */
+      sendmode=FileTransmitType;
       client_name=SetClientName((char *) NULL);
       if (argc < 4)
         return(False);
     }
   else
     {
-      sendmode=UndefinedTransmitType; /* set mode to - called as normal executable */
+      sendmode=UndefinedTransmitType;
       ReadCommandlLine(argc,&argv);
       MagickIncarnate(*argv);
       client_name=SetClientName((char *) NULL);
@@ -819,47 +819,47 @@ int main(int argc,char **argv)
           if (LocaleCompare("xbdat",option+1) == 0)
             {
               i++;
-              if ((i == argc) && (sendmode>0))
+              if ((i == argc) && (sendmode != UndefinedTransmitType))
                 MagickError(OptionError,"Missing blob buffer",option);
-              param1=(void *)argv[i];
+              param1=(void *) argv[i];
               argv[i]=AllocateString("");
-              sendmode=2;
+              sendmode=BlobTransmitType;
               break;
             }
           if (LocaleCompare("xblen",option+1) == 0)
             {
               i++;
-              if ((i == argc) && (sendmode>0))
+              if ((i == argc) && (sendmode != UndefinedTransmitType))
                 MagickError(OptionError,"Missing blob length",option);
-              param2=(void *)argv[i];
+              param2=(void *) argv[i];
               argv[i]=AllocateString("");
-              sendmode=2;
+              sendmode=BlobTransmitType;
               break;
             }
           if (LocaleCompare("xfunc",option+1) == 0)
             {
               i++;
-              if ((i == argc) && (sendmode>0))
-                MagickError(OptionError,"Missing stream func",option);
-              param1=(void *)argv[i];
+              if ((i == argc) && (sendmode != UndefinedTransmitType))
+                MagickError(OptionError,"Missing stream method",option);
+              param1=(void *) argv[i];
               argv[i]=AllocateString("");
-              sendmode=3;
+              sendmode=StreamTransmitType;
               break;
             }
           if (LocaleCompare("xctxt",option+1) == 0)
             {
               i++;
-              if ((i == argc) && (sendmode>0))
+              if ((i == argc) && (sendmode != UndefinedTransmitType))
                 MagickError(OptionError,"Missing stream context",option);
-              param2=(void *)argv[i];
+              param2=(void *) argv[i];
               argv[i]=AllocateString("");
-              sendmode=3;
+              sendmode=StreamTransmitType;
               break;
             }
           if (LocaleCompare("xinfo",option+1) == 0)
             {
               i++;
-              if ((i == argc) && (sendmode>0))
+              if ((i == argc) && (sendmode != UndefinedTransmitType))
                 MagickError(OptionError,"Missing image info ptr",option);
               param1=(void *)argv[i];
               argv[i]=AllocateString("");
@@ -869,7 +869,7 @@ int main(int argc,char **argv)
           if (LocaleCompare("ximag",option+1) == 0)
             {
               i++;
-              if ((i == argc) && (sendmode>0))
+              if ((i == argc) && (sendmode != UndefinedTransmitType))
                 MagickError(OptionError,"Missing image ptr",option);
               param2=(void *)argv[i];
               argv[i]=AllocateString("");
@@ -1060,11 +1060,11 @@ int main(int argc,char **argv)
     CatchImageException(combined_image);
   if (image_info->verbose)
     DescribeImage(combined_image,stderr,False);
-  if (sendmode==ImageTransmitType)
+  if (sendmode == ImageTransmitType)
     return(True);
   DestroyImages(combined_image);
   DestroyImageInfo(image_info);
-  if (sendmode)
+  if (sendmode != UndefinedTransmitType)
     return(True);
   LiberateMemory((void **) &argv);
   Exit(0);
