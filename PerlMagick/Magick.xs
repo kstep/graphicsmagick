@@ -4175,7 +4175,7 @@ Mogrify(ref,...)
         {
           if (!attribute_flag[0])
             argument_list[0].string_reference=(char *) NULL;
-          while (SetImageAttribute(image,"comment",(char *) NULL) != False);
+          (void) SetImageAttribute(image,"comment",(char *) NULL);
           (void) SetImageAttribute(image,"comment",
             argument_list[0].string_reference);
           break;
@@ -4184,7 +4184,7 @@ Mogrify(ref,...)
         {
           if (!attribute_flag[0])
             argument_list[0].string_reference=(char *) NULL;
-          while (SetImageAttribute(image,"label",(char *) NULL) != False);
+          (void) SetImageAttribute(image,"label",(char *) NULL);
           (void) SetImageAttribute(image,"label",
             argument_list[0].string_reference);
           break;
