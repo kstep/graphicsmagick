@@ -1,5 +1,6 @@
 2003-10-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* Makefile.am: Updated to Automake 1.7.8.
 	* various: Edits to eliminate minor issues detected by SGI C compiler.
 	* coders/ps3.c (WritePS3Image): Variable 'value was set but never
 	used so it is removed.
