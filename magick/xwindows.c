@@ -260,7 +260,7 @@ Export unsigned int XAnnotateImage(Display *display,
     }
   for (y=0; y < (int) annotate_image->rows; y++)
   {
-    q=SetPixelCache(image,0,y,image->columns,1);
+    q=SetPixelCache(annotate_image,0,y,annotate_image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
     for (x=0; x < (int) annotate_image->columns; x++)
@@ -302,7 +302,7 @@ Export unsigned int XAnnotateImage(Display *display,
         }
       q++;
     }
-    if (!SyncPixelCache(image))
+    if (!SyncPixelCache(annotate_image))
       break;
   }
   XDestroyImage(annotate_ximage);
@@ -396,6 +396,7 @@ Export unsigned int XAnnotateImage(Display *display,
       q++;
     }
   }
+  (void) XParseGeometry(annotate_info->geometry,&x,&y,&width,&height);
   matte=image->matte;
   CompositeImage(image,OverCompositeOp,annotate_image,x,y);
   image->matte=matte;
