@@ -3766,6 +3766,33 @@ width=15><b><font face="Helvetica, Arial"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
+    -virtual_pixel <i>&lt;type&gt;</i>
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>specify contents of "virtual pixels"</td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+This option 
+defines "virtual pixels" for use by methods that can access pixels outside
+the boundaries of an image.</font></td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+Choose from these types:
+</font></td></tr></table>
+<pre>
+    Constant:  Use the image background color.
+    Edge:  Extend the edge pixel toward infinity.
+    Mirror:  mirror the image.
+    Tile:  Tile the image.
+</pre>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+This option affects methods that use
+virtual pixels such as convolve, sharpen, wave, etc.</font></td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#9EBAC6">
+<img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#FFFFFF"><font size="+1">
     <a name="details-visual"></a>-visual <i>&lt;type&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>animate images using this X visual type</td></tr></table>
