@@ -191,19 +191,19 @@ Export Image *BlurImage(Image *image,const double factor,
   ExceptionInfo *exception)
 {
 #define Blur(weight) \
-  total_red+=(weight)*s->red; \
-  total_green+=(weight)*s->green; \
-  total_blue+=(weight)*s->blue; \
-  total_opacity+=(weight)*s->opacity; \
+  red+=(weight)*s->red; \
+  green+=(weight)*s->green; \
+  blue+=(weight)*s->blue; \
+  opacity+=(weight)*s->opacity; \
   s++;
 #define BlurImageText  "  Blur image...  "
 
   double
+    blue,
+    green,
+    opacity,
     quantum,
-    total_blue,
-    total_green,
-    total_opacity,
-    total_red,
+    red,
     weight;
 
   Image
@@ -250,20 +250,20 @@ Export Image *BlurImage(Image *image,const double factor,
       /*
         Compute weighted average of target pixel color components.
       */
-      total_red=0.0;
-      total_green=0.0;
-      total_blue=0.0;
-      total_opacity=0.0;
+      red=0.0;
+      green=0.0;
+      blue=0.0;
+      opacity=0.0;
       s=p;
       Blur(1); Blur(2); Blur(1);
       s=p+image->columns;
       Blur(2); Blur(weight); Blur(2);
       s=p+2*image->columns;
       Blur(1); Blur(2); Blur(1);
-      q->red=(total_red+(quantum/2))/quantum;
-      q->green=(total_green+(quantum/2))/quantum;
-      q->blue=(total_blue+(quantum/2))/quantum;
-      q->opacity=(total_opacity+(quantum/2))/quantum;
+      q->red=(red+(quantum/2))/quantum;
+      q->green=(green+(quantum/2))/quantum;
+      q->blue=(blue+(quantum/2))/quantum;
+      q->opacity=(opacity+(quantum/2))/quantum;
       p++;
       q++;
     }
@@ -322,10 +322,10 @@ Export Image *ColorizeImage(Image *image,const char *opacity,
     y;
 
   long
-    blue_opacity,
+    blue,
     count,
-    green_opacity,
-    red_opacity;
+    green,
+    red;
 
   PixelPacket
     target;
@@ -349,16 +349,16 @@ Export Image *ColorizeImage(Image *image,const char *opacity,
     Determine RGB values of the pen color.
   */
   (void) QueryColorDatabase(pen_color,&target);
-  red_opacity=100;
-  green_opacity=100;
-  blue_opacity=100;
-  count=sscanf(opacity,"%ld/%ld/%ld",&red_opacity,&green_opacity,&blue_opacity);
+  red=100;
+  green=100;
+  blue=100;
+  count=sscanf(opacity,"%ld/%ld/%ld",&red,&green,&blue);
   if (count == 1)
     {
-      if (red_opacity == 0)
+      if (red == 0)
         return(colorize_image);
-      green_opacity=red_opacity;
-      blue_opacity=red_opacity;
+      green=red;
+      blue=red;
     }
   /*
     Colorize DirectClass image.
@@ -371,12 +371,9 @@ Export Image *ColorizeImage(Image *image,const char *opacity,
       break;
     for (x=0; x < (int) image->columns; x++)
     {
-      q->red=(Quantum) ((unsigned long)
-        (p->red*(100-red_opacity)+target.red*red_opacity)/100);
-      q->green=(Quantum) ((unsigned long)
-        (p->green*(100-green_opacity)+target.green*green_opacity)/100);
-      q->blue=(Quantum) ((unsigned long)
-        (p->blue*(100-blue_opacity)+target.blue*blue_opacity)/100);
+      q->red=((unsigned long) (p->red*(100-red)+target.red*red)/100);
+      q->green=((unsigned long) (p->green*(100-green)+target.green*green)/100);
+      q->blue=((unsigned long) (p->blue*(100-blue)+target.blue*blue)/100);
       p++;
       q++;
     }
@@ -434,11 +431,11 @@ Export Image *DespeckleImage(Image *image,ExceptionInfo *exception)
     y;
 
   Quantum
-    *blue_channel,
+    *blue,
     *buffer,
-    *green_channel,
-    *matte_channel,
-    *red_channel;
+    *green,
+    *matte,
+    *red;
 
   register int
     i,
@@ -468,15 +465,13 @@ Export Image *DespeckleImage(Image *image,ExceptionInfo *exception)
     Allocate image buffers.
   */
   packets=(image->columns+2)*(image->rows+2);
-  red_channel=(Quantum *) AllocateMemory(packets*sizeof(Quantum));
-  green_channel=(Quantum *) AllocateMemory(packets*sizeof(Quantum));
-  blue_channel=(Quantum *) AllocateMemory(packets*sizeof(Quantum));
-  matte_channel=(Quantum *) AllocateMemory(packets*sizeof(Quantum));
+  red=(Quantum *) AllocateMemory(packets*sizeof(Quantum));
+  green=(Quantum *) AllocateMemory(packets*sizeof(Quantum));
+  blue=(Quantum *) AllocateMemory(packets*sizeof(Quantum));
+  matte=(Quantum *) AllocateMemory(packets*sizeof(Quantum));
   buffer=(Quantum *) AllocateMemory(packets*sizeof(Quantum));
-  if ((red_channel == (Quantum *) NULL) ||
-      (green_channel == (Quantum *) NULL) ||
-      (blue_channel == (Quantum *) NULL) ||
-      (matte_channel == (Quantum *) NULL) ||
+  if ((red == (Quantum *) NULL) || (green == (Quantum *) NULL) ||
+      (blue == (Quantum *) NULL) || (matte == (Quantum *) NULL) ||
       (buffer == (Quantum *) NULL))
     {
       DestroyImage(despeckle_image);
@@ -488,10 +483,10 @@ Export Image *DespeckleImage(Image *image,ExceptionInfo *exception)
   */
   for (i=0; i < (int) packets; i++)
   {
-    red_channel[i]=0;
-    green_channel[i]=0;
-    blue_channel[i]=0;
-    matte_channel[i]=0;
+    red[i]=0;
+    green[i]=0;
+    blue[i]=0;
+    matte[i]=0;
     buffer[i]=0;
   }
   /*
@@ -506,10 +501,10 @@ Export Image *DespeckleImage(Image *image,ExceptionInfo *exception)
     j++;
     for (x=0; x < (int) image->columns; x++)
     {
-      red_channel[j]=p->red;
-      green_channel[j]=p->green;
-      blue_channel[j]=p->blue;
-      matte_channel[j]=p->opacity;
+      red[j]=p->red;
+      green[j]=p->green;
+      blue[j]=p->blue;
+      matte[j]=p->opacity;
       p++;
       j++;
     }
@@ -521,10 +516,10 @@ Export Image *DespeckleImage(Image *image,ExceptionInfo *exception)
   for (i=0; i < 4; i++)
   {
     ProgressMonitor(DespeckleImageText,i,12);
-    Hull(X[i],Y[i],1,image->columns,image->rows,red_channel,buffer);
-    Hull(-X[i],-Y[i],1,image->columns,image->rows,red_channel,buffer);
-    Hull(-X[i],-Y[i],-1,image->columns,image->rows,red_channel,buffer);
-    Hull(X[i],Y[i],-1,image->columns,image->rows,red_channel,buffer);
+    Hull(X[i],Y[i],1,image->columns,image->rows,red,buffer);
+    Hull(-X[i],-Y[i],1,image->columns,image->rows,red,buffer);
+    Hull(-X[i],-Y[i],-1,image->columns,image->rows,red,buffer);
+    Hull(X[i],Y[i],-1,image->columns,image->rows,red,buffer);
   }
   /*
     Reduce speckle in green channel.
@@ -534,10 +529,10 @@ Export Image *DespeckleImage(Image *image,ExceptionInfo *exception)
   for (i=0; i < 4; i++)
   {
     ProgressMonitor(DespeckleImageText,i+4,12);
-    Hull(X[i],Y[i],1,image->columns,image->rows,green_channel,buffer);
-    Hull(-X[i],-Y[i],1,image->columns,image->rows,green_channel,buffer);
-    Hull(-X[i],-Y[i],-1,image->columns,image->rows,green_channel,buffer);
-    Hull(X[i],Y[i],-1,image->columns,image->rows,green_channel,buffer);
+    Hull(X[i],Y[i],1,image->columns,image->rows,green,buffer);
+    Hull(-X[i],-Y[i],1,image->columns,image->rows,green,buffer);
+    Hull(-X[i],-Y[i],-1,image->columns,image->rows,green,buffer);
+    Hull(X[i],Y[i],-1,image->columns,image->rows,green,buffer);
   }
   /*
     Reduce speckle in blue channel.
@@ -547,10 +542,10 @@ Export Image *DespeckleImage(Image *image,ExceptionInfo *exception)
   for (i=0; i < 4; i++)
   {
     ProgressMonitor(DespeckleImageText,i+8,12);
-    Hull(X[i],Y[i],1,image->columns,image->rows,blue_channel,buffer);
-    Hull(-X[i],-Y[i],1,image->columns,image->rows,blue_channel,buffer);
-    Hull(-X[i],-Y[i],-1,image->columns,image->rows,blue_channel,buffer);
-    Hull(X[i],Y[i],-1,image->columns,image->rows,blue_channel,buffer);
+    Hull(X[i],Y[i],1,image->columns,image->rows,blue,buffer);
+    Hull(-X[i],-Y[i],1,image->columns,image->rows,blue,buffer);
+    Hull(-X[i],-Y[i],-1,image->columns,image->rows,blue,buffer);
+    Hull(X[i],Y[i],-1,image->columns,image->rows,blue,buffer);
   }
   /*
     Copy color component buffers to despeckled image.
@@ -564,10 +559,10 @@ Export Image *DespeckleImage(Image *image,ExceptionInfo *exception)
     j++;
     for (x=0; x < (int) image->columns; x++)
     {
-      q->red=red_channel[j];
-      q->green=green_channel[j];
-      q->blue=blue_channel[j];
-      q->opacity=matte_channel[j];
+      q->red=red[j];
+      q->green=green[j];
+      q->blue=blue[j];
+      q->opacity=matte[j];
       q++;
       j++;
     }
@@ -579,10 +574,10 @@ Export Image *DespeckleImage(Image *image,ExceptionInfo *exception)
     Free memory.
   */
   FreeMemory((void *) &buffer);
-  FreeMemory((void *) &matte_channel);
-  FreeMemory((void *) &blue_channel);
-  FreeMemory((void *) &green_channel);
-  FreeMemory((void *) &red_channel);
+  FreeMemory((void *) &matte);
+  FreeMemory((void *) &blue);
+  FreeMemory((void *) &green);
+  FreeMemory((void *) &red);
   return(despeckle_image);
 }
 
@@ -635,18 +630,18 @@ Export Image *EdgeImage(Image *image,const double factor,
   ExceptionInfo *exception)
 {
 #define Edge(weight) \
-  total_red+=(weight)*s->red; \
-  total_green+=(weight)*s->green; \
-  total_blue+=(weight)*s->blue; \
-  total_opacity+=(weight)*s->opacity; \
+  red+=(weight)*s->red; \
+  green+=(weight)*s->green; \
+  blue+=(weight)*s->blue; \
+  opacity+=(weight)*s->opacity; \
   s++;
 #define EdgeImageText  "  Detecting image edges...  "
 
   double
-    total_blue,
-    total_green,
-    total_opacity,
-    total_red,
+    blue,
+    green,
+    opacity,
+    red,
     weight;
 
   Image
@@ -692,23 +687,20 @@ Export Image *EdgeImage(Image *image,const double factor,
       /*
         Compute weighted average of target pixel color components.
       */
-      total_red=0.0;
-      total_green=0.0;
-      total_blue=0.0;
-      total_opacity=0.0;
+      red=0.0;
+      green=0.0;
+      blue=0.0;
+      opacity=0.0;
       s=p;
       Edge(-weight/8); Edge(-weight/8) Edge(-weight/8);
       s=p+image->columns;
       Edge(-weight/8); Edge(weight); Edge(-weight/8);
       s=p+2*image->columns;
       Edge(-weight/8); Edge(-weight/8); Edge(-weight/8);
-      q->red=(total_red < 0) ? 0 : (total_red > MaxRGB) ? MaxRGB : total_red;
-      q->green=
-        (total_green < 0) ? 0 : (total_green > MaxRGB) ? MaxRGB : total_green;
-      q->blue=
-        (total_blue < 0) ? 0 : (total_blue > MaxRGB) ? MaxRGB : total_blue;
-      q->opacity=((total_opacity < Transparent) ? Transparent :
-        (total_opacity > Opaque) ? Opaque : total_opacity);
+      q->red=(red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red+0.5;
+      q->green=(green < 0) ? 0 : (green > MaxRGB) ? MaxRGB : green+0.5;
+      q->blue=(blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue+0.5;
+      q->opacity=(opacity < 0) ? 0 : (opacity > MaxRGB) ? MaxRGB : opacity+0.5;
       p++;
       q++;
     }
@@ -771,15 +763,15 @@ Export Image *EmbossImage(Image *image,ExceptionInfo *exception)
 {
 #define EmbossImageText  "  Embossing image...  "
 #define Emboss(weight) \
-  total_red+=(weight)*s->red; \
-  total_green+=(weight)*s->green; \
-  total_blue+=(weight)*s->blue; \
+  red+=(weight)*s->red; \
+  green+=(weight)*s->green; \
+  blue+=(weight)*s->blue; \
   s++;
 
   double
-    total_blue,
-    total_green,
-    total_red;
+    blue,
+    green,
+    red;
 
   Image
     *emboss_image;
@@ -823,23 +815,21 @@ Export Image *EmbossImage(Image *image,ExceptionInfo *exception)
       /*
         Compute weighted average of target pixel color components.
       */
-      total_red=0.0;
-      total_green=0.0;
-      total_blue=0.0;
+      red=0.0;
+      green=0.0;
+      blue=0.0;
       s=p;
       Emboss(-1); Emboss(-2); Emboss( 0);
       s=p+image->columns;
       Emboss(-2); Emboss( 0); Emboss( 2);
       s=p+2*image->columns;
       Emboss( 0); Emboss( 2); Emboss( 1);
-      total_red+=(MaxRGB+1)/2;
-      q->red=(total_red < 0) ? 0 : (total_red > MaxRGB) ? MaxRGB : total_red;
-      total_green+=(MaxRGB+1)/2;
-      q->green=
-        (total_green < 0) ? 0 : (total_green > MaxRGB) ? MaxRGB : total_green;
-      total_blue+=(MaxRGB+1)/2;
-      q->blue=
-        (total_blue < 0) ? 0 : (total_blue > MaxRGB) ? MaxRGB : total_blue;
+      red+=(MaxRGB+1)/2;
+      q->red=(red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red+0.5;
+      green+=(MaxRGB+1)/2;
+      q->green=(green < 0) ? 0 : (green > MaxRGB) ? MaxRGB : green+0.5;
+      blue+=(MaxRGB+1)/2;
+      q->blue=(blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue+0.5;
       q->opacity=(p+image->columns)->opacity;
       p++;
       q++;
@@ -2421,19 +2411,19 @@ Export Image *SharpenImage(Image *image,const double factor,
   ExceptionInfo *exception)
 {
 #define Sharpen(weight) \
-  total_red+=(weight)*s->red; \
-  total_green+=(weight)*s->green; \
-  total_blue+=(weight)*s->blue; \
-  total_opacity+=(weight)*s->opacity; \
+  red+=(weight)*s->red; \
+  green+=(weight)*s->green; \
+  blue+=(weight)*s->blue; \
+  opacity+=(weight)*s->opacity; \
   s++;
 #define SharpenImageText  "  Sharpening image...  "
 
   double
+    blue,
+    green,
+    opacity,
     quantum,
-    total_blue,
-    total_green,
-    total_opacity,
-    total_red,
+    red,
     weight;
 
   Image
@@ -2480,44 +2470,24 @@ Export Image *SharpenImage(Image *image,const double factor,
       /*
         Compute weighted average of target pixel color components.
       */
-      total_red=0.0;
-      total_green=0.0;
-      total_blue=0.0;
-      total_opacity=0.0;
+      red=0.0;
+      green=0.0;
+      blue=0.0;
+      opacity=0.0;
       s=p;
       Sharpen(-1); Sharpen(-2); Sharpen(-1);
       s=p+image->columns;
       Sharpen(-2); Sharpen(weight); Sharpen(-2);
       s=p+2*image->columns;
       Sharpen(-1); Sharpen(-2); Sharpen(-1);
-      if (total_red < 0)
-        q->red=0;
-      else
-        if (total_red > (int) (MaxRGB*quantum))
-          q->red=MaxRGB;
-        else
-          q->red=(Quantum) ((total_red+(quantum/2.0))/quantum);
-      if (total_green < 0)
-        q->green=0;
-      else
-        if (total_green > (int) (MaxRGB*quantum))
-          q->green=MaxRGB;
-        else
-          q->green=(Quantum) ((total_green+(quantum/2.0))/quantum);
-      if (total_blue < 0)
-        q->blue=0;
-      else
-        if (total_blue > (int) (MaxRGB*quantum))
-          q->blue=MaxRGB;
-        else
-          q->blue=(Quantum) ((total_blue+(quantum/2.0))/quantum);
-      if (total_opacity < 0)
-        q->opacity=0;
-      else
-        if (total_opacity > (int) (MaxRGB*quantum))
-          q->opacity=MaxRGB;
-        else
-          q->opacity=(Quantum) ((total_opacity+(quantum/2.0))/quantum);
+      q->red=(red < 0) ? 0 : (red > (MaxRGB*quantum)) ? MaxRGB :
+        (red+(quantum/2.0))/quantum;
+      q->green=(green < 0) ? 0 : (green > (MaxRGB*quantum)) ? MaxRGB :
+        (green+(quantum/2.0))/quantum;
+      q->blue=(blue < 0) ? 0 : (blue > (MaxRGB*quantum)) ? MaxRGB :
+        (blue+(quantum/2.0))/quantum;
+      q->opacity=(opacity < 0) ? 0 : (opacity > (Opaque*quantum)) ? MaxRGB :
+        (opacity+(quantum/2.0))/quantum;
       p++;
       q++;
     }

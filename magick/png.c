@@ -2204,10 +2204,9 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             png_get_PLTE(ping, ping_info, &palette, &num_palette);
             for (i=0; i < (int) image->colors; i++)
             {
-              image->colormap[i].red= (unsigned short) UpScale(palette[i].red);
-              image->colormap[i].green=
-                (unsigned short) UpScale(palette[i].green);
-              image->colormap[i].blue= (unsigned short) UpScale(palette[i].blue);
+              image->colormap[i].red=UpScale(palette[i].red);
+              image->colormap[i].green=UpScale(palette[i].green);
+              image->colormap[i].blue=UpScale(palette[i].blue);
             }
           }
         else
@@ -3301,9 +3300,9 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
      */
      MSBFirstWriteLong(image,6L);
      PNGType(chunk,mng_BACK);
-     red=(unsigned short) UpScale(image->background_color.red);
-     green=(unsigned short) UpScale(image->background_color.green);
-     blue=(unsigned short) UpScale(image->background_color.blue);
+     red=UpScale(image->background_color.red);
+     green=UpScale(image->background_color.green);
+     blue=UpScale(image->background_color.blue);
      PNGShort(chunk+4,red);
      PNGShort(chunk+6,green);
      PNGShort(chunk+8,blue);

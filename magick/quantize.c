@@ -972,8 +972,7 @@ static unsigned int Dither(CubeInfo *cube_info,Image *image,
         green_error+=p->error[i].green*p->weights[i];
         blue_error+=p->error[i].blue*p->weights[i];
       }
-      red=(red_error < 0) ? 0 :
-        (red_error > MaxRGB) ? MaxRGB : red_error+0.5;
+      red=(red_error < 0) ? 0 : (red_error > MaxRGB) ? MaxRGB : red_error+0.5;
       green=(green_error < 0) ? 0 :
         (green_error > MaxRGB) ? MaxRGB : green_error+0.5;
       blue=(blue_error < 0) ? 0 :
@@ -1030,9 +1029,9 @@ static unsigned int Dither(CubeInfo *cube_info,Image *image,
       */
       for (i=0; i < (ExceptionQueueLength-1); i++)
         p->error[i]=p->error[i+1];
-      p->error[i].red=(int) (red-image->colormap[index].red);
-      p->error[i].green=(int) (green-image->colormap[index].green);
-      p->error[i].blue=(int) (blue-image->colormap[index].blue);
+      p->error[i].red=red-(int) image->colormap[index].red;
+      p->error[i].green=green-(int) image->colormap[index].green;
+      p->error[i].blue=blue-(int) image->colormap[index].blue;
     }
   switch (direction)
   {

@@ -325,7 +325,7 @@ Export Image *MagnifyImage(Image *image,ExceptionInfo *exception)
   */
   assert(image != (Image *) NULL);
   magnify_image=
-    CloneImage(image,image->columns << 1,image->rows << 1,False,exception);
+    CloneImage(image,2*image->columns,2*image->rows,False,exception);
   if (magnify_image == (Image *) NULL)
     return((Image *) NULL);
   magnify_image->class=DirectClass;
@@ -362,12 +362,12 @@ Export Image *MagnifyImage(Image *image,ExceptionInfo *exception)
     if (p == (PixelPacket *) NULL)
       break;
     memcpy(scanline,p,magnify_image->columns*sizeof(PixelPacket));
-    q=GetImagePixels(magnify_image,0,(image->rows-1-y) << 1,
+    q=GetImagePixels(magnify_image,0,2*(image->rows-1-y),
       magnify_image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
     p=scanline+image->columns-1;
-    q+=((image->columns-1) << 1);
+    q+=2*(image->columns-1);
     *q=(*p);
     *(q+1)=(*(p));
     for (x=1; x < (int) image->columns; x++)
@@ -375,10 +375,10 @@ Export Image *MagnifyImage(Image *image,ExceptionInfo *exception)
       p--;
       q-=2;
       *q=(*p);
-      (q+1)->red=(((int) p->red)+((int) (p+1)->red)+1) >> 1;
-      (q+1)->green=(((int) p->green)+((int) (p+1)->green)+1) >> 1;
-      (q+1)->blue=(((int) p->blue)+((int) (p+1)->blue)+1) >> 1;
-      (q+1)->opacity=(((int) p->opacity)+((int) (p+1)->opacity)+1) >> 1;
+      (q+1)->red=(((int) p->red)+((int) (p+1)->red)+1)/2;
+      (q+1)->green=(((int) p->green)+((int) (p+1)->green)+1)/2;
+      (q+1)->blue=(((int) p->blue)+((int) (p+1)->blue)+1)/2;
+      (q+1)->opacity=(((int) p->opacity)+((int) (p+1)->opacity)+1)/2;
     }
     if (!SyncImagePixels(magnify_image))
       break;
@@ -386,7 +386,7 @@ Export Image *MagnifyImage(Image *image,ExceptionInfo *exception)
   for (y=0; y < (int) image->rows; y++)
   {
     rows=Min(image->rows-y,3);
-    p=GetImagePixels(magnify_image,0,y << 1,magnify_image->columns,rows);
+    p=GetImagePixels(magnify_image,0,2*y,magnify_image->columns,rows);
     if (p == (PixelPacket *) NULL)
       break;
     q=p;
@@ -397,10 +397,10 @@ Export Image *MagnifyImage(Image *image,ExceptionInfo *exception)
       s=q+magnify_image->columns;
     for (x=0; x < (int) (image->columns-1); x++)
     {
-      q->red=(((int) p->red)+((int) s->red)+1) >> 1;
-      q->green=(((int) p->green)+((int) s->green)+1) >> 1;
-      q->blue=(((int) p->blue)+((int) s->blue)+1) >> 1;
-      q->opacity=(((int) p->opacity)+((int) s->opacity)+1) >> 1;
+      q->red=(((int) p->red)+((int) s->red)+1)/2;
+      q->green=(((int) p->green)+((int) s->green)+1)/2;
+      q->blue=(((int) p->blue)+((int) s->blue)+1)/2;
+      q->opacity=(((int) p->opacity)+((int) s->opacity)+1)/2;
       (q+1)->red=(((int) p->red)+((int) (p+2)->red)+((int) s->red)+
         ((int) (s+2)->red)+2) >> 2;
       (q+1)->green=(((int) p->green)+((int) (p+2)->green)+((int) s->green)+
@@ -413,17 +413,17 @@ Export Image *MagnifyImage(Image *image,ExceptionInfo *exception)
       p+=2;
       s+=2;
     }
-    q->red=(((int) p->red)+((int) s->red)+1) >> 1;
-    q->green=(((int) p->green)+((int) s->green)+1) >> 1;
-    q->blue=(((int) p->blue)+((int) s->blue)+1) >> 1;
-    q->opacity=(((int) p->opacity)+((int) s->opacity)+1) >> 1;
+    q->red=(((int) p->red)+((int) s->red)+1)/2;
+    q->green=(((int) p->green)+((int) s->green)+1)/2;
+    q->blue=(((int) p->blue)+((int) s->blue)+1)/2;
+    q->opacity=(((int) p->opacity)+((int) s->opacity)+1)/2;
     p++;
     q++;
     s++;
-    q->red=(((int) p->red)+((int) s->red)+1) >> 1;
-    q->green=(((int) p->green)+((int) s->green)+1) >> 1;
-    q->blue=(((int) p->blue)+((int) s->blue)+1) >> 1;
-    q->opacity=(((int) p->opacity)+((int) s->opacity)+1) >> 1;
+    q->red=(((int) p->red)+((int) s->red)+1)/2;
+    q->green=(((int) p->green)+((int) s->green)+1)/2;
+    q->blue=(((int) p->blue)+((int) s->blue)+1)/2;
+    q->opacity=(((int) p->opacity)+((int) s->opacity)+1)/2;
     if (!SyncImagePixels(magnify_image))
       break;
     if (QuantumTick(y,image->rows))
@@ -522,8 +522,7 @@ Export Image *MinifyImage(Image *image,ExceptionInfo *exception)
   assert(image != (Image *) NULL);
   if ((image->columns < 4) || (image->rows < 4))
     return((Image *) NULL);
-  minify_image=
-    CloneImage(image,image->columns >> 1,image->rows >> 1,False,exception);
+  minify_image=CloneImage(image,image->columns/2,image->rows/2,False,exception);
   if (minify_image == (Image *) NULL)
     return((Image *) NULL);
   minify_image->class=DirectClass;
@@ -532,7 +531,7 @@ Export Image *MinifyImage(Image *image,ExceptionInfo *exception)
   */
   for (y=0; y < (int) minify_image->rows; y++)
   {
-    p=GetImagePixels(image,0,Min(y << 1,image->rows-4),image->columns,4);
+    p=GetImagePixels(image,0,Min(2*y,image->rows-4),image->columns,4);
     q=SetImagePixels(minify_image,0,y,minify_image->columns,1);
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
@@ -1275,12 +1274,12 @@ static unsigned int HorizontalFilter(Image *source,Image *destination,
   const unsigned int span,unsigned int *quantum)
 {
   double
-    blue_weight,
+    blue,
     center,
     density,
-    green_weight,
-    opacity_weight,
-    red_weight,
+    green,
+    opacity,
+    red,
     scale_factor,
     support;
 
@@ -1349,27 +1348,23 @@ static unsigned int HorizontalFilter(Image *source,Image *destination,
     for (y=0; y < (int) destination->rows; y++)
     {
       j=0;
-      blue_weight=0.0;
-      green_weight=0.0;
-      red_weight=0.0;
-      opacity_weight=0.0;
+      blue=0.0;
+      green=0.0;
+      red=0.0;
+      opacity=0.0;
       for (i=0; i < n; i++)
       {
         j=y*(contribution[n-1].pixel-contribution[0].pixel+1)+
           (contribution[i].pixel-contribution[0].pixel);
-        red_weight+=contribution[i].weight*(p+j)->red;
-        green_weight+=contribution[i].weight*(p+j)->green;
-        blue_weight+=contribution[i].weight*(p+j)->blue;
-        opacity_weight+=contribution[i].weight*(p+j)->opacity;
+        red+=contribution[i].weight*(p+j)->red;
+        green+=contribution[i].weight*(p+j)->green;
+        blue+=contribution[i].weight*(p+j)->blue;
+        opacity+=contribution[i].weight*(p+j)->opacity;
       }
-      q->red=(red_weight < 0) ? 0 :
-        (red_weight > MaxRGB) ? MaxRGB : red_weight+0.5;
-      q->green=(green_weight < 0) ? 0 :
-        (green_weight > MaxRGB) ? MaxRGB : green_weight+0.5;
-      q->blue=(blue_weight < 0) ? 0 :
-        (blue_weight > MaxRGB) ? MaxRGB : blue_weight+0.5;
-      q->opacity=(opacity_weight < 0) ? 0 :
-        (opacity_weight > MaxRGB) ? MaxRGB : opacity_weight+0.5;
+      q->red=(red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red+0.5;
+      q->green=(green < 0) ? 0 : (green > MaxRGB) ? MaxRGB : green+0.5;
+      q->blue=(blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue+0.5;
+      q->opacity=(opacity < 0) ? 0 : (opacity > MaxRGB) ? MaxRGB : opacity+0.5;
       if (destination->class == PseudoClass)
         destination_indexes[y]=source_indexes[j];
       q++;
@@ -1388,12 +1383,12 @@ static unsigned int VerticalFilter(Image *source,Image *destination,
   const unsigned int span,unsigned int *quantum)
 {
   double
-    blue_weight,
+    blue,
     center,
     density,
-    green_weight,
-    opacity_weight,
-    red_weight,
+    green,
+    opacity,
+    red,
     scale_factor,
     support;
 
@@ -1462,26 +1457,22 @@ static unsigned int VerticalFilter(Image *source,Image *destination,
     for (x=0; x < (int) destination->columns; x++)
     {
       j=0;
-      blue_weight=0.0;
-      green_weight=0.0;
-      red_weight=0.0;
-      opacity_weight=0.0;
+      blue=0.0;
+      green=0.0;
+      red=0.0;
+      opacity=0.0;
       for (i=0; i < n; i++)
       {
         j=(contribution[i].pixel-contribution[0].pixel)*source->columns+x;
-        red_weight+=contribution[i].weight*(p+j)->red;
-        green_weight+=contribution[i].weight*(p+j)->green;
-        blue_weight+=contribution[i].weight*(p+j)->blue;
-        opacity_weight+=contribution[i].weight*(p+j)->opacity;
+        red+=contribution[i].weight*(p+j)->red;
+        green+=contribution[i].weight*(p+j)->green;
+        blue+=contribution[i].weight*(p+j)->blue;
+        opacity+=contribution[i].weight*(p+j)->opacity;
       }
-      q->red=(red_weight < 0) ? 0 :
-        (red_weight > MaxRGB) ? MaxRGB : red_weight+0.5;
-      q->green=(green_weight < 0) ? 0 :
-        (green_weight > MaxRGB) ? MaxRGB : green_weight+0.5;
-      q->blue=(blue_weight < 0) ? 0 :
-        (blue_weight > MaxRGB) ? MaxRGB : blue_weight+0.5;
-      q->opacity=(opacity_weight < 0) ? 0 :
-        (opacity_weight > MaxRGB) ? MaxRGB : opacity_weight+0.5;
+      q->red=(red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red+0.5;
+      q->green=(green < 0) ? 0 : (green > MaxRGB) ? MaxRGB : green+0.5;
+      q->blue=(blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue+0.5;
+      q->opacity=(opacity < 0) ? 0 : (opacity > MaxRGB) ? MaxRGB : opacity+0.5;
       if (destination->class == PseudoClass)
         destination_indexes[x]=source_indexes[j];
       q++;

@@ -655,9 +655,9 @@ Export unsigned int NegateImage(Image *image,const unsigned int grayscale)
           if ((image->colormap[i].red != image->colormap[i].green) ||
               (image->colormap[i].green != image->colormap[i].blue))
             continue;
-        image->colormap[i].red=(Quantum) (~image->colormap[i].red);
-        image->colormap[i].green=(Quantum) (~image->colormap[i].green);
-        image->colormap[i].blue=(Quantum) (~image->colormap[i].blue);
+        image->colormap[i].red=(~image->colormap[i].red);
+        image->colormap[i].green=(~image->colormap[i].green);
+        image->colormap[i].blue=(~image->colormap[i].blue);
       }
       SyncImage(image);
       break;

@@ -965,9 +965,10 @@ Export unsigned int CompositeImage(Image *image,const CompositeOperator compose,
   int
     y;
 
-  long
+  double
     blue,
     green,
+    midpoint,
     opacity,
     red;
 
@@ -975,7 +976,6 @@ Export unsigned int CompositeImage(Image *image,const CompositeOperator compose,
     color;
 
   Quantum
-    midpoint,
     shade;
 
   register IndexPacket
@@ -1009,10 +1009,10 @@ Export unsigned int CompositeImage(Image *image,const CompositeOperator compose,
   /*
     Image must be uncompressed.
   */
-  red=0;
-  green=0;
-  blue=0;
-  midpoint=0;
+  red=0.0;
+  green=0.0;
+  blue=0.0;
+  midpoint=0.0;
   switch (compose)
   {
     case XorCompositeOp:
@@ -1116,7 +1116,7 @@ Export unsigned int CompositeImage(Image *image,const CompositeOperator compose,
     }
     case ModulateCompositeOp:
     {
-      midpoint=MaxRGB/2;
+      midpoint=MaxRGB/2.0;
       saturation_scale=50.0;
       brightness_scale=50.0;
       if (composite_image->geometry != (char *) NULL)
@@ -1475,11 +1475,11 @@ Export unsigned int CompositeImage(Image *image,const CompositeOperator compose,
       if (image->class == PseudoClass)
         if (image->class == composite_image->class)
           indexes[x]=composite_indexes[x];
-      q->red=(red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red;
-      q->green=(green < 0) ? 0 : (green > MaxRGB) ? MaxRGB : green;
-      q->blue=(blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue;
+      q->red=(red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red+0.5;
+      q->green=(green < 0) ? 0 : (green > MaxRGB) ? MaxRGB : green+0.5;
+      q->blue=(blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue+0.5;
       q->opacity=(opacity < Transparent) ? Transparent :
-        (opacity > Opaque) ? Opaque : opacity;
+        (opacity > Opaque) ? Opaque : opacity+0.5;
       if (!SyncImagePixels(image))
         break;
     }
@@ -5074,9 +5074,9 @@ Export unsigned int RGBTransformImage(Image *image,
           red=x_map[q->red+X]+y_map[q->green+X]+z_map[q->blue+X]+tx;
           green=x_map[q->red+Y]+y_map[q->green+Y]+z_map[q->blue+Y]+ty;
           blue=x_map[q->red+Z]+y_map[q->green+Z]+z_map[q->blue+Z]+tz;
-          q->red=red < 0 ? 0 : red > MaxRGB ? MaxRGB : red;
-          q->green=green < 0 ? 0 : green > MaxRGB ? MaxRGB : green;
-          q->blue=blue < 0 ? 0 : blue > MaxRGB ? MaxRGB : blue;
+          q->red=(red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red+0.5;
+          q->green=(green < 0) ? 0 : (green > MaxRGB) ? MaxRGB : green+0.5;
+          q->blue=(blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue+0.5;
           q++;
         }
         if (!SyncImagePixels(image))
@@ -5099,10 +5099,12 @@ Export unsigned int RGBTransformImage(Image *image,
           z_map[image->colormap[i].blue+Y]+ty;
         blue=x_map[image->colormap[i].red+Z]+y_map[image->colormap[i].green+Z]+
           z_map[image->colormap[i].blue+Z]+tz;
-        image->colormap[i].red=red < 0 ? 0 : red > MaxRGB ? MaxRGB : red;
+        image->colormap[i].red=
+          (red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red+0.5;
         image->colormap[i].green=
-          green < 0 ? 0 : green > MaxRGB ? MaxRGB : green;
-        image->colormap[i].blue=blue < 0 ? 0 : blue > MaxRGB ? MaxRGB : blue;
+          (green < 0) ? 0 : (green > MaxRGB) ? MaxRGB : green+0.5;
+        image->colormap[i].blue=
+          (blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue+0.5;
       }
       SyncImage(image);
       break;
@@ -6060,11 +6062,11 @@ Export unsigned int TransformRGBImage(Image *image,
         for (x=0; x < (int) image->columns; x++)
         {
           red=red_map[q->red+R]+green_map[q->green+R]+blue_map[q->blue+R];
-          red=red < 0 ? 0 : red > max_value ? max_value : red;
+          red=red < 0 ? 0 : red > max_value ? max_value : red+0.5;
           green=red_map[q->red+G]+green_map[q->green+G]+blue_map[q->blue+G];
-          green=green < 0 ? 0 : green > max_value ? max_value : green;
+          green=green < 0 ? 0 : green > max_value ? max_value : green+0.5;
           blue=red_map[q->red+B]+green_map[q->green+B]+blue_map[q->blue+B];
-          blue=blue < 0 ? 0 : blue > max_value ? max_value : blue;
+          blue=blue < 0 ? 0 : blue > max_value ? max_value : blue+0.5;
           if (colorspace == sRGBColorspace)
             {
               red=UpScale(sRGBMap[DownScale((int) red)]);
@@ -6099,15 +6101,15 @@ Export unsigned int TransformRGBImage(Image *image,
         red=red_map[image->colormap[i].red+R]+
           green_map[image->colormap[i].green+R]+
           blue_map[image->colormap[i].blue+R];
-        red=red < 0 ? 0 : red > max_value ? max_value : red;
+        red=red < 0 ? 0 : red > max_value ? max_value : red+0.5;
         green=red_map[image->colormap[i].red+G]+
           green_map[image->colormap[i].green+G]+
           blue_map[image->colormap[i].blue+G];
-        green=green < 0 ? 0 : green > max_value ? max_value : green;
+        green=green < 0 ? 0 : green > max_value ? max_value : green+0.5;
         blue=red_map[image->colormap[i].red+B]+
           green_map[image->colormap[i].green+B]+
           blue_map[image->colormap[i].blue+B];
-        blue=blue < 0 ? 0 : blue > max_value ? max_value : blue;
+        blue=blue < 0 ? 0 : blue > max_value ? max_value : blue+0.5;
         if (colorspace == sRGBColorspace)
           {
             red=UpScale(sRGBMap[DownScale((int) red)]);

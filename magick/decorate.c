@@ -228,13 +228,11 @@ Export Image *FrameImage(Image *image,const FrameInfo *frame_info,
   shadow.red=((unsigned long) (matte.red*ShadowModulate)/MaxRGB);
   shadow.green=((unsigned long) (matte.green*ShadowModulate)/MaxRGB);
   shadow.blue=((unsigned long) (matte.blue*ShadowModulate)/MaxRGB);
-  shadow.opacity=(Quantum)
-    ((unsigned long) (matte.opacity*ShadowModulate)/MaxRGB);
+  shadow.opacity=((unsigned long) (matte.opacity*ShadowModulate)/MaxRGB);
   trough.red=((unsigned long) (matte.red*TroughModulate)/MaxRGB);
   trough.green=((unsigned long) (matte.green*TroughModulate)/MaxRGB);
   trough.blue=((unsigned long) (matte.blue*TroughModulate)/MaxRGB);
-  trough.opacity=(Quantum)
-    ((unsigned long) (matte.opacity*TroughModulate)/MaxRGB);
+  trough.opacity=((unsigned long) (matte.opacity*TroughModulate)/MaxRGB);
   /*
     Draw top of ornamental border.
   */

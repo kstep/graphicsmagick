@@ -61,7 +61,7 @@ testFilter('input.miff', 'Despeckle',
 ++$test;
 testFilter('input.miff', 'Edge',
   q/60/,
-  '4a877ab03fbfc0d96694c95d8e908230',
+  '6c9b138455a7270dc922568d572e1442',
   '89457006d11b4d9ea348d90f2fa75ec7');
 
 ++$test;
@@ -186,7 +186,7 @@ testFilter('input.miff', 'Sample',
 ++$test;
 testFilter('input.miff', 'Scale',
   q/50%/,
-  '3bb2a62e56f47f9bd5cbd68dbda00513',
+  'fd9f86e0fb31bc2fd67aa43084e64e24',
   '8e5e4720a90d15b24c0f28e15c93a94c');
 
 ++$test;
