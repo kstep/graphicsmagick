@@ -1810,7 +1810,7 @@ due to the limited size of the palette (256 or 65535 colors).</font></td>
 
 <td><font size=-1>void</font></td>
 
-<td><font size=-1>const Image clipMask_</font></td>
+<td><font size=-1>const Image &amp;clipMask_</font></td>
 
 <td><font size=-1>Associate a clip mask image with the current image. The
 clip mask image must have the same dimensions as the current image or an
@@ -2658,7 +2658,8 @@ into the dash pattern to start the dash (default 0).</font></td>
 <td><font size=-1>Specify the pattern of dashes and gaps used to stroke
 paths. The strokeDashArray represents a zero-terminated array of numbers
 that specify the lengths (in pixels) of alternating dashes and gaps in
-user units. If an odd number of values is provided, then the list of values
+user
+units. If an odd number of values is provided, then the list of values
 is repeated to yield an even number of values.&nbsp; A typical strokeDashArray_
 array might contain the members 5 3 2 0, where the zero value indicates
 the end of the pattern array.</font></td>
