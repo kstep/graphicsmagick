@@ -207,12 +207,8 @@ MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
         User specified annotation geometry.
       */
       flags=ParseGeometry(draw_info->geometry,&x,&y,&width,&height);
-      if ((flags & XNegative) != 0)
-        x+=image->columns;
       if ((flags & WidthValue) == 0)
         width-=2*x > (long) width ? width : 2*x;
-      if ((flags & YNegative) != 0)
-        y+=image->rows;
       if ((flags & HeightValue) == 0)
         height-=2*y > (long) height ? height : 2*y;
     }
@@ -734,6 +730,9 @@ static unsigned int RenderPostscript(Image *image,const DrawInfo *draw_info,
   FILE
     *file;
 
+  ExceptionInfo
+    exception;
+
   Image
     *annotate_image;
 
@@ -821,7 +820,9 @@ static unsigned int RenderPostscript(Image *image,const DrawInfo *draw_info,
   if (draw_info->density != (char *) NULL)
     (void) CloneString(&clone_info->density,draw_info->density);
   clone_info->antialias=draw_info->text_antialias;
-  annotate_image=ReadImage(clone_info,&image->exception);
+  annotate_image=ReadImage(clone_info,&exception);
+  if (exception.severity != UndefinedException)
+    MagickWarning(exception.severity,exception.reason,exception.description);
   DestroyImageInfo(clone_info);
   (void) remove(filename);
   if (annotate_image == (Image *) NULL)
@@ -844,7 +845,7 @@ static unsigned int RenderPostscript(Image *image,const DrawInfo *draw_info,
       RectangleInfo
         crop_info;
 
-      crop_info=GetImageBoundingBox(annotate_image,&image->exception);
+      crop_info=GetImageBoundingBox(annotate_image,&annotate_image->exception);
       crop_info.height=(unsigned int) ceil((resolution.y/72.0)*
         ExpandAffine(&draw_info->affine)*draw_info->pointsize-0.5);
       crop_info.y=(long) ceil((resolution.y/72.0)*extent.y/8.0-0.5);
