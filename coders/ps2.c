@@ -530,7 +530,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
       bounds.y2=y+(height+text_size)-1;
     attribute=GetImageAttribute(image,"Label");
     if (attribute != (ImageAttribute *) NULL)
-      (void) WriteBlobString(image,"%%PageResources: font Times\n");
+      (void) WriteBlobString(image,"%%PageResources: font Times-Roman\n");
     if (LocaleCompare(image_info->magick,"PS2") != 0)
       (void) WriteBlobString(image,"userdict begin\n");
     (void) WriteBlobString(image,"%%BeginData:\n");

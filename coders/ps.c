@@ -774,7 +774,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
       "  token pop /y exch def pop",
       "  currentfile buffer readline pop",
       "  token pop /pointsize exch def pop",
-      "  /Times findfont pointsize scalefont setfont",
+      "  /Times-Roman findfont pointsize scalefont setfont",
       (char *) NULL
     },
     *PostscriptEpilog[]=
@@ -937,7 +937,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
         attribute=GetImageAttribute(image,"Label");
         if (attribute != (ImageAttribute *) NULL)
           (void) WriteBlobString(image,
-            "%%%%DocumentNeededResources: font Times\n");
+            "%%%%DocumentNeededResources: font Times-Roman\n");
         (void) WriteBlobString(image,"%%DocumentData: Clean7Bit\n");
         (void) WriteBlobString(image,"%%LanguageLevel: 1\n");
         if (LocaleCompare(image_info->magick,"PS") != 0)
@@ -1087,7 +1087,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
       bounds.y2=y+(height+text_size)-1;
     attribute=GetImageAttribute(image,"Label");
     if (attribute != (ImageAttribute *) NULL)
-      (void) WriteBlobString(image,"%%%%PageResources: font Times\n");
+      (void) WriteBlobString(image,"%%%%PageResources: font Times-Roman\n");
     if (LocaleCompare(image_info->magick,"PS") != 0)
       (void) WriteBlobString(image,"userdict begin\n");
     (void) WriteBlobString(image,"DisplayImage\n");

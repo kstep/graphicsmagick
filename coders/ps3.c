@@ -318,7 +318,7 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
       bounds.y2=y+(height+text_size)-1;
     attribute=GetImageAttribute(image,"Label");
     if (attribute != (ImageAttribute *) NULL)
-      (void) WriteBlobString(image,"%%PageResources: font Times\n");
+      (void) WriteBlobString(image,"%%PageResources: font Times-Roman\n");
     /*
       Output image data.
     */
