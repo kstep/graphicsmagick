@@ -1907,14 +1907,13 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
       /*
         Set cache memory threshold.
       */
-      SetCacheThreshold(((size_t) 1L) << (8*sizeof(size_t)-21),
-        ((size_t) 1L) << (8*sizeof(size_t)-21));
+      SetCacheThreshold(((size_t) 1L) << (8*sizeof(size_t)-21),~0);
 #if defined(PixelCacheThreshold)
-      SetCacheThreshold(PixelCacheThreshold,PixelCacheThreshold);
+      SetCacheThreshold(PixelCacheThreshold,~0);
 #endif
       threshold=getenv("MAGICK_CACHE_THRESHOLD");
       if (threshold != (char *) NULL)
-        SetCacheThreshold(atol(threshold),atol(threshold));
+        SetCacheThreshold(atol(threshold),~0);
     }
   cache_info=(CacheInfo *) image->cache;
   assert(cache_info->signature == MagickSignature);
