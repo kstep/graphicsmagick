@@ -358,7 +358,7 @@ static struct
     { "Scale", { {"geometry", StringReference}, {"width", IntegerReference},
       {"height", IntegerReference} } },
     { "Shade", { {"geometry", StringReference}, {"azimuth", DoubleReference},
-      {"elevatation", DoubleReference}, {"gray", BooleanTypes} } },
+      {"elevatation", DoubleReference}, {"color", BooleanTypes} } },
     { "Sharpen", { {"geometry", StringReference}, {"radius", DoubleReference},
       {"sigma", DoubleReference} } },
     { "Shear", { {"geometry", StringReference}, {"x", IntegerReference},
@@ -6835,11 +6835,11 @@ QueryColor(ref,...)
     GetExceptionInfo(&exception);
     if (items == 1)
       {
-        const ColorInfo
-          *color_info;
-
-        register const ColorInfo
+        register volatile const ColorInfo
           *p;
+
+        volatile const ColorInfo
+          *color_info;
 
         color_info=GetColorInfo("*",&exception);
         if (color_info == (const ColorInfo *) NULL)
@@ -6975,21 +6975,21 @@ QueryFont(ref,...)
       *name,
       message[MaxTextExtent];
 
-    const TypeInfo
-      *type_info;
-
     ExceptionInfo
       exception;
 
     register int
       i;
 
+    volatile const TypeInfo
+      *type_info;
+
     dMY_CXT;
     MY_CXT.error_list=newSVpv("",0);
     GetExceptionInfo(&exception);
     if (items == 1)
       {
-        register const TypeInfo
+        register volatile const TypeInfo
           *p;
 
         type_info=GetTypeInfo("*",&exception);
@@ -7355,21 +7355,21 @@ QueryFormat(ref,...)
       message[MaxTextExtent],
       *name;
 
-    const MagickInfo
-      *magick_info;
-
     ExceptionInfo
       exception;
 
     register int
       i;
 
+    volatile const MagickInfo
+      *magick_info;
+
     dMY_CXT;
     MY_CXT.error_list=newSVpv("",0);
     GetExceptionInfo(&exception);
     if (items == 1)
       {
-        register const MagickInfo
+        register volatile const MagickInfo
           *p;
 
         magick_info=GetMagickInfo("*",&exception);
