@@ -142,7 +142,7 @@ MagickExport Image *BlobToImage(const ImageInfo *image_info,const void *blob,
       clone_info->blob.data=(char *) blob;
       clone_info->blob.length=length;
       clone_info->blob.extent=length;
-      image=ReadImage(clone_info,&exception);
+      image=ReadImage(clone_info,exception);
       DestroyImageInfo(clone_info);
       if (image != (Image *) NULL)
         GetBlobInfo(&(image->blob));
@@ -169,7 +169,7 @@ MagickExport Image *BlobToImage(const ImageInfo *image_info,const void *blob,
         clone_info->filename);
       return((Image *) NULL);
     }
-  image=ReadImage(clone_info,&exception);
+  image=ReadImage(clone_info,exception);
   (void) remove(clone_info->filename);
   DestroyImageInfo(clone_info);
   return(image);
