@@ -275,17 +275,16 @@ format_c_api_docs:
 #
 # Build a Windows source Zip-ball
 #
-ZIP_FILES= \
-	acinclude.m4 configure.ac aclocal.m4 GraphicsMagick.spec.in \
-	Makefile.am Makefile.in rungm.sh.in configure $(EXTRA_DIST) \
-	 BCBMagick CVS CVSROOT Magick++ PerlMagick TclMagick \
-	VisualMagick bzlib coders config contrib doc filters fpx images \
-	jbig jp2 jpeg lcms libxml licenses locale ltdl magick png scenes scripts \
-	tests tiff ttf utilities wand win2k wmf www xlib zlib
 DIST_WINDOWS_SRC_ZIP=$(PACKAGE_NAME)-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM)-windows.zip
-$(DIST_WINDOWS_SRC_ZIP) windows-src:
+$(DIST_WINDOWS_SRC_ZIP) windows-dist:
+	if test -d $(PACKAGE_NAME)-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM) ; then \
+	  chmod -R u+w $(PACKAGE_NAME)-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM) ; \
+	  rm -rf $(PACKAGE_NAME)-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM) ; \
+	fi
 	rm -f $(DIST_WINDOWS_SRC_ZIP)
-	builddir=`pwd` ; cd $(top_srcdir) && zip -r -9 -q $$builddir/$(DIST_WINDOWS_SRC_ZIP) $(ZIP_FILES) -x '*~' -x '*.o' -x autom4te.cache -x CVS -x '*.so' -x '.libs' -x '.deps' -x '.#*' -x core -x '*.core'
+	cvs -d ':ext:anoncvs@cvs.graphicsmagick.org:/GraphicsMagick' export -r $(CVS_BRANCH_TAG) -d $(PACKAGE_NAME)-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM) GraphicsMagick-NT
+	zip -r -9 -q  $(DIST_WINDOWS_SRC_ZIP) $(PACKAGE_NAME)-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM)
+	rm -rf $(PACKAGE_NAME)-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM)
 
 #
 # RPM build support

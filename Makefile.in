@@ -117,6 +117,7 @@ CONVENIENCE_LTDL_FALSE = @CONVENIENCE_LTDL_FALSE@
 CONVENIENCE_LTDL_TRUE = @CONVENIENCE_LTDL_TRUE@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
+CVS_BRANCH_TAG = @CVS_BRANCH_TAG@
 CXX = @CXX@
 CXXCPP = @CXXCPP@
 CXXDEPMODE = @CXXDEPMODE@
@@ -476,14 +477,6 @@ DOCDIRS = images www www/api www/Magick++
 #
 # Build a Windows source Zip-ball
 #
-ZIP_FILES = \
-	acinclude.m4 configure.ac aclocal.m4 GraphicsMagick.spec.in \
-	Makefile.am Makefile.in rungm.sh.in configure $(EXTRA_DIST) \
-	 BCBMagick CVS CVSROOT Magick++ PerlMagick TclMagick \
-	VisualMagick bzlib coders config contrib doc filters fpx images \
-	jbig jp2 jpeg lcms libxml licenses locale ltdl magick png scenes scripts \
-	tests tiff ttf utilities wand win2k wmf www xlib zlib
-
 DIST_WINDOWS_SRC_ZIP = $(PACKAGE_NAME)-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM)-windows.zip
 
 #
@@ -1113,9 +1106,15 @@ $(top_srcdir)/www/README.html: $(top_srcdir)/README.txt
 
 format_c_api_docs:
 	@PERL@ $(top_srcdir)/scripts/format_c_api_docs -format html --srcdir $(top_srcdir)/magick --outdir $(top_srcdir)/www/api
-$(DIST_WINDOWS_SRC_ZIP) windows-src:
+$(DIST_WINDOWS_SRC_ZIP) windows-dist:
+	if test -d $(PACKAGE_NAME)-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM) ; then \
+	  chmod -R u+w $(PACKAGE_NAME)-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM) ; \
+	  rm -rf $(PACKAGE_NAME)-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM) ; \
+	fi
 	rm -f $(DIST_WINDOWS_SRC_ZIP)
-	builddir=`pwd` ; cd $(top_srcdir) && zip -r -9 -q $$builddir/$(DIST_WINDOWS_SRC_ZIP) $(ZIP_FILES) -x '*~' -x '*.o' -x autom4te.cache -x CVS -x '*.so' -x '.libs' -x '.deps' -x '.#*' -x core -x '*.core'
+	cvs -d ':ext:anoncvs@cvs.graphicsmagick.org:/GraphicsMagick' export -r $(CVS_BRANCH_TAG) -d $(PACKAGE_NAME)-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM) GraphicsMagick-NT
+	zip -r -9 -q  $(DIST_WINDOWS_SRC_ZIP) $(PACKAGE_NAME)-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM)
+	rm -rf $(PACKAGE_NAME)-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM)
 @HAS_RPM_TRUE@PHONY: srpm
 @HAS_RPM_TRUE@$(DIST_ARCHIVE_SRPM) srpm: $(distdir).tar.bz2
 @HAS_RPM_TRUE@	rm -f $(DIST_ARCHIVE_SRPM)

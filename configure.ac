@@ -51,6 +51,9 @@ AC_SUBST(PACKAGE_VERSION_ADDENDUM)dnl
 AC_SUBST(PACKAGE_CHANGE_DATE)dnl
 AC_SUBST(PACKAGE_RELEASE_DATE)dnl
 
+# Substitute CVS branch tag
+AC_SUBST(CVS_BRANCH_TAG)dnl
+
 # Definition used to define MagickLibVersion in version.h
 # As soon as any of these values exceeds 9, a more sophisticated formatting
 # scheme must be invented for this string.

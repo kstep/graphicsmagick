@@ -4,6 +4,7 @@
 # This file is sourced by a Bourne shell (/bin/sh) script so it must
 # observe Bourne shell syntax.
 #
+
 # Package base name
 PACKAGE_NAME='GraphicsMagick'
 #
@@ -32,6 +33,11 @@ then
 else
   PACKAGE_VERSION_ADDENDUM=''
 fi
+
+#
+# CVS branch that this release is on.
+#
+CVS_BRANCH_TAG=HEAD
 
 #
 # Libtool library revision control info
