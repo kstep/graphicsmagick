@@ -3364,8 +3364,6 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             draw_info->text_antialias=(*option == '-');
             break;
           }
-        ThrowException(&(*image)->exception,OptionWarning,"Unrecognized option",
-          option);
         break;
       }
       case 'b':
@@ -3437,8 +3435,6 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             (void) QueryColorDatabase(argv[++i],&draw_info->box);
             continue;
           }
-        ThrowException(&(*image)->exception,OptionWarning,"Unrecognized option",
-          option);
         break;
       }
       case 'c':
@@ -3593,8 +3589,6 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             CycleColormapImage(*image,atoi(argv[++i]));
             continue;
           }
-        ThrowException(&(*image)->exception,OptionWarning,"Unrecognized option",
-          option);
         break;
       }
       case 'd':
@@ -3653,8 +3647,6 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             DrawImage(*image,draw_info);
             continue;
           }
-        ThrowException(&(*image)->exception,OptionWarning,"Unrecognized option",
-          option);
         break;
       }
       case 'e':
@@ -3724,8 +3716,6 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             EqualizeImage(*image);
             continue;
           }
-        ThrowException(&(*image)->exception,OptionWarning,"Unrecognized option",
-          option);
         break;
       }
       case 'f':
@@ -3856,8 +3846,6 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             (void) CloneString(&draw_info->font,argv[i]);
             continue;
           }
-        ThrowException(&(*image)->exception,OptionWarning,"Unrecognized option",
-          option);
         break;
       }
       case 'g':
@@ -3942,8 +3930,6 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
               }
             continue;
           }
-        ThrowException(&(*image)->exception,OptionWarning,"Unrecognized option",
-          option);
         break;
       }
       case 'i':
@@ -3988,8 +3974,6 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
               }
             continue;
           }
-        ThrowException(&(*image)->exception,OptionWarning,"Unrecognized option",
-          option);
         break;
       }
       case 'l':
@@ -4030,8 +4014,6 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             draw_info->linewidth=atof(argv[++i]);
             continue;
           }
-        ThrowException(&(*image)->exception,OptionWarning,"Unrecognized option",
-          option);
         break;
       }
       case 'm':
@@ -4088,8 +4070,6 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             quantize_info.colorspace=GRAYColorspace;
             continue;
           }
-        ThrowException(&(*image)->exception,OptionWarning,"Unrecognized option",
-          option);
         break;
       }
       case 'n':
@@ -4141,8 +4121,6 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             NormalizeImage(*image);
             continue;
           }
-        ThrowException(&(*image)->exception,OptionWarning,"Unrecognized option",
-          option);
         break;
       }
       case 'o':
@@ -4157,8 +4135,6 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             OpaqueImage(*image,target,draw_info->fill);
             continue;
           }
-        ThrowException(&(*image)->exception,OptionWarning,"Unrecognized option",
-          option);
         break;
       }
       case 'p':
@@ -4253,8 +4229,6 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             ProfileImage(*image,UndefinedProfile,argv[++i]);
             continue;
           }
-        ThrowException(&(*image)->exception,OptionWarning,"Unrecognized option",
-          option);
         break;
       }
       case 'r':
@@ -4392,8 +4366,6 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             *image=rotate_image;
             continue;
           }
-        ThrowException(&(*image)->exception,OptionWarning,"Unrecognized option",
-          option);
         break;
       }
       case 's':
@@ -4582,8 +4554,6 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             *image=swirl_image;
             continue;
           }
-        ThrowException(&(*image)->exception,OptionWarning,"Unrecognized option",
-          option);
         break;
       }
       case 't':
@@ -4621,8 +4591,6 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             quantize_info.tree_depth=atoi(argv[++i]);
             continue;
           }
-        ThrowException(&(*image)->exception,OptionWarning,"Unrecognized option",
-          option);
         break;
       }
       case 'u':
@@ -4640,8 +4608,6 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
               }
             continue;
           }
-        ThrowException(&(*image)->exception,OptionWarning,"Unrecognized option",
-          option);
         break;
       }
       case 'v':
@@ -4652,8 +4618,6 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             quantize_info.measure_error=(*option == '-');
             continue;
           }
-        ThrowException(&(*image)->exception,OptionWarning,"Unrecognized option",
-          option);
         break;
       }
       case 'w':
@@ -4682,16 +4646,10 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             *image=wave_image;
             continue;
           }
-        ThrowException(&(*image)->exception,OptionWarning,"Unrecognized option",
-          option);
         break;
       }
       default:
-      {
-        ThrowException(&(*image)->exception,OptionWarning,"Unrecognized option",
-          option);
         break;
-      }
     }
   }
   if (region_image != (Image *) NULL)
