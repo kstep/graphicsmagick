@@ -153,7 +153,7 @@ int main(int argc,char **argv)
       MagickGetImageIndex(magick_wand),MagickGetImageScene(magick_wand));
   (void) fprintf(stdout,"Remove scene 1...\n");
   (void) MagickSetImageIndex(magick_wand,1);
-  clone_wand=MagickCloneImage(magick_wand);
+  clone_wand=MagickGetImage(magick_wand);
   status=MagickRemoveImage(magick_wand);
   if (status == False)
     ThrowAPIException(magick_wand);

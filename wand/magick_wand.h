@@ -103,7 +103,7 @@ extern WandExport MagickWand
     double *),
   *MagickDeconstructImages(MagickWand *),
   *MagickFlattenImages(MagickWand *),
-  *MagickCloneImage(MagickWand *),
+  *MagickGetImage(MagickWand *),
   *MagickMorphImages(MagickWand *,const unsigned long),
   *MagickMosaicImages(MagickWand *),
   *MagickMontageImage(MagickWand *,const DrawingWand *,const char *,

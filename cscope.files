@@ -165,6 +165,8 @@ magick/paint.c
 magick/paint.h
 magick/PreRvIcccm.c
 magick/PreRvIcccm.h
+magick/profile.c
+magick/profile.h
 magick/quantize.c
 magick/quantize.h
 magick/registry.c

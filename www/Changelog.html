@@ -53,6 +53,25 @@
 </tr>
 </table>
 <p>
+2004-01-07  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> wand/wandtest.c: Change MagickCloneWand to MagickGetImage since
+        the API name changed.<BR>
+  <LI> wand/pixel_wand.c: Synchronized with
+        latest daily ImageMagick updates.
+  <LI> wand/magick_wand.c (MagickRemoveImageProfile): Synchronized with
+        latest daily ImageMagick updates.
+  <LI> magick/profile.c (DeleteImageProfile): New method to make
+        it easier to destroy an image profile.
+  <LI> magick/profile.h: New source file to contain functions for
+        dealing with embedded image profiles.
+  <LI> magick/profile.c: New source file to contain functions for
+        dealing with embedded image profiles.
+  <LI> Makefile.am (DISTDIRS): Distribute TclMagick subdirectory.
+
+</UL>
+<p>
 2004-01-06  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

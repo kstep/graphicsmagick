@@ -424,7 +424,7 @@ check-miff: rwfile$(EXEEXT)
 	fi ; \
 	exit $$status
 
-check: check-constitute \
+check:	check-constitute \
 	check-drawtest \
 	check-rwfile \
 	check-miff \

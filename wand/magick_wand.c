@@ -162,7 +162,7 @@ static unsigned long
 %
 %  The format of the CloneMagickWand method is:
 %
-%      MagickWand * CloneMagickWand(MagickWand *wand)
+%      MagickWand *CloneMagickWand(MagickWand *wand)
 %
 %  A description of each parameter follows:
 %
@@ -1053,43 +1053,6 @@ WandExport unsigned int MagickClipPathImage(MagickWand *wand,
   if (status == False)
     InheritException(&wand->exception,&wand->image->exception);
   return(status);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   M a g i c k C l o n e I m a g e                                           %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  MagickCloneImage() clones the image at the current image index.
-%
-%  The format of the MagickCloneImage method is:
-%
-%      MagickWand *MagickCloneImage(MagickWand *wand)
-%
-%  A description of each parameter follows:
-%
-%    o wand: The magick wand.
-%
-*/
-WandExport MagickWand *MagickCloneImage(MagickWand *wand)
-{
-  Image
-    *image;
-
-  assert(wand != (MagickWand *) NULL);
-  assert(wand->signature == MagickSignature);
-  if (wand->images == (Image *) NULL)
-    ThrowWandException(WandError,WandContainsNoImages,wand->id);
-  image=CloneImage(wand->image,0,0,True,&wand->exception);
-  if (image == (Image *) NULL)
-    return(False);
-  return(CloneMagickWandWithImages(wand,image));
 }
 
 /*
@@ -2536,6 +2499,43 @@ WandExport char *MagickGetFilename(const MagickWand *wand)
   assert(wand != (const MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
   return(AcquireString(wand->image_info->filename));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a g i c k G e t I m a g e                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickGetImage() clones the image at the current image index.
+%
+%  The format of the MagickGetImage method is:
+%
+%      MagickWand *MagickGetImage(MagickWand *wand)
+%
+%  A description of each parameter follows:
+%
+%    o wand: The magick wand.
+%
+*/
+WandExport MagickWand *MagickGetImage(MagickWand *wand)
+{
+  Image
+    *image;
+
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
+  image=CloneImage(wand->image,0,0,True,&wand->exception);
+  if (image == (Image *) NULL)
+    return(False);
+  return(CloneMagickWandWithImages(wand,image));
 }
 
 /*
@@ -5916,7 +5916,7 @@ WandExport unsigned int MagickReadImageBlob(MagickWand *wand,
   assert(wand != (MagickWand *) NULL);
   assert(wand->signature == MagickSignature);
   read_info=CloneImageInfo(wand->image_info);
-  read_info->blob=(void *) blob;
+  read_info->blob=(unsigned char *) blob;
   read_info->length=length;
   images=ReadImage(read_info,&wand->exception);
   DestroyImageInfo(read_info);
@@ -6079,6 +6079,66 @@ WandExport unsigned int MagickRemoveImage(MagickWand *wand)
   DeleteImageFromList(&wand->image);
   wand->images=GetFirstImageInList(wand->image);
   return(True);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M a g i c k R e m o v e I m a g e P r o f i l e                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MagickRemoveImageProfile() removes the named image profile and returns it.
+%
+%  The format of the MagickRemoveImageProfile method is:
+%
+%      unsigned char *MagickRemoveImageProfile(MagickWand *wand,const char *name,
+%        unsigned long *length)
+%
+%  A description of each parameter follows:
+%
+%    o wand: The magick wand.
+%
+%    o name: Name of profile to return: ICC, IPTC, or generic profile.
+%
+%    o length: The length of the profile.
+%
+*/
+WandExport unsigned char *MagickRemoveImageProfile(MagickWand *wand,
+  const char *name,unsigned long *length)
+{
+  const unsigned char
+    *profile;
+
+  unsigned char
+    *cloned_profile;
+
+  size_t
+    profile_length;
+
+  assert(wand != (MagickWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  if (wand->images == (Image *) NULL)
+    ThrowWandException(WandError,WandContainsNoImages,wand->id);
+  *length=0;
+  // Obtain pointer to existing image profile
+  profile=GetImageProfile(wand->image,name,&profile_length);
+  if (!profile || !profile_length)
+    return 0;
+  // Clone profile
+  *length=profile_length;
+  cloned_profile=MagickAllocateMemory(unsigned char *,profile_length);
+  if (!cloned_profile)
+    return 0;
+  memcpy(cloned_profile,profile,profile_length);
+  profile=0;
+  // Remove image profile
+  DeleteImageProfile(wand->image,name);
+  return cloned_profile;
 }
 
 /*

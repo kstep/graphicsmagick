@@ -69,6 +69,35 @@ typedef struct _GeometryInfo
     psi;
 } GeometryInfo;
 
+typedef struct _MagickPixelPacket
+{
+  ColorspaceType
+    colorspace;
+
+  unsigned int
+    matte;
+
+  Quantum
+    red,
+    green,
+    blue,
+    opacity;
+
+  IndexPacket
+    index;
+} MagickPixelPacket;
+
+typedef struct _SuperDoublePixelPacket
+{
+  double
+    red,
+    green,
+    blue,
+    opacity,
+    index;
+} SuperDoublePixelPacket;
+#define DoublePixelPacket SuperDoublePixelPacket
+
 #if !defined(__GNUC__) && !defined(__attribute__)
 #  define __attribute__(x) /*nothing*/
 #endif
@@ -87,7 +116,8 @@ extern WandExport unsigned int
     const long y_offset,const unsigned long columns,const unsigned long rows,
     const char *map,const StorageType type,const void *pixels),
   ParseAbsoluteGeometry(const char *geometry,RectangleInfo *region_info),
-  ParseGeometry(const char *geometry,GeometryInfo *geometry_info);
+  ParseGeometry(const char *geometry,GeometryInfo *geometry_info),
+  QueryMagickColor(const char *,MagickPixelPacket *,ExceptionInfo *);
 
 extern WandExport size_t
   ConcatenateMagickString(char *,const char *,const size_t),

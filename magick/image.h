@@ -951,9 +951,6 @@ extern MagickExport const char
   *AccessDefinition(const ImageInfo *image_info,const char *magick,
    const char *key);
 
-extern MagickExport const unsigned char
-  *GetImageProfile(const Image* image, const char *name, size_t *length);
-
 extern MagickExport int
   GetImageGeometry(const Image *,const char *,const unsigned int,
   RectangleInfo *);
@@ -986,8 +983,6 @@ extern MagickExport unsigned int
   SetImageClipMask(Image *image,Image *clip_mask),
   SetImageDepth(Image *,const unsigned long),
   SetImageInfo(ImageInfo *,const unsigned int,ExceptionInfo *),
-  SetImageProfile(Image *image,const char *name,const unsigned char *profile,
-    const size_t length),
   SetImageType(Image *,const ImageType),
   SortColormapByIntensity(Image *),
   TextureImage(Image *,const Image *),

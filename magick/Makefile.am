@@ -67,6 +67,7 @@ MAGICK_BASE_SRCS = \
 	monitor.c \
 	montage.c \
 	paint.c \
+	profile.c \
 	PreRvIcccm.c \
 	quantize.c \
 	registry.c \
@@ -155,6 +156,7 @@ pkginclude_HEADERS = \
 	monitor.h \
 	montage.h \
 	paint.h \
+	profile.h \
 	quantize.h \
 	registry.h \
 	render.h \

@@ -23,35 +23,42 @@
 %                                March 2003                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright (C) 2003 ImageMagick Studio, a non-profit organization dedicated %
-%  to making software imaging solutions freely available.                     %
+%  Copyright (C) 1999-2004 ImageMagick Studio LLC, a non-profit organization  %
+%  dedicated to making software imaging solutions freely available.           %
 %                                                                             %
-%  Permission is hereby granted, free of charge, to any person obtaining a    %
-%  copy of this software and associated documentation files ("ImageMagick"),  %
-%  to deal in ImageMagick without restriction, including without limitation   %
-%  the rights to use, copy, modify, merge, publish, distribute, sublicense,   %
-%  and/or sell copies of ImageMagick, and to permit persons to whom the       %
-%  ImageMagick is furnished to do so, subject to the following conditions:    %
+%  This software and documentation is provided "as is," and the copyright     %
+%  holders and contributing author(s) make no representations or warranties,  %
+%  express or implied, including but not limited to, warranties of            %
+%  merchantability or fitness for any particular purpose or that the use of   %
+%  the software or documentation will not infringe any third party patents,   %
+%  copyrights, trademarks or other rights.                                    %
 %                                                                             %
-%  The above copyright notice and this permission notice shall be included in %
-%  all copies or substantial portions of ImageMagick.                         %
+%  The copyright holders and contributing author(s) will not be held liable   %
+%  for any direct, indirect, special or consequential damages arising out of  %
+%  any use of the software or documentation, even if advised of the           %
+%  possibility of such damage.                                                %
 %                                                                             %
-%  The software is provided "as is", without warranty of any kind, express or %
-%  implied, including but not limited to the warranties of merchantability,   %
-%  fitness for a particular purpose and noninfringement.  In no event shall   %
-%  ImageMagick Studio be liable for any claim, damages or other liability,    %
-%  whether in an action of contract, tort or otherwise, arising from, out of  %
-%  or in connection with ImageMagick or the use or other dealings in          %
-%  ImageMagick.                                                               %
+%  Permission is hereby granted to use, copy, modify, and distribute this     %
+%  source code, or portions hereof, documentation and executables, for any    %
+%  purpose, without fee, subject to the following restrictions:               %
 %                                                                             %
-%  Except as contained in this notice, the name of the ImageMagick Studio     %
-%  shall not be used in advertising or otherwise to promote the sale, use or  %
-%  other dealings in ImageMagick without prior written authorization from the %
-%  ImageMagick Studio.                                                        %
+%    1. The origin of this source code must not be misrepresented.            %
+%    2. Altered versions must be plainly marked as such and must not be       %
+%       misrepresented as being the original source.                          %
+%    3. This Copyright notice may not be removed or altered from any source   %
+%       or altered source distribution.                                       %
+%                                                                             %
+%  The copyright holders and contributing author(s) specifically permit,      %
+%  without fee, and encourage the use of this source code as a component for  %
+%  supporting image processing in commercial products.  If you use this       %
+%  source code in a product, acknowledgment is not required but would be      %
+%  appreciated.                                                               %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  For internal use only!  Subject to change!
+%  This is the tentative public API for ImageMagick.  Use it with caution
+%  because it is subject to change until it is finished somewhere around
+%  January of 2004.
 %
 */
 
@@ -70,6 +77,12 @@ struct _PixelWand
 {
   ExceptionInfo
     exception;
+
+  ColorspaceType
+    colorspace;
+                                                                                
+  unsigned int
+    matte;
 
   DoublePixelPacket
     pixel;
@@ -139,6 +152,7 @@ WandExport PixelWand *NewPixelWand(void)
       UnableToAllocateImage);
   (void) memset(wand,0,sizeof(PixelWand));
   GetExceptionInfo(&wand->exception);
+  wand->colorspace=RGBColorspace;
   wand->signature=MagickSignature;
   return(wand);
 }
@@ -237,6 +251,65 @@ WandExport unsigned int PixelGetException(PixelWand *wand,char **description)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   P i x e l G e t B l a c k                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  PixelGetBlack() returns the normalized black color of the pixel wand.
+%
+%  The format of the PixelGetBlack method is:
+%
+%      double PixelGetBlack(const PixelWand *wand)
+%
+%  A description of each parameter follows:
+%
+%    o wand: The pixel wand.
+%
+*/
+WandExport double PixelGetBlack(const PixelWand *wand)
+{
+  assert(wand != (const PixelWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  return(wand->pixel.index);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   P i x e l G e t B l a c k Q u a n t u m                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  PixelGetBlackQuantum() returns the black color of the pixel wand.  The
+%  color is in the range of [0..MaxRGB]
+%
+%  The format of the PixelGetBlackQuantum method is:
+%
+%      Quantum PixelGetBlackQuantum(const PixelWand *wand)
+%
+%  A description of each parameter follows:
+%
+%    o wand: The pixel wand.
+%
+*/
+WandExport Quantum PixelGetBlackQuantum(const PixelWand *wand)
+{
+  assert(wand != (const PixelWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  return((Quantum) (MaxRGB*wand->pixel.index+0.5));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   P i x e l G e t B l u e                                                   %
 %                                                                             %
 %                                                                             %
@@ -320,11 +393,16 @@ WandExport char *PixelGetColorAsString(const PixelWand *wand)
 
   assert(wand != (const PixelWand *) NULL);
   assert(wand->signature == MagickSignature);
-  (void) FormatMagickString(color,MaxTextExtent,"%u,%u,%u,%u",
+  (void) FormatString(color,"%u,%u,%u",
     (Quantum) (MaxRGB*wand->pixel.red+0.5),
     (Quantum) (MaxRGB*wand->pixel.green+0.5),
-    (Quantum) (MaxRGB*wand->pixel.blue+0.5),
-    (Quantum) (MaxRGB*wand->pixel.opacity+0.5));
+    (Quantum) (MaxRGB*wand->pixel.blue+0.5));
+  if (wand->colorspace == CMYKColorspace)
+    (void) FormatString(color,"%.1024s,%u",color,
+      (Quantum) (MaxRGB*wand->pixel.index+0.5));
+  if (wand->matte != False)
+    (void) FormatString(color,"%.1024s,%u",color,
+      (Quantum) (MaxRGB*wand->pixel.opacity+0.5));
   return(AcquireString(color));
 }
 
@@ -355,6 +433,65 @@ WandExport unsigned long PixelGetColorCount(const PixelWand *wand)
   assert(wand != (const PixelWand *) NULL);
   assert(wand->signature == MagickSignature);
   return(wand->count);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   P i x e l G e t C y a n                                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  PixelGetCyan() returns the normalized cyan color of the pixel wand.
+%
+%  The format of the PixelGetCyan method is:
+%
+%      double PixelGetCyan(const PixelWand *wand)
+%
+%  A description of each parameter follows:
+%
+%    o wand: The pixel wand.
+%
+*/
+WandExport double PixelGetCyan(const PixelWand *wand)
+{
+  assert(wand != (const PixelWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  return(wand->pixel.red);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   P i x e l G e t C y a n Q u a n t u m                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  PixelGetCyanQuantum() returns the cyan color of the pixel wand.  The color
+%  is in the range of [0..MaxRGB]
+%
+%  The format of the PixelGetCyanQuantum method is:
+%
+%      Quantum PixelGetCyanQuantum(const PixelWand *wand)
+%
+%  A description of each parameter follows:
+%
+%    o wand: The pixel wand.
+%
+*/
+WandExport Quantum PixelGetCyanQuantum(const PixelWand *wand)
+{
+  assert(wand != (const PixelWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  return((Quantum) (MaxRGB*wand->pixel.red+0.5));
 }
 
 /*
@@ -410,6 +547,65 @@ WandExport double PixelGetGreen(const PixelWand *wand)
 %
 */
 WandExport Quantum PixelGetGreenQuantum(const PixelWand *wand)
+{
+  assert(wand != (const PixelWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  return((Quantum) (MaxRGB*wand->pixel.green+0.5));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   P i x e l G e t M a g e n t a                                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  PixelGetMagenta() returns the normalized magenta color of the pixel wand.
+%
+%  The format of the PixelGetMagenta method is:
+%
+%      double PixelGetMagenta(const PixelWand *wand)
+%
+%  A description of each parameter follows:
+%
+%    o wand: The pixel wand.
+%
+*/
+WandExport double PixelGetMagenta(const PixelWand *wand)
+{
+  assert(wand != (const PixelWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  return(wand->pixel.green);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   P i x e l G e t M a g e n t a Q u a n t u m                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  PixelGetMagentaQuantum() returns the magenta color of the pixel wand.  The
+%  color is in the range of [0..MaxRGB]
+%
+%  The format of the PixelGetMagentaQuantum method is:
+%
+%      Quantum PixelGetMagentaQuantum(const PixelWand *wand)
+%
+%  A description of each parameter follows:
+%
+%    o wand: The pixel wand.
+%
+*/
+WandExport Quantum PixelGetMagentaQuantum(const PixelWand *wand)
 {
   assert(wand != (const PixelWand *) NULL);
   assert(wand->signature == MagickSignature);
@@ -481,6 +677,41 @@ WandExport Quantum PixelGetOpacityQuantum(const PixelWand *wand)
 %                                                                             %
 %                                                                             %
 %                                                                             %
++   P i x e l G e t Q u a n t u m C o l o r                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  PixelGetQuantumColor() gets the color of the pixel wand.
+%
+%  The format of the PixelGetQuantumColor method is:
+%
+%      PixelGetQuantumColor(PixelWand *wand,PixelPacket *color)
+%
+%  A description of each parameter follows:
+%
+%    o wand: The pixel wand.
+%
+%    o color: Return the pixel wand color here.
+%
+*/
+WandExport void PixelGetQuantumColor(const PixelWand *wand,PixelPacket *color)
+{
+  assert(wand != (const PixelWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  assert(color != (PixelPacket *) NULL);
+  color->red=(Quantum) (MaxRGB*wand->pixel.red+0.5);
+  color->green=(Quantum) (MaxRGB*wand->pixel.green+0.5);
+  color->blue=(Quantum) (MaxRGB*wand->pixel.blue+0.5);
+  color->opacity=(Quantum) (MaxRGB*wand->pixel.opacity+0.5);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   P i x e l G e t R e d                                                     %
 %                                                                             %
 %                                                                             %
@@ -540,34 +771,197 @@ WandExport Quantum PixelGetRedQuantum(const PixelWand *wand)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   P i x e l G e t Q u a n t u m C o l o r                                   %
+%   P i x e l G e t Y e l l o w                                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  PixelGetQuantumColor() gets the color of the pixel wand.
+%  PixelGetYellow() returns the normalized yellow color of the pixel wand.
 %
-%  The format of the PixelGetQuantumColor method is:
+%  The format of the PixelGetYellow method is:
 %
-%      PixelGetQuantumColor(PixelWand *wand,PixelPacket *color)
+%      double PixelGetYellow(const PixelWand *wand)
 %
 %  A description of each parameter follows:
 %
 %    o wand: The pixel wand.
 %
-%    o color: Return the pixel wand color here.
-%
 */
-WandExport void PixelGetQuantumColor(const PixelWand *wand,PixelPacket *color)
+WandExport double PixelGetYellow(const PixelWand *wand)
 {
   assert(wand != (const PixelWand *) NULL);
   assert(wand->signature == MagickSignature);
-  assert(color != (PixelPacket *) NULL);
-  color->red=(Quantum) (MaxRGB*wand->pixel.red+0.5);
-  color->green=(Quantum) (MaxRGB*wand->pixel.green+0.5);
-  color->blue=(Quantum) (MaxRGB*wand->pixel.blue+0.5);
-  color->opacity=(Quantum) (MaxRGB*wand->pixel.opacity+0.5);
+  return(wand->pixel.blue);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   P i x e l G e t Y e l l o w Q u a n t u m                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  PixelGetYellowQuantum() returns the yellow color of the pixel wand.  The
+%  color is in the range of [0..MaxRGB]
+%
+%  The format of the PixelGetYellowQuantum method is:
+%
+%      Quantum PixelGetYellowQuantum(const PixelWand *wand)
+%
+%  A description of each parameter follows:
+%
+%    o wand: The pixel wand.
+%
+*/
+WandExport Quantum PixelGetYellowQuantum(const PixelWand *wand)
+{
+  assert(wand != (const PixelWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  return((Quantum) (MaxRGB*wand->pixel.blue+0.5));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   P i x e l S e t B l a c k                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  PixelSetBlack() sets the normalized black color of the pixel wand.
+%
+%  The format of the PixelSetBlack method is:
+%
+%      unsigned int PixelSetBlack(PixelWand *wand,const double black)
+%
+%  A description of each parameter follows:
+%
+%    o wand: The pixel wand.
+%
+%    o black: The black color.
+%
+*/
+WandExport void PixelSetBlack(PixelWand *wand,const double black)
+{
+  assert(wand != (const PixelWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  if (black > 1.0)
+    wand->pixel.index=1.0;
+  else
+    if (black < 0.0)
+      wand->pixel.index=0.0;
+    else
+      wand->pixel.index=black;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   P i x e l S e t B l a c k Q u a n t u m                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  PixelSetBlackQuantum() sets the black color of the pixel wand.  The color
+%  must be in the range of [0..MaxRGB]
+%
+%  The format of the PixelSetBlackQuantum method is:
+%
+%      unsigned int PixelSetBlackQuantum(PixelWand *wand,
+%        const Quantum black)
+%
+%  A description of each parameter follows:
+%
+%    o wand: The pixel wand.
+%
+%    o black: The black color.
+%
+*/
+WandExport void PixelSetBlackQuantum(PixelWand *wand,const Quantum black)
+{
+  assert(wand != (const PixelWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  wand->pixel.index=(double) black/MaxRGB;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   P i x e l S e t B l u e                                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  PixelSetBlue() sets the normalized blue color of the pixel wand.
+%
+%  The format of the PixelSetBlue method is:
+%
+%      unsigned int PixelSetBlue(PixelWand *wand,const double blue)
+%
+%  A description of each parameter follows:
+%
+%    o wand: The pixel wand.
+%
+%    o blue: The blue color.
+%
+*/
+WandExport void PixelSetBlue(PixelWand *wand,const double blue)
+{
+  assert(wand != (const PixelWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  if (blue > 1.0)
+    wand->pixel.blue=1.0;
+  else
+    if (blue < 0.0)
+      wand->pixel.blue=0.0;
+    else
+      wand->pixel.blue=blue;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   P i x e l S e t B l u e Q u a n t u m                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  PixelSetBlueQuantum() sets the blue color of the pixel wand.  The color must
+%  be in the range of [0..MaxRGB]
+%
+%  The format of the PixelSetBlueQuantum method is:
+%
+%      unsigned int PixelSetBlueQuantum(PixelWand *wand,const Quantum blue)
+%
+%  A description of each parameter follows:
+%
+%    o wand: The pixel wand.
+%
+%    o blue: The blue color.
+%
+*/
+WandExport void PixelSetBlueQuantum(PixelWand *wand,const Quantum blue)
+{
+  assert(wand != (const PixelWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  wand->pixel.blue=(double) blue/MaxRGB;
 }
 
 /*
@@ -598,7 +992,7 @@ WandExport void PixelGetQuantumColor(const PixelWand *wand,PixelPacket *color)
 */
 WandExport unsigned int PixelSetColor(PixelWand *wand,const char *color)
 {
-  PixelPacket
+  MagickPixelPacket
     pixel;
 
   unsigned int
@@ -606,79 +1000,17 @@ WandExport unsigned int PixelSetColor(PixelWand *wand,const char *color)
 
   assert(wand != (PixelWand *) NULL);
   assert(wand->signature == MagickSignature);
-  status=QueryColorDatabase(color,&pixel,&wand->exception);
-  if (status != False)
-    PixelSetQuantumColor(wand,&pixel);
+  status=QueryMagickColor(color,&pixel,&wand->exception);
+  if (status == False)
+    return(status);
+  wand->colorspace=pixel.colorspace;
+  wand->matte=pixel.matte;
+  wand->pixel.red=(double) pixel.red/MaxRGB;
+  wand->pixel.green=(double) pixel.green/MaxRGB;
+  wand->pixel.blue=(double) pixel.blue/MaxRGB;
+  wand->pixel.opacity=(double) pixel.opacity/MaxRGB;
+  wand->pixel.index=(double) pixel.index/MaxRGB;
   return(status);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   P i x e l S e t B l u e                                                   %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  PixelSetBlue() sets the normalized blue color of the pixel wand.
-%
-%  The format of the PixelSetBlue method is:
-%
-%      unsigned int PixelSetBlue(PixelWand *wand,const double blue)
-%
-%  A description of each parameter follows:
-%
-%    o wand: The pixel wand.
-%
-%    o blue: The blue color.
-%
-*/
-WandExport void PixelSetBlue(PixelWand *wand,const double blue)
-{
-  assert(wand != (PixelWand *) NULL);
-  assert(wand->signature == MagickSignature);
-  if (blue > 1.0)
-    wand->pixel.blue=1.0;
-  else
-    if (blue < 0.0)
-      wand->pixel.blue=0.0;
-    else
-      wand->pixel.blue=blue;
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   P i x e l S e t B l u e Q u a n t u m                                       %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  PixelSetBlueQuantum() sets the blue color of the pixel wand.  The color must
-%  be in the range of [0..MaxRGB]
-%
-%  The format of the PixelSetBlueQuantum method is:
-%
-%      unsigned int PixelSetBlueQuantum(PixelWand *wand,const Quantum blue)
-%
-%  A description of each parameter follows:
-%
-%    o wand: The pixel wand.
-%
-%    o blue: The blue color.
-%
-*/
-WandExport void PixelSetBlueQuantum(PixelWand *wand,const Quantum blue)
-{
-  assert(wand != (PixelWand *) NULL);
-  assert(wand->signature == MagickSignature);
-  wand->pixel.blue=(double) blue/MaxRGB;
 }
 
 /*
@@ -711,6 +1043,75 @@ WandExport void PixelSetColorCount(PixelWand *wand,const unsigned long count)
   assert(wand != (PixelWand *) NULL);
   assert(wand->signature == MagickSignature);
   wand->count=count;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   P i x e l S e t C y a n                                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  PixelSetCyan() sets the normalized cyan color of the pixel wand.
+%
+%  The format of the PixelSetCyan method is:
+%
+%      unsigned int PixelSetCyan(PixelWand *wand,const double cyan)
+%
+%  A description of each parameter follows:
+%
+%    o wand: The pixel wand.
+%
+%    o cyan: The cyan color.
+%
+*/
+WandExport void PixelSetCyan(PixelWand *wand,const double cyan)
+{
+  assert(wand != (const PixelWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  if (cyan > 1.0)
+    wand->pixel.red=1.0;
+  else
+    if (cyan < 0.0)
+      wand->pixel.red=0.0;
+    else
+      wand->pixel.red=cyan;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   P i x e l S e t C y a n Q u a n t u m                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  PixelSetCyanQuantum() sets the cyan color of the pixel wand.  The color must
+%  be in the range of [0..MaxRGB]
+%
+%  The format of the PixelSetCyanQuantum method is:
+%
+%      unsigned int PixelSetCyanQuantum(PixelWand *wand,const Quantum cyan)
+%
+%  A description of each parameter follows:
+%
+%    o wand: The pixel wand.
+%
+%    o cyan: The cyan color.
+%
+*/
+WandExport void PixelSetCyanQuantum(PixelWand *wand,const Quantum cyan)
+{
+  assert(wand != (const PixelWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  wand->pixel.red=(double) cyan/MaxRGB;
 }
 
 /*
@@ -780,6 +1181,76 @@ WandExport void PixelSetGreenQuantum(PixelWand *wand,const Quantum green)
   assert(wand != (PixelWand *) NULL);
   assert(wand->signature == MagickSignature);
   wand->pixel.green=(double) green/MaxRGB;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   P i x e l S e t M a g e n t a                                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  PixelSetMagenta() sets the normalized magenta color of the pixel wand.
+%
+%  The format of the PixelSetMagenta method is:
+%
+%      unsigned int PixelSetMagenta(PixelWand *wand,const double magenta)
+%
+%  A description of each parameter follows:
+%
+%    o wand: The pixel wand.
+%
+%    o magenta: The magenta color.
+%
+*/
+WandExport void PixelSetMagenta(PixelWand *wand,const double magenta)
+{
+  assert(wand != (const PixelWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  if (magenta > 1.0)
+    wand->pixel.green=1.0;
+  else
+    if (magenta < 0.0)
+      wand->pixel.green=0.0;
+    else
+      wand->pixel.green=magenta;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   P i x e l S e t M a g e n t a Q u a n t u m                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  PixelSetMagentaQuantum() sets the magenta color of the pixel wand.  The
+%  color must be in the range of [0..MaxRGB]
+%
+%  The format of the PixelSetMagentaQuantum method is:
+%
+%      unsigned int PixelSetMagentaQuantum(PixelWand *wand,
+%        const Quantum magenta)
+%
+%  A description of each parameter follows:
+%
+%    o wand: The pixel wand.
+%
+%    o magenta: The green magenta.
+%
+*/
+WandExport void PixelSetMagentaQuantum(PixelWand *wand,const Quantum magenta)
+{
+  assert(wand != (const PixelWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  wand->pixel.green=(double) magenta/MaxRGB;
 }
 
 /*
@@ -954,4 +1425,73 @@ WandExport void PixelSetRedQuantum(PixelWand *wand,const Quantum red)
   assert(wand != (PixelWand *) NULL);
   assert(wand->signature == MagickSignature);
   wand->pixel.red=(double) red/MaxRGB;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   P i x e l S e t Y e l l o w                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  PixelSetYellow() sets the normalized yellow color of the pixel wand.
+%
+%  The format of the PixelSetYellow method is:
+%
+%      unsigned int PixelSetYellow(PixelWand *wand,const double yellow)
+%
+%  A description of each parameter follows:
+%
+%    o wand: The pixel wand.
+%
+%    o yellow: The yellow color.
+%
+*/
+WandExport void PixelSetYellow(PixelWand *wand,const double yellow)
+{
+  assert(wand != (const PixelWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  if (yellow > 1.0)
+    wand->pixel.blue=1.0;
+  else
+    if (yellow < 0.0)
+      wand->pixel.blue=0.0;
+    else
+      wand->pixel.blue=yellow;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   P i x e l S e t Y e l l o w Q u a n t u m                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  PixelSetYellowQuantum() sets the yellow color of the pixel wand.  The color
+%  must be in the range of [0..MaxRGB]
+%
+%  The format of the PixelSetYellowQuantum method is:
+%
+%      unsigned int PixelSetYellowQuantum(PixelWand *wand,const Quantum yellow)
+%
+%  A description of each parameter follows:
+%
+%    o wand: The pixel wand.
+%
+%    o yellow: The yellow color.
+%
+*/
+WandExport void PixelSetYellowQuantum(PixelWand *wand,const Quantum yellow)
+{
+  assert(wand != (const PixelWand *) NULL);
+  assert(wand->signature == MagickSignature);
+  wand->pixel.green=(double) yellow/MaxRGB;
 }

@@ -21,20 +21,28 @@ extern WandExport char
   *PixelGetColorAsString(const PixelWand *);
 
 extern WandExport double
+  PixelGetBlack(const PixelWand *),
   PixelGetBlue(const PixelWand *),
+  PixelGetCyan(const PixelWand *),
   PixelGetGreen(const PixelWand *),
+  PixelGetMagenta(const PixelWand *),
   PixelGetOpacity(const PixelWand *),
-  PixelGetRed(const PixelWand *);
+  PixelGetRed(const PixelWand *),
+  PixelGetYellow(const PixelWand *);
 
 extern WandExport PixelWand
   *NewPixelWand(void),
   **NewPixelWands(const unsigned long);
 
 extern WandExport Quantum
+  PixelGetBlackQuantum(const PixelWand *),
   PixelGetBlueQuantum(const PixelWand *),
+  PixelGetCyanQuantum(const PixelWand *),
   PixelGetGreenQuantum(const PixelWand *),
+  PixelGetMagentaQuantum(const PixelWand *),
   PixelGetOpacityQuantum(const PixelWand *),
-  PixelGetRedQuantum(const PixelWand *);
+  PixelGetRedQuantum(const PixelWand *),
+  PixelGetYellowQuantum(const PixelWand *);
 
 extern WandExport unsigned int
   PixelSetColor(PixelWand *,const char *);
@@ -45,16 +53,24 @@ extern WandExport unsigned long
 extern WandExport void
   DestroyPixelWand(PixelWand *),
   PixelGetQuantumColor(const PixelWand *,PixelPacket *),
+  PixelSetBlack(PixelWand *,const double),
+  PixelSetBlackQuantum(PixelWand *,const Quantum),
   PixelSetBlue(PixelWand *,const double),
   PixelSetBlueQuantum(PixelWand *,const Quantum),
+  PixelSetColorCount(PixelWand *,const unsigned long),
+  PixelSetCyan(PixelWand *,const double),
+  PixelSetCyanQuantum(PixelWand *,const Quantum),
   PixelSetGreen(PixelWand *,const double),
   PixelSetGreenQuantum(PixelWand *,const Quantum),
+  PixelSetMagenta(PixelWand *,const double),
+  PixelSetMagentaQuantum(PixelWand *,const Quantum),
   PixelSetOpacity(PixelWand *,const double),
   PixelSetOpacityQuantum(PixelWand *,const Quantum),
-  PixelSetColorCount(PixelWand *,const unsigned long),
   PixelSetQuantumColor(PixelWand *,PixelPacket *),
   PixelSetRed(PixelWand *,const double),
-  PixelSetRedQuantum(PixelWand *,const Quantum);
+  PixelSetRedQuantum(PixelWand *,const Quantum),
+  PixelSetYellow(PixelWand *,const double),
+  PixelSetYellowQuantum(PixelWand *,const Quantum);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

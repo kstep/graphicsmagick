@@ -12,7 +12,7 @@ A:visited { color: #800080 }
 -->
 </STYLE>
 
-<TITLE>image - GraphicsMagick Image Methods</TITLE>
+<TITLE>image - Miscellaneous image methods</TITLE>
 <LINK REV="made" HREF="mailto:root@gohan11.freebsd.org">
 </HEAD>
 
@@ -89,7 +89,6 @@ DESCRIPTIONS</A>
 		<LI><A HREF="#getimageexception">GetImageException</A>
 		<LI><A HREF="#getimagegeometry">GetImageGeometry</A>
 		<LI><A HREF="#getimageinfo">GetImageInfo</A>
-		<LI><A HREF="#getimageprofile">GetImageProfile</A>
 		<LI><A HREF="#getimagetype">GetImageType</A>
 		<LI><A HREF="#grayscalepseudoclassimage">GrayscalePseudoClassImage</A>
 		<LI><A HREF="#isimagesequal">IsImagesEqual</A>
@@ -103,7 +102,6 @@ DESCRIPTIONS</A>
 		<LI><A HREF="#setimageclipmask">SetImageClipMask</A>
 		<LI><A HREF="#setimagedepth">SetImageDepth</A>
 		<LI><A HREF="#setimageopacity">SetImageOpacity</A>
-		<LI><A HREF="#setimageprofile">SetImageProfile</A>
 		<LI><A HREF="#setimagetype">SetImageType</A>
 		<LI><A HREF="#textureimage">TextureImage</A>
 	</UL>
@@ -115,7 +113,7 @@ DESCRIPTIONS</A>
 <P>
 <H2><A NAME="name">
 NAME</A></H2>
-<P>image - GraphicsMagick Image Methods</P>
+<P>image - Miscellaneous image methods</P>
 <P>
 <HR>
 <H2><A NAME="synopsis">
@@ -144,7 +142,6 @@ FILE *file, const unsigned int verbose );</P>
 <P>void  <STRONG>GetImageException</STRONG>( Image *image, ExceptionInfo *exception );</P>
 <P>int  <STRONG>GetImageGeometry</STRONG>( const Image *image, const char *geometry, const unsigned int size_to_fit, RectangleInfo *region_info );</P>
 <P>void  <STRONG>GetImageInfo</STRONG>( ImageInfo *image_info );</P>
-<P>const unsigned char * <STRONG>GetImageProfile</STRONG>( const Image *image, const char *name, size_t *length );</P>
 <P>ImageType  <STRONG>GetImageType</STRONG>( const Image *image, ExceptionInfo *exception );</P>
 <P>void  <STRONG>GrayscalePseudoClassImage</STRONG>( Image *image );</P>
 <P>unsigned int  <STRONG>IsImagesEqual</STRONG>( Image *image, const Image *reference );</P>
@@ -157,7 +154,6 @@ FILE *file, const unsigned int verbose );</P>
 <P>unsigned int  <STRONG>SetImageClipMask</STRONG>( Image *image, Image *clip_mask );</P>
 <P>unsigned int  <STRONG>SetImageDepth</STRONG>( Image *image, const unsigned long depth );</P>
 <P>void  <STRONG>SetImageOpacity</STRONG>( Image *image, const unsigned int opacity );</P>
-<P>unsigned int  <STRONG>SetImageProfile</STRONG>( Image *image, const char *name, const unsigned char *profile, const size_t length );</P>
 <P><STRONG>SetImageType</STRONG>( Image *image, const ImageType image_type );</P>
 <P>unsigned int  <STRONG>TextureImage</STRONG>( Image *image, const Image *texture );</P>
 <P>
@@ -523,29 +519,6 @@ A description of each parameter follows:</P>
 The image info.
 <P></P></DL></DL>
 <P>
-<H3><A NAME="getimageprofile">GetImageProfile</A></H3>
-<P>GetImageProfile returns a pointer to the named image profile if it is present.  
-A null pointer is returned if the named profile is not present.</P>
-<P>The format of the GetImageProfile method is:</P>
-<blockquote>const unsigned char *GetImageProfile ( const <A HREF="types.html#Image">Image</A> *image, const char *name, size_t *length ); </blockquote><P>
-A description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<DD><P></P><DT><STRONG>image:</STRONG><BR>
-<DD>
-The image.
-<P></P>
-<DD><P></P><DT><STRONG><A NAME="item_o_name%3A">name:</A></STRONG><BR>
-<DD>
-Profile name.  Valid names are 
-``8BIM'', 
-``ICM'', &amp; 
-``IPTC'' or an existing generic profile name.
-<P></P>
-<DD><P></P><DT><STRONG><A NAME="item_o_length%3A">length:</A></STRONG><BR>
-<DD>
-Updated with profile length if profile is present.
-<P></P></DL></DL>
-<P>
 <H3><A NAME="getimagetype">GetImageType</A></H3>
 <blockquote>GetImageType() returns the type of image: </blockquote><PRE>
       Bilevel        Grayscale       GrayscaleMatte
@@ -758,31 +731,6 @@ The image.
 <DD><P></P><DT><STRONG>opacity:</STRONG><BR>
 <DD>
 The level of transparency: 0 is fully opaque and MaxRGB is fully transparent.
-<P></P></DL></DL>
-<P>
-<H3><A NAME="setimageprofile">SetImageProfile</A></H3>
-<P>SetImageProfile adds a named profile to the image.  If a profile with the same name already exists, then it is replaced.  The profile is copied into the image.  Note that this function does not execute 
-CMS color profiles.  Any existing 
-CMS color profile is simply replaced.  Use the <CODE>ProfileImage()</CODE> function in order to execute a 
-CMS color profile.</P>
-<P>The format of the SetImageProfile method is:</P>
-<blockquote>unsigned int SetImageProfile ( <A HREF="types.html#Image">Image</A> *image, const char *name, const unsigned char *profile, const size_t length ); </blockquote><P>
-A description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<DD><P></P><DT><STRONG>image:</STRONG><BR>
-<DD>
-The image.
-<P></P>
-<DD><P></P><DT><STRONG>name:</STRONG><BR>
-<DD>
-Profile name.  Valid names are 
-``8BIM'', 
-``ICM'', &amp; 
-``IPTC'' or an generic profile name.
-<P></P>
-<DD><P></P><DT><STRONG>length:</STRONG><BR>
-<DD>
-The length of the profile.
 <P></P></DL></DL>
 <P>
 <H3><A NAME="setimagetype">SetImageType</A></H3>

@@ -58,6 +58,7 @@
 #include "magick/monitor.h"
 #include "magick/montage.h"
 #include "magick/paint.h"
+#include "magick/profile.h"
 #include "magick/quantize.h"
 #include "magick/render.h"
 #include "magick/resize.h"

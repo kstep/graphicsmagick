@@ -619,3 +619,53 @@ WandExport void *ResizeMagickMemory(void *memory,const size_t size)
   return(allocation);
 }
 
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   Q u e r y M a g i c k C o l o r                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  QueryMagickColor() returns the red, green, blue, and opacity intensities
+%  for a given color name.
+%
+%  The format of the QueryMagickColor method is:
+%
+%      unsigned int QueryMagickColor(const char *name,MagickPixelPacket *color,
+%        ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o name: The color name (e.g. white, blue, yellow).
+%
+%    o color: The red, green, blue, and opacity intensities values of the
+%      named color in this structure.
+%
+%    o exception: Return any errors or warnings in this structure.
+%
+%
+*/
+MagickExport unsigned int QueryMagickColor(const char *name,
+  MagickPixelPacket *color,ExceptionInfo *exception)
+{
+  PixelPacket
+    pixel;
+
+  unsigned int
+    status;
+
+  status=QueryColorDatabase(name,&pixel,exception);
+  color->colorspace=RGBColorspace;
+  color->matte=0;
+  color->red=pixel.red;
+  color->green=pixel.green;
+  color->blue=pixel.blue;
+  color->opacity=pixel.opacity;
+  color->index=0;
+  return status;
+}
