@@ -66,99 +66,94 @@ std::list<std::string> dependency_list;
 void CConfigureApp::generate_global_dependencies(
     ofstream &dsw, int runtime)
 {
-  switch (runtime)
+  CStringEx strDepends;
+	for (
+		std::list<std::string>::iterator it1a = dependency_list.begin();
+		it1a != dependency_list.end();
+		it1a++)
+	{
+    strDepends = (*it1a).c_str();
+    if (strDepends.FindNoCase("LIBR_zlib",0) == 0)
+		  add_project_dependency(dsw, strDepends );
+	}
+
+	for (
+		std::list<std::string>::iterator it1b = dependency_list.begin();
+		it1b != dependency_list.end();
+		it1b++)
+	{
+    strDepends = (*it1b).c_str();
+    if (strDepends.FindNoCase("LIBR_bzlib",0) == 0)
+		  add_project_dependency(dsw, strDepends );
+	}
+
+	for (
+		std::list<std::string>::iterator it1c = dependency_list.begin();
+		it1c != dependency_list.end();
+		it1c++)
+	{
+    strDepends = (*it1c).c_str();
+    if (strDepends.FindNoCase("LIBR_jpeg",0) == 0)
+		  add_project_dependency(dsw, strDepends );
+	}
+
+	for (
+		std::list<std::string>::iterator it1 = dependency_list.begin();
+		it1 != dependency_list.end();
+		it1++)
+	{
+    strDepends = (*it1).c_str();
+    if (strDepends.FindNoCase("LIBR_zlib",0) == 0)
+      continue;
+    if (strDepends.FindNoCase("LIBR_bzlib",0) == 0)
+      continue;
+    if (strDepends.FindNoCase("LIBR_jpeg",0) == 0)
+      continue;
+    if (strDepends.FindNoCase("LIBR_",0) == 0)
+		  add_project_dependency(dsw, strDepends );
+	}
+	for (
+		std::list<std::string>::iterator it2 = dependency_list.begin();
+		it2 != dependency_list.end();
+		it2++)
+	{
+    strDepends = (*it2).c_str();
+    if (strDepends.FindNoCase("CORE_",0) == 0)
+    {
+      if (strDepends.Find("CORE_Magick",0) == 0)
+        continue;
+		  add_project_dependency(dsw, strDepends );
+    }
+	}
+	for (
+		std::list<std::string>::iterator it3 = dependency_list.begin();
+		it3 != dependency_list.end();
+		it3++)
+	{
+    strDepends = (*it3).c_str();
+    if (strDepends.FindNoCase("CORE_Magick",0) == 0)
+		  add_project_dependency(dsw, strDepends );
+	}
+	for (
+		std::list<std::string>::iterator it4 = dependency_list.begin();
+		it4 != dependency_list.end();
+		it4++)
+	{
+    strDepends = (*it4).c_str();
+    if (strDepends.FindNoCase("IM_MOD_",0) == 0)
+		  add_project_dependency(dsw, strDepends );
+	}
+  if (runtime == MULTITHREADEDDLL)
   {
-    case MULTITHREADEDSTATIC:
-    case SINGLETHREADEDSTATIC:
-    case MULTITHREADEDSTATICDLL:
-      {
-        CStringEx strDepends;
-		    for (
-			    std::list<std::string>::iterator it1a = dependency_list.begin();
-			    it1a != dependency_list.end();
-			    it1a++)
-		    {
-          strDepends = (*it1a).c_str();
-          if (strDepends.FindNoCase("LIBR_zlib",0) == 0)
-		        add_project_dependency(dsw, strDepends );
-		    }
-
-		    for (
-			    std::list<std::string>::iterator it1b = dependency_list.begin();
-			    it1b != dependency_list.end();
-			    it1b++)
-		    {
-          strDepends = (*it1b).c_str();
-          if (strDepends.FindNoCase("LIBR_bzlib",0) == 0)
-		        add_project_dependency(dsw, strDepends );
-		    }
-
-		    for (
-			    std::list<std::string>::iterator it1c = dependency_list.begin();
-			    it1c != dependency_list.end();
-			    it1c++)
-		    {
-          strDepends = (*it1c).c_str();
-          if (strDepends.FindNoCase("LIBR_jpeg",0) == 0)
-		        add_project_dependency(dsw, strDepends );
-		    }
-
-		    for (
-			    std::list<std::string>::iterator it1 = dependency_list.begin();
-			    it1 != dependency_list.end();
-			    it1++)
-		    {
-          strDepends = (*it1).c_str();
-          if (strDepends.FindNoCase("LIBR_zlib",0) == 0)
-            continue;
-          if (strDepends.FindNoCase("LIBR_bzlib",0) == 0)
-            continue;
-          if (strDepends.FindNoCase("LIBR_jpeg",0) == 0)
-            continue;
-          if (strDepends.FindNoCase("LIBR_",0) == 0)
-		        add_project_dependency(dsw, strDepends );
-		    }
-		    for (
-			    std::list<std::string>::iterator it2 = dependency_list.begin();
-			    it2 != dependency_list.end();
-			    it2++)
-		    {
-          strDepends = (*it2).c_str();
-          if (strDepends.FindNoCase("CORE_",0) == 0)
-          {
-            if (strDepends.Find("CORE_Magick",0) == 0)
-              continue;
-		        add_project_dependency(dsw, strDepends );
-          }
-		    }
-		    for (
-			    std::list<std::string>::iterator it3 = dependency_list.begin();
-			    it3 != dependency_list.end();
-			    it3++)
-		    {
-          strDepends = (*it3).c_str();
-          if (strDepends.FindNoCase("CORE_Magick",0) == 0)
-		        add_project_dependency(dsw, strDepends );
-		    }
-		    for (
-			    std::list<std::string>::iterator it4 = dependency_list.begin();
-			    it4 != dependency_list.end();
-			    it4++)
-		    {
-          strDepends = (*it4).c_str();
-          if (strDepends.FindNoCase("IM_MOD_",0) == 0)
-		        add_project_dependency(dsw, strDepends );
-		    }
-      }
-      break;
-    default:
-    case MULTITHREADEDDLL:
-	    add_project_dependency(dsw, "CORE_magick");
-      if (useX11Stubs)
-	      add_project_dependency(dsw, "CORE_xlib");
-		  add_project_dependency(dsw, "CORE_MagickArgs");
-		  add_project_dependency(dsw, "CORE_Magick++");
-      break;
+		for (
+			std::list<std::string>::iterator it5 = dependency_list.begin();
+			it5 != dependency_list.end();
+			it5++)
+		{
+      strDepends = (*it5).c_str();
+      if (strDepends.FindNoCase("UTIL_",0) == 0)
+		    add_project_dependency(dsw, strDepends );
+		}
   }
 }
 
@@ -291,6 +286,7 @@ void CConfigureApp::process_utility(ofstream &dsw,
       break;
     default:
     case MULTITHREADEDDLL:
+		  dependency_list.push_back(name.c_str());
       project += "_mt_exe.dsp";
 	    begin_project(dsw, name.c_str(), project.c_str());
 	    add_project_dependency(dsw, "CORE_magick");
@@ -370,6 +366,7 @@ void CConfigureApp::process_library(ofstream &dsw,
   project += staging;
   project += "\\";
   project += pname;
+	dependency_list.push_back(pname.c_str());
   if (dll)
   {
     switch(runtime)
@@ -377,19 +374,16 @@ void CConfigureApp::process_library(ofstream &dsw,
       case SINGLETHREADEDSTATIC:
         project += "_st_dll.dsp";
 	      begin_project(dsw, pname.c_str(), project.c_str());
-		    dependency_list.push_back(pname.c_str());
 	      end_project(dsw);
         break;
       case MULTITHREADEDSTATIC:
         project += "_xt_dll.dsp";
 	      begin_project(dsw, pname.c_str(), project.c_str());
-		    dependency_list.push_back(pname.c_str());
 	      end_project(dsw);
         break;
       case MULTITHREADEDSTATICDLL:
         project += "_mtdll_dll.dsp";
 	      begin_project(dsw, pname.c_str(), project.c_str());
-		    dependency_list.push_back(pname.c_str());
 	      end_project(dsw);
         break;
       default:
@@ -418,30 +412,20 @@ void CConfigureApp::process_library(ofstream &dsw,
     {
       case SINGLETHREADEDSTATIC:
         project += "_st_lib.dsp";
-	      begin_project(dsw, pname.c_str(), project.c_str());
-		    dependency_list.push_back(pname.c_str());
-	      end_project(dsw);
         break;
       case MULTITHREADEDSTATIC:
         project += "_xt_lib.dsp";
-	      begin_project(dsw, pname.c_str(), project.c_str());
-		    dependency_list.push_back(pname.c_str());
-	      end_project(dsw);
         break;
       case MULTITHREADEDSTATICDLL:
         project += "_mtdll_lib.dsp";
-	      begin_project(dsw, pname.c_str(), project.c_str());
-		    dependency_list.push_back(pname.c_str());
-	      end_project(dsw);
         break;
       default:
       case MULTITHREADEDDLL:
         project += "_mt_lib.dsp";
-	      begin_project(dsw, pname.c_str(), project.c_str());
-		    dependency_list.push_back(pname.c_str());
-	      end_project(dsw);
         break;
     }
+	  begin_project(dsw, pname.c_str(), project.c_str());
+	  end_project(dsw);
   }
 }
 
@@ -479,6 +463,7 @@ do_it_again:
     project += staging;
     project += "\\";
     project += pname;
+		dependency_list.push_back(pname.c_str());
     switch(runtime)
     {
       case SINGLETHREADEDSTATIC:
@@ -508,7 +493,6 @@ do_it_again:
         case SINGLETHREADEDSTATIC:
         case MULTITHREADEDSTATIC:
         case MULTITHREADEDSTATICDLL:
-		      dependency_list.push_back(pname.c_str());
           break;
         default:
         case MULTITHREADEDDLL:
@@ -648,24 +632,22 @@ void CConfigureApp::process_module(ofstream &dsw,
   project += data.cFileName;
   project += "\\";
   project += pname;
+	dependency_list.push_back(pname.c_str());
   switch(runtime)
   {
     case SINGLETHREADEDSTATIC:
       project += "_st_lib.dsp";
 	    begin_project(dsw, pname.c_str(), project.c_str());
-		  dependency_list.push_back(pname.c_str());
 	    end_project(dsw);
       break;
     case MULTITHREADEDSTATIC:
       project += "_xt_lib.dsp";
 	    begin_project(dsw, pname.c_str(), project.c_str());
-		  dependency_list.push_back(pname.c_str());
 	    end_project(dsw);
       break;
     case MULTITHREADEDSTATICDLL:
       project += "_mtdll_lib.dsp";
 	    begin_project(dsw, pname.c_str(), project.c_str());
-		  dependency_list.push_back(pname.c_str());
 	    end_project(dsw);
       break;
     default:
