@@ -845,7 +845,7 @@ MagickExport void XAnimateBackgroundImage(Display *display,
     }
   } while (event.type != DestroyNotify);
   XSync(display,False);
-  if (coalesce_image != image)
+  if (!resource_info->immutable)
     DestroyImages(image);
 }
 
@@ -2470,7 +2470,7 @@ MagickExport Image *XAnimateImages(Display *display,
       (void) XSetWindows((XWindows *) NULL);
     }
   XSync(display,False);
-  if (coalesce_image != image)
+  if (!resource_info->immutable)
     DestroyImages(image);
   /*
     Restore our progress monitor and warning handlers.
