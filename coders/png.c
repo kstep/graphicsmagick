@@ -3084,7 +3084,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
                 LogPNGChunk(logging,mng_IHDR,13L);
                 PNGLong(data+4,jng_width);
                 PNGLong(data+8,jng_height);
-                data[12]=8; /* bit_depth 8 */
+                data[12]=jng_alpha_sample_depth;
                 data[13]=0; /* color_type gray */
                 data[14]=0; /* compression method 0 */
                 data[15]=0; /* filter_method 0 */
