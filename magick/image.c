@@ -2128,7 +2128,7 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
             (image->magick_rows != image->rows))
           (void) fprintf(file,"%ux%u=>",image->magick_columns,
             image->magick_rows);
-      if ((image->page_info.width == 0) || (image->page_info.height == 0))
+      if ((image->page_info.width <= 1) || (image->page_info.height <= 1))
         (void) fprintf(file,"%ux%u ",image->columns,image->rows);
       else
         (void) fprintf(file,"%ux%u%+d%+d ",image->page_info.width,
