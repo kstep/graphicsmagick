@@ -1264,8 +1264,25 @@ MagickExport Image *ReadWMFImage(const ImageInfo *image_info,
     ThrowReaderException(FatalException,"file is not a metafile",image);
   if ((image->columns == 0) || (image->rows == 0))
     {
+      /* WTR: This can not be right since the data returned in
+         height and width is in .01mm. I am using -size to force
+         a specific pixel size.
+       */
       image->rows=height;
       image->columns=width;
+    }
+  if (image_info->size != (char *) NULL)
+    {
+      int
+        x,
+        y;
+
+      unsigned int
+        flags;
+
+      x=y=0;
+      flags=ParseImageGeometry(image_info->size,&x,&y,
+        &image->columns,&image->rows);
     }
   if (image_info->page != (char *) NULL)
     {
