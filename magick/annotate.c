@@ -213,7 +213,7 @@ MagickExport unsigned int AnnotateImage(Image *image,
     status=GetFontMetrics(clone_info,&bounds);
     if (status == False)
       continue;
-    font_width=bounds.x2-bounds.x1+1.0;
+    font_width=bounds.x2-bounds.x1;
     offset.x=x;
     offset.y=y+i*font_height;
     switch (clone_info->gravity)
@@ -1004,10 +1004,14 @@ static unsigned int RenderPostscript(Image *image,
         crop_info.height,crop_info.x,crop_info.y);
       TransformImage(&annotate_image,geometry,(char *) NULL);
     }
+{
+double font_height;
+  font_height=AffineExpansion(&annotate_info->affine)*annotate_info->pointsize;
   bounds->x1=0.0;
-  bounds->y1=(annotate_image->rows/-4.0)+1.5;
+  bounds->y1=(font_height/-4.0)+1.5;
   bounds->x2=annotate_image->columns;
-  bounds->y2=(3.0*annotate_image->rows/4.0)-1.5;
+  bounds->y2=(3.0*font_height/4.0)-1.5;
+}
   if (image == (Image *) NULL)
     {
       DestroyImage(annotate_image);
@@ -1031,7 +1035,7 @@ static unsigned int RenderPostscript(Image *image,
       break;
   }
   CompositeImage(image,OverCompositeOp,annotate_image,
-    (int) ceil(offset->x-0.5),(int) ceil(offset->y-bounds->y2-0.5));
+    (int) ceil(offset->x-0.5),(int) ceil(offset->y-bounds->y2-1.5));
   DestroyImage(annotate_image);
   return(True);
 }
