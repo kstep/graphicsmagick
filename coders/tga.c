@@ -431,9 +431,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
                         }
                       else
                         {
-                          pixel.red=ScaleCharToQuantum(index);
-                          pixel.green=ScaleCharToQuantum(index);
-                          pixel.blue=ScaleCharToQuantum(index);
+                          pixel.blue=pixel.green=pixel.red=ScaleCharToQuantum(index);
                         }
                       break;
                     }
@@ -733,6 +731,7 @@ static unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
     *targa_pixels;
 
   unsigned int
+    write_grayscale,
     status;
 
   unsigned long
@@ -751,10 +750,48 @@ static unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
   scene=0;
   do
     {
+      write_grayscale=False;
+
+      /*
+        If requested output is grayscale, then write grayscale.
+      */
+      if ((image_info->type == GrayscaleType) ||
+          (image_info->type == GrayscaleMatteType))
+        write_grayscale=True;
+
+      /*
+        Convert colorspace to an RGB-compatible type.
+      */
+      (void) TransformColorspace(image,RGBColorspace);
+
+      /*
+        If some other type has not been requested and the image is
+        grayscale, then write a grayscale image unless the image
+        contains an alpha channel.
+      */
+      if (((image_info->type != TrueColorType) &&
+           (image_info->type != TrueColorMatteType) &&
+           (image_info->type != PaletteType) &&
+           (image->matte == False)) &&
+          IsGrayImage(image,&image->exception))
+        write_grayscale=True;
+
+      /*
+        If there are too many colors for colormapped output or the
+        image contains an alpha channel, then promote to TrueColor.
+      */
+      if (((write_grayscale == False) &&
+           (image->storage_class == PseudoClass) &&
+           (image->colors > 256)) ||
+          (image->matte == True))
+        {
+          SyncImage(image);
+          image->storage_class=DirectClass;
+        }
+
       /*
         Initialize TGA raster file header.
       */
-      (void) TransformColorspace(image,RGBColorspace);
       targa_info.id_length=0;
       attribute=GetImageAttribute(image,"comment");
       if (attribute != (const ImageAttribute *) NULL)
@@ -769,11 +806,28 @@ static unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
       targa_info.height=(unsigned short) image->rows;
       targa_info.bits_per_pixel=8;
       targa_info.attributes=0;
-      if ((image->storage_class == DirectClass) || (image->colors > 256))
+      if (write_grayscale == True)
+        {
+          /*
+            Grayscale without Colormap
+          */
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                "Writing Grayscale raster ...");
+          targa_info.image_type=TargaMonochrome;
+	  targa_info.bits_per_pixel=8;
+	  targa_info.colormap_type=0;
+          targa_info.colormap_index=0;
+          targa_info.colormap_length=0;
+          targa_info.colormap_size=0;	
+        }
+      else if (image->storage_class == DirectClass)
         {
           /*
             Full color TGA raster.
           */
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                "Writing TrueColor raster ...");
+
           targa_info.image_type=TargaRGB;
           targa_info.bits_per_pixel=24;
           if (image->matte)
@@ -782,11 +836,13 @@ static unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
               targa_info.attributes=8;  /* # of alpha bits */
             }
         }
-      else
+     else
         {
           /*
             Colormapped TGA raster.
           */
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                "Writing ColorMapped raster ..." );
           targa_info.image_type=TargaColormap;
           targa_info.colormap_type=1;
           targa_info.colormap_index=0;
@@ -851,17 +907,38 @@ static unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
           for (x=0; x < (long) image->columns; x++)
             {
               if (targa_info.image_type == TargaColormap)
-                *q++=indexes[x];
+                {
+                  /* Colormapped */
+                  *q++=*indexes;
+                  indexes++;
+                }
+              else if (targa_info.image_type == TargaMonochrome)
+                {
+                  /* Grayscale */
+                  if (image->storage_class == PseudoClass)
+                    {
+                      if (image->is_grayscale)
+                        *q++=ScaleQuantumToChar(image->colormap[*indexes].red);
+                      else
+                        *q++=PixelIntensityToQuantum(&image->colormap[*indexes]);
+                      indexes++;
+                    }
+                  else
+                    {
+                      if (image->is_grayscale)
+                        *q++=ScaleQuantumToChar(p->red);
+                      else
+                        *q++=PixelIntensityToQuantum(p);
+                    }
+                }
               else
                 {
+                  /* TrueColor RGB */
                   *q++=ScaleQuantumToChar(p->blue);
                   *q++=ScaleQuantumToChar(p->green);
                   *q++=ScaleQuantumToChar(p->red);
-                  if (image->colorspace == CMYKColorspace)
-                    *q++=ScaleQuantumToChar(p->opacity);
-                  else
-                    if (image->matte)
-                      *q++=ScaleQuantumToChar(MaxRGB-p->opacity);
+                  if (image->matte)
+                    *q++=ScaleQuantumToChar(MaxRGB-p->opacity);
                 }
               p++;
             }

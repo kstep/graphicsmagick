@@ -5706,15 +5706,15 @@ MagickExport MagickPassFail SetImageType(Image *image,const ImageType image_type
     }
     case TrueColorType:
     {
-      if (image->colorspace != RGBColorspace)
-        (void) TransformColorspace(image,RGBColorspace);
+
+      (void) TransformColorspace(image,RGBColorspace);
       image->storage_class=DirectClass;
       break;
     }
     case TrueColorMatteType:
     {
-      if (image->colorspace != RGBColorspace)
-        (void) TransformColorspace(image,RGBColorspace);
+
+      (void) TransformColorspace(image,RGBColorspace);
       image->storage_class=DirectClass;
       if (!image->matte)
         SetImageOpacity(image,OpaqueOpacity);
