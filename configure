@@ -3620,7 +3620,7 @@ EOF
     DLLDFLAGS=-export-dynamic
 
   fi
-   eval "eval im_cv_x_coder_modules=${libdir}/ImageMagick/modules/coders/"
+   eval "eval im_cv_x_coder_modules=${libdir}/ImageMagick/module/coder/"
 
 cat >>confdefs.h <<EOF
 #define MagickModulesPath "$im_cv_x_coder_modules"
@@ -14311,7 +14311,7 @@ LIBS=""
 #AC_SUBST(X_LIBS)
 #AC_SUBST(X_EXTRA_LIBS)
 
-ac_config_files="$ac_config_files Makefile magick/Makefile coders/delegate.mgk coders/Makefile utilities/Makefile tests/Makefile coders/type.mgk magick/Magick-config Magick++/bin/Makefile Magick++/bin/Magick++-config Magick++/Makefile Magick++/lib/Makefile Magick++/lib/Magick++/Makefile Magick++/demo/Makefile Magick++/tests/Makefile PerlMagick/Makefile.PL"
+ac_config_files="$ac_config_files Makefile magick/Makefile coder/delegate.mgk coder/Makefile utilities/Makefile tests/Makefile coder/type.mgk magick/Magick-config Magick++/bin/Makefile Magick++/bin/Magick++-config Magick++/Makefile Magick++/lib/Makefile Magick++/lib/Magick++/Makefile Magick++/demo/Makefile Magick++/tests/Makefile PerlMagick/Makefile.PL"
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
 # tests run on this system so they can be shared between configure
@@ -14588,11 +14588,11 @@ Try \`$0 --help' for more information." >&2;}
   # Handling of arguments.
   'Makefile' ) CONFIG_FILES="$CONFIG_FILES Makefile" ;;
   'magick/Makefile' ) CONFIG_FILES="$CONFIG_FILES magick/Makefile" ;;
-  'coders/delegate.mgk' ) CONFIG_FILES="$CONFIG_FILES coders/delegate.mgk" ;;
-  'coders/Makefile' ) CONFIG_FILES="$CONFIG_FILES coders/Makefile" ;;
+  'coder/delegate.mgk' ) CONFIG_FILES="$CONFIG_FILES coder/delegate.mgk" ;;
+  'coder/Makefile' ) CONFIG_FILES="$CONFIG_FILES coder/Makefile" ;;
   'utilities/Makefile' ) CONFIG_FILES="$CONFIG_FILES utilities/Makefile" ;;
   'tests/Makefile' ) CONFIG_FILES="$CONFIG_FILES tests/Makefile" ;;
-  'coders/type.mgk' ) CONFIG_FILES="$CONFIG_FILES coders/type.mgk" ;;
+  'coder/type.mgk' ) CONFIG_FILES="$CONFIG_FILES coder/type.mgk" ;;
   'magick/Magick-config' ) CONFIG_FILES="$CONFIG_FILES magick/Magick-config" ;;
   'Magick++/bin/Makefile' ) CONFIG_FILES="$CONFIG_FILES Magick++/bin/Makefile" ;;
   'Magick++/bin/Magick++-config' ) CONFIG_FILES="$CONFIG_FILES Magick++/bin/Magick++-config" ;;
