@@ -21,6 +21,9 @@ extern MagickExport int
              const DrawContext context);
 
 extern MagickExport void
+  DrawAnnotation(DrawContext context,
+		 const double x, const double y,
+		 const char *text),
   DrawArc(DrawContext context,
           const double sx, const double sy,
           const double ex, const double ey,
@@ -166,10 +169,7 @@ extern MagickExport void
   DrawSetTranslate(DrawContext context, const double x, const double y),
   DrawSetViewbox(DrawContext context,
                  unsigned long x1, unsigned long y1,
-                 unsigned long x2, unsigned long y2),
-  DrawAnnotation(DrawContext context,
-           const double x, const double y,
-           const char *text);
+                 unsigned long x2, unsigned long y2);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

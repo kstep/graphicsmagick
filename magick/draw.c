@@ -116,6 +116,37 @@ struct _DrawContext
 static int
   DrawPrintf(DrawContext context, const char *format, ...);
 
+MagickExport void DrawAnnotation(DrawContext context, const double x,
+				 const double y, const char *text)
+{
+  char escaped_string[MaxTextExtent];
+
+  unsigned char *p,
+    *q;
+
+  int string_length;
+
+  for (p = (unsigned char *) text, q =
+         (unsigned char *) escaped_string, string_length = 0;
+       *p != 0 && string_length < ((int) sizeof(escaped_string) - 3); ++p)
+    {
+      if (*p == '\'')
+        {
+          *q++ = '\\';
+          *q++ = '\\';
+          string_length += 2;
+        }
+      else
+        {
+          *q++ = (*p);
+          ++string_length;
+        }
+    }
+  *q = 0;
+
+  DrawPrintf(context, "text %.10g,%.10g '%.1024s'\n", escaped_string);
+}
+
 MagickExport void DrawSetAffine(DrawContext context, const double sx,
                                 const double rx, const double ry, const double sy,
                                 const double tx, const double ty)
@@ -1292,36 +1323,6 @@ MagickExport void DrawSetStrokeOpacity(DrawContext context,
 MagickExport void DrawSetStrokeWidth(DrawContext context, const double width)
 {
   DrawPrintf(context, "stroke-width %.10g\n", width);
-}
-MagickExport void DrawAnnotation(DrawContext context, const double x,
-                           const double y, const char *text)
-{
-  char escaped_string[MaxTextExtent];
-
-  unsigned char *p,
-    *q;
-
-  int string_length;
-
-  for (p = (unsigned char *) text, q =
-         (unsigned char *) escaped_string, string_length = 0;
-       *p != 0 && string_length < ((int) sizeof(escaped_string) - 3); ++p)
-    {
-      if (*p == '\'')
-        {
-          *q++ = '\\';
-          *q++ = '\\';
-          string_length += 2;
-        }
-      else
-        {
-          *q++ = (*p);
-          ++string_length;
-        }
-    }
-  *q = 0;
-
-  DrawPrintf(context, "text %.10g,%.10g '%.1024s'\n", escaped_string);
 }
 
 MagickExport void DrawSetTextAntialias(DrawContext context,
