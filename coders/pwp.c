@@ -223,7 +223,7 @@ static Image *ReadPWPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (image_info->subrange != 0)
       if (next_image->scene >= (image_info->subimage+image_info->subrange-1))
         break;
-    MagickMonitor(LoadImagesText,TellBlob(pwp_image),pwp_image->blob->filesize);
+    MagickMonitor(LoadImagesText,TellBlob(pwp_image),SizeBlob(image));
   }
   (void) remove(clone_info->filename);
   DestroyImageInfo(clone_info);

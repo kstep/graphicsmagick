@@ -1762,17 +1762,17 @@ MagickExport void DescribeImage(Image *image,FILE *file,
               image->normalized_maximum_error);
           }
       (void) fprintf(file,"%u-bit ",image->depth);
-      if (image->blob->filesize != 0)
+      if (SizeBlob(image) != 0)
         {
-          if (image->blob->filesize >= (1 << 24))
+          if (SizeBlob(image) >= (1 << 24))
             (void) fprintf(file,"%lumb ",
-              (unsigned long) (image->blob->filesize/1024/1024));
+              (unsigned long) (SizeBlob(image)/1024/1024));
           else
-            if (image->blob->filesize >= (1 << 16))
+            if (SizeBlob(image) >= (1 << 16))
               (void) fprintf(file,"%lukb ",
-                (unsigned long) (image->blob->filesize/1024));
+                (unsigned long) (SizeBlob(image)/1024));
             else
-              (void) fprintf(file,"%lub ",(unsigned long) image->blob->filesize);
+              (void) fprintf(file,"%lub ",(unsigned long) SizeBlob(image));
         }
       (void) fprintf(file,"%.1fu %d:%02d\n",user_time,(int) (elapsed_time/60.0),
         (int) ceil(fmod(elapsed_time,60.0)));
@@ -2062,16 +2062,15 @@ MagickExport void DescribeImage(Image *image,FILE *file,
           else
             (void) fprintf(file,"\n");
     }
-  if (image->blob->filesize >= (1 << 24))
+  if (SizeBlob(image) >= (1 << 24))
     (void) fprintf(file,"  Filesize: %lumb\n",
-      (unsigned long) (image->blob->filesize/1024/1024));
+      (unsigned long) (SizeBlob(image)/1024/1024));
   else
-    if (image->blob->filesize >= (1 << 16))
+    if (SizeBlob(image) >= (1 << 16))
       (void) fprintf(file,"  Filesize: %lukb\n",
-        (unsigned long) (image->blob->filesize/1024));
+        (unsigned long) (SizeBlob(image)/1024));
     else
-      (void) fprintf(file,"  Filesize: %lub\n",
-        (unsigned long) image->blob->filesize);
+      (void) fprintf(file,"  Filesize: %lub\n",(unsigned long) SizeBlob(image));
   if (image->interlace == NoInterlace)
     (void) fprintf(file,"  Interlace: None\n");
   else

@@ -158,7 +158,7 @@ int main ( int argc, char **argv )
        (original->normalized_mean_error > fuzz_factor) )
     {
       printf( "R/W file check for format \"%s\" failed: %u/%.6f/%.6fe\n",
-        format,original->mean_error_per_pixel,original->normalized_mean_error,
+        format,(unsigned int) original->mean_error_per_pixel,original->normalized_mean_error,
         original->normalized_maximum_error);
       fflush(stdout);
     }

@@ -589,16 +589,16 @@ ImageAttribute *GetImageInfoAttribute(const ImageInfo *image_info,
     {
       if (LocaleNCompare("size",key,2) == 0)
         {
-          if (image->blob->filesize >= (1 << 24))
+          if (SizeBlob(image) >= (1 << 24))
             FormatString(attribute,"%lumb",
-              (unsigned long) (image->blob->filesize/1024/1024));
+              (unsigned long) (SizeBlob(image)/1024/1024));
           else
-            if (image->blob->filesize >= (1 << 16))
+            if (SizeBlob(image) >= (1 << 16))
               FormatString(attribute,"%lukb",
-                (unsigned long) (image->blob->filesize/1024));
+                (unsigned long) (SizeBlob(image)/1024));
             else
               FormatString(attribute,"%lu",
-                (unsigned long) image->blob->filesize);
+                (unsigned long) SizeBlob(image));
           break;
         }
       if (LocaleNCompare("scene",key,2) == 0)

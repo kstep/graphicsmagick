@@ -314,7 +314,7 @@ static Image *ReadEPTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   (void) fputs(translate_geometry,file);
   (void) fclose(file);
   CloseBlob(image);
-  filesize=image->blob->filesize;
+  filesize=SizeBlob(image);
   DestroyImage(image);
   /*
     Use Ghostscript to convert Postscript image.
@@ -369,7 +369,6 @@ static Image *ReadEPTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   {
     (void) strcpy(image->magick,"PS");
     (void) strcpy(image->filename,image_info->filename);
-    image->blob->filesize=filesize;
     next_image=image->next;
     if (next_image != (Image *) NULL)
       image=next_image;

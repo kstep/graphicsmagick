@@ -3028,15 +3028,13 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
     {
       case 'b':
       {
-        if (image->blob->filesize >= (1 << 24))
-          FormatString(q,"%lumb ",
-            (unsigned long) (image->blob->filesize/1024/1024));
+        if (SizeBlob(image) >= (1 << 24))
+          FormatString(q,"%lumb ",(unsigned long) (SizeBlob(image)/1024/1024));
         else
-          if (image->blob->filesize >= (1 << 16))
-            FormatString(q,"%lukb ",
-              (unsigned long) (image->blob->filesize/1024));
+          if (SizeBlob(image) >= (1 << 16))
+            FormatString(q,"%lukb ",(unsigned long) (SizeBlob(image)/1024));
           else
-            FormatString(q,"%lub ",(unsigned long) image->blob->filesize);
+            FormatString(q,"%lub ",(unsigned long) SizeBlob(image));
         q=translated_text+Extent(translated_text);
         break;
       }

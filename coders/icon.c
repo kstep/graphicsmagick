@@ -453,7 +453,7 @@ static Image *ReadIconImage(const ImageInfo *image_info,
             return((Image *) NULL);
           }
         image=image->next;
-        MagickMonitor(LoadImagesText,TellBlob(image),image->blob->filesize);
+        MagickMonitor(LoadImagesText,TellBlob(image),SizeBlob(image));
       }
   }
   while (image->previous != (Image *) NULL)

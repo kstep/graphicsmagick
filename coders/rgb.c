@@ -374,7 +374,7 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
             return((Image *) NULL);
           }
         image=image->next;
-        MagickMonitor(LoadImagesText,TellBlob(image),image->blob->filesize);
+        MagickMonitor(LoadImagesText,TellBlob(image),SizeBlob(image));
       }
   } while (count > 0);
   LiberateMemory((void **) &scanline);

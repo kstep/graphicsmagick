@@ -1748,7 +1748,6 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /* Restore original filename and magick */
   strcpy(image->filename,image_info->filename);
   strcpy(image->magick,image_info->magick);
-  image->blob->filesize=filesize;
   image->rows=cstruct->realheight;
   image->columns=cstruct->realwidth;
 

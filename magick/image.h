@@ -113,7 +113,7 @@ typedef struct _BlobInfo
 
   off_t
     offset,
-    filesize;
+    maximum_extent;
 
   unsigned long
     signature;

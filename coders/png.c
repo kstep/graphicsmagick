@@ -2453,7 +2453,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             image=image->next;
           }
         mng_info->image=image;
-        MagickMonitor(LoadImagesText,TellBlob(image),image->blob->filesize);
+        MagickMonitor(LoadImagesText,TellBlob(image),SizeBlob(image));
         if (term_chunk_found)
           {
             image->start_loop=True;

@@ -511,7 +511,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
             return((Image *) NULL);
           }
         image=image->next;
-        MagickMonitor(LoadImagesText,TellBlob(image),image->blob->filesize);
+        MagickMonitor(LoadImagesText,TellBlob(image),SizeBlob(image));
       }
   } while (sun_info.magic == 0x59a66a95);
   while (image->previous != (Image *) NULL)

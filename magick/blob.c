@@ -253,7 +253,7 @@ MagickExport void CloseBlob(Image *image)
   assert(image->signature == MagickSignature);
   CloseImagePixels(image);
   image->taint=False;
-  image->blob->filesize=SizeBlob(image);
+  image->blob->maximum_extent=SizeBlob(image);
   if (image->blob->data != (unsigned char *) NULL)
     {
       image->blob->extent=image->blob->length;
@@ -1061,7 +1061,7 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
                   }
               }
           }
-        image->blob->filesize=SizeBlob(image);
+        image->blob->maximum_extent=SizeBlob(image);
       }
   image->status=False;
   if (*type == 'r')
@@ -1615,6 +1615,8 @@ MagickExport off_t SizeBlob(Image *image)
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
+  if (image->blob->maximum_extent != 0)
+    return(image->blob->maximum_extent);
   if (image->file == (FILE *) NULL)
     return(image->blob->length);
   SyncBlob(image);

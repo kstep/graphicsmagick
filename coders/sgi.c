@@ -575,7 +575,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
             return((Image *) NULL);
           }
         image=image->next;
-        MagickMonitor(LoadImagesText,TellBlob(image),image->blob->filesize);
+        MagickMonitor(LoadImagesText,TellBlob(image),SizeBlob(image));
       }
   } while (iris_info.magic == 0x01DA);
   while (image->previous != (Image *) NULL)

@@ -224,7 +224,7 @@ static Image *ReadPIXImage(const ImageInfo *image_info,ExceptionInfo *exception)
             return((Image *) NULL);
           }
         image=image->next;
-        MagickMonitor(LoadImagesText,TellBlob(image),image->blob->filesize);
+        MagickMonitor(LoadImagesText,TellBlob(image),SizeBlob(image));
       }
   } while (status == True);
   while (image->previous != (Image *) NULL)

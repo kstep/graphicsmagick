@@ -220,7 +220,7 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->next->previous=image;
     image=image->next;
     SetImage(image,OpaqueOpacity);
-    MagickMonitor(LoadImagesText,TellBlob(image),image->blob->filesize);
+    MagickMonitor(LoadImagesText,TellBlob(image),SizeBlob(image));
     /*
       Initialize text image to background color.
     */
