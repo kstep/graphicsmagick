@@ -34,7 +34,6 @@ copy-all:
 ##########
   copy $(GMBCB)\coders\libCoders.bpr $(GMDIR)\coders
   copy $(GMBCB)\coders\libCoders.bpf $(GMDIR)\coders
-  copy $(GMBCB)\coders\svg.c $(GMDIR)\coders
 
 ##########
 # jpeg
@@ -74,7 +73,6 @@ copy-all:
   copy $(GMBCB)\magick\libMagick.bpf $(GMDIR)\magick
   copy $(GMBCB)\magick\magick_types.h.in $(GMDIR)\magick\magick_types.h
   copy $(GMBCB)\magick\magick_config.h.in $(GMDIR)\magick\magick_config.h
-  copy $(GMBCB)\magick\cache.c $(GMDIR)\magick
 
 ##########
 # magick++
