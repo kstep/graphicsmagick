@@ -112,14 +112,8 @@ eps<=>ps
 	gswin32c -dMaxBitmap=300000000 -sDEVICE=pswrite -q -dNOPAUSE -dSAFER \
 	  -sOutputFile="%o" -- "%i" -c quit
 
-file=>
-	wget --quiet --output-document=%o %m:%i
-
 fig=>
 	fig2dev -L ps %i %o
-
-ftp=>
-	wget --quiet --output-document=%o %m:%i
 
 # Gnuplot format (rendered as Postscript)
 # Add additional gnuplot commands to the input file to adjust output.
@@ -145,9 +139,6 @@ htm=>
 
 html=>
 	html2ps -o %o %i
-
-http=>
-	wget --quiet --output-document=%o %m:%i
 
 mpg=>
 	mpeg2decode -q -b %i -f -r -o3 %o%%05d
