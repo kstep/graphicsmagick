@@ -284,7 +284,7 @@ MagickExport unsigned int AnnotateImage(Image *image,
             box_image->background_color=annotate_info->box;
             SetImage(box_image,OpaqueOpacity);
             CompositeImage(image,ReplaceCompositeOp,box_image,(int)
-              ceil(offset.x-0.5),(int) ceil(offset.y-3.0*font_height/4.0-0.5));
+              ceil(offset.x-0.5),(int) ceil(offset.y-3.0*font_height/4.0+0.5));
             DestroyImage(box_image);
           }
       }
