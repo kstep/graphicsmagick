@@ -36,7 +36,7 @@ testFilter('input.miff', 'Chop',
 ++$test;
 testFilter('input.miff', 'ColorFloodfill',
   q/+25+45/,
-  'a5d122b2b7a0944d835243afd4a81815bbea5bc1ae6c3a6ba79301662b4474a1');
+  '4f575497a2a7bd00c078d169f7e21309b9dab1319c9601c900f233ca4d3996a6');
 
 ++$test;
 testFilter('input.miff', 'Colorize',
@@ -156,13 +156,13 @@ testFilter('input.miff', 'OilPaint',
 ++$test;
 testFilter('input.miff', 'Opaque',
   q/#fefefd/,
-  'e2c877df8a828c0d2f391cbfb689dfb23535fee7719f86acf9faf1a8e2d62c6f');
+  'a5d122b2b7a0944d835243afd4a81815bbea5bc1ae6c3a6ba79301662b4474a1');
 
 ++$test;
 testFilter('input.miff', 'Quantize',
   q/128/,
   'a690f2732ba25e3a101ba3d166b5c9345198606d73eae0f7c8b7fc8e61bbba01',
-  '6018c1c104a1d443845e204c12925cc69ed1f1c9d1b210c674d04fa7052fa551');
+  'dc224abeddcb1bb0efdaad191167935b99daaa989cf57dc6fe1aa11b86a93ce3');
 
 ++$test;
 testFilter('input.miff', 'Raise',
