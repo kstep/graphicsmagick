@@ -863,11 +863,11 @@ MagickExport unsigned int IsOpaqueImage(Image *image)
   long
     y;
 
+  register const PixelPacket
+    *p;
+
   register long
     x;
-
-  register PixelPacket
-    *p;
 
   /*
     Determine if image is grayscale.
@@ -878,8 +878,8 @@ MagickExport unsigned int IsOpaqueImage(Image *image)
     return(True);
   for (y=0; y < (long) image->rows; y++)
   {
-    p=GetImagePixels(image,0,y,image->columns,1);
-    if (p == (PixelPacket *) NULL)
+    p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+    if (p == (const PixelPacket *) NULL)
       return(True);
     for (x=0; x < (long) image->columns; x++)
     {

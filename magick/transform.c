@@ -284,7 +284,7 @@ MagickExport Image *CoalesceImages(const Image *image,ExceptionInfo *exception)
         return((Image *) NULL);
       }
     coalesce_image->next->previous=coalesce_image;
-    coalesce_image=GetNextImage(coalesce_image);
+    coalesce_image=coalesce_image->next;
     coalesce_image->delay=next->delay;
     coalesce_image->start_loop=next->start_loop;
     (void) CompositeImage(coalesce_image,next->matte ? OverCompositeOp :
@@ -612,7 +612,7 @@ MagickExport Image *DeconstructImages(Image *image,ExceptionInfo *exception)
     Deconstruct the image sequence.
   */
   i=0;
-  for (next=image->next; next != (Image *) NULL; next=GetNextImage(next))
+  for (next=image->next; next != (Image *) NULL; next=next->next)
   {
     next->orphan=True;
     crop_next=CropImage(next,&bounds[i++],exception);
@@ -681,10 +681,9 @@ MagickExport Image *FlattenImages(const Image *image,ExceptionInfo *exception)
   /*
     Flatten image.
   */
-  for (next=image->next; next != (Image *) NULL; next=GetNextImage(next))
+  for (next=image->next; next != (Image *) NULL; next=next->next)
     (void) CompositeImage(flatten_image,next->matte ? OverCompositeOp :
       CopyCompositeOp,next,next->page.x,next->page.y);
-  (void) IsOpaqueImage(flatten_image);
   return(flatten_image);
 }
 

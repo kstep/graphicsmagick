@@ -623,7 +623,6 @@ MagickExport unsigned int NegateImage(Image *image,const unsigned int grayscale)
           q->red=(~q->red);
           q->green=(~q->green);
           q->blue=(~q->blue);
-          q->opacity=(~q->opacity);
           q++;
         }
         if (!SyncImagePixels(image))

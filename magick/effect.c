@@ -1545,7 +1545,6 @@ MagickExport Image *ImplodeImage(const Image *image,const double amount,
     if (QuantumTick(y,image->rows))
       MagickMonitor(ImplodeImageText,y,image->rows);
   }
-  (void) IsOpaqueImage(implode_image);
   return(implode_image);
 }
 
@@ -3471,7 +3470,6 @@ MagickExport Image *SwirlImage(const Image *image,double degrees,
     if (QuantumTick(y,image->rows))
       MagickMonitor(SwirlImageText,y,image->rows);
   }
-  (void) IsOpaqueImage(swirl_image);
   return(swirl_image);
 }
 
@@ -3760,6 +3758,5 @@ MagickExport Image *WaveImage(const Image *image,const double amplitude,
       MagickMonitor(WaveImageText,y,wave_image->rows);
   }
   LiberateMemory((void **) &sine_map);
-  (void) IsOpaqueImage(wave_image);
   return(wave_image);
 }

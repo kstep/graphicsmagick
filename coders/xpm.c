@@ -645,6 +645,9 @@ static unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
     k,
     y;
 
+  register const PixelPacket
+    *p;
+
   register IndexPacket
     *indexes;
 
@@ -653,7 +656,7 @@ static unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
     x;
 
   register PixelPacket
-    *p;
+    *q;
 
   unsigned int
     characters_per_pixel,
@@ -692,16 +695,16 @@ static unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
           */
           for (y=0; y < (long) image->rows; y++)
           {
-            p=GetImagePixels(image,0,y,image->columns,1);
-            if (p == (PixelPacket *) NULL)
+            q=GetImagePixels(image,0,y,image->columns,1);
+            if (q == (PixelPacket *) NULL)
               break;
             for (x=0; x < (long) image->columns; x++)
             {
-              if (p->opacity == TransparentOpacity)
+              if (q->opacity == TransparentOpacity)
                 transparent=True;
               else
-                p->opacity=OpaqueOpacity;
-              p++;
+                q->opacity=OpaqueOpacity;
+              q++;
             }
             if (!SyncImagePixels(image))
               break;
@@ -718,15 +721,15 @@ static unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
       ReacquireMemory((void **) &image->colormap,colors*sizeof(PixelPacket));
       for (y=0; y < (long) image->rows; y++)
       {
-        p=GetImagePixels(image,0,y,image->columns,1);
-        if (p == (PixelPacket *) NULL)
+        q=GetImagePixels(image,0,y,image->columns,1);
+        if (q == (PixelPacket *) NULL)
           break;
         indexes=GetIndexes(image);
         for (x=0; x < (long) image->columns; x++)
         {
-          if (p->opacity == TransparentOpacity)
+          if (q->opacity == TransparentOpacity)
             indexes[x]=image->colors;
-          p++;
+          q++;
         }
         if (!SyncImagePixels(image))
           break;
@@ -784,8 +787,8 @@ static unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
   (void) WriteBlobString(image,"/* pixels */\n");
   for (y=0; y < (long) image->rows; y++)
   {
-    p=GetImagePixels(image,0,y,image->columns,1);
-    if (p == (PixelPacket *) NULL)
+    p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+    if (p == (const PixelPacket *) NULL)
       break;
     indexes=GetIndexes(image);
     (void) WriteBlobString(image,"\"");
@@ -801,7 +804,6 @@ static unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
       symbol[j]='\0';
       FormatString(buffer,"%.1024s",symbol);
       (void) WriteBlobString(image,buffer);
-      p++;
     }
     FormatString(buffer,"\"%.1024s\n",
       (y == (long) (image->rows-1) ? "" : ","));

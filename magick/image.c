@@ -417,7 +417,7 @@ MagickExport unsigned int AnimateImages(const ImageInfo *image_info,Image *image
 %
 %  The format of the AppendImage method is:
 %
-%      Image *AppendImages(Image *image,const unsigned int stack,
+%      Image *AppendImages(const Image *image,const unsigned int stack,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -431,7 +431,7 @@ MagickExport unsigned int AnimateImages(const ImageInfo *image_info,Image *image
 %
 %
 */
-MagickExport Image *AppendImages(Image *image,const unsigned int stack,
+MagickExport Image *AppendImages(const Image *image,const unsigned int stack,
   ExceptionInfo *exception)
 {
 #define AppendImageText  "  Append image sequence...  "
@@ -439,7 +439,7 @@ MagickExport Image *AppendImages(Image *image,const unsigned int stack,
   Image
     *append_image;
 
-  register Image
+  register const Image
     *next;
 
   register long
@@ -546,7 +546,6 @@ MagickExport Image *AppendImages(Image *image,const unsigned int stack,
       if (!global_colormap)
         append_image->storage_class=DirectClass;
     }
-  (void) IsOpaqueImage(image);
   return(append_image);
 }
 
@@ -560,10 +559,10 @@ MagickExport Image *AppendImages(Image *image,const unsigned int stack,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  The Average() method takes a set of images and averages them together.
+%  The AverageImages() method takes a set of images and averages them together.
 %  Each image in the set must have the same width and the same height.
-%  Average() returns a single image with each corresponding pixel component
-%  of each image averaged.   On failure, a NULL image is returned and
+%  AverageImages() returns a single image with each corresponding pixel
+%  component of each image averaged.   On failure, a NULL image is returned and
 %  exception describes the reason for the failure.
 %
 %  The format of the AverageImage method is:
@@ -578,7 +577,7 @@ MagickExport Image *AppendImages(Image *image,const unsigned int stack,
 %
 %
 */
-MagickExport Image *AverageImages(Image *image,ExceptionInfo *exception)
+MagickExport Image *AverageImages(const Image *image,ExceptionInfo *exception)
 {
 #define AverageImageText  "  Average image sequence...  "
 
@@ -1129,6 +1128,7 @@ MagickExport unsigned int CompositeImage(Image *image,
   assert(image->signature == MagickSignature);
   assert(composite_image != (Image *) NULL);
   assert(composite_image->signature == MagickSignature);
+  image->storage_class=DirectClass;
   switch (compose)
   {
     case DisplaceCompositeOp:
@@ -1256,9 +1256,12 @@ MagickExport unsigned int CompositeImage(Image *image,
       continue;
     if ((y-y_offset) >= (long) composite_image->rows)
       break;
+    p=AcquireImagePixels(composite_image,0,y-y_offset,composite_image->columns,
+      1,&image->exception);
     q=GetImagePixels(image,0,y,image->columns,1);
-    if (q == (PixelPacket *) NULL)
+    if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
+    composite_indexes=GetIndexes(composite_image);
     indexes=GetIndexes(image);
     for (x=0; x < (long) image->columns; x++)
     {
@@ -1269,9 +1272,11 @@ MagickExport unsigned int CompositeImage(Image *image,
         }
       if ((x-x_offset) >= (long) composite_image->columns)
         break;
-      pixel=AcquireOnePixel(composite_image,x-x_offset,y-y_offset,
-        &image->exception);
-      composite_indexes=GetIndexes(composite_image);
+      pixel=(*p);
+      if (!composite_image->matte)
+        pixel.opacity=OpaqueOpacity;
+      if (!image->matte)
+        q->opacity=OpaqueOpacity;
       switch (compose)
       {
         case ThresholdCompositeOp:
@@ -1338,7 +1343,7 @@ MagickExport unsigned int CompositeImage(Image *image,
             case OverCompositeOp:
             default:
             {
-              AlphaComposite(&pixel,pixel.opacity,q,q->opacity);
+              AlphaComposite(p,pixel.opacity,q,q->opacity);
               break;
             }
             case InCompositeOp:
@@ -1379,22 +1384,25 @@ MagickExport unsigned int CompositeImage(Image *image,
                 pixel.blue/MaxRGB+(double) pixel.opacity*(MaxRGB-q->opacity)*
                 q->blue/MaxRGB)/MaxRGB;
               q->blue=(Quantum) (blue > MaxRGB ? MaxRGB : blue+0.5);
-              opacity=MaxRGB-((double) (MaxRGB-pixel.opacity)*(MaxRGB-q->opacity)+
-                (double) pixel.opacity*(MaxRGB-q->opacity))/MaxRGB;
+              opacity=MaxRGB-((double) (MaxRGB-pixel.opacity)*
+                (MaxRGB-q->opacity)+(double) pixel.opacity*
+                (MaxRGB-q->opacity))/MaxRGB;
               q->opacity=(Quantum) (opacity > MaxRGB ? MaxRGB : opacity+0.5);
               break;
             }
             case XorCompositeOp:
             {
               red=((double) (MaxRGB-pixel.opacity)*q->opacity*pixel.red/MaxRGB+
-                (double) pixel.opacity*(MaxRGB-q->opacity)*q->red/MaxRGB)/MaxRGB;
+                (double) pixel.opacity*(MaxRGB-q->opacity)*
+                q->red/MaxRGB)/MaxRGB;
               q->red=(Quantum) (red > MaxRGB ? MaxRGB : red+0.5);
               green=((double) (MaxRGB-pixel.opacity)*q->opacity*pixel.green/
                 MaxRGB+(double) pixel.opacity*(MaxRGB-q->opacity)*q->green/
                 MaxRGB)/MaxRGB;
               q->green=(Quantum) (green > MaxRGB ? MaxRGB : green+0.5);
-              blue=((double) (MaxRGB-pixel.opacity)*q->opacity*pixel.blue/MaxRGB+
-                (double) pixel.opacity*(MaxRGB-q->opacity)*q->blue/MaxRGB)/MaxRGB;
+              blue=((double) (MaxRGB-pixel.opacity)*q->opacity*pixel.blue/
+                MaxRGB+(double) pixel.opacity*(MaxRGB-q->opacity)*
+                q->blue/MaxRGB)/MaxRGB;
               q->blue=(Quantum) (blue > MaxRGB ? MaxRGB : blue+0.5);
               opacity=MaxRGB-((double) (MaxRGB-pixel.opacity)*q->opacity+
                 (double) pixel.opacity*(MaxRGB-q->opacity))/MaxRGB;
@@ -1532,13 +1540,13 @@ MagickExport unsigned int CompositeImage(Image *image,
       }
       if ((indexes != (IndexPacket *) NULL) &&
           (composite_indexes != (IndexPacket *) NULL))
-        indexes[x]=(*composite_indexes);
+        indexes[x]=composite_indexes[x-x_offset];
+      p++;
       q++;
     }
     if (!SyncImagePixels(image))
       break;
   }
-  image->storage_class=DirectClass;
   return(True);
 }
 
@@ -1800,14 +1808,14 @@ MagickExport void DescribeImage(Image *image,FILE *file,
   p=(Image *) NULL;
   if ((image->matte && (strcmp(image->magick,"GIF") != 0)) || image->taint)
     {
-      PixelPacket
+      register const PixelPacket
         *p;
 
       p=(PixelPacket *) NULL;
       for (y=0; y < (long) image->rows; y++)
       {
-        p=GetImagePixels(image,0,y,image->columns,1);
-        if (p == (PixelPacket *) NULL)
+        p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+        if (p == (const PixelPacket *) NULL)
           break;
         for (x=0; x < (long) image->columns; x++)
         {
@@ -2608,11 +2616,11 @@ MagickExport unsigned long GetImageDepth(Image *image)
   long
     y;
 
+  register const PixelPacket
+    *p;
+
   register long
     x;
-
-  register PixelPacket
-    *p;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -2622,8 +2630,8 @@ MagickExport unsigned long GetImageDepth(Image *image)
   image->depth=16;
   for (y=0; y < (long) image->rows; y++)
   {
-    p=GetImagePixels(image,0,y,image->columns,1);
-    if (p == (PixelPacket *) NULL)
+    p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+    if (p == (const PixelPacket *) NULL)
       break;
     for (x=0; x < (long) image->columns; x++)
     {
@@ -2927,6 +2935,9 @@ MagickExport unsigned int IsImagesEqual(Image *image,Image *reference)
   long
     y;
 
+  register const PixelPacket
+    *p;
+
   register double
     blue,
     green,
@@ -2937,7 +2948,6 @@ MagickExport unsigned int IsImagesEqual(Image *image,Image *reference)
     x;
 
   register PixelPacket
-    *p,
     *q;
 
   /*
@@ -2965,9 +2975,9 @@ MagickExport unsigned int IsImagesEqual(Image *image,Image *reference)
   opacity=0;
   for (y=0; y < (long) image->rows; y++)
   {
-    p=GetImagePixels(image,0,y,image->columns,1);
+    p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
     q=GetImagePixels(reference,0,y,reference->columns,1);
-    if (p == (PixelPacket *) NULL)
+    if (p == (const PixelPacket *) NULL)
       break;
     for (x=0; x < (long) image->columns; x++)
     {
@@ -4306,7 +4316,6 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
                   region_info.x,region_info.y);
                 DestroyImage(*image);
                 *image=region_image;
-                (void) IsOpaqueImage(*image);
               }
             if (*option == '+')
               continue;
@@ -4905,7 +4914,7 @@ MagickExport unsigned int MogrifyImages(const ImageInfo *image_info,
     mogrify_images=mogrify_images->next;
     if (image_info->verbose)
       DescribeImage(image,stdout,False);
-    image=GetNextImage(image);
+    image=image->next;
     MagickMonitor(MogrifyImageText,scene,number_images);
   }
   return(status);
@@ -5206,11 +5215,13 @@ MagickExport unsigned int RGBTransformImage(Image *image,
   long
     y;
 
+  register const PixelPacket
+    *p;
+
   register long
     x;
 
   register PixelPacket
-    *p,
     *q;
 
   register long
@@ -5273,8 +5284,8 @@ MagickExport unsigned int RGBTransformImage(Image *image,
       */
       for (y=0; y < (long) image->rows; y++)
       {
-        p=GetImagePixels(image,0,y,image->columns,1);
-        if (p == (PixelPacket *) NULL)
+        p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+        if (p == (const PixelPacket *) NULL)
           break;
         for (x=0; x < (long) image->columns; x++)
         {
@@ -5787,7 +5798,7 @@ MagickExport unsigned int SetImageDepth(Image *image,const unsigned long depth)
     x;
 
   register PixelPacket
-    *p;
+    *q;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -5799,16 +5810,16 @@ MagickExport unsigned int SetImageDepth(Image *image,const unsigned long depth)
   image->depth=8;
   for (y=0; y < (long) image->rows; y++)
   {
-    p=GetImagePixels(image,0,y,image->columns,1);
-    if (p == (PixelPacket *) NULL)
+    q=GetImagePixels(image,0,y,image->columns,1);
+    if (q == (PixelPacket *) NULL)
       break;
     for (x=0; x < (long) image->columns; x++)
     {
-      p->red=UpScale(DownScale(p->red));
-      p->green=UpScale(DownScale(p->green));
-      p->blue=UpScale(DownScale(p->blue));
-      p->opacity=UpScale(DownScale(p->opacity));
-      p++;
+      q->red=UpScale(DownScale(q->red));
+      q->green=UpScale(DownScale(q->green));
+      q->blue=UpScale(DownScale(q->blue));
+      q->opacity=UpScale(DownScale(q->opacity));
+      q++;
     }
     if (!SyncImagePixels(image))
       break;
@@ -5818,14 +5829,14 @@ MagickExport unsigned int SetImageDepth(Image *image,const unsigned long depth)
       register long
         i;
 
-      p=image->colormap;
+      q=image->colormap;
       for (i=0; i < (long) image->colors; i++)
       {
-        p->red=UpScale(DownScale(p->red));
-        p->green=UpScale(DownScale(p->green));
-        p->blue=UpScale(DownScale(p->blue));
-        p->opacity=UpScale(DownScale(p->opacity));
-        p++;
+        q->red=UpScale(DownScale(q->red));
+        q->green=UpScale(DownScale(q->green));
+        q->blue=UpScale(DownScale(q->blue));
+        q->opacity=UpScale(DownScale(q->opacity));
+        q++;
       }
     }
   return(True);

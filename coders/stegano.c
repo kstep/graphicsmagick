@@ -123,6 +123,9 @@ static Image *ReadSTEGANOImage(const ImageInfo *image_info,
     shift,
     y;
 
+  PixelPacket
+    pixel;
+
   register IndexPacket
     *indexes,
     *stegano_indexes;
@@ -131,7 +134,6 @@ static Image *ReadSTEGANOImage(const ImageInfo *image_info,
     x;
 
   register PixelPacket
-    *p,
     *q;
 
   /*
@@ -168,18 +170,16 @@ static Image *ReadSTEGANOImage(const ImageInfo *image_info,
     {
       if (i == (long) (stegano_image->columns*stegano_image->rows))
         i=0;
-      p=GetImagePixels(stegano_image,(long) (i % stegano_image->columns),
-        (long) (i/stegano_image->columns),1,1);
-      if (p == (PixelPacket *) NULL)
-        break;
+      pixel=AcquireOnePixel(stegano_image,(long) (i % stegano_image->columns),
+        (long) (i/stegano_image->columns),&image->exception);
       stegano_indexes=GetIndexes(stegano_image);
       if (stegano_image->storage_class == PseudoClass)
         UnembedBit(*stegano_indexes)
       else
         {
-          UnembedBit(p->red);
-          UnembedBit(p->green);
-          UnembedBit(p->blue);
+          UnembedBit(pixel.red);
+          UnembedBit(pixel.green);
+          UnembedBit(pixel.blue);
         }
       i++;
     }

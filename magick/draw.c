@@ -2644,7 +2644,6 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
   if (status == False)
     ThrowBinaryException(OptionWarning,
       "Non-conforming drawing primitive definition",keyword);
-  (void) IsOpaqueImage(image);
   return(status);
 }
 

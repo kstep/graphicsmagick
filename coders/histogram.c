@@ -186,12 +186,15 @@ static unsigned int WriteHISTOGRAMImage(const ImageInfo *image_info,
     sans_offset,
     y;
 
+  register const PixelPacket
+    *p;
+
   register long
     x;
 
   register PixelPacket
-    *p,
-    *q;
+    *q,
+    *r;
 
   unsigned int
     status;
@@ -240,8 +243,8 @@ static unsigned int WriteHISTOGRAMImage(const ImageInfo *image_info,
   }
   for (y=0; y < (long) image->rows; y++)
   {
-    p=GetImagePixels(image,0,y,image->columns,1);
-    if (p == (PixelPacket *) NULL)
+    p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+    if (p == (const PixelPacket *) NULL)
       break;
     for (x=0; x < (long) image->columns; x++)
     {
@@ -282,25 +285,25 @@ static unsigned int WriteHISTOGRAMImage(const ImageInfo *image_info,
     if (q == (PixelPacket *) NULL)
       break;
     y=histogram_image->rows-(int) (scale*red[x]);
-    p=q+y;
+    r=q+y;
     for ( ; y < (long) histogram_image->rows; y++)
     {
-      p->red=MaxRGB;
-      p++;
+      r->red=MaxRGB;
+      r++;
     }
     y=histogram_image->rows-(int) (scale*green[x]);
-    p=q+y;
+    r=q+y;
     for ( ; y < (long) histogram_image->rows; y++)
     {
-      p->green=MaxRGB;
-      p++;
+      r->green=MaxRGB;
+      r++;
     }
     y=histogram_image->rows-(int) (scale*blue[x]);
-    p=q+y;
+    r=q+y;
     for ( ; y < (long) histogram_image->rows; y++)
     {
-      p->blue=MaxRGB;
-      p++;
+      r->blue=MaxRGB;
+      r++;
     }
     if (!SyncImagePixels(histogram_image))
       break;
