@@ -289,7 +289,7 @@ int lt_dlinit(void)
 */
 char *lt_dlerror(void)
 {
-  return(NTGetLastError());
+  return(ntgetlasterror());
 }
 
 /*
@@ -422,7 +422,7 @@ void *lt_dlsym(void *h,char *s)
   LPFNDLLFUNC1
     lpfnDllFunc1;
 
-  lpfnDllFunc1=(LPFNDLLFUNC1) GetProcAddress(handle,name);
+  lpfnDllFunc1=(LPFNDLLFUNC1) GetProcAddress(h,s);
   if (!lpfnDllFunc1)
     return((void *) NULL);
   return((void *) lpfnDllFunc1);
@@ -649,7 +649,7 @@ Export void NTErrorHandler(const ExceptionType error,const char *message,
 %
 %
 */
-Export char *NTGetLastError(void)
+Export char *ntgetlasterror(void)
 {
   char
     *message;
@@ -662,7 +662,7 @@ Export char *NTGetLastError(void)
 
   status=FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER |
     FORMAT_MESSAGE_FROM_SYSTEM,NULL,GetLastError(),
-    MAKELANGID(LANG_NEUTRAL,SUBLANG_DEFAULT),(LPTSTR) &buffer,0,NULL))
+    MAKELANGID(LANG_NEUTRAL,SUBLANG_DEFAULT),(LPTSTR) &buffer,0,NULL);
   if (!status)
     message=AllocateString("An unknown error occurred");
   else
