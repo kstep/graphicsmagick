@@ -82,14 +82,11 @@ int main( int /*argc*/, char **argv)
 	NULL
       };
 
-      string expectedString;
-      {
-	Image image( "1x1", "white" );
-	if ( image.depth() == 16 )
-	  expectedString = "#AAAABBBBCCCC";
-	else
-	  expectedString = "#AABBCC";
-      }
+#if QuantumDepth == 8
+      string expectedString = "#AABBCC";
+#else
+      string expectedString = "#AAAABBBBCCCC";
+#endif
 
       for ( int i = 0; colorStrings[i] != NULL; ++i )
 	{
