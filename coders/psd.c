@@ -431,6 +431,7 @@ static char* ModeToString( PSDImageType inType )
 
 static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
+#define MaxPSDChannels  24
   typedef struct _ChannelInfo
   {
     short int
@@ -450,7 +451,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       channels;
 
     ChannelInfo
-      channel_info[24];
+      channel_info[MaxPSDChannels];
 
     char
       blendkey[4];
@@ -587,6 +588,8 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   }
   (void) ReadBlob(image,6,(char *) psd_info.reserved);
   psd_info.channels=ReadBlobMSBShort(image);
+  if (psd_info.channels > MaxPSDChannels)
+    ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
   psd_info.rows=ReadBlobMSBLong(image);
   psd_info.columns=ReadBlobMSBLong(image);
   psd_info.depth=ReadBlobMSBShort(image);
