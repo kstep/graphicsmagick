@@ -311,7 +311,8 @@ MagickExport Image *MontageImages(Image *image,const MontageInfo *montage_info,
     *annotate_info;
 
   char
-    geometry[MaxTextExtent];
+    geometry[MaxTextExtent],
+    *title;
 
   FrameInfo
     frame_info;
@@ -516,9 +517,9 @@ MagickExport Image *MontageImages(Image *image,const MontageInfo *montage_info,
   */
   font_height=(unsigned int) (clone_info->affine[0]*annotate_info->pointsize+
     clone_info->affine[2]*annotate_info->pointsize);
-  FormatLabel(clone_info,montage_info->title,((tile_info.width+
-    2*border_width)*Min(number_images,tiles_per_column))/2,
-    &font_height);
+  title=TranslateText(clone_info,image,montage_info->title);
+  FormatLabel(clone_info,title,0.5*tile_info.width+2*border_width*
+    Min(number_images,tiles_per_column),&font_height);
   for (tile=0; tile < number_images; tile++)
   {
     attribute=GetImageAttribute(next_list[tile],"Label");
@@ -532,8 +533,7 @@ MagickExport Image *MontageImages(Image *image,const MontageInfo *montage_info,
   */
   title_offset=0;
   if (montage_info->title != (char *) NULL)
-    title_offset=((font_height*MultilineCensus(montage_info->title)) << 1)+
-      (tile_info.y << 1);
+    title_offset=2*font_height*MultilineCensus(title)+2*tile_info.y;
   number_lines=0;
   for (tile=0; tile < number_images; tile++)
   {
@@ -626,7 +626,7 @@ MagickExport Image *MontageImages(Image *image,const MontageInfo *montage_info,
         FormatString(geometry,"%ux%u%+d%+d",montage_next->columns,
           font_height << 1,0,font_height+tile_info.y+4);
         (void) CloneString(&annotate_info->geometry,geometry);
-        (void) CloneString(&annotate_info->text,montage_info->title);
+        (void) CloneString(&annotate_info->text,title);
         AnnotateImage(montage_next,annotate_info);
       }
     (void) SetMonitorHandler(handler);
@@ -862,6 +862,7 @@ MagickExport Image *MontageImages(Image *image,const MontageInfo *montage_info,
   if (texture != (Image *) NULL)
     LiberateMemory((void **) &texture);
   LiberateMemory((void **) &master_list);
+  LiberateMemory((void **) &title);
   DestroyAnnotateInfo(annotate_info);
   DestroyImageInfo(clone_info);
   while (montage_next->previous != (Image *) NULL)

@@ -5103,8 +5103,8 @@ Mogrify(ref,...)
             radius,
             sigma;
 
-          radius=3.0;
-          sigma=1.0;
+          radius=0.0;
+          sigma=1.5;
           if (attribute_flag[1])
             radius=argument_list[1].double_reference;
           if (attribute_flag[2])
@@ -5156,10 +5156,10 @@ Mogrify(ref,...)
             sigma,
             threshold;
 
-          radius=3.0;
-          sigma=1.0;
+          radius=0.0;
+          sigma=1.5;
           amount=1.0;
-          threshold=0.5*MaxRGB;
+          threshold=0.0;
           if (attribute_flag[1])
             radius=argument_list[1].double_reference;
           if (attribute_flag[2])
