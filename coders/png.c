@@ -2213,6 +2213,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
         else
           row_offset=0;
         png_read_row(ping,png_pixels+row_offset,NULL);
+        /* Try SetImagePixels */
         if (!GetImagePixels(image,0,y,image->columns,1))
           break;
 #if (QuantumDepth == 8)
@@ -2360,7 +2361,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
         else
           row_offset=0;
         png_read_row(ping,png_pixels+row_offset,NULL);
-        q=GetImagePixels(image,0,y,image->columns,1);
+        q=SetImagePixels(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
           break;
         indexes=GetIndexes(image);
@@ -2529,7 +2530,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       for (y=0; y < (long) image->rows; y++)
       {
         image->storage_class=storage_class;
-        q=GetImagePixels(image,0,y,image->columns,1);
+        q=SetImagePixels(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
           break;
         indexes=GetIndexes(image);
@@ -3355,7 +3356,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
   for (y=0; y < (long) image->rows; y++)
   {
     s=AcquireImagePixels(jng_image,0,y,image->columns,1,&image->exception);
-    q=GetImagePixels(image,0,y,image->columns,1);
+    q=SetImagePixels(image,0,y,image->columns,1);
     (void) memcpy(q,s,length);
     if (!SyncImagePixels(image))
       break;
@@ -3389,17 +3390,22 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
          {
            s=AcquireImagePixels(jng_image,0,y,image->columns,1,
               &image->exception);
-           q=GetImagePixels(image,0,y,image->columns,1);
            if (image->matte)
+           {
+             q=SetImagePixels(image,0,y,image->columns,1);
              for (x=(long) image->columns; x > 0; x--,q++,s++)
                 q->opacity=(Quantum) MaxRGB-s->red;
+           }
            else
+           {
+             q=SetImagePixels(image,0,y,image->columns,1);
              for (x=(long) image->columns; x > 0; x--,q++,s++)
              {
                 q->opacity=(Quantum) MaxRGB-s->red;
                 if (q->opacity != OpaqueOpacity)
                   image->matte=True;
              }
+           }
            if (!SyncImagePixels(image))
              break;
          }
