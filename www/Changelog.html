@@ -23,6 +23,16 @@ ImageMagick Changes</font></font></font></b></td>
 <dl>
 <dd>
 <pre>
+2002-10-30  Leonard Rosenthol &lt;leonardr@lazerware.com&gt;
+  * ReadPSDImage() is now fully instrumented with logging
+  * Fixed long standing bug in ReadPSDImage, so it no longer 
+    returns an extra layer
+
+2002-10-29  Glenn Randers-Pehrson &lt;randeg@alum.rpi.edu&gt;
+  * Added three output formats: PNG24 (24-bit RGB PNG, opaque only),
+    PNG32 32-bit (RGBA PNG, semitransparency OK), and PNG8 (8-bit indexed
+    PNG, binary transparency only).
+
 2002-10-27  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
   * coders/vid.c: Modified to be 10X faster for large images and to take
     advantage of JPEG size optimizations.
