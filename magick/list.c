@@ -853,7 +853,7 @@ MagickExport unsigned int SpliceImageIntoList(Image **images,const long offset,
     *image,
     *next;
 
-	register int
+  register long
     i;
 
   assert(images != (Image **) NULL);
@@ -870,8 +870,12 @@ MagickExport unsigned int SpliceImageIntoList(Image **images,const long offset,
   if (image == (Image *) NULL)
     return(False);
   next=image;
-  for (i=0; i < length; i++)
+  for (i=0; (i < length; i++)
+  {
+    if (next->next == (Image *) NULL)
+      break;
     next=next->next;
+  }
   if ((image->previous != (Image *) NULL) && (image->next != (Image *) NULL))
     *images=splices;
   else
