@@ -384,6 +384,8 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
         break;
       }
     }
+    if (EOFBlob(image))
+      ThrowReaderException(CorruptImageWarning,"not enough pixels",image);
     /*
       Proceed to next image.
     */

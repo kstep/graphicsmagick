@@ -393,12 +393,12 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
         }
       if (!SyncImagePixels(image))
         break;
-      if (EOFBlob(image))
-        break;
       if (image->previous == (Image *) NULL)
         if (QuantumTick(y,image->rows))
           MagickMonitor(LoadImageText,y,image->rows);
     }
+    if (EOFBlob(image))
+      ThrowReaderException(CorruptImageWarning,"not enough pixels",image);
     /*
       Proceed to next image.
     */

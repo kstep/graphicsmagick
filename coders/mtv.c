@@ -153,7 +153,7 @@ static Image *ReadMTVImage(const ImageInfo *image_info,ExceptionInfo *exception)
     */
     pixels=(unsigned char *) AcquireMemory(3*image->columns);
     if (pixels == (unsigned char *) NULL)
-      ThrowReaderException(CorruptImageWarning,"Unable to allocate memory",
+      ThrowReaderException(ResourceLimitWarning,"Unable to allocate memory",
         image);
     for (y=0; y < (int) image->rows; y++)
     {
@@ -179,6 +179,8 @@ static Image *ReadMTVImage(const ImageInfo *image_info,ExceptionInfo *exception)
           MagickMonitor(LoadImageText,y,image->rows);
     }
     LiberateMemory((void **) &pixels);
+    if (EOFBlob(image))
+      ThrowReaderException(CorruptImageWarning,"not enough pixels",image);
     /*
       Proceed to next image.
     */

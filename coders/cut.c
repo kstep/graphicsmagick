@@ -546,11 +546,13 @@ if(palette==NULL)
     } 
 
 Finish:
- CloseBlob(image);
- if(BImgBuff!=NULL) free(BImgBuff);
- if(palette!=NULL) DestroyImage(palette);
- if(clone_info!=NULL) DestroyImageInfo(clone_info);
- return(image);       
+  if(BImgBuff!=NULL) free(BImgBuff);
+  if(palette!=NULL) DestroyImage(palette);
+  if(clone_info!=NULL) DestroyImageInfo(clone_info);
+  if (EOFBlob(image))
+    ThrowReaderException(CorruptImageWarning,"not enough pixels",image);
+  CloseBlob(image);
+  return(image);       
 }
 
 /*

@@ -161,6 +161,8 @@ static Image *ReadMONOImage(const ImageInfo *image_info,
       MagickMonitor(LoadImageText,y,image->rows);
   }
   SyncImage(image);
+  if (EOFBlob(image))
+    ThrowReaderException(CorruptImageWarning,"not enough pixels",image);
   CloseBlob(image);
   return(image);
 }

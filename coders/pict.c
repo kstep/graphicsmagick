@@ -1257,6 +1257,8 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
         continue;
       }
   }
+  if (EOFBlob(image))
+    ThrowReaderException(CorruptImageWarning,"not enough pixels",image);
   CloseBlob(image);
   return(image);
 }

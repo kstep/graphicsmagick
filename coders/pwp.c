@@ -228,6 +228,9 @@ static Image *ReadPWPImage(const ImageInfo *image_info,ExceptionInfo *exception)
   DestroyImageInfo(clone_info);
   CloseBlob(pwp_image);
   DestroyImage(pwp_image);
+  if (EOFBlob(image))
+    ThrowReaderException(CorruptImageWarning,"not enough pixels",image);
+  CloseBlob(image);
   return(image);
 }
 

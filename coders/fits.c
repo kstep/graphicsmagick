@@ -452,11 +452,11 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
         MagickMonitor(LoadImageText,y,image->rows);
     }
     LiberateMemory((void **) &fits_pixels);
+    if (EOFBlob(image))
+      ThrowReaderException(CorruptImageWarning,"not enough pixels",image);
     /*
       Proceed to next image.
     */
-    if (EOFBlob(image))
-      break;
     if (image_info->subrange != 0)
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
         break;

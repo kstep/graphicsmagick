@@ -962,6 +962,8 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
         DestroyImages(image);
         return((Image *) NULL);
       }
+    if (EOFBlob(image))
+      ThrowReaderException(CorruptImageWarning,"not enough pixels",image);
     /*
       Proceed to next image.
     */

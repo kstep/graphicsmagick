@@ -238,6 +238,9 @@ static Image *ReadSCTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (QuantumTick(y,image->rows))
       MagickMonitor(LoadImageText,y,image->rows);
   }
+  if (EOFBlob(image))
+    ThrowReaderException(CorruptImageWarning,"not enough pixels",image);
+  CloseBlob(image);
   return(image);
 }
 

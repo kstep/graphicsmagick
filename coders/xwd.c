@@ -445,6 +445,8 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     LiberateMemory((void **) &colors);
   LiberateMemory((void **) &ximage->data);
   LiberateMemory((void **) &ximage);
+  if (EOFBlob(image))
+    ThrowReaderException(CorruptImageWarning,"not enough pixels",image);
   CloseBlob(image);
   return(image);
 }

@@ -182,9 +182,10 @@ NoMemory: ThrowReaderException(CorruptImageWarning,"Memory exhausted",image);
       ReadBlob(image,k,(char *)&dummy);
       InsertRow(BImgBuff,i,image);
       }
-
- CloseBlob(image);
  if(BImgBuff!=NULL) free(BImgBuff);
+ if (EOFBlob(image))
+   ThrowReaderException(CorruptImageWarning,"not enough pixels",image);
+ CloseBlob(image);
  return(image);
 }
 

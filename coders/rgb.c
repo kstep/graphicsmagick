@@ -353,6 +353,8 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
         break;
       }
     }
+    if (EOFBlob(image))
+      ThrowReaderException(CorruptImageWarning,"not enough pixels",image);
     /*
       Proceed to next image.
     */

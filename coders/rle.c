@@ -518,6 +518,8 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (number_colormaps != 0)
       LiberateMemory((void **) &colormap);
     LiberateMemory((void **) &rle_pixels);
+    if (EOFBlob(image))
+      ThrowReaderException(CorruptImageWarning,"not enough pixels",image);
     /*
       Proceed to next image.
     */

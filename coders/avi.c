@@ -697,17 +697,11 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (image_info->verbose)
           (void) fprintf(stdout,"  Stream fcc\n");
         if (LocaleCompare(stream_info.data_type,"auds") == 0)
-          {
-            continue;
-          }
+          continue;
         if (LocaleCompare(stream_info.data_type,"pads") == 0)
-          {
-            continue;
-          }
+          continue;
         if (LocaleCompare(stream_info.data_type,"txts") == 0)
-          {
-            continue;
-          }
+          continue;
         if (LocaleCompare(stream_info.data_type,"vids") == 0)
           {
             bmp_info.size=ReadBlobLSBLong(image);
@@ -797,6 +791,8 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
   }
   while (image->previous != (Image *) NULL)
     image=image->previous;
+  if (EOFBlob(image))
+    ThrowReaderException(CorruptImageWarning,"not enough pixels",image);
   CloseBlob(image);
   return(image);
 }

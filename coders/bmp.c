@@ -822,6 +822,8 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         ThrowReaderException(CorruptImageWarning,"Not a BMP image file",image);
     }
     LiberateMemory((void **) &pixels);
+    if (EOFBlob(image))
+      ThrowReaderException(CorruptImageWarning,"not enough pixels",image);
     if (bmp_info.height < 0)
       {
         Image

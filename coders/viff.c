@@ -697,6 +697,8 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
     LiberateMemory((void **) &viff_pixels);
     if (image->storage_class == PseudoClass)
       SyncImage(image);
+    if (EOFBlob(image))
+      ThrowReaderException(CorruptImageWarning,"not enough pixels",image);
     /*
       Proceed to next image.
     */

@@ -782,6 +782,8 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
           LiberateMemory((void **) &colormap);
         }
     }
+  if (EOFBlob(image))
+    ThrowReaderException(CorruptImageWarning,"not enough pixels",image);
   /*
     Initialize cache.
   */

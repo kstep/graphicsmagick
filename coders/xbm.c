@@ -356,6 +356,8 @@ static Image *ReadXBMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   }
   LiberateMemory((void **) &data);
   SyncImage(image);
+  if (EOFBlob(image))
+    ThrowReaderException(CorruptImageWarning,"not enough pixels",image);
   CloseBlob(image);
   return(image);
 }

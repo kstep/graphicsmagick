@@ -490,6 +490,8 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (image->storage_class == PseudoClass)
       SyncImage(image);
     LiberateMemory((void **) &sun_pixels);
+    if (EOFBlob(image))
+      ThrowReaderException(CorruptImageWarning,"not enough pixels",image);
     /*
       Proceed to next image.
     */

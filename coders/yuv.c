@@ -258,6 +258,8 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
     TransformRGBImage(image,YCbCrColorspace);
     if (image_info->interlace == PartitionInterlace)
       (void) strcpy(image->filename,image_info->filename);
+    if (EOFBlob(image))
+      ThrowReaderException(CorruptImageWarning,"not enough pixels",image);
     /*
       Proceed to next image.
     */
@@ -283,6 +285,8 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
   LiberateMemory((void **) &scanline);
   while (image->previous != (Image *) NULL)
     image=image->previous;
+  if (EOFBlob(image))
+    ThrowReaderException(CorruptImageWarning,"not enough pixels",image);
   CloseBlob(image);
   return(image);
 }

@@ -476,6 +476,8 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       ThrowReaderException(CorruptImageWarning,"Not a PDB image file",image);
   }
   LiberateMemory((void **) &pixels);
+  if (EOFBlob(image))
+    ThrowReaderException(CorruptImageWarning,"not enough pixels",image);
   if ((offset-TellBlob(image)) == 0)
     {
       char

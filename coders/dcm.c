@@ -2884,8 +2884,8 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if ((group == dicom_info[i].group) &&
               (element == dicom_info[i].element))
             break;
-        (void) fprintf(stdout,"0x%04x %4d %.1024s-%.1024s (0x%04x,0x%04x)",image->offset,
-          length,implicit_vr,explicit_vr,group,element);
+        (void) fprintf(stdout,"0x%04x %4d %.1024s-%.1024s (0x%04x,0x%04x)",
+          image->offset,length,implicit_vr,explicit_vr,group,element);
         if (dicom_info[i].description != (char *) NULL)
           (void) fprintf(stdout," %.1024s",dicom_info[i].description);
         (void) fprintf(stdout,": ");
@@ -3346,11 +3346,11 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               NormalizeImage(image);
           }
       }
+    if (EOFBlob(image))
+      ThrowReaderException(CorruptImageWarning,"not enough pixels",image);
     /*
       Proceed to next image.
     */
-    if (EOFBlob(image))
-      break;
     if (image_info->subrange != 0)
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
         break;

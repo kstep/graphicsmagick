@@ -568,6 +568,8 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       SyncImage(image);
     LiberateMemory((void **) &scanline);
     LiberateMemory((void **) &pcx_pixels);
+    if (EOFBlob(image))
+      ThrowReaderException(CorruptImageWarning,"not enough pixels",image);
     /*
       Proceed to next image.
     */

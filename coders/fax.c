@@ -169,6 +169,8 @@ static Image *ReadFAXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   status=HuffmanDecodeImage(image);
   if (status == False)
     ThrowReaderException(CorruptImageWarning,"Unable to read image data",image);
+  if (EOFBlob(image))
+    ThrowReaderException(CorruptImageWarning,"not enough pixels",image);
   CloseBlob(image);
   return(image);
 }

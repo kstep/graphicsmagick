@@ -3231,6 +3231,9 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
       if (*token == ',')
         GetToken(q,&q,token);
       point.y=atof(token);
+      GetToken(q,(char **) NULL,token);
+      if (*token == ',')
+        GetToken(q,&q,token);
       primitive_info[i].primitive=primitive_type;
       primitive_info[i].point=point;
       primitive_info[i].coordinates=0;

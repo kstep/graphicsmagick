@@ -193,6 +193,8 @@ static Image *ReadMAPImage(const ImageInfo *image_info,ExceptionInfo *exception)
       break;
   }
   LiberateMemory((void **) &pixels);
+  if (EOFBlob(image))
+    ThrowReaderException(CorruptImageWarning,"not enough pixels",image);
   CloseBlob(image);
   return(image);
 }
