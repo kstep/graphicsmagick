@@ -55,6 +55,7 @@
 */
 #include "magick.h"
 #include "defines.h"
+#include "magic.h"
 #if defined(HasX11)
 #include "xwindows.h"
 #endif
@@ -5250,6 +5251,7 @@ Export unsigned int SetImageInfo(ImageInfo *image_info,
   const unsigned int rectify)
 {
   char
+    magic[MaxTextExtent],
     magick[MaxTextExtent];
 
   Image
@@ -5451,6 +5453,12 @@ Export unsigned int SetImageInfo(ImageInfo *image_info,
     }
   DestroyImage(image);
   magick[MaxTextExtent-1]='\0';
+
+  *magic='\0';
+  if(GetMagic(magic,magick,MaxTextExtent) == True)
+    (void) strcpy(image_info->magick,magic);
+#if 0
+
   if (LocaleNCompare(magick,"BEGMF",3) == 0)
     (void) strcpy(image_info->magick,"CGM");
   if (LocaleNCompare(magick,"digraph",7) == 0)
@@ -5476,6 +5484,7 @@ Export unsigned int SetImageInfo(ImageInfo *image_info,
     if (r->magick)
       if (r->magick((unsigned char *) magick,MaxTextExtent))
         (void) strcpy(image_info->magick,r->tag);
+#endif
   return(True);
 }
 
