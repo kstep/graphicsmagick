@@ -11,44 +11,54 @@ angle angle
 arc startX,startY endX,endY startDegrees,endDegrees
 bezier x1,y1, x2,y2, x3,y3, ..., xN,yN
 circle originX,originY perimX,perimY
-*clip-path %s  (%s is the name of the clip path)
+clip-path %s  (%s is the name of the clip path)
+clip-rule (evenodd|nonzero)
+clip-units (userSpace|userSpaceOnUse|objectBoundingBox)
 color x,y (point|replace|floodfill|filltoborder|reset)
-decorate (none|underline|overline|line-through)
+decorate (underline|overline|line-through|#FFFFFF)
 ellipse centerX,centerY radiusX,radiusY arcStart,arcEnd
 fill colorspec
-fill-rule (evenodd|nonzero)
 fill-opacity opacity
+fill-rule (evenodd|nonzero)
 font fontname
+font-size pointsize  (used to be 'pointsize')
+gradient ?????????????
+gradient-units
 gravity (NorthWest|North|NorthEast|West|Center|East|SouthWest|South|SouthEast)
-image (Over|In|Out|Atop|Xor|Plus|Minus|Add|Subtract|Difference|Multiply|Bumpmap|Copy|CopyRed|CopyGreen|CopyBlue|CopyOpacity) x,y width,height filename
+image (Over|In|Out|Atop|Xor|Plus|Minus|Add|Subtract|Difference|Multiply|Bumpmap|Copy|CopyRed|CopyGreen|CopyBlue|CopyOpacity|Clear) x,y width,height filename
 line startX,startY endX,endY
 matte x,y (point|replace|floodfill|filltoborder|reset)
+offset ??????????????
 opacity fill stroke
 path 'SVG-compatible path arguments'
 point x,y
-font-size pointsize  (used to be 'pointsize')
 polygon x1,y1, x2,y2, x3,y3, ..., xN,yN
 polyline x1,y1, x2,y2, x3,y3, ..., xN,yN
-*pop clip-path
+pop clip-path
+pop defs
 pop graphic-context
-*push clip-path-%s  (%s is the name of the clip path)
+pop linear-gradient
+push clip-path-%s  (%s is the name of the clip path)
 push graphic-context
+push defs
+push linear-gradient
 rectangle upperLeftX,upperLeftY lowerRightX,lowerRightY
 rotate angle
 roundrectangle upperLeftX,upperLeftY lowerRightX,lowerRightY cornerWidth,cornerHeight
 scale x,y
 skewX angle
 skewY angle
+stop-color color
 stroke colorspec
 stroke-antialias truth-value (0 or 1)
 stroke-dasharray (none|comma-delimited-numeric-list)
 stroke-dashoffset dashoffset
 stroke-linecap (butt|round|square)
-stroke-linejoin (miter|round|bevel)
-stroke-miterlimit limit (default 4)
+stroke-linejoin (butt|miter|round|square)
+stroke-miterlimit limit
 stroke-opacity opacity
 stroke-width linewidth
 text x,y "some text"
-text-antialias text_antialias (0 or 1)
+text-antialias (0|1)
 translate x,y
-*viewbox (e.g. "viewbox 0 0 640 480")
+viewbox (e.g. "viewbox 0 0 640 480")
