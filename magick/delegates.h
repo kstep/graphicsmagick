@@ -41,7 +41,7 @@ extern MagickExport DelegateInfo
 
 extern MagickExport unsigned int
   InvokeDelegate(const ImageInfo *,Image *,const char *,const char *),
-  ListDelegateInfo(FILE *);
+  ListDelegateInfo(FILE *,ExceptionInfo *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
