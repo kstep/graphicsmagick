@@ -54,6 +54,9 @@
 */
 #include "magick.h"
 #include "defines.h"
+#if defined(HasHDF)
+#include "hdf5.h"
+#endif
 
 /*
   Forward declarations.
@@ -101,14 +104,6 @@ static unsigned int IsHDF(const unsigned char *magick,const unsigned int length)
 }
 
 #if defined(HasHDF)
-#if defined(HAVE_HDF_HDF_H)
-#include "hdf/hdf.h"
-#else
-#include "hdf.h"
-#endif
-#undef BSD
-#undef LOCAL
-
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
