@@ -30,8 +30,8 @@ int main ( int argc, char **argv )
   Image *original = (Image *)NULL;
   Image *final = (Image *)NULL;
   char * blob = NULL;
-  char infile[80];
-  char format[80];
+  char infile[MaxTextExtent];
+  char format[MaxTextExtent];
   size_t blob_length = 0;
   char *size = NULL;
   int rows, columns = 0;
@@ -50,8 +50,8 @@ int main ( int argc, char **argv )
   else
     InitializeMagick(*argv);
 
-  strcpy( infile, argv[1] );
-  strcpy( format, argv[2] );
+  strncpy( infile, argv[1], MaxTextExtent-1 );
+  strncpy( format, argv[2], MaxTextExtent-1 );
 
   printf("%s %s %s\n",
 	  argv[0],infile, format );
@@ -62,7 +62,7 @@ int main ( int argc, char **argv )
    */
   GetImageInfo( &imageInfo );
   imageInfo.dither = 0;
-  strcpy( imageInfo.filename, infile );
+  strncpy( imageInfo.filename, infile, MaxTextExtent-1 );
 
   original = ReadImage ( &imageInfo, &exception );
   if ( original == (Image *)NULL )
@@ -83,7 +83,7 @@ int main ( int argc, char **argv )
    * Save image to BLOB
    */
   blob_length = 8192;
-  strcpy( original->magick, format );
+  strncpy( original->magick, format, MaxTextExtent-1 );
   strcpy( imageInfo.filename, "" );
   original->delay = 10;
   blob = (char *) ImageToBlob ( &imageInfo, original, &blob_length, &exception );
@@ -99,7 +99,7 @@ int main ( int argc, char **argv )
   /*
    * Read image back from BLOB
    */
-  strcpy( imageInfo.magick, format );
+  strncpy( imageInfo.magick, format, MaxTextExtent-1 );
   strcpy( imageInfo.filename, "" );
   if ( size != NULL )
     CloneString( &imageInfo.size, size );
@@ -115,7 +115,7 @@ int main ( int argc, char **argv )
    * Save image to BLOB
    */
   blob_length = 8192;
-  strcpy( original->magick, format );
+  strncpy( original->magick, format, MaxTextExtent-1 );
   strcpy( imageInfo.filename, "" );
   original->delay = 10;
   blob = (char *) ImageToBlob ( &imageInfo, original, &blob_length, &exception );
@@ -129,7 +129,7 @@ int main ( int argc, char **argv )
   /*
    * Read image back from BLOB
    */
-  strcpy( imageInfo.magick, format );
+  strncpy( imageInfo.magick, format, MaxTextExtent-1 );
   strcpy( imageInfo.filename, "" );
   if ( size != NULL )
     CloneString( &imageInfo.size, size );
