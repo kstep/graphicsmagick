@@ -111,14 +111,14 @@ MagickExport void closedir(DIR *entry)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   D e b u g T r a c e                                                       %
+%   D e b u g S t r i n g                                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method DebugTrace formats and sends a prtinf like message to the NT
-%  debug trace API
+%  Method DebugString formats and sends a prtinf like message to the NT
+%  debug trace API, a file, or to the Event Log
 %
 %  The format of the DebugString method is:
 %
@@ -131,66 +131,78 @@ MagickExport void closedir(DIR *entry)
 %
 */
 
-/*
- * Uncomment this to enable the tracing code. This can
- * be used to help locate problems in production code
- * including multithreaded programs. It used a critical
- * section to protect the logging.
- */
+#define IM_DEBUG_WIN32  1
+#define IM_DEBUG_FILE   2
+#define IM_DEBUG_EVENT  4
 
-/* #define ENABLE_TRACING 1 */
-
-#ifdef ENABLE_TRACING
 static CRITICAL_SECTION
   critical_section;
 
 static unsigned int
   critical_section_exists = False;
 
+static int
+  tracings_level = 0;
+
 static unsigned int
   tracings_sequence = 0,
   tracings_counter = 0;
 
+static char
+  tracings_filepath[MaxTextExtent] =
+    "C:\\";
+
 FILE
   *trace_file = (FILE *) NULL;
-#endif /* ENABLE_TRACING */
 
 MagickExport void DestroyTracingCriticalSection(void)
 {
-#ifdef ENABLE_TRACING
   if (critical_section_exists)
     DeleteCriticalSection(&critical_section);
-#endif
 }
 
 MagickExport void InitializeTracingCriticalSection(void)
 {
-#ifdef ENABLE_TRACING
   if (!critical_section_exists)
     InitializeCriticalSection(&critical_section);
   critical_section_exists=True;
-#endif
 }
 
 static void EnterTracingCriticalSection(void)
 {
-#ifdef ENABLE_TRACING
   if (critical_section_exists)
     EnterCriticalSection(&critical_section);
-#endif
 }
 
 static void LeaveTracingCriticalSection(void)
 {
-#ifdef ENABLE_TRACING
   if (critical_section_exists)
     LeaveCriticalSection(&critical_section);
-#endif
+}
+
+MagickExport void DebugLevel(int level)
+{
+  if (critical_section_exists)
+    {
+      EnterTracingCriticalSection();
+      if (level > 0)
+        tracings_level = level;
+      LeaveTracingCriticalSection();
+    }
+}
+
+MagickExport void DebugFilePath(const char *s)
+{
+  if (critical_section_exists)
+    {
+      EnterTracingCriticalSection();
+      (void) strncpy(tracings_filepath,s,MaxTextExtent-1);
+      LeaveTracingCriticalSection();
+    }
 }
 
 MagickExport void DebugString(char *format,...)
 {
-#ifdef ENABLE_TRACING
   va_list
     operands;
 
@@ -199,32 +211,49 @@ MagickExport void DebugString(char *format,...)
     trace_name[MaxTextExtent];
 
   va_start(operands, format);
-  EnterTracingCriticalSection();
+
+  if (tracings_level <= 0)
+    return;
+
+  if (critical_section_exists)
+    EnterTracingCriticalSection();
+
   (void) _snprintf(string,MaxTextExtent-1,"%08d  ",(int) GetCurrentThreadId());
   (void) _vsnprintf(&string[9],MaxTextExtent-10,format,operands);
-  OutputDebugString(string);
-  if (trace_file == (FILE *) NULL)
+
+  if (tracings_level & IM_DEBUG_WIN32)
+    OutputDebugString(string);
+  if (tracings_level & IM_DEBUG_FILE)
     {
-      tracings_counter=0;
-      (void) _snprintf(trace_name, MaxTextExtent-1,
-        "C:\\IM_%08X.log",tracings_sequence);
-      trace_file=fopen(trace_name,"wS");
-    }
-  if (trace_file != (FILE *) NULL)
-    {
-      fputs(string, trace_file);
-      fflush(trace_file);
-      tracings_counter++;
-      if (tracings_counter > 0x2000)
+      /* we send the data to files, and keep the number of items
+         down to less the 0x2000 to that they are managable */
+      if (trace_file == (FILE *) NULL)
         {
-          fclose(trace_file);
-          trace_file = (FILE *) NULL;
-          tracings_sequence++;
+          tracings_counter=0;
+          (void) _snprintf(trace_name, MaxTextExtent-1,
+            "%sIM_%08X.log",tracings_filepath,tracings_sequence);
+          trace_file=fopen(trace_name,"wS");
+        }
+      if (trace_file != (FILE *) NULL)
+        {
+          fputs(string, trace_file);
+          fflush(trace_file);
+          tracings_counter++;
+          if (tracings_counter > 0x2000)
+            {
+              fclose(trace_file);
+              trace_file = (FILE *) NULL;
+              tracings_sequence++;
+            }
         }
     }
-  LeaveTracingCriticalSection();
+  if (tracings_level & IM_DEBUG_EVENT)
+    {
+    }
+
+  if (critical_section_exists)
+    LeaveTracingCriticalSection();
   va_end(operands);
-#endif
 }
 
 /*
