@@ -5,7 +5,7 @@
 %                                                                             %
 %                            DDDD   PPPP   X   X                              %
 %                            D   D  P   P   X X                               %
-%                            D   D  PPPP     X                                %
+%                            D   D  PPPP    XXX                               %
 %                            D   D  P       X X                               %
 %                            DDDD   P      X   X                              %
 %                                                                             %
@@ -56,6 +56,12 @@
 #include "define.h"
 
 /*
+  Forward declaractions.
+*/
+static unsigned int
+  WriteDPXImage(const ImageInfo *,Image *);
+
+/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -85,20 +91,18 @@
 %
 %
 */
-static unsigned int IsDPX(const unsigned char *magick,
-  const unsigned int length)
+static unsigned int IsDPX(const unsigned char *magick,const unsigned int length)
 {
   if (length < 4)
     return(False);
-  if (LocaleNCompare((char *) magick,"SDPX",4) == 0)
+  if (memcmp(magick,"SDPX",4) == 0)
     return(True);
-  if (LocaleNCompare((char *) magick,"XODS",4) == 0)
+  if (memcmp(magick,"XPDS",4) == 0)
     return(True);
   return(False);
 }
 
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+/*%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -130,6 +134,9 @@ static unsigned int IsDPX(const unsigned char *magick,
 */
 static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
+#define MonoColorType  6
+#define RGBColorType  50
+
   char
     magick[4];
 
@@ -139,9 +146,6 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   int
     y;
 
-  off_t
-    offset;
-
   register int
     i,
     x;
@@ -149,14 +153,15 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   register PixelPacket
     *q;
 
+  unsigned char
+    colortype;    
+
   unsigned int
-    bits_per_pixel,
     status;
 
   unsigned long
-    height,
-    pixel,
-    width;
+    headersize,
+    pixel;
 
   /*
     Open image file.
@@ -169,25 +174,22 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Read DPX image.
   */
   status=ReadBlob(image,4,(char *) magick);
-  if ((status == False) || (LocaleNCompare((char *) magick,"SDPX",4) != 0))
+  if ((status == False) || ((LocaleNCompare((char *) magick,"SDPX",4) != 0) &&
+      (LocaleNCompare((char *) magick,"XPDS",4) != 0)))
     ThrowReaderException(CorruptImageWarning,"Not a DPX image file",image);
-  offset=ReadBlobMSBLong(image);
+  headersize=ReadBlobMSBLong(image); 
   for (i=0; i < 764; i++)
     (void) ReadBlobByte(image);
-  width=ReadBlobMSBLong(image);
-  height=ReadBlobMSBLong(image);
-  for (i=0; i < 22; i++)
+  image->columns=ReadBlobMSBLong(image);
+  image->rows=ReadBlobMSBLong(image);
+  for (i=0; i < 20; i++)
     (void) ReadBlobByte(image);
-  bits_per_pixel=ReadBlobByte(image);
-  offset-=TellBlob(image);
-  for (i=0; i < offset; i++)
+  colortype=ReadBlobByte(image);
+  (void) ReadBlobByte(image);
+  (void) ReadBlobByte(image);
+  image->depth=ReadBlobByte(image) > 8 ? 16  : 8;
+  for (i=0; i < (headersize-804); i++)
     (void) ReadBlobByte(image);
-  /*
-    Initialize image structure.
-  */
-  image->columns=width;
-  image->rows=height;
-  image->depth=8;
   if (image_info->ping)
     {
       CloseBlob(image);
@@ -196,24 +198,54 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Convert DPX raster image to pixel packets.
   */
-  for (y=0; y < (int) image->rows; y++)
+  switch (colortype)
   {
-    q=SetImagePixels(image,0,y,image->columns,1);
-    if (q == (PixelPacket *) NULL)
-      break;
-    for (x=0; x < (int) image->columns; x++)
+    case (MonoColorType):
     {
-      pixel=ReadBlobMSBLong(image);
-      q->red=MaxRGB*((pixel >> 22) & 0x3ff)/1023;
-      q->green=MaxRGB*((pixel >> 12) & 0x3ff)/1023;
-      q->blue=MaxRGB*((pixel >> 2) & 0x3ff)/1023;
-      q++;
-    }
-    if (!SyncImagePixels(image))
+      q=SetImagePixels(image,0,0,image->columns,image->rows);
+      for (x=0; x < (int) ((image->columns*image->rows)/3); x++)
+      {
+        pixel=ReadBlobMSBLong(image);
+        q->red=MaxRGB*((pixel >> 0) & 0x3ff)/1023;
+        q->green=q->red;
+        q->blue=q->red;
+        q++;
+        q->red=MaxRGB*((pixel >> 10) & 0x3ff)/1023;
+        q->green=q->red;
+        q->blue=q->red;
+        q++;
+        q->red=MaxRGB*((pixel >> 20) & 0x3ff)/1023;
+        q->green=q->red;
+        q->blue=q->red;
+        q++;
+      }
       break;
-    if (image->previous == (Image *) NULL)
-      if (QuantumTick(y,image->rows))
-        MagickMonitor(LoadImageText,y,image->rows);
+    }
+    case (RGBColorType):
+    {
+      for (y=0; y < (int) image->rows; y++)
+      {
+        q=SetImagePixels(image,0,y,image->columns,1);
+        if (q == (PixelPacket *) NULL)
+          break;
+        for (x=0; x < (int) image->columns; x++)
+        {
+          pixel=ReadBlobMSBLong(image);
+          q->red=MaxRGB*((pixel >> 22) & 0x3ff)/1023;
+          q->green=MaxRGB*((pixel >> 12) & 0x3ff)/1023;
+          q->blue=MaxRGB*((pixel >> 2) & 0x3ff)/1023;     
+          q++;
+        }
+        if (!SyncImagePixels(image))
+          break;
+        if (image->previous == (Image *) NULL)
+          if (QuantumTick(y,image->rows))
+            MagickMonitor(LoadImageText,y,image->rows);
+      }
+      break;
+    }
+    default:
+      ThrowReaderException(CorruptImageWarning,"color type not supported",image);
   }
   if (EOFBlob(image))
     ThrowReaderException(CorruptImageWarning,"Unexpected end-of-file",image);
@@ -251,9 +283,10 @@ ModuleExport void RegisterDPXImage(void)
 
   entry=SetMagickInfo("DPX");
   entry->decoder=ReadDPXImage;
-  entry->module=AllocateString("DPX");
+  entry->encoder=WriteDPXImage;
   entry->magick=IsDPX;
   entry->description=AllocateString("Digital Moving Picture Exchange");
+  entry->module=AllocateString("DPX");
   RegisterMagickInfo(entry);
 }
 
@@ -279,4 +312,105 @@ ModuleExport void RegisterDPXImage(void)
 ModuleExport void UnregisterDPXImage(void)
 {
   UnregisterMagickInfo("DPX");
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   W r i t e D P X I m a g e                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method WriteDPXImage writes an image in DPX encoded image format.
+%
+%  The format of the WriteDPXImage method is:
+%
+%      unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
+%
+%  A description of each parameter follows.
+%
+%    o status: Method WriteDPXImage return True if the image is written.
+%      False is returned is there is a memory shortage or if the image file
+%      fails to write.
+%
+%    o image_info: Specifies a pointer to an ImageInfo structure.
+%
+%    o image:  A pointer to a Image structure.
+%
+%
+*/
+static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
+{
+  int
+    y;
+
+  register int
+    i,
+    x;
+
+  register PixelPacket
+    *q;
+  
+  unsigned long
+    pixel;
+
+  unsigned int
+    status;
+ 
+  /*
+    Open output image file.
+  */
+  status=OpenBlob(image_info,image,WriteBinaryType);
+  if (status == False)
+    ThrowWriterException(FileOpenWarning,"Unable to open file",image);
+  TransformRGBImage(image,RGBColorspace);
+  WriteBlobMSBLong(image,0x53445058);
+  WriteBlobMSBLong(image,0x2000);
+  WriteBlobMSBLong(image,0x56312E30);
+  WriteBlobMSBLong(image,0x00000000);
+  WriteBlobMSBLong(image,4*image->columns*image->rows+0x2000);
+  WriteBlobMSBLong(image,0x00000001);
+  WriteBlobMSBLong(image,0x00000680);
+  WriteBlobMSBLong(image,0x00000180);
+  WriteBlobMSBLong(image,0x00001800);
+  for (i=0; i < 124; i++)
+    WriteBlobByte(image,0x00);
+  WriteBlobMSBLong(image,0x496D6167);
+  WriteBlobMSBLong(image,0x654D6167);
+  WriteBlobMSBLong(image,0x69636B20);
+  for (i=0; i < 600; i++)
+    WriteBlobByte(image,0x00);
+  WriteBlobMSBLong(image,image->columns);
+  WriteBlobMSBLong(image,image->rows);
+  for (i=0; i < 20; i++)
+    WriteBlobByte(image,0x00);
+  WriteBlobByte(image,RGBColorType);
+  WriteBlobByte(image,0x00);
+  WriteBlobByte(image,0x00);
+  WriteBlobByte(image,10);  /* bit depth */
+  for (i=0; i < (0x2000-804); i++)
+    WriteBlobByte(image,0x00);
+  /*
+    Convert pixel packets to DPX raster image .
+  */
+  for (y=0; y < (int) image->rows; y++)
+  {
+    q=SetImagePixels(image,0,y,image->columns,1);
+    if (q == (PixelPacket *) NULL)
+      break;
+    for (x=0; x < (int) image->columns; x++)
+    {
+      pixel=((1023*XUpScale(q->red)/MaxRGB) << 22) |
+        ((1023*XUpScale(q->green)/MaxRGB) << 12) |
+        ((1023*XUpScale(q->blue)/MaxRGB) << 2);
+      WriteBlobMSBLong(image,pixel);
+      q++;
+    }
+  }
+  CloseBlob(image);  
+  return(status);
 }
