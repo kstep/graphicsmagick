@@ -166,6 +166,8 @@ Export MagickInfo *GetMagickInfo(const char *tag)
 	FreeMemory((void**)&module_list[i++]);
       FreeMemory((void **) &module_list);
 
+      /* Cache format is treated specially */
+      RegisterCacheImage();
 #else
       Register8BIMImage();
       RegisterAVSImage();
