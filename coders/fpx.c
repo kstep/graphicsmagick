@@ -212,11 +212,11 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       fsspec;
 
     FilenameToFSSpec(image->filename,&fsspec);
-    fpx_status=FPX_OpenImageByFilename((const FSSpec &) fsspec,
+    fpx_status=FPX_OpenImageByFilename((const FSSpec &) fsspec,(char *) NULL,
 #else
-    fpx_status=FPX_OpenImageByFilename(image->filename,
+    fpx_status=FPX_OpenImageByFilename(image->filename,(char *) NULL,
 #endif
-      NULL,&width,&height,&tile_width,&tile_height,&colorspace,&flashpix);
+      &width,&height,&tile_width,&tile_height,&colorspace,&flashpix);
   }
   if (fpx_status == FPX_LOW_MEMORY_ERROR)
     {
@@ -301,8 +301,7 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Determine resolution by subimage specification.
   */
   for (i=1; ; i++)
-    if (((width >> i) < tile_width) ||
-        ((height >> i) < tile_height))
+    if (((width >> i) < tile_width) || ((height >> i) < tile_height))
       break;
   subimage=i;
   if (image_info->subrange != 0)
@@ -398,10 +397,10 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
           fpx_status=FPX_ReadImageRectangle(flashpix,0,y,image->columns,y+
             tile_height-1,subimage,&fpx_info);
         else
-          fpx_status=FPX_ReadImageTransformRectangle(flashpix,0.0F,(float) y/
-            image->rows,(float) image->columns/image->rows,(float) (y+
-            tile_height-1)/image->rows,(long) image->columns,(long) tile_height,
-            &fpx_info);
+          fpx_status=FPX_ReadImageTransformRectangle(flashpix,0.0F,
+            (float) y/image->rows,(float) image->columns/image->rows,
+            (float) (y+tile_height-1)/image->rows,(long) image->columns,
+            (long) tile_height,&fpx_info);
         if (fpx_status == FPX_LOW_MEMORY_ERROR)
           {
             LiberateMemory((void **) &scanline);
@@ -562,45 +561,45 @@ static void ColorTwistMultiply(FPXColorTwistMatrix first,
     Matrix multiply.
   */
   assert(color_twist != (FPXColorTwistMatrix *) NULL);
-  color_twist->byy=(first.byy*second.byy)+(first.byc1*second.bc1y)+(first.byc2*
-    second.bc2y)+(first.dummy1_zero*second.dummy4_zero);
+  color_twist->byy=(first.byy*second.byy)+(first.byc1*second.bc1y)+
+    (first.byc2*second.bc2y)+(first.dummy1_zero*second.dummy4_zero);
   color_twist->byc1=(first.byy*second.byc1)+(first.byc1*second.bc1c1)+
     (first.byc2*second.bc2c1)+(first.dummy1_zero*second.dummy5_zero);
   color_twist->byc2=(first.byy*second.byc2)+(first.byc1*second.bc1c2)+
     (first.byc2*second.bc2c2)+(first.dummy1_zero*second.dummy6_zero);
-  color_twist->dummy1_zero=(first.byy*second.dummy1_zero)+(first.byc1*
-    second.dummy2_zero)+(first.byc2*second.dummy3_zero)+(first.dummy1_zero*
-    second.dummy7_one);
+  color_twist->dummy1_zero=(first.byy*second.dummy1_zero)+
+    (first.byc1*second.dummy2_zero)+(first.byc2*second.dummy3_zero)+
+    (first.dummy1_zero*second.dummy7_one);
   color_twist->bc1y=(first.bc1y*second.byy)+(first.bc1c1*second.bc1y)+
     (first.bc1c2*second.bc2y)+(first.dummy2_zero*second.dummy4_zero);
   color_twist->bc1c1=(first.bc1y*second.byc1)+(first.bc1c1*second.bc1c1)+
     (first.bc1c2*second.bc2c1)+(first.dummy2_zero*second.dummy5_zero);
   color_twist->bc1c2=(first.bc1y*second.byc2)+(first.bc1c1*second.bc1c2)+
     (first.bc1c2*second.bc2c2)+(first.dummy2_zero*second.dummy6_zero);
-  color_twist->dummy2_zero=(first.bc1y*second.dummy1_zero)+(first.bc1c1*
-    second.dummy2_zero)+(first.bc1c2*second.dummy3_zero)+(first.dummy2_zero*
-    second.dummy7_one);
+  color_twist->dummy2_zero=(first.bc1y*second.dummy1_zero)+
+    (first.bc1c1*second.dummy2_zero)+(first.bc1c2*second.dummy3_zero)+
+    (first.dummy2_zero*second.dummy7_one);
   color_twist->bc2y=(first.bc2y*second.byy)+(first.bc2c1*second.bc1y)+
     (first.bc2c2*second.bc2y)+(first.dummy3_zero*second.dummy4_zero);
   color_twist->bc2c1=(first.bc2y*second.byc1)+(first.bc2c1*second.bc1c1)+
     (first.bc2c2*second.bc2c1)+(first.dummy3_zero*second.dummy5_zero);
   color_twist->bc2c2=(first.bc2y*second.byc2)+(first.bc2c1*second.bc1c2)+
     (first.bc2c2*second.bc2c2)+(first.dummy3_zero*second.dummy6_zero);
-  color_twist->dummy3_zero=(first.bc2y*second.dummy1_zero)+(first.bc2c1*
-    second.dummy2_zero)+(first.bc2c2*second.dummy3_zero)+(first.dummy3_zero*
-    second.dummy7_one);
-  color_twist->dummy4_zero=(first.dummy4_zero*second.byy)+(first.dummy5_zero*
-    second.bc1y)+(first.dummy6_zero*second.bc2y)+(first.dummy7_one*
-    second.dummy4_zero);
-  color_twist->dummy5_zero=(first.dummy4_zero*second.byc1)+(first.dummy5_zero*
-    second.bc1c1)+(first.dummy6_zero*second.bc2c1)+(first.dummy7_one*
-    second.dummy5_zero);
-  color_twist->dummy6_zero=(first.dummy4_zero*second.byc2)+(first.dummy5_zero*
-    second.bc1c2)+(first.dummy6_zero*second.bc2c2)+(first.dummy7_one*
-    second.dummy6_zero);
+  color_twist->dummy3_zero=(first.bc2y*second.dummy1_zero)+
+    (first.bc2c1*second.dummy2_zero)+(first.bc2c2*second.dummy3_zero)+
+    (first.dummy3_zero*second.dummy7_one);
+  color_twist->dummy4_zero=(first.dummy4_zero*second.byy)+
+    (first.dummy5_zero*second.bc1y)+(first.dummy6_zero*second.bc2y)+
+    (first.dummy7_one*second.dummy4_zero);
+  color_twist->dummy5_zero=(first.dummy4_zero*second.byc1)+
+    (first.dummy5_zero*second.bc1c1)+(first.dummy6_zero*second.bc2c1)+
+    (first.dummy7_one*second.dummy5_zero);
+  color_twist->dummy6_zero=(first.dummy4_zero*second.byc2)+
+    (first.dummy5_zero*second.bc1c2)+(first.dummy6_zero*second.bc2c2)+
+    (first.dummy7_one*second.dummy6_zero);
   color_twist->dummy7_one=(first.dummy4_zero*second.dummy1_zero)+
-    (first.dummy5_zero*second.dummy2_zero)+(first.dummy6_zero*
-    second.dummy3_zero)+(first.dummy7_one*second.dummy7_one);
+    (first.dummy5_zero*second.dummy2_zero)+
+    (first.dummy6_zero*second.dummy3_zero)+(first.dummy7_one*second.dummy7_one);
 }
 
 static void SetBrightness(double brightness,FPXColorTwistMatrix *color_twist)
@@ -748,10 +747,12 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
     colorspace =
     {
       TRUE, 4,
-      { { NIFRGB_R, DATA_TYPE_UNSIGNED_BYTE },
+      {
+        { NIFRGB_R, DATA_TYPE_UNSIGNED_BYTE },
         { NIFRGB_G, DATA_TYPE_UNSIGNED_BYTE },
         { NIFRGB_B, DATA_TYPE_UNSIGNED_BYTE },
-        { ALPHA, DATA_TYPE_UNSIGNED_BYTE } }
+        { ALPHA, DATA_TYPE_UNSIGNED_BYTE }
+      }
     };
 
   const ImageAttribute
@@ -773,10 +774,10 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
   FPXSummaryInformation
     summary_info;
 
-  int
+  long
     y;
 
-  register int
+  register long
     i;
 
   unsigned char
@@ -839,12 +840,12 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
       fsspec;
 
     FilenameToFSSpec(filename,&fsspec);
-    fpx_status=FPX_CreateImageByFilename((const FSSpec &) fsspec,
+    fpx_status=FPX_CreateImageByFilename((const FSSpec &) fsspec,image->columns,
 #else
-    fpx_status=FPX_CreateImageByFilename(filename,
+    fpx_status=FPX_CreateImageByFilename(filename,image->columns,
 #endif
-      image->columns,image->rows,tile_width,tile_height,colorspace,
-      background_color,compression,&flashpix);
+      image->rows,tile_width,tile_height,colorspace,background_color,
+      compression,&flashpix);
   }
   if (fpx_status != FPX_OK)
     ThrowWriterException(FileOpenWarning,"Unable to open file",image);
@@ -893,8 +894,7 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
         (void) strncpy((char *) summary_info.title.ptr,label->value,
           MaxTextExtent-1);
       else
-        ThrowWriterException(DelegateWarning,"Unable to set image title",
-          image);
+        ThrowWriterException(DelegateWarning,"Unable to set image title",image);
     }
   comment=GetImageAttribute(image,"comment");
   if (comment != (ImageAttribute *) NULL)
@@ -1045,7 +1045,7 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
       if (0)
         {
           /*
-            Color color_twist.
+            Color color twist.
           */
           SetBrightness(0.5,&color_twist);
           SetSaturation(0.5,&color_twist);
