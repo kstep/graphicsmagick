@@ -495,12 +495,12 @@ sub testMontage {
 }
 
 #
-# Test filter method
+# Test filter method using signature compare
 #
-# Usage: testFilter( input image attributes, filter, options expected MD5
+# Usage: testFilterSignature( input image attributes, filter, options, expected MD5
 #      [, expected MD5_16] );
 #
-sub testFilter {
+sub testFilterSignature {
   my( $srcimage, $filter, $options, $md5, $md5_16 ) = @_;
 
   my($image);
@@ -514,6 +514,7 @@ sub testFilter {
   warn "Readimage: $status" if "$status";
 
   $image->$filter($options);
+  # $image->write(filename=>"reference/filter/$filter.miff", compression=>'None');
 
   $signature=$image->GetAttribute('signature');
   if ( defined( $signature ) ) {
@@ -535,4 +536,90 @@ sub testFilter {
   }
 }
 
+#
+# Test filter method using comparison with reference image
+#
+# Usage: testFilterCompare( input image, reference image, filter, options,
+#                           mean_error_per_pixel, normalized_mean_error,
+#                           normalized_maximum_error );
+sub testFilterCompare {
+  my ($srcimage_name, $refimage_name, $filter, $options, $mean_error_per_pixel_max,
+      $normalized_mean_error_max, $normalized_maximum_error_max) = @_;
+  my($srcimage, $refimage, $mean_error_per_pixel, $normalized_mean_error,
+    $normalized_maximum_error);
+  my($errorinfo);
+
+  print( $filter, " ...\n" );
+
+  $errorinfo='';
+
+  # Create images
+  $srcimage=Image::Magick->new;
+  $refimage=Image::Magick->new;
+
+  $status=$srcimage->ReadImage("$srcimage_name");
+  if ("$status")
+    {
+      $errorinfo = "Readimage ($srcimage_name): $status";
+      goto COMPARE_RUNTIME_ERROR;
+    }
+
+  $status=$srcimage->$filter($options);
+  if ("$status")
+    {
+      $errorinfo = "$filter ($options): $status";
+      goto COMPARE_RUNTIME_ERROR;
+    }
+  # $srcimage->write(filename=>"reference/filter/$filter.miff", compression=>'None');
+
+  $status=$refimage->ReadImage("$refimage_name");
+  if ("$status")
+    {
+      $errorinfo = "Readimage ($refimage_name): $status";
+      goto COMPARE_RUNTIME_ERROR;
+    }
+
+  $srcimage->Compare($refimage);
+#  $status=$image->Compare($refimage);
+#  if ("$status")
+#    {
+#      $errorinfo = "Compare($refimage_name): $status";
+#      goto COMPARE_RUNTIME_ERROR;
+#    }
+
+  $mean_error_per_pixel=$srcimage->GetAttribute('error');
+  if ( !defined($mean_error_per_pixel) )
+    {
+      $errorinfo = "GetAttribute('error') returned undefined value!";
+      goto COMPARE_RUNTIME_ERROR;
+    }
+  $normalized_mean_error=$srcimage->GetAttribute('mean-error');
+  if ( !defined($normalized_mean_error) )
+    {
+      $errorinfo = "GetAttribute('mean-error') returned undefined value!";
+      goto COMPARE_RUNTIME_ERROR;
+    }
+  $normalized_maximum_error=$srcimage->GetAttribute('maximum-error');
+  if ( ! defined($normalized_maximum_error) )
+    {
+      $errorinfo = "GetAttribute('maximum-error') returned undefined value!";
+      goto COMPARE_RUNTIME_ERROR;
+    }
+  if ( ($mean_error_per_pixel > $mean_error_per_pixel_max) ||
+       ($normalized_mean_error > $normalized_mean_error_max) ||
+       ($normalized_maximum_error > $normalized_maximum_error_max) )
+    {
+      print("error=$mean_error_per_pixel, mean-error=$normalized_mean_error, maximum-error=$normalized_maximum_error\n");
+      print "not ok $test\n";
+      return 1
+    }
+
+  print "ok $test\n";
+  return 0;
+
+ COMPARE_RUNTIME_ERROR:
+  warn("$errorinfo");
+  print "not ok $test\n";
+  return 1
+}
 1;
