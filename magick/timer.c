@@ -313,8 +313,8 @@ MagickExport void StartTimer(TimerInfo *time_info,const unsigned int reset)
       /*
         Reset the stopwatch before starting it.
       */
-      time_info->user.total=0;
-      time_info->elapsed.total=0;
+      time_info->user.total=0.0;
+      time_info->elapsed.total=0.0;
     }
   if (time_info->state != RunningTimerState)
     {
@@ -354,9 +354,10 @@ MagickExport void StopTimer(TimerInfo *time_info)
   time_info->user.stop=UserTime();
   if (time_info->state == RunningTimerState)
     {
-      time_info->user.total+=time_info->user.stop-time_info->user.start;
+      time_info->user.total+=
+        time_info->user.stop-time_info->user.start+MagickEpsilon;
       time_info->elapsed.total+=
-        time_info->elapsed.stop-time_info->elapsed.start;
+        time_info->elapsed.stop-time_info->elapsed.start+MagickEpsilon;
     }
   time_info->state=StoppedTimerState;
 }
