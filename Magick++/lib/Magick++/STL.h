@@ -1795,7 +1795,7 @@ namespace Magick
           continue;
 
         try {
-          CoderInfo coderInfo( magickInfo );
+          volatile CoderInfo coderInfo( magickInfo );
 
           // Test isReadable_
           if ( isReadable_ != CoderInfo::AnyMatch &&
