@@ -5067,6 +5067,7 @@ MagickExport unsigned int RGBTransformImage(Image *image,
       /*
         Convert RGB to CMYK colorspace.
       */
+      image->storage_class=DirectClass;
       image->colorspace=CMYKColorspace;
       for (y=0; y < (int) image->rows; y++)
       {
