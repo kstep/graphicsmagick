@@ -1392,7 +1392,6 @@ MagickExport void XDelay(Display *display,const unsigned long milliseconds)
   (void) XFlush(display);
   if (milliseconds == 0)
     return;
-
 #if defined(WIN32)
   Sleep(milliseconds);
 #elif defined(vms)

@@ -7472,7 +7472,7 @@ echo $ECHO_N "checking if JPEG version 2 support package is complete... $ECHO_C"
 echo "${ECHO_T}no -- some components failed test" >&6
 	have_jp2='no (failed tests)'
     else
-	LIB_JP2='-ljp2'
+	LIB_JP2='-ljasper'
 	LIBS="$LIB_JP2 $LIBS"
 
 cat >>confdefs.h <<\EOF

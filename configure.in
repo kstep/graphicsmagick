@@ -857,7 +857,7 @@ then
 	AC_MSG_RESULT(no -- some components failed test)
 	have_jp2='no (failed tests)'
     else
-	LIB_JP2='-ljp2'
+	LIB_JP2='-ljasper'
 	LIBS="$LIB_JP2 $LIBS"
 	AC_DEFINE(HasJP2,,Define if you have JPEG version 2 "Jasper" library)
 	AC_MSG_RESULT(yes)
