@@ -751,7 +751,7 @@ static double Triangle(const double x,const double support)
 
 static unsigned int HorizontalFilter(const Image *source,Image *destination,
   const double x_factor,const FilterInfo *filter_info,const double blur,
-  ContributionInfo *contribution,const size_t span,unsigned int *quantum,
+  ContributionInfo *contribution,const size_t span,unsigned long *quantum,
   ExceptionInfo *exception)
 {
 #define ResizeImageText  "  Resize image...  "
@@ -875,7 +875,7 @@ static unsigned int HorizontalFilter(const Image *source,Image *destination,
 
 static unsigned int VerticalFilter(const Image *source,Image *destination,
   const double y_factor,const FilterInfo *filter_info,const double blur,
-  ContributionInfo *contribution,const size_t span,unsigned int *quantum,
+  ContributionInfo *contribution,const size_t span,unsigned long *quantum,
   ExceptionInfo *exception)
 {
   double

@@ -1721,7 +1721,7 @@ MagickExport void DescribeImage(Image *image,FILE *file,
   for (count=1; p->next != (Image *) NULL; count++)
     p=p->next;
   if (count > 1)
-    (void) fprintf(file,"  Scene: %lu of %u\n",image->scene,count);
+    (void) fprintf(file,"  Scene: %lu of %lu\n",image->scene,count);
   else
     if (image->scene != 0)
       (void) fprintf(file,"  Scene: %lu\n",image->scene);

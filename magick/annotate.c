@@ -1746,7 +1746,7 @@ static unsigned int RenderX11(Image *image,const DrawInfo *draw_info,
         annotate_info.degrees=(180.0/MagickPI)*
           atan2(draw_info->affine.rx,draw_info->affine.sx);
     }
-  FormatString(annotate_info.geometry,"%ux%u+%ld+%ld",width,height,
+  FormatString(annotate_info.geometry,"%lux%lu+%ld+%ld",width,height,
     (long) ceil(offset->x-0.5),
     (long) ceil(offset->y-metrics->ascent-metrics->descent-0.5));
   pixel.pen_color.red=ScaleQuantumToShort(draw_info->fill.red);
