@@ -1,7 +1,6 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-  "http://www.w3.org/TR/html4/loose.dtd">
-<HTML>
-<HEAD>
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
    <meta name="GENERATOR" content="Mozilla/4.78 [en] (X11; U; SunOS 5.6 sun4u) [Netscape]">
    <meta name="Author" content="Bob Friesenhahn">
@@ -48,7 +47,7 @@ or <a href="http://www.imagemagick.org/www/cvs.html">CVS.</a>
 Installation</h3>
 Once you have the sources available, follow these detailed <a href="Install.html">installation
 instructions</a> for UNIX and Windows.
-<p><b><font size="+1">Usage</font></b>
+<p><b><font size=+1>Usage</font></b>
 <p>A helper script named <i>Magick++-config</i> is installed under Unix
 which assists with recalling compilation options required to compile and
 link programs which use Magick++.&nbsp; For example, the following command
@@ -58,6 +57,18 @@ executable <i>example</i> (notice that quotes are backward quotes):
 --ldflags --libs` -o example example.cpp</font></tt></blockquote>
 Windows users may get started by manually editing a project file for one
 of the Magick++ demo programs.
+<p><b>Please note that under Windows (and possibly the Mac) it is necessary
+to initialize the ImageMagick library prior to using the Magick++ library</b>.&nbsp;
+This initialization is performed by passing the path to the ImageMagick
+DLLs (assumed to be in the same directory as your program) to the InitializeMagick()
+function call. This is commonly performed by providing the path to your
+program (argv[0]) as shown in the following example:
+<blockquote><tt><font color="#663366">int main( int /*argc*/, char ** argv)</font></tt>
+<br><tt><font color="#663366">{</font></tt>
+<br><tt><font color="#663366">&nbsp; InitializeMagick(*argv);</font></tt></blockquote>
+This intialization step is not required under Unix, Linux, Cygwin, or any
+other operating environment that supports the notion of "installing" ImageMagick
+in a known location.
 <h3>
 Reporting Bugs</h3>
 Please report any bugs via the <a href="http://www.simplesystems.org/Magick++/bugs">Magick++
