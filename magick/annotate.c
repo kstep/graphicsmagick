@@ -1092,6 +1092,8 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
               q->green*opacity)/MaxRGB);
             q->blue=((unsigned long) (draw_info->fill.blue*(MaxRGB-opacity)+
               q->blue*opacity)/MaxRGB);
+            q->opacity=((unsigned long) (draw_info->fill.opacity*
+              (MaxRGB-opacity)+q->opacity*opacity)/MaxRGB);
             p++;
             if (!SyncImagePixels(image))
               continue;
