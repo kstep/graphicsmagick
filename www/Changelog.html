@@ -32,7 +32,7 @@
 				[<A HREF="books.html">Books</A>] [<A HREF="links.html">Links</A>]</P>
 			</TD>
 			<TD ROWSPAN=2 WIDTH=19%>
-				<P ALIGN=CENTER><IMG SRC="../images/magick_small.png" NAME="Graphic2" ALIGN=BOTTOM WIDTH=114 HEIGHT=118 BORDER=0></P>
+				<P ALIGN=CENTER><IMG SRC="../images/gm-188x120t.png" NAME="Graphic2" ALIGN=BOTTOM WIDTH=188 HEIGHT=120 BORDER=0></P>
 			</TD>
 		</TR>
 		<TR>
@@ -53,6 +53,34 @@
 </tr>
 </table>
 <p>
+2003-06-15  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> images: Replace existing logo images with cleaner ones.
+  <LI> www: Update links to point to updated logo images.
+  <LI> logos: New CVS directory to contain master logos.
+  <LI> scripts/txt2html: Updated inline logo image link.
+  <LI> scripts/format_c_api_docs: Updated inline logo image link.
+  <LI> version.sh: Support versioning all libraries independently.
+  <LI> coders/meta.c: Prefix include paths for safety.
+  <LI> magick/image.h: (TransmitType) Removed unused enumeration.
+        (ProfileType) Removed unused enumeration.
+        (QuantumType) Moved enumeration to constitute.h
+        (StorageType) Moved enumeration to constitute.h
+  <LI> magick/draw.c (DrawPeekGraphicContext): Added function to peek
+        at head of drawing context stack (function added for ImageMagick
+        compatability).<BR>
+  <LI> magick/image.c (CycleColormapImage): Change return type from
+        'void' to 'unsigned int' so that error status is returned to user.
+        (DescribeImage): Change return type from
+        'void' to 'unsigned int' so that error status is returned to user.
+  <LI> magick/list.c (ReplaceImageInList): Incorporated function from
+        John Cristy's ImageMagick to replace current image in the list.
+  <LI> coders/sgi.c (ReadSGIImage): Applied patch from John Cristy's
+        ImageMagick to save the compression type for SGI images.
+
+</UL>
+<p>
 2003-06-12  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
@@ -63,6 +91,8 @@
         (IsTXT): Recognize files written by the TXT coder.
         (ReadTXTImage): Reject files written by the TXT coder until support
         for reading these files is implemented.
+        (IsTXT): Ensure that sscanf doesn't read outside of provided data
+        by using a fixed size buffer.
 
 </UL>
 <p>

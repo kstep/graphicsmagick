@@ -36,7 +36,7 @@ A:visited { color: #800080 }
                                 [<A HREF="../books.html">Books</A>] [<A HREF="../links.html">Links</A>]</P>
                         </TD>
                         <TD ROWSPAN=2 WIDTH=19%>
-                                <P ALIGN=CENTER><IMG SRC="../../images/magick_small.png" NAME="Graphic2" ALIGN=BOTTOM WIDTH=114 HEIGHT=118 BORDER=0></P>
+                                <P ALIGN=CENTER><IMG SRC="../../images/gm-188x120t.png" NAME="Graphic2" ALIGN=BOTTOM WIDTH=188 HEIGHT=120 BORDER=0></P>
                         </TD>
                 </TR>
                 <TR>
@@ -124,6 +124,7 @@ DESCRIPTIONS</A>
 		<LI><A HREF="#drawpathmovetoabsolute">DrawPathMoveToAbsolute</A>
 		<LI><A HREF="#drawpathmovetorelative">DrawPathMoveToRelative</A>
 		<LI><A HREF="#drawpathstart">DrawPathStart</A>
+		<LI><A HREF="#drawpeekgraphiccontext">DrawPeekGraphicContext</A>
 		<LI><A HREF="#drawpoint">DrawPoint</A>
 		<LI><A HREF="#drawpolygon">DrawPolygon</A>
 		<LI><A HREF="#drawpolyline">DrawPolyline</A>
@@ -244,6 +245,7 @@ SYNOPSIS</A></H2>
 <P>void  <STRONG>DrawPathMoveToAbsolute</STRONG>( DrawContext context, const double x, const double y );</P>
 <P>void  <STRONG>DrawPathMoveToRelative</STRONG>( DrawContext context, const double x, const double y );</P>
 <P>void  <STRONG>DrawPathStart</STRONG>( DrawContext context );</P>
+<P>const DrawInfo * <STRONG>DrawPeekGraphicContext</STRONG>( const DrawContext context );</P>
 <P>void  <STRONG>DrawPoint</STRONG>( DrawContext context, const double x, const double y );</P>
 <P>void  <STRONG>DrawPolygon</STRONG>( DrawContext context, const size_t num_coords, const PointInfo *coordinates );</P>
 <P>void  <STRONG>DrawPolyline</STRONG>( DrawContext context, const size_t num_coords, const PointInfo *coordinates );</P>
@@ -1384,6 +1386,16 @@ target y ordinate
 <H3><A NAME="drawpathstart">DrawPathStart</A></H3>
 <blockquote>DrawPathStart() declares the start of a path drawing list which is terminated by a matching DrawPathFinish ( ) command. All other DrawPath commands must be enclosed between a DrawPathStart ( ) and a DrawPathFinish ( ) command. This is because path drawing commands are subordinate commands and they do not function by themselves. </blockquote><P>The format of the DrawPathStart method is:</P>
 <blockquote>void DrawPathStart ( <A HREF="types.html#DrawContext">DrawContext</A> context ); </blockquote><P>
+A description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<DD><P></P><DT><STRONG>context:</STRONG><BR>
+<DD>
+drawing context
+<P></P></DL></DL>
+<P>
+<H3><A NAME="drawpeekgraphiccontext">DrawPeekGraphicContext</A></H3>
+<blockquote>DrawPeekGraphicContext() returns a pointer to the <A HREF="types.html#DrawInfo">DrawInfo</A> structure at the head of the drawing context stack. The returned <A HREF="types.html#DrawInfo">DrawInfo</A> structure is invalidated by DrawPopGraphicsContext so it should be used immediately. </blockquote><P>The format of the DrawPeekGraphicContext method is:</P>
+<blockquote>const <A HREF="types.html#DrawInfo">DrawInfo</A> *DrawPeekGraphicContext ( const <A HREF="types.html#DrawContext">DrawContext</A> context ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG>context:</STRONG><BR>
