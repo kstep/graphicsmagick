@@ -1919,6 +1919,210 @@ static int ParseGeometry(const char *geometry,long *x,long *y,
 %                                                                             %
 %                                                                             %
 %                                                                             %
++   P a r s e I m a g e G e o m e t r y                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method ParseImageGeometry parses a geometry specification and returns the
+%  width, height, x, and y values.  It also returns flags that indicates
+%  which of the four values (width, height, xoffset, yoffset) were located
+%  in the string, and whether the x and y values are negative.  In addition,
+%  there are flags to report any meta characters (%, !, <, and >).
+%
+%  The format of the ParseImageGeometry method is:
+%
+%      int ParseImageGeometry(const char *geometry,long *x,long *y,
+%        unsigned long *width,unsigned long *height)
+%
+%  A description of each parameter follows:
+%
+%    o flags:  Method ParseImageGeometry returns a bitmask that indicates
+%      which of the four values were located in the geometry string.
+%
+%    o image_geometry:  Specifies a character string representing the geometry
+%      specification.
+%
+%    o x,y:  A pointer to an integer.  The x and y offset as determined by
+%      the geometry specification is returned here.
+%
+%    o width,height:  A pointer to an unsigned integer.  The width and height
+%      as determined by the geometry specification is returned here.
+%
+%
+*/
+MagickExport int ParseImageGeometry(const char *geometry,long *x,long *y,
+  unsigned long *width,unsigned long *height)
+{
+  int
+    flags;
+
+  long
+    count,
+    delta;
+
+  RectangleInfo
+    media_info;
+
+  unsigned long
+    former_height,
+    former_width;
+
+  /*
+    Ensure the image geometry is valid.
+  */
+  assert(x != (long *) NULL);
+  assert(y != (long *) NULL);
+  assert(width != (unsigned long *) NULL);
+  assert(height != (unsigned long *) NULL);
+  if ((geometry == (char *) NULL) || (*geometry == '\0'))
+    return(NoValue);
+  /*
+    Parse geometry using GetGeometry.
+  */
+  former_width=(*width);
+  former_height=(*height);
+  flags=GetGeometry(geometry,x,y,width,height);
+  if (flags & PercentValue)
+    {
+      double
+        x_scale,
+        y_scale;
+
+      /*
+        Geometry is a percentage of the image size.
+      */
+      x_scale=(*width);
+      y_scale=(*height);
+      count=sscanf(geometry,"%lf%%x%lf",&x_scale,&y_scale);
+      if (count != 2)
+        count=sscanf(geometry,"%lfx%lf",&x_scale,&y_scale);
+      if (count == 1)
+        y_scale=x_scale;
+      *width=(unsigned long) floor((x_scale*former_width/100.0)+0.5);
+      *height=(unsigned long) floor((y_scale*former_height/100.0)+0.5);
+      former_width=(*width);
+      former_height=(*height);
+    }
+  if (flags & AreaValue)
+    {
+      double
+        distance,
+        x_area,
+        y_area;
+
+      /*
+        Geometry is a maximum area in pixels.
+      */
+      x_area=(*width);
+      y_area=(*height);
+      count=sscanf(geometry,"%lf%%x%lf",&x_area,&y_area);
+      if (count != 2)
+        count=sscanf(geometry,"%lfx%lf",&x_area,&y_area);
+      if (count == 1)
+        y_area=x_area;
+      distance=sqrt((double) former_width*former_height);
+      *width=(unsigned long) floor((x_area*former_width/distance)+0.5);
+      *height=(unsigned long) floor((y_area*former_height/distance)+0.5);
+      former_width=(*width);
+      former_height=(*height);
+    }
+  if (!(flags & AspectValue) && 
+	    ((*width != former_width) || (*height != former_height)))
+    {
+      double
+        scale_factor;
+
+      /*
+        Respect aspect ratio of the image.
+      */
+      if ((former_width == 0) || (former_height == 0))
+        scale_factor=1.0;
+      else
+        if (((flags & WidthValue) != 0) && (flags & HeightValue) != 0)
+          { 
+            scale_factor=(double) *width/former_width;
+            if (scale_factor > ((double) *height/former_height))
+              scale_factor=(double) *height/former_height;
+          }  
+        else 
+          if ((flags & WidthValue) != 0)
+            scale_factor=(double) *width/former_width;
+          else
+            scale_factor=(double) *height/former_height;
+    *width=(unsigned long) floor(scale_factor*former_width+0.5);
+    *height=(unsigned long) floor(scale_factor*former_height+0.5);
+  }
+  if (flags & GreaterValue)
+    {
+      if (former_width < *width)
+        *width=former_width;
+      if (former_height < *height)
+        *height=former_height;
+    }
+  if (flags & LessValue)
+    {
+      if (former_width > *width)
+        *width=former_width;
+      if (former_height > *height)
+        *height=former_height;
+    }
+  media_info.width=(*width);
+  media_info.height=(*height);
+  media_info.x=(*x);
+  media_info.y=(*y);
+  (void) GetGeometry(geometry,&media_info.x,&media_info.y,&media_info.width,
+    &media_info.height);
+  if ((flags & XValue) == 0)
+    {
+      /*
+        Center image in the X direction.
+      */
+      delta=(long) (media_info.width-(*width));
+      if (delta >= 0)
+        *x=delta >> 1;
+    }
+  else
+    if ((flags & XNegative) != 0)
+      *x+=media_info.width-(*width);
+  if ((flags & YValue) == 0)
+    {
+      /*
+        Center image in the Y direction.
+      */
+      delta=(long) (media_info.height-(*height));
+      if (delta >= 0)
+        *y=delta >> 1;
+    }
+  else
+    if ((flags & YNegative) != 0)
+      *y+=media_info.height-(*height);
+  if (flags & GreaterValue)
+    {
+      if ((*width+((*x) << 1)) > media_info.width)
+        {
+          if ((long) *width > ((*x) << 1))
+            *width-=(*x) << 1;
+          if ((long) *height > ((*y) << 1))
+            *height-=(*y) << 1;
+        }
+      if ((*height+((*y) << 1)) > media_info.height)
+        {
+          if ((long) *width > ((*x) << 1))
+            *width-=(*x) << 1;
+          if ((long) *height > ((*y) << 1))
+            *height-=(*y) << 1;
+        }
+    }
+  return(flags);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   S e t C l i e n t N a m e                                                 %
 %                                                                             %
 %                                                                             %

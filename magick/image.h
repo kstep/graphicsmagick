@@ -378,6 +378,9 @@ typedef struct _Image
   InterlaceType
     interlace;
 
+  GravityType
+    gravity;
+
   CompositeOperator
     compose;
 
@@ -523,7 +526,7 @@ typedef struct _ImageInfo
     *view;
 
   Image
-	  *attributes;
+    *attributes;
 
   void
     *client_data;
@@ -706,8 +709,8 @@ extern MagickExport IndexPacket
   ValidateColormapIndex(Image *,const unsigned long);
 
 extern MagickExport int
-  ParseImageGeometry(const char *,long *,long *,unsigned long *,
-    unsigned long *);
+  GetImageGeometry(const Image *,const char *,const unsigned int,
+		RectangleInfo *);
 
 extern MagickExport MagickInfo
   *RegisterMagickInfo(MagickInfo *),

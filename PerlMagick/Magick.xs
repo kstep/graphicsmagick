@@ -1451,7 +1451,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
           if (info)
             (void) CloneString(&info->image_info->page,geometry);
           for ( ; image; image=image->next)
-            ParseImageGeometry(geometry,&image->page.x,&image->page.y,
+            (void) ParseImageGeometry(geometry,&image->page.x,&image->page.y,
               &image->page.width,&image->page.height);
           LiberateMemory((void **) &geometry);
           return;
@@ -4023,6 +4023,7 @@ Mogrify(ref,...)
     region_info.x=0;
     region_info.y=0;
     region_image=(Image *) NULL;
+    image=SetupList(reference,&info,&reference_vector);
     if (ix && (ix != 666))
       {
         /*
@@ -4040,9 +4041,7 @@ Mogrify(ref,...)
         attribute=(char *) SvPV(ST(1),na);
         if (ix)
           {
-            region_info.height=region_info.width;
-            flags=ParseImageGeometry(attribute,&region_info.x,&region_info.y,
-              &region_info.width,&region_info.height);
+            flags=GetImageGeometry(image,attribute,False,&region_info);
             attribute=(char *) SvPV(ST(2),na);
             base++;
           }
@@ -4059,7 +4058,6 @@ Mogrify(ref,...)
         ix=rp-Methods+1;
         base++;
       }
-    image=SetupList(reference,&info,&reference_vector);
     if (!image)
       {
         MagickWarning(OptionWarning,"no images to mogrify",attribute);
@@ -4219,12 +4217,8 @@ Mogrify(ref,...)
         case 5:  /* Border */
         {
           if (attribute_flag[0])
-            {
-              FormatString(absolute_geometry,"%.1024s!",
-                argument_list[0].string_reference);
-              flags=ParseImageGeometry(absolute_geometry,&geometry.x,
-                &geometry.y,&geometry.width,&geometry.height);
-            }
+            flags=GetImageGeometry(image,argument_list[0].string_reference,
+              False,&geometry);
           if (attribute_flag[1])
             geometry.width=argument_list[1].int_reference;
           if (attribute_flag[2])
@@ -4259,12 +4253,8 @@ Mogrify(ref,...)
         case 7:  /* Chop */
         {
           if (attribute_flag[0])
-            {
-              FormatString(absolute_geometry,"%.1024s!",
-                argument_list[0].string_reference);
-              flags=ParseImageGeometry(absolute_geometry,&geometry.x,
-                &geometry.y,&geometry.width,&geometry.height);
-            }
+            flags=GetImageGeometry(image,argument_list[0].string_reference,
+              False,&geometry);
           if (attribute_flag[1])
             geometry.width=argument_list[1].int_reference;
           if (attribute_flag[2])
@@ -4286,12 +4276,8 @@ Mogrify(ref,...)
         case 8:  /* Crop */
         {
           if (attribute_flag[0])
-            {
-              FormatString(absolute_geometry,"%.1024s!",
-                argument_list[0].string_reference);
-              flags=ParseImageGeometry(absolute_geometry,&geometry.x,
-                &geometry.y,&geometry.width,&geometry.height);
-            }
+            flags=GetImageGeometry(image,argument_list[0].string_reference,
+              False,&geometry);
           if (attribute_flag[1])
             geometry.width=argument_list[1].int_reference;
           if (attribute_flag[2])
@@ -4362,15 +4348,16 @@ Mogrify(ref,...)
           frame_info.outer_bevel=3;
           if (attribute_flag[0])
             {
-              flags=ParseImageGeometry(argument_list[0].string_reference,
-                &frame_info.outer_bevel,&frame_info.inner_bevel,
-                &frame_info.width,&frame_info.height);
-              if (!(flags & HeightValue))
-                frame_info.height=frame_info.width;
-              if (!(flags & XValue))
-                frame_info.outer_bevel=(long) ((frame_info.width >> 2)+1);
-              if (!(flags & YValue))
-                frame_info.inner_bevel=(long) ((frame_info.height >> 2)+1);
+              flags=GetImageGeometry(image,argument_list[0].string_reference,
+                False,&geometry);
+              frame_info.width=geometry.width;
+              frame_info.height=geometry.height;
+              frame_info.outer_bevel=geometry.x;
+              frame_info.inner_bevel=geometry.y;
+              frame_info.x=(long) frame_info.width;
+              frame_info.y=(long) frame_info.height;
+              frame_info.width=image->columns+2*frame_info.width;
+              frame_info.height=image->rows+2*frame_info.height;
             }
           if (attribute_flag[1])
             frame_info.width=argument_list[1].int_reference;
@@ -4438,8 +4425,8 @@ Mogrify(ref,...)
         case 22:  /* Roll */
         {
           if (attribute_flag[0])
-            flags=ParseImageGeometry(argument_list[0].string_reference,
-              &geometry.x,&geometry.y,&geometry.width,&geometry.height);
+            flags=GetImageGeometry(image,argument_list[0].string_reference,
+              False,&geometry);
           if (attribute_flag[1])
             geometry.x=argument_list[1].int_reference;
           if (attribute_flag[2])
@@ -4460,8 +4447,8 @@ Mogrify(ref,...)
         case 24:  /* Sample */
         {
           if (attribute_flag[0])
-            flags=ParseImageGeometry(argument_list[0].string_reference,
-              &geometry.x,&geometry.y,&geometry.width,&geometry.height);
+            flags=GetImageGeometry(image,argument_list[0].string_reference,
+              True,&geometry);
           if (attribute_flag[1])
             geometry.width=argument_list[1].int_reference;
           if (attribute_flag[2])
@@ -4472,8 +4459,8 @@ Mogrify(ref,...)
         case 25:  /* Scale */
         {
           if (attribute_flag[0])
-            flags=ParseImageGeometry(argument_list[0].string_reference,
-              &geometry.x,&geometry.y,&geometry.width,&geometry.height);
+            flags=GetImageGeometry(image,argument_list[0].string_reference,
+              True,&geometry);
           if (attribute_flag[1])
             geometry.width=argument_list[1].int_reference;
           if (attribute_flag[2])
@@ -4557,8 +4544,8 @@ Mogrify(ref,...)
         case 32:  /* Zoom */
         {
           if (attribute_flag[0])
-            flags=ParseImageGeometry(argument_list[0].string_reference,
-              &geometry.x,&geometry.y,&geometry.width,&geometry.height);
+            flags=GetImageGeometry(image,argument_list[0].string_reference,
+              True,&geometry);
           if (attribute_flag[1])
             geometry.width=argument_list[1].int_reference;
           if (attribute_flag[2])
@@ -4702,8 +4689,8 @@ Mogrify(ref,...)
           draw_info=CloneDrawInfo(info ? info->image_info : (ImageInfo *) NULL,
             (DrawInfo *) NULL);
           if (attribute_flag[0])
-            flags=ParseImageGeometry(argument_list[0].string_reference,
-              &geometry.x,&geometry.y,&geometry.width,&geometry.height);
+            flags=GetImageGeometry(image,argument_list[0].string_reference,
+              False,&geometry);
           if (attribute_flag[1])
             geometry.x=argument_list[1].int_reference;
           if (attribute_flag[2])
@@ -4726,6 +4713,9 @@ Mogrify(ref,...)
         }
         case 35:  /* Composite */
         {
+          char
+            composite_geometry[MaxTextExtent];
+
           CompositeOperator
             compose;
 
@@ -4803,78 +4793,24 @@ Mogrify(ref,...)
                 DestroyImage(rotate_image);
               break;
             }
-          /*
-            Respect gravity.
-          */
-          if (attribute_flag[2])
-            flags=GetGeometry(argument_list[2].string_reference,&geometry.x,
-              &geometry.y,&geometry.width,&geometry.height);
           if (attribute_flag[3])
             geometry.x=argument_list[3].int_reference;
           if (attribute_flag[4])
             geometry.y=argument_list[4].int_reference;
           if (attribute_flag[5])
-            switch (argument_list[5].int_reference)
-            {
-              case ForgetGravity:
-              case NorthWestGravity:
-                break;
-              case NorthGravity:
-              {
-                geometry.x+=(long)
-                  (geometry.width/2-composite_image->columns/2);
-                break;
-              }
-              case NorthEastGravity:
-              {
-                geometry.x+=(long) geometry.width-composite_image->columns;
-                break;
-              }
-              case WestGravity:
-              {
-                geometry.y+=(long) (geometry.height/2-composite_image->rows/2);
-                break;
-              }
-              case StaticGravity:
-              case CenterGravity:
-              default:
-              {
-                geometry.x+=(long)
-                  (geometry.width/2-composite_image->columns/2);
-                geometry.y+=(long) (geometry.height/2-composite_image->rows/2);
-                break;
-              }
-              case EastGravity:
-              {
-                geometry.x+=(long) geometry.width-composite_image->columns;
-                geometry.y+=(long) (geometry.height/2-composite_image->rows/2);
-                break;
-              }
-              case SouthWestGravity:
-              {
-                geometry.y+=(long) geometry.height-composite_image->rows;
-                break;
-              }
-              case SouthGravity:
-              {
-                geometry.x+=(long)
-                  (geometry.width/2-composite_image->columns/2);
-                geometry.y+=(long) geometry.height-composite_image->rows;
-                break;
-              }
-              case SouthEastGravity:
-              {
-                geometry.x+=(long) geometry.width-composite_image->columns;
-                geometry.y+=(long) geometry.height-composite_image->rows;
-                break;
-              }
-            }
+            image->gravity=(GravityType) argument_list[5].int_reference;
+          if (attribute_flag[2])
+            flags=GetGeometry(argument_list[5].string_reference,&geometry.x,
+              &geometry.y,&geometry.width,&geometry.height);
           /*
             Composite image.
           */
+          FormatString(composite_geometry,"%lux%lu%+ld%+ld",
+            composite_image->columns,composite_image->rows,geometry.x,
+            geometry.y);
+          flags=GetImageGeometry(image,composite_geometry,False,&geometry);
           if (!attribute_flag[8])
-            CompositeImage(image,compose,composite_image,geometry.x,
-              geometry.y);
+            CompositeImage(image,compose,composite_image,geometry.x,geometry.y);
           else
             {
               /*
@@ -5071,8 +5007,8 @@ Mogrify(ref,...)
             opacity;
 
           if (attribute_flag[0])
-            flags=ParseImageGeometry(argument_list[0].string_reference,
-              &geometry.x,&geometry.y,&geometry.width,&geometry.height);
+            flags=GetImageGeometry(image,argument_list[0].string_reference,
+              False,&geometry);
           if (attribute_flag[1])
             geometry.x=argument_list[1].int_reference;
           if (attribute_flag[2])
@@ -5181,12 +5117,8 @@ Mogrify(ref,...)
         case 49:  /* Raise */
         {
           if (attribute_flag[0])
-            {
-              FormatString(absolute_geometry,"%.1024s!",
-                argument_list[0].string_reference);
-              flags=ParseImageGeometry(absolute_geometry,&geometry.x,
-                &geometry.y,&geometry.width,&geometry.height);
-            }
+            flags=GetImageGeometry(image,argument_list[0].string_reference,
+              False,&geometry);
           if (attribute_flag[1])
             geometry.width=argument_list[1].int_reference;
           if (attribute_flag[2])
@@ -5459,12 +5391,8 @@ Mogrify(ref,...)
         case 72:  /* Shave */
         {
           if (attribute_flag[0])
-            {
-              FormatString(absolute_geometry,"%.1024s!",
-                argument_list[0].string_reference);
-              flags=ParseImageGeometry(absolute_geometry,&geometry.x,
-                &geometry.y,&geometry.width,&geometry.height);
-            }
+            flags=GetImageGeometry(image,argument_list[0].string_reference,
+              False,&geometry);
           if (attribute_flag[1])
             geometry.width=argument_list[1].int_reference;
           if (attribute_flag[2])

@@ -26,21 +26,18 @@ for ($angle=0; $angle < 360; $angle+=30)
     fill=>'none',stroke=>'#600');
   $thumbnail->Composite(image=>$smile,gravity=>"NorthWest",x=>$x,y=>$y,
     rotate=>$angle);
-  $thumbnail->Composite(image=>$smile,gravity=>"North",x=>$x,y=>$y,
+  $thumbnail->Composite(image=>$smile,gravity=>"North",y=>$y,rotate=>$angle);
+  $thumbnail->Composite(image=>$smile,gravity=>"NorthEast",x=>-$x,y=>$y,
     rotate=>$angle);
-  $thumbnail->Composite(image=>$smile,gravity=>"NorthEast",x=>$x,y=>$y,
+  $thumbnail->Composite(image=>$smile,gravity=>"West",x=>$x,
     rotate=>$angle);
-  $thumbnail->Composite(image=>$smile,gravity=>"West",x=>$x,y=>$y,
+  $thumbnail->Composite(image=>$smile,gravity=>"Center",rotate=>$angle);
+  $thumbnail->Composite(image=>$smile,gravity=>"East",x=>-$x,rotate=>$angle);
+  $thumbnail->Composite(image=>$smile,gravity=>"SouthWest",x=>$x,y=>-$y,
+	  rotate=>$angle);
+  $thumbnail->Composite(image=>$smile,gravity=>"South",y=>-$y,
     rotate=>$angle);
-  $thumbnail->Composite(image=>$smile,gravity=>"Center",x=>$x,y=>$y,
-    rotate=>$angle);
-  $thumbnail->Composite(image=>$smile,gravity=>"East",x=>$x,y=>$y,
-    rotate=>$angle);
-  $thumbnail->Composite(image=>$smile,gravity=>"SouthWest",x=>$x,y=>$y,
-    rotate=>$angle);
-  $thumbnail->Composite(image=>$smile,gravity=>"South",x=>$x,y=>$y,
-    rotate=>$angle);
-  $thumbnail->Composite(image=>$smile,gravity=>"SouthEast",x=>$x,y=>$y,
+  $thumbnail->Composite(image=>$smile,gravity=>"SouthEast",x=>-$x,y=>-$y,
     rotate=>$angle);
   push(@$image,$thumbnail);
 }

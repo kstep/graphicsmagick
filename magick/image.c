@@ -2731,6 +2731,113 @@ MagickExport unsigned long GetImageDepth(const Image *image,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   G e t I m a g e G e o m e t r y                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetImageGeometry() returns a region as defined by the geometry specification
+%  with respect to the image gravity.
+%
+%  The format of the GetImageGeometry method is:
+%
+%      int GetImageGeometry(const Image *image,const char *geometry,
+%        const unsigned int size_to_fit,RectangeInfo *region_info)
+%
+%  A description of each parameter follows:
+%
+%    o flags:  Method GetGeometry returns a bitmask that indicates
+%      which of the four values were located in the geometry string.
+%
+%    o geometry:  The geometry specification (e.g. 100x100+10+10).
+%
+%    o size_to_fit:  A value other than 0 means to interpet any width/height
+%      values as a maximum.
+%
+%    o region_info: The region as defined by the geometry specification and
+%      the image gravity.
+%
+%
+*/
+MagickExport int GetImageGeometry(const Image *image,const char *geometry,
+  const unsigned int size_to_fit,RectangleInfo *region_info)
+{
+  char
+    region_geometry[MaxTextExtent];
+
+  int
+    flags;
+
+  region_info->width=image->columns;
+  region_info->height=image->rows;
+  region_info->x=0;
+  region_info->y=0;
+  (void) strncpy(region_geometry,geometry,MaxTextExtent-2);
+  if (!size_to_fit)
+    (void) strcat(region_geometry,"!");
+  flags=ParseImageGeometry(region_geometry,&region_info->x,&region_info->y,
+    &region_info->width,&region_info->height);
+  switch (image->gravity)
+  {
+    case ForgetGravity:
+    case NorthWestGravity:
+      break;
+    case NorthGravity:
+    {
+      region_info->x+=(long) image->columns/2-region_info->width/2;
+      break;
+    }
+    case NorthEastGravity:
+    {
+      region_info->x+=(long) image->columns-region_info->width;
+      break;
+    }
+    case WestGravity:
+    {
+      region_info->y+=(long) (image->rows/2-region_info->width/2);
+      break;
+    }
+    case StaticGravity:
+    case CenterGravity:
+    default:
+    {
+      region_info->x+=(long) (image->columns/2-region_info->width/2);
+      region_info->y+=(long) (image->rows/2-region_info->width/2);
+      break;
+    }
+    case EastGravity:
+    {
+      region_info->x+=(long) image->columns-region_info->width;
+      region_info->y+=(long) (image->rows/2-region_info->width/2);
+      break;
+    }
+    case SouthWestGravity:
+    {
+      region_info->y+=(long) image->rows-region_info->height;
+      break;
+    }
+    case SouthGravity:
+    {
+      region_info->x+=(long) (image->columns/2-region_info->width/2);
+      region_info->y+=(long) image->rows-region_info->height;
+      break;
+    }
+    case SouthEastGravity:
+    {
+      region_info->x+=(long) image->columns-region_info->width;
+      region_info->y+=(long) image->rows-region_info->height;
+      break;
+    }
+  }
+  return(flags);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   G e t I m a g e I n f o                                                   %
 %                                                                             %
 %                                                                             %
@@ -3287,7 +3394,6 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
   const int argc,char **argv,Image **image)
 {
   char
-		absolute_geometry[MaxTextExtent],
     *option;
 
   DrawInfo
@@ -3438,9 +3544,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             /*
               Surround image with a border of solid color.
             */
-            FormatString(absolute_geometry,"%.1024s!",argv[++i]);
-            flags=ParseImageGeometry(absolute_geometry,&geometry.x,&geometry.y,
-              &geometry.width,&geometry.height);
+            flags=GetImageGeometry(*image,argv[++i],False,&geometry);
             border_image=BorderImage(*image,&geometry,&(*image)->exception);
             if (border_image == (Image *) NULL)
               break;
@@ -3525,9 +3629,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             /*
               Chop the image.
             */
-            FormatString(absolute_geometry,"%.1024s!",argv[++i]);
-            flags=ParseImageGeometry(absolute_geometry,&geometry.x,&geometry.y,
-              &geometry.width,&geometry.height);
+            flags=GetImageGeometry(*image,argv[++i],False,&geometry);
             chop_image=ChopImage(*image,&geometry,&(*image)->exception);
             if (chop_image == (Image *) NULL)
               break;
@@ -3976,21 +4078,15 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             /*
               Surround image with an ornamental border.
             */
-            (void) memset(&frame_info,0,sizeof(FrameInfo));
-            frame_info.width=(*image)->columns;
-            frame_info.height=(*image)->columns;
-            flags=ParseImageGeometry(argv[++i],&frame_info.outer_bevel,
-              &frame_info.inner_bevel,&frame_info.width,&frame_info.height);
-            if ((flags & HeightValue) == 0)
-              frame_info.height=frame_info.width;
-            if ((flags & XValue) == 0)
-              frame_info.outer_bevel=(long) (frame_info.width >> 2)+1;
-            if ((flags & YValue) == 0)
-              frame_info.inner_bevel=(long) frame_info.outer_bevel;
+            flags=GetImageGeometry(*image,argv[++i],False,&geometry);
+            frame_info.width=geometry.width;
+            frame_info.height=geometry.height;
+            frame_info.outer_bevel=geometry.x;
+            frame_info.inner_bevel=geometry.y;
             frame_info.x=(long) frame_info.width;
             frame_info.y=(long) frame_info.height;
-            frame_info.width=(*image)->columns+(frame_info.width << 1);
-            frame_info.height=(*image)->rows+(frame_info.height << 1);
+            frame_info.width=(*image)->columns+2*frame_info.width;
+            frame_info.height=(*image)->rows+2*frame_info.height;
             frame_image=FrameImage(*image,&frame_info,&(*image)->exception);
             if (frame_image == (Image *) NULL)
               break;
@@ -4052,8 +4148,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             /*
               Resize image.
             */
-            flags=ParseImageGeometry(argv[++i],&geometry.x,&geometry.y,
-              &geometry.width,&geometry.height);
+            flags=GetImageGeometry(*image,argv[++i],True,&geometry);
             if ((geometry.width == (*image)->columns) &&
                 (geometry.height == (*image)->rows))
               break;
@@ -4072,11 +4167,12 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
 
             if (*option == '+')
               {
-                draw_info->gravity=(GravityType) NorthWestGravity;
+                draw_info->gravity=(GravityType) ForgetGravity;
+                (*image)->gravity=(GravityType) ForgetGravity;
                 continue;
               }
             option=argv[++i];
-            gravity=(GravityType) NorthWestGravity;
+            gravity=(GravityType) ForgetGravity;
             if (LocaleCompare("NorthWest",option) == 0)
               gravity=(GravityType) NorthWestGravity;
             if (LocaleCompare("North",option) == 0)
@@ -4096,6 +4192,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             if (LocaleCompare("SouthEast",option) == 0)
               gravity=(GravityType) SouthEastGravity;
             draw_info->gravity=gravity;
+            (*image)->gravity=gravity;
             continue;
           }
         break;
@@ -4471,9 +4568,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             /*
               Surround image with a raise of solid color.
             */
-            FormatString(absolute_geometry,"%.1024s!",argv[++i]);
-            flags=ParseImageGeometry(absolute_geometry,&geometry.x,&geometry.y,
-              &geometry.width,&geometry.height);
+            flags=GetImageGeometry(*image,argv[++i],False,&geometry);
             (void) RaiseImage(*image,&geometry,*option == '-');
             continue;
           }
@@ -4498,11 +4593,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             /*
               Apply transformations to a selected region of the image.
             */
-            SetGeometry(*image,&region_geometry);
-            FormatString(absolute_geometry,"%.1024s!",argv[++i]);
-            flags=ParseImageGeometry(absolute_geometry,&region_geometry.x,
-              &region_geometry.y,&region_geometry.width,
-              &region_geometry.height);
+            flags=GetImageGeometry(*image,argv[++i],False,&region_geometry);
             crop_image=CropImage(*image,&region_geometry,&(*image)->exception);
             if (crop_image == (Image *) NULL)
               break;
@@ -4518,8 +4609,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             /*
               Resize image.
             */
-            flags=ParseImageGeometry(argv[++i],&geometry.x,&geometry.y,
-              &geometry.width,&geometry.height);
+            flags=GetImageGeometry(*image,argv[++i],True,&geometry);
             if ((geometry.width == (*image)->columns) &&
                 (geometry.height == (*image)->rows))
               break;
@@ -4539,8 +4629,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             /*
               Roll image.
             */
-            flags=ParseImageGeometry(argv[++i],&geometry.x,&geometry.y,
-              &geometry.width,&geometry.height);
+            flags=GetImageGeometry(*image,argv[++i],False,&geometry);
             roll_image=RollImage(*image,geometry.x,geometry.y,
               &(*image)->exception);
             if (roll_image == (Image *) NULL)
@@ -4590,8 +4679,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             /*
               Sample image with pixel replication.
             */
-            flags=ParseImageGeometry(argv[++i],&geometry.x,&geometry.y,
-              &geometry.width,&geometry.height);
+            flags=GetImageGeometry(*image,argv[++i],True,&geometry);
             if ((geometry.width == (*image)->columns) &&
                 (geometry.height == (*image)->rows))
               break;
@@ -4614,8 +4702,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             /*
               Resize image.
             */
-            flags=ParseImageGeometry(argv[++i],&geometry.x,&geometry.y,
-              &geometry.width,&geometry.height);
+            flags=GetImageGeometry(*image,argv[++i],True,&geometry);
             if ((geometry.width == (*image)->columns) &&
                 (geometry.height == (*image)->rows))
               break;
@@ -4702,9 +4789,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             /*
               Shave the image edges.
             */
-            FormatString(absolute_geometry,"%.1024s!",argv[++i]);
-            flags=ParseImageGeometry(absolute_geometry,&geometry.x,&geometry.y,
-              &geometry.width,&geometry.height);
+            flags=GetImageGeometry(*image,argv[++i],False,&geometry);
             shave_image=ShaveImage(*image,&geometry,&(*image)->exception);
             if (shave_image == (Image *) NULL)
               break;
@@ -5081,218 +5166,6 @@ MagickExport unsigned int MogrifyImages(const ImageInfo *image_info,
   }
   *images=mogrify_images;
   return(status);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   P a r s e I m a g e G e o m e t r y                                       %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method ParseImageGeometry parses a geometry specification and returns the
-%  width, height, x, and y values.  It also returns flags that indicates
-%  which of the four values (width, height, xoffset, yoffset) were located
-%  in the string, and whether the x and y values are negative.  In addition,
-%  there are flags to report any meta characters (%, !, <, and >).
-%
-%  The format of the ParseImageGeometry method is:
-%
-%      int ParseImageGeometry(const char *geometry,long *x,long *y,
-%        unsigned long *width,unsigned long *height)
-%
-%  A description of each parameter follows:
-%
-%    o flags:  Method ParseImageGeometry returns a bitmask that indicates
-%      which of the four values were located in the geometry string.
-%
-%    o image_geometry:  Specifies a character string representing the geometry
-%      specification.
-%
-%    o x,y:  A pointer to an integer.  The x and y offset as determined by
-%      the geometry specification is returned here.
-%
-%    o width,height:  A pointer to an unsigned integer.  The width and height
-%      as determined by the geometry specification is returned here.
-%
-%
-*/
-MagickExport int ParseImageGeometry(const char *geometry,long *x,long *y,
-  unsigned long *width,unsigned long *height)
-{
-  int
-    flags;
-
-  long
-    count,
-    delta;
-
-  RectangleInfo
-    media_info;
-
-  unsigned long
-    former_height,
-    former_width;
-
-  /*
-    Ensure the image geometry is valid.
-  */
-  assert(x != (long *) NULL);
-  assert(y != (long *) NULL);
-  assert(width != (unsigned long *) NULL);
-  assert(height != (unsigned long *) NULL);
-  if ((geometry == (char *) NULL) || (*geometry == '\0'))
-    return(NoValue);
-  /*
-    Parse geometry using GetGeometry.
-  */
-  former_width=(*width);
-  former_height=(*height);
-  flags=GetGeometry(geometry,x,y,width,height);
-  if (flags & PercentValue)
-    {
-      double
-        x_scale,
-        y_scale;
-
-      /*
-        Geometry is a percentage of the image size.
-      */
-      x_scale=(*width);
-      y_scale=(*height);
-      count=sscanf(geometry,"%lf%%x%lf",&x_scale,&y_scale);
-      if (count != 2)
-        count=sscanf(geometry,"%lfx%lf",&x_scale,&y_scale);
-      if (count == 1)
-        y_scale=x_scale;
-      *width=(unsigned long) floor((x_scale*former_width/100.0)+0.5);
-      *height=(unsigned long) floor((y_scale*former_height/100.0)+0.5);
-      former_width=(*width);
-      former_height=(*height);
-    }
-  if (flags & AreaValue)
-    {
-      double
-        distance,
-        x_area,
-        y_area;
-
-      /*
-        Geometry is a maximum area in pixels.
-      */
-      x_area=(*width);
-      y_area=(*height);
-      count=sscanf(geometry,"%lf%%x%lf",&x_area,&y_area);
-      if (count != 2)
-        count=sscanf(geometry,"%lfx%lf",&x_area,&y_area);
-      if (count == 1)
-        y_area=x_area;
-      distance=sqrt((double) former_width*former_height);
-      *width=(unsigned long) floor((x_area*former_width/distance)+0.5);
-      *height=(unsigned long) floor((y_area*former_height/distance)+0.5);
-      former_width=(*width);
-      former_height=(*height);
-    }
-  if (!(flags & AspectValue) && 
-	    ((*width != former_width) || (*height != former_height)))
-    {
-      double
-        scale_factor;
-
-      /*
-        Respect aspect ratio of the image.
-      */
-      if ((former_width == 0) || (former_height == 0))
-        scale_factor=1.0;
-      else
-        if (((flags & WidthValue) != 0) && (flags & HeightValue) != 0)
-          { 
-            scale_factor=(double) *width/former_width;
-            if (scale_factor > ((double) *height/former_height))
-              scale_factor=(double) *height/former_height;
-          }  
-        else 
-          if ((flags & WidthValue) != 0)
-            scale_factor=(double) *width/former_width;
-          else
-            scale_factor=(double) *height/former_height;
-    *width=(unsigned long) floor(scale_factor*former_width+0.5);
-    *height=(unsigned long) floor(scale_factor*former_height+0.5);
-  }
-  if ((flags & XValue) == 0)
-    *width-=(*x) << 1;
-  if ((flags & XNegative) != 0)
-    *x+=former_width-(*width);
-  if ((flags & YValue) == 0)
-    *height-=(*y) << 1;
-  if ((flags & YNegative) != 0)
-    *y+=former_height-(*height);
-  if (flags & GreaterValue)
-    {
-      if (former_width < *width)
-        *width=former_width;
-      if (former_height < *height)
-        *height=former_height;
-    }
-  if (flags & LessValue)
-    {
-      if (former_width > *width)
-        *width=former_width;
-      if (former_height > *height)
-        *height=former_height;
-    }
-  media_info.width=(*width);
-  media_info.height=(*height);
-  media_info.x=(*x);
-  media_info.y=(*y);
-  (void) GetGeometry(geometry,&media_info.x,&media_info.y,&media_info.width,
-    &media_info.height);
-  if ((flags & XValue) == 0)
-    {
-      /*
-        Center image in the X direction.
-      */
-      delta=(long) (media_info.width-(*width));
-      if (delta >= 0)
-        *x=delta >> 1;
-    }
-  else
-    if ((flags & XNegative) != 0)
-      *x+=media_info.width-(*width);
-  if ((flags & YValue) == 0)
-    {
-      /*
-        Center image in the Y direction.
-      */
-      delta=(long) (media_info.height-(*height));
-      if (delta >= 0)
-        *y=delta >> 1;
-    }
-  else
-    if ((flags & YNegative) != 0)
-      *y+=media_info.height-(*height);
-  if (flags & GreaterValue)
-    {
-      if ((*width+((*x) << 1)) > media_info.width)
-        {
-          if ((long) *width > ((*x) << 1))
-            *width-=(*x) << 1;
-          if ((long) *height > ((*y) << 1))
-            *height-=(*y) << 1;
-        }
-      if ((*height+((*y) << 1)) > media_info.height)
-        {
-          if ((long) *width > ((*x) << 1))
-            *width-=(*x) << 1;
-          if ((long) *height > ((*y) << 1))
-            *height-=(*y) << 1;
-        }
-    }
-  return(flags);
 }
 
 /*
@@ -5915,11 +5788,11 @@ MagickExport unsigned int SetImageClipMask(Image *image,Image *clip_mask)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  SetImageDepth() sets the depth of the image.  Some image formats support
-%  both 8 and 16-bits per color component (e.g. PNG).  Use SetImageDepth() to
-%  specify your preference.  A value other than 0 is returned if the depth is
-%  set.  Check the exception member of image to determine the cause for any
-%  failure.
+%  SetImageDepth() sets the depth of the image, either 8 or 16.  Some image
+%  formats support both 8 and 16-bits per color component (e.g. PNG).  Use
+%  SetImageDepth() to specify your preference.  A value other than 0 is
+%  returned if the depth is set.  Check the exception member of image to
+%  determine the cause for any failure.
 %
 %  The format of the SetImageDepth method is:
 %

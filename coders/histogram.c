@@ -186,7 +186,7 @@ static unsigned int WriteHISTOGRAMImage(const ImageInfo *image_info,
     y;
 
   RectangleInfo
-    geometry;
+		geometry;
 
   register const PixelPacket
     *p;
@@ -209,11 +209,12 @@ static unsigned int WriteHISTOGRAMImage(const ImageInfo *image_info,
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   SetGeometry(image,&geometry);
-  (void) GetGeometry(image_info->density,&geometry.x,&geometry.y,
-    &geometry.width,&geometry.height);
   if (image_info->density == (char *) NULL)
-    (void) GetGeometry(HistogramDensity,&geometry.x,&geometry.y,&geometry.width,
-      &geometry.height);
+    (void) ParseImageGeometry(HistogramDensity,&geometry.x,&geometry.y,
+      &geometry.width,&geometry.height);
+  else
+    (void) ParseImageGeometry(image_info->density,&geometry.x,&geometry.y,
+      &geometry.width,&geometry.height);
   histogram_image=CloneImage(image,geometry.width,geometry.height,True,
     &image->exception);
   if (histogram_image == (Image *) NULL)

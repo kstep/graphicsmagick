@@ -116,11 +116,11 @@ typedef struct _CompositeOptions
   CompositeOperator
     compose;
 
+  GravityType
+    gravity;
+
   double
     dissolve;
-
-  int
-    gravity;
 
   long
     stegano;
@@ -292,6 +292,9 @@ static unsigned int CompositeImageList(ImageInfo *image_info,Image **image,
             }
           else
             {
+              char
+                composite_geometry[MaxTextExtent];
+
               int
                 flags;
 
@@ -301,65 +304,15 @@ static unsigned int CompositeImageList(ImageInfo *image_info,Image **image,
               /*
                 Digitally composite image.
               */
-              SetGeometry(*image,&geometry);
+              geometry.x=0;
+              geometry.y=0;
               flags=GetGeometry(option_info->geometry,&geometry.x,
                 &geometry.y,&geometry.width,&geometry.height);
-              switch (option_info->gravity)
-              {
-                case ForgetGravity:
-                case NorthWestGravity:
-                  break;
-                case NorthGravity:
-                {
-                  geometry.x+=(long)
-                    (geometry.width/2-composite_image->columns/2);
-                  break;
-                }
-                case NorthEastGravity:
-                {
-                  geometry.x+=(long) geometry.width-composite_image->columns;
-                  break;
-                }
-                case WestGravity:
-                {
-                  geometry.y+=(long) (geometry.width/2-composite_image->rows/2);
-                  break;
-                }
-                case StaticGravity:
-                case CenterGravity:
-                default:
-                {
-                  geometry.x+=(long)
-                    (geometry.width/2-composite_image->columns/2);
-                  geometry.y+=(long) (geometry.width/2-composite_image->rows/2);
-                  break;
-                }
-                case EastGravity:
-                {
-                  geometry.x+=(long) geometry.width-composite_image->columns;
-                  geometry.y+=(long) (geometry.width/2-composite_image->rows/2);
-                  break;
-                }
-                case SouthWestGravity:
-                {
-                  geometry.y+=(long) geometry.height;
-                  geometry.y+=(long) geometry.height-composite_image->rows;
-                  break;
-                }
-                case SouthGravity:
-                {
-                  geometry.x+=(long)
-                    (geometry.width/2-composite_image->columns/2);
-                  geometry.y+=(long) geometry.height-composite_image->rows;
-                  break;
-                }
-                case SouthEastGravity:
-                {
-                  geometry.x+=(long) geometry.width-composite_image->columns;
-                  geometry.y+=(long) geometry.height-composite_image->rows;
-                  break;
-                }
-              }
+              FormatString(composite_geometry,"%lux%lu%+ld%+ld",
+                composite_image->columns,composite_image->rows,geometry.x,
+                geometry.y);
+              (*image)->gravity=option_info->gravity;
+              flags=GetImageGeometry(*image,composite_geometry,False,&geometry);
               status&=CompositeImage(*image,option_info->compose,
                 composite_image,geometry.x,geometry.y);
               (void) CatchImageException(*image);
@@ -541,7 +494,6 @@ MagickExport unsigned int CompositeUtility(int argc,char **argv)
   option_info.displace_geometry=(char *) NULL;
   GetExceptionInfo(&exception);
   option_info.geometry=(char *) NULL;
-  option_info.gravity=NorthWestGravity;
   image=(Image *) NULL;
   image_info=CloneImageInfo((ImageInfo *) NULL);
   (void) strncpy(image_info->filename,argv[argc-1],MaxTextExtent-1);
