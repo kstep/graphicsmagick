@@ -320,9 +320,6 @@ MagickExport unsigned int XAnnotateImage(Display *display,
       double
         normalized_degrees;
 
-      ExceptionInfo
-        exception;
-
       Image
         *rotate_image;
 
@@ -333,7 +330,7 @@ MagickExport unsigned int XAnnotateImage(Display *display,
         Rotate image.
       */
       rotate_image=
-        RotateImage(annotate_image,annotate_info->degrees,&exception);
+        RotateImage(annotate_image,annotate_info->degrees,&image->exception);
       if (rotate_image == (Image *) NULL)
         return(False);
       DestroyImage(annotate_image);
@@ -2113,9 +2110,6 @@ MagickExport unsigned int XDrawImage(Display *display,const XPixelInfo *pixel,
       double
         normalized_degrees;
 
-      ExceptionInfo
-        exception;
-
       Image
         *rotate_image;
 
@@ -2125,7 +2119,7 @@ MagickExport unsigned int XDrawImage(Display *display,const XPixelInfo *pixel,
       /*
         Rotate image.
       */
-      rotate_image=RotateImage(draw_image,draw_info->degrees,&exception);
+      rotate_image=RotateImage(draw_image,draw_info->degrees,&image->exception);
       if (rotate_image == (Image *) NULL)
         return(False);
       DestroyImage(draw_image);
@@ -2226,7 +2220,7 @@ MagickExport unsigned int XDrawImage(Display *display,const XPixelInfo *pixel,
 %    o display: Specifies a pointer to the Display structure;  returned from
 %      XOpenDisplay.
 %
-%    o exception: Specifies the error event.
+%    o error: Specifies the error event.
 %
 %
 */
@@ -4677,9 +4671,6 @@ MagickExport Image *XImportImage(const ImageInfo *image_info,
       (void) strcpy(image->filename,image_info->filename);
       if ((crop_info.width != 0) && (crop_info.height != 0))
         {
-          ExceptionInfo
-            exception;
-
           Image
             *crop_image;
 
@@ -4687,7 +4678,7 @@ MagickExport Image *XImportImage(const ImageInfo *image_info,
             Crop image as defined by the cropping rectangle.
           */
           image->orphan=True;
-          crop_image=CropImage(image,&crop_info,&exception);
+          crop_image=CropImage(image,&crop_info,&image->exception);
           if (crop_image != (Image *) NULL)
             {
               DestroyImage(image);
@@ -5051,9 +5042,6 @@ MagickExport unsigned int XMakeImage(Display *display,
   const XResourceInfo *resource_info,XWindowInfo *window,Image *image,
   unsigned int width,unsigned int height)
 {
-  ExceptionInfo
-    exception;
-
   Image
     *transform_image;
 
@@ -5083,9 +5071,6 @@ MagickExport unsigned int XMakeImage(Display *display,
     {
       if (window->crop_geometry)
         {
-          ExceptionInfo
-            exception;
-
           Image
             *crop_image;
 
@@ -5102,7 +5087,7 @@ MagickExport unsigned int XMakeImage(Display *display,
           (void) XParseGeometry(window->crop_geometry,&crop_info.x,
             &crop_info.y,&crop_info.width,&crop_info.height);
           transform_image->orphan=True;
-          crop_image=CropImage(transform_image,&crop_info,&exception);
+          crop_image=CropImage(transform_image,&crop_info,&image->exception);
           if (crop_image != (Image *) NULL)
             {
               if (transform_image != image)
@@ -5121,12 +5106,15 @@ MagickExport unsigned int XMakeImage(Display *display,
           */
           transform_image->orphan=True;
           if ((window->pixel_info->colors != 0) || transform_image->matte)
-            zoom_image=SampleImage(transform_image,width,height,&exception);
+            zoom_image=
+              SampleImage(transform_image,width,height,&image->exception);
           else
             if ((width <= 160) && (height <= 160))
-              zoom_image=ScaleImage(transform_image,width,height,&exception);
+              zoom_image=
+                ScaleImage(transform_image,width,height,&image->exception);
             else
-              zoom_image=ZoomImage(transform_image,width,height,&exception);
+              zoom_image=
+                ZoomImage(transform_image,width,height,&image->exception);
           if (zoom_image != (Image *) NULL)
             {
               if (transform_image != image)

@@ -445,6 +445,7 @@ int main(int argc,char **argv)
   average=False;
   coalesce=False;
   deconstruct=False;
+  GetExceptionInfo(&exception);
   morph=0;
   mosaic=False;
   filename=(char *) NULL;
@@ -1734,7 +1735,6 @@ int main(int argc,char **argv)
     }
   while (image->previous != (Image *) NULL)
     image=image->previous;
-  GetExceptionInfo(&exception);
   if (append != 0)
     {
       Image

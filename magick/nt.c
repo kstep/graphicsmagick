@@ -596,7 +596,7 @@ MagickExport double NTElapsedTime(void)
 %
 %  A description of each parameter follows:
 %
-%    o exception: Specifies the numeric error category.
+%    o error: Specifies the numeric error category.
 %
 %    o message: Specifies the message to display before terminating the
 %      program.

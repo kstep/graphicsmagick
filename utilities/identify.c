@@ -174,6 +174,7 @@ int main(int argc,char **argv)
     Set defaults.
   */
   count=0;
+  GetExceptionInfo(&exception);
   image_info=CloneImageInfo((ImageInfo *) NULL);
   number_images=0;
   format=(char *) NULL;

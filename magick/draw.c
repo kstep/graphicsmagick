@@ -1066,9 +1066,6 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       }
       case ImagePrimitive:
       {
-        ExceptionInfo
-          exception;
-
         Image
           *composite_image;
 
@@ -1118,7 +1115,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
               p++;
           }
         *q='\0';
-        composite_image=ReadImage(composite_info,&exception);
+        composite_image=ReadImage(composite_info,&image->exception);
         if (composite_image == (Image *) NULL)
           break;
         if ((clone_info->affine[1] == 0.0) && (clone_info->affine[2] == 0.0))
@@ -1135,7 +1132,8 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
 
                 width=clone_info->affine[0]*composite_image->columns;
                 height=clone_info->affine[3]*composite_image->rows;
-                scale_image=ZoomImage(composite_image,width,height,&exception);
+                scale_image=
+                  ZoomImage(composite_image,width,height,&image->exception);
                 if (scale_image != (Image *) NULL)
                   {
                     DestroyImage(composite_image);
@@ -1156,7 +1154,8 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
 
                 theta=(180.0/M_PI)*
                   atan2(clone_info->affine[1],clone_info->affine[0]);
-                rotate_image=RotateImage(composite_image,theta,&exception);
+                rotate_image=
+                  RotateImage(composite_image,theta,&image->exception);
                 if (rotate_image != (Image *) NULL)
                   {
                     DestroyImage(composite_image);

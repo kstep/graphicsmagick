@@ -448,6 +448,7 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
   unsigned int
     status;
 
+  GetExceptionInfo(&exception);
   clone_info=CloneImageInfo(image_info);
   (void) strcpy(clone_info->magick,image->magick);
   magick_info=(MagickInfo *) GetMagickInfo(clone_info->magick);

@@ -353,6 +353,7 @@ int main(int argc,char **argv)
   /*
     Set defaults.
   */
+  GetExceptionInfo(&exception);
   format=(char *) NULL;
   global_colormap=False;
   image=(Image *) NULL;

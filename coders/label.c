@@ -810,6 +810,47 @@ static Image *RenderFreetype(const ImageInfo *image_info,const char *text,
     if ((image->columns % 2) != 0)
       p++;
   }
+  if ((image_info->affine[1] == 0.0) && (image_info->affine[2] == 0.0))
+    {
+      if ((image_info->affine[0] != 1.0) || (image_info->affine[0] != 1.0))
+        {
+          Image
+            *scale_image;
+
+          unsigned int
+            height,
+            width;
+
+          width=image_info->affine[0]*image->columns;
+          height=image_info->affine[3]*image->rows;
+          scale_image=ZoomImage(image,width,height,exception);
+          if (scale_image != (Image *) NULL)
+            {
+              DestroyImage(image);
+              image=scale_image;
+            }
+        }
+    }
+  else
+    {
+      if (((image_info->affine[0]-image_info->affine[3]) == 0.0) &&
+          ((image_info->affine[1]+image_info->affine[2]) == 0.0))
+        {
+          double
+            theta;
+
+          Image
+            *rotate_image;
+
+          theta=(180.0/M_PI)*atan2(image_info->affine[1],image_info->affine[0]);
+          rotate_image=RotateImage(image,theta,exception);
+          if (rotate_image != (Image *) NULL)
+            {
+              DestroyImage(image);
+              image=rotate_image;
+            }
+        }
+    }
   image->bounding_box.x1=0.0;
   image->bounding_box.y1=0.0;
   image->bounding_box.x2=Max(image->columns,image->rows);

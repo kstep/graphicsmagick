@@ -510,6 +510,7 @@ MagickExport void GetAnnotateInfo(const ImageInfo *image_info,
   /*
     Get font bounds.
   */
+  GetExceptionInfo(&exception);
   clone_info=CloneImageInfo(image_info);
   FormatString(clone_info->filename,"label:%.1024s",Alphabet);
   annotate_image=ReadImage(clone_info,&exception);

@@ -2034,7 +2034,7 @@ MagickExport void DescribeImage(Image *image,FILE *file,
   if (image->directory != (char *) NULL)
     {
       ExceptionInfo
-        error;
+        exception;
 
       Image
         *tile;
@@ -2065,7 +2065,7 @@ MagickExport void DescribeImage(Image *image,FILE *file,
         p=q;
         (void) fprintf(file,"    %.1024s",image_info->filename);
         handler=SetWarningHandler((WarningHandler) NULL);
-        tile=ReadImage(image_info,&error);
+        tile=ReadImage(image_info,&exception);
         (void) SetWarningHandler(handler);
         if (tile == (Image *) NULL)
           {

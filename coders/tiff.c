@@ -268,7 +268,8 @@ static unsigned int TIFFWarningHandler(const char *module,const char *format,
     }
   (void) vsprintf(p,format,warning);
   (void) strcat(p,".");
-  ThrowBinaryException(DelegateWarning,message,image->filename);
+  ThrowBinaryException(DelegateWarning,message,
+    image ? image->filename : (char *) NULL);
 }
 
 #if defined(__cplusplus) || defined(c_plusplus)

@@ -162,6 +162,7 @@ format.
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /*
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Initialize the image info structure and read an image.
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; */
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; GetExceptionInfo(&exception);
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; image_info=CloneImageInfo((ImageInfo *) NULL);
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (void) strcpy(image_info->filename,"image.jpg");
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; image=ReadImage(image_info,&amp;exception);

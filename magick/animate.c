@@ -445,9 +445,6 @@ MagickExport void XAnimateBackgroundImage(Display *display,
   static XWindowInfo
     window_info;
 
-  ExceptionInfo
-    exception;
-
   Image
     *display_image,
     **images;
@@ -551,9 +548,10 @@ MagickExport void XAnimateBackgroundImage(Display *display,
       Image
         *coalesce_image;
 
-      coalesce_image=CoalesceImages(image,&exception);
+      coalesce_image=CoalesceImages(image,&image->exception);
       if (coalesce_image == (Image *) NULL)
-        MagickError(exception.severity,exception.message,exception.qualifier);
+        MagickError(image->exception.severity,image->exception.message,
+          image->exception.qualifier);
       DestroyImages(image);
       image=coalesce_image;
     }
@@ -974,9 +972,6 @@ MagickExport Image *XAnimateImages(Display *display,
   CommandType
     command_type;
 
-  ExceptionInfo
-    exception;
-
   Image
     *display_image,
     **images,
@@ -1134,9 +1129,10 @@ MagickExport Image *XAnimateImages(Display *display,
       Image
         *coalesce_image;
 
-      coalesce_image=CoalesceImages(image,&exception);
+      coalesce_image=CoalesceImages(image,&image->exception);
       if (coalesce_image == (Image *) NULL)
-        MagickError(exception.severity,exception.message,exception.qualifier);
+        MagickError(image->exception.severity,image->exception.message,
+          image->exception.qualifier);
       DestroyImages(image);
       image=coalesce_image;
     }

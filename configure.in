@@ -572,8 +572,8 @@ then
   failed=0;
   passed=0;
   AC_CHECK_HEADER(bzlib.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
-  AC_CHECK_LIB(bz2,bzCompress,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
-  AC_CHECK_LIB(bz2,bzDecompress,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
+  AC_CHECK_LIB(bz2,BZ2_bzCompress,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
+  AC_CHECK_LIB(bz2,BZ2_bzDecompress,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
   AC_MSG_CHECKING(if BZLIB package is complete)
   if test $passed -gt 0
   then
@@ -991,7 +991,7 @@ AC_CHECK_HEADERS(memory.h errno.h fcntl.h)
 # Checks for typedefs, structures, and compiler characteristics.
 AC_PROG_CC_STDC
 AC_C_CONST
-#AC_C_INLINE
+AC_C_INLINE
 AC_C_BIGENDIAN
 
 AC_TYPE_MODE_T

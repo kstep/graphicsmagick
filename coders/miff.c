@@ -775,7 +775,8 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
                 bzip_info.bzalloc=NULL;
                 bzip_info.bzfree=NULL;
                 bzip_info.opaque=NULL;
-                (void) bzDecompressInit(&bzip_info,image_info->verbose,False);
+                (void) BZ2_bzDecompressInit(&bzip_info,image_info->verbose,
+                  False);
                 bzip_info.avail_in=0;
               }
             bzip_info.next_out=(char *) pixels;
@@ -788,13 +789,13 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
                   length=1.01*packet_size*image->columns+12;
                   bzip_info.avail_in=ReadBlob(image,length,bzip_info.next_in);
                 }
-              if (bzDecompress(&bzip_info) == BZ_STREAM_END)
+              if (BZ2_bzDecompress(&bzip_info) == BZ_STREAM_END)
                 break;
             } while (bzip_info.avail_out > 0);
             if (y == (int) (image->rows-1))
               {
                 (void) SeekBlob(image,-((off_t) bzip_info.avail_in),SEEK_CUR);
-                status=!bzDecompressEnd(&bzip_info);
+                status=!BZ2_bzDecompressEnd(&bzip_info);
               }
           }
         else
@@ -1464,8 +1465,8 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
                 bzip_info.bzalloc=NULL;
                 bzip_info.bzfree=NULL;
                 bzip_info.opaque=NULL;
-                (void) bzCompressInit(&bzip_info,Min(image_info->quality/10,9),
-                  image_info->verbose,0);
+                (void) BZ2_bzCompressInit(&bzip_info,
+                  Min(image_info->quality/10,9),image_info->verbose,0);
               }
             bzip_info.next_in=(char *) pixels;
             bzip_info.avail_in=packet_size*image->columns;
@@ -1473,7 +1474,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
             {
               bzip_info.next_out=(char *) compressed_pixels;
               bzip_info.avail_out=packet_size*image->columns+600;
-              (void) bzCompress(&bzip_info,BZ_RUN);
+              (void) BZ2_bzCompress(&bzip_info,BZ_RUN);
               length=bzip_info.next_out-(char *) compressed_pixels;
               if (bzip_info.next_out != (char *) compressed_pixels)
                 (void) WriteBlob(image,length,compressed_pixels);
@@ -1484,13 +1485,13 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
                 {
                   bzip_info.next_out=(char *) compressed_pixels;
                   bzip_info.avail_out=packet_size*image->columns+600;
-                  (void) bzCompress(&bzip_info,BZ_FINISH);
+                  (void) BZ2_bzCompress(&bzip_info,BZ_FINISH);
                   if (bzip_info.next_out == (char *) compressed_pixels)
                     break;
                   length=bzip_info.next_out-(char *) compressed_pixels;
                   (void) WriteBlob(image,length,compressed_pixels);
                 }
-                status=!bzCompressEnd(&bzip_info);
+                status=!BZ2_bzCompressEnd(&bzip_info);
               }
           }
         else

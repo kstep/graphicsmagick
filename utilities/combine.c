@@ -239,6 +239,7 @@ int main(int argc,char **argv)
   compose=ReplaceCompositeOp;
   composite_image=(Image *) NULL;
   displacement_geometry=(char *) NULL;
+  GetExceptionInfo(&exception);
   geometry=(char *) NULL;
   gravity=NorthWestGravity;
   image=(Image *) NULL;

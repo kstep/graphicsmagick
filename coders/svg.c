@@ -553,7 +553,6 @@ static void SVGStartDocument(void *context)
   for (i=0; i < 6; i++)
     svg_info->graphic_context[0].affine[i]=(i == 0) || (i == 3) ? 1.0 : 0.0;
   GetExceptionInfo(svg_info->exception);
-  xmlSubstituteEntitiesDefault(1);
 }
 
 static void SVGEndDocument(void *context)
@@ -1390,6 +1389,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   svg_info.file=file;
   svg_info.verbose=image_info->verbose;
   svg_info.exception=exception;
+  xmlSubstituteEntitiesDefault(1);
   SAXHandler=(&SAXHandlerStruct);
   n=ReadBlob(image,4,buffer);
   if (n > 0)
@@ -1401,6 +1401,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
   n=xmlParseChunk(context,buffer,0,1);
   xmlFreeParserCtxt(context);
+  xmlCleanupParser();
   (void) fclose(file);
   CloseBlob(image);
   DestroyImage(image);

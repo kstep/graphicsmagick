@@ -359,6 +359,7 @@ int main(int argc,char **argv)
     Set defaults.
   */
   display=(Display *) NULL;
+  GetExceptionInfo(&exception);
   first_scene=0;
   image_number=0;
   last_image=0;

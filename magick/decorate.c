@@ -187,7 +187,6 @@ MagickExport Image *FrameImage(Image *image,const FrameInfo *frame_info,
   */
   assert(image != (Image *) NULL);
   assert(frame_info != (FrameInfo *) NULL);
-  GetExceptionInfo(exception);
   if ((frame_info->outer_bevel < 0) || (frame_info->inner_bevel < 0))
     ThrowImageException(OptionWarning,"Unable to frame image",
       "bevel width is negative");
