@@ -368,7 +368,7 @@ MagickExport unsigned int InvokeDelegate(const ImageInfo *image_info,
           {
             DestroyImageInfo(clone_info);
             ThrowBinaryException(DelegateWarning,"delegate failed",
-              decode ? decode : encode);
+              decode ? decode : encode)
           }
       }
   if (delegate_info->mode != 0)
@@ -391,7 +391,7 @@ MagickExport unsigned int InvokeDelegate(const ImageInfo *image_info,
           {
             DestroyImageInfo(clone_info);
             ThrowBinaryException(DelegateWarning,"delegate failed",
-              decode ? decode : encode);
+              decode ? decode : encode)
           }
         LocaleUpper(magick);
         (void) strcpy((char *) clone_info->magick,magick);
@@ -409,7 +409,7 @@ MagickExport unsigned int InvokeDelegate(const ImageInfo *image_info,
             {
               DestroyImageInfo(clone_info);
               ThrowBinaryException(DelegateWarning,"delegate failed",
-                decode ? decode : encode);
+                decode ? decode : encode)
             }
           if (clone_info->adjoin)
             break;
@@ -424,7 +424,7 @@ MagickExport unsigned int InvokeDelegate(const ImageInfo *image_info,
     {
       DestroyImageInfo(clone_info);
       ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
-        decode ? decode : encode);
+        decode ? decode : encode)
     }
   command=(char *) NULL;
   status=True;
