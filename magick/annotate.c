@@ -1108,7 +1108,8 @@ static unsigned int RenderFreetype(Image *image,const DrawInfo *draw_info,
           text=EncodeSJIS(draw_info->text,&length);
           break;
         }
-      if (LocaleCompare(draw_info->encoding,"UTF-8") == 0)
+      if ((LocaleCompare(draw_info->encoding,"UTF-8") == 0) ||
+          (encoding_type != ft_encoding_none))
         {
           text=EncodeUnicode(draw_info->text,&length);
           break;
