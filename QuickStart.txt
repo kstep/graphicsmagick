@@ -48,15 +48,16 @@ Win2K, NT, Win95, Win98 Install:
 
   Use Copy/Paste/Rename to copy and rename 
 
-	ImageMagick-5.2.0\delegates\win2k.mgk to c:\ImageMagick\delegates.mgk
+	ImageMagick-win2k\delegates\win2k.mgk to c:\ImageMagick\delegates.mgk
 
   and
 
-	ImageMagick-5.2.0\delegates\magic.mgk to c:\ImageMagick\magic.mgk
+	ImageMagick-win2k\delegates\magic.mgk to c:\ImageMagick\magic.mgk
 
   Select Start->Programs->Command Prompt.  In the Command Prompt window type
 
-    cd ImageMagick-5.2.0
+    cd ImageMagick-win2k
+    set MAGICK_MODULE_PATH=c:\ImageMagick-win2k
     identify -verbose logo:
 
   Alternatively, download the ImageMagick NT source
