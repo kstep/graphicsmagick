@@ -3,7 +3,7 @@ dnl Currently maintained by Bob Friesenhahn, bfriesen@simple.dallas.tx.us
 #
 # ImageMagick Configure Script
 #
-# Report ImageMagick configure bugs via http://www.simplesystems.org/ImageMagick/bugs
+# Report ImageMagick configure bugs via http://www.imagemagick.org/ImageMagick/bugs
 #
 
 AC_PREREQ(2.2)

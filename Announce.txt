@@ -1,8 +1,8 @@
 
-Subject: ImageMagick 5.2.9 - tools and libraries for image manipulation
+Subject: ImageMagick 5.3.1 - tools and libraries for image manipulation
 
 The ImageMagick Studio LLC development group is proud to announce the
-release of ImageMagick 5.2.9.  Version 5.2.9 is a bug-fix release to
+release of ImageMagick 5.3.1.  Version 5.3.1 is a bug-fix release to
 resolve bugs reported against 5.2.8.
 
 ImageMagick is a robust collection of tools and libraries to read,
@@ -26,14 +26,14 @@ The ImageMagick WWW page is
 
    http://www.imagemagick.org/
  
-ImageMagick 5.2.9 is available via ftp as
+ImageMagick 5.3.1 is available via ftp as
 
-   ftp://ftp.simplesystems.org/pub/ImageMagick/ImageMagick-5.2.9.tar.gz
+   ftp://ftp.imagemagick.org/pub/ImageMagick/ImageMagick-5.3.1.tar.gz
 
-If ftp.simplesystems.org is overloaded (very likely), check the list of
+If ftp.imagemagick.org is overloaded (very likely), check the list of
 mirrors at http://www.imagemagick.org/www/archives.html for other
 mirrors.   You may want to use a mirror anyway, since many of the
-mirrors are faster than simplesystems.org.
+mirrors are faster than imagemagick.org.
 
 Note that the primary distribution site has changed in the past two
 months.  If you are running a mirror site, please adjust your mirror

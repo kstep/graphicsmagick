@@ -664,10 +664,10 @@ static unsigned int RenderPostscript(Image *image,const DrawInfo *draw_info,
   if (draw_info->density != (char *) NULL)
     (void) CloneString(&clone_info->density,draw_info->density);
   clone_info->antialias=draw_info->text_antialias;
-  GetExceptionInfo(&exception);
   annotate_image=ReadImage(clone_info,&exception);
+  if (exception.severity != UndefinedException)
+    MagickWarning(exception.severity,exception.reason,exception.description);
   DestroyImageInfo(clone_info);
-  DestroyExceptionInfo(&exception);
   (void) remove(filename);
   if (annotate_image == (Image *) NULL)
     return(False);

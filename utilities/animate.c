@@ -939,12 +939,11 @@ int main(int argc,char **argv)
           image_info->colorspace=quantize_info->colorspace;
           image_info->dither=quantize_info->dither;
           next_image=ReadImage(image_info,&exception);
+          if (exception.severity != UndefinedException)
+            MagickWarning(exception.severity,exception.reason,
+              exception.description);
           if (next_image == (Image *) NULL)
-            {
-              MagickWarning(exception.severity,exception.reason,
-                exception.description);
-              continue;
-            }
+            continue;
           status=MogrifyImages(image_info,i,argv,&next_image);
           if (status == False)
             CatchImageException(next_image);

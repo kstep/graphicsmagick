@@ -329,12 +329,11 @@ int main(int argc,char **argv)
         image_info->subimage=0;
         image_info->subrange=0;
         image=ReadImage(image_info,&exception);
+        if (exception.severity != UndefinedException)
+          MagickWarning(exception.severity,exception.reason,
+            exception.description);
         if (image == (Image *) NULL)
-          {
-            MagickWarning(exception.severity,exception.reason,
-              exception.description);
-            continue;
-          }
+          continue;
         if (format == (char *) NULL)
           DescribeImage(image,stdout,False);
         else
@@ -352,11 +351,11 @@ int main(int argc,char **argv)
         continue;
       }
     image=ReadImage(image_info,&exception);
+    if (exception.severity != UndefinedException)
+      MagickWarning(exception.severity,exception.reason,
+        exception.description);
     if (image == (Image *) NULL)
-      {
-        MagickWarning(exception.severity,exception.reason,exception.description);
-        continue;
-      }
+      continue;
     for (p=image; p != (Image *) NULL; p=p->next)
     {
       if (p->scene == 0)

@@ -860,6 +860,9 @@ MagickExport Image *FlopImage(Image *image,ExceptionInfo *exception)
 MagickExport unsigned int ProfileImage(Image *image,const char *profile_name,
   const char *filename)
 {
+  ExceptionInfo
+    exception;
+
   Image
     *profile_image;
 
@@ -913,7 +916,9 @@ MagickExport unsigned int ProfileImage(Image *image,const char *profile_name,
   */
   image_info=CloneImageInfo((ImageInfo *) NULL);
   (void) strcpy(image_info->filename,filename);
-  profile_image=ReadImage(image_info,&image->exception);
+  profile_image=ReadImage(image_info,&exception);
+  if (exception.severity != UndefinedException)
+    MagickWarning(exception.severity,exception.reason,exception.description);
   DestroyImageInfo(image_info);
   if (profile_image == (Image *) NULL)
     return(False);

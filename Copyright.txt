@@ -26,10 +26,10 @@ ImageMagick Studio.
 
 ImageMagick is available as
 
-  ftp://ftp.simplesystems.org/pub/ImageMagick/
+  ftp://ftp.imagemagick.org/pub/ImageMagick/
 
 The official ImageMagick WWW page is
 
-  http://www.simplesystems.org/cristy/ImageMagick.html
+  http://www.imagemagick.org/cristy/ImageMagick.html
 
 The author is magick@wizards.dupont.com.

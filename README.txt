@@ -24,22 +24,22 @@ AVAILABILITY
 
   ImageMagick is available as
 
-    ftp://ftp.simplesystems.org/pub/ImageMagick/ImageMagick-5.3.1.tar.gz
+    ftp://ftp.imagemagick.org/pub/ImageMagick/ImageMagick-5.3.1.tar.gz
 
   ImageMagick client executables are available for some platforms. See
 
-    ftp://ftp.simplesystems.org/pub/ImageMagick/binaries
-    ftp://ftp.simplesystems.org/pub/ImageMagick/mac
-    ftp://ftp.simplesystems.org/pub/ImageMagick/nt
-    ftp://ftp.simplesystems.org/pub/ImageMagick/vms
-    ftp://ftp.simplesystems.org/pub/ImageMagick/linux
+    ftp://ftp.imagemagick.org/pub/ImageMagick/binaries
+    ftp://ftp.imagemagick.org/pub/ImageMagick/mac
+    ftp://ftp.imagemagick.org/pub/ImageMagick/nt
+    ftp://ftp.imagemagick.org/pub/ImageMagick/vms
+    ftp://ftp.imagemagick.org/pub/ImageMagick/linux
 
   I want ImageMagick to be of high quality, so if you encounter a
   problem I will investigate.  However, be sure you are using the most
-  recent version from ftp://ftp.simplesystems.org/pub/ImageMagick
+  recent version from ftp://ftp.imagemagick.org/pub/ImageMagick
   before submitting any bug reports or suggestions.  Report any
   problems via the web-based reporting facility at
-  http://www.simplesystems.org/ImageMagick/bugs.html.
+  http://www.imagemagick.org/ImageMagick/bugs.html.
 
 
 WWW
@@ -489,7 +489,7 @@ MAGICK DELEGATES
       Apply this JPEG patch to Independent JPEG Group's source
       distribution to read lossless jpeg-encoded DICOM images:
 
-	  ftp://ftp.simplesystems.org/pub/ImageMagick/delegates/
+	  ftp://ftp.imagemagick.org/pub/ImageMagick/delegates/
 	    ljpeg-6b.tar.gz
 
       Concerning iterative JPEG compression:  see Kinoshita and
@@ -609,7 +609,7 @@ VMS COMPILATION
   Alternatively, get a zipped distribution (with JPEG, PNG, TIFF, TTF)
   from
 
-      ftp://ftp.simplesystems.org/pub/ImageMagick/vms/ImageMagick-5.3.1.zip
+      ftp://ftp.imagemagick.org/pub/ImageMagick/vms/ImageMagick-5.3.1.zip
 
   The VMS JPEG, PNG, TIFF, and TTF  source libraries are available on
   axp.psl.ku.dk in [anonymous.decwindows.lib].

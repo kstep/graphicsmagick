@@ -1521,12 +1521,11 @@ int main(int argc,char **argv)
         */
         (void) strcpy(image_info->filename,argv[i]);
         image=ReadImage(image_info,&exception);
+        if (exception.severity != UndefinedException)
+          MagickWarning(exception.severity,exception.reason,
+            exception.description);
         if (image == (Image *) NULL)
-          {
-            MagickWarning(exception.severity,exception.reason,
-              exception.description);
-            continue;
-          }
+          continue;
         if (scene != 0)
           image->scene=scene;
         if (format != (char *) NULL)

@@ -1938,6 +1938,9 @@ MagickExport void DescribeImage(Image *image,FILE *file,
         (void) fprintf(file,"    %.1024s",image_info->filename);
         handler=SetWarningHandler((WarningHandler) NULL);
         tile=ReadImage(image_info,&exception);
+        if (exception.severity != UndefinedException)
+          MagickWarning(exception.severity,exception.reason,
+            exception.description);
         (void) SetWarningHandler(handler);
         if (tile == (Image *) NULL)
           {
@@ -3064,6 +3067,9 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
   DrawInfo
     *draw_info;
 
+  ExceptionInfo
+    exception;
+
   Image
     *map_image,
     *region_image;
@@ -3873,7 +3879,10 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
               Transform image colors to match this set of colors.
             */
             (void) strcpy(clone_info->filename,argv[++i]);
-            map_image=ReadImage(clone_info,&(*image)->exception);
+            map_image=ReadImage(clone_info,&exception);
+            if (exception.severity != UndefinedException)
+              MagickWarning(exception.severity,exception.reason,
+                exception.description);
             continue;
           }
         if (LocaleCompare("matte",option+1) == 0)
@@ -4417,11 +4426,11 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
           }
         if (LocaleCompare("-tile",option) == 0)
           {
-            ExceptionInfo
-              exception;
-
             (void) strcpy(clone_info->filename,argv[++i]);
             draw_info->tile=ReadImage(clone_info,&exception);
+            if (exception.severity != UndefinedException)
+              MagickWarning(exception.severity,exception.reason,
+                exception.description);
             continue;
           }
         if (LocaleNCompare("-transparent",option,8) == 0)

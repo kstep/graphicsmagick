@@ -40,7 +40,7 @@ Unix/Linux/Cygwin Install:
 
   Download
 
-      ftp://ftp.simplesystems.org/pub/ImageMagick/ImageMagick-5.3.1.tar.gz
+      ftp://ftp.imagemagick.org/pub/ImageMagick/ImageMagick-5.3.1.tar.gz
 
   and type
 
@@ -52,7 +52,7 @@ Unix/Linux/Cygwin Install:
       identify -verbose logo:
 
   Alternatively, download the appropriate binary from
-  ftp://ftp.simplesystems.org/pub/ImageMagick/binaries.  The Unix
+  ftp://ftp.imagemagick.org/pub/ImageMagick/binaries.  The Unix
   binaries must be installed in the /usr/local.  If you require a
   different install directory, follow these steps (here we assume an
   install directory of /opt/ImageMagick):
@@ -72,7 +72,7 @@ Win2K, NT, Win98, Win95 Install:
 
   Download
 
-      ftp://ftp.simplesystems.org/pub/ImageMagick/win2k/ImageMagick-win2k.zip
+      ftp://ftp.imagemagick.org/pub/ImageMagick/win2k/ImageMagick-win2k.zip
 
   and double click on it to extract the distribution.
 
@@ -83,7 +83,7 @@ Win2K, NT, Win98, Win95 Install:
 
   Alternatively, download the ImageMagick NT source
 
-      ftp://ftp.simplesystems.org/pub/ImageMagick/win2k/ImageMagick-5.3.1.zip
+      ftp://ftp.imagemagick.org/pub/ImageMagick/win2k/ImageMagick-5.3.1.zip
 
   and read README.txt for detailed instructions on compiling the ImageMagick
   source as well as additional details on ways to tell ImageMagick how to
@@ -94,7 +94,7 @@ MAC Install:
 
   Download
 
-      ftp://ftp.simplesystems.org/pub/ImageMagick/mac/ImageMagick-mac.sit.hqx
+      ftp://ftp.imagemagick.org/pub/ImageMagick/mac/ImageMagick-mac.sit.hqx
 
   and double click on it to extract the distribution.   Move to the
   ImageMagick-5.3.1 directory and double click on the identify program
@@ -106,7 +106,7 @@ MAC Install:
 
   Alternatively, download the ImageMagick MAC source
 
-      ftp://ftp.simplesystems.org/pub/ImageMagick/mac/ImageMagick-5.3.1.sit.hqx
+      ftp://ftp.imagemagick.org/pub/ImageMagick/mac/ImageMagick-5.3.1.sit.hqx
 
   and double click on the Make AppleScript script to build from the source.
 

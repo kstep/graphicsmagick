@@ -3152,6 +3152,9 @@ static unsigned int DrawPrimitive(const DrawInfo *draw_info,
     }
     case ImagePrimitive:
     {
+      ExceptionInfo
+        exception;
+
       Image
         *composite_image;
 
@@ -3165,7 +3168,10 @@ static unsigned int DrawPrimitive(const DrawInfo *draw_info,
         break;
       clone_info=CloneImageInfo((ImageInfo *) NULL);
       (void) strcpy(clone_info->filename,primitive_info->text);
-      composite_image=ReadImage(clone_info,&image->exception);
+      composite_image=ReadImage(clone_info,&exception);
+      if (exception.severity != UndefinedException)
+        MagickWarning(exception.severity,exception.reason,
+          exception.description);
       DestroyImageInfo(clone_info);
       if (composite_image == (Image *) NULL)
         break;

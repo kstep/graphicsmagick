@@ -1190,12 +1190,11 @@ int main(int argc,char **argv)
         if (image_info->size == (char *) NULL)
           CloneString(&image_info->size,montage_info->geometry);
         next_image=ReadImage(image_info,&exception);
+        if (exception.severity != UndefinedException)
+          MagickWarning(exception.severity,exception.reason,
+            exception.description);
         if (next_image == (Image *) NULL)
-          {
-            MagickWarning(exception.severity,exception.reason,
-              exception.description);
-            continue;
-          }
+          continue;
         status=MogrifyImages(image_info,i,argv,&next_image);
         if (status == False)
           CatchImageException(next_image);

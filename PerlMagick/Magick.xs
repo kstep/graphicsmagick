@@ -6548,8 +6548,9 @@ Read(ref,...)
     {
       (void) strncpy(info->image_info->filename,list[i],MaxTextExtent-1);
       image=ReadImage(info->image_info,&exception);
-      if (image == (Image *) NULL)
-        MagickWarning(exception.severity,exception.reason,exception.description);
+      if (exception.severity != UndefinedException)
+        MagickWarning(exception.severity,exception.reason,
+          exception.description);
       for ( ; image; image=image->next)
       {
         sv=newSViv((IV) image);

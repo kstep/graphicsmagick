@@ -123,7 +123,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         **filelist;
 
       ExceptionInfo
-        error;
+        exception;
 
       Image
         *image,
@@ -190,7 +190,10 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
           handler=SetMonitorHandler((MonitorHandler) NULL);
         (void) strcpy(clone_info->filename,filelist[i]);
         *clone_info->magick='\0';
-        next_image=ReadImage(clone_info,&error);
+        next_image=ReadImage(clone_info,&exception);
+        if (exception.severity != UndefinedException)
+          MagickWarning(exception.severity,exception.reason,
+            exception.description);
         if (next_image != (Image *) NULL)
           {
             if (image == (Image *) NULL)
@@ -1911,7 +1914,7 @@ MagickExport Image *XAnimateImages(Display *display,
               type;
 
             ExceptionInfo
-              error;
+              exception;
 
             int
               format;
@@ -1955,7 +1958,10 @@ MagickExport Image *XAnimateImages(Display *display,
                 (void) strcpy(resource_info->image_info->filename,
                   ((char *) data)+5);
               }
-            nexus=ReadImage(resource_info->image_info,&error);
+            nexus=ReadImage(resource_info->image_info,&exception);
+            if (exception.severity != UndefinedException)
+              MagickWarning(exception.severity,exception.reason,
+                exception.description);
             if (nexus != (Image *) NULL)
               state|=ExitState;
             XFree((void *) data);
@@ -2264,7 +2270,7 @@ MagickExport Image *XAnimateImages(Display *display,
           type;
 
         ExceptionInfo
-          error;
+          exception;
 
         int
           format;
@@ -2290,7 +2296,10 @@ MagickExport Image *XAnimateImages(Display *display,
         if ((status != Success) || (length == 0))
           break;
         (void) strcpy(resource_info->image_info->filename,(char *) data);
-        nexus=ReadImage(resource_info->image_info,&error);
+        nexus=ReadImage(resource_info->image_info,&exception);
+        if (exception.severity != UndefinedException)
+          MagickWarning(exception.severity,exception.reason,
+            exception.description);
         if (nexus != (Image *) NULL)
           state|=ExitState;
         XFree((void *) data);

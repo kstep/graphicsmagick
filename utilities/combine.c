@@ -295,8 +295,8 @@ int main(int argc,char **argv)
         if (image == (Image *) NULL)
           {
             image=ReadImage(image_info,&exception);
-            if (image == (Image *) NULL)
-              MagickError(exception.severity,exception.reason,
+            if (exception.severity != UndefinedException)
+              MagickWarning(exception.severity,exception.reason,
                 exception.description);
             continue;
           }
@@ -305,14 +305,18 @@ int main(int argc,char **argv)
         if (composite_image == (Image *) NULL)
           {
             composite_image=ReadImage(image_info,&exception);
-            if (composite_image == (Image *) NULL)
-              MagickError(exception.severity,exception.reason,
+            if (exception.severity != UndefinedException)
+              MagickWarning(exception.severity,exception.reason,
                 exception.description);
             continue;
           }
         mask_image=ReadImage(image_info,&exception);
         if (mask_image == (Image *) NULL)
-          MagickError(exception.severity,exception.reason,exception.description);
+          MagickError(exception.severity,exception.reason,
+            exception.description);
+        if (exception.severity != UndefinedException)
+          MagickWarning(exception.severity,exception.reason,
+            exception.description);
       }
     else
       switch(*(option+1))
