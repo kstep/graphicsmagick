@@ -214,7 +214,7 @@ MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
     (void) CloneString(&annotate->text,textlist[i]);
     if ((i == 0) || (annotate->gravity != NorthWestGravity))
       (void) GetTypeMetrics(image,annotate,&metrics);
-    height=metrics.ascent-metrics.descent;
+    height=(unsigned long) (metrics.ascent-metrics.descent);
     switch (annotate->gravity)
     {
       case ForgetGravity:

@@ -128,8 +128,8 @@ MagickExport Image *AffineTransformImage(const Image *image,
   extent[3].y=image->rows;
   for (i=0; i < 4; i++)
   {
-    x=extent[i].x+0.5;
-    y=extent[i].y+0.5;
+    x=(long) (extent[i].x+0.5);
+    y=(long) (extent[i].y+0.5);
     extent[i].x=x*affine->sx+y*affine->ry+affine->tx;
     extent[i].y=x*affine->rx+y*affine->sy+affine->ty;
   }

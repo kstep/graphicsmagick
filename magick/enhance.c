@@ -835,7 +835,6 @@ MagickExport unsigned int NormalizeImage(Image *image)
     low;
 
   long
-    threshold_intensity,
     y;
 
   PixelPacket
@@ -852,6 +851,9 @@ MagickExport unsigned int NormalizeImage(Image *image)
 
   register long
     i;
+
+  unsigned long
+    threshold_intensity;
 
   /*
     Allocate histogram and normalize map.
