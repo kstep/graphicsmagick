@@ -23,7 +23,6 @@
 		<LI><A HREF="#CloneImage">CloneImage</A>
 		<LI><A HREF="#CloneImageInfo">CloneImageInfo</A>
 		<LI><A HREF="#CommentImage">CommentImage</A>
-		<LI><A HREF="#CompressColormap">CompressColormap</A>
 		<LI><A HREF="#CompositeImage">CompositeImage</A>
 		<LI><A HREF="#CondenseImage">CondenseImage</A>
 		<LI><A HREF="#CreateImage">CreateImage</A>
@@ -102,9 +101,6 @@ cloned_info=<STRONG>CloneImageInfo</STRONG>(image_info)
 
 <P>
 <STRONG>CompositeImage</STRONG>(image,compose,composite_image,x_offset,y_offset)
-
-<P>
-<STRONG>CompressColormap</STRONG>(image)
 
 <P>
 <STRONG>CondenseImage</STRONG>(image)
@@ -447,28 +443,6 @@ The address of a structure of type Image.
 <DT><STRONG>comments:</STRONG><DD>
 <P>
 The address of a character string containing the comment format.
-
-</DL></DL>
-<P>
-<HR>
-<H2><A NAME="CompressColormap">CompressColormap</A></H2>
-<P>
-Method CompressColormap compresses an image colormap removing any duplicate
-and unused color entries.
-
-<P>
-The format of the CompressColormap routine is:
-
-<P>
-<PRE>        CompressColormap(image)
-</PRE>
-<P>
-A description of each parameter follows:
-
-<DL><DL>
-<DT><STRONG>image:</STRONG><DD>
-<P>
-The address of a structure of type Image.
 
 </DL></DL>
 <P>

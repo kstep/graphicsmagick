@@ -158,7 +158,7 @@ testReadWrite( 'PGM:input_p2.pgm',
 testReadWrite( 'PICT:input.pict',
                'PICT:output.pict',
                q//,
-               '2cdf3d196a7974c33e788c032cb918e0' );
+               '7785d161ea66bd39394bb74ef704a0aa' );
 
 #
 # Portable pixmap format (color), ASCII format
@@ -194,7 +194,7 @@ testReadWrite( 'PPM:input_p6.ppm',
 testReadWrite( 'PSD:input.psd',
                'PSD:output.psd',
                q//,
-               'e9b162b8431709942886f79b7b7c11bb' );
+               '7785d161ea66bd39394bb74ef704a0aa' );
 
 #
 # Irix RGB image file

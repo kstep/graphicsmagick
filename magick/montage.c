@@ -212,7 +212,7 @@ static void FormatLabel(ImageInfo *image_info,char *label,
   for (q=p+1; *q != '\0'; q++)
   {
     (void) strcpy(image_info->filename,"label:");
-    (void) strncat(image_info->filename+6,p,(int) (q-p));
+    (void) strncat(image_info->filename+6,p,(int) (q-p+1));
     image=ReadImage(image_info);
     if (image == (Image *) NULL)
       break;

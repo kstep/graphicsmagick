@@ -9,10 +9,20 @@ extern "C" {
 #endif
 
 /*
-  Review these machine specific definitions.
+  Review these platform specific definitions.
 */
+#if defined(sgi)
+#if !defined(RGBColorDatabase)
+#define RGBColorDatabase  "/usr/lib/X11/rgb.txt"
+#endif
+#if !defined(ApplicationDefaults)
+#define ApplicationDefaults  "/usr/lib/X11/app-defaults/"
+#endif
+#endif
 #if !defined(vms) && !defined(macintosh) && !defined(WIN32)
+#if !defined(ApplicationDefaults)
 #define ApplicationDefaults  "/usr/X11R6/lib/X11/app-defaults/"
+#endif
 #if !defined(DelegatePath)
 #define DelegatePath  "/usr/local/share/ImageMagick/"
 #endif
@@ -36,7 +46,7 @@ extern "C" {
 #endif
 #define SetNotifyHandlers
 #define TemporaryTemplate  "magick"
-#else
+#else /* specific platforms */
 #if defined(vms)
 #define ApplicationDefaults  "decw$system_defaults:"
 #define DelegatePath  "sys$login:"
@@ -58,7 +68,7 @@ extern "C" {
 #define RGBColorDatabase  "sys$common:[sysmgr]decw$rgb.dat"
 #endif
 #define SetNotifyHandlers
-#endif
+#endif /* vms */
 #if defined(macintosh)
 #define ApplicationDefaults  "/usr/lib/X11/app-defaults/"
 #define DelegatePath  ""
@@ -82,7 +92,7 @@ extern "C" {
 #define SetNotifyHandlers \
   SetErrorHandler(MACErrorHandler); \
   SetWarningHandler(MACWarningHandler)
-#endif
+#endif /* macintosh */
 #if defined(WIN32)
 #define ApplicationDefaults  "c:\\ImageMagick\\"
 #define DelegatePath  "c:\\ImageMagick\\"
@@ -111,21 +121,26 @@ extern "C" {
   SetWarningHandler(NTWarningHandler)
 #undef sleep
 #define sleep(seconds)  Sleep(seconds*1000)
-#endif
-#endif
+#endif /* WIN32 */
+#endif /* end of platform specific definitions */
 
 /*
   Define declarations.
 */
 #define AbsoluteValue(x)  ((x) < 0 ? -(x) : (x))
+#define CloseImage(image)  CloseBlob(image)
 #define ColorMatch(color,target,distance) \
-  ((unsigned long) ((((int) (color).red-(int) (target).red)* \
-     ((int) (color).red-(int) (target).red))+ \
-    (((int) (color).green-(int) (target).green)* \
-     ((int) (color).green-(int) (target).green))+ \
-    (((int) (color).blue-(int) (target).blue)* \
-     ((int) (color).blue-(int) (target).blue))) <= \
-     (unsigned long) (distance*distance))
+  (((distance) == 0) ? \
+   (((color).red == (target).red) && \
+    ((color).green == (target).green) && \
+    ((color).blue == (target).blue)) : \
+   ((unsigned long) ((((int) (color).red-(int) (target).red)* \
+      ((int) (color).red-(int) (target).red))+ \
+     (((int) (color).green-(int) (target).green)* \
+      ((int) (color).green-(int) (target).green))+ \
+     (((int) (color).blue-(int) (target).blue)* \
+      ((int) (color).blue-(int) (target).blue))) <= \
+      (unsigned long) (distance*distance)))
 #define DownShift(x) (((unsigned long) ((x)+(1L << 13))) >> 14)
 #define Extent(string)  ((int) strlen(string))
 #define False  0
@@ -142,6 +157,7 @@ extern "C" {
 #define M_PI  3.14159265358979323846
 #endif
 #define Opaque  MaxRGB
+#define OpenImage(image_info,image,type)  OpenBlob(image,image,type)
 #define PixelOffset(image,x,y) \
   ((image)->pixels+(((int) (y))*(image)->columns+((int) (x))))
 #define QuantumTick(i,span) \

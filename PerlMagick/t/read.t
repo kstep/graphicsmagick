@@ -153,7 +153,7 @@ testRead( 'input_p5.pgm', '4d21ec5c0ed543eeb6d478515c66ff14' );
 # Apple Macintosh QuickDraw/PICT file
 #
 ++$test;
-testRead( 'input.pict', '2cdf3d196a7974c33e788c032cb918e0' );
+testRead( 'input.pict', '7785d161ea66bd39394bb74ef704a0aa' );
 
 #
 # Alias/Wavefront RLE image format
@@ -177,7 +177,7 @@ testRead( 'input_p6.ppm', 'e9b162b8431709942886f79b7b7c11bb' );
 # Adobe Photoshop bitmap file
 #
 ++$test;
-testRead( 'input.psd', 'e9b162b8431709942886f79b7b7c11bb' );
+testRead( 'input.psd', '7785d161ea66bd39394bb74ef704a0aa' );
 
 #
 # Irix RGB image file
@@ -281,4 +281,4 @@ testReadSized( 'input_70x46.cmyk', '70x46', '70b0c3d7fcc7a617481285a1e27345d5' )
 # UYVY format
 #
 ++$test;
-testReadSized( 'input_70x46.uyvy', '70x46', '2ca4b6f0599c21f3e9811a8a98fe511c' );
+testReadSized( 'input_70x46.uyvy', '70x46', '81990d39685ec85b67d606a4bd35fc9c' );

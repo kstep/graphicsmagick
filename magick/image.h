@@ -530,19 +530,27 @@ typedef struct _AnnotateInfo
 
 typedef struct _MagickInfo
 {
-  char
-    *magick;
+  const char
+    *tag;
 
   Image
     *(*decoder)(const ImageInfo *);
 
   unsigned int
     (*encoder)(const ImageInfo *,Image *),
+    (*magick)(const unsigned char *,const unsigned int),
     adjoin,
     blob_support;
 
   const char
     *description;
+
+  void
+    *data;
+
+  struct _MagickInfo
+    *previous,
+    *next;
 } MagickInfo;
 
 /*
@@ -696,8 +704,12 @@ extern Export int
   ParseGeometry(const char *,int *,int *,unsigned int *,unsigned int *),
   ParseImageGeometry(const char *,int *,int *,unsigned int *,unsigned int *);
 
-extern Export const MagickInfo
-  *GetMagickInfo(const char *);
+extern Export MagickInfo
+  *GetMagickInfo(const char *),
+  *RegisterMagickInfo(const char *,Image *(*)(const ImageInfo *),
+    unsigned int (*)(const ImageInfo *,Image *),
+    unsigned int (*)(const unsigned char *,const unsigned int),
+    const unsigned int,const unsigned int,const char *);
 
 extern Export unsigned int
   AnimateImages(const ImageInfo *image_info,Image *image),

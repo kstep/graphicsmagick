@@ -98,11 +98,11 @@ extern "C" {
 /*
   Perl 5.006 no longer defines na and sv_undef.
 */
-#ifndef PL_na
-#define PL_na na
+#ifndef na
+#define na  PL_na
 #endif
-#ifndef PL_sv_undef
-#define PL_sv_undef sv_undef
+#ifndef sv_undef
+#define sv_undef  PL_sv_undef
 #endif
 
 /*
@@ -907,12 +907,10 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
     {
       if (strEQcase(attribute,"adjoin"))
         {
-          sp=SvPOK(sval) ? LookupStr(BooleanTypes,SvPV(sval,PL_na)) :
-            SvIV(sval);
+          sp=SvPOK(sval) ? LookupStr(BooleanTypes,SvPV(sval,na)) : SvIV(sval);
           if (sp < 0)
             {
-              MagickWarning(OptionWarning,"Invalid adjoin type",
-                SvPV(sval,PL_na));
+              MagickWarning(OptionWarning,"Invalid adjoin type",SvPV(sval,na));
               return;
             }
           if (info)
@@ -921,12 +919,11 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
         }
       if (strEQcase(attribute,"antialias"))
         {
-          sp=SvPOK(sval) ? LookupStr(BooleanTypes,SvPV(sval,PL_na)) :
-            SvIV(sval);
+          sp=SvPOK(sval) ? LookupStr(BooleanTypes,SvPV(sval,na)) : SvIV(sval);
           if (sp < 0)
             {
               MagickWarning(OptionWarning,"Invalid antialias type",
-                SvPV(sval,PL_na));
+                SvPV(sval,na));
               return;
             }
           if (info)
@@ -942,8 +939,8 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
         {
           if (info)
             (void) CloneString(&info->image_info->background_color,
-              SvPV(sval,PL_na));
-          (void) QueryColorDatabase(SvPV(sval,PL_na),&target_color);
+              SvPV(sval,na));
+          (void) QueryColorDatabase(SvPV(sval,na),&target_color);
           for ( ; image; image=image->next)
           {
             image->background_color.red=XDownScale(target_color.red);
@@ -955,7 +952,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
       if (strEQcase(attribute,"blue_p"))
         {
           for ( ; image; image=image->next)
-            (void) sscanf(SvPV(sval,PL_na),"%lf,%lf",
+            (void) sscanf(SvPV(sval,na),"%lf,%lf",
               &image->chromaticity.blue_primary.x,
               &image->chromaticity.blue_primary.y);
           return;
@@ -963,9 +960,8 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
       if (strEQcase(attribute,"bordercolor"))
         {
           if (info)
-            (void) CloneString(&info->image_info->border_color,
-              SvPV(sval,PL_na));
-          (void) QueryColorDatabase(SvPV(sval,PL_na),&target_color);
+            (void) CloneString(&info->image_info->border_color,SvPV(sval,na));
+          (void) QueryColorDatabase(SvPV(sval,na),&target_color);
           for ( ; image; image=image->next)
           {
             image->border_color.red=XDownScale(target_color.red);
@@ -993,9 +989,9 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
             if (i > image->colors)
               i%=image->colors;
             color=image->colormap+i;
-            if (strchr(SvPV(sval,PL_na),',') == 0)
+            if (strchr(SvPV(sval,na),',') == 0)
               {
-                QueryColorDatabase(SvPV(sval,PL_na),&target_color);
+                QueryColorDatabase(SvPV(sval,na),&target_color);
                 color->red=XDownScale(target_color.red);
                 color->green=XDownScale(target_color.green);
                 color->blue=XDownScale(target_color.blue);
@@ -1005,7 +1001,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
                 red=color->red;
                 green=color->green;
                 blue=color->blue;
-                (void) sscanf(SvPV(sval,PL_na),"%d,%d,%d",&red,&green,&blue);
+                (void) sscanf(SvPV(sval,na),"%d,%d,%d",&red,&green,&blue);
                 color->red=(Quantum)
                   ((red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red);
                 color->green=(Quantum)
@@ -1020,12 +1016,12 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
         {
           if (info)
             {
-              sp=SvPOK(sval) ? LookupStr(ColorspaceTypes,SvPV(sval,PL_na)) :
+              sp=SvPOK(sval) ? LookupStr(ColorspaceTypes,SvPV(sval,na)) :
                 SvIV(sval);
               if (sp < 0)
                 {
                   MagickWarning(OptionWarning,"Invalid colorspace type",
-                    SvPV(sval,PL_na));
+                    SvPV(sval,na));
                   return;
                 }
               if (info)
@@ -1036,12 +1032,12 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
         return;
       if (strEQcase(attribute,"compres"))
         {
-          sp=SvPOK(sval) ? LookupStr(CompressionTypes,SvPV(sval,PL_na)) :
+          sp=SvPOK(sval) ? LookupStr(CompressionTypes,SvPV(sval,na)) :
             SvIV(sval);
           if (sp < 0)
             {
               MagickWarning(OptionWarning,"Invalid compression type",
-                SvPV(sval,PL_na));
+                SvPV(sval,na));
               return;
             }
           if (info)
@@ -1058,21 +1054,21 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
       if (strEQcase(attribute,"delay"))
         {
           if (info)
-            (void) CloneString(&info->image_info->delay,SvPV(sval,PL_na));
+            (void) CloneString(&info->image_info->delay,SvPV(sval,na));
           for ( ; image; image=image->next)
             image->delay=SvIV(sval);
           return;
         }
       if (strEQcase(attribute,"density"))
         {
-          if (!IsGeometry(SvPV(sval,PL_na)))
+          if (!IsGeometry(SvPV(sval,na)))
             {
               MagickWarning(OptionWarning,"Invalid geometry on density",
-                SvPV(sval,PL_na));
+                SvPV(sval,na));
               return;
             }
           if (info)
-            (void) CloneString(&info->image_info->density,SvPV(sval,PL_na));
+            (void) CloneString(&info->image_info->density,SvPV(sval,na));
           return;
         }
       if (strEQcase(attribute,"depth"))
@@ -1086,7 +1082,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
       if (strEQcase(attribute,"dispose"))
         {
           if (info)
-            (void) CloneString(&info->image_info->dispose,SvPV(sval,PL_na));
+            (void) CloneString(&info->image_info->dispose,SvPV(sval,na));
           for (; image; image=image->next)
             image->dispose=SvIV(sval);
           return;
@@ -1095,12 +1091,12 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
         {
           if (info)
             {
-              sp=SvPOK(sval) ? LookupStr(BooleanTypes,SvPV(sval,PL_na)) :
+              sp=SvPOK(sval) ? LookupStr(BooleanTypes,SvPV(sval,na)) :
                 SvIV(sval);
               if (sp < 0)
                 {
                   MagickWarning(OptionWarning,"Invalid dither type",
-                    SvPV(sval,PL_na));
+                    SvPV(sval,na));
                   return;
                 }
               info->image_info->dither=sp;
@@ -1111,7 +1107,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
         {
           display:
           if (info)
-            (void) CloneString(&info->image_info->server_name,SvPV(sval,PL_na));
+            (void) CloneString(&info->image_info->server_name,SvPV(sval,na));
           return;
         }
       break;
@@ -1125,10 +1121,10 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
       if (strEQcase(attribute,"filen"))
         {
           if (info)
-            (void) strncpy(info->image_info->filename,SvPV(sval,PL_na),
+            (void) strncpy(info->image_info->filename,SvPV(sval,na),
               MaxTextExtent-1);
           for ( ; image; image=image->next)
-            (void) strncpy(image->filename,SvPV(sval,PL_na),MaxTextExtent-1);
+            (void) strncpy(image->filename,SvPV(sval,na),MaxTextExtent-1);
           return;
         }
       if (strEQcase(attribute,"file"))
@@ -1140,7 +1136,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
       if (strEQcase(attribute,"font"))
         {
           if (info)
-            (void) CloneString(&info->image_info->font,SvPV(sval,PL_na));
+            (void) CloneString(&info->image_info->font,SvPV(sval,na));
           return;
         }
       if (strEQcase(attribute,"fuzz"))
@@ -1159,7 +1155,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
       if (strEQcase(attribute,"green_p"))
         {
           for ( ; image; image=image->next)
-            (void) sscanf(SvPV(sval,PL_na),"%lf,%lf",
+            (void) sscanf(SvPV(sval,na),"%lf,%lf",
               &image->chromaticity.green_primary.x,
               &image->chromaticity.green_primary.y);
           return;
@@ -1176,19 +1172,18 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
         {
   iterations:
           if (info)
-            (void) CloneString(&info->image_info->iterations,SvPV(sval,PL_na));
+            (void) CloneString(&info->image_info->iterations,SvPV(sval,na));
           for ( ; image; image=image->next)
             image->iterations=SvIV(sval);
           return;
         }
       if (strEQcase(attribute,"interla"))
         {
-          sp=SvPOK(sval) ? LookupStr(InterlaceTypes,SvPV(sval,PL_na)) :
-            SvIV(sval);
+          sp=SvPOK(sval) ? LookupStr(InterlaceTypes,SvPV(sval,na)) : SvIV(sval);
           if (sp < 0)
             {
               MagickWarning(OptionWarning,"Invalid interlace value",
-                SvPV(sval,PL_na));
+                SvPV(sval,na));
               return;
             }
           if (info)
@@ -1220,7 +1215,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
           if (info)
             {
               FormatString(info->image_info->filename,"%.1024s:",
-                SvPV(sval,PL_na));
+                SvPV(sval,na));
               SetImageInfo(info->image_info,True);
               if (*info->image_info->magick == '\0')
                 MagickWarning(OptionWarning,"Unrecognized image format",
@@ -1234,8 +1229,8 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
       if (strEQcase(attribute,"mattec") || strEQcase(attribute,"matte_color"))
         {
           if (info)
-            (void) CloneString(&info->image_info->matte_color,SvPV(sval,PL_na));
-          (void) QueryColorDatabase(SvPV(sval,PL_na),&target_color);
+            (void) CloneString(&info->image_info->matte_color,SvPV(sval,na));
+          (void) QueryColorDatabase(SvPV(sval,na),&target_color);
           for ( ; image; image=image->next)
           {
             image->matte_color.red=XDownScale(target_color.red);
@@ -1246,12 +1241,11 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
         }
       if (strEQcase(attribute,"matte"))
         {
-          sp=SvPOK(sval) ? LookupStr(BooleanTypes,SvPV(sval,PL_na)) :
+          sp=SvPOK(sval) ? LookupStr(BooleanTypes,SvPV(sval,na)) :
             SvIV(sval);
           if (sp < 0)
             {
-              MagickWarning(OptionWarning,"Invalid matte type",
-                SvPV(sval,PL_na));
+              MagickWarning(OptionWarning,"Invalid matte type",SvPV(sval,na));
               return;
             }
           for ( ; image; image=image->next)
@@ -1260,12 +1254,11 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
         }
       if (strEQcase(attribute,"monoch"))
         {
-          sp=SvPOK(sval) ? LookupStr(BooleanTypes,SvPV(sval,PL_na)) :
-            SvIV(sval);
+          sp=SvPOK(sval) ? LookupStr(BooleanTypes,SvPV(sval,na)) : SvIV(sval);
           if (sp < 0)
             {
               MagickWarning(OptionWarning,"Invalid monochrome type",
-                SvPV(sval,PL_na));
+                SvPV(sval,na));
               return;
             }
           if (info)
@@ -1285,20 +1278,20 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
           char
             *p;
 
-          p=PostscriptGeometry(SvPV(sval,PL_na));
+          p=PostscriptGeometry(SvPV(sval,na));
           if (!p)
             return;
           if (info)
             (void) CloneString(&info->image_info->page,p);
           for ( ; image; image=image->next)
-            image->page=PostscriptGeometry(SvPV(sval,PL_na));
+            image->page=PostscriptGeometry(SvPV(sval,na));
           DestroyPostscriptGeometry(p);
           return;
         }
       if (strEQcase(attribute,"pen"))
         {
           if (info)
-            (void) CloneString(&info->image_info->pen,SvPV(sval,PL_na));
+            (void) CloneString(&info->image_info->pen,SvPV(sval,na));
           return;
         }
       if (strEQcase(attribute,"pixel"))
@@ -1323,9 +1316,9 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
               x%=image->columns;
             color=image->pixels+(y*image->columns+x);
             image->class=DirectClass;
-            if (strchr(SvPV(sval,PL_na),',') == 0)
+            if (strchr(SvPV(sval,na),',') == 0)
               {
-                QueryColorDatabase(SvPV(sval,PL_na),&target_color);
+                QueryColorDatabase(SvPV(sval,na),&target_color);
                 color->red=XDownScale(target_color.red);
                 color->green=XDownScale(target_color.green);
                 color->blue=XDownScale(target_color.blue);
@@ -1336,7 +1329,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
                 green=color->green;
                 blue=color->blue;
                 index=color->index;
-                (void) sscanf(SvPV(sval,PL_na),"%d,%d,%d,%d",&red,&green,&blue,
+                (void) sscanf(SvPV(sval,na),"%d,%d,%d,%d",&red,&green,&blue,
                   &index);
                 color->red=(Quantum)
                   ((red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red);
@@ -1358,12 +1351,10 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
         }
       if (strEQcase(attribute,"preview"))
         {
-          sp=SvPOK(sval) ? LookupStr(PreviewTypes,SvPV(sval,PL_na)) :
-            SvIV(sval);
+          sp=SvPOK(sval) ? LookupStr(PreviewTypes,SvPV(sval,na)) : SvIV(sval);
           if (sp < 0)
             {
-              MagickWarning(OptionWarning,"Invalid preview type",
-                SvPV(sval,PL_na));
+              MagickWarning(OptionWarning,"Invalid preview type",SvPV(sval,na));
               return;
             }
           if (info)
@@ -1389,18 +1380,18 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
       if (strEQcase(attribute,"red_p"))
         {
           for ( ; image; image=image->next)
-            (void) sscanf(SvPV(sval,PL_na),"%lf,%lf",
+            (void) sscanf(SvPV(sval,na),"%lf,%lf",
               &image->chromaticity.red_primary.x,
               &image->chromaticity.red_primary.y);
           return;
         }
       if (strEQcase(attribute,"render"))
         {
-          sp=SvPOK(sval) ? LookupStr(IntentTypes,SvPV(sval,PL_na)) : SvIV(sval);
+          sp=SvPOK(sval) ? LookupStr(IntentTypes,SvPV(sval,na)) : SvIV(sval);
           if (sp < 0)
             {
               MagickWarning(OptionWarning,"Invalid rendering intent",
-                SvPV(sval,PL_na));
+                SvPV(sval,na));
               return;
             }
          for ( ; image; image=image->next)
@@ -1436,13 +1427,13 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
         {
           if (info)
             {
-              if (!IsGeometry(SvPV(sval,PL_na)))
+              if (!IsGeometry(SvPV(sval,na)))
                 {
                   MagickWarning(OptionWarning,"Invalid geometry on size",
-                    SvPV(sval,PL_na));
+                    SvPV(sval,na));
                   return;
                 }
-              (void) CloneString(&info->image_info->size,SvPV(sval,PL_na));
+              (void) CloneString(&info->image_info->size,SvPV(sval,na));
             }
           return;
         }
@@ -1454,13 +1445,13 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
       if (strEQcase(attribute,"tile"))
         {
           if (info)
-            (void) CloneString(&info->image_info->tile,SvPV(sval,PL_na));
+            (void) CloneString(&info->image_info->tile,SvPV(sval,na));
           return;
         }
       if (strEQcase(attribute,"texture"))
         {
           if (info)
-            (void) CloneString(&info->image_info->texture,SvPV(sval,PL_na));
+            (void) CloneString(&info->image_info->texture,SvPV(sval,na));
           return;
         }
       break;
@@ -1470,12 +1461,12 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
     {
       if (strEQcase(attribute,"unit"))
         {
-          sp=SvPOK(sval) ? LookupStr(ResolutionTypes,SvPV(sval,PL_na)) :
+          sp=SvPOK(sval) ? LookupStr(ResolutionTypes,SvPV(sval,na)) :
             SvIV(sval);
           if (sp < 0)
             {
               MagickWarning(OptionWarning,"Invalid resolution unit",
-                SvPV(sval,PL_na));
+                SvPV(sval,na));
               return;
             }
           if (info)
@@ -1491,12 +1482,11 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
     {
       if (strEQcase(attribute,"verbose"))
         {
-          sp=SvPOK(sval) ? LookupStr(BooleanTypes,SvPV(sval,PL_na)) :
-            SvIV(sval);
+          sp=SvPOK(sval) ? LookupStr(BooleanTypes,SvPV(sval,na)) : SvIV(sval);
           if (sp < 0)
             {
               MagickWarning(OptionWarning,"Invalid verbose type",
-                SvPV(sval,PL_na));
+                SvPV(sval,na));
               return;
             }
           if (info)
@@ -1506,7 +1496,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
       if (strEQcase(attribute,"view"))
         {
           if (info)
-            (void) CloneString(&info->image_info->view,SvPV(sval,PL_na));
+            (void) CloneString(&info->image_info->view,SvPV(sval,na));
           return;
         }
       break;
@@ -1517,7 +1507,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
       if (strEQcase(attribute,"white_p"))
         {
           for ( ; image; image=image->next)
-            (void) sscanf(SvPV(sval,PL_na),"%lf,%lf",
+            (void) sscanf(SvPV(sval,na),"%lf,%lf",
               &image->chromaticity.white_point.x,
               &image->chromaticity.white_point.y);
           return;
@@ -1792,7 +1782,7 @@ Animate(ref,...)
     else
       if (items > 2)
         for (i=2; i < items; i+=2)
-          SetAttribute(package_info,NULL,SvPV(ST(i-1),PL_na),ST(i));
+          SetAttribute(package_info,NULL,SvPV(ST(i-1),na),ST(i));
     AnimateImages(package_info->image_info,image);
 
   MethodError:
@@ -1895,7 +1885,7 @@ Append(ref,...)
     stack=True;
     for (i=2; i < items; i+=2)
     {
-      attribute=(char *) SvPV(ST(i-1),PL_na);
+      attribute=(char *) SvPV(ST(i-1),na);
       switch (*attribute)
       {
         case 'S':
@@ -1903,11 +1893,11 @@ Append(ref,...)
         {
           if (strEQcase(attribute,"stack"))
             {
-              stack=LookupStr(BooleanTypes,SvPV(ST(i),PL_na));
+              stack=LookupStr(BooleanTypes,SvPV(ST(i),na));
               if (stack < 0)
                 {
                   MagickWarning(OptionWarning,"Invalid stack type",
-                    SvPV(ST(i),PL_na));
+                    SvPV(ST(i),na));
                   return;
                 }
               continue;
@@ -2129,7 +2119,7 @@ BlobToImage(ref,...)
     for (n=0, i=0; i < ac; i++)
     {
       list[n]=(char *) (SvPV(ST(i+1),length[n]));
-      if ((items >= 3) && strEQcase((char *) SvPV(ST(i+1),PL_na),"blob"))
+      if ((items >= 3) && strEQcase((char *) SvPV(ST(i+1),na),"blob"))
         {
           list[n]=(char *) (SvPV(ST(i+2),length[n]));
           continue;
@@ -2415,7 +2405,7 @@ Display(ref,...)
     else
       if (items > 2)
         for (i=2; i < items; i+=2)
-          SetAttribute(package_info,NULL,SvPV(ST(i-1),PL_na),ST(i));
+          SetAttribute(package_info,NULL,SvPV(ST(i-1),na),ST(i));
     DisplayImages(package_info->image_info,image);
 
   MethodError:
@@ -2490,7 +2480,7 @@ Get(ref,...)
     EXTEND(sp,items-1);
     for (i=1; i < items; i++)
     {
-      attribute=(char *) SvPV(ST(i),PL_na);
+      attribute=(char *) SvPV(ST(i),na);
       s=NULL;
       switch (*attribute)
       {
@@ -3241,7 +3231,7 @@ Get(ref,...)
         case 'z':
           break;
       }
-      PUSHs(s ? sv_2mortal(s) : &PL_sv_undef);
+      PUSHs(s ? sv_2mortal(s) : &sv_undef);
     }
   }
 
@@ -3317,7 +3307,7 @@ ImageToBlob(ref,...)
       }
     package_info=ClonePackageInfo(info);
     for (i=2; i < items; i+=2)
-      SetAttribute(package_info,NULL,SvPV(ST(i-1),PL_na),ST(i));
+      SetAttribute(package_info,NULL,SvPV(ST(i-1),na),ST(i));
     (void) strcpy(filename,package_info->image_info->filename);
     scene=0;
     for (next=image; next; next=next->next)
@@ -3582,14 +3572,14 @@ Mogrify(ref,...)
         /*
           Called as Mogrify("Method",...)
         */
-        attribute=(char *) SvPV(ST(1),PL_na);
+        attribute=(char *) SvPV(ST(1),na);
         if (ix)
           {
             flags=ParseGeometry(attribute,&region_info.x,&region_info.y,
               &region_info.width,&region_info.height);
             if (!(flags & HeightValue))
               region_info.height=region_info.width;
-            attribute=(char *) SvPV(ST(2),PL_na);
+            attribute=(char *) SvPV(ST(2),na);
             base++;
           }
         for (rp=Methods; ; rp++)
@@ -3634,7 +3624,7 @@ Mogrify(ref,...)
       if (i == items)
         sv=ST(i-1);
       else
-        for (sv=ST(i), attribute=(char *) SvPV(ST(i-1),PL_na); ; qq++)
+        for (sv=ST(i), attribute=(char *) SvPV(ST(i-1),na); ; qq++)
         {
           if ((qq >= EndOf(rp->arguments)) || (qq->method == NULL))
             {
@@ -3653,7 +3643,7 @@ Mogrify(ref,...)
         al->int_reference=SvIV(sv);
       else
         if (pp->type == StringReference)
-          al->string_reference=(char *) SvPV(sv,PL_na);
+          al->string_reference=(char *) SvPV(sv,na);
         else
           if (pp->type == DoubleReference)
             al->double_reference=SvNV(sv);
@@ -3677,7 +3667,7 @@ Mogrify(ref,...)
                   /*
                     Is a string; look up name.
                   */
-                  al->int_reference=LookupStr(pp->type,SvPV(sv,PL_na));
+                  al->int_reference=LookupStr(pp->type,SvPV(sv,na));
                   if ((al->int_reference < 0) &&
                       ((al->int_reference=SvIV(sv)) <= 0))
                     {
@@ -4799,7 +4789,7 @@ Montage(ref,...)
     concatenate=0;
     for (i=2; i < items; i+=2)
     {
-      attribute=(char *) SvPV(ST(i-1),PL_na);
+      attribute=(char *) SvPV(ST(i-1),na);
       switch (*attribute)
       {
         case 'B':
@@ -4808,12 +4798,12 @@ Montage(ref,...)
           if (strEQcase(attribute,"background"))
             {
               (void) CloneString(&montage_info.background_color,SvPV(ST(i),
-                PL_na));
+                na));
               continue;
             }
           if (strEQcase(attribute,"bordercolor"))
             {
-              (void) CloneString(&montage_info.border_color,SvPV(ST(i),PL_na));
+              (void) CloneString(&montage_info.border_color,SvPV(ST(i),na));
               continue;
             }
           if (strEQcase(attribute,"borderwidth"))
@@ -4828,11 +4818,11 @@ Montage(ref,...)
           if (strEQcase(attribute,"compos"))
             {
               sp=!SvPOK(ST(i)) ? SvIV(ST(i)) :
-                LookupStr(CompositeTypes,SvPV(ST(i),PL_na));
+                LookupStr(CompositeTypes,SvPV(ST(i),na));
               if (sp < 0)
                 {
                   MagickWarning(OptionWarning,"Invalid composite type",
-                    SvPV(ST(i),PL_na));
+                    SvPV(ST(i),na));
                   continue;
                 }
               montage_info.compose=(CompositeOperator) sp;
@@ -4848,7 +4838,7 @@ Montage(ref,...)
               char
                 *p;
 
-              p=SvPV(ST(i),PL_na);
+              p=SvPV(ST(i),na);
               if (!IsGeometry(p))
                 {
                   MagickWarning(OptionWarning,"Invalid geometry on frame",p);
@@ -4861,20 +4851,20 @@ Montage(ref,...)
             }
           if (strEQcase(attribute,"filen"))
             {
-              (void) strncpy(montage_info.filename,SvPV(ST(i),PL_na),
+              (void) strncpy(montage_info.filename,SvPV(ST(i),na),
                 MaxTextExtent);
               continue;
             }
           if (strEQcase(attribute,"font"))
             {
-              (void) CloneString(&montage_info.font,SvPV(ST(i),PL_na));
+              (void) CloneString(&montage_info.font,SvPV(ST(i),na));
               continue;
             }
           if (strEQcase(attribute,"fore"))  /* anachronism */
             {
               if (info)
-                (void) CloneString(&info->image_info->pen,SvPV(ST(i),PL_na));
-              (void) CloneString(&montage_info.pen,SvPV(ST(i),PL_na));
+                (void) CloneString(&info->image_info->pen,SvPV(ST(i),na));
+              (void) CloneString(&montage_info.pen,SvPV(ST(i),na));
               continue;
              }
           break;
@@ -4887,7 +4877,7 @@ Montage(ref,...)
               char
                 *p;
 
-              p=SvPV(ST(i),PL_na);
+              p=SvPV(ST(i),na);
               if (!IsGeometry(p))
                 {
                   MagickWarning(OptionWarning,"Invalid geometry on geometry",p);
@@ -4904,11 +4894,11 @@ Montage(ref,...)
                in;
 
              in=!SvPOK(ST(i)) ? SvIV(ST(i)) :
-               LookupStr(GravityTypes,SvPV(ST(i),PL_na));
+               LookupStr(GravityTypes,SvPV(ST(i),na));
              if (in < 0)
                {
                  MagickWarning(OptionWarning,"Invalid gravity type",
-                   SvPV(ST(i),PL_na));
+                   SvPV(ST(i),na));
                  return;
                }
              montage_info.gravity=in;
@@ -4922,7 +4912,7 @@ Montage(ref,...)
           if (strEQcase(attribute,"label"))
             {
               for (next=image; next; next=next->next)
-                LabelImage(next,SvPV(ST(i),PL_na));
+                LabelImage(next,SvPV(ST(i),na));
               continue;
             }
           break;
@@ -4932,7 +4922,7 @@ Montage(ref,...)
         {
           if (strEQcase(attribute,"mattec"))
             {
-              (void) CloneString(&montage_info.matte_color,SvPV(ST(i),PL_na));
+              (void) CloneString(&montage_info.matte_color,SvPV(ST(i),na));
               continue;
             }
           if (strEQcase(attribute,"mode"))
@@ -4941,13 +4931,13 @@ Montage(ref,...)
                 in;
 
               in=!SvPOK(ST(i)) ? SvIV(ST(i)) :
-                LookupStr(ModeTypes,SvPV(ST(i),PL_na));
+                LookupStr(ModeTypes,SvPV(ST(i),na));
               switch (in)
               {
                 default:
                 {
                   MagickWarning(OptionWarning,"Invalid mode value",
-                    SvPV(ST(i),PL_na));
+                    SvPV(ST(i),na));
                   break;
                 }
                 case FrameMode:
@@ -4982,8 +4972,8 @@ Montage(ref,...)
           if (strEQcase(attribute,"pen"))
             {
               if (info)
-                (void) CloneString(&info->image_info->pen,SvPV(ST(i),PL_na));
-              (void) CloneString(&montage_info.pen,SvPV(ST(i),PL_na));
+                (void) CloneString(&info->image_info->pen,SvPV(ST(i),na));
+              (void) CloneString(&montage_info.pen,SvPV(ST(i),na));
               continue;
              }
           if (strEQcase(attribute,"point"))
@@ -4999,11 +4989,11 @@ Montage(ref,...)
           if (strEQcase(attribute,"shadow"))
             {
               sp=!SvPOK(ST(i)) ? SvIV(ST(i)) :
-                LookupStr(BooleanTypes,SvPV(ST(i),PL_na));
+                LookupStr(BooleanTypes,SvPV(ST(i),na));
               if (sp < 0)
                 {
                   MagickWarning(OptionWarning,"Invalid shadow type",
-                    SvPV(ST(i),PL_na));
+                    SvPV(ST(i),na));
                   continue;
                 }
              montage_info.shadow=sp;
@@ -5016,12 +5006,12 @@ Montage(ref,...)
         {
           if (strEQcase(attribute,"texture"))
             {
-              (void) CloneString(&montage_info.texture,SvPV(ST(i),PL_na));
+              (void) CloneString(&montage_info.texture,SvPV(ST(i),na));
               continue;
             }
           if (strEQcase(attribute,"tile"))
             {
-              char *p=SvPV(ST(i),PL_na);
+              char *p=SvPV(ST(i),na);
               if (!IsGeometry(p))
                 {
                   MagickWarning(OptionWarning,"Invalid geometry on tile",p);
@@ -5034,12 +5024,12 @@ Montage(ref,...)
             }
           if (strEQcase(attribute,"title"))
             {
-              (void) CloneString(&montage_info.title,SvPV(ST(i),PL_na));
+              (void) CloneString(&montage_info.title,SvPV(ST(i),na));
               continue;
             }
           if (strEQcase(attribute,"trans"))
             {
-              transparent_color=SvPV(ST(i),PL_na);
+              transparent_color=SvPV(ST(i),na);
               continue;
             }
           break;
@@ -5169,7 +5159,7 @@ Morph(ref,...)
     number_frames=1;
     for (i=2; i < items; i+=2)
     {
-      attribute=(char *) SvPV(ST(i-1),PL_na);
+      attribute=(char *) SvPV(ST(i-1),na);
       switch (*attribute)
       {
         case 'F':
@@ -5263,7 +5253,7 @@ Ping(ref,...)
     info=GetPackageInfo((void *) av,(struct PackageInfo *) NULL);
     for (i=1; i < items; i++)
     {
-      (void) strcpy(info->image_info->filename,(char *) SvPV(ST(i),PL_na));
+      (void) strcpy(info->image_info->filename,(char *) SvPV(ST(i),na));
       if ((items >= 3) && strEQcase(info->image_info->filename,"filen"))
         continue;
       if ((items >= 3) && strEQcase(info->image_info->filename,"file"))
@@ -5273,7 +5263,7 @@ Ping(ref,...)
         }
       image=PingImage(info->image_info);
       if (image == (Image *) NULL)
-        s=(&PL_sv_undef);
+        s=(&sv_undef);
       else
         {
           FormatString(message,"%u,%u,%u,%s",image->columns,image->rows,
@@ -5323,9 +5313,9 @@ QueryColor(ref,...)
     error_list=newSVpv("",0);
     for (i=1; i < items; i++)
     {
-      attribute=(char *) SvPV(ST(i),PL_na);
+      attribute=(char *) SvPV(ST(i),na);
       if (!QueryColorDatabase(attribute,&target_color))
-        s=(&PL_sv_undef);
+        s=(&sv_undef);
       else
         {
           FormatString(message,"%u,%u,%u",XDownScale(target_color.red),
@@ -5421,7 +5411,7 @@ Read(ref,...)
     else
       for (n=0, i=0; i < ac; i++)
       {
-        list[n]=(char *) SvPV(ST(i+1),PL_na);
+        list[n]=(char *) SvPV(ST(i+1),na);
         if ((items >= 3) && strEQcase(list[n],"filen"))
           continue;
         if ((items >= 3) && strEQcase(list[n],"file"))
@@ -5519,7 +5509,7 @@ Remote(ref,...)
 
       display=XOpenDisplay(info->image_info->server_name);
       for (i=1; i < items; i++)
-        XRemoteCommand(display,(char *) NULL,(char *) SvPV(ST(i),PL_na));
+        XRemoteCommand(display,(char *) NULL,(char *) SvPV(ST(i),na));
     }
 #endif
     SvREFCNT_dec(error_list);    /* throw away all errors */
@@ -5570,7 +5560,7 @@ Set(ref,...)
     reference=SvRV(ST(0));
     image=SetupList(reference,&info,(SV ***) NULL);
     for (i=2; i < items; i+=2)
-      SetAttribute(info,image,SvPV(ST(i-1),PL_na),ST(i));
+      SetAttribute(info,image,SvPV(ST(i-1),na),ST(i));
 
   MethodError:
     sv_setiv(error_list,(IV) (SvCUR(error_list) != 0));
@@ -5651,7 +5641,7 @@ Write(ref,...)
     else
       if (items > 2)
         for (i=2; i < items; i+=2)
-          SetAttribute(package_info,NULL,SvPV(ST(i-1),PL_na),ST(i));
+          SetAttribute(package_info,NULL,SvPV(ST(i-1),na),ST(i));
     (void) strcpy(filename,package_info->image_info->filename);
     scene=0;
     for (next=image; next; next=next->next)

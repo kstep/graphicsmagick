@@ -417,7 +417,7 @@ Export char *ImageToBlob(const ImageInfo *image_info,Image *image,
         Native blob support for this image format.
       */
       *image->filename='\0';
-      local_info->blob.extent=Max(*length,image->blob.quantum);
+      local_info->blob.extent=Max((int) *length,image->blob.quantum);
       local_info->blob.data=(char *) AllocateMemory(local_info->blob.extent);
       if (local_info->blob.data == (char *) NULL)
         {

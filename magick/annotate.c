@@ -152,23 +152,7 @@ Export void AnnotateImage(Image *image,const AnnotateInfo *annotate_info)
   x=0;
   y=0;
   if (local_info->geometry != (char *) NULL)
-    {
-      int
-        flags;
-
-      /*
-        User specified annotation geometry.
-      */
-      flags=ParseGeometry(local_info->geometry,&x,&y,&width,&height);
-      if ((flags & XNegative) != 0)
-        x+=image->columns;
-      if ((flags & WidthValue) == 0)
-        width-=x;
-      if ((flags & YNegative) != 0)
-        y+=image->rows;
-      if ((flags & HeightValue) == 0)
-        height-=y;
-    }
+    (void) ParseGeometry(local_info->geometry,&x,&y,&width,&height);
   /*
     Annotate image.
   */
@@ -215,20 +199,20 @@ Export void AnnotateImage(Image *image,const AnnotateInfo *annotate_info)
       }
       case NorthGravity:
       {
-        local_info->bounds.x=x+(width >> 1)-(annotate_image->columns >> 1);
-        local_info->bounds.y=y+i*local_info->bounds.height;
+        local_info->bounds.x=(width >> 1)-(annotate_image->columns >> 1);
+        local_info->bounds.y=i*local_info->bounds.height+y;
         break;
       }
       case NorthEastGravity:
       {
-        local_info->bounds.x=x+width-annotate_image->columns;
-        local_info->bounds.y=y+i*local_info->bounds.height;
+        local_info->bounds.x=width-annotate_image->columns-x;
+        local_info->bounds.y=i*local_info->bounds.height+y;
         break;
       }
       case WestGravity:
       {
         local_info->bounds.x=x;
-        local_info->bounds.y=y+(height >> 1)-
+        local_info->bounds.y=(height >> 1)-
           (number_lines*local_info->bounds.height >> 1)+
           i*local_info->bounds.height;
         break;
@@ -238,16 +222,16 @@ Export void AnnotateImage(Image *image,const AnnotateInfo *annotate_info)
       case CenterGravity:
       default:
       {
-        local_info->bounds.x=x+(width >> 1)-(annotate_image->columns >> 1);
-        local_info->bounds.y=y+(height >> 1)-
+        local_info->bounds.x=(width >> 1)-(annotate_image->columns >> 1);
+        local_info->bounds.y=(height >> 1)-
           (number_lines*local_info->bounds.height >> 1)+
           i*local_info->bounds.height;
         break;
       }
       case EastGravity:
       {
-        local_info->bounds.x=x+width-annotate_image->columns;
-        local_info->bounds.y=y+(height >> 1)-
+        local_info->bounds.x=width-annotate_image->columns-x;
+        local_info->bounds.y=(height >> 1)-
           (number_lines*local_info->bounds.height >> 1)+
           i*local_info->bounds.height;
         break;
@@ -255,19 +239,19 @@ Export void AnnotateImage(Image *image,const AnnotateInfo *annotate_info)
       case SouthWestGravity:
       {
         local_info->bounds.x=x;
-        local_info->bounds.y=y+height-(i+1)*local_info->bounds.height;
+        local_info->bounds.y=height-(i+1)*local_info->bounds.height-y;
         break;
       }
       case SouthGravity:
       {
-        local_info->bounds.x=x+(width >> 1)-(annotate_image->columns >> 1);
-        local_info->bounds.y=y+height-(i+1)*local_info->bounds.height;
+        local_info->bounds.x=(width >> 1)-(annotate_image->columns >> 1);
+        local_info->bounds.y=height-(i+1)*local_info->bounds.height-y;
         break;
       }
       case SouthEastGravity:
       {
-        local_info->bounds.x=x+width-annotate_image->columns;
-        local_info->bounds.y=y+height-(i+1)*local_info->bounds.height;
+        local_info->bounds.x=width-annotate_image->columns-x;
+        local_info->bounds.y=height-(i+1)*local_info->bounds.height-y;
         break;
       }
     }

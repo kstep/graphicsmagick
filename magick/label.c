@@ -768,10 +768,17 @@ Export Image *ReadLABELImage(const ImageInfo *image_info)
   if (file == (FILE *) NULL)
     ReaderExit(FileOpenWarning,"Unable to open file",image);
   (void) fprintf(file,"%%!PS-Adobe-3.0\n");
-  (void) fprintf(file,"/Helvetica findfont %u scalefont setfont\n",
-    local_info->pointsize);
-  (void) fprintf(file,"/%.1024s findfont %u scalefont setfont\n",
-    local_info->font,local_info->pointsize);
+  (void) fprintf(file,"/ReencodeFont\n");
+  (void) fprintf(file,"{\n");
+  (void) fprintf(file,"  findfont dup length\n");
+  (void) fprintf(file,
+    "  dict begin { 1 index /FID ne {def} {pop pop} ifelse } forall\n");
+  (void) fprintf(file,
+    "  /Encoding ISOLatin1Encoding def currentdict end definefont pop\n");
+  (void) fprintf(file,"} bind def\n");
+  (void) fprintf(file,
+    "/%.1024s-ISO dup /%.1024s ReencodeFont findfont %u scalefont setfont\n",
+    local_info->font,local_info->font,local_info->pointsize);
   (void) fprintf(file,"0.0 0.0 0.0 setrgbcolor\n");
   (void) fprintf(file,"0 0 %u %u rectfill\n",
     local_info->pointsize*Extent(text),local_info->pointsize << 1);

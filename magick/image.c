@@ -4600,7 +4600,9 @@ Export int ParseImageGeometry(const char *geometry,int *x,int *y,
       */
       x_scale=(*width);
       y_scale=(*height);
-      count=sscanf(geometry,"%lfx%lf",&x_scale,&y_scale);
+      count=sscanf(geometry,"%lf%%x%lf",&x_scale,&y_scale);
+      if (count != 2)
+        count=sscanf(geometry,"%lfx%lf",&x_scale,&y_scale);
       if (count == 1)
         y_scale=x_scale;
       *width=Max((unsigned int) ((x_scale*former_width)/100.0),1);
@@ -5380,8 +5382,8 @@ Export void RGBTransformImage(Image *image,const ColorspaceType colorspace)
         Initialize YCbCr tables:
 
           Y =  0.299000*R+0.587000*G+0.114000*B
-          Cb= -0.172586*R-0.338828*G+0.511414*B
-          Cr=  0.511414*R-0.428246*G-0.083168*B
+          Cb= -0.168736*R-0.331264*G+0.500000*B
+          Cr=  0.500000*R-0.418688*G-0.083168*B
 
         Cb and Cr, normally -0.5 through 0.5, are normalized to the range 0
         through MaxRGB.
@@ -5393,12 +5395,12 @@ Export void RGBTransformImage(Image *image,const ColorspaceType colorspace)
         x[i+X]=0.299*i;
         y[i+X]=0.587*i;
         z[i+X]=0.114*i;
-        x[i+Y]=(-0.172586)*i;
-        y[i+Y]=(-0.338828)*i;
-        z[i+Y]=0.511414*i;
-        x[i+Z]=0.511414*i;
-        y[i+Z]=(-0.428246)*i;
-        z[i+Z]=(-0.08316)*i;
+        x[i+Y]=(-0.16873)*i;
+        y[i+Y]=(-0.331264)*i;
+        z[i+Y]=0.500000*i;
+        x[i+Z]=0.500000*i;
+        y[i+Z]=(-0.418688)*i;
+        z[i+Z]=(-0.081312)*i;
       }
       break;
     }
@@ -5676,6 +5678,9 @@ Export void SetImageInfo(ImageInfo *image_info,const unsigned int rectify)
     *p,
     *q;
 
+  register MagickInfo
+    *r;
+
   unsigned int
     status;
 
@@ -5863,109 +5868,27 @@ Export void SetImageInfo(ImageInfo *image_info,const unsigned int rectify)
     }
   DestroyImage(image);
   magick[MaxTextExtent-1]='\0';
-  if (strncmp(magick,"BM",2) == 0)
-    (void) strcpy(image_info->magick,"BMP");
-  if (strncmp(magick,"IC",2) == 0)
-    (void) strcpy(image_info->magick,"BMP");
-  if (strncmp(magick,"PI",2) == 0)
-    (void) strcpy(image_info->magick,"BMP");
-  if (strncmp(magick,"CI",2) == 0)
-    (void) strcpy(image_info->magick,"BMP");
-  if (strncmp(magick,"CP",2) == 0)
-    (void) strcpy(image_info->magick,"BMP");
   if (strncmp(magick,"BEGMF",3) == 0)
     (void) strcpy(image_info->magick,"CGM");
-  if (strncmp(magick+128,"DICM",4) == 0)
-    (void) strcpy(image_info->magick,"DCM");
-  if (strncmp(magick,"\305\320\323\306",4) == 0)
-    (void) strcpy(image_info->magick,"EPT");
-  if (strncmp(magick,"IT0",3) == 0)
-    (void) strcpy(image_info->magick,"FITS");
-  if (strncmp(magick,"\261\150\336\72",4) == 0)
-    (void) strcpy(image_info->magick,"DCX");
   if (strncmp(magick,"digraph",7) == 0)
     (void) strcpy(image_info->magick,"DOT");
-  if (strncmp(magick,"DFAX",4) == 0)
-    (void) strcpy(image_info->magick,"FAX");
-  if (strncmp(magick,"SIMPLE",6) == 0)
-    (void) strcpy(image_info->magick,"FITS");
   if (strncmp(magick,"#FIG",4) == 0)
     (void) strcpy(image_info->magick,"FIG");
-  if (strncmp(magick,"GIF8",4) == 0)
-    (void) strcpy(image_info->magick,"GIF");
   if (strncmp(magick,"#!/usr/local/bin/gnuplot",24) == 0)
     (void) strcpy(image_info->magick,"GPLT");
-  if (strncmp(magick,"\016\003\023\001",4) == 0)
-    (void) strcpy(image_info->magick,"HDF");
   if (strncmp(magick,"IN;",3) == 0)
     (void) strcpy(image_info->magick,"HPGL");
-  if ((strncmp(magick,"<HTML",5) == 0) ||
-      (strncmp(magick,"<html",5) == 0))
-    (void) strcpy(image_info->magick,"HTML");
   if (strncmp(magick+8,"ILBM",2) == 0)
     (void) strcpy(image_info->magick,"ILBM");
-  if (strncmp(magick,"\377\330\377",3) == 0)
-    (void) strcpy(image_info->magick,"JPEG");
-  if (strncmp(magick,"id=ImageMagick",14) == 0)
-    (void) strcpy(image_info->magick,"MIFF");
-  if (strncmp(magick,"\212MNG\r\n\032\n",8) == 0)
-    (void) strcpy(image_info->magick,"MNG");
   if ((magick[0] == 0x00) && (magick[1] == 0x00))
-    if ((magick[2] == 0x01) && (magick[3] == (char) 0xb3))
+    if ((magick[2] == 0x01) && (magick[3] == 0xb3))
       (void) strcpy(image_info->magick,"M2V");
-  if (strncmp(magick,"PCD_",4) == 0)
-    (void) strcpy(image_info->magick,"PCD");
-  if (strncmp(magick,"\033E\033",3) == 0)
-    (void) strcpy(image_info->magick,"PCL");
-  if (strncmp(magick,"\12\2",2) == 0)
-    (void) strcpy(image_info->magick,"PCX");
-  if (strncmp(magick,"\12\5",2) == 0)
-    (void) strcpy(image_info->magick,"PCX");
-  if (strncmp(magick,"%PDF-",5) == 0)
-    (void) strcpy(image_info->magick,"PDF");
-  if ((*magick == 'P') && isdigit((int) (magick[1])))
-    (void) strcpy(image_info->magick,"PNM");
-  if (strncmp(magick,"\211PNG\r\n\032\n",8) == 0)
-    (void) strcpy(image_info->magick,"PNG");
-  if (strncmp(magick,"\004%!",3) == 0)
-    (void) strcpy(image_info->magick,"PS");
-  if (strncmp(magick,"%!",2) == 0)
-    (void) strcpy(image_info->magick,"PS");
-  if (strncmp(magick,"8BPS",4) == 0)
-    (void) strcpy(image_info->magick,"PSD");
-  if (strncmp(magick,"SFW95",5) == 0)
-    (void) strcpy(image_info->magick,"PWP");
   if (strncmp(magick,"#?RADIANCE",10) == 0)
     (void) strcpy(image_info->magick,"RAD");
-  if (strncmp(magick,"\122\314",2) == 0)
-    (void) strcpy(image_info->magick,"RLE");
-  if (strncmp(magick+80,"CT",2) == 0)
-    (void) strcpy(image_info->magick,"SCT");
-  if (strncmp(magick,"SFW94",5) == 0)
-    (void) strcpy(image_info->magick,"SFW");
-  if (strncmp(magick,"\001\332",2) == 0)
-    (void) strcpy(image_info->magick,"SGI");
-  if (strncmp(magick,"\131\246\152\225",4) == 0)
-    (void) strcpy(image_info->magick,"SUN");
-  if ((magick[0] == 0x4D) && (magick[1] == 0x4D))
-    if ((magick[2] == 0x00) && (magick[3] == (char) 0x2A))
-      (void) strcpy(image_info->magick,"TIFF");
-  if (strncmp(magick,"\111\111\052\000",4) == 0)
-    (void) strcpy(image_info->magick,"TIFF");
-  if ((strncmp(magick,"LBLSIZE",7) == 0) || (strncmp(magick,"NJPL1I",6) == 0))
-    (void) strcpy(image_info->magick,"VICAR");
-  if (strncmp(magick,"\253\1",2) == 0)
-    (void) strcpy(image_info->magick,"VIFF");
-  p=strchr(magick,'#');
-  if (p != (char *) NULL)
-    if (strncmp(p,"#define",7) == 0)
-      (void) strcpy(image_info->magick,"XBM");
-  if (strncmp(magick,"/* XPM */",9) == 0)
-    (void) strcpy(image_info->magick,"XPM");
-  if ((magick[1] == 0x00) && (magick[2] == 0x00))
-    if ((magick[5] == 0x00) && (magick[6] == 0x00))
-      if ((magick[4] == 0x07) || (magick[7] == 0x07))
-        (void) strcpy(image_info->magick,"XWD");
+  for (r=GetMagickInfo((char *) NULL); r != (MagickInfo *) NULL; r=r->next)
+    if (r->magick)
+      if (r->magick((unsigned char *) magick,MaxTextExtent))
+        (void) strcpy(image_info->magick,r->tag);
 }
 
 /*
@@ -6608,9 +6531,9 @@ Export void TransformRGBImage(Image *image,const ColorspaceType colorspace)
       /*
         Initialize YCbCr tables:
 
-          R = Y            +1.370707*Cr
-          G = Y-0.336453*Cb-0.698195*Cr
-          B = Y+1.732445*Cb
+          R = Y            +1.402000*Cr
+          G = Y-0.344136*Cb-0.714136*Cr
+          B = Y+1.772000*Cb
 
         Cb and Cr, normally -0.5 through 0.5, must be normalized to the range 0
         through MaxRGB.
@@ -6619,12 +6542,12 @@ Export void TransformRGBImage(Image *image,const ColorspaceType colorspace)
       {
         red[i+R]=i;
         green[i+R]=0.0;
-        blue[i+R]=0.6853535*(2.0*i-MaxRGB);
+        blue[i+R]=(1.402000*0.5)*(2.0*i-MaxRGB);
         red[i+G]=i;
-        green[i+G]=(-0.1682265)*(2.0*i-MaxRGB);
-        blue[i+G]=(-0.3490975)*(2.0*i-MaxRGB);
+        green[i+G]=(-0.344136*0.5)*(2.0*i-MaxRGB);
+        blue[i+G]=(-0.714136*0.5)*(2.0*i-MaxRGB);
         red[i+B]=i;
-        green[i+B]=0.8662225*(2.0*i-MaxRGB);
+        green[i+B]=(1.772000*0.5)*(2.0*i-MaxRGB);
         blue[i+B]=0.0;
       }
       break;

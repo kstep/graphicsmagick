@@ -17,6 +17,7 @@
 
 		<LI><A HREF="#GetMagickInfo">GetMagickInfo</A>
 		<LI><A HREF="#ListMagickInfo">ListMagickInfo</A>
+		<LI><A HREF="#RegisterMagickInfo">RegisterMagickInfo</A>
 	</UL>
 
 </UL>
@@ -45,7 +46,8 @@ magick_info=<STRONG>GetMagickInfo</STRONG>(tag)
 <H2><A NAME="GetMagickInfo">GetMagickInfo</A></H2>
 <P>
 Method GetMagickInfo returns a pointer MagickInfo structure that matches
-the specified tag.
+the specified tag. If tag is NULL, the head of the image format list is
+returned.
 
 <P>
 The format of the GetMagickInfo routine is:
@@ -85,6 +87,65 @@ A description of each parameter follows.
 <P>
 <PRE>  o:  An pointer to a FILE.
 </PRE>
+<P>
+<HR>
+<H2><A NAME="RegisterMagickInfo">RegisterMagickInfo</A></H2>
+<P>
+Method RegisterMagickInfo adds attributes for a particular image format to
+the list of supported formats. The attributes include the image format tag,
+a method to read and/or write the format, whether the format supports the
+saving of more than one frame to the same file or blob, whether the format
+supports native in-memory I/O, and a brief description of the format.
+
+<P>
+The format of the RegisterMagickInfo routine is:
+
+<P>
+<PRE>    magick_info=RegisterMagickInfo(tag,decoder,encoder,magick,adjoin,
+</PRE>
+<P>
+<PRE>      blob_support,description))
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>magick_info:</STRONG><DD>
+<P>
+Method RegisterMagickInfo returns a pointer MagickInfo structure that
+contains the specified tag info.
+
+<DT><STRONG>tag:</STRONG><DD>
+<P>
+a character string that represents the image format we are looking for.
+
+<DT><STRONG>decoder:</STRONG><DD>
+<P>
+a method that is used to read the image format.
+
+<DT><STRONG>encoder:</STRONG><DD>
+<P>
+a method that is used to write the image format.
+
+<DT><STRONG>magick:</STRONG><DD>
+<P>
+this method returns True if the image format signature matches a subset of
+the first few bytes of the file or blob.
+
+<DT><STRONG>adjoin:</STRONG><DD>
+<P>
+a value greater than 0 means the image format can save more than one frame
+to the file or blob.
+
+<DT><STRONG>blob_support:</STRONG><DD>
+<P>
+a value greater than 0 means the format supports native in-memory I/O.
+
+<DT><STRONG>description:</STRONG><DD>
+<P>
+a character string that describes the image format.
+
+</DL></DL>
 </BODY>
 
 </HTML>

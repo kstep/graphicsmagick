@@ -523,9 +523,6 @@ Export unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
   unsigned long
     lsb_first;
 
-  unsigned short
-    value;
-
   XWDFileHeader
     xwd_header;
 

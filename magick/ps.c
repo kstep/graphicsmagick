@@ -568,7 +568,7 @@ Export unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
       "  {",
       "    currentfile buffer readline pop",
       "    token pop /depth exch def pop",
-      "    /grays columns depth depth 7 add 8 idiv string def",
+      "    /grays columns 7 add depth sub depth mul 8 idiv string def",
       "    columns rows depth",
       "    [",
       "      columns 0 0",
@@ -1090,6 +1090,7 @@ Export unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                 for (j=0; j <= ((int) p->length); j++)
                 {
                   (void) sprintf(buffer,"%02lx",DownScale(p->red));
+                  (void) WriteBlob(image,strlen(buffer),buffer);
                   x++;
                   if (x == 36)
                     {

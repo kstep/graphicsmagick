@@ -25,6 +25,7 @@
 		<LI><A HREF="#OpenBlob">OpenBlob</A>
 		<LI><A HREF="#ReadBlob">ReadBlob</A>
 		<LI><A HREF="#SeekBlob">SeekBlob</A>
+		<LI><A HREF="#SetBlobQuantum">SetBlobQuantum</A>
 		<LI><A HREF="#TellBlob">TellBlob</A>
 		<LI><A HREF="#WriteBlob">WriteBlob</A>
 	</UL>
@@ -70,6 +71,9 @@ count=<STRONG>ReadBlob</STRONG>(image,number_bytes,data);
 
 <P>
 status=<STRONG>SeekBlob</STRONG>(image,offset,whence)
+
+<P>
+status=<STRONG>SetBlobQuantum</STRONG>(blob_info,quantum)
 
 <P>
 status=<STRONG>TellBlob</STRONG>(image)
@@ -398,6 +402,33 @@ beginning of the blob as follows:
 <P>
 <PRE>      SEEK_END  Set position to EOF plus offset.
 </PRE>
+<P>
+<HR>
+<H2><A NAME="SetBlobQuantum">SetBlobQuantum</A></H2>
+<P>
+Method SetBlobQuantum set the current value of the blob quantum. This is
+the size in bytes to add to a blob when writing to a blob exceeds its
+current length.
+
+<P>
+The format of the SetBlobQuantum routine is:
+
+<P>
+<PRE>        status=SetBlobQuantum(blob_info,quantum)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>blob_info:</STRONG><DD>
+<P>
+A pointer to a BlobInfo structure.
+
+<DT><STRONG>quantum:</STRONG><DD>
+<P>
+An unsigned long that reflects the number of bytes to increase a blob.
+
+</DL></DL>
 <P>
 <HR>
 <H2><A NAME="TellBlob">TellBlob</A></H2>

@@ -978,8 +978,11 @@ Export unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
       }
     if (image->comments != (char *) NULL)
       {
-        (void) sprintf(buffer,"{%s}\n",image->comments);
-        (void) WriteBlob(image,strlen(buffer),buffer);
+        (void) WriteByte(image,'{');
+        (void) WriteByte(image,'\n');
+        (void) WriteBlob(image,strlen(image->comments),image->comments);
+        (void) WriteByte(image,'}');
+        (void) WriteByte(image,'\n');
       }
     (void) strcpy(buffer,"\f\n:\032");
     (void) WriteBlob(image,strlen(buffer),buffer);
@@ -989,10 +992,7 @@ Export unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
           Write montage tile directory.
         */
         if (image->directory != (char *) NULL)
-          {
-            (void) sprintf(buffer,"%s",image->directory);
-            (void) WriteBlob(image,strlen(buffer),buffer);
-          }
+          (void) WriteBlob(image,strlen(image->directory),image->directory);
         (void) WriteByte(image,'\0');
       }
     if (image->color_profile.length > 0)

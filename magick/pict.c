@@ -535,7 +535,7 @@ static unsigned char* DecodeImage(Image *image,int bytes_per_line,
 %
 %    o scanline: A pointer to an array of characters to pack.
 %
-%    o bytes_per_line: The number of bytes in a scanlin.e
+%    o bytes_per_line: The number of bytes in a scanline.
 %
 %    o pixels: A pointer to an array of characters where the packed
 %      characters are stored.
@@ -650,8 +650,16 @@ static unsigned int EncodeImage(Image *image,const unsigned char *scanline,
     Write the number of and the packed packets.
   */
   packets=(int) (q-pixels);
-  MSBFirstWriteShort(image,(unsigned short) packets);
-  packets+=2;
+  if (bytes_per_line > 250)
+    {
+      MSBFirstWriteShort(image,(unsigned short) packets);
+      packets+=2;
+    }
+  else
+    {
+      (void) WriteByte(image,packets);
+      packets++;
+    }
   while (q != pixels)
   {
     q--;
@@ -1335,7 +1343,8 @@ Export unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
     Allocate memory.
   */
   bytes_per_line=image->columns;
-  if (!IsPseudoClass(image))
+  if ((Latin1Compare(image_info->magick,"PICT24") == 0) ||
+      !IsPseudoClass(image))
     bytes_per_line*=image->matte ? 4 : 3;
   buffer=(unsigned char *)
     AllocateMemory(PictHeaderSize*sizeof(unsigned char));
@@ -1374,7 +1383,8 @@ Export unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
   pixmap.pixel_type=(image->class == DirectClass ? 16 : 0);
   pixmap.bits_per_pixel=(image->class == DirectClass ? 32 : 8);
   pixmap.component_count=1;
-  if (image->class == DirectClass)
+  if ((Latin1Compare(image_info->magick,"PICT24") == 0) ||
+      (image->class == DirectClass))
     pixmap.component_count=image->matte ? 4 : 3;
   pixmap.component_size=8;
   pixmap.plane_bytes=0;
@@ -1418,7 +1428,8 @@ Export unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
   /*
     Write picture opcode, row bytes, and picture bounding box, and version.
   */
-  if (image->class == PseudoClass)
+  if ((Latin1Compare(image_info->magick,"PICT24") != 0) &&
+      (image->class == PseudoClass))
     MSBFirstWriteShort(image,PictPICTOp);
   else
     {
@@ -1448,7 +1459,8 @@ Export unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
   MSBFirstWriteLong(image,(unsigned long) pixmap.plane_bytes);
   MSBFirstWriteLong(image,(unsigned long) pixmap.table);
   MSBFirstWriteLong(image,(unsigned long) pixmap.reserved);
-  if (image->class == PseudoClass)
+  if ((Latin1Compare(image_info->magick,"PICT24") != 0) &&
+      (image->class == PseudoClass))
     {
       unsigned short
         red,
@@ -1491,7 +1503,8 @@ Export unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
   x=0;
   y=0;
   p=image->pixels;
-  if (image->class == PseudoClass)
+  if ((Latin1Compare(image_info->magick,"PICT24") != 0) &&
+      (image->class == PseudoClass))
     {
       register unsigned char
         *index;

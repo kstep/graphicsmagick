@@ -15,6 +15,7 @@
 	<LI><A HREF="#FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A>
 	<UL>
 
+		<LI><A HREF="#CompressColormap">CompressColormap</A>
 		<LI><A HREF="#GetNumberColors">GetNumberColors</A>
 		<LI><A HREF="#IsMonochromeImage">IsMonochromeImage</A>
 		<LI><A HREF="#IsPseudoClass">IsPseudoClass</A>
@@ -35,6 +36,9 @@ colors - Methods to Count the Colors in an Image
 <HR>
 <H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
 <P>
+<STRONG>CompressColormap</STRONG>(image)
+
+<P>
 number_colors=<STRONG>GetNumberColors</STRONG>(image,file)
 
 <P>
@@ -53,10 +57,32 @@ distance=<STRONG>QueryColorName</STRONG>(color,name)
 <HR>
 <H1><A NAME="FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A></H1>
 <P>
+<HR>
+<H2><A NAME="CompressColormap">CompressColormap</A></H2>
+<P>
+Method CompressColormap compresses an image colormap removing any duplicate
+and unused color entries.
+
+<P>
+The format of the CompressColormap routine is:
+
+<P>
+<PRE>        CompressColormap(image)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG><A NAME="item_o">image:</A></STRONG><DD>
+<P>
+The address of a structure of type Image.
+
+</DL></DL>
+<P>
 A description of each parameter follows.
 
 <DL><DL>
-<DT><STRONG><A NAME="item_o">node_info:</A></STRONG><DD>
+<DT><STRONG>node_info:</STRONG><DD>
 <P>
 The address of a structure of type NodeInfo which points to a node in the
 color cube tree that is to be pruned.
