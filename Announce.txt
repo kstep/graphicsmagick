@@ -1,10 +1,6 @@
-[ 5.4.2 source and binaries will be available via ftp starting 8AM
-  Monday December 3rd EST after they are mirrored;  Source is available
-  in CVS now. ]
-
 The ImageMagick Studio LLC development group announces the release of
 ImageMagick 5.4.2. Version 5.4.2 is a feature release but also resolves
-bugs reported against 5.4.0.
+bugs reported against 5.4.1.
 
 ImageMagick is a robust collection of tools and libraries to read,
 write, and manipulate an image in many image formats (over 72 major
@@ -23,67 +19,26 @@ available.  ImageMagick is available for free, may be used to support
 both open and proprietary applications, and may be redistributed
 without fee.
 
-Significant changes from the 5.4.0 release (see release ChangeLog
+Significant changes from the 5.4.1 release (see release ChangeLog
 for details):
 
   o General:
 
-    - Many bugs fixed which were reported via the ImageMagick bug
-      tracking system, or via the mailing lists.
+    - 
 
-    - ImageMagick image registry format added (magick string "mpr").
-      This format provides a means for in-memory images to be
-      registered and passed to the drawing module (without use of
-      temporary file) via the filename "mpr:id". Registration of images
-      is managed via the SetMagickRegistry(), GetMagickRegistry(), and
-      DeleteMagickRegistry() C APIs.
-
-    - Support added for reading the GIMP's native XCF image format
-      (thanks to Leonard Rosenthol).
-
-    - WMF rendering is improved. Dashed lines are now supported. Text
-      scaling and placement is significantly improved. Scaling and
-      translation of coordinates to fit the image are done by the
-      drawing module rather than within the WMF renderer.
-
-    - Pattern definition, and filling with pattern, are now supported
-      by the SVG renderer, and by ImageMagick's native drawing format
-      (MVG). Support was also added for defining and filling with
-      gradients (for simple gradients only).
-
-    - The default background color is changed from 'white' to 'none'
-      (transparent black).
       
   o Utilities enhancements/changes:
 
-    - A display-like GUI for Windows is now available (thanks again to
-      Leonard Rosenthol). Look for it in the source directory
-      "contrib/win32/MFC/IMDisplay".
-
-    - Abbreviated options are no longer supported.  This will impact
-      any programs or scripts that used abbreviated options.
+    - 
 
   o C API enhancements:
 
-    - Added PingBlob() function to test a BLOB based on its header.
-
-    - AcquireImagePixels() now supports "virtual pixels" by replicating
-      any edge pixel toward infinity.  This helps eliminate the need
-      for special case edge operations for kernel-based image
-      processing operations such as median filtering.  This means you
-      can use negative offsets as well as widths or heights that exceed
-      the boundaries of an image.  Fro example,
-
-	p=AcquireImagePixels(image,-width/2,y-width/2,image->columns+width,
-	  width,&exception).
+    - 
 
   o C++ API enhancements:
 
-    - Eliminated memory leak in the draw() method.
+    - 
 
-    - DestroyMagick() is automatically invoked when the static
-      destructors for the image module are invoked. This help eliminate
-      apparent memory "leaks".
 
 The ImageMagick WWW page is
 
