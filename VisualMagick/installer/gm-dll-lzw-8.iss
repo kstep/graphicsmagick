@@ -10,10 +10,11 @@
 ; #pragma verboselevel 4
 ; #define DEBUG 1
 
-#define  public MagickStaticPackage 1
+#define  public MagickDynamicPackage 1
+#define  public MagickLZWCompression 1
 #define  public QuantumDepth "8"
 #include "inc\body.isx"
 
 #ifdef Debug
-  #expr SaveToFile(AddBackslash(SourcePath) + "gm-static-8.isp")
+  #expr SaveToFile(AddBackslash(SourcePath) + "gm-dynamic-lzw-8.isp")
 #endif

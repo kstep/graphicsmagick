@@ -11,9 +11,10 @@
 ; #define DEBUG 1
 
 #define  public MagickStaticPackage 1
-#define  public QuantumDepth "8"
+#define  public MagickLZWCompression 1
+#define  public QuantumDepth "16"
 #include "inc\body.isx"
 
 #ifdef Debug
-  #expr SaveToFile(AddBackslash(SourcePath) + "gm-static-8.isp")
+  #expr SaveToFile(AddBackslash(SourcePath) + "gm-static-lzw-16.isp")
 #endif

@@ -1,14 +1,38 @@
 
 Welcome to GraphicsMagick!
 
-  GraphicsMagick is copyrighted (C) by GraphicsMagick Group. It is free for any
-  use, commercial or private. However, this installation package is based on
-  additional programs and libraries which use a different license than
+  GraphicsMagick is copyrighted (C) by GraphicsMagick Group. It is free for
+  any use, commercial or private. However, this installation package is based
+  on additional programs and libraries which use a different license than
   GraphicsMagick. None of these licenses prohibit you from using this package
   for commercial or private use, but they may impose requirements on
   re-distribution of the package. Please see the 'licenses' subdirectory in
-  the package installation directory after the package is installed to
-  view the license restrictions of additional package components.
+  the package installation directory after the package is installed to view
+  the license restrictions of additional package components.
+
+       #     #
+       #  #  #    ##    #####   #    #     #    #    #   ####
+       #  #  #   #  #   #    #  ##   #     #    ##   #  #    #
+       #  #  #  #    #  #    #  # #  #     #    # #  #  #
+       #  #  #  ######  #####   #  # #     #    #  # #  #  ###
+       #  #  #  #    #  #   #   #   ##     #    #   ##  #    #
+        ## ##   #    #  #    #  #    #     #    #    #   ####
+
+  This package includes support for the LZW compression algorithm as employed
+  by GIF. UNISYS holds a patent on the LZW compression algorithm in a number
+  of countries. The U.S. patent expired on June 20, 2003, the counterpart
+  Canadian patent expires on July 7, 2004, the counterpart patents in the
+  United Kingdom, France, Germany and Italy expire on June 18, 2004, and the
+  Japanese counterpart patents expire on June 20, 2004. Please be advised
+  that IT MAY BE ILLEGAL TO USE OR IMPORT THIS SOFTWARE in a country where
+  the patent is in effect unless you have first obtained license from UNISYS
+  to do so. If you have obtained this package in a country where the UNISYS
+  patent applies and you do not have a valid license, please delete the
+  package immediately. The GraphicsMagick Group DOES NOT RECOMMEND,
+  ENCOURAGE, OR SUPPORT THE UNLICENSED USE OF LZW in a country where the
+  UNISYS patent applies. The GraphicsMagick Group does not support the
+  illegal import of LZW-enabled software into a country where the UNISYS LZW
+  patent applies.
 
 Before You Start
 

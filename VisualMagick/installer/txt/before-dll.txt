@@ -1,14 +1,14 @@
 
 Welcome to GraphicsMagick!
 
-  GraphicsMagick is copyrighted (C) by GraphicsMagick Group. It is free for any
-  use, commercial or private. However, this installation package is based on
-  additional programs and libraries which use a different license than
+  GraphicsMagick is copyrighted (C) by GraphicsMagick Group. It is free for
+  any use, commercial or private. However, this installation package is based
+  on additional programs and libraries which use a different license than
   GraphicsMagick. None of these licenses prohibit you from using this package
   for commercial or private use, but they may impose requirements on
   re-distribution of the package. Please see the 'licenses' subdirectory in
-  the package installation directory after you the package is installed to
-  view the license restrictions of additional package components.
+  the package installation directory after the package is installed to view
+  the license restrictions of additional package components.
 
 Before You Start
 

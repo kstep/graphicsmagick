@@ -1,5 +1,6 @@
 2003-11-30  Bob Friesenhahn <bfriesen@simple.dallas.tx.us>  <bfriesen@simple.dallas.tx.us>
 
+	* VisualMagick/installer: Add optional build support for LZW.
 	* wand/Makefile.am: Add AUTOMAKE_OPTIONS.
 	* configure.ac: Update to Autoconf 2.59.
 
