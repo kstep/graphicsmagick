@@ -11176,6 +11176,10 @@ static Image *XVisualDirectoryImage(Display *display,
     **filelist,
     window_id[MaxTextExtent];
 
+  double
+    x_factor,
+    y_factor;
+
   ExceptionInfo
     exception;
 
@@ -11277,8 +11281,14 @@ static Image *XVisualDirectoryImage(Display *display,
         SetGeometry(next_image,&geometry);
         (void) GetMagickGeometry(clone_info->size,&geometry.x,&geometry.y,
           &geometry.width,&geometry.height);
-        thumbnail_image=ThumbnailImage(next_image,geometry.width,
-          geometry.height,&exception);
+        x_factor=(double) geometry.width/next_image->columns;
+			  y_factor=(double) geometry.height/next_image->rows;
+        if ((x_factor*y_factor) > 0.1)
+          thumbnail_image=ZoomImage(next_image,geometry.width,geometry.height,
+            &exception);
+				else
+          thumbnail_image=ThumbnailImage(next_image,geometry.width,
+            geometry.height,&exception);
         if (thumbnail_image != (Image *) NULL)
           {
             DestroyImage(next_image);
