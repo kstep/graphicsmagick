@@ -169,13 +169,13 @@ Export void DestroyModuleInfo()
     *p;
 
   for (p=module_info_list; p != (ModuleInfo *) NULL; )
-  {
-    entry=p;
-    p=p->next;
-    if (entry->tag != (char *) NULL)
-      FreeMemory((void **) &entry->tag);
-    FreeMemory((void **) &entry);
-  }
+    {
+      entry=p;
+      p=p->next;
+      if (entry->tag != (char *) NULL)
+        FreeMemory((void **) &entry->tag);
+      FreeMemory((void **) &entry);
+    }
   module_info_list=(ModuleInfo *) NULL;
 }
 
@@ -622,7 +622,7 @@ Export char **ListModules(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   L o a d D y n a m i c M o d u l e                                                       %
+%   L o a d D y n a m i c M o d u l e                                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -830,7 +830,7 @@ Export ModuleInfo *SetModuleInfo(const char *tag)
   entry=(ModuleInfo *) AllocateMemory(sizeof(ModuleInfo));
   if (entry == (ModuleInfo *) NULL)
     MagickError(ResourceLimitError,"Unable to allocate module info",
-      "Memory allocation failed");
+                "Memory allocation failed");
   entry->tag=AllocateString(tag);
   entry->handle=
     (ModuleHandle) NULL;
@@ -845,7 +845,7 @@ Export ModuleInfo *SetModuleInfo(const char *tag)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   U n l o a d D y n a m i c M o d u l e                                                   %
+%   U n l o a d D y n a m i c M o d u l e                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -943,27 +943,27 @@ Export int UnregisterModuleInfo(const char *tag)
     *p;
 
   for (p=module_info_list; p != (ModuleInfo *) NULL; p=p->next)
-  {
-    if (Latin1Compare(p->tag,tag) == 0)
-      {
-        FreeMemory((void **) &p->tag);
-        if (p->previous != (ModuleInfo *) NULL)
-          /* Not first in list */
-          p->previous->next=p->next;
-        else
-          {
-            /* First in list */
-            module_info_list=p->next;
-            if (p->next != (ModuleInfo *) NULL)
-              p->next->previous=(ModuleInfo *) NULL;
-          }
-        if (p->next != (ModuleInfo *) NULL)
-          p->next->previous=p->previous;
-        module_info=p;
-        FreeMemory((void **) &module_info);
-        return(True);
+    {
+      if (Latin1Compare(p->tag,tag) == 0)
+        {
+          FreeMemory((void **) &p->tag);
+          if (p->previous != (ModuleInfo *) NULL)
+            /* Not first in list */
+            p->previous->next=p->next;
+          else
+            {
+              /* First in list */
+              module_info_list=p->next;
+              if (p->next != (ModuleInfo *) NULL)
+                p->next->previous=(ModuleInfo *) NULL;
+            }
+          if (p->next != (ModuleInfo *) NULL)
+            p->next->previous=p->previous;
+          module_info=p;
+          FreeMemory((void **) &module_info);
+          return(True);
+        }
     }
-  }
   return(False);
 }
 
