@@ -458,8 +458,8 @@ MagickExport unsigned int ListTypeInfo(FILE *file,ExceptionInfo *exception)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ReadConfigurationFile reads the type configuration file which
-%  provides a mapping between type attributes and font files.
+%  ReadConfigurationFile() reads the type configuration file which provides
+%  a mapping between type attributes and font files.
 %
 %  The format of the ReadConfigurationFile method is:
 %
@@ -468,8 +468,8 @@ MagickExport unsigned int ListTypeInfo(FILE *file,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
-%    o status: Method ReadConfigurationFile returns True if at least one entry
-%        is read, otherwise False is returned.
+%    o status: ReadConfigurationFile() returns True if at least one entry
+%      is read, otherwise False is returned.
 %
 %    o basename:  The type configuration filename.
 %
