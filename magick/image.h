@@ -640,6 +640,7 @@ typedef struct _Image
     compression;
 
   unsigned int
+    dither,
     taint,
     matte;
 

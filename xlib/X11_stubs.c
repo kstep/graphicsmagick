@@ -28,9 +28,9 @@ in this Software without prior written authorization from the X Consortium.
 
 
 /*
- *	Xlib.h - Header definition and support file for the C subroutine
- *	interface library (Xlib) to the X Window System Protocol (V11).
- *	Structures and symbols starting with "_" are private to the library.
+ *      Xlib.h - Header definition and support file for the C subroutine
+ *      interface library (Xlib) to the X Window System Protocol (V11).
+ *      Structures and symbols starting with "_" are private to the library.
  */
 #define XlibSpecificationRelease 6
 
@@ -39,24 +39,24 @@ in this Software without prior written authorization from the X Consortium.
 #include <unistd.h>
 #else
 #if defined(_VISUALC_)
-#	if defined(_MT) && defined(_DLL) && !defined(_LIB)
-#		define MagickExport __declspec(dllexport)
-#	else
-#		define MagickExport
-#	endif
+#       if defined(_MT) && defined(_DLL) && !defined(_LIB)
+#               define MagickExport __declspec(dllexport)
+#       else
+#               define MagickExport
+#       endif
 #pragma warning(disable : 4035)
 #pragma warning(disable : 4018)
 #pragma warning(disable : 4244)
 #pragma warning(disable : 4142)
 #pragma warning(disable : 4716)
 #else
-#	define MagickExport
+#       define MagickExport
 #endif
 #endif
 
 #ifdef USG
 #ifndef __TYPES__
-#include <sys/types.h>			/* forgot to protect it... */
+#include <sys/types.h>                  /* forgot to protect it... */
 #define __TYPES__
 #endif /* __TYPES__ */
 #else
@@ -115,82 +115,82 @@ typedef char *XPointer;
 #define QueuedAfterReading 1
 #define QueuedAfterFlush 2
 
-#define ConnectionNumber(dpy) 	(((_XPrivDisplay)dpy)->fd)
-#define RootWindow(dpy, scr) 	(ScreenOfDisplay(dpy,scr)->root)
-#define DefaultScreen(dpy) 	(((_XPrivDisplay)dpy)->default_screen)
-#define DefaultRootWindow(dpy) 	(ScreenOfDisplay(dpy,DefaultScreen(dpy))->root)
+#define ConnectionNumber(dpy)   (((_XPrivDisplay)dpy)->fd)
+#define RootWindow(dpy, scr)    (ScreenOfDisplay(dpy,scr)->root)
+#define DefaultScreen(dpy)      (((_XPrivDisplay)dpy)->default_screen)
+#define DefaultRootWindow(dpy)  (ScreenOfDisplay(dpy,DefaultScreen(dpy))->root)
 #define DefaultVisual(dpy, scr) (ScreenOfDisplay(dpy,scr)->root_visual)
-#define DefaultGC(dpy, scr) 	(ScreenOfDisplay(dpy,scr)->default_gc)
-#define BlackPixel(dpy, scr) 	(ScreenOfDisplay(dpy,scr)->black_pixel)
-#define WhitePixel(dpy, scr) 	(ScreenOfDisplay(dpy,scr)->white_pixel)
-#define AllPlanes 		((unsigned long)~0L)
-#define QLength(dpy) 		(((_XPrivDisplay)dpy)->qlen)
-#define DisplayWidth(dpy, scr) 	(ScreenOfDisplay(dpy,scr)->width)
+#define DefaultGC(dpy, scr)     (ScreenOfDisplay(dpy,scr)->default_gc)
+#define BlackPixel(dpy, scr)    (ScreenOfDisplay(dpy,scr)->black_pixel)
+#define WhitePixel(dpy, scr)    (ScreenOfDisplay(dpy,scr)->white_pixel)
+#define AllPlanes               ((unsigned long)~0L)
+#define QLength(dpy)            (((_XPrivDisplay)dpy)->qlen)
+#define DisplayWidth(dpy, scr)  (ScreenOfDisplay(dpy,scr)->width)
 #define DisplayHeight(dpy, scr) (ScreenOfDisplay(dpy,scr)->height)
 #define DisplayWidthMM(dpy, scr)(ScreenOfDisplay(dpy,scr)->mwidth)
 #define DisplayHeightMM(dpy, scr)(ScreenOfDisplay(dpy,scr)->mheight)
 #define DisplayPlanes(dpy, scr) (ScreenOfDisplay(dpy,scr)->root_depth)
-#define DisplayCells(dpy, scr) 	(DefaultVisual(dpy,scr)->map_entries)
-#define ScreenCount(dpy) 	(((_XPrivDisplay)dpy)->nscreens)
-#define ServerVendor(dpy) 	(((_XPrivDisplay)dpy)->vendor)
-#define ProtocolVersion(dpy) 	(((_XPrivDisplay)dpy)->proto_major_version)
-#define ProtocolRevision(dpy) 	(((_XPrivDisplay)dpy)->proto_minor_version)
-#define VendorRelease(dpy) 	(((_XPrivDisplay)dpy)->release)
-#define DisplayString(dpy) 	(((_XPrivDisplay)dpy)->display_name)
-#define DefaultDepth(dpy, scr) 	(ScreenOfDisplay(dpy,scr)->root_depth)
+#define DisplayCells(dpy, scr)  (DefaultVisual(dpy,scr)->map_entries)
+#define ScreenCount(dpy)        (((_XPrivDisplay)dpy)->nscreens)
+#define ServerVendor(dpy)       (((_XPrivDisplay)dpy)->vendor)
+#define ProtocolVersion(dpy)    (((_XPrivDisplay)dpy)->proto_major_version)
+#define ProtocolRevision(dpy)   (((_XPrivDisplay)dpy)->proto_minor_version)
+#define VendorRelease(dpy)      (((_XPrivDisplay)dpy)->release)
+#define DisplayString(dpy)      (((_XPrivDisplay)dpy)->display_name)
+#define DefaultDepth(dpy, scr)  (ScreenOfDisplay(dpy,scr)->root_depth)
 #define DefaultColormap(dpy, scr)(ScreenOfDisplay(dpy,scr)->cmap)
-#define BitmapUnit(dpy) 	(((_XPrivDisplay)dpy)->bitmap_unit)
-#define BitmapBitOrder(dpy) 	(((_XPrivDisplay)dpy)->bitmap_bit_order)
-#define BitmapPad(dpy) 		(((_XPrivDisplay)dpy)->bitmap_pad)
-#define ImageByteOrder(dpy) 	(((_XPrivDisplay)dpy)->byte_order)
+#define BitmapUnit(dpy)         (((_XPrivDisplay)dpy)->bitmap_unit)
+#define BitmapBitOrder(dpy)     (((_XPrivDisplay)dpy)->bitmap_bit_order)
+#define BitmapPad(dpy)          (((_XPrivDisplay)dpy)->bitmap_pad)
+#define ImageByteOrder(dpy)     (((_XPrivDisplay)dpy)->byte_order)
 #ifdef CRAY /* unable to get WORD64 without pulling in other symbols */
-#define NextRequest(dpy)	XNextRequest(dpy)
+#define NextRequest(dpy)        XNextRequest(dpy)
 #else
-#define NextRequest(dpy)	(((_XPrivDisplay)dpy)->request + 1)
+#define NextRequest(dpy)        (((_XPrivDisplay)dpy)->request + 1)
 #endif
-#define LastKnownRequestProcessed(dpy)	(((_XPrivDisplay)dpy)->last_request_read)
+#define LastKnownRequestProcessed(dpy)  (((_XPrivDisplay)dpy)->last_request_read)
 
 /* macros for screen oriented applications (toolkit) */
 #define ScreenOfDisplay(dpy, scr)(&((_XPrivDisplay)dpy)->screens[scr])
 #define DefaultScreenOfDisplay(dpy) ScreenOfDisplay(dpy,DefaultScreen(dpy))
-#define DisplayOfScreen(s)	((s)->display)
-#define RootWindowOfScreen(s)	((s)->root)
-#define BlackPixelOfScreen(s)	((s)->black_pixel)
-#define WhitePixelOfScreen(s)	((s)->white_pixel)
+#define DisplayOfScreen(s)      ((s)->display)
+#define RootWindowOfScreen(s)   ((s)->root)
+#define BlackPixelOfScreen(s)   ((s)->black_pixel)
+#define WhitePixelOfScreen(s)   ((s)->white_pixel)
 #define DefaultColormapOfScreen(s)((s)->cmap)
-#define DefaultDepthOfScreen(s)	((s)->root_depth)
-#define DefaultGCOfScreen(s)	((s)->default_gc)
+#define DefaultDepthOfScreen(s) ((s)->root_depth)
+#define DefaultGCOfScreen(s)    ((s)->default_gc)
 #define DefaultVisualOfScreen(s)((s)->root_visual)
-#define WidthOfScreen(s)	((s)->width)
-#define HeightOfScreen(s)	((s)->height)
-#define WidthMMOfScreen(s)	((s)->mwidth)
-#define HeightMMOfScreen(s)	((s)->mheight)
-#define PlanesOfScreen(s)	((s)->root_depth)
-#define CellsOfScreen(s)	(DefaultVisualOfScreen((s))->map_entries)
-#define MinCmapsOfScreen(s)	((s)->min_maps)
-#define MaxCmapsOfScreen(s)	((s)->max_maps)
-#define DoesSaveUnders(s)	((s)->save_unders)
-#define DoesBackingStore(s)	((s)->backing_store)
-#define EventMaskOfScreen(s)	((s)->root_input_mask)
+#define WidthOfScreen(s)        ((s)->width)
+#define HeightOfScreen(s)       ((s)->height)
+#define WidthMMOfScreen(s)      ((s)->mwidth)
+#define HeightMMOfScreen(s)     ((s)->mheight)
+#define PlanesOfScreen(s)       ((s)->root_depth)
+#define CellsOfScreen(s)        (DefaultVisualOfScreen((s))->map_entries)
+#define MinCmapsOfScreen(s)     ((s)->min_maps)
+#define MaxCmapsOfScreen(s)     ((s)->max_maps)
+#define DoesSaveUnders(s)       ((s)->save_unders)
+#define DoesBackingStore(s)     ((s)->backing_store)
+#define EventMaskOfScreen(s)    ((s)->root_input_mask)
 
 /*
  * Extensions need a way to hang private data on some structures.
  */
 typedef struct _XExtData {
-	int number;		/* number returned by XRegisterExtension */
-	struct _XExtData *next;	/* next item on list of data for structure */
-	int (*free_private)();	/* called to free private storage */
-	XPointer private_data;	/* data private to this extension. */
+        int number;             /* number returned by XRegisterExtension */
+        struct _XExtData *next; /* next item on list of data for structure */
+        int (*free_private)();  /* called to free private storage */
+        XPointer private_data;  /* data private to this extension. */
 } XExtData;
 
 /*
  * This file contains structures used by the extension mechanism.
  */
-typedef struct {		/* public to extension, cannot be changed */
-	int extension;		/* extension number */
-	int major_opcode;	/* major op-code assigned by server */
-	int first_event;	/* first event number for the extension */
-	int first_error;	/* first error number for the extension */
+typedef struct {                /* public to extension, cannot be changed */
+        int extension;          /* extension number */
+        int major_opcode;       /* major op-code assigned by server */
+        int first_event;        /* first event number for the extension */
+        int first_error;        /* first error number for the extension */
 } XExtCodes;
 
 /*
@@ -208,31 +208,31 @@ typedef struct {
  * Data structure for setting graphics context.
  */
 typedef struct {
-	int function;		/* logical operation */
-	unsigned long plane_mask;/* plane mask */
-	unsigned long foreground;/* foreground pixel */
-	unsigned long background;/* background pixel */
-	int line_width;		/* line width */
-	int line_style;	 	/* LineSolid, LineOnOffDash, LineDoubleDash */
-	int cap_style;	  	/* CapNotLast, CapButt, 
-				   CapRound, CapProjecting */
-	int join_style;	 	/* JoinMiter, JoinRound, JoinBevel */
-	int fill_style;	 	/* FillSolid, FillTiled, 
-				   FillStippled, FillOpaeueStippled */
-	int fill_rule;	  	/* EvenOddRule, WindingRule */
-	int arc_mode;		/* ArcChord, ArcPieSlice */
-	Pixmap tile;		/* tile pixmap for tiling operations */
-	Pixmap stipple;		/* stipple 1 plane pixmap for stipping */
-	int ts_x_origin;	/* offset for tile or stipple operations */
-	int ts_y_origin;
-        Font font;	        /* default text font for text operations */
-	int subwindow_mode;     /* ClipByChildren, IncludeInferiors */
-	Bool graphics_exposures;/* boolean, should exposures be generated */
-	int clip_x_origin;	/* origin for clipping */
-	int clip_y_origin;
-	Pixmap clip_mask;	/* bitmap clipping; other calls for rects */
-	int dash_offset;	/* patterned/dashed line information */
-	char dashes;
+        int function;           /* logical operation */
+        unsigned long plane_mask;/* plane mask */
+        unsigned long foreground;/* foreground pixel */
+        unsigned long background;/* background pixel */
+        int line_width;         /* line width */
+        int line_style;         /* LineSolid, LineOnOffDash, LineDoubleDash */
+        int cap_style;          /* CapNotLast, CapButt, 
+                                   CapRound, CapProjecting */
+        int join_style;         /* JoinMiter, JoinRound, JoinBevel */
+        int fill_style;         /* FillSolid, FillTiled, 
+                                   FillStippled, FillOpaeueStippled */
+        int fill_rule;          /* EvenOddRule, WindingRule */
+        int arc_mode;           /* ArcChord, ArcPieSlice */
+        Pixmap tile;            /* tile pixmap for tiling operations */
+        Pixmap stipple;         /* stipple 1 plane pixmap for stipping */
+        int ts_x_origin;        /* offset for tile or stipple operations */
+        int ts_y_origin;
+        Font font;              /* default text font for text operations */
+        int subwindow_mode;     /* ClipByChildren, IncludeInferiors */
+        Bool graphics_exposures;/* boolean, should exposures be generated */
+        int clip_x_origin;      /* origin for clipping */
+        int clip_y_origin;
+        Pixmap clip_mask;       /* bitmap clipping; other calls for rects */
+        int dash_offset;        /* patterned/dashed line information */
+        char dashes;
 } XGCValues;
 
 /*
@@ -243,8 +243,8 @@ typedef struct {
 typedef struct _XGC
 #ifdef XLIB_ILLEGAL_ACCESS
 {
-    XExtData *ext_data;	/* hook for extension to hang data */
-    GContext gid;	/* protocol ID for graphics context */
+    XExtData *ext_data; /* hook for extension to hang data */
+    GContext gid;       /* protocol ID for graphics context */
     /* there is more to this structure, but it is private to Xlib */
 }
 #endif
@@ -254,25 +254,25 @@ typedef struct _XGC
  * Visual structure; contains information about colormapping possible.
  */
 typedef struct {
-	XExtData *ext_data;	/* hook for extension to hang data */
-	VisualID visualid;	/* visual id of this visual */
+        XExtData *ext_data;     /* hook for extension to hang data */
+        VisualID visualid;      /* visual id of this visual */
 #if defined(__cplusplus) || defined(c_plusplus)
-	int c_class;		/* C++ class of screen (monochrome, etc.) */
+        int c_class;            /* C++ class of screen (monochrome, etc.) */
 #else
-	int class;		/* class of screen (monochrome, etc.) */
+        int class;              /* class of screen (monochrome, etc.) */
 #endif
-	unsigned long red_mask, green_mask, blue_mask;	/* mask values */
-	int bits_per_rgb;	/* log base 2 of distinct color values */
-	int map_entries;	/* color map entries */
+        unsigned long red_mask, green_mask, blue_mask;  /* mask values */
+        int bits_per_rgb;       /* log base 2 of distinct color values */
+        int map_entries;        /* color map entries */
 } Visual;
 
 /*
  * Depth structure; contains information for each possible depth.
- */	
+ */     
 typedef struct {
-	int depth;		/* this depth (Z) of the depth */
-	int nvisuals;		/* number of Visual types at this depth */
-	Visual *visuals;	/* list of visuals possible at this depth */
+        int depth;              /* this depth (Z) of the depth */
+        int nvisuals;           /* number of Visual types at this depth */
+        Visual *visuals;        /* list of visuals possible at this depth */
 } Depth;
 
 /*
@@ -281,85 +281,85 @@ typedef struct {
  * by application code.
  */
 
-struct _XDisplay;		/* Forward declare before use for C++ */
+struct _XDisplay;               /* Forward declare before use for C++ */
 
 typedef struct {
-	XExtData *ext_data;	/* hook for extension to hang data */
-	struct _XDisplay *display;/* back pointer to display structure */
-	Window root;		/* Root window id. */
-	int width, height;	/* width and height of screen */
-	int mwidth, mheight;	/* width and height of  in millimeters */
-	int ndepths;		/* number of depths possible */
-	Depth *depths;		/* list of allowable depths on the screen */
-	int root_depth;		/* bits per pixel */
-	Visual *root_visual;	/* root visual */
-	GC default_gc;		/* GC for the root root visual */
-	Colormap cmap;		/* default color map */
-	unsigned long white_pixel;
-	unsigned long black_pixel;	/* White and Black pixel values */
-	int max_maps, min_maps;	/* max and min color maps */
-	int backing_store;	/* Never, WhenMapped, Always */
-	Bool save_unders;	
-	long root_input_mask;	/* initial root input mask */
+        XExtData *ext_data;     /* hook for extension to hang data */
+        struct _XDisplay *display;/* back pointer to display structure */
+        Window root;            /* Root window id. */
+        int width, height;      /* width and height of screen */
+        int mwidth, mheight;    /* width and height of  in millimeters */
+        int ndepths;            /* number of depths possible */
+        Depth *depths;          /* list of allowable depths on the screen */
+        int root_depth;         /* bits per pixel */
+        Visual *root_visual;    /* root visual */
+        GC default_gc;          /* GC for the root root visual */
+        Colormap cmap;          /* default color map */
+        unsigned long white_pixel;
+        unsigned long black_pixel;      /* White and Black pixel values */
+        int max_maps, min_maps; /* max and min color maps */
+        int backing_store;      /* Never, WhenMapped, Always */
+        Bool save_unders;       
+        long root_input_mask;   /* initial root input mask */
 } Screen;
 
 /*
  * Format structure; describes ZFormat data the screen will understand.
  */
 typedef struct {
-	XExtData *ext_data;	/* hook for extension to hang data */
-	int depth;		/* depth of this image format */
-	int bits_per_pixel;	/* bits/pixel at this depth */
-	int scanline_pad;	/* scanline must padded to this multiple */
+        XExtData *ext_data;     /* hook for extension to hang data */
+        int depth;              /* depth of this image format */
+        int bits_per_pixel;     /* bits/pixel at this depth */
+        int scanline_pad;       /* scanline must padded to this multiple */
 } ScreenFormat;
 
 /*
  * Data structure for setting window attributes.
  */
 typedef struct {
-    Pixmap background_pixmap;	/* background or None or ParentRelative */
-    unsigned long background_pixel;	/* background pixel */
-    Pixmap border_pixmap;	/* border of the window */
-    unsigned long border_pixel;	/* border pixel value */
-    int bit_gravity;		/* one of bit gravity values */
-    int win_gravity;		/* one of the window gravity values */
-    int backing_store;		/* NotUseful, WhenMapped, Always */
+    Pixmap background_pixmap;   /* background or None or ParentRelative */
+    unsigned long background_pixel;     /* background pixel */
+    Pixmap border_pixmap;       /* border of the window */
+    unsigned long border_pixel; /* border pixel value */
+    int bit_gravity;            /* one of bit gravity values */
+    int win_gravity;            /* one of the window gravity values */
+    int backing_store;          /* NotUseful, WhenMapped, Always */
     unsigned long backing_planes;/* planes to be preseved if possible */
     unsigned long backing_pixel;/* value to use in restoring planes */
-    Bool save_under;		/* should bits under be saved? (popups) */
-    long event_mask;		/* set of events that should be saved */
-    long do_not_propagate_mask;	/* set of events that should not propagate */
-    Bool override_redirect;	/* boolean value for override-redirect */
-    Colormap colormap;		/* color map to be associated with window */
-    Cursor cursor;		/* cursor to be displayed (or None) */
+    Bool save_under;            /* should bits under be saved? (popups) */
+    long event_mask;            /* set of events that should be saved */
+    long do_not_propagate_mask; /* set of events that should not propagate */
+    Bool override_redirect;     /* boolean value for override-redirect */
+    Colormap colormap;          /* color map to be associated with window */
+    Cursor cursor;              /* cursor to be displayed (or None) */
 } XSetWindowAttributes;
 
 typedef struct {
-    int x, y;			/* location of window */
-    int width, height;		/* width and height of window */
-    int border_width;		/* border width of window */
-    int depth;          	/* depth of window */
-    Visual *visual;		/* the associated visual structure */
-    Window root;        	/* root of screen containing window */
+    int x, y;                   /* location of window */
+    int width, height;          /* width and height of window */
+    int border_width;           /* border width of window */
+    int depth;                  /* depth of window */
+    Visual *visual;             /* the associated visual structure */
+    Window root;                /* root of screen containing window */
 #if defined(__cplusplus) || defined(c_plusplus)
-    int c_class;		/* C++ InputOutput, InputOnly*/
+    int c_class;                /* C++ InputOutput, InputOnly*/
 #else
-    int class;			/* InputOutput, InputOnly*/
+    int class;                  /* InputOutput, InputOnly*/
 #endif
-    int bit_gravity;		/* one of bit gravity values */
-    int win_gravity;		/* one of the window gravity values */
-    int backing_store;		/* NotUseful, WhenMapped, Always */
+    int bit_gravity;            /* one of bit gravity values */
+    int win_gravity;            /* one of the window gravity values */
+    int backing_store;          /* NotUseful, WhenMapped, Always */
     unsigned long backing_planes;/* planes to be preserved if possible */
     unsigned long backing_pixel;/* value to be used when restoring planes */
-    Bool save_under;		/* boolean, should bits under be saved? */
-    Colormap colormap;		/* color map to be associated with window */
-    Bool map_installed;		/* boolean, is color map currently installed*/
-    int map_state;		/* IsUnmapped, IsUnviewable, IsViewable */
-    long all_event_masks;	/* set of events all people have interest in*/
-    long your_event_mask;	/* my event mask */
+    Bool save_under;            /* boolean, should bits under be saved? */
+    Colormap colormap;          /* color map to be associated with window */
+    Bool map_installed;         /* boolean, is color map currently installed*/
+    int map_state;              /* IsUnmapped, IsUnviewable, IsViewable */
+    long all_event_masks;       /* set of events all people have interest in*/
+    long your_event_mask;       /* my event mask */
     long do_not_propagate_mask; /* set of events that should not propagate */
-    Bool override_redirect;	/* boolean value for override-redirect */
-    Screen *screen;		/* back pointer to correct screen */
+    Bool override_redirect;     /* boolean value for override-redirect */
+    Screen *screen;             /* back pointer to correct screen */
 } XWindowAttributes;
 
 /*
@@ -368,46 +368,46 @@ typedef struct {
  */
 
 typedef struct {
-	int family;		/* for example FamilyInternet */
-	int length;		/* length of address, in bytes */
-	char *address;		/* pointer to where to find the bytes */
+        int family;             /* for example FamilyInternet */
+        int length;             /* length of address, in bytes */
+        char *address;          /* pointer to where to find the bytes */
 } XHostAddress;
 
 /*
  * Data structure for "image" data, used by image manipulation routines.
  */
 typedef struct _XImage {
-    int width, height;		/* size of image */
-    int xoffset;		/* number of pixels offset in X direction */
-    int format;			/* XYBitmap, XYPixmap, ZPixmap */
-    char *data;			/* pointer to image data */
-    int byte_order;		/* data byte order, LSBFirst, MSBFirst */
-    int bitmap_unit;		/* quant. of scanline 8, 16, 32 */
-    int bitmap_bit_order;	/* LSBFirst, MSBFirst */
-    int bitmap_pad;		/* 8, 16, 32 either XY or ZPixmap */
-    int depth;			/* depth of image */
-    int bytes_per_line;		/* accelarator to next line */
-    int bits_per_pixel;		/* bits per pixel (ZPixmap) */
-    unsigned long red_mask;	/* bits in z arrangment */
+    int width, height;          /* size of image */
+    int xoffset;                /* number of pixels offset in X direction */
+    int format;                 /* XYBitmap, XYPixmap, ZPixmap */
+    char *data;                 /* pointer to image data */
+    int byte_order;             /* data byte order, LSBFirst, MSBFirst */
+    int bitmap_unit;            /* quant. of scanline 8, 16, 32 */
+    int bitmap_bit_order;       /* LSBFirst, MSBFirst */
+    int bitmap_pad;             /* 8, 16, 32 either XY or ZPixmap */
+    int depth;                  /* depth of image */
+    int bytes_per_line;         /* accelarator to next line */
+    int bits_per_pixel;         /* bits per pixel (ZPixmap) */
+    unsigned long red_mask;     /* bits in z arrangment */
     unsigned long green_mask;
     unsigned long blue_mask;
-    XPointer obdata;		/* hook for the object routines to hang on */
-    struct funcs {		/* image manipulation routines */
-	struct _XImage *(*create_image)();
+    XPointer obdata;            /* hook for the object routines to hang on */
+    struct funcs {              /* image manipulation routines */
+        struct _XImage *(*create_image)();
 #if NeedFunctionPrototypes
-	int (*destroy_image)        (struct _XImage *);
-	unsigned long (*get_pixel)  (struct _XImage *, int, int);
-	int (*put_pixel)            (struct _XImage *, int, int, unsigned long);
-	struct _XImage *(*sub_image)(struct _XImage *, int, int, unsigned int, unsigned int);
-	int (*add_pixel)            (struct _XImage *, long);
+        int (*destroy_image)        (struct _XImage *);
+        unsigned long (*get_pixel)  (struct _XImage *, int, int);
+        int (*put_pixel)            (struct _XImage *, int, int, unsigned long);
+        struct _XImage *(*sub_image)(struct _XImage *, int, int, unsigned int, unsigned int);
+        int (*add_pixel)            (struct _XImage *, long);
 #else
-	int (*destroy_image)();
-	unsigned long (*get_pixel)();
-	int (*put_pixel)();
-	struct _XImage *(*sub_image)();
-	int (*add_pixel)();
+        int (*destroy_image)();
+        unsigned long (*get_pixel)();
+        int (*put_pixel)();
+        struct _XImage *(*sub_image)();
+        int (*add_pixel)();
 #endif
-	} f;
+        } f;
 } XImage;
 
 /* 
@@ -425,10 +425,10 @@ typedef struct {
  * Data structure used by color operations
  */
 typedef struct {
-	unsigned long pixel;
-	unsigned short red, green, blue;
-	char flags;  /* do_red, do_green, do_blue */
-	char pad;
+        unsigned long pixel;
+        unsigned short red, green, blue;
+        char flags;  /* do_red, do_green, do_blue */
+        char pad;
 } XColor;
 
 /* 
@@ -473,25 +473,25 @@ typedef struct {
 
 typedef struct {
         int key_click_percent;
-	int bell_percent;
-	unsigned int bell_pitch, bell_duration;
-	unsigned long led_mask;
-	int global_auto_repeat;
-	char auto_repeats[32];
+        int bell_percent;
+        unsigned int bell_pitch, bell_duration;
+        unsigned long led_mask;
+        int global_auto_repeat;
+        char auto_repeats[32];
 } XKeyboardState;
 
 /* Data structure for XGetMotionEvents.  */
 
 typedef struct {
         Time time;
-	short x, y;
+        short x, y;
 } XTimeCoord;
 
 /* Data structure for X{Set,Get}ModifierMapping */
 
 typedef struct {
- 	int max_keypermod;	/* The server's max # of keys per modifier */
- 	KeyCode *modifiermap;	/* An 8 by max_keypermod array of modifiers */
+        int max_keypermod;      /* The server's max # of keys per modifier */
+        KeyCode *modifiermap;   /* An 8 by max_keypermod array of modifiers */
 } XModifierKeymap;
 
 
@@ -504,7 +504,7 @@ typedef struct {
 typedef struct _XDisplay Display;
 #endif
 
-struct _XPrivate;		/* Forward declare before use for C++ */
+struct _XPrivate;               /* Forward declare before use for C++ */
 struct _XrmHashBucketRec;
 
 typedef struct 
@@ -512,57 +512,57 @@ typedef struct
 _XDisplay
 #endif
 {
-	XExtData *ext_data;	/* hook for extension to hang data */
-	struct _XPrivate *private1;
-	int fd;			/* Network socket. */
-	int private2;
-	int proto_major_version;/* major version of server's X protocol */
-	int proto_minor_version;/* minor version of servers X protocol */
-	char *vendor;		/* vendor of the server hardware */
+        XExtData *ext_data;     /* hook for extension to hang data */
+        struct _XPrivate *private1;
+        int fd;                 /* Network socket. */
+        int private2;
+        int proto_major_version;/* major version of server's X protocol */
+        int proto_minor_version;/* minor version of servers X protocol */
+        char *vendor;           /* vendor of the server hardware */
         XID private3;
-	XID private4;
-	XID private5;
-	int private6;
-	XID (*resource_alloc)();/* allocator function */
-	int byte_order;		/* screen byte order, LSBFirst, MSBFirst */
-	int bitmap_unit;	/* padding and data requirements */
-	int bitmap_pad;		/* padding requirements on bitmaps */
-	int bitmap_bit_order;	/* LeastSignificant or MostSignificant */
-	int nformats;		/* number of pixmap formats in list */
-	ScreenFormat *pixmap_format;	/* pixmap format list */
-	int private8;
-	int release;		/* release of the server */
-	struct _XPrivate *private9, *private10;
-	int qlen;		/* Length of input event queue */
-	unsigned long last_request_read; /* seq number of last event read */
-	unsigned long request;	/* sequence number of last request. */
-	XPointer private11;
-	XPointer private12;
-	XPointer private13;
-	XPointer private14;
-	unsigned max_request_size; /* maximum number 32 bit words in request*/
-	struct _XrmHashBucketRec *db;
-	int (*private15)();
-	char *display_name;	/* "host:display" string used on this connect*/
-	int default_screen;	/* default screen for operations */
-	int nscreens;		/* number of screens on this server*/
-	Screen *screens;	/* pointer to list of screens */
-	unsigned long motion_buffer;	/* size of motion buffer */
-	unsigned long private16;
-	int min_keycode;	/* minimum defined keycode */
-	int max_keycode;	/* maximum defined keycode */
-	XPointer private17;
-	XPointer private18;
-	int private19;
-	char *xdefaults;	/* contents of defaults from server */
-	/* there is more to this structure, but it is private to Xlib */
+        XID private4;
+        XID private5;
+        int private6;
+        XID (*resource_alloc)();/* allocator function */
+        int byte_order;         /* screen byte order, LSBFirst, MSBFirst */
+        int bitmap_unit;        /* padding and data requirements */
+        int bitmap_pad;         /* padding requirements on bitmaps */
+        int bitmap_bit_order;   /* LeastSignificant or MostSignificant */
+        int nformats;           /* number of pixmap formats in list */
+        ScreenFormat *pixmap_format;    /* pixmap format list */
+        int private8;
+        int release;            /* release of the server */
+        struct _XPrivate *private9, *private10;
+        int qlen;               /* Length of input event queue */
+        unsigned long last_request_read; /* seq number of last event read */
+        unsigned long request;  /* sequence number of last request. */
+        XPointer private11;
+        XPointer private12;
+        XPointer private13;
+        XPointer private14;
+        unsigned max_request_size; /* maximum number 32 bit words in request*/
+        struct _XrmHashBucketRec *db;
+        int (*private15)();
+        char *display_name;     /* "host:display" string used on this connect*/
+        int default_screen;     /* default screen for operations */
+        int nscreens;           /* number of screens on this server*/
+        Screen *screens;        /* pointer to list of screens */
+        unsigned long motion_buffer;    /* size of motion buffer */
+        unsigned long private16;
+        int min_keycode;        /* minimum defined keycode */
+        int max_keycode;        /* maximum defined keycode */
+        XPointer private17;
+        XPointer private18;
+        int private19;
+        char *xdefaults;        /* contents of defaults from server */
+        /* there is more to this structure, but it is private to Xlib */
 }
 #ifdef XLIB_ILLEGAL_ACCESS
 Display, 
 #endif
 *_XPrivDisplay;
 
-#if NeedFunctionPrototypes	/* prototypes require event type definitions */
+#if NeedFunctionPrototypes      /* prototypes require event type definitions */
 #undef _XEVENT_
 #endif
 #ifndef _XEVENT_
@@ -570,387 +570,387 @@ Display,
  * Definitions of specific events.
  */
 typedef struct {
-	int type;		/* of event */
-	unsigned long serial;	/* # of last request processed by server */
-	Bool send_event;	/* true if this came from a SendEvent request */
-	Display *display;	/* Display the event was read from */
-	Window window;	        /* "event" window it is reported relative to */
-	Window root;	        /* root window that the event occured on */
-	Window subwindow;	/* child window */
-	Time time;		/* milliseconds */
-	int x, y;		/* pointer x, y coordinates in event window */
-	int x_root, y_root;	/* coordinates relative to root */
-	unsigned int state;	/* key or button mask */
-	unsigned int keycode;	/* detail */
-	Bool same_screen;	/* same screen flag */
+        int type;               /* of event */
+        unsigned long serial;   /* # of last request processed by server */
+        Bool send_event;        /* true if this came from a SendEvent request */
+        Display *display;       /* Display the event was read from */
+        Window window;          /* "event" window it is reported relative to */
+        Window root;            /* root window that the event occured on */
+        Window subwindow;       /* child window */
+        Time time;              /* milliseconds */
+        int x, y;               /* pointer x, y coordinates in event window */
+        int x_root, y_root;     /* coordinates relative to root */
+        unsigned int state;     /* key or button mask */
+        unsigned int keycode;   /* detail */
+        Bool same_screen;       /* same screen flag */
 } XKeyEvent;
 typedef XKeyEvent XKeyPressedEvent;
 typedef XKeyEvent XKeyReleasedEvent;
 
 typedef struct {
-	int type;		/* of event */
-	unsigned long serial;	/* # of last request processed by server */
-	Bool send_event;	/* true if this came from a SendEvent request */
-	Display *display;	/* Display the event was read from */
-	Window window;	        /* "event" window it is reported relative to */
-	Window root;	        /* root window that the event occured on */
-	Window subwindow;	/* child window */
-	Time time;		/* milliseconds */
-	int x, y;		/* pointer x, y coordinates in event window */
-	int x_root, y_root;	/* coordinates relative to root */
-	unsigned int state;	/* key or button mask */
-	unsigned int button;	/* detail */
-	Bool same_screen;	/* same screen flag */
+        int type;               /* of event */
+        unsigned long serial;   /* # of last request processed by server */
+        Bool send_event;        /* true if this came from a SendEvent request */
+        Display *display;       /* Display the event was read from */
+        Window window;          /* "event" window it is reported relative to */
+        Window root;            /* root window that the event occured on */
+        Window subwindow;       /* child window */
+        Time time;              /* milliseconds */
+        int x, y;               /* pointer x, y coordinates in event window */
+        int x_root, y_root;     /* coordinates relative to root */
+        unsigned int state;     /* key or button mask */
+        unsigned int button;    /* detail */
+        Bool same_screen;       /* same screen flag */
 } XButtonEvent;
 typedef XButtonEvent XButtonPressedEvent;
 typedef XButtonEvent XButtonReleasedEvent;
 
 typedef struct {
-	int type;		/* of event */
-	unsigned long serial;	/* # of last request processed by server */
-	Bool send_event;	/* true if this came from a SendEvent request */
-	Display *display;	/* Display the event was read from */
-	Window window;	        /* "event" window reported relative to */
-	Window root;	        /* root window that the event occured on */
-	Window subwindow;	/* child window */
-	Time time;		/* milliseconds */
-	int x, y;		/* pointer x, y coordinates in event window */
-	int x_root, y_root;	/* coordinates relative to root */
-	unsigned int state;	/* key or button mask */
-	char is_hint;		/* detail */
-	Bool same_screen;	/* same screen flag */
+        int type;               /* of event */
+        unsigned long serial;   /* # of last request processed by server */
+        Bool send_event;        /* true if this came from a SendEvent request */
+        Display *display;       /* Display the event was read from */
+        Window window;          /* "event" window reported relative to */
+        Window root;            /* root window that the event occured on */
+        Window subwindow;       /* child window */
+        Time time;              /* milliseconds */
+        int x, y;               /* pointer x, y coordinates in event window */
+        int x_root, y_root;     /* coordinates relative to root */
+        unsigned int state;     /* key or button mask */
+        char is_hint;           /* detail */
+        Bool same_screen;       /* same screen flag */
 } XMotionEvent;
 typedef XMotionEvent XPointerMovedEvent;
 
 typedef struct {
-	int type;		/* of event */
-	unsigned long serial;	/* # of last request processed by server */
-	Bool send_event;	/* true if this came from a SendEvent request */
-	Display *display;	/* Display the event was read from */
-	Window window;	        /* "event" window reported relative to */
-	Window root;	        /* root window that the event occured on */
-	Window subwindow;	/* child window */
-	Time time;		/* milliseconds */
-	int x, y;		/* pointer x, y coordinates in event window */
-	int x_root, y_root;	/* coordinates relative to root */
-	int mode;		/* NotifyNormal, NotifyGrab, NotifyUngrab */
-	int detail;
-	/*
-	 * NotifyAncestor, NotifyVirtual, NotifyInferior, 
-	 * NotifyNonlinear,NotifyNonlinearVirtual
-	 */
-	Bool same_screen;	/* same screen flag */
-	Bool focus;		/* boolean focus */
-	unsigned int state;	/* key or button mask */
+        int type;               /* of event */
+        unsigned long serial;   /* # of last request processed by server */
+        Bool send_event;        /* true if this came from a SendEvent request */
+        Display *display;       /* Display the event was read from */
+        Window window;          /* "event" window reported relative to */
+        Window root;            /* root window that the event occured on */
+        Window subwindow;       /* child window */
+        Time time;              /* milliseconds */
+        int x, y;               /* pointer x, y coordinates in event window */
+        int x_root, y_root;     /* coordinates relative to root */
+        int mode;               /* NotifyNormal, NotifyGrab, NotifyUngrab */
+        int detail;
+        /*
+         * NotifyAncestor, NotifyVirtual, NotifyInferior, 
+         * NotifyNonlinear,NotifyNonlinearVirtual
+         */
+        Bool same_screen;       /* same screen flag */
+        Bool focus;             /* boolean focus */
+        unsigned int state;     /* key or button mask */
 } XCrossingEvent;
 typedef XCrossingEvent XEnterWindowEvent;
 typedef XCrossingEvent XLeaveWindowEvent;
 
 typedef struct {
-	int type;		/* FocusIn or FocusOut */
-	unsigned long serial;	/* # of last request processed by server */
-	Bool send_event;	/* true if this came from a SendEvent request */
-	Display *display;	/* Display the event was read from */
-	Window window;		/* window of event */
-	int mode;		/* NotifyNormal, NotifyGrab, NotifyUngrab */
-	int detail;
-	/*
-	 * NotifyAncestor, NotifyVirtual, NotifyInferior, 
-	 * NotifyNonlinear,NotifyNonlinearVirtual, NotifyPointer,
-	 * NotifyPointerRoot, NotifyDetailNone 
-	 */
+        int type;               /* FocusIn or FocusOut */
+        unsigned long serial;   /* # of last request processed by server */
+        Bool send_event;        /* true if this came from a SendEvent request */
+        Display *display;       /* Display the event was read from */
+        Window window;          /* window of event */
+        int mode;               /* NotifyNormal, NotifyGrab, NotifyUngrab */
+        int detail;
+        /*
+         * NotifyAncestor, NotifyVirtual, NotifyInferior, 
+         * NotifyNonlinear,NotifyNonlinearVirtual, NotifyPointer,
+         * NotifyPointerRoot, NotifyDetailNone 
+         */
 } XFocusChangeEvent;
 typedef XFocusChangeEvent XFocusInEvent;
 typedef XFocusChangeEvent XFocusOutEvent;
 
 /* generated on EnterWindow and FocusIn  when KeyMapState selected */
 typedef struct {
-	int type;
-	unsigned long serial;	/* # of last request processed by server */
-	Bool send_event;	/* true if this came from a SendEvent request */
-	Display *display;	/* Display the event was read from */
-	Window window;
-	char key_vector[32];
-} XKeymapEvent;	
+        int type;
+        unsigned long serial;   /* # of last request processed by server */
+        Bool send_event;        /* true if this came from a SendEvent request */
+        Display *display;       /* Display the event was read from */
+        Window window;
+        char key_vector[32];
+} XKeymapEvent; 
 
 typedef struct {
-	int type;
-	unsigned long serial;	/* # of last request processed by server */
-	Bool send_event;	/* true if this came from a SendEvent request */
-	Display *display;	/* Display the event was read from */
-	Window window;
-	int x, y;
-	int width, height;
-	int count;		/* if non-zero, at least this many more */
+        int type;
+        unsigned long serial;   /* # of last request processed by server */
+        Bool send_event;        /* true if this came from a SendEvent request */
+        Display *display;       /* Display the event was read from */
+        Window window;
+        int x, y;
+        int width, height;
+        int count;              /* if non-zero, at least this many more */
 } XExposeEvent;
 
 typedef struct {
-	int type;
-	unsigned long serial;	/* # of last request processed by server */
-	Bool send_event;	/* true if this came from a SendEvent request */
-	Display *display;	/* Display the event was read from */
-	Drawable drawable;
-	int x, y;
-	int width, height;
-	int count;		/* if non-zero, at least this many more */
-	int major_code;		/* core is CopyArea or CopyPlane */
-	int minor_code;		/* not defined in the core */
+        int type;
+        unsigned long serial;   /* # of last request processed by server */
+        Bool send_event;        /* true if this came from a SendEvent request */
+        Display *display;       /* Display the event was read from */
+        Drawable drawable;
+        int x, y;
+        int width, height;
+        int count;              /* if non-zero, at least this many more */
+        int major_code;         /* core is CopyArea or CopyPlane */
+        int minor_code;         /* not defined in the core */
 } XGraphicsExposeEvent;
 
 typedef struct {
-	int type;
-	unsigned long serial;	/* # of last request processed by server */
-	Bool send_event;	/* true if this came from a SendEvent request */
-	Display *display;	/* Display the event was read from */
-	Drawable drawable;
-	int major_code;		/* core is CopyArea or CopyPlane */
-	int minor_code;		/* not defined in the core */
+        int type;
+        unsigned long serial;   /* # of last request processed by server */
+        Bool send_event;        /* true if this came from a SendEvent request */
+        Display *display;       /* Display the event was read from */
+        Drawable drawable;
+        int major_code;         /* core is CopyArea or CopyPlane */
+        int minor_code;         /* not defined in the core */
 } XNoExposeEvent;
 
 typedef struct {
-	int type;
-	unsigned long serial;	/* # of last request processed by server */
-	Bool send_event;	/* true if this came from a SendEvent request */
-	Display *display;	/* Display the event was read from */
-	Window window;
-	int state;		/* Visibility state */
+        int type;
+        unsigned long serial;   /* # of last request processed by server */
+        Bool send_event;        /* true if this came from a SendEvent request */
+        Display *display;       /* Display the event was read from */
+        Window window;
+        int state;              /* Visibility state */
 } XVisibilityEvent;
 
 typedef struct {
-	int type;
-	unsigned long serial;	/* # of last request processed by server */
-	Bool send_event;	/* true if this came from a SendEvent request */
-	Display *display;	/* Display the event was read from */
-	Window parent;		/* parent of the window */
-	Window window;		/* window id of window created */
-	int x, y;		/* window location */
-	int width, height;	/* size of window */
-	int border_width;	/* border width */
-	Bool override_redirect;	/* creation should be overridden */
+        int type;
+        unsigned long serial;   /* # of last request processed by server */
+        Bool send_event;        /* true if this came from a SendEvent request */
+        Display *display;       /* Display the event was read from */
+        Window parent;          /* parent of the window */
+        Window window;          /* window id of window created */
+        int x, y;               /* window location */
+        int width, height;      /* size of window */
+        int border_width;       /* border width */
+        Bool override_redirect; /* creation should be overridden */
 } XCreateWindowEvent;
 
 typedef struct {
-	int type;
-	unsigned long serial;	/* # of last request processed by server */
-	Bool send_event;	/* true if this came from a SendEvent request */
-	Display *display;	/* Display the event was read from */
-	Window event;
-	Window window;
+        int type;
+        unsigned long serial;   /* # of last request processed by server */
+        Bool send_event;        /* true if this came from a SendEvent request */
+        Display *display;       /* Display the event was read from */
+        Window event;
+        Window window;
 } XDestroyWindowEvent;
 
 typedef struct {
-	int type;
-	unsigned long serial;	/* # of last request processed by server */
-	Bool send_event;	/* true if this came from a SendEvent request */
-	Display *display;	/* Display the event was read from */
-	Window event;
-	Window window;
-	Bool from_configure;
+        int type;
+        unsigned long serial;   /* # of last request processed by server */
+        Bool send_event;        /* true if this came from a SendEvent request */
+        Display *display;       /* Display the event was read from */
+        Window event;
+        Window window;
+        Bool from_configure;
 } XUnmapEvent;
 
 typedef struct {
-	int type;
-	unsigned long serial;	/* # of last request processed by server */
-	Bool send_event;	/* true if this came from a SendEvent request */
-	Display *display;	/* Display the event was read from */
-	Window event;
-	Window window;
-	Bool override_redirect;	/* boolean, is override set... */
+        int type;
+        unsigned long serial;   /* # of last request processed by server */
+        Bool send_event;        /* true if this came from a SendEvent request */
+        Display *display;       /* Display the event was read from */
+        Window event;
+        Window window;
+        Bool override_redirect; /* boolean, is override set... */
 } XMapEvent;
 
 typedef struct {
-	int type;
-	unsigned long serial;	/* # of last request processed by server */
-	Bool send_event;	/* true if this came from a SendEvent request */
-	Display *display;	/* Display the event was read from */
-	Window parent;
-	Window window;
+        int type;
+        unsigned long serial;   /* # of last request processed by server */
+        Bool send_event;        /* true if this came from a SendEvent request */
+        Display *display;       /* Display the event was read from */
+        Window parent;
+        Window window;
 } XMapRequestEvent;
 
 typedef struct {
-	int type;
-	unsigned long serial;	/* # of last request processed by server */
-	Bool send_event;	/* true if this came from a SendEvent request */
-	Display *display;	/* Display the event was read from */
-	Window event;
-	Window window;
-	Window parent;
-	int x, y;
-	Bool override_redirect;
+        int type;
+        unsigned long serial;   /* # of last request processed by server */
+        Bool send_event;        /* true if this came from a SendEvent request */
+        Display *display;       /* Display the event was read from */
+        Window event;
+        Window window;
+        Window parent;
+        int x, y;
+        Bool override_redirect;
 } XReparentEvent;
 
 typedef struct {
-	int type;
-	unsigned long serial;	/* # of last request processed by server */
-	Bool send_event;	/* true if this came from a SendEvent request */
-	Display *display;	/* Display the event was read from */
-	Window event;
-	Window window;
-	int x, y;
-	int width, height;
-	int border_width;
-	Window above;
-	Bool override_redirect;
+        int type;
+        unsigned long serial;   /* # of last request processed by server */
+        Bool send_event;        /* true if this came from a SendEvent request */
+        Display *display;       /* Display the event was read from */
+        Window event;
+        Window window;
+        int x, y;
+        int width, height;
+        int border_width;
+        Window above;
+        Bool override_redirect;
 } XConfigureEvent;
 
 typedef struct {
-	int type;
-	unsigned long serial;	/* # of last request processed by server */
-	Bool send_event;	/* true if this came from a SendEvent request */
-	Display *display;	/* Display the event was read from */
-	Window event;
-	Window window;
-	int x, y;
+        int type;
+        unsigned long serial;   /* # of last request processed by server */
+        Bool send_event;        /* true if this came from a SendEvent request */
+        Display *display;       /* Display the event was read from */
+        Window event;
+        Window window;
+        int x, y;
 } XGravityEvent;
 
 typedef struct {
-	int type;
-	unsigned long serial;	/* # of last request processed by server */
-	Bool send_event;	/* true if this came from a SendEvent request */
-	Display *display;	/* Display the event was read from */
-	Window window;
-	int width, height;
+        int type;
+        unsigned long serial;   /* # of last request processed by server */
+        Bool send_event;        /* true if this came from a SendEvent request */
+        Display *display;       /* Display the event was read from */
+        Window window;
+        int width, height;
 } XResizeRequestEvent;
 
 typedef struct {
-	int type;
-	unsigned long serial;	/* # of last request processed by server */
-	Bool send_event;	/* true if this came from a SendEvent request */
-	Display *display;	/* Display the event was read from */
-	Window parent;
-	Window window;
-	int x, y;
-	int width, height;
-	int border_width;
-	Window above;
-	int detail;		/* Above, Below, TopIf, BottomIf, Opposite */
-	unsigned long value_mask;
+        int type;
+        unsigned long serial;   /* # of last request processed by server */
+        Bool send_event;        /* true if this came from a SendEvent request */
+        Display *display;       /* Display the event was read from */
+        Window parent;
+        Window window;
+        int x, y;
+        int width, height;
+        int border_width;
+        Window above;
+        int detail;             /* Above, Below, TopIf, BottomIf, Opposite */
+        unsigned long value_mask;
 } XConfigureRequestEvent;
 
 typedef struct {
-	int type;
-	unsigned long serial;	/* # of last request processed by server */
-	Bool send_event;	/* true if this came from a SendEvent request */
-	Display *display;	/* Display the event was read from */
-	Window event;
-	Window window;
-	int place;		/* PlaceOnTop, PlaceOnBottom */
+        int type;
+        unsigned long serial;   /* # of last request processed by server */
+        Bool send_event;        /* true if this came from a SendEvent request */
+        Display *display;       /* Display the event was read from */
+        Window event;
+        Window window;
+        int place;              /* PlaceOnTop, PlaceOnBottom */
 } XCirculateEvent;
 
 typedef struct {
-	int type;
-	unsigned long serial;	/* # of last request processed by server */
-	Bool send_event;	/* true if this came from a SendEvent request */
-	Display *display;	/* Display the event was read from */
-	Window parent;
-	Window window;
-	int place;		/* PlaceOnTop, PlaceOnBottom */
+        int type;
+        unsigned long serial;   /* # of last request processed by server */
+        Bool send_event;        /* true if this came from a SendEvent request */
+        Display *display;       /* Display the event was read from */
+        Window parent;
+        Window window;
+        int place;              /* PlaceOnTop, PlaceOnBottom */
 } XCirculateRequestEvent;
 
 typedef struct {
-	int type;
-	unsigned long serial;	/* # of last request processed by server */
-	Bool send_event;	/* true if this came from a SendEvent request */
-	Display *display;	/* Display the event was read from */
-	Window window;
-	Atom atom;
-	Time time;
-	int state;		/* NewValue, Deleted */
+        int type;
+        unsigned long serial;   /* # of last request processed by server */
+        Bool send_event;        /* true if this came from a SendEvent request */
+        Display *display;       /* Display the event was read from */
+        Window window;
+        Atom atom;
+        Time time;
+        int state;              /* NewValue, Deleted */
 } XPropertyEvent;
 
 typedef struct {
-	int type;
-	unsigned long serial;	/* # of last request processed by server */
-	Bool send_event;	/* true if this came from a SendEvent request */
-	Display *display;	/* Display the event was read from */
-	Window window;
-	Atom selection;
-	Time time;
+        int type;
+        unsigned long serial;   /* # of last request processed by server */
+        Bool send_event;        /* true if this came from a SendEvent request */
+        Display *display;       /* Display the event was read from */
+        Window window;
+        Atom selection;
+        Time time;
 } XSelectionClearEvent;
 
 typedef struct {
-	int type;
-	unsigned long serial;	/* # of last request processed by server */
-	Bool send_event;	/* true if this came from a SendEvent request */
-	Display *display;	/* Display the event was read from */
-	Window owner;
-	Window requestor;
-	Atom selection;
-	Atom target;
-	Atom property;
-	Time time;
+        int type;
+        unsigned long serial;   /* # of last request processed by server */
+        Bool send_event;        /* true if this came from a SendEvent request */
+        Display *display;       /* Display the event was read from */
+        Window owner;
+        Window requestor;
+        Atom selection;
+        Atom target;
+        Atom property;
+        Time time;
 } XSelectionRequestEvent;
 
 typedef struct {
-	int type;
-	unsigned long serial;	/* # of last request processed by server */
-	Bool send_event;	/* true if this came from a SendEvent request */
-	Display *display;	/* Display the event was read from */
-	Window requestor;
-	Atom selection;
-	Atom target;
-	Atom property;		/* ATOM or None */
-	Time time;
+        int type;
+        unsigned long serial;   /* # of last request processed by server */
+        Bool send_event;        /* true if this came from a SendEvent request */
+        Display *display;       /* Display the event was read from */
+        Window requestor;
+        Atom selection;
+        Atom target;
+        Atom property;          /* ATOM or None */
+        Time time;
 } XSelectionEvent;
 
 typedef struct {
-	int type;
-	unsigned long serial;	/* # of last request processed by server */
-	Bool send_event;	/* true if this came from a SendEvent request */
-	Display *display;	/* Display the event was read from */
-	Window window;
-	Colormap colormap;	/* COLORMAP or None */
+        int type;
+        unsigned long serial;   /* # of last request processed by server */
+        Bool send_event;        /* true if this came from a SendEvent request */
+        Display *display;       /* Display the event was read from */
+        Window window;
+        Colormap colormap;      /* COLORMAP or None */
 #if defined(__cplusplus) || defined(c_plusplus)
-	Bool c_new;		/* C++ */
+        Bool c_new;             /* C++ */
 #else
-	Bool new;
+        Bool new;
 #endif
-	int state;		/* ColormapInstalled, ColormapUninstalled */
+        int state;              /* ColormapInstalled, ColormapUninstalled */
 } XColormapEvent;
 
 typedef struct {
-	int type;
-	unsigned long serial;	/* # of last request processed by server */
-	Bool send_event;	/* true if this came from a SendEvent request */
-	Display *display;	/* Display the event was read from */
-	Window window;
-	Atom message_type;
-	int format;
-	union {
-		char b[20];
-		short s[10];
-		long l[5];
-		} data;
+        int type;
+        unsigned long serial;   /* # of last request processed by server */
+        Bool send_event;        /* true if this came from a SendEvent request */
+        Display *display;       /* Display the event was read from */
+        Window window;
+        Atom message_type;
+        int format;
+        union {
+                char b[20];
+                short s[10];
+                long l[5];
+                } data;
 } XClientMessageEvent;
 
 typedef struct {
-	int type;
-	unsigned long serial;	/* # of last request processed by server */
-	Bool send_event;	/* true if this came from a SendEvent request */
-	Display *display;	/* Display the event was read from */
-	Window window;		/* unused */
-	int request;		/* one of MappingModifier, MappingKeyboard,
-				   MappingPointer */
-	int first_keycode;	/* first keycode */
-	int count;		/* defines range of change w. first_keycode*/
+        int type;
+        unsigned long serial;   /* # of last request processed by server */
+        Bool send_event;        /* true if this came from a SendEvent request */
+        Display *display;       /* Display the event was read from */
+        Window window;          /* unused */
+        int request;            /* one of MappingModifier, MappingKeyboard,
+                                   MappingPointer */
+        int first_keycode;      /* first keycode */
+        int count;              /* defines range of change w. first_keycode*/
 } XMappingEvent;
 
 typedef struct {
-	int type;
-	Display *display;	/* Display the event was read from */
-	XID resourceid;		/* resource id */
-	unsigned long serial;	/* serial number of failed request */
-	unsigned char error_code;	/* error code of failed request */
-	unsigned char request_code;	/* Major op-code of failed request */
-	unsigned char minor_code;	/* Minor op-code of failed request */
+        int type;
+        Display *display;       /* Display the event was read from */
+        XID resourceid;         /* resource id */
+        unsigned long serial;   /* serial number of failed request */
+        unsigned char error_code;       /* error code of failed request */
+        unsigned char request_code;     /* Major op-code of failed request */
+        unsigned char minor_code;       /* Minor op-code of failed request */
 } XErrorEvent;
 
 typedef struct {
-	int type;
-	unsigned long serial;	/* # of last request processed by server */
-	Bool send_event;	/* true if this came from a SendEvent request */
-	Display *display;/* Display the event was read from */
-	Window window;	/* window on which event was requested in event mask */
+        int type;
+        unsigned long serial;   /* # of last request processed by server */
+        Bool send_event;        /* true if this came from a SendEvent request */
+        Display *display;/* Display the event was read from */
+        Window window;  /* window on which event was requested in event mask */
 } XAnyEvent;
 
 /*
@@ -958,39 +958,39 @@ typedef struct {
  * event structure internally, to avoid memory fragmentation.
  */
 typedef union _XEvent {
-        int type;		/* must not be changed; first element */
-	XAnyEvent xany;
-	XKeyEvent xkey;
-	XButtonEvent xbutton;
-	XMotionEvent xmotion;
-	XCrossingEvent xcrossing;
-	XFocusChangeEvent xfocus;
-	XExposeEvent xexpose;
-	XGraphicsExposeEvent xgraphicsexpose;
-	XNoExposeEvent xnoexpose;
-	XVisibilityEvent xvisibility;
-	XCreateWindowEvent xcreatewindow;
-	XDestroyWindowEvent xdestroywindow;
-	XUnmapEvent xunmap;
-	XMapEvent xmap;
-	XMapRequestEvent xmaprequest;
-	XReparentEvent xreparent;
-	XConfigureEvent xconfigure;
-	XGravityEvent xgravity;
-	XResizeRequestEvent xresizerequest;
-	XConfigureRequestEvent xconfigurerequest;
-	XCirculateEvent xcirculate;
-	XCirculateRequestEvent xcirculaterequest;
-	XPropertyEvent xproperty;
-	XSelectionClearEvent xselectionclear;
-	XSelectionRequestEvent xselectionrequest;
-	XSelectionEvent xselection;
-	XColormapEvent xcolormap;
-	XClientMessageEvent xclient;
-	XMappingEvent xmapping;
-	XErrorEvent xerror;
-	XKeymapEvent xkeymap;
-	long pad[24];
+        int type;               /* must not be changed; first element */
+        XAnyEvent xany;
+        XKeyEvent xkey;
+        XButtonEvent xbutton;
+        XMotionEvent xmotion;
+        XCrossingEvent xcrossing;
+        XFocusChangeEvent xfocus;
+        XExposeEvent xexpose;
+        XGraphicsExposeEvent xgraphicsexpose;
+        XNoExposeEvent xnoexpose;
+        XVisibilityEvent xvisibility;
+        XCreateWindowEvent xcreatewindow;
+        XDestroyWindowEvent xdestroywindow;
+        XUnmapEvent xunmap;
+        XMapEvent xmap;
+        XMapRequestEvent xmaprequest;
+        XReparentEvent xreparent;
+        XConfigureEvent xconfigure;
+        XGravityEvent xgravity;
+        XResizeRequestEvent xresizerequest;
+        XConfigureRequestEvent xconfigurerequest;
+        XCirculateEvent xcirculate;
+        XCirculateRequestEvent xcirculaterequest;
+        XPropertyEvent xproperty;
+        XSelectionClearEvent xselectionclear;
+        XSelectionRequestEvent xselectionrequest;
+        XSelectionEvent xselection;
+        XColormapEvent xcolormap;
+        XClientMessageEvent xclient;
+        XMappingEvent xmapping;
+        XErrorEvent xerror;
+        XKeymapEvent xkeymap;
+        long pad[24];
 } XEvent;
 #endif
 
@@ -1000,12 +1000,12 @@ typedef union _XEvent {
  * per character font metric information.
  */
 typedef struct {
-    short	lbearing;	/* origin to left edge of raster */
-    short	rbearing;	/* origin to right edge of raster */
-    short	width;		/* advance to next char's origin */
-    short	ascent;		/* baseline to top edge of raster */
-    short	descent;	/* baseline to bottom edge of raster */
-    unsigned short attributes;	/* per char flags (not predefined) */
+    short       lbearing;       /* origin to left edge of raster */
+    short       rbearing;       /* origin to right edge of raster */
+    short       width;          /* advance to next char's origin */
+    short       ascent;         /* baseline to top edge of raster */
+    short       descent;        /* baseline to bottom edge of raster */
+    unsigned short attributes;  /* per char flags (not predefined) */
 } XCharStruct;
 
 /*
@@ -1018,53 +1018,53 @@ typedef struct {
 } XFontProp;
 
 typedef struct {
-    XExtData	*ext_data;	/* hook for extension to hang data */
+    XExtData    *ext_data;      /* hook for extension to hang data */
     Font        fid;            /* Font id for this font */
-    unsigned	direction;	/* hint about direction the font is painted */
-    unsigned	min_char_or_byte2;/* first character */
-    unsigned	max_char_or_byte2;/* last character */
-    unsigned	min_byte1;	/* first row that exists */
-    unsigned	max_byte1;	/* last row that exists */
-    Bool	all_chars_exist;/* flag if all characters have non-zero size*/
-    unsigned	default_char;	/* char to print for undefined character */
+    unsigned    direction;      /* hint about direction the font is painted */
+    unsigned    min_char_or_byte2;/* first character */
+    unsigned    max_char_or_byte2;/* last character */
+    unsigned    min_byte1;      /* first row that exists */
+    unsigned    max_byte1;      /* last row that exists */
+    Bool        all_chars_exist;/* flag if all characters have non-zero size*/
+    unsigned    default_char;   /* char to print for undefined character */
     int         n_properties;   /* how many properties there are */
-    XFontProp	*properties;	/* pointer to array of additional properties*/
-    XCharStruct	min_bounds;	/* minimum bounds over all existing char*/
-    XCharStruct	max_bounds;	/* maximum bounds over all existing char*/
-    XCharStruct	*per_char;	/* first_char to last_char information */
-    int		ascent;		/* log. extent above baseline for spacing */
-    int		descent;	/* log. descent below baseline for spacing */
+    XFontProp   *properties;    /* pointer to array of additional properties*/
+    XCharStruct min_bounds;     /* minimum bounds over all existing char*/
+    XCharStruct max_bounds;     /* maximum bounds over all existing char*/
+    XCharStruct *per_char;      /* first_char to last_char information */
+    int         ascent;         /* log. extent above baseline for spacing */
+    int         descent;        /* log. descent below baseline for spacing */
 } XFontStruct;
 
 /*
  * PolyText routines take these as arguments.
  */
 typedef struct {
-    char *chars;		/* pointer to string */
-    int nchars;			/* number of characters */
-    int delta;			/* delta between strings */
-    Font font;			/* font to print it in, None don't change */
+    char *chars;                /* pointer to string */
+    int nchars;                 /* number of characters */
+    int delta;                  /* delta between strings */
+    Font font;                  /* font to print it in, None don't change */
 } XTextItem;
 
-typedef struct {		/* normal 16 bit characters are two bytes */
+typedef struct {                /* normal 16 bit characters are two bytes */
     unsigned char byte1;
     unsigned char byte2;
 } XChar2b;
 
 typedef struct {
-    XChar2b *chars;		/* two byte characters */
-    int nchars;			/* number of characters */
-    int delta;			/* delta between strings */
-    Font font;			/* font to print it in, None don't change */
+    XChar2b *chars;             /* two byte characters */
+    int nchars;                 /* number of characters */
+    int delta;                  /* delta between strings */
+    Font font;                  /* font to print it in, None don't change */
 } XTextItem16;
 
 
 typedef union { Display *display;
-		GC gc;
-		Visual *visual;
-		Screen *screen;
-		ScreenFormat *pixmap_format;
-		XFontStruct *font; } XEDataObject;
+                GC gc;
+                Visual *visual;
+                Screen *screen;
+                ScreenFormat *pixmap_format;
+                XFontStruct *font; } XEDataObject;
 
 typedef struct {
     XRectangle      max_ink_extent;
@@ -1116,7 +1116,7 @@ typedef enum {
 
 typedef struct {
     int num_orient;
-    XOrientation *orient;	/* Input Text description */
+    XOrientation *orient;       /* Input Text description */
 } XOMOrientation;
 
 typedef struct {
@@ -1137,15 +1137,15 @@ typedef struct {
     XIMStyle *supported_styles;
 } XIMStyles;
 
-#define XIMPreeditArea		0x0001L
-#define XIMPreeditCallbacks	0x0002L
-#define XIMPreeditPosition	0x0004L
-#define XIMPreeditNothing	0x0008L
-#define XIMPreeditNone		0x0010L
-#define XIMStatusArea		0x0100L
-#define XIMStatusCallbacks	0x0200L
-#define XIMStatusNothing	0x0400L
-#define XIMStatusNone		0x0800L
+#define XIMPreeditArea          0x0001L
+#define XIMPreeditCallbacks     0x0002L
+#define XIMPreeditPosition      0x0004L
+#define XIMPreeditNothing       0x0008L
+#define XIMPreeditNone          0x0010L
+#define XIMStatusArea           0x0100L
+#define XIMStatusCallbacks      0x0200L
+#define XIMStatusNothing        0x0400L
+#define XIMStatusNone           0x0800L
 
 #define XNVaNestedList "XNVaNestedList"
 #define XNQueryInputStyle "queryInputStyle"
@@ -1191,11 +1191,11 @@ typedef struct {
 #define XNPreeditState "preeditState"
 #define XNSeparatorofNestedList "separatorofNestedList"
 
-#define XBufferOverflow		-1
-#define XLookupNone		1
-#define XLookupChars		2
-#define XLookupKeySym		3
-#define XLookupBoth		4
+#define XBufferOverflow         -1
+#define XLookupNone             1
+#define XLookupChars            2
+#define XLookupKeySym           3
+#define XLookupBoth             4
 
 #if NeedFunctionPrototypes
 typedef void *XVaNestedList;
@@ -1210,73 +1210,73 @@ typedef struct {
 
 typedef unsigned long XIMFeedback;
 
-#define XIMReverse		1L
-#define XIMUnderline		(1L<<1) 
-#define XIMHighlight		(1L<<2)
-#define XIMPrimary	 	(1L<<5)
-#define XIMSecondary		(1L<<6)
-#define XIMTertiary	 	(1L<<7)
-#define XIMVisibleToForward 	(1L<<8)
-#define XIMVisibleToBackword 	(1L<<9)
-#define XIMVisibleToCenter 	(1L<<10)
+#define XIMReverse              1L
+#define XIMUnderline            (1L<<1) 
+#define XIMHighlight            (1L<<2)
+#define XIMPrimary              (1L<<5)
+#define XIMSecondary            (1L<<6)
+#define XIMTertiary             (1L<<7)
+#define XIMVisibleToForward     (1L<<8)
+#define XIMVisibleToBackword    (1L<<9)
+#define XIMVisibleToCenter      (1L<<10)
 
 typedef struct _XIMText {
     unsigned short length;
     XIMFeedback *feedback;
     Bool encoding_is_wchar; 
     union {
-	char *multi_byte;
-	wchar_t *wide_char;
+        char *multi_byte;
+        wchar_t *wide_char;
     } string; 
 } XIMText;
 
-typedef	unsigned long	 XIMPreeditState;
+typedef unsigned long    XIMPreeditState;
 
-#define	XIMPreeditUnKnown	0L
-#define	XIMPreeditEnable	1L
-#define	XIMPreeditDisable	(1L<<1)
+#define XIMPreeditUnKnown       0L
+#define XIMPreeditEnable        1L
+#define XIMPreeditDisable       (1L<<1)
 
-typedef	struct	_XIMPreeditStateNotifyCallbackStruct {
+typedef struct  _XIMPreeditStateNotifyCallbackStruct {
     XIMPreeditState state;
 } XIMPreeditStateNotifyCallbackStruct;
 
-typedef	unsigned long	 XIMResetState;
+typedef unsigned long    XIMResetState;
 
-#define	XIMInitialState		1L
-#define	XIMPreserveState	(1L<<1)
+#define XIMInitialState         1L
+#define XIMPreserveState        (1L<<1)
 
 typedef unsigned long XIMStringConversionFeedback;
 
-#define	XIMStringConversionLeftEdge	(0x00000001)
-#define	XIMStringConversionRightEdge	(0x00000002)
-#define	XIMStringConversionTopEdge	(0x00000004)
-#define	XIMStringConversionBottomEdge	(0x00000008)
-#define	XIMStringConversionConcealed	(0x00000010)
-#define	XIMStringConversionWrapped	(0x00000020)
+#define XIMStringConversionLeftEdge     (0x00000001)
+#define XIMStringConversionRightEdge    (0x00000002)
+#define XIMStringConversionTopEdge      (0x00000004)
+#define XIMStringConversionBottomEdge   (0x00000008)
+#define XIMStringConversionConcealed    (0x00000010)
+#define XIMStringConversionWrapped      (0x00000020)
 
 typedef struct _XIMStringConversionText {
     unsigned short length;
     XIMStringConversionFeedback *feedback;
     Bool encoding_is_wchar; 
     union {
-	char *mbs;
-	wchar_t *wcs;
+        char *mbs;
+        wchar_t *wcs;
     } string; 
 } XIMStringConversionText;
 
-typedef	unsigned short	XIMStringConversionPosition;
+typedef unsigned short  XIMStringConversionPosition;
 
-typedef	unsigned short	XIMStringConversionType;
+typedef unsigned short  XIMStringConversionType;
 
-#define	XIMStringConversionBuffer	(0x0001)
-#define	XIMStringConversionLine		(0x0002)
-#define	XIMStringConversionWord		(0x0003)
-#define	XIMStringConversionChar		(0x0004)
+#define XIMStringConversionBuffer       (0x0001)
+#define XIMStringConversionLine         (0x0002)
+#define XIMStringConversionWord         (0x0003)
+#define XIMStringConversionChar         (0x0004)
 
-typedef	unsigned short	XIMStringConversionOperation;
+typedef unsigned short  XIMStringConversionOperation;
 
-#define	XIMStringConversionSubstitution	(0x0001)
-#define	XIMStringConversionRetrival	(0x0002)
+#define XIMStringConversionSubstitution (0x0001)
+#define XIMStringConversionRetrival     (0x0002)
 
 typedef struct _XIMStringConversionCallbackStruct {
     XIMStringConversionPosition position;
@@ -1287,9 +1287,9 @@ typedef struct _XIMStringConversionCallbackStruct {
 } XIMStringConversionCallbackStruct;
 
 typedef struct _XIMPreeditDrawCallbackStruct {
-    int caret;		/* Cursor offset within pre-edit string */
-    int chg_first;	/* Starting change position */
-    int chg_length;	/* Length of the change in character count */
+    int caret;          /* Cursor offset within pre-edit string */
+    int chg_first;      /* Starting change position */
+    int chg_length;     /* Length of the change in character count */
     XIMText *text;
 } XIMPreeditDrawCallbackStruct;
 
@@ -1304,45 +1304,45 @@ typedef enum {
 } XIMCaretDirection;
 
 typedef enum {
-    XIMIsInvisible,	/* Disable caret feedback */ 
-    XIMIsPrimary,	/* UI defined caret feedback */
-    XIMIsSecondary	/* UI defined caret feedback */
+    XIMIsInvisible,     /* Disable caret feedback */ 
+    XIMIsPrimary,       /* UI defined caret feedback */
+    XIMIsSecondary      /* UI defined caret feedback */
 } XIMCaretStyle;
 
 typedef struct _XIMPreeditCaretCallbackStruct {
-    int position;		 /* Caret offset within pre-edit string */
+    int position;                /* Caret offset within pre-edit string */
     XIMCaretDirection direction; /* Caret moves direction */
-    XIMCaretStyle style;	 /* Feedback of the caret */
+    XIMCaretStyle style;         /* Feedback of the caret */
 } XIMPreeditCaretCallbackStruct;
 
 typedef enum {
     XIMTextType,
     XIMBitmapType
 } XIMStatusDataType;
-	
+        
 typedef struct _XIMStatusDrawCallbackStruct {
     XIMStatusDataType type;
     union {
-	XIMText *text;
-	Pixmap  bitmap;
+        XIMText *text;
+        Pixmap  bitmap;
     } data;
 } XIMStatusDrawCallbackStruct;
 
 typedef struct _XIMHotKeyTrigger {
-    KeySym	 keysym;
-    int		 modifier;
-    int		 modifier_mask;
+    KeySym       keysym;
+    int          modifier;
+    int          modifier_mask;
 } XIMHotKeyTrigger;
 
 typedef struct _XIMHotKeyTriggers {
-    int			 num_hot_key;
-    XIMHotKeyTrigger	*key;
+    int                  num_hot_key;
+    XIMHotKeyTrigger    *key;
 } XIMHotKeyTriggers;
 
-typedef	unsigned long	 XIMHotKeyState;
+typedef unsigned long    XIMHotKeyState;
 
-#define	XIMHotKeyStateON	(0x0001L)
-#define	XIMHotKeyStateOFF	(0x0002L)
+#define XIMHotKeyStateON        (0x0001L)
+#define XIMHotKeyStateOFF       (0x0002L)
 
 typedef struct {
     unsigned short count_values;
@@ -1361,8 +1361,8 @@ extern MagickExport XFontStruct *XLoadQueryFont(
 XFontStruct *XLoadQueryFont(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    _Xconst char* b	/* name */
+    Display* a          /* display */,
+    _Xconst char* b     /* name */
 #endif
 ){}
 
@@ -1372,8 +1372,8 @@ extern MagickExport XFontStruct *XQueryFont(
 XFontStruct *XQueryFont(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    XID	b		/* font_ID */
+    Display* a          /* display */,
+    XID b               /* font_ID */
 #endif
 ){}
 
@@ -1383,11 +1383,11 @@ extern MagickExport XTimeCoord *XGetMotionEvents(
 XTimeCoord *XGetMotionEvents(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Window b		/* w */,
-    Time c		/* start */,
-    Time d		/* stop */,
-    int* e		/* nevents_return */
+    Display* a          /* display */,
+    Window b            /* w */,
+    Time c              /* start */,
+    Time d              /* stop */,
+    int* e              /* nevents_return */
 #endif
 ){}
 
@@ -1397,39 +1397,39 @@ extern MagickExport XModifierKeymap *XDeleteModifiermapEntry(
 XModifierKeymap *XDeleteModifiermapEntry(
 #endif
 #if NeedFunctionPrototypes
-    XModifierKeymap* a	/* modmap */,
+    XModifierKeymap* a  /* modmap */,
 #if NeedWidePrototypes
-    unsigned int b	/* keycode_entry */,
+    unsigned int b      /* keycode_entry */,
 #else
-    KeyCode	c	/* keycode_entry */,
+    KeyCode     c       /* keycode_entry */,
 #endif
-    int	d		/* modifier */
+    int d               /* modifier */
 #endif
 ){}
 
 #if defined(_VISUALC_)
-extern MagickExport XModifierKeymap	*XGetModifierMapping(
+extern MagickExport XModifierKeymap     *XGetModifierMapping(
 #else
-XModifierKeymap	*XGetModifierMapping(
+XModifierKeymap *XGetModifierMapping(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */
+    Display* a          /* display */
 #endif
 ){}
 
 #if defined(_VISUALC_)
-extern MagickExport XModifierKeymap	*XInsertModifiermapEntry(
+extern MagickExport XModifierKeymap     *XInsertModifiermapEntry(
 #else
-XModifierKeymap	*XInsertModifiermapEntry(
+XModifierKeymap *XInsertModifiermapEntry(
 #endif
 #if NeedFunctionPrototypes
-    XModifierKeymap* b	/* modmap */,
+    XModifierKeymap* b  /* modmap */,
 #if NeedWidePrototypes
-    unsigned int c	/* keycode_entry */,
+    unsigned int c      /* keycode_entry */,
 #else
-    KeyCode	d	/* keycode_entry */,
+    KeyCode     d       /* keycode_entry */,
 #endif
-    int	e		/* modifier */    
+    int e               /* modifier */    
 #endif
 ){}
 
@@ -1439,7 +1439,7 @@ extern MagickExport XModifierKeymap *XNewModifiermap(
 XModifierKeymap *XNewModifiermap(
 #endif
 #if NeedFunctionPrototypes
-    int	a		/* max_keys_per_mod */
+    int a               /* max_keys_per_mod */
 #endif
 ){}
 
@@ -1449,16 +1449,16 @@ extern MagickExport XImage *XCreateImage(
 XImage *XCreateImage(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Visual*	b	/* visual */,
-    unsigned int c	/* depth */,
-    int	d		/* format */,
-    int	e		/* offset */,
-    char* f		/* data */,
-    unsigned int g	/* width */,
-    unsigned int h	/* height */,
-    int	i		/* bitmap_pad */,
-    int	j		/* bytes_per_line */
+    Display* a          /* display */,
+    Visual*     b       /* visual */,
+    unsigned int c      /* depth */,
+    int d               /* format */,
+    int e               /* offset */,
+    char* f             /* data */,
+    unsigned int g      /* width */,
+    unsigned int h      /* height */,
+    int i               /* bitmap_pad */,
+    int j               /* bytes_per_line */
 #endif
 ){}
 #if defined(_VISUALC_)
@@ -1467,7 +1467,7 @@ extern MagickExport Status XInitImage(
 Status XInitImage(
 #endif
 #if NeedFunctionPrototypes
-    XImage*	a	/* image */
+    XImage*     a       /* image */
 #endif
 ){}
 #if defined(_VISUALC_)
@@ -1476,14 +1476,14 @@ extern MagickExport XImage *XGetImage(
 XImage *XGetImage(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Drawable b		/* d */,
-    int	c		/* x */,
-    int	d		/* y */,
-    unsigned int e	/* width */,
-    unsigned int f	/* height */,
-    unsigned long g	/* plane_mask */,
-    int	h		/* format */
+    Display* a          /* display */,
+    Drawable b          /* d */,
+    int c               /* x */,
+    int d               /* y */,
+    unsigned int e      /* width */,
+    unsigned int f      /* height */,
+    unsigned long g     /* plane_mask */,
+    int h               /* format */
 #endif
 ){}
 #if defined(_VISUALC_)
@@ -1492,17 +1492,17 @@ extern MagickExport XImage *XGetSubImage(
 XImage *XGetSubImage(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Drawable b		/* d */,
-    int	c		/* x */,
-    int	d		/* y */,
-    unsigned int e	/* width */,
-    unsigned int f	/* height */,
-    unsigned long g	/* plane_mask */,
-    int	h		/* format */,
-    XImage*	i	/* dest_image */,
-    int	j		/* dest_x */,
-    int	k		/* dest_y */
+    Display* a          /* display */,
+    Drawable b          /* d */,
+    int c               /* x */,
+    int d               /* y */,
+    unsigned int e      /* width */,
+    unsigned int f      /* height */,
+    unsigned long g     /* plane_mask */,
+    int h               /* format */,
+    XImage*     i       /* dest_image */,
+    int j               /* dest_x */,
+    int k               /* dest_y */
 #endif
 ){}
 
@@ -1536,8 +1536,8 @@ extern MagickExport char *XFetchBytes(
 char *XFetchBytes(
 #endif
 #if NeedFunctionPrototypes
-    Display* b		/* display */,
-    int* c		/* nbytes_return */
+    Display* b          /* display */,
+    int* c              /* nbytes_return */
 #endif
 ){}
 #if defined(_VISUALC_)
@@ -1546,9 +1546,9 @@ extern MagickExport char *XFetchBuffer(
 char *XFetchBuffer(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    int* b		/* nbytes_return */,
-    int	c		/* buffer */
+    Display* a          /* display */,
+    int* b              /* nbytes_return */,
+    int c               /* buffer */
 #endif
 ){}
 #if defined(_VISUALC_)
@@ -1557,8 +1557,8 @@ extern MagickExport char *XGetAtomName(
 char *XGetAtomName(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Atom b		/* atom */
+    Display* a          /* display */,
+    Atom b              /* atom */
 #endif
 ){}
 #if defined(_VISUALC_)
@@ -1567,10 +1567,10 @@ extern MagickExport Status XGetAtomNames(
 Status XGetAtomNames(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* dpy */,
-    Atom* b		/* atoms */,
-    int	c		/* count */,
-    char** d		/* names_return */
+    Display* a          /* dpy */,
+    Atom* b             /* atoms */,
+    int c               /* count */,
+    char** d            /* names_return */
 #endif
 ){}
 #if defined(_VISUALC_)
@@ -1579,9 +1579,9 @@ extern MagickExport char *XGetDefault(
 char *XGetDefault(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    _Xconst char* b	/* program */,
-    _Xconst char* c	/* option */		  
+    Display* a          /* display */,
+    _Xconst char* b     /* program */,
+    _Xconst char* c     /* option */              
 #endif
 ){}
 #if defined(_VISUALC_)
@@ -1596,7 +1596,7 @@ extern MagickExport char *XKeysymToString(
 char *XKeysymToString(
 #endif
 #if NeedFunctionPrototypes
-    KeySym	a	/* keysym */
+    KeySym      a       /* keysym */
 #endif
 ){}
 
@@ -1606,8 +1606,8 @@ extern MagickExport int (*XSynchronize(
 int (*XSynchronize(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Bool b		/* onoff */
+    Display* a          /* display */,
+    Bool b              /* onoff */
 #endif
 )){};
 #if defined(_VISUALC_)
@@ -1616,12 +1616,12 @@ extern MagickExport int (*XSetAfterFunction(
 int (*XSetAfterFunction(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
+    Display* a          /* display */,
     int (* b) (
 #if NeedNestedPrototypes
-	     Display* a	/* display */
+             Display* a /* display */
 #endif
-            )		/* procedure */
+            )           /* procedure */
 #endif
 )){};
 #if defined(_VISUALC_)
@@ -1630,9 +1630,9 @@ extern MagickExport Atom XInternAtom(
 Atom XInternAtom(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    _Xconst char* b	/* atom_name */,
-    Bool c		/* only_if_exists */		 
+    Display* a          /* display */,
+    _Xconst char* b     /* atom_name */,
+    Bool c              /* only_if_exists */             
 #endif
 ){}
 #if defined(_VISUALC_)
@@ -1641,11 +1641,11 @@ extern MagickExport Status XInternAtoms(
 Status XInternAtoms(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* dpy */,
-    char** b		/* names */,
-    int	c		/* count */,
-    Bool d		/* onlyIfExists */,
-    Atom* e		/* atoms_return */
+    Display* a          /* dpy */,
+    char** b            /* names */,
+    int c               /* count */,
+    Bool d              /* onlyIfExists */,
+    Atom* e             /* atoms_return */
 #endif
 ){}
 #if defined(_VISUALC_)
@@ -1654,8 +1654,8 @@ extern MagickExport Colormap XCopyColormapAndFree(
 Colormap XCopyColormapAndFree(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Colormap b		/* colormap */
+    Display* a          /* display */,
+    Colormap b          /* colormap */
 #endif
 ){}
 #if defined(_VISUALC_)
@@ -1664,10 +1664,10 @@ extern MagickExport Colormap XCreateColormap(
 Colormap XCreateColormap(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Window b		/* w */,
-    Visual*	c	/* visual */,
-    int	d		/* alloc */			 
+    Display* a          /* display */,
+    Window b            /* w */,
+    Visual*     c       /* visual */,
+    int d               /* alloc */                      
 #endif
 ){}
 #if defined(_VISUALC_)
@@ -1676,13 +1676,13 @@ extern MagickExport Cursor XCreatePixmapCursor(
 Cursor XCreatePixmapCursor(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Pixmap b		/* source */,
-    Pixmap c	/* mask */,
-    XColor*	d	/* foreground_color */,
-    XColor*	e	/* background_color */,
-    unsigned int f	/* x */,
-    unsigned int g	/* y */			   
+    Display* a          /* display */,
+    Pixmap b            /* source */,
+    Pixmap c    /* mask */,
+    XColor*     d       /* foreground_color */,
+    XColor*     e       /* background_color */,
+    unsigned int f      /* x */,
+    unsigned int g      /* y */                    
 #endif
 ){}
 #if defined(_VISUALC_)
@@ -1691,13 +1691,13 @@ extern MagickExport Cursor XCreateGlyphCursor(
 Cursor XCreateGlyphCursor(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Font b		/* source_font */,
-    Font c		/* mask_font */,
-    unsigned int d	/* source_char */,
-    unsigned int e	/* mask_char */,
-    XColor*	f	/* foreground_color */,
-    XColor*	g	/* background_color */
+    Display* a          /* display */,
+    Font b              /* source_font */,
+    Font c              /* mask_font */,
+    unsigned int d      /* source_char */,
+    unsigned int e      /* mask_char */,
+    XColor*     f       /* foreground_color */,
+    XColor*     g       /* background_color */
 #endif
 ){}
 #if defined(_VISUALC_)
@@ -1706,8 +1706,8 @@ extern MagickExport Cursor XCreateFontCursor(
 Cursor XCreateFontCursor(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    unsigned int b	/* shape */
+    Display* a          /* display */,
+    unsigned int b      /* shape */
 #endif
 ){}
 #if defined(_VISUALC_)
@@ -1716,8 +1716,8 @@ extern MagickExport Font XLoadFont(
 Font XLoadFont(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    _Xconst char* b	/* name */
+    Display* a          /* display */,
+    _Xconst char* b     /* name */
 #endif
 ){}
 #if defined(_VISUALC_)
@@ -1726,10 +1726,10 @@ extern MagickExport GC XCreateGC(
 GC XCreateGC(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Drawable b		/* d */,
-    unsigned long c	/* valuemask */,
-    XGCValues* d		/* values */
+    Display* a          /* display */,
+    Drawable b          /* d */,
+    unsigned long c     /* valuemask */,
+    XGCValues* d                /* values */
 #endif
 ){}
 #if defined(_VISUALC_)
@@ -1738,7 +1738,7 @@ extern MagickExport GContext XGContextFromGC(
 GContext XGContextFromGC(
 #endif
 #if NeedFunctionPrototypes
-    GC a			/* gc */
+    GC a                        /* gc */
 #endif
 ){}
 #if defined(_VISUALC_)
@@ -1747,8 +1747,8 @@ extern MagickExport void XFlushGC(
 void XFlushGC(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    GC	b		/* gc */
+    Display* a          /* display */,
+    GC  b               /* gc */
 #endif
 ){}
 #if defined(_VISUALC_)
@@ -1757,11 +1757,11 @@ extern MagickExport Pixmap XCreatePixmap(
 Pixmap XCreatePixmap(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Drawable b		/* d */,
-    unsigned int c	/* width */,
-    unsigned int d	/* height */,
-    unsigned int e	/* depth */		        
+    Display* a          /* display */,
+    Drawable b          /* d */,
+    unsigned int c      /* width */,
+    unsigned int d      /* height */,
+    unsigned int e      /* depth */                     
 #endif
 ){}
 #if defined(_VISUALC_)
@@ -1770,11 +1770,11 @@ extern MagickExport Pixmap XCreateBitmapFromData(
 Pixmap XCreateBitmapFromData(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Drawable b		/* d */,
-    _Xconst char* c	/* data */,
-    unsigned int d	/* width */,
-    unsigned int e	/* height */
+    Display* a          /* display */,
+    Drawable b          /* d */,
+    _Xconst char* c     /* data */,
+    unsigned int d      /* width */,
+    unsigned int e      /* height */
 #endif
 ){}
 #if defined(_VISUALC_)
@@ -1783,14 +1783,14 @@ extern MagickExport Pixmap XCreatePixmapFromBitmapData(
 Pixmap XCreatePixmapFromBitmapData(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Drawable b		/* d */,
-    char* c		/* data */,
-    unsigned int d	/* width */,
-    unsigned int e	/* height */,
-    unsigned long f	/* fg */,
-    unsigned long g	/* bg */,
-    unsigned int h	/* depth */
+    Display* a          /* display */,
+    Drawable b          /* d */,
+    char* c             /* data */,
+    unsigned int d      /* width */,
+    unsigned int e      /* height */,
+    unsigned long f     /* fg */,
+    unsigned long g     /* bg */,
+    unsigned int h      /* depth */
 #endif
 ){}
 #if defined(_VISUALC_)
@@ -1799,15 +1799,15 @@ extern MagickExport Window XCreateSimpleWindow(
 Window XCreateSimpleWindow(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Window b		/* parent */,
-    int	c		/* x */,
-    int	d		/* y */,
-    unsigned int e	/* width */,
-    unsigned int f	/* height */,
-    unsigned int g	/* border_width */,
-    unsigned long h	/* border */,
-    unsigned long i	/* background */
+    Display* a          /* display */,
+    Window b            /* parent */,
+    int c               /* x */,
+    int d               /* y */,
+    unsigned int e      /* width */,
+    unsigned int f      /* height */,
+    unsigned int g      /* border_width */,
+    unsigned long h     /* border */,
+    unsigned long i     /* background */
 #endif
 ){}
 #if defined(_VISUALC_)
@@ -1816,8 +1816,8 @@ extern MagickExport Window XGetSelectionOwner(
 Window XGetSelectionOwner(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Atom b		/* selection */
+    Display* a          /* display */,
+    Atom b              /* selection */
 #endif
 ){}
 #if defined(_VISUALC_)
@@ -1826,18 +1826,18 @@ extern MagickExport Window XCreateWindow(
 Window XCreateWindow(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Window b		/* parent */,
-    int	c		/* x */,
-    int	d		/* y */,
-    unsigned int e	/* width */,
-    unsigned int f	/* height */,
-    unsigned int g	/* border_width */,
-    int	h		/* depth */,
-    unsigned int i	/* class */,
-    Visual*	j	/* visual */,
-    unsigned long k	/* valuemask */,
-    XSetWindowAttributes* l	/* attributes */
+    Display* a          /* display */,
+    Window b            /* parent */,
+    int c               /* x */,
+    int d               /* y */,
+    unsigned int e      /* width */,
+    unsigned int f      /* height */,
+    unsigned int g      /* border_width */,
+    int h               /* depth */,
+    unsigned int i      /* class */,
+    Visual*     j       /* visual */,
+    unsigned long k     /* valuemask */,
+    XSetWindowAttributes* l     /* attributes */
 #endif
 ){} 
 #if defined(_VISUALC_)
@@ -1846,9 +1846,9 @@ extern MagickExport Colormap *XListInstalledColormaps(
 Colormap *XListInstalledColormaps(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Window b		/* w */,
-    int* c		/* num_return */
+    Display* a          /* display */,
+    Window b            /* w */,
+    int* c              /* num_return */
 #endif
 ){}
 #if defined(_VISUALC_)
@@ -1857,10 +1857,10 @@ extern MagickExport char **XListFonts(
 char **XListFonts(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    _Xconst char* b	/* pattern */,
-    int	c		/* maxnames */,
-    int* d		/* actual_count_return */
+    Display* a          /* display */,
+    _Xconst char* b     /* pattern */,
+    int c               /* maxnames */,
+    int* d              /* actual_count_return */
 #endif
 ){}
 #if defined(_VISUALC_)
@@ -1869,11 +1869,11 @@ extern MagickExport char **XListFontsWithInfo(
 char **XListFontsWithInfo(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    _Xconst char* b	/* pattern */,
-    int	c		/* maxnames */,
-    int* d		/* count_return */,
-    XFontStruct** e	/* info_return */
+    Display* a          /* display */,
+    _Xconst char* b     /* pattern */,
+    int c               /* maxnames */,
+    int* d              /* count_return */,
+    XFontStruct** e     /* info_return */
 #endif
 ){}
 #if defined(_VISUALC_)
@@ -1882,8 +1882,8 @@ extern MagickExport char **XGetFontPath(
 char **XGetFontPath(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    int* b		/* npaths_return */
+    Display* a          /* display */,
+    int* b              /* npaths_return */
 #endif
 ){}
 #if defined(_VISUALC_)
@@ -1892,8 +1892,8 @@ extern MagickExport char **XListExtensions(
 char **XListExtensions(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    int* b		/* nextensions_return */
+    Display* a          /* display */,
+    int* b              /* nextensions_return */
 #endif
 ){}
 #if defined(_VISUALC_)
@@ -1902,9 +1902,9 @@ extern MagickExport Atom *XListProperties(
 Atom *XListProperties(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Window b		/* w */,
-    int* c		/* num_prop_return */
+    Display* a          /* display */,
+    Window b            /* w */,
+    int* c              /* num_prop_return */
 #endif
 ){}
 #if defined(_VISUALC_)
@@ -1913,9 +1913,9 @@ extern MagickExport XHostAddress *XListHosts(
 XHostAddress *XListHosts(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    int* b		/* nhosts_return */,
-    Bool* c		/* state_return */
+    Display* a          /* display */,
+    int* b              /* nhosts_return */,
+    Bool* c             /* state_return */
 #endif
 ){}
 #if defined(_VISUALC_)
@@ -1924,13 +1924,13 @@ extern MagickExport KeySym XKeycodeToKeysym(
 KeySym XKeycodeToKeysym(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
+    Display* a          /* display */,
 #if NeedWidePrototypes
-    unsigned int b	/* keycode */,
+    unsigned int b      /* keycode */,
 #else
-    KeyCode	c	/* keycode */,
+    KeyCode     c       /* keycode */,
 #endif
-    int	d		/* index */
+    int d               /* index */
 #endif
 ){}
 #if defined(_VISUALC_)
@@ -1939,8 +1939,8 @@ extern MagickExport KeySym XLookupKeysym(
 KeySym XLookupKeysym(
 #endif
 #if NeedFunctionPrototypes
-    XKeyEvent* a		/* key_event */,
-    int	b		/* index */
+    XKeyEvent* a                /* key_event */,
+    int b               /* index */
 #endif
 ){}
 #if defined(_VISUALC_)
@@ -1949,14 +1949,14 @@ extern MagickExport KeySym *XGetKeyboardMapping(
 KeySym *XGetKeyboardMapping(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
+    Display* a          /* display */,
 #if NeedWidePrototypes
-    unsigned int b	/* first_keycode */,
+    unsigned int b      /* first_keycode */,
 #else
-    KeyCode	c	/* first_keycode */,
+    KeyCode     c       /* first_keycode */,
 #endif
-    int	d		/* keycode_count */,
-    int* e		/* keysyms_per_keycode_return */
+    int d               /* keycode_count */,
+    int* e              /* keysyms_per_keycode_return */
 #endif
 ){}
 #if defined(_VISUALC_)
@@ -1965,7 +1965,7 @@ extern MagickExport KeySym XStringToKeysym(
 KeySym XStringToKeysym(
 #endif
 #if NeedFunctionPrototypes
-    _Xconst char* a	/* string */
+    _Xconst char* a     /* string */
 #endif
 ){}
 #if defined(_VISUALC_)
@@ -1974,7 +1974,7 @@ extern MagickExport long XMaxRequestSize(
 long XMaxRequestSize(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */
+    Display* a          /* display */
 #endif
 ){}
 #if defined(_VISUALC_)
@@ -1983,7 +1983,7 @@ extern MagickExport long XExtendedMaxRequestSize(
 long XExtendedMaxRequestSize(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */
+    Display* a          /* display */
 #endif
 ){}
 #if defined(_VISUALC_)
@@ -1992,7 +1992,7 @@ extern MagickExport char *XResourceManagerString(
 char *XResourceManagerString(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */
+    Display* a          /* display */
 #endif
 ){}
 #if defined(_VISUALC_)
@@ -2001,7 +2001,7 @@ extern MagickExport char *XScreenResourceString(
 char *XScreenResourceString(
 #endif
 #if NeedFunctionPrototypes
-	Screen*	a	/* screen */
+        Screen* a       /* screen */
 #endif
 ){}
 #if defined(_VISUALC_)
@@ -2010,7 +2010,7 @@ extern MagickExport unsigned long XDisplayMotionBufferSize(
 unsigned long XDisplayMotionBufferSize(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */
+    Display* a          /* display */
 #endif
 ){}
 #if defined(_VISUALC_)
@@ -2019,7 +2019,7 @@ extern MagickExport VisualID XVisualIDFromVisual(
 VisualID XVisualIDFromVisual(
 #endif
 #if NeedFunctionPrototypes
-    Visual*	a	/* visual */
+    Visual*     a       /* visual */
 #endif
 ){}
 
@@ -2041,7 +2041,7 @@ extern MagickExport void XLockDisplay(
 void XLockDisplay(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */
+    Display* a          /* display */
 #endif
 ){}
 
@@ -2051,7 +2051,7 @@ extern MagickExport void XUnlockDisplay(
 void XUnlockDisplay(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */
+    Display* a          /* display */
 #endif
 ){}
 
@@ -2063,8 +2063,8 @@ extern MagickExport XExtCodes *XInitExtension(
 XExtCodes *XInitExtension(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    _Xconst char* b	/* name */
+    Display* a          /* display */,
+    _Xconst char* b     /* name */
 #endif
 ){}
 
@@ -2074,7 +2074,7 @@ extern MagickExport XExtCodes *XAddExtension(
 XExtCodes *XAddExtension(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */
+    Display* a          /* display */
 #endif
 ){}
 #if defined(_VISUALC_)
@@ -2083,8 +2083,8 @@ extern MagickExport XExtData *XFindOnExtensionList(
 XExtData *XFindOnExtensionList(
 #endif
 #if NeedFunctionPrototypes
-    XExtData** a		/* structure */,
-    int	b		/* number */
+    XExtData** a                /* structure */,
+    int b               /* number */
 #endif
 ){}
 #if defined(_VISUALC_)
@@ -2093,7 +2093,7 @@ extern MagickExport XExtData **XEHeadOfExtensionList(
 XExtData **XEHeadOfExtensionList(
 #endif
 #if NeedFunctionPrototypes
-    XEDataObject a	/* object */
+    XEDataObject a      /* object */
 #endif
 ){}
 
@@ -2110,7 +2110,7 @@ extern MagickExport Window XDefaultRootWindow(
 Window XDefaultRootWindow(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */
+    Display* a          /* display */
 #endif
 ){}
 #if defined(_VISUALC_)
@@ -2119,7 +2119,7 @@ extern MagickExport Window XRootWindowOfScreen(
 Window XRootWindowOfScreen(
 #endif
 #if NeedFunctionPrototypes
-    Screen*	a	/* screen */
+    Screen*     a       /* screen */
 #endif
 ){}
 #if defined(_VISUALC_)
@@ -2128,8 +2128,8 @@ extern MagickExport Visual *XDefaultVisual(
 Visual *XDefaultVisual(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    int	b		/* screen_number */
+    Display* a          /* display */,
+    int b               /* screen_number */
 #endif
 ){}
 #if defined(_VISUALC_)
@@ -2138,7 +2138,7 @@ extern MagickExport Visual *XDefaultVisualOfScreen(
 Visual *XDefaultVisualOfScreen(
 #endif
 #if NeedFunctionPrototypes
-    Screen*	a	/* screen */
+    Screen*     a       /* screen */
 #endif
 ){}
 #if defined(_VISUALC_)
@@ -2147,8 +2147,8 @@ extern MagickExport GC XDefaultGC(
 GC XDefaultGC(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    int	b		/* screen_number */
+    Display* a          /* display */,
+    int b               /* screen_number */
 #endif
 ){}
 #if defined(_VISUALC_)
@@ -2157,7 +2157,7 @@ extern MagickExport GC XDefaultGCOfScreen(
 GC XDefaultGCOfScreen(
 #endif
 #if NeedFunctionPrototypes
-    Screen*	a	/* screen */
+    Screen*     a       /* screen */
 #endif
 ){}
 #if defined(_VISUALC_)
@@ -2166,8 +2166,8 @@ extern MagickExport unsigned long XBlackPixel(
 unsigned long XBlackPixel(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    int	b		/* screen_number */
+    Display* a          /* display */,
+    int b               /* screen_number */
 #endif
 ){}
 #if defined(_VISUALC_)
@@ -2176,8 +2176,8 @@ extern MagickExport unsigned long XWhitePixel(
 unsigned long XWhitePixel(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    int	b		/* screen_number */
+    Display* a          /* display */,
+    int b               /* screen_number */
 #endif
 ){}
 #if defined(_VISUALC_)
@@ -2195,7 +2195,7 @@ extern MagickExport unsigned long XBlackPixelOfScreen(
 unsigned long XBlackPixelOfScreen(
 #endif
 #if NeedFunctionPrototypes
-    Screen*	a	/* screen */
+    Screen*     a       /* screen */
 #endif
 ){}
 #if defined(_VISUALC_)
@@ -2204,7 +2204,7 @@ extern MagickExport unsigned long XWhitePixelOfScreen(
 unsigned long XWhitePixelOfScreen(
 #endif
 #if NeedFunctionPrototypes
-    Screen*	a	/* screen */
+    Screen*     a       /* screen */
 #endif
 ){}
 #if defined(_VISUALC_)
@@ -2213,7 +2213,7 @@ extern MagickExport unsigned long XNextRequest(
 unsigned long XNextRequest(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */
+    Display* a          /* display */
 #endif
 ){}
 #if defined(_VISUALC_)
@@ -2222,7 +2222,7 @@ extern MagickExport unsigned long XLastKnownRequestProcessed(
 unsigned long XLastKnownRequestProcessed(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */
+    Display* a          /* display */
 #endif
 ){}
 #if defined(_VISUALC_)
@@ -2231,7 +2231,7 @@ extern MagickExport char *XServerVendor(
 char *XServerVendor(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */
+    Display* a          /* display */
 #endif
 ){}
 #if defined(_VISUALC_)
@@ -2240,7 +2240,7 @@ extern MagickExport char *XDisplayString(
 char *XDisplayString(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */
+    Display* a          /* display */
 #endif
 ){}
 #if defined(_VISUALC_)
@@ -2249,8 +2249,8 @@ extern MagickExport Colormap XDefaultColormap(
 Colormap XDefaultColormap(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    int	b		/* screen_number */
+    Display* a          /* display */,
+    int b               /* screen_number */
 #endif
 ){}
 #if defined(_VISUALC_)
@@ -2259,7 +2259,7 @@ extern MagickExport Colormap XDefaultColormapOfScreen(
 Colormap XDefaultColormapOfScreen(
 #endif
 #if NeedFunctionPrototypes
-    Screen*	a	/* screen */
+    Screen*     a       /* screen */
 #endif
 ){}
 #if defined(_VISUALC_)
@@ -2268,7 +2268,7 @@ extern MagickExport Display *XDisplayOfScreen(
 Display *XDisplayOfScreen(
 #endif
 #if NeedFunctionPrototypes
-    Screen*	a	/* screen */
+    Screen*     a       /* screen */
 #endif
 ){}
 #if defined(_VISUALC_)
@@ -2277,8 +2277,8 @@ extern MagickExport Screen *XScreenOfDisplay(
 Screen *XScreenOfDisplay(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    int	b		/* screen_number */
+    Display* a          /* display */,
+    int b               /* screen_number */
 #endif
 ){}
 #if defined(_VISUALC_)
@@ -2293,7 +2293,7 @@ extern MagickExport long XEventMaskOfScreen(
 long XEventMaskOfScreen(
 #endif
 #if NeedFunctionPrototypes
-    Screen*	a	/* screen */
+    Screen*     a       /* screen */
 #endif
 ){}
 
@@ -2303,14 +2303,14 @@ extern MagickExport int XScreenNumberOfScreen(
 int XScreenNumberOfScreen(
 #endif
 #if NeedFunctionPrototypes
-    Screen*	a	/* screen */
+    Screen*     a       /* screen */
 #endif
 ){}
 
-typedef int (*XErrorHandler) (	    /* WARNING, this type not in Xlib spec */
+typedef int (*XErrorHandler) (      /* WARNING, this type not in Xlib spec */
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    XErrorEvent* b	/* error_event */
+    Display* a          /* display */,
+    XErrorEvent* b      /* error_event */
 #endif
 );
 
@@ -2321,14 +2321,14 @@ extern MagickExport XErrorHandler XSetErrorHandler (
 XErrorHandler XSetErrorHandler (
 #endif
 #if NeedFunctionPrototypes
-    XErrorHandler a	/* handler */
+    XErrorHandler a     /* handler */
 #endif
 ){}
 
 
 typedef int (*XIOErrorHandler) (    /* WARNING, this type not in Xlib spec */
 #if NeedFunctionPrototypes
-    Display* a		/* display */
+    Display* a          /* display */
 #endif
 );
 
@@ -2338,7 +2338,7 @@ extern MagickExport XIOErrorHandler XSetIOErrorHandler (
 XIOErrorHandler XSetIOErrorHandler (
 #endif
 #if NeedFunctionPrototypes
-    XIOErrorHandler	a/* handler */
+    XIOErrorHandler     a/* handler */
 #endif
 ){}
 
@@ -2349,8 +2349,8 @@ extern MagickExport XPixmapFormatValues *XListPixmapFormats(
 XPixmapFormatValues *XListPixmapFormats(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    int* b		/* count_return */
+    Display* a          /* display */,
+    int* b              /* count_return */
 #endif
 ){}
 #if defined(_VISUALC_)
@@ -2359,9 +2359,9 @@ extern MagickExport int *XListDepths(
 int *XListDepths(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    int	b		/* screen_number */,
-    int* c		/* count_return */
+    Display* a          /* display */,
+    int b               /* screen_number */,
+    int* c              /* count_return */
 #endif
 ){}
 
@@ -2373,11 +2373,11 @@ extern MagickExport Status XReconfigureWMWindow(
 Status XReconfigureWMWindow(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Window b		/* w */,
-    int	c		/* screen_number */,
-    unsigned int d	/* mask */,
-    XWindowChanges*	e /* changes */
+    Display* a          /* display */,
+    Window b            /* w */,
+    int c               /* screen_number */,
+    unsigned int d      /* mask */,
+    XWindowChanges*     e /* changes */
 #endif
 ){}
 
@@ -2387,10 +2387,10 @@ extern MagickExport Status XGetWMProtocols(
 Status XGetWMProtocols(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Window b		/* w */,
-    Atom** c		/* protocols_return */,
-    int* d		/* count_return */
+    Display* a          /* display */,
+    Window b            /* w */,
+    Atom** c            /* protocols_return */,
+    int* d              /* count_return */
 #endif
 ){}
 #if defined(_VISUALC_)
@@ -2399,10 +2399,10 @@ extern MagickExport Status XSetWMProtocols(
 Status XSetWMProtocols(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Window b		/* w */,
-    Atom* c		/* protocols */,
-    int	d		/* count */
+    Display* a          /* display */,
+    Window b            /* w */,
+    Atom* c             /* protocols */,
+    int d               /* count */
 #endif
 ){}
 #if defined(_VISUALC_)
@@ -2411,9 +2411,9 @@ extern MagickExport Status XIconifyWindow(
 Status XIconifyWindow(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Window b		/* w */,
-    int	c		/* screen_number */
+    Display* a          /* display */,
+    Window b            /* w */,
+    int c               /* screen_number */
 #endif
 ){}
 #if defined(_VISUALC_)
@@ -2422,9 +2422,9 @@ extern MagickExport Status XWithdrawWindow(
 Status XWithdrawWindow(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Window b		/* w */,
-    int	c		/* screen_number */
+    Display* a          /* display */,
+    Window b            /* w */,
+    int c               /* screen_number */
 #endif
 ){}
 #if defined(_VISUALC_)
@@ -2433,10 +2433,10 @@ extern MagickExport Status XGetCommand(
 Status XGetCommand(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Window b		/* w */,
-    char***	c	/* argv_return */,
-    int* d		/* argc_return */
+    Display* a          /* display */,
+    Window b            /* w */,
+    char***     c       /* argv_return */,
+    int* d              /* argc_return */
 #endif
 ){}
 #if defined(_VISUALC_)
@@ -2445,10 +2445,10 @@ extern MagickExport Status XGetWMColormapWindows(
 Status XGetWMColormapWindows(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Window b		/* w */,
-    Window** c		/* windows_return */,
-    int* d		/* count_return */
+    Display* a          /* display */,
+    Window b            /* w */,
+    Window** c          /* windows_return */,
+    int* d              /* count_return */
 #endif
 ){}
 #if defined(_VISUALC_)
@@ -2457,10 +2457,10 @@ extern MagickExport Status XSetWMColormapWindows(
 Status XSetWMColormapWindows(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Window b		/* w */,
-    Window*	c	/* colormap_windows */,
-    int	d		/* count */
+    Display* a          /* display */,
+    Window b            /* w */,
+    Window*     c       /* colormap_windows */,
+    int d               /* count */
 #endif
 ){}
 #if defined(_VISUALC_)
@@ -2469,7 +2469,7 @@ extern MagickExport void XFreeStringList(
 void XFreeStringList(
 #endif
 #if NeedFunctionPrototypes
-    char** a		/* list */
+    char** a            /* list */
 #endif
 ){}
 #if defined(_VISUALC_)
@@ -2478,9 +2478,9 @@ extern MagickExport XSetTransientForHint(
 XSetTransientForHint(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Window b		/* w */,
-    Window c		/* prop_window */
+    Display* a          /* display */,
+    Window b            /* w */,
+    Window c            /* prop_window */
 #endif
 ){}
 
@@ -2492,7 +2492,7 @@ extern MagickExport XActivateScreenSaver(
 XActivateScreenSaver(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */
+    Display* a          /* display */
 #endif
 ){}
 
@@ -2502,8 +2502,8 @@ extern MagickExport XAddHost(
 XAddHost(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    XHostAddress* b	/* host */
+    Display* a          /* display */,
+    XHostAddress* b     /* host */
 #endif
 ){}
 
@@ -2513,9 +2513,9 @@ extern MagickExport XAddHosts(
 XAddHosts(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    XHostAddress* b	/* hosts */,
-    int	c		/* num_hosts */    
+    Display* a          /* display */,
+    XHostAddress* b     /* hosts */,
+    int c               /* num_hosts */    
 #endif
 ){}
 
@@ -2525,8 +2525,8 @@ extern MagickExport XAddToExtensionList(
 XAddToExtensionList(
 #endif
 #if NeedFunctionPrototypes
-    struct _XExtData** a	/* structure */,
-    XExtData* b		/* ext_data */
+    struct _XExtData** a        /* structure */,
+    XExtData* b         /* ext_data */
 #endif
 ){}
 
@@ -2536,8 +2536,8 @@ extern MagickExport XAddToSaveSet(
 XAddToSaveSet(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Window b		/* w */
+    Display* a          /* display */,
+    Window b            /* w */
 #endif
 ){}
 
@@ -2547,9 +2547,9 @@ extern MagickExport Status XAllocColor(
 Status XAllocColor(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Colormap b		/* colormap */,
-    XColor*	c	/* screen_in_out */
+    Display* a          /* display */,
+    Colormap b          /* colormap */,
+    XColor*     c       /* screen_in_out */
 #endif
 ){}
 
@@ -2559,13 +2559,13 @@ extern MagickExport Status XAllocColorCells(
 Status XAllocColorCells(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Colormap b		/* colormap */,
-    Bool c	        /* contig */,
-    unsigned long* d	/* plane_masks_return */,
-    unsigned int e	/* nplanes */,
-    unsigned long* f	/* pixels_return */,
-    unsigned int g	/* npixels */
+    Display* a          /* display */,
+    Colormap b          /* colormap */,
+    Bool c              /* contig */,
+    unsigned long* d    /* plane_masks_return */,
+    unsigned int e      /* nplanes */,
+    unsigned long* f    /* pixels_return */,
+    unsigned int g      /* npixels */
 #endif
 ){}
 
@@ -2575,17 +2575,17 @@ extern MagickExport Status XAllocColorPlanes(
 Status XAllocColorPlanes(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Colormap b		/* colormap */,
-    Bool c		/* contig */,
-    unsigned long* x	/* pixels_return */,
-    int	d		/* ncolors */,
-    int	e		/* nreds */,
-    int	f		/* ngreens */,
-    int	g		/* nblues */,
-    unsigned long* h	/* rmask_return */,
-    unsigned long* i	/* gmask_return */,
-    unsigned long* j	/* bmask_return */
+    Display* a          /* display */,
+    Colormap b          /* colormap */,
+    Bool c              /* contig */,
+    unsigned long* x    /* pixels_return */,
+    int d               /* ncolors */,
+    int e               /* nreds */,
+    int f               /* ngreens */,
+    int g               /* nblues */,
+    unsigned long* h    /* rmask_return */,
+    unsigned long* i    /* gmask_return */,
+    unsigned long* j    /* bmask_return */
 #endif
 ){}
 
@@ -2595,11 +2595,11 @@ extern MagickExport Status XAllocNamedColor(
 Status XAllocNamedColor(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Colormap b		/* colormap */,
-    _Xconst char* c	/* color_name */,
-    XColor*	d	/* screen_def_return */,
-    XColor*	e	/* exact_def_return */
+    Display* a          /* display */,
+    Colormap b          /* colormap */,
+    _Xconst char* c     /* color_name */,
+    XColor*     d       /* screen_def_return */,
+    XColor*     e       /* exact_def_return */
 #endif
 ){}
 
@@ -2609,9 +2609,9 @@ extern MagickExport XAllowEvents(
 XAllowEvents(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    int	b		/* event_mode */,
-    Time c		/* time */
+    Display* a          /* display */,
+    int b               /* event_mode */,
+    Time c              /* time */
 #endif
 ){}
 
@@ -2621,7 +2621,7 @@ extern MagickExport XAutoRepeatOff(
 XAutoRepeatOff(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */
+    Display* a          /* display */
 #endif
 ){}
 
@@ -2631,7 +2631,7 @@ extern MagickExport XAutoRepeatOn(
 XAutoRepeatOn(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */
+    Display* a          /* display */
 #endif
 ){}
 
@@ -2641,8 +2641,8 @@ extern MagickExport XBell(
 XBell(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    int	b		/* percent */
+    Display* a          /* display */,
+    int b               /* percent */
 #endif
 ){}
 
@@ -2652,7 +2652,7 @@ extern MagickExport int XBitmapBitOrder(
 int XBitmapBitOrder(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */
+    Display* a          /* display */
 #endif
 ){}
 
@@ -2662,7 +2662,7 @@ extern MagickExport int XBitmapPad(
 int XBitmapPad(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */
+    Display* a          /* display */
 #endif
 ){}
 
@@ -2672,7 +2672,7 @@ extern MagickExport int XBitmapUnit(
 int XBitmapUnit(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */
+    Display* a          /* display */
 #endif
 ){}
 
@@ -2682,7 +2682,7 @@ extern MagickExport int XCellsOfScreen(
 int XCellsOfScreen(
 #endif
 #if NeedFunctionPrototypes
-    Screen*	a	/* screen */
+    Screen*     a       /* screen */
 #endif
 ){}
 
@@ -2692,10 +2692,10 @@ extern MagickExport XChangeActivePointerGrab(
 XChangeActivePointerGrab(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    unsigned int b	/* event_mask */,
-    Cursor c		/* cursor */,
-    Time d		/* time */
+    Display* a          /* display */,
+    unsigned int b      /* event_mask */,
+    Cursor c            /* cursor */,
+    Time d              /* time */
 #endif
 ){}
 
@@ -2705,10 +2705,10 @@ extern MagickExport XChangeGC(
 XChangeGC(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    GC b			/* gc */,
-    unsigned long c	/* valuemask */,
-    XGCValues* d	/* values */
+    Display* a          /* display */,
+    GC b                        /* gc */,
+    unsigned long c     /* valuemask */,
+    XGCValues* d        /* values */
 #endif
 ){}
 
@@ -2718,9 +2718,9 @@ extern MagickExport XChangeKeyboardControl(
 XChangeKeyboardControl(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    unsigned long b	/* value_mask */,
-    XKeyboardControl* c	/* values */
+    Display* a          /* display */,
+    unsigned long b     /* value_mask */,
+    XKeyboardControl* c /* values */
 #endif
 ){}
 
@@ -2730,11 +2730,11 @@ extern MagickExport XChangeKeyboardMapping(
 XChangeKeyboardMapping(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    int	b		/* first_keycode */,
-    int	c		/* keysyms_per_keycode */,
-    KeySym*	d	/* keysyms */,
-    int	e		/* num_codes */
+    Display* a          /* display */,
+    int b               /* first_keycode */,
+    int c               /* keysyms_per_keycode */,
+    KeySym*     d       /* keysyms */,
+    int e               /* num_codes */
 #endif
 ){}
 
@@ -2744,12 +2744,12 @@ extern MagickExport XChangePointerControl(
 XChangePointerControl(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Bool b		/* do_accel */,
-    Bool c		/* do_threshold */,
-    int	d		/* accel_numerator */,
-    int	e		/* accel_denominator */,
-    int	f		/* threshold */
+    Display* a          /* display */,
+    Bool b              /* do_accel */,
+    Bool c              /* do_threshold */,
+    int d               /* accel_numerator */,
+    int e               /* accel_denominator */,
+    int f               /* threshold */
 #endif
 ){}
 
@@ -2759,14 +2759,14 @@ extern MagickExport XChangeProperty(
 XChangeProperty(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Window b		/* w */,
-    Atom c		/* property */,
-    Atom d		/* type */,
-    int	e		/* format */,
-    int	f		/* mode */,
-    _Xconst unsigned char* g	/* data */,
-    int	h		/* nelements */
+    Display* a          /* display */,
+    Window b            /* w */,
+    Atom c              /* property */,
+    Atom d              /* type */,
+    int e               /* format */,
+    int f               /* mode */,
+    _Xconst unsigned char* g    /* data */,
+    int h               /* nelements */
 #endif
 ){}
 
@@ -2776,9 +2776,9 @@ extern MagickExport XChangeSaveSet(
 XChangeSaveSet(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Window b		/* w */,
-    int	c		/* change_mode */
+    Display* a          /* display */,
+    Window b            /* w */,
+    int c               /* change_mode */
 #endif
 ){}
 
@@ -2788,9 +2788,9 @@ extern MagickExport XChangeWindowAttributes(
 XChangeWindowAttributes(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Window b		/* w */,
-    unsigned long c	/* valuemask */,
+    Display* a          /* display */,
+    Window b            /* w */,
+    unsigned long c     /* valuemask */,
     XSetWindowAttributes* d /* attributes */
 #endif
 ){}
@@ -2801,16 +2801,16 @@ extern MagickExport Bool XCheckIfEvent(
 Bool XCheckIfEvent(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    XEvent* b		/* event_return */,
+    Display* a          /* display */,
+    XEvent* b           /* event_return */,
     Bool (* c) (
 #if NeedNestedPrototypes
-	       Display*	x		/* display */,
-               XEvent* y			/* event */,
-               XPointer	z		/* arg */
+               Display* x               /* display */,
+               XEvent* y                        /* event */,
+               XPointer z               /* arg */
 #endif
-             )		/* predicate */,
-    XPointer d		/* arg */
+             )          /* predicate */,
+    XPointer d          /* arg */
 #endif
 ){}
 
@@ -2820,9 +2820,9 @@ extern MagickExport Bool XCheckMaskEvent(
 Bool XCheckMaskEvent(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    long b		/* event_mask */,
-    XEvent*	c	/* event_return */
+    Display* a          /* display */,
+    long b              /* event_mask */,
+    XEvent*     c       /* event_return */
 #endif
 ){}
 
@@ -2832,9 +2832,9 @@ extern MagickExport Bool XCheckTypedEvent(
 Bool XCheckTypedEvent(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    int	b		/* event_type */,
-    XEvent*	c	/* event_return */
+    Display* a          /* display */,
+    int b               /* event_type */,
+    XEvent*     c       /* event_return */
 #endif
 ){}
 
@@ -2844,10 +2844,10 @@ extern MagickExport Bool XCheckTypedWindowEvent(
 Bool XCheckTypedWindowEvent(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Window b		/* w */,
-    int	c		/* event_type */,
-    XEvent*	d	/* event_return */
+    Display* a          /* display */,
+    Window b            /* w */,
+    int c               /* event_type */,
+    XEvent*     d       /* event_return */
 #endif
 ){}
 
@@ -2857,10 +2857,10 @@ extern MagickExport Bool XCheckWindowEvent(
 Bool XCheckWindowEvent(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Window b		/* w */,
-    long c		/* event_mask */,
-    XEvent*	d	/* event_return */
+    Display* a          /* display */,
+    Window b            /* w */,
+    long c              /* event_mask */,
+    XEvent*     d       /* event_return */
 #endif
 ){}
 
@@ -2870,9 +2870,9 @@ extern MagickExport XCirculateSubwindows(
 XCirculateSubwindows(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Window b		/* w */,
-    int	c		/* direction */
+    Display* a          /* display */,
+    Window b            /* w */,
+    int c               /* direction */
 #endif
 ){}
 
@@ -2882,8 +2882,8 @@ extern MagickExport XCirculateSubwindowsDown(
 XCirculateSubwindowsDown(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Window b		/* w */
+    Display* a          /* display */,
+    Window b            /* w */
 #endif
 ){}
 
@@ -2893,8 +2893,8 @@ extern MagickExport XCirculateSubwindowsUp(
 XCirculateSubwindowsUp(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Window b		/* w */
+    Display* a          /* display */,
+    Window b            /* w */
 #endif
 ){}
 
@@ -2904,13 +2904,13 @@ extern MagickExport XClearArea(
 XClearArea(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Window b		/* w */,
-    int	c		/* x */,
-    int	d		/* y */,
-    unsigned int e	/* width */,
-    unsigned int f	/* height */,
-    Bool g		/* exposures */
+    Display* a          /* display */,
+    Window b            /* w */,
+    int c               /* x */,
+    int d               /* y */,
+    unsigned int e      /* width */,
+    unsigned int f      /* height */,
+    Bool g              /* exposures */
 #endif
 ){}
 
@@ -2920,8 +2920,8 @@ extern MagickExport XClearWindow(
 XClearWindow(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Window b		/* w */
+    Display* a          /* display */,
+    Window b            /* w */
 #endif
 ){}
 
@@ -2931,7 +2931,7 @@ extern MagickExport XCloseDisplay(
 XCloseDisplay(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */
+    Display* a          /* display */
 #endif
 ){}
 
@@ -2941,10 +2941,10 @@ extern MagickExport XConfigureWindow(
 XConfigureWindow(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Window b		/* w */,
-    unsigned int c	/* value_mask */,
-    XWindowChanges*	d /* values */		 
+    Display* a          /* display */,
+    Window b            /* w */,
+    unsigned int c      /* value_mask */,
+    XWindowChanges*     d /* values */           
 #endif
 ){}
 
@@ -2954,7 +2954,7 @@ extern MagickExport int XConnectionNumber(
 int XConnectionNumber(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */
+    Display* a          /* display */
 #endif
 ){}
 
@@ -2964,12 +2964,12 @@ extern MagickExport XConvertSelection(
 XConvertSelection(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Atom b		/* selection */,
-    Atom c		/* target */,
-    Atom d		/* property */,
-    Window e	/* requestor */,
-    Time f		/* time */
+    Display* a          /* display */,
+    Atom b              /* selection */,
+    Atom c              /* target */,
+    Atom d              /* property */,
+    Window e    /* requestor */,
+    Time f              /* time */
 #endif
 ){}
 
@@ -2979,16 +2979,16 @@ extern MagickExport XCopyArea(
 XCopyArea(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Drawable b		/* src */,
-    Drawable c		/* dest */,
-    GC	d		/* gc */,
-    int	 e		/* src_x */,
-    int	 f		/* src_y */,
-    unsigned int g	/* width */,
-    unsigned int h	/* height */,
-    int	i		/* dest_x */,
-    int	j		/* dest_y */
+    Display* a          /* display */,
+    Drawable b          /* src */,
+    Drawable c          /* dest */,
+    GC  d               /* gc */,
+    int  e              /* src_x */,
+    int  f              /* src_y */,
+    unsigned int g      /* width */,
+    unsigned int h      /* height */,
+    int i               /* dest_x */,
+    int j               /* dest_y */
 #endif
 ){}
 
@@ -2998,10 +2998,10 @@ extern MagickExport XCopyGC(
 XCopyGC(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    GC	b		/* src */,
-    unsigned long c	/* valuemask */,
-    GC	d		/* dest */
+    Display* a          /* display */,
+    GC  b               /* src */,
+    unsigned long c     /* valuemask */,
+    GC  d               /* dest */
 #endif
 ){}
 
@@ -3011,17 +3011,17 @@ extern MagickExport XCopyPlane(
 XCopyPlane(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Drawable b		/* src */,
-    Drawable c		/* dest */,
-    GC	d		/* gc */,
-    int	e		/* src_x */,
-    int	f		/* src_y */,
-    unsigned int g	/* width */,
-    unsigned int h	/* height */,
-    int	i		/* dest_x */,
-    int	j		/* dest_y */,
-    unsigned long k	/* plane */
+    Display* a          /* display */,
+    Drawable b          /* src */,
+    Drawable c          /* dest */,
+    GC  d               /* gc */,
+    int e               /* src_x */,
+    int f               /* src_y */,
+    unsigned int g      /* width */,
+    unsigned int h      /* height */,
+    int i               /* dest_x */,
+    int j               /* dest_y */,
+    unsigned long k     /* plane */
 #endif
 ){}
 
@@ -3031,8 +3031,8 @@ extern MagickExport int XDefaultDepth(
 int XDefaultDepth(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    int	b		/* screen_number */
+    Display* a          /* display */,
+    int b               /* screen_number */
 #endif
 ){}
 
@@ -3042,7 +3042,7 @@ extern MagickExport int XDefaultDepthOfScreen(
 int XDefaultDepthOfScreen(
 #endif
 #if NeedFunctionPrototypes
-    Screen*	a	/* screen */
+    Screen*     a       /* screen */
 #endif
 ){}
 
@@ -3059,9 +3059,9 @@ extern MagickExport XDefineCursor(
 XDefineCursor(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Window b		/* w */,
-    Cursor c		/* cursor */
+    Display* a          /* display */,
+    Window b            /* w */,
+    Cursor c            /* cursor */
 #endif
 ){}
 
@@ -3071,9 +3071,9 @@ extern MagickExport XDeleteProperty(
 XDeleteProperty(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Window	b	/* w */,
-    Atom c		/* property */
+    Display* a          /* display */,
+    Window      b       /* w */,
+    Atom c              /* property */
 #endif
 ){}
 
@@ -3083,8 +3083,8 @@ extern MagickExport XDestroyWindow(
 XDestroyWindow(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Window b		/* w */
+    Display* a          /* display */,
+    Window b            /* w */
 #endif
 ){}
 
@@ -3094,8 +3094,8 @@ extern MagickExport XDestroySubwindows(
 XDestroySubwindows(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Window b		/* w */
+    Display* a          /* display */,
+    Window b            /* w */
 #endif
 ){}
 
@@ -3105,7 +3105,7 @@ extern MagickExport int XDoesBackingStore(
 int XDoesBackingStore(
 #endif
 #if NeedFunctionPrototypes
-    Screen* c		/* screen */    
+    Screen* c           /* screen */    
 #endif
 ){}
 
@@ -3115,7 +3115,7 @@ extern MagickExport Bool XDoesSaveUnders(
 Bool XDoesSaveUnders(
 #endif
 #if NeedFunctionPrototypes
-    Screen* c		/* screen */
+    Screen* c           /* screen */
 #endif
 ){}
 
@@ -3125,7 +3125,7 @@ extern MagickExport XDisableAccessControl(
 XDisableAccessControl(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */
+    Display* a          /* display */
 #endif
 ){}
 
@@ -3136,8 +3136,8 @@ extern MagickExport int XDisplayCells(
 int XDisplayCells(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    int	b		/* screen_number */
+    Display* a          /* display */,
+    int b               /* screen_number */
 #endif
 ){}
 
@@ -3147,8 +3147,8 @@ extern MagickExport int XDisplayHeight(
 int XDisplayHeight(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    int	b		/* screen_number */
+    Display* a          /* display */,
+    int b               /* screen_number */
 #endif
 ){}
 
@@ -3158,8 +3158,8 @@ extern MagickExport int XDisplayHeightMM(
 int XDisplayHeightMM(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    int	b		/* screen_number */
+    Display* a          /* display */,
+    int b               /* screen_number */
 #endif
 ){}
 
@@ -3169,9 +3169,9 @@ extern MagickExport XDisplayKeycodes(
 XDisplayKeycodes(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    int* b		/* min_keycodes_return */,
-    int* c		/* max_keycodes_return */
+    Display* a          /* display */,
+    int* b              /* min_keycodes_return */,
+    int* c              /* max_keycodes_return */
 #endif
 ){}
 
@@ -3181,8 +3181,8 @@ extern MagickExport int XDisplayPlanes(
 int XDisplayPlanes(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    int	b		/* screen_number */
+    Display* a          /* display */,
+    int b               /* screen_number */
 #endif
 ){}
 
@@ -3192,8 +3192,8 @@ extern MagickExport int XDisplayWidth(
 int XDisplayWidth(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    int	b		/* screen_number */
+    Display* a          /* display */,
+    int b               /* screen_number */
 #endif
 ){}
 
@@ -3203,8 +3203,8 @@ extern MagickExport int XDisplayWidthMM(
 int XDisplayWidthMM(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    int	b		/* screen_number */
+    Display* a          /* display */,
+    int b               /* screen_number */
 #endif
 ){}
 
@@ -3214,15 +3214,15 @@ extern MagickExport XDrawArc(
 XDrawArc(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Drawable b		/* d */,
-    GC c			/* gc */,
-    int	d		/* x */,
-    int	e		/* y */,
-    unsigned int f	/* width */,
-    unsigned int g	/* height */,
-    int	h		/* angle1 */,
-    int	i		/* angle2 */
+    Display* a          /* display */,
+    Drawable b          /* d */,
+    GC c                        /* gc */,
+    int d               /* x */,
+    int e               /* y */,
+    unsigned int f      /* width */,
+    unsigned int g      /* height */,
+    int h               /* angle1 */,
+    int i               /* angle2 */
 #endif
 ){}
 
@@ -3232,11 +3232,11 @@ extern MagickExport XDrawArcs(
 XDrawArcs(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Drawable b		/* d */,
-    GC c			/* gc */,
-    XArc* d		/* arcs */,
-    int	e		/* narcs */
+    Display* a          /* display */,
+    Drawable b          /* d */,
+    GC c                        /* gc */,
+    XArc* d             /* arcs */,
+    int e               /* narcs */
 #endif
 ){}
 
@@ -3246,13 +3246,13 @@ extern MagickExport XDrawImageString(
 XDrawImageString(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Drawable b		/* d */,
-    GC c			/* gc */,
-    int	d		/* x */,
-    int	e		/* y */,
-    _Xconst char* f	/* string */,
-    int	g		/* length */
+    Display* a          /* display */,
+    Drawable b          /* d */,
+    GC c                        /* gc */,
+    int d               /* x */,
+    int e               /* y */,
+    _Xconst char* f     /* string */,
+    int g               /* length */
 #endif
 ){}
 
@@ -3262,13 +3262,13 @@ extern MagickExport XDrawImageString16(
 XDrawImageString16(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Drawable b		/* d */,
-    GC c			/* gc */,
-    int	d		/* x */,
-    int	e		/* y */,
-    _Xconst XChar2b* f	/* string */,
-    int	g		/* length */
+    Display* a          /* display */,
+    Drawable b          /* d */,
+    GC c                        /* gc */,
+    int d               /* x */,
+    int e               /* y */,
+    _Xconst XChar2b* f  /* string */,
+    int g               /* length */
 #endif
 ){}
 
@@ -3278,13 +3278,13 @@ extern MagickExport XDrawLine(
 XDrawLine(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Drawable b		/* d */,
-    GC c			/* gc */,
-    int	d		/* x1 */,
-    int	e		/* x2 */,
-    int	f		/* y1 */,
-    int	g		/* y2 */
+    Display* a          /* display */,
+    Drawable b          /* d */,
+    GC c                        /* gc */,
+    int d               /* x1 */,
+    int e               /* x2 */,
+    int f               /* y1 */,
+    int g               /* y2 */
 #endif
 ){}
 
@@ -3294,12 +3294,12 @@ extern MagickExport XDrawLines(
 XDrawLines(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Drawable d		/* d */,
-    GC e			/* gc */,
-    XPoint*	f	/* points */,
-    int	g		/* npoints */,
-    int	h		/* mode */
+    Display* a          /* display */,
+    Drawable d          /* d */,
+    GC e                        /* gc */,
+    XPoint*     f       /* points */,
+    int g               /* npoints */,
+    int h               /* mode */
 #endif
 ){}
 
@@ -3309,11 +3309,11 @@ extern MagickExport XDrawPoint(
 XDrawPoint(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Drawable d		/* d */,
-    GC e			/* gc */,
-    int	f		/* x */,
-    int	g		/* y */
+    Display* a          /* display */,
+    Drawable d          /* d */,
+    GC e                        /* gc */,
+    int f               /* x */,
+    int g               /* y */
 #endif
 ){}
 
@@ -3323,12 +3323,12 @@ extern MagickExport XDrawPoints(
 XDrawPoints(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Drawable d		/* d */,
-    GC e			/* gc */,
-    XPoint*	f	/* points */,
-    int	g		/* npoints */,
-    int	h		/* mode */
+    Display* a          /* display */,
+    Drawable d          /* d */,
+    GC e                        /* gc */,
+    XPoint*     f       /* points */,
+    int g               /* npoints */,
+    int h               /* mode */
 #endif
 ){}
 
@@ -3338,13 +3338,13 @@ extern MagickExport XDrawRectangle(
 XDrawRectangle(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Drawable d		/* d */,
-    GC e			/* gc */,
-    int	f		/* x */,
-    int	g		/* y */,
-    unsigned int h	/* width */,
-    unsigned int i	/* height */
+    Display* a          /* display */,
+    Drawable d          /* d */,
+    GC e                        /* gc */,
+    int f               /* x */,
+    int g               /* y */,
+    unsigned int h      /* width */,
+    unsigned int i      /* height */
 #endif
 ){}
 
@@ -3354,11 +3354,11 @@ extern MagickExport XDrawRectangles(
 XDrawRectangles(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Drawable d		/* d */,
-    GC e			/* gc */,
-    XRectangle*	f	/* rectangles */,
-    int	g		/* nrectangles */
+    Display* a          /* display */,
+    Drawable d          /* d */,
+    GC e                        /* gc */,
+    XRectangle* f       /* rectangles */,
+    int g               /* nrectangles */
 #endif
 ){}
 
@@ -3368,11 +3368,11 @@ extern MagickExport XDrawSegments(
 XDrawSegments(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Drawable d		/* d */,
-    GC e			/* gc */,
-    XSegment* f		/* segments */,
-    int g			/* nsegments */
+    Display* a          /* display */,
+    Drawable d          /* d */,
+    GC e                        /* gc */,
+    XSegment* f         /* segments */,
+    int g                       /* nsegments */
 #endif
 ){}
 
@@ -3382,13 +3382,13 @@ extern MagickExport XDrawString(
 XDrawString(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Drawable d		/* d */,
-    GC e			/* gc */,
-    int	f		/* x */,
-    int	g		/* y */,
-    _Xconst char* h	/* string */,
-    int	i		/* length */
+    Display* a          /* display */,
+    Drawable d          /* d */,
+    GC e                        /* gc */,
+    int f               /* x */,
+    int g               /* y */,
+    _Xconst char* h     /* string */,
+    int i               /* length */
 #endif
 ){}
 
@@ -3398,13 +3398,13 @@ extern MagickExport XDrawString16(
 XDrawString16(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Drawable d		/* d */,
-    GC e			/* gc */,
-    int	f		/* x */,
-    int	g		/* y */,
-    _Xconst XChar2b* h	/* string */,
-    int	i		/* length */
+    Display* a          /* display */,
+    Drawable d          /* d */,
+    GC e                        /* gc */,
+    int f               /* x */,
+    int g               /* y */,
+    _Xconst XChar2b* h  /* string */,
+    int i               /* length */
 #endif
 ){}
 
@@ -3414,13 +3414,13 @@ extern MagickExport XDrawText(
 XDrawText(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Drawable d		/* d */,
-    GC e			/* gc */,
-    int	f		/* x */,
-    int	g		/* y */,
-    XTextItem* h		/* items */,
-    int	i		/* nitems */
+    Display* a          /* display */,
+    Drawable d          /* d */,
+    GC e                        /* gc */,
+    int f               /* x */,
+    int g               /* y */,
+    XTextItem* h                /* items */,
+    int i               /* nitems */
 #endif
 ){}
 
@@ -3430,13 +3430,13 @@ extern MagickExport XDrawText16(
 XDrawText16(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Drawable d		/* d */,
-    GC e			/* gc */,
-    int f			/* x */,
-    int	g		/* y */,
-    XTextItem16* h	/* items */,
-    int	i		/* nitems */
+    Display* a          /* display */,
+    Drawable d          /* d */,
+    GC e                        /* gc */,
+    int f                       /* x */,
+    int g               /* y */,
+    XTextItem16* h      /* items */,
+    int i               /* nitems */
 #endif
 ){}
 
@@ -3446,7 +3446,7 @@ extern MagickExport XEnableAccessControl(
 XEnableAccessControl(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */
+    Display* a          /* display */
 #endif
 ){}
 
@@ -3456,8 +3456,8 @@ extern MagickExport int XEventsQueued(
 int XEventsQueued(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    int	b		/* mode */
+    Display* a          /* display */,
+    int b               /* mode */
 #endif
 ){}
 
@@ -3467,9 +3467,9 @@ extern MagickExport Status XFetchName(
 Status XFetchName(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Window b		/* w */,
-    char** c		/* window_name_return */
+    Display* a          /* display */,
+    Window b            /* w */,
+    char** c            /* window_name_return */
 #endif
 ){}
 
@@ -3479,15 +3479,15 @@ extern MagickExport XFillArc(
 XFillArc(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Drawable d		/* d */,
-    GC e			/* gc */,
-    int	f		/* x */,
-    int	g		/* y */,
-    unsigned int h	/* width */,
-    unsigned int i	/* height */,
-    int	j		/* angle1 */,
-    int	k		/* angle2 */
+    Display* a          /* display */,
+    Drawable d          /* d */,
+    GC e                        /* gc */,
+    int f               /* x */,
+    int g               /* y */,
+    unsigned int h      /* width */,
+    unsigned int i      /* height */,
+    int j               /* angle1 */,
+    int k               /* angle2 */
 #endif
 ){}
 
@@ -3497,11 +3497,11 @@ extern MagickExport XFillArcs(
 XFillArcs(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Drawable d		/* d */,
-    GC e			/* gc */,
-    XArc* f		/* arcs */,
-    int	g		/* narcs */
+    Display* a          /* display */,
+    Drawable d          /* d */,
+    GC e                        /* gc */,
+    XArc* f             /* arcs */,
+    int g               /* narcs */
 #endif
 ){}
 
@@ -3511,13 +3511,13 @@ extern MagickExport XFillPolygon(
 XFillPolygon(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Drawable d		/* d */,
-    GC e			/* gc */,
-    XPoint*	f	/* points */,
-    int g			/* npoints */,
-    int	h		/* shape */,
-    int	i		/* mode */
+    Display* a          /* display */,
+    Drawable d          /* d */,
+    GC e                        /* gc */,
+    XPoint*     f       /* points */,
+    int g                       /* npoints */,
+    int h               /* shape */,
+    int i               /* mode */
 #endif
 ){}
 
@@ -3527,13 +3527,13 @@ extern MagickExport XFillRectangle(
 XFillRectangle(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Drawable d		/* d */,
-    GC e			/* gc */,
-    int	f		/* x */,
-    int	g		/* y */,
-    unsigned int h	/* width */,
-    unsigned int i	/* height */
+    Display* a          /* display */,
+    Drawable d          /* d */,
+    GC e                        /* gc */,
+    int f               /* x */,
+    int g               /* y */,
+    unsigned int h      /* width */,
+    unsigned int i      /* height */
 #endif
 ){}
 
@@ -3543,11 +3543,11 @@ extern MagickExport XFillRectangles(
 XFillRectangles(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Drawable d		/* d */,
-    GC e			/* gc */,
-    XRectangle*	f	/* rectangles */,
-    int	g		/* nrectangles */
+    Display* a          /* display */,
+    Drawable d          /* d */,
+    GC e                        /* gc */,
+    XRectangle* f       /* rectangles */,
+    int g               /* nrectangles */
 #endif
 ){}
 
@@ -3557,7 +3557,7 @@ extern MagickExport XFlush(
 XFlush(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */
+    Display* a          /* display */
 #endif
 ){}
 
@@ -3567,8 +3567,8 @@ extern MagickExport XForceScreenSaver(
 XForceScreenSaver(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    int	b		/* mode */
+    Display* a          /* display */,
+    int b               /* mode */
 #endif
 ){}
 
@@ -3578,7 +3578,7 @@ extern MagickExport XFree(
 XFree(
 #endif
 #if NeedFunctionPrototypes
-    void* a		/* data */
+    void* a             /* data */
 #endif
 ){}
 
@@ -3588,8 +3588,8 @@ extern MagickExport XFreeColormap(
 XFreeColormap(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Colormap b		/* colormap */
+    Display* a          /* display */,
+    Colormap b          /* colormap */
 #endif
 ){}
 
@@ -3599,11 +3599,11 @@ extern MagickExport XFreeColors(
 XFreeColors(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Colormap b		/* colormap */,
-    unsigned long* c	/* pixels */,
-    int	d		/* npixels */,
-    unsigned long e	/* planes */
+    Display* a          /* display */,
+    Colormap b          /* colormap */,
+    unsigned long* c    /* pixels */,
+    int d               /* npixels */,
+    unsigned long e     /* planes */
 #endif
 ){}
 
@@ -3613,8 +3613,8 @@ extern MagickExport XFreeCursor(
 XFreeCursor(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Cursor b		/* cursor */
+    Display* a          /* display */,
+    Cursor b            /* cursor */
 #endif
 ){}
 
@@ -3624,7 +3624,7 @@ extern MagickExport XFreeExtensionList(
 XFreeExtensionList(
 #endif
 #if NeedFunctionPrototypes
-    char** a		/* list */    
+    char** a            /* list */    
 #endif
 ){}
 
@@ -3634,8 +3634,8 @@ extern MagickExport XFreeFont(
 XFreeFont(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    XFontStruct* b	/* font_struct */
+    Display* a          /* display */,
+    XFontStruct* b      /* font_struct */
 #endif
 ){}
 
@@ -3645,9 +3645,9 @@ extern MagickExport XFreeFontInfo(
 XFreeFontInfo(
 #endif
 #if NeedFunctionPrototypes
-    char** a		/* names */,
-    XFontStruct* b	/* free_info */,
-    int	c		/* actual_count */
+    char** a            /* names */,
+    XFontStruct* b      /* free_info */,
+    int c               /* actual_count */
 #endif
 ){}
 
@@ -3657,7 +3657,7 @@ extern MagickExport XFreeFontNames(
 XFreeFontNames(
 #endif
 #if NeedFunctionPrototypes
-    char** a		/* list */
+    char** a            /* list */
 #endif
 ){}
 
@@ -3667,7 +3667,7 @@ extern MagickExport XFreeFontPath(
 XFreeFontPath(
 #endif
 #if NeedFunctionPrototypes
-    char** a		/* list */
+    char** a            /* list */
 #endif
 ){}
 
@@ -3677,8 +3677,8 @@ extern MagickExport XFreeGC(
 XFreeGC(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    GC e			/* gc */
+    Display* a          /* display */,
+    GC e                        /* gc */
 #endif
 ){}
 
@@ -3688,7 +3688,7 @@ extern MagickExport XFreeModifiermap(
 XFreeModifiermap(
 #endif
 #if NeedFunctionPrototypes
-    XModifierKeymap* a	/* modmap */
+    XModifierKeymap* a  /* modmap */
 #endif
 ){}
 
@@ -3698,8 +3698,8 @@ extern MagickExport XFreePixmap(
 XFreePixmap(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Pixmap b		/* pixmap */
+    Display* a          /* display */,
+    Pixmap b            /* pixmap */
 #endif
 ){}
 
@@ -3709,19 +3709,19 @@ extern MagickExport int XGeometry(
 int XGeometry(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    int	b		/* screen */,
-    _Xconst char* c	/* position */,
-    _Xconst char* d	/* default_position */,
-    unsigned int e	/* bwidth */,
-    unsigned int f	/* fwidth */,
-    unsigned int g	/* fheight */,
-    int	h		/* xadder */,
-    int	i		/* yadder */,
-    int* j		/* x_return */,
-    int* k		/* y_return */,
-    int* l		/* width_return */,
-    int* m		/* height_return */
+    Display* a          /* display */,
+    int b               /* screen */,
+    _Xconst char* c     /* position */,
+    _Xconst char* d     /* default_position */,
+    unsigned int e      /* bwidth */,
+    unsigned int f      /* fwidth */,
+    unsigned int g      /* fheight */,
+    int h               /* xadder */,
+    int i               /* yadder */,
+    int* j              /* x_return */,
+    int* k              /* y_return */,
+    int* l              /* width_return */,
+    int* m              /* height_return */
 #endif
 ){}
 
@@ -3731,12 +3731,12 @@ extern MagickExport XGetErrorDatabaseText(
 XGetErrorDatabaseText(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    _Xconst char* b	/* name */,
-    _Xconst char* c	/* message */,
-    _Xconst char* d	/* default_string */,
-    char* e		/* buffer_return */,
-    int	f		/* length */
+    Display* a          /* display */,
+    _Xconst char* b     /* name */,
+    _Xconst char* c     /* message */,
+    _Xconst char* d     /* default_string */,
+    char* e             /* buffer_return */,
+    int f               /* length */
 #endif
 ){}
 
@@ -3746,10 +3746,10 @@ extern MagickExport XGetErrorText(
 XGetErrorText(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    int	b		/* code */,
-    char* c		/* buffer_return */,
-    int	d		/* length */
+    Display* a          /* display */,
+    int b               /* code */,
+    char* c             /* buffer_return */,
+    int d               /* length */
 #endif
 ){}
 
@@ -3759,9 +3759,9 @@ extern MagickExport Bool XGetFontProperty(
 Bool XGetFontProperty(
 #endif
 #if NeedFunctionPrototypes
-    XFontStruct* a	/* font_struct */,
-    Atom b		/* atom */,
-    unsigned long* c	/* value_return */
+    XFontStruct* a      /* font_struct */,
+    Atom b              /* atom */,
+    unsigned long* c    /* value_return */
 #endif
 ){}
 
@@ -3771,10 +3771,10 @@ extern MagickExport Status XGetGCValues(
 Status XGetGCValues(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    GC e			/* gc */,
-    unsigned long f	/* valuemask */,
-    XGCValues* g		/* values_return */
+    Display* a          /* display */,
+    GC e                        /* gc */,
+    unsigned long f     /* valuemask */,
+    XGCValues* g                /* values_return */
 #endif
 ){}
 
@@ -3784,15 +3784,15 @@ extern MagickExport Status XGetGeometry(
 Status XGetGeometry(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Drawable d		/* d */,
-    Window*	e	/* root_return */,
-    int* f		/* x_return */,
-    int* g		/* y_return */,
-    unsigned int* h	/* width_return */,
-    unsigned int* i	/* height_return */,
-    unsigned int* j	/* border_width_return */,
-    unsigned int* k	/* depth_return */
+    Display* a          /* display */,
+    Drawable d          /* d */,
+    Window*     e       /* root_return */,
+    int* f              /* x_return */,
+    int* g              /* y_return */,
+    unsigned int* h     /* width_return */,
+    unsigned int* i     /* height_return */,
+    unsigned int* j     /* border_width_return */,
+    unsigned int* k     /* depth_return */
 #endif
 ){}
 
@@ -3802,9 +3802,9 @@ extern MagickExport Status XGetIconName(
 Status XGetIconName(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Window b		/* w */,
-    char** c		/* icon_name_return */
+    Display* a          /* display */,
+    Window b            /* w */,
+    char** c            /* icon_name_return */
 #endif
 ){}
 
@@ -3814,9 +3814,9 @@ extern MagickExport XGetInputFocus(
 XGetInputFocus(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Window*	b	/* focus_return */,
-    int* c		/* revert_to_return */
+    Display* a          /* display */,
+    Window*     b       /* focus_return */,
+    int* c              /* revert_to_return */
 #endif
 ){}
 
@@ -3826,8 +3826,8 @@ extern MagickExport XGetKeyboardControl(
 XGetKeyboardControl(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    XKeyboardState*	b /* values_return */
+    Display* a          /* display */,
+    XKeyboardState*     b /* values_return */
 #endif
 ){}
 
@@ -3837,10 +3837,10 @@ extern MagickExport XGetPointerControl(
 XGetPointerControl(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    int* b		/* accel_numerator_return */,
-    int* c		/* accel_denominator_return */,
-    int* d		/* threshold_return */
+    Display* a          /* display */,
+    int* b              /* accel_numerator_return */,
+    int* c              /* accel_denominator_return */,
+    int* d              /* threshold_return */
 #endif
 ){}
 
@@ -3850,9 +3850,9 @@ extern MagickExport int XGetPointerMapping(
 int XGetPointerMapping(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    unsigned char* b	/* map_return */,
-    int	c		/* nmap */
+    Display* a          /* display */,
+    unsigned char* b    /* map_return */,
+    int c               /* nmap */
 #endif
 ){}
 
@@ -3862,11 +3862,11 @@ extern MagickExport XGetScreenSaver(
 XGetScreenSaver(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    int* b		/* timeout_return */,
-    int* c		/* interval_return */,
-    int* d		/* prefer_blanking_return */,
-    int* e		/* allow_exposures_return */
+    Display* a          /* display */,
+    int* b              /* timeout_return */,
+    int* c              /* interval_return */,
+    int* d              /* prefer_blanking_return */,
+    int* e              /* allow_exposures_return */
 #endif
 ){}
 
@@ -3876,9 +3876,9 @@ extern MagickExport Status XGetTransientForHint(
 Status XGetTransientForHint(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Window	b	/* w */,
-    Window*	 c	/* prop_window_return */
+    Display* a          /* display */,
+    Window      b       /* w */,
+    Window*      c      /* prop_window_return */
 #endif
 ){}
 
@@ -3888,18 +3888,18 @@ extern MagickExport int XGetWindowProperty(
 int XGetWindowProperty(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Window b		/* w */,
-    Atom c		/* property */,
-    long d		/* long_offset */,
-    long e		/* long_length */,
-    Bool f		/* delete */,
-    Atom g		/* req_type */,
-    Atom* h		/* actual_type_return */,
-    int* i		/* actual_format_return */,
-    unsigned long* j	/* nitems_return */,
-    unsigned long* k	/* bytes_after_return */,
-    unsigned char**	l /* prop_return */
+    Display* a          /* display */,
+    Window b            /* w */,
+    Atom c              /* property */,
+    long d              /* long_offset */,
+    long e              /* long_length */,
+    Bool f              /* delete */,
+    Atom g              /* req_type */,
+    Atom* h             /* actual_type_return */,
+    int* i              /* actual_format_return */,
+    unsigned long* j    /* nitems_return */,
+    unsigned long* k    /* bytes_after_return */,
+    unsigned char**     l /* prop_return */
 #endif
 ){}
 
@@ -3909,9 +3909,9 @@ extern MagickExport Status XGetWindowAttributes(
 Status XGetWindowAttributes(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Window b		/* w */,
-    XWindowAttributes* c	/* window_attributes_return */
+    Display* a          /* display */,
+    Window b            /* w */,
+    XWindowAttributes* c        /* window_attributes_return */
 #endif
 ){}
 
@@ -3921,16 +3921,16 @@ extern MagickExport XGrabButton(
 XGrabButton(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    unsigned int b	/* button */,
-    unsigned int c	/* modifiers */,
-    Window d		/* grab_window */,
-    Bool e		/* owner_events */,
-    unsigned int f	/* event_mask */,
-    int	g		/* pointer_mode */,
-    int	h		/* keyboard_mode */,
-    Window	i	/* confine_to */,
-    Cursor	j	/* cursor */
+    Display* a          /* display */,
+    unsigned int b      /* button */,
+    unsigned int c      /* modifiers */,
+    Window d            /* grab_window */,
+    Bool e              /* owner_events */,
+    unsigned int f      /* event_mask */,
+    int g               /* pointer_mode */,
+    int h               /* keyboard_mode */,
+    Window      i       /* confine_to */,
+    Cursor      j       /* cursor */
 #endif
 ){}
 
@@ -3940,13 +3940,13 @@ extern MagickExport XGrabKey(
 XGrabKey(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    int	b		/* keycode */,
-    unsigned int c	/* modifiers */,
-    Window	d	/* grab_window */,
-    Bool e		/* owner_events */,
-    int	f		/* pointer_mode */,
-    int	g		/* keyboard_mode */
+    Display* a          /* display */,
+    int b               /* keycode */,
+    unsigned int c      /* modifiers */,
+    Window      d       /* grab_window */,
+    Bool e              /* owner_events */,
+    int f               /* pointer_mode */,
+    int g               /* keyboard_mode */
 #endif
 ){}
 
@@ -3956,12 +3956,12 @@ extern MagickExport int XGrabKeyboard(
 int XGrabKeyboard(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Window b		/* grab_window */,
-    Bool c		/* owner_events */,
-    int	d		/* pointer_mode */,
-    int	e		/* keyboard_mode */,
-    Time f		/* time */
+    Display* a          /* display */,
+    Window b            /* grab_window */,
+    Bool c              /* owner_events */,
+    int d               /* pointer_mode */,
+    int e               /* keyboard_mode */,
+    Time f              /* time */
 #endif
 ){}
 
@@ -3971,15 +3971,15 @@ extern MagickExport int XGrabPointer(
 int XGrabPointer(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Window b		/* grab_window */,
-    Bool c		/* owner_events */,
-    unsigned int d	/* event_mask */,
-    int	e		/* pointer_mode */,
-    int	f		/* keyboard_mode */,
-    Window g		/* confine_to */,
-    Cursor h		/* cursor */,
-    Time i		/* time */
+    Display* a          /* display */,
+    Window b            /* grab_window */,
+    Bool c              /* owner_events */,
+    unsigned int d      /* event_mask */,
+    int e               /* pointer_mode */,
+    int f               /* keyboard_mode */,
+    Window g            /* confine_to */,
+    Cursor h            /* cursor */,
+    Time i              /* time */
 #endif
 ){}
 
@@ -3989,7 +3989,7 @@ extern MagickExport XGrabServer(
 XGrabServer(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */
+    Display* a          /* display */
 #endif
 ){}
 
@@ -3999,7 +3999,7 @@ extern MagickExport int XHeightMMOfScreen(
 int XHeightMMOfScreen(
 #endif
 #if NeedFunctionPrototypes
-    Screen* c		/* screen */
+    Screen* c           /* screen */
 #endif
 ){}
 
@@ -4009,7 +4009,7 @@ extern MagickExport int XHeightOfScreen(
 int XHeightOfScreen(
 #endif
 #if NeedFunctionPrototypes
-    Screen* c		/* screen */
+    Screen* c           /* screen */
 #endif
 ){}
 
@@ -4019,16 +4019,16 @@ extern MagickExport XIfEvent(
 XIfEvent(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    XEvent*	b	/* event_return */,
+    Display* a          /* display */,
+    XEvent*     b       /* event_return */,
     Bool (* c) (
 #if NeedNestedPrototypes
-	       Display* x			/* display */,
-               XEvent* y			/* event */,
-               XPointer	z		/* arg */
+               Display* x                       /* display */,
+               XEvent* y                        /* event */,
+               XPointer z               /* arg */
 #endif
-             )		/* predicate */,
-    XPointer d		/* arg */
+             )          /* predicate */,
+    XPointer d          /* arg */
 #endif
 ){}
 
@@ -4038,7 +4038,7 @@ extern MagickExport int XImageByteOrder(
 int XImageByteOrder(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */
+    Display* a          /* display */
 #endif
 ){}
 
@@ -4048,8 +4048,8 @@ extern MagickExport XInstallColormap(
 XInstallColormap(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Colormap b		/* colormap */
+    Display* a          /* display */,
+    Colormap b          /* colormap */
 #endif
 ){}
 
@@ -4059,8 +4059,8 @@ extern MagickExport KeyCode XKeysymToKeycode(
 KeyCode XKeysymToKeycode(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    KeySym b		/* keysym */
+    Display* a          /* display */,
+    KeySym b            /* keysym */
 #endif
 ){}
 
@@ -4070,8 +4070,8 @@ extern MagickExport XKillClient(
 XKillClient(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    XID	b		/* resource */
+    Display* a          /* display */,
+    XID b               /* resource */
 #endif
 ){}
 
@@ -4081,7 +4081,7 @@ extern MagickExport unsigned long XXLastKnownRequestProcessed(
 unsigned long XXLastKnownRequestProcessed(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */
+    Display* a          /* display */
 #endif
 ){}
 
@@ -4091,11 +4091,11 @@ extern MagickExport Status XLookupColor(
 Status XLookupColor(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Colormap b		/* colormap */,
-    _Xconst char* c	/* color_name */,
-    XColor*	d	/* exact_def_return */,
-    XColor*	e	/* screen_def_return */
+    Display* a          /* display */,
+    Colormap b          /* colormap */,
+    _Xconst char* c     /* color_name */,
+    XColor*     d       /* exact_def_return */,
+    XColor*     e       /* screen_def_return */
 #endif
 ){}
 
@@ -4105,8 +4105,8 @@ extern MagickExport XLowerWindow(
 XLowerWindow(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Window	b	/* w */
+    Display* a          /* display */,
+    Window      b       /* w */
 #endif
 ){}
 
@@ -4116,8 +4116,8 @@ extern MagickExport XMapRaised(
 XMapRaised(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Window b		/* w */
+    Display* a          /* display */,
+    Window b            /* w */
 #endif
 ){}
 
@@ -4127,8 +4127,8 @@ extern MagickExport XMapSubwindows(
 XMapSubwindows(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Window b		/* w */
+    Display* a          /* display */,
+    Window b            /* w */
 #endif
 ){}
 
@@ -4138,8 +4138,8 @@ extern MagickExport XMapWindow(
 XMapWindow(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Window b		/* w */
+    Display* a          /* display */,
+    Window b            /* w */
 #endif
 ){}
 
@@ -4149,9 +4149,9 @@ extern MagickExport XMaskEvent(
 XMaskEvent(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    long b		/* event_mask */,
-    XEvent*	c	/* event_return */
+    Display* a          /* display */,
+    long b              /* event_mask */,
+    XEvent*     c       /* event_return */
 #endif
 ){}
 
@@ -4161,7 +4161,7 @@ extern MagickExport int XMaxCmapsOfScreen(
 int XMaxCmapsOfScreen(
 #endif
 #if NeedFunctionPrototypes
-    Screen* c		/* screen */
+    Screen* c           /* screen */
 #endif
 ){}
 
@@ -4171,7 +4171,7 @@ extern MagickExport int XMinCmapsOfScreen(
 int XMinCmapsOfScreen(
 #endif
 #if NeedFunctionPrototypes
-    Screen* c		/* screen */
+    Screen* c           /* screen */
 #endif
 ){}
 
@@ -4181,12 +4181,12 @@ extern MagickExport XMoveResizeWindow(
 XMoveResizeWindow(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Window b		/* w */,
-    int c			/* x */,
-    int	d		/* y */,
-    unsigned int e	/* width */,
-    unsigned int f	/* height */
+    Display* a          /* display */,
+    Window b            /* w */,
+    int c                       /* x */,
+    int d               /* y */,
+    unsigned int e      /* width */,
+    unsigned int f      /* height */
 #endif
 ){}
 
@@ -4196,10 +4196,10 @@ extern MagickExport XMoveWindow(
 XMoveWindow(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Window b		/* w */,
-    int	c		/* x */,
-    int	d		/* y */
+    Display* a          /* display */,
+    Window b            /* w */,
+    int c               /* x */,
+    int d               /* y */
 #endif
 ){}
 
@@ -4209,8 +4209,8 @@ extern MagickExport XNextEvent(
 XNextEvent(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    XEvent*	b	/* event_return */
+    Display* a          /* display */,
+    XEvent*     b       /* event_return */
 #endif
 ){}
 
@@ -4220,7 +4220,7 @@ extern MagickExport XNoOp(
 XNoOp(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */
+    Display* a          /* display */
 #endif
 ){}
 
@@ -4230,10 +4230,10 @@ extern MagickExport Status XParseColor(
 Status XParseColor(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Colormap b		/* colormap */,
-    _Xconst char* c	/* spec */,
-    XColor*	d	/* exact_def_return */
+    Display* a          /* display */,
+    Colormap b          /* colormap */,
+    _Xconst char* c     /* spec */,
+    XColor*     d       /* exact_def_return */
 #endif
 ){}
 
@@ -4246,31 +4246,31 @@ char **NextString;
     int Sign = 1;
     
     if (*string == '+')
-	string++;
+        string++;
     else if (*string == '-')
     {
-	string++;
-	Sign = -1;
+        string++;
+        Sign = -1;
     }
     for (; (*string >= '0') && (*string <= '9'); string++)
     {
-	Result = (Result * 10) + (*string - '0');
+        Result = (Result * 10) + (*string - '0');
     }
     *NextString = string;
     if (Sign >= 0)
-	return (Result);
+        return (Result);
     else
-	return (-Result);
+        return (-Result);
 }
 
-#define NoValue		0x0000
-#define XValue  	0x0001
-#define YValue		0x0002
-#define WidthValue  	0x0004
-#define HeightValue  	0x0008
-#define AllValues 	0x000F
-#define XNegative 	0x0010
-#define YNegative 	0x0020
+#define NoValue         0x0000
+#define XValue          0x0001
+#define YValue          0x0002
+#define WidthValue      0x0004
+#define HeightValue     0x0008
+#define AllValues       0x000F
+#define XNegative       0x0010
+#define YNegative       0x0020
 
 
 #if NeedFunctionPrototypes
@@ -4291,88 +4291,88 @@ int *x, *y;
 unsigned int *width, *height;    /* RETURN */
 #endif
 {
-	int mask = NoValue;
-	register char *strind;
-	unsigned int tempWidth, tempHeight;
-	int tempX, tempY;
-	char *nextCharacter;
+        int mask = NoValue;
+        register char *strind;
+        unsigned int tempWidth, tempHeight;
+        int tempX, tempY;
+        char *nextCharacter;
 
-	if ( (string == NULL) || (*string == '\0')) return(mask);
-	if (*string == '=')
-		string++;  /* ignore possible '=' at beg of geometry spec */
+        if ( (string == NULL) || (*string == '\0')) return(mask);
+        if (*string == '=')
+                string++;  /* ignore possible '=' at beg of geometry spec */
 
-	strind = (char *)string;
-	if (*strind != '+' && *strind != '-' && *strind != 'x') {
-		tempWidth = ReadInteger(strind, &nextCharacter);
-		if (strind == nextCharacter) 
-		    return (0);
-		strind = nextCharacter;
-		mask |= WidthValue;
-	}
+        strind = (char *)string;
+        if (*strind != '+' && *strind != '-' && *strind != 'x') {
+                tempWidth = ReadInteger(strind, &nextCharacter);
+                if (strind == nextCharacter) 
+                    return (0);
+                strind = nextCharacter;
+                mask |= WidthValue;
+        }
 
-	if (*strind == 'x' || *strind == 'X') {	
-		strind++;
-		tempHeight = ReadInteger(strind, &nextCharacter);
-		if (strind == nextCharacter)
-		    return (0);
-		strind = nextCharacter;
-		mask |= HeightValue;
-	}
+        if (*strind == 'x' || *strind == 'X') { 
+                strind++;
+                tempHeight = ReadInteger(strind, &nextCharacter);
+                if (strind == nextCharacter)
+                    return (0);
+                strind = nextCharacter;
+                mask |= HeightValue;
+        }
 
-	if ((*strind == '+') || (*strind == '-')) {
-		if (*strind == '-') {
-  			strind++;
-			tempX = -ReadInteger(strind, &nextCharacter);
-			if (strind == nextCharacter)
-			    return (0);
-			strind = nextCharacter;
-			mask |= XNegative;
+        if ((*strind == '+') || (*strind == '-')) {
+                if (*strind == '-') {
+                        strind++;
+                        tempX = -ReadInteger(strind, &nextCharacter);
+                        if (strind == nextCharacter)
+                            return (0);
+                        strind = nextCharacter;
+                        mask |= XNegative;
 
-		}
-		else
-		{	strind++;
-			tempX = ReadInteger(strind, &nextCharacter);
-			if (strind == nextCharacter)
-			    return(0);
-			strind = nextCharacter;
-		}
-		mask |= XValue;
-		if ((*strind == '+') || (*strind == '-')) {
-			if (*strind == '-') {
-				strind++;
-				tempY = -ReadInteger(strind, &nextCharacter);
-				if (strind == nextCharacter)
-			    	    return(0);
-				strind = nextCharacter;
-				mask |= YNegative;
+                }
+                else
+                {       strind++;
+                        tempX = ReadInteger(strind, &nextCharacter);
+                        if (strind == nextCharacter)
+                            return(0);
+                        strind = nextCharacter;
+                }
+                mask |= XValue;
+                if ((*strind == '+') || (*strind == '-')) {
+                        if (*strind == '-') {
+                                strind++;
+                                tempY = -ReadInteger(strind, &nextCharacter);
+                                if (strind == nextCharacter)
+                                    return(0);
+                                strind = nextCharacter;
+                                mask |= YNegative;
 
-			}
-			else
-			{
-				strind++;
-				tempY = ReadInteger(strind, &nextCharacter);
-				if (strind == nextCharacter)
-			    	    return(0);
-				strind = nextCharacter;
-			}
-			mask |= YValue;
-		}
-	}
-	
-	/* If strind isn't at the end of the string the it's an invalid
-		geometry specification. */
+                        }
+                        else
+                        {
+                                strind++;
+                                tempY = ReadInteger(strind, &nextCharacter);
+                                if (strind == nextCharacter)
+                                    return(0);
+                                strind = nextCharacter;
+                        }
+                        mask |= YValue;
+                }
+        }
+        
+        /* If strind isn't at the end of the string the it's an invalid
+                geometry specification. */
 
-	if (*strind != '\0') return (0);
+        if (*strind != '\0') return (0);
 
-	if (mask & XValue)
-	    *x = tempX;
- 	if (mask & YValue)
-	    *y = tempY;
-	if (mask & WidthValue)
+        if (mask & XValue)
+            *x = tempX;
+        if (mask & YValue)
+            *y = tempY;
+        if (mask & WidthValue)
             *width = tempWidth;
-	if (mask & HeightValue)
+        if (mask & HeightValue)
             *height = tempHeight;
-	return (mask);
+        return (mask);
 }
 
 #if defined(_VISUALC_)
@@ -4381,8 +4381,8 @@ extern MagickExport XPeekEvent(
 XPeekEvent(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    XEvent*	b	/* event_return */
+    Display* a          /* display */,
+    XEvent*     b       /* event_return */
 #endif
 ){}
 
@@ -4392,16 +4392,16 @@ extern MagickExport XPeekIfEvent(
 XPeekIfEvent(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    XEvent*	b	/* event_return */,
+    Display* a          /* display */,
+    XEvent*     b       /* event_return */,
     Bool (* c) (
 #if NeedNestedPrototypes
-	       Display* x		/* display */,
-               XEvent* y		/* event */,
-               XPointer	z	/* arg */
+               Display* x               /* display */,
+               XEvent* y                /* event */,
+               XPointer z       /* arg */
 #endif
-             )		/* predicate */,
-    XPointer d		/* arg */
+             )          /* predicate */,
+    XPointer d          /* arg */
 #endif
 ){}
 
@@ -4411,7 +4411,7 @@ extern MagickExport int XPending(
 int XPending(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */
+    Display* a          /* display */
 #endif
 ){}
 
@@ -4421,7 +4421,7 @@ extern MagickExport int XPlanesOfScreen(
 int XPlanesOfScreen(
 #endif
 #if NeedFunctionPrototypes
-    Screen* c		/* screen */
+    Screen* c           /* screen */
     
 #endif
 ){}
@@ -4432,7 +4432,7 @@ extern MagickExport int XProtocolRevision(
 int XProtocolRevision(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */
+    Display* a          /* display */
 #endif
 ){}
 
@@ -4442,7 +4442,7 @@ extern MagickExport int XProtocolVersion(
 int XProtocolVersion(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */
+    Display* a          /* display */
 #endif
 ){}
 
@@ -4453,8 +4453,8 @@ extern MagickExport XPutBackEvent(
 XPutBackEvent(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    XEvent*	b	/* event */
+    Display* a          /* display */,
+    XEvent*     b       /* event */
 #endif
 ){}
 
@@ -4464,16 +4464,16 @@ extern MagickExport XPutImage(
 XPutImage(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Drawable d		/* d */,
-    GC e			/* gc */,
-    XImage*	f	/* image */,
-    int	g		/* src_x */,
-    int	h		/* src_y */,
-    int	i		/* dest_x */,
-    int	j		/* dest_y */,
-    unsigned int k	/* width */,
-    unsigned int l	/* height */	  
+    Display* a          /* display */,
+    Drawable d          /* d */,
+    GC e                        /* gc */,
+    XImage*     f       /* image */,
+    int g               /* src_x */,
+    int h               /* src_y */,
+    int i               /* dest_x */,
+    int j               /* dest_y */,
+    unsigned int k      /* width */,
+    unsigned int l      /* height */      
 #endif
 ){}
 
@@ -4483,7 +4483,7 @@ extern MagickExport int XQLength(
 int XQLength(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */
+    Display* a          /* display */
 #endif
 ){}
 
@@ -4493,12 +4493,12 @@ extern MagickExport Status XQueryBestCursor(
 Status XQueryBestCursor(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Drawable d		/* d */,
+    Display* a          /* display */,
+    Drawable d          /* d */,
     unsigned int e       /* width */,
-    unsigned int f	/* height */,
-    unsigned int* g	/* width_return */,
-    unsigned int* h	/* height_return */
+    unsigned int f      /* height */,
+    unsigned int* g     /* width_return */,
+    unsigned int* h     /* height_return */
 #endif
 ){}
 
@@ -4508,13 +4508,13 @@ extern MagickExport Status XQueryBestSize(
 Status XQueryBestSize(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    int	b		/* class */,
-    Drawable d		/* which_screen */,
-    unsigned int e	/* width */,
-    unsigned int f	/* height */,
-    unsigned int* g	/* width_return */,
-    unsigned int* h	/* height_return */
+    Display* a          /* display */,
+    int b               /* class */,
+    Drawable d          /* which_screen */,
+    unsigned int e      /* width */,
+    unsigned int f      /* height */,
+    unsigned int* g     /* width_return */,
+    unsigned int* h     /* height_return */
 #endif
 ){}
 
@@ -4524,12 +4524,12 @@ extern MagickExport Status XQueryBestStipple(
 Status XQueryBestStipple(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Drawable d		/* which_screen */,
-    unsigned int e	/* width */,
-    unsigned int f	/* height */,
-    unsigned int* g	/* width_return */,
-    unsigned int* h	/* height_return */
+    Display* a          /* display */,
+    Drawable d          /* which_screen */,
+    unsigned int e      /* width */,
+    unsigned int f      /* height */,
+    unsigned int* g     /* width_return */,
+    unsigned int* h     /* height_return */
 #endif
 ){}
 
@@ -4539,12 +4539,12 @@ extern MagickExport Status XQueryBestTile(
 Status XQueryBestTile(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Drawable d		/* which_screen */,
-    unsigned int e	/* width */,
-    unsigned int f	/* height */,
-    unsigned int* g	/* width_return */,
-    unsigned int* h	/* height_return */
+    Display* a          /* display */,
+    Drawable d          /* which_screen */,
+    unsigned int e      /* width */,
+    unsigned int f      /* height */,
+    unsigned int* g     /* width_return */,
+    unsigned int* h     /* height_return */
 #endif
 ){}
 
@@ -4554,9 +4554,9 @@ extern MagickExport XQueryColor(
 XQueryColor(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Colormap b		/* colormap */,
-    XColor*	c	/* def_in_out */
+    Display* a          /* display */,
+    Colormap b          /* colormap */,
+    XColor*     c       /* def_in_out */
 #endif
 ){}
 
@@ -4566,10 +4566,10 @@ extern MagickExport XQueryColors(
 XQueryColors(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Colormap b		/* colormap */,
-    XColor*	c	/* defs_in_out */,
-    int	d		/* ncolors */
+    Display* a          /* display */,
+    Colormap b          /* colormap */,
+    XColor*     c       /* defs_in_out */,
+    int d               /* ncolors */
 #endif
 ){}
 
@@ -4579,11 +4579,11 @@ extern MagickExport Bool XQueryExtension(
 Bool XQueryExtension(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    _Xconst char* b	/* name */,
-    int* c		/* major_opcode_return */,
-    int* d		/* first_event_return */,
-    int* e		/* first_error_return */
+    Display* a          /* display */,
+    _Xconst char* b     /* name */,
+    int* c              /* major_opcode_return */,
+    int* d              /* first_event_return */,
+    int* e              /* first_error_return */
 #endif
 ){}
 
@@ -4593,8 +4593,8 @@ extern MagickExport XQueryKeymap(
 XQueryKeymap(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    char b[32]		/* keys_return */
+    Display* a          /* display */,
+    char b[32]          /* keys_return */
 #endif
 ){}
 
@@ -4604,14 +4604,14 @@ extern MagickExport Bool XQueryPointer(
 Bool XQueryPointer(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Window b		/* w */,
-    Window*	c	/* root_return */,
-    Window*	d	/* child_return */,
-    int* e		/* root_x_return */,
-    int* f		/* root_y_return */,
-    int* g		/* win_x_return */,
-    int* h		/* win_y_return */,
+    Display* a          /* display */,
+    Window b            /* w */,
+    Window*     c       /* root_return */,
+    Window*     d       /* child_return */,
+    int* e              /* root_x_return */,
+    int* f              /* root_y_return */,
+    int* g              /* win_x_return */,
+    int* h              /* win_y_return */,
     unsigned int*  i     /* mask_return */
 #endif
 ){}
@@ -4622,14 +4622,14 @@ extern MagickExport XQueryTextExtents(
 XQueryTextExtents(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    XID	b		/* font_ID */,
-    _Xconst char* c	/* string */,
-    int	d		/* nchars */,
-    int* e		/* direction_return */,
-    int* f		/* font_ascent_return */,
-    int* g		/* font_descent_return */,
-    XCharStruct* h	/* overall_return */    
+    Display* a          /* display */,
+    XID b               /* font_ID */,
+    _Xconst char* c     /* string */,
+    int d               /* nchars */,
+    int* e              /* direction_return */,
+    int* f              /* font_ascent_return */,
+    int* g              /* font_descent_return */,
+    XCharStruct* h      /* overall_return */    
 #endif
 ){}
 
@@ -4639,14 +4639,14 @@ extern MagickExport XQueryTextExtents16(
 XQueryTextExtents16(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    XID	b		/* font_ID */,
-    _Xconst XChar2b* c	/* string */,
-    int	d		/* nchars */,
-    int* e		/* direction_return */,
-    int* f		/* font_ascent_return */,
-    int* g		/* font_descent_return */,
-    XCharStruct* h	/* overall_return */
+    Display* a          /* display */,
+    XID b               /* font_ID */,
+    _Xconst XChar2b* c  /* string */,
+    int d               /* nchars */,
+    int* e              /* direction_return */,
+    int* f              /* font_ascent_return */,
+    int* g              /* font_descent_return */,
+    XCharStruct* h      /* overall_return */
 #endif
 ){}
 
@@ -4656,12 +4656,12 @@ extern MagickExport Status XQueryTree(
 Status XQueryTree(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Window b		/* w */,
-    Window*	c	/* root_return */,
-    Window*	d	/* parent_return */,
-    Window** e		/* children_return */,
-    unsigned int* f	/* nchildren_return */
+    Display* a          /* display */,
+    Window b            /* w */,
+    Window*     c       /* root_return */,
+    Window*     d       /* parent_return */,
+    Window** e          /* children_return */,
+    unsigned int* f     /* nchildren_return */
 #endif
 ){}
 
@@ -4671,8 +4671,8 @@ extern MagickExport XRaiseWindow(
 XRaiseWindow(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Window	b	/* w */
+    Display* a          /* display */,
+    Window      b       /* w */
 #endif
 ){}
 
@@ -4682,14 +4682,14 @@ extern MagickExport int XReadBitmapFile(
 int XReadBitmapFile(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Drawable d 		/* d */,
-    _Xconst char* e	/* filename */,
-    unsigned int* f	/* width_return */,
-    unsigned int* g	/* height_return */,
-    Pixmap*	h	/* bitmap_return */,
-    int* i		/* x_hot_return */,
-    int* j		/* y_hot_return */
+    Display* a          /* display */,
+    Drawable d          /* d */,
+    _Xconst char* e     /* filename */,
+    unsigned int* f     /* width_return */,
+    unsigned int* g     /* height_return */,
+    Pixmap*     h       /* bitmap_return */,
+    int* i              /* x_hot_return */,
+    int* j              /* y_hot_return */
 #endif
 ){}
 
@@ -4699,12 +4699,12 @@ extern MagickExport int XReadBitmapFileData(
 int XReadBitmapFileData(
 #endif
 #if NeedFunctionPrototypes
-    _Xconst char* a	/* filename */,
-    unsigned int* b	/* width_return */,
-    unsigned int* c	/* height_return */,
-    unsigned char**	d /* data_return */,
-    int* e		/* x_hot_return */,
-    int* f		/* y_hot_return */
+    _Xconst char* a     /* filename */,
+    unsigned int* b     /* width_return */,
+    unsigned int* c     /* height_return */,
+    unsigned char**     d /* data_return */,
+    int* e              /* x_hot_return */,
+    int* f              /* y_hot_return */
 #endif
 ){}
 
@@ -4714,12 +4714,12 @@ extern MagickExport XRebindKeysym(
 XRebindKeysym(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    KeySym b		/* keysym */,
-    KeySym*	c	/* list */,
-    int	d		/* mod_count */,
-    _Xconst unsigned char* e	/* string */,
-    int	f		/* bytes_string */
+    Display* a          /* display */,
+    KeySym b            /* keysym */,
+    KeySym*     c       /* list */,
+    int d               /* mod_count */,
+    _Xconst unsigned char* e    /* string */,
+    int f               /* bytes_string */
 #endif
 ){}
 
@@ -4729,10 +4729,10 @@ extern MagickExport XRecolorCursor(
 XRecolorCursor(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Cursor b		/* cursor */,
-    XColor*	c	/* foreground_color */,
-    XColor*	d	/* background_color */
+    Display* a          /* display */,
+    Cursor b            /* cursor */,
+    XColor*     c       /* foreground_color */,
+    XColor*     d       /* background_color */
 #endif
 ){}
 
@@ -4742,7 +4742,7 @@ extern MagickExport XRefreshKeyboardMapping(
 XRefreshKeyboardMapping(
 #endif
 #if NeedFunctionPrototypes
-    XMappingEvent* a	/* event_map */    
+    XMappingEvent* a    /* event_map */    
 #endif
 ){}
 
@@ -4752,8 +4752,8 @@ extern MagickExport XRemoveFromSaveSet(
 XRemoveFromSaveSet(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Window b		/* w */
+    Display* a          /* display */,
+    Window b            /* w */
 #endif
 ){}
 
@@ -4763,8 +4763,8 @@ extern MagickExport XRemoveHost(
 XRemoveHost(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    XHostAddress* b	/* host */
+    Display* a          /* display */,
+    XHostAddress* b     /* host */
 #endif
 ){}
 
@@ -4774,9 +4774,9 @@ extern MagickExport XRemoveHosts(
 XRemoveHosts(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    XHostAddress* b	/* hosts */,
-    int	c		/* num_hosts */
+    Display* a          /* display */,
+    XHostAddress* b     /* hosts */,
+    int c               /* num_hosts */
 #endif
 ){}
 
@@ -4786,11 +4786,11 @@ extern MagickExport XReparentWindow(
 XReparentWindow(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Window b		/* w */,
-    Window c		/* parent */,
-    int	d		/* x */,
-    int	e		/* y */
+    Display* a          /* display */,
+    Window b            /* w */,
+    Window c            /* parent */,
+    int d               /* x */,
+    int e               /* y */
 #endif
 ){}
 
@@ -4800,7 +4800,7 @@ extern MagickExport XResetScreenSaver(
 XResetScreenSaver(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */
+    Display* a          /* display */
 #endif
 ){}
 
@@ -4810,10 +4810,10 @@ extern MagickExport XResizeWindow(
 XResizeWindow(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Window	b	/* w */,
-    unsigned int c	/* width */,
-    unsigned int d	/* height */
+    Display* a          /* display */,
+    Window      b       /* w */,
+    unsigned int c      /* width */,
+    unsigned int d      /* height */
 #endif
 ){}
 
@@ -4823,9 +4823,9 @@ extern MagickExport XRestackWindows(
 XRestackWindows(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Window*	b	/* windows */,
-    int	c		/* nwindows */
+    Display* a          /* display */,
+    Window*     b       /* windows */,
+    int c               /* nwindows */
 #endif
 ){}
 
@@ -4835,8 +4835,8 @@ extern MagickExport XRotateBuffers(
 XRotateBuffers(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    int	b		/* rotate */
+    Display* a          /* display */,
+    int b               /* rotate */
 #endif
 ){}
 
@@ -4846,11 +4846,11 @@ extern MagickExport XRotateWindowProperties(
 XRotateWindowProperties(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Window b		/* w */,
-    Atom* c		/* properties */,
-    int	d		/* num_prop */,
-    int	e		/* npositions */
+    Display* a          /* display */,
+    Window b            /* w */,
+    Atom* c             /* properties */,
+    int d               /* num_prop */,
+    int e               /* npositions */
 #endif
 ){}
 
@@ -4860,7 +4860,7 @@ extern MagickExport int XScreenCount(
 int XScreenCount(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */
+    Display* a          /* display */
 #endif
 ){}
 
@@ -4870,9 +4870,9 @@ extern MagickExport XSelectInput(
 XSelectInput(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Window	b	/* w */,
-    long c		/* event_mask */
+    Display* a          /* display */,
+    Window      b       /* w */,
+    long c              /* event_mask */
 #endif
 ){}
 
@@ -4882,11 +4882,11 @@ extern MagickExport Status XSendEvent(
 Status XSendEvent(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Window b		/* w */,
-    Bool c		/* propagate */,
-    long d		/* event_mask */,
-    XEvent*	e	/* event_send */
+    Display* a          /* display */,
+    Window b            /* w */,
+    Bool c              /* propagate */,
+    long d              /* event_mask */,
+    XEvent*     e       /* event_send */
 #endif
 ){}
 
@@ -4896,8 +4896,8 @@ extern MagickExport XSetAccessControl(
 XSetAccessControl(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    int	b		/* mode */
+    Display* a          /* display */,
+    int b               /* mode */
 #endif
 ){}
 
@@ -4907,9 +4907,9 @@ extern MagickExport XSetArcMode(
 XSetArcMode(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    GC e			/* gc */,
-    int	f		/* arc_mode */
+    Display* a          /* display */,
+    GC e                        /* gc */,
+    int f               /* arc_mode */
 #endif
 ){}
 
@@ -4919,9 +4919,9 @@ extern MagickExport XSetBackground(
 XSetBackground(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    GC e			/* gc */,
-    unsigned long g	/* background */
+    Display* a          /* display */,
+    GC e                        /* gc */,
+    unsigned long g     /* background */
 #endif
 ){}
 
@@ -4931,9 +4931,9 @@ extern MagickExport XSetClipMask(
 XSetClipMask(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    GC e			/* gc */,
-    Pixmap f		/* pixmap */
+    Display* a          /* display */,
+    GC e                        /* gc */,
+    Pixmap f            /* pixmap */
 #endif
 ){}
 
@@ -4943,10 +4943,10 @@ extern MagickExport XSetClipOrigin(
 XSetClipOrigin(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    GC e			/* gc */,
-    int	f		/* clip_x_origin */,
-    int	g		/* clip_y_origin */
+    Display* a          /* display */,
+    GC e                        /* gc */,
+    int f               /* clip_x_origin */,
+    int g               /* clip_y_origin */
 #endif
 ){}
 
@@ -4956,13 +4956,13 @@ extern MagickExport XSetClipRectangles(
 XSetClipRectangles(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    GC e			/* gc */,
-    int	b		/* clip_x_origin */,
-    int	c		/* clip_y_origin */,
-    XRectangle*	d	/* rectangles */,
-    int	x		/* n */,
-    int	f		/* ordering */
+    Display* a          /* display */,
+    GC e                        /* gc */,
+    int b               /* clip_x_origin */,
+    int c               /* clip_y_origin */,
+    XRectangle* d       /* rectangles */,
+    int x               /* n */,
+    int f               /* ordering */
 #endif
 ){}
 
@@ -4972,8 +4972,8 @@ extern MagickExport XSetCloseDownMode(
 XSetCloseDownMode(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    int	b		/* close_mode */
+    Display* a          /* display */,
+    int b               /* close_mode */
 #endif
 ){}
 
@@ -4983,10 +4983,10 @@ extern MagickExport XSetCommand(
 XSetCommand(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Window	b	/* w */,
-    char**	c	/* argv */,
-    int	d		/* argc */
+    Display* a          /* display */,
+    Window      b       /* w */,
+    char**      c       /* argv */,
+    int d               /* argc */
 #endif
 ){}
 
@@ -4996,11 +4996,11 @@ extern MagickExport XSetDashes(
 XSetDashes(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    GC e			/* gc */,
-    int	b		/* dash_offset */,
-    _Xconst char* c	/* dash_list */,
-    int	d		/* n */
+    Display* a          /* display */,
+    GC e                        /* gc */,
+    int b               /* dash_offset */,
+    _Xconst char* c     /* dash_list */,
+    int d               /* n */
 #endif
 ){}
 
@@ -5010,9 +5010,9 @@ extern MagickExport XSetFillRule(
 XSetFillRule(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    GC e			/* gc */,
-    int	f		/* fill_rule */
+    Display* a          /* display */,
+    GC e                        /* gc */,
+    int f               /* fill_rule */
 #endif
 ){}
 
@@ -5022,9 +5022,9 @@ extern MagickExport XSetFillStyle(
 XSetFillStyle(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    GC e			/* gc */,
-    int	b		/* fill_style */
+    Display* a          /* display */,
+    GC e                        /* gc */,
+    int b               /* fill_style */
 #endif
 ){}
 
@@ -5034,9 +5034,9 @@ extern MagickExport XSetFont(
 XSetFont(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    GC e			/* gc */,
-    Font b		/* font */
+    Display* a          /* display */,
+    GC e                        /* gc */,
+    Font b              /* font */
 #endif
 ){}
 
@@ -5046,9 +5046,9 @@ extern MagickExport XSetFontPath(
 XSetFontPath(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    char**	b	/* directories */,
-    int	c		/* ndirs */	     
+    Display* a          /* display */,
+    char**      b       /* directories */,
+    int c               /* ndirs */          
 #endif
 ){}
 
@@ -5058,9 +5058,9 @@ extern MagickExport XSetForeground(
 XSetForeground(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    GC e			/* gc */,
-    unsigned long b	/* foreground */
+    Display* a          /* display */,
+    GC e                        /* gc */,
+    unsigned long b     /* foreground */
 #endif
 ){}
 
@@ -5070,9 +5070,9 @@ extern MagickExport XSetFunction(
 XSetFunction(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    GC e			/* gc */,
-    int	b		/* function */
+    Display* a          /* display */,
+    GC e                        /* gc */,
+    int b               /* function */
 #endif
 ){}
 
@@ -5082,9 +5082,9 @@ extern MagickExport XSetGraphicsExposures(
 XSetGraphicsExposures(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    GC e			/* gc */,
-    Bool b		/* graphics_exposures */
+    Display* a          /* display */,
+    GC e                        /* gc */,
+    Bool b              /* graphics_exposures */
 #endif
 ){}
 
@@ -5094,9 +5094,9 @@ extern MagickExport XSetIconName(
 XSetIconName(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Window	b	/* w */,
-    _Xconst char* c	/* icon_name */
+    Display* a          /* display */,
+    Window      b       /* w */,
+    _Xconst char* c     /* icon_name */
 #endif
 ){}
 
@@ -5106,10 +5106,10 @@ extern MagickExport XSetInputFocus(
 XSetInputFocus(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Window b		/* focus */,
-    int	c		/* revert_to */,
-    Time d		/* time */
+    Display* a          /* display */,
+    Window b            /* focus */,
+    int c               /* revert_to */,
+    Time d              /* time */
 #endif
 ){}
 
@@ -5119,12 +5119,12 @@ extern MagickExport XSetLineAttributes(
 XSetLineAttributes(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    GC e			/* gc */,
-    unsigned int b	/* line_width */,
-    int	c		/* line_style */,
-    int	d		/* cap_style */,
-    int	f		/* join_style */
+    Display* a          /* display */,
+    GC e                        /* gc */,
+    unsigned int b      /* line_width */,
+    int c               /* line_style */,
+    int d               /* cap_style */,
+    int f               /* join_style */
 #endif
 ){}
 
@@ -5134,8 +5134,8 @@ extern MagickExport int XSetModifierMapping(
 int XSetModifierMapping(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    XModifierKeymap* b	/* modmap */
+    Display* a          /* display */,
+    XModifierKeymap* b  /* modmap */
 #endif
 ){}
 
@@ -5145,9 +5145,9 @@ extern MagickExport XSetPlaneMask(
 XSetPlaneMask(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    GC e			/* gc */,
-    unsigned long b	/* plane_mask */
+    Display* a          /* display */,
+    GC e                        /* gc */,
+    unsigned long b     /* plane_mask */
 #endif
 ){}
 
@@ -5157,9 +5157,9 @@ extern MagickExport int XSetPointerMapping(
 int XSetPointerMapping(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    _Xconst unsigned char* b	/* map */,
-    int	 c		/* nmap */
+    Display* a          /* display */,
+    _Xconst unsigned char* b    /* map */,
+    int  c              /* nmap */
 #endif
 ){}
 
@@ -5169,11 +5169,11 @@ extern MagickExport XSetScreenSaver(
 XSetScreenSaver(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    int	b		/* timeout */,
-    int	c		/* interval */,
-    int	d		/* prefer_blanking */,
-    int	e		/* allow_exposures */
+    Display* a          /* display */,
+    int b               /* timeout */,
+    int c               /* interval */,
+    int d               /* prefer_blanking */,
+    int e               /* allow_exposures */
 #endif
 ){}
 
@@ -5183,10 +5183,10 @@ extern MagickExport XSetSelectionOwner(
 XSetSelectionOwner(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Atom b	        /* selection */,
-    Window c		/* owner */,
-    Time d		/* time */
+    Display* a          /* display */,
+    Atom b              /* selection */,
+    Window c            /* owner */,
+    Time d              /* time */
 #endif
 ){}
 
@@ -5196,12 +5196,12 @@ extern MagickExport XSetState(
 XSetState(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    GC x			/* gc */,
-    unsigned long b	/* foreground */,
-    unsigned long c	/* background */,
-    int	d		/* function */,
-    unsigned long e	/* plane_mask */
+    Display* a          /* display */,
+    GC x                        /* gc */,
+    unsigned long b     /* foreground */,
+    unsigned long c     /* background */,
+    int d               /* function */,
+    unsigned long e     /* plane_mask */
 #endif
 ){}
 
@@ -5211,9 +5211,9 @@ extern MagickExport XSetStipple(
 XSetStipple(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    GC e			/* gc */,
-    Pixmap	b	/* stipple */
+    Display* a          /* display */,
+    GC e                        /* gc */,
+    Pixmap      b       /* stipple */
 #endif
 ){}
 
@@ -5223,9 +5223,9 @@ extern MagickExport XSetSubwindowMode(
 XSetSubwindowMode(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    GC e			/* gc */,
-    int	b		/* subwindow_mode */
+    Display* a          /* display */,
+    GC e                        /* gc */,
+    int b               /* subwindow_mode */
 #endif
 ){}
 
@@ -5235,10 +5235,10 @@ extern MagickExport XSetTSOrigin(
 XSetTSOrigin(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    GC e			/* gc */,
-    int	b		/* ts_x_origin */,
-    int	c		/* ts_y_origin */
+    Display* a          /* display */,
+    GC e                        /* gc */,
+    int b               /* ts_x_origin */,
+    int c               /* ts_y_origin */
 #endif
 ){}
 
@@ -5248,9 +5248,9 @@ extern MagickExport XSetTile(
 XSetTile(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    GC e			/* gc */,
-    Pixmap	b	/* tile */
+    Display* a          /* display */,
+    GC e                        /* gc */,
+    Pixmap      b       /* tile */
 #endif
 ){}
 
@@ -5260,9 +5260,9 @@ extern MagickExport XSetWindowBackground(
 XSetWindowBackground(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Window	b	/* w */,
-    unsigned long c	/* background_pixel */
+    Display* a          /* display */,
+    Window      b       /* w */,
+    unsigned long c     /* background_pixel */
 #endif
 ){}
 
@@ -5272,9 +5272,9 @@ extern MagickExport XSetWindowBackgroundPixmap(
 XSetWindowBackgroundPixmap(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Window b		/* w */,
-    Pixmap c		/* background_pixmap */
+    Display* a          /* display */,
+    Window b            /* w */,
+    Pixmap c            /* background_pixmap */
 #endif
 ){}
 
@@ -5284,9 +5284,9 @@ extern MagickExport XSetWindowBorder(
 XSetWindowBorder(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Window c		/* w */,
-    unsigned long d	/* border_pixel */
+    Display* a          /* display */,
+    Window c            /* w */,
+    unsigned long d     /* border_pixel */
 #endif
 ){}
 
@@ -5296,9 +5296,9 @@ extern MagickExport XSetWindowBorderPixmap(
 XSetWindowBorderPixmap(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Window b		/* w */,
-    Pixmap c		/* border_pixmap */
+    Display* a          /* display */,
+    Window b            /* w */,
+    Pixmap c            /* border_pixmap */
 #endif
 ){}
 
@@ -5308,9 +5308,9 @@ extern MagickExport XSetWindowBorderWidth(
 XSetWindowBorderWidth(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Window b		/* w */,
-    unsigned int c	/* width */
+    Display* a          /* display */,
+    Window b            /* w */,
+    unsigned int c      /* width */
 #endif
 ){}
 
@@ -5320,9 +5320,9 @@ extern MagickExport XSetWindowColormap(
 XSetWindowColormap(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Window b		/* w */,
-    Colormap c		/* colormap */
+    Display* a          /* display */,
+    Window b            /* w */,
+    Colormap c          /* colormap */
 #endif
 ){}
 
@@ -5332,10 +5332,10 @@ extern MagickExport XStoreBuffer(
 XStoreBuffer(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    _Xconst char* b	/* bytes */,
-    int	c		/* nbytes */,
-    int	d		/* buffer */
+    Display* a          /* display */,
+    _Xconst char* b     /* bytes */,
+    int c               /* nbytes */,
+    int d               /* buffer */
 #endif
 ){}
 
@@ -5345,9 +5345,9 @@ extern MagickExport XStoreBytes(
 XStoreBytes(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    _Xconst char* b	/* bytes */,
-    int	c		/* nbytes */
+    Display* a          /* display */,
+    _Xconst char* b     /* bytes */,
+    int c               /* nbytes */
 #endif
 ){}
 
@@ -5357,9 +5357,9 @@ extern MagickExport XStoreColor(
 XStoreColor(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Colormap b		/* colormap */,
-    XColor*	c	/* color */
+    Display* a          /* display */,
+    Colormap b          /* colormap */,
+    XColor*     c       /* color */
 #endif
 ){}
 
@@ -5369,10 +5369,10 @@ extern MagickExport XStoreColors(
 XStoreColors(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Colormap b		/* colormap */,
-    XColor*	c	/* color */,
-    int	d		/* ncolors */
+    Display* a          /* display */,
+    Colormap b          /* colormap */,
+    XColor*     c       /* color */,
+    int d               /* ncolors */
 #endif
 ){}
 
@@ -5382,9 +5382,9 @@ extern MagickExport XStoreName(
 XStoreName(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Window b		/* w */,
-    _Xconst char* c	/* window_name */
+    Display* a          /* display */,
+    Window b            /* w */,
+    _Xconst char* c     /* window_name */
 #endif
 ){}
 
@@ -5394,11 +5394,11 @@ extern MagickExport XStoreNamedColor(
 XStoreNamedColor(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Colormap b		/* colormap */,
-    _Xconst char* c	/* color */,
-    unsigned long d	/* pixel */,
-    int	e		/* flags */
+    Display* a          /* display */,
+    Colormap b          /* colormap */,
+    _Xconst char* c     /* color */,
+    unsigned long d     /* pixel */,
+    int e               /* flags */
 #endif
 ){}
 
@@ -5415,13 +5415,13 @@ extern MagickExport XTextExtents(
 XTextExtents(
 #endif
 #if NeedFunctionPrototypes
-    XFontStruct* a	/* font_struct */,
-    _Xconst char* b	/* string */,
-    int	c		/* nchars */,
-    int* d		/* direction_return */,
-    int* e		/* font_ascent_return */,
-    int* f		/* font_descent_return */,
-    XCharStruct* g	/* overall_return */
+    XFontStruct* a      /* font_struct */,
+    _Xconst char* b     /* string */,
+    int c               /* nchars */,
+    int* d              /* direction_return */,
+    int* e              /* font_ascent_return */,
+    int* f              /* font_descent_return */,
+    XCharStruct* g      /* overall_return */
 #endif
 ){}
 
@@ -5431,13 +5431,13 @@ extern MagickExport XTextExtents16(
 XTextExtents16(
 #endif
 #if NeedFunctionPrototypes
-    XFontStruct* a	/* font_struct */,
-    _Xconst XChar2b* b	/* string */,
-    int	c		/* nchars */,
-    int* d		/* direction_return */,
-    int* e		/* font_ascent_return */,
-    int* f		/* font_descent_return */,
-    XCharStruct* g	/* overall_return */
+    XFontStruct* a      /* font_struct */,
+    _Xconst XChar2b* b  /* string */,
+    int c               /* nchars */,
+    int* d              /* direction_return */,
+    int* e              /* font_ascent_return */,
+    int* f              /* font_descent_return */,
+    XCharStruct* g      /* overall_return */
 #endif
 ){}
 
@@ -5447,9 +5447,9 @@ extern MagickExport int XTextWidth(
 int XTextWidth(
 #endif
 #if NeedFunctionPrototypes
-    XFontStruct* a	/* font_struct */,
-    _Xconst char* b	/* string */,
-    int	c		/* count */
+    XFontStruct* a      /* font_struct */,
+    _Xconst char* b     /* string */,
+    int c               /* count */
 #endif
 ){}
 
@@ -5459,9 +5459,9 @@ extern MagickExport int XTextWidth16(
 int XTextWidth16(
 #endif
 #if NeedFunctionPrototypes
-    XFontStruct* a	/* font_struct */,
-    _Xconst XChar2b* b	/* string */,
-    int	c		/* count */
+    XFontStruct* a      /* font_struct */,
+    _Xconst XChar2b* b  /* string */,
+    int c               /* count */
 #endif
 ){}
 
@@ -5471,14 +5471,14 @@ extern MagickExport Bool XTranslateCoordinates(
 Bool XTranslateCoordinates(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Window b		/* src_w */,
-    Window c		/* dest_w */,
-    int	d		/* src_x */,
-    int	e		/* src_y */,
-    int* f		/* dest_x_return */,
-    int* g		/* dest_y_return */,
-    Window*	h	/* child_return */
+    Display* a          /* display */,
+    Window b            /* src_w */,
+    Window c            /* dest_w */,
+    int d               /* src_x */,
+    int e               /* src_y */,
+    int* f              /* dest_x_return */,
+    int* g              /* dest_y_return */,
+    Window*     h       /* child_return */
 #endif
 ){}
 
@@ -5488,8 +5488,8 @@ extern MagickExport XUndefineCursor(
 XUndefineCursor(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Window b		/* w */
+    Display* a          /* display */,
+    Window b            /* w */
 #endif
 ){}
 
@@ -5499,10 +5499,10 @@ extern MagickExport XUngrabButton(
 XUngrabButton(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    unsigned int b	/* button */,
-    unsigned int c	/* modifiers */,
-    Window	d	/* grab_window */
+    Display* a          /* display */,
+    unsigned int b      /* button */,
+    unsigned int c      /* modifiers */,
+    Window      d       /* grab_window */
 #endif
 ){}
 
@@ -5512,10 +5512,10 @@ extern MagickExport XUngrabKey(
 XUngrabKey(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    int	b		/* keycode */,
-    unsigned int c	/* modifiers */,
-    Window d		/* grab_window */
+    Display* a          /* display */,
+    int b               /* keycode */,
+    unsigned int c      /* modifiers */,
+    Window d            /* grab_window */
 #endif
 ){}
 
@@ -5525,8 +5525,8 @@ extern MagickExport XUngrabKeyboard(
 XUngrabKeyboard(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Time b		/* time */
+    Display* a          /* display */,
+    Time b              /* time */
 #endif
 ){}
 
@@ -5536,8 +5536,8 @@ extern MagickExport XUngrabPointer(
 XUngrabPointer(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Time b		/* time */
+    Display* a          /* display */,
+    Time b              /* time */
 #endif
 ){}
 
@@ -5547,7 +5547,7 @@ extern MagickExport XUngrabServer(
 XUngrabServer(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */
+    Display* a          /* display */
 #endif
 ){}
 
@@ -5557,8 +5557,8 @@ extern MagickExport XUninstallColormap(
 XUninstallColormap(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Colormap b		/* colormap */
+    Display* a          /* display */,
+    Colormap b          /* colormap */
 #endif
 ){}
 
@@ -5568,8 +5568,8 @@ extern MagickExport XUnloadFont(
 XUnloadFont(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Font b		/* font */
+    Display* a          /* display */,
+    Font b              /* font */
 #endif
 ){}
 
@@ -5579,8 +5579,8 @@ extern MagickExport XUnmapSubwindows(
 XUnmapSubwindows(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Window b		/* w */
+    Display* a          /* display */,
+    Window b            /* w */
 #endif
 ){}
 
@@ -5590,8 +5590,8 @@ extern MagickExport XUnmapWindow(
 XUnmapWindow(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Window b		/* w */
+    Display* a          /* display */,
+    Window b            /* w */
 #endif
 ){}
 
@@ -5601,7 +5601,7 @@ extern MagickExport int XVendorRelease(
 int XVendorRelease(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */
+    Display* a          /* display */
 #endif
 ){}
 
@@ -5611,15 +5611,15 @@ extern MagickExport XWarpPointer(
 XWarpPointer(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Window b		/* src_w */,
-    Window c		/* dest_w */,
-    int	d		/* src_x */,
-    int	e		/* src_y */,
-    unsigned int f	/* src_width */,
-    unsigned int g	/* src_height */,
-    int	h		/* dest_x */,
-    int	i		/* dest_y */	     
+    Display* a          /* display */,
+    Window b            /* src_w */,
+    Window c            /* dest_w */,
+    int d               /* src_x */,
+    int e               /* src_y */,
+    unsigned int f      /* src_width */,
+    unsigned int g      /* src_height */,
+    int h               /* dest_x */,
+    int i               /* dest_y */         
 #endif
 ){}
 
@@ -5629,7 +5629,7 @@ extern MagickExport int XWidthMMOfScreen(
 int XWidthMMOfScreen(
 #endif
 #if NeedFunctionPrototypes
-    Screen* c		/* screen */
+    Screen* c           /* screen */
 #endif
 ){}
 
@@ -5639,7 +5639,7 @@ extern MagickExport int XWidthOfScreen(
 int XWidthOfScreen(
 #endif
 #if NeedFunctionPrototypes
-    Screen*	c	/* screen */
+    Screen*     c       /* screen */
 #endif
 ){}
 
@@ -5649,10 +5649,10 @@ extern MagickExport XWindowEvent(
 XWindowEvent(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Window b		/* w */,
-    long c		/* event_mask */,
-    XEvent*	d	/* event_return */
+    Display* a          /* display */,
+    Window b            /* w */,
+    long c              /* event_mask */,
+    XEvent*     d       /* event_return */
 #endif
 ){}
 
@@ -5662,13 +5662,13 @@ extern MagickExport int XWriteBitmapFile(
 int XWriteBitmapFile(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    _Xconst char* b	/* filename */,
-    Pixmap c		/* bitmap */,
-    unsigned int d	/* width */,
-    unsigned int e	/* height */,
-    int	f		/* x_hot */,
-    int	g		/* y_hot */		     
+    Display* a          /* display */,
+    _Xconst char* b     /* filename */,
+    Pixmap c            /* bitmap */,
+    unsigned int d      /* width */,
+    unsigned int e      /* height */,
+    int f               /* x_hot */,
+    int g               /* y_hot */                  
 #endif
 ){}
 
@@ -5688,7 +5688,7 @@ extern MagickExport char *XSetLocaleModifiers(
 char *XSetLocaleModifiers(
 #endif
 #if NeedFunctionPrototypes
-    _Xconst char* a	/* modifier_list */
+    _Xconst char* a     /* modifier_list */
 #endif
 ){}
 
@@ -5698,10 +5698,10 @@ extern MagickExport XOM XOpenOM(
 XOM XOpenOM(
 #endif
 #if NeedFunctionPrototypes
-    Display* a			/* display */,
-    struct _XrmHashBucketRec* b	/* rdb */,
-    _Xconst char* c		/* res_name */,
-    _Xconst char* d		/* res_class */
+    Display* a                  /* display */,
+    struct _XrmHashBucketRec* b /* rdb */,
+    _Xconst char* c             /* res_name */,
+    _Xconst char* d             /* res_class */
 #endif
 ){}
 
@@ -5711,7 +5711,7 @@ extern MagickExport Status XCloseOM(
 Status XCloseOM(
 #endif
 #if NeedFunctionPrototypes
-    XOM a			/* om */
+    XOM a                       /* om */
 #endif
 ){}
 
@@ -5721,7 +5721,7 @@ extern MagickExport char *XSetOMValues(
 char *XSetOMValues(
 #endif
 #if NeedVarargsPrototypes
-    XOM a			/* om */,
+    XOM a                       /* om */,
     ...
 #endif
 ){}
@@ -5732,7 +5732,7 @@ extern MagickExport char *XGetOMValues(
 char *XGetOMValues(
 #endif
 #if NeedVarargsPrototypes
-    XOM a			/* om */,
+    XOM a                       /* om */,
     ...
 #endif
 ){}
@@ -5743,7 +5743,7 @@ extern MagickExport Display *XDisplayOfOM(
 Display *XDisplayOfOM(
 #endif
 #if NeedFunctionPrototypes
-    XOM a			/* om */
+    XOM a                       /* om */
 #endif
 ){}
 
@@ -5753,7 +5753,7 @@ extern MagickExport char *XLocaleOfOM(
 char *XLocaleOfOM(
 #endif
 #if NeedFunctionPrototypes
-    XOM a			/* om */
+    XOM a                       /* om */
 #endif
 ){}
 
@@ -5763,7 +5763,7 @@ extern MagickExport XOC XCreateOC(
 XOC XCreateOC(
 #endif
 #if NeedVarargsPrototypes
-    XOM a			/* om */,
+    XOM a                       /* om */,
     ...
 #endif
 ){}
@@ -5774,7 +5774,7 @@ extern MagickExport void XDestroyOC(
 void XDestroyOC(
 #endif
 #if NeedFunctionPrototypes
-    XOC a			/* oc */
+    XOC a                       /* oc */
 #endif
 ){}
 
@@ -5784,7 +5784,7 @@ extern MagickExport XOM XOMOfOC(
 XOM XOMOfOC(
 #endif
 #if NeedFunctionPrototypes
-    XOC a			/* oc */
+    XOC a                       /* oc */
 #endif
 ){}
 
@@ -5794,7 +5794,7 @@ extern MagickExport char *XSetOCValues(
 char *XSetOCValues(
 #endif
 #if NeedVarargsPrototypes
-    XOC a			/* oc */,
+    XOC a                       /* oc */,
     ...
 #endif
 ){}
@@ -5805,7 +5805,7 @@ extern MagickExport char *XGetOCValues(
 char *XGetOCValues(
 #endif
 #if NeedVarargsPrototypes
-    XOC a			/* oc */,
+    XOC a                       /* oc */,
     ...
 #endif
 ){}
@@ -5816,11 +5816,11 @@ extern MagickExport XFontSet XCreateFontSet(
 XFontSet XCreateFontSet(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    _Xconst char* b	/* base_font_name_list */,
-    char***	c	/* missing_charset_list */,
-    int* d		/* missing_charset_count */,
-    char** e		/* def_string */
+    Display* a          /* display */,
+    _Xconst char* b     /* base_font_name_list */,
+    char***     c       /* missing_charset_list */,
+    int* d              /* missing_charset_count */,
+    char** e            /* def_string */
 #endif
 ){}
 
@@ -5830,8 +5830,8 @@ extern MagickExport void XFreeFontSet(
 void XFreeFontSet(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    XFontSet b		/* font_set */
+    Display* a          /* display */,
+    XFontSet b          /* font_set */
 #endif
 ){}
 
@@ -5841,9 +5841,9 @@ extern MagickExport int XFontsOfFontSet(
 int XFontsOfFontSet(
 #endif
 #if NeedFunctionPrototypes
-    XFontSet a		/* font_set */,
-    XFontStruct*** b	/* font_struct_list */,
-    char***	c	/* font_name_list */
+    XFontSet a          /* font_set */,
+    XFontStruct*** b    /* font_struct_list */,
+    char***     c       /* font_name_list */
 #endif
 ){}
 
@@ -5853,7 +5853,7 @@ extern MagickExport char *XBaseFontNameListOfFontSet(
 char *XBaseFontNameListOfFontSet(
 #endif
 #if NeedFunctionPrototypes
-    XFontSet a		/* font_set */
+    XFontSet a          /* font_set */
 #endif
 ){}
 
@@ -5863,7 +5863,7 @@ extern MagickExport char *XLocaleOfFontSet(
 char *XLocaleOfFontSet(
 #endif
 #if NeedFunctionPrototypes
-    XFontSet a		/* font_set */
+    XFontSet a          /* font_set */
 #endif
 ){}
 
@@ -5873,7 +5873,7 @@ extern MagickExport Bool XContextDependentDrawing(
 Bool XContextDependentDrawing(
 #endif
 #if NeedFunctionPrototypes
-    XFontSet a		/* font_set */
+    XFontSet a          /* font_set */
 #endif
 ){}
 
@@ -5883,7 +5883,7 @@ extern MagickExport Bool XDirectionalDependentDrawing(
 Bool XDirectionalDependentDrawing(
 #endif
 #if NeedFunctionPrototypes
-    XFontSet a		/* font_set */
+    XFontSet a          /* font_set */
 #endif
 ){}
 
@@ -5893,7 +5893,7 @@ extern MagickExport Bool XContextualDrawing(
 Bool XContextualDrawing(
 #endif
 #if NeedFunctionPrototypes
-    XFontSet a		/* font_set */
+    XFontSet a          /* font_set */
 #endif
 ){}
 
@@ -5903,7 +5903,7 @@ extern MagickExport XFontSetExtents *XExtentsOfFontSet(
 XFontSetExtents *XExtentsOfFontSet(
 #endif
 #if NeedFunctionPrototypes
-    XFontSet a		/* font_set */
+    XFontSet a          /* font_set */
 #endif
 ){}
 
@@ -5913,9 +5913,9 @@ extern MagickExport int XmbTextEscapement(
 int XmbTextEscapement(
 #endif
 #if NeedFunctionPrototypes
-    XFontSet a		/* font_set */,
-    _Xconst char* b	/* text */,
-    int	c		/* bytes_text */
+    XFontSet a          /* font_set */,
+    _Xconst char* b     /* text */,
+    int c               /* bytes_text */
 #endif
 ){}
 
@@ -5925,9 +5925,9 @@ extern MagickExport int XwcTextEscapement(
 int XwcTextEscapement(
 #endif
 #if NeedFunctionPrototypes
-    XFontSet a		/* font_set */,
-    _Xconst wchar_t* b	/* text */,
-    int	c		/* num_wchars */
+    XFontSet a          /* font_set */,
+    _Xconst wchar_t* b  /* text */,
+    int c               /* num_wchars */
 #endif
 ){}
 
@@ -5937,11 +5937,11 @@ extern MagickExport int XmbTextExtents(
 int XmbTextExtents(
 #endif
 #if NeedFunctionPrototypes
-    XFontSet a		/* font_set */,
-    _Xconst char* b	/* text */,
-    int	c		/* bytes_text */,
-    XRectangle*	d	/* overall_ink_return */,
-    XRectangle*	e	/* overall_logical_return */
+    XFontSet a          /* font_set */,
+    _Xconst char* b     /* text */,
+    int c               /* bytes_text */,
+    XRectangle* d       /* overall_ink_return */,
+    XRectangle* e       /* overall_logical_return */
 #endif
 ){}
 
@@ -5951,11 +5951,11 @@ extern MagickExport int XwcTextExtents(
 int XwcTextExtents(
 #endif
 #if NeedFunctionPrototypes
-    XFontSet a		/* font_set */,
-    _Xconst wchar_t* b	/* text */,
-    int	c		/* num_wchars */,
-    XRectangle*	d	/* overall_ink_return */,
-    XRectangle*	e	/* overall_logical_return */
+    XFontSet a          /* font_set */,
+    _Xconst wchar_t* b  /* text */,
+    int c               /* num_wchars */,
+    XRectangle* d       /* overall_ink_return */,
+    XRectangle* e       /* overall_logical_return */
 #endif
 ){}
 
@@ -5965,15 +5965,15 @@ extern MagickExport Status XmbTextPerCharExtents(
 Status XmbTextPerCharExtents(
 #endif
 #if NeedFunctionPrototypes
-    XFontSet a		/* font_set */,
-    _Xconst char* b	/* text */,
-    int	c		/* bytes_text */,
-    XRectangle*	d	/* ink_extents_buffer */,
-    XRectangle*	e	/* logical_extents_buffer */,
-    int	f		/* buffer_size */,
-    int* g		/* num_chars */,
-    XRectangle*	h	/* overall_ink_return */,
-    XRectangle*	i	/* overall_logical_return */
+    XFontSet a          /* font_set */,
+    _Xconst char* b     /* text */,
+    int c               /* bytes_text */,
+    XRectangle* d       /* ink_extents_buffer */,
+    XRectangle* e       /* logical_extents_buffer */,
+    int f               /* buffer_size */,
+    int* g              /* num_chars */,
+    XRectangle* h       /* overall_ink_return */,
+    XRectangle* i       /* overall_logical_return */
 #endif
 ){}
 
@@ -5983,15 +5983,15 @@ extern MagickExport Status XwcTextPerCharExtents(
 Status XwcTextPerCharExtents(
 #endif
 #if NeedFunctionPrototypes
-    XFontSet a		/* font_set */,
-    _Xconst wchar_t* b	/* text */,
-    int	c		/* num_wchars */,
-    XRectangle*	d	/* ink_extents_buffer */,
-    XRectangle*	e	/* logical_extents_buffer */,
-    int	f		/* buffer_size */,
-    int* g		/* num_chars */,
-    XRectangle*	h	/* overall_ink_return */,
-    XRectangle*	i	/* overall_logical_return */
+    XFontSet a          /* font_set */,
+    _Xconst wchar_t* b  /* text */,
+    int c               /* num_wchars */,
+    XRectangle* d       /* ink_extents_buffer */,
+    XRectangle* e       /* logical_extents_buffer */,
+    int f               /* buffer_size */,
+    int* g              /* num_chars */,
+    XRectangle* h       /* overall_ink_return */,
+    XRectangle* i       /* overall_logical_return */
 #endif
 ){}
 
@@ -6001,13 +6001,13 @@ extern MagickExport void XmbDrawText(
 void XmbDrawText(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Drawable d		/* d */,
-    GC e			/* gc */,
-    int	x		/* x */,
-    int	y		/* y */,
-    XmbTextItem* z	/* text_items */,
-    int	w		/* nitems */
+    Display* a          /* display */,
+    Drawable d          /* d */,
+    GC e                        /* gc */,
+    int x               /* x */,
+    int y               /* y */,
+    XmbTextItem* z      /* text_items */,
+    int w               /* nitems */
 #endif
 ){}
 
@@ -6017,13 +6017,13 @@ extern MagickExport void XwcDrawText(
 void XwcDrawText(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Drawable d		/* d */,
-    GC e			/* gc */,
-    int	x		/* x */,
-    int	y		/* y */,
-    XwcTextItem* z	/* text_items */,
-    int	w		/* nitems */
+    Display* a          /* display */,
+    Drawable d          /* d */,
+    GC e                        /* gc */,
+    int x               /* x */,
+    int y               /* y */,
+    XwcTextItem* z      /* text_items */,
+    int w               /* nitems */
 #endif
 ){}
 
@@ -6033,14 +6033,14 @@ extern MagickExport void XmbDrawString(
 void XmbDrawString(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Drawable d		/* d */,
-    XFontSet f		/* font_set */,
-    GC e			/* gc */,
-    int	x		/* x */,
-    int	y		/* y */,
-    _Xconst char* z	/* text */,
-    int	w		/* bytes_text */
+    Display* a          /* display */,
+    Drawable d          /* d */,
+    XFontSet f          /* font_set */,
+    GC e                        /* gc */,
+    int x               /* x */,
+    int y               /* y */,
+    _Xconst char* z     /* text */,
+    int w               /* bytes_text */
 #endif
 ){}
 
@@ -6050,14 +6050,14 @@ extern MagickExport void XwcDrawString(
 void XwcDrawString(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Drawable d		/* d */,
-    XFontSet f		/* font_set */,
-    GC e			/* gc */,
-    int	x		/* x */,
-    int	y		/* y */,
-    _Xconst wchar_t* z	/* text */,
-    int	w		/* num_wchars */
+    Display* a          /* display */,
+    Drawable d          /* d */,
+    XFontSet f          /* font_set */,
+    GC e                        /* gc */,
+    int x               /* x */,
+    int y               /* y */,
+    _Xconst wchar_t* z  /* text */,
+    int w               /* num_wchars */
 #endif
 ){}
 
@@ -6067,14 +6067,14 @@ extern MagickExport void XmbDrawImageString(
 void XmbDrawImageString(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Drawable d		/* d */,
-    XFontSet f		/* font_set */,
-    GC e			/* gc */,
-    int	x		/* x */,
-    int	y		/* y */,
-    _Xconst char* z	/* text */,
-    int	w		/* bytes_text */
+    Display* a          /* display */,
+    Drawable d          /* d */,
+    XFontSet f          /* font_set */,
+    GC e                        /* gc */,
+    int x               /* x */,
+    int y               /* y */,
+    _Xconst char* z     /* text */,
+    int w               /* bytes_text */
 #endif
 ){}
 
@@ -6084,14 +6084,14 @@ extern MagickExport void XwcDrawImageString(
 void XwcDrawImageString(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Drawable d		/* d */,
-    XFontSet f		/* font_set */,
-    GC e			/* gc */,
-    int	x		/* x */,
-    int	y		/* y */,
-    _Xconst wchar_t* z	/* text */,
-    int	w		/* num_wchars */
+    Display* a          /* display */,
+    Drawable d          /* d */,
+    XFontSet f          /* font_set */,
+    GC e                        /* gc */,
+    int x               /* x */,
+    int y               /* y */,
+    _Xconst wchar_t* z  /* text */,
+    int w               /* num_wchars */
 #endif
 ){}
 
@@ -6101,10 +6101,10 @@ extern MagickExport XIM XOpenIM(
 XIM XOpenIM(
 #endif
 #if NeedFunctionPrototypes
-    Display* a			/* dpy */,
-    struct _XrmHashBucketRec* b	/* rdb */,
-    char* c			/* res_name */,
-    char* d			/* res_class */
+    Display* a                  /* dpy */,
+    struct _XrmHashBucketRec* b /* rdb */,
+    char* c                     /* res_name */,
+    char* d                     /* res_class */
 #endif
 ){}
 
@@ -6244,8 +6244,8 @@ extern MagickExport Bool XFilterEvent(
 Bool XFilterEvent(
 #endif
 #if NeedFunctionPrototypes
-    XEvent*	a /* event */,
-    Window b	/* window */
+    XEvent*     a /* event */,
+    Window b    /* window */
 #endif
 ){}
 
@@ -6255,12 +6255,12 @@ extern MagickExport int XmbLookupString(
 int XmbLookupString(
 #endif
 #if NeedFunctionPrototypes
-    XIC a			/* ic */,
-    XKeyPressedEvent* b	/* event */,
-    char* c		/* buffer_return */,
-    int	d		/* bytes_buffer */,
-    KeySym*	e	/* keysym_return */,
-    Status*	f	/* status_return */
+    XIC a                       /* ic */,
+    XKeyPressedEvent* b /* event */,
+    char* c             /* buffer_return */,
+    int d               /* bytes_buffer */,
+    KeySym*     e       /* keysym_return */,
+    Status*     f       /* status_return */
 #endif
 ){}
 
@@ -6270,12 +6270,12 @@ extern MagickExport int XwcLookupString(
 int XwcLookupString(
 #endif
 #if NeedFunctionPrototypes
-    XIC a			/* ic */,
-    XKeyPressedEvent* b	/* event */,
-    wchar_t* c		/* buffer_return */,
-    int	d		/* wchars_buffer */,
-    KeySym*	e	/* keysym_return */,
-    Status*	f	/* status_return */
+    XIC a                       /* ic */,
+    XKeyPressedEvent* b /* event */,
+    wchar_t* c          /* buffer_return */,
+    int d               /* wchars_buffer */,
+    KeySym*     e       /* keysym_return */,
+    Status*     f       /* status_return */
 #endif
 ){}
 
@@ -6297,12 +6297,12 @@ extern MagickExport Bool XRegisterIMInstantiateCallback(
 Bool XRegisterIMInstantiateCallback(
 #endif
 #if NeedFunctionPrototypes
-    Display* a			/* dpy */,
-    struct _XrmHashBucketRec* b	/* rdb */,
-    char* c			/* res_name */,
-    char* d			/* res_class */,
-    XIMProc	e		/* callback */,
-    XPointer* f			/* client_data */
+    Display* a                  /* dpy */,
+    struct _XrmHashBucketRec* b /* rdb */,
+    char* c                     /* res_name */,
+    char* d                     /* res_class */,
+    XIMProc     e               /* callback */,
+    XPointer* f                 /* client_data */
 #endif
 ){}
 
@@ -6312,22 +6312,22 @@ extern MagickExport Bool XUnregisterIMInstantiateCallback(
 Bool XUnregisterIMInstantiateCallback(
 #endif
 #if NeedFunctionPrototypes
-    Display* a			/* dpy */,
-    struct _XrmHashBucketRec* x	/* rdb */,
-    char* b			/* res_name */,
-    char* c			/* res_class */,
-    XIMProc	d		/* callback */,
-    XPointer* e			/* client_data */
+    Display* a                  /* dpy */,
+    struct _XrmHashBucketRec* x /* rdb */,
+    char* b                     /* res_name */,
+    char* c                     /* res_class */,
+    XIMProc     d               /* callback */,
+    XPointer* e                 /* client_data */
 #endif
 ){}
 
 typedef void (*XConnectionWatchProc)(
 #if NeedFunctionPrototypes
-    Display* a			/* dpy */,
-    XPointer b			/* client_data */,
-    int	c			/* fd */,
-    Bool d			/* opening */,	 /* open or close flag */
-    XPointer* e			/* watch_data */ /* open sets, close uses */
+    Display* a                  /* dpy */,
+    XPointer b                  /* client_data */,
+    int c                       /* fd */,
+    Bool d                      /* opening */,   /* open or close flag */
+    XPointer* e                 /* watch_data */ /* open sets, close uses */
 #endif
 );
     
@@ -6338,9 +6338,9 @@ extern MagickExport Status XInternalConnectionNumbers(
 Status XInternalConnectionNumbers(
 #endif
 #if NeedFunctionPrototypes
-    Display* a			/* dpy */,
-    int** b			/* fd_return */,
-    int* c			/* count_return */
+    Display* a                  /* dpy */,
+    int** b                     /* fd_return */,
+    int* c                      /* count_return */
 #endif
 ){}
 
@@ -6350,8 +6350,8 @@ extern MagickExport void XProcessInternalConnection(
 void XProcessInternalConnection(
 #endif
 #if NeedFunctionPrototypes
-    Display* a			/* dpy */,
-    int	b			/* fd */
+    Display* a                  /* dpy */,
+    int b                       /* fd */
 #endif
 ){}
 
@@ -6361,9 +6361,9 @@ extern MagickExport Status XAddConnectionWatch(
 Status XAddConnectionWatch(
 #endif
 #if NeedFunctionPrototypes
-    Display* a			/* dpy */,
-    XConnectionWatchProc b	/* callback */,
-    XPointer c			/* client_data */
+    Display* a                  /* dpy */,
+    XConnectionWatchProc b      /* callback */,
+    XPointer c                  /* client_data */
 #endif
 ){}
 
@@ -6373,9 +6373,9 @@ extern MagickExport void XRemoveConnectionWatch(
 void XRemoveConnectionWatch(
 #endif
 #if NeedFunctionPrototypes
-    Display* a			/* dpy */,
-    XConnectionWatchProc b	/* callback */,
-    XPointer c			/* client_data */
+    Display* a                  /* dpy */,
+    XConnectionWatchProc b      /* callback */,
+    XPointer c                  /* client_data */
 #endif
 ){}
 
@@ -6386,32 +6386,32 @@ void XRemoveConnectionWatch(
  * Bitmask returned by XParseGeometry().  Each bit tells if the corresponding
  * value (x, y, width, height) was found in the parsed string.
  */
-#define NoValue		0x0000
-#define XValue  	0x0001
-#define YValue		0x0002
-#define WidthValue  	0x0004
-#define HeightValue  	0x0008
-#define AllValues 	0x000F
-#define XNegative 	0x0010
-#define YNegative 	0x0020
+#define NoValue         0x0000
+#define XValue          0x0001
+#define YValue          0x0002
+#define WidthValue      0x0004
+#define HeightValue     0x0008
+#define AllValues       0x000F
+#define XNegative       0x0010
+#define YNegative       0x0020
 
 /*
  * new version containing base_width, base_height, and win_gravity fields;
  * used with WM_NORMAL_HINTS.
  */
 typedef struct {
-    	long flags;	/* marks which fields in this structure are defined */
-	int x, y;		/* obsolete for new window mgrs, but clients */
-	int width, height;	/* should set so old wm's don't mess up */
-	int min_width, min_height;
-	int max_width, max_height;
-    	int width_inc, height_inc;
-	struct {
-		int x;	/* numerator */
-		int y;	/* denominator */
-	} min_aspect, max_aspect;
-	int base_width, base_height;		/* added by ICCCM version 1 */
-	int win_gravity;			/* added by ICCCM version 1 */
+        long flags;     /* marks which fields in this structure are defined */
+        int x, y;               /* obsolete for new window mgrs, but clients */
+        int width, height;      /* should set so old wm's don't mess up */
+        int min_width, min_height;
+        int max_width, max_height;
+        int width_inc, height_inc;
+        struct {
+                int x;  /* numerator */
+                int y;  /* denominator */
+        } min_aspect, max_aspect;
+        int base_width, base_height;            /* added by ICCCM version 1 */
+        int win_gravity;                        /* added by ICCCM version 1 */
 } XSizeHints;
 
 /*
@@ -6420,17 +6420,17 @@ typedef struct {
  */
 
 /* flags argument in size hints */
-#define USPosition	(1L << 0) /* user specified x, y */
-#define USSize		(1L << 1) /* user specified width, height */
+#define USPosition      (1L << 0) /* user specified x, y */
+#define USSize          (1L << 1) /* user specified width, height */
 
-#define PPosition	(1L << 2) /* program specified position */
-#define PSize		(1L << 3) /* program specified size */
-#define PMinSize	(1L << 4) /* program specified minimum size */
-#define PMaxSize	(1L << 5) /* program specified maximum size */
-#define PResizeInc	(1L << 6) /* program specified resize increments */
-#define PAspect		(1L << 7) /* program specified min and max aspect ratios */
-#define PBaseSize	(1L << 8) /* program specified base for incrementing */
-#define PWinGravity	(1L << 9) /* program specified window gravity */
+#define PPosition       (1L << 2) /* program specified position */
+#define PSize           (1L << 3) /* program specified size */
+#define PMinSize        (1L << 4) /* program specified minimum size */
+#define PMaxSize        (1L << 5) /* program specified maximum size */
+#define PResizeInc      (1L << 6) /* program specified resize increments */
+#define PAspect         (1L << 7) /* program specified min and max aspect ratios */
+#define PBaseSize       (1L << 8) /* program specified base for incrementing */
+#define PWinGravity     (1L << 9) /* program specified window gravity */
 
 /* obsolete */
 #define PAllHints (PPosition|PSize|PMinSize|PMaxSize|PResizeInc|PAspect)
@@ -6438,43 +6438,43 @@ typedef struct {
 
 
 typedef struct {
-	long flags;	/* marks which fields in this structure are defined */
-	Bool input;	/* does this application rely on the window manager to
-			get keyboard input? */
-	int initial_state;	/* see below */
-	Pixmap icon_pixmap;	/* pixmap to be used as icon */
-	Window icon_window; 	/* window to be used as icon */
-	int icon_x, icon_y; 	/* initial position of icon */
-	Pixmap icon_mask;	/* icon mask bitmap */
-	XID window_group;	/* id of related window group */
-	/* this structure may be extended in the future */
+        long flags;     /* marks which fields in this structure are defined */
+        Bool input;     /* does this application rely on the window manager to
+                        get keyboard input? */
+        int initial_state;      /* see below */
+        Pixmap icon_pixmap;     /* pixmap to be used as icon */
+        Window icon_window;     /* window to be used as icon */
+        int icon_x, icon_y;     /* initial position of icon */
+        Pixmap icon_mask;       /* icon mask bitmap */
+        XID window_group;       /* id of related window group */
+        /* this structure may be extended in the future */
 } XWMHints;
 
 /* definition for flags of XWMHints */
 
-#define InputHint 		(1L << 0)
-#define StateHint 		(1L << 1)
-#define IconPixmapHint		(1L << 2)
-#define IconWindowHint		(1L << 3)
-#define IconPositionHint 	(1L << 4)
-#define IconMaskHint		(1L << 5)
-#define WindowGroupHint		(1L << 6)
+#define InputHint               (1L << 0)
+#define StateHint               (1L << 1)
+#define IconPixmapHint          (1L << 2)
+#define IconWindowHint          (1L << 3)
+#define IconPositionHint        (1L << 4)
+#define IconMaskHint            (1L << 5)
+#define WindowGroupHint         (1L << 6)
 #define AllHints (InputHint|StateHint|IconPixmapHint|IconWindowHint| \
 IconPositionHint|IconMaskHint|WindowGroupHint)
-#define XUrgencyHint		(1L << 8)
+#define XUrgencyHint            (1L << 8)
 
 /* definitions for initial window state */
-#define WithdrawnState 0	/* for windows that are not mapped */
-#define NormalState 1	/* most applications want to start this way */
-#define IconicState 3	/* application wants to start as an icon */
+#define WithdrawnState 0        /* for windows that are not mapped */
+#define NormalState 1   /* most applications want to start this way */
+#define IconicState 3   /* application wants to start as an icon */
 
 /*
  * Obsolete states no longer defined by ICCCM
  */
-#define DontCareState 0	/* don't know or care */
-#define ZoomState 2	/* application wants to start zoomed */
-#define InactiveState 4	/* application believes it is seldom used; */
-			/* some wm's may put it on inactive menu */
+#define DontCareState 0 /* don't know or care */
+#define ZoomState 2     /* application wants to start zoomed */
+#define InactiveState 4 /* application believes it is seldom used; */
+                        /* some wm's may put it on inactive menu */
 
 
 /*
@@ -6482,10 +6482,10 @@ IconPositionHint|IconMaskHint|WindowGroupHint)
  * WM_ICON_NAME, WM_CLIENT_MACHINE, and WM_COMMAND.
  */
 typedef struct {
-    unsigned char *value;		/* same as Property routines */
-    Atom encoding;			/* prop type */
-    int format;				/* prop data format: 8, 16, or 32 */
-    unsigned long nitems;		/* number of data items in value */
+    unsigned char *value;               /* same as Property routines */
+    Atom encoding;                      /* prop type */
+    int format;                         /* prop data format: 8, 16, or 32 */
+    unsigned long nitems;               /* number of data items in value */
 } XTextProperty;
 
 #define XNoMemory -1
@@ -6493,21 +6493,21 @@ typedef struct {
 #define XConverterNotFound -3
 
 typedef enum {
-    XStringStyle,		/* STRING */
-    XCompoundTextStyle,		/* COMPOUND_TEXT */
-    XTextStyle,			/* text in owner's encoding (current locale)*/
-    XStdICCTextStyle		/* STRING, else COMPOUND_TEXT */
+    XStringStyle,               /* STRING */
+    XCompoundTextStyle,         /* COMPOUND_TEXT */
+    XTextStyle,                 /* text in owner's encoding (current locale)*/
+    XStdICCTextStyle            /* STRING, else COMPOUND_TEXT */
 } XICCEncodingStyle;
 
 typedef struct {
-	int min_width, min_height;
-	int max_width, max_height;
-	int width_inc, height_inc;
+        int min_width, min_height;
+        int max_width, max_height;
+        int width_inc, height_inc;
 } XIconSize;
 
 typedef struct {
-	char *res_name;
-	char *res_class;
+        char *res_name;
+        char *res_class;
 } XClassHint;
 
 /*
@@ -6515,22 +6515,22 @@ typedef struct {
  * naive people are more comfortable with them.
  */
 #define XDestroyImage(ximage) \
-	((*((ximage)->f.destroy_image))((ximage)))
+        ((*((ximage)->f.destroy_image))((ximage)))
 #define XGetPixel(ximage, x, y) \
-	((*((ximage)->f.get_pixel))((ximage), (x), (y)))
+        ((*((ximage)->f.get_pixel))((ximage), (x), (y)))
 #define XPutPixel(ximage, x, y, pixel) \
-	((*((ximage)->f.put_pixel))((ximage), (x), (y), (pixel)))
+        ((*((ximage)->f.put_pixel))((ximage), (x), (y), (pixel)))
 #define XSubImage(ximage, x, y, width, height)  \
-	((*((ximage)->f.sub_image))((ximage), (x), (y), (width), (height)))
+        ((*((ximage)->f.sub_image))((ximage), (x), (y), (width), (height)))
 #define XAddPixel(ximage, value) \
-	((*((ximage)->f.add_pixel))((ximage), (value)))
+        ((*((ximage)->f.add_pixel))((ximage), (value)))
 
 /*
  * Compose sequence status structure, used in calling XLookupString.
  */
 typedef struct _XComposeStatus {
-    XPointer compose_ptr;	/* state table pointer */
-    int chars_matched;		/* match state */
+    XPointer compose_ptr;       /* state table pointer */
+    int chars_matched;          /* match state */
 } XComposeStatus;
 
 /*
@@ -6581,7 +6581,7 @@ typedef struct {
   int screen;
   int depth;
 #if defined(__cplusplus) || defined(c_plusplus)
-  int c_class;					/* C++ */
+  int c_class;                                  /* C++ */
 #else
   int class;
 #endif
@@ -6592,33 +6592,33 @@ typedef struct {
   int bits_per_rgb;
 } XVisualInfo;
 
-#define VisualNoMask		0x0
-#define VisualIDMask 		0x1
-#define VisualScreenMask	0x2
-#define VisualDepthMask		0x4
-#define VisualClassMask		0x8
-#define VisualRedMaskMask	0x10
-#define VisualGreenMaskMask	0x20
-#define VisualBlueMaskMask	0x40
-#define VisualColormapSizeMask	0x80
-#define VisualBitsPerRGBMask	0x100
-#define VisualAllMask		0x1FF
+#define VisualNoMask            0x0
+#define VisualIDMask            0x1
+#define VisualScreenMask        0x2
+#define VisualDepthMask         0x4
+#define VisualClassMask         0x8
+#define VisualRedMaskMask       0x10
+#define VisualGreenMaskMask     0x20
+#define VisualBlueMaskMask      0x40
+#define VisualColormapSizeMask  0x80
+#define VisualBitsPerRGBMask    0x100
+#define VisualAllMask           0x1FF
 
 /*
  * This defines a window manager property that clients may use to
  * share standard color maps of type RGB_COLOR_MAP:
  */
 typedef struct {
-	Colormap colormap;
-	unsigned long red_max;
-	unsigned long red_mult;
-	unsigned long green_max;
-	unsigned long green_mult;
-	unsigned long blue_max;
-	unsigned long blue_mult;
-	unsigned long base_pixel;
-	VisualID visualid;		/* added by ICCCM version 1 */
-	XID killid;			/* added by ICCCM version 1 */
+        Colormap colormap;
+        unsigned long red_max;
+        unsigned long red_mult;
+        unsigned long green_max;
+        unsigned long green_mult;
+        unsigned long blue_max;
+        unsigned long blue_mult;
+        unsigned long base_pixel;
+        VisualID visualid;              /* added by ICCCM version 1 */
+        XID killid;                     /* added by ICCCM version 1 */
 } XStandardColormap;
 
 #define ReleaseByFreeingColormap ((XID) 1L)  /* for killid field above */
@@ -6627,10 +6627,10 @@ typedef struct {
 /*
  * return codes for XReadBitmapFile and XWriteBitmapFile
  */
-#define BitmapSuccess		0
-#define BitmapOpenFailed 	1
-#define BitmapFileInvalid 	2
-#define BitmapNoMemory		3
+#define BitmapSuccess           0
+#define BitmapOpenFailed        1
+#define BitmapFileInvalid       2
+#define BitmapNoMemory          3
 
 /****************************************************************
  *
@@ -6641,7 +6641,7 @@ typedef struct {
 
 /* Associative lookup table return codes */
 
-#define XCSUCCESS 0	/* No error. */
+#define XCSUCCESS 0     /* No error. */
 #define XCNOMEM   1    /* Out of memory */
 #define XCNOENT   2    /* No entry in table */
 
@@ -6708,8 +6708,8 @@ extern MagickExport XClipBox(
 XClipBox(
 #endif
 #if NeedFunctionPrototypes
-    Region a		/* r */,
-    XRectangle*	b	/* rect_return */
+    Region a            /* r */,
+    XRectangle* b       /* rect_return */
 #endif
 ){}
 
@@ -6739,9 +6739,9 @@ extern MagickExport int XDeleteContext(
 int XDeleteContext(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    XID	 b		/* rid */,
-    XContext c		/* context */
+    Display* a          /* display */,
+    XID  b              /* rid */,
+    XContext c          /* context */
 #endif
 ){}
 
@@ -6751,7 +6751,7 @@ extern MagickExport XDestroyRegion(
 XDestroyRegion(
 #endif
 #if NeedFunctionPrototypes
-    Region a		/* r */
+    Region a            /* r */
 #endif
 ){}
 
@@ -6761,7 +6761,7 @@ extern MagickExport XEmptyRegion(
 XEmptyRegion(
 #endif
 #if NeedFunctionPrototypes
-    Region a		/* r */
+    Region a            /* r */
 #endif
 ){}
 
@@ -6771,8 +6771,8 @@ extern MagickExport XEqualRegion(
 XEqualRegion(
 #endif
 #if NeedFunctionPrototypes
-    Region a		/* r1 */,
-    Region b		/* r2 */
+    Region a            /* r1 */,
+    Region b            /* r2 */
 #endif
 ){}
 
@@ -6782,10 +6782,10 @@ extern MagickExport int XFindContext(
 int XFindContext(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    XID	b		/* rid */,
-    XContext c		/* context */,
-    XPointer* d		/* data_return */
+    Display* a          /* display */,
+    XID b               /* rid */,
+    XContext c          /* context */,
+    XPointer* d         /* data_return */
 #endif
 ){}
 
@@ -6795,9 +6795,9 @@ extern MagickExport Status XGetClassHint(
 Status XGetClassHint(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Window b		/* w */,
-    XClassHint*	c	/* class_hints_return */
+    Display* a          /* display */,
+    Window b            /* w */,
+    XClassHint* c       /* class_hints_return */
 #endif
 ){}
 
@@ -6807,10 +6807,10 @@ extern MagickExport Status XGetIconSizes(
 Status XGetIconSizes(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Window b		/* w */,
-    XIconSize**	c	/* size_list_return */,
-    int* d		/* count_return */
+    Display* a          /* display */,
+    Window b            /* w */,
+    XIconSize** c       /* size_list_return */,
+    int* d              /* count_return */
 #endif
 ){}
 
@@ -6820,9 +6820,9 @@ extern MagickExport Status XGetNormalHints(
 Status XGetNormalHints(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Window b		/* w */,
-    XSizeHints*	c	/* hints_return */
+    Display* a          /* display */,
+    Window b            /* w */,
+    XSizeHints* c       /* hints_return */
 #endif
 ){}
 
@@ -6832,11 +6832,11 @@ extern MagickExport Status XGetRGBColormaps(
 Status XGetRGBColormaps(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Window b		/* w */,
+    Display* a          /* display */,
+    Window b            /* w */,
     XStandardColormap** d /* stdcmap_return */,
-    int* e		/* count_return */,
-    Atom f		/* property */
+    int* e              /* count_return */,
+    Atom f              /* property */
 #endif
 ){}
 
@@ -6846,10 +6846,10 @@ extern MagickExport Status XGetSizeHints(
 Status XGetSizeHints(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Window b		/* w */,
-    XSizeHints*	c	/* hints_return */,
-    Atom d		/* property */
+    Display* a          /* display */,
+    Window b            /* w */,
+    XSizeHints* c       /* hints_return */,
+    Atom d              /* property */
 #endif
 ){}
 
@@ -6859,10 +6859,10 @@ extern MagickExport Status XGetStandardColormap(
 Status XGetStandardColormap(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Window b		/* w */,
-    XStandardColormap* c	/* colormap_return */,
-    Atom d		/* property */			    
+    Display* a          /* display */,
+    Window b            /* w */,
+    XStandardColormap* c        /* colormap_return */,
+    Atom d              /* property */                      
 #endif
 ){}
 
@@ -6872,10 +6872,10 @@ extern MagickExport Status XGetTextProperty(
 Status XGetTextProperty(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Window b		/* window */,
-    XTextProperty* c	/* text_prop_return */,
-    Atom d		/* property */
+    Display* a          /* display */,
+    Window b            /* window */,
+    XTextProperty* c    /* text_prop_return */,
+    Atom d              /* property */
 #endif
 ){}
 
@@ -6885,10 +6885,10 @@ extern MagickExport XVisualInfo *XGetVisualInfo(
 XVisualInfo *XGetVisualInfo(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    long b		/* vinfo_mask */,
-    XVisualInfo* c	/* vinfo_template */,
-    int* d		/* nitems_return */
+    Display* a          /* display */,
+    long b              /* vinfo_mask */,
+    XVisualInfo* c      /* vinfo_template */,
+    int* d              /* nitems_return */
 #endif
 ){}
 
@@ -6898,9 +6898,9 @@ extern MagickExport Status XGetWMClientMachine(
 Status XGetWMClientMachine(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Window b		/* w */,
-    XTextProperty* c	/* text_prop_return */
+    Display* a          /* display */,
+    Window b            /* w */,
+    XTextProperty* c    /* text_prop_return */
 #endif
 ){}
 
@@ -6910,8 +6910,8 @@ extern MagickExport XWMHints *XGetWMHints(
 XWMHints *XGetWMHints(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Window b		/* w */		      
+    Display* a          /* display */,
+    Window b            /* w */               
 #endif
 ){}
 
@@ -6921,9 +6921,9 @@ extern MagickExport Status XGetWMIconName(
 Status XGetWMIconName(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Window b		/* w */,
-    XTextProperty* c	/* text_prop_return */
+    Display* a          /* display */,
+    Window b            /* w */,
+    XTextProperty* c    /* text_prop_return */
 #endif
 ){}
 
@@ -6933,9 +6933,9 @@ extern MagickExport Status XGetWMName(
 Status XGetWMName(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Window b		/* w */,
-    XTextProperty* c	/* text_prop_return */
+    Display* a          /* display */,
+    Window b            /* w */,
+    XTextProperty* c    /* text_prop_return */
 #endif
 ){}
 
@@ -6945,10 +6945,10 @@ extern MagickExport Status XGetWMNormalHints(
 Status XGetWMNormalHints(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Window b		/* w */,
-    XSizeHints*	c	/* hints_return */,
-    long* d		/* supplied_return */ 
+    Display* a          /* display */,
+    Window b            /* w */,
+    XSizeHints* c       /* hints_return */,
+    long* d             /* supplied_return */ 
 #endif
 ){}
 
@@ -6958,11 +6958,11 @@ extern MagickExport Status XGetWMSizeHints(
 Status XGetWMSizeHints(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Window b		/* w */,
-    XSizeHints*	c	/* hints_return */,
-    long* d		/* supplied_return */,
-    Atom e		/* property */
+    Display* a          /* display */,
+    Window b            /* w */,
+    XSizeHints* c       /* hints_return */,
+    long* d             /* supplied_return */,
+    Atom e              /* property */
 #endif
 ){}
 
@@ -6972,9 +6972,9 @@ extern MagickExport Status XGetZoomHints(
 Status XGetZoomHints(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Window b		/* w */,
-    XSizeHints*	c	/* zhints_return */
+    Display* a          /* display */,
+    Window b            /* w */,
+    XSizeHints* c       /* zhints_return */
 #endif
 ){}
 
@@ -6984,9 +6984,9 @@ extern MagickExport XIntersectRegion(
 XIntersectRegion(
 #endif
 #if NeedFunctionPrototypes
-    Region a		/* sra */,
-    Region b		/* srb */,
-    Region c		/* dr_return */
+    Region a            /* sra */,
+    Region b            /* srb */,
+    Region c            /* dr_return */
 #endif
 ){}
 
@@ -6996,9 +6996,9 @@ extern MagickExport void XConvertCase(
 void XConvertCase(
 #endif
 #if NeedFunctionPrototypes
-    KeySym	a	/* sym */,
-    KeySym*	b	/* lower */,
-    KeySym*	c	/* upper */
+    KeySym      a       /* sym */,
+    KeySym*     b       /* lower */,
+    KeySym*     c       /* upper */
 #endif
 ){}
 
@@ -7008,11 +7008,11 @@ extern MagickExport int XLookupString(
 int XLookupString(
 #endif
 #if NeedFunctionPrototypes
-    XKeyEvent* a		/* event_struct */,
-    char* b		/* buffer_return */,
-    int	c		/* bytes_buffer */,
-    KeySym*	d	/* keysym_return */,
-    XComposeStatus*	e /* status_in_out */
+    XKeyEvent* a                /* event_struct */,
+    char* b             /* buffer_return */,
+    int c               /* bytes_buffer */,
+    KeySym*     d       /* keysym_return */,
+    XComposeStatus*     e /* status_in_out */
 #endif
 ){}
 
@@ -7022,11 +7022,11 @@ extern MagickExport Status XMatchVisualInfo(
 Status XMatchVisualInfo(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    int	b		/* screen */,
-    int	c		/* depth */,
-    int	d		/* class */,
-    XVisualInfo* e	/* vinfo_return */
+    Display* a          /* display */,
+    int b               /* screen */,
+    int c               /* depth */,
+    int d               /* class */,
+    XVisualInfo* e      /* vinfo_return */
 #endif
 ){}
 
@@ -7036,9 +7036,9 @@ extern MagickExport XOffsetRegion(
 XOffsetRegion(
 #endif
 #if NeedFunctionPrototypes
-    Region a		/* r */,
-    int	b		/* dx */,
-    int	c		/* dy */
+    Region a            /* r */,
+    int b               /* dx */,
+    int c               /* dy */
 #endif
 ){}
 
@@ -7048,9 +7048,9 @@ extern MagickExport Bool XPointInRegion(
 Bool XPointInRegion(
 #endif
 #if NeedFunctionPrototypes
-    Region a		/* r */,
-    int	b		/* x */,
-    int	c		/* y */
+    Region a            /* r */,
+    int b               /* x */,
+    int c               /* y */
 #endif
 ){}
 
@@ -7060,9 +7060,9 @@ extern MagickExport Region XPolygonRegion(
 Region XPolygonRegion(
 #endif
 #if NeedFunctionPrototypes
-    XPoint*	a	/* points */,
-    int	b		/* n */,
-    int	c		/* fill_rule */
+    XPoint*     a       /* points */,
+    int b               /* n */,
+    int c               /* fill_rule */
 #endif
 ){}
 
@@ -7072,11 +7072,11 @@ extern MagickExport int XRectInRegion(
 int XRectInRegion(
 #endif
 #if NeedFunctionPrototypes
-    Region a		/* r */,
-    int	b		/* x */,
-    int	c		/* y */,
-    unsigned int d	/* width */,
-    unsigned int e	/* height */
+    Region a            /* r */,
+    int b               /* x */,
+    int c               /* y */,
+    unsigned int d      /* width */,
+    unsigned int e      /* height */
 #endif
 ){}
 
@@ -7086,10 +7086,10 @@ extern MagickExport int XSaveContext(
 int XSaveContext(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    XID	b		/* rid */,
-    XContext c		/* context */,
-    _Xconst char* d	/* data */
+    Display* a          /* display */,
+    XID b               /* rid */,
+    XContext c          /* context */,
+    _Xconst char* d     /* data */
 #endif
 ){}
 
@@ -7099,9 +7099,9 @@ extern MagickExport XSetClassHint(
 XSetClassHint(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Window b		/* w */,
-    XClassHint*	c	/* class_hints */
+    Display* a          /* display */,
+    Window b            /* w */,
+    XClassHint* c       /* class_hints */
 #endif
 ){}
 
@@ -7111,10 +7111,10 @@ extern MagickExport XSetIconSizes(
 XSetIconSizes(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Window b		/* w */,
-    XIconSize* c		/* size_list */,
-    int	d		/* count */    
+    Display* a          /* display */,
+    Window b            /* w */,
+    XIconSize* c                /* size_list */,
+    int d               /* count */    
 #endif
 ){}
 
@@ -7124,9 +7124,9 @@ extern MagickExport XSetNormalHints(
 XSetNormalHints(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Window b		/* w */,
-    XSizeHints*	c	/* hints */
+    Display* a          /* display */,
+    Window b            /* w */,
+    XSizeHints* c       /* hints */
 #endif
 ){}
 
@@ -7136,11 +7136,11 @@ extern MagickExport void XSetRGBColormaps(
 void XSetRGBColormaps(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Window b		/* w */,
-    XStandardColormap* c	/* stdcmaps */,
-    int	d		/* count */,
-    Atom e		/* property */
+    Display* a          /* display */,
+    Window b            /* w */,
+    XStandardColormap* c        /* stdcmaps */,
+    int d               /* count */,
+    Atom e              /* property */
 #endif
 ){}
 
@@ -7150,10 +7150,10 @@ extern MagickExport XSetSizeHints(
 XSetSizeHints(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Window b		/* w */,
-    XSizeHints*	c	/* hints */,
-    Atom d		/* property */
+    Display* a          /* display */,
+    Window b            /* w */,
+    XSizeHints* c       /* hints */,
+    Atom d              /* property */
 #endif
 ){}
 
@@ -7163,14 +7163,14 @@ extern MagickExport XSetStandardProperties(
 XSetStandardProperties(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Window b		/* w */,
-    _Xconst char* c	/* window_name */,
-    _Xconst char* d	/* icon_name */,
-    Pixmap e		/* icon_pixmap */,
-    char** f		/* argv */,
-    int	g		/* argc */,
-    XSizeHints*	h	/* hints */
+    Display* a          /* display */,
+    Window b            /* w */,
+    _Xconst char* c     /* window_name */,
+    _Xconst char* d     /* icon_name */,
+    Pixmap e            /* icon_pixmap */,
+    char** f            /* argv */,
+    int g               /* argc */,
+    XSizeHints* h       /* hints */
 #endif
 ){}
 
@@ -7180,10 +7180,10 @@ extern MagickExport void XSetTextProperty(
 void XSetTextProperty(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Window b		/* w */,
-    XTextProperty* c	/* text_prop */,
-    Atom d		/* property */
+    Display* a          /* display */,
+    Window b            /* w */,
+    XTextProperty* c    /* text_prop */,
+    Atom d              /* property */
 #endif
 ){}
 
@@ -7193,9 +7193,9 @@ extern MagickExport void XSetWMClientMachine(
 void XSetWMClientMachine(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Window b		/* w */,
-    XTextProperty* c	/* text_prop */
+    Display* a          /* display */,
+    Window b            /* w */,
+    XTextProperty* c    /* text_prop */
 #endif
 ){}
 
@@ -7205,9 +7205,9 @@ extern MagickExport XSetWMHints(
 XSetWMHints(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Window b		/* w */,
-    XWMHints* c		/* wm_hints */
+    Display* a          /* display */,
+    Window b            /* w */,
+    XWMHints* c         /* wm_hints */
 #endif
 ){}
 
@@ -7217,9 +7217,9 @@ extern MagickExport void XSetWMIconName(
 void XSetWMIconName(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Window b		/* w */,
-    XTextProperty* c	/* text_prop */
+    Display* a          /* display */,
+    Window b            /* w */,
+    XTextProperty* c    /* text_prop */
 #endif
 ){}
 
@@ -7229,9 +7229,9 @@ extern MagickExport void XSetWMName(
 void XSetWMName(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Window b		/* w */,
-    XTextProperty* c	/* text_prop */
+    Display* a          /* display */,
+    Window b            /* w */,
+    XTextProperty* c    /* text_prop */
 #endif
 ){}
 
@@ -7241,9 +7241,9 @@ extern MagickExport void XSetWMNormalHints(
 void XSetWMNormalHints(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Window b		/* w */,
-    XSizeHints*	c	/* hints */
+    Display* a          /* display */,
+    Window b            /* w */,
+    XSizeHints* c       /* hints */
 #endif
 ){}
 
@@ -7253,15 +7253,15 @@ extern MagickExport void XSetWMProperties(
 void XSetWMProperties(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Window b		/* w */,
-    XTextProperty* c	/* window_name */,
-    XTextProperty* d	/* icon_name */,
-    char** e		/* argv */,
-    int	f		/* argc */,
-    XSizeHints*	g	/* normal_hints */,
-    XWMHints* h		/* wm_hints */,
-    XClassHint*	i	/* class_hints */
+    Display* a          /* display */,
+    Window b            /* w */,
+    XTextProperty* c    /* window_name */,
+    XTextProperty* d    /* icon_name */,
+    char** e            /* argv */,
+    int f               /* argc */,
+    XSizeHints* g       /* normal_hints */,
+    XWMHints* h         /* wm_hints */,
+    XClassHint* i       /* class_hints */
 #endif
 ){}
 
@@ -7271,15 +7271,15 @@ extern MagickExport void XmbSetWMProperties(
 void XmbSetWMProperties(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Window b		/* w */,
-    _Xconst char* c	/* window_name */,
-    _Xconst char* d	/* icon_name */,
-    char** e		/* argv */,
-    int	f		/* argc */,
-    XSizeHints*	g	/* normal_hints */,
-    XWMHints* h		/* wm_hints */,
-    XClassHint*	i	/* class_hints */
+    Display* a          /* display */,
+    Window b            /* w */,
+    _Xconst char* c     /* window_name */,
+    _Xconst char* d     /* icon_name */,
+    char** e            /* argv */,
+    int f               /* argc */,
+    XSizeHints* g       /* normal_hints */,
+    XWMHints* h         /* wm_hints */,
+    XClassHint* i       /* class_hints */
 #endif
 ){}
 
@@ -7289,10 +7289,10 @@ extern MagickExport void XSetWMSizeHints(
 void XSetWMSizeHints(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Window b		/* w */,
-    XSizeHints*	c	/* hints */,
-    Atom d		/* property */
+    Display* a          /* display */,
+    Window b            /* w */,
+    XSizeHints* c       /* hints */,
+    Atom d              /* property */
 #endif
 ){}
 
@@ -7302,9 +7302,9 @@ extern MagickExport XSetRegion(
 XSetRegion(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    GC e			/* gc */,
-    Region x		/* r */
+    Display* a          /* display */,
+    GC e                        /* gc */,
+    Region x            /* r */
 #endif
 ){}
 
@@ -7314,10 +7314,10 @@ extern MagickExport void XSetStandardColormap(
 void XSetStandardColormap(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Window b		/* w */,
-    XStandardColormap* c	/* colormap */,
-    Atom d		/* property */
+    Display* a          /* display */,
+    Window b            /* w */,
+    XStandardColormap* c        /* colormap */,
+    Atom d              /* property */
 #endif
 ){}
 
@@ -7327,9 +7327,9 @@ extern MagickExport XSetZoomHints(
 XSetZoomHints(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    Window b		/* w */,
-    XSizeHints*	c	/* zhints */
+    Display* a          /* display */,
+    Window b            /* w */,
+    XSizeHints* c       /* zhints */
 #endif
 ){}
 
@@ -7339,9 +7339,9 @@ extern MagickExport XShrinkRegion(
 XShrinkRegion(
 #endif
 #if NeedFunctionPrototypes
-    Region x		/* r */,
-    int	y		/* dx */,
-    int	z		/* dy */
+    Region x            /* r */,
+    int y               /* dx */,
+    int z               /* dy */
 #endif
 ){}
 
@@ -7351,9 +7351,9 @@ extern MagickExport Status XStringListToTextProperty(
 Status XStringListToTextProperty(
 #endif
 #if NeedFunctionPrototypes
-    char** a		/* list */,
-    int	b		/* count */,
-    XTextProperty* c	/* text_prop_return */
+    char** a            /* list */,
+    int b               /* count */,
+    XTextProperty* c    /* text_prop_return */
 #endif
 ){}
 
@@ -7363,9 +7363,9 @@ extern MagickExport XSubtractRegion(
 XSubtractRegion(
 #endif
 #if NeedFunctionPrototypes
-    Region x		/* sra */,
-    Region y		/* srb */,
-    Region z		/* dr_return */
+    Region x            /* sra */,
+    Region y            /* srb */,
+    Region z            /* dr_return */
 #endif
 ){}
 
@@ -7375,11 +7375,11 @@ extern MagickExport int XmbTextListToTextProperty(
 int XmbTextListToTextProperty(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    char** b		/* list */,
-    int	c		/* count */,
-    XICCEncodingStyle d	/* style */,
-    XTextProperty* e	/* text_prop_return */
+    Display* a          /* display */,
+    char** b            /* list */,
+    int c               /* count */,
+    XICCEncodingStyle d /* style */,
+    XTextProperty* e    /* text_prop_return */
 #endif
 ){}
 
@@ -7389,11 +7389,11 @@ extern MagickExport int XwcTextListToTextProperty(
 int XwcTextListToTextProperty(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    wchar_t** b		/* list */,
-    int	c		/* count */,
-    XICCEncodingStyle d	/* style */,
-    XTextProperty* e	/* text_prop_return */
+    Display* a          /* display */,
+    wchar_t** b         /* list */,
+    int c               /* count */,
+    XICCEncodingStyle d /* style */,
+    XTextProperty* e    /* text_prop_return */
 #endif
 ){}
 
@@ -7403,7 +7403,7 @@ extern MagickExport void XwcFreeStringList(
 void XwcFreeStringList(
 #endif
 #if NeedFunctionPrototypes
-    wchar_t** a		/* list */
+    wchar_t** a         /* list */
 #endif
 ){}
 
@@ -7413,9 +7413,9 @@ extern MagickExport Status XTextPropertyToStringList(
 Status XTextPropertyToStringList(
 #endif
 #if NeedFunctionPrototypes
-    XTextProperty* a	/* text_prop */,
-    char***	b	/* list_return */,
-    int* c		/* count_return */
+    XTextProperty* a    /* text_prop */,
+    char***     b       /* list_return */,
+    int* c              /* count_return */
 #endif
 ){}
 
@@ -7425,10 +7425,10 @@ extern MagickExport int XmbTextPropertyToTextList(
 int XmbTextPropertyToTextList(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    XTextProperty* b	/* text_prop */,
-    char***	c	/* list_return */,
-    int* d		/* count_return */
+    Display* a          /* display */,
+    XTextProperty* b    /* text_prop */,
+    char***     c       /* list_return */,
+    int* d              /* count_return */
 #endif
 ){}
 
@@ -7438,10 +7438,10 @@ extern MagickExport int XwcTextPropertyToTextList(
 int XwcTextPropertyToTextList(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    XTextProperty* b	/* text_prop */,
-    wchar_t*** c		/* list_return */,
-    int* d		/* count_return */
+    Display* a          /* display */,
+    XTextProperty* b    /* text_prop */,
+    wchar_t*** c                /* list_return */,
+    int* d              /* count_return */
 #endif
 ){}
 
@@ -7451,9 +7451,9 @@ extern MagickExport XUnionRectWithRegion(
 XUnionRectWithRegion(
 #endif
 #if NeedFunctionPrototypes
-    XRectangle*	a	/* rectangle */,
-    Region b		/* src_region */,
-    Region c		/* dest_region_return */
+    XRectangle* a       /* rectangle */,
+    Region b            /* src_region */,
+    Region c            /* dest_region_return */
 #endif
 ){}
 
@@ -7463,9 +7463,9 @@ extern MagickExport XUnionRegion(
 XUnionRegion(
 #endif
 #if NeedFunctionPrototypes
-    Region c		/* sra */,
-    Region d		/* srb */,
-    Region e		/* dr_return */
+    Region c            /* sra */,
+    Region d            /* srb */,
+    Region e            /* dr_return */
 #endif
 ){}
 
@@ -7475,17 +7475,17 @@ extern MagickExport int XWMGeometry(
 int XWMGeometry(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    int	b		/* screen_number */,
-    _Xconst char* c	/* user_geometry */,
-    _Xconst char* d	/* default_geometry */,
-    unsigned int e	/* border_width */,
-    XSizeHints*	f	/* hints */,
-    int* g		/* x_return */,
-    int* h		/* y_return */,
-    int* i		/* width_return */,
-    int* j		/* height_return */,
-    int* k		/* gravity_return */
+    Display* a          /* display */,
+    int b               /* screen_number */,
+    _Xconst char* c     /* user_geometry */,
+    _Xconst char* d     /* default_geometry */,
+    unsigned int e      /* border_width */,
+    XSizeHints* f       /* hints */,
+    int* g              /* x_return */,
+    int* h              /* y_return */,
+    int* i              /* width_return */,
+    int* j              /* height_return */,
+    int* k              /* gravity_return */
 #endif
 ){}
 
@@ -7495,9 +7495,9 @@ extern MagickExport XXorRegion(
 XXorRegion(
 #endif
 #if NeedFunctionPrototypes
-    Region a		/* sra */,
-    Region b		/* srb */,
-    Region c		/* dr_return */
+    Region a            /* sra */,
+    Region b            /* srb */,
+    Region c            /* dr_return */
 #endif
 ){}
 
@@ -7527,7 +7527,7 @@ extern MagickExport char *Xpermalloc(
 char *Xpermalloc(
 #endif
 #if NeedFunctionPrototypes
-    unsigned int a	/* size */
+    unsigned int a      /* size */
 #endif
 ){}
 
@@ -7550,7 +7550,7 @@ extern MagickExport XrmQuark XrmStringToQuark(
 XrmQuark XrmStringToQuark(
 #endif
 #if NeedFunctionPrototypes
-    _Xconst char* a	/* string */
+    _Xconst char* a     /* string */
 #endif
 ){}
 
@@ -7560,7 +7560,7 @@ extern MagickExport XrmQuark XrmPermStringToQuark(
 XrmQuark XrmPermStringToQuark(
 #endif
 #if NeedFunctionPrototypes
-    _Xconst char* a	/* string */
+    _Xconst char* a     /* string */
 #endif
 ){}
 
@@ -7571,7 +7571,7 @@ extern MagickExport XrmString XrmQuarkToString(
 XrmString XrmQuarkToString(
 #endif
 #if NeedFunctionPrototypes
-    XrmQuark a		/* quark */
+    XrmQuark a          /* quark */
 #endif
 ){}
 
@@ -7602,8 +7602,8 @@ extern MagickExport void XrmStringToQuarkList(
 void XrmStringToQuarkList(
 #endif
 #if NeedFunctionPrototypes
-    _Xconst char* a	/* string */,
-    XrmQuarkList b	/* quarks_return */
+    _Xconst char* a     /* string */,
+    XrmQuarkList b      /* quarks_return */
 #endif
 ){}
 
@@ -7613,9 +7613,9 @@ extern MagickExport void XrmStringToBindingQuarkList(
 void XrmStringToBindingQuarkList(
 #endif
 #if NeedFunctionPrototypes
-    _Xconst char* a	/* string */,
-    XrmBindingList b	/* bindings_return */,
-    XrmQuarkList c	/* quarks_return */
+    _Xconst char* a     /* string */,
+    XrmBindingList b    /* bindings_return */,
+    XrmQuarkList c      /* quarks_return */
 #endif
 ){}
 
@@ -7627,14 +7627,14 @@ void XrmStringToBindingQuarkList(
 
 typedef XrmQuark     XrmName;
 typedef XrmQuarkList XrmNameList;
-#define XrmNameToString(name)		XrmQuarkToString(name)
-#define XrmStringToName(string)		XrmStringToQuark(string)
-#define XrmStringToNameList(str, name)	XrmStringToQuarkList(str, name)
+#define XrmNameToString(name)           XrmQuarkToString(name)
+#define XrmStringToName(string)         XrmStringToQuark(string)
+#define XrmStringToNameList(str, name)  XrmStringToQuarkList(str, name)
 
 typedef XrmQuark     XrmClass;
 typedef XrmQuarkList XrmClassList;
-#define XrmClassToString(c_class)	XrmQuarkToString(c_class)
-#define XrmStringToClass(c_class)	XrmStringToQuark(c_class)
+#define XrmClassToString(c_class)       XrmQuarkToString(c_class)
+#define XrmStringToClass(c_class)       XrmStringToQuark(c_class)
 #define XrmStringToClassList(str,c_class) XrmStringToQuarkList(str, c_class)
 
 
@@ -7647,11 +7647,11 @@ typedef XrmQuarkList XrmClassList;
 
 typedef XrmQuark     XrmRepresentation;
 #define XrmStringToRepresentation(string)   XrmStringToQuark(string)
-#define	XrmRepresentationToString(type)   XrmQuarkToString(type)
+#define XrmRepresentationToString(type)   XrmQuarkToString(type)
 
 typedef struct {
     unsigned int    size;
-    XPointer	    addr;
+    XPointer        addr;
 } XrmValue, *XrmValuePtr;
 
 
@@ -7673,7 +7673,7 @@ extern MagickExport void XrmDestroyDatabase(
 void XrmDestroyDatabase(
 #endif
 #if NeedFunctionPrototypes
-    XrmDatabase a		/* database */    
+    XrmDatabase a               /* database */    
 #endif
 ){}
 
@@ -7683,11 +7683,11 @@ extern MagickExport void XrmQPutResource(
 void XrmQPutResource(
 #endif
 #if NeedFunctionPrototypes
-    XrmDatabase* a	/* database */,
-    XrmBindingList b	/* bindings */,
-    XrmQuarkList c	/* quarks */,
-    XrmRepresentation d	/* type */,
-    XrmValue* e		/* value */
+    XrmDatabase* a      /* database */,
+    XrmBindingList b    /* bindings */,
+    XrmQuarkList c      /* quarks */,
+    XrmRepresentation d /* type */,
+    XrmValue* e         /* value */
 #endif
 ){}
 
@@ -7697,10 +7697,10 @@ extern MagickExport void XrmPutResource(
 void XrmPutResource(
 #endif
 #if NeedFunctionPrototypes
-    XrmDatabase* a	/* database */,
-    _Xconst char* b	/* specifier */,
-    _Xconst char* c	/* type */,
-    XrmValue* d		/* value */
+    XrmDatabase* a      /* database */,
+    _Xconst char* b     /* specifier */,
+    _Xconst char* c     /* type */,
+    XrmValue* d         /* value */
 #endif
 ){}
 
@@ -7710,10 +7710,10 @@ extern MagickExport void XrmQPutStringResource(
 void XrmQPutStringResource(
 #endif
 #if NeedFunctionPrototypes
-    XrmDatabase* a	/* database */,
+    XrmDatabase* a      /* database */,
     XrmBindingList b     /* bindings */,
-    XrmQuarkList c	/* quarks */,
-    _Xconst char* d	/* value */
+    XrmQuarkList c      /* quarks */,
+    _Xconst char* d     /* value */
 #endif
 ){}
 
@@ -7723,9 +7723,9 @@ extern MagickExport void XrmPutStringResource(
 void XrmPutStringResource(
 #endif
 #if NeedFunctionPrototypes
-    XrmDatabase* a	/* database */,
-    _Xconst char* b	/* specifier */,
-    _Xconst char* c	/* value */
+    XrmDatabase* a      /* database */,
+    _Xconst char* b     /* specifier */,
+    _Xconst char* c     /* value */
 #endif
 ){}
 
@@ -7735,8 +7735,8 @@ extern MagickExport void XrmPutLineResource(
 void XrmPutLineResource(
 #endif
 #if NeedFunctionPrototypes
-    XrmDatabase* a	/* database */,
-    _Xconst char* b	/* line */
+    XrmDatabase* a      /* database */,
+    _Xconst char* b     /* line */
 #endif
 ){}
 
@@ -7746,11 +7746,11 @@ extern MagickExport XrmQGetResource(
 XrmQGetResource(
 #endif
 #if NeedFunctionPrototypes
-    XrmDatabase	a	/* database */,
-    XrmNameList	b	/* quark_name */,
-    XrmClassList c	/* quark_class */,
-    XrmRepresentation* d	/* quark_type_return */,
-    XrmValue* e		/* value_return */
+    XrmDatabase a       /* database */,
+    XrmNameList b       /* quark_name */,
+    XrmClassList c      /* quark_class */,
+    XrmRepresentation* d        /* quark_type_return */,
+    XrmValue* e         /* value_return */
 #endif
 ){}
 
@@ -7760,11 +7760,11 @@ extern MagickExport Bool XrmGetResource(
 Bool XrmGetResource(
 #endif
 #if NeedFunctionPrototypes
-    XrmDatabase	a	/* database */,
-    _Xconst char* b	/* str_name */,
-    _Xconst char* c	/* str_class */,
-    char**	d	/* str_type_return */,
-    XrmValue*	e	/* value_return */
+    XrmDatabase a       /* database */,
+    _Xconst char* b     /* str_name */,
+    _Xconst char* c     /* str_class */,
+    char**      d       /* str_type_return */,
+    XrmValue*   e       /* value_return */
 #endif
 )
 {
@@ -7777,11 +7777,11 @@ extern MagickExport Bool XrmQGetSearchList(
 Bool XrmQGetSearchList(
 #endif
 #if NeedFunctionPrototypes
-    XrmDatabase	a	/* database */,
-    XrmNameList	b	/* names */,
-    XrmClassList c	/* classes */,
-    XrmSearchList d	/* list_return */,
-    int	e		/* list_length */
+    XrmDatabase a       /* database */,
+    XrmNameList b       /* names */,
+    XrmClassList c      /* classes */,
+    XrmSearchList d     /* list_return */,
+    int e               /* list_length */
 #endif
 ){}
 
@@ -7791,11 +7791,11 @@ extern MagickExport Bool XrmQGetSearchResource(
 Bool XrmQGetSearchResource(
 #endif
 #if NeedFunctionPrototypes
-    XrmSearchList a	/* list */,
-    XrmName	b	/* name */,
-    XrmClass c		/* class */,
-    XrmRepresentation* d	/* type_return */,
-    XrmValue* e		/* value_return */
+    XrmSearchList a     /* list */,
+    XrmName     b       /* name */,
+    XrmClass c          /* class */,
+    XrmRepresentation* d        /* type_return */,
+    XrmValue* e         /* value_return */
 #endif
 ){}
 
@@ -7811,8 +7811,8 @@ extern MagickExport void XrmSetDatabase(
 void XrmSetDatabase(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */,
-    XrmDatabase	b	/* database */
+    Display* a          /* display */,
+    XrmDatabase b       /* database */
 #endif
 ){}
 
@@ -7822,7 +7822,7 @@ extern MagickExport XrmDatabase XrmGetDatabase(
 XrmDatabase XrmGetDatabase(
 #endif
 #if NeedFunctionPrototypes
-    Display* a		/* display */
+    Display* a          /* display */
 #endif
 ){}
 
@@ -7832,7 +7832,7 @@ extern MagickExport XrmDatabase XrmGetFileDatabase(
 XrmDatabase XrmGetFileDatabase(
 #endif
 #if NeedFunctionPrototypes
-    _Xconst char* a	/* filename */
+    _Xconst char* a     /* filename */
 #endif
 ){}
 
@@ -7842,9 +7842,9 @@ extern MagickExport Status XrmCombineFileDatabase(
 Status XrmCombineFileDatabase(
 #endif
 #if NeedFunctionPrototypes
-    _Xconst char* b	/* filename */,
-    XrmDatabase* a	/* target */,
-    Bool c		/* override */
+    _Xconst char* b     /* filename */,
+    XrmDatabase* a      /* target */,
+    Bool c              /* override */
 #endif
 ){}
 
@@ -7854,7 +7854,7 @@ extern MagickExport XrmDatabase XrmGetStringDatabase(
 XrmDatabase XrmGetStringDatabase(
 #endif
 #if NeedFunctionPrototypes
-    _Xconst char* a	/* data */  /*  null terminated string */
+    _Xconst char* a     /* data */  /*  null terminated string */
 #endif
 ){}
 
@@ -7864,8 +7864,8 @@ extern MagickExport void XrmPutFileDatabase(
 void XrmPutFileDatabase(
 #endif
 #if NeedFunctionPrototypes
-    XrmDatabase	a	/* database */,
-    _Xconst char* b	/* filename */
+    XrmDatabase a       /* database */,
+    _Xconst char* b     /* filename */
 #endif
 ){}
 
@@ -7875,8 +7875,8 @@ extern MagickExport void XrmMergeDatabases(
 void XrmMergeDatabases(
 #endif
 #if NeedFunctionPrototypes
-    XrmDatabase	b	/* source_db */,
-    XrmDatabase* a	/* target_db */
+    XrmDatabase b       /* source_db */,
+    XrmDatabase* a      /* target_db */
 #endif
 ){}
 
@@ -7886,9 +7886,9 @@ extern MagickExport void XrmCombineDatabase(
 void XrmCombineDatabase(
 #endif
 #if NeedFunctionPrototypes
-    XrmDatabase	b	/* source_db */,
-    XrmDatabase* a	/* target_db */,
-    Bool c		/* override */
+    XrmDatabase b       /* source_db */,
+    XrmDatabase* a      /* target_db */,
+    Bool c              /* override */
 #endif
 ){}
 
@@ -7901,21 +7901,21 @@ extern MagickExport Bool XrmEnumerateDatabase(
 Bool XrmEnumerateDatabase(
 #endif
 #if NeedFunctionPrototypes
-    XrmDatabase	a	/* db */,
-    XrmNameList	b	/* name_prefix */,
-    XrmClassList c	/* class_prefix */,
-    int	d		/* mode */,
+    XrmDatabase a       /* db */,
+    XrmNameList b       /* name_prefix */,
+    XrmClassList c      /* class_prefix */,
+    int d               /* mode */,
     Bool (* e)(
 #if NeedNestedPrototypes
-	     XrmDatabase* q	/* db */,
-	     XrmBindingList r	/* bindings */,
-	     XrmQuarkList s	/* quarks */,
-	     XrmRepresentation*	t /* type */,
-	     XrmValue* u		/* value */,
-	     XPointer v		/* closure */
+             XrmDatabase* q     /* db */,
+             XrmBindingList r   /* bindings */,
+             XrmQuarkList s     /* quarks */,
+             XrmRepresentation* t /* type */,
+             XrmValue* u                /* value */,
+             XPointer v         /* closure */
 #endif
-	     )		/* proc */,
-    XPointer x		/* closure */
+             )          /* proc */,
+    XPointer x          /* closure */
 #endif
 ){}
 
@@ -7925,7 +7925,7 @@ extern MagickExport char *XrmLocaleOfDatabase(
 char *XrmLocaleOfDatabase(
 #endif
 #if NeedFunctionPrototypes
-    XrmDatabase a	/* database */
+    XrmDatabase a       /* database */
 #endif
 ){}
 
@@ -7937,22 +7937,22 @@ char *XrmLocaleOfDatabase(
  ****************************************************************/
 
 typedef enum {
-    XrmoptionNoArg,	/* Value is specified in OptionDescRec.value	    */
-    XrmoptionIsArg,     /* Value is the option string itself		    */
+    XrmoptionNoArg,     /* Value is specified in OptionDescRec.value        */
+    XrmoptionIsArg,     /* Value is the option string itself                */
     XrmoptionStickyArg, /* Value is characters immediately following option */
-    XrmoptionSepArg,    /* Value is next argument in argv		    */
-    XrmoptionResArg,	/* Resource and value in next argument in argv      */
+    XrmoptionSepArg,    /* Value is next argument in argv                   */
+    XrmoptionResArg,    /* Resource and value in next argument in argv      */
     XrmoptionSkipArg,   /* Ignore this option and the next argument in argv */
-    XrmoptionSkipLine,  /* Ignore this option and the rest of argv	    */
-    XrmoptionSkipNArgs	/* Ignore this option and the next 
-			   OptionDescRes.value arguments in argv */
+    XrmoptionSkipLine,  /* Ignore this option and the rest of argv          */
+    XrmoptionSkipNArgs  /* Ignore this option and the next 
+                           OptionDescRes.value arguments in argv */
 } XrmOptionKind;
 
 typedef struct {
-    char	    *option;	    /* Option abbreviation in argv	    */
-    char	    *specifier;     /* Resource specifier		    */
-    XrmOptionKind   argKind;	    /* Which style of option it is	    */
-    XPointer	    value;	    /* Value to provide if XrmoptionNoArg   */
+    char            *option;        /* Option abbreviation in argv          */
+    char            *specifier;     /* Resource specifier                   */
+    XrmOptionKind   argKind;        /* Which style of option it is          */
+    XPointer        value;          /* Value to provide if XrmoptionNoArg   */
 } XrmOptionDescRec, *XrmOptionDescList;
 
 
@@ -7962,11 +7962,11 @@ extern MagickExport void XrmParseCommand(
 void XrmParseCommand(
 #endif
 #if NeedFunctionPrototypes
-    XrmDatabase* a	/* database */,
-    XrmOptionDescList b	/* table */,
-    int	c		/* table_count */,
-    _Xconst char* d	/* name */,
-    int* e		/* argc_in_out */,
-    char**	f	/* argv_in_out */		     
+    XrmDatabase* a      /* database */,
+    XrmOptionDescList b /* table */,
+    int c               /* table_count */,
+    _Xconst char* d     /* name */,
+    int* e              /* argc_in_out */,
+    char**      f       /* argv_in_out */                    
 #endif
 ){}

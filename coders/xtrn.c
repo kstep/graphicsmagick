@@ -18,32 +18,32 @@
 %                                 May 2001                                    %
 %                                                                             %
 %                                                                             %
-%  Copyright (C) 2002 GraphicsMagick Group, an organization dedicated	      %
-%  to making software imaging solutions freely available.		      %
-%									      %
+%  Copyright (C) 2002 GraphicsMagick Group, an organization dedicated         %
+%  to making software imaging solutions freely available.                     %
+%                                                                             %
 %  Permission is hereby granted, free of charge, to any person obtaining a    %
-%  copy of this software and associated documentation files ("Open	      %
-%  ImageMagick"), to deal in GraphicsMagick without restriction,	      %
-%  including without limitation the rights to use, copy, modify, merge,	      %
+%  copy of this software and associated documentation files                   %
+%  ("GraphicsMagick"), to deal in GraphicsMagick without restriction,         %
+%  including without limitation the rights to use, copy, modify, merge,       %
 %  publish, distribute, sublicense, and/or sell copies of ImageMagick, and    %
-%  to permit persons to whom GraphicsMagick is furnished to do so,	      %
-%  subject to the following conditions:					      %
-%									      %
+%  to permit persons to whom GraphicsMagick is furnished to do so,            %
+%  subject to the following conditions:                                       %
+%                                                                             %
 %  The above copyright notice and this permission notice shall be included    %
-%  in all copies or substantial portions of GraphicsMagick.		      %
-%									      %
+%  in all copies or substantial portions of GraphicsMagick.                   %
+%                                                                             %
 %  The software is provided "as is", without warranty of any kind, express    %
-%  or implied, including but not limited to the warranties of		      %
+%  or implied, including but not limited to the warranties of                 %
 %  merchantability, fitness for a particular purpose and noninfringement.     %
-%  In no event shall GraphicsMagick Group be liable for any claim,	      %
+%  In no event shall GraphicsMagick Group be liable for any claim,            %
 %  damages or other liability, whether in an action of contract, tort or      %
-%  otherwise, arising from, out of or in connection with GraphicsMagick	      %
-%  or the use or other dealings in GraphicsMagick.			      %
-%									      %
-%  Except as contained in this notice, the name of the GraphicsMagick	      %
-%  Group shall not be used in advertising or otherwise to promote the	      %
-%  sale, use or other dealings in GraphicsMagick without prior written	      %
-%  authorization from the GraphicsMagick Group.				      %
+%  otherwise, arising from, out of or in connection with GraphicsMagick       %
+%  or the use or other dealings in GraphicsMagick.                            %
+%                                                                             %
+%  Except as contained in this notice, the name of the GraphicsMagick         %
+%  Group shall not be used in advertising or otherwise to promote the         %
+%  sale, use or other dealings in GraphicsMagick without prior written        %
+%  authorization from the GraphicsMagick Group.                               %
 %                                                                             %
 %  This coder is a kind of backdoor used by the COM object that allows it to  %
 %  pass blobs back and forth using the coder interface. It simply encodes and %
@@ -218,7 +218,7 @@ static Image *ReadXTRNImage(const ImageInfo *image_info, ExceptionInfo *exceptio
       size_t
         blob_length;
 
-		  long
+                  long
         lBoundl,
         lBoundu;
 
@@ -230,18 +230,18 @@ static Image *ReadXTRNImage(const ImageInfo *image_info, ExceptionInfo *exceptio
 
       filename[0] = '\0';
       (void) sscanf(clone_info->filename,"%lx,%s",&param1,&filename);
-	    hr = S_OK;
+            hr = S_OK;
       pSafeArray = (SAFEARRAY *) param1;
       if (pSafeArray)
         {
-		      hr = SafeArrayGetLBound(pSafeArray, 1, &lBoundl);
+                      hr = SafeArrayGetLBound(pSafeArray, 1, &lBoundl);
           if (SUCCEEDED(hr))
-		        hr = SafeArrayGetUBound(pSafeArray, 1, &lBoundu);
+                        hr = SafeArrayGetUBound(pSafeArray, 1, &lBoundu);
           if (SUCCEEDED(hr))
             {
-		          blob_length = lBoundu - lBoundl + 1;
+                          blob_length = lBoundu - lBoundl + 1;
               hr = SafeArrayAccessData(pSafeArray, (void**)&blob_data);
-	            if(SUCCEEDED(hr))
+                    if(SUCCEEDED(hr))
                 {
                   if (filename[0] != '\0')
                     {
@@ -407,32 +407,32 @@ int SafeArrayFifo(const Image *image,const void *data,const size_t length)
   SAFEARRAY *pSafeArray = (SAFEARRAY *)image->client_data;
   if (pSafeArray != NULL)
   {
-		long lBoundl, lBoundu, lCount;
-	  HRESULT hr = S_OK;
+                long lBoundl, lBoundu, lCount;
+          HRESULT hr = S_OK;
     // First see how big the buffer currently is
-		hr = SafeArrayGetLBound(pSafeArray, 1, &lBoundl);
+                hr = SafeArrayGetLBound(pSafeArray, 1, &lBoundl);
     if (FAILED(hr))
       return tlen;
-		hr = SafeArrayGetUBound(pSafeArray, 1, &lBoundu);
+                hr = SafeArrayGetUBound(pSafeArray, 1, &lBoundu);
     if (FAILED(hr))
       return tlen;
-		lCount = lBoundu - lBoundl + 1;
+                lCount = lBoundu - lBoundl + 1;
 
     if (length>0)
     {
-	    unsigned char	*pReturnBuffer = NULL;
+            unsigned char       *pReturnBuffer = NULL;
       NewArrayBounds[0].lLbound = 0;   // Start-Index 0
       NewArrayBounds[0].cElements = length+lCount;  // # Elemente
       hr = SafeArrayRedim(pSafeArray, NewArrayBounds);
       if (FAILED(hr))
         return tlen;
       hr = SafeArrayAccessData(pSafeArray, (void**)&pReturnBuffer);
-	    if( FAILED(hr) )
-		    return tlen;
-	    memcpy( pReturnBuffer+lCount, (unsigned char *)data, length );
+            if( FAILED(hr) )
+                    return tlen;
+            memcpy( pReturnBuffer+lCount, (unsigned char *)data, length );
       hr = SafeArrayUnaccessData(pSafeArray);
-	    if( FAILED(hr) )
-		    return tlen;
+            if( FAILED(hr) )
+                    return tlen;
     }
     else
     {

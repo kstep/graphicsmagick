@@ -572,6 +572,8 @@ sub testReadWriteSized {
   
   $image=Graphics::Magick->new;
 
+  #$image->SetAttribute(debug=>'transform');
+
   # Set size attribute
   $status=$image->SetAttribute(size=>"$size");
   warn "$status" if "$status";

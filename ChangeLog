@@ -1,3 +1,26 @@
+2003-01-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* Fixed Copyright statement on all source files.
+
+	* magick/effect.c (ThresholdImage): Optimized loop.
+
+	* coders/tiff.c (ReadTIFFImage): Read bits more efficiently for
+ 	bits_per_sample=1.
+
+	* magick/command.c (MogrifyImage): Set image->dither to
+ 	image_info->dither prior to invoking SetImageType.
+
+	* magick/constitute.c (WriteImage): Set image->dither to
+ 	image_info->dither.
+
+	* magick/image.c (SetImageType): For case BilevelType, normalize
+ 	image, and threshold 50% if dithering is disabled.  This is at
+ 	least 10X faster than quantizing with dither.
+	(AllocateImage): Initialize image->dither.
+	(CloneImage): Copy image->dither.
+
+	* magick/image.h: Added dither member to Image.
+
 2003-01-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* PerlMagick/t/tiff/read.t: Added a test for reading 16-bit TIFF

@@ -315,7 +315,7 @@ inline void Magick::Color::initPixel()
   _pixel->opacity = TransparentOpacity;
 }
 
-inline void Magick::Color::redQuantum ( Quantum red_ )
+inline void Magick::Color::redQuantum ( Magick::Quantum red_ )
 {
   _pixel->red = red_;
 }
@@ -325,7 +325,7 @@ inline Magick::Quantum Magick::Color::redQuantum ( void ) const
   return _pixel->red;
 }
 
-inline void Magick::Color::greenQuantum ( Quantum green_ )
+inline void Magick::Color::greenQuantum ( Magick::Quantum green_ )
 {
   _pixel->green = green_;
 }
@@ -335,7 +335,7 @@ inline Magick::Quantum  Magick::Color::greenQuantum ( void ) const
   return _pixel->green;
 }
 
-inline void  Magick::Color::blueQuantum ( Quantum blue_ )
+inline void  Magick::Color::blueQuantum ( Magick::Quantum blue_ )
 {
   _pixel->blue = blue_;
 }
@@ -345,7 +345,7 @@ inline Magick::Quantum Magick::Color::blueQuantum ( void ) const
   return _pixel->blue;
 }
 
-inline void  Magick::Color::alphaQuantum ( Quantum alpha_ )
+inline void  Magick::Color::alphaQuantum ( Magick::Quantum alpha_ )
 {
   _pixel->opacity = alpha_;
 }
@@ -374,8 +374,8 @@ inline double Magick::Color::alpha ( void ) const
 //
 // ColorHSL
 //
-inline Magick::ColorHSL::ColorHSL ( PixelPacket* rep_,
-                                    PixelType pixelType_ )
+inline Magick::ColorHSL::ColorHSL ( Magick::PixelPacket* rep_,
+                                    Magick::Color::PixelType pixelType_ )
 : Color( rep_, pixelType_ )
 {
 }
@@ -383,8 +383,8 @@ inline Magick::ColorHSL::ColorHSL ( PixelPacket* rep_,
 //
 // ColorGray
 //
-inline Magick::ColorGray::ColorGray ( PixelPacket* rep_,
-                                      PixelType pixelType_ )
+inline Magick::ColorGray::ColorGray ( Magick::PixelPacket* rep_,
+                                      Magick::Color::PixelType pixelType_ )
 : Color( rep_, pixelType_ )
 {
 }
@@ -392,8 +392,8 @@ inline Magick::ColorGray::ColorGray ( PixelPacket* rep_,
 //
 // ColorMono
 //
-inline Magick::ColorMono::ColorMono ( PixelPacket* rep_,
-                                      PixelType pixelType_ )
+inline Magick::ColorMono::ColorMono ( Magick::PixelPacket* rep_,
+                                      Magick::Color::PixelType pixelType_ )
   : Color( rep_, pixelType_ )
 {
 }
@@ -401,8 +401,8 @@ inline Magick::ColorMono::ColorMono ( PixelPacket* rep_,
 //
 // ColorRGB
 //
-inline Magick::ColorRGB::ColorRGB ( PixelPacket* rep_,
-                                    PixelType pixelType_ )
+inline Magick::ColorRGB::ColorRGB ( Magick::PixelPacket* rep_,
+                                    Magick::Color::PixelType pixelType_ )
   : Color( rep_, pixelType_ )
 {
 }
@@ -441,8 +441,8 @@ inline double Magick::ColorRGB::blue ( void ) const
 // ColorYUV
 //
 
-inline Magick::ColorYUV::ColorYUV ( PixelPacket* rep_,
-                                    PixelType pixelType_ )
+inline Magick::ColorYUV::ColorYUV ( Magick::PixelPacket* rep_,
+                                    Magick::Color::PixelType pixelType_ )
   : Color( rep_, pixelType_ )
 {
 }
