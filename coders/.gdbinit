@@ -1,0 +1,1 @@
+dir ../magick:$cdir:$cwd
