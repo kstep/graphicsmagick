@@ -5,8 +5,6 @@
 void OpenStaticModules(void)
 {
 #if !defined(HasMODULES)
-  Register8BIMImage();
-  RegisterAPP1Image();
   RegisterARTImage();
   RegisterAVIImage();
   RegisterAVSImage();
@@ -25,9 +23,7 @@ void OpenStaticModules(void)
   RegisterHDFImage();
   RegisterHISTOGRAMImage();
   RegisterHTMLImage();
-  RegisterICMImage();
   RegisterICONImage();
-  RegisterIPTCImage();
   RegisterJBIGImage();
   RegisterJPEGImage();
   RegisterJP2Image();
@@ -36,6 +32,7 @@ void OpenStaticModules(void)
   RegisterMAPImage();
   RegisterMATImage();
   RegisterMATTEImage();
+  RegisterMETAImage();
   RegisterMIFFImage();
   RegisterMONOImage();
   RegisterMPCImage();
