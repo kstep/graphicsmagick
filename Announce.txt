@@ -1,6 +1,6 @@
 The ImageMagick Studio LLC development group announces the release of
-ImageMagick 5.4.8.  Version 5.4.8 is a feature release but also resolves
-bugs reported against 5.4.7.
+ImageMagick 5.4.9.  Version 5.4.9 is a feature release but also resolves
+bugs reported against 5.4.8.
 
 ImageMagick is a robust collection of tools and libraries to read,
 write, and manipulate an image in many image formats (over 72 major
@@ -19,64 +19,63 @@ dedicated to making software imaging solutions freely available.
 ImageMagick is available for free, may be used to support both open and
 proprietary applications, and may be redistributed without fee.
 
-Significant changes from the 5.4.7 release (see release ChangeLog for
+Significant changes from the 5.4.8 release (see release ChangeLog for
 details):
 
   o General:
 
     - Platform independent changes
 
-      + Fixed a problem when writing PPM files with all-gray pixels.
+      + ImageMagick now supports an "installed" configuration and
+        an "uninstalled" configuration.  The installed configuration
+        looks in precise pre-determined places for configuration
+        files and modules.  The uninstalled configuration uses
+        heuristics to try to find configuration files and modules.
+        The default from the Unix configured build is to use the
+        "installed" configuration, while the default for the Windows build
+        is the "uninstalled" configuration.  Unix binary distributions
+        provided by ImageMagick Studio are configured using the "uninstalled"
+        configuration and should run using the file heirarchy of the
+        distribution archive.
 
-      + Color profiles are identified as ICM rather than IPTC.
+      + ImageMagick may now be compiled with a 32-bit QuantumDepth (16-bytes
+        per pixel + 4 bytes per colormap index). This mode is recommended for
+        those who need to preserve maximum resolution when processing their
+        NSA spy photos.
 
-      + 8-Bit Quantum PCD images now read correctly.
+      + Arcs are now rendered according to the SVG standard.
+
+      + 'convert -list type' output is now more useful.
+
+      + 16-bit RAW PPM files can now be written.
 
     - Windows specific changes
 
-     + A Windows binary install package is available which is based
-       on the Inno Setup Compiler "http://www.jrsoftware.org/isinfo.php".
+     + Magick++ demos plus supporting Visual C++ 6.0 project files
+       are installed as part of the binary install package in order
+       to assist those want to use the DLLs provided with the package.
 
-     + Link libraries and header files are provided so that applications
-       may compile with ImageMagick without building the ImageMagick
-       source package.
-
-     + PerlMagick built for ActiveState ActivePerl is optionally
-       installed.
-
-     + The ImageMagickObject OLE Control (usable from VisualBasic and
-       WSH) is optionally installed.
-
-     + ImageMagick installation locations are recorded via registry
-       settings so that it can find its components (no more need for
-       MAGICK_HOME!).
-
-     + File extension associations are created for file types that
-       ImageMagick supports.
-
-     + The list of TrueType fonts available is obtained from the
-       Windows Registry rather than being hard-coded.
-
-     + The Ghostscript executable and Ghostscript fonts are discovered
-       automatically.
-
-     + The Cygwin build should now properly distinguish between drive
-       letters and magick types for path specifications.
-
-     + Magick++ (C++ API) now builds as a DLL under Windows.
+     + Magick++ (C++ API) now builds as a DLL under Windows using Visual
+       C++ 7.0 (in addition to Visual C++ 6.0).
   
   o Utilities enhancements/changes:
-     - No changes in this release.
+
+     - Use the -authenticate option to specify a password when viewing
+       encrypted PDF files.
 
   o C API enhancements:
      - No changes in this release.
 
   o C++ API enhancements:
 
-     - A profile() method is added to support accessing named profiles.
+     - The API now supports the ability to specify UTF-8 (Unicode)
+       text encoding for annotation text.
 
-     - The type() method now specifies the image type to use while
-       writing.
+     - The compare() method supports comparing two images and obtaining
+       error values representing the degree of difference.
+
+     - The API headers have been made "cleaner" by moving more
+       implementation definitions to private headers.
 
   o Perl API enhancements:
      - No changes in this release.
@@ -85,13 +84,13 @@ The ImageMagick WWW page is
 
   http://www.imagemagick.org/
  
-The ImageMagick 5.4.8 source code is available via ftp as
+The ImageMagick 5.4.9 source code is available via ftp as
 
-  ftp://ftp.imagemagick.org/pub/ImageMagick/ImageMagick-5.4.8.tar.gz
+  ftp://ftp.imagemagick.org/pub/ImageMagick/ImageMagick-5.4.9.tar.gz
 
-The ImageMagick 5.4.8 Windows install package is available via ftp as
+The ImageMagick 5.4.9 Windows install package is available via ftp as
 
- ftp://ftp.imagemagick.org/pub/ImageMagick/binaries/ImageMagick-5.4.8-win2k.exe
+ ftp://ftp.imagemagick.org/pub/ImageMagick/binaries/ImageMagick-5.4.9-win2k.exe
 
 If ftp.imagemagick.org is overloaded, check the list of mirrors at
 http://www.imagemagick.org/www/archives.html for other mirrors.
