@@ -113,6 +113,10 @@ typedef struct _SVGInfo
   ExceptionInfo
     *exception;
 
+  double
+    x_resolution,
+    y_resolution;
+
   int
     width,
     height;
@@ -641,7 +645,13 @@ static void SVGStartDocument(void *context)
   svg_info->graphic_context[0].pointsize=12.0;
   svg_info->graphic_context[0].opacity=100.0;
   for (i=0; i < 6; i++)
-    svg_info->graphic_context[0].affine[i]=(i == 0) || (i == 3) ? 1.0 : 0.0;
+  {
+    svg_info->graphic_context[0].affine[i]=0.0;
+    if (i == 0)
+      svg_info->graphic_context[0].affine[i]=svg_info->x_resolution/72.0;
+    if (i == 3)
+      svg_info->graphic_context[0].affine[i]=svg_info->y_resolution/72.0;
+  }
   GetExceptionInfo(svg_info->exception);
   svg_info->document=xmlNewDoc(svg_info->parser->version);
 }
@@ -926,7 +936,11 @@ static void SVGStartElement(void *context,const xmlChar *name,
             for (k=0; k < 6; k++)
             {
               current[k]=q->affine[k];
-              affine[k]=(k == 0) || (k == 3) ? 1.0 : 0.0;
+              affine[k]=0.0;
+              if (i == 0)
+                affine[i]=svg_info->x_resolution/72.0;
+              if (i == 3)
+                affine[i]=svg_info->y_resolution/72.0;
             }
             if (LocaleCompare(keyword,"matrix") == 0)
               {
@@ -958,15 +972,15 @@ static void SVGStartElement(void *context,const xmlChar *name,
               }
             if (LocaleCompare(keyword,"skewX") == 0)
               {
-                affine[0]=1.0;
+                affine[0]=svg_info->x_resolution/72.0;
                 affine[2]=tan(DegreesToRadians(fmod(atof(value+1),360.0)));
-                affine[3]=1.0;
+                affine[3]=svg_info->y_resolution/72.0;
               }
             if (LocaleCompare(keyword,"skewY") == 0)
               {
-                affine[0]=1.0;
+                affine[0]=svg_info->x_resolution/72.0;
                 affine[1]=tan(DegreesToRadians(fmod(atof(value+1),360.0)));
-                affine[3]=1.0;
+                affine[3]=svg_info->y_resolution/72.0;
               }
             if (LocaleCompare(keyword,"translate") == 0)
               {
@@ -1597,6 +1611,8 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   svg_info.file=file;
   svg_info.verbose=image_info->verbose;
   svg_info.exception=exception;
+  svg_info.x_resolution=image->x_resolution == 0.0 ? 72.0 : image->x_resolution;
+  svg_info.y_resolution=image->y_resolution == 0.0 ? 72.0 : image->y_resolution;
   svg_info.width=image->columns;
   svg_info.height=image->rows;
   xmlSubstituteEntitiesDefault(1);
@@ -1619,7 +1635,9 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Draw image.
   */
   clone_info=CloneImageInfo(image_info);
-  FormatString(geometry,"%ux%u",svg_info.width,svg_info.height);
+  FormatString(geometry,"%dx%d",
+    (int) (svg_info.x_resolution*svg_info.width/72.0),
+    (int) (svg_info.y_resolution*svg_info.height/72.0));
   CloneString(&clone_info->size,geometry);
   FormatString(clone_info->filename,"mvg:%.1024s",filename);
   image=ReadImage(clone_info,exception);

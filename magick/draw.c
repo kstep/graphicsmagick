@@ -1265,7 +1265,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       if (point.y > bounds.y2)
         bounds.y2=point.y;
     }
-    mid=ceil(radius+clone_info->linewidth/2.0);
+    mid=ceil(radius+draw_info->affine[0]*clone_info->linewidth/2.0);
     bounds.x1-=mid;
     if (bounds.x1 < 0.0)
       bounds.x1=0.0;
@@ -1279,20 +1279,20 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
     if (bounds.y2 >= image->rows)
       bounds.y2=image->rows-1.0;
     alpha=1.0/MaxRGB;
-    image->storage_class=DirectClass;
-    for (y=(int) (bounds.y1+0.5); y <= (int) (bounds.y2+0.5); y++)
+    target.y=bounds.y1;
+    for (y=0; y <= (int) (bounds.y2-bounds.y1+0.5); y++)
     {
       /*
         Fill the primitive on the image.
       */
-      n=(int) (bounds.x2-bounds.x1+1.0);
-      target.y=y;
-      q=GetImagePixels(image,(int) bounds.x1,y,n,1);
+      target.x=bounds.x1;
+      n=(int) (bounds.x2-bounds.x1+0.5);
+      q=GetImagePixels(image,(int) ceil(target.x-0.5),(int) ceil(target.y-0.5),
+        n+1,1);
       if (q == (PixelPacket *) NULL)
         break;
-      for (x=(int) (bounds.x1-0.5); x <= (int) (bounds.x2+0.5); x++)
+      for (x=0; x <= n; x++)
       {
-        target.x=x;
         switch (primitive_info->primitive)
         {
           case ArcPrimitive:
@@ -1366,11 +1366,13 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
           }
         }
         q++;
+        target.x+=1.0;
       }
       if (!SyncImagePixels(image))
         break;
       if (QuantumTick(y,image->rows))
         MagickMonitor(DrawImageText,y,image->rows);
+      target.y+=1.0;
     }
   }
   /*
@@ -1383,6 +1385,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
   if (primitive_type == UndefinedPrimitive)
     ThrowBinaryException(OptionWarning,
       "Non-conforming drawing primitive definition",keyword);
+  image->storage_class=DirectClass;
   (void) IsMatteImage(image);
   return(True);
 }
@@ -2156,7 +2159,7 @@ MagickExport void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
 %
 */
 
-inline static double DistanceToLine(const PointInfo *point,const PointInfo *p,
+static inline double DistanceToLine(const PointInfo *point,const PointInfo *p,
   const PointInfo *q)
 {
   double
@@ -2182,7 +2185,7 @@ inline static double DistanceToLine(const PointInfo *point,const PointInfo *p,
   return(alpha*alpha+beta*beta);
 }
 
-static _inline double PixelOnLine(const PointInfo *point,const PointInfo *p,
+static inline double PixelOnLine(const PointInfo *point,const PointInfo *p,
   const PointInfo *q,const double mid,const double opacity)
 {
   register double
@@ -2235,7 +2238,7 @@ static double IntersectPrimitive(PrimitiveInfo *primitive_info,
   assert(draw_info->signature == MagickSignature);
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  mid=draw_info->linewidth/2.0;
+  mid=draw_info->affine[0]*draw_info->linewidth/2.0;
   opacity=0.0;
   p=primitive_info;
   while (p->primitive != UndefinedPrimitive)
@@ -2246,8 +2249,8 @@ static double IntersectPrimitive(PrimitiveInfo *primitive_info,
       case PointPrimitive:
       default:
       {
-        if ((point->x == (int) (p->point.x+0.5)) &&
-            (point->y == (int) (p->point.y+0.5)))
+        if ((point->x == (int) ceil(p->point.x-0.5)) &&
+            (point->y == (int) ceil(p->point.y-0.5)))
           opacity=1.0;
         break;
       }
@@ -2383,8 +2386,8 @@ static double IntersectPrimitive(PrimitiveInfo *primitive_info,
           case PointMethod:
           default:
           {
-            if ((point->x != (int) (p->point.x+0.5)) ||
-                (point->y != (int) (p->point.y+0.5)))
+            if ((point->x != (int) ceil(p->point.x-0.5)) ||
+                (point->y != (int) ceil(p->point.y-0.5)))
               break;
             opacity=1.0;
             break;
@@ -2394,10 +2397,11 @@ static double IntersectPrimitive(PrimitiveInfo *primitive_info,
             PixelPacket
               target;
 
-            if ((point->x != (int) (p->point.x+0.5)) ||
-                (point->y != (int) (p->point.y+0.5)))
+            if ((point->x != (int) ceil(p->point.x-0.5)) ||
+                (point->y != (int) ceil(p->point.y-0.5)))
               break;
-            target=GetOnePixel(image,(int) p->point.x,(int) p->point.y);
+            target=GetOnePixel(image,(int) ceil(p->point.x-0.5),
+              (int) ceil(p->point.y-0.5));
             (void) OpaqueImage(image,target,draw_info->fill);
             opacity=0.0;
             break;
@@ -2405,17 +2409,18 @@ static double IntersectPrimitive(PrimitiveInfo *primitive_info,
           case FloodfillMethod:
           case FillToBorderMethod:
           {
-            if ((point->x != (int) (p->point.x+0.5)) ||
-                (point->y != (int) (p->point.y+0.5)))
+            if ((point->x != (int) ceil(p->point.x-0.5)) ||
+                (point->y != (int) ceil(p->point.y-0.5)))
               break;
-            target=GetOnePixel(image,(int) p->point.x,(int) p->point.y);
+            target=GetOnePixel(image,(int) ceil(p->point.x-0.5),
+              (int) ceil(p->point.y-0.5));
             if (p->method == FillToBorderMethod)
               {
                 border_color=draw_info->border_color;
                 target=border_color;
               }
             (void) ColorFloodfillImage(image,draw_info,target,
-              (int) point->x,(int) point->y,p->method);
+              (int) ceil(point->x-0.5),(int) ceil(point->y-0.5),p->method);
             break;
           }
           case ResetMethod:
@@ -2438,10 +2443,11 @@ static double IntersectPrimitive(PrimitiveInfo *primitive_info,
           case PointMethod:
           default:
           {
-            if ((point->x != (int) (p->point.x+0.5)) ||
-                (point->y != (int) (p->point.y+0.5)))
+            if ((point->x != (int) ceil(p->point.x-0.5)) ||
+                (point->y != (int) ceil(p->point.y-0.5)))
               break;
-            q=GetImagePixels(image,(int) point->x,(int) point->y,1,1);
+            q=GetImagePixels(image,(int) ceil(point->x-0.5),
+              (int) ceil(point->y-0.5),1,1);
             if (q != (PixelPacket *) NULL)
               {
                 q->opacity=TransparentOpacity;
@@ -2454,10 +2460,11 @@ static double IntersectPrimitive(PrimitiveInfo *primitive_info,
             PixelPacket
               target;
 
-            if ((point->x != (int) (p->point.x+0.5)) ||
-                (point->y != (int) (p->point.y+0.5)))
+            if ((point->x != (int) ceil(p->point.x-0.5)) ||
+                (point->y != (int) ceil(p->point.y-0.5)))
               break;
-            target=GetOnePixel(image,(int) p->point.x,(int) p->point.y);
+            target=GetOnePixel(image,(int) ceil(p->point.x-0.5),
+              (int) ceil(p->point.y-0.5));
             (void) TransparentImage(image,target);
             opacity=0.0;
             break;
@@ -2465,10 +2472,11 @@ static double IntersectPrimitive(PrimitiveInfo *primitive_info,
           case FloodfillMethod:
           case FillToBorderMethod:
           {
-            if ((point->x != (int) (p->point.x+0.5)) ||
-                (point->y != (int) (p->point.y+0.5)))
+            if ((point->x != (int) ceil(p->point.x-0.5)) ||
+                (point->y != (int) ceil(p->point.y-0.5)))
               break;
-            target=GetOnePixel(image,(int) p->point.x,(int) p->point.y);
+            target=GetOnePixel(image,(int) ceil(p->point.x-0.5),
+              (int) ceil(p->point.y-0.5));
             if (p->method == FillToBorderMethod)
               {
                 border_color=draw_info->border_color;
@@ -2480,7 +2488,8 @@ static double IntersectPrimitive(PrimitiveInfo *primitive_info,
           }
           case ResetMethod:
           {
-            q=GetImagePixels(image,(int) point->x,(int) point->y,1,1);
+            q=GetImagePixels(image,(int) ceil(point->x-0.5),
+              (int) ceil(point->y-0.5),1,1);
             if (q != (PixelPacket *) NULL)
               {
                 q->opacity=OpaqueOpacity;
@@ -2502,8 +2511,8 @@ static double IntersectPrimitive(PrimitiveInfo *primitive_info,
         register char
           *r;
 
-        if ((point->x != (int) (p->point.x+0.5)) ||
-            (point->y != (int) (p->point.y+0.5)))
+        if ((point->x != (int) ceil(p->point.x-0.5)) ||
+            (point->y != (int) ceil(p->point.y-0.5)))
           break;
         if (p->text == (char *) NULL)
           break;

@@ -3379,7 +3379,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
           Gaussian blur image.
         */
         radius=0.0;
-        sigma=1.5;
+        sigma=1.0;
         if (*option == '-')
           (void) sscanf(argv[++i],"%lfx%lf",&radius,&sigma);
         blur_image=BlurImage(*image,radius,sigma,&(*image)->exception);
@@ -3657,7 +3657,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
           Emboss the image.
         */
         radius=0.0;
-        sigma=1.5;
+        sigma=1.0;
         if (*option == '-')
           (void) sscanf(argv[++i],"%lfx%lf",&radius,&sigma);
         emboss_image=EmbossImage(*image,radius,sigma,&(*image)->exception);
@@ -3837,7 +3837,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
           Gaussian blur image.
         */
         radius=0.0;
-        sigma=1.5;
+        sigma=1.0;
         if (*option == '-')
           (void) sscanf(argv[++i],"%lfx%lf",&radius,&sigma);
         blur_image=GaussianBlurImage(*image,radius,sigma,&(*image)->exception);
@@ -4401,7 +4401,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
           Gaussian sharpen image.
         */
         radius=0.0;
-        sigma=1.5;
+        sigma=1.0;
         if (*option == '-')
           (void) sscanf(argv[++i],"%lfx%lf",&radius,&sigma);
         sharp_image=SharpenImage(*image,radius,sigma,&(*image)->exception);
