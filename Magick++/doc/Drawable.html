@@ -1,369 +1,315 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML>
-<HEAD>
-   <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
-   <META NAME="GENERATOR" CONTENT="Mozilla/4.07 [en] (X11; U; SunOS 5.6 sun4u) [Netscape]">
-   <META NAME="Author" CONTENT="Bob Friesenhahn">
-   <META NAME="Description" CONTENT="Documentation for Magick::Drawable class">
-   <TITLE>Magick::Drawable Class</TITLE>
-</HEAD>
-<BODY TEXT="#000000" BGCOLOR="#FFFFFF" LINK="#0000EE" VLINK="#551A8B" ALINK="#FF0000">
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="GENERATOR" content="Mozilla/4.7 [en] (X11; U; SunOS 5.6 sun4u) [Netscape]">
+   <meta name="Author" content="Bob Friesenhahn">
+   <meta name="Description" content="Documentation for Magick::Drawable class">
+   <title>Magick::Drawable Class</title>
+</head>
+<body text="#000000" bgcolor="#FFFFFF" link="#0000EE" vlink="#551A8B" alink="#FF0000">
 
-<CENTER>
-<H1>
-Magick::Drawable</H1></CENTER>
+<center>
+<h1>
+Magick::Drawable</h1></center>
 Drawable provides a convenient interface for preparing vector, image, or
-text arguments for the Image::draw() method. Each instance of Drawable
-represents a single drawable object.
-<P>The following is an example of how Drawable might be used:
-<P><TT><FONT COLOR="#000066">#include &lt;Magick++.h></FONT></TT>
-<P><TT><FONT COLOR="#000066">using namespace std;</FONT></TT>
-<BR><TT><FONT COLOR="#000066">using namespace Magick;</FONT></TT>
-<P><TT><FONT COLOR="#000066">int main(int argc,char **argv)</FONT></TT>
-<BR><TT><FONT COLOR="#000066">{</FONT></TT>
-<BR><TT><FONT COLOR="#000066">&nbsp;&nbsp;&nbsp; // Create base image (white
-image of 600 by 400 pixels)</FONT></TT>
-<BR><TT><FONT COLOR="#000066">&nbsp;&nbsp;&nbsp; Image image( "600x400",
-"xc:white" )</FONT></TT>
-<P><TT><FONT COLOR="#000066">&nbsp;&nbsp;&nbsp; // Set draw options</FONT></TT>
-<BR><TT><FONT COLOR="#000066">&nbsp;&nbsp;&nbsp; image.penColor("red");</FONT></TT>
-<BR><TT><FONT COLOR="#000066">&nbsp;&nbsp;&nbsp; image.lineWidth(5) ;</FONT></TT>
-<P><TT><FONT COLOR="#000066">&nbsp;&nbsp;&nbsp; // Draw a circle</FONT></TT>
-<BR><TT><FONT COLOR="#000066">&nbsp;&nbsp;&nbsp; Drawable drawable;</FONT></TT>
-<BR><TT><FONT COLOR="#000066">&nbsp;&nbsp;&nbsp; drawable.circle( 100,100,
-150,150 );</FONT></TT>
-<BR><TT><FONT COLOR="#000066">&nbsp;&nbsp;&nbsp; image.draw( drawable );</FONT></TT>
-<P><TT><FONT COLOR="#000066">&nbsp;&nbsp;&nbsp; // Draw a rectangle (re-use
-drawable object)</FONT></TT>
-<BR><TT><FONT COLOR="#000066">&nbsp;&nbsp;&nbsp; drawable.rectangle( 200,200
-300,300 );</FONT></TT>
-<BR><TT><FONT COLOR="#000066">&nbsp;&nbsp;&nbsp; image.draw( drawable );</FONT></TT>
-<P><TT><FONT COLOR="#000066">&nbsp;&nbsp;&nbsp; // Display the result</FONT></TT>
-<BR><TT><FONT COLOR="#000066">&nbsp;&nbsp;&nbsp; image.display( );</FONT></TT>
-<BR><TT><FONT COLOR="#000066">}</FONT></TT>
-<P><FONT COLOR="#000000">Since Drawable is an object it may be saved in
+text arguments for the Image::draw() method. Each instance of a Drawable
+sub-class represents a single drawable object.
+<p>The following is an example of how sub-classes of Drawable may be used:
+<p><tt><font color="#000066">#include &lt;Magick++.h></font></tt>
+<p><tt><font color="#000066">using namespace std;</font></tt>
+<br><tt><font color="#000066">using namespace Magick;</font></tt>
+<p><tt><font color="#000066">int main(int argc,char **argv)</font></tt>
+<br><tt><font color="#000066">{</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; // Create base image (white
+image of 600 by 400 pixels)</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; Image image( Geometry(600,400),
+Color("white") );</font></tt>
+<p><tt><font color="#000066">&nbsp;&nbsp;&nbsp; // Set draw options</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; image.penColor("red");</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; image.lineWidth(5) ;</font></tt>
+<p><tt><font color="#000066">&nbsp;&nbsp;&nbsp; // Draw a circle</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; image.draw( DrawableCircle(100,100,
+150,150) );</font></tt>
+<p><tt><font color="#000066">&nbsp;&nbsp;&nbsp; // Draw a rectangle</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; image.draw( DrawableRectangle(200,200
+300,300) );</font></tt>
+<p><tt><font color="#000066">&nbsp;&nbsp;&nbsp; // Display the result</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; image.display( );</font></tt>
+<br><tt><font color="#000066">}</font></tt>
+<p><font color="#000000">Since Drawable is an object it may be saved in
 an array or a list for later (perhaps repeated) use. Drawable depends on
-the simple Coordinate class which represents a pair of x,y coodinates.&nbsp;
-The methods provided by the Coordinate class are shown in the following
-table:</FONT>
-<BR><FONT COLOR="#000000"></FONT>&nbsp;
-<TABLE BORDER WIDTH="100%" NOSAVE >
-<CAPTION>Coordinate Class Methods</CAPTION>
+the simple Coordinate structure (based on STL <i>pair</i>)which represents
+a pair of x,y coodinates.&nbsp; The methods provided by the Coordinate
+structure are shown in the following table:</font>
+<br>&nbsp;
+<table BORDER WIDTH="100%" NOSAVE >
+<caption>Coordinate Structure Methods</caption>
 
-<TR NOSAVE>
-<TD NOSAVE>
-<CENTER><B>Method</B></CENTER>
-</TD>
+<tr NOSAVE>
+<td NOSAVE>
+<center><b>Method/Member</b></center>
+</td>
 
-<TD>
-<CENTER><B>Signature</B></CENTER>
-</TD>
+<td>
+<center><b>Signature</b></center>
+</td>
 
-<TD>
-<CENTER><B>Description</B></CENTER>
-</TD>
-</TR>
+<td>
+<center><b>Description</b></center>
+</td>
+</tr>
 
-<TR NOSAVE>
-<TD ROWSPAN="2" NOSAVE>
-<CENTER><FONT SIZE=-1>Coordinate</FONT></CENTER>
-</TD>
+<tr NOSAVE>
+<td ROWSPAN="2" NOSAVE>
+<center><font size=-1>Coordinate</font></center>
+</td>
 
-<TD><FONT SIZE=-1>void</FONT></TD>
+<td><font size=-1>void</font></td>
 
-<TD><FONT SIZE=-1>Default Constructor</FONT></TD>
-</TR>
+<td><font size=-1>Default Constructor</font></td>
+</tr>
 
-<TR>
-<TD><FONT SIZE=-1>double x_, double y_</FONT></TD>
+<tr>
+<td><font size=-1>double x_, double y_</font></td>
 
-<TD><FONT SIZE=-1>Constructor, setting x &amp; y</FONT></TD>
-</TR>
+<td><font size=-1>Constructor, setting <i>first</i> &amp; <i>second</i></font></td>
+</tr>
 
-<TR NOSAVE>
-<TD ROWSPAN="2" NOSAVE>
-<CENTER><FONT SIZE=-1>x</FONT></CENTER>
-</TD>
+<tr NOSAVE>
+<td NOSAVE>
+<center><font size=-1>first</font></center>
+</td>
 
-<TD><FONT SIZE=-1>double x_</FONT></TD>
+<td><font size=-1>double x_</font></td>
 
-<TD><FONT SIZE=-1>Set x coordinate</FONT></TD>
-</TR>
+<td NOSAVE><font size=-1>x coordinate member</font></td>
+</tr>
 
-<TR>
-<TD><FONT SIZE=-1>void</FONT></TD>
+<tr NOSAVE>
+<td NOSAVE>
+<center><font size=-1>second</font></center>
+</td>
 
-<TD><FONT SIZE=-1>Get x coordinate</FONT></TD>
-</TR>
+<td><font size=-1>double y_</font></td>
 
-<TR NOSAVE>
-<TD ROWSPAN="2" NOSAVE>
-<CENTER><FONT SIZE=-1>y</FONT></CENTER>
-</TD>
+<td><font size=-1>y coordinate member</font></td>
+</tr>
+</table>
 
-<TD><FONT SIZE=-1>double y_</FONT></TD>
+<p><font color="#000000">The Drawable classes are shown in the following
+table:</font>
+<br>&nbsp;
+<table BORDER WIDTH="100%" NOSAVE >
+<caption><b>Drawable Classes</b></caption>
 
-<TD><FONT SIZE=-1>Set y coordinate</FONT></TD>
-</TR>
+<tr>
+<td>
+<center><b>Sub-Class</b></center>
+</td>
 
-<TR>
-<TD><FONT SIZE=-1>void</FONT></TD>
+<td>
+<center><b>Constructor Signature</b></center>
+</td>
 
-<TD><FONT SIZE=-1>Get y coordinate</FONT></TD>
-</TR>
-</TABLE>
-<FONT COLOR="#000000"></FONT>
-<P><FONT COLOR="#000000">The methods available in the Drawable class are
-shown in the following table:</FONT>
-<BR>&nbsp;
-<TABLE BORDER WIDTH="100%" NOSAVE >
-<CAPTION><B>Drawable Class Methods</B></CAPTION>
+<td>
+<center><b>Description</b></center>
+</td>
+</tr>
 
-<TR>
-<TD>
-<CENTER><B>Method</B></CENTER>
-</TD>
+<tr>
+<td>
+<center><a NAME="DrawableArc"></a><font size=-1>DrawableArc</font></center>
+</td>
 
-<TD>
-<CENTER><B>Signature</B></CENTER>
-</TD>
+<td><font size=-1>double startX_, double startY_, double endX_, double
+endY_, double startDegrees, double endDegrees_</font></td>
 
-<TD>
-<CENTER><B>Description</B></CENTER>
-</TD>
-</TR>
+<td><font size=-1>Draw an arc using the <i>stroke</i> color and based on
+the circle starting at coordinates <i>startX_</i>,<i>startY_,</i> and ending
+with coordinates <i>endX_,</i>endY_, and bounded by the rotational arc
+<i>startDegrees_,endDegrees_</i></font></td>
+</tr>
 
-<TR NOSAVE>
-<TD ROWSPAN="2" NOSAVE>
-<CENTER><FONT SIZE=-1>point</FONT></CENTER>
-</TD>
+<tr>
+<td>
+<center><a NAME="DrawableBezier"></a><font size=-1>DrawableBezier</font></center>
+</td>
 
-<TD><FONT SIZE=-1>double x_, double y_</FONT></TD>
+<td><font size=-1>const std::list&lt;Magick::Coordinate> &amp;coordinates_</font></td>
 
-<TD ROWSPAN="2" NOSAVE><FONT SIZE=-1>Draw a point using current pen color
-and thickness at coordinate</FONT></TD>
-</TR>
+<td><font size=-1>Draw a bezier curve using the <i>stroke</i> color and
+based on the coordinates specified by the <i>coordinates_ </i>list.</font></td>
+</tr>
 
-<TR>
-<TD><FONT SIZE=-1>Coordinate coordinate_</FONT></TD>
-</TR>
+<tr>
+<td>
+<center><a NAME="DrawableCircle"></a><font size=-1>DrawableCircle</font></center>
+</td>
 
-<TR NOSAVE>
-<TD ROWSPAN="2" NOSAVE>
-<CENTER><FONT SIZE=-1>line</FONT></CENTER>
-</TD>
+<td><font size=-1>double originX_, double originY_, double perimX_, double
+perimY_</font></td>
 
-<TD><FONT SIZE=-1>double startX_, double startY_, double endX_, double
-endY_</FONT></TD>
+<td><font size=-1>Draw a circle using the <i>stroke</i> color and thickness
+using specified origin and perimeter coordinates. If a <i>fill</i> color
+is specified, then the object is filled.</font></td>
+</tr>
 
-<TD ROWSPAN="2" NOSAVE><FONT SIZE=-1>Draw a line using current pen color
-and thickness using starting and ending coordinates</FONT></TD>
-</TR>
+<tr>
+<td>
+<center><a NAME="DrawableColor"></a><font size=-1>DrawableColor</font></center>
+</td>
 
-<TR>
-<TD><FONT SIZE=-1>Coordinate startCoordinate_, Coordinate endCoordinate_</FONT></TD>
-</TR>
+<td><font size=-1>double x_, double y_, <a href="Enumerations.html#PaintMethod">PaintMethod</a>
+paintMethod_</font></td>
 
-<TR NOSAVE>
-<TD ROWSPAN="2" NOSAVE>
-<CENTER><FONT SIZE=-1>rectangle</FONT></CENTER>
-</TD>
-
-<TD><FONT SIZE=-1>double upperLeftX_, double upperLeftY_, double lowerRightX_,
-double lowerRightY</FONT></TD>
-
-<TD ROWSPAN="2" NOSAVE><FONT SIZE=-1>Draw a rectangle using current pen
-color and thickness from upper-left coordinates to lower-right coordinates</FONT></TD>
-</TR>
-
-<TR>
-<TD><FONT SIZE=-1>Coordinate upperLeftCoordinate_, Coordinate lowerRightCoordinate_</FONT></TD>
-</TR>
-
-<TR NOSAVE>
-<TD ROWSPAN="2" NOSAVE>
-<CENTER><FONT SIZE=-1>fillRectangle</FONT></CENTER>
-</TD>
-
-<TD><FONT SIZE=-1>double upperLeftX_, double upperLeftY_, double lowerRightX_,
-double lowerRightY</FONT></TD>
-
-<TD ROWSPAN="2" NOSAVE><FONT SIZE=-1>Draw a filled rectangle using current
-pen color from upper-left coordinates to lower-right coordinates</FONT></TD>
-</TR>
-
-<TR>
-<TD><FONT SIZE=-1>Coordinate upperLeftCoordinate_, Coordinate lowerRightCoordinate_</FONT></TD>
-</TR>
-
-<TR NOSAVE>
-<TD ROWSPAN="2" NOSAVE>
-<CENTER><FONT SIZE=-1>circle</FONT></CENTER>
-</TD>
-
-<TD><FONT SIZE=-1>double originX_, double originY_, double perimX_, double
-perimY_</FONT></TD>
-
-<TD ROWSPAN="2" NOSAVE><FONT SIZE=-1>Draw a circle using current pen color
-and thicknews using specified origin and perimeter coordinates</FONT></TD>
-</TR>
-
-<TR>
-<TD><FONT SIZE=-1>Coordinate originCoordinate_, Coordinate perimCoordinate_</FONT></TD>
-</TR>
-
-<TR NOSAVE>
-<TD ROWSPAN="2" NOSAVE>
-<CENTER><FONT SIZE=-1>fillCircle</FONT></CENTER>
-</TD>
-
-<TD><FONT SIZE=-1>double originX_, double originY_, double perimX_, double
-perimY_</FONT></TD>
-
-<TD ROWSPAN="2" NOSAVE><FONT SIZE=-1>Draw a filled circle using current
-pen color, origin and perimeter coordinates</FONT></TD>
-</TR>
-
-<TR>
-<TD><FONT SIZE=-1>Coordinate originCoordinate_, Coordinate perimCoordinate_</FONT></TD>
-</TR>
-
-<TR NOSAVE>
-<TD ROWSPAN="2" NOSAVE>
-<CENTER><FONT SIZE=-1>ellipse</FONT></CENTER>
-</TD>
-
-<TD><FONT SIZE=-1>double originX_, double originY_, double width_, double
-height_, double arcStart_, double arcEnd_</FONT></TD>
-
-<TD ROWSPAN="2" NOSAVE><FONT SIZE=-1>Draw an ellipse using current pen
-color, pen thickness, specified origin, width &amp; height, as well as
-specified start and end of arc in degrees.</FONT></TD>
-</TR>
-
-<TR>
-<TD><FONT SIZE=-1>Coordinate originCoordinate_, double width_, double height_,
-double arcStart_, double arcEnd_</FONT></TD>
-</TR>
-
-<TR NOSAVE>
-<TD ROWSPAN="2" NOSAVE>
-<CENTER><FONT SIZE=-1>fillEllipse</FONT></CENTER>
-</TD>
-
-<TD><FONT SIZE=-1>double originX_, double originY_, double width_, double
-height_, double arcStart_, double arcEnd_</FONT></TD>
-
-<TD ROWSPAN="2" NOSAVE><FONT SIZE=-1>Draw a filled ellipse using current
-pen color, specified origin, width &amp; height, as well as specified start
-and end of arc in degrees.</FONT></TD>
-</TR>
-
-<TR>
-<TD><FONT SIZE=-1>Coordinate originCoordinate_, double width_, double height_,
-double arcStart_, double arcEnd_</FONT></TD>
-</TR>
-
-<TR>
-<TD>
-<CENTER><FONT SIZE=-1>polygon</FONT></CENTER>
-</TD>
-
-<TD><FONT SIZE=-1>const std::list&lt;Coordinate> &amp;coordinates_</FONT></TD>
-
-<TD><FONT SIZE=-1>Draw an arbitrary polygon using current pen color and
-pen thickness consisting of three or more coordinates contained in an STL
-list</FONT></TD>
-</TR>
-
-<TR>
-<TD>
-<CENTER><FONT SIZE=-1>fillPolygon</FONT></CENTER>
-</TD>
-
-<TD><FONT SIZE=-1>const std::list&lt;Coordinate> &amp;coordinates_</FONT></TD>
-
-<TD><FONT SIZE=-1>Draw an arbitrary filled polygon using current pen color
-and pen thickness consisting of three or more coordinates contained in
-an STL list</FONT></TD>
-</TR>
-
-<TR NOSAVE>
-<TD ROWSPAN="2" NOSAVE>
-<CENTER><FONT SIZE=-1>color</FONT></CENTER>
-</TD>
-
-<TD><FONT SIZE=-1>double x_, double y_, <A HREF="Enumerations.html#PaintMethod">PaintMethod</A>
-paintMethod_</FONT></TD>
-
-<TD ROWSPAN="2" NOSAVE><FONT SIZE=-1>Color image according to paintMethod.
-The point method recolors the target pixel.&nbsp; The replace method recolors
-any pixel that matches the color of the target pixel.&nbsp; Floodfill recolors
-any pixel that matches the color of the target pixel and is a neighbor,&nbsp;
+<td><font size=-1>Color image according to paintMethod. The point method
+recolors the target pixel.&nbsp; The replace method recolors any pixel
+that matches the color of the target pixel.&nbsp; Floodfill recolors any
+pixel that matches the color of the target pixel and is a neighbor,&nbsp;
 whereas filltoborder recolors any neighbor pixel that is not the border
-color. Finally, reset recolors all pixels.</FONT></TD>
-</TR>
+color. Finally, reset recolors all pixels.</font></td>
+</tr>
 
-<TR>
-<TD><FONT SIZE=-1>Coordinate coordinate_, <A HREF="Enumerations.html#PaintMethod">PaintMethod</A>
-paintMethod_</FONT></TD>
-</TR>
+<tr>
+<td>
+<center><a NAME="DrawableEllipse"></a><font size=-1>DrawableEllipse</font></center>
+</td>
 
-<TR NOSAVE>
-<TD ROWSPAN="2" NOSAVE>
-<CENTER><FONT SIZE=-1>matte</FONT></CENTER>
-</TD>
+<td><font size=-1>double originX_, double originY_, double width_, double
+height_, double arcStart_, double arcEnd_</font></td>
 
-<TD><FONT SIZE=-1>double x_, double y_, <A HREF="Enumerations.html#PaintMethod">PaintMethod</A>
-paintMethod_</FONT></TD>
+<td><font size=-1>Draw an ellipse using the <i>stroke</i> color and thickness,
+specified origin, width &amp; height, as well as specified start and end
+of arc in degrees. If a <i>fill</i> color is specified, then the object
+is filled.</font></td>
+</tr>
 
-<TD ROWSPAN="2" NOSAVE><FONT SIZE=-1>Change the pixel matte value to transparent.
-The point method changes the matte value of the target pixel.&nbsp; The
-replace method changes the matte value of any pixel that matches the color
-of the target pixel. Floodfill changes the matte value of any pixel that
-matches the color of the target pixel and is a neighbor, whereas filltoborder
-changes the matte value of any neighbor pixel that is not the border color,
-Finally reset changes the matte value of all pixels.</FONT></TD>
-</TR>
+<tr>
+<td>
+<center><a NAME="DrawableImage"></a><font size=-1>DrawableImage</font></center>
+</td>
 
-<TR>
-<TD><FONT SIZE=-1>Coordinate coordinate_, <A HREF="Enumerations.html#PaintMethod">PaintMethod</A>
-paintMethod_</FONT></TD>
-</TR>
+<td><font size=-1>double x_, double y_, const string &amp;image_</font></td>
 
-<TR NOSAVE>
-<TD ROWSPAN="2" NOSAVE>
-<CENTER><FONT SIZE=-1>text</FONT></CENTER>
-</TD>
+<td><font size=-1>Composite image (file) with image file at specified coordinates.</font></td>
+</tr>
 
-<TD><FONT SIZE=-1>double x_, double y_, std::string text_</FONT></TD>
+<tr>
+<td>
+<center><font size=-1>&nbsp;<a NAME="DrawableLine"></a>DrawableLine</font></center>
+</td>
 
-<TD ROWSPAN="2" NOSAVE><FONT SIZE=-1>Annotate image with text using current
-pen color, font, font pointsize, and box color (text background color),
-at specified coordinates. If text contains <A HREF="FormatCharacters.html">special
-format characters</A> the image filename, type, width, height, or other
-image attributes may be incorporated in the text (see label()).</FONT></TD>
-</TR>
+<td><font size=-1>double startX_, double startY_, double endX_, double
+endY_</font></td>
 
-<TR>
-<TD><FONT SIZE=-1>Coordinate coordinate_, std::string text_</FONT></TD>
-</TR>
+<td><font size=-1>Draw a line using <i>stroke</i> color and thickness using
+starting and ending coordinates</font></td>
+</tr>
 
-<TR NOSAVE>
-<TD ROWSPAN="2" NOSAVE>
-<CENTER><FONT SIZE=-1>image</FONT></CENTER>
-</TD>
+<tr>
+<td>
+<center><a NAME="DrawableMatte"></a><font size=-1>DrawableMatte</font></center>
+</td>
 
-<TD><FONT SIZE=-1>double x_, double y_, const string &amp;image_</FONT></TD>
+<td><font size=-1>double x_, double y_, <a href="Enumerations.html#PaintMethod">PaintMethod</a>
+paintMethod_</font></td>
 
-<TD ROWSPAN="2" NOSAVE><FONT SIZE=-1>Composite image (file) with image
-file at specified coordinates.</FONT></TD>
-</TR>
+<td><font size=-1>Change the pixel matte value to transparent. The point
+method changes the matte value of the target pixel.&nbsp; The replace method
+changes the matte value of any pixel that matches the color of the target
+pixel. Floodfill changes the matte value of any pixel that matches the
+color of the target pixel and is a neighbor, whereas filltoborder changes
+the matte value of any neighbor pixel that is not the border color, Finally
+reset changes the matte value of all pixels.</font></td>
+</tr>
 
-<TR>
-<TD><FONT SIZE=-1>Coordinate coordinate_, const std::string &amp;image_</FONT></TD>
-</TR>
-</TABLE>
-<FONT SIZE=-1></FONT>
-</BODY>
-</HTML>
+<tr>
+<td>
+<center><a NAME="DrawablePath"></a><font size=-1>DrawablePath</font></center>
+</td>
+
+<td><font size=-1>&nbsp;&nbsp;</font></td>
+
+<td><font size=-1>&nbsp;&nbsp;</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="DrawablePoint"></a><font size=-1>DrawablePoint</font></center>
+</td>
+
+<td><font size=-1>double x_, double y_</font></td>
+
+<td><font size=-1>Draw a point using <i>stroke</i> color and thickness
+at coordinate</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="DrawablePolygon"></a><font size=-1>DrawablePolygon</font></center>
+</td>
+
+<td><font size=-1>const std::list&lt;Magick::Coordinate> &amp;coordinates_</font></td>
+
+<td><font size=-1>Draw an arbitrary polygon using <i>stroke</i> color and
+thickness consisting of three or more coordinates contained in an STL list.
+If a <i>fill</i> color is specified, then the object is filled.</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="DrawablePolyline"></a><font size=-1>DrawablePolyline</font></center>
+</td>
+
+<td><font size=-1>const std::list&lt;Magick::Coordinate> &amp;coordinates_</font></td>
+
+<td><font size=-1>Draw an arbitrary polyline using <i>stroke</i> color
+and thickness consisting of three or more coordinates contained in an STL
+list. If a <i>fill</i> color is specified, then the object is filled.</font></td>
+</tr>
+
+<tr NOSAVE>
+<td NOSAVE>
+<center><a NAME="DrawableRectangle"></a><font size=-1>DrawableRectangle</font></center>
+</td>
+
+<td><font size=-1>double upperLeftX_, double upperLeftY_, double lowerRightX_,
+double lowerRightY</font></td>
+
+<td NOSAVE><font size=-1>Draw a rectangle using <i>stroke</i> color and
+thickness from upper-left coordinates to lower-right coordinates.&nbsp;
+If a <i>fill</i> color is specified, then the object is filled.</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="DrawableRoundRectangle"></a><font size=-1>DrawableRoundRectangle</font></center>
+</td>
+
+<td><font size=-1>double centerX_, double centerY_, double width_, double
+hight_, double cornerWidth_, double cornerHeight_</font></td>
+
+<td><font size=-1>Draw a rounded rectangle using <i>stroke</i> color and
+thickness, with specified center coordinate, specified width and height,
+and specified corner width and height.&nbsp; If a <i>fill</i> color is
+specified, then the object is filled.</font></td>
+</tr>
+
+<tr NOSAVE>
+<td NOSAVE>
+<center><a NAME="DrawableText"></a><font size=-1>DrawableText</font></center>
+</td>
+
+<td><font size=-1>double x_, double y_, std::string text_</font></td>
+
+<td NOSAVE><font size=-1>Annotate image with text using <i>stroke</i> color,
+font, font pointsize, and <i>box</i> color (text background color), at
+specified coordinates. If text contains <a href="FormatCharacters.html">special
+format characters</a> the image filename, type, width, height, or other
+image attributes may be incorporated in the text (see label()).</font></td>
+</tr>
+</table>
+
+</body>
+</html>

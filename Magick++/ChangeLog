@@ -1,3 +1,8 @@
+2000-04-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Drawable.cpp (DrawableArc, DrawableBezier, DrawablePolyline,
+ 	RoundRectangle): Added support for new drawing objects.
+
 2000-04-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Drawable.cpp: Removed all public methods which accept

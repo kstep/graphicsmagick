@@ -86,7 +86,7 @@ namespace Magick
   public:
     DrawableArc ( double startX_, double startY_,
                   double endX_, double endY_,
-                  double startDegrees, double endDegrees_ );
+                  double startDegrees_, double endDegrees_ );
   };
 
   // Bezier curve (Coordinate list must contain at least three members)
@@ -96,7 +96,7 @@ namespace Magick
     DrawableBezier ( const std::list<Magick::Coordinate> &coordinates_ );
   };
 
-    // Circle
+  // Circle
   class DrawableCircle : public Drawable
   {
   public:
@@ -145,7 +145,7 @@ namespace Magick
                     PaintMethod paintMethod_ );
   };
 
-// path
+  // path
 
   // Point
   class DrawablePoint : public Drawable
@@ -182,7 +182,7 @@ namespace Magick
   public:
     DrawableRoundRectangle ( double centerX_, double centerY_,
                              double width_, double hight_,
-                             double cornerWidth_, double cornerHeight_);
+                             double cornerWidth_, double cornerHeight_ );
   };
 
   // Draw text at point

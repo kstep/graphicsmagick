@@ -87,6 +87,21 @@ void Magick::Drawable::list_arg_impl ( const char* command_,
 // Drawable Objects
 //
 
+// Arc
+Magick::DrawableArc::DrawableArc ( double startX_, double startY_,
+                                   double endX_, double endY_,
+                                   double startDegrees_, double endDegrees_ )
+{
+  char buffer[MaxTextExtent + 1];
+  ostrstream buffstr( buffer, sizeof(buffer));
+  buffstr << "arc"
+          << " " << Coordinate(startX_,startY_)
+          << " " << Coordinate(endX_,endY_)
+          << " " << Coordinate(startDegrees_,endDegrees_)
+          << ends;
+  _primitive.assign( buffer );
+}
+
 // Bezier curve (Coordinate list must contain at least three members)
 Magick::DrawableBezier::DrawableBezier ( const std::list<Magick::Coordinate> &coordinates_ )
 {
@@ -235,6 +250,12 @@ Magick::DrawablePolygon::DrawablePolygon ( const std::list<Magick::Coordinate> &
   list_arg_impl( "polygon", coordinates_ );
 }
 
+// Polyline (Coordinate list must contain at least three members)
+Magick::DrawablePolyline::DrawablePolyline ( const std::list<Magick::Coordinate> &coordinates_ )
+{
+  list_arg_impl( "polyline", coordinates_ );
+}
+
 // Rectangle
 Magick::DrawableRectangle::DrawableRectangle ( double upperLeftX_,
                                                double upperLeftY_,
@@ -244,6 +265,22 @@ Magick::DrawableRectangle::DrawableRectangle ( double upperLeftX_,
   two_arg_impl( "rectangle",
                 Coordinate( upperLeftX_, upperLeftY_ ),
                 Coordinate( lowerRightX_, lowerRightY ) );
+}
+
+// RoundRectangle
+Magick::DrawableRoundRectangle::DrawableRoundRectangle
+( double centerX_, double centerY_,
+  double width_, double hight_,
+  double cornerWidth_, double cornerHeight_ )
+{                                                      
+  char buffer[MaxTextExtent + 1];
+  ostrstream buffstr( buffer, sizeof(buffer));
+  buffstr << "roundRectangle"
+          << " " << Coordinate(centerX_,centerY_)
+          << " " << Coordinate(width_,hight_)
+          << " " << Coordinate(cornerWidth_,cornerHeight_)
+          << ends;
+  _primitive.assign( buffer );
 }
 
 // Draw text at point
