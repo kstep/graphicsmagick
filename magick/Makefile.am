@@ -52,7 +52,7 @@ MAGICK_BASE_SRCS=PreRvIcccm.c animate.c annotate.c attributes.c blob.c \
   xwindows.c zoom.c
 
 # Library coder sources
-MAGICK_CODER_SRCS=avs.c bim.c bmp.c cache.c cmyk.c dcm.c dps.c ept.c fax.c \
+MAGICK_CODER_SRCS=avs.c 8bim.c bmp.c cache.c cmyk.c dcm.c dps.c ept.c fax.c \
   fits.c fpx.c gif.c gradation.c gray.c hdf.c histogram.c html.c icc.c icon.c \
   iptc.c jbig.c jpeg.c label.c logo.c map.c matte.c miff.c mono.c mtv.c \
   pcd.c pcl.c pcx.c pdb.c pdf.c pict.c pix.c png.c plasma.c pnm.c preview.c \
@@ -64,7 +64,7 @@ MAGICK_CODER_SRCS=avs.c bim.c bmp.c cache.c cmyk.c dcm.c dps.c ept.c fax.c \
 if WITH_MODULES
 libMagick_la_SOURCES = $(MAGICK_BASE_SRCS)
 libMagick_la_LIBADD = @LIB_TIFF@ @LIB_JPEG@ @LIB_XEXT@ @LIB_XT@ \
-  @LIB_X11@ @LIB_BZLIB@ @LIB_ZLIB@ @LIB_SFIO@ @LIB_THREAD@ @LIB_LF@ \
+  @LIB_X11@ @LIB_ZLIB@ @LIB_SFIO@ @LIB_THREAD@ @LIB_LF@ \
   @LIB_MATH@ $(top_builddir)/ltdl/libltdlc.la
 else
 libMagick_la_SOURCES = $(MAGICK_BASE_SRCS) $(MAGICK_CODER_SRCS)
@@ -102,7 +102,7 @@ pkg_DATA = modules.mgk
 
 # Modules which are to be built
 if WITH_MODULES
-pkg_LTLIBRARIES   = avs.la bmp.la cache.la cmyk.la dcm.la dps.la ept.la \
+pkg_LTLIBRARIES   = 8bim.la avs.la bmp.la cache.la cmyk.la dcm.la dps.la ept.la \
   fax.la fpx.la fits.la gif.la gray.la gradation.la hdf.la histogram.la \
   html.la icc.la icon.la iptc.la jbig.la jpeg.la label.la logo.la map.la \
   matte.la miff.la mono.la mtv.la pcd.la pcl.la pcx.la pdb.la pdf.la \
@@ -110,7 +110,7 @@ pkg_LTLIBRARIES   = avs.la bmp.la cache.la cmyk.la dcm.la dps.la ept.la \
   psd.la pwp.la rgb.la rla.la rle.la sct.la sfw.la sgi.la stegano.la \
   sun.la svg.la tga.la tiff.la tile.la tim.la ttf.la txt.la uil.la \
   uyvy.la vicar.la vid.la viff.la wbmp.la x.la xbm.la xc.la xpm.la \
-  xwd.la yuv.la bim.la
+  xwd.la yuv.la
 else
 pkg_LTLIBRARIES   =
 endif # WITH_MODULES
@@ -121,9 +121,9 @@ avs_la_LDFLAGS      = -no-undefined -module -avoid-version
 avs_la_LIBADD       = libMagick.la
 
 # BIM module
-bim_la_SOURCES     = bim.c
-bim_la_LDFLAGS     = -no-undefined -module -avoid-version
-bim_la_LIBADD      = libMagick.la
+8bim_la_SOURCES     = 8bim.c
+8bim_la_LDFLAGS     = -no-undefined -module -avoid-version
+8bim_la_LIBADD      = libMagick.la
 
 # BMP module
 bmp_la_SOURCES      = bmp.c
@@ -248,7 +248,7 @@ matte_la_LIBADD     = libMagick.la
 # MIFF module
 miff_la_SOURCES     = miff.c
 miff_la_LDFLAGS     = -no-undefined -module -avoid-version
-miff_la_LIBADD      = libMagick.la
+miff_la_LIBADD      = libMagick.la @LIB_ZLIB@  @LIB_BZLIB@ @LIB_JPEG@
 
 # MONO module
 mono_la_SOURCES     = mono.c
