@@ -538,20 +538,20 @@ MagickExport Image **ImageListToArray(const Image *images,
 */
 MagickExport unsigned int InsertImageInList(Image **images,Image *image)
 {
+  Image
+    *split;
+
   assert(images != (Image **) NULL);
-  if (image == (Image *) NULL)
-    return(False);
+  assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   if ((*images) == (Image *) NULL)
-    {
-      *images=image;
-      return(True);
-    }
-  assert((*images)->signature == MagickSignature);
-  (*images)->next=image;
-  if ((*images)->next == (Image *) NULL)
     return(False);
-  (*images)->next->previous=(*images);
+  assert((*images)->signature == MagickSignature);
+  split=SplitImageList(*images);
+  if (split == (Image *) NULL)
+    return(False);
+  AppendImageToList(images,image);
+  AppendImageToList(images,split);
   return(True);
 }
 
