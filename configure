@@ -1584,7 +1584,7 @@ if eval "test \"`echo '$''{'ac_cv_lib_$ac_lib_var'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   ac_save_LIBS="$LIBS"
-LIBS="-ldir  $LIBS"
+LIBS="$LIBS -ldir "
 cat > conftest.$ac_ext <<EOF
 #line 1590 "configure"
 #include "confdefs.h"
@@ -1625,7 +1625,7 @@ if eval "test \"`echo '$''{'ac_cv_lib_$ac_lib_var'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   ac_save_LIBS="$LIBS"
-LIBS="-lx  $LIBS"
+LIBS="$LIBS -lx "
 cat > conftest.$ac_ext <<EOF
 #line 1631 "configure"
 #include "confdefs.h"
@@ -3146,7 +3146,7 @@ if eval "test \"`echo '$''{'ac_cv_lib_$ac_lib_var'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   ac_save_LIBS="$LIBS"
-LIBS="-lm  $LIBS"
+LIBS="$LIBS -lm "
 cat > conftest.$ac_ext <<EOF
 #line 3152 "configure"
 #include "confdefs.h"
@@ -3514,7 +3514,7 @@ if eval "test \"`echo '$''{'ac_cv_lib_$ac_lib_var'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   ac_save_LIBS="$LIBS"
-LIBS="-ldnet  $LIBS"
+LIBS="$LIBS -ldnet "
 cat > conftest.$ac_ext <<EOF
 #line 3520 "configure"
 #include "confdefs.h"
@@ -3555,7 +3555,7 @@ if eval "test \"`echo '$''{'ac_cv_lib_$ac_lib_var'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   ac_save_LIBS="$LIBS"
-LIBS="-ldnet_stub  $LIBS"
+LIBS="$LIBS -ldnet_stub "
 cat > conftest.$ac_ext <<EOF
 #line 3561 "configure"
 #include "confdefs.h"
@@ -3652,7 +3652,7 @@ if eval "test \"`echo '$''{'ac_cv_lib_$ac_lib_var'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   ac_save_LIBS="$LIBS"
-LIBS="-lnsl  $LIBS"
+LIBS="$LIBS -lnsl "
 cat > conftest.$ac_ext <<EOF
 #line 3658 "configure"
 #include "confdefs.h"
@@ -3750,7 +3750,7 @@ if eval "test \"`echo '$''{'ac_cv_lib_$ac_lib_var'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   ac_save_LIBS="$LIBS"
-LIBS="-lsocket $X_EXTRA_LIBS $LIBS"
+LIBS="$LIBS -lsocket $X_EXTRA_LIBS"
 cat > conftest.$ac_ext <<EOF
 #line 3756 "configure"
 #include "confdefs.h"
@@ -3842,7 +3842,7 @@ if eval "test \"`echo '$''{'ac_cv_lib_$ac_lib_var'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   ac_save_LIBS="$LIBS"
-LIBS="-lposix  $LIBS"
+LIBS="$LIBS -lposix "
 cat > conftest.$ac_ext <<EOF
 #line 3848 "configure"
 #include "confdefs.h"
@@ -3934,7 +3934,7 @@ if eval "test \"`echo '$''{'ac_cv_lib_$ac_lib_var'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   ac_save_LIBS="$LIBS"
-LIBS="-lipc  $LIBS"
+LIBS="$LIBS -lipc "
 cat > conftest.$ac_ext <<EOF
 #line 3940 "configure"
 #include "confdefs.h"
@@ -3986,7 +3986,7 @@ if eval "test \"`echo '$''{'ac_cv_lib_$ac_lib_var'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   ac_save_LIBS="$LIBS"
-LIBS="-lICE  $LIBS"
+LIBS="$LIBS -lICE "
 cat > conftest.$ac_ext <<EOF
 #line 3992 "configure"
 #include "confdefs.h"
@@ -4040,7 +4040,7 @@ if eval "test \"`echo '$''{'ac_cv_lib_$ac_lib_var'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   ac_save_LIBS="$LIBS"
-LIBS="-lXext  $LIBS"
+LIBS="$LIBS -lXext "
 cat > conftest.$ac_ext <<EOF
 #line 4046 "configure"
 #include "confdefs.h"
@@ -4080,7 +4080,7 @@ if eval "test \"`echo '$''{'ac_cv_lib_$ac_lib_var'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   ac_save_LIBS="$LIBS"
-LIBS="-lXext  $LIBS"
+LIBS="$LIBS -lXext "
 cat > conftest.$ac_ext <<EOF
 #line 4086 "configure"
 #include "confdefs.h"
@@ -4123,7 +4123,7 @@ if eval "test \"`echo '$''{'ac_cv_lib_$ac_lib_var'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   ac_save_LIBS="$LIBS"
-LIBS="-lXext  $LIBS"
+LIBS="$LIBS -lXext "
 cat > conftest.$ac_ext <<EOF
 #line 4129 "configure"
 #include "confdefs.h"
@@ -4167,7 +4167,7 @@ if eval "test \"`echo '$''{'ac_cv_lib_$ac_lib_var'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   ac_save_LIBS="$LIBS"
-LIBS="-lXt  $LIBS"
+LIBS="$LIBS -lXt "
 cat > conftest.$ac_ext <<EOF
 #line 4173 "configure"
 #include "confdefs.h"
@@ -4334,7 +4334,7 @@ if eval "test \"`echo '$''{'ac_cv_lib_$ac_lib_var'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   ac_save_LIBS="$LIBS"
-LIBS="-lsfio $TRAILING_LIBS $LIBS"
+LIBS="$LIBS -lsfio $TRAILING_LIBS"
 cat > conftest.$ac_ext <<EOF
 #line 4340 "configure"
 #include "confdefs.h"
@@ -4375,7 +4375,7 @@ if eval "test \"`echo '$''{'ac_cv_lib_$ac_lib_var'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   ac_save_LIBS="$LIBS"
-LIBS="-lstdio -lsfio $TRAILING_LIBS $LIBS"
+LIBS="$LIBS -lstdio -lsfio $TRAILING_LIBS"
 cat > conftest.$ac_ext <<EOF
 #line 4381 "configure"
 #include "confdefs.h"
@@ -4484,7 +4484,7 @@ if eval "test \"`echo '$''{'ac_cv_lib_$ac_lib_var'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   ac_save_LIBS="$LIBS"
-LIBS="-lfpx $TRAILING_LIBS $LIBS"
+LIBS="$LIBS -lfpx $TRAILING_LIBS"
 cat > conftest.$ac_ext <<EOF
 #line 4490 "configure"
 #include "confdefs.h"
@@ -4593,7 +4593,7 @@ if eval "test \"`echo '$''{'ac_cv_lib_$ac_lib_var'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   ac_save_LIBS="$LIBS"
-LIBS="-ljbig $TRAILING_LIBS $LIBS"
+LIBS="$LIBS -ljbig $TRAILING_LIBS"
 cat > conftest.$ac_ext <<EOF
 #line 4599 "configure"
 #include "confdefs.h"
@@ -4804,7 +4804,7 @@ if eval "test \"`echo '$''{'ac_cv_lib_$ac_lib_var'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   ac_save_LIBS="$LIBS"
-LIBS="-ljpeg $TRAILING_LIBS $LIBS"
+LIBS="$LIBS -ljpeg $TRAILING_LIBS"
 cat > conftest.$ac_ext <<EOF
 #line 4810 "configure"
 #include "confdefs.h"
@@ -4913,7 +4913,7 @@ if eval "test \"`echo '$''{'ac_cv_lib_$ac_lib_var'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   ac_save_LIBS="$LIBS"
-LIBS="-lbz2 $TRAILING_LIBS $LIBS"
+LIBS="$LIBS -lbz2 $TRAILING_LIBS"
 cat > conftest.$ac_ext <<EOF
 #line 4919 "configure"
 #include "confdefs.h"
@@ -4954,7 +4954,7 @@ if eval "test \"`echo '$''{'ac_cv_lib_$ac_lib_var'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   ac_save_LIBS="$LIBS"
-LIBS="-lbz2 $TRAILING_LIBS $LIBS"
+LIBS="$LIBS -lbz2 $TRAILING_LIBS"
 cat > conftest.$ac_ext <<EOF
 #line 4960 "configure"
 #include "confdefs.h"
@@ -5097,7 +5097,7 @@ if eval "test \"`echo '$''{'ac_cv_lib_$ac_lib_var'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   ac_save_LIBS="$LIBS"
-LIBS="-lz $TRAILING_LIBS $LIBS"
+LIBS="$LIBS -lz $TRAILING_LIBS"
 cat > conftest.$ac_ext <<EOF
 #line 5103 "configure"
 #include "confdefs.h"
@@ -5138,7 +5138,7 @@ if eval "test \"`echo '$''{'ac_cv_lib_$ac_lib_var'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   ac_save_LIBS="$LIBS"
-LIBS="-lz $TRAILING_LIBS $LIBS"
+LIBS="$LIBS -lz $TRAILING_LIBS"
 cat > conftest.$ac_ext <<EOF
 #line 5144 "configure"
 #include "confdefs.h"
@@ -5179,7 +5179,7 @@ if eval "test \"`echo '$''{'ac_cv_lib_$ac_lib_var'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   ac_save_LIBS="$LIBS"
-LIBS="-lz $TRAILING_LIBS $LIBS"
+LIBS="$LIBS -lz $TRAILING_LIBS"
 cat > conftest.$ac_ext <<EOF
 #line 5185 "configure"
 #include "confdefs.h"
@@ -5220,7 +5220,7 @@ if eval "test \"`echo '$''{'ac_cv_lib_$ac_lib_var'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   ac_save_LIBS="$LIBS"
-LIBS="-lz $TRAILING_LIBS $LIBS"
+LIBS="$LIBS -lz $TRAILING_LIBS"
 cat > conftest.$ac_ext <<EOF
 #line 5226 "configure"
 #include "confdefs.h"
@@ -5329,7 +5329,7 @@ if eval "test \"`echo '$''{'ac_cv_lib_$ac_lib_var'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   ac_save_LIBS="$LIBS"
-LIBS="-ldf $TRAILING_LIBS $LIBS"
+LIBS="$LIBS -ldf $TRAILING_LIBS"
 cat > conftest.$ac_ext <<EOF
 #line 5335 "configure"
 #include "confdefs.h"
@@ -5472,7 +5472,7 @@ if eval "test \"`echo '$''{'ac_cv_lib_$ac_lib_var'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   ac_save_LIBS="$LIBS"
-LIBS="-lpng $TRAILING_LIBS $LIBS"
+LIBS="$LIBS -lpng $TRAILING_LIBS"
 cat > conftest.$ac_ext <<EOF
 #line 5478 "configure"
 #include "confdefs.h"
@@ -5615,7 +5615,7 @@ if eval "test \"`echo '$''{'ac_cv_lib_$ac_lib_var'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   ac_save_LIBS="$LIBS"
-LIBS="-ltiff $TRAILING_LIBS $LIBS"
+LIBS="$LIBS -ltiff $TRAILING_LIBS"
 cat > conftest.$ac_ext <<EOF
 #line 5621 "configure"
 #include "confdefs.h"
@@ -5724,7 +5724,7 @@ if eval "test \"`echo '$''{'ac_cv_lib_$ac_lib_var'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   ac_save_LIBS="$LIBS"
-LIBS="-lttf $TRAILING_LIBS $LIBS"
+LIBS="$LIBS -lttf $TRAILING_LIBS"
 cat > conftest.$ac_ext <<EOF
 #line 5730 "configure"
 #include "confdefs.h"
@@ -5869,7 +5869,7 @@ if eval "test \"`echo '$''{'ac_cv_lib_$ac_lib_var'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   ac_save_LIBS="$LIBS"
-LIBS="-ldps $TRAILING_LIBS $LIBS"
+LIBS="$LIBS -ldps $TRAILING_LIBS"
 cat > conftest.$ac_ext <<EOF
 #line 5875 "configure"
 #include "confdefs.h"
@@ -5910,7 +5910,7 @@ if eval "test \"`echo '$''{'ac_cv_lib_$ac_lib_var'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   ac_save_LIBS="$LIBS"
-LIBS="-ldpstk -ldps $TRAILING_LIBS $LIBS"
+LIBS="$LIBS -ldpstk -ldps $TRAILING_LIBS"
 cat > conftest.$ac_ext <<EOF
 #line 5916 "configure"
 #include "confdefs.h"
@@ -7472,7 +7472,7 @@ if eval "test \"`echo '$''{'ac_cv_lib_$ac_lib_var'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   ac_save_LIBS="$LIBS"
-LIBS="-lsocks5  $LIBS"
+LIBS="$LIBS -lsocks5 "
 cat > conftest.$ac_ext <<EOF
 #line 7478 "configure"
 #include "confdefs.h"
@@ -7557,7 +7557,7 @@ if eval "test \"`echo '$''{'ac_cv_lib_$ac_lib_var'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   ac_save_LIBS="$LIBS"
-LIBS="-lnsl  $LIBS"
+LIBS="$LIBS -lnsl "
 cat > conftest.$ac_ext <<EOF
 #line 7563 "configure"
 #include "confdefs.h"
@@ -7597,7 +7597,7 @@ if eval "test \"`echo '$''{'ac_cv_lib_$ac_lib_var'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   ac_save_LIBS="$LIBS"
-LIBS="-lsocket  $LIBS"
+LIBS="$LIBS -lsocket "
 cat > conftest.$ac_ext <<EOF
 #line 7603 "configure"
 #include "confdefs.h"

@@ -883,7 +883,8 @@ Export Image *BorderImage(Image *image,RectangleInfo *border_info)
       *q++=border;
       x++;
     }
-    ProgressMonitor(BorderImageText,y,image->rows);
+    if (QuantumTick(y,image->rows))
+      ProgressMonitor(BorderImageText,y,image->rows);
   }
   for (y=(bordered_image->rows-image->rows-border_info->height-1); y >= 0; y--)
     for (x=0; x < bordered_image->columns; x++)
@@ -1039,7 +1040,8 @@ Export Image *ChopImage(Image *image,RectangleInfo *chop_info)
           q++;
         }
     }
-    ProgressMonitor(ChopImageText,y,height);
+    if (QuantumTick(y,height))
+      ProgressMonitor(ChopImageText,y,height);
   }
   return(chopped_image);
 }
@@ -2014,7 +2016,8 @@ Export void CompositeImage(Image *image,const CompositeOperator compose,
       q->length=0;
       q++;
     }
-    ProgressMonitor(CompositeImageText,y,composite_image->rows);
+    if (QuantumTick(y,composite_image->rows))
+      ProgressMonitor(CompositeImageText,y,composite_image->rows);
   }
   if (compose == BlendCompositeOp)
     image->matte=False;
@@ -2651,7 +2654,8 @@ Export Image *CropImage(Image *image,RectangleInfo *crop_info)
           p++;
           runlength=p->length;
         }
-    ProgressMonitor(CropImageText,y,cropped_image->rows-1);
+    if (QuantumTick(y,cropped_image->rows))
+      ProgressMonitor(CropImageText,y,cropped_image->rows-1);
   }
   /*
     Transfer last scanline.
@@ -3755,7 +3759,8 @@ Export void DrawImage(Image *image,AnnotateInfo *annotate_info)
         }
       q++;
     }
-    ProgressMonitor(DrawImageText,y,image->rows);
+    if (QuantumTick(y,image->rows))
+      ProgressMonitor(DrawImageText,y,image->rows);
   }
   FreeMemory((char *) primitive_info);
   if (indirection)
@@ -4010,7 +4015,8 @@ Export Image *FlipImage(Image *image)
       q->length=0;
       q--;
     }
-    ProgressMonitor(FlipImageText,y,flipped_image->rows);
+    if (QuantumTick(y,flipped_image->rows))
+      ProgressMonitor(FlipImageText,y,flipped_image->rows);
   }
   FreeMemory((char *) scanline);
   return(flipped_image);
@@ -4125,7 +4131,8 @@ Export Image *FlopImage(Image *image)
       q->length=0;
       q++;
     }
-    ProgressMonitor(FlopImageText,y,flopped_image->rows);
+    if (QuantumTick(y,flopped_image->rows))
+      ProgressMonitor(FlopImageText,y,flopped_image->rows);
   }
   FreeMemory((char *) scanline);
   return(flopped_image);
@@ -4335,7 +4342,8 @@ Export Image *FrameImage(Image *image,FrameInfo *frame_info)
       *q++=matte;
     for (x=0; x < frame_info->outer_bevel; x++)
       *q++=shadow;
-    ProgressMonitor(FrameImageText,y,image->rows);
+    if (QuantumTick(y,image->rows))
+      ProgressMonitor(FrameImageText,y,image->rows);
   }
   for (y=frame_info->inner_bevel-1; y >= 0; y--)
   {
@@ -4610,6 +4618,7 @@ Export void GetImageInfo(ImageInfo *image_info)
   image_info->matte_color=(char *) NULL;
   image_info->undercolor=(char *) NULL;
   TemporaryFilename(image_info->unique);
+  (void) strcat(image_info->unique,"u");
   image_info->ping=False;
 }
 
@@ -5239,7 +5248,8 @@ Export Image *MagnifyImage(Image *image)
     p++;
     q++;
     r++;
-    ProgressMonitor(MagnifyImageText,y,image->rows);
+    if (QuantumTick(y,image->rows))
+      ProgressMonitor(MagnifyImageText,y,image->rows);
   }
   p=magnified_image->pixels+(2*image->rows-2)*magnified_image->columns;
   q=magnified_image->pixels+(2*image->rows-1)*magnified_image->columns;
@@ -5677,7 +5687,8 @@ Export Image *MinifyImage(Image *image)
           q->length=0;
         }
     }
-    ProgressMonitor(MinifyImageText,y,image->rows-1);
+    if (QuantumTick(y,image->rows))
+      ProgressMonitor(MinifyImageText,y,image->rows-1);
   }
   minified_image->packets=packets;
   minified_image->pixels=(RunlengthPacket *) ReallocateMemory((char *)
@@ -8221,7 +8232,8 @@ Export Image *RollImage(Image *image,int x_offset,int y_offset)
       *q=(*p);
       q->length=0;
     }
-    ProgressMonitor(RollImageText,y,image->rows);
+    if (QuantumTick(y,image->rows))
+      ProgressMonitor(RollImageText,y,image->rows);
   }
   return(rolled_image);
 }
@@ -8398,7 +8410,8 @@ Export Image *SampleImage(Image *image,unsigned int columns,unsigned int rows)
       q++;
       s+=x_offset[x];
     }
-    ProgressMonitor(SampleImageText,y,sampled_image->rows);
+    if (QuantumTick(y,sampled_image->rows))
+      ProgressMonitor(SampleImageText,y,sampled_image->rows);
   }
   FreeMemory((char *) scanline);
   FreeMemory((char *) x_offset);
@@ -8833,7 +8846,8 @@ Export Image *ScaleImage(Image *image,const unsigned int columns,
         t++;
       }
     }
-    ProgressMonitor(ScaleImageText,y,scaled_image->rows);
+    if (QuantumTick(y,scaled_image->rows))
+      ProgressMonitor(ScaleImageText,y,scaled_image->rows);
   }
   scaled_image->packets=packets;
   scaled_image->pixels=(RunlengthPacket *) ReallocateMemory((char *)
@@ -9369,7 +9383,8 @@ Export Image *StereoImage(Image *left_image,Image *right_image)
       r->length=0;
       r++;
     }
-    ProgressMonitor(StereoImageText,y,stereo_image->rows);
+    if (QuantumTick(y,stereo_image->rows))
+      ProgressMonitor(StereoImageText,y,stereo_image->rows);
   }
   return(stereo_image);
 }
@@ -9486,7 +9501,8 @@ Export void TextureImage(Image *image,char *filename)
   {
     for (x=0; x < image->columns; x+=texture_image->columns)
       CompositeImage(image,ReplaceCompositeOp,texture_image,x,y);
-    ProgressMonitor(TextureImageText,y,image->rows);
+    if (QuantumTick(y,image->rows))
+      ProgressMonitor(TextureImageText,y,image->rows);
   }
   DestroyImage(texture_image);
 }
@@ -10639,7 +10655,8 @@ static void HorizontalFilter(Image *source,Image *destination,double x_factor,
       q->length=0;
       q+=destination->columns;
     }
-    ProgressMonitor(ZoomImageText,*quantum,span);
+    if (QuantumTick(*quantum,span))
+      ProgressMonitor(ZoomImageText,*quantum,span);
     (*quantum)++;
   }
 }
@@ -10732,7 +10749,8 @@ static void VerticalFilter(Image *source,Image *destination,double y_factor,
       q->length=0;
       q++;
     }
-    ProgressMonitor(ZoomImageText,*quantum,span);
+    if (QuantumTick(*quantum,span))
+      ProgressMonitor(ZoomImageText,*quantum,span);
     (*quantum)++;
   }
 }

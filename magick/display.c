@@ -54,7 +54,6 @@
 #define __EXTENSIONS__  1
 #include "magick.h"
 #include "display.h"
-#include "version.h"
 
 /*
   Global variable declarations.
@@ -6813,7 +6812,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
     }
     case VersionCommand:
     {
-      XNoticeWidget(display,windows,Version,Copyright);
+      XNoticeWidget(display,windows,MagickVersion,MagickCopyright);
       break;
     }
     case SaveToUndoBufferCommand:

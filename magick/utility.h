@@ -54,7 +54,7 @@
 #define BasenameSeparator  "/"
 #define DirectorySeparator  "/"
 #define SystemCommand(command)  system(command)
-#define TemporaryTemplate  "%s/magickXXXXXX"
+#define TemporaryTemplate  "magick"
 #else
 #if defined(vms)
 #define BasenameSeparator  "]"

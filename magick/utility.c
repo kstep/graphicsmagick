@@ -2310,18 +2310,7 @@ Export void TemporaryFilename(char *filename)
   assert(filename != (char *) NULL);
   *filename='\0';
 #if !defined(vms) && !defined(macintosh) && !defined(WIN32)
-  {
-    char
-      *directory;
-
-    directory=(char *) getenv("TMPDIR");
-    if (directory == (char *) NULL)
-      directory=(char *) getenv("TEMP");
-    if (directory == (char *) NULL)
-      directory=TemporaryDirectory;
-    (void) sprintf(filename,TemporaryTemplate,directory);
-    (void) mktemp(filename);
-  }
+  (void) strcpy(filename,(char *) tempnam((char *) NULL,TemporaryTemplate));
 #else
 #if defined(WIN32)
   (void) NTTemporaryFilename(filename);

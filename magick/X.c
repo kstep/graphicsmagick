@@ -53,7 +53,6 @@
 */
 #include "magick.h"
 #include "Colorlist.h"
-#include "version.h"
 
 /*
   State declarations.
@@ -4856,7 +4855,7 @@ Export XWindows *XInitializeWindows(Display *display,
   if (resource_info->debug)
     {
       XSynchronize(display,True);
-      (void) fprintf(stderr,"Version: %s\n",Version);
+      (void) fprintf(stderr,"Version: %s\n",MagickVersion);
       (void) fprintf(stderr,"  timestamp: %ld\n",time((time_t *) NULL));
       (void) fprintf(stderr,"Protocols:\n");
       (void) fprintf(stderr,"  Window Manager: 0x%lx\n",

@@ -35,7 +35,7 @@
 # An encode delegate begins with an image format, a less-equal sign (<=),
 # and a tag.  The delegate is invoked whenever ImageMagick attempts to write
 # an image whose format specifier or filename extension matches the tag
-# (e.g. image.mpg for tag=>mpg).  ImageMagick writes to a temporary file
+# (e.g. image.mpg for tag <=mpg).  ImageMagick writes to a temporary file
 # in the format you specify.  The delegate can then read this file and
 # convert it to a format it supports and pesumably ImageMagick does not.
 # 
@@ -85,7 +85,7 @@ compress=>
 	|@LZWDecodeDelegate@ -c %i
 
 dvi=>
-        @DVIDecodeDelegate@ -q -o %o %i
+	@DVIDecodeDelegate@ -q -o %o %i
 
 edit=>
 	@EditorDelegate@ -title "Edit Image Comment" -e vi %i

@@ -53,7 +53,6 @@
 */
 #include "magick.h"
 #include "animate.h"
-#include "version.h"
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -327,7 +326,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
     }
     case VersionCommand:
     {
-      XNoticeWidget(display,windows,Version,Copyright);
+      XNoticeWidget(display,windows,MagickVersion,MagickCopyright);
       break;
     }
     case QuitCommand:

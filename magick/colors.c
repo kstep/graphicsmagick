@@ -250,8 +250,7 @@ static void Histogram(CubeInfo *color_cube,const NodeInfo *node_info,FILE *file)
           }
         (void) fprintf(file,"\n");
       }
-      if (((color_cube->progress+1) == color_cube->colors) ||
-          ((color_cube->progress % ((color_cube->colors >> 8)+1)) == 0))
+      if (QuantumTick(color_cube->progress,color_cube->colors))
         ProgressMonitor(HistogramImageText,color_cube->progress,
           color_cube->colors);
       color_cube->progress++;

@@ -1029,7 +1029,8 @@ Image *ReadPICTImage(ImageInfo *image_info)
           q->length=0;
         }
     }
-    ProgressMonitor(LoadImageText,y,image->rows);
+    if (QuantumTick(y,image->rows))
+      ProgressMonitor(LoadImageText,y,image->rows);
   }
   UnlockPixels(graphic_world->portPixMap);
   SetGWorld(port,device);

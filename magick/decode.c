@@ -303,6 +303,11 @@ static Image *ReadBMPImage(const ImageInfo *image_info)
       y_pixels,
       number_colors,
       colors_important;
+
+    unsigned short
+      red_mask,
+      green_mask,
+      blue_mask;
   } BMPHeader;
 
   BMPHeader
@@ -433,7 +438,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info)
           image->colormap[i].blue=(Quantum)
             ((long) (MaxRGB*i)/(image->colors-1));
         }
-        if (bmp_header.bits_per_pixel <= 8)
+        if (bmp_header.bits_per_pixel < 16)
           {
             unsigned char
               *bmp_colormap;
@@ -466,6 +471,14 @@ static Image *ReadBMPImage(const ImageInfo *image_info)
             FreeMemory((char *) bmp_colormap);
           }
       }
+    if (bmp_header.size == 40)
+      if ((bmp_header.bits_per_pixel == 16) ||
+          (bmp_header.bits_per_pixel == 32))
+        {
+          bmp_header.red_mask=LSBFirstReadShort(image->file);
+          bmp_header.green_mask=LSBFirstReadShort(image->file);
+          bmp_header.blue_mask=LSBFirstReadShort(image->file);
+        }
     while (ftell(image->file) < (start_position+bmp_header.offset_bits))
       (void) fgetc(image->file);
     /*
@@ -602,6 +615,10 @@ static Image *ReadBMPImage(const ImageInfo *image_info)
       }
       case 16:
       {
+        unsigned char
+          h,
+          l;
+
         /*
           Convert PseudoColor scanline to runlength-encoded color packets.
         */
@@ -613,11 +630,13 @@ static Image *ReadBMPImage(const ImageInfo *image_info)
           q=image->pixels+(y*image->columns);
           for (x=0; x < image->columns; x++)
           {
-            q->index=(*p++);
-            q->index|=(*p++) << 8;
-            q->red=XDownScale(q->index);
-            q->green=XDownScale(q->index);
-            q->blue=XDownScale(q->index);
+            h=(*p++);
+            l=(*p++);
+            q->red=(Quantum) ((MaxRGB*((int) (l & 0x7c) >> 2))/31);
+            q->green=(Quantum)
+              ((MaxRGB*(((int) (l & 0x03) << 3)+((int) (h & 0xe0) >> 5)))/31);
+            q->blue=(Quantum) ((MaxRGB*((int) (h & 0x1f)))/31);
+            q->index=0;
             q->length=0;
             q++;
           }
@@ -927,8 +946,9 @@ static Image *ReadCMYKImage(const ImageInfo *image_info)
             q++;
           }
           if (image->previous == (Image *) NULL)
-            if (QuantumTick(y,image->rows))
-              ProgressMonitor(LoadImageText,i++,image->rows << 2);
+            if (QuantumTick(i,image->rows << 2))
+              ProgressMonitor(LoadImageText,i,image->rows << 2);
+          i++;
         }
         count=image->tile_info.height-image->rows-image->tile_info.y;
         for (y=0; y < count; y++)
@@ -957,8 +977,9 @@ static Image *ReadCMYKImage(const ImageInfo *image_info)
             q++;
           }
           if (image->previous == (Image *) NULL)
-            if (QuantumTick(y,image->rows))
-              ProgressMonitor(LoadImageText,i++,image->rows << 2);
+            if (QuantumTick(i,image->rows << 2))
+              ProgressMonitor(LoadImageText,i,image->rows << 2);
+          i++;
         }
         count=image->tile_info.height-image->rows-image->tile_info.y;
         for (y=0; y < count; y++)
@@ -987,8 +1008,9 @@ static Image *ReadCMYKImage(const ImageInfo *image_info)
             q++;
           }
           if (image->previous == (Image *) NULL)
-            if (QuantumTick(y,image->rows))
-              ProgressMonitor(LoadImageText,i++,image->rows << 2);
+            if (QuantumTick(i,image->rows << 2))
+              ProgressMonitor(LoadImageText,i,image->rows << 2);
+          i++;
         }
         count=image->tile_info.height-image->rows-image->tile_info.y;
         for (y=0; y < count; y++)
@@ -1017,8 +1039,9 @@ static Image *ReadCMYKImage(const ImageInfo *image_info)
             q++;
           }
           if (image->previous == (Image *) NULL)
-            if (QuantumTick(y,image->rows))
-              ProgressMonitor(LoadImageText,i++,image->rows << 2);
+            if (QuantumTick(i,image->rows << 2))
+              ProgressMonitor(LoadImageText,i,image->rows << 2);
+          i++;
         }
         count=image->tile_info.height-image->rows-image->tile_info.y;
         for (y=0; y < count; y++)
@@ -7063,7 +7086,7 @@ static Image *ReadPCDImage(const ImageInfo *image_info)
     p->index=0;
     p->length=0;
     p++;
-    if (QuantumTick(i,image->packets))
+    if (QuantumTick(i,image->columns*image->rows))
       ProgressMonitor(LoadImageText,i,image->columns*image->rows);
   }
   FreeMemory(chroma2);
@@ -11045,8 +11068,9 @@ static Image *ReadRGBImage(const ImageInfo *image_info)
             q++;
           }
           if (image->previous == (Image *) NULL)
-            if (QuantumTick(y,image->rows))
-              ProgressMonitor(LoadImageText,i++,span);
+            if (QuantumTick(i,span))
+              ProgressMonitor(LoadImageText,i,span);
+          i++;
         }
         count=image->tile_info.height-image->rows-image->tile_info.y;
         for (y=0; y < count; y++)
@@ -11075,8 +11099,9 @@ static Image *ReadRGBImage(const ImageInfo *image_info)
             q++;
           }
           if (image->previous == (Image *) NULL)
-            if (QuantumTick(y,image->rows))
-              ProgressMonitor(LoadImageText,i++,span);
+            if (QuantumTick(i,span))
+              ProgressMonitor(LoadImageText,i,span);
+          i++;
         }
         count=image->tile_info.height-image->rows-image->tile_info.y;
         for (y=0; y < count; y++)
@@ -11105,8 +11130,9 @@ static Image *ReadRGBImage(const ImageInfo *image_info)
             q++;
           }
           if (image->previous == (Image *) NULL)
-            if (QuantumTick(y,image->rows))
-              ProgressMonitor(LoadImageText,i++,span);
+            if (QuantumTick(i,span))
+              ProgressMonitor(LoadImageText,i,span);
+          i++;
         }
         count=image->tile_info.height-image->rows-image->tile_info.y;
         for (y=0; y < count; y++)
@@ -11140,8 +11166,9 @@ static Image *ReadRGBImage(const ImageInfo *image_info)
                 q++;
               }
               if (image->previous == (Image *) NULL)
-                if (QuantumTick(y,image->rows))
-                  ProgressMonitor(LoadImageText,i++,span);
+                if (QuantumTick(i,span))
+                  ProgressMonitor(LoadImageText,i,span);
+              i++;
             }
             count=image->tile_info.height-image->rows-image->tile_info.y;
             for (y=0; y < count; y++)
@@ -14115,9 +14142,7 @@ static Image *ReadTILEImage(ImageInfo *image_info)
   {
     for (x=0; x < image->columns; x+=tiled_image->columns)
       CompositeImage(image,ReplaceCompositeOp,tiled_image,x,y);
-    if (QuantumTick(y,image->rows))
-      if (QuantumTick(y,image->rows))
-        ProgressMonitor(LoadImageText,y,image->rows);
+    ProgressMonitor(LoadImageText,y,image->rows);
   }
   DestroyImage(tiled_image);
   CondenseImage(image);
@@ -14679,7 +14704,7 @@ static Image *ReadUYVYImage(const ImageInfo *image_info)
     q->length=0;
     q++;
     p+=4;
-    if (QuantumTick(i,image->packets))
+    if (QuantumTick(i,image->columns*image->rows >> 1))
       ProgressMonitor(LoadImageText,i,image->columns*image->rows >> 1);
   }
   FreeMemory((char *) uyvy_pixels);
@@ -16333,7 +16358,7 @@ static Image *ReadXCImage(const ImageInfo *image_info)
     SetRunlengthEncoder(q);
     q++;
     if (QuantumTick(i,image->packets))
-      ProgressMonitor(LoadImageText,i,image->columns*image->rows);
+      ProgressMonitor(LoadImageText,i,image->packets);
   }
   q--;
   q->length=image->columns*image->rows-(MaxRunlength+1)*(image->packets-1)-1;
@@ -17172,7 +17197,8 @@ static Image *ReadYUVImage(const ImageInfo *image_info)
         q++;
       }
       if (image->previous == (Image *) NULL)
-        ProgressMonitor(LoadImageText,i++,3);
+        ProgressMonitor(LoadImageText,i,3);
+      i++;
     }
     if (image_info->interlace == PartitionInterlace)
       {
@@ -17193,7 +17219,8 @@ static Image *ReadYUVImage(const ImageInfo *image_info)
         q++;
       }
       if (image->previous == (Image *) NULL)
-        ProgressMonitor(LoadImageText,i++,3);
+        ProgressMonitor(LoadImageText,i,3);
+      i++;
     }
     if (image_info->interlace == PartitionInterlace)
       {
@@ -17214,7 +17241,8 @@ static Image *ReadYUVImage(const ImageInfo *image_info)
         q++;
       }
       if (image->previous == (Image *) NULL)
-        ProgressMonitor(LoadImageText,i++,3);
+        ProgressMonitor(LoadImageText,i,3);
+      i++;
     }
     /*
       Scale image.

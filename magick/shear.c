@@ -292,7 +292,7 @@ static Image *IntegralRotateImage(Image *image,unsigned int rotations)
           q->length=0;
           q+=rotated_image->columns;
         }
-        if (QuantumTick(x,image->columns))
+        if (QuantumTick(x,rotated_image->columns))
           ProgressMonitor(RotateImageText,x,rotated_image->columns);
       }
       break;
@@ -345,7 +345,7 @@ static Image *IntegralRotateImage(Image *image,unsigned int rotations)
           q->length=0;
           q-=rotated_image->columns;
         }
-        if (QuantumTick(y,rotated_image->rows))
+        if (QuantumTick(x,rotated_image->columns))
           ProgressMonitor(RotateImageText,rotated_image->columns-x,
             rotated_image->columns);
       }

@@ -159,11 +159,11 @@ EXTRA_libMagick_la_SOURCES = mac.c nt.c vms.c
 
 # Headers which are installed
 include_HEADERS = PreRvIcccm.h X.h compress.h config.h error.h gems.h image.h \
-	magick.h monitor.h utility.h widget.h memory.h delegates.h
+	magick.h monitor.h utility.h widget.h memory.h delegates.h version.h
 
 # Headers which are not installed but which are distributed
 noinst_HEADERS = Colorlist.h animate.h dicom.h display.h formats.h logo.h \
-	mac.h nt.h pict.h proxy.h version.h vms.h
+	mac.h nt.h pict.h proxy.h vms.h
 
 # Additional files to distribute
 EXTRA_DIST = Imakefile Make.com

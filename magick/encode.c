@@ -56,7 +56,6 @@
 #include "magick.h"
 #include "proxy.h"
 #include "Colorlist.h"
-#include "version.h"
 
 /*
   Define declarations.
@@ -707,7 +706,8 @@ static unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
             WriteQuantumFile((unsigned int) (black_generation*black));
             p++;
           }
-          ProgressMonitor(SaveImageText,y,image->rows);
+          if (QuantumTick(y,image->rows))
+            ProgressMonitor(SaveImageText,y,image->rows);
         }
         break;
       }
@@ -1166,7 +1166,8 @@ static unsigned int WriteFITSImage(const ImageInfo *image_info,Image *image)
       (void) fputc(DownScale(Intensity(*p)),image->file);
       p++;
     }
-    ProgressMonitor(SaveImageText,image->rows-y-1,image->rows);
+    if (QuantumTick(y,image->rows))
+      ProgressMonitor(SaveImageText,image->rows-y-1,image->rows);
   }
   CloseImage(image);
   return(True);
@@ -2446,7 +2447,8 @@ static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
                 *q++=DownScale(p->blue);
                 p++;
               }
-              ProgressMonitor(SaveImageText,y,image->rows);
+              if (QuantumTick(y,image->rows))
+                ProgressMonitor(SaveImageText,y,image->rows);
             }
             break;
           }
@@ -2749,7 +2751,8 @@ static unsigned int WriteHISTOGRAMImage(const ImageInfo *image_info,
       q->blue=MaxRGB;
       j++;
     }
-    ProgressMonitor(SaveImageText,i,histogram_image->columns);
+    if (QuantumTick(i,histogram_image->columns))
+      ProgressMonitor(SaveImageText,i,histogram_image->columns);
   }
   free ((char *) blue);
   free ((char *) green);
@@ -4469,7 +4472,8 @@ static unsigned int WritePCDTile(const ImageInfo *image_info,Image *image,
       (void) fputc(DownScale(q->blue),image->file);
       q++;
     }
-    ProgressMonitor(SaveImageText,y,tile_image->rows);
+    if (QuantumTick(y,image->rows))
+      ProgressMonitor(SaveImageText,y,tile_image->rows);
   }
   for (i=0; i < 0x800; i++)
     (void) fputc('\0',image->file);
@@ -5036,7 +5040,8 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
               p++;
             }
           }
-          ProgressMonitor(SaveImageText,y,image->rows);
+          if (QuantumTick(y,image->rows))
+            ProgressMonitor(SaveImageText,y,image->rows);
         }
       }
     else
@@ -5146,7 +5151,8 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
             (void) fwrite(&count,1,1,image->file);
           }
         (void) fwrite(&previous,1,1,image->file);
-        ProgressMonitor(SaveImageText,y,image->rows);
+        if (QuantumTick(y,image->rows))
+          ProgressMonitor(SaveImageText,y,image->rows);
       }
     }
     (void) fwrite(&pcx_header.colormap_signature,1,1,image->file);
@@ -5341,7 +5347,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
   (void) strcpy(date,ctime(&timer));
   date[Extent(date)-1]='\0';
   (void) fprintf(image->file,"/CreationDate (%s)\n",date);
-  (void) fprintf(image->file,"/Producer (%s)\n",Version);
+  (void) fprintf(image->file,"/Producer (%s)\n",MagickVersion);
   (void) fprintf(image->file,">>\n");
   (void) fprintf(image->file,"endobj\n");
   /*
@@ -7104,7 +7110,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     ping_info->text=(png_text *) AllocateMemory(256*sizeof(png_text));
     if (ping_info->text == (png_text *) NULL)
       PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
-    PNGTextChunk(image_info,ping_info,"Software",Version);
+    PNGTextChunk(image_info,ping_info,"Software",MagickVersion);
     SignatureImage(image);
     if (image->signature != (char *) NULL)
       PNGTextChunk(image_info,ping_info,"Signature",image->signature);
@@ -7602,7 +7608,8 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
           i++;
           if (i == 2)
             i=0;
-          ProgressMonitor(SaveImageText,y,image->rows);
+          if (QuantumTick(y,image->rows))
+            ProgressMonitor(SaveImageText,y,image->rows);
         }
         /*
           Free allocated memory.
@@ -9875,7 +9882,8 @@ static unsigned int WriteRGBImage(const ImageInfo *image_info,Image *image)
               WriteQuantumFile(p->index);
               p++;
             }
-          ProgressMonitor(SaveImageText,y,image->rows);
+          if (QuantumTick(y,image->rows))
+            ProgressMonitor(SaveImageText,y,image->rows);
         }
         break;
       }
@@ -10238,7 +10246,8 @@ static unsigned int WriteSGIImage(const ImageInfo *image_info,Image *image)
             offset+=length;
           }
           q+=(iris_header.columns*4);
-          ProgressMonitor(SaveImageText,y,iris_header.rows);
+          if (QuantumTick(y,iris_header.rows))
+            ProgressMonitor(SaveImageText,y,iris_header.rows);
         }
         /*
           Write out line start and length tables and runlength-encoded pixels.
@@ -11192,7 +11201,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
         (void *) image->color_profile.info);
 #endif
     TIFFSetField(tiff,TIFFTAG_DOCUMENTNAME,image->filename);
-    TIFFSetField(tiff,TIFFTAG_SOFTWARE,Version);
+    TIFFSetField(tiff,TIFFTAG_SOFTWARE,MagickVersion);
     if (image->number_scenes > 1)
       {
         TIFFSetField(tiff,TIFFTAG_SUBFILETYPE,FILETYPE_PAGE);
@@ -11879,7 +11888,8 @@ static unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
       (void) fprintf(image->file,"%s",symbol);
     }
     (void) fprintf(image->file,"\"%s\n",(y == (image->rows-1) ? ");" : ","));
-    ProgressMonitor(SaveImageText,y,image->rows);
+    if (QuantumTick(y,image->rows))
+      ProgressMonitor(SaveImageText,y,image->rows);
   }
   CloseImage(image);
   return(True);
@@ -13064,7 +13074,8 @@ static unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
       (void) fprintf(image->file,"%s",symbol);
     }
     (void) fprintf(image->file,"\"%s\n",(y == (image->rows-1) ? "" : ","));
-    ProgressMonitor(SaveImageText,y,image->rows);
+    if (QuantumTick(y,image->rows))
+      ProgressMonitor(SaveImageText,y,image->rows);
   }
   (void) fprintf(image->file,"};\n");
   CloseImage(image);

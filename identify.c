@@ -103,8 +103,8 @@ static void Usage(const char *client_name)
       (char *) NULL
     };
 
-  (void) printf("Version: %s\n",Version);
-  (void) printf("Copyright: %s\n\n",Copyright);
+  (void) printf("Version: %s\n",MagickVersion);
+  (void) printf("Copyright: %s\n\n",MagickCopyright);
   (void) printf("Usage: %s [ options ... ] file [ file ... ]\n",client_name);
   (void) printf("\nWhere options include:\n");
   for (p=options; *p != (char *) NULL; p++)

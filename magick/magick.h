@@ -84,6 +84,7 @@ extern "C" {
 #include "PreRvIcccm.h"
 #include "memory.h"
 #include "delegates.h"
+#include "version.h"
 
 /*
   Define declarations.
