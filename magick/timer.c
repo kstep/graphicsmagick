@@ -205,6 +205,37 @@ MagickExport void GetTimerInfo(TimerInfo *time_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   G e t T i m e r R e s o l u t i o n                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Obtain the measurement resolution of the timer.
+%
+%  The format of the GetTimerResolution method is:
+%
+%      void GetTimerInfo(TimerInfo *time_info)
+%
+%  A description of each parameter follows.
+%
+%    o  time_info: Timer statistics structure.
+%
+*/
+MagickExport double GetTimerResolution(void)
+{
+#if defined(WIN32)
+  return (0.02);
+#else
+  return (1.0/CLK_TCK);
+#endif
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   G e t U s e r T i m e                                                     %
 %                                                                             %
 %                                                                             %

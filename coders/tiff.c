@@ -164,7 +164,7 @@ static unsigned int IsTIFF(const unsigned char *magick,const size_t length)
 %
 %
 */
-#if defined(HAVE_TIFFMERGEFIELDINFO) && (HAVE_TIFFSETTAGEXTENDER)
+#if defined(HAVE_TIFFMERGEFIELDINFO) && defined(HAVE_TIFFSETTAGEXTENDER)
 #  define EXTEND_TIFF_TAGS 1
 #  define TIFFTAG_EXIF_IFD 34665
 static const TIFFFieldInfo
@@ -213,7 +213,7 @@ void ExtensionTagsInitialize(void)
   _ParentExtender = TIFFSetTagExtender(ExtensionTagsDefaultDirectory);
 }
 
-#endif /* defined(HAVE_TIFFMERGEFIELDINFO) && (HAVE_TIFFSETTAGEXTENDER) */
+#endif /* defined(HAVE_TIFFMERGEFIELDINFO) && defined(HAVE_TIFFSETTAGEXTENDER) */
 
 static const char *CompressionTagToString(unsigned int compress_tag)
 {

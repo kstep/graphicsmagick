@@ -1047,14 +1047,16 @@ MagickExport void FormatSize(const magick_int64_t size,char *format)
     length/=1024.0;
   FormatString(format,"%.1f",length);
   switch (i)
-  {
+    {
     default: break;
     case 0: break;
-    case 1: (void) strcat(format,"k"); break;
-    case 2: (void) strcat(format,"m"); break;
-    case 3: (void) strcat(format,"g"); break;
-    case 4: (void) strcat(format,"t"); break;
-  }
+    case 1: (void) strcat(format,"k"); break; /* kilo, 10^3 */
+    case 2: (void) strcat(format,"m"); break; /* mega, 10^6 */
+    case 3: (void) strcat(format,"g"); break; /* giga, 10^9 */
+    case 4: (void) strcat(format,"t"); break; /* terra, 10^12 */
+    case 5: (void) strcat(format,"p"); break; /* peta, 10^15 */
+    case 6: (void) strcat(format,"e"); break; /* exa, 10^18 */
+    }
 }
 
 /*

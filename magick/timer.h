@@ -54,7 +54,8 @@ typedef struct _TimerInfo
 */
 extern MagickExport double
   GetElapsedTime(TimerInfo *),
-  GetUserTime(TimerInfo *);
+  GetUserTime(TimerInfo *),
+  GetTimerResolution(void);
 
 extern MagickExport unsigned int
   ContinueTimer(TimerInfo *);

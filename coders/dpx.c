@@ -36,7 +36,9 @@
 #include "magick/studio.h"
 #include "magick/attribute.h"
 #include "magick/blob.h"
+#include "magick/bit_stream.h"
 #include "magick/cache.h"
+#include "magick/endian.h"
 #include "magick/log.h"
 #include "magick/magick.h"
 #include "magick/monitor.h"
@@ -48,146 +50,172 @@
 static unsigned int
   WriteDPXImage(const ImageInfo *,Image *);
 
-#define MSBOrderFloat(a,b) /* FIXME */
-
+typedef char ASCII;
 typedef magick_uint8_t U8;
 typedef magick_uint16_t U16;
 typedef magick_uint32_t U32;
 typedef float R32;
 
+typedef enum
+{
+  ImageElementUnspecified=0,
+  ImageElementRed=1,
+  ImageElementGreen=2,
+  ImageElementBlue=3,
+  ImageElementAlpha=4,
+  ImageElementLuma=6,
+  ImageElementColorDifferenceCbCr=7,
+  ImageElementDepth=8,
+  ImageElementCompositeVideo=9,
+  ImageElementRGB=50,              /* BGR order */
+  ImageElementRGBA=51,             /* BGRA order */
+  ImageElementABGR=52,             /* ARGB order */
+  ImageElementCbYCrY422=100,       /* SMPTE 125M, 4:2:2 */
+  ImageElementCbYACrYA4224=101,    /* 4:2:2:4 */
+  ImageElementCbYCr444=102,        /* 4:4:4 */
+  ImageElementCbYCrA4444=103       /* 4:4:4:4 */
+} DPXImageElementDescriptor;
+
+typedef enum
+{
+  PackingMethodPacked=0,           /* Packed with no padding */
+  PackingMethodWordsFillLSB=1,     /* Method 'A', padding bits in LSB of 32-bit word */
+  PackingMethodWordsFillMSB=2      /* Method 'B', padding bits in MSB of 32-bit word (deprecated) */
+}  ImageComponentPackingMethod;
+
 typedef struct _DPXFileInfo
 {
-  U32  magic;                     /* Magick number (SDPX ASCII) */
-  U32  image_data_offset;         /* Offset to image data in bytes */
-  char header_format_version[8];  /* Version number of header format */
-  U32  file_size;                 /* Total image file size in bytes  */
-  U32  ditto_key;                 /* (0 = same as previous frame; 1 = new) */
-  U32  generic_section_length;    /* Generic section header length in bytes */
-  U32  industry_section_length;   /* Industry specific header length in bytes */
-  U32  user_defined_length;       /* User defined header length in bytes */
-  char image_filename[100];       /* Image filename */
-  char creation_datetime[24];     /* Creation date/time: yyyy:mm:dd:hh:mm:ssLTZ */
-  char creator[100];              /* Creator */
-  char project_name[200];         /* Project name */
-  char copyright[200];            /* Right to use or copyright */
-  U32  encrption_key;             /* Enscryption key (FFFFFFFF unencrypted ) */
-  char reserved[104];             /* Reserved for future use */
+  U32   magic;                     /* Magick number (SDPX ASCII) */
+  U32   image_data_offset;         /* Offset to image data in bytes */
+  ASCII header_format_version[8];  /* Version number of header format */
+  U32   file_size;                 /* Total image file size in bytes  */
+  U32   ditto_key;                 /* (0 = same as previous frame; 1 = new) */
+  U32   generic_section_length;    /* Generic section header length in bytes */
+  U32   industry_section_length;   /* Industry specific header length in bytes */
+  U32   user_defined_length;       /* User defined header length in bytes */
+  ASCII image_filename[100];       /* Image filename */
+  ASCII creation_datetime[24];     /* Creation date/time: yyyy:mm:dd:hh:mm:ssLTZ */
+  ASCII creator[100];              /* Creator */
+  ASCII project_name[200];         /* Project name */
+  ASCII copyright[200];            /* Right to use or copyright */
+  U32   encrption_key;             /* Enscryption key (FFFFFFFF unencrypted ) */
+  ASCII reserved[104];             /* Reserved for future use */
 } DPXFileInfo;
 
 typedef struct _DPXImageElement
 {
-  U32  data_sign;                 /* Data sign (0 = unsigned; 1 = signed) */
-  U32  reference_low_data_code;   /* Reference low data code value */
-  R32  reference_low_quantity;    /* Low quantity represented */
-  U32  reference_high_data_code;  /* Reference high data code value */
-  R32  reference_high_quantity;   /* Reference high quantity represented */
-  U8   descriptor;                /* Descriptor */
-  U8   transfer_characteristic;   /* Transfer characteristic */
-  U8   colorimetric;              /* Colorimetric specification */
-  U8   bits_per_sample;           /* Bit depth */
-  U16  packing;                   /* Packing */
-  U16  encoding;                  /* Encoding */
-  U32  data_offset;               /* Offset to data */
-  U32  eol_pad;                   /* End of line padding */
-  U32  eoi_pad;                   /* End of image padding */
-  char description[32];           /* Description of image element */
+  U32   data_sign;                 /* Data sign (0 = unsigned; 1 = signed) */
+  U32   reference_low_data_code;   /* Reference low data code value */
+  R32   reference_low_quantity;    /* Low quantity represented */
+  U32   reference_high_data_code;  /* Reference high data code value */
+  R32   reference_high_quantity;   /* Reference high quantity represented */
+  U8    descriptor;                /* Descriptor */
+  U8    transfer_characteristic;   /* Transfer characteristic */
+  U8    colorimetric;              /* Colorimetric specification */
+  U8    bits_per_sample;           /* Bit depth */
+  U16   packing;                   /* Packing */
+  U16   encoding;                  /* Encoding */
+  U32   data_offset;               /* Offset to data */
+  U32   eol_pad;                   /* End of line padding */
+  U32   eoi_pad;                   /* End of image padding */
+  ASCII description[32];           /* Description of image element */
 } DPXImageElement;
 
 typedef struct _DPXImageInfo
 {
-  U16  orientation;               /* Image orientation */
-  U16  elements;                  /* Number of image elements (1-8) */
-  U32  pixels_per_line;           /* Pixels per line (columns) */
-  U32  lines_per_image_element;   /* Lines per image element (rows) */
-  DPXImageElement element_info[8];/* Description of elements */
-  char reserved[52];              /* Reserved for future use */
+  U16   orientation;               /* Image orientation */
+  U16   elements;                  /* Number of image elements (1-8) */
+  U32   pixels_per_line;           /* Pixels per line (columns) */
+  U32   lines_per_image_element;   /* Lines per image element (rows) */
+  DPXImageElement element_info[8]; /* Description of elements */
+  ASCII reserved[52];              /* Reserved for future use */
 } DPXImageInfo;
 
 typedef struct _DPXImageSourceBorderValidity
 {
-  U16  XL;                        /* Border validity XL border */
-  U16  XR;                        /* Border validity XR border */
-  U16  YT;                        /* Border validity YT border */
-  U16  YB;                        /* Border validity YB border */
+  U16   XL;                        /* Border validity XL border */
+  U16   XR;                        /* Border validity XR border */
+  U16   YT;                        /* Border validity YT border */
+  U16   YB;                        /* Border validity YB border */
 } DPXImageSourceBorderValidity;
 
 typedef struct _DPXImageSourcePixelAspectRatio
 {
-  U32  horizontal;                /* Horizontal */
-  U32  vertical;                  /* Vertical */
+  U32   horizontal;                /* Horizontal */
+  U32   vertical;                  /* Vertical */
 } DPXImageSourcePixelAspectRatio;
 
 typedef struct _DPXImageSourceInfo
 {
-  U32  x_offset;                  /* X offset */
-  U32  y_offset;                  /* Y offset */
-  R32  x_center;                  /* X center */
-  R32  y_center;                  /* Y center */
-  U32  x_original_size;           /* X original size */
-  U32  y_original_size;           /* Y original size */
-  char source_image_filename[100];/* Source image filename */
-  char source_image_datetime[24]; /* Source image date/time: yyyy:mmm:dd:hh:mm:ssLTZ */
-  char input_device_name[32];     /* Input device name */
-  char input_device_serialnumber[32]; /* Input device serial number */
+  U32   x_offset;                  /* X offset */
+  U32   y_offset;                  /* Y offset */
+  R32   x_center;                  /* X center */
+  R32   y_center;                  /* Y center */
+  U32   x_original_size;           /* X original size */
+  U32   y_original_size;           /* Y original size */
+  ASCII source_image_filename[100];/* Source image filename */
+  ASCII source_image_datetime[24]; /* Source image date/time: yyyy:mmm:dd:hh:mm:ssLTZ */
+  ASCII input_device_name[32];     /* Input device name */
+  ASCII input_device_serialnumber[32]; /* Input device serial number */
   DPXImageSourceBorderValidity border_validity; /* Border validity */
   DPXImageSourcePixelAspectRatio aspect_ratio; /* Aspect ratio */
-  R32  x_scanned_size;            /* X scanned size */
-  R32  y_scanned_size;            /* Y scanned size */
-  char reserved[20];              /* Reserved for future use */
+  R32   x_scanned_size;            /* X scanned size */
+  R32   y_scanned_size;            /* Y scanned size */
+  ASCII reserved[20];              /* Reserved for future use */
 } DPXImageSourceInfo;
 
 typedef struct _DPXMPFilmInfo
 {
-  char film_mfg_id_code[2];       /* Film mfg. ID code (2 digits from film edge code) */
-  char film_type[2];              /* Film type (2 digits from film edge code) */
-  char perfs_offset[2];           /* Offset in perfs (2 digits from film edge code) */
-  char prefix[6];                 /* Prefix (6 digits from film edge code) */
-  char count[4];                  /* Count (4 digits from film edge code) */
-  char format[32];                /* Format -- e.g. Academy */
-  U32  frame_position;            /* Frame position in sequence */
-  U32  sequence_length;           /* Sequence length (frames) */
-  U32  held_count;                /* Held count (1 = default) */
-  R32  frame_rate;                /* Frame rate of original (frames/s) */
-  R32  shutter_angle;             /* Shutter angle of camera in degrees */
-  char frame_id[32];              /* Frame identification - e.g. keyframe */
-  char slate_info[100];           /* Slate information */
-  char reserved[56];              /* Reserved for future use */
+  ASCII film_mfg_id_code[2];       /* Film mfg. ID code (2 digits from film edge code) */
+  ASCII film_type[2];              /* Film type (2 digits from film edge code) */
+  ASCII perfs_offset[2];           /* Offset in perfs (2 digits from film edge code) */
+  ASCII prefix[6];                 /* Prefix (6 digits from film edge code) */
+  ASCII count[4];                  /* Count (4 digits from film edge code) */
+  ASCII format[32];                /* Format -- e.g. Academy */
+  U32   frame_position;            /* Frame position in sequence */
+  U32   sequence_length;           /* Sequence length (frames) */
+  U32   held_count;                /* Held count (1 = default) */
+  R32   frame_rate;                /* Frame rate of original (frames/s) */
+  R32   shutter_angle;             /* Shutter angle of camera in degrees */
+  ASCII frame_id[32];              /* Frame identification - e.g. keyframe */
+  ASCII slate_info[100];           /* Slate information */
+  ASCII reserved[56];              /* Reserved for future use */
 } DPXMPFilmInfo;
 
 typedef struct _DPXTVInfo
 {
-  U32  time_code;                 /* SMPTE time code */
-  U32  user_bits;                 /* SMPTE user bits */
-  U8   interlace;                 /* Interlace (0 = noninterlaced; 1 = 2:1 interlace */
-  U8   field_number;              /* Field number */
-  U8   video_signal;              /* Video signal standard */
-  U8   zero;                      /* Zero (for byte alignment) */
-  R32  horizontal_sample;         /* Horizontal sampling rate */
-  R32  vertical_sample;           /* Vertical sampling rate */
-  R32  temporal_sample;           /* Temporal sampling rate or frame rate (Hz) */
-  R32  sync_time;                 /* Time offset from sync to first pixel (ms) */
-  R32  gamma;                     /* Gamma */
-  R32  black_level;               /* Black level code value */
-  R32  black_gain;                /* Black gain */
-  R32  breakpoint;                /* Breakpoint */
-  R32  white_level;               /* Reference white level code value */
-  R32  integration_time;          /* Integration time (s) */
-  char reserved[76];              /* Reserved for future use */
+  U32   time_code;                 /* SMPTE time code */
+  U32   user_bits;                 /* SMPTE user bits */
+  U8    interlace;                 /* Interlace (0 = noninterlaced; 1 = 2:1 interlace */
+  U8    field_number;              /* Field number */
+  U8    video_signal;              /* Video signal standard */
+  U8    zero;                      /* Zero (for byte alignment) */
+  R32   horizontal_sample;         /* Horizontal sampling rate */
+  R32   vertical_sample;           /* Vertical sampling rate */
+  R32   temporal_sample;           /* Temporal sampling rate or frame rate (Hz) */
+  R32   sync_time;                 /* Time offset from sync to first pixel (ms) */
+  R32   gamma;                     /* Gamma */
+  R32   black_level;               /* Black level code value */
+  R32   black_gain;                /* Black gain */
+  R32   breakpoint;                /* Breakpoint */
+  R32   white_level;               /* Reference white level code value */
+  R32   integration_time;          /* Integration time (s) */
+  ASCII reserved[76];              /* Reserved for future use */
 } DPXTVInfo;
 
 typedef struct _DPXUserDefinedData
 {
-  char  user_id[32];              /* User identification */
+  ASCII user_id[32];               /* User identification */
   /* Up to 1MB of user-defined data after this point */
 } DPXUserDefinedData;
 
 typedef struct _DPXHeader
 {
-  DPXFileInfo file_info;          /* File information header */
-  DPXImageInfo image_info;        /* Image information header */
-  DPXImageSourceInfo source_info; /* Image source information header */
-  DPXMPFilmInfo mp_info;          /* Motion picture film information header */
-  DPXTVInfo tv_info;              /* Television information header */
+  DPXFileInfo file_info;           /* File information header */
+  DPXImageInfo image_info;         /* Image information header */
+  DPXImageSourceInfo source_info;  /* Image source information header */
+  DPXMPFilmInfo mp_info;           /* Motion picture film information header */
+  DPXTVInfo tv_info;               /* Television information header */
 } DPXHeader;
 
 /*
@@ -260,6 +288,78 @@ static unsigned int IsDPX(const unsigned char *magick,const size_t length)
 %
 %
 */
+
+/*
+  Bit stream word reader "handle"
+*/
+typedef struct _BitStreamWordReadHandle
+{
+  const magick_uint32_t
+  *words;
+  
+  unsigned int
+  bits_remaining;
+} BitStreamWordReadHandle;
+
+/*
+  Initialize Bit Stream for reading
+*/
+static inline void BitStreamWordInitializeRead(BitStreamWordReadHandle *bit_stream,
+                                               const magick_uint32_t *words)
+{
+  bit_stream->words          = words;
+  bit_stream->bits_remaining = 32;
+}
+
+/*
+  Return the requested number of bits from the current position in a
+  bit stream. Stream is read in most-significant bit/byte "big endian"
+  order.
+*/
+static inline unsigned int BitStreamWordLSBRead(BitStreamWordReadHandle *bit_stream,
+                                                const unsigned int requested_bits)
+{
+  register unsigned int
+    remaining_quantum_bits,
+    quantum;
+  
+  remaining_quantum_bits = requested_bits;
+  quantum = 0;
+  
+  while (remaining_quantum_bits > 0)
+    {
+      register unsigned int
+        word_bits;
+      
+      word_bits = remaining_quantum_bits;
+      if (word_bits > bit_stream->bits_remaining)
+        word_bits = bit_stream->bits_remaining;
+      
+      remaining_quantum_bits -= word_bits;
+      bit_stream->bits_remaining -= word_bits;
+
+#if 1
+      quantum = quantum |
+        (((*bit_stream->words >> (32-word_bits-bit_stream->bits_remaining))
+         & BitAndMasks[word_bits]) << (0));
+/*       printf("word_bits=%u remaining_quantum_bits=%u bit_stream->bits_remaining=%u\n", */
+/*              word_bits,remaining_quantum_bits,bit_stream->bits_remaining); */
+#else
+      quantum = (quantum << word_bits) |
+        ((*bit_stream->words >> (bit_stream->bits_remaining))
+         & BitAndMasks[word_bits]);
+#endif
+
+      if (bit_stream->bits_remaining == 0)
+        {
+          bit_stream->words++;
+          bit_stream->bits_remaining=32;
+        }
+    }
+  return quantum;
+}
+
+
 #define StringToAttribute(image,name,member) \
 { \
   char \
@@ -306,88 +406,94 @@ static unsigned int IsDPX(const unsigned char *magick,const size_t length)
 }
 static void SwabDPXFileInfo(DPXFileInfo *file_info)
 {
-  MSBOrderLong((unsigned char *) &file_info->magic,1);
-  MSBOrderLong((unsigned char *) &file_info->image_data_offset,1);
-  MSBOrderLong((unsigned char *) &file_info->file_size,1);
-  MSBOrderLong((unsigned char *) &file_info->ditto_key,1);
-  MSBOrderLong((unsigned char *) &file_info->generic_section_length,1);
-  MSBOrderLong((unsigned char *) &file_info->industry_section_length,1);
-  MSBOrderLong((unsigned char *) &file_info->user_defined_length,1);
-  MSBOrderLong((unsigned char *) &file_info->encrption_key,1);
+  MagickSwabUInt32(&file_info->magic);
+  MagickSwabUInt32(&file_info->image_data_offset);
+  MagickSwabUInt32(&file_info->file_size);
+  MagickSwabUInt32(&file_info->ditto_key);
+  MagickSwabUInt32(&file_info->generic_section_length);
+  MagickSwabUInt32(&file_info->industry_section_length);
+  MagickSwabUInt32(&file_info->user_defined_length);
+  MagickSwabUInt32(&file_info->encrption_key);
 }
 static void SwabDPXImageInfo(DPXImageInfo *image_info)
 {
   int
     i;
 
-  MSBOrderShort((unsigned char *) &image_info->orientation,1);
-  MSBOrderShort((unsigned char *) &image_info->elements,1);
-  MSBOrderLong((unsigned char *) &image_info->pixels_per_line,1);
-  MSBOrderLong((unsigned char *) &image_info->lines_per_image_element,1);
+  MagickSwabUInt16(&image_info->orientation);
+  MagickSwabUInt16(&image_info->elements);
+  MagickSwabUInt32(&image_info->pixels_per_line);
+  MagickSwabUInt32(&image_info->lines_per_image_element);
   for (i=0 ; i < 8 ; i++)
     {
-      MSBOrderLong((unsigned char *) &image_info->element_info[i].data_sign,1);
-      MSBOrderLong((unsigned char *) &image_info->element_info[i].reference_low_data_code,1);
-      MSBOrderFloat((unsigned char *) &image_info->element_info[i].reference_low_quantity,1);
-      MSBOrderLong((unsigned char *) &image_info->element_info[i].reference_high_data_code,1);
-      MSBOrderFloat((unsigned char *) &image_info->element_info[i].reference_high_quantity,1);
-      MSBOrderShort((unsigned char *) &image_info->element_info[i].packing,1);
-      MSBOrderShort((unsigned char *) &image_info->element_info[i].encoding,1);
-      MSBOrderLong((unsigned char *) &image_info->element_info[i].data_offset,1);
-      MSBOrderLong((unsigned char *) &image_info->element_info[i].eol_pad,1);
-      MSBOrderLong((unsigned char *) &image_info->element_info[i].eoi_pad,1);
+      MagickSwabUInt32(&image_info->element_info[i].data_sign);
+      MagickSwabUInt32(&image_info->element_info[i].reference_low_data_code);
+      MagickSwabFloat(&image_info->element_info[i].reference_low_quantity);
+      MagickSwabUInt32(&image_info->element_info[i].reference_high_data_code);
+      MagickSwabFloat(&image_info->element_info[i].reference_high_quantity);
+      MagickSwabUInt16(&image_info->element_info[i].packing);
+      MagickSwabUInt16(&image_info->element_info[i].encoding);
+      MagickSwabUInt32(&image_info->element_info[i].data_offset);
+      MagickSwabUInt32(&image_info->element_info[i].eol_pad);
+      MagickSwabUInt32(&image_info->element_info[i].eoi_pad);
     }
 }
 static void SwabDPXImageSourceInfo(DPXImageSourceInfo *source_info)
 {
-  MSBOrderLong((unsigned char *) &source_info->x_offset,1);
-  MSBOrderLong((unsigned char *) &source_info->y_offset,1);
-  MSBOrderFloat((unsigned char *) &source_info->x_center,1);
-  MSBOrderFloat((unsigned char *) &source_info->y_center,1);
-  MSBOrderLong((unsigned char *) &source_info->x_original_size,1);
-  MSBOrderLong((unsigned char *) &source_info->y_original_size,1);
-  MSBOrderShort((unsigned char *) &source_info->border_validity.XL,1);
-  MSBOrderShort((unsigned char *) &source_info->border_validity.XR,1);
-  MSBOrderShort((unsigned char *) &source_info->border_validity.YT,1);
-  MSBOrderShort((unsigned char *) &source_info->border_validity.YB,1);
-  MSBOrderShort((unsigned char *) &source_info->aspect_ratio.horizontal,1);
-  MSBOrderShort((unsigned char *) &source_info->aspect_ratio.vertical,1);
-  MSBOrderFloat((unsigned char *) &source_info->x_scanned_size,1);
-  MSBOrderFloat((unsigned char *) &source_info->y_scanned_size,1);
+  MagickSwabUInt32(&source_info->x_offset);
+  MagickSwabUInt32(&source_info->y_offset);
+  MagickSwabFloat(&source_info->x_center);
+  MagickSwabFloat(&source_info->y_center);
+  MagickSwabUInt32(&source_info->x_original_size);
+  MagickSwabUInt32(&source_info->y_original_size);
+  MagickSwabUInt16(&source_info->border_validity.XL);
+  MagickSwabUInt16(&source_info->border_validity.XR);
+  MagickSwabUInt16(&source_info->border_validity.YT);
+  MagickSwabUInt16(&source_info->border_validity.YB);
+  MagickSwabUInt32(&source_info->aspect_ratio.horizontal);
+  MagickSwabUInt32(&source_info->aspect_ratio.vertical);
+  MagickSwabFloat(&source_info->x_scanned_size);
+  MagickSwabFloat(&source_info->y_scanned_size);
 }
 static void SwabDPXMPFilmInfo(DPXMPFilmInfo *mp_info)
 {
-  MSBOrderLong((unsigned char *) &mp_info->frame_position,1);
-  MSBOrderLong((unsigned char *) &mp_info->sequence_length,1);
-  MSBOrderLong((unsigned char *) &mp_info->held_count,1);
-  MSBOrderFloat((unsigned char *) &mp_info->frame_rate,1);
-  MSBOrderFloat((unsigned char *) &mp_info->shutter_angle,1);
+  MagickSwabUInt32(&mp_info->frame_position);
+  MagickSwabUInt32(&mp_info->sequence_length);
+  MagickSwabUInt32(&mp_info->held_count);
+  MagickSwabFloat(&mp_info->frame_rate);
+  MagickSwabFloat(&mp_info->shutter_angle);
 }
 static void SwabDPXTVInfo(DPXTVInfo *tv_info)
 {
-  MSBOrderLong((unsigned char *) &tv_info->time_code,1);
-  MSBOrderLong((unsigned char *) &tv_info->user_bits,1);
-  MSBOrderFloat((unsigned char *) &tv_info->horizontal_sample,1);
-  MSBOrderFloat((unsigned char *) &tv_info->vertical_sample,1);
-  MSBOrderFloat((unsigned char *) &tv_info->temporal_sample,1);
-  MSBOrderFloat((unsigned char *) &tv_info->sync_time,1);
-  MSBOrderFloat((unsigned char *) &tv_info->gamma,1);
-  MSBOrderFloat((unsigned char *) &tv_info->black_level,1);
-  MSBOrderFloat((unsigned char *) &tv_info->black_gain,1);
-  MSBOrderFloat((unsigned char *) &tv_info->breakpoint,1);
-  MSBOrderFloat((unsigned char *) &tv_info->white_level,1);
-  MSBOrderFloat((unsigned char *) &tv_info->integration_time,1);
+  MagickSwabUInt32(&tv_info->time_code);
+  MagickSwabUInt32(&tv_info->user_bits);
+  MagickSwabFloat(&tv_info->horizontal_sample);
+  MagickSwabFloat(&tv_info->vertical_sample);
+  MagickSwabFloat(&tv_info->temporal_sample);
+  MagickSwabFloat(&tv_info->sync_time);
+  MagickSwabFloat(&tv_info->gamma);
+  MagickSwabFloat(&tv_info->black_level);
+  MagickSwabFloat(&tv_info->black_gain);
+  MagickSwabFloat(&tv_info->breakpoint);
+  MagickSwabFloat(&tv_info->white_level);
+  MagickSwabFloat(&tv_info->integration_time);
 }
 static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
-#define MonoColorType  6
-#define RGBColorType  50
+  DPXFileInfo
+    dpx_file_info;
 
-  DPXHeader
-    header;
+  DPXImageInfo
+    dpx_image_info;
 
-  char
-    attribute[MaxTextExtent];
+  DPXImageSourceInfo
+    dpx_source_info;
+
+  DPXMPFilmInfo
+    dpx_mp_info;
+
+  DPXTVInfo
+    dpx_tv_info;
 
   Image
     *image;
@@ -404,10 +510,8 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   size_t
     offset;    
 
-  unsigned char
-    colortype;    
-
   unsigned int
+    element,
     status;
 
   unsigned long
@@ -416,6 +520,9 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   MagickBool
     swab=MagickFalse;
+
+  BitStreamWordReadHandle
+    bit_word_stream;
 
   /*
     Open image file.
@@ -432,85 +539,96 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Read DPX image.
   */
-  offset=ReadBlob(image,sizeof(header.file_info),&header.file_info);
-  if (offset != sizeof(header.file_info) ||
-      ((LocaleNCompare((char *) &header.file_info.magic,"SDPX",4) != 0) &&
-       (LocaleNCompare((char *) &header.file_info.magic,"XPDS",4) != 0)))
+  offset=ReadBlob(image,sizeof(dpx_file_info),&dpx_file_info);
+  if (offset != sizeof(dpx_file_info) ||
+      ((LocaleNCompare((char *) &dpx_file_info.magic,"SDPX",4) != 0) &&
+       (LocaleNCompare((char *) &dpx_file_info.magic,"XPDS",4) != 0)))
     ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
   /*
     Check for swapped endian order.
   */
-  if (header.file_info.magic != 0x53445058)
+  if (dpx_file_info.magic != 0x53445058)
     swab=MagickTrue;
+  
+  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                        "%s endian DPX format",
+#if defined(WORDS_BIGENDIAN)
+                        (swab ? "Little" : "Big")
+#else
+                        (swab ? "Big" : "Little")
+#endif
+                        );
   if (swab)
-    SwabDPXFileInfo(&header.file_info);
+    SwabDPXFileInfo(&dpx_file_info);
 
-  StringToAttribute(image,"artist",header.file_info.creator);
-  StringToAttribute(image,"comment",header.file_info.project_name);
-  StringToAttribute(image,"copyright",header.file_info.copyright);
-  StringToAttribute(image,"document",header.file_info.image_filename);
-  StringToAttribute(image,"timestamp",header.file_info.creation_datetime);
+  StringToAttribute(image,"artist",dpx_file_info.creator);
+  StringToAttribute(image,"comment",dpx_file_info.project_name);
+  StringToAttribute(image,"copyright",dpx_file_info.copyright);
+  StringToAttribute(image,"document",dpx_file_info.image_filename);
+  StringToAttribute(image,"timestamp",dpx_file_info.creation_datetime);
 
-  StringToAttribute(image,"DPX:file.filename",header.file_info.image_filename);
-  StringToAttribute(image,"DPX:file.creation.datetime",header.file_info.creation_datetime);
-  StringToAttribute(image,"DPX:file.creator",header.file_info.creator);
-  StringToAttribute(image,"DPX:file.project.name",header.file_info.project_name);
-  StringToAttribute(image,"DPX:file.copyright",header.file_info.copyright);
-  U32ToAttribute(image,"DPX:file.encryption.key",header.file_info.encrption_key);
+  StringToAttribute(image,"DPX:file.filename",dpx_file_info.image_filename);
+  StringToAttribute(image,"DPX:file.creation.datetime",dpx_file_info.creation_datetime);
+  StringToAttribute(image,"DPX:file.creator",dpx_file_info.creator);
+  StringToAttribute(image,"DPX:file.project.name",dpx_file_info.project_name);
+  StringToAttribute(image,"DPX:file.copyright",dpx_file_info.copyright);
+  U32ToAttribute(image,"DPX:file.encryption.key",dpx_file_info.encrption_key);
 
   /*
     Obtain offset to pixels.
   */
-  pixels_offset=header.file_info.image_data_offset;
+  pixels_offset=dpx_file_info.image_data_offset;
   if (pixels_offset < 1408)
     ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
   /*
     Read image information header.
   */
-  offset += ReadBlob(image,sizeof(header.image_info),&header.image_info);
+  offset += ReadBlob(image,sizeof(dpx_image_info),&dpx_image_info);
   if (offset != (size_t) 1408L)
     ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
   if (swab)
-    SwabDPXImageInfo(&header.image_info);
-  image->columns=header.image_info.pixels_per_line;
-  image->rows=header.image_info.lines_per_image_element;
-  colortype=header.image_info.element_info[0].descriptor;
-  image->depth=Min(QuantumDepth,header.image_info.element_info[0].bits_per_sample);
+    SwabDPXImageInfo(&dpx_image_info);
+  image->columns=dpx_image_info.pixels_per_line;
+  image->rows=dpx_image_info.lines_per_image_element;
+  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                        "Columns %ld, Rows %ld, Elements %u",
+                        image->columns, image->rows,
+                        (unsigned int) dpx_image_info.elements);
 
-  U16ToAttribute(image,"DPX:image.orientation",header.image_info.orientation);
+  U16ToAttribute(image,"DPX:image.orientation",dpx_image_info.orientation);
 
   if (pixels_offset >= 1664UL)
     {
       /*
         Read Image source information header.
       */
-      offset += ReadBlob(image,sizeof(header.source_info),&header.source_info);
+      offset += ReadBlob(image,sizeof(dpx_source_info),&dpx_source_info);
       if (offset != (size_t) 1664L)
         ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
       if (swab)
-        SwabDPXImageSourceInfo(&header.source_info);
+        SwabDPXImageSourceInfo(&dpx_source_info);
     }
   if (pixels_offset >= 1920UL)
     {
       /*
         Read Motion-picture film information header.
       */
-      offset += ReadBlob(image,sizeof(header.mp_info),&header.mp_info);
+      offset += ReadBlob(image,sizeof(dpx_mp_info),&dpx_mp_info);
       if (offset != (size_t) 1920L)
         ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
       if (swab)
-        SwabDPXMPFilmInfo(&header.mp_info);
+        SwabDPXMPFilmInfo(&dpx_mp_info);
     }
   if (pixels_offset >= 2048UL)
     {
       /*
         Read Television information header.
       */
-      offset += ReadBlob(image,sizeof(header.tv_info),&header.tv_info);
+      offset += ReadBlob(image,sizeof(dpx_tv_info),&dpx_tv_info);
       if (offset != (size_t) 2048L)
         ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
       if (swab)
-        SwabDPXTVInfo(&header.tv_info);
+        SwabDPXTVInfo(&dpx_tv_info);
     }
   /*
     Skip reading pixels if ping requested.
@@ -528,59 +646,135 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Convert DPX raster image to pixel packets.
   */
-  switch ((int) colortype)
-  {
-    case (MonoColorType):
+  for (element=0; element < dpx_image_info.elements; element++)
     {
-      q=SetImagePixels(image,0,0,image->columns,image->rows);
-      for (x=0; x < (long) ((image->columns*image->rows)/3); x++)
-      {
-        pixel=ReadBlobMSBLong(image);
-        q->red=(Quantum) ((double) MaxRGB*((pixel >> 0) & 0x3ff)/1023+0.5);
-        q->green=q->red;
-        q->blue=q->red;
-        q++;
-        q->red=(Quantum) ((double) MaxRGB*((pixel >> 10) & 0x3ff)/1023+0.5);
-        q->green=q->red;
-        q->blue=q->red;
-        q++;
-        q->red=(Quantum) ((double) MaxRGB*((pixel >> 20) & 0x3ff)/1023+0.5);
-        q->green=q->red;
-        q->blue=q->red;
-        q++;
-      }
-      break;
-    }
-    case (RGBColorType):
-    {
-      for (y=0; y < (long) image->rows; y++)
-      {
-        q=SetImagePixels(image,0,y,image->columns,1);
-        if (q == (PixelPacket *) NULL)
-          break;
-        for (x=0; x < (long) image->columns; x++)
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                            "Element %u: data_sign=%s",element+1, 
+                            dpx_image_info.element_info[element].data_sign == 0 ?
+                            "unsigned" : "signed");
+      
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                            "Element %u: reference_low_data_code=%u reference_low_quantity=%g",
+                            element+1,
+                            dpx_image_info.element_info[element].reference_low_data_code,
+                            dpx_image_info.element_info[element].reference_low_quantity);
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                            "Element %u: reference_high_data_code=%u reference_high_quantity=%g",
+                            element+1,
+                            dpx_image_info.element_info[element].reference_low_data_code,
+                            dpx_image_info.element_info[element].reference_low_quantity);
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                            "Element %u: descriptor=%u characteristic=%u colorimetric=%u",
+                            element+1,
+                            (unsigned int) dpx_image_info.element_info[element].descriptor,
+                            (unsigned int) dpx_image_info.element_info[element].transfer_characteristic,
+                            (unsigned int) dpx_image_info.element_info[element].colorimetric);
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                            "Element %u: bits-per-sample=%u",
+                            element+1,
+                            (unsigned int) dpx_image_info.element_info[element].bits_per_sample);
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                            "Element %u: packing=%u encoding=%u data_offset=%u eol_pad=%u eoi_pad=%u",
+                            element+1,
+                            (unsigned int) dpx_image_info.element_info[element].packing,
+                            (unsigned int) dpx_image_info.element_info[element].encoding,
+                            (unsigned int) dpx_image_info.element_info[element].data_offset,
+                            (unsigned int) dpx_image_info.element_info[element].eol_pad,
+                            (unsigned int) dpx_image_info.element_info[element].eoi_pad);
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                            "Element %u: description=\"%.32s\"",
+                            element+1,
+                            dpx_image_info.element_info[element].description);
+      /*
+        Data sign, (0 = unsigned; 1 = signed)
+      */
+      if (dpx_image_info.element_info[element].data_sign != 0)
+        continue;
+
+      /*
+        Bits per sample.
+      */
+      if (dpx_image_info.element_info[element].bits_per_sample > 16)
+        continue;
+
+      image->depth=Max(image->depth,dpx_image_info.element_info[element].bits_per_sample);
+
+      switch ((DPXImageElementDescriptor) dpx_image_info.element_info[element].descriptor)
         {
-          pixel=ReadBlobMSBLong(image);
-          q->red=(Quantum) ((double) MaxRGB*((pixel >> 22) & 0x3ff)/1023+0.5);
-          q->green=(Quantum) ((double) MaxRGB*((pixel >> 12) & 0x3ff)/1023+0.5);
-          q->blue=(Quantum) ((double) MaxRGB*((pixel >> 2) & 0x3ff)/1023+0.5);
-          q++;
+        case (ImageElementLuma):
+          {
+            q=SetImagePixels(image,0,0,image->columns,image->rows);
+            for (x=0; x < (long) ((image->columns*image->rows)/3); x++)
+              {
+                pixel=ReadBlobMSBLong(image);
+                q->red=(Quantum) ((double) MaxRGB*((pixel >> 0) & 0x3ff)/1023+0.5);
+                q->green=q->red;
+                q->blue=q->red;
+                q++;
+                q->red=(Quantum) ((double) MaxRGB*((pixel >> 10) & 0x3ff)/1023+0.5);
+                q->green=q->red;
+                q->blue=q->red;
+                q++;
+                q->red=(Quantum) ((double) MaxRGB*((pixel >> 20) & 0x3ff)/1023+0.5);
+                q->green=q->red;
+                q->blue=q->red;
+                q++;
+              }
+            break;
+          }
+        case (ImageElementRGB):
+          {
+            for (y=0; y < (long) image->rows; y++)
+              {
+                q=SetImagePixels(image,0,y,image->columns,1);
+                if (q == (PixelPacket *) NULL)
+                  break;
+
+                for (x=0; x < (long) image->columns; x++)
+                  {
+                    magick_uint32_t
+                      word;
+
+                    word=ReadBlobMSBLong(image);
+                    BitStreamWordInitializeRead(&bit_word_stream,&word);
+#if 0
+                    if (x == 256 && y == 147)
+                      {
+                        printf("0x%08x\n",word);
+                        printf("blue=%u green=%u red=%u\n", (word >> 22) & BitAndMasks[10],
+                               (word >> 12) &  BitAndMasks[10],
+                               (word >> 2) & BitAndMasks[10]);
+                        (void) BitStreamWordLSBRead(&bit_word_stream,2);
+                        printf("blue=%u green=%u red=%u\n",
+                               BitStreamWordLSBRead(&bit_word_stream,10),
+                               BitStreamWordLSBRead(&bit_word_stream,10),
+                               BitStreamWordLSBRead(&bit_word_stream,10));
+                      }
+#endif
+
+                    (void) BitStreamWordLSBRead(&bit_word_stream,2);
+                    q->blue=ScaleShortToQuantum(BitStreamWordLSBRead(&bit_word_stream,10)*64);
+                    q->green=ScaleShortToQuantum(BitStreamWordLSBRead(&bit_word_stream,10)*64);
+                    q->red=ScaleShortToQuantum(BitStreamWordLSBRead(&bit_word_stream,10)*64);
+                    q->opacity=0U; 
+                    q++;
+                  }
+                if (!SyncImagePixels(image))
+                  break;
+                if (image->previous == (Image *) NULL)
+                  if (QuantumTick(y,image->rows))
+                    if (!MagickMonitor(LoadImageText,y,image->rows,exception))
+                      break;
+              }
+            break;
+          }
+        default:
+          ThrowReaderException(CoderError,ColorTypeNotSupported,image);
         }
-        if (!SyncImagePixels(image))
-          break;
-        if (image->previous == (Image *) NULL)
-          if (QuantumTick(y,image->rows))
-            if (!MagickMonitor(LoadImageText,y,image->rows,exception))
-              break;
-      }
-      break;
     }
-    default:
-      ThrowReaderException(CoderError,ColorTypeNotSupported,image)
-  }
   if (EOFBlob(image))
     ThrowException(exception,CorruptImageError,UnexpectedEndOfFile,
-      image->filename);
+                   image->filename);
   CloseBlob(image);
   return(image);
 }
@@ -733,7 +927,7 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
   (void) WriteBlobMSBLong(image,image->rows);
   for (i=0; i < 20; i++)
     (void) WriteBlobByte(image,0x00);
-  (void) WriteBlobByte(image,RGBColorType);
+  (void) WriteBlobByte(image,ImageElementRGB);
   (void) WriteBlobByte(image,0x00);
   (void) WriteBlobByte(image,0x00);
   (void) WriteBlobByte(image,10);  /* bit depth */

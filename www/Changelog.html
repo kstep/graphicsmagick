@@ -21,6 +21,29 @@
 </tr>
 </table>
 <p>
+2005-03-23  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/tiff.c (ExtensionTagsInitialize): Fix conditional use of
+        TIFFSetTagExtender().
+
+</UL>
+<p>
+2005-03-20  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/endian.c: Imported libtiff's swab.c since its functions
+        are so useful and well-tested.<BR>
+  <LI> magick/utility.c (FormatSize): Extend to support incredibly
+        large sizes.<BR>
+  <LI> magick/image.c (DescribeImage): Use GetTimerResolution() when
+        computing pixels-per-second rate in order to avoid computing
+        astronomical rates when the time consumed is too small to measure.
+  <LI> magick/timer.c (GetTimerResolution): New function to return the
+        timer's resolution.
+
+</UL>
+<p>
 2005-03-19  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
@@ -110,7 +133,7 @@
 
 </UL>
 <p>
-2005-13-10 Glenn Randers-Pehrson &lt;glennrp@glennrp.com&gt;
+2005-03-10 Glenn Randers-Pehrson &lt;glennrp@glennrp.com&gt;
 
 <UL>
   <LI> coders/png.c: Avoid attempting to write indexed PNG when
@@ -141,8 +164,10 @@
 2005-03-07  Mike Chiarappa  &lt;mikechiarappa@libero.it&gt;
 
 <UL>
-  <LI> BCBMagick\magick\GM_magick.bpr: Updated to reflect changes since last update.
-  <LI> BCBMagick\magick\libMagick.bpr: Updated to reflect changes since last update.
+  <LI> BCBMagick\magick\GM_magick.bpr: Updated to reflect changes since
+        last update.<BR>
+  <LI> BCBMagick\magick\libMagick.bpr: Updated to reflect changes since
+        last update.
 
 </UL>
 <p>

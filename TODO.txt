@@ -6,9 +6,6 @@ See website for "wish list".
 For 1.2 Branch
 ==============
 
-  o PDF writer is outputting stuff that latest Alladin Ghostscript complains
-    about.
-
   o Fix/improve PSD reader.
 
   o Look into problem reported by Rick Mabry, "Shear produces artifacts for

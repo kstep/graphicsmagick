@@ -1,3 +1,20 @@
+2005-03-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/tiff.c (ExtensionTagsInitialize): Fix conditional use of
+	TIFFSetTagExtender().
+
+2005-03-20  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/endian.c: Imported libtiff's swab.c since its functions
+	are so useful and well-tested.
+	* magick/utility.c (FormatSize): Extend to support incredibly
+	large sizes.
+	* magick/image.c (DescribeImage): Use GetTimerResolution() when
+	computing pixels-per-second rate in order to avoid computing
+	astronomical rates when the time consumed is too small to measure.
+	* magick/timer.c (GetTimerResolution): New function to return the
+	timer's resolution.
+
 2005-03-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/pdf.c (WritePDFImage): Eliminate cause of annoying

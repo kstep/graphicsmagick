@@ -297,6 +297,7 @@ static Image *ReadCINEONImage(const ImageInfo *image_info,
                 /*
                   Packed 10 bit samples with 2 bit pad at end of 32-bit word.
                 */
+#if 0
                 if ((x == 0) && (y == 0))
                   {
                     printf("%x %x %x %x\n",
@@ -305,6 +306,7 @@ static Image *ReadCINEONImage(const ImageInfo *image_info,
                            ((unsigned char *)scanline)[2],
                            ((unsigned char *)scanline)[3]);
                   }
+#endif
                 BitStreamInitializeRead(&bit_stream,scanline);
                 q->red=ScaleShortToQuantum(BitStreamMSBRead(&bit_stream,10)*64);
                 q->green=ScaleShortToQuantum(BitStreamMSBRead(&bit_stream,10)*64);

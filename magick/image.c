@@ -1529,7 +1529,8 @@ MagickExport MagickPassFail DescribeImage(Image *image,FILE *file,
           (void) fprintf(file,"%.1024s ",format);
         }
       pixels_per_second=(magick_int64_t) ((double) rows*columns/
-                                          (elapsed_time+MagickEpsilon));
+                                          (elapsed_time > GetTimerResolution() ?
+                                           elapsed_time : GetTimerResolution()));
       FormatSize(pixels_per_second,format);
       (void) fprintf(file,"%0.3fu %ld:%02ld (%s pixels/s)\n",user_time,
                      (long) (elapsed_time/60.0),
@@ -2218,7 +2219,8 @@ MagickExport MagickPassFail DescribeImage(Image *image,FILE *file,
                      (long) ceil(fmod(elapsed_time,60.0)));
       pixels_per_second=(magick_int64_t) ((double) image->rows*
                                           image->columns/
-                                          (elapsed_time+MagickEpsilon));
+                                          (elapsed_time > GetTimerResolution() ?
+                                           elapsed_time : GetTimerResolution()));
       FormatSize(pixels_per_second,format);
       (void) fprintf(file,"  Pixels Per Second: %s\n", format);
     }
