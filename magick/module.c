@@ -502,8 +502,8 @@ MagickExport const ModuleInfo *GetModuleInfo(const char *name,
             Read modules.
           */
           if (lt_dlinit() != 0)
-            MagickFatalError(DelegateFatalError,
-              "Unable to initialize module loader",lt_dlerror());
+            MagickFatalError(ModuleFatalError,"UnableToInitializeModuleLoader",
+              lt_dlerror());
           RegisterStaticModules();
           (void) ReadConfigureFile(ModuleFilename,0,exception);
         }
@@ -929,8 +929,8 @@ static unsigned int ReadConfigureFile(const char *basename,
         */
         module_info=(ModuleInfo *) AcquireMemory(sizeof(ModuleInfo));
         if (module_info == (ModuleInfo *) NULL)
-          MagickFatalError(ResourceLimitFatalError,
-            "Unable to allocate module info","MemoryAllocationFailed");
+          MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
+            "unable to allocate module info");
         (void) memset(module_info,0,sizeof(ModuleInfo));
         module_info->path=AcquireString(path);
         module_info->signature=MagickSignature;
@@ -1124,8 +1124,8 @@ static CoderInfo *SetCoderInfo(const char *tag)
   assert(tag != (const char *) NULL);
   entry=(CoderInfo *) AcquireMemory(sizeof(CoderInfo));
   if (entry == (CoderInfo *) NULL)
-    MagickFatalError(ResourceLimitFatalError,"Unable to allocate module info",
-      "MemoryAllocationFailed");
+    MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
+      "unable to allocate module info");
   (void) memset(entry,0,sizeof(CoderInfo));
   entry->tag=AcquireString(tag);
   entry->signature=MagickSignature;

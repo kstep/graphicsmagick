@@ -678,9 +678,8 @@ MagickExport DrawContext DrawAllocateContext(const DrawInfo *draw_info,
   /* Allocate initial drawing context */
   context = (DrawContext) AcquireMemory(sizeof(struct _DrawContext));
   if(context == (DrawContext) NULL)
-    MagickFatalError(ResourceLimitFatalError,
-                     "Unable to allocate initial drawing context",
-                     "MemoryAllocationFailed");
+    MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
+      "unable to allocate initial drawing context");
 
   /* Support structures */
   context->image = image;

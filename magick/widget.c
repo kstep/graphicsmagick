@@ -2886,7 +2886,7 @@ MagickExport int XCommandWidget(Display *display,XWindows *windows,
       if (selection_info == (XWidgetInfo *) NULL)
         {
           MagickError(ResourceLimitError,"MemoryAllocationFailed",
-            "Unable to create Command Widget");
+            "unable to create Command Widget");
           return(id);
         }
       state|=UpdateConfigurationState | RedrawWidgetState;
@@ -5439,8 +5439,8 @@ MagickExport void XFontBrowserWidget(Display *display,XWindows *windows,
   fontlist=(char **) AcquireMemory(fonts*sizeof(char *));
   if (fontlist == (char **) NULL)
     {
-      XNoticeWidget(display,windows,"Unable to view fonts:",
-        "MemoryAllocationFailed");
+      XNoticeWidget(display,windows,"MemoryAllocationFailed",
+        "unable to view fonts");
       return;
     }
   for (i=0; i < fonts; i++)
@@ -5717,8 +5717,8 @@ MagickExport void XFontBrowserWidget(Display *display,XWindows *windows,
         fontlist=(char **) AcquireMemory(fonts*sizeof(char *));
         if (fontlist == (char **) NULL)
           {
-            XNoticeWidget(display,windows,"Unable to view fonts:",
-              "MemoryAllocationFailed");
+            XNoticeWidget(display,windows,"MemoryAllocationFailed",
+              "unable to view fonts");
             return;
           }
         for (i=0; i < fonts; i++)

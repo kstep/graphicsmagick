@@ -308,8 +308,8 @@ int main(int argc,char **argv)
   last_scene=0;
   image_marker=(unsigned int *) AcquireMemory((argc+1)*sizeof(unsigned int));
   if (image_marker == (unsigned int *) NULL)
-    MagickFatalError(ResourceLimitFatalError,"Unable to display image",
-      "MemoryAllocationFailed");
+    MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
+			"unable to display image");
   for (i=0; i <= argc; i++)
     image_marker[i]=argc;
   resource_database=(XrmDatabase) NULL;
@@ -926,7 +926,7 @@ int main(int argc,char **argv)
                 if (LocaleCompare("MSB",option) == 0)
                   image_info->endian=MSBEndian;
                 if (image_info->endian == UndefinedEndian)
-                  MagickFatalError(OptionFatalError,"Invalid endian type",
+                  MagickFatalError(OptionFatalError,"InvalidEndianType",
                     option);
               }
             break;
@@ -1262,7 +1262,7 @@ int main(int argc,char **argv)
               {
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  MagickFatalError(OptionFatalError,"Missing quality",option);
+                  MagickFatalError(OptionFatalError,"MissingQuality",option);
                 image_info->quality=atol(argv[i]);
               }
             break;

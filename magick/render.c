@@ -181,8 +181,8 @@ MagickExport DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
 
   clone_info=(DrawInfo *) AcquireMemory(sizeof(DrawInfo));
   if (clone_info == (DrawInfo *) NULL)
-    MagickFatalError(ResourceLimitFatalError,"Unable to clone draw info",
-      "MemoryAllocationFailed");
+    MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
+			"unable to clone draw info");
   GetDrawInfo(image_info,clone_info);
   if (draw_info == (DrawInfo *) NULL)
     return(clone_info);
@@ -242,8 +242,8 @@ MagickExport DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
       for (x=0; draw_info->dash_pattern[x] != 0.0; x++);
       clone_info->dash_pattern=(double *) AcquireMemory((x+1)*sizeof(double));
       if (clone_info->dash_pattern == (double *) NULL)
-        MagickFatalError(ResourceLimitFatalError,"Unable to clone dash pattern",
-          "MemoryAllocationFailed");
+        MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
+          "unable to clone dash pattern");
       (void) memcpy(clone_info->dash_pattern,draw_info->dash_pattern,
         (x+1)*sizeof(double));
     }
@@ -4825,7 +4825,7 @@ MagickExport void TraceBezier(PrimitiveInfo *primitive_info,
   points=(PointInfo *) AcquireMemory(control_points*sizeof(PointInfo));
   if ((coefficients == (double *) NULL) || (points == (PointInfo *) NULL))
     MagickFatalError(ResourceLimitError,"MemoryAllocationFailed",
-      "Unable to draw image");
+      "unable to draw image");
   /*
     Compute bezier points.
   */

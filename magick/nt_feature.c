@@ -214,8 +214,8 @@ MagickExport TypeInfo* NTGetTypeList( void )
 
         type_info=(TypeInfo *) AcquireMemory(sizeof(TypeInfo));
         if (type_info == (TypeInfo *) NULL)
-          MagickFatalError(ResourceLimitFatalError,"Unable to allocate font list",
-                           "MemoryAllocationFailed");
+          MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
+            "unable to allocate font list");
         (void) memset(type_info,0,sizeof(TypeInfo));
 
         type_info->path=AcquireString("Windows Fonts");

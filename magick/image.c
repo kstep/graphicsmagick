@@ -125,8 +125,8 @@ MagickExport Image *AllocateImage(const ImageInfo *image_info)
   */
   allocate_image=(Image *) AcquireMemory(sizeof(Image));
   if (allocate_image == (Image *) NULL)
-    MagickFatalError(ResourceLimitFatalError,"Unable to allocate image",
-      "MemoryAllocationFailed");
+    MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
+      "unable to allocate image");
   (void) memset(allocate_image,0,sizeof(Image));
   /*
     Initialize Image structure.
@@ -1131,8 +1131,8 @@ MagickExport ImageInfo *CloneImageInfo(const ImageInfo *image_info)
 
   clone_info=(ImageInfo *) AcquireMemory(sizeof(ImageInfo));
   if (clone_info == (ImageInfo *) NULL)
-    MagickFatalError(ResourceLimitFatalError,"Unable to clone image info",
-      "MemoryAllocationFailed");
+    MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
+      "unable to clone image info");
   GetImageInfo(clone_info);
   if (image_info == (ImageInfo *) NULL)
     return(clone_info);
@@ -2979,7 +2979,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
     return(True);
   for (i=0; i < argc; i++)
     if (strlen(argv[i]) > (MaxTextExtent/2-1))
-      MagickFatalError(OptionError,"Option length exceeds limit",argv[i]);
+      MagickFatalError(OptionFatalError,"OptionLengthExceedsLimit",argv[i]);
   /*
     Initialize method variables.
   */

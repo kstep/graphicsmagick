@@ -1645,8 +1645,8 @@ MagickExport void XDisplayImageInfo(Display *display,
   (void) remove(filename);
   if (text == (char *) NULL)
     {
-      XNoticeWidget(display,windows,"Unable to display image info",
-        "MemoryAllocationFailed");
+      XNoticeWidget(display,windows,"MemoryAllocationFailed",
+				"unable to display image info");
       return;
     }
   textlist=StringToList(text);
@@ -2641,8 +2641,8 @@ MagickExport void XGetPixelPacket(Display *display,
     LiberateMemory((void **) &pixel->pixels);
   pixel->pixels=(unsigned long *) AcquireMemory(packets*sizeof(unsigned long));
   if (pixel->pixels == (unsigned long *) NULL)
-    MagickFatalError(ResourceLimitFatalError,"Unable to get pixel info",
-      "MemoryAllocationFailed");
+    MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
+			"unable to get pixel info");
   /*
     Set foreground color.
   */
@@ -4754,8 +4754,8 @@ MagickExport XWindows *XInitializeWindows(Display *display,
   windows->icon_map=XAllocStandardColormap();
   if ((windows->map_info == (XStandardColormap *) NULL) ||
       (windows->icon_map == (XStandardColormap *) NULL))
-    MagickFatalError(ResourceLimitFatalError,
-      "Unable to create standard colormap","MemoryAllocationFailed");
+    MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
+      "unable to create standard colormap");
   windows->map_info->colormap=(Colormap) NULL;
   windows->icon_map->colormap=(Colormap) NULL;
   windows->pixel_info->pixels=(unsigned long *) NULL;
@@ -4778,7 +4778,7 @@ MagickExport XWindows *XInitializeWindows(Display *display,
     XBestVisualInfo(display,windows->icon_map,windows->icon_resources);
   if ((windows->visual_info == (XVisualInfo *) NULL) ||
       (windows->icon_visual == (XVisualInfo *) NULL))
-    MagickFatalError(XServerFatalError,"Unable to get visual",
+    MagickFatalError(XServerFatalError,"UnableToGetVisual",
       resource_info->visual_type);
   if (IsEventLogging())
     {
@@ -4805,8 +4805,8 @@ MagickExport XWindows *XInitializeWindows(Display *display,
   windows->manager_hints=XAllocWMHints();
   if ((windows->class_hints == (XClassHint *) NULL) ||
       (windows->manager_hints == (XWMHints *) NULL))
-    MagickFatalError(ResourceLimitFatalError,"Unable to allocate X hints",
-      (char *) NULL);
+    MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
+      "unable to allocate X hints");
   /*
     Determine group leader if we have one.
   */
@@ -7071,8 +7071,8 @@ MagickExport void XMakeStandardColormap(Display *display,
             */
             map_image=AllocateImage((ImageInfo *) NULL);
             if (map_image == (Image *) NULL)
-              MagickFatalError(ResourceLimitFatalError,"Unable to dither image",
-                "MemoryAllocationFailed");
+              MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
+                "unable to dither image");
             map_image->columns=number_colors;
             map_image->rows=1;
             /*
@@ -7144,8 +7144,8 @@ MagickExport void XMakeStandardColormap(Display *display,
       visual_info->visual,visual_info->storage_class == DirectColor ?
       AllocAll : AllocNone);
   if (colormap == (Colormap) NULL)
-    MagickFatalError(XServerFatalError,"Unable to create colormap",
-      (char *) NULL);
+    MagickFatalError(XServerFatalError,"MemoryAllocationFailed",
+      "unable to create colormap");
   /*
     Initialize the map and pixel info structures.
   */
@@ -7166,8 +7166,8 @@ MagickExport void XMakeStandardColormap(Display *display,
       colors=(XColor *)
         AcquireMemory(visual_info->colormap_size*sizeof(XColor));
       if (colors == (XColor *) NULL)
-        MagickFatalError(XServerFatalError,"Unable to create colormap",
-          "MemoryAllocationFailed");
+        MagickFatalError(XServerFatalError,"MemoryAllocationFailed",
+          "unable to create colormap");
       p=colors;
       color.flags=DoRed | DoGreen | DoBlue;
       for (i=0; i < (long) image->colors; i++)
@@ -7206,8 +7206,8 @@ MagickExport void XMakeStandardColormap(Display *display,
       colors=(XColor *)
         AcquireMemory(visual_info->colormap_size*sizeof(XColor));
       if (colors == (XColor *) NULL)
-        MagickFatalError(ResourceLimitFatalError,"Unable to create colormap",
-          "MemoryAllocationFailed");
+        MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
+          "unable to create colormap");
       /*
         Preallocate our GUI colors.
       */
@@ -7252,8 +7252,8 @@ MagickExport void XMakeStandardColormap(Display *display,
           diversity=(DiversityPacket *)
             AcquireMemory(image->colors*sizeof(DiversityPacket));
           if (diversity == (DiversityPacket *) NULL)
-            MagickFatalError(ResourceLimitFatalError,
-              "Unable to create colormap","MemoryAllocationFailed");
+            MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
+              "unable to create colormap");
           for (i=0; i < (long) image->colors; i++)
           {
             diversity[i].red=image->colormap[i].red;
@@ -7314,8 +7314,8 @@ MagickExport void XMakeStandardColormap(Display *display,
           server_colors=(XColor *)
             AcquireMemory(visual_info->colormap_size*sizeof(XColor));
           if (server_colors == (XColor *) NULL)
-            MagickFatalError(ResourceLimitFatalError,
-              "Unable to create colormap","MemoryAllocationFailed");
+            MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
+              "unable to create colormap");
           for (x=0; x < visual_info->colormap_size; x++)
             server_colors[x].pixel=(unsigned long) x;
           (void) XQueryColors(display,colormap,server_colors,
@@ -7370,8 +7370,8 @@ MagickExport void XMakeStandardColormap(Display *display,
             XRootWindow(display,visual_info->screen),visual_info->visual,
             AllocNone);
           if (colormap == (Colormap) NULL)
-            MagickFatalError(XServerFatalError,"Unable to create colormap",
-              (char *) NULL);
+            MagickFatalError(XServerFatalError,"MemoryAllocationFailed",
+              "unable to create colormap");
           map_info->colormap=colormap;
           if ((int) image->colors < visual_info->colormap_size)
             {
@@ -7454,8 +7454,8 @@ MagickExport void XMakeStandardColormap(Display *display,
       */
       colors=(XColor *) AcquireMemory(number_colors*sizeof(XColor));
       if (colors == (XColor *) NULL)
-        MagickFatalError(ResourceLimitFatalError,"Unable to create colormap",
-          "MemoryAllocationFailed");
+        MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
+					"unable to create colormap");
       /*
         Initialize linear color ramp.
       */
@@ -7622,8 +7622,8 @@ MagickExport void XMakeWindow(Display *display,Window parent,char **argv,
   assert(window_info != (XWindowInfo *) NULL);
   size_hints=XAllocSizeHints();
   if (size_hints == (XSizeHints *) NULL)
-    MagickFatalError(ResourceLimitFatalError,"Unable to make X window",
-      "MemoryAllocationFailed");
+    MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
+      "unable to make X window");
   size_hints->flags=(long) window_info->flags;
   size_hints->x=window_info->x;
   size_hints->y=window_info->y;
@@ -7734,15 +7734,15 @@ MagickExport void XMakeWindow(Display *display,Window parent,char **argv,
         mask,&window_changes);
     }
   if (window_info->id == (Window) NULL)
-    MagickFatalError(XServerFatalError,"Unable to create window",
+    MagickFatalError(XServerFatalError,"UnableToCreateXWindow",
       window_info->name);
   status=XStringListToTextProperty(&window_info->name,1,&window_name);
   if (status == 0)
-    MagickFatalError(XServerFatalError,"Unable to create text property",
+    MagickFatalError(XServerFatalError,"UnableToCreateTextProperty",
       window_info->name);
   status=XStringListToTextProperty(&window_info->icon_name,1,&icon_name);
   if (status == 0)
-    MagickFatalError(XServerFatalError,"Unable to create text property",
+    MagickFatalError(XServerFatalError,"UnableToCreateTextProperty",
       window_info->icon_name);
   if (window_info->icon_geometry != (char *) NULL)
     {

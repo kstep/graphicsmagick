@@ -181,7 +181,7 @@ MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
   text=TranslateText((ImageInfo *) NULL,image,draw_info->text);
   if (text == (char *) NULL)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-      "Unable to annotate image");
+      "unable to annotate image");
   textlist=StringToList(text);
   LiberateMemory((void **) &text);
   if (textlist == (char **) NULL)
@@ -194,7 +194,7 @@ MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
   text=(char *) AcquireMemory(length+MaxTextExtent);
   if (text == (char *) NULL)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-      "Unable to annotate image");
+      "unable to annotate image");
   SetGeometry(image,&geometry);
   if (draw_info->geometry != (char *) NULL)
     (void) GetGeometry(draw_info->geometry,&geometry.x,&geometry.y,
@@ -468,8 +468,8 @@ static unsigned short *EncodeSJIS(const char *text,size_t *count)
   encoding=(unsigned short *)
     AcquireMemory((strlen(text)+MaxTextExtent)*sizeof(unsigned short));
   if (encoding == (unsigned short *) NULL)
-    MagickFatalError(ResourceLimitFatalError,
-      "Unable to convert text to Textcode","MemoryAllocationFailed");
+    MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
+      "unable to convert text to Textcode");
   q=encoding;
   for (p=text; *p != '\0'; p+=length)
   {
@@ -535,8 +535,8 @@ static unsigned short *EncodeText(const char *text,size_t *count)
   encoding=(unsigned short *)
     AcquireMemory((strlen(text)+MaxTextExtent)*sizeof(unsigned short));
   if (encoding == (unsigned short *) NULL)
-    MagickFatalError(ResourceLimitFatalError,"Unable to convert text to Text",
-      "MemoryAllocationFailed");
+    MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
+			"unable to convert text to Text");
   q=encoding;
   for (p=text; *p != '\0'; p++)
     *q++=(unsigned char) *p;
@@ -649,8 +649,8 @@ static unsigned short *EncodeUnicode(const char *text,size_t *count)
   unicode=(unsigned short *)
     AcquireMemory((strlen(text)+MaxTextExtent)*sizeof(unsigned short));
   if (unicode == (unsigned short *) NULL)
-    MagickFatalError(ResourceLimitFatalError,
-      "Unable to convert text to Unicode","MemoryAllocationFailed");
+    MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
+      "unable to convert text to Unicode");
   q=unicode;
   for (p=text; *p != '\0'; p+=length)
   {
@@ -1669,7 +1669,7 @@ static unsigned int RenderX11(Image *image,const DrawInfo *draw_info,
       map_info=XAllocStandardColormap();
       if (map_info == (XStandardColormap *) NULL)
         ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-          "Unable to allocate colormap");
+          "unable to allocate colormap");
       /*
         Initialize visual info.
       */
@@ -1767,7 +1767,7 @@ static unsigned int RenderX11(Image *image,const DrawInfo *draw_info,
   status=XAnnotateImage(display,&pixel,&annotate_info,image);
   if (status == 0)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-      "Unable to annotate image");
+      "unable to annotate image");
   return(True);
 }
 #else

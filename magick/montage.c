@@ -96,8 +96,8 @@ MagickExport MontageInfo *CloneMontageInfo(const ImageInfo *image_info,
 
   clone_info=(MontageInfo *) AcquireMemory(sizeof(MontageInfo));
   if (clone_info == (MontageInfo *) NULL)
-    MagickFatalError(ResourceLimitFatalError,"Unable to clone montage info",
-      "MemoryAllocationFailed");
+    MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
+      "unable to clone montage info");
   GetMontageInfo(image_info,clone_info);
   if (montage_info == (MontageInfo *) NULL)
     return(clone_info);

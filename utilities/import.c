@@ -271,7 +271,7 @@ int main(int argc,char **argv)
   SetNotifyHandlers;
   display=XOpenDisplay(server_name);
   if (display == (Display *) NULL)
-    MagickFatalError(OptionFatalError,"Unable to connect to X server",
+    MagickFatalError(OptionFatalError,"UnableToOpenXServer",
       XDisplayName(server_name));
   (void) XSetErrorHandler(XError);
   client_name=SetClientName((char *) NULL);
@@ -628,7 +628,7 @@ int main(int argc,char **argv)
                 if (LocaleCompare("MSB",option) == 0)
                   image_info->endian=MSBEndian;
                 if (image_info->endian == UndefinedEndian)
-                  MagickFatalError(OptionFatalError,"Invalid endian type",
+                  MagickFatalError(OptionFatalError,"InvalidEndianType",
                     option);
               }
             break;
@@ -809,7 +809,7 @@ int main(int argc,char **argv)
               {
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  MagickFatalError(OptionFatalError,"Missing size",option);
+                  MagickFatalError(OptionFatalError,"MissingSize",option);
                 image_info->pointsize=atof(argv[i]);
               }
             break;
@@ -826,7 +826,7 @@ int main(int argc,char **argv)
               {
                 i++;
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                  MagickFatalError(OptionFatalError,"Missing quality",option);
+                  MagickFatalError(OptionFatalError,"MissingQuality",option);
                 image_info->quality=atol(argv[i]);
               }
             break;
@@ -908,7 +908,7 @@ int main(int argc,char **argv)
             (void) strcpy(argv[i]+1,"sans");
             i++;
             if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-              MagickFatalError(OptionFatalError,"Missing snaps value",option);
+              MagickFatalError(OptionFatalError,"MissingSnaps",option);
             snapshots=atol(argv[i]);
             break;
           }
@@ -971,7 +971,7 @@ int main(int argc,char **argv)
                 if (LocaleCompare("Optimize",option) == 0)
                   image_info->type=OptimizeType;
                 if (image_info->type == UndefinedType)
-                  MagickFatalError(OptionFatalError,"Invalid image type",
+                  MagickFatalError(OptionFatalError,"InvalidImageType",
                     option);
               }
             break;

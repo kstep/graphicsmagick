@@ -1714,8 +1714,8 @@ static unsigned int ModifyCache(Image *image)
   */
   clone_image=(Image *) AcquireMemory(sizeof(Image));
   if (clone_image == (Image *) NULL)
-    MagickFatalError(ResourceLimitFatalError,"Unable to clone image",
-      "MemoryAllocationFailed");
+    MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
+      "unable to clone image");
   *clone_image=(*image);
   GetCacheInfo(&image->cache);
   length=clone_image->columns*sizeof(PixelPacket);
@@ -1809,8 +1809,8 @@ extern "C" {
 
 static void CacheSignalHandler(int status)
 {
-  MagickFatalError(ResourceLimitFatalError,"Unable to extend pixel cache",
-    "Disk allocation failed");
+  MagickFatalError(CacheFatalError,"UnableToExtendPixelCache",
+    "disk allocation failed");
   DestroyMagick();
   Exit(status);
 }

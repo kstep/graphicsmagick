@@ -159,53 +159,69 @@ const char *GetLocaleMessage(const char *tag)
 
       case 'c':  case 'C':
         if (p - tp == 5 && !LocaleNCompare(tp, "Cache", 5))
-          if (LocaleNCompare(NEXT_FIELD, "Error", 5) || p - tp != 5)
+          switch (*NEXT_FIELD)
+          {
+          default:
             return tag;
-          else
-            switch (*NEXT_FIELD)
-            {
-            default:
+
+          case 'e':  case 'E':
+            if (p - tp == 5 && !LocaleNCompare(tp, "Error", 5))
+              switch (*NEXT_FIELD)
+              {
+              default:
+                return tag;
+
+              case 'i':  case 'I':
+                if (p - tp == 31 && !LocaleNCompare(tp, "InconsistentPeristentCacheDepth", 31))
+                  return *np ? tag : "Inconsistent peristent cache depth";
+                else
+                  return tag;
+
+              case 'p':  case 'P':
+                if (p - tp == 19 && !LocaleNCompare(tp, "PixelCacheIsNotOpen", 19))
+                  return *np ? tag : "Pixel cache is not open";
+                else
+                  return tag;
+
+              case 'u':  case 'U':
+                if (p - tp == 18 && !LocaleNCompare(tp, "UnableToCloneCache", 18))
+                  return *np ? tag : "Unable to clone cache";
+                else
+                if (p - tp == 19 && !LocaleNCompare(tp, "UnableToExtendCache", 19))
+                  return *np ? tag : "Unable to extend cache";
+                else
+                if (p - tp == 21 && !LocaleNCompare(tp, "UnableToGetCacheNexus", 21))
+                  return *np ? tag : "Unable to get cache nexus";
+                else
+                if (p - tp == 26 && !LocaleNCompare(tp, "UnableToGetPixelsFromCache", 26))
+                  return *np ? tag : "Unable to get pixels from cache";
+                else
+                if (p - tp == 17 && !LocaleNCompare(tp, "UnableToOpenCache", 17))
+                  return *np ? tag : "Unable to open cache";
+                else
+                if (p - tp == 20 && !LocaleNCompare(tp, "UnableToPersistCache", 20))
+                  return *np ? tag : "Unable to persist pixel cache";
+                else
+                if (p - tp == 22 && !LocaleNCompare(tp, "UnableToReadPixelCache", 22))
+                  return *np ? tag : "Unable to read pixel cache";
+                else
+                if (p - tp == 17 && !LocaleNCompare(tp, "UnableToSyncCache", 17))
+                  return *np ? tag : "Unable to sync cache";
+                else
+                  return tag;
+              }
+            else
               return tag;
 
-            case 'i':  case 'I':
-              if (p - tp == 31 && !LocaleNCompare(tp, "InconsistentPeristentCacheDepth", 31))
-                return *np ? tag : "Inconsistent peristent cache depth";
-              else
+          case 'f':  case 'F':
+            if (p - tp == 10 && !LocaleNCompare(tp, "FatalError", 10))
+              if (LocaleNCompare(NEXT_FIELD, "UnableToExtendPixelCache", 24) || p - tp != 24)
                 return tag;
-
-            case 'p':  case 'P':
-              if (p - tp == 19 && !LocaleNCompare(tp, "PixelCacheIsNotOpen", 19))
-                return *np ? tag : "Pixel cache is not open";
               else
-                return tag;
-
-            case 'u':  case 'U':
-              if (p - tp == 18 && !LocaleNCompare(tp, "UnableToCloneCache", 18))
-                return *np ? tag : "Unable to clone cache";
-              else
-              if (p - tp == 19 && !LocaleNCompare(tp, "UnableToExtendCache", 19))
-                return *np ? tag : "Unable to extend cache";
-              else
-              if (p - tp == 21 && !LocaleNCompare(tp, "UnableToGetCacheNexus", 21))
-                return *np ? tag : "Unable to get cache nexus";
-              else
-              if (p - tp == 26 && !LocaleNCompare(tp, "UnableToGetPixelsFromCache", 26))
-                return *np ? tag : "Unable to get pixels from cache";
-              else
-              if (p - tp == 17 && !LocaleNCompare(tp, "UnableToOpenCache", 17))
-                return *np ? tag : "Unable to open cache";
-              else
-              if (p - tp == 20 && !LocaleNCompare(tp, "UnableToPersistCache", 20))
-                return *np ? tag : "Unable to persist pixel cache";
-              else
-              if (p - tp == 22 && !LocaleNCompare(tp, "UnableToReadPixelCache", 22))
-                return *np ? tag : "Unable to read pixel cache";
-              else
-              if (p - tp == 17 && !LocaleNCompare(tp, "UnableToSyncCache", 17))
-                return *np ? tag : "Unable to sync cache";
-              else
-                return tag;
-            }
+                return *np ? tag : "Unable to extend pixel cache";
+            else
+              return tag;
+          }
         else
         if (p - tp == 5 && !LocaleNCompare(tp, "Coder", 5))
           switch (*NEXT_FIELD)
@@ -675,6 +691,12 @@ const char *GetLocaleMessage(const char *tag)
                 if (p - tp == 21 && !LocaleNCompare(tp, "InvalidColorspaceType", 21))
                   return *np ? tag : "Invalid colorspace type";
                 else
+                if (p - tp == 17 && !LocaleNCompare(tp, "InvalidEndianType", 17))
+                  return *np ? tag : "Invalid endian type";
+                else
+                if (p - tp == 16 && !LocaleNCompare(tp, "InvalidImageType", 16))
+                  return *np ? tag : "Invalid image type";
+                else
                 if (p - tp == 20 && !LocaleNCompare(tp, "InvalidInterlaceType", 20))
                   return *np ? tag : "Invalid interlace type";
                 else
@@ -796,6 +818,9 @@ const char *GetLocaleMessage(const char *tag)
                 if (p - tp == 15 && !LocaleNCompare(tp, "MissingPassword", 15))
                   return *np ? tag : "Missing password";
                 else
+                if (p - tp == 14 && !LocaleNCompare(tp, "MissingQuality", 14))
+                  return *np ? tag : "Missing quality";
+                else
                 if (p - tp == 20 && !LocaleNCompare(tp, "MissingResourceLimit", 20))
                   return *np ? tag : "Missing resource limit";
                 else
@@ -810,6 +835,12 @@ const char *GetLocaleMessage(const char *tag)
                 else
                 if (p - tp == 17 && !LocaleNCompare(tp, "MissingServerName", 17))
                   return *np ? tag : "Missing server name";
+                else
+                if (p - tp == 11 && !LocaleNCompare(tp, "MissingSize", 11))
+                  return *np ? tag : "Missing size";
+                else
+                if (p - tp == 12 && !LocaleNCompare(tp, "MissingSnaps", 12))
+                  return *np ? tag : "Missing snaps";
                 else
                 if (p - tp == 16 && !LocaleNCompare(tp, "MissingThreshold", 16))
                   return *np ? tag : "Missing threshold";
@@ -830,26 +861,42 @@ const char *GetLocaleMessage(const char *tag)
                   return *np ? tag : "Missing width";
                 else
                 if (p - tp == 6 && !LocaleNCompare(tp, "Module", 6))
-                  if (LocaleNCompare(NEXT_FIELD, "Error", 5) || p - tp != 5)
+                  switch (*NEXT_FIELD)
+                  {
+                  default:
                     return tag;
-                  else
-                    switch (*NEXT_FIELD)
-                    {
-                    default:
+
+                  case 'e':  case 'E':
+                    if (p - tp == 5 && !LocaleNCompare(tp, "Error", 5))
+                      switch (*NEXT_FIELD)
+                      {
+                      default:
+                        return tag;
+
+                      case 'u':  case 'U':
+                        if (p - tp == 18 && !LocaleNCompare(tp, "UnableToLoadModule", 18))
+                          return *np ? tag : "Unable to load module";
+                        else
+                        if (p - tp == 27 && !LocaleNCompare(tp, "UnableToRegisterImageFormat", 27))
+                          return *np ? tag : "Unable to register image format";
+                        else
+                        if (p - tp == 18 && !LocaleNCompare(tp, "UnrecognizedModule", 18))
+                          return *np ? tag : "Unrecognized module";
+                        else
+                          return tag;
+                      }
+                    else
                       return tag;
 
-                    case 'u':  case 'U':
-                      if (p - tp == 18 && !LocaleNCompare(tp, "UnableToLoadModule", 18))
-                        return *np ? tag : "Unable to load module";
-                      else
-                      if (p - tp == 27 && !LocaleNCompare(tp, "UnableToRegisterImageFormat", 27))
-                        return *np ? tag : "Unable to register image format";
-                      else
-                      if (p - tp == 18 && !LocaleNCompare(tp, "UnrecognizedModule", 18))
-                        return *np ? tag : "Unrecognized module";
-                      else
+                  case 'f':  case 'F':
+                    if (p - tp == 10 && !LocaleNCompare(tp, "FatalError", 10))
+                      if (LocaleNCompare(NEXT_FIELD, "UnableToInitializeModuleLoader", 30) || p - tp != 30)
                         return tag;
-                    }
+                      else
+                        return *np ? tag : "Unable to initialize module loader";
+                    else
+                      return tag;
+                  }
                 else
                   return tag;
 
@@ -1088,6 +1135,9 @@ const char *GetLocaleMessage(const char *tag)
                       else
                         return tag;
                     }
+                else
+                if (p - tp == 24 && !LocaleNCompare(tp, "OptionLengthExceedsLimit", 24))
+                  return *np ? tag : "Option length exceeds limit";
                 else
                   return tag;
 
@@ -1471,6 +1521,15 @@ const char *GetLocaleMessage(const char *tag)
               else
                 return tag;
 
+            case 'f':  case 'F':
+              if (p - tp == 10 && !LocaleNCompare(tp, "FatalError", 10))
+                if (LocaleNCompare(NEXT_FIELD, "MemoryAllocationFailed", 22) || p - tp != 22)
+                  return tag;
+                else
+                  return *np ? tag : "Memory allocation failed";
+              else
+                return tag;
+
             case 'w':  case 'W':
               if (p - tp == 7 && !LocaleNCompare(tp, "Warning", 7))
                 if (LocaleNCompare(NEXT_FIELD, "MemoryAllocationFailed", 22) || p - tp != 22)
@@ -1654,10 +1713,41 @@ const char *GetLocaleMessage(const char *tag)
 
           case 'f':  case 'F':
             if (p - tp == 10 && !LocaleNCompare(tp, "FatalError", 10))
-              if (LocaleNCompare(NEXT_FIELD, "UnableToOpenXServer", 19) || p - tp != 19)
+              switch (*NEXT_FIELD)
+              {
+              default:
                 return tag;
-              else
-                return *np ? tag : "Unable to open X server";
+
+              case 'u':  case 'U':
+                if (p - tp == 20 && !LocaleNCompare(tp, "UnableToCreateCursor", 20))
+                  return *np ? tag : "Unable to create X cursor";
+                else
+                if (p - tp == 28 && !LocaleNCompare(tp, "UnableToCreateGraphicContext", 28))
+                  return *np ? tag : "Unable to create graphic context";
+                else
+                if (p - tp == 26 && !LocaleNCompare(tp, "UnableToCreateTextProperty", 26))
+                  return *np ? tag : "Unable to create text property";
+                else
+                if (p - tp == 20 && !LocaleNCompare(tp, "UnableToCreateXImage", 20))
+                  return *np ? tag : "Unable to create X image";
+                else
+                if (p - tp == 21 && !LocaleNCompare(tp, "UnableToCreateXPixmap", 21))
+                  return *np ? tag : "Unable to create X pixmap";
+                else
+                if (p - tp == 21 && !LocaleNCompare(tp, "UnableToCreateXWindow", 21))
+                  return *np ? tag : "Unable to create X window";
+                else
+                if (p - tp == 17 && !LocaleNCompare(tp, "UnableToGetVisual", 17))
+                  return *np ? tag : "Unable to get visual";
+                else
+                if (p - tp == 16 && !LocaleNCompare(tp, "UnableToLoadFont", 16))
+                  return *np ? tag : "Unable to load font";
+                else
+                if (p - tp == 19 && !LocaleNCompare(tp, "UnableToOpenXServer", 19))
+                  return *np ? tag : "Unable to open X server";
+                else
+                  return tag;
+              }
             else
               return tag;
 
@@ -1732,53 +1822,69 @@ const char *GetLocaleMessage(const char *tag)
 
       case 'c':  case 'C':
         if (p - tp == 5 && !LocaleNCompare(tp, "Cache", 5))
-          if (LocaleNCompare(NEXT_FIELD, "Error", 5) || p - tp != 5)
+          switch (*NEXT_FIELD)
+          {
+          default:
             return tag;
-          else
-            switch (*NEXT_FIELD)
-            {
-            default:
+
+          case 'e':  case 'E':
+            if (p - tp == 5 && !LocaleNCompare(tp, "Error", 5))
+              switch (*NEXT_FIELD)
+              {
+              default:
+                return tag;
+
+              case 'i':  case 'I':
+                if (p - tp == 31 && !LocaleNCompare(tp, "InconsistentPeristentCacheDepth", 31))
+                  return *np ? tag : "Inconsistent peristent cache depth";
+                else
+                  return tag;
+
+              case 'p':  case 'P':
+                if (p - tp == 19 && !LocaleNCompare(tp, "PixelCacheIsNotOpen", 19))
+                  return *np ? tag : "Pixel cache is not open";
+                else
+                  return tag;
+
+              case 'u':  case 'U':
+                if (p - tp == 18 && !LocaleNCompare(tp, "UnableToCloneCache", 18))
+                  return *np ? tag : "Unable to clone cache";
+                else
+                if (p - tp == 19 && !LocaleNCompare(tp, "UnableToExtendCache", 19))
+                  return *np ? tag : "Unable to extend cache";
+                else
+                if (p - tp == 21 && !LocaleNCompare(tp, "UnableToGetCacheNexus", 21))
+                  return *np ? tag : "Unable to get cache nexus";
+                else
+                if (p - tp == 26 && !LocaleNCompare(tp, "UnableToGetPixelsFromCache", 26))
+                  return *np ? tag : "Unable to get pixels from cache";
+                else
+                if (p - tp == 17 && !LocaleNCompare(tp, "UnableToOpenCache", 17))
+                  return *np ? tag : "Unable to open cache";
+                else
+                if (p - tp == 20 && !LocaleNCompare(tp, "UnableToPersistCache", 20))
+                  return *np ? tag : "Unable to persist pixel cache";
+                else
+                if (p - tp == 22 && !LocaleNCompare(tp, "UnableToReadPixelCache", 22))
+                  return *np ? tag : "Unable to read pixel cache";
+                else
+                if (p - tp == 17 && !LocaleNCompare(tp, "UnableToSyncCache", 17))
+                  return *np ? tag : "Unable to sync cache";
+                else
+                  return tag;
+              }
+            else
               return tag;
 
-            case 'i':  case 'I':
-              if (p - tp == 31 && !LocaleNCompare(tp, "InconsistentPeristentCacheDepth", 31))
-                return *np ? tag : "Inconsistent peristent cache depth";
-              else
+          case 'f':  case 'F':
+            if (p - tp == 10 && !LocaleNCompare(tp, "FatalError", 10))
+              if (LocaleNCompare(NEXT_FIELD, "UnableToExtendPixelCache", 24) || p - tp != 24)
                 return tag;
-
-            case 'p':  case 'P':
-              if (p - tp == 19 && !LocaleNCompare(tp, "PixelCacheIsNotOpen", 19))
-                return *np ? tag : "Pixel cache is not open";
               else
-                return tag;
-
-            case 'u':  case 'U':
-              if (p - tp == 18 && !LocaleNCompare(tp, "UnableToCloneCache", 18))
-                return *np ? tag : "Unable to clone cache";
-              else
-              if (p - tp == 19 && !LocaleNCompare(tp, "UnableToExtendCache", 19))
-                return *np ? tag : "Unable to extend cache";
-              else
-              if (p - tp == 21 && !LocaleNCompare(tp, "UnableToGetCacheNexus", 21))
-                return *np ? tag : "Unable to get cache nexus";
-              else
-              if (p - tp == 26 && !LocaleNCompare(tp, "UnableToGetPixelsFromCache", 26))
-                return *np ? tag : "Unable to get pixels from cache";
-              else
-              if (p - tp == 17 && !LocaleNCompare(tp, "UnableToOpenCache", 17))
-                return *np ? tag : "Unable to open cache";
-              else
-              if (p - tp == 20 && !LocaleNCompare(tp, "UnableToPersistCache", 20))
-                return *np ? tag : "Unable to persist pixel cache";
-              else
-              if (p - tp == 22 && !LocaleNCompare(tp, "UnableToReadPixelCache", 22))
-                return *np ? tag : "Unable to read pixel cache";
-              else
-              if (p - tp == 17 && !LocaleNCompare(tp, "UnableToSyncCache", 17))
-                return *np ? tag : "Unable to sync cache";
-              else
-                return tag;
-            }
+                return *np ? tag : "Unable to extend pixel cache";
+            else
+              return tag;
+          }
         else
         if (p - tp == 5 && !LocaleNCompare(tp, "Coder", 5))
           switch (*NEXT_FIELD)
@@ -2248,6 +2354,12 @@ const char *GetLocaleMessage(const char *tag)
                 if (p - tp == 21 && !LocaleNCompare(tp, "InvalidColorspaceType", 21))
                   return *np ? tag : "Invalid colorspace type";
                 else
+                if (p - tp == 17 && !LocaleNCompare(tp, "InvalidEndianType", 17))
+                  return *np ? tag : "Invalid endian type";
+                else
+                if (p - tp == 16 && !LocaleNCompare(tp, "InvalidImageType", 16))
+                  return *np ? tag : "Invalid image type";
+                else
                 if (p - tp == 20 && !LocaleNCompare(tp, "InvalidInterlaceType", 20))
                   return *np ? tag : "Invalid interlace type";
                 else
@@ -2369,6 +2481,9 @@ const char *GetLocaleMessage(const char *tag)
                 if (p - tp == 15 && !LocaleNCompare(tp, "MissingPassword", 15))
                   return *np ? tag : "Missing password";
                 else
+                if (p - tp == 14 && !LocaleNCompare(tp, "MissingQuality", 14))
+                  return *np ? tag : "Missing quality";
+                else
                 if (p - tp == 20 && !LocaleNCompare(tp, "MissingResourceLimit", 20))
                   return *np ? tag : "Missing resource limit";
                 else
@@ -2383,6 +2498,12 @@ const char *GetLocaleMessage(const char *tag)
                 else
                 if (p - tp == 17 && !LocaleNCompare(tp, "MissingServerName", 17))
                   return *np ? tag : "Missing server name";
+                else
+                if (p - tp == 11 && !LocaleNCompare(tp, "MissingSize", 11))
+                  return *np ? tag : "Missing size";
+                else
+                if (p - tp == 12 && !LocaleNCompare(tp, "MissingSnaps", 12))
+                  return *np ? tag : "Missing snaps";
                 else
                 if (p - tp == 16 && !LocaleNCompare(tp, "MissingThreshold", 16))
                   return *np ? tag : "Missing threshold";
@@ -2403,26 +2524,42 @@ const char *GetLocaleMessage(const char *tag)
                   return *np ? tag : "Missing width";
                 else
                 if (p - tp == 6 && !LocaleNCompare(tp, "Module", 6))
-                  if (LocaleNCompare(NEXT_FIELD, "Error", 5) || p - tp != 5)
+                  switch (*NEXT_FIELD)
+                  {
+                  default:
                     return tag;
-                  else
-                    switch (*NEXT_FIELD)
-                    {
-                    default:
+
+                  case 'e':  case 'E':
+                    if (p - tp == 5 && !LocaleNCompare(tp, "Error", 5))
+                      switch (*NEXT_FIELD)
+                      {
+                      default:
+                        return tag;
+
+                      case 'u':  case 'U':
+                        if (p - tp == 18 && !LocaleNCompare(tp, "UnableToLoadModule", 18))
+                          return *np ? tag : "Unable to load module";
+                        else
+                        if (p - tp == 27 && !LocaleNCompare(tp, "UnableToRegisterImageFormat", 27))
+                          return *np ? tag : "Unable to register image format";
+                        else
+                        if (p - tp == 18 && !LocaleNCompare(tp, "UnrecognizedModule", 18))
+                          return *np ? tag : "Unrecognized module";
+                        else
+                          return tag;
+                      }
+                    else
                       return tag;
 
-                    case 'u':  case 'U':
-                      if (p - tp == 18 && !LocaleNCompare(tp, "UnableToLoadModule", 18))
-                        return *np ? tag : "Unable to load module";
-                      else
-                      if (p - tp == 27 && !LocaleNCompare(tp, "UnableToRegisterImageFormat", 27))
-                        return *np ? tag : "Unable to register image format";
-                      else
-                      if (p - tp == 18 && !LocaleNCompare(tp, "UnrecognizedModule", 18))
-                        return *np ? tag : "Unrecognized module";
-                      else
+                  case 'f':  case 'F':
+                    if (p - tp == 10 && !LocaleNCompare(tp, "FatalError", 10))
+                      if (LocaleNCompare(NEXT_FIELD, "UnableToInitializeModuleLoader", 30) || p - tp != 30)
                         return tag;
-                    }
+                      else
+                        return *np ? tag : "Unable to initialize module loader";
+                    else
+                      return tag;
+                  }
                 else
                   return tag;
 
@@ -2661,6 +2798,9 @@ const char *GetLocaleMessage(const char *tag)
                       else
                         return tag;
                     }
+                else
+                if (p - tp == 24 && !LocaleNCompare(tp, "OptionLengthExceedsLimit", 24))
+                  return *np ? tag : "Option length exceeds limit";
                 else
                   return tag;
 
@@ -3044,6 +3184,15 @@ const char *GetLocaleMessage(const char *tag)
               else
                 return tag;
 
+            case 'f':  case 'F':
+              if (p - tp == 10 && !LocaleNCompare(tp, "FatalError", 10))
+                if (LocaleNCompare(NEXT_FIELD, "MemoryAllocationFailed", 22) || p - tp != 22)
+                  return tag;
+                else
+                  return *np ? tag : "Memory allocation failed";
+              else
+                return tag;
+
             case 'w':  case 'W':
               if (p - tp == 7 && !LocaleNCompare(tp, "Warning", 7))
                 if (LocaleNCompare(NEXT_FIELD, "MemoryAllocationFailed", 22) || p - tp != 22)
@@ -3227,10 +3376,41 @@ const char *GetLocaleMessage(const char *tag)
 
           case 'f':  case 'F':
             if (p - tp == 10 && !LocaleNCompare(tp, "FatalError", 10))
-              if (LocaleNCompare(NEXT_FIELD, "UnableToOpenXServer", 19) || p - tp != 19)
+              switch (*NEXT_FIELD)
+              {
+              default:
                 return tag;
-              else
-                return *np ? tag : "Unable to open X server";
+
+              case 'u':  case 'U':
+                if (p - tp == 20 && !LocaleNCompare(tp, "UnableToCreateCursor", 20))
+                  return *np ? tag : "Unable to create X cursor";
+                else
+                if (p - tp == 28 && !LocaleNCompare(tp, "UnableToCreateGraphicContext", 28))
+                  return *np ? tag : "Unable to create graphic context";
+                else
+                if (p - tp == 26 && !LocaleNCompare(tp, "UnableToCreateTextProperty", 26))
+                  return *np ? tag : "Unable to create text property";
+                else
+                if (p - tp == 20 && !LocaleNCompare(tp, "UnableToCreateXImage", 20))
+                  return *np ? tag : "Unable to create X image";
+                else
+                if (p - tp == 21 && !LocaleNCompare(tp, "UnableToCreateXPixmap", 21))
+                  return *np ? tag : "Unable to create X pixmap";
+                else
+                if (p - tp == 21 && !LocaleNCompare(tp, "UnableToCreateXWindow", 21))
+                  return *np ? tag : "Unable to create X window";
+                else
+                if (p - tp == 17 && !LocaleNCompare(tp, "UnableToGetVisual", 17))
+                  return *np ? tag : "Unable to get visual";
+                else
+                if (p - tp == 16 && !LocaleNCompare(tp, "UnableToLoadFont", 16))
+                  return *np ? tag : "Unable to load font";
+                else
+                if (p - tp == 19 && !LocaleNCompare(tp, "UnableToOpenXServer", 19))
+                  return *np ? tag : "Unable to open X server";
+                else
+                  return tag;
+              }
             else
               return tag;
 

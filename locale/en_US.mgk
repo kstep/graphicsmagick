@@ -55,6 +55,11 @@
         Unable to read pixel cache
       </Message>
     </Error>
+    <FatalError>
+      <Message name="UnableToExtendPixelCache">
+        Unable to extend pixel cache
+      </Message>
+    </FatalError>
   </Cache>
   <Coder>
     <Error>
@@ -669,6 +674,11 @@
         Unrecognized module
       </Message>
     </Error>
+    <FatalError>
+      <Message name="UnableToInitializeModuleLoader">
+        Unable to initialize module loader
+      </Message>
+    </FatalError>
   </Module>
   <Option>
     <Error>
@@ -887,6 +897,12 @@
       <Message name="InvalidColorspaceType">
         Invalid colorspace type
       </Message>
+      <Message name="InvalidEndianType">
+        Invalid endian type
+      </Message>
+      <Message name="InvalidImageType">
+        Invalid image type
+      </Message>
       <Message name="InvalidInterlaceType">
         Invalid interlace type
       </Message>
@@ -950,6 +966,15 @@
       <Message name="MissingServerName">
         Missing server name
       </Message>
+      <Message name="MissingQuality">
+        Missing quality
+      </Message>
+      <Message name="MissingSize">
+        Missing size
+      </Message>
+      <Message name="MissingSnaps">
+        Missing snaps
+      </Message>
       <Message name="MissingThreshold">
         Missing threshold
       </Message>
@@ -967,6 +992,9 @@
       </Message>
       <Message name="MissingVirtualPixelMethod">
         Missing virtual pixel method
+      </Message>
+      <Message name="OptionLengthExceedsLimit">
+        Option length exceeds limit
       </Message>
       <Message name="UnrecognizedOption">
         Unrecognized option
@@ -1008,6 +1036,11 @@
           Unable to manage color
         </Message>
       </Error>
+      <FatalError>
+        <Message name="MemoryAllocationFailed">
+          Memory allocation failed
+        </Message>
+      </FatalError>
       <Warning>
         <Message name="MemoryAllocationFailed">
           Memory allocation failed
@@ -1114,6 +1147,30 @@
       </Message>
     </Error>
     <FatalError>
+      <Message name="UnableToCreateCursor">
+        Unable to create X cursor
+      </Message>
+      <Message name="UnableToCreateGraphicContext">
+        Unable to create graphic context
+      </Message>
+      <Message name="UnableToCreateTextProperty">
+        Unable to create text property
+      </Message>
+      <Message name="UnableToCreateXWindow">
+        Unable to create X window
+      </Message>
+      <Message name="UnableToCreateXImage">
+        Unable to create X image
+      </Message>
+      <Message name="UnableToCreateXPixmap">
+        Unable to create X pixmap
+      </Message>
+      <Message name="UnableToGetVisual">
+        Unable to get visual
+      </Message>
+      <Message name="UnableToLoadFont">
+        Unable to load font
+      </Message>
       <Message name="UnableToOpenXServer">
         Unable to open X server
       </Message>
