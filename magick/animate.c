@@ -135,6 +135,9 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       static char
         filenames[MaxTextExtent] = "*";
 
+      unsigned int
+        status;
+
       if (resource_info->immutable)
         break;
       /*
@@ -155,8 +158,8 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         }
       number_files=1;
       filelist[0]=filenames;
-      (void) ExpandFilenames(&number_files,&filelist);
-      if (number_files == 0)
+      status=ExpandFilenames(&number_files,&filelist);
+      if ((status == False) || (number_files == 0))
         {
           MagickWarning(OptionWarning,"No image files were found",filenames);
           return((Image *) NULL);

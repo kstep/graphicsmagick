@@ -5773,24 +5773,30 @@ Export unsigned int GetNumberScenes(const Image *image)
 %
 %  The format of the GetPixels routine is:
 %
-%      GetPixels(image,red,green,blue,opacity)
+%      GetPixels(image,red_pixels,green_pixels,blue_pixels,opacity_pixels)
 %
 %  A description of each parameter follows:
 %
 %    o image: Specifies a pointer to a Image structure;  returned from
 %      ReadImage.
 %
-%    o red,green,blue,opacity: These arrays are returned with the correponding
-%      red, green, blue, and opacity values from the image.  The length of the
-%      arrays must equal the area specified by the columns and row values
-%      values of the Image structure.  If you do not want to initialize a
-%      particular component, specify it as NULL.
+%    o red_pixels,green_pixels,blue_pixels,opacity_pixels: These arrays are
+%      returned with the correpondingred, green, blue, and opacity values from
+%      the image.  The length of the arrays must equal the area specified by
+%      the columns and row values values of the Image structure.  If you do
+%      not want to initialize a particular component, specify it as NULL.
 %
 %
 */
-void GetPixels(const Image *image,float *red,float *green,float *blue,
-  float *opacity)
+void GetPixels(const Image *image,float *red_pixels,float *green_pixels,
+  float *blue_pixels,float *opacity_pixels)
 {
+  double
+    blue,
+    green,
+    opacity,
+    red;
+
   register int
     i,
     j,
@@ -5804,16 +5810,20 @@ void GetPixels(const Image *image,float *red,float *green,float *blue,
   p=image->pixels;
   for (i=0; i < (int) image->packets; i++)
   {
+    red=(double) p->red/MaxRGB;
+    green=(double) p->green/MaxRGB;
+    blue=(double) p->blue/MaxRGB;
+    opacity=(double) (image->matte ? p->index/Opaque : 0);
     for (j=0; j <= (int) p->length; j++)
     {
-      if (red != (float *) NULL)
-        red[x]=(float) p->red/MaxRGB;
-      if (green != (float *) NULL)
-        green[x]=(float) p->green/MaxRGB;
-      if (blue != (float *) NULL)
-        blue[x]=(float) p->blue/MaxRGB;
-      if (opacity != (float *) NULL)
-        opacity[x]=image->matte ? (float) p->index/Opaque : 0;
+      if (red_pixels != (float *) NULL)
+        red_pixels[x]=red;
+      if (green_pixels != (float *) NULL)
+        green_pixels[x]=green;
+      if (blue_pixels != (float *) NULL)
+        blue_pixels[x]=blue;
+      if (opacity_pixels != (float *) NULL)
+        opacity_pixels[x]=opacity;
       x++;
     }
     p++;

@@ -2741,8 +2741,8 @@ static unsigned int XConfigureImage(Display *display,
     windows->pan.height<<=1;
   }
   if (windows->pan.geometry != (char *) NULL)
-    (void) ParseImageGeometry(windows->pan.geometry,&windows->pan.x,
-      &windows->pan.y,&windows->pan.width,&windows->pan.height);
+    (void) XParseGeometry(windows->pan.geometry,&windows->pan.x,&windows->pan.y,
+      &windows->pan.width,&windows->pan.height);
   window_changes.width=windows->pan.width;
   window_changes.height=windows->pan.height;
   size_hints=XAllocSizeHints();
@@ -11111,7 +11111,8 @@ static Image *XVisualDirectoryImage(Display *display,
     filenames[MaxTextExtent] = "*";
 
   unsigned int
-    backdrop;
+    backdrop,
+    status;
 
   XResourceInfo
     background_resources;
@@ -11134,8 +11135,8 @@ static Image *XVisualDirectoryImage(Display *display,
     }
   number_files=1;
   filelist[0]=filenames;
-  (void) ExpandFilenames(&number_files,&filelist);
-  if (number_files == 0)
+  status=ExpandFilenames(&number_files,&filelist);
+  if ((status == False) || (number_files == 0))
     {
       MagickWarning(OptionWarning,"No image files were found",filenames);
       return((Image *) NULL);
@@ -12426,8 +12427,8 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   FormatString(resource_name,"%.1024s.pan",resource_info->client_name);
   windows->pan.geometry=XGetResourceClass(resource_info->resource_database,
     resource_name,"geometry",(char *) NULL);
-  (void) ParseImageGeometry(windows->pan.geometry,&windows->pan.x,
-    &windows->pan.y,&windows->pan.width,&windows->pan.height);
+  (void) XParseGeometry(windows->pan.geometry,&windows->pan.x,&windows->pan.y,
+    &windows->pan.width,&windows->pan.height);
   windows->pan.flags|=PPosition;
   windows->pan.immutable=True;
   windows->pan.attributes.event_mask=ButtonMotionMask | ButtonPressMask |

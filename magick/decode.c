@@ -17421,6 +17421,9 @@ Export Image *ReadVIDImage(const ImageInfo *image_info)
   register int
     i;
 
+  unsigned int
+    status;
+
   /*
     Expand the filename.
   */
@@ -17441,8 +17444,8 @@ Export Image *ReadVIDImage(const ImageInfo *image_info)
   (void) strcpy(list[0],image_info->filename);
   number_files=1;
   filelist=list;
-  (void) ExpandFilenames(&number_files,&filelist);
-  if (number_files == 0)
+  status=ExpandFilenames(&number_files,&filelist);
+  if ((status == False) || (number_files == 0))
     {
       MagickWarning(CorruptImageWarning,"unable to read VID image",
         image_info->filename);

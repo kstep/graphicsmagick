@@ -502,6 +502,7 @@ Export unsigned int ExpandFilenames(int *argc,char ***argv)
 {
   char
     **filelist,
+    filename[MaxTextExtent],
     home_directory[MaxTextExtent],
     *option,
     **vector,
@@ -552,12 +553,14 @@ Export unsigned int ExpandFilenames(int *argc,char ***argv)
       continue;
     if ((*option == '"') || (*option == '\''))
       continue;
-    if (!IsGlob(option))
+    (void) strcpy(filename,option);
+    ExpandFilename(filename);
+    if (!IsGlob(filename))
       {
         /*
           Silently skip directories.
         */
-        if (IsDirectory(option))
+        if (IsDirectory(filename))
           count--;
         continue;
       }
@@ -565,15 +568,15 @@ Export unsigned int ExpandFilenames(int *argc,char ***argv)
       Get the list of image file names.
     */
     (void) getcwd(working_directory,MaxTextExtent-1);
-    for (p=option+Extent(option)-1; p > option; p--)
+    for (p=filename+Extent(filename)-1; p > filename; p--)
       if (IsBasenameSeparator(*p))
         {
           /*
             Filename includes a directory name.
           */
           q=working_directory;
-          for (j=0; j < (p-option+1); j++)
-            *q++=option[j];
+          for (j=0; j < (p-filename+1); j++)
+            *q++=filename[j];
           *q='\0';
           p++;
           break;
@@ -611,7 +614,7 @@ Export unsigned int ExpandFilenames(int *argc,char ***argv)
           continue;
         }
       expanded=True;
-      vector[count]=(char *) AllocateMemory(((p-option)+Extent(filelist[j])+
+      vector[count]=(char *) AllocateMemory(((p-filename)+Extent(filelist[j])+
         MaxTextExtent+1)*sizeof(char));
       if (vector[count] == (char *) NULL)
         {
@@ -622,7 +625,7 @@ Export unsigned int ExpandFilenames(int *argc,char ***argv)
           FreeMemory((char *) filelist);
           return(False);
         }
-      FormatString(vector[count],"%.*s%.1024s",(int) (p-option),option,
+      FormatString(vector[count],"%.*s%.1024s",(int) (p-filename),filename,
         filelist[j]);
       FreeMemory((char *) filelist[j]);
       count++;
