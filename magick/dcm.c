@@ -2633,7 +2633,7 @@ static unsigned int IsDCM(const unsigned char *magick,const unsigned int length)
 {
   if (length < 132)
     return(False);
-  if (strncmp((char *) (magick+128),"DICM",4) == 0)
+  if (LatinNCompare((char *) (magick+128),"DICM",4) == 0)
     return(True);
   return(False);
 }
@@ -2743,7 +2743,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   status=ReadBlob(image,128,(char *) magick);
   status|=ReadBlob(image,4,(char *) magick);
-  if ((status == False) || (strncmp((char *) magick,"DICM",4) != 0))
+  if ((status == False) || (LatinNCompare((char *) magick,"DICM",4) != 0))
     (void) SeekBlob(image,0L,SEEK_SET);
   /*
     Read DCM Medical image.
@@ -3149,7 +3149,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       return(image);
     }
   max_value=(1 << (8*bytes_per_pixel))-1;
-  if (strncmp(photometric,"MONOCHROME",10) == 0)
+  if (LatinNCompare(photometric,"MONOCHROME",10) == 0)
     max_value=(1 << significant_bits)-1;
   scale=(Quantum *) NULL;
   if (max_value != MaxRGB)

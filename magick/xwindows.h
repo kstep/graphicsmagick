@@ -78,6 +78,25 @@ typedef enum
 
 typedef enum
 {
+  UndefinedElement = 0,
+  PointElement,
+  LineElement,
+  RectangleElement,
+  FillRectangleElement,
+  CircleElement,
+  FillCircleElement,
+  EllipseElement,
+  FillEllipseElement,
+  PolygonElement,
+  FillPolygonElement,
+  ColorElement,
+  MatteElement,
+  TextElement,
+  ImageElement
+} ElementType;
+
+typedef enum
+{
   UndefinedColormap,
   PrivateColormap,
   SharedColormap
@@ -147,8 +166,8 @@ typedef struct _XDrawInfo
   AnnotationStencil
     stencil;
 
-  PrimitiveType
-    primitive;
+  ElementType
+    element;
 
   Pixmap
     stipple;

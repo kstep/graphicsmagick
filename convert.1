@@ -578,14 +578,12 @@ The primitives include
      point
      line
      rectangle
-     fillRectangle
-     circle
-     fillCircle
+     roundRectangle
+     arc
      ellipse
-     fillEllipse
+     circle
      polyline
      polygon
-     fillPolygon
      bezier
      color
      matte
@@ -597,11 +595,13 @@ The primitives include
 \fBimage\fP each require a single coordinate.  \fBLine\fP requires a
 start and end coordinate, while \fBrectangle\fP expects an upper left
 and lower right coordinate.  \fBCircle\fP has a center coordinate and a
-coordinate on the outer edge.  Use \fBEllipse\fP to draw a partial ellipse
-centered at the given point, specified width and height, and start and
+coordinate on the outer edge.  Use \fBArc\fP to circumscribe an arc within
+a rectangle.  Arcs require a start and end point as well as the degree of
+rotation (e.g. 130,30 200,100 45,90). Use \fBEllipse\fP to draw a partial
+ellipse centered at the given point, specified width and height, and start and
 end of arc in degrees (e.g. 100,100 100,150 0,360).  Finally,
-\fBpolyline\fP and \fBpolygon\fP require three or more coordinates defining its
-boundaries.  Coordinates are
+\fBpolyline\fP and \fBpolygon\fP require three or more coordinates to define
+its boundaries.  Coordinates are
 integers separated by an optional comma.  For example, to define a circle
 centered at 100,100 that extends to 150,150 use:
 
@@ -681,6 +681,9 @@ apply a digital filter to enhance a noisy image.
 .TP
 .B "-equalize"
 perform histogram equalization to the image.
+.TP
+.B "-fill
+paint the interior of a drawing primitive.
 .TP
 .B "-filter \fItype\fP"
 use this type of filter when resizing an image.

@@ -639,7 +639,7 @@ static unsigned int IsGIF(const unsigned char *magick,const unsigned int length)
 {
   if (length < 4)
     return(False);
-  if (strncmp((char *) magick,"GIF8",4) == 0)
+  if (LatinNCompare((char *) magick,"GIF8",4) == 0)
     return(True);
   return(False);
 }
@@ -722,8 +722,8 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Determine if this is a GIF file.
   */
   status=ReadBlob(image,6,(char *) magick);
-  if ((status == False) || ((strncmp((char *) magick,"GIF87",5) != 0) &&
-      (strncmp((char *) magick,"GIF89",5) != 0)))
+  if ((status == False) || ((LatinNCompare((char *) magick,"GIF87",5) != 0) &&
+      (LatinNCompare((char *) magick,"GIF89",5) != 0)))
     ThrowReaderException(CorruptImageWarning,"Not a GIF image file",image);
   global_colors=0;
   global_colormap=(unsigned char *) NULL;
@@ -821,22 +821,18 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
           case 0xff:
           {
+            int
+              loop;
+
             /*
               Read Netscape Loop extension.
             */
-            int
-              found_netscape_loop=False;
-
+            loop=False;
             if (ReadBlobBlock(image,(char *) header) > 0)
-              found_netscape_loop=!strncmp((char *) header,"NETSCAPE2.0",11);
+              loop=!LatinNCompare((char *) header,"NETSCAPE2.0",11);
             while (ReadBlobBlock(image,(char *) header) > 0)
-            if (found_netscape_loop)
-              {
-                /*
-                  Look for terminator.
-                */
-                iterations=(header[2] << 8) | header[1];
-              }
+            if (loop)
+              iterations=(header[2] << 8) | header[1];
             break;
           }
           default:

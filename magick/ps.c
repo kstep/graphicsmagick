@@ -95,9 +95,9 @@ static unsigned int IsPS(const unsigned char *magick,const unsigned int length)
 {
   if (length < 3)
     return(False);
-  if (strncmp((char *) magick,"\004%!",3) == 0)
+  if (LatinNCompare((char *) magick,"\004%!",3) == 0)
     return(True);
-  if (strncmp((char *) magick,"%!",2) == 0)
+  if (LatinNCompare((char *) magick,"%!",2) == 0)
     return(True);
   return(False);
 }
@@ -271,21 +271,21 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
       continue;
     *p='\0';
     p=command;
-    if (strncmp(PostscriptLevel,command,Extent(PostscriptLevel)) == 0)
+    if (LatinNCompare(PostscriptLevel,command,Extent(PostscriptLevel)) == 0)
       (void) sscanf(command,"%%!PS-Adobe-%d.0 EPSF-%d.0",&level,&eps_level);
-    if (strncmp(ShowPage,command,Extent(ShowPage)) == 0)
+    if (LatinNCompare(ShowPage,command,Extent(ShowPage)) == 0)
       eps_level=0;
     /*
       Parse a bounding box statement.
     */
     count=0;
-    if (strncmp(BoundingBox,command,Extent(BoundingBox)) == 0)
+    if (LatinNCompare(BoundingBox,command,Extent(BoundingBox)) == 0)
       count=sscanf(command,"%%%%BoundingBox: %lf %lf %lf %lf",&bounding_box.x1,
         &bounding_box.y1,&bounding_box.x2,&bounding_box.y2);
-    if (strncmp(DocumentMedia,command,Extent(DocumentMedia)) == 0)
+    if (LatinNCompare(DocumentMedia,command,Extent(DocumentMedia)) == 0)
       count=sscanf(command,"%%%%DocumentMedia: %*s %lf %lf",&bounding_box.x2,
         &bounding_box.y2)+2;
-    if (strncmp(PageBoundingBox,command,Extent(PageBoundingBox)) == 0)
+    if (LatinNCompare(PageBoundingBox,command,Extent(PageBoundingBox)) == 0)
       count=sscanf(command,"%%%%PageBoundingBox: %lf %lf %lf %lf",
         &bounding_box.x1,&bounding_box.y1,&bounding_box.x2,&bounding_box.y2);
     if (count != 4)

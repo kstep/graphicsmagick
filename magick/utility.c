@@ -407,7 +407,7 @@ Export unsigned short *ConvertTextToUnicode(const char *text,int *count)
   while (*p != '\0')
   {
     *q=(unsigned char) (*p);
-    if (strncmp(p,"\\0x",3) == 0)
+    if (LatinNCompare(p,"\\0x",3) == 0)
       {
         p+=3;
         value=InterpretUnicode(p,4);
@@ -635,7 +635,7 @@ Export unsigned int ExpandFilenames(int *argc,char ***argv)
         }
       expanded=True;
       vector[count]=(char *)
-	AllocateMemory(((p-filename)+Extent(filelist[j])+MaxTextExtent+1));
+        AllocateMemory(((p-filename)+Extent(filelist[j])+MaxTextExtent+1));
       if (vector[count] == (char *) NULL)
         {
           for ( ; j < number_files; j++)
@@ -1156,17 +1156,87 @@ Export unsigned int IsDirectory(const char *filename)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   L a t i n N C o m p a r e                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method LatinNCompare compares two strings byte-by-byte, according to
+%  the ordering of the ISO 8859-1 encoding. LatinNCompare returns an
+%  integer greater than, equal to, or less than 0, if the string pointed
+%  to by p is greater than, equal to, or less than the string pointed to
+%  by q respectively.  The sign of a non-zero return value is determined
+%  by the sign of the difference between the values of the first pair of
+%  bytes that differ in the strings being compared.  The LatinNCompare
+%  method makes the same comparison as Latin1Compare but looks at a
+%  maximum of n bytes.  Bytes following a null byte are not compared.
+%
+%  The format of the LatinNCompare method is:
+%
+%      int LatinNCompare(const char *p,const char *q,size_t n)
+%
+%  A description of each parameter follows:
+%
+%    o p: A pointer to the string to convert to Latin1 string.
+%
+%    o q: A pointer to the string to convert to Latin1 string.
+%
+%    o n: A pointer to the string to convert to Latin1 string.
+%
+%
+*/
+Export int LatinNCompare(const char *p,const char *q,size_t n)
+{
+  register int
+    i,
+    j;
+
+  if (p == q)
+    return(0);
+  if (p == (char *) NULL)
+    return(-1);
+  if (q == (char *) NULL)
+    return(1);
+  while ((*p != '\0') && (*q != '\0'))
+  {
+    if ((*p == '\0') || (*q == '\0'))
+      break;
+    i=(*p);
+    if (islower(i))
+      i=toupper(i);
+    j=(*q);
+    if (islower(j))
+      j=toupper(j);
+    if (i != j)
+      break;
+    n--;
+    if (n == 0)
+      break;
+    p++;
+    q++;
+  }
+  return(*p-(*q));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   L a t i n 1 C o m p a r e                                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method Latin1Compare compares two null terminated Latin-1 strings,
-%  ignoring case differences, and returns an integer greater than, equal
-%  to, or less than 0, according to whether first is lexicographically
-%  greater than, equal to, or less than second.  The two strings are
-%  assumed to be encoded using ISO 8859-1.
+%  Method Latin1Compare compares two strings byte-by-byte, according to
+%  the ordering of the ISO 8859-1 encoding. Latin1Compare returns an
+%  integer greater than, equal to, or less than 0, if the string pointed
+%  to by p is greater than, equal to, or less than the string pointed to
+%  by q respectively.  The sign of a non-zero return value is determined
+%  by the sign of the difference between the values of the first pair of
+%  bytes that differ in the strings being compared.
 %
 %  The format of the Latin1Compare method is:
 %
@@ -1939,7 +2009,7 @@ Export char *PostscriptGeometry(const char *page)
     Comparison is case insensitive.
   */
   for (i=0; *PageSizes[i] != (char *) NULL; i++)
-    if (strncmp(PageSizes[i][0],geometry,Extent(PageSizes[i][0])) == 0)
+    if (LatinNCompare(PageSizes[i][0],geometry,Extent(PageSizes[i][0])) == 0)
       {
         /*
           Replace mneumonic with the equivalent size in dots-per-inch.

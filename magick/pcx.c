@@ -95,7 +95,7 @@ static unsigned int IsDCX(const unsigned char *magick,const unsigned int length)
 {
   if (length < 4)
     return(False);
-  if (strncmp((char *) magick,"\261\150\336\72",4) == 0)
+  if (LatinNCompare((char *) magick,"\261\150\336\72",4) == 0)
     return(True);
   return(False);
 }
@@ -134,9 +134,9 @@ static unsigned int IsPCX(const unsigned char *magick,const unsigned int length)
 {
   if (length < 2)
     return(False);
-  if (strncmp((char *) magick,"\12\2",2) == 0)
+  if (LatinNCompare((char *) magick,"\12\2",2) == 0)
     return(True);
-  if (strncmp((char *) magick,"\12\5",2) == 0)
+  if (LatinNCompare((char *) magick,"\12\5",2) == 0)
     return(True);
   return(False);
 }

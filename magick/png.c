@@ -344,7 +344,7 @@ static unsigned int IsMNG(const unsigned char *magick,const unsigned int length)
 {
   if (length < 8)
     return(False);
-  if (strncmp((char *) magick,"\212MNG\r\n\032\n",8) == 0)
+  if (LatinNCompare((char *) magick,"\212MNG\r\n\032\n",8) == 0)
     return(True);
   return(False);
 }
@@ -383,7 +383,7 @@ static unsigned int IsPNG(const unsigned char *magick,const unsigned int length)
 {
   if (length < 8)
     return(False);
-  if (strncmp((char *) magick,"\211PNG\r\n\032\n",8) == 0)
+  if (LatinNCompare((char *) magick,"\211PNG\r\n\032\n",8) == 0)
     return(True);
   return(False);
 }
@@ -934,7 +934,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         Verify MNG signature.
       */
       (void) ReadBlob(image,8,magic_number);
-      if (strncmp(magic_number,"\212MNG\r\n\032\n",8) != 0)
+      if (LatinNCompare(magic_number,"\212MNG\r\n\032\n",8) != 0)
         ThrowReaderException(CorruptImageWarning,"Not a MNG image file",image);
       first_mng_object=1;
       /*

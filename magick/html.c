@@ -96,9 +96,7 @@ static unsigned int IsHTML(const unsigned char *magick,
 {
   if (length < 5)
     return(False);
-  if (strncmp((char *) magick,"<HTML",5) == 0)
-    return(True);
-  if (strncmp((char *) magick,"<html",5) == 0)
+  if (LatinNCompare((char *) magick,"<html",5) == 0)
     return(True);
   return(False);
 }

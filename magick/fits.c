@@ -96,9 +96,9 @@ static unsigned int IsFITS(const unsigned char *magick,
 {
   if (length < 6)
     return(False);
-  if (strncmp((char *) magick,"IT0",3) == 0)
+  if (LatinNCompare((char *) magick,"IT0",3) == 0)
     return(True);
-  if (strncmp((char *) magick,"SIMPLE",6) == 0)
+  if (LatinNCompare((char *) magick,"SIMPLE",6) == 0)
     return(True);
   return(False);
 }

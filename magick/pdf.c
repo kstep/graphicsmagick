@@ -100,7 +100,7 @@ static unsigned int IsPDF(const unsigned char *magick,const unsigned int length)
 {
   if (length < 5)
     return(False);
-  if (strncmp((char *) magick,"%PDF-",5) == 0)
+  if (LatinNCompare((char *) magick,"%PDF-",5) == 0)
     return(True);
   return(False);
 }
@@ -251,9 +251,9 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /*
       Continue unless this is a MediaBox statement.
     */
-    if (strncmp(command,"/Rotate 90",10) == 0)
+    if (LatinNCompare(command,"/Rotate 90",10) == 0)
       portrait=False;
-    if (strncmp(MediaBox,command,Extent(MediaBox)) != 0)
+    if (LatinNCompare(MediaBox,command,Extent(MediaBox)) != 0)
       continue;
     count=sscanf(command,"/MediaBox [ %lf %lf %lf %lf",&bounding_box.x1,
       &bounding_box.y1,&bounding_box.x2,&bounding_box.y2);

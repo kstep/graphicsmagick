@@ -96,9 +96,9 @@ static unsigned int IsVICAR(const unsigned char *magick,
 {
   if (length < 7)
     return(False);
-  if (strncmp((char *) magick,"LBLSIZE",7) == 0)
+  if (LatinNCompare((char *) magick,"LBLSIZE",7) == 0)
     return(True);
-  if (strncmp((char *) magick,"NJPL1I",6) == 0)
+  if (LatinNCompare((char *) magick,"NJPL1I",6) == 0)
     return(True);
   return(False);
 }

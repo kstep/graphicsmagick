@@ -89,7 +89,7 @@ static unsigned int IsSCT(const unsigned char *magick,const unsigned int length)
 {
   if (length < 2)
     return(False);
-  if (strncmp((char *) magick,"CT",2) == 0)
+  if (LatinNCompare((char *) magick,"CT",2) == 0)
     return(True);
   return(False);
 }
@@ -158,16 +158,16 @@ static Image *ReadSCTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   (void) ReadBlob(image,80,(char *) buffer);
   (void) ReadBlob(image,2,(char *) magick);
-  if ((strncmp((char *) magick,"CT",2) != 0) &&
-      (strncmp((char *) magick,"LW",2) != 0) &&
-      (strncmp((char *) magick,"BM",2) != 0) &&
-      (strncmp((char *) magick,"PG",2) != 0) &&
-      (strncmp((char *) magick,"TX",2) != 0))
+  if ((LatinNCompare((char *) magick,"CT",2) != 0) &&
+      (LatinNCompare((char *) magick,"LW",2) != 0) &&
+      (LatinNCompare((char *) magick,"BM",2) != 0) &&
+      (LatinNCompare((char *) magick,"PG",2) != 0) &&
+      (LatinNCompare((char *) magick,"TX",2) != 0))
     ThrowReaderException(CorruptImageWarning,"Not a SCT image file",image);
-  if ((strncmp((char *) magick,"LW",2) == 0) ||
-      (strncmp((char *) magick,"BM",2) == 0) ||
-      (strncmp((char *) magick,"PG",2) == 0) ||
-      (strncmp((char *) magick,"TX",2) == 0))
+  if ((LatinNCompare((char *) magick,"LW",2) == 0) ||
+      (LatinNCompare((char *) magick,"BM",2) == 0) ||
+      (LatinNCompare((char *) magick,"PG",2) == 0) ||
+      (LatinNCompare((char *) magick,"TX",2) == 0))
     ThrowReaderException(CorruptImageWarning,
       "only Continuous Tone Picture supported",image);
   (void) ReadBlob(image,174,(char *) buffer);

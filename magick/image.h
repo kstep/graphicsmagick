@@ -429,6 +429,7 @@ typedef struct _DrawInfo
 
   unsigned int
     antialias,
+    fill,
     gravity;
 
   double

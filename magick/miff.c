@@ -102,9 +102,7 @@ static unsigned int IsMIFF(const unsigned char *magick,
 {
   if (length < 14)
     return(False);
-  if (strncmp((char *) magick,"id=ImageMagick",14) == 0)
-    return(True);
-  if (strncmp((char *) magick,"Id=ImageMagick",14) == 0)
+  if (LatinNCompare((char *) magick,"id=ImageMagick",14) == 0)
     return(True);
   return(False);
 }

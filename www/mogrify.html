@@ -913,14 +913,12 @@ The primitives include</dd>
 <pre>&nbsp;&nbsp;&nbsp;&nbsp; point
 &nbsp;&nbsp;&nbsp;&nbsp; line
 &nbsp;&nbsp;&nbsp;&nbsp; rectangle
-&nbsp;&nbsp;&nbsp;&nbsp; fillRectangle
-&nbsp;&nbsp;&nbsp;&nbsp; circle
-&nbsp;&nbsp;&nbsp;&nbsp; fillCircle
+&nbsp;&nbsp;&nbsp;&nbsp; roundRectangle
+&nbsp;&nbsp;&nbsp;&nbsp; arc
 &nbsp;&nbsp;&nbsp;&nbsp; ellipse
-&nbsp;&nbsp;&nbsp;&nbsp; fillEllipse
+&nbsp;&nbsp;&nbsp;&nbsp; circle
 &nbsp;&nbsp;&nbsp;&nbsp; polyline
 &nbsp;&nbsp;&nbsp;&nbsp; polygon
-&nbsp;&nbsp;&nbsp;&nbsp; fillPolygon
 &nbsp;&nbsp;&nbsp;&nbsp; bezier
 &nbsp;&nbsp;&nbsp;&nbsp; color
 &nbsp;&nbsp;&nbsp;&nbsp; matte
@@ -928,17 +926,20 @@ The primitives include</dd>
 &nbsp;&nbsp;&nbsp;&nbsp; image</pre>
 
 <dd>
-<b>Point</b>, <b>line</b>, <b>color</b>, <b>matte</b>, <b>text</b>, and
-<b>image</b>
-each require a single coordinate. <b>Line</b> requires a start and end
-coordinate, while <b>rectangle</b> expects an upper left and lower right
-coordinate. <b>Circle</b> has a center coordinate and a coordinate on the
-outer edge. Use <b>Ellipse</b> to draw a partial ellipse centered at the
-given point, specified width and height, and start and end of arc in degrees
-(e.g. 100,100 100,150 0,360). Finally, <b>polyline</b> and <b>polygon</b>
-require three or more coordinates defining its boundaries. Coordinates are
-integers separated by an optional comma. For example, to define a circle
-centered at 100,100 that extends to 150,150 use:</dd>
+<b>Point</b> and <b>line</b> each require a single coordinate.
+<b>Line</b> requires a start and end coordinate, while <b>rectangle</b>
+expects an upper left and lower right coordinate.  <b>roundRectangle</b>
+has a center coordinate, a width and height, and the width and height of the
+corners.  <b>Circle</b> has a center coordinate and a coordinate for the outer
+edge.  Use <b>Arc</b> to circumscribe an arc within a rectangle.  Arcs require
+a start and end point as well as the degree of rotation
+(e.g. 130,30 200,100 45,90). Use <b>Ellipse</b> to draw a partial ellipse
+centered at the given point, specified width and
+height, and start and end of arc in degrees (e.g. 100,100 100,150 0,360).
+Finally, <b>polyline</b> and <b>polygon</b> require three or more coordinates
+to define its boundaries.  Coordinates are integers separated by an
+optional comma.  For example, to define a circle centered at 100,100
+that extends to 150,150 use: </dd>
 
 <pre>&nbsp;&nbsp;&nbsp;&nbsp; -draw 'circle 100,100 150,150'</pre>
 
@@ -1036,6 +1037,19 @@ apply a digital filter to enhance a noisy image.</dd>
 
 <dd>
 perform histogram equalization to the image.</dd>
+</dl>
+
+<dl>&nbsp;
+<table BORDER=0 WIDTH="65%" >
+<tr>
+<td ALIGN=LEFT BGCOLOR="#9EBAC6"><img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color
+="#FFFFFF"><font size=+1>-fill</font></font></font></b></td>
+</tr>
+</table>
+
+<dd>
+paint the interior a drawing primitive.</dd>
 </dl>
 
 <dl>&nbsp;

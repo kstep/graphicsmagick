@@ -95,7 +95,7 @@ static unsigned int IsXBM(const unsigned char *magick,const unsigned int length)
 {
   if (length < 7)
     return(False);
-  if (strncmp((char *) magick,"#define",7) == 0)
+  if (LatinNCompare((char *) magick,"#define",7) == 0)
     return(True);
   return(False);
 }

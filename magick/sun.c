@@ -95,7 +95,7 @@ static unsigned int IsSUN(const unsigned char *magick,const unsigned int length)
 {
   if (length < 4)
     return(False);
-  if (strncmp((char *) magick,"\131\246\152\225",4) == 0)
+  if (LatinNCompare((char *) magick,"\131\246\152\225",4) == 0)
     return(True);
   return(False);
 }

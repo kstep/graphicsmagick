@@ -243,10 +243,8 @@ static char
   },
   *PrimitiveTypes[] =
   {
-    "Undefined", "point", "line", "rectangle", "fillRectangle",
-    "roundRectangle", "fillRoundRectangle", "arc", "fillArc", 
-    "ellipse", "fillEllipse", "circle", "fillCircle", "polyline",
-    "fillPolyline", "polygon", "fillPolygon", "bezier", "color",
+    "Undefined", "point", "line", "rectangle", "roundRectangle", "arc", 
+    "ellipse", "circle", "polyline", "polygon", "bezier", "color",
     "matte", "text", "image", (char *) NULL
   },
   *ResolutionTypes[] =
@@ -340,7 +338,8 @@ static struct
       {"meth", MethodTypes}, {"pen", StringReference},
       {"linew", DoubleReference}, {"server", StringReference},
       {"borderc", StringReference}, {"x", DoubleReference},
-      {"y", DoubleReference}, {"rotate", DoubleReference} } },
+      {"y", DoubleReference}, {"rotate", DoubleReference},
+      {"fill", BooleanTypes} } },
     { "Equalize", },
     { "Gamma", { {"gamma", StringReference}, {"red", DoubleReference},
       {"green", DoubleReference}, {"blue", DoubleReference} } },
@@ -4356,6 +4355,8 @@ Mogrify(ref,...)
             draw_info->translate.y=argument_list[8].double_reference;
           if (attribute_flag[9])
             draw_info->rotate=argument_list[9].double_reference;
+          if (attribute_flag[10])
+            draw_info->fill=argument_list[10].int_reference;
           DrawImage(image,draw_info);
           DestroyDrawInfo(draw_info);
           break;

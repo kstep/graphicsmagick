@@ -100,7 +100,7 @@ static unsigned int IsHDF(const unsigned char *magick,const unsigned int length)
 {
   if (length < 4)
     return(False);
-  if (strncmp((char *) magick,"\016\003\023\001",4) == 0)
+  if (LatinNCompare((char *) magick,"\016\003\023\001",4) == 0)
     return(True);
   return(False);
 }

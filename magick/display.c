@@ -3573,7 +3573,7 @@ static unsigned int XCropImage(Display *display,XResourceInfo *resource_info,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method XDrawEditImage draws a graphic primitive (point, line, rectangle,
+%  Method XDrawEditImage draws a graphic element (point, line, rectangle,
 %  etc.) on the image.
 %
 %  The format of the XDrawEditImage method is:
@@ -3605,7 +3605,7 @@ static unsigned int XDrawEditImage(Display *display,
   static const char
     *DrawMenu[]=
     {
-      "Primitive",
+      "Element",
       "Color",
       "Stipple",
       "Width",
@@ -3615,13 +3615,13 @@ static unsigned int XDrawEditImage(Display *display,
       (char *) NULL
     };
 
-  static PrimitiveType
-    primitive = PointPrimitive;
+  static ElementType
+    element = PointElement;
 
   static const ModeType
     DrawCommands[]=
     {
-      DrawPrimitiveCommand,
+      DrawElementCommand,
       DrawColorCommand,
       DrawStippleCommand,
       DrawWidthCommand,
@@ -3743,10 +3743,10 @@ static unsigned int XDrawEditImage(Display *display,
             continue;
           switch (DrawCommands[id])
           {
-            case DrawPrimitiveCommand:
+            case DrawElementCommand:
             {
               static const char
-                *Primitives[]=
+                *Elements[]=
                 {
                   "point",
                   "line",
@@ -3764,8 +3764,8 @@ static unsigned int XDrawEditImage(Display *display,
               /*
                 Select a command from the pop-up menu.
               */
-              primitive=(PrimitiveType) (XMenuWidget(display,windows,
-                DrawMenu[id],Primitives,command)+1);
+              element=(ElementType) (XMenuWidget(display,windows,
+                DrawMenu[id],Elements,command)+1);
               break;
             }
             case DrawColorCommand:
@@ -4096,7 +4096,7 @@ static unsigned int XDrawEditImage(Display *display,
     if (state & EscapeState)
       break;
     /*
-      Draw primitive as pointer moves until the button is released.
+      Draw element as pointer moves until the button is released.
     */
     distance=0;
     degrees=0.0;
@@ -4115,9 +4115,9 @@ static unsigned int XDrawEditImage(Display *display,
     state=DefaultState;
     do
     {
-      switch (primitive)
+      switch (element)
       {
-        case PointPrimitive:
+        case PointElement:
         default:
         {
           if (number_coordinates > 1)
@@ -4132,7 +4132,7 @@ static unsigned int XDrawEditImage(Display *display,
             }
           break;
         }
-        case LinePrimitive:
+        case LineElement:
         {
           if (distance > 9)
             {
@@ -4151,8 +4151,8 @@ static unsigned int XDrawEditImage(Display *display,
               XWithdrawWindow(display,windows->info.id,windows->info.screen);
           break;
         }
-        case RectanglePrimitive:
-        case FillRectanglePrimitive:
+        case RectangleElement:
+        case FillRectangleElement:
         {
           if ((rectangle_info.width > 3) && (rectangle_info.height > 3))
             {
@@ -4170,10 +4170,10 @@ static unsigned int XDrawEditImage(Display *display,
               XWithdrawWindow(display,windows->info.id,windows->info.screen);
           break;
         }
-        case CirclePrimitive:
-        case FillCirclePrimitive:
-        case EllipsePrimitive:
-        case FillEllipsePrimitive:
+        case CircleElement:
+        case FillCircleElement:
+        case EllipseElement:
+        case FillEllipseElement:
         {
           if ((rectangle_info.width > 3) && (rectangle_info.height > 3))
             {
@@ -4191,8 +4191,8 @@ static unsigned int XDrawEditImage(Display *display,
               XWithdrawWindow(display,windows->info.id,windows->info.screen);
           break;
         }
-        case PolygonPrimitive:
-        case FillPolygonPrimitive:
+        case PolygonElement:
+        case FillPolygonElement:
         {
           if (number_coordinates > 1)
             XDrawLines(display,windows->image.id,
@@ -4220,9 +4220,9 @@ static unsigned int XDrawEditImage(Display *display,
         Wait for next event.
       */
       XScreenEvent(display,windows,&event);
-      switch (primitive)
+      switch (element)
       {
-        case PointPrimitive:
+        case PointElement:
         default:
         {
           if (number_coordinates > 1)
@@ -4231,33 +4231,33 @@ static unsigned int XDrawEditImage(Display *display,
               number_coordinates,CoordModeOrigin);
           break;
         }
-        case LinePrimitive:
+        case LineElement:
         {
           if (distance > 9)
             XHighlightLine(display,windows->image.id,
               windows->image.highlight_context,&line_info);
           break;
         }
-        case RectanglePrimitive:
-        case FillRectanglePrimitive:
+        case RectangleElement:
+        case FillRectangleElement:
         {
           if ((rectangle_info.width > 3) && (rectangle_info.height > 3))
             XHighlightRectangle(display,windows->image.id,
               windows->image.highlight_context,&rectangle_info);
           break;
         }
-        case CirclePrimitive:
-        case FillCirclePrimitive:
-        case EllipsePrimitive:
-        case FillEllipsePrimitive:
+        case CircleElement:
+        case FillCircleElement:
+        case EllipseElement:
+        case FillEllipseElement:
         {
           if ((rectangle_info.width > 3) && (rectangle_info.height > 3))
             XHighlightEllipse(display,windows->image.id,
               windows->image.highlight_context,&rectangle_info);
           break;
         }
-        case PolygonPrimitive:
-        case FillPolygonPrimitive:
+        case PolygonElement:
+        case FillPolygonElement:
         {
           if (number_coordinates > 1)
             XDrawLines(display,windows->image.id,
@@ -4276,7 +4276,7 @@ static unsigned int XDrawEditImage(Display *display,
         case ButtonRelease:
         {
           /*
-            User has committed to primitive.
+            User has committed to element.
           */
           line_info.x2=event.xbutton.x;
           line_info.y2=event.xbutton.y;
@@ -4284,8 +4284,8 @@ static unsigned int XDrawEditImage(Display *display,
           rectangle_info.y=event.xbutton.y;
           coordinate_info[number_coordinates].x=event.xbutton.x;
           coordinate_info[number_coordinates].y=event.xbutton.y;
-          if (((primitive != PolygonPrimitive) &&
-               (primitive != FillPolygonPrimitive)) || (distance <= 9))
+          if (((element != PolygonElement) &&
+               (element != FillPolygonElement)) || (distance <= 9))
             {
               state|=ExitState;
               break;
@@ -4311,7 +4311,7 @@ static unsigned int XDrawEditImage(Display *display,
         {
           if (event.xmotion.window != windows->image.id)
             break;
-          if (primitive != PointPrimitive)
+          if (element != PointElement)
             {
               line_info.x2=event.xmotion.x;
               line_info.y2=event.xmotion.y;
@@ -4381,8 +4381,8 @@ static unsigned int XDrawEditImage(Display *display,
         }
     } while (!(state & ExitState));
     XSetFunction(display,windows->image.highlight_context,GXcopy);
-    if ((primitive == PointPrimitive) || (primitive == PolygonPrimitive) ||
-        (primitive == FillPolygonPrimitive))
+    if ((element == PointElement) || (element == PolygonElement) ||
+        (element == FillPolygonElement))
       {
         /*
           Determine polygon bounding box.
@@ -4414,8 +4414,8 @@ static unsigned int XDrawEditImage(Display *display,
       if (distance <= 9)
         continue;
       else
-        if ((primitive == RectanglePrimitive) ||
-            (primitive == CirclePrimitive) || (primitive == EllipsePrimitive))
+        if ((element == RectangleElement) ||
+            (element == CircleElement) || (element == EllipseElement))
           {
             rectangle_info.width--;
             rectangle_info.height--;
@@ -4455,7 +4455,7 @@ static unsigned int XDrawEditImage(Display *display,
       Initialize drawing attributes.
     */
     draw_info.degrees=0.0;
-    draw_info.primitive=primitive;
+    draw_info.element=element;
     draw_info.stipple=stipple;
     draw_info.line_width=line_width;
     draw_info.line_info=line_info;
@@ -4489,7 +4489,7 @@ static unsigned int XDrawEditImage(Display *display,
     draw_info.coordinate_info=coordinate_info;
     windows->pixel_info->pen_color=windows->pixel_info->pen_colors[pen_id];
     /*
-      Draw primitive on image.
+      Draw element on image.
     */
     XSetCursorState(display,windows,True);
     XCheckRefreshWindows(display,windows);

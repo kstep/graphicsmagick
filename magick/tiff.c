@@ -248,7 +248,7 @@ static unsigned int IsTIFF(const unsigned char *magick,
   if ((magick[0] == 0x4D) && (magick[1] == 0x4D))
     if ((magick[2] == 0x00) && (magick[3] == 0x2A))
       return(True);
-  if (strncmp((char *) magick,"\111\111\052\000",4) == 0)
+  if (LatinNCompare((char *) magick,"\111\111\052\000",4) == 0)
     return(True);
   return(False);
 }
@@ -350,9 +350,9 @@ static unsigned int ReadNewsProfile(char *text,long int length,Image *image,
   while (length > 0)
   {
 #if defined(GET_ONLY_IPTC_DATA)
-    if (strncmp((char *) p,"8BIM44",6) == 0)
+    if (LatinNCompare((char *) p,"8BIM44",6) == 0)
 #else
-    if (strncmp((char *) p,"8BIM",4) == 0)
+    if (LatinNCompare((char *) p,"8BIM",4) == 0)
 #endif
       break;
     length-=2;

@@ -87,6 +87,7 @@
 %    -emboss order        emboss an image
 %    -enhance             apply a digital filter to enhance a noisy image
 %    -equalize            perform histogram equalization to an image
+%    -fill                paint the interior of a drawing primitive
 %    -filter type         use this filter when resizing an image
 %    -flip                flip image in the vertical direction
 %    -flop                flop image in the horizontal direction
@@ -285,6 +286,7 @@ static void Usage(const char *client_name)
       "-emboss order        emboss an image",
       "-enhance             apply a digital filter to enhance a noisy image",
       "-equalize            perform histogram equalization to an image",
+      "-fill                paint the interior of a drawing primitive",
       "-filter type         use this filter when resizing an image",
       "-flip                flip image in the vertical direction",
       "-flop                flop image in the horizontal direction",
@@ -838,7 +840,9 @@ int main(int argc,char **argv)
         }
         case 'f':
         {
-          if (strncmp("filter",option+1,3) == 0)
+          if (strncmp("fill",option+1,4) == 0)
+            break;
+          if (strncmp("filter",option+1,4) == 0)
             {
               if (*option == '-')
                 {

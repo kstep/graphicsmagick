@@ -95,7 +95,7 @@ static unsigned int IsEPT(const unsigned char *magick,const unsigned int length)
 {
   if (length < 4)
     return(False);
-  if (strncmp((char *) magick,"\305\320\323\306",4) == 0)
+  if (LatinNCompare((char *) magick,"\305\320\323\306",4) == 0)
     return(True);
   return(False);
 }

@@ -342,7 +342,7 @@ static unsigned int IsPCD(const unsigned char *magick,const unsigned int length)
 {
   if (length < 4)
     return(False);
-  if (strncmp((char *) magick,"PCD_",4) == 0)
+  if (LatinNCompare((char *) magick,"PCD_",4) == 0)
     return(True);
   return(False);
 }
@@ -471,9 +471,9 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (header == (unsigned char *) NULL)
     ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
   status=ReadBlob(image,3*0x800,(char *) header);
-  overview=strncmp((char *) header,"PCD_OPA",7) == 0;
+  overview=LatinNCompare((char *) header,"PCD_OPA",7) == 0;
   if ((status == False) ||
-      ((strncmp((char *) header+0x800,"PCD",3) != 0) && !overview))
+      ((LatinNCompare((char *) header+0x800,"PCD",3) != 0) && !overview))
     ThrowReaderException(CorruptImageWarning,"Not a PCD image file",image);
   rotate=header[0x0e02] & 0x03;
   number_images=(header[10] << 8) | header[11];

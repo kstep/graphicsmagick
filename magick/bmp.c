@@ -346,15 +346,15 @@ static unsigned int IsBMP(const unsigned char *magick,const unsigned int length)
 {
   if (length < 2)
     return(False);
-  if (strncmp((char *) magick,"BM",2) == 0)
+  if (LatinNCompare((char *) magick,"BM",2) == 0)
     return(True);
-  if (strncmp((char *) magick,"IC",2) == 0)
+  if (LatinNCompare((char *) magick,"IC",2) == 0)
     return(True);
-  if (strncmp((char *) magick,"PI",2) == 0)
+  if (LatinNCompare((char *) magick,"PI",2) == 0)
     return(True);
-  if (strncmp((char *) magick,"CI",2) == 0)
+  if (LatinNCompare((char *) magick,"CI",2) == 0)
     return(True);
-  if (strncmp((char *) magick,"CP",2) == 0)
+  if (LatinNCompare((char *) magick,"CP",2) == 0)
     return(True);
   return(False);
 }
@@ -491,7 +491,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
       Verify BMP identifier.
     */
     start_position=TellBlob(image)-2;
-    if ((status == False) || (strncmp((char *) magick,"BM",2) != 0))
+    if ((status == False) || (LatinNCompare((char *) magick,"BM",2) != 0))
       ThrowReaderException(CorruptImageWarning,"Not a BMP image file",image);
     bmp_header.file_size=LSBFirstReadLong(image);
     bmp_header.reserved[0]=LSBFirstReadShort(image);
@@ -853,7 +853,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         break;
     *magick='\0';
     (void) ReadBlob(image,2,(char *) magick);
-    if (strncmp((char *) magick,"BM",2) == 0)
+    if (LatinNCompare((char *) magick,"BM",2) == 0)
       {
         /*
           Allocate next image structure.
@@ -867,7 +867,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         image=image->next;
         ProgressMonitor(LoadImagesText,TellBlob(image),image->filesize);
       }
-  } while (strncmp((char *) magick,"BM",2) == 0);
+  } while (LatinNCompare((char *) magick,"BM",2) == 0);
   while (image->previous != (Image *) NULL)
     image=image->previous;
   CloseBlob(image);

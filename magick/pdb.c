@@ -152,7 +152,7 @@ static unsigned int IsPDB(const unsigned char *magick,const unsigned int length)
 {
   if (length < 68)
     return(False);
-  if (strncmp((char *) (magick+60),"vIMGView",8) == 0)
+  if (LatinNCompare((char *) (magick+60),"vIMGView",8) == 0)
     return(True);
   return(False);
 }

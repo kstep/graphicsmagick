@@ -3113,20 +3113,20 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
     option=argv[i];
     if ((Extent(option) <= 1) || ((*option != '-') && (*option != '+')))
       continue;
-    if (strncmp("antialias",option+1,3) == 0)
+    if (LatinNCompare("antialias",option+1,3) == 0)
       {
         clone_info->antialias=(*option == '-');
         draw_info->antialias=(*option == '-');
         continue;
       }
-    if (strncmp("-background",option,6) == 0)
+    if (LatinNCompare("-background",option,6) == 0)
       {
         (void) QueryColorDatabase(argv[++i],&target_color);
         clone_info->background_color=target_color;
         (*image)->background_color=target_color;
         continue;
       }
-    if (strncmp("-blur",option,4) == 0)
+    if (LatinNCompare("-blur",option,4) == 0)
       {
         Image
           *blurred_image;
@@ -3172,7 +3172,7 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
         *image=bordered_image;
         continue;
       }
-    if (strncmp("-bordercolor",option,8) == 0)
+    if (LatinNCompare("-bordercolor",option,8) == 0)
       {
         (void) QueryColorDatabase(argv[++i],&target_color);
         clone_info->border_color=target_color;
@@ -3184,7 +3184,7 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
         (void) CloneString(&draw_info->box,argv[++i]);
         continue;
       }
-    if (strncmp("-charcoal",option,3) == 0)
+    if (LatinNCompare("-charcoal",option,3) == 0)
       {
         char
           *commands[7];
@@ -3211,7 +3211,7 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
         (void) QuantizeImage(&quantize_info,*image);
         continue;
       }
-    if (strncmp("-colorize",option,8) == 0)
+    if (LatinNCompare("-colorize",option,8) == 0)
       {
         Image
           *colorized_image;
@@ -3232,7 +3232,7 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
         *image=colorized_image;
         continue;
       }
-    if (strncmp("-compress",option,6) == 0)
+    if (LatinNCompare("-compress",option,6) == 0)
       {
         if (*option == '-')
           {
@@ -3266,7 +3266,7 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
         quantize_info.number_colors=atoi(argv[++i]);
         continue;
       }
-    if (strncmp("-colorspace",option,8) == 0)
+    if (LatinNCompare("-colorspace",option,8) == 0)
       {
         option=argv[++i];
         if (Latin1Compare("cmyk",option) == 0)
@@ -3307,7 +3307,7 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
         clone_info->colorspace=quantize_info.colorspace;
         continue;
       }
-    if (strncmp("comment",option+1,4) == 0)
+    if (LatinNCompare("comment",option+1,4) == 0)
       {
         if (*option == '-')
           (void) SetImageAttribute(*image,"Comment",argv[++i]);
@@ -3315,17 +3315,17 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
           (void) SetImageAttribute(*image,"Comment",(char *) NULL);
         continue;
       }
-    if (strncmp("contrast",option+1,3) == 0)
+    if (LatinNCompare("contrast",option+1,3) == 0)
       {
         ContrastImage(*image,(unsigned int) (*option == '-'));
         continue;
       }
-    if (strncmp("-crop",option,3) == 0)
+    if (LatinNCompare("-crop",option,3) == 0)
       {
         TransformImage(image,argv[++i],(char *) NULL);
         continue;
       }
-    if (strncmp("-cycle",option,3) == 0)
+    if (LatinNCompare("-cycle",option,3) == 0)
       {
         /*
           Cycle an image colormap.
@@ -3333,7 +3333,7 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
         CycleColormapImage(*image,atoi(argv[++i]));
         continue;
       }
-    if (strncmp("-density",option,4) == 0)
+    if (LatinNCompare("-density",option,4) == 0)
       {
         int
           count;
@@ -3347,12 +3347,12 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
         if (count != 2)
           (*image)->y_resolution=(*image)->x_resolution;
       }
-    if (strncmp("-depth",option,4) == 0)
+    if (LatinNCompare("-depth",option,4) == 0)
       {
         (*image)->depth=atoi(argv[++i]) <= 8 ? 8 : 16;
         continue;
       }
-    if (strncmp("-despeckle",option,4) == 0)
+    if (LatinNCompare("-despeckle",option,4) == 0)
       {
         Image
           *despeckled_image;
@@ -3367,18 +3367,18 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
         *image=despeckled_image;
         continue;
       }
-    if (strncmp("-display",option,6) == 0)
+    if (LatinNCompare("-display",option,6) == 0)
       {
         (void) CloneString(&clone_info->server_name,argv[++i]);
         continue;
       }
-    if (strncmp("dither",option+1,3) == 0)
+    if (LatinNCompare("dither",option+1,3) == 0)
       {
         clone_info->dither=(*option == '-');
         quantize_info.dither=(*option == '-');
         continue;
       }
-    if (strncmp("-draw",option,3) == 0)
+    if (LatinNCompare("-draw",option,3) == 0)
       {
         /*
           Draw image.
@@ -3387,7 +3387,7 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
         DrawImage(*image,draw_info);
         continue;
       }
-    if (strncmp("-edge",option,3) == 0)
+    if (LatinNCompare("-edge",option,3) == 0)
       {
         Image
           *edge_image;
@@ -3406,7 +3406,7 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
         *image=edge_image;
         continue;
       }
-    if (strncmp("-emboss",option,3) == 0)
+    if (LatinNCompare("-emboss",option,3) == 0)
       {
         Image
           *emboss_image;
@@ -3425,7 +3425,7 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
         *image=emboss_image;
         continue;
       }
-    if (strncmp("-enhance",option,3) == 0)
+    if (LatinNCompare("-enhance",option,3) == 0)
       {
         Image
           *enhanced_image;
@@ -3440,7 +3440,7 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
         *image=enhanced_image;
         continue;
       }
-    if (strncmp("-equalize",option,3) == 0)
+    if (LatinNCompare("-equalize",option,3) == 0)
       {
         /*
           Equalize image.
@@ -3448,7 +3448,12 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
         EqualizeImage(*image);
         continue;
       }
-    if (strncmp("filter",option+1,3) == 0)
+    if (LatinNCompare("fill",option+1,4) == 0)
+      {
+        draw_info->fill=(*option == '-');
+        continue;
+      }
+    if (LatinNCompare("filter",option+1,4) == 0)
       {
         if (*option == '-')
           {
@@ -3491,7 +3496,7 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
           }
         continue;
       }
-    if (strncmp("-flip",option,4) == 0)
+    if (LatinNCompare("-flip",option,4) == 0)
       {
         Image
           *flipped_image;
@@ -3506,7 +3511,7 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
         *image=flipped_image;
         continue;
       }
-    if (strncmp("-flop",option,4) == 0)
+    if (LatinNCompare("-flop",option,4) == 0)
       {
         Image
           *flopped_image;
@@ -3556,7 +3561,7 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
         *image=framed_image;
         continue;
       }
-    if (strncmp("-fuzz",option,3) == 0)
+    if (LatinNCompare("-fuzz",option,3) == 0)
       {
         (*image)->fuzz=atoi(argv[++i]);
         continue;
@@ -3567,7 +3572,7 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
         (void) CloneString(&draw_info->font,argv[++i]);
         continue;
       }
-    if (strncmp("gamma",option+1,3) == 0)
+    if (LatinNCompare("gamma",option+1,3) == 0)
       {
         if (*option == '+')
           (*image)->gamma=atof(argv[++i]);
@@ -3598,7 +3603,7 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
         *image=blur_image;
         continue;
       }
-    if (strncmp("-geometry",option,4) == 0)
+    if (LatinNCompare("-geometry",option,4) == 0)
       {
         Image
           *zoom_image;
@@ -3619,7 +3624,7 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
         *image=zoom_image;
         continue;
       }
-    if (strncmp("gravity",option+1,2) == 0)
+    if (LatinNCompare("gravity",option+1,2) == 0)
       {
         draw_info->gravity=NorthWestGravity;
         if (*option == '-')
@@ -3646,7 +3651,7 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
           }
         continue;
       }
-    if (strncmp("-implode",option,4) == 0)
+    if (LatinNCompare("-implode",option,4) == 0)
       {
         double
           amount;
@@ -3665,7 +3670,7 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
         *image=imploded_image;
         continue;
       }
-    if (strncmp("label",option+1,3) == 0)
+    if (LatinNCompare("label",option+1,3) == 0)
       {
         if (*option == '-')
           (void) SetImageAttribute(*image,"Label",argv[++i]);
@@ -3673,7 +3678,7 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
           (void) SetImageAttribute(*image,"Label",(char *) NULL);
         continue;
       }
-    if (strncmp("layer",option+1,3) == 0)
+    if (LatinNCompare("layer",option+1,3) == 0)
       {
         LayerType
           layer;
@@ -3694,7 +3699,7 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
         LayerImage(*image,layer);
         continue;
       }
-    if (strncmp("-linewidth",option,3) == 0)
+    if (LatinNCompare("-linewidth",option,3) == 0)
       {
         draw_info->linewidth=atof(argv[++i]);
         continue;
@@ -3716,14 +3721,14 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
         (*image)->matte=(*option == '-');
         continue;
       }
-    if (strncmp("-mattecolor",option,7) == 0)
+    if (LatinNCompare("-mattecolor",option,7) == 0)
       {
         (void) QueryColorDatabase(argv[++i],&target_color);
         clone_info->matte_color=target_color;
         (*image)->matte_color=target_color;
         continue;
       }
-    if (strncmp("-median",option,4) == 0)
+    if (LatinNCompare("-median",option,4) == 0)
       {
         Image
           *median_image;
@@ -3739,12 +3744,12 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
         *image=median_image;
         continue;
       }
-    if (strncmp("-modulate",option,4) == 0)
+    if (LatinNCompare("-modulate",option,4) == 0)
       {
         ModulateImage(*image,argv[++i]);
         continue;
       }
-    if (strncmp("-monochrome",option,4) == 0)
+    if (LatinNCompare("-monochrome",option,4) == 0)
       {
         clone_info->monochrome=True;
         quantize_info.number_colors=2;
@@ -3752,12 +3757,12 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
         quantize_info.colorspace=GRAYColorspace;
         continue;
       }
-    if (strncmp("negate",option+1,3) == 0)
+    if (LatinNCompare("negate",option+1,3) == 0)
       {
         NegateImage(*image,*option == '+');
         continue;
       }
-    if (strncmp("noise",option+1,4) == 0)
+    if (LatinNCompare("noise",option+1,4) == 0)
       {
         Image
           *noisy_image;
@@ -3793,12 +3798,12 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
         *image=noisy_image;
         continue;
       }
-    if (strncmp("-normalize",option,4) == 0)
+    if (LatinNCompare("-normalize",option,4) == 0)
       {
         NormalizeImage(*image);
         continue;
       }
-    if (strncmp("-opaque",option,3) == 0)
+    if (LatinNCompare("-opaque",option,3) == 0)
       {
         PixelPacket
           pen_color,
@@ -3811,7 +3816,7 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
         OpaqueImage(*image,target,pen_color);
         continue;
       }
-    if (strncmp("-paint",option,4) == 0)
+    if (LatinNCompare("-paint",option,4) == 0)
       {
         Image
           *paint_image;
@@ -3831,12 +3836,12 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
         (void) CloneString(&clone_info->pen,argv[++i]);
         continue;
       }
-    if (strncmp("pointsize",option+1,2) == 0)
+    if (LatinNCompare("pointsize",option+1,2) == 0)
       {
         clone_info->pointsize=atof(argv[++i]);
         continue;
       }
-    if (strncmp("profile",option+1,4) == 0)
+    if (LatinNCompare("profile",option+1,4) == 0)
       {
         Image
           *profile;
@@ -3907,7 +3912,7 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
         DestroyImage(profile);
         continue;
       }
-    if (strncmp("raise",option+1,2) == 0)
+    if (LatinNCompare("raise",option+1,2) == 0)
       {
         RectangleInfo
           raise_info;
@@ -3926,7 +3931,7 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
         RaiseImage(*image,&raise_info,*option == '-');
         continue;
       }
-    if (strncmp("region",option+1,3) == 0)
+    if (LatinNCompare("region",option+1,3) == 0)
       {
         Image
           *cropped_image;
@@ -3962,7 +3967,7 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
         *image=cropped_image;
         continue;
       }
-    if (strncmp("-roll",option,4) == 0)
+    if (LatinNCompare("-roll",option,4) == 0)
       {
         Image
           *rolled_image;
@@ -3980,7 +3985,7 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
         *image=rolled_image;
         continue;
       }
-    if (strncmp("-rotate",option,4) == 0)
+    if (LatinNCompare("-rotate",option,4) == 0)
       {
         double
           degrees;
@@ -4009,7 +4014,7 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
         *image=rotated_image;
         continue;
       }
-    if (strncmp("-sample",option,3) == 0)
+    if (LatinNCompare("-sample",option,3) == 0)
       {
         Image
           *sampled_image;
@@ -4029,10 +4034,10 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
         *image=sampled_image;
         continue;
       }
-    if (strncmp("sans",option+1,2) == 0)
+    if (LatinNCompare("sans",option+1,2) == 0)
       if (*option == '-')
         i++;
-    if (strncmp("-scale",option,4) == 0)
+    if (LatinNCompare("-scale",option,4) == 0)
       {
         Image
           *scale_image;
@@ -4058,7 +4063,7 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
         (*image)->scene=atoi(argv[++i]);
         continue;
       }
-    if (strncmp("-segment",option,4) == 0)
+    if (LatinNCompare("-segment",option,4) == 0)
       {
         double
           cluster_threshold,
@@ -4075,7 +4080,7 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
           (double) cluster_threshold,(double) smoothing_threshold);
         continue;
       }
-    if (strncmp("shade",option+1,5) == 0)
+    if (LatinNCompare("shade",option+1,5) == 0)
       {
         double
           azimuth,
@@ -4098,7 +4103,7 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
         *image=shade_image;
         continue;
       }
-    if (strncmp("-sharpen",option,5) == 0)
+    if (LatinNCompare("-sharpen",option,5) == 0)
       {
         Image
           *sharpen_image;
@@ -4117,7 +4122,7 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
         *image=sharpen_image;
         continue;
       }
-    if (strncmp("-shear",option,4) == 0)
+    if (LatinNCompare("-shear",option,4) == 0)
       {
         double
           x_shear,
@@ -4141,12 +4146,12 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
         *image=shear_image;
         continue;
       }
-    if (strncmp("-solarize",option,3) == 0)
+    if (LatinNCompare("-solarize",option,3) == 0)
       {
         SolarizeImage(*image,atof(argv[++i]));
         continue;
       }
-    if (strncmp("-spread",option,3) == 0)
+    if (LatinNCompare("-spread",option,3) == 0)
       {
         unsigned int
           amount;
@@ -4165,7 +4170,7 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
         *image=spread_image;
         continue;
       }
-    if (strncmp("-swirl",option,3) == 0)
+    if (LatinNCompare("-swirl",option,3) == 0)
       {
         double
           degrees;
@@ -4184,7 +4189,7 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
         *image=swirl_image;
         continue;
       }
-    if (strncmp("-threshold",option,3) == 0)
+    if (LatinNCompare("-threshold",option,3) == 0)
       {
         double
           threshold;
@@ -4196,7 +4201,7 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
         ThresholdImage(*image,threshold);
         continue;
       }
-    if (strncmp("-transparent",option,4) == 0)
+    if (LatinNCompare("-transparent",option,4) == 0)
       {
         PixelPacket
           target;
@@ -4206,12 +4211,12 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
         TransparentImage(*image,target);
         continue;
       }
-    if (strncmp("-treedepth",option,4) == 0)
+    if (LatinNCompare("-treedepth",option,4) == 0)
       {
         quantize_info.tree_depth=atoi(argv[++i]);
         continue;
       }
-    if (strncmp("units",option+1,3) == 0)
+    if (LatinNCompare("units",option+1,3) == 0)
       {
         (*image)->units=UndefinedResolution;
         if (*option == '-')
@@ -4224,7 +4229,7 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
           }
         continue;
       }
-    if (strncmp("verbose",option+1,3) == 0)
+    if (LatinNCompare("verbose",option+1,3) == 0)
       {
         clone_info->verbose=(*option == '-');
         quantize_info.measure_error=(*option == '-');
@@ -5331,7 +5336,7 @@ Export unsigned int SetImageInfo(ImageInfo *image_info,
       /*
         SGI and RGB are ambiguous;  TMP must be set explicitly.
       */
-      if (((strncmp(image_info->magick,"SGI",3) != 0) ||
+      if (((LatinNCompare(image_info->magick,"SGI",3) != 0) ||
           (Latin1Compare(magick,"RGB") != 0)) &&
           (Latin1Compare(magick,"TMP") != 0))
         (void) strcpy(image_info->magick,magick);
@@ -5445,26 +5450,26 @@ Export unsigned int SetImageInfo(ImageInfo *image_info,
     }
   DestroyImage(image);
   magick[MaxTextExtent-1]='\0';
-  if (strncmp(magick,"BEGMF",3) == 0)
+  if (LatinNCompare(magick,"BEGMF",3) == 0)
     (void) strcpy(image_info->magick,"CGM");
-  if (strncmp(magick,"digraph",7) == 0)
+  if (LatinNCompare(magick,"digraph",7) == 0)
     (void) strcpy(image_info->magick,"DOT");
-  if (strncmp(magick,"#FIG",4) == 0)
+  if (LatinNCompare(magick,"#FIG",4) == 0)
     (void) strcpy(image_info->magick,"FIG");
-  if (strncmp(magick,"#!/usr/local/bin/gnuplot",24) == 0)
+  if (LatinNCompare(magick,"#!/usr/local/bin/gnuplot",24) == 0)
     (void) strcpy(image_info->magick,"GPLT");
-  if (strncmp(magick,"IN;",3) == 0)
+  if (LatinNCompare(magick,"IN;",3) == 0)
     (void) strcpy(image_info->magick,"HPGL");
-  if (strncmp((char *) magick,"\033E\033&",4) == 0)
+  if (LatinNCompare((char *) magick,"\033E\033&",4) == 0)
     (void) strcpy(image_info->magick,"HPGL");
-  if (strncmp(magick+8,"ILBM",2) == 0)
+  if (LatinNCompare(magick+8,"ILBM",2) == 0)
     (void) strcpy(image_info->magick,"ILBM");
   if ((magick[0] == 0x00) && (magick[1] == 0x00))
     if ((magick[2] == 0x01) && ((unsigned char) magick[3] == 0xb3))
       (void) strcpy(image_info->magick,"M2V");
-  if (strncmp(magick,"#?RADIANCE",10) == 0)
+  if (LatinNCompare(magick,"#?RADIANCE",10) == 0)
     (void) strcpy(image_info->magick,"RAD");
-  if (strncmp(magick,"gimp xcf file",13) == 0)
+  if (LatinNCompare(magick,"gimp xcf file",13) == 0)
     (void) strcpy(image_info->magick,"XCF");
   for (r=GetMagickInfo((char *) NULL); r != (MagickInfo *) NULL; r=r->next)
     if (r->magick)

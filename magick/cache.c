@@ -97,9 +97,7 @@ static unsigned int IsCACHE(const unsigned char *magick,
 {
   if (length < 14)
     return(False);
-  if (strncmp((char *) magick,"id=MagickCache",14) == 0)
-    return(True);
-  if (strncmp((char *) magick,"Id=MagickCache",14) == 0)
+  if (LatinNCompare((char *) magick,"id=MagickCache",14) == 0)
     return(True);
   return(False);
 }

@@ -569,12 +569,11 @@ x=><i>integer</i>, y=><i>integer</i></td>
 <tr>
 <td>Draw</td>
 
-<td>primitive={point, line, rectangle, fillRectangle, circle, fillCircle,
-ellipse, fillEllipse, polyline, polygon, fillPolygon, bezier, color, matte,
-text, image, @<i>filename</i>}, points=><i>string</i>,
+<td>primitive={point, line, rectangle, arc, ellipse, circle, polyline, polygon,
+bezier, color, matte, text, image, @<i>filename</i>}, points=><i>string</i>,
 method=<i>{Point, Replace, Floodfill, FillToBorder, Reset}</i>,
-pen=><i>colorname</i>, bordercolor=><i>colorname</i>,
-linewidth=><i>float</i>, server=><i>string</i>,
+pen=><i>colorname</i>, fill=>{True, False}, linewidth=><i>float</i>, 
+bordercolor=><i>colorname</i>, server=><i>string</i>,
 x=><i>float</i>, y=><i>float</i>, rotate=><i>float</i></td>
 
 <td>annotate an image with one or more graphic primitives</td>

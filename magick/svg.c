@@ -96,9 +96,7 @@ static unsigned int IsSVG(const unsigned char *magick,
 {
   if (length < 5)
     return(False);
-  if (strncmp((char *) magick,"<?XML",5) == 0)
-    return(True);
-  if (strncmp((char *) magick,"<?xml",5) == 0)
+  if (LatinNCompare((char *) magick,"<?XML",5) == 0)
     return(True);
   return(False);
 }
@@ -558,7 +556,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (Latin1Compare(graphic_context[n].stroke,"none") != 0)
           (void) CloneString(&draw_info->pen,graphic_context[n].stroke);
         if ((Latin1Compare(graphic_context[n].fill,"none") != 0) ||
-            (strncmp(command,"fill",4) == 0))
+            (LatinNCompare(command,"fill",4) == 0))
           (void) CloneString(&draw_info->pen,graphic_context[n].fill);
         (void) QueryColorDatabase(draw_info->pen,&tile->background_color);
         SetImage(tile,(Quantum) (graphic_context[n].opacity*Opaque/100.0));
@@ -575,7 +573,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (status == False)
           ThrowReaderException(ResourceLimitWarning,
             "Unable to draw primitive",image);
-        if ((strncmp(command,"fill",4) == 0) &&
+        if ((LatinNCompare(command,"fill",4) == 0) &&
             (Latin1Compare(graphic_context[n].stroke,"none") != 0))
           {
             tile=ReadImage(clone_info,exception);

@@ -96,7 +96,7 @@ static unsigned int IsXPM(const unsigned char *magick,const unsigned int length)
 {
   if (length < 9)
     return(False);
-  if (strncmp((char *) magick,"/* XPM */",9) == 0)
+  if (LatinNCompare((char *) magick,"/* XPM */",9) == 0)
     return(True);
   return(False);
 }

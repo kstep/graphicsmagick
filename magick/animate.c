@@ -1932,7 +1932,7 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
                 /*
                   XDND.
                 */
-                if (strncmp((char *) data, "file:", 5) != 0)
+                if (LatinNCompare((char *) data,"file:",5) != 0)
                   {
                     XFree((void *) data);
                     break;

@@ -667,10 +667,6 @@ static void GenerateEllipse(PrimitiveInfo *primitive_info,PointInfo start,
   while (degrees.y < degrees.x)
     degrees.y+=360.0;
   p=primitive_info;
-  if ((primitive_info->primitive == FillEllipsePrimitive) &&
-      (fmod(degrees.y-degrees.x,360.0) != 0.0))
-    primitive_info->coordinates++;
-  p=primitive_info;
   for (angle=(degrees.x+1.0); angle <= degrees.y; angle+=1.0)
   {
     pixel.x=cos(DegreesToRadians(fmod(angle,360.0)))*end.x+start.x;
@@ -972,6 +968,11 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
     keyword[x]='\0';
     if (*keyword == '\0')
       break;
+    if (LatinNCompare("fill",keyword,4) == 0)
+      {
+        clone_info->fill=True;
+        (void) strcpy(keyword,keyword+4);
+      }
     primitive_type=UndefinedPrimitive;
     if (Latin1Compare("Point",keyword) == 0)
       primitive_type=PointPrimitive;
@@ -979,32 +980,18 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       primitive_type=LinePrimitive;
     if (Latin1Compare("Rectangle",keyword) == 0)
       primitive_type=RectanglePrimitive;
-    if (Latin1Compare("FillRectangle",keyword) == 0)
-      primitive_type=FillRectanglePrimitive;
     if (Latin1Compare("RoundRectangle",keyword) == 0)
       primitive_type=RoundRectanglePrimitive;
-    if (Latin1Compare("FillRoundRectangle",keyword) == 0)
-      primitive_type=FillRoundRectanglePrimitive;
     if (Latin1Compare("Arc",keyword) == 0)
       primitive_type=ArcPrimitive;
-    if (Latin1Compare("FillArc",keyword) == 0)
-      primitive_type=FillArcPrimitive;
     if (Latin1Compare("Ellipse",keyword) == 0)
       primitive_type=EllipsePrimitive;
-    if (Latin1Compare("FillEllipse",keyword) == 0)
-      primitive_type=FillEllipsePrimitive;
     if (Latin1Compare("Circle",keyword) == 0)
       primitive_type=CirclePrimitive;
-    if (Latin1Compare("FillCircle",keyword) == 0)
-      primitive_type=FillCirclePrimitive;
     if (Latin1Compare("Polyline",keyword) == 0)
       primitive_type=PolylinePrimitive;
-    if (Latin1Compare("FillPolyline",keyword) == 0)
-      primitive_type=FillPolylinePrimitive;
     if (Latin1Compare("Polygon",keyword) == 0)
       primitive_type=PolygonPrimitive;
-    if (Latin1Compare("FillPolygon",keyword) == 0)
-      primitive_type=FillPolygonPrimitive;
     if (Latin1Compare("Bezier",keyword) == 0)
       primitive_type=BezierPrimitive;
     if (Latin1Compare("Color",keyword) == 0)
@@ -1093,7 +1080,6 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
         break;
       }
       case RectanglePrimitive:
-      case FillRectanglePrimitive:
       {
         if (primitive_info[j].coordinates != 2)
           {
@@ -1101,15 +1087,12 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
             break;
           }
         primitive_info[j].primitive=RectanglePrimitive;
-        if (primitive_type == FillRectanglePrimitive)
-          primitive_info[j].primitive=FillRectanglePrimitive;
         GenerateRectangle(primitive_info+j,primitive_info[j].pixel,
           primitive_info[j+1].pixel);
         i=j+primitive_info[j].coordinates;
         break;
       }
       case RoundRectanglePrimitive:
-      case FillRoundRectanglePrimitive:
       {
         if (primitive_info[j].coordinates != 3)
           {
@@ -1117,15 +1100,12 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
             break;
           }
         primitive_info[j].primitive=PolygonPrimitive;
-        if (primitive_type == FillRoundRectanglePrimitive)
-          primitive_info[j].primitive=FillPolygonPrimitive;
         GenerateRoundRectangle(primitive_info+j,primitive_info[j].pixel,
           primitive_info[j+1].pixel,primitive_info[j+2].pixel);
         i=j+primitive_info[j].coordinates;
         break;
       }
       case ArcPrimitive:
-      case FillArcPrimitive:
       {
         if (primitive_info[j].coordinates != 3)
           {
@@ -1133,15 +1113,12 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
             break;
           }
         primitive_info[j].primitive=PolygonPrimitive;
-        if (primitive_type == FillArcPrimitive)
-          primitive_info[j].primitive=FillPolygonPrimitive;
         GenerateArc(primitive_info+j,primitive_info[j].pixel,
           primitive_info[j+1].pixel,primitive_info[j+2].pixel);
         i=j+primitive_info[j].coordinates;
         break;
       }
       case EllipsePrimitive:
-      case FillEllipsePrimitive:
       {
         if (primitive_info[j].coordinates != 3)
           {
@@ -1149,15 +1126,12 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
             break;
           }
         primitive_info[j].primitive=PolygonPrimitive;
-        if (primitive_type == FillEllipsePrimitive)
-          primitive_info[j].primitive=FillPolygonPrimitive;
         GenerateEllipse(primitive_info+j,primitive_info[j].pixel,
           primitive_info[j+1].pixel,primitive_info[j+2].pixel);
         i=j+primitive_info[j].coordinates;
         break;
       }
       case CirclePrimitive:
-      case FillCirclePrimitive:
       {
         if (primitive_info[j].coordinates != 2)
           {
@@ -1165,15 +1139,12 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
             break;
           }
         primitive_info[j].primitive=CirclePrimitive;
-        if (primitive_type == FillCirclePrimitive)
-          primitive_info[j].primitive=FillCirclePrimitive;
         radius=GenerateCircle(primitive_info+j,primitive_info[j].pixel,
           primitive_info[j+1].pixel);
         i=j+primitive_info[j].coordinates;
         break;
       }
       case PolylinePrimitive:
-      case FillPolylinePrimitive:
       {
         if (primitive_info[j].coordinates < 3)
           {
@@ -1183,7 +1154,6 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
         break;
       }
       case PolygonPrimitive:
-      case FillPolygonPrimitive:
       {
         if (primitive_info[j].coordinates < 3)
           {
@@ -1514,8 +1484,9 @@ Export void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
   draw_info->pen=AllocateString(image_info->pen);
   draw_info->box=(char *) NULL;
   draw_info->antialias=image_info->antialias;
-  draw_info->linewidth=1.0;
+  draw_info->fill=False;
   draw_info->gravity=NorthWestGravity;
+  draw_info->linewidth=1.0;
   draw_info->pointsize=image_info->pointsize;
   draw_info->translate.x=0.0;
   draw_info->translate.y=0.0;
@@ -1675,6 +1646,15 @@ static Quantum InsidePrimitive(PrimitiveInfo *primitive_info,
       }
       case RectanglePrimitive:
       {
+        if (draw_info->fill)
+          {
+            if ((pixel->x >= (int) (Min(p->pixel.x,q->pixel.x)+0.5)) &&
+                (pixel->x <= (int) (Max(p->pixel.x,q->pixel.x)+0.5)) &&
+                (pixel->y >= (int) (Min(p->pixel.y,q->pixel.y)+0.5)) &&
+                (pixel->y <= (int) (Max(p->pixel.y,q->pixel.y)+0.5)))
+              opacity=Opaque;
+            break;
+          }
         if (((pixel->x >= (int) (Min(p->pixel.x-mid,q->pixel.x+mid)+0.5)) &&
              (pixel->x < (int) (Max(p->pixel.x-mid,q->pixel.x+mid)+0.5)) &&
              (pixel->y >= (int) (Min(p->pixel.y-mid,q->pixel.y+mid)+0.5)) &&
@@ -1686,17 +1666,26 @@ static Quantum InsidePrimitive(PrimitiveInfo *primitive_info,
           opacity=Opaque;
         break;
       }
-      case FillRectanglePrimitive:
-      {
-        if ((pixel->x >= (int) (Min(p->pixel.x,q->pixel.x)+0.5)) &&
-            (pixel->x <= (int) (Max(p->pixel.x,q->pixel.x)+0.5)) &&
-            (pixel->y >= (int) (Min(p->pixel.y,q->pixel.y)+0.5)) &&
-            (pixel->y <= (int) (Max(p->pixel.y,q->pixel.y)+0.5)))
-          opacity=Opaque;
-        break;
-      }
       case CirclePrimitive:
       {
+        if (draw_info->fill)
+          {
+            alpha=p->pixel.x-pixel->x;
+            beta=p->pixel.y-pixel->y;
+            distance=sqrt(alpha*alpha+beta*beta);
+            alpha=p->pixel.x-q->pixel.x;
+            beta=p->pixel.y-q->pixel.y;
+            radius=sqrt(alpha*alpha+beta*beta);
+            if (distance <= (radius-1.0))
+              opacity=Opaque;
+            else
+              if (distance < (radius+1.0))
+                {
+                  alpha=(radius-distance+1.0)/2.0;
+                  opacity=Max(opacity,Opaque*alpha*alpha);
+                }
+            break;
+          }
         alpha=p->pixel.x-pixel->x;
         beta=p->pixel.y-pixel->y;
         distance=sqrt(alpha*alpha+beta*beta);
@@ -1716,39 +1705,8 @@ static Quantum InsidePrimitive(PrimitiveInfo *primitive_info,
           }
         break;
       }
-      case FillCirclePrimitive:
-      {
-        alpha=p->pixel.x-pixel->x;
-        beta=p->pixel.y-pixel->y;
-        distance=sqrt(alpha*alpha+beta*beta);
-        alpha=p->pixel.x-q->pixel.x;
-        beta=p->pixel.y-q->pixel.y;
-        radius=sqrt(alpha*alpha+beta*beta);
-        if (distance <= (radius-1.0))
-          opacity=Opaque;
-        else
-          if (distance < (radius+1.0))
-            {
-              alpha=(radius-distance+1.0)/2.0;
-              opacity=Max(opacity,Opaque*alpha*alpha);
-            }
-        break;
-      }
       case PolylinePrimitive:
       case PolygonPrimitive:
-      {
-        unsigned int
-          poly_opacity;
-
-        poly_opacity=Transparent;
-        for ( ; (p < q) && (poly_opacity != Opaque); p++)
-          poly_opacity=PixelOnLine(pixel,&p->pixel,&(p+1)->pixel,mid,
-            Max(opacity,poly_opacity));
-        opacity=Max(opacity,poly_opacity);
-        break;
-      }
-      case FillPolylinePrimitive:
-      case FillPolygonPrimitive:
       {
         double
           minimum_distance;
@@ -1760,6 +1718,15 @@ static Quantum InsidePrimitive(PrimitiveInfo *primitive_info,
         unsigned int
           poly_opacity;
 
+        if (!draw_info->fill)
+          {
+            poly_opacity=Transparent;
+            for ( ; (p < q) && (poly_opacity != Opaque); p++)
+              poly_opacity=PixelOnLine(pixel,&p->pixel,&(p+1)->pixel,mid,
+                Max(opacity,poly_opacity));
+            opacity=Max(opacity,poly_opacity);
+            break;
+          }
         minimum_distance=DistanceToLine(pixel,&p->pixel,&q->pixel);
         crossings=0;
         if ((pixel->y < q->pixel.y) != (pixel->y < p->pixel.y))

@@ -96,7 +96,7 @@ static unsigned int IsIPTC(const unsigned char *magick,
 {
   if (length < 2)
     return(False);
-  if (strncmp((char *) magick,"\034\002",2) == 0)
+  if (LatinNCompare((char *) magick,"\034\002",2) == 0)
     return(True);
   return(False);
 }

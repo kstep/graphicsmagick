@@ -1963,38 +1963,38 @@ Export unsigned int XDrawImage(Display *display,const XPixelInfo *pixel,
   XSetForeground(display,draw_context,(unsigned long) (~0));
   XSetFillStyle(display,draw_context,FillOpaqueStippled);
   XSetStipple(display,draw_context,draw_info->stipple);
-  switch (draw_info->primitive)
+  switch (draw_info->element)
   {
-    case PointPrimitive:
+    case PointElement:
     default:
     {
       XDrawLines(display,draw_pixmap,draw_context,draw_info->coordinate_info,
         draw_info->number_coordinates,CoordModeOrigin);
       break;
     }
-    case LinePrimitive:
+    case LineElement:
     {
       XDrawLine(display,draw_pixmap,draw_context,draw_info->line_info.x1,
         draw_info->line_info.y1,draw_info->line_info.x2,
         draw_info->line_info.y2);
       break;
     }
-    case RectanglePrimitive:
+    case RectangleElement:
     {
       XDrawRectangle(display,draw_pixmap,draw_context,
         draw_info->rectangle_info.x,draw_info->rectangle_info.y,
         draw_info->rectangle_info.width,draw_info->rectangle_info.height);
       break;
     }
-    case FillRectanglePrimitive:
+    case FillRectangleElement:
     {
       XFillRectangle(display,draw_pixmap,draw_context,
         draw_info->rectangle_info.x,draw_info->rectangle_info.y,
         draw_info->rectangle_info.width,draw_info->rectangle_info.height);
       break;
     }
-    case CirclePrimitive:
-    case EllipsePrimitive:
+    case CircleElement:
+    case EllipseElement:
     {
       XDrawArc(display,draw_pixmap,draw_context,
         draw_info->rectangle_info.x,draw_info->rectangle_info.y,
@@ -2002,8 +2002,8 @@ Export unsigned int XDrawImage(Display *display,const XPixelInfo *pixel,
         0,360*64);
       break;
     }
-    case FillCirclePrimitive:
-    case FillEllipsePrimitive:
+    case FillCircleElement:
+    case FillEllipseElement:
     {
       XFillArc(display,draw_pixmap,draw_context,
         draw_info->rectangle_info.x,draw_info->rectangle_info.y,
@@ -2011,7 +2011,7 @@ Export unsigned int XDrawImage(Display *display,const XPixelInfo *pixel,
         0,360*64);
       break;
     }
-    case PolygonPrimitive:
+    case PolygonElement:
     {
       XPoint
         *coordinate_info;
@@ -2025,7 +2025,7 @@ Export unsigned int XDrawImage(Display *display,const XPixelInfo *pixel,
         coordinate_info[0].x,coordinate_info[0].y);
       break;
     }
-    case FillPolygonPrimitive:
+    case FillPolygonElement:
     {
       XFillPolygon(display,draw_pixmap,draw_context,draw_info->coordinate_info,
         draw_info->number_coordinates,Complex,CoordModeOrigin);

@@ -59,6 +59,7 @@ extern Export char
 extern Export int
   GetGeometry(const char *,int *,int *,unsigned int *,unsigned int *),
   GlobExpression(const char *,const char *),
+  LatinNCompare(const char *,const char *,size_t),
   Latin1Compare(const char *,const char *),
   MultilineCensus(const char *),
   SystemCommand(const unsigned int,const char *);

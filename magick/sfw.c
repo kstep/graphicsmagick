@@ -89,7 +89,7 @@ static unsigned int IsSFW(const unsigned char *magick,const unsigned int length)
 {
   if (length < 5)
     return(False);
-  if (strncmp((char *) magick,"SFW94",5) == 0)
+  if (LatinNCompare((char *) magick,"SFW94",5) == 0)
     return(True);
   return(False);
 }
@@ -243,7 +243,7 @@ static Image *ReadSFWImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (buffer == (unsigned char *) NULL)
     ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
   status=ReadBlob(image,image->filesize,(char *) buffer);
-  if ((status == False) || (strncmp((char *) buffer,"SFW",3) != 0))
+  if ((status == False) || (LatinNCompare((char *) buffer,"SFW",3) != 0))
     ThrowReaderException(CorruptImageWarning,"Not a SFW image file",image);
   CloseBlob(image);
   DestroyImage(image);
