@@ -1887,12 +1887,16 @@ static void magick_font_map( wmfAPI* API, wmfFont* font)
     *type_info,
     *type_info_base;
 
+  const char
+    *wmf_font_name;
+
   if (font == 0)
     return;
 
   font_data = (wmfFontData*)API->font_data;
   font->user_data = font_data->user_data;
   magick_font = (wmf_magick_font_t*)font->user_data;
+  wmf_font_name = WMF_FONT_NAME(font);
 
   LiberateMemory((void**)&magick_font->ps_name);
 
@@ -1904,6 +1908,9 @@ static void magick_font_map( wmfAPI* API, wmfFont* font)
                      exception.reason,exception.description);
       return;
     }
+
+  /* Certain short-hand font names are not the proper names and should
+     be promoted to the proper names */
 
   /* Look for a family-based best-match */
   if(!magick_font->ps_name)
@@ -1920,7 +1927,7 @@ static void magick_font_map( wmfAPI* API, wmfFont* font)
       /* printf("Desired weight  = %i\n", WMF_FONT_WEIGHT(font)); */
       for ( type_info=type_info_base; type_info != 0; type_info=type_info->next )
         {
-          if(LocaleCompare(WMF_FONT_NAME(font),type_info->family) == 0)
+          if(LocaleCompare(wmf_font_name,type_info->family) == 0)
             {
               double
                 weight;
@@ -1948,7 +1955,7 @@ static void magick_font_map( wmfAPI* API, wmfFont* font)
     {
       for ( type_info=type_info_base; type_info != 0; type_info=type_info->next)
         {
-          if(LocaleCompare(WMF_FONT_NAME(font),type_info->description) == 0)
+          if(LocaleCompare(wmf_font_name,type_info->description) == 0)
             {
               CloneString(&magick_font->ps_name,type_info->name);
               break;
@@ -1971,19 +1978,19 @@ static void magick_font_map( wmfAPI* API, wmfFont* font)
       if( WMF_FONT_WEIGHT(font) != 0 )
         target_weight = WMF_FONT_WEIGHT(font);
 
-      if( (target_weight > 550) || ((strstr(WMF_FONT_NAME(font),"Bold") ||
-                                     strstr(WMF_FONT_NAME(font),"Heavy") ||
-                                     strstr(WMF_FONT_NAME(font),"Black"))) )
+      if( (target_weight > 550) || ((strstr(wmf_font_name,"Bold") ||
+                                     strstr(wmf_font_name,"Heavy") ||
+                                     strstr(wmf_font_name,"Black"))) )
         want_bold = True;
 
-      if( (WMF_FONT_ITALIC(font)) || ((strstr(WMF_FONT_NAME(font),"Italic") ||
-                                       strstr(WMF_FONT_NAME(font),"Oblique"))) )
+      if( (WMF_FONT_ITALIC(font)) || ((strstr(wmf_font_name,"Italic") ||
+                                       strstr(wmf_font_name,"Oblique"))) )
         want_italic = True;
 
       strcpy(target,"Times");
       for( i=0; SubFontMap[i].name != NULL; i++ )
         {
-          if(LocaleCompare(WMF_FONT_NAME(font), SubFontMap[i].name) == 0)
+          if(LocaleCompare(wmf_font_name, SubFontMap[i].name) == 0)
             {
               strcpy(target,SubFontMap[i].mapping);
               break;
@@ -2493,9 +2500,7 @@ ModuleExport void RegisterWMFImage(void)
   entry = SetMagickInfo("WMF");
   entry->decoder = ReadWMFImage2;
   entry->description = AllocateString("Windows Meta File");
-#if defined(HasWIN32WMFAPI)
   entry->blob_support = False;
-#endif
   entry->module = AllocateString("WMF");
   (void) RegisterMagickInfo(entry);
 #if defined(HasWIN32WMFAPI)
