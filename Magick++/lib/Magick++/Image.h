@@ -701,7 +701,7 @@ namespace Magick
     // color reduced.
     double          normalizedMeanError ( void ) const;
 
-    // Pen color
+    // Pen color (same as fill)
     void            penColor ( const Color &penColor_ );
     Color           penColor ( void  ) const;
 

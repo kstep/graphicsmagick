@@ -1,8 +1,12 @@
 2001-01-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* lib/Magick++/Montage.h (strokeColor): New method.
+	(fillColor): New method.
+
 	* lib/Image.cpp (replaceImage): Revised logic so that an inValid
  	image should be returned if a NULL pointer is passed.  Before this
  	change the existing image was preserved.
+	(label): Work-around ImageMagick SetImageAttribute bug.
 
 2001-01-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 

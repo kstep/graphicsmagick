@@ -1008,6 +1008,33 @@ int main( int /*argc*/, char ** argv)
       }
 
     //
+    // strokeColor
+    //
+
+    image.strokeColor(ColorRGB(0.5,0.5,1));
+    if ( image.strokeColor() != ColorRGB(0.5,0.5,1) )
+      {
+	++failures;
+	cout << "Line: " << __LINE__ << ", strokeColor ("
+	     << string(image.strokeColor())
+	     << ") set/get failed" << endl;
+      }
+
+
+    //
+    // fillColor
+    //
+
+    image.fillColor(ColorRGB(0.5,0.5,1));
+    if ( image.fillColor() != ColorRGB(0.5,0.5,1) )
+      {
+	++failures;
+	cout << "Line: " << __LINE__ << ", fillColor ("
+	     << string(image.fillColor())
+	     << ") set/get failed" << endl;
+      }
+
+    //
     // pixelColor
     //
     // Test default

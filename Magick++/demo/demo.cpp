@@ -346,7 +346,7 @@ int main( int /*argc*/, char ** argv)
     montageOpts.geometry( "130x194+10+5>" );
     montageOpts.gravity( CenterGravity );
     montageOpts.pointSize( 18 );
-    montageOpts.penColor( "#600" );
+    montageOpts.fillColor( "#600" );
     montageOpts.texture( "granite:" );
     montageOpts.tile( "5x1000" );
     montageImages( &montage, images.begin(), images.end(), montageOpts );
@@ -357,7 +357,7 @@ int main( int /*argc*/, char ** argv)
 
     final.font( font );
     final.fontPointsize( 18 );
-    final.penColor( "#600" );
+    final.fillColor( "#600" );
     final.annotate( "Every thing you see on this page was created with the "\
 		    "Magick++ and ImageMagick libraries.",
 		    "+20+175" );

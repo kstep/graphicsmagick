@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999, 2000
+// Copyright Bob Friesenhahn, 1999, 2000,2001
 //
 // Implementation of Image
 //
@@ -2217,10 +2217,9 @@ bool Magick::Image::isValid ( void ) const
 void Magick::Image::label ( const std::string &label_ )
 {
   modifyImage();
+  SetImageAttribute ( image(), "Label", NULL );
   if ( label_.length() > 0 )
     SetImageAttribute ( image(), "Label", label_.c_str() );
-  else
-    SetImageAttribute ( image(), "Label", NULL );
   throwImageException();
 }
 std::string Magick::Image::label ( void ) const
@@ -2335,11 +2334,11 @@ void Magick::Image::penColor ( const Color &penColor_ )
 {
   modifyImage();
   options()->fillColor(penColor_);
-  options()->strokeColor(penColor_);
+  options()->strokeColor(Color());
 }
 Magick::Color Magick::Image::penColor ( void  ) const
 {
-  return constOptions()->strokeColor();
+  return constOptions()->fillColor();
 }
 
 void Magick::Image::penTexture ( const Image &penTexture_ )

@@ -30,7 +30,10 @@ namespace Magick
     
     void              fileName( std::string fileName_ );
     std::string       fileName( void ) const;
-    
+
+    void              fillColor ( const Color &fill_ );
+    Color             fillColor ( void ) const;
+
     void              font ( std::string font_ );
     std::string       font ( void ) const;
     
@@ -43,7 +46,8 @@ namespace Magick
     // Apply as attribute to all images before montage
     void              label( std::string label_ );
     std::string       label( void ) const;
-    
+
+    // Same as fill color
     void              penColor ( const Color &pen_ );
     Color             penColor ( void ) const;
     
@@ -52,7 +56,10 @@ namespace Magick
     
     void              shadow ( bool shadow_ );
     bool              shadow ( void ) const;
-    
+
+    void              strokeColor ( const Color &stroke_ );
+    Color             strokeColor ( void ) const;
+
     void              texture ( std::string texture_ );
     std::string       texture ( void ) const;
     
@@ -79,13 +86,14 @@ namespace Magick
     Color             _backgroundColor;   // Color that thumbnails are composed on
     CompositeOperator _compose;           // Composition algorithm to use (e.g. ReplaceCompositeOp)
     std::string       _fileName;          // Filename to save montages to
+    Color             _fill;              // Fill color
     std::string       _font;              // Label font
     Geometry          _geometry;          // Thumbnail width & height plus border width & height
     GravityType       _gravity;           // Thumbnail position (e.g. SouthWestGravity)
     std::string       _label;             // Thumbnail label (applied to image prior to montage)
-    Color             _pen;               // Color for text annotations
     unsigned int      _pointSize;         // Font point size
     bool              _shadow;            // Enable drop-shadows on thumbnails
+    Color             _stroke;            // Outline color
     std::string       _texture;           // Background texture image
     Geometry          _tile;              // Thumbnail rows and colmns
     std::string       _title;             // Montage title
@@ -143,13 +151,14 @@ inline Magick::Montage::Montage ( void )
   : _backgroundColor(),
     _compose(UndefinedCompositeOp),
     _fileName(),
+    _fill(),
     _font(),
     _geometry(),
     _gravity(CenterGravity),
     _label(),
-    _pen(),
     _pointSize(0),
     _shadow(false),
+    _stroke(),
     _texture(),
     _tile(),
     _title(),
@@ -187,6 +196,15 @@ inline void Magick::Montage::fileName( std::string fileName_ )
 inline std::string Magick::Montage::fileName( void ) const
 {
   return _fileName;
+}
+
+inline void Magick::Montage::fillColor ( const Color &fill_ )
+{
+  _fill=fill_;
+}
+inline Magick::Color Magick::Montage::fillColor ( void ) const
+{
+  return _fill;
 }
 
 inline void Magick::Montage::font ( std::string font_ )
@@ -228,11 +246,12 @@ inline std::string Magick::Montage::label( void ) const
 
 inline void Magick::Montage::penColor ( const Color &pen_ )
 {
-  _pen = pen_;
+  _fill=pen_;
+  _stroke=Color("none");
 }
 inline Magick::Color Magick::Montage::penColor ( void ) const
 {
-  return _pen;
+  return _fill;
 }
 
 inline void Magick::Montage::pointSize ( unsigned int pointSize_ )
@@ -251,6 +270,15 @@ inline void Magick::Montage::shadow ( bool shadow_ )
 inline bool Magick::Montage::shadow ( void ) const
 {
   return _shadow;
+}
+
+inline void Magick::Montage::strokeColor ( const Color &stroke_ )
+{
+  _stroke=stroke_;
+}
+inline Magick::Color Magick::Montage::strokeColor ( void ) const
+{
+  return _stroke;
 }
 
 inline void Magick::Montage::texture ( std::string texture_ )
