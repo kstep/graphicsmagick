@@ -35,7 +35,7 @@ $image->Draw(primitive=>'line',points=>"10,200 20,190",stroke=>red);
 #
 $image->Draw(primitive=>'circle',stroke=>'none',fill=>'yellow',,
   points=>"170,70 200,70");
-$image->Draw(primitve=>'Path',stroke=>'none',fill=>'blue',strokewidth=>4,
+$image->Draw(primitive=>'Path',stroke=>'none',fill=>'blue',strokewidth=>4,
   points=>'M170,70 v-30 a30,30 0 0,0 -30,30 z');
 $image->Draw(primitive=>'circle',stroke=>'black',fill=>'none',strokewidth=>4,
   points=>"170,70 200,70");
