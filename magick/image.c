@@ -5107,6 +5107,8 @@ MagickExport unsigned int MogrifyImages(const ImageInfo *image_info,
     handler=SetMonitorHandler((MonitorHandler) NULL);
     status&=MogrifyImage(image_info,argc,argv,&image);
     (void) SetMonitorHandler(handler);
+    if (image->scene != 0)
+      image->scene+=i;
     if (image_info->verbose)
       DescribeImage(image,stdout,False);
     PushImageList(&mogrify_images,image,&image->exception);

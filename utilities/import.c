@@ -243,7 +243,7 @@ int main(int argc,char **argv)
     *image_info;
 
   int
-	  z;
+    z;
 
   long
     snapshots,
@@ -327,7 +327,7 @@ int main(int argc,char **argv)
   resource_value=
     XGetResourceInstance(resource_database,client_name,"delay","6");
   (void) XParseGeometry(resource_value,&z,&z,&resource_info.delay,
-	  &resource_info.pause);
+    &resource_info.pause);
   image_info->density=XGetResourceInstance(resource_database,client_name,
     "density",(char *) NULL);
   resource_value=
