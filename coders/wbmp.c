@@ -158,7 +158,7 @@ static Image *ReadWBMPImage(const ImageInfo *image_info,
     ThrowReaderException(FileOpenWarning,"Unable to open file",image);
   if (!ReadBlob(image,2,(char *) &header)) 
     ThrowReaderException(CorruptImageWarning,"Not a WBMP image file",image);
-  if (header)
+  if (header != 0)
     ThrowReaderException(CorruptImageWarning,
       "Only WBMP level 0 files supported",image);
   /*

@@ -156,13 +156,13 @@ static Image *ReadUYVYImage(const ImageInfo *image_info,
       y1=ReadBlobByte(image);
       v=ReadBlobByte(image);
       y2=ReadBlobByte(image);
-      q->red=UpScale(y1);
-      q->green=UpScale(u);
-      q->blue=UpScale(v);
+      q->red=(Quantum) UpScale(y1);
+      q->green=(Quantum) UpScale(u);
+      q->blue=(Quantum) UpScale(v);
       q++;
-      q->red=UpScale(y2);
-      q->green=UpScale(u);
-      q->blue=UpScale(v);
+      q->red=(Quantum) UpScale(y2);
+      q->green=(Quantum) UpScale(u);
+      q->blue=(Quantum) UpScale(v);
       q++;
     }
     if (!SyncImagePixels(image))

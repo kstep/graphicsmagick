@@ -584,7 +584,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
     p=(unsigned char *) viff_pixels;
     for (i=0; i < (long) max_packets; i++)
     {
-      switch (viff_info.data_storage_type)
+      switch ((int) viff_info.data_storage_type)
       {
         case VFF_TYP_2_BYTE: value=((short *) viff_pixels)[i]; break;
         case VFF_TYP_4_BYTE: value=((int *) viff_pixels)[i]; break;

@@ -372,11 +372,11 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
             {
               pixel=XGetPixel(ximage,(int) x,(int) y);
               index=(unsigned short) ((pixel >> red_shift) & red_mask);
-              q->red=XDownScale(colors[index].red);
+              q->red=(Quantum) XDownScale(colors[index].red);
               index=(unsigned short) ((pixel >> green_shift) & green_mask);
-              q->green=XDownScale(colors[index].green);
+              q->green=(Quantum) XDownScale(colors[index].green);
               index=(unsigned short) ((pixel >> blue_shift) & blue_mask);
-              q->blue=XDownScale(colors[index].blue);
+              q->blue=(Quantum) XDownScale(colors[index].blue);
               q++;
             }
             if (!SyncImagePixels(image))
@@ -394,11 +394,11 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
             {
               pixel=XGetPixel(ximage,(int) x,(int) y);
               color=(pixel >> red_shift) & red_mask;
-              q->red=XDownScale((color*65535L)/red_mask);
+              q->red=(Quantum) XDownScale((color*65535L)/red_mask);
               color=(pixel >> green_shift) & green_mask;
-              q->green=XDownScale((color*65535L)/green_mask);
+              q->green=(Quantum) XDownScale((color*65535L)/green_mask);
               color=(pixel >> blue_shift) & blue_mask;
-              q->blue=XDownScale((color*65535L)/blue_mask);
+              q->blue=(Quantum) XDownScale((color*65535L)/blue_mask);
               q++;
             }
             if (!SyncImagePixels(image))
@@ -418,9 +418,9 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
             image);
         for (i=0; i < (long) image->colors; i++)
         {
-          image->colormap[i].red=XDownScale(colors[i].red);
-          image->colormap[i].green=XDownScale(colors[i].green);
-          image->colormap[i].blue=XDownScale(colors[i].blue);
+          image->colormap[i].red=(Quantum) XDownScale(colors[i].red);
+          image->colormap[i].green=(Quantum) XDownScale(colors[i].green);
+          image->colormap[i].blue=(Quantum) XDownScale(colors[i].blue);
         }
         for (y=0; y < (long) image->rows; y++)
         {

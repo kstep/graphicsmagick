@@ -180,7 +180,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
         break;
       for (x=0; x < (long) image->columns; x++)
       {
-        q->red=UpScale(*p++);
+        q->red=(Quantum) UpScale(*p++);
         q->green=0;
         q->blue=0;
         q++;
@@ -212,7 +212,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
       for (x=0; x < (long) chroma_image->columns; x++)
       {
         q->red=0;
-        q->green=UpScale(*p++);
+        q->green=(Quantum) UpScale(*p++);
         q->blue=0;
         q++;
       }
@@ -236,7 +236,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
         break;
       for (x=0; x < (long) chroma_image->columns; x++)
       {
-        q->blue=UpScale(*p++);
+        q->blue=(Quantum) UpScale(*p++);
         q++;
       }
       if (!SyncImagePixels(chroma_image))
