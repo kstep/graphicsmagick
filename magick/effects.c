@@ -1558,7 +1558,7 @@ Export Image *ImplodeImage(Image *image,const double factor)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method MorphImages morphs a set of images.  both the image pixels and size
+%  Method MorphImages morphs a set of images.  Both the image pixels and size
 %  are linearly interpolated to give the appearance of a meta-morphosis from
 %  one image to the next.
 %

@@ -94,6 +94,10 @@ Export Image *ReadVIFFImage(const ImageInfo *image_info)
 #define VFF_LOC_IMPLICIT  1
 #define VFF_MAPTYP_NONE  0
 #define VFF_MAPTYP_1_BYTE  1
+#define VFF_MAPTYP_2_BYTE  2
+#define VFF_MAPTYP_4_BYTE  4
+#define VFF_MAPTYP_FLOAT  5
+#define VFF_MAPTYP_DOUBLE  7
 #define VFF_MS_NONE  0
 #define VFF_MS_ONEPERBAND  1
 #define VFF_MS_SHARED  3
@@ -102,6 +106,7 @@ Export Image *ReadVIFFImage(const ImageInfo *image_info)
 #define VFF_TYP_2_BYTE  2
 #define VFF_TYP_4_BYTE  4
 #define VFF_TYP_FLOAT  5
+#define VFF_TYP_DOUBLE  9
 
   typedef struct _ViffHeader
   {
@@ -145,6 +150,12 @@ Export Image *ReadVIFFImage(const ImageInfo *image_info)
       maps_per_cycle,
       color_space_model;
   } ViffHeader;
+
+  double
+    max_value,
+    min_value,
+    scale_factor,
+    value;
 
   Image
     *image;
@@ -273,14 +284,19 @@ Export Image *ReadVIFFImage(const ImageInfo *image_info)
         (viff_header.data_storage_type != VFF_TYP_1_BYTE) &&
         (viff_header.data_storage_type != VFF_TYP_2_BYTE) &&
         (viff_header.data_storage_type != VFF_TYP_4_BYTE) &&
-        (viff_header.data_storage_type != VFF_TYP_FLOAT))
+        (viff_header.data_storage_type != VFF_TYP_FLOAT) &&
+        (viff_header.data_storage_type != VFF_TYP_DOUBLE))
       ReaderExit(CorruptImageWarning,
         "Data storage type is not supported",image);
     if (viff_header.data_encode_scheme != VFF_DES_RAW)
       ReaderExit(CorruptImageWarning,
         "Data encoding scheme is not supported",image);
     if ((viff_header.map_storage_type != VFF_MAPTYP_NONE) &&
-        (viff_header.map_storage_type != VFF_MAPTYP_1_BYTE))
+        (viff_header.map_storage_type != VFF_MAPTYP_1_BYTE) &&
+        (viff_header.map_storage_type != VFF_MAPTYP_2_BYTE) &&
+        (viff_header.map_storage_type != VFF_MAPTYP_4_BYTE) &&
+        (viff_header.map_storage_type != VFF_MAPTYP_FLOAT) &&
+        (viff_header.map_storage_type != VFF_MAPTYP_DOUBLE))
       ReaderExit(CorruptImageWarning,
         "Map storage type is not supported",image);
     if ((viff_header.color_space_model != VFF_CM_NONE) &&
@@ -296,8 +312,9 @@ Export Image *ReadVIFFImage(const ImageInfo *image_info)
         return((Image *) NULL);
       }
     if (viff_header.number_of_images != 1)
-      ReaderExit(CorruptImageWarning,
-        "Number of images is not supported",image);
+      ReaderExit(CorruptImageWarning,"Number of images is not supported",image);
+    if (viff_header.map_rows == 0)
+      viff_header.map_scheme=VFF_MS_NONE;
     switch (viff_header.map_scheme)
     {
       case VFF_MS_NONE:
@@ -332,35 +349,74 @@ Export Image *ReadVIFFImage(const ImageInfo *image_info)
           *viff_colormap;
 
         /*
-          Read VIFF raster colormap.
+          Allocate VIFF colormap.
         */
+        switch (viff_header.map_storage_type)
+        {
+          case VFF_MAPTYP_1_BYTE: bytes_per_pixel=1; break;
+          case VFF_MAPTYP_2_BYTE: bytes_per_pixel=2; break;
+          case VFF_MAPTYP_4_BYTE: bytes_per_pixel=4; break;
+          case VFF_MAPTYP_FLOAT: bytes_per_pixel=4; break;
+          case VFF_MAPTYP_DOUBLE: bytes_per_pixel=8; break;
+          default: bytes_per_pixel=1; break;
+        }
         image->colors=(unsigned int) viff_header.map_columns;
         image->colormap=(ColorPacket *)
           AllocateMemory(image->colors*sizeof(ColorPacket));
-        viff_colormap=(unsigned char *)
-          AllocateMemory(image->colors*sizeof(unsigned char));
+        viff_colormap=(unsigned char *) AllocateMemory(bytes_per_pixel*
+          image->colors*viff_header.map_rows*sizeof(unsigned char));
         if ((image->colormap == (ColorPacket *) NULL) ||
             (viff_colormap == (unsigned char *) NULL))
           ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
-        (void) ReadData((char *) viff_colormap,1,image->colors,image->file);
-        for (i=0; i < (int) image->colors; i++)
+        /*
+          Read VIFF raster colormap.
+        */
+        (void) ReadData((char *) viff_colormap,bytes_per_pixel,
+          image->colors*viff_header.map_rows,image->file);
+        if ((viff_header.machine_dependency == VFF_DEP_DECORDER) ||
+            (viff_header.machine_dependency == VFF_DEP_NSORDER))
+          switch (viff_header.map_storage_type)
+          {
+            case VFF_MAPTYP_2_BYTE:
+            {
+              MSBFirstOrderShort((char *) viff_colormap,(unsigned int)
+                (bytes_per_pixel*image->colors*viff_header.map_rows));
+              break;
+            }
+            case VFF_MAPTYP_4_BYTE:
+            case VFF_MAPTYP_FLOAT:
+            {
+              MSBFirstOrderLong((char *) viff_colormap,(unsigned int)
+                (bytes_per_pixel*image->colors*viff_header.map_rows));
+              break;
+            }
+            default: break;
+          }
+        for (i=0; i < (int) (viff_header.map_rows*image->colors); i++)
         {
-          image->colormap[i].red=UpScale(viff_colormap[i]);
-          image->colormap[i].green=UpScale(viff_colormap[i]);
-          image->colormap[i].blue=UpScale(viff_colormap[i]);
+          switch (viff_header.map_storage_type)
+          {
+            case VFF_MAPTYP_2_BYTE: value=((short *) viff_colormap)[i]; break;
+            case VFF_MAPTYP_4_BYTE: value=((int *) viff_colormap)[i]; break;
+            case VFF_MAPTYP_FLOAT: value=((float *) viff_colormap)[i]; break;
+            case VFF_MAPTYP_DOUBLE: value=((double *) viff_colormap)[i]; break;
+            default: value=viff_colormap[i]; break;
+          }
+          if (i < image->colors)
+            {
+              image->colormap[i].red=UpScale((unsigned int) value);
+              image->colormap[i].green=UpScale((unsigned int) value);
+              image->colormap[i].blue=UpScale((unsigned int) value);
+            }
+          else
+            if (i < 2*image->colors)
+              image->colormap[i % image->colors].green=
+                UpScale((unsigned int) value);
+            else
+              if (i < 3*image->colors)
+                image->colormap[i % image->colors].blue=
+                  UpScale((unsigned int) value);
         }
-        if (viff_header.map_rows > 1)
-          {
-            (void) ReadData((char *) viff_colormap,1,image->colors,image->file);
-            for (i=0; i < (int) image->colors; i++)
-              image->colormap[i].green=UpScale(viff_colormap[i]);
-          }
-        if (viff_header.map_rows > 2)
-          {
-            (void) ReadData((char *) viff_colormap,1,image->colors,image->file);
-            for (i=0; i < (int) image->colors; i++)
-              image->colormap[i].blue=UpScale(viff_colormap[i]);
-          }
         FreeMemory((char *) viff_colormap);
         break;
       }
@@ -371,12 +427,14 @@ Export Image *ReadVIFFImage(const ImageInfo *image_info)
     /*
       Allocate VIFF pixels.
     */
-    bytes_per_pixel=1;
-    if (viff_header.data_storage_type == VFF_TYP_2_BYTE)
-      bytes_per_pixel=2;
-    if ((viff_header.data_storage_type == VFF_TYP_4_BYTE) ||
-        (viff_header.data_storage_type == VFF_TYP_FLOAT))
-      bytes_per_pixel=4;
+    switch (viff_header.data_storage_type)
+    {
+      case VFF_TYP_2_BYTE: bytes_per_pixel=2; break;
+      case VFF_TYP_4_BYTE: bytes_per_pixel=4; break;
+      case VFF_TYP_FLOAT: bytes_per_pixel=4; break;
+      case VFF_TYP_DOUBLE: bytes_per_pixel=8; break;
+      default: bytes_per_pixel=1; break;
+    }
     if (viff_header.data_storage_type == VFF_TYP_BIT)
       max_packets=((viff_header.columns+7) >> 3)*viff_header.rows;
     else
@@ -388,225 +446,92 @@ Export Image *ReadVIFFImage(const ImageInfo *image_info)
       ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
     (void) ReadData((char *) viff_pixels,bytes_per_pixel,(unsigned int)
       max_packets,image->file);
-    switch (viff_header.data_storage_type)
-    {
-      register Quantum
-        *q;
-
-      unsigned long
-        scale_factor;
-
-      case VFF_TYP_1_BYTE:
+    if ((viff_header.machine_dependency == VFF_DEP_DECORDER) ||
+        (viff_header.machine_dependency == VFF_DEP_NSORDER))
+      switch (viff_header.data_storage_type)
       {
-        int
-          value;
-
-        register unsigned char
-          *p;
-
-        if (QuantumDepth == 8)
+        case VFF_TYP_2_BYTE:
+        {
+          MSBFirstOrderShort((char *) viff_pixels,(unsigned int)
+            (bytes_per_pixel*max_packets));
           break;
-        /*
-          Scale integer pixels to [0..MaxRGB].
-        */
-        p=viff_pixels;
-        q=(Quantum *) viff_pixels;
-        p+=max_packets-1;
-        q+=max_packets-1;
-        for (i=0; i < (int) max_packets; i++)
-        {
-          value=UpScale(*p);
-          *q=(Quantum) value;
-          p--;
-          q--;
         }
-        break;
+        case VFF_TYP_4_BYTE:
+        case VFF_TYP_FLOAT:
+        {
+          MSBFirstOrderLong((char *) viff_pixels,(unsigned int)
+            (bytes_per_pixel*max_packets));
+          break;
+        }
+        default: break;
       }
-      case VFF_TYP_2_BYTE:
+    if (viff_header.map_scheme == VFF_MS_NONE)
       {
-        int
-          value;
-
-        register short int
-          *p;
-
-        short
-          max_value,
-          min_value;
-
-        /*
-          Ensure the header byte-order is most-significant byte first.
-        */
-        if ((viff_header.machine_dependency == VFF_DEP_DECORDER) ||
-            (viff_header.machine_dependency == VFF_DEP_NSORDER))
-          MSBFirstOrderShort((char *) &viff_header,
-            (unsigned int) (bytes_per_pixel*max_packets));
         /*
           Determine scale factor.
         */
-        p=(short *) viff_pixels;
-        max_value=(*p);
-        min_value=(*p);
+        switch (viff_header.data_storage_type)
+        {
+          case VFF_TYP_2_BYTE: value=((short *) viff_pixels)[0]; break;
+          case VFF_TYP_4_BYTE: value=((int *) viff_pixels)[0]; break;
+          case VFF_TYP_FLOAT: value=((float *) viff_pixels)[0]; break;
+          case VFF_TYP_DOUBLE: value=((double *) viff_pixels)[0]; break;
+          default: value=viff_pixels[0]; break;
+        }
+        max_value=value;
+        min_value=value;
         for (i=0; i < (int) max_packets; i++)
         {
-          if (*p > max_value)
-            max_value=(*p);
+          switch (viff_header.data_storage_type)
+          {
+            case VFF_TYP_2_BYTE: value=((short *) viff_pixels)[i]; break;
+            case VFF_TYP_4_BYTE: value=((int *) viff_pixels)[i]; break;
+            case VFF_TYP_FLOAT: value=((float *) viff_pixels)[i]; break;
+            case VFF_TYP_DOUBLE: value=((double *) viff_pixels)[i]; break;
+            default: value=viff_pixels[i]; break;
+          }
+          if (value > max_value)
+            max_value=value;
           else
-            if (*p < min_value)
-              min_value=(*p);
-          p++;
+            if (value < min_value)
+              min_value=value;
         }
         if ((min_value == 0) && (max_value == 0))
           scale_factor=0;
         else
           if (min_value == max_value)
             {
-              scale_factor=UpShift(MaxRGB)/min_value;
+              scale_factor=(double) MaxRGB/min_value;
               min_value=0;
             }
           else
-            scale_factor=UpShift(MaxRGB)/(max_value-min_value);
-        /*
-          Scale integer pixels to [0..MaxRGB].
-        */
-        p=(short int *) viff_pixels;
-        q=(Quantum *) viff_pixels;
-        for (i=0; i < (int) max_packets; i++)
-        {
-          value=DownShift((*p-min_value)*scale_factor);
-          if (value > MaxRGB)
-            value=MaxRGB;
-          else
-            if (value < 0)
-              value=0;
-          *q=(Quantum) value;
-          p++;
-          q++;
-        }
-        break;
+            scale_factor=(double) MaxRGB/(max_value-min_value);
       }
-      case VFF_TYP_4_BYTE:
+    /*
+      Convert pixels to Quantum size.
+    */
+    p=(Quantum *) viff_pixels;
+    for (i=0; i < (int) max_packets; i++)
+    {
+      switch (viff_header.data_storage_type)
       {
-        int
-          max_value,
-          min_value,
-          value;
-
-        register int
-          *p;
-
-        /*
-          Ensure the header byte-order is most-significant byte first.
-        */
-        if ((viff_header.machine_dependency == VFF_DEP_DECORDER) ||
-            (viff_header.machine_dependency == VFF_DEP_NSORDER))
-          MSBFirstOrderLong((char *) &viff_header,
-            (unsigned int) (bytes_per_pixel*max_packets));
-        /*
-          Determine scale factor.
-        */
-        p=(int *) viff_pixels;
-        max_value=(*p);
-        min_value=(*p);
-        for (i=0; i < (int) max_packets; i++)
+        case VFF_TYP_2_BYTE: value=((short *) viff_pixels)[i]; break;
+        case VFF_TYP_4_BYTE: value=((int *) viff_pixels)[i]; break;
+        case VFF_TYP_FLOAT: value=((float *) viff_pixels)[i]; break;
+        case VFF_TYP_DOUBLE: value=((double *) viff_pixels)[i]; break;
+        default: value=viff_pixels[i]; break;
+      }
+      if (viff_header.map_scheme == VFF_MS_NONE)
         {
-          if (*p > max_value)
-            max_value=(*p);
-          else
-            if (*p < min_value)
-              min_value=(*p);
-          p++;
-        }
-        if ((min_value == 0) && (max_value == 0))
-          scale_factor=0;
-        else
-          if (min_value == max_value)
-            {
-              scale_factor=UpShift(MaxRGB)/min_value;
-              min_value=0;
-            }
-          else
-            scale_factor=UpShift(MaxRGB)/(max_value-min_value);
-        /*
-          Scale integer pixels to [0..MaxRGB].
-        */
-        p=(int *) viff_pixels;
-        q=(Quantum *) viff_pixels;
-        for (i=0; i < (int) max_packets; i++)
-        {
-          value=DownShift((*p-min_value)*scale_factor);
+          value=(value-min_value)*scale_factor;
           if (value > MaxRGB)
             value=MaxRGB;
           else
             if (value < 0)
               value=0;
-          *q=(unsigned char) value;
-          p++;
-          q++;
         }
-        break;
-      }
-      case VFF_TYP_FLOAT:
-      {
-        float
-          max_value,
-          min_value,
-          value;
-
-        register float
-          *p;
-
-        /*
-          Ensure the header byte-order is most-significant byte first.
-        */
-        if ((viff_header.machine_dependency == VFF_DEP_DECORDER) ||
-            (viff_header.machine_dependency == VFF_DEP_NSORDER))
-          MSBFirstOrderLong((char *) &viff_header,
-            (unsigned int) (bytes_per_pixel*max_packets));
-        /*
-          Determine scale factor.
-        */
-        p=(float *) viff_pixels;
-        max_value=(*p);
-        min_value=(*p);
-        for (i=0; i < (int) max_packets; i++)
-        {
-          if (*p > max_value)
-            max_value=(*p);
-          else
-            if (*p < min_value)
-              min_value=(*p);
-          p++;
-        }
-        if ((min_value == 0) && (max_value == 0))
-          scale_factor=0;
-        else
-          if (min_value == max_value)
-            {
-              scale_factor=UpShift(MaxRGB)/min_value;
-              min_value=0;
-            }
-          else
-            scale_factor=UpShift(MaxRGB)/(max_value-min_value);
-        /*
-          Scale integer pixels to [0..MaxRGB].
-        */
-        p=(float *) viff_pixels;
-        q=(Quantum *) viff_pixels;
-        for (i=0; i < (int) max_packets; i++)
-        {
-          value=DownShift((*p-min_value)*scale_factor);
-          if (value > MaxRGB)
-            value=MaxRGB;
-          else
-            if (value < 0)
-              value=0;
-          *q=(unsigned char) value;
-          p++;
-          q++;
-        }
-        break;
-      }
+      *p=(Quantum) value;
+      p++;
     }
     /*
       Initialize image structure.
@@ -640,8 +565,10 @@ Export Image *ReadVIFFImage(const ImageInfo *image_info)
         /*
           Convert bitmap scanline to runlength-encoded color packets.
         */
-        polarity=(viff_header.machine_dependency == VFF_DEP_DECORDER) ||
-          (viff_header.machine_dependency == VFF_DEP_NSORDER);
+        polarity=0;
+        if (image->colors >= 2)
+          polarity=Intensity(image->colormap[0]) <
+            Intensity(image->colormap[1]);
         for (y=0; y < (int) image->rows; y++)
         {
           /*

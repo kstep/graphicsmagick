@@ -268,6 +268,9 @@ Export void CoalesceImages(Image *images)
         "image sequence required");
       return;
     }
+  if (images->page != (char *) NULL)
+    FreeMemory(images->page);
+  images->page=(char *) NULL;
   for (image=images->next; image != (Image *) NULL; image=image->next)
   {
     assert(image->previous != (Image *) NULL);
@@ -345,6 +348,8 @@ Export void CoalesceImages(Image *images)
     DestroyImage(cloned_image);
     FormatString(geometry,"%ux%u%+d%+d",image->columns,image->rows,
       (int) bounding_box.x1,(int) bounding_box.y1);
+    if (image->page != (char *) NULL)
+      FreeMemory(image->page);
     image->page=PostscriptGeometry(geometry);
     image->matte=matte;
   }
@@ -797,6 +802,9 @@ Export void DeconstructImages(Image *images)
     Deconstruct the image sequence.
   */
   i=0;
+  if (images->page != (char *) NULL)
+    FreeMemory(images->page);
+  images->page=(char *) NULL;
   for (image=images->next; image != (Image *) NULL; image=image->next)
   {
     image->orphan=True;
@@ -813,6 +821,8 @@ Export void DeconstructImages(Image *images)
     DestroyImage(deconstructed_image);
     FormatString(geometry,"%ux%u%+d%+d",image->columns,image->rows,
       bounding_box[i].x,bounding_box[i].y);
+    if (image->page != (char *) NULL)
+      FreeMemory(image->page);
     image->page=PostscriptGeometry(geometry);
     i++;
   }

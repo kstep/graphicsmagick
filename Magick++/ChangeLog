@@ -1,3 +1,10 @@
+1999-05-31  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/MagickSTL.h (mapImages): New algorithm to map the sequence
+ 	of images to the color map of a provided image.
+	(quantizeImages): New algorithm to quantize a sequence of images
+ 	to a common color map.
+
 1999-05-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/MagickBlob.cpp (updateNoCopy): New method to allow derived

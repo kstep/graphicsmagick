@@ -1,3 +1,8 @@
+(0.8.4)
+  * New mapImages algorithm maps a sequence of images to the colormap of
+    a provided image.
+  * New quantizeImages algorithm computes and applies a common colormap
+    to a sequence of images.
 (0.8.3)
   * Ported to ImageMagick 4.2.6.
   * Blob supports default constructor.

@@ -6,19 +6,22 @@ dnl Written by Bob Friesenhahn, bfriesen@simple.dallas.tx.us
 # Report Magick++ configure bugs to bfriesen@simple.dallas.tx.us
 #
 
+
 AC_INIT(lib/Magick++.h)
-AC_CANONICAL_SYSTEM
 
-AM_INIT_AUTOMAKE(Magick++, 0.8.3, ' ')
-TESTED_MAGICK_VERSION="4.2.7"
+MAGICK_RELEASE="0.8.4"
+TESTED_MAGICK_VERSION="4.2.6"
 
-MAJOR_VERSION=0
-MINOR_VERSION=8
-MICRO_VERSION=2
-echo "configuring Magick++ $MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION"
-AC_SUBST(MAJOR_VERSION)dnl
-AC_SUBST(MINOR_VERSION)dnl
-AC_SUBST(MICRO_VERSION)dnl
+dnl The most recent interface number that this library implements.
+INTERFACE_CURRENT=0
+dnl The implementation number of the current interface. 
+INTERFACE_REVISION=0
+dnl The difference between the newest and oldest interfaces that this
+dnl library implements. In other words, the library implements all the
+dnl interface numbers in the range from number current - age to current.
+INTERFACE_AGE=0
+
+echo "configuring Magick++ $MAGICK_RELEASE"
 
 # Check for ImageMagick release and warn if not what we expect
 AC_MSG_CHECKING(ImageMagick version)
@@ -28,6 +31,14 @@ if test "$MAGICK_VERSION" != "$TESTED_MAGICK_VERSION"
 then
   AC_MSG_WARN("ImageMagick version is not expected version $TESTED_MAGICK_VERSION !!!")
 fi
+
+AC_CANONICAL_SYSTEM
+AM_INIT_AUTOMAKE(Magick++, $MAGICK_RELEASE, ' ')
+
+AC_SUBST(INTERFACE_CURRENT)dnl
+AC_SUBST(INTERFACE_REVISION)dnl
+AC_SUBST(INTERFACE_AGE)dnl
+
 
 # Ensure that make can run correctly
 AM_SANITY_CHECK

@@ -61,6 +61,17 @@ namespace Magick
   void displayImages( InputIterator first_,
 		      InputIterator last_ );
 
+  // Replace the colors of a sequence of images with the closest color
+  // from a reference image.
+  // Set dither_ to true to enable dithering.  Set measureError_ to
+  // true in order to evaluate quantization error.
+  template <class InputIterator>
+  void mapImages( InputIterator first_,
+		  InputIterator last_,
+		  const Image& mapImage_,
+		  bool dither_,
+		  bool measureError_ );
+
   // Create a composite image by combining several separate images.
   template <class Container, class InputIterator>
   void montageImages( Container *montageImages_,
@@ -74,6 +85,13 @@ namespace Magick
 		    InputIterator first_,
 		    InputIterator last_,
 		    unsigned int frames_ );
+
+  // Quantize colors in images using current quantization settings
+  // Set measureError_ to true in order to measure quantization error
+  template <class InputIterator>
+  void quantizeImages( InputIterator first_,
+		       InputIterator last_,
+		       bool measureError_ );
 
   // Read images into existing container (appending to container)
   template <class Container>
@@ -2033,6 +2051,38 @@ namespace Magick
     unlinkImages( first_, last_ );
   }
 
+  // Replace the colors of a sequence of images with the closest color
+  // from a reference image.
+  // Set dither_ to true to enable dithering.  Set measureError_ to
+  // true in order to evaluate quantization error.
+  template <class InputIterator>
+  void mapImages( InputIterator first_,
+		  InputIterator last_,
+		  const Image& mapImage_,
+		  bool dither_ = false,
+		  bool measureError_ = false ) {
+    linkImages( first_, last_ );
+     MagickLib::MapImages( first_->image(),
+			   mapImage_->image(),
+			   dither_ );
+
+    MagickLib::Image* image = first_->image();
+    while( image != 0 )
+      {
+	// Calculate quantization error
+	if ( measureError_ )
+	  MagickLib::QuantizationError( image );
+
+	// Udate DirectClass representation of pixels
+	MagickLib::SyncImage( _imgRef->image() );
+
+	// Next image
+	image=image->next;
+      }
+
+    unlinkImages( first_, last_ );
+  }
+
   // Create a composite image by combining several separate images.
   template <class Container, class InputIterator>
   void montageImages( Container *montageImages_,
@@ -2119,6 +2169,33 @@ namespace Magick
       errPtr->throwException();
   }
 
+  // Quantize colors in images using current quantization settings
+  // Set measureError_ to true in order to measure quantization error
+  template <class InputIterator>
+  void quantizeImages( InputIterator first_,
+		       InputIterator last_,
+		       bool measureError_ ) {
+    linkImages( first_, last_ );
+
+    MagickLib::QuantizeImages( first_->options()->quantizeInfo(),
+			       first_->image() );
+
+    MagickLib::Image* image = first_->image();
+    while( image != 0 )
+      {
+	// Calculate quantization error
+	if ( measureError_ )
+	  MagickLib::QuantizationError( image );
+
+	// Udate DirectClass representation of pixels
+	MagickLib::SyncImage( _imgRef->image() );
+
+	// Next image
+	image=image->next;
+      }
+
+    unlinkImages( first_, last_ );
+  }
 
   // Read images into existing container (appending to container)
   template <class Container>

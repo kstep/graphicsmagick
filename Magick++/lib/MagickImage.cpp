@@ -724,6 +724,7 @@ void Magick::Image::ping ( const std::string &imageSpec_ )
 }
 
 // Quantize colors in image using current quantization settings
+// Set measureError_ to true in order to measure quantization error
 void Magick::Image::quantize ( bool measureError_  )
 {
   modifyImage();
@@ -736,6 +737,7 @@ void Magick::Image::quantize ( bool measureError_  )
   if ( measureError_ )
     MagickLib::QuantizationError( _imgRef->image() );
 
+  // Udate DirectClass representation of pixels
   MagickLib::SyncImage( _imgRef->image() );
   throwMagickError();
 }
@@ -1856,31 +1858,37 @@ void Magick::Image::pixelColor ( unsigned int x_, unsigned int y_,
 {
   if ( color_.isValid() )
     {
-      modifyImage();
 
       MagickLib::Image * image = _imgRef->image();
+
+      // Test arguments to ensure they are within the image.
+      if ( y_ > image->rows || x_ > image->columns )
+	{
+	  Magick::LastError err( MagickLib::OptionError,
+				 "Access outside of image boundary." );
+	  err.throwException();
+	}
+
+      modifyImage();
+
+      // Uncondense image into rectangular array of packets
       if ( !MagickLib::UncondenseImage( image ) )
 	return;
 
-      // FIXME: should throw exception rather than truncating rows/columns
-      if ( y_ > image->rows )
-	y_ %= image->rows;
+      // Calculate location of color packet
+      MagickLib::RunlengthPacket* packet = image->pixels+(y_*image->columns+x_);
 
-      if ( x_ > image->columns )
-	x_ %= image->columns;
-
-      MagickLib::RunlengthPacket *color = image->pixels +
-	( y_ *image->columns + x_);
+      // Updating DirectClass pixels invalidates colormap so set to DirectClass type
       image->c_class = MagickLib::DirectClass;
 
       // Set RGB
-      color->red   = color_.redQuantum();
-      color->green = color_.greenQuantum();
-      color->blue  = color_.blueQuantum();
+      packet->red   = color_.redQuantum();
+      packet->green = color_.greenQuantum();
+      packet->blue  = color_.blueQuantum();
 
       // Set alpha
       if ( classType() == DirectClass )
-	color->index = color_.alphaQuantum();
+	packet->index = color_.alphaQuantum();
 
       return;
     }
@@ -1891,6 +1899,7 @@ void Magick::Image::pixelColor ( unsigned int x_, unsigned int y_,
 Magick::Color Magick::Image::pixelColor ( unsigned int x_,
 					  unsigned int y_ ) const
 {
+  // Access image.
   MagickLib::Image * image = _imgRef->image();
   if ( !image->pixels )
     {
@@ -1899,30 +1908,34 @@ Magick::Color Magick::Image::pixelColor ( unsigned int x_,
       err.throwException();
     }
 
+  // Uncondense image into rectangular array of packets
   if ( !MagickLib::UncondenseImage( image ) ) 
     {
       Magick::LastError *err = LastError::instance();
       err->throwException();
-      return Color();
     }
 
-  // FIXME: should throw exception rather than truncating rows/columns
-  if ( y_ > image->rows )
-    y_ %= image->rows;
+  // Test arguments to ensure they are within the image.
+  if ( y_ > image->rows || x_ > image->columns )
+    {
+      Magick::LastError err( MagickLib::OptionError,
+			     "Access outside of image boundary." );
+      err.throwException();
+    }
 
-  if ( x_ > image->columns )
-    x_ %= image->columns;
+  // Calculate location of color packet
+  MagickLib::RunlengthPacket* packet = image->pixels+(y_*image->columns+x_);
 
   // If DirectClass and support a matte plane, then alpha is supported.
   if ( matte() && classType() == DirectClass )
-    return Color ( image->pixels[ y_ * image->columns+x_ ].red,
-		   image->pixels[ y_ * image->columns+x_ ].green,
-		   image->pixels[ y_ * image->columns+x_ ].blue,
-		   image->pixels[ y_ * image->columns+x_ ].index );
-
-  return Color ( image->pixels[ y_ * image->columns+x_ ].red,
-		 image->pixels[ y_ * image->columns+x_ ].green,
-		 image->pixels[ y_ * image->columns+x_ ].blue );
+    return Color ( packet->red,
+		   packet->green,
+		   packet->blue,
+		   packet->index );
+  
+  return Color ( packet->red,
+		 packet->green,
+		 packet->blue );
 }
 
 void Magick::Image::psPageSize ( const Magick::Geometry &pageSize_ )
