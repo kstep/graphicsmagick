@@ -57,7 +57,6 @@
 #if defined(HasX11)
 #include "xwindow.h"
 #include "animate.h"
-#include <signal.h>
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -656,11 +656,8 @@ extern MagickExport Image
   *FlipImage(const Image *,ExceptionInfo *),
   *FlopImage(const Image *,ExceptionInfo *),
   *FrameImage(const Image *,const FrameInfo *,ExceptionInfo *),
-  *GetImageList(Image *,const unsigned long,ExceptionInfo *),
-  *GetNextImage(Image *),
   *GaussianBlurImage(const Image *,const double,const double,ExceptionInfo *),
   *ImplodeImage(const Image *,const double,ExceptionInfo *),
-  **ListToGroupImage(const Image *,unsigned long *),
   *MagnifyImage(const Image *,ExceptionInfo *),
   *MedianFilterImage(const Image *,const double,ExceptionInfo *),
   *MinifyImage(const Image *,ExceptionInfo *),
@@ -669,10 +666,8 @@ extern MagickExport Image
   *MosaicImages(const Image *,ExceptionInfo *),
   *MotionBlurImage(const Image *,const double,const double,const double,
     ExceptionInfo *),
-  *NewImageList(void),
   *OilPaintImage(const Image *,const double,ExceptionInfo *),
   *PingImage(const ImageInfo *,ExceptionInfo *),
-  *PopImageList(Image **),
   *ReadImage(const ImageInfo *,ExceptionInfo *),
   *ReadStream(const ImageInfo *,
     int (*)(const Image *,const void *,const size_t),ExceptionInfo *),
@@ -768,7 +763,6 @@ extern MagickExport unsigned int
   PlasmaImage(Image *,const SegmentInfo *,int,int),
   PopImagePixels(const Image *,const QuantumType,unsigned char *),
   ProfileImage(Image *,const char *,const char *),
-  PushImageList(Image **,const Image *,ExceptionInfo *),
   PushImagePixels(Image *,const QuantumType,const unsigned char *),
   QueryColorDatabase(const char *,PixelPacket *),
   QueryColorname(const Image *,const PixelPacket *,const ComplianceType,char *,
@@ -778,7 +772,6 @@ extern MagickExport unsigned int
   SetImageClipMask(Image *,Image *),
   SetImageDepth(Image *,const unsigned long),
   SetImageInfo(ImageInfo *,const unsigned int,ExceptionInfo *),
-  SetImageList(Image **,const Image *,const unsigned long,ExceptionInfo *),
   SignatureImage(Image *),
   SortColormapByIntensity(Image *),
   SyncImagePixels(Image *),
@@ -792,7 +785,6 @@ extern MagickExport unsigned int
 
 extern MagickExport unsigned long
   GetImageDepth(const Image *,ExceptionInfo *),
-  GetImageListSize(const Image *),
   GetNumberColors(const Image *,FILE *,ExceptionInfo *);
 
 extern MagickExport void
@@ -805,7 +797,6 @@ extern MagickExport void
   DestroyImage(Image *),
   DestroyImageInfo(ImageInfo *),
   DestroyImagePixels(Image *),
-  DestroyImageList(Image *),
   DestroyImages(Image *),
   DestroyMagick(void),
   DestroyMagickInfo(void),

@@ -44,6 +44,7 @@ extern "C" {
 #include <math.h>
 #include <time.h>
 #include <limits.h>
+#include <signal.h>
 #include <assert.h>
 
 #if !defined(vms) && !defined(macintosh)

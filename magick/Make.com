@@ -38,6 +38,7 @@ $call Make enhance.c
 $call Make error.c
 $call Make gem.c
 $call Make image.c
+$call Make list.c
 $call Make semaphore.c
 $call Make magic.c
 $call Make magick.c
@@ -61,9 +62,9 @@ $call Make widget.c
 $call Make xwindow.c
 $call Make zoom.c
 $library/create libMagick.olb memory,blob,cache,error,monitor,constitute, -
-  image,color,quantize,segment,zoom,transform,shear,enhance,effect,decorate, -
-  annotate,type,draw,montage,semaphore,attribute,signature,compress,gem, -
-  registry,magic,magick,delegate,module,static,timer,utility,cache_view, -
+  image,list,color,quantize,segment,zoom,transform,shear,enhance,effect,
+	decorate,annotate,type,draw,montage,semaphore,attribute,signature,compress,
+	gem,registry,magic,magick,delegate,module,static,timer,utility,cache_view, -
   stream,animate,display,widget,xwindow,PreRvIcccm,vms
 $exit
 $

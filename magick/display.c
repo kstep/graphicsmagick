@@ -57,7 +57,6 @@
 #if defined(HasX11)
 #include "xwindow.h"
 #include "display.h"
-#include <signal.h>
 
 /*
   Constant declaration.

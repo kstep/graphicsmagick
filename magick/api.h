@@ -83,6 +83,7 @@ extern "C" {
 #if !defined(vms) && !defined(macintosh)
 #include "magick/classify.h"
 #include "magick/image.h"
+#include "magick/list.h"
 #include "magick/draw.h"
 #include "magick/gem.h"
 #include "magick/quantize.h"
@@ -104,6 +105,7 @@ extern "C" {
 #else
 #include "classify.h"
 #include "image.h"
+#include "list.h"
 #include "draw.h"
 #include "gem.h"
 #include "quantize.h"
