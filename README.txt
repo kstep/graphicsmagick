@@ -81,14 +81,21 @@ UNIX/Cygwin/MinGW COMPILATION
     gzip -dc ImageMagick-5.4.7.tar.gz | tar xvf -
     cd ImageMagick-5.4.7
 
-  If you do not have gunzip(1), the source for the bgzip package is
+  If you do not have gzip(1), the source for the gzip package is
   available as "ftp://ftp.gnu.org/gnu/gzip/gzip-1.2.4a.shar" (a shell
   archive) or "ftp://ftp.gnu.org/gnu/gzip/gzip-1.2.4a.tar" (a tar archive).
 
   Use 'configure' to automatically configure, build, and install
-  ImageMagick.
+  ImageMagick. The configure script may be executed from the ImageMagick
+  source directory (e.g ./configure) or from a seperate build directory by
+  specifying the full path to configure (e.g.
+  /src/ImageMagick-5.4.7/configure). The advantage of using a seperate
+  build directory is that multiple ImageMagick builds may share the same
+  ImageMagick source directory while allowing each build to use a unique
+  set of options.
 
-  If you are willing to accept configure's default options, type:
+  If you are willing to accept configure's default options, and build from
+  within the source directory, type:
 
       ./configure
 
@@ -116,14 +123,14 @@ UNIX/Cygwin/MinGW COMPILATION
   packages installed under that prefix.  This is an example config.site
   file:
 
-  # Configuration defaults for all packages installed under this prefix
+  # Configuration values for all packages installed under this prefix
   CC=gcc
   CXX=c++
   CPPFLAGS='-I/usr/local/include'
   LDFLAGS='-L/usr/local/lib -R/usr/local/lib'
 
-  When the 'config.site' file is being used to supply defaults, configure
-  will issue a message similar to:
+  When the 'config.site' file is being used to supply configuration
+  options, configure will issue a message similar to:
 
     configure: loading site script /usr/local/share/config.site
 
@@ -460,18 +467,48 @@ UNIX/Cygwin/MinGW COMPILATION
     (and why) so the failure you are observing can be identified and
     resolved.
 
-  Compilation:
+  Once ImageMagick is configured, these standard build targets are
+  available from the generated Makefiles:
+
+     'make'
+        Build the package
+
+     'make install'
+        Install the package
+
+     'make check'
+        Run tests using the installed ImageMagick ('make install' must
+        be done first!).
+
+     'make clean'
+        Remove everything in the build directory created by 'make'
+
+     'make distclean'
+        Remove everything in the build directory created by 'configure'
+        and 'make'. This is useful if you want to start over from scratch.
+
+     'make uninstall'
+   	Remove all files from the system which are (or would be)
+   	installed by 'make install' using the current configuration.
+        Note that this target is imperfect for PerlMagick since Perl
+        no longer supports an 'uninstall' target.
+
+  Build & Install:
 
     Now that ImageMagick is configured, type
 
        make
 
-    to build the package.
+    to build the package and
+
+       make install
+
+    to install it.
 
   Verifying The Build:
 
-    To confirm your build of the ImageMagick distribution was successful,
-    type:
+    To confirm your installation of the ImageMagick distribution was
+    successful, type:
   
         ./utilities/display
 
