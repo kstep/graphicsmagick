@@ -692,7 +692,7 @@ to give a 3-D raised or lowered effect)</font></td>
 </tr>
 
 <tr NOSAVE>
-<td ROWSPAN="2" NOSAVE>
+<td ROWSPAN="4" NOSAVE>
 <center><a NAME="read"></a><font size=-1>read</font></center>
 </td>
 
@@ -711,6 +711,27 @@ a size hint for decoding an image. For example, when reading a Photo CD,
 JBIG, or JPEG image, a size request causes the library to return an image
 which is the next resolution greater or equal to the specified size. This
 may result in memory and time savings.</font></td>
+</tr>
+
+<tr>
+<td><font size=-1>const Blob &amp;blob_</font></td>
+
+<td><font size=-1>Read image stored in an in-memory BLOB into current object</font></td>
+
+<td></td>
+</tr>
+
+<tr>
+<td><font size=-1>const Geometry &amp;size_, const Blob &amp;blob_</font></td>
+
+<td><font size=-1>Read image of specified size from an in-memory BLOB into
+current object. This form is useful for images that do not specifiy their
+size or to specify a size hint for decoding an image. For example, when
+reading a Photo CD, JBIG, or JPEG image, a size request causes the library
+to return an image which is the next resolution greater or equal to the
+specified size. This may result in memory and time savings.</font></td>
+
+<td></td>
 </tr>
 
 <tr>
@@ -963,14 +984,24 @@ to transparent.</font></td>
 <td><font size=-1>Alter an image along a sine wave.</font></td>
 </tr>
 
-<tr>
-<td>
+<tr NOSAVE>
+<td ROWSPAN="2" NOSAVE>
 <center><a NAME="write"></a><font size=-1>write</font></center>
 </td>
 
 <td><font size=-1>const string &amp;imageSpec_</font></td>
 
 <td><font size=-1>Write image to a file using filename i<i>mageSpec_</i>.</font>
+<br><font size=-1><b><font color="#FF0000">Caution: </font></b>if an image
+format is selected which is capable of supporting fewer colors than the
+original image or quantization has been requested, the original image will
+be quantized to fewer colors. Use a copy of the original if this is a problem.</font></td>
+</tr>
+
+<tr>
+<td><font size=-1>Blob *blob_</font></td>
+
+<td><font size=-1>Write image to a in-memory BLOB stored in <i>blob_</i>.</font>
 <br><font size=-1><b><font color="#FF0000">Caution: </font></b>if an image
 format is selected which is capable of supporting fewer colors than the
 original image or quantization has been requested, the original image will

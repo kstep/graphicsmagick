@@ -268,6 +268,13 @@ namespace Magick
     // Read image of specified size into current object
     void            read ( const Geometry &size_,
 			   const std::string &imageSpec_ );
+
+    // Read image from in-memory BLOB
+    void            read ( const Blob &blob_ );
+
+    // Read image of specified size from in-memory BLOB
+    void            read ( const Geometry &size_,
+			   const Blob &blob_ );
     
     // Reduce noise in image using a noise peak elimination filter
     void            reduceNoise ( void );
@@ -357,6 +364,9 @@ namespace Magick
     
     // Write image to a file
     void            write ( const std::string &imageSpec_ );
+
+    // Write image to in-memory BLOB
+    void            write ( Blob *blob_ );
     
     // Zoom image to specified size.
     void            zoom ( const Geometry &geometry_ );

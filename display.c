@@ -471,6 +471,7 @@ int main(int argc,char **argv)
                   if (i == argc)
                     MagickError(OptionError,"Missing color",option);
                   (void) CloneString(&resource_info.background_color,argv[i]);
+                  (void) CloneString(&image_info->background_color,argv[i]);
                 }
               break;
             }

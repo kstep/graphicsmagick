@@ -78,11 +78,11 @@ AM_WITH_DMALLOC
 #
 
 AC_MSG_CHECKING(pre-processor flags)
-CPPFLAGS="-DHAVE_CONFIG_H "`Magick-config --cppflags`" $CPPFLAGS"
+CPPFLAGS="$CPPFLAGS "`Magick-config --cppflags`
 AC_MSG_RESULT("$CPPFLAGS")
 
 AC_MSG_CHECKING(linker flags)
-LDFLAGS=`Magick-config --ldflags`" $LDFLAGS"
+LDFLAGS="$LDFLAGS "`Magick-config --ldflags`
 AC_MSG_RESULT("$LDFLAGS")
 
 AC_MSG_CHECKING(libraries)

@@ -778,6 +778,22 @@ void Magick::Image::read ( const Geometry &size_,
   read( imageSpec_ );
 }
 
+// Read image from in-memory BLOB
+void Magick::Image::read ( const Blob &blob_ )
+{
+  replaceImage( MagickLib::BlobToImage( _imgRef->options()->imageInfo(),
+					static_cast<const char *>(blob_.data()),
+					blob_.length() ) );
+}
+
+// Read image of specified size from in-memory BLOB
+void  Magick::Image::read ( const Geometry &size_,
+			    const Blob &blob_ )
+{
+  size( size_ );
+  read( blob_ );
+}
+
 // Reduce noise in image
 void Magick::Image::reduceNoise ( void )
 {
@@ -1047,6 +1063,17 @@ void Magick::Image::write( const std::string &imageSpec_ )
   modifyImage();
   fileName( imageSpec_ );
   MagickLib::WriteImage( _imgRef->options()->imageInfo(), _imgRef->image() );
+  throwMagickError();
+}
+
+// Write image to in-memory BLOB
+void Magick::Image::write ( Blob *blob_ )
+{
+  unsigned int length = 0;
+  void* data = MagickLib::ImageToBlob( _imgRef->options()->imageInfo(),
+				       _imgRef->image(),
+				       &length );
+  blob_->updateNoCopy( data, length );
   throwMagickError();
 }
 

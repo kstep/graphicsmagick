@@ -79,7 +79,7 @@ MEMORY REQUIREMENTS
   recommended.
 
 
-UNIX COMPILATION
+UNIX/Cygwin COMPILATION
 
   Type:
 
@@ -187,12 +187,12 @@ UNIX COMPILATION
 
     Several configure options require special note:
 
-      o --disable-shared: the shared libraries are not built.  Shared
+      o --enable-shared: the shared libraries are built. Shared
         libraries are valuable because they are *shared* across more
-        than one invocation of an ImageMagick or PerlMagick client.  In
+        than one invocation of an ImageMagick or PerlMagick client. In
         addition, the clients take much less disk space and shared
-        libraries are required in order for PERL to dynamically load
-        the PerlMagick extension.
+        libraries are required in order for PERL to dynamically load the
+        PerlMagick extension.
 
         ImageMagick built with delegates (see MAGICK PLUG-INS below) can
         pose additional challenges.  You can build all the delegates
@@ -213,41 +213,52 @@ UNIX COMPILATION
         additional expertise and effort; 4) you are unable to build
         shared libraries.
 
-      o --with-frozenpaths: By default, the configure script will
-        determine the location of all delegates (external programs)
-        and incorporate the full paths within the delegates.mgk file.
-        This is the default because it is assumed that the installer's
+      o --without-frozenpaths: By default, the configure script will
+        determine the location of all delegates (external programs) and
+        incorporate the full paths within the delegates.mgk file. This
+        is the default because it is assumed that the installer's
         environment is appropriately configured and that the operation
         of ImageMagick should not be subject to the end-user's
-        environment.  However, if it is desireable to allow the end
-        user to define their own environment or possible that the
-        end user's environment does not match the installer's
-        environment (e.g. for binary distributions), this option may
-        be set to 'no' so that only the delegate's name is included
-        in the delegates.mgk file.
+        environment. However, if it is desireable to allow the end user
+        to define their own environment or possible that the end user's
+        environment does not match the installer's environment (e.g. for
+        binary distributions), --without-frozenpaths may be specified so
+        that only the delegate's name is included in the delegates.mgk
+        file.
 
-      o --with-perl: conveniently compile and install PerlMagick in
-        one step.  Without this option you first install ImageMagick,
-        change to the PerlMagick subdirectory, build, and finally
-        install PerlMagick.  Note, PerlMagick is configured even if
-        --with-perl is disabled.  If --enable-shared is not
-        specified, a new PERL interpreter (PerlMagick) is built
-        which is statically linked against the PerlMagick extension.
-        This new interpreter is installed alongside your existing PERL
-        interpreter.  If --enable-shared is specified, the
-        PerlMagick extension is built as a dynamically loadable object
-        which is loaded into your current PERL interpreter at
-        run-time.  Use of dynamically-loaded extensions is preferable
-        over statically linked extensions so --enable-shared should be
-        specified if possible.  If the argument
+      o --without-perl: By default, PerlMagick is conveniently compiled
+        and installed in one step. When --without-perl is specified, you
+        must first install ImageMagick, change to the PerlMagick
+        subdirectory, build, and finally install PerlMagick. Note,
+        PerlMagick is configured even if --without-perl is specified. If
+        --enable-shared is not specified, a new PERL interpreter
+        (PerlMagick) is built which is statically linked against the
+        PerlMagick extension. This new interpreter is installed
+        alongside your existing PERL interpreter. If --enable-shared is
+        specified, the PerlMagick extension is built as a dynamically
+        loadable object which is loaded into your current PERL
+        interpreter at run-time. Use of dynamically-loaded extensions is
+        preferable over statically linked extensions so --enable-shared
+        should be specified if possible. If the argument
         --with-perl=/path/to/perl is supplied, then /path/to/perl will
         be taken as the PERL interpreter to use.
 
-      o --with-x=no: build and use the X11 stubs library
-        (ImageMagick/xlib) instead of the core X11 libraries.  This may
-        be necessary on systems where X11 is not installed (e.g. a web
-        server).  Display, animate, and import will not work with this
-        library.  The remaining programs have reduced functionality.
+      o --without-x: By default, ImageMagick will use X11 libraries if
+        they are available. When --without-x is specified, use of X11 is
+        disabled. The display, animate, and import programs are not
+        built or installed. The remaining programs have reduced
+        functionality such as no access to X11 fonts (consider using
+        Postscript or TrueType fonts instead).
+
+    Building under Cygwin
+
+      ImageMagick may be built under the Windows NT/'9X Cygwin
+      Unix-emulation environment which may be downloaded from
+      http://sourceware.cygnus.com/cygwin/. Pre-compiled X11R6.4
+      libraries for Cygwin are available from
+      http://dao.gsfc.nasa.gov/software/grads/win32/X11R6.4/. Use the
+      same procedure as for Unix except that building DLLs is not yet
+      supported so do not specify --enable-shared option to configure.
 
     Dealing with configuration failures:
 
@@ -258,10 +269,14 @@ UNIX COMPILATION
       specified compilation flags (CFLAGS), pre-processor flags
       (CPPFLAGS), and linker flags (LDFLAGS). Any errors are logged to
       the file 'config.log'. If configure fails to discover a header or
-      library please review this log file to determine why. After taking
-      corrective action, be sure to remove the 'config.cache' file
-      before running configure so that configure will re-inspect the
-      environment rather than using cached values.
+      library please review this log file to determine why, however,
+      please be aware that *errors in the config.log are normal* because
+      configure works by trying something and seeing if it fails. An
+      error in config.log is only a problem if the test should have
+      worked on your system.. After taking corrective action, be sure to
+      remove the 'config.cache' file before running configure so that
+      configure will re-inspect the environment rather than using cached
+      values.
 
       Common causes of configure falures are: 1) a delegate header is not
       in the header include path (CPPFLAGS -I option); 2) a delegate
@@ -276,7 +291,10 @@ UNIX COMPILATION
       contain the operating system type (as reported by 'uname -a') and
       the compiler/compiler-version. A copy of the configure script
       output and/or the config.log file may be valuable in order to find
-      the problem.
+      the problem. If you send a config.log, please also send a script
+      of the configure output and a description of what you expected to
+      see (and why) so the failure you are observing can be identified
+      and resolved.
 
   * * *
 

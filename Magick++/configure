@@ -2029,12 +2029,12 @@ fi
 
 echo $ac_n "checking pre-processor flags""... $ac_c" 1>&6
 echo "configure:2032: checking pre-processor flags" >&5
-CPPFLAGS="-DHAVE_CONFIG_H "`Magick-config --cppflags`" $CPPFLAGS"
+CPPFLAGS="$CPPFLAGS "`Magick-config --cppflags`
 echo "$ac_t"""$CPPFLAGS"" 1>&6
 
 echo $ac_n "checking linker flags""... $ac_c" 1>&6
 echo "configure:2037: checking linker flags" >&5
-LDFLAGS=`Magick-config --ldflags`" $LDFLAGS"
+LDFLAGS="$LDFLAGS "`Magick-config --ldflags`
 echo "$ac_t"""$LDFLAGS"" 1>&6
 
 echo $ac_n "checking libraries""... $ac_c" 1>&6

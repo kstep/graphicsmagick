@@ -1,3 +1,19 @@
+1999-06-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/MagickImage.cpp (read): Added support for reading an encoded
+ 	image stored in a BLOB.  Uses new ImageMagick APIs introduced on
+ 	July 21, 1999.  Note that the implementation of these new APIs
+ 	uses a temporary file.
+	(write): Added support for writing an encoded image to a BLOB.
+
+1999-06-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/MagickInclude.h : Use new <magick/api.h> interface to
+ 	ImageMagick to avoid namespace-induced problems.
+
+	* configure.in : CPPFLAGS and LDFLAGS specified via the
+ 	environment take precidence over flags from Magick-config.
+
 1999-05-31  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/MagickSTL.h (mapImages): New algorithm to map the sequence

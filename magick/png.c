@@ -88,12 +88,19 @@
 %    o image_info: Specifies a pointer to an ImageInfo structure.
 %
 %  To do, more or less in chronological order (as of version 4.2.7,
-%    9 June 1999 -- glennrp):
+%    22 June 1999 -- glennrp -- see also "To do" under WritePNGImage):
 %
-%    (At this point, decode is supposed to be in full MNG-LC compliance)
+%    (At this point, PNG decoding is supposed to be in full MNG-LC compliance)
 %
-%    Recognize and ignore certain MNG chunks (presently, all unrecognized
-%    MNG chunks are ignored, but this can be unsafe).
+%    Preserve all unknown and not-yet-handled known chunks found in input
+%    PNG file and copy them  into output PNG files according to the PNG
+%    copying rules.
+%
+%    (At this point, PNG encoding should be in full MNG compliance)
+%
+%    Provide options for choice of background to use when the MNG BACK
+%    chunk is not present or is not mandatory (i.e., leave transparent,
+%    user specified, MNG BACK, PNG bKGD)
 %
 %    Implement LOOP/ENDL [done, but could do discretionary loops more
 %    efficiently by linking in the duplicate frames.].
@@ -103,16 +110,14 @@
 %    Decode and act on the MHDR simplicity profile (offer option to reject
 %    files or attempt to process them anyway when the profile isn't LC or VLC).
 %
-%    Decode global cHRM chunk.
-%
 %    Upgrade to full MNG without Delta-PNG.
 %
 %        o  BACK [done a while ago except for background image ID]
 %        o  MOVE [done 15 May 1999]
 %        o  CLIP [done 15 May 1999]
 %        o  DISC [done 19 May 1999]
-%        o  SAVE [partial 19 May 1999 (marks objects frozen)]
-%        o  SEEK [partial 19 May 1999 (discard function only)]
+%        o  SAVE [partially done 19 May 1999 (marks objects frozen)]
+%        o  SEEK [partially done 19 May 1999 (discard function only)]
 %        o  SHOW
 %        o  PAST
 %        o  BASI
@@ -145,20 +150,30 @@
 /*
   Features under construction.  Define these to work on them.
   #define MNG_OBJECT_BUFFERS
-  #define MNG_GLOBAL_COLORSPACE_SUPPORTED
   #define MNG_BASI_SUPPORTED
 */
+  #define MNG_GLOBAL_COLORSPACE_SUPPORTED
 
 /*
-  Define this to 96 to get proposed MNG-0.96 capabilities (Draft 0.95b),
-  or to 95 to get MNG-0.95 capabilities (in MNG-0.95a, object does not
-  "exist" until the embedded image is received and the object attributes for
-  object 0 are discarded immediately; in MNG-0.95b proposal, they "exist"
-  when the DEFI chunk is found and the object attributes for object 0
-  persist until redefined.)
+  Define this to 9503 or 9504 to get proposed MNG-0.96 capabilities (Draft
+  0.95c or 0.95d), or to 9501 to get MNG-0.95a capabilities (in MNG-0.95a,
+  object does not "exist" until the embedded image is received and the
+  object attributes for object 0 are discarded immediately; in MNG-0.95b
+  proposal, they "exist" when the DEFI chunk is found and the object
+  attributes for object 0 persist until redefined.)
+
+  As of June 22, 1999, version 0.95a is the latest approved version.  Version
+  0.95b is being voted on, and versions 0.95c and 0.95d are being discussed
+  and will probably be voted on by the PNG Development Group in July.
+
+  MNG_LEVEL 9501: MNG-0.95a
+  MNG_LEVEL 9502: MNG-0.95b
+  MNG_LEVEL 9503: MNG-0.95c
+  MNG_LEVEL 9504: MNG-0.95d
+
 */
 
-#define MNG_LEVEL 96
+#define MNG_LEVEL 9502
 
 /*
   If this is not defined, spec is interpreted strictly.  If it is
@@ -167,6 +182,13 @@
       o global PLTE too short
   #define MNG_LOOSE
  */
+
+/*
+  Don't try to define PNG_READ|WRITE_EMPTY_PLTE_SUPPORTED here.  Make sure
+  it's defined in libpng/pngconf.h, version 1.0.3a or later.  It won't work
+  with earlier versions of libpng.  As of June 16, 1999, libpng-1.0.3a has
+  not yet been released by the PNG group.
+*/
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
@@ -321,7 +343,7 @@ typedef struct _Mng
     global_gamma;
 
   ChromaticityInfo
-    global_chromaticity;
+    global_chrm;
 
   RenderingIntent
     global_srgb_intent;
@@ -706,20 +728,22 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
     ticks_per_second;
 
   int
-    have_global_chromaticity,
-    have_global_gamma,
+    have_global_bkgd,
+    have_global_chrm,
+    have_global_gama,
     have_global_srgb,
     global_plte_length,
     global_trns_length;
 
   ColorPacket
-    mng_background_color;
+    mng_background_color,
+    mng_global_bkgd;
 
   unsigned int
     framing_mode=1,
     mandatory_back=0,
     mng_background_object=0,
-    mng_level=MNG_LEVEL,
+    mng_level,
     mng_type=0,   /* 0: PNG; 1: MNG; 2: MNG-LC; 3: MNG-VLC */
     simplicity=0;
 
@@ -743,6 +767,9 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
     frame,
     image_box,
     previous_fb;
+
+  mng_level=MNG_LEVEL;
+
   /*
     Allocate image structure.
   */
@@ -810,7 +837,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
           m->ob[i]=(MngBuffer *)NULL;
 #endif
         }
-      if (mng_level > 95)
+      if (mng_level > 9501)
          m->exists[0]=True;
       for (i=0; i<256; i++)
         m->loop_active[i]=0;
@@ -826,12 +853,16 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
   image_found = 0;
   framing_mode=1;
   mandatory_back=0;
-  have_global_gamma=0;
-  have_global_chromaticity=0;
-  have_global_srgb=0;
+  have_global_chrm=False;
+  have_global_bkgd=False;
+  have_global_gama=False;
+  have_global_srgb=False;
   global_plte_length=0;
   global_trns_length=0;
-  mng_background_color=image->border_color;
+  mng_background_color=image->background_color;
+  if(image_info->verbose)
+     printf("background color is %3d %3d %3d\n",mng_background_color.red,
+         mng_background_color.green, mng_background_color.blue);
   do
   {
     if (Latin1Compare(image_info->magick,"MNG") == 0)
@@ -1066,7 +1097,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
                   FreeMemory((char *) chunk);
                   continue;
                 }
-            if (mng_level > 95)
+            if (mng_level > 9500)
               m->exists[object_id] = True;
             else
               m->exists[object_id] = False;  /* It doesn't exist until IHDR */
@@ -1074,7 +1105,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
             if (length>2)
               m->visible[object_id]=!p[2];
             else
-              if (mng_level < 96)
+              if (mng_level < 9502)
                 m->visible[object_id]=True;
             /*
               Extract object offset info.
@@ -1090,7 +1121,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
                 m->y_off[object_id]=pair.b;
               }
             else
-               if (mng_level < 96)
+               if (mng_level < 9502)
                  {
                    m->x_off[object_id]=0;
                    m->y_off[object_id]=0;
@@ -1101,7 +1132,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
             if (length>27)
               m->object_clip[object_id]=mng_read_box(frame,0,&p[12]);
             else
-              if (mng_level < 96)
+              if (mng_level < 9502)
                 m->object_clip[object_id]=frame;
 
             if (m->verbose)
@@ -1118,9 +1149,32 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
             continue;
           }
 
+        if (!png_memcmp(type, mng_bKGD, 4))
+          {
+            have_global_bkgd = False;
+            if(mng_level > 9502)
+              if(length > 5)
+                {
+                  mng_global_bkgd.red   =
+                    (unsigned short)XDownScale((p[0]<<8) | p[1]);
+                  mng_global_bkgd.green =
+                    (unsigned short)XDownScale((p[2]<<8) | p[3]);
+                  mng_global_bkgd.blue  =
+                    (unsigned short)XDownScale((p[4]<<8) | p[5]);
+                  have_global_bkgd = True;
+                }
+            FreeMemory((char *) chunk);
+            continue;
+          }
+
         if (!png_memcmp(type, mng_BACK, 4))
           {
-            if (length>5)
+            if (length>6)
+              mandatory_back = p[6];
+            else
+              mandatory_back = 0;
+
+            if (mandatory_back && length>5)
               {
                 mng_background_color.red   =
                   (unsigned short)XDownScale((p[0]<<8) | p[1]);
@@ -1129,11 +1183,6 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
                 mng_background_color.blue  =
                   (unsigned short)XDownScale((p[4]<<8) | p[5]);
               }
-
-            if (length>6)
-              mandatory_back = p[6];
-            else
-              mandatory_back = 0;
 
             if (length > 8)
               mng_background_object = p[7]<<8 | p[8];
@@ -1156,15 +1205,17 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
 
             /* read global PLTE */
 
-            if (length < 769)
-              m->global_plte = (png_colorp) AllocateMemory(256*sizeof(png_color));
-              for (i=0; i<(int)length/3; i++)
-                {
-                  m->global_plte[i].red=p[3*i];
-                  m->global_plte[i].green=p[3*i+1];
-                  m->global_plte[i].blue=p[3*i+2];
-                }
-            global_plte_length = (int)length/3;
+            if (length && length < 769)
+              {
+                m->global_plte=(png_colorp) AllocateMemory(256*sizeof(png_color));
+                for (i=0; i<(int)length/3; i++)
+                  {
+                    m->global_plte[i].red=p[3*i];
+                    m->global_plte[i].green=p[3*i+1];
+                    m->global_plte[i].blue=p[3*i+2];
+                  }
+                global_plte_length = (int)length/3;
+              }
 #ifdef MNG_LOOSE
             for (   ; i<256; i++)
               {
@@ -1172,9 +1223,11 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
                 m->global_plte[i].green=i;
                 m->global_plte[i].blue=i;
               }
-            if (length > 0)
+            if (length)
               global_plte_length = 256;
 #endif
+            else
+              global_plte_length = 0;
             FreeMemory((char *) chunk);
             continue;
           }
@@ -1187,7 +1240,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
 
             if (length < 257)
               for (i=0; i<length; i++)
-                m->global_trns[i]=chunk[i+4];
+                m->global_trns[i]=p[i];
 
 #ifdef MNG_LOOSE
             for (   ; i<256; i++)
@@ -1201,10 +1254,14 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
 
         if (!png_memcmp(type, mng_gAMA, 4))
           {
-            int igamma = (int)mng_get_long(chunk);
-
-            m->global_gamma = ((float)igamma+0.5)*0.00001;
-            have_global_gamma = True;
+            if(length == 4)
+              {
+                int igamma = (int)mng_get_long(p);
+                m->global_gamma = ((float)igamma+0.5)*0.00001;
+                have_global_gama = True;
+              }
+            else
+                have_global_gama = False;
 
             FreeMemory((char *) chunk);
             continue;
@@ -1214,7 +1271,20 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
           {
             /* read global cHRM */
 
-            /* TO DO */
+            if(length == 32)
+              {
+                m->global_chrm.white_point.x  =.00001*mng_get_long(p);
+                m->global_chrm.white_point.y  =.00001*mng_get_long(&p[4]);
+                m->global_chrm.red_primary.x  =.00001*mng_get_long(&p[8]);
+                m->global_chrm.red_primary.y  =.00001*mng_get_long(&p[12]);
+                m->global_chrm.green_primary.x=.00001*mng_get_long(&p[16]);
+                m->global_chrm.green_primary.y=.00001*mng_get_long(&p[20]);
+                m->global_chrm.blue_primary.x =.00001*mng_get_long(&p[24]);
+                m->global_chrm.blue_primary.y =.00001*mng_get_long(&p[28]);
+                have_global_chrm = True;
+              }
+            else
+              have_global_chrm = False;
 
             FreeMemory((char *) chunk);
             continue;
@@ -1224,8 +1294,13 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
           {
             /* read global sRGB */
 
-            m->global_srgb_intent = (RenderingIntent)p[0];
-            have_global_srgb = 1;
+            if(length)
+              {
+                m->global_srgb_intent = (RenderingIntent)p[0];
+                have_global_srgb = True;
+              }
+            else
+              have_global_srgb = False;
 
             FreeMemory((char *) chunk);
             continue;
@@ -1638,7 +1713,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
                when object_id is zero, in MNG-0.95.  For other object_id's,
                it remains in effect until reset by another DEFI chunk. */
 
-            if (object_id == 0 && mng_level < 96)
+            if (object_id == 0 && mng_level < 9502)
               m->visible[object_id]=True;
 
             if (!image_info->decode_all_MNG_objects)
@@ -1764,7 +1839,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
                 SetImage(image);
               }
             first_mng_object=0;
-            if (mng_level < 96)
+            if (mng_level < 9502)
               m->exists[0]=False;
           }
 
@@ -1886,23 +1961,39 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
     if (ping_info->valid & PNG_INFO_sRGB)
       image->rendering_intent=(RenderingIntent) (ping_info->srgb_intent+1);
 #endif
-    if (have_global_gamma)
+    if (have_global_gama)
       image->gamma=m->global_gamma;
     if (ping_info->valid & PNG_INFO_gAMA)
       image->gamma=ping_info->gamma;
-    if (have_global_chromaticity)
-        image->chromaticity=m->global_chromaticity;
+    if (have_global_chrm)
+        image->chromaticity=m->global_chrm;
     if (ping_info->valid & PNG_INFO_cHRM)
       {
+        image->chromaticity.white_point.x=ping_info->x_white;
+        image->chromaticity.white_point.y=ping_info->y_white;
         image->chromaticity.red_primary.x=ping_info->x_red;
         image->chromaticity.red_primary.y=ping_info->y_red;
         image->chromaticity.green_primary.x=ping_info->x_green;
         image->chromaticity.green_primary.y=ping_info->y_green;
         image->chromaticity.blue_primary.x=ping_info->x_blue;
         image->chromaticity.blue_primary.y=ping_info->y_blue;
-        image->chromaticity.white_point.x=ping_info->x_white;
-        image->chromaticity.white_point.y=ping_info->y_white;
       }
+    if (image->rendering_intent)
+      {
+        image->gamma=.45455;
+        image->chromaticity.white_point.x  =0.3127;
+        image->chromaticity.white_point.y  =0.3290;
+        image->chromaticity.red_primary.x  =0.6400;
+        image->chromaticity.red_primary.y  =0.3300;
+        image->chromaticity.green_primary.x=0.3000;
+        image->chromaticity.green_primary.y=0.6000;
+        image->chromaticity.blue_primary.x =0.1500;
+        image->chromaticity.blue_primary.y =0.0600;
+      }
+    if (have_global_gama || image->rendering_intent)
+      ping_info->valid |= PNG_INFO_gAMA;
+    if (have_global_chrm || image->rendering_intent)
+      ping_info->valid |= PNG_INFO_cHRM;
     if (ping_info->valid & PNG_INFO_pHYs)
       {
         /*
@@ -1978,15 +2069,33 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
       }
 
 #if defined(PNG_READ_bKGD_SUPPORTED)
+    if(mng_level > 9502)
+      if (have_global_bkgd && !(ping_info->valid & PNG_INFO_bKGD))
+        {
+          if (QuantumDepth == 16)
+            image->background_color=mng_global_bkgd;
+          else
+            {
+              image->background_color.red=
+                (unsigned short)XDownScale(mng_global_bkgd.red);
+              image->background_color.green=
+                (unsigned short)XDownScale(mng_global_bkgd.green);
+              image->background_color.blue=
+                (unsigned short)XDownScale(mng_global_bkgd.blue);
+            }
+        }
     if (ping_info->valid & PNG_INFO_bKGD)
       {
         /*
           Set image background color.
         */
-        image->background_color.red=ping_info->background.red;
-        image->background_color.green=ping_info->background.green;
-        image->background_color.blue=ping_info->background.blue;
-        if (ping_info->bit_depth > QuantumDepth)
+        if (ping_info->bit_depth <= QuantumDepth)
+          {
+            image->background_color.red=ping_info->background.red;
+            image->background_color.green=ping_info->background.green;
+            image->background_color.blue=ping_info->background.blue;
+          }
+        else
           {
             image->background_color.red=
               (unsigned short)XDownScale(ping_info->background.red);
@@ -2568,7 +2677,6 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
                       "p. Memory allocation failed");
                     return(False);
                   }
-                image->background_color = mng_background_color;
                 image->matte=True;
                 image->colors=2;
                 SetImage(image);
@@ -2583,7 +2691,10 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
               }
           }
         if (image_info->coalesce_frames)
-          MNGCoalesce(image);
+          {
+            image->background_color = mng_background_color;
+            MNGCoalesce(image);
+          }
       }
   } while (Latin1Compare(image_info->magick,"MNG") == 0);
 
@@ -2632,10 +2743,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
             return((Image *) NULL);
           }
         image->background_color = mng_background_color;
-        if (mandatory_back)
-           image->matte = False;
-        else
-           image->matte = True;
+        image->matte = False;
         SetImage(image);
         CondenseImage(image);
         image_found++;
@@ -2730,7 +2838,12 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
 %    o image:  A pointer to an Image structure.
 %
 %
-%  To do (as of version 4.2.7, 15 June 1999 -- glennrp):
+%  To do (as of version 4.2.7, 22 June 1999 -- glennrp -- see also
+%    "To do" under ReadPNGImage):
+%
+%    Preserve all unknown and not-yet-handled known chunks found in input
+%    PNG file and copy them  into output PNG files according to the PNG
+%    copying rules.
 %
 %    Improve selection of color type (use indexed-colour or indexed-colour
 %    with tRNS when 256 or fewer unique RGBA values are present).
@@ -2746,12 +2859,16 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
 %
 %    Check for identical sRGB and replace with a global sRGB (and remove
 %    gAMA/cHRM if sRGB is found; check for identical gAMA/cHRM and
-%    replace with global gAMA/cHRM.
+%    replace with global gAMA/cHRM (or with sRGB if appropriate; replace
+%    local gAMA/cHRM with local sRGB if appropriate).
 %
 %    Provide option to skip writing the signature tEXt chunks.
 %
 %    Use signatures to detect identical objects and reuse the first
 %    instance of such objects instead of writing duplicate objects.
+%
+%    Use a smaller-than-32k value of compression window size when
+%    appropriate.
 %
 %    Encode JNG datastreams.
 %
@@ -2816,19 +2933,21 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
 {
   int
     equal_backgrounds,
+    equal_chrms,
+    equal_gammas,
     equal_palettes,
+    equal_srgbs,
     framing_mode,
+    image_count,
     old_framing_mode,
     x,
     y,
-    have_global_plte,
+    have_write_global_plte,
     use_global_plte,
     need_local_plte,
-#ifdef MNG_GLOBAL_COLOR_SPACE_SUPPORTED
-    have_global_srgb,
-    have_global_gamma,
-    have_global_chrm,
-#endif
+    have_write_global_srgb,
+    have_write_global_gama,
+    have_write_global_chrm,
     need_defi,
     need_fram,
     need_iterations,
@@ -2863,11 +2982,14 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     final_delay,
     initial_delay,
     matte,
+    mng_level,
     scene,
     ticks_per_second;
 
   unsigned short
     value;
+
+  mng_level=MNG_LEVEL;
 
   /*
     Open image file.
@@ -2893,14 +3015,12 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
       page_info.height=0;
       page_info.x=0;
       page_info.y=0;
-      have_global_plte=False;
+      have_write_global_plte=False;
       use_global_plte=False;
       need_local_plte=True;
-#ifdef MNG_GLOBAL_COLOR_SPACE_SUPPORTED
-      have_global_srgb=False;
-      have_global_gamma= False;
-      have_global_chrm=False;
-#endif
+      have_write_global_srgb=False;
+      have_write_global_gama= False;
+      have_write_global_chrm=False;
       need_geom=True;
       need_defi=False;
       need_fram=False;
@@ -2924,10 +3044,13 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
       need_iterations=False;
       need_local_plte=False;
       equal_backgrounds = True;
+      equal_chrms = True;
+      equal_gammas = True;
+      equal_srgbs = True;
+      image_count = 0;
 
       for (next_image=image; next_image != (Image *) NULL; )
         {
-
           if (next_image->page != (char *) NULL)
             {
               /* Get "page" geometry of scene. */
@@ -2973,172 +3096,218 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
           need_local_plte = True;
 #endif
           if(next_image->next != (Image *)NULL)
-            if( (next_image->background_color.red !=
-                 next_image->next->background_color.red) ||
-                (next_image->background_color.green !=
-                 next_image->next->background_color.green) ||
-                (next_image->background_color.blue !=
-                 next_image->next->background_color.blue))
-              equal_backgrounds = False;
+            {
+              if( (next_image->background_color.red !=
+                   next_image->next->background_color.red) ||
+                  (next_image->background_color.green !=
+                   next_image->next->background_color.green) ||
+                  (next_image->background_color.blue !=
+                   next_image->next->background_color.blue))
+                 equal_backgrounds = False;
+              if (next_image->gamma != next_image->next->gamma)
+                 equal_gammas = False;
+              if (next_image->rendering_intent != 
+                   next_image->next->rendering_intent)
+                 equal_srgbs = False;
+            }
 
+          image_count++;
           next_image=next_image->next;
+        }
+
+      if (image_count < 2)
+       {
+         equal_backgrounds = False;
+         equal_chrms = False;
+         equal_gammas = False;
+         equal_srgbs = False;
+         use_global_plte = False;
+         need_local_plte = True;
        }
 
-       if (image_info->verbose)
-         {
-           printf("initial delay=%d, final delay=%d\n",
-             initial_delay, final_delay);
-           printf("need_defi=%d, need_fram=%d\n",need_defi, need_fram);
-         }
+     if (image_info->verbose)
+       {
+         printf("initial delay=%d, final delay=%d\n",
+           initial_delay, final_delay);
+         printf("need_defi=%d, need_fram=%d\n",need_defi, need_fram);
+       }
 
-       if (!need_fram)
-        {
-          /*
-             Only certain framing rates 100/n are exactly representable without
-             the FRAM chunk but we'll allow some slop in VLC files
-           */
+     if (!need_fram)
+       {
+         /*
+           Only certain framing rates 100/n are exactly representable without
+           the FRAM chunk but we'll allow some slop in VLC files
+         */
 
-          if (final_delay == 0)
-            {
-              if (need_iterations)
-                {
-                  /* It's probably a GIF with loop; don't run it *too* fast */
-                  final_delay=10;
-                  MagickWarning(DelegateWarning,
-                    "input has zero delay between all frames; assuming 10 cs",
-                    image->filename);
-                }
-              else
-                ticks_per_second=0;
-            }
-          if (final_delay > 0) ticks_per_second = 100/final_delay;
-          if (final_delay > 50) ticks_per_second = 2;
-          if (final_delay > 75) ticks_per_second = 1;
-          if (final_delay > 125) need_fram=True;
+         if (final_delay == 0)
+           {
+             if (need_iterations)
+               {
+                 /* It's probably a GIF with loop; don't run it *too* fast */
+                 final_delay=10;
+                 MagickWarning(DelegateWarning,
+                   "input has zero delay between all frames; assuming 10 cs",
+                   image->filename);
+               }
+             else
+               ticks_per_second=0;
+           }
+         if (final_delay > 0) ticks_per_second = 100/final_delay;
+         if (final_delay > 50) ticks_per_second = 2;
+         if (final_delay > 75) ticks_per_second = 1;
+         if (final_delay > 125) need_fram=True;
 
-          if (image_info->verbose)
-              printf("final delay=%d, need_fram=%d\n",final_delay,need_fram);
-          if (need_defi && final_delay > 2 && final_delay != 4 &&
-              final_delay != 5 && final_delay != 10 && final_delay != 20 &&
-              final_delay != 25 && final_delay != 50 && final_delay != 100)
-            need_fram=True;  /* make it exact; we cannot have VLC anyway */
-        }
-       if (need_fram)
-          ticks_per_second = 100;
+         if (image_info->verbose)
+             printf("final delay=%d, need_fram=%d\n",final_delay,need_fram);
+         if (need_defi && final_delay > 2 && final_delay != 4 &&
+             final_delay != 5 && final_delay != 10 && final_delay != 20 &&
+             final_delay != 25 && final_delay != 50 && final_delay != 100)
+           need_fram=True;  /* make it exact; we cannot have VLC anyway */
+       }
+     if (need_fram)
+        ticks_per_second = 100;
 
-      /* If pseudocolor, we should also check to see if all the
-         palettes are identical and write a global PLTE if they are.
-         ../glennrp Feb 99
-      */
+     /* If pseudocolor, we should also check to see if all the
+        palettes are identical and write a global PLTE if they are.
+        ../glennrp Feb 99
+     */
 
-      /*
+     /*
         Write the MNG version 0.95 signature and MHDR chunk.
-      */
-      (void) fwrite("\212MNG\r\n\032\n",1,8,image->file);
-      MSBFirstWriteLong(28L,image->file);  /* chunk data length = 28 */
-      PNGType(chunk,mng_MHDR);
-      PNGLong(chunk+4,page_info.width);
-      PNGLong(chunk+8,page_info.height);
-      PNGLong(chunk+12,ticks_per_second);
-      PNGLong(chunk+16,0L);    /* layer count = unknown */
-      PNGLong(chunk+20,0L);    /* frame count = unknown */
-      PNGLong(chunk+24,0L);    /* play time = unknown   */
-      if (need_matte)
-        {
-          if (need_defi || need_fram || use_global_plte)
-            PNGLong(chunk+28,11L);    /* simplicity =  LC */
-          else
-            PNGLong(chunk+28,9L);    /* simplicity = VLC */
-        }
-      else
-        {
-          if (need_defi || need_fram || use_global_plte)
-            PNGLong(chunk+28,3L);    /* simplicity =  LC, no transparency */
-          else
-            PNGLong(chunk+28,1L);    /* simplicity = VLC, no transparency */
-        }
+     */
+     (void) fwrite("\212MNG\r\n\032\n",1,8,image->file);
+     MSBFirstWriteLong(28L,image->file);  /* chunk data length = 28 */
+     PNGType(chunk,mng_MHDR);
+     PNGLong(chunk+4,page_info.width);
+     PNGLong(chunk+8,page_info.height);
+     PNGLong(chunk+12,ticks_per_second);
+     PNGLong(chunk+16,0L);    /* layer count = unknown */
+     PNGLong(chunk+20,0L);    /* frame count = unknown */
+     PNGLong(chunk+24,0L);    /* play time = unknown   */
+     if (need_matte)
+       {
+         if (need_defi || need_fram || use_global_plte)
+           PNGLong(chunk+28,11L);    /* simplicity =  LC */
+         else
+           PNGLong(chunk+28,9L);    /* simplicity = VLC */
+       }
+     else
+       {
+         if (need_defi || need_fram || use_global_plte)
+           PNGLong(chunk+28,3L);    /* simplicity =  LC, no transparency */
+         else
+           PNGLong(chunk+28,1L);    /* simplicity = VLC, no transparency */
+       }
 
-      (void) fwrite(chunk,1,32,image->file);
-      MSBFirstWriteLong(crc32(0,chunk,32),image->file);
+     (void) fwrite(chunk,1,32,image->file);
+     MSBFirstWriteLong(crc32(0,chunk,32),image->file);
 
-      if ((image->previous == (Image *) NULL) &&
-          (image->next != (Image *) NULL) && (image->iterations != 1))
-        {
-          /*
-            Write MNG TERM chunk
-          */
-          MSBFirstWriteLong(10L,image->file);  /* data length = 10 */
-          PNGType(chunk,mng_TERM);
-          chunk[4]=3;  /* repeat animation */
-          chunk[5]=0;  /* show last frame when done */
-          PNGLong(chunk+6, (png_uint_32)(ticks_per_second*final_delay/100));
-          if (image_info->verbose)
-             printf(
-              "Wrote MNG TERM chunk with delay=%d (tps=%d, final_delay=%d)\n",
-               ticks_per_second*final_delay/100,ticks_per_second,final_delay);
-          if (image->iterations == 0)
-            PNGLong(chunk+10, 0x7fffffffL);
-          else
-            PNGLong(chunk+10, (png_uint_32)image->iterations);
-          (void) fwrite(chunk,1,14,image->file);
-          MSBFirstWriteLong(crc32(0,chunk,14),image->file);
-        }
-      if(equal_backgrounds)
-        {
-          /*
-            Write MNG BACK chunk (and if global bKGD is approved, global bKGD
-            chunk)
-          */
-          unsigned short
-            color;
+     if ((image->previous == (Image *) NULL) &&
+         (image->next != (Image *) NULL) && (image->iterations != 1))
+       {
+         /*
+           Write MNG TERM chunk
+         */
+         MSBFirstWriteLong(10L,image->file);  /* data length = 10 */
+         PNGType(chunk,mng_TERM);
+         chunk[4]=3;  /* repeat animation */
+         chunk[5]=0;  /* show last frame when done */
+         PNGLong(chunk+6, (png_uint_32)(ticks_per_second*final_delay/100));
+         if (image_info->verbose)
+            printf(
+             "Wrote MNG TERM chunk with delay=%d (tps=%d, final_delay=%d)\n",
+              ticks_per_second*final_delay/100,ticks_per_second,final_delay);
+         if (image->iterations == 0)
+           PNGLong(chunk+10, 0x7fffffffL);
+         else
+           PNGLong(chunk+10, (png_uint_32)image->iterations);
+         (void) fwrite(chunk,1,14,image->file);
+         MSBFirstWriteLong(crc32(0,chunk,14),image->file);
+       }
 
-          MSBFirstWriteLong(6L, image->file);
-          PNGType(chunk,mng_BACK);
-          color=(unsigned short)UpScale(image->background_color.red);
-          PNGShort(chunk+4, color);
-          color=(unsigned short)UpScale(image->background_color.green);
-          PNGShort(chunk+6, color);
-          color=(unsigned short)UpScale(image->background_color.blue);
-          PNGShort(chunk+8, color);
-          (void) fwrite(chunk,1,10,image->file);
-          MSBFirstWriteLong(crc32(0,chunk,10),image->file);
-#if 0
-          /* proposed MNG feature */
-          MSBFirstWriteLong(6L, image->file);
-          PNGType(chunk,mng_bkgd);
-          color=(unsigned short)UpScale(image->background_color.red);
-          PNGShort(chunk+4, color);
-          color=(unsigned short)UpScale(image->background_color.green);
-          PNGShort(chunk+6, color);
-          color=(unsigned short)UpScale(image->background_color.blue);
-          PNGShort(chunk+8, color);
-          (void) fwrite(chunk,1,10,image->file);
-          MSBFirstWriteLong(crc32(0,chunk,10),image->file);
-#endif
-        }
-      if(!need_local_plte && IsPseudoClass(image))
-        {
-          /*
-            Write MNG PLTE chunk
-          */
-          long
-            data_length;
-          data_length=3*image->colors;
-          MSBFirstWriteLong(data_length, image->file);
-          PNGType(chunk,mng_PLTE);
-          for (i=0; i < (int) image->colors; i++)
-          {
-            chunk[4+i*3]=
-              (unsigned char)DownScale(image->colormap[i].red)&0xff;
-            chunk[5+i*3]=
-              (unsigned char)DownScale(image->colormap[i].green)&0xff;
-            chunk[6+i*3]=
-              (unsigned char)DownScale(image->colormap[i].blue)&0xff;
-          }
-          (void) fwrite(chunk,1,data_length+4,image->file);
-          MSBFirstWriteLong(crc32(0,chunk,data_length+4),image->file);
-          have_global_plte = True;
-        }
+     /* To do: check for cHRM+gAMA == sRGB, and write sRGB instead */
+
+     if(image->gamma && equal_gammas)
+       {
+         /*
+            Write MNG gAMA chunk
+         */
+         MSBFirstWriteLong(4L, image->file);
+         PNGType(chunk,mng_gAMA);
+         PNGLong(chunk+4, (unsigned long) (100000*image->gamma+0.5));
+         (void) fwrite(chunk,1,8,image->file);
+         MSBFirstWriteLong(crc32(0,chunk,8),image->file);
+         have_write_global_gama = True;
+       }
+     if((image_info->colorspace==sRGBColorspace || image->rendering_intent) &&
+          equal_srgbs)
+       {
+         /*
+           Write MNG sRGB chunk
+         */
+         MSBFirstWriteLong(1L, image->file);
+         PNGType(chunk,mng_sRGB);
+         chunk[4]=image->rendering_intent+1;
+         (void) fwrite(chunk,1,5,image->file);
+         MSBFirstWriteLong(crc32(0,chunk,5),image->file);
+         have_write_global_srgb = True;
+       }
+
+     if(equal_backgrounds)
+       {
+         /*
+           Write MNG BACK chunk (and if global bKGD is approved, global bKGD
+           chunk)
+         */
+         unsigned short
+           red,
+           green,
+           blue;
+
+         MSBFirstWriteLong(6L, image->file);
+         PNGType(chunk,mng_BACK);
+         red=(unsigned short)UpScale(image->background_color.red);
+         green=(unsigned short)UpScale(image->background_color.green);
+         blue=(unsigned short)UpScale(image->background_color.blue);
+         PNGShort(chunk+4, red);
+         PNGShort(chunk+6, green);
+         PNGShort(chunk+8, blue);
+         (void) fwrite(chunk,1,10,image->file);
+         MSBFirstWriteLong(crc32(0,chunk,10),image->file);
+
+         if (mng_level > 9502)
+           {
+             /* proposed MNG-0.95c feature */
+             MSBFirstWriteLong(6L, image->file);
+             PNGType(chunk,mng_bKGD);
+             (void) fwrite(chunk,1,10,image->file);
+             MSBFirstWriteLong(crc32(0,chunk,10),image->file);
+           }
+       }
+
+     if(!need_local_plte && IsPseudoClass(image))
+       {
+         /*
+           Write MNG PLTE chunk
+         */
+         long
+           data_length;
+         data_length=3*image->colors;
+         MSBFirstWriteLong(data_length, image->file);
+         PNGType(chunk,mng_PLTE);
+         for (i=0; i < (int) image->colors; i++)
+         {
+           chunk[4+i*3]=
+             (unsigned char)DownScale(image->colormap[i].red)&0xff;
+           chunk[5+i*3]=
+             (unsigned char)DownScale(image->colormap[i].green)&0xff;
+           chunk[6+i*3]=
+             (unsigned char)DownScale(image->colormap[i].blue)&0xff;
+         }
+         (void) fwrite(chunk,1,data_length+4,image->file);
+         MSBFirstWriteLong(crc32(0,chunk,data_length+4),image->file);
+         have_write_global_plte = True;
+       }
     }
   scene=0;
   delay=0;
@@ -3155,10 +3324,10 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
            When equal_palettes is true, this image has the same palette
            as the previous PseudoClass image
         */
-        have_global_plte = equal_palettes;
+        have_write_global_plte = equal_palettes;
         equal_palettes = PalettesAreEqual(image_info, image,
            image->next);
-        if(equal_palettes && !have_global_plte)
+        if(equal_palettes && !have_write_global_plte)
           {
             /*
               Write MNG PLTE chunk
@@ -3179,7 +3348,7 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
             }
             (void) fwrite(chunk,1,data_length+4,image->file);
             MSBFirstWriteLong(crc32(0,chunk,data_length+4),image->file);
-            have_global_plte = True;
+            have_write_global_plte = True;
           }
       }
 
@@ -3294,7 +3463,7 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
               (100.0*image->y_resolution);
           }
       }
-    if (!image_info->adjoin || !equal_backgrounds)
+    if (!image_info->adjoin || (mng_level > 9502 && !equal_backgrounds))
       {
         ping_info->valid|=PNG_INFO_bKGD;
         ping_info->background.red=
@@ -3354,7 +3523,7 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
           */
           ping_info->color_type=PNG_COLOR_TYPE_PALETTE;
           ping_info->valid|=PNG_INFO_PLTE;
-          if(have_global_plte)
+          if(have_write_global_plte)
             {
               if (image_info->verbose)
                 printf("writing empty PLTE chunk\n");
@@ -3411,29 +3580,37 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
           ping_info->background.index=(unsigned short) i;
         }
 #if defined(PNG_WRITE_sRGB_SUPPORTED)
-    if (image->rendering_intent != UndefinedIntent)
+    if (!have_write_global_srgb && ((image->rendering_intent != UndefinedIntent)
+         || image_info->colorspace==sRGBColorspace))
       {
         /*
           Note image rendering intent.
         */
         ping_info->valid|=PNG_INFO_sRGB;
-        ping_info->srgb_intent=(int) image->rendering_intent-1;
+        if(image->rendering_intent)
+          ping_info->srgb_intent=(int) image->rendering_intent-1;
+        else
+          ping_info->srgb_intent=1;
+        image->gamma=.45455;
       }
-    if (!image_info->adjoin || image->rendering_intent != UndefinedIntent)
+    if (!image_info->adjoin || (!ping_info->valid&PNG_INFO_sRGB))
 #endif
     {
-       if (image->gamma != 0.0)
+       if (!have_write_global_gama && image->gamma != 0.0)
          {
            /*
              Note image gamma.
+             To do: check for cHRM+gAMA == sRGB, and write sRGB instead. 
            */
+
            ping_info->valid|=PNG_INFO_gAMA;
            ping_info->gamma=image->gamma;
          }
-       if (image->chromaticity.white_point.x != 0.0)
+       if (!have_write_global_chrm && image->chromaticity.white_point.x != 0.0)
          {
            /*
              Note image chromaticity.
+             To do: check for cHRM+gAMA == sRGB, and write sRGB instead. 
            */
            ping_info->valid|=PNG_INFO_cHRM;
            ping_info->x_red=image->chromaticity.red_primary.x;

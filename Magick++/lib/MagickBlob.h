@@ -10,12 +10,14 @@
 
 namespace Magick
 {
-
   // Forward decl
   class BlobRef;
 
   class Blob
   {
+
+    friend class Image;
+
   public:
     // Default constructor
     Blob ( void );
@@ -41,7 +43,7 @@ namespace Magick
 
     // Obtain data length
     unsigned long length ( void ) const;
-    
+
   protected:
 
     // Update object contents, using supplied pointer directly (no

@@ -558,14 +558,14 @@ extern Export AnnotateInfo
   *CloneAnnotateInfo(const ImageInfo *,const AnnotateInfo *);
 
 extern Export char
-  *ImageToBlob(const ImageInfo *,Image *,unsigned int *);
+  *ImageToBlob(const ImageInfo *,Image *,unsigned long *);
 
 extern Export Image
   *AddNoiseImage(const Image *,const NoiseType),
   *AllocateImage(const ImageInfo *),
   *AppendImages(Image *,const unsigned int),
   *AverageImages(const Image *),
-  *BlobToImage(const ImageInfo *,const char *,const unsigned int),
+  *BlobToImage(const ImageInfo *,const char *,const unsigned long),
   *BlurImage(const Image *,const double),
   *BorderImage(const Image *,const RectangleInfo *),
   *ChopImage(const Image *,const RectangleInfo *),

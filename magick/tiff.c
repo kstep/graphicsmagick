@@ -496,7 +496,7 @@ Export Image *ReadTIFFImage(const ImageInfo *image_info)
         image->colormap=(ColorPacket *)
           AllocateMemory(image->colors*sizeof(ColorPacket));
         quantum_scanline=(Quantum *) AllocateMemory(width*sizeof(Quantum));
-        scanline=(unsigned char *) AllocateMemory(TIFFScanlineSize(tiff)+4);
+        scanline=(unsigned char *) AllocateMemory(2*TIFFScanlineSize(tiff)+4);
         if ((image->colormap == (ColorPacket *) NULL) ||
             (quantum_scanline == (Quantum *) NULL) ||
             (scanline == (unsigned char *) NULL))
@@ -704,8 +704,7 @@ Export Image *ReadTIFFImage(const ImageInfo *image_info)
         /*
           Convert TIFF image to DirectClass MIFF image.
         */
-        scanline=(unsigned char *)
-          AllocateMemory((TIFFScanlineSize(tiff) << 1)+4);
+        scanline=(unsigned char *) AllocateMemory(2*TIFFScanlineSize(tiff)+4);
         if (scanline == (unsigned char *) NULL)
           {
             TIFFClose(tiff);
@@ -1422,11 +1421,11 @@ Export unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
                 /*
                   Convert DirectClass packets to contiguous RGB scanlines.
                 */
-                *q++=DownScale(p->red);
-                *q++=DownScale(p->green);
-                *q++=DownScale(p->blue);
+                WriteQuantum(p->red,q);
+                WriteQuantum(p->green,q);
+                WriteQuantum(p->blue,q);
                 if (image->matte)
-                  *q++=DownScale(p->index);
+                  WriteQuantum(p->index,q);
                 x++;
                 if (x == (int) image->columns)
                   {

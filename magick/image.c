@@ -775,7 +775,7 @@ Export Image *AverageImages(const Image *images)
 %
 */
 Export Image *BlobToImage(const ImageInfo *image_info,const char *blob,
-  const unsigned int length)
+  const unsigned long length)
 {
   FILE
     *file;
@@ -3028,7 +3028,7 @@ void GetPixels(const Image *image,float *red_pixels,float *green_pixels,
 %
 */
 Export char *ImageToBlob(const ImageInfo *image_info,Image *image,
-  unsigned int *length)
+  unsigned long *length)
 {
   char
     *blob,
@@ -3056,7 +3056,7 @@ Export char *ImageToBlob(const ImageInfo *image_info,Image *image,
     {
       MagickWarning(FileOpenWarning,"Unable to convert image to a blob",
         image->filename);
-      return((void *) NULL);
+      return((char *) NULL);
     }
   /*
     Read image from disk as blob.
@@ -3069,7 +3069,7 @@ Export char *ImageToBlob(const ImageInfo *image_info,Image *image,
     {
       MagickWarning(FileOpenWarning,"Unable to convert image to a blob",
         image->filename);
-      return((void *) NULL);
+      return((char *) NULL);
     }
   (void) fseek(file,0L,SEEK_END);
   *length=ftell(file);

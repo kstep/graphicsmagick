@@ -300,7 +300,7 @@ Export Image *ReadPSImage(const ImageInfo *image_info)
       image_info->subimage+1,image_info->subimage+image_info->subrange);
   (void) strcpy(filename,image_info->filename);
   TemporaryFilename((char *) image_info->filename);
-  FormatString(command,delegate_info.commands,image_info->antialias ? 1 : 1,
+  FormatString(command,delegate_info.commands,image_info->antialias ? 4 : 1,
     image_info->antialias ? 4 : 1,geometry,density,options,image_info->filename,
     postscript_filename);
   ProgressMonitor(RenderPostscriptText,0,8);

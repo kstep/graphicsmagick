@@ -286,13 +286,13 @@ Export void CoalesceImages(Image *images)
     if (!image->matte && (x <= previous_box.x1) && (y <= previous_box.y1) &&
         ((image->columns+x) >= previous_box.x2) &&
         ((image->rows+y) >= previous_box.y2))
-       continue; /* image completely obscures previous image */
+      continue; /* image completely obscures previous image */
     bounding_box.x1=x < previous_box.x1 ? x : previous_box.x1;
     bounding_box.y1=y < previous_box.y1 ? y : previous_box.y1;
     bounding_box.x2=(image->columns+x) > previous_box.x2 ?
-      (image->columns+x+0.5) : previous_box.x2;
+      (image->columns+x) : previous_box.x2;
     bounding_box.y2=(image->rows+y) > (previous_box.y2) ?
-      (image->rows+y+0.5) : previous_box.y2;
+      (image->rows+y) : previous_box.y2;
     assert(!image->orphan);
     image->orphan=True;
     cloned_image=CloneImage(image,image->columns,image->rows,True);
@@ -314,7 +314,7 @@ Export void CoalesceImages(Image *images)
           "Memory reallocation failed");
         return;
       }
-    image->matte|=
+    image->matte |=
       ((((bounding_box.x1 != x) ||
          (bounding_box.y1 != y)) &&
         ((bounding_box.x1 != previous_box.x1) ||
@@ -330,7 +330,11 @@ Export void CoalesceImages(Image *images)
        (((bounding_box.x2 != (image->columns+x)) ||
          (bounding_box.y1 != y)) &&
         ((bounding_box.x2 != previous_box.x2) ||
-         (bounding_box.y1 != previous_box.y1))));
+         (bounding_box.y1 != previous_box.y1))) ||
+       (previous_box.x2-previous_box.x1+image->columns <
+        bounding_box.x2-bounding_box.x1) ||
+       (previous_box.y2-previous_box.y1+image->rows <
+        bounding_box.y2-bounding_box.y1));
     matte=image->matte;
     SetImage(image);
     CompositeImage(image,ReplaceCompositeOp,image->previous,
@@ -647,7 +651,7 @@ Export Image *CropImage(const Image *image,const RectangleInfo *crop_info)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  Method DeconstructImages breaks down an image sequence into constituent
-%  parts.  This is useful for creating GIF or MNG animation sequences.
+%  parts.  This is useful %  for creating GIF or MNG animation sequences.
 %
 %  The format of the DeconstructImages routine is:
 %
@@ -775,7 +779,7 @@ Export void DeconstructImages(Image *images)
       if (y < (int) image->rows)
         break;
     }
-    bounding_box[i].width=x-bounding_box[i].x+1;
+    bounding_box[i].width=x-bounding_box[i].x;
     for (y=image->rows-1; y >= 0; y--)
     {
       p=image->pixels+y*image->columns;
@@ -790,16 +794,16 @@ Export void DeconstructImages(Image *images)
       if (x < (int) image->columns)
         break;
     }
-    bounding_box[i].height=y-bounding_box[i].y+1;
+    bounding_box[i].height=y-bounding_box[i].y;
     i++;
   }
   /*
     Deconstruct the image sequence.
   */
+  i=0;
   if (images->page != (char *) NULL)
     FreeMemory(images->page);
   images->page=(char *) NULL;
-  i=0;
   for (image=images->next; image != (Image *) NULL; image=image->next)
   {
     image->orphan=True;
