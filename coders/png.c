@@ -433,6 +433,7 @@ static unsigned int
 #endif
 #endif
 
+#if defined(HasPNG)
 #if PNG_LIBPNG_VER > 95
 #if defined(PNG_SORT_PALETTE)
 /*
@@ -819,6 +820,8 @@ static unsigned int ImageIsMonochrome(Image *image)
   }
   return(True);
 }
+#endif /* PNG_LIBPNG_VER > 95 */
+#endif /* HasPNG */
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -849,7 +852,6 @@ static unsigned int ImageIsMonochrome(Image *image)
 %
 %
 */
-#endif
 static unsigned int IsMNG(const unsigned char *magick,const size_t length)
 {
   if (length < 8)
@@ -935,6 +937,7 @@ static unsigned int IsPNG(const unsigned char *magick,const size_t length)
   return(False);
 }
 
+#if defined(HasPNG)
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
@@ -992,7 +995,6 @@ static void LogPNGChunk(int logging, png_bytep type, unsigned long length)
 }
 #endif
 
-#if defined(HasPNG)
 #if PNG_LIBPNG_VER > 95
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
