@@ -1,5 +1,6 @@
 2004-03-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* version.sh (PACKAGE_CHANGE_DATE): Update release to 1.1Beta2.
 	* magick/constitute.c (ReadImage): Ignore errors of type
 	ConfigureError when loading modules so that error report can still
 	report the familiar "No delegate for this image format" message
