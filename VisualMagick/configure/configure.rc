@@ -123,7 +123,7 @@ BEGIN
     CONTROL         "Generate all utility projects with full paths rather then relative paths.",
                     IDC_STANDALONE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,
                     167,236,10
-    PUSHBUTTON      "Edit ""config.h""",IDC_EditConfig,117,204,69,14
+    PUSHBUTTON      "Edit ""magick_config.h""",IDC_EditConfig,117,204,69,14
     CONTROL         "Generate a font map file",IDC_GENERATE_FONTMAP,"Button",
                     BS_AUTOCHECKBOX | WS_TABSTOP,15,182,88,10
 END
