@@ -3725,8 +3725,8 @@ static unsigned int DrawStrokePolygon(Image *image,const DrawInfo *draw_info,
     closed_path=(q->point.x == p->point.x) && (q->point.y == p->point.y);
     if ((draw_info->linecap == RoundCap) && !closed_path)
       {
-        DrawRoundLinecap(image,clone_info,p);
-        DrawRoundLinecap(image,clone_info,q);
+        DrawRoundLinecap(image,draw_info,p);
+        DrawRoundLinecap(image,draw_info,q);
       }
   }
   DestroyDrawInfo(clone_info);
