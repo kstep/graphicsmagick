@@ -56,6 +56,18 @@
 2003-09-08  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> magick/log.c (LogMagickEvent): Windows system logging
+        functionality is not currently ported to work with Cygwin so
+        disable when compiling under Cygwin.
+  <LI> magick/log.c (Win32EventlogOutput): Remove spurious comma in enum.
+  <LI> wand/drawing_wand.h: Remove junk comment marker that I forgot to
+        remove.<BR>
+  <LI> magick/studio.h: Provide prototypes for strlcpy and vsnprintf if
+        the system doesn't provide them in the requested compilation
+        environment.<BR>
+  <LI> configure.ac: Add necessary standards compilance definitions to
+        magick_config.h.<BR>
+        Check for strlcpy and vsnprintf prototypes.
   <LI> Makefile.am (DOCDIRS): www/api/types does not exist anymore.
 
 </UL>

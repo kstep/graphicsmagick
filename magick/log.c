@@ -791,7 +791,7 @@ MagickExport unsigned int LogMagickEvent(const ExceptionType type,
     case FatalErrorException: severity=(char *) "FatalError"; break;
     default: severity=(char *) "Unknown"; break;
   }
-#if defined(WIN32) || defined(__CYGWIN__)
+#if defined(WIN32)
   switch ((type / 100) * 100)
   {
     case EventException: nteventtype=EVENTLOG_INFORMATION_TYPE; break;
@@ -910,7 +910,7 @@ MagickExport unsigned int LogMagickEvent(const ExceptionType type,
       LiberateSemaphoreInfo(&log_semaphore);
       return(True);
     }
-#if defined(WIN32) || defined(__CYGWIN__)
+#if defined(WIN32)
   if (log_info->output_type & Win32DebugOutput)
     {
       char
