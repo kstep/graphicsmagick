@@ -44,7 +44,7 @@ testSetAttribute('input.miff','compression','RLE');
 testSetAttribute('input.miff','compression','Zip');
 
 ++$test;
-testSetAttribute('input.miff','density','72');
+testSetAttribute('input.miff','density','72x72');
 
 ++$test;
 testSetAttribute('input.miff','dispose',1);

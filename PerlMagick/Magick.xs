@@ -2998,8 +2998,14 @@ Get(ref,...)
         {
           if (LocaleCompare(attribute,"density") == 0)
             {
-              if (info && info->image_info->density)
-                s=newSVpv(info->image_info->density,0);
+              char
+                geometry[MaxTextExtent];
+
+              if (!image)
+                break;
+              FormatString(geometry,"%gx%g",image->x_resolution,
+                image->y_resolution);
+              s=newSVpv(geometry,0);
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
             }
