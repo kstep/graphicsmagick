@@ -1052,6 +1052,10 @@ ConfigureProject *project = write_project_lib(
       workspace->write_project_dependency(project,"CORE_jpeg");
       workspace->write_project_dependency(project,"CORE_zlib");
     }
+    if (name.compare("wand") == 0)
+    {
+      workspace->write_project_dependency(project,"CORE_magick");
+    }
     workspace->write_end_project(project);
   }
   else
@@ -2844,7 +2848,7 @@ BOOL CConfigureApp::InitInstance()
     waitdlg.Pumpit();
 
     standard_includes_list.push_back("..\\..");
-    standard_includes_list.push_back("..\\..\\magick");
+    //standard_includes_list.push_back("..\\..\\magick");
     standard_includes_list.push_back("..\\..\\xlib");
     standard_includes_list.push_back("..\\..\\Magick++\\lib");
     //standard_includes_list.push_back("..\\..\\MagickArgs");

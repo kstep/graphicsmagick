@@ -4,6 +4,12 @@
 	obtained from from John Cristy's ImageMagick which ensures that an
 	unused matte channel is set to Opaque, and uses this knowledge to
 	simplify the math.
+	* VisualMagick/configure/configure.cpp: The 'wand' library has a
+	linkage dependency on the 'magick' library. Also don't include
+	the magick subdirectory so that headers must be included like
+	<magick/api.h> for safety.
+	* coders/xtrn.c: Fix magick header inclusion.
+	* lcms\src\cmserr.c: Fix magick header inclusion.
 
 2003-06-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
