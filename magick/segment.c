@@ -469,8 +469,7 @@ static unsigned int Classify(Image *image,short **extrema,
   /*
     Allocate image colormap.
   */
-  colormap=(PixelPacket *)
-    AcquireMemory((unsigned int) number_clusters*sizeof(PixelPacket));
+  colormap=(PixelPacket *) AcquireMemory(number_clusters*sizeof(PixelPacket));
   if (colormap == (PixelPacket *) NULL)
     ThrowBinaryException(ResourceLimitError,"Memory allocation failed",
       image->filename);
@@ -1137,7 +1136,7 @@ static double OptimalTau(const long *histogram,const double max_tau,
   /*
     Allocate zero crossing list.
   */
-  count=(unsigned int) ((max_tau-min_tau)/delta_tau)+2;
+  count=(unsigned long) ((max_tau-min_tau)/delta_tau)+2;
   zero_crossing=(ZeroCrossing *) AcquireMemory(count*sizeof(ZeroCrossing));
   if (zero_crossing == (ZeroCrossing *) NULL)
     return(0.0);

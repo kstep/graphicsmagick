@@ -4769,12 +4769,12 @@ MagickExport void TraceBezier(PrimitiveInfo *primitive_info,
     point,
     *points;
 
-  register PrimitiveInfo
-    *p;
-
   register long
     i,
     j;
+
+  register PrimitiveInfo
+    *p;
 
   unsigned long
     control_points,
@@ -4790,10 +4790,10 @@ MagickExport void TraceBezier(PrimitiveInfo *primitive_info,
     {
       alpha=fabs(primitive_info[j].point.x-primitive_info[i].point.x);
       if (alpha > quantum)
-        quantum=(unsigned int) alpha;
+        quantum=(unsigned long) alpha;
       alpha=fabs(primitive_info[j].point.y-primitive_info[i].point.y);
       if (alpha > quantum)
-        quantum=(unsigned int) alpha;
+        quantum=(unsigned long) alpha;
     }
   }
   quantum=Min(quantum/number_coordinates,BezierQuantum);

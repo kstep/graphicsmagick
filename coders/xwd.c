@@ -264,8 +264,7 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       XWDColor
         color;
 
-      colors=(XColor *)
-        AcquireMemory((unsigned int) header.ncolors*sizeof(XColor));
+      colors=(XColor *) AcquireMemory(header.ncolors*sizeof(XColor));
       if (colors == (XColor *) NULL)
         ThrowReaderException(ResourceLimitError,"Memory allocation failed",
           image);

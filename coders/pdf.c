@@ -294,7 +294,7 @@ static unsigned int Huffman2DEncodeImage(const ImageInfo *image_info,
     if (fillorder == FILLORDER_LSB2MSB)
       TIFFReverseBits(buffer,count);
     for (j=0; j < count; j++)
-      Ascii85Encode(image,(unsigned int) buffer[j]);
+      Ascii85Encode(image,(unsigned long) buffer[j]);
     Ascii85Flush(image);
   }
   LiberateMemory((void **) &buffer);
@@ -518,12 +518,8 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /*
       Set Postscript render geometry.
     */
-    width=(unsigned int) (bounds.x2-bounds.x1);
-    if ((float) ((int) bounds.x2) != bounds.x2)
-      width++;
-    height=(unsigned int) (bounds.y2-bounds.y1);
-    if ((float) ((int) bounds.y2) != bounds.y2)
-      height++;
+    width=(unsigned long) (bounds.x2-bounds.x1+0.5);
+    height=(unsigned long) (bounds.y2-bounds.y1+0.5);
     if ((width <= box.width) && (height <= box.height))
       continue;
     page.width=width;

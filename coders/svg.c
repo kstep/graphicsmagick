@@ -1990,8 +1990,8 @@ static void SVGStartElement(void *context,const xmlChar *name,
               (svg_info->view_box.height == 0.0))
             svg_info->view_box=svg_info->bounds;
           SetGeometry(svg_info->image,&page);
-          page.width=(unsigned int) svg_info->bounds.width;
-          page.height=(unsigned int) svg_info->bounds.height;
+          page.width=(unsigned long) svg_info->bounds.width;
+          page.height=(unsigned long) svg_info->bounds.height;
           geometry=(char *) NULL;
           if (svg_info->page != (char *) NULL)
             geometry=GetPageGeometry(svg_info->page);

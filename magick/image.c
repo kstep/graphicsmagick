@@ -3319,7 +3319,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
           }
         if (LocaleCompare("contrast",option+1) == 0)
           {
-            (void) ContrastImage(*image,(unsigned int) (*option == '-'));
+            (void) ContrastImage(*image,*option == '-');
             continue;
           }
         if (LocaleCompare("crop",option+1) == 0)
@@ -3360,13 +3360,13 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
               }
             count=sscanf(argv[++i],"%lf-%lf",&minimum_delay,&maximum_delay);
             if (count == 1)
-              (*image)->delay=(unsigned int) minimum_delay;
+              (*image)->delay=(unsigned long) minimum_delay;
             else
               {
                 if ((*image)->delay < minimum_delay)
-                  (*image)->delay=(unsigned int) minimum_delay;
+                  (*image)->delay=(unsigned long) minimum_delay;
                 if ((*image)->delay > maximum_delay)
-                  (*image)->delay=(unsigned int) maximum_delay;
+                  (*image)->delay=(unsigned long) maximum_delay;
               }
             continue;
           }

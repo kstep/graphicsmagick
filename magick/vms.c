@@ -129,8 +129,7 @@ DIR *opendir(char *name)
     }
   if (strcmp(".",name) == 0)
     name="";
-  directory->pattern=
-    AcquireMemory((unsigned int) (strlen(name)+sizeof("*.*")+1));
+  directory->pattern=(char *) AcquireMemory(strlen(name)+sizeof("*.*")+1);
   if (directory->pattern == (char *) NULL)
     {
       LiberateMemory((void **) &directory);

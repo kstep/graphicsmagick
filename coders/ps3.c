@@ -189,7 +189,7 @@ static unsigned int Huffman2DEncodeImage(const ImageInfo *image_info,
     if (fillorder == FILLORDER_LSB2MSB)
       TIFFReverseBits(buffer,count);
     for (j=0; j < count; j++)
-      Ascii85Encode(image,(unsigned int) buffer[j]);
+      Ascii85Encode(image,(unsigned long) buffer[j]);
     Ascii85Flush(image);
   }
   LiberateMemory((void **) &buffer);

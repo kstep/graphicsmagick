@@ -653,7 +653,7 @@ MagickExport unsigned int HuffmanEncodeImage(const ImageInfo *image_info,
       if (LocaleCompare(image_info->magick,"FAX") == 0) \
         (void) WriteBlobByte(image,byte);  \
       else \
-        Ascii85Encode(image,(unsigned int) byte); \
+        Ascii85Encode(image,(unsigned long) byte); \
       byte=0;  \
       bit=0x80;  \
     }  \
@@ -824,7 +824,7 @@ MagickExport unsigned int HuffmanEncodeImage(const ImageInfo *image_info,
       if (LocaleCompare(image_info->magick,"FAX") == 0)
         (void) WriteBlobByte(image,byte);
       else
-        Ascii85Encode(image,(unsigned int) byte);
+        Ascii85Encode(image,(unsigned long) byte);
     }
   if (LocaleCompare(image_info->magick,"FAX") != 0)
     Ascii85Flush(image);
@@ -879,7 +879,7 @@ MagickExport unsigned int LZWEncodeImage(Image *image,const size_t length,
     number_bits+=code_width; \
     while (number_bits >= 8) \
     { \
-        (void) WriteBlobByte(image,(unsigned int) (accumulator >> 24)); \
+        (void) WriteBlobByte(image,(unsigned long) (accumulator >> 24)); \
         accumulator=accumulator << 8; \
         number_bits-=8; \
     } \
