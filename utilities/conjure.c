@@ -159,14 +159,15 @@ int main(int argc,char **argv)
     option=argv[i];
     if ((strlen(option) < 2) || ((*option != '-') && (*option != '+')))
       {
-        status=SetImageAttribute(image_info->attributes,option+1,argv[i+1]);
+        status=SetImageAttribute(image_info->attributes,option+1,(char *) NULL);
+        status|=SetImageAttribute(image_info->attributes,option+1,argv[i+1]);
         if (status == False)
           MagickError(ResourceLimitError,"Unable to persist key",option);
         i++;
         continue;
       }
     status=SetImageAttribute(image_info->attributes,"filename",(char *) NULL);
-    status=SetImageAttribute(image_info->attributes,"filename",argv[i]);
+    status|=SetImageAttribute(image_info->attributes,"filename",argv[i]);
     if (status == False)
       MagickError(ResourceLimitError,"Unable to persist key",argv[i]);
     (void) FormatString(image_info->filename,"msl:%.1024s",argv[i]);

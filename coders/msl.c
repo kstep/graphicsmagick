@@ -882,7 +882,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
           compositeOp = OverCompositeOp;
         GravityType
           gravity = CenterGravity;
-          
+
         x = y = 0;
 
         if (msl_info->image[n] == (Image *) NULL)
@@ -1060,7 +1060,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
             }
           }
         }
-          
+
         /*
           process image.
         */
@@ -1068,7 +1068,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
         {
           unsigned int
               result;
-          
+
           switch (gravity)
           {
             case ForgetGravity:
@@ -1135,7 +1135,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
 
           result = CompositeImage(msl_info->image[n], compositeOp, srcImage, x, y);
           break;
-        } else 
+        } else
           ThrowException(msl_info->exception,OptionWarning,
                   "no composite image defined",name);
 
@@ -1270,7 +1270,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
                   "no images defined",name);
           break;
         }
-        
+
         /* no attributes here */
 
         /* process the image */
@@ -1431,7 +1431,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
                   "no images defined",name);
           break;
         }
-        
+
         /* no attributes here */
 
         /* process the image */
@@ -1455,7 +1455,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
                   "no images defined",name);
           break;
         }
-        
+
         /* no attributes here */
 
         /* process the image */
@@ -1478,7 +1478,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
                   "no images defined",name);
           break;
         }
-        
+
         /* no attributes here */
 
         /* process the image */
@@ -1502,7 +1502,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
                   "no images defined",name);
           break;
         }
-        
+
         /* no attributes here */
 
         /* process the image */
@@ -1526,7 +1526,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
                   "no images defined",name);
           break;
         }
-        
+
         /* no attributes here */
 
         /* process the image */
@@ -1829,7 +1829,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
           }
           break;
         }
-    else if (LocaleCompare(name, "group") == 0) 
+    else if (LocaleCompare(name, "group") == 0)
     {
       msl_info->nGroups++;
       ReacquireMemory((void**) &msl_info->group_info, (msl_info->nGroups+1)*sizeof(MSLGroupInfo));
@@ -2044,7 +2044,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
                   "no images defined",name);
           break;
         }
-        
+
         /* no attributes here */
 
         /* process the image */
@@ -2124,7 +2124,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
                   "no images defined",name);
           break;
         }
-        
+
         /* no attributes here */
 
         /* process the image */
@@ -2139,10 +2139,10 @@ static void MSLStartElement(void *context,const xmlChar *name,
           msl_info->image[n]=newImage;
           break;
         }
-      } 
+      }
       else if (LocaleCompare(name, "msl") == 0 )
       {
-        /* 
+        /*
           This is our base element.
             at the moment we don't do anything special
             but someday we might!
@@ -2163,7 +2163,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
                   "no images defined",name);
           break;
         }
-        
+
         /* no attributes here */
 
         /* process the image */
@@ -2875,7 +2875,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
                   "no images defined",name);
           break;
         }
-        
+
         if (attributes == (const xmlChar **) NULL)
           break;
         for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
@@ -2989,7 +2989,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
                   strncpy(tmp, value, len-1);
                   opac = atoi( tmp );
                   opac = (int)(MaxRGB * ((float)opac/100));
-                } else 
+                } else
                   opac = atoi( value );
                 SetImageOpacity( msl_info->image[n], opac );
                 break;
@@ -3413,7 +3413,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
         DestroyImage(msl_info->image[n]);
         msl_info->image[n]=newImage;
         break;
-        } else 
+        } else
           ThrowException(msl_info->exception,OptionWarning,
             "Missing watermark image",keyword);
       }
@@ -3481,7 +3481,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
         DestroyImage(msl_info->image[n]);
         msl_info->image[n]=newImage;
         break;
-        } else 
+        } else
           ThrowException(msl_info->exception,OptionWarning,
             "Missing stereo image",keyword);
       }
@@ -3631,7 +3631,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
         {
         TextureImage(msl_info->image[n], textureImage);
         break;
-        } else 
+        } else
           ThrowException(msl_info->exception,OptionWarning,
             "Missing texture image",keyword);
       }
@@ -3736,7 +3736,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
                   "no images defined",name);
           break;
         }
-        
+
         /* no attributes here */
 
         /* process the image */
@@ -3839,10 +3839,10 @@ static void MSLEndElement(void *context,const xmlChar *name)
     {
       if (LocaleCompare(name, "group") == 0 )
       {
-        if (msl_info->group_info[msl_info->nGroups-1].numImages > 0 ) 
+        if (msl_info->group_info[msl_info->nGroups-1].numImages > 0 )
         {
           int  i = msl_info->group_info[msl_info->nGroups-1].numImages;
-          while ( i-- ) 
+          while ( i-- )
           {
             if (msl_info->image[msl_info->n] != (Image *) NULL)
               DestroyImage(msl_info->image[msl_info->n]);
@@ -3881,7 +3881,7 @@ static void MSLEndElement(void *context,const xmlChar *name)
     {
       if (LocaleCompare(name, "msl") == 0 )
       {
-        /* 
+        /*
           This is our base element.
             at the moment we don't do anything special
             but someday we might!
@@ -4225,7 +4225,7 @@ static Image *ReadMSLImage(const ImageInfo *image_info,ExceptionInfo *exception)
   *msl_info.draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
   *msl_info.attributes=image_info->attributes;
   if (*msl_info.attributes == (Image *) NULL)
-	  *msl_info.attributes=AllocateImage(image_info);
+    *msl_info.attributes=AllocateImage(image_info);
   *msl_info.image=image;
   msl_info.group_info[0].numImages=0;
   (void) xmlSubstituteEntitiesDefault(1);
