@@ -42,6 +42,7 @@ typedef struct _MagickInfo
     adjoin,
     raw,
     stealth,
+    seekable_stream,
     blob_support,
     thread_support;
 
