@@ -1110,7 +1110,7 @@ Export unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
         break;
       }
     }
-    if (bmp_header.bit_count <= 8)
+    if (bmp_header.bit_count == 8)
       if (image_info->compression != NoCompression)
         {
           unsigned int
