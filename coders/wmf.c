@@ -731,13 +731,27 @@ static void wmf_magick_region_frame(wmfAPI * API, wmfPolyRectangle_t * poly_rect
 
 static void wmf_magick_region_paint(wmfAPI * API, wmfPolyRectangle_t * poly_rect)
 {
-  magick_mvg_printf(API, "# wmf_magick_region_paint\n");
+  unsigned int
+    i;
+
+  if (poly_rect->count == 0)
+    return;
 
   /* Save graphic context */
   magick_mvg_printf(API, "push graphic-context\n");
 
-  /* FIXME: implement */
-  printf("wmf_magick_region_paint not implemented\n");
+  if (TO_FILL (poly_rect))
+    {
+      magick_mvg_printf(API, "stroke none\n");
+      magick_brush(API, poly_rect->dc);
+
+      for (i = 0; i < poly_rect->count; i++)
+        {
+          magick_mvg_printf(API, "rectangle %.10g,%.10g %.10g,%.10g\n",
+                            (double)poly_rect->TL[i].x, (double)poly_rect->TL[i].y,
+                            (double)poly_rect->BR[i].x, (double)poly_rect->BR[i].y);
+        }
+    }
 
   /* Restore graphic context */
   magick_mvg_printf(API, "pop graphic-context\n");
