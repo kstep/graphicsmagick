@@ -3019,7 +3019,7 @@ MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
                 ping=False;
                 break;
               }
-        if (image_info->verbose || (ping==False))
+        if (image_info->verbose || !ping)
           image=ReadImage(image_info,exception);
         else
           image=PingImage(image_info,exception);
