@@ -1404,16 +1404,7 @@ int main(int argc,char **argv)
         (void) strcpy(image_info->filename,argv[i]);
         image=ReadImage(image_info,&exception);
         if (image == (Image *) NULL)
-          {
-            MagickWarning(exception.severity,exception.message,
-              exception.qualifier);
-            if (exception.severity > severity)
-              severity=exception.severity;
-            if (*option == '-')
-              break;
-            else
-              continue;
-          }
+          MagickError(exception.severity,exception.message,exception.qualifier);
         if (scene != 0)
           image->scene=scene;
         if (format != (char *) NULL)

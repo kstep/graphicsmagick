@@ -276,12 +276,7 @@ int main(int argc,char **argv)
       }
     image=ReadImage(image_info,&exception);
     if (image == (Image *) NULL)
-      {
-        MagickWarning(exception.severity,exception.message,exception.qualifier);
-        if (exception.severity > severity)
-          severity=exception.severity;
-        continue;
-      }
+      MagickError(exception.severity,exception.message,exception.qualifier);
     for (p=image; p != (Image *) NULL; p=p->next)
     {
       if (p->scene == 0)

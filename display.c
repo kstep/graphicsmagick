@@ -1339,19 +1339,8 @@ int main(int argc,char **argv)
           image_info->dither=quantize_info->dither;
           image=ReadImage(image_info,&exception);
           if (image == (Image *) NULL)
-            {
-              MagickWarning(exception.severity,exception.message,
-                exception.qualifier);
-              if (exception.severity > severity)
-                severity=exception.severity;
-              if ((i < (argc-1)) || (scene < last_scene))
-                continue;
-              else
-                {
-                  state|=ExitState;
-                  break;
-                }
-            }
+            MagickError(exception.severity,exception.message,
+              exception.qualifier);
           do
           {
             /*
