@@ -1,14 +1,6 @@
 <?xml version="1.0"?>
 <fontmap>
-  <font
-    name="Helvetica"
-    familyname="Helvetica"
-    alias="Helvetica"
-    fullname="Helvetica"
-    format="type1"
-    weight="Medium"
-    glyphs="Helvetica"
-    metrics="Helvetica"
-    version="0.1"
-  />
+  <font name="Helvetica" familyname="Helvetica" alias="Helvetica"
+    fullname="Helvetica" format="type1" weight="Medium" glyphs="Helvetica"
+    metrics="Helvetica" version="0.1" />
 </fontmap>

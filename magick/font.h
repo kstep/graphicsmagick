@@ -1,5 +1,5 @@
 /*
-  Drawing methods.
+  Font methods.
 */
 #ifndef _FONT_H
 #define _FONT_H
