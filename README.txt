@@ -448,8 +448,7 @@ MAGICK DELEGATES
       (2) the first compression determined base image quality.
 
     o ImageMagick requires the MPEG utilities from the MPEG Software
-      Simulation Group in order to encode and decode MPEG images. These
-      are available via anonymous FTP as
+      Simulation Group, which are available via anonymous FTP as
 
           ftp://ftp.mpeg.org/pub/mpeg/mssg/mpeg2vidcodec_v12.tar.gz
 
