@@ -55,6 +55,7 @@
 */
 #include "magick.h"
 #include "defines.h"
+#include "zlib.h"
 
 /*
   Global declarations.
@@ -87,7 +88,9 @@ static unsigned int
 
 static void
   ClosePixelCache(Image *),
-  DestroyPixelCache(Image *);
+  CompressCache(Cache),
+  DestroyPixelCache(Image *),
+  UncompressCache(Cache);
 
 /*
   Initialize the image pixel methods.
@@ -158,7 +161,7 @@ static void CloseCache(Cache cache)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  Method ClosePixelCache closes the pixel cache.  Use this method to prevent
-%  the too many file descriptors from being allocated when reading an image
+%  too many file descriptors from being allocated when reading an image
 %  sequence.  File descriptors are only used for a disk-based cache.  This is
 %  essentially a no-op for a memory-based cache.
 %
@@ -178,7 +181,97 @@ static void ClosePixelCache(Image *image)
   assert(image->signature == MagickSignature);
   if (image->cache == (void *) NULL)
     return;
+  if (cache_threshold == 0)
+    CompressCache(image->cache);
   CloseCache(image->cache);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   C o m p r e s s C a c h e                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method CompressCache compresses the disk-based pixel cache.  
+%
+%  The format of the CompressCache method is:
+%
+%      void CompressCache(Cache cache)
+%
+%  A description of each parameter follows:
+%
+%    o cache: Specifies a pointer to a Cache structure.
+%
+%
+*/
+static void CompressCache(Cache cache)
+{
+#if defined(HasZLIB)
+  CacheInfo
+    *cache_info;
+
+  char
+    filename[MaxTextExtent],
+    *pixels;
+
+  gzFile
+    file;
+
+  int
+    y;
+
+  size_t
+    count;
+
+  assert(cache != (Cache) NULL);
+  cache_info=(CacheInfo *) cache;
+  if (cache_info->type == MemoryCache)
+    return;
+  if (cache_info->file == -1)
+    {
+      cache_info->file=open(cache_info->cache_filename,O_RDWR | O_BINARY,0777);
+      if (cache_info->file == -1)
+        return;
+    }
+  if (lseek(cache_info->file,0,SEEK_SET) == -1)
+    return;
+  FormatString(filename,"%s.gz",cache_info->cache_filename);
+  file=gzopen(filename,WriteBinaryType);
+  if (file == (gzFile) NULL)
+    return;
+  count=cache_info->columns*Max(sizeof(IndexPacket),sizeof(PixelPacket));
+  pixels=(char *) AcquireMemory(count);
+  if (pixels == (char *) NULL)
+    {
+      (void) gzclose(file);
+      return;
+    }
+  for (y=0; y < (int) cache_info->rows; y++)
+  {
+    count=read(cache_info->file,pixels,cache_info->columns*sizeof(PixelPacket));
+    if (gzwrite(file,pixels,count) != count)
+      break;
+  }
+  if ((cache_info->storage_class == PseudoClass) && (y == cache_info->rows))
+    for (y=0; y < (int) cache_info->rows; y++)
+    {
+      count=read(cache_info->file,pixels,
+        cache_info->columns*sizeof(IndexPacket));
+      if (gzwrite(file,pixels,count) != count)
+        break;
+    }
+  LiberateMemory((void **) &pixels);
+  (void) gzclose(file);
+  if (y != cache_info->rows)
+    (void) remove(filename);
+  else
+    (void) remove(cache_info->cache_filename);
+#endif
 }
 
 /*
@@ -246,7 +339,11 @@ static void DestroyCacheInfo(Cache cache)
     {
       CloseCache(cache);
       if (!cache_info->persist)
-        (void) remove(cache_info->cache_filename);
+        {
+          (void) remove(cache_info->cache_filename);
+          (void) strcat(cache_info->cache_filename,".gz");
+          (void) remove(cache_info->cache_filename);
+        }
       break;
     }
     default:
@@ -984,6 +1081,8 @@ MagickExport unsigned int OpenCache(Cache cache,const ClassType storage_class,
       cache_info->file=open(cache_info->cache_filename,O_RDWR | O_CREAT |
         O_BINARY,0777);
       if (cache_info->file == -1)
+        UncompressCache(cache);
+      if (cache_info->file == -1)
         return(False);
     }
 #if !defined(vms) && !defined(macintosh) && !defined(WIN32)
@@ -997,17 +1096,21 @@ else
 #endif
   cache_info->storage_class=storage_class;
   cache_info->type=DiskCache;
-  allocation=MapBlob(cache_info->file,IOMode,&offset);
-  if (allocation != (void *) NULL)
+  if (cache_threshold != 0)
     {
       /*
         Create memory-mapped pixel cache.
       */
-      cache_info->type=MemoryMappedCache;
-      cache_info->pixels=(PixelPacket *) allocation;
-      if (cache_info->storage_class == PseudoClass)
-        cache_info->indexes=(IndexPacket *) (cache_info->pixels+number_pixels);
-      CloseCache(cache);
+      allocation=MapBlob(cache_info->file,IOMode,&offset);
+      if (allocation != (void *) NULL)
+        {
+          cache_info->type=MemoryMappedCache;
+          cache_info->pixels=(PixelPacket *) allocation;
+          if (cache_info->storage_class == PseudoClass)
+            cache_info->indexes=(IndexPacket *)
+              (cache_info->pixels+number_pixels);
+          CloseCache(cache);
+        }
     }
   return(True);
 }
@@ -1090,6 +1193,8 @@ MagickExport unsigned int ReadCacheIndexes(Cache cache,const unsigned int id)
   if (cache_info->file == -1)
     {
       cache_info->file=open(cache_info->cache_filename,O_RDWR | O_BINARY,0777);
+      if (cache_info->file == -1)
+        UncompressCache(cache);
       if (cache_info->file == -1)
         return(False);
     }
@@ -1185,6 +1290,8 @@ MagickExport unsigned int ReadCachePixels(Cache cache,const unsigned int id)
   if (cache_info->file == -1)
     {
       cache_info->file=open(cache_info->cache_filename,O_RDWR | O_BINARY,0777);
+      if (cache_info->file == -1)
+        UncompressCache(cache);
       if (cache_info->file == -1)
         return(False);
     }
@@ -1492,22 +1599,107 @@ static unsigned int SyncPixelCache(Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   U n c o m p r e s s C a c h e                                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method UncompressCache uncompresses the disk-based pixel cache.  
+%
+%  The format of the CompressCache method is:
+%
+%      void CompressCache(Cache cache)
+%
+%  A description of each parameter follows:
+%
+%    o cache: Specifies a pointer to a Cache structure.
+%
+%
+*/
+static void UncompressCache(Cache cache)
+{
+#if defined(HasZLIB)
+  CacheInfo
+    *cache_info;
+
+  char
+    filename[MaxTextExtent],
+    *pixels;
+
+  gzFile
+    file;
+
+  int
+    y;
+
+  size_t
+    count;
+
+  assert(cache != (Cache) NULL);
+  cache_info=(CacheInfo *) cache;
+  if (cache_info->type == MemoryCache)
+    return;
+  if (cache_info->file == -1)
+    {
+      cache_info->file=open(cache_info->cache_filename,O_RDWR | O_CREAT |
+        O_BINARY,0777);
+      if (cache_info->file == -1)
+        return;
+    }
+  if (lseek(cache_info->file,0,SEEK_SET) == -1)
+    return;
+  FormatString(filename,"%s.gz",cache_info->cache_filename);
+  file=gzopen(filename,ReadBinaryType);
+  if (file == (gzFile) NULL)
+    return;
+  count=cache_info->columns*Max(sizeof(IndexPacket),sizeof(PixelPacket));
+  pixels=(char *) AcquireMemory(count);
+  if (pixels == (char *) NULL)
+    {
+      (void) gzclose(file);
+      return;
+    }
+  for (y=0; y < (int) cache_info->rows; y++)
+  {
+    count=gzread(file,pixels,cache_info->columns*sizeof(PixelPacket));
+    if (write(cache_info->file,pixels,count) != count)
+      break;
+  }
+  if ((cache_info->storage_class == PseudoClass) && (y == cache_info->rows))
+    for (y=0; y < (int) cache_info->rows; y++)
+    {
+      count=gzread(file,pixels,cache_info->columns*sizeof(IndexPacket));
+      if (write(cache_info->file,pixels,count) != count)
+        break;
+    }
+  LiberateMemory((void **) &pixels);
+  (void) gzclose(file);
+  (void) remove(filename);
+#endif
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 +   W r i t e C a c h e I n d e x e s                                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method WriteCachePixels writes the colormap indexes to the specified region
+%  Method WriteCacheIndexes writes the colormap indexes to the specified region
 %  of the pixel cache.
 %
-%  The format of the WriteCachePixels method is:
+%  The format of the WriteCacheIndexes method is:
 %
-%      unsigned int WriteCachePixels(Cache cache)
+%      unsigned int WriteCacheIndexes(Cache cache)
 %
 %  A description of each parameter follows:
 %
-%    o status: Method WriteCachePixels returns True if the colormap indexes
+%    o status: Method WriteCacheIndexes returns True if the colormap indexes
 %      are successfully written to the pixel cache, otherwise False.
 %
 %    o cache: Specifies a pointer to a CacheInfo structure.
@@ -1565,6 +1757,8 @@ MagickExport unsigned int WriteCacheIndexes(Cache cache,const unsigned int id)
   if (cache_info->file == -1)
     {
       cache_info->file=open(cache_info->cache_filename,O_RDWR | O_BINARY,0777);
+      if (cache_info->file == -1)
+        UncompressCache(cache);
       if (cache_info->file == -1)
         return(False);
     }
@@ -1920,6 +2114,8 @@ MagickExport unsigned int WriteCachePixels(Cache cache,const unsigned int id)
   if (cache_info->file == -1)
     {
       cache_info->file=open(cache_info->cache_filename,O_RDWR | O_BINARY,0777);
+      if (cache_info->file == -1)
+        UncompressCache(cache);
       if (cache_info->file == -1)
         return(False);
     }
