@@ -487,6 +487,9 @@ typedef struct _ImageInfo
   ColorspaceType
     colorspace;
 
+  ImageType
+    type;
+
   PreviewType
     preview_type;
 

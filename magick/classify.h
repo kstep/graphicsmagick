@@ -236,7 +236,8 @@ typedef enum
   TrueColorType,
   TrueColorMatteType,
   ColorSeparationType,
-  ColorSeparationMatteType
+  ColorSeparationMatteType,
+  OptimizeType
 } ImageType;
 
 typedef enum

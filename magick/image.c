@@ -1576,7 +1576,7 @@ MagickExport unsigned int CompositeImage(Image *image,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  CycleColormap() displaces an image's colormap by a given number of 
+%  CycleColormap() displaces an image's colormap by a given number of
 %  positions.  If you cycle the colormap a number of times you can produce
 %  a psychodelic effect.
 %
@@ -4730,6 +4730,8 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
                   image_type=ColorSeparationType;
                 if (LocaleCompare("ColorSeparationMatte",option) == 0)
                   image_type=ColorSeparationMatteType;
+                if (LocaleCompare("Optimize",option) == 0)
+                  image_type=OptimizeType;
                 SetImageType(*image,image_type);
               }
             continue;
@@ -5949,6 +5951,7 @@ MagickExport void SetImageOpacity(Image *image,const unsigned int opacity)
 %        Bilevel        Grayscale       GrayscaleMatte
 %        Palette        PaletteMatte    TrueColor
 %        TrueColorMatte ColorSeparation ColorSeparationMatte
+%        OptimizeType
 %
 %  The format of the SetImageType method is:
 %
@@ -6078,6 +6081,7 @@ MagickExport void SetImageType(Image *image,const ImageType image_type)
         SetImageOpacity(image,OpaqueOpacity);
       break;
     }
+    case OptimizeType:
     default:
       break;
   }

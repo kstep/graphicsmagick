@@ -60,11 +60,11 @@ MAILING LIST
   There is a mailing list for discussions and bug reports about
   ImageMagick.  To subscribe send the message
 
-    subscribe magick
+    subscribe magick-user
 
   to majordomo@imagemagick.org.  You will receive a welcome message
   which tells you how to post messages to the list,
-  magick@imagemagick.org.
+  magick-user@imagemagick.org.
 
 
 UNIX/Cygwin COMPILATION

@@ -1,3 +1,7 @@
+2001-10-22  Cristy  <cristy@mystic.es.dupont.com>
+	* Added ImageType member to the image_info structure (suggested
+	  by Glenn)
+
 2001-10-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
         * Eliminated libMagick.so dependency on libxml by not listing
           -lxml when doing modules link.

@@ -191,7 +191,7 @@ static char
   {
     "Undefined", "Bilevel", "Grayscale", "GrayscaleMatte" "Palette",
     "PaletteMatte", "TrueColor", "TrueColorMatte", "ColorSeparation",
-    "ColorSeparationMatte", (char *) NULL
+    "ColorSeparationMatte", "Optimize", (char *) NULL
   },
   *IntentTypes[] =
   {
@@ -1624,6 +1624,8 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
               MagickWarning(OptionWarning,"Invalid image type",SvPV(sval,na));
               return;
             }
+          if (info)
+            info->image_info->type=(ImageType) sp;
           for ( ; image; image=image->next)
             SetImageType(image,(ImageType) sp);
           return;
