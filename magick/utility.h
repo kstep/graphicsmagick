@@ -106,7 +106,7 @@ extern Export unsigned short
 
 extern Export void
   AppendImageFormat(const char *,char *),
-  CloneString(char **,char *),
+  CloneString(char **,const char *),
   DestroyPostscriptGeometry(char *),
   ExpandFilename(char *),
   FormatString(char *,const char *,...),

@@ -2536,12 +2536,6 @@ Get(ref,...)
         case 'A':
         case 'a':
         {
-          if (strEQcase(attribute,"affirm"))
-            {
-              if (info)
-                s=newSViv(info->image_info.affirm);
-              break;
-            }
           if (strEQcase(attribute,"adjoin"))
             {
               if (info)
@@ -2895,7 +2889,7 @@ Get(ref,...)
         case 'M':
         case 'm':
         {
-          if (strEQcase(attribute,"magick"))  /* same as format */
+          if (strEQcase(attribute,"magick"))
             {
               if (info && *info->image_info.magick)
                 s=newSVpv(info->image_info.magick,0);
@@ -2999,7 +2993,7 @@ Get(ref,...)
             }
           if (strEQcase(attribute,"pen"))
             {
-              if (info)
+              if (info && info->image_info.pen)
                 s=newSVpv(info->image_info.pen,0);
               break;
             }
@@ -3105,12 +3099,6 @@ Get(ref,...)
         case 'S':
         case 's':
         {
-          if (strEQcase(attribute,"status"))
-            {
-              if (image)
-                s=newSViv(image->status);
-              break;
-            }
           if (strEQcase(attribute,"subimage"))
             {
               if (info)
@@ -3208,27 +3196,6 @@ Get(ref,...)
                   sv_setpv(s,ImageTypes[j]);
                   SvIOK_on(s);
                 }
-              break;
-            }
-         if (strEQcase(attribute,"type"))
-           {
-             if (image)
-               if (info && (info->image_info.colorspace == CMYKColorspace))
-                 s=newSVpv("color separation",0);
-               else
-                 if (IsMonochromeImage(image))
-                   s=newSVpv("bilevel",0);
-                 else
-                  if (IsGrayImage(image))
-                    s=newSVpv("grayscale",0);
-                  else
-                    if (IsPseudoClass(image))
-                      s=newSVpv("palette",0);
-                    else
-                       if (!image->matte)
-                         s=newSVpv("true color",0);
-                       else
-                         s=newSVpv("true color with transparency",0);
               break;
             }
           break;

@@ -5482,7 +5482,7 @@ Export unsigned int XMakeImage(Display *display,
     {
       XFreePixmap(display,window->matte_pixmap);
       window->matte_pixmap=(Pixmap) NULL;
-#if defined(HasShape) && !defined(linux)
+#if defined(HasShape)
       if (window->shape)
         XShapeCombineMask(display,window->id,ShapeBounding,0,0,None,ShapeSet);
 #endif
@@ -5525,7 +5525,7 @@ Export unsigned int XMakeImage(Display *display,
           XPutImage(display,window->matte_pixmap,graphics_context,
             window->matte_image,0,0,0,0,width,height);
           XFreeGC(display,graphics_context);
-#if defined(HasShape) && !defined(linux)
+#if defined(HasShape)
           if (window->shape)
             XShapeCombineMask(display,window->id,ShapeBounding,0,0,
               window->matte_pixmap,ShapeSet);

@@ -469,7 +469,7 @@ display, a particular area of an image.
 <DD>Omit the x and y offset to generate one or more subimages of a uniform size.
 <p>
 <DD>Use cropping to crop a particular area of an image.   Use <b>-crop
-0x0</b> to trim edges that are the background color.  Add a x and y offset
+0x0</b> to trim edges that are the background color.  Add an x and y offset
 to leave a portion of the trimmed edges with the image.
 <P>
 <DT><B>-cycle</B> <I>amount</I>
@@ -585,7 +585,7 @@ pixel coordinate with a method:
 <b>point</b> method recolors the target pixel.  The <b>replace</b> method
 recolors any pixel that matches the color of the target pixel.
 <b>Floodfill</b> recolors any pixel that matches the color of the target
-pixel and is a neighbor.  Whereas <b>filltoborder</b> recolors any neighbor
+pixel and is a neighbor,  whereas <b>filltoborder</b> recolors any neighbor
 pixel that is not the border color. Finally, <b>reset</b> recolors all pixels.
 <p> 
 <dd>Use <b>matte</b> to the change the pixel matte value to transparent.
@@ -594,9 +594,10 @@ primitive for a description of methods).  The <b>point</b> method
 changes the matte value of the target pixel.  The <b>replace</b> method
 changes the matte value of any pixel that matches the color of the
 target pixel.  <b>Floodfill</b> changes the matte value of any pixel
-that matches the color of the target pixel and is a neighbor. Whereas
+that matches the color of the target pixel and is a neighbor, whereas
 <b>filltoborder</b> changes the matte value any neighbor pixel that is not the
-border color.  Finally <b>reset</b> changes the matte value of all pixels.
+border color (<b>-bordercolor</b>).  Finally <b>reset</b> changes the matte
+value of all pixels.
 <p> 
 <dd>Use <b>text</b> to annotate an image with text.  Follow the
 text coordinates with a string.  If the string has embedded spaces,

@@ -203,7 +203,7 @@ Export char *BaseFilename(const char *name)
 %
 %
 */
-void CloneString(char **destination,char *source)
+void CloneString(char **destination,const char *source)
 {
   if (*destination != (char *) NULL)
     FreeMemory(*destination);
