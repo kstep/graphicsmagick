@@ -7,8 +7,6 @@
 # configuration information is presented instead so that it may be used more
 # effictively in configure scripts.
 #
-prefix=@prefix@
-prefix_set=no
 usage="\
 Usage: Magick++-config [--version] [--cxxflags] [--cppflags] [--ldflags] [--libs]"
 
