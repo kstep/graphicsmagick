@@ -884,7 +884,7 @@ void CConfigureApp::process_module(ofstream &dsw,
 		includes_list.push_back("..\\..\\zlib");
 		includes_list.push_back("..\\..\\bzlib");
   }
-  if (name.compare("svg") == 0)
+  if ((name.compare("svg") == 0) || (name.compare("url") == 0))
   {
 		includes_list.push_back("..\\..\\libxml");
 		includes_list.push_back("..\\..\\libxml\\include");
@@ -1041,7 +1041,7 @@ void CConfigureApp::process_module(ofstream &dsw,
           if (useX11Stubs)
 		        add_project_dependency(dsw, "CORE_xlib");
         }
-        if (name.compare("svg") == 0)
+        if ((name.compare("svg") == 0) || (name.compare("url") == 0))
         {
 		      add_project_dependency(dsw, "CORE_libxml");
           if (doesDirExist("..\\..\\autotrace"))
