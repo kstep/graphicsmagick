@@ -99,7 +99,6 @@ typedef struct _PrimitiveInfo
   Forward declarations
 */
 static double
-  GenerateCircle(PrimitiveInfo *,const PointInfo,const PointInfo),
   IntersectPrimitive(PrimitiveInfo *,const DrawInfo *,const PointInfo *,
     const int,Image *);
 
@@ -1605,28 +1604,6 @@ static void GenerateBezier(PrimitiveInfo *primitive_info)
   LiberateMemory((void **) &coefficients);
 }
 
-static double GenerateCircle(PrimitiveInfo *primitive_info,
-  const PointInfo start,const PointInfo end)
-{
-  double
-    alpha,
-    beta;
-
-  register PrimitiveInfo
-    *p,
-    *q;
-
-  primitive_info->coordinates=2;
-  p=primitive_info;
-  p->point=start;
-  q=p+1;
-  q->primitive=primitive_info->primitive;
-  q->point=end;
-  alpha=q->point.x-p->point.x;
-  beta=q->point.y-p->point.y;
-  return(sqrt(alpha*alpha+beta*beta));
-}
-
 static void GenerateEllipse(PrimitiveInfo *primitive_info,const PointInfo start,
   const PointInfo end,const PointInfo degrees)
 {
@@ -2001,16 +1978,14 @@ static void GenerateRectangle(PrimitiveInfo *primitive_info,
   p=primitive_info;
   GeneratePoint(p,start);
   p+=p->coordinates;
-  point.x=start.x+end.x;
-  point.y=start.y;
-  GeneratePoint(p,point);
-  p+=p->coordinates;
-  point.x=start.x+end.x;
-  point.y=start.y+end.y;
-  GeneratePoint(p,point);
-  p+=p->coordinates;
   point.x=start.x;
-  point.y=start.y+end.y;
+  point.y=end.y;
+  GeneratePoint(p,point);
+  p+=p->coordinates;
+  GeneratePoint(p,end);
+  p+=p->coordinates;
+  point.x=end.x;
+  point.y=start.y;
   GeneratePoint(p,point);
   p+=p->coordinates;
   GeneratePoint(p,start);
