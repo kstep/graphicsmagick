@@ -188,7 +188,7 @@ SOURCE=..\..\tiff\libtiff\tif_fax3.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\tiff\libtiff\tif_fax3sm.c
+SOURCE=..\..\tiff\libtiff\fax3sm_winnt.c
 # End Source File
 # Begin Source File
 
@@ -388,57 +388,6 @@ InputPath=.\port.nth
 
 "..\..\tiff\libtiff\port.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	copy $(ProjDir)\port.nth ..\..\tiff\libtiff\port.h
-
-# End Custom Build
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
-SOURCE=.\tif_fax3sm.ntc
-
-!IF  "$(CFG)" == "MagickTIFF - Win32 Release"
-
-# Begin Custom Build
-ProjDir=.
-InputPath=.\tif_fax3sm.ntc
-
-"..\..\tiff\libtiff\tif_fax3sm.c" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	copy $(ProjDir)\tif_fax3sm.ntc ..\..\tiff\libtiff\tif_fax3sm.c
-
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "MagickTIFF - Win32 Debug"
-
-# Begin Custom Build
-ProjDir=.
-InputPath=.\tif_fax3sm.ntc
-
-"..\..\tiff\libtiff\tif_fax3sm.c" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	copy $(ProjDir)\tif_fax3sm.ntc ..\..\tiff\libtiff\tif_fax3sm.c
-
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "MagickTIFF - Win32 Release static"
-
-# Begin Custom Build
-ProjDir=.
-InputPath=.\tif_fax3sm.ntc
-
-"..\..\tiff\libtiff\tif_fax3sm.c" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	copy $(ProjDir)\tif_fax3sm.ntc ..\..\tiff\libtiff\tif_fax3sm.c
-
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "MagickTIFF - Win32 Debug static"
-
-# Begin Custom Build
-ProjDir=.
-InputPath=.\tif_fax3sm.ntc
-
-"..\..\tiff\libtiff\tif_fax3sm.c" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	copy $(ProjDir)\tif_fax3sm.ntc ..\..\tiff\libtiff\tif_fax3sm.c
 
 # End Custom Build
 
