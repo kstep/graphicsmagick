@@ -79,8 +79,8 @@
 /* define if the compiler supports the explicit keyword */
 #undef HAVE_EXPLICIT
 
-/* Define to 1 if you have the <freetype/freetype.h> header file. */
-#undef HAVE_FREETYPE_FREETYPE_H
+/* Define to 1 if you have the <ft2build.h> header file. */
+#undef HAVE_FT2BUILD_H
 
 /* Define to 1 if you have the `ftime' function. */
 #undef HAVE_FTIME

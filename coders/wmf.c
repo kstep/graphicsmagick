@@ -691,7 +691,6 @@ static void ipa_device_begin(wmfAPI * API)
 
   DrawSetClipRule(WmfDrawContext,EvenOddRule); /* Default for WMF is ALTERNATE polygon fill mode */
   DrawSetFillColorString(WmfDrawContext,"none"); /* Default brush is WHITE_BRUSH */
-  DrawSetFillOpacity(WmfDrawContext,1.0); /* Default background mode is OPAQUE */
   DrawSetStrokeColorString(WmfDrawContext,"none"); /* Default pen is BLACK_PEN */
   DrawSetStrokeLineCap(WmfDrawContext,ButtCap); /* Default linecap is PS_ENDCAP_FLAT */
   DrawSetStrokeLineJoin(WmfDrawContext,MiterJoin); /* Default linejoin is PS_JOIN_MITER */

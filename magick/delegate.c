@@ -747,7 +747,9 @@ MagickExport unsigned int ListDelegateInfo(FILE *file,ExceptionInfo *exception)
             }
           formatted_chars=fprintf(file,"%.*s",strip_length,s);
           length+=formatted_chars;
-          fprintf(file,"\n");          
+          fprintf(file,"\n");
+          if (formatted_chars == 0)
+            break;
         }
     }
     for (i=0; commands[i] != (char *) NULL; i++)

@@ -60,7 +60,7 @@ check:
 	${GM} convert $(MODEL_MIFF) -blur 0.0x1.0                 -label Blur Blur_out.miff
 	${GM} convert $(MODEL_MIFF) -bordercolor gold -border 6x6 -label Border Border_out.miff
 	${GM} convert $(MODEL_MIFF)                               -label Channel Channel_out.miff
-	${GM} convert $(MODEL_MIFF) -charcoal 0x1                 -label Charcoal Charcoal_out.miff
+	${GM} convert $(MODEL_MIFF) -charcoal 0.0x1.0                 -label Charcoal Charcoal_out.miff
 	${GM} composite $(SMILE_MIFF) -geometry +35+65 $(MODEL_MIFF) -label Composite Comp_out.miff
 	${GM} convert $(MODEL_MIFF) -contrast                     -label Contrast Contrast_out.miff
 	${GM} convert $(MODEL_MIFF)                               -label Convolve Convolve_out.miff
@@ -68,8 +68,8 @@ check:
 	${GM} convert $(MODEL_MIFF) -crop '80x80+25+50'           -label Crop Crop_out.miff
 	${GM} convert $(MODEL_MIFF) -fill none -stroke gold \
 	        -draw 'circle 60,90 60,120'              -label Draw Draw_out.miff
-	${GM} convert $(MODEL_MIFF) -edge 0x1                     -label Edge Edge_out.miff
-	${GM} convert $(MODEL_MIFF) -emboss 0x1                   -label Emboss Emboss_out.miff
+	${GM} convert $(MODEL_MIFF) -edge 0.0x1.0                     -label Edge Edge_out.miff
+	${GM} convert $(MODEL_MIFF) -emboss 0.0x1.0                   -label Emboss Emboss_out.miff
 	${GM} convert $(MODEL_MIFF) -equalize                     -label Equalize Equalize_out.miff
 	${GM} convert $(MODEL_MIFF) -implode -1                   -label Explode Explode_out.miff
 	${GM} convert $(MODEL_MIFF) -flip                         -label Flip Flip_out.miff
@@ -87,11 +87,11 @@ check:
 	       +dither                                   -label Monochrome Mono_out.miff
 	${GM} convert $(MODEL_MIFF) -negate                       -label Negate Negate_out.miff
 	${GM} convert $(MODEL_MIFF) -normalize                    -label Normalize Normal_out.miff
-	${GM} convert $(MODEL_MIFF) -paint 0x1                    -label Oilpaint Oil_out.miff
+	${GM} convert $(MODEL_MIFF) -paint 0.0x1.0                    -label Oilpaint Oil_out.miff
 	${GM} convert -size 130x194 plasma:fractal             -label Plasma Plasma_out.miff
 	${GM} convert $(MODEL_MIFF)                               -label Quantize Quantize_out.miff
 	${GM} convert $(MODEL_MIFF) -raise 10x10                  -label Raise Raise_out.miff
-	${GM} convert $(MODEL_MIFF) -noise 0x1                    -label ReduceNoise RedN_out.miff
+	${GM} convert $(MODEL_MIFF) -noise 0.0x1.0                    -label ReduceNoise RedN_out.miff
 	${GM} convert $(MODEL_MIFF) -resize 50%                   -label Resize Resize_out.miff
 	${GM} convert $(MODEL_MIFF) -roll +20+10                  -label Roll Roll_out.miff
 	${GM} convert $(MODEL_MIFF) -fill black -rotate 45 \
