@@ -90,6 +90,9 @@
 static Image *ReadLABELImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
+  char
+    geometry[MaxTextExtent];
+
   DrawInfo
     *draw_info;
 
@@ -111,17 +114,17 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
   assert(exception->signature == MagickSignature);
   image=AllocateImage(image_info);
   draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
-  draw_info->gravity=CenterGravity;
   draw_info->text=AllocateString(image_info->filename);
   status=GetTypeMetrics(image,draw_info,&metrics);
   if (status == False)
     ThrowReaderException(DelegateWarning,"Unable to get type metrics",image);
+  FormatString(geometry,"+%g+%g",0.5*metrics.max_advance,metrics.ascent);
+  draw_info->geometry=AllocateString(geometry);
   image->columns=(unsigned long) floor(metrics.width+metrics.max_advance+0.5);
   image->rows=(unsigned long) floor(metrics.height+0.5);
   SetImage(image,OpaqueOpacity);
   (void) AnnotateImage(image,draw_info);
   DestroyDrawInfo(draw_info);
-  TransformImage(&image,"0x0",(char *) NULL);
   return(image);
 }
 
