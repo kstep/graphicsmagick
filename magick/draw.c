@@ -263,7 +263,7 @@ MagickExport unsigned int ColorFloodfillImage(Image *image,
   /*
     Track "hot" pixels with the image index packets.
   */
-  alpha=1.0/OpaqueOpacity;
+  alpha=1.0/MaxRGB;
   image->class=PseudoClass;
   for (y=0; y < (int) image->rows; y++)
   {
@@ -425,13 +425,13 @@ MagickExport unsigned int ColorFloodfillImage(Image *image,
             else
               {
                 q->red=alpha*(color.red*color.opacity+
-                  q->red*(OpaqueOpacity-color.opacity));
+                  q->red*(MaxRGB-color.opacity));
                 q->green=alpha*(color.green*color.opacity+
-                  q->green*(OpaqueOpacity-color.opacity));
+                  q->green*(MaxRGB-color.opacity));
                 q->blue=alpha*(color.blue*color.opacity+
-                  q->blue*(OpaqueOpacity-color.opacity));
+                  q->blue*(MaxRGB-color.opacity));
                 q->opacity=alpha*(color.opacity*
-                  color.opacity+q->opacity*(OpaqueOpacity-color.opacity));
+                  color.opacity+q->opacity*(MaxRGB-color.opacity));
               }
           }
         q++;
@@ -1215,7 +1215,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
     bounds.y2+=mid;
     if (bounds.y2 >= image->rows)
       bounds.y2=image->rows-1.0;
-    alpha=1.0/OpaqueOpacity;
+    alpha=1.0/MaxRGB;
     image->class=DirectClass;
     for (y=(int) bounds.y1; y <= (int) bounds.y2; y++)
     {
@@ -1256,22 +1256,19 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
               opacity=OpaqueOpacity;
             if (clone_info->opacity == 100.0)
               {
-                q->red=alpha*(color.red*opacity+
-                  q->red*(OpaqueOpacity-opacity));
-                q->green=alpha*(color.green*opacity+
-                  q->green*(OpaqueOpacity-opacity));
-                q->blue=alpha*(color.blue*opacity+
-                  q->blue*(OpaqueOpacity-opacity));
+                q->red=alpha*(color.red*opacity+q->red*(MaxRGB-opacity));
+                q->green=alpha*(color.green*opacity+q->green*(MaxRGB-opacity));
+                q->blue=alpha*(color.blue*opacity+q->blue*(MaxRGB-opacity));
                 break;
               }
             q->red=alpha*(color.red*color.opacity+
-              q->red*(OpaqueOpacity-color.opacity));
+              q->red*(MaxRGB-color.opacity));
             q->green=alpha*(color.green*color.opacity+
-              q->green*(OpaqueOpacity-color.opacity));
+              q->green*(MaxRGB-color.opacity));
             q->blue=alpha*(color.blue*color.opacity+
-              q->blue*(OpaqueOpacity-color.opacity));
+              q->blue*(MaxRGB-color.opacity));
             q->opacity=alpha*(color.opacity*color.opacity+
-              q->opacity*(OpaqueOpacity-color.opacity));
+              q->opacity*(MaxRGB-color.opacity));
             break;
           }
           default:
@@ -1290,23 +1287,20 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
           opacity=OpaqueOpacity;
         if (clone_info->opacity == 100.0)
           {
-            q->red=alpha*(color.red*opacity+
-              q->red*(OpaqueOpacity-opacity));
-            q->green=alpha*(color.green*opacity+
-              q->green*(OpaqueOpacity-opacity));
-            q->blue=alpha*(color.blue*opacity+
-              q->blue*(OpaqueOpacity-opacity));
+            q->red=alpha*(color.red*opacity+q->red*(MaxRGB-opacity));
+            q->green=alpha*(color.green*opacity+q->green*(MaxRGB-opacity));
+            q->blue=alpha*(color.blue*opacity+q->blue*(MaxRGB-opacity));
             q++;
             continue;
           }
         q->red=alpha*(color.red*color.opacity+
-          q->red*(OpaqueOpacity-color.opacity));
+          q->red*(MaxRGB-color.opacity));
         q->green=alpha*(color.green*color.opacity+
-          q->green*(OpaqueOpacity-color.opacity));
+          q->green*(MaxRGB-color.opacity));
         q->blue=alpha*(color.blue*color.opacity+
-          q->blue*(OpaqueOpacity-color.opacity));
+          q->blue*(MaxRGB-color.opacity));
         q->opacity=alpha*(color.opacity*color.opacity+
-          q->opacity*(OpaqueOpacity-color.opacity));
+          q->opacity*(MaxRGB-color.opacity));
         q++;
       }
       if (!SyncImagePixels(image))
@@ -2097,16 +2091,16 @@ static double PixelOnLine(const PointInfo *pixel,const PointInfo *p,
   if ((mid == 0) || (opacity == OpaqueOpacity))
     return(opacity);
   if ((p->x == q->x) && (p->y == q->y))
-    return((pixel->x == p->x) && (pixel->y == p->y) ? OpaqueOpacity : opacity);
+    return((pixel->x == p->x) && (pixel->y == p->y) ? MaxRGB : opacity);
   distance=DistanceToLine(pixel,p,q);
   alpha=mid-0.5;
   if (distance <= (alpha*alpha))
-    return((double) OpaqueOpacity);
+    return((double) MaxRGB);
   alpha=mid+0.5;
   if (distance <= (alpha*alpha))
     {
       alpha=sqrt(distance)-mid-0.5;
-      return(Max(opacity,OpaqueOpacity*alpha*alpha));
+      return(Max(opacity,MaxRGB*alpha*alpha));
     }
   return(opacity);
 }
@@ -2175,7 +2169,7 @@ static double InsidePrimitive(PrimitiveInfo *primitive_info,
               if (distance < (radius+1.0))
                 {
                   alpha=(radius-distance+1.0)/2.0;
-                  opacity=Max(opacity,OpaqueOpacity*alpha*alpha);
+                  opacity=Max(opacity,MaxRGB*alpha*alpha);
                 }
             break;
           }
@@ -2186,7 +2180,7 @@ static double InsidePrimitive(PrimitiveInfo *primitive_info,
             else
               {
                 alpha=mid-fabs(distance-radius)+0.5;
-                opacity=Max(opacity,OpaqueOpacity*alpha*alpha);
+                opacity=Max(opacity,MaxRGB*alpha*alpha);
               }
           }
         break;
@@ -2280,7 +2274,7 @@ static double InsidePrimitive(PrimitiveInfo *primitive_info,
               alpha=0.5+sqrt(minimum_distance);
             else
               alpha=0.5-sqrt(minimum_distance);
-            poly_opacity=alpha*alpha*OpaqueOpacity;
+            poly_opacity=MaxRGB*alpha*alpha;
           }
         opacity=Max(opacity,poly_opacity);
         break;
