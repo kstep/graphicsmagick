@@ -840,7 +840,7 @@ MagickExport void *MapBlob(int file,const MapMode mode,size_t *length)
 %
 %  The format of the MSBOrderLong method is:
 %
-%      void MSBOrderLong(register char *p,const unsigned int length)
+%      void MSBOrderLong(register char *buffer,const unsigned int length)
 %
 %  A description of each parameter follows.
 %
@@ -850,26 +850,28 @@ MagickExport void *MapBlob(int file,const MapMode mode,size_t *length)
 %
 %
 */
-MagickExport void MSBOrderLong(register char *p,const size_t length)
+MagickExport void MSBOrderLong(register char *buffer,const size_t length)
 {
-  register char
-    c,
-    *q,
-    *sp;
+  int
+	  c;
 
-  assert(p != (char *) NULL);
-  q=p+length;
-  while (p < q)
+  register char
+    *p,
+    *q;
+
+  assert(buffer != (char *) NULL);
+  q=buffer+length;
+  while (buffer < q)
   {
-    sp=p+3;
-    c=(*sp);
-    *sp=(*p);
-    *p++=c;
-    sp=p+1;
-    c=(*sp);
-    *sp=(*p);
-    *p++=c;
-    p+=2;
+    p=buffer+3;
+    c=(*p);
+    *p=(*buffer);
+    *buffer++=c;
+    p=buffer+1;
+    c=(*p);
+    *p=(*buffer);
+    *buffer++=c;
+    buffer+=2;
   }
 }
 
