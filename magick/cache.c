@@ -1773,7 +1773,9 @@ MagickExport unsigned int OpenCache(Image *image)
         }
     }
   (void) close(file);
+#if defined(SIGBUS)
   (void) signal(SIGBUS,CacheSignalHandler);
+#endif
   return(True);
 }
 
