@@ -53,8 +53,7 @@
 /*
   Include declarations.
 */
-#include "magick.h"
-#include "define.h"
+#include "studio.h"
 
 /*
   Define declarations.
@@ -253,8 +252,16 @@ static char *Ascii85Tuple(unsigned char *data)
 
 MagickExport void Ascii85Initialize(Image *image)
 {
-  image->ascii85.line_break=MaxLineExtent << 1;
-  image->ascii85.offset=0;
+  /*
+	 Allocate image structure.
+  */
+	image->ascii85=(Image *) AcquireMemory(sizeof(Ascii85Info));
+	if (image->ascii85 == (Ascii85Info *) NULL)
+		MagickFatalError(ResourceLimitFatalError,"Unable to allocate Ascii85",
+      "Memory allocation failed");
+	(void) memset(image->ascii85,0,sizeof(Ascii85Info));
+  image->ascii85->line_break=MaxLineExtent << 1;
+  image->ascii85->offset=0;
 }
 
 MagickExport void Ascii85Flush(Image *image)
@@ -264,13 +271,14 @@ MagickExport void Ascii85Flush(Image *image)
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  if (image->ascii85.offset > 0)
+  assert(image->ascii85 != (Ascii85Info *) NULL);
+  if (image->ascii85->offset > 0)
     {
-      image->ascii85.buffer[image->ascii85.offset]=0;
-      image->ascii85.buffer[image->ascii85.offset+1]=0;
-      image->ascii85.buffer[image->ascii85.offset+2]=0;
-      tuple=Ascii85Tuple(image->ascii85.buffer);
-      (void) WriteBlob(image,image->ascii85.offset+1,
+      image->ascii85->buffer[image->ascii85->offset]=0;
+      image->ascii85->buffer[image->ascii85->offset+1]=0;
+      image->ascii85->buffer[image->ascii85->offset+2]=0;
+      tuple=Ascii85Tuple(image->ascii85->buffer);
+      (void) WriteBlob(image,image->ascii85->offset+1,
         *tuple == 'z' ? "!!!!" : tuple);
     }
   (void) WriteBlobByte(image,'~');
@@ -291,29 +299,30 @@ MagickExport void Ascii85Encode(Image *image,const unsigned long code)
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  image->ascii85.buffer[image->ascii85.offset]=(unsigned char) code;
-  image->ascii85.offset++;
-  if (image->ascii85.offset < 4)
+  assert(image->ascii85 != (Ascii85Info *) NULL);
+  image->ascii85->buffer[image->ascii85->offset]=(unsigned char) code;
+  image->ascii85->offset++;
+  if (image->ascii85->offset < 4)
     return;
-  p=image->ascii85.buffer;
-  for (n=image->ascii85.offset; n >= 4; n-=4)
+  p=image->ascii85->buffer;
+  for (n=image->ascii85->offset; n >= 4; n-=4)
   {
     for (q=Ascii85Tuple(p); *q; q++)
     {
-      image->ascii85.line_break--;
-      if ((image->ascii85.line_break < 0) && (*q != '%'))
+      image->ascii85->line_break--;
+      if ((image->ascii85->line_break < 0) && (*q != '%'))
         {
           (void) WriteBlobByte(image,'\n');
-          image->ascii85.line_break=2*MaxLineExtent;
+          image->ascii85->line_break=2*MaxLineExtent;
         }
       (void) WriteBlobByte(image,*q);
     }
     p+=8;
   }
-  image->ascii85.offset=n;
+  image->ascii85->offset=n;
   p-=4;
   for (n=0; n < 4; n++)
-    image->ascii85.buffer[n]=(*p++);
+    image->ascii85->buffer[n]=(*p++);
 }
 
 /*

@@ -50,11 +50,6 @@ typedef unsigned short Quantum;
 /*
   Typedef declarations.
 */
-struct SemaphoreInfo;
-
-typedef struct SemaphoreInfo
-  SemaphoreInfo;
-
 typedef struct _PointInfo
 {
   double
@@ -62,6 +57,15 @@ typedef struct _PointInfo
     y,
     z;
 } PointInfo;
+
+typedef struct _ChromaticityInfo
+{
+  PointInfo
+    red_primary,
+    green_primary,
+    blue_primary,
+    white_point;
+} ChromaticityInfo;
 
 typedef struct _PixelPacket
 {
@@ -88,78 +92,6 @@ typedef struct _PixelPacket
 #endif
 } PixelPacket;
 
-typedef struct _RectangleInfo
-{
-  unsigned long
-    width,
-    height;
-
-  long
-    x,
-    y;
-} RectangleInfo;
-
-typedef struct _Ascii85Info
-{
-  long
-    offset,
-    line_break;
-
-  unsigned char
-    buffer[10];
-} Ascii85Info;
-
-struct _Image;
-
-typedef struct _BlobInfo
-{
-  size_t
-    length,
-    extent,
-    quantum;
-
-  unsigned int
-    mapped,
-    eof;
-
-  unsigned char
-    *data;
-
-  off_t
-    offset,
-    size;
-
-  unsigned int
-    exempt,
-    status,
-    pipet,
-    temporary;
-
-  FILE
-    *file;
-
-  int
-    (*fifo)(const struct _Image *,const void *,const size_t);
-
-  SemaphoreInfo
-    *semaphore;
-
-  long
-    reference_count;
-
-  unsigned long
-    signature;
-} BlobInfo;
-
-typedef struct _ChromaticityInfo
-{
-  PointInfo
-    red_primary,
-    green_primary,
-    blue_primary,
-    white_point;
-} ChromaticityInfo;
-
 typedef struct _ColorInfo
 {
   const char
@@ -183,29 +115,6 @@ typedef struct _ColorInfo
     *next;
 } ColorInfo;
 
-typedef struct _ElementInfo
-{
-  double
-    cx,
-    cy,
-    major,
-    minor,
-    angle;
-} ElementInfo;
-
-typedef struct _ExceptionInfo
-{
-  char
-    *reason,
-    *description;
-
-  ExceptionType
-    severity;
-
-  unsigned long
-    signature;
-} ExceptionInfo;
-
 typedef struct _FrameInfo
 {
   unsigned long
@@ -218,20 +127,6 @@ typedef struct _FrameInfo
     inner_bevel,
     outer_bevel;
 } FrameInfo;
-
-typedef struct _ImageAttribute
-{
-  char
-    *key,
-    *value;
-
-  unsigned int
-    compression;
-
-  struct _ImageAttribute
-    *previous,
-    *next;
-} ImageAttribute;
 
 typedef Quantum IndexPacket;
 
@@ -283,6 +178,17 @@ typedef struct _ProfileInfo
     *info;
 } ProfileInfo;
 
+typedef struct _RectangleInfo
+{
+  unsigned long
+    width,
+    height;
+
+  long
+    x,
+    y;
+} RectangleInfo;
+
 typedef struct _SegmentInfo
 {
   double
@@ -292,26 +198,11 @@ typedef struct _SegmentInfo
     y2;
 } SegmentInfo;
 
-typedef struct _Timer
-{
-  double
-    start,
-    stop,
-    total;
-} Timer;
+typedef struct _Ascii85Info _Ascii85Info;
 
-typedef struct _TimerInfo
-{
-  Timer
-    user,
-    elapsed;
+typedef struct _BlobInfo _BlobInfo;
 
-  TimerState
-    state;
-
-  unsigned long
-    signature;
-} TimerInfo;
+typedef struct _ImageAttribute _ImageAttribute;
 
 typedef struct _Image
 {
@@ -353,13 +244,11 @@ typedef struct _Image
 
   ProfileInfo
     color_profile,
-    iptc_profile;
+    iptc_profile,
+    *generic_profile;
 
   unsigned long
     generic_profiles;
-
-  ProfileInfo
-    *generic_profile;
 
   RenderingIntent
     rendering_intent;
@@ -380,9 +269,7 @@ typedef struct _Image
     y_resolution;
 
   RectangleInfo
-    page;
-
-  RectangleInfo
+    page,
     tile_info;
 
   double
@@ -404,7 +291,7 @@ typedef struct _Image
   CompositeOperator
     compose;
 
-  ImageAttribute
+  _ImageAttribute
     *attributes;
 
   struct _Image
@@ -417,33 +304,27 @@ typedef struct _Image
     iterations,
     total_colors;
 
+  long
+    start_loop;
+
   double
     mean_error_per_pixel,
     normalized_mean_error,
     normalized_maximum_error;
 
-  SemaphoreInfo
-    *semaphore;
-
   TimerInfo
     timer;
-
-  ExceptionInfo
-    exception;
 
   void
     *client_data;
 
-  long
-    start_loop;
-
-  Ascii85Info
-    ascii85;
+  _Ascii85Info
+    *ascii85;
 
   void
     *cache;
 
-  BlobInfo
+  _BlobInfo
     *blob;
 
   char
@@ -455,8 +336,14 @@ typedef struct _Image
     magick_columns,
     magick_rows;
 
+  ExceptionInfo
+    exception;
+
   long
     reference_count;
+
+  SemaphoreInfo
+    *semaphore;
 
   unsigned long
     signature;
@@ -569,42 +456,6 @@ typedef struct _ImageInfo
   unsigned long
     signature;
 } ImageInfo;
-
-typedef struct _MagickInfo
-{
-  const char
-    *name,
-    *description,
-    *version,
-    *module;
-
-  ImageInfo
-    *image_info;
-
-  Image
-    *(*decoder)(const ImageInfo *,ExceptionInfo *);
-
-  unsigned int
-    (*encoder)(const ImageInfo *,Image *),
-    (*magick)(const unsigned char *,const size_t);
-
-  void
-    *client_data;
-
-  unsigned int
-    adjoin,
-    raw,
-    stealth,
-    blob_support,
-    thread_support;
-
-  unsigned long
-    signature;
-
-  struct _MagickInfo
-    *previous,
-    *next;
-} MagickInfo;
 
 /*
   Image const declarations.
@@ -646,9 +497,6 @@ extern MagickExport const char
 
 extern MagickExport const ColorInfo
   *GetColorInfo(const char *,ExceptionInfo *);
-
-extern const MagickExport MagickInfo
-  *GetMagickInfo(const char *,ExceptionInfo *exception);
 
 extern MagickExport const PixelPacket
   *AcquireImagePixels(const Image *,const long,const long,const unsigned long,
@@ -735,10 +583,6 @@ extern MagickExport IndexPacket
 extern MagickExport int
   GetImageGeometry(const Image *,const char *,const unsigned int,
     RectangleInfo *);
-
-extern MagickExport MagickInfo
-  *RegisterMagickInfo(MagickInfo *),
-  *SetMagickInfo(const char *);
 
 extern MagickExport MontageInfo
   *CloneMontageInfo(const ImageInfo *,const MontageInfo *);

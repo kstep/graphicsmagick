@@ -53,14 +53,12 @@
 /*
   Include declarations.
 */
-#include "magick.h"
-#include "define.h"
+#include "studio.h"
 
 /*
   Typedef declaractions.
 */
-typedef CacheInfo
-  StreamInfo;
+typedef CacheInfo StreamInfo;
 
 /*
   Declare pixel stream interfaces.

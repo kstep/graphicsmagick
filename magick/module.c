@@ -53,8 +53,7 @@
 /*
   Include declarations.
 */
-#include "magick.h"
-#include "define.h"
+#include "studio.h"
 #if defined(HasLTDL)
 #include "ltdl/ltdl.h"
 typedef lt_dlhandle ModuleHandle;

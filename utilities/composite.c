@@ -56,7 +56,6 @@
   Include declarations.
 */
 #include "magick/magick.h"
-#include "magick/define.h"
 
 /*
   Typedef declarations.

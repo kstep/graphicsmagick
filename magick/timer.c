@@ -53,8 +53,7 @@
 /*
   Include declarations.
 */
-#include "magick.h"
-#include "define.h"
+#include "studio.h"
 
 #if defined(macintosh)
 #define CLK_TCK  CLOCKS_PER_SEC

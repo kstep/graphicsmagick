@@ -1,8 +1,8 @@
 /*
   Drawing methods.
 */
-#ifndef MAGICK_RENDER_H
-#define MAGICK_RENDER_H
+#ifndef _MAGICK_RENDER_H
+#define _MAGICK_RENDER_H
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
@@ -128,6 +128,16 @@ typedef struct _DrawInfo
   unsigned long
     signature;
 } DrawInfo;
+
+typedef struct _ElementInfo
+{
+  double
+    cx,
+    cy,
+    major,
+    minor,
+    angle;
+} ElementInfo;
 
 typedef struct _TypeInfo
 {

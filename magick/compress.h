@@ -8,6 +8,19 @@
 extern "C" {
 #endif
 
+typedef struct _Ascii85Info
+{
+  long
+    offset,
+    line_break;
+
+  unsigned char
+    buffer[10];
+} Ascii85Info;
+
+/*
+  Compress methods.
+*/
 extern MagickExport unsigned int
   HuffmanDecodeImage(Image *),
   HuffmanEncodeImage(const ImageInfo *,Image *),

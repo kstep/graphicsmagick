@@ -69,7 +69,6 @@
   Include declarations.
 */
 #include "magick/magick.h"
-#include "magick/define.h"
 #include "magick/xwindow.h"
 
 /*

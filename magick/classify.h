@@ -8,8 +8,6 @@
 extern "C" {
 #endif
 
-struct Image;
-
 /*
   Classify image attributes.
 */

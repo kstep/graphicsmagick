@@ -75,8 +75,7 @@
 #include <Gestalt.h>
 #include <TextUtils.h>
 #define ColorInfo  KolorInfo
-#include "magick.h"
-#include "define.h"
+#include "studio.h"
 #include "mac.h"
 
 /*

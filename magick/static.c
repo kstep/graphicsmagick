@@ -1,6 +1,5 @@
 /* warning - this source code file is auto generated -- do not edit */
-#include "magick.h"
-#include "define.h"
+#include "studio.h"
 
 void OpenStaticModules(void)
 {

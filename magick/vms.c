@@ -55,8 +55,7 @@
 /*
   Include declarations.
 */
-#include "magick.h"
-#include "define.h"
+#include "studio.h"
 #include "vms.h"
 
 #if !defined(_AXP_) && (!defined(__VMS_VER) || (__VMS_VER < 70000000))

@@ -8,8 +8,29 @@
 extern "C" {
 #endif
 
+typedef struct _Timer
+{
+  double
+    start,
+    stop,
+    total;
+} Timer;
+
+typedef struct _TimerInfo
+{
+  Timer
+    user,
+    elapsed;
+
+  TimerState
+    state;
+
+  unsigned long
+    signature;
+} TimerInfo;
+
 /*
-  Utilities methods.
+  Timer methods.
 */
 extern MagickExport double
   GetElapsedTime(TimerInfo *),

@@ -53,8 +53,7 @@
 /*
   Include declarations.
 */
-#include "magick.h"
-#include "define.h"
+#include "studio.h"
 
 /*
   Constant declaration.
@@ -2548,6 +2547,8 @@ MagickExport void DestroyImage(Image *image)
     }
   DestroyImageAttributes(image);
   DestroyExceptionInfo(&image->exception);
+  if (image->ascii85 != (Ascii85Info *) NULL)
+    LiberateMemory((void **) &image->ascii85);
   DestroyBlobInfo(image->blob);
   if (image->semaphore != (SemaphoreInfo *) NULL)
     DestroySemaphoreInfo(&image->semaphore);
