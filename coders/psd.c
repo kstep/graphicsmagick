@@ -325,7 +325,7 @@ static unsigned int IsPSD(const unsigned char *magick,const size_t length)
 */
 static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
-  enum
+  typedef enum
   {
     BitmapMode = 0,
     GrayscaleMode = 1,
@@ -335,28 +335,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     MultichannelMode = 7,
     DuotoneMode = 8, 
     LabMode = 9
-  };
-
-  enum
-  {
-    layerNormal    = 'norm',
-    layerDarken    = 'dark',
-    layerLighten   = 'lite',
-    layerHue       = 'hue ',
-    layerSaturation= 'sat ',
-    layerColor     = 'colr',
-    layerLuminosity= 'lum ',
-    layerMultiply  = 'mul ',
-    layerScreen    = 'scrn',
-    layerDissolve  = 'diss',
-    layerOverlay   = 'over',
-    layerHardLight = 'hLit',
-    layerSoftLight = 'sLit',
-    layerDifference= 'diff',
-    layerExclusion = 'smud',
-    layerDodge     = 'div ',
-    layerBurn      = 'idiv'
-  };
+  } PSDImageType;
 
   typedef struct _ChannelInfo
   {
