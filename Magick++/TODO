@@ -2,6 +2,9 @@
 Items large and small which remain to be worked on.
 --------------------------------------------------------------------
 
+* Fix documentation for drawing rounded rectangle.  Parameters
+  represent corners, not center.
+
 * Manage Options instance seperate from Image instance.
 
 * Support options stack similar to graphic-context.

@@ -77,30 +77,34 @@ Magick::Options::~Options()
 
 void Magick::Options::animationDelay ( unsigned int delay_ )
 {
-  char tmpbuff[MaxTextExtent + 1];
-  FormatString( tmpbuff, "%u", delay_ );
-  Magick::CloneString( &_imageInfo->delay, tmpbuff );
+  // FIXME: replacement implementation unknown
+//   char tmpbuff[MaxTextExtent + 1];
+//   FormatString( tmpbuff, "%u", delay_ );
+//   Magick::CloneString( &_imageInfo->delay, tmpbuff );
 }
 unsigned int Magick::Options::animationDelay ( void ) const
 {
-  if ( _imageInfo->delay )
-    return atoi( _imageInfo->delay );
-  else
-    return 0;
+  // FIXME: replacement implementation unknown
+//   if ( _imageInfo->delay )
+//     return atoi( _imageInfo->delay );
+//   else
+//     return 0;
 }
 
 void Magick::Options::animationIterations ( unsigned int iterations_ )
 {
-  char tmpbuff[MaxTextExtent + 1];
-  FormatString( tmpbuff, "%u", iterations_ );
-  Magick::CloneString( &_imageInfo->iterations, tmpbuff );
+  // FIXME: replacement implementation unknown
+//   char tmpbuff[MaxTextExtent + 1];
+//   FormatString( tmpbuff, "%u", iterations_ );
+//   Magick::CloneString( &_imageInfo->iterations, tmpbuff );
 }
 unsigned int Magick::Options::animationIterations ( void ) const
 {
-  if ( _imageInfo->iterations )
-    return atoi( _imageInfo->iterations );
-  else
-    return 0;
+  // FIXME: replacement implementation unknown
+//   if ( _imageInfo->iterations )
+//     return atoi( _imageInfo->iterations );
+//   else
+//     return 0;
 }
 
 void Magick::Options::backgroundColor ( const Magick::Color &color_ )
@@ -244,17 +248,19 @@ std::string Magick::Options::format ( void ) const
 
 void Magick::Options::gifDisposeMethod ( unsigned int disposeMethod_ )
 {
-  char tmpbuff[MaxTextExtent + 1];
-  FormatString( tmpbuff, "%u", disposeMethod_ );
-  Magick::CloneString( &_imageInfo->dispose, tmpbuff );
+  // FIXME: replacement implementation unknown
+//   char tmpbuff[MaxTextExtent + 1];
+//   FormatString( tmpbuff, "%u", disposeMethod_ );
+//   Magick::CloneString( &_imageInfo->dispose, tmpbuff );
 }
 unsigned int Magick::Options::gifDisposeMethod ( void ) const
 {
+  // FIXME: replacement implementation unknown
   // It would be better to return an enumeration
-  if ( _imageInfo->dispose )
-    return ( atoi( _imageInfo->dispose ) );
+//   if ( _imageInfo->dispose )
+//     return ( atoi( _imageInfo->dispose ) );
   
-  return 0;
+//   return 0;
 }
 
 void Magick::Options::magick ( const std::string &magick_ )

@@ -123,10 +123,11 @@ namespace Magick
   using MagickLib::CopyGreenCompositeOp;
   using MagickLib::CopyBlueCompositeOp;
   using MagickLib::CopyOpacityCompositeOp;
-  using MagickLib::BlendCompositeOp;
+  using MagickLib::ClearCompositeOp;
+  using MagickLib::DissolveCompositeOp;
   using MagickLib::DisplaceCompositeOp;
   using MagickLib::ModulateCompositeOp;
-
+  using MagickLib::ThresholdCompositeOp;
   
   // Compression algorithms
   using MagickLib::CompressionType;
