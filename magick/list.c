@@ -618,7 +618,7 @@ MagickExport unsigned int PrependImageToList(Image **images,Image *image)
       return(True);
     }
   assert((*images)->signature == MagickSignature);
-  for (p=(*images); p->previous != (Image *) NULL; p=p->next);
+  for (p=(*images); p->previous != (Image *) NULL; p=p->previous);
   for (q=image; q->next != (Image *) NULL; q=q->next);
   q->next=p;
   p->previous=q;
