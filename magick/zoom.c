@@ -808,7 +808,6 @@ static unsigned int HorizontalFilter(const Image *source,Image *destination,
       scale=1.0;
     }
   scale=1.0/scale;
-printf("%.12f %.12f\n",scale,support);
   offset=scale >= 1.0 ? 0.5 : -0.5;
   for (x=0; x < (long) destination->columns; x++)
   {
