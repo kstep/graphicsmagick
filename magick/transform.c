@@ -1486,7 +1486,7 @@ MagickExport void TransformImage(Image **image,const char *crop_geometry,
   */
   SetGeometry(transform_image,&geometry);
   flags=GetMagickGeometry(image_geometry,&geometry.x,&geometry.y,
-  	&geometry.width,&geometry.height);
+    &geometry.width,&geometry.height);
   if ((transform_image->columns == geometry.width) &&
       (transform_image->rows == geometry.height))
     return;

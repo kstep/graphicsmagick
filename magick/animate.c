@@ -573,9 +573,10 @@ MagickExport void XAnimateBackgroundImage(Display *display,
       */
       for (next=images; next != (Image *) NULL; )
       {
-        if ((images->columns != next->columns) ||
-            (images->rows != next->rows))
-          break;
+        if ((images->page.width != 0) && (images->page.height != 0))
+          if ((images->columns != next->columns) ||
+              (images->rows != next->rows))
+            break;
         if ((images->page.x != next->page.x) ||
             (images->page.y != next->page.y))
           break;
@@ -640,7 +641,7 @@ MagickExport void XAnimateBackgroundImage(Display *display,
   */
   resources.colormap=SharedColormap;
   display_image=image_list[0];
-  for (scene=0; scene < (long) number_scenes; scene++)
+  for (scene=0; scene < (int) number_scenes; scene++)
   {
     if ((resource_info->map_type != (char *) NULL) ||
         (visual_info->storage_class == TrueColor) ||
@@ -783,7 +784,7 @@ MagickExport void XAnimateBackgroundImage(Display *display,
   window_info.matte_pixmaps[0]=window_info.pixmap;
   scene_info.pixels=(unsigned long *) NULL;
   scene_info.gamma_map=(XColor *) NULL;
-  for (scene=1; scene < (long) number_scenes; scene++)
+  for (scene=1; scene < (int) number_scenes; scene++)
   {
     /*
       Create X image.
@@ -851,7 +852,7 @@ MagickExport void XAnimateBackgroundImage(Display *display,
   event.type=Expose;
   do
   {
-    for (scene=0; scene < (long) number_scenes; scene++)
+    for (scene=0; scene < (int) number_scenes; scene++)
     {
       if (XEventsQueued(display,QueuedAfterFlush) > 0)
         {
