@@ -230,6 +230,19 @@ int main(int argc,char **argv)
     MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
       (char *) NULL);
 
+#if 0
+  /* Debug code for listing expanded argument list */
+  {
+    int
+      z;
+
+    for (z=0; z<argc; z++)
+      {
+        printf("Arg[%d] = %s\n",z,argv[z]);
+      }
+  }
+#endif
+
   GetExceptionInfo(&exception);
   image_info=CloneImageInfo((ImageInfo *) NULL);
 

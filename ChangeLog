@@ -1,3 +1,15 @@
+2003-04-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/magick.c (InitializeMagick): Seed the random number
+	generator.
+	* magick/utility.c (ExpandFilenames): Handle tilde expansion
+	properly. Handle relative glob specifications. Skip over "*"
+	argument to +profile properly. Don't expand VID: specifications
+	since the VID: coder will execute ExpandFilenames() later. Apply
+	format specifier prefix to globbed file names. Fix double frees
+	and rationalize memory management by always copying to a new
+	vector.
+
 2003-04-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/magick.c (InitializeMagick): Decided to

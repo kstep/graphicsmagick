@@ -41,9 +41,11 @@
 #include "magick/blob.h"
 #include "magick/color.h"
 #include "magick/log.h"
+#include "magick/magick.h"
 #include "magick/signature.h"
 #include "magick/tempfile.h"
 #include "magick/utility.h"
+
 /*
   Static declarations.
 */
@@ -690,7 +692,7 @@ MagickExport void ExpandFilename(char *filename)
     }
   else
     {
-#if !defined(vms) && !defined(macintosh) && !defined(WIN32)
+#if defined(POSIX)
       char
         username[MaxTextExtent];
 
@@ -751,17 +753,12 @@ MagickExport void ExpandFilename(char *filename)
 MagickExport unsigned int ExpandFilenames(int *argc,char ***argv)
 {
   char
-    **filelist,
-    filename[MaxTextExtent],
-    home_directory[MaxTextExtent],
+    starting_directory[MaxTextExtent],
     *option,
-    path[MaxTextExtent],
-    **vector,
-    working_directory[MaxTextExtent];
+    **vector;
 
   long
     count,
-    expanded,
     number_files;
 
   register long
@@ -783,23 +780,48 @@ MagickExport unsigned int ExpandFilenames(int *argc,char ***argv)
   /*
     Expand any wildcard filenames.
   */
-  (void) getcwd(home_directory,MaxTextExtent-1);
-  expanded=False;
+  (void) getcwd(starting_directory,MaxTextExtent-1);
   count=0;
   for (i=0; i < *argc; i++)
   {
     option=(*argv)[i];
-    vector[count++]=option;
-    if (LocaleNCompare("+profile",option+1,8) == 0)
+    vector[count++]=AllocateString(option);
+
+    /*
+      Don't expand or process any VID: argument since the VID coder
+      does its own expansion
+    */
+    if (LocaleNCompare("VID:",option,4) == 0)
+      continue;
+
+    /*
+      Skip the argument to +profile since it can be a glob
+      specification, and we don't want it interpreted as a file.
+    */
+    if (LocaleNCompare("+profile",option,8) == 0)
       {
+        i++;
         if (i == *argc)
             continue;
         option=(*argv)[i];
-        vector[count++]=option;
+        vector[count++]=AllocateString(option);
         continue;
       }
+
+    /*
+      Pass quotes through to the command-line parser
+    */
     if ((*option == '"') || (*option == '\''))
       continue;
+
+    /*
+      Check for, and handle subimage specifications, i.e. img0001.pcd[2].
+      FIXME: Should the subimage spec be applied to each filename
+      expanded by a glob specification as it now is for the format?
+      The apparent subimage specification could be a glob specification,
+      so it could be tried as a glob first, and if there is no match, could
+      be appended as a subimage specification.
+    */
     if (strchr(option,'['))
       {
         ExceptionInfo
@@ -811,80 +833,171 @@ MagickExport unsigned int ExpandFilenames(int *argc,char ***argv)
         unsigned int
           exempt;
 
-        /*
-          Determine if pattern is a subimage, i.e. img0001.pcd[2].
-        */
         image_info=CloneImageInfo((ImageInfo *) NULL);
         (void) strncpy(image_info->filename,option,MaxTextExtent-1);
         GetExceptionInfo(&exception);
         (void) SetImageInfo(image_info,True,&exception);
         DestroyExceptionInfo(&exception);
-        exempt=(LocaleCompare(image_info->magick,"VID") == 0) ||
-          (image_info->subimage);
+        exempt=image_info->subimage;
         DestroyImageInfo(image_info);
         if (exempt)
           {
-            expanded=True;
             continue;
           }
        }
-    (void) strncpy(path,option,MaxTextExtent-1);
-    ExpandFilename(path);
-    if (!IsGlob(path))
-      {
-        expanded=True;
-        continue;
-      }
-    /*
-      Get the list of image file names.
-    */
-    GetPathComponent(path,HeadPath,working_directory);
-    GetPathComponent(path,TailPath,filename);
-    if (*working_directory == '\0')
-      (void) getcwd(working_directory,MaxTextExtent-1);
-    filelist=ListFiles(working_directory,filename,&number_files);
-    if (filelist == (char **) NULL)
-      continue;
-    for (j=0; j < number_files; j++)
-      if (IsDirectory(filelist[j]) <= 0)
-        break;
-    if (j == number_files)
-      {
-        for (j=0; j < number_files; j++)
-          LiberateMemory((void **) &filelist[j]);
-        LiberateMemory((void **) &filelist);
-        continue;
-      }
-    /*
-      Transfer file list to argument vector.
-    */
-    ReacquireMemory((void **) &vector,
-      (*argc+count+number_files+MaxTextExtent)*sizeof(char *));
-    if (vector == (char **) NULL)
-      return(False);
-    count--;
-    for (j=0; j < number_files; j++)
     {
-      FormatString(filename,"%.1024s%s%.1024s",working_directory,
-        DirectorySeparator,filelist[j]);
-      if (IsDirectory(filename) != 0)
+      char
+        format[MaxTextExtent],
+        path[MaxTextExtent];
+
+      /*
+        Extract format specification (if any) from filename
+        specification. Set path to remaining string.
+      */
+      format[0]='\0';
+      if (strchr(option,':'))
         {
-          LiberateMemory((void **) &filelist[j]);
+          for(j=0; ((j< MaxTextExtent-2) && (option[j] != ':') &&
+                    (isalnum((int) option[j]))); j++)
+            format[j]=option[j];
+          if (option[j] == ':')
+            {
+              format[j]=option[j];
+              j++;
+              format[j]='\0';
+            }
+          else
+            format[0]='\0';
+        }
+      if (IsMagickConflict(format))
+        format[0]='\0';
+
+      (void) strncpy(path,option+strlen(format),MaxTextExtent-strlen(format)-1);
+
+      /*
+        Expand arguments of form ~path or format:~path such that
+        tilde ('~') expands to the user's home directory (or $HOME).
+      */
+      if (path[0] == '~')
+        {
+          ExpandFilename(path);
+          if (path[0] != '~')
+            {
+              char
+                buffer[MaxTextExtent];
+
+              strcpy(buffer,format);
+              strcat(buffer,path);
+              CloneString(&vector[count-1],buffer);
+            }
+        }
+      
+      if (!IsGlob(path))
+        {
           continue;
         }
-      expanded=True;
-      vector[count]=AllocateString(filename);
-      LiberateMemory((void **) &filelist[j]);
-      count++;
+
+      {
+        char
+          **filelist,
+          filename[MaxTextExtent],
+          working_directory[MaxTextExtent];
+
+        /*
+          Fully qualify the base path for the file specification.
+        */
+        {
+          char
+            specified_directory[MaxTextExtent];
+          
+          GetPathComponent(path,HeadPath,specified_directory);
+          if (specified_directory[0] == '\0')
+            (void) getcwd(working_directory,MaxTextExtent-1);
+          else if ((specified_directory[0] != DirectorySeparator[0])
+#if defined(WIN32)
+                   /*
+                     Windows does allow relative inferior qualified
+                     specifications like "c:image.gif" to access
+                     image.gif in the current directory but we will
+                     require a fully qualified specification like
+                     "c:\path\image.gif" or an unqualified
+                     specification like "image.gif". Testing shows
+                     that Windows does not allow creating directories
+                     named like drive letters so we can ignore that
+                     possibility. For example, Windows won't allow
+                     creating the directory "c:".
+                   */
+                   &&
+                   !((strlen(specified_directory) >= 3) &&
+                     (isalpha((int)specified_directory[0]) &&
+                      (specified_directory[1] == ':') &&
+                      (specified_directory[2] == DirectorySeparator[0])))
+#endif
+                     )
+            {
+              char
+                current_directory[MaxTextExtent];
+              
+              (void) getcwd(current_directory,MaxTextExtent-1);
+              if (current_directory[strlen(current_directory)-1] != DirectorySeparator[0])
+                strcat(current_directory,DirectorySeparator);
+              strcpy(working_directory,current_directory);
+              strcat(working_directory,specified_directory);
+            }
+          else
+            strcpy(working_directory,specified_directory);
+        }
+
+        GetPathComponent(path,TailPath,filename);
+
+        /*
+          Get the list of matching file names.
+        */
+        filelist=ListFiles(working_directory,filename,&number_files);
+        if (filelist == (char **) NULL)
+          continue;
+        for (j=0; j < number_files; j++)
+          if (IsDirectory(filelist[j]) <= 0)
+            break;
+        if (j == number_files)
+          {
+            for (j=0; j < number_files; j++)
+              LiberateMemory((void **) &filelist[j]);
+            LiberateMemory((void **) &filelist);
+            continue;
+          }
+        /*
+          Transfer file list to argument vector.
+        */
+        ReacquireMemory((void **) &vector,
+                        (*argc+count+number_files+MaxTextExtent)*sizeof(char *));
+        if (vector == (char **) NULL)
+          return(False);
+        count--;
+        for (j=0; j < number_files; j++)
+          {
+            FormatString(filename,"%.1024s%s%.1024s",working_directory,
+                         DirectorySeparator,filelist[j]);
+            if (IsDirectory(filename) != 0)
+              {
+                LiberateMemory((void **) &filelist[j]);
+                continue;
+              }
+            {
+              char
+                file_spec[MaxTextExtent];
+
+              sprintf(file_spec,"%s%s",format,filename);
+              vector[count]=AllocateString(file_spec);
+            }
+            LiberateMemory((void **) &filelist[j]);
+            count++;
+          }
+        LiberateMemory((void **) &filelist);
+      }
     }
-    LiberateMemory((void **) &filelist);
   }
-  (void) chdir(home_directory);
-  if (!expanded)
-    {
-      LiberateMemory((void **) &vector);
-      return(True);
-    }
+  (void) chdir(starting_directory);
   *argc=count;
   *argv=vector;
   return(True);

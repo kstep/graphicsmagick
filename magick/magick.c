@@ -331,6 +331,11 @@ MagickExport void InitializeMagick(const char *path)
 
   (void) setlocale(LC_ALL,"");
   (void) setlocale(LC_NUMERIC,"C");
+
+  /* Seed the random number generator */
+  srand(time(0));
+
+  /* Initialize semaphores */
   InitializeSemaphore();
 
   /*
