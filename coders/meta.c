@@ -1265,7 +1265,7 @@ iptc_find:
   return(info_length);
 }
 
-void formatString(Image *ofile, const char *s, int len)
+static void formatString(Image *ofile, const char *s, int len)
 {
   char
     temp[MaxTextExtent];

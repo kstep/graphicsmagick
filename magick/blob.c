@@ -724,6 +724,7 @@ MagickExport off_t GetBlobSize(const Image *image)
 %
 */
 
+#if !defined(UseInstalledImageMagick) && defined(POSIX)
 static void ChopBlobComponents(char *path,const unsigned long components,
   const unsigned int debug)
 {
@@ -751,6 +752,7 @@ static void ChopBlobComponents(char *path,const unsigned long components,
   if (debug)
     (void) fprintf(stdout,"chopped path  \"%s\"\n",path);
 }
+#endif
 
 static unsigned int IsConfigureFileAccessible(const char *filename,
   const unsigned int debug)
