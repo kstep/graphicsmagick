@@ -1988,44 +1988,20 @@ void Magick::Image::colorMap ( const unsigned int index_,
 {
   MagickLib::Image* imageptr = image();
 
-  if (index_ > MaxRGB )
+  if (index_ > (MaxColormapSize-1) )
     throwExceptionExplicit( OptionError,
-                            "Index greater than MaxRGB" );
+                            "Colormap index must be less than MaxColormapSize" );
   
   if ( !color_.isValid() )
     throwExceptionExplicit( OptionError,
 			    "Color argument is invalid");
-
   modifyImage();
 
-  if ( !imageptr->colormap || index_ > imageptr->colors-1 )
-    {
+  // Ensure that colormap size is large enough
+  if ( colorMapSize() < (index_+1) )
+    colorMapSize( index_ + 1 );
 
-      if( !imageptr->colormap )
-        {
-          // Allocate colormap
-          imageptr->colormap =
-            static_cast<PixelPacket*>(AcquireMemory((index_+1)*
-                                                    sizeof(PixelPacket)));
-          imageptr->colors = 0;
-        }
-      else
-        {
-          // Re-allocate colormap
-          ReacquireMemory(reinterpret_cast<void **>(&(imageptr->colormap)),
-                          (index_+1)*sizeof(PixelPacket));
-        }
-
-      // Initialize new colormap entries as all black
-      Color black(0,0,0);
-      for( unsigned int i=imageptr->colors; i<index_; i++ )
-        (imageptr->colormap)[i] = black;
-
-      // Change number of colors
-      imageptr->colors = index_+1;
-    }
-
-  // Finally, set color at index in colormap
+  // Set color at index in colormap
   (imageptr->colormap)[index_] = color_;
 }
 // Return color in colormap at index
@@ -2035,13 +2011,56 @@ Magick::Color Magick::Image::colorMap ( const unsigned int index_ ) const
 
   if ( !imageptr->colormap )
     throwExceptionExplicit( OptionError,
-			    "Image does not support a colormap");
+			    "Image does not contain a colormap");
 
   if ( index_ > imageptr->colors-1 )
     throwExceptionExplicit( OptionError,
 			    "Index out of range");
 
   return Magick::Color( (imageptr->colormap)[index_] );
+}
+
+// Colormap size (number of colormap entries)
+void Magick::Image::colorMapSize ( const unsigned int entries_ )
+{
+  if (entries_ >MaxColormapSize )
+    throwExceptionExplicit( OptionError,
+                            "Colormap entries must not exceed MaxColormapSize" );
+
+  modifyImage();
+
+  MagickLib::Image* imageptr = image();
+
+  if( !imageptr->colormap )
+    {
+      // Allocate colormap
+      imageptr->colormap =
+        static_cast<PixelPacket*>(AcquireMemory(entries_*sizeof(PixelPacket)));
+      imageptr->colors = 0;
+    }
+  else if ( entries_ > imageptr->colors )
+    {
+      // Re-allocate colormap
+      ReacquireMemory(reinterpret_cast<void **>(&(imageptr->colormap)),
+                      (entries_)*sizeof(PixelPacket));
+    }
+
+  // Initialize any new new colormap entries as all black
+  Color black(0,0,0);
+  for( unsigned int i=imageptr->colors; i<(entries_-1); i++ )
+    (imageptr->colormap)[i] = black;
+
+  imageptr->colors = entries_;
+}
+unsigned int Magick::Image::colorMapSize ( void )
+{
+  const MagickLib::Image* imageptr = constImage();
+
+  if ( !imageptr->colormap )
+    throwExceptionExplicit( OptionError,
+			    "Image does not contain a colormap");
+
+  return imageptr->colors;
 }
 
 // Image colorspace

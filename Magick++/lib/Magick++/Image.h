@@ -679,6 +679,10 @@ namespace Magick
                                const Color &color_ );
     Color           colorMap ( const unsigned int index_ ) const;
 
+    // Colormap size (number of colormap entries)
+    void            colorMapSize ( const unsigned int entries_ );
+    unsigned int    colorMapSize ( void );
+
     // Image Color Space
     void            colorSpace( const ColorspaceType colorSpace_ );
     ColorspaceType  colorSpace ( void ) const;
