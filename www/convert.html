@@ -441,10 +441,10 @@ width=15><b><font face="Helvetica, Arial"
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>append a set of images</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-All the input images must have the same width or height. Images of the
-same width are stacked top-to-bottom. Images with the same height are stacked
-left-to-right. Use <strong>+append</strong> to stack images of the same
-width and the same height top-to-bottom.
+This option creates a single image where the images in the original set
+are stacked top-to-bottom.  If they are not of the same width,
+any narrow images will be expanded to fit using the background color.
+Use <strong>+append</strong> to stack images left-to-right.
 </font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
@@ -1799,6 +1799,9 @@ width=15><b><font face="Helvetica, Arial"
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 If the image does not have a matte channel, create an opaque one.
 </font></td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+Use <strong>+matte</strong> to ignore the matte channel and to avoid writing a
+matte channel in the output file.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 

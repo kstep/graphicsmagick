@@ -281,10 +281,10 @@ behavior.
 .B "-append"
 \fRappend a set of images
 
-All the input images must have the same width or height. Images of the
-same width are stacked top-to-bottom. Images with the same height are stacked
-left-to-right. Use \fB+append\fP to stack images of the same
-width and the same height top-to-bottom.
+This option creates a single image where the images in the original set
+are stacked top-to-bottom.  If they are not of the same width,
+any narrow images will be expanded to fit using the background color.
+Use \fB+append\fP to stack images left-to-right.
 
 .TP
 .B "-average"
@@ -1249,6 +1249,9 @@ that best represent all the images.
 
 If the image does not have a matte channel, create an opaque one.
 
+
+Use \fB+matte\fP to ignore the matte channel and to avoid writing a
+matte channel in the output file.
 .TP
 .B "-median \fIorder"\fP
 \fRapply a median filter to the image
