@@ -1,32 +1,12 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999
+// Copyright Bob Friesenhahn, 1999, 2000
 //
 // Definition of Image, the representation of a single image in Magick++
 //
 
 #if !defined(Image_header)
 #define Image_header
-
-#if 0
-// Instantiated from within methods which want to modify image data
-class ModifyImage
-{
-    ModifyImage( Image& image_ );
-};
-
-// Instantiated from within methods which want to replace image data
-class ReplaceImage
-{
-    ReplaceImage( Image& image_, MagickLib::Image* replacement_ );
-};
-
-// Instantiated from within methods which want to read image data
-class ReadImage
-{
-    ReadImage( Image& image_ );
-};
-#endif // out
 
 #include <string>
 #include <list>
@@ -720,10 +700,47 @@ namespace Magick
 
     //////////////////////////////////////////////////////////////////////    
     //
+    // Low-level Pixel Access Routines
+    //
+    // These invoke equivalent ImageMagick routines so they are subject to
+    // change as ImageMagick evolves.
+    //
+    //////////////////////////////////////////////////////////////////////
+
+    // Transfers pixels from the image to the pixel cache as defined
+    // by the specified region. Modified pixels may be subsequently
+    // transferred back to the image via syncPixels.
+    PixelPacket* getPixels ( int x_, int y_,
+			     unsigned int columns_, unsigned int rows_ );
+
+    // Allocates a pixel cache region to store image pixels as defined
+    // by the region rectangle.  This area is subsequently transferred
+    // from the pixel cache to the image via syncPixels.
+    PixelPacket* setPixels ( int x_, int y_,
+			     unsigned int columns_, unsigned int rows_ );
+
+    // Transfers the image cache pixels to the image.
+    void syncPixels ( void );
+
+    // Transfers one or more pixel components from a buffer or file
+    // into the image pixel cache of an image.
+    // Used to support image decoders.
+    void readPixels ( QuantumTypes quantum_,
+		      unsigned char *source_ );
+    
+    // Transfers one or more pixel components from the image pixel
+    // cache to a buffer or file.
+    // Used to support image encoders.
+    void writePixels ( QuantumTypes quantum_,
+		       unsigned char *destination_ );
+
+    //////////////////////////////////////////////////////////////////////    
+    //
     // No user-serviceable parts beyond this point
     //
     //////////////////////////////////////////////////////////////////////
-    
+
+
     // Construct with image and options
     Image ( MagickLib::Image* image_, Magick::Options* options_ );
 
@@ -741,6 +758,7 @@ namespace Magick
 
     // Replace current image (reference counted)
     MagickLib::Image* replaceImage ( MagickLib::Image* replacement_ );
+
 
     // Prepare to update image (copy if reference > 1)
     void            modifyImage ( void );

@@ -1,5 +1,11 @@
 This file records noteworthy changes.
 
+(0.9.2)
+  * Added methods getPixels, setPixels, syncPixels, readPixels, and
+    writePixels, in order to provide low-level access to Image pixels.
+  * Bugfix: size method was setting Options size, but not Image rows
+    and columns.
+
 (0.9.1)
   * Added additional constructors, read, and write methods for BLOBs
     to make BLOBs easier to use.

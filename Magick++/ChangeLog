@@ -1,3 +1,12 @@
+2000-01-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Image.cpp: Added methods getPixels, setPixels, syncPixels,
+ 	readPixels, and writePixels, in order to provide low-level access
+ 	to Image pixels.  This approach (direct wrapper around ImageMagick
+ 	functions) does not mean that the planned object-oriented wrapper
+ 	has been forgotten, only that this wrapper is not ready yet, and
+ 	users need to manipulate pixels *now*.
+
 2000-01-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/LastError.cpp: Complete re-implementation of LastError so

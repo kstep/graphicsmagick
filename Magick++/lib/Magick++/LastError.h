@@ -17,71 +17,51 @@
 
 namespace Magick
 {
-    // Forward declaration
-    class LastError;
-
     //
-    // The actual singleton class
+    // Pure virtual base class to represent last error. The purpose of
+    // this is to eliminate dependencies on the singleton
+    // implementation from the interface.
     //
-    class LastErrorInst
+    class LastErrorBase
     {
-	// Accessed only via LastError
-	friend class LastError;
-
-	private:
-
-	LastErrorInst( void );
-	~LastErrorInst( void );
+	public:
+	LastErrorBase( void ) {};
+	virtual ~LastErrorBase( void ) {};
 
 	// Test to see if error or warning is set
-	bool                   isError( void ) const;
+	virtual bool           isError( void ) const = 0;
     
 	// Clear out existing error info
-	void                   clear ( void );
+	virtual void           clear ( void ) = 0;
     
 	// Error code
-	void                   error ( MagickLib::ErrorType error_ );
-	MagickLib::ErrorType   error ( void ) const;
+	virtual void           error ( MagickLib::ErrorType error_ ) = 0;
+	virtual MagickLib::ErrorType error ( void ) const = 0;
 
 	// Warning code
-	void                   warning ( MagickLib::WarningType warning_ );
-	MagickLib::WarningType warning ( void ) const;
+	virtual void           warning ( MagickLib::WarningType warning_ ) = 0;
+	virtual MagickLib::WarningType warning ( void ) const = 0;
     
 	// System errno
-	void                   syserror ( int syserror_ );
-	int                    syserror ( void ) const;
+	virtual void           syserror ( int syserror_ ) = 0;
+	virtual int            syserror ( void ) const = 0;
     
 	// Error message
-	void                   message ( std::string message_ );
-	std::string            message ( void ) const;
+	virtual void           message ( std::string message_ ) = 0;
+	virtual std::string    message ( void ) const = 0;
     
 	// Error qualifier
-	void                   qualifier ( std::string qualifier_ );
-	std::string            qualifier ( void ) const;
+	virtual void           qualifier ( std::string qualifier_ ) = 0;
+	virtual std::string    qualifier ( void ) const = 0;
     
 	// Throw exception corresponding to error (if any)
-	void                   throwException( void );
-
-	private:
-
-	// Don't support copy constructor
-	LastErrorInst ( const LastErrorInst& original_ );
-    
-	// Don't support assignment
-	LastErrorInst& operator = ( const LastErrorInst& original_ );
-    
-	MagickLib::ErrorType   _error;
-	MagickLib::WarningType _warning;
-	int                    _syserror;
-	std::string            _message;
-	std::string            _qualifier;
+	virtual void           throwException( void ) = 0;
     };
-
 
     //
     // Interface class to access singleton.
     //
-    class LastError
+    class LastError : public LastErrorBase
     {
 	friend class LastErrorGuard;
 	public:
@@ -131,12 +111,11 @@ namespace Magick
 	// Indicate that destruction is desired
 	void doDelete();
 
-	static LastErrorInst* _instance;  // Singleton reference
+	static LastErrorBase* _instance;  // Singleton reference
 	static unsigned       _refCount;  // References
 	static bool           _doDelete;  // Deletion desired
     };
 }
-
 
 //
 // Pass-through methods to singleton implementation

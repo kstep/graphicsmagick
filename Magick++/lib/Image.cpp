@@ -2356,11 +2356,78 @@ Magick::Image Magick::Image::operator=( const Magick::Image &image_ )
   return *this;
 }
 
+//////////////////////////////////////////////////////////////////////    
+//
+// Low-level Pixel Access Routines
+//
+// These invoke equivalent ImageMagick routines directly, so they are
+// subject to change as ImageMagick evolves. In particular, the API
+// may be extended to use handles to refer to a pixel cache so that
+// multiple pixel caches may be supported at one time.
+//
+//////////////////////////////////////////////////////////////////////
+
+// Transfers pixels from the image to the pixel cache as defined
+// by the specified region. Modified pixels may be subsequently
+// transferred back to the image via syncPixels.
+Magick::PixelPacket* Magick::Image::getPixels ( int x_, int y_,
+						unsigned int columns_,
+						unsigned int rows_ )
+{
+  modifyImage();
+  Magick::PixelPacket* p = MagickLib::GetPixelCache( image(),
+						     x_, y_,
+						     columns_, rows_ );
+  throwMagickError();
+  return p;
+}
+
+// Allocates a pixel cache region to store image pixels as defined
+// by the region rectangle.  This area is subsequently transferred
+// from the pixel cache to the image via syncPixels.
+Magick::PixelPacket* Magick::Image::setPixels ( int x_, int y_,
+						unsigned int columns_,
+						unsigned int rows_ )
+{
+  modifyImage();
+  Magick::PixelPacket* p = MagickLib::SetPixelCache( image(),
+						     x_, y_,
+						     columns_, rows_ );
+  throwMagickError();
+  return p;
+}
+
+// Transfers the image cache pixels to the image.
+void Magick::Image::syncPixels ( void )
+{
+  MagickLib::SyncPixelCache( image() );
+  throwMagickError();
+}
+
+// Transfers one or more pixel components from a buffer or file
+// into the image pixel cache of an image.
+// Used to support image decoders.
+void Magick::Image::readPixels ( Magick::QuantumTypes quantum_,
+				 unsigned char *source_ )
+{
+  MagickLib::ReadPixelCache( image(), quantum_, source_ );
+}
+
+// Transfers one or more pixel components from the image pixel
+// cache to a buffer or file.
+// Used to support image encoders.
+void Magick::Image::writePixels ( Magick::QuantumTypes quantum_,
+				  unsigned char *destination_ )
+{
+  MagickLib::WritePixelCache( image(), quantum_, destination_ );
+}
+
 /////////////////////////////////////////////////////////////////////
 //
 // No end-user methods beyond this point
 //
 /////////////////////////////////////////////////////////////////////
+
 
 //
 // Construct using MagickLib::Image and Magick::Options

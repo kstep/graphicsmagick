@@ -256,7 +256,8 @@ namespace Magick
   using MagickLib::PixelsPerInchResolution;
   using MagickLib::PixelsPerCentimeterResolution;
 
-
+  // PixelPacket structure
+  using MagickLib::PixelPacket;
 
 }
 
