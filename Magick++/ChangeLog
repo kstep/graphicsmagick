@@ -1,3 +1,10 @@
+2001-01-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Image.cpp (channel): Renamed method from 'layer' to match
+ 	equivalent change in ImageMagick (ChannelImage).  Enumeration
+ 	names *Layer renamed to *Channel.  Still need to update
+ 	documentation.  Should a backward compatability API be provided?
+
 2001-01-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Magick++/Montage.h (strokeColor): New method.
