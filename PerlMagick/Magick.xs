@@ -390,7 +390,6 @@ static struct
     { "Condense", },
     { "Stereo", { {"image", ImageReference} } },
     { "Stegano", { {"image", ImageReference}, {"offset", IntegerReference} } },
-    { "Coalesce", },
     { "Deconstruct", },
     { "GaussianBlur", { {"geom", StringReference}, {"width", DoubleReference},
       {"sigma", DoubleReference} } },
@@ -2251,6 +2250,110 @@ BlobToImage(ref,...)
 #                                                                             #
 #                                                                             #
 #                                                                             #
+#   C o a l e s c e                                                           #
+#                                                                             #
+#                                                                             #
+#                                                                             #
+###############################################################################
+#
+#
+void
+Coalesce(ref)
+  Image::Magick ref=NO_INIT
+  ALIAS:
+    CoalesceImage   = 1
+    coalesce        = 2
+    coalesceimage   = 3
+  PPCODE:
+  {
+    AV
+      *av;
+
+    char
+      *p;
+
+    ExceptionInfo
+      exception;
+
+    HV
+      *hv;
+
+    jmp_buf
+      error_jmp;
+
+    Image
+      *image;
+
+    struct PackageInfo
+      *info;
+
+    SV
+      *reference,
+      *rv,
+      *sv;
+
+    volatile int
+      status;
+
+    status=0;
+    error_list=newSVpv("",0);
+    if (!sv_isobject(ST(0)))
+      {
+        MagickWarning(OptionWarning,"Reference is not my type",PackageName);
+        goto MethodException;
+      }
+    reference=SvRV(ST(0));
+    hv=SvSTASH(reference);
+    error_jump=(&error_jmp);
+    status=setjmp(error_jmp);
+    if (status)
+      goto MethodException;
+    image=SetupList(reference,&info,(SV ***) NULL);
+    if (!image)
+      {
+        MagickWarning(OptionWarning,"No images to coalesce",NULL);
+        goto MethodException;
+      }
+    GetExceptionInfo(&exception);
+    image=CoalesceImages(image,&exception);
+    if (!image)
+      {
+        MagickWarning(exception.severity,exception.message,exception.qualifier);
+        goto MethodException;
+      }
+    /*
+      Create blessed Perl array for the returned image.
+    */
+    av=newAV();
+    ST(0)=sv_2mortal(sv_bless(newRV((SV *) av),hv));
+    SvREFCNT_dec(av);
+    sv=newSViv((IV) image);
+    rv=newRV(sv);
+    av_push(av,sv_bless(rv,hv));
+    SvREFCNT_dec(sv);
+    info=GetPackageInfo((void *) av,info);
+    FormatString(info->image_info->filename,"average-%.*s",MaxTextExtent-9,
+      ((p=strrchr(image->filename,'/')) ? p+1 : image->filename));
+    (void) strcpy(image->filename,info->image_info->filename);
+    SetImageInfo(info->image_info,False);
+    SvREFCNT_dec(error_list);
+    error_jump=NULL;
+    XSRETURN(1);
+
+  MethodException:
+    sv_setiv(error_list,(IV) (status ? status : SvCUR(error_list) != 0));
+    SvPOK_on(error_list);  /* return messages in string context */
+    ST(0)=sv_2mortal(error_list);
+    error_list=NULL;
+    error_jump=NULL;
+    XSRETURN(1);
+  }
+
+#
+###############################################################################
+#                                                                             #
+#                                                                             #
+#                                                                             #
 #   C o p y                                                                   #
 #                                                                             #
 #                                                                             #
@@ -3572,8 +3675,6 @@ Mogrify(ref,...)
     StereoImage        = 126
     Stegano            = 127
     SteganoImage       = 128
-    Coalesce           = 129
-    CoalesceImage      = 130
     Deconstruct        = 131
     DeconstructImage   = 132
     GaussianBlur       = 133
@@ -4961,11 +5062,6 @@ Mogrify(ref,...)
           image=SteganoImage(image,argument_list[0].image_reference,&exception);
           break;
         }
-        case 65:  /* Coalesce */
-        {
-          image=CoalesceImages(image,&exception);
-          break;
-        }
         case 66:  /* Deconstruct */
         {
           image=DeconstructImages(image,&exception);
@@ -5679,7 +5775,7 @@ Mosaic(ref)
     image=SetupList(reference,&info,(SV ***) NULL);
     if (!image)
       {
-        MagickWarning(OptionWarning,"No images to average",NULL);
+        MagickWarning(OptionWarning,"No images to mosaic",NULL);
         goto MethodException;
       }
     GetExceptionInfo(&exception);
