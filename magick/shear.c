@@ -953,7 +953,7 @@ MagickExport Image *RotateImage(const Image *image,const double degrees,
       "Memory allocation failed");
   SetImageType(integral_image,integral_image->background_color.opacity !=
     OpaqueOpacity ? TrueColorMatteType : TrueColorType);
-  shear.x=(-tan(0.5*DegreesToRadians(angle)));
+  shear.x=(-tan(DegreesToRadians(angle)/2));
   shear.y=sin(DegreesToRadians(angle));
   if ((shear.x == 0.0) || (shear.y == 0.0))
     return(integral_image);
@@ -967,9 +967,9 @@ MagickExport Image *RotateImage(const Image *image,const double degrees,
       width=image->rows;
       height=image->columns;
     }
-  y_width=(unsigned long) (width+ceil(height*fabs(shear.x)-0.5));
-  x_offset=(long) (width+2.0*ceil(height*fabs(shear.y)-0.5)-width);
-  y_offset=(long) (height+ceil(y_width*fabs(shear.y)-0.5)-height);
+  y_width=(unsigned long) (width+ceil(fabs(shear.x)*height-0.5));
+  x_offset=(long) (width+2*ceil(fabs(shear.y)*height-0.5)-width)/2;
+  y_offset=(long) (height+ceil(fabs(shear.y)*y_width-0.5)-height)/2;
   /*
     Surround image with a border.
   */
@@ -985,11 +985,11 @@ MagickExport Image *RotateImage(const Image *image,const double degrees,
     Rotate the image.
   */
   XShearImage(rotate_image,shear.x,width,height,x_offset,
-    (long) (rotate_image->rows-height+1)/2);
+    (long) (rotate_image->rows-height)/2);
   YShearImage(rotate_image,shear.y,y_width,height,
-    (long) (rotate_image->columns-y_width+1)/2,y_offset);
+    (long) (rotate_image->columns-y_width)/2,y_offset);
   XShearImage(rotate_image,shear.x,y_width,rotate_image->rows,
-    (long) (rotate_image->columns-y_width+1)/2,0);
+    (long) (rotate_image->columns-y_width)/2,0);
   (void) memset(&rotate_image->page,0,sizeof(RectangleInfo));
   CropShearImage(&rotate_image,shear.x,shear.y,width,height,exception);
   return(rotate_image);
@@ -1076,17 +1076,17 @@ MagickExport Image *ShearImage(const Image *image,const double x_shear,
       "Memory allocation failed");
   SetImageType(integral_image,integral_image->background_color.opacity !=
     OpaqueOpacity ?  TrueColorMatteType : TrueColorType);
-  shear.x=(-tan(0.5*DegreesToRadians(x_shear)));
+  shear.x=(-tan(DegreesToRadians(x_shear)/2));
   shear.y=sin(DegreesToRadians(y_shear));
   if ((shear.x == 0.0) || (shear.y == 0.0))
     return(integral_image);
   /*
     Compute image size.
   */
-  y_width=(unsigned long) (image->columns+ceil(image->rows*fabs(shear.x)-0.5));
+  y_width=(unsigned long) (image->columns+ceil(fabs(shear.x)*image->rows-0.5));
   x_offset=(long)
-    (image->columns+ceil(2*image->rows*fabs(shear.y)-0.5)-image->columns);
-  y_offset=(long) (image->rows+ceil(y_width*fabs(shear.y)-0.5)-image->rows);
+    (image->columns+ceil(2*fabs(shear.y)*image->rows-0.5)-image->columns)/2;
+  y_offset=(long) (image->rows+ceil(fabs(shear.y)*y_width-0.5)-image->rows)/2;
   /*
     Surround image with border.
   */
@@ -1102,9 +1102,9 @@ MagickExport Image *ShearImage(const Image *image,const double x_shear,
     Shear the image.
   */
   XShearImage(shear_image,shear.x,image->columns,image->rows,x_offset,
-    (long) (shear_image->rows-image->rows+1)/2);
+    (long) (shear_image->rows-image->rows)/2);
   YShearImage(shear_image,shear.y,y_width,image->rows,
-    (long) (shear_image->columns-y_width+1)/2,y_offset);
+    (long) (shear_image->columns-y_width)/2,y_offset);
   (void) memset(&shear_image->page,0,sizeof(RectangleInfo));
   CropShearImage(&shear_image,shear.x,shear.y,image->columns,image->rows,
 		exception);
