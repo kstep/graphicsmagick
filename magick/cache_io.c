@@ -316,13 +316,17 @@ Export off_t GetCacheMemory(off_t memory)
   static off_t
     free_memory = PixelCacheThreshold*1024*1024;
 
+  if (memory == 0)
+    return(free_memory);
 #if defined(HasPTHREADS)
-  static pthread_mutex_t
-    memory_mutex = PTHREAD_MUTEX_INITIALIZER;
+  {
+    static pthread_mutex_t
+      memory_mutex = PTHREAD_MUTEX_INITIALIZER;
 
-  pthread_mutex_lock(&memory_mutex);
-  free_memory+=memory;
-  pthread_mutex_unlock(&memory_mutex);
+    pthread_mutex_lock(&memory_mutex);
+    free_memory+=memory;
+    pthread_mutex_unlock(&memory_mutex);
+  }
 #else
   free_memory+=memory;
 #endif
@@ -764,7 +768,7 @@ Export void SetCacheClassType(CacheHandle cache_handle,ClassType type)
 */
 Export void SetCacheThreshold(off_t threshold)
 {
-  (void) GetCacheMemory(1024*1024*(-cache_threshold-threshold));
+  (void) GetCacheMemory(-1024*1024*(cache_threshold-threshold));
   cache_threshold=threshold;
 }
 
