@@ -371,9 +371,8 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   dy_resolution=72.0;
   if ((image->x_resolution == 0.0) || (image->y_resolution == 0.0))
     {
-     (void) strcpy(density,PSDensityGeometry);
-      count=sscanf(density,"%lfx%lf",&image->x_resolution,
-        &image->y_resolution);
+      (void) strcpy(density,PSDensityGeometry);
+      count=sscanf(density,"%lfx%lf",&image->x_resolution,&image->y_resolution);
       if (count != 2)
         image->y_resolution=image->x_resolution;
     }
@@ -536,6 +535,8 @@ ModuleExport void RegisterPDFImage(void)
   entry->decoder=(DecoderHandler) ReadPDFImage;
   entry->encoder=(EncoderHandler) WritePDFImage;
   entry->adjoin=False;
+  entry->blob_support=False;
+  entry->seekable_stream=True;
   entry->description=AcquireString("Encapsulated Portable Document Format");
   entry->module=AcquireString("PDF");
   (void) RegisterMagickInfo(entry);
@@ -543,6 +544,8 @@ ModuleExport void RegisterPDFImage(void)
   entry->decoder=(DecoderHandler) ReadPDFImage;
   entry->encoder=(EncoderHandler) WritePDFImage;
   entry->magick=(MagickHandler) IsPDF;
+  entry->blob_support=False;
+  entry->seekable_stream=True;
   entry->description=AcquireString("Portable Document Format");
   entry->module=AcquireString("PDF");
   (void) RegisterMagickInfo(entry);
@@ -724,18 +727,6 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
     ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
-  if (image->blob->type != FileStream)
-    {
-      /*
-        Write standard output or pipe to temporary file.
-      */
-      encode_image=(*image);
-      TemporaryFilename(image->filename);
-      image->blob->temporary=True;
-      status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
-      if (status == False)
-        ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
-    }
   compression=image->compression;
   if (image_info->compression != UndefinedCompression)
     compression=image_info->compression;
@@ -774,7 +765,8 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
   /*
     Allocate X ref memory.
   */
-  xref=(ExtendedSignedIntegralType *) AcquireMemory(2048*sizeof(ExtendedSignedIntegralType));
+  xref=(ExtendedSignedIntegralType *)
+    AcquireMemory(2048*sizeof(ExtendedSignedIntegralType));
   if (xref == (ExtendedSignedIntegralType *) NULL)
     ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image);
   memset(xref,0,2048*sizeof(ExtendedSignedIntegralType));
@@ -910,8 +902,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     FormatString(buffer,"/Parent %lu 0 R\n",pages_id);
     (void) WriteBlobString(image,buffer);
     (void) WriteBlobString(image,"/Resources <<\n");
-    FormatString(buffer,"/Font << /F%lu %lu 0 R >>\n",image->scene,
-      object+4);
+    FormatString(buffer,"/Font << /F%lu %lu 0 R >>\n",image->scene,object+4);
     (void) WriteBlobString(image,buffer);
     FormatString(buffer,"/XObject << /Im%lu %lu 0 R >>\n",image->scene,
       object+5);
@@ -965,8 +956,8 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
         }
         LiberateMemory((void **) &labels);
       }
-    FormatString(buffer,"%g 0 0 %g %ld %ld cm\n",x_scale,y_scale,
-      geometry.x,geometry.y);
+    FormatString(buffer,"%g 0 0 %g %ld %ld cm\n",x_scale,y_scale,geometry.x,
+      geometry.y);
     (void) WriteBlobString(image,buffer);
     FormatString(buffer,"/Im%lu Do\n",image->scene);
     (void) WriteBlobString(image,buffer);
@@ -1133,8 +1124,12 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
               }
               if (image->previous == (Image *) NULL)
                 if (QuantumTick(y,image->rows))
-                  if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
-                    break;
+                  {
+                    status=MagickMonitor(SaveImageText,y,image->rows,
+                      &image->exception);
+                    if (status == False)
+                      break;
+                  }
             }
             if (compression == ZipCompression)
               status=ZLIBEncodeImage(image,length,image_info->quality,pixels);
@@ -1171,8 +1166,12 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
               }
               if (image->previous == (Image *) NULL)
                 if (QuantumTick(y,image->rows))
-                  if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
-                    break;
+                  {
+                    status=MagickMonitor(SaveImageText,y,image->rows,
+                      &image->exception);
+                    if (status == False)
+                      break;
+                  }
             }
             Ascii85Flush(image);
             break;
@@ -1247,8 +1246,12 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
               }
               if (image->previous == (Image *) NULL)
                 if (QuantumTick(y,image->rows))
-                  if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
-                    break;
+                  {
+                    status=MagickMonitor(SaveImageText,y,image->rows,
+                      &image->exception);
+                    if (status == False)
+                      break;
+                  }
             }
             if (compression == ZipCompression)
               status=ZLIBEncodeImage(image,length,image_info->quality,pixels);
@@ -1295,8 +1298,12 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
               }
               if (image->previous == (Image *) NULL)
                 if (QuantumTick(y,image->rows))
-                  if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
-                    break;
+                  {
+                    status=MagickMonitor(SaveImageText,y,image->rows,
+                      &image->exception);
+                    if (status == False)
+                      break;
+                  }
             }
             Ascii85Flush(image);
             break;
@@ -1335,8 +1342,12 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                   *q++=indexes[x];
                 if (image->previous == (Image *) NULL)
                   if (QuantumTick(y,image->rows))
-                    if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
-                      break;
+                    {
+                      status=MagickMonitor(SaveImageText,y,image->rows,
+                        &image->exception);
+                      if (status == False)
+                        break;
+                    }
               }
               if (compression == ZipCompression)
                 status=ZLIBEncodeImage(image,length,image_info->quality,pixels);
@@ -1370,8 +1381,12 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                   Ascii85Encode(image,indexes[x]);
                 if (image->previous == (Image *) NULL)
                   if (QuantumTick(y,image->rows))
-                    if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
-                      break;
+                    {
+                      status=MagickMonitor(SaveImageText,y,image->rows,
+                        &image->exception);
+                      if (status == False)
+                        break;
+                    }
               }
               Ascii85Flush(image);
               break;
@@ -1808,9 +1823,12 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
               Ascii85Encode(image,ScaleQuantumToChar(image->colormap[i].blue));
               continue;
             }
-          (void) WriteBlobByte(image,ScaleQuantumToChar(image->colormap[i].red));
-          (void) WriteBlobByte(image,ScaleQuantumToChar(image->colormap[i].green));
-          (void) WriteBlobByte(image,ScaleQuantumToChar(image->colormap[i].blue));
+          (void) WriteBlobByte(image,
+            ScaleQuantumToChar(image->colormap[i].red));
+          (void) WriteBlobByte(image,
+            ScaleQuantumToChar(image->colormap[i].green));
+          (void) WriteBlobByte(image,
+            ScaleQuantumToChar(image->colormap[i].blue));
         }
         if (compression == NoCompression)
           Ascii85Flush(image);
@@ -1830,7 +1848,9 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     if (image->next == (Image *) NULL)
       break;
     image=SyncNextImageInList(image);
-    if (!MagickMonitor(SaveImagesText,scene++,GetImageListLength(image),&image->exception))
+    status=MagickMonitor(SaveImagesText,scene++,GetImageListLength(image),
+      &image->exception);
+    if (status == False)
       break;
   } while (image_info->adjoin);
   if (image_info->adjoin)
