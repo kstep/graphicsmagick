@@ -211,7 +211,7 @@ MagickExport unsigned char *Base64Decode(const char *source,size_t *length)
   assert(source != (char *) NULL);
   assert(length != (size_t *) NULL);
   *length=0;
-  decode=(unsigned char *) AcquireMemory(3*strlen(source)/4+4);
+  decode=(unsigned char *) AcquireMemory(3*strlen(source)/4+1);
   if (decode == (unsigned char *) NULL)
     return((unsigned char *) NULL);
   i=0;
@@ -359,7 +359,7 @@ MagickExport char *Base64Encode(const unsigned char *source,const size_t length)
     remainder;
 
   assert(source != (unsigned char *) NULL);
-  encode=(char *) AcquireMemory(4*length/3+4);
+  encode=(char *) AcquireMemory(4*length/3+5);
   if (encode == (char *) NULL)
     return((char *) NULL);
   i=0;
