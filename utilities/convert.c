@@ -66,6 +66,7 @@
 %    -cache threshold     number of megabytes available to the pixel cache
 %    -channel type        extract a particular color channel from image
 %    -charcoal radius     simulate a charcoal drawing
+%    -chop geometry       remove pixels from the image interior
 %    -coalesce            merge a sequence of images
 %    -colorize value      colorize the image with the fill color
 %    -colors value        preferred number of colors in the image
@@ -475,6 +476,7 @@ static void Usage(void)
       "-cache threshold     megabytes of memory available to the pixel cache",
       "-channel type        extract a particular color channel from image",
       "-charcoal radius     simulate a charcoal drawing",
+      "-chop geometry       remove pixels from the image interior",
       "-coalesce            merge a sequence of images",
       "-colorize value      colorize the image with the fill color",
       "-colors value        preferred number of colors in the image",
@@ -866,6 +868,16 @@ int main(int argc,char **argv)
                   i++;
                   if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
                     MagickError(OptionError,"Missing radius",option);
+                }
+              break;
+            }
+          if (LocaleCompare("chop",option+1) == 0)
+            {
+              if (*option == '-')
+                {
+                  i++;
+                  if ((i == argc) || !IsGeometry(argv[i]))
+                    MagickError(OptionError,"Missing geometry",option);
                 }
               break;
             }
