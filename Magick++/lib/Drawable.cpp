@@ -512,7 +512,7 @@ Magick::DrawablePointSize::DrawablePointSize( double pointSize_ )
 }
 
 // Stroke color
-Magick::DrawableStroke::DrawableStroke ( Color &color_ )
+Magick::DrawableStroke::DrawableStroke ( Magick::Color &color_ )
 {
   char buffer[MaxTextExtent + 1];
   ostrstream buffstr( buffer, sizeof(buffer));
