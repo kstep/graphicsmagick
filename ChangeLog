@@ -1,3 +1,7 @@
+2005-01-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lcms: Updated to LCMS 1.14.
+
 2005-01-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/jp2.c (ReadJP2Image): Handle images in YCBCR colorspace.
