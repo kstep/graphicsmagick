@@ -231,6 +231,7 @@ ModuleExport void RegisterUYVYImage(void)
 */
 ModuleExport void UnregisterUYVYImage(void)
 {
+  UnregisterMagickInfo("PAL");
   UnregisterMagickInfo("UYVY");
 }
 
