@@ -27,7 +27,7 @@ extern Export unsigned int
 extern Export void
   ClosePixelCache(CacheHandle),
   DestroyCacheInfo(CacheHandle),
-  GetCacheInfo(CacheHandle),
+  GetCacheInfo(CacheHandle *),
   SetCacheThreshold(unsigned int),
   SetCacheClassType(CacheHandle,ClassType);
 
