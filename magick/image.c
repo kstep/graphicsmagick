@@ -6028,18 +6028,15 @@ Export void RGBTransformImage(Image *image,const ColorspaceType colorspace)
 #define Z (MaxRGB+1)*2
 
   double
+    blue,
+    green,
+    red,
     tx,
     ty,
     tz;
 
   int
-    blue,
-    green,
-    red,
     y;
-
-  Quantum
-    *range_table;
 
   register double
     *x_map,
@@ -6049,9 +6046,6 @@ Export void RGBTransformImage(Image *image,const ColorspaceType colorspace)
   register int
     i,
     x;
-
-  register Quantum
-    *range_limit;
 
   register PixelPacket
     *p,
@@ -6127,26 +6121,13 @@ Export void RGBTransformImage(Image *image,const ColorspaceType colorspace)
   x_map=(double *) AllocateMemory(3*(MaxRGB+1)*sizeof(double));
   y_map=(double *) AllocateMemory(3*(MaxRGB+1)*sizeof(double));
   z_map=(double *) AllocateMemory(3*(MaxRGB+1)*sizeof(double));
-  range_table=(Quantum *) AllocateMemory(4*(MaxRGB+1)*sizeof(Quantum));
   if ((x_map == (double *) NULL) || (y_map == (double *) NULL) ||
-      (z_map == (double *) NULL) || (range_table == (Quantum *) NULL))
+      (z_map == (double *) NULL))
     {
       MagickWarning(ResourceLimitWarning,"Unable to transform color space",
         "Memory allocation failed");
       return;
     }
-  /*
-    Pre-compute conversion tables.
-  */
-  for (i=0; i <= MaxRGB; i++)
-  {
-    range_table[i]=0;
-    range_table[i+(MaxRGB+1)]=(Quantum) i;
-    range_table[i+(MaxRGB+1)*2]=MaxRGB;
-  }
-  for (i=0; i <= MaxRGB; i++)
-    range_table[i+(MaxRGB+1)*3]=MaxRGB;
-  range_limit=range_table+(MaxRGB+1);
   tx=0;
   ty=0;
   tz=0;
@@ -6434,15 +6415,12 @@ Export void RGBTransformImage(Image *image,const ColorspaceType colorspace)
           break;
         for (x=0; x < (int) image->columns; x++)
         {
-          red=q->red;
-          green=q->green;
-          blue=q->blue;
-          q->red=
-            range_limit[(int) (x_map[red+X]+y_map[green+X]+z_map[blue+X]+tx)];
-          q->green=
-            range_limit[(int) (x_map[red+Y]+y_map[green+Y]+z_map[blue+Y]+ty)];
-          q->blue=
-            range_limit[(int) (x_map[red+Z]+y_map[green+Z]+z_map[blue+Z]+tz)];
+          red=x_map[q->red+X]+y_map[q->green+X]+z_map[q->blue+X]+tx;
+          green=x_map[q->red+Y]+y_map[q->green+Y]+z_map[q->blue+Y]+ty;
+          blue=x_map[q->red+Z]+y_map[q->green+Z]+z_map[q->blue+Z]+tz;
+          q->red=red < 0 ? 0 : red > MaxRGB ? MaxRGB : red;
+          q->green=green < 0 ? 0 : green > MaxRGB ? MaxRGB : green;
+          q->blue=blue < 0 ? 0 : blue > MaxRGB ? MaxRGB : blue;
           q++;
         }
         if (!SyncPixelCache(image))
@@ -6459,15 +6437,16 @@ Export void RGBTransformImage(Image *image,const ColorspaceType colorspace)
       */
       for (i=0; i < (int) image->colors; i++)
       {
-        red=image->colormap[i].red;
-        green=image->colormap[i].green;
-        blue=image->colormap[i].blue;
-        image->colormap[i].red=
-          range_limit[(int) (x_map[red+X]+y_map[green+X]+z_map[blue+X]+tx)];
+        red=x_map[image->colormap[i].red+X]+y_map[image->colormap[i].green+X]+
+          z_map[image->colormap[i].blue+X]+tx;
+        green=x_map[image->colormap[i].red+Y]+y_map[image->colormap[i].green+Y]+
+          z_map[image->colormap[i].blue+Y]+ty;
+        blue=x_map[image->colormap[i].red+Z]+y_map[image->colormap[i].green+Z]+
+          z_map[image->colormap[i].blue+Z]+tz;
+        image->colormap[i].red=red < 0 ? 0 : red > MaxRGB ? MaxRGB : red;
         image->colormap[i].green=
-          range_limit[(int) (x_map[red+Y]+y_map[green+Y]+z_map[blue+Y]+ty)];
-        image->colormap[i].blue=
-          range_limit[(int) (x_map[red+Z]+y_map[green+Z]+z_map[blue+Z]+tz)];
+          green < 0 ? 0 : green > MaxRGB ? MaxRGB : green;
+        image->colormap[i].blue=blue < 0 ? 0 : blue > MaxRGB ? MaxRGB : blue;
       }
       SyncImage(image);
       break;
@@ -6476,7 +6455,6 @@ Export void RGBTransformImage(Image *image,const ColorspaceType colorspace)
   /*
     Free allocated memory.
   */
-  FreeMemory(range_table);
   FreeMemory(z_map);
   FreeMemory(y_map);
   FreeMemory(x_map);
@@ -7102,26 +7080,20 @@ Export void TransformRGBImage(Image *image,const ColorspaceType colorspace)
     };
 
   double
+    blue,
     *blue_map,
+    green,
     *green_map,
+    red,
     *red_map;
 
   int
     index,
     y;
 
-  Quantum
-    blue,
-    green,
-    *range_table,
-    red;
-
   register int
     i,
     x;
-
-  register Quantum
-    *range_limit;
 
   register PixelPacket
     *q;
@@ -7179,26 +7151,13 @@ Export void TransformRGBImage(Image *image,const ColorspaceType colorspace)
   red_map=(double *) AllocateMemory(3*(MaxRGB+1)*sizeof(double));
   green_map=(double *) AllocateMemory(3*(MaxRGB+1)*sizeof(double));
   blue_map=(double *) AllocateMemory(3*(MaxRGB+1)*sizeof(double));
-  range_table=(Quantum *) AllocateMemory(4*(MaxRGB+1)*sizeof(Quantum));
   if ((red_map == (double *) NULL) || (green_map == (double *) NULL) ||
-      (blue_map == (double *) NULL) || (range_table == (Quantum *) NULL))
+      (blue_map == (double *) NULL))
     {
       MagickWarning(ResourceLimitWarning,"Unable to transform color space",
         "Memory allocation failed");
       return;
     }
-  /*
-    Initialize tables.
-  */
-  for (i=0; i <= MaxRGB; i++)
-  {
-    range_table[i]=0;
-    range_table[i+(MaxRGB+1)]=(Quantum) i;
-    range_table[i+(MaxRGB+1)*2]=MaxRGB;
-  }
-  for (i=0; i <= MaxRGB; i++)
-    range_table[i+(MaxRGB+1)*3]=MaxRGB;
-  range_limit=range_table+(MaxRGB+1);
   switch (colorspace)
   {
     case OHTAColorspace:
@@ -7249,10 +7208,7 @@ Export void TransformRGBImage(Image *image,const ColorspaceType colorspace)
         red_map[i+B]=1.40200*i;
         green_map[i+B]=2.28900*(i-(double) UpScale(156));
         blue_map[i+B]=0.0;
-        range_table[i+(MaxRGB+1)]=(Quantum) UpScale(sRGBMap[DownScale(i)]);
       }
-      for ( ; i < (int) UpScale(351); i++)
-        range_table[i+(MaxRGB+1)]=(Quantum) UpScale(sRGBMap[DownScale(i)]);
       break;
     }
     case XYZColorspace:
@@ -7326,10 +7282,7 @@ Export void TransformRGBImage(Image *image,const ColorspaceType colorspace)
         red_map[i+B]=1.3584*i;
         green_map[i+B]=2.2179*(i-(double) UpScale(156));
         blue_map[i+B]=0.0;
-        range_table[i+(MaxRGB+1)]=(Quantum) UpScale(YCCMap[DownScale(i)]);
       }
-      for ( ; i < (int) UpScale(351); i++)
-        range_table[i+(MaxRGB+1)]=(Quantum) UpScale(YCCMap[DownScale(i)]);
       break;
     }
     case YIQColorspace:
@@ -7430,15 +7383,12 @@ Export void TransformRGBImage(Image *image,const ColorspaceType colorspace)
           break;
         for (x=0; x < (int) image->columns; x++)
         {
-          red=q->red;
-          green=q->green;
-          blue=q->blue;
-          index=red_map[red+R]+green_map[green+R]+blue_map[blue+R];
-          q->red=range_limit[index];
-          index=red_map[red+G]+green_map[green+G]+blue_map[blue+G];
-          q->green=range_limit[index];
-          index=red_map[red+B]+green_map[green+B]+blue_map[blue+B];
-          q->blue=range_limit[index];
+          red=red_map[q->red+R]+green_map[q->green+R]+blue_map[q->blue+R];
+          green=red_map[q->red+G]+green_map[q->green+G]+blue_map[q->blue+G];
+          blue=red_map[q->red+B]+green_map[q->green+B]+blue_map[q->blue+B];
+          q->red=red < 0 ? 0 : red > MaxRGB ? MaxRGB : red;
+          q->green=green < 0 ? 0 : green > MaxRGB ? MaxRGB : green;
+          q->blue=blue < 0 ? 0 : blue > MaxRGB ? MaxRGB : blue;
           q++;
         }
         if (!SyncPixelCache(image))
@@ -7455,15 +7405,19 @@ Export void TransformRGBImage(Image *image,const ColorspaceType colorspace)
       */
       for (i=0; i < (int) image->colors; i++)
       {
-        red=image->colormap[i].red;
-        green=image->colormap[i].green;
-        blue=image->colormap[i].blue;
-        index=red_map[red+R]+green_map[green+R]+blue_map[blue+R];
-        image->colormap[i].red=range_limit[index];
-        index=red_map[red+G]+green_map[green+G]+blue_map[blue+G];
-        image->colormap[i].green=range_limit[index];
-        index=red_map[red+B]+green_map[green+B]+blue_map[blue+B];
-        image->colormap[i].blue=range_limit[index];
+        red=red_map[image->colormap[i].red+R]+
+          green_map[image->colormap[i].green+R]+
+          blue_map[image->colormap[i].blue+R];
+        green=red_map[image->colormap[i].red+G]+
+          green_map[image->colormap[i].green+G]+
+          blue_map[image->colormap[i].blue+G];
+        blue=red_map[image->colormap[i].red+B]+
+          green_map[image->colormap[i].green+B]+
+          blue_map[image->colormap[i].blue+B];
+        image->colormap[i].red=red < 0 ? 0 : red > MaxRGB ? MaxRGB : red;
+        image->colormap[i].green=
+          green < 0 ? 0 : green > MaxRGB ? MaxRGB : green;
+        image->colormap[i].blue=blue < 0 ? 0 : blue > MaxRGB ? MaxRGB : blue;
       }
       SyncImage(image);
       break;
@@ -7472,7 +7426,6 @@ Export void TransformRGBImage(Image *image,const ColorspaceType colorspace)
   /*
     Free allocated memory.
   */
-  FreeMemory(range_table);
   FreeMemory(blue_map);
   FreeMemory(green_map);
   FreeMemory(red_map);
