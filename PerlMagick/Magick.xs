@@ -3257,6 +3257,7 @@ ImageToBlob(ref,...)
     imagetoblob  = 2
     toblob       = 3
     blob         = 4
+    Blob         = 5
   PPCODE:
   {
     char

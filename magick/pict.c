@@ -1071,19 +1071,28 @@ Export Image *ReadPICTImage(const ImageInfo *image_info)
                 index=(*p++);
               else
                 {
-                  if (!tiled_image->matte)
+                  if (pixmap.bits_per_pixel == 16)
                     {
-                      red=UpScale(*p);
-                      green=UpScale(*(p+tiled_image->columns));
-                      blue=UpScale(*(p+2*tiled_image->columns));
+                      i=(*p++);
+                      j=(*p);
+                      red=UpScale((i & 0x7c) << 1);
+                      green=UpScale(((i & 0x03) << 6) | ((j & 0xe0) >> 2));
+                      blue=UpScale((j & 0x1f) << 3);
                     }
                   else
-                    {
-                      index=UpScale(*p);
-                      red=UpScale(*(p+tiled_image->columns));
-                      green=UpScale(*(p+2*tiled_image->columns));
-                      blue=UpScale(*(p+3*tiled_image->columns));
-                    }
+                    if (!tiled_image->matte)
+                      {
+                        red=UpScale(*p);
+                        green=UpScale(*(p+tiled_image->columns));
+                        blue=UpScale(*(p+2*tiled_image->columns));
+                      }
+                    else
+                      {
+                        index=UpScale(*p);
+                        red=UpScale(*(p+tiled_image->columns));
+                        green=UpScale(*(p+2*tiled_image->columns));
+                        blue=UpScale(*(p+3*tiled_image->columns));
+                      }
                   p++;
                 }
               if ((red == q->red) && (green == q->green) &&
@@ -1102,7 +1111,8 @@ Export Image *ReadPICTImage(const ImageInfo *image_info)
                   q->length=0;
                 }
             }
-            if (tiled_image->class == DirectClass)
+            if ((tiled_image->class == DirectClass) &&
+                (pixmap.bits_per_pixel != 16))
               p+=(pixmap.component_count-1)*tiled_image->columns;
             if (destination.bottom == (int) image->rows)
               if (QuantumTick(y,tiled_image->rows))
