@@ -4737,7 +4737,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             /*
               Add a ICM, IPTC, or generic profile to the image.
             */
-            client_data = clone_info->client_data;
+            client_data=clone_info->client_data;
             clone_info->client_data=(void *) &(*image)->iptc_profile;
             (void) strncpy(clone_info->filename,argv[++i],MaxTextExtent-1);
             profile=ReadImage(clone_info,&(*image)->exception);
@@ -4752,7 +4752,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
               }
             if (profile->color_profile.length != 0)
               {
-                (void) ProfileImage(*image,"IPTC",profile->color_profile.info,
+                (void) ProfileImage(*image,"ICM",profile->color_profile.info,
                   profile->color_profile.length,False);
                 profile->color_profile.info=(unsigned char *) NULL;
                 profile->color_profile.length=0;
@@ -4769,7 +4769,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
               generic->length=0;
             }
             DestroyImage(profile);
-            clone_info->client_data = client_data;
+            clone_info->client_data=client_data;
             continue;
           }
         break;
