@@ -42,6 +42,11 @@ int main ( int argc, char **argv )
       exit( 1 );
     }
 
+  if (LocaleNCompare("rwfile",argv[0],7) == 0)
+    InitializeMagick(GetExecutionPath(argv[0]));
+  else
+    InitializeMagick(*argv);
+
   strcpy( infile, argv[1] );
   strcpy( format, argv[2] );
 
