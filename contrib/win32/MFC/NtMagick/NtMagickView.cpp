@@ -226,35 +226,23 @@ void CNtMagickView::DoDisplayImage()
     return;
   }
 
-  PixelPacket *pPixels;
-  CPoint pt;
-  CRect rectClient;
-  CDC * pDC;
-
-  pDC = GetDC();
-  GetClientRect(rectClient);
-
+  CDC *pDC = GetDC();
   if (pDC != NULL)
   {
-
-    int   nImageY;
-    int   nImageX;
-    CSize sizeScaled;
+    CRect rectClient;
+    GetClientRect(rectClient);
 
     // Clear the background
     pDC->FillSolidRect(rectClient,pDC->GetBkColor());
 
     // Determine the size of the scaled image
     // Don't allow image to be zoomed
-    sizeScaled = Scale(CSize(m_pImage->columns(),m_pImage->rows()), rectClient.Size());
+    CSize sizeScaled = Scale(CSize(m_pImage->columns(),m_pImage->rows()), rectClient.Size());
 
     // Calculate the top-left co-ordinates of the image
-    pt = rectClient.TopLeft();
-    nImageX= ((rectClient.Width()-sizeScaled.cx)/2)+ pt.x ;
-    nImageY = ((rectClient.Height()-sizeScaled.cy)/2) + pt.y;
-
-    // Extract the pixels from Magick++ image object
-    pPixels = m_pImage->getPixels(0,0,m_pImage->columns(),m_pImage->rows());
+    CPoint pt = rectClient.TopLeft();
+    int nImageX= ((rectClient.Width()-sizeScaled.cx)/2)+ pt.x ;
+    int nImageY = ((rectClient.Height()-sizeScaled.cy)/2) + pt.y;
 
     // Set up the Windows bitmap header
     BITMAPINFOHEADER bmi;
@@ -270,8 +258,11 @@ void CNtMagickView::DoDisplayImage()
     bmi.biClrUsed = 0;
     bmi.biClrImportant = 0;
 
-    // Blast it to the device context
+#if QuantumDepth == 8
+    // Extract the pixels from Magick++ image object
+    PixelPacket *pPixels = m_pImage->getPixels(0,0,m_pImage->columns(),m_pImage->rows());
 
+    // Blast it to the device context
     SetStretchBltMode(pDC->m_hDC,COLORONCOLOR);
 
     StretchDIBits(pDC->m_hDC,
@@ -287,6 +278,9 @@ void CNtMagickView::DoDisplayImage()
                   (BITMAPINFO *)&bmi,
                   DIB_RGB_COLORS,
                   SRCCOPY);
+#elif QuantumDepth == 16
+# error "This code only works when ImageMagick is compiled with 8-bit Quantum size"
+#endif
 
   }
 }

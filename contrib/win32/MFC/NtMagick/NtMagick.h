@@ -14,9 +14,6 @@
 
 #include "resource.h"       // main symbols
 #include <Magick++.h>
-#if QuantumDepth != 8
-# error "This code only works when ImageMagick is compiled with 8-bit Quantum size"
-#endif
 #include <string>
 using namespace std;
 using namespace Magick;
