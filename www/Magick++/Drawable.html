@@ -571,7 +571,9 @@ the last <i>DrawablePushGraphicContext</i> operation are restored.</font></td>
 </tr>
 
 <tr>
-<td><a NAME="DrawablePushPattern"></a><font size=-1>DrawablePushPattern</font></td>
+<td>
+<center><a NAME="DrawablePushPattern"></a><font size=-1>DrawablePushPattern</font></center>
+</td>
 
 <td><font size=-1>std::string &amp;id_, long x_, long y_, long width_,
 long height_</font></td>
@@ -590,7 +592,9 @@ by a <a href="#DrawablePopPattern">DrawablePopPattern</a> object.</font></td>
 </tr>
 
 <tr>
-<td><a NAME="DrawablePopPattern"></a><font size=-1>DrawablePopPattern</font></td>
+<td>
+<center><a NAME="DrawablePopPattern"></a><font size=-1>DrawablePopPattern</font></center>
+</td>
 
 <td><font size=-1>void</font></td>
 
@@ -761,6 +765,21 @@ attributes may be incorporated in the text (see label()).</font></td>
 <td><font size=-1>bool flag_</font></td>
 
 <td><font size=-1>Antialias while drawing text.</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="DrawableViewbox"></a><font size=-1>DrawableViewbox</font></center>
+</td>
+
+<td><font size=-1>unsigned long x1_, unsigned long y1_, unsigned long x2_,
+unsigned long y2_</font></td>
+
+<td><font size=-1>Dimensions of the output viewbox. If the image is to
+be written to a vector format (e.g. MVG or SVG), then a DrawablePushGraphicContext()
+object should be pushed to the head of the list, followed by a DrawableViewbox()
+statement to establish the output canvas size. A matching DrawablePopGraphicContext()
+object should be pushed to the tail of the list.</font></td>
 </tr>
 </table>
 

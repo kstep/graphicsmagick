@@ -9,7 +9,7 @@
 2002-03-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Drawable.cpp (DrawableViewbox): New class to allow setting
- 	the MVG output size.  Still needs documentation.
+ 	the MVG output size.
 
 2002-03-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
