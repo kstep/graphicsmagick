@@ -87,6 +87,7 @@
 %    -type type          image type
 %    -units type         PixelsPerInch, PixelsPerCentimeter, or Undefined
 %    -unsharp geometry   sharpen the image
+%    -watermark geometry percent brightness and saturation of a watermark
 %    -verbose            print detailed information about the image
 %
 %
@@ -447,6 +448,7 @@ static void Usage(void)
       "-type type          image type",
       "-units type         PixelsPerInch, PixelsPerCentimeter, or Undefined",
       "-unsharp geometry   sharpen the image",
+      "-watermark geometry percent brightness and saturation of a watermark",
       "-verbose            print detailed information about the image",
       (char *) NULL
     };
