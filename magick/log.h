@@ -8,21 +8,10 @@
 extern "C" {
 #endif
 
-#if defined(__GNUC__) && defined(__GNUC_MINOR__)
-# define GNUC_Prerequiste(major,minor) \
-    ((__GNUC__ << 16) + __GNUC_MINOR__ >= ((major) << 16) + (minor))
+#if defined(HAS___func__)
+#  define GetMagickModule()  __FILE__,__func__,__LINE__
 #else
-# define GNUC_Prerequiste(major,minor)  0
-#endif
-
-#if defined __STDC_VERSION__ && (__STDC_VERSION__ >= 199901L)
-# define GetMagickModule()  __FILE__,__func__,__LINE__
-#else
-# if defined(__cplusplus) ? GNUC_Prerequiste(2,6) : GNUC_Prerequiste(2,4)
-#  define GetMagickModule()  __FILE__,__PRETTY_FUNCTION__,__LINE__
-# else
 #  define GetMagickModule()  __FILE__,"unknown",__LINE__
-# endif
 #endif
 
 typedef enum
