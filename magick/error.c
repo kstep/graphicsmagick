@@ -312,6 +312,7 @@ MagickExport void GetImageException(const Image *image,ExceptionInfo *exception)
     if (next->exception.severity > exception->severity)
       ThrowException(exception,next->exception.severity,
         next->exception.reason,next->exception.description);
+    next->exception.severity=UndefinedException;
   }
 }
 
