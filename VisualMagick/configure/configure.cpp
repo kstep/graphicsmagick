@@ -401,9 +401,37 @@ void CConfigureApp::generate_a_dependency_cs(
 #endif
 }
 
+void CConfigureApp::generate_a_dependency_type(
+  ConfigureWorkspace *w,ConfigureProject *p,
+  int type)
+{
+  bool bDidSomething = false;
+  string strDepends;
+  string strName;
+  int nProjectType;
+  for (
+    list<ConfigureProject*>::iterator depit = dependency_list.begin();
+    depit != dependency_list.end();
+    depit++)
+  {
+    strName = (*depit)->name;
+    nProjectType = (*depit)->type;
+    if (nProjectType == type)
+    {
+      LocalFormat(strDepends,strName.c_str(),"","");
+      w->write_project_dependency(p,strDepends);
+      bDidSomething = true;
+    }
+  }
+#ifdef _DEBUG
+  if (!bDidSomething)
+    debuglog  << "gen dependency type did nothing for: " << type << endl;
+#endif
+}
+
 void CConfigureApp::generate_dependencies(
   ConfigureProject *p,
-    bool add_cpp_depends, bool add_util_depends)
+    bool add_cpp_depends, bool add_util_depends, bool add_add_one_depdends)
 {
   generate_a_dependency(workspace, p, "CORE_%szlib", false, true);
   generate_a_dependency(workspace, p, "CORE_%sbzlib", false, true);
@@ -416,6 +444,8 @@ void CConfigureApp::generate_dependencies(
   generate_a_dependency(workspace, p, (char *)MODULE_PREFIX, true, false);
   if (add_util_depends)
     generate_a_dependency(workspace, p, "UTIL_", true, false);
+  if (add_add_one_depdends)
+    generate_a_dependency_type(workspace, p, ADD_ON);
 }
 
 static bool doesDirExist(const char *name)
@@ -705,6 +735,7 @@ ConfigureProject *project = write_project_exe(
     extn);
 
   project->name = prefix + "%s" + name + "%s";
+  project->type = project_type;
   dependency_list.push_back(project);
 #ifdef _DEBUG
     debuglog  << "dependency:" << project->name.c_str() << endl;
@@ -722,7 +753,7 @@ ConfigureProject *project = write_project_exe(
     case MULTITHREADEDSTATICDLL:
       workspace->write_begin_project(project, pname.c_str(), projectname.c_str());
       if (!standaloneMode)
-        generate_dependencies(project,(extn.compare("cpp") == 0), false);
+        generate_dependencies(project,(extn.compare("cpp") == 0), false, false);
       workspace->write_end_project(project);
       break;
     default:
@@ -946,6 +977,7 @@ ConfigureProject *project = write_project_lib(
   pname = prefix + name;
 
   project->name = prefix + "%s" + name + "%s";
+  project->type = project_type;
   dependency_list.push_back(project);
 #ifdef _DEBUG
     debuglog  << "dependency:" << project->name.c_str() << endl;
@@ -1233,6 +1265,7 @@ ConfigureProject *project = write_project_lib(
   if (project_type == MODULE)
   {
     project->name = prefix + "%s" + name + "%s";
+    project->type = project_type;
     dependency_list.push_back(project);
 #ifdef _DEBUG
     debuglog  << "dependency:" << project->name.c_str() << endl;
@@ -1241,6 +1274,7 @@ ConfigureProject *project = write_project_lib(
   if (project_type == ADD_ON)
   {
     project->name = name;
+    project->type = project_type;
     dependency_list.push_back(project);
 #ifdef _DEBUG
     debuglog  << "dependency:" << project->name.c_str() << endl;
@@ -1372,6 +1406,7 @@ void CConfigureApp::process_3rd_party_library(
     else
       project = new ConfigureVS6Project();
     project->name = prefix + "%s" + name + "%s";
+    project->type = project_type;
     dependency_list.push_back(project);
 #ifdef _DEBUG
     debuglog  << "dependency:" << project->name.c_str() << endl;
@@ -2843,6 +2878,7 @@ BOOL CConfigureApp::InitInstance()
     else
       dummy_project = new ConfigureVS6Project();
     dummy_project->name = "All";
+    dummy_project->type = -1;
     dependency_list.push_back(dummy_project);
 #ifdef _DEBUG
     debuglog  << "dependency:" << dummy_project->name.c_str() << endl;
@@ -2903,7 +2939,7 @@ BOOL CConfigureApp::InitInstance()
     if (!visualStudio7)
       workspace->write_begin_project(dummy_project, "All", ".\\All\\All.dsp");
     waitdlg.Pumpit();
-    generate_dependencies(dummy_project, true, true);
+    generate_dependencies(dummy_project, true, true, true);
     workspace->write_end_project(dummy_project);
 
     waitdlg.Pumpit();

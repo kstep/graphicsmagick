@@ -45,6 +45,7 @@ public:
   ofstream m_stream;
   string name;
   list<string> depends;
+  int type;
 
   // Assignment operator
   ConfigureProject& operator=(const ConfigureProject& obj); 
@@ -368,11 +369,14 @@ private:
   void process_one_folder(
           const char *root, WIN32_FIND_DATA &data,
           int project_type, int projectType);
-  void generate_dependencies(ConfigureProject *project, bool gen_cpp, bool gen_util);
+  void generate_dependencies(ConfigureProject *project,
+    bool gen_cpp, bool gen_util, bool gen_type);
   void generate_a_dependency(ConfigureWorkspace *w,ConfigureProject *p,
     char *s, bool flag1, bool flag2);
   void generate_a_dependency_cs(ConfigureWorkspace *w,ConfigureProject *p,
     char *s);
+  void generate_a_dependency_type(ConfigureWorkspace *w,ConfigureProject *p,
+    int t);
   bool CConfigureApp::process_one_entry(const char *entry, int nLinesRead, int runtime);
   int CConfigureApp::load_environment_file( const char *inputfile, int runtime);
 };

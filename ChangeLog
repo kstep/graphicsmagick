@@ -1,3 +1,8 @@
+2003-05-20  William Radcliffe  <billr@corbis.com>
+
+	* VisualMagick\configure : Fixed bug with add on (plug-ins) not
+	buidling automatically in DLL mode.
+
 2003-05-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/image.c (TextureImage): Creation of tiled image textures
