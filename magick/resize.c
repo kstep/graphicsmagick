@@ -464,12 +464,15 @@ MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
 MagickExport Image *MinifyImage(const Image *image,ExceptionInfo *exception)
 {
 #define Minify(weight) \
-  total_red+=(weight)*(r->red); \
-  total_green+=(weight)*(r->green); \
-  total_blue+=(weight)*(r->blue); \
-  total_opacity+=(weight)*(r->opacity); \
+  total.red+=(weight)*(r->red); \
+  total.green+=(weight)*(r->green); \
+  total.blue+=(weight)*(r->blue); \
+  total.opacity+=(weight)*(r->opacity); \
   r++;
 #define MinifyImageText  "  Minify image...  "
+
+  DoublePixelPacket
+    total;
 
   Image
     *minify_image;
@@ -486,12 +489,6 @@ MagickExport Image *MinifyImage(const Image *image,ExceptionInfo *exception)
 
   register PixelPacket
     *q;
-
-  unsigned long
-    total_blue,
-    total_green,
-    total_opacity,
-    total_red;
 
   /*
     Initialize minified image.
@@ -519,10 +516,7 @@ MagickExport Image *MinifyImage(const Image *image,ExceptionInfo *exception)
       /*
         Compute weighted average of target pixel color components.
       */
-      total_red=0;
-      total_green=0;
-      total_blue=0;
-      total_opacity=0;
+      memset(&total,0,sizeof(DoublePixelPacket));
       r=p;
       Minify(3L); Minify(7L);  Minify(7L);  Minify(3L);
       r=p+(image->columns+4);
@@ -531,10 +525,10 @@ MagickExport Image *MinifyImage(const Image *image,ExceptionInfo *exception)
       Minify(7L); Minify(15L); Minify(15L); Minify(7L);
       r=p+3*(image->columns+4);
       Minify(3L); Minify(7L);  Minify(7L);  Minify(3L);
-      q->red=(Quantum) ((total_red+63L) >> 7L);
-      q->green=(Quantum) ((total_green+63L) >> 7L);
-      q->blue=(Quantum) ((total_blue+63L) >> 7L);
-      q->opacity=(Quantum) ((total_opacity+63L) >> 7L);
+      q->red=(Quantum) (total.red/128.0+0.5);
+      q->green=(Quantum) (total.green/128.0+0.5);
+      q->blue=(Quantum) (total.blue/128.0+0.5);
+      q->opacity=(Quantum) (total.opacity/128.0+0.5);
       p+=2;
       q++;
     }
