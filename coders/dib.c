@@ -763,7 +763,8 @@ ModuleExport void RegisterDIBImage(void)
   entry->encoder=WriteDIBImage;
   entry->adjoin=False;
   entry->stealth=True;
-  entry->description=AllocateString("Microsoft Windows Device-Independent Bitmap");
+  entry->description=
+    AllocateString("Microsoft Windows Device-Independent Bitmap");
   entry->module=AllocateString("DIB");
   (void) RegisterMagickInfo(entry);
 }

@@ -148,15 +148,9 @@ MagickExport Image *BlobToImage(const ImageInfo *image_info,const void *blob,
   assert(image_info != (ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
-  if (blob == (const void *) NULL)
+  if ((blob == (const void *) NULL) || (length == 0))
     {
-      ThrowException(exception,BlobWarning,"Null BLOB offset",
-        image_info->magick);
-      return((Image *) NULL);
-    }
-  if (length == 0)
-    {
-      ThrowException(exception,BlobWarning,"Null BLOB length",
+      ThrowException(exception,BlobWarning,"Zero-length blob not permitted",
         image_info->magick);
       return((Image *) NULL);
     }
