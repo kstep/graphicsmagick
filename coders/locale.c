@@ -562,7 +562,7 @@ static void accumulate(const char **buf, int siz, struct locale_str **locstr)
         {
             if (!(np = strchr(p, '/')))    /* last field is the message */
             {
-                if (!(xp = (char *) strdup(tp)))
+                if (!(xp = (char *) AllocateString(tp)))
                 {
                     fprintf(stderr, " out of memory!\n");
                     exit(1);
@@ -732,6 +732,7 @@ static void output_switches(Image *image,struct locale_str *locstr, int indent, 
     FormatString(message, "%*s}\n", indent, "");
     WriteBlobString(image,message);
 }
+
 static unsigned int WriteLOCALEImage(const ImageInfo *image_info,Image *image)
 {
   char
