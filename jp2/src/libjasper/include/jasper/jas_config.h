@@ -120,6 +120,9 @@
 /* The preprocessor symbol JAS_WIN_MSVC_BUILD should not be defined
   unless the JasPer software is being built under Microsoft Windows
   using Microsoft Visual C. */
+#if defined(_VISUALC_) && !defined(JAS_WIN_MSVC_BUILD)
+# define JAS_WIN_MSVC_BUILD
+#endif
 #ifndef	JAS_WIN_MSVC_BUILD
 
 /* Define to empty if the keyword does not work.  */
