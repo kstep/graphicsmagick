@@ -4,7 +4,7 @@
 #
 # Contributed by Bob Friesenhahn <bfriesen@simple.dallas.tx.us>
 #
-BEGIN { $| = 1; $test=1, print "1..76)\n"; }
+BEGIN { $| = 1; $test=1, print "1..75)\n"; }
 END {print "not ok 1\n" unless $loaded;}
 use Image::Magick;
 $loaded=1;
@@ -40,13 +40,6 @@ if ($depth eq 16) {
    testSetAttribute('input.miff','bordercolor','#808070706060');
 } else {
    testSetAttribute('input.miff','bordercolor','#807060');
-}
-
-++$test;
-if ($depth eq 16) {
-   testSetAttribute('input.miff','colormap[20]','#808070706060');
-} else {
-   testSetAttribute('input.miff','colormap[20]','#807060');
 }
 
 ++$test;

@@ -22,24 +22,23 @@ testGetAttribute('input.miff','base_filename','input.miff');
 testGetAttribute('input.miff','base_rows','46');
 
 ++$test;
-testGetAttribute('input.miff','class','PseudoClass');
+testGetAttribute('input.miff','class','DirectClass');
 
 ++$test;
-testGetAttribute('input.miff','colors','256');
+testGetAttribute('input.miff','colors','3019');
 
 ++$test;
 testGetAttribute('input.miff','columns','70');
 
 ++$test;
 testGetAttribute('input.miff','comment',q/
-This is a comment.
-/);
+This is a comment./);
 
 ++$test;
 testGetAttribute('input.miff','directory',undef);
 
 ++$test;
-testGetAttribute('input.miff','filesize','4145');
+testGetAttribute('input.miff','filesize','9869');
 
 ++$test;
 testGetAttribute('input.miff','gamma','0');
@@ -73,13 +72,13 @@ testGetAttribute('input.miff','normalized_mean','0');
 testGetAttribute('input.miff','rows','46');
 
 ++$test;
-testGetAttribute('input.miff','signature','12643c99ecf96cf1d7e8f5cc62b13c78');
+testGetAttribute('input.miff','signature','eb4d6e084afe2835a1ad28ad7fc12ced');
 
 ++$test;
 testGetAttribute('input.miff','text',undef);
 
 ++$test;
-testGetAttribute('input.miff','type','Palette');
+testGetAttribute('input.miff','type','Matte');
 
 ++$test;
 testGetAttribute('input.miff','units','undefined units');

@@ -28,7 +28,7 @@ print("Microsoft Windows bitmap image file ...\n");
 testReadWrite( 'BMP:input.bmp',
                'BMP:output.bmp',
                q//,
-               '12643c99ecf96cf1d7e8f5cc62b13c78');
+               'eb4d6e084afe2835a1ad28ad7fc12ced');
 
 print("Microsoft Windows 24-bit bitmap image file ...\n");
 ++$test;
@@ -57,22 +57,22 @@ print("Flexible Image Transport System ...\n");
 testReadWrite( 'FITS:input.fits',
                'FITS:output.fits',
                q//,
-               'ec5b1420c419973d9ca3c723ae265c98',
-               '76f33dda6073bf289333ee6383dea7ff' );
+               '27b8cea85c011f60024ff559096bd11f',
+               'f7aacb0efcd13dbd976fcee78568b2fc' );
 
 print("CompuServe graphics interchange format ...\n");
 ++$test;
 testReadWrite( 'GIF:input.gif',
                'GIF:output.gif',
                q//,
-               '863061c238e6d59e7926772d83c36611');
+               '45e5c63ac641eda9bedd4f42a7f6b4cd');
 
 print("CompuServe graphics interchange format (1987) ...\n");
 ++$test;
 testReadWrite( 'GIF87:input.gif87',
                'GIF87:output.gif87',
                q//,
-               '863061c238e6d59e7926772d83c36611');
+               '45e5c63ac641eda9bedd4f42a7f6b4cd');
 
 
 print("Magick image file format ...\n");
@@ -80,7 +80,7 @@ print("Magick image file format ...\n");
 testReadWrite( 'MIFF:input.miff',
                'MIFF:output.miff',
                q//,
-               '12643c99ecf96cf1d7e8f5cc62b13c78');
+               'eb4d6e084afe2835a1ad28ad7fc12ced');
 
 print("MTV Raytracing image format ...\n");
 ++$test;
@@ -133,7 +133,7 @@ print("Apple Macintosh QuickDraw/PICT file ...\n");
 testReadWrite( 'PICT:input.pict',
                'PICT:output.pict',
                q//,
-               '12643c99ecf96cf1d7e8f5cc62b13c78');
+               'eb4d6e084afe2835a1ad28ad7fc12ced');
 
 print("Portable pixmap format (color), ASCII format ...\n");
 ++$test;
@@ -162,8 +162,8 @@ print("Adobe Photoshop bitmap file ...\n");
 testReadWrite( 'PSD:input.psd',
                'PSD:output.psd',
                q//,
-               '12643c99ecf96cf1d7e8f5cc62b13c78',
-               '5e5437a2685e456b429c72686e5d93e4' );
+               'eb4d6e084afe2835a1ad28ad7fc12ced',
+               '2b8f2d03bc34dcd45e24439039aedeee' );
 
 print("Irix RGB image file ...\n");
 ++$test;
@@ -178,7 +178,7 @@ print("SUN 1-bit Rasterfile ...\n");
 testReadWrite( 'SUN:input.im1',
                'SUN:output.im1',
                q//,
-               'b2cc6cad5c66aae9140c96b74437c591');
+               'a93499e5e2d0e9ae717abbd4ddc994e9');
 
 
 print("SUN 8-bit Rasterfile ...\n");
@@ -186,7 +186,7 @@ print("SUN 8-bit Rasterfile ...\n");
 testReadWrite( 'SUN:input.im8',
                'SUN:output.im8',
                q//,
-               '12643c99ecf96cf1d7e8f5cc62b13c78');
+               '45e5c63ac641eda9bedd4f42a7f6b4cd');
 
 
 print("SUN True-Color Rasterfile ...\n");
@@ -211,21 +211,21 @@ print("Khoros Visualization image file ...\n");
 testReadWrite( 'VIFF:input.viff',
                'VIFF:output.viff',
                q//,
-               '12643c99ecf96cf1d7e8f5cc62b13c78');
+               'eb4d6e084afe2835a1ad28ad7fc12ced');
 
 print("X Windows system bitmap (black and white only) ...\n");
 ++$test;
 testReadWrite( 'XBM:input.xbm',
                'XBM:output.xbm',
                q//,
-               'b2cc6cad5c66aae9140c96b74437c591');
+               'a93499e5e2d0e9ae717abbd4ddc994e9');
 
 print("X Windows system pixmap file (color) ...\n");
 ++$test;
 testReadWrite( 'XPM:input.xpm',
                'XPM:output.xpm',
                q//,
-               '12643c99ecf96cf1d7e8f5cc62b13c78');
+               '45e5c63ac641eda9bedd4f42a7f6b4cd');
 
 
 print("X Windows system window dump file (color) ...\n");
@@ -243,8 +243,8 @@ testReadWriteSized( 'CMYK:input_70x46.cmyk',
 		    '70x46',
 		    8,
 		    q//,
-		    'a69ea409ec1962729ed7b5c6985619b6',
-                    '840c11bcfa1e39cb97589813dc139c28' );
+		    'eb059e77f4e55a08861e2ae8a13226c4',
+                    '728c947a8a7ff8148987f3fe5f26e63c' );
 
 
 print("GRAY format ...\n");
@@ -254,8 +254,8 @@ testReadWriteSized( 'GRAY:input_70x46.gray',
 		    '70x46',
 		    8,
 		    q//,
-		    'f0ad0e33df6ed019b9e15ee5e1741d16',
-                    'e62f2cea7aa5bf01fcb9417b0626dc2f' );
+		    '27b8cea85c011f60024ff559096bd11f',
+                    'a4abb1d900aeca891061e0a47543c079' );
 
 print("RGB format ...\n");
 ++$test;

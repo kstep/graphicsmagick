@@ -20,7 +20,7 @@ testRead( 'input.avs', 'eb4d6e084afe2835a1ad28ad7fc12ced');
 
 print("Microsoft Windows bitmap image file ...\n");
 ++$test;
-testRead( 'input.bmp', '12643c99ecf96cf1d7e8f5cc62b13c78');
+testRead( 'input.bmp', 'eb4d6e084afe2835a1ad28ad7fc12ced');
 
 print("Microsoft Windows 24-bit bitmap image file ...\n");
 ++$test;
@@ -36,16 +36,16 @@ testRead( 'input.dib', 'eb4d6e084afe2835a1ad28ad7fc12ced');
 
 print("Flexible Image Transport System ...\n");
 ++$test;
-testRead( 'input.fits', 'ec5b1420c419973d9ca3c723ae265c98',
-                        '4bbb09705c7a86e64d9e175be6623dd4' );
+testRead( 'input.fits', '27b8cea85c011f60024ff559096bd11f',
+                        'f7aacb0efcd13dbd976fcee78568b2fc' );
 
 print("CompuServe graphics interchange format ...\n");
 ++$test;
-testRead( 'input.gif', '863061c238e6d59e7926772d83c36611');
+testRead( 'input.gif', '45e5c63ac641eda9bedd4f42a7f6b4cd');
 
 print("CompuServe graphics interchange format (1987) ...\n");
 ++$test;
-testRead( 'input.gif87', '863061c238e6d59e7926772d83c36611');
+testRead( 'input.gif87', '45e5c63ac641eda9bedd4f42a7f6b4cd');
 
 print("GRADATION (gradual passing from one shade to another) ...\n");
 #
@@ -65,7 +65,7 @@ testRead( 'input.ico', '34bb7fe60a48c49caf559ffe317f52dd',
 
 print("Magick image file format ...\n");
 ++$test;
-testRead( 'input.miff', '12643c99ecf96cf1d7e8f5cc62b13c78');
+testRead( 'input.miff', 'eb4d6e084afe2835a1ad28ad7fc12ced');
 
 print("MTV Raytracing image format ...\n");
 ++$test;
@@ -111,7 +111,7 @@ testRead( 'input_p5.pgm', 'c49de394a410034d4682fb48384b5c1a');
 
 print("Apple Macintosh QuickDraw/PICT file ...\n");
 ++$test;
-testRead( 'input.pict', '12643c99ecf96cf1d7e8f5cc62b13c78',
+testRead( 'input.pict', 'eb4d6e084afe2835a1ad28ad7fc12ced',
                         'ca09fc4171ad27787da936baf4cddf5a' );
 
 print("Alias/Wavefront RLE image format ...\n");
@@ -128,8 +128,8 @@ testRead( 'input_p6.ppm', 'eb4d6e084afe2835a1ad28ad7fc12ced');
 
 print("Adobe Photoshop bitmap file ...\n");
 ++$test;
-testRead( 'input.psd', '12643c99ecf96cf1d7e8f5cc62b13c78',
-                       'ca09fc4171ad27787da936baf4cddf5a' );
+testRead( 'input.psd', 'eb4d6e084afe2835a1ad28ad7fc12ced',
+                       '2b8f2d03bc34dcd45e24439039aedeee' );
 
 print("Irix RGB image file ...\n");
 ++$test;
@@ -137,10 +137,10 @@ testRead( 'input.sgi', 'eb4d6e084afe2835a1ad28ad7fc12ced');
 
 print("SUN 1-bit Rasterfile ...\n");
 ++$test;
-testRead( 'input.im1', 'b2cc6cad5c66aae9140c96b74437c591');
+testRead( 'input.im1', 'a93499e5e2d0e9ae717abbd4ddc994e9');
 print("SUN 8-bit Rasterfile ...\n");
 ++$test;
-testRead( 'input.im8', '12643c99ecf96cf1d7e8f5cc62b13c78');
+testRead( 'input.im8', '45e5c63ac641eda9bedd4f42a7f6b4cd');
 print("SUN TrueColor Rasterfile ...\n");
 ++$test;
 testRead( 'input.im24', 'eb4d6e084afe2835a1ad28ad7fc12ced');
@@ -155,11 +155,11 @@ testRead( 'input.tim', 'b8ebf628b12284b891fcb9992c1539ee');
 
 print("Khoros Visualization image file ...\n");
 ++$test;
-testRead( 'input.viff', '12643c99ecf96cf1d7e8f5cc62b13c78');
+testRead( 'input.viff', 'eb4d6e084afe2835a1ad28ad7fc12ced');
 
 print("X Windows system bitmap (black and white only) ...\n");
 ++$test;
-testRead( 'input.xbm', 'b2cc6cad5c66aae9140c96b74437c591');
+testRead( 'input.xbm', 'a93499e5e2d0e9ae717abbd4ddc994e9');
 
 print("XC: Constant image of X server color ...\n");
 ++$test;
@@ -167,7 +167,7 @@ testRead( 'xc:black', '9ced1f90ef7fb266a7472cb70b7e6528');
 
 print("X Windows system pixmap file (color) ...\n");
 ++$test;
-testRead( 'input.xpm', '12643c99ecf96cf1d7e8f5cc62b13c78');
+testRead( 'input.xpm', '45e5c63ac641eda9bedd4f42a7f6b4cd');
 
 print("X Windows system window dump file (color) ...\n");
 ++$test;
@@ -179,7 +179,7 @@ print("TILE (Tile image with a texture) ...\n");
 # We will tile using the default image and a MIFF file
 #
 ++$test;
-testReadSized( 'TILE:input.miff', '140x92', 8, '79610a0f0d4dd5f5ae1c69607e881792');
+testReadSized( 'TILE:input.miff', '140x92', 8, '082708402284c8dc2a17314268ad2673');
 
 
 print("CMYK format ...\n");
@@ -187,7 +187,7 @@ print("CMYK format ...\n");
 testReadSized( 'input_70x46.cmyk',
 	       '70x46',
 	       8,
-	       'a69ea409ec1962729ed7b5c6985619b6',
+	       'eb059e77f4e55a08861e2ae8a13226c4',
 	       '840c11bcfa1e39cb97589813dc139c28');
 
 print("GRAY format ...\n");
@@ -195,7 +195,7 @@ print("GRAY format ...\n");
 testReadSized( 'input_70x46.gray',
 	       '70x46',
 	       8,
-	       'f0ad0e33df6ed019b9e15ee5e1741d16',
+	       '27b8cea85c011f60024ff559096bd11f',
 	       'e0b0d2607784a1b831024d66b9565b2c' );
 
 print("RGB format ...\n");
@@ -220,5 +220,5 @@ print("UYVY format ...\n");
 testReadSized( 'input_70x46.uyvy',
 	       '70x46',
 	       0,
-	       '8d77e402e2d3ce1bce884d7ab886af5b',
-	       'b8480eb8088e74023c12c75e6c0a23a7' );
+	       '3df974766f559b585c3e309f2c2c6bd4',
+	       '450c2d572452f553ab0d707840082e4d' );
