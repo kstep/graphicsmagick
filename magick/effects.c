@@ -1127,8 +1127,8 @@ Export Image *ImplodeImage(Image *image,const double factor)
       return((Image *) NULL);
     }
   implode_image->class=DirectClass;
-  if (!implode_image->matte)
-    MatteImage(implode_image,Opaque);
+  if (!image->matte)
+    MatteImage(image,Opaque);
   /*
     Compute scaling factor.
   */
@@ -2720,13 +2720,13 @@ Export Image *SwirlImage(Image *image,double degrees)
       return((Image *) NULL);
     }
   swirl_image->class=DirectClass;
-  if (!swirl_image->matte)
-    MatteImage(swirl_image,Opaque);
+  if (!image->matte)
+    MatteImage(image,Opaque);
   /*
     Compute scaling factor.
   */
-  x_center=(double) image->columns/2.0;
-  y_center=(double) image->rows/2.0;
+  x_center=image->columns/2.0;
+  y_center=image->rows/2.0;
   radius=Max(x_center,y_center);
   x_scale=1.0;
   y_scale=1.0;
@@ -2935,8 +2935,8 @@ Export Image *WaveImage(Image *image,const double amplitude,
       return((Image *) NULL);
     }
   wave_image->class=DirectClass;
-  if (!wave_image->matte)
-    MatteImage(wave_image,Opaque);
+  if (!image->matte)
+    MatteImage(image,Opaque);
   /*
     Allocate sine map.
   */
