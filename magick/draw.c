@@ -185,7 +185,7 @@ static void
 %
 */
 MagickExport inline PixelPacket AlphaComposite(const PixelPacket *p,
-	const double alpha,const PixelPacket *q,const double beta)
+  const double alpha,const PixelPacket *q,const double beta)
 {
   register double
     scale;
@@ -586,7 +586,7 @@ MagickExport unsigned int ColorFloodfillImage(Image *image,
 %
 */
 MagickExport inline unsigned int ColorMatch(const PixelPacket *p,
-	const PixelPacket *q,const double fuzz)
+  const PixelPacket *q,const double fuzz)
 {
   register double
     blue,
@@ -2742,9 +2742,9 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
       primitive_info[i].coordinates=0;
       primitive_info[i].method=FloodfillMethod;
       i++;
-      if (i < (long) (number_points-6*BezierQuantum-360))
+      if (i < (long) (number_points-MagickPI*360-6*BezierQuantum))
         continue;
-      number_points+=6*BezierQuantum+360;
+      number_points+=MagickPI*360+6*BezierQuantum;
       ReacquireMemory((void **) &primitive_info,
         number_points*sizeof(PrimitiveInfo));
       if (primitive_info == (PrimitiveInfo *) NULL)
@@ -3323,8 +3323,8 @@ static unsigned int DrawPolygonPrimitive(Image *image,const DrawInfo *draw_info,
     *pattern;
 
   long
-		start,
-		stop,
+    start,
+    stop,
     y;
 
   PathInfo
