@@ -2229,7 +2229,6 @@ MagickExport Image *SpreadImage(const Image *image,const unsigned int radius,
     offsets_index;
 
   long
-    quantum,
     x_distance,
     y,
     y_distance;

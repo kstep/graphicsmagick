@@ -58,6 +58,7 @@
 #include "studio.h"
 #include "cache.h"
 #include "utility.h"
+#include "monitor.h"
 #include "nt_feature.h"
 #define WIN32_LEAN_AND_MEAN
 #define VC_EXTRALEAN
@@ -95,13 +96,10 @@
 %
 %
 */
-MagickExport void *CropImageToHBITMAP(const Image *image,
+MagickExport void *CropImageToHBITMAP(Image *image,
   const RectangleInfo *geometry,ExceptionInfo *exception)
 {
 #define CropImageText  "  Crop image...  "
-
-  Image
-    *crop_image;
 
   long
     y;
@@ -111,10 +109,6 @@ MagickExport void *CropImageToHBITMAP(const Image *image,
 
   register const PixelPacket
     *p;
-
-  register IndexPacket
-    *crop_indexes,
-    *indexes;
 
   BITMAP
     bitmap;

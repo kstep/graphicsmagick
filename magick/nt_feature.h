@@ -17,7 +17,7 @@ extern MagickExport char
   *NTRegistryKeyLookup(const char *key);
 
 extern MagickExport void
-  *CropImageToHBITMAP(const Image *,const RectangleInfo *,ExceptionInfo *),
+  *CropImageToHBITMAP(Image *,const RectangleInfo *,ExceptionInfo *),
   *ImageToHBITMAP(Image* image);
 
 #if !defined(XS_VERSION)
