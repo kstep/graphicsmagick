@@ -50,125 +50,28 @@
 %
 */
 
-// 4 space tabs
-
 /*
   Include declarations.
 */
 #include "magick.h"
 #include "define.h"
-
-/*
-  Forward declarations.
-*/
-static unsigned int
-  WritePALMImage(const ImageInfo *,Image *);
-
+
 #define MIN(a,b) (a<b?a:b)
-#define PALM_IS_COMPRESSED_FLAG		0x8000
-#define PALM_HAS_COLORMAP_FLAG		0x4000
-#define PALM_HAS_TRANSPARENCY_FLAG	0x2000
-#define PALM_IS_INDIRECT			0x1000
-#define PALM_IS_FOR_SCREEN			0x0800
-#define PALM_IS_DIRECT_COLOR		0x0400
-#define PALM_HAS_FOUR_BYTE_FIELD	0x0200
+#define PALM_IS_COMPRESSED_FLAG    0x8000
+#define PALM_HAS_COLORMAP_FLAG    0x4000
+#define PALM_HAS_TRANSPARENCY_FLAG  0x2000
+#define PALM_IS_INDIRECT      0x1000
+#define PALM_IS_FOR_SCREEN      0x0800
+#define PALM_IS_DIRECT_COLOR    0x0400
+#define PALM_HAS_FOUR_BYTE_FIELD  0x0200
 
-#define PALM_COMPRESSION_SCANLINE	0x00
-#define PALM_COMPRESSION_RLE		0x01
-#define PALM_COMPRESSION_NONE		0xFF
-
+#define PALM_COMPRESSION_SCANLINE  0x00
+#define PALM_COMPRESSION_RLE    0x01
+#define PALM_COMPRESSION_NONE    0xFF
+
 /*
- * The 8bit-256 color system palette for Palm Computing Devices.
- */
-#if QuantumDepth == 16
-int PalmPalette8bpp[256][3] = 
-{{ 65535,  65535,  65535}, { 65535,  52428,  65535}, { 65535,  39321,  65535},
- { 65535,  26214,  65535}, { 65535,  13107,  65535}, { 65535,      0,  65535},
- { 65535,  65535,  52428}, { 65535,  52428,  52428}, { 65535,  39321,  52428},
- { 65535,  26214,  52428}, { 65535,  13107,  52428}, { 65535,      0,  52428},
- { 65535,  65535,  39321}, { 65535,  52428,  39321}, { 65535,  39321,  39321},
- { 65535,  26214,  39321}, { 65535,  13107,  39321}, { 65535,      0,  39321},
- { 52428,  65535,  65535}, { 52428,  52428,  65535}, { 52428,  39321,  65535},
- { 52428,  26214,  65535}, { 52428,  13107,  65535}, { 52428,      0,  65535},
- { 52428,  65535,  52428}, { 52428,  52428,  52428}, { 52428,  39321,  52428},
- { 52428,  26214,  52428}, { 52428,  13107,  52428}, { 52428,      0,  52428},
- { 52428,  65535,  39321}, { 52428,  52428,  39321}, { 52428,  39321,  39321},
- { 52428,  26214,  39321}, { 52428,  13107,  39321}, { 52428,      0,  39321},
- { 39321,  65535,  65535}, { 39321,  52428,  65535}, { 39321,  39321,  65535},
- { 39321,  26214,  65535}, { 39321,  13107,  65535}, { 39321,      0,  65535},
- { 39321,  65535,  52428}, { 39321,  52428,  52428}, { 39321,  39321,  52428},
- { 39321,  26214,  52428}, { 39321,  13107,  52428}, { 39321,      0,  52428},
- { 39321,  65535,  39321}, { 39321,  52428,  39321}, { 39321,  39321,  39321},
- { 39321,  26214,  39321}, { 39321,  13107,  39321}, { 39321,      0,  39321},
- { 26214,  65535,  65535}, { 26214,  52428,  65535}, { 26214,  39321,  65535},
- { 26214,  26214,  65535}, { 26214,  13107,  65535}, { 26214,      0,  65535},
- { 26214,  65535,  52428}, { 26214,  52428,  52428}, { 26214,  39321,  52428},
- { 26214,  26214,  52428}, { 26214,  13107,  52428}, { 26214,      0,  52428},
- { 26214,  65535,  39321}, { 26214,  52428,  39321}, { 26214,  39321,  39321},
- { 26214,  26214,  39321}, { 26214,  13107,  39321}, { 26214,      0,  39321},
- { 13107,  65535,  65535}, { 13107,  52428,  65535}, { 13107,  39321,  65535},
- { 13107,  26214,  65535}, { 13107,  13107,  65535}, { 13107,      0,  65535},
- { 13107,  65535,  52428}, { 13107,  52428,  52428}, { 13107,  39321,  52428},
- { 13107,  26214,  52428}, { 13107,  13107,  52428}, { 13107,      0,  52428},
- { 13107,  65535,  39321}, { 13107,  52428,  39321}, { 13107,  39321,  39321},
- { 13107,  26214,  39321}, { 13107,  13107,  39321}, { 13107,      0,  39321},
- {     0,  65535,  65535}, {     0,  52428,  65535}, {     0,  39321,  65535},
- {     0,  26214,  65535}, {     0,  13107,  65535}, {     0,      0,  65535},
- {     0,  65535,  52428}, {     0,  52428,  52428}, {     0,  39321,  52428},
- {     0,  26214,  52428}, {     0,  13107,  52428}, {     0,      0,  52428},
- {     0,  65535,  39321}, {     0,  52428,  39321}, {     0,  39321,  39321},
- {     0,  26214,  39321}, {     0,  13107,  39321}, {     0,      0,  39321},
- { 65535,  65535,  26214}, { 65535,  52428,  26214}, { 65535,  39321,  26214},
- { 65535,  26214,  26214}, { 65535,  13107,  26214}, { 65535,      0,  26214},
- { 65535,  65535,  13107}, { 65535,  52428,  13107}, { 65535,  39321,  13107},
- { 65535,  26214,  13107}, { 65535,  13107,  13107}, { 65535,      0,  13107},
- { 65535,  65535,      0}, { 65535,  52428,      0}, { 65535,  39321,      0},
- { 65535,  26214,      0}, { 65535,  13107,      0}, { 65535,      0,      0},
- { 52428,  65535,  26214}, { 52428,  52428,  26214}, { 52428,  39321,  26214},
- { 52428,  26214,  26214}, { 52428,  13107,  26214}, { 52428,      0,  26214},
- { 52428,  65535,  13107}, { 52428,  52428,  13107}, { 52428,  39321,  13107},
- { 52428,  26214,  13107}, { 52428,  13107,  13107}, { 52428,      0,  13107},
- { 52428,  65535,      0}, { 52428,  52428,      0}, { 52428,  39321,      0},
- { 52428,  26214,      0}, { 52428,  13107,      0}, { 52428,      0,      0},
- { 39321,  65535,  26214}, { 39321,  52428,  26214}, { 39321,  39321,  26214},
- { 39321,  26214,  26214}, { 39321,  13107,  26214}, { 39321,      0,  26214},
- { 39321,  65535,  13107}, { 39321,  52428,  13107}, { 39321,  39321,  13107},
- { 39321,  26214,  13107}, { 39321,  13107,  13107}, { 39321,      0,  13107},
- { 39321,  65535,      0}, { 39321,  52428,      0}, { 39321,  39321,      0},
- { 39321,  26214,      0}, { 39321,  13107,      0}, { 39321,      0,      0},
- { 26214,  65535,  26214}, { 26214,  52428,  26214}, { 26214,  39321,  26214},
- { 26214,  26214,  26214}, { 26214,  13107,  26214}, { 26214,      0,  26214},
- { 26214,  65535,  13107}, { 26214,  52428,  13107}, { 26214,  39321,  13107},
- { 26214,  26214,  13107}, { 26214,  13107,  13107}, { 26214,      0,  13107},
- { 26214,  65535,      0}, { 26214,  52428,      0}, { 26214,  39321,      0},
- { 26214,  26214,      0}, { 26214,  13107,      0}, { 26214,      0,      0},
- { 13107,  65535,  26214}, { 13107,  52428,  26214}, { 13107,  39321,  26214},
- { 13107,  26214,  26214}, { 13107,  13107,  26214}, { 13107,      0,  26214},
- { 13107,  65535,  13107}, { 13107,  52428,  13107}, { 13107,  39321,  13107},
- { 13107,  26214,  13107}, { 13107,  13107,  13107}, { 13107,      0,  13107},
- { 13107,  65535,      0}, { 13107,  52428,      0}, { 13107,  39321,      0},
- { 13107,  26214,      0}, { 13107,  13107,      0}, { 13107,      0,      0},
- {     0,  65535,  26214}, {     0,  52428,  26214}, {     0,  39321,  26214},
- {     0,  26214,  26214}, {     0,  13107,  26214}, {     0,      0,  26214},
- {     0,  65535,  13107}, {     0,  52428,  13107}, {     0,  39321,  13107},
- {     0,  26214,  13107}, {     0,  13107,  13107}, {     0,      0,  13107},
- {     0,  65535,      0}, {     0,  52428,      0}, {     0,  39321,      0},
- {     0,  26214,      0}, {     0,  13107,      0}, {  4369,   4369,   4369},
- {  8738,   8738,   8738}, { 17476,  17476,  17476}, { 21845,  21845,  21845},
- { 30583,  30583,  30583}, { 34952,  34952,  34952}, { 43690,  43690,  43690},
- { 48059,  48059,  48059}, { 56797,  56797,  56797}, { 61166,  61166,  61166},
- { 49344,  49344,  49344}, { 32896,      0,      0}, { 32896,      0,  32896},
- {     0,  32896,      0}, {     0,  32896,  32896}, {     0,      0,      0},
- {     0,      0,      0}, {     0,      0,      0}, {     0,      0,      0},
- {     0,      0,      0}, {     0,      0,      0}, {     0,      0,      0},
- {     0,      0,      0}, {     0,      0,      0}, {     0,      0,      0},
- {     0,      0,      0}, {     0,      0,      0}, {     0,      0,      0},
- {     0,      0,      0}, {     0,      0,      0}, {     0,      0,      0},
- {     0,      0,      0}, {     0,      0,      0}, {     0,      0,      0},
- {     0,      0,      0}, {     0,      0,      0}, {     0,      0,      0},
- {     0,      0,      0}, {     0,      0,      0}, {     0,      0,      0},
- {     0,      0,      0}};
-#else
+ The 8bit-256 color system palette for Palm Computing Devices.
+*/
 int PalmPalette8bpp[256][3] = 
  {{ 255, 255, 255 }, { 255, 204, 255 }, { 255, 153, 255 }, { 255, 102, 255 }, 
   { 255,  51, 255 }, { 255,   0, 255 }, { 255, 255, 204 }, { 255, 204, 204 }, 
@@ -234,7 +137,12 @@ int PalmPalette8bpp[256][3] =
   {   0,   0,   0 }, {   0,   0,   0 }, {   0,   0,   0 }, {   0,   0,   0 },
   {   0,   0,   0 }, {   0,   0,   0 }, {   0,   0,   0 }, {   0,   0,   0 },
   {   0,   0,   0 }, {   0,   0,   0 }, {   0,   0,   0 }, {   0,   0,   0 }};
-#endif
+
+/*
+  Forward declarations.
+*/
+static unsigned int
+  WritePALMImage(const ImageInfo *,Image *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -264,12 +172,13 @@ int PalmPalette8bpp[256][3] =
 */
 static int FindColor(PixelPacket *pixel)
 {
-  int i;
+  register int
+    i;
 
   for(i = 0; i < 256; i++)
-    if(pixel->red == PalmPalette8bpp[i][0]
-        && pixel->green == PalmPalette8bpp[i][1]
-        && pixel->blue == PalmPalette8bpp[i][2])
+    if (pixel->red == PalmPalette8bpp[i][0] &&
+        pixel->green == PalmPalette8bpp[i][1] &&
+        pixel->blue == PalmPalette8bpp[i][2])
       return i;
   return -1;
 }
@@ -291,7 +200,8 @@ static int FindColor(PixelPacket *pixel)
 %
 %  The format of the ReadPALMImage method is:
 %
-%      Image *ReadPALMImage(const ImageInfo *image_info,ExceptionInfo *exception)
+%      Image *ReadPALMImage(const ImageInfo *image_info,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -373,14 +283,14 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
   if (!AllocateImageColormap(image,1 << bpp))
     ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
 
-  if(bpp < 8 && flags & PALM_IS_COMPRESSED_FLAG)		/* compressed size */
+  if(bpp < 8 && flags & PALM_IS_COMPRESSED_FLAG)    /* compressed size */
     {
-    if(flags & PALM_HAS_FOUR_BYTE_FIELD)	/* big size */
+    if(flags & PALM_HAS_FOUR_BYTE_FIELD)  /* big size */
       size = ReadBlobMSBLong(image);
     else
       size = ReadBlobMSBShort(image);
     }
-  else	/* is color */
+  else  /* is color */
   if(bpp == 8)
     {
     i = 0;
@@ -631,16 +541,16 @@ static unsigned int WritePALMImage(const ImageInfo *image_info,Image *image)
   TransformRGBImage(image,RGBColorspace);
 
   for (bpp = 1;  (1 << bpp) < image->colors;  bpp *= 2)
-  	  ;
+      ;
 
-  if(!IsGrayImage(image, &exception))	/* is color */
+  if(!IsGrayImage(image, &exception))  /* is color */
     bpp = 8;
 
   (void) SortColormapByIntensity(image);
 
   /* Write Tbmp header. */
-  (void) WriteBlobMSBShort(image, image->columns);	/* width */
-  (void) WriteBlobMSBShort(image, image->rows );	/* height */
+  (void) WriteBlobMSBShort(image, image->columns);  /* width */
+  (void) WriteBlobMSBShort(image, image->rows );  /* height */
   /* bytes per row - always a word boundary */
   bytes_per_row = ((image->columns + (16 / bpp - 1)) / (16 / bpp)) * 2;
   (void) WriteBlobMSBShort(image, bytes_per_row);
@@ -657,8 +567,8 @@ static unsigned int WritePALMImage(const ImageInfo *image_info,Image *image)
       || image->compression == FaxCompression)
     version = 2;
   (void) WriteBlobByte(image,version);
-  (void) WriteBlobMSBShort(image, 0);	/* offset */
-  (void) WriteBlobByte(image,0);	/* trans index */
+  (void) WriteBlobMSBShort(image, 0);  /* offset */
+  (void) WriteBlobByte(image,0);  /* trans index */
   if(image->compression == RunlengthEncodedCompression)
     (void) WriteBlobByte(image, PALM_COMPRESSION_RLE);
   else
@@ -666,21 +576,21 @@ static unsigned int WritePALMImage(const ImageInfo *image_info,Image *image)
     (void) WriteBlobByte(image, PALM_COMPRESSION_SCANLINE);
   else
     (void) WriteBlobByte(image, PALM_COMPRESSION_NONE);
-  (void) WriteBlobMSBShort(image, 0);	/* reserved */
+  (void) WriteBlobMSBShort(image, 0);  /* reserved */
 
-  if(bpp < 8)	/* not color */
+  if(bpp < 8)  /* not color */
     {
-    if(flags & PALM_IS_COMPRESSED_FLAG)	/* compressed size */
+    if(flags & PALM_IS_COMPRESSED_FLAG)  /* compressed size */
       {
-      if(flags & PALM_HAS_FOUR_BYTE_FIELD)	/* big size */
+      if(flags & PALM_HAS_FOUR_BYTE_FIELD)  /* big size */
         WriteBlobMSBLong(image, 0);
       else
         WriteBlobMSBShort(image, 0);
       }
     }
-  else	/* is color */
+  else  /* is color */
     {
-    if(flags & PALM_HAS_COLORMAP_FLAG)	/* Write out colormap */
+    if(flags & PALM_HAS_COLORMAP_FLAG)  /* Write out colormap */
       {
       GetQuantizeInfo(&quantize_info);
       quantize_info.dither=image_info->dither;
@@ -695,19 +605,10 @@ static unsigned int WritePALMImage(const ImageInfo *image_info,Image *image)
         WriteBlobByte(image, Downscale(image->colormap[count].blue));
         }
       }
-    else	/* Map colors to Palm standard colormap */
+    else  /* Map colors to Palm standard colormap */
       {
-#if 0
-      for(count = 0; count < 256; count++)
-        {
-        PalmPalette8bpp[count][0] = Upscale(PalmPalette8bpp[count][0]);
-        PalmPalette8bpp[count][1] = Upscale(PalmPalette8bpp[count][1]);
-        PalmPalette8bpp[count][2] = Upscale(PalmPalette8bpp[count][2]);
-printf("{%6d, %6d, %6d},\n", PalmPalette8bpp[count][0], PalmPalette8bpp[count][1], PalmPalette8bpp[count][2]);
-        }
-#endif
       map = ConstituteImage(256, 1, "RGB", IntegerPixel,
-											&PalmPalette8bpp, &exception);
+                      &PalmPalette8bpp, &exception);
       SetImageType(map, PaletteType);
       MapImage(image, map, False);
       for(y = 0; y < image->rows; y++)
@@ -773,7 +674,7 @@ printf("{%6d, %6d, %6d},\n", PalmPalette8bpp[count][0], PalmPalette8bpp[count][1
         }
       }
     else
-    if(image->compression == FaxCompression)	/* Scanline really */
+    if(image->compression == FaxCompression)  /* Scanline really */
       {
       char tmpbuf[8];
       char *tptr;
@@ -802,7 +703,7 @@ printf("{%6d, %6d, %6d},\n", PalmPalette8bpp[count][0], PalmPalette8bpp[count][1
 
   if(bpp < 8 && flags & PALM_IS_COMPRESSED_FLAG)
     {
-    count = SizeBlob(image);	/* compressed size */
+    count = SizeBlob(image);  /* compressed size */
     SeekBlob(image, 16, SEEK_SET);
     if(flags & PALM_HAS_FOUR_BYTE_FIELD)
       (void) WriteBlobMSBLong(image, count - 16);
