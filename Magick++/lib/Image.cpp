@@ -1317,6 +1317,15 @@ Magick::Color Magick::Image::boxColor ( void ) const
   return constOptions()->boxColor( );
 }
 
+// Pixel cache threshold.  Once this threshold is exceeded, all
+// subsequent pixels cach operations are to/from disk.
+// This setting is shared by all Image objects.
+/* static */
+void Magick::Image::cacheThreshold ( unsigned int threshold_ )
+{
+  MagickLib::SetCacheThreshold( threshold_ );
+}
+
 void Magick::Image::chromaBluePrimary ( float x_, float y_ )
 {
   modifyImage();

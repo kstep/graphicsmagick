@@ -420,6 +420,11 @@ namespace Magick
     // Text bounding-box base color (default none)
     void            boxColor ( const Color &boxColor_ );
     Color           boxColor ( void ) const;
+
+    // Pixel cache threshold.  Once this threshold is exceeded, all
+    // subsequent pixels cache operations are to/from disk.
+    // This setting is shared by all Image objects.
+    static void     cacheThreshold ( unsigned int threshold_ );
     
     // Chromaticity blue primary point (e.g. x=0.15, y=0.06)
     void            chromaBluePrimary ( float x_, float y_ );
@@ -559,12 +564,6 @@ namespace Magick
     // The normalized mean error per pixel computed when an image is
     // color reduced.
     double          normalizedMeanError ( void ) const;
-
-    // The number of runlength-encoded packets in the image
-//     unsigned int    packets ( void ) const;
-
-    // The number of bytes in each pixel packet
-//     unsigned int    packetSize ( void ) const;
 
     // Pen color
     void            penColor ( const Color &penColor_ );

@@ -177,8 +177,8 @@ namespace Magick
     
   private:
     
-    // Not supported
-    Options operator=(const Options&);
+    // Assignment not supported
+    Options operator= ( const Options& );
     
     ImageInfo*        _imageInfo;
     QuantizeInfo*     _quantizeInfo;

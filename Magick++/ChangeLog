@@ -1,3 +1,11 @@
+1999-11-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Image.cpp (cacheThreshold): New method to set the pixel
+ 	cache threshold.
+
+	* lib/Magick++/Include.h (Magick): Added new enumerations from
+ 	classify.h.
+
 1999-10-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Magick++/Options.h (fontPointsize): Argument is now a double
