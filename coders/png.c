@@ -1322,6 +1322,10 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *image;
 
   int
+    have_mng_structure,
+    num_text;
+
+  volatile int
     have_global_bkgd,
     have_global_chrm,
     have_global_gama,
@@ -1329,8 +1333,6 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     have_global_sbit,
     have_global_srgb,
     first_mng_object,
-    have_mng_structure,
-    num_text,
     object_id,
 #if (QuantumDepth == 16)
     optimize,
@@ -1339,9 +1341,11 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     skip_to_iend;
 
   long
-    image_count = 0,
-    image_found,
     y;
+
+  volatile long
+    image_count = 0,
+    image_found;
 
   MngInfo
     *mng_info;
@@ -1354,7 +1358,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image_box,
     previous_fb;
 
-  PixelPacket
+  volatile PixelPacket
     mng_background_color,
     mng_global_bkgd,
     transparent_color;
@@ -1386,7 +1390,9 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   short
     loop_level,
-    loops_active,
+    loops_active;
+
+  volatile short
     skipping_loop;
 
   unsigned char
@@ -1394,26 +1400,30 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     **scanlines;
 
   unsigned int
-    framing_mode = 1,
     mandatory_back = 0,
+    status;
+
+  volatile unsigned int
+    framing_mode = 1,
 #ifdef MNG_OBJECT_BUFFERS
     mng_background_object = 0,
 #endif
-    mng_type = 0,   /* 0: PNG; 1: MNG; 2: MNG-LC; 3: MNG-VLC */
-    status;
+    mng_type = 0;   /* 0: PNG; 1: MNG; 2: MNG-LC; 3: MNG-VLC */
 
   unsigned long
-    default_frame_delay,
     default_frame_timeout,
-    final_delay,
-    frame_delay,
     frame_timeout,
-    global_plte_length,
-    global_trns_length,
     image_height,
     image_width,
+    length;
+
+  volatile unsigned long
+    default_frame_delay,
+    final_delay,
+    frame_delay,
+    global_plte_length,
+    global_trns_length,
     insert_layers,
-    length,
     mng_height = 0,
     mng_iterations=0,
     mng_width = 0,
@@ -1616,7 +1626,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
         if (!memcmp(type,mng_MHDR,4))
           {
-            MngPair
+            volatile MngPair
                pair;
 
             pair.a=0;
@@ -1732,7 +1742,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             */
             if (length>11)
               {
-                MngPair
+                volatile MngPair
                   pair;
 
                 pair.a=0;
@@ -2089,7 +2099,9 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
               if (mng_info->exists[i] && !mng_info->frozen[i])
                 {
                   MngPair
-                    new_pair,
+                    new_pair;
+
+                  volatile MngPair
                     old_pair;
 
                   old_pair.a=mng_info->x_off[i];
@@ -2540,6 +2552,8 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         */
         (void) SeekBlob(image,-((long) length+12),SEEK_CUR);
       }
+
+/* Read one PNG image */
 
     /*
       Allocate the PNG structures
@@ -3447,6 +3461,9 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     png_destroy_read_struct(&ping,&ping_info,&end_info);
     LiberateMemory((void **) &png_pixels);
     LiberateMemory((void **) &scanlines);
+
+/* end of reading one PNG image */
+
     if (mng_type)
       {
         MngBox
@@ -3906,7 +3923,6 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
       }
 #endif
-
       CatchImageException(image);
   } while (LocaleCompare(image_info->magick,"MNG") == 0);
   if (insert_layers && !image_found && (mng_width) && (mng_height))
@@ -4309,6 +4325,14 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     *next_image;
 
   int
+    equal_chrms,
+    equal_gammas,
+    equal_srgbs,
+    image_count,
+    need_iterations,
+    need_matte;
+
+  volatile int
 #if defined(PNG_WRITE_EMPTY_PLTE_SUPPORTED) || \
     defined(PNG_MNG_FEATURES_SUPPORTED)
     equal_palettes,
@@ -4316,20 +4340,14 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
 #endif
     all_images_are_gray,
     equal_backgrounds=True,
-    equal_chrms,
-    equal_gammas,
     equal_physs=True,
-    equal_srgbs,
     framing_mode,
     have_write_global_chrm,
     have_write_global_gama,
     have_write_global_plte,
     have_write_global_srgb,
-    image_count,
     need_defi,
     need_fram,
-    need_iterations,
-    need_matte,
     old_framing_mode,
     use_global_plte;
 
@@ -4342,11 +4360,8 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
   register IndexPacket
     *indexes;
 
-  register long
+  volatile register long
     x=0;
-
-  register const PixelPacket
-    *p=NULL;
 
   register long
     i;
@@ -4366,17 +4381,21 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     **scanlines;
 
   unsigned int
-    adjoin,
     matte,
-    optimize,
-    scene,
     status;
+  
+  volatile unsigned int
+    adjoin,
+    optimize,
+    scene;
 
   unsigned long
-    delay,
     final_delay=0,
     initial_delay,
-    save_image_depth,
+    save_image_depth;
+  
+  volatile unsigned long
+    delay,
     ticks_per_second=0;
 
 #if (PNG_LIBPNG_VER < 10007)
@@ -5007,6 +5026,9 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
       ping_info->color_type=PNG_COLOR_TYPE_RGB_ALPHA;
     if (matte && (optimize || IsPseudo))
       {
+        register const PixelPacket
+          *p=NULL;
+
         ping_info->color_type=PNG_COLOR_TYPE_GRAY_ALPHA;
         for (y=0; y < (long) image->rows; y++)
         {
@@ -5231,6 +5253,9 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
                ping_info->trans[i]=255;
             for (y=0; y < (long) image->rows; y++)
             {
+              register const PixelPacket
+                *p=NULL;
+
               p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
               if (p == (const PixelPacket *) NULL)
                 break;

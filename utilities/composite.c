@@ -97,7 +97,7 @@
 /*
   Typedef declarations.
 */
-typedef struct _CompositeOptionInfo
+typedef struct _OptionInfo
 {
   char
     *displace_geometry,
@@ -120,7 +120,7 @@ typedef struct _CompositeOptionInfo
   unsigned int
     stereo,
     tile;
-} CompositeOptionInfo;
+} OptionInfo;
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -138,32 +138,31 @@ typedef struct _CompositeOptionInfo
 %
 %  The format of the CompositeImages method is:
 %
-%      unsigned int CompositeImages(const ImageInfo *image_info,const int argc,
-%        char **argv,Image **image,CompositeOptionInfo *option_info,
-%        ExceptionInfo *exception)
+%      unsigned int CompositeImages(const ImageInfo *image_info,
+%        OptionInfo *option_info,const int argc,char **argv,
+%        Image *composite_image,Image *mask_image,Image **image)
 %
 %  A description of each parameter follows:
 %
 %    o image_info: The image info..
 %
-%    o argc: Specifies a pointer to an integer describing the number of
-%      elements in the argument vector.
+%    o option_info: The option info.
 %
-%    o argv: Specifies a pointer to a text array containing the command line
-%      arguments.
+%    o argc: The number of elements in the argument vector.
 %
-%    o images: The image; returned from ReadImage.
+%    o argv: A text array containing the command line arguments.
 %
-%    o option_info: A pointer to a structure containing a set of flags that
-%      control how the images are written.
+%    o composite_image: The composite image.
 %
-%    o exception: Return any errors or warnings in this structure.
+%    o mask_image: The mask image.
+%
+%    o image: The image.
 %
 %
 */
-static unsigned int CompositeImages(ImageInfo *image_info,const int argc,
-  char **argv,Image **image,Image *composite_image,Image *mask_image,
-  CompositeOptionInfo *option_info,ExceptionInfo *exception)
+static unsigned int CompositeImages(ImageInfo *image_info,
+  OptionInfo *option_info,const int argc,char **argv,Image *composite_image,
+  Image *mask_image,Image **image)
 {
   long
     x,
@@ -250,7 +249,7 @@ static unsigned int CompositeImages(ImageInfo *image_info,const int argc,
         *stego_image;
 
       (*image)->offset=option_info->stegano-1;
-      stego_image=SteganoImage(*image,composite_image,exception);
+      stego_image=SteganoImage(*image,composite_image,&(*image)->exception);
       if (stego_image != (Image *) NULL)
         {
           DestroyImages(*image);
@@ -263,7 +262,7 @@ static unsigned int CompositeImages(ImageInfo *image_info,const int argc,
         Image
           *stereo_image;
 
-        stereo_image=StereoImage(*image,composite_image,exception);
+        stereo_image=StereoImage(*image,composite_image,&(*image)->exception);
         if (stereo_image != (Image *) NULL)
           {
             DestroyImages(*image);
@@ -500,7 +499,7 @@ int main(int argc,char **argv)
   long
     x;
 
-  CompositeOptionInfo
+  OptionInfo
     option_info;
 
   register int
@@ -534,9 +533,9 @@ int main(int argc,char **argv)
   /*
     Set default.
   */
-  memset(&option_info,0,sizeof(CompositeOptionInfo));
+  memset(&option_info,0,sizeof(OptionInfo));
   option_info.dissolve=0.0;
-  option_info.compose=CopyCompositeOp;
+  option_info.compose=OverCompositeOp;
   composite_image=(Image *) NULL;
   option_info.displace_geometry=(char *) NULL;
   GetExceptionInfo(&exception);
@@ -803,14 +802,13 @@ int main(int argc,char **argv)
             }
           if (LocaleCompare("displace",option+1) == 0)
             {
-              (void) CloneString(&(option_info.displace_geometry),
-                (char *) NULL);
+              (void) CloneString(&option_info.displace_geometry,(char *) NULL);
               if (*option == '-')
                 {
                   i++;
                   if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
                     MagickError(OptionError,"Missing geometry",option);
-                  (void) CloneString(&(option_info.displace_geometry),argv[i]);
+                  (void) CloneString(&option_info.displace_geometry,argv[i]);
                   option_info.compose=DisplaceCompositeOp;
                 }
               break;
@@ -874,13 +872,13 @@ int main(int argc,char **argv)
         {
           if (LocaleCompare("geometry",option+1) == 0)
             {
-              (void) CloneString(&(option_info.geometry),(char *) NULL);
+              (void) CloneString(&option_info.geometry,(char *) NULL);
               if (*option == '-')
                 {
                   i++;
                   if ((i == argc) || !IsGeometry(argv[i]))
                     MagickError(OptionError,"Missing geometry",option);
-                  (void) CloneString(&(option_info.geometry),argv[i]);
+                  (void) CloneString(&option_info.geometry,argv[i]);
                 }
               break;
             }
@@ -1089,9 +1087,8 @@ int main(int argc,char **argv)
                       if (clone_image == (Image *) NULL)
                         MagickError(OptionError,"Missing an image file name",
                           (char *) NULL);
-                      status=CompositeImages(clone_info,i-j+2,argv+j-1,
-                        &clone_image,composite_image,mask_image,
-                          &option_info,&exception);
+                      status=CompositeImages(clone_info,&option_info,i-j+2,
+                        argv+j-1,composite_image,mask_image,&clone_image);
                       DestroyImages(clone_image);
                       DestroyImageInfo(clone_info);
                       j=i+1;
@@ -1109,9 +1106,8 @@ int main(int argc,char **argv)
                         if (image == (Image *) NULL)
                           MagickError(OptionError,"Missing source image",
                             (char *) NULL);
-                        status=CompositeImages(image_info,i-j+2,argv+j-1,
-                          &image,composite_image,mask_image,
-                            &option_info,&exception);
+                        status=CompositeImages(image_info,&option_info,i-j+2,
+                          argv+j-1,composite_image,mask_image,&image);
                         j=i+1;
                       }
                   }
@@ -1195,13 +1191,13 @@ int main(int argc,char **argv)
         {
           if (LocaleCompare("unsharp",option+1) == 0)
             {
-              (void) CloneString(&(option_info.unsharp_geometry),(char *) NULL);
+              (void) CloneString(&option_info.unsharp_geometry,(char *) NULL);
               if (*option == '-')
                 {
                   i++;
                   if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
                     MagickError(OptionError,"Missing geometry",option);
-                  (void) CloneString(&(option_info.unsharp_geometry),argv[i]);
+                  (void) CloneString(&option_info.unsharp_geometry,argv[i]);
                   option_info.compose=ThresholdCompositeOp;
                 }
               break;
@@ -1223,14 +1219,13 @@ int main(int argc,char **argv)
         {
           if (LocaleCompare("watermark",option+1) == 0)
             {
-              (void) CloneString(&(option_info.watermark_geometry),
-                (char *) NULL);
+              (void) CloneString(&option_info.watermark_geometry,(char *) NULL);
               if (*option == '-')
                 {
                   i++;
                   if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
                     MagickError(OptionError,"Missing geometry",option);
-                  (void) CloneString(&(option_info.watermark_geometry),argv[i]);
+                  (void) CloneString(&option_info.watermark_geometry,argv[i]);
                   option_info.compose=ModulateCompositeOp;
                 }
               break;
@@ -1253,8 +1248,16 @@ int main(int argc,char **argv)
   if ((i != (argc-1)) || (image == (Image *) NULL) ||
       (composite_image == (Image *) NULL))
     MagickError(OptionError,"Missing an image file name",(char *) NULL);
-  status=CompositeImages(image_info,argc-j+1,argv+j-1,&image,
-    composite_image,mask_image,&option_info,&exception);
+  status=CompositeImages(image_info,&option_info,argc-j+1,argv+j-1,
+    composite_image,mask_image,&image);
+  if (option_info.displace_geometry != (char *) NULL)
+    LiberateMemory((void **) &option_info.displace_geometry);
+  if (option_info.geometry != (char *) NULL)
+    LiberateMemory((void **) &option_info.geometry);
+  if (option_info.unsharp_geometry != (char *) NULL)
+    LiberateMemory((void **) &option_info.unsharp_geometry);
+  if (option_info.watermark_geometry != (char *) NULL)
+    LiberateMemory((void **) &option_info.watermark_geometry);
   DestroyImages(image);
   DestroyImageInfo(image_info);
   if (LocaleCompare("-composite",argv[0]) == 0)
