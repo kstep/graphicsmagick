@@ -1366,6 +1366,51 @@ static int IsDirectory(const char *filename)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
++     I s G e o m e t r y                                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method IsGeometry returns True if the geometry specification is valid
+%  as determined by ParseGeometry.
+%
+%  The format of the IsGeometry method is:
+%
+%      unsigned int IsGeometry(const char *geometry)
+%
+%  A description of each parameter follows:
+%
+%    o status: Method IsGeometry returns True if the geometry specification
+%      is valid otherwise False is returned.
+%
+%    o geometry: This string is the geometry specification.
+%
+%
+*/
+MagickExport unsigned int IsGeometry(const char *geometry)
+{
+  long
+    x,
+    y;
+
+  unsigned int
+    flags;
+
+  unsigned long
+    height,
+    width;
+
+  if (geometry == (const char *) NULL)
+    return(False);
+  flags=GetGeometry(geometry,&x,&y,&width,&height);
+  return(flags != NoValue);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
 %                                                                             %
 %   L i s t F i l e s                                                         %
 %                                                                             %

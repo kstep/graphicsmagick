@@ -1922,7 +1922,7 @@ MagickExport void DescribeImage(Image *image,FILE *file,
   if ((image->magick_columns != 0) || (image->magick_rows != 0))
     if ((image->magick_columns != image->columns) ||
         (image->magick_rows != image->rows))
-      (void) fprintf(file,"  Base Geometry: %lux%lu\n",image->magick_columns,
+      (void) fprintf(file,"  Base geometry: %lux%lu\n",image->magick_columns,
         image->magick_rows);
   (void) fprintf(file,"  Type: ");
   switch (GetImageType(image,&image->exception))
@@ -2166,7 +2166,7 @@ MagickExport void DescribeImage(Image *image,FILE *file,
       image->generic_profile[i].length);
   }
   if ((image->tile_info.width*image->tile_info.height) != 0)
-    (void) fprintf(file,"  Tile Geometry: %lux%lu%+ld%+ld\n",
+    (void) fprintf(file,"  Tile geometry: %lux%lu%+ld%+ld\n",
       image->tile_info.width,image->tile_info.height,image->tile_info.x,
       image->tile_info.y);
   if ((image->x_resolution != 0.0) && (image->y_resolution != 0.0))
@@ -2218,7 +2218,7 @@ MagickExport void DescribeImage(Image *image,FILE *file,
     &image->exception);
   (void) fprintf(file,"  Matte Color: %.1024s\n",color);
   if ((image->page.width != 0) && (image->page.height != 0))
-    (void) fprintf(file,"  Page Geometry: %lux%lu%+ld%+ld\n",image->page.width,
+    (void) fprintf(file,"  Page geometry: %lux%lu%+ld%+ld\n",image->page.width,
       image->page.height,image->page.x,image->page.y);
   if (image->dispose != 0)
     (void) fprintf(file,"  Dispose Method: %lu\n",image->dispose);
@@ -2737,8 +2737,8 @@ MagickExport unsigned long GetImageDepth(const Image *image,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetImageGeometry() returns a region as defined by the geometry specification
-%  with respect to the image gravity.
+%  GetImageGeometry() returns a region as defined by the geometry string with
+%  respect to the image and its gravity.
 %
 %  The format of the GetImageGeometry method is:
 %
@@ -2747,16 +2747,16 @@ MagickExport unsigned long GetImageDepth(const Image *image,
 %
 %  A description of each parameter follows:
 %
-%    o flags:  Method GetGeometry returns a bitmask that indicates
+%    o flags:  Method GetImageGeometry returns a bitmask that indicates
 %      which of the four values were located in the geometry string.
 %
-%    o geometry:  The geometry specification (e.g. 100x100+10+10).
+%    o geometry:  The geometry  (e.g. 100x100+10+10).
 %
-%    o size_to_fit:  A value other than 0 means to interpet any width/height
-%      values as a maximum.
+%    o size_to_fit:  A value other than 0 means to scale the region so it
+%      fits within the specified width and height.
 %
-%    o region_info: The region as defined by the geometry specification and
-%      the image gravity.
+%    o region_info: The region as defined by the geometry string with
+%      respect to the image and its gravity.
 %
 %
 */
@@ -3030,51 +3030,6 @@ MagickExport unsigned int GradientImage(Image *image,
       MagickMonitor(LoadImageText,y,image->rows);
   }
   return(True);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-+     I s G e o m e t r y                                                     %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method IsGeometry returns True if the geometry specification is valid
-%  as determined by ParseGeometry.
-%
-%  The format of the IsGeometry method is:
-%
-%      unsigned int IsGeometry(const char *geometry)
-%
-%  A description of each parameter follows:
-%
-%    o status: Method IsGeometry returns True if the geometry specification
-%      is valid otherwise False is returned.
-%
-%    o geometry: This string is the geometry specification.
-%
-%
-*/
-MagickExport unsigned int IsGeometry(const char *geometry)
-{
-  long
-    x,
-    y;
-
-  unsigned int
-    flags;
-
-  unsigned long
-    height,
-    width;
-
-  if (geometry == (const char *) NULL)
-    return(False);
-  flags=GetGeometry(geometry,&x,&y,&width,&height);
-  return(flags != NoValue);
 }
 
 /*
@@ -3451,7 +3406,6 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
         quantize_info.colorspace=GRAYColorspace;
       }
   region_image=(Image *) NULL;
-  SetGeometry(*image,&region_geometry);
   /*
     Transmogrify the image.
   */
@@ -3460,7 +3414,6 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
     option=argv[i];
     if ((strlen(option) <= 1) || ((*option != '-') && (*option != '+')))
       continue;
-    SetGeometry(*image,&geometry);
     switch (*(option+1))
     {
       case 'a':

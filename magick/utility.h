@@ -60,7 +60,8 @@ extern MagickExport unsigned int
   CloneString(char **,const char *),
   ConcatenateString(char **,const char *),
   ExpandFilenames(int *,char ***),
-  IsAccessible(const char *);
+  IsAccessible(const char *),
+	IsGeometry(const char *);
 
 extern MagickExport unsigned long
   MultilineCensus(const char *);
