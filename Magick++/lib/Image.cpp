@@ -1448,6 +1448,7 @@ void Magick::Image::write( const std::string &imageSpec_ )
 // Write image to in-memory BLOB
 void Magick::Image::write ( Blob *blob_ )
 {
+  modifyImage();
   size_t length = 2048; // Efficient size for small images
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
@@ -1462,6 +1463,7 @@ void Magick::Image::write ( Blob *blob_ )
 void Magick::Image::write ( Blob *blob_,
 			    const std::string &magick_ )
 {
+  modifyImage();
   magick(magick_);
   size_t length = 2048; // Efficient size for small images
   ExceptionInfo exceptionInfo;
@@ -1478,6 +1480,7 @@ void Magick::Image::write ( Blob *blob_,
 			    const std::string &magick_,
 			    unsigned int depth_ )
 {
+  modifyImage();
   magick(magick_);
   depth(depth_);
   size_t length = 2048; // Efficient size for small images
