@@ -11,7 +11,6 @@
 ; Release documentation files
 Source: "..\..\ChangeLog"; DestDir: "{app}"; Flags: ignoreversion; DestName: "ChangeLog.txt"
 Source: "..\..\Copyright.txt"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\..\QuickStart.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\..\README.txt"; DestDir: "{app}"; Flags: ignoreversion
 ; Web pages
 Source: "..\..\index.html"; DestDir: "{app}"; Flags: ignoreversion isreadme
