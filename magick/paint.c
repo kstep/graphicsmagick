@@ -193,7 +193,9 @@ MagickExport unsigned int ColorFloodfillImage(Image *image,
   /*
     Set floodfill color.
   */
-  if (FuzzyColorMatch(&draw_info->fill,&target,image->fuzz))
+  pattern=draw_info->fill_pattern;
+  if ((pattern == (Image *) NULL) &&
+      FuzzyColorMatch(&draw_info->fill,&target,image->fuzz))
     return(False);
   floodplane=(unsigned char *) AcquireMemory(image->columns*image->rows);
   segment_stack=(SegmentInfo *) AcquireMemory(MaxStacksize*sizeof(SegmentInfo));
@@ -238,7 +240,8 @@ MagickExport unsigned int ColorFloodfillImage(Image *image,
         }
       else
         if (FuzzyColorMatch(q,&target,image->fuzz) ||
-            FuzzyColorMatch(q,&draw_info->fill,image->fuzz))
+            ((pattern == (Image *) NULL) &&
+             FuzzyColorMatch(q,&draw_info->fill,image->fuzz)))
           break;
       floodplane[y*image->columns+x]=True;
       *q=draw_info->fill;
@@ -272,7 +275,8 @@ MagickExport unsigned int ColorFloodfillImage(Image *image,
                   }
                 else
                   if (FuzzyColorMatch(q,&target,image->fuzz) ||
-                      FuzzyColorMatch(q,&draw_info->fill,image->fuzz))
+                      ((pattern == (Image *) NULL) &&
+                       FuzzyColorMatch(q,&draw_info->fill,image->fuzz)))
                     break;
                 floodplane[y*image->columns+x]=True;
                 *q=draw_info->fill;
@@ -301,7 +305,8 @@ MagickExport unsigned int ColorFloodfillImage(Image *image,
               }
             else
               if (!FuzzyColorMatch(q,&target,image->fuzz) &&
-                  !FuzzyColorMatch(q,&draw_info->fill,image->fuzz))
+                  ((pattern != (Image *) NULL) || 
+                   !FuzzyColorMatch(q,&draw_info->fill,image->fuzz)))
                 break;
             q++;
           }
@@ -309,7 +314,6 @@ MagickExport unsigned int ColorFloodfillImage(Image *image,
       start=x;
     } while (x <= x2);
   }
-  pattern=draw_info->fill_pattern;
   if (pattern == (Image *) NULL)
     for (y=0; y < (long) image->rows; y++)
     {

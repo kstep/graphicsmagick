@@ -1185,6 +1185,13 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
     }
     LiberateMemory((void **) &values);
     (void) ReadBlobByte(image);
+
+    LogMagickEvent(CoderEvent,GetMagickModule(),
+      "class=%sClass compression=%s matte=%s columns=%lu rows=%lu depth=%lu",
+      ClassTypeToString(image->storage_class),
+      CompressionTypeToString(image->compression),
+      image->matte ? "True" : "False",image->columns, image->rows, image->depth);
+
     /*
       Verify that required image information is defined.
     */
@@ -1192,13 +1199,9 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
         (image->storage_class == UndefinedClass) ||
         (image->compression == UndefinedCompression) || (image->columns == 0) ||
         (image->rows == 0))
-      ThrowReaderException(CorruptImageError,"ImproperImageHeader",image);
+      ThrowReaderException(CorruptImageError,"ImproperImageHeader",
+        image);
 
-    LogMagickEvent(CoderEvent,GetMagickModule(),
-      "class=%sClass compression=%s matte=%s columns=%lu rows=%lu depth=%lu",
-      ClassTypeToString(image->storage_class),
-      CompressionTypeToString(image->compression),
-      image->matte ? "True" : "False",image->columns, image->rows, image->depth);
     if (image->montage != (char *) NULL)
       {
         register char
@@ -1354,7 +1357,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
     if (image->matte)
       packet_size+=image->depth/8;
     if (image->compression == RLECompression)
-      packet_size+=image->depth/8;
+      packet_size++;
     pixels=(unsigned char *) AcquireMemory(packet_size*image->columns);
     length=(size_t) (1.01*packet_size*image->columns+600);
     compress_pixels=(unsigned char *) AcquireMemory(length);

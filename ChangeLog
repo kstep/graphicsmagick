@@ -1,3 +1,16 @@
+2003-02-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/miff.c (ReadMIFFImage): RLE packet size was not
+	calculated correctly, causing RLE-compressed MIFF images with
+	depth>8 to not be read.
+
+2003-02-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/paint.c (ColorFloodfillImage): Transfered fix from
+	ImageMagick for the problem that floodfill using a tiled image
+	failed if the target color happened to match the current fill
+	color.
+
 2003-02-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/command.c: Fixed preview error message.

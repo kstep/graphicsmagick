@@ -19,14 +19,17 @@
 # Copyright (C) 2002 GraphicsMagick Group, an organization dedicated
 # to making software imaging solutions freely available.
 #
-# Permission is hereby granted, free of charge, to any person obtaining a
-# copy of this software and associated documentation files ("Open
-# ImageMagick"), to deal in GraphicsMagick without restriction,
+# Copyright (C) 2002 GraphicsMagick Group, an organization dedicated
+# to making software imaging solutions freely available.
+#
+# Permission is hereby granted, free of charge, to any person obtaining
+# a copy of this software and associated documentation files
+# ("GraphicsMagick"), to deal in GraphicsMagick without restriction,
 # including without limitation the rights to use, copy, modify, merge,
-# publish, distribute, sublicense, and/or sell copies of ImageMagick, and
-# to permit persons to whom GraphicsMagick is furnished to do so,
+# publish, distribute, sublicense, and/or sell copies of GraphicsMagick,
+# and to permit persons to whom GraphicsMagick is furnished to do so,
 # subject to the following conditions:
-# 
+#
 # The above copyright notice and this permission notice shall be included
 # in all copies or substantial portions of GraphicsMagick.
 #
@@ -383,10 +386,10 @@ LIBMAGICK = ../magick/libGraphicsMagick.la
 pkgdir = @MagickModulesPath@
 
 # Architecture-dependent data files installed with modules
-@WITH_MODULES_TRUE@pkg_DATA = modules.mgk
+pkg_DATA = modules.mgk
 
 # Architecture independent data files installed into GraphicsMagick/share
-@WITH_MODULES_TRUE@pkgdata_DATA = 
+pkgdata_DATA = 
 @WITH_MODULES_FALSE@pkg_LTLIBRARIES = 
 
 # Modules which are to be built

@@ -75,7 +75,7 @@ namespace Magick
     double _y;
   };
 
-  typedef std::list<Magick::Coordinate, std::allocator<Magick::Coordinate> > CoordinateList;
+  typedef std::list<Magick::Coordinate> CoordinateList;
 
 #if defined(MagickDLLBuild)
 
