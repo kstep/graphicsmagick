@@ -204,15 +204,25 @@ MagickExport DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
     clone_info->text=AllocateString(draw_info->text);
   if (draw_info->geometry != (char *) NULL)
     clone_info->geometry=AllocateString(draw_info->geometry);
+  if (draw_info->fill_pattern != (Image *) NULL)
+    clone_info->fill_pattern=CloneImage(draw_info->fill_pattern,0,0,True,
+      &draw_info->fill_pattern->exception);
+  else
+    if (draw_info->tile != (Image *) NULL)
+      {
+        clone_info->fill_pattern=CloneImage(draw_info->tile,0,0,True,
+          &draw_info->tile->exception);
+        clone_info->tile=(Image *) NULL;  /* tile is deprecated */
+      }
+  if (draw_info->stroke_pattern != (Image *) NULL)
+    clone_info->stroke_pattern=CloneImage(draw_info->stroke_pattern,0,0,True,
+      &draw_info->stroke_pattern->exception);
   if (draw_info->font != (char *) NULL)
     clone_info->font=AllocateString(draw_info->font);
   if (draw_info->encoding != (char *) NULL)
     clone_info->encoding=AllocateString(draw_info->encoding);
   if (draw_info->density != (char *) NULL)
-  if (draw_info->density != (char *) NULL)
     clone_info->density=AllocateString(draw_info->density);
-  if (draw_info->tile != (Image *) NULL)
-    clone_info->tile=ReferenceImage(draw_info->tile);
   if (draw_info->server_name != (char *) NULL)
     clone_info->server_name=AllocateString(draw_info->server_name);
   if (draw_info->dash_pattern != (double *) NULL)
@@ -438,7 +448,7 @@ MagickExport unsigned int ColorFloodfillImage(Image *image,
       start=x;
     } while (x <= x2);
   }
-  if (draw_info->tile == (Image *) NULL)
+  if (draw_info->fill_pattern == (Image *) NULL)
     for (y=0; y < (long) image->rows; y++)
     {
       /*
@@ -470,10 +480,10 @@ MagickExport unsigned int ColorFloodfillImage(Image *image,
         {
           if (floodplane[y*image->columns+x])
             {
-              color=GetOnePixel(draw_info->tile,
-                (long) (x % draw_info->tile->columns),
-                (long) (y % draw_info->tile->rows));
-              if (!draw_info->tile->matte)
+              color=GetOnePixel(draw_info->fill_pattern,
+                (long) (x % draw_info->fill_pattern->columns),
+                (long) (y % draw_info->fill_pattern->rows));
+              if (!draw_info->fill_pattern->matte)
                 color.opacity=OpaqueOpacity;
               if (color.opacity != TransparentOpacity)
                 *q=AlphaComposite(&color,color.opacity,q,q->opacity);
@@ -957,8 +967,8 @@ MagickExport void DestroyDrawInfo(DrawInfo *draw_info)
     LiberateMemory((void **) &draw_info->encoding);
   if (draw_info->density != (char *) NULL)
     LiberateMemory((void **) &draw_info->density);
-  if (draw_info->tile != (Image *) NULL)
-    DestroyImage(draw_info->tile);
+  if (draw_info->fill_pattern != (Image *) NULL)
+    DestroyImage(draw_info->fill_pattern);
   if (draw_info->server_name != (char *) NULL)
     LiberateMemory((void **) &draw_info->server_name);
   if (draw_info->dash_pattern != (double *) NULL)
@@ -3411,7 +3421,7 @@ static unsigned int DrawPrimitive(Image *image,const DrawInfo *draw_info,
       (void) fprintf(stdout,"  begin draw-primitive\n");
       (void) fprintf(stdout,"    affine: %g,%g,%g,%g,%g,%g\n",
         draw_info->affine.sx,draw_info->affine.rx,draw_info->affine.ry,
-	draw_info->affine.sy,draw_info->affine.tx,draw_info->affine.ty);
+        draw_info->affine.sy,draw_info->affine.tx,draw_info->affine.ty);
     }
   status=True;
   x=(long) ceil(primitive_info->point.x-0.5);
@@ -3461,12 +3471,12 @@ static unsigned int DrawPrimitive(Image *image,const DrawInfo *draw_info,
                   q++;
                   continue;
                 }
-              if (draw_info->tile != (Image *) NULL)
+              if (draw_info->fill_pattern != (Image *) NULL)
                 {
-                  color=GetOnePixel(draw_info->tile,
-                    (long) (x % draw_info->tile->columns),
-                    (long) (y % draw_info->tile->rows));
-                  if (!draw_info->tile->matte)
+                  color=GetOnePixel(draw_info->fill_pattern,
+                    (long) (x % draw_info->fill_pattern->columns),
+                    (long) (y % draw_info->fill_pattern->rows));
+                  if (!draw_info->fill_pattern->matte)
                     color.opacity=OpaqueOpacity;
                 }
               if (color.opacity != TransparentOpacity)
