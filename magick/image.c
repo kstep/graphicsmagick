@@ -119,9 +119,6 @@ MagickExport Image *AllocateImage(const ImageInfo *image_info)
   int
     flags;
 
-  register int
-    i;
-
   /*
     Allocate image structure.
   */

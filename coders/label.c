@@ -58,7 +58,7 @@
 #include "xwindows.h"
 #endif
 #if defined(HasTTF)
-#if !defined(vms)
+#if !defined(vms) && !defined(macintosh) && !defined(WIN32)
 #include "freetype/freetype.h"
 #else
 #include "freetype.h"

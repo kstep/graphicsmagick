@@ -351,7 +351,7 @@ MagickExport unsigned int AnnotateImage(Image *image,
           }
       }
     CompositeImage(image,annotate_image->matte ? AnnotateCompositeOp :
-      ReplaceCompositeOp,annotate_image,offset.x,offset.y);
+      ReplaceCompositeOp,annotate_image,(int) offset.x,(int) offset.y);
     DestroyImage(annotate_image);
   }
   image->matte=matte;

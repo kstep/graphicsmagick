@@ -292,7 +292,6 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   (void) fclose(file);
   CloseBlob(image);
   filesize=image->filesize;
-  DestroyImage(image);
   /*
     Use Ghostscript to convert Postscript image.
   */
@@ -314,6 +313,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       ThrowReaderException(FileOpenWarning,"Portable Document delegate failed",
         image);
     }
+  DestroyImage(image);
   clone_info=CloneImageInfo(image_info);
   GetBlobInfo(&clone_info->blob);
   image=ReadImage(clone_info,exception);
