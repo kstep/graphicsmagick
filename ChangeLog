@@ -1,3 +1,9 @@
+2003-05-12  William Radcliffe  <billr@corbis.com>
+
+	* modules.mgk, magic.mgk : Sync up both of these for UNIX
+	as well as VisualMagick builds. Includes changes for the
+	meta.c code.
+
 2003-05-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* VisualMagick/bin/modules.mgk: Create a mapping from "IMAGE"
