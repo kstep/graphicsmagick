@@ -201,7 +201,7 @@ testFilter('input.miff', 'Segment',
 testFilter('input.miff', 'Shade',
   q/30x30/,
   '883d2876639db90581044138c986fb0c',
-  'e3be7aee0fb28cbdf8b9830f13c53bac');
+  '851f346525a2de45605ce967abe70b05');
 
 ++$test;
 testFilter('input.miff', 'Shear',
