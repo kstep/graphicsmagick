@@ -732,8 +732,6 @@ MagickExport void DestroyDrawInfo(DrawInfo *draw_info)
     LiberateMemory((void **) &draw_info->dash_pattern);
   if (draw_info->clip_path != (char *) NULL)
     LiberateMemory((void **) &draw_info->clip_path);
-  if (draw_info->gradient != (GradientInfo *) NULL)
-    DestroyGradientInfo(draw_info->gradient);
   LiberateMemory((void **) &draw_info);
 }
 

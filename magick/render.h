@@ -96,6 +96,12 @@ typedef enum
 
 typedef enum
 {
+  UndefinedReference,
+  GradientReference
+} ReferenceType;
+
+typedef enum
+{
   UndefinedSpread,
   PadSpread,
   ReflectSpead,
@@ -151,6 +157,25 @@ typedef struct _GradientInfo
     *previous,
     *next;
 } GradientInfo;
+
+typedef struct _ElementReference
+{
+  char
+    *id;
+
+  ReferenceType
+    type;
+
+  GradientInfo
+    gradient;
+
+  unsigned long
+    signature;
+
+  struct _ElementReference
+    *previous,
+    *next;
+} ElementReference;
 
 typedef struct _DrawInfo
 {
@@ -243,9 +268,6 @@ typedef struct _DrawInfo
   SegmentInfo
     bounds;
 
-  GradientInfo
-    *gradient;
-
   ClipPathUnits
     clip_units;
 
@@ -255,6 +277,9 @@ typedef struct _DrawInfo
   unsigned int
     render,
     debug;  /* deprecated */
+
+  ElementReference
+    element_reference;
 
   unsigned long
     signature;
