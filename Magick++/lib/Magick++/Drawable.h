@@ -2403,38 +2403,39 @@ namespace Magick
     std::list<Magick::Coordinate> _coordinates;
   };
 
-} // namespace Magick
 
-// Write Coordinate to stream.
-std::ostream& operator<<( std::ostream& stream_,
-			  const Magick::Coordinate& coordinate_);
-
-// Write DrawableBase to stream
-std::ostream& operator<< (std::ostream& stream_,
-			  const Magick::DrawableBase& drawable_);
-
-// Write Drawable to stream
-std::ostream& operator<< (std::ostream& stream_,
-			  const Magick::Drawable& drawable_);
+  // Write Coordinate to stream.
+  std::ostream& operator<<( std::ostream& stream_,
+                            const Magick::Coordinate& coordinate_);
   
-// Write VPathBase to stream
-std::ostream& operator<< (std::ostream& stream_,
-			  const Magick::VPathBase& drawable_);
+  // Write DrawableBase to stream
+  std::ostream& operator<< (std::ostream& stream_,
+                            const Magick::DrawableBase& drawable_);
+  
+  // Write Drawable to stream
+  std::ostream& operator<< (std::ostream& stream_,
+                            const Magick::Drawable& drawable_);
+  
+  // Write VPathBase to stream
+  std::ostream& operator<< (std::ostream& stream_,
+                            const Magick::VPathBase& drawable_);
+  
+  // Write Path to stream
+  std::ostream& operator<< (std::ostream& stream_,
+                            const Magick::VPath& drawable_);
+  
+  // Write PathArcArgs to stream
+  std::ostream& operator<<( std::ostream& stream_,
+                            const Magick::PathArcArgs& args_ );
+  
+  // Write PathCurvetoArgs to stream
+  std::ostream& operator<<( std::ostream& stream_,
+                            const Magick::PathCurvetoArgs& args_ );
+  
+  // Write PathQuadraticCurvetoArgs to stream
+  std::ostream& operator<<( std::ostream& stream_,
+                            const Magick::PathQuadraticCurvetoArgs& args_);
 
-// Write Path to stream
-std::ostream& operator<< (std::ostream& stream_,
-			  const Magick::VPath& drawable_);
-
-// Write PathArcArgs to stream
-std::ostream& operator<<( std::ostream& stream_,
-			  const Magick::PathArcArgs& args_ );
-
-// Write PathCurvetoArgs to stream
-std::ostream& operator<<( std::ostream& stream_,
-                          const Magick::PathCurvetoArgs& args_ );
-
-// Write PathQuadraticCurvetoArgs to stream
-std::ostream& operator<<( std::ostream& stream_,
-			  const Magick::PathQuadraticCurvetoArgs& args_);
+} // namespace Magick
 
 #endif // Drawable_header

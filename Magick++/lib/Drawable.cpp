@@ -20,24 +20,24 @@ using namespace std;
 #define RadiansToDegrees(x) (180.0*(x)/3.14159265358979323846)
 
 //Write Coordinate to stream
-std::ostream& operator<<( std::ostream& stream_,
-			  const Magick::Coordinate& coordinate_)
+std::ostream& Magick::operator<<( std::ostream& stream_,
+                                  const Magick::Coordinate& coordinate_)
 {
   stream_ << coordinate_.x() << "," << coordinate_.y();
   return stream_;
 }
 
 // Write DrawableBase to stream
-std::ostream& operator<< (std::ostream& stream_,
-			  const Magick::DrawableBase& drawable_)
+std::ostream& Magick::operator<< (std::ostream& stream_,
+                                  const Magick::DrawableBase& drawable_)
 {
   drawable_.print (stream_);
   return stream_;
 }
 
 // Write Drawable to stream
-std::ostream& operator<< (std::ostream& stream_,
-			  const Magick::Drawable& drawable_)
+std::ostream& Magick::operator<< (std::ostream& stream_,
+                                  const Magick::Drawable& drawable_)
   
 {
   if (drawable_.dp != 0)
@@ -46,16 +46,16 @@ std::ostream& operator<< (std::ostream& stream_,
 }
 
 // Write VPathBase to stream
-std::ostream& operator<< (std::ostream& stream_,
-			  const Magick::VPathBase& drawable_)
+std::ostream& Magick::operator<< (std::ostream& stream_,
+                                  const Magick::VPathBase& drawable_)
 {
   drawable_.print (stream_);
   return stream_;
 }
 
 // Write Path to stream
-std::ostream& operator<< (std::ostream& stream_,
-			  const Magick::VPath& drawable_)
+std::ostream& Magick::operator<< (std::ostream& stream_,
+                                  const Magick::VPath& drawable_)
   
 {
   if (drawable_.dp != 0)
@@ -518,7 +518,7 @@ void Magick::DrawableTextAntialias::print (std::ostream& stream_) const
 //
 
 // Write PathArcArgs to stream
-std::ostream& operator<<( std::ostream& stream_, const Magick::PathArcArgs& args_ )
+std::ostream& Magick::operator<<( std::ostream& stream_, const Magick::PathArcArgs& args_ )
 {
   stream_ << args_.radiusX()
           << ","
@@ -579,8 +579,8 @@ void Magick::PathClosePath::print (std::ostream& stream_) const
 //
 // Path Curveto (Cubic Bezier)
 //
-std::ostream& operator<<( std::ostream& stream_,
-                          const Magick::PathCurvetoArgs& args_ )
+std::ostream& Magick::operator<<( std::ostream& stream_,
+                                  const Magick::PathCurvetoArgs& args_ )
 {
   stream_ 
     << args_.x1()
@@ -647,7 +647,8 @@ void Magick::PathSmoothCurvetoRel::print (std::ostream& stream_) const
 //
 // Quadratic Curveto (Quadratic Bezier)
 //
-std::ostream& operator<<( std::ostream& stream_, const Magick::PathQuadraticCurvetoArgs& args_)
+std::ostream& Magick::operator<<( std::ostream& stream_,
+                                  const Magick::PathQuadraticCurvetoArgs& args_)
 {
   stream_ 
     << args_.x1()
