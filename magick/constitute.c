@@ -872,7 +872,7 @@ MagickExport unsigned int DispatchImage(Image *image,const int x,const int y,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  Method PingImage returns the image size in bytes if it exists and can be
-%  read (at %  least up until it reveals it's size).  The width and height of
+%  read (at least up until it reveals it's size).  The width and height of
 %  the image is returned as well.  Note, only the first image in a multi-frame
 %  image file is pinged.
 %
