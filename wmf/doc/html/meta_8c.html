@@ -8,10 +8,10 @@
 <a class="qindex" href="index.html">Main Page</a> &nbsp; <a class="qindex" href="classes.html">Alphabetical List</a> &nbsp; <a class="qindex" href="annotated.html">Data Structures</a> &nbsp; <a class="qindex" href="files.html">File List</a> &nbsp; <a class="qindex" href="functions.html">Data Fields</a> &nbsp; <a class="qindex" href="globals.html">Globals</a> &nbsp; </center>
 <hr><h1>meta.c File Reference</h1><table border=0 cellpadding=0 cellspacing=0>
 <tr><td colspan=2><br><h2>Functions</h2></td></tr>
-<tr><td nowrap align=right valign=top>U16&nbsp;</td><td valign=bottom><a class="el" href="meta_8c.html#a0">wmf_read_16</a> (<a class="el" href="types_8h.html#a21">wmfAPI</a> *API)</td></tr>
-<tr><td nowrap align=right valign=top>U32&nbsp;</td><td valign=bottom><a class="el" href="meta_8c.html#a1">wmf_read_32</a> (<a class="el" href="types_8h.html#a21">wmfAPI</a> *API, U16 *u16a, U16 *u16b)</td></tr>
-<tr><td nowrap align=right valign=top>U16&nbsp;</td><td valign=bottom><a class="el" href="meta_8c.html#a2">wmf_aldus_checksum</a> (<a class="el" href="types_8h.html#a21">wmfAPI</a> *API)</td></tr>
-<tr><td nowrap align=right valign=top><a class="el" href="types_8h.html#a5">wmf_error_t</a>&nbsp;</td><td valign=bottom><a class="el" href="meta_8c.html#a3">wmf_header_read</a> (<a class="el" href="types_8h.html#a21">wmfAPI</a> *API)</td></tr>
+<tr><td nowrap align=right valign=top>U16&nbsp;</td><td valign=bottom><a class="el" href="meta_8c.html#a0">wmf_read_16</a> (<a class="el" href="types_8h.html#a22">wmfAPI</a> *API)</td></tr>
+<tr><td nowrap align=right valign=top>U32&nbsp;</td><td valign=bottom><a class="el" href="meta_8c.html#a1">wmf_read_32</a> (<a class="el" href="types_8h.html#a22">wmfAPI</a> *API, U16 *u16a, U16 *u16b)</td></tr>
+<tr><td nowrap align=right valign=top>U16&nbsp;</td><td valign=bottom><a class="el" href="meta_8c.html#a2">wmf_aldus_checksum</a> (<a class="el" href="types_8h.html#a22">wmfAPI</a> *API)</td></tr>
+<tr><td nowrap align=right valign=top><a class="el" href="types_8h.html#a5">wmf_error_t</a>&nbsp;</td><td valign=bottom><a class="el" href="meta_8c.html#a3">wmf_header_read</a> (<a class="el" href="types_8h.html#a22">wmfAPI</a> *API)</td></tr>
 </table>
 <hr><h2>Function Documentation</h2>
 <a name="a2" doxytag="meta.c::wmf_aldus_checksum"></a><p>
@@ -24,7 +24,7 @@
 U16 wmf_aldus_checksum 
           </td>
           <td class="md">(&nbsp</td>
-          <td class="md"><a class="el" href="types_8h.html#a21">wmfAPI</a> *          </td>
+          <td class="md"><a class="el" href="types_8h.html#a22">wmfAPI</a> *          </td>
           <td class="mdname"> <em>API</em>          </td>
           <td class="md">)&nbsp;</td>
           <td class="md">          </td>
@@ -68,7 +68,7 @@ Returns the checksum. </dl>    </td>
 <a class="el" href="types_8h.html#a5">wmf_error_t</a> wmf_header_read 
           </td>
           <td class="md">(&nbsp</td>
-          <td class="md"><a class="el" href="types_8h.html#a21">wmfAPI</a> *          </td>
+          <td class="md"><a class="el" href="types_8h.html#a22">wmfAPI</a> *          </td>
           <td class="mdname"> <em>API</em>          </td>
           <td class="md">)&nbsp;</td>
           <td class="md">          </td>
@@ -112,7 +112,7 @@ Returns the library error state (<b>wmf_E_None</b> on success). Possible library
 U16 wmf_read_16 
           </td>
           <td class="md">(&nbsp</td>
-          <td class="md"><a class="el" href="types_8h.html#a21">wmfAPI</a> *          </td>
+          <td class="md"><a class="el" href="types_8h.html#a22">wmfAPI</a> *          </td>
           <td class="mdname"> <em>API</em>          </td>
           <td class="md">)&nbsp;</td>
           <td class="md">          </td>
@@ -145,7 +145,7 @@ For internal use only.    </td>
 U32 wmf_read_32 
           </td>
           <td class="md">(&nbsp</td>
-          <td class="md"><a class="el" href="types_8h.html#a21">wmfAPI</a> *          </td>
+          <td class="md"><a class="el" href="types_8h.html#a22">wmfAPI</a> *          </td>
           <td class="mdname"> <em>API</em>,           </td>
         </tr>
         <tr>
@@ -189,7 +189,7 @@ U32 wmf_read_32
 For internal use only.    </td>
   </tr>
 </table>
-<hr><address><small>Generated at Fri Aug 17 16:45:19 2001 for libwmf by
+<hr><address><small>Generated at Sun Oct 28 12:22:55 2001 for libwmf by
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.gif" alt="doxygen" align="middle" border=0 
 width=110 height=53></a>1.2.9.1 written by <a href="mailto:dimitri@stack.nl">Dimitri van Heesch</a>,

@@ -8,11 +8,11 @@
 <a class="qindex" href="index.html">Main Page</a> &nbsp; <a class="qindex" href="classes.html">Alphabetical List</a> &nbsp; <a class="qindex" href="annotated.html">Data Structures</a> &nbsp; <a class="qindex" href="files.html">File List</a> &nbsp; <a class="qindex" href="functions.html">Data Fields</a> &nbsp; <a class="qindex" href="globals.html">Globals</a> &nbsp; </center>
 <hr><h1>stream.c File Reference</h1><table border=0 cellpadding=0 cellspacing=0>
 <tr><td colspan=2><br><h2>Functions</h2></td></tr>
-<tr><td nowrap align=right valign=top><a class="el" href="types_8h.html#a22">wmfStream</a> *&nbsp;</td><td valign=bottom><a class="el" href="stream_8c.html#a0">wmf_ztream_create</a> (<a class="el" href="types_8h.html#a21">wmfAPI</a> *API, gzFile out)</td></tr>
-<tr><td nowrap align=right valign=top><a class="el" href="types_8h.html#a22">wmfStream</a> *&nbsp;</td><td valign=bottom><a class="el" href="stream_8c.html#a1">wmf_stream_create</a> (<a class="el" href="types_8h.html#a21">wmfAPI</a> *API, FILE *out)</td></tr>
-<tr><td nowrap align=right valign=top>void&nbsp;</td><td valign=bottom><a class="el" href="stream_8c.html#a2">wmf_ztream_destroy</a> (<a class="el" href="types_8h.html#a21">wmfAPI</a> *API, <a class="el" href="types_8h.html#a22">wmfStream</a> *stream, char **buffer, unsigned long *length)</td></tr>
-<tr><td nowrap align=right valign=top>void&nbsp;</td><td valign=bottom><a class="el" href="stream_8c.html#a3">wmf_stream_destroy</a> (<a class="el" href="types_8h.html#a21">wmfAPI</a> *API, <a class="el" href="types_8h.html#a22">wmfStream</a> *stream, char **buffer, unsigned long *length)</td></tr>
-<tr><td nowrap align=right valign=top>int&nbsp;</td><td valign=bottom><a class="el" href="stream_8c.html#a4">wmf_stream_printf</a> (<a class="el" href="types_8h.html#a21">wmfAPI</a> *API, <a class="el" href="types_8h.html#a22">wmfStream</a> *stream, char *format,...)</td></tr>
+<tr><td nowrap align=right valign=top><a class="el" href="types_8h.html#a23">wmfStream</a> *&nbsp;</td><td valign=bottom><a class="el" href="stream_8c.html#a0">wmf_ztream_create</a> (<a class="el" href="types_8h.html#a22">wmfAPI</a> *API, gzFile out)</td></tr>
+<tr><td nowrap align=right valign=top><a class="el" href="types_8h.html#a23">wmfStream</a> *&nbsp;</td><td valign=bottom><a class="el" href="stream_8c.html#a1">wmf_stream_create</a> (<a class="el" href="types_8h.html#a22">wmfAPI</a> *API, FILE *out)</td></tr>
+<tr><td nowrap align=right valign=top>void&nbsp;</td><td valign=bottom><a class="el" href="stream_8c.html#a2">wmf_ztream_destroy</a> (<a class="el" href="types_8h.html#a22">wmfAPI</a> *API, <a class="el" href="types_8h.html#a23">wmfStream</a> *stream, char **buffer, unsigned long *length)</td></tr>
+<tr><td nowrap align=right valign=top>void&nbsp;</td><td valign=bottom><a class="el" href="stream_8c.html#a3">wmf_stream_destroy</a> (<a class="el" href="types_8h.html#a22">wmfAPI</a> *API, <a class="el" href="types_8h.html#a23">wmfStream</a> *stream, char **buffer, unsigned long *length)</td></tr>
+<tr><td nowrap align=right valign=top>int&nbsp;</td><td valign=bottom><a class="el" href="stream_8c.html#a4">wmf_stream_printf</a> (<a class="el" href="types_8h.html#a22">wmfAPI</a> *API, <a class="el" href="types_8h.html#a23">wmfStream</a> *stream, char *format,...)</td></tr>
 <tr><td nowrap align=right valign=top>int&nbsp;</td><td valign=bottom><a class="el" href="stream_8c.html#a5">wmf_stream_zputs</a> (char *str, void *context)</td></tr>
 <tr><td nowrap align=right valign=top>int&nbsp;</td><td valign=bottom><a class="el" href="stream_8c.html#a6">wmf_stream_sputs</a> (char *str, void *context)</td></tr>
 <tr><td nowrap align=right valign=top>int&nbsp;</td><td valign=bottom><a class="el" href="stream_8c.html#a7">wmf_stream_rezet</a> (void *context)</td></tr>
@@ -26,10 +26,10 @@
       <table cellpadding="0" cellspacing="0" border="0">
         <tr>
           <td class="md" nowrap valign="top"> 
-<a class="el" href="types_8h.html#a22">wmfStream</a>* wmf_stream_create 
+<a class="el" href="types_8h.html#a23">wmfStream</a>* wmf_stream_create 
           </td>
           <td class="md">(&nbsp</td>
-          <td class="md"><a class="el" href="types_8h.html#a21">wmfAPI</a> *          </td>
+          <td class="md"><a class="el" href="types_8h.html#a22">wmfAPI</a> *          </td>
           <td class="mdname"> <em>API</em>,           </td>
         </tr>
         <tr>
@@ -71,11 +71,11 @@ descriptor for a file stream; or zero to write to memory
 <p>
 </td></tr>
 </table>
-</dl><a class="el" href="api_8h.html#a33">wmf_stream_create</a>() creates a <b><a class="el" href="types_8h.html#a22">wmfStream</a></b> (a character-based output stream) for output to a file or, if <code>out</code> is zero, to memory.
+</dl><a class="el" href="api_8h.html#a33">wmf_stream_create</a>() creates a <b><a class="el" href="types_8h.html#a23">wmfStream</a></b> (a character-based output stream) for output to a file or, if <code>out</code> is zero, to memory.
 <p>
 <dl compact><dt>
 <b>Returns: </b><dd>
-Returns a <b><a class="el" href="types_8h.html#a22">wmfStream</a></b> pointer, or zero on failure. Possible library error states of <b>wmf_E_InsMem</b> or <b>wmf_E_BadFile</b>. </dl>    </td>
+Returns a <b><a class="el" href="types_8h.html#a23">wmfStream</a></b> pointer, or zero on failure. Possible library error states of <b>wmf_E_InsMem</b> or <b>wmf_E_BadFile</b>. </dl>    </td>
   </tr>
 </table>
 <a name="a3" doxytag="stream.c::wmf_stream_destroy"></a><p>
@@ -88,7 +88,7 @@ Returns a <b><a class="el" href="types_8h.html#a22">wmfStream</a></b> pointer, o
 void wmf_stream_destroy 
           </td>
           <td class="md">(&nbsp</td>
-          <td class="md"><a class="el" href="types_8h.html#a21">wmfAPI</a> *          </td>
+          <td class="md"><a class="el" href="types_8h.html#a22">wmfAPI</a> *          </td>
           <td class="mdname"> <em>API</em>,           </td>
         </tr>
         <tr>
@@ -97,7 +97,7 @@ void wmf_stream_destroy
           <td class="md">        <tr>
           <td></td>
           <td></td>
-          <td class="md"><a class="el" href="types_8h.html#a22">wmfStream</a> *          </td>
+          <td class="md"><a class="el" href="types_8h.html#a23">wmfStream</a> *          </td>
           <td class="mdname"> <em>stream</em>,           </td>
         </tr>
         <tr>
@@ -167,7 +167,7 @@ for length return
 int wmf_stream_printf 
           </td>
           <td class="md">(&nbsp</td>
-          <td class="md"><a class="el" href="types_8h.html#a21">wmfAPI</a> *          </td>
+          <td class="md"><a class="el" href="types_8h.html#a22">wmfAPI</a> *          </td>
           <td class="mdname"> <em>API</em>,           </td>
         </tr>
         <tr>
@@ -176,7 +176,7 @@ int wmf_stream_printf
           <td class="md">        <tr>
           <td></td>
           <td></td>
-          <td class="md"><a class="el" href="types_8h.html#a22">wmfStream</a> *          </td>
+          <td class="md"><a class="el" href="types_8h.html#a23">wmfStream</a> *          </td>
           <td class="mdname"> <em>stream</em>,           </td>
         </tr>
         <tr>
@@ -230,7 +230,7 @@ print format
 <p>
 </td></tr>
 </table>
-</dl>With syntax similar to printf(), <a class="el" href="api_8h.html#a36">wmf_stream_printf</a>() prints a formatted message to a <b><a class="el" href="types_8h.html#a22">wmfStream</a></b> character stream.
+</dl>With syntax similar to printf(), <a class="el" href="api_8h.html#a36">wmf_stream_printf</a>() prints a formatted message to a <b><a class="el" href="types_8h.html#a23">wmfStream</a></b> character stream.
 <p>
 <dl compact><dt>
 <b>Returns: </b><dd>
@@ -400,10 +400,10 @@ For internal use only.    </td>
       <table cellpadding="0" cellspacing="0" border="0">
         <tr>
           <td class="md" nowrap valign="top"> 
-<a class="el" href="types_8h.html#a22">wmfStream</a>* wmf_ztream_create 
+<a class="el" href="types_8h.html#a23">wmfStream</a>* wmf_ztream_create 
           </td>
           <td class="md">(&nbsp</td>
-          <td class="md"><a class="el" href="types_8h.html#a21">wmfAPI</a> *          </td>
+          <td class="md"><a class="el" href="types_8h.html#a22">wmfAPI</a> *          </td>
           <td class="mdname"> <em>API</em>,           </td>
         </tr>
         <tr>
@@ -445,11 +445,11 @@ descriptor for a zlib compressed file stream
 <p>
 </td></tr>
 </table>
-</dl><a class="el" href="api_8h.html#a32">wmf_ztream_create</a>() creates a <b><a class="el" href="types_8h.html#a22">wmfStream</a></b> (a character-based output stream) for output to a file opened via <b>zlib</b>. (Writing compressed data to memory is not currently supported.)
+</dl><a class="el" href="api_8h.html#a32">wmf_ztream_create</a>() creates a <b><a class="el" href="types_8h.html#a23">wmfStream</a></b> (a character-based output stream) for output to a file opened via <b>zlib</b>. (Writing compressed data to memory is not currently supported.)
 <p>
 <dl compact><dt>
 <b>Returns: </b><dd>
-Returns a <b><a class="el" href="types_8h.html#a22">wmfStream</a></b> pointer, or zero on failure. Possible library error state of <b>wmf_E_InsMem</b>. </dl>    </td>
+Returns a <b><a class="el" href="types_8h.html#a23">wmfStream</a></b> pointer, or zero on failure. Possible library error state of <b>wmf_E_InsMem</b>. </dl>    </td>
   </tr>
 </table>
 <a name="a2" doxytag="stream.c::wmf_ztream_destroy"></a><p>
@@ -462,7 +462,7 @@ Returns a <b><a class="el" href="types_8h.html#a22">wmfStream</a></b> pointer, o
 void wmf_ztream_destroy 
           </td>
           <td class="md">(&nbsp</td>
-          <td class="md"><a class="el" href="types_8h.html#a21">wmfAPI</a> *          </td>
+          <td class="md"><a class="el" href="types_8h.html#a22">wmfAPI</a> *          </td>
           <td class="mdname"> <em>API</em>,           </td>
         </tr>
         <tr>
@@ -471,7 +471,7 @@ void wmf_ztream_destroy
           <td class="md">        <tr>
           <td></td>
           <td></td>
-          <td class="md"><a class="el" href="types_8h.html#a22">wmfStream</a> *          </td>
+          <td class="md"><a class="el" href="types_8h.html#a23">wmfStream</a> *          </td>
           <td class="mdname"> <em>stream</em>,           </td>
         </tr>
         <tr>
@@ -529,7 +529,7 @@ stream handle </td></tr>
 </dl>    </td>
   </tr>
 </table>
-<hr><address><small>Generated at Fri Aug 17 16:45:19 2001 for libwmf by
+<hr><address><small>Generated at Sun Oct 28 12:22:56 2001 for libwmf by
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.gif" alt="doxygen" align="middle" border=0 
 width=110 height=53></a>1.2.9.1 written by <a href="mailto:dimitri@stack.nl">Dimitri van Heesch</a>,

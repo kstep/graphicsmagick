@@ -287,6 +287,18 @@ make install
 /usr/share/doc/libwmf/html/x_2font_8h.html
 /usr/share/doc/libwmf/html/x_8c.html
 /usr/share/doc/libwmf/html/x_8h.html
+/usr/share/doc/libwmf/html/foreign_8c.html
+/usr/share/doc/libwmf/html/foreign_8h.html 
+/usr/share/doc/libwmf/html/ipa_2xgd_2region_8h.html
+/usr/share/doc/libwmf/html/xgd_2bmp_8h.html
+/usr/share/doc/libwmf/html/xgd_2device_8h.html
+/usr/share/doc/libwmf/html/xgd_2draw_8h.html
+/usr/share/doc/libwmf/html/xgd_2font_8h.html
+/usr/share/doc/libwmf/html/xgd_8c.html
+/usr/share/doc/libwmf/html/xgd_8h.html
+/usr/share/doc/libwmf/html/struct__gd__t.html
+/usr/share/doc/libwmf/html/struct__wmfImage.html
+/usr/share/doc/libwmf/html/struct__wmf__foreign__t.html
 
 %files devel
 %defattr(-,root,root)

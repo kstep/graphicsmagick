@@ -1,3 +1,17 @@
+libwmf-0.2.2 Release Notes
+--------------------------
+
+While there have been some improvements to text placement and rendering in the
+X and gd layers, most changes are in the configuration. (It is now possible to
+build libwmf without any device layers, but this has not been tested extensively
+and is not recommended for general use.)
+
+Special thanks to Bob Friesenhahn, Leonard Rosenthol, David C Sterratt and
+Tomasz K³oczko.
+
+Hopefully this release will build on Solaris. My apologies to everyone who had
+problems with libwmf-0.2.1.
+
 libwmf-0.2.1 Release Notes
 --------------------------
 

@@ -8,14 +8,14 @@
 <a class="qindex" href="index.html">Main Page</a> &nbsp; <a class="qindex" href="classes.html">Alphabetical List</a> &nbsp; <a class="qindex" href="annotated.html">Data Structures</a> &nbsp; <a class="qindex" href="files.html">File List</a> &nbsp; <a class="qindex" href="functions.html">Data Fields</a> &nbsp; <a class="qindex" href="globals.html">Globals</a> &nbsp; </center>
 <hr><h1>bbuf.c File Reference</h1><table border=0 cellpadding=0 cellspacing=0>
 <tr><td colspan=2><br><h2>Functions</h2></td></tr>
-<tr><td nowrap align=right valign=top><a class="el" href="types_8h.html#a5">wmf_error_t</a>&nbsp;</td><td valign=bottom><a class="el" href="bbuf_8c.html#a0">wmf_bbuf_input</a> (<a class="el" href="types_8h.html#a21">wmfAPI</a> *API, <a class="el" href="types_8h.html#a7">wmfRead</a> fp_read, <a class="el" href="types_8h.html#a8">wmfSeek</a> fp_seek, <a class="el" href="types_8h.html#a9">wmfTell</a> fp_tell, void *user_data)</td></tr>
-<tr><td nowrap align=right valign=top><a class="el" href="types_8h.html#a5">wmf_error_t</a>&nbsp;</td><td valign=bottom><a class="el" href="bbuf_8c.html#a1">wmf_file_open</a> (<a class="el" href="types_8h.html#a21">wmfAPI</a> *API, char *file)</td></tr>
-<tr><td nowrap align=right valign=top><a class="el" href="types_8h.html#a5">wmf_error_t</a>&nbsp;</td><td valign=bottom><a class="el" href="bbuf_8c.html#a2">wmf_file_close</a> (<a class="el" href="types_8h.html#a21">wmfAPI</a> *API)</td></tr>
+<tr><td nowrap align=right valign=top><a class="el" href="types_8h.html#a5">wmf_error_t</a>&nbsp;</td><td valign=bottom><a class="el" href="bbuf_8c.html#a0">wmf_bbuf_input</a> (<a class="el" href="types_8h.html#a22">wmfAPI</a> *API, <a class="el" href="types_8h.html#a8">wmfRead</a> fp_read, <a class="el" href="types_8h.html#a9">wmfSeek</a> fp_seek, <a class="el" href="types_8h.html#a10">wmfTell</a> fp_tell, void *user_data)</td></tr>
+<tr><td nowrap align=right valign=top><a class="el" href="types_8h.html#a5">wmf_error_t</a>&nbsp;</td><td valign=bottom><a class="el" href="bbuf_8c.html#a1">wmf_file_open</a> (<a class="el" href="types_8h.html#a22">wmfAPI</a> *API, const char *file)</td></tr>
+<tr><td nowrap align=right valign=top><a class="el" href="types_8h.html#a5">wmf_error_t</a>&nbsp;</td><td valign=bottom><a class="el" href="bbuf_8c.html#a2">wmf_file_close</a> (<a class="el" href="types_8h.html#a22">wmfAPI</a> *API)</td></tr>
 <tr><td nowrap align=right valign=top>int&nbsp;</td><td valign=bottom><a class="el" href="bbuf_8c.html#a3">wmf_file_read</a> (void *user_data)</td></tr>
 <tr><td nowrap align=right valign=top>int&nbsp;</td><td valign=bottom><a class="el" href="bbuf_8c.html#a4">wmf_file_seek</a> (void *user_data, long pos)</td></tr>
 <tr><td nowrap align=right valign=top>long&nbsp;</td><td valign=bottom><a class="el" href="bbuf_8c.html#a5">wmf_file_tell</a> (void *user_data)</td></tr>
-<tr><td nowrap align=right valign=top><a class="el" href="types_8h.html#a5">wmf_error_t</a>&nbsp;</td><td valign=bottom><a class="el" href="bbuf_8c.html#a6">wmf_mem_open</a> (<a class="el" href="types_8h.html#a21">wmfAPI</a> *API, unsigned char *mem, long length)</td></tr>
-<tr><td nowrap align=right valign=top><a class="el" href="types_8h.html#a5">wmf_error_t</a>&nbsp;</td><td valign=bottom><a class="el" href="bbuf_8c.html#a7">wmf_mem_close</a> (<a class="el" href="types_8h.html#a21">wmfAPI</a> *API)</td></tr>
+<tr><td nowrap align=right valign=top><a class="el" href="types_8h.html#a5">wmf_error_t</a>&nbsp;</td><td valign=bottom><a class="el" href="bbuf_8c.html#a6">wmf_mem_open</a> (<a class="el" href="types_8h.html#a22">wmfAPI</a> *API, unsigned char *mem, long length)</td></tr>
+<tr><td nowrap align=right valign=top><a class="el" href="types_8h.html#a5">wmf_error_t</a>&nbsp;</td><td valign=bottom><a class="el" href="bbuf_8c.html#a7">wmf_mem_close</a> (<a class="el" href="types_8h.html#a22">wmfAPI</a> *API)</td></tr>
 <tr><td nowrap align=right valign=top>int&nbsp;</td><td valign=bottom><a class="el" href="bbuf_8c.html#a8">wmf_mem_read</a> (void *user_data)</td></tr>
 <tr><td nowrap align=right valign=top>int&nbsp;</td><td valign=bottom><a class="el" href="bbuf_8c.html#a9">wmf_mem_seek</a> (void *user_data, long pos)</td></tr>
 <tr><td nowrap align=right valign=top>long&nbsp;</td><td valign=bottom><a class="el" href="bbuf_8c.html#a10">wmf_mem_tell</a> (void *user_data)</td></tr>
@@ -31,7 +31,7 @@
 <a class="el" href="types_8h.html#a5">wmf_error_t</a> wmf_bbuf_input 
           </td>
           <td class="md">(&nbsp</td>
-          <td class="md"><a class="el" href="types_8h.html#a21">wmfAPI</a> *          </td>
+          <td class="md"><a class="el" href="types_8h.html#a22">wmfAPI</a> *          </td>
           <td class="mdname"> <em>API</em>,           </td>
         </tr>
         <tr>
@@ -40,7 +40,7 @@
           <td class="md">        <tr>
           <td></td>
           <td></td>
-          <td class="md"><a class="el" href="types_8h.html#a7">wmfRead</a>          </td>
+          <td class="md"><a class="el" href="types_8h.html#a8">wmfRead</a>          </td>
           <td class="mdname"> <em>fp_read</em>,           </td>
         </tr>
         <tr>
@@ -49,7 +49,7 @@
           <td class="md">        <tr>
           <td></td>
           <td></td>
-          <td class="md"><a class="el" href="types_8h.html#a8">wmfSeek</a>          </td>
+          <td class="md"><a class="el" href="types_8h.html#a9">wmfSeek</a>          </td>
           <td class="mdname"> <em>fp_seek</em>,           </td>
         </tr>
         <tr>
@@ -58,7 +58,7 @@
           <td class="md">        <tr>
           <td></td>
           <td></td>
-          <td class="md"><a class="el" href="types_8h.html#a9">wmfTell</a>          </td>
+          <td class="md"><a class="el" href="types_8h.html#a10">wmfTell</a>          </td>
           <td class="mdname"> <em>fp_tell</em>,           </td>
         </tr>
         <tr>
@@ -117,11 +117,11 @@ typedef int  (*wmfSeek) (void* user_data,long position);
 typedef long (*wmfTell) (void* user_data);
 </pre></div>
 <p>
-<b><a class="el" href="types_8h.html#a7">wmfRead</a></b> returns unsigned char cast to int, or EOF (cf. fgetc())
+<b><a class="el" href="types_8h.html#a8">wmfRead</a></b> returns unsigned char cast to int, or EOF (cf. fgetc())
 <p>
-<b><a class="el" href="types_8h.html#a8">wmfSeek</a></b> returns (-1) on error, otherwise 0 (cf. fseek())
+<b><a class="el" href="types_8h.html#a9">wmfSeek</a></b> returns (-1) on error, otherwise 0 (cf. fseek())
 <p>
-<b><a class="el" href="types_8h.html#a9">wmfTell</a></b> returns (-1) on error, otherwise current position (cf. ftell())
+<b><a class="el" href="types_8h.html#a10">wmfTell</a></b> returns (-1) on error, otherwise current position (cf. ftell())
 <p>
 <dl compact><dt>
 <b>Returns: </b><dd>
@@ -138,7 +138,7 @@ Returns the library error state (<b>wmf_E_None</b> on success). Possible library
 <a class="el" href="types_8h.html#a5">wmf_error_t</a> wmf_file_close 
           </td>
           <td class="md">(&nbsp</td>
-          <td class="md"><a class="el" href="types_8h.html#a21">wmfAPI</a> *          </td>
+          <td class="md"><a class="el" href="types_8h.html#a22">wmfAPI</a> *          </td>
           <td class="mdname"> <em>API</em>          </td>
           <td class="md">)&nbsp;</td>
           <td class="md">          </td>
@@ -180,7 +180,7 @@ Returns the library error state (<b>wmf_E_None</b> on success). Possible library
 <a class="el" href="types_8h.html#a5">wmf_error_t</a> wmf_file_open 
           </td>
           <td class="md">(&nbsp</td>
-          <td class="md"><a class="el" href="types_8h.html#a21">wmfAPI</a> *          </td>
+          <td class="md"><a class="el" href="types_8h.html#a22">wmfAPI</a> *          </td>
           <td class="mdname"> <em>API</em>,           </td>
         </tr>
         <tr>
@@ -189,7 +189,7 @@ Returns the library error state (<b>wmf_E_None</b> on success). Possible library
           <td class="md">        <tr>
           <td></td>
           <td></td>
-          <td class="md">char *          </td>
+          <td class="md">const char *          </td>
           <td class="mdname"> <em>file</em>          </td>
         </tr>
         <tr>
@@ -350,7 +350,7 @@ For internal use only.    </td>
 <a class="el" href="types_8h.html#a5">wmf_error_t</a> wmf_mem_close 
           </td>
           <td class="md">(&nbsp</td>
-          <td class="md"><a class="el" href="types_8h.html#a21">wmfAPI</a> *          </td>
+          <td class="md"><a class="el" href="types_8h.html#a22">wmfAPI</a> *          </td>
           <td class="mdname"> <em>API</em>          </td>
           <td class="md">)&nbsp;</td>
           <td class="md">          </td>
@@ -392,7 +392,7 @@ Returns the library error state (<b>wmf_E_None</b> on success). </dl>    </td>
 <a class="el" href="types_8h.html#a5">wmf_error_t</a> wmf_mem_open 
           </td>
           <td class="md">(&nbsp</td>
-          <td class="md"><a class="el" href="types_8h.html#a21">wmfAPI</a> *          </td>
+          <td class="md"><a class="el" href="types_8h.html#a22">wmfAPI</a> *          </td>
           <td class="mdname"> <em>API</em>,           </td>
         </tr>
         <tr>
@@ -564,7 +564,7 @@ long wmf_mem_tell
 For internal use only.    </td>
   </tr>
 </table>
-<hr><address><small>Generated at Fri Aug 17 16:45:16 2001 for libwmf by
+<hr><address><small>Generated at Sun Oct 28 12:22:53 2001 for libwmf by
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.gif" alt="doxygen" align="middle" border=0 
 width=110 height=53></a>1.2.9.1 written by <a href="mailto:dimitri@stack.nl">Dimitri van Heesch</a>,

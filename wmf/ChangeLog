@@ -1,3 +1,4 @@
+v. 0.2.2
 	* fix wmf2x arg detection bug (Bob Friesenhahn)
 	* added --with-layers option (fjf)
 	* de-necessitate GD, add libpng support (highly experimental);

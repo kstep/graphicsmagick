@@ -1,4 +1,4 @@
-/* wmfconfig.h.in.  Generated automatically from configure.ac by autoheader.  */
+/* wmfconfig.h.in.  Generated automatically from configure.in by autoheader.  */
 
 /* define if you wish to build the magick device layer */
 #undef ENABLE_MAGICK
@@ -99,8 +99,14 @@
 /* define if you have libxml2 */
 #undef HAVE_XML2
 
+/* Name of package */
+#undef PACKAGE
+
 /* Define if you have the ANSI C header files. */
 #undef STDC_HEADERS
+
+/* Version number of package */
+#undef VERSION
 
 /* defining this will disable egs, fig, svg & foreign layers */
 #undef WITHOUT_LAYERS

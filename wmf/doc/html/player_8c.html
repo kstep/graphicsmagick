@@ -8,10 +8,10 @@
 <a class="qindex" href="index.html">Main Page</a> &nbsp; <a class="qindex" href="classes.html">Alphabetical List</a> &nbsp; <a class="qindex" href="annotated.html">Data Structures</a> &nbsp; <a class="qindex" href="files.html">File List</a> &nbsp; <a class="qindex" href="functions.html">Data Fields</a> &nbsp; <a class="qindex" href="globals.html">Globals</a> &nbsp; </center>
 <hr><h1>player.c File Reference</h1><table border=0 cellpadding=0 cellspacing=0>
 <tr><td colspan=2><br><h2>Functions</h2></td></tr>
-<tr><td nowrap align=right valign=top><a class="el" href="types_8h.html#a5">wmf_error_t</a>&nbsp;</td><td valign=bottom><a class="el" href="player_8c.html#a0">wmf_player_init</a> (<a class="el" href="types_8h.html#a21">wmfAPI</a> *API)</td></tr>
-<tr><td nowrap align=right valign=top><a class="el" href="types_8h.html#a5">wmf_error_t</a>&nbsp;</td><td valign=bottom><a class="el" href="player_8c.html#a1">wmf_scan</a> (<a class="el" href="types_8h.html#a21">wmfAPI</a> *API, unsigned long flags, <a class="el" href="types_8h.html#a14">wmfD_Rect</a> *d_r)</td></tr>
-<tr><td nowrap align=right valign=top><a class="el" href="types_8h.html#a5">wmf_error_t</a>&nbsp;</td><td valign=bottom><a class="el" href="player_8c.html#a2">wmf_size</a> (<a class="el" href="types_8h.html#a21">wmfAPI</a> *API, float *width, float *height)</td></tr>
-<tr><td nowrap align=right valign=top><a class="el" href="types_8h.html#a5">wmf_error_t</a>&nbsp;</td><td valign=bottom><a class="el" href="player_8c.html#a3">wmf_play</a> (<a class="el" href="types_8h.html#a21">wmfAPI</a> *API, unsigned long flags, <a class="el" href="types_8h.html#a14">wmfD_Rect</a> *d_r)</td></tr>
+<tr><td nowrap align=right valign=top><a class="el" href="types_8h.html#a5">wmf_error_t</a>&nbsp;</td><td valign=bottom><a class="el" href="player_8c.html#a0">wmf_player_init</a> (<a class="el" href="types_8h.html#a22">wmfAPI</a> *API)</td></tr>
+<tr><td nowrap align=right valign=top><a class="el" href="types_8h.html#a5">wmf_error_t</a>&nbsp;</td><td valign=bottom><a class="el" href="player_8c.html#a1">wmf_scan</a> (<a class="el" href="types_8h.html#a22">wmfAPI</a> *API, unsigned long flags, <a class="el" href="types_8h.html#a15">wmfD_Rect</a> *d_r)</td></tr>
+<tr><td nowrap align=right valign=top><a class="el" href="types_8h.html#a5">wmf_error_t</a>&nbsp;</td><td valign=bottom><a class="el" href="player_8c.html#a2">wmf_size</a> (<a class="el" href="types_8h.html#a22">wmfAPI</a> *API, float *width, float *height)</td></tr>
+<tr><td nowrap align=right valign=top><a class="el" href="types_8h.html#a5">wmf_error_t</a>&nbsp;</td><td valign=bottom><a class="el" href="player_8c.html#a3">wmf_play</a> (<a class="el" href="types_8h.html#a22">wmfAPI</a> *API, unsigned long flags, <a class="el" href="types_8h.html#a15">wmfD_Rect</a> *d_r)</td></tr>
 </table>
 <hr><h2>Function Documentation</h2>
 <a name="a3" doxytag="player.c::wmf_play"></a><p>
@@ -24,7 +24,7 @@
 <a class="el" href="types_8h.html#a5">wmf_error_t</a> wmf_play 
           </td>
           <td class="md">(&nbsp</td>
-          <td class="md"><a class="el" href="types_8h.html#a21">wmfAPI</a> *          </td>
+          <td class="md"><a class="el" href="types_8h.html#a22">wmfAPI</a> *          </td>
           <td class="mdname"> <em>API</em>,           </td>
         </tr>
         <tr>
@@ -42,7 +42,7 @@
           <td class="md">        <tr>
           <td></td>
           <td></td>
-          <td class="md"><a class="el" href="types_8h.html#a14">wmfD_Rect</a> *          </td>
+          <td class="md"><a class="el" href="types_8h.html#a15">wmfD_Rect</a> *          </td>
           <td class="mdname"> <em>d_r</em>          </td>
         </tr>
         <tr>
@@ -99,7 +99,7 @@ Returns the library error state (<b>wmf_E_None</b> on success). </dl>    </td>
 <a class="el" href="types_8h.html#a5">wmf_error_t</a> wmf_player_init 
           </td>
           <td class="md">(&nbsp</td>
-          <td class="md"><a class="el" href="types_8h.html#a21">wmfAPI</a> *          </td>
+          <td class="md"><a class="el" href="types_8h.html#a22">wmfAPI</a> *          </td>
           <td class="mdname"> <em>API</em>          </td>
           <td class="md">)&nbsp;</td>
           <td class="md">          </td>
@@ -132,7 +132,7 @@ For internal use only.    </td>
 <a class="el" href="types_8h.html#a5">wmf_error_t</a> wmf_scan 
           </td>
           <td class="md">(&nbsp</td>
-          <td class="md"><a class="el" href="types_8h.html#a21">wmfAPI</a> *          </td>
+          <td class="md"><a class="el" href="types_8h.html#a22">wmfAPI</a> *          </td>
           <td class="mdname"> <em>API</em>,           </td>
         </tr>
         <tr>
@@ -150,7 +150,7 @@ For internal use only.    </td>
           <td class="md">        <tr>
           <td></td>
           <td></td>
-          <td class="md"><a class="el" href="types_8h.html#a14">wmfD_Rect</a> *          </td>
+          <td class="md"><a class="el" href="types_8h.html#a15">wmfD_Rect</a> *          </td>
           <td class="mdname"> <em>d_r</em>          </td>
         </tr>
         <tr>
@@ -205,7 +205,7 @@ Returns the library error state (<b>wmf_E_None</b> on success). </dl>    </td>
 <a class="el" href="types_8h.html#a5">wmf_error_t</a> wmf_size 
           </td>
           <td class="md">(&nbsp</td>
-          <td class="md"><a class="el" href="types_8h.html#a21">wmfAPI</a> *          </td>
+          <td class="md"><a class="el" href="types_8h.html#a22">wmfAPI</a> *          </td>
           <td class="mdname"> <em>API</em>,           </td>
         </tr>
         <tr>
@@ -266,7 +266,7 @@ height return
 Returns the library error state (<b>wmf_E_None</b> on success). Possible library error state of <b>wmf_E_Glitch</b> (the metafile has not been scanned). </dl>    </td>
   </tr>
 </table>
-<hr><address><small>Generated at Fri Aug 17 16:45:19 2001 for libwmf by
+<hr><address><small>Generated at Sun Oct 28 12:22:55 2001 for libwmf by
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.gif" alt="doxygen" align="middle" border=0 
 width=110 height=53></a>1.2.9.1 written by <a href="mailto:dimitri@stack.nl">Dimitri van Heesch</a>,

@@ -131,7 +131,19 @@ DOCUMENTATION = \
 	x_2draw_8h.html \
 	x_2font_8h.html \
 	x_8c.html \
-	x_8h.html
+	x_8h.html \
+	foreign_8c.html \
+	foreign_8h.html \
+	ipa_2xgd_2region_8h.html \
+	xgd_2bmp_8h.html \
+	xgd_2device_8h.html \
+	xgd_2draw_8h.html \
+	xgd_2font_8h.html \
+	xgd_8c.html \
+	xgd_8h.html \
+	struct__gd__t.html \
+	struct__wmfImage.html \
+	struct__wmf__foreign__t.html
 
 htmldoc_DATA = $(DOCUMENTATION)
 
