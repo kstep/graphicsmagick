@@ -199,6 +199,8 @@ static const MagickInfo
     { "PS", ReadPSImage, WritePSImage, True, "Adobe PostScript file" },
     { "PS2", (Image *(*)(const ImageInfo *)) NULL, WritePS2Image, True,
       "Adobe Level II PostScript file" },
+    { "PS3", (Image *(*)(const ImageInfo *)) NULL, WritePS3Image, True,
+      "Adobe Level III PostScript file" },
     { "PSD", ReadPSDImage, WritePSDImage, False,
       "Adobe Photoshop bitmap file" },
 #if defined(HasTIFF)

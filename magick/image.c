@@ -183,7 +183,6 @@ Export Image *AllocateImage(const ImageInfo *image_info)
   allocated_image->iptc_profile.length=0;
   allocated_image->iptc_profile.info=(unsigned char *) NULL;
   allocated_image->pixels=(RunlengthPacket *) NULL;
-  allocated_image->packet=(RunlengthPacket *) NULL;
   allocated_image->packets=0;
   allocated_image->packet_size=0;
   allocated_image->packed_pixels=(unsigned char *) NULL;

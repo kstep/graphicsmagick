@@ -48,7 +48,7 @@ libMagick_la_SOURCES = PreRvIcccm.c animate.c annotate.c avs.c bmp.c cmyk.c \
   gradation.c gray.c hdf.c histogram.c html.c icc.c icon.c image.c \
   iptc.c jbig.c jpeg.c label.c logo.c magick.c map.c matte.c memory.c \
   miff.c monitor.c mono.c montage.c mtv.c null.c pcd.c pcl.c pcx.c \
-  pdf.c pict.c pix.c plasma.c png.c pnm.c preview.c ps.c ps2.c psd.c \
+  pdf.c pict.c pix.c plasma.c png.c pnm.c preview.c ps.c ps2.c ps3.c psd.c \
   pwp.c quantize.c rgb.c rla.c rle.c segment.c sfw.c sgi.c shear.c \
   signature.c stegano.c sun.c tga.c tiff.c tile.c tim.c transform.c \
   ttf.c txt.c uil.c utility.c uyvy.c vicar.c vid.c viff.c widget.c x.c \

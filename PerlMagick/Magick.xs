@@ -2114,22 +2114,27 @@ Blob(ref,...)
       clone->scene=scene++;
       if (!WriteImage(package_info->image_info,clone))
         {
+          DestroyImage(clone);
           PUSHs(&sv_undef);
           continue;
         }
-      DestroyImage(clone);
-      image->file=fopen(filename,"rb");
-      if (image->file == (FILE *) NULL)
-        {
-          PUSHs(&sv_undef);
-          continue;
-        }
-      data=(char *) safemalloc(image->filesize);
-      ReadData(data,1,image->filesize,image->file);
-      (void) fclose(image->file);
+      clone->file=fopen(filename,"rb");
       remove(filename);
-      PUSHs(sv_2mortal(newSVpv(data,image->filesize)));
+      if (clone->file == (FILE *) NULL)
+        {
+          DestroyImage(clone);
+          PUSHs(&sv_undef);
+          continue;
+        }
+      (void) fseek(clone->file,0L,SEEK_END);
+      clone->filesize=ftell(clone->file);
+      (void) fseek(clone->file,0L,SEEK_SET);
+      data=(char *) safemalloc(clone->filesize);
+      ReadData(data,1,clone->filesize,clone->file);
+      (void) fclose(clone->file);
+      PUSHs(sv_2mortal(newSVpv(data,clone->filesize)));
       safefree((char *) data);
+      DestroyImage(clone);
     }
 
   MethodError:

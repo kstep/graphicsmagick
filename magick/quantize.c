@@ -644,7 +644,7 @@ static unsigned int Classification(CubeInfo *cube_info,const Image *image)
 %  A description of each parameter follows:
 %
 %    o cloned_info: Method CloneQuantizeInfo returns a duplicate of the given
-%      image info, or if image info is NULL a new one.
+%      quantize info, or if image info is NULL a new one.
 %
 %    o quantize_info: a structure of type info.
 %

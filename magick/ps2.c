@@ -383,25 +383,13 @@ Export unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
           (void) fprintf(image->file,"%%%%Pages: 0\n");
         else
           {
-            Image
-             *next_image;
-
-            unsigned int
-              pages;
-
-            /*
-              Compute the number of pages.
-            */
             (void) fprintf(image->file,"%%%%Orientation: Portrait\n");
             (void) fprintf(image->file,"%%%%PageOrder: Ascend\n");
-            pages=1;
-            if (image_info->adjoin)
-              for (next_image=image->next; next_image != (Image *) NULL; )
-              {
-                next_image=next_image->next;
-                pages++;
-              }
-            (void) fprintf(image->file,"%%%%Pages: %u\n",pages);
+            if (!image_info->adjoin)
+              (void) fprintf(image->file,"%%%%Pages: 0\n");
+            else
+              (void) fprintf(image->file,"%%%%Pages: %u\n",
+                GetNumberScenes(image));
           }
         (void) fprintf(image->file,"%%%%EndComments\n");
         (void) fprintf(image->file,"\n%%%%BeginDefaults\n");

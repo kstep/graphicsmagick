@@ -153,7 +153,7 @@ testRead( 'input_p5.pgm', '4d21ec5c0ed543eeb6d478515c66ff14' );
 # Apple Macintosh QuickDraw/PICT file
 #
 ++$test;
-testRead( 'input.pict', 'd25208a1f7e2f4314181a73eb88f5371' );
+testRead( 'input.pict', '2cdf3d196a7974c33e788c032cb918e0' );
 
 #
 # Alias/Wavefront RLE image format

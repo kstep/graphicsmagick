@@ -415,8 +415,7 @@ typedef struct _Image
     *signature;
 
   RunlengthPacket
-    *pixels,
-    *packet;
+    *pixels;
 
   unsigned long
     packets;
@@ -705,6 +704,7 @@ extern Export unsigned int
   WritePNMImage(const ImageInfo *image_info,Image *image),
   WritePREVIEWImage(const ImageInfo *image_info,Image *image),
   WritePS2Image(const ImageInfo *image_info,Image *image),
+  WritePS3Image(const ImageInfo *image_info,Image *image),
   WritePSDImage(const ImageInfo *image_info,Image *image),
   WritePSImage(const ImageInfo *image_info,Image *image),
   WriteRGBImage(const ImageInfo *image_info,Image *image),

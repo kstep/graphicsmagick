@@ -1044,7 +1044,7 @@ Export Image *ReadPICTImage(const ImageInfo *image_info)
           packets=0;
           max_packets=Max((tiled_image->columns*tiled_image->rows+4) >> 3,1);
           tiled_image->pixels=(RunlengthPacket *)
-            AllocateMemory(max_packets*sizeof(RunlengthPacket));
+            AllocateMemory(5*max_packets*sizeof(RunlengthPacket));
           if ((code != 0x9a) && (bytes_per_line & 0x8000) == 0)
             pixels=DecodeImage(tiled_image,bytes_per_line,1);
           else
