@@ -21,7 +21,7 @@
 	<UL>
 
 		<LI><A HREF="#acquirememory">AcquireMemory</A>
-		<LI><A HREF="#copymemory">CopyMemory</A>
+		<LI><A HREF="#clonememory">CloneMemory</A>
 		<LI><A HREF="#liberatememory">LiberateMemory</A>
 		<LI><A HREF="#reacquirememory">ReacquireMemory</A>
 	</UL>
@@ -39,7 +39,7 @@
 <H1><A NAME="synopsis">
 <FONT SIZE=-1>SYNOPSIS</FONT></A></H1>
 <P>void * <STRONG>AcquireMemory</STRONG>( const size_t size );</P>
-<P>void * <STRONG>CopyMemory</STRONG>( void *destination, const void *source, const size_t size );</P>
+<P>void * <STRONG>CloneMemory</STRONG>( void *destination, const void *source, const size_t size );</P>
 <P>void  <STRONG>LiberateMemory</STRONG>( void ** memory );</P>
 <P>void  <STRONG>ReacquireMemory</STRONG>( void ** memory, const size_t size );</P>
 <P>
@@ -58,9 +58,9 @@
 The size of the memory in bytes to allocate.
 <P></P></DL></DL>
 <P>
-<H2><A NAME="copymemory">CopyMemory</A></H2>
-<blockquote>CopyMemory() copies size bytes from memory area source to the destination. Copying between objects that overlap will take place correctly. It returns destination. </blockquote><P>The format of the CopyMemory method is:</P>
-<blockquote>void *CopyMemory ( void *destination, const void *source, const size_t size ); </blockquote><P>
+<H2><A NAME="clonememory">CloneMemory</A></H2>
+<blockquote>CloneMemory() copies size bytes from memory area source to the destination. Copying between objects that overlap will take place correctly. It returns destination. </blockquote><P>The format of the CloneMemory method is:</P>
+<blockquote>void *CloneMemory ( void *destination, const void *source, const size_t size ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <dd><p></p><dt><STRONG>size:</STRONG><BR>

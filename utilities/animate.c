@@ -374,7 +374,6 @@ int main(int argc,char **argv)
                 FormatString(filename,"%.1024s[%u]",image_info->filename,scene);
               (void) strncpy(image_info->filename,filename,MaxTextExtent-1);
             }
-          (void) strcpy(image_info->magick,"MIFF");
           image_info->colorspace=quantize_info->colorspace;
           image_info->dither=quantize_info->dither;
           next_image=ReadImage(image_info,&exception);
@@ -956,6 +955,7 @@ int main(int argc,char **argv)
       }
     }
   }
+  i--;
   if ((image == (Image *) NULL) && (image_list == (Image *) NULL))
     MagickError(OptionError,"Missing an image file name",(char *) NULL);
   if (image == (Image *) NULL)

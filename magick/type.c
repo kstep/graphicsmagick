@@ -316,15 +316,15 @@ MagickExport const TypeInfo *GetTypeInfoByFamily(const char *family,
     if (weight == 0)
       score+=16;
     else
-      score+=(16*(800-((long) Max(Min(weight,900),type_info->weight)-
-        (long) Min(Min(weight,900),type_info->weight))))/800;
+      score+=(16*(800-((long) Max(Min(weight,900),p->weight)-
+        (long) Min(Min(weight,900),p->weight))))/800;
     if (stretch == AnyStretch)
       score+=8;
     else
       {
         range=(long) UltraExpandedStretch-(long) NormalStretch;
-        score+=(8*(range-((long) Max(stretch,type_info->stretch)-
-          (long) Min(stretch,type_info->stretch))))/range;
+        score+=(8*(range-((long) Max(stretch,p->stretch)-
+          (long) Min(stretch,p->stretch))))/range;
       }
     if (score > max_score)
       {
