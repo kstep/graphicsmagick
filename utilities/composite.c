@@ -217,25 +217,39 @@ static unsigned int CompositeImageList(ImageInfo *image_info,Image **image,
           register PixelPacket
             *q;
 
+          unsigned int
+            matte;
+
           /*
             Create mattes for dissolve.
           */
-          composite_image->storage_class=DirectClass;
+          matte=composite_image->matte;
           composite_image->matte=True;
           for (y=0; y < (long) composite_image->rows; y++)
           {
             q=GetImagePixels(composite_image,0,y,composite_image->columns,1);
             if (q == (PixelPacket *) NULL)
               break;
-            for (x=0; x < (long) composite_image->columns; x++)
-            {
-              if (composite_image->matte)
+       
+            if (matte)
+              for (x=0; x < (long) composite_image->columns; x++)
+              {
                 q->opacity=(Quantum)
                   (((MaxRGB-q->opacity)*option_info->dissolve)/100);
-              else
-                q->opacity=(Quantum) ((MaxRGB*option_info->dissolve)/100);
-              q++;
-            }
+                q++;
+              }
+            else
+              {
+                Quantum
+                   factor;
+
+                factor=(Quantum) ((MaxRGB*option_info->dissolve)/100);
+                for (x=0; x < (long) composite_image->columns; x++)
+                {
+                  q->opacity=factor;
+                  q++;
+                }
+              }
             if (!SyncImagePixels(composite_image))
               break;
           }
