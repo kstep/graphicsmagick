@@ -34,7 +34,7 @@ extern "C" {
   identifying the release.
 */
 #define MagickPackageName "GraphicsMagick"
-#define MagickCopyright  "Copyright (C) 2002, 2003, 2004 " MagickPackageName " Group"
+#define MagickCopyright  "Copyright (C) 2002, 2003, 2004 GraphicsMagick Group. Additional copyrights and licenses apply to this software, see http://www.GraphicsMagick.org/www/Copyright.html"
 #define MagickLibVersion  0x020000
 #define MagickLibVersionText  "1.2"
 #define MagickLibVersionNumber 2,0,0

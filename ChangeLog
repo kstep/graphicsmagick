@@ -1,5 +1,9 @@
 2004-04-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/version.h.in: Make it clear in the -version output that a
+	mutitude of copyrights and licenses apply to this software.
+	* magick/utility.c (GetPathComponent): Avoid strncpy() of
+	overlapping regions.
 	* magick/command.c (DisplayImageCommand): Eliminate double-free
 	of resource_info->image_geometry.
 	(DisplayImageCommand): 'display' was improperly requiring at least
