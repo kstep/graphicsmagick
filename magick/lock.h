@@ -82,7 +82,9 @@ typedef struct _RecursiveMutexLock
 
   /* Current owner of the lock. */
   pthread_t owner_id;
-#endif /* defined(HasPTHREADS) */
+#else /* defined(HasPTHREADS) */
+  int sans;
+#endif
 
 } RecursiveMutexLock_t;
 
