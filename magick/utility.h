@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2003 GraphicsMagick Group
+  Copyright (C) 2003, 2004 GraphicsMagick Group
   Copyright (C) 2002 ImageMagick Studio
   Copyright 1991-1999 E. I. du Pont de Nemours and Company
  
@@ -153,6 +153,7 @@ extern MagickExport void
   Reallocate memory using provided pointer.  If pointer value is null,
   then allocate new memory. If reallocation fails then free memory,
   setting pointer to NULL.
+  C++ does not accept the final memory=_magick_mp without a cast.
 */
 #define MagickReallocMemory(memory,size) \
 { \
@@ -165,7 +166,7 @@ extern MagickExport void
         if (_magick_mp == 0) \
           free(memory); \
       } \
-   memory=_magick_mp; \
+    (void *) memory=_magick_mp;                  \
 }
 
 /*

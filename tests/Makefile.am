@@ -260,7 +260,7 @@ check-constitute: constitute$(EXEEXT)
 	  storage_type_failed=0 ; \
 	  for map in $(CHECK_CONSTITUTE_MAPS) ; \
 	  do \
-	    if $(RUNENV) ./constitute -storagetype $$storage_type $(srcdir)/input_truecolor.miff $$map ; \
+	    if $(RUNENV) $(MEMCHECK) ./constitute -storagetype $$storage_type $(srcdir)/input_truecolor.miff $$map ; \
 	    then \
 	      : ; \
 	    else \
@@ -287,7 +287,7 @@ check-rwblob: rwblob$(EXEEXT)
 	  format_failed=0 ; \
 	  for file in $(CHECK_FILES) ; \
 	  do \
-	    if $(RUNENV) ./rwblob $$file $$format ; \
+	    if $(RUNENV) $(MEMCHECK) ./rwblob $$file $$format ; \
 	    then \
 	      : ; \
 	    else \
@@ -314,7 +314,7 @@ check-rwfile: rwfile$(EXEEXT)
 	  format_failed=0 ; \
 	  for file in  $(CHECK_FILES) ; \
 	  do \
-	    if $(RUNENV) ./rwfile $$file $$format ; \
+	    if $(RUNENV) $(MEMCHECK) ./rwfile $$file $$format ; \
 	    then \
 	      : ; \
 	    else \
@@ -341,7 +341,7 @@ check-rwblob-sized: rwblob$(EXEEXT)
 	  format_failed=0 ; \
 	  for file in $(CHECK_FILES) ; \
 	  do \
-	    if $(RUNENV) ./rwblob -size 70x46 $$file $$format ; \
+	    if $(RUNENV) $(MEMCHECK) ./rwblob -size 70x46 $$file $$format ; \
 	    then \
 	      : ; \
 	    else \
@@ -368,7 +368,7 @@ check-rwfile-sized: rwfile$(EXEEXT)
 	  format_failed=0 ; \
 	  for file in $(CHECK_FILES) ; \
 	  do \
-	    if $(RUNENV) ./rwfile -size 70x46 $$file $$format ; \
+	    if $(RUNENV) $(MEMCHECK) ./rwfile -size 70x46 $$file $$format ; \
 	    then \
 	      : ; \
 	    else \
@@ -405,7 +405,7 @@ check-miff: rwfile$(EXEEXT)
 	  test_failed=0 ; \
 	  for file in $(CHECK_FILES) ; \
 	  do \
-	    if $(RUNENV) ./rwfile -compress $$compress $$file MIFF ; \
+	    if $(RUNENV) $(MEMCHECK) ./rwfile -compress $$compress $$file MIFF ; \
 	    then \
 	      : ; \
 	    else \

@@ -779,18 +779,18 @@ uninstall-am: uninstall-info-am
 
 
 check:
-	@$(RUNENV) SRCDIR=$(SRCDIR) ./exceptions
-	@$(RUNENV) SRCDIR=$(SRCDIR) ./attributes
-	@$(RUNENV) SRCDIR=$(SRCDIR) ./appendImages
-	@$(RUNENV) SRCDIR=$(SRCDIR) ./averageImages
-	@$(RUNENV) SRCDIR=$(SRCDIR) ./coalesceImages
-	-@$(RUNENV) SRCDIR=$(SRCDIR) ./coderInfo # Test fails for moby build since no .so file exists.
-	@$(RUNENV) SRCDIR=$(SRCDIR) ./color
-	@$(RUNENV) SRCDIR=$(SRCDIR) ./colorHistogram > colorHistogram.txt
-	@$(RUNENV) SRCDIR=$(SRCDIR) ./montageImages
-	@$(RUNENV) SRCDIR=$(SRCDIR) ./morphImages
-	-@$(RUNENV) SRCDIR=$(SRCDIR) ./readWriteBlob # HP compiler fails on this one due to libxml2!
-	@$(RUNENV) SRCDIR=$(SRCDIR) ./readWriteImages
+	@$(RUNENV) SRCDIR=$(SRCDIR) $(MEMCHECK) ./exceptions
+	@$(RUNENV) SRCDIR=$(SRCDIR) $(MEMCHECK) ./attributes
+	@$(RUNENV) SRCDIR=$(SRCDIR) $(MEMCHECK) ./appendImages
+	@$(RUNENV) SRCDIR=$(SRCDIR) $(MEMCHECK) ./averageImages
+	@$(RUNENV) SRCDIR=$(SRCDIR) $(MEMCHECK) ./coalesceImages
+	-@$(RUNENV) SRCDIR=$(SRCDIR) $(MEMCHECK) ./coderInfo # Test fails for moby build since no .so file exists.
+	@$(RUNENV) SRCDIR=$(SRCDIR) $(MEMCHECK) ./color
+	@$(RUNENV) SRCDIR=$(SRCDIR) $(MEMCHECK) ./colorHistogram > colorHistogram.txt
+	@$(RUNENV) SRCDIR=$(SRCDIR) $(MEMCHECK) ./montageImages
+	@$(RUNENV) SRCDIR=$(SRCDIR) $(MEMCHECK) ./morphImages
+	-@$(RUNENV) SRCDIR=$(SRCDIR) $(MEMCHECK) ./readWriteBlob # HP compiler fails on this one due to libxml2!
+	@$(RUNENV) SRCDIR=$(SRCDIR) $(MEMCHECK) ./readWriteImages
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

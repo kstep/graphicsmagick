@@ -432,7 +432,7 @@ man_MANS = $(MANPAGES)
 # Additional files to distribute
 EXTRA_DIST = $(ALLMANPAGES)
 RUNENV = $(SHELL) $(top_builddir)/rungm.sh
-GM = @$(RUNENV) ./gm
+GM = @$(RUNENV) $(MEMCHECK) ./gm
 MODEL_MIFF = $(top_srcdir)/Magick++/demo/model.miff
 SMILE_MIFF = $(top_srcdir)/Magick++/demo/smile.miff
 GENERIC_TTF = $(top_srcdir)/PerlMagick/demo/Generic.ttf

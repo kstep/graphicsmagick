@@ -48,7 +48,7 @@ clean-local:
 
 RUNENV = $(SHELL) $(top_builddir)/rungm.sh
 
-GM=@$(RUNENV) ./gm
+GM=@$(RUNENV) $(MEMCHECK) ./gm
 
 MODEL_MIFF=$(top_srcdir)/Magick++/demo/model.miff
 SMILE_MIFF=$(top_srcdir)/Magick++/demo/smile.miff

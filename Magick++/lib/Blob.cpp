@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002
+// Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002, 2004
 //
 // Implementation of Blob
 //
@@ -89,7 +89,8 @@ void Magick::Blob::base64 ( const std::string base64_ )
     Base64Decode( base64_.c_str(), &length );
 
   if(decoded)
-    updateNoCopy( static_cast<void*>(decoded), length, MallocAllocator );
+    updateNoCopy( static_cast<void*>(decoded), length,
+                  Magick::Blob::MallocAllocator );
 }
 
 // Return Base64-encoded string representation.
@@ -134,7 +135,7 @@ void Magick::Blob::update ( const void* data_, size_t length_ )
 // ensure that the pointer supplied is not deleted or otherwise
 // modified after it has been supplied to this method.
 void Magick::Blob::updateNoCopy ( void* data_, size_t length_,
-                                  Allocator allocator_  )
+                                  Magick::Blob::Allocator allocator_  )
 {
   bool doDelete = false;
   {

@@ -1,5 +1,7 @@
 2004-01-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/utility.h (MagickReallocMemory): Added a cast required to
+	make C++ Happy.
 	* coders/tiff.c: Adjust for bitstream API function renaming.
 	* magick/bit_stream.h: Rename BitStreamRead() to
 	BitStreamMSBRead() to indicate that it reads most significant bits

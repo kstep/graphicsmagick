@@ -5425,8 +5425,10 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
           /*
             Strip off image format prefix.
           */
+          char base_filename[MaxTextExtent];
           p++;
-          (void) strncpy(image_info->filename,p,MaxTextExtent-1);
+          (void) strncpy(base_filename,p,MaxTextExtent-1);
+          (void) strcpy(image_info->filename,base_filename);
           (void) strncpy(magic,format,MaxTextExtent-1);
           if (LocaleCompare(magic,"IMPLICIT") != 0)
             {

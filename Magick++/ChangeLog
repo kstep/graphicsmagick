@@ -1,3 +1,11 @@
+2004-01-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Magick++/STL.h (WriteImages): Pass Blob::MallocAllocator to
+	updateNoCopy() in order to ensure that correct deallocator is
+	used.
+	* tests/readWriteBlob.cpp (main): Needed to delete character array
+	using array [] reference.
+
 2004-01-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* demo/analyze.cpp (main): Fix a GNU C++ library portability

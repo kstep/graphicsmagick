@@ -22,8 +22,8 @@ public:
   myBlob( std::ifstream &stream_ )
     : Blob()
     {
-      char* blobData = new char[100000];
-      char* c=blobData;
+      unsigned char* blobData = new unsigned char[100000];
+      char* c= reinterpret_cast<char *>(blobData);
       size_t blobLen=0;
       while( (blobLen< 100000) && stream_.get(*c) )
         {
@@ -59,174 +59,175 @@ int main( int /*argc*/, char ** argv)
 
   string testimage;
 
-  try {
+  try
+    {
     
-    //
-    // Test reading BLOBs
-    //
-    {
-      string signature("");
+      //
+      // Test reading BLOBs
+      //
       {
-	Image image(srcdir + "test_image.miff");
-	signature = image.signature();
-      }
-
-      // Read raw data from file into BLOB
-      testimage = srcdir + "test_image.miff";
-      ifstream in( testimage.c_str(), ios::in | ios::binary );
-      if( !in )
-	{
-	  cout << "Failed to open file " << testimage << " for input!" << endl;
-	  exit(1);
-	}
-      char* blobData = new char[100000];
-      char* c=blobData;
-      size_t blobLen=0;
-      while( (blobLen< 100000) && in.get(*c) )
+        string signature("");
         {
-          c++;
-          blobLen++;
+          Image image(srcdir + "test_image.miff");
+          signature = image.signature();
         }
-      if ((!in.eof()) || (blobLen == 0))
+
+        // Read raw data from file into BLOB
+        testimage = srcdir + "test_image.miff";
+        ifstream in( testimage.c_str(), ios::in | ios::binary );
+        if( !in )
+          {
+            cout << "Failed to open file " << testimage << " for input!" << endl;
+            exit(1);
+          }
+        unsigned char* blobData = new unsigned char[100000];
+        char* c=reinterpret_cast<char *>(blobData);
+        size_t blobLen=0;
+        while( (blobLen< 100000) && in.get(*c) )
+          {
+            c++;
+            blobLen++;
+          }
+        if ((!in.eof()) || (blobLen == 0))
+          {
+            cout << "Failed to read file " << testimage << " for input!" << endl;
+            exit(1);
+          }
+        in.close();
+
+        // Construct Magick++ Blob
+        Blob blob(static_cast<const void*>(blobData), blobLen);
+        delete [] blobData;
+
+        // If construction of image fails, an exception should be thrown
         {
-          cout << "Failed to read file " << testimage << " for input!" << endl;
-          exit(1);
+          // Construct with blob data only
+          Image image( blob );
+          if ( image.signature() != signature )
+            {
+              ++failures;
+              cout << "Line: " << __LINE__
+                   << "  Image signature "
+                   << image.signature()
+                   << " != "
+                   << signature << endl;
+            }
         }
-      in.close();
 
-      // Construct Magick++ Blob
-      Blob blob(static_cast<const void*>(blobData), blobLen);
-      delete blobData;
+        {
+          // Construct with image geometry and blob data
+          Image image(  blob, Geometry(148,99));
+          if ( image.signature() != signature )
+            {
+              ++failures;
+              cout << "Line: " << __LINE__
+                   << "  Image signature "
+                   << image.signature()
+                   << " != "
+                   << signature << endl;
+            }
+        }
 
-      // If construction of image fails, an exception should be thrown
-      {
-	// Construct with blob data only
-	Image image( blob );
-	if ( image.signature() != signature )
-	  {
-	    ++failures;
-	    cout << "Line: " << __LINE__
-		 << "  Image signature "
-		 << image.signature()
-		 << " != "
-		 << signature << endl;
-	  }
+        {
+          // Construct default image, and then read in blob data
+          Image image;
+          image.read( blob );
+          if ( image.signature() != signature )
+            {
+              ++failures;
+              cout << "Line: " << __LINE__
+                   << "  Image signature "
+                   << image.signature()
+                   << " != "
+                   << signature << endl;
+            }
+        }
+
+        {
+          // Construct default image, and then read in blob data with
+          // image geometry
+          Image image;
+          image.read( blob, Geometry(148,99) );
+          if ( image.signature() != signature )
+            {
+              ++failures;
+              cout << "Line: " << __LINE__
+                   << "  Image signature "
+                   << image.signature()
+                   << " != "
+                   << signature << endl;
+            }
+        }
+
       }
 
+      // Test writing BLOBs
       {
-	// Construct with image geometry and blob data
-	Image image(  blob, Geometry(148,99));
-	if ( image.signature() != signature )
-	  {
-	    ++failures;
-	    cout << "Line: " << __LINE__
-		 << "  Image signature "
-		 << image.signature()
-		 << " != "
-		 << signature << endl;
-	  }
-      }
-
-      {
-	// Construct default image, and then read in blob data
-	Image image;
-	image.read( blob );
-	if ( image.signature() != signature )
-	  {
-	    ++failures;
-	    cout << "Line: " << __LINE__
-		 << "  Image signature "
-		 << image.signature()
-		 << " != "
-		 << signature << endl;
-	  }
-      }
-
-      {
-	// Construct default image, and then read in blob data with
-	// image geometry
-	Image image;
-	image.read( blob, Geometry(148,99) );
-	if ( image.signature() != signature )
-	  {
-	    ++failures;
-	    cout << "Line: " << __LINE__
-		 << "  Image signature "
-		 << image.signature()
-		 << " != "
-		 << signature << endl;
-	  }
-      }
-
-    }
-
-    // Test writing BLOBs
-    {
-      Blob blob;
-      string signature("");
-      {
-	Image image(srcdir + "test_image.miff");
-	image.magick("MIFF");
-	image.write( &blob );
-	signature = image.signature();
-      }
-      {
-	Image image(blob);
-	if ( image.signature() != signature )
-	  {
-	    ++failures;
-	    cout << "Line: " << __LINE__
-		 << "  Image signature "
-		 << image.signature()
-		 << " != "
-		 << signature << endl;
-	    image.display();
-	  }
-      }
+        Blob blob;
+        string signature("");
+        {
+          Image image(srcdir + "test_image.miff");
+          image.magick("MIFF");
+          image.write( &blob );
+          signature = image.signature();
+        }
+        {
+          Image image(blob);
+          if ( image.signature() != signature )
+            {
+              ++failures;
+              cout << "Line: " << __LINE__
+                   << "  Image signature "
+                   << image.signature()
+                   << " != "
+                   << signature << endl;
+              image.display();
+            }
+        }
       
-    }
-    // Test writing BLOBs via STL writeImages
-    {
-      Blob blob;
-
-      list<Image> first;
-      readImages( &first, srcdir + "test_image_anim.miff" );
-      writeImages( first.begin(), first.end(), &blob, true );
-    }
-
-    // Test constructing a BLOB from a derived class
-    {
-
-      string signature("");
+      }
+      // Test writing BLOBs via STL writeImages
       {
-	Image image(srcdir + "test_image.miff");
-	signature = image.signature();
+        Blob blob;
+
+        list<Image> first;
+        readImages( &first, srcdir + "test_image_anim.miff" );
+        writeImages( first.begin(), first.end(), &blob, true );
       }
 
-      // Read raw data from file into BLOB
-      testimage = srcdir + "test_image.miff";
-      ifstream in( testimage.c_str(), ios::in | ios::binary );
-      if( !in )
-	{
-	  cout << "Failed to open file for input!" << endl;
-	  exit(1);
-	}
+      // Test constructing a BLOB from a derived class
+      {
 
-      myBlob blob( in );
-      in.close();
+        string signature("");
+        {
+          Image image(srcdir + "test_image.miff");
+          signature = image.signature();
+        }
 
-      Image image( blob );
-      if ( image.signature() != signature )
-	{
-	  ++failures;
-	  cout << "Line: " << __LINE__
-	       << "  Image signature "
-	       << image.signature()
-	       << " != "
-	       << signature << endl;
-	}
+        // Read raw data from file into BLOB
+        testimage = srcdir + "test_image.miff";
+        ifstream in( testimage.c_str(), ios::in | ios::binary );
+        if( !in )
+          {
+            cout << "Failed to open file for input!" << endl;
+            exit(1);
+          }
+
+        myBlob blob( in );
+        in.close();
+
+        Image image( blob );
+        if ( image.signature() != signature )
+          {
+            ++failures;
+            cout << "Line: " << __LINE__
+                 << "  Image signature "
+                 << image.signature()
+                 << " != "
+                 << signature << endl;
+          }
+      }
     }
-  }
   
   catch( Exception &error_ )
     {
