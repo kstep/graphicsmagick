@@ -61,6 +61,7 @@ namespace MagickLib
 #  if defined(_MT) && defined(_DLL) && !defined(_LIB)
 #    define MagickDLLBuild
 #    pragma warning( disable: 4273 )      /* Disable the stupid dll linkage warnings */
+#    pragma warning( disable: 4251 )
 #    if !defined(MAGICK_IMPLEMENTATION)
 #      define MagickDLLDecl __declspec(dllimport)
 #      define MagickDLLDeclExtern extern __declspec(dllimport)
