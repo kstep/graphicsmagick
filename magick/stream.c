@@ -243,18 +243,8 @@ static const PixelPacket *AcquirePixelStream(const Image *image,const long x,
 */
 static void DestroyPixelStream(Image *image)
 {
-  StreamInfo
-    *stream_info;
-
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  if (image->cache == (void *) NULL)
-    return;
-  stream_info=(StreamInfo *) image->cache;
-  assert(stream_info->signature == MagickSignature);
-  if (stream_info->pixels != (PixelPacket *) NULL)
-    LiberateMemory((void **) &stream_info->pixels);
-  LiberateMemory((void **) &stream_info);
 }
 
 /*
@@ -465,6 +455,9 @@ MagickExport Image *ReadStream(const ImageInfo *image_info,
   register Image
     *p;
 
+  StreamInfo
+    *stream_info;
+
   /*
     Stream image pixels.
   */
@@ -480,7 +473,13 @@ MagickExport Image *ReadStream(const ImageInfo *image_info,
   image=ReadImage(clone_info,exception);
   DestroyImageInfo(clone_info);
   for (p=image; p != (Image *) NULL; p=p->next)
-    DestroyPixelStream(p);
+  {
+    stream_info=(StreamInfo *) p->cache;
+    assert(stream_info->signature == MagickSignature);
+    if (stream_info->pixels != (PixelPacket *) NULL)
+      LiberateMemory((void **) &stream_info->pixels);
+    LiberateMemory((void **) &stream_info);
+  }
   ResetPixelCacheMethods();
   for (p=image; p != (Image *) NULL; p=p->next)
     GetCacheInfo(&p->cache);
