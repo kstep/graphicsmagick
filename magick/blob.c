@@ -589,6 +589,7 @@ MagickExport int EOFBlob(const Image *image)
       (void) BZ2_bzerror(image->blob->file,&status);
       image->blob->eof=status == BZ_UNEXPECTED_EOF;
 #endif
+      break;
     }
     case FifoStream:
     {
@@ -1864,7 +1865,7 @@ MagickExport size_t ReadBlob(Image *image,const size_t length,void *data)
   assert(image->blob != (BlobInfo *) NULL);
   assert(image->blob->type != UndefinedStream);
   assert(data != (void *) NULL);
-  count=(-1);
+  count=0;
   switch (image->blob->type)
   {
     case UndefinedStream:

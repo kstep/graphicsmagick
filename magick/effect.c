@@ -339,7 +339,7 @@ static void BlurScanline(const double *kernel,const unsigned long width,
               aggregate.blue+=(*p)*q->blue;
               aggregate.opacity+=(*p)*q->opacity;
             }
-          if (((i+width/2-x) >= 0) && ((i+width/2-x) < (long) width))
+          if (((long) (i+width/2-x) >= 0) && ((i+width/2-x) < (long) width))
             scale+=kernel[i+width/2-x];
           p++;
           q++;
@@ -439,7 +439,7 @@ static int GetBlurKernel(unsigned long width,const double sigma,double **kernel)
     resolution than needed and average the results as a form of numerical
     integration to get the best accuracy.
   */
-  if (width <= 0)
+  if (width == 0)
     width=3;
   *kernel=(double *) AcquireMemory(width*sizeof(double));
   if (*kernel == (double *) NULL)
