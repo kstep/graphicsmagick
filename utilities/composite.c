@@ -471,12 +471,14 @@ unsigned int CompositeUtility(int argc,char **argv)
   option_info.compose=OverCompositeOp;
   composite_image=(Image *) NULL;
   option_info.displace_geometry=(char *) NULL;
+  filename=(char *) NULL;
   GetExceptionInfo(&exception);
   option_info.geometry=(char *) NULL;
   image=(Image *) NULL;
   image_info=CloneImageInfo((ImageInfo *) NULL);
   (void) strncpy(image_info->filename,argv[argc-1],MaxTextExtent-1);
   (void) SetImageInfo(image_info,True,&exception);
+  j=0;
   mask_image=(Image *) NULL;
   option_info.stegano=0;
   option_info.stereo=False;
@@ -488,8 +490,6 @@ unsigned int CompositeUtility(int argc,char **argv)
   /*
     Check command syntax.
   */
-  filename=(char *) NULL;
-  j=0;
   for (i=1; i < (argc-1); i++)
   {
     option=argv[i];

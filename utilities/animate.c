@@ -313,7 +313,9 @@ int main(int argc,char **argv)
   GetExceptionInfo(&exception);
   first_scene=0;
   image=(Image *) NULL;
+  j=0;
   last_scene=0;
+	status=True;
   /*
     Check for server name specified on the command line.
   */
@@ -379,8 +381,6 @@ int main(int argc,char **argv)
   /*
     Parse command line.
   */
-	status=True;
-  j=0;
   for (i=1; i <= argc; i++)
   {
     if (i < argc)
