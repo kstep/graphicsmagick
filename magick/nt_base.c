@@ -1449,12 +1449,11 @@ MagickExport int NTGhostscriptLoadDLL(void)
 
   memset((void*)&gs_vectors, 0, sizeof(GhostscriptVectors));
 
-#define GSCast(foo) ((int (MagickDLLCall *)(gs_main_instance *))(foo))
-  gs_vectors.exit=GSCast(lt_dlsym(gs_dll_handle,"gsapi_exit"));
-  gs_vectors.init_with_args=GSCast(lt_dlsym(gs_dll_handle,"gsapi_init_with_args"));
-  gs_vectors.new_instance=GSCast(lt_dlsym(gs_dll_handle,"gsapi_new_instance"));
-  gs_vectors.run_string=GSCast(lt_dlsym(gs_dll_handle,"gsapi_run_string"));
-  gs_vectors.delete_instance=GSCast(lt_dlsym(gs_dll_handle,"gsapi_delete_instance"));
+  gs_vectors.exit=(int (MagickDLLCall *)(gs_main_instance*))lt_dlsym(gs_dll_handle,"gsapi_exit");
+  gs_vectors.init_with_args=(int (MagickDLLCall *)(gs_main_instance *, int, char **))(lt_dlsym(gs_dll_handle,"gsapi_init_with_args"));
+  gs_vectors.new_instance=(int (MagickDLLCall *)(gs_main_instance **, void *))(lt_dlsym(gs_dll_handle,"gsapi_new_instance"));
+  gs_vectors.run_string=(int (MagickDLLCall *)(gs_main_instance *, const char *, int, int *))(lt_dlsym(gs_dll_handle,"gsapi_run_string"));
+  gs_vectors.delete_instance=(void (MagickDLLCall *)(gs_main_instance *))(lt_dlsym(gs_dll_handle,"gsapi_delete_instance"));
 
   if ((gs_vectors.exit==NULL) ||
       (gs_vectors.init_with_args==NULL) ||
