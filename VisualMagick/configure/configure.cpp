@@ -2256,7 +2256,7 @@ BOOL CConfigureApp::InitInstance()
               fontmap << "<fontmap>" << endl;
               fontmap << "  <font"
                       << " format=\"truetype\""
-                      << " glyphs=\"%SystemRoot%\\Fonts\\" << data_buffer << "\""
+                      << " glyphs=\"c:\\Windows\\Fonts\\" << data_buffer << "\""
                       << " fullname=\"" << font_full_name << "\""
                       << " name=\"" << font_name << "\""
                       << " />" << endl;
