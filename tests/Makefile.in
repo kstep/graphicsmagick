@@ -220,6 +220,8 @@ CHECK_FILES = \
 	'$(top_srcdir)/PerlMagick/t/input_p5.pgm' \
 	'$(top_srcdir)/PerlMagick/t/input_p6.ppm'
 
+@HasFPX_TRUE@FPX = @HasFPX_TRUE@FPX
+@HasFPX_FALSE@FPX = 
 @HasHDF_TRUE@HDF = @HasHDF_TRUE@HDF
 @HasHDF_FALSE@HDF = 
 @HasJBIG_TRUE@JBIG = @HasJBIG_TRUE@JBIG
@@ -244,6 +246,7 @@ CHECK_FORMATS = \
 	DIB \
 	FAX \
 	FITS \
+	$(FPX) \
 	GIF \
 	GRAY \
 	$(HDF) \

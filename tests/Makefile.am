@@ -56,6 +56,12 @@ CHECK_FILES = \
 	'$(top_srcdir)/PerlMagick/t/input_p5.pgm' \
 	'$(top_srcdir)/PerlMagick/t/input_p6.ppm'
 
+if HasFPX
+FPX=FPX
+else
+FPX=
+endif
+
 if HasHDF
 HDF=HDF
 else
@@ -103,6 +109,7 @@ CHECK_FORMATS = \
 	DIB \
 	FAX \
 	FITS \
+	$(FPX) \
 	GIF \
 	GRAY \
 	$(HDF) \

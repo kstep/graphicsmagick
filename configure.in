@@ -362,17 +362,27 @@ builddir=`pwd`
 #
 # Most delegates have includes in the same directory as the library
 #
-for dir in bzlib hdf/hdf/src jbig/libjbig jpeg lcms/source  png tiff/libtiff ttf/obj/.libs ttf/include xml xml/.libs zlib
+for dir in bzlib fpx hdf/hdf/src jbig/libjbig jpeg lcms/source png tiff/libtiff ttf/obj/.libs ttf/include xml xml/.libs zlib
 do
   if test -d "$builddir/$dir"
   then
     CPPFLAGS="$CPPFLAGS -I$builddir/$dir"
-    LDFLAGS="$LDFLAGS -L$builddir/$dir"
+    if test "$dir" != 'fpx'
+    then
+      LDFLAGS="$LDFLAGS -L$builddir/$dir"
+    else
+      LDFLAGS="$LDFLAGS -L$builddir/$dir/obj"
+    fi
   else
     if test -d "$srcdirfull/$dir"
     then
       CPPFLAGS="$CPPFLAGS -I$srcdirfull/$dir"
-      LDFLAGS="$LDFLAGS -L$srcdirfull/$dir"
+      if test "$dir" != 'fpx'
+      then
+        LDFLAGS="$LDFLAGS -L$srcdirfull/$dir"
+      else
+        LDFLAGS="$LDFLAGS -L$srcdirfull/$dir/obj"
+      fi
     fi
   fi
 done
@@ -651,7 +661,7 @@ then
     AC_MSG_RESULT()
     failed=0;
     passed=0;
-    AC_CHECK_HEADER(fpx.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
+    AC_CHECK_HEADER(fpxlib.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
     AC_CHECK_LIB(fpx,FPX_OpenImageByFilename,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
     AC_MSG_CHECKING(if FlashPIX package is complete)
     if test $passed -gt 0
