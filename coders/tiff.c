@@ -800,7 +800,12 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
               }
             }
           if (image->colorspace == CMYKColorspace)
-            (void) PushImagePixels(image,CMYKQuantum,scanline);
+            {
+              if (!image->matte)
+                (void) PushImagePixels(image,CMYKQuantum,scanline);
+              else
+                (void) PushImagePixels(image,CMYKAQuantum,scanline);
+            }
           else
             if (!image->matte)
               (void) PushImagePixels(image,RGBQuantum,scanline);

@@ -716,10 +716,10 @@ static unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
             *q++=DownScale(p->green);
             *q++=DownScale(p->red);
             if (image->colorspace == CMYKColorspace)
-              *q++=indexes[x];
+              *q++=DownScale(p->opacity);
             else
               if (image->matte)
-                *q++=MaxRGB-p->opacity;
+                *q++=MaxRGB-DownScale(p->opacity);
           }
         p++;
       }

@@ -799,14 +799,15 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
             case 3:
             {
               if (image->colorspace == CMYKColorspace)
-                {
-                  (void) PushImagePixels(image,BlackQuantum,scanline);
-                  break;
-                }
+                (void) PushImagePixels(image,BlackQuantum,scanline);
+              else
+                (void) PushImagePixels(image,AlphaQuantum,scanline);
+              break;
             }
             case 4:
             {
-              (void) PushImagePixels(image,AlphaQuantum,scanline);
+              if (image->colorspace == CMYKColorspace)
+                (void) PushImagePixels(image,AlphaQuantum,scanline);
               break;
             }
             default:

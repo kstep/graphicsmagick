@@ -524,13 +524,12 @@ MagickExport unsigned int SignatureImage(Image *image)
       *q++=XUpScale(p->green);
       *q++=XUpScale(p->blue) >> 8;
       *q++=XUpScale(p->blue);
-      *q++=XUpScale(image->matte ? p->opacity : MaxRGB) >> 8;
-      *q++=XUpScale(image->matte ? p->opacity : MaxRGB);
+      *q++=XUpScale(p->opacity) >> 8;
+      *q++=XUpScale(p->opacity);
       if (image->colorspace == CMYKColorspace)
         {
-          *q++=
-            XUpScale(image->colorspace == CMYKColorspace ? indexes[x] : 0) >> 8;
-          *q++=XUpScale(image->colorspace == CMYKColorspace ? indexes[x] : 0);
+          *q++=XUpScale(indexes[x]) >> 8;
+          *q++=XUpScale(indexes[x]);
         }
       p++;
     }

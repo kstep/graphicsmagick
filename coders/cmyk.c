@@ -339,6 +339,15 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
         }
         if (image->matte)
           {
+            if (image_info->interlace == PartitionInterlace)
+              {
+                CloseBlob(image);
+                AppendImageFormat("A",image->filename);
+                status=OpenBlob(image_info,image,ReadBinaryType);
+                if (status == False)
+                  ThrowReaderException(FileOpenWarning,"Unable to open file",
+                    image);
+              }
             for (y=0; y < image->tile_info.y; y++)
               (void) ReadBlob(image,packet_size*image->tile_info.width,
                 scanline);
@@ -602,7 +611,7 @@ static unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
             if (status == False)
               ThrowWriterException(FileOpenWarning,"Unable to open file",image);
           }
-        MagickMonitor(SaveImageText,100,400);
+        MagickMonitor(SaveImageText,100,500);
         for (y=0; y < (int) image->rows; y++)
         {
           if (!GetImagePixels(image,0,y,image->columns,1))
@@ -618,7 +627,7 @@ static unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
             if (status == False)
               ThrowWriterException(FileOpenWarning,"Unable to open file",image);
           }
-        MagickMonitor(SaveImageText,200,400);
+        MagickMonitor(SaveImageText,200,500);
         for (y=0; y < (int) image->rows; y++)
         {
           if (!GetImagePixels(image,0,y,image->columns,1))
@@ -626,7 +635,7 @@ static unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
           (void) PopImagePixels(image,MagentaQuantum,pixels);
           (void) WriteBlob(image,image->columns,pixels);
         }
-        MagickMonitor(SaveImageText,300,400);
+        MagickMonitor(SaveImageText,300,500);
         if (image_info->interlace == PartitionInterlace)
           {
             CloseBlob(image);
@@ -645,13 +654,13 @@ static unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
         }
         if (image_info->interlace == PartitionInterlace)
           (void) strcpy(image->filename,image_info->filename);
-        MagickMonitor(SaveImageText,400,400);
+        MagickMonitor(SaveImageText,400,500);
         if (image->matte)
           {
             if (image_info->interlace == PartitionInterlace)
               {
                 CloseBlob(image);
-                AppendImageFormat("K",image->filename);
+                AppendImageFormat("A",image->filename);
                 status=OpenBlob(image_info,image,WriteBinaryType);
                 if (status == False)
                   ThrowWriterException(FileOpenWarning,"Unable to open file",
@@ -666,8 +675,9 @@ static unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
             }
             if (image_info->interlace == PartitionInterlace)
               (void) strcpy(image->filename,image_info->filename);
-            MagickMonitor(SaveImageText,400,400);
+            MagickMonitor(SaveImageText,500,500);
           }
+        MagickMonitor(SaveImageText,500,500);
         break;
       }
     }
