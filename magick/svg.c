@@ -516,9 +516,6 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   Image
     *image;
 
-  ImageInfo
-    *clone_info;
-
   int
     c,
     n,
@@ -540,7 +537,6 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   unsigned int
     height,
     quote,
-    status,
     width;
 
   /*

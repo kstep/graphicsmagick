@@ -95,10 +95,10 @@ Export void DestroyMagickInfo()
   {
     entry=p;
     p=p->next;
-    FreeMemory((void ***) &entry->tag);
-    FreeMemory((void ***) &entry->description);
-    FreeMemory((void ***) &entry->module);
-    FreeMemory((void ***) &entry);
+    FreeMemory((void **) &entry->tag);
+    FreeMemory((void **) &entry->description);
+    FreeMemory((void **) &entry->module);
+    FreeMemory((void **) &entry);
   }
   magick_info_list=(MagickInfo *) NULL;
 }
@@ -442,9 +442,9 @@ Export unsigned int UnregisterMagickInfo(const char *tag)
     {
       if (Latin1Compare(p->tag,tag) == 0)
 	{
-	  FreeMemory((void ***) &p->tag);
-	  FreeMemory((void ***) &p->description);
-	  FreeMemory((void ***) &p->module);
+	  FreeMemory((void **) &p->tag);
+	  FreeMemory((void **) &p->description);
+	  FreeMemory((void **) &p->module);
 	  if (p->previous != (MagickInfo *) NULL)
 	    p->previous->next=p->next;
 	  else
@@ -456,7 +456,7 @@ Export unsigned int UnregisterMagickInfo(const char *tag)
 	  if (p->next != (MagickInfo *) NULL)
 	    p->next->previous=p->previous;
 	  magick_info=p;
-	  FreeMemory((void ***) &magick_info);
+	  FreeMemory((void **) &magick_info);
 	  return(True);
 	}
     }

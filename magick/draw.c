@@ -1417,9 +1417,9 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
     image->class=DirectClass;
     for (y=(int) bounds.y1; y <= (int) bounds.y2; y++)
     {
-      target.x=(int) (bounds.x2-bounds.x1+1.0);
+      target.x=bounds.x2-bounds.x1+1.0;
       target.y=y;
-      q=GetImagePixels(image,(int) bounds.x1,y,target.x,1);
+      q=GetImagePixels(image,(int) bounds.x1,y,(int) target.x,1);
       if (q == (PixelPacket *) NULL)
         break;
       for (x=(int) bounds.x1; x <= (int) bounds.x2; x++)
