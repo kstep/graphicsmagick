@@ -514,6 +514,7 @@ void CConfigureApp::process_library(ofstream &dsw,
 	includes_list.push_back("..\\..\\lcms\\src");
 	includes_list.push_back("..\\..\\lcms\\source");
 	includes_list.push_back("..\\..\\ttf\\include");
+	includes_list.push_back("..\\..\\libxml\\include");
 
   std::string libpath;
   libpath = "..\\";
@@ -592,6 +593,7 @@ void CConfigureApp::process_library(ofstream &dsw,
 	        add_project_dependency(dsw, "LIBR_TIFF");
 	        add_project_dependency(dsw, "CORE_lcms");
 	        add_project_dependency(dsw, "CORE_ttf");
+	        add_project_dependency(dsw, "CORE_libxml");
         }
         if (name.compare("Magick++") == 0)
         {
