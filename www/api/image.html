@@ -471,7 +471,7 @@ Set each pixel to this level of transparency.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="setimageclipmask">SetImageClipMask</A></H2>
-<blockquote>SetImageClipMask() associates a clip mask with the image. The clip mask must be the same dimensions as the image. </blockquote><P>The format of the SetImageClipMask method is:</P>
+<blockquote>SetImageClipMask() associates a clip mask with the image. The clip mask must be the same dimensions as the image. Set any pixel component of the clip mask to TransparentOpacity to prevent that corresponding image pixel component from being updated when SyncImagePixels ( ) is applied. </blockquote><P>The format of the SetImageClipMask method is:</P>
 <blockquote>unsigned int SetImageClipMask ( <A HREF="types/Image.html">Image</A> *image, <A HREF="types/Image.html">Image</A> *clip_mask ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DT><DD><DL>

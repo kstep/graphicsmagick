@@ -21,6 +21,7 @@
 	<UL>
 
 		<LI><A HREF="#deletemagickregistry">DeleteMagickRegistry</A>
+		<LI><A HREF="#getimagefrommagickregisty">GetImageFromMagickRegisty</A>
 		<LI><A HREF="#getmagickregistry">GetMagickRegistry</A>
 		<LI><A HREF="#setmagickregistry">SetMagickRegistry</A>
 	</UL>
@@ -38,7 +39,7 @@
 <H1><A NAME="synopsis">
 <FONT SIZE=-1>SYNOPSIS</FONT></A></H1>
 <P>unsigned int  <STRONG>DeleteMagickRegistry</STRONG>( const long id );</P>
-<P>const void * <STRONG>GetMagickRegistry</STRONG>( const long id, RegistryType *type, size_t *length );</P>
+<P>const void * <STRONG>GetMagickRegistry</STRONG>( const long id, RegistryType *type, size_t *length, ExceptionInfo *exception );</P>
 <P>long  <STRONG>SetMagickRegistry</STRONG>( const RegistryType type, const void *blob, const size_t length, ExceptionInfo *exception );</P>
 <P>
 <HR>
@@ -56,9 +57,28 @@
 The registry id.
 <P></P></DL></DL>
 <P>
+<H2><A NAME="getimagefrommagickregisty">GetImageFromMagickRegisty</A></H2>
+<P><CODE>GetImageFromMagickRegistry()</CODE> gets an image from the registry as defined by its name.  If the blob that matches the name is not found, 
+<FONT SIZE=-1>NULL</FONT> is returned.</P>
+<P>The format of the GetImageFromMagickRegistry method is:</P>
+<PRE>
+    Image *GetImageFromMagickRegistry(const char *name,
+      ExceptionInfo *exception)</PRE>
+<P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<dd><p></p><dt><STRONG>id:</STRONG><BR>
+<DD>
+The registry id.
+<P></P>
+<dd><p></p><dt><STRONG><A NAME="item_o_exception%3A">exception:</A></STRONG><BR>
+<DD>
+Return any errors or warnings in this structure.
+<P></P></DL></DL>
+<P>
 <H2><A NAME="getmagickregistry">GetMagickRegistry</A></H2>
-<blockquote>GetMagickRegistry() gets a blob from the registry as defined by the id. If the blob that matches the id is not found, NULL is returned. </blockquote><P>The format of the getMagickRegistry method is:</P>
-<blockquote>const void *GetMagickRegistry ( const long id, RegistryType *type, size_t *length ); </blockquote><P>
+<blockquote>GetMagickRegistry() gets a blob from the registry as defined by the id. If the blob that matches the id is not found, NULL is returned. </blockquote><P>The format of the GetMagickRegistry method is:</P>
+<blockquote>const void *GetMagickRegistry ( const long id, RegistryType *type, size_t *length, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <dd><p></p><dt><STRONG>id:</STRONG><BR>
@@ -72,6 +92,10 @@ The registry type.
 <dd><p></p><dt><STRONG><A NAME="item_o_length%3A">length:</A></STRONG><BR>
 <DD>
 The blob length in number of bytes.
+<P></P>
+<dd><p></p><dt><STRONG>exception:</STRONG><BR>
+<DD>
+Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="setmagickregistry">SetMagickRegistry</A></H2>
@@ -91,7 +115,7 @@ The address of a Binary Large OBject.
 <DD>
 For a registry type of ImageRegistryType use <CODE>sizeof(Image)</CODE> otherise the blob length in number of bytes.
 <P></P>
-<dd><p></p><dt><STRONG><A NAME="item_o_exception%3A">exception:</A></STRONG><BR>
+<dd><p></p><dt><STRONG>exception:</STRONG><BR>
 <DD>
 Return any errors or warnings in this structure.
 </DL></DL>

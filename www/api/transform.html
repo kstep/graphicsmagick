@@ -54,7 +54,7 @@
 <P>Image * <STRONG>FlipImage</STRONG>( const Image *image, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>FlopImage</STRONG>( const Image *image, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>MosaicImages</STRONG>( const Image *image, ExceptionInfo *exception );</P>
-<P>unsigned int  <STRONG>ProfileImage</STRONG>( Image *image, const char *name, const void *profile, const size_t length );</P>
+<P>unsigned int  <STRONG>ProfileImage</STRONG>( Image *image, const char *name, const unsigned char *profile, const size_t length );</P>
 <P>Image * <STRONG>RollImage</STRONG>( const Image *image, const long x_offset, const long y_offset, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>ShaveImage</STRONG>( const Image *image, const RectangleInfo *shave_info, ExceptionInfo *exception );</P>
 <P>void  <STRONG>TransformImage</STRONG>( Image ** image, const char *crop_geometry, const char *image_geometry );</P>
@@ -190,7 +190,7 @@ Return any errors or warnings in this structure.
 <P>
 <H2><A NAME="profileimage">ProfileImage</A></H2>
 <blockquote>ProfileImage() adds or removes a ICM, IPTC, or generic profile from an image. If the profile is NULL, it is removed from the image otherwise added. Use a name of ' *' and a profile of NULL to remove all profiles from the image. </blockquote><P>The format of the ProfileImage method is:</P>
-<blockquote>unsigned int ProfileImage ( <A HREF="types/Image.html">Image</A> *image, const char *name, const void *profile, const size_t length ); </blockquote><P>
+<blockquote>unsigned int ProfileImage ( <A HREF="types/Image.html">Image</A> *image, const char *name, const unsigned char *profile, const size_t length ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <dd><p></p><dt><STRONG>image:</STRONG><BR>

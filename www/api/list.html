@@ -33,6 +33,7 @@
 		<LI><A HREF="#reverseimagelist">ReverseImageList</A>
 		<LI><A HREF="#setimagelist">SetImageList</A>
 		<LI><A HREF="#shiftimagelist">ShiftImageList</A>
+		<LI><A HREF="#spliceimagelist">SpliceImageList</A>
 		<LI><A HREF="#unshiftimagelist">UnshiftImageList</A>
 	</UL>
 
@@ -49,9 +50,9 @@
 <H1><A NAME="synopsis">
 <FONT SIZE=-1>SYNOPSIS</FONT></A></H1>
 <P>Image * <STRONG>CloneImageList</STRONG>( const Image *images, ExceptionInfo *exception );</P>
-<P>unsigned int  <STRONG>DeleteImageList</STRONG>( Image *images, const unsigned long n );</P>
+<P>unsigned int  <STRONG>DeleteImageList</STRONG>( Image *images, const unsigned long offset );</P>
 <P>void  <STRONG>DestroyImageList</STRONG>( Image *image );</P>
-<P>Image * <STRONG>GetImageList</STRONG>( const Image *images, const unsigned long n, ExceptionInfo *exception );</P>
+<P>Image * <STRONG>GetImageList</STRONG>( const Image *images, const unsigned long offset, ExceptionInfo *exception );</P>
 <P>size_t  <STRONG>GetImageListSize</STRONG>( const Image *images );</P>
 <P>Image * <STRONG>GetNextImage</STRONG>( Image *images );</P>
 <P>Image **  <STRONG>ImageListToArray</STRONG>( const Image *images, ExceptionInfo *exception );</P>
@@ -59,8 +60,9 @@
 <P>Image * <STRONG>PopImageList</STRONG>( Image ** images );</P>
 <P>unsigned int  <STRONG>PushImageList</STRONG>( Image *images, const Image *image, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>ReverseImageList</STRONG>( const Image *images, ExceptionInfo *exception );</P>
-<P>unsigned int  <STRONG>SetImageList</STRONG>( Image *images, const Image *image, ExceptionInfo *exception );</P>
+<P>unsigned int  <STRONG>SetImageList</STRONG>( Image *images, const Image *image, const unsigned long offset, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>ShiftImageList</STRONG>( Image ** images );</P>
+<P>Image * <STRONG>SpliceImageList</STRONG>( Image *images, const unsigned long offset, const unsigned long length, const Image *splices, ExceptionInfo *exception );</P>
 <P>unsigned int  <STRONG>UnshiftImageList</STRONG>( Image *images, const Image *image, ExceptionInfo *exception );</P>
 <P>
 <HR>
@@ -84,14 +86,14 @@ Return any errors or warnings in this structure.
 <P>
 <H2><A NAME="deleteimagelist">DeleteImageList</A></H2>
 <blockquote>DeleteImageList() deletes an image at the specified position in the list. </blockquote><P>The format of the DeleteImageList method is:</P>
-<blockquote>unsigned int DeleteImageList ( <A HREF="types/Image.html">Image</A> *images, const unsigned long n ); </blockquote><P>
+<blockquote>unsigned int DeleteImageList ( <A HREF="types/Image.html">Image</A> *images, const unsigned long offset ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <dd><p></p><dt><STRONG>images:</STRONG><BR>
 <DD>
 The image list.
 <P></P>
-<dd><p></p><dt><STRONG><A NAME="item_o_n%3A">n:</A></STRONG><BR>
+<dd><p></p><dt><STRONG><A NAME="item_o_offset%3A">offset:</A></STRONG><BR>
 <DD>
 The position within the list.
 <P></P></DL></DL>
@@ -108,14 +110,14 @@ The image sequence.
 <P>
 <H2><A NAME="getimagelist">GetImageList</A></H2>
 <blockquote>GetImageList() returns an image at the specified position in the list. </blockquote><P>The format of the GetImageList method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *GetImageList ( const <A HREF="types/Image.html">Image</A> *images, const unsigned long n, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<blockquote><A HREF="types/Image.html">Image</A> *GetImageList ( const <A HREF="types/Image.html">Image</A> *images, const unsigned long offset, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <dd><p></p><dt><STRONG>images:</STRONG><BR>
 <DD>
 The image list.
 <P></P>
-<dd><p></p><dt><STRONG>n:</STRONG><BR>
+<dd><p></p><dt><STRONG>offset:</STRONG><BR>
 <DD>
 The position within the list.
 <P></P>
@@ -205,7 +207,7 @@ Return any errors or warnings in this structure.
 <P>
 <H2><A NAME="setimagelist">SetImageList</A></H2>
 <blockquote>SetImageList() inserts an image into the list at the specified position. </blockquote><P>The format of the SetImageList method is:</P>
-<blockquote>unsigned int SetImageList ( <A HREF="types/Image.html">Image</A> *images, const <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<blockquote>unsigned int SetImageList ( <A HREF="types/Image.html">Image</A> *images, const <A HREF="types/Image.html">Image</A> *image, const unsigned long offset, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <dd><p></p><dt><STRONG>images:</STRONG><BR>
@@ -215,6 +217,10 @@ The image list.
 <dd><p></p><dt><STRONG>image:</STRONG><BR>
 <DD>
 The image.
+<P></P>
+<dd><p></p><dt><STRONG>offset:</STRONG><BR>
+<DD>
+The position within the list.
 <P></P>
 <dd><p></p><dt><STRONG>exception:</STRONG><BR>
 <DD>
@@ -229,6 +235,32 @@ Return any errors or warnings in this structure.
 <dd><p></p><dt><STRONG>images:</STRONG><BR>
 <DD>
 The image list.
+<P></P></DL></DL>
+<P>
+<H2><A NAME="spliceimagelist">SpliceImageList</A></H2>
+<blockquote>SpliceImageList() removes the images designated by offset and length from the list and replaces them with the specified list. </blockquote><P>The format of the SpliceImageList method is:</P>
+<blockquote><A HREF="types/Image.html">Image</A> *SpliceImageList ( <A HREF="types/Image.html">Image</A> *images, const unsigned long offset, const unsigned long length, const <A HREF="types/Image.html">Image</A> *splices, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<dd><p></p><dt><STRONG>images:</STRONG><BR>
+<DD>
+The image list.
+<P></P>
+<dd><p></p><dt><STRONG>offset:</STRONG><BR>
+<DD>
+The position within the list.
+<P></P>
+<dd><p></p><dt><STRONG>offset:</STRONG><BR>
+<DD>
+The length of the image list to remove.
+<P></P>
+<dd><p></p><dt><STRONG><A NAME="item_o_splice%3A">splice:</A></STRONG><BR>
+<DD>
+Replace the removed image list with this list.
+<P></P>
+<dd><p></p><dt><STRONG>exception:</STRONG><BR>
+<DD>
+Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="unshiftimagelist">UnshiftImageList</A></H2>
