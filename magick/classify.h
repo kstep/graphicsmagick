@@ -56,7 +56,7 @@ typedef enum
 {
   AllCompliance,
   SVGCompliance,
-  X11Compliance,
+  X11Compliance
 } ComplianceType;
 
 typedef enum
