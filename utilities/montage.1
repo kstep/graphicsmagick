@@ -22,8 +22,7 @@ resource. See
 \fBOptions\fP
 for more information on command line arguments. See
 \fBX(1)\fP for more information on X resources.
-Note that the maximum tile size need not be a square. To respect the aspect
-ratio of each image append \fB~\fP to the geometry specification.
+Note that the maximum tile size need not be a square.
 
 Next the composite image is initialized with the color specified by the
 \fB-background\fP
@@ -88,8 +87,8 @@ and 192 pixels in height, surrounded by a red border, and separated by
 To create an unlabeled parrot image, 640 by 480 pixels, and surrounded
 by a border of black, use:
 
-    montage -geometry 640x480 -bordercolor black -label ""
-            parrot.miff bird.miff
+    montage -geometry 640x480 -bordercolor black
+            -label "" parrot.miff bird.miff
 
 To create an image of an eagle with a textured background, use:
 
@@ -98,8 +97,8 @@ To create an image of an eagle with a textured background, use:
 To join several GIF images together without any extraneous graphics (e.g.
 no label, no shadowing, no surrounding tile frame), use:
 
-    montage +frame +shadow +label -tile 5x1 -geometry 50x50+0+0
-            *.png joined.png
+    montage +frame +shadow +label -tile 5x1
+            -geometry 50x50+0+0 *.png joined.png
 .SH OPTIONS
 
 Any option you specify on the command line remains in effect for the group
@@ -134,7 +133,7 @@ For a more detailed description of each option, see
 .B "-cache \fI<threshold>"\fP
 \fRmegabytes of memory available to the pixel cache
 .TP
-.B "-chop \fI<width>x<height>{+-}<x offset>{+-}<y offset>{%}"\fP
+.B "-chop \fI<width>x<height>{+-}<x>{+-}<y>{%}"\fP
 \fRremove pixels from the interior of an image
 .TP
 .B "-colors \fI<value>"\fP
@@ -152,7 +151,7 @@ For a more detailed description of each option, see
 .B "-compress \fI<type>"\fP
 \fRthe type of image compression
 .TP
-.B "-crop \fI<width>x<height>{+-}<x offset>{+-}<y offset>{%}"\fP
+.B "-crop \fI<width>x<height>{+-}<x>{+-}<y>{%}"\fP
 \fRpreferred size and location of the cropped image
 .TP
 .B "-debug"
@@ -191,7 +190,7 @@ For a more detailed description of each option, see
 .B "-gamma \fI<value>"\fP
 \fRlevel of gamma correction
 .TP
-.B "-geometry \fI<width>x<height>{+-}<x offset>{+-}<y offset>{%}{@} {!}{<}{>}"\fP
+.B "-geometry \fI<width>x<height>{+-}<x>{+-}<y>{%}{@} {!}{<}{>}"\fP
 \fRpreferred size and location of the Image window.
 .TP
 .B "-gravity \fI<type>"\fP
@@ -221,7 +220,7 @@ For a more detailed description of each option, see
 .B "-noop"
 \fRNOOP (no option)
 .TP
-.B "-page \fI<width>x<height>{+-}<x offset>{+-}<y offset>{%}{!}{<}{>}"\fP
+.B "-page \fI<width>x<height>{+-}<x>{+-}<y>{%}{!}{<}{>}"\fP
 \fRsize and location of an image canvas
 .TP
 .B "-pen \fI<color>"\fP
@@ -233,7 +232,7 @@ For a more detailed description of each option, see
 .B "-quality \fI<value>"\fP
 \fRJPEG/MIFF/PNG compression level
 .TP
-.B "-resize \fI<width>x<height>{+-}<x offset>{+-}<y offset>{%}{@}{!}{<}{>}"\fP
+.B "-resize \fI<width>x<height>{+-}<x>{+-}<y>{%}{@}{!}{<}{>}"\fP
 \fRresize and locate an image
 .TP
 .B "-rotate \fI<degrees{<}{>}>"\fP

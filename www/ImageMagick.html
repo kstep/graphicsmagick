@@ -635,20 +635,20 @@ width=15><b><font face="Helvetica, Arial"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
-    <a name="-chop">-chop</a> <i>&lt;width&gt;x&lt;height&gt;</i>{<i>+-</i>}<i>&lt;x offset&gt;</i>{<i>+-</i>}<i>&lt;y offset&gt;</i>{<i>%</i>}<i></i>
+    <a name="-chop">-chop</a> <i>&lt;width&gt;x&lt;height&gt;</i>{<i>+-</i>}<i>&lt;x&gt;</i>{<i>+-</i>}<i>&lt;y&gt;</i>{<i>%</i>}<i></i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>remove pixels from the interior of an image</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-The width and height give the number of columns and rows to remove,
-and the offsets give the location of the leftmost column and topmost
-row to remove.
+<em>Width</em> and <em>height</em> give the number of columns and rows to remove,
+and <em>x</em> and <em>y</em> are offsets that give the location of the
+leftmost column and topmost row to remove.
 </font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-The x offset normally specifies the leftmost column to remove.
+The <em>x</em> offset normally specifies the leftmost column to remove.
 If the <strong>-gravity</strong> option is present with <em>NorthEast, East,</em>
 or <em>SouthEast</em>
 gravity, it gives the distance leftward from the right edge
-of the image to the rightmost column to remove.  Similarly, the y offset
+of the image to the rightmost column to remove.  Similarly, the <em>y</em> offset
 normally specifies the topmost row to remove, but if
 the <strong>-gravity</strong> option is present with <em>SouthWest, South,</em>
 or <em>SouthEast</em>
@@ -674,7 +674,7 @@ If a clipping path is present, it will be applied to subsequent operations.</fon
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 For example, if you type the following command:</font></td></tr></table>
 <pre>
-     convert -clip -negate cockatoo.tif negated_cockatoo.tif
+     convert -clip -negate cockatoo.tif negated.tif
 </pre>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 only the pixels within the clipping path are negated.</font></td></tr></table>
@@ -1046,7 +1046,7 @@ or <strong>+contrast</strong> to reduce the image contrast.
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
-    <a name="-crop">-crop</a> <i>&lt;width&gt;x&lt;height&gt;</i>{<i>+-</i>}<i>&lt;x offset&gt;</i>{<i>+-</i>}<i>&lt;y offset&gt;</i>{<i>%</i>}<i></i>
+    <a name="-crop">-crop</a> <i>&lt;width&gt;x&lt;height&gt;</i>{<i>+-</i>}<i>&lt;x&gt;</i>{<i>+-</i>}<i>&lt;y&gt;</i>{<i>%</i>}<i></i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>preferred size and location of the cropped image</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
@@ -1055,7 +1055,8 @@ about the geometry specification.
 </font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 The width and height give the size of the image that remains after cropping,
-and the offsets give the location of the top left corner of the cropped
+and <em>x</em> and <em>y</em> are offsets that give the location of the top left
+corner of the cropped
 image with respect to the original image.  To specify the amount to be
 removed, use <strong>-shave</strong> instead.
 </font></td></tr></table>
@@ -1066,7 +1067,7 @@ to crop the image by ten percent (five percent on each side of the image),
 use <strong>-crop 10%</strong>.
 </font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-The x and y offsets specify the location of the upper left corner of
+The <em>x</em> and <em>y</em> offsets specify the location of the upper left corner of
 the cropping region measured downward and rightward with respect to the
 upper left corner of the image.
 If the <strong>-gravity</strong> option is present with <em>NorthEast, East,</em>
@@ -1078,7 +1079,8 @@ or <em>SouthEast</em>
 gravity, the distance is measured upward between the bottom
 edges.</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-Omit the x and y offset to generate one or more subimages of a uniform
+Omit the <em>x</em> and <em>y</em> offsets to generate one or more subimages
+of a uniform
 size.
 </font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
@@ -1251,7 +1253,8 @@ Here are the valid methods:
 <pre>
      0     No disposal specified.
      1     Do not dispose between frames.      
-     2     Overwrite frame with background color from header.
+     2     Overwrite frame with background color
+           from header.
      3     Overwrite with previous frame.
 </pre>
 <table BORDER=0 WIDTH="94%">
@@ -1789,7 +1792,7 @@ Use the given radius and standard deviation (sigma).
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
-    <a name="-geometry">-geometry</a> <i>&lt;width&gt;x&lt;height&gt;</i>{<i>+-</i>}<i>&lt;x offset&gt;</i>{<i>+-</i>}<i>&lt;y offset&gt;</i>{<i>%</i>}<i></i>{<i>@</i>}<i> </i>{<i>!</i>}<i></i>{<i>&lt;</i>}<i></i>{<i>&gt;</i>}<i></i>
+    <a name="-geometry">-geometry</a> <i>&lt;width&gt;x&lt;height&gt;</i>{<i>+-</i>}<i>&lt;x&gt;</i>{<i>+-</i>}<i>&lt;y&gt;</i>{<i>%</i>}<i></i>{<i>@</i>}<i> </i>{<i>!</i>}<i></i>{<i>&lt;</i>}<i></i>{<i>&gt;</i>}<i></i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>preferred size and location of the Image window.</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
@@ -1834,18 +1837,18 @@ as a file redirection.
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 When used with <em>animate</em> and <em>display</em>, offsets are handled in
 the same manner as in <em>X(1)</em> and the <strong>-gravity</strong> option is not used.
-If the <em>x offset</em> is negative, the offset is measured leftward
+If the <em>x</em> is negative, the offset is measured leftward
 from the right edge of the
 screen to the right edge of the image being displayed.
-Similarly, negative <em>y offset</em> is measured between the bottom edges.</font></td></tr></table>
+Similarly, negative <em>y</em> is measured between the bottom edges.</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 When used as a <em>composite</em> option, <strong>-geometry</strong>
 gives the dimensions of the image and its location with respect
 to the composite image.  If the <strong>-gravity</strong> option is present
-with <em>NorthEast, East,</em> or <em>SouthEast</em> gravity, the x offset
+with <em>NorthEast, East,</em> or <em>SouthEast</em> gravity, the <em>x</em> 
 represents the distance from the right edge of the image to the right edge of
 the composite image.  Similarly, if the <strong>-gravity</strong> option is present
-with <em>SouthWest, South,</em> or <em>SouthEast</em> gravity, the y offset
+with <em>SouthWest, South,</em> or <em>SouthEast</em> gravity, <em>y</em>
 is measured between the bottom edges. Accordingly, a positive offset will
 never point in the direction outside of the image.
 </font></td></tr></table>
@@ -1888,7 +1891,7 @@ The <strong>-gravity</strong> option is also used in concert with the <strong>-g
 option and other options that take <strong>&lt;geometry&gt;</strong> as a parameter, such
 as the <strong>-crop</strong> option.  See <strong>-geometry</strong> for details of how the
 <strong>-gravity</strong> option interacts with the 
-<strong>&lt;x_offset&gt;</strong> and <strong>&lt;y_offset&gt;</strong> parameters of a geometry
+<strong>&lt;x&gt;</strong> and <strong>&lt;y&gt;</strong> parameters of a geometry
 specification.</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 When used as an option to <em>composite</em>, <strong>-gravity</strong>
@@ -2441,7 +2444,7 @@ See <strong>-fill</strong> for more details.
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
-    <a name="-page">-page</a> <i>&lt;width&gt;x&lt;height&gt;</i>{<i>+-</i>}<i>&lt;x offset&gt;</i>{<i>+-</i>}<i>&lt;y offset&gt;</i>{<i>%</i>}<i></i>{<i>!</i>}<i></i>{<i>&lt;</i>}<i></i>{<i>&gt;</i>}<i></i>
+    <a name="-page">-page</a> <i>&lt;width&gt;x&lt;height&gt;</i>{<i>+-</i>}<i>&lt;x&gt;</i>{<i>+-</i>}<i>&lt;y&gt;</i>{<i>%</i>}<i></i>{<i>!</i>}<i></i>{<i>&lt;</i>}<i></i>{<i>&gt;</i>}<i></i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>size and location of an image canvas</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
@@ -2496,8 +2499,8 @@ etc.). Otherwise, <strong>-page</strong> behaves much like
 <strong>-geometry</strong> (e.g.  <tt>-page letter+43+43&gt;</tt>).
 </font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-To position a GIF image, use <strong>-page</strong><em>{+-}&lt;x offset&gt;{+-}&lt;y
-offset&gt;</em> (e.g. -page +100+200).
+To position a GIF image, use <strong>-page</strong><em>{+-}&lt;x&gt;{+-}&lt;y&gt;</em>
+(e.g. -page +100+200).
 </font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 For a Postscript page, the image is sized as in <strong>-geometry</strong> and positioned
@@ -2757,11 +2760,11 @@ Use <strong>-raise</strong> to create a raised effect, otherwise use <strong>+ra
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
-    <a name="-region">-region</a> <i>&lt;width&gt;x&lt;height&gt;</i>{<i>+-</i>}<i>&lt;x offset&gt;</i>{<i>+-</i>}<i>&lt;y offset&gt;</i>
+    <a name="-region">-region</a> <i>&lt;width&gt;x&lt;height&gt;</i>{<i>+-</i>}<i>&lt;x&gt;</i>{<i>+-</i>}<i>&lt;y&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>apply options to a portion of the image</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-Negative offsets are treated in the same manner as in <strong>-crop</strong></font></td></tr></table>.
+The <em>x</em> and <em>y</em> offsets are treated in the same manner as in <strong>-crop</strong></font></td></tr></table>.
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -2785,7 +2788,7 @@ an image file to load.
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
-    <a name="-resize">-resize</a> <i>&lt;width&gt;x&lt;height&gt;</i>{<i>+-</i>}<i>&lt;x offset&gt;</i>{<i>+-</i>}<i>&lt;y offset&gt;</i>{<i>%</i>}<i></i>{<i>@</i>}<i></i>{<i>!</i>}<i></i>{<i>&lt;</i>}<i></i>{<i>&gt;</i>}<i></i>
+    <a name="-resize">-resize</a> <i>&lt;width&gt;x&lt;height&gt;</i>{<i>+-</i>}<i>&lt;x&gt;</i>{<i>+-</i>}<i>&lt;y&gt;</i>{<i>%</i>}<i></i>{<i>@</i>}<i></i>{<i>!</i>}<i></i>{<i>&lt;</i>}<i></i>{<i>&gt;</i>}<i></i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>resize and locate an image</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
@@ -2811,17 +2814,18 @@ information about the tiles.</font></td></tr></table>
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
-    <a name="-roll">-roll</a> <i></i>{<i>+-</i>}<i>&lt;x offset&gt;</i>{<i>+-</i>}<i>&lt;y offset&gt;</i>
+    <a name="-roll">-roll</a> <i></i>{<i>+-</i>}<i>&lt;x&gt;</i>{<i>+-</i>}<i>&lt;y&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>roll an image vertically or horizontally</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 See <strong>-geometry</strong> for details
 the geometry specification.
-The offsets are not affected by the <strong>-gravity</strong> option.
+The <em>x</em> and <em>y</em> offsets are not affected
+by the <strong>-gravity</strong> option.
 </font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-A negative <em>x offset</em> rolls the image left-to-right. A negative <em>y
-offset</em> rolls the image top-to-bottom.
+A negative <em>x</em>  offset rolls the image left-to-right. A negative <em>y</em>
+offset rolls the image top-to-bottom.
 </font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>

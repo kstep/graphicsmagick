@@ -38,7 +38,8 @@ the lower left-hand corner, use:
 To convert a raw Gray image with a 128 byte header to a portable graymap,
 use:
 
-    convert -depth 8 -size 768x512+128 gray:raw image.pgm
+    convert -depth 8 -size 768x512+128 gray:raw
+            image.pgm
 
 To convert a Photo CD image to a TIFF image, use:
 
@@ -119,7 +120,7 @@ For a more detailed description of each option, see
 .B "-charcoal \fI<factor>"\fP
 \fRsimulate a charcoal drawing
 .TP
-.B "-chop \fI<width>x<height>{+-}<x offset>{+-}<y offset>{%}"\fP
+.B "-chop \fI<width>x<height>{+-}<x>{+-}<y>{%}"\fP
 \fRremove pixels from the interior of an image
 .TP
 .B "-clip"
@@ -149,7 +150,7 @@ For a more detailed description of each option, see
 .B "-contrast"
 \fRenhance or reduce the image contrast
 .TP
-.B "-crop \fI<width>x<height>{+-}<x offset>{+-}<y offset>{%}"\fP
+.B "-crop \fI<width>x<height>{+-}<x>{+-}<y>{%}"\fP
 \fRpreferred size and location of the cropped image
 .TP
 .B "-cycle \fI<amount>"\fP
@@ -227,7 +228,7 @@ For a more detailed description of each option, see
 .B "-gaussian \fI<radius>x<sigma>"\fP
 \fRblur the image with a gaussian operator
 .TP
-.B "-geometry \fI<width>x<height>{+-}<x offset>{+-}<y offset>{%}{@} {!}{<}{>}"\fP
+.B "-geometry \fI<width>x<height>{+-}<x>{+-}<y>{%}{@} {!}{<}{>}"\fP
 \fRpreferred size and location of the Image window.
 .TP
 .B "-gravity \fI<type>"\fP
@@ -296,7 +297,7 @@ For a more detailed description of each option, see
 .B "-opaque \fI<color>"\fP
 \fRchange this color to the pen color within the image
 .TP
-.B "-page \fI<width>x<height>{+-}<x offset>{+-}<y offset>{%}{!}{<}{>}"\fP
+.B "-page \fI<width>x<height>{+-}<x>{+-}<y>{%}{!}{<}{>}"\fP
 \fRsize and location of an image canvas
 .TP
 .B "-paint \fI<radius>"\fP
@@ -326,13 +327,13 @@ For a more detailed description of each option, see
 .B "-raise \fI<width>x<height>"\fP
 \fRlighten or darken image edges
 .TP
-.B "-region \fI<width>x<height>{+-}<x offset>{+-}<y offset>"\fP
+.B "-region \fI<width>x<height>{+-}<x>{+-}<y>"\fP
 \fRapply options to a portion of the image
 .TP
-.B "-resize \fI<width>x<height>{+-}<x offset>{+-}<y offset>{%}{@}{!}{<}{>}"\fP
+.B "-resize \fI<width>x<height>{+-}<x>{+-}<y>{%}{@}{!}{<}{>}"\fP
 \fRresize and locate an image
 .TP
-.B "-roll \fI{+-}<x offset>{+-}<y offset>"\fP
+.B "-roll \fI{+-}<x>{+-}<y>"\fP
 \fRroll an image vertically or horizontally
 .TP
 .B "-rotate \fI<degrees{<}{>}>"\fP
@@ -461,8 +462,8 @@ function. A pixel is assigned to the closest class of which the fuzzy membership
 has a maximum value.
 
 For additional information see:
-<bq>\fIYoung Won Lim, Sang Uk Lee\fP, "\fBOn The Color Image Segmentation
-Algorithm Based on the Thresholding and the Fuzzy c-Means Techniques\fP",
+<bq>\fIYoung Won Lim, Sang Uk Lee\fP, ``\fBOn The Color Image Segmentation
+Algorithm Based on the Thresholding and the Fuzzy c-Means Techniques\fP'',
 Pattern Recognition, Volume 23, Number 9, pages 935-952, 1990.</bq>
 
 .SH ENVIRONMENT

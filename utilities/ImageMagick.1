@@ -411,19 +411,19 @@ for example, is useful for extracting the opacity values from an image.
 .B "-charcoal \fI<factor>"\fP
 \fRsimulate a charcoal drawing
 .TP
-.B "-chop \fI<width>x<height>{+-}<x offset>{+-}<y offset>{%}"\fP
+.B "-chop \fI<width>x<height>{+-}<x>{+-}<y>{%}"\fP
 \fRremove pixels from the interior of an image
 
-The width and height give the number of columns and rows to remove,
-and the offsets give the location of the leftmost column and topmost
-row to remove.
+\fIWidth\fP and \fIheight\fP give the number of columns and rows to remove,
+and \fIx\fP and \fIy\fP are offsets that give the location of the
+leftmost column and topmost row to remove.
 
 
-The x offset normally specifies the leftmost column to remove.
+The \fIx\fP offset normally specifies the leftmost column to remove.
 If the \fB-gravity\fP option is present with \fINorthEast, East,\fP
 or \fISouthEast\fP
 gravity, it gives the distance leftward from the right edge
-of the image to the rightmost column to remove.  Similarly, the y offset
+of the image to the rightmost column to remove.  Similarly, the \fIy\fP offset
 normally specifies the topmost row to remove, but if
 the \fB-gravity\fP option is present with \fISouthWest, South,\fP
 or \fISouthEast\fP
@@ -441,7 +441,7 @@ If a clipping path is present, it will be applied to subsequent operations.
 
 For example, if you type the following command:
 
-     convert -clip -negate cockatoo.tif negated_cockatoo.tif
+     convert -clip -negate cockatoo.tif negated.tif
 
 only the pixels within the clipping path are negated.
 
@@ -816,7 +816,7 @@ the image
 or \fB+contrast\fP to reduce the image contrast.
 
 .TP
-.B "-crop \fI<width>x<height>{+-}<x offset>{+-}<y offset>{%}"\fP
+.B "-crop \fI<width>x<height>{+-}<x>{+-}<y>{%}"\fP
 \fRpreferred size and location of the cropped image
 
 See \fB-geometry\fP for details
@@ -824,7 +824,8 @@ about the geometry specification.
 
 
 The width and height give the size of the image that remains after cropping,
-and the offsets give the location of the top left corner of the cropped
+and \fIx\fP and \fIy\fP are offsets that give the location of the top left
+corner of the cropped
 image with respect to the original image.  To specify the amount to be
 removed, use \fB-shave\fP instead.
 
@@ -835,7 +836,7 @@ to crop the image by ten percent (five percent on each side of the image),
 use \fB-crop 10%\fP.
 
 
-The x and y offsets specify the location of the upper left corner of
+The \fIx\fP and \fIy\fP offsets specify the location of the upper left corner of
 the cropping region measured downward and rightward with respect to the
 upper left corner of the image.
 If the \fB-gravity\fP option is present with \fINorthEast, East,\fP
@@ -847,7 +848,8 @@ or \fISouthEast\fP
 gravity, the distance is measured upward between the bottom
 edges.
 
-Omit the x and y offset to generate one or more subimages of a uniform
+Omit the \fIx\fP and \fIy\fP offsets to generate one or more subimages
+of a uniform
 size.
 
 .TP
@@ -932,7 +934,8 @@ Here are the valid methods:
 
      0     No disposal specified.
      1     Do not dispose between frames.      
-     2     Overwrite frame with background color from header.
+     2     Overwrite frame with background color
+           from header.
      3     Overwrite with previous frame.
 .TP
 .B "-dissolve \fI<percent>"\fP
@@ -1286,7 +1289,7 @@ but not set as an image attribute (e.g. PNG images).
 Use the given radius and standard deviation (sigma). 
 
 .TP
-.B "-geometry \fI<width>x<height>{+-}<x offset>{+-}<y offset>{%}{@} {!}{<}{>}"\fP
+.B "-geometry \fI<width>x<height>{+-}<x>{+-}<y>{%}{@} {!}{<}{>}"\fP
 \fRpreferred size and location of the Image window.
 
 By default, the window size is the image
@@ -1330,18 +1333,18 @@ as a file redirection.
 
 When used with \fIanimate\fP and \fIdisplay\fP, offsets are handled in
 the same manner as in \fIX(1)\fP and the \fB-gravity\fP option is not used.
-If the \fIx offset\fP is negative, the offset is measured leftward
+If the \fIx\fP is negative, the offset is measured leftward
 from the right edge of the
 screen to the right edge of the image being displayed.
-Similarly, negative \fIy offset\fP is measured between the bottom edges.
+Similarly, negative \fIy\fP is measured between the bottom edges.
 
 When used as a \fIcomposite\fP option, \fB-geometry\fP
 gives the dimensions of the image and its location with respect
 to the composite image.  If the \fB-gravity\fP option is present
-with \fINorthEast, East,\fP or \fISouthEast\fP gravity, the x offset
+with \fINorthEast, East,\fP or \fISouthEast\fP gravity, the \fIx\fP 
 represents the distance from the right edge of the image to the right edge of
 the composite image.  Similarly, if the \fB-gravity\fP option is present
-with \fISouthWest, South,\fP or \fISouthEast\fP gravity, the y offset
+with \fISouthWest, South,\fP or \fISouthEast\fP gravity, \fIy\fP
 is measured between the bottom edges. Accordingly, a positive offset will
 never point in the direction outside of the image.
 
@@ -1376,7 +1379,7 @@ The \fB-gravity\fP option is also used in concert with the \fB-geometry\fP
 option and other options that take \fB<geometry>\fP as a parameter, such
 as the \fB-crop\fP option.  See \fB-geometry\fP for details of how the
 \fB-gravity\fP option interacts with the 
-\fB<x_offset>\fP and \fB<y_offset>\fP parameters of a geometry
+\fB<x>\fP and \fB<y>\fP parameters of a geometry
 specification.
 
 When used as an option to \fIcomposite\fP, \fB-gravity\fP
@@ -1679,7 +1682,7 @@ section of \fIX(1)\fP.
 See \fB-fill\fP for more details.
 
 .TP
-.B "-page \fI<width>x<height>{+-}<x offset>{+-}<y offset>{%}{!}{<}{>}"\fP
+.B "-page \fI<width>x<height>{+-}<x>{+-}<y>{%}{!}{<}{>}"\fP
 \fRsize and location of an image canvas
 
 Use this option to specify the dimensions of the
@@ -1732,8 +1735,8 @@ etc.). Otherwise, \fB-page\fP behaves much like
 \fB-geometry\fP (e.g.  -page letter+43+43>).
 
 
-To position a GIF image, use \fB-page\fP\fI{+-}<x offset>{+-}<y
-offset>\fP (e.g. -page +100+200).
+To position a GIF image, use \fB-page\fP\fI{+-}<x>{+-}<y>\fP
+(e.g. -page +100+200).
 
 
 For a Postscript page, the image is sized as in \fB-geometry\fP and positioned
@@ -1896,10 +1899,10 @@ Offsets are not used.
 Use \fB-raise\fP to create a raised effect, otherwise use \fB+raise\fP.
 
 .TP
-.B "-region \fI<width>x<height>{+-}<x offset>{+-}<y offset>"\fP
+.B "-region \fI<width>x<height>{+-}<x>{+-}<y>"\fP
 \fRapply options to a portion of the image
 
-Negative offsets are treated in the same manner as in \fB-crop\fP.
+The \fIx\fP and \fIy\fP offsets are treated in the same manner as in \fB-crop\fP.
 .TP
 .B "-remote"
 \fRperform a remote operation
@@ -1908,7 +1911,7 @@ The only command recognized at this time is the name of
 an image file to load.
 
 .TP
-.B "-resize \fI<width>x<height>{+-}<x offset>{+-}<y offset>{%}{@}{!}{<}{>}"\fP
+.B "-resize \fI<width>x<height>{+-}<x>{+-}<y>{%}{@}{!}{<}{>}"\fP
 \fRresize and locate an image
 
 This is an alias for the \fB-geometry\fP option and it behaves in the
@@ -1926,16 +1929,17 @@ When used as a \fImontage\fP option, \fB-resize\fP conveys the preferred
 size and location of the montage, while \fB-geometry\fP conveys
 information about the tiles.
 .TP
-.B "-roll \fI{+-}<x offset>{+-}<y offset>"\fP
+.B "-roll \fI{+-}<x>{+-}<y>"\fP
 \fRroll an image vertically or horizontally
 
 See \fB-geometry\fP for details
 the geometry specification.
-The offsets are not affected by the \fB-gravity\fP option.
+The \fIx\fP and \fIy\fP offsets are not affected
+by the \fB-gravity\fP option.
 
 
-A negative \fIx offset\fP rolls the image left-to-right. A negative \fIy
-offset\fP rolls the image top-to-bottom.
+A negative \fIx\fP  offset rolls the image left-to-right. A negative \fIy\fP
+offset rolls the image top-to-bottom.
 
 .TP
 .B "-rotate \fI<degrees{<}{>}>"\fP
