@@ -1,3 +1,8 @@
+2002-08-15  Cristy  <cristy@mystic.es.dupont.com>
+  * Arcs are now rendered properly.
+  * Configure files are returned as blobs now (suggested by William
+    Radcliffe).
+
 2002-08-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
   * Added --disable-installed option to configure to support building
     an ImageMagick which is not installed via hard-coded paths. This
