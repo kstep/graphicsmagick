@@ -279,10 +279,12 @@ MagickExport const PixelPacket *AcquireCacheNexus(const Image *image,
           if (p == (const PixelPacket *) NULL)
             break;
           *q++=(*p);
+          if (indexes == (IndexPacket *) NULL)
+            continue;
           nexus_indexes=GetNexusIndexes(image->cache,image_nexus);
-          if ((nexus_indexes != (IndexPacket *) NULL) &&
-              (indexes != (IndexPacket *) NULL))
-            *indexes++=(*nexus_indexes);
+          if (nexus_indexes == (IndexPacket *) NULL)
+            continue;
+          *indexes++=(*nexus_indexes);
           continue;
         }
       /*
@@ -292,14 +294,14 @@ MagickExport const PixelPacket *AcquireCacheNexus(const Image *image,
       if (p == (const PixelPacket *) NULL)
         break;
       (void) memcpy(q,p,span*sizeof(PixelPacket));
-      nexus_indexes=GetNexusIndexes(image->cache,image_nexus);
-      if ((nexus_indexes != (IndexPacket *) NULL) &&
-          (indexes != (IndexPacket *) NULL))
-        {
-          (void) memcpy(indexes,nexus_indexes,span*sizeof(IndexPacket));
-          indexes+=span;
-        }
       q+=span;
+      if (indexes == (IndexPacket *) NULL)
+        continue;
+      nexus_indexes=GetNexusIndexes(image->cache,image_nexus);
+      if (nexus_indexes == (IndexPacket *) NULL)
+        continue;
+      (void) memcpy(indexes,nexus_indexes,span*sizeof(IndexPacket));
+      indexes+=span;
     }
   }
   DestroyCacheNexus(image->cache,image_nexus);
@@ -2042,7 +2044,7 @@ static unsigned int ReadCachePixels(const Cache cache,const unsigned long nexus)
     *pixels;
 
   register size_t
-	  i;
+    i;
 
   size_t
     length;
@@ -2846,7 +2848,7 @@ static unsigned int WriteCachePixels(Cache cache,const unsigned long nexus)
     *pixels;
 
   register size_t
-	  i;
+    i;
 
   size_t
     length;
