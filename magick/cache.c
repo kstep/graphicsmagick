@@ -1109,7 +1109,7 @@ MagickExport unsigned int OpenCache(Image *image)
           /*
             Create in-memory pixel cache.
           */
-          (void) GetCacheMemory((off_t) -length);
+          (void) GetCacheMemory(-(off_t) length);
           cache_info->storage_class=image->storage_class;
           cache_info->colorspace=image->colorspace;
           cache_info->type=MemoryCache;
