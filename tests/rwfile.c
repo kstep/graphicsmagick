@@ -33,7 +33,6 @@ int main ( int argc, char **argv )
   int rows, columns = 0;
   char filename[80];
   double fuzz_factor = 0;
-  float diff = 0;
   ImageInfo imageInfo;
   ExceptionInfo exception;
 

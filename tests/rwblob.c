@@ -34,7 +34,6 @@ int main ( int argc, char **argv )
   char *size = NULL;
   int rows, columns = 0;
   double fuzz_factor = 0;
-  float diff = 0;
   ImageInfo imageInfo;
   ExceptionInfo exception;
 
