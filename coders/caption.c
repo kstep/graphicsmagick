@@ -173,7 +173,7 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
       ThrowReaderException(DelegateWarning,"Unable to get type metrics",image);
     if ((metrics.width+metrics.max_advance/2) < image->columns)
       continue;
-    for (p--; !isspace(*p) && (p > caption); p--);
+    for (p--; !isspace((int) *p) && (p > caption); p--);
     *p++='\n';
     q=draw_info->text;
     i++;
