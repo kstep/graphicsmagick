@@ -429,7 +429,7 @@ MagickExport int GetOptimalKernelWidth1D(const double radius,const double sigma)
       normalize+=exp(-(double) (u*u)/(2.0*sigma*sigma));
     u=width/2;
     value=exp(-(double) (u*u)/(2.0*sigma*sigma))/normalize;
-    if ((int) (value*MaxRGB) <= 0)
+    if ((int) (MaxRGB*value) <= 0)
       break;
     width+=2;
   }
@@ -461,7 +461,7 @@ MagickExport int GetOptimalKernelWidth2D(const double radius,const double sigma)
     }
     v=width/2;
     value=exp(-(double) (v*v)/(sigma*sigma))/normalize;
-    if ((int) (value*MaxRGB) <= 0)
+    if ((int) (MaxRGB*value) <= 0)
       break;
     width+=2;
   }
