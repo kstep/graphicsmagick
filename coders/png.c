@@ -4274,7 +4274,7 @@ png_write_raw_profile(const ImageInfo *image_info,png_struct *ping,
    sp=profile_data;
    dp=text[0].text;
    *dp++='\n';
-   (void) strcat(dp,(const char *) profile_description);
+   (void) strcpy(dp,(const char *) profile_description);
    dp+=description_length;
    *dp++='\n';
    (void) sprintf(dp,"%8lu ",length);
