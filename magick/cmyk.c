@@ -405,7 +405,6 @@ Export unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
   /*
     Allocate memory for pixels.
   */
-  image->depth=QuantumDepth;
   packet_size=image->depth > 8 ? 8 : 4;
   pixels=(unsigned char *)
     AllocateMemory(packet_size*image->columns*sizeof(PixelPacket));

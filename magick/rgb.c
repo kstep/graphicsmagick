@@ -424,7 +424,6 @@ Export unsigned int WriteRGBImage(const ImageInfo *image_info,Image *image)
   /*
     Allocate memory for pixels.
   */
-  image->depth=QuantumDepth;
   packet_size=image->depth > 8 ? 6 : 3;
   if (image->matte || (Latin1Compare(image_info->magick,"RGBA") == 0))
     packet_size=image->depth > 8 ? 8 : 4;

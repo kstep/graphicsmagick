@@ -831,7 +831,6 @@ Export unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
   status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
     WriterExit(FileOpenWarning,"Unable to open file",image);
-  image->depth=QuantumDepth;
   packet_size=image->depth > 8 ? 6 : 3;
   if (image->matte)
     packet_size+=image->depth > 8 ? 2 : 1;

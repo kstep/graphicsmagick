@@ -241,7 +241,6 @@ Export Image *ReadRLAImage(const ImageInfo *image_info)
     Initialize image structure.
   */
   image->matte=rla_header.number_matte_channels != 0;
-  image->depth=QuantumDepth;
   image->columns=rla_header.active_window.right-rla_header.active_window.left;
   image->rows=rla_header.active_window.top-rla_header.active_window.bottom;
   if (image_info->ping)

@@ -261,7 +261,6 @@ Export unsigned int WriteGRAYImage(const ImageInfo *image_info,Image *image)
   /*
     Convert image to gray scale PseudoColor class.
   */
-  image->depth=QuantumDepth;
   scene=0;
   do
   {
