@@ -1,3 +1,9 @@
+2003-05-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/command.c (MogrifyImageCommand): Wrong exception
+	macro was being invoked.  Steps have been taken to ensure that
+	this doesn't happen again.
+
 2003-05-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/ept.c (WriteEPTImage): Fixed writing EPT preview image and

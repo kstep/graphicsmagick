@@ -3315,6 +3315,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
   LiberateArgumentList(argc,argv);
   return(status);
 }
+#undef ThrowConvertException
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -3695,6 +3696,7 @@ MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
   LiberateArgumentList(argc,argv);
   return(status);
 }
+#undef ThrowIdentifyException
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -7847,6 +7849,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
   LiberateArgumentList(argc,argv);
   return(status);
 }
+#undef ThrowMogrifyException
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -9089,7 +9092,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
   if ((image == (Image *) NULL) && (image_list == (Image *) NULL))
     {
       if (exception->severity == UndefinedException)
-        ThrowConvertException(OptionError,"MissingAnImageFilename",
+        ThrowMontageException(OptionError,"MissingAnImageFilename",
           (char *) NULL);
       return(False);
     }
@@ -9137,7 +9140,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
   LiberateArgumentList(argc,argv);
   return(status);
 }
-
+#undef ThrowMontageException
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
