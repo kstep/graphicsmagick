@@ -1,1 +1,1 @@
-output.* test_*_out.*
+output* test_*_out.*
