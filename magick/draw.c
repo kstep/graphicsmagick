@@ -1146,8 +1146,8 @@ static void DrawBoundingRectangles(Image *image,const DrawInfo *draw_info,
           (void) QueryColorDatabase("red",&clone_info->stroke);
         else
           (void) QueryColorDatabase("green",&clone_info->stroke);
-        start.x=floor(polygon_info->edges[i].bounds.x1-mid+0.5);
-        start.y=floor(polygon_info->edges[i].bounds.y1-mid+0.5);
+        start.x=floor(polygon_info->edges[i].bounds.x1-mid-0.5);
+        start.y=floor(polygon_info->edges[i].bounds.y1-mid-0.5);
         end.x=ceil(polygon_info->edges[i].bounds.x2+mid-0.5);
         end.y=ceil(polygon_info->edges[i].bounds.y2+mid-0.5);
         primitive_info[0].primitive=RectanglePrimitive;
@@ -1159,8 +1159,8 @@ static void DrawBoundingRectangles(Image *image,const DrawInfo *draw_info,
       }
     }
   (void) QueryColorDatabase("blue",&clone_info->stroke);
-  start.x=floor(bounds.x1-mid+0.5);
-  start.y=floor(bounds.y1-mid+0.5);
+  start.x=floor(bounds.x1-mid-0.5);
+  start.y=floor(bounds.y1-mid-0.5);
   end.x=ceil(bounds.x2+mid-0.5);
   end.y=ceil(bounds.y2+mid-0.5);
   primitive_info[0].primitive=RectanglePrimitive;
@@ -2717,29 +2717,29 @@ static inline double GetPixelOpacity(PolygonInfo *polygon_info,const double mid,
   p=polygon_info->edges;
   for (j=0; j < polygon_info->number_edges; j++)
   {
-    if (y < (p->bounds.y1-mid-0.5))
+    if (y <= (p->bounds.y1-mid-0.5))
       break;
-    if (y >= (p->bounds.y2+mid+0.5))
+    if (y > (p->bounds.y2+mid+0.5))
       {
         (void) DestroyEdge(polygon_info,j);
         p++;
         continue;
       }
-    if (x < (p->bounds.x1-mid-0.5))
+    if (x <= (p->bounds.x1-mid-0.5))
       {
         p++;
         continue;
       }
-    if (x >= (p->bounds.x2+mid+0.5))
+    if (x > (p->bounds.x2+mid+0.5))
       {
         p++;
         continue;
       }
     for (i=Max(p->highwater,1); i < p->number_points; i++)
     {
-      if (y < (p->points[i-1].y-mid-0.5))
+      if (y <= (p->points[i-1].y-mid-0.5))
         break;
-      if (y >= (p->points[i].y+mid+0.5))
+      if (y > (p->points[i].y+mid+0.5))
         continue;
       if (p->scanline != y)
         {
@@ -2833,19 +2833,19 @@ static inline double GetPixelOpacity(PolygonInfo *polygon_info,const double mid,
   p=polygon_info->edges;
   for (j=0; j < polygon_info->number_edges; j++)
   {
-    if (y < p->bounds.y1)
+    if (y <= p->bounds.y1)
       break;
-    if (y >= p->bounds.y2)
+    if (y > p->bounds.y2)
       {
         p++;
         continue;
       }
-    if (x < p->bounds.x1)
+    if (x <= p->bounds.x1)
       {
         p++;
         continue;
       }
-    if (x >= p->bounds.x2)
+    if (x > p->bounds.x2)
       {
         winding_number+=p->direction ? 1 : -1;
         p++;
@@ -2968,13 +2968,13 @@ static unsigned int DrawPolygonPrimitive(Image *image,const DrawInfo *draw_info,
       /*
         Draw point.
       */
-      for (y=(int) ceil(bounds.y1-0.5); y <= (int) floor(bounds.y2+0.5); y++)
+      for (y=(int) ceil(bounds.y1-0.5); y <= (int) floor(bounds.y2-0.5); y++)
       {
         x=(int) ceil(bounds.x1-0.5);
-        q=GetImagePixels(image,x,y,(int) floor(bounds.x2+0.5)-x,1);
+        q=GetImagePixels(image,x,y,(int) floor(bounds.x2-0.5)-x,1);
         if (q == (PixelPacket *) NULL)
           break;
-        for ( ; x <= (int) floor(bounds.x2+0.5); x++)
+        for ( ; x <= (int) floor(bounds.x2-0.5); x++)
         {
           if ((x == (int) ceil(primitive_info->point.x-0.5)) &&
               (y == (int) ceil(primitive_info->point.y-0.5)))
@@ -2992,13 +2992,13 @@ static unsigned int DrawPolygonPrimitive(Image *image,const DrawInfo *draw_info,
   /*
     Draw polygon or line.
   */
-  for (y=(int) ceil(bounds.y1-0.5); y <= (int) floor(bounds.y2+0.5); y++)
+  for (y=(int) ceil(bounds.y1-0.5); y <= (int) floor(bounds.y2-0.5); y++)
   {
     x=(int) ceil(bounds.x1-0.5);
-    q=GetImagePixels(image,x,y,(int) floor(bounds.x2+0.5)-x,1);
+    q=GetImagePixels(image,x,y,(int) floor(bounds.x2-0.5)-x,1);
     if (q == (PixelPacket *) NULL)
       break;
-    for ( ; x <= (int) floor(bounds.x2+0.5); x++)
+    for ( ; x <= (int) floor(bounds.x2-0.5); x++)
     {
       /*
         Fill and/or stroke.
