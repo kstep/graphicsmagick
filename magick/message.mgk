@@ -1,33 +1,4 @@
-convert message.mgk message.c
-
-For POSIX-compliant systems this is determined by the LC_MESSAGES
-environment variable, and/or the value set or retrieved by
-setlocale(3C).  It is worth reading the description of setlocale(3C).
-
 <?xml version="1.0"?>
 <typemap>
   <include language="english" file="english.mgk" />
-  <include language="french" file="french.mgk" />
 </typemap>
-
-english.mgk:
-
-<?xml version="1.0"?>
-<messagemap>
-  <Error>
-    <ReadImage>
-      <message name="EndOfFile">Unable to read image, EOF</message>
-    </ReadImage>
-  </Error>
-</messagemap>
-
-french.mgk
-
-<messagemap>
-  <Error>
-    <ReadImage>
-      <message name="EndOfFile">Parla Vous Rut Row</message>
-     </ReadImage>
-  </Error>
-</messagemap>
-

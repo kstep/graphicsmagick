@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<messagemap>
+  <FileOpen>
+    <Warning>
+      <message name="EndOfFile">Unable to read image, EOF</message>
+    </Warning>
+  </FileOpen>
+</messagemap>
