@@ -4807,18 +4807,12 @@ Mogrify(ref,...)
             Respect gravity.
           */
           if (attribute_flag[2])
-            flags=ParseImageGeometry(argument_list[2].string_reference,
-              &geometry.x,&geometry.y,&geometry.width,&geometry.height);
+            flags=GetGeometry(argument_list[2].string_reference,&geometry.x,
+              &geometry.y,&geometry.width,&geometry.height);
           if (attribute_flag[3])
             geometry.x=argument_list[3].int_reference;
           if (attribute_flag[4])
             geometry.y=argument_list[4].int_reference;
-          if ((flags & WidthValue) == 0)
-            geometry.width-=2*geometry.x > (long) geometry.width ?
-              geometry.width : 2*geometry.x;
-          if ((flags & HeightValue) == 0)
-            geometry.height-=2*geometry.y > (long) geometry.height ?
-              geometry.height : 2*geometry.y;
           if (attribute_flag[5])
             switch (argument_list[5].int_reference)
             {
