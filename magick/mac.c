@@ -1137,7 +1137,7 @@ Image *ReadPICTImage(const ImageInfo *image_info)
       image->class=PseudoClass;
       image->colors=(*(picture_info.theColorTable))->ctSize;
       image->colormap=(PixelPacket *)
-        AllocateMemory(image->colors*sizeof(ColorPacket));
+        AllocateMemory(image->colors*sizeof(PixelPacket));
       if (image->colormap == (PixelPacket *) NULL)
         {
           if (picture_info.theColorTable != nil)
