@@ -102,12 +102,12 @@ static void Usage(const char *client_name)
       (char *) NULL
     };
 
-  (void) printf("Version: %.128s\n",MagickVersion);
-  (void) printf("Copyright: %.128s\n\n",MagickCopyright);
-  (void) printf("Usage: %.128s [ options ... ] file [ file ... ]\n",client_name);
+  (void) printf("Version: %.1024s\n",MagickVersion);
+  (void) printf("Copyright: %.1024s\n\n",MagickCopyright);
+  (void) printf("Usage: %.1024s [ options ... ] file [ file ... ]\n",client_name);
   (void) printf("\nWhere options include:\n");
   for (p=options; *p != (char *) NULL; p++)
-    (void) printf("  %.128s\n",*p);
+    (void) printf("  %.1024s\n",*p);
   Exit(0);
 }
 

@@ -206,7 +206,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       /*
         Window name is the base of the filename.
       */
-      FormatString(windows->image.name,"ImageMagick: %.128s",
+      FormatString(windows->image.name,"ImageMagick: %.1024s",
         BaseFilename((*image)->filename));
       if (resource_info->title != (char *) NULL)
         (void) strcpy(windows->image.name,(*image)->label);
@@ -306,7 +306,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
           /*
             Display documentation using Netscape remote control.
           */
-          FormatString(command,"openURL(%.128s,new-window,noraise)",
+          FormatString(command,"openURL(%.1024s,new-window,noraise)",
             DocumentationURL);
           mozilla_atom=XInternAtom(display,"_MOZILLA_COMMAND",False);
           XChangeProperty(display,mozilla_window,mozilla_atom,XA_STRING,8,
@@ -620,11 +620,11 @@ Export void XAnimateBackgroundImage(Display *display,
   window_info.y=0;
   if (resources.debug)
     {
-      (void) fprintf(stderr,"Image: %.128s[%u] %ux%u ",images[0]->filename,
+      (void) fprintf(stderr,"Image: %.1024s[%u] %ux%u ",images[0]->filename,
         images[0]->scene,images[0]->columns,images[0]->rows);
       if (images[0]->colors != 0)
         (void) fprintf(stderr,"%uc ",images[0]->colors);
-      (void) fprintf(stderr,"%.128s\n",images[0]->magick);
+      (void) fprintf(stderr,"%.1024s\n",images[0]->magick);
     }
   /*
     Adjust image dimensions as specified by backdrop or geometry options.
@@ -726,11 +726,11 @@ Export void XAnimateBackgroundImage(Display *display,
       MagickError(XServerError,"Unable to create X image",(char *) NULL);
     if (resources.debug)
       {
-        (void) fprintf(stderr,"Image: [%u] %.128s %ux%u ",images[scene]->scene,
+        (void) fprintf(stderr,"Image: [%u] %.1024s %ux%u ",images[scene]->scene,
           images[scene]->filename,images[scene]->columns,images[scene]->rows);
         if (images[scene]->colors != 0)
           (void) fprintf(stderr,"%uc ",images[scene]->colors);
-        (void) fprintf(stderr,"%.128s\n",images[scene]->magick);
+        (void) fprintf(stderr,"%.1024s\n",images[scene]->magick);
       }
     /*
       Create the X pixmap.
@@ -1146,11 +1146,11 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
   }
   if (resource_info->debug)
     {
-      (void) fprintf(stderr,"Image: %.128s[%u] %ux%u ",displayed_image->filename,
+      (void) fprintf(stderr,"Image: %.1024s[%u] %ux%u ",displayed_image->filename,
         displayed_image->scene,displayed_image->columns,displayed_image->rows);
       if (displayed_image->colors != 0)
         (void) fprintf(stderr,"%uc ",displayed_image->colors);
-      (void) fprintf(stderr,"%.128s\n",displayed_image->magick);
+      (void) fprintf(stderr,"%.1024s\n",displayed_image->magick);
     }
   XMakeStandardColormap(display,visual_info,resource_info,displayed_image,
     map_info,pixel_info);
@@ -1262,7 +1262,7 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
       p=displayed_image->filename+Extent(displayed_image->filename)-1;
       while ((p > displayed_image->filename) && !IsBasenameSeparator(*(p-1)))
         p--;
-      FormatString(windows->image.name,"ImageMagick: %.128s[%u of %u]",p,
+      FormatString(windows->image.name,"ImageMagick: %.1024s[%u of %u]",p,
         displayed_image->scene,number_scenes);
       (void) strcpy(windows->image.icon_name,p);
     }
@@ -1394,7 +1394,7 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
     resource_info,&windows->command);
   windows->command.data=MagickMenus;
   (void) XCommandWidget(display,windows,CommandMenu,(XEvent *) NULL);
-  FormatString(resource_name,"%.128s.command",resource_info->client_name);
+  FormatString(resource_name,"%.1024s.command",resource_info->client_name);
   windows->command.geometry=XGetResourceClass(resource_info->resource_database,
     resource_name,"geometry",(char *) NULL);
   windows->command.name=MagickTitle;
@@ -1422,7 +1422,7 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
     FreeMemory((char *) windows->widget.name);
   XGetWindowInfo(display,visual_info,map_info,pixel_info,font_info,
     resource_info,&windows->widget);
-  FormatString(resource_name,"%.128s.widget",resource_info->client_name);
+  FormatString(resource_name,"%.1024s.widget",resource_info->client_name);
   windows->widget.geometry=XGetResourceClass(resource_info->resource_database,
     resource_name,"geometry",(char *) NULL);
   windows->widget.name=(char *) AllocateMemory(MaxTextExtent*sizeof(char));
@@ -1540,11 +1540,11 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
       MagickError(XServerError,"Unable to create X image",(char *) NULL);
     if (resource_info->debug)
       {
-        (void) fprintf(stderr,"Image: [%u] %.128s %ux%u ",images[scene]->scene,
+        (void) fprintf(stderr,"Image: [%u] %.1024s %ux%u ",images[scene]->scene,
           images[scene]->filename,images[scene]->columns,images[scene]->rows);
         if (images[scene]->colors != 0)
           (void) fprintf(stderr,"%uc ",images[scene]->colors);
-        (void) fprintf(stderr,"%.128s\n",images[scene]->magick);
+        (void) fprintf(stderr,"%.1024s\n",images[scene]->magick);
       }
     /*
       Window name is the base of the filename.
@@ -1559,7 +1559,7 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
         p=images[scene]->filename+Extent(images[scene]->filename)-1;
         while ((p > images[scene]->filename) && (*(p-1) != '/'))
           p--;
-        FormatString(windows->image.name,"ImageMagick: %.128s[%u of %u]",p,
+        FormatString(windows->image.name,"ImageMagick: %.1024s[%u of %u]",p,
           scene,number_scenes);
       }
     status=XStringListToTextProperty(&windows->image.name,1,&window_name);
@@ -1643,7 +1643,7 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
               p=images[scene]->filename+Extent(images[scene]->filename)-1;
               while ((p > images[scene]->filename) && (*(p-1) != '/'))
                 p--;
-              FormatString(windows->image.name,"ImageMagick: %.128s[%u of %u]",p,
+              FormatString(windows->image.name,"ImageMagick: %.1024s[%u of %u]",p,
                 scene,number_scenes);
               if (resource_info->title != (char *) NULL)
                 (void) strcpy(windows->image.name,image->label);

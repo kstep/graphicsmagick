@@ -99,6 +99,7 @@
 %    -dispose method     GIF disposal method
 %    -dither             apply Floyd/Steinberg error diffusion to image
 %    -draw string        annotate the image with a graphic primitive
+%    -filter type        use this filter when resizing an image
 %    -frame geometry     surround image with an ornamental border
 %    -gamma value        level of gamma correction
 %    -geometry geometry  preferred tile and border sizes
@@ -182,6 +183,7 @@ static void Usage(const char *client_name)
       "-dispose method     GIF disposal method",
       "-dither             apply Floyd/Steinberg error diffusion to image",
       "-draw string        annotate the image with a graphic primitive",
+      "-filter type        use this filter when resizing an image",
       "-frame geometry     surround image with an ornamental border",
       "-gamma value        level of gamma correction",
       "-geometry geometry  preferred tile and border sizes",
@@ -207,14 +209,14 @@ static void Usage(const char *client_name)
       (char *) NULL
     };
 
-  (void) printf("Version: %.128s\n",MagickVersion);
-  (void) printf("Copyright: %.128s\n\n",MagickCopyright);
+  (void) printf("Version: %.1024s\n",MagickVersion);
+  (void) printf("Copyright: %.1024s\n\n",MagickCopyright);
   (void) printf(
-    "Usage: %.128s [-options ...] file [ [-options ...] file ...] file\n",
+    "Usage: %.1024s [-options ...] file [ [-options ...] file ...] file\n",
     client_name);
   (void) printf("\nWhere options include: \n");
   for (p=options; *p != (char *) NULL; p++)
-    (void) printf("  %.128s\n",*p);
+    (void) printf("  %.1024s\n",*p);
   (void) printf(
     "\nIn addition to those listed above, you can specify these standard X\n");
   (void) printf(
@@ -666,6 +668,51 @@ int main(int argc,char **argv)
         }
         case 'f':
         {
+          if (strncmp("filter",option+1,3) == 0)
+            {
+              image_info->filter=MitchellFilter;
+              if (*option == '-')
+                {
+                  i++;
+                  if (i == argc)
+                    MagickError(OptionError,"Missing type",option);
+                  option=argv[i];
+                  image_info->filter=UndefinedFilter;
+                  if (Latin1Compare("Point",option) == 0)
+                    image_info->filter=PointFilter;
+                  if (Latin1Compare("Box",option) == 0)
+                    image_info->filter=BoxFilter;
+                  if (Latin1Compare("Triangle",option) == 0)
+                    image_info->filter=TriangleFilter;
+                  if (Latin1Compare("Hermite",option) == 0)
+                    image_info->filter=HermiteFilter;
+                  if (Latin1Compare("Hanning",option) == 0)
+                    image_info->filter=HanningFilter;
+                  if (Latin1Compare("Hamming",option) == 0)
+                    image_info->filter=HammingFilter;
+                  if (Latin1Compare("Blackman",option) == 0)
+                    image_info->filter=BlackmanFilter;
+                  if (Latin1Compare("Gaussian",option) == 0)
+                    image_info->filter=GaussianFilter;
+                  if (Latin1Compare("Quadratic",option) == 0)
+                    image_info->filter=QuadraticFilter;
+                  if (Latin1Compare("Cubic",option) == 0)
+                    image_info->filter=CubicFilter;
+                  if (Latin1Compare("Catrom",option) == 0)
+                    image_info->filter=CatromFilter;
+                  if (Latin1Compare("Mitchell",option) == 0)
+                    image_info->filter=MitchellFilter;
+                  if (Latin1Compare("Lanczos",option) == 0)
+                    image_info->filter=LanczosFilter;
+                  if (Latin1Compare("Bessel",option) == 0)
+                    image_info->filter=BesselFilter;
+                  if (Latin1Compare("Sinc",option) == 0)
+                    image_info->filter=SincFilter;
+                  if (image_info->filter == UndefinedFilter)
+                    MagickError(OptionError,"Invalid filter type",option);
+                }
+              break;
+            }
           if (strncmp("font",option+1,3) == 0)
             {
               image_info->font=(char *) NULL;
@@ -1110,7 +1157,7 @@ int main(int argc,char **argv)
             */
             FormatString(filename,image_info->filename,scene);
             if (Latin1Compare(filename,image_info->filename) == 0)
-              FormatString(filename,"%.128s.%u",image_info->filename,scene);
+              FormatString(filename,"%.1024s.%u",image_info->filename,scene);
             (void) strcpy(image_info->filename,filename);
           }
         image_info->font=resource_info.font;

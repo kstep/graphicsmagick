@@ -111,6 +111,7 @@
 %    -pen color           color for annotating or changing opaque color
 %    -pointsize value     pointsize of Postscript font
 %    -preview type        image preview type
+%    -profile filename    add ICC or IPTC information profile to image
 %    -quality value       JPEG/MIFF/PNG compression level
 %    -raise value         lighten/darken image edges to create a 3-D effect
 %    -region geometry     apply options to a portion of the image
@@ -299,6 +300,7 @@ static void Usage(const char *client_name)
       "-pen color           color for annotating or changing opaque color",
       "-pointsize value     pointsize of Postscript font",
       "-preview type        image preview type",
+      "-profile filename    add ICC or IPTC information profile to image",
       "-quality value       JPEG/MIFF/PNG compression level",
       "-raise value         lighten/darken image edges to create a 3-D effect",
       "-region geometry     apply options to a portion of the image",
@@ -326,13 +328,13 @@ static void Usage(const char *client_name)
       (char *) NULL
     };
 
-  (void) printf("Version: %.128s\n",MagickVersion);
-  (void) printf("Copyright: %.128s\n\n",MagickCopyright);
-  (void) printf("Usage: %.128s [options ...] file [ files... ] output_file\n",
+  (void) printf("Version: %.1024s\n",MagickVersion);
+  (void) printf("Copyright: %.1024s\n\n",MagickCopyright);
+  (void) printf("Usage: %.1024s [options ...] file [ files... ] output_file\n",
     client_name);
   (void) printf("\nWhere options include:\n");
   for (p=options; *p != (char *) NULL; p++)
-    (void) printf("  %.128s\n",*p);
+    (void) printf("  %.1024s\n",*p);
   (void) printf(
     "\nBy default, the image format of `file' is determined by its magic\n");
   (void) printf(
@@ -1255,6 +1257,16 @@ int main(int argc,char **argv)
                     image_info.preview_type=JPEGPreview;
                   if (image_info.preview_type == UndefinedPreview)
                     MagickError(OptionError,"Invalid interlace type",option);
+                }
+              break;
+            }
+          if (strncmp("profile",option+1,4) == 0)
+            {
+              if (*option == '-')
+                {
+                  i++;
+                  if (i == argc)
+                    MagickError(OptionError,"Missing profile",option);
                 }
               break;
             }

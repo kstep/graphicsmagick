@@ -69,7 +69,6 @@
   return((Image *) NULL); \
 }
 #define RenderPostscriptText  "  Rendering postscript...  "
-
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1349,7 +1348,7 @@ Image *ReadDCMImage(const ImageInfo *image_info)
         (void) fprintf(stdout,"0x%04x %4d (0x%04x,0x%04x)",image->offset,
           length,group,element);
         if (dicom_info[i].description != (char *) NULL)
-          (void) fprintf(stdout," %.128s",dicom_info[i].description);
+          (void) fprintf(stdout," %.1024s",dicom_info[i].description);
         (void) fprintf(stdout,": ");
       }
     if ((group == 0x7FE0) && (element == 0x0010))
@@ -4030,6 +4029,576 @@ Image *ReadHISTOGRAMImage(const ImageInfo *image_info)
   return(image);
 }
 
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   R e a d I C C I m a g e                                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method ReadICCImage reads an image file in the ICC format and returns it.
+%  It allocates the memory necessary for the new Image structure and returns a
+%  pointer to the new image.  This method differs from the other decoder
+%  methods in that only the color profile information is useful in the
+%  returned image.
+%
+%  The format of the ReadICCImage routine is:
+%
+%      image=ReadICCImage(image_info)
+%
+%  A description of each parameter follows:
+%
+%    o image:  Method ReadICCImage returns a pointer to the image after
+%      reading. A null image is returned if there is a a memory shortage or if
+%      the image cannot be read.
+%
+%    o image_info: Specifies a pointer to an ImageInfo structure.
+%
+%
+*/
+Image *ReadICCImage(const ImageInfo *image_info)
+{
+  Image
+    *image;
+
+  int
+    c;
+
+  register unsigned char
+    *q;
+
+  unsigned int
+    length;
+
+  /*
+    Allocate image structure.
+  */
+  image=AllocateImage(image_info);
+  if (image == (Image *) NULL)
+    return((Image *) NULL);
+  /*
+    Open image file.
+  */
+  OpenImage(image_info,image,ReadBinaryType);
+  if (image->file == (FILE *) NULL)
+    PrematureExit(FileOpenWarning,"Unable to open file",image);
+  /*
+    Read ICC image.
+  */
+  length=MaxTextExtent;
+  image->color_profile.info=(unsigned char *)
+    AllocateMemory(length*sizeof(unsigned char));
+  for (q=image->color_profile.info; ; q++)
+  {
+    c=fgetc(image->file);
+    if (c == EOF)
+      break;
+    if ((q-image->color_profile.info+1) >= length)
+      {
+        image->color_profile.length=q-image->color_profile.info;
+        length<<=1;
+        image->color_profile.info=(unsigned char *) ReallocateMemory((char *)
+          image->color_profile.info,length*sizeof(unsigned char));
+        if (image->color_profile.info == (unsigned char *) NULL)
+          break;
+        q=image->color_profile.info+image->color_profile.length;
+      }
+    *q=(unsigned char) c;
+  }
+  image->color_profile.length=0;
+  if (image->color_profile.info == (unsigned char *) NULL)
+    image->color_profile.length=q-image->color_profile.info;
+  CloseImage(image);
+  return(image);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   R e a d I C O N I m a g e                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method ReadICONImage reads a Microsoft icon image file and returns it.  It
+%  allocates the memory necessary for the new Image structure and returns a
+%  pointer to the new image.
+%
+%  The format of the ReadICONImage routine is:
+%
+%      image=ReadICONImage(image_info)
+%
+%  A description of each parameter follows:
+%
+%    o image:  Method ReadICONImage returns a pointer to the image after
+%      reading.  A null image is returned if there is a a memory shortage or
+%      if the image cannot be read.
+%
+%    o image_info: Specifies a pointer to an ImageInfo structure.
+%
+%
+*/
+Image *ReadICONImage(const ImageInfo *image_info)
+{
+#define MaxIcons  256
+
+  typedef struct _IconEntry
+  {
+    unsigned char
+      width,
+      height,
+      colors,
+      reserved;
+
+    short int
+      planes,
+      bits_per_pixel;
+
+    unsigned int
+      size,
+      offset;
+  } IconEntry;
+
+  typedef struct _IconFile
+  {
+    short
+      reserved,
+      resource_type,
+      count;
+
+    IconEntry
+      directory[MaxIcons];
+  } IconFile;
+
+  typedef struct _IconHeader
+  {
+    unsigned long
+      size,
+      width,
+      height;
+
+    unsigned short
+      planes,
+      bits_per_pixel;
+
+    unsigned long
+      compression,
+      image_size,
+      x_pixels,
+      y_pixels,
+      number_colors,
+      colors_important;
+  } IconHeader;
+
+  IconFile
+    icon_file;
+
+  IconHeader
+    icon_header;
+
+  Image
+    *image;
+
+  register int
+    bit,
+    i,
+    x,
+    y;
+
+  register RunlengthPacket
+    *q;
+
+  register unsigned char
+    *p;
+
+  unsigned char
+    *icon_colormap,
+    *icon_pixels;
+
+  unsigned int
+    bytes_per_line,
+    offset;
+
+  /*
+    Allocate image structure.
+  */
+  image=AllocateImage(image_info);
+  if (image == (Image *) NULL)
+    return((Image *) NULL);
+  /*
+    Open image file.
+  */
+  OpenImage(image_info,image,ReadBinaryType);
+  if (image->file == (FILE *) NULL)
+    PrematureExit(FileOpenWarning,"Unable to open file",image);
+  icon_file.reserved=LSBFirstReadShort(image->file);
+  icon_file.resource_type=LSBFirstReadShort(image->file);
+  icon_file.count=LSBFirstReadShort(image->file);
+  if ((icon_file.reserved != 0) || (icon_file.resource_type != 1) ||
+      (icon_file.count > MaxIcons))
+    PrematureExit(CorruptImageWarning,"Not a ICO image file",image);
+  for (i=0; i < icon_file.count; i++)
+  {
+    icon_file.directory[i].width=fgetc(image->file);
+    icon_file.directory[i].height=fgetc(image->file);
+    icon_file.directory[i].colors=fgetc(image->file);
+    icon_file.directory[i].reserved=fgetc(image->file);
+    icon_file.directory[i].planes=LSBFirstReadShort(image->file);
+    icon_file.directory[i].bits_per_pixel=LSBFirstReadShort(image->file);
+    icon_file.directory[i].size=LSBFirstReadLong(image->file);
+    icon_file.directory[i].offset=LSBFirstReadLong(image->file);
+  }
+  for (i=0; i < icon_file.count; i++)
+  {
+    /*
+      Verify ICON identifier.
+    */
+    (void) fseek(image->file,icon_file.directory[i].offset,SEEK_SET);
+    icon_header.size=LSBFirstReadLong(image->file);
+    icon_header.width=LSBFirstReadLong(image->file);
+    icon_header.height=LSBFirstReadLong(image->file);
+    icon_header.planes=LSBFirstReadShort(image->file);
+    icon_header.bits_per_pixel=LSBFirstReadShort(image->file);
+    icon_header.compression=LSBFirstReadLong(image->file);
+    icon_header.image_size=LSBFirstReadLong(image->file);
+    icon_header.x_pixels=LSBFirstReadLong(image->file);
+    icon_header.y_pixels=LSBFirstReadLong(image->file);
+    icon_header.number_colors=LSBFirstReadLong(image->file);
+    icon_header.colors_important=LSBFirstReadLong(image->file);
+    image->columns=(unsigned int) icon_header.width;
+    image->rows=(unsigned int) icon_header.height;
+    image->class=PseudoClass;
+    image->colors=image->colors=1 << icon_header.bits_per_pixel;
+    if (image_info->ping)
+      {
+        CloseImage(image);
+        return(image);
+      }
+    /*
+      Allocate image colormap.
+    */
+    image->colormap=(ColorPacket *)
+      AllocateMemory(image->colors*sizeof(ColorPacket));
+    if (image->colormap == (ColorPacket *) NULL)
+      PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
+    /*
+      Read ICON raster colormap.
+    */
+    icon_colormap=(unsigned char *)
+      AllocateMemory(4*image->colors*sizeof(unsigned char));
+    if (icon_colormap == (unsigned char *) NULL)
+      PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
+    (void) ReadData((char *) icon_colormap,4,image->colors,image->file);
+    p=icon_colormap;
+    for (x=0; x < image->colors; x++)
+    {
+      image->colormap[x].blue=UpScale(*p++);
+      image->colormap[x].green=UpScale(*p++);
+      image->colormap[x].red=UpScale(*p++);
+      p++;
+    }
+    FreeMemory((char *) icon_colormap);
+    /*
+      Read image data.
+    */
+    icon_pixels=(unsigned char *)
+      AllocateMemory(icon_file.directory[i].size*sizeof(unsigned char));
+    if (icon_pixels == (unsigned char *) NULL)
+      PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
+    (void) ReadData((char *) icon_pixels,1,icon_file.directory[i].size,
+      image->file);
+    /*
+      Initialize image structure.
+    */
+    image->columns=icon_file.directory[i].width;
+    image->rows=icon_file.directory[i].height;
+    image->packets=image->columns*image->rows;
+    image->pixels=(RunlengthPacket *)
+      AllocateMemory(image->packets*sizeof(RunlengthPacket));
+    if (image->pixels == (RunlengthPacket *) NULL)
+      PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
+    BlackImage(image);
+    /*
+      Convert ICON raster image to runlength-encoded packets.
+    */
+    bytes_per_line=((image->columns*icon_header.bits_per_pixel+31)/32)*4;
+    switch (icon_header.bits_per_pixel)
+    {
+      case 1:
+      {
+        /*
+          Convert bitmap scanline to runlength-encoded color packets.
+        */
+        for (y=image->rows-1; y >= 0; y--)
+        {
+          p=icon_pixels+(image->rows-y-1)*bytes_per_line;
+          q=image->pixels+(y*image->columns);
+          for (x=0; x < ((int) image->columns-7); x+=8)
+          {
+            for (bit=0; bit < 8; bit++)
+            {
+              q->index=((*p) & (0x80 >> bit) ? 0x01 : 0x00);
+              q->length=0;
+              q++;
+            }
+            p++;
+          }
+          if ((image->columns % 8) != 0)
+            {
+              for (bit=0; bit < (image->columns % 8); bit++)
+              {
+                q->index=((*p) & (0x80 >> bit) ? 0x01 : 0x00);
+                q->length=0;
+                q++;
+              }
+              p++;
+            }
+          if (image->previous == (Image *) NULL)
+            if (QuantumTick(y,image->rows))
+              ProgressMonitor(LoadImageText,image->rows-y-1,image->rows);
+        }
+        break;
+      }
+      case 4:
+      {
+        /*
+          Convert PseudoColor scanline to runlength-encoded color packets.
+        */
+        for (y=image->rows-1; y >= 0; y--)
+        {
+          p=icon_pixels+(image->rows-y-1)*bytes_per_line;
+          q=image->pixels+(y*image->columns);
+          for (x=0; x < ((int) image->columns-1); x+=2)
+          {
+            q->index=(*p >> 4) & 0xf;
+            q->length=0;
+            q++;
+            q->index=(*p) & 0xf;
+            q->length=0;
+            p++;
+            q++;
+          }
+          if ((image->columns % 2) != 0)
+            {
+              q->index=(*p >> 4) & 0xf;
+              q->length=0;
+              q++;
+              p++;
+            }
+          if (image->previous == (Image *) NULL)
+            if (QuantumTick(y,image->rows))
+              ProgressMonitor(LoadImageText,image->rows-y-1,image->rows);
+        }
+        break;
+      }
+      case 8:
+      {
+        /*
+          Convert PseudoColor scanline to runlength-encoded color packets.
+        */
+        for (y=image->rows-1; y >= 0; y--)
+        {
+          p=icon_pixels+(image->rows-y-1)*bytes_per_line;
+          q=image->pixels+(y*image->columns);
+          for (x=0; x < image->columns; x++)
+          {
+            q->index=(*p++);
+            q->length=0;
+            q++;
+          }
+          if (image->previous == (Image *) NULL)
+            if (QuantumTick(y,image->rows))
+              ProgressMonitor(LoadImageText,image->rows-y-1,image->rows);
+        }
+        break;
+      }
+      case 16:
+      {
+        /*
+          Convert PseudoColor scanline to runlength-encoded color packets.
+        */
+        if (icon_header.compression == 1)
+          bytes_per_line=image->columns << 1;
+        for (y=image->rows-1; y >= 0; y--)
+        {
+          p=icon_pixels+(image->rows-y-1)*bytes_per_line;
+          q=image->pixels+(y*image->columns);
+          for (x=0; x < image->columns; x++)
+          {
+            q->index=(*p++);
+            q->index|=(*p++) << 8;
+            q->length=0;
+            q++;
+          }
+          if (image->previous == (Image *) NULL)
+            if (QuantumTick(y,image->rows))
+              ProgressMonitor(LoadImageText,image->rows-y-1,image->rows);
+        }
+        break;
+      }
+      default:
+        PrematureExit(CorruptImageWarning,"Not a ICO image file",image);
+    }
+    SyncImage(image);
+    /*
+      Convert bitmap scanline to runlength-encoded color packets.
+    */
+    image->class=DirectClass;
+    image->matte=True;
+    offset=image->rows*bytes_per_line;
+    bytes_per_line=((image->columns+31)/32)*4;
+    for (y=image->rows-1; y >= 0; y--)
+    {
+      p=icon_pixels+offset+(image->rows-y-1)*bytes_per_line;
+      q=image->pixels+(y*image->columns);
+      for (x=0; x < ((int) image->columns-7); x+=8)
+      {
+        for (bit=0; bit < 8; bit++)
+        {
+          q->index=((*p) & (0x80 >> bit) ? Transparent : Opaque);
+          q->length=0;
+          q++;
+        }
+        p++;
+      }
+      if ((image->columns % 8) != 0)
+        {
+          for (bit=0; bit < (image->columns % 8); bit++)
+          {
+            q->index=((*p) & (0x80 >> bit) ? Transparent : Opaque);
+            q->length=0;
+            q++;
+          }
+          p++;
+        }
+      if (image->previous == (Image *) NULL)
+        if (QuantumTick(y,image->rows))
+          ProgressMonitor(LoadImageText,image->rows-y-1,image->rows);
+    }
+    FreeMemory((char *) icon_pixels);
+    CondenseImage(image);
+    /*
+      Proceed to next image.
+    */
+    if (image_info->subrange != 0)
+      if (image->scene >= (image_info->subimage+image_info->subrange-1))
+        break;
+    if (i < (icon_file.count-1))
+      {
+        /*
+          Allocate next image structure.
+        */
+        AllocateNextImage(image_info,image);
+        if (image->next == (Image *) NULL)
+          {
+            DestroyImages(image);
+            return((Image *) NULL);
+          }
+        image=image->next;
+        ProgressMonitor(LoadImagesText,(unsigned int) ftell(image->file),
+          (unsigned int) image->filesize);
+      }
+  }
+  while (image->previous != (Image *) NULL)
+    image=image->previous;
+  CloseImage(image);
+  return(image);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   R e a d I P T C I m a g e                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method ReadIPTCImage reads an image file in the IPTC format and returns it.
+%  It allocates the memory necessary for the new Image structure and returns a
+%  pointer to the new image.  This method differs from the other decoder
+%  methods in that only the iptc profile information is useful in the
+%  returned image.
+%
+%  The format of the ReadIPTCImage routine is:
+%
+%      image=ReadIPTCImage(image_info)
+%
+%  A description of each parameter follows:
+%
+%    o image:  Method ReadIPTCImage returns a pointer to the image after
+%      reading. A null image is returned if there is a a memory shortage or if
+%      the image cannot be read.
+%
+%    o image_info: Specifies a pointer to an ImageInfo structure.
+%
+%
+*/
+Image *ReadIPTCImage(const ImageInfo *image_info)
+{
+  Image
+    *image;
+
+  int
+    c;
+
+  register unsigned char
+    *q;
+
+  unsigned int
+    length;
+
+  /*
+    Allocate image structure.
+  */
+  image=AllocateImage(image_info);
+  if (image == (Image *) NULL)
+    return((Image *) NULL);
+  /*
+    Open image file.
+  */
+  OpenImage(image_info,image,ReadBinaryType);
+  if (image->file == (FILE *) NULL)
+    PrematureExit(FileOpenWarning,"Unable to open file",image);
+  /*
+    Read IPTC image.
+  */
+  length=MaxTextExtent;
+  image->iptc_profile.info=(unsigned char *)
+    AllocateMemory(length*sizeof(unsigned char));
+  for (q=image->iptc_profile.info; ; q++)
+  {
+    c=fgetc(image->file);
+    if (c == EOF)
+      break;
+    if ((q-image->iptc_profile.info+1) >= length)
+      {
+        image->iptc_profile.length=q-image->iptc_profile.info;
+        length<<=1;
+        image->iptc_profile.info=(unsigned char *) ReallocateMemory((char *)
+          image->iptc_profile.info,length*sizeof(unsigned char));
+        if (image->iptc_profile.info == (unsigned char *) NULL)
+          break;
+        q=image->iptc_profile.info+image->iptc_profile.length;
+      }
+    *q=(unsigned char) c;
+  }
+  image->iptc_profile.length=0;
+  if (image->iptc_profile.info == (unsigned char *) NULL)
+    image->iptc_profile.length=q-image->iptc_profile.info;
+  CloseImage(image);
+  return(image);
+}
+
 #if defined(HasJBIG)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -4734,402 +5303,6 @@ Image *ReadJPEGImage(const ImageInfo *image_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   R e a d I C O N I m a g e                                                 %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method ReadICONImage reads a Microsoft icon image file and returns it.  It
-%  allocates the memory necessary for the new Image structure and returns a
-%  pointer to the new image.
-%
-%  The format of the ReadICONImage routine is:
-%
-%      image=ReadICONImage(image_info)
-%
-%  A description of each parameter follows:
-%
-%    o image:  Method ReadICONImage returns a pointer to the image after
-%      reading.  A null image is returned if there is a a memory shortage or
-%      if the image cannot be read.
-%
-%    o image_info: Specifies a pointer to an ImageInfo structure.
-%
-%
-*/
-Image *ReadICONImage(const ImageInfo *image_info)
-{
-#define MaxIcons  256
-
-  typedef struct _IconEntry
-  {
-    unsigned char
-      width,
-      height,
-      colors,
-      reserved;
-
-    short int
-      planes,
-      bits_per_pixel;
-
-    unsigned int
-      size,
-      offset;
-  } IconEntry;
-
-  typedef struct _IconFile
-  {
-    short
-      reserved,
-      resource_type,
-      count;
-
-    IconEntry
-      directory[MaxIcons];
-  } IconFile;
-
-  typedef struct _IconHeader
-  {
-    unsigned long
-      size,
-      width,
-      height;
-
-    unsigned short
-      planes,
-      bits_per_pixel;
-
-    unsigned long
-      compression,
-      image_size,
-      x_pixels,
-      y_pixels,
-      number_colors,
-      colors_important;
-  } IconHeader;
-
-  IconFile
-    icon_file;
-
-  IconHeader
-    icon_header;
-
-  Image
-    *image;
-
-  register int
-    bit,
-    i,
-    x,
-    y;
-
-  register RunlengthPacket
-    *q;
-
-  register unsigned char
-    *p;
-
-  unsigned char
-    *icon_colormap,
-    *icon_pixels;
-
-  unsigned int
-    bytes_per_line,
-    offset;
-
-  /*
-    Allocate image structure.
-  */
-  image=AllocateImage(image_info);
-  if (image == (Image *) NULL)
-    return((Image *) NULL);
-  /*
-    Open image file.
-  */
-  OpenImage(image_info,image,ReadBinaryType);
-  if (image->file == (FILE *) NULL)
-    PrematureExit(FileOpenWarning,"Unable to open file",image);
-  icon_file.reserved=LSBFirstReadShort(image->file);
-  icon_file.resource_type=LSBFirstReadShort(image->file);
-  icon_file.count=LSBFirstReadShort(image->file);
-  if ((icon_file.reserved != 0) || (icon_file.resource_type != 1) ||
-      (icon_file.count > MaxIcons))
-    PrematureExit(CorruptImageWarning,"Not a ICO image file",image);
-  for (i=0; i < icon_file.count; i++)
-  {
-    icon_file.directory[i].width=fgetc(image->file);
-    icon_file.directory[i].height=fgetc(image->file);
-    icon_file.directory[i].colors=fgetc(image->file);
-    icon_file.directory[i].reserved=fgetc(image->file);
-    icon_file.directory[i].planes=LSBFirstReadShort(image->file);
-    icon_file.directory[i].bits_per_pixel=LSBFirstReadShort(image->file);
-    icon_file.directory[i].size=LSBFirstReadLong(image->file);
-    icon_file.directory[i].offset=LSBFirstReadLong(image->file);
-  }
-  for (i=0; i < icon_file.count; i++)
-  {
-    /*
-      Verify ICON identifier.
-    */
-    (void) fseek(image->file,icon_file.directory[i].offset,SEEK_SET);
-    icon_header.size=LSBFirstReadLong(image->file);
-    icon_header.width=LSBFirstReadLong(image->file);
-    icon_header.height=LSBFirstReadLong(image->file);
-    icon_header.planes=LSBFirstReadShort(image->file);
-    icon_header.bits_per_pixel=LSBFirstReadShort(image->file);
-    icon_header.compression=LSBFirstReadLong(image->file);
-    icon_header.image_size=LSBFirstReadLong(image->file);
-    icon_header.x_pixels=LSBFirstReadLong(image->file);
-    icon_header.y_pixels=LSBFirstReadLong(image->file);
-    icon_header.number_colors=LSBFirstReadLong(image->file);
-    icon_header.colors_important=LSBFirstReadLong(image->file);
-    image->columns=(unsigned int) icon_header.width;
-    image->rows=(unsigned int) icon_header.height;
-    image->class=PseudoClass;
-    image->colors=image->colors=1 << icon_header.bits_per_pixel;
-    if (image_info->ping)
-      {
-        CloseImage(image);
-        return(image);
-      }
-    /*
-      Allocate image colormap.
-    */
-    image->colormap=(ColorPacket *)
-      AllocateMemory(image->colors*sizeof(ColorPacket));
-    if (image->colormap == (ColorPacket *) NULL)
-      PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
-    /*
-      Read ICON raster colormap.
-    */
-    icon_colormap=(unsigned char *)
-      AllocateMemory(4*image->colors*sizeof(unsigned char));
-    if (icon_colormap == (unsigned char *) NULL)
-      PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
-    (void) ReadData((char *) icon_colormap,4,image->colors,image->file);
-    p=icon_colormap;
-    for (x=0; x < image->colors; x++)
-    {
-      image->colormap[x].blue=UpScale(*p++);
-      image->colormap[x].green=UpScale(*p++);
-      image->colormap[x].red=UpScale(*p++);
-      p++;
-    }
-    FreeMemory((char *) icon_colormap);
-    /*
-      Read image data.
-    */
-    icon_pixels=(unsigned char *)
-      AllocateMemory(icon_file.directory[i].size*sizeof(unsigned char));
-    if (icon_pixels == (unsigned char *) NULL)
-      PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
-    (void) ReadData((char *) icon_pixels,1,icon_file.directory[i].size,
-      image->file);
-    /*
-      Initialize image structure.
-    */
-    image->columns=icon_file.directory[i].width;
-    image->rows=icon_file.directory[i].height;
-    image->packets=image->columns*image->rows;
-    image->pixels=(RunlengthPacket *)
-      AllocateMemory(image->packets*sizeof(RunlengthPacket));
-    if (image->pixels == (RunlengthPacket *) NULL)
-      PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
-    BlackImage(image);
-    /*
-      Convert ICON raster image to runlength-encoded packets.
-    */
-    bytes_per_line=((image->columns*icon_header.bits_per_pixel+31)/32)*4;
-    switch (icon_header.bits_per_pixel)
-    {
-      case 1:
-      {
-        /*
-          Convert bitmap scanline to runlength-encoded color packets.
-        */
-        for (y=image->rows-1; y >= 0; y--)
-        {
-          p=icon_pixels+(image->rows-y-1)*bytes_per_line;
-          q=image->pixels+(y*image->columns);
-          for (x=0; x < ((int) image->columns-7); x+=8)
-          {
-            for (bit=0; bit < 8; bit++)
-            {
-              q->index=((*p) & (0x80 >> bit) ? 0x01 : 0x00);
-              q->length=0;
-              q++;
-            }
-            p++;
-          }
-          if ((image->columns % 8) != 0)
-            {
-              for (bit=0; bit < (image->columns % 8); bit++)
-              {
-                q->index=((*p) & (0x80 >> bit) ? 0x01 : 0x00);
-                q->length=0;
-                q++;
-              }
-              p++;
-            }
-          if (image->previous == (Image *) NULL)
-            if (QuantumTick(y,image->rows))
-              ProgressMonitor(LoadImageText,image->rows-y-1,image->rows);
-        }
-        break;
-      }
-      case 4:
-      {
-        /*
-          Convert PseudoColor scanline to runlength-encoded color packets.
-        */
-        for (y=image->rows-1; y >= 0; y--)
-        {
-          p=icon_pixels+(image->rows-y-1)*bytes_per_line;
-          q=image->pixels+(y*image->columns);
-          for (x=0; x < ((int) image->columns-1); x+=2)
-          {
-            q->index=(*p >> 4) & 0xf;
-            q->length=0;
-            q++;
-            q->index=(*p) & 0xf;
-            q->length=0;
-            p++;
-            q++;
-          }
-          if ((image->columns % 2) != 0)
-            {
-              q->index=(*p >> 4) & 0xf;
-              q->length=0;
-              q++;
-              p++;
-            }
-          if (image->previous == (Image *) NULL)
-            if (QuantumTick(y,image->rows))
-              ProgressMonitor(LoadImageText,image->rows-y-1,image->rows);
-        }
-        break;
-      }
-      case 8:
-      {
-        /*
-          Convert PseudoColor scanline to runlength-encoded color packets.
-        */
-        for (y=image->rows-1; y >= 0; y--)
-        {
-          p=icon_pixels+(image->rows-y-1)*bytes_per_line;
-          q=image->pixels+(y*image->columns);
-          for (x=0; x < image->columns; x++)
-          {
-            q->index=(*p++);
-            q->length=0;
-            q++;
-          }
-          if (image->previous == (Image *) NULL)
-            if (QuantumTick(y,image->rows))
-              ProgressMonitor(LoadImageText,image->rows-y-1,image->rows);
-        }
-        break;
-      }
-      case 16:
-      {
-        /*
-          Convert PseudoColor scanline to runlength-encoded color packets.
-        */
-        if (icon_header.compression == 1)
-          bytes_per_line=image->columns << 1;
-        for (y=image->rows-1; y >= 0; y--)
-        {
-          p=icon_pixels+(image->rows-y-1)*bytes_per_line;
-          q=image->pixels+(y*image->columns);
-          for (x=0; x < image->columns; x++)
-          {
-            q->index=(*p++);
-            q->index|=(*p++) << 8;
-            q->length=0;
-            q++;
-          }
-          if (image->previous == (Image *) NULL)
-            if (QuantumTick(y,image->rows))
-              ProgressMonitor(LoadImageText,image->rows-y-1,image->rows);
-        }
-        break;
-      }
-      default:
-        PrematureExit(CorruptImageWarning,"Not a ICO image file",image);
-    }
-    SyncImage(image);
-    /*
-      Convert bitmap scanline to runlength-encoded color packets.
-    */
-    image->class=DirectClass;
-    image->matte=True;
-    offset=image->rows*bytes_per_line;
-    bytes_per_line=((image->columns+31)/32)*4;
-    for (y=image->rows-1; y >= 0; y--)
-    {
-      p=icon_pixels+offset+(image->rows-y-1)*bytes_per_line;
-      q=image->pixels+(y*image->columns);
-      for (x=0; x < ((int) image->columns-7); x+=8)
-      {
-        for (bit=0; bit < 8; bit++)
-        {
-          q->index=((*p) & (0x80 >> bit) ? Transparent : Opaque);
-          q->length=0;
-          q++;
-        }
-        p++;
-      }
-      if ((image->columns % 8) != 0)
-        {
-          for (bit=0; bit < (image->columns % 8); bit++)
-          {
-            q->index=((*p) & (0x80 >> bit) ? Transparent : Opaque);
-            q->length=0;
-            q++;
-          }
-          p++;
-        }
-      if (image->previous == (Image *) NULL)
-        if (QuantumTick(y,image->rows))
-          ProgressMonitor(LoadImageText,image->rows-y-1,image->rows);
-    }
-    FreeMemory((char *) icon_pixels);
-    CondenseImage(image);
-    /*
-      Proceed to next image.
-    */
-    if (image_info->subrange != 0)
-      if (image->scene >= (image_info->subimage+image_info->subrange-1))
-        break;
-    if (i < (icon_file.count-1))
-      {
-        /*
-          Allocate next image structure.
-        */
-        AllocateNextImage(image_info,image);
-        if (image->next == (Image *) NULL)
-          {
-            DestroyImages(image);
-            return((Image *) NULL);
-          }
-        image=image->next;
-        ProgressMonitor(LoadImagesText,(unsigned int) ftell(image->file),
-          (unsigned int) image->filesize);
-      }
-  }
-  while (image->previous != (Image *) NULL)
-    image=image->previous;
-  CloseImage(image);
-  return(image);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   R e a d L A B E L I m a g e                                               %
 %                                                                             %
 %                                                                             %
@@ -5750,13 +5923,13 @@ Image *ReadLABELImage(const ImageInfo *image_info)
   (void) fprintf(file,"%%!PS-Adobe-3.0\n");
   (void) fprintf(file,"/Helvetica findfont %u scalefont setfont\n",
     local_info.pointsize);
-  (void) fprintf(file,"/%.128s findfont %u scalefont setfont\n",local_info.font,
+  (void) fprintf(file,"/%.1024s findfont %u scalefont setfont\n",local_info.font,
     local_info.pointsize);
   (void) fprintf(file,"0.0 0.0 0.0 setrgbcolor\n");
   (void) fprintf(file,"0 0 %u %u rectfill\n",
     local_info.pointsize*Extent(text),local_info.pointsize << 1);
   (void) fprintf(file,"1.0 1.0 1.0 setrgbcolor\n");
-  (void) fprintf(file,"0 %u moveto (%.128s) show\n",local_info.pointsize,
+  (void) fprintf(file,"0 %u moveto (%.1024s) show\n",local_info.pointsize,
     EscapeParenthesis(text));
   (void) fprintf(file,"showpage\n");
   (void) fclose(file);
@@ -13833,7 +14006,7 @@ static void TIFFWarningMessage(const char *module,const char *format,
   p=message;
   if (module != (char *) NULL)
     {
-      FormatString(p,"%.128s: ",module);
+      FormatString(p,"%.1024s: ",module);
       p+=Extent(message);
     }
   FormatString(p,format,warning);
@@ -14993,7 +15166,7 @@ Image *ReadTTFImage(const ImageInfo *image_info)
   local_info.pen="black";
   local_info.pointsize=18;
   local_info.font=font;
-  FormatString(local_info.font,"@%.128s",image_info->filename);
+  FormatString(local_info.font,"@%.1024s",image_info->filename);
   GetAnnotateInfo(&local_info,&annotate_info);
   image->columns=annotate_info.bounds.width;
   image->rows=annotate_info.bounds.height;

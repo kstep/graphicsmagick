@@ -207,7 +207,7 @@ static void Histogram(CubeInfo *color_cube,const NodeInfo *node_info,FILE *file)
           (unsigned int) p->green,(unsigned int) p->blue);
         (void) fprintf(file,"  ");
         (void) QueryColorName(p,name);
-        (void) fprintf(file,"%.128s",name);
+        (void) fprintf(file,"%.1024s",name);
         (void) fprintf(file,"\n");
       }
       if (QuantumTick(color_cube->progress,color_cube->colors))

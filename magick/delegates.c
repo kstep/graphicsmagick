@@ -484,11 +484,11 @@ Export unsigned int InvokeDelegate(const ImageInfo *image_info,Image *image,
             return(True);
           }
         (void) fprintf(file,"MPEG\n");
-        (void) fprintf(file,"%.128s%%d\n",image->filename);
+        (void) fprintf(file,"%.1024s%%d\n",image->filename);
         (void) fprintf(file,"-\n");
         (void) fprintf(file,"-\n");
         (void) fprintf(file,"-\n");
-        (void) fprintf(file,"%.128s\n",image_info->unique);
+        (void) fprintf(file,"%.1024s\n",image_info->unique);
         (void) fprintf(file,"1\n");
         (void) fprintf(file,"%u\n",image->number_scenes);
         (void) fprintf(file,"0\n");

@@ -425,6 +425,39 @@ You can set the primitive color, font color, and font bounding box color with
 processed in command line order so be sure to use \fB-pen\fP
 \fIbefore\fP the \fB-draw\fP option.
 .TP
+.B "-filter \fItype\fP"
+use this type of filter when resizing an image.
+
+Use this option to affect the resizing operation of an image (see
+\fB-geometry\fP).  Choose from these filters:
+
+.nf
+     Point
+     Box
+     Triangle
+     Hermite
+     Hanning
+     Hamming
+     Blackman
+     Gaussian
+     Quadratic
+     Cubic
+     Catrom
+     Mitchell
+     Lanczos
+     Bessel
+     Sinc
+.fi
+
+The default filter is \fBMitchell\fP.
+
+.TP
+.B "-frame"
+surround the image with an ornamental border.
+
+The color of the border is specified with the \fB-mattecolor\fP command line
+option.  If no frame is desired, use \fB+frame\fP.
+.TP
 .B "-font \fIname\fP"
 use this font when annotating the image with text.
 
@@ -432,12 +465,6 @@ If the font is a fully qualified X server font name, the font is obtained
 from an X server (e.g. -*-helvetica-medium-r-*-*-12-*-*-*-*-*-iso8859-*).  To
 use a TrueType font, precede the TrueType filename with a \fB@\fP (e.g.
 @times.ttf).  Otherwise, specify a Postscript font (e.g. helvetica).
-.TP
-.B "-frame"
-surround the image with an ornamental border.
-
-The color of the border is specified with the \fB-mattecolor\fP command line
-option.  If no frame is desired, use \fB+frame\fP.
 .TP
 .B "-gamma \fIvalue\fP"
 level of gamma correction.

@@ -982,7 +982,7 @@ Export XVisualInfo *XBestVisualInfo(Display *display,
           /*
             User specified Standard Colormap.
           */
-          FormatString((char *) map_name,"RGB_%.128s_MAP",map_type);
+          FormatString((char *) map_name,"RGB_%.1024s_MAP",map_type);
           Latin1Upper(map_name);
           map_property=XInternAtom(display,(char *) map_name,True);
           if (map_property != (Atom) NULL)
@@ -1589,12 +1589,12 @@ Export void XDisplayImageInfo(Display *display,
   FormatString(title," Image Info: %s",image->filename);
   if (resource_info->gamma_correct)
     if (resource_info->display_gamma != (char *) NULL)
-      FormatString(text,"%sDisplay\n  gamma: %.128s\n\n",text,
+      FormatString(text,"%sDisplay\n  gamma: %.1024s\n\n",text,
         resource_info->display_gamma);
   /*
     Display info about the X image.
   */
-  FormatString(text,"%sX\n  visual: %.128s\n",text,
+  FormatString(text,"%sX\n  visual: %.1024s\n",text,
     XVisualClassName(windows->image.class));
   FormatString(text,"%s  depth: %d\n",text,windows->image.ximage->depth);
   if (windows->visual_info->colormap_size != 0)
@@ -1607,7 +1607,7 @@ Export void XDisplayImageInfo(Display *display,
   FormatString(text,"%s  geometry: %dx%d\n",text,
     windows->image.ximage->width,windows->image.ximage->height);
   if (windows->image.crop_geometry != (char *) NULL)
-    FormatString(text,"%s  crop geometry: %.128s\n",text,
+    FormatString(text,"%s  crop geometry: %.1024s\n",text,
       windows->image.crop_geometry);
   if (windows->image.pixmap == (Pixmap) NULL)
     (void) strcat(text,"  type: X Image\n");
@@ -1623,9 +1623,9 @@ Export void XDisplayImageInfo(Display *display,
     (void) strcat(text,"  shared memory: False\n");
   (void) strcat(text,"\n");
   if (resource_info->font != (char *) NULL)
-    FormatString(text,"%sFont: %.128s\n\n",text,resource_info->font);
+    FormatString(text,"%sFont: %.1024s\n\n",text,resource_info->font);
   if (resource_info->text_font != (char *) NULL)
-    FormatString(text,"%sText font: %.128s\n\n",text,resource_info->text_font);
+    FormatString(text,"%sText font: %.1024s\n\n",text,resource_info->text_font);
   /*
     Display info about the undo image cache.
   */
@@ -1641,7 +1641,7 @@ Export void XDisplayImageInfo(Display *display,
   /*
     Display info about the image.
   */
-  FormatString(text,"%sImage\n  file: %.128s\n",text,image->filename);
+  FormatString(text,"%sImage\n  file: %.1024s\n",text,image->filename);
   if (IsMonochromeImage(image))
     (void) strcat(text,"  type: bilevel\n");
   else
@@ -1684,7 +1684,7 @@ Export void XDisplayImageInfo(Display *display,
         FormatString(text,"%s    %d: (%3d,%3d,%3d)  ",text,i,p->red,
           p->green,p->blue);
         (void) QueryColorName(p,name);
-        (void) FormatString(text,"%s  %.128s",text,name);
+        (void) FormatString(text,"%s  %.1024s",text,name);
         (void) strcat(text,"\n");
         p++;
       }
@@ -1699,7 +1699,7 @@ Export void XDisplayImageInfo(Display *display,
     FormatString(text,"%s  normalized maximum error: %.6f\n",text,
       image->normalized_maximum_error);
   SignatureImage(image);
-  FormatString(text,"%s  signature: %.128s\n",text,image->signature);
+  FormatString(text,"%s  signature: %.1024s\n",text,image->signature);
   if (image->matte)
     (void) strcat(text,"  matte: True\n");
   else
@@ -1794,13 +1794,13 @@ Export void XDisplayImageInfo(Display *display,
       if (image->interlace == PartitionInterlace)
         (void) strcat(text,"  interlace: Partition\n");
   (void) QueryColorName(&image->background_color,color);
-  FormatString(text,"%s  background-color: %.128s\n",text,color);
+  FormatString(text,"%s  background-color: %.1024s\n",text,color);
   (void) QueryColorName(&image->border_color,color);
-  FormatString(text,"%s  border-color: %.128s\n",text,color);
+  FormatString(text,"%s  border-color: %.1024s\n",text,color);
   (void) QueryColorName(&image->matte_color,color);
-  FormatString(text,"%s  matte-color: %.128s\n",text,color);
+  FormatString(text,"%s  matte-color: %.1024s\n",text,color);
   if (image->page != (char *) NULL)
-    FormatString(text,"%s  page geometry: %.128s\n",text,image->page);
+    FormatString(text,"%s  page geometry: %.1024s\n",text,image->page);
   if (image->dispose != 0)
     FormatString(text,"%s  dispose method: %d\n",text,image->dispose);
   if (image->delay != 0)
@@ -1810,9 +1810,9 @@ Export void XDisplayImageInfo(Display *display,
   magick_info=(MagickInfo *) GetMagickInfo(image->magick);
   if ((magick_info == (MagickInfo *) NULL) ||
       (*magick_info->description == '\0'))
-    FormatString(text,"%s  format: %.128s\n",text,image->magick);
+    FormatString(text,"%s  format: %.1024s\n",text,image->magick);
   else
-    FormatString(text,"%s  format: %.128s (%.128s)\n",text,image->magick,
+    FormatString(text,"%s  format: %.1024s (%.1024s)\n",text,image->magick,
       magick_info->description);
   p=image;
   while (p->previous != (Image *) NULL)
@@ -1825,7 +1825,7 @@ Export void XDisplayImageInfo(Display *display,
     if (image->scene != 0)
       FormatString(text,"%s  scene: %u\n",text,image->scene);
   if (image->label != (char *) NULL)
-    FormatString(text,"%s  label: %.128s\n",text,image->label);
+    FormatString(text,"%s  label: %.1024s\n",text,image->label);
   (void) strcat(text,"  compression: ");
   if (image->compression == ZipCompression)
     (void) strcat(text,"Zip\n");
@@ -1857,14 +1857,14 @@ Export void XDisplayImageInfo(Display *display,
         {
           for (i=0; textlist[i] != (char *) NULL; i++)
           {
-            FormatString(text,"%s  %.128s\n",text,textlist[i]);
+            FormatString(text,"%s  %.1024s\n",text,textlist[i]);
             FreeMemory(textlist[i]);
           }
           FreeMemory((char *) textlist);
         }
     }
   if (image->montage != (char *) NULL)
-    FormatString(text,"%s  montage: %.128s\n",text,image->montage);
+    FormatString(text,"%s  montage: %.1024s\n",text,image->montage);
   if (image->directory != (char *) NULL)
     {
       /*
@@ -1876,7 +1876,7 @@ Export void XDisplayImageInfo(Display *display,
         {
           for (i=0; textlist[i] != (char *) NULL; i++)
           {
-            FormatString(text,"%s    %.128s\n",text,textlist[i]);
+            FormatString(text,"%s    %.1024s\n",text,textlist[i]);
             FreeMemory(textlist[i]);
           }
           FreeMemory((char *) textlist);
@@ -3163,7 +3163,7 @@ Export char *XGetResourceClass(XrmDatabase database,const char *client_name,
       /*
         Initialize resource keyword and class.
       */
-      FormatString(resource_name,"%.128s.%.128s",client_name,keyword);
+      FormatString(resource_name,"%.1024s.%.1024s",client_name,keyword);
       c=(*client_name);
       if ((c >= XK_a) && (c <= XK_z))
         c-=(XK_a-XK_A);
@@ -3182,7 +3182,7 @@ Export char *XGetResourceClass(XrmDatabase database,const char *client_name,
         else
           if ((k >= XK_oslash) && (k <= XK_thorn))
             k-=(XK_oslash-XK_Ooblique);
-      FormatString(resource_class,"%c%.128s.%c%.128s",c,client_name+1,k,keyword+1);
+      FormatString(resource_class,"%c%.1024s.%c%.1024s",c,client_name+1,k,keyword+1);
     }
   status=XrmGetResource(database,resource_name,resource_class,&resource_type,
     &resource_value);
@@ -3269,7 +3269,7 @@ Export XrmDatabase XGetResourceDatabase(Display *display,char *client_name)
     else
       if ((c >= XK_oslash) && (c <= XK_thorn))
         c-=(XK_oslash-XK_Ooblique);
-  FormatString(filename,"%.128s%c%.128s",ApplicationDefaults,c,client_name+1);
+  FormatString(filename,"%.1024s%c%.1024s",ApplicationDefaults,c,client_name+1);
   XrmCombineFileDatabase(filename,&resource_database,False);
   if (XResourceManagerString(display) != (char *) NULL)
     {
@@ -3282,7 +3282,7 @@ Export XrmDatabase XGetResourceDatabase(Display *display,char *client_name)
   /*
     Merge user preferences database.
   */
-  FormatString(filename,"%.128s%.128src",PreferencesDefaults,client_name);
+  FormatString(filename,"%.1024s%.1024src",PreferencesDefaults,client_name);
   ExpandFilename(filename);
   XrmCombineFileDatabase(filename,&resource_database,False);
   return(resource_database);
@@ -3547,7 +3547,7 @@ Export char *XGetResourceInstance(XrmDatabase database,const char *client_name,
     return(resource_default);
   *resource_name='\0';
   if (keyword != (char *) NULL)
-    FormatString(resource_name,"%.128s.%.128s",client_name,keyword);
+    FormatString(resource_name,"%.1024s.%.1024s",client_name,keyword);
   status=XrmGetResource(database,resource_name,"ImageMagick",&resource_type,
     &resource_value);
   if (status == False)
@@ -5016,7 +5016,7 @@ Export XWindows *XInitializeWindows(Display *display,
   if (resource_info->debug)
     {
       XSynchronize(display,True);
-      (void) fprintf(stderr,"Version: %.128s\n",MagickVersion);
+      (void) fprintf(stderr,"Version: %.1024s\n",MagickVersion);
       (void) fprintf(stderr,"  timestamp: %ld\n",time((time_t *) NULL));
       (void) fprintf(stderr,"Protocols:\n");
       (void) fprintf(stderr,"  Window Manager: 0x%lx\n",
@@ -5085,7 +5085,7 @@ Export XWindows *XInitializeWindows(Display *display,
       (void) fprintf(stderr,"Visual:\n");
       (void) fprintf(stderr,"  visual id: 0x%lx\n",
         windows->visual_info->visualid);
-      (void) fprintf(stderr,"  class: %.128s\n",
+      (void) fprintf(stderr,"  class: %.1024s\n",
         XVisualClassName(windows->visual_info->class));
       (void) fprintf(stderr,"  depth: %d planes\n",
         windows->visual_info->depth);
@@ -8263,6 +8263,7 @@ Export Image *XMontageImages(const XResourceInfo *resource_info,
     max_height,
     number_images,
     number_lines,
+    sharpen,
     tile,
     tiles,
     tiles_per_column,
@@ -8300,6 +8301,7 @@ Export Image *XMontageImages(const XResourceInfo *resource_info,
     y=0;
     (void) ParseImageGeometry(resource_info->image_geometry,&x,&y,
       &width,&height);
+    sharpen=((width*height) << 1) < (images[tile]->rows*images[tile]->columns);
     tile_image=ZoomImage(images[tile],width,height);
     if (tile_image == (Image *) NULL)
       {
@@ -8309,15 +8311,20 @@ Export Image *XMontageImages(const XResourceInfo *resource_info,
         return((Image *) NULL);
       }
     images[tile]=tile_image;
-    if ((tile_image->columns < 3) || (tile_image->rows < 3))
-      continue;
-    sharpened_image=SharpenImage(tile_image,SharpenFactor);
-    if (sharpened_image != (Image *) NULL)
-      {
-        DestroyImage(tile_image);
-        tile_image=sharpened_image;
-      }
-    images[tile]=tile_image;
+    if (sharpen)
+      if ((tile_image->columns >= 3) && (tile_image->rows >= 3))
+        {
+          /*
+            Sharpen image.
+          */
+          sharpened_image=SharpenImage(tile_image,SharpenFactor);
+          if (sharpened_image != (Image *) NULL)
+            {
+              DestroyImage(tile_image);
+              tile_image=sharpened_image;
+            }
+          images[tile]=tile_image;
+        }
     (void) SetMonitorHandler(handler);
     ProgressMonitor(TileImageText,tile,number_images);
   }
@@ -9639,31 +9646,31 @@ Export void XUserPreferences(XResourceInfo *resource_info)
   assert(resource_info != (XResourceInfo *) NULL);
   client_name=SetClientName((char *) NULL);
   preferences_database=XrmGetStringDatabase("");
-  FormatString(specifier,"%.128s.backdrop",client_name);
+  FormatString(specifier,"%.1024s.backdrop",client_name);
   value=resource_info->backdrop ? "True" : "False";
   XrmPutStringResource(&preferences_database,specifier,value);
-  FormatString(specifier,"%.128s.colormap",client_name);
+  FormatString(specifier,"%.1024s.colormap",client_name);
   value=resource_info->colormap == SharedColormap ? "Shared" : "Private";
   XrmPutStringResource(&preferences_database,specifier,value);
-  FormatString(specifier,"%.128s.confirmExit",client_name);
+  FormatString(specifier,"%.1024s.confirmExit",client_name);
   value=resource_info->confirm_exit ? "True" : "False";
   XrmPutStringResource(&preferences_database,specifier,value);
-  FormatString(specifier,"%.128s.displayWarnings",client_name);
+  FormatString(specifier,"%.1024s.displayWarnings",client_name);
   value=resource_info->display_warnings ? "True" : "False";
   XrmPutStringResource(&preferences_database,specifier,value);
-  FormatString(specifier,"%.128s.dither",client_name);
+  FormatString(specifier,"%.1024s.dither",client_name);
   value=resource_info->quantize_info.dither ? "True" : "False";
   XrmPutStringResource(&preferences_database,specifier,value);
-  FormatString(specifier,"%.128s.gammaCorrect",client_name);
+  FormatString(specifier,"%.1024s.gammaCorrect",client_name);
   value=resource_info->gamma_correct ? "True" : "False";
   XrmPutStringResource(&preferences_database,specifier,value);
-  FormatString(specifier,"%.128s.undoCache",client_name);
+  FormatString(specifier,"%.1024s.undoCache",client_name);
   FormatString(cache,"%u",resource_info->undo_cache);
   XrmPutStringResource(&preferences_database,specifier,cache);
-  FormatString(specifier,"%.128s.usePixmap",client_name);
+  FormatString(specifier,"%.1024s.usePixmap",client_name);
   value=resource_info->use_pixmap ? "True" : "False";
   XrmPutStringResource(&preferences_database,specifier,value);
-  FormatString(filename,"%.128s%.128src",PreferencesDefaults,client_name);
+  FormatString(filename,"%.1024s%.1024src",PreferencesDefaults,client_name);
   ExpandFilename(filename);
   XrmPutFileDatabase(preferences_database,filename);
 }

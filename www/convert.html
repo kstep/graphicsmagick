@@ -1022,9 +1022,13 @@ Choose from these previews:
 <p>
 <dd>The default preview is <b>JPEG</b>.
 <P>
-<DT><B>-flip</B>
-<DD> create a "mirror image" by reflecting the scanlines in the vertical
-direction.
+<DT><B>-profile</b> <i>string</i>
+<DD>add ICC color or IPTC newswire information profile to image.
+<p>
+<DD>The filename must be prefixed with the particular profile type.  For
+example, <tt>icc:color.dat</tt> or <tt>iptc:news.dat</tt>.
+<P>
+<DD>By default, each image is commented with its file
 <P>
 <DT><B>-quality</B> <I>value</I>
 <DD>JPEG/MIFF/PNG compression level.

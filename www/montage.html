@@ -494,6 +494,32 @@ You can set the primitive color, font color, and font bounding box color with
 processed in command line order so be sure to use <b>-pen</b>
 <em>before</em> the <b>-draw</b> option.
 <P>
+<DT><B>-filter</B> <I>type</I>
+<dd>use this type of filter when resizing an image.
+<p>
+<d>Use this option to affect the resizing operation of an image (see
+<b>-geometry</b>).  Choose from these filters:
+<p>
+<dd><pre>
+     Point
+     Box
+     Triangle
+     Hermite
+     Hanning
+     Hamming
+     Blackman
+     Gaussian
+     Quadratic
+     Cubic
+     Catrom
+     Mitchell
+     Lanczos
+     Bessel
+     Sinc
+</pre>
+<p>
+<dd>The default filter is <b>Mitchell</b>.
+<P>
 <DT><B>-frame</B>
 <DD>    surround the image with an ornamental border.
 <P>

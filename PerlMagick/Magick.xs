@@ -732,7 +732,7 @@ static void errorhandler(const char *message,const char *qualifier)
   error_number=errno;
   errno=0;
   magick_status=SetErrorStatus(0);
-  FormatString(error,"Error %d: %.128s%s%.128s%s%s%.64s%s",
+  FormatString(error,"Error %d: %.1024s%s%.1024s%s%s%.64s%s",
     magick_status,(message ? message : "ERROR"),
     qualifier ? " (" : "",qualifier ? qualifier : "",qualifier ? ")" : "",
     error_number ? " [" : "",error_number ? strerror(error_number) : "",
@@ -1347,7 +1347,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
         {
           if (info)
             {
-              FormatString(info->image_info.filename,"%.128s:",SvPV(sval,na));
+              FormatString(info->image_info.filename,"%.1024s:",SvPV(sval,na));
               SetImageInfo((ImageInfo *) &info->image_info,1);
               if (*info->image_info.magick == '\0')
                 MagickWarning(OptionWarning,"Unrecognized image format",
@@ -1812,7 +1812,7 @@ static void warninghandler(const char *message,const char *qualifier)
   if (!message)
     return;
   magick_status=SetErrorStatus(0);
-  FormatString(warning,"Warning %d: %.128s%s%.128s%s%s%.64s%s",magick_status,
+  FormatString(warning,"Warning %d: %.1024s%s%.1024s%s%s%.64s%s",magick_status,
     message,qualifier ? " (" : "",qualifier ? qualifier : "",
     qualifier? ")" : "",error_number ? " [" : "",
     error_number ? strerror(error_number) : "",error_number ? "]" : "");

@@ -2416,7 +2416,7 @@ static unsigned int XCompositeImage(Display *display,
           &key_symbol,(XComposeStatus *) NULL);
         *(command+length)='\0';
         if (resource_info->debug)
-          (void) fprintf(stderr,"Key press: 0x%lx (%.128s)\n",key_symbol,command);
+          (void) fprintf(stderr,"Key press: 0x%lx (%.1024s)\n",key_symbol,command);
         switch (key_symbol)
         {
           case XK_Escape:
@@ -5295,7 +5295,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       /*
         Create canvas.
       */
-      FormatString(image_info.filename,"%.128s:%.128s",format,color);
+      FormatString(image_info.filename,"%.1024s:%.1024s",format,color);
       image_info.size=geometry;
       loaded_image=ReadImage(&image_info);
       DestroyImageInfo(&image_info);
@@ -6580,7 +6580,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
           char
             command[MaxTextExtent];
 
-          FormatString(command,"@%.128s",image_info.filename);
+          FormatString(command,"@%.1024s",image_info.filename);
           CommentImage(*image,command);
         }
       (void) remove(image_info.filename);
@@ -6808,7 +6808,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
           /*
             Display documentation using Netscape remote control.
           */
-          FormatString(command,"openURL(%.128s,new-window,noraise)",
+          FormatString(command,"openURL(%.1024s,new-window,noraise)",
             DocumentationURL);
           mozilla_atom=XInternAtom(display,"_MOZILLA_COMMAND",False);
           XChangeProperty(display,mozilla_window,mozilla_atom,XA_STRING,8,
@@ -7845,7 +7845,7 @@ static Image *XOpenImage(Display *display,XResourceInfo *resource_info,
           register int
             i;
 
-          FormatString(title,"Unknown format: %.128s",filename);
+          FormatString(title,"Unknown format: %.1024s",filename);
           XTextViewWidget(display,resource_info,windows,True,title,
             (const char **) textlist);
           for (i=0; textlist[i] != (char *) NULL; i++)
@@ -8289,7 +8289,7 @@ static unsigned int XPasteImage(Display *display,XResourceInfo *resource_info,
           &key_symbol,(XComposeStatus *) NULL);
         *(command+length)='\0';
         if (resource_info->debug)
-          (void) fprintf(stderr,"Key press: 0x%lx (%.128s)\n",key_symbol,command);
+          (void) fprintf(stderr,"Key press: 0x%lx (%.1024s)\n",key_symbol,command);
         switch (key_symbol)
         {
           case XK_Escape:
@@ -11315,11 +11315,11 @@ Export unsigned int XDisplayBackgroundImage(Display *display,
   window_info.y=0;
   if (resources.debug)
     {
-      (void) fprintf(stderr,"Image: %.128s[%u] %ux%u ",image->filename,
+      (void) fprintf(stderr,"Image: %.1024s[%u] %ux%u ",image->filename,
         image->scene,image->columns,image->rows);
       if (image->colors != 0)
         (void) fprintf(stderr,"%uc ",image->colors);
-      (void) fprintf(stderr,"%.128s\n",image->magick);
+      (void) fprintf(stderr,"%.1024s\n",image->magick);
     }
   /*
     Adjust image dimensions as specified by backdrop or geometry options.
@@ -11934,11 +11934,11 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   displayed_image->signature=(char *) NULL;
   if (resource_info->debug)
     {
-      (void) fprintf(stderr,"Image: %.128s[%u] %ux%u ",displayed_image->filename,
+      (void) fprintf(stderr,"Image: %.1024s[%u] %ux%u ",displayed_image->filename,
         displayed_image->scene,displayed_image->columns,displayed_image->rows);
       if (displayed_image->colors != 0)
         (void) fprintf(stderr,"%uc ",displayed_image->colors);
-      (void) fprintf(stderr,"%.128s\n",displayed_image->magick);
+      (void) fprintf(stderr,"%.1024s\n",displayed_image->magick);
     }
   XMakeStandardColormap(display,visual_info,resource_info,displayed_image,
     map_info,pixel_info);
@@ -12059,19 +12059,19 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
       p=displayed_image->filename+Extent(displayed_image->filename)-1;
       while ((p > displayed_image->filename) && !IsBasenameSeparator(*(p-1)))
         p--;
-      FormatString(windows->image.name,"ImageMagick: %.128s[%u]",p,
+      FormatString(windows->image.name,"ImageMagick: %.1024s[%u]",p,
         displayed_image->scene);
       q=displayed_image;
       while (q->previous != (Image *) NULL)
         q=q->previous;
       for (count=1; q->next != (Image *) NULL; count++)
         q=q->next;
-      FormatString(windows->image.name,"ImageMagick: %.128s[%u of %u]",p,
+      FormatString(windows->image.name,"ImageMagick: %.1024s[%u of %u]",p,
         displayed_image->scene,count);
       if ((displayed_image->previous == (Image *) NULL) &&
           (displayed_image->next == (Image *) NULL) &&
           (displayed_image->scene == 0))
-        FormatString(windows->image.name,"ImageMagick: %.128s",p);
+        FormatString(windows->image.name,"ImageMagick: %.1024s",p);
       (void) strcpy(windows->image.icon_name,p);
     }
   if (resource_info->immutable)
@@ -12203,7 +12203,7 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
     resource_info,&windows->command);
   windows->command.data=MagickMenus;
   (void) XCommandWidget(display,windows,CommandMenu,(XEvent *) NULL);
-  FormatString(resource_name,"%.128s.command",resource_info->client_name);
+  FormatString(resource_name,"%.1024s.command",resource_info->client_name);
   windows->command.geometry=XGetResourceClass(resource_info->resource_database,
     resource_name,"geometry",(char *) NULL);
   windows->command.name=MagickTitle;
@@ -12233,7 +12233,7 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
     FreeMemory((char *) windows->widget.name);
   XGetWindowInfo(display,visual_info,map_info,pixel_info,font_info,
     resource_info,&windows->widget);
-  FormatString(resource_name,"%.128s.widget",resource_info->client_name);
+  FormatString(resource_name,"%.1024s.widget",resource_info->client_name);
   windows->widget.geometry=XGetResourceClass(resource_info->resource_database,
     resource_name,"geometry",(char *) NULL);
   windows->widget.name=(char *) AllocateMemory(MaxTextExtent*sizeof(char));
@@ -12300,7 +12300,7 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   XGetWindowInfo(display,visual_info,map_info,pixel_info,font_info,
     resource_info,&windows->magnify);
   windows->magnify.shared_memory=resource_info->use_shared_memory;
-  FormatString(resource_name,"%.128s.magnify",resource_info->client_name);
+  FormatString(resource_name,"%.1024s.magnify",resource_info->client_name);
   windows->magnify.geometry=XGetResourceClass(resource_info->resource_database,
     resource_name,"geometry",(char *) NULL);
   windows->magnify.name=(char *) AllocateMemory(MaxTextExtent*sizeof(char));
@@ -12343,7 +12343,7 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   windows->pan.name="Pan Icon";
   windows->pan.width=windows->icon.width;
   windows->pan.height=windows->icon.height;
-  FormatString(resource_name,"%.128s.pan",resource_info->client_name);
+  FormatString(resource_name,"%.1024s.pan",resource_info->client_name);
   windows->pan.geometry=XGetResourceClass(resource_info->resource_database,
     resource_name,"geometry",(char *) NULL);
   (void) ParseImageGeometry(windows->pan.geometry,&windows->pan.x,
@@ -13041,7 +13041,7 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
           &key_symbol,(XComposeStatus *) NULL);
         *(command+length)='\0';
         if (resource_info->debug)
-          (void) fprintf(stderr,"Key press: %d 0x%lx (%.128s)\n",event.xkey.state,
+          (void) fprintf(stderr,"Key press: %d 0x%lx (%.1024s)\n",event.xkey.state,
             key_symbol,command);
         if (event.xkey.window == windows->image.id)
           {

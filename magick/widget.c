@@ -1817,7 +1817,7 @@ Export void XColorBrowserWidget(Display *display,XWindows *windows,char *action,
         y=text_info.y+((text_info.height-height) >> 1)+font_info->ascent;
         XDrawString(display,windows->widget.id,windows->widget.annotate_context,
           x,y,ColorPatternText,Extent(ColorPatternText));
-        FormatString(text_info.text,"%.128s",glob_pattern);
+        FormatString(text_info.text,"%.1024s",glob_pattern);
         XDrawWidgetText(display,&windows->widget,&text_info);
         XDrawBeveledButton(display,&windows->widget,&grab_info);
         XDrawBeveledButton(display,&windows->widget,&reset_info);
@@ -1899,7 +1899,7 @@ Export void XColorBrowserWidget(Display *display,XWindows *windows,char *action,
         */
         *reply_info.text='\0';
         reply_info.cursor=reply_info.text;
-        FormatString(text_info.text,"%.128s",glob_pattern);
+        FormatString(text_info.text,"%.1024s",glob_pattern);
         XDrawWidgetText(display,&windows->widget,&text_info);
         XDrawMatteText(display,&windows->widget,&reply_info);
         XDrawBeveledMatte(display,&windows->widget,&scroll_info);
@@ -4448,7 +4448,7 @@ Export void XFileBrowserWidget(Display *display,XWindows *windows,char *action,
         y=text_info.y+((text_info.height-height) >> 1)+font_info->ascent;
         XDrawString(display,windows->widget.id,windows->widget.annotate_context,
           x,y,DirectoryText,Extent(DirectoryText));
-        FormatString(text_info.text,"%.128s%.128s%.128s",working_directory,
+        FormatString(text_info.text,"%.1024s%.1024s%.1024s",working_directory,
           DirectorySeparator,glob_pattern);
         XDrawWidgetText(display,&windows->widget,&text_info);
         XDrawBeveledButton(display,&windows->widget,&up_info);
@@ -4522,7 +4522,7 @@ Export void XFileBrowserWidget(Display *display,XWindows *windows,char *action,
             *reply_info.text='\0';
             reply_info.cursor=reply_info.text;
           }
-        FormatString(text_info.text,"%.128s%.128s%.128s",working_directory,
+        FormatString(text_info.text,"%.1024s%.1024s%.1024s",working_directory,
           DirectorySeparator,glob_pattern);
         XDrawWidgetText(display,&windows->widget,&text_info);
         XDrawMatteText(display,&windows->widget,&reply_info);
@@ -5626,7 +5626,7 @@ Export void XFontBrowserWidget(Display *display,XWindows *windows,char *action,
         y=text_info.y+((text_info.height-height) >> 1)+font_info->ascent;
         XDrawString(display,windows->widget.id,windows->widget.annotate_context,
           x,y,FontPatternText,Extent(FontPatternText));
-        FormatString(text_info.text,"%.128s",glob_pattern);
+        FormatString(text_info.text,"%.1024s",glob_pattern);
         XDrawWidgetText(display,&windows->widget,&text_info);
         XDrawBeveledButton(display,&windows->widget,&back_info);
         XDrawBeveledButton(display,&windows->widget,&reset_info);
@@ -5730,7 +5730,7 @@ Export void XFontBrowserWidget(Display *display,XWindows *windows,char *action,
         */
         *reply_info.text='\0';
         reply_info.cursor=reply_info.text;
-        FormatString(text_info.text,"%.128s",glob_pattern);
+        FormatString(text_info.text,"%.1024s",glob_pattern);
         XDrawWidgetText(display,&windows->widget,&text_info);
         XDrawMatteText(display,&windows->widget,&reply_info);
         XDrawBeveledMatte(display,&windows->widget,&scroll_info);

@@ -1006,7 +1006,12 @@ Choose from these previews:
 .fi
 
 The default preview is \fBJPEG\fP.
+.TP
+.B "-profile \fIfilename\fP"
+add ICC color or IPTC newswire information profile to image.
 
+The filename must be prefixed with the particular profile type.  For example,
+\fBicc:color.dat\fP or \fBiptc:news.dat\fP.
 .TP
 .B "-quality \fIvalue\fP"
 JPEG/MIFF/PNG compression level.

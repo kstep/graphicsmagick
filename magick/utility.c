@@ -96,7 +96,7 @@ Export void AppendImageFormat(const char *format,char *filename)
     return;
   if (Latin1Compare(filename,"-") == 0)
     {
-      FormatString(staging,"%.128s:%.128s",format,filename);
+      FormatString(staging,"%.1024s:%.1024s",format,filename);
       (void) strcpy(filename,staging);
       return;
     }
@@ -527,7 +527,7 @@ Export unsigned int ExpandFilenames(int *argc,char ***argv)
           FreeMemory((char *) filelist);
           return(False);
         }
-      FormatString(vector[count],"%.*s%.128s",(int) (p-option),option,
+      FormatString(vector[count],"%.*s%.1024s",(int) (p-option),option,
         filelist[j]);
       FreeMemory((char *) filelist[j]);
       count++;
@@ -2625,7 +2625,7 @@ Export char *TranslateText(const ImageInfo *image_info,Image *image,char *text)
       (void) fclose(file);
       if (text == (char *) NULL)
         {
-          MagickWarning(ResourceLimitWarning,"Unable to text image",
+          MagickWarning(ResourceLimitWarning,"Unable to translate text",
             "Memory allocation failed");
           return((char *) NULL);
         }
