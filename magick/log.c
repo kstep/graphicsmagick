@@ -112,7 +112,7 @@ static char
 /*
   Static declarations.
 */
-static unsigned int
+static volatile unsigned int
   log_initialize = True;
 
 static LogInfo
@@ -343,25 +343,29 @@ static void *GetLogBlob(const char *filename,char *path,size_t *length,
 MagickExport unsigned int IsEventLogging(void)
 {
   unsigned int
+    initialize,
     status;
 
-  if (log_info == (LogInfo *) NULL)
+  initialize=False;
+  if ((log_info == (LogInfo *) NULL) && (log_initialize == True))
     {
-      AcquireSemaphoreInfo(&log_semaphore);
-      if (log_initialize == True)
-      {
-        log_initialize=False;
-        if (log_info == (LogInfo *) NULL)
-          {
-            ExceptionInfo
-              exception;
+      /* AcquireSemaphoreInfo(&log_semaphore); */
+      if ((log_info == (LogInfo *) NULL) && (log_initialize == True))
+        {
+          log_initialize=False;
+          initialize=True;
+        }
+      /* LiberateSemaphoreInfo(&log_semaphore); */
 
-            GetExceptionInfo(&exception);
-            (void) ReadConfigureFile(LogFilename,0,&exception);
-            DestroyExceptionInfo(&exception);
-          }
-      }
-      LiberateSemaphoreInfo(&log_semaphore);
+      if (initialize == True)
+        {
+          ExceptionInfo
+            exception;
+          
+          GetExceptionInfo(&exception);
+          (void) ReadConfigureFile(LogFilename,0,&exception);
+          DestroyExceptionInfo(&exception);
+        }
     }
   if (log_info == (LogInfo *) NULL)
     return(False);

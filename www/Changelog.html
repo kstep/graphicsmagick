@@ -13,6 +13,29 @@
 </tr>
 </table>
 <p>
+2003-03-09  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/log.c (IsEventLogging): Only hold the lock long
+        enough to test initialization flags.  This should eliminate
+        one of the potential deadlock points.
+  <LI> magick/blob.c: Revert to version before logging statements
+        were added since logging has uncovered deadlocks in the logging
+        subsystem design.
+
+</UL>
+<p>
+2003-03-08  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> configure.ac: Test for libtiff functions (TIFFClientOpen &amp;
+        TIFFIsByteSwapped), which are required by GraphicsMagick, but
+        not found in older libtiff versions.
+  <LI> magick/blob.c: Added logging for Blob open/close and memory
+        mapping operations.
+
+</UL>
+<p>
 2003-03-07  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
