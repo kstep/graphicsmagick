@@ -99,7 +99,7 @@ static unsigned int
 %
 %
 */
-Export unsigned int CompressColormapTransFirst(Image *image)
+unsigned int CompressColormapTransFirst(Image *image)
 {
   IndexPacket
     index;
