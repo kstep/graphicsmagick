@@ -1,8 +1,7 @@
 
-EXTRA_DIST=LICENSE tests images
+EXTRA_DIST=LICENSE tests images doc
 SUBDIRS = generic
 
 install-data-local:
+	$(mkinstalldirs) $(DESTDIR)$(pkglibdir)
 	$(INSTALL_DATA) pkgIndex.tcl $(DESTDIR)$(pkglibdir);
-	$(mkinstalldirs) $(DESTDIR)$(pkgdatadir)
-	$(INSTALL_DATA) doc/*Magick.html $(DESTDIR)$(pkgdatadir);

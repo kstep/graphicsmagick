@@ -1,3 +1,18 @@
+2004-09-20  David N. Welton  <davidw@dedasys.com>
+
+	* Makefile.am: Fiddled to get pkgIndex.tcl installed right.
+
+	* tests/tkmagick.tcl (saveimage): Add image save proc and binding
+	to test transformation of Tk images to magick want images.
+
+	* generic/TkMagick.c (MagickToPhoto): Change map depending on
+	Graphics or ImageMagick.
+	(PhotoToMagick): Make sure map is null terminated, switch type
+	depending on Graphics or ImageMagick.
+
+	* INSTALL: Added hint to try auto* stuff if configure is not
+	present.
+
 2004-06-28  Rolf Schroedter <rolf.schroedter@dlr.de>
 	* INSTALL: Added windows compilation instructions
 

@@ -23,8 +23,17 @@ proc magickimage {filename} {
     return $tkimg
 }
 
+proc saveimage {} {
+    global poolphoto
+    set magimg [magick create wand]
+    phototomagick $poolphoto $magimg
+    $magimg WriteImage tmp.jpg
+    magick delete $magimg
+}
+
 set poolphoto [magickimage [file join $dirname .. images pool.jpg]]
 label .im
 .im configure -image $poolphoto
 pack .im
 bind . <q> exit
+bind . <s> saveimage

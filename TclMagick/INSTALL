@@ -10,6 +10,10 @@ Unix platforms:
 Installing TclMagick in a separate directory from ImageMagick or
 GraphicsMagick.
 
+0) If there is no configure script (you are fetching from CVS, for
+   instance), try running automake, aclocal, and autoconf in order to
+   generate the configure script.
+
 1) Run the ./configure script.  The following arguments are
    recommended:
 
