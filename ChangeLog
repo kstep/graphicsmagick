@@ -1,3 +1,7 @@
+2004-07-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* Makefile.am:  Update to Automake 1.9.
+
 2004-07-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* NEWS: Updated with changes since the 1.1.2 release.
