@@ -1451,6 +1451,7 @@ MagickExport Image *ImplodeImage(Image *image,const double factor,
   implode_image=CloneImage(image,image->columns,image->rows,False,exception);
   if (implode_image == (Image *) NULL)
     return((Image *) NULL);
+  implode_image->class=DirectClass;
   /*
     Compute scaling factor.
   */
@@ -1510,6 +1511,7 @@ MagickExport Image *ImplodeImage(Image *image,const double factor,
     if (QuantumTick(y,image->rows))
       MagickMonitor(ImplodeImageText,y,image->rows);
   }
+  (void) IsMatteImage(implode_image);
   return(implode_image);
 }
 
@@ -3158,6 +3160,7 @@ MagickExport Image *SwirlImage(Image *image,double degrees,
   swirl_image=CloneImage(image,image->columns,image->rows,False,exception);
   if (swirl_image == (Image *) NULL)
     return((Image *) NULL);
+  swirl_image->class=DirectClass;
   /*
     Compute scaling factor.
   */
@@ -3210,6 +3213,7 @@ MagickExport Image *SwirlImage(Image *image,double degrees,
     if (QuantumTick(y,image->rows))
       MagickMonitor(SwirlImageText,y,image->rows);
   }
+  (void) IsMatteImage(swirl_image);
   return(swirl_image);
 }
 
@@ -3465,6 +3469,7 @@ MagickExport Image *WaveImage(Image *image,const double amplitude,
     (int) (image->rows+2.0*fabs(amplitude)),False,exception);
   if (wave_image == (Image *) NULL)
     return((Image *) NULL);
+  wave_image->class=DirectClass;
   /*
     Allocate sine map.
   */
@@ -3496,5 +3501,6 @@ MagickExport Image *WaveImage(Image *image,const double amplitude,
       MagickMonitor(WaveImageText,y,wave_image->rows);
   }
   LiberateMemory((void **) &sine_map);
+  (void) IsMatteImage(wave_image);
   return(wave_image);
 }

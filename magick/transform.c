@@ -1260,12 +1260,10 @@ MagickExport void TransformImage(Image **image,const char *crop_geometry,
           x=0;
           y=0;
           (void) ParseImageGeometry(crop_geometry,&x,&y,&width,&height);
-          if (width > transform_image->columns)
-            width=transform_image->columns;
-          if (height > transform_image->rows)
-            height=transform_image->rows;
-          crop_info.x=width >> 1;
-          crop_info.y=height >> 1;
+          crop_info.x=width;
+          crop_info.y=height;
+          width=transform_image->columns-width;
+          height=transform_image->rows-height;
           flags|=XValue | YValue;
         }
       crop_info.width=width;
