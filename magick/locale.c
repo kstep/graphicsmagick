@@ -202,7 +202,7 @@ const char *GetLocaleMessage(const char *tag)
               if (p - tp == 17 && !LocaleNCompare(tp, "UnableToOpenCache", 17))
                 return *np ? tag : "Unable to open cache";
               else
-              if (p - tp == 20 && !LocaleNCompare(tp, "UnableToPersistCache", 20))
+              if (p - tp == 25 && !LocaleNCompare(tp, "UnableToPersistPixelCache", 25))
                 return *np ? tag : "Unable to persist pixel cache";
               else
               if (p - tp == 22 && !LocaleNCompare(tp, "UnableToReadPixelCache", 22))
@@ -1981,6 +1981,9 @@ const char *GetLocaleMessage(const char *tag)
                   return tag;
 
               case 'u':  case 'U':
+                if (p - tp == 21 && !LocaleNCompare(tp, "UnableToAllocateImage", 21))
+                  return *np ? tag : "unable to allocate image";
+                else
                 if (p - tp == 22 && !LocaleNCompare(tp, "UnableToCreateColormap", 22))
                   return *np ? tag : "unable to create colormap";
                 else
@@ -2067,6 +2070,9 @@ const char *GetLocaleMessage(const char *tag)
               return tag;
 
           case 'u':  case 'U':
+            if (p - tp == 27 && !LocaleNCompare(tp, "UnableToConvertStringtoARGV", 27))
+              return *np ? tag : "Unable to convert string to ARGV";
+            else
             if (p - tp == 22 && !LocaleNCompare(tp, "UnableToGetTypeMetrics", 22))
               return *np ? tag : "Unable to get type metrics";
             else

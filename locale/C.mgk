@@ -48,7 +48,7 @@
       <Message name="UnableToOpenCache">
         Unable to open cache
       </Message>
-      <Message name="UnableToPersistCache">
+      <Message name="UnableToPersistPixelCache">
         Unable to persist pixel cache
       </Message>
       <Message name="UnableToReadPixelCache">

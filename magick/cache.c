@@ -2062,6 +2062,9 @@ MagickExport unsigned int PersistCache(Image *image,const char *filename,
   register PixelPacket
     *q;
 
+  unsigned int
+    status;
+
   unsigned long
     pagesize;
 
@@ -2078,12 +2081,12 @@ MagickExport unsigned int PersistCache(Image *image,const char *filename,
   pagesize=getpagesize();
 #endif
 #endif
+  cache_info=(CacheInfo *) image->cache;
   if (attach)
     {
       /*
         Attach persistent pixel cache.
       */
-      cache_info=(CacheInfo *) image->cache;
       (void) strncpy(cache_info->cache_filename,filename,MaxTextExtent-1);
       cache_info->type=DiskCache;
       cache_info->offset=(*offset);
@@ -2091,10 +2094,32 @@ MagickExport unsigned int PersistCache(Image *image,const char *filename,
         return(False);
       (void) ReferenceCache(cache_info);
       *offset+=cache_info->length+pagesize-(cache_info->length % pagesize);
+      (void) LogMagickEvent(CacheEvent,GetMagickModule(),
+        "Attach persistent cache");
       return(True);
     }
+  AcquireSemaphoreInfo(&cache_info->semaphore);
+  if ((cache_info->reference_count == 1) &&
+      (cache_info->type != MemoryCache))
+    {
+      /*
+        Usurp resident persistent pixel cache.
+      */
+      status=rename(cache_info->cache_filename,filename);
+      if (status == 0)
+        {
+          (void) strncpy(cache_info->cache_filename,filename,MaxTextExtent-1);
+          LiberateSemaphoreInfo(&cache_info->semaphore);
+          (void) ReferenceCache(cache_info);
+          *offset+=cache_info->length+pagesize-(cache_info->length % pagesize);
+          (void) LogMagickEvent(CacheEvent,GetMagickModule(),
+            "Usurp resident persistent cache");
+          return(True);
+        }
+    }
+  LiberateSemaphoreInfo(&cache_info->semaphore);
   /*
-    Initialize persistent pixel cache.
+    Clone persistent pixel cache.
   */
   clone_image=CloneImage(image,image->columns,image->rows,True,exception);
   if (clone_image == (Image *) NULL)
@@ -2125,6 +2150,7 @@ MagickExport unsigned int PersistCache(Image *image,const char *filename,
   if (y < (long) image->rows)
     return(False);
   *offset+=cache_info->length+pagesize-(cache_info->length % pagesize);
+  (void) LogMagickEvent(CacheEvent,GetMagickModule(),"Clone persistent cache");
   return(True);
 }
 
