@@ -1811,9 +1811,6 @@ MagickExport unsigned int PersistCache(Image *image,const char *filename,
   register const PixelPacket
     *p;
 
-  register long
-    x;
-
   register PixelPacket
     *q;
 
