@@ -344,70 +344,64 @@ MagickExport const char *GetMagickVersion(unsigned int *version)
 MagickExport void InitializeMagick(const char *path)
 {
   char
-    execpath[MaxTextExtent];
+    execution_path[MaxTextExtent];
 
   InitializeSemaphore();
-
-  *execpath='\0';
-
+  *execution_path='\0';
 #if !defined(UseInstalledImageMagick)
 # if defined(POSIX) || defined(WIN32)
-  if ((path != (const char *) NULL) &&
-      (strchr(path,*DirectorySeparator) != (char *) NULL) &&
-      (strlen(path) > 2))
-    {
-      if
-#  if defined(POSIX)
-      (*path == *DirectorySeparator)
-#  elif defined(WIN32)
-      (path[1] == ':')
-#  endif
-        {
-          strcpy(execpath,path);
-        }
-      else 
-        {
-          char
-            directory[MaxTextExtent];
-
-          (void) getcwd(directory,sizeof(directory)-1);
-          (void) strcpy(execpath,directory);
-          (void) strcat(execpath,DirectorySeparator);
-          if((path[0] == '.') && (path[1] == *DirectorySeparator))
-            (void) strcat(execpath,path+2);
-          else
-            (void) strcat(execpath,path);
-        }
-    }
-  else
+  if ((path == (const char *) NULL) ||
+      (strchr(path,*DirectorySeparator) == (char *) NULL) ||
+      (strlen(path) <= 2))
     {
       char
         *execution_path;
 
       execution_path=GetExecutionPath();
       if (execution_path != (char *) NULL)
+        (void) strcpy(execution_path,execution_path);
+    }
+  else
+    {
+#if defined(POSIX)
+      if (*path == *DirectorySeparator)
+#elif defined(WIN32)
+      if (path[1] == ':')
+#else
+      if (1)
+#endif
+        (void) strcpy(execution_path,path);
+      else
         {
-          (void) strcpy(execpath,execution_path);
+          char
+            directory[MaxTextExtent];
+
+          (void) getcwd(directory,sizeof(directory)-1);
+          (void) strcpy(execution_path,directory);
+          (void) strcat(execution_path,DirectorySeparator);
+          if((path[0] == '.') && (path[1] == *DirectorySeparator))
+            (void) strcat(execution_path,path+2);
+          else
+            (void) strcat(execution_path,path);
         }
     }
 #endif /* POSIX || WIN32 */
 #endif /* !UseInstalledImageMagick */
-  if (*execpath != '\0')
-    {
-      char
-        filename[MaxTextExtent];
-
-      GetPathComponent(execpath,HeadPath,filename);
-      (void) SetClientPath(filename);
-      GetPathComponent(execpath,TailPath,filename);
-      (void) SetClientName(filename);
-    }
-  else
+  if (*execution_path == '\0')
     {
       if (path != (char *) NULL)
         (void) SetClientName(path);
     }
+  else
+    {
+      char
+        filename[MaxTextExtent];
 
+      GetPathComponent(execution_path,HeadPath,filename);
+      (void) SetClientPath(filename);
+      GetPathComponent(execution_path,TailPath,filename);
+      (void) SetClientName(filename);
+    }
 #if defined(WIN32)
     InitializeTracingCriticalSection();
 #if defined(_DEBUG)
