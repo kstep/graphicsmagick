@@ -1,0 +1,105 @@
+
+Welcome to ImageMagick!
+
+  ImageMagick is copyrighted (C) by ImageMagick Studio. It is free for
+  any use, commercial or private. However, this installation package is
+  based on additional programs and libraries which use a different
+  license than ImageMagick. None of these licenses prohibit you from
+  using this package for commercial or private use, but they may impose
+  requirements on re-distribution of the package. Please see the
+  'licenses' subdirectory in the package installation directory after
+  you the package is installed to view the license restrictions of
+  additional package components.
+
+Installation
+
+   Please note that the user who installs this package may require
+   "Administrator" privileges in order to properly ImageMagick.
+
+  Prerequisites
+  
+    While multiple versions of ImageMagick may be installed at one time,
+    if your intention is to replace a prior installation of ImageMagick
+    with a newer version, then it may be wise to uninstall the existing
+    ImageMagick prior to installing the newer version.
+  
+    While it is not a requirement, it is recommended that the
+    Ghostscript package be installed. ImageMagick uses Ghostscript to
+    render Postscript and PDF files, as well as formats where a
+    translator to Postscript is available. ImageMagick will use the
+    fonts delivered with Ghostscript to support the set of standard
+    Postscript fonts.
+    
+    The installation package includes the ImageMagick Perl extension (
+    PerlMagick) as an installation option. If you would like to use this
+    extension, then you should install ActiveState ActivePerl prior to
+    commencing with installation of ImageMagick.
+  
+  Retrieve Install Package
+  
+    Retrieve the ImageMagick Windows binary install package from a one
+    of the ftp sites listed at the ImageMagick Download Sites page. The
+    file will be named similar to ImageMagick-5.4.9-win2k.exe and should
+    be found in the 'binaries' subdirectory of the ftp site.
+  
+  Start Installation Wizard
+  
+    Execute the downloaded file from your browser or by double-clicking
+    on the filename from within Windows Explorer. The ImageMagick Setup
+    Wizard will appear. Click on "Next" to continue.
+  
+  Select Destination Directory
+  
+    Specify what drive and directory to install ImageMagick into.
+    Approximately 13MB of free disk space is required to install
+    ImageMagick. The default installation directory is similar to
+    "C:\Program Files\ImageMagick-5.4.9-Q16". Once you have entered the
+    desired installation directory, then select "Next>" to continue.
+  
+  Select Start Menu Folder
+  
+    Select the folder where you would like the program's shortcuts to
+    appear. The default should normally be satisfactory. Click on
+    "Next>" to continue.
+  
+  Select Additional Tasks
+  
+    A screen is displayed which provides the option to create a desktop
+    shortcut icon to the imdisplay program and to update the executable
+    search path so that ImageMagick is available without specifying the
+    full path to the programs. The default is to enable both of these.
+    Once you have made your selections, click on "Next>" to continue.
+  
+  Ready to Install
+  
+    A screen is displayed which displays the selected options. If you
+    are not satisfied with a selected option, then click on "<Back" to
+    go back to a previous screen so that the option may be adjusted. If
+    you are satisfied with the options and are ready to install, then
+    select "Install". To abort the installation entirely, select "Cancel".
+  
+  Installation Progress
+  
+    While the install program is performing the installation, it will
+    display what it is doing in an installation progress window.
+  
+  Finishing Up
+  
+    By default "View ImageMagick.html" is check-marked. This causes the
+    ImageMagick web pages to be displayed in a browser when "Finish" is
+    selected. If you do not want to view the web pages, then de-select
+    "View ImageMagick.html". Select "Finish" to exit the installation
+    program. Under Windows '95 and Windows '98 it will be necessary to
+    reboot the system in order for some settings to take effect (such as
+    executable search path) since these are set in autoexec.bat.
+  
+  Testing The Installation
+  
+    Select "Command Prompt" from the Windows Start menu. Within the
+    window type
+    
+      convert logo: logo.miff
+      imdisplay logo.miff
+    
+    and the ImageMagick logo should be displayed in a window.
+
