@@ -2412,23 +2412,6 @@ MagickExport void DestroyImage(Image *image)
   DestroyBlobInfo(image->blob);
   if (image->semaphore != (SemaphoreInfo *) NULL)
     DestroySemaphoreInfo(&image->semaphore);
-  /*
-    Unlink from linked list.
-  */
-  if (image->previous != (Image *) NULL)
-    {
-      if (image->next != (Image *) NULL)
-        image->previous->next=image->next;
-      else
-        image->previous->next=(Image *) NULL;
-    }
-  if (image->next != (Image *) NULL)
-    {
-      if (image->previous != (Image *) NULL)
-        image->next->previous=image->previous;
-      else
-        image->next->previous=(Image *) NULL;
-    }
   LiberateMemory((void **) &image);
 }
 

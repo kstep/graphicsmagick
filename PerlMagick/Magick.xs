@@ -2554,7 +2554,6 @@ DESTROY(ref)
         image=(Image *) SvIV(reference);
         if (image)
           {
-            image->orphan=True;
             DestroyImage(image);
             sv_setiv(reference,0);
           }
@@ -5569,7 +5568,6 @@ Mogrify(ref,...)
           status=CompositeImage(region_image,CopyCompositeOp,image,
             region_info.x,region_info.y);
           CatchImageException(region_image);
-          image->orphan=True;
           DestroyImage(image);
           image=region_image;
         }
@@ -5579,7 +5577,6 @@ Mogrify(ref,...)
           if (next && (next != image))
             {
               image->next=next->next;
-              next->orphan=True;
               DestroyImage(next);
             }
           sv_setiv(*pv,(IV) image);
