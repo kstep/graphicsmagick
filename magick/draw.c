@@ -1620,11 +1620,14 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
                 graphic_context[n]->fill_rule=NonZeroRule;
                 break;
               }
+            status=False;
             break;
           }
         if (LocaleCompare("clip-units",keyword) == 0)
           {
             GetToken(q,&q,token);
+            if (LocaleCompare("userSpace",token) == 0)
+              break;
             if (LocaleCompare("objectBoundingBox",token) == 0)
               {
                 affine.sx=draw_info->bounds.x2;
@@ -1633,6 +1636,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
                 affine.ty=draw_info->bounds.y1;
                 break;
               }
+            status=False;
             break;
           }
         if (LocaleCompare("circle",keyword) == 0)
@@ -1674,6 +1678,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
                 graphic_context[n]->decorate=LineThroughDecoration;
                 break;
               }
+            status=False;
             break;
           }
         status=False;
@@ -1714,6 +1719,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
                 graphic_context[n]->fill_rule=NonZeroRule;
                 break;
               }
+            status=False;
             break;
           }
         if (LocaleCompare("fill-opacity",keyword) == 0)
@@ -1768,7 +1774,10 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
                 break;
               }
             if (LocaleCompare("Center",token) == 0)
-              graphic_context[n]->gravity=CenterGravity;
+              {
+                graphic_context[n]->gravity=CenterGravity;
+                break;
+              }
             if (LocaleCompare("East",token) == 0)
               {
                 graphic_context[n]->gravity=EastGravity;
@@ -1789,6 +1798,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
                 graphic_context[n]->gravity=SouthEastGravity;
                 break;
               }
+            status=False;
             break;
           }
         status=False;
@@ -1799,6 +1809,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       {
         if (LocaleCompare("image",keyword) == 0)
           {
+            primitive_type=ImagePrimitive;
             GetToken(q,&q,token);
             if (LocaleCompare("Over",token) == 0)
               {
@@ -1890,7 +1901,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
                 graphic_context[n]->compose=ClearCompositeOp;
                 break;
               }
-            primitive_type=ImagePrimitive;
+            status=False;
             break;
           }
         status=False;
@@ -1979,6 +1990,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
                     "unbalanced graphic context push/pop",token);
                 break;
               }
+            status=False;
             break;
           }
         if (LocaleCompare("push",keyword) == 0)
@@ -2024,6 +2036,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
               }
             if (LocaleCompare("defs",token) == 0)
               break;
+            status=False;
             break;
           }
         status=False;
@@ -2155,6 +2168,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
                 graphic_context[n]->linecap=SquareCap;
                 break;
               }
+            status=False;
             break;
           }
         if (LocaleCompare("stroke-linejoin",keyword) == 0)
@@ -2175,6 +2189,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
                 graphic_context[n]->linejoin=BevelJoin;
                 break;
               }
+            status=False;
             break;
           }
         if (LocaleCompare("stroke-miterlimit",keyword) == 0)
@@ -2195,7 +2210,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
           {
             GetToken(q,&q,token);
             graphic_context[n]->stroke_width=atof(token);
-            continue;
+            break;
           }
         status=False;
         break;
