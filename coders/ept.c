@@ -64,7 +64,7 @@
 #include "monitor.h"
 #include "render.h"
 #include "utility.h"
-#include "pscommon.h"
+#include "pdf.h"
 
 /*
   Forward declarations.

@@ -1,6 +1,12 @@
 /*
-  Postscript coder common definitions
+  PDF and Postscript methods.
 */
+#ifndef _MAGICK_PDF_H
+#define _MAGICK_PDF_H
+
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
 
 #if defined(HasGS)
 #include "ps/iapi.h"
@@ -137,3 +143,9 @@ static unsigned int ExecutePostscriptInterpreter(const unsigned int verbose,
   return(SystemCommand(verbose,command));
 #endif
 }
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
+
+#endif

@@ -30,11 +30,11 @@
 %  all copies or substantial portions of ImageMagick.                         %
 %                                                                             %
 %  Licensor ("ImageMagick Studio LLC") warrants that the copyright in and to  %
-%  the Software ("ImageMagick") is owned by ImageMagick Studio LLC or is      %
-%  distributed by ImageMagick Studio LLC under a valid current license.       %
-%  Except as expressly stated in the immediately preceding sentence,          %
-%  ImageMagick is provided by ImageMagick Studio LLC, distributors, and       %
-%  copyright owners "AS IS", without warranty of any kind, express or         %
+%  the Software ("ImageMagick") is owned by ImageMagick Studio LLC or that    %
+%  ImageMagick is distributed by ImageMagick Studio LLC under a valid current %
+%  license.  Except as expressly stated in the immediately preceding          %
+%  sentence, ImageMagick is provided by ImageMagick Studio LLC, contributors, %
+%  and copyright owners "AS IS", without warranty of any kind, express or     %
 %  implied, including but not limited to the warranties of merchantability,   %
 %  fitness for a particular purpose and non-infringement.  In no event shall  %
 %  ImageMagick Studio LLC, contributors or copyright owners be liable for     %
