@@ -375,7 +375,13 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           indexes=GetIndexes(image);
           for (x=0; x < (long) image->columns; x++)
           {
-            index=ValidateColormapIndex(image,!PNMInteger(image,2));
+            index=!PNMInteger(image,2);
+            if (index >= image->colors)
+              {
+                ThrowException(&image->exception,CorruptImageWarning,
+                  "invalid colormap index",image->filename);
+                index=0;
+              }
             indexes[x]=index;
             *q++=image->colormap[index];
           }
@@ -406,7 +412,13 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             intensity=PNMInteger(image,10);
             if (scale != (Quantum *) NULL)
               intensity=scale[intensity];
-            index=ValidateColormapIndex(image,intensity);
+            index=intensity;
+            if (index >= image->colors)
+              {
+                ThrowException(&image->exception,CorruptImageWarning,
+                  "invalid colormap index",image->filename);
+                index=0;
+              }
             indexes[x]=index;
             *q++=image->colormap[index];
           }
@@ -517,11 +529,17 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           for (x=0; x < (long) image->columns; x++)
           {
             if (image->depth <= 8)
-              index=ValidateColormapIndex(image,*p++);
+              index=(*p++);
             else
               {
-                index=ValidateColormapIndex(image,(*p << 8) | *(p+1));
+                index=(*p << 8) | *(p+1);
                 p+=2;
+              }
+            if (index >= image->colors)
+              {
+                ThrowException(&image->exception,CorruptImageWarning,
+                  "invalid colormap index",image->filename);
+                index=0;
               }
             indexes[x]=index;
             *q++=image->colormap[index];

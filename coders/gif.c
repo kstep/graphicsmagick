@@ -279,7 +279,13 @@ static unsigned int DecodeImage(Image *image,const long opacity)
         Pop a pixel off the pixel stack.
       */
       top_stack--;
-      index=ValidateColormapIndex(image,*top_stack);
+      index=(*top_stack);
+      if (index >= image->colors)
+        {
+          ThrowException(&image->exception,CorruptImageWarning,
+            "invalid colormap index",image->filename);
+          index=0;
+        }
       indexes[x]=index;
       *q=image->colormap[index];
       q->opacity=(Quantum)

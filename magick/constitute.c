@@ -63,6 +63,9 @@ static SemaphoreInfo
 */
 static Image
   *ReadImages(const ImageInfo *,ExceptionInfo *);
+
+MagickExport inline IndexPacket
+	ValidateColormapIndex(Image *,const unsigned long);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -2540,4 +2543,46 @@ MagickExport unsigned int WriteImages(ImageInfo *image_info,Image *image,
   if (image_info->verbose)
     DescribeImage(image,stderr,False);
   return(status);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   V a l i d a t e C o l o r m a p I n d e x                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ValidateColormapIndex() validates the colormap index.  If the index does
+%  not range from 0 to the number of colors in the colormap an exception
+%  is issued and 0 is returned.
+%
+%  The format of the ValidateColormapIndex method is:
+%
+%      IndexPacket ValidateColormapIndex(Image *image,const unsigned int index)
+%
+%  A description of each parameter follows:
+%
+%    o index: Method ValidateColormapIndex returns colormap index if it is
+%      valid other an exception is issued and 0 is returned.
+%
+%    o image: The image.
+%
+%    o index: This integer is the colormap index.
+%
+%
+*/
+MagickExport inline IndexPacket ValidateColormapIndex(Image *image,
+  const unsigned long index)
+{
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  if (index < image->colors)
+    return((IndexPacket) index);
+  ThrowException(&image->exception,CorruptImageWarning,
+    "invalid colormap index",image->filename);
+  return(0);
 }

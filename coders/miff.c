@@ -904,10 +904,15 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
               {
                 if (image->storage_class != DirectClass)
                   {
-                    index=ValidateColormapIndex(image,ReadBlobByte(image));
+                    index=ReadBlobByte(image);
                     if (image->depth > 8)
-                      index=ValidateColormapIndex(image,
-                        (index << 8)+ReadBlobByte(image));
+                      index=(index << 8)+ReadBlobByte(image);
+                    if (index >= image->colors)
+                      {
+                        ThrowException(&image->exception,CorruptImageWarning,
+                          "invalid colormap index",image->filename);
+                        index=0;
+                      }
                     pixel=image->colormap[index];
                   }
                 else

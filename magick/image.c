@@ -5072,7 +5072,7 @@ MagickExport unsigned int MogrifyImages(const ImageInfo *image_info,
     *option;
 
   Image
-		*clone_images,
+    *clone_images,
     *image,
     *mogrify_images;
 
@@ -6724,6 +6724,12 @@ MagickExport void SyncImage(Image *image)
     indexes=GetIndexes(image);
     for (x=0; x < (long) image->columns; x++)
     {
+      if (indexes[x] >= image->colors)
+        {
+          ThrowException(&image->exception,CorruptImageWarning,
+            "invalid colormap index",image->filename);
+          indexes[x]=0;
+        }
       index=indexes[x];
       q->red=image->colormap[index].red;
       q->green=image->colormap[index].green;

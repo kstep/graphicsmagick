@@ -129,6 +129,9 @@ typedef struct _PathInfo
 /*
   Forward declarations.
 */
+MagickExport inline unsigned int
+	ColorMatch(const PixelPacket *,const PixelPacket *,const double);
+
 static PrimitiveInfo
   *TraceStrokePolygon(const DrawInfo *,const PrimitiveInfo *);
 
@@ -294,62 +297,6 @@ MagickExport DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
   if (draw_info->clip_path != (char *) NULL)
     clone_info->clip_path=AllocateString(draw_info->clip_path);
   return(clone_info);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   C o l o r M a t c h                                                       %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  ColorMatch() returns true if two pixels are identical in color.
-%
-%  The format of the ColorMatch method is:
-%
-%      void ColorMatch(const PixelPacket *p,const PixelPacket *q,
-%        const double fuzz)
-%
-%  A description of each parameter follows:
-%
-%    o p: Pixel p.
-%
-%    o q: Pixel q.
-%
-%    o distance:  Define how much tolerance is acceptable to consider
-%      two colors as the same.
-%
-%
-*/
-MagickExport inline unsigned int ColorMatch(const PixelPacket *p,
-  const PixelPacket *q,const double fuzz)
-{
-  register double
-    blue,
-    distance,
-    green,
-    red;
-
-  if ((fuzz == 0.0) && (p->red == q->red) && (p->green == q->green) &&
-      (p->blue == q->blue))
-    return(True);
-  red=(double) (p->red-q->red);
-  distance=red*red;
-  if (distance > (fuzz*fuzz))
-    return(False);
-  green=(double) (p->green-q->green);
-  distance+=green*green;
-  if (distance > (fuzz*fuzz))
-    return(False);
-  blue=(double) (p->blue-q->blue);
-  distance+=blue*blue;
-  if (distance > (fuzz*fuzz))
-    return(False);
-  return(True);
 }
 
 /*
@@ -609,6 +556,62 @@ MagickExport unsigned int ColorFloodfillImage(Image *image,
     }
   LiberateMemory((void **) &segment_stack);
   LiberateMemory((void **) &floodplane);
+  return(True);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   C o l o r M a t c h                                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ColorMatch() returns true if two pixels are identical in color.
+%
+%  The format of the ColorMatch method is:
+%
+%      void ColorMatch(const PixelPacket *p,const PixelPacket *q,
+%        const double fuzz)
+%
+%  A description of each parameter follows:
+%
+%    o p: Pixel p.
+%
+%    o q: Pixel q.
+%
+%    o distance:  Define how much tolerance is acceptable to consider
+%      two colors as the same.
+%
+%
+*/
+MagickExport inline unsigned int ColorMatch(const PixelPacket *p,
+  const PixelPacket *q,const double fuzz)
+{
+  register double
+    blue,
+    distance,
+    green,
+    red;
+
+  if ((fuzz == 0.0) && (p->red == q->red) && (p->green == q->green) &&
+      (p->blue == q->blue))
+    return(True);
+  red=(double) (p->red-q->red);
+  distance=red*red;
+  if (distance > (fuzz*fuzz))
+    return(False);
+  green=(double) (p->green-q->green);
+  distance+=green*green;
+  if (distance > (fuzz*fuzz))
+    return(False);
+  blue=(double) (p->blue-q->blue);
+  distance+=blue*blue;
+  if (distance > (fuzz*fuzz))
+    return(False);
   return(True);
 }
 
