@@ -1089,6 +1089,13 @@ AC_FUNC_VPRINTF
 AC_FUNC_MMAP
 AC_CHECK_FUNCS(getcwd gettimeofday mkdir select snprintf strchr strerror strtol sysconf tempnam vsnprintf)
 
+# Check for getexecname() under Solaris
+case "${host_os}" in
+  solaris* )
+    AC_CHECK_FUNCS(getexecname)
+  ;;
+esac
+
 # Test for sys_errlist array if strerror() not supported.
 if test "$ac_cv_func_strerror" != 'yes' ; then
 AC_CACHE_CHECK(for sys_errlist array, ac_cv_sys_errlist,

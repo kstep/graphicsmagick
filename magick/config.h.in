@@ -334,6 +334,9 @@
 /* Define if you have the `getcwd' function. */
 #undef HAVE_GETCWD
 
+/* Define if you have the `getexecname' function. */
+#undef HAVE_GETEXECNAME
+
 /* Define if you have the `getpagesize' function. */
 #undef HAVE_GETPAGESIZE
 

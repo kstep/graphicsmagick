@@ -693,7 +693,7 @@ int main( int /*argc*/, char ** argv)
     // font
     //
     // Test default
-    if ( image.font().length() != 13 )
+    if ( image.font().length() != 11 )
       {
 	++failures;
 	cout << "Line: " << __LINE__
@@ -721,11 +721,13 @@ int main( int /*argc*/, char ** argv)
     // fontPointsize
     //
     // Test default
-    if ( image.fontPointsize() != 12 )
+    if ( image.fontPointsize() != 13 )
       {
 	++failures;
 	cout << "Line: " << __LINE__
-             << ", fontPointsize does not report default of 12 as expected"
+             << ", fontPointsize ("
+             << image.fontPointsize()
+             << ") is not default of 13 as expected"
              << endl;
       }
 

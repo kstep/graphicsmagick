@@ -6,7 +6,10 @@ Items large and small which remain to be completed
   this.
 
 * Port to Sun Workshop 5.0 under Solaris.  The library compiles now
-  but the STL-based tests and demos do not.
+  but some of the tests and demos do not.
+
+The colorize method is broken since the color parameter has changed to
+an opacity parameter.
 
 Items which will require the aid of volunteers.  Volunteers?
 --------------------------------------------------------------------
