@@ -310,17 +310,46 @@ static void draw_pattern_push( wmfAPI* API,
   DrawPushPattern(WmfDrawContext,pattern_id,0,0,columns,rows);
 }
 
+/* Pattern/Bit BLT with raster operation (ROP) support.  Invoked by
+   META_PATBLT, which is equivalent to Windows PatBlt() call, or by
+   META_DIBBITBLT which is equivalent to Windows BitBlt() call. */
+
+/* The BitBlt function transfers pixels from a rectangular area in one
+   device context called the 'source', to a rectangular area of the
+   same size in another device context, called the 'destination'. */
+
 static void ipa_rop_draw(wmfAPI * API, wmfROP_Draw_t * rop_draw)
 {
+/*   wmfBrush */
+/*     *brush = WMF_DC_BRUSH(rop_draw->dc); */
+  
+/*   wmfBMP */
+/*     *brush_bmp = WMF_BRUSH_BITMAP(brush); */
+
   if (!TO_FILL(rop_draw))
     return;
 
   /* Save graphic context */
   DrawPushGraphicContext(WmfDrawContext);
 
-  /* FIXME: finish implementing (once we know what it is supposed to do!)*/
+  /* FIXME: finish implementing (once we know what it is supposed to do!) */
 
-  util_set_brush(API, rop_draw->dc, BrushApplyFill);
+  /*
+  struct _wmfROP_Draw_t
+  {       wmfDC* dc;
+    
+    wmfD_Coord TL;
+    wmfD_Coord BR;
+    
+    U32 ROP;
+    
+    double pixel_width;
+    double pixel_height;
+  };
+  */
+
+/*   if(brush_bmp && brush_bmp->data != 0) */
+/*     printf("Have an image!\n"); */
 
   switch (rop_draw->ROP) /* Ternary raster operations */
     {
@@ -352,7 +381,7 @@ static void ipa_rop_draw(wmfAPI * API, wmfROP_Draw_t * rop_draw)
       printf("ipa_rop_draw MERGEPAINT ROP mode not implemented\n");
       break;
     case PATCOPY: /* dest = pattern */
-      printf("ipa_rop_draw PATCOPY ROP mode not implemented\n");
+      util_set_brush(API, rop_draw->dc, BrushApplyFill);
       break;
     case PATPAINT: /* dest = DPSnoo */
       printf("ipa_rop_draw PATPAINT ROP mode not implemented\n");
@@ -364,12 +393,13 @@ static void ipa_rop_draw(wmfAPI * API, wmfROP_Draw_t * rop_draw)
       printf("ipa_rop_draw DSTINVERT ROP mode not implemented\n");
       break;
     case BLACKNESS: /* dest = BLACK */
-      printf("ipa_rop_draw BLACKNESS ROP mode not implemented\n");
+      DrawSetFillColorString(WmfDrawContext,"black");
       break;
     case WHITENESS: /* dest = WHITE */
-      printf("ipa_rop_draw WHITENESS ROP mode not implemented\n");
+      DrawSetFillColorString(WmfDrawContext,"white");
       break;
     default:
+      printf("ipa_rop_draw 0x%x ROP mode not implemented\n", rop_draw->ROP);
       break;
     }
 
