@@ -1600,8 +1600,6 @@ static unsigned int ModifyCache(Image *image)
   cache_info->reference_count--;
   clone_image=AllocateImage((ImageInfo *) NULL);
   *clone_image=(*image);
-  clone_image->storage_class=GetCacheClass(image->cache);
-  clone_image->colorspace=GetCacheColorspace(image->cache);
   GetCacheInfo(&image->cache);
   for (y=0; y < (long) image->rows; y++)
   {
