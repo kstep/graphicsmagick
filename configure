@@ -18695,9 +18695,9 @@ else
 fi
 
 
-    echo "$as_me:$LINENO: checking for png_free in -lpng" >&5
-echo $ECHO_N "checking for png_free in -lpng... $ECHO_C" >&6
-if test "${ac_cv_lib_png_png_free+set}" = set; then
+    echo "$as_me:$LINENO: checking for png_get_io_ptr in -lpng" >&5
+echo $ECHO_N "checking for png_get_io_ptr in -lpng... $ECHO_C" >&6
+if test "${ac_cv_lib_png_png_get_io_ptr+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
   ac_check_lib_save_LIBS=$LIBS
@@ -18712,7 +18712,7 @@ extern "C"
 #endif
 /* We use char because int might match the return type of a gcc2
    builtin and then its argument prototype would still apply.  */
-char png_free ();
+char png_get_io_ptr ();
 #ifdef F77_DUMMY_MAIN
 #  ifdef __cplusplus
      extern "C"
@@ -18722,7 +18722,7 @@ char png_free ();
 int
 main ()
 {
-png_free ();
+png_get_io_ptr ();
   ;
   return 0;
 }
@@ -18739,18 +18739,18 @@ if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
   ac_status=$?
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); }; }; then
-  ac_cv_lib_png_png_free=yes
+  ac_cv_lib_png_png_get_io_ptr=yes
 else
   echo "$as_me: failed program was:" >&5
 cat conftest.$ac_ext >&5
-ac_cv_lib_png_png_free=no
+ac_cv_lib_png_png_get_io_ptr=no
 fi
 rm -f conftest.$ac_objext conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
-echo "$as_me:$LINENO: result: $ac_cv_lib_png_png_free" >&5
-echo "${ECHO_T}$ac_cv_lib_png_png_free" >&6
-if test $ac_cv_lib_png_png_free = yes; then
+echo "$as_me:$LINENO: result: $ac_cv_lib_png_png_get_io_ptr" >&5
+echo "${ECHO_T}$ac_cv_lib_png_png_get_io_ptr" >&6
+if test $ac_cv_lib_png_png_get_io_ptr = yes; then
   passed=`expr $passed + 1`
 else
   failed=`expr $failed + 1`
