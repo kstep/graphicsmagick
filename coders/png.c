@@ -1464,7 +1464,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   default_frame_delay=0;
   default_frame_timeout=0;
   frame_delay=0;
-  final_delay=100;
+  final_delay=1;
   ticks_per_second=100;
   object_id=0;
   skip_to_iend=False;
