@@ -925,6 +925,51 @@ See <B>X(1)</B> for details about the color specification.
 <DT><B>-pointsize</B> <I>value</I>
 <DD>pointsize of the Postscript font.
 <P>
+<DT><B>-preview</B> <I>type</I>
+<dd>image preview type.
+<p>
+<d>Use this option to affect the preview operation of an image
+(e.g. <tt>convert -preview Gamma Preview:gamma.gif</tt>).
+Choose from these previews:
+<p>
+<dd><pre>
+     Rotate
+     Shear
+     Roll
+     Hue
+     Saturation
+     Brightness
+     Gamma
+     Spiff
+     Dull
+     Grayscale
+     Quantize
+     Despeckle
+     ReduceNoise
+     Add Noise
+     Sharpen
+     Blur
+     Threshold
+     EdgeDetect
+     Spread
+     Shade
+     Raise
+     Segment
+     Solarize
+     Swirl
+     Implode
+     Wave
+     OilPaint
+     CharcoalDrawing
+     JPEG
+</pre>
+<p>
+<dd>The default preview is <b>JPEG</b>.
+<P>
+<DT><B>-flip</B>
+<DD> create a "mirror image" by reflecting the scanlines in the vertical
+direction.
+<P>
 <DT><B>-quality</B> <I>value</I>
 <DD>JPEG/MIFF/PNG compression level.
 <P>

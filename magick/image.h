@@ -242,7 +242,8 @@ typedef enum
 
 typedef enum
 {
-  RotatePreview = 0,
+  UndefinedPreview = 0,
+  RotatePreview,
   ShearPreview,
   RollPreview,
   HuePreview,
@@ -269,7 +270,8 @@ typedef enum
   ImplodePreview,
   WavePreview,
   OilPaintPreview,
-  CharcoalDrawingPreview
+  CharcoalDrawingPreview,
+  JPEGPreview
 } PreviewType;
 
 typedef enum

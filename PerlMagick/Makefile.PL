@@ -23,7 +23,6 @@ sub MY::test
    #
    #  Feature   Formats Tested		Prerequisites
    #  =======   ======================	======================================
-   #   IM	ImageMagick built-ins	None
    #   cgm	CGM format		'ralcgm' program
    #   hdf	HDF format		HDF library
    #   jbig	JBIG format		JBIG library
@@ -38,9 +37,9 @@ sub MY::test
    #   xfig	Xfig format		'transfig' program
    #   zlib	Zip compression		Zlib library
    #
-   # e.g. my @PLUGINS = qw/IM jpeg tiff/;
+   # e.g. my @PLUGINS = qw/jpeg tiff/;
    #
-   my @PLUGINS = qw/IM cgm mpeg ps rad x xfig/;
+   my @PLUGINS = qw/ cgm mpeg ps rad x xfig/;
 
    package MY; # so that "SUPER" works right
    my $inherited = shift->SUPER::test(@_);

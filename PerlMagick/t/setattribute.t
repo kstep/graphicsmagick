@@ -217,7 +217,7 @@ testSetAttribute('input.miff','preview','Saturation');
 testSetAttribute('input.miff','preview','Brightness');
 
 ++$test;
-testSetAttribute('input.miff','preview','Gamma');
+testSetAttribute('input.miff','preview','JPEG');
 
 ++$test;
 testSetAttribute('input.miff','preview','Spiff');

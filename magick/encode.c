@@ -7848,6 +7848,7 @@ static unsigned int WritePREVIEWImage(const ImageInfo *image_info,
     *commands[NumberTiles+6],
     *client_name,
     factor[MaxTextExtent],
+    filename[MaxTextExtent],
     label[MaxTextExtent],
     *resource_value;
 
@@ -7912,6 +7913,8 @@ static unsigned int WritePREVIEWImage(const ImageInfo *image_info,
     Apply enhancement at varying strengths.
   */
   local_info=(*image_info);
+  local_info.filename=filename;
+  local_info.quality=0;
   degrees=0;
   gamma=(float) (-0.2);
   colors=2;
@@ -7974,7 +7977,7 @@ static unsigned int WritePREVIEWImage(const ImageInfo *image_info,
       }
       case HuePreview:
       {
-        (void) sprintf(factor,"0,0,%.1f",percentage+=12.5);
+        (void) sprintf(factor,"0,0,%.1f",percentage);
         (void) sprintf(label,"modulate %s",factor);
         commands[argc++]="-modulate";
         commands[argc++]=factor;
@@ -7982,7 +7985,7 @@ static unsigned int WritePREVIEWImage(const ImageInfo *image_info,
       }
       case SaturationPreview:
       {
-        (void) sprintf(factor,"0,%.1f",percentage+=12.5);
+        (void) sprintf(factor,"0,%.1f",percentage);
         (void) sprintf(label,"modulate %s",factor);
         commands[argc++]="-modulate";
         commands[argc++]=factor;
@@ -7990,14 +7993,13 @@ static unsigned int WritePREVIEWImage(const ImageInfo *image_info,
       }
       case BrightnessPreview:
       {
-        (void) sprintf(factor,"%.1f",percentage+=12.5);
+        (void) sprintf(factor,"%.1f",percentage);
         (void) sprintf(label,"modulate %s",factor);
         commands[argc++]="-modulate";
         commands[argc++]=factor;
         break;
       }
       case GammaPreview:
-      default:
       {
         (void) sprintf(factor,"%.1f",gamma+=(float) 0.4);
         (void) sprintf(label,"gamma %s",factor);
@@ -8072,7 +8074,7 @@ static unsigned int WritePREVIEWImage(const ImageInfo *image_info,
       }
       case SharpenPreview:
       {
-        (void) sprintf(factor,"%.1f",percentage+=12.5);
+        (void) sprintf(factor,"%.1f",percentage);
         (void) sprintf(label,"sharpen %s",factor);
         commands[argc++]="-sharpen";
         commands[argc++]=factor;
@@ -8080,7 +8082,7 @@ static unsigned int WritePREVIEWImage(const ImageInfo *image_info,
       }
       case BlurPreview:
       {
-        (void) sprintf(factor,"%.1f",percentage+=12.5);
+        (void) sprintf(factor,"%.1f",percentage);
         (void) sprintf(label,"+sharpen %s",factor);
         commands[argc++]="+sharpen";
         commands[argc++]=factor;
@@ -8092,12 +8094,12 @@ static unsigned int WritePREVIEWImage(const ImageInfo *image_info,
         (void) sprintf(label,"threshold %s",factor);
         commands[argc++]="-threshold";
         commands[argc++]=factor;
-        percentage+=12.5;
+        percentage;
         break;
       }
       case EdgeDetectPreview:
       {
-        (void) sprintf(factor,"%.1f",percentage+=12.5);
+        (void) sprintf(factor,"%.1f",percentage);
         (void) sprintf(label,"edge %s",factor);
         commands[argc++]="-edge";
         commands[argc++]=factor;
@@ -8113,7 +8115,7 @@ static unsigned int WritePREVIEWImage(const ImageInfo *image_info,
       }
       case SolarizePreview:
       {
-        (void) sprintf(factor,"%.1f",percentage+=12.5);
+        (void) sprintf(factor,"%.1f",percentage);
         (void) sprintf(label,"solarize %s",factor);
         commands[argc++]="-solarize";
         commands[argc++]=factor;
@@ -8160,7 +8162,7 @@ static unsigned int WritePREVIEWImage(const ImageInfo *image_info,
       }
       case ImplodePreview:
       {
-        (void) sprintf(factor,"%.1f",percentage+=12.5);
+        (void) sprintf(factor,"%.1f",percentage);
         (void) sprintf(label,"implode %s",factor);
         commands[argc++]="-implode";
         commands[argc++]=factor;
@@ -8185,13 +8187,45 @@ static unsigned int WritePREVIEWImage(const ImageInfo *image_info,
       }
       case CharcoalDrawingPreview:
       {
-        (void) sprintf(factor,"%.1f",percentage+=12.5);
+        (void) sprintf(factor,"%.1f",percentage);
         (void) sprintf(label,"charcoal %s",factor);
         commands[argc++]="-charcoal";
         commands[argc++]=factor;
         break;
       }
+      case JPEGPreview:
+      default:
+      {
+        local_info.quality=(unsigned int) percentage+13.0;
+        (void) sprintf(factor,"%u",local_info.quality);
+        TemporaryFilename(images[i]->filename);
+        status=WriteJPEGImage(&local_info,images[i]);
+        if (status != False)
+          {
+            Image
+              *quality_image;
+
+            (void) strcpy(local_info.filename,images[i]->filename);
+            quality_image=ReadImage(&local_info);
+            (void) remove(images[i]->filename);
+            if (quality_image != (Image *) NULL)
+              {
+                DestroyImage(images[i]);
+                images[i]=quality_image;
+              }
+          }
+        (void) sprintf(label,"quality %s\n%ldb ",factor,images[i]->filesize);
+        if (images[i]->filesize >= (1 << 24))
+          (void) sprintf(label,"quality %s\n%ldmb ",factor,
+            images[i]->filesize/1024/1024);
+        else
+          if (images[i]->filesize >= (1 << 14))
+            (void) sprintf(label,"quality %s\n%ldkb ",factor,
+              images[i]->filesize/1024);
+        break;
+      }
     }
+    percentage+=12.5;
     commands[argc++]="-label";
     commands[argc++]=label;
     MogrifyImage(&local_info,argc,commands,&images[i]);

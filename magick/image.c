@@ -3192,7 +3192,8 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
     count;
 
   assert(image != (Image *) NULL);
-  assert(file != (FILE *) NULL);
+  if (file == (FILE *) NULL)
+    file=stdout;
   if (!verbose)
     {
       /*
@@ -4960,7 +4961,7 @@ Export void GetImageInfo(ImageInfo *image_info)
   image_info->pointsize=atoi(DefaultPointSize);
   image_info->quality=atoi(DefaultImageQuality);
   image_info->verbose=False;
-  image_info->preview_type=GammaPreview;
+  image_info->preview_type=JPEGPreview;
   image_info->filter=MitchellFilter;
   image_info->undercolor=(char *) NULL;
   image_info->ping=False;

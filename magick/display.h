@@ -68,6 +68,7 @@ static char
     "Wave",
     "Oil Paint",
     "Charcoal Drawing",
+    "JPEG",
     (char *) NULL
   };
 
