@@ -1098,6 +1098,7 @@ Export unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
       image->blob_info=image_info->blob_info;
       return(True);
     }
+  GetBlobInfo(&image->blob_info);
   image->exempt=False;
   if (image_info->file != (FILE *) NULL)
     {

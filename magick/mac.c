@@ -49,7 +49,8 @@
 %  The directory methods are strongly based on similar methods written
 %  by Steve Summit, scs@eskimo.com.  The Ghostscript launch code is strongly
 %  based on Dave Schooley's Mac Gnuplot and provided by
-%  schindall@wave14i.nrl.navy.mil.
+%  schindall@wave14i.nrl.navy.mil.  Mac-centric improvements provided by
+%  leonardr@digapp.com.
 %
 %
 */
