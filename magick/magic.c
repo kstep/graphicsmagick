@@ -59,441 +59,403 @@
 /*
   Global declarations.
 */
-
-static MagicTest
-  **magic_test_list = (MagicTest**) NULL;
+static MagicInfo
+  **magic_list = (MagicInfo **) NULL;
 
 /*
-  Set magic string (sized to MaxTextExtent)
-  based on image header data provided in magick,
-  with length magick_length.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   D e s t r o y M a g i c I n f o                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method DestroyMagicInfo deallocates memory associated with the MagicInfo
+%  list.
+%
+%  The format of the DestroyMagicInfo method is:
+%
+%      void DestroyMagicInfo(void)
+%
 */
+Export void DestroyMagicInfo(void)
+{
+  MagicInfoMember
+    *entry,
+    *member;
 
-/* Read and parse magic.mgk file */
-static int ReadMagicConfigurationFile(const char* path)
+  register int
+    i;
+
+  for (i=0; magic_list[i] != (MagicInfo *) NULL; i++)
+  {
+    for (member=magic_list[i]->member; member != (MagicInfoMember *) NULL; )
+    {
+      entry=member;
+      FreeMemory((void **) &entry->argument);
+      FreeMemory((void **) &entry);
+      member=member->next;
+    }
+  }
+  FreeMemory((void **) &magic_list[i]);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   R e a d M a g i c C o n f i g u r a t i o n F i l e                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method ReadMagicConfigurationFile reads the magic configuration file.  It
+%  contains one or tag and magic combinations to help identify which image
+%  format a particular image file or blob may be.  For example,
+%
+%    JPEG    string(0,"\377\330\377")
+%    PNG     string(0,"\211PNG\r\n\032\n")
+%    TIFF    string(0,"\115\115\000\052")
+%
+%  The format of the ReadMagicConfigurationFile method is:
+%
+%      unsigned int ReadMagicConfigurationFile(const char *filename)
+%
+%  A description of each parameter follows:
+%
+%    o status:  Method ReadMagicConfigurationFile returns True if the
+%      configuration file is parsed properly, otherwise False is returned.
+%
+%    o filename:  A pointer to a character string.
+%
+*/
+static int ReadMagicConfigurationFile(const char *filename)
 {
   char
     buffer[MaxTextExtent],
-    *buff_p,
-    tag[MaxTextExtent],
-    *tag_p;
+    *p,
+    tag[MaxTextExtent];
+
+  FILE
+    *file;
 
   int
-    line_number,
-    list_index;
+    j,
+    line_number;
 
-  FILE*
-    file;
-
-  MagicTestMember
+  MagicInfoMember
     *test_member;
 
-  file = fopen(path, "r");
-  if(file != (FILE*) NULL)
+  register unsigned char
+    *q;
+
+  register int
+    i;
+
+  /*
+    Allocate and initialize the format list.
+  */
+  file=fopen(filename,"r");
+  if (file == (FILE *) NULL)
+    return(False);
+  i=0;
+  magic_list=(MagicInfo **)
+    AllocateMemory((MagicInfoListExtent)*sizeof(MagicInfo *));
+  if (magic_list == (MagicInfo **) NULL)
+    MagickError(ResourceLimitError,"Unable to allocate image",
+      "Memory allocation failed");
+  line_number=0;
+  magic_list[i]=(MagicInfo *) NULL;
+  while ((i < MagicInfoListExtent-1) && !feof(file))
+  {
+    line_number++;
+    (void) fgets(buffer,MaxTextExtent,file);
+    buffer[MaxTextExtent-1]='\0';
+    Strip(buffer);
+    if ((*buffer == '\0') || (*buffer == '#'))
+      continue;
+    p=buffer;
+    for (j=0; isalnum((int) *p); j++)
+      tag[j]=(*p++);
+    tag[j]='\0';
+    if (*p == '\0')
+      goto eol_error;
+    magic_list[i]=(MagicInfo *) AllocateMemory(sizeof(MagicInfo));
+    if (magic_list[i] == (MagicInfo *) NULL)
+      MagickError(ResourceLimitError,"Unable to allocate image",
+        "Memory allocation failed");
+    magic_list[i]->tag=AllocateString(tag);
+    magic_list[i]->member=(MagicInfoMember *) NULL;
+    /*
+      Parse sequence of match rules.
+    */
+    for ( ; ; )
     {
-      /* allocate and init format list */
-      list_index=0;
-      magic_test_list=
-        (MagicTest**)AllocateMemory((MagicTestListExtent)*sizeof(MagicTest*));
-      if(magic_test_list == (MagicTest**)NULL)
+      while (isspace((int) *p))
+        p++;
+      if (*p == '\0')
+        goto eol_error;
+      test_member=(MagicInfoMember *) AllocateMemory(sizeof(MagicInfoMember));
+      if (test_member == (MagicInfoMember *) NULL)
+        MagickError(ResourceLimitError,"Unable to allocate image",
+          "Memory allocation failed");
+      test_member->method=UndefinedMagicMethod;
+      test_member->argument=(void *) NULL;
+      test_member->status=True;
+      test_member->next=(MagicInfoMember *) NULL;
+      if (*p == '!')
         {
-          MagickError(ResourceLimitError,"Unable to allocate image",
-                      "Memory allocation failed");
+          test_member->status=False;
+          p++;
         }
-      magic_test_list[list_index]=(MagicTest*)NULL;
-
-      line_number=0;
-      while((list_index<MagicTestListExtent-1) && !feof(file))
+      while (isspace((int) *p))
+        p++;
+      if (*p == '\0')
+        goto eol_error;
+      if (LocaleNCompare(p,"string(",7) == 0)
         {
-          ++line_number;
-          fgets(buffer,MaxTextExtent,file);
-          buffer[MaxTextExtent-1]='\0';
-          Strip(buffer);
-          if(*buffer=='\0' || *buffer=='#')
-            continue;
+          StringMethodArgument
+            *argument;
 
-          /* tag */
-          buff_p=buffer;
-          tag_p=tag;
-          while(isalnum((int)*buff_p))
-            *tag_p++=*buff_p++;
-          *tag_p='\0';
-          if(*buff_p == '\0')
-            goto eol_error;
-          magic_test_list[list_index]=
-            (MagicTest*)AllocateMemory(sizeof(MagicTest));
-          if(magic_test_list[list_index] == (MagicTest*)NULL)
+          argument=(StringMethodArgument *)
+            AllocateMemory(sizeof(StringMethodArgument));
+          if (argument == (StringMethodArgument*)NULL)
             MagickError(ResourceLimitError,"Unable to allocate image",
-                        "Memory allocation failed");
-          magic_test_list[list_index]->tag=AllocateString(tag);
-          magic_test_list[list_index]->member=(MagicTestMember*)NULL;
-            
-          /* parse sequence of match rules */
-          while(1)
-            {
-              /* skip over white space */
-              while(isspace((int)*(buff_p)))
-                ++buff_p;
-              if(*buff_p == '\0')
-                goto eol_error;
-
-              /* intialize test_member */
-              test_member=
-                (MagicTestMember*)AllocateMemory(sizeof(MagicTestMember));
-              if(test_member == (MagicTestMember*)NULL)
-                MagickError(ResourceLimitError,"Unable to allocate image",
-                            "Memory allocation failed");
-              test_member->method=UndefinedMagicMethod;
-              test_member->argument=(void*)NULL;
-              test_member->truth_value=True;
-              test_member->next=(MagicTestMember*)NULL;
-
-              /* test truth value */
-              if(*buff_p == '!')
+              "Memory allocation failed");
+          test_member->argument=(void *) argument;
+          test_member->method=StringMagicMethod;
+          argument->length=0;
+          argument->offset=0;
+          *argument->value='\0';
+          p+=7;
+          while (isspace((int) *p))
+            p++;
+          if (*p == '\0')
+            goto eol_error;
+          argument->offset=strtol(p,&p,10);
+          while (isspace((int) *p))
+            p++;
+          if (*p == '\0')
+            goto eol_error;
+          if (*p != ',')
+            goto syntax_error;
+          p++;
+          while (isspace((int) *p))
+            p++;
+          if (*p == '\0')
+            goto eol_error;
+          if (*p != '"')
+            goto syntax_error;
+          p++;
+          q=argument->value;
+          for ( ; ; )
+          {
+            if (*p == '\0')
+              goto eol_error;
+            if (*p == '"')
+              {
+                *q='\0';
+                p++;
+                break;
+              }
+            if (*p == '\\')
+              {
+                p++;
+                if (isdigit((int) *p))
+                  {
+                    *q=(unsigned char) strtol(p,&p,8);
+                    q++;
+                    argument->length++;
+                    continue;
+                  }
+                switch (*p)
                 {
-                  ++buff_p;
-                  test_member->truth_value=False;
+                  case 'b': *q='\b'; break;
+                  case 'f': *q='\f'; break;
+                  case 'n': *q='\n'; break;
+                  case 'r': *q='\r'; break;
+                  case 't': *q='\t'; break;
+                  case 'v': *q='\v'; break;
+                  case 'a': *q='a'; break;
+                  case '?': *q='\?'; break;
+                  default: *q=(*p); break;
                 }
-
-              /* skip over white space */
-              while(isspace((int)*(buff_p)))
-                ++buff_p;
-              if(*buff_p == '\0')
-                goto eol_error;
-
-              if(LocaleNCompare(buff_p,"string(",7) == 0)
-                {
-                  StringMethodArgument
-                    *string_argument;
-
-                  unsigned char
-                    *str_p;
-
-                  string_argument=
-                    (StringMethodArgument*)AllocateMemory(sizeof(StringMethodArgument));
-                  if(string_argument == (StringMethodArgument*)NULL)
-                    MagickError(ResourceLimitError,"Unable to allocate image",
-                                "Memory allocation failed");
-                  test_member->argument=(void*)string_argument;
-
-                  test_member->method=StringMagicMethod;
-                  string_argument->value_length=0;
-                  string_argument->value_offset=0;
-                  *string_argument->value='\0';
-
-                  /* skip over "string(" */
-                  buff_p += 7;
-
-                  /* skip over white space */
-                  while(isspace((int)*(buff_p)))
-                    ++buff_p;
-                  if(*buff_p == '\0')
-                    goto eol_error;
-
-                  /* get offset */
-                  string_argument->value_offset=strtol(buff_p, &buff_p, 10);
-
-                  /* skip over white space */
-                  while(isspace((int)*(buff_p)))
-                    ++buff_p;
-                  if(*buff_p == '\0')
-                    goto eol_error;
-
-                  /* check for comma */
-                  if(*buff_p != ',')
-                    goto syntax_error;
-                  ++buff_p;
-
-                  /* skip over white space */
-                  while(isspace((int)*(buff_p)))
-                    ++buff_p;
-                  if(*buff_p == '\0')
-                    goto eol_error;
-
-                  /* check for double quotes */
-                  if(*buff_p != '"')
-                    goto syntax_error;
-                  ++buff_p;
-
-                  /* translate string */
-                  str_p=string_argument->value;
-                  while(1)
-                    {
-                      /* unexpected end of line */
-                      if(*buff_p == '\0')
-                        goto eol_error;
-
-                      /* end of string, done */
-                      if(*buff_p == '"')
-                        {
-                          *str_p='\0';
-                          ++buff_p;
-                          break;
-                        }
-
-                      if(*buff_p == '\\')
-                        {
-                          ++buff_p;
-                          if(isdigit((int)*(buff_p)))
-                            {
-                              *str_p=(unsigned char)strtol(buff_p,
-                                                           &buff_p,8);
-                              ++str_p;
-                              ++string_argument->value_length;
-                              continue;
-                            }
-
-                          switch(*buff_p)
-                            {
-                            case 'b' :
-                              *str_p='\b';
-                              break;
-                            case 'f' :
-                              *str_p='\f';
-                              break;
-                            case 'n' :
-                              *str_p='\n';
-                              break;
-                            case 'r' :
-                              *str_p='\r';
-                              break;
-                            case 't' :
-                              *str_p='\t';
-                              break;
-                            case 'v' :
-                              *str_p='\v';
-                              break;
-                            case 'a' :
-                              *str_p='a';
-                              break;
-                            case '?' :
-                              *str_p='\?';
-                              break;
-                            default :
-                              {
-                                *str_p=*buff_p;
-                              }
-                            }
-                          ++str_p;
-                          ++buff_p;
-                          ++string_argument->value_length;
-                          continue;
-                        }
-
-                      /* just copy character */
-                      *str_p=*buff_p;
-                      ++str_p;
-                      ++buff_p;
-                      ++string_argument->value_length;
-                    }
-
-                  /* skip over white space */
-                  while(isspace((int)*(buff_p)))
-                    ++buff_p;
-                  if(*buff_p == '\0')
-                    goto eol_error;
-
-                  /* test parens */
-                  if(*buff_p != ')')
-                    goto syntax_error;
-                  ++buff_p;
-
-                  /* add test to list */
-                  if(magic_test_list[list_index]->member==(MagicTestMember*)NULL)
-                    {
-                      /* first in list */
-                      magic_test_list[list_index]->member=test_member;
-                    }
-                  else
-                    {
-                      MagicTestMember
-                        *member;
-
-                      for(member=magic_test_list[list_index]->member;
-                          member->next!=(MagicTestMember*)NULL;
-                          member=member->next);
-                      member->next=test_member;
-                    }
-
-                  /* skip over white space */
-                  while(isspace((int)*(buff_p)))
-                    ++buff_p;
-
-                  if(*buff_p == ';')
-                    {
-                      ++buff_p;
-                      continue;
-                    }
-
-                  /* done with the line? */
-                  if(*buff_p == '\0')
-                    break;
-                }
-              else
-                goto syntax_error;
+                q++;
+                p++;
+                argument->length++;
+                continue;
+              }
+              *q=(*p);
+              q++;
+              p++;
+              argument->length++;
             }
-          ++list_index;
-          magic_test_list[list_index]=(MagicTest*)NULL;
-          continue;
-          
-          syntax_error :
-            {
-              char
-                buff[MaxTextExtent];
-              
-              sprintf(buff,"%s:%d: syntax: \"%s\"\n", path,
-                      line_number, buff_p);
-              MagickWarning(OptionWarning,buff,NULL);
-            }
-          
-          eol_error :
-            {
-              char
-                buff[MaxTextExtent];
+            while (isspace((int) *p))
+              p++;
+            if (*p == '\0')
+              goto eol_error;
+            if (*p != ')')
+              goto syntax_error;
+            p++;
+            if (magic_list[i]->member == (MagicInfoMember *) NULL)
+              magic_list[i]->member=test_member;
+            else
+              {
+                MagicInfoMember
+                  *member;
 
-              sprintf(buff,"%s:%d: syntax: \"%s\"\n", path,
-                      line_number, "unexpected end of line");
-              MagickWarning(OptionWarning,buff,NULL);
-            }
-        }
-      fclose(file);
+                member=magic_list[i]->member;
+                while (member->next != (MagicInfoMember *) NULL)
+                  member=member->next;
+                member->next=test_member;
+              }
+            while (isspace((int) *p))
+              p++;
+            if (*p == ';')
+              {
+                p++;
+                continue;
+              }
+            if (*p == '\0')
+              break;
+          }
+        else
+          goto syntax_error;
     }
-  else
-    return False;
+    i++;
+    magic_list[i]=(MagicInfo *) NULL;
+    continue;
+    syntax_error:
+    {
+      char
+        message[MaxTextExtent];
+            
+      FormatString(message,"%s:%d: syntax: \"%s\"\n",filename,line_number,p);
+      MagickWarning(OptionWarning,message,(char *) NULL);
+      continue;
+    }
+    eol_error:
+    {
+      char
+        message[MaxTextExtent];
 
-  if(magic_test_list == (MagicTest**) NULL)
-    return False;
-
-  return True;
+      FormatString(message,"%s:%d: syntax: \"%s\"\n",message,line_number,
+        "unexpected end of line");
+      MagickWarning(OptionWarning,message,(char *) NULL);
+      continue;
+    }
+  }
+  (void) fclose(file);
+  if (magic_list == (MagicInfo **) NULL)
+    return(False);
+  return(True);
 }
-/* Initialize magic_test_list */
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   S e t I m a g e M a g i c                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method SetImageMagic identifies the type of a image blob or file using,
+%  among other tests, a test for whether the image begins with a certain
+%  magic number.  If a match is found, the tag is returned that represents
+%  the image format (e.g. JPEG, TIFF, GIF, etc).
+%
+%  The format of the SetImageMagic method is:
+%
+%      unsigned int SetImageMagic(const unsigned char *magick,
+%        const unsigned int length,char *magic)
+%
+%  A description of each parameter follows:
+%
+%    o status:  Method SetImageMagic returns True if the magic number matches
+%      a string in the magic list otherwise False.
+%
+%    o magick: A binary string generally representing the first few characters
+%      of the image file or blob.
+%
+%    o length: The length of the binary string.
+%
+%    o magic: A pointer to a character string.  If a match is found, the image
+%      format is returned as this string.
+%
+%
+*/
+
 static unsigned int InitializeMagic(void)
 {
   char
     path[MaxTextExtent];
 
-  if(getenv("DELEGATE_PATH") != NULL)
+  if (getenv("DELEGATE_PATH") != (char *) NULL)
     {
-      strcpy(path,getenv("DELEGATE_PATH"));
-      strcat(path,DirectorySeparator);
-      strcat(path,"magic.mgk");
-      if(ReadMagicConfigurationFile(path) == True)
+      (void) strcpy(path,getenv("DELEGATE_PATH"));
+      (void) strcat(path,DirectorySeparator);
+      (void) strcat(path,"magic.mgk");
+      if (ReadMagicConfigurationFile(path) == True)
         return(True);
     }
-
-  strcpy(path,DelegatePath);
-  strcat(path,DirectorySeparator);
-  strcat(path,"magic.mgk");
+  (void) strcpy(path,DelegatePath);
+  (void) strcat(path,DirectorySeparator);
+  (void) strcat(path,"magic.mgk");
   return(ReadMagicConfigurationFile(path));
 }
-Export unsigned int SetImageMagic(char* magic,
-                                  const unsigned char *magick,
-                                  const unsigned int magick_length)
+
+Export unsigned int SetImageMagic(const unsigned char *magick,
+  const unsigned int length,char *magic)
 {
-  int
+  MagicInfoMember
+    *member;
+
+  register int
     i;
 
-  if(magic_test_list == (MagicTest**) NULL)
+  register StringMethodArgument
+    *p;
+
+  *magic='\0';
+  if (magic_list == (MagicInfo **) NULL)
     if (InitializeMagic() == False)
       return(False);
-
-  if(magic_test_list == (MagicTest**) NULL)
-    MagickError(FileOpenError,"Failed read file magic.mgk",NULL);
-
-  /* Traverse magic tests */
-  for (i=0;magic_test_list[i]!=(MagicTest*)NULL;++i)
+  if (magic_list == (MagicInfo **) NULL)
+    MagickError(FileOpenError,"Unable to read file","magic.mgk");
+  for (i=0; magic_list[i] != (MagicInfo *) NULL; i++)
+    switch (magic_list[i]->member->method)
     {
-      switch(magic_test_list[i]->member->method)
+      case StringMagicMethod:
+      {
+        for (member=magic_list[i]->member; member != (MagicInfoMember *) NULL; )
         {
-        case StringMagicMethod:
-          {
-            MagicTestMember
-              *member;
-
-            /* Traverse test members */
-            for(member=magic_test_list[i]->member;
-                member!=(MagicTestMember*)NULL;)
-              {
-                StringMethodArgument
-                  *arg;
-
-                arg=(StringMethodArgument*)member->argument;
-                if(arg->value_offset+arg->value_length > magick_length)
-                  break;
-
-                if(memcmp((char*)magick+arg->value_offset,(char*)arg->value,
-                          arg->value_length)==0)
-                  {
-                    if(member->truth_value == True)
-                      {
-                        if (member->next==(MagicTestMember*)NULL)
-                          {
-                            strcpy(magic, magic_test_list[i]->tag);
-                            return True;
-                          }
-                      }
-                    else
-                      {
-                        /* Short-circuit search */
-                        break;
-                      }
-                  }
-                member=member->next;
-              }
-
+          p=(StringMethodArgument *) member->argument;
+          if ((p->offset+p->length) > length)
             break;
-          }
-        default:
-          {
-          }
-        }
-    }
-
-  return False;
-}
-
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   Q u i t M a g i c                                                         %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method QuitMagic deallocates memory associated with the MagicTest list
-%
-%  The format of the QuitMagic method is:
-%
-%      void QuitMagic()
-%
-*/
-Export void QuitMagic(void)
-{
-  int
-    i;
-
-  /* Traverse magic tests */
-  for (i=0;magic_test_list[i]!=(MagicTest*)NULL;++i)
-    {
-      MagicTestMember
-        *member;
-
-      /* Traverse test members */
-      for(member=magic_test_list[i]->member;member!=(MagicTestMember*)NULL;)
-        {
-          MagicTestMember*
-            entry;
-
-          entry=member;
-          FreeMemory((void**)&entry->argument);
-          FreeMemory((void**)&entry);
+          if (memcmp(magick+p->offset,p->value,p->length) == 0)
+            {
+              if (member->status != True)
+                break;
+              if (member->next == (MagicInfoMember *) NULL)
+                {
+                  (void) strcpy(magic,magic_list[i]->tag);
+                  return(True);
+                }
+             }
           member=member->next;
         }
+        break;
+      }
+      default:
+        break;
     }
-  FreeMemory((void**)&magic_test_list[i]);
+  return(False);
 }
-

@@ -5236,8 +5236,7 @@ Export unsigned int SetImageInfo(ImageInfo *image_info,
   const unsigned int rectify)
 {
   char
-    magic[MaxTextExtent],
-    magick[MaxTextExtent];
+    magic[MaxTextExtent];
 
   Image
     *image;
@@ -5245,6 +5244,9 @@ Export unsigned int SetImageInfo(ImageInfo *image_info,
   register char
     *p,
     *q;
+
+  unsigned char
+    magick[MaxTextExtent];
 
   unsigned int
     affirm,
@@ -5254,7 +5256,7 @@ Export unsigned int SetImageInfo(ImageInfo *image_info,
     Look for 'image.format' in filename.
   */
   assert(image_info != (ImageInfo *) NULL);
-  *magick='\0';
+  *magic='\0';
   p=image_info->filename+Max(Extent(image_info->filename)-1,0);
   if (*p == ']')
     for (q=p-1; q > image_info->filename; q--)
@@ -5305,26 +5307,26 @@ Export unsigned int SetImageInfo(ImageInfo *image_info,
     {
       p--;
     } while ((*p != '.') && (p > (image_info->filename+1)));
-  if ((*p == '.') && (Extent(p) < (int) sizeof(magick)))
+  if ((*p == '.') && (Extent(p) < (int) sizeof(magic)))
     {
       /*
         User specified image format.
       */
-      (void) strcpy(magick,p+1);
-      for (q=magick; *q != '\0'; q++)
+      (void) strcpy(magic,p+1);
+      for (q=magic; *q != '\0'; q++)
         if (*q == '.')
           {
             *q='\0';
             break;
           }
-      LocaleUpper(magick);
+      LocaleUpper(magic);
       /*
         SGI and RGB are ambiguous;  TMP must be set explicitly.
       */
       if (((LocaleNCompare(image_info->magick,"SGI",3) != 0) ||
-          (LocaleCompare(magick,"RGB") != 0)) &&
-          (LocaleCompare(magick,"TMP") != 0))
-        (void) strcpy(image_info->magick,magick);
+          (LocaleCompare(magic,"RGB") != 0)) &&
+          (LocaleCompare(magic,"TMP") != 0))
+        (void) strcpy(image_info->magick,magic);
     }
   /*
     Look for explicit 'format:image' in filename.
@@ -5337,16 +5339,16 @@ Export unsigned int SetImageInfo(ImageInfo *image_info,
   if (*(p+1) == '[')
     p++;
 #endif
-  if ((*p == ':') && ((p-image_info->filename) < (int) sizeof(magick)))
+  if ((*p == ':') && ((p-image_info->filename) < (int) sizeof(magic)))
     {
       /*
         User specified image format.
       */
-      (void) strncpy(magick,image_info->filename,p-image_info->filename);
-      magick[p-image_info->filename]='\0';
-      LocaleUpper(magick);
+      (void) strncpy(magic,image_info->filename,p-image_info->filename);
+      magic[p-image_info->filename]='\0';
+      LocaleUpper(magic);
 #if defined(macintosh) || defined(WIN32)
-      if (!ImageFormatConflict(magick))
+      if (!ImageFormatConflict(magic))
 #endif
         {
           /*
@@ -5354,10 +5356,10 @@ Export unsigned int SetImageInfo(ImageInfo *image_info,
           */
           p++;
           (void) strcpy(image_info->filename,p);
-          if (LocaleCompare(magick,"IMPLICIT") != 0)
+          if (LocaleCompare(magic,"IMPLICIT") != 0)
             {
-              (void) strcpy(image_info->magick,magick);
-              if (LocaleCompare(magick,"TMP") != 0)
+              (void) strcpy(image_info->magick,magic);
+              if (LocaleCompare(magic,"TMP") != 0)
                 affirm=True;
               else
                 image_info->temporary=True;
@@ -5379,7 +5381,7 @@ Export unsigned int SetImageInfo(ImageInfo *image_info,
       if ((LocaleCompare(filename,image_info->filename) != 0) &&
           (strchr(filename,'%') == (char *) NULL))
         image_info->adjoin=False;
-      magick_info=(MagickInfo *) GetMagickInfo(magick);
+      magick_info=(MagickInfo *) GetMagickInfo(magic);
       if (magick_info != (MagickInfo *) NULL)
         image_info->adjoin&=magick_info->adjoin;
       return(True);
@@ -5403,7 +5405,7 @@ Export unsigned int SetImageInfo(ImageInfo *image_info,
       return(True);
     }
   if ((image->blob.data != (char *) NULL)  || !image->exempt)
-    (void) ReadBlob(image,MaxTextExtent-1,magick);
+    (void) ReadBlob(image,MaxTextExtent,magick);
   else
     {
       FILE
@@ -5434,9 +5436,7 @@ Export unsigned int SetImageInfo(ImageInfo *image_info,
       (void) fclose(file);
     }
   DestroyImage(image);
-  magick[MaxTextExtent-1]='\0';
-  *magic='\0';
-  if (SetImageMagic(magic,(const unsigned char *) magick,MaxTextExtent) == True)
+  if (SetImageMagic(magick,MaxTextExtent,magic) == True)
     (void) strcpy(image_info->magick,magic);
   return(True);
 }

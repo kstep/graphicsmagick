@@ -8,65 +8,54 @@
 extern "C" {
 #endif
 
-/* Available magic matching methods */
+#define MagicInfoListExtent 256
+#define StringMethodArgumentExtent  64
+
 typedef enum
 {
   UndefinedMagicMethod,
   StringMagicMethod
 } MagicMethod;
 
-/* Argument to support StringMagickMethod */
-#define StringMethodArgumentExtent 64
 typedef struct _StringMethodArgument
 {
-  unsigned int
-    value_length,
-    value_offset;
-
   unsigned char
     value[StringMethodArgumentExtent];
 
+  unsigned int
+    length,
+    offset;
 } StringMethodArgument;
 
-/* List member to support one or more tests for a format */
-typedef struct _MagicTestMember
+typedef struct _MagicInfoMember
 {
   MagicMethod
-    method;      /* Method to apply */
+    method;
 
   void
-    *argument;   /* Method argument, e.g. cast to StringMethodArgument* */
+    *argument;
 
   int
-    truth_value; /* Truth value of operation (True or False) */
+    status;
 
-  struct _MagicTestMember
+  struct _MagicInfoMember
     *next;
+} MagicInfoMember;
 
-} MagicTestMember;
-
-/* List of formats to test */
-#define MagicTestListExtent 256
-typedef struct _MagicTest
+typedef struct _MagicInfo
 {
   char
-  *tag;
+    *tag;
 
-  struct _MagicTestMember
-  *member;
-
-} MagicTest;
-
-/*
-  Magic declarations.
-*/
+  struct _MagicInfoMember
+    *member;
+} MagicInfo;
 
 extern Export void
-  QuitMagic(void);
+  DestroyMagicInfo(void);
 
 extern Export unsigned int
-  SetImageMagic(char* magic,const unsigned char *magick,
-                const unsigned int magick_length);
+  SetImageMagic(const unsigned char *,const unsigned int,char *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
