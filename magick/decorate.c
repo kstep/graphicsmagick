@@ -528,7 +528,7 @@ MagickExport unsigned int RaiseImage(Image *image,
         (MaxRGB-HighlightFactor))/MaxRGB);
       q++;
     }
-    for (x=0; x < (long) (image->columns-2*raise_info->width-y); x++)
+    for (x=0; x < (long) (image->columns-2*(raise_info->width-y)); x++)
     {
       q->red=(Quantum) ((unsigned long) (q->red*TroughFactor+background*
         (MaxRGB-TroughFactor))/MaxRGB);
