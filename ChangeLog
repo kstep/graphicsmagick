@@ -1,3 +1,9 @@
+2003-09-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/render.c (DrawClipPath): Fix memory leak of
+	clone_info->clip_path.  Problem reported by Vladimir
+	<lvm@integrum.ru>.
+
 2003-09-10  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
 
 	* magick/render.c: Fixed handling of arc primitive (see IM-5.5.8).

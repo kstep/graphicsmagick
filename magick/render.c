@@ -1319,7 +1319,7 @@ MagickExport unsigned int DrawClipPath(Image *image,const DrawInfo *draw_info,
   clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
   (void) CloneString(&clone_info->primitive,attribute->value);
   (void) QueryColorDatabase("white",&clone_info->fill,&image->exception);
-  clone_info->clip_path=(char *) NULL;
+  LiberateMemory((void **) &clone_info->clip_path);
   status=DrawImage(image->clip_mask,clone_info);
   (void) NegateImage(image->clip_mask,False);
   DestroyDrawInfo(clone_info);
