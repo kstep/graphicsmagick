@@ -60,9 +60,6 @@ class std::fstream;
 
 namespace MagickLib
 {
-#undef PACKAGE
-#undef VERSION
-
 #include <magick/api.h>
 #undef inline // Remove possible definition from config.h
 
