@@ -17,14 +17,13 @@
 #include "Magick++/Drawable.h"
 #include "Magick++/Exception.h"
 #include "Magick++/Geometry.h"
-#include "Magick++/Options.h"
-#include "Magick++/Thread.h"
 #include "Magick++/TypeMetric.h"
 
 namespace Magick
 {
   // Forward declarations
-  class MagickDLLDecl ImageRef;
+  class Options;
+  class ImageRef;
 
   extern MagickDLLDecl const std::string borderGeometryDefault;
   extern MagickDLLDecl const std::string frameGeometryDefault;
@@ -932,6 +931,10 @@ namespace Magick
     void            subRange ( const unsigned int subRange_ );
     unsigned int    subRange ( void ) const;
 
+    // Annotation text encoding (e.g. "UTF-16")
+    void            textEncoding ( const std::string &encoding_ );
+    std::string     textEncoding ( void ) const;
+
     // Tile name
     void            tileName ( const std::string &tileName_ );
     std::string     tileName ( void ) const;
@@ -1042,8 +1045,8 @@ namespace Magick
     //////////////////////////////////////////////////////////////////////
 
 
-    // Construct with image and options
-    Image ( MagickLib::Image* image_, const Magick::Options* options_ );
+    // Construct with MagickLib::Image and default options
+    Image ( MagickLib::Image* image_ );
 
     // Retrieve Image*
     MagickLib::Image*& image( void );
@@ -1057,9 +1060,12 @@ namespace Magick
     MagickLib::ImageInfo * imageInfo( void );
     const MagickLib::ImageInfo * constImageInfo( void ) const;
 
+    // Retrieve QuantizeInfo*
+    MagickLib::QuantizeInfo * quantizeInfo( void );
+    const MagickLib::QuantizeInfo * constQuantizeInfo( void ) const;
+
     // Replace current image (reference counted)
     MagickLib::Image* replaceImage ( MagickLib::Image* replacement_ );
-
 
     // Prepare to update image (copy if reference > 1)
     void            modifyImage ( void );
@@ -1077,74 +1083,17 @@ namespace Magick
     ImageRef *      _imgRef;
   };
 
-
-  //
-  // Reference counted access to Image *
-  // (Private implementation class)
-  //
-  class MagickDLLDecl ImageRef {
-    friend class MagickDLLDecl Image; 
-  private:
-    // Construct with an image pointer and default options
-    ImageRef ( MagickLib::Image * image_ );
-    // Construct with an image pointer and options
-    ImageRef ( MagickLib::Image * image_, const Options * options_ );
-    // Construct with null image and default options
-    ImageRef ( void );
-    // Destroy image and options
-    ~ImageRef( void );
-    
-    // Copy constructor and assignment are not supported
-    ImageRef(const ImageRef&);
-    ImageRef& operator=(const ImageRef&);
-    
-    void                 image ( MagickLib::Image * image_ );
-    MagickLib::Image *&  image ( void );
-    
-    void                 options ( Options * options_ );
-    Options *            options ( void );
-
-    void                 id ( const long id_ );
-    long                 id ( void ) const;
-    
-    MagickLib::Image *   _image;    // ImageMagick Image
-    Options *            _options;  // User-specified options
-    long                 _id;       // Registry ID (-1 if not registered)
-    int                  _refCount; // Reference count
-    MutexLock            _mutexLock;// Mutex lock
-  };
-
 } // end of namespace Magick
 
 //
 // Inlines
 //
 
-//
-// ImageRef
-//
-
-// Retrieve image from reference
-inline MagickLib::Image *& Magick::ImageRef::image ( void )
-{
-  return _image;
-}
-
-// Retrieve Options from reference
-inline Magick::Options * Magick::ImageRef::options ( void )
-{
-  return _options;
-}
-
-// Retrieve registration id from reference
-inline long Magick::ImageRef::id ( void ) const
-{
-  return _id;
-}
 
 //
 // Image
 //
+
 
 // Reduce noise in image using a noise peak elimination filter
 inline void Magick::Image::reduceNoise ( void )
@@ -1160,36 +1109,6 @@ inline void Magick::Image::lineWidth ( const double lineWidth_ )
 inline double Magick::Image::lineWidth ( void ) const
 {
   return strokeWidth( );
-}
-
-// Get MagickLib::Image*
-inline MagickLib::Image*& Magick::Image::image( void )
-{
-  return _imgRef->image();
-}
-inline const MagickLib::Image* Magick::Image::constImage( void ) const
-{
-  return _imgRef->image();
-}
-
-// Get Magick::Options*
-inline Magick::Options* Magick::Image::options( void )
-{
-  return _imgRef->options();
-}
-inline const Magick::Options* Magick::Image::constOptions( void ) const
-{
-  return _imgRef->options();
-}
-
-// Get ImageInfo *
-inline MagickLib::ImageInfo* Magick::Image::imageInfo( void )
-{
-  return _imgRef->options()->imageInfo();
-}
-inline const MagickLib::ImageInfo * Magick::Image::constImageInfo( void ) const
-{
-  return _imgRef->options()->imageInfo();
 }
 
 // Get image storage class

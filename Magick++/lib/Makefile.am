@@ -20,9 +20,9 @@ MINOR_VERSION      = @MINOR_VERSION@
 MICRO_VERSION      = @MICRO_VERSION@
 
 libMagick___la_SOURCES = \
-	Blob.cpp CoderInfo.cpp Color.cpp Drawable.cpp Exception.cpp \
-	Functions.cpp Geometry.cpp Image.cpp Montage.cpp Options.cpp \
-	Pixels.cpp STL.cpp Thread.cpp TypeMetric.cpp
+	Blob.cpp BlobRef.cpp CoderInfo.cpp Color.cpp Drawable.cpp \
+	Exception.cpp Functions.cpp Geometry.cpp Image.cpp ImageRef.cpp \
+	Montage.cpp Options.cpp Pixels.cpp STL.cpp Thread.cpp TypeMetric.cpp
 
 # Add -no-undefined once Cygwin supports throwing C++ exceptions from DLLs.
 libMagick___la_LDFLAGS = \

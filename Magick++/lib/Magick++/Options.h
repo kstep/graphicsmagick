@@ -22,12 +22,10 @@
 
 namespace Magick
 {
-
   class MagickDLLDecl Image;
 
-  class MagickDLLDecl Options
+  class Options
   {
-    friend class Image;
 
   public:
     Options( void );
@@ -215,6 +213,10 @@ namespace Magick
     // Sub-frame number to return
     void            subRange ( unsigned int subRange_ );
     unsigned int    subRange ( void ) const;
+
+    // Annotation text encoding (e.g. "UTF-16")
+    void            textEncoding ( const std::string &encoding_ );
+    std::string     textEncoding ( void ) const;
     
     void            tileName ( const std::string &tileName_ );
     std::string     tileName ( void ) const;
@@ -277,232 +279,5 @@ namespace Magick
     MagickLib::DrawInfo*         _drawInfo;
   };
 } // namespace Magick
-
-//
-// Inlines
-//
-
-// Anti-alias Postscript and TrueType fonts (default true)
-inline void Magick::Options::antiAlias( bool flag_ )
-{
-  _drawInfo->text_antialias = static_cast<unsigned int>( flag_ );
-}
-inline bool Magick::Options::antiAlias( void ) const
-{
-  return static_cast<bool>(_drawInfo->text_antialias);
-}
-
-inline void Magick::Options::adjoin ( bool flag_ )
-{
-  _imageInfo->adjoin = static_cast<unsigned int>(flag_);
-}
-inline bool Magick::Options::adjoin ( void ) const
-{
-  return static_cast<bool>(_imageInfo->adjoin);
-}
-
-inline void Magick::Options::colorFuzz ( double fuzz_ )
-{
-  _imageInfo->fuzz = fuzz_;
-}
-inline double Magick::Options::colorFuzz ( void ) const
-{
-  return _imageInfo->fuzz;
-}
-
-inline void Magick::Options::compressType ( CompressionType compressType_ )
-{
-  _imageInfo->compression = compressType_;
-}
-inline Magick::CompressionType Magick::Options::compressType ( void ) const
-{
-  return static_cast<Magick::CompressionType>(_imageInfo->compression);
-}
-
-inline void Magick::Options::strokeDashOffset ( double strokeDashOffset_ )
-{
-  _drawInfo->dash_offset = strokeDashOffset_;
-}
-inline double Magick::Options::strokeDashOffset ( void ) const
-{
-  return _drawInfo->dash_offset;
-}
-
-inline void Magick::Options::depth ( unsigned int depth_ )
-{
-  _imageInfo->depth = depth_;
-}
-inline unsigned int Magick::Options::depth ( void ) const
-{
-  return _imageInfo->depth;
-}
-
-inline void Magick::Options::fontPointsize ( double pointSize_ )
-{
-  _imageInfo->pointsize = pointSize_;
-  _drawInfo->pointsize = pointSize_;
-}
-inline double Magick::Options::fontPointsize ( void ) const
-{
-  return _imageInfo->pointsize;
-}
-
-inline void Magick::Options::interlaceType ( Magick::InterlaceType interlace_ )
-{
-  _imageInfo->interlace = interlace_;
-}
-inline Magick::InterlaceType Magick::Options::interlaceType ( void ) const
-{
-  return static_cast<Magick::InterlaceType>(_imageInfo->interlace);
-}
-
-inline void Magick::Options::monochrome ( bool monochromeFlag_ )
-{
-  _imageInfo->monochrome = monochromeFlag_;
-}
-inline bool Magick::Options::monochrome ( void ) const
-{
-  return static_cast<bool>(_imageInfo->monochrome);
-}
-
-inline void Magick::Options::quantizeColors ( unsigned int colors_ )
-{
-  _quantizeInfo->number_colors = colors_;
-}
-inline unsigned int Magick::Options::quantizeColors ( void ) const
-{
-  return _quantizeInfo->number_colors;
-}
-
-inline void Magick::Options::quantizeColorSpace ( Magick::ColorspaceType colorSpace_ )
-{
-  _quantizeInfo->colorspace = colorSpace_;
-}
-inline Magick::ColorspaceType Magick::Options::quantizeColorSpace ( void ) const
-{
-  return static_cast<Magick::ColorspaceType>(_quantizeInfo->colorspace);
-}
-
-inline void Magick::Options::quantizeDither ( bool ditherFlag_ )
-{
-  _imageInfo->dither = ditherFlag_;
-  _quantizeInfo->dither = ditherFlag_;
-}
-inline bool Magick::Options::quantizeDither ( void ) const
-{
-  return static_cast<bool>(_imageInfo->dither);
-}
-
-inline void Magick::Options::quantizeTreeDepth ( unsigned int treeDepth_ )
-{
-  _quantizeInfo->tree_depth = treeDepth_;
-}
-inline unsigned int Magick::Options::quantizeTreeDepth ( void ) const
-{
-  return _quantizeInfo->tree_depth;
-}
-
-inline void Magick::Options::quality ( unsigned int quality_ )
-{
-  _imageInfo->quality = quality_;
-}
-inline unsigned int Magick::Options::quality ( void ) const
-{
-  return _imageInfo->quality;
-}
-
-inline void Magick::Options::strokeAntiAlias( bool flag_ )
-{
-  flag_ ? _drawInfo->stroke_antialias=1 : _drawInfo->stroke_antialias=0;
-}
-inline bool Magick::Options::strokeAntiAlias( void ) const
-{
-  return (_drawInfo->stroke_antialias != 0 ? true : false);
-}
-
-// Specify the shape to be used at the end of open subpaths when they
-// are stroked. Values of LineCap are ButtCap, RoundCap, and
-// SquareCap.
-inline void Magick::Options::strokeLineCap ( Magick::LineCap lineCap_ )
-{
-  _drawInfo->linecap = lineCap_;
-}
-inline Magick::LineCap Magick::Options::strokeLineCap ( void ) const
-{
-  return _drawInfo->linecap;
-}
-
-// Specify the shape to be used at the corners of paths (or other
-// vector shapes) when they are stroked.
-inline void Magick::Options::strokeLineJoin ( Magick::LineJoin lineJoin_ )
-{
-  _drawInfo->linejoin = lineJoin_;
-}
-inline Magick::LineJoin Magick::Options::strokeLineJoin ( void ) const
-{
-  return _drawInfo->linejoin;
-}
-
-// miterLimit for drawing lines, circles, ellipses, etc.
-inline void Magick::Options::strokeMiterLimit ( unsigned int miterLimit_ )
-{
-  _drawInfo->miterlimit = miterLimit_;
-}
-inline unsigned int Magick::Options::strokeMiterLimit ( void ) const
-{
-  return _drawInfo->miterlimit;
-}
-
-// Stroke width for drawing lines, circles, ellipses, etc.
-inline void Magick::Options::strokeWidth ( double strokeWidth_ )
-{
-  _drawInfo->stroke_width = strokeWidth_;
-}
-inline double Magick::Options::strokeWidth ( void ) const
-{
-  return _drawInfo->stroke_width;
-}
-
-inline void Magick::Options::subImage ( unsigned int subImage_ )
-{
-  _imageInfo->subimage = subImage_;
-}
-inline unsigned int Magick::Options::subImage ( void ) const
-{
-  return _imageInfo->subimage;
-}
-
-inline void Magick::Options::subRange ( unsigned int subRange_ )
-{
-  _imageInfo->subrange = subRange_;
-}
-inline unsigned int Magick::Options::subRange ( void ) const
-{
-  return _imageInfo->subrange;
-}
-
-inline void Magick::Options::verbose ( bool verboseFlag_ )
-{
-  _imageInfo->verbose = verboseFlag_;
-}
-inline bool Magick::Options::verbose ( void ) const
-{
-  return static_cast<bool>(_imageInfo->verbose);
-}
-
-inline MagickLib::DrawInfo * Magick::Options::drawInfo( void )
-{
-  return _drawInfo;
-}
-
-inline MagickLib::ImageInfo * Magick::Options::imageInfo( void )
-{
-  return _imageInfo;
-}
-
-inline MagickLib::QuantizeInfo * Magick::Options::quantizeInfo( void )
-{
-  return _quantizeInfo;
-}
 
 #endif // Magick_Options_header

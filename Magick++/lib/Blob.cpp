@@ -10,8 +10,8 @@
 #include <string.h>
 
 #include "Magick++/Include.h"
-#include "Magick++/Thread.h"
 #include "Magick++/Blob.h"
+#include "Magick++/BlobRef.h"
 
 //
 // Implementation of Magick::Blob
@@ -153,31 +153,15 @@ void Magick::Blob::updateNoCopy ( void* data_, size_t length_,
   _blobRef->_allocator = allocator_;
 }
 
-//
-// Implementation of Magick::BlobRef
-//
-
-// Construct with data, making private copy of data
-Magick::BlobRef::BlobRef ( const void* data_,
-			   size_t length_ )
-  : _data(0),
-    _length(length_),
-    _allocator(Blob::NewAllocator),
-    _refCount(1),
-    _mutexLock()
+// Obtain pointer to data
+const void* Magick::Blob::data( void ) const
 {
-  if( data_ )
-    {
-      _data = new unsigned char[length_];
-      memcpy( _data, data_, length_ );
-    }
+  return _blobRef->_data;
 }
 
-// Destructor (actually destroys data)
-Magick::BlobRef::~BlobRef ( void )
+// Obtain data length
+size_t Magick::Blob::length( void ) const
 {
-  if ( _allocator == Blob::NewAllocator )
-      delete [] static_cast<unsigned char*>(_data);
-  if ( _allocator == Blob::MallocAllocator )
-    LiberateMemory(static_cast<void **>(&_data));
+  return _blobRef->_length;
 }
+

@@ -10,6 +10,7 @@
 #define MAGICK_IMPLEMENTATION
 
 #include <string>
+#include <string.h>
 #include <stdlib.h>
 #include <math.h>
 #include "Magick++/Options.h"
@@ -76,6 +77,25 @@ Magick::Options::~Options()
  *
  */
 
+// Anti-alias Postscript and TrueType fonts (default true)
+void Magick::Options::antiAlias( bool flag_ )
+{
+  _drawInfo->text_antialias = static_cast<unsigned int>( flag_ );
+}
+bool Magick::Options::antiAlias( void ) const
+{
+  return static_cast<bool>(_drawInfo->text_antialias);
+}
+
+void Magick::Options::adjoin ( bool flag_ )
+{
+  _imageInfo->adjoin = static_cast<unsigned int>(flag_);
+}
+bool Magick::Options::adjoin ( void ) const
+{
+  return static_cast<bool>(_imageInfo->adjoin);
+}
+
 void Magick::Options::backgroundColor ( const Magick::Color &color_ )
 {
   _imageInfo->background_color = color_;
@@ -120,6 +140,24 @@ Magick::Color Magick::Options::boxColor ( void ) const
   return Magick::Color( _drawInfo->undercolor );
 }
 
+void Magick::Options::compressType ( CompressionType compressType_ )
+{
+  _imageInfo->compression = compressType_;
+}
+Magick::CompressionType Magick::Options::compressType ( void ) const
+{
+  return static_cast<Magick::CompressionType>(_imageInfo->compression);
+}
+
+void Magick::Options::colorFuzz ( double fuzz_ )
+{
+  _imageInfo->fuzz = fuzz_;
+}
+double Magick::Options::colorFuzz ( void ) const
+{
+  return _imageInfo->fuzz;
+}
+
 // Enable printing of debug messages from ImageMagick
 void Magick::Options::debug ( bool flag_ )
 {
@@ -156,6 +194,15 @@ Magick::Geometry Magick::Options::density ( void ) const
     return Geometry( _imageInfo->density );
 
   return Geometry();
+}
+
+void Magick::Options::depth ( unsigned int depth_ )
+{
+  _imageInfo->depth = depth_;
+}
+unsigned int Magick::Options::depth ( void ) const
+{
+  return _imageInfo->depth;
 }
 
 // Endianness (little like Intel or big like SPARC) for image
@@ -247,6 +294,16 @@ std::string Magick::Options::font ( void ) const
   return std::string();
 }
 
+void Magick::Options::fontPointsize ( double pointSize_ )
+{
+  _imageInfo->pointsize = pointSize_;
+  _drawInfo->pointsize = pointSize_;
+}
+double Magick::Options::fontPointsize ( void ) const
+{
+  return _imageInfo->pointsize;
+}
+
 std::string Magick::Options::format ( void ) const
 {
   ExceptionInfo exception;
@@ -261,6 +318,15 @@ std::string Magick::Options::format ( void ) const
     return std::string( magick_info->description );
   
   return std::string();
+}
+
+void Magick::Options::interlaceType ( Magick::InterlaceType interlace_ )
+{
+  _imageInfo->interlace = interlace_;
+}
+Magick::InterlaceType Magick::Options::interlaceType ( void ) const
+{
+  return static_cast<Magick::InterlaceType>(_imageInfo->interlace);
 }
 
 void Magick::Options::magick ( const std::string &magick_ )
@@ -292,6 +358,15 @@ Magick::Color Magick::Options::matteColor ( void ) const
   return Magick::Color( _imageInfo->matte_color );
 }
 
+void Magick::Options::monochrome ( bool monochromeFlag_ )
+{
+  _imageInfo->monochrome = monochromeFlag_;
+}
+bool Magick::Options::monochrome ( void ) const
+{
+  return static_cast<bool>(_imageInfo->monochrome);
+}
+
 void Magick::Options::page ( const Magick::Geometry &pageSize_ )
 {
   if ( !pageSize_.isValid() )
@@ -305,6 +380,52 @@ Magick::Geometry Magick::Options::page ( void ) const
     return Geometry( _imageInfo->page );
 
     return Geometry();
+}
+
+void Magick::Options::quality ( unsigned int quality_ )
+{
+  _imageInfo->quality = quality_;
+}
+unsigned int Magick::Options::quality ( void ) const
+{
+  return _imageInfo->quality;
+}
+
+void Magick::Options::quantizeColors ( unsigned int colors_ )
+{
+  _quantizeInfo->number_colors = colors_;
+}
+unsigned int Magick::Options::quantizeColors ( void ) const
+{
+  return _quantizeInfo->number_colors;
+}
+
+void Magick::Options::quantizeColorSpace ( Magick::ColorspaceType colorSpace_ )
+{
+  _quantizeInfo->colorspace = colorSpace_;
+}
+Magick::ColorspaceType Magick::Options::quantizeColorSpace ( void ) const
+{
+  return static_cast<Magick::ColorspaceType>(_quantizeInfo->colorspace);
+}
+
+void Magick::Options::quantizeDither ( bool ditherFlag_ )
+{
+  _imageInfo->dither = ditherFlag_;
+  _quantizeInfo->dither = ditherFlag_;
+}
+bool Magick::Options::quantizeDither ( void ) const
+{
+  return static_cast<bool>(_imageInfo->dither);
+}
+
+void Magick::Options::quantizeTreeDepth ( unsigned int treeDepth_ )
+{
+  _quantizeInfo->tree_depth = treeDepth_;
+}
+unsigned int Magick::Options::quantizeTreeDepth ( void ) const
+{
+  return _quantizeInfo->tree_depth;
 }
 
 void Magick::Options::resolutionUnits ( Magick::ResolutionType resolutionUnits_ )
@@ -329,6 +450,15 @@ Magick::Geometry Magick::Options::size ( void ) const
     return Geometry( _imageInfo->size );
 
   return Geometry();
+}
+
+void Magick::Options::strokeAntiAlias( bool flag_ )
+{
+  flag_ ? _drawInfo->stroke_antialias=1 : _drawInfo->stroke_antialias=0;
+}
+bool Magick::Options::strokeAntiAlias( void ) const
+{
+  return (_drawInfo->stroke_antialias != 0 ? true : false);
 }
 
 // Color to use when drawing object outlines
@@ -364,6 +494,48 @@ const double* Magick::Options::strokeDashArray ( void ) const
   return _drawInfo->dash_pattern;
 }
 
+void Magick::Options::strokeDashOffset ( double strokeDashOffset_ )
+{
+  _drawInfo->dash_offset = strokeDashOffset_;
+}
+double Magick::Options::strokeDashOffset ( void ) const
+{
+  return _drawInfo->dash_offset;
+}
+
+// Specify the shape to be used at the end of open subpaths when they
+// are stroked. Values of LineCap are ButtCap, RoundCap, and
+// SquareCap.
+void Magick::Options::strokeLineCap ( Magick::LineCap lineCap_ )
+{
+  _drawInfo->linecap = lineCap_;
+}
+Magick::LineCap Magick::Options::strokeLineCap ( void ) const
+{
+  return _drawInfo->linecap;
+}
+
+// Specify the shape to be used at the corners of paths (or other
+// vector shapes) when they are stroked.
+void Magick::Options::strokeLineJoin ( Magick::LineJoin lineJoin_ )
+{
+  _drawInfo->linejoin = lineJoin_;
+}
+Magick::LineJoin Magick::Options::strokeLineJoin ( void ) const
+{
+  return _drawInfo->linejoin;
+}
+
+// miterLimit for drawing lines, circles, ellipses, etc.
+void Magick::Options::strokeMiterLimit ( unsigned int miterLimit_ )
+{
+  _drawInfo->miterlimit = miterLimit_;
+}
+unsigned int Magick::Options::strokeMiterLimit ( void ) const
+{
+  return _drawInfo->miterlimit;
+}
+
 // Pattern image to use for stroked outlines
 void Magick::Options::strokePattern ( const MagickLib::Image *strokePattern_ )
 {
@@ -391,6 +563,44 @@ const MagickLib::Image* Magick::Options::strokePattern ( void  ) const
   return _drawInfo->stroke_pattern;
 }
 
+// Stroke width for drawing lines, circles, ellipses, etc.
+void Magick::Options::strokeWidth ( double strokeWidth_ )
+{
+  _drawInfo->stroke_width = strokeWidth_;
+}
+double Magick::Options::strokeWidth ( void ) const
+{
+  return _drawInfo->stroke_width;
+}
+
+void Magick::Options::subImage ( unsigned int subImage_ )
+{
+  _imageInfo->subimage = subImage_;
+}
+unsigned int Magick::Options::subImage ( void ) const
+{
+  return _imageInfo->subimage;
+}
+
+void Magick::Options::subRange ( unsigned int subRange_ )
+{
+  _imageInfo->subrange = subRange_;
+}
+unsigned int Magick::Options::subRange ( void ) const
+{
+  return _imageInfo->subrange;
+}
+
+// Annotation text encoding (e.g. "UTF-16")
+void Magick::Options::textEncoding ( const std::string &encoding_ )
+{
+  // FIXME
+}
+std::string Magick::Options::textEncoding ( void ) const
+{
+  // FIXME
+  return std::string("UTF-16");
+}
 
 void Magick::Options::tileName ( const std::string &tileName_ )
 {
@@ -546,6 +756,15 @@ void Magick::Options::transformSkewY ( double skewy_ )
   _drawInfo->affine.ty=current.rx*affine.tx+current.sy*affine.ty+current.ty;
 }
 
+void Magick::Options::verbose ( bool verboseFlag_ )
+{
+  _imageInfo->verbose = verboseFlag_;
+}
+bool Magick::Options::verbose ( void ) const
+{
+  return static_cast<bool>(_imageInfo->verbose);
+}
+
 void Magick::Options::view ( const std::string &view_ )
 {
   if ( view_.length() == 0 )
@@ -574,4 +793,23 @@ std::string Magick::Options::x11Display ( void ) const
     return std::string( _imageInfo->server_name );
 
   return std::string();
+}
+
+//
+// Internal implementation methods.  Please do not use.
+//
+
+MagickLib::DrawInfo * Magick::Options::drawInfo( void )
+{
+  return _drawInfo;
+}
+
+MagickLib::ImageInfo * Magick::Options::imageInfo( void )
+{
+  return _imageInfo;
+}
+
+MagickLib::QuantizeInfo * Magick::Options::quantizeInfo( void )
+{
+  return _quantizeInfo;
 }

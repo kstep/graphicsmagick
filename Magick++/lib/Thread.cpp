@@ -7,6 +7,8 @@
 
 #define MAGICK_IMPLEMENTATION
 
+#include <string.h>
+
 #include "Magick++/Thread.h"
 #include "Magick++/Exception.h"
 

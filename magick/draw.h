@@ -167,6 +167,7 @@ extern MagickExport void
   DrawSetTextAntialias(DrawContext context, const unsigned int true_false),
   DrawSetTextDecoration(DrawContext context,
                         const DecorationType decoration),
+  DrawSetTextEncoding(DrawContext context, const char* encoding),
   DrawSetTextUnderColor(DrawContext context, const PixelPacket * color),
   DrawSetTextUnderColorString(DrawContext context, const char* under_color),
   DrawSetTranslate(DrawContext context, const double x, const double y),

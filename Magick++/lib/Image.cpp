@@ -17,6 +17,8 @@ using namespace std;
 #include "Magick++/Image.h"
 #include "Magick++/Functions.h"
 #include "Magick++/Pixels.h"
+#include "Magick++/Options.h"
+#include "Magick++/ImageRef.h"
 
 #define AbsoluteValue(x)  ((x) < 0 ? -(x) : (x))
 
@@ -1940,7 +1942,7 @@ Magick::Image Magick::Image::clipMask ( void  ) const
                     &exceptionInfo);
 
       throwException( exceptionInfo );
-      return Magick::Image( image, new Magick::Options());
+      return Magick::Image( image );
 }
 
 void Magick::Image::colorFuzz ( const double fuzz_ )
@@ -2307,7 +2309,7 @@ void Magick::Image::fontTypeMetrics( const std::string &text_,
   drawInfo->text = const_cast<char *>(text_.c_str());
   GetTypeMetrics( image(), drawInfo, &(metrics->_typeMetric) );
   drawInfo->text = 0;
-};
+}
 
 // Image format string
 std::string Magick::Image::format ( void ) const
@@ -2971,6 +2973,17 @@ unsigned int Magick::Image::subRange ( void ) const
   return constOptions()->subRange( );
 }
 
+// Annotation text encoding (e.g. "UTF-16")
+void Magick::Image::textEncoding ( const std::string &encoding_ )
+{
+  modifyImage();
+  options()->textEncoding( encoding_ );
+}
+std::string Magick::Image::textEncoding ( void ) const
+{
+  return constOptions()->textEncoding( );
+}
+
 void Magick::Image::tileName ( const std::string &tileName_ )
 {
   modifyImage();
@@ -3250,10 +3263,49 @@ void Magick::Image::writePixels ( const Magick::QuantumType quantum_,
 //
 // Construct using Image and Magick::Options
 //
-Magick::Image::Image ( MagickLib::Image* image_,
-                       const Magick::Options* options_ )
-  : _imgRef(new ImageRef( image_, options_))
+Magick::Image::Image ( MagickLib::Image* image_ )
+  : _imgRef(new ImageRef( image_, new Magick::Options() ))
 {
+}
+
+// Get Magick::Options*
+Magick::Options* Magick::Image::options( void )
+{
+  return _imgRef->options();
+}
+const Magick::Options* Magick::Image::constOptions( void ) const
+{
+  return _imgRef->options();
+}
+
+// Get MagickLib::Image*
+MagickLib::Image*& Magick::Image::image( void )
+{
+  return _imgRef->image();
+}
+const MagickLib::Image* Magick::Image::constImage( void ) const
+{
+  return _imgRef->image();
+}
+
+// Get ImageInfo *
+MagickLib::ImageInfo* Magick::Image::imageInfo( void )
+{
+  return _imgRef->options()->imageInfo();
+}
+const MagickLib::ImageInfo * Magick::Image::constImageInfo( void ) const
+{
+  return _imgRef->options()->imageInfo();
+}
+
+// Get QuantizeInfo *
+MagickLib::QuantizeInfo* Magick::Image::quantizeInfo( void )
+{
+  return _imgRef->options()->quantizeInfo();
+}
+const MagickLib::QuantizeInfo * Magick::Image::constQuantizeInfo( void ) const
+{
+  return _imgRef->options()->quantizeInfo();
 }
 
 //
@@ -3348,95 +3400,6 @@ void Magick::Image::unregisterId( void )
 {
   modifyImage();
   _imgRef->id( -1 );
-}
-
-/////////////////////////////////////////////
-//
-// ImageRef image handle implementation
-//
-/////////////////////////////////////////////
-
-// // Construct with an image and default options
-Magick::ImageRef::ImageRef ( MagickLib::Image * image_ )
-  : _image(image_),
-    _options(new Options),
-    _id(-1),
-    _refCount(1),
-    _mutexLock()
-{
-}
-
-// Construct with an image and options
-// Inserts Image* in image, but copies Options into image.
-Magick::ImageRef::ImageRef ( MagickLib::Image * image_,
-			     const Options * options_ )
-  : _image(image_),
-    _options(0),
-    _id(-1),
-    _refCount(1),
-    _mutexLock()
-{
-  _options = new Options( *options_ );
-}
-
-// Default constructor
-Magick::ImageRef::ImageRef ( void )
-  : _image(0),
-    _options(new Options),
-    _id(-1),
-    _refCount(1),
-    _mutexLock()
-{
-  // Allocate default image
-  _image = AllocateImage( _options->imageInfo() );
-
-  // Test for error and throw exception (like throwImageException())
-  throwException(_image->exception);
-}
-
-// Destructor
-Magick::ImageRef::~ImageRef( void )
-{
-  // Unregister image (if still registered)
-  if( _id > -1 )
-    {
-      DeleteMagickRegistry( _id );
-      _id=-1;
-    }
-
-  // Deallocate image
-  if ( _image )
-    {
-      DestroyImageList( _image );
-      _image = 0;
-    }
-
-  // Deallocate image options
-  delete _options;
-  _options = 0;
-}
-
-// Assign image to reference
-void Magick::ImageRef::image ( MagickLib::Image * image_ )
-{
-  if(_image)
-    DestroyImageList( _image );
-  _image = image_;
-}
-
-// Assign options to reference
-void  Magick::ImageRef::options ( Magick::Options * options_ )
-{
-  delete _options;
-  _options = options_;
-}
-
-// Assign registration id to reference
-void Magick::ImageRef::id ( const long id_ )
-{
-  if( _id > -1 )
-    DeleteMagickRegistry( _id );
-  _id = id_;
 }
 
 //

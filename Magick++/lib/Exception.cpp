@@ -46,7 +46,7 @@ Magick::Exception& Magick::Exception::operator= (const Magick::Exception& origin
 /* Destructor */
 /*virtual*/ Magick::Exception::~Exception ( ) throw ()
 {
-};
+}
 
 //
 // Warnings

@@ -5,22 +5,19 @@
 // Reference counted container class for Binary Large Objects (BLOBs)
 //
 
-#if !defined(Magick_Blob_header)
-#define Magick_Blob_header
+#if !defined(Magick_BlobRef_header)
+#define Magick_BlobRef_header
 
 #include "Magick++/Include.h"
-#include "Magick++/Thread.h"
 #include <string>
 
 namespace Magick
 {
   // Forward decl
-  class MagickDLLDecl BlobRef;
+  class BlobRef;
 
   class MagickDLLDecl Blob
   {
-
-    friend class Image;
 
   public:
 
@@ -80,45 +77,6 @@ namespace Magick
     BlobRef * _blobRef;
   };
 
-  //
-  // Reference counted access to Blob data
-  // (Private implementation class)
-  //
-  class MagickDLLDecl BlobRef {
-    friend class Blob;
-  public:
-    // There are no public methods in this class
-
-  private:
-    // Construct with data, making private copy of data
-    BlobRef ( const void* data_, size_t length_ );
-
-    // Destructor (actually destroys data)
-    ~BlobRef ( void );
-
-    // Copy constructor and assignment are not supported
-    BlobRef (const BlobRef&);
-    BlobRef& operator= (const BlobRef&);
-
-    void *          _data;     // Blob data
-    size_t          _length;   // Blob length
-    Blob::Allocator _allocator; // Memory allocation system in use
-    int             _refCount; // Reference count
-    MutexLock       _mutexLock;// Mutex lock
-  };
-
 } // namespace Magick
 
-// Obtain pointer to data
-inline const void* Magick::Blob::data( void ) const
-{
-  return _blobRef->_data;
-}
-
-// Obtain data length
-inline size_t Magick::Blob::length( void ) const
-{
-  return _blobRef->_length;
-}
-
-#endif // Magick_Blob_header
+#endif // Magick_BlobRef_header

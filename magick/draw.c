@@ -2446,6 +2446,21 @@ MagickExport void DrawSetTextDecoration(DrawContext context,
     }
 }
 
+MagickExport void DrawSetTextEncoding(DrawContext context, const char* encoding)
+{
+  assert(context != (DrawContext)NULL);
+  assert(context->signature == MagickSignature);
+  assert(encoding != (char *) NULL);
+
+  if (context->filter_off || (CurrentContext->encoding == (char *) NULL) ||
+      (LocaleCompare(CurrentContext->encoding,encoding) != 0))
+    {
+        CloneString(&CurrentContext->encoding,encoding);
+
+      MvgPrintf(context, "encoding %s\n", encoding);
+    }
+}
+
 MagickExport void DrawSetTextUnderColor(DrawContext context,
                                         const PixelPacket * under_color)
 {

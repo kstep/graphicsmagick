@@ -1153,13 +1153,23 @@ Magick::DrawableText::DrawableText ( const double x_, const double y_,
                                      const std::string &text_ )
   : _x(x_),
     _y(y_),
-    _text(text_)
+    _text(text_),
+    _encoding()
+{
+}
+Magick::DrawableText::DrawableText ( const double x_, const double y_,
+                                     const std::string &text_,  const std::string &encoding_)
+  : _x(x_),
+    _y(y_),
+    _text(text_),
+    _encoding()
 {
 }
 Magick::DrawableText::DrawableText( const Magick::DrawableText& original_ )
   : _x(original_._x),
     _y(original_._y),
-    _text(original_._text)
+    _text(original_._text),
+    _encoding(original_._encoding)
 {
 }
 Magick::DrawableText::~DrawableText ( void )
@@ -1168,6 +1178,7 @@ Magick::DrawableText::~DrawableText ( void )
 void Magick::DrawableText::operator()
   ( MagickLib::DrawContext context_ ) const
 {
+  DrawSetTextEncoding( context_, _encoding.c_str() );
   DrawAnnotation( context_, _x, _y,
                   reinterpret_cast<const unsigned char*>(_text.c_str()) );
 }
@@ -1177,6 +1188,14 @@ Magick::DrawableBase* Magick::DrawableText::copy() const
 }
 
 // Text antialias
+Magick::DrawableTextAntialias::DrawableTextAntialias ( bool flag_ )
+  : _flag(flag_)
+{
+}
+Magick::DrawableTextAntialias::DrawableTextAntialias( const Magick::DrawableTextAntialias &original_ )
+  : _flag(original_._flag)
+{
+}
 Magick::DrawableTextAntialias::~DrawableTextAntialias ( void )
 {
 }
@@ -1191,6 +1210,16 @@ Magick::DrawableBase* Magick::DrawableTextAntialias::copy() const
 }
 
 // Decoration (text decoration)
+Magick::DrawableTextDecoration::DrawableTextDecoration
+  ( Magick::DecorationType decoration_ )
+    : _decoration(decoration_)
+{
+}
+Magick::DrawableTextDecoration::DrawableTextDecoration
+  ( const Magick::DrawableTextDecoration &original_ )
+    : _decoration(original_._decoration)
+{
+}
 Magick::DrawableTextDecoration::~DrawableTextDecoration( void )
 {
 }

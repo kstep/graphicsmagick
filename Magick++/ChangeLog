@@ -1,3 +1,11 @@
+2002-08-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Image.cpp (textEncoding): New method to allow setting the
+ 	default text encoding (e.g. "UTF-8").
+
+	* lib/Drawable.cpp (DrawableText): Added an alternate constructor
+ 	to allow specifying the text encoding.
+
 2002-08-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* Overall: Now compiles as a DLL using Visual C++.

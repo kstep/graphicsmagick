@@ -224,9 +224,9 @@ INCLUDES = -I../.. -I$(top_srcdir)
 lib_LTLIBRARIES = libMagick++.la
 
 libMagick___la_SOURCES = \
-	Blob.cpp CoderInfo.cpp Color.cpp Drawable.cpp Exception.cpp \
-	Functions.cpp Geometry.cpp Image.cpp Montage.cpp Options.cpp \
-	Pixels.cpp STL.cpp Thread.cpp TypeMetric.cpp
+	Blob.cpp BlobRef.cpp CoderInfo.cpp Color.cpp Drawable.cpp \
+	Exception.cpp Functions.cpp Geometry.cpp Image.cpp ImageRef.cpp \
+	Montage.cpp Options.cpp Pixels.cpp STL.cpp Thread.cpp TypeMetric.cpp
 
 
 # Add -no-undefined once Cygwin supports throwing C++ exceptions from DLLs.
@@ -248,9 +248,10 @@ CONFIG_CLEAN_FILES =
 LTLIBRARIES = $(lib_LTLIBRARIES)
 
 libMagick___la_DEPENDENCIES = ../../magick/libMagick.la
-am_libMagick___la_OBJECTS = Blob.lo CoderInfo.lo Color.lo Drawable.lo \
-	Exception.lo Functions.lo Geometry.lo Image.lo Montage.lo \
-	Options.lo Pixels.lo STL.lo Thread.lo TypeMetric.lo
+am_libMagick___la_OBJECTS = Blob.lo BlobRef.lo CoderInfo.lo Color.lo \
+	Drawable.lo Exception.lo Functions.lo Geometry.lo Image.lo \
+	ImageRef.lo Montage.lo Options.lo Pixels.lo STL.lo Thread.lo \
+	TypeMetric.lo
 libMagick___la_OBJECTS = $(am_libMagick___la_OBJECTS)
 
 DEFS = @DEFS@
@@ -259,10 +260,11 @@ CPPFLAGS = @CPPFLAGS@
 LIBS = @LIBS@
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
-@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/Blob.Plo ./$(DEPDIR)/CoderInfo.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/Color.Plo ./$(DEPDIR)/Drawable.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/Exception.Plo ./$(DEPDIR)/Functions.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/Geometry.Plo ./$(DEPDIR)/Image.Plo \
+@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/Blob.Plo ./$(DEPDIR)/BlobRef.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/CoderInfo.Plo ./$(DEPDIR)/Color.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/Drawable.Plo ./$(DEPDIR)/Exception.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/Functions.Plo ./$(DEPDIR)/Geometry.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/Image.Plo ./$(DEPDIR)/ImageRef.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/Montage.Plo ./$(DEPDIR)/Options.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/Pixels.Plo ./$(DEPDIR)/STL.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/Thread.Plo ./$(DEPDIR)/TypeMetric.Plo
@@ -334,6 +336,7 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Blob.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BlobRef.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CoderInfo.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Color.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Drawable.Plo@am__quote@
@@ -341,6 +344,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Functions.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Geometry.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Image.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ImageRef.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Montage.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Options.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Pixels.Plo@am__quote@

@@ -9,6 +9,8 @@
 
 #include <string>
 
+#include <string.h>
+
 #include "Magick++/Montage.h"
 #include "Magick++/Functions.h"
 

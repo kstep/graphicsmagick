@@ -17,7 +17,6 @@
 #include "Magick++/Drawable.h"
 #include "Magick++/Exception.h"
 #include "Magick++/Montage.h"
-#include "Magick++/Functions.h"
 
 namespace Magick
 {
@@ -1675,8 +1674,7 @@ namespace Magick
   // The options copied into the object.
   template <class Container>
   void insertImages( Container *sequence_,
-		     MagickLib::Image* images_,
-		     Options &options_ ) {
+		     MagickLib::Image* images_ ) {
     MagickLib::Image *image = images_;
     if ( image )
       {
@@ -1688,7 +1686,7 @@ namespace Magick
 	    if (next_image != 0)
 	      next_image->previous=0;
 	  
-	    sequence_->push_back( Magick::Image( image, &options_ ) );
+	    sequence_->push_back( Magick::Image( image ) );
 	  
 	    image=next_image;
 	  } while( image );
@@ -1841,10 +1839,9 @@ namespace Magick
 
     // Ensure container is empty
     deconstructedImages_->clear();
-    Magick::Options options;
 
     // Move images to container
-    insertImages( deconstructedImages_, images, options );
+    insertImages( deconstructedImages_, images );
 
     // Report any error
     throwException( exceptionInfo );
@@ -1965,8 +1962,7 @@ namespace Magick
 							 &exceptionInfo );
     if ( images != 0 )
       {
-	Magick::Options options;
-	insertImages( montageImages_, images, options );
+	insertImages( montageImages_, images );
       }
 
     // Clean up any allocated data in montageInfo
@@ -2007,10 +2003,9 @@ namespace Magick
 
     // Ensure container is empty
     morphedImages_->clear();
-    Magick::Options options;
 
     // Move images to container
-    insertImages( morphedImages_, images, options );
+    insertImages( morphedImages_, images );
 
     // Report any error
     throwException( exceptionInfo );
@@ -2042,7 +2037,7 @@ namespace Magick
 
     linkImages( first_, last_ );
 
-    MagickLib::QuantizeImages( first_->options()->quantizeInfo(),
+    MagickLib::QuantizeImages( first_->quantizeInfo(),
 			       first_->image() );
     MagickLib::GetImageException( first_->image(), &exceptionInfo );
     if ( exceptionInfo.severity > MagickLib::UndefinedException )
@@ -2072,24 +2067,26 @@ namespace Magick
   template <class Container>
   void readImages( Container *sequence_,
 		   const std::string &imageSpec_ ) {
-    Magick::Options options;
-    options.fileName( imageSpec_ );
+    MagickLib::ImageInfo *imageInfo = MagickLib::CloneImageInfo(0);
+    strcpy(imageInfo->filename,imageSpec_.c_str());
     MagickLib::ExceptionInfo exceptionInfo;
     MagickLib::GetExceptionInfo( &exceptionInfo );
-    MagickLib::Image* images =  MagickLib::ReadImage( options.imageInfo(), &exceptionInfo );
-    insertImages( sequence_, images, options );
+    MagickLib::Image* images =  MagickLib::ReadImage( imageInfo, &exceptionInfo );
+    MagickLib::DestroyImageInfo(imageInfo);
+    insertImages( sequence_, images);
     throwException( exceptionInfo );
   }
   template <class Container>
   void readImages( Container *sequence_,
 		   const Blob &blob_ ) {
-    Magick::Options options;
+    MagickLib::ImageInfo *imageInfo = MagickLib::CloneImageInfo(0);
     MagickLib::ExceptionInfo exceptionInfo;
     MagickLib::GetExceptionInfo( &exceptionInfo );
-    MagickLib::Image *images = MagickLib::BlobToImage( options.imageInfo(),
+    MagickLib::Image *images = MagickLib::BlobToImage( imageInfo,
 						       blob_.data(),
 						       blob_.length(), &exceptionInfo );
-    insertImages( sequence_, images, options );
+    MagickLib::DestroyImageInfo(imageInfo);
+    insertImages( sequence_, images );
     throwException( exceptionInfo );
   }
 

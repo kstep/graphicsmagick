@@ -511,6 +511,7 @@ namespace Magick
   using MagickLib::DrawSetStrokePatternURL;
   using MagickLib::DrawSetStrokeWidth;
   using MagickLib::DrawSetTextAntialias;
+  using MagickLib::DrawSetTextEncoding;
   using MagickLib::DrawSetTextDecoration;
   using MagickLib::DrawSetTextUnderColor;
   using MagickLib::DrawSetTextUnderColorString;

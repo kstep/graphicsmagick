@@ -28,7 +28,6 @@ namespace Magick
 
   class MagickDLLDecl Geometry
   {
-    friend class Image;
   public:
     
     Geometry ( unsigned int width_,

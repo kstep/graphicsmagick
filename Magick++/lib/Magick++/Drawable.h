@@ -1780,6 +1780,8 @@ class MagickDLLDecl DrawableText : public DrawableBase
 public:
   DrawableText ( const double x_, const double y_,
                  const std::string &text_ );
+  DrawableText ( const double x_, const double y_,
+                 const std::string &text_, const std::string &encoding_);
 
   DrawableText ( const DrawableText& original_ );
 
@@ -1790,6 +1792,11 @@ public:
 
   // Return polymorphic copy of object
   /*virtual*/ DrawableBase* copy() const;
+
+  void encoding(const std::string &encoding_)
+    {
+      _encoding = encoding_;
+    }
 
   void x( double x_ )
     {
@@ -1822,14 +1829,16 @@ private:
   double      _x;
   double      _y;
   std::string _text;
+  std::string _encoding;
 };
 
 // Text antialias
 class MagickDLLDecl DrawableTextAntialias : public DrawableBase
 {
 public:
-  DrawableTextAntialias ( bool flag_ )
-    : _flag(flag_) { }
+  DrawableTextAntialias ( bool flag_ );
+
+  DrawableTextAntialias( const DrawableTextAntialias &original_ );
 
   /*virtual*/ ~DrawableTextAntialias ( void );
 
@@ -1856,9 +1865,9 @@ private:
 class MagickDLLDecl DrawableTextDecoration : public DrawableBase
 {
 public:
-  DrawableTextDecoration ( DecorationType decoration_ )
-    : _decoration(decoration_)
-    { }
+  DrawableTextDecoration ( DecorationType decoration_ );
+
+  DrawableTextDecoration ( const DrawableTextDecoration& original_ );
 
   /*virtual*/ ~DrawableTextDecoration( void );
 
