@@ -756,7 +756,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
 
     if ((bmp_info.compression != BI_RGB) &&
-        (bmp_info.file_size != GetBlobSize(image)))
+        ((magick_off_t) bmp_info.file_size != GetBlobSize(image)))
       ThrowReaderException(CorruptImageError,LengthAndFilesizeDoNotMatch,
         image);
     if (bmp_info.width <= 0)

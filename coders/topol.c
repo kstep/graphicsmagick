@@ -430,7 +430,7 @@ static Image *ReadTOPOLImage(const ImageInfo * image_info, ExceptionInfo * excep
         }
     }
 
-  for (i = 0; i < sizeof(Header.Name); i++)
+  for (i = 0; i < (long) sizeof(Header.Name); i++)
     {
       if (Header.Name[i] < ' ')
         TOPOL_KO:ThrowReaderException(CorruptImageError,ImproperImageHeader,
@@ -521,7 +521,8 @@ static Image *ReadTOPOLImage(const ImageInfo * image_info, ExceptionInfo * excep
   if (status == False) goto NoMEZ; 
 
   ldblk=(long) GetBlobSize(palette);
-  if(ldblk>sizeof(MEZ)) ldblk=sizeof(MEZ);
+  if ( ldblk > (long) sizeof(MEZ))
+    ldblk=sizeof(MEZ);
   (void) ReadBlob(palette, ldblk, MEZ); 
             
  NoMEZ:		/*Clean up palette and clone_info*/

@@ -525,7 +525,7 @@ static int UnpackWPGRaster(Image *image,int bpp)
 }
 static int UnpackWPG2Raster(Image *image,int bpp)
 {
-  char
+  unsigned int
     SampleSize=1;
 
   unsigned char
@@ -534,9 +534,11 @@ static int UnpackWPG2Raster(Image *image,int bpp)
     RunCount,
     SampleBuffer[8];
 
-  int
+  unsigned long
     x,
-    y,
+    y;
+
+  unsigned int
     i;
 
   long
@@ -550,7 +552,7 @@ static int UnpackWPG2Raster(Image *image,int bpp)
   if(BImgBuff==NULL)
     return(-2);
 
-  while(y<(long) image->rows)
+  while( y< image->rows)
     {
       bbuf=ReadBlobByte(image);
 
@@ -558,23 +560,25 @@ static int UnpackWPG2Raster(Image *image,int bpp)
         {
         case 0x7D:
           SampleSize=ReadBlobByte(image);  /* DSZ */
-          if(SampleSize>8) return(-2);
-          if(SampleSize<1) return(-2);
+          if(SampleSize>8)
+            return(-2);
+          if(SampleSize<1)
+            return(-2);
           break;
         case 0x7E:
           (void) fprintf(stderr,"\nUnsupported WPG token XOR, please report!");  
           break;
         case 0x7F:
           RunCount=ReadBlobByte(image);   /* BLK */
-          for(i=0;i<(int) SampleSize*((int)RunCount+1);i++)
+          for(i=0; i < SampleSize*(RunCount+1); i++)
             {
               InsertRByte(0);
             }
           break;
         case 0xFD:
 	  RunCount=ReadBlobByte(image);   /* EXT */
-	  for(i=0;i<=(int)RunCount;i++)
-            for(bbuf=0;bbuf<SampleSize;bbuf++)
+	  for(i=0; i<= (int) RunCount;i++)
+            for(bbuf=0; bbuf < SampleSize; bbuf++)
               InsertRByte(SampleBuffer[bbuf]);          
           break;
         case 0xFE:
@@ -582,7 +586,7 @@ static int UnpackWPG2Raster(Image *image,int bpp)
           if(x!=0)
             {
               (void) fprintf(stderr,
-                             "\nUnsupported WPG2 unaligned token RST x=%d, please report!\n"
+                             "\nUnsupported WPG2 unaligned token RST x=%lu, please report!\n"
                              ,x);
               return(-3);
             }
@@ -590,7 +594,7 @@ static int UnpackWPG2Raster(Image *image,int bpp)
             /* duplicate the previous row RunCount x */
             for(i=0;i<=RunCount;i++)
               {      
-                InsertRow(BImgBuff,(long) (image->rows>y?image->rows-y-1:0),
+                InsertRow(BImgBuff,(long) (image->rows > y ? image->rows-y-1 : 0),
                           image,bpp);
                 y++;
               }    
@@ -598,7 +602,7 @@ static int UnpackWPG2Raster(Image *image,int bpp)
           break;
         case 0xFF:
           RunCount=ReadBlobByte(image);	 /* WHT */
-          for(i=0;i<(int) SampleSize*((int)RunCount+1);i++)
+          for(i=0; i < SampleSize*(RunCount+1); i++)
             {
               InsertRByte(0xFF);
             }
@@ -608,14 +612,14 @@ static int UnpackWPG2Raster(Image *image,int bpp)
 
           if(bbuf & 0x80)		 /* REP */
             {  
-              for(i=0;i<(int) SampleSize;i++)
+              for(i=0; i < SampleSize; i++)
                 SampleBuffer[i]=ReadBlobByte(image);
               for(i=0;i<=(int)RunCount;i++)
                 for(bbuf=0;bbuf<SampleSize;bbuf++)
                   InsertRByte(SampleBuffer[bbuf]);
             }
           else {			/* NRP */
-            for(i=0;i<(int) SampleSize*((int)RunCount+1);i++)
+            for(i=0; i< SampleSize*(RunCount+1);i++)
               {
                 bbuf=ReadBlobByte(image);
                 InsertRByte(bbuf);
@@ -987,7 +991,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
                                            image)
                     }
                   /* printf("Load default colormap \n"); */
-                  for(i=0;i<image->colors && i<256;i++)
+                  for (i=0; (i < (int) image->colors) && (i < 256); i++)
                     {               
                       image->colormap[i].red=ScaleCharToQuantum(WPG1_Palette[i].Red);
                       image->colormap[i].green=ScaleCharToQuantum(WPG1_Palette[i].Green);
@@ -996,13 +1000,13 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
                 }
               else
                 {
-                  if(bpp < 24)
-                    if( (image->colors < (1UL<<bpp)) && (bpp != 24) )
+                  if (bpp < 24)
+                    if ( (image->colors < (1UL<<bpp)) && (bpp != 24) )
                       MagickReallocMemory(image->colormap,
                                           (1<<bpp)*sizeof(PixelPacket));
                 }
           
-              if(bpp == 1)
+              if (bpp == 1)
                 {
                   if(image->colormap[0].red==0 &&
                      image->colormap[0].green==0 &&
@@ -1142,9 +1146,9 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
                     if (BImgBuff == (unsigned char *) NULL)
                       goto NoMemory;
 
-                    for(i=0;i<(long) image->rows;i++)
+                    for(i=0; i< (long) image->rows; i++)
                       {
-                        (void) ReadBlob(image,ldblk,(char *)BImgBuff);
+                        (void) ReadBlob(image,ldblk,(char *) BImgBuff);
                         InsertRow(BImgBuff,i,image,bpp);
                       }
 
@@ -1172,7 +1176,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
 
             case 0x12:  /* Postscript WPG2*/
 	      i=ReadBlobLSBShort(image);
-              if(Rec2.RecordLength>i)
+              if(Rec2.RecordLength > (unsigned int) i)
                 image=ExtractPostscript(image,image_info,
                   TellBlob(image)+i,		/*skip PS header in the wpg2*/
                   (long) (Rec2.RecordLength-i-2),exception);

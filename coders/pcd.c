@@ -292,7 +292,9 @@ static unsigned int DecodeImage(Image *image,unsigned char *luma,
       quantum=(long) (*q)+r->key;
     else
       quantum=(long) (*q)+r->key-256;
-    *q=(unsigned char) ((quantum < 0) ? 0 : (quantum > 255) ? 255U : quantum);
+    *q=(unsigned char) ((quantum < 0L) ? 0U :
+                        (quantum > 255L) ? 255U :
+                        (unsigned char) quantum);
     q++;
     PCDGetBits(r->length);
     count--;

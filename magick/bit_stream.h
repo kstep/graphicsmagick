@@ -32,7 +32,7 @@ extern "C" {
     const unsigned char
       *bytes;
 
-    int
+    unsigned int
       bits_remaining;
   } BitStreamReadHandle;
 
@@ -94,7 +94,7 @@ extern "C" {
     unsigned char
       *bytes;
 
-    int
+    unsigned int
       bits_remaining;
   } BitStreamWriteHandle;
 
@@ -131,7 +131,7 @@ extern "C" {
 
         remaining_quantum_bits -= octet_bits;
 
-        if(bit_stream->bits_remaining == 8)
+        if (bit_stream->bits_remaining == 8)
           *bit_stream->bytes = 0;
 
         bit_stream->bits_remaining -= octet_bits;

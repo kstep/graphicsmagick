@@ -477,16 +477,16 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
   Image
     *image;
 
-  long
+  unsigned int
     y;
 
-  register long
+  register unsigned int
     x;
 
   register PixelPacket
     *q;
 
-  register long
+  register unsigned int
     i;
 
   TIFF
@@ -825,7 +825,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             Quantum
               quantum;
 
-            for (i=0; i < (long) image->colors; i++)
+            for (i=0; i < image->colors; i++)
             {
               quantum = (Quantum) (i*(MaxRGB/Max(image->colors-1,1)));
               image->colormap[i].red=quantum;
@@ -841,7 +841,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             Quantum
               quantum;
 
-            for (i=0; i < (long) image->colors; i++)
+            for (i=0; i < image->colors; i++)
             {
               quantum = (Quantum) (MaxRGB - (i*(MaxRGB/Max(image->colors-1,1))));
               image->colormap[i].red=quantum;
@@ -864,14 +864,14 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             (void) TIFFGetField(tiff,TIFFTAG_COLORMAP,&red_colormap,
               &green_colormap,&blue_colormap);
             range=256L;  /* might be old style 8-bit colormap */
-            for (i=0; i < (long) image->colors; i++)
+            for (i=0; i < image->colors; i++)
               if ((red_colormap[i] >= 256) || (green_colormap[i] >= 256) ||
                   (blue_colormap[i] >= 256))
                 {
                   range=65535L;
                   break;
                 }
-            for (i=0; i < (long) image->colors; i++)
+            for (i=0; i < image->colors; i++)
             {
               image->colormap[i].red=(Quantum)
                 (((double) MaxRGB*red_colormap[i])/range+0.5);
@@ -886,7 +886,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         /*
           Convert image to PseudoClass pixel packets.
         */
-        for (y=0; y < (long) image->rows; y++)
+        for (y=0; y < image->rows; y++)
         {
           register IndexPacket
             *indexes;
@@ -929,7 +929,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
               */
               lsb_first=1;
               if (*(char *) &lsb_first)
-                MSBOrderShort(scanline, Max(TIFFScanlineSize(tiff),
+                MSBOrderShort(scanline, Max((unsigned int) TIFFScanlineSize(tiff),
                   packet_size*width));
             }
 
@@ -991,7 +991,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
               image)
           }
 
-        for (y=0; y < (long) image->rows; y++)
+        for (y=0; y < image->rows; y++)
         {
           register IndexPacket
             *indexes;
@@ -1155,7 +1155,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
               image)
           }
-        for (y=0; y < (long) image->rows; y+=tile_rows)
+        for (y=0; y < image->rows; y+=tile_rows)
           {
             /*
               Retrieve a tile height's worth of rows
@@ -1270,10 +1270,10 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         /*
           Convert image to DirectClass pixel packets.
         */
-        for (y=0; y < (long) image->rows; y+=rows_per_strip)
+        for (y=0; y < image->rows; y+=rows_per_strip)
         {
           i=(long) rows_per_strip;
-          if ((y+rows_per_strip) > (long) image->rows)
+          if ((y+rows_per_strip) > image->rows)
             i=(long) (image->rows-y);
           q=SetImagePixels(image,0,y,image->columns,i);
           if (q == (PixelPacket *) NULL)
@@ -1282,7 +1282,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           p=strip_pixels+image->columns*i-1;
           if (!TIFFReadRGBAStrip(tiff,y,strip_pixels))
             break;
-          for (x=0; x < (long) image->columns; x++)
+          for (x=0; x < image->columns; x++)
           {
             q->red=ScaleCharToQuantum(TIFFGetR(*p));
             q->green=ScaleCharToQuantum(TIFFGetG(*p));
@@ -1339,7 +1339,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           Convert image to DirectClass pixel packets.
         */
         p=pixels+number_pixels+image->columns*sizeof(uint32)-1;
-        for (y=0; y < (long) image->rows; y++)
+        for (y=0; y < image->rows; y++)
         {
           q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
@@ -1775,7 +1775,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
   const ImageAttribute
     *attribute;
 
-  long
+  unsigned int
     y;
 
   register const PixelPacket
@@ -1784,7 +1784,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
   register IndexPacket
     *indexes;
 
-  register long
+  register unsigned int
     i,
     x;
 
@@ -2293,7 +2293,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
           case NoInterlace:
           default:
           {
-            for (y=0; y < (long) image->rows; y++)
+            for (y=0; y < image->rows; y++)
             {
               p=AcquireImagePixels(image,0,y,image->columns,1,
                 &image->exception);
@@ -2322,7 +2322,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
             /*
               Plane interlacing:  RRRRRR...GGGGGG...BBBBBB...
             */
-            for (y=0; y < (long) image->rows; y++)
+            for (y=0; y < image->rows; y++)
             {
               p=AcquireImagePixels(image,0,y,image->columns,1,
                 &image->exception);
@@ -2334,7 +2334,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
             }
             if (!MagickMonitor(SaveImageText,100,400,&image->exception))
               break;
-            for (y=0; y < (long) image->rows; y++)
+            for (y=0; y < image->rows; y++)
             {
               p=AcquireImagePixels(image,0,y,image->columns,1,
                 &image->exception);
@@ -2346,7 +2346,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
             }
             if (!MagickMonitor(SaveImageText,200,400,&image->exception))
               break;
-            for (y=0; y < (long) image->rows; y++)
+            for (y=0; y < image->rows; y++)
             {
               p=AcquireImagePixels(image,0,y,image->columns,1,
                 &image->exception);
@@ -2359,7 +2359,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
             if (!MagickMonitor(SaveImageText,300,400,&image->exception))
               break;
             if (image->matte)
-              for (y=0; y < (long) image->rows; y++)
+              for (y=0; y < image->rows; y++)
               {
                 p=AcquireImagePixels(image,0,y,image->columns,1,
                   &image->exception);
@@ -2382,7 +2382,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
           CMYK TIFF image.
         */
         (void) TransformColorspace(image,CMYKColorspace);
-        for (y=0; y < (long) image->rows; y++)
+        for (y=0; y < image->rows; y++)
         {
           p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
           if (p == (const PixelPacket *) NULL)
@@ -2424,7 +2424,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
         (void) memset(red,0,65536L*sizeof(unsigned short));
         (void) memset(green,0,65536L*sizeof(unsigned short));
         (void) memset(blue,0,65536L*sizeof(unsigned short));
-        for (i=0; i < (long) image->colors; i++)
+        for (i=0; i < image->colors; i++)
         {
           red[i]=ScaleQuantumToShort(image->colormap[i].red);
           green[i]=ScaleQuantumToShort(image->colormap[i].green);
@@ -2441,7 +2441,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
         /*
           Convert PseudoClass packets to contiguous scanlines.
         */
-        for (y=0; y < (long) image->rows; y++)
+        for (y=0; y < image->rows; y++)
           {
             BitStreamWriteHandle
               bit_stream;

@@ -205,7 +205,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
             c=ReadBlobByte(image);
             if ((c == EOF) || (c == '}'))
               break;
-            if ((p-comment+1) >= length)
+            if ((unsigned long) (p-comment+1) >= length)
               {
                 *p='\0';
                 length<<=1;

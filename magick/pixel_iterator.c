@@ -80,7 +80,7 @@ PixelIterateMonoRead(PixelIteratorMonoReadCallback call_back,
   register long
     row;
 
-  for (row=y; row < y+rows; row++)
+  for (row=y; row < (long) y+rows; row++)
     {
       register const PixelPacket
         *pixels;
@@ -95,7 +95,7 @@ PixelIterateMonoRead(PixelIteratorMonoReadCallback call_back,
           break;
         }
 
-      for (column=x; column < x+columns; column++)
+      for (column=x; column < (long) x+columns; column++)
         {
           status=(call_back)(user_data,column,row,image,pixels,exception);
           if (status == MagickFail)
@@ -173,7 +173,7 @@ PixelIterateMonoModify(PixelIteratorMonoModifyCallback call_back,
   register long
     row;
 
-  for (row=y; row < y+rows; row++)
+  for (row=y; row < (long) y+rows; row++)
     {
       register PixelPacket
         *pixels;
@@ -189,7 +189,7 @@ PixelIterateMonoModify(PixelIteratorMonoModifyCallback call_back,
           break;
         }
 
-      for (column=x; column < x+columns; column++)
+      for (column=x; column < (long) x+columns; column++)
         {
           status=(call_back)(user_data,column,row,image,pixels,exception);
           if (status == MagickFail)
@@ -290,7 +290,7 @@ PixelIterateDualRead(PixelIteratorDualReadCallback call_back,
     second_row;
 
   for (first_row=first_y, second_row=second_y;
-       first_row < first_y+rows;
+       first_row < (long) first_y+rows;
        first_row++, second_row++)
     {
       register const PixelPacket
@@ -315,7 +315,7 @@ PixelIterateDualRead(PixelIteratorDualReadCallback call_back,
         }
 
       for (first_column=first_x, second_column=second_x;
-           first_column < first_x+columns;
+           first_column < (long) first_x+columns;
            first_column++, second_column++)
         {
           status=(call_back)(user_data,
@@ -412,7 +412,7 @@ PixelIterateDualModify(PixelIteratorDualModifyCallback call_back,
     update_row;
 
   for (source_row=source_y, update_row=update_y;
-       source_row < source_y+rows;
+       source_row < (long) source_y+rows;
        source_row++, update_row++)
     {
       register const PixelPacket
@@ -441,7 +441,7 @@ PixelIterateDualModify(PixelIteratorDualModifyCallback call_back,
         }
 
       for (source_column=source_x, update_column=update_x;
-           source_column < source_x+columns;
+           source_column < (long) source_x+columns;
            source_column++, update_column++)
         {
           status=(call_back)(user_data,

@@ -583,13 +583,13 @@ static unsigned int WriteEPTImage(const ImageInfo *image_info,Image *image)
       /* EPS section */
       if (logging)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-          "Writing EPS section at offset %lld",TellBlob(image));
+          "Writing EPS section at offset %ld",(long) TellBlob(image));
       for (c=fgetc(ps_file); c != EOF; c=fgetc(ps_file))
         (void) WriteBlobByte(image,c);
       /* TIFF section */
       if (logging)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-          "Writing TIFF section at offset %lld",TellBlob(image));
+          "Writing TIFF section at offset %ld",(long) TellBlob(image));
       for (c=fgetc(tiff_file); c != EOF; c=fgetc(tiff_file))
         (void) WriteBlobByte(image,c);
       CloseBlob(image);

@@ -397,8 +397,8 @@ static Image *ReadJP2Image(const ImageInfo *image_info,
     number_components);
   for (i=0; i < (long) number_components; i++)
     {
-      if((jas_image_cmptwidth(jp2_image,components[i]) != image->columns) ||
-         (jas_image_cmptheight(jp2_image,components[i]) != image->rows) ||
+      if(((unsigned long) jas_image_cmptwidth(jp2_image,components[i]) != image->columns) ||
+         ((unsigned long) jas_image_cmptheight(jp2_image,components[i]) != image->rows) ||
          (jas_image_cmpttlx(jp2_image, components[i]) != 0) ||
          (jas_image_cmpttly(jp2_image, components[i]) != 0) ||
          (jas_image_cmpthstep(jp2_image, components[i]) != 1) ||
@@ -424,7 +424,7 @@ static Image *ReadJP2Image(const ImageInfo *image_info,
   for (i=0; i < (long) number_components; i++)
   {
     maximum_component_depth=
-      Max(jas_image_cmptprec(jp2_image,components[i]),maximum_component_depth);
+      Max((unsigned int) jas_image_cmptprec(jp2_image,components[i]),maximum_component_depth);
 
     pixels[i]=jas_matrix_create(1,(unsigned int) image->columns);
     if (pixels[i] == (jas_matrix_t *) NULL)

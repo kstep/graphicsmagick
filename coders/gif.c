@@ -939,7 +939,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->depth=8;
     flag=ReadBlobByte(image);
     image->interlace=BitSet(flag,0x40) ? PlaneInterlace : NoInterlace;
-    image->colors=!BitSet(flag,0x80) ? global_colors : 1 << ((flag & 0x07)+1);
+    image->colors=!BitSet(flag,0x80) ? global_colors : 0x01U << ((flag & 0x07)+1);
     if (opacity >= (long) image->colors)
       image->colors=opacity+1;
     image->page.width=page.width;

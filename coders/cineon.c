@@ -451,7 +451,7 @@ static unsigned int WriteCINEONImage(const ImageInfo *image_info,Image *image)
   (void) WriteBlobMSBLong(image,0x0);
   /* Filename */
   (void) WriteBlobString(image,image->filename);
-  for ( i =0 ; i < ( 100 - strlen(image->filename) ); i++ )
+  for ( i =0 ; i < ( 100 - (long) strlen(image->filename) ); i++ )
     (void) WriteBlobByte(image,0);
   /* Creation Date. */
   (void) WriteBlobString(image,"yyyy:mm:dd  ");
@@ -560,7 +560,7 @@ static unsigned int WriteCINEONImage(const ImageInfo *image_info,Image *image)
   (void) WriteBlobMSBLong(image,0x0);
   /* Filename */
   (void) WriteBlobString(image,image->filename);
-  for ( i =0 ; i < ( 100 - strlen(image->filename) ); i++ ) 
+  for ( i =0 ; i < ( 100 - (long) strlen(image->filename) ); i++ ) 
     (void) WriteBlobByte(image,0);
   /* date. who cares ? */
   for ( i =0 ; i < 12 ; i++ ) 
