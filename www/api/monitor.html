@@ -45,8 +45,11 @@
 <FONT SIZE=-1>DESCRIPTIONS</FONT></A></H1>
 <P>
 <H2><A NAME="magickmonitor">MagickMonitor</A></H2>
-<blockquote>MagickMonitor() calls the monitor handler method with a text string that describes the task and a measure of completion. </blockquote><P>The format of the MagickMonitor method is:</P>
-<blockquote>void MagickMonitor ( const char *text, const off_t quantum, const size_t span ); </blockquote><P>
+<blockquote>MagickMonitor() calls the monitor handler method with a text string that describes the task and a measure of completion.
+The method returns False on success otherwise
+True if an error is encountered, e.g. if there was a user interrupt.
+</blockquote><P>The format of the MagickMonitor method is:</P>
+<blockquote>MagickExport unsigned int MagickMonitor ( const char *text, const off_t quantum, const size_t span, ExceptionInfo *exception); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <dd><p></p><dt><STRONG><A NAME="item_o_quantum%3A">quantum:</A></STRONG><BR>
@@ -56,6 +59,10 @@ The position relative to the span parameter which represents how much progress h
 <dd><p></p><dt><STRONG><A NAME="item_o_span%3A">span:</A></STRONG><BR>
 <DD>
 The span relative to completing a task.
+<P></P>
+<dd><p></p><dt><STRONG><A NAME="item_o_exception%3A">exception:</A></STRONG><BR>
+<DD>
+Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="setmonitorhandler">SetMonitorHandler</A></H2>
