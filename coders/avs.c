@@ -160,7 +160,7 @@ static Image *ReadAVSImage(const ImageInfo *image_info,ExceptionInfo *exception)
         break;
       for (x=0; x < (int) image->columns; x++)
       {
-        q->opacity=MaxRGB-UpScale(*p++);
+        q->opacity=(Quantum) (MaxRGB-UpScale(*p++));
         q->red=UpScale(*p++);
         q->green=UpScale(*p++);
         q->blue=UpScale(*p++);

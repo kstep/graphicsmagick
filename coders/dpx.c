@@ -378,22 +378,22 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
   (void) WriteBlobMSBLong(image,0x00000180);
   (void) WriteBlobMSBLong(image,0x00001800);
   for (i=0; i < 124; i++)
-    WriteBlobByte(image,0x00);
+    (void) WriteBlobByte(image,0x00);
   (void) WriteBlobMSBLong(image,0x496D6167);
   (void) WriteBlobMSBLong(image,0x654D6167);
   (void) WriteBlobMSBLong(image,0x69636B20);
   for (i=0; i < 600; i++)
-    WriteBlobByte(image,0x00);
+    (void) WriteBlobByte(image,0x00);
   (void) WriteBlobMSBLong(image,image->columns);
   (void) WriteBlobMSBLong(image,image->rows);
   for (i=0; i < 20; i++)
-    WriteBlobByte(image,0x00);
-  WriteBlobByte(image,RGBColorType);
-  WriteBlobByte(image,0x00);
-  WriteBlobByte(image,0x00);
-  WriteBlobByte(image,10);  /* bit depth */
+    (void) WriteBlobByte(image,0x00);
+  (void) WriteBlobByte(image,RGBColorType);
+  (void) WriteBlobByte(image,0x00);
+  (void) WriteBlobByte(image,0x00);
+  (void) WriteBlobByte(image,10);  /* bit depth */
   for (i=0; i < (0x2000-804); i++)
-    WriteBlobByte(image,0x00);
+    (void) WriteBlobByte(image,0x00);
   /*
     Convert pixel packets to DPX raster image .
   */

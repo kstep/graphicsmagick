@@ -319,7 +319,7 @@ CUT_KO:  ThrowReaderException(CorruptImageWarning,"Not a CUT image file",image);
 	{
 	i=1;
 	if(RunCount<0x80) i=RunCountMasked;
-	SeekBlob(image,TellBlob(image)+i,SEEK_SET);
+	(void) SeekBlob(image,TellBlob(image)+i,SEEK_SET);
 	if(EOFBlob(image)) goto CUT_KO;	/*wrong data*/
 	EncodedByte-=i+1;
 	ldblk+=RunCountMasked;
@@ -364,7 +364,7 @@ CUT_KO:  ThrowReaderException(CorruptImageWarning,"Not a CUT image file",image);
  strcpy(clone_info->filename+i,".PAL");
  if((clone_info->file=fopen(clone_info->filename,"rb"))==NULL)
      {
-     strcpy(clone_info->filename+i,".pal");
+     (void) strcpy(clone_info->filename+i,".pal");
      if((clone_info->file=fopen(clone_info->filename,"rb"))==NULL)
          {
 	 clone_info->filename[i]=0;
@@ -418,7 +418,7 @@ ErasePalette:
 	   if((j % 512)>512-/*sizeof(pal)*/6)
 	       {
 	       j=((j / 512)+1)*512;
-	       SeekBlob(palette,j,SEEK_SET);
+	       (void) SeekBlob(palette,j,SEEK_SET);
 	       }
 	   image->colormap[i].red=ReadBlobLSBShort(palette);
 	   if(MaxRGB!=PalHeader.MaxRed) 
@@ -468,7 +468,7 @@ NoMemory:  ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
  BImgBuff=(unsigned char *) malloc(ldblk);  /*Ldblk was set in the check phase*/
  if(BImgBuff==NULL) goto NoMemory;
 
- SeekBlob(image,6 /*sizeof(Header)*/,SEEK_SET);
+ (void) SeekBlob(image,6 /*sizeof(Header)*/,SEEK_SET);
  for(i=0;i<(int) Header.Height;i++)
       {
       EncodedByte=ReadBlobLSBShort(image);

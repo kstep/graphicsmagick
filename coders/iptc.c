@@ -327,7 +327,7 @@ static long GetIPTCStream(unsigned char **info,unsigned long length)
   tag_length=0;
   info_length=0;
   marker=False;
-  while (length > 0)
+  while (length != 0)
   {
     c=(*p++);
     length--;

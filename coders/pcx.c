@@ -750,13 +750,13 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
       /*
         Write the DCX page table.
       */
-      WriteBlobLSBLong(image,0x3ADE68B1L);
+      (void) WriteBlobLSBLong(image,0x3ADE68B1L);
       page_table=(unsigned long *) AcquireMemory(1024*sizeof(unsigned long));
       if (page_table == (unsigned long *) NULL)
         ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
           image);
       for (scene=0; scene < 1024; scene++)
-        WriteBlobLSBLong(image,0x00000000L);
+        (void) WriteBlobLSBLong(image,0x00000000L);
     }
   scene=0;
   do
@@ -1006,9 +1006,9 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
       */
       page_table[scene+1]=0;
       (void) SeekBlob(image,0L,SEEK_SET);
-      WriteBlobLSBLong(image,0x3ADE68B1L);
+      (void) WriteBlobLSBLong(image,0x3ADE68B1L);
       for (i=0; i <= (long) scene; i++)
-        WriteBlobLSBLong(image,page_table[i]);
+        (void) WriteBlobLSBLong(image,page_table[i]);
       LiberateMemory((void **) &page_table);
     }
   CloseBlob(image);

@@ -407,7 +407,7 @@ static Image *OverviewImage(const ImageInfo *image_info,Image *image,
   commands[0]=SetClientName((char *) NULL);
   commands[1]=(char *) "-label";
   commands[2]=(char *) DefaultTileLabel;
-  MogrifyImages(clone_info,3,commands,&image);
+  (void) MogrifyImages(clone_info,3,commands,&image);
   DestroyImageInfo(clone_info);
   /*
     Create the PCD Overview image.

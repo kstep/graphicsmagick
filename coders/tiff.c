@@ -419,12 +419,12 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       }
 #if defined(ICC_SUPPORT)
     if (TIFFGetField(tiff,TIFFTAG_ICCPROFILE,&length,&text) == 1)
-      ReadColorProfile(text,length,image);
+      (void) ReadColorProfile(text,length,image);
 #endif
 #if defined(IPTC_SUPPORT)
 #if defined(PHOTOSHOP_SUPPORT)
     if (TIFFGetField(tiff,TIFFTAG_PHOTOSHOP,&length,&text) == 1)
-      ReadNewsProfile(text,length,image,TIFFTAG_PHOTOSHOP);
+      (void) ReadNewsProfile(text,length,image,TIFFTAG_PHOTOSHOP);
 #else
     if (TIFFGetField(tiff,TIFFTAG_RICHTIFFIPTC,&length,&text) == 1)
       {
@@ -613,7 +613,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
-          TIFFReadScanline(tiff,(char *) scanline,y,0);
+          (void) TIFFReadScanline(tiff,(char *) scanline,y,0);
           if (bits_per_sample == 16)
             {
               unsigned long
@@ -742,7 +742,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
-          TIFFReadScanline(tiff,(char *) scanline,y,0);
+          (void) TIFFReadScanline(tiff,(char *) scanline,y,0);
           if (bits_per_sample == 16)
             {
               unsigned long
@@ -1237,8 +1237,8 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
       adjoin=True;
     }
   tiff_exception=(&image->exception);
-  TIFFSetErrorHandler((TIFFErrorHandler) TIFFErrors);
-  TIFFSetWarningHandler((TIFFErrorHandler) TIFFWarnings);
+  (void) TIFFSetErrorHandler((TIFFErrorHandler) TIFFErrors);
+  (void) TIFFSetWarningHandler((TIFFErrorHandler) TIFFWarnings);
   (void) strcpy(filename,image->filename);
   if ((image->file == stdout) || image->pipet ||
       (image->blob->data != (unsigned char *) NULL))
@@ -1435,16 +1435,16 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
         (void) TIFFSetField(tiff,TIFFTAG_WHITEPOINT,chromaticity);
       }
 #if defined(ICC_SUPPORT)
-    if (image->color_profile.length > 0)
+    if (image->color_profile.length != 0)
       (void) TIFFSetField(tiff,TIFFTAG_ICCPROFILE,(uint32) image->color_profile.length,
         (void *) image->color_profile.info);
 #endif
 #if defined(IPTC_SUPPORT)
 #if defined(PHOTOSHOP_SUPPORT)
-    if (image->iptc_profile.length > 0)
+    if (image->iptc_profile.length != 0)
       WriteNewsProfile(tiff,TIFFTAG_PHOTOSHOP,image);
 #else
-    if (image->iptc_profile.length > 0)
+    if (image->iptc_profile.length != 0)
       WriteNewsProfile(tiff,TIFFTAG_RICHTIFFIPTC,image);
 #endif
 #endif

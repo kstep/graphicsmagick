@@ -443,7 +443,7 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
         if (file == (FILE *) NULL)
           ThrowWriterException(FileOpenWarning,"Unable to open file",image);
         for (c=fgetc(file); c != EOF; c=fgetc(file))
-          WriteBlobByte(image,c);
+          (void) WriteBlobByte(image,c);
         (void) fclose(file);
         (void) remove(filename);
         break;

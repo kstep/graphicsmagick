@@ -659,13 +659,13 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
     if (LocaleCompare(id,"idx1") == 0)
       {
-        for ( ; chunk_size > 0; chunk_size--)
+        for ( ; chunk_size != 0; chunk_size--)
           (void) ReadBlobByte(image);
         continue;
       }
     if (LocaleCompare(id,"JUNK") == 0)
       {
-        for ( ; chunk_size > 0; chunk_size--)
+        for ( ; chunk_size != 0; chunk_size--)
           (void) ReadBlobByte(image);
         continue;
       }
@@ -736,7 +736,7 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   chunk_size-=4;
                 }
               }
-            for ( ; chunk_size > 0; chunk_size--)
+            for ( ; chunk_size != 0; chunk_size--)
               (void) ReadBlobByte(image);
             if (image_info->verbose)
               (void) fprintf(stdout,"Video compression: %.1024s\n",
@@ -765,7 +765,7 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
         stream_info.sample_size=ReadBlobLSBLong(image);
         if (chunk_size & 0x01)
           chunk_size++;
-        for (chunk_size-=48; chunk_size > 0; chunk_size--)
+        for (chunk_size-=48; chunk_size != 0; chunk_size--)
           (void) ReadBlobByte(image);
         if (image_info->verbose)
           (void) fprintf(stdout,"AVI Test handler: %.1024s\n",
@@ -774,13 +774,13 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
     if (LocaleCompare(id,"strn") == 0)
       {
-        for ( ; chunk_size > 0; chunk_size--)
+        for ( ; chunk_size != 0; chunk_size--)
           (void) ReadBlobByte(image);
         continue;
       }
     if (LocaleCompare(id,"vedt") == 0)
       {
-        for ( ; chunk_size > 0; chunk_size--)
+        for ( ; chunk_size != 0; chunk_size--)
           (void) ReadBlobByte(image);
         continue;
       }

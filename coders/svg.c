@@ -3532,10 +3532,10 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
         for (p=token; *p != '\0'; p++)
           switch (*p)
           {
-            case '<': WriteBlobString(image,"&lt;"); break;
-            case '>': WriteBlobString(image,"&gt;"); break;
-            case '&': WriteBlobString(image,"&amp;"); break;
-            default: WriteBlobByte(image,*p); break;
+            case '<': (void) WriteBlobString(image,"&lt;"); break;
+            case '>': (void) WriteBlobString(image,"&gt;"); break;
+            case '&': (void) WriteBlobString(image,"&amp;"); break;
+            default: (void) WriteBlobByte(image,*p); break;
           }
         (void) WriteBlobString(image,"</text>\n");
         break;

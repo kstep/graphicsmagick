@@ -55,23 +55,23 @@
 typedef unsigned long DWORD;
 typedef unsigned short WORD;
 typedef struct {
-	char identific[125];
-	char idx[3];
-	DWORD unknown0;
-	DWORD ObjectSize;
-	DWORD unknown1;
-	DWORD unknown2;
+        char identific[125];
+        char idx[3];
+        DWORD unknown0;
+        DWORD ObjectSize;
+        DWORD unknown1;
+        DWORD unknown2;
 
-	DWORD StructureFlag;
-	DWORD unknown3;
-	DWORD unknown4;
-	DWORD DimFlag;
+        DWORD StructureFlag;
+        DWORD unknown3;
+        DWORD unknown4;
+        DWORD DimFlag;
 
-	DWORD SizeX;
-	DWORD SizeY;
-	WORD Flag1;
-	WORD NameFlag;
-	} MATHeader;
+        DWORD SizeX;
+        DWORD SizeY;
+        WORD Flag1;
+        WORD NameFlag;
+        } MATHeader;
 
 
 static void InsertRow(unsigned char *p,int y,Image *image)
@@ -90,7 +90,7 @@ register IndexPacket *indexes;
            if (q == (PixelPacket *) NULL) break;
            indexes=GetIndexes(image);
 
-	   for (x=0; x < (int) image->columns; x++)
+           for (x=0; x < (int) image->columns; x++)
                 {
                 index=ValidateColormapIndex(image,*p);
                 indexes[x]=index;
@@ -122,48 +122,48 @@ char MATLAB_HDR[192];
 if(f==NULL) f=stdout;
 
 if(Header)
-	{
-	for(iz=0;iz<sizeof(MATLAB_HDR);iz++)
-	       MATLAB_HDR[iz]=0;
-	for(iz=0;iz<124;iz++)
-	       MATLAB_HDR[iz]=' ';
-	strcpy(MATLAB_HDR,"MATLAB 5.0 MAT-file, Platform: LNX86, Created on: Tue May 16 22:35:06 2000");
-	MATLAB_HDR[0x7D]=1;
-	MATLAB_HDR[0x7E]='I';
-	MATLAB_HDR[0x7F]='M';
-	MATLAB_HDR[0x80]=0xE;
-	*(DWORD *)&(MATLAB_HDR[0x84])=(DWORD)x * (DWORD)y * (DWORD)z + 56l;
-	MATLAB_HDR[0x88]=0x6;
-	MATLAB_HDR[0x8C]=0x8;
-	MATLAB_HDR[0x90]=0x6;
-	MATLAB_HDR[0x98]=0x5;
-	MATLAB_HDR[0x9C]=0xC;
-	*(DWORD *)&(MATLAB_HDR[0xA0])=x;
-	*(DWORD *)&(MATLAB_HDR[0xA4])=y;
-	*(DWORD *)&(MATLAB_HDR[0xA8])=z;
-	MATLAB_HDR[0xB0]=1;
-	MATLAB_HDR[0xB2]=1;
-	MATLAB_HDR[0xB4]='M';
-	MATLAB_HDR[0xB8]=0x2;
-	*(DWORD *)&(MATLAB_HDR[0xBC])=(DWORD)x * (DWORD)y * (DWORD)z;
-	fwrite(MATLAB_HDR,1,sizeof(MATLAB_HDR),f);
-	}
+        {
+        for(iz=0;iz<sizeof(MATLAB_HDR);iz++)
+               MATLAB_HDR[iz]=0;
+        for(iz=0;iz<124;iz++)
+               MATLAB_HDR[iz]=' ';
+        strcpy(MATLAB_HDR,"MATLAB 5.0 MAT-file, Platform: LNX86, Created on: Tue May 16 22:35:06 2000");
+        MATLAB_HDR[0x7D]=1;
+        MATLAB_HDR[0x7E]='I';
+        MATLAB_HDR[0x7F]='M';
+        MATLAB_HDR[0x80]=0xE;
+        *(DWORD *)&(MATLAB_HDR[0x84])=(DWORD)x * (DWORD)y * (DWORD)z + 56l;
+        MATLAB_HDR[0x88]=0x6;
+        MATLAB_HDR[0x8C]=0x8;
+        MATLAB_HDR[0x90]=0x6;
+        MATLAB_HDR[0x98]=0x5;
+        MATLAB_HDR[0x9C]=0xC;
+        *(DWORD *)&(MATLAB_HDR[0xA0])=x;
+        *(DWORD *)&(MATLAB_HDR[0xA4])=y;
+        *(DWORD *)&(MATLAB_HDR[0xA8])=z;
+        MATLAB_HDR[0xB0]=1;
+        MATLAB_HDR[0xB2]=1;
+        MATLAB_HDR[0xB4]='M';
+        MATLAB_HDR[0xB8]=0x2;
+        *(DWORD *)&(MATLAB_HDR[0xBC])=(DWORD)x * (DWORD)y * (DWORD)z;
+        fwrite(MATLAB_HDR,1,sizeof(MATLAB_HDR),f);
+        }
 
 Pos3D=0;
 WData=a.data3D;
 for(iz=0;iz<z;iz++)
-	{
-	if(Pos3D<a.DataSize3D)
-	  if(WData->Position3D<=iz)
-		{
-		OldCont2D=Cont2D;
-		schXOR(Cont2D,*WData,OldCont2D);
-		WData++;
-		Pos3D++;
-		}
+        {
+        if(Pos3D<a.DataSize3D)
+          if(WData->Position3D<=iz)
+                {
+                OldCont2D=Cont2D;
+                schXOR(Cont2D,*WData,OldCont2D);
+                WData++;
+                Pos3D++;
+                }
 
-	MATPrint(Cont2D,x,y,f,0);
-	}
+        MATPrint(Cont2D,x,y,f,0);
+        }
 }*/
 
 
@@ -232,20 +232,20 @@ MATLAB_KO:  ThrowReaderException(CorruptImageWarning,"Not a MATLAB image file",i
   if(MATLAB_HDR.StructureFlag!=6) goto MATLAB_KO;
 
   if(MATLAB_HDR.NameFlag==1)
-	{
-	ReadBlob(image,4,&size); /*Object name string*/
-	}
+        {
+        (void) ReadBlob(image,4,&size); /*Object name string*/
+        }
    else if(MATLAB_HDR.NameFlag==0)
-	{
-	ReadBlob(image,4,&size); /*Object name string*/
-	size=4*(int)((size+3+1)/4);
-	SeekBlob(image,size,SEEK_CUR);
-	}
+        {
+        (void) ReadBlob(image,4,&size); /*Object name string*/
+        size=4*(int)((size+3+1)/4);
+        (void) SeekBlob(image,size,SEEK_CUR);
+        }
    else goto MATLAB_KO;
 
-   (void) ReadBlob(image,4,&size);	/*Additional object type*/
+   (void) ReadBlob(image,4,&size);        /*Additional object type*/
    if(size!=2) goto MATLAB_KO;
-   (void) ReadBlob(image,4,&size);	/*data size*/
+   (void) ReadBlob(image,4,&size);        /*data size*/
 
    image->columns=MATLAB_HDR.SizeX;
    image->rows=MATLAB_HDR.SizeY;
@@ -259,17 +259,17 @@ MATLAB_KO:  ThrowReaderException(CorruptImageWarning,"Not a MATLAB image file",i
  
    image->colors=256;
    if (!AllocateImageColormap(image,image->colors))
-	   {
+           {
 NoMemory:  ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
-				image);
-           }	   
+                                image);
+           }           
    
    for (i=0; i < (int)image->colors; i++)
-	   {
-	   image->colormap[i].red=UpScale(i);
-	   image->colormap[i].green=UpScale(i);
-	   image->colormap[i].blue=UpScale(i);
-	   }
+           {
+           image->colormap[i].red=UpScale(i);
+           image->colormap[i].green=UpScale(i);
+           image->colormap[i].blue=UpScale(i);
+           }
 
            
 /* ----- Load raster data ----- */
@@ -277,10 +277,10 @@ NoMemory:  ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
    if(BImgBuff==NULL) goto NoMemory;
 
    for(i=0;i<MATLAB_HDR.SizeY;i++)
-	{
+        {
         (void) ReadBlob(image,ldblk,(char *)BImgBuff);
         InsertRow(BImgBuff,i,image);
-	}
+        }
   rotate=3;
   if ((rotate == 1) || (rotate == 3))
     {

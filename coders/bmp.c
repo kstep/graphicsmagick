@@ -603,7 +603,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         }
         LiberateMemory((void **) &bmp_colormap);
       }
-    SeekBlob(image,start_position+bmp_info.offset_bits,SEEK_SET);
+    (void) SeekBlob(image,start_position+bmp_info.offset_bits,SEEK_SET);
     /*
       Read image data.
     */
@@ -847,8 +847,8 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
         break;
     *magick='\0';
-    if (bmp_info.ba_offset > 0)
-      SeekBlob(image,bmp_info.ba_offset,SEEK_SET);
+    if (bmp_info.ba_offset != 0)
+      (void) SeekBlob(image,bmp_info.ba_offset,SEEK_SET);
     (void) ReadBlob(image,2,(char *) magick);
     if (IsBMP(magick,2))
       {

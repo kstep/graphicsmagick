@@ -950,7 +950,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
             if (file == (FILE *) NULL)
               ThrowWriterException(FileOpenWarning,"Unable to open file",image);
             for (c=fgetc(file); c != EOF; c=fgetc(file))
-              WriteBlobByte(image,c);
+              (void) WriteBlobByte(image,c);
             (void) fclose(file);
             (void) remove(filename);
             break;
@@ -1250,7 +1250,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
             if (file == (FILE *) NULL)
               ThrowWriterException(FileOpenWarning,"Unable to open file",image);
             for (c=fgetc(file); c != EOF; c=fgetc(file))
-              WriteBlobByte(image,c);
+              (void) WriteBlobByte(image,c);
             (void) fclose(file);
             (void) remove(filename);
             break;
@@ -1460,9 +1460,9 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
               Ascii85Encode(image,DownScale(image->colormap[i].blue));
               continue;
             }
-          WriteBlobByte(image,DownScale(image->colormap[i].red));
-          WriteBlobByte(image,DownScale(image->colormap[i].green));
-          WriteBlobByte(image,DownScale(image->colormap[i].blue));
+          (void) WriteBlobByte(image,DownScale(image->colormap[i].red));
+          (void) WriteBlobByte(image,DownScale(image->colormap[i].green));
+          (void) WriteBlobByte(image,DownScale(image->colormap[i].blue));
         }
         if (compression == NoCompression)
           Ascii85Flush(image);
