@@ -4,7 +4,6 @@
   <delegate decode="bmp" encode="launch" mode="encode" command='imdisplay.exe "%i."' />
   <delegate decode="bmp" encode="win" mode="encode" command='imdisplay.exe "%i."' />
   <delegate decode="browse" restrain="True" spawn="True" command='cmd /C start http://www.imagemagick.org/'  />
-  <delegate decode="bzip" restrain="True" command='|bzip2 -cd "%i"' />
   <delegate decode="cgm" command='ralcgm -d ps "%i" "%o" %u
     convert -concatenate %o*.ps "%o"' />
   <delegate decode="compress" restrain="True" command='|uncompress -c "%i"' />
@@ -41,9 +40,6 @@
   <delegate decode="shtml" command='html2ps -U -o "%o" "%i"' />
   <delegate decode="txt" encode="ps" mode="bi" command='enscript -o "%o" "%i"' />
   <delegate decode="xcf" command='xcftopnm "%i" > "%o"' />
-  <delegate decode="zip" restrain="True" command='|gzip -cdfq "%i"' />
-  <delegate encode="bzip" restrain="True" command='|bzip2 -f > "%o"' />
   <delegate encode="compress" restrain="True" command='|compress -c > "%o"' />
   <delegate encode="show" restrain="True" spawn="True" command='display -immutable -window_group %g -title "%l of %f" "tmp:%o"' />
-  <delegate encode="zip" restrain="True" command='|gzip -cf > "%o"' />
 </delegatemap>
