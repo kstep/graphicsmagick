@@ -6,12 +6,10 @@ For 1.1 Release
 ===============
 
  o Fix -process parsing so '-process analyze' works.
- o Fix SegmentImage.  Result image is coming out all black!
+ o Fix SegmentImage.  Result image is coming out all black! (works with PseudoClass)
  o Fix new XorCompositeOp implementation.  Apparently a pixel is inverted
    between SPARC and Intel in the PerlMagick tests.
- o Debug utilities test failure noticed under OS-X (no access to OS-X).
  o Fix retrieving specified frames from an MPEG file.
- o Fix rendering of wmf/examples/fjftest.wmf.
  o Update Windows libtiff to version 3.6.1.
 
 For Future Release

@@ -53,6 +53,20 @@
 </tr>
 </table>
 <p>
+2004-02-15  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/tga.c (ReadTGAImage): Fix matte channel handling. For
+        16-bit packets, use integer rather than floating point. Return
+        gray images as PseudoClass and set is_grayscale flag.  Add
+        logging.<BR>
+  <LI> magick/fx.c (WaveImage): Ensure that image is
+        DirectClass. Ensure that matte channel is initialized if
+        necessary. Include background color in is_grayscale evaluation.
+  <LI> magick/gem.c (GenerateNoise): Scale noise to range of quantum.
+
+</UL>
+<p>
 2004-02-13  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

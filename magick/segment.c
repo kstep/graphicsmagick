@@ -1145,10 +1145,8 @@ static double OptimalTau(const long *histogram,const double max_tau,
   /*
     Initialize zero crossing list.
   */
-  derivative=MagickAllocateMemory(double *,
-    256*sizeof(double));
-  second_derivative=MagickAllocateMemory(double *,
-    256*sizeof(double));
+  derivative=MagickAllocateMemory(double *,256*sizeof(double));
+  second_derivative=MagickAllocateMemory(double *,256*sizeof(double));
   if ((derivative == (double *) NULL) || (second_derivative == (double *) NULL))
     MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
       UnableToAllocateDerivatives);

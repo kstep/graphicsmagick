@@ -534,6 +534,7 @@ static void XShearImage(Image *image,const double degrees,
 
   assert(image != (Image *) NULL);
   is_grayscale=image->is_grayscale;
+
   y_offset--;
   for (y=0; y < (long) height; y++)
   {
@@ -1070,6 +1071,7 @@ MagickExport Image *ShearImage(const Image *image,const double x_shear,
   assert(exception->signature == MagickSignature);
   if ((x_shear == 180.0) || (y_shear == 180.0))
     ThrowImageException3(ImageError,UnableToShearImage,AngleIsDiscontinuous);
+
   /*
     Initialize shear angle.
   */
@@ -1081,6 +1083,7 @@ MagickExport Image *ShearImage(const Image *image,const double x_shear,
   shear.y=sin(DegreesToRadians(y_shear));
   if ((shear.x == 0.0) || (shear.y == 0.0))
     return(integral_image);
+
   /*
     Compute image size.
   */

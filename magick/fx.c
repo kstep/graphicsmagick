@@ -1447,8 +1447,16 @@ MagickExport Image *WaveImage(const Image *image,const double amplitude,
     (image->rows+2.0*fabs(amplitude)),False,exception);
   if (wave_image == (Image *) NULL)
     return((Image *) NULL);
-  SetImageType(wave_image,wave_image->background_color.opacity !=
-    OpaqueOpacity ? TrueColorMatteType : TrueColorType);
+
+  wave_image->storage_class=DirectClass;
+
+  /*
+    If background color is non-opaque, then initialize matte channel.
+  */
+  if ((wave_image->background_color.opacity != OpaqueOpacity) &&
+      (!wave_image->matte))
+    SetImageOpacity(wave_image,OpaqueOpacity);
+
   /*
     Allocate sine map.
   */
@@ -1485,6 +1493,6 @@ MagickExport Image *WaveImage(const Image *image,const double amplitude,
   }
   SetImageVirtualPixelMethod(image,virtual_pixel_method);
   MagickFreeMemory(sine_map);
-  wave_image->is_grayscale=image->is_grayscale;
+  wave_image->is_grayscale=(image->is_grayscale && IsGray(wave_image->background_color));
   return(wave_image);
 }

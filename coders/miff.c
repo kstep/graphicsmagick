@@ -221,6 +221,12 @@ static unsigned int PushImageRLEPixels(Image *image,
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(source != (const unsigned char *) NULL);
+  assert((image->depth == 8) || (image->depth == 16) || (image->depth == 32));
+  assert(((quantum_type == IndexQuantum) && (image->storage_class == PseudoClass)) ||
+         ((quantum_type == CMYKAQuantum) && (image->storage_class == DirectClass) && image->matte) ||
+         ((quantum_type == CMYKQuantum) && (image->storage_class == DirectClass) && !image->matte) ||
+         ((quantum_type == RGBAQuantum) && (image->storage_class == DirectClass) && image->matte) ||
+         ((quantum_type == RGBQuantum) && (image->storage_class == DirectClass) && !image->matte));
 
   p=source;
   q=GetPixels(image);
@@ -232,7 +238,7 @@ static unsigned int PushImageRLEPixels(Image *image,
   pixel.green=0;
   pixel.blue=0;
   pixel.opacity=TransparentOpacity;
-  
+
   switch (quantum_type)
     {
     case IndexQuantum:
@@ -745,6 +751,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
     colors=0;
     image->depth=8;
     image->compression=NoCompression;
+    image->storage_class=DirectClass;
     while (isgraph(c) && (c != ':'))
     {
       register char
@@ -1498,11 +1505,17 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
             }
           break;
         }
+        /*
+          Verify that pixel transfer loops completed
+        */
+        if (y != (long) image->rows)
+          status=False;
       } /* End switch (image->compression) */
     MagickFreeMemory(pixels);
     MagickFreeMemory(compress_pixels);
     if (status == False)
       {
+        CloseBlob(image);
         DestroyImageList(image);
         return((Image *) NULL);
       }
