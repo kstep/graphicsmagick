@@ -1,3 +1,10 @@
+2004-12-19  David N. Welton  <davidw@dedasys.com>
+
+	* INSTALL: Updated install instructions.
+
+	* genconf.sh: Shell script that may be used to generate the config
+	stuff.
+
 2004-12-18  David N. Welton  <davidw@dedasys.com>
 
 	* tests/test-bmp-compare.tcl: New tests, thanks to Sheila Miguez.

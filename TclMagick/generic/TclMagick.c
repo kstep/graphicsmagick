@@ -1654,13 +1654,16 @@ static int wandObjCmd(
 	if( (refWand = findMagickWand(interp, name)) == NULL ) {
 	    return TCL_ERROR;
 	}
-	if (Tcl_GetIndexFromObj(interp, objv[3], chanNames, "channelType", 0, &chanIdx) != TCL_OK) {
+	if (Tcl_GetIndexFromObj(interp, objv[3], chanNames,
+				"channelType", 0, &chanIdx) != TCL_OK) {
 	    return TCL_ERROR;
 	}
-	if (Tcl_GetIndexFromObj(interp, objv[4], metricNames, "metricType", 0, &metricIdx) != TCL_OK) {
+	if (Tcl_GetIndexFromObj(interp, objv[4], metricNames,
+				"metricType", 0, &metricIdx) != TCL_OK) {
 	    return TCL_ERROR;
 	}
-	newWand = MagickCompareImageChannels( wandPtr, refWand, chanTypes[chanIdx], metricTypes[metricIdx], &value );
+	newWand = MagickCompareImageChannels( wandPtr, refWand, chanTypes[chanIdx],
+					      metricTypes[metricIdx], &value );
 	if (newWand != NULL) {
             DestroyMagickWand(newWand);
 	}
@@ -1685,7 +1688,8 @@ static int wandObjCmd(
 	if( (refWand = findMagickWand(interp, name)) == NULL ) {
 	    return TCL_ERROR;
 	}
-	if (Tcl_GetIndexFromObj(interp, objv[3], metricNames, "metricType", 0, &metricIdx) != TCL_OK) {
+	if (Tcl_GetIndexFromObj(interp, objv[3], metricNames,
+				"metricType", 0, &metricIdx) != TCL_OK) {
 	    return TCL_ERROR;
 	}
 	newWand = MagickCompareImages( wandPtr, refWand, metricTypes[metricIdx], &value );
@@ -1770,7 +1774,9 @@ static int wandObjCmd(
 	    return stat;
 	}
 	if( (unsigned long)listLen != order * order ) {
-	    Tcl_AppendResult(interp, "ConvolveImage: Invalid kernelList length, should be = (order x order)", NULL);
+	    Tcl_AppendResult(
+		interp,
+		"ConvolveImage: Invalid kernelList length, should be = (order x order)", NULL);
 	    return TCL_ERROR;
 	}
 	kernel = (double *)ckalloc(listLen * sizeof(double));

@@ -11,8 +11,10 @@ Installing TclMagick in a separate directory from ImageMagick or
 GraphicsMagick.
 
 0) If there is no configure script (you are fetching from CVS, for
-   instance), try running automake, aclocal, and autoconf in order to
-   generate the configure script.
+   instance), try running the genconf.sh script.  It runs aclocal,
+   autoconf, and automake --add-missing, in that order.  Be sure to
+   use recent versions of the autotools (1.8 works for me, 1.4
+   doesn't).
 
 1) Run the ./configure script.  The following arguments are
    recommended:
