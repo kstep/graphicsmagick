@@ -15,6 +15,13 @@
 // locate installed components.
 // #define UseInstalledImageMagick
 
+//
+// When building ImageMagick using DLLs, include a DllMain() function which
+// automatically invokes InitializeMagick(NULL), and DestroyMagick()
+// so that the user doesn't need to.
+//
+// #define ProvideDllMain
+
 // Define to use the autotrace library (obtain sources seperately)
 //#define HasAUTOTRACE
 

@@ -74,7 +74,7 @@ static GhostscriptVectors
 */
 #if !defined(WIN32)
 extern "C" BOOL WINAPI
-  DllMain(HINSTANCE instance,DWORD data_segment,LPVOID reserved);
+  DllMain(HINSTANCE hinstDLL,DWORD fdwReason,LPVOID lpvReserved);
 #endif
 
 /*
@@ -268,6 +268,70 @@ MagickExport void DebugString(char *format,...)
     LeaveTracingCriticalSection();
   va_end(operands);
 }
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   DllMain                                                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method DllMain is an entry point to the DLL which is called when processes
+%  and threads are initialized and terminated, or upon calls to the
+%  Windows LoadLibrary and FreeLibrary functions.
+%
+%  The function returns TRUE of it succeeds, or FALSE if initialization fails.
+%
+%  The format of the DllMain method is:
+%
+%    BOOL WINAPI DllMain(HINSTANCE hinstDLL,DWORD fdwReason,LPVOID lpvReserved)
+%
+%  A description of each parameter follows:
+%
+%    o hinstDLL: handle to the DLL module
+%   
+%    o fdwReason: reason for calling function.
+%
+%          May have values:
+%             DLL_PROCESS_ATTACH - DLL is being loaded into virtual address
+%                                  space of current process.
+%             DLL_THREAD_ATTACH - Indicates that the current process is
+%                                 creating a new thread.  Called under the
+%                                 context of the new thread.
+%             DLL_THREAD_DETACH - Indicates that the thread is exiting.
+%                                 Called under the context of the exiting
+%                                 thread.
+%             DLL_PROCESS_DETACH - Indicates that the DLL is being unloaded
+%                                  from the virtual address space of the
+%                                  current process.
+%
+%    o lpvReserved: Used for passing additional info during DLL_PROCESS_ATTACH
+%                   and DLL_PROCESS_DETACH.
+%
+*/
+#if defined(_DLL) && defined( ProvideDllMain )
+BOOL WINAPI DllMain(HINSTANCE hinstDLL,DWORD fdwReason,LPVOID lpvReserved)
+{
+  switch ( fdwReason )
+    {
+    case DLL_PROCESS_ATTACH:
+      InitializeMagick(NULL);
+      break;
+    case DLL_PROCESS_DETACH:
+      DestroyMagick();
+      break;
+    default:
+      {
+        /* Do nothing */
+      }
+    }
+  return TRUE;
+}
+#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
