@@ -252,9 +252,6 @@
 /* Define if you have zlib compression library */
 #undef HasZLIB
 
-/* Define to prepend to default font search path. */
-#undef MAGICK_FONT_PATH
-
 /* Directory where architecture-dependent files live. */
 #undef MagickLibPath
 

@@ -1296,7 +1296,6 @@ if(draw_text->flags)
 
         magick_mvg_printf(API, "rectangle %.10g,%.10g %.10g,%.10g\n",
                           XC(ulTL.x), YC(ulTL.y), XC(ulBR.x), YC(ulBR.y));
-
       }
 
     /* Strikeout text the Windows way */
@@ -1309,7 +1308,8 @@ if(draw_text->flags)
           ulTL;			/* top left of strikeout rectangle */
 
         line_height = ((double)1/(ddata->scale_x))*metrics.underline_thickness;
-        if(metrics.underline_thickness < 1.5)
+
+        if(metrics.underline_thickness < 2.0)
           line_height *= 0.55;
         ulTL.x = 0;
         ulTL.y = -(((double) metrics.ascent) / 2 + line_height / 2);
