@@ -32,14 +32,6 @@ Before You Start
   Postscript is available. GraphicsMagick will use the fonts delivered with
   Ghostscript to support the set of standard Postscript fonts.
   
-  The installation package includes the Perl Image::Magick extension
-  (PerlMagick) as an installation option. If you would like to use this
-  extension, then you should install ActiveState ActivePerl (available from
-  "http://www.activestate.com/Products/Download/Register.plex?id=ActivePerl")
-  prior to commencing with installation of GraphicsMagick. If you should decide to
-  install ActivePerl later, you can simply re-run this installation program
-  to install PerlMagick.
-  
 Installation Steps
 
   The following describes the steps remaining to install GraphicsMagick.
@@ -79,11 +71,6 @@ Installation Steps
         formats like GIF, JPEG, TIFF, PDF, and Postscript) will be associated
         with the GraphicsMagick display program. Please consider carefully if
         you want to do this!
-
-      o Install PerlMagick for ActiveState Perl v5.8.0 build 804
-
-        This option runs the Perl installer to install the Image::Magick
-        extension.
 
       o Install ImageMagickObject OLE Control
 
