@@ -42,12 +42,12 @@ extern wmf_error_t wmf_api_destroy (wmfAPI*);
 /**
  * Initializes library - 'lite' interface only
  */
-wmf_error_t wmf_lite_create (wmfAPI**,unsigned long,wmfAPI_Options*);
+extern wmf_error_t wmf_lite_create (wmfAPI**,unsigned long,wmfAPI_Options*);
 
 /**
  * Possibly completes output, and otherwise frees all allocated memory - 'lite' interface only
  */
-wmf_error_t wmf_lite_destroy (wmfAPI*);
+extern wmf_error_t wmf_lite_destroy (wmfAPI*);
 
 /**
  * Reads the header of the current metafile
@@ -68,6 +68,11 @@ extern wmf_error_t wmf_play (wmfAPI*,unsigned long,wmfD_Rect*);
  * Supplies a width and height for the current metafile
  */
 extern wmf_error_t wmf_size (wmfAPI*,float*,float*);
+
+/**
+ * Supplies a display (integer-) width and height for the current metafile
+ */
+extern wmf_error_t wmf_display_size (wmfAPI*,unsigned int*,unsigned int*,double,double);
 
 /**
  * Sets user defines input stream functions for reading a metafile
@@ -151,7 +156,7 @@ extern void  wmf_detach (wmfAPI*,void*);
 /**
  * strdup() & attach to library's memory manager
  */
-extern char* wmf_strdup (wmfAPI*,char*);
+extern char* wmf_strdup (wmfAPI*,const char*);
 
 /**
  * create concatenation of two strings and attach to library's memory manager
@@ -275,6 +280,52 @@ extern void wmf_set_viewport_origin (wmfAPI*,wmfD_Coord);
  */
 extern void wmf_status_function (wmfAPI*,void*,wmfStatus);
 
+/**
+ * Writes to --wmf-write file (which may be WMF or home-made wmfxml)
+ */
+extern void wmf_write (wmfAPI*,unsigned long,unsigned int,const char*,
+		       char**,const unsigned char*,unsigned long);
+
+/**
+ * Open --wmf-write file (which may be WMF or home-made wmfxml)
+ */
+extern void wmf_write_begin (wmfAPI*,const char*);
+
+/**
+ * Close --wmf-write file (which may be WMF or home-made wmfxml)
+ */
+extern void wmf_write_end (wmfAPI*);
+
+/**
+ * Initialize a wmfAttributes structure
+ */
+extern void wmf_attr_new (wmfAPI*,wmfAttributes*);
+
+/**
+ * Clear/Empty a wmfAttributes structure
+ */
+extern void wmf_attr_clear (wmfAPI*,wmfAttributes*);
+
+/**
+ * Free memory associated with a wmfAttributes structure
+ */
+extern void wmf_attr_free (wmfAPI*,wmfAttributes*);
+
+/**
+ * Add an name&value to a wmfAttributes structure; returns ptr to value-in-list
+ */
+extern const char * wmf_attr_add (wmfAPI*,wmfAttributes*,const char*,const char*);
+
+/**
+ * Return value of name in a wmfAttributes structure; returns 0 if name not found
+ */
+extern const char * wmf_attr_query (wmfAPI*,wmfAttributes*,const char*);
+
+/**
+ * Load wmfxml file and wmf_mem_open() it
+ */
+extern wmf_error_t wmf_wmfxml_import (wmfAPI*,const char*);
+
 #ifdef __cplusplus
 }
 #endif
@@ -374,6 +425,13 @@ extern void wmf_status_function (wmfAPI*,void*,wmfStatus);
  * use specified ghostscript fontmap file
  */
 #define WMF_OPT_GS_FONTMAP      (1<<8)
+
+/**
+ * Option to wmf_api_create()
+ * 
+ * write metafile to specified file
+ */
+#define WMF_OPT_WRITE           (1<<9)
 
 /**
  * Option to wmf_api_create()
