@@ -2701,8 +2701,8 @@ static inline double DistanceToEdge(const PointInfo *p,const double x,
   return(alpha*beta*beta);
 }
 
-static inline int GetWindingNumber(const PolygonInfo *polygon_info,const double x,
-  const double y)
+static inline int GetWindingNumber(const PolygonInfo *polygon_info,
+  const double x,const double y)
 {
   int
     j,
