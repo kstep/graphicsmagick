@@ -173,7 +173,10 @@ MagickExport Image *ChopImage(Image *image,const RectangleInfo *chop_info,
     {
       if ((x < clone_info.x) || (x >= (int) (clone_info.x+clone_info.width)))
         {
-          if (image->storage_class == PseudoClass)
+          if (((image->storage_class == PseudoClass) ||
+               (image->colorspace == CMYKColorspace)) &&
+              ((chop_image->storage_class == PseudoClass) ||
+               (chop_image->colorspace == CMYKColorspace)))
             chop_indexes[x]=indexes[x];
           *q=(*p);
           q++;
@@ -423,11 +426,16 @@ MagickExport Image *CropImage(Image *image,const RectangleInfo *crop_info,
     q=SetImagePixels(crop_image,0,y,crop_image->columns,1);
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
-    indexes=GetIndexes(image);
-    crop_indexes=GetIndexes(crop_image);
-    if (image->storage_class == PseudoClass)
-      memcpy(crop_indexes,indexes,crop_image->columns*sizeof(IndexPacket));
     memcpy(q,p,crop_image->columns*sizeof(PixelPacket));
+    if (((image->storage_class == PseudoClass) ||
+         (image->colorspace == CMYKColorspace)) &&
+        ((crop_image->storage_class == PseudoClass) ||
+         (crop_image->colorspace == CMYKColorspace)))
+      {
+        indexes=GetIndexes(image);
+        crop_indexes=GetIndexes(crop_image);
+        memcpy(crop_indexes,indexes,image->columns*sizeof(IndexPacket));
+      }
     if (!SyncImagePixels(crop_image))
       break;
     if (QuantumTick(y,crop_image->rows))

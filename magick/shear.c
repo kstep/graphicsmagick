@@ -145,11 +145,16 @@ static Image *IntegralRotateImage(Image *image,unsigned int rotations,
         q=SetImagePixels(rotate_image,0,y,rotate_image->columns,1);
         if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
           break;
-        indexes=GetIndexes(image);
-        rotate_indexes=GetIndexes(rotate_image);
-        if (image->storage_class == PseudoClass)
-          memcpy(rotate_indexes,indexes,image->columns*sizeof(IndexPacket));
         memcpy(q,p,image->columns*sizeof(PixelPacket));
+        if (((image->storage_class == PseudoClass) ||
+             (image->colorspace == CMYKColorspace)) &&
+            ((rotate_image->storage_class == PseudoClass) ||
+             (rotate_image->colorspace == CMYKColorspace)))
+          {
+            indexes=GetIndexes(image);
+            rotate_indexes=GetIndexes(rotate_image);
+            memcpy(rotate_indexes,indexes,image->columns*sizeof(IndexPacket));
+          }
         if (!SyncImagePixels(rotate_image))
           break;
         if (QuantumTick(y,image->rows))
@@ -168,11 +173,16 @@ static Image *IntegralRotateImage(Image *image,unsigned int rotations,
         q=SetImagePixels(rotate_image,image->rows-y-1,0,1,rotate_image->rows);
         if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
           break;
-        indexes=GetIndexes(image);
-        rotate_indexes=GetIndexes(rotate_image);
-        if (image->storage_class == PseudoClass)
-          memcpy(rotate_indexes,indexes,image->columns*sizeof(IndexPacket));
         memcpy(q,p,image->columns*sizeof(PixelPacket));
+        if (((image->storage_class == PseudoClass) ||
+             (image->colorspace == CMYKColorspace)) &&
+            ((rotate_image->storage_class == PseudoClass) ||
+             (rotate_image->colorspace == CMYKColorspace)))
+          {
+            indexes=GetIndexes(image);
+            rotate_indexes=GetIndexes(rotate_image);
+            memcpy(rotate_indexes,indexes,image->columns*sizeof(IndexPacket));
+          }
         if (!SyncImagePixels(rotate_image))
           break;
         if (QuantumTick(y,image->rows))

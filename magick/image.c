@@ -971,11 +971,15 @@ MagickExport Image *CloneImage(Image *image,const unsigned int columns,
         if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
           break;
         memcpy(q,p,image->columns*sizeof(PixelPacket));
-        indexes=GetIndexes(image);
-        clone_indexes=GetIndexes(clone_image);
-        if ((indexes != (IndexPacket *) NULL) &&
-            (clone_indexes != (IndexPacket *) NULL))
-          memcpy(clone_indexes,indexes,image->columns*sizeof(IndexPacket));
+        if (((image->storage_class == PseudoClass) ||
+             (image->colorspace == CMYKColorspace)) &&
+            ((clone_image->storage_class == PseudoClass) ||
+             (clone_image->colorspace == CMYKColorspace)))
+          {
+            indexes=GetIndexes(image);
+            clone_indexes=GetIndexes(clone_image);
+            memcpy(clone_indexes,indexes,image->columns*sizeof(IndexPacket));
+          }
         if (!SyncImagePixels(clone_image))
           break;
       }

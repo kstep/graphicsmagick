@@ -777,11 +777,16 @@ static unsigned int HorizontalFilter(Image *source,Image *destination,
         if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
           break;
         memcpy(q,p,source->columns*sizeof(PixelPacket));
-        source_indexes=GetIndexes(source);
-        destination_indexes=GetIndexes(destination);
-        if (source->storage_class == PseudoClass)
-          memcpy(destination_indexes,source_indexes,
-            source->columns*sizeof(IndexPacket));
+        if (((source->storage_class == PseudoClass) ||
+             (source->colorspace == CMYKColorspace)) &&
+            ((destination->storage_class == PseudoClass) ||
+             (destination->colorspace == CMYKColorspace)))
+          {
+            source_indexes=GetIndexes(source);
+            destination_indexes=GetIndexes(destination);
+            memcpy(destination_indexes,source_indexes,
+              source->columns*sizeof(IndexPacket));
+          }
         if (!SyncImagePixels(destination))
           break;
         if (QuantumTick(*quantum,span))
@@ -920,11 +925,16 @@ static unsigned int VerticalFilter(Image *source,Image *destination,
         if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
           break;
         memcpy(q,p,source->columns*sizeof(PixelPacket));
-        source_indexes=GetIndexes(source);
-        destination_indexes=GetIndexes(destination);
-        if (source->storage_class == PseudoClass)
-          memcpy(destination_indexes,source_indexes,
-            source->columns*sizeof(IndexPacket));
+        if (((source->storage_class == PseudoClass) ||
+             (source->colorspace == CMYKColorspace)) &&
+            ((destination->storage_class == PseudoClass) ||
+             (destination->colorspace == CMYKColorspace)))
+          {
+            source_indexes=GetIndexes(source);
+            destination_indexes=GetIndexes(destination);
+            memcpy(destination_indexes,source_indexes,
+              source->columns*sizeof(IndexPacket));
+          }
         if (!SyncImagePixels(destination))
           break;
         if (QuantumTick(*quantum,span))
