@@ -1,3 +1,8 @@
+2003-06-03  William Radcliffe  <billr@corbis.com>
+
+	* coders/meta.c: Was broken due to editing mistakes as well
+	as inherent incompatability with MagickReallocMemory macro.
+
 2003-06-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/xpm.c (RegisterXPMImage): Module registration for PICON

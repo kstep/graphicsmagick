@@ -228,41 +228,44 @@ static char *super_fgets(char **b, int *blen, Image *file)
     len;
 
   unsigned char
+    *p,
     *q;
 
   len=*blen;
-  for (q=(unsigned char *) (*b); ; q++)
+  p = (*b);
+  for (q=p; ; q++)
   {
     c=ReadBlobByte(file);
     if (c == EOF || c == '\n')
       break;
-    if ((q-(unsigned char *) (*b)+1) >= (int) len)
+    if ((q-p+1) >= (int) len)
       {
         int
           tlen;
 
-        tlen=q-(unsigned char *) (*b);
+        tlen=q-p;
         len<<=1;
-        MagickReallocMemory(b,(len+2));
-        if ((*b) == (char *) NULL)
+        MagickReallocMemory(p,(len+2));
+        *b = (char *) p;
+        if (p == (char *) NULL)
           break;
-        q=(unsigned char*) (*b)+tlen;
+        q=p+tlen;
       }
     *q=(unsigned char) c;
   }
   *blen=0;
-  if ((*b) != (char *) NULL)
+  if (p != (char *) NULL)
     {
       int
         tlen;
 
-      tlen=q-(unsigned char *) (*b);
+      tlen=q-p;
       if (tlen == 0)
         return (char *) NULL;
-      (*b)[tlen] = '\0';
+      p[tlen] = '\0';
       *blen=++tlen;
     }
-  return (*b);
+  return p;
 }
 
 #define BUFFER_SZ 4096
@@ -486,28 +489,31 @@ static char *super_fgets_w(char **b, int *blen, Image *file)
     len;
 
   unsigned char
+    *p,
     *q;
 
   len=*blen;
+  p=(*b);
   /* DebugString("META CODER super_fgets_w #1\n"); */
-  for (q=(unsigned char *) (*b); ; q++)
+  for (q=p; ; q++)
   {
     c=ReadBlobLSBShort(file);
     if (c == ((unsigned short) ~0) || c == '\n')
       break;
    if (EOFBlob(file))
       break;
-   if ((q-(unsigned char *) (*b)+1) >= (int) len)
+   if ((q-p+1) >= (int) len)
       {
         int
           tlen;
 
-        tlen=q-(unsigned char *) (*b);
+        tlen=q-p;
         len<<=1;
-        MagickReallocMemory(b,(len+2));
-        if ((*b) == (char *) NULL)
+        MagickReallocMemory(p,(len+2));
+        *b=p;
+        if (p == (char *) NULL)
           break;
-        q=(unsigned char*) (*b)+tlen;
+        q=p+tlen;
       }
     *q=(unsigned char) c;
   }
@@ -518,14 +524,14 @@ static char *super_fgets_w(char **b, int *blen, Image *file)
       int
         tlen;
 
-      tlen=q-(unsigned char *) (*b);
+      tlen=q-p;
       if (tlen == 0)
         return (char *) NULL;
-      (*b)[tlen] = '\0';
+      p[tlen] = '\0';
       *blen=++tlen;
     }
   /* DebugString("META CODER super_fgets_w #3\n"); */
-  return (*b);
+  return p;
 }
 
 static long parse8BIMW(Image *ifile, Image *ofile)
