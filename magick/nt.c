@@ -159,7 +159,7 @@ Export int Exit(int status)
 %  A description of each parameter follows:
 %
 %    o status: Method ImageFormatConflict returns true if the image format
-%              conflicts with a logical drive.
+%      conflicts with a logical drive.
 %
 %    o magick: Specifies the image format.
 %

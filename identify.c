@@ -147,19 +147,22 @@ int main(int argc,char **argv)
     count;
 
   /*
-    Initialize program variables.
+    Initialize command line arguments.
   */
   ReadCommandlLine(argc,&argv);
   client_name=SetClientName(*argv);
+  (void) ExpandFilenames(&argc,&argv);
   if (argc < 2)
     Usage(client_name);
+  /*
+    Set defaults.
+  */
   count=0;
   GetImageInfo(&image_info);
   number_images=0;
   /*
     Identify an image.
   */
-  (void) ExpandFilenames(&argc,&argv);
   for (i=1; i < argc; i++)
   {
     option=argv[i];

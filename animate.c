@@ -274,11 +274,15 @@ int main(int argc,char **argv)
     resource_database;
 
   /*
-    Set defaults.
+    Initialize command line arguments.
   */
   SetNotifyHandlers;
   ReadCommandlLine(argc,&argv);
   client_name=SetClientName(*argv);
+  (void) ExpandFilenames(&argc,&argv);
+  /*
+    Set defaults.
+  */
   display=(Display *) NULL;
   first_scene=0;
   image=(Image *) NULL;
@@ -286,7 +290,6 @@ int main(int argc,char **argv)
   /*
     Check for server name specified on the command line.
   */
-  (void) ExpandFilenames(&argc,&argv);
   server_name=(char *) NULL;
   for (i=1; i < argc; i++)
   {

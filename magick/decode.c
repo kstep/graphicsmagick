@@ -5930,8 +5930,8 @@ Image *ReadLABELImage(const ImageInfo *image_info)
   (void) fprintf(file,"%%!PS-Adobe-3.0\n");
   (void) fprintf(file,"/Helvetica findfont %u scalefont setfont\n",
     local_info.pointsize);
-  (void) fprintf(file,"/%.1024s findfont %u scalefont setfont\n",local_info.font,
-    local_info.pointsize);
+  (void) fprintf(file,"/%.1024s findfont %u scalefont setfont\n",
+    local_info.font,local_info.pointsize);
   (void) fprintf(file,"0.0 0.0 0.0 setrgbcolor\n");
   (void) fprintf(file,"0 0 %u %u rectfill\n",
     local_info.pointsize*Extent(text),local_info.pointsize << 1);

@@ -707,9 +707,6 @@ Export unsigned int InsidePrimitive(PrimitiveInfo *primitive_info,
             case FloodfillMethod:
             case FillToBorderMethod:
             {
-              ColorPacket
-                color;
-
               if ((p->x != x) || (p->y != y))
                 break;
               target=image->pixels[y*image->columns+x];

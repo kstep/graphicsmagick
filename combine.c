@@ -214,14 +214,15 @@ int main(int argc,char **argv)
     tile;
 
   /*
-    Initialize program variables.
+    Initialize command line arguments.
   */
   ReadCommandlLine(argc,&argv);
   client_name=SetClientName(*argv);
+  (void) ExpandFilenames(&argc,&argv);
   if (argc < 4)
     Usage(client_name);
   /*
-    Read image and convert to MIFF format.
+    Set default.
   */
   blend=0.0;
   compose=ReplaceCompositeOp;
@@ -239,7 +240,6 @@ int main(int argc,char **argv)
   /*
     Check command syntax.
   */
-  (void) ExpandFilenames(&argc,&argv);
   filename=(char *) NULL;
   for (i=1; i < (argc-1); i++)
   {

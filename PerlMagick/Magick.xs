@@ -689,6 +689,12 @@ static void DestroyPackageInfo(struct PackageInfo *info)
     safefree(info->image_info.texture);
   if (info->image_info.undercolor)
     safefree(info->image_info.undercolor);
+  if (info->image_info.background_color)
+    safefree(info->image_info.background_color);
+  if (info->image_info.border_color)
+    safefree(info->image_info.border_color);
+  if (info->image_info.matte_color)
+    safefree(info->image_info.matte_color);
   safefree((char *) info);
 }
 
@@ -1425,7 +1431,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
           if (info)
             CopyString(&info->image_info.page,p);
           for ( ; image; image=image->next)
-            CopyString(&image->page,p);
+            image->page=PostscriptGeometry(SvPV(sval,na));
           DestroyPostscriptGeometry(p);
           return;
         }
@@ -2827,6 +2833,15 @@ Get(ref,...)
                   s=newSVpv((char *) magick_info->description,0);
               break;
             }
+          if (strEQcase(attribute,"fuzz"))
+            {
+              if (info)
+                s=newSVnv(info->image_info.fuzz);
+              else
+                if (image)
+                  s=newSVnv(image->fuzz);
+              break;
+            }
           break;
         }
         case 'G':
@@ -3264,6 +3279,12 @@ Get(ref,...)
             {
               if (info)
                 s=newSViv(info->image_info.verbose);
+              break;
+            }
+          if (strEQcase(attribute,"view"))
+            {
+              if (info && info->image_info.view)
+                s=newSVpv(info->image_info.view,0);
               break;
             }
           break;

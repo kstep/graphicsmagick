@@ -242,14 +242,17 @@ int main(int argc,char **argv)
     resource_database;
 
   /*
-    Connect to X server.
+    Initialize command line arguments.
   */
   SetNotifyHandlers;
   ReadCommandlLine(argc,&argv);
+  (void) ExpandFilenames(&argc,&argv);
+  /*
+    Set defaults.
+  */
   GetImageInfo(&image_info);
   GetQuantizeInfo(&quantize_info);
   client_name=SetClientName(*argv);
-  (void) ExpandFilenames(&argc,&argv);
   for (i=1; i < argc; i++)
   {
     /*

@@ -285,10 +285,11 @@ int main(int argc,char **argv)
     scene;
 
   /*
-    Display usage profile if there are no command line arguments.
+    Initialize command line arguments.
   */
   ReadCommandlLine(argc,&argv);
   client_name=SetClientName(*argv);
+  (void) ExpandFilenames(&argc,&argv);
   if (argc < 3)
     Usage(client_name);
   /*
@@ -305,7 +306,6 @@ int main(int argc,char **argv)
   /*
     Parse command line.
   */
-  (void) ExpandFilenames(&argc,&argv);
   for (i=1; i < (argc-1); i++)
   {
     option=argv[i];

@@ -400,12 +400,16 @@ int main(int argc,char **argv)
     scene;
 
   /*
-    Initialize program variables.
+    Initialize command line arguments.
   */
   ReadCommandlLine(argc,&argv);
   client_name=SetClientName(*argv);
+  (void) ExpandFilenames(&argc,&argv);
   if (argc < 3)
     Usage(client_name);
+  /*
+    Set defaults.
+  */
   append=0;
   average=False;
   coalesce=False;
@@ -418,7 +422,6 @@ int main(int argc,char **argv)
   /*
     Parse command-line arguments.
   */
-  (void) ExpandFilenames(&argc,&argv);
   if ((argc > 2) && (strcmp("-concatenate",argv[1]) == 0))
     ConcatenateImages(argc,argv);
   for (i=1; i < (argc-1); i++)
