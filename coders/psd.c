@@ -132,6 +132,11 @@ static unsigned int DecodeImage(Image *image,const int channel)
           indexes=GetIndexes(image);
           switch (channel)
           {
+            case -1:
+            {
+              q->opacity=MaxRGB-UpScale(pixel);
+              break;
+            }
             case 0:
             {
               q->red=UpScale(pixel);
@@ -156,7 +161,6 @@ static unsigned int DecodeImage(Image *image,const int channel)
               break;
             }
             case 3:
-            case -1:
             {
               q->opacity=UpScale(pixel);
               break;
@@ -164,7 +168,7 @@ static unsigned int DecodeImage(Image *image,const int channel)
             case 4:
             {
               if (image->colorspace == CMYKColorspace)
-                *indexes=MaxRGB-UpScale(pixel);
+                *indexes=UpScale(pixel);
               break;
             }
             default:
@@ -187,6 +191,11 @@ static unsigned int DecodeImage(Image *image,const int channel)
       indexes=GetIndexes(image);
       switch (channel)
       {
+        case -1:
+        {
+          q->opacity=MaxRGB-UpScale(pixel);
+          break;
+        }
         case 0:
         {
           q->red=UpScale(pixel);
@@ -211,7 +220,6 @@ static unsigned int DecodeImage(Image *image,const int channel)
           break;
         }
         case 3:
-        case -1:
         {
           q->opacity=UpScale(pixel);
           break;
@@ -219,7 +227,7 @@ static unsigned int DecodeImage(Image *image,const int channel)
         case 4:
         {
           if (image->colorspace == CMYKColorspace)
-            *indexes=MaxRGB-UpScale(pixel);
+            *indexes=UpScale(pixel);
           break;
         }
         default:
@@ -399,6 +407,9 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   PSDInfo
     psd_info;
+
+  Quantum
+    pixel;
 
   register int
     i,
@@ -637,57 +648,58 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
               layer_info[i].image->columns,1);
             if (q == (PixelPacket *) NULL)
               break;
-            indexes=GetIndexes(image);
+            indexes=GetIndexes(layer_info[i].image);
             (void) ReadBlob(layer_info[i].image,packet_size*
               layer_info[i].image->columns,(char *) scanline);
-            switch (layer_info[i].channel_info[j].type)
+            indexes=GetIndexes(layer_info[i].image);
+            for (x=0; x < layer_info[i].image->columns; x++)
             {
-              case 0:
+              pixel=scanline[x];
+              switch (layer_info[i].channel_info[j].type)
               {
-                if (layer_info[i].image->storage_class == PseudoClass)
-                  (void) PushImagePixels(layer_info[i].image,IndexQuantum,
-                    scanline);
-                else
-                  (void) PushImagePixels(layer_info[i].image,RedQuantum,
-                    scanline);
-                break;
+                case -1:
+                {
+                  q->opacity=MaxRGB-UpScale(pixel);
+                  break;
+                }
+                case 0:
+                {
+                  q->red=UpScale(pixel);
+                  if (image->storage_class == PseudoClass)
+                    {
+                      indexes[x]=pixel;
+                      *q=image->colormap[pixel];
+                    }
+                  break;
+                }
+                case 1:
+                {
+                  if (image->storage_class == PseudoClass)
+                    q->opacity=UpScale(pixel);
+                  else
+                    q->green=UpScale(pixel);
+                  break;
+                }
+                case 2:
+                {
+                  q->green=UpScale(pixel);
+                  break;
+                }
+                case 3:
+                {
+                  q->opacity=UpScale(pixel);
+                  break;
+                }
+                case 4:
+                {
+                  if (image->colorspace == CMYKColorspace)
+                    indexes[x]=UpScale(pixel);
+                  break;
+                }
+                default:
+                  break;
               }
-              case 1:
-              {
-                if (image->storage_class == PseudoClass)
-                  (void) PushImagePixels(layer_info[i].image,AlphaQuantum,
-                    scanline);
-                else
-                  (void) PushImagePixels(layer_info[i].image,GreenQuantum,
-                    scanline);
-                break;
-              }
-              case 2:
-              {
-                (void) PushImagePixels(layer_info[i].image,BlueQuantum,
-                  scanline);
-                break;
-              }
-              case 3:
-              case -1:
-              {
-                if (layer_info[i].image->colorspace == CMYKColorspace)
-                  (void) PushImagePixels(layer_info[i].image,BlackQuantum,
-                    scanline);
-                else
-                  (void) PushImagePixels(layer_info[i].image,AlphaQuantum,
-                    scanline);
-                break;
-              }
-              case 4:
-              {
-                if (layer_info[i].image->colorspace == CMYKColorspace)
-                  (void) PushImagePixels(layer_info[i].image,AlphaQuantum,
-                    scanline);
-		    break;
-              }
-              default:
-                break;
+              q++;
             }
             if (!SyncImagePixels(layer_info[i].image))
               break;
@@ -786,45 +798,55 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           status=ReadBlob(image,packet_size*image->columns,(char *) scanline);
           if ((status == False) || (q == (PixelPacket *) NULL))
             break;
-          switch (i)
+          indexes=GetIndexes(image);
+          for (x=0; x < image->columns; x++)
           {
-            case 0:
+            pixel=scanline[x];
+            switch (image->matte ? i-1 : i)
             {
-              if (image->storage_class == PseudoClass)
-                (void) PushImagePixels(image,IndexQuantum,scanline);
-              else
-                (void) PushImagePixels(image,RedQuantum,scanline);
-              break;
+              case -1:
+              {
+                q->opacity=MaxRGB-UpScale(pixel);
+                break;
+              }
+              case 0:
+              {
+                q->red=UpScale(pixel);
+                if (image->storage_class == PseudoClass)
+                  {
+                    indexes[x]=pixel;
+                    *q=image->colormap[pixel];
+                  }
+                break;
+              }
+              case 1:
+              {
+                if (image->storage_class == PseudoClass)
+                  q->opacity=UpScale(pixel);
+                else
+                  q->green=UpScale(pixel);
+                break;
+              }
+              case 2:
+              {
+                q->blue=UpScale(pixel);
+                break;
+              }
+              case 3:
+              {
+                q->opacity=UpScale(pixel);
+                break;
+              }
+              case 4:
+              {
+                if (image->colorspace == CMYKColorspace)
+                  *indexes=UpScale(pixel);
+                break;
+              }
+              default:
+                break;
             }
-            case 1:
-            {
-              if (image->storage_class == PseudoClass)
-                (void) PushImagePixels(image,AlphaQuantum,scanline);
-              else
-                (void) PushImagePixels(image,GreenQuantum,scanline);
-              break;
-            }
-            case 2:
-            {
-              (void) PushImagePixels(image,BlueQuantum,scanline);
-              break;
-            }
-            case 3:
-            {
-              if (image->colorspace == CMYKColorspace)
-                (void) PushImagePixels(image,BlackQuantum,scanline);
-              else
-                (void) PushImagePixels(image,AlphaQuantum,scanline);
-              break;
-            }
-            case 4:
-            {
-              if (image->colorspace == CMYKColorspace)
-                (void) PushImagePixels(image,AlphaQuantum,scanline);
-              break;
-            }
-            default:
-              break;
+            q++;
           }
           if (!SyncImagePixels(image))
             break;
