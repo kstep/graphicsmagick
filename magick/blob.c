@@ -489,6 +489,7 @@ MagickExport void DestroyBlobInfo(BlobInfo *blob)
     (void) UnmapBlob(blob->data,blob->length);
   if (blob->semaphore != (SemaphoreInfo *) NULL)
     DestroySemaphoreInfo(&blob->semaphore);
+  memset((void *)blob,0xbf,sizeof(BlobInfo));
   LiberateMemory((void **) &blob);
 }
 

@@ -555,27 +555,27 @@ MagickExport unsigned int ListMagickInfo(FILE *file,ExceptionInfo *exception)
   if (file == (FILE *) NULL)
     file=stdout;
   (void) GetMagickInfo("*",exception);
-#if defined(HasMODULES)
-  {
-    char
-      *module_file,
-      path[MaxTextExtent];
+/* #if defined(SupportMagickModules) */
+/*   { */
+/*     char */
+/*       *module_file, */
+/*       path[MaxTextExtent]; */
 
-    size_t
-      length;
+/*     size_t */
+/*       length; */
 
-    void
-      *blob;
+/*     void */
+/*       *blob; */
 
-    module_file=TagToModule("MIFF");
-    blob=GetModuleBlob(module_file,path,&length,exception);
-    if (blob != (void *) NULL)
-      LiberateMemory((void **) &blob);
-    LiberateMemory((void **) &module_file);
-    GetPathComponent(path,HeadPath,path);
-    (void) fprintf(file,"Path: %.1024s\n\n",path);
-  }
-#endif
+/*     module_file=TagToModule("MIFF"); */
+/*     blob=GetModuleBlob(module_file,path,&length,exception); */
+/*     if (blob != (void *) NULL) */
+/*       LiberateMemory((void **) &blob); */
+/*     LiberateMemory((void **) &module_file); */
+/*     GetPathComponent(path,HeadPath,path); */
+/*     (void) fprintf(file,"Path: %.1024s\n\n",path); */
+/*   } */
+/* #endif */
   (void) fprintf(file,"   Format  Mode  Description\n");
   (void) fprintf(file,"--------------------------------------------------------"
     "-----------------------\n");
@@ -604,10 +604,10 @@ MagickExport unsigned int ListMagickInfo(FILE *file,ExceptionInfo *exception)
               i;
 
             for (i=0; text[i] != (char *) NULL; i++)
-	    			{
-              (void) fprintf(file,"            %.1024s\n",text[i]);
-              LiberateMemory((void **) &text[i]);
-    				}
+              {
+                (void) fprintf(file,"            %.1024s\n",text[i]);
+                LiberateMemory((void **) &text[i]);
+              }
             LiberateMemory((void **) &text);
           }
       }

@@ -114,6 +114,71 @@ else
 XWD=
 endif
 
+BILEVEL_FORMATS = \
+	$(JBIG) \
+	BMP \
+	DIB \
+	FAX \
+	GIF \
+	MONO \
+	OTB \
+	SUN \
+	MIFF \
+	WBMP \
+	XBM
+
+COLORMAPPED_FORMATS = \
+	ART \
+	BMP \
+	DIB \
+	GIF \
+	SUN \
+	MIFF \
+	$(MNG) \
+	PALM \
+	PDB \
+	PCX \
+	PICT \
+	$(PNG) \
+	$(TIFF) \
+	VIFF \
+	XPM \
+	$(XWD)
+
+GRAYSCALE_FORMATS = \
+	FITS \
+	MIFF \
+	$(MNG) \
+	$(JPEG) \
+	$(JP2) \
+	PDB \
+	$(PNG)
+
+TRUECOLOR_FORMATS = \
+	AVS \
+	BMP \
+	DCX \
+	DIB \
+	$(FPX) \
+	$(JPEG) \
+	$(JP2) \
+	$(MNG) \
+	PCD \
+	PCDS \
+	$(PNG) \
+	SUN \
+	MIFF \
+	MTV \
+	P7 \
+	PCX \
+	PICT \
+	PSD \
+	SGI \
+	TGA \
+	$(TIFF) \
+	$(XWD)
+
+
 CHECK_BLOB_FORMATS = \
 	AVS \
 	BMP \

@@ -1921,6 +1921,7 @@ MagickExport void DestroyImage(Image *image)
   DestroyBlobInfo(image->blob);
   if (image->semaphore != (SemaphoreInfo *) NULL)
     DestroySemaphoreInfo(&image->semaphore);
+  memset((void *)image,0xbf,sizeof(Image));
   LiberateMemory((void **) &image);
 }
 
@@ -1976,6 +1977,7 @@ MagickExport void DestroyImageInfo(ImageInfo *image_info)
     DestroyImage(image_info->attributes);
   if (image_info->cache != (void *) NULL)
     DestroyCacheInfo(image_info->cache);
+  memset((void *)image_info,0xbf,sizeof(ImageInfo));
   LiberateMemory((void **) &image_info);
 }
 
