@@ -17,6 +17,7 @@ using namespace std;
 
 #include "Magick++/Image.h"
 #include "Magick++/Functions.h"
+#include "Magick++/Pixels.h"
 #include "Magick++/Include.h"
 
 //
@@ -633,8 +634,6 @@ void Magick::Image::floodFillTexture( unsigned int x_, unsigned int y_,
 {
   modifyImage();
 
-  PixelPacket* pixel;
-
   // Test arguments to ensure they are within the image.
   if ( y_ > rows() || x_ > columns() )
     {
@@ -642,20 +641,13 @@ void Magick::Image::floodFillTexture( unsigned int x_, unsigned int y_,
 		      "Access outside of image boundary" );
     }
 
-  // Retrieve single pixel at co-ordinate from pixel cache
-  ViewInfo* view = OpenCacheView( image() );
-  if ( (pixel = GetCacheView( view, x_, y_, 1, 1 )) == 0 )
-    {
-      CloseCacheView(view);
-      throwImageException();
-    }
-
-  PixelPacket pixelValue = *pixel;
-
-  ColorFloodfillImage ( image(), &pixelValue,
+  // Get pixel view
+  Pixels pixels(*this);
+  // Fill image
+  ColorFloodfillImage ( image(),
+			pixels.getPixels(x_, y_, 1, 1 ),
 			const_cast<Image &>(texture_).image(),
 			x_, y_, FloodfillMethod );
-  CloseCacheView(view);
   throwImageException();
 }
 void Magick::Image::floodFillTexture( const Magick::Geometry &point_,
@@ -672,12 +664,7 @@ void Magick::Image::floodFillTexture( unsigned int x_, unsigned int y_,
 				      const Magick::Color &borderColor_ )
 {
   modifyImage();
-
-  PixelPacket target;
-  target.red = borderColor_.redQuantum();
-  target.green = borderColor_.greenQuantum();
-  target.blue = borderColor_.blueQuantum();
-
+  PixelPacket target = borderColor_;
   ColorFloodfillImage ( image(), &target,
 			const_cast<Image &>(texture_).image(),
 			x_, y_, FillToBorderMethod );
@@ -828,12 +815,9 @@ void Magick::Image::matteFloodfill ( const Color &target_ ,
 		      "Target color argument is invalid" );
     }
 
-  PixelPacket rllPacket;
-  rllPacket.red = target_.redQuantum();
-  rllPacket.green = target_.greenQuantum();
-  rllPacket.blue = target_.blueQuantum();
-
   modifyImage();
+
+  PixelPacket rllPacket = target_;
   MatteFloodfillImage ( image(), &rllPacket, matte_,
 				   x_, y_, method_ );
   throwImageException();
@@ -1568,7 +1552,7 @@ Magick::Color Magick::Image::boxColor ( void ) const
 }
 
 // Pixel cache threshold.  Once this threshold is exceeded, all
-// subsequent pixels cach operations are to/from disk.
+// subsequent pixels cache operations are to/from disk.
 // This setting is shared by all Image objects.
 /* static */
 void Magick::Image::cacheThreshold ( unsigned int threshold_ )
@@ -1683,11 +1667,8 @@ void Magick::Image::colorMap ( unsigned int index_,
 
       if ( image()->colormap )
 	{
-	  PixelPacket *color = image()->colormap + index_;
-	  
-	  color->red   = color_.redQuantum();
-	  color->green = color_.greenQuantum();
-	  color->blue  = color_.blueQuantum();
+	  // FIXME: verify that accessing colormap member this way is still valid.
+	  *(image()->colormap + index_) = color_;
 	  return;
 	}
 
@@ -1708,6 +1689,7 @@ Magick::Color Magick::Image::colorMap ( unsigned int index_ ) const
 			  "Color index is greater than maximum image color index");
 	}
 
+      // FIXME: verify that accessing colormap member this way is still valid.
       PixelPacket *color = constImage()->colormap + index_;
 
       return Magick::Color( color->red, color->green, color->blue );
@@ -2235,32 +2217,20 @@ void Magick::Image::pixelColor ( unsigned int x_, unsigned int y_,
     {
       // Test arguments to ensure they are within the image.
       if ( y_ > rows() || x_ > columns() )
-        {
-	  throwException( OptionError,
-			  "Access outside of image boundary" );
-        }
-
+	throwException( OptionError,
+			"Access outside of image boundary" );
+      
       modifyImage();
 
       // Set image to DirectClass
       classType( DirectClass );
 
-      // Retrieve single pixel at co-ordinate from pixel cache
-      ViewInfo* view = OpenCacheView( image() );
-      PixelPacket *pixel;
-      if ( !( pixel=GetCacheView( view, x_, y_, 1, 1 ) ) )
-	{
-	  CloseCacheView(view);
-	  throwImageException();
-	  return;  // Shouldn't get here if GetPixelCache reports error
-	}
-
-      // Set pixel
-      *pixel = color_;
-
+      // Get pixel view
+      Pixels pixels(*this);
+      // Set pixel value
+      *(pixels.getPixels(x_, y_, 1, 1 )) = color_;
       // Tell ImageMagick that pixels have been updated
-      SyncCacheView( view );
-      CloseCacheView(view);
+      pixels.syncPixels();
 
       return;
     }
@@ -2271,26 +2241,15 @@ void Magick::Image::pixelColor ( unsigned int x_, unsigned int y_,
 Magick::Color Magick::Image::pixelColor ( unsigned int x_,
 					  unsigned int y_ )
 {
-  PixelPacket* pixel;
-
   // Test arguments to ensure they are within the image.
   if ( y_ > rows() || x_ > columns() )
-    {
-      throwException( OptionError,
-		      "Access outside of image boundary" );
-    }
+    throwException( OptionError,
+		    "Access outside of image boundary" );
 
-  // Retrieve single pixel at co-ordinate from pixel cache
-  ViewInfo* view = OpenCacheView( image() );
-  if ( (pixel = GetCacheView( view, x_, y_, 1, 1 )) == 0 )
-  {
-    CloseCacheView(view);
-    throwImageException();
-    return Color();  // Shouldn't get here if GetPixelCache reports error
-  }
-  CloseCacheView(view);
-  return Color ( *pixel );
-
+  // Get pixel view
+  Pixels pixels(*this);
+  // Return value
+  return Color( *(pixels.getPixels(x_, y_, 1, 1 )) );
 }
 
 // Preferred size and location of an image canvas.
