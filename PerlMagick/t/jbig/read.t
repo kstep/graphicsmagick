@@ -13,4 +13,5 @@ require 't/subroutines.pl';
 
 chdir 't/jbig' || die 'Cd failed';
 
-testRead( 'input.jbig', 'c33e3eda4668d04bef53bf256f689888');
+testRead( 'input.jbig', 'c33e3eda4668d04bef53bf256f689888',
+                        '9967d7d781c6e3792b2f63128ff6369c');
