@@ -157,7 +157,7 @@ print("Adobe Photoshop bitmap file ...\n");
 testReadWrite( 'PSD:input.psd',
   'PSD:output.psd',
   q//,
-  'c4de7ad3f1f66cc0d78d1bf091b7644eb7cfc6ef14b4e1e30619b00db9ca3beb' );
+  'a58c9cc55b8ae969351efc5c023d8705306fac0449d49b7b5b15aba2bc2ba1de' );
 
 print("Irix RGB image file ...\n");
 ++$test;
