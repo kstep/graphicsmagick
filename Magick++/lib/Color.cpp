@@ -151,9 +151,9 @@ Magick::Color::operator std::string() const
 #if defined(QuantumLeap)
   colorstr << "#"
 	   << hex
-	   << setw(4) << (unsigned int)redQuantum()
-	   << setw(4) << (unsigned int)greenQuantum()
-	   << setw(4) << (unsigned int)blueQuantum();
+	   << setw(4) << static_cast<unsigned int>(redQuantum())
+	   << setw(4) << static_cast<unsigned int>(greenQuantum())
+	   << setw(4) << static_cast<unsigned int>(blueQuantum());
   if ( _pixelType == RGBAPixel )
     colorstr << hex << setw(4) << (unsigned int)alphaQuantum();
 #else
