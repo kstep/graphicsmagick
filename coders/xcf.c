@@ -705,7 +705,7 @@ static int ReadOneLayer( Image* image, XCFDocInfo* inDocInfo, XCFLayerInfo* outL
   /* read the layer properties! */
 	foundPropEnd = 0;
   while ( !foundPropEnd ) {
-	PropType		prop_type = ReadBlobMSBLong(image);
+	PropType		prop_type = (PropType) ReadBlobMSBLong(image);
 	unsigned long	prop_size = ReadBlobMSBLong(image);
 
 	  switch (prop_type)
@@ -929,7 +929,7 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   /* read properties */
   while ( !foundPropEnd ) {
-	PropType		prop_type = ReadBlobMSBLong(image);
+	PropType		prop_type = (PropType) ReadBlobMSBLong(image);
 	unsigned long	prop_size = ReadBlobMSBLong(image);
 
 	switch ( prop_type ) {
