@@ -3101,11 +3101,15 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
         GetToken(q,&q,token);
         length=1;
         t=token;
-        for (s=token; *s != '\0'; s=t+1)
+        for (s=token; *s != '\0'; s=t)
         {
-          strtod(s,&t);
-          if (s != t)
-            length++;
+          (void) strtod(s,&t);
+          if (s == t)
+            {
+              t++;
+              continue;
+            }
+          length++;
         }
         if (i > (long) (number_points-6*BezierQuantum*length/3-1))
           {
