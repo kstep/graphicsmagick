@@ -1244,52 +1244,29 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
   if (LocaleCompare(image_info->magick,"PTIF") == 0)
     {
       Image
-        *next_image,
         *pyramid_image;
-
-      unsigned int
-        height,
-        width;
 
       /*
         Pyramid encode TIFF image.
       */
-      pyramid_image=(Image *) NULL;
-      if (image->tile_info.width == 0)
-        image->tile_info.width=64;
-      if (image->tile_info.height == 0)
-        image->tile_info.height=64;
-      width=image->columns;
-      height=image->rows;
+      pyramid_image=CloneImage(image,0,0,True,&image->exception);
+      if (pyramid_image == (Image *) NULL)
+        ThrowWriterException(FileOpenWarning,
+          "Unable to pyramid encode image",image);
       do
       {
-        image->orphan=True;
-        next_image=ZoomImage(image,width,height,&image->exception);
-        if (next_image == (Image *) NULL)
+        pyramid_image->orphan=True;
+        pyramid_image->next=ZoomImage(pyramid_image,pyramid_image->columns >> 1,
+          pyramid_image->rows >>1,&image->exception);
+        if (pyramid_image->next == (Image *) NULL)
           ThrowWriterException(FileOpenWarning,
             "Unable to pyramid encode image",image);
-        next_image->next=(Image *) NULL;
-        if (pyramid_image == (Image *) NULL)
-          pyramid_image=next_image;
-        else
-          {
-            register Image
-              *p;
-
-            /*
-              Link image into pyramid image list.
-            */
-            for (p=pyramid_image; p->next != (Image *) NULL; p=p->next);
-            next_image->previous=p;
-            p->next=next_image;
-          }
-        width=(width+1)/2;
-        height=(height+1)/2;
-        if ((width == 0) || (height == 0))
-          break;
-      } while (((2*width) >= image->tile_info.width) ||
-               ((2*height) >= image->tile_info.height));
+        pyramid_image->next->previous=pyramid_image;
+        pyramid_image=pyramid_image->next;
+      } while ((pyramid_image->columns > 64) && (pyramid_image->rows > 64));
       image=pyramid_image;
+      while (image->previous != (Image *) NULL)
+        image=image->previous;
       adjoin=True;
     }
   /*
