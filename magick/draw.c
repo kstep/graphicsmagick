@@ -1294,15 +1294,15 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
     if (bounds.y2 >= image->rows)
       bounds.y2=image->rows-1.0;
     alpha=1.0/MaxRGB;
-    target.y=ceil(bounds.y1-0.5);
+    target.y=(int) (bounds.y1+0.5);
     for (y=0; y <= (int) (bounds.y2-bounds.y1+0.5); y++)
     {
       /*
         Fill the primitive on the image.
       */
-      target.x=ceil(bounds.x1-0.5);
+      target.x=(int) (bounds.x1+0.5);
       n=(int) (bounds.x2-bounds.x1+0.5);
-      q=GetImagePixels(image,(int) target.x,(int) target.y,n+1,1);
+      q=GetImagePixels(image,target.x,target.y,n+1,1);
       if (q == (PixelPacket *) NULL)
         break;
       for (x=0; x <= n; x++)
@@ -2000,14 +2000,16 @@ static void GenerateRectangle(PrimitiveInfo *primitive_info,
   p=primitive_info;
   GeneratePoint(p,start);
   p+=p->coordinates;
-  point.x=start.x;
-  point.y=end.y;
+  point.x=start.x+end.x;
+  point.y=start.y;
   GeneratePoint(p,point);
   p+=p->coordinates;
-  GeneratePoint(p,end);
+  point.x=start.x+end.x;
+  point.y=start.y+end.y;
+  GeneratePoint(p,point);
   p+=p->coordinates;
-  point.x=end.x;
-  point.y=start.y;
+  point.x=start.x;
+  point.y=start.y+end.y;
   GeneratePoint(p,point);
   p+=p->coordinates;
   GeneratePoint(p,start);
