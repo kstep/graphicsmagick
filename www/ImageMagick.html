@@ -193,7 +193,7 @@ The <strong>ImageMagick</strong> utilities recognize the following image formats
 <tr><td>          </td><td>    </td><td> Medicine image</td></tr>
 <tr><td><img SRC="../images/ball.png" ALT="*">DCX      </td><td>*rw+</td><td>ZSoft IBM PC multi-page Paintbrush</td></tr>
 <tr><td><img SRC="../images/ball.png" ALT="*">DIB      </td><td>*rw+</td><td>Microsoft Windows bitmap image</td></tr>
-<tr><td><img SRC="../images/ball.png" ALT="*">DPS      </td><td>*r--</td><td>Display Postscript</td></tr>
+<tr><td><img SRC="../images/ball.png" ALT="*">DPS      </td><td>*r--</td><td>Display PostScript</td></tr>
 <tr><td><img SRC="../images/ball.png" ALT="*">DPX      </td><td>*r--</td><td>Digital Moving Picture Exchange</td></tr>
 <tr><td><img SRC="../images/ball.png" ALT="*">EPDF     </td><td>*rw-</td><td>Encapsulated Portable Document Format</td></tr>
 <tr><td><img SRC="../images/ball.png" ALT="*">EPI      </td><td>*rw-</td><td>Adobe Encapsulated PostScript</td></tr>
@@ -1315,7 +1315,7 @@ The <strong>-colors</strong> or <strong>-monochrome</strong> option is required 
 to take effect.
 </font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-Use <strong>+dither</strong> to turn off dithering and to render Postscript without
+Use <strong>+dither</strong> to turn off dithering and to render PostScript without
 text or graphic aliasing.
 </font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
@@ -1344,7 +1344,7 @@ and pixel operations.  The shape primitives are
      circle          x0,y0 x1,y1
      polyline        x0,y0  ...  xn,yn
      polygon         x0,y0  ...  xn,yn
-     bezier          x0,y0  ...  xn,yn
+     Bezier          x0,y0  ...  xn,yn
      path            path specification
      image           operator x0,y0 w,h filename
 </pre>
@@ -1412,7 +1412,7 @@ that extends to 150,150 use:
 (See <a href="http://www.w3.org/TR/SVG/paths.html">Paths</a>)
 represent an outline of an object which is defined in terms of
 moveto (set a new current point), lineto (draw a straight line),
-curveto (draw a curve using a cubic bezier), arc (elliptical or
+curveto (draw a curve using a cubic Bezier), arc (elliptical or
 circular arc) and closepath (close the current shape by drawing a line
 to the last moveto) elements. Compound paths (i.e., a path with
 subpaths, each consisting of a single moveto followed by one or more
@@ -1703,9 +1703,9 @@ width=15><b><font face="Helvetica, Arial"
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>use this font when annotating the image with text</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-You can tag a font to specify whether it is a Postscript, Truetype, or OPTION1
-font.  For example, <tt>Arial.ttf</tt> is a Truetype font, <tt>ps:helvetica</tt>
-is Postscript, and <tt>x:fixed</tt> is OPTION1.
+You can tag a font to specify whether it is a PostScript, TrueType, or OPTION1
+font.  For example, <tt>Arial.ttf</tt> is a TrueType font, <tt>ps:helvetica</tt>
+is PostScript, and <tt>x:fixed</tt> is OPTION1.
 </font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
@@ -2564,7 +2564,7 @@ width=15><b><font face="Helvetica, Arial"
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Use this option to specify the dimensions of the
 <em>PostScript</em> page
-in dots per inch or a TEXT page in pixels. The choices for a Postscript
+in dots per inch or a TEXT page in pixels. The choices for a PostScript
 page are:
 </font></td></tr></table>
 <pre>
@@ -2617,12 +2617,12 @@ To position a GIF image, use <strong>-page</strong><em>{+-}&lt;x&gt;{+-}&lt;y&gt
 (e.g. -page +100+200).
 </font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-For a Postscript page, the image is sized as in <strong>-geometry</strong> and positioned
+For a PostScript page, the image is sized as in <strong>-geometry</strong> and positioned
 relative to the lower left hand corner of the page by
 {+-}&lt;<strong>x</strong><em>offset</em>&gt;{+-}&lt;<strong>y</strong>
 <em>offset&gt;</em>. Use
 <tt>-page 612x792&gt;</tt>, for example, to center the
-image within the page. If the image size exceeds the Postscript page, it
+image within the page. If the image size exceeds the PostScript page, it
 is reduced to fit the page.
 The default gravity for the <strong>-page</strong>
 option is <em>NorthWest</em>, i.e., positive <strong>x</strong> and
@@ -2714,7 +2714,7 @@ width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
     <a name="-pointsize">-pointsize</a> <i>&lt;value&gt;</i>
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>pointsize of the Postscript, OPTION1, or TrueType font</td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>pointsize of the PostScript, OPTION1, or TrueType font</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -3432,8 +3432,8 @@ Specifies the name of the preferred font to use in fixed (typewriter style)
 formatted text.  The default is 14 point <em>Courier</em>.
 </font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-You can tag a font to specify whether it is a Postscript, Truetype, or
-OPTION1 font.  For example, <tt>Courier.ttf</tt> is a Truetype font
+You can tag a font to specify whether it is a PostScript, TrueType, or
+OPTION1 font.  For example, <tt>Courier.ttf</tt> is a TrueType font
 and <tt>x:fixed</tt> is OPTION1.
 </font></td></tr></table>
 <table BORDER=0 WIDTH="94%">

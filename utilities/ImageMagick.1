@@ -110,7 +110,7 @@ The \fBImageMagick\fP utilities recognize the following image formats:
                     Medicine image
  o  DCX       *rw+ ZSoft IBM PC multi-page Paintbrush
  o  DIB       *rw+ Microsoft Windows bitmap image
- o  DPS       *r-- Display Postscript
+ o  DPS       *r-- Display PostScript
  o  DPX       *r-- Digital Moving Picture Exchange
  o  EPDF      *rw- Encapsulated Portable Document Format
  o  EPI       *rw- Adobe Encapsulated PostScript
@@ -979,7 +979,7 @@ The \fB-colors\fP or \fB-monochrome\fP option is required for this option
 to take effect.
 
 
-Use \fB+dither\fP to turn off dithering and to render Postscript without
+Use \fB+dither\fP to turn off dithering and to render PostScript without
 text or graphic aliasing.
 
 .TP
@@ -1000,7 +1000,7 @@ and pixel operations.  The shape primitives are
      circle          x0,y0 x1,y1
      polyline        x0,y0  ...  xn,yn
      polygon         x0,y0  ...  xn,yn
-     bezier          x0,y0  ...  xn,yn
+     Bezier          x0,y0  ...  xn,yn
      path            path specification
      image           operator x0,y0 w,h filename
 
@@ -1063,7 +1063,7 @@ that extends to 150,150 use:
 (See Paths)
 represent an outline of an object which is defined in terms of
 moveto (set a new current point), lineto (draw a straight line),
-curveto (draw a curve using a cubic bezier), arc (elliptical or
+curveto (draw a curve using a cubic Bezier), arc (elliptical or
 circular arc) and closepath (close the current shape by drawing a line
 to the last moveto) elements. Compound paths (i.e., a path with
 subpaths, each consisting of a single moveto followed by one or more
@@ -1254,9 +1254,9 @@ reflect the scanlines in the horizontal direction.
 .B "-font \fI<name>"\fP
 \fRuse this font when annotating the image with text
 
-You can tag a font to specify whether it is a Postscript, Truetype, or OPTION1
-font.  For example, Arial.ttf is a Truetype font, ps:helvetica
-is Postscript, and x:fixed is OPTION1.
+You can tag a font to specify whether it is a PostScript, TrueType, or OPTION1
+font.  For example, Arial.ttf is a TrueType font, ps:helvetica
+is PostScript, and x:fixed is OPTION1.
 
 .TP
 .B "-foreground \fI<color>"\fP
@@ -1782,7 +1782,7 @@ See \fB-fill\fP for more details.
 
 Use this option to specify the dimensions of the
 \fIPostScript\fP page
-in dots per inch or a TEXT page in pixels. The choices for a Postscript
+in dots per inch or a TEXT page in pixels. The choices for a PostScript
 page are:
 
 
@@ -1834,12 +1834,12 @@ To position a GIF image, use \fB-page\fP\fI{+-}<x>{+-}<y>\fP
 (e.g. -page +100+200).
 
 
-For a Postscript page, the image is sized as in \fB-geometry\fP and positioned
+For a PostScript page, the image is sized as in \fB-geometry\fP and positioned
 relative to the lower left hand corner of the page by
 {+-}<\fBx\fP\fIoffset\fP>{+-}<\fBy\fP
 \fIoffset>\fP. Use
 -page 612x792>, for example, to center the
-image within the page. If the image size exceeds the Postscript page, it
+image within the page. If the image size exceeds the PostScript page, it
 is reduced to fit the page.
 The default gravity for the \fB-page\fP
 option is \fINorthWest\fP, i.e., positive \fBx\fP and
@@ -1883,7 +1883,7 @@ section of \fIX(1)\fP.
 \fRefficiently determine image characteristics
 .TP
 .B "-pointsize \fI<value>"\fP
-\fRpointsize of the Postscript, OPTION1, or TrueType font
+\fRpointsize of the PostScript, OPTION1, or TrueType font
 .TP
 .B "-preview \fI<type>"\fP
 \fRimage preview type
@@ -2315,8 +2315,8 @@ Specifies the name of the preferred font to use in fixed (typewriter style)
 formatted text.  The default is 14 point \fICourier\fP.
 
 
-You can tag a font to specify whether it is a Postscript, Truetype, or
-OPTION1 font.  For example, Courier.ttf is a Truetype font
+You can tag a font to specify whether it is a PostScript, TrueType, or
+OPTION1 font.  For example, Courier.ttf is a TrueType font
 and x:fixed is OPTION1.
 
 .TP
