@@ -23,7 +23,7 @@ int main(int argc,char **argv)
     }
 
   // Initialize ImageMagick install location for Windows
-  MagickIncarnate(*argv);
+  InitializeMagick(*argv);
 
   std::string filter_type(argv[1]);
   std::string input_file(argv[3]);

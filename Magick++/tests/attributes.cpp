@@ -18,7 +18,7 @@ int main( int /*argc*/, char ** argv)
 {
 
   // Initialize ImageMagick install location for Windows
-  MagickIncarnate(*argv);
+  InitializeMagick(*argv);
 
   int failures=0;
 

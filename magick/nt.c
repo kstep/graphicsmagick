@@ -652,7 +652,7 @@ MagickExport char *NTGetExecutionPath(void)
 %
 %   Method NTGetLastError returns the last error that occurred.
 %
-%  The format of the lt_dlerror method is:
+%  The format of the NTGetLastError method is:
 %
 %      char *NTGetLastError(void)
 %

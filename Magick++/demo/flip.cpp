@@ -23,7 +23,7 @@ int main( int /*argc*/, char ** argv)
 {
 
   // Initialize ImageMagick install location for Windows
-  MagickIncarnate(*argv);
+  InitializeMagick(*argv);
 
   string srcdir("");
   if(getenv("srcdir") != 0)
