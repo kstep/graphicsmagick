@@ -115,7 +115,16 @@ static Image *ReadMVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
       SegmentInfo
         bounds;
+
+      unsigned int
+        status;
  
+      /*
+        Determine size of image canvas.
+      */
+      status=OpenBlob(image_info,image,ReadBinaryType);
+      if (status == False)
+        ThrowReaderException(FileOpenWarning,"Unable to open file",image);
       while (GetStringBlob(image,primitive) != (char *) NULL)
       {
         if (LocaleNCompare(BoundingBox,primitive,Extent(BoundingBox)) != 0)
@@ -124,8 +133,11 @@ static Image *ReadMVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
           &bounds.y1,&bounds.x2,&bounds.y2);
         image->columns=bounds.x2-bounds.x1;
         image->rows=bounds.y2-bounds.y1;
+        break;
       }
     }
+  if ((image->columns == 0) || (image->rows == 0))
+    ThrowReaderException(OptionWarning,"Must specify image size",image);
   SetImage(image,OpaqueOpacity);
   draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
   (void) strcpy(filename,"@");
