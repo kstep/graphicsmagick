@@ -803,9 +803,6 @@ Export int GetGeometry(const char *image_geometry,int *x,int *y,
 */
 Export int GlobExpression(const char *expression,const char *pattern)
 {
-  ImageInfo
-    *image_info;
-
   unsigned int
     done,
     exempt;
@@ -822,15 +819,20 @@ Export int GlobExpression(const char *expression,const char *pattern)
   /*
     Determine if pattern is a subimage, i.e. img0001.pcd[2].
   */
-  image_info=CloneImageInfo((ImageInfo *) NULL);
-  (void) strcpy(image_info->filename,pattern);
-  SetImageInfo(image_info,True);
-  exempt=(Latin1Compare(image_info->magick,"VID") == 0) ||
-    (image_info->subimage &&
-    (Latin1Compare(expression,image_info->filename) == 0));
-  DestroyImageInfo(image_info);
-  if (exempt)
-    return(False);
+  if (strchr( pattern, '['))
+  {
+    ImageInfo
+      *image_info;
+    image_info=CloneImageInfo((ImageInfo *) NULL);
+    (void) strcpy(image_info->filename,pattern);
+    SetImageInfo(image_info,True);
+    exempt=(Latin1Compare(image_info->magick,"VID") == 0) ||
+      (image_info->subimage &&
+       (Latin1Compare(expression,image_info->filename) == 0));
+    DestroyImageInfo(image_info);
+    if (exempt)
+      return(False);
+  }
   /*
     Evaluate glob expression.
   */
