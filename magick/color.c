@@ -552,14 +552,16 @@ MagickExport char **GetColorList(const char *pattern,int *number_colors)
 %
 %  The format of the GetColorTuple method is:
 %
-%      GetColorTuple(const Image *image,const PixelPacket *color,
-%        unsigned int hex,char *tuple)
+%      GetColorTuple(const PixelPacket *color,const unsigned int depth,
+%        const unsigned int matte,const unsigned int hex,char *tuple)
 %
 %  A description of each parameter follows.
 %
-%    o image: The image.
-%
 %    o color: The color.
+%
+%    o depth: The color depth.
+%
+%    o matte: A value other than zero returns the opacity in the tuple.
 %
 %    o hex: A value other than zero returns the tuple in a hexidecimal format.
 %
@@ -567,16 +569,15 @@ MagickExport char **GetColorList(const char *pattern,int *number_colors)
 %
 %
 */
-MagickExport void GetColorTuple(const Image *image,const PixelPacket *color,
-  unsigned int hex,char *tuple)
+MagickExport void GetColorTuple(const PixelPacket *color,
+  const unsigned int depth,const unsigned int matte,const unsigned int hex,
+	char *tuple)
 {
-  assert(image != (const Image *) NULL);
-  assert(image->signature == MagickSignature);
   assert(color != (const PixelPacket *) NULL);
   assert(tuple != (char *) NULL);
-  if (image->depth <= 8)
+  if (depth <= 8)
     {
-      if (image->matte)
+      if (matte)
         {
           FormatString(tuple,
             hex ? "#%02x%02x%02x%02x" : "(%3u,%3u,%3u,%3u)",
@@ -589,7 +590,7 @@ MagickExport void GetColorTuple(const Image *image,const PixelPacket *color,
         ScaleQuantumToByte(color->blue));
       return;
     }
-  if (image->matte)
+  if (matte)
     {
       FormatString(tuple,
         hex ? "#%04x%04x%04x%04x" : "(%5u,%5u,%5u,%5u)",
@@ -1585,7 +1586,7 @@ MagickExport unsigned int QueryColorname(const Image *image,
         return(True);
       }
     }
-  GetColorTuple(image,color,True,name);
+  GetColorTuple(color,image->depth,image->matte,True,name);
   return(False);
 }
 
