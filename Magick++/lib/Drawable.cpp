@@ -11,13 +11,13 @@
 #include <iostream>
 #include <strstream>
 
-using namespace std;
-
 #include "Magick++/Drawable.h"
 
+using namespace Magick;
+using namespace std;
 
 std::ostream& Magick::operator<<( std::ostream& stream_,
-				  const Magick::Coordinate &coordinate_)
+                                  const Magick::Coordinate& coordinate_ )
 {
   stream_ << coordinate_.first << "," << coordinate_.second;
   return stream_;

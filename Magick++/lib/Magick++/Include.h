@@ -64,6 +64,7 @@ namespace MagickLib
 #undef VERSION
 
 #include <magick/api.h>
+#undef inline // Remove possible definition from config.h
 
 #undef class
 }

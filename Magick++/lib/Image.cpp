@@ -303,22 +303,22 @@ void Magick::Image::colorize ( const Color &opaqueColor_,
 			       const Color &penColor_ )
 {
   if ( !opaqueColor_.isValid() )
-    {
-      throwException( OptionError,
-		      "Opaque color argument is invalid");
-    }
+  {
+    throwExceptionExplicit( OptionError,
+			    "Opaque color argument is invalid");
+  }
 
   if ( !penColor_.isValid() )
-    {
-      throwException( OptionError,
-		      "Pen color argument is invalid");
-    }
+  {
+    throwExceptionExplicit( OptionError,
+			    "Pen color argument is invalid");
+  }
 
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
   MagickLib::Image* newImage =
-    ColorizeImage ( image(), std::string(opaqueColor_).c_str(),
-		    penColor_, &exceptionInfo );
+  ColorizeImage ( image(), std::string(opaqueColor_).c_str(),
+		  penColor_, &exceptionInfo );
   replaceImage( newImage );
   throwException( exceptionInfo );
 }
@@ -637,10 +637,10 @@ void Magick::Image::floodFillTexture( unsigned int x_, unsigned int y_,
 
   // Test arguments to ensure they are within the image.
   if ( y_ > rows() || x_ > columns() )
-    {
-      throwException( OptionError,
-		      "Access outside of image boundary" );
-    }
+  {
+    throwExceptionExplicit( OptionError,
+			    "Access outside of image boundary" );
+  }
 
   // Set drawing texture
   options()->penTexture(texture_.constImage());
@@ -656,7 +656,7 @@ void Magick::Image::floodFillTexture( unsigned int x_, unsigned int y_,
                           x_, // const int x_offset
                           y_, // const int y_offset
                           FloodfillMethod // const PaintMethod method
-                          );
+      );
   throwImageException();
 }
 void Magick::Image::floodFillTexture( const Magick::Geometry &point_,
@@ -827,16 +827,16 @@ void Magick::Image::matteFloodfill ( const Color &target_ ,
 				     Magick::PaintMethod method_ )
 {
   if ( !target_.isValid() )
-    {
-      throwException( OptionError,
-		      "Target color argument is invalid" );
-    }
+  {
+    throwExceptionExplicit( OptionError,
+			    "Target color argument is invalid" );
+  }
 
   modifyImage();
 
   PixelPacket rllPacket = target_;
   MatteFloodfillImage ( image(), rllPacket, matte_,
-				   x_, y_, method_ );
+			x_, y_, method_ );
   throwImageException();
 }
 
@@ -910,15 +910,15 @@ void Magick::Image::opaque ( const Color &opaqueColor_,
 			     const Color &penColor_ )
 {
   if ( !opaqueColor_.isValid() )
-    {
-      throwException( OptionError,
-		      "Opaque color argument is invalid" );
-    }
+  {
+    throwExceptionExplicit( OptionError,
+			    "Opaque color argument is invalid" );
+  }
   if ( !penColor_.isValid() )
-    {
-      throwException( OptionError,
-		      "Pen color argument is invalid" );
-    }
+  {
+    throwExceptionExplicit( OptionError,
+			    "Pen color argument is invalid" );
+  }
 
   modifyImage();
   OpaqueImage ( image(), opaqueColor_, penColor_ );
@@ -1319,10 +1319,10 @@ void Magick::Image::transform ( const Geometry &imageGeometry_,
 void Magick::Image::transparent ( const Color &color_ )
 {
   if ( !color_.isValid() )
-    {
-      throwException( OptionError,
-		      "Color argument is invalid" );
-    }
+  {
+    throwExceptionExplicit( OptionError,
+			    "Color argument is invalid" );
+  }
 
   std::string color = color_;
 
@@ -1679,20 +1679,20 @@ void Magick::Image::colorMap ( unsigned int index_,
 			       const Color &color_ )
 {
   if ( !color_.isValid() )
-    throwException( OptionError,
-		    "Color argument is invalid");
+    throwExceptionExplicit( OptionError,
+			    "Color argument is invalid");
   
   if ( constImage()->c_class != PseudoClass )
-    throwException( OptionError,
-		    "Image class does not support colormap");
+    throwExceptionExplicit( OptionError,
+			    "Image class does not support colormap");
 
   if ( index_ > constImage()->colors )
-    throwException( OptionError,
-		    "Color index is greater than maximum image color index");
+    throwExceptionExplicit( OptionError,
+			    "Color index is greater than maximum image color index");
 
   if ( !constImage()->colormap )
-    throwException( OptionError,
-		    "Image does not contain colormap");
+    throwExceptionExplicit( OptionError,
+			    "Image does not contain colormap");
 
   modifyImage();
 
@@ -1702,16 +1702,16 @@ void Magick::Image::colorMap ( unsigned int index_,
 Magick::Color Magick::Image::colorMap ( unsigned int index_ ) const
 {
   if ( constImage()->c_class != PseudoClass )
-    throwException( OptionError,
-		    "Image class does not support colormap");
+    throwExceptionExplicit( OptionError,
+			    "Image class does not support colormap");
 
   if ( !constImage()->colormap )
-    throwException( CorruptImageError,
-		    "Image does not contain colormap");
+    throwExceptionExplicit( CorruptImageError,
+			    "Image does not contain colormap");
 
   if ( index_ > constImage()->colors )
-    throwException( OptionError,
-		    "Color index is greater than maximum image color index");
+    throwExceptionExplicit( OptionError,
+			    "Color index is greater than maximum image color index");
 
   PixelPacket *color = constImage()->colormap + index_;
   return Magick::Color( color->red, color->green, color->blue );
@@ -1860,8 +1860,8 @@ std::string Magick::Image::directory ( void ) const
   if ( constImage()->directory )
     return std::string( constImage()->directory );
 
-  throwException( CorruptImageWarning,
-		  "Image does not contain a directory");
+  throwExceptionExplicit( CorruptImageWarning,
+			  "Image does not contain a directory");
 
   return std::string();
 }
@@ -1933,14 +1933,14 @@ std::string Magick::Image::format ( void ) const
 {
   //  return options()->format ( );
   const MagickInfo * magick_info
-    = GetMagickInfo( constImage()->magick );
+  = GetMagickInfo( constImage()->magick );
 
   if (( magick_info != (MagickInfo *)0 ) && 
       ( *magick_info->description != '\0' ))
     return std::string(magick_info->description);
 
-  throwException( CorruptImageWarning,
-		  "Unrecognized image magick type");
+  throwExceptionExplicit( CorruptImageWarning,
+			  "Unrecognized image magick type");
 
   return std::string();
 }
@@ -1953,12 +1953,12 @@ double Magick::Image::gamma ( void ) const
 Magick::Geometry Magick::Image::geometry ( void ) const
 {
   if ( constImage()->geometry )
-    {
-      return Geometry(constImage()->geometry);
-    }
+  {
+    return Geometry(constImage()->geometry);
+  }
 
-  throwException( OptionWarning,
-		  "Image does not contain a geometry");
+  throwExceptionExplicit( OptionWarning,
+			  "Image does not contain a geometry");
 
   return Geometry();
 }
@@ -2174,8 +2174,8 @@ Magick::Geometry Magick::Image::montageGeometry ( void ) const
   if ( constImage()->montage )
     return Magick::Geometry(constImage()->montage);
 
-  throwException( CorruptImageWarning,
-		  "Image does not contain a montage" );
+  throwExceptionExplicit( CorruptImageWarning,
+			  "Image does not contain a montage" );
 
   return Magick::Geometry();
 }
@@ -2237,37 +2237,37 @@ void Magick::Image::pixelColor ( unsigned int x_, unsigned int y_,
 				 const Color &color_ )
 {
   if ( color_.isValid() )
-    {
-      // Test arguments to ensure they are within the image.
-      if ( y_ > rows() || x_ > columns() )
-	throwException( OptionError,
-			"Access outside of image boundary" );
+  {
+    // Test arguments to ensure they are within the image.
+    if ( y_ > rows() || x_ > columns() )
+      throwExceptionExplicit( OptionError,
+			      "Access outside of image boundary" );
       
-      modifyImage();
+    modifyImage();
 
-      // Set image to DirectClass
-      classType( DirectClass );
+    // Set image to DirectClass
+    classType( DirectClass );
 
-      // Get pixel view
-      Pixels pixels(*this);
-      // Set pixel value
-      *(pixels.get(x_, y_, 1, 1 )) = color_;
-      // Tell ImageMagick that pixels have been updated
-      pixels.sync();
+    // Get pixel view
+    Pixels pixels(*this);
+    // Set pixel value
+    *(pixels.get(x_, y_, 1, 1 )) = color_;
+    // Tell ImageMagick that pixels have been updated
+    pixels.sync();
 
-      return;
-    }
+    return;
+  }
 
-  throwException( OptionError,
-		  "Color argument is invalid" );
+  throwExceptionExplicit( OptionError,
+			  "Color argument is invalid" );
 }
 Magick::Color Magick::Image::pixelColor ( unsigned int x_,
 					  unsigned int y_ )
 {
   // Test arguments to ensure they are within the image.
   if ( y_ > rows() || x_ > columns() )
-    throwException( OptionError,
-		    "Access outside of image boundary" );
+    throwExceptionExplicit( OptionError,
+			    "Access outside of image boundary" );
 
   // Get pixel view
   Pixels pixels(*this);

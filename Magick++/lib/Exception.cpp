@@ -155,9 +155,9 @@ Magick::ErrorCache::ErrorCache ( const std::string& what_ )
 }
 
 // Format and throw exception
-void Magick::throwException( ExceptionType severity_,
-			     const char* message_,
-			     const char* qualifier_)
+void Magick::throwExceptionExplicit( ExceptionType severity_,
+				     const char* message_,
+				     const char* qualifier_)
 {
   // Just return if there is no reported error
   if ( severity_ == UndefinedException )
@@ -228,7 +228,7 @@ void Magick::throwException( const ExceptionInfo &exception_ )
   if ( exception_.severity == UndefinedException )
     return;
 
-  throwException( exception_.severity,
-		  exception_.message,
-		  exception_.qualifier );
+  throwExceptionExplicit( exception_.severity,
+			  exception_.message,
+			  exception_.qualifier );
 }

@@ -228,9 +228,9 @@ void Magick::Options::magick ( const std::string &magick_ )
   FormatString( _imageInfo->filename, "%.1024s:", magick_.c_str() );
   SetImageInfo( _imageInfo, 1 );
   if ( _imageInfo->magick == '\0' )
-    throwException( OptionWarning,
-		    "Unrecognized image format",
-		    magick_.c_str() );
+    throwExceptionExplicit( OptionWarning,
+			    "Unrecognized image format",
+			    magick_.c_str() );
 }
 std::string Magick::Options::magick ( void ) const
 {

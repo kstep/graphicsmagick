@@ -29,7 +29,7 @@ Magick::Pixels::Pixels( Magick::Image &image_ )
     _rows(0)
 {
   if (!_view)
-    throwException( MagickLib::ResourceLimitError, "Out of pixel views" );
+    throwExceptionExplicit( MagickLib::ResourceLimitError, "Out of pixel views" );
 }
 
 // Destroy pixel view
@@ -50,8 +50,8 @@ Magick::PixelPacket* Magick::Pixels::get ( unsigned int x_,
 {
   if ( ( x_ + columns_ > _image.columns()) ||
        ( y_ + rows_ > _image.rows()) )
-    throwException( MagickLib::OptionError,
-		    "View requested outside of image" );
+    throwExceptionExplicit( MagickLib::OptionError,
+			    "View requested outside of image" );
   _x = x_;
   _y = y_;
   _columns = columns_;
@@ -60,7 +60,7 @@ Magick::PixelPacket* Magick::Pixels::get ( unsigned int x_,
   _pixels = MagickLib::GetCacheView( _view, x_, y_,
 				     columns_, rows_ );
   if ( _pixels == 0 )
-    throwException( MagickLib::OptionError, "Failed to get pixels" );
+    throwExceptionExplicit( MagickLib::OptionError, "Failed to get pixels" );
   
   return _pixels;
 }
@@ -69,7 +69,7 @@ Magick::PixelPacket* Magick::Pixels::get ( unsigned int x_,
 void Magick::Pixels::sync ( void )
 {
   if( !MagickLib::SyncCacheView( _view ) )
-    throwException( MagickLib::OptionError, "Failed to sync pixels" );
+    throwExceptionExplicit( MagickLib::OptionError, "Failed to sync pixels" );
 }
     
 // Allocate a pixel view region to store image pixels as defined
@@ -82,8 +82,8 @@ Magick::PixelPacket* Magick::Pixels::set ( unsigned int x_,
 {
   if ( ( x_ + columns_ > _image.columns()) ||
        ( y_ + rows_ > _image.rows()) )
-    throwException( MagickLib::OptionError,
-		    "View requested outside of image" );
+    throwExceptionExplicit( MagickLib::OptionError,
+			    "View requested outside of image" );
 
   _x = x_;
   _y = y_;
@@ -93,7 +93,7 @@ Magick::PixelPacket* Magick::Pixels::set ( unsigned int x_,
   _pixels = MagickLib::SetCacheView( _view, x_, y_,
 				     columns_, rows_ );
   if ( !_pixels )
-    throwException( MagickLib::OptionError, "Failed to set pixels" );
+    throwExceptionExplicit( MagickLib::OptionError, "Failed to set pixels" );
   
   return _pixels;
 }
@@ -102,8 +102,8 @@ Magick::PixelPacket* Magick::Pixels::set ( unsigned int x_,
 Magick::IndexPacket* Magick::Pixels::indexes ( void )
 {
   if ( _image.constImage()->c_class != Magick::PseudoClass )
-    throwException( MagickLib::OptionError,
-		    "Image class does not support colormap");
+    throwExceptionExplicit( MagickLib::OptionError,
+			    "Image class does not support colormap");
 
   return MagickLib::GetCacheViewIndexes( _view );
 }
