@@ -543,6 +543,10 @@ MagickExport unsigned int LogMagickEvent(const LogEventType type,
     event[MaxTextExtent],
     timestamp[MaxTextExtent];
 
+  double
+    elapsed_time,
+    user_time;
+
   struct tm
     *time_meridian;
 
@@ -579,12 +583,15 @@ MagickExport unsigned int LogMagickEvent(const LogEventType type,
   va_end(operands);
   seconds=time((time_t *) NULL);
   time_meridian=localtime(&seconds);
+  elapsed_time=GetElapsedTime(&log_info->timer);
+  user_time=GetUserTime(&log_info->timer);
   if ((log_info->file == stdout) || (log_info->file == stderr))
     {
       FormatString(timestamp,"%02d:%02d:%02d",
         time_meridian->tm_hour,time_meridian->tm_min,time_meridian->tm_sec);
-      (void) fprintf(log_info->file,"%.1024s %.2fu %.1024s[%ld]: %.1024s\n",
-        timestamp,GetElapsedTime((TimerInfo *) &log_info->timer),domain,
+      (void) fprintf(log_info->file,
+        "%.1024s %0.3fu %ld:%02ld %.1024s[%ld]: %.1024s\n",timestamp,user_time,
+        (long) (elapsed_time/60.0),(long) ceil(fmod(elapsed_time,60.0)),domain,
         _GetThreadId(),event);
     }
   else
@@ -617,8 +624,11 @@ MagickExport unsigned int LogMagickEvent(const LogEventType type,
       (void) fprintf(log_info->file,"  <timestamp>%.1024s</timestamp>\n",
         timestamp);
       (void) fprintf(log_info->file,"  <id>%ld</id>\n",_GetThreadId());
-      (void) fprintf(log_info->file,"  <elapsed-time>%.2f</elapsed-time>\n",
-        GetElapsedTime((TimerInfo *) &log_info->timer));
+      (void) fprintf(log_info->file,"  <user-time>%0.3f</user-time>\n",
+        user_time);
+      (void) fprintf(log_info->file,
+        "  <elapsed-time>%ld:%02ld</elapsed-time>\n",
+        (long) (elapsed_time/60.0),(long) ceil(fmod(elapsed_time,60.0)));
       (void) fprintf(log_info->file,"  <domain>%.1024s</domain>\n",domain);
       (void) fprintf(log_info->file,"  <event>%.1024s</event>\n",event);
       (void) fprintf(log_info->file,"</record>\n");

@@ -390,7 +390,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
   assert(image_info->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  logging=LogMagickEvent(CoderEvent," Begin ReadTIFFImage()");
+  logging=LogMagickEvent(CoderEvent,"enter ReadTIFFImage()");
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
@@ -458,47 +458,47 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_PHOTOMETRIC,&photometric);
     if (logging)
       {
-        LogMagickEvent(CoderEvent,"   Width=%u, Height=%u",
-          (unsigned int) width,(unsigned int) height);
-        LogMagickEvent(CoderEvent,"   Interlace=%u",interlace);
-        LogMagickEvent(CoderEvent,"   Bits per sample=%u",bits_per_sample);
-        LogMagickEvent(CoderEvent,"   Min sample value=%u",min_sample_value);
-        LogMagickEvent(CoderEvent,"   Max sample value=%u",max_sample_value);
+        LogMagickEvent(CoderEvent,"  Width: %u",(unsigned int) width);
+        LogMagickEvent(CoderEvent,"  Height: %u",(unsigned int) height);
+        LogMagickEvent(CoderEvent,"  Interlace: %u",interlace);
+        LogMagickEvent(CoderEvent,"  Bits per sample: %u",bits_per_sample);
+        LogMagickEvent(CoderEvent,"  Min sample value: %u",min_sample_value);
+        LogMagickEvent(CoderEvent,"  Max sample value: %u",max_sample_value);
         switch (photometric)
         {
           case PHOTOMETRIC_MINISBLACK:
           {
-            LogMagickEvent(CoderEvent,"   Photometric MINISBLACK");
+            LogMagickEvent(CoderEvent,"  Photometric: MINISBLACK");
             break;
           }
           case PHOTOMETRIC_MINISWHITE:
           {
-            LogMagickEvent(CoderEvent,"   Photometric MINISBLACK");
+            LogMagickEvent(CoderEvent,"  Photometric: MINISBLACK");
             break;
           }
           case PHOTOMETRIC_PALETTE:
           {
-            LogMagickEvent(CoderEvent,"   Photometric PALETTE");
+            LogMagickEvent(CoderEvent,"  Photometric: PALETTE");
             break;
           }
           case PHOTOMETRIC_RGB:
           {
-            LogMagickEvent(CoderEvent,"   Photometric RGB");
+            LogMagickEvent(CoderEvent,"  Photometric: RGB");
             break;
           }
           case PHOTOMETRIC_CIELAB:
           {
-            LogMagickEvent(CoderEvent,"   Photometric CIELAB");
+            LogMagickEvent(CoderEvent,"  Photometric: CIELAB");
             break;
           }
           case PHOTOMETRIC_SEPARATED:
           {
-            LogMagickEvent(CoderEvent,"   Photometric SEPARATED");
+            LogMagickEvent(CoderEvent,"  Photometric: SEPARATED");
             break;
           }
           default:
           {
-            LogMagickEvent(CoderEvent,"   Photometric interpretation=%u",
+            LogMagickEvent(CoderEvent,"  Photometric interpretation: %u",
               photometric);
             break;
           }
@@ -575,7 +575,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     image->rows=height;
     image->depth=bits_per_sample <= 8 ? 8 : QuantumDepth;
     if (logging)
-      LogMagickEvent(CoderEvent,"   Image depth=%lu",image->depth);
+      LogMagickEvent(CoderEvent,"  Image depth: %lu",image->depth);
     (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_EXTRASAMPLES,&extra_samples,
       &sample_info);
     image->matte=((extra_samples == 1) &&
@@ -1017,7 +1017,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
   while (image->previous != (Image *) NULL)
     image=image->previous;
   if (logging)
-    LogMagickEvent(CoderEvent," End ReadTIFFImage()");
+    LogMagickEvent(CoderEvent,"exit ReadTIFFImage()");
   return(image);
 }
 #else
@@ -1438,7 +1438,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
   assert(image_info->signature == MagickSignature);
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  logging=LogMagickEvent(CoderEvent," Begin WriteTIFFImage()");
+  logging=LogMagickEvent(CoderEvent,"enter WriteTIFFImage()");
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
     ThrowWriterException(FileOpenError,"Unable to open file",image);
@@ -2023,7 +2023,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
       CloseBlob(image);
     }
   if (logging)
-    LogMagickEvent(CoderEvent," End WriteTIFFImage()");
+    LogMagickEvent(CoderEvent,"exit WriteTIFFImage()");
   return(True);
 }
 #else

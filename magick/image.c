@@ -1381,7 +1381,7 @@ MagickExport void DescribeImage(Image *image,FILE *file,
           FormatSize(GetBlobSize(image),format);
           (void) fprintf(file,"%.1024s ",format);
         }
-      (void) fprintf(file,"%.1fu %ld:%02ld\n",user_time,
+      (void) fprintf(file,"%0.3fu %ld:%02ld\n",user_time,
         (long) (elapsed_time/60.0),(long) ceil(fmod(elapsed_time,60.0)));
       return;
     }
@@ -1818,7 +1818,7 @@ MagickExport void DescribeImage(Image *image,FILE *file,
   else
     (void) fprintf(file,"  Tainted: False\n");
   if (user_time != 0.0)
-    (void) fprintf(file,"  User Time: %.1fu\n",user_time);
+    (void) fprintf(file,"  User Time: %0.3fu\n",user_time);
   if (elapsed_time != 0.0)
     (void) fprintf(file,"  Elapsed Time: %ld:%02ld\n",
       (long) (elapsed_time/60.0),(long) ceil(fmod(elapsed_time,60.0)));

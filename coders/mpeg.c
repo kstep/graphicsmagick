@@ -567,7 +567,7 @@ static unsigned int WriteMPEGImage(const ImageInfo *image_info,Image *image)
   assert(image_info->signature == MagickSignature);
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  logging=LogMagickEvent(CoderEvent," Begin WriteMPEGImage()");
+  logging=LogMagickEvent(CoderEvent,"enter WriteMPEGImage()");
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
     ThrowWriterException(FileOpenError,"Unable to open file",image);
@@ -704,6 +704,6 @@ static unsigned int WriteMPEGImage(const ImageInfo *image_info,Image *image)
   if (coalesce_image != image)
     DestroyImage(coalesce_image);
   if (logging)
-    LogMagickEvent(CoderEvent," End WriteMPEGImage()");
+    LogMagickEvent(CoderEvent,"exit WriteMPEGImage()");
   return(status);
 }

@@ -1517,7 +1517,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   assert(image_info->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  logging=LogMagickEvent(CoderEvent," Begin ReadPNGImage()");
+  logging=LogMagickEvent(CoderEvent,"enter ReadPNGImage()");
   image=AllocateImage(image_info);
   mng_info=(MngInfo *) NULL;
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
@@ -4296,7 +4296,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   MngInfoFreeStruct(mng_info,&have_mng_structure);
   have_mng_structure=False;
   if (logging)
-    LogMagickEvent(CoderEvent," End ReadPNGImage()");
+    LogMagickEvent(CoderEvent,"exit ReadPNGImage()");
   return(image);
 }
 #else /* PNG_LIBPNG_VER > 95 */
@@ -4728,7 +4728,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
   assert(image_info->signature == MagickSignature);
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  logging=LogMagickEvent(CoderEvent," Begin WritePNGImage()");
+  logging=LogMagickEvent(CoderEvent,"enter WritePNGImage()");
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
     ThrowWriterException((ExceptionType) FileOpenError,
@@ -6332,7 +6332,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
   */
   CloseBlob(image);
   if (logging)
-    LogMagickEvent(CoderEvent," End WritePNGImage()");
+    LogMagickEvent(CoderEvent,"exit WritePNGImage()");
   return(True);
 }
 #else /* PNG_LIBPNG_VER > 95 */
