@@ -451,6 +451,8 @@ Export void Hull(const int x_offset,const int y_offset,const int polarity,
 %  and greater than fully transparent is returned for a primitive edge pixel
 %  to allow for anti-aliasing.  Otherwise fully transparent is returned.
 %
+%  Rick Mabry provided the algorithms for anti-aliased primitives.
+%
 %  The format of the InsidePrimitive routine is:
 %
 %      opacity=InsidePrimitive(primitive_info,annotate_info,x,y,image)
@@ -470,16 +472,43 @@ Export void Hull(const int x_offset,const int y_offset,const int polarity,
 %
 %
 */
-Export unsigned int InsidePrimitive(PrimitiveInfo *primitive_info,
+
+static Quantum InsideLinePrimitive(const PrimitiveInfo *p,
+  const PrimitiveInfo *q,const int x,const int y,const Quantum opacity,
+  const double mid)
+{
+  double
+    distance,
+    dot,
+    v;
+
+  if ((mid == 0) || (opacity == Opaque))
+    return(opacity);
+  if ((p->x == q->x) && (p->y == q->y))
+    return((x == p->x) && (y == p->y) ? Opaque : opacity);
+  v=(q->x-p->x)*(q->x-p->x)+(q->y-p->y)*(q->y-p->y);
+  dot=(x-p->x)*(q->x-p->x)+(y-p->y)*(q->y-p->y);
+  if ((dot >= 0) && ((dot*dot/v) <= v))
+    distance=sqrt((x-p->x)*(x-p->x)+(y-p->y)*(y-p->y)-dot*dot/v);
+  else
+    if (dot < 0)
+      distance=sqrt((x-p->x)*(x-p->x)+(y-p->y)*(y-p->y));
+    else
+      distance=sqrt((x-q->x)*(x-q->x)+(y-q->y)*(y-q->y));
+  if (distance < (mid-0.5))
+    return(Opaque);
+  if (distance <= (mid+0.5))
+    return(Max(opacity,Opaque*(distance-mid-0.5)*(distance-mid-0.5)));
+  return(opacity);
+}
+
+Export Quantum InsidePrimitive(PrimitiveInfo *primitive_info,
   AnnotateInfo *annotate_info,const int x,const int y,Image *image)
 {
   double
     distance,
     mid,
-    radius,
-    slope,
-    trix,
-    triy;
+    radius;
 
   register int
     i;
@@ -488,7 +517,7 @@ Export unsigned int InsidePrimitive(PrimitiveInfo *primitive_info,
     *p,
     *q;
 
-  register unsigned int
+  register Quantum
     opacity;
 
   RunlengthPacket
@@ -517,26 +546,7 @@ Export unsigned int InsidePrimitive(PrimitiveInfo *primitive_info,
       }
       case LinePrimitive:
       {
-        if (p->x == q->x)
-          {
-            if ((x >= (p->x-mid)) && (x < (p->x+mid)) &&
-                (y >= Min(p->y,q->y)) && (y <= Max(p->y,q->y)))
-              opacity=Opaque;
-            break;
-          }
-        if (p->y == q->y)
-          {
-            if ((x >= Min(p->x,q->x)) && (x <= Max(p->x,q->x)) &&
-                (y >= (p->y-mid)) && (y < (p->y+mid)))
-              opacity=Opaque;
-            break;
-          }
-        slope=(double) (p->y-q->y)/(p->x-q->x);
-        trix=(slope*p->x+x/slope+y-p->y)/(slope+1.0/slope);
-        triy=slope*(trix-p->x)+p->y;
-        if ((((x-trix)*(x-trix)+(y-triy)*(y-triy)) <= (mid*mid)) &&
-            (trix >= Min(p->x,q->x)) && (trix <= Max(p->x,q->x)))
-          opacity=Opaque;
+        opacity=InsideLinePrimitive(p,q,x,y,opacity,mid);
         break;
       }
       case RectanglePrimitive:
@@ -564,95 +574,39 @@ Export unsigned int InsidePrimitive(PrimitiveInfo *primitive_info,
         radius=sqrt(((p->y-q->y)*(p->y-q->y))+((p->x-q->x)*(p->x-q->x)));
         distance=sqrt(((p->y-y)*(p->y-y))+((p->x-x)*(p->x-x)));
         center=fabs(distance-radius);
-        if (center >= (mid+0.5))
-          {
-            opacity=Transparent;
-            break;
-          }
-        if (center <= (mid-0.5))
-          {
+        if (center < (mid+0.5))
+          if (center <= (mid-0.5))
             opacity=Opaque;
-            break;
-          }
-        opacity=Opaque*(mid-center+0.5)*(mid-center+0.5);
+          else
+            opacity=Max(opacity,Opaque*(mid-center+0.5)*(mid-center+0.5));
         break;
       }
       case FillCirclePrimitive:
       {
         radius=sqrt(((p->y-q->y)*(p->y-q->y))+((p->x-q->x)*(p->x-q->x)));
         distance=sqrt(((p->y-y)*(p->y-y))+((p->x-x)*(p->x-x)));
-        if (distance >= (radius+1.0))
-          {
-            opacity=Transparent;
-            break;
-          }
         if (distance <= (radius-1.0))
-          {
-            opacity=Opaque;
-            break;
-          }
-        opacity=Opaque*((radius-distance+1.0)/2)*((radius-distance+1.0)/2);
+          opacity=Opaque;
+        else
+          if (distance < (radius+1.0))
+            opacity=Max(opacity,Opaque*((radius-distance+1.0)/2)*
+              (radius-distance+1.0)/2);
         break;
       }
       case PolygonPrimitive:
       {
-        register PrimitiveInfo
+        PrimitiveInfo
           *r;
 
-        r=p;
-        for ( ; (p < q) && (opacity == Transparent); p++)
-        {
-          if (p->x == (p+1)->x)
-            {
-              if ((x >= (p->x-mid)) && (x < (p->x+mid)) &&
-                  (y >= (Min(p->y,(p+1)->y)-mid)) &&
-                  (y < (Max(p->y,(p+1)->y)+mid)))
-                opacity=Opaque;
-              continue;
-            }
-          if (p->y == (p+1)->y)
-            {
-              if ((x >= Min(p->x,(p+1)->x)-mid) &&
-                  (x < Max(p->x,(p+1)->x)+mid) &&
-                  (y >= (p->y-mid)) && (y < (p->y+mid)))
-                opacity=Opaque;
-              continue;
-            }
-          slope=(double) (p->y-(p+1)->y)/(p->x-(p+1)->x);
-          trix=(slope*p->x+x/slope+y-p->y)/(slope+1.0/slope);
-          triy=slope*(trix-p->x)+p->y;
-          if ((((x-trix)*(x-trix)+(y-triy)*(y-triy)) <= (mid*mid)) &&
-              (trix >= Min(p->x,(p+1)->x)) && (trix <= Max(p->x,(p+1)->x)))
-            opacity=Opaque;
-        }
-        if (opacity != Transparent)
-          break;
-        while (p <= q)
-          p++;
-        p--;
-        if (p->x == r->x)
-          {
-            if ((x >= (p->x-mid)) && (x < (p->x+mid)) &&
-                (y >= (Min(p->y,r->y)-mid)) && (y < (Max(p->y,r->y)+mid)))
-              opacity=Opaque;
-          }
-        else
-          if (p->y == r->y)
-            {
-              if ((x >= (Min(p->x,r->x)-mid)) && (x < (Max(p->x,r->x)+mid)) &&
-                  (y >= (p->y-mid)) && (y < (p->y+mid)))
-                opacity=Opaque;
-            }
-          else
-            {
-              slope=(double) (p->y-r->y)/(p->x-r->x);
-              trix=(slope*p->x+x/slope+y-p->y)/(slope+1.0/slope);
-              triy=slope*(trix-p->x)+p->y;
-              if ((((x-trix)*(x-trix)+(y-triy)*(y-triy)) <= (mid*mid)) &&
-                  (trix >= Min(p->x,r->x)) && (trix <= Max(p->x,r->x)))
-                opacity=Opaque;
-            }
-        p++;
+        Quantum
+          poly_opacity;
+
+         poly_opacity=Transparent;
+         for (r=p; r < q; r++)
+            poly_opacity=
+              InsideLinePrimitive(r,r+1,x,y,Max(opacity,poly_opacity),mid);
+         poly_opacity=InsideLinePrimitive(q,p,x,y,poly_opacity,mid);
+         opacity=Max(opacity,poly_opacity);
         break;
       }
       case FillPolygonPrimitive:
@@ -873,7 +827,7 @@ Export unsigned int InsidePrimitive(PrimitiveInfo *primitive_info,
         break;
       }
     }
-    if (opacity != Transparent)
+    if (opacity == Opaque)
       return(opacity);
     while (p <= q)
       p++;

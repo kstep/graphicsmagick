@@ -673,8 +673,8 @@ Export void FormatString(char *string,const char *format,...)
   (void) vsprintf(string,format,operands);
 #else
   (void) vsnprintf(string,MaxTextExtent,format,operands);
-  va_end(operands);
 #endif
+  va_end(operands);
 }
 
 /*

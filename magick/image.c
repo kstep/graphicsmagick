@@ -3835,6 +3835,9 @@ Export void DrawImage(Image *image,AnnotateInfo *annotate_info)
   PrimitiveType
     primitive_type;
 
+  Quantum
+    opacity;
+
   RunlengthPacket
     pixel;
 
@@ -3854,8 +3857,7 @@ Export void DrawImage(Image *image,AnnotateInfo *annotate_info)
   unsigned int
     indirection,
     length,
-    number_coordinates,
-    opacity;
+    number_coordinates;
 
   XColor
     pen_color;
@@ -4285,6 +4287,14 @@ Export void DrawImage(Image *image,AnnotateInfo *annotate_info)
         bounds.y2=image->rows-1;
       }
   /*
+    Account for linewidth.
+  */
+  mid=annotate_info->linewidth/2.0;
+  bounds.x1=Max((int) (bounds.x1-mid),0);
+  bounds.y1=Max((int) (bounds.y1-mid),0);
+  bounds.x2=Min((int) (bounds.x2+ceil(mid)),image->columns-1);
+  bounds.y2=Min((int) (bounds.y2+ceil(mid)),image->rows-1);
+  /*
     Draw the primitive on the image.
   */
   pixel.red=XDownScale(pen_color.red);
@@ -4294,11 +4304,10 @@ Export void DrawImage(Image *image,AnnotateInfo *annotate_info)
   if ((tile != (Image *) NULL) && tile->matte)
     pen_color.flags|=DoOpacity;
   image->class=DirectClass;
-  mid=annotate_info->linewidth/2.0;
-  for (y=bounds.y1-mid; y <= (bounds.y2+mid); y++)
+  for (y=bounds.y1; y <= bounds.y2; y++)
   {
-    q=image->pixels+y*image->columns+(int) (bounds.x1-mid);
-    for (x=bounds.x1-mid; x <= (bounds.x2+mid); x++)
+    q=image->pixels+y*image->columns+bounds.x1;
+    for (x=bounds.x1; x <= bounds.x2; x++)
     {
       opacity=InsidePrimitive(primitive_info,annotate_info,x,y,image);
       if (opacity != Transparent)
@@ -5118,7 +5127,8 @@ Export void GammaImage(Image *image,const char *gamma)
 %
 %
 */
-Export void GetAnnotateInfo(ImageInfo *image_info,AnnotateInfo *annotate_info)
+Export void GetAnnotateInfo(const ImageInfo *image_info,
+  AnnotateInfo *annotate_info)
 {
   Image
     *annotate_image;

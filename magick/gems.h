@@ -5,9 +5,7 @@ extern Export ColorPacket
   InterpolateColor(Image *,double,double);
 
 extern Export Quantum
-  GenerateNoise(const Quantum,const NoiseType);
-   
-extern Export unsigned int
+  GenerateNoise(const Quantum,const NoiseType),
   InsidePrimitive(PrimitiveInfo *,AnnotateInfo *,const int,const int,Image *);
 
 extern Export void

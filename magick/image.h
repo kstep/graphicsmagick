@@ -946,7 +946,7 @@ extern Export void
   DrawImage(Image *,AnnotateInfo *),
   EqualizeImage(Image *),
   GammaImage(Image *,const char *),
-  GetAnnotateInfo(ImageInfo *,AnnotateInfo *),
+  GetAnnotateInfo(const ImageInfo *,AnnotateInfo *),
   GetImageInfo(ImageInfo *),
   GetMontageInfo(MontageInfo *),
   HSLTransform(double,const double,const double,Quantum *,Quantum *,Quantum *),
