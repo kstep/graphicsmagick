@@ -1,0 +1,52 @@
+If you're creating libxml2 with the "mingw" compiler, just copy the
+Makefile.mingw to the root directory as "Makefile", edit the PREFIX
+value, and run "make".
+
+If you're using MSVC, here are some instructions for how you can
+proceed:
+
+The configuration stuff (i.e. what should be enabled/disabled) is in
+xmlversion.h I only tested it compiled fine with the current settings
+(that is nearly everything disabled, I didn't need many features)
+
+----------------------------
+
+How did I get everything in place so the MSDev project works from the
+original archive?
+
+from the cygwin prompt (http://sources.redhat.com/cygwin) :
+$ ./configure --disable-corba --without-ftp --without-http --without-html --wit
+hout-xpath --without-iconv --without-debug
+
+built the project file for the static library
+
+----------------------------
+
+diff after doing the changes and cleaning up the generated stuff:
+
+[Note: this is out of date]
+diff libxml2-2.2.4/xmlversion.h libxml2-2.2.4-reference/xmlversion.h
+38c38
+< #if 0
+---
+> #if 1
+47c47
+< #if 0
+---
+> #if 1
+56c56
+< #if 0
+---
+> #if 1
+74c74
+< #if 0
+---
+> #if 1
+83c83
+< #if 0
+---
+> #if 1
+92c92
+< #if 0
+---
+> #if 1
