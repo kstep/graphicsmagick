@@ -1364,7 +1364,7 @@ int main(int argc,char **argv)
               Transmogrify image as defined by the image processing options.
             */
             resource_info.quantum=1;
-            status&=MogrifyImage(image_info,i,argv,&image);
+            status&=MogrifyImages(image_info,i,argv,&image);
             (void) CatchImageException(image);
             if (first_scene != last_scene)
               image->scene=scene;
@@ -1403,8 +1403,6 @@ int main(int argc,char **argv)
                       image=nexus;
                       break;
                     }
-                  status&=MogrifyImage(image_info,i,argv,&nexus);
-                  (void) CatchImageException(nexus);
                   if (first_scene != last_scene)
                     image->scene=scene;
                   next=XDisplayImage(display,&resource_info,argv,argc,&nexus,

@@ -970,21 +970,18 @@ int main(int argc,char **argv)
             MagickWarning(exception.severity,exception.reason,
               exception.description);
           status&=next_image != (Image *) NULL;
-          if (next_image != (Image *) NULL)
+          if (next_image == (Image *) NULL)
+            continue;
+          if (image == (Image *) NULL)
+            image=next_image;
+          else
             {
-              status&=MogrifyImages(image_info,i,argv,&next_image);
-              (void) CatchImageException(next_image);
-              if (image == (Image *) NULL)
-                image=next_image;
-              else
-                {
-                  /*
-                    Link image into image list.
-                  */
-                  for (p=image; p->next != (Image *) NULL; p=p->next);
-                  next_image->previous=p;
-                  p->next=next_image;
-                }
+              /*
+                Link image into image list.
+              */
+              for (p=image; p->next != (Image *) NULL; p=p->next);
+              next_image->previous=p;
+              p->next=next_image;
             }
         }
       }
@@ -993,7 +990,7 @@ int main(int argc,char **argv)
     MagickError(OptionError,"Missing an image file name",(char *) NULL);
   while (image->previous != (Image *) NULL)
     image=image->previous;
-  status&=MogrifyImages(image_info,i,argv,&next_image);
+  status&=MogrifyImages(image_info,argc-1,argv,&next_image);
   (void) CatchImageException(image);
   if (resource_info.window_id != (char *) NULL)
     XAnimateBackgroundImage(display,&resource_info,image);

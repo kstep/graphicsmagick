@@ -1241,21 +1241,18 @@ static unsigned int MontageUtility(int argc,char **argv)
           MagickWarning(exception.severity,exception.reason,
             exception.description);
         status&=next_image != (Image *) NULL;
-        if (next_image != (Image *) NULL)
+        if (next_image == (Image *) NULL)
+          continue;
+        if (image == (Image *) NULL)
+          image=next_image;
+        else
           {
-            status&=MogrifyImages(image_info,i,argv,&next_image);
-            (void) CatchImageException(next_image);
-            if (image == (Image *) NULL)
-              image=next_image;
-            else
-              {
-                /*
-                  Link image into image list.
-                */
-                for (p=image; p->next != (Image *) NULL; p=p->next);
-                next_image->previous=p;
-                p->next=next_image;
-              }
+            /*
+              Link image into image list.
+            */
+            for (p=image; p->next != (Image *) NULL; p=p->next);
+            next_image->previous=p;
+            p->next=next_image;
           }
       }
   }
@@ -1266,7 +1263,7 @@ static unsigned int MontageUtility(int argc,char **argv)
   /*
     Create composite image.
   */
-  status&=MogrifyImages(image_info,i,argv,&image);
+  status&=MogrifyImages(image_info,argc-1,argv,&image);
   (void) CatchImageException(image);
   (void) strncpy(montage_info->filename,argv[argc-1],MaxTextExtent-1);
   montage_image=MontageImages(image,montage_info,&exception);

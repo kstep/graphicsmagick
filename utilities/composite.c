@@ -511,6 +511,7 @@ unsigned int CompositeUtility(int argc,char **argv)
                 status&=MogrifyImages(image_info,i-j,argv+j,&composite_image);
                 (void) CatchImageException(composite_image);
               }
+            j=i+1;
             continue;
           }
         if (mask_image != (Image *) NULL)
@@ -526,6 +527,7 @@ unsigned int CompositeUtility(int argc,char **argv)
                 status&=MogrifyImages(image_info,i-j,argv+j,&image);
                 (void) CatchImageException(image);
               }
+            j=i+1;
             continue;
           }
         mask_image=ReadImage(image_info,&exception);
@@ -541,6 +543,7 @@ unsigned int CompositeUtility(int argc,char **argv)
             status&=MogrifyImages(image_info,i-j,argv+j,&mask_image);
             (void) CatchImageException(mask_image);
           }
+        j=i+1;
       }
     else
       switch(*(option+1))
