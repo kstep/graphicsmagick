@@ -88,29 +88,18 @@
 */
 MagickExport unsigned int DeleteImageList(Image *images,const long offset)
 {
-  Image
-    *image;
-
   register long
     i;
 
-  if (images == (Image *) NULL)
-    return(False);
-  assert(images->signature == MagickSignature);
   while (images->previous != (Image *) NULL)
     images=images->previous;
-  for (i=0; images != (Image *) NULL; images=images->next)
-    if (i++ == offset)
-      break;
-  if (images == (Image *) NULL)
-    return(False);
-  image=images;
-  if (images->previous != (Image *) NULL)
-    images->previous->next=images->next;
-  if (images->next != (Image *) NULL)
-    images->next->previous=images->previous;
-  DestroyImage(image);
-  return(True);
+  for (i=0; i < offset; i++)
+  {
+    if (images->next == (Image *) NULL)
+      return(False);
+    images=images->next;
+  }
+  return(DeleteImageFromList(&images));
 }
 
 /*
@@ -176,7 +165,7 @@ MagickExport void DestroyImages(Image *image)
 MagickExport Image *GetImageList(const Image *images,const long offset,
   ExceptionInfo *exception)
 {
-  return(CloneImage(GetImageFromList(images,offset,exception),0,0,True,exception));
+  return(CloneImage(GetImageFromList(images,offset),0,0,True,exception));
 }
 
 /*
@@ -543,34 +532,21 @@ MagickExport unsigned int SetImageList(Image **images,const Image *image,
   const long offset,ExceptionInfo *exception)
 {
   Image
-    *next;
+    *clone;
 
   register long
     i;
 
-  assert(images != (Image **) NULL);
-  if (image == (Image *) NULL)
-    return(False);
-  assert(image->signature == MagickSignature);
-  if ((*images) == (Image *) NULL)
-    {
-      if (offset > 0)
-        return(False);
-      *images=CloneImageList(image,exception);
-      return(*images != (Image *) NULL);
-    }
-  assert((*images)->signature == MagickSignature);
-  for (next=(*images); next->previous != (Image *) NULL; next=next->previous);
-  for (i=0; next != (Image *) NULL; next=next->next)
-    if (i++ == offset)
-      break;
-  if (next == (Image *) NULL)
-    return(False);
-  next->next=CloneImageList(image,exception);
-  if (next->next == (Image *) NULL)
-    return(False);
-  next->next->previous=next;
-  return(True);
+  clone=CloneImageList(image,exception);
+  while ((*images)->previous != (Image *) NULL)
+    (*images)=(*images)->previous;
+  for (i=0; i < offset; i++)
+  {
+    if ((*images)->next == (Image *) NULL)
+      return(False);
+    (*images)=(*images)->next;
+  }
+  return(InsertImageInList(images,clone));
 }
 
 /*
@@ -676,54 +652,22 @@ MagickExport Image *SpliceImageList(Image *images,const long offset,
   const unsigned long length,const Image *splices,ExceptionInfo *exception)
 {
   Image
-    *splice;
+    *clone;
 
   register long
     i;
 
-  register Image
-    *p,
-    *q;
-
-  if (images == (Image *) NULL)
-    return((Image *) NULL);
-  assert(images->signature == MagickSignature);
+  clone=CloneImageList(splices,exception);
   while (images->previous != (Image *) NULL)
     images=images->previous;
-  for (i=0; images != (Image *) NULL; images=images->next)
-    if (i++ == offset)
-      break;
-  if (images == (Image *) NULL)
-    return((Image *) NULL);
-  p=images;
-  for (i=1; images != (Image *) NULL; images=images->next)
-    if (i++ == (long) length)
-      break;
-  if (images == (Image *) NULL)
-    return((Image *) NULL);
-  q=images;
-  splice=CloneImageList(splices,exception);
-  if (splice == (Image *) NULL)
-    return(q);
-  if (p->previous != (Image *) NULL)
-    {
-      p->previous->next=splice;
-      if (splice != (Image *) NULL)
-        splice->previous=p->previous;
-    }
-  p->previous=(Image *) NULL;
-  if (q->next != (Image *) NULL)
-    {
-      q->next->previous=splice;
-      if (splice != (Image *) NULL)
-        {
-          while (splice->next != (Image *) NULL)
-            splice=splice->next;
-          splice->next=q->next;
-        }
-    }
-  q->next=(Image *) NULL;
-  return(p);
+  for (i=0; i < offset; i++)
+  {
+    if (images->next == (Image *) NULL)
+      return(False);
+    images=images->next;
+  }
+  (void) SpliceImageIntoList(&images,length,clone);
+  return(images);
 }
 
 /*

@@ -370,7 +370,6 @@ MagickExport Image *MontageImages(const Image *images,
     thumbnail=ZoomImage(image,geometry.width,geometry.height,exception);
     if (thumbnail == (Image *) NULL)
       break;
-    DestroyImage(image);
     image_list[i]=thumbnail;
     (void) SetMonitorHandler(handler);
     if (!MagickMonitor(TileImageText,i,number_images,&image->exception))
@@ -378,8 +377,6 @@ MagickExport Image *MontageImages(const Image *images,
   }
   if (i < (long) number_images)
     {
-      for (i=0; i < (long) number_images; i++)
-        DestroyImage(master_list[i]);
       LiberateMemory((void **) &master_list);
       return((Image *) NULL);
     }
@@ -769,8 +766,6 @@ MagickExport Image *MontageImages(const Image *images,
   DestroyImage(tile_image);
   if (texture != (Image *) NULL)
     LiberateMemory((void **) &texture);
-  for (i=0; i < (long) number_images; i++)
-    DestroyImage(master_list[i]);
   LiberateMemory((void **) &master_list);
   DestroyDrawInfo(draw_info);
   DestroyImageInfo(image_info);

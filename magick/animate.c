@@ -882,8 +882,6 @@ MagickExport void XAnimateBackgroundImage(Display *display,
     }
   } while (event.type != DestroyNotify);
   (void) XSync(display,False);
-  for (i=0; i < (long) number_scenes; i++)
-    DestroyImage(image_list[i]);
   LiberateMemory((void **) &image_list);
   if (coalesce)
     DestroyImageList(images);
@@ -2477,8 +2475,6 @@ MagickExport Image *XAnimateImages(Display *display,
     }
   }
   while (!(state & ExitState));
-  for (i=0; i < (long) number_scenes; i++)
-    DestroyImage(image_list[i]);
   LiberateMemory((void **) &image_list);
   if (coalesce)
     DestroyImageList(images);

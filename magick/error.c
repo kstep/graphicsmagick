@@ -432,7 +432,7 @@ static const char *ExceptionSeverityToTag(const ExceptionType severity)
     case MonitorFatalError: return("Monitor/FatalError/");
     case RegistryFatalError: return("Registry/FatalError/");
     case ConfigureFatalError: return("Configure/FatalError/");
-    default: return("");
+    default: break;
   }
   return("");
 }
