@@ -294,7 +294,7 @@ host_cpu = @host_cpu@
 host_os = @host_os@
 host_vendor = @host_vendor@
 
-includedir = ${prefix}/include
+includedir = $(prefix)/include
 infodir = @infodir@
 install_sh = @install_sh@
 libdir = @libdir@
@@ -321,11 +321,11 @@ xml2_config = @xml2_config@
 #
 # Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002
 #
-AUTOMAKE_OPTIONS = 1.7
+AUTOMAKE_OPTIONS = 1.7 nostdinc
 
 SUBDIRS = Magick++
 
-INCLUDES = -I../.. -I$(top_srcdir)
+INCLUDES = -I$(srcdir) -I../.. -I$(top_srcdir)
 
 lib_LTLIBRARIES = libMagick++.la
 
@@ -360,7 +360,7 @@ am_libMagick___la_OBJECTS = Blob.lo BlobRef.lo CoderInfo.lo Color.lo \
 	TypeMetric.lo
 libMagick___la_OBJECTS = $(am_libMagick___la_OBJECTS)
 
-DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)/magick
+DEFAULT_INCLUDES = 
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
 @AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/Blob.Plo ./$(DEPDIR)/BlobRef.Plo \
