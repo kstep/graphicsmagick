@@ -1,5 +1,8 @@
 2002-03-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* lib/Drawable.cpp (print): Changed "mpr:" to "mpri:" in order to
+ 	*finally* get DrawableCompositeImage to work as intended.
+
 	* lib/Image.cpp (registerId): Bugfix. Register using
  	sizeof(MagickLib::Image) rather than sizeof(Image).
 

@@ -2,11 +2,14 @@
 <HEAD>
 <TITLE>Magick++ ChangeLog</TITLE>
 </HEAD>
-<BODY>
+<BODY TEXT="#000000" BGCOLOR="#FFFFFF" LINK="#0000EE" VLINK="#551A8B" ALINK="#FF0000">
 <p>
 2002-03-26  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> lib/Drawable.cpp (print): Changed "mpr:" to "mpri:" in order to
+        *finally* get DrawableCompositeImage to work as intended.
+
   <LI> lib/Image.cpp (registerId): Bugfix. Register using
         sizeof(MagickLib::Image) rather than sizeof(Image).
 

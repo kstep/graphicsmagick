@@ -430,7 +430,7 @@ Magick::DrawableCompositeImage::DrawableCompositeImage ( double x_, double y_,
 Magick::DrawableCompositeImage::DrawableCompositeImage ( double x_, double y_,
                                                          double width_, double height_,
                                                          const std::string &filename_ )
-  :_composition(Magick::CopyCompositeOp),
+  :_composition(CopyCompositeOp),
    _x(x_),
    _y(y_),
    _width(width_),
@@ -441,7 +441,7 @@ Magick::DrawableCompositeImage::DrawableCompositeImage ( double x_, double y_,
 Magick::DrawableCompositeImage::DrawableCompositeImage ( double x_, double y_,
                                                          double width_, double height_,
                                                          const Image &image_ )
-  :_composition(Magick::CopyCompositeOp),
+  :_composition(CopyCompositeOp),
    _x(x_),
    _y(y_),
    _width(width_),
@@ -451,7 +451,7 @@ Magick::DrawableCompositeImage::DrawableCompositeImage ( double x_, double y_,
 }
 Magick::DrawableCompositeImage::DrawableCompositeImage ( double x_, double y_,
                                                          const std::string &filename_ )
-  : _composition(Magick::CopyCompositeOp),
+  : _composition(CopyCompositeOp),
     _x(x_),
     _y(y_),
     _width(0),
@@ -463,7 +463,7 @@ Magick::DrawableCompositeImage::DrawableCompositeImage ( double x_, double y_,
 }
 Magick::DrawableCompositeImage::DrawableCompositeImage ( double x_, double y_,
                                                          const Image &image_ )
-  : _composition(Magick::CopyCompositeOp),
+  : _composition(CopyCompositeOp),
     _x(x_),
     _y(y_),
     _width(0),
@@ -560,7 +560,7 @@ void Magick::DrawableCompositeImage::print (std::ostream& stream_) const
   stream_ << Magick::Coordinate( _x, _y)
           << " "
           << Magick::Coordinate( _width, _height)
-          << " 'mpr:" << _image->registerId() << "'";
+          << " 'mpri:" << _image->registerId() << "'";
 }
 
 // Line

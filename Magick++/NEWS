@@ -7,6 +7,7 @@ with Magick++ itself.
   * Added endian method to Image, and endianImage class to STL.h in
     order to support setting endian option for formats which support
     the notion (e.g. TIFF).
+  * DrawableCompositeImage was not working.  Now it does.
 
 (5.4.3)
   * Support selecting fonts via font-family, font-style, font-weight,
