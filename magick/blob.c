@@ -344,17 +344,24 @@ MagickExport void CloseBlob(Image *image)
     }
   if (image->blob->data != (unsigned char *) NULL)
     {
-      image->blob->size=image->blob->length;
-      image->blob->eof=False;
-      if (image->exempt)
-        return;
-      if (image->blob->mapped)
-        (void) UnmapBlob(image->blob->data,image->blob->length);
-      DetachBlob(image->blob);
+      Image
+        *next;
+
       while (image->previous != (Image *) NULL)
         image=image->previous;
-      for ( ; image != (Image *) NULL; image=image->next)
-        DetachBlob(image->blob);
+      if (!image->exempt)
+        {
+          if (image->blob->mapped)
+            (void) UnmapBlob(image->blob->data,image->blob->length);
+          DetachBlob(image->blob);
+          for ( ; image != (Image *) NULL; image=image->next)
+            DetachBlob(image->blob);
+          return;
+        }
+      for (next=image; next->next != (Image *) NULL; next=next->next);
+      next->blob->eof=False;
+      for ( ; image->next != (Image *) NULL; image=image->next)
+        image->blob=next->blob;
       return;
     }
   if (image->file == (FILE *) NULL)
@@ -948,7 +955,7 @@ MagickExport void MSBOrderLong(unsigned char *buffer,const size_t length)
 */
 MagickExport void MSBOrderShort(unsigned char *p,const size_t length)
 {
-	int
+  int
     c;
 
   register unsigned char

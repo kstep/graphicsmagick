@@ -11,16 +11,16 @@ extern "C" {
 #define MagickCopyright  "Copyright (C) 2002 ImageMagick Studio LLC"
 #define MagickLibVersion  0x0544
 #define MagickLibVersionText  "5.4.4"
-#define MagickLibVersionNumber  5,4,4,3
+#define MagickLibVersionNumber  5,4,4,4
 #if QuantumDepth == 8
 #define MagickVersion \
-  "@(#)ImageMagick 5.4.4 04/04/02 Q:8 http://www.imagemagick.org"
+  "@(#)ImageMagick 5.4.4 04/05/02 Q:8 http://www.imagemagick.org"
 #elif QuantumDepth == 16
 #define MagickVersion \
-  "@(#)ImageMagick 5.4.4 04/04/02 Q:16 http://www.imagemagick.org"
+  "@(#)ImageMagick 5.4.4 04/05/02 Q:16 http://www.imagemagick.org"
 #else
 #define MagickVersion \
-  "@(#)ImageMagick 5.4.4 04/04/02 http://www.imagemagick.org"
+  "@(#)ImageMagick 5.4.4 04/05/02 http://www.imagemagick.org"
 #endif
 
 #if defined(__cplusplus) || defined(c_plusplus)
