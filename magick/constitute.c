@@ -3061,7 +3061,7 @@ MagickExport unsigned int WriteImage(const ImageInfo *image_info,Image *image)
           (magick_info->encoder == NULL))
         {
           DestroyImageInfo(clone_info);
-          ThrowBinaryException(DelegateError,
+          ThrowBinaryException(MissingDelegateError,
             "NoEncodeDelegateForThisImageFormat",image->filename)
         }
       if (!magick_info->thread_support)

@@ -591,7 +591,7 @@ MagickExport ExtendedSignedIntegralType SizeBlob(const Image *image)
 MagickExport Image *SpliceImageList(Image *images,const long offset,
   const unsigned long length,const Image *splices,ExceptionInfo *exception)
 {
-  return(SpliceImageIntoList(images,offset,length,splices,exception));
+  return(SpliceImageIntoList(&images,offset,length,splices,exception));
 }
 
 /*

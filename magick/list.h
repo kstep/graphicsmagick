@@ -17,9 +17,7 @@ extern MagickExport Image
   *NewImageList(void),
   *RemoveLastImageFromList(Image **),
   *ReverseImageList(const Image *,ExceptionInfo *),
-  *RemoveFirstImageFromList(Image **),
-  *SpliceImageIntoList(Image *,const long,const unsigned long,const Image *,
-    ExceptionInfo *);
+  *RemoveFirstImageFromList(Image **);
 
 extern MagickExport long
   GetImageIndexInList(const Image *);
@@ -28,7 +26,10 @@ extern MagickExport unsigned int
   AppendImageToList(Image **,const Image *,ExceptionInfo *),
   DeleteImageFromList(Image **,const long),
   InsertImageInList(Image **,const Image *,const long,ExceptionInfo *),
-  PrependImageToList(Image **,const Image *,ExceptionInfo *);
+  PrependImageToList(Image **,const Image *,ExceptionInfo *),
+  ReplaceImageInList(Image **,const Image *,const long,ExceptionInfo *),
+  SpliceImageIntoList(Image **,const long,const unsigned long,const Image *,
+    ExceptionInfo *);
 
 extern MagickExport unsigned long
   GetImageListLength(const Image *);

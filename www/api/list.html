@@ -32,6 +32,7 @@
 		<li><a href="#prependimagetolist">PrependImageToList</a></li>
 		<li><a href="#removefirstimagefromlist">RemoveFirstImageFromList</a></li>
 		<li><a href="#removelastimagefromlist">RemoveLastImageFromList</a></li>
+		<li><a href="#replaceimageinlist">ReplaceImageInList</a></li>
 		<li><a href="#reverseimagelist">ReverseImageList</a></li>
 		<li><a href="#spliceimageintolist">SpliceImageIntoList</a></li>
 	</ul>
@@ -63,8 +64,9 @@
 <p>unsigned int  <strong>PrependImageToList</strong>( Image *images, const Image *image, ExceptionInfo *exception );</p>
 <p>Image * <strong>RemoveFirstImageFromList</strong>( Image ** images );</p>
 <p>Image * <strong>RemoveLastImageFromList</strong>( Image ** images );</p>
+<p>unsigned int  <strong>ReplaceImageInList</strong>( Image ** images, Image *image, const long offset, ExceptionInfo *exception );</p>
 <p>Image * <strong>ReverseImageList</strong>( const Image *images, ExceptionInfo *exception );</p>
-<p>Image * <strong>SpliceImageIntoList</strong>( Image *images, const long offset, const unsigned long length, const Image *splices, ExceptionInfo *exception );</p>
+<p>unsigned int  <strong>SpliceImageIntoList</strong>( Image ** images, const long offset, const unsigned long length, const Image *splices, ExceptionInfo *exception );</p>
 <p>
 </p>
 <hr />
@@ -315,6 +317,36 @@ The image list.
 <p></p></dl>
 <p>
 </p>
+<h2><a name="replaceimageinlist">ReplaceImageInList</a></h2>
+<blockquote>ReplaceImageInList() replace the image at the specified position in the list. </blockquote><p>The format of the ReplaceImageInList method is:</p>
+<blockquote>unsigned int ReplaceImageInList ( <A HREF="types/Image.html">Image</A> **images, <A HREF="types/Image.html">Image</A> *image, const long offset, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><p>A description of each parameter follows:</p>
+<dl>
+<dt><strong>o images:</strong><br />
+</dt>
+<dd>
+The image list.
+</dd>
+<p></p>
+<dt><strong>o image:</strong><br />
+</dt>
+<dd>
+The image.
+</dd>
+<p></p>
+<dt><strong>o offset:</strong><br />
+</dt>
+<dd>
+The position within the list.
+</dd>
+<p></p>
+<dt><strong>o exception:</strong><br />
+</dt>
+<dd>
+Return any errors or warnings in this structure.
+</dd>
+<p></p></dl>
+<p>
+</p>
 <h2><a name="reverseimagelist">ReverseImageList</a></h2>
 <blockquote>ReverseImageList() reverses the image list. </blockquote><p>The format of the ReverseImageList method is:</p>
 <blockquote><A HREF="types/Image.html">Image</A> *ReverseImageList ( const <A HREF="types/Image.html">Image</A> *images, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><p>A description of each parameter follows:</p>
@@ -335,7 +367,7 @@ Return any errors or warnings in this structure.
 </p>
 <h2><a name="spliceimageintolist">SpliceImageIntoList</a></h2>
 <blockquote>SpliceImageIntoList() removes the images designated by offset and length from the list and replaces them with the specified list. </blockquote><p>The format of the SpliceImageIntoList method is:</p>
-<blockquote><A HREF="types/Image.html">Image</A> *SpliceImageIntoList ( <A HREF="types/Image.html">Image</A> *images, const long offset, const unsigned long length, const <A HREF="types/Image.html">Image</A> *splices, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><p>A description of each parameter follows:</p>
+<blockquote>unsigned int SpliceImageIntoList ( <A HREF="types/Image.html">Image</A> **images, const long offset, const unsigned long length, const <A HREF="types/Image.html">Image</A> *splices, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><p>A description of each parameter follows:</p>
 <dl>
 <dt><strong>o images:</strong><br />
 </dt>
