@@ -1,4 +1,4 @@
-gsmatch=lequal,1,1
+gsmatch=lequal,2,1
 symbol_vector=(ADDNOISEIMAGE=procedure)
 symbol_vector=(ALLOCATEIMAGE=procedure)
 symbol_vector=(ALLOCATEMEMORY=procedure)
@@ -198,6 +198,7 @@ symbol_vector=(XGETWINDOWINFO=procedure)
 symbol_vector=(XHIGHLIGHTELLIPSE=procedure)
 symbol_vector=(XHIGHLIGHTLINE=procedure)
 symbol_vector=(XHIGHLIGHTRECTANGLE=procedure)
+symbol_vector=(XIMPORTIMAGE=procedure)
 symbol_vector=(XINFOWIDGET=procedure)
 symbol_vector=(XINITIMAGE=procedure)
 symbol_vector=(XLISTBROWSERWIDGET=procedure)

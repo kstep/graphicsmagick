@@ -229,7 +229,7 @@ testFilter('input.miff', 'Wave',
 
 ++$test;
 testFilter('input.miff', 'Zoom',
-  q/geometry=>50%,filter=>Triangle/,
+  q/geometry=>50%,filter=>Point/,
   'f9a5ccced93db546404214742d5329d2');
 
 ++$test;

@@ -4,7 +4,7 @@ $!
 $
 $if (f$trnlnm("X11") .eqs. "") then define/nolog X11 decw$include:
 $compile_options="/nodebug/optimize"
-$if (f$trnlnm("sys$system:decc$compiler.exe") .nes. "") 
+$if (f$search("sys$system:decc$compiler.exe") .nes. "") 
 $then     ! VAX with DEC C
 $  compile_options="/decc/nodebug/optimize"
 $else     ! VAX with VAX C
@@ -14,7 +14,7 @@ $endif
 $if (f$getsyi("HW_MODEL") .gt. 1023)
 $then     ! Alpha with DEC C
 $  define/nolog sys decc$library_include
-$  compile_options="/nodebug/optimize"
+$  compile_options="/nodebug/optimize/prefix=all"
 $endif
 $
 $write sys$output "Making Magick..."

@@ -1634,7 +1634,7 @@ Export Image *ReadDCMImage(const ImageInfo *image_info)
       (void) fclose(file);
       DestroyImage(image);
       image=ReadJPEGImage(local_info);
-      (void) unlink(local_info->filename);
+      (void) remove(local_info->filename);
       DestroyImageInfo(local_info);
       return(image);
     }

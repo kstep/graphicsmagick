@@ -33,7 +33,7 @@ $link_options="/nodebug/notraceback"
 $if (f$trnlnm("X11") .eqs. "") then define/nolog X11 decw$include:
 $library_options=""
 $compile_options="/nodebug/optimize"
-$if (f$trnlnm("sys$system:decc$compiler.exe") .nes. "")
+$if (f$search("sys$system:decc$compiler.exe") .nes. "")
 $then       ! VAX with DEC C compiler
 $  compile_options="/decc/nodebug/optimize"
 $  library_options="_decc"
@@ -45,8 +45,7 @@ $endif
 $if (f$getsyi("HW_MODEL") .gt. 1023)
 $then       ! Alpha with DEC C compiler
 $  define/nolog sys decc$library_include
-$  deas lnk$library
-$  compile_options="/nodebug/optimize"
+$  compile_options="/nodebug/optimize/prefix=all"
 $  library_options="_axp"
 $  share := 'share'y
 $else
