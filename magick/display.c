@@ -2778,8 +2778,7 @@ static unsigned int XConfigureImage(Display *display,
     }
   (void) XReconfigureWMWindow(display,windows->image.id,windows->image.screen,
     mask,&window_changes);
-  if (image->matte)
-    (void) XClearWindow(display,windows->image.id);
+  (void) XClearWindow(display,windows->image.id);
   XRefreshWindow(display,&windows->image,(XEvent *) NULL);
   /*
     Update Magnify window configuration.
