@@ -4726,9 +4726,10 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     Image
       *p;
 
-    int
+    long
       scene;
 
+    scene=0;
     for(p=image; p != (Image *) NULL; p=p->next)
     {
       LogMagickEvent(CoderEvent,  "     Scene=%d",scene++);
