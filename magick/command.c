@@ -3716,7 +3716,7 @@ MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
 %
 */
 MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
-  const int argc,char **argv,Image **image)
+  int argc,char **argv,Image **image)
 {
   char
     *option;
@@ -5756,7 +5756,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
 %
 */
 MagickExport unsigned int MogrifyImages(const ImageInfo *image_info,
-  const int argc,char **argv,Image **images)
+  int argc,char **argv,Image **images)
 {
 #define MogrifyImageText  "  Transform image...  "
 
