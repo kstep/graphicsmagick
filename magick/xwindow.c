@@ -2782,9 +2782,9 @@ MagickExport void XGetPixelPacket(Display *display,
     else
       for (i=0; i <= MaxRGB; i++)
       {
-        pixel->gamma_map[i].red=i;
-        pixel->gamma_map[i].green=i;
-        pixel->gamma_map[i].blue=i;
+        pixel->gamma_map[i].red=(Quantum) i;
+        pixel->gamma_map[i].green=(Quantum) i;
+        pixel->gamma_map[i].blue=(Quantum) i;
       }
   if (image != (Image *) NULL)
     {

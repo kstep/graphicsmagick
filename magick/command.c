@@ -231,9 +231,6 @@ static unsigned int CompositeImageList(ImageInfo *image_info,Image **image,
               char
                 composite_geometry[MaxTextExtent];
 
-              int
-                flags;
-
               RectangleInfo
                 geometry;
 
@@ -242,13 +239,14 @@ static unsigned int CompositeImageList(ImageInfo *image_info,Image **image,
               */
               geometry.x=0;
               geometry.y=0;
-              flags=GetGeometry(option_info->geometry,&geometry.x,&geometry.y,
+              (void) GetGeometry(option_info->geometry,&geometry.x,&geometry.y,
                 &geometry.width,&geometry.height);
               FormatString(composite_geometry,"%lux%lu%+ld%+ld",
                 composite_image->columns,composite_image->rows,geometry.x,
                 geometry.y);
               (*image)->gravity=option_info->gravity;
-              flags=GetImageGeometry(*image,composite_geometry,False,&geometry);
+              (void) GetImageGeometry(*image,composite_geometry,False,
+                &geometry);
               status&=CompositeImage(*image,option_info->compose,
                 composite_image,geometry.x,geometry.y);
               (void) CatchImageException(*image);
@@ -287,8 +285,7 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
   char
     *filename,
     *format,
-    *option,
-    *write_filename;
+    *option;
 
   CompositeOptions
     option_info;
@@ -336,7 +333,6 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
   option_info.watermark_geometry=(char *) NULL;
   option_info.unsharp_geometry=(char *) NULL;
   status=True;
-  write_filename=argv[argc-1];
   /*
     Check command syntax.
   */
