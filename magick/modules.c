@@ -76,12 +76,42 @@ static char
   **module_path = (char**) NULL;
 static int
     modules_initialized = False;
-
+
 #if defined(_VISUALC_)
 #define CoderModuleDirectory ".\\"
 #define R_OK 4
 #define W_OK 2
 #define RW_OK 6
+
+typedef UINT (CALLBACK* LPFNDLLFUNC1)(DWORD,UINT);
+
+int sample_func(void)
+{
+  HINSTANCE hDLL;               // Handle to DLL
+  LPFNDLLFUNC1 lpfnDllFunc1;    // Function pointer
+  DWORD dwParam1;
+  UINT  uParam2, uReturnVal;
+
+  hDLL = LoadLibrary("MyDLL");
+  if (hDLL != NULL)
+  {
+    lpfnDllFunc1 = (LPFNDLLFUNC1)GetProcAddress(hDLL,"DLLFunc1");
+    if (!lpfnDllFunc1)
+    {
+      // handle the error
+      FreeLibrary(hDLL);       
+      return -1;
+    }
+    else
+    {
+      // call the function
+      dwParam1 = 0;
+      uParam2 = 0;
+      uReturnVal = lpfnDllFunc1(dwParam1, uParam2);
+    }
+  }
+  return 0;
+}
 void lt_dlsetsearchpath(char *s)
 {
 }
@@ -95,14 +125,19 @@ char *lt_dlerror(void)
 }
 void *lt_dlopen(char *s)
 {
-  return (void *)NULL;
+  return (void *)LoadLibrary(s);
 }
 void lt_dlclose(void *h)
 {
+  FreeLibrary(h);
 }
 void *lt_dlsym(void *h, char *s)
 {
-  return (void *)NULL;
+  LPFNDLLFUNC1 lpfnDllFunc1;
+  lpfnDllFunc1 = (LPFNDLLFUNC1)GetProcAddress(h,s);
+  if (!lpfnDllFunc1)
+    return (void *)NULL;
+  return (void *)lpfnDllFunc1;
 }
 #endif
 
