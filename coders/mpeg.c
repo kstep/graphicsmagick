@@ -92,6 +92,7 @@ static unsigned int IsMPEG(const unsigned char *magick,const size_t length)
   return(False);
 }
 
+#define HasMPEG2
 #if defined(HasMPEG2)
 #include <inttypes.h>
 #include "video_out.h"
@@ -131,27 +132,42 @@ static unsigned int IsMPEG(const unsigned char *magick,const size_t length)
 %
 */
 
-static mpeg2dec_t mpeg2dec;
-#define BUFFER_SIZE 4096
-static uint8_t buffer[BUFFER_SIZE];
+Image
+  *image;
 
-typedef struct common_instance_s {
-    vo_instance_t vo;
-    int prediction_index;
-    vo_frame_t * frame_ptr[3];
+ImageInfo
+  *clone_info;
+
+typedef struct common_instance_s
+{
+  vo_instance_t
+    vo;
+
+  int
+    prediction_index;
+
+  vo_frame_t
+    *frame_ptr[3];
 } common_instance_t;
 
+typedef struct pgm_instance_s
+{
+  vo_instance_t
+    vo;
 
-typedef struct pgm_instance_s {
-    vo_instance_t vo;
-    int prediction_index;
-    vo_frame_t * frame_ptr[3];
-    vo_frame_t frame[3];
-    int width;
-    int height;
-    int framenum;
-    char header[1024];
-    char filename[128];
+  int
+    prediction_index;
+
+  vo_frame_t
+    *frame_ptr[3],
+    frame[3];
+
+  int
+    width,
+    height;
+
+  int
+    framenum;
 } pgm_instance_t;
 
 int libvo_common_alloc_frames (vo_instance_t * _instance,
@@ -161,14 +177,14 @@ int libvo_common_alloc_frames (vo_instance_t * _instance,
 			       void (* draw) (vo_frame_t *))
 {
     common_instance_t * instance;
-    int size;
+    size_t size;
     uint8_t * alloc;
     int i;
 
     instance = (common_instance_t *) _instance;
     instance->prediction_index = 1;
-    size = width * height / 4;
-    alloc = malloc (18 * size);
+    size = width * height/4;
+    alloc = (uint8_t *) AcquireMemory(18*size);
     if (alloc == NULL)
 	return 1;
 
@@ -194,7 +210,7 @@ void libvo_common_free_frames (vo_instance_t * _instance)
     common_instance_t * instance;
 
     instance = (common_instance_t *) _instance;
-    free (instance->frame_ptr[0]->base[0]);
+    LiberateMemory( (void **) &(instance->frame_ptr[0]->base[0]));
 }
 
 vo_frame_t * libvo_common_get_frame (vo_instance_t * _instance, int flags)
@@ -221,7 +237,6 @@ static int internal_setup (vo_instance_t * _instance, int width, int height,
     instance->vo.get_frame = libvo_common_get_frame;
     instance->width = width;
     instance->height = height;
-    sprintf (instance->header, "P5\n\n%d %d\n255\n", width, height * 3 / 2);
     return libvo_common_alloc_frames ((vo_instance_t *) instance,
                                       width, height, sizeof (vo_frame_t),
                                       NULL, NULL, draw_frame);
@@ -229,27 +244,134 @@ static int internal_setup (vo_instance_t * _instance, int width, int height,
 
 static void pgm_draw_frame (vo_frame_t * frame)
 {
-    pgm_instance_t * instance;
-    int i;
-    FILE * file;
+  Image
+    *chroma_image,
+    *clone_image,
+    *resize_image;
 
-    instance = (pgm_instance_t *) frame->instance;
-    if (++(instance->framenum) < 0)
-        return;
-    sprintf (instance->filename, "%d.pgm", instance->framenum);
-    file = fopen (instance->filename, "wb");
-    if (!file)
-        return;
+  long
+    y;
 
-    fwrite (instance->header, strlen (instance->header), 1, file);
-    fwrite (frame->base[0], instance->width, instance->height, file);
-    for (i = 0; i < instance->height >> 1; i++) {
-        fwrite (frame->base[1]+i*instance->width/2, instance->width/2, 1,
-                file);
-        fwrite (frame->base[2]+i*instance->width/2, instance->width/2, 1,
-                file);
+  register const PixelPacket
+    *r;
+
+  register long
+    x;
+  
+  register PixelPacket
+    *q;
+
+  register unsigned char
+    *p;
+
+  pgm_instance_t
+    *instance;
+
+  instance=(pgm_instance_t *) frame->instance;
+  instance->framenum++;
+  if (instance->framenum < 0)
+    return;
+  if (clone_info->subrange != 0)
+    if (instance->framenum < clone_info->subimage)
+      return;
+  if (image->columns != 0)
+    {
+      /*
+        Allocate next image structure.
+      */
+      AllocateNextImage(clone_info,image);
+      if (image->next == (Image *) NULL)
+        {
+          DestroyImages(image);
+          return;
+        }
+      image=image->next;
+      MagickMonitor(LoadImagesText,TellBlob(image),SizeBlob(image));
+    } 
+  image->columns=instance->width;
+  image->rows=instance->height;
+  image->scene=instance->framenum;
+  p=frame->base[0];
+  for (y=0; y < (long) image->rows; y++)
+  {
+    q=SetImagePixels(image,0,y,image->columns,1);
+    if (q == (PixelPacket *) NULL)
+      break;
+    for (x=0; x < (long) image->columns; x++)
+    {
+      q->red=UpScale(*p++);
+      q->green=0;
+      q->blue=0;
+      q++;
     }
-    fclose (file);
+    if (!SyncImagePixels(image))
+      break;
+  }
+  chroma_image=CloneImage(image,image->columns/2,image->rows/2,True,
+    &image->exception);
+  if (chroma_image == (Image *) NULL)
+    return;
+  p=frame->base[1];
+  for (y=0; y < (long) chroma_image->rows; y++)
+  {
+    q=SetImagePixels(chroma_image,0,y,chroma_image->columns,1);
+    if (q == (PixelPacket *) NULL)
+      break;
+    for (x=0; x < (long) chroma_image->columns; x++)
+    {
+      q->red=0;
+      q->green=UpScale(*p++);
+      q->blue=0;
+      q++;
+    }
+    if (!SyncImagePixels(chroma_image))
+      break;
+  }
+  p=frame->base[2];
+  for (y=0; y < (long) chroma_image->rows; y++)
+  {
+    q=GetImagePixels(chroma_image,0,y,chroma_image->columns,1);
+    if (q == (PixelPacket *) NULL)
+      break;
+    for (x=0; x < (long) chroma_image->columns; x++)
+    {
+      q->blue=UpScale(*p++);
+      q++;
+    }
+    if (!SyncImagePixels(chroma_image))
+      break;
+  }
+  /*
+    Scale image.
+  */
+  clone_image=CloneImage(chroma_image,0,0,True,&image->exception);
+  if (clone_image == (Image *) NULL)
+    return;
+  resize_image=ResizeImage(clone_image,image->columns,image->rows,
+    TriangleFilter,1.0,&image->exception);
+  DestroyImage(clone_image);
+  DestroyImage(chroma_image);
+  if (resize_image == (Image *) NULL)
+    return;
+  for (y=0; y < (long) image->rows; y++)
+  {
+    q=GetImagePixels(image,0,y,image->columns,1);
+    r=AcquireImagePixels(resize_image,0,y,resize_image->columns,1,
+      &resize_image->exception);
+    if ((q == (PixelPacket *) NULL) || (r == (const PixelPacket *) NULL))
+      break;
+    for (x=0; x < (long) image->columns; x++)
+    {
+      q->green=r->green;
+      q->blue=r->blue;
+      r++;
+      q++;
+    }
+    if (!SyncImagePixels(image))
+      break;
+  }
+  DestroyImage(resize_image);
+  (void) TransformRGBImage(image,YCbCrColorspace);
 }
 
 static int pgm_setup (vo_instance_t * instance, int width, int height)
@@ -262,8 +384,8 @@ vo_instance_t *OpenVideo(void)
   pgm_instance_t
     *instance;
 
-  instance=malloc (sizeof (pgm_instance_t));
-  if (instance == NULL)
+  instance=(pgm_instance_t *) AcquireMemory(sizeof(pgm_instance_t));
+  if (instance == (pgm_instance_t *) NULL)
     return NULL;
   instance->vo.setup=pgm_setup;
   instance->framenum=(-2);
@@ -273,14 +395,14 @@ vo_instance_t *OpenVideo(void)
 static Image *ReadMPEGImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
-  Image
-    *image;
+  static uint8_t
+    buffer[4096];
 
-  int
-    num_frames;
+  mpeg2dec_t
+    mpeg_info;
 
-  uint8_t
-    *end;
+  register uint8_t
+    *q;
 
   unsigned int
     status;
@@ -295,16 +417,23 @@ static Image *ReadMPEGImage(const ImageInfo *image_info,
   status=OpenBlob(image_info,image,ReadBinaryType,exception);
   if (status == False)
     ThrowReaderException(FileOpenWarning,"Unable to open file",image);
+  clone_info=CloneImageInfo(image_info);
   video=vo_open(OpenVideo);
-  mpeg2_init(&mpeg2dec,0,video);
+  mpeg2_init(&mpeg_info,0,video);
   do
   {
-    end=buffer+ReadBlob(image,BUFFER_SIZE,buffer);
-    num_frames=mpeg2_decode_data(&mpeg2dec,buffer,end);
-    printf("%d\n",num_frames);
-  } while (end == (buffer+BUFFER_SIZE));
-  mpeg2_close(&mpeg2dec);
+    q=buffer+ReadBlob(image,4096,buffer);
+    (void) mpeg2_decode_data(&mpeg_info,buffer,q);
+    if (clone_info->subrange != 0)
+      if (image->scene >= (clone_info->subimage+clone_info->subrange-1))
+        break;
+  } while (q == (buffer+4096));
+  mpeg2_close(&mpeg_info);
   vo_close(video);
+  DestroyImageInfo(clone_info);
+  while (image->previous != (Image *) NULL)
+    image=image->previous;
+  CloseBlob(image);
   return(image);
 }
 #else
@@ -348,6 +477,7 @@ ModuleExport void RegisterMPEGImage(void)
   entry=SetMagickInfo("MPEG");
   entry->decoder=ReadMPEGImage;
   entry->magick=IsMPEG;
+  entry->thread_support=False;
   entry->description=AllocateString("MPEG Video Stream");
   entry->module=AllocateString("MPEG");
   (void) RegisterMagickInfo(entry);
