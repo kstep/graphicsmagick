@@ -162,28 +162,211 @@ static void IntializeImageMagic(void)
 {
   char
     buffer[MaxTextExtent],
+    *buff_p,
+    file_name[MaxTextExtent],
     tag[MaxTextExtent],
-    *p;
-  
+    *tag_p;
+
+  int
+    line_number;
+
   FILE*
     file;
 
-  strcpy(buffer,DelegatePath);
-  strcpy(buffer,DirectorySeparator);
-  strcpy(buffer,"magic.mgk");
+  MagicTestMember
+    test_member;
 
-  file = fopen(buffer, "r");
+  strcpy(file_name,DelegatePath);
+  strcpy(file_name,DirectorySeparator);
+  strcpy(file_name,"magic.mgk");
+
+  file = fopen(file_name, "r");
   if(file != (FILE*) NULL)
     {
+      line_number=0;
       while(!feof(file))
         {
+          ++line_number;
           fgets(buffer,MaxTextExtent,file);
           buffer[MaxTextExtent-1]='\0';
           Strip(buffer);
           if(*buffer=='\0' || *buffer=='#')
             continue;
-          
 
+          /* tag */
+          buff_p=buffer;
+          tag_p=tag;
+          while(isalnum((int)*buff_p))
+            *tag_p++=*buff_p++;
+          *tag_p='\0';
+          if(*buff_p == '\0')
+            {
+              printf("%s:%d: syntax: \"%s\"\n", file_name, line_number, "unexpected end of line");
+              continue;
+            }
+
+          /* parse sequence of match rules */
+          while(1)
+            {
+              /* skip over white space */
+              while(isspace((int)*buff_p))
+                ++buff_p;
+              if(*buff_p == '\0')
+                {
+                  printf("%s:%d: syntax: \"%s\"\n", file_name, line_number, "unexpected end of line");
+                  continue;
+                }
+
+              /* intialize test_member */
+              test_member.method=UndefinedMagicMethod;
+              test_member.argument=(void*)NULL;
+              test_member.truth_value=True;
+              test_member.next=(MagicTestMember*)NULL;
+
+              /* test truth value */
+              if(*buff_p++ == '!')
+                test_member.truth_value=False;
+
+              /* skip over white space */
+              while(isspace((int)*buff_p))
+                ++buff_p;
+              if(*buff_p == '\0')
+                {
+                  printf("%s:%d: syntax: \"%s\"\n", file_name, line_number, "unexpected end of line");
+                  break;
+                }
+
+              if(LocaleCompare(buff_p,"string(") == 0)
+                {
+                  StringMethodArgument
+                    string_argument;
+
+                  unsigned char
+                    string_buff[StringMethodArgumentExtent],
+                    *str_p;
+
+                  test_member.method=StringMagicMethod;
+                  *string_buff='\0';
+                  str_p=string_buff;
+
+                  /* skip over "string(" */
+                  buff_p += 7;
+
+                  /* skip over white space */
+                  while(isspace((int)*buff_p))
+                    ++buff_p;
+                  if(*buff_p == '\0')
+                    {
+                      printf("%s:%d: syntax: \"%s\"\n", file_name, line_number, "unexpected end of line");
+                      break;
+                    }
+
+                  /* get offset */
+                  string_argument.value_offset=strtol(buff_p, &buff_p, 10);
+
+                  /* skip over white space */
+                  while(isspace((int)*buff_p))
+                    ++buff_p;
+                  if(*buff_p == '\0')
+                    {
+                      printf("%s:%d: syntax: \"%s\"\n", file_name, line_number, "unexpected end of line");
+                      break;
+                    }
+
+                  /* check for comma */
+                  if(*buff_p != ',')
+                    {
+                      printf("%s:%d: syntax: \"%s\"\n", file_name, line_number, buff_p);
+                      break;
+                    }
+                  ++buff_p;
+
+                  /* skip over white space */
+                  while(isspace((int)*buff_p))
+                    ++buff_p;
+                  if(*buff_p == '\0')
+                    {
+                      printf("%s:%d: syntax: \"%s\"\n", file_name, line_number, "unexpected end of line");
+                      break;
+                    }
+
+                  /* check for double quotes */
+                  if(*buff_p != '"')
+                    {
+                      printf("%s:%d: syntax: \"%s\"\n", file_name, line_number, buff_p);
+                      break;
+                    }
+                  ++buff_p;
+
+                  /* translate string */
+                  while(1)
+                    {
+                      if(*buff_p == '"')
+                        break;
+
+                      if(*buff_p == '\\');
+                      {
+                        ++buff_p;
+                        if(isdigit((int)*(buff_p)) &&
+                           isdigit((int)*(buff_p+1)) &&
+                           isdigit((int)*(buff_p+2)))
+                          {
+                            /* octal code */
+                            char
+                              lbuff[4];
+
+                            lbuff[0]=*buff_p++;
+                            lbuff[1]=*buff_p++;
+                            lbuff[2]=*buff_p++;
+                            lbuff[3]='\0';
+
+                            *str_p++=(unsigned char)strtol(lbuff, (char**)NULL, 8);
+                            buff_p += 3;
+                          }
+                        else
+                          {
+                            /* escaped character */
+                            *str_p++=*buff_p++;
+                          }
+                        continue;
+                      }
+
+                      if(*buff_p == '\0')
+                        {
+                          printf("%s:%d: syntax: \"%s\"\n", file_name, line_number,
+                                 "unexpected end of line");
+                          break;
+                        }
+                    }
+
+                  /* skip over white space */
+                  while(isspace((int)*buff_p))
+                    ++buff_p;
+                  if(*buff_p == '\0')
+                    {
+                      printf("%s:%d: syntax: \"%s\"\n", file_name, line_number, "unexpected end of line");
+                      break;
+                    }
+
+                  /* test parens */
+                  if(*buff_p != ')')
+                    {
+                      printf("%s:%d: syntax: \"%s\"\n", file_name, line_number, buff_p);
+                      break;
+                    }
+                  ++buff_p;
+
+                  /* done with the line? */
+                  if(*buff_p == '\0')
+                    break;
+                }
+              else
+                {
+                  printf("%s:%d: syntax: \"%s\"\n", file_name, line_number, buff_p);
+                  continue;
+                }
+
+            }
         }
       fclose(file);
     }
