@@ -467,7 +467,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
           }
         if (LocaleCompare((char *) keyword,"stetch") == 0)
           {
-            type_list->stetch=LocaleCompare(token,"True") == 0;
+            type_list->stretch=AllocateString(token);
             break;
           }
         if (LocaleCompare((char *) keyword,"style") == 0)
