@@ -382,15 +382,9 @@ MagickExport Image *CropImage(Image *image,const RectangleInfo *crop_info,
       if ((page.y+(int) page.height) > (int) image->rows)
         page.height=image->rows-page.y;
       if (page.x < 0)
-        {
-          page.width-=(-page.x);
-          page.x=0;
-        }
+        page.x=image->columns-page.width+page.x;
       if (page.y < 0)
-        {
-          page.height-=(-page.y);
-          page.y=0;
-        }
+        page.y=image->rows-page.height+page.y;
     }
   else
     {
