@@ -267,20 +267,11 @@ static void wmf_magick_rop_draw(wmfAPI * API, wmfROP_Draw_t * rop_draw)
   magick_mvg_printf(API, "pop graphic-context\n");
 }
 
-static void wmf_magick_bmp_draw(wmfAPI * API, wmfBMP_Draw_t * bmp_draw)
+static void wmf_magick_bmp_draw(wmfAPI *API, wmfBMP_Draw_t *bmp_draw)
 {
-  wmf_magick_t
-    *ddata = WMF_MAGICK_GetData(API);
-
   double
     height,
     width;
-
-  char
-    imgspec[30];
-
-  ExceptionInfo
-    exception;
 
   long
     id;
@@ -288,38 +279,25 @@ static void wmf_magick_bmp_draw(wmfAPI * API, wmfBMP_Draw_t * bmp_draw)
   if (bmp_draw->bmp.data == 0)
     return;
 
-  /* Save graphic context */
-  magick_mvg_printf(API, "push graphic-context\n");
+  id = *((long*)bmp_draw->bmp.data);
 
-  GetExceptionInfo(&exception);
-  id = SetMagickRegistry(ImageRegistryType, bmp_draw->bmp.data,
-                         sizeof(Image), &exception);
-  (ddata->temp_images)[ddata->cur_temp_image_index] = id;
-  ++ddata->cur_temp_image_index;
-  if (ddata->cur_temp_image_index == ddata->max_temp_image_index)
-  {
-    ddata->max_temp_image_index += 2048;
-    ReacquireMemory((void **) &ddata->temp_images,
-		    ddata->max_temp_image_index * sizeof(long));
-  }
-  sprintf(imgspec, "mpr:%li", id);
 
   width = AbsoluteValue(bmp_draw->pixel_width * (double) bmp_draw->crop.w);
   height = AbsoluteValue(bmp_draw->pixel_height * (double) bmp_draw->crop.h);
 
 #if 0
-printf("pixel_width      = %.10g\n", (double)bmp_draw->pixel_width);
-printf("pixel_height     = %.10g\n", (double)bmp_draw->pixel_height);
-printf("bmp_draw->crop.w = %.10g\n", (double)bmp_draw->crop.w);
-printf("bmp_draw->crop.h = %.10g\n", (double)bmp_draw->crop.h);
+  printf("bmp_draw->bmp.data   = 0x%lx\n", (long)bmp_draw->bmp.data);
+  printf("registry id          = %li\n", id);
+  printf("pixel_width          = %.10g\n", bmp_draw->pixel_width);
+  printf("pixel_height         = %.10g\n", bmp_draw->pixel_height);
+  printf("bmp_draw->bmp.width  = %i\n", bmp_draw->bmp.width);
+  printf("bmp_draw->bmp.height = %i\n", bmp_draw->bmp.height);
+  printf("bmp_draw->crop.w     = %i\n", bmp_draw->crop.w);
+  printf("bmp_draw->crop.h     = %i\n", bmp_draw->crop.h);
 #endif
 
-  /*   printf("x=%.10g, y=%.10g, width=%.10g, height=%.10g\n", x,y,width,height); */
-  magick_mvg_printf(API, "image Copy %.10g,%.10g %.10g,%.10g '%s'\n",
-		    XC(bmp_draw->pt.x), YC(bmp_draw->pt.y), width, height, imgspec);
-
-  /* Restore graphic context */
-  magick_mvg_printf(API, "pop graphic-context\n");
+  magick_mvg_printf(API, "image Copy %.10g,%.10g %.10g,%.10g 'mpr:%li'\n",
+		    XC(bmp_draw->pt.x), YC(bmp_draw->pt.y), width, height, id);
 }
 
 static void wmf_magick_bmp_read(wmfAPI * API, wmfBMP_Read_t * bmp_read) {
@@ -335,40 +313,87 @@ static void wmf_magick_bmp_read(wmfAPI * API, wmfBMP_Read_t * bmp_read) {
   Image
     *image;
 
-  bmp_read->bmp.data = (void *) 0;
+  bmp_read->bmp.data = 0;
+
   image_info = CloneImageInfo((ImageInfo *) 0);
   strcpy(image_info->magick, "DIB");
+  if(bmp_read->width || bmp_read->height)
+    {
+      char
+        size[MaxTextExtent];
+      
+      FormatString(size,"%ux%u",bmp_read->width,bmp_read->height);
+      CloneString(&image_info->size,size);
+    }
   GetExceptionInfo(&exception);
 #if 0
-  printf("offset=%ld, buffer=%lx length=%ld, width=%i, height=%i\n",
-	 bmp_read->offset, (unsigned long) bmp_read->buffer, bmp_read->length,
+  printf("wmf_magick_bmp_read: buffer=0x%lx length=%ld, width=%i, height=%i\n",
+	 (long) bmp_read->buffer, bmp_read->length,
 	 bmp_read->width, bmp_read->height);
 #endif
-
   image = BlobToImage(image_info, (const void *) bmp_read->buffer,
 		      bmp_read->length, &exception);
   DestroyImageInfo(image_info);
   if (!image)
-  {
-    char error_message[MaxTextExtent];
-
-    /* Transfer error to image */
-    if (ddata->image->exception.severity < CorruptImageWarning)
     {
-      ddata->image->exception = exception;
-      ddata->image->exception.severity = CorruptImageWarning;
+      char error_message[MaxTextExtent];
+
+      /* Transfer error to image */
+      if (ddata->image->exception.severity < CorruptImageWarning)
+        {
+          ddata->image->exception = exception;
+          ddata->image->exception.severity = CorruptImageWarning;
+        }
+      snprintf(error_message, sizeof(error_message) - 1, "%s (%s)",
+               exception.reason, exception.description);
+      WMF_ERROR(API, error_message);
     }
-    snprintf(error_message, sizeof(error_message) - 1, "%s (%s)",
-	     exception.reason, exception.description);
-    WMF_ERROR(API, error_message);
-  }
   else
-  {
-    /* printf("rows=%ld,columns=%ld\n", image->rows, image->columns); */
-    bmp_read->bmp.data = image;
-    /*       bmp_read->bmp.width  = (U16)image->columns; */
-    /*       bmp_read->bmp.height = (U16)image->rows; */
-  }
+    {
+      long
+        *id;
+
+      id = (long*) AcquireMemory(sizeof(long));
+
+      if(!id)
+        return; /* FIXME, handle memory allocation error */
+
+#if 0
+      printf("wmf_magick_bmp_read: rows=%ld,columns=%ld\n\n", image->rows, image->columns);
+#endif
+
+      GetExceptionInfo(&exception);
+      *id = SetMagickRegistry(ImageRegistryType, image,
+                              sizeof(Image), &exception);
+    
+      if( *id > -1 )
+        {
+          (ddata->temp_images)[ddata->cur_temp_image_index] = *id;
+          ++ddata->cur_temp_image_index;
+          if (ddata->cur_temp_image_index == ddata->max_temp_image_index)
+            {
+              ddata->max_temp_image_index += 2048;
+              ReacquireMemory((void **) &ddata->temp_images,
+                              ddata->max_temp_image_index * sizeof(long));
+            }
+
+          bmp_read->bmp.data   = (void*)id;
+          bmp_read->bmp.width  = (U16)image->columns;
+          bmp_read->bmp.height = (U16)image->rows;
+        }
+      else
+        {
+          char
+            error_message[MaxTextExtent];
+
+          LiberateMemory((void**)&id);
+          if (ddata->image->exception.severity < exception.severity)
+            ddata->image->exception = exception;
+          snprintf(error_message, sizeof(error_message) - 1, "%s (%s)",
+                   exception.reason, exception.description);
+          WMF_ERROR(API, error_message);
+        }
+    }
 
 }
 
@@ -380,9 +405,8 @@ static void wmf_magick_bmp_free(wmfAPI * API, wmfBMP * bmp)
    * The images are freed by wmf_magick_device_close()
    */
 
-  /* if(bmp->data) */
-  /* DestroyImage((Image*)bmp->data); */
-  bmp->data = (void *) 0;
+  if(bmp->data)
+    LiberateMemory((void**)&bmp->data);
   bmp->width = (U16) 0;
   bmp->height = (U16) 0;
 }
@@ -1356,65 +1380,30 @@ static void magick_brush(wmfAPI * API, wmfDC * dc)
 
 	if (brush_bmp && brush_bmp->data != 0)
           {
-            char
-              composition_mode[14],
-              imgspec[30],
-              pattern_id[30];
+            const char
+              *mode;
 
-            Image
-              *image;
+            const long
+              id = *((long*)brush_bmp->data);
 
-            ExceptionInfo
-              exception;
-
-            long
-              id;
-
-            image = (Image *) brush_bmp->data;
-
-            GetExceptionInfo(&exception);
-            id = SetMagickRegistry(ImageRegistryType, (void *) image,
-                                   sizeof(Image), &exception);
-            if( id<0 || exception.severity != UndefinedException)
-              {
-                if (ddata->image->exception.severity < exception.severity)
-                  ddata->image->exception = exception;
-                return;
-              }
-            sprintf(imgspec, "mpr:%li", id);
-
-            /* Add to ID list */
-            (ddata->temp_images)[ddata->cur_temp_image_index] = id;
-            ++ddata->cur_temp_image_index;
-            if (ddata->cur_temp_image_index == ddata->max_temp_image_index)
-              {
-                ddata->max_temp_image_index += 2048;
-                ReacquireMemory((void **) &ddata->temp_images,
-                                ddata->max_temp_image_index * sizeof(long));
-              }
-
-            sprintf(pattern_id, "fill_%lu", ddata->pattern_id);
-            magick_mvg_printf(API, "push pattern %s 0,0, %lu,%lu\n",
-                              pattern_id, image->columns, image->rows);
-
-            strcpy(composition_mode, "Copy");	/* Default is copy */
+            mode = "Copy";	/* Default is copy */
             switch (fill_ROP)
               {
               case SRCCOPY:	/* dest = source */
-                strcpy(composition_mode, "Copy");
+                mode = "Copy";
                 break;
               case SRCPAINT:	/* dest = source OR dest */
                 break;
               case SRCAND:	/* dest = source AND dest */
                 break;
               case SRCINVERT:	/* dest = source XOR dest */
-                strcpy(composition_mode, "Xor");
+                mode = "Xor";
                 break;
               case SRCERASE:	/* dest = source AND (NOT dest) */
                 break;
               case NOTSRCCOPY:	/* dest = (NOT source) */
-                NegateImage(image, False);
-                strcpy(composition_mode, "Copy");
+/*                 NegateImage(image, False); */
+                /* mode = "Copy"; */
                 break;
               case NOTSRCERASE:	/* dest = (NOT source) AND (NOT dest) */
                 break;
@@ -1438,15 +1427,18 @@ static void magick_brush(wmfAPI * API, wmfDC * dc)
                 {
                 }
               }
-            magick_mvg_printf(API, "image %s 0,0 %lu,%lu '%s'\n",
-                              composition_mode, image->columns, image->rows, imgspec);
+
+            magick_mvg_printf(API, "push pattern fill_%lu 0,0, %u,%u\n",
+                              ddata->pattern_id, brush_bmp->width, brush_bmp->height);
+            magick_mvg_printf(API, "image %s 0,0 %u,%u 'mpr:%li'\n",
+                              mode, brush_bmp->width, brush_bmp->height, id);
             magick_mvg_printf(API, "pop pattern\n");
-            magick_mvg_printf(API, "fill url(#%s)\n", pattern_id);
+            magick_mvg_printf(API, "fill url(#fill_%lu)\n", ddata->pattern_id);
 
             ++ddata->pattern_id;
           }
 	else
-	  printf("magick_brush: no image data!\n");
+	  printf("magick_brush: no BMP image data!\n");
 
 	break;
       }
