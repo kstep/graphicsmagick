@@ -44,7 +44,7 @@ Various image manipulation operations may be applied to the image. Attributes
 may be set on the image to influence the operation of the manipulation
 operations. The <a href="Pixels.html">Pixels</a> class provides low-level
 access to image pixels. As a convenience, including
-<tt>&lt;Magick++.h></tt>
+<tt><font color="#663366">&lt;Magick++.h></font></tt>
 is sufficient in order to use the complete Magick++ API. The Magick++ API
 is enclosed within the <i>Magick</i> namespace so you must either add the
 prefix "<tt>Magick::</tt>" to each class/enumeration name or add the statement
@@ -70,10 +70,17 @@ handling is optional but strongly recommended):
 <br><tt><font color="#000066">using namespace Magick;</font></tt>
 <br><tt><font color="#000066">int main(int argc,char **argv)</font></tt>
 <br><tt><font color="#000066">{</font></tt>
-<br><tt><font color="#000066">&nbsp; try {</font></tt>
-<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; // Create an image object
-and read an image</font></tt>
-<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; Image image( "girl.gif"
+<br><tt><font color="#000066">&nbsp; // Construct the image object. Seperating
+image construction from the</font></tt>
+<br><tt><font color="#000066">&nbsp; // the read operation ensures that
+a failure to read the image file</font></tt>
+<br><tt><font color="#000066">&nbsp; // doesn't render the image object
+useless.</font></tt>
+<br><tt><font color="#000066">&nbsp; Image image;</font></tt><tt><font color="#000066"></font></tt>
+<p><tt><font color="#000066">&nbsp; try {</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; // Read a file into image
+object</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; image.read( "girl.gif"
 );</font></tt>
 <p><tt><font color="#000066">&nbsp;&nbsp;&nbsp; // Crop the image to specified
 size</font></tt>
@@ -365,6 +372,12 @@ manipulation operations provided by the ImageMagick library. If you must
 process a multi-image file (such as an animation), the <a href="STL.html">STL
 interface</a>, which provides a multi-image abstraction on top of <i>Image</i>,
 must be used.
+<p>Image manipulation methods are very easy to use.&nbsp; For example:
+<blockquote><font color="#663366">Image image;</font>
+<br><font color="#663366">image.read("myImage.tiff");</font>
+<br><font color="#663366">image.addNoise(GaussianNoise);</font>
+<br><font color="#663366">image.write("myImage.tiff");</font></blockquote>
+adds gaussian noise to the image file "myImage.tiff".
 <p>The operations supported by Image are shown in the following table:
 <br>&nbsp;
 <table BORDER NOSAVE >
@@ -1556,8 +1569,18 @@ equal the area specified by the width_ and height_ values and type_ parameters.<
 Image attributes are set and obtained via methods in Image. Except for
 methods which accept pointer arguments (e.g. c<tt>hromaBluePrimary)</tt>
 all methods return attributes by value.
-<p>The supported image attributes and the method arguments required to
-obtain them are shown in the following table:
+<p>Image attributes are easily used. For example, to set the resolution
+of the TIFF file "file.tiff" to 150 dots-per-inch (DPI) in both the horizontal
+and vertical directions, you can use the following example code:
+<blockquote><font color="#663366">string filename("file.tiff");</font>
+<br><font color="#663366">Image image;</font>
+<br><font color="#663366">image.read(filename);</font>
+<br><font color="#663366">image.resolutionUnits(PixelsPerInchResolution);</font>
+<br><font color="#663366">image.density(Geometry(150,150));&nbsp;&nbsp;
+// could also use image.density("150x150")</font>
+<br><font color="#663366">image.write(filename)</font></blockquote>
+The supported image attributes and the method arguments required to obtain
+them are shown in the following table:
 <br>&nbsp;
 <table BORDER >
 <caption>Image Image Attributes</caption>
@@ -2668,8 +2691,7 @@ units_</font></td>
 <td BGCOLOR="#666666"><font size=-1>&nbsp;</font></td>
 
 <td><font size=-1>Image MD5 signature. Set force_ to 'true' to force re-computation
-of
-signature.</font></td>
+of signature.</font></td>
 </tr>
 
 <tr>
