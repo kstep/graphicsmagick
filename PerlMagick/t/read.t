@@ -47,7 +47,7 @@ testRead( 'input.dib', 'e9b162b8431709942886f79b7b7c11bb' );
 # Flexible Image Transport System
 #
 ++$test;
-testRead( 'input.fits', '402072120da1513decd3efc060473f60' );
+testRead( 'input.fits', '93a139ba1fbb9a6fbb6c7f2dd276ebe8' );
 
 #
 # CompuServe graphics interchange format
@@ -217,7 +217,7 @@ testRead( 'input.tim', '5f53f9f45afef1060449dd4f09c3706c' );
 # Khoros Visualization image file
 #
 ++$test;
-testRead( 'input.viff', '703151c1beed89a570ae56f1670a486a' );
+testRead( 'input.viff', '7785d161ea66bd39394bb74ef704a0aa' );
 
 #
 # X Windows system bitmap (black and white only)

@@ -68,7 +68,7 @@ testReadWrite( 'DIB:input.dib',
 testReadWrite( 'FITS:input.fits',
                'FITS:output.fits',
                q//,
-               '402072120da1513decd3efc060473f60' );
+               '64cf3c4c88aa5b1083eeb57f4fb8a457' );
 
 #
 # CompuServe graphics interchange format
@@ -249,7 +249,7 @@ testReadWrite( 'TGA:input.tga',
 testReadWrite( 'VIFF:input.viff',
                'VIFF:output.viff',
                q//,
-               'bba2e7661b8dd0b8006442bebcdf285d' );
+               '7785d161ea66bd39394bb74ef704a0aa' );
 #
 # X Windows system bitmap (black and white only)
 #
