@@ -5,8 +5,8 @@ dnl	to configure the system for the local environment.
 #
 # RCS: @(#) $Id$
 
-AC_INIT(TclMagick, 0.41)
-AM_INIT_AUTOMAKE(TclMagick, 0.41)
+AC_INIT(TclMagick, 0.42)
+AM_INIT_AUTOMAKE(TclMagick, 0.42)
 
 AC_PROG_CC
 AC_PROG_LIBTOOL
