@@ -925,9 +925,11 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  clone_image=AllocateImage((ImageInfo *) NULL);
-  if (image == (Image *) NULL)
-    return(clone_image);
+  clone_image=(Image *) AcquireMemory(sizeof(Image));
+  if (clone_image == (Image *) NULL)
+    ThrowImageException(ResourceLimitError,"Unable to clone image",
+      "Memory allocation failed");
+  (void) memset(clone_image,0,sizeof(Image));
   clone_image->storage_class=image->storage_class;
   clone_image->colorspace=image->colorspace;
   clone_image->compression=image->compression;
@@ -1033,6 +1035,7 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
   clone_image->endian=image->endian;
   clone_image->gravity=image->gravity;
   clone_image->compose=image->compose;
+  clone_image->signature=MagickSignature;
   attribute=GetImageAttribute(image,(char *) NULL);
   for ( ; attribute != (const ImageAttribute *) NULL; attribute=attribute->next)
     (void) SetImageAttribute(clone_image,attribute->key,attribute->value);
@@ -1051,7 +1054,6 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
     image->exception.reason,image->exception.description);
   clone_image->client_data=image->client_data;
   clone_image->start_loop=image->start_loop;
-  DestroyBlobInfo(clone_image->blob);
   clone_image->blob=ReferenceBlob(image->blob);
   clone_image->ascii85=image->ascii85;
   clone_image->magick_columns=image->magick_columns;
@@ -1071,7 +1073,7 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
       if (image->next != (Image *) NULL)
         clone_image->next->previous=clone_image;
     }
-  if ((columns == 0) || (rows == 0))
+  if ((columns == 0) && (rows == 0))
     {
       if (image->montage != (char *) NULL)
         (void) CloneString(&clone_image->montage,image->montage);
@@ -1079,7 +1081,6 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
         (void) CloneString(&clone_image->directory,image->directory);
       if (image->clip_mask != (Image *) NULL)
         clone_image->clip_mask=CloneImage(image->clip_mask,0,0,True,exception);
-      DestroyCacheInfo(clone_image->cache);
       clone_image->cache=ReferenceCache(image->cache);
       return(clone_image);
     }
@@ -1089,6 +1090,7 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
   clone_image->page.y=rows*image->page.y/clone_image->rows;
   clone_image->columns=columns;
   clone_image->rows=rows;
+  GetCacheInfo(&clone_image->cache);
   return(clone_image);
 }
 
