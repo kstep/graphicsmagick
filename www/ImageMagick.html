@@ -2951,8 +2951,8 @@ width=15><b><font face="Helvetica, Arial"
 Each image in the range is read
 with the filename followed by a period (<strong>.</strong>) and the decimal scene
 number.  You
-can change this behavior by embedding a <strong>%0Nd, %0No, or %0Nx printf</strong>
-format specification in the file name. For example,</font></td></tr></table>
+can change this behavior by embedding a <strong>%d, %0Nd, %o, %0No, %x, or %0Nx
+printf</strong> format specification in the file name. For example,</font></td></tr></table>
 <pre>
     montage -scenes 5-7 image.miff
 </pre>
@@ -3482,6 +3482,21 @@ Choose from:
 <strong>PaletteMatte</strong>, <strong>TrueColor</strong>, <strong>TrueColorMatte</strong>,
 <strong>ColorSeparation</strong>, <strong>ColorSeparationMatte</strong>, or <strong>Optimize</strong>.
 </font></td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+Normally, when a format supports different subformats such as grayscale
+and truecolor, the encoder will try to choose an efficient subformat.
+The <strong>-type</strong> option can be used to overrride this behavior.  For
+example, to prevent a JPEG from being written in grayscale format even
+though only gray pixels are present, use
+</font></td></tr></table>
+<pre>
+    convert bird.pgm -type TrueColor bird.jpg
+</pre>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+Similarly, using <tt>-type TrueColorMatte</tt> will force the encoder
+to write an alpha channel even though the image is opaque, if the
+output format supports transparency.
+</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -3778,7 +3793,7 @@ specify a subimage with a geometry
 images (e.g., a multi-page PostScript document with <strong>+adjoin</strong> specified)
 are written
 with the filename followed by a period (<strong>.</strong>) and the scene number.  You
-can change this behavior by embedding a <tt>%0Nd, %0No,</tt>
+can change this behavior by embedding a <tt>%d, %0Nd, %o, %0No, %x,</tt>
 or <tt>%0Nx</tt> <em>printf</em>
 format specification in the file name. For example,
 <pre>

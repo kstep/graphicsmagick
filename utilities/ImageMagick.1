@@ -2017,8 +2017,8 @@ an image sequence.
 Each image in the range is read
 with the filename followed by a period (\fB.\fP) and the decimal scene
 number.  You
-can change this behavior by embedding a \fB%0Nd, %0No, or %0Nx printf\fP
-format specification in the file name. For example,
+can change this behavior by embedding a \fB%d, %0Nd, %o, %0No, %x, or %0Nx
+printf\fP format specification in the file name. For example,
 
     montage -scenes 5-7 image.miff
 
@@ -2311,6 +2311,20 @@ Choose from:
 \fBPaletteMatte\fP, \fBTrueColor\fP, \fBTrueColorMatte\fP,
 \fBColorSeparation\fP, \fBColorSeparationMatte\fP, or \fBOptimize\fP.
 
+
+Normally, when a format supports different subformats such as grayscale
+and truecolor, the encoder will try to choose an efficient subformat.
+The \fB-type\fP option can be used to overrride this behavior.  For
+example, to prevent a JPEG from being written in grayscale format even
+though only gray pixels are present, use
+
+
+    convert bird.pgm -type TrueColor bird.jpg
+
+Similarly, using -type TrueColorMatte will force the encoder
+to write an alpha channel even though the image is opaque, if the
+output format supports transparency.
+
 .TP
 .B "-update \fI<seconds>"\fP
 \fR
@@ -2489,7 +2503,7 @@ Single images are written with the filename you specify. However, multi-part
 images (e.g., a multi-page PostScript document with \fB+adjoin\fP specified)
 are written
 with the filename followed by a period (\fB.\fP) and the scene number.  You
-can change this behavior by embedding a %0Nd, %0No,
+can change this behavior by embedding a %d, %0Nd, %o, %0No, %x,
 or %0Nx \fIprintf\fP
 format specification in the file name. For example,
 
