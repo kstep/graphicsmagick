@@ -484,17 +484,13 @@ MagickExport const ColorInfo *GetColorInfo(const char *name,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method GetColorList returns any colors that match the specified pattern
-%  and color standard.
+%  GetColorList() returns any colors that match the specified pattern.
 %
 %  The format of the GetColorList function is:
 %
-%      filelist=GetColorList(const char *pattern,unsigned long *number_colors)
+%      char **GetColorList(const char *pattern,unsigned long *number_colors)
 %
 %  A description of each parameter follows:
-%
-%    o filelist: Method GetColorList returns a list of colors that match the
-%      specified pattern and color standard.
 %
 %    o pattern: Specifies a pointer to a text string containing a pattern.
 %
