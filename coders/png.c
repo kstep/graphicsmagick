@@ -3556,8 +3556,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     count;
 
   short
-    loop_level,
-    loops_active;
+    loop_level;
 
   volatile short
     skipping_loop;
@@ -4309,7 +4308,6 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
           {
             long loop_iters=1;
             loop_level=chunk[0];
-            loops_active++;
             mng_info->loop_active[loop_level]=1;  /* mark loop active */
             /*
               Record starting point.
@@ -4337,7 +4335,6 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                       Found end of zero-iteration loop.
                     */
                     skipping_loop=(-1);
-                    loops_active--;
                     mng_info->loop_active[loop_level]=0;
                   }
               }
@@ -4358,7 +4355,6 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                         /*
                           Finished loop.
                         */
-                        loops_active--;
                         mng_info->loop_active[loop_level]=0;
                         last_level=(-1);
                         for (i=0; i < loop_level; i++)

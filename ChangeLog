@@ -1,3 +1,7 @@
+2003-09-04  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
+
+	* coders/png.c: removed unused "loops_active" variable.
+
 2003-08-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* GraphicsMagick 1.0.3 released.
