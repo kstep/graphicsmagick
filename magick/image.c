@@ -5883,10 +5883,12 @@ MagickExport void SetImageOpacity(Image *image,const unsigned int opacity)
         indexes=GetIndexes(image);
         for (x=0; x < (long) image->columns; x++)
         {
-          if (image->colorspace != CMYKColorspace)
-            q->opacity=((unsigned long) (opacity*q->opacity)/MaxRGB);
-          else
-            indexes[x]=((unsigned long) (opacity*q->opacity)/MaxRGB);
+          if (image->colorspace == CMYKColorspace)
+            {
+              indexes[x]=((unsigned long) (opacity*indexes[x])/MaxRGB);
+              continue;
+            }
+          q->opacity=((unsigned long) (opacity*q->opacity)/MaxRGB);
           q++;
         }
         if (!SyncImagePixels(image))
@@ -5903,10 +5905,12 @@ MagickExport void SetImageOpacity(Image *image,const unsigned int opacity)
     indexes=GetIndexes(image);
     for (x=0; x < (long) image->columns; x++)
     {
-      if (image->colorspace != CMYKColorspace)
-        q->opacity=opacity;
-      else
-        indexes[x]=((unsigned long) (opacity*q->opacity)/MaxRGB);
+      if (image->colorspace == CMYKColorspace)
+        {
+	  indexes[x]=opacity;
+          continue;
+        }
+      q->opacity=opacity;
       q++;
     }
     if (!SyncImagePixels(image))
