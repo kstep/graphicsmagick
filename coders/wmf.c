@@ -1522,7 +1522,8 @@ static void WmfSetPenStyle(CSTRUCT *cstruct, LOGPEN *pen, DC *currentDC)
       /* Source XOR Dest */
       break;
     default:
-      break;
+      {
+      }
     }
 
   if (pen->lopnWidth <= 1)
@@ -1540,6 +1541,9 @@ static void WmfSetPenStyle(CSTRUCT *cstruct, LOGPEN *pen, DC *currentDC)
         case PS_ALTERNATE:
         case PS_USERSTYLE:
           break;
+        default:
+          {
+          }
         }
     }
 
@@ -1552,6 +1556,8 @@ static void WmfSetPenStyle(CSTRUCT *cstruct, LOGPEN *pen, DC *currentDC)
     case PS_ENDCAP_ROUND:
       break;
     default:
+      {
+      }
     }
 
   switch(pen->lopnStyle & PS_JOIN_MASK)
@@ -1563,6 +1569,8 @@ static void WmfSetPenStyle(CSTRUCT *cstruct, LOGPEN *pen, DC *currentDC)
     case PS_JOIN_ROUND:
       break;
     default:
+      {
+      }
     }
 
   puts("WmfSetPenStyle() not implemented");
