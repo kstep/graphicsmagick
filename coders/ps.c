@@ -597,10 +597,11 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
 #define WriteRunlengthPacket(image,pixel,length,p) \
 { \
   if (image->matte && (p->opacity == TransparentOpacity)) \
-    FormatString(buffer,"ffffff%02x",(int) Min(length,0xff)); \
+    FormatString(buffer,"ffffff%02lx",Min(length,0xff)); \
   else \
-    FormatString(buffer,"%02x%02x%02x%02x",ScaleQuantumToChar(pixel.red), \
-      ScaleQuantumToChar(pixel.green),ScaleQuantumToChar(pixel.blue),(int) Min(length,0xff)); \
+    FormatString(buffer,"%02lx%02lx%02lx%02lx",ScaleQuantumToChar(pixel.red), \
+      ScaleQuantumToChar(pixel.green),ScaleQuantumToChar(pixel.blue), \
+      Min(length,0xff)); \
   (void) WriteBlobString(image,buffer); \
 }
 
@@ -1211,7 +1212,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                 break;
               for (x=0; x < (long) image->columns; x++)
               {
-                FormatString(buffer,"%02x",ScaleQuantumToChar(Intensity(p)));
+                FormatString(buffer,"%02lx",ScaleQuantumToChar(Intensity(p)));
                 (void) WriteBlobString(image,buffer);
                 i++;
                 if (i == 36)
@@ -1364,8 +1365,9 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                   if (image->matte && (p->opacity == TransparentOpacity))
                     (void) strcpy(buffer,"ffffff");
                   else
-                    FormatString(buffer,"%02x%02x%02x",
-                      ScaleQuantumToChar(p->red),ScaleQuantumToChar(p->green),ScaleQuantumToChar(p->blue));
+                    FormatString(buffer,"%02lx%02lx%02lx",
+                      ScaleQuantumToChar(p->red),ScaleQuantumToChar(p->green),
+                      ScaleQuantumToChar(p->blue));
                   (void) WriteBlobString(image,buffer);
                   i++;
                   if (i == 12)
@@ -1400,7 +1402,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
           (void) WriteBlobString(image,buffer);
           for (i=0; i < (long) image->colors; i++)
           {
-            FormatString(buffer,"%02x%02x%02x\n",
+            FormatString(buffer,"%02lx%02lx%02lx\n",
               ScaleQuantumToChar(image->colormap[i].red),
               ScaleQuantumToChar(image->colormap[i].green),
               ScaleQuantumToChar(image->colormap[i].blue));
@@ -1432,8 +1434,8 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                     {
                       if (x > 0)
                         {
-                          FormatString(buffer,"%02x%02x",(unsigned int)
-                            index,(unsigned int) Min(length,0xff));
+                          FormatString(buffer,"%02x%02lx",index,
+                            Min(length,0xff));
                           (void) WriteBlobString(image,buffer);
                           i++;
                           if (i == 18)
@@ -1448,8 +1450,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                   pixel=(*p);
                   p++;
                 }
-                FormatString(buffer,"%02x%02x",(unsigned int) index,
-                  (unsigned int) Min(length,0xff));
+                FormatString(buffer,"%02x%02lx",index,Min(length,0xff));
                 (void) WriteBlobString(image,buffer);
                 if (image->previous == (Image *) NULL)
                   if (QuantumTick(y,image->rows))
