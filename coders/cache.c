@@ -309,6 +309,11 @@ static Image *ReadCACHEImage(const ImageInfo *image_info,
               case 'c':
               case 'C':
               {
+                if (LocaleCompare(keyword,"Cache") == 0)
+                  {
+                    (void) strcpy(cache_info->filename,values);
+                    break;
+                  }
                 if (LocaleCompare(keyword,"Class") == 0)
                   {
                     if (LocaleCompare(values,"PseudoClass") == 0)
@@ -887,7 +892,7 @@ static unsigned int WriteCACHEImage(const ImageInfo *image_info,Image *image)
         RGBTransformImage(image,CMYKColorspace);
     (void) strcpy(buffer,"Id=MagickCache\n");
     (void) WriteBlob(image,strlen(buffer),buffer);
-    FormatString(buffer,"cache=%.1024s\n",cache_info->filename);
+    FormatString(buffer,"Cache=%.1024s\n",cache_info->filename);
     (void) WriteBlob(image,strlen(buffer),buffer);
     if (image->class == PseudoClass)
       FormatString(buffer,"Class=PseudoClass  Colors=%u  Matte=%s\n",

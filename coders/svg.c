@@ -102,7 +102,7 @@ typedef struct _SVGInfo
     verbose;
 
   ExceptionInfo
-    exception;
+    *exception;
 
   int
     width,
@@ -523,6 +523,9 @@ static void SVGSetDocumentLocator(void *context,xmlSAXLocatorPtr location)
 
 static void SVGStartDocument(void *context)
 {
+  register int
+    i;
+
   SVGInfo
     *svg_info;
 
@@ -532,10 +535,32 @@ static void SVGStartDocument(void *context)
   svg_info=(SVGInfo *) context;
   if (svg_info->verbose)
     (void) fprintf(stdout,"SAX.startDocument()\n");
+  svg_info->width=640;
+  svg_info->height=480;
+  svg_info->graphic_context=(GraphicContext *)
+    AllocateMemory(sizeof(GraphicContext));
+  if (svg_info->graphic_context == (GraphicContext *) NULL)
+    MagickError(ResourceLimitError,"Unable to allocate memory",(char *) NULL);
+  svg_info->graphic_context[0].fill=AllocateString("none");
+  svg_info->graphic_context[0].stroke=AllocateString("none");
+  svg_info->graphic_context[0].font=AllocateString("none");
+  svg_info->graphic_context[0].antialias=True;
+  svg_info->graphic_context[0].gravity=NorthWestGravity;
+  svg_info->graphic_context[0].decorate=NoDecoration;
+  svg_info->graphic_context[0].linewidth=1.0;
+  svg_info->graphic_context[0].pointsize=12.0;
+  svg_info->graphic_context[0].opacity=100.0;
+  for (i=0; i < 6; i++)
+    svg_info->graphic_context[0].affine[i]=(i == 0) || (i == 3) ? 1.0 : 0.0;
+  GetExceptionInfo(svg_info->exception);
+  xmlSubstituteEntitiesDefault(1);
 }
 
 static void SVGEndDocument(void *context)
 {
+  register int
+    i;
+
   SVGInfo
     *svg_info;
 
@@ -545,6 +570,19 @@ static void SVGEndDocument(void *context)
   svg_info=(SVGInfo *) context;
   if (svg_info->verbose)
     (void) fprintf(stdout,"SAX.endDocument()\n");
+  for (i=0; i <= svg_info->n; i++)
+  {
+    FreeMemory((void **) &svg_info->graphic_context[i].fill);
+    FreeMemory((void **) &svg_info->graphic_context[i].stroke);
+    FreeMemory((void **) &svg_info->graphic_context[i].font);
+  }
+  FreeMemory((void **) &svg_info->graphic_context);
+  if (svg_info->text != (char *) NULL)
+    FreeMemory((void **) &svg_info->text);
+  if (svg_info->vertices != (char *) NULL)
+    FreeMemory((void **) &svg_info->vertices);
+  if (svg_info->url != (char *) NULL)
+    FreeMemory((void **) &svg_info->url);
 }
 
 static void SVGStartElement(void *context,const xmlChar *name,
@@ -720,7 +758,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
               }
             if (LocaleCompare(keyword,"stroke-antialiasing:") == 0)
               {
-                q->antialias=LocaleCompare(value,"true");
+                q->antialias=LocaleCompare(value,"true") == 0;
                 continue;
               }
             if (LocaleCompare(keyword,"stroke-opacity:") == 0)
@@ -1007,7 +1045,8 @@ static void SVGEndElement(void *context,const xmlChar *name)
       (void) fprintf(svg_info->file,"fill %s\n",p->fill);
       (void) fprintf(svg_info->file,"stroke %s\n",p->stroke);
     }
-  (void) fprintf(svg_info->file,"font %s\n",p->font);
+  if (LocaleCompare(p->font,"none") != 0)
+    (void) fprintf(svg_info->file,"font %s\n",p->font);
   (void) fprintf(svg_info->file,"angle %f\n",p->angle);
   (void) fprintf(svg_info->file,"affine ");
   for (i=0; i < 6; i++)
@@ -1204,13 +1243,13 @@ static void SVGWarning(void *context,const char *format,...)
       (void) fprintf(stdout,"SAX.warning: ");
       vfprintf(stdout,format,operands);
     }
-  svg_info->exception.severity=DelegateWarning;
+  svg_info->exception->severity=DelegateWarning;
 #if !defined(HAVE_VSNPRINTF)
   (void) vsprintf(message,format,operands);
 #else
   (void) vsnprintf(message,MaxTextExtent,format,operands);
 #endif
-  CloneString(&svg_info->exception.message,message);
+  CloneString(&svg_info->exception->message,message);
   va_end(operands);
 }
 
@@ -1236,13 +1275,13 @@ static void SVGError(void *context,const char *format,...)
       (void) fprintf(stdout,"SAX.error: ");
       vfprintf(stdout,format,operands);
     }
-  svg_info->exception.severity=DelegateError;
+  svg_info->exception->severity=DelegateError;
 #if !defined(HAVE_VSNPRINTF)
   (void) vsprintf(message,format,operands);
 #else
   (void) vsnprintf(message,MaxTextExtent,format,operands);
 #endif
-  CloneString(&svg_info->exception.message,message);
+  CloneString(&svg_info->exception->message,message);
   va_end(operands);
 }
 
@@ -1350,25 +1389,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   memset(&svg_info,0,sizeof(SVGInfo));
   svg_info.file=file;
   svg_info.verbose=image_info->verbose;
-  GetExceptionInfo(&svg_info.exception);
-  svg_info.width=640;
-  svg_info.height=480;
-  svg_info.graphic_context=(GraphicContext *)
-    AllocateMemory(sizeof(GraphicContext));
-  if (svg_info.graphic_context == (GraphicContext *) NULL)
-    ThrowReaderException(ResourceLimitError,"Unable to allocate memory",image);
-  svg_info.graphic_context[0].fill=AllocateString("none");
-  svg_info.graphic_context[0].stroke=AllocateString("none");
-  svg_info.graphic_context[0].font=
-    AllocateString(image_info->font ? image_info->font : "Times");
-  svg_info.graphic_context[0].antialias=True;
-  svg_info.graphic_context[0].gravity=NorthWestGravity;
-  svg_info.graphic_context[0].decorate=NoDecoration;
-  svg_info.graphic_context[0].linewidth=1.0;
-  svg_info.graphic_context[0].pointsize=12.0;
-  svg_info.graphic_context[0].opacity=100.0;
-  for (i=0; i < 6; i++)
-    svg_info.graphic_context[0].affine[i]=(i == 0) || (i == 3) ? 1.0 : 0.0;
+  svg_info.exception=exception;
   SAXHandler=(&SAXHandlerStruct);
   n=ReadBlob(image,4,buffer);
   if (n > 0)
@@ -1396,27 +1417,14 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (image != (Image *) NULL)
     {
       (void) strcpy(image->filename,image_info->filename);
-      *exception=svg_info.exception;
       if (svg_info.comment != (char *) NULL)
         (void) SetImageAttribute(image,"Comment",svg_info.comment);
     }
   /*
     Free resources.
   */
-  for (i=0; i <= svg_info.n; i++)
-  {
-    FreeMemory((void **) &svg_info.graphic_context[i].fill);
-    FreeMemory((void **) &svg_info.graphic_context[i].stroke);
-    FreeMemory((void **) &svg_info.graphic_context[i].font);
-  }
   if (svg_info.comment != (char *) NULL)
     FreeMemory((void **) &svg_info.comment);
-  if (svg_info.text != (char *) NULL)
-    FreeMemory((void **) &svg_info.text);
-  if (svg_info.vertices != (char *) NULL)
-    FreeMemory((void **) &svg_info.vertices);
-  if (svg_info.url != (char *) NULL)
-    FreeMemory((void **) &svg_info.url);
   return(image);
 }
 #else
