@@ -725,8 +725,7 @@ static unsigned int ImageIsMonochrome(Image *image)
 %
 %  The format of the IsMNG method is:
 %
-%      unsigned int IsMNG(const unsigned char *magick,
-%        const unsigned int length)
+%      unsigned int IsMNG(const unsigned char *magick,const size_t length)
 %
 %  A description of each parameter follows:
 %
@@ -739,7 +738,7 @@ static unsigned int ImageIsMonochrome(Image *image)
 %
 %
 */
-static unsigned int IsMNG(const unsigned char *magick,const unsigned int length)
+static unsigned int IsMNG(const unsigned char *magick,const size_t length)
 {
   if (length < 8)
     return(False);
@@ -765,7 +764,7 @@ static unsigned int IsMNG(const unsigned char *magick,const unsigned int length)
 %  The format of the IsPNG method is:
 %
 %      unsigned int IsPNG(const unsigned char *magick,
-%        const unsigned int length)
+%        const size_t length)
 %
 %  A description of each parameter follows:
 %
@@ -778,7 +777,7 @@ static unsigned int IsMNG(const unsigned char *magick,const unsigned int length)
 %
 %
 */
-static unsigned int IsPNG(const unsigned char *magick,const unsigned int length)
+static unsigned int IsPNG(const unsigned char *magick,const size_t length)
 {
   if (length < 8)
     return(False);

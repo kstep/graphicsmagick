@@ -277,8 +277,7 @@ static unsigned int DecodeImage(Image *image,const unsigned int compression,
 %
 %  The format of the IsAVI method is:
 %
-%      unsigned long IsAVI(const unsigned char *magick,
-%        const unsigned long int)
+%      unsigned long IsAVI(const unsigned char *magick,const size_t length)
 %
 %  A description of each parameter follows:
 %
@@ -291,8 +290,7 @@ static unsigned int DecodeImage(Image *image,const unsigned int compression,
 %
 %
 */
-static unsigned int IsAVI(const unsigned char *magick,
-  const unsigned int length)
+static unsigned int IsAVI(const unsigned char *magick,const size_t length)
 {
   if (length < 4)
     return(False);

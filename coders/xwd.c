@@ -77,8 +77,7 @@ static unsigned int
 %
 %  The format of the IsXWD method is:
 %
-%      unsigned int IsXWD(const unsigned char *magick,
-%        const unsigned int length)
+%      unsigned int IsXWD(const unsigned char *magick,const size_t length)
 %
 %  A description of each parameter follows:
 %
@@ -91,7 +90,7 @@ static unsigned int
 %
 %
 */
-static unsigned int IsXWD(const unsigned char *magick,const unsigned int length)
+static unsigned int IsXWD(const unsigned char *magick,const size_t length)
 {
   if (length < 8)
     return(False);

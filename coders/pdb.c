@@ -134,8 +134,7 @@ static unsigned int DecodeImage(Image *image,unsigned char *pixels,
 %
 %  The format of the ReadPDBImage method is:
 %
-%      unsigned int IsPDB(const unsigned char *magick,
-%        const unsigned int length)
+%      unsigned int IsPDB(const unsigned char *magick,const size_t length)
 %
 %  A description of each parameter follows:
 %
@@ -148,7 +147,7 @@ static unsigned int DecodeImage(Image *image,unsigned char *pixels,
 %
 %
 */
-static unsigned int IsPDB(const unsigned char *magick,const unsigned int length)
+static unsigned int IsPDB(const unsigned char *magick,const size_t length)
 {
   if (length < 68)
     return(False);

@@ -268,8 +268,7 @@ static unsigned int DecodeImage(Image *image,const int channel)
 %
 %  The format of the IsPSD method is:
 %
-%      unsigned int IsPSD(const unsigned char *magick,
-%        const unsigned int length)
+%      unsigned int IsPSD(const unsigned char *magick,const size_t length)
 %
 %  A description of each parameter follows:
 %
@@ -282,7 +281,7 @@ static unsigned int DecodeImage(Image *image,const int channel)
 %
 %
 */
-static unsigned int IsPSD(const unsigned char *magick,const unsigned int length)
+static unsigned int IsPSD(const unsigned char *magick,const size_t length)
 {
   if (length < 4)
     return(False);

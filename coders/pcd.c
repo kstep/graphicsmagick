@@ -328,8 +328,7 @@ static unsigned int DecodeImage(Image *image,unsigned char *luma,
 %
 %  The format of the IsPCD method is:
 %
-%      unsigned int IsPCD(const unsigned char *magick,
-%        const unsigned int length)
+%      unsigned int IsPCD(const unsigned char *magick,const size_t length)
 %
 %  A description of each parameter follows:
 %
@@ -342,7 +341,7 @@ static unsigned int DecodeImage(Image *image,unsigned char *luma,
 %
 %
 */
-static unsigned int IsPCD(const unsigned char *magick,const unsigned int length)
+static unsigned int IsPCD(const unsigned char *magick,const size_t length)
 {
   if (length < 4)
     return(False);

@@ -79,8 +79,7 @@ static unsigned int
 %
 %  The format of the IsXPM method is:
 %
-%      unsigned int IsXPM(const unsigned char *magick,
-%        const unsigned int length)
+%      unsigned int IsXPM(const unsigned char *magick,const size_t length)
 %
 %  A description of each parameter follows:
 %
@@ -93,7 +92,7 @@ static unsigned int
 %
 %
 */
-static unsigned int IsXPM(const unsigned char *magick,const unsigned int length)
+static unsigned int IsXPM(const unsigned char *magick,const size_t length)
 {
   if (length < 9)
     return(False);

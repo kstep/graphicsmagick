@@ -658,8 +658,7 @@ static unsigned int EncodeImage(const ImageInfo *image_info,Image *image,
 %
 %  The format of the IsGIF method is:
 %
-%      unsigned int IsGIF(const unsigned char *magick,
-%        const unsigned int length)
+%      unsigned int IsGIF(const unsigned char *magick,const size_t length)
 %
 %  A description of each parameter follows:
 %
@@ -672,7 +671,7 @@ static unsigned int EncodeImage(const ImageInfo *image_info,Image *image,
 %
 %
 */
-static unsigned int IsGIF(const unsigned char *magick,const unsigned int length)
+static unsigned int IsGIF(const unsigned char *magick,const size_t length)
 {
   if (length < 4)
     return(False);

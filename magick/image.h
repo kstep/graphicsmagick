@@ -540,7 +540,7 @@ typedef struct _MagickInfo
 
   unsigned int
     (*encoder)(const ImageInfo *,Image *),
-    (*magick)(const unsigned char *,const unsigned int);
+    (*magick)(const unsigned char *,const size_t);
 
   void
     *client_data;

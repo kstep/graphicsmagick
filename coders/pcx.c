@@ -108,8 +108,7 @@ static unsigned int
 %
 %  The format of the IsDCX method is:
 %
-%      unsigned int IsDCX(const unsigned char *magick,
-%        const unsigned int length)
+%      unsigned int IsDCX(const unsigned char *magick,const size_t length)
 %
 %  A description of each parameter follows:
 %
@@ -122,7 +121,7 @@ static unsigned int
 %
 %
 */
-static unsigned int IsDCX(const unsigned char *magick,const unsigned int length)
+static unsigned int IsDCX(const unsigned char *magick,const size_t length)
 {
   if (length < 4)
     return(False);
@@ -148,7 +147,7 @@ static unsigned int IsDCX(const unsigned char *magick,const unsigned int length)
 %  The format of the IsPCX method is:
 %
 %      unsigned int IsPCX(const unsigned char *magick,
-%        const unsigned int length)
+%        const size_t length)
 %
 %  A description of each parameter follows:
 %
@@ -161,7 +160,7 @@ static unsigned int IsDCX(const unsigned char *magick,const unsigned int length)
 %
 %
 */
-static unsigned int IsPCX(const unsigned char *magick,const unsigned int length)
+static unsigned int IsPCX(const unsigned char *magick,const size_t length)
 {
   if (length < 2)
     return(False);

@@ -71,8 +71,7 @@
 %
 %  The format of the IsPWP method is:
 %
-%      unsigned int IsPWP(const unsigned char *magick,
-%        const unsigned int length)
+%      unsigned int IsPWP(const unsigned char *magick,const size_t length)
 %
 %  A description of each parameter follows:
 %
@@ -85,7 +84,7 @@
 %
 %
 */
-static unsigned int IsPWP(const unsigned char *magick,const unsigned int length)
+static unsigned int IsPWP(const unsigned char *magick,const size_t length)
 {
   if (length < 5)
     return(False);

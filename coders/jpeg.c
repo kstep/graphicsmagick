@@ -81,8 +81,7 @@ static unsigned int
 %
 %  The format of the IsJPEG  method is:
 %
-%      unsigned int IsJPEG(const unsigned char *magick,
-%        const unsigned int length)
+%      unsigned int IsJPEG(const unsigned char *magick,const size_t length)
 %
 %  A description of each parameter follows:
 %
@@ -95,8 +94,7 @@ static unsigned int
 %
 %
 */
-static unsigned int IsJPEG(const unsigned char *magick,
-  const unsigned int length)
+static unsigned int IsJPEG(const unsigned char *magick,const size_t length)
 {
   if (length < 3)
     return(False);

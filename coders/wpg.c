@@ -67,8 +67,7 @@
 %
 %  The format of the IsWPG method is:
 %
-%      unsigned int IsWPG(const unsigned char *magick,
-%        const unsigned int length)
+%      unsigned int IsWPG(const unsigned char *magick,const size_t length)
 %
 %  A description of each parameter follows:
 %
@@ -81,7 +80,7 @@
 %
 %
 */
-static unsigned int IsWPG(const unsigned char *magick,const unsigned int length)
+static unsigned int IsWPG(const unsigned char *magick,const size_t length)
 {
   if (length < 4)
     return(False);

@@ -77,8 +77,7 @@ static unsigned int
 %
 %  The format of the IsHTML method is:
 %
-%      unsigned int IsHTML(const unsigned char *magick,
-%        const unsigned int length)
+%      unsigned int IsHTML(const unsigned char *magick,const size_t length)
 %
 %  A description of each parameter follows:
 %
@@ -91,8 +90,7 @@ static unsigned int
 %
 %
 */
-static unsigned int IsHTML(const unsigned char *magick,
-  const unsigned int length)
+static unsigned int IsHTML(const unsigned char *magick,const size_t length)
 {
   if (length < 5)
     return(False);
