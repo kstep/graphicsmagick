@@ -172,9 +172,8 @@ MagickExport void DestroyMagickInfo(void)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetImageMagick() searches for an image format that matches the
-%  specified magick string.  If one is found the name is returned otherwise
-%  NULL.
+%  GetImageMagick() searches for an image format that matches the specified
+%  magick string.  If one is found the name is returned otherwise NULL.
 %
 %  The format of the GetImageMagick method is:
 %
