@@ -1,0 +1,7 @@
+SAX.setDocumentLocator()
+SAX.startDocument()
+SAX.startElement(EXAMPLE)
+SAX.characters(
+    This is an inverted excla, 67)
+SAX.endElement(EXAMPLE)
+SAX.endDocument()

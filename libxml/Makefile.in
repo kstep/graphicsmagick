@@ -1,0 +1,444 @@
+NAME	= libxml
+VERSION	= @LIBXML_VERSION@
+
+CC	= @CC@
+#CC	= insure
+
+CFLAGS	= -Wall @CFLAGS@ 
+#CFLAGS	= -Wall -g -DDEBUG
+#CFLAGS	= -Wall -O6
+#VPATH   = @top_srcdir@@xmlextrasrcdir@
+
+INCL	= -I. -I.. -I$(srcdir)
+
+LIBS	= @LIBXML_LIBS@
+FLIBS	= @LIBS@
+
+RM	= @RM@ -f
+MV	= @MV@ 
+LN	= @LN_S@
+
+prefix	= @prefix@
+exec_prefix= @exec_prefix@
+bindir	= @bindir@
+libdir	= @libdir@
+sysconfdir = @sysconfdir@
+datadir	= @datadir@
+mandir	= @prefix@/man
+srcdir  = @top_srcdir@@xmlextrasrcdir@
+top_srcdir = @top_srcdir@
+
+FILES	= Copyright Makefile.in Makefile.win SAX.c TODO acconfig.h \
+    config.h.in configure.in encoding.c encoding.h entities.c entities.h \
+    error.c xml-error.h install-sh parser.c parser.h test xmllint.c tree.c \
+    tree.h debugXML.h debugXML.c valid.c valid.h xpointer.c xpointer.h \
+    testSAX.c HTMLparser.h HTMLparser.c HTMLtree.h HTMLtree.c \
+    xpath.c xpath.h testXPath.c xmlIO.c xmlIO.h xmlmemory.c xmlmemory.h \
+    nanohttp.c nanohttp.h nanoftp.c nanoftp.h xlink.c xlink.h \
+    win32config.h win32config.in uri.c uri.h testURI.c testOasis.c
+OBJS	= tree.o parser.o entities.o error.o SAX.o encoding.o @DEBUG_OBJ@ \
+    valid.o xpointer.o @HTML_OBJ@ @XPATH_OBJ@ xmlIO.o xmlmemory.o \
+    @HTTP_OBJ@ @FTP_OBJ@ xlink.o uri.o
+
+%.o: $(srcdir)/%.c
+	$(CC) $(CFLAGS) $(INCL) -c $<
+
+all : $(srcdir)/libxml libxml.a xmllint testSAX testHTML testXPath nanohttp nanoftp testDAV testURI testOasis
+
+$(srcdir)/libxml:
+	-$(RM) $(srcdir)/libxml
+	ln -s $(srcdir)/. $(srcdir)/libxml
+
+slashrdf.o : $(srcdir)/slashrdf.c
+	$(CC) $(CFLAGS) -I/usr/lib/glib/include -c $(srcdir)/slashrdf.c
+
+slashrdf: slashrdf.o libxml.a
+	$(CC) $(CFLAGS) -o slashrdf slashrdf.o -L. -lxml -lglib $(LIBS)
+
+libxml.a : $(OBJS)
+	ar rc libxml.a $(OBJS)
+
+clean :
+	$(RM) tree parser *.o core tree xmllint testSAX libxml.a \
+	      result.*.xml valerror.*.xml error.*.xml slashrdf \
+	      testXPath testHTML .\#* gmon.out *.orig *.old *.bak \
+	      *.patch *.rej testDAV nanohttp .ix* .memdump \
+	      testOasis
+	@(if [ -f insure/Makefile ] ; then cd insure ; $(MAKE) clean ; fi)
+
+distclean : clean
+	$(RM) Makefile config.h configure config.log config.cache \
+	      config.status .depends Makefile
+
+xmllint : xmllint.o libxml.a
+	$(CC) $(CFLAGS) -o xmllint xmllint.o -L. -lxml $(FLIBS)
+
+testSAX : testSAX.o libxml.a
+	$(CC) $(CFLAGS) -o testSAX testSAX.o -L. -lxml $(LIBS)
+
+testHTML : testHTML.o libxml.a
+	$(CC) $(CFLAGS) -o testHTML testHTML.o -L. -lxml $(LIBS)
+
+testXPath : testXPath.o libxml.a
+	$(CC) $(CFLAGS) -o testXPath testXPath.o -L. -lxml $(LIBS)
+
+testURI : testURI.o libxml.a
+	$(CC) $(CFLAGS) -o testURI testURI.o -L. -lxml $(LIBS)
+
+testOasis : testOasis.o libxml.a
+	$(CC) $(CFLAGS) -o testOasis testOasis.o -L. -lxml $(LIBS)
+
+tree : $(srcdir)/tree.c
+	$(CC) $(CFLAGS) -DDEBUG_TREE -o tree $(srcdir)/tree.c
+
+nanohttp: $(srcdir)/nanohttp.c $(srcdir)/nanohttp.h xmlmemory.o
+	$(CC) $(CFLAGS) $(INCL) -DSTANDALONE -o nanohttp $(srcdir)/nanohttp.c xmlmemory.o $(LIBS)
+
+nanoftp: $(srcdir)/nanoftp.c $(srcdir)/nanoftp.h xmlmemory.o
+	$(CC) $(CFLAGS) $(INCL) -DSTANDALONE -o nanoftp $(srcdir)/nanoftp.c xmlmemory.o $(LIBS)
+
+testDAV: $(srcdir)/testDAV.c
+	$(CC) $(CFLAGS) $(INCL) -o testDAV $(srcdir)/testDAV.c -L. -lxml $(LIBS)
+
+depends .depends:
+	@$(CC) $(CFLAGS) $(INCL) -M $(srcdir)/*.c > .depends
+
+testall : tests SVGtests SAXtests XPathtests HTMLtests
+
+tests: XMLtests XMLenttests Validtests # HTMLtests 
+
+HTMLtests : testHTML
+	@(rm -f .memdump ; touch .memdump)
+	@echo "##"
+	@echo "## HTML regression tests"
+	@echo "##"
+	@(for i in $(srcdir)/test/HTML/* ; do \
+	  name=`basename $$i`; \
+	  if [ ! -d $$i ] ; then \
+	  if [ ! -f $(srcdir)/result/HTML/$$name ] ; then \
+	      echo New test file $$name ; \
+	      testHTML $$i > $(srcdir)/result/HTML/$$name 2>$(srcdir)/result/HTML/$$name.err ; \
+	  else \
+	      echo Testing $$name ; \
+	      testHTML $$i > result.$$name 2> error.$$name ; \
+	      grep "MORY ALLO" .memdump  | grep -v "MEMORY ALLOCATED : 0";\
+	      diff $(srcdir)/result/HTML/$$name result.$$name ; \
+	      diff -b $(srcdir)/result/HTML/$$name.err error.$$name ; \
+	      testHTML result.$$name > result2.$$name 2>error.$$name ; \
+	      diff result.$$name result2.$$name ; \
+	      rm result.$$name result2.$$name error.$$name ; \
+	  fi ; fi ; done)
+	@echo "##"
+	@echo "## Push HTML regression tests"
+	@echo "##"
+	@(for i in $(srcdir)/test/HTML/* ; do \
+	  name=`basename $$i`; \
+	  if [ ! -d $$i ] ; then \
+	  if [ ! -f $(srcdir)/result/HTML/$$name ] ; then \
+	      echo New test file $$name ; \
+	      testHTML $$i > $(srcdir)/result/HTML/$$name 2>$(srcdir)/result/HTML/$$name.err ; \
+	  else \
+	      echo Testing $$name ; \
+	      testHTML --push $$i > result.$$name 2> error.$$name ; \
+	      grep "MORY ALLO" .memdump  | grep -v "MEMORY ALLOCATED : 0";\
+	      diff $(srcdir)/result/HTML/$$name result.$$name ; \
+	      diff -b $(srcdir)/result/HTML/$$name.err error.$$name ; \
+	      testHTML --push result.$$name > result2.$$name 2>error.$$name ; \
+	      diff result.$$name result2.$$name ; \
+	      rm result.$$name result2.$$name error.$$name ; \
+	  fi ; fi ; done)
+
+XMLtests : xmllint
+	@(rm -f .memdump ; touch .memdump)
+	@echo "##"
+	@echo "## XML regression tests"
+	@echo "##"
+	@(for i in $(srcdir)/test/* ; do \
+	  name=`basename $$i`; \
+	  if [ ! -d $$i ] ; then \
+	  if [ ! -f $(srcdir)/result/$$name ] ; then \
+	      echo New test file $$name ; \
+	      xmllint $$i > $(srcdir)/result/$$name ; \
+	  else \
+	      echo Testing $$name ; \
+	      xmllint $$i > result.$$name ; \
+	      grep "MORY ALLO" .memdump  | grep -v "MEMORY ALLOCATED : 0";\
+	      diff $(srcdir)/result/$$name result.$$name ; \
+	      xmllint result.$$name > result2.$$name ; \
+	      diff result.$$name result2.$$name ; \
+	      rm result.$$name result2.$$name ; \
+	  fi ; fi ; done)
+	@echo "##"
+	@echo "## XML Push regression tests"
+	@echo "##"
+	@(for i in $(srcdir)/test/* ; do \
+	  name=`basename $$i`; \
+	  if [ ! -d $$i ] ; then \
+	  if [ ! -f $(srcdir)/result/$$name ] ; then \
+	      echo New test file $$name ; \
+	      xmllint --push $$i > $(srcdir)/result/$$name ; \
+	  else \
+	      echo Testing $$name ; \
+	      xmllint --push $$i > result.$$name ; \
+	      grep "MORY ALLO" .memdump  | grep -v "MEMORY ALLOCATED : 0";\
+	      diff $(srcdir)/result/$$name result.$$name ; \
+	      xmllint --push result.$$name > result2.$$name ; \
+	      diff result.$$name result2.$$name ; \
+	      rm result.$$name result2.$$name ; \
+	  fi ; fi ; done)
+
+XMLenttests : xmllint
+	@(rm -f .memdump ; touch .memdump)
+	@echo "##"
+	@echo "## XML entity subst regression tests"
+	@echo "##"
+	@(for i in $(srcdir)/test/* ; do \
+	  name=`basename $$i`; \
+	  if [ ! -d $$i ] ; then \
+	  if [ ! -f $(srcdir)/result/noent/$$name ] ; then \
+	      echo New test file $$name ; \
+	      xmllint --noent $$i > $(srcdir)/result/noent/$$name ; \
+	  else \
+	      echo Testing $$name ; \
+	      xmllint --noent $$i > result.$$name ; \
+	      grep "MORY ALLO" .memdump  | grep -v "MEMORY ALLOCATED : 0";\
+	      diff $(srcdir)/result/noent/$$name result.$$name ; \
+	      xmllint --noent result.$$name > result2.$$name ; \
+	      diff result.$$name result2.$$name ; \
+	      rm result.$$name result2.$$name ; \
+	  fi ; fi ; done)
+	@echo "##"
+	@echo "## Push XML entity subst regression tests"
+	@echo "##"
+	@(for i in $(srcdir)/test/* ; do \
+	  name=`basename $$i`; \
+	  if [ ! -d $$i ] ; then \
+	  if [ ! -f $(srcdir)/result/noent/$$name ] ; then \
+	      echo New test file $$name ; \
+	      xmllint --noent $$i > $(srcdir)/result/noent/$$name ; \
+	  else \
+	      echo Testing $$name ; \
+	      xmllint --push --noent $$i > result.$$name ; \
+	      grep "MORY ALLO" .memdump  | grep -v "MEMORY ALLOCATED : 0";\
+	      diff $(srcdir)/result/noent/$$name result.$$name ; \
+	      xmllint --push --noent result.$$name > result2.$$name ; \
+	      diff result.$$name result2.$$name ; \
+	      rm result.$$name result2.$$name ; \
+	  fi ; fi ; done)
+
+XPathtests : testXPath
+	@(rm -f .memdump ; touch .memdump)
+	@echo "##"
+	@echo "## XPath regression tests"
+	@echo "##"
+	@(for i in $(srcdir)/test/XPath/expr/* ; do \
+	  name=`basename $$i`; \
+	  if [ ! -d $$i ] ; then \
+	  if [ ! -f $(srcdir)/result/XPath/expr/$$name ] ; then \
+	      echo New test file $$name ; \
+	      testXPath -f --expr $$i > $(srcdir)/result/XPath/expr/$$name ; \
+	  else \
+	      echo Testing $$name ; \
+	      testXPath -f --expr $$i > result.$$name ; \
+	      grep "MORY ALLO" .memdump  | grep -v "MEMORY ALLOCATED : 0";\
+	      diff $(srcdir)/result/XPath/expr/$$name result.$$name ; \
+	      rm result.$$name ; \
+	  fi ; fi ; done)
+	@(for i in $(srcdir)/test/XPath/docs/* ; do \
+	  if [ ! -d $$i ] ; then \
+	  doc=`basename $$i`; \
+	  for j in $(srcdir)/test/XPath/tests/$$doc* ; do \
+	  name=`basename $$j`; \
+	  if [ ! -d $$j ] ; then \
+	  if [ ! -f $(srcdir)/result/XPath/tests/$$name ] ; then \
+	      echo New test file $$name ; \
+	      testXPath -f -i $$i $$j > $(srcdir)/result/XPath/tests/$$name ; \
+	  else \
+	      echo Testing $$name ; \
+	      testXPath -f -i $$i $$j > result.$$name ; \
+	      grep "MORY ALLO" .memdump  | grep -v "MEMORY ALLOCATED : 0";\
+	      diff $(srcdir)/result/XPath/tests/$$name result.$$name ; \
+	      rm result.$$name ; \
+	  fi ; fi ; done ; fi ; done)
+
+SVGtests : xmllint
+	@(rm -f .memdump ; touch .memdump)
+	@echo "##"
+	@echo "## SVG parsing regression tests"
+	@echo "##"
+	@(for i in $(srcdir)/test/SVG/* ; do \
+	  name=`basename $$i`; \
+	  if [ ! -d $$i ] ; then \
+	  if [ ! -f $(srcdir)/result/SVG/$$name ] ; then \
+	      echo New test file $$name ; \
+	      xmllint $$i > $(srcdir)/result/SVG/$$name ; \
+	  else \
+	      echo Testing $$name ; \
+	      xmllint $$i > result.$$name ; \
+	      grep "MORY ALLO" .memdump  | grep -v "MEMORY ALLOCATED : 0";\
+	      diff $(srcdir)/result/SVG/$$name result.$$name ; \
+	      xmllint result.$$name > result2.$$name ; \
+	      diff result.$$name result2.$$name ; \
+	      rm result.$$name result2.$$name ; \
+	  fi ; fi ; done)
+
+SAXtests : testSAX
+	@(rm -f .memdump ; touch .memdump)
+	@echo "##"
+	@echo "## SAX callbacks regression tests"
+	@echo "##"
+	@(for i in $(srcdir)/test/* ; do \
+	  name=`basename $$i`; \
+	  if [ ! -d $$i ] ; then \
+	  if [ ! -f $(srcdir)/SAXresult/$$name ] ; then \
+	      echo New test file $$name ; \
+	      testSAX $$i > $(srcdir)/SAXresult/$$name ; \
+	  else \
+	      echo Testing $$name ; \
+	      testSAX $$i > result.$$name ; \
+	      grep "MORY ALLO" .memdump  | grep -v "MEMORY ALLOCATED : 0";\
+	      diff $(srcdir)/SAXresult/$$name result.$$name ; \
+	      rm result.$$name ; \
+	  fi ; fi ; done)
+	@echo "##"
+	@echo "## Push mode SAX callbacks regression tests"
+	@echo "##"
+	@(for i in $(srcdir)/test/* ; do \
+	  name=`basename $$i`; \
+	  if [ ! -d $$i ] ; then \
+	  if [ ! -f $(srcdir)/SAXresult/$$name ] ; then \
+	      echo New test file $$name ; \
+	      testSAX $$i > $(srcdir)/SAXresult/$$name ; \
+	  else \
+	      echo Testing $$name ; \
+	      testSAX --push $$i > result.$$name ; \
+	      grep "MORY ALLO" .memdump  | grep -v "MEMORY ALLOCATED : 0";\
+	      diff $(srcdir)/SAXresult/$$name result.$$name ; \
+	      rm result.$$name ; \
+	  fi ; fi ; done)
+
+PushValidtests : xmllint
+	@echo "##"
+	@echo "## Push Validity checking regression tests"
+	@echo "##"
+	@(for i in $(srcdir)/test/VC/* ; do \
+	  name=`basename $$i`; \
+	  if [ ! -d $$i ] ; then \
+	  if [ ! -f $(srcdir)/result/VC/$$name ] ; then \
+	      echo New test file $$name ; \
+	      xmllint --noout --valid $$i 2> $(srcdir)/result/VC/$$name ; \
+	  else \
+	      echo Testing $$name ; \
+	      xmllint --push --noout --valid $$i 2> result.$$name ; \
+	      grep "MORY ALLO" .memdump  | grep -v "MEMORY ALLOCATED : 0";\
+	      diff -b $(srcdir)/result/VC/$$name result.$$name ; \
+	      rm result.$$name ; \
+	  fi ; fi ; done)
+	@echo "##"
+	@echo "## Push Valid documents regression tests"
+	@echo "##"
+	@(for i in $(srcdir)/test/valid/* ; do \
+	  name=`basename $$i`; \
+	  if [ ! -d $$i ] ; then \
+	  if [ ! -f $(srcdir)/result/valid/$$name ] ; then \
+	      echo New test file $$name ; \
+	      xmllint --valid $$i > $(srcdir)/result/valid/$$name 2>$(srcdir)/result/valid/$$name.err ; \
+	  else \
+	      echo Testing $$name ; \
+	      xmllint --push --valid $$i > result.$$name 2>error.$$name ; \
+	      grep "MORY ALLO" .memdump  | grep -v "MEMORY ALLOCATED : 0";\
+	      diff $(srcdir)/result/valid/$$name result.$$name ; \
+	      diff -b $(srcdir)/result/valid/$$name.err error.$$name ; \
+	      rm result.$$name error.$$name ; \
+	  fi ; fi ; done)
+
+Validtests : xmllint
+	@(rm -f .memdump ; touch .memdump)
+	@echo "##"
+	@echo "## Validity checking regression tests"
+	@echo "##"
+	@(for i in $(srcdir)/test/VC/* ; do \
+	  name=`basename $$i`; \
+	  if [ ! -d $$i ] ; then \
+	  if [ ! -f $(srcdir)/result/VC/$$name ] ; then \
+	      echo New test file $$name ; \
+	      xmllint --noout --valid $$i 2> $(srcdir)/result/VC/$$name ; \
+	  else \
+	      echo Testing $$name ; \
+	      xmllint --noout --valid $$i 2> result.$$name ; \
+	      grep "MORY ALLO" .memdump  | grep -v "MEMORY ALLOCATED : 0";\
+	      diff -b $(srcdir)/result/VC/$$name result.$$name ; \
+	      rm result.$$name ; \
+	  fi ; fi ; done)
+	@echo "##"
+	@echo "## Valid documents regression tests"
+	@echo "##"
+	@(for i in $(srcdir)/test/valid/* ; do \
+	  name=`basename $$i`; \
+	  if [ ! -d $$i ] ; then \
+	  if [ ! -f $(srcdir)/result/valid/$$name ] ; then \
+	      echo New test file $$name ; \
+	      xmllint --valid $$i > $(srcdir)/result/valid/$$name 2>$(srcdir)/result/valid/$$name.err ; \
+	  else \
+	      echo Testing $$name ; \
+	      xmllint --valid $$i > result.$$name 2>error.$$name ; \
+	      grep "MORY ALLO" .memdump  | grep -v "MEMORY ALLOCATED : 0";\
+	      diff $(srcdir)/result/valid/$$name result.$$name ; \
+	      diff -b $(srcdir)/result/valid/$$name.err error.$$name ; \
+	      rm result.$$name error.$$name ; \
+	  fi ; fi ; done)
+
+#	      xmllint --valid result.$$name > result2.$$name ; \
+#	      diff result.$$name result2.$$name ; \
+#	      rm result.$$name result2.$$name ; \
+
+jctests : xmllint
+	@(for i in $(srcdir)/xmltest/not-wf/sa/*.xml ; do \
+	  name=`basename $$i`; \
+	  xmllint $$i > result.$$name 2> error.$$name ; \
+	  if [ -s result.$$name ] ; then \
+	  echo "$$i is not well formed, output should be empty" ; \
+	  else rm -f result.$$name ; fi ; \
+	  rm error.$$name ; done)
+	@(DIR=`pwd`; cd $(srcdir) ;  \
+	  for i in $(srcdir)/xmltest/valid/sa/*.xml ; do \
+	  xmllint --nowarning --valid --noout $$i > valresult.$$name 2> valerror.$$name ; \
+	  if [ -s valerror.$$name ] ; then \
+	  echo "$$i is valid, error should be empty" ; \
+	  cat valerror.$$name ; \
+	  else rm -f valerror.$$name ; fi ; \
+	  rm valresult.$$name ; done)
+	@(DIR=`pwd`; cd $(srcdir) ;  \
+	  for i in $(srcdir)/xmltest/valid/not-sa/*.xml ; do \
+	  xmllint --nowarning --valid --noout $$i > valresult.$$name 2> valerror.$$name ; \
+	  if [ -s valerror.$$name ] ; then \
+	  echo "$$i is valid, error should be empty" ; \
+	  cat valerror.$$name ; \
+	  else rm -f valerror.$$name ; fi ; \
+	  rm valresult.$$name ; done)
+
+
+install : libxml.a
+	if [ ! -d $(libdir) ] ; then \
+	   @INSTALL@ -d $(libdir) ;\
+	fi
+	@INSTALL@ -m 644 libxml.a $(libdir)
+
+uninstall :
+	$(RM) $(libdir)/libxml.a
+
+include .depends
+
+distrib : clean
+	@(cd $(srcdir) ; $(LN) . $(NAME)-$(VERSION))
+	@(cd $(srcdir) ; $(TAR) cvf - `for i in $(FILES) ; do echo $(NAME)-$(VERSION)/$$i ; \
+	  done` | $(GZIP) > $(NAME)-$(VERSION).tar.gz)
+	@(cd $(srcdir) ; $(RM) $(NAME)-$(VERSION))
+
+tar:
+	tar cvf - $(FILES) | bzip2 -z > libxml-@LIBXML_VERSION@.tar.bz2
+backup:
+	@(DATE=`date +%a%d%b-%H%M` ; PREFIX="/tmp/libxml-" ; \
+	  OUT=$$PREFIX$$DATE.tar.gz ; tar czf $$OUT $(FILES) ; \
+	  ls -ltr $$PREFIX*)
+

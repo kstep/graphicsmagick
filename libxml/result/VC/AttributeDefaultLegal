@@ -1,0 +1,12 @@
+./test/VC/AttributeDefaultLegal:4: validity error: Attribute doc on At: invalid default value
+<!ATTLIST doc At NMTOKEN "$$$">
+                              ^
+./test/VC/AttributeDefaultLegal:6: validity error: Attribute doc on bad: invalid default value
+<!ATTLIST doc bad IDREF "1abc_2">
+                                ^
+./test/VC/AttributeDefaultLegal:8: validity error: Attribute doc on bad2: invalid default value
+<!ATTLIST doc bad2 IDREFS "abc:1 1abc_2">
+                                        ^
+./test/VC/AttributeDefaultLegal:11: validity error: No declaration for attribute val on element doc
+<doc val="v1"/>
+             ^
