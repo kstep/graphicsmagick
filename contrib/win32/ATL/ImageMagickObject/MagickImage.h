@@ -32,6 +32,7 @@
 #undef VERSION
 
 #include <magick/api.h>
+#include <ntbase.h>
 #undef inline // Remove possible definition from config.h
 
 #undef class
@@ -115,9 +116,11 @@ public:
   HRESULT ProcessArgs(int iFunction,SAFEARRAY **pArrayVar);
   HRESULT DispatchToImage(IDispatch* pdisp,CComObject<CMagickImage>** ppMagickImage);
   HRESULT UnknownToImage(IUnknown* pdisp,CComObject<CMagickImage>** ppMagickImage);
-  HRESULT Execute(unsigned int (*func)(int argc,char **argv));
-	HRESULT Perform(unsigned int (*func)(int argc,char **argv),
-    SAFEARRAY **pArrayVar,VARIANT *pVar2);
+  HRESULT Execute(unsigned int (*func)(ImageInfo *image_info,
+    const int argc,char **argv,ExceptionInfo *exception));
+	HRESULT Perform(unsigned int (*func)(ImageInfo *image_info,
+    const int argc,char **argv,ExceptionInfo *exception),
+      SAFEARRAY **pArrayVar,VARIANT *pVar2);
   LPTSTR StrChr(LPTSTR lpsz, TCHAR ch);
 public:
 	CComPtr<IRequest> m_piRequest;					//Request Object
@@ -143,6 +146,9 @@ private:
     const char *qualifier);
 
   static void errorhandler(const ExceptionType error,const char *message,
+    const char *qualifier);
+
+  static void fatalerrorhandler(const ExceptionType error,const char *message,
     const char *qualifier);
 };
 

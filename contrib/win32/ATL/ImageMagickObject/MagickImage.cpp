@@ -7,24 +7,10 @@
 const LCID lcidDefault = 0;
 const DWORD dwErrorBase = 5000;
 
-#define DO_DEBUG 1
-//
-// Include all of the main utilities as subroutines
-//
-#define MagickAPI 0
-#include ".\utilities\convert.c"
-#include ".\utilities\composite.c"
-#include ".\utilities\mogrify.c"
-#include ".\utilities\montage.c"
-#include ".\utilities\identify.c"
+/* #define DO_DEBUG 1 */
 
 /////////////////////////////////////////////////////////////////////////////
 // CMagickImage
-
-#ifdef USE_SETJMP
-static CMagickImage *error_callback;
-static jmp_buf *error_jump;  /* long jump return for FATAL errors */
-#endif
 
 CMagickImage::CMagickImage()
 {
@@ -33,6 +19,7 @@ CMagickImage::CMagickImage()
 #endif
   SetWarningHandler(warninghandler);
   SetErrorHandler(errorhandler);
+  SetFatalErrorHandler(fatalerrorhandler);
   m_bOnStartPageCalled = FALSE;
 	m_bOnFirstTime = FALSE;
   AllocateArgs( nDefaultArgumentSize );
@@ -40,22 +27,6 @@ CMagickImage::CMagickImage()
 
 CMagickImage::~CMagickImage() 
 {
-#ifdef USE_SETJMP
-  jmp_buf error_jmp;
-  volatile int status;
-
-  status=0;
-  error_jump=(&error_jmp);
-  status=setjmp(error_jmp);
-  if (status)
-    goto MethodException;
-  error_callback = this;
-  SetWarningHandler(warninghandler);
-  SetErrorHandler(errorhandler);
-
-MethodException:
-  error_jump=NULL;
-#endif
 #ifdef DO_DEBUG
 	DebugString("CMagickImage - delete\n");
 #endif
@@ -552,7 +523,7 @@ STDMETHODIMP CMagickImage::Convert(SAFEARRAY **pArrayVar, VARIANT *pVar)
 
   EmptyArgs();
   AddArgs(L"-convert");
-  hr = Perform(ConvertUtility,pArrayVar,pVar);
+  hr = Perform(CompositeImageCommand,pArrayVar,pVar);
 	if (FAILED(hr))
     {
       hr = MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,dwErrorBase+1001);
@@ -569,7 +540,7 @@ STDMETHODIMP CMagickImage::Composite(SAFEARRAY **pArrayVar, VARIANT *pVar)
 
   EmptyArgs();
   AddArgs(L"-composite");
-  hr = Perform(CompositeUtility,pArrayVar,pVar);
+  hr = Perform(CompositeImageCommand,pArrayVar,pVar);
 	if (FAILED(hr))
     {
       hr = MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,dwErrorBase+1002);
@@ -586,7 +557,8 @@ STDMETHODIMP CMagickImage::Mogrify(SAFEARRAY **pArrayVar, VARIANT *pVar)
 
   EmptyArgs();
   AddArgs(L"-mogrify");
-  hr = Perform(MogrifyUtility,pArrayVar,pVar);
+  hr = E_INVALIDARG;
+  // hr = Perform(MogrifyImageCommand,pArrayVar,pVar);
 	if (FAILED(hr))
     {
       hr = MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,dwErrorBase+1003);
@@ -603,7 +575,7 @@ STDMETHODIMP CMagickImage::Montage(SAFEARRAY **pArrayVar, VARIANT *pVar)
 
   EmptyArgs();
   AddArgs(L"-montage");
-  hr = Perform(MontageUtility,pArrayVar,pVar);
+  hr = Perform(MontageImageCommand,pArrayVar,pVar);
 	if (FAILED(hr))
     {
       hr = MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,dwErrorBase+1004);
@@ -620,7 +592,7 @@ STDMETHODIMP CMagickImage::Identify(SAFEARRAY **pArrayVar, VARIANT *pVar)
 
   EmptyArgs();
   AddArgs(L"-identify");
-  hr = Perform(IdentifyUtility,pArrayVar,pVar);
+  hr = Perform(IdentifyImageCommand,pArrayVar,pVar);
 	if (FAILED(hr))
     {
       hr = MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,dwErrorBase+1005);
@@ -629,7 +601,8 @@ STDMETHODIMP CMagickImage::Identify(SAFEARRAY **pArrayVar, VARIANT *pVar)
   return hr;
 }
 
-HRESULT CMagickImage::Perform(unsigned int (*func)(int argc,LPTSTR *argv),
+HRESULT CMagickImage::Perform(unsigned int (*func)(ImageInfo *image_info,
+  const int argc,LPTSTR *argv,ExceptionInfo *exception),
   SAFEARRAY **pArrayVar, VARIANT *pVar)
 {
   USES_CONVERSION;
@@ -922,11 +895,7 @@ HRESULT CMagickImage::Perform(unsigned int (*func)(int argc,LPTSTR *argv),
 
           if (pDispatch)
           {
-            CComBSTR bstrTemp;
-
             DispatchToImage(pDispatch,&pMagickImage);
-            //pMagickImage->FormatRequest(&bstrTemp);
-            //hr = AddArgs(bstrTemp);
           }
           break;
         }
@@ -943,11 +912,7 @@ HRESULT CMagickImage::Perform(unsigned int (*func)(int argc,LPTSTR *argv),
 
           if (pUnknown)
           {
-            CComBSTR bstrTemp;
-
             UnknownToImage(pUnknown,&pMagickImage);
-            //pMagickImage->FormatRequest(&bstrTemp);
-            //hr = AddArgs(bstrTemp);
           }
           break;
         }
@@ -1067,7 +1032,7 @@ HRESULT CMagickImage::Perform(unsigned int (*func)(int argc,LPTSTR *argv),
 void CMagickImage::warninghandler(const ExceptionType warning,const char *message,
   const char *qualifier)
 {
-#ifdef USE_SETJMP
+#ifdef STORE_MESSAGES
   error_callback->error_number=errno;
   errno=0;
   if (!message)
@@ -1093,28 +1058,9 @@ void CMagickImage::warninghandler(const ExceptionType warning,const char *messag
 	DebugString(warning_text);
 }
 
-void CMagickImage::errorhandler(const ExceptionType error,const char *message,
+void CMagickImage::errorhandler(const ExceptionType warning,const char *message,
   const char *qualifier)
 {
-#ifdef USE_SETJMP
-  USES_CONVERSION;
-
-  error_callback->error_number=errno;
-  FormatString(error_callback->error_text,"Exception %d: %.1024s%s%.1024s%s%s%.64s%s",error,
-    (message ? message : "ERROR"),
-    qualifier ? " (" : "",qualifier ? qualifier : "",qualifier ? ")" : "",
-    error_callback->error_number ? " [" : "",error_callback->error_number ? strerror(error_callback->error_number) : "",
-    error_callback->error_number? "]" : "");
-  CComVariant var(error_callback->error_text);
-  error_callback->m_coll.push_back(var);
-  Error(A2W(error_callback->error_text),IID_IMagickImage,
-    MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,dwErrorBase + error));
-  if (error_jump != NULL)
-  {
-    int the_error = error % 100;
-    longjmp(*error_jump,(int) error);
-  }
-#endif
   char error_text[MaxTextExtent];
 
   if (!message)
@@ -1122,46 +1068,54 @@ void CMagickImage::errorhandler(const ExceptionType error,const char *message,
 	  DebugString("CMagickImage - error with no message\n");
     return;
   }
-  FormatString(error_text,"CMagickImage - exception %d: %.1024s%s%.1024s%s%s%.64s%s",error,
+  FormatString(error_text,"CMagickImage - error %d: %.1024s%s%.1024s%s%s%.64s%s\n",warning,
+    message,qualifier ? " (" : "",qualifier ? qualifier : "",
+    qualifier? ")" : "",errno ? " [" : "",
+    errno ? strerror(errno) : "",errno ? "]" : "");
+	DebugString(error_text);
+}
+
+void CMagickImage::fatalerrorhandler(const ExceptionType error,const char *message,
+  const char *qualifier)
+{
+  char fatalerror_text[MaxTextExtent];
+
+  if (!message)
+  {
+	  DebugString("CMagickImage - fatal error with no message\n");
+    return;
+  }
+  FormatString(fatalerror_text,"CMagickImage - fatal error %d: %.1024s%s%.1024s%s%s%.64s%s",error,
     (message ? message : "ERROR"),
     qualifier ? " (" : "",qualifier ? qualifier : "",qualifier ? ")" : "",
     errno ? " [" : "",errno ? strerror(errno) : "",
     errno? "]" : "");
-	DebugString(error_text);
+	DebugString(fatalerror_text);
   _DbgBreak();
 }
 
-HRESULT CMagickImage::Execute(unsigned int (*func)(int argc,char **argv))
+HRESULT CMagickImage::Execute(unsigned int (*func)(ImageInfo *image_info,
+  const int argc,char **argv,ExceptionInfo *exception))
 {
   unsigned int retcode = 0;
 
-#ifdef USE_SETJMP
-  jmp_buf error_jmp;
-  volatile int status;
+  ExceptionInfo
+    exception;
 
-  status=0;
-  error_jump=(&error_jmp);
-  status=setjmp(error_jmp);
-  if (status)
-    goto MethodException;
+  ImageInfo
+    *image_info;
 
-  error_callback = this;
-  SetWarningHandler(warninghandler);
-  SetErrorHandler(errorhandler);
-#endif
-
-  //_CrtCheckMemory();
-  retcode = (func)(GetArgc(), GetArgv());
-  //_CrtCheckMemory();
+  /*
+    Set defaults.
+  */
+  GetExceptionInfo(&exception);
+  image_info=CloneImageInfo((ImageInfo *) NULL);
+  retcode = (func)(image_info, GetArgc(), GetArgv(), &exception);
+  DestroyImageInfo(image_info);
+  DestroyExceptionInfo(&exception);
   if (!retcode)
     return E_UNEXPECTED;
   return S_OK;
-
-#ifdef USE_SETJMP
-MethodException:
-  error_jump=NULL;
-  return E_INVALIDARG;
-#endif
 }
 
 // Command line argument processing methods
