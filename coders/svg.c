@@ -1376,6 +1376,10 @@ static void SVGStartElement(void *context,const xmlChar *name,
                 angle;
 
               angle=GetUserSpaceCoordinateValue(svg_info,value);
+              (void) fprintf(svg_info->file,"translate %g,%g\n",
+                svg_info->bounds.x,svg_info->bounds.y);
+              svg_info->bounds.x=0;
+              svg_info->bounds.y=0;
               (void) fprintf(svg_info->file,"rotate %g\n",angle);
               break;
             }
