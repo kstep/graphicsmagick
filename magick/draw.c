@@ -217,8 +217,12 @@ MagickExport DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
   if (draw_info->stroke_pattern != (Image *) NULL)
     clone_info->stroke_pattern=CloneImage(draw_info->stroke_pattern,0,0,True,
       &draw_info->stroke_pattern->exception);
-  if (draw_info->font != (char *) NULL)
-    clone_info->font=AllocateString(draw_info->font);
+  if (draw_info->family != (char *) NULL)
+    clone_info->family=AllocateString(draw_info->family);
+  if (draw_info->style != (char *) NULL)
+    clone_info->style=AllocateString(draw_info->style);
+  if (draw_info->weight != (char *) NULL)
+    clone_info->weight=AllocateString(draw_info->weight);
   if (draw_info->encoding != (char *) NULL)
     clone_info->encoding=AllocateString(draw_info->encoding);
   if (draw_info->density != (char *) NULL)
@@ -1811,18 +1815,34 @@ draw_info->clip_units=ObjectBoundingBox;
               (MaxRGB*(1.0-factor*atof(token)));
             break;
           }
-        if (LocaleCompare("font",keyword) == 0)
+        if (LocaleCompare("font-family",keyword) == 0)
           {
             GetToken(q,&q,token);
-            if (draw_info->font != (char *) NULL)
-              (void) strncpy(token,draw_info->font,MaxTextExtent-1);
-            (void) CloneString(&graphic_context[n]->font,token);
+            if (draw_info->family != (char *) NULL)
+              (void) strncpy(token,draw_info->family,MaxTextExtent-1);
+            (void) CloneString(&graphic_context[n]->family,token);
             break;
           }
         if (LocaleCompare("font-size",keyword) == 0)
           {
             GetToken(q,&q,token);
             graphic_context[n]->pointsize=atof(token);
+            break;
+          }
+        if (LocaleCompare("font-style",keyword) == 0)
+          {
+            GetToken(q,&q,token);
+            if (draw_info->style != (char *) NULL)
+              (void) strncpy(token,draw_info->style,MaxTextExtent-1);
+            (void) CloneString(&graphic_context[n]->style,token);
+            break;
+          }
+        if (LocaleCompare("font-weight",keyword) == 0)
+          {
+            GetToken(q,&q,token);
+            if (draw_info->weight != (char *) NULL)
+              (void) strncpy(token,draw_info->weight,MaxTextExtent-1);
+            (void) CloneString(&graphic_context[n]->weight,token);
             break;
           }
         status=False;
@@ -3932,7 +3952,7 @@ MagickExport void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
   draw_info->miterlimit=10;
   draw_info->decorate=NoDecoration;
   if (clone_info->font != (char *) NULL)
-    draw_info->font=AllocateString(clone_info->font);
+    draw_info->family=AllocateString(clone_info->font);
   if (clone_info->density != (char *) NULL)
     draw_info->density=AllocateString(clone_info->density);
   draw_info->text_antialias=clone_info->antialias;
