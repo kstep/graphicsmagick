@@ -45,6 +45,13 @@
 %  ImageMagick Studio.                                                        %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%
+*/
+
+/*
+  Include declarations.
+*/
 
 #include "drawapi.h"
 
@@ -107,7 +114,7 @@ MagickExport MgkDrawContext MgkDrawAllocateContext(ExceptionInfo * exception)
   MgkDrawContext
     context;
 
-  context = (MgkDrawContext) AcquireMemory(sizeof(MgkDrawContext));
+  context = (MgkDrawContext) AcquireMemory(sizeof(struct _MgkDrawContext));
   AccessContext(context)->mvg = NULL;
   AccessContext(context)->mvg_alloc = 0;
   AccessContext(context)->mvg_length = 0;
