@@ -1,3 +1,6 @@
+2001-12-05  Cristy  <cristy@mystic.es.dupont.com>
+	* Corrected bias when downsizing an image with ResizeImage().
+
 2001-11-25  Cristy  <cristy@mystic.es.dupont.com>
 	* AcquireImagePixels() can accept (x,y) outside the image area
 	  (e.g. AcquireImagePixels(image,-3,-3,7,7,exception)).
