@@ -229,7 +229,7 @@ MagickExport unsigned int ListTypeInfo(FILE *file,ExceptionInfo *exception)
     return(False);
   if (p->filename != (char *) NULL)
     (void) fprintf(file,"Filename: %.1024s\n\n",p->filename);
-  (void) fprintf(file,"Name                             Description\n");
+  (void) fprintf(file,"Name                                 Description\n");
   (void) fprintf(file,"-------------------------------------------------------"
     "------------------------\n");
   for ( ; p != (const TypeInfo *) NULL; p=p->next)
@@ -237,7 +237,7 @@ MagickExport unsigned int ListTypeInfo(FILE *file,ExceptionInfo *exception)
     if (p->stealth)
       continue;
     (void) fprintf(file,"%.1024s",p->name);
-    for (i=(long) strlen(p->name); i <= 32; i++)
+    for (i=(long) strlen(p->name); i <= 36; i++)
       (void) fprintf(file," ");
     if (p->description != (char *) NULL)
       (void) fprintf(file,"%.1024s",p->description);
