@@ -783,7 +783,7 @@ void CConfigureApp::process_library(ofstream &dsw,
     if (name.compare("magick") == 0)
     {
       if (useX11Stubs)
-	      add_project_dependency(dsw, "CORE_xlib");
+	    add_project_dependency(dsw, "CORE_xlib");
 	    //add_project_dependency(dsw, "CORE_tiff");
 	    add_project_dependency(dsw, "CORE_jpeg");
 	    add_project_dependency(dsw, "CORE_zlib");
@@ -1010,6 +1010,13 @@ void CConfigureApp::process_module(ofstream &dsw,
   }
   if (name.compare("hdf") == 0)
   {
+    extra = "..\\zlib";
+    add_includes(includes_list, extra, levels-2);
+  }
+  if (name.compare("wmf") == 0)
+  {
+    extra = "..\\ttf";
+    add_includes(includes_list, extra, levels-2);
     extra = "..\\zlib";
     add_includes(includes_list, extra, levels-2);
   }
