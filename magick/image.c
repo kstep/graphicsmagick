@@ -2410,11 +2410,11 @@ MagickExport RectangleInfo GetImageBoundingBox(Image *image)
 %
 %  The format of the GetImageDepth method is:
 %
-%      RectangleInfo GetImageDepth(Image *image)
+%      unsigned int GetImageDepth(Image *image)
 %
 %  A description of each parameter follows:
 %
-%    o bounds: Method GetImageDepth returns the depth of the image.
+%    o depth: Method GetImageDepth returns the depth of the image.
 %
 %    o image: The address of a structure of type Image.
 %
@@ -5358,17 +5358,19 @@ MagickExport void SetImage(Image *image,Quantum opacity)
 %
 %  The format of the SetImageDepth method is:
 %
-%      RectangleInfo SetImageDepth(Image *image)
+%      unsigned int SetImageDepth(Image *image,const unsigned int)
 %
 %  A description of each parameter follows:
 %
-%    o bounds: Method SetImageDepth returns the depth of the image.
+%    o status: Method SetImageDepth returns True if the image depth is set.
 %
 %    o image: The address of a structure of type Image.
 %
+%    o depth: specified the image depth.
+%
 %
 */
-MagickExport unsigned int SetImageDepth(Image *image)
+MagickExport unsigned int SetImageDepth(Image *image,const unsigned int)
 {
   int
     y;
