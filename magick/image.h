@@ -222,7 +222,7 @@ typedef struct _ImageAttribute
     *next;
 } ImageAttribute;
 
-typedef unsigned short IndexPacket;
+typedef Quantum IndexPacket;
 
 typedef struct _MontageInfo
 {

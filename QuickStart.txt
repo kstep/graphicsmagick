@@ -22,12 +22,12 @@ Unix Install:
 
   Download
 
-    ftp://www.wizards.dupont.com/pub/ImageMagick/ImageMagick-5.2.0.tar.gz
+    ftp://www.wizards.dupont.com/pub/ImageMagick/ImageMagick-5.2.1.tar.gz
 
   and type
 
-    gunzip -c ImageMagick-5.2.0.tar.gz | tar xvf -
-    cd ImageMagick-5.2.0
+    gunzip -c ImageMagick-5.2.1.tar.gz | tar xvf -
+    cd ImageMagick-5.2.1
     ./configure
     make
     make install
@@ -62,7 +62,7 @@ Win2K, NT, Win95, Win98 Install:
 
   Alternatively, download the ImageMagick NT source
 
-    ftp://www.wizards.dupont.com/pub/ImageMagick/win2k/ImageMagick-5.2.0.zip
+    ftp://www.wizards.dupont.com/pub/ImageMagick/win2k/ImageMagick-5.2.1.zip
 
   and read README.txt for detailed instructions on compiling the ImageMagick
   source.
@@ -75,7 +75,7 @@ MAC Install:
     ftp://www.wizards.dupont.com/pub/ImageMagick/mac/ImageMagick-mac.sit.hqx
 
   and double click on it to extract the distribution.   Move to the
-  ImageMagick-5.2.0 directory and double click on the identify program
+  ImageMagick-5.2.1 directory and double click on the identify program
   icon.  Next, type
 
     -verbose logo:
@@ -84,7 +84,7 @@ MAC Install:
 
   Alternatively, download the ImageMagick MAC source
 
-    ftp://www.wizards.dupont.com/pub/ImageMagick/mac/ImageMagick-5.2.0.sit.hqx
+    ftp://www.wizards.dupont.com/pub/ImageMagick/mac/ImageMagick-5.2.1.sit.hqx
 
   and double click on the Make AppleScript script to build from the source.
 
@@ -93,7 +93,7 @@ VMS Install:
 
   Type
 
-    unzip ImageMagick-5.2.0.zip
+    unzip ImageMagick-5.2.1.zip
     set default [.imagemagick]
     @make
     identify -verbose logo:

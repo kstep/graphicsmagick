@@ -2,7 +2,7 @@
 <html>
 <head>
    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-   <meta name="description" content="ImageMagick, version 5.2.0, is a    robust collection of tools and libraries to read, write, and manipulate    an image in any of the more popular image formats including GIF, JPEG,    PNG, PDF, and Photo CD.  With ImageMagick you can create GIFs dynamically    making it suitable for Web applications.  You can also resize, rotate,    sharpen, color reduce, or add special effects to an image and save your    completed work in the same or  differing image format.">
+   <meta name="description" content="ImageMagick, version 5.2.1, is a    robust collection of tools and libraries to read, write, and manipulate    an image in any of the more popular image formats including GIF, JPEG,    PNG, PDF, and Photo CD.  With ImageMagick you can create GIFs dynamically    making it suitable for Web applications.  You can also resize, rotate,    sharpen, color reduce, or add special effects to an image and save your    completed work in the same or  differing image format.">
    <meta name="keywords" content="ImageMagick, Image Magick, Image Magic,    PerlMagick, Perl Magick, Perl Magic, CineMagick, PixelMagick, Pixel Magic,    WebMagick, Web Magic, visualization, image processing, software     development, simulation, image, software, AniMagick, Animagic,    Magick++">
    <meta name="GENERATOR" content="Mozilla/4.7 [en] (X11; U; SunOS 5.6 sun4u) [Netscape]">
    <title>ImageMagick - Image Processing and Display Package</title>
@@ -17,7 +17,7 @@
 <td BGCOLOR="#52799E"><img SRC="../images/right_triangle.png" ALT=">" height=14 wid
 th=15>
 <b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>Changes
-Changes in ImageMagick Version 5.2.0</font></font></font></b></td>
+Changes in ImageMagick Version 5.2.1</font></font></font></b></td>
 </tr>
 </table>
 <dl>
@@ -31,6 +31,14 @@ is proven to work for Sun Solaris, Linux, and SGI IRIX.  Please let us
 know about other operating systems they work on.  Building a modular
 ImageMagick is enabled by specifing the configure options
 <tt>--enable-shared --with-modules</tt>.
+</dd>
+<p>
+
+<dd>
+ImageMagick now has a set of modules for streaming.  Here pixels are
+passed to the application as they are available and deleted after use ensuring
+a small memory footprint.  This is useful for multi-media applications such as
+MPEG.
 </dd>
 <p>
 
