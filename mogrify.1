@@ -243,6 +243,7 @@ The primitives include
      fillCircle
      ellipse
      fillEllipse
+     polyline
      polygon
      fillPolygon
      bezier
@@ -258,8 +259,9 @@ start and end coordinate, while \fBrectangle\fP expects an upper left
 and lower right coordinate.  \fBCircle\fP has a center coordinate and a
 coordinate on the outer edge.  Use \fBEllipse\fP to draw a partial ellipse
 centered at the given point, specified width and height, and start and
-end of arc in degrees (e.g. 100,100 100,150 0,360).  Finally, \fBpolygon\fP
-requires three or more coordinates defining its boundaries.  Coordinates are
+end of arc in degrees (e.g. 100,100 100,150 0,360).  Finally, \fBpolyline\fP
+and\fBpolygon\fP require three or more coordinates defining its boundaries.
+Coordinates are
 integers separated by an optional comma.  For example, to define a circle
 centered at 100,100 that extends to 150,150 use:
 

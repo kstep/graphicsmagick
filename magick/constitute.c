@@ -1571,6 +1571,7 @@ Export Image *ReadImage(const ImageInfo *image_info,ExceptionInfo *exception)
         TemporaryFilename(clone_info->filename);
         status=
           InvokeDelegate(clone_info,image,clone_info->magick,(char *) NULL);
+        *exception=image->exception;
         DestroyImages(image);
         image=(Image *) NULL;
         if (status != False)

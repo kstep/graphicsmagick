@@ -80,10 +80,10 @@
 	|gzip -cf > %o
 
 bmp<=launch
-	mspaint %i.
+	c:/program files/accessories/mspaint %i.
 
 bmp<=win
-	mspaint %i.
+	c:/program files/accessories/mspaint %i.
 
 browse=>
 	cmd /C start http://www.wizards.dupont.com/cristy/ImageMagick.html &

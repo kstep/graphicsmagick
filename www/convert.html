@@ -997,6 +997,7 @@ The primitives include</dd>
 &nbsp;&nbsp;&nbsp;&nbsp; fillCircle
 &nbsp;&nbsp;&nbsp;&nbsp; ellipse
 &nbsp;&nbsp;&nbsp;&nbsp; fillEllipse
+&nbsp;&nbsp;&nbsp;&nbsp; polyline
 &nbsp;&nbsp;&nbsp;&nbsp; polygon
 &nbsp;&nbsp;&nbsp;&nbsp; fillPolygon
 &nbsp;&nbsp;&nbsp;&nbsp; bezier
@@ -1013,10 +1014,10 @@ coordinate, while <b>rectangle</b> expects an upper left and lower right
 coordinate. <b>Circle</b> has a center coordinate and a coordinate on the
 outer edge. Use <b>Ellipse</b> to draw a partial ellipse centered at the
 given point, specified width and height, and start and end of arc in degrees
-(e.g. 100,100 100,150 0,360). Finally, <b>polygon</b> requires three or
-more coordinates defining its boundaries. Coordinates are integers separated
-by an optional comma. For example, to define a circle centered at 100,100
-that extends to 150,150 use:</dd>
+(e.g. 100,100 100,150 0,360). Finally, <b>polyline</b> and <b>polygon</b>
+require three or more coordinates defining its boundaries. Coordinates are
+integers separated by an optional comma. For example, to define a circle
+centered at 100,100 that extends to 150,150 use:</dd>
 
 <pre>&nbsp;&nbsp;&nbsp;&nbsp; -draw 'circle 100,100 150,150'</pre>
 
