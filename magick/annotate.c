@@ -462,22 +462,23 @@ MagickExport void DestroyFontInfo(void)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method GetFontInfo 
+%  Method GetFontInfo returns the font info associated with the specified
+%  name.
 %
 %  The format of the GetFontInfo method is:
 %
-%      char *GetFontInfo(char *name)
+%      FontInfo *GetFontInfo(char *name)
 %
 %  A description of each parameter follows:
 %
-%    o name: Method GetFontMetrics returns True if the metrics are
-%      available otherwise False.
+%    o font_info: Method GetFontInfo returns the font info associated with the
+%      specified name.
 %
-%    o image: The address of a structure of type Image.
+%    o name: The font name.
 %
 %
 */
-MagickExport char *GetFontInfo(char *name)
+MagickExport FontInfo *GetFontInfo(char *name)
 {
   /*
   AcquireSemaphore(&font_semaphore);
@@ -487,7 +488,7 @@ MagickExport char *GetFontInfo(char *name)
     }
   LiberateSemaphore(&font_semaphore);
   */
-  return(name);
+  return((FontInfo *) NULL);
 }
 
 /*
@@ -591,6 +592,9 @@ static unsigned int RenderFont(Image *image,const DrawInfo *draw_info,
   DrawInfo
     *clone_info;
 
+  FontInfo
+    *font_info;
+
   ImageInfo
     *image_info;
 
@@ -600,7 +604,11 @@ static unsigned int RenderFont(Image *image,const DrawInfo *draw_info,
   if (draw_info->font == (char *) NULL)
     return(RenderPostscript(image,draw_info,offset,render,metrics));
   image_info=CloneImageInfo((ImageInfo *) NULL);
-  (void) strcpy(image_info->filename,GetFontInfo(draw_info->font));
+  font_info=GetFontInfo(draw_info->font);
+  if ((font_info != (FontInfo *) NULL) && (font_info->glyphs != (char *) NULL))
+    (void) strcpy(image_info->filename,font_info->glyphs);
+  else
+    (void) strcpy(image_info->filename,draw_info->font);
   (void) strcpy(image_info->magick,"PS");
   if (*image_info->filename == '@')
     (void) strcpy(image_info->magick,"TTF");
