@@ -83,7 +83,7 @@
 */
 MagickExport void DestroyImages(Image *image)
 {
-  DestroyImages(image);
+  DestroyImageList(image);
 }
 
 /*
