@@ -14,12 +14,13 @@ extern "C" {
 #define MagickLibVersionNumber  5.4.1,0
 #if QuantumDepth == 8
 #define MagickVersion \
-  "@(#)ImageMagick 5.4.1 01/01/02 Q:8 http://www.imagemagick.org"
+  "@(#)ImageMagick 5.4.1 12/01/01 Q:8 http://www.imagemagick.org"
 #elif QuantumDepth == 16
 #define MagickVersion \
-  "@(#)ImageMagick 5.4.1 01/01/02 Q:16 http://www.imagemagick.org"
+  "@(#)ImageMagick 5.4.1 12/01/01 Q:16 http://www.imagemagick.org"
 #else
-#define MagickVersion "@(#)ImageMagick 5.4.1 11/01/01 http://www.imagemagick.org"
+#define MagickVersion \
+  "@(#)ImageMagick 5.4.1 12/01/01 http://www.imagemagick.org"
 #endif
 
 #if defined(__cplusplus) || defined(c_plusplus)
