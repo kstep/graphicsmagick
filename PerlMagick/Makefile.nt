@@ -36,7 +36,7 @@ ppm: ppd all
         if exist PerlMagick.zip del PerlMagick.zip
         $(TAR) $(TARFLAGS) Image-Magick.tar blib
         $(COMPRESS) Image-Magick.tar
-        if exist x86 del x86 /y
+        if exist x86 del x86 /qf
         if exist x86 rd x86
         md x86
         copy Image-Magick.tar$(SUFFIX) x86
