@@ -21,7 +21,7 @@
 </tr>
 </table>
 <p>
-This file was last updated on May 30, 2004.
+This file was last updated on July 9, 2004.
 
 <p>
 Please note that this file records news for the associated development
@@ -33,6 +33,11 @@ Significant changes associated with GraphicsMagick 1.2 (not yet released)
 <p>
   Bug fixes:<BR>
 <UL>
+  <LI> The configure script now searches for a web browser in the order
+    mozilla, firefox, and finally netscape.
+  <LI> When the user specifies the -units option, the current image
+    resolution values are now re-scaled to match the new units.
+  <LI> Properly determine Ghostscript font location for Ghostscript 8.0 and later.
   <LI> GraphicsMagick now successfully builds and passes all tests under
     Digital Unix 5.1, using the vendor compiler.
   <LI> Ghostscript sometimes displays an error message and fails, yet it
@@ -43,11 +48,16 @@ Significant changes associated with GraphicsMagick 1.2 (not yet released)
     search path are considered. Previously only the modules in the same
     directory as the LOGO module were listed.
   <LI> Ensure that an image clip mask is respected by the negate algorithm.
+  <LI> The BMP writer was sometimes writing incorrect BMP v4 files.
+  <LI> Support reading and writing large PCX files.
+  <LI> The Red Hat source RPM was failing to install the *-config scripts
+    with execute permissions.
 
 </UL>
 <p>
-  Utilities enhancements:<BR>
+  Feature improvements:<BR>
 <UL>
+  <LI> LZW compression is now enabled by default.
   <LI> If gm is executed under a traditional alternate name (e.g.
     convert), it will invoke the appropriate sub-command. This allows use
     of hard links, symbolic links, or just copying 'gm' to the desired
@@ -66,6 +76,8 @@ Significant changes associated with GraphicsMagick 1.2 (not yet released)
   <LI> The DispatchImage() and ConstituteImage() functions incorporate special
     case code for BGR, BGRO, BGRP, RGB, RGBO, and I formats (8 bit only) in
     order to improve performance dramatically.
+  <LI> When writing very large JPEG images, don't enable Huffman compression
+    since doing so requires libjpeg to buffer the entire image in memory.
 
 </UL>
 <p>
@@ -74,6 +86,8 @@ Significant changes associated with GraphicsMagick 1.2 (not yet released)
 <UL>
   <LI> For the MinGW and Cygwin builds, the Magick++ library is forced to
     build as a static library since otherwise C++ exceptions don't work.
+  <LI> Determine location of Ghostscript fonts only once in order to improve
+    performance.
 
 </UL>
 <p>
