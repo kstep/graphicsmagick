@@ -1095,6 +1095,8 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       ThrowBinaryException(ResourceLimitWarning,"Unable to draw image",
         "Memory allocation failed");
     }
+    while (isspace((int) (*p)))
+      p++;
     primitive_info[j].coordinates=x;
     primitive_info[j].method=FloodfillMethod;
     primitive_info[j].text=(char *) NULL;
@@ -1236,9 +1238,7 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
         /*
           Define method.
         */
-        while (isspace((int) (*p)))
-          p++;
-        for (x=0; isalpha((int) (*p)); x++)
+        for (x=0; !isspace((int) (*p)); x++)
           keyword[x]=(*p++);
         keyword[x]='\0';
         if (*keyword == '\0')
@@ -1314,41 +1314,54 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
         ImageInfo
           *composite_info;
 
+        register char
+          *q;
+
         if (primitive_info[j].coordinates != 1)
           {
             primitive_type=UndefinedPrimitive;
             break;
           }
+        composite_info=CloneImageInfo((ImageInfo *) NULL);
+        q=composite_info->filename;
         if (*p != '\0')
           {
             primitive_info[j].text=p;
             if (*p == '"')
               {
                 for (p++; *p != '\0'; p++)
+                {
                   if ((*p == '"') && (*(p-1) != '\\'))
                     break;
+                  *q++=(*p);
+                }
               }
             else
               if (*p == '\'')
                 {
                   for (p++; *p != '\0'; p++)
+                  {
                     if ((*p == '\'') && (*(p-1) != '\\'))
                       break;
+                    *q++=(*p);
+                  }
                 }
               else
-                for (p++;  *p != '\0'; p++)
+                for ( ;  *p != '\0'; p++)
+                {
                   if (isspace((int) *p) && (*(p-1) != '\\'))
                     break;
+                  *q++=(*p);
+                }
             if (*p != '\0')
               p++;
           }
-        composite_info=CloneImageInfo((ImageInfo *) NULL);
-        (void) strcpy(composite_info->filename,primitive_info[j].text);
+        *q='\0';
         composite_image=ReadImage(composite_info,&error);
         if (composite_image == (Image *) NULL)
           break;
-        CompositeImage(image,ReplaceCompositeOp,composite_image,
-          (int) pixel.x,(int) pixel.y);
+        CompositeImage(image,image->matte ? OverCompositeOp :
+          ReplaceCompositeOp,composite_image,(int) pixel.x,(int) pixel.y);
         DestroyImage(composite_image);
         DestroyImageInfo(composite_info);
         break;
