@@ -919,7 +919,7 @@ int main(int argc,char **argv)
       }
   }
   if ((image == (Image *) NULL) || (composite_image == (Image *) NULL))
-    Usage();
+    MagickError(OptionError,"Missing an image file name",(char *) NULL);
   if (i != (argc-1))
     MagickError(OptionError,"Missing an image file name",(char *) NULL);
   if (mask_image != (Image *) NULL)
