@@ -2898,7 +2898,7 @@ Export Image *ReadDCMImage(const ImageInfo *image_info)
         if ((length == 1) && (quantum == 4))
           datum=LSBFirstReadLong(image);
         else
-          if (quantum != 0)
+          if ((quantum != 0) && (length > 0))
             {
               data=(unsigned char *)
                 AllocateMemory(quantum*(length+1)*sizeof(unsigned char));
@@ -3168,7 +3168,7 @@ Export Image *ReadDCMImage(const ImageInfo *image_info)
       if (scale == (Quantum *) NULL)
         ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
       for (i=0; i <= (int) max_value; i++)
-        scale[i]=(Quantum) ((i*MaxRGB+(max_value >> 1))/max_value);
+        scale[i]=((unsigned long) (MaxRGB*i)/max_value);
     }
   for (scene=0; scene < (int) number_scenes; scene++)
   {
@@ -3183,18 +3183,17 @@ Export Image *ReadDCMImage(const ImageInfo *image_info)
           Allocate image colormap.
         */
         image->class=PseudoClass;
-        image->colors=Min(max_value,MaxRGB)+1;
+        image->colors=max_value+1;
         image->colormap=(PixelPacket *)
           AllocateMemory(image->colors*sizeof(PixelPacket));
         if (image->colormap == (PixelPacket *) NULL)
           ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
         for (i=0; i < (int) image->colors; i++)
         {
-          image->colormap[i].red=(Quantum)
+          image->colormap[i].red=((unsigned long) (MaxRGB*i)/(image->colors-1));
+          image->colormap[i].green=
             ((unsigned long) (MaxRGB*i)/(image->colors-1));
-          image->colormap[i].green=(Quantum)
-            ((unsigned long) (MaxRGB*i)/(image->colors-1));
-          image->colormap[i].blue=(Quantum)
+          image->colormap[i].blue=
             ((unsigned long) (MaxRGB*i)/(image->colors-1));
         }
       }
@@ -3293,7 +3292,7 @@ Export Image *ReadDCMImage(const ImageInfo *image_info)
                   q->green=LSBFirstReadShort(image);
                   q->blue=LSBFirstReadShort(image);
                 }
-            if (scale != (Quantum *) NULL)
+            if ((image->class == DirectClass) && (scale != (Quantum *) NULL))
               {
                 q->red=scale[q->red];
                 q->green=scale[q->green];
