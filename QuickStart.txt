@@ -1,7 +1,7 @@
 Configuration Files:
 
   ImageMagick depends on a number of external configuration files which
-  include delegates.mgk, magic.mgk, and modules.mgk. ImageMagick
+  include delegates.mgk, magic.mgk, fonts.mgk, and modules.mgk. ImageMagick
   searches in the following order, and will use the first configuration
   file found:
 
