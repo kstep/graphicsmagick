@@ -378,10 +378,10 @@ static unsigned int Assignment(CubeInfo *cube_info,Image *image)
   */
   if (image->colormap == (PixelPacket *) NULL)
     image->colormap=(PixelPacket *)
-      AcquireMemory(cube_info->colors*sizeof(PixelPacket));
+      AcquireMemory(Max(cube_info->colors,256)*sizeof(PixelPacket));
   else
     ReacquireMemory((void **) &image->colormap,
-      cube_info->colors*sizeof(PixelPacket));
+      Max(cube_info->colors,256)*sizeof(PixelPacket));
   if (image->colormap == (PixelPacket *) NULL)
     ThrowBinaryException(ResourceLimitWarning,"Unable to quantize image",
       "Memory allocation failed");
@@ -1985,8 +1985,7 @@ MagickExport unsigned int QuantizeImage(const QuantizeInfo *quantize_info,
       /*
         Reduce the number of colors in the image.
       */
-      if (number_colors < cube_info->colors)
-        Reduction(cube_info,number_colors);
+      Reduction(cube_info,number_colors);
       status=Assignment(cube_info,image);
       if (quantize_info->colorspace != RGBColorspace)
         TransformRGBImage(image,quantize_info->colorspace);
