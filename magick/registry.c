@@ -398,9 +398,6 @@ MagickExport long SetMagickRegistry(const RegistryType type,const void *blob,
       Image
         *image;
 
-      long
-        id;
-
       register RegistryInfo
         *p;
 
@@ -420,19 +417,6 @@ MagickExport long SetMagickRegistry(const RegistryType type,const void *blob,
       clone_blob=(void *) CloneImageList(image,exception);
       if (clone_blob == (void *) NULL)
         return(-1);
-      id=(-1);
-      AcquireSemaphoreInfo(&registry_semaphore);
-      for (p=registry_list; p != (RegistryInfo *) NULL; p=p->next)
-      {
-        if (p->type != ImageRegistryType)
-          continue;
-        if (LocaleCompare(((Image *) p->blob)->filename,image->filename) != 0)
-          continue;
-        id=p->id;
-      }
-      LiberateSemaphoreInfo(&registry_semaphore);
-      if (id >= 0)
-        (void) DeleteMagickRegistry(id);
       break;
     }
     case ImageInfoRegistryType:
