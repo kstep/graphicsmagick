@@ -1176,10 +1176,9 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
         clone_info->affine.tx=offset->x+(glyph.origin.x >> 6);
         clone_info->affine.ty=offset->y-(glyph.origin.y >> 6);
         (void) CloneString(&clone_info->primitive,"path '");
-        status=FT_Outline_Decompose(&((FT_OutlineGlyph) glyph.image)->outline,
+        (void) FT_Outline_Decompose(&((FT_OutlineGlyph) glyph.image)->outline,
           &OutlineMethods,clone_info);
-        if (status == False)
-          (void) ConcatenateString(&clone_info->primitive,"'");
+        (void) ConcatenateString(&clone_info->primitive,"'");
       }
     (void) FT_Glyph_Transform(glyph.image,&affine,&glyph.origin);
     if (render && (draw_info->fill.opacity != TransparentOpacity))
