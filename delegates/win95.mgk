@@ -1,4 +1,4 @@
-# ImageMagick delegates for Windows 95/98.  The format is as follows.  Each
+# ImageMagick delegates for Windows NT.  The format is as follows.  Each
 # delegate begins with a tag and/or format separated by a operator tag
 # (<=, <=>, =>).  This line must be followed by one or more commands
 # preceded with a tab (\t) character.  If a command exceeds the length of
@@ -80,13 +80,13 @@
 	|gzip -cf > %o
 
 bmp<=launch
-	c:\Program Files\Accessories\mspaint %i.
+	mspaint %i.
 
 bmp<=win
-	c:\Program Files\Accessories\mspaint %i.
+	mspaint %i.
 
 browse=>
-	start http://www.wizards.dupont.com/magick/ImageMagick.html &
+	cmd /C start http://www.wizards.dupont.com/cristy/ImageMagick.html &
 
 bzip=>
 	|bzip2 -cd %i
@@ -105,11 +105,11 @@ edit=>
 	notepad %o
 
 eps<=>pdf
-	gswin32 -dMaxBitmap=300000000 -sDEVICE=pdfwrite -q -dNOPAUSE -dSAFER \
+	gswin32c -dMaxBitmap=300000000 -sDEVICE=pdfwrite -q -dNOPAUSE -dSAFER \
 	  -sOutputFile="%o" -- "%i" -c quit
 
 eps<=>ps
-	gswin32 -dMaxBitmap=300000000 -sDEVICE=pswrite -q -dNOPAUSE -dSAFER \
+	gswin32c -dMaxBitmap=300000000 -sDEVICE=pswrite -q -dNOPAUSE -dSAFER \
 	  -sOutputFile="%o" -- "%i" -c quit
 
 file=>
@@ -128,12 +128,12 @@ gplt=>
 	gnuplot %u
 
 gs-color=>
-	gswin32 -dMaxBitmap=300000000 -sDEVICE=pnmraw -q -dNOPAUSE -dSAFER \
+	gswin32c -dMaxBitmap=300000000 -sDEVICE=pnmraw -q -dNOPAUSE -dSAFER \
 	  -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g%s -r%s %s \
 	  -sOutputFile="%s" -- "%s" -c quit
 
 gs-mono=>
-	gswin32 -dMaxBitmap=300000000 -sDEVICE=pbmraw -q -dNOPAUSE -dSAFER \
+	gswin32c -dMaxBitmap=300000000 -sDEVICE=pbmraw -q -dNOPAUSE -dSAFER \
 	  -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g%s -r%s %s \
 	  -sOutputFile="%s" -- "%s" -c quit
 
@@ -157,12 +157,15 @@ m2v=>
 	mpeg2decode -q -b %i -f -r -o3 %o%%05d
 	convert -concatenate %o*.ppm %o
 
+pcl<=print
+	print %i
+
 pdf<=>eps
-	gswin32 -dMaxBitmap=300000000 -sDEVICE=epswrite -q -dNOPAUSE -dSAFER \
+	gswin32c -dMaxBitmap=300000000 -sDEVICE=epswrite -q -dNOPAUSE -dSAFER \
 	  -sOutputFile="%o" -- "%i" -c quit
 
 pdf<=>ps
-	gswin32 -dMaxBitmap=300000000 -sDEVICE=pswrite -q -dNOPAUSE -dSAFER \
+	gswin32c -dMaxBitmap=300000000 -sDEVICE=pswrite -q -dNOPAUSE -dSAFER \
 	  -sOutputFile="%o" -- "%i" -c quit
 
 pgp=>
@@ -172,15 +175,12 @@ pov=>
 	povray +i%i +o%o +fn%q +w%w +h%h +a -q9 -kfi%s -kff%n
 	convert -concatenate %o*.png %o
 
-pcl<=print
-	print %i
-
 ps<=>eps
-	gswin32 -dMaxBitmap=300000000 -sDEVICE=epswrite -q -dNOPAUSE -dSAFER \
+	gswin32c -dMaxBitmap=300000000 -sDEVICE=epswrite -q -dNOPAUSE -dSAFER \
 	  -sOutputFile="%o" -- "%i" -c quit
 
 ps<=>pdf
-	gswin32 -dMaxBitmap=300000000 -sDEVICE=pdfwrite -q -dNOPAUSE -dSAFER \
+	gswin32c -dMaxBitmap=300000000 -sDEVICE=pdfwrite -q -dNOPAUSE -dSAFER \
 	  -sOutputFile="%o" -- "%i" -c quit
 
 rad=>

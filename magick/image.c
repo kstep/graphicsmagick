@@ -712,8 +712,10 @@ Export Image *AverageImages(Image *images)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  Method CloneImage returns a copy of all fields of the input image.  The
-%  image pixels are copied only if the columns and rows of the cloned image
-%  are the same as the original.
+%  image pixels and indexes are copied only if the columns and rows of the
+%  cloned image are the same as the original otherwise the pixel data is
+%  undefined and must be initialized with SetPixelCache() and SyncPixelCache()
+%  methods.
 %
 %  The format of the CloneImage method is:
 %
@@ -809,29 +811,12 @@ Export Image *CloneImage(Image *image,const unsigned int columns,
   clone_image->cache_info.height=0;
   clone_image->pixels=(PixelPacket *) NULL;
   clone_image->indexes=(IndexPacket *) NULL;
-  if (orphan)
-    {
-      clone_image->exempt=True;
-      clone_image->previous=(Image *) NULL;
-      clone_image->next=(Image *) NULL;
-    }
-  else
-    {
-      /*
-        Link image into image list.
-      */
-      if (clone_image->previous != (Image *) NULL)
-        clone_image->previous->next=clone_image;
-      if (clone_image->next != (Image *) NULL)
-        clone_image->next->previous=clone_image;
-    }
   if ((image->columns != columns) || (image->rows != rows))
     {
       clone_image->columns=columns;
       clone_image->rows=rows;
       clone_image->page_info.width=0;
       clone_image->page_info.height=0;
-      SetImage(clone_image);
     }
   else
     {
@@ -861,6 +846,22 @@ Export Image *CloneImage(Image *image,const unsigned int columns,
         (void) CloneString(&clone_image->directory,image->directory);
       if (image->signature != (char *) NULL)
         (void) CloneString(&clone_image->signature,image->signature);
+    }
+  if (orphan)
+    {
+      clone_image->exempt=True;
+      clone_image->previous=(Image *) NULL;
+      clone_image->next=(Image *) NULL;
+    }
+  else
+    {
+      /*
+        Link image into image list.
+      */
+      if (clone_image->previous != (Image *) NULL)
+        clone_image->previous->next=clone_image;
+      if (clone_image->next != (Image *) NULL)
+        clone_image->next->previous=clone_image;
     }
   return(clone_image);
 }
@@ -1489,9 +1490,7 @@ Export void CompositeImage(Image *image,const CompositeOperator compose,
               /*
                 Pixel is not at 0 point.
               */
-              color.red=q->red;
-              color.green=q->green;
-              color.blue=q->blue;
+              color=(*q);
               TransformHSL(color.red,color.green,color.blue,&hue,&saturation,
                 &brightness);
               percent_brightness=(brightness_scale*
