@@ -302,9 +302,8 @@ $montage=$images->Montage(geometry=>'130x194+10+5>',gravity=>'Center',
 
 $logo=Image::Magick->new();
 $logo->Read('logo:');
-$logo->Crop('461x455+98+0');
-$logo->Zoom('45%');
-$montage->Composite(image=>$logo,geometry=>'+245+0',compose=>'Over');
+$logo->Zoom('40%');
+$montage->Composite(image=>$logo,gravity=>'North');
 
 print "Write image...\n";
 $montage->Set(matte=>'false');
