@@ -21,7 +21,7 @@
 
 
 #include "msf.hxx"
-#include "wchar.h"
+#include "owchar.h"
 #include "vect.hxx"
 
 

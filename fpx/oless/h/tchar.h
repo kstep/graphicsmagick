@@ -12,7 +12,7 @@
 #ifndef __TCHAR_DEFINED
 #define __TCHAR_DEFINED
 #include "ref.hxx"
-#include "wchar.h"
+#include "owchar.h"
 
 #ifdef _UNICODE
 

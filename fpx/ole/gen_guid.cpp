@@ -32,6 +32,10 @@
   #include "b_error.h"
 #endif
 
+#ifdef _UNIX
+  #include <sys/time.h>
+#endif
+
 //  ----------------------------------------------------------------------------
   #include "gen_guid.h"
 //  ----------------------------------------------------------------------------
@@ -110,8 +114,12 @@ HRESULT GenGuid(CLSID *clsid)
   ts.tv_nsec = ts.tv_sec   * 100000; 
 #else
 #  ifdef _UNIX
-     // FIXME: need gettimeofday-based implementation
-     clock_gettime(CLOCK_REALTIME, &ts);
+  {
+    struct timeval tv;
+    gettimeofday(&tv,NULL);
+    ts.tv_sec = tv.tv_sec;
+    ts.tv_nsec = tv.tv_usec * 1000;
+  }
 #  endif
 #endif
 

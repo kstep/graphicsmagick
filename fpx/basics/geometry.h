@@ -16,7 +16,7 @@
   #define Geometrie_h
   #ifndef Commun_h
     #include  "common.h"
-  #endif Commun_h
+  #endif // Commun_h
 //  ------------------------------------------------------------------------------------------------
 
 //  Includes

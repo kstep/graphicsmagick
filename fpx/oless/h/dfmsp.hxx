@@ -15,7 +15,7 @@
 #include "ref.hxx"
 #include "ole.hxx"
 #include "msf.hxx"
-#include "wchar.h"
+#include "owchar.h"
 #include <memory.h>
 #include <string.h>
 #include "../time.hxx"

@@ -80,7 +80,7 @@
 
   class OLEProperty : public PToolkitObject {
 
-  friend OLEPropertySection; 
+  friend class OLEPropertySection; 
   
   public:
                   OLEProperty (OLEPropertySet* parentPropSet, 

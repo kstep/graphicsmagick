@@ -5,7 +5,7 @@
  * 
  */
 
-#include "h/wchar.h"
+#include "h/owchar.h"
 #include <errno.h>
 
 #ifndef _tbstowcs

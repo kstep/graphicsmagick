@@ -425,7 +425,11 @@ long FicNom::PlaceDisponible() const
   int errNum=0, fstyp;
   /* Get file system stats */
   fstyp=0;
+#ifdef __SVR4 // FIXME: statfs is not a portable API
   errNum = statfs ( ".", &buf, sizeof( struct statfs ), fstyp);
+#else
+  errNum = statfs ( ".", &buf);
+#endif
 
   return (buf.f_bsize*buf.f_bfree)/kOneKilobyte;
 #endif

@@ -54,7 +54,7 @@ AC_C_BIGENDIAN
 #
 # Configure libtool and ltdl
 #
-AC_ENABLE_SHARED(no)
+AC_ENABLE_SHARED(yes)
 AC_ENABLE_STATIC(yes)
 AC_LIBLTDL_CONVENIENCE
 # Substitute INCLTDL and LIBLTDL in the Makefiles

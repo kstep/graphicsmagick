@@ -73,6 +73,7 @@
   // Define OLE_STR and V_UI1REF
 #if defined(_UNIX) || defined(macintosh)
     #define OLE_STR (char*) 
+    #undef V_UI1REF
     #define V_UI1REF(X) V_BSTR(X) 
   #endif
   
