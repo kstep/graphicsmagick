@@ -27,6 +27,7 @@ public:
 	BOOL	m_decorateFiles;
 	BOOL	m_optionalFiles;
 	BOOL	m_standalone;
+	BOOL	m_generateFontmap;
 	//}}AFX_DATA
 
 

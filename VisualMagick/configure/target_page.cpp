@@ -24,6 +24,7 @@ CTargetPage::CTargetPage() : CPropertyPage(CTargetPage::IDD)
 	m_decorateFiles = FALSE;
 	m_optionalFiles = FALSE;
 	m_standalone = FALSE;
+	m_generateFontmap = FALSE;
 	//}}AFX_DATA_INIT
 }
 
@@ -40,6 +41,7 @@ void CTargetPage::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX, IDC_DECORATE_FILES, m_decorateFiles);
 	DDX_Check(pDX, IDC_INCLUDE_OPTIONAL, m_optionalFiles);
 	DDX_Check(pDX, IDC_STANDALONE, m_standalone);
+	DDX_Check(pDX, IDC_GENERATE_FONTMAP, m_generateFontmap);
 	//}}AFX_DATA_MAP
 }
 

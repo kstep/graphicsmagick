@@ -112,7 +112,7 @@ BEGIN
     CONTROL         "Decorate exe files with build options",
                     IDC_DECORATE_FILES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
                     15,135,139,10
-    GROUPBOX        "Build options",IDC_STATIC,7,122,304,64
+    GROUPBOX        "Build options",IDC_STATIC,7,122,304,77
     CONTROL         "Static Multi-threaded DLL runtimes",IDC_PROJECT_TYPE3,
                     "Button",BS_AUTORADIOBUTTON,15,95,124,10
     LTEXT           "Static Builds",IDC_STATIC,13,50,40,8
@@ -123,7 +123,9 @@ BEGIN
     CONTROL         "Generate all utility projects with full paths rather then relative paths.",
                     IDC_STANDALONE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,
                     167,236,10
-    PUSHBUTTON      "Edit ""config.h""",IDC_EditConfig,117,199,69,14
+    PUSHBUTTON      "Edit ""config.h""",IDC_EditConfig,117,204,69,14
+    CONTROL         "Generate a font map file",IDC_GENERATE_FONTMAP,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,15,182,88,10
 END
 
 IDD_SYSTEM_PAGE DIALOG DISCARDABLE  0, 0, 318, 233

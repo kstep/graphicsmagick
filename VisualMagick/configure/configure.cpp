@@ -51,6 +51,7 @@ BOOL decorateFiles = FALSE;
 BOOL optionalFiles = FALSE;
 BOOL consoleMode = TRUE;
 BOOL standaloneMode = TRUE;
+BOOL generateFontmap = FALSE;
 
 CString release_loc;
 CString debug_loc;
@@ -1473,6 +1474,696 @@ public:
     nPercent;
 };
 
+#define THIS_SUB_KEY FALSE
+#define ALL_SUB_KEYS TRUE
+
+#define SIGNAL_EVENT    TRUE
+#define WAIT_FOR_CHANGE FALSE
+
+class CRegistry
+{
+   private:
+      CRegistry( const CRegistry& ) {};
+      CRegistry& operator=( const CRegistry& ) { return( *this ); };
+
+   private:
+      void m_Initialize( void );
+
+   protected:
+      HKEY m_KeyHandle;
+      HKEY m_RegistryHandle;
+
+      LONG m_ErrorCode;
+
+      CString m_ClassName;
+      CString m_ComputerName;
+      CString m_KeyName;
+      CString m_RegistryName;
+      DWORD   m_NumberOfSubkeys;
+      DWORD   m_NumberOfValues;
+
+      /*
+      ** Data items filled in by QueryInfo
+      */
+
+      DWORD    m_LongestSubkeyNameLength;
+      DWORD    m_LongestClassNameLength;
+      DWORD    m_LongestValueNameLength;
+      DWORD    m_LongestValueDataLength;
+      DWORD    m_SecurityDescriptorLength;
+      FILETIME m_LastWriteTime;
+
+   public:
+
+      enum _Keys
+      {
+         keyLocalMachine         = (DWORD) HKEY_LOCAL_MACHINE,
+         keyClassesRoot          = (DWORD) HKEY_CLASSES_ROOT,
+         keyPerformanceData      = (DWORD) HKEY_PERFORMANCE_DATA,
+         keyUsers                = (DWORD) HKEY_USERS,
+         keyCurrentUser          = (DWORD) HKEY_CURRENT_USER,
+#if ( WINVER >= 0x400 )
+         keyCurrentConfiguration = (DWORD) HKEY_CURRENT_CONFIG,
+         keyDynamicData          = (DWORD) HKEY_DYN_DATA
+#endif
+      };
+
+      enum KeyValueTypes
+      {
+         typeBinary                 = REG_BINARY,
+         typeDoubleWord             = REG_DWORD,
+         typeDoubleWordLittleEndian = REG_DWORD_LITTLE_ENDIAN,
+         typeDoubleWordBigEndian    = REG_DWORD_BIG_ENDIAN,
+         typeUnexpandedString       = REG_EXPAND_SZ,
+         typeSymbolicLink           = REG_LINK,
+         typeMultipleString         = REG_MULTI_SZ,
+         typeNone                   = REG_NONE,
+         typeResourceList           = REG_RESOURCE_LIST,
+         typeString                 = REG_SZ
+      };
+
+      enum CreateOptions
+      {
+         optionsNonVolatile = REG_OPTION_NON_VOLATILE,
+         optionsVolatile    = REG_OPTION_VOLATILE
+      };
+
+      enum CreatePermissions
+      {
+         permissionAllAccess        = KEY_ALL_ACCESS,
+         permissionCreateLink       = KEY_CREATE_LINK,
+         permissionCreateSubKey     = KEY_CREATE_SUB_KEY,
+         permissionEnumerateSubKeys = KEY_ENUMERATE_SUB_KEYS,
+         permissionExecute          = KEY_EXECUTE,
+         permissionNotify           = KEY_NOTIFY,
+         permissionQueryValue       = KEY_QUERY_VALUE,
+         permissionRead             = KEY_READ,
+         permissionSetValue         = KEY_SET_VALUE,
+         permissionWrite            = KEY_WRITE
+      };
+
+      enum CreationDisposition
+      {
+         dispositionCreatedNewKey     = REG_CREATED_NEW_KEY,
+         dispositionOpenedExistingKey = REG_OPENED_EXISTING_KEY
+      };
+
+      enum NotifyChangeFlag
+      {
+         changeKeyAndSubkeys    = TRUE,
+         changeSpecifiedKeyOnly = FALSE
+      };
+
+      enum NotifyChangeFilter
+      {
+         notifyName       = REG_NOTIFY_CHANGE_NAME,
+         notifyAttributes = REG_NOTIFY_CHANGE_ATTRIBUTES,
+         notifyLastSet    = REG_NOTIFY_CHANGE_LAST_SET,
+         notifySecurity   = REG_NOTIFY_CHANGE_SECURITY
+      };
+
+      CRegistry();
+
+      virtual ~CRegistry();
+
+      virtual BOOL Close( void );
+      virtual BOOL Connect( HKEY key_to_open = HKEY_CURRENT_USER,
+                            LPCTSTR computer_name = NULL );
+      virtual BOOL EnumerateKeys( const DWORD subkey_index,
+                                  CString&    subkey_name,
+                                  CString&    class_name );
+      virtual BOOL EnumerateValues( const DWORD    value_index,
+                                    CString&       name_of_value,
+                                    KeyValueTypes& type_code,
+                                    LPBYTE         data_buffer,
+                                    DWORD&         size_of_data_buffer );
+      virtual BOOL GetBinaryValue( LPCTSTR name_of_value, CByteArray& return_array );
+      virtual void GetClassName( CString& class_name ) const;
+      virtual void GetComputerName( CString& computer_name ) const;
+      virtual BOOL GetDoubleWordValue( LPCTSTR name_of_value, DWORD& return_value );
+      virtual BOOL GetErrorCode( void ) const;
+      virtual void GetKeyName( CString& key_name ) const;
+      virtual DWORD GetNumberOfSubkeys( void ) const;
+      virtual DWORD GetNumberOfValues( void ) const;
+      virtual void GetRegistryName( CString& registry_name ) const;
+      virtual BOOL GetStringValue( LPCTSTR name_of_value, CString& return_string );
+      virtual BOOL GetStringArrayValue( LPCTSTR name_of_value, CStringArray& return_array );
+      virtual BOOL GetValue( LPCTSTR name_of_value, CByteArray& return_array );
+      virtual BOOL GetValue( LPCTSTR name_of_value, DWORD& return_value );
+      virtual BOOL GetValue( LPCTSTR name_of_value, CString& return_string );
+      virtual BOOL GetValue( LPCTSTR name_of_value, CStringArray& return_array );
+      virtual BOOL Open( LPCTSTR name_of_subkey_to_open,
+         const CreatePermissions security_access_mask = permissionAllAccess );
+      virtual BOOL QueryInfo( void );
+      virtual BOOL QueryValue( LPCTSTR        name_of_value,
+                               KeyValueTypes& value_type,
+                               LPBYTE         address_of_buffer,
+                               DWORD&         size_of_buffer );
+
+      virtual BOOL UnLoad( LPCTSTR name_of_subkey_to_unload );
+
+};
+
+CRegistry::CRegistry()
+{
+   m_Initialize();
+}
+
+CRegistry::~CRegistry()
+{
+   if ( m_RegistryHandle != (HKEY) NULL )
+      Close();
+   m_Initialize();
+}
+
+void CRegistry::m_Initialize( void )
+{
+   m_ClassName.Empty();
+   m_ComputerName.Empty();
+   m_KeyName.Empty();
+   m_RegistryName.Empty();
+
+   m_KeyHandle                    = (HKEY) NULL;
+   m_ErrorCode                    = 0L;
+   m_NumberOfSubkeys              = 0;
+   m_LongestSubkeyNameLength      = 0;
+   m_LongestClassNameLength       = 0;
+   m_NumberOfValues               = 0;
+   m_LongestValueNameLength       = 0;
+   m_LongestValueDataLength       = 0;
+   m_SecurityDescriptorLength     = 0;
+   m_LastWriteTime.dwLowDateTime  = 0;
+   m_LastWriteTime.dwHighDateTime = 0;
+   m_RegistryHandle               = (HKEY) NULL;
+}
+
+BOOL CRegistry::Close( void )
+{
+   if ( m_KeyHandle != (HKEY) NULL )
+   {
+      ::RegCloseKey( m_KeyHandle );
+      m_KeyHandle = (HKEY) NULL;
+   }
+
+   if ( m_RegistryHandle == (HKEY) NULL )
+      return( TRUE );
+
+   m_ErrorCode = ::RegCloseKey( m_RegistryHandle );
+
+   if ( m_ErrorCode == ERROR_SUCCESS )
+   {
+      m_RegistryHandle = (HKEY) NULL;
+      m_Initialize();
+      return( TRUE );
+   }
+   else
+      return( FALSE );
+}
+
+BOOL CRegistry::Connect( HKEY key_to_open, LPCTSTR name_of_computer )
+{
+   try
+   {
+      if ( key_to_open == (HKEY) keyClassesRoot ||
+        key_to_open == (HKEY) keyCurrentUser )
+      {
+         if ( name_of_computer == NULL )
+         {
+            m_RegistryHandle = key_to_open;
+            m_ErrorCode = ERROR_SUCCESS;
+         }
+         else
+            m_ErrorCode = ERROR_INVALID_HANDLE;
+      }
+      else
+      {
+         m_ErrorCode = ::RegConnectRegistry( (LPTSTR) name_of_computer, key_to_open, &m_RegistryHandle );
+      }
+
+      if ( m_ErrorCode == ERROR_SUCCESS )
+      {
+         if ( name_of_computer == NULL )
+         {
+            TCHAR computer_name[ MAX_PATH ];
+            DWORD size = MAX_PATH;
+
+            if ( ::GetComputerName( computer_name, &size ) == FALSE )
+               m_ComputerName.Empty();
+            else
+               m_ComputerName = computer_name;
+         }
+         else
+            m_ComputerName = name_of_computer;
+
+         if ( key_to_open == HKEY_LOCAL_MACHINE )
+            m_RegistryName = TEXT( "HKEY_LOCAL_MACHINE" );
+         else if ( key_to_open == HKEY_CLASSES_ROOT )
+            m_RegistryName = TEXT( "HKEY_CLASSES_ROOT" );
+         else if ( key_to_open == HKEY_USERS )
+            m_RegistryName = TEXT( "HKEY_USERS" );
+         else if ( key_to_open == HKEY_CURRENT_USER )
+            m_RegistryName = TEXT( "HKEY_CURRENT_USER" );
+         else if ( key_to_open == HKEY_PERFORMANCE_DATA )
+            m_RegistryName = TEXT( "HKEY_PERFORMANCE_DATA" );
+#if ( WINVER >= 0x400 )
+         else if ( key_to_open == HKEY_CURRENT_CONFIG )
+            m_RegistryName = TEXT( "HKEY_CURRENT_CONFIG" );
+         else if ( key_to_open == HKEY_DYN_DATA )
+            m_RegistryName = TEXT( "HKEY_DYN_DATA" );
+#endif
+         else
+            m_RegistryName = TEXT( "Unknown" );
+
+         return( TRUE );
+      }
+      else
+         return( FALSE );
+   }
+   catch( ... )
+   {
+      m_ErrorCode = ERROR_EXCEPTION_IN_SERVICE;
+      return( FALSE );
+   }
+}
+
+#define DIMENSION_OF( argument ) ( sizeof( argument ) / sizeof( *( argument ) ) )
+
+BOOL CRegistry::EnumerateKeys( const DWORD subkey_index, CString& subkey_name, CString& class_name )
+{
+   TCHAR subkey_name_string[ 2048 ];
+   TCHAR class_name_string[ 2048 ];
+
+   DWORD size_of_subkey_name_string = DIMENSION_OF( subkey_name_string ) - 1;
+   DWORD size_of_class_name_string  = DIMENSION_OF( class_name_string  ) - 1;
+
+   ::ZeroMemory( subkey_name_string, sizeof( subkey_name_string ) );
+   ::ZeroMemory( class_name_string,  sizeof( class_name_string  ) );
+
+   m_ErrorCode = ::RegEnumKeyEx( m_KeyHandle, 
+                                 subkey_index, 
+                                 subkey_name_string, 
+                                &size_of_subkey_name_string,
+                                 NULL,
+                                 class_name_string,
+                                &size_of_class_name_string,
+                                &m_LastWriteTime );
+
+   if ( m_ErrorCode == ERROR_SUCCESS )
+   {
+      subkey_name = subkey_name_string;
+      class_name  = class_name_string;
+
+      return( TRUE );
+   }
+   else
+   {
+      return( FALSE );
+   }
+}
+
+BOOL CRegistry::EnumerateValues( const DWORD    value_index, 
+                                 CString&       name_of_value, 
+                                 KeyValueTypes& type_code,
+                                 LPBYTE         data_buffer,
+                                 DWORD&         size_of_data_buffer )
+{
+   DWORD temp_type_code = type_code;
+
+   TCHAR temp_name[ 2048 ];
+
+   ::ZeroMemory( temp_name, sizeof( temp_name ) );
+
+   DWORD temp_name_size = DIMENSION_OF( temp_name );
+
+   try
+   {
+      m_ErrorCode = ::RegEnumValue( m_KeyHandle,
+                                    value_index,
+                                    temp_name,
+                                   &temp_name_size,
+                                    NULL,
+                                   &temp_type_code,
+                                    data_buffer,
+                                   &size_of_data_buffer );
+
+      if ( m_ErrorCode == ERROR_SUCCESS )
+      {
+         type_code     = (KeyValueTypes) temp_type_code;
+         name_of_value = temp_name;
+
+         return( TRUE );
+      }
+      else
+         return( FALSE );
+   }
+   catch( ... )
+   {
+      m_ErrorCode = ERROR_EXCEPTION_IN_SERVICE;
+      return( FALSE );
+   }
+}
+
+BOOL CRegistry::GetBinaryValue( LPCTSTR name_of_value, CByteArray& return_array )
+{
+   if ( name_of_value == NULL )
+   {
+      m_ErrorCode = ERROR_INVALID_PARAMETER;
+      return( FALSE );
+   }
+
+   QueryInfo();
+
+   DWORD size_of_buffer = m_LongestValueDataLength;
+
+   LPBYTE memory_buffer = (LPBYTE) new BYTE[ size_of_buffer ];
+
+   if ( memory_buffer == NULL )
+   {
+      m_ErrorCode = ::GetLastError();
+      return( FALSE );
+   }
+
+   BOOL return_value = TRUE;
+
+   KeyValueTypes type = typeBinary;
+
+   if ( QueryValue( name_of_value, type, memory_buffer, size_of_buffer ) != FALSE )
+   {
+      /*
+      ** We've got data so give it back to the caller
+      */
+
+      return_array.RemoveAll();
+
+      DWORD index = 0;
+
+      while( index < size_of_buffer )
+      {
+         return_array.Add( memory_buffer[ index ] );
+         index++;
+      }
+
+      return_value = TRUE;
+   }
+   else
+      return_value = FALSE;
+
+   delete [] memory_buffer;
+
+   return( return_value );
+}
+
+void CRegistry::GetClassName( CString& class_name ) const
+{
+   class_name = m_ClassName;
+}
+
+void CRegistry::GetComputerName( CString& computer_name ) const
+{
+   computer_name = m_ComputerName;
+}
+
+BOOL CRegistry::GetDoubleWordValue( LPCTSTR name_of_value, DWORD& return_value )
+{
+   if ( name_of_value == NULL )
+   {
+      m_ErrorCode = ERROR_INVALID_PARAMETER;
+      return( FALSE );
+   }
+
+   DWORD size_of_buffer = sizeof( DWORD );
+
+   KeyValueTypes type = typeDoubleWord;
+
+   return( QueryValue( name_of_value, type, (LPBYTE) &return_value, size_of_buffer ) );
+}
+
+BOOL CRegistry::GetErrorCode( void ) const
+{
+   return( m_ErrorCode );
+}
+
+void CRegistry::GetKeyName( CString& key_name ) const
+{
+   key_name = m_KeyName;
+}
+
+DWORD CRegistry::GetNumberOfSubkeys( void ) const
+{
+   return( m_NumberOfSubkeys );
+}
+
+DWORD CRegistry::GetNumberOfValues( void ) const
+{
+   return( m_NumberOfValues );
+}
+
+void CRegistry::GetRegistryName( CString& registry_name ) const
+{
+   registry_name = m_RegistryName;
+}
+
+BOOL CRegistry::GetStringValue( LPCTSTR name_of_value, CString& return_string )
+{
+   if ( name_of_value == NULL )
+   {
+      m_ErrorCode = ERROR_INVALID_PARAMETER;
+      return( FALSE );
+   }
+
+   TCHAR temp_string[ 2048 ];
+   DWORD size_of_buffer = 2048;
+
+   ::ZeroMemory( temp_string, sizeof( temp_string ) );
+
+   KeyValueTypes type = typeString;
+
+   if ( QueryValue( name_of_value, type, (LPBYTE) temp_string, size_of_buffer ) != FALSE )
+   {
+      return_string = temp_string;
+      return( TRUE );
+   }
+   else
+   {
+      return_string.Empty();
+      return( FALSE );
+   }
+}
+
+BOOL CRegistry::GetStringArrayValue( LPCTSTR name_of_value, CStringArray& return_array )
+{
+   if ( name_of_value == NULL )
+   {
+      m_ErrorCode = ERROR_INVALID_PARAMETER;
+      return( FALSE );
+   }
+
+   QueryInfo();
+
+   DWORD size_of_buffer = m_LongestValueDataLength;
+
+   LPBYTE memory_buffer = (LPBYTE) new BYTE[ size_of_buffer ];
+
+   if ( memory_buffer == NULL )
+   {
+      m_ErrorCode = ::GetLastError();
+      return( FALSE );
+   }
+
+   BOOL return_value = TRUE;
+
+   KeyValueTypes type = typeMultipleString; // A double NULL terminated string
+
+   if ( QueryValue( name_of_value, type, memory_buffer, size_of_buffer ) != FALSE )
+   {
+      LPTSTR strings = (LPTSTR) memory_buffer;
+
+      return_array.RemoveAll();
+
+      while( strings[ 0 ] != 0x00 )
+      {
+         return_array.Add( (LPCTSTR) strings );
+         strings += ( _tcslen( (LPCTSTR) strings ) + 1 ); // Paul Ostrowski [postrowski@xantel.com]
+      }
+
+      return_value = TRUE;
+   }
+   else
+      return_value = FALSE;
+
+   delete [] memory_buffer;  
+   return( return_value );
+}
+
+BOOL CRegistry::GetValue( LPCTSTR name_of_value, CByteArray& return_array )
+{
+   if ( name_of_value == NULL )
+   {
+      m_ErrorCode = ERROR_INVALID_PARAMETER;
+      return( FALSE );
+   }
+
+   return( GetBinaryValue( name_of_value, return_array ) );
+}
+
+BOOL CRegistry::GetValue( LPCTSTR name_of_value, DWORD& return_value )
+{
+   if ( name_of_value == NULL )
+   {
+      m_ErrorCode = ERROR_INVALID_PARAMETER;
+      return( FALSE );
+   }
+
+   return( GetDoubleWordValue( name_of_value, return_value ) );
+}
+
+BOOL CRegistry::GetValue( LPCTSTR name_of_value, CString& return_string )
+{
+   if ( name_of_value == NULL )
+   {
+      m_ErrorCode = ERROR_INVALID_PARAMETER;
+      return( FALSE );
+   }
+
+   return( GetStringValue( name_of_value, return_string ) );
+}
+
+BOOL CRegistry::GetValue( LPCTSTR name_of_value, CStringArray& return_array )
+{
+   if ( name_of_value == NULL )
+   {
+      m_ErrorCode = ERROR_INVALID_PARAMETER;
+      return( FALSE );
+   }
+
+   return( GetStringArrayValue( name_of_value, return_array ) );
+}
+
+BOOL CRegistry::Open( LPCTSTR name_of_subkey_to_open, const CreatePermissions security_access_mask )
+{
+   try
+   {
+      if ( m_KeyHandle != (HKEY) NULL )
+      {
+         ::RegCloseKey( m_KeyHandle );
+         m_KeyHandle = (HKEY) NULL;
+      }
+
+      m_ErrorCode = ::RegOpenKeyEx( m_RegistryHandle, name_of_subkey_to_open, NULL, security_access_mask, &m_KeyHandle );
+
+      if ( m_ErrorCode == ERROR_SUCCESS )
+      {
+         QueryInfo();
+         m_KeyName = name_of_subkey_to_open;
+
+         return( TRUE );
+      }
+      else
+         return( FALSE );
+   }
+   catch( ... )
+   {
+      m_ErrorCode = ERROR_EXCEPTION_IN_SERVICE;
+      return( FALSE );
+   }
+}
+
+BOOL CRegistry::QueryInfo( void )
+{
+   TCHAR class_name[ 2048 ];
+
+   ::ZeroMemory( class_name, sizeof( class_name ) );
+   DWORD size_of_class_name = DIMENSION_OF( class_name ) - 1; 
+   m_ErrorCode = ::RegQueryInfoKey( m_KeyHandle,
+                                    class_name,
+                                   &size_of_class_name,
+                          (LPDWORD) NULL,
+                                   &m_NumberOfSubkeys,
+                                   &m_LongestSubkeyNameLength,
+                                   &m_LongestClassNameLength,
+                                   &m_NumberOfValues,
+                                   &m_LongestValueNameLength,
+                                   &m_LongestValueDataLength,
+                                   &m_SecurityDescriptorLength,
+                                   &m_LastWriteTime );
+
+   if ( m_ErrorCode == ERROR_SUCCESS )
+   {
+      m_ClassName = class_name;
+      return( TRUE );
+   }
+   else
+   {
+      return( FALSE );
+   }
+}
+
+BOOL CRegistry::QueryValue( LPCTSTR        name_of_value, 
+                            KeyValueTypes& value_type, 
+                            LPBYTE         address_of_buffer, 
+                            DWORD&         size_of_buffer )
+{
+   /*
+   ** address_of_buffer and size_of_buffer can be NULL
+   */
+
+   if ( name_of_value == NULL )
+   {
+      m_ErrorCode = ERROR_INVALID_PARAMETER;
+      return( FALSE );
+   }
+
+   // We were passed a pointer, do not trust it
+
+   try
+   {
+      DWORD temp_data_type = (DWORD) value_type;
+
+      m_ErrorCode = ::RegQueryValueEx( m_KeyHandle,
+                              (LPTSTR) name_of_value,
+                                       NULL,
+                                      &temp_data_type,
+                                       address_of_buffer,
+                                      &size_of_buffer );
+
+      if ( m_ErrorCode == ERROR_SUCCESS )
+      {
+         value_type = (KeyValueTypes) temp_data_type;
+         return( TRUE );
+      }
+      else
+      {
+         return( FALSE );
+      }
+   }
+   catch( ... )
+   {
+      m_ErrorCode = ERROR_EXCEPTION_IN_SERVICE;
+      return( FALSE );
+   }
+}
+
+BOOL CRegistry::UnLoad( LPCTSTR name_of_subkey_to_unload )
+{
+  if ( name_of_subkey_to_unload == NULL )
+  {
+    m_ErrorCode = ERROR_INVALID_PARAMETER;
+    return( FALSE );
+  }
+  try
+  {
+    m_ErrorCode = ::RegUnLoadKey( m_KeyHandle, name_of_subkey_to_unload );
+    if ( m_ErrorCode == ERROR_SUCCESS )
+      return( TRUE );
+    else
+    return( FALSE );
+  }
+  catch( ... )
+  {
+    return( FALSE );
+  }
+}
+
 BOOL CConfigureApp::InitInstance()
 {
 	// Standard initialization
@@ -1482,7 +2173,8 @@ BOOL CConfigureApp::InitInstance()
 	Enable3dControlsStatic();	// Call this when linking to MFC statically
 #endif
 	CConfigureWizard wizard;
-	m_pMainWnd = &wizard;
+
+  m_pMainWnd = &wizard.m_Page1;
 
   release_loc = "..\\Release\\";
   debug_loc = "..\\Debug\\";
@@ -1493,11 +2185,82 @@ BOOL CConfigureApp::InitInstance()
   wizard.m_Page2.m_decorateFiles = decorateFiles;
   wizard.m_Page2.m_optionalFiles = optionalFiles;
   wizard.m_Page2.m_standalone = standaloneMode;
+  wizard.m_Page2.m_generateFontmap = generateFontmap;
 
   wizard.m_Page3.m_tempRelease = release_loc;
   wizard.m_Page3.m_tempDebug = debug_loc;
   wizard.m_Page3.m_outputBin = bin_loc;
   wizard.m_Page3.m_outputLib = lib_loc;
+
+  if (!generateFontmap)
+  {
+    CRegistry registry;
+    if ( registry.Connect( HKEY_LOCAL_MACHINE ) == TRUE )
+    {
+      if (
+            (registry.Open( "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Fonts",
+                        CRegistry::permissionRead) == TRUE)
+            ||
+            (registry.Open( "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Fonts",
+                        CRegistry::permissionRead) == TRUE)
+        ) {
+        CString filename;
+        registry.QueryInfo();
+
+        BOOL result = TRUE;
+
+        filename = bin_loc + "fonts.mgk";
+	      ofstream fontmap(filename);
+        fontmap << "<?xml version=\"1.0\"?>" << endl;
+        for (int index=0; index<registry.GetNumberOfValues(); index++)
+        {
+          CStringEx name_of_value;
+          CRegistry::KeyValueTypes type_code;
+          BYTE data_buffer[2048];
+          LPBYTE ptr_data_buffer = data_buffer;
+          DWORD size_of_data_buffer = 2048;
+          result = registry.EnumerateValues( index, name_of_value, type_code,
+                    data_buffer, size_of_data_buffer );
+
+          // The font name looks like this: "XYZ Bold Italic (TrueType)"
+          CStringEx font_format, font_name, font_full_name;
+          int name_length = name_of_value.GetLength();
+          int type_pos = name_of_value.ReverseFind("(");
+          if (type_pos > 0)
+          {
+            font_full_name = name_of_value.Left(type_pos-1);
+            font_name = font_full_name;
+            font_name.FindReplace(" ","-",TRUE);
+            font_format = name_of_value.Mid(type_pos);
+            if (font_format.FindNoCase("(TrueType)") == 0)
+            {
+              // Information we need to create:
+              //  format="type1"
+              //  metrics="/usr/share/fonts/afms/adobe/phvb8an.afm"
+              //  glyphs="/usr/share/fonts/default/Type1/n019044l.pfb"
+              //  name="Helvetica-Narrow-Bold"
+              //  fullname="Helvetica Narrow Bold"
+              //  familyname="Helvetica"
+              //  weight="Bold"
+              //  version="0.1"
+              //  alias="NimbusSanL-BoldCond"
+              //
+              fontmap << "<fontmap>" << endl;
+              fontmap << "  <font"
+                      << " format=\"truetype\""
+                      << " glyphs=\"%SystemRoot%\\Fonts\\" << data_buffer << "\""
+                      << " fullname=\"" << font_full_name << "\""
+                      << " name=\"" << font_name << "\""
+                      << " />" << endl;
+              fontmap << "</fontmap>" << endl;
+            }
+          }
+        }
+        fontmap << "</xml>" << endl;
+        registry.Close();
+      }
+    }
+  }
 
 	int nResponse = wizard.DoModal();
   if (nResponse == ID_WIZFINISH)
@@ -1509,6 +2272,7 @@ BOOL CConfigureApp::InitInstance()
     decorateFiles = wizard.m_Page2.m_decorateFiles;
     optionalFiles = wizard.m_Page2.m_optionalFiles;
     standaloneMode = wizard.m_Page2.m_standalone;
+    generateFontmap = wizard.m_Page2.m_generateFontmap;
     release_loc = wizard.m_Page3.m_tempRelease;
     debug_loc = wizard.m_Page3.m_tempDebug;
     bin_loc = wizard.m_Page3.m_outputBin;
