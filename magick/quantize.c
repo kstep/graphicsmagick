@@ -2314,7 +2314,7 @@ static void Reduction(CubeInfo *cube_info,const unsigned int number_colors)
     cube_info->next_pruning_threshold=cube_info->root->quantization_error;
     cube_info->colors=0;
     Reduce(cube_info,cube_info->root);
-    ProgressMonitor(ReduceImageText,(unsigned int) (span-cube_info->colors),
+    ProgressMonitor(ReduceImageText,span-cube_info->colors,
       span-number_colors+1);
   }
 }

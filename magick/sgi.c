@@ -469,8 +469,7 @@ Export Image *ReadSGIImage(const ImageInfo *image_info)
             return((Image *) NULL);
           }
         image=image->next;
-        ProgressMonitor(LoadImagesText,(unsigned int) TellBlob(image),
-          (unsigned int) image->filesize);
+        ProgressMonitor(LoadImagesText,TellBlob(image),image->filesize);
       }
   } while (iris_header.magic == 0x01DA);
   while (image->previous != (Image *) NULL)

@@ -12,7 +12,7 @@ extern "C" {
   Monitor typedef declarations.
 */
 typedef void
-  (*MonitorHandler)(const char *,const unsigned int,const unsigned int);
+  (*MonitorHandler)(const char *,const off_t,const off_t);
 
 /*
   Monitor declarations.
@@ -21,7 +21,7 @@ extern Export MonitorHandler
   SetMonitorHandler(MonitorHandler);
 
 extern Export void
-  ProgressMonitor(const char *,const unsigned int,const unsigned int);
+  ProgressMonitor(const char *,const off_t,const off_t);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

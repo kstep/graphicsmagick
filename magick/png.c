@@ -1592,8 +1592,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
             image->next->blob_info=image->blob_info;
             image=image->next;
             mng_info->image=image;
-            ProgressMonitor(LoadImagesText,(unsigned int) TellBlob(image),
-              (unsigned int) image->filesize);
+            ProgressMonitor(LoadImagesText,TellBlob(image),image->filesize);
           }
         if (term_chunk_found)
           {

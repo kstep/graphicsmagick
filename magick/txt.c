@@ -219,8 +219,7 @@ Export Image *ReadTXTImage(const ImageInfo *image_info)
     image->next->previous=image;
     (void) IsPseudoClass(image);
     image=image->next;
-    ProgressMonitor(LoadImagesText,(unsigned int) TellBlob(image),
-      (unsigned int) image->filesize);
+    ProgressMonitor(LoadImagesText,TellBlob(image),image->filesize);
     /*
       Initialize text image to background color.
     */

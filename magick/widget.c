@@ -7901,7 +7901,7 @@ Export int XMenuWidget(Display *display,XWindows *windows,const char *title,
 %  The format of the XMonitorWidget method is:
 %
 %      void XMonitorWidget(Display *display,XWindows *windows,const char *task,
-%        const unsigned int quantum,const unsigned int span)
+%        const off_t quantum,const off_t span)
 %
 %  A description of each parameter follows:
 %
@@ -7920,7 +7920,7 @@ Export int XMenuWidget(Display *display,XWindows *windows,const char *title,
 %
 */
 Export void XMonitorWidget(Display *display,XWindows *windows,const char *task,
-  const unsigned int quantum,const unsigned int span)
+  const off_t quantum,const off_t span)
 {
   unsigned int
     width;

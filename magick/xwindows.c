@@ -7803,8 +7803,8 @@ Export void XMakeWindow(Display *display,Window parent,char **argv,int argc,
 %
 %  The format of the XProgressMonitor method is:
 %
-%      void XProgressMonitor(const char *task,const unsigned int quantum,
-%        const unsigned int span)
+%      void XProgressMonitor(const char *task,const off_t quantum,
+%        const off_t span)
 %
 %  A description of each parameter follows:
 %
@@ -7817,8 +7817,8 @@ Export void XMakeWindow(Display *display,Window parent,char **argv,int argc,
 %
 %
 */
-Export void XProgressMonitor(const char *task,const unsigned int quantum,
-  const unsigned int span)
+Export void XProgressMonitor(const char *task,const off_t quantum,
+  const off_t span)
 {
   XWindows
     *windows;

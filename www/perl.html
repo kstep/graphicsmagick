@@ -1927,8 +1927,8 @@ the name of the image file to display or animate.
 <p>Finally, for convenience, method <tt>QueryColor</tt> accepts one or
 more color names or hex value and returns their respective red, green,
 and blue color values:
-<pre>&nbsp;&nbsp;&nbsp; ($red, $green, $blue) = split(', ', $image-&gt;QueryColor('cyan'));
-&nbsp;&nbsp;&nbsp; ($red, $green, $blue) = split(', ', $image-&gt;QueryColor('#716bae'));</pre>
+<pre>&nbsp;&nbsp;&nbsp; ($red, $green, $blue, $opacity) = split(', ', $image-&gt;QueryColor('cyan'));
+&nbsp;&nbsp;&nbsp; ($red, $green, $blue, $opacity) = split(', ', $image-&gt;QueryColor('#716bae'));</pre>
 </dl>
 <a href="#contents">Back to Contents</a>
 <p>

@@ -78,8 +78,8 @@ static MonitorHandler
 %
 %  The format of the ProgressMonitor method is:
 %
-%      void ProgressMonitor(const char *text,const unsigned int quantum,
-%        const unsigned int span)
+%      void ProgressMonitor(const char *text,const off_t quantum,
+%        const off_t span)
 %
 %  A description of each parameter follows:
 %
@@ -90,8 +90,8 @@ static MonitorHandler
 %
 %
 */
-Export void ProgressMonitor(const char *text,const unsigned int quantum,
-  const unsigned int span)
+Export void ProgressMonitor(const char *text,const off_t quantum,
+  const off_t span)
 {
   ProcessPendingEvents(text);
   if (monitor_handler != (MonitorHandler) NULL)

@@ -508,8 +508,7 @@ Export Image *ReadSUNImage(const ImageInfo *image_info)
             return((Image *) NULL);
           }
         image=image->next;
-        ProgressMonitor(LoadImagesText,(unsigned int) TellBlob(image),
-          (unsigned int) image->filesize);
+        ProgressMonitor(LoadImagesText,TellBlob(image),image->filesize);
       }
   } while (sun_header.magic == 0x59a66a95);
   while (image->previous != (Image *) NULL)

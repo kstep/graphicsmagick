@@ -224,8 +224,7 @@ Export Image *ReadPWPImage(const ImageInfo *image_info)
     if (image_info->subrange != 0)
       if (next_image->scene >= (image_info->subimage+image_info->subrange-1))
         break;
-    ProgressMonitor(LoadImagesText,(unsigned int) TellBlob(pwp_image),
-      (unsigned int) pwp_image->filesize);
+    ProgressMonitor(LoadImagesText,TellBlob(pwp_image),pwp_image->filesize);
   }
   (void) remove(local_info->filename);
   DestroyImageInfo(local_info);

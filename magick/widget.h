@@ -59,8 +59,7 @@ extern Export void
   XInfoWidget(Display *,XWindows *,const char *),
   XListBrowserWidget(Display *,XWindows *,XWindowInfo *,char const **,
     const char *,const char *,char *),
-  XMonitorWidget(Display *,XWindows *,const char *,const unsigned int,
-    const unsigned int),
+  XMonitorWidget(Display *,XWindows *,const char *,const off_t,const off_t),
   XNoticeWidget(Display *,XWindows *,const char *,const char *),
   XTextViewWidget(Display *,const XResourceInfo *,XWindows *,const unsigned int,
     const char *,char const **);

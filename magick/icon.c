@@ -401,8 +401,7 @@ Export Image *ReadICONImage(const ImageInfo *image_info)
             return((Image *) NULL);
           }
         image=image->next;
-        ProgressMonitor(LoadImagesText,(unsigned int) TellBlob(image),
-          (unsigned int) image->filesize);
+        ProgressMonitor(LoadImagesText,TellBlob(image),image->filesize);
       }
   }
   while (image->previous != (Image *) NULL)
