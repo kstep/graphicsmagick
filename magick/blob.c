@@ -110,6 +110,7 @@ MagickExport void AttachBlob(BlobInfo *blob_info,const void *blob,
   blob_info->quantum=DefaultBlobQuantum;
   blob_info->offset=0;
   blob_info->type=BlobStream;
+  blob_info->file=(FILE *) NULL;
   blob_info->data=(unsigned char *) blob;
 }
 
@@ -1578,26 +1579,10 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
       if (*type == 'w')
         return(True);
     }
-  (void) strncpy(filename,image->filename,MaxTextExtent-1);
-#if !defined(vms) && !defined(macintosh)
-  if (*filename != '|')
-    {
-      /*
-        Handle compressed images.
-      */
-      if ((strlen(filename) > 4) &&
-          (LocaleCompare(filename+strlen(filename)-4,".bz2") == 0))
-        image->blob->type=BZipStream;
-      else
-        if ((strlen(filename) > 3) &&
-            ((LocaleCompare(filename+strlen(filename)-3,".gz") == 0) ||
-             (LocaleCompare(filename+strlen(filename)-2,".Z") == 0)))
-          image->blob->type=ZipStream;
-    }
-#endif
   /*
     Open image file.
   */
+  (void) strncpy(filename,image->filename,MaxTextExtent-1);
   if (LocaleCompare(filename,"-") == 0)
     {
       image->blob->file=(*type == 'r') ? stdin : stdout;
@@ -1625,7 +1610,8 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
         (void) strncpy(mode,type,1);
         mode[1]='\0';
         image->blob->file=(FILE *) popen(filename+1,mode);
-        image->blob->type=PipeStream;
+        if (image->blob->file != (FILE *) NULL)
+          image->blob->type=PipeStream;
       }
     else
 #endif
@@ -1673,36 +1659,40 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
             SetApplicationType(filename,image_info->magick,'8BIM');
 #endif
           }
-        switch (image->blob->type)
-        {
-          case FileStream:
-          {
-            image->blob->file=image_info->file;
-            image->blob->exempt=True;
-          }
-          case ZipStream:
-          {
 #if defined(HasZLIB)
-            image->blob->file=(FILE *) gzopen(filename,type);
-#endif
-            break;
-          }
-          case BZipStream:
-          {
-#if defined(HasBZLIB)
-            image->blob->file=(FILE *) BZ2_bzopen(filename,type);
-#endif
-            break;
-          }
-          default:
-          {
-            image->blob->type=FileStream;
-            image->blob->file=(FILE *) fopen(filename,type);
-            break;
-          }
+      if ((strlen(filename) > 3) &&
+          ((LocaleCompare(filename+strlen(filename)-3,".gz") == 0) ||
+           (LocaleCompare(filename+strlen(filename)-2,".Z") == 0)))
+        {
+          image->blob->file=(FILE *) gzopen(filename,type);
+          if (image->blob->file != (FILE *) NULL)
+            image->blob->type=ZipStream;
         }
-        if ((image->blob->file != (FILE *) NULL) &&
-            (image->blob->type == FileStream) && (*type == 'r'))
+      else
+#endif
+#if defined(HasBZLIB)
+        if ((strlen(filename) > 4) &&
+            (LocaleCompare(filename+strlen(filename)-4,".bz2") == 0))
+          {
+            image->blob->file=(FILE *) BZ2_bzopen(filename,type);
+            if (image->blob->file != (FILE *) NULL)
+              image->blob->type=BZipStream;
+          }
+        else
+#endif
+          if (image_info->file != (FILE *) NULL)
+            {
+              image->blob->file=image_info->file;
+              image->blob->type=FileStream;
+              image->blob->exempt=True;
+            }
+          else
+            {
+              image->blob->file=(FILE *) fopen(filename,type);
+              if (image->blob->file != (FILE *) NULL)
+                image->blob->type=FileStream;
+            }
+        if ((image->blob->type == FileStream) && (*type == 'r'))
           {
             const MagickInfo
               *magick_info;
@@ -1734,21 +1724,21 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
                         image->blob->exempt=False;
                       else
                         (void) fclose(image->blob->file);
-                      image->blob->file=(FILE *) NULL;
                       AttachBlob(image->blob,blob,length);
                       image->blob->mapped=True;
                     }
               }
           }
-        image->blob->size=GetBlobSize(image);
       }
   image->blob->status=False;
+  if (image->blob->type != UndefinedStream)
+    image->blob->size=GetBlobSize(image);
   if (*type == 'r')
     {
       image->next=(Image *) NULL;
       image->previous=(Image *) NULL;
     }
-  return((image->blob->file != (FILE *) NULL) || (image->blob->data != NULL));
+  return(image->blob->type != UndefinedStream);
 }
 
 /*
