@@ -258,11 +258,11 @@ MagickExport const PixelPacket *AcquireCacheNexus(const Image *image,
   /*
     Pixel request is outside cache extents.
   */
+  q=pixels;
+  indexes=GetNexusIndexes(image->cache,nexus);
   image_nexus=GetNexus(image->cache);
   if (image_nexus == 0)
     return(False);
-  q=pixels;
-  indexes=GetNexusIndexes(image->cache,nexus);
   for (v=0; v < (long) rows; v++)
   {
     for (u=0; u < (long) columns; u+=span)
