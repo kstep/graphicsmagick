@@ -54,13 +54,17 @@
   Include declarations.
 */
 #include "magick.h"
-#if defined(HasLTDL) || defined(_MAGICKMOD_)
-#include "modules.h"
 #include "defines.h"
-
+#if defined(HasLTDL)
+#include "ltdl/ltdl.h"
+typedef lt_dlhandle ModuleHandle;
+#else
+typedef void *ModuleHandle;
+#endif
 /*
   Define declarations.
 */
+#if defined(HasLTDL) || defined(_MAGICKMOD_)
 #if !defined(_VISUALC_)
 #if !defined(CoderModuleDirectory)
 #define CoderModuleDirectory  ""
@@ -73,21 +77,6 @@
 #define ModuleGlobExpression "IM_MOD_RL_*.dll"
 #endif
 #endif
-
-/*
-  Typedef declarations.
-*/
-typedef struct _ModuleAlias
-{
-  char
-    *filename,
-    *name,
-    *alias;
-
-  struct _ModuleAlias
-    *previous,
-    *next;
-} ModuleAlias;
 
 /*
   Global declarations.
