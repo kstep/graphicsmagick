@@ -1,6 +1,6 @@
 2001-09-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
-	* magick/image.h: Rename QuantumLeap define to QuantumSize.
-	  QuantumSize is set to the values 8 or 16, depending on user
+	* magick/image.h: Rename QuantumLeap define to QuantumDepth.
+	  QuantumDepth is set to the values 8 or 16, depending on user
 	  configuration option.
 
 2001-09-09  Cristy  <cristy@mystic.es.dupont.com>

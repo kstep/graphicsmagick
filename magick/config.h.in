@@ -528,7 +528,7 @@
 #undef PixelCacheThreshold
 
 /* Number of bits in a pixel Quantum (8 or 16) */
-#undef QuantumSize
+#undef QuantumDepth
 
 /* Define as the return type of signal handlers (`int' or `void'). */
 #undef RETSIGTYPE

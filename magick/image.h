@@ -8,35 +8,28 @@
 extern "C" {
 #endif
 
-#if !defined(QuantumSize)
-# define QuantumSize 16
-# define QuantumLeap  /* deprecated; use QuantumSize instead */
-#endif
-
-#if QuantumSize == 8
+#if QuantumDepth == 8
 /*
   Color quantum is [0..255].
 */
 #define DownScale(quantum)  (quantum)
-#define QuantumDepth  8
 #define UpScale(quantum)  (quantum)
 #define XDownScale(color)  ((color)/257)
 #define XUpScale(color)  (257*(color))
 
 typedef unsigned char Quantum;
-#elif QuantumSize == 16
+#elif QuantumDepth == 16
 /*
   Color quantum is [0..65535].
 */
 #define DownScale(quantum)  ((quantum)/257)
-#define QuantumDepth  16
 #define UpScale(quantum)  (257*(quantum))
 #define XDownScale(color)  (color)
 #define XUpScale(color)  (color)
 
 typedef unsigned short Quantum;
 #else
-# error "Specified value of QuantumSize is not supported"
+# error "Specified value of QuantumDepth is not supported"
 #endif
 #define MaxRGB  ((1L << QuantumDepth)-1L)
 #define OpaqueOpacity  0

@@ -172,13 +172,13 @@ test "$with_lzw" = 'yes' && AC_DEFINE(HasLZW,1,Include LZW compression)
 AM_CONDITIONAL(HasLZW, test "$have_lzw" != 'no')
 
 # Number of bits in a Quantum
-QuantumSize=16
+QuantumDepth=16
 AC_ARG_ENABLE(16bit-pixel,
 	      [  --disable-16bit-pixel   disable 16 bit/quantum pixels (default enabled)],
 	      [with_16_bit_pixel=$enableval],
 	      [with_16_bit_pixel=$enableval='yes'])
-test "$with_16_bit_pixel" = 'no' && QuantumSize=8
-AC_DEFINE_UNQUOTED(QuantumSize,$QuantumSize,[Number of bits in a pixel Quantum (8 or 16)])
+test "$with_16_bit_pixel" = 'no' && QuantumDepth=8
+AC_DEFINE_UNQUOTED(QuantumDepth,$QuantumDepth,[Number of bits in a pixel Quantum (8 or 16)])
 
 # Set pixel cache threshold
 AC_ARG_WITH(cache,
