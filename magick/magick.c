@@ -204,7 +204,6 @@ MagickExport const char *GetImageMagick(const unsigned char *magick,
 %             <current directory>/
 %             <client path>/
 %             $MAGICK_HOME/
-%             $MAGICK_FONT_PATH
 %             $HOME/.magick/
 %             MagickLibPath
 %             MagickModulesPath
@@ -232,7 +231,6 @@ MagickExport char *GetMagickConfigurePath(const char *filename,
   ExceptionInfo *exception)
 {
   char
-    *font_path,
     *path,
     *search_path;
 
@@ -262,40 +260,6 @@ MagickExport char *GetMagickConfigurePath(const char *filename,
         }
       ConcatenateString(&search_path,"; MAGICK_HOME:");
       ConcatenateString(&search_path,path);
-    }
-  font_path=getenv("MAGICK_FONT_PATH");
-#if defined(MAGICK_FONT_PATH)
-  if (font_path == (char *) NULL)
-    font_path=MAGICK_FONT_PATH;
-#endif
-  if (font_path != (char *) NULL)
-    {
-      register char
-        *p,
-        *q;
-
-      for (p=font_path; *p != '\0'; p=q+1)
-      {
-        q=strchr(p,DirectoryListSeparator);
-        if (q == (char *) NULL)
-          FormatString(path,"%.1024s%s%.1024s",p,DirectorySeparator,filename);
-        else
-          {
-            (void) strncpy(path,p,q-p);
-            path[q-p]='\0';
-            (void) strcat(path,DirectorySeparator);
-            (void) strncat(path,filename,MaxTextExtent-strlen(path)-1);
-          }
-        if (IsAccessible(path))
-          {
-            LiberateMemory((void **) &search_path);
-            return(path);
-          }
-        ConcatenateString(&search_path,"; MAGICK_FONT_PATH:");
-        ConcatenateString(&search_path,path);
-        if (q == (char *) NULL)
-          break;
-      }
     }
   if (getenv("HOME") != (char *) NULL)
     {
