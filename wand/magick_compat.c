@@ -650,7 +650,7 @@ WandExport void *ResizeMagickMemory(void *memory,const size_t size)
 %
 %
 */
-MagickExport unsigned int QueryMagickColor(const char *name,
+WandExport unsigned int QueryMagickColor(const char *name,
   MagickPixelPacket *color,ExceptionInfo *exception)
 {
   PixelPacket
