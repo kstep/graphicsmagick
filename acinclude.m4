@@ -681,7 +681,7 @@ if test "x$acx_pthread_ok" = xyes; then
 
         # More AIX lossage: must compile with cc_r
         case "$CC" in
-          *xlc )
+          *xlc | *xlc_r )
            AC_CHECK_PROG(PTHREAD_CC, xlc_r, xlc_r, ${CC}) ;;
           * )
            AC_CHECK_PROG(PTHREAD_CC, cc_r, cc_r, ${CC}) ;;

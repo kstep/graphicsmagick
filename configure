@@ -4050,7 +4050,7 @@ echo "${ECHO_T}${flag}" >&6
 
         # More AIX lossage: must compile with cc_r
         case "$CC" in
-          *xlc )
+          *xlc | *xlc_r )
            # Extract the first word of "xlc_r", so it can be a program name with args.
 set dummy xlc_r; ac_word=$2
 echo "$as_me:$LINENO: checking for $ac_word" >&5
