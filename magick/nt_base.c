@@ -1495,7 +1495,7 @@ MagickExport char *NTRegistryKeyLookup(const char *key)
 
   /* Can probably append MagickLibVersionText to string for efficiency */
   if (reg_key == (HKEY) INVALID_HANDLE_VALUE) {
-    res = RegOpenKeyExA (HKEY_LOCAL_MACHINE, "SOFTWARE\\ImageMagick", 0, KEY_READ, &reg_key);
+    res = RegOpenKeyExA (HKEY_LOCAL_MACHINE, "SOFTWARE\\GraphicsMagick", 0, KEY_READ, &reg_key);
 
     if (res == ERROR_SUCCESS)
       res = RegOpenKeyExA (reg_key, MagickLibVersionText, 0, KEY_READ, &reg_key);
