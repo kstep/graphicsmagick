@@ -56,6 +56,9 @@
 2003-09-12  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> acinclude.m4 (AC_CXX_HAVE_STD): It seems that defining
+        _XOPEN_SOURCE seems to confuse the C++ headers under AIX so
+        undefine it in that environment.
   <LI> www/api/types.html: Update description of MonitorHandler.
 
 </UL>

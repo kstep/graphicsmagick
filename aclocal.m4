@@ -77,8 +77,7 @@ AC_DEFUN([RSSH_CHECK_SUNPRO_CC],
 [AC_LANG_SAVE
  AC_LANG_CPLUSPLUS
  AC_TRY_COMPILE([],
-[#undef inline
-#ifndef __SUNPRO_CC
+[#ifndef __SUNPRO_CC
 # include "error: this is not Sun C++ Compiler."
 #endif
 ],
@@ -112,8 +111,7 @@ AC_DEFUN([RSSH_CHECK_SUNPRO_C],
 [AC_LANG_SAVE
  AC_LANG_C
  AC_TRY_COMPILE([],
-[#undef inline
-#ifndef __SUNPRO_C
+[#ifndef __SUNPRO_C
 # include "error: this is not Sun C Compiler."
 #endif
 ],
@@ -145,8 +143,7 @@ AC_DEFUN([AC_CXX_BOOL],
 ac_cv_cxx_bool,
 [AC_LANG_SAVE
  AC_LANG_CPLUSPLUS
- AC_TRY_COMPILE([#undef inline
-int f(int  x){return 1;}
+ AC_TRY_COMPILE([int f(int  x){return 1;}
 int f(char x){return 1;}
 int f(bool x){return 1;}
 ],[bool b = true; return f(b);],
@@ -170,8 +167,7 @@ AC_DEFUN([AC_CXX_CONST_CAST],
 ac_cv_cxx_const_cast,
 [AC_LANG_SAVE
  AC_LANG_CPLUSPLUS
- AC_TRY_COMPILE(,[#undef inline
-int x = 0;
+ AC_TRY_COMPILE(,[int x = 0;
 const int& y = x;
 int& z = const_cast<int&>(y);
 return z;],
@@ -196,8 +192,7 @@ AC_DEFUN([AC_CXX_DEFAULT_TEMPLATE_PARAMETERS],
 ac_cv_cxx_default_template_parameters,
 [AC_LANG_SAVE
  AC_LANG_CPLUSPLUS
- AC_TRY_COMPILE([#undef inline
-template<class T = double, int N = 10> class A {public: int f() {return 0;}};
+ AC_TRY_COMPILE([template<class T = double, int N = 10> class A {public: int f() {return 0;}};
 ],[A<float> a; return a.f();],
  ac_cv_cxx_default_template_parameters=yes, ac_cv_cxx_default_template_parameters=no)
  AC_LANG_RESTORE
@@ -222,8 +217,7 @@ AC_DEFUN([AC_CXX_EXCEPTIONS],
 ac_cv_cxx_exceptions,
 [AC_LANG_SAVE
  AC_LANG_CPLUSPLUS
- AC_TRY_COMPILE(,[#undef inline
-try { throw  1; } catch (int i) { return i; }],
+ AC_TRY_COMPILE(,[try { throw  1; } catch (int i) { return i; }],
  ac_cv_cxx_exceptions=yes, ac_cv_cxx_exceptions=no)
  AC_LANG_RESTORE
 ])
@@ -245,8 +239,7 @@ AC_DEFUN([AC_CXX_EXPLICIT],
 ac_cv_cxx_explicit,
 [AC_LANG_SAVE
  AC_LANG_CPLUSPLUS
- AC_TRY_COMPILE([#undef inline
-class A{public:explicit A(double){}};],
+ AC_TRY_COMPILE([class A{public:explicit A(double){}};],
 [double c = 5.0;A x(c);return 0;],
  ac_cv_cxx_explicit=yes, ac_cv_cxx_explicit=no)
  AC_LANG_RESTORE
@@ -270,8 +263,9 @@ ac_cv_cxx_have_std,
 [AC_REQUIRE([AC_CXX_NAMESPACES])
  AC_LANG_SAVE
  AC_LANG_CPLUSPLUS
- AC_TRY_COMPILE([#undef inline
-#undef _XOPEN_SOURCE
+ AC_TRY_COMPILE([#if defined(_AIX50)
+# undef _XOPEN_SOURCE
+#endif
 #include <iostream>
 #include <map>
 #include <iomanip>
@@ -299,8 +293,7 @@ ac_cv_cxx_have_stl,
 [AC_REQUIRE([AC_CXX_NAMESPACES])
  AC_LANG_SAVE
  AC_LANG_CPLUSPLUS
- AC_TRY_COMPILE([#undef inline
-#include <list>
+ AC_TRY_COMPILE([#include <list>
 #include <deque>
 #ifdef HAVE_NAMESPACES
 using namespace std;
@@ -328,8 +321,7 @@ ac_cv_cxx_member_templates_outside_class,
 [AC_LANG_SAVE
  AC_LANG_CPLUSPLUS
  AC_TRY_COMPILE([
-#undef inline
-template<class T, int N> class A
+#template<class T, int N> class A
 { public :
   template<int N2> A<T,N> operator=(const A<T,N2>& z);
 };
@@ -360,9 +352,7 @@ AC_DEFUN([AC_CXX_MUTABLE],
 ac_cv_cxx_mutable,
 [AC_LANG_SAVE
  AC_LANG_CPLUSPLUS
- AC_TRY_COMPILE([
-#undef inline
-class A { mutable int i;
+ AC_TRY_COMPILE([class A { mutable int i;
           public:
           int f (int n) const { i = n; return i; }
         };
@@ -389,10 +379,8 @@ AC_DEFUN([AC_CXX_NAMESPACES],
 ac_cv_cxx_namespaces,
 [AC_LANG_SAVE
  AC_LANG_CPLUSPLUS
- AC_TRY_COMPILE([#undef inline
-namespace Outer { namespace Inner { int i = 0; }}],
-                [#undef inline
-using namespace Outer::Inner; return i;],
+ AC_TRY_COMPILE([namespace Outer { namespace Inner { int i = 0; }}],
+                [using namespace Outer::Inner; return i;],
  ac_cv_cxx_namespaces=yes, ac_cv_cxx_namespaces=no)
  AC_LANG_RESTORE
 ])
@@ -415,8 +403,7 @@ AC_DEFUN([AC_CXX_NEW_FOR_SCOPING],
 ac_cv_cxx_new_for_scoping,
 [AC_LANG_SAVE
  AC_LANG_CPLUSPLUS
- AC_TRY_COMPILE(,[#undef inline
-  int z = 0;
+ AC_TRY_COMPILE(,[  int z = 0;
   for (int i = 0; i < 10; ++i)
     z = z + i;
   for (int i = 0; i < 10; ++i)
@@ -441,8 +428,7 @@ AC_DEFUN([AC_CXX_STATIC_CAST],
 ac_cv_cxx_static_cast,
 [AC_LANG_SAVE
  AC_LANG_CPLUSPLUS
- AC_TRY_COMPILE([#undef inline
-#include <typeinfo>
+ AC_TRY_COMPILE([#include <typeinfo>
 class Base { public : Base () {} virtual void f () = 0; };
 class Derived : public Base { public : Derived () {} virtual void f () {} };
 int g (Derived&) { return 0; }],[
@@ -468,8 +454,7 @@ AC_DEFUN([AC_CXX_TEMPLATES],
 ac_cv_cxx_templates,
 [AC_LANG_SAVE
  AC_LANG_CPLUSPLUS
- AC_TRY_COMPILE([#undef inline
-template<class T> class A {public:A(){}};
+ AC_TRY_COMPILE([template<class T> class A {public:A(){}};
 template<class T> void f(const A<T>& ){}],[
 A<double> d; A<int> i; f(d); f(i); return 0;],
  ac_cv_cxx_templates=yes, ac_cv_cxx_templates=no)
