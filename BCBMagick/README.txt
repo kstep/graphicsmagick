@@ -1,5 +1,5 @@
 ***********************************************************
-**  GraphicsMagick library - v.1.1 - 10 July 2003        **
+**  GraphicsMagick library - v.1.1 - 24 Sept 2003        **
 **                                                       **
 **  Porting for compilation with Borland C++Builder 6.0  **
 **-------------------------------------------------------**
@@ -74,7 +74,13 @@ USE OF LIBRARY IN OUR PROJECTS
         [GM dir]\Magick++\lib				(only for Magick++)   
 
 
+(3) Copy all following files into execution path of your application: 
 
+        [GM dir]\Magick\color.mgk
+        [GM dir]\Magick\log.mgk
+        [GM dir]\Magick\magick.mgk
+
+    
 
 All comments and/orsuggestions are welcome.
 

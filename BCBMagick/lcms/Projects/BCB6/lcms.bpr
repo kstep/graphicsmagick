@@ -4,12 +4,13 @@
   <MACROS>
     <VERSION value="BCB.06.00"/>
     <PROJECT value="..\..\Lib\BC\lcms.lib"/>
-    <OBJFILES value="lcms.obj ..\..\src\cmsxform.obj ..\..\src\cmscnvrt.obj 
-      ..\..\src\cmserr.obj ..\..\src\cmsgamma.obj ..\..\src\cmsgmt.obj 
-      ..\..\src\cmsintrp.obj ..\..\src\cmsio1.obj ..\..\src\cmslut.obj 
-      ..\..\src\cmsmatsh.obj ..\..\src\cmsmtrx.obj ..\..\src\cmspack.obj 
-      ..\..\src\cmspcs.obj ..\..\src\cmssamp.obj ..\..\src\cmswtpnt.obj 
-      ..\..\src\cmscam97.obj ..\..\src\cmsps2.obj ..\..\src\cmsnamed.obj"/>
+    <OBJFILES value="lcms.obj ..\..\src\cmscnvrt.obj ..\..\src\cmserr.obj 
+      ..\..\src\cmsgamma.obj ..\..\src\cmsgmt.obj ..\..\src\cmsintrp.obj 
+      ..\..\src\cmsio1.obj ..\..\src\cmslut.obj ..\..\src\cmsmatsh.obj 
+      ..\..\src\cmsmtrx.obj ..\..\src\cmspack.obj ..\..\src\cmspcs.obj 
+      ..\..\src\cmswtpnt.obj ..\..\src\cmsxform.obj ..\..\src\cmssamp.obj 
+      ..\..\src\cmscam97.obj ..\..\src\cmsnamed.obj ..\..\src\cmsps2.obj 
+      ..\..\src\cmscam02.obj ..\..\src\cmsvirt.obj"/>
     <RESFILES value=""/>
     <IDLFILES value=""/>
     <DEFFILE value=""/>
@@ -52,7 +53,6 @@
   </LINKER>
   <FILELIST>
       <FILE FILENAME="lcms.cpp" FORMNAME="" UNITNAME="lcms" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\..\src\cmsxform.c" FORMNAME="" UNITNAME="cmsxform" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\src\cmscnvrt.c" FORMNAME="" UNITNAME="cmscnvrt" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\src\cmserr.c" FORMNAME="" UNITNAME="cmserr" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\src\cmsgamma.c" FORMNAME="" UNITNAME="cmsgamma" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
@@ -64,11 +64,14 @@
       <FILE FILENAME="..\..\src\cmsmtrx.c" FORMNAME="" UNITNAME="cmsmtrx" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\src\cmspack.c" FORMNAME="" UNITNAME="cmspack" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\src\cmspcs.c" FORMNAME="" UNITNAME="cmspcs" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\..\src\cmssamp.c" FORMNAME="" UNITNAME="cmssamp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\src\cmswtpnt.c" FORMNAME="" UNITNAME="cmswtpnt" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\src\cmsxform.c" FORMNAME="" UNITNAME="cmsxform" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\src\cmssamp.c" FORMNAME="" UNITNAME="cmssamp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\src\cmscam97.c" FORMNAME="" UNITNAME="cmscam97" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\..\src\cmsps2.c" FORMNAME="" UNITNAME="cmsps2" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\src\cmsnamed.c" FORMNAME="" UNITNAME="cmsnamed" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\src\cmsps2.c" FORMNAME="" UNITNAME="cmsps2" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\src\cmscam02.c" FORMNAME="" UNITNAME="cmscam02" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\src\cmsvirt.c" FORMNAME="" UNITNAME="cmsvirt" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
   </FILELIST>
   <BUILDTOOLS>
   </BUILDTOOLS>

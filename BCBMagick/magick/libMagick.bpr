@@ -4,16 +4,16 @@
   <MACROS>
     <VERSION value="BCB.06.00"/>
     <PROJECT value="libMagick.lib"/>
-    <OBJFILES value="animate.obj annotate.obj attribute.obj blob.obj cache.obj cache_view.obj 
-      color.obj command.obj composite.obj compress.obj constitute.obj 
-      decorate.obj delegate.obj deprecate.obj display.obj draw.obj effect.obj enhance.obj 
-      error.obj fx.obj gem.obj image.obj list.obj locale.obj log.obj magic.obj 
-      magick.obj memory.obj module.obj monitor.obj montage.obj nt_base.obj 
-      nt_feature.obj paint.obj PreRvIcccm.obj quantize.obj registry.obj 
-      render.obj resize.obj resource.obj segment.obj semaphore.obj shear.obj 
-      signature.obj static.obj stream.obj tempfile.obj timer.obj transform.obj 
-      type.obj utility.obj version.obj widget.obj xwindow.obj 
-      ..\filters\analyze.obj"/>
+    <OBJFILES value="..\filters\analyze.obj animate.obj annotate.obj attribute.obj blob.obj 
+      cache.obj cache_view.obj color.obj command.obj composite.obj compress.obj 
+      constitute.obj decorate.obj delegate.obj deprecate.obj display.obj 
+      draw.obj effect.obj enhance.obj error.obj fx.obj gem.obj image.obj list.obj 
+      locale.obj log.obj magic.obj magick.obj map.obj memory.obj module.obj 
+      monitor.obj montage.obj nt_base.obj nt_feature.obj paint.obj 
+      PreRvIcccm.obj quantize.obj registry.obj render.obj resize.obj resource.obj 
+      segment.obj semaphore.obj shear.obj signature.obj static.obj stream.obj 
+      tempfile.obj timer.obj transform.obj type.obj utility.obj version.obj 
+      widget.obj xwindow.obj"/>
     <RESFILES value=""/>
     <DEFFILE value=""/>
     <RESDEPEN value="$(RESFILES)"/>
@@ -28,8 +28,8 @@
     <USERDEFINES value="WIN32"/>
     <SYSDEFINES value="NO_STRICT"/>
     <MAINSOURCE value="libMagick.bpf"/>
-    <INCLUDEPATH value="D:\filters;..;..\bzlib;..\filters;..\magick;..\ttf\include;..\lcms\include;..\zlib;$(BCB)\include"/>
-    <LIBPATH value="..\filters;D:\filters;$(BCB)\lib\obj;$(BCB)\lib"/>
+    <INCLUDEPATH value="..;..\bzlib;..\filters;..\magick;..\ttf\include;..\lcms\include;..\zlib;$(BCB)\include"/>
+    <LIBPATH value="..\filters;$(BCB)\lib\obj;$(BCB)\lib"/>
     <WARNINGS value="-w-sus -w-spa -w-rch -w-pia -w-pch -w-par -w-csu -w-ccc -w-aus"/>
     <LISTFILE value="libMagick"/>
     <OTHERFILES value=""/>
@@ -48,6 +48,7 @@
   </LINKER>
   <FILELIST>
       <FILE FILENAME="libMagick.bpf" FORMNAME="" UNITNAME="libMagick" CONTAINERID="BPF" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\filters\analyze.c" FORMNAME="" UNITNAME="analyze" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="animate.c" FORMNAME="" UNITNAME="animate.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="annotate.c" FORMNAME="" UNITNAME="annotate.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="attribute.c" FORMNAME="" UNITNAME="attribute.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
@@ -75,6 +76,7 @@
       <FILE FILENAME="log.c" FORMNAME="" UNITNAME="log.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="magic.c" FORMNAME="" UNITNAME="magic.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="magick.c" FORMNAME="" UNITNAME="magick.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="map.c" FORMNAME="" UNITNAME="map" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="memory.c" FORMNAME="" UNITNAME="memory.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="module.c" FORMNAME="" UNITNAME="module.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="monitor.c" FORMNAME="" UNITNAME="monitor.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
@@ -102,7 +104,6 @@
       <FILE FILENAME="version.c" FORMNAME="" UNITNAME="version.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="widget.c" FORMNAME="" UNITNAME="widget.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="xwindow.c" FORMNAME="" UNITNAME="xwindow.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\filters\analyze.c" FORMNAME="" UNITNAME="analyze" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
   </FILELIST>
   <BUILDTOOLS>
   </BUILDTOOLS>
