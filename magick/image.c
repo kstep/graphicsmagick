@@ -5886,7 +5886,7 @@ Export void SetImageInfo(ImageInfo *image_info,const unsigned int rectify)
   if (strncmp(magick+8,"ILBM",2) == 0)
     (void) strcpy(image_info->magick,"ILBM");
   if ((magick[0] == 0x00) && (magick[1] == 0x00))
-    if ((magick[2] == 0x01) && (magick[3] == 0xb3))
+    if ((magick[2] == 0x01) && ((unsigned char) magick[3] == 0xb3))
       (void) strcpy(image_info->magick,"M2V");
   if (strncmp(magick,"#?RADIANCE",10) == 0)
     (void) strcpy(image_info->magick,"RAD");
