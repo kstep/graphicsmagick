@@ -138,7 +138,7 @@ static unsigned int IsPDF(const unsigned char *magick,const unsigned int length)
 */
 static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
-#define MediaBox  "/MediaBox["
+#define MediaBox  "/MediaBox"
 
   char
     density[MaxTextExtent],
