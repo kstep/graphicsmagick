@@ -267,15 +267,15 @@ typedef struct _TimerInfo
 
 typedef struct _Image
 {
-  char
-    filename[MaxTextExtent],
-    magick[MaxTextExtent];
-
   BlobInfo
     blob;
 
   FILE
     *file;
+
+  char
+    filename[MaxTextExtent],
+    magick[MaxTextExtent];
 
   int
     exempt,
@@ -436,15 +436,9 @@ typedef struct _Image
 
 typedef struct _ImageInfo
 {
-  /*
-    Blob member.
-  */
   BlobInfo
     blob;
 
-  /*
-    File and image dimension members.
-  */
   FILE
     *file;
 
@@ -472,18 +466,12 @@ typedef struct _ImageInfo
   ResolutionType
     units;
 
-  /*
-    Compression members.
-  */
   CompressionType
     compression;
 
   unsigned int
     quality;
 
-  /*
-    Annotation members.
-  */
   char
     *server_name,
     *font,
@@ -505,9 +493,6 @@ typedef struct _ImageInfo
     border_color,
     matte_color;
 
-  /*
-    Color reduction members.
-  */
   unsigned int
     dither,
     monochrome;
@@ -515,9 +500,6 @@ typedef struct _ImageInfo
   ColorspaceType
     colorspace;
 
-  /*
-    Miscellaneous members.
-  */
   PreviewType
     preview_type;
 
