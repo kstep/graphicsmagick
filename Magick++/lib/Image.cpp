@@ -3247,6 +3247,7 @@ void Magick::Image::throwImageException( void ) const
 
   // Save ImageMagick exception
   ExceptionInfo exception;
+  GetExceptionInfo( &exception );
   ThrowException( &exception,
                   constImage()->exception.severity,
                   constImage()->exception.reason,

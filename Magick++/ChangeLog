@@ -1,3 +1,9 @@
+2002-04-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Image.cpp (throwImageException): ExceptionInfo was not being
+ 	properly initialized.  This could cause some errors to cause an
+ 	abort in error.c rather than throwing an exception.
+
 2002-04-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Image.cpp (draw): Use draw.h drawing APIs to draw on image.
