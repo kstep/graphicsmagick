@@ -4872,6 +4872,7 @@ MagickExport void TraceEllipse(PrimitiveInfo *primitive_info,
   const PointInfo start,const PointInfo stop,PointInfo degrees)
 {
   double
+    delta,
     step;
 
   PointInfo
@@ -4887,11 +4888,10 @@ MagickExport void TraceEllipse(PrimitiveInfo *primitive_info,
   /*
     Ellipses are just short segmented polys.
   */
-  step=2/Max(stop.x,stop.y);
-  if (step > (MagickPI/8.0))
-    step=MagickPI/8.0;
-  else
-    step=MagickPI/(4*ceil(MagickPI/step/2));
+  delta=2/Max(stop.x,stop.y);
+  step=MagickPI/8.0;
+  if (delta < (MagickPI/8.0))
+    step=MagickPI/(4*ceil(MagickPI/delta/2));
   while (degrees.y < degrees.x)
     degrees.y+=360.0;
   angle.x=DegreesToRadians(degrees.x);
