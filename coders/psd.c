@@ -785,8 +785,8 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       Composite layer onto image.
     */
     if ((layer_info[i].width != 0) && (layer_info[i].height != 0))
-      CompositeImage(image,OverCompositeOp,layer_info[i].image,layer_info[i].x,
-        layer_info[i].y);
+      CompositeImage(image,image->matte ? OverCompositeOp : CopyCompositeOp,
+        layer_info[i].image,layer_info[i].x,layer_info[i].y);
     DestroyImage(layer_info[i].image);
   }
   image->matte=False;
