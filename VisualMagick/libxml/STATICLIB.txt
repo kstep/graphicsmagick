@@ -1,9 +1,13 @@
 #ECF - this file contains additional configuration info.
-EXCLUDE = testDAV.c
+EXCLUDE = testC14N.c
+EXCLUDE = testDocbook.c
 EXCLUDE = testHTML.c
-EXCLUDE = testOasis.c
 EXCLUDE = testSAX.c
+EXCLUDE = testThreads.c
+EXCLUDE = testThreadsWin32.c
 EXCLUDE = testURI.c
 EXCLUDE = testXPath.c
-EXCLUDE = slashrdf.c
+EXCLUDE = trio.c
+EXCLUDE = trionan.c
+EXCLUDE = xmlcatalog.c
 EXCLUDE = xmllint.c
