@@ -1669,7 +1669,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
         if (LocaleCompare("fill-opacity",keyword) == 0)
           {
             graphic_context[n]->fill.opacity=(Quantum)
-              ceil(MaxRGB*strtod(q,&q)/100.0-0.5);
+              ceil(MaxRGB*(1.0-strtod(q,&q))/100.0-0.5);
             break;
           }
         if (LocaleCompare("font",keyword) == 0)
@@ -1799,7 +1799,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
         if (LocaleCompare("opacity",keyword) == 0)
           {
             graphic_context[n]->opacity=(Quantum)
-              ceil(MaxRGB*strtod(q,&q)/100.0-0.5);
+              ceil(MaxRGB*(1.0-strtod(q,&q))/100.0-0.5);
             graphic_context[n]->fill.opacity=graphic_context[n]->opacity;
             graphic_context[n]->stroke.opacity=graphic_context[n]->opacity;
             break;
@@ -2027,7 +2027,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
         if (LocaleCompare("stroke-opacity",keyword) == 0)
           {
             graphic_context[n]->stroke.opacity=(Quantum)
-              ceil(MaxRGB*strtod(q,&q)/100.0-0.5);
+              ceil(MaxRGB*(1.0*strtod(q,&q))/100.0-0.5);
             break;
           }
         if (LocaleCompare("stroke-width",keyword) == 0)
