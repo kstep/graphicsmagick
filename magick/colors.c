@@ -126,7 +126,7 @@ typedef struct _CubeInfo
   Color list.
 */
 #define NumberXColors  764
-#define NumberXPMColors  235
+#define NumberXPMColors  236
 
 const ColorlistInfo
   XColorlist[NumberXColors] =

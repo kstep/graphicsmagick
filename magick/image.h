@@ -675,7 +675,7 @@ extern MagickExport const char
   *WriteBinaryType;
 
 extern MagickExport const ColorlistInfo
-  XPMColorlist[235],
+  XPMColorlist[236],
   XColorlist[764];
 
 /*
