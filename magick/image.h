@@ -522,11 +522,8 @@ typedef struct _ImageInfo
   char
     *view;
 
-  int
-	  argc;
-
-  char
-	  **argv;
+  Image
+	  *attributes;
 
   void
     *client_data;

@@ -129,6 +129,9 @@ int main(int argc,char **argv)
   ImageInfo
 	  *image_info;
 
+  register int
+    i;
+
   unsigned int
     status;
 
@@ -141,12 +144,31 @@ int main(int argc,char **argv)
     Usage();
   GetExceptionInfo(&exception);
 	image_info=CloneImageInfo((ImageInfo *) NULL);
-	image_info->argc=argc;
-	image_info->argv=argv;
-  (void) FormatString(image_info->filename,"msl:%.1024s",argv[argc-1]);
-  image=ReadImage(image_info,&exception);
-  if (image != (Image *) NULL)
-    DestroyImages(image);
+  image_info->attributes=AllocateImage(image_info);
+  if (image_info->attributes == (Image *) NULL)
+    MagickError(ResourceLimitError,"Memory allocation failed",(char *) NULL);
+  for (i=1; i < (argc-1); i+=2)
+  {
+    if (*argv[i] != '-') 
+      break;
+    status=SetImageAttribute(image_info->attributes,argv[i]+1,argv[i+1]);
+    if (status == False)
+      MagickError(ResourceLimitError,"Unable to persist key",argv[i]);
+    i+=2;
+  }
+  for ( ; i < argc; i++)
+  {
+    status=SetImageAttribute(image_info->attributes,"filename",(char *) NULL);
+    status=SetImageAttribute(image_info->attributes,"filename",argv[i]);
+    if (status == False)
+      MagickError(ResourceLimitError,"Unable to persist key",argv[i]);
+    (void) FormatString(image_info->filename,"msl:%.1024s",argv[i]);
+    image=ReadImage(image_info,&exception);
+    if (exception.severity != UndefinedException)
+      MagickWarning(exception.severity,exception.reason,exception.description);
+    if (image != (Image *) NULL)
+      DestroyImages(image);
+  }
 	DestroyImageInfo(image_info);
 	DestroyMagick();
 	LiberateMemory((void **) &argv);

@@ -1052,6 +1052,9 @@ MagickExport ImageInfo *CloneImageInfo(const ImageInfo *image_info)
     clone_info->density=AllocateString(image_info->density);
   if (image_info->view != (char *) NULL)
     clone_info->view=AllocateString(image_info->view);
+  if (image_info->attributes != (Image *) NULL)
+    clone_info->attributes=CloneImage(image_info->attributes,0,0,True,
+		  &image_info->attributes->exception);
   clone_info->blob=CloneBlobInfo(image_info->blob);
   return(clone_info);
 }
@@ -2478,6 +2481,8 @@ MagickExport void DestroyImageInfo(ImageInfo *image_info)
     LiberateMemory((void **) &image_info->density);
   if (image_info->view != (char *) NULL)
     LiberateMemory((void **) &image_info->view);
+  if (image_info->attributes != (Image *) NULL)
+    DestroyImage(image_info->attributes);
   DestroyBlobInfo(image_info->blob);
   LiberateMemory((void **) &image_info);
 }
