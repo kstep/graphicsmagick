@@ -464,44 +464,44 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         LogMagickEvent(CoderEvent,"   Min sample value=%u",min_sample_value);
         LogMagickEvent(CoderEvent,"   Max sample value=%u",max_sample_value);
         switch (photometric)
+        {
+          case PHOTOMETRIC_MINISBLACK:
           {
-            case PHOTOMETRIC_MINISBLACK:
-            {
-              LogMagickEvent(CoderEvent,"   Photometric MINISBLACK");
-              break;
-            }
-            case PHOTOMETRIC_MINISWHITE:
-            {
-              LogMagickEvent(CoderEvent,"   Photometric MINISBLACK");
-              break;
-            }
-            case PHOTOMETRIC_PALETTE:
-            {
-              LogMagickEvent(CoderEvent,"   Photometric PALETTE");
-              break;
-            }
-            case PHOTOMETRIC_RGB:
-            {
-              LogMagickEvent(CoderEvent,"   Photometric RGB");
-              break;
-            }
-            case PHOTOMETRIC_CIELAB:
-            {
-              LogMagickEvent(CoderEvent,"   Photometric CIELAB");
-              break;
-            }
-            case PHOTOMETRIC_SEPARATED:
-            {
-              LogMagickEvent(CoderEvent,"   Photometric SEPARATED");
-              break;
-            }
-            default:
-            {
-              LogMagickEvent(CoderEvent,"   Photometric interpretation=%u",
-                photometric);
-              break;
-            }
+            LogMagickEvent(CoderEvent,"   Photometric MINISBLACK");
+            break;
           }
+          case PHOTOMETRIC_MINISWHITE:
+          {
+            LogMagickEvent(CoderEvent,"   Photometric MINISBLACK");
+            break;
+          }
+          case PHOTOMETRIC_PALETTE:
+          {
+            LogMagickEvent(CoderEvent,"   Photometric PALETTE");
+            break;
+          }
+          case PHOTOMETRIC_RGB:
+          {
+            LogMagickEvent(CoderEvent,"   Photometric RGB");
+            break;
+          }
+          case PHOTOMETRIC_CIELAB:
+          {
+            LogMagickEvent(CoderEvent,"   Photometric CIELAB");
+            break;
+          }
+          case PHOTOMETRIC_SEPARATED:
+          {
+            LogMagickEvent(CoderEvent,"   Photometric SEPARATED");
+            break;
+          }
+          default:
+          {
+            LogMagickEvent(CoderEvent,"   Photometric interpretation=%u",
+              photometric);
+            break;
+          }
+        }
       }
     if (photometric == PHOTOMETRIC_CIELAB)
       {
@@ -574,7 +574,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     image->rows=height;
     image->depth=bits_per_sample <= 8 ? 8 : QuantumDepth;
     if (logging)
-        LogMagickEvent(CoderEvent,"   Image depth=%lu",image->depth);
+      LogMagickEvent(CoderEvent,"   Image depth=%lu",image->depth);
     (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_EXTRASAMPLES,&extra_samples,
       &sample_info);
     image->matte=((extra_samples == 1) &&

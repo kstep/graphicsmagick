@@ -1709,13 +1709,14 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
            {
              LogMagickEvent(CoderEvent,"   Compression=UNKNOWN (%lu)",
                bmp_info.compression);
+             break;
            }
         }
-        if (bmp_info.number_colors)
+        if (bmp_info.number_colors == 0)
+          LogMagickEvent(CoderEvent,"   Number_colors=unspecified");
+        else
           LogMagickEvent(CoderEvent,"   Number_colors=%lu",
             bmp_info.number_colors);
-        else
-          LogMagickEvent(CoderEvent,"   Number_colors=unspecified");
       }
     (void) WriteBlob(image,2,"BM");
     (void) WriteBlobLSBLong(image,bmp_info.file_size);
