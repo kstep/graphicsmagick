@@ -103,6 +103,16 @@ static void GMUsage(void)
 }
 
 /*
+  Signal handler to ensure that DestroyMagick is invoked in case the
+  user aborts the program.
+*/
+static void MagickSignalHandler(int status)
+{
+  DestroyMagick();
+  Exit(status);
+}
+
+/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -135,6 +145,44 @@ int main(int argc,char **argv)
     status;
 
   InitializeMagick(*argv);
+
+  /*
+    Establish signal handlers for common signals
+  */
+
+  /* hangup */
+#if defined(SIGHUP)
+  (void) signal(SIGHUP,MagickSignalHandler);
+#endif
+  /* interrupt (rubout) */
+#if defined(SIGINT)
+  (void) signal(SIGINT,MagickSignalHandler);
+#endif
+  /* quit (ASCII FS) */
+#if defined(SIGQUIT)
+  (void) signal(SIGQUIT,MagickSignalHandler);
+#endif
+  /* software-triggered abort */
+#if defined(SIGABRT)
+  (void) signal(SIGABRT,MagickSignalHandler);
+#endif
+  /* floating point exception */
+#if defined(SIGFPE)
+  (void) signal(SIGFPE,MagickSignalHandler);
+#endif
+  /* software termination signal from kill */
+#if defined(SIGTERM)
+  (void) signal(SIGQUIT,MagickSignalHandler);
+#endif
+  /* exceeded cpu limit */
+#if defined(SIGXCPU)
+  (void) signal(SIGXCPU,MagickSignalHandler);
+#endif
+  /* exceeded file size limit */
+#if defined(SIGXFSZ)
+  (void) signal(SIGXFSZ,MagickSignalHandler);
+#endif
+
   help_wanted=False;
   ReadCommandlLine(argc,&argv);
   for (i=1; i < argc; i++)

@@ -261,7 +261,7 @@ int main( int /*argc*/, char ** argv)
     // Base filename is color for xc images
     if ( image.baseFilename() != "#FF0000" &&
 	 image.baseFilename() != "#FFFF00000000" &&
-	 image.baseFilename() != "xc:#FFFFFFFF0000000000000000")
+	 image.baseFilename() != "#FFFFFFFF0000000000000000")
       {
 	++failures;
 	cout << "Line: " << __LINE__
@@ -1251,13 +1251,14 @@ int main( int /*argc*/, char ** argv)
     //
 
     if ( image.signature() != "3af362f5b4ad66e9c4a684427fad20c12f2fd9c3c1c7128b00a050d7bec72f44" &&
-	 image.signature() != "a529e8fe1d83890d893a153777be5f0fd48cf21e0124adee65da248694a204b2" )
+	 image.signature() != "a529e8fe1d83890d893a153777be5f0fd48cf21e0124adee65da248694a204b2" &&
+         image.signature() != "573301a0edb9861de8d02b57e445ba5ea689a494d53a6299e8693b7479ba9cb6")
       {
 	++failures;
 	cout << "Line: " << __LINE__ << ", signature ("
 	     << image.signature()
 	     << ") is incorrect" << endl;
-	// image.display();
+	image.display();
       }
 
     //

@@ -501,7 +501,7 @@ static void MvgAppendColor(DrawContext context, const PixelPacket *color)
         tuple[MaxTextExtent];
 
       GetColorTuple(color,context->image->depth,context->image->matte,True,
-        tuple);
+                    tuple);
       MvgPrintf(context,"%.1024s",tuple);
     }
 }
@@ -1410,9 +1410,9 @@ MagickExport void DrawSetFillColor(DrawContext context,
     {
       CurrentContext->fill = new_fill;
 
-      MvgPrintf(context, "fill ");
+      MvgPrintf(context, "fill '");
       MvgAppendColor(context, fill_color);
-      MvgPrintf(context, "\n");
+      MvgPrintf(context, "'\n");
     }
 }
 
@@ -4601,9 +4601,9 @@ MagickExport void DrawSetStrokeColor(DrawContext context,
     {
       CurrentContext->stroke = new_stroke;
 
-      MvgPrintf(context, "stroke ");
+      MvgPrintf(context, "stroke '");
       MvgAppendColor(context, stroke_color);
-      MvgPrintf(context, "\n");
+      MvgPrintf(context, "'\n");
     }
 }
 
@@ -5750,9 +5750,9 @@ MagickExport void DrawSetTextUnderColor(DrawContext context,
   if (context->filter_off || !(PixelPacketMatch(&CurrentContext->undercolor, under_color)))
     {
       CurrentContext->undercolor = *under_color;
-      MvgPrintf(context, "text-undercolor ");
+      MvgPrintf(context, "text-undercolor '");
       MvgAppendColor(context, under_color);
-      MvgPrintf(context, "\n");
+      MvgPrintf(context, "'\n");
     }
 }
 

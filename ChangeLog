@@ -1,5 +1,17 @@
 2003-04-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/color.c (QueryColorDatabase): Extended to
+	support parsing Q:32 hex color specification strings.
+	Also add error reporting for failure to parse the
+	color specification. This resolves a bug that drawing
+	via the draw.c APIs was not working for Q:32 builds.
+	* utilities/gm.c (main): Add signal handlers to
+	make sure that program cleans-up on exit by invoking
+	DestroyMagick.
+	* magick/draw.c (DrawSetFillColor): Quote color
+	specification.
+	(DrawSetStrokeColor): Quote color specification.
+	(DrawSetTextUnderColor): Quote color specification.
 	* ltmain.sh: Update to latest CVS libtool.
 
 2003-04-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>

@@ -1398,7 +1398,7 @@ MagickExport unsigned int QueryColorDatabase(const char *name,
   register const ColorInfo
     *p;
 
-  register long
+  register int
     i;
 
   /*
@@ -1416,7 +1416,7 @@ MagickExport unsigned int QueryColorDatabase(const char *name,
       char
         c;
 
-      long
+      int
         n;
 
       LongPixelPacket
@@ -1425,7 +1425,7 @@ MagickExport unsigned int QueryColorDatabase(const char *name,
       memset(&pixel,0,sizeof(LongPixelPacket));
       name++;
       for (n=0; isxdigit((int) name[n]); n++);
-      if ((n == 3) || (n == 6) || (n == 9) || (n == 12))
+      if ((n == 3) || (n == 6) || (n == 9) || (n == 12) || (n == 24))
         {
           /*
             Parse RGB specification.
@@ -1449,13 +1449,21 @@ MagickExport unsigned int QueryColorDatabase(const char *name,
                   if ((c >= 'a') && (c <= 'f'))
                     pixel.blue|=c-('a'-10);
                   else
-                    return(False);
+                    {
+                      ThrowException(exception,OptionWarning,
+                        "UnrecognizedColor",name);
+                      return(False);
+                    }
             }
           } while (isxdigit((int) *name));
         }
       else
-        if ((n != 4) && (n != 8) && (n != 16))
-          return(False);
+        if ((n != 4) && (n != 8) && (n != 16) && (n != 32))
+          {
+            ThrowException(exception,OptionWarning,
+              "UnrecognizedColor",name);
+            return(False);
+          }
         else
           {
             /*
@@ -1481,21 +1489,35 @@ MagickExport unsigned int QueryColorDatabase(const char *name,
                     if ((c >= 'a') && (c <= 'f'))
                       pixel.opacity|=c-('a'-10);
                     else
-                      return(False);
+                      {
+                        ThrowException(exception,OptionWarning,
+                          "UnrecognizedColor",name);
+                        return(False);
+                      }
               }
             } while (isxdigit((int) *name));
           }
-      n<<=2;
-      color->red=(Quantum)
-        (((double) MaxRGB*pixel.red)/((1 << n)-1)+0.5);
-      color->green=(Quantum)
-        (((double) MaxRGB*pixel.green)/((1 << n)-1)+0.5);
-      color->blue=(Quantum)
-        (((double) MaxRGB*pixel.blue)/((1 << n)-1)+0.5);
-      color->opacity=OpaqueOpacity;
-      if ((n != 3) && (n != 6) && (n != 9) && (n != 12))
-        color->opacity=(Quantum)
-          (((double) MaxRGB*pixel.opacity)/((1 << n)-1)+0.5);
+      {
+        unsigned int
+          divisor=1;
+        
+        n<<=2;
+        for( i=n-1; i; i--)
+          {
+            divisor <<= 1;
+            divisor |=1;
+          }
+        color->red=(Quantum)
+          (((double) MaxRGB*pixel.red)/divisor+0.5);
+        color->green=(Quantum)
+          (((double) MaxRGB*pixel.green)/divisor+0.5);
+        color->blue=(Quantum)
+          (((double) MaxRGB*pixel.blue)/divisor+0.5);
+        color->opacity=OpaqueOpacity;
+        if ((n != 3) && (n != 6) && (n != 9) && (n != 12) && (n != 24))
+          color->opacity=(Quantum)
+            (((double) MaxRGB*pixel.opacity)/divisor+0.5);
+      }
       return(True);
     }
   if (LocaleNCompare(name,"rgb(",4) == 0)
