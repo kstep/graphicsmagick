@@ -434,7 +434,7 @@ static unsigned int Assignment(CubeInfo *color_cube,QuantizeInfo *quantize_info,
           p->blue=image->colormap[index].blue;
         }
       p++;
-      if (QuantumTick(i,image))
+      if (QuantumTick(i,image->packets))
         ProgressMonitor(AssignImageText,i,image->packets);
     }
   return(True);
@@ -606,7 +606,7 @@ static unsigned int Classification(CubeInfo *color_cube,Image *image)
     node_info->total_green+=p->green*((double) p->length+1);
     node_info->total_blue+=p->blue*((double) p->length+1);
     p++;
-    if (QuantumTick(i,image))
+    if (QuantumTick(i,image->packets))
       ProgressMonitor(ClassifyImageText,i,image->packets);
   }
   return(True);
@@ -996,7 +996,8 @@ static unsigned int DitherImage(CubeInfo *color_cube,Image *image)
       ns->green+=green_error;
       ns->blue+=blue_error;
     }
-    ProgressMonitor(DitherImageText,y,image->rows);
+    if (QuantumTick(y,image->rows))
+      ProgressMonitor(DitherImageText,y,image->rows);
   }
   /*
     Free up memory.
@@ -1697,7 +1698,8 @@ static unsigned int OrderedDitherImage(Image *image)
       p->index=p->red > DitherMatrix[y & 0x07][x & 0x07] ? 1 : 0;
       p++;
     }
-    ProgressMonitor(DitherImageText,y,image->rows);
+    if (QuantumTick(y,image->rows))
+      ProgressMonitor(DitherImageText,y,image->rows);
   }
   SyncImage(image);
   return(True);

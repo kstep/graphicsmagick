@@ -361,7 +361,7 @@ static unsigned int Classify(Image *image,short **extrema,
           break;
         }
     p++;
-    if (QuantumTick(i,image))
+    if (QuantumTick(i,image->packets))
       ProgressMonitor(SegmentImageText,i,image->packets << 1);
   }
   /*
@@ -543,7 +543,7 @@ static unsigned int Classify(Image *image,short **extrema,
         }
       }
     q++;
-    if (QuantumTick(i,image))
+    if (QuantumTick(i,image->packets))
       ProgressMonitor(SegmentImageText,i+image->packets,image->packets << 1);
   }
   /*

@@ -266,7 +266,8 @@ static Image *IntegralRotateImage(Image *image,unsigned int rotations)
           q->length=0;
           q++;
         }
-        ProgressMonitor(RotateImageText,y,image->rows);
+        if (QuantumTick(y,image->rows))
+          ProgressMonitor(RotateImageText,y,image->rows);
       }
       break;
     }
@@ -291,7 +292,8 @@ static Image *IntegralRotateImage(Image *image,unsigned int rotations)
           q->length=0;
           q+=rotated_image->columns;
         }
-        ProgressMonitor(RotateImageText,x,rotated_image->columns);
+        if (QuantumTick(x,image->columns))
+          ProgressMonitor(RotateImageText,x,rotated_image->columns);
       }
       break;
     }
@@ -316,7 +318,8 @@ static Image *IntegralRotateImage(Image *image,unsigned int rotations)
           q->length=0;
           q--;
         }
-        ProgressMonitor(RotateImageText,image->rows-y,image->rows);
+        if (QuantumTick(y,image->rows))
+          ProgressMonitor(RotateImageText,image->rows-y,image->rows);
       }
       break;
     }
@@ -342,8 +345,9 @@ static Image *IntegralRotateImage(Image *image,unsigned int rotations)
           q->length=0;
           q-=rotated_image->columns;
         }
-        ProgressMonitor(RotateImageText,rotated_image->columns-x,
-          rotated_image->columns);
+        if (QuantumTick(y,rotated_image->rows))
+          ProgressMonitor(RotateImageText,rotated_image->columns-x,
+            rotated_image->columns);
       }
       break;
     }
@@ -630,7 +634,8 @@ static void XShearImage(Image *image,const double degrees,
         break;
       }
     }
-    ProgressMonitor(XShearImageText,y,height);
+    if (QuantumTick(y,height))
+      ProgressMonitor(XShearImageText,y,height);
   }
 }
 
@@ -914,7 +919,8 @@ static void YShearImage(Image *image,const double degrees,
         break;
       }
     }
-    ProgressMonitor(YShearImageText,y,width);
+    if (QuantumTick(y,width))
+      ProgressMonitor(YShearImageText,y,width);
   }
 }
 

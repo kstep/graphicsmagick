@@ -1635,6 +1635,7 @@ int main(int argc,char **argv)
     DescribeImage(image,stdout,False);
   DestroyImages(image);
   DestroyImageInfo(&image_info);
+  DestroyDelegates();
   Exit(0);
   return(False);
 }

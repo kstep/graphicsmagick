@@ -275,8 +275,8 @@ UNIX COMPILATION
     seperate step to install PerlMagick (see the README file in the
     PerlMagick subdirectory).
 
-    Review the defines in magick/magick.h and magick/delegates.h and make
-    sure the meet the requirements of your local system.
+    Review the defines in magick/magick.h and delegates/delegates.mgk and
+    make sure the meet the requirements of your local system.
 
     Edit Magick.tmpl and set the variables to suit your local
     environment.  Now type:

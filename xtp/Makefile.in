@@ -101,6 +101,7 @@ CPP = @CPP@
 CatDelegate = @CatDelegate@
 ConvertDelegate = @ConvertDelegate@
 DELEGATES = @DELEGATES@
+DVIDecodeDelegate = @DVIDecodeDelegate@
 EditorDelegate = @EditorDelegate@
 FIGDecodeDelegate = @FIGDecodeDelegate@
 HPGLDecodeDelegate = @HPGLDecodeDelegate@

@@ -881,6 +881,7 @@ int main(int argc,char **argv)
     DescribeImage(combined_image,stdout,False);
   DestroyImage(combined_image);
   DestroyImageInfo(&image_info);
+  DestroyDelegates();
   Exit(0);
   return(False);
 }

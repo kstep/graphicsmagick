@@ -1148,6 +1148,7 @@ int main(int argc,char **argv)
   montage_image=XMontageImages(&resource_info,&montage_info,image);
   if (montage_image == (Image *) NULL)
     MagickError(OptionError,"Missing an image file name",(char *) NULL);
+  DestroyImages(image);
   /*
     Write image.
   */
@@ -1181,6 +1182,7 @@ int main(int argc,char **argv)
     DescribeImage(montage_image,stderr,False);
   DestroyImage(montage_image);
   DestroyImageInfo(image_info);
+  DestroyDelegates();
   Exit(0);
   return(False);
 }

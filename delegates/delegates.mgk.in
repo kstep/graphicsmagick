@@ -1,9 +1,10 @@
 # ImageMagick delegates for Unix.  The format is as follows.  Each
-# delegate begins with a tag and/or format separated by a colon (=>).
-# This line must be followed by one or more commands preceded with a tab
-# (\t) character.  If a command exceeds the length of a line, use the
-# backslash continuation character.  End the command with an ampersand
-# (&) to execute the command in the background.
+# delegate begins with a tag and/or format separated by a operation
+# tag (see below).  This line must be followed by one or more commands
+# preceded with a tab (\t) character.  If a command exceeds the length
+# of a line, use the backslash continuation character.  End the
+# command with an ampersand (&) to execute the command in the
+# background.
 #
 # Optionally you can include the image filename, type, width, height, or
 # other image attributes by embedding special format characters=>
@@ -83,6 +84,9 @@ cgm=>
 compress=>
 	|@LZWDecodeDelegate@ -c %i
 
+dvi=>
+        @DVIDecodeDelegate@ -q -o %o %i
+
 edit=>
 	@EditorDelegate@ -title "Edit Image Comment" -e vi %i
 
@@ -128,6 +132,9 @@ m2v=>
 pgp=>
 	@PGPDecodeDelegate@ -fq %i
 
+pnm<=win
+	@ShowImageDelegate@ -immutable %i
+
 print=>ps
 	@LPDelegate@ -c -s %i
 
@@ -146,9 +153,6 @@ show=>%m
 
 shtml=>
 	@HTMLDecodeDelegate@ -o %o %i
-
-win=>pnm
-	@ShowImageDelegate@ -immutable %i
 
 yuv<=m2v
 	@MPEGEncodeDelegate@ %u %o

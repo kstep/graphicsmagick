@@ -602,7 +602,7 @@ Export void NumberColors(Image *image,FILE *file)
       color_cube.colors++;
     }
     p++;
-    if (QuantumTick(i,image))
+    if (QuantumTick(i,image->packets))
       ProgressMonitor(NumberColorsImageText,i,image->packets);
   }
   if (file != (FILE *) NULL)

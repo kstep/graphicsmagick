@@ -1444,6 +1444,7 @@ int main(int argc,char **argv)
       XSync(display,False);
     }
   DestroyImageInfo(image_info);
+  DestroyDelegates();
   Exit(0);
   return(False);
 }

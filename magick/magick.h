@@ -97,8 +97,6 @@ extern "C" {
 #if !defined(M_PI)
 #define M_PI  3.14159265358979323846
 #endif
-#define QuantumTick(i,image) \
-  (((i+1) == image->packets) || ((i % image->rows) == 0))
 #define Swap(x,y) ((x)^=(y), (y)^=(x), (x)^=(y))
 #if !defined(STDIN_FILENO)
 #define STDIN_FILENO  0

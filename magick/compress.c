@@ -878,7 +878,7 @@ Export unsigned int GIFDecodeImage(Image *image)
          q->index=index;
          q->length=0;
        }
-    if (QuantumTick(i,image) && (image->previous == (Image *) NULL))
+    if (QuantumTick(i,image->packets) && (image->previous == (Image *) NULL))
       ProgressMonitor(LoadImageText,i,image->columns*image->rows);
   }
   SetRunlengthPackets(image,packets);
@@ -1087,7 +1087,7 @@ Export unsigned int GIFEncodeImage(Image *image,const unsigned int data_size)
           max_code=MaxCode(number_bits);
         }
       waiting_code=index;
-      if (QuantumTick(i,image) && (image->previous == (Image *) NULL))
+      if (QuantumTick(i,image->packets) && (image->previous == (Image *) NULL))
         ProgressMonitor(SaveImageText,i,image->packets);
     }
     p++;
@@ -1613,7 +1613,7 @@ Export unsigned int HuffmanEncodeImage(ImageInfo *image_info,Image *image)
       q=scanline;
     }
     p++;
-    if (QuantumTick(i,image) && (image->previous == (Image *) NULL))
+    if (QuantumTick(i,image->packets) && (image->previous == (Image *) NULL))
       ProgressMonitor(SaveImageText,i,image->packets);
   }
   /*
@@ -2916,7 +2916,7 @@ Export unsigned int RunlengthDecodeImage(Image *image)
           q->length=(*p++);
           count+=(q->length+1);
           q++;
-          if (QuantumTick(i,image) && (image->previous == (Image *) NULL))
+          if (QuantumTick(i,image->packets) && (image->previous == (Image *) NULL))
             ProgressMonitor(LoadImageText,i,image->packets);
         }
       else
@@ -2931,7 +2931,7 @@ Export unsigned int RunlengthDecodeImage(Image *image)
           q->length=0;
           count++;
           q++;
-          if (QuantumTick(i,image) && (image->previous == (Image *) NULL))
+          if (QuantumTick(i,image->packets) && (image->previous == (Image *) NULL))
             ProgressMonitor(LoadImageText,i,image->packets);
         }
     }
@@ -2949,7 +2949,7 @@ Export unsigned int RunlengthDecodeImage(Image *image)
               q->length=(*p++);
               count+=(q->length+1);
               q++;
-              if (QuantumTick(i,image) && (image->previous == (Image *) NULL))
+              if (QuantumTick(i,image->packets) && (image->previous == (Image *) NULL))
                 ProgressMonitor(LoadImageText,i,image->packets);
             }
           else
@@ -2961,7 +2961,7 @@ Export unsigned int RunlengthDecodeImage(Image *image)
               q->length=(*p++);
               count+=(q->length+1);
               q++;
-              if (QuantumTick(i,image) && (image->previous == (Image *) NULL))
+              if (QuantumTick(i,image->packets) && (image->previous == (Image *) NULL))
                 ProgressMonitor(LoadImageText,i,image->packets);
             }
         }
@@ -2973,7 +2973,7 @@ Export unsigned int RunlengthDecodeImage(Image *image)
             q->length=0;
             count++;
             q++;
-            if (QuantumTick(i,image) && (image->previous == (Image *) NULL))
+            if (QuantumTick(i,image->packets) && (image->previous == (Image *) NULL))
               ProgressMonitor(LoadImageText,i,image->packets);
           }
         else
@@ -2985,7 +2985,7 @@ Export unsigned int RunlengthDecodeImage(Image *image)
             q->length=0;
             count++;
             q++;
-            if (QuantumTick(i,image) && (image->previous == (Image *) NULL))
+            if (QuantumTick(i,image->packets) && (image->previous == (Image *) NULL))
               ProgressMonitor(LoadImageText,i,image->packets);
           }
       SyncImage(image);
@@ -3213,7 +3213,7 @@ Export unsigned int RunlengthEncodeImage(Image *image)
           *q++=p->length;
           count+=(p->length+1);
           p++;
-          if (QuantumTick(i,image) && (image->previous == (Image *) NULL))
+          if (QuantumTick(i,image->packets) && (image->previous == (Image *) NULL))
             ProgressMonitor(SaveImageText,i,image->packets);
         }
       else
@@ -3229,7 +3229,7 @@ Export unsigned int RunlengthEncodeImage(Image *image)
           }
           count+=(p->length+1);
           p++;
-          if (QuantumTick(i,image) && (image->previous == (Image *) NULL))
+          if (QuantumTick(i,image->packets) && (image->previous == (Image *) NULL))
             ProgressMonitor(SaveImageText,i,image->packets);
         }
     }
@@ -3243,7 +3243,7 @@ Export unsigned int RunlengthEncodeImage(Image *image)
             *q++=p->length;
             count+=(p->length+1);
             p++;
-            if (QuantumTick(i,image) && (image->previous == (Image *) NULL))
+            if (QuantumTick(i,image->packets) && (image->previous == (Image *) NULL))
               ProgressMonitor(SaveImageText,i,image->packets);
           }
         else
@@ -3254,7 +3254,7 @@ Export unsigned int RunlengthEncodeImage(Image *image)
             *q++=p->length;
             count+=(p->length+1);
             p++;
-            if (QuantumTick(i,image) && (image->previous == (Image *) NULL))
+            if (QuantumTick(i,image->packets) && (image->previous == (Image *) NULL))
               ProgressMonitor(SaveImageText,i,image->packets);
           }
       }
@@ -3266,7 +3266,7 @@ Export unsigned int RunlengthEncodeImage(Image *image)
             *q++=p->index;
           count+=(p->length+1);
           p++;
-          if (QuantumTick(i,image) && (image->previous == (Image *) NULL))
+          if (QuantumTick(i,image->packets) && (image->previous == (Image *) NULL))
             ProgressMonitor(SaveImageText,i,image->packets);
         }
       else
@@ -3286,7 +3286,7 @@ Export unsigned int RunlengthEncodeImage(Image *image)
             }
             count+=(p->length+1);
             p++;
-            if (QuantumTick(i,image) && (image->previous == (Image *) NULL))
+            if (QuantumTick(i,image->packets) && (image->previous == (Image *) NULL))
               ProgressMonitor(SaveImageText,i,image->packets);
           }
         }

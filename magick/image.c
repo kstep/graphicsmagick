@@ -1364,7 +1364,7 @@ Export void ColorizeImage(Image *image,char *opacity,char *pen_color)
         value=(long) (p->blue*(100-blue_opacity)+target.blue*blue_opacity)/100;
         p->blue=(Quantum) ((value < 0) ? 0 : (value > MaxRGB) ? MaxRGB : value);
         p++;
-        if (QuantumTick(i,image))
+        if (QuantumTick(i,image->packets))
           ProgressMonitor(ColorizeImageText,i,image->packets);
       }
       break;
@@ -2177,7 +2177,7 @@ Export void ContrastImage(Image *image,const unsigned int sharpen)
       {
         Contrast(sign,&p->red,&p->green,&p->blue);
         p++;
-        if (QuantumTick(i,image))
+        if (QuantumTick(i,image->packets))
           if (sharpen)
             ProgressMonitor(SharpenContrastImageText,i,image->packets);
           else
@@ -3878,7 +3878,7 @@ Export void EqualizeImage(Image *image)
         p->green=equalize_map[p->green];
         p->blue=equalize_map[p->blue];
         p++;
-        if (QuantumTick(i,image))
+        if (QuantumTick(i,image->packets))
           ProgressMonitor(EqualizeImageText,i,image->packets);
       }
       break;
@@ -4486,7 +4486,7 @@ Export void GammaImage(Image *image,char *gamma)
         p->green=gamma_map[p->green].green;
         p->blue=gamma_map[p->blue].blue;
         p++;
-        if (QuantumTick(i,image))
+        if (QuantumTick(i,image->packets))
           ProgressMonitor(GammaImageText,i,image->packets);
       }
       break;
@@ -5008,7 +5008,7 @@ Export void LayerImage(Image *image,LayerType layer)
       }
     }
     p++;
-    if (QuantumTick(i,image))
+    if (QuantumTick(i,image->packets))
       ProgressMonitor(LayerImageText,i,image->packets);
   }
   /*
@@ -5755,7 +5755,7 @@ Export void ModulateImage(Image *image,char *modulate)
         Modulate(percent_hue,percent_saturation,percent_brightness,
           &p->red,&p->green,&p->blue);
         p++;
-        if (QuantumTick(i,image))
+        if (QuantumTick(i,image->packets))
           ProgressMonitor(ModulateImageText,i,image->packets);
       }
       break;
@@ -6935,7 +6935,7 @@ Export void NegateImage(Image *image,unsigned int grayscale)
         p->green=(~p->green);
         p->blue=(~p->blue);
         p++;
-        if (QuantumTick(i,image))
+        if (QuantumTick(i,image->packets))
           ProgressMonitor(NegateImageText,i,image->packets);
       }
       break;
@@ -7091,7 +7091,7 @@ Export void NormalizeImage(Image *image)
         p->green=normalize_map[p->green];
         p->blue=normalize_map[p->blue];
         p++;
-        if (QuantumTick(i,image))
+        if (QuantumTick(i,image->packets))
           ProgressMonitor(NormalizeImageText,i,image->packets);
       }
       break;
@@ -7192,7 +7192,7 @@ Export void OpaqueImage(Image *image,char *opaque_color,char *pen_color)
             p->blue=XDownScale(target_color.blue);
           }
         p++;
-        if (QuantumTick(i,image))
+        if (QuantumTick(i,image->packets))
           ProgressMonitor(OpaqueImageText,i,image->packets);
       }
       break;
@@ -7215,7 +7215,7 @@ Export void OpaqueImage(Image *image,char *opaque_color,char *pen_color)
             p->blue=XDownScale(target_color.blue);
           }
         p++;
-        if (QuantumTick(i,image))
+        if (QuantumTick(i,image->packets))
           ProgressMonitor(OpaqueImageText,i,image->packets);
       }
       SyncImage(image);
@@ -8093,7 +8093,7 @@ Export void RGBTransformImage(Image *image,const unsigned int colorspace)
         p->green=range_limit[DownShift(x[red+Y]+y[green+Y]+z[blue+Y]+ty)];
         p->blue=range_limit[DownShift(x[red+Z]+y[green+Z]+z[blue+Z]+tz)];
         p++;
-        if (QuantumTick(i,image))
+        if (QuantumTick(i,image->packets))
           ProgressMonitor(RGBTransformImageText,i,image->packets);
       }
       break;
@@ -8991,16 +8991,18 @@ Export void SetImageInfo(ImageInfo *image_info,unsigned int rectify)
         (void) strncpy(magick,image_info->filename,p-image_info->filename);
         magick[p-image_info->filename]='\0';
         Latin1Upper(magick);
-        /*
-          Strip off image format prefix.
-        */
-        p++;
-        (void) strcpy(image_info->filename,p);
-        if (Latin1Compare(magick,"IMPLICIT") != 0)
 #if defined(WIN32)
         if (!ImageFormatConflict(magick))
 #endif
-          (void) strcpy(image_info->magick,magick);
+          {
+            /*
+              Strip off image format prefix.
+            */
+            p++;
+            (void) strcpy(image_info->filename,p);
+            if (Latin1Compare(magick,"IMPLICIT") != 0)
+              (void) strcpy(image_info->magick,magick);
+          }
         if ((Latin1Compare(magick,"IMPLICIT") != 0) &&
             (Latin1Compare(magick,"TMP") != 0))
           image_info->affirm=True;
@@ -9554,7 +9556,7 @@ Export void ThresholdImage(Image *image,double threshold)
   {
     p->index=Intensity(*p) < threshold ? 0 : 1;
     p++;
-    if (QuantumTick(i,image))
+    if (QuantumTick(i,image->packets))
       ProgressMonitor(ThresholdImageText,i,image->packets);
   }
   SyncImage(image);
@@ -10173,7 +10175,7 @@ Export void TransformRGBImage(Image *image,const unsigned int colorspace)
         p->green=range_limit[DownShift(red[x+G]+green[y+G]+blue[z+G])];
         p->blue=range_limit[DownShift(red[x+B]+green[y+B]+blue[z+B])];
         p++;
-        if (QuantumTick(i,image))
+        if (QuantumTick(i,image->packets))
           ProgressMonitor(TransformRGBImageText,i,image->packets);
       }
       break;
@@ -10297,7 +10299,7 @@ Export void TransparentImage(Image *image,char *color)
     if (ColorMatch(*p,target,0))
       p->index=Transparent;
     p++;
-    if (QuantumTick(i,image))
+    if (QuantumTick(i,image->packets))
       ProgressMonitor(TransparentImageText,i,image->packets);
   }
 }

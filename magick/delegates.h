@@ -44,4 +44,7 @@ Export DelegateInfo
 Export unsigned int
   GetDelegateInfo(char *,unsigned int,DelegateInfo *),
   InvokeDelegate(const ImageInfo *,Image *,char *,unsigned int);
+
+Export void
+  DestroyDelegates(void);
 #endif

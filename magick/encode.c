@@ -148,8 +148,9 @@ static unsigned int WriteAVSImage(const ImageInfo *image_info,Image *image)
         (void) fputc(DownScale(p->blue),image->file);
       }
       p++;
-      if (QuantumTick(i,image) && (image->previous == (Image *) NULL))
-        ProgressMonitor(SaveImageText,i,image->packets);
+      if (image->previous == (Image *) NULL)
+        if (QuantumTick(i,image->packets))
+          ProgressMonitor(SaveImageText,i,image->packets);
     }
     if (image->next == (Image *) NULL)
       break;
@@ -370,8 +371,9 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
              }
           }
           p++;
-          if (QuantumTick(i,image) && (image->previous == (Image *) NULL))
-            ProgressMonitor(SaveImageText,i,image->packets);
+          if (image->previous == (Image *) NULL)
+            if (QuantumTick(i,image->packets))
+              ProgressMonitor(SaveImageText,i,image->packets);
         }
         break;
       }
@@ -396,8 +398,9 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
               }
           }
           p++;
-          if (QuantumTick(i,image) && (image->previous == (Image *) NULL))
-            ProgressMonitor(SaveImageText,i,image->packets);
+          if (image->previous == (Image *) NULL)
+            if (QuantumTick(i,image->packets))
+              ProgressMonitor(SaveImageText,i,image->packets);
         }
         break;
       }
@@ -427,8 +430,9 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
               }
           }
           p++;
-          if (QuantumTick(i,image) && (image->previous == (Image *) NULL))
-            ProgressMonitor(SaveImageText,i,image->packets);
+          if (image->previous == (Image *) NULL)
+            if (QuantumTick(i,image->packets))
+              ProgressMonitor(SaveImageText,i,image->packets);
         }
         break;
       }
@@ -628,8 +632,9 @@ static unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
             WriteQuantumFile((unsigned int) (black_generation*black));
           }
           p++;
-          if (QuantumTick(i,image) && (image->previous == (Image *) NULL))
-            ProgressMonitor(SaveImageText,i,image->packets);
+          if (image->previous == (Image *) NULL)
+            if (QuantumTick(i,image->packets))
+              ProgressMonitor(SaveImageText,i,image->packets);
         }
         break;
       }
@@ -1621,7 +1626,7 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
         }
     }
     p++;
-    if (QuantumTick(i,image))
+    if (QuantumTick(i,image->packets))
       ProgressMonitor(SaveImageText,i,image->packets);
   }
   if (image_info->view != (char *) NULL)
@@ -2280,8 +2285,9 @@ static unsigned int WriteGRAYImage(const ImageInfo *image_info,Image *image)
       for (j=0; j <= ((int) p->length); j++)
         WriteQuantumFile(Intensity(*p));
       p++;
-      if (QuantumTick(i,image) && (image->previous == (Image *) NULL))
-        ProgressMonitor(SaveImageText,i,image->packets);
+      if (image->previous == (Image *) NULL)
+        if (QuantumTick(i,image->packets))
+          ProgressMonitor(SaveImageText,i,image->packets);
     }
     if (image->next == (Image *) NULL)
       break;
@@ -2402,8 +2408,9 @@ static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
                 *q++=DownScale(p->blue);
               }
               p++;
-              if (QuantumTick(i,image) && (image->previous == (Image *) NULL))
-                ProgressMonitor(SaveImageText,i,image->packets);
+              if (image->previous == (Image *) NULL)
+                if (QuantumTick(i,image->packets))
+                  ProgressMonitor(SaveImageText,i,image->packets);
             }
             break;
           }
@@ -2496,8 +2503,9 @@ static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
             for (j=0; j <= ((int) p->length); j++)
               *q++=DownScale(p->red);
             p++;
-            if (QuantumTick(i,image) && (image->previous == (Image *) NULL))
-              ProgressMonitor(SaveImageText,i,image->packets);
+            if (image->previous == (Image *) NULL)
+              if (QuantumTick(i,image->packets))
+                ProgressMonitor(SaveImageText,i,image->packets);
           }
         else
           {
@@ -2524,8 +2532,9 @@ static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
               for (j=0; j <= ((int) p->length); j++)
                 *q++=p->index;
               p++;
-              if (QuantumTick(i,image) && (image->previous == (Image *) NULL))
-                ProgressMonitor(SaveImageText,i,image->packets);
+              if (image->previous == (Image *) NULL)
+                if (QuantumTick(i,image->packets))
+                  ProgressMonitor(SaveImageText,i,image->packets);
             }
           }
         compression=image_info->compression == NoCompression ? 0 : DFTAG_RLE;
@@ -3145,8 +3154,9 @@ static unsigned int WriteJBIGImage(const ImageInfo *image_info,Image *image)
          }
       }
       p++;
-      if (QuantumTick(i,image) && (image->previous == (Image *) NULL))
-        ProgressMonitor(SaveImageText,i,image->packets);
+      if (image->previous == (Image *) NULL)
+        if (QuantumTick(i,image->packets))
+          ProgressMonitor(SaveImageText,i,image->packets);
     }
     /*
       Initialize JBIG info structure.
@@ -3405,7 +3415,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
               }
           }
           p++;
-          if (QuantumTick(i,image))
+          if (QuantumTick(i,image->packets))
             ProgressMonitor(SaveImageText,i,image->packets);
         }
       else
@@ -3426,7 +3436,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
                 }
             }
             p++;
-            if (QuantumTick(i,image))
+            if (QuantumTick(i,image->packets))
               ProgressMonitor(SaveImageText,i,image->packets);
           }
         else
@@ -3458,8 +3468,9 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
                 }
             }
             p++;
-            if (QuantumTick(i,image) && (image->previous == (Image *) NULL))
-              ProgressMonitor(SaveImageText,i,image->packets);
+            if (image->previous == (Image *) NULL)
+              if (QuantumTick(i,image->packets))
+                ProgressMonitor(SaveImageText,i,image->packets);
           }
     }
   else
@@ -3478,7 +3489,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
             }
         }
         p++;
-        if (QuantumTick(i,image))
+        if (QuantumTick(i,image->packets))
           ProgressMonitor(SaveImageText,i,image->packets);
       }
     else
@@ -3499,7 +3510,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
               }
           }
           p++;
-          if (QuantumTick(i,image))
+          if (QuantumTick(i,image->packets))
             ProgressMonitor(SaveImageText,i,image->packets);
         }
       else
@@ -3531,8 +3542,9 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
               }
           }
           p++;
-          if (QuantumTick(i,image) && (image->previous == (Image *) NULL))
-            ProgressMonitor(SaveImageText,i,image->packets);
+          if (image->previous == (Image *) NULL)
+            if (QuantumTick(i,image->packets))
+              ProgressMonitor(SaveImageText,i,image->packets);
         }
   jpeg_finish_compress(&jpeg_info);
   /*
@@ -4246,7 +4258,7 @@ static unsigned int WriteMONOImage(const ImageInfo *image_info,Image *image)
        }
     }
     p++;
-    if (QuantumTick(i,image))
+    if (QuantumTick(i,image->packets))
       ProgressMonitor(SaveImageText,i,image->packets);
   }
   CloseImage(image);
@@ -4318,8 +4330,9 @@ static unsigned int WriteMTVImage(const ImageInfo *image_info,Image *image)
         (void) fputc(DownScale(p->blue),image->file);
       }
       p++;
-      if (QuantumTick(i,image) && (image->previous == (Image *) NULL))
-        ProgressMonitor(SaveImageText,i,image->packets);
+      if (image->previous == (Image *) NULL)
+        if (QuantumTick(i,image->packets))
+          ProgressMonitor(SaveImageText,i,image->packets);
     }
     if (image->next == (Image *) NULL)
       break;
@@ -4685,7 +4698,7 @@ static unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
             x=0;
           }
         p++;
-        if (QuantumTick(i,image))
+        if (QuantumTick(i,image->packets))
           ProgressMonitor(SaveImageText,i,image->packets);
       }
       (void) fprintf(image->file,"\033*rC");  /* end graphics */
@@ -4773,7 +4786,7 @@ static unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
            }
         }
         p++;
-        if (QuantumTick(i,monochrome_image))
+        if (QuantumTick(i,monochrome_image->packets))
           ProgressMonitor(SaveImageText,i,monochrome_image->packets);
       }
       (void) fprintf(image->file,"\033*rB");  /* end graphics */
@@ -5045,8 +5058,9 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
               }
           }
           p++;
-          if (QuantumTick(i,image) && (image->previous == (Image *) NULL))
-            ProgressMonitor(SaveImageText,i,image->packets);
+          if (image->previous == (Image *) NULL)
+            if (QuantumTick(i,image->packets))
+              ProgressMonitor(SaveImageText,i,image->packets);
         }
       else
         {
@@ -5094,8 +5108,9 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
                 }
             }
             p++;
-            if (QuantumTick(i,image) && (image->previous == (Image *) NULL))
-              ProgressMonitor(SaveImageText,i,image->packets);
+            if (image->previous == (Image *) NULL)
+              if (QuantumTick(i,image->packets))
+                ProgressMonitor(SaveImageText,i,image->packets);
           }
         }
     /*
@@ -5587,8 +5602,9 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                 }
             }
             p++;
-            if (QuantumTick(i,image) && (image->previous == (Image *) NULL))
-              ProgressMonitor(SaveImageText,i,image->packets);
+            if (image->previous == (Image *) NULL)
+              if (QuantumTick(i,image->packets))
+                ProgressMonitor(SaveImageText,i,image->packets);
           }
           if (compression == ZipCompression)
             status=ZLIBEncodeImage(image->file,pixels,number_packets,
@@ -5630,8 +5646,9 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                 }
             }
             p++;
-            if (QuantumTick(i,image) && (image->previous == (Image *) NULL))
-              ProgressMonitor(SaveImageText,i,image->packets);
+            if (image->previous == (Image *) NULL)
+              if (QuantumTick(i,image->packets))
+                ProgressMonitor(SaveImageText,i,image->packets);
           }
           Ascii85Flush(image->file);
           break;
@@ -5698,8 +5715,9 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                    }
                 }
                 p++;
-                if (QuantumTick(i,image) && (image->previous == (Image *) NULL))
-                  ProgressMonitor(SaveImageText,i,image->packets);
+                if (image->previous == (Image *) NULL)
+                  if (QuantumTick(i,image->packets))
+                    ProgressMonitor(SaveImageText,i,image->packets);
               }
               Ascii85Flush(image->file);
               break;
@@ -5734,8 +5752,9 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                 for (j=0; j <= ((int) p->length); j++)
                   *q++=(unsigned char) p->index;
                 p++;
-                if (QuantumTick(i,image) && (image->previous == (Image *) NULL))
-                  ProgressMonitor(SaveImageText,i,image->packets);
+                if (image->previous == (Image *) NULL)
+                  if (QuantumTick(i,image->packets))
+                    ProgressMonitor(SaveImageText,i,image->packets);
               }
               if (compression == ZipCompression)
                 status=ZLIBEncodeImage(image->file,pixels,number_packets,
@@ -5764,8 +5783,9 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                 for (j=0; j <= ((int) p->length); j++)
                   Ascii85Encode((unsigned char) p->index,image->file);
                 p++;
-                if (QuantumTick(i,image) && (image->previous == (Image *) NULL))
-                  ProgressMonitor(SaveImageText,i,image->packets);
+                if (image->previous == (Image *) NULL)
+                  if (QuantumTick(i,image->packets))
+                    ProgressMonitor(SaveImageText,i,image->packets);
               }
               Ascii85Flush(image->file);
               break;
@@ -6486,7 +6506,7 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
             }
         }
         p++;
-        if (QuantumTick(i,image))
+        if (QuantumTick(i,image->packets))
           ProgressMonitor(SaveImageText,i,image->packets);
       }
     }
@@ -6523,7 +6543,7 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
             }
         }
         p++;
-        if (QuantumTick(i,image))
+        if (QuantumTick(i,image->packets))
           ProgressMonitor(SaveImageText,i,image->packets);
       }
     }
@@ -7003,8 +7023,9 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
               }
           }
           p++;
-          if (QuantumTick(i,image) && (image->previous == (Image *) NULL))
-            ProgressMonitor(SaveImageText,i,image->packets);
+          if (image->previous == (Image *) NULL)
+            if (QuantumTick(i,image->packets))
+              ProgressMonitor(SaveImageText,i,image->packets);
         }
       }
     else
@@ -7023,8 +7044,9 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
               }
           }
           p++;
-          if (QuantumTick(i,image) && (image->previous == (Image *) NULL))
-            ProgressMonitor(SaveImageText,i,image->packets);
+          if (image->previous == (Image *) NULL)
+            if (QuantumTick(i,image->packets))
+              ProgressMonitor(SaveImageText,i,image->packets);
         }
       else
         if (!IsPseudoClass(image))
@@ -7050,8 +7072,9 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
                 }
             }
             p++;
-            if (QuantumTick(i,image) && (image->previous == (Image *) NULL))
-              ProgressMonitor(SaveImageText,i,image->packets);
+            if (image->previous == (Image *) NULL)
+              if (QuantumTick(i,image->packets))
+                ProgressMonitor(SaveImageText,i,image->packets);
           }
         else
           for (i=0; i < image->packets; i++)
@@ -7069,8 +7092,9 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
                 }
             }
             p++;
-            if (QuantumTick(i,image) && (image->previous == (Image *) NULL))
-              ProgressMonitor(SaveImageText,i,image->packets);
+            if (image->previous == (Image *) NULL)
+              if (QuantumTick(i,image->packets))
+                ProgressMonitor(SaveImageText,i,image->packets);
           }
     png_write_image(ping,scanlines);
     /*
@@ -7329,8 +7353,9 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
               }
           }
           p++;
-          if (QuantumTick(i,image) && (image->previous == (Image *) NULL))
-            ProgressMonitor(SaveImageText,i,image->packets);
+          if (image->previous == (Image *) NULL)
+            if (QuantumTick(i,image->packets))
+              ProgressMonitor(SaveImageText,i,image->packets);
         }
         break;
       }
@@ -7354,8 +7379,9 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
               }
           }
           p++;
-          if (QuantumTick(i,image) && (image->previous == (Image *) NULL))
-            ProgressMonitor(SaveImageText,i,image->packets);
+          if (image->previous == (Image *) NULL)
+            if (QuantumTick(i,image->packets))
+              ProgressMonitor(SaveImageText,i,image->packets);
         }
         break;
       }
@@ -7378,8 +7404,9 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
               }
           }
           p++;
-          if (QuantumTick(i,image) && (image->previous == (Image *) NULL))
-            ProgressMonitor(SaveImageText,i,image->packets);
+          if (image->previous == (Image *) NULL)
+            if (QuantumTick(i,image->packets))
+              ProgressMonitor(SaveImageText,i,image->packets);
         }
         break;
       }
@@ -7428,8 +7455,9 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
              }
           }
           p++;
-          if (QuantumTick(i,image) && (image->previous == (Image *) NULL))
-            ProgressMonitor(SaveImageText,i,image->packets);
+          if (image->previous == (Image *) NULL)
+            if (QuantumTick(i,image->packets))
+              ProgressMonitor(SaveImageText,i,image->packets);
         }
         break;
       }
@@ -7445,8 +7473,9 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
           for (j=0; j <= ((int) p->length); j++)
             (void) fputc(index,image->file);
           p++;
-          if (QuantumTick(i,image) && (image->previous == (Image *) NULL))
-            ProgressMonitor(SaveImageText,i,image->packets);
+          if (image->previous == (Image *) NULL)
+            if (QuantumTick(i,image->packets))
+              ProgressMonitor(SaveImageText,i,image->packets);
         }
         break;
       }
@@ -7465,8 +7494,9 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
             (void) fputc(DownScale(p->blue),image->file);
           }
           p++;
-          if (QuantumTick(i,image) && (image->previous == (Image *) NULL))
-            ProgressMonitor(SaveImageText,i,image->packets);
+          if (image->previous == (Image *) NULL)
+            if (QuantumTick(i,image->packets))
+              ProgressMonitor(SaveImageText,i,image->packets);
         }
         break;
       }
@@ -8727,8 +8757,9 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                   }
               }
               p++;
-              if (QuantumTick(i,image) && (image->previous == (Image *) NULL))
-                ProgressMonitor(SaveImageText,i,image->packets);
+              if (image->previous == (Image *) NULL)
+                if (QuantumTick(i,image->packets))
+                  ProgressMonitor(SaveImageText,i,image->packets);
             }
             break;
           }
@@ -8754,8 +8785,9 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                   }
               }
               p++;
-              if (QuantumTick(i,image) && (image->previous == (Image *) NULL))
-                ProgressMonitor(SaveImageText,i,image->packets);
+              if (image->previous == (Image *) NULL)
+                if (QuantumTick(i,image->packets))
+                  ProgressMonitor(SaveImageText,i,image->packets);
             }
             break;
           }
@@ -8785,8 +8817,9 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                     }
                 }
                 p++;
-                if (QuantumTick(i,image) && (image->previous == (Image *) NULL))
-                  ProgressMonitor(SaveImageText,i,image->packets);
+                if (image->previous == (Image *) NULL)
+                  if (QuantumTick(i,image->packets))
+                    ProgressMonitor(SaveImageText,i,image->packets);
               }
             }
           else
@@ -8844,8 +8877,9 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                     }
                   }
                 p++;
-                if (QuantumTick(i,image) && (image->previous == (Image *) NULL))
-                  ProgressMonitor(SaveImageText,i,image->packets);
+                if (image->previous == (Image *) NULL)
+                  if (QuantumTick(i,image->packets))
+                    ProgressMonitor(SaveImageText,i,image->packets);
               }
             }
           if (count != 0)
@@ -8890,8 +8924,9 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                     }
                 }
                 p++;
-                if (QuantumTick(i,image) && (image->previous == (Image *) NULL))
-                  ProgressMonitor(SaveImageText,i,image->packets);
+                if (image->previous == (Image *) NULL)
+                  if (QuantumTick(i,image->packets))
+                    ProgressMonitor(SaveImageText,i,image->packets);
               }
               break;
             }
@@ -8913,8 +8948,9 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                     }
                 }
                 p++;
-                if (QuantumTick(i,image) && (image->previous == (Image *) NULL))
-                  ProgressMonitor(SaveImageText,i,image->packets);
+                if (image->previous == (Image *) NULL)
+                  if (QuantumTick(i,image->packets))
+                    ProgressMonitor(SaveImageText,i,image->packets);
               }
               break;
             }
@@ -9495,8 +9531,9 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
                 }
             }
             p++;
-            if (QuantumTick(i,image) && (image->previous == (Image *) NULL))
-              ProgressMonitor(SaveImageText,i,image->packets);
+            if (image->previous == (Image *) NULL)
+              if (QuantumTick(i,image->packets))
+                ProgressMonitor(SaveImageText,i,image->packets);
           }
           if (compression == ZipCompression)
             status=ZLIBEncodeImage(image->file,pixels,number_packets,
@@ -9538,8 +9575,9 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
                 }
             }
             p++;
-            if (QuantumTick(i,image) && (image->previous == (Image *) NULL))
-              ProgressMonitor(SaveImageText,i,image->packets);
+            if (image->previous == (Image *) NULL)
+              if (QuantumTick(i,image->packets))
+                ProgressMonitor(SaveImageText,i,image->packets);
           }
           Ascii85Flush(image->file);
           break;
@@ -9606,8 +9644,9 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
                    }
                 }
                 p++;
-                if (QuantumTick(i,image) && (image->previous == (Image *) NULL))
-                  ProgressMonitor(SaveImageText,i,image->packets);
+                if (image->previous == (Image *) NULL)
+                  if (QuantumTick(i,image->packets))
+                    ProgressMonitor(SaveImageText,i,image->packets);
               }
               Ascii85Flush(image->file);
               break;
@@ -9651,8 +9690,9 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
                 for (j=0; j <= ((int) p->length); j++)
                   *q++=(unsigned char) p->index;
                 p++;
-                if (QuantumTick(i,image) && (image->previous == (Image *) NULL))
-                  ProgressMonitor(SaveImageText,i,image->packets);
+                if (image->previous == (Image *) NULL)
+                  if (QuantumTick(i,image->packets))
+                    ProgressMonitor(SaveImageText,i,image->packets);
               }
               if (compression == ZipCompression)
                 status=ZLIBEncodeImage(image->file,pixels,number_packets,
@@ -9681,8 +9721,9 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
                 for (j=0; j <= ((int) p->length); j++)
                   Ascii85Encode((unsigned char) p->index,image->file);
                 p++;
-                if (QuantumTick(i,image) && (image->previous == (Image *) NULL))
-                  ProgressMonitor(SaveImageText,i,image->packets);
+                if (image->previous == (Image *) NULL)
+                  if (QuantumTick(i,image->packets))
+                    ProgressMonitor(SaveImageText,i,image->packets);
               }
               Ascii85Flush(image->file);
               break;
@@ -9790,8 +9831,9 @@ static unsigned int WriteRGBImage(const ImageInfo *image_info,Image *image)
               WriteQuantumFile(image->matte ? p->index : Opaque);
           }
           p++;
-          if (QuantumTick(i,image) && (image->previous == (Image *) NULL))
-            ProgressMonitor(SaveImageText,i,image->packets);
+          if (image->previous == (Image *) NULL)
+            if (QuantumTick(i,image->packets))
+              ProgressMonitor(SaveImageText,i,image->packets);
         }
         break;
       }
@@ -10379,8 +10421,9 @@ static unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
               }
           }
           p++;
-          if (QuantumTick(i,image) && (image->previous == (Image *) NULL))
-            ProgressMonitor(SaveImageText,i,image->packets);
+          if (image->previous == (Image *) NULL)
+            if (QuantumTick(i,image->packets))
+              ProgressMonitor(SaveImageText,i,image->packets);
         }
       }
     else
@@ -10431,8 +10474,9 @@ static unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
                }
             }
             p++;
-            if (QuantumTick(i,image) && (image->previous == (Image *) NULL))
-              ProgressMonitor(SaveImageText,i,image->packets);
+            if (image->previous == (Image *) NULL)
+              if (QuantumTick(i,image->packets))
+                ProgressMonitor(SaveImageText,i,image->packets);
           }
         }
       else
@@ -10463,8 +10507,9 @@ static unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
                 }
             }
             p++;
-            if (QuantumTick(i,image) && (image->previous == (Image *) NULL))
-              ProgressMonitor(SaveImageText,i,image->packets);
+            if (image->previous == (Image *) NULL)
+              if (QuantumTick(i,image->packets))
+                ProgressMonitor(SaveImageText,i,image->packets);
           }
         }
     if (image->next == (Image *) NULL)
@@ -10687,7 +10732,7 @@ static unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
                 *q++=Opaque-DownScale(p->index);
             }
             p--;
-            if (QuantumTick(i,flopped_image))
+            if (QuantumTick(i,flopped_image->packets))
               ProgressMonitor(SaveImageText,i,flopped_image->packets);
           }
         else
@@ -10727,7 +10772,7 @@ static unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
                 }
                 *r=runlength-1;
               }
-            if (QuantumTick(i,flopped_image))
+            if (QuantumTick(i,flopped_image->packets))
               ProgressMonitor(SaveImageText,i,flopped_image->packets);
           }
       }
@@ -10775,7 +10820,7 @@ static unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
               for (j=0; j <= ((int) p->length); j++)
                 *q++=p->index;
               p--;
-              if (QuantumTick(i,flopped_image))
+              if (QuantumTick(i,flopped_image->packets))
                 ProgressMonitor(SaveImageText,i,flopped_image->packets);
             }
           else
@@ -10803,7 +10848,7 @@ static unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
                   }
                   *r=runlength-1;
                 }
-              if (QuantumTick(i,flopped_image))
+              if (QuantumTick(i,flopped_image->packets))
                 ProgressMonitor(SaveImageText,i,flopped_image->packets);
             }
         }
@@ -10827,7 +10872,7 @@ static unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
               for (j=0; j <= ((int) p->length); j++)
                 *q++=p->index == polarity ? 0 : DownScale(MaxRGB);
               p--;
-              if (QuantumTick(i,flopped_image))
+              if (QuantumTick(i,flopped_image->packets))
                 ProgressMonitor(SaveImageText,i,flopped_image->packets);
             }
           else
@@ -10855,7 +10900,7 @@ static unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
                   }
                   *r=runlength-1;
                 }
-              if (QuantumTick(i,flopped_image))
+              if (QuantumTick(i,flopped_image->packets))
                 ProgressMonitor(SaveImageText,i,flopped_image->packets);
             }
         }
@@ -11203,8 +11248,9 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
                   }
               }
               p++;
-              if (QuantumTick(i,image) && (image->previous == (Image *) NULL))
-                ProgressMonitor(SaveImageText,i,image->packets);
+              if (image->previous == (Image *) NULL)
+                if (QuantumTick(i,image->packets))
+                  ProgressMonitor(SaveImageText,i,image->packets);
             }
             break;
           }
@@ -11353,8 +11399,9 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
               }
           }
           p++;
-          if (QuantumTick(i,image) && (image->previous == (Image *) NULL))
-            ProgressMonitor(SaveImageText,i,image->packets);
+          if (image->previous == (Image *) NULL)
+            if (QuantumTick(i,image->packets))
+              ProgressMonitor(SaveImageText,i,image->packets);
         }
         break;
       }
@@ -11430,8 +11477,9 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
                   }
               }
               p++;
-              if (QuantumTick(i,image) && (image->previous == (Image *) NULL))
-                ProgressMonitor(SaveImageText,i,image->packets);
+              if (image->previous == (Image *) NULL)
+                if (QuantumTick(i,image->packets))
+                  ProgressMonitor(SaveImageText,i,image->packets);
             }
             break;
           }
@@ -11484,8 +11532,9 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
              }
           }
           p++;
-          if (QuantumTick(i,image) && (image->previous == (Image *) NULL))
-            ProgressMonitor(SaveImageText,i,image->packets);
+          if (image->previous == (Image *) NULL)
+            if (QuantumTick(i,image->packets))
+              ProgressMonitor(SaveImageText,i,image->packets);
         }
         break;
       }
@@ -11925,7 +11974,7 @@ static unsigned int WriteUYVYImage(const ImageInfo *image_info,Image *image)
         }
     }
     p++;
-    if (QuantumTick(i,image))
+    if (QuantumTick(i,image->packets))
       ProgressMonitor(SaveImageText,i,image->packets);
   }
   TransformRGBImage(image,YCbCrColorspace);
@@ -12023,7 +12072,7 @@ static unsigned int WriteVICARImage(const ImageInfo *image_info,Image *image)
     for (j=0; j <= ((int) p->length); j++)
       (void) fputc(p->red,image->file);
     p++;
-    if (QuantumTick(i,image))
+    if (QuantumTick(i,image->packets))
       ProgressMonitor(SaveImageText,i,image->packets);
   }
   CloseImage(image);
@@ -12280,8 +12329,9 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
             q++;
           }
           p++;
-          if (QuantumTick(i,image) && (image->previous == (Image *) NULL))
-            ProgressMonitor(SaveImageText,i,image->packets);
+          if (image->previous == (Image *) NULL)
+            if (QuantumTick(i,image->packets))
+              ProgressMonitor(SaveImageText,i,image->packets);
         }
       }
     else
@@ -12317,8 +12367,9 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
             for (j=0; j <= ((int) p->length); j++)
               *q++=p->index;
             p++;
-            if (QuantumTick(i,image) && (image->previous == (Image *) NULL))
-              ProgressMonitor(SaveImageText,i,image->packets);
+            if (image->previous == (Image *) NULL)
+              if (QuantumTick(i,image->packets))
+                ProgressMonitor(SaveImageText,i,image->packets);
           }
         }
       else
@@ -12370,8 +12421,9 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
                  }
               }
               p++;
-              if (QuantumTick(i,image) && (image->previous == (Image *) NULL))
-                ProgressMonitor(SaveImageText,i,image->packets);
+              if (image->previous == (Image *) NULL)
+                if (QuantumTick(i,image->packets))
+                  ProgressMonitor(SaveImageText,i,image->packets);
             }
           }
         else
@@ -12384,8 +12436,9 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
               for (j=0; j <= ((int) p->length); j++)
                 *q++=p->red;
               p++;
-              if (QuantumTick(i,image) && (image->previous == (Image *) NULL))
-                ProgressMonitor(SaveImageText,i,image->packets);
+              if (image->previous == (Image *) NULL)
+                if (QuantumTick(i,image->packets))
+                  ProgressMonitor(SaveImageText,i,image->packets);
             }
           }
     (void) fwrite((char *) viff_pixels,1,(int) packets,image->file);
@@ -12752,7 +12805,7 @@ static unsigned int WriteXBMImage(const ImageInfo *image_info,Image *image)
         }
     }
     p++;
-    if (QuantumTick(i,image))
+    if (QuantumTick(i,image->packets))
       ProgressMonitor(SaveImageText,i,image->packets);
   }
   (void) fprintf(image->file,"};\n");
@@ -13328,7 +13381,7 @@ static unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
         }
     }
     p++;
-    if (QuantumTick(i,image))
+    if (QuantumTick(i,image->packets))
       ProgressMonitor(SaveImageText,i,image->packets);
   }
   CloseImage(image);

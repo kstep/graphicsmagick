@@ -128,6 +128,9 @@ m2v=>
 pgp=>
 	/usr/local/bin/pgpv -fq %i
 
+pnm<=win
+	/usr/local/bin/display %i
+
 print=>ps
 	/usr/bin/lp -c -s %i
 
@@ -146,9 +149,6 @@ show=>%m
 
 shtml=>
 	/usr/local/bin/html2ps -o %o %i
-
-win=>pnm
-	/usr/local/bin/display %i
 
 yuv<=m2v
 	/usr/local/bin/mpeg2encode %u %o

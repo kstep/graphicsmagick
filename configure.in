@@ -242,18 +242,22 @@ do
   fi
 done
 
-
 #
-# Determine installation prefix
-# Unfortunately, this depends on Autoconf internals that may change
+# The following is extracted from AC_OUTPUT since we need its value earlier.
 #
-PREFIX="$prefix"
-test "x$PREFIX" = xNONE && PREFIX=$ac_default_prefix
+test "x$prefix" = xNONE && prefix=$ac_default_prefix
+# Let make expand exec_prefix.
+test "x$exec_prefix" = xNONE && exec_prefix='${prefix}'
 
-libdir="$PREFIX/lib"
-LDFLAGS="$LDFLAGS -L$libdir"
+eval im_bindir=${exec_prefix}/bin
+echo "im_bindir=$im_bindir"
+eval im_libdir=${exec_prefix}/lib
+echo "im_libdir=$im_libdir"
+eval im_includedir=${prefix}/include
+echo "im_includedir=$im_includedir"
 
-CPPFLAGS="$CPPFLAGS -I$PREFIX/include"
+LDFLAGS="$LDFLAGS -L$im_libdir"
+CPPFLAGS="$CPPFLAGS -I$im_includedir"
 TRAILING_LIBS=''
 
 #
@@ -730,6 +734,68 @@ then
 fi
 
 #
+# Look for standard system programs
+#
+
+#
+# Look for 'cat' program
+#
+have_cat='no'
+AC_PATH_PROG(CatDelegate, cat)
+if test -n "$CatDelegate"
+then
+    AC_DEFINE_UNQUOTED(CatDelegate,"$CatDelegate")
+    have_cat='yes'
+else
+    CatDelegate=cat
+fi
+AC_SUBST(CatDelegate)
+
+
+#
+# Look for LP program.
+#
+have_lp='no'
+AC_PATH_PROG(LPDelegate, lp)
+if test -n "$LPDelegate"
+then
+    AC_DEFINE_UNQUOTED(LPDelegate,"$LPDelegate")
+    have_lp='yes'
+else
+    LPDelegate=lp
+fi
+AC_SUBST(LPDelegate)
+
+#
+# Look for 'mv' program
+#
+have_mv='no'
+AC_PATH_PROG(MVDelegate, mv)
+if test -n "$MVDelegate"
+then
+    AC_DEFINE_UNQUOTED(MVDelegate,"$MVDelegate")
+    have_mv='yes'
+else
+    MVDelegate=mv
+fi
+AC_SUBST(MVDelegate)
+
+#
+# Look for 'rm' program
+#
+have_rm='no'
+AC_PATH_PROG(RMDelegate, rm)
+if test -n "$RMDelegate"
+then
+    AC_DEFINE_UNQUOTED(RMDelegate,"$RMDelegate")
+    have_rm='yes'
+else
+    RMDelegate=rm
+fi
+AC_SUBST(RMDelegate)
+
+
+#
 # Look for Netscape program.
 #
 have_netscape='no'
@@ -759,21 +825,6 @@ fi
 AC_SUBST(BZIPDelegate)
 
 #
-# Look for 'cat' program
-#
-have_cat='no'
-AC_PATH_PROG(CatDelegate, cat)
-if test -n "$CatDelegate"
-then
-    AC_DEFINE_UNQUOTED(CatDelegate,"$CatDelegate")
-    have_cat='yes'
-else
-    CatDelegate=cat
-fi
-AC_SUBST(CatDelegate)
-
-#
-#
 # Look for 'compress' program
 #
 have_compress='no'
@@ -788,47 +839,57 @@ fi
 AC_SUBST(LZWEncodeDelegate)
 
 #
-# Look for 'convert' program
-#
-have_convert='no'
-AC_PATH_PROG(ConvertDelegate, convert)
-if test -n "$ConvertDelegate"
-then
-    AC_DEFINE_UNQUOTED(ConvertDelegate,"$ConvertDelegate")
-    have_convert='yes'
-else
-    ConvertDelegate=convert
-fi
-AC_SUBST(ConvertDelegate)
-
-#
-#
 # Look for xterm program.
 #
-have_editor='no'
+have_xterm='no'
 AC_PATH_PROG(EditorDelegate, xterm)
 if test -n "$EditorDelegate"
 then
     AC_DEFINE_UNQUOTED(EditorDelegate,"$EditorDelegate")
-    have_editor='yes'
+    have_xterm='yes'
 else
     EditorDelegate=xterm
 fi
 AC_SUBST(EditorDelegate)
 
 #
+# Look for TeX DVI format support program 'dvips'
+#
+have_dvips='no'
+AC_PATH_PROG(DVIDecodeDelegate, dvips, dvips)
+if test "$DVIDecodeDelegate" != 'dvips'
+then
+   have_dvips='yes'
+fi
+AC_SUBST(DVIDecodeDelegate)
+
+#
 # Look for Fig format support program 'fig2dev'
 #
-have_xfig='no'
+have_fig2dev='no'
 AC_PATH_PROG(FIGDecodeDelegate, fig2dev)
 if test -n "$FIGDecodeDelegate"
 then
    AC_DEFINE_UNQUOTED(FIGDecodeDelegate,"$FIGDecodeDelegate")
-   have_xfig='yes'
+   have_fig2dev='yes'
 else
    FIGDecodeDelegate=fig2dev
 fi
 AC_SUBST(FIGDecodeDelegate)
+
+#
+# Look for 'gzip' program
+#
+have_gzip='no'
+AC_PATH_PROG(ZipDelegate, gzip)
+if test -n "$ZipDelegate"
+then
+    AC_DEFINE_UNQUOTED(ZipDelegate,"$ZipDelegate")
+    have_gzip='yes'
+else
+    ZipDelegate=gzip
+fi
+AC_SUBST(ZipDelegate)
 
 #
 # Look for Ghostscript 'gs'
@@ -858,79 +919,34 @@ else
 fi
 AC_SUBST(LaunchDelegate)
 
-#
-# Look for 'gzip' program
-#
-have_gzip='no'
-AC_PATH_PROG(ZipDelegate, gzip)
-if test -n "$ZipDelegate"
-then
-    AC_DEFINE_UNQUOTED(ZipDelegate,"$ZipDelegate")
-    have_gzip='yes'
-else
-    ZipDelegate=gzip
-fi
-AC_SUBST(ZipDelegate)
 
 #
-# Look for LP program.
+# Look for MPEG support program 'mpeg2decode'
 #
-have_lp='no'
-AC_PATH_PROG(LPDelegate, lp)
-if test -n "$LPDelegate"
-then
-    AC_DEFINE_UNQUOTED(LPDelegate,"$LPDelegate")
-    have_lp='yes'
-else
-    LPDelegate=lp
-fi
-AC_SUBST(LPDelegate)
-
-#
-# Look for 'mogrify' program
-#
-have_mogrify='no'
-AC_PATH_PROG(MogrifyDelegate, mogrify)
-if test -n "$MogrifyDelegate"
-then
-    AC_DEFINE_UNQUOTED(MogrifyDelegate,"$MogrifyDelegate")
-    have_mogrify='yes'
-else
-    MogrifyDelegate=mogrify
-fi
-AC_SUBST(MogrifyDelegate)
-
-#
-# Look for MPEG support programs 'mpeg2decode' & 'mpeg2encode'
-#
-have_mpeg='no'
+have_mpeg2decode='no'
 AC_PATH_PROG(MPEGDecodeDelegate, mpeg2decode)
-AC_PATH_PROG(MPEGEncodeDelegate, mpeg2encode)
-if test -n "$MPEGDecodeDelegate" && test -n "$MPEGEncodeDelegate"
+if test -n "$MPEGDecodeDelegate"
 then
     AC_DEFINE_UNQUOTED(MPEGDecodeDelegate,"$MPEGDecodeDelegate")
-    AC_DEFINE_UNQUOTED(MPEGEncodeDelegate,"$MPEGEncodeDelegate")
-    have_mpeg='yes'
+    have_mpeg2decode='yes'
 else
     MPEGDecodeDelegate=mpeg2decode
-    MPEGEncodeDelegate=mpeg2encode_default
 fi
 AC_SUBST(MPEGDecodeDelegate)
-AC_SUBST(MPEGEncodeDelegate)
 
 #
-# Look for 'mv' program
+# Look for MPEG support program 'mpeg2encode'
 #
-have_mv='no'
-AC_PATH_PROG(MVDelegate, mv)
-if test -n "$MVDelegate"
+have_mpeg2encode='no'
+AC_PATH_PROG(MPEGEncodeDelegate, mpeg2encode)
+if test -n "$MPEGEncodeDelegate"
 then
-    AC_DEFINE_UNQUOTED(MVDelegate,"$MVDelegate")
-    have_mv='yes'
+    AC_DEFINE_UNQUOTED(MPEGEncodeDelegate,"$MPEGEncodeDelegate")
+    have_mpeg2encode='yes'
 else
-    MVDelegate=mv
+    MPEGEncodeDelegate=mpeg2encode
 fi
-AC_SUBST(MVDelegate)
+AC_SUBST(MPEGEncodeDelegate)
 
 #
 # Look for 'pgpv' program
@@ -949,29 +965,28 @@ AC_SUBST(PGPDecodeDelegate)
 #
 # Look for Radiance format support program 'ra_ppm'
 #
-have_rad='no'
-ra_ppm_default='ra_ppm'
-AC_PATH_PROG(RADDecodeDelegate, "$ra_ppm_default")
+have_ra_ppm='no'
+AC_PATH_PROG(RADDecodeDelegate, ra_ppm)
 if test -n "$RADDecodeDelegate"
 then
     AC_DEFINE_UNQUOTED(RADDecodeDelegate,"$RADDecodeDelegate")
-    have_rad='yes'
+    have_ra_ppm='yes'
 else
-    RADDecodeDelegate="$ra_ppm_default"
+    RADDecodeDelegate=ra_ppm
 fi
 AC_SUBST(RADDecodeDelegate)
 
 #
 # Look for CGM support program 'ralcgm'
 #
-have_cgm='no'
+have_ralcgm='no'
 AC_PATH_PROG(CGMDecodeDelegate, ralcgm)
 if test -n "$CGMDecodeDelegate"
 then
     AC_DEFINE_UNQUOTED(CGMDecodeDelegate,"$CGMDecodeDelegate")
-    have_cgm='yes'
+    have_ralcgm='yes'
 else
-    CGMDecodeDelegate=ralcgm_default
+    CGMDecodeDelegate=ralcgm
 fi
 AC_SUBST(CGMDecodeDelegate)
 
@@ -1017,19 +1032,31 @@ else
 fi
 AC_SUBST(HTMLDecodeDelegate)
 
+
 #
-# Look for display program.
+# Configure convert program
 #
-have_display='no'
-AC_PATH_PROG(ShowImageDelegate, display)
-if test -n "$ShowImageDelegate"
-then
-    AC_DEFINE_UNQUOTED(ShowImageDelegate,"$ShowImageDelegate")
-    have_display='yes'
-else
-    ShowImageDelegate=display
-fi
+ConvertDelegate=$im_bindir/convert
+have_convert='yes'
+AC_DEFINE_UNQUOTED(ConvertDelegate,"$ConvertDelegate")
+AC_SUBST(ConvertDelegate)
+
+#
+# Configure display program.
+#
+ShowImageDelegate=$im_bindir/display
+have_display='yes'
+AC_DEFINE_UNQUOTED(ShowImageDelegate,"$ShowImageDelegate")
 AC_SUBST(ShowImageDelegate)
+
+#
+# Configure mogrify program.
+#
+MogrifyDelegate=$im_bindir/mogrify
+have_mogrify='yes'
+AC_DEFINE_UNQUOTED(MogrifyDelegate,"$MogrifyDelegate")
+AC_SUBST(MogrifyDelegate)
+
 
 #
 # Look for 'rawtorle' program
@@ -1074,21 +1101,6 @@ fi
 AC_SUBST(WWWDecodeDelegate)
 
 #
-# Look for 'rm' program
-#
-have_rm='no'
-AC_PATH_PROG(RMDelegate, rm)
-if test -n "$RMDelegate"
-then
-    AC_DEFINE_UNQUOTED(RMDelegate,"$RMDelegate")
-    have_rm='yes'
-else
-    RMDelegate=rm
-fi
-AC_SUBST(RMDelegate)
-
-#
-#
 # PerlMagick-related configuration
 #
 
@@ -1123,24 +1135,24 @@ AC_SUBST(MAGICKLIB)
 # Create a simple string containing format names for all delegate libraries
 DELEGATES=''
 if test "$have_bzlib"  = 'yes' ; then DELEGATES="$DELEGATES bzlib"  ; fi
-if test "$have_cgm"  = 'yes' ; then DELEGATES="$DELEGATES cgm"  ; fi
-if test "$have_fpx"  = 'yes' ; then DELEGATES="$DELEGATES fpx"  ; fi
-if test "$have_hdf"  = 'yes' ; then DELEGATES="$DELEGATES hdf"  ; fi
-if test "$have_jbig" = 'yes' ; then DELEGATES="$DELEGATES jbig" ; fi
-if test "$have_jpeg" = 'yes' ; then DELEGATES="$DELEGATES jpeg" ; fi
-if test "$have_mpeg" = 'yes' ; then DELEGATES="$DELEGATES mpeg" ; fi
-if test "$have_png"  = 'yes' ; then DELEGATES="$DELEGATES png"  ; fi
+if test "$have_ralcgm" = 'yes' ; then DELEGATES="$DELEGATES cgm"  ; fi
+if test "$have_fpx"    = 'yes' ; then DELEGATES="$DELEGATES fpx"  ; fi
+if test "$have_hdf"    = 'yes' ; then DELEGATES="$DELEGATES hdf"  ; fi
+if test "$have_jbig"   = 'yes' ; then DELEGATES="$DELEGATES jbig" ; fi
+if test "$have_jpeg"   = 'yes' ; then DELEGATES="$DELEGATES jpeg" ; fi
+if test "$have_mpeg2decode" = 'yes' && test "$have_mpeg2encode"  = 'yes' ; then DELEGATES="$DELEGATES mpeg" ; fi
+if test "$have_png"    = 'yes' ; then DELEGATES="$DELEGATES png"  ; fi
 
 have_ps='no'
-if test "$have_dps"  = 'yes' || test "$have_gs" = 'yes' ; then have_ps='yes'  ; fi
-if test "$have_ps"   = 'yes' ; then DELEGATES="$DELEGATES ps"  ; fi
+if test "$have_dps"    = 'yes' || test "$have_gs" = 'yes' ; then have_ps='yes'  ; fi
+if test "$have_ps"     = 'yes' ; then DELEGATES="$DELEGATES ps"  ; fi
 
-if test "$have_rad"  = 'yes' ; then DELEGATES="$DELEGATES rad" ; fi
-if test "$have_tiff" = 'yes' ; then DELEGATES="$DELEGATES tiff" ; fi
-if test "$have_ttf"  = 'yes' ; then DELEGATES="$DELEGATES ttf"  ; fi
-if test "$have_x"    = 'yes' ; then DELEGATES="$DELEGATES x"    ; fi
-if test "$have_xfig" = 'yes' && test "$have_ps" = 'yes'  ; then DELEGATES="$DELEGATES xfig"    ; fi
-if test "$have_zlib" = 'yes' ; then DELEGATES="$DELEGATES zlib" ; fi
+if test "$have_ra_ppm" = 'yes' ; then DELEGATES="$DELEGATES rad" ; fi
+if test "$have_tiff"   = 'yes' ; then DELEGATES="$DELEGATES tiff" ; fi
+if test "$have_ttf"    = 'yes' ; then DELEGATES="$DELEGATES ttf"  ; fi
+if test "$have_x"      = 'yes' ; then DELEGATES="$DELEGATES x"    ; fi
+if test "$have_fig2dev" = 'yes' && test "$have_ps" = 'yes'  ; then DELEGATES="$DELEGATES xfig"    ; fi
+if test "$have_zlib"   = 'yes' ; then DELEGATES="$DELEGATES zlib" ; fi
 
 AC_SUBST(DELEGATES)
 

@@ -130,7 +130,7 @@ DIR *opendir(char *name)
       errno=ENOMEM;
       return((DIR *) NULL);
     }
-  if (Latin1Compare(".",name) == 0)
+  if (strcmp(".",name) == 0)
     name="";
   directory->pattern=malloc((unsigned int) (strlen(name)+sizeof("*.*")+1));
   if (directory->pattern == (char *) NULL)

@@ -149,6 +149,8 @@ static unsigned int ReadDelegates(char *path,char *directory)
         delegate_info.direction=1;
         *p++;
       }
+    while (isspace(*p))
+      p++;
     if (*p != '0')
       (void) strcpy(delegate_info.encode_tag,p);
     Strip(delegate_info.encode_tag);
@@ -176,6 +178,12 @@ static unsigned int ReadDelegates(char *path,char *directory)
       else
         delegate_info.commands[strlen(delegate_info.commands)-1]='\0';
     }
+    if (delegate_info.commands == (char *) NULL)
+      {
+        MagickWarning(DelegateWarning,"no commands for this delgate",
+          delegate_info.decode_tag);
+        continue;
+      }
     /*
       Add delegate to the delegate list.
     */
@@ -185,6 +193,52 @@ static unsigned int ReadDelegates(char *path,char *directory)
     FreeMemory((char *) delegate_info.commands);
   }
   return(number_delegates != 0);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   D e s t r o y D e l e g a t e s                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method DestroyDelegates deallocates memory associated with the delegates
+%  list.
+%
+%  The format of the DestroyDelegates routine is:
+%
+%      DestroyDelegates(image_info)
+%
+%  A description of each parameter follows:
+%
+%    o image_info: Specifies a pointer to a Delegates structure.
+%
+%
+*/
+Export void DestroyDelegates(void)
+{
+  DelegateInfo
+    *delegate,
+    *delegates;
+
+  register DelegateInfo
+    *p;
+
+  delegates=SetDelegateInfo((DelegateInfo *) NULL);
+  if (delegates == (DelegateInfo *) NULL)
+    return;
+  for (p=delegates; p != (DelegateInfo *) NULL; )
+  {
+    if (p->commands != (char *) NULL)
+      FreeMemory((char *) p->commands);
+    delegate=p;
+    p=p->next;
+    FreeMemory((char *) delegate);
+  }
 }
 
 /*
@@ -232,13 +286,24 @@ Export unsigned int GetDelegateInfo(char *tag,unsigned int decode,
   delegates=SetDelegateInfo((DelegateInfo *) NULL);
   if (delegates == (DelegateInfo *) NULL)
     {
+      DelegateInfo
+        delegate_info;
+
       /*
-        The delegate list is empty, read delegates from the delegates.mgk file.
+        The delegate list is empty, read delegates from the configuration file.
       */
+      *delegate_info.decode_tag='\0';
+      delegate_info.commands=(char *) NULL;
+      *delegate_info.encode_tag='\0';
+      delegate_info.direction=0;
+      (void) SetDelegateInfo(&delegate_info);
       (void) ReadDelegates(DelegatePath,"/ImageMagick/");
-      (void) ReadDelegates(getenv("HOME"),"/.magick/");
+      (void) ReadDelegates((char *) getenv("HOME"),"/.magick/");
       (void) ReadDelegates((char *) NULL,(char *) NULL);
       delegates=SetDelegateInfo((DelegateInfo *) NULL);
+      if (delegates->next == (DelegateInfo *) NULL)
+        MagickWarning(DelegateWarning,"no delegates configuration file found",
+          DelegateFilename);
     }
   if (decode)
     {
@@ -512,7 +577,7 @@ Export unsigned int InvokeDelegate(const ImageInfo *image_info,Image *image,
         status=WriteImage(&local_info,p);
         if (status == False)
           {
-            MagickWarning(DelegateWarning,"delegate failed",command);
+            MagickWarning(DelegateWarning,"delegate failed",tag);
             return(False);
           }
       }
@@ -603,11 +668,18 @@ Export DelegateInfo *SetDelegateInfo(DelegateInfo *delegate_info)
   (void) strcpy(new_delegate->decode_tag,delegate_info->decode_tag);
   (void) strcpy(new_delegate->encode_tag,delegate_info->encode_tag);
   new_delegate->direction=delegate_info->direction;
-  new_delegate->commands=(char *)
-    AllocateMemory((strlen(delegate_info->commands)+1)*sizeof(char));
-  if (new_delegate->commands == (char *) NULL)
-    return(delegates);
-  (void) strcpy(new_delegate->commands,delegate_info->commands);
+  new_delegate->commands=(char *) NULL;
+  if (delegate_info->commands != (char *) NULL)
+    {
+      /*
+        Note commands associated with this delegate.
+      */
+      new_delegate->commands=(char *)
+        AllocateMemory((strlen(delegate_info->commands)+1)*sizeof(char));
+      if (new_delegate->commands == (char *) NULL)
+        return(delegates);
+      (void) strcpy(new_delegate->commands,delegate_info->commands);
+    }
   new_delegate->previous=(DelegateInfo *) NULL;
   new_delegate->next=(DelegateInfo *) NULL;
   if (delegates == (DelegateInfo *) NULL)

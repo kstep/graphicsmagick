@@ -140,7 +140,8 @@ Export Image *AddNoiseImage(Image *image,NoiseType noise_type)
       q->length=0;
       q++;
     }
-    ProgressMonitor(AddNoiseImageText,y,image->rows);
+    if (QuantumTick(y,image->rows))
+      ProgressMonitor(AddNoiseImageText,y,image->rows);
   }
   return(noisy_image);
 }
@@ -346,7 +347,8 @@ Export Image *BlurImage(Image *image,double factor)
     *q=(*s1);
     q->length=0;
     q++;
-    ProgressMonitor(BlurImageText,y,image->rows);
+    if (QuantumTick(y,image->rows))
+      ProgressMonitor(BlurImageText,y,image->rows);
   }
   /*
     Dump last scanline of pixels.
@@ -760,7 +762,8 @@ Export Image *EdgeImage(Image *image,double factor)
     }
     *q=(*(q-1));
     q++;
-    ProgressMonitor(EdgeImageText,y,image->rows-1);
+    if (QuantumTick(y,image->rows))
+      ProgressMonitor(EdgeImageText,y,image->rows-1);
   }
   /*
     Dump last scanline of pixels.
@@ -979,7 +982,8 @@ Export Image *EmbossImage(Image *image)
     }
     *q=(*(q-1));
     q++;
-    ProgressMonitor(EmbossImageText,y,image->rows-1);
+    if (QuantumTick(y,image->rows))
+      ProgressMonitor(EmbossImageText,y,image->rows-1);
   }
   /*
     Dump last scanline of pixels.
@@ -1253,7 +1257,8 @@ Export Image *EnhanceImage(Image *image)
       q++;
       s++;
     }
-    ProgressMonitor(EnhanceImageText,y,image->rows-2);
+    if (QuantumTick(y,image->rows))
+      ProgressMonitor(EnhanceImageText,y,image->rows-2);
   }
   /*
     Dump last 2 scanlines of pixels.
@@ -1396,7 +1401,8 @@ Export Image *ImplodeImage(Image *image,double factor)
       p++;
       q++;
     }
-    ProgressMonitor(ImplodeImageText,y,image->rows);
+    if (QuantumTick(y,image->rows))
+      ProgressMonitor(ImplodeImageText,y,image->rows);
   }
   return(imploded_image);
 }
@@ -1554,7 +1560,8 @@ Export Image *OilPaintImage(Image *image,const unsigned int radius)
       q++;
       p++;
     }
-    ProgressMonitor(OilPaintImageText,y,image->rows);
+    if (QuantumTick(y,image->rows))
+      ProgressMonitor(OilPaintImageText,y,image->rows);
   }
   FreeMemory((char *) histogram);
   return(painted_image);
@@ -1871,7 +1878,8 @@ Export void RaiseImage(Image *image,RectangleInfo *raise_info,const int raised)
         (p->blue*ShadowFactor+background*(MaxRGB-ShadowFactor))/MaxRGB;
       p++;
     }
-    ProgressMonitor(RaiseImageText,y,height);
+    if (QuantumTick(y,height))
+      ProgressMonitor(RaiseImageText,y,height);
   }
   for (y=0; y < raise_info->height; y++)
   {
@@ -2131,7 +2139,8 @@ Export Image *ReduceNoiseImage(Image *image)
     *q=(*s);
     q->length=0;
     q++;
-    ProgressMonitor(ReduceNoiseImageText,y,image->rows-1);
+    if (QuantumTick(y,image->rows))
+      ProgressMonitor(ReduceNoiseImageText,y,image->rows-1);
   }
   /*
     Dump last scanline of pixels.
@@ -2332,7 +2341,8 @@ Export Image *ShadeImage(Image *image,unsigned int color_shading,double azimuth,
       p++;
       q++;
     }
-    ProgressMonitor(ShadeImageText,y,image->rows);
+    if (QuantumTick(y,image->rows))
+      ProgressMonitor(ShadeImageText,y,image->rows);
   }
   if (!color_shading)
     SyncImage(shaded_image);
@@ -2570,7 +2580,8 @@ Export Image *SharpenImage(Image *image,double factor)
     *q=(*s1);
     q->length=0;
     q++;
-    ProgressMonitor(SharpenImageText,y,image->rows-1);
+    if (QuantumTick(y,image->rows))
+      ProgressMonitor(SharpenImageText,y,image->rows-1);
   }
   /*
     Dump last scanline of pixels.
@@ -2642,7 +2653,7 @@ Export void SolarizeImage(Image *image,const double factor)
         p->green=p->green > threshold ? MaxRGB-p->green : p->green;
         p->blue=p->blue > threshold ? MaxRGB-p->blue : p->blue;
         p++;
-        if (QuantumTick(i,image))
+        if (QuantumTick(i,image->packets))
           ProgressMonitor(SolarizeImageText,i,image->packets);
       }
       break;
@@ -2757,7 +2768,8 @@ Export Image *SpreadImage(Image *image,unsigned int amount)
         *q=(*p);
       q++;
     }
-    ProgressMonitor(SpreadImageText,y,image->rows);
+    if (QuantumTick(y,image->rows))
+      ProgressMonitor(SpreadImageText,y,image->rows);
   }
   return(spread_image);
 }
@@ -2885,7 +2897,8 @@ Export Image *SwirlImage(Image *image,double degrees)
       p++;
       q++;
     }
-    ProgressMonitor(SwirlImageText,y,image->rows);
+    if (QuantumTick(y,image->rows))
+      ProgressMonitor(SwirlImageText,y,image->rows);
   }
   return(swirled_image);
 }
@@ -2995,7 +3008,8 @@ Export Image *WaveImage(Image *image,double amplitude,double wavelength)
         *q=Interpolate(image,p,x,i);
       q++;
     }
-    ProgressMonitor(WaveImageText,y,image->rows);
+    if (QuantumTick(y,image->rows))
+      ProgressMonitor(WaveImageText,y,image->rows);
   }
   FreeMemory((char *) sine_map);
   return(waved_image);

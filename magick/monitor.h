@@ -1,4 +1,10 @@
 /*
+  Monitor define declarations.
+*/
+#define QuantumTick(i,span) \
+  ((((~(i) & (i-1))+1) == (i)) || (i == (span-1)))
+
+/*
   Monitor typedef declarations.
 */
 typedef void

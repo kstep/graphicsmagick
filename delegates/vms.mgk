@@ -125,6 +125,9 @@ m2v=>
 	convert %o*.ppm %o
 	rm -f %o*.ppm
 
+pnm<=win
+	display -immutable %i
+
 pgp=>
 	pgpv -fq %i
 
@@ -146,9 +149,6 @@ show=>%m
 
 shtml=>
 	html2ps -o %o %i
-
-win=>pnm
-	display -immutable %i
 
 yuv<=m2v
 	mpeg2encode %u %o

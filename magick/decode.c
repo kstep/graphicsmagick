@@ -213,7 +213,8 @@ static Image *ReadAVSImage(const ImageInfo *image_info)
           }
       }
       if (image->previous == (Image *) NULL)
-        ProgressMonitor(LoadImageText,y,image->rows);
+        if (QuantumTick(y,image->rows))
+          ProgressMonitor(LoadImageText,y,image->rows);
     }
     SetRunlengthPackets(image,packets);
     /*
@@ -539,7 +540,8 @@ static Image *ReadBMPImage(const ImageInfo *image_info)
               p++;
             }
           if (image->previous == (Image *) NULL)
-            ProgressMonitor(LoadImageText,image->rows-y-1,image->rows);
+            if (QuantumTick(y,image->rows))
+              ProgressMonitor(LoadImageText,image->rows-y-1,image->rows);
         }
         break;
       }
@@ -570,7 +572,8 @@ static Image *ReadBMPImage(const ImageInfo *image_info)
               p++;
             }
           if (image->previous == (Image *) NULL)
-            ProgressMonitor(LoadImageText,image->rows-y-1,image->rows);
+            if (QuantumTick(y,image->rows))
+              ProgressMonitor(LoadImageText,image->rows-y-1,image->rows);
         }
         break;
       }
@@ -592,7 +595,8 @@ static Image *ReadBMPImage(const ImageInfo *image_info)
             q++;
           }
           if (image->previous == (Image *) NULL)
-            ProgressMonitor(LoadImageText,image->rows-y-1,image->rows);
+            if (QuantumTick(y,image->rows))
+              ProgressMonitor(LoadImageText,image->rows-y-1,image->rows);
         }
         break;
       }
@@ -618,7 +622,8 @@ static Image *ReadBMPImage(const ImageInfo *image_info)
             q++;
           }
           if (image->previous == (Image *) NULL)
-            ProgressMonitor(LoadImageText,image->rows-y-1,image->rows);
+            if (QuantumTick(y,image->rows))
+              ProgressMonitor(LoadImageText,image->rows-y-1,image->rows);
         }
         break;
       }
@@ -644,7 +649,8 @@ static Image *ReadBMPImage(const ImageInfo *image_info)
             q++;
           }
           if (image->previous == (Image *) NULL)
-            ProgressMonitor(LoadImageText,image->rows-y-1,image->rows);
+            if (QuantumTick(y,image->rows))
+              ProgressMonitor(LoadImageText,image->rows-y-1,image->rows);
         }
         break;
       }
@@ -821,7 +827,8 @@ static Image *ReadCMYKImage(const ImageInfo *image_info)
             q++;
           }
           if (image->previous == (Image *) NULL)
-            ProgressMonitor(LoadImageText,y,image->rows);
+            if (QuantumTick(y,image->rows))
+              ProgressMonitor(LoadImageText,y,image->rows);
         }
         count=image->tile_info.height-image->rows-image->tile_info.y;
         for (y=0; y < count; y++)
@@ -879,7 +886,8 @@ static Image *ReadCMYKImage(const ImageInfo *image_info)
             q++;
           }
           if (image->previous == (Image *) NULL)
-            ProgressMonitor(LoadImageText,y,image->rows);
+            if (QuantumTick(y,image->rows))
+              ProgressMonitor(LoadImageText,y,image->rows);
         }
         count=image->tile_info.height-image->rows-image->tile_info.y;
         for (y=0; y < count; y++)
@@ -919,7 +927,8 @@ static Image *ReadCMYKImage(const ImageInfo *image_info)
             q++;
           }
           if (image->previous == (Image *) NULL)
-            ProgressMonitor(LoadImageText,i++,image->rows << 2);
+            if (QuantumTick(y,image->rows))
+              ProgressMonitor(LoadImageText,i++,image->rows << 2);
         }
         count=image->tile_info.height-image->rows-image->tile_info.y;
         for (y=0; y < count; y++)
@@ -948,7 +957,8 @@ static Image *ReadCMYKImage(const ImageInfo *image_info)
             q++;
           }
           if (image->previous == (Image *) NULL)
-            ProgressMonitor(LoadImageText,i++,image->rows << 2);
+            if (QuantumTick(y,image->rows))
+              ProgressMonitor(LoadImageText,i++,image->rows << 2);
         }
         count=image->tile_info.height-image->rows-image->tile_info.y;
         for (y=0; y < count; y++)
@@ -977,7 +987,8 @@ static Image *ReadCMYKImage(const ImageInfo *image_info)
             q++;
           }
           if (image->previous == (Image *) NULL)
-            ProgressMonitor(LoadImageText,i++,image->rows << 2);
+            if (QuantumTick(y,image->rows))
+              ProgressMonitor(LoadImageText,i++,image->rows << 2);
         }
         count=image->tile_info.height-image->rows-image->tile_info.y;
         for (y=0; y < count; y++)
@@ -1006,7 +1017,8 @@ static Image *ReadCMYKImage(const ImageInfo *image_info)
             q++;
           }
           if (image->previous == (Image *) NULL)
-            ProgressMonitor(LoadImageText,i++,image->rows << 2);
+            if (QuantumTick(y,image->rows))
+              ProgressMonitor(LoadImageText,i++,image->rows << 2);
         }
         count=image->tile_info.height-image->rows-image->tile_info.y;
         for (y=0; y < count; y++)
@@ -1094,7 +1106,8 @@ static Image *ReadDICOMImage(const ImageInfo *image_info)
   int
     element,
     group,
-    length;
+    length,
+    y;
 
   Quantum
     blue,
@@ -1103,6 +1116,7 @@ static Image *ReadDICOMImage(const ImageInfo *image_info)
     *scale;
 
   register int
+    x,
     i;
 
   register RunlengthPacket
@@ -1429,66 +1443,70 @@ static Image *ReadDICOMImage(const ImageInfo *image_info)
   index=0;
   q=image->pixels;
   SetRunlengthEncoder(q);
-  for (i=0; i < (image->columns*image->rows); i++)
+  for (y=0; y < image->rows; y++)
   {
-    if (samples_per_pixel == 1)
-      {
-        if (bytes_per_pixel == 1)
-          index=fgetc(image->file);
-        else
-          index=LSBFirstReadShort(image->file);
-        if (strcmp(photometric,"MONOCHROME1") == 0)
-          index=max_value-index;
-        if (graymap != (unsigned short *) NULL)
-          index=graymap[index];
-      }
-    else
-      if (bytes_per_pixel == 1)
+    for (x=0; x < image->columns; x++)
+    {
+      if (samples_per_pixel == 1)
         {
-          red=fgetc(image->file);
-          green=fgetc(image->file);
-          blue=fgetc(image->file);
+          if (bytes_per_pixel == 1)
+            index=fgetc(image->file);
+          else
+            index=LSBFirstReadShort(image->file);
+          if (strcmp(photometric,"MONOCHROME1") == 0)
+            index=max_value-index;
+          if (graymap != (unsigned short *) NULL)
+            index=graymap[index];
         }
       else
-        {
-          red=LSBFirstReadShort(image->file);
-          green=LSBFirstReadShort(image->file);
-          blue=LSBFirstReadShort(image->file);
-        }
-    if (scale != (Quantum *) NULL)
-      {
-        red=scale[red];
-        green=scale[green];
-        blue=scale[blue];
-        index=scale[index];
-      }
-    if ((red == q->red) && (green == q->green) && (blue == q->blue) &&
-        (index == q->index) && ((int) q->length < MaxRunlength))
-      q->length++;
-    else
-      {
-        if (packets != 0)
-          q++;
-        packets++;
-        if (packets == max_packets)
+        if (bytes_per_pixel == 1)
           {
-            max_packets<<=1;
-            image->pixels=(RunlengthPacket *) ReallocateMemory((char *)
-              image->pixels,max_packets*sizeof(RunlengthPacket));
-            if (image->pixels == (RunlengthPacket *) NULL)
-              {
-                if (scale != (Quantum *) NULL)
-                  FreeMemory((char *) scale);
-                PrematureExit(ResourceLimitWarning,"Memory allocation failed",
-                  image);
-              }
-            q=image->pixels+packets-1;
+            red=fgetc(image->file);
+            green=fgetc(image->file);
+            blue=fgetc(image->file);
           }
-        q->index=index;
-        q->length=0;
-      }
-    if (QuantumTick(i,image))
-      ProgressMonitor(LoadImageText,i,image->columns*image->rows);
+        else
+          {
+            red=LSBFirstReadShort(image->file);
+            green=LSBFirstReadShort(image->file);
+            blue=LSBFirstReadShort(image->file);
+          }
+      if (scale != (Quantum *) NULL)
+        {
+          red=scale[red];
+          green=scale[green];
+          blue=scale[blue];
+          index=scale[index];
+        }
+      if ((red == q->red) && (green == q->green) && (blue == q->blue) &&
+          (index == q->index) && ((int) q->length < MaxRunlength))
+        q->length++;
+      else
+        {
+          if (packets != 0)
+            q++;
+          packets++;
+          if (packets == max_packets)
+            {
+              max_packets<<=1;
+              image->pixels=(RunlengthPacket *) ReallocateMemory((char *)
+                image->pixels,max_packets*sizeof(RunlengthPacket));
+              if (image->pixels == (RunlengthPacket *) NULL)
+                {
+                  if (scale != (Quantum *) NULL)
+                    FreeMemory((char *) scale);
+                  PrematureExit(ResourceLimitWarning,"Memory allocation failed",
+                    image);
+                }
+              q=image->pixels+packets-1;
+            }
+          q->index=index;
+          q->length=0;
+        }
+    }
+    if (image->previous == (Image *) NULL)
+      if (QuantumTick(y,image->rows))
+        ProgressMonitor(LoadImageText,y,image->rows);
   }
   SetRunlengthPackets(image,packets);
   SyncImage(image);
@@ -1820,7 +1838,8 @@ static Image *ReadDPSImage(const ImageInfo *image_info)
             p->length=0;
             p++;
           }
-          ProgressMonitor(LoadImageText,y,image->rows);
+          if (QuantumTick(y,image->rows))
+            ProgressMonitor(LoadImageText,y,image->rows);
         }
       else
         for (y=0; y < image->rows; y++)
@@ -1838,7 +1857,8 @@ static Image *ReadDPSImage(const ImageInfo *image_info)
             p->length=0;
             p++;
           }
-          ProgressMonitor(LoadImageText,y,image->rows);
+          if (QuantumTick(y,image->rows))
+            ProgressMonitor(LoadImageText,y,image->rows);
         }
       break;
     }
@@ -1876,7 +1896,8 @@ static Image *ReadDPSImage(const ImageInfo *image_info)
           p->length=0;
           p++;
         }
-        ProgressMonitor(LoadImageText,y,image->rows);
+        if (QuantumTick(y,image->rows))
+          ProgressMonitor(LoadImageText,y,image->rows);
       }
       break;
     }
@@ -2369,7 +2390,8 @@ static Image *ReadFITSImage(const ImageInfo *image_info)
       q->length=0;
       q++;
     }
-    ProgressMonitor(LoadImageText,y,image->rows);
+    if (QuantumTick(y,image->rows))
+      ProgressMonitor(LoadImageText,y,image->rows);
   }
   FreeMemory((char *) fits_pixels);
   SyncImage(image);
@@ -2791,7 +2813,8 @@ static Image *ReadFPXImage(const ImageInfo *image_info)
       b+=blue_component->columnStride;
       a+=alpha_component->columnStride;
     }
-    ProgressMonitor(LoadImageText,y,image->rows);
+    if (QuantumTick(y,image->rows))
+      ProgressMonitor(LoadImageText,y,image->rows);
   }
   SetRunlengthPackets(image,packets);
   FreeMemory((char *) scanline);
@@ -3281,7 +3304,8 @@ static Image *ReadGRADATIONImage(const ImageInfo *image_info)
       saturation+=saturation_step;
       brightness+=brightness_step;
     }
-    ProgressMonitor(LoadImageText,y,image->rows);
+    if (QuantumTick(y,image->rows))
+      ProgressMonitor(LoadImageText,y,image->rows);
   }
   CondenseImage(image);
   return(image);
@@ -3454,7 +3478,8 @@ static Image *ReadGRAYImage(const ImageInfo *image_info)
           }
       }
       if (image->previous == (Image *) NULL)
-        ProgressMonitor(LoadImageText,y,image->rows);
+        if (QuantumTick(y,image->rows))
+          ProgressMonitor(LoadImageText,y,image->rows);
     }
     count=image->tile_info.height-image->rows-image->tile_info.y;
     for (y=0; y < count; y++)
@@ -3667,7 +3692,8 @@ static Image *ReadHDFImage(ImageInfo *image_info)
             q++;
           }
           if (image->previous == (Image *) NULL)
-            ProgressMonitor(LoadImageText,y,image->rows);
+            if (QuantumTick(y,image->rows))
+              ProgressMonitor(LoadImageText,y,image->rows);
         }
       }
     else
@@ -3696,7 +3722,8 @@ static Image *ReadHDFImage(ImageInfo *image_info)
             q++;
           }
           if (image->previous == (Image *) NULL)
-            ProgressMonitor(LoadImageText,y,image->rows);
+            if (QuantumTick(y,image->rows))
+              ProgressMonitor(LoadImageText,y,image->rows);
         }
       }
     length=DFANgetlablen(image->filename,DFTAG_RIG,reference);
@@ -4005,7 +4032,8 @@ static Image *ReadJBIGImage(const ImageInfo *image_info)
       if (bit == 8)
         bit=0;
     }
-    ProgressMonitor(LoadImageText,y,image->rows);
+    if (QuantumTick(y,image->rows))
+      ProgressMonitor(LoadImageText,y,image->rows);
   }
   SetRunlengthPackets(image,packets);
   SyncImage(image);
@@ -4420,7 +4448,8 @@ static Image *ReadJPEGImage(const ImageInfo *image_info)
           q->length=0;
         }
     }
-    ProgressMonitor(LoadImageText,y,image->rows);
+    if (QuantumTick(y,image->rows))
+      ProgressMonitor(LoadImageText,y,image->rows);
   }
   SetRunlengthPackets(image,packets);
   if (jpeg_info.out_color_space == JCS_CMYK)
@@ -4691,7 +4720,8 @@ static Image *ReadICONImage(const ImageInfo *image_info)
               p++;
             }
           if (image->previous == (Image *) NULL)
-            ProgressMonitor(LoadImageText,image->rows-y-1,image->rows);
+            if (QuantumTick(y,image->rows))
+              ProgressMonitor(LoadImageText,image->rows-y-1,image->rows);
         }
         break;
       }
@@ -4722,7 +4752,8 @@ static Image *ReadICONImage(const ImageInfo *image_info)
               p++;
             }
           if (image->previous == (Image *) NULL)
-            ProgressMonitor(LoadImageText,image->rows-y-1,image->rows);
+            if (QuantumTick(y,image->rows))
+              ProgressMonitor(LoadImageText,image->rows-y-1,image->rows);
         }
         break;
       }
@@ -4742,7 +4773,8 @@ static Image *ReadICONImage(const ImageInfo *image_info)
             q++;
           }
           if (image->previous == (Image *) NULL)
-            ProgressMonitor(LoadImageText,image->rows-y-1,image->rows);
+            if (QuantumTick(y,image->rows))
+              ProgressMonitor(LoadImageText,image->rows-y-1,image->rows);
         }
         break;
       }
@@ -4765,7 +4797,8 @@ static Image *ReadICONImage(const ImageInfo *image_info)
             q++;
           }
           if (image->previous == (Image *) NULL)
-            ProgressMonitor(LoadImageText,image->rows-y-1,image->rows);
+            if (QuantumTick(y,image->rows))
+              ProgressMonitor(LoadImageText,image->rows-y-1,image->rows);
         }
         break;
       }
@@ -4805,7 +4838,8 @@ static Image *ReadICONImage(const ImageInfo *image_info)
           p++;
         }
       if (image->previous == (Image *) NULL)
-        ProgressMonitor(LoadImageText,image->rows-y-1,image->rows);
+        if (QuantumTick(y,image->rows))
+          ProgressMonitor(LoadImageText,image->rows-y-1,image->rows);
     }
     FreeMemory((char *) icon_pixels);
     CondenseImage(image);
@@ -5536,6 +5570,9 @@ static Image *ReadLOGOImage(ImageInfo *image_info)
 {
 #include "logo.h"
 
+  char
+    filename[MaxTextExtent];
+
   FILE
     *file;
 
@@ -5554,6 +5591,7 @@ static Image *ReadLOGOImage(ImageInfo *image_info)
   /*
     Open temporary output file.
   */
+  (void) strcpy(filename,image_info->filename);
   TemporaryFilename(image_info->filename);
   file=fopen(image_info->filename,WriteBinaryType);
   if (file == (FILE *) NULL)
@@ -5582,16 +5620,16 @@ static Image *ReadLOGOImage(ImageInfo *image_info)
   if (ferror(file))
     {
       MagickWarning(FileOpenWarning,"An error has occurred writing to file",
-        image_info->filename);
+        filename);
       (void) fclose(file);
-      (void) remove(image_info->filename);
+      (void) remove(filename);
       return(ReadXCImage(image_info));
     }
   (void) fclose(file);
   image=ReadGIFImage(image_info);
-  if (image != (Image *) NULL)
-    (void) strcpy(image->filename,image_info->filename);
   (void) remove(image_info->filename);
+  if (image != (Image *) NULL)
+    (void) strcpy(image->filename,filename);
   return(image);
 }
 
@@ -6411,7 +6449,8 @@ static Image *ReadMONOImage(const ImageInfo *image_info)
         bit=0;
       byte>>=1;
     }
-    ProgressMonitor(LoadImageText,y,image->rows);
+    if (QuantumTick(y,image->rows))
+      ProgressMonitor(LoadImageText,y,image->rows);
   }
   SetRunlengthPackets(image,packets);
   SyncImage(image);
@@ -6552,7 +6591,8 @@ static Image *ReadMTVImage(const ImageInfo *image_info)
           }
       }
       if (image->previous == (Image *) NULL)
-        ProgressMonitor(LoadImageText,y,image->rows);
+        if (QuantumTick(y,image->rows))
+          ProgressMonitor(LoadImageText,y,image->rows);
     }
     SetRunlengthPackets(image,packets);
     /*
@@ -7023,7 +7063,7 @@ static Image *ReadPCDImage(const ImageInfo *image_info)
     p->index=0;
     p->length=0;
     p++;
-    if (QuantumTick(i,image))
+    if (QuantumTick(i,image->packets))
       ProgressMonitor(LoadImageText,i,image->columns*image->rows);
   }
   FreeMemory(chroma2);
@@ -7580,7 +7620,8 @@ static Image *ReadPCXImage(const ImageInfo *image_info)
           }
       }
       if (image->previous == (Image *) NULL)
-        ProgressMonitor(LoadImageText,y,image->rows);
+        if (QuantumTick(y,image->rows))
+          ProgressMonitor(LoadImageText,y,image->rows);
     }
     SetRunlengthPackets(image,packets);
     if (image->class == PseudoClass)
@@ -8327,7 +8368,8 @@ Export Image *ReadPICTImage(ImageInfo *image_info)
             }
             if (tiled_image->class == DirectClass)
               p+=(pixmap.component_count-1)*tiled_image->columns;
-            ProgressMonitor(LoadImageText,y,tiled_image->rows);
+            if (QuantumTick(y,tiled_image->rows))
+              ProgressMonitor(LoadImageText,y,tiled_image->rows);
           }
           SetRunlengthPackets(tiled_image,packets);
           if (tiled_image->class == PseudoClass)
@@ -9166,7 +9208,8 @@ static Image *ReadPNGImage(const ImageInfo *image_info)
               }
           }
           if (image->previous == (Image *) NULL)
-            ProgressMonitor(LoadImageText,y,image->rows);
+            if (QuantumTick(y,image->rows))
+              ProgressMonitor(LoadImageText,y,image->rows);
         }
         SetRunlengthPackets(image,packets);
       }
@@ -9290,7 +9333,8 @@ static Image *ReadPNGImage(const ImageInfo *image_info)
               }
           }
           if (image->previous == (Image *) NULL)
-            ProgressMonitor(LoadImageText,y,image->rows);
+            if (QuantumTick(y,image->rows))
+              ProgressMonitor(LoadImageText,y,image->rows);
         }
         FreeMemory((char *) quantum_scanline);
         SetRunlengthPackets(image,packets);
@@ -9683,7 +9727,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info)
               }
           }
           if (image->previous == (Image *) NULL)
-            ProgressMonitor(LoadImageText,y,image->rows);
+            if (QuantumTick(y,image->rows))
+              ProgressMonitor(LoadImageText,y,image->rows);
         }
         break;
       }
@@ -9725,7 +9770,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info)
               }
           }
           if (image->previous == (Image *) NULL)
-            ProgressMonitor(LoadImageText,y,image->rows);
+            if (QuantumTick(y,image->rows))
+              ProgressMonitor(LoadImageText,y,image->rows);
         }
         break;
       }
@@ -9777,7 +9823,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info)
             }
           }
           if (image->previous == (Image *) NULL)
-            ProgressMonitor(LoadImageText,y,image->rows);
+            if (QuantumTick(y,image->rows))
+              ProgressMonitor(LoadImageText,y,image->rows);
         }
         break;
       }
@@ -9829,7 +9876,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info)
             byte<<=1;
           }
           if (image->previous == (Image *) NULL)
-            ProgressMonitor(LoadImageText,y,image->rows);
+            if (QuantumTick(y,image->rows))
+              ProgressMonitor(LoadImageText,y,image->rows);
         }
         break;
       }
@@ -9871,7 +9919,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info)
               }
           }
           if (image->previous == (Image *) NULL)
-            ProgressMonitor(LoadImageText,y,image->rows);
+            if (QuantumTick(y,image->rows))
+              ProgressMonitor(LoadImageText,y,image->rows);
         }
         break;
       }
@@ -9932,7 +9981,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info)
               }
           }
           if (image->previous == (Image *) NULL)
-            ProgressMonitor(LoadImageText,y,image->rows);
+            if (QuantumTick(y,image->rows))
+              ProgressMonitor(LoadImageText,y,image->rows);
         }
         handler=SetMonitorHandler((MonitorHandler) NULL);
         (void) SetMonitorHandler(handler);
@@ -10886,7 +10936,8 @@ static Image *ReadRGBImage(const ImageInfo *image_info)
             q++;
           }
           if (image->previous == (Image *) NULL)
-            ProgressMonitor(LoadImageText,y,image->rows);
+            if (QuantumTick(y,image->rows))
+              ProgressMonitor(LoadImageText,y,image->rows);
         }
         count=image->tile_info.height-image->rows-image->tile_info.y;
         for (y=0; y < count; y++)
@@ -10948,7 +10999,8 @@ static Image *ReadRGBImage(const ImageInfo *image_info)
               }
             }
           if (image->previous == (Image *) NULL)
-            ProgressMonitor(LoadImageText,y,image->rows);
+            if (QuantumTick(y,image->rows))
+              ProgressMonitor(LoadImageText,y,image->rows);
         }
         count=image->tile_info.height-image->rows-image->tile_info.y;
         for (y=0; y < count; y++)
@@ -10993,7 +11045,8 @@ static Image *ReadRGBImage(const ImageInfo *image_info)
             q++;
           }
           if (image->previous == (Image *) NULL)
-            ProgressMonitor(LoadImageText,i++,span);
+            if (QuantumTick(y,image->rows))
+              ProgressMonitor(LoadImageText,i++,span);
         }
         count=image->tile_info.height-image->rows-image->tile_info.y;
         for (y=0; y < count; y++)
@@ -11022,7 +11075,8 @@ static Image *ReadRGBImage(const ImageInfo *image_info)
             q++;
           }
           if (image->previous == (Image *) NULL)
-            ProgressMonitor(LoadImageText,i++,span);
+            if (QuantumTick(y,image->rows))
+              ProgressMonitor(LoadImageText,i++,span);
         }
         count=image->tile_info.height-image->rows-image->tile_info.y;
         for (y=0; y < count; y++)
@@ -11051,7 +11105,8 @@ static Image *ReadRGBImage(const ImageInfo *image_info)
             q++;
           }
           if (image->previous == (Image *) NULL)
-            ProgressMonitor(LoadImageText,i++,span);
+            if (QuantumTick(y,image->rows))
+              ProgressMonitor(LoadImageText,i++,span);
         }
         count=image->tile_info.height-image->rows-image->tile_info.y;
         for (y=0; y < count; y++)
@@ -11085,7 +11140,8 @@ static Image *ReadRGBImage(const ImageInfo *image_info)
                 q++;
               }
               if (image->previous == (Image *) NULL)
-                ProgressMonitor(LoadImageText,i++,span);
+                if (QuantumTick(y,image->rows))
+                  ProgressMonitor(LoadImageText,i++,span);
             }
             count=image->tile_info.height-image->rows-image->tile_info.y;
             for (y=0; y < count; y++)
@@ -11443,7 +11499,8 @@ static Image *ReadRLAImage(const ImageInfo *image_info)
         while (runlength > 0);
       }
     }
-    ProgressMonitor(LoadImageText,y,image->rows);
+    if (QuantumTick(y,image->rows))
+      ProgressMonitor(LoadImageText,y,image->rows);
     if ((q-image->pixels) >= image->packets)
       break;
   }
@@ -11786,7 +11843,8 @@ static Image *ReadRLEImage(const ImageInfo *image_info)
             q++;
           }
           if (image->previous == (Image *) NULL)
-            ProgressMonitor(LoadImageText,y,image->rows);
+            if (QuantumTick(y,image->rows))
+              ProgressMonitor(LoadImageText,y,image->rows);
         }
       }
     else
@@ -11847,7 +11905,8 @@ static Image *ReadRLEImage(const ImageInfo *image_info)
                 q++;
               }
               if (image->previous == (Image *) NULL)
-                ProgressMonitor(LoadImageText,y,image->rows);
+                if (QuantumTick(y,image->rows))
+                  ProgressMonitor(LoadImageText,y,image->rows);
             }
             SyncImage(image);
           }
@@ -11868,7 +11927,8 @@ static Image *ReadRLEImage(const ImageInfo *image_info)
                 q++;
               }
               if (image->previous == (Image *) NULL)
-                ProgressMonitor(LoadImageText,y,image->rows);
+                if (QuantumTick(y,image->rows))
+                  ProgressMonitor(LoadImageText,y,image->rows);
             }
             FreeMemory(image->colormap);
             image->colormap=(ColorPacket *) NULL;
@@ -12221,7 +12281,8 @@ static Image *ReadSGIImage(const ImageInfo *image_info)
             q++;
           }
           if (image->previous == (Image *) NULL)
-            ProgressMonitor(LoadImageText,y,image->rows);
+            if (QuantumTick(y,image->rows))
+              ProgressMonitor(LoadImageText,y,image->rows);
         }
       }
     else
@@ -12257,7 +12318,8 @@ static Image *ReadSGIImage(const ImageInfo *image_info)
             q++;
           }
           if (image->previous == (Image *) NULL)
-            ProgressMonitor(LoadImageText,y,image->rows);
+            if (QuantumTick(y,image->rows))
+              ProgressMonitor(LoadImageText,y,image->rows);
         }
         SyncImage(image);
       }
@@ -12557,7 +12619,8 @@ static Image *ReadSUNImage(const ImageInfo *image_info)
         if ((((image->columns/8)+(image->columns % 8 ? 1 : 0)) % 2) != 0)
           p++;
         if (image->previous == (Image *) NULL)
-          ProgressMonitor(LoadImageText,y,image->rows);
+          if (QuantumTick(y,image->rows))
+            ProgressMonitor(LoadImageText,y,image->rows);
       }
     else
       if (image->class == PseudoClass)
@@ -12575,7 +12638,8 @@ static Image *ReadSUNImage(const ImageInfo *image_info)
           if ((image->columns % 2) != 0)
             p++;
           if (image->previous == (Image *) NULL)
-            ProgressMonitor(LoadImageText,y,image->rows);
+            if (QuantumTick(y,image->rows))
+              ProgressMonitor(LoadImageText,y,image->rows);
         }
       else
         for (y=0; y < image->rows; y++)
@@ -12612,7 +12676,8 @@ static Image *ReadSUNImage(const ImageInfo *image_info)
           if (((image->columns % 2) != 0) && (image->matte == False))
             p++;
           if (image->previous == (Image *) NULL)
-            ProgressMonitor(LoadImageText,y,image->rows);
+            if (QuantumTick(y,image->rows))
+              ProgressMonitor(LoadImageText,y,image->rows);
         }
     FreeMemory((char *) sun_pixels);
     if (image->class == PseudoClass)
@@ -12995,7 +13060,8 @@ static Image *ReadTGAImage(const ImageInfo *image_info)
       if (feof(image->file))
         break;
       if (image->previous == (Image *) NULL)
-        ProgressMonitor(LoadImageText,y,image->rows);
+        if (QuantumTick(y,image->rows))
+          ProgressMonitor(LoadImageText,y,image->rows);
     }
     (void) IsGrayImage(image);
     if (image->class == PseudoClass)
@@ -13196,7 +13262,8 @@ static Image *ReadTEXTImage(const ImageInfo *image_info)
     offset+=annotate_info.height;
     (void) SetMonitorHandler(handler);
     if (image->previous == (Image *) NULL)
-      ProgressMonitor(LoadImageText,bounding_box.y+offset,image->rows);
+      if (QuantumTick(bounding_box.y+offset,image->rows))
+        ProgressMonitor(LoadImageText,bounding_box.y+offset,image->rows);
     if (((bounding_box.y << 1)+offset+annotate_info.height) < image->rows)
       continue;
     /*
@@ -13769,7 +13836,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info)
               }
           }
           if (image->previous == (Image *) NULL)
-            ProgressMonitor(LoadImageText,y,image->rows);
+            if (QuantumTick(y,image->rows))
+              ProgressMonitor(LoadImageText,y,image->rows);
         }
         FreeMemory((char *) scanline);
         FreeMemory((char *) quantum_scanline);
@@ -13848,7 +13916,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info)
               }
           }
           if (image->previous == (Image *) NULL)
-            ProgressMonitor(LoadImageText,y,image->rows);
+            if (QuantumTick(y,image->rows))
+              ProgressMonitor(LoadImageText,y,image->rows);
         }
         FreeMemory((char *) scanline);
         break;
@@ -13925,7 +13994,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info)
             p++;
           }
           if (image->previous == (Image *) NULL)
-            ProgressMonitor(LoadImageText,image->rows-y-1,image->rows);
+            if (QuantumTick(y,image->rows))
+              ProgressMonitor(LoadImageText,image->rows-y-1,image->rows);
         }
         FreeMemory((char *) pixels);
         break;
@@ -14045,7 +14115,9 @@ static Image *ReadTILEImage(ImageInfo *image_info)
   {
     for (x=0; x < image->columns; x+=tiled_image->columns)
       CompositeImage(image,ReplaceCompositeOp,tiled_image,x,y);
-    ProgressMonitor(LoadImageText,y,image->columns);
+    if (QuantumTick(y,image->rows))
+      if (QuantumTick(y,image->rows))
+        ProgressMonitor(LoadImageText,y,image->rows);
   }
   DestroyImage(tiled_image);
   CondenseImage(image);
@@ -14254,7 +14326,8 @@ static Image *ReadTIMImage(const ImageInfo *image_info)
               q++;
               p++;
             }
-          ProgressMonitor(LoadImageText,image->rows-y-1,image->rows);
+          if (QuantumTick(y,image->rows))
+            ProgressMonitor(LoadImageText,image->rows-y-1,image->rows);
         }
         break;
       }
@@ -14273,7 +14346,8 @@ static Image *ReadTIMImage(const ImageInfo *image_info)
             q->length=0;
             q++;
           }
-          ProgressMonitor(LoadImageText,image->rows-y-1,image->rows);
+          if (QuantumTick(y,image->rows))
+            ProgressMonitor(LoadImageText,image->rows-y-1,image->rows);
         }
         break;
       }
@@ -14297,7 +14371,8 @@ static Image *ReadTIMImage(const ImageInfo *image_info)
             q->length=0;
             q++;
           }
-          ProgressMonitor(LoadImageText,image->rows-y-1,image->rows);
+          if (QuantumTick(y,image->rows))
+            ProgressMonitor(LoadImageText,image->rows-y-1,image->rows);
         }
         break;
       }
@@ -14319,7 +14394,8 @@ static Image *ReadTIMImage(const ImageInfo *image_info)
             q->length=0;
             q++;
           }
-          ProgressMonitor(LoadImageText,image->rows-y-1,image->rows);
+          if (QuantumTick(y,image->rows))
+            ProgressMonitor(LoadImageText,image->rows-y-1,image->rows);
         }
         break;
       }
@@ -14603,7 +14679,7 @@ static Image *ReadUYVYImage(const ImageInfo *image_info)
     q->length=0;
     q++;
     p+=4;
-    if (QuantumTick(i,image))
+    if (QuantumTick(i,image->packets))
       ProgressMonitor(LoadImageText,i,image->columns*image->rows >> 1);
   }
   FreeMemory((char *) uyvy_pixels);
@@ -14829,7 +14905,8 @@ static Image *ReadVICARImage(const ImageInfo *image_info)
       p++;
       q++;
     }
-    ProgressMonitor(LoadImageText,y,image->rows);
+    if (QuantumTick(y,image->rows))
+      ProgressMonitor(LoadImageText,y,image->rows);
   }
   FreeMemory((char *) vicar_pixels);
   SyncImage(image);
@@ -15572,7 +15649,8 @@ static Image *ReadVIFFImage(const ImageInfo *image_info)
               p++;
             }
           if (image->previous == (Image *) NULL)
-            ProgressMonitor(LoadImageText,y,image->rows);
+            if (QuantumTick(y,image->rows))
+              ProgressMonitor(LoadImageText,y,image->rows);
         }
       }
     else
@@ -15589,7 +15667,8 @@ static Image *ReadVIFFImage(const ImageInfo *image_info)
             q++;
           }
           if (image->previous == (Image *) NULL)
-            ProgressMonitor(LoadImageText,y,image->rows);
+            if (QuantumTick(y,image->rows))
+              ProgressMonitor(LoadImageText,y,image->rows);
         }
       else
         {
@@ -15619,7 +15698,8 @@ static Image *ReadVIFFImage(const ImageInfo *image_info)
               q++;
             }
             if (image->previous == (Image *) NULL)
-              ProgressMonitor(LoadImageText,y,image->rows);
+              if (QuantumTick(y,image->rows))
+                ProgressMonitor(LoadImageText,y,image->rows);
           }
         }
     FreeMemory((char *) viff_pixels);
@@ -16163,7 +16243,8 @@ static Image *ReadXBMImage(const ImageInfo *image_info)
       if (bit == 8)
         bit=0;
     }
-    ProgressMonitor(LoadImageText,y,image->rows);
+    if (QuantumTick(y,image->rows))
+      ProgressMonitor(LoadImageText,y,image->rows);
   }
   FreeMemory((char *) data);
   SyncImage(image);
@@ -16251,7 +16332,7 @@ static Image *ReadXCImage(const ImageInfo *image_info)
     q->index=0;
     SetRunlengthEncoder(q);
     q++;
-    if (QuantumTick(i,image))
+    if (QuantumTick(i,image->packets))
       ProgressMonitor(LoadImageText,i,image->columns*image->rows);
   }
   q--;
@@ -16864,7 +16945,8 @@ static Image *ReadXWDImage(const ImageInfo *image_info)
                 q->length=0;
               }
           }
-          ProgressMonitor(LoadImageText,y,image->rows);
+          if (QuantumTick(y,image->rows))
+            ProgressMonitor(LoadImageText,y,image->rows);
         }
       else
         for (y=0; y < image->rows; y++)
@@ -16903,7 +16985,8 @@ static Image *ReadXWDImage(const ImageInfo *image_info)
                 q->length=0;
               }
           }
-          ProgressMonitor(LoadImageText,y,image->rows);
+          if (QuantumTick(y,image->rows))
+            ProgressMonitor(LoadImageText,y,image->rows);
         }
       break;
     }
@@ -16949,7 +17032,8 @@ static Image *ReadXWDImage(const ImageInfo *image_info)
               q->length=0;
             }
         }
-        ProgressMonitor(LoadImageText,y,image->rows);
+        if (QuantumTick(y,image->rows))
+          ProgressMonitor(LoadImageText,y,image->rows);
       }
       break;
     }

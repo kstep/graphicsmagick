@@ -68,6 +68,9 @@
 <=zip
 	|gzip -cf > %o
 
+bmp<=win
+	mspaint %i
+
 browse=>
 	cmd /C start http://www.wizards.dupont.com/cristy/ImageMagick.html &
 
@@ -145,9 +148,6 @@ show=>%m
 
 shtml=>
 	html2ps -o %o %i
-
-win=>bmp
-	mspaint %i
 
 yuv<=m2v
 	mpeg2encode %u %o

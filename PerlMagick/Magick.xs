@@ -2313,7 +2313,6 @@ Mogrify(ref, ...)
 	    Image *image, *next, *region_image = NULL;
 	    struct info *info, *temp = NULL;
 	    char b[80];
-	    unsigned int compress;
 	    SV **svarr = NULL, **pv;
 	    char *commands[10];
 
@@ -2459,8 +2458,6 @@ Mogrify(ref, ...)
 	    {
 		image = next;
 
-		compress = image->packets <
-		    ((image->columns*image->rows*3) >> 2);
 		if ((rg.width*rg.height) != 0)
 		{
 		    region_image = image;
@@ -3262,8 +3259,6 @@ Mogrify(ref, ...)
 
 		if (image)
 		{
-		    if (compress)
-			CondenseImage(image);
 		    ++nimg;
 		    if (next && next != image)
 		    {
