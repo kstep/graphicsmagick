@@ -35,7 +35,7 @@ typedef unsigned char Quantum;
 typedef unsigned short Quantum;
 #elif (QuantumDepth == 32)
 /*
-  Color quantum is [0..4294967295].
+  Experimental: Color quantum is [0..4294967295].
 */
 #define Downscale(quantum)  ((quantum)/16777217L)
 #define Upscale(quantum)  (16777217L*(quantum))
