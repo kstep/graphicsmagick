@@ -9,6 +9,7 @@ $font = 'Generic.ttf';
 $image = Image::Magick->new();
 $smile = Image::Magick->new();
 $smile->Read('smile.gif');
+$smile->Set(background=>'none');
 $x = 100;
 $y = 100;
 for ($angle=0; $angle < 360; $angle+=30)
