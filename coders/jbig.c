@@ -435,7 +435,7 @@ static unsigned int WriteJBIGImage(const ImageInfo *image_info,Image *image)
     /*
       Allocate pixel data.
     */
-    (void) TransformRGBImage(image,RGBColorspace);
+    (void) TransformRGBImage(image,image->colorspace);
     number_packets=((image->columns+7) >> 3)*image->rows;
     pixels=(unsigned char *) AcquireMemory(number_packets);
     if (pixels == (unsigned char *) NULL)

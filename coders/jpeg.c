@@ -1440,7 +1440,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
           break;
         }
       if (image->colorspace != RGBColorspace)
-        (void) TransformRGBImage(image,RGBColorspace);
+        (void) TransformRGBImage(image,image->colorspace);
       break;
     }
   }

@@ -1,3 +1,16 @@
+2002-12-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+	* magick/image.c: Optimized gray x, y, z, tables creation in
+	RGBTransformImage().
+
+2002-12-27  Cristy  <cristy@mystic.es.dupont.com>
+	* coders/pcd.c: IsPCDImage() fix offset to test header magic.
+	* coders/pcd.c: Ensure that blob is closed on error.
+	* coders (all): Pass image->colorspace to TransformRGBImage()
+	* magick (animate.c, command.c, display.c, image.c, nt_feature.c)
+	Pass image->colorspace to TransformRGBImage().
+	* magick/nt_feature.c: Ensure that image is RGB prior to transfer
+	to HBITMAP.
+
 2002-12-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 	* magick/image.c: Re-worked RGBTransformImage so that it is now
 	smoking fast for Q:8 and Q:16. Changed lookup tables, and all

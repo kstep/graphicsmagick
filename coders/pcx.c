@@ -766,7 +766,7 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
     ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
-  (void) TransformRGBImage(image,RGBColorspace);
+  (void) TransformRGBImage(image,image->colorspace);
   page_table=(ExtendedSignedIntegralType *) NULL;
   if (image_info->adjoin)
     {

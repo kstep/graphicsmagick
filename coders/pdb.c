@@ -724,7 +724,7 @@ static unsigned int WritePDBImage(const ImageInfo *image_info,Image *image)
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
     ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
-  (void) TransformRGBImage(image,RGBColorspace);
+  (void) TransformRGBImage(image,image->colorspace);
   bits_per_pixel=image_info->depth;
   if (GetImageType(image,&image->exception) == BilevelType)
     bits_per_pixel=1;
@@ -790,7 +790,7 @@ static unsigned int WritePDBImage(const ImageInfo *image_info,Image *image)
   scanline=(unsigned char *) AcquireMemory(packet_size*image->columns);
   if (scanline == (unsigned char *) NULL)
     ThrowWriterException(ResourceLimitWarning,"MemoryAllocationFailed",image);
-  (void) TransformRGBImage(image,RGBColorspace);
+  (void) TransformRGBImage(image,image->colorspace);
   /*
     Convert to GRAY raster scanline.
   */

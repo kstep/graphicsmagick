@@ -307,7 +307,7 @@ static unsigned int WriteMONOImage(const ImageInfo *image_info,Image *image)
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
     ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
-  (void) TransformRGBImage(image,RGBColorspace);
+  (void) TransformRGBImage(image,image->colorspace);
   /*
     Convert image to a bi-level image.
   */

@@ -3941,7 +3941,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
               quantize_info.colorspace=OHTAColorspace;
             if (LocaleCompare("rgb",option) == 0)
               {
-                (void) TransformRGBImage(*image,RGBColorspace);
+                (void) TransformRGBImage(*image,(*image)->colorspace);
                 quantize_info.colorspace=RGBColorspace;
               }
             if (LocaleCompare("srgb",option) == 0)

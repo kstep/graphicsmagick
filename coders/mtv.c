@@ -352,7 +352,7 @@ static unsigned int WriteMTVImage(const ImageInfo *image_info,Image *image)
     /*
       Allocate memory for pixels.
     */
-    (void) TransformRGBImage(image,RGBColorspace);
+    (void) TransformRGBImage(image,image->colorspace);
     pixels=(unsigned char *)
       AcquireMemory(image->columns*sizeof(PixelPacket));
     if (pixels == (unsigned char *) NULL)

@@ -12092,7 +12092,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   assert(image != (Image **) NULL);
   assert((*image)->signature == MagickSignature);
   display_image=(*image);
-  (void) TransformRGBImage(display_image,RGBColorspace);
+  (void) TransformRGBImage(display_image,display_image->colorspace);
   monitor_handler=(MonitorHandler) NULL;
   warning_handler=(WarningHandler) NULL;
   windows=XSetWindows((XWindows *) ~0);

@@ -650,7 +650,7 @@ static unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
     /*
       Initialize TGA raster file header.
     */
-    (void) TransformRGBImage(image,RGBColorspace);
+    (void) TransformRGBImage(image,image->colorspace);
     targa_info.id_length=0;
     attribute=GetImageAttribute(image,"comment");
     if (attribute != (const ImageAttribute *) NULL)

@@ -554,7 +554,7 @@ static unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
       Sample image to an even width and height, if necessary.
     */
     image->depth=8;
-    (void) TransformRGBImage(image,RGBColorspace);
+    (void) TransformRGBImage(image,image->colorspace);
     width=image->columns+(image->columns & (horizontal_factor-1));
     height=image->rows+(image->rows & (vertical_factor-1));
     yuv_image=ResizeImage(image,width,height,TriangleFilter,1.0,

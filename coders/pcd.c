@@ -356,9 +356,9 @@ static unsigned int DecodeImage(Image *image,unsigned char *luma,
 */
 static unsigned int IsPCD(const unsigned char *magick,const size_t length)
 {
-  if (length < 4)
+  if (length < 2052)
     return(False);
-  if (LocaleNCompare((char *) magick,"PCD_",4) == 0)
+  if (LocaleNCompare((char *) magick+2048,"PCD_",4) == 0)
     return(True);
   return(False);
 }
@@ -741,7 +741,9 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   else
     (void) TransformRGBImage(image,YCCColorspace);
   if (EOFBlob(image))
-    ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile",image);
+    ThrowException(exception,CorruptImageError,"UnexpectedEndOfFile",
+      image->filename);
+  CloseBlob(image);
   if ((rotate == 1) || (rotate == 3))
     {
       double
@@ -773,7 +775,6 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image->chromaticity.white_point.x=0.3127f;
   image->chromaticity.white_point.y=0.3290f;
   image->gamma=1.000f/2.200f;
-  CloseBlob(image);
   return(image);
 }
 

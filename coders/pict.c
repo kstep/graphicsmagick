@@ -1478,7 +1478,7 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
     ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
-  (void) TransformRGBImage(image,RGBColorspace);
+  (void) TransformRGBImage(image,image->colorspace);
   /*
     Initialize image info.
   */

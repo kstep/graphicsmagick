@@ -483,48 +483,51 @@ MagickExport void *ImageToHBITMAP(Image* image)
 
   memSize = nPixels * bitmap.bmBitsPixel;
   theBitsH = (HANDLE) GlobalAlloc (GMEM_MOVEABLE | GMEM_DDESHARE, memSize);
+
   if (theBitsH == NULL)
     return( NULL ); 
-  else {
-    RGBQUAD * theBits = (RGBQUAD *) GlobalLock((HGLOBAL) theBitsH);
-    RGBQUAD *pDestPixel = theBits;
-    if ( bitmap.bmBits == NULL )
-      bitmap.bmBits = theBits;
+  
+  (void) TransformRGBImage(image,image->colorspace);
+  RGBQUAD * theBits = (RGBQUAD *) GlobalLock((HGLOBAL) theBitsH);
+  RGBQUAD *pDestPixel = theBits;
 
-    for( row = 0 ; row < image->rows ; row++ )
-      {
-        pPixels = AcquireImagePixels(image,0,row,image->columns,1,&image->exception);
+  if ( bitmap.bmBits == NULL )
+    bitmap.bmBits = theBits;
 
+  for( row = 0 ; row < image->rows ; row++ )
+    {
+      pPixels = AcquireImagePixels(image,0,row,image->columns,1,
+                                   &image->exception);
 #if QuantumDepth == 8
-        /* Form of PixelPacket is identical to RGBQUAD when QuantumDepth==8 */
-        memcpy((void*)pDestPixel,(const void*)pPixels,sizeof(PixelPacket)*image->columns);
-        pDestPixel += image->columns;
+      /* Form of PixelPacket is identical to RGBQUAD when QuantumDepth==8 */
+      memcpy((void*)pDestPixel,(const void*)pPixels,
+             sizeof(PixelPacket)*image->columns);
+      pDestPixel += image->columns;
 
 #else  /* 16 or 32 bit Quantum */
-        {
-          unsigned long nPixelCount;
+      {
+        unsigned long nPixelCount;
 
-          /* Transfer pixels, scaling to Quantum */
-          for( nPixelCount = image->columns; nPixelCount ; nPixelCount-- )
-            {
-              pDestPixel->rgbRed = ScaleQuantumToChar(pPixels->red);
-              pDestPixel->rgbGreen = ScaleQuantumToChar(pPixels->green);
-              pDestPixel->rgbBlue = ScaleQuantumToChar(pPixels->blue);
-              pDestPixel->rgbReserved = 0;
-              ++pDestPixel;
-              ++pPixels;
-            }
-        }
-#endif
+        /* Transfer pixels, scaling to Quantum */
+        for( nPixelCount = image->columns; nPixelCount ; nPixelCount-- )
+          {
+            pDestPixel->rgbRed = ScaleQuantumToChar(pPixels->red);
+            pDestPixel->rgbGreen = ScaleQuantumToChar(pPixels->green);
+            pDestPixel->rgbBlue = ScaleQuantumToChar(pPixels->blue);
+            pDestPixel->rgbReserved = 0;
+            ++pDestPixel;
+            ++pPixels;
+          }
       }
+#endif
+    }
 
-    bitmap.bmBits = theBits;
-    bitmapH = CreateBitmapIndirect( &bitmap );
+  bitmap.bmBits = theBits;
+  bitmapH = CreateBitmapIndirect( &bitmap );
 
-    GlobalUnlock((HGLOBAL) theBitsH);
+  GlobalUnlock((HGLOBAL) theBitsH);
 
-    return (void *)bitmapH;
-  }
+  return (void *)bitmapH;
 }
 
 #endif

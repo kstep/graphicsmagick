@@ -961,7 +961,7 @@ static unsigned int WriteDIBImage(const ImageInfo *image_info,Image *image)
   /*
     Initialize DIB raster file header.
   */
-  (void) TransformRGBImage(image,RGBColorspace);
+  (void) TransformRGBImage(image,image->colorspace);
   if (image->storage_class == DirectClass)
     {
       /*

@@ -1545,7 +1545,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
         /*
           Full color TIFF raster.
         */
-        (void) TransformRGBImage(image,RGBColorspace);
+        (void) TransformRGBImage(image,image->colorspace);
         photometric=PHOTOMETRIC_RGB;
         (void) TIFFSetField(tiff,TIFFTAG_SAMPLESPERPIXEL,3);
         if (image_info->type != TrueColorType)

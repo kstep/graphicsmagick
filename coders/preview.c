@@ -230,7 +230,7 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
   if (status == False)
     ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
   CloseBlob(image);
-  (void) TransformRGBImage(image,RGBColorspace);
+  (void) TransformRGBImage(image,image->colorspace);
   clone_info=CloneImageInfo(image_info);
   clone_info->quality=0;
   colors=2;

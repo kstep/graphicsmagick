@@ -540,7 +540,7 @@ static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
     /*
       Initialize raster file header.
     */
-    TransformRGBImage(image,RGBColorspace);
+    TransformRGBImage(image,image->colorspace);
     packet_size=image->storage_class == DirectClass ? 3 : 11;
     hdf_pixels=(unsigned char *)
       AcquireMemory(packet_size*image->columns*image->rows);

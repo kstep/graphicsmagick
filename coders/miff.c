@@ -1395,7 +1395,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
     if (((image_info->colorspace != UndefinedColorspace) ||
          (image->colorspace != CMYKColorspace)) &&
          (image_info->colorspace != CMYKColorspace))
-      (void) TransformRGBImage(image,RGBColorspace);
+      (void) TransformRGBImage(image,image->colorspace);
     else
       if (image->colorspace != CMYKColorspace)
         (void) RGBTransformImage(image,CMYKColorspace);

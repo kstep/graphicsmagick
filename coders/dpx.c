@@ -384,7 +384,7 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
     ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
-  (void) TransformRGBImage(image,RGBColorspace);
+  (void) TransformRGBImage(image,image->colorspace);
   (void) WriteBlobMSBLong(image,0x53445058);
   (void) WriteBlobMSBLong(image,0x2000);
   (void) WriteBlobMSBLong(image,0x56312E30);
