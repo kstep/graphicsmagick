@@ -394,11 +394,9 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *p;
 
   size_t
-    count,
     length;
 
   unsigned char
-    magick[12],
     *pixels;
 
   unsigned int
@@ -484,9 +482,6 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
       LiberateMemory((void **) &dib_colormap);
     }
-  if (image_info->ping && (image_info->subrange != 0))
-    if (image->scene >= (image_info->subimage+image_info->subrange-1))
-      break;
   /*
     Read image data.
   */
@@ -845,7 +840,6 @@ static unsigned int WriteDIBImage(const ImageInfo *image_info,Image *image)
     *pixels;
 
   unsigned int
-    scene,
     status;
 
   unsigned long
