@@ -48,7 +48,6 @@ top_srcdir = @top_srcdir@
 VPATH = @srcdir@
 pkgdatadir = $(datadir)/@PACKAGE@
 pkglibdir = $(libdir)/@PACKAGE@
-pkgincludedir = $(includedir)/@PACKAGE@
 top_builddir = ..
 
 am__cd = CDPATH="$${ZSH_VERSION+.}$(PATH_SEPARATOR)" && cd
@@ -67,6 +66,7 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
+pkgincludedir = $(includedir)/GraphicsMagick/magick
 ACLOCAL = @ACLOCAL@
 AMDEP_FALSE = @AMDEP_FALSE@
 AMDEP_TRUE = @AMDEP_TRUE@
@@ -317,7 +317,8 @@ host_alias = @host_alias@
 host_cpu = @host_cpu@
 host_os = @host_os@
 host_vendor = @host_vendor@
-includedir = @includedir@
+
+includedir = ${prefix}/include
 infodir = @infodir@
 install_sh = @install_sh@
 libdir = @libdir@
@@ -343,15 +344,15 @@ xml2_config = @xml2_config@
 AUTOMAKE_OPTIONS = 1.7 foreign
 
 # Shared libraries built in this directory
-lib_LTLIBRARIES = libMagick.la
+lib_LTLIBRARIES = libGraphicsMagick.la
 
 BUILT_SOURCES = magick_config.h
 
 INCLUDES = -I$(top_srcdir) $(INCLTDL)
 
-ALLMANPAGES = Magick-config.1
+ALLMANPAGES = GraphicsMagick-config.1
 
-libMagick_la_LDFLAGS = -no-undefined \
+libGraphicsMagick_la_LDFLAGS = -no-undefined \
 	-release $(MAJOR_VERSION).$(MINOR_VERSION).$(MICRO_VERSION) \
 	-version-info 0:0:0
 
@@ -371,23 +372,23 @@ MAGICK_BASE_SRCS = memory.c blob.c cache.c locale.c error.c monitor.c \
 
 
 # Platform specific source files that may appear in the library
-EXTRA_libMagick_la_SOURCES = nt_base.c nt_feature.c
+EXTRA_libGraphicsMagick_la_SOURCES = nt_base.c nt_feature.c
 
 @WIN32_NATIVE_BUILD_TRUE@MAGICK_PLATFORM_SRCS = nt_base.c nt_feature.c
 @CYGWIN_BUILD_FALSE@@WIN32_NATIVE_BUILD_FALSE@MAGICK_PLATFORM_SRCS = 
 @CYGWIN_BUILD_TRUE@@WIN32_NATIVE_BUILD_FALSE@MAGICK_PLATFORM_SRCS = nt_feature.c
-@WITH_MODULES_FALSE@libMagick_la_SOURCES = $(MAGICK_BASE_SRCS) $(MAGICK_PLATFORM_SRCS)
+@WITH_MODULES_FALSE@libGraphicsMagick_la_SOURCES = $(MAGICK_BASE_SRCS) $(MAGICK_PLATFORM_SRCS)
 
 # Library sources
-@WITH_MODULES_TRUE@libMagick_la_SOURCES = $(MAGICK_BASE_SRCS) $(MAGICK_PLATFORM_SRCS)
-@WITH_MODULES_FALSE@libMagick_la_LIBADD = ../coders/libCoders.la @MAGICK_DEP_LIBS@
-@WITH_MODULES_TRUE@libMagick_la_LIBADD = @MAGICK_DEP_LIBS@ $(LIBLTDL)
+@WITH_MODULES_TRUE@libGraphicsMagick_la_SOURCES = $(MAGICK_BASE_SRCS) $(MAGICK_PLATFORM_SRCS)
+@WITH_MODULES_FALSE@libGraphicsMagick_la_LIBADD = ../coders/libCoders.la @MAGICK_DEP_LIBS@
+@WITH_MODULES_TRUE@libGraphicsMagick_la_LIBADD = @MAGICK_DEP_LIBS@ $(LIBLTDL)
 
 # Binary scripts
-bin_SCRIPTS = Magick-config
+bin_SCRIPTS = GraphicsMagick-config
 
 # Headers which are installed
-include_HEADERS = api.h attribute.h blob.h cache.h \
+pkginclude_HEADERS = api.h attribute.h blob.h cache.h \
   cache_view.h command.h compress.h magick_config.h delegate.h \
   draw.h render.h error.h gem.h image.h list.h log.h magic.h magick.h \
   module.h monitor.h quantize.h paint.h random.h resource.h registry.h \
@@ -401,8 +402,8 @@ noinst_HEADERS = animate.h display.h mac.h nt_base.h nt_feature.h \
 
 
 # Additional files to distribute
-EXTRA_DIST = $(ALLMANPAGES) colors.mgk log.mgk magic.mgk Magick-config.in \
-  Magick-config.in Make.com mac.c nt_base.c nt_feature.c vms.c $(MAGICK_BASE_SRCS)
+EXTRA_DIST = $(ALLMANPAGES) colors.mgk log.mgk magic.mgk GraphicsMagick-config.in \
+  Make.com mac.c nt_base.c nt_feature.c vms.c $(MAGICK_BASE_SRCS)
 
 
 # Where configuration files get installed
@@ -419,17 +420,18 @@ man_MANS = $(ALLMANPAGES)
 subdir = magick
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = magick_config.h
-CONFIG_CLEAN_FILES = Magick-config
+CONFIG_CLEAN_FILES = GraphicsMagick-config
 LTLIBRARIES = $(lib_LTLIBRARIES)
 
-@WITH_MODULES_TRUE@libMagick_la_DEPENDENCIES =
-@WITH_MODULES_FALSE@libMagick_la_DEPENDENCIES = ../coders/libCoders.la
-am__libMagick_la_SOURCES_DIST = memory.c blob.c cache.c locale.c error.c \
-	monitor.c constitute.c image.c composite.c list.c color.c \
-	quantize.c segment.c resize.c transform.c shear.c enhance.c \
-	effect.c fx.c decorate.c annotate.c type.c draw.c render.c \
-	paint.c montage.c semaphore.c attribute.c signature.c random.c \
-	compress.c command.c gem.c registry.c magic.c magick.c \
+@WITH_MODULES_TRUE@libGraphicsMagick_la_DEPENDENCIES =
+@WITH_MODULES_FALSE@libGraphicsMagick_la_DEPENDENCIES = \
+@WITH_MODULES_FALSE@	../coders/libCoders.la
+am__libGraphicsMagick_la_SOURCES_DIST = memory.c blob.c cache.c locale.c \
+	error.c monitor.c constitute.c image.c composite.c list.c \
+	color.c quantize.c segment.c resize.c transform.c shear.c \
+	enhance.c effect.c fx.c decorate.c annotate.c type.c draw.c \
+	render.c paint.c montage.c semaphore.c attribute.c signature.c \
+	random.c compress.c command.c gem.c registry.c magic.c magick.c \
 	delegate.c module.c static.c resource.c log.c timer.c utility.c \
 	cache_view.c stream.c version.c animate.c display.c widget.c \
 	xwindow.c PreRvIcccm.c deprecate.c nt_base.c nt_feature.c
@@ -447,11 +449,11 @@ am__objects_1 = memory.lo blob.lo cache.lo locale.lo error.lo monitor.lo \
 @CYGWIN_BUILD_TRUE@@WIN32_NATIVE_BUILD_FALSE@am__objects_2 = \
 @CYGWIN_BUILD_TRUE@@WIN32_NATIVE_BUILD_FALSE@	nt_feature.lo
 @WIN32_NATIVE_BUILD_TRUE@am__objects_2 = nt_base.lo nt_feature.lo
-@WITH_MODULES_TRUE@am_libMagick_la_OBJECTS = $(am__objects_1) \
+@WITH_MODULES_TRUE@am_libGraphicsMagick_la_OBJECTS = $(am__objects_1) \
 @WITH_MODULES_TRUE@	$(am__objects_2)
-@WITH_MODULES_FALSE@am_libMagick_la_OBJECTS = $(am__objects_1) \
+@WITH_MODULES_FALSE@am_libGraphicsMagick_la_OBJECTS = $(am__objects_1) \
 @WITH_MODULES_FALSE@	$(am__objects_2)
-libMagick_la_OBJECTS = $(am_libMagick_la_OBJECTS)
+libGraphicsMagick_la_OBJECTS = $(am_libGraphicsMagick_la_OBJECTS)
 SCRIPTS = $(bin_SCRIPTS)
 
 
@@ -493,18 +495,19 @@ LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) \
 CCLD = $(CC)
 LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
-DIST_SOURCES = $(am__libMagick_la_SOURCES_DIST) \
-	$(EXTRA_libMagick_la_SOURCES)
+DIST_SOURCES = $(am__libGraphicsMagick_la_SOURCES_DIST) \
+	$(EXTRA_libGraphicsMagick_la_SOURCES)
 
 NROFF = nroff
 MANS = $(man_MANS)
 DATA = $(pkg_DATA) $(pkgdata_DATA)
 
-HEADERS = $(include_HEADERS) $(noinst_HEADERS)
+HEADERS = $(noinst_HEADERS) $(pkginclude_HEADERS)
 
-DIST_COMMON = $(include_HEADERS) $(noinst_HEADERS) Magick-config.in \
-	Makefile.am Makefile.in magick_config.h.in
-SOURCES = $(libMagick_la_SOURCES) $(EXTRA_libMagick_la_SOURCES)
+DIST_COMMON = $(noinst_HEADERS) $(pkginclude_HEADERS) \
+	GraphicsMagick-config.in Makefile.am Makefile.in \
+	magick_config.h.in
+SOURCES = $(libGraphicsMagick_la_SOURCES) $(EXTRA_libGraphicsMagick_la_SOURCES)
 
 all: $(BUILT_SOURCES) magick_config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-am
@@ -533,7 +536,7 @@ $(srcdir)/magick_config.h.in: @MAINTAINER_MODE_TRUE@ $(top_srcdir)/configure.ac 
 
 distclean-hdr:
 	-rm -f magick_config.h stamp-h1
-Magick-config: $(top_builddir)/config.status Magick-config.in
+GraphicsMagick-config: $(top_builddir)/config.status GraphicsMagick-config.in
 	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@
 libLTLIBRARIES_INSTALL = $(INSTALL)
 install-libLTLIBRARIES: $(lib_LTLIBRARIES)
@@ -563,8 +566,8 @@ clean-libLTLIBRARIES:
 	  echo "rm -f \"$${dir}/so_locations\""; \
 	  rm -f "$${dir}/so_locations"; \
 	done
-libMagick.la: $(libMagick_la_OBJECTS) $(libMagick_la_DEPENDENCIES) 
-	$(LINK) -rpath $(libdir) $(libMagick_la_LDFLAGS) $(libMagick_la_OBJECTS) $(libMagick_la_LIBADD) $(LIBS)
+libGraphicsMagick.la: $(libGraphicsMagick_la_OBJECTS) $(libGraphicsMagick_la_DEPENDENCIES) 
+	$(LINK) -rpath $(libdir) $(libGraphicsMagick_la_LDFLAGS) $(libGraphicsMagick_la_OBJECTS) $(libGraphicsMagick_la_LIBADD) $(LIBS)
 binSCRIPT_INSTALL = $(INSTALL_SCRIPT)
 install-binSCRIPTS: $(bin_SCRIPTS)
 	@$(NORMAL_INSTALL)
@@ -771,23 +774,23 @@ uninstall-pkgdataDATA:
 	  echo " rm -f $(DESTDIR)$(pkgdatadir)/$$f"; \
 	  rm -f $(DESTDIR)$(pkgdatadir)/$$f; \
 	done
-includeHEADERS_INSTALL = $(INSTALL_HEADER)
-install-includeHEADERS: $(include_HEADERS)
+pkgincludeHEADERS_INSTALL = $(INSTALL_HEADER)
+install-pkgincludeHEADERS: $(pkginclude_HEADERS)
 	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(DESTDIR)$(includedir)
-	@list='$(include_HEADERS)'; for p in $$list; do \
+	$(mkinstalldirs) $(DESTDIR)$(pkgincludedir)
+	@list='$(pkginclude_HEADERS)'; for p in $$list; do \
 	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
 	  f="`echo $$p | sed -e 's|^.*/||'`"; \
-	  echo " $(includeHEADERS_INSTALL) $$d$$p $(DESTDIR)$(includedir)/$$f"; \
-	  $(includeHEADERS_INSTALL) $$d$$p $(DESTDIR)$(includedir)/$$f; \
+	  echo " $(pkgincludeHEADERS_INSTALL) $$d$$p $(DESTDIR)$(pkgincludedir)/$$f"; \
+	  $(pkgincludeHEADERS_INSTALL) $$d$$p $(DESTDIR)$(pkgincludedir)/$$f; \
 	done
 
-uninstall-includeHEADERS:
+uninstall-pkgincludeHEADERS:
 	@$(NORMAL_UNINSTALL)
-	@list='$(include_HEADERS)'; for p in $$list; do \
+	@list='$(pkginclude_HEADERS)'; for p in $$list; do \
 	  f="`echo $$p | sed -e 's|^.*/||'`"; \
-	  echo " rm -f $(DESTDIR)$(includedir)/$$f"; \
-	  rm -f $(DESTDIR)$(includedir)/$$f; \
+	  echo " rm -f $(DESTDIR)$(pkgincludedir)/$$f"; \
+	  rm -f $(DESTDIR)$(pkgincludedir)/$$f; \
 	done
 
 ETAGS = etags
@@ -884,7 +887,7 @@ all-am: Makefile $(LTLIBRARIES) $(SCRIPTS) $(MANS) $(DATA) $(HEADERS) \
 		magick_config.h
 
 installdirs:
-	$(mkinstalldirs) $(DESTDIR)$(libdir) $(DESTDIR)$(bindir) $(DESTDIR)$(man1dir) $(DESTDIR)$(pkgdir) $(DESTDIR)$(pkgdatadir) $(DESTDIR)$(includedir)
+	$(mkinstalldirs) $(DESTDIR)$(libdir) $(DESTDIR)$(bindir) $(DESTDIR)$(man1dir) $(DESTDIR)$(pkgdir) $(DESTDIR)$(pkgdatadir) $(DESTDIR)$(pkgincludedir)
 
 install: install-am
 install-exec: install-exec-am
@@ -930,8 +933,8 @@ info: info-am
 
 info-am:
 
-install-data-am: install-includeHEADERS install-man install-pkgDATA \
-	install-pkgdataDATA
+install-data-am: install-man install-pkgDATA install-pkgdataDATA \
+	install-pkgincludeHEADERS
 
 install-exec-am: install-binSCRIPTS install-libLTLIBRARIES
 
@@ -958,9 +961,9 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am: uninstall-binSCRIPTS uninstall-includeHEADERS \
-	uninstall-info-am uninstall-libLTLIBRARIES uninstall-man \
-	uninstall-pkgDATA uninstall-pkgdataDATA
+uninstall-am: uninstall-binSCRIPTS uninstall-info-am \
+	uninstall-libLTLIBRARIES uninstall-man uninstall-pkgDATA \
+	uninstall-pkgdataDATA uninstall-pkgincludeHEADERS
 
 uninstall-man: uninstall-man1
 
@@ -970,15 +973,16 @@ uninstall-man: uninstall-man1
 	distclean-hdr distclean-libtool distclean-tags distdir dvi \
 	dvi-am info info-am install install-am install-binSCRIPTS \
 	install-data install-data-am install-exec install-exec-am \
-	install-includeHEADERS install-info install-info-am \
-	install-libLTLIBRARIES install-man install-man1 install-pkgDATA \
-	install-pkgdataDATA install-strip installcheck installcheck-am \
-	installdirs maintainer-clean maintainer-clean-generic \
-	mostlyclean mostlyclean-compile mostlyclean-generic \
-	mostlyclean-libtool pdf pdf-am ps ps-am tags uninstall \
-	uninstall-am uninstall-binSCRIPTS uninstall-includeHEADERS \
+	install-info install-info-am install-libLTLIBRARIES install-man \
+	install-man1 install-pkgDATA install-pkgdataDATA \
+	install-pkgincludeHEADERS install-strip installcheck \
+	installcheck-am installdirs maintainer-clean \
+	maintainer-clean-generic mostlyclean mostlyclean-compile \
+	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
+	tags uninstall uninstall-am uninstall-binSCRIPTS \
 	uninstall-info-am uninstall-libLTLIBRARIES uninstall-man \
-	uninstall-man1 uninstall-pkgDATA uninstall-pkgdataDATA
+	uninstall-man1 uninstall-pkgDATA uninstall-pkgdataDATA \
+	uninstall-pkgincludeHEADERS
 
 
 # Ensure that configuration header is not distributed

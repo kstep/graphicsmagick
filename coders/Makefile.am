@@ -1,30 +1,30 @@
-#  Makefile for building ImageMagick coder modules
+#  Makefile for building GraphicsMagick coder modules
 #
-# Copyright (C) 2002 ImageMagick Studio, a non-profit organization dedicated
+# Copyright (C) 2002 GraphicsMagick Group, a non-profit organization dedicated
 # to making software imaging solutions freely available.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
-# copy of this software and associated documentation files ("ImageMagick"),
-# to deal in ImageMagick without restriction, including without limitation
+# copy of this software and associated documentation files ("GraphicsMagick"),
+# to deal in GraphicsMagick without restriction, including without limitation
 # the rights to use, copy, modify, merge, publish, distribute, sublicense
-# and/or sell copies of ImageMagick, and to permit persons to whom the
-# ImageMagick is furnished to do so, subject to the following conditions:
+# and/or sell copies of GraphicsMagick, and to permit persons to whom the
+# GraphicsMagick is furnished to do so, subject to the following conditions:
 #
 # The above copyright notice and this permission notice shall be included in
-# all copies or substantial portions of ImageMagick.
+# all copies or substantial portions of GraphicsMagick.
 #
 # The software is provided "as is", without warranty of any kind, express or
 # implied, including but not limited to the warranties of merchantability,
 # fitness for a particular purpose and noninfringement.  In no event shall
-# ImageMagick Studio be liable for any claim, damages or other liability,
+# GraphicsMagick Group be liable for any claim, damages or other liability,
 # whether in an action of contract, tort or otherwise, arising from, out of
-# or in connection with ImageMagick or the use or other dealings in
-# ImageMagick.
+# or in connection with GraphicsMagick or the use or other dealings in
+# GraphicsMagick.
 #
-# Except as contained in this notice, the name of the ImageMagick Studio
+# Except as contained in this notice, the name of the GraphicsMagick Group
 # shall not be used in advertising or otherwise to promote the sale, use or
-# other dealings in ImageMagick without prior written authorization from the
-# ImageMagick Studio.
+# other dealings in GraphicsMagick without prior written authorization from the
+# GraphicsMagick Group.
 #
 
 # Don't require all the GNU mandated files
@@ -43,7 +43,7 @@ MAGICK_CODER_SRCS = \
   dib.c dps.c dpx.c emf.c ept.c fax.c fits.c fpx.c gif.c gradient.c \
   gray.c histogram.c html.c icon.c jbig.c jp2.c jpeg.c label.c \
   locale.c logo.c map.c mat.c matte.c meta.c miff.c mono.c mpc.c mpeg.c \
-	mpr.c msl.c mtv.c mvg.c null.c otb.c palm.c pcd.c pcl.c pcx.c pdb.c pdf.c \
+  mpr.c msl.c mtv.c mvg.c null.c otb.c palm.c pcd.c pcl.c pcx.c pdb.c pdf.c \
   pict.c pix.c plasma.c png.c pnm.c preview.c ps.c ps2.c ps3.c psd.c \
   pwp.c rgb.c rla.c rle.c sct.c sfw.c sgi.c stegano.c sun.c svg.c \
   tga.c tiff.c tile.c tim.c ttf.c txt.c uil.c url.c uyvy.c vicar.c \
@@ -67,8 +67,8 @@ EXTRA_DIST = modules.mgk delegates.mgk.in type.mgk.in
 # Headers which are not installed but which are distributed
 noinst_HEADERS = 
 
-# Location of libMagick.la
-LIBMAGICK = ../magick/libMagick.la
+# Location of libGraphicsMagick.la
+LIBMAGICK = ../magick/libGraphicsMagick.la
 
 # Where modules are installed
 pkgdir = @MagickModulesPath@
@@ -81,7 +81,7 @@ if WITH_MODULES
 # Architecture-dependent data files installed with modules
 pkg_DATA = modules.mgk
 
-# Architecture independent data files installed into ImageMagick/share
+# Architecture independent data files installed into GraphicsMagick/share
 pkgdata_DATA =
 
 # Modules which are to be built
@@ -89,13 +89,13 @@ pkg_LTLIBRARIES = \
   art.la avi.la avs.la bmp.la caption.la cmyk.la cut.la dcm.la dib.la dps.la \
   dpx.la ept.la fax.la fits.la fpx.la gif.la gradient.la gray.la \
   histogram.la html.la icon.la jbig.la jp2.la jpeg.la label.la locale.la \
-	logo.la map.la mat.la matte.la meta.la miff.la mono.la mpc.la mpeg.la mpr.la \
-	msl.la mtv.la mvg.la null.la otb.la palm.la pcd.la pcl.la pcx.la pdb.la \
-	pdf.la pict.la pix.la plasma.la png.la pnm.la preview.la ps.la ps2.la ps3.la \
-	psd.la pwp.la rgb.la rla.la rle.la sct.la sfw.la sgi.la stegano.la sun.la \
-	svg.la tga.la tiff.la tile.la tim.la ttf.la txt.la uil.la url.la uyvy.la \
-	vicar.la vid.la viff.la wbmp.la wmf.la wpg.la x.la xbm.la xc.la xcf.la \
-	xpm.la xwd.la yuv.la $(MAGICK_GDI32_MODULES)
+  logo.la map.la mat.la matte.la meta.la miff.la mono.la mpc.la mpeg.la mpr.la \
+  msl.la mtv.la mvg.la null.la otb.la palm.la pcd.la pcl.la pcx.la pdb.la \
+  pdf.la pict.la pix.la plasma.la png.la pnm.la preview.la ps.la ps2.la ps3.la \
+  psd.la pwp.la rgb.la rla.la rle.la sct.la sfw.la sgi.la stegano.la sun.la \
+  svg.la tga.la tiff.la tile.la tim.la ttf.la txt.la uil.la url.la uyvy.la \
+  vicar.la vid.la viff.la wbmp.la wmf.la wpg.la x.la xbm.la xc.la xcf.la \
+  xpm.la xwd.la yuv.la $(MAGICK_GDI32_MODULES)
 MODULECOMMONFLAGS = -no-undefined -module -avoid-version
 else
 pkg_LTLIBRARIES =

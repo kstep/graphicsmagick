@@ -9,27 +9,27 @@ SUBDIRS = Magick++
 
 INCLUDES = -I$(srcdir) -I../.. -I$(top_srcdir)
 
-includedir = $(prefix)/include
+includedir = $(prefix)/include/GraphicsMagick
 pkgdatadir = $(datadir)/Magick++
 pkglibdir = $(libdir)/Magick++
 pkgincludedir = $(includedir)/Magick++
 
-lib_LTLIBRARIES    = libMagick++.la
+lib_LTLIBRARIES    = libGraphicsMagick++.la
 MAJOR_VERSION      = @MAJOR_VERSION@
 MINOR_VERSION      = @MINOR_VERSION@
 MICRO_VERSION      = @MICRO_VERSION@
 
-libMagick___la_SOURCES = \
+libGraphicsMagick___la_SOURCES = \
 	Blob.cpp BlobRef.cpp CoderInfo.cpp Color.cpp Drawable.cpp \
 	Exception.cpp Functions.cpp Geometry.cpp Image.cpp ImageRef.cpp \
 	Montage.cpp Options.cpp Pixels.cpp STL.cpp Thread.cpp TypeMetric.cpp
 
 # Add -no-undefined once Cygwin supports throwing C++ exceptions from DLLs.
-libMagick___la_LDFLAGS = \
+libGraphicsMagick___la_LDFLAGS = \
 	-release $(MAJOR_VERSION).$(MINOR_VERSION).$(MICRO_VERSION) \
 	-version-info 0:0:0
 
-libMagick___la_LIBADD = ../../magick/libMagick.la
+libGraphicsMagick___la_LIBADD = ../../magick/libGraphicsMagick.la
 
 include_HEADERS = Magick++.h
 

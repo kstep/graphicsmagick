@@ -1,15 +1,15 @@
 #
-# ImageMagick Configure Script
+# GraphicsMagick Configure Script
 #
 
-AC_PREREQ(2.56)
+AC_PREREQ(2.57)
 AC_INIT(magick/magick.h)
 
 # Set version
-MAJOR_VERSION=5
-MINOR_VERSION=5
-MICRO_VERSION=2
-echo "configuring ImageMagick $MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION"
+MAJOR_VERSION=1
+MINOR_VERSION=0
+MICRO_VERSION=0
+echo "configuring GraphicsMagick $MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION"
 AC_CANONICAL_SYSTEM
 AC_SUBST(MAJOR_VERSION)dnl
 AC_SUBST(MINOR_VERSION)dnl
@@ -21,7 +21,7 @@ AM_SANITY_CHECK
 # Generate configure header.
 AC_CONFIG_HEADERS([magick/magick_config.h])
 
-AM_INIT_AUTOMAKE(ImageMagick,$MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION, ' ')
+AM_INIT_AUTOMAKE(GraphicsMagick,$MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION, ' ')
 
 #
 # Save initial user-tunable values
@@ -205,16 +205,16 @@ AC_ARG_ENABLE(delegate-build,
 	      [with_delegate_build=$enableval],
 	      [with_delegate_build='no'])
 
-# Build a version of ImageMagick which operates uninstalled.
+# Build a version of GraphicsMagick which operates uninstalled.
 # Used to build distributions located via MAGICK_HOME / executable path
 AC_ARG_ENABLE(installed,
-	      [  --disable-installed      disable building an installed ImageMagick
+	      [  --disable-installed      disable building an installed GraphicsMagick
                           (default enabled)],
 	      [with_installed=$enableval],
 	      [with_installed='yes'])
 if test "$with_installed" = 'yes'
 then
-  AC_DEFINE(UseInstalledImageMagick,1,[ImageMagick is formally installed under prefix])
+  AC_DEFINE(UseInstalledImageMagick,1,[GraphicsMagick is formally installed under prefix])
 fi
 
 # Enable verbose output from libtool (enable libtool's default)
@@ -652,7 +652,7 @@ AM_CONDITIONAL(WITH_MAGICK_PLUS_PLUS, test "$have_magick_plus_plus" = 'yes')
 if test "$with_delegate_build" != 'no'
 then
   # Check for delegate sub-directories and add -I & -L options as required.
-  # This presumes that delegates are installed as detailed in the ImageMagick
+  # This presumes that delegates are installed as detailed in the GraphicsMagick
   # README. If delegates are installed in a standard location where the
   # compiler will automatically find them then these options should not be
   # required.
@@ -699,7 +699,7 @@ then
 fi
 
 # Assume that delegate headers and libraries may reside under same
-# directory as ImageMagick installation prefix.
+# directory as GraphicsMagick installation prefix.
 #LDFLAGS="$LDFLAGS -L$LIB_DIR"
 #CPPFLAGS="$CPPFLAGS -I$INCLUDE_DIR"
 
@@ -1563,11 +1563,11 @@ AC_SUBST(LIB_WMF_DEPS)
 # Configure install Paths
 #
 
-# Subdirectory under lib to place ImageMagick lib files
-MagickLibSubdir="ImageMagick-$MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION"
-AC_DEFINE_UNQUOTED(MagickLibSubdir,"$MagickLibSubdir",Subdirectory of lib where ImageMagick architecture dependent files are installed)
+# Subdirectory under lib to place GraphicsMagick lib files
+MagickLibSubdir="GraphicsMagick-$MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION"
+AC_DEFINE_UNQUOTED(MagickLibSubdir,"$MagickLibSubdir",Subdirectory of lib where GraphicsMagick architecture dependent files are installed)
 
-# Path to ImageMagick lib
+# Path to GraphicsMagick lib
 MagickLibPath="${LIB_DIR}/${MagickLibSubdir}"
 MagickLibPathDefine="${MagickLibPath}/"
 if test "$native_win32_build" = 'yes'
@@ -1577,11 +1577,11 @@ fi
 AC_DEFINE_UNQUOTED(MagickLibPath,"$MagickLibPathDefine",Directory where architecture-dependent files live.)
 AC_SUBST(MagickLibPath)
 
-# Subdirectory under lib to place ImageMagick module files
+# Subdirectory under lib to place GraphicsMagick module files
 MagickModulesSubdir="${MagickLibSubdir}/modules/coders"
-AC_DEFINE_UNQUOTED(MagickModulesSubdir,"$MagickModulesSubdir",Subdirectory of lib where ImageMagick modules are installed)
+AC_DEFINE_UNQUOTED(MagickModulesSubdir,"$MagickModulesSubdir",Subdirectory of lib where GraphicsMagick modules are installed)
 
-# Path to ImageMagick coder module files
+# Path to GraphicsMagick coder module files
 MagickModulesPath="${LIB_DIR}/${MagickModulesSubdir}"
 MagickModulesPathDefine="${MagickModulesPath}/"
 if test "$native_win32_build" = 'yes'
@@ -1591,8 +1591,9 @@ fi
 AC_DEFINE_UNQUOTED(MagickModulesPath,"$MagickModulesPathDefine",Location of coder modules)
 AC_SUBST(MagickModulesPath)
 
-# Path to ImageMagick share files
-MagickSharePath="${DATA_DIR}/ImageMagick"
+# Path to GraphicsMagick share files]
+MagickShareSubdir="GraphicsMagick-$MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION"
+MagickSharePath="${DATA_DIR}/${MagickShareSubdir}"
 MagickSharePathDefine="${MagickSharePath}/"
 if test "$native_win32_build" = 'yes'
 then
@@ -1696,7 +1697,7 @@ else
 fi
 AC_SUBST(PrintDelegate)
 
-# Installed ImageMagick utiltity paths
+# Installed GraphicsMagick utiltity paths
 ConvertDelegate="${BIN_DIR}/${ConvertDelegateDefault}"
 ShowImageDelegate="${BIN_DIR}/${ShowImageDelegateDefault}"
 MogrifyDelegate="${BIN_DIR}/${MogrifyDelegateDefault}"
@@ -1990,11 +1991,11 @@ AM_CONDITIONAL(WITH_PERL, test "$have_perl" != 'no')
 AM_CONDITIONAL(WITH_PERL_STATIC, test $with_perl_static = 'yes')
 AM_CONDITIONAL(WITH_PERL_DYNAMIC, test $with_perl_dynamic = 'yes')
 
-# Determine path to pick up ImageMagick library from for use with building PerlMagick
-MAGICKLIB="-L${LIB_DIR} -lMagick"
+# Determine path to pick up GraphicsMagick library from for use with building PerlMagick
+MAGICKLIB="-L${LIB_DIR} -lGraphicsMagick"
 if test $with_perl_static = 'yes'
 then
-  MAGICKLIB="-L${builddir}/magick -lMagick"
+  MAGICKLIB="-L${builddir}/magick -lGraphicsMagick"
 fi
 AC_SUBST(MAGICKLIB)
 
@@ -2095,14 +2096,14 @@ AC_SUBST(X_CFLAGS)
 AC_OUTPUT(Makefile magick/Makefile coders/delegates.mgk coders/Makefile \
   utilities/Makefile tests/Makefile coders/type.mgk \
   coders/type-ghostscript.mgk coders/type-windows.mgk coders/type-solaris.mgk \
-  ltdl/Makefile \
-  magick/Magick-config Magick++/bin/Makefile Magick++/bin/Magick++-config \
-  Magick++/Makefile Magick++/lib/Makefile Magick++/lib/Magick++/Makefile  \
-  Magick++/demo/Makefile Magick++/tests/Makefile PerlMagick/Makefile.PL)
+  ltdl/Makefile magick/GraphicsMagick-config Magick++/bin/Makefile \
+  Magick++/bin/GraphicsMagick++-config Magick++/Makefile Magick++/lib/Makefile \
+  Magick++/lib/Magick++/Makefile Magick++/demo/Makefile Magick++/tests/Makefile \
+  PerlMagick/Makefile.PL)
 
 echo ""
 
-echo "ImageMagick is configured as follows. Please verify that this"
+echo "GraphicsMagick is configured as follows. Please verify that this"
 echo "configuration matches your expectations."
 echo ""
 echo "Host system type : $host"

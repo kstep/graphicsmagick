@@ -287,7 +287,7 @@ host_cpu = @host_cpu@
 host_os = @host_os@
 host_vendor = @host_vendor@
 
-includedir = $(prefix)/include
+includedir = $(prefix)/include/GraphicsMagick
 infodir = @infodir@
 install_sh = @install_sh@
 libdir = @libdir@
@@ -320,21 +320,21 @@ SUBDIRS = Magick++
 
 INCLUDES = -I$(srcdir) -I../.. -I$(top_srcdir)
 
-lib_LTLIBRARIES = libMagick++.la
+lib_LTLIBRARIES = libGraphicsMagick++.la
 
-libMagick___la_SOURCES = \
+libGraphicsMagick___la_SOURCES = \
 	Blob.cpp BlobRef.cpp CoderInfo.cpp Color.cpp Drawable.cpp \
 	Exception.cpp Functions.cpp Geometry.cpp Image.cpp ImageRef.cpp \
 	Montage.cpp Options.cpp Pixels.cpp STL.cpp Thread.cpp TypeMetric.cpp
 
 
 # Add -no-undefined once Cygwin supports throwing C++ exceptions from DLLs.
-libMagick___la_LDFLAGS = \
+libGraphicsMagick___la_LDFLAGS = \
 	-release $(MAJOR_VERSION).$(MINOR_VERSION).$(MICRO_VERSION) \
 	-version-info 0:0:0
 
 
-libMagick___la_LIBADD = ../../magick/libMagick.la
+libGraphicsMagick___la_LIBADD = ../../magick/libGraphicsMagick.la
 
 include_HEADERS = Magick++.h
 
@@ -347,12 +347,12 @@ CONFIG_HEADER = $(top_builddir)/magick/magick_config.h
 CONFIG_CLEAN_FILES =
 LTLIBRARIES = $(lib_LTLIBRARIES)
 
-libMagick___la_DEPENDENCIES = ../../magick/libMagick.la
-am_libMagick___la_OBJECTS = Blob.lo BlobRef.lo CoderInfo.lo Color.lo \
-	Drawable.lo Exception.lo Functions.lo Geometry.lo Image.lo \
-	ImageRef.lo Montage.lo Options.lo Pixels.lo STL.lo Thread.lo \
-	TypeMetric.lo
-libMagick___la_OBJECTS = $(am_libMagick___la_OBJECTS)
+libGraphicsMagick___la_DEPENDENCIES = ../../magick/libGraphicsMagick.la
+am_libGraphicsMagick___la_OBJECTS = Blob.lo BlobRef.lo CoderInfo.lo \
+	Color.lo Drawable.lo Exception.lo Functions.lo Geometry.lo \
+	Image.lo ImageRef.lo Montage.lo Options.lo Pixels.lo STL.lo \
+	Thread.lo TypeMetric.lo
+libGraphicsMagick___la_OBJECTS = $(am_libGraphicsMagick___la_OBJECTS)
 
 DEFAULT_INCLUDES = 
 depcomp = $(SHELL) $(top_srcdir)/depcomp
@@ -373,7 +373,7 @@ LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) \
 CXXLD = $(CXX)
 CXXLINK = $(LIBTOOL) --mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
-DIST_SOURCES = $(libMagick___la_SOURCES)
+DIST_SOURCES = $(libGraphicsMagick___la_SOURCES)
 HEADERS = $(include_HEADERS)
 
 
@@ -384,7 +384,7 @@ RECURSIVE_TARGETS = info-recursive dvi-recursive pdf-recursive \
 	check-recursive installcheck-recursive
 DIST_COMMON = $(include_HEADERS) Makefile.am Makefile.in
 DIST_SUBDIRS = $(SUBDIRS)
-SOURCES = $(libMagick___la_SOURCES)
+SOURCES = $(libGraphicsMagick___la_SOURCES)
 
 all: all-recursive
 
@@ -423,8 +423,8 @@ clean-libLTLIBRARIES:
 	  echo "rm -f \"$${dir}/so_locations\""; \
 	  rm -f "$${dir}/so_locations"; \
 	done
-libMagick++.la: $(libMagick___la_OBJECTS) $(libMagick___la_DEPENDENCIES) 
-	$(CXXLINK) -rpath $(libdir) $(libMagick___la_LDFLAGS) $(libMagick___la_OBJECTS) $(libMagick___la_LIBADD) $(LIBS)
+libGraphicsMagick++.la: $(libGraphicsMagick___la_OBJECTS) $(libGraphicsMagick___la_DEPENDENCIES) 
+	$(CXXLINK) -rpath $(libdir) $(libGraphicsMagick___la_LDFLAGS) $(libGraphicsMagick___la_OBJECTS) $(libGraphicsMagick___la_LIBADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT) core *.core

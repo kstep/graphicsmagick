@@ -14,33 +14,33 @@
 
 @SET_MAKE@
 
-#  Makefile for building ImageMagick coder modules
+#  Makefile for building GraphicsMagick coder modules
 #
-# Copyright (C) 2002 ImageMagick Studio, a non-profit organization dedicated
+# Copyright (C) 2002 GraphicsMagick Group, a non-profit organization dedicated
 # to making software imaging solutions freely available.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
-# copy of this software and associated documentation files ("ImageMagick"),
-# to deal in ImageMagick without restriction, including without limitation
+# copy of this software and associated documentation files ("GraphicsMagick"),
+# to deal in GraphicsMagick without restriction, including without limitation
 # the rights to use, copy, modify, merge, publish, distribute, sublicense
-# and/or sell copies of ImageMagick, and to permit persons to whom the
-# ImageMagick is furnished to do so, subject to the following conditions:
+# and/or sell copies of GraphicsMagick, and to permit persons to whom the
+# GraphicsMagick is furnished to do so, subject to the following conditions:
 #
 # The above copyright notice and this permission notice shall be included in
-# all copies or substantial portions of ImageMagick.
+# all copies or substantial portions of GraphicsMagick.
 #
 # The software is provided "as is", without warranty of any kind, express or
 # implied, including but not limited to the warranties of merchantability,
 # fitness for a particular purpose and noninfringement.  In no event shall
-# ImageMagick Studio be liable for any claim, damages or other liability,
+# GraphicsMagick Group be liable for any claim, damages or other liability,
 # whether in an action of contract, tort or otherwise, arising from, out of
-# or in connection with ImageMagick or the use or other dealings in
-# ImageMagick.
+# or in connection with GraphicsMagick or the use or other dealings in
+# GraphicsMagick.
 #
-# Except as contained in this notice, the name of the ImageMagick Studio
+# Except as contained in this notice, the name of the GraphicsMagick Group
 # shall not be used in advertising or otherwise to promote the sale, use or
-# other dealings in ImageMagick without prior written authorization from the
-# ImageMagick Studio.
+# other dealings in GraphicsMagick without prior written authorization from the
+# GraphicsMagick Group.
 #
 
 srcdir = @srcdir@
@@ -354,7 +354,7 @@ MAGICK_CODER_SRCS = \
   dib.c dps.c dpx.c emf.c ept.c fax.c fits.c fpx.c gif.c gradient.c \
   gray.c histogram.c html.c icon.c jbig.c jp2.c jpeg.c label.c \
   locale.c logo.c map.c mat.c matte.c meta.c miff.c mono.c mpc.c mpeg.c \
-	mpr.c msl.c mtv.c mvg.c null.c otb.c palm.c pcd.c pcl.c pcx.c pdb.c pdf.c \
+  mpr.c msl.c mtv.c mvg.c null.c otb.c palm.c pcd.c pcl.c pcx.c pdb.c pdf.c \
   pict.c pix.c plasma.c png.c pnm.c preview.c ps.c ps2.c ps3.c psd.c \
   pwp.c rgb.c rla.c rle.c sct.c sfw.c sgi.c stegano.c sun.c svg.c \
   tga.c tiff.c tile.c tim.c ttf.c txt.c uil.c url.c uyvy.c vicar.c \
@@ -372,8 +372,8 @@ EXTRA_DIST = modules.mgk delegates.mgk.in type.mgk.in
 # Headers which are not installed but which are distributed
 noinst_HEADERS = 
 
-# Location of libMagick.la
-LIBMAGICK = ../magick/libMagick.la
+# Location of libGraphicsMagick.la
+LIBMAGICK = ../magick/libGraphicsMagick.la
 
 # Where modules are installed
 pkgdir = @MagickModulesPath@
@@ -381,7 +381,7 @@ pkgdir = @MagickModulesPath@
 # Architecture-dependent data files installed with modules
 @WITH_MODULES_TRUE@pkg_DATA = modules.mgk
 
-# Architecture independent data files installed into ImageMagick/share
+# Architecture independent data files installed into GraphicsMagick/share
 @WITH_MODULES_TRUE@pkgdata_DATA = 
 @WITH_MODULES_FALSE@pkg_LTLIBRARIES = 
 
@@ -390,13 +390,13 @@ pkgdir = @MagickModulesPath@
 @WITH_MODULES_TRUE@  art.la avi.la avs.la bmp.la caption.la cmyk.la cut.la dcm.la dib.la dps.la \
 @WITH_MODULES_TRUE@  dpx.la ept.la fax.la fits.la fpx.la gif.la gradient.la gray.la \
 @WITH_MODULES_TRUE@  histogram.la html.la icon.la jbig.la jp2.la jpeg.la label.la locale.la \
-@WITH_MODULES_TRUE@	logo.la map.la mat.la matte.la meta.la miff.la mono.la mpc.la mpeg.la mpr.la \
-@WITH_MODULES_TRUE@	msl.la mtv.la mvg.la null.la otb.la palm.la pcd.la pcl.la pcx.la pdb.la \
-@WITH_MODULES_TRUE@	pdf.la pict.la pix.la plasma.la png.la pnm.la preview.la ps.la ps2.la ps3.la \
-@WITH_MODULES_TRUE@	psd.la pwp.la rgb.la rla.la rle.la sct.la sfw.la sgi.la stegano.la sun.la \
-@WITH_MODULES_TRUE@	svg.la tga.la tiff.la tile.la tim.la ttf.la txt.la uil.la url.la uyvy.la \
-@WITH_MODULES_TRUE@	vicar.la vid.la viff.la wbmp.la wmf.la wpg.la x.la xbm.la xc.la xcf.la \
-@WITH_MODULES_TRUE@	xpm.la xwd.la yuv.la $(MAGICK_GDI32_MODULES)
+@WITH_MODULES_TRUE@  logo.la map.la mat.la matte.la meta.la miff.la mono.la mpc.la mpeg.la mpr.la \
+@WITH_MODULES_TRUE@  msl.la mtv.la mvg.la null.la otb.la palm.la pcd.la pcl.la pcx.la pdb.la \
+@WITH_MODULES_TRUE@  pdf.la pict.la pix.la plasma.la png.la pnm.la preview.la ps.la ps2.la ps3.la \
+@WITH_MODULES_TRUE@  psd.la pwp.la rgb.la rla.la rle.la sct.la sfw.la sgi.la stegano.la sun.la \
+@WITH_MODULES_TRUE@  svg.la tga.la tiff.la tile.la tim.la ttf.la txt.la uil.la url.la uyvy.la \
+@WITH_MODULES_TRUE@  vicar.la vid.la viff.la wbmp.la wmf.la wpg.la x.la xbm.la xc.la xcf.la \
+@WITH_MODULES_TRUE@  xpm.la xwd.la yuv.la $(MAGICK_GDI32_MODULES)
 
 @WITH_MODULES_FALSE@MODULECOMMONFLAGS = 
 @WITH_MODULES_TRUE@MODULECOMMONFLAGS = -no-undefined -module -avoid-version
@@ -874,85 +874,85 @@ CONFIG_CLEAN_FILES = delegates.mgk type.mgk type-ghostscript.mgk \
 	type-windows.mgk type-solaris.mgk
 LTLIBRARIES = $(noinst_LTLIBRARIES) $(pkg_LTLIBRARIES)
 
-art_la_DEPENDENCIES = ../magick/libMagick.la
+art_la_DEPENDENCIES = ../magick/libGraphicsMagick.la
 am_art_la_OBJECTS = art.lo
 art_la_OBJECTS = $(am_art_la_OBJECTS)
-avi_la_DEPENDENCIES = ../magick/libMagick.la
+avi_la_DEPENDENCIES = ../magick/libGraphicsMagick.la
 am_avi_la_OBJECTS = avi.lo
 avi_la_OBJECTS = $(am_avi_la_OBJECTS)
-avs_la_DEPENDENCIES = ../magick/libMagick.la
+avs_la_DEPENDENCIES = ../magick/libGraphicsMagick.la
 am_avs_la_OBJECTS = avs.lo
 avs_la_OBJECTS = $(am_avs_la_OBJECTS)
-bmp_la_DEPENDENCIES = ../magick/libMagick.la
+bmp_la_DEPENDENCIES = ../magick/libGraphicsMagick.la
 am_bmp_la_OBJECTS = bmp.lo
 bmp_la_OBJECTS = $(am_bmp_la_OBJECTS)
-caption_la_DEPENDENCIES = ../magick/libMagick.la
+caption_la_DEPENDENCIES = ../magick/libGraphicsMagick.la
 am_caption_la_OBJECTS = caption.lo
 caption_la_OBJECTS = $(am_caption_la_OBJECTS)
-clipboard_la_DEPENDENCIES = ../magick/libMagick.la
+clipboard_la_DEPENDENCIES = ../magick/libGraphicsMagick.la
 am_clipboard_la_OBJECTS = clipboard.lo
 clipboard_la_OBJECTS = $(am_clipboard_la_OBJECTS)
-cmyk_la_DEPENDENCIES = ../magick/libMagick.la
+cmyk_la_DEPENDENCIES = ../magick/libGraphicsMagick.la
 am_cmyk_la_OBJECTS = cmyk.lo
 cmyk_la_OBJECTS = $(am_cmyk_la_OBJECTS)
-cut_la_DEPENDENCIES = ../magick/libMagick.la
+cut_la_DEPENDENCIES = ../magick/libGraphicsMagick.la
 am_cut_la_OBJECTS = cut.lo
 cut_la_OBJECTS = $(am_cut_la_OBJECTS)
-dcm_la_DEPENDENCIES = ../magick/libMagick.la
+dcm_la_DEPENDENCIES = ../magick/libGraphicsMagick.la
 am_dcm_la_OBJECTS = dcm.lo
 dcm_la_OBJECTS = $(am_dcm_la_OBJECTS)
-dib_la_DEPENDENCIES = ../magick/libMagick.la
+dib_la_DEPENDENCIES = ../magick/libGraphicsMagick.la
 am_dib_la_OBJECTS = dib.lo
 dib_la_OBJECTS = $(am_dib_la_OBJECTS)
-dps_la_DEPENDENCIES = ../magick/libMagick.la
+dps_la_DEPENDENCIES = ../magick/libGraphicsMagick.la
 am_dps_la_OBJECTS = dps.lo
 dps_la_OBJECTS = $(am_dps_la_OBJECTS)
-dpx_la_DEPENDENCIES = ../magick/libMagick.la
+dpx_la_DEPENDENCIES = ../magick/libGraphicsMagick.la
 am_dpx_la_OBJECTS = dpx.lo
 dpx_la_OBJECTS = $(am_dpx_la_OBJECTS)
-emf_la_DEPENDENCIES = ../magick/libMagick.la
+emf_la_DEPENDENCIES = ../magick/libGraphicsMagick.la
 am_emf_la_OBJECTS = emf.lo
 emf_la_OBJECTS = $(am_emf_la_OBJECTS)
-ept_la_DEPENDENCIES = ../magick/libMagick.la
+ept_la_DEPENDENCIES = ../magick/libGraphicsMagick.la
 am_ept_la_OBJECTS = ept.lo
 ept_la_OBJECTS = $(am_ept_la_OBJECTS)
-fax_la_DEPENDENCIES = ../magick/libMagick.la
+fax_la_DEPENDENCIES = ../magick/libGraphicsMagick.la
 am_fax_la_OBJECTS = fax.lo
 fax_la_OBJECTS = $(am_fax_la_OBJECTS)
-fits_la_DEPENDENCIES = ../magick/libMagick.la
+fits_la_DEPENDENCIES = ../magick/libGraphicsMagick.la
 am_fits_la_OBJECTS = fits.lo
 fits_la_OBJECTS = $(am_fits_la_OBJECTS)
-fpx_la_DEPENDENCIES = ../magick/libMagick.la
+fpx_la_DEPENDENCIES = ../magick/libGraphicsMagick.la
 am_fpx_la_OBJECTS = fpx.lo
 fpx_la_OBJECTS = $(am_fpx_la_OBJECTS)
-gif_la_DEPENDENCIES = ../magick/libMagick.la
+gif_la_DEPENDENCIES = ../magick/libGraphicsMagick.la
 am_gif_la_OBJECTS = gif.lo
 gif_la_OBJECTS = $(am_gif_la_OBJECTS)
-gradient_la_DEPENDENCIES = ../magick/libMagick.la
+gradient_la_DEPENDENCIES = ../magick/libGraphicsMagick.la
 am_gradient_la_OBJECTS = gradient.lo
 gradient_la_OBJECTS = $(am_gradient_la_OBJECTS)
-gray_la_DEPENDENCIES = ../magick/libMagick.la
+gray_la_DEPENDENCIES = ../magick/libGraphicsMagick.la
 am_gray_la_OBJECTS = gray.lo
 gray_la_OBJECTS = $(am_gray_la_OBJECTS)
-histogram_la_DEPENDENCIES = ../magick/libMagick.la
+histogram_la_DEPENDENCIES = ../magick/libGraphicsMagick.la
 am_histogram_la_OBJECTS = histogram.lo
 histogram_la_OBJECTS = $(am_histogram_la_OBJECTS)
-html_la_DEPENDENCIES = ../magick/libMagick.la
+html_la_DEPENDENCIES = ../magick/libGraphicsMagick.la
 am_html_la_OBJECTS = html.lo
 html_la_OBJECTS = $(am_html_la_OBJECTS)
-icon_la_DEPENDENCIES = ../magick/libMagick.la
+icon_la_DEPENDENCIES = ../magick/libGraphicsMagick.la
 am_icon_la_OBJECTS = icon.lo
 icon_la_OBJECTS = $(am_icon_la_OBJECTS)
-jbig_la_DEPENDENCIES = ../magick/libMagick.la
+jbig_la_DEPENDENCIES = ../magick/libGraphicsMagick.la
 am_jbig_la_OBJECTS = jbig.lo
 jbig_la_OBJECTS = $(am_jbig_la_OBJECTS)
-jp2_la_DEPENDENCIES = ../magick/libMagick.la
+jp2_la_DEPENDENCIES = ../magick/libGraphicsMagick.la
 am_jp2_la_OBJECTS = jp2.lo
 jp2_la_OBJECTS = $(am_jp2_la_OBJECTS)
-jpeg_la_DEPENDENCIES = ../magick/libMagick.la
+jpeg_la_DEPENDENCIES = ../magick/libGraphicsMagick.la
 am_jpeg_la_OBJECTS = jpeg.lo
 jpeg_la_OBJECTS = $(am_jpeg_la_OBJECTS)
-label_la_DEPENDENCIES = ../magick/libMagick.la
+label_la_DEPENDENCIES = ../magick/libGraphicsMagick.la
 am_label_la_OBJECTS = label.lo
 label_la_OBJECTS = $(am_label_la_OBJECTS)
 libCoders_la_LDFLAGS =
@@ -983,196 +983,196 @@ am__objects_1 = art.lo avi.lo avs.lo bmp.lo caption.lo clipboard.lo \
 @WITH_MODULES_FALSE@am_libCoders_la_OBJECTS = $(am__objects_1)
 am__EXTRA_libCoders_la_SOURCES_DIST = clipboard.c emf.c
 libCoders_la_OBJECTS = $(am_libCoders_la_OBJECTS)
-locale_la_DEPENDENCIES = ../magick/libMagick.la
+locale_la_DEPENDENCIES = ../magick/libGraphicsMagick.la
 am_locale_la_OBJECTS = locale.lo
 locale_la_OBJECTS = $(am_locale_la_OBJECTS)
-logo_la_DEPENDENCIES = ../magick/libMagick.la
+logo_la_DEPENDENCIES = ../magick/libGraphicsMagick.la
 am_logo_la_OBJECTS = logo.lo
 logo_la_OBJECTS = $(am_logo_la_OBJECTS)
-map_la_DEPENDENCIES = ../magick/libMagick.la
+map_la_DEPENDENCIES = ../magick/libGraphicsMagick.la
 am_map_la_OBJECTS = map.lo
 map_la_OBJECTS = $(am_map_la_OBJECTS)
-mat_la_DEPENDENCIES = ../magick/libMagick.la
+mat_la_DEPENDENCIES = ../magick/libGraphicsMagick.la
 am_mat_la_OBJECTS = mat.lo
 mat_la_OBJECTS = $(am_mat_la_OBJECTS)
-matte_la_DEPENDENCIES = ../magick/libMagick.la
+matte_la_DEPENDENCIES = ../magick/libGraphicsMagick.la
 am_matte_la_OBJECTS = matte.lo
 matte_la_OBJECTS = $(am_matte_la_OBJECTS)
-meta_la_DEPENDENCIES = ../magick/libMagick.la
+meta_la_DEPENDENCIES = ../magick/libGraphicsMagick.la
 am_meta_la_OBJECTS = meta.lo
 meta_la_OBJECTS = $(am_meta_la_OBJECTS)
-miff_la_DEPENDENCIES = ../magick/libMagick.la
+miff_la_DEPENDENCIES = ../magick/libGraphicsMagick.la
 am_miff_la_OBJECTS = miff.lo
 miff_la_OBJECTS = $(am_miff_la_OBJECTS)
-mono_la_DEPENDENCIES = ../magick/libMagick.la
+mono_la_DEPENDENCIES = ../magick/libGraphicsMagick.la
 am_mono_la_OBJECTS = mono.lo
 mono_la_OBJECTS = $(am_mono_la_OBJECTS)
-mpc_la_DEPENDENCIES = ../magick/libMagick.la
+mpc_la_DEPENDENCIES = ../magick/libGraphicsMagick.la
 am_mpc_la_OBJECTS = mpc.lo
 mpc_la_OBJECTS = $(am_mpc_la_OBJECTS)
-mpeg_la_DEPENDENCIES = ../magick/libMagick.la
+mpeg_la_DEPENDENCIES = ../magick/libGraphicsMagick.la
 am_mpeg_la_OBJECTS = mpeg.lo
 mpeg_la_OBJECTS = $(am_mpeg_la_OBJECTS)
-mpr_la_DEPENDENCIES = ../magick/libMagick.la
+mpr_la_DEPENDENCIES = ../magick/libGraphicsMagick.la
 am_mpr_la_OBJECTS = mpr.lo
 mpr_la_OBJECTS = $(am_mpr_la_OBJECTS)
-msl_la_DEPENDENCIES = ../magick/libMagick.la
+msl_la_DEPENDENCIES = ../magick/libGraphicsMagick.la
 am_msl_la_OBJECTS = msl.lo
 msl_la_OBJECTS = $(am_msl_la_OBJECTS)
-mtv_la_DEPENDENCIES = ../magick/libMagick.la
+mtv_la_DEPENDENCIES = ../magick/libGraphicsMagick.la
 am_mtv_la_OBJECTS = mtv.lo
 mtv_la_OBJECTS = $(am_mtv_la_OBJECTS)
-mvg_la_DEPENDENCIES = ../magick/libMagick.la
+mvg_la_DEPENDENCIES = ../magick/libGraphicsMagick.la
 am_mvg_la_OBJECTS = mvg.lo
 mvg_la_OBJECTS = $(am_mvg_la_OBJECTS)
-null_la_DEPENDENCIES = ../magick/libMagick.la
+null_la_DEPENDENCIES = ../magick/libGraphicsMagick.la
 am_null_la_OBJECTS = null.lo
 null_la_OBJECTS = $(am_null_la_OBJECTS)
-otb_la_DEPENDENCIES = ../magick/libMagick.la
+otb_la_DEPENDENCIES = ../magick/libGraphicsMagick.la
 am_otb_la_OBJECTS = otb.lo
 otb_la_OBJECTS = $(am_otb_la_OBJECTS)
-palm_la_DEPENDENCIES = ../magick/libMagick.la
+palm_la_DEPENDENCIES = ../magick/libGraphicsMagick.la
 am_palm_la_OBJECTS = palm.lo
 palm_la_OBJECTS = $(am_palm_la_OBJECTS)
-pcd_la_DEPENDENCIES = ../magick/libMagick.la
+pcd_la_DEPENDENCIES = ../magick/libGraphicsMagick.la
 am_pcd_la_OBJECTS = pcd.lo
 pcd_la_OBJECTS = $(am_pcd_la_OBJECTS)
-pcl_la_DEPENDENCIES = ../magick/libMagick.la
+pcl_la_DEPENDENCIES = ../magick/libGraphicsMagick.la
 am_pcl_la_OBJECTS = pcl.lo
 pcl_la_OBJECTS = $(am_pcl_la_OBJECTS)
-pcx_la_DEPENDENCIES = ../magick/libMagick.la
+pcx_la_DEPENDENCIES = ../magick/libGraphicsMagick.la
 am_pcx_la_OBJECTS = pcx.lo
 pcx_la_OBJECTS = $(am_pcx_la_OBJECTS)
-pdb_la_DEPENDENCIES = ../magick/libMagick.la
+pdb_la_DEPENDENCIES = ../magick/libGraphicsMagick.la
 am_pdb_la_OBJECTS = pdb.lo
 pdb_la_OBJECTS = $(am_pdb_la_OBJECTS)
-pdf_la_DEPENDENCIES = ../magick/libMagick.la
+pdf_la_DEPENDENCIES = ../magick/libGraphicsMagick.la
 am_pdf_la_OBJECTS = pdf.lo
 pdf_la_OBJECTS = $(am_pdf_la_OBJECTS)
-pict_la_DEPENDENCIES = ../magick/libMagick.la
+pict_la_DEPENDENCIES = ../magick/libGraphicsMagick.la
 am_pict_la_OBJECTS = pict.lo
 pict_la_OBJECTS = $(am_pict_la_OBJECTS)
-pix_la_DEPENDENCIES = ../magick/libMagick.la
+pix_la_DEPENDENCIES = ../magick/libGraphicsMagick.la
 am_pix_la_OBJECTS = pix.lo
 pix_la_OBJECTS = $(am_pix_la_OBJECTS)
-plasma_la_DEPENDENCIES = ../magick/libMagick.la
+plasma_la_DEPENDENCIES = ../magick/libGraphicsMagick.la
 am_plasma_la_OBJECTS = plasma.lo
 plasma_la_OBJECTS = $(am_plasma_la_OBJECTS)
-png_la_DEPENDENCIES = ../magick/libMagick.la
+png_la_DEPENDENCIES = ../magick/libGraphicsMagick.la
 am_png_la_OBJECTS = png.lo
 png_la_OBJECTS = $(am_png_la_OBJECTS)
-pnm_la_DEPENDENCIES = ../magick/libMagick.la
+pnm_la_DEPENDENCIES = ../magick/libGraphicsMagick.la
 am_pnm_la_OBJECTS = pnm.lo
 pnm_la_OBJECTS = $(am_pnm_la_OBJECTS)
-preview_la_DEPENDENCIES = ../magick/libMagick.la
+preview_la_DEPENDENCIES = ../magick/libGraphicsMagick.la
 am_preview_la_OBJECTS = preview.lo
 preview_la_OBJECTS = $(am_preview_la_OBJECTS)
-ps_la_DEPENDENCIES = ../magick/libMagick.la
+ps_la_DEPENDENCIES = ../magick/libGraphicsMagick.la
 am_ps_la_OBJECTS = ps.lo
 ps_la_OBJECTS = $(am_ps_la_OBJECTS)
-ps2_la_DEPENDENCIES = ../magick/libMagick.la
+ps2_la_DEPENDENCIES = ../magick/libGraphicsMagick.la
 am_ps2_la_OBJECTS = ps2.lo
 ps2_la_OBJECTS = $(am_ps2_la_OBJECTS)
-ps3_la_DEPENDENCIES = ../magick/libMagick.la
+ps3_la_DEPENDENCIES = ../magick/libGraphicsMagick.la
 am_ps3_la_OBJECTS = ps3.lo
 ps3_la_OBJECTS = $(am_ps3_la_OBJECTS)
-psd_la_DEPENDENCIES = ../magick/libMagick.la
+psd_la_DEPENDENCIES = ../magick/libGraphicsMagick.la
 am_psd_la_OBJECTS = psd.lo
 psd_la_OBJECTS = $(am_psd_la_OBJECTS)
-pwp_la_DEPENDENCIES = ../magick/libMagick.la
+pwp_la_DEPENDENCIES = ../magick/libGraphicsMagick.la
 am_pwp_la_OBJECTS = pwp.lo
 pwp_la_OBJECTS = $(am_pwp_la_OBJECTS)
-rgb_la_DEPENDENCIES = ../magick/libMagick.la
+rgb_la_DEPENDENCIES = ../magick/libGraphicsMagick.la
 am_rgb_la_OBJECTS = rgb.lo
 rgb_la_OBJECTS = $(am_rgb_la_OBJECTS)
-rla_la_DEPENDENCIES = ../magick/libMagick.la
+rla_la_DEPENDENCIES = ../magick/libGraphicsMagick.la
 am_rla_la_OBJECTS = rla.lo
 rla_la_OBJECTS = $(am_rla_la_OBJECTS)
-rle_la_DEPENDENCIES = ../magick/libMagick.la
+rle_la_DEPENDENCIES = ../magick/libGraphicsMagick.la
 am_rle_la_OBJECTS = rle.lo
 rle_la_OBJECTS = $(am_rle_la_OBJECTS)
-sct_la_DEPENDENCIES = ../magick/libMagick.la
+sct_la_DEPENDENCIES = ../magick/libGraphicsMagick.la
 am_sct_la_OBJECTS = sct.lo
 sct_la_OBJECTS = $(am_sct_la_OBJECTS)
-sfw_la_DEPENDENCIES = ../magick/libMagick.la
+sfw_la_DEPENDENCIES = ../magick/libGraphicsMagick.la
 am_sfw_la_OBJECTS = sfw.lo
 sfw_la_OBJECTS = $(am_sfw_la_OBJECTS)
-sgi_la_DEPENDENCIES = ../magick/libMagick.la
+sgi_la_DEPENDENCIES = ../magick/libGraphicsMagick.la
 am_sgi_la_OBJECTS = sgi.lo
 sgi_la_OBJECTS = $(am_sgi_la_OBJECTS)
-stegano_la_DEPENDENCIES = ../magick/libMagick.la
+stegano_la_DEPENDENCIES = ../magick/libGraphicsMagick.la
 am_stegano_la_OBJECTS = stegano.lo
 stegano_la_OBJECTS = $(am_stegano_la_OBJECTS)
-sun_la_DEPENDENCIES = ../magick/libMagick.la
+sun_la_DEPENDENCIES = ../magick/libGraphicsMagick.la
 am_sun_la_OBJECTS = sun.lo
 sun_la_OBJECTS = $(am_sun_la_OBJECTS)
-svg_la_DEPENDENCIES = ../magick/libMagick.la
+svg_la_DEPENDENCIES = ../magick/libGraphicsMagick.la
 am_svg_la_OBJECTS = svg.lo
 svg_la_OBJECTS = $(am_svg_la_OBJECTS)
-tga_la_DEPENDENCIES = ../magick/libMagick.la
+tga_la_DEPENDENCIES = ../magick/libGraphicsMagick.la
 am_tga_la_OBJECTS = tga.lo
 tga_la_OBJECTS = $(am_tga_la_OBJECTS)
-tiff_la_DEPENDENCIES = ../magick/libMagick.la
+tiff_la_DEPENDENCIES = ../magick/libGraphicsMagick.la
 am_tiff_la_OBJECTS = tiff.lo
 tiff_la_OBJECTS = $(am_tiff_la_OBJECTS)
-tile_la_DEPENDENCIES = ../magick/libMagick.la
+tile_la_DEPENDENCIES = ../magick/libGraphicsMagick.la
 am_tile_la_OBJECTS = tile.lo
 tile_la_OBJECTS = $(am_tile_la_OBJECTS)
-tim_la_DEPENDENCIES = ../magick/libMagick.la
+tim_la_DEPENDENCIES = ../magick/libGraphicsMagick.la
 am_tim_la_OBJECTS = tim.lo
 tim_la_OBJECTS = $(am_tim_la_OBJECTS)
-ttf_la_DEPENDENCIES = ../magick/libMagick.la
+ttf_la_DEPENDENCIES = ../magick/libGraphicsMagick.la
 am_ttf_la_OBJECTS = ttf.lo
 ttf_la_OBJECTS = $(am_ttf_la_OBJECTS)
-txt_la_DEPENDENCIES = ../magick/libMagick.la
+txt_la_DEPENDENCIES = ../magick/libGraphicsMagick.la
 am_txt_la_OBJECTS = txt.lo
 txt_la_OBJECTS = $(am_txt_la_OBJECTS)
-uil_la_DEPENDENCIES = ../magick/libMagick.la
+uil_la_DEPENDENCIES = ../magick/libGraphicsMagick.la
 am_uil_la_OBJECTS = uil.lo
 uil_la_OBJECTS = $(am_uil_la_OBJECTS)
-url_la_DEPENDENCIES = ../magick/libMagick.la
+url_la_DEPENDENCIES = ../magick/libGraphicsMagick.la
 am_url_la_OBJECTS = url.lo
 url_la_OBJECTS = $(am_url_la_OBJECTS)
-uyvy_la_DEPENDENCIES = ../magick/libMagick.la
+uyvy_la_DEPENDENCIES = ../magick/libGraphicsMagick.la
 am_uyvy_la_OBJECTS = uyvy.lo
 uyvy_la_OBJECTS = $(am_uyvy_la_OBJECTS)
-vicar_la_DEPENDENCIES = ../magick/libMagick.la
+vicar_la_DEPENDENCIES = ../magick/libGraphicsMagick.la
 am_vicar_la_OBJECTS = vicar.lo
 vicar_la_OBJECTS = $(am_vicar_la_OBJECTS)
-vid_la_DEPENDENCIES = ../magick/libMagick.la
+vid_la_DEPENDENCIES = ../magick/libGraphicsMagick.la
 am_vid_la_OBJECTS = vid.lo
 vid_la_OBJECTS = $(am_vid_la_OBJECTS)
-viff_la_DEPENDENCIES = ../magick/libMagick.la
+viff_la_DEPENDENCIES = ../magick/libGraphicsMagick.la
 am_viff_la_OBJECTS = viff.lo
 viff_la_OBJECTS = $(am_viff_la_OBJECTS)
-wbmp_la_DEPENDENCIES = ../magick/libMagick.la
+wbmp_la_DEPENDENCIES = ../magick/libGraphicsMagick.la
 am_wbmp_la_OBJECTS = wbmp.lo
 wbmp_la_OBJECTS = $(am_wbmp_la_OBJECTS)
-wmf_la_DEPENDENCIES = ../magick/libMagick.la
+wmf_la_DEPENDENCIES = ../magick/libGraphicsMagick.la
 am_wmf_la_OBJECTS = wmf.lo
 wmf_la_OBJECTS = $(am_wmf_la_OBJECTS)
-wpg_la_DEPENDENCIES = ../magick/libMagick.la
+wpg_la_DEPENDENCIES = ../magick/libGraphicsMagick.la
 am_wpg_la_OBJECTS = wpg.lo
 wpg_la_OBJECTS = $(am_wpg_la_OBJECTS)
-x_la_DEPENDENCIES = ../magick/libMagick.la
+x_la_DEPENDENCIES = ../magick/libGraphicsMagick.la
 am_x_la_OBJECTS = x.lo
 x_la_OBJECTS = $(am_x_la_OBJECTS)
-xbm_la_DEPENDENCIES = ../magick/libMagick.la
+xbm_la_DEPENDENCIES = ../magick/libGraphicsMagick.la
 am_xbm_la_OBJECTS = xbm.lo
 xbm_la_OBJECTS = $(am_xbm_la_OBJECTS)
-xc_la_DEPENDENCIES = ../magick/libMagick.la
+xc_la_DEPENDENCIES = ../magick/libGraphicsMagick.la
 am_xc_la_OBJECTS = xc.lo
 xc_la_OBJECTS = $(am_xc_la_OBJECTS)
-xcf_la_DEPENDENCIES = ../magick/libMagick.la
+xcf_la_DEPENDENCIES = ../magick/libGraphicsMagick.la
 am_xcf_la_OBJECTS = xcf.lo
 xcf_la_OBJECTS = $(am_xcf_la_OBJECTS)
-xpm_la_DEPENDENCIES = ../magick/libMagick.la
+xpm_la_DEPENDENCIES = ../magick/libGraphicsMagick.la
 am_xpm_la_OBJECTS = xpm.lo
 xpm_la_OBJECTS = $(am_xpm_la_OBJECTS)
-xwd_la_DEPENDENCIES = ../magick/libMagick.la
+xwd_la_DEPENDENCIES = ../magick/libGraphicsMagick.la
 am_xwd_la_OBJECTS = xwd.lo
 xwd_la_OBJECTS = $(am_xwd_la_OBJECTS)
-yuv_la_DEPENDENCIES = ../magick/libMagick.la
+yuv_la_DEPENDENCIES = ../magick/libGraphicsMagick.la
 am_yuv_la_OBJECTS = yuv.lo
 yuv_la_OBJECTS = $(am_yuv_la_OBJECTS)
 

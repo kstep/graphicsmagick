@@ -7,11 +7,11 @@
 # configuration information is presented instead so that it may be used more
 # effictively in configure scripts.
 #
-usage='Usage: Magick++-config [--cppflags] [--cxxflags] [--exec-prefix] [--ldflags] [--libs] [--prefix] [--version]
+usage='Usage: GraphicsMagick++-config [--cppflags] [--cxxflags] [--exec-prefix] [--ldflags] [--libs] [--prefix] [--version]
 
  For example, "example.cpp" may be compiled to produce "example" as follows:
 
-  "c++ -o example example.cpp `Magick++-config --cppflags --cxxflags --ldflags --libs`"'
+  "c++ -o example example.cpp `GraphicsMagick++-config --cppflags --cxxflags --ldflags --libs`"'
 
 if test $# -eq 0; then
       echo "${usage}" 1>&2
@@ -30,7 +30,7 @@ while test $# -gt 0; do
       echo @MAJOR_VERSION@.@MINOR_VERSION@.@MICRO_VERSION@
       ;;
     --cppflags)
-      echo "-I@INCLUDE_DIR@ @CPPFLAGS@"
+      echo "-I@INCLUDE_DIR@/GraphicsMagick @CPPFLAGS@"
       ;;
     --cxxflags)
       echo '@CXXFLAGS@'
@@ -39,7 +39,7 @@ while test $# -gt 0; do
       echo '-L@LIB_DIR@ @LDFLAGS@'
       ;;
     --libs)
-      LIBS="-lMagick++ -lMagick @MAGICK_DEP_LIBS@"
+      LIBS="-lGraphicsMagick++ -lGraphicsMagick @MAGICK_DEP_LIBS@"
       echo "$LIBS"
       ;;
     *)

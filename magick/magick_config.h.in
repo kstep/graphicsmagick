@@ -314,14 +314,14 @@
 /* Directory where architecture-dependent files live. */
 #undef MagickLibPath
 
-/* Subdirectory of lib where ImageMagick architecture dependent files are
+/* Subdirectory of lib where GraphicsMagick architecture dependent files are
    installed */
 #undef MagickLibSubdir
 
 /* Location of coder modules */
 #undef MagickModulesPath
 
-/* Subdirectory of lib where ImageMagick modules are installed */
+/* Subdirectory of lib where GraphicsMagick modules are installed */
 #undef MagickModulesSubdir
 
 /* Directory where architecture-independent files live. */
@@ -354,7 +354,7 @@
 /* Define to 1 if you have the ANSI C header files. */
 #undef STDC_HEADERS
 
-/* ImageMagick is formally installed under prefix */
+/* GraphicsMagick is formally installed under prefix */
 #undef UseInstalledImageMagick
 
 /* Define to 1 if your processor stores words with the most significant byte

@@ -45,6 +45,7 @@ SUBDIRS = coders magick $(MAGICK_PLUS_PLUS) utilities tests
 endif # WITH_MODULES
 
 # Architecture independent data files installed in the package's data directory
+pkgdatadir = @MagickSharePath@
 pkgdata_DATA = Copyright.txt QuickStart.txt
 
 # Additional files to distribute
@@ -59,7 +60,8 @@ dist-hook:
 	  cd $(srcdir) && \
 	  ( \
 	    for dir in $(DISTDIRS) ; do \
-	      find $$dir -depth -print | egrep -v '(~$$)|(/CVS)|(/\.#)|(/\.deps)' | cpio -pdum $$builddir/$(distdir) 2> /dev/null ; \
+	      find $$dir -depth -print | egrep -v '(~$$)|(/CVS)|(/\.#)|(/\.deps)' \
+	        | cpio -pdum $$builddir/$(distdir) 2> /dev/null ; \
 	    done \
 	  ) \
 	)
@@ -75,10 +77,10 @@ install-data-html:
 	$(mkinstalldirs) $(DESTDIR)$(pkgdocdir)
 	$(INSTALL_DATA) $(srcdir)/ImageMagick.html $(DESTDIR)$(pkgdocdir)
 	@for dir in $(DOCDIRS) ; do \
-	  $(mkinstalldirs) $(DESTDIR)$(pkgdocdir)$$dir && \
+	  $(mkinstalldirs) $(DESTDIR)$(pkgdocdir)/$$dir && \
 	  for file in $(srcdir)/$$dir/*.* ; do \
-	    echo "$(INSTALL_DATA) $$file $(DESTDIR)$(pkgdocdir)$$dir" ; \
-	    $(INSTALL_DATA) "$$file" $(DESTDIR)$(pkgdocdir)$$dir ; \
+	    echo "$(INSTALL_DATA) $$file $(DESTDIR)$(pkgdocdir)/$$dir" ; \
+	    $(INSTALL_DATA) "$$file" $(DESTDIR)$(pkgdocdir)/$$dir ; \
 	  done ; \
 	done
 

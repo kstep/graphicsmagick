@@ -30,8 +30,11 @@
 # Don't require all the GNU mandated files
 AUTOMAKE_OPTIONS = 1.7 foreign
 
+includedir = ${prefix}/include
+pkgincludedir = $(includedir)/GraphicsMagick/magick
+
 # Shared libraries built in this directory
-lib_LTLIBRARIES = libMagick.la
+lib_LTLIBRARIES = libGraphicsMagick.la
 
 MAJOR_VERSION=@MAJOR_VERSION@
 MINOR_VERSION=@MINOR_VERSION@
@@ -41,9 +44,9 @@ BUILT_SOURCES = magick_config.h
 
 INCLUDES = -I$(top_srcdir) $(INCLTDL)
 
-ALLMANPAGES = Magick-config.1
+ALLMANPAGES = GraphicsMagick-config.1
 
-libMagick_la_LDFLAGS = -no-undefined \
+libGraphicsMagick_la_LDFLAGS = -no-undefined \
 	-release $(MAJOR_VERSION).$(MINOR_VERSION).$(MICRO_VERSION) \
 	-version-info 0:0:0
 
@@ -61,7 +64,7 @@ MAGICK_BASE_SRCS = memory.c blob.c cache.c locale.c error.c monitor.c \
 	deprecate.c
 
 # Platform specific source files that may appear in the library
-EXTRA_libMagick_la_SOURCES = nt_base.c nt_feature.c
+EXTRA_libGraphicsMagick_la_SOURCES = nt_base.c nt_feature.c
 
 if WIN32_NATIVE_BUILD
 MAGICK_PLATFORM_SRCS = nt_base.c nt_feature.c
@@ -75,18 +78,18 @@ endif # if WIN32_NATIVE_BUILD
 
 # Library sources
 if WITH_MODULES
-libMagick_la_SOURCES = $(MAGICK_BASE_SRCS) $(MAGICK_PLATFORM_SRCS)
-libMagick_la_LIBADD = @MAGICK_DEP_LIBS@ $(LIBLTDL)
+libGraphicsMagick_la_SOURCES = $(MAGICK_BASE_SRCS) $(MAGICK_PLATFORM_SRCS)
+libGraphicsMagick_la_LIBADD = @MAGICK_DEP_LIBS@ $(LIBLTDL)
 else
-libMagick_la_SOURCES = $(MAGICK_BASE_SRCS) $(MAGICK_PLATFORM_SRCS)
-libMagick_la_LIBADD = ../coders/libCoders.la @MAGICK_DEP_LIBS@
+libGraphicsMagick_la_SOURCES = $(MAGICK_BASE_SRCS) $(MAGICK_PLATFORM_SRCS)
+libGraphicsMagick_la_LIBADD = ../coders/libCoders.la @MAGICK_DEP_LIBS@
 endif # WITH_MODULES
 
 # Binary scripts
-bin_SCRIPTS = Magick-config
+bin_SCRIPTS = GraphicsMagick-config
 
 # Headers which are installed
-include_HEADERS = api.h attribute.h blob.h cache.h \
+pkginclude_HEADERS = api.h attribute.h blob.h cache.h \
   cache_view.h command.h compress.h magick_config.h delegate.h \
   draw.h render.h error.h gem.h image.h list.h log.h magic.h magick.h \
   module.h monitor.h quantize.h paint.h random.h resource.h registry.h \
@@ -98,8 +101,8 @@ noinst_HEADERS = animate.h display.h mac.h nt_base.h nt_feature.h \
   static.h studio.h vms.h
 
 # Additional files to distribute
-EXTRA_DIST = $(ALLMANPAGES) colors.mgk log.mgk magic.mgk Magick-config.in \
-  Magick-config.in Make.com mac.c nt_base.c nt_feature.c vms.c $(MAGICK_BASE_SRCS)
+EXTRA_DIST = $(ALLMANPAGES) colors.mgk log.mgk magic.mgk GraphicsMagick-config.in \
+  Make.com mac.c nt_base.c nt_feature.c vms.c $(MAGICK_BASE_SRCS)
 
 # Where configuration files get installed
 pkgdir = @MagickLibPath@

@@ -320,26 +320,26 @@ AUTOMAKE_OPTIONS = 1.7
 INCLUDES = -I../.. -I$(top_srcdir)
 
 # Binary scripts
-bin_SCRIPTS = Magick++-config
+bin_SCRIPTS = GraphicsMagick++-config
 
 # Manual pages
-ALLMANPAGES = Magick++-config.1
+ALLMANPAGES = GraphicsMagick++-config.1
 
 # Manual pages to install
 man_MANS = $(ALLMANPAGES)
 
-EXTRA_DIST = $(ALLMANPAGES) Magick++-config.in
+EXTRA_DIST = $(ALLMANPAGES) GraphicsMagick++-config.in
 subdir = Magick++/bin
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/magick/magick_config.h
-CONFIG_CLEAN_FILES = Magick++-config
+CONFIG_CLEAN_FILES = GraphicsMagick++-config
 SCRIPTS = $(bin_SCRIPTS)
 
 DIST_SOURCES =
 
 NROFF = nroff
 MANS = $(man_MANS)
-DIST_COMMON = Magick++-config.in Makefile.am Makefile.in
+DIST_COMMON = GraphicsMagick++-config.in Makefile.am Makefile.in
 all: all-am
 
 .SUFFIXES:
@@ -348,7 +348,7 @@ $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am  $(top_srcdir)/configu
 	  $(AUTOMAKE) --gnu  Magick++/bin/Makefile
 Makefile: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ $(am__depfiles_maybe)
-Magick++-config: $(top_builddir)/config.status Magick++-config.in
+GraphicsMagick++-config: $(top_builddir)/config.status GraphicsMagick++-config.in
 	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@
 binSCRIPT_INSTALL = $(INSTALL_SCRIPT)
 install-binSCRIPTS: $(bin_SCRIPTS)

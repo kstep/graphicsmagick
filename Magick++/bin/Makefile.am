@@ -17,12 +17,12 @@ MINOR_VERSION      = @MINOR_VERSION@
 MICRO_VERSION      = @MICRO_VERSION@
 
 # Binary scripts
-bin_SCRIPTS = Magick++-config
+bin_SCRIPTS = GraphicsMagick++-config
 
 # Manual pages
-ALLMANPAGES = Magick++-config.1
+ALLMANPAGES = GraphicsMagick++-config.1
 
 # Manual pages to install
 man_MANS = $(ALLMANPAGES)
 
-EXTRA_DIST = $(ALLMANPAGES) Magick++-config.in
+EXTRA_DIST = $(ALLMANPAGES) GraphicsMagick++-config.in

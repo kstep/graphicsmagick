@@ -1,3 +1,12 @@
+2002-12-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+	* Updated to Autoconf 2.57.
+	* Install libraries as -lGraphicsMagick and -lGraphicsMagick++ under
+	Unix.
+	* Install headers under ${PREFIX}/include/GraphicsMagick under Unix.
+	* Update *-config scripts to produce correct library and include
+	statements.
+	* Update PerlMagick to use correct library and include statements.
+
 2002-12-04 William Radcliffe <billr@corbis.com>
 	* contrib/win32/ATL7/ImageMagickObject/ImageMagickObject.cpp:
 	Fixed serious problem with not installing custom error and warning

@@ -9,7 +9,7 @@ INCLUDES = -I$(srcdir)/../lib -I../.. -I$(top_srcdir)
 
 check_PROGRAMS = button demo detrans flip gravity piddle shapes zoom
 
-LDADD = ../lib/libMagick++.la
+LDADD = ../lib/libGraphicsMagick++.la
 
 button_SOURCES  = button.cpp
 demo_SOURCES    = demo.cpp

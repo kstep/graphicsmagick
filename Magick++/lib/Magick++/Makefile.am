@@ -8,7 +8,7 @@ AUTOMAKE_OPTIONS = 1.7
 includedir = ${prefix}/include
 pkgdatadir = $(datadir)/Magick++
 pkglibdir = $(libdir)/Magick++
-pkgincludedir = $(includedir)/Magick++
+pkgincludedir = $(includedir)/GraphicsMagick/Magick++
 
 pkginclude_HEADERS = Blob.h CoderInfo.h Color.h Drawable.h \
 	Exception.h Geometry.h Image.h Include.h Montage.h \
