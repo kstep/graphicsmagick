@@ -53,6 +53,20 @@
 </tr>
 </table>
 <p>
+2003-07-02  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/wmf.c (ipa_bmp_draw): Use CopyException.
+        (ipa_device_begin): Use CopyException.
+        (lite_font_map): Use CopyException.
+  <LI> coders/jpeg.c (ReadJPEGImage): Use CopyException.
+  <LI> magick/image.c (GetImageException): Use CopyException.
+  <LI> magick/constitute.c (WriteImages): Use CopyException.
+  <LI> Makefile.am (DIST_SUBDIRS): wand needs to be included in
+        distribution.
+
+</UL>
+<p>
 2003-06-30  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

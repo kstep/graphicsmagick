@@ -22,7 +22,7 @@ MAGICK_PLUS_PLUS=Magick++
 endif # WITH_MAGICK_PLUS_PLUS
 
 # Directories to include in distribution
-DIST_SUBDIRS=ltdl coders filters magick utilities tests Magick++
+DIST_SUBDIRS=ltdl coders filters magick utilities tests Magick++ wand
 
 if WITH_LTDL
 LTDL=ltdl

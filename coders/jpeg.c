@@ -669,8 +669,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
       if (jpeg_pixels != (JSAMPLE *) NULL)
         MagickFreeMemory(jpeg_pixels);
       jpeg_destroy_decompress(&jpeg_info);
-      ThrowException(exception,image->exception.severity,
-        image->exception.reason,image->exception.description);
+      CopyException(exception,&image->exception);
       if (image->blob->type != UndefinedStream)
         CloseBlob(image);
       number_pixels=image->columns*image->rows;
@@ -1054,8 +1053,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   CloseBlob(image);
   if (logging) 
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),"return");
-  ThrowException(exception,image->exception.severity,image->exception.reason,
-    image->exception.description);
+  CopyException(exception,&image->exception);
   return(image);
 }
 #endif

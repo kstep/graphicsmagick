@@ -4,6 +4,23 @@
 </HEAD>
 <BODY TEXT="#000000" BGCOLOR="#FFFFFF" LINK="#0000EE" VLINK="#551A8B" ALINK="#FF0000">
 <p>
+2003-06-29  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Magick++/Include.h: Needed to import ThrowLoggedException.
+  <LI> lib/Exception.cpp (throwException): Add originating source
+        module, source line, and function name (if available) to exception
+        report. This is useful in order to determine the exact conditions
+        that lead to the exception being thrown.
+  <LI> lib/Magick++/Exception.h: Added ErrorCoder, WarningCoder,
+        ErrorConfigure, WarningConfigure, ErrorDraw, WarningDraw,
+        ErrorImage, WarningImage, ErrorMonitor, WarningMonitor,
+        ErrorRegistry, WarningRegistry, ErrorStream, WarningStream,
+        ErrorType, and WarningType, exception classes to support the full
+        set of exceptions that GraphicsMagick can throw.
+
+</UL>
+<p>
 2003-06-22  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

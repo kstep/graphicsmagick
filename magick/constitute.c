@@ -3366,8 +3366,7 @@ MagickExport unsigned int WriteImages(ImageInfo *image_info,Image *image,
   {
     status&=WriteImage(image_info,p);
     if(p->exception.severity > exception->severity)
-      ThrowException(exception,p->exception.severity,
-        p->exception.reason,p->exception.description);
+      CopyException(exception,&p->exception);
     GetImageException(p,exception);
     if (image_info->adjoin)
       break;

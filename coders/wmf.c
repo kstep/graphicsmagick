@@ -433,9 +433,8 @@ static void ipa_bmp_draw(wmfAPI *API, wmfBMP_Draw_t *bmp_draw)
   image = (Image*)bmp_draw->bmp.data;
   if(!image)
     {
-       ThrowException(&ddata->image->exception,exception.severity,
-         exception.reason,exception.description);
-       return;
+      CopyException(&ddata->image->exception,&exception);
+      return;
     }
 
   if(bmp_draw->crop.x || bmp_draw->crop.y ||
@@ -464,8 +463,7 @@ static void ipa_bmp_draw(wmfAPI *API, wmfBMP_Draw_t *bmp_draw)
           bmp_draw->bmp.data = (void*)image;
         }
       else
-        ThrowException(&ddata->image->exception,exception.severity,
-          exception.reason,exception.description);
+        CopyException(&ddata->image->exception,&exception);
     }
 
   QueryColorDatabase( "white", &white, &exception );
@@ -684,8 +682,7 @@ static void ipa_device_begin(wmfAPI * API)
       else
         {
           LogMagickEvent(CoderEvent,GetMagickModule(),"reading texture image failed!");
-          ThrowException(&ddata->image->exception,exception.severity,
-            exception.reason,exception.description);
+          CopyException(&ddata->image->exception,&exception);
         }
     }
 
@@ -2105,8 +2102,7 @@ static void lite_font_map( wmfAPI* API, wmfFont* font)
   type_info_base=GetTypeInfo("*",&exception);
   if(type_info_base == 0)
     {
-      ThrowException(&ddata->image->exception,exception.severity,
-        exception.reason,exception.description);
+      CopyException(&ddata->image->exception,&exception);
       return;
     }
 

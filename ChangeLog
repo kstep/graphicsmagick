@@ -1,3 +1,14 @@
+2003-07-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/wmf.c (ipa_bmp_draw): Use CopyException.
+	(ipa_device_begin): Use CopyException.
+	(lite_font_map): Use CopyException.
+	* coders/jpeg.c (ReadJPEGImage): Use CopyException.
+	* magick/image.c (GetImageException): Use CopyException.
+	* magick/constitute.c (WriteImages): Use CopyException.
+	* Makefile.am (DIST_SUBDIRS): wand needs to be included in
+	distribution.
+
 2003-06-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/static.c (RegisterStaticModules): Invoke
