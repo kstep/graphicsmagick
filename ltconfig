@@ -1,6 +1,6 @@
 #! /bin/sh
 
-# ltconfig - Create a system-specific libtool.
+# ltconfig - Create a system-specific libtool. 
 # Copyright (C) 1996, 1997, 1998, 1999, 2000, 2001
 # Free Software Foundation, Inc.
 # Originally by Gordon Matzigkeit <gord@gnu.ai.mit.edu>, 1996
