@@ -1,3 +1,12 @@
+Major changes associated with GraphicsMagick 1.0.3 (Not released yet)
+
+  Bug Fixes:
+    * Configure script fix to ensure that -lfpx is not supplied to C
+    compiler during subsequent tests since this fails on some systems.
+    * BMP reader fix to avoid unnecessary rejection of some old
+    uncompressed Windows 2.X and OS/2 BMPs.
+    * Semaphore fix which is necessary for proper multi-threaded operation.
+
 Major changes associated with GraphicsMagick 1.0.2 (Released June 6, 2003)
 
   Bug Fixes:
