@@ -22,7 +22,7 @@ extern "C" {
 /*
   Static declarations.
 */
-const char
+static const char
   *AnimateHelp[]=
   {
     "BUTTONS",

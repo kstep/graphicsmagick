@@ -62,7 +62,7 @@
 /*
   Constant declaration.
 */
-const int
+static const int
   RoiDelta = 8;
 
 /*
