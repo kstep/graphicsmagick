@@ -14,7 +14,6 @@
 #ifndef __VECT_HXX__
 #define __VECT_HXX__
 
-#include <malloc.h>
 #include "page.hxx"
 
 //+-------------------------------------------------------------------------

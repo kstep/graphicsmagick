@@ -153,46 +153,6 @@ static void
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   C o n s t r a i n C o l o r m a p I n d e x                               %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  ConstrainColormapIndex() validates the colormap index.  If the index does
-%  not range from 0 to the number of colors in the colormap an exception
-%  is issued and 0 is returned.
-%
-%  The format of the ConstrainColormapIndex method is:
-%
-%      IndexPacket ConstrainColormapIndex(Image *image,const unsigned int index)
-%
-%  A description of each parameter follows:
-%
-%    o index: Method ConstrainColormapIndex returns colormap index if it is
-%      valid other an exception is issued and 0 is returned.
-%
-%    o image: The image.
-%
-%    o index: This integer is the colormap index.
-%
-%
-*/
-MagickExport IndexPacket ConstrainColormapIndex(Image *image,
-  unsigned long index)
-{
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-
-  VerifyColormapIndex(image,index);
-  return((IndexPacket) index);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 +   D e s t r o y C o l o r I n f o                                           %
 %                                                                             %
 %                                                                             %

@@ -1,3 +1,7 @@
+2003-04-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* oless/h/vect.hxx: Don't include <malloc.h>
+
 2003-03-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* fpx/f_fpxvw.cpp (OleRegGetUserType): Needed to copy

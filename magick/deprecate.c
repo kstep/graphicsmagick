@@ -729,44 +729,4 @@ MagickExport unsigned int UnshiftImageList(Image **images,const Image *image,
   PrependImageToList(images,CloneImageList(image,exception));
   return(True);
 }
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   V a l i d a t e C o l o r m a p I n d e x                                 %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  ValidateColormapIndex() validates the colormap index.  If the index does
-%  not range from 0 to the number of colors in the colormap an exception
-%  is issued and 0 is returned.
-%
-%  This method is deprecated as of version 5.4.4.
-%
-%  The format of the ValidateColormapIndex method is:
-%
-%      IndexPacket ValidateColormapIndex(Image *image,const unsigned int index)
-%
-%  A description of each parameter follows:
-%
-%    o index: Method ValidateColormapIndex returns colormap index if it is
-%      valid other an exception is issued and 0 is returned.
-%
-%    o image: The image.
-%
-%    o index: This integer is the colormap index.
-%
-%
-*/
 
-MagickExport IndexPacket ValidateColormapIndex(Image *image,
-  const unsigned long index)
-{
-  (void) LogMagickEvent(DeprecateEvent,GetMagickModule(),
-    "Method has been deprecated");
-  return(ConstrainColormapIndex(image,index));
-}

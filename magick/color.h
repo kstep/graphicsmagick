@@ -31,9 +31,6 @@ extern MagickExport char
 extern MagickExport const ColorInfo
   *GetColorInfo(const char *,ExceptionInfo *);
 
-extern MagickExport IndexPacket
-  ConstrainColormapIndex(Image *,unsigned long);
-
 extern MagickExport unsigned int
   FuzzyColorMatch(const PixelPacket *,const PixelPacket *,const double),
   IsGrayImage(const Image *,ExceptionInfo *),

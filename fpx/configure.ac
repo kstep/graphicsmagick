@@ -52,7 +52,7 @@ AC_C_CONST
 AC_C_INLINE
 AC_C_BIGENDIAN
 
-AC_CHECK_HEADERS(wchar.h)
+AC_CHECK_HEADERS(wchar.h,sys/statfs.h)
 
 #
 # Configure libtool

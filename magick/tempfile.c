@@ -274,7 +274,27 @@ MagickExport int AcquireTemporaryFileDescriptor(char *filename)
       return (fd);
     }
 
-#if HAVE_TEMPNAM
+#if HAVE_MKSTEMP
+  /*
+    Use mkstemp().
+    Mkstemp opens the the temporary file to assure that there is
+    no race condition between allocating the name and creating the
+    file. This helps improve security.  However, the other cases
+    also create the file in advance as well so there is not actually
+    much advantage.
+  */
+  {
+    (void) strcpy(filename,"gmXXXXXX");
+    fd=mkstemp(filename);
+    if (fd != -1)
+      {
+        AddTemporaryFileToList(filename);
+      }
+    return (fd);
+  }
+
+
+#elif HAVE_TEMPNAM
   /*
     Use tempnam().
     Windows has _tempnam which works similar to Unix tempnam.
@@ -313,24 +333,6 @@ MagickExport int AcquireTemporaryFileDescriptor(char *filename)
           }
 
         LiberateMemory((void **) &name);
-      }
-    return (fd);
-  }
-#elif HAVE_MKSTEMP
-  /*
-    Use mkstemp().
-    Mkstemp opens the the temporary file to assure that there is
-    no race condition between allocating the name and creating the
-    file. This helps improve security.  However, the other cases
-    also create the file in advance as well so there is not actually
-    much advantage.
-  */
-  {
-    (void) strcpy(filename,"gmXXXXXX");
-    fd=mkstemp(filename);
-    if (fd != -1)
-      {
-        AddTemporaryFileToList(filename);
       }
     return (fd);
   }

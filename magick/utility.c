@@ -3319,51 +3319,6 @@ MagickExport int SystemCommand(const unsigned int verbose,const char *command)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%  T e m p o r a r y F i l e n a m e                                          %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method TemporaryFilename replaces the contents of the string pointed to
-%  by filename by a unique file name.
-%
-%  The format of the TemporaryFilename method is:
-%
-%      void TemporaryFilename(char *filename)
-%
-%  A description of each parameter follows.
-%
-%   o  filename:  Specifies a pointer to an array of characters.  The unique
-%      file name is returned in this array.
-%
-*/
-MagickExport void TemporaryFilename(char *filename)
-{
-  assert(filename != (char *) NULL);
-  (void) strcpy(filename,"magic");
-#if defined(vms) || defined(macintosh)
-  (void) tmpnam(filename);
-#else
-  {
-    char
-      *name;
-
-    if ((name=tempnam((char *) NULL,filename)))
-      {
-        (void) strncpy(filename,name,MaxTextExtent-1);
-        LiberateMemory((void **) &name);
-      }
-  }
-#endif
-  FormatString(filename+strlen(filename),"%ld.tmp",(long) getpid());
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   T o k e n i z e r                                                         %
 %                                                                             %
 %                                                                             %

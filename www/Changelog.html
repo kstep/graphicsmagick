@@ -53,6 +53,38 @@
 </tr>
 </table>
 <p>
+2003-04-12  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/deprecate.c (ValidateColormapIndex): Remove
+        non-interface deprecated function.
+  <LI> magick/tempfile.c (AcquireTemporaryFileDescriptor):
+        Priortize use of mkstemp() over tempname() since *BSD
+        compilers whine about tempname() (although we do use
+        tempname() safely).<BR>
+  <LI> magick/color.c (ConstrainColormapIndex): Removed
+        function since it is no longer used.
+  <LI> magick/utility.c (TemporaryFilename): Removed
+        TemporaryFilename utility function since it is
+        no longer used and it makes *BSD compilers
+        complain.<BR>
+  <LI> magick/studio.h: Don't define _ISOC99_SOURCE,
+        _POSIX_C_SOURCE, or _XOPEN_SOURCE when compiling
+        under FreeBSD since this maps out a 'ushort'
+        definition required by /usr/include/sys/ipc.h.
+
+</UL>
+<p>
+2003-04-11  Glenn Randers-Pehrson &lt;randeg@alum.rpi.edu&gt;
+
+<UL>
+  <LI> coders/png.c: Some grayscale PNG images and the
+        JNG alpha channel were decoded improperly at Q:32.
+  <LI> magick/constitute.c (PopImagePixels): Changed many
+        instances of (Quantum) typecast to (unsigned char).
+
+</UL>
+<p>
 2003-04-10  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
