@@ -131,10 +131,11 @@ typedef struct _PathInfo
 */
 static unsigned int
   DrawPrimitive(Image *,const DrawInfo *,const PrimitiveInfo *),
+  DrawStrokePolygon(Image *,const DrawInfo *,const PrimitiveInfo *),
   TracePath(PrimitiveInfo *,const char *);
 
 static void
-  DrawStrokePolygon(const DrawInfo *,const PrimitiveInfo *,Image *),
+  DrawBoundingRectangles(Image *,const DrawInfo *,const PolygonInfo *),
   TraceArc(PrimitiveInfo *,const PointInfo,const PointInfo,const PointInfo,
     const double,const unsigned int,const unsigned int),
   TraceBezier(PrimitiveInfo *,const unsigned int),
@@ -1066,21 +1067,21 @@ static void DestroyPolygonInfo(PolygonInfo *polygon_info)
 %
 %  The format of the DrawBoundingRectangles method is:
 %
-%      void DrawBoundingRectangles(const DrawInfo *draw_info,
-%        PolygonInfo *polygon_info,Image *image)
+%      void DrawBoundingRectangles(Image *image,const DrawInfo *draw_info,
+%        PolygonInfo *polygon_info)
 %
 %  A description of each parameter follows:
+%
+%    o image: The image.
 %
 %    o draw_info: The draw info.
 %
 %    o polygon_info: Specifies a pointer to a PolygonInfo structure.
 %
-%    o image: The image.
-%
 %
 */
-static void DrawBoundingRectangles(const DrawInfo *draw_info,
-  const PolygonInfo *polygon_info,Image *image)
+static void DrawBoundingRectangles(Image *image,const DrawInfo *draw_info,
+  const PolygonInfo *polygon_info)
 {
   double
     mid;
@@ -1264,7 +1265,7 @@ static unsigned int DrawClipPath(Image *image,DrawInfo *draw_info)
 %
 %  The format of the DrawDashPolygon method is:
 %
-%      void DrawDashPolygon(const DrawInfo *draw_info,
+%      unsigned int DrawDashPolygon(const DrawInfo *draw_info,
 %        const PrimitiveInfo *primitive_info,Image *image)
 %
 %  A description of each parameter follows:
@@ -1277,7 +1278,7 @@ static unsigned int DrawClipPath(Image *image,DrawInfo *draw_info)
 %
 %
 */
-static void DrawDashPolygon(const DrawInfo *draw_info,
+static unsigned int DrawDashPolygon(const DrawInfo *draw_info,
   const PrimitiveInfo *primitive_info,Image *image)
 {
   double
@@ -1308,7 +1309,8 @@ static void DrawDashPolygon(const DrawInfo *draw_info,
     timer;
 
   unsigned int
-    number_vertices;
+    number_vertices,
+    status;
 
   assert(draw_info != (const DrawInfo *) NULL);
   if (draw_info->debug)
@@ -1323,8 +1325,7 @@ static void DrawDashPolygon(const DrawInfo *draw_info,
   dash_polygon=(PrimitiveInfo *)
     AcquireMemory((2*number_vertices+1)*sizeof(PrimitiveInfo));
   if (dash_polygon == (PrimitiveInfo *) NULL)
-    MagickError(ResourceLimitWarning,"Unable to draw image",
-      "Memory allocation failed");
+    return(False);
   scale=ExpandAffine(&draw_info->affine);
   dash_offset=draw_info->dash_offset > 0 ? scale*draw_info->dash_offset : 0.0;
   distance=0.0;
@@ -1358,6 +1359,7 @@ static void DrawDashPolygon(const DrawInfo *draw_info,
       n=0;
       j=1;
     }
+  status=True;
   for (i=1; i < (int) number_vertices; i++)
   {
     dx=primitive_info[i].point.x-primitive_info[i-1].point.x;
@@ -1393,7 +1395,7 @@ static void DrawDashPolygon(const DrawInfo *draw_info,
           j++;
           dash_polygon[0].coordinates=j;
           dash_polygon[j].primitive=UndefinedPrimitive;
-          DrawStrokePolygon(clone_info,dash_polygon,image);
+          status|=DrawStrokePolygon(image,clone_info,dash_polygon);
         }
       n++;
       if (draw_info->dash_pattern[n] == 0)
@@ -1411,6 +1413,7 @@ static void DrawDashPolygon(const DrawInfo *draw_info,
   DestroyDrawInfo(clone_info);
   if (draw_info->debug)
     (void) fprintf(stdout,"    end draw-dash (%.2fu)\n",GetUserTime(&timer));
+  return(status);
 }
 
 /*
@@ -2673,19 +2676,16 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
 %
 %  The format of the DrawPolygonPrimitive method is:
 %
-%      DrawPolygonPrimitive(const DrawInfo *draw_info,
-%        const PrimitiveInfo *primitive_info,PolygonInfo *polygon_info,
-%        Image *image)
+%      unsigned int DrawPolygonPrimitive(Image *image,const DrawInfo *draw_info,
+%        const PrimitiveInfo *primitive_info)
 %
 %  A description of each parameter follows:
+%
+%    o image: The image.
 %
 %    o draw_info: The draw info.
 %
 %    o primitive_info: Specifies a pointer to a PrimitiveInfo structure.
-%
-%    o polygon_info: Specifies a pointer to a PolygonInfo structure.
-%
-%    o image: The image.
 %
 %
 */
@@ -2880,8 +2880,8 @@ static inline double GetPixelOpacity(PolygonInfo *polygon_info,const double mid,
   return(subpath_opacity);
 }
 
-static void DrawPolygonPrimitive(const DrawInfo *draw_info,
-  const PrimitiveInfo *primitive_info,PolygonInfo *polygon_info,Image *image)
+static unsigned int DrawPolygonPrimitive(Image *image,const DrawInfo *draw_info,
+  const PrimitiveInfo *primitive_info)
 {
   double
     fill_opacity,
@@ -2892,9 +2892,15 @@ static void DrawPolygonPrimitive(const DrawInfo *draw_info,
     fill,
     y;
 
+  PathInfo
+    *path_info;
+
   PixelPacket
     fill_color,
     stroke_color;
+ 
+  PolygonInfo
+    *polygon_info;
 
   register EdgeInfo
     *p;
@@ -2915,12 +2921,21 @@ static void DrawPolygonPrimitive(const DrawInfo *draw_info,
   /*
     Compute bounding box.
   */
-  assert(primitive_info != (PrimitiveInfo *) NULL);
-  assert(primitive_info->coordinates > 0);
-  assert(draw_info != (DrawInfo *) NULL);
-  assert(draw_info->signature == MagickSignature);
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
+  assert(draw_info != (DrawInfo *) NULL);
+  assert(draw_info->signature == MagickSignature);
+  assert(primitive_info != (PrimitiveInfo *) NULL);
+  assert(primitive_info->coordinates > 0);
+  path_info=ConvertPrimitiveToPath(draw_info,primitive_info);
+  if (path_info == (PathInfo *) NULL)
+    return(False);
+  polygon_info=ConvertPathToPolygon(draw_info,path_info);
+  LiberateMemory((void **) &path_info);
+  if (polygon_info == (PolygonInfo *) NULL)
+    return(False);
+  if (draw_info->debug > 1)
+    DrawBoundingRectangles(image,draw_info,polygon_info);
   if (draw_info->debug)
     {
       GetTimerInfo(&timer);
@@ -2980,7 +2995,7 @@ static void DrawPolygonPrimitive(const DrawInfo *draw_info,
       if (draw_info->debug)
         (void) fprintf(stdout,"    end draw-polygon (%.2fu)\n",
           GetUserTime(&timer));
-      return;
+      return(True);
     }
   /*
     Draw polygon or line.
@@ -3017,6 +3032,8 @@ static void DrawPolygonPrimitive(const DrawInfo *draw_info,
   }
   if (draw_info->debug)
     (void) fprintf(stdout,"    end draw-polygon (%.2fu)\n",GetUserTime(&timer));
+  DestroyPolygonInfo(polygon_info);
+  return(True);
 }
 
 /*
@@ -3421,23 +3438,8 @@ static unsigned int DrawPrimitive(Image *image,const DrawInfo *draw_info,
       DrawInfo
         *clone_info;
 
-      PathInfo
-        *path_info;
-
-      PolygonInfo
-        *polygon_info;
-
       if (draw_info->debug)
         PrintPrimitiveInfo(primitive_info);
-      path_info=ConvertPrimitiveToPath(draw_info,primitive_info);
-      if (path_info == (PathInfo *) NULL)
-        return(False);
-      polygon_info=ConvertPathToPolygon(draw_info,path_info);
-      LiberateMemory((void **) &path_info);
-      if (polygon_info == (PolygonInfo *) NULL)
-        return(False);
-      if (draw_info->debug > 1)
-        DrawBoundingRectangles(draw_info,polygon_info,image);
       scale=ExpandAffine(&draw_info->affine);
       if ((draw_info->dash_pattern != (unsigned *) NULL) &&
           (scale*draw_info->stroke_width > MagickEpsilon) &&
@@ -3449,9 +3451,8 @@ static unsigned int DrawPrimitive(Image *image,const DrawInfo *draw_info,
           clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
           clone_info->stroke_width=0.0;
           clone_info->stroke.opacity=TransparentOpacity;
-          DrawPolygonPrimitive(clone_info,primitive_info,polygon_info,image);
+          status=DrawPolygonPrimitive(image,clone_info,primitive_info);
           DestroyDrawInfo(clone_info);
-          DestroyPolygonInfo(polygon_info);
           DrawDashPolygon(draw_info,primitive_info,image);
           break;
         }
@@ -3473,21 +3474,18 @@ static unsigned int DrawPrimitive(Image *image,const DrawInfo *draw_info,
                (draw_info->linejoin == RoundJoin)) ||
                (primitive_info[i].primitive != UndefinedPrimitive))
             {
-              DrawPolygonPrimitive(draw_info,primitive_info,polygon_info,image);
-              DestroyPolygonInfo(polygon_info);
+              DrawPolygonPrimitive(image,draw_info,primitive_info);
               break;
             }
           clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
           clone_info->stroke_width=0.0;
           clone_info->stroke.opacity=TransparentOpacity;
-          DrawPolygonPrimitive(clone_info,primitive_info,polygon_info,image);
+          status=DrawPolygonPrimitive(image,clone_info,primitive_info);
           DestroyDrawInfo(clone_info);
-          DestroyPolygonInfo(polygon_info);
-          DrawStrokePolygon(draw_info,primitive_info,image);
+          status|=DrawStrokePolygon(image,draw_info,primitive_info);
           break;
         }
-      DrawPolygonPrimitive(draw_info,primitive_info,polygon_info,image);
-      DestroyPolygonInfo(polygon_info);
+      DrawPolygonPrimitive(image,draw_info,primitive_info);
       break;
     }
   }
@@ -3512,16 +3510,16 @@ static unsigned int DrawPrimitive(Image *image,const DrawInfo *draw_info,
 %
 %  The format of the DrawStrokePolygon method is:
 %
-%      void DrawStrokePolygon(const DrawInfo *draw_info,
-%        const PrimitiveInfo *primitive_info,Image *image)
+%      unsigned int DrawStrokePolygon(Image *image,const DrawInfo *draw_info,
+%        const PrimitiveInfo *primitive_info)
 %
 %  A description of each parameter follows:
+%
+%    o image: The image.
 %
 %    o draw_info: The draw info.
 %
 %    o primitive_info: Specifies a pointer to a PrimitiveInfo structure.
-%
-%    o image: The image.
 %
 %
 */
@@ -3529,12 +3527,6 @@ static unsigned int DrawPrimitive(Image *image,const DrawInfo *draw_info,
 static void DrawRoundLinecap(const DrawInfo *draw_info,
   const PrimitiveInfo *primitive_info,Image *image)
 {
-  PathInfo
-    *path_info;
-
-  PolygonInfo
-    *polygon_info;
-
   PrimitiveInfo
     linecap[5];
 
@@ -3549,19 +3541,11 @@ static void DrawRoundLinecap(const DrawInfo *draw_info,
   linecap[2].point.y+=10.0*MagickEpsilon;
   linecap[3].point.y+=10.0*MagickEpsilon;
   linecap[4].primitive=UndefinedPrimitive;
-  path_info=ConvertPrimitiveToPath(draw_info,linecap);
-  if (path_info == (PathInfo *) NULL)
-    return;
-  polygon_info=ConvertPathToPolygon(draw_info,path_info);
-  LiberateMemory((void **) &path_info);
-  if (polygon_info == (PolygonInfo *) NULL)
-    return;
-  DrawPolygonPrimitive(draw_info,linecap,polygon_info,image);
-  DestroyPolygonInfo(polygon_info);
+  DrawPolygonPrimitive(image,draw_info,linecap);
 }
 
-static void DrawStrokePolygon(const DrawInfo *draw_info,
-  const PrimitiveInfo *primitive_info,Image *image)
+static unsigned int DrawStrokePolygon(Image *image,const DrawInfo *draw_info,
+  const PrimitiveInfo *primitive_info)
 {
   typedef struct _LineSegment
   {
@@ -3595,9 +3579,6 @@ static void DrawStrokePolygon(const DrawInfo *draw_info,
     slope,
     theta;
 
-  PathInfo
-    *path_info;
-
   PointInfo
     center,
     left_points[5],
@@ -3605,9 +3586,6 @@ static void DrawStrokePolygon(const DrawInfo *draw_info,
     offset,
     right_points[5],
     *right_strokes;
-
-  PolygonInfo
-    *polygon_info;
 
   PrimitiveInfo
     *stroke_polygon,
@@ -3620,7 +3598,8 @@ static void DrawStrokePolygon(const DrawInfo *draw_info,
     timer;
 
   unsigned int
-    number_vertices;
+    number_vertices,
+    status;
 
   /*
     Clone the polygon primitive.
@@ -4087,22 +4066,14 @@ static void DrawStrokePolygon(const DrawInfo *draw_info,
   /*
     Draw stroked polygon.
   */
-  path_info=ConvertPrimitiveToPath(draw_info,stroke_polygon);
-  if (path_info == (PathInfo *) NULL)
-    return;
-  polygon_info=ConvertPathToPolygon(draw_info,path_info);
-  LiberateMemory((void **) &path_info);
-  if (polygon_info == (PolygonInfo *) NULL)
-    return;
   clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
   clone_info->fill=draw_info->stroke;
   clone_info->stroke.opacity=TransparentOpacity;
   clone_info->stroke_width=0.0;
   clone_info->fill_rule=NonZeroRule;
-  DrawPolygonPrimitive(clone_info,stroke_polygon,polygon_info,image);
+  status=DrawPolygonPrimitive(image,clone_info,stroke_polygon);
   DestroyDrawInfo(clone_info);
   LiberateMemory((void **) &stroke_polygon);
-  DestroyPolygonInfo(polygon_info);
   if ((draw_info->linecap == RoundCap) && !closed_path)
     {
       DrawRoundLinecap(draw_info,&polygon_primitive[0],image);
@@ -4112,6 +4083,7 @@ static void DrawStrokePolygon(const DrawInfo *draw_info,
   if (draw_info->debug)
     (void) fprintf(stdout,"    end draw-stroke-polygon (%.2fu)\n",
       GetUserTime(&timer));
+  return(status);
 }
 
 /*
