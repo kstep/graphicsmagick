@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999
+// Copyright Bob Friesenhahn, 1999, 2000
 //
 // Definition of Magick::Exception and derived classes
 // Magick::Warning* and Magick::Error*.  Derived from C++ STD
