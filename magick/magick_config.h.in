@@ -222,6 +222,9 @@
 /* Define to 1 if you have the `rindex' function. */
 #undef HAVE_RINDEX
 
+/* Define to 1 if you have the `seekdir' function. */
+#undef HAVE_SEEKDIR
+
 /* Define to 1 if you have the `select' function. */
 #undef HAVE_SELECT
 
@@ -301,6 +304,9 @@
 
 /* Define to 1 if you have the <sys/types.h> header file. */
 #undef HAVE_SYS_TYPES_H
+
+/* Define to 1 if you have the `telldir' function. */
+#undef HAVE_TELLDIR
 
 /* define if the compiler supports basic templates */
 #undef HAVE_TEMPLATES

@@ -954,8 +954,8 @@ AC_SUBST(UINT64_T)
 GM_FUNC_MMAP_FILEIO
 AC_CHECK_FUNCS([ftime getexecname getc_unlocked getpagesize mkstemp \
   _pclose pclose poll _popen popen pread pwrite putc_unlocked raise \
-  rand_r select tempnam times sigemptyset sigaction strerror strlcat \
-  strlcpy sysconf vsprintf vsnprintf])
+  rand_r select tempnam times seekdir sigemptyset sigaction strerror \
+  strlcat strlcpy sysconf telldir vsprintf vsnprintf])
 
 ########
 #

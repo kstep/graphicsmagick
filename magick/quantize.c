@@ -1580,6 +1580,263 @@ MagickExport void GetQuantizeInfo(QuantizeInfo *quantize_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   G r a y s c a l e P s e u d o C l a s s I m a g e                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GrayscalePseudoClassImage converts an image to a PseudoClass
+%  grayscale representation with an (optionally) compressed and sorted
+%  colormap. Colormap is ordered by increasing intensity.
+%
+%  The format of the GrayscalePseudoClassImage method is:
+%
+%      void GrayscalePseudoClassImage(Image *image)
+%
+%  A description of each parameter follows:
+%
+%    o image: The image.
+%
+%    o optimize_colormap: If true, produce an optimimal (compact) colormap.
+%
+*/
+
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
+
+static int IntensityCompare(const void *x,const void *y)
+{
+  long
+    intensity;
+
+  PixelPacket
+    *color_1,
+    *color_2;
+
+  color_1=(PixelPacket *) x;
+  color_2=(PixelPacket *) y;
+  intensity=PixelIntensityToQuantum(color_1)-
+    (long) PixelIntensityToQuantum(color_2);
+  return(intensity);
+}
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
+
+MagickExport void GrayscalePseudoClassImage(Image *image,
+  unsigned int optimize_colormap)
+{
+  long
+    y;
+
+  register long
+    x;
+
+  register IndexPacket
+    *indexes;
+
+  register const PixelPacket
+    *q;
+
+  register unsigned int
+    i;
+
+  int
+    *colormap_index=(int *) NULL;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+
+  if (!image->is_grayscale)
+    (void) TransformColorspace(image,GRAYColorspace);
+
+  if (image->storage_class != PseudoClass)
+    {
+      /*
+        Allocate maximum sized grayscale image colormap
+      */
+      if (!AllocateImageColormap(image,MaxColormapSize))
+        {
+          ThrowException3(&image->exception,ResourceLimitError,
+            MemoryAllocationFailed,UnableToSortImageColormap);
+          return;
+        }
+
+      if (optimize_colormap)
+        {
+          /*
+            Use minimal colormap method.
+          */
+
+          /*
+            Allocate memory for colormap index
+          */
+          colormap_index=MagickAllocateMemory(int *,MaxColormapSize*sizeof(int));
+          if (colormap_index == (int *) NULL)
+            {
+              ThrowException3(&image->exception,ResourceLimitError,
+                MemoryAllocationFailed,UnableToSortImageColormap);
+              return;
+            }
+
+          /*
+            Initial colormap index value is -1 so we can tell if it
+            is initialized.
+          */
+          for (i=0; i < MaxColormapSize; i++)
+            colormap_index[i]=-1;
+
+          image->colors=0;
+          for (y=0; y < (long) image->rows; y++)
+            {
+              q=GetImagePixels(image,0,y,image->columns,1);
+              if (q == (PixelPacket *) NULL)
+                break;
+              indexes=GetIndexes(image);
+              for (x=(long) image->columns; x > 0; x--)
+                {
+                  register int
+                    intensity;
+                  
+                  /*
+                    If index is new, create index to colormap
+                  */
+                  intensity=ScaleQuantumToMap(q->red);
+                  if (colormap_index[intensity] < 0)
+                    {
+                      colormap_index[intensity]=image->colors;
+                      image->colormap[image->colors]=*q;
+                      image->colors++;
+                    }
+                  *indexes++=colormap_index[intensity];
+                  q++;
+                }
+              if (!SyncImagePixels(image))
+                return;
+            }
+        }
+      else
+        {
+          /*
+            Use fast-cut linear colormap method.
+          */
+          for (y=0; y < (long) image->rows; y++)
+            {
+              q=GetImagePixels(image,0,y,image->columns,1);
+              if (q == (PixelPacket *) NULL)
+                break;
+              indexes=GetIndexes(image);
+              for (x=(long) image->columns; x > 0; x--)
+                {
+                  *indexes=ScaleQuantumToIndex(q->red);
+                  q++;
+                  indexes++;
+                } 
+              if (!SyncImagePixels(image))
+                break;
+           }
+          image->is_grayscale=True;
+          return;
+        }
+    }
+
+  if (optimize_colormap)
+    {
+      /*
+        Sort and compact the colormap
+      */
+
+      /*
+        Allocate memory for colormap index
+      */
+      if (colormap_index == (int *) NULL)
+        {
+          colormap_index=MagickAllocateMemory(int *,MaxColormapSize*sizeof(int));
+          if (colormap_index == (int *) NULL)
+            {
+              ThrowException3(&image->exception,ResourceLimitError,
+                MemoryAllocationFailed,UnableToSortImageColormap);
+              return;
+            }
+        }
+      
+      /*
+        Assign index values to colormap entries.
+      */
+      for (i=0; i < image->colors; i++)
+        image->colormap[i].opacity=(unsigned short) i;
+      /*
+        Sort image colormap by increasing intensity.
+      */
+      qsort((void *) image->colormap,image->colors,sizeof(PixelPacket),
+            IntensityCompare);
+      /*
+        Create mapping between original indexes and reduced/sorted
+        colormap.
+      */
+      {
+        PixelPacket
+          *new_colormap;
+
+        int
+          j;
+
+        new_colormap=MagickAllocateMemory(PixelPacket *,image->colors*sizeof(PixelPacket));
+        if (new_colormap == (PixelPacket *) NULL)
+          {
+            ThrowException3(&image->exception,ResourceLimitError,
+              MemoryAllocationFailed,UnableToSortImageColormap);
+            return;
+          }
+
+        j=0;
+        new_colormap[j]=image->colormap[0];
+        for (i=0; i < image->colors; i++)
+          {
+            if (!ColorMatch(&new_colormap[j],&image->colormap[i]))
+              {
+                j++;
+                new_colormap[j]=image->colormap[i];
+              }
+            
+            colormap_index[image->colormap[i].opacity]=j;
+          }
+        image->colors=j+1;
+        MagickFreeMemory(image->colormap);
+        image->colormap=new_colormap;
+      }
+
+      /*
+        Reassign image colormap indexes
+      */
+      for (y=0; y < (long) image->rows; y++)
+        {
+          q=GetImagePixels(image,0,y,image->columns,1);
+          if (q == (PixelPacket *) NULL)
+            break;
+          indexes=GetIndexes(image);
+          for (x=(long) image->columns; x > 0; x--)
+            {
+              *indexes=colormap_index[*indexes];
+              indexes++;
+            }
+          if (!SyncImagePixels(image))
+            break;
+        }
+      MagickFreeMemory(colormap_index);
+    }
+  image->is_monochrome=IsMonochromeImage(image,&image->exception);
+  image->is_grayscale=True;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 +   H i l b e r t C u r v e                                                   %
 %                                                                             %
 %                                                                             %
@@ -1782,7 +2039,12 @@ MagickExport MagickPassFail MapImage(Image *image,const Image *map_image,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  MapImages() replaces the colors of a sequence of images with the closest
-%  color from a reference image.
+%  color from a reference image. If the reference image does not contain a
+%  colormap, then a colormap will be created based on existing colors in the
+%  reference image. The order and number of colormap entries does not match
+%  the reference image.  If the order and number of colormap entries needs to
+%  match the reference image, then the ReplaceImageColormap() function may be
+%  used after invoking MapImages() in order to apply the reference colormap.
 %
 %  The format of the MapImage method is:
 %

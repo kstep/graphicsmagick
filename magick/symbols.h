@@ -659,6 +659,7 @@
 #define RemoveDefinitions GmRemoveDefinitions
 #define RemoveFirstImageFromList GmRemoveFirstImageFromList
 #define RemoveLastImageFromList GmRemoveLastImageFromList
+#define ReplaceImageColormap GmReplaceImageColormap
 #define ReplaceImageInList GmReplaceImageInList
 #define ResetTimer GmResetTimer
 #define ResizeImage GmResizeImage

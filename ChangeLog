@@ -1,3 +1,20 @@
+2005-03-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/image.c (ReplaceImageColormap): New function to replace
+	the image colormap with a user-provided one. Colormap indexes are
+	adjusted to point to identical colors in the new colormap.
+	* magick/nt_base.h: Reorganized a bit to cluster code supporting
+	similar features in the same area of the header.
+	* magick/nt_base.c: Renamed wrappers for standard functions so
+	that they have the prefix 'NT'. Macros are used to apply the new
+	names. This assures that there will not be conflicts if the library
+	is linked with a different package's wrapper functions.
+
+2005-03-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/quantize.c (GrayscalePseudoClassImage): Moved to here
+	from image.c.  Added support for is_monochrome.
+
 2005-03-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* jp2: Updated Jasper library to version 1.701.0.

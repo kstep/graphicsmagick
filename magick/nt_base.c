@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 GraphicsMagick Group
+% Copyright (C) 2003, 2005 GraphicsMagick Group
 % Copyright (C) 2000-2002, Ghostgum Software Pty Ltd.  All rights reserved.
 % Copyright (C) 2002 ImageMagick Studio
 %
@@ -51,7 +51,7 @@
 */
 #if !defined(HasLTDL)
 static char
-  *lt_slsearchpath = (char *) NULL;
+  *NTslsearchpath = (char *) NULL;
 #endif
 static void
   *gs_dll_handle = (void *)NULL;
@@ -72,18 +72,18 @@ extern "C" BOOL WINAPI
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   c l o s e d i r                                                           %
+%   N T c l o s e d i r                                                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method closedir closes the named directory stream and frees the DIR
+%  Method NTclosedir closes the named directory stream and frees the DIR
 %  structure.
 %
-%  The format of the closedir method is:
+%  The format of the NTclosedir method is:
 %
-%      void closedir(DIR *entry)
+%      void NTclosedir(DIR *entry)
 %
 %  A description of each parameter follows:
 %
@@ -91,7 +91,7 @@ extern "C" BOOL WINAPI
 %
 %
 */
-MagickExport void closedir(DIR *entry)
+MagickExport void NTclosedir(DIR *entry)
 {
   assert(entry != (DIR *) NULL);
   FindClose(entry->hSearch);
@@ -237,75 +237,6 @@ MagickExport int Exit(int status)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   f t r u n c a t e                                                         %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method ftruncate truncates a file to the specified size.  If the file is
-%  longer than the specified size, it is shortened to the specified size. If
-%  the file is shorter than the specified size, it is extended to the
-%  specified size by filling with zeros.
-%  This is a POSIX compatability function.
-%
-%  The format of the ftruncate method is:
-%
-%      int ftruncate(int filedes, off_t length)
-%
-%  A description of each parameter follows:
-%
-%    o status: Zero is returned on successful completion. Otherwise -1
-%        is returned and errno is set to indicate the error.
-%
-%    o filedes: File descriptor from the _open() call.
-%
-%    o length: Desired file length.
-%
-*/
-MagickExport int ftruncate(int filedes, off_t length)
-{
-  int
-    status;
-
-  magick_off_t
-    current_pos;
-
-  status=0;
-  current_pos=MagickTell(filedes);
-
-  /*
-    Truncate file to size, filling any extension with nulls.
-    Notice that this interface is limited to 2GB due to its
-    use of a 'long' offset. Ftruncate also has this shortcoming
-    if off_t is a 'long'.
-
-    A way to support more than 2GB is to use SetFilePointerEx()
-    to set the file position followed by SetEndOfFile() to set
-    the file EOF to the current file position. This approach does
-    not ensure that bytes in the extended portion are null.
-
-    The CreateFileMapping() function may also be used to extend a
-    file's length. The filler byte values are not defined in the
-    documentation.
-  */ 
-  status=chsize(filedes,length);
-
-  /*
-    It is not documented if _chsize preserves the seek 
-    position, so restore the seek position like ftruncate
-    does
-  */
-  if (!status)
-    status=MagickSeek(filedes,current_pos,SEEK_SET);
-  return(status);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   I s W i n d o w s 9 5                                                     %
 %                                                                             %
 %                                                                             %
@@ -343,25 +274,25 @@ MagickExport MagickBool IsWindows95()
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   l t _ d l c l o s e                                                       %
+%   N T d l c l o s e                                                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%   Method lt_dlclose unloads the module associated with the passed handle.
+%   Method NTdlclose unloads the module associated with the passed handle.
 %   Zero is returned on success.
 %
-%  The format of the lt_dlclose method is:
+%  The format of the NTdlclose method is:
 %
-%      void lt_dlclose(void *handle)
+%      void NTdlclose(void *handle)
 %
 %  A description of each parameter follows:
 %
 %    o handle: Specifies a handle to a previously loaded dynamic module.
 %
 */
-int lt_dlclose(void *handle)
+MagickExport int NTdlclose(void *handle)
 {
   /* FreeLibrary returns zero for failure */
   return (!(FreeLibrary(handle)));
@@ -372,24 +303,24 @@ int lt_dlclose(void *handle)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   l t _ d l e r r o r                                                       %
+%   N T d l e r r o r                                                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%   Method lt_dlerror returns a pointer to a string describing the last error
-%   associated with a lt_dl* function. Note that this function is not thread
+%   Method NTdlerror returns a pointer to a string describing the last error
+%   associated with a NTdl* function. Note that this function is not thread
 %   safe so it should only be used under the protection of a lock.
 %
-%  The format of the lt_dlerror method is:
+%  The format of the NTdlerror method is:
 %
-%      const char * lt_dlerror(void)
+%      const char * NTdlerror(void)
 %
 %  A description of each parameter follows:
 %
 */
-const char *lt_dlerror(void)
+MagickExport const char *NTdlerror(void)
 {
   static char
     last_error[MaxTextExtent];
@@ -410,20 +341,20 @@ const char *lt_dlerror(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   l t _ d l e x i t                                                         %
+%   N T d l e x i t                                                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%   lt_dlexit() exits the dynamic module loading subsystem.
+%   NTdlexit() exits the dynamic module loading subsystem.
 %
-%  The format of the lt_dlexit method is:
+%  The format of the NTdlexit method is:
 %
-%      int lt_dlexit(void)
+%      int NTdlexit(void)
 %
 */
-int lt_dlexit(void)
+MagickExport int NTdlexit(void)
 {
   return(0);
 }
@@ -433,20 +364,20 @@ int lt_dlexit(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   l t _ d l i n i t                                                         %
+%   N T d l i n i t                                                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%   Method lt_dlinit initializes the dynamic module loading subsystem.
+%   Method NTdlinit initializes the dynamic module loading subsystem.
 %
-%  The format of the lt_dlinit method is:
+%  The format of the NTdlinit method is:
 %
-%      int lt_dlinit(void)
+%      int NTdlinit(void)
 %
 */
-int lt_dlinit(void)
+MagickExport int NTdlinit(void)
 {
   return(0);
 }
@@ -456,18 +387,18 @@ int lt_dlinit(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   l t _ d l o p e n                                                         %
+%   N T d l o p e n                                                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%   Method lt_dlopen loads a dynamic module into memory and returns a handle
+%   Method NTdlopen loads a dynamic module into memory and returns a handle
 %   that can be used to access the various procedures in the module.
 %
-%  The format of the lt_dlopen method is:
+%  The format of the NTdlopen method is:
 %
-%      void *lt_dlopen(const char *filename)
+%      void *NTdlopen(const char *filename)
 %
 %  A description of each parameter follows:
 %
@@ -475,7 +406,7 @@ int lt_dlinit(void)
 %            is to be loaded.
 %
 */
-void *lt_dlopen(const char *filename)
+MagickExport void *NTdlopen(const char *filename)
 {
 #define MaxPathElements  31
 
@@ -506,9 +437,9 @@ void *lt_dlopen(const char *filename)
 
   // If library failed to load, but a search path is defined, then
   // attempt to load library via search path.
-  if ((handle == (void *) NULL) && (lt_slsearchpath != NULL))
+  if ((handle == (void *) NULL) && (NTslsearchpath != NULL))
     {
-      p=lt_slsearchpath;
+      p=NTslsearchpath;
       index=0;
       while (index < MaxPathElements)
         {
@@ -544,18 +475,18 @@ void *lt_dlopen(const char *filename)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   l t _ d l s e t s e a r c h p a t h                                       %
+%   N T d l s e t s e a r c h p a t h                                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%   Method lt_dlsetsearchpath sets the current locations that the subsystem
+%   Method NTdlsetsearchpath sets the current locations that the subsystem
 %   should look at to find dynamically loadable modules.
 %
-%  The format of the lt_dlsetsearchpath method is:
+%  The format of the NTdlsetsearchpath method is:
 %
-%      int lt_dlsetsearchpath(char *path)
+%      int NTdlsetsearchpath(char *path)
 %
 %  A description of each parameter follows:
 %
@@ -563,15 +494,15 @@ void *lt_dlopen(const char *filename)
 %            for DLL's that can be dynamically loaded.
 %
 */
-int lt_dlsetsearchpath(const char *path)
+MagickExport int NTdlsetsearchpath(const char *path)
 {
-  if (lt_slsearchpath)
+  if (NTslsearchpath)
     {
-      MagickFreeMemory(lt_slsearchpath);
-      lt_slsearchpath=(char *) NULL;
+      MagickFreeMemory(NTslsearchpath);
+      NTslsearchpath=(char *) NULL;
     }
   if (path != (char *) NULL)
-    lt_slsearchpath=AllocateString(path);
+    NTslsearchpath=AllocateString(path);
   return (0);
 }
 
@@ -580,18 +511,18 @@ int lt_dlsetsearchpath(const char *path)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   l t _ d l s y m                                                           %
+%   N T d l s y m                                                             %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%   Method lt_dlsym retrieve the procedure address of the procedure specified
+%   Method NTdlsym retrieve the procedure address of the procedure specified
 %   by the passed character string.
 %
-%  The format of the lt_dlsym method is:
+%  The format of the NTdlsym method is:
 %
-%      void *lt_dlsym(void *handle,const char *name)
+%      void *NTdlsym(void *handle,const char *name)
 %
 %  A description of each parameter follows:
 %
@@ -600,7 +531,7 @@ int lt_dlsetsearchpath(const char *path)
 %    o name: Specifies the procedure entry point to be returned.
 %
 */
-void *lt_dlsym(void *handle,const char *name)
+MagickExport void *NTdlsym(void *handle,const char *name)
 {
   LPFNDLLFUNC1
     lpfnDllFunc1;
@@ -617,158 +548,21 @@ void *lt_dlsym(void *handle,const char *name)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+  m m a p                                                                    %
++  N T m u n m a p                                                            %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method mmap emulates the Unix method of the same name. Supports PROT_READ,
-%  PROT_WRITE protection options, and MAP_SHARED, MAP_PRIVATE, MAP_ANON flags.
-%  Passing a file descriptor of -1 along with the MAP_ANON flag option returns
-%  a memory allocation from the system page file with the specified allocated
-%  length.
+%  Method NTmunmap emulates the POSIX munmap function.
 %
-%  The format of the mmap method is:
+%  The format of the NTmunmap method is:
 %
-%    MagickExport void *mmap(char *address, size_t length, int protection,
-%      int flags, int file, magick_off_t offset)
-%
-%
-*/
-MagickExport void *mmap(char *address,size_t length,int protection,int flags,
-  int file,magick_off_t offset)
-{
-  void
-    *map;
-
-  HANDLE
-    file_handle,
-    shmem_handle;
-
-  DWORD
-    length_low,
-    length_high,
-    offset_low,
-    offset_high;
-
-  DWORD
-    access_mode=0,
-    protection_mode=0;
-
-  map=(void *) NULL;
-  shmem_handle=INVALID_HANDLE_VALUE;
-  file_handle=INVALID_HANDLE_VALUE;
-
-  offset_low=(DWORD) (offset & 0xFFFFFFFFUL);
-  offset_high=(DWORD) ((offset >> 32) & 0xFFFFFFFFUL);
-
-  length_low=(DWORD) (length & 0xFFFFFFFFUL);
-  length_high=(DWORD) ((((magick_off_t) length) >> 32) & 0xFFFFFFFFUL);
-
-  if (protection & PROT_WRITE)
-    {
-      access_mode=FILE_MAP_WRITE;
-      if (flags & MAP_PRIVATE)
-        {
-          // Copy on write (updates are private)
-          access_mode=FILE_MAP_COPY;
-          protection_mode=PAGE_WRITECOPY;
-        }
-      else
-        {
-          // Updates are shared
-          protection_mode=PAGE_READWRITE;
-        }
-    }
-  else if (protection & PROT_READ)
-    {
-      access_mode=FILE_MAP_READ;
-      protection_mode=PAGE_READONLY;
-    }
-
-  if ((file == -1) && (flags & MAP_ANON))
-    // Similar to using mmap on /dev/zero to allocate memory from paging area.
-    file_handle=INVALID_HANDLE_VALUE;
-  else
-    file_handle=(HANDLE) _get_osfhandle(file);
-
-  shmem_handle=CreateFileMapping(file_handle,0,protection_mode,length_high,
-                                 length_low,0);
-  if (shmem_handle)
-    {
-      map=(void *) MapViewOfFile(shmem_handle,access_mode,offset_high,
-                                 offset_low,length);
-      CloseHandle(shmem_handle);
-    }
-
-  if (map == (void *) NULL)
-    return((void *) MAP_FAILED);
-  return((void *) ((char *) map));
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+  m s y n c                                                                  %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method msync emulates the Unix msync function except that the flags
-%  argument is ignored. Windows page sync behaves mostly like MS_SYNC
-%  except that if the file is accessed over a network, the updates are not
-%  fully synchronous unless a special flag is provided when the file is
-%  opened.  It is not clear if flushing a range invalidates copy pages
-%  like Unix msync does.
-%
-%  The format of the msync method is:
-%
-%      int msync(void *addr, size_t len, int flags)
+%      int NTmunmap(void *map,size_t length)
 %
 %  A description of each parameter follows:
 %
-%    o status:  Method munmap returns 0 on success; otherwise, it
-%      returns -1 and sets errno to indicate the error.
-%
-%    o addr: The address of the binary large object.
-%
-%    o len: The length of the binary large object.
-%
-%    o flags: Option flags (ignored for Windows)
-%
-%
-*/
-MagickExport int msync(void *addr, size_t len, int flags)
-{
-  if (!FlushViewOfFile(addr,len))
-    return(-1);
-  return(0);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+  m u n m a p                                                                %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method munmap emulates the Unix method with the same name.
-%
-%  The format of the munmap method is:
-%
-%      int munmap(void *map,size_t length)
-%
-%  A description of each parameter follows:
-%
-%    o status:  Method munmap returns 0 on success; otherwise, it
+%    o status:  Method NTmunmap returns 0 on success; otherwise, it
 %      returns -1 and sets errno to indicate the error.
 %
 %    o map: The address of the binary large object.
@@ -777,7 +571,7 @@ MagickExport int msync(void *addr, size_t len, int flags)
 %
 %
 */
-MagickExport int munmap(void *map,size_t length)
+MagickExport int NTmunmap(void *map,size_t length)
 {
   if (!UnmapViewOfFile(map))
     return(-1);
@@ -1997,18 +1791,224 @@ MagickExport void NTWarningHandler(const ExceptionType warning,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   o p e n d i r                                                             %
+%   N T f t r u n c a t e                                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method opendir opens the directory named by filename and associates
+%  Method NTftruncate truncates a file to the specified size.  If the file is
+%  longer than the specified size, it is shortened to the specified size. If
+%  the file is shorter than the specified size, it is extended to the
+%  specified size by filling with zeros.
+%  This is a POSIX compatability function.
+%
+%  The format of the NTftruncate method is:
+%
+%      int NTftruncate(int filedes, off_t length)
+%
+%  A description of each parameter follows:
+%
+%    o status: Zero is returned on successful completion. Otherwise -1
+%        is returned and errno is set to indicate the error.
+%
+%    o filedes: File descriptor from the _open() call.
+%
+%    o length: Desired file length.
+%
+*/
+MagickExport int NTftruncate(int filedes, off_t length)
+{
+  int
+    status;
+
+  magick_off_t
+    current_pos;
+
+  status=0;
+  current_pos=MagickTell(filedes);
+
+  /*
+    Truncate file to size, filling any extension with nulls.
+    Notice that this interface is limited to 2GB due to its
+    use of a 'long' offset. Ftruncate also has this shortcoming
+    if off_t is a 'long'.
+
+    A way to support more than 2GB is to use SetFilePointerEx()
+    to set the file position followed by SetEndOfFile() to set
+    the file EOF to the current file position. This approach does
+    not ensure that bytes in the extended portion are null.
+
+    The CreateFileMapping() function may also be used to extend a
+    file's length. The filler byte values are not defined in the
+    documentation.
+  */ 
+  status=chsize(filedes,length);
+
+  /*
+    It is not documented if _chsize preserves the seek 
+    position, so restore the seek position like ftruncate
+    does
+  */
+  if (!status)
+    status=MagickSeek(filedes,current_pos,SEEK_SET);
+  return(status);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++  N T m m a p                                                                %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method NTmmap emulates POSIX mmap. Supports PROT_READ, PROT_WRITE
+%  protection options, and MAP_SHARED, MAP_PRIVATE, MAP_ANON flags.
+%  Passing a file descriptor of -1 along with the MAP_ANON flag option returns
+%  a memory allocation from the system page file with the specified allocated
+%  length.
+%
+%  The format of the NTmmap method is:
+%
+%    MagickExport void *NTmmap(char *address, size_t length, int protection,
+%      int flags, int file, magick_off_t offset)
+%
+%
+*/
+MagickExport void *NTmmap(char *address,size_t length,int protection,int flags,
+  int file,magick_off_t offset)
+{
+  void
+    *map;
+
+  HANDLE
+    file_handle,
+    shmem_handle;
+
+  DWORD
+    length_low,
+    length_high,
+    offset_low,
+    offset_high;
+
+  DWORD
+    access_mode=0,
+    protection_mode=0;
+
+  map=(void *) NULL;
+  shmem_handle=INVALID_HANDLE_VALUE;
+  file_handle=INVALID_HANDLE_VALUE;
+
+  offset_low=(DWORD) (offset & 0xFFFFFFFFUL);
+  offset_high=(DWORD) ((offset >> 32) & 0xFFFFFFFFUL);
+
+  length_low=(DWORD) (length & 0xFFFFFFFFUL);
+  length_high=(DWORD) ((((magick_off_t) length) >> 32) & 0xFFFFFFFFUL);
+
+  if (protection & PROT_WRITE)
+    {
+      access_mode=FILE_MAP_WRITE;
+      if (flags & MAP_PRIVATE)
+        {
+          // Copy on write (updates are private)
+          access_mode=FILE_MAP_COPY;
+          protection_mode=PAGE_WRITECOPY;
+        }
+      else
+        {
+          // Updates are shared
+          protection_mode=PAGE_READWRITE;
+        }
+    }
+  else if (protection & PROT_READ)
+    {
+      access_mode=FILE_MAP_READ;
+      protection_mode=PAGE_READONLY;
+    }
+
+  if ((file == -1) && (flags & MAP_ANON))
+    // Similar to using mmap on /dev/zero to allocate memory from paging area.
+    file_handle=INVALID_HANDLE_VALUE;
+  else
+    file_handle=(HANDLE) _get_osfhandle(file);
+
+  shmem_handle=CreateFileMapping(file_handle,0,protection_mode,length_high,
+                                 length_low,0);
+  if (shmem_handle)
+    {
+      map=(void *) MapViewOfFile(shmem_handle,access_mode,offset_high,
+                                 offset_low,length);
+      CloseHandle(shmem_handle);
+    }
+
+  if (map == (void *) NULL)
+    return((void *) MAP_FAILED);
+  return((void *) ((char *) map));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++  N T m s y n c                                                              %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method NTmsync emulates the Unix msync function except that the flags
+%  argument is ignored. Windows page sync behaves mostly like MS_SYNC
+%  except that if the file is accessed over a network, the updates are not
+%  fully synchronous unless a special flag is provided when the file is
+%  opened.  It is not clear if flushing a range invalidates copy pages
+%  like Unix msync does.
+%
+%  The format of the NTmsync method is:
+%
+%      int NTmsync(void *addr, size_t len, int flags)
+%
+%  A description of each parameter follows:
+%
+%    o status:  Method NTmsync returns 0 on success; otherwise, it
+%      returns -1 and sets errno to indicate the error.
+%
+%    o addr: The address of the binary large object.
+%
+%    o len: The length of the binary large object.
+%
+%    o flags: Option flags (ignored for Windows)
+%
+%
+*/
+MagickExport int NTmsync(void *addr, size_t len, int flags)
+{
+  if (!FlushViewOfFile(addr,len))
+    return(-1);
+  return(0);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   N T o p e n d i r                                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method NTopendir opens the directory named by filename and associates
 %  a directory stream with it.
 %
 %  The format of the opendir method is:
 %
-%      DIR *opendir(char *path)
+%      DIR *NTopendir(char *path)
 %
 %  A description of each parameter follows:
 %
@@ -2016,7 +2016,7 @@ MagickExport void NTWarningHandler(const ExceptionType warning,
 %
 %
 */
-MagickExport DIR *opendir(char *path)
+MagickExport DIR *NTopendir(char *path)
 {
   char
     file_specification[MaxTextExtent];
@@ -2057,19 +2057,19 @@ MagickExport DIR *opendir(char *path)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   r e a d d i r                                                             %
+%   N T r e a d d i r                                                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method readdir returns a pointer to a structure representing the
+%  Method NTreaddir returns a pointer to a structure representing the
 %  directory entry at the current position in the directory stream to
 %  which entry refers.
 %
 %  The format of the readdir
 %
-%      readdir(entry)
+%      NTreaddir(entry)
 %
 %  A description of each parameter follows:
 %
@@ -2077,7 +2077,7 @@ MagickExport DIR *opendir(char *path)
 %
 %
 */
-MagickExport struct dirent *readdir(DIR *entry)
+MagickExport struct dirent *NTreaddir(DIR *entry)
 {
   int
     status;
@@ -2103,18 +2103,18 @@ MagickExport struct dirent *readdir(DIR *entry)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   s e e k d i r                                                             %
+%   N T s e e k d i r                                                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%   Method seekdir sets the position of the next readdir() operation
+%   Method NTseekdir sets the position of the next NTreaddir() operation
 %   on the directory stream.
 %
-%  The format of the seekdir method is:
+%  The format of the NTseekdir method is:
 %
-%      void seekdir(DIR *entry,long position)
+%      void NTseekdir(DIR *entry,long position)
 %
 %  A description of each parameter follows:
 %
@@ -2126,7 +2126,7 @@ MagickExport struct dirent *readdir(DIR *entry)
 %
 %
 */
-MagickExport void seekdir(DIR *entry,long position)
+MagickExport void NTseekdir(DIR *entry,long position)
 {
   assert(entry != (DIR *) NULL);
 }
@@ -2136,18 +2136,18 @@ MagickExport void seekdir(DIR *entry,long position)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   t e l l d i r                                                             %
+%   N T t e l l d i r                                                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%   Method telldir returns the current location associated  with  the
+%   Method NTtelldir returns the current location associated  with  the
 %   named directory stream.
 %
-%  The format of the telldir method is:
+%  The format of the NTtelldir method is:
 %
-%      long telldir(DIR *entry)
+%      long NTtelldir(DIR *entry)
 %
 %  A description of each parameter follows:
 %
@@ -2155,7 +2155,7 @@ MagickExport void seekdir(DIR *entry,long position)
 %
 %
 */
-MagickExport long telldir(DIR *entry)
+MagickExport long NTtelldir(DIR *entry)
 {
   assert(entry != (DIR *) NULL);
   return(0);

@@ -6,10 +6,10 @@ See website for "wish list".
 For 1.2 Branch
 ==============
 
-  o Fix/improve PSD reader.
+  o PDF writer is outputting stuff that latest Alladin Ghostscript complains
+    about.
 
-  o Check applicability of ImageMagick advisory at
-    http://secunia.com/advisories/12995/.
+  o Fix/improve PSD reader.
 
   o Look into problem reported by Rick Mabry, "Shear produces artifacts for
     a 0 y-shear (e.g. 60x0)."

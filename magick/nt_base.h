@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2003 GraphicsMagick Group
+  Copyright (C) 2003, 2005 GraphicsMagick Group
   Copyright (C) 2002 ImageMagick Studio
  
   This program is covered by multiple licenses, which are described in
@@ -32,21 +32,6 @@ extern "C" {
 /*
   Define declarations.
 */
-
-/* Memory mapping support */
-#define PROT_NONE       0x0  // pages can not be accessed
-#define PROT_READ       0x1  // pages can be read
-#define PROT_WRITE      0x2  // pages can be written
-#define MAP_SHARED      0x1  // share changes
-#define MAP_PRIVATE     0x2  // changes are private
-#define MAP_NORESERVE   0x4  // do not reserve paging space
-#define MAP_ANON        0x8  // anonymous mapping
-#if !defined(MAP_FAILED)
-#  define MAP_FAILED      ((void *) -1) // returned on error by mmap
-#endif
-#define MS_ASYNC        0x0  // asynchronous page sync
-#define MS_SYNC         0x1  // synchronous page sync
-
 
 #define F_OK 0
 #define R_OK 4
@@ -114,7 +99,58 @@ extern "C" {
 */
 typedef UINT (CALLBACK *LPFNDLLFUNC1)(DWORD,UINT);
 
-#if !defined(XS_VERSION)
+#if !defined(XS_VERSION) /* Not in Perl extension */
+
+/*
+  ssize_t is the type returned by _read and _write.
+  Recent MinGW compilers include this typedef by default.
+ */
+#if !defined(ssize_t) && !defined(__MINGW32__)
+typedef long ssize_t;
+#endif /* !defined(ssize_t) && !defined(__MINGW32__) */
+
+#endif /* !defined(XS_VERSION) */
+
+
+/*
+  NT utilities routines.
+*/
+
+extern MagickExport char
+  *NTGetLastError(void);
+
+/*
+  Ghostscript DLL support.
+*/
+extern MagickExport int
+  NTGhostscriptDLL(char *path, int path_length),
+  NTGhostscriptEXE(char *path, int path_length),
+  NTGhostscriptFonts(char *path, int path_length),
+  NTGhostscriptLoadDLL(void),
+  NTGhostscriptUnLoadDLL(void);
+
+#if defined(MAGICK_IMPLEMENTATION)
+extern MagickExport const GhostscriptVectors
+  *NTGhostscriptDLLVectors( void );
+#endif /* defined(MAGICK_IMPLEMENTATION) */
+
+/*
+  Thread specific data support.
+*/
+typedef void * NTThreadSDKey_t;
+
+extern MagickExport int
+  NTThreadSDKeyCreate(NTThreadSDKey_t *key, void (void (*)(void *))),
+  NTThreadSDKeyDelete(NTThreadSDKey_t key),
+  NTThreadSDSetSpecific(NTThreadSDKey_t key, const void *value);
+
+extern MagickExport void
+  *NTThreadSDGetSpecific(NTThreadSDKey_t key);
+
+/*
+  Directory access functions
+*/
+#if !defined(HAVE_DIRENT_H) || defined(__MINGW32__)
 struct dirent
 {
   char
@@ -123,14 +159,6 @@ struct dirent
   int
     d_namlen;
 };
-
-/*
-  ssize_t is the type returned by _read and _write.
-  Recent MinGW compilers include this typedef by default.
- */
-#if !defined(ssize_t) && !defined(__MINGW32__)
-typedef long ssize_t;
-#endif
 
 typedef struct _DIR
 {
@@ -147,57 +175,96 @@ typedef struct _DIR
     file_info;
 } DIR;
 
-#endif
+extern MagickExport long
+  NTtelldir(DIR *);
 
-
+extern MagickExport struct dirent
+  *NTreaddir(DIR *);
+
+extern MagickExport DIR
+  *NTopendir(char *);
+
+extern MagickExport void
+  NTclosedir(DIR *),
+  NTseekdir(DIR *,long);
+
+#define closedir(dir) NTclosedir(dir)
+#define opendir(path) NTopendir(path)
+#define readdir(entry) NTreaddir(entry)
+#define seekdir(entry,position) NTseekdir(entry,position)
+#define telldir(entry) NTtelldir(entry)
+#endif /* !defined(HAVE_DIRENT_H) */
+
 /*
-  NT utilities routines.
+  System functions.
 */
-extern MagickExport char
-  *NTGetLastError(void);
-
 extern MagickExport int
   Exit(int),
-  NTGhostscriptDLL(char *path, int path_length),
-  NTGhostscriptEXE(char *path, int path_length),
-  NTGhostscriptFonts(char *path, int path_length),
-  NTGhostscriptLoadDLL(void),
-  NTGhostscriptUnLoadDLL(void),
   NTSystemComman(const char *);
 
-#if defined(MAGICK_IMPLEMENTATION)
-extern MagickExport const GhostscriptVectors
-  *NTGhostscriptDLLVectors( void );
-#endif
+#if !defined(XS_VERSION)  /* Not in Perl extension */
 
-#if !defined(XS_VERSION)
-extern MagickExport DIR
-  *opendir(char *);
-
+/*
+  Precision timing functions.
+*/
 extern MagickExport double
   NTElapsedTime(void),
   NTUserTime(void);
 
-extern MagickExport int
-#if !defined(HasLTDL)
-  lt_dlclose(void *),
-  lt_dlexit(void),
-  lt_dlinit(void),
-  lt_dlsetsearchpath(const char *),
-#endif /* !HasLTDL */
-  msync(void *addr, size_t len, int flags),
-  munmap(void *addr, size_t len);
-
-extern MagickExport long
-  telldir(DIR *);
-
-extern MagickExport struct dirent
-  *readdir(DIR *);
-
-#if !defined(HasLTDL)
-extern MagickExport const char
-  *lt_dlerror(void);
+/*
+  Memory mapped file support.
+*/
+#define PROT_NONE       0x0  // pages can not be accessed
+#define PROT_READ       0x1  // pages can be read
+#define PROT_WRITE      0x2  // pages can be written
+#define MAP_SHARED      0x1  // share changes
+#define MAP_PRIVATE     0x2  // changes are private
+#define MAP_NORESERVE   0x4  // do not reserve paging space
+#define MAP_ANON        0x8  // anonymous mapping
+#if !defined(MAP_FAILED)
+#  define MAP_FAILED      ((void *) -1) // returned on error by mmap
 #endif
+#define MS_ASYNC        0x0  // asynchronous page sync
+#define MS_SYNC         0x1  // synchronous page sync
+
+extern MagickExport void
+  *NTmmap(char *address,size_t length,int protection,int access,int file,
+     magick_off_t offset);
+
+extern MagickExport int
+  NTftruncate(int filedes, off_t length),
+  NTmsync(void *addr, size_t len, int flags),
+  NTmunmap(void *addr, size_t len);
+
+#define mmap(address,length,protection,access,file,offset) \
+  NTmmap(address,length,protection,access,file,offset)
+#define msync(addr,len,flags) NTmsync(addr,len,flags)
+#define munmap(addr,len) NTmunmap(addr,len)
+
+/*
+  libltdl-like module loader wrappers
+*/
+#if !defined(HasLTDL)
+extern MagickExport void
+  *NTdlopen(const char *filename),
+  *NTdlsym(void *handle, const char *name);
+
+extern MagickExport int
+  NTdlclose(void *handle),
+  NTdlexit(void),
+  NTdlinit(void),
+  NTdlsetsearchpath(const char *);
+
+extern MagickExport const char
+  *NTdlerror(void);
+
+#define lt_dlclose(handle) NTdlclose(handle)
+#define lt_dlexit() NTdlexit()
+#define lt_dlinit() NTdlinit()
+#define lt_dlopen(filename) NTdlopen(filename)
+#define lt_dlsetsearchpath(path) NTdlsetsearchpath(path)
+#define lt_dlsym(handle,name) NTdlsym(handle,name)
+#endif /* !defined(HasLTDL) */
   
 extern MagickExport unsigned char
   *NTResourceToBlob(const char *);
@@ -210,18 +277,8 @@ extern MagickExport MagickBool
   NTKernelAPISupported(const char *name);
 
 extern MagickExport void
-  closedir(DIR *),
-  *mmap(char *address,size_t length,int protection,int access,int file,
-    magick_off_t offset),
   NTErrorHandler(const ExceptionType,const char *,const char *),
-  NTWarningHandler(const ExceptionType,const char *,const char *),
-  seekdir(DIR *,long)
-#if !defined(HasLTDL)
-  ,
-  *lt_dlopen(const char *),
-  *lt_dlsym(void *, const char *)
-#endif /* !HasLTDL */
-  ;
+  NTWarningHandler(const ExceptionType,const char *,const char *);
 
 #endif /* !XS_VERSION */
 

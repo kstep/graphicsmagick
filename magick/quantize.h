@@ -64,7 +64,8 @@ extern MagickExport unsigned int
 extern MagickExport void
   CompressImageColormap(Image *),
   DestroyQuantizeInfo(QuantizeInfo *),
-  GetQuantizeInfo(QuantizeInfo *);
+  GetQuantizeInfo(QuantizeInfo *),
+  GrayscalePseudoClassImage(Image *,unsigned int);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

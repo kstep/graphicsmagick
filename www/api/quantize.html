@@ -22,6 +22,7 @@
 		<li><a href="#destroyquantizeinfo">DestroyQuantizeInfo</a></li>
 		<li><a href="#getimagequantizeerror">GetImageQuantizeError</a></li>
 		<li><a href="#getquantizeinfo">GetQuantizeInfo</a></li>
+		<li><a href="#grayscalepseudoclassimage">GrayscalePseudoClassImage</a></li>
 		<li><a href="#mapimage">MapImage</a></li>
 		<li><a href="#mapimages">MapImages</a></li>
 		<li><a href="#orderedditherimage">OrderedDitherImage</a></li>
@@ -46,6 +47,7 @@
 <P><strong>DestroyQuantizeInfo</strong>( QuantizeInfo *quantize_info );</P>
 <P>unsigned int  <strong>GetImageQuantizeError</strong>( Image *image );</P>
 <P><strong>GetQuantizeInfo</strong>( QuantizeInfo *quantize_info );</P>
+<P>void  <strong>GrayscalePseudoClassImage</strong>( Image *image );</P>
 <P>unsigned int  <strong>MapImage</strong>( Image *image, const Image *map_image, const unsigned int dither );</P>
 <P>unsigned int  <strong>MapImages</strong>( Image *images, Image *map_image, const unsigned int dither );</P>
 <P>unsigned int  <strong>OrderedDitherImage</strong>( Image *image );</P>
@@ -142,6 +144,25 @@ Specifies a pointer to a QuantizeInfo structure.
 <P></P></dl>
 <P>
 </P>
+<h2><a name="grayscalepseudoclassimage">GrayscalePseudoClassImage</a></h2>
+<P>GrayscalePseudoClassImage converts an image to a PseudoClass grayscale representation with an (optionally) compressed and sorted colormap.  Colormap is ordered by increasing intensity.</P>
+<P>The format of the GrayscalePseudoClassImage method is:</P>
+<blockquote>void GrayscalePseudoClassImage ( <A HREF="types.html#Image">Image</A> *image ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>image:</strong><br />
+</dt>
+<DD>
+The image.
+</dd>
+<P></P>
+<dt><strong><a name="item_o_optimize_colormap_3a">optimize_colormap:</a></strong><br />
+</dt>
+<DD>
+If true, produce an optimimal (compact) colormap.
+</dd>
+<P></P></dl>
+<P>
+</P>
 <h2><a name="mapimage">MapImage</a></h2>
 <blockquote>MapImage() replaces the colors of an image with the closest color from a reference image. </blockquote><P>The format of the MapImage method is:</P>
 <blockquote>unsigned int MapImage ( <A HREF="types.html#Image">Image</A> *image, const <A HREF="types.html#Image">Image</A> *map_image, const unsigned int dither ); </blockquote><P>A description of each parameter follows:</P>
@@ -167,7 +188,7 @@ Set this integer value to something other than zero to dither the quantized imag
 <P>
 </P>
 <h2><a name="mapimages">MapImages</a></h2>
-<blockquote>MapImages() replaces the colors of a sequence of images with the closest color from a reference image. </blockquote><P>The format of the MapImage method is:</P>
+<blockquote>MapImages() replaces the colors of a sequence of images with the closest color from a reference image. If the reference image does not contain a colormap, then a colormap will be created based on existing colors in the reference image. The order and number of colormap entries does not match the reference image. If the order and number of colormap entries needs to match the reference image, then the ReplaceImageColormap ( ) function may be used after invoking MapImages ( ) in order to apply the reference colormap. </blockquote><P>The format of the MapImage method is:</P>
 <blockquote>unsigned int MapImages ( <A HREF="types.html#Image">Image</A> *images, <A HREF="types.html#Image">Image</A> *map_image, const unsigned int dither ); </blockquote><P>A description of each parameter follows:</P>
 <dl>
 <dt><strong>image:</strong><br />

@@ -41,13 +41,13 @@
 		<li><a href="#getimageinfo">GetImageInfo</a></li>
 		<li><a href="#getimagestatistics">GetImageStatistics</a></li>
 		<li><a href="#getimagetype">GetImageType</a></li>
-		<li><a href="#grayscalepseudoclassimage">GrayscalePseudoClassImage</a></li>
 		<li><a href="#isimagesequal">IsImagesEqual</a></li>
 		<li><a href="#istaintimage">IsTaintImage</a></li>
 		<li><a href="#modifyimage">ModifyImage</a></li>
 		<li><a href="#plasmaimage">PlasmaImage</a></li>
 		<li><a href="#referenceimage">ReferenceImage</a></li>
 		<li><a href="#removedefinitions">RemoveDefinitions</a></li>
+		<li><a href="#replaceimagecolormap">ReplaceImageColormap</a></li>
 		<li><a href="#setimage">SetImage</a></li>
 		<li><a href="#setimageclipmask">SetImageClipMask</a></li>
 		<li><a href="#setimagedepth">SetImageDepth</a></li>
@@ -92,13 +92,13 @@
 <P>void  <strong>GetImageInfo</strong>( ImageInfo *image_info );</P>
 <P>MagickPassFail  <strong>GetImageStatistics</strong>( const Image *image, ImageStatistics *statistics ExceptionInfo *exception );</P>
 <P>ImageType  <strong>GetImageType</strong>( const Image *image, ExceptionInfo *exception );</P>
-<P>void  <strong>GrayscalePseudoClassImage</strong>( Image *image );</P>
 <P>unsigned int  <strong>IsImagesEqual</strong>( Image *image, const Image *reference );</P>
 <P>unsigned int  <strong>IsTaintImage</strong>( const Image *image );</P>
 <P><strong>ModifyImage</strong>( Image *image, ExceptionInfo *exception );</P>
 <P>unsigned int  <strong>PlasmaImage</strong>( Image *image, const SegmentInfo *segment, unsigned long attenuate, unsigned long depth );</P>
 <P>Image * <strong>ReferenceImage</strong>( Image *image );</P>
 <P>void  <strong>RemoveDefinitions</strong>( ImageInfo *image_info, const char *options );</P>
+<P>MagickPassFail  <strong>ReplaceImageColormap</strong>( Image *image, const PixelPacket *colormap, const unsigned int colors );</P>
 <P>void  <strong>SetImage</strong>( Image *image, const Quantum opacity );</P>
 <P>unsigned int  <strong>SetImageClipMask</strong>( Image *image, const Image *clip_mask );</P>
 <P>unsigned int  <strong>SetImageDepth</strong>( Image *image, const unsigned long depth );</P>
@@ -583,25 +583,6 @@ Return any errors or warnings in this structure.
 <P></P></dl>
 <P>
 </P>
-<h2><a name="grayscalepseudoclassimage">GrayscalePseudoClassImage</a></h2>
-<P>GrayscalePseudoClassImage converts an image to a PseudoClass grayscale representation with an (optionally) compressed and sorted colormap.  Colormap is ordered by increasing intensity.</P>
-<P>The format of the GrayscalePseudoClassImage method is:</P>
-<blockquote>void GrayscalePseudoClassImage ( <A HREF="types.html#Image">Image</A> *image ); </blockquote><P>A description of each parameter follows:</P>
-<dl>
-<dt><strong>image:</strong><br />
-</dt>
-<DD>
-The image.
-</dd>
-<P></P>
-<dt><strong><a name="item_o_optimize_colormap_3a">optimize_colormap:</a></strong><br />
-</dt>
-<DD>
-If true, produce an optimimal (compact) colormap.
-</dd>
-<P></P></dl>
-<P>
-</P>
 <h2><a name="isimagesequal">IsImagesEqual</a></h2>
 <blockquote>IsImagesEqual() measures the difference between colors at each pixel location of two images. A value other than 0 means the colors match exactly. Otherwise an error measure is computed by summing over all pixels in an image the distance squared in RGB space between each image pixel and its corresponding pixel in the reference image. The error measure is assigned to these image members: </blockquote><dl>
 <dt><strong><a name="item_o_mean_error_per_pixel_3a">mean_error_per_pixel:</a></strong><br />
@@ -732,6 +713,31 @@ List of keys to remove from the definitions map.  The format of the string is ``
 </dt>
 <DD>
 Errors result in updates to this structure.
+</dd>
+<P></P></dl>
+<P>
+</P>
+<h2><a name="replaceimagecolormap">ReplaceImageColormap</a></h2>
+<blockquote>ReplaceImageColormap() replaces an existing image colormap with a new image colormap. The new image colormap is expected to contain all of the colors from the existing colormap. The existing colormap indexes are adjusted to conform with positions in the new colormap. If the new colormap contains duplicate entries, then the associated colormap index will point to the first entry found in the colormap and other matching entries will not be used. MagickPass is returned if the operation is successful, otherwise MagickFail is returned, and image->exception is updated with the cause of the failure. </blockquote><P>This function is useful in case colormap entries need to match across multiple images or otherwise occupy specific locations.</P>
+<P>The format of the ReplaceImageColormap method is:</P>
+<blockquote>MagickPassFail ReplaceImageColormap ( <A HREF="types.html#Image">Image</A> *image, const <A HREF="types.html#PixelPacket">PixelPacket</A> *colormap, const unsigned int colors ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>image:</strong><br />
+</dt>
+<DD>
+image in which to replace colormap.
+</dd>
+<P></P>
+<dt><strong><a name="item_o_colormap_3a">colormap:</a></strong><br />
+</dt>
+<DD>
+new colormap.
+</dd>
+<P></P>
+<dt><strong>colors:</strong><br />
+</dt>
+<DD>
+number of colors in new colormap.
 </dd>
 <P></P></dl>
 <P>

@@ -1034,6 +1034,8 @@ extern MagickExport MagickPassFail
     ExceptionInfo *exception),
   PlasmaImage(Image *,const SegmentInfo *,unsigned long,unsigned long),
   RemoveDefinitions(const ImageInfo *image_info,const char *options),
+  ReplaceImageColormap(Image *image,const PixelPacket *colormap,
+    const unsigned int colors),
   RGBTransformImage(Image *,const ColorspaceType),
   SetImageClipMask(Image *image,const Image *clip_mask),
   SetImageDepth(Image *,const unsigned long),
@@ -1054,7 +1056,6 @@ extern MagickExport void
   DestroyImageInfo(ImageInfo *),
   GetImageException(Image *,ExceptionInfo *),
   GetImageInfo(ImageInfo *),
-  GrayscalePseudoClassImage(Image *,unsigned int),
   ModifyImage(Image **,ExceptionInfo *),
   SetImage(Image *,const Quantum),
   SetImageOpacity(Image *,const unsigned int);
