@@ -1207,7 +1207,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
       if (image->units == PixelsPerCentimeterResolution)
         jpeg_info.density_unit=2;
     }
-  if (image_info->quality >= 75)
+  if ((image_info->quality % 10) > 5)
     for (i=0; i < MAX_COMPONENTS; i++)
     {
       jpeg_info.comp_info[i].h_samp_factor=1;
