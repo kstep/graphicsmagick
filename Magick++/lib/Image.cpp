@@ -980,7 +980,6 @@ void Magick::Image::reduceNoise ( void )
   replaceImage( MagickLib::ReduceNoiseImage( image() ) );
 }
 
-#include <crtdbg.h>
 // Roll image
 void Magick::Image::roll ( const Geometry &roll_ )
 {
@@ -990,9 +989,7 @@ void Magick::Image::roll ( const Geometry &roll_ )
   int yOff = roll_.yOff();
   if ( roll_.yNegative() )
     yOff = - yOff;
-_ASSERTE( _CrtCheckMemory() );
   replaceImage( MagickLib::RollImage( image(), xOff, yOff ) );
-_ASSERTE( _CrtCheckMemory() );
 }
 void Magick::Image::roll ( int columns_, int rows_ )
 {
