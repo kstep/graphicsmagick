@@ -233,7 +233,7 @@ static HENHMETAFILE ReadEnhMetaFile(const char *szFileName,long *width,
 
 #define CENTIMETERS_INCH 2.54
 
-MagickExport Image *ReadEMFImage(const ImageInfo *image_info,
+static Image *ReadEMFImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
   BITMAPINFO

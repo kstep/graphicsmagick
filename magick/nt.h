@@ -74,9 +74,6 @@ extern MagickExport char
   *NTGetExecutionPath(void),
   *NTGetLastError(void);
 
-MagickExport Image
-  *ReadEMFImage(const ImageInfo *,ExceptionInfo *);
-
 extern MagickExport int
   Exit(int),
   IsWindows95(),
