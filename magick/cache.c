@@ -212,35 +212,34 @@ MagickExport const PixelPacket *AcquireCacheNexus(const Image *image,
   region.width=columns;
   region.height=rows;
   pixels=SetNexus(image,&region,nexus);
-  if (((x >= 0) && (x < (long) cache_info->columns)) &&
-      ((y >= 0) && (y < (long) cache_info->rows)))
-    {
-      if (IsNexusInCore(cache_info,nexus))
-        return(pixels);
-      offset=y*cache_info->columns+x;
-      span=(rows-1)*cache_info->columns+columns-1;
-      number_pixels=cache_info->columns*cache_info->rows;
-      if ((offset >= 0) && (offset+span) < (off_t) number_pixels)
-        {
-          unsigned int
-            status;
+  offset=region.y*cache_info->columns+region.x;
+  span=(region.height-1)*cache_info->columns+region.width-1;
+  number_pixels=cache_info->columns*cache_info->rows;
+  if ((offset >= 0) && ((offset+span) < (off_t) number_pixels))
+    if ((x >= 0) && (y >= 0) && ((x+columns) <= cache_info->columns) &&
+        ((y+rows) <= cache_info->rows))
+      
+      {
+        unsigned int
+          status;
 
-          /*
-            Pixel request is inside cache extents.
-          */
-          status=ReadCachePixels(cache_info,nexus);
-          if ((image->storage_class == PseudoClass) ||
-              (image->colorspace == CMYKColorspace))
-            status|=ReadCacheIndexes(cache_info,nexus);
-          if (status == False)
-            {
-              ThrowException(exception,CacheError,"Unable to read pixel cache",
-                image->filename);
-              return((const PixelPacket *) NULL);
-            }
+        /*
+          Pixel request is inside cache extents.
+        */
+        if (IsNexusInCore(cache_info,nexus))
           return(pixels);
-        }
-    }
+        status=ReadCachePixels(cache_info,nexus);
+        if ((image->storage_class == PseudoClass) ||
+            (image->colorspace == CMYKColorspace))
+          status|=ReadCacheIndexes(cache_info,nexus);
+        if (status == False)
+          {
+            ThrowException(exception,CacheError,"Unable to read pixel cache",
+              image->filename);
+            return((const PixelPacket *) NULL);
+          }
+        return(pixels);
+      }
   /*
     Pixel request is outside cache extents.
   */
@@ -252,7 +251,6 @@ MagickExport const PixelPacket *AcquireCacheNexus(const Image *image,
         image->filename);
       return((const PixelPacket *) NULL);
     }
-  region.x=x;
   cache_info->virtual_pixel=image->background_color;
   q=pixels;
   for (v=0; v < (long) rows; v++)
@@ -1035,9 +1033,9 @@ static off_t GetCacheMemory(const off_t memory)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method GetCacheNexus() gets pixels from the in-memory or disk pixel cache as
-%  defined by the geometry parameters.   A pointer to the pixels is returned if
-%  the pixels are transferred, otherwise a NULL is returned.
+%  GetCacheNexus() gets pixels from the in-memory or disk pixel cache as
+%  defined by the geometry parameters.   A pointer to the pixels is returned
+%  if the pixels are transferred, otherwise a NULL is returned.
 %
 %  The format of the GetCacheNexus() method is:
 %
