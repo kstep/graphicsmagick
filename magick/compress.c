@@ -221,12 +221,14 @@ static char *Ascii85Tuple(unsigned char *data)
   static char
     tuple[6];
 
-  register unsigned long
-    word,
+  register unsigned int
     x;
 
   register unsigned short
     y;
+
+  unsigned int
+		word;
 
   word=(((data[0] << 8) | data[1]) << 16) | (data[2] << 8) | data[3];
   if (word == 0L)
@@ -235,14 +237,14 @@ static char *Ascii85Tuple(unsigned char *data)
       tuple[1]='\0';
       return(tuple);
     }
-  x=(word/(85L*85*85*85));
+  x=(unsigned int) (word/(85L*85*85*85));
   tuple[0]=(char) (x+'!');
   word-=x*(85L*85*85*85);
-  x=(word/(85L*85*85));
-  tuple[1]=(char) (x+'!');
+  x=(unsigned int) (word/(85L*85*85));
+  tuple[1]=x+'!';
   word-=x*(85L*85*85);
-  x=(word/(85*85));
-  tuple[2]=(char) (x+'!');
+  x=(unsigned int) (word/(85*85));
+  tuple[2]=x+'!';
   y=(unsigned short) (word-x*(85L*85));
   tuple[3]=(y/85)+'!';
   tuple[4]=(y % 85)+'!';
