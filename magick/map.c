@@ -31,7 +31,7 @@ typedef struct _MagickMapObject
 
   /* Object size. Optional.  May be set to zero depending on needs of
      object type */
-  unsigned long
+  size_t
     object_size;
 
   /* Function which clones (copies) contained objects */
@@ -105,7 +105,7 @@ typedef struct _MagickMapIteratorHandle
 */
 static MagickMapObject *
 MagickMapAllocateObject(const char *key, const void *object,
-  const unsigned long object_size, MagickMapObjectClone clone,
+  const size_t object_size, MagickMapObjectClone clone,
   MagickMapObjectDeallocator deallocate)
 {
   MagickMapObject *
@@ -154,7 +154,7 @@ MagickMapDestroyObject(MagickMapObject *object)
 */
 MagickExport const void *
 MagickMapAccessEntry(MagickMap map,const char *key,
-  unsigned long *object_size)
+  size_t *object_size)
 {
   MagickMapObject
     *p;
@@ -188,7 +188,7 @@ MagickMapAccessEntry(MagickMap map,const char *key,
 */
 MagickExport void
 MagickMapAddEntry(MagickMap map,const char *key, const void *object,
-  const unsigned long object_size)
+  const size_t object_size)
 {
   MagickMapObject
     *new_object;
@@ -303,7 +303,7 @@ MagickMapCloneMap(MagickMap map)
 {
   MagickMap map_clone;
   MagickMapIterator iterator;
-  unsigned long size;
+  size_t size;
   const char *key;
 
   assert(map != 0);
@@ -437,7 +437,7 @@ MagickMapDeallocateIterator(MagickMapIterator iterator)
 */
 MagickExport const void *
 MagickMapDereferenceIterator(const MagickMapIterator iterator,
-    unsigned long *object_size)
+    size_t *object_size)
 {
   const void
     *value=0;
@@ -615,7 +615,7 @@ MagickMapRemoveEntry(MagickMap map,const char *key)
   Function to copy a C string
 */
 MagickExport void *
-MagickMapCopyString(const void *string, const unsigned long size)
+MagickMapCopyString(const void *string, const size_t size)
 {
   return (void *) AllocateString((const char *)string);
 }
@@ -627,4 +627,29 @@ extern MagickExport void
 MagickMapDeallocateString(void *string)
 {
   MagickFreeMemory(string);
+}
+
+/*
+  Function to copy a BLOB
+*/
+MagickExport void *
+MagickMapCopyBlob(const void *blob, const size_t size)
+{
+  void
+    *memory;
+
+  memory=MagickAllocateMemory(void *,size);
+  if (memory)
+    memcpy(memory,blob,size);
+
+  return (memory);
+}
+
+/*
+  Function to deallocate a BLOB
+*/
+extern MagickExport void
+MagickMapDeallocateBlob(void *blob)
+{
+  MagickFreeMemory(blob);
 }

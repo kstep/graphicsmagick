@@ -56,6 +56,44 @@
 2003-09-22  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> magick/map.h: Changed all size parmeters from type 'unsigned
+        long' to 'size_t'.<BR>
+  <LI> magick/map.c (MagickMapCopyBlob): Add new function to support
+        copying a Blob in a MagickMap.<BR>
+        (MagickMapDeallocateBlob): Add new function to support
+        deallocating a Blob in MagickMap.
+
+</UL>
+<p>
+2003-09-23  Lars Ruben Skyum  &lt;lars.skyum@stibo.com&gt;
+
+<UL>
+  <LI> coders/ps3.c: Fixed handling the case when no -coder-options are
+        provided to the PS3 coder.
+
+</UL>
+<p>
+2003-09-22  Lars Ruben Skyum  &lt;lars.skyum@stibo.com&gt;
+
+<UL>
+  <LI> coders/ps3.c: Changed %%Creator version to use
+        MagickLibVersionText, increased precision in HiResBoundingBox,
+        added a coder specific option for rendering bilevel images with
+        the PS imagemask operator indstead of the image operator.
+  <LI> magick/command.c: Added "-coder-options" command line argument
+        to all relevant command line utilities. Option argument to
+        -coder-options is a list of comma separated key-value pairs that
+        are saved in a MagickMap in ImageInfo for (de-)coders to use. See
+        PS3 coder for an example that checks for: -coder-options
+        "ps:image=imagemask"<BR>
+  <LI> magick/image.c, magick/image.h: Added function AddCoderOptions().
+  <LI> magick/map.c, magick/map.h: removed MS-DOS line terminators.
+
+</UL>
+<p>
+2003-09-22  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
   <LI> tests/maptest.c (main): Test/demo program for key,value map API.
   <LI> magick/map.c, magick/map.h: Implementation of a key,value map
         API for internal use.

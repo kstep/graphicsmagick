@@ -24,7 +24,7 @@ typedef struct _MagickMapIteratorHandle *MagickMapIterator;
   Function prototype for a function to clone (copy) an object
 */
 typedef void * (*MagickMapObjectClone)(const void *object_,
-  const unsigned long object_size);
+  const size_t object_size);
 
 /*
   Function prototype for a function to destroy a contained object
@@ -71,7 +71,7 @@ extern MagickExport MagickMap
 */
 extern MagickExport void
   MagickMapAddEntry(MagickMap map,const char *key, const void *object,
-                    const unsigned long object_size);
+                    const size_t object_size);
 
 /*
   Remove (destroy) an entry from the Magick Map. False is returned if
@@ -86,7 +86,7 @@ extern MagickExport unsigned int
 */
 extern MagickExport const void
   *MagickMapAccessEntry(MagickMap map,const char *key,
-    unsigned long *object_size);
+    size_t *object_size);
 
 /*
   Allocate an iterator
@@ -138,19 +138,31 @@ extern MagickExport unsigned int
 */
 extern MagickExport const void
   *MagickMapDereferenceIterator(const MagickMapIterator iterator,
-    unsigned long *object_size);
+    size_t *object_size);
 
 /*
   Function to copy a string
 */
 extern MagickExport void *
-  MagickMapCopyString(const void *string, const unsigned long size);
+  MagickMapCopyString(const void *string, const size_t size);
 
 /*
   Function to deallocate a string
 */
 extern MagickExport void
   MagickMapDeallocateString(void *string);
+
+/*
+  Function to copy a BLOB
+*/
+extern MagickExport void *
+  MagickMapCopyBlob(const void *blob, const size_t size);
+
+/*
+  Function to deallocate a BLOB
+*/
+extern MagickExport void
+  MagickMapDeallocateBlob(void *blob);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
