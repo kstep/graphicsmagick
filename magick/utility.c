@@ -1635,20 +1635,20 @@ Export int MultilineCensus(const char *label)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ParseImageGeometry parses a geometry specification and returns the
+%  Method ParseGeometry parses a geometry specification and returns the
 %  width, height, x, and y values.  It also returns flags that indicates
 %  which of the four values (width, height, xoffset, yoffset) were located
 %  in the string, and whether the x and y values are negative.  In addition,
 %  there are flags to report any meta characters (%, !, <, and >).
 %
-%  The format of the ParseImageGeometry method is:
+%  The format of the ParseGeometry method is:
 %
 %      int ParseGeometry(const char *geometry,int *x,int *y,unsigned int *width,
 %        unsigned int *height)
 %
 %  A description of each parameter follows:
 %
-%    o flags:  Method ParseImageGeometry returns a bitmask that indicates
+%    o flags:  Method ParseGeometry returns a bitmask that indicates
 %      which of the four values were located in the geometry string.
 %
 %    o image_geometry:  Specifies a character string representing the geometry
@@ -1708,25 +1708,14 @@ static double ReadReal(const char *p,char **q)
 Export int ParseGeometry(const char *geometry,int *x,int *y,unsigned int *width,
   unsigned int *height)
 {
-  typedef struct _BoundsInfo
-  {
-    unsigned int
-      width,
-      height;
-
-    int
-      x,
-      y;
-  } BoundsInfo;
-
-  BoundsInfo
-    bounds;
-
   char
     *q;
 
   int
     mask;
+
+  RectangleInfo
+    bounds;
 
   mask=NoValue;
   if ((geometry == (const char *) NULL) || (*geometry == '\0'))
@@ -1766,7 +1755,7 @@ Export int ParseGeometry(const char *geometry,int *x,int *y,unsigned int *width,
           geometry++;
           bounds.x=(-ReadReal(geometry,&q));
           if (geometry == q)
-            return (0);
+            return(0);
           geometry=q;
           mask|=XNegative;
         }
@@ -1833,7 +1822,7 @@ Export int ParseGeometry(const char *geometry,int *x,int *y,unsigned int *width,
 %
 %  The format of the PostscriptGeometry method is:
 %
-%      void DestroyPostscriptGeometry(char *geometry)
+%      void PostscriptGeometry(const char *page)
 %
 %  A description of each parameter follows.
 %
