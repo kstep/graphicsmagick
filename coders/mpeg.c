@@ -494,6 +494,10 @@ static unsigned int WriteMPEGImage(const ImageInfo *image_info,Image *image)
     basename[MaxTextExtent],
     filename[MaxTextExtent];
 
+  Image
+    *coalesce_image,
+    *next_image;
+
   ImageInfo
     *clone_info;
 
@@ -518,19 +522,42 @@ static unsigned int WriteMPEGImage(const ImageInfo *image_info,Image *image)
     ThrowWriterException(FileOpenWarning,"Unable to open file",image);
   CloseBlob(image);
   /*
+    Determine if the sequence of images have identical page info.
+  */
+  coalesce_image=image;
+  for (next_image=image; next_image != (Image *) NULL; )
+  {
+    if ((image->columns != next_image->columns) ||
+        (image->rows != next_image->rows))
+      break;
+    if ((image->page.x != next_image->page.x) ||
+        (image->page.y != next_image->page.y))
+      break;
+    next_image=next_image->next;
+  }
+  if (next_image != (Image *) NULL)
+    {
+      coalesce_image=CoalesceImages(image,&image->exception);
+      if (coalesce_image == (Image *) NULL)
+        return(False);
+    }
+  /*
     Write YUV files.
   */
   TemporaryFilename(basename);
-  FormatString(image->filename,basename);
+  FormatString(coalesce_image->filename,basename);
   clone_info=CloneImageInfo(image_info);
   (void) strncpy(clone_info->unique,basename,MaxTextExtent-1);
-  status=WriteMPEGParameterFiles(clone_info,image);
+  status=WriteMPEGParameterFiles(clone_info,coalesce_image);
   if (status == False)
-    ThrowWriterException(DelegateWarning,"Unable to write MPEG parameters",
-      image);
-  (void) CoalesceImages(image,&image->exception);
+    {
+      if (coalesce_image != image)
+        DestroyImage(coalesce_image);
+      ThrowWriterException(DelegateWarning,"Unable to write MPEG parameters",
+        image)
+    }
   count=0;
-  for (p=image; p != (Image *) NULL; p=p->next)
+  for (p=coalesce_image; p != (Image *) NULL; p=p->next)
   {
     scene=p->scene;
     for (i=0; i < Max((p->delay+1)/3,1); i++)
@@ -548,15 +575,15 @@ static unsigned int WriteMPEGImage(const ImageInfo *image_info,Image *image)
   /*
     Convert YUV to MPEG.
   */
-  (void) strncpy(image->filename,clone_info->unique,MaxTextExtent-1);
-  status=InvokeDelegate(clone_info,image,(char *) NULL,"mpeg-encode",
+  (void) strncpy(coalesce_image->filename,clone_info->unique,MaxTextExtent-1);
+  status=InvokeDelegate(clone_info,coalesce_image,(char *) NULL,"mpeg-encode",
     &image->exception);
   DestroyImageInfo(clone_info);
   /*
     Free resources.
   */
   count=0;
-  for (p=image; p != (Image *) NULL; p=p->next)
+  for (p=coalesce_image; p != (Image *) NULL; p=p->next)
   {
     for (i=0; i < Max((p->delay+1)/3,1); i++)
     {
@@ -572,5 +599,7 @@ static unsigned int WriteMPEGImage(const ImageInfo *image_info,Image *image)
   (void) remove(filename);
   FormatString(filename,"%.1024s.log",basename);
   (void) remove(filename);
+  if (coalesce_image != image)
+    DestroyImage(coalesce_image);
   return(status);
 }
