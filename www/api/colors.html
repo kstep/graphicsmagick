@@ -15,9 +15,9 @@
 	<LI><A HREF="#FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A>
 	<UL>
 
+		<LI><A HREF="#GetNumberColors">GetNumberColors</A>
 		<LI><A HREF="#IsPseudoClass">IsPseudoClass</A>
 		<LI><A HREF="#QueryColorName">QueryColorName</A>
-		<LI><A HREF="#NumberColors">NumberColors</A>
 	</UL>
 
 </UL>
@@ -33,10 +33,10 @@ colors - Methods to Count the Colors in an Image
 <HR>
 <H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
 <P>
-status=<STRONG>IsPseudoClass</STRONG>(image)
+number_colors=<STRONG>GetNumberColors</STRONG>(image,file)
 
 <P>
-<STRONG>NumberColors</STRONG>(image,file)
+status=<STRONG>IsPseudoClass</STRONG>(image)
 
 <P>
 distance=<STRONG>QueryColorName</STRONG>(color,name)
@@ -52,6 +52,39 @@ A description of each parameter follows.
 <P>
 The address of a structure of type NodeInfo which points to a node in the
 color cube tree that is to be pruned.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="GetNumberColors">GetNumberColors</A></H2>
+<P>
+Method GetNumberColors returns the number of unique colors in an image.
+
+<P>
+The format of the GetNumberColors routine is:
+
+<P>
+<PRE>        number_colors=GetNumberColors(image,file)
+</PRE>
+<P>
+A description of each parameter follows.
+
+<DL><DL>
+<DT><STRONG>number_colors:</STRONG><DD>
+<P>
+Method GetNumberColors returns the number of unique colors in the specified
+image.
+
+<DT><STRONG>image:</STRONG><DD>
+<P>
+The address of a byte (8 bits) array of run-length encoded pixel data of
+your source image. The sum of the run-length counts in the source image
+must be equal to or exceed the number of pixels.
+
+<DT><STRONG>file:</STRONG><DD>
+<P>
+An pointer to a FILE. If it is non-null a list of unique pixel field values
+and the number of times each occurs in the image is written to the file.
 
 </DL></DL>
 <P>
@@ -128,34 +161,6 @@ searching for.
 <P>
 The name of the color that is closest to the supplied color is returned in
 this character buffer.
-
-</DL></DL>
-<P>
-<HR>
-<H2><A NAME="NumberColors">NumberColors</A></H2>
-<P>
-Method NumberColors returns the number of unique colors in an image.
-
-<P>
-The format of the NumberColors routine is:
-
-<P>
-<PRE>        NumberColors(image,file)
-</PRE>
-<P>
-A description of each parameter follows.
-
-<DL><DL>
-<DT><STRONG>image:</STRONG><DD>
-<P>
-The address of a byte (8 bits) array of run-length encoded pixel data of
-your source image. The sum of the run-length counts in the source image
-must be equal to or exceed the number of pixels.
-
-<DT><STRONG>file:</STRONG><DD>
-<P>
-An pointer to a FILE. If it is non-null a list of unique pixel field values
-and the number of times each occurs in the image is written to the file.
 
 </DL></DL>
 </BODY>

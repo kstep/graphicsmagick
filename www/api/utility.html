@@ -76,7 +76,7 @@ allocated_string=<STRONG>AllocateString</STRONG>(source)
 <STRONG>BaseFilename</STRONG>(name)
 
 <P>
-<STRONG>CloneString</STRONG>(destination,source)
+status=<STRONG>CloneString</STRONG>(destination,source)
 
 <P>
 unicode=<STRONG>ConvertTextToUnicode</STRONG>(text,count)
@@ -254,15 +254,20 @@ Method CloneString allocates memory for the destination string and copies
 the source string to that memory location.
 
 <P>
-The format of the CloneString routine is:
+The format of the (void) CloneString routine is:
 
 <P>
-<PRE>        CloneString(destination,source)
+<PRE>        status=CloneString(destination,source)
 </PRE>
 <P>
 A description of each parameter follows:
 
 <DL><DL>
+<DT><STRONG>status:</STRONG><DD>
+<P>
+Method IsAccessible returns True is the string is cloned, otherwise False
+is returned.
+
 <DT><STRONG>destination:</STRONG><DD>
 <P>
 A pointer to a character string.

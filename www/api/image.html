@@ -22,6 +22,9 @@
 		<LI><A HREF="#AverageImages">AverageImages</A>
 		<LI><A HREF="#BorderImage">BorderImage</A>
 		<LI><A HREF="#ChopImage">ChopImage</A>
+		<LI><A HREF="#CloneAnnotateInfo">CloneAnnotateInfo</A>
+		<LI><A HREF="#CloneImage">CloneImage</A>
+		<LI><A HREF="#CloneImageInfo">CloneImageInfo</A>
 		<LI><A HREF="#CloseImage">CloseImage</A>
 		<LI><A HREF="#CoalesceImage">CoalesceImage</A>
 		<LI><A HREF="#ColorFloodfillImage">ColorFloodfillImage</A>
@@ -31,8 +34,6 @@
 		<LI><A HREF="#CompositeImage">CompositeImage</A>
 		<LI><A HREF="#CondenseImage">CondenseImage</A>
 		<LI><A HREF="#ContrastImage">ContrastImage</A>
-		<LI><A HREF="#CloneImage">CloneImage</A>
-		<LI><A HREF="#CloneImageInfo">CloneImageInfo</A>
 		<LI><A HREF="#CreateImage">CreateImage</A>
 		<LI><A HREF="#CropImage">CropImage</A>
 		<LI><A HREF="#CycleColormapImage">CycleColormapImage</A>
@@ -52,6 +53,7 @@
 		<LI><A HREF="#GetImageInfo">GetImageInfo</A>
 		<LI><A HREF="#GetImageType">GetImageType</A>
 		<LI><A HREF="#GetMontageInfo">GetMontageInfo</A>
+		<LI><A HREF="#GetNumberScenes">GetNumberScenes</A>
 		<LI><A HREF="#GetPixels">GetPixels</A>
 		<LI><A HREF="#IsGeometry">IsGeometry</A>
 		<LI><A HREF="#IsGrayImage">IsGrayImage</A>
@@ -82,7 +84,6 @@
 		<LI><A HREF="#ScaleImage">ScaleImage</A>
 		<LI><A HREF="#SetImage">SetImage</A>
 		<LI><A HREF="#SetImageInfo">SetImageInfo</A>
-		<LI><A HREF="#SetNumberScenes">SetNumberScenes</A>
 		<LI><A HREF="#SortColormapByIntentsity">SortColormapByIntentsity</A>
 		<LI><A HREF="#SteganoImage">SteganoImage</A>
 		<LI><A HREF="#StereoImage">StereoImage</A>
@@ -127,6 +128,9 @@ bordered_image=<STRONG>BorderImage</STRONG>(image,border_info)
 chop_image=<STRONG>ChopImage</STRONG>(image,chop_info)
 
 <P>
+cloned_info=<STRONG>CloneAnnotateInfo</STRONG>(image_info,annotate_info)
+
+<P>
 clone_image=<STRONG>CloneImage</STRONG>(image,columns,rows,clone_pixels)
 
 <P>
@@ -136,7 +140,7 @@ cloned_info=<STRONG>CloneImageInfo</STRONG>(image_info)
 <STRONG>CloseImage</STRONG>(image)
 
 <P>
-<STRONG>ColorFloodfillImage</STRONG>(image,target,pen,x,y,method)
+<STRONG>ColorFloodfillImage</STRONG>(image,target,tile,x,y,method)
 
 <P>
 <STRONG>ColorizeImage</STRONG>(image,opaque_color,pen_color)
@@ -214,6 +218,9 @@ type=<STRONG>GetImageType</STRONG>(image)
 <STRONG>GetMontageInfo</STRONG>(montage_info)
 
 <P>
+scenes=<STRONG>GetNumberScenes</STRONG>(image)
+
+<P>
 <STRONG>GetPixels</STRONG>(image,red,green,blue,opacity)
 
 <P>
@@ -262,7 +269,7 @@ minified_image=<STRONG>MinifyImage</STRONG>(image)
 <STRONG>MogrifyImages</STRONG>(image_info,argc,argv,images)
 
 <P>
-<STRONG>MontageImages</STRONG>(image,montage_info)
+<STRONG>MontageImages</STRONG>(images,montage_info)
 
 <P>
 morphed_image=<STRONG>MorphImages</STRONG>(images,number_frames)
@@ -299,9 +306,6 @@ scaled_image=<STRONG>ScaleImage</STRONG>(image,columns,rows)
 
 <P>
 <STRONG>SetImageInfo</STRONG>(image_info,rectify)
-
-<P>
-<STRONG>SetNumberScenes</STRONG>(image)
 
 <P>
 stegano_image=<STRONG>SteganoImage</STRONG>(image,watermark)
@@ -538,6 +542,103 @@ image to crop.
 </DL></DL>
 <P>
 <HR>
+<H2><A NAME="CloneAnnotateInfo">CloneAnnotateInfo</A></H2>
+<P>
+Method CloneAnnotateInfo makes a duplicate of the given annotate info, or
+if annotate info is NULL, a new one.
+
+<P>
+The format of the CloneAnnotateInfo routine is:
+
+<P>
+<PRE>        cloned_info=CloneAnnotateInfo(image_info,annotate_info)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>cloned_info:</STRONG><DD>
+<P>
+Method CloneAnnotateInfo returns a duplicate of the given annotate info, or
+if annotate info is NULL a new one.
+
+<DT><STRONG>image_info:</STRONG><DD>
+<P>
+a structure of type info.
+
+<DT><STRONG>annotate_info:</STRONG><DD>
+<P>
+a structure of type info.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="CloneImage">CloneImage</A></H2>
+<P>
+Method CloneImage returns a copy of all fields of the input image. The the
+pixel memory is allocated but the pixel data is not copied.
+
+<P>
+The format of the CloneImage routine is:
+
+<P>
+<PRE>        clone_image=CloneImage(image,columns,rows,clone_pixels)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>clone_image:</STRONG><DD>
+<P>
+Method CloneImage returns a pointer to the image after copying. A null
+image is returned if there is a memory shortage.
+
+<DT><STRONG>image:</STRONG><DD>
+<P>
+The address of a structure of type Image.
+
+<DT><STRONG>columns:</STRONG><DD>
+<P>
+An integer that specifies the number of columns in the copied image.
+
+<DT><STRONG>rows:</STRONG><DD>
+<P>
+An integer that specifies the number of rows in the copied image.
+
+<DT><STRONG>clone_pixels:</STRONG><DD>
+<P>
+Specifies whether the pixel data is copied. Must be either True or False;
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="CloneImageInfo">CloneImageInfo</A></H2>
+<P>
+Method CloneImageInfo makes a duplicate of the given image info, or if
+image info is NULL, a new one.
+
+<P>
+The format of the CloneImageInfo routine is:
+
+<P>
+<PRE>        cloned_info=CloneImageInfo(image_info)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>cloned_info:</STRONG><DD>
+<P>
+Method CloneImageInfo returns a duplicate of the given image info, or if
+image info is NULL a new one.
+
+<DT><STRONG>image_info:</STRONG><DD>
+<P>
+a structure of type info.
+
+</DL></DL>
+<P>
+<HR>
 <H2><A NAME="CloseImage">CloseImage</A></H2>
 <P>
 Method CloseImage closes a file associated with the image. If the filename
@@ -592,7 +693,7 @@ Gems'' by Paul Heckbert.
 The format of the ColorFloodfillImage routine is:
 
 <P>
-<PRE>        ColorFloodfillImage(image,target,pen,x,y,method)
+<PRE>        ColorFloodfillImage(image,target,tile,x,y,method)
 </PRE>
 <P>
 A description of each parameter follows:
@@ -606,9 +707,9 @@ The address of a structure of type Image.
 <P>
 A RunlengthPacket structure. This is the RGB value of the target color.
 
-<DT><STRONG>pen:</STRONG><DD>
+<DT><STRONG>tile:</STRONG><DD>
 <P>
-A character string representing the pen color.
+An image representing the image to tile onto the floodplane.
 
 <DT><STRONG>x,y:</STRONG><DD>
 <P>
@@ -778,72 +879,6 @@ The address of a structure of type Image; returned from ReadImage.
 <DT><STRONG>sharpen:</STRONG><DD>
 <P>
 If True, the intensity is increased otherwise it is decreased.
-
-</DL></DL>
-<P>
-<HR>
-<H2><A NAME="CloneImage">CloneImage</A></H2>
-<P>
-Method CloneImage returns a copy of all fields of the input image. The the
-pixel memory is allocated but the pixel data is not copied.
-
-<P>
-The format of the CloneImage routine is:
-
-<P>
-<PRE>        clone_image=CloneImage(image,columns,rows,clone_pixels)
-</PRE>
-<P>
-A description of each parameter follows:
-
-<DL><DL>
-<DT><STRONG>clone_image:</STRONG><DD>
-<P>
-Method CloneImage returns a pointer to the image after copying. A null
-image is returned if there is a memory shortage.
-
-<DT><STRONG>image:</STRONG><DD>
-<P>
-The address of a structure of type Image.
-
-<DT><STRONG>columns:</STRONG><DD>
-<P>
-An integer that specifies the number of columns in the copied image.
-
-<DT><STRONG>rows:</STRONG><DD>
-<P>
-An integer that specifies the number of rows in the copied image.
-
-<DT><STRONG>clone_pixels:</STRONG><DD>
-<P>
-Specifies whether the pixel data is copied. Must be either True or False;
-
-</DL></DL>
-<P>
-<HR>
-<H2><A NAME="CloneImageInfo">CloneImageInfo</A></H2>
-<P>
-Method CloneImageInfo makes a duplicate of the given image info, or if
-image info is NULL, a new one.
-
-<P>
-The format of the CloneImageInfo routine is:
-
-<P>
-<PRE>        cloned_info=CloneImageInfo(image_info)
-</PRE>
-<P>
-A description of each parameter follows:
-
-<DL><DL>
-<DT><STRONG>cloned_info:</STRONG><DD>
-<P>
-Method CloneImageInfo returns a duplicate of the given image info, or if
-image info is NULL a new one.
-
-<DT><STRONG>image_info:</STRONG><DD>
-<P>
-a structure of type info.
 
 </DL></DL>
 <P>
@@ -1339,6 +1374,31 @@ A description of each parameter follows:
 <DT><STRONG>montage_info:</STRONG><DD>
 <P>
 Specifies a pointer to a MontageInfo structure.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="GetNumberScenes">GetNumberScenes</A></H2>
+<P>
+Method GetNumberScenes returns the number of scenes in an image sequence.
+
+<P>
+The format of the GetNumberScenes routine is:
+
+<P>
+<PRE>        scenes=GetNumberScenes(image)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>scenes:</STRONG><DD>
+<P>
+Method GetNumberScenes returns the number of scenes in an image sequence.
+
+<DT><STRONG>image:</STRONG><DD>
+<P>
+The address of a structure of type Image.
 
 </DL></DL>
 <P>
@@ -1854,13 +1914,13 @@ separate images.
 The format of the MontageImages routine is:
 
 <P>
-<PRE>        MontageImages(image,montage_info)
+<PRE>        MontageImages(images,montage_info)
 </PRE>
 <P>
 A description of each parameter follows:
 
 <DL><DL>
-<DT><STRONG>image:</STRONG><DD>
+<DT><STRONG>images:</STRONG><DD>
 <P>
 Specifies a pointer to an array of Image structures.
 
@@ -2279,27 +2339,6 @@ Specifies a pointer to an ImageInfo structure.
 <P>
 an unsigned value other than zero rectifies the attribute for multi-frame
 support (user may want multi-frame but image format may not support it).
-
-</DL></DL>
-<P>
-<HR>
-<H2><A NAME="SetNumberScenes">SetNumberScenes</A></H2>
-<P>
-Method SetNumberScenes sets the number of scenes in an image sequence.
-
-<P>
-The format of the SetNumberScenes routine is:
-
-<P>
-<PRE>        SetNumberScenes(image)
-</PRE>
-<P>
-A description of each parameter follows:
-
-<DL><DL>
-<DT><STRONG>image:</STRONG><DD>
-<P>
-The address of a structure of type Image.
 
 </DL></DL>
 <P>

@@ -51,7 +51,7 @@ gems - Graphic Gems - Graphic Support Methods
 opacity=<STRONG>InsidePrimitive</STRONG>(primitive_info,annotate_info,target,image)
 
 <P>
-<STRONG>InterpolateColor</STRONG>(image,x,y)
+<STRONG>InterpolateColor</STRONG>(image,x_offset,y_offset)
 
 <P>
 <STRONG>TransformHSL</STRONG>(red,green,blue,hue,saturation,luminosity)
@@ -234,7 +234,7 @@ it's neighbors.
 The format of the InterpolateColor routine is:
 
 <P>
-<PRE>        InterpolateColor(image,x,y)
+<PRE>        InterpolateColor(image,x_offset,y_offset)
 </PRE>
 <P>
 A description of each parameter follows:
@@ -244,7 +244,7 @@ A description of each parameter follows:
 <P>
 The address of a structure of type Image.
 
-<DT><STRONG>x,y:</STRONG><DD>
+<DT><STRONG>x_offset,y_offset:</STRONG><DD>
 <P>
 A double representing the current (x,y) position of the pixel.
 

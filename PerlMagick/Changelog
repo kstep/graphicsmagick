@@ -1,5 +1,7 @@
 Revision history for Perl extension Image::Magick.
 
+4.20 Fri Feb 15 1999
+        - Change the ColorFloodfill() parameters.
 4.19 Fri Feb 01 1999
         - Changed version to reflect the ImageMagick release #.
 1.58 Fri Jan 01 1999

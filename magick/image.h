@@ -263,23 +263,14 @@ typedef struct _SegmentInfo
     y2;
 } SegmentInfo;
 
-typedef struct _AnnotateInfo
+typedef struct _ProfileInfo
 {
-  ImageInfo
-    *image_info;
-
   unsigned int
-    gravity;
+    length;
 
-  char
-    *geometry,
-    *text,
-    *primitive,
-    *font_name;
-
-  RectangleInfo
-    bounds;
-} AnnotateInfo;
+  unsigned char
+    *info;
+} ProfileInfo;
 
 typedef struct _ChromaticityInfo
 {
@@ -289,15 +280,6 @@ typedef struct _ChromaticityInfo
     blue_primary,
     white_point;
 } ChromaticityInfo;
-
-typedef struct _ProfileInfo
-{
-  unsigned int
-    length;
-
-  unsigned char
-    *info;
-} ProfileInfo;
 
 typedef struct _Image
 {
@@ -457,6 +439,27 @@ typedef struct _Image
     *list,
     *next;
 } Image;
+
+typedef struct _AnnotateInfo
+{
+  ImageInfo
+    *image_info;
+
+  unsigned int
+    gravity;
+
+  char
+    *geometry,
+    *text,
+    *primitive,
+    *font_name;
+
+  Image
+    *tile;
+
+  RectangleInfo
+    bounds;
+} AnnotateInfo;
 
 /*
   Image utilities methods.
@@ -645,7 +648,7 @@ extern Export void
   AnnotateImage(Image *,const AnnotateInfo *),
   CloseImage(Image *),
   CoalesceImages(Image *),
-  ColorFloodfillImage(Image *,const RunlengthPacket *,const char *,const int x,
+  ColorFloodfillImage(Image *,const RunlengthPacket *,Image *,const int x,
     const int y,const PaintMethod),
   ColorizeImage(Image *,const char *,const char *),
   CommentImage(Image *,const char *),

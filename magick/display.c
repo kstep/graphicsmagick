@@ -1998,6 +1998,12 @@ static unsigned int XColorEditImage(Display *display,
           case FloodfillMethod:
           case FillToBorderMethod:
           {
+            AnnotateInfo
+              annotate_info;
+
+            ImageInfo
+              image_info;
+
             RunlengthPacket
               target;
 
@@ -2014,8 +2020,14 @@ static unsigned int XColorEditImage(Display *display,
                 target.green=XDownScale(border_color.green);
                 target.blue=XDownScale(border_color.blue);
               }
-            ColorFloodfillImage(*image,&target,
-              resource_info->pen_colors[pen_id],x_offset,y_offset,method);
+            GetImageInfo(&image_info);
+            (void) CloneString(&image_info.pen,
+              resource_info->pen_colors[pen_id]);
+            GetAnnotateInfo(&image_info,&annotate_info);
+            ColorFloodfillImage(*image,&target,annotate_info.tile,x_offset,
+              y_offset,method);
+            DestroyAnnotateInfo(&annotate_info);
+            DestroyImageInfo(&image_info);
             break;
           }
           case ResetMethod:

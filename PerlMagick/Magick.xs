@@ -4054,14 +4054,12 @@ Mogrify(ref,...)
         }
         case 34:  /* ColorFloodfill */
         {
-          char
-            *pen = "black";
-
           RunlengthPacket
             target;
 
           if (first)
             {
+              package_info=ClonePackageInfo(info);
               if (attribute_flag[0])
                 (void) XParseGeometry(argument_list[0].string_reference,
                   &rectangle_info.x,&rectangle_info.y,&rectangle_info.width,
@@ -4071,22 +4069,24 @@ Mogrify(ref,...)
               if (attribute_flag[2])
                  rectangle_info.y=argument_list[2].int_reference;
               if (attribute_flag[3])
-                pen=argument_list[3].string_reference;
+                (void) CloneString(&package_info->image_info->pen,
+                  argument_list[3].string_reference);
               if (attribute_flag[4])
                 XQueryColorDatabase(argument_list[4].string_reference,
                   &border_color);
+              GetAnnotateInfo(package_info->image_info,&annotate_info);
             }
           if (!UncondenseImage(image))
             break;
-          target=image->pixels[(rectangle_info.y % image->rows)*image->columns+
-            (rectangle_info.x % image->columns)];
+          target=(*PixelOffset(image,rectangle_info.x % image->columns,
+            rectangle_info.y % image->rows));
           if (attribute_flag[4])
             {
               target.red=XDownScale(border_color.red);
               target.green=XDownScale(border_color.green);
               target.blue=XDownScale(border_color.blue);
             }
-          ColorFloodfillImage(image,&target,pen,rectangle_info.x,
+          ColorFloodfillImage(image,&target,annotate_info.tile,rectangle_info.x,
             rectangle_info.y,attribute_flag[4] ? FillToBorderMethod :
             FloodfillMethod);
           break;

@@ -17454,8 +17454,10 @@ Export Image *ReadXCImage(const ImageInfo *image_info)
   image=AllocateImage(image_info);
   if (image == (Image *) NULL)
     return((Image *) NULL);
-  if ((image->columns == 0) || (image->rows == 0))
-    PrematureExit(OptionWarning,"must specify image size",image);
+  if (image->columns == 0)
+    image->columns=1;
+  if (image->rows == 0)
+    image->rows=1;
   /*
     Initialize Image structure.
   */

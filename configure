@@ -686,8 +686,8 @@ test "$host_alias" != "$target_alias" &&
 
 # Set version
 MAJOR_VERSION=4
-MINOR_VERSION=1
-MICRO_VERSION=9
+MINOR_VERSION=2
+MICRO_VERSION=0
 echo "configuring ImageMagick $MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION"
 
 # Generate configure header.

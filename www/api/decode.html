@@ -52,9 +52,11 @@
 		<LI><A HREF="#ReadPNMImage">ReadPNMImage</A>
 		<LI><A HREF="#ReadPSImage">ReadPSImage</A>
 		<LI><A HREF="#ReadPSDImage">ReadPSDImage</A>
+		<LI><A HREF="#ReadLOGOImage">ReadLOGOImage</A>
 		<LI><A HREF="#ReadRGBImage">ReadRGBImage</A>
 		<LI><A HREF="#ReadRLAImage">ReadRLAImage</A>
 		<LI><A HREF="#ReadRLEImage">ReadRLEImage</A>
+		<LI><A HREF="#ReadSFWImage">ReadSFWImage</A>
 		<LI><A HREF="#ReadSGIImage">ReadSGIImage</A>
 		<LI><A HREF="#ReadSTEGANOImage">ReadSTEGANOImage</A>
 		<LI><A HREF="#ReadSUNImage">ReadSUNImage</A>
@@ -157,6 +159,9 @@ image=<STRONG>ReadLABELImage</STRONG>(image_info)
 image=<STRONG>ReadLOGOImage</STRONG>(image_info)
 
 <P>
+image=<STRONG>ReadLOGOImage</STRONG>(image_info)
+
+<P>
 image=<STRONG>ReadMAPImage</STRONG>(image_info)
 
 <P>
@@ -212,6 +217,9 @@ image=<STRONG>ReadRLAImage</STRONG>(image_info)
 
 <P>
 image=<STRONG>ReadRLEImage</STRONG>(image_info)
+
+<P>
+image=<STRONG>ReadSFWImage</STRONG>(image_info)
 
 <P>
 image=<STRONG>ReadSGIImage</STRONG>(image_info)
@@ -1354,6 +1362,35 @@ Specifies a pointer to an ImageInfo structure.
 </DL></DL>
 <P>
 <HR>
+<H2><A NAME="ReadLOGOImage">ReadLOGOImage</A></H2>
+<P>
+Method ReadPWPImage reads a Seattle Film Works multi-image file and returns
+it. It allocates the memory necessary for the new Image structure and
+returns a pointer to the new image.
+
+<P>
+The format of the ReadPWPImage routine is:
+
+<P>
+<PRE>    image=ReadPWPImage(image_info)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>image:</STRONG><DD>
+<P>
+Method ReadPWPImage returns a pointer to the image after reading. A null
+image is returned if there is a memory shortage or if the image cannot be
+read.
+
+<DT><STRONG>image_info:</STRONG><DD>
+<P>
+Specifies a pointer to an ImageInfo structure.
+
+</DL></DL>
+<P>
+<HR>
 <H2><A NAME="ReadRGBImage">ReadRGBImage</A></H2>
 <P>
 Method ReadRGBImage reads an image of raw red, green, and blue bytes and
@@ -1435,6 +1472,35 @@ A description of each parameter follows:
 <DT><STRONG>image:</STRONG><DD>
 <P>
 Method ReadRLEImage returns a pointer to the image after reading. A null
+image is returned if there is a memory shortage or if the image cannot be
+read.
+
+<DT><STRONG>image_info:</STRONG><DD>
+<P>
+Specifies a pointer to an ImageInfo structure.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="ReadSFWImage">ReadSFWImage</A></H2>
+<P>
+Method ReadSFWImage reads a Seattle Film Works image file and returns it.
+It allocates the memory necessary for the new Image structure and returns a
+pointer to the new image.
+
+<P>
+The format of the ReadSFWImage routine is:
+
+<P>
+<PRE>        image=ReadSFWImage(image_info)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>image:</STRONG><DD>
+<P>
+Method ReadSFWImage returns a pointer to the image after reading. A null
 image is returned if there is a memory shortage or if the image cannot be
 read.
 

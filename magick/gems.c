@@ -795,7 +795,7 @@ Export unsigned short InsidePrimitive(PrimitiveInfo *primitive_info,
                 target.green=XDownScale(border_color.green);
                 target.blue=XDownScale(border_color.blue);
               }
-            ColorFloodfillImage(image,&target,annotate_info->image_info->pen,
+            ColorFloodfillImage(image,&target,annotate_info->tile,
               (int) pixel->x,(int) pixel->y,p->method);
             break;
           }
