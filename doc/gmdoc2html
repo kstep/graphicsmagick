@@ -42,7 +42,7 @@ cat <<!!
 <head>
 	<meta HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=us-ascii">
 	<title>GraphicsMagick GM Utility</title>
-	<style type=css/text>
+	<style type=text/css>
 	<!--
 		@page { size: 8.5in 11in }
 		TD P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 14pt }
