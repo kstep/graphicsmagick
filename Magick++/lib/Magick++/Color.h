@@ -283,7 +283,7 @@ inline void Magick::Color::initPixel()
   _pixel->red     = 0;
   _pixel->green   = 0;
   _pixel->blue    = 0;
-  _pixel->opacity = Transparent;
+  _pixel->opacity = TransparentOpacity;
 }
 
 inline void Magick::Color::redQuantum ( Quantum red_ )
@@ -318,7 +318,7 @@ inline Magick::Quantum Magick::Color::blueQuantum ( void ) const
 
 inline void  Magick::Color::alphaQuantum ( Quantum alpha_ )
 {
-  _pixel->opacity = (Quantum) (alpha_ > Opaque ? Opaque : alpha_);
+  _pixel->opacity = (Quantum) (alpha_ > OpaqueOpacity ? OpaqueOpacity : alpha_);
 }
 
 inline Magick::Quantum Magick::Color::alphaQuantum ( void ) const
@@ -336,7 +336,7 @@ inline Magick::Color::Color ( Quantum red_,
   redQuantum   ( red_   );
   greenQuantum ( green_ );
   blueQuantum  ( blue_  );
-  alphaQuantum ( Opaque );
+  alphaQuantum ( OpaqueOpacity );
 }
 
 inline Magick::Color::Color ( Quantum red_,
@@ -416,7 +416,7 @@ inline double Magick::Color::alpha ( void ) const
 // Does object contain valid color?
 inline bool Magick::Color::isValid ( void ) const
 {
-  return( _pixel->opacity != Transparent ||
+  return( _pixel->opacity != TransparentOpacity ||
           _pixel->red != 0 ||
           _pixel->green != 0 ||
           _pixel->blue != 0 );

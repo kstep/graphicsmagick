@@ -113,7 +113,7 @@ const Magick::Color& Magick::Color::operator = ( std::string x11color_ )
       blueQuantum( target_color.blue );
       alphaQuantum( target_color.opacity );
 
-      if ( target_color.opacity < Opaque )
+      if ( target_color.opacity < OpaqueOpacity )
 	_pixelType = RGBAPixel;
       else
 	_pixelType = RGBPixel;
@@ -179,7 +179,7 @@ Magick::Color::Color ( PixelPacket &color_ )
 {
   *_pixel = color_;
 
-  if ( color_.opacity != Opaque )
+  if ( color_.opacity != OpaqueOpacity )
     _pixelType = RGBAPixel;
 }
 
@@ -187,7 +187,7 @@ Magick::Color::Color ( PixelPacket &color_ )
 const Magick::Color& Magick::Color::operator= ( MagickLib::PixelPacket &color_ )
 {
   *_pixel = color_;
-  if ( color_.opacity != Opaque )
+  if ( color_.opacity != OpaqueOpacity )
     _pixelType = RGBAPixel;
   else
     _pixelType = RGBPixel;
