@@ -1,3 +1,9 @@
+2004-04-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/pdf.c (ReadPDFImage): Double-check that Ghostscript
+	produced an output file since sometimes it reports success after
+	it has spewed an error message and has produced no output.
+
 2004-04-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/compress.c (HuffmanEncode2Image): Avoid out of bounds

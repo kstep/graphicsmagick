@@ -99,37 +99,37 @@ int main ( int argc, char **argv )
                 imageInfo->compression=ZipCompression;
             }
           else if (LocaleCompare("debug",option+1) == 0)
-              (void) SetLogEventMask(argv[++arg]);
+            (void) SetLogEventMask(argv[++arg]);
           else if (LocaleCompare("depth",option+1) == 0)
             {
               imageInfo->depth=QuantumDepth;
               arg++;
               if ((arg == argc) || !sscanf(argv[arg],"%ld",&imageInfo->depth))
                 {
-                  printf("-depth argument missing or not integer\n");
-                  fflush(stdout);
+                  (void) printf("-depth argument missing or not integer\n");
+                  (void) fflush(stdout);
                   exit_status = 1;
                   goto program_exit;
                 }
               if(imageInfo->depth != 8 && imageInfo->depth != 16 && imageInfo->depth != 32)
                 {
-                  printf("-depth (%ld) not 8, 16, or 32\n", imageInfo->depth);
-                  fflush(stdout);
+                  (void) printf("-depth (%ld) not 8, 16, or 32\n", imageInfo->depth);
+                  (void) fflush(stdout);
                   exit_status = 1;
                   goto program_exit;
                 }
             }
           else if (LocaleCompare("log",option+1) == 0)
-              (void) SetLogFormat(argv[++arg]);
+            (void) SetLogFormat(argv[++arg]);
           else if (LocaleCompare("pause",option+1) == 0)
-              pause=1;
+            pause=1;
           else if (LocaleCompare("size",option+1) == 0)
             {
               arg++;
               if ((arg == argc) || !IsGeometry(argv[arg]))
                 {
-                  printf("-size argument missing or not geometry\n");
-                  fflush(stdout);
+                  (void) printf("-size argument missing or not geometry\n");
+                  (void) fflush(stdout);
                   exit_status = 1;
                   goto program_exit;
                 }
@@ -141,21 +141,21 @@ int main ( int argc, char **argv )
     }
   if (arg != argc-2)
     {
-      printf("arg=%d, argc=%d\n", arg, argc);
-      printf ( "Usage: %s [-compress algorithm -debug events -depth integer -log format -size geometry] infile format\n", argv[0] );
-      fflush(stdout);
+      (void) printf("arg=%d, argc=%d\n", arg, argc);
+      (void) printf ( "Usage: %s [-compress algorithm -debug events -depth integer -log format -size geometry] infile format\n", argv[0] );
+      (void) fflush(stdout);
       exit_status = 1;
       goto program_exit;
     }
 
-  strncpy(infile, argv[arg], MaxTextExtent-1 );
+  (void) strncpy(infile, argv[arg], MaxTextExtent-1 );
   arg++;
-  strncpy( format, argv[arg], MaxTextExtent-1 );
+  (void) strncpy( format, argv[arg], MaxTextExtent-1 );
 
-  for (arg=0; arg < argc; arg++)
-    printf("%s ", argv[arg]);
-  printf("\n");
-  fflush(stdout);
+/*   for (arg=0; arg < argc; arg++) */
+/*     (void) printf("%s ", argv[arg]); */
+/*   (void) printf("\n"); */
+/*   (void) fflush(stdout); */
 
   /*
    * Read original image
@@ -164,9 +164,9 @@ int main ( int argc, char **argv )
   imageInfo=CloneImageInfo(0);
   GetExceptionInfo( &exception );
   imageInfo->dither = 0;
-  strncpy( imageInfo->filename, infile, MaxTextExtent-1 );
+  (void) strncpy( imageInfo->filename, infile, MaxTextExtent-1 );
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-    "Reading image %s", imageInfo->filename);
+                        "Reading image %s", imageInfo->filename);
   original = ReadImage ( imageInfo, &exception );
   if (exception.severity != UndefinedException)
     {
@@ -176,8 +176,8 @@ int main ( int argc, char **argv )
     }
   if ( original == (Image *)NULL )
     {
-      printf ( "Failed to read original image %s\n", imageInfo->filename );
-      fflush(stdout);
+      (void) printf ( "Failed to read original image %s\n", imageInfo->filename );
+      (void) fflush(stdout);
       exit_status = 1;
       goto program_exit;
     }
@@ -196,11 +196,11 @@ int main ( int argc, char **argv )
    * Save image to BLOB
    */
   blob_length = 8192;
-  strncpy( original->magick, format, MaxTextExtent-1 );
-  strcpy( imageInfo->filename, "" );
+  (void) strncpy( original->magick, format, MaxTextExtent-1 );
+  (void) strcpy( imageInfo->filename, "" );
   original->delay = 10;
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-    "Writing image to BLOB");
+                        "Writing image to BLOB");
   blob =(char *) ImageToBlob ( imageInfo, original, &blob_length, &exception );
   if (exception.severity != UndefinedException)
     {
@@ -210,8 +210,8 @@ int main ( int argc, char **argv )
     }
   if ( blob == NULL )
     {
-      printf ( "Failed to write BLOB in format %s\n", imageInfo->magick );
-      fflush(stdout);
+      (void) printf ( "Failed to write BLOB in format %s\n", imageInfo->magick );
+      (void) fflush(stdout);
       exit_status = 1;
       goto program_exit;
     }
@@ -222,8 +222,8 @@ int main ( int argc, char **argv )
   /*
    * Read image back from BLOB
    */
-  strncpy( imageInfo->magick, format, MaxTextExtent-1 );
-  strcpy( imageInfo->filename, "" );
+  (void) strncpy( imageInfo->magick, format, MaxTextExtent-1 );
+  (void) strcpy( imageInfo->filename, "" );
   if ( size[0] != '\0' )
     CloneString( &imageInfo->size, size );
   original = BlobToImage( imageInfo, blob, blob_length, &exception );
@@ -235,8 +235,8 @@ int main ( int argc, char **argv )
     }
   if ( original == (Image *)NULL )
     {
-      printf ( "Failed to read image from BLOB in format %s\n",imageInfo->magick );
-      fflush(stdout);
+      (void) printf ( "Failed to read image from BLOB in format %s\n",imageInfo->magick );
+      (void) fflush(stdout);
       exit_status = 1;
       goto program_exit;
     }
@@ -246,8 +246,8 @@ int main ( int argc, char **argv )
    * Save image to BLOB
    */
   blob_length = 8192;
-  strncpy( original->magick, format, MaxTextExtent-1 );
-  strcpy( imageInfo->filename, "" );
+  (void) strncpy( original->magick, format, MaxTextExtent-1 );
+  (void) strcpy( imageInfo->filename, "" );
   original->delay = 10;
   blob = (char *) ImageToBlob ( imageInfo, original, &blob_length, &exception );
   if (exception.severity != UndefinedException)
@@ -259,8 +259,8 @@ int main ( int argc, char **argv )
   imageInfo->depth=original->depth;
   if ( blob == NULL )
     {
-      printf ( "Failed to write BLOB in format %s\n", imageInfo->magick );
-      fflush(stdout);
+      (void) printf ( "Failed to write BLOB in format %s\n", imageInfo->magick );
+      (void) fflush(stdout);
       exit_status = 1;
       goto program_exit;
     }
@@ -273,7 +273,7 @@ int main ( int argc, char **argv )
   if ( size[0] != '\0' )
     CloneString( &imageInfo->size, size );
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-    "Reading image from BLOB");
+                        "Reading image from BLOB");
   final = BlobToImage( imageInfo, blob, blob_length, &exception );
   if (exception.severity != UndefinedException)
     {
@@ -283,8 +283,8 @@ int main ( int argc, char **argv )
     }
   if ( final == (Image *)NULL )
     {
-      printf ( "Failed to read image from BLOB in format %s\n",imageInfo->magick );
-      fflush(stdout);
+      (void) printf ( "Failed to read image from BLOB in format %s\n",imageInfo->magick );
+      (void) fflush(stdout);
       exit_status = 1;
       goto program_exit;
     }
@@ -313,11 +313,11 @@ int main ( int argc, char **argv )
   if ( !IsImagesEqual(original, final ) &&
        (original->error.normalized_mean_error > fuzz_factor) )
     {
-      printf( "R/W file check for format \"%s\" failed: %u/%.6f/%.6fe\n",
-              format,(unsigned int) original->error.mean_error_per_pixel,
-              original->error.normalized_mean_error,
-              original->error.normalized_maximum_error);
-      fflush(stdout);
+      (void) printf( "R/W file check for format \"%s\" failed: %u/%.6f/%.6fe\n",
+                     format,(unsigned int) original->error.mean_error_per_pixel,
+                     original->error.normalized_mean_error,
+                     original->error.normalized_maximum_error);
+      (void) fflush(stdout);
       exit_status = 1;
       goto program_exit;
     }
@@ -334,6 +334,6 @@ int main ( int argc, char **argv )
   DestroyMagick();
 
   if (pause)
-    getc(stdin);
+    (void) getc(stdin);
   return exit_status;
 }
