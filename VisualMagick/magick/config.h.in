@@ -15,6 +15,7 @@
 #define HasXML
 #define HAVE_LIBXML_XMLERROR_H
 #define HAVE_FREETYPE_FREETYPE_H
+#define QuantumSize 16
 //#define HasAUTOTRACE
 //#define HasWMF
 #endif
