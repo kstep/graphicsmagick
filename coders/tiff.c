@@ -2017,8 +2017,6 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
   while (image->previous != (Image *) NULL)
     image=image->previous;
   TIFFClose(tiff);
-  if (image->blob->type == FileStream)
-    status=rename(filename,image->filename);
   if ((image->blob->type != FileStream) || rename(filename,image->filename))
     {
       FILE
