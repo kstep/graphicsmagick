@@ -17,30 +17,30 @@ extern "C" {
 /*
   Color quantum is [0..255].
 */
-#define Downscale(quantum)  ((unsigned long) (quantum))
-#define Upscale(quantum)  ((unsigned long) (quantum))
-#define XDownscale(color)  ((color)/257UL)
-#define XUpscale(color)  (257UL*(color))
+#define Downscale(quantum)  ((long) (quantum))
+#define Upscale(quantum)  ((long) (quantum))
+#define XDownscale(color)  ((color)/257L)
+#define XUpscale(color)  (257L*(color))
 
 typedef unsigned char Quantum;
 #elif (QuantumDepth == 16)
 /*
   Color quantum is [0..65535].
 */
-#define Downscale(quantum)  ((quantum)/257UL)
-#define Upscale(quantum)  (257UL*(quantum))
-#define XDownscale(color)  ((unsigned long) (color))
-#define XUpscale(color)  ((unsigned long) (color))
+#define Downscale(quantum)  ((quantum)/257L)
+#define Upscale(quantum)  (257L*(quantum))
+#define XDownscale(color)  ((long) (color))
+#define XUpscale(color)  ((long) (color))
 
 typedef unsigned short Quantum;
 #elif (QuantumDepth == 32)
 /*
   Color quantum is [0..4294967295].
 */
-#define Downscale(quantum)  ((quantum)/16777217UL)
-#define Upscale(quantum)  (16777217UL*(quantum))
-#define XDownscale(color)  (65537UL*(color))
-#define XUpscale(color)  ((color)/65537UL)
+#define Downscale(quantum)  ((quantum)/16777217L)
+#define Upscale(quantum)  (16777217L*(quantum))
+#define XDownscale(color)  (65537L*(color))
+#define XUpscale(color)  ((color)/65537L)
 
 typedef unsigned int Quantum;
 #else
@@ -50,9 +50,9 @@ typedef unsigned int Quantum;
 #define ColorMatch(p,q) (((p)->red == (q)->red) && \
   ((p)->green == (q)->green) && ((p)->blue == (q)->blue))
 #define Intensity(color)  \
-  ((9798UL*(color)->red+19235UL*(color)->green+3735UL*(color)->blue)/32768UL)
-#define MaxRGB  ((1UL << QuantumDepth)-1UL)
-#define OpaqueOpacity  0UL
+  ((9798L*(color)->red+19235L*(color)->green+3735L*(color)->blue)/32768L)
+#define MaxRGB  ((1L << QuantumDepth)-1L)
+#define OpaqueOpacity  0L
 #define TransparentOpacity  MaxRGB
 
 /*
