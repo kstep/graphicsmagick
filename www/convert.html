@@ -407,7 +407,11 @@ image is specified, it is composited into a single multi-image file. Use
 if you want a single image produced for each frame.
 <p>Raw images are expected to have one byte per pixel unless <b>ImageMagick</b>
 is compiled in 16-bit mode. Here, the raw data is expected to be stored
-two bytes per pixel in most-significant-byte-first order.</dl>
+two bytes per pixel in most-significant-byte-first order.
+You can tell if <b>ImageMagick</b> was compiled in 16-bit mode by typing
+"convert" without any options, and looking for "Q:16" in the first line of
+output.
+</dl>
 <i><a href="#top">Back to Contents</a></i>
 <br>&nbsp;
 <br>&nbsp;
@@ -450,7 +454,7 @@ To convert a raw Gray image with a 128 byte header to a portable graymap,
 use:
 <dl>
 <dd>
-<tt>convert -size 768x5.2.228 gray:raw image.pgm</tt></dd></dl>
+<tt>convert -depth 8 -size 768x512+128 gray:raw image.pgm</tt></dd></dl>
 
 <dd>
 <p>
@@ -972,7 +976,10 @@ and vertical direction. This option is used in concert with <b>-page</b>.</dd>
 
 <dd>
 depth of the image. This is the number of bits in a pixel. The only acceptable
-values are 8 or 16.</dd>
+values are 8 or 16.  Use this option to specify the depth of raw images whose
+depth is unknown such as GRAY, RGB, or CMYK, or to change the depth of any
+image after it has been read.
+</dd>
 </dl>
 
 <dl>&nbsp;
