@@ -127,40 +127,41 @@ UNIX/Cygwin COMPILATION
   equivalent to --with-something=no.  The configure options are as
   follows (execute 'configure --help' to see all options).
 
-   Optional Features:
-    --enable-prof           enable prof source profiling support (default is no)
-    --enable-gprof          enable gprof source profiling support (default is no)
-    --enable-gcov           enable gcov source profiling support (default is no)
-    --enable-lzw            enable LZW support (default is no)
-    --enable-16bit-pixel    enable 16 bit/quantum pixels (default is no)
+  Optional Features:
+   --enable-prof           enable prof profiling support (default disabled)
+   --enable-gprof          enable gprof profiling support (default disabled)
+   --enable-gcov           enable gcov profiling support (default disabled)
+   --enable-lzw            enable LZW support (default disabled)
+   --disable-16bit-pixel   disable 16 bit/quantum pixels (default enabled)
 
-   Optional Packages:
-    --with-modules          enable support for dynamically loadable modules
-    --with-cache            set pixel cache threshhold (default 2047MB)
-    --with-threads          enable threads support
-    --without-frozenpaths   disable frozen delegate paths
-    --without-largefiles    disable support for large (64 bit) file offsets
-    --without-magick-plus-plus disable build/install of Magick++
-    --without-perl          disable build/install of PerlMagick
-         or
-    --with-perl=PERL        use specified Perl binary to configure PerlMagick
-    --with-perl-options=OPTIONS  options to pass on command-line when
-                            generating PerlMagick's Makefile from Makefile.PL
-    --without-bzlib         disable BZLIB support
-    --without-dps           disable Display Postscript support
-    --without-fpx           disable FlashPIX support
-    --without-hdf           disable HDF support
-    --without-jbig          disable JBIG support
-    --without-jpeg          disable JPEG support
-    --without-lcms          disable LCMS support
-    --without-png           disable PNG support
-    --without-tiff          disable TIFF support
-    --without-ttf           disable TrueType support
-    --with-ttf-fontpath     set default TrueType font path (default none)
-    --without-xml           disable XML support
-    --without-zlib          disable ZLIB support
-    --with-x                use the X Window System
-    --with-libstdc=DIR      use libstdc++ in DIR (for GNU C++)
+  Optional Packages:
+   --with-modules          enable support for dynamically loadable modules
+   --with-cache            set pixel cache threshhold (default 2047MB)
+   --with-threads          enable threads support
+   --without-frozenpaths   disable frozen delegate paths
+   --without-largefiles    disable support for large (64 bit) file offsets
+   --without-magick-plus-plus disable build/install of Magick++
+   --without-perl          disable build/install of PerlMagick
+        or
+   --with-perl=PERL        use specified Perl binary to configure PerlMagick
+   --with-perl-options=OPTIONS  options to pass on command-line when
+                           generating PerlMagick's Makefile from Makefile.PL
+   --without-bzlib         disable BZLIB support
+   --without-dps           disable Display Postscript support
+   --without-fpx           disable FlashPIX support
+   --without-hdf           disable HDF support
+   --without-jbig          disable JBIG support
+   --without-jpeg          disable JPEG support
+   --without-lcms          disable LCMS support
+   --without-png           disable PNG support
+   --without-tiff          disable TIFF support
+   --without-ttf           disable TrueType support
+   --without-wmf           disable WMF support
+   --with-ttf-fontpath     set default TrueType font path (default none)
+   --without-xml           disable XML support
+   --without-zlib          disable ZLIB support
+   --with-x                use the X Window System
+   --with-libstdc=DIR      use libstdc++ in DIR (for GNU C++)
 
   ImageMagick options represent either features to be enabled,
   disabled, or packages to be included in the build.  When a feature is
@@ -221,18 +222,16 @@ UNIX/Cygwin COMPILATION
       by default.  With LZW support, GIF files written by ImageMagick
       will be much larger than expected.
 
-    o --enable-16bit-pixel: By default ImageMagick represents images
-      internally using an eight-bit pixel quantum (red, green, blue,
-      and alpha component).  Scientific applications, or other
-      specialized applications, which must ensure that the full dynamic
-      range of the image pixels is preserved across operations, or
-      which must process an image format that can represent deep
-      pixels, may want to enable support for sixteen-bit pixel
-      quantums. When this option is specified, the definition
-      QuantumLeap is applied when ImageMagick is built, allowing RGBA
-      values to range from 0 to 65535 rather than 0 to 255.  Enabling
-      this option will cause ImageMagick to run about 30% slower.
-
+    o --disable-16bit-pixel: By default ImageMagick represents images
+      internally using a sixteen-bit pixel quantum (the size of the red,
+      green, blue, and alpha pixel components). The definition QuantumLeap
+      is applied when ImageMagick is built, allowing RGBA values to range
+      from 0 to 65535 rather than 0 to 255. Use of sixteen-bit pixel
+      quantums typically causes ImageMagick to run about 30% slower then
+      when it is built to support eight-bit pixel quantums. Those who favor
+      performance over output quality may prefer to specify
+      --disable-16bit-pixel.
+      
     o --without-magick-plus-plus: Disable building Magick++, the C++
       application programming interface to ImageMagick.  A suitable C++
       compiler is required. Specify the CXX configure variable to
@@ -428,8 +427,7 @@ MAGICK DELEGATES
       multi-page document.
 
     o ImageMagick requires the NCSA HDF library available via anonymous
-    FTP
-      as
+      FTP as
 
 	  ftp://ftp.ncsa.uiuc.edu/HDF/HDF/HDF_Current
 
@@ -460,8 +458,7 @@ MAGICK DELEGATES
       to read the HTML image format.
 
     o ImageMagick requires the JBIG-Kit software available via
-    anonymous
-      FTP as
+      anonymous FTP as
 
 	  ftp://ftp.informatik.uni-erlangen.de/pub/doc/ISO/JBIG/
 

@@ -128,19 +128,19 @@ AM_MAINTAINER_MODE
 
 # Enable prof-based profiling support
 AC_ARG_ENABLE(prof,
-	      [  --enable-prof           enable prof source profiling support (default disabled)],
+	      [  --enable-prof           enable 'prof' profiling support (default disabled)],
 	      [with_prof=$enableval],
 	      [with_prof='no'])
 
 # Enable gprof-based profiling support
 AC_ARG_ENABLE(gprof,
-	      [  --enable-gprof          enable gprof source profiling support (default disabled)],
+	      [  --enable-gprof          enable 'gprof' profiling support (default disabled)],
 	      [with_gprof=$enableval],
 	      [with_gprof='no'])
 
 # Enable gcov-based profiling support
 AC_ARG_ENABLE(gcov,
-	      [  --enable-gcov           enable gcov source profiling support (default disabled)],
+	      [  --enable-gcov           enable 'gcov' profiling support (default disabled)],
 	      [with_gcov=$enableval],
 	      [with_gcov='no'])
 
