@@ -1061,7 +1061,7 @@ MagickExport Image *ResizeImage(const Image *image,const unsigned long columns,
   */
   x_factor=(double) resize_image->columns/image->columns;
   y_factor=(double) resize_image->rows/image->rows;
-  if (image->filter == UndefinedFilter)
+  if (image->filter != UndefinedFilter)
     i=(long) image->filter;
   else
     if ((x_factor*y_factor) > 1.0)
