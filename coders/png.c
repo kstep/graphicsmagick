@@ -6648,8 +6648,12 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
               if ((ping_info->valid & PNG_INFO_tRNS))
               {
                 for (i=0; i < (long) number_colors; i++)
-                  if (ping_info->trans[i] != 255)
+                {
+                  if (trans[i] == 256)
+                    trans[i]=255;
+                  if (trans[i] != 255)
                     ping_info->num_trans=(unsigned short) (i+1);
+                }
               }
               if (ping_info->num_trans == 0)
                 ping_info->valid&=(~PNG_INFO_tRNS);
