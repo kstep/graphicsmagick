@@ -876,6 +876,7 @@ static Image *RenderPostscript(const ImageInfo *image_info,const char *text,
     *clone_info;
 
   PointInfo
+    extent,
     point;
 
   register int
@@ -908,20 +909,20 @@ static Image *RenderPostscript(const ImageInfo *image_info,const char *text,
   /*
     Sample to compute bounding box.
   */
-  x=0;
-  y=0;
-  for (i=0; i <= (Extent(text)+2); i++)
+  extent.x=0;
+  extent.y=0;
+  for (x=0; x <= (Extent(text)+2); x++)
   {
-    point.x=image_info->affine[0]*i*image_info->pointsize+
-      image_info->affine[2]*2.0*image_info->pointsize;
-    point.y=image_info->affine[1]*i*image_info->pointsize+
-      image_info->affine[3]*2.0*image_info->pointsize;
-    if (AbsoluteValue(point.x) > x)
-      x=AbsoluteValue(point.x)+0.5;
-    if (AbsoluteValue(point.y) > y)
-      y=AbsoluteValue(point.y)+0.5;
+    point.x=AbsoluteValue(image_info->affine[0]*x*image_info->pointsize+
+      image_info->affine[2]*2.0*image_info->pointsize);
+    point.y=AbsoluteValue(image_info->affine[1]*x*image_info->pointsize+
+      image_info->affine[3]*2.0*image_info->pointsize);
+    if (point.x > extent.x)
+      extent.x=point.x;
+    if (point.y > extent.y)
+      extent.y=point.y;
   }
-  (void) fprintf(file,"%g %g moveto\n",x/2.0,y/2.0);
+  (void) fprintf(file,"%g %g moveto\n",extent.x/2.0,extent.y/2.0);
   (void) fprintf(file,"%g %g scale\n",image_info->pointsize,
     image_info->pointsize);
   (void) fprintf(file,
@@ -935,7 +936,7 @@ static Image *RenderPostscript(const ImageInfo *image_info,const char *text,
   (void) fprintf(file,"showpage\n");
   (void) fclose(file);
   clone_info=CloneImageInfo(image_info);
-  FormatString(page,"%dx%d+0+0!",x,y);
+  FormatString(page,"%dx%d+0+0!",(int) ceil(extent.x),(int) ceil(extent.y));
   (void) FormatString(clone_info->filename,"ps:%.1024s",filename);
   (void) CloneString(&clone_info->page,page);
   DestroyImage(image);
