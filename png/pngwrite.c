@@ -1,9 +1,9 @@
 
 /* pngwrite.c - general routines to write a PNG file
  *
- * libpng 1.2.0 - September 1, 2001
+ * libpng 1.2.2 - April 15, 2002
  * For conditions of distribution and use, see copyright notice in png.h
- * Copyright (c) 1998-2001 Glenn Randers-Pehrson
+ * Copyright (c) 1998-2002 Glenn Randers-Pehrson
  * (Version 0.96 Copyright (c) 1996, 1997 Andreas Dilger)
  * (Version 0.88 Copyright (c) 1995, 1996 Guy Eric Schalnat, Group 42, Inc.)
  */
@@ -424,7 +424,7 @@ png_create_write_struct(png_const_charp user_png_ver, png_voidp error_ptr,
 {
 #ifdef PNG_USER_MEM_SUPPORTED
    return (png_create_write_struct_2(user_png_ver, error_ptr, error_fn,
-      warn_fn, NULL, NULL, NULL));
+      warn_fn, png_voidp_NULL, png_malloc_ptr_NULL, png_free_ptr_NULL));
 }
 
 /* Alternate initialize png_ptr structure, and allocate any memory needed */
@@ -443,18 +443,19 @@ png_create_write_struct_2(png_const_charp user_png_ver, png_voidp error_ptr,
    int i;
    png_debug(1, "in png_create_write_struct\n");
 #ifdef PNG_USER_MEM_SUPPORTED
-   if ((png_ptr = (png_structp)png_create_struct_2(PNG_STRUCT_PNG,
-      (png_malloc_ptr)malloc_fn, (png_voidp)mem_ptr)) == NULL)
+   png_ptr = (png_structp)png_create_struct_2(PNG_STRUCT_PNG,
+      (png_malloc_ptr)malloc_fn, (png_voidp)mem_ptr);
 #else
-   if ((png_ptr = (png_structp)png_create_struct(PNG_STRUCT_PNG)) == NULL)
+   png_ptr = (png_structp)png_create_struct(PNG_STRUCT_PNG);
 #endif /* PNG_USER_MEM_SUPPORTED */
-   {
-      return ((png_structp)NULL);
-   }
+   if (png_ptr == NULL)
+      return (NULL);
 
+#if !defined(PNG_1_0_X)
 #ifdef PNG_ASSEMBLER_CODE_SUPPORTED
    png_init_mmx_flags(png_ptr);   /* 1.2.0 addition */
 #endif
+#endif /* PNG_1_0_X */
 
 #ifdef PNG_SETJMP_SUPPORTED
 #ifdef USE_FAR_KEYWORD
@@ -466,7 +467,7 @@ png_create_write_struct_2(png_const_charp user_png_ver, png_voidp error_ptr,
       png_free(png_ptr, png_ptr->zbuf);
       png_ptr->zbuf=NULL;
       png_destroy_struct(png_ptr);
-      return ((png_structp)NULL);
+      return (NULL);
    }
 #ifdef USE_FAR_KEYWORD
    png_memcpy(png_ptr->jmpbuf,jmpbuf,sizeof(jmp_buf));
@@ -504,7 +505,7 @@ png_create_write_struct_2(png_const_charp user_png_ver, png_voidp error_ptr,
              user_png_ver);
           png_warning(png_ptr, msg);
         }
-        sprintf(msg, "Application  is running with png.c from libpng-%.20s",
+        sprintf(msg, "Application  is  running with png.c from libpng-%.20s",
            png_libpng_ver);
         png_warning(png_ptr, msg);
 #endif
@@ -521,11 +522,12 @@ png_create_write_struct_2(png_const_charp user_png_ver, png_voidp error_ptr,
    png_ptr->zbuf = (png_bytep)png_malloc(png_ptr,
       (png_uint_32)png_ptr->zbuf_size);
 
-   png_set_write_fn(png_ptr, NULL, NULL, NULL);
+   png_set_write_fn(png_ptr, png_voidp_NULL, png_rw_ptr_NULL,
+      png_flush_ptr_NULL);
 
 #if defined(PNG_WRITE_WEIGHTED_FILTER_SUPPORTED)
    png_set_filter_heuristics(png_ptr, PNG_FILTER_HEURISTIC_DEFAULT,
-      1, NULL, NULL);
+      1, png_doublep_NULL, png_doublep_NULL);
 #endif
 
    return ((png_structp)png_ptr);
@@ -550,21 +552,21 @@ png_write_init_2(png_structp png_ptr, png_const_charp user_png_ver,
    if(sizeof(png_struct) > png_struct_size || sizeof(png_info) > png_info_size)
    {
       char msg[80];
-      png_ptr->warning_fn=(png_error_ptr)NULL;
+      png_ptr->warning_fn=NULL;
       if (user_png_ver)
       {
         sprintf(msg, "Application was compiled with png.h from libpng-%.20s",
            user_png_ver);
         png_warning(png_ptr, msg);
       }
-      sprintf(msg, "Application  is running with png.c from libpng-%.20s",
+      sprintf(msg, "Application  is  running with png.c from libpng-%.20s",
          png_libpng_ver);
       png_warning(png_ptr, msg);
    }
 #endif
    if(sizeof(png_struct) > png_struct_size)
      {
-       png_ptr->error_fn=(png_error_ptr)NULL;
+       png_ptr->error_fn=NULL;
 #ifdef PNG_ERROR_NUMBERS_SUPPORTED
        png_ptr->flags=0;
 #endif
@@ -573,7 +575,7 @@ png_write_init_2(png_structp png_ptr, png_const_charp user_png_ver,
      }
    if(sizeof(png_info) > png_info_size)
      {
-       png_ptr->error_fn=(png_error_ptr)NULL;
+       png_ptr->error_fn=NULL;
 #ifdef PNG_ERROR_NUMBERS_SUPPORTED
        png_ptr->flags=0;
 #endif
@@ -600,7 +602,7 @@ png_write_init_3(png_structpp ptr_ptr, png_const_charp user_png_ver,
 #ifdef PNG_LEGACY_SUPPORTED
        png_ptr->flags |= PNG_FLAG_LIBRARY_MISMATCH;
 #else
-       png_ptr->warning_fn=(png_error_ptr)NULL;
+       png_ptr->warning_fn=NULL;
        png_warning(png_ptr,
      "Application uses deprecated png_write_init() and should be recompiled.");
        break;
@@ -625,16 +627,19 @@ png_write_init_3(png_structpp ptr_ptr, png_const_charp user_png_ver,
    /* reset all variables to 0 */
    png_memset(png_ptr, 0, sizeof (png_struct));
 
+#if !defined(PNG_1_0_X)
 #ifdef PNG_ASSEMBLER_CODE_SUPPORTED
    png_init_mmx_flags(png_ptr);   /* 1.2.0 addition */
 #endif
+#endif /* PNG_1_0_X */
 
 #ifdef PNG_SETJMP_SUPPORTED
    /* restore jump buffer */
    png_memcpy(png_ptr->jmpbuf, tmp_jmp, sizeof (jmp_buf));
 #endif
 
-   png_set_write_fn(png_ptr, NULL, NULL, NULL);
+   png_set_write_fn(png_ptr, png_voidp_NULL, png_rw_ptr_NULL,
+      png_flush_ptr_NULL);
 
    /* initialize zbuf - compression buffer */
    png_ptr->zbuf_size = PNG_ZBUF_SIZE;
@@ -643,7 +648,7 @@ png_write_init_3(png_structpp ptr_ptr, png_const_charp user_png_ver,
 
 #if defined(PNG_WRITE_WEIGHTED_FILTER_SUPPORTED)
    png_set_filter_heuristics(png_ptr, PNG_FILTER_HEURISTIC_DEFAULT,
-      1, NULL, NULL);
+      1, png_doublep_NULL, png_doublep_NULL);
 #endif
 }
 
@@ -705,6 +710,11 @@ png_write_row(png_structp png_ptr, png_bytep row)
    /* initialize transformations and other stuff if first time */
    if (png_ptr->row_number == 0 && png_ptr->pass == 0)
    {
+   /* make sure we wrote the header info */
+   if (!(png_ptr->mode & PNG_WROTE_INFO_BEFORE_PLTE))
+      png_error(png_ptr,
+         "png_write_info was never called before png_write_row.");
+
    /* check for transforms that have been set but were defined out */
 #if !defined(PNG_WRITE_INVERT_SUPPORTED) && defined(PNG_READ_INVERT_SUPPORTED)
    if (png_ptr->transformations & PNG_INVERT_MONO)
@@ -943,6 +953,7 @@ png_destroy_write_struct(png_structpp png_ptr_ptr, png_infopp info_ptr_ptr)
       png_ptr = *png_ptr_ptr;
 #ifdef PNG_USER_MEM_SUPPORTED
       free_fn = png_ptr->free_fn;
+      mem_ptr = png_ptr->mem_ptr;
 #endif
    }
 
@@ -968,7 +979,7 @@ png_destroy_write_struct(png_structpp png_ptr_ptr, png_infopp info_ptr_ptr)
 #else
       png_destroy_struct((png_voidp)info_ptr);
 #endif
-      *info_ptr_ptr = (png_infop)NULL;
+      *info_ptr_ptr = NULL;
    }
 
    if (png_ptr != NULL)
@@ -980,7 +991,7 @@ png_destroy_write_struct(png_structpp png_ptr_ptr, png_infopp info_ptr_ptr)
 #else
       png_destroy_struct((png_voidp)png_ptr);
 #endif
-      *png_ptr_ptr = (png_structp)NULL;
+      *png_ptr_ptr = NULL;
    }
 }
 
