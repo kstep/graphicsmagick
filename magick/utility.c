@@ -2083,21 +2083,21 @@ Export char *PostscriptGeometry(const char *page)
     *PageSizes[][2]=
     {
       { "11x17", "792x1224>" },
-      { "Ledger", "1224x792>" },
-      { "Legal", "612x1008>" },
-      { "Letter", "612x792>" },
-      { "LetterSmall", "612x792>" },
-      { "ArchE", "2592x3456>" },
-      { "ArchD", "1728x2592>" },
-      { "ArchC", "1296x1728>" },
-      { "ArchB", "864x1296>" },
-      { "ArchA", "648x864>" },
+      { "LEDGER", "1224x792>" },
+      { "LEGAL", "612x1008>" },
+      { "LETTER", "612x792>" },
+      { "LETTERSMALL", "612x792>" },
+      { "ARCHE", "2592x3456>" },
+      { "ARCHD", "1728x2592>" },
+      { "ARCHC", "1296x1728>" },
+      { "ARCHB", "864x1296>" },
+      { "ARCHA", "648x864>" },
       { "A0", "2380x3368>" },
       { "A1", "1684x2380>" },
       { "A2", "1190x1684>" },
       { "A3", "842x1190>" },
       { "A4", "595x842>" },
-      { "A4Small", "595x842>" },
+      { "A4SMALL", "595x842>" },
       { "A5", "421x595>" },
       { "A6", "297x421>" },
       { "A7", "210x297>" },
@@ -2117,9 +2117,9 @@ Export char *PostscriptGeometry(const char *page)
       { "C4", "649x918>" },
       { "C5", "459x649>" },
       { "C6", "323x459>" },
-      { "Flsa", "612x936>" },
-      { "Flse", "612x936>" },
-      { "HalfLetter", "396x612>" },
+      { "FLSA", "612x936>" },
+      { "FLSE", "612x936>" },
+      { "HALFLETTER", "396x612>" },
       { (char *) NULL, (char *) NULL }
     };
 
@@ -2150,8 +2150,18 @@ Export char *PostscriptGeometry(const char *page)
     Comparison is case insensitive.
   */
   (void) strcpy(geometry,page);
+  if (!isdigit((int) (*geometry)))
+    for (p=geometry; *p != '\0'; p++)
+    {
+      c=(*p);
+      if (islower((int) c))
+        *p=toupper(c);
+    }
+  /*
+    Comparison is case insensitive.
+  */
   for (i=0; *PageSizes[i] != (char *) NULL; i++)
-    if (Latin1Compare(page,PageSizes[i][0]) == 0)
+    if (strncmp(PageSizes[i][0],geometry,Extent(PageSizes[i][0])) == 0)
       {
         /*
           Replace mneumonic with the equivalent size in dots-per-inch.
