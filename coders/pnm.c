@@ -1055,7 +1055,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
             break;
           for (x=0; x < (long) image->columns; x++)
           {
-            index=(short unsigned int) DownScale(Intensity(*p)+0.5);
+            index=DownScale((int) Intensity(*p));
             (void) WriteBlobByte(image,index);
             p++;
           }
