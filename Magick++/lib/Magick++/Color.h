@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999, 2000
+// Copyright Bob Friesenhahn, 1999, 2000, 2001
 //
 // Color Implementation
 //
@@ -44,19 +44,19 @@ namespace Magick
     virtual        ~Color ( void );
     Color ( const Color & color_ );
 
-    // Red color (0 to MaxRGB)
+    // Red color (range 0 to MaxRGB)
     void           redQuantum ( Quantum red_ );
     Quantum        redQuantum ( void ) const;
 
-    // Green color (0 to MaxRGB)
+    // Green color (range 0 to MaxRGB)
     void           greenQuantum ( Quantum green_ );
     Quantum        greenQuantum ( void ) const;
 
-    // Blue color (0 to MaxRGB)
+    // Blue color (range 0 to MaxRGB)
     void           blueQuantum ( Quantum blue_ );
     Quantum        blueQuantum ( void ) const;
 
-    // Alpha level (0 = transparent, MaxRGB = opaque)
+    // Alpha level (range OpaqueOpacity to TransparentOpacity)
     void           alphaQuantum ( Quantum alpha_ );
     Quantum        alphaQuantum ( void ) const;
 
@@ -127,7 +127,7 @@ namespace Magick
     //  red     = red   (range 0 to MaxRGB)
     //  green   = green (range 0 to MaxRGB)
     //  blue    = blue  (range 0 to MaxRGB)
-    //  opacity = alpha (range Transparent to Opaque)
+    //  opacity = alpha (range OpaqueOpacity to TransparentOpacity)
     //  index   = PseudoColor colormap index
     PixelPacket*     _pixel;
 
@@ -303,7 +303,7 @@ inline void Magick::Color::initPixel()
 
 inline void Magick::Color::redQuantum ( Quantum red_ )
 {
-  _pixel->red = static_cast<Quantum>(red_ > MaxRGB ? MaxRGB : red_);
+  _pixel->red = red_;
 }
 
 inline Magick::Quantum Magick::Color::redQuantum ( void ) const
@@ -313,7 +313,7 @@ inline Magick::Quantum Magick::Color::redQuantum ( void ) const
 
 inline void Magick::Color::greenQuantum ( Quantum green_ )
 {
-  _pixel->green = static_cast<Quantum>(green_ > MaxRGB ? MaxRGB : green_);
+  _pixel->green = green_;
 }
 
 inline Magick::Quantum  Magick::Color::greenQuantum ( void ) const
@@ -323,7 +323,7 @@ inline Magick::Quantum  Magick::Color::greenQuantum ( void ) const
 
 inline void  Magick::Color::blueQuantum ( Quantum blue_ )
 {
-  _pixel->blue = static_cast<Quantum>(blue_ > MaxRGB ? MaxRGB : blue_);
+  _pixel->blue = blue_;
 }
 
 inline Magick::Quantum Magick::Color::blueQuantum ( void ) const
@@ -333,8 +333,7 @@ inline Magick::Quantum Magick::Color::blueQuantum ( void ) const
 
 inline void  Magick::Color::alphaQuantum ( Quantum alpha_ )
 {
-  _pixel->opacity = static_cast<Quantum>(alpha_ > TransparentOpacity ?
-                                         TransparentOpacity : alpha_);
+  _pixel->opacity = alpha_;
 }
 
 inline Magick::Quantum Magick::Color::alphaQuantum ( void ) const

@@ -21,6 +21,9 @@ Enumerations</h1></center>
 
 <ul>
 <li>
+<a href="#ChannelType">ChannelType</a></li>
+
+<li>
 <a href="#ClassType">ClassType</a></li>
 
 <li>
@@ -45,9 +48,6 @@ Enumerations</h1></center>
 <a href="#InterlaceType">InterlaceType</a></li>
 
 <li>
-<a href="#LayerType">LayerType</a></li>
-
-<li>
 <a href="#NoiseType">NoiseType</a></li>
 
 <li>
@@ -63,6 +63,62 @@ Enumerations</h1></center>
 <a href="#ResolutionType">ResolutionType</a></li>
 </ul>
 
+<table BORDER=0 WIDTH="100%" >
+<tr>
+<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="right_triangle.png" ALT=">" BORDER=0 height=14 width=15><a NAME="ChannelType"></a><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>ChannelType</font></font></font></b></td>
+</tr>
+</table>
+
+<p><i>ChannelType</i> is used as an argument when doing color separations.
+Use
+<i>ChannelType </i>when extracting a layer from an image. <i>MatteChannel</i>
+is useful for extracting the opacity values from an image.
+<br>&nbsp;
+<table BORDER WIDTH="100%" BGCOLOR="#CCCCCC" NOSAVE >
+<caption><b>ChannelType</b></caption>
+
+<tr>
+<td>
+<center><b>Enumeration</b></center>
+</td>
+
+<td>
+<center><b>Description</b></center>
+</td>
+</tr>
+
+<tr>
+<td>UndefinedChannel</td>
+
+<td>Unset value.</td>
+</tr>
+
+<tr NOSAVE>
+<td NOSAVE>RedChannel</td>
+
+<td>Select red channel</td>
+</tr>
+
+<tr NOSAVE>
+<td NOSAVE>GreenChannel</td>
+
+<td>Select green channel</td>
+</tr>
+
+<tr>
+<td>BlueChannel</td>
+
+<td>Select blue channel</td>
+</tr>
+
+<tr>
+<td>MatteChannel</td>
+
+<td>Select matte (opacity values) channel</td>
+</tr>
+</table>
+
+<br>&nbsp;
 <table BORDER=0 WIDTH="100%" >
 <tr>
 <td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="right_triangle.png" ALT=">" BORDER=0 height=14 width=15><a NAME="ClassType"></a><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>ClassType</font></font></font></b></td>

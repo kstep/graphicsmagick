@@ -1,16 +1,15 @@
 2001-01-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Image.cpp (erase): New method to reset image to background
- 	color.  Still need to update documentation.
+ 	color.
 	(strokeAntiAlias): New method to control antialiasing of stroked
- 	objects.  Still need to update documentation.
+ 	objects.
 
 2001-01-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Image.cpp (channel): Renamed method from 'layer' to match
  	equivalent change in ImageMagick (ChannelImage).  Enumeration
- 	names *Layer renamed to *Channel.  Still need to update
- 	documentation.  Should a backward compatability API be provided?
+ 	names *Layer renamed to *Channel.
 
 2001-01-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 

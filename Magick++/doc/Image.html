@@ -428,6 +428,20 @@ in pixels.</font></td>
 the border is specified by the <i>borderColor</i> attribute.</font></td>
 </tr>
 
+<tr>
+<td>
+<center><a NAME="channel"></a><font size=-1>channel</font></center>
+</td>
+
+<td><font size=-1><a href="Enumerations.html#ChannelType">ChannelType</a>
+layer_</font></td>
+
+<td><font size=-1>Extract channel from image. Use this option to extract
+a particular channel from&nbsp; the image.&nbsp; <i>MatteChannel</i>&nbsp;
+for&nbsp; example, is useful for extracting the opacity values from an
+image.</font></td>
+</tr>
+
 <tr NOSAVE>
 <td NOSAVE>
 <center><a NAME="charcoal"></a><font size=-1>charcoal</font></center>
@@ -656,6 +670,16 @@ deviation of the Laplacian, in pixels.</font></td>
 
 <tr>
 <td>
+<center><a NAME="erase"></a><font size=-1>erase</font></center>
+</td>
+
+<td><font size=-1>void</font></td>
+
+<td><font size=-1>Set all image pixels to the current background color.</font></td>
+</tr>
+
+<tr>
+<td>
 <center><a NAME="flip"></a><font size=-1>flip</font></center>
 </td>
 
@@ -809,19 +833,6 @@ embedding&nbsp; <a href="FormatCharacters.html">special format characters.</a>
 If the first character of string is @, the image label is read from a file
 titled by the remaining characters in the string. When converting to Postscript,
 use this&nbsp; option to specify a header string to print above the image.</font></td>
-</tr>
-
-<tr>
-<td>
-<center><a NAME="layer"></a><font size=-1>layer</font></center>
-</td>
-
-<td><font size=-1><a href="Enumerations.html#LayerType">LayerType</a> layer_</font></td>
-
-<td><font size=-1>Extract layer from image. Use this option to extract
-a particular layer from&nbsp; the image.&nbsp; <i>MatteLayer</i>,&nbsp;
-for&nbsp; example, is useful for extracting the opacity values from an
-image.</font></td>
 </tr>
 
 <tr>
@@ -1341,11 +1352,12 @@ threshold_</font></td>
 <td><font size=-1>Replace image with a sharpened version of the original
 image using the unsharp mask algorithm. The <i>radius</i>_ parameter specifies
 the radius of the Gaussian, in pixels, not counting the center pixel. The
-<i>sigma</i>_ parameter specifies the standard deviation of the Gaussian,
-in pixels. The <i>amount</i>_ parameter specifies the percentage of the
-difference between the original and the blur image that is added back into
-the original. The <i>threshold</i>_ parameter specifies the threshold in
-pixels needed to apply the diffence amount.</font></td>
+<i>sigma</i>_
+parameter specifies the standard deviation of the Gaussian, in pixels.
+The <i>amount</i>_ parameter specifies the percentage of the difference
+between the original and the blur image that is added back into the original.
+The <i>threshold</i>_ parameter specifies the threshold in pixels needed
+to apply the diffence amount.</font></td>
 </tr>
 
 <tr>
@@ -2059,7 +2071,7 @@ when creating a GIF animation.</font></td>
 
 <tr>
 <td>
-<center><a NAME="iccColorProfile"></a>i<font size=-1>ccColorProfile</font></center>
+<center><a NAME="iccColorProfile"></a><font size=-1>iccColorProfile</font></center>
 </td>
 
 <td><font size=-1><a href="Blob.html">Blob</a></font></td>
@@ -2294,10 +2306,10 @@ to true and the image has just been quantized.</font></td>
 <td><font size=-1>const <a href="Geometry.html#PostscriptPageSize">Geometry</a>
 &amp;pageSize_</font></td>
 
-<td><font size=-1>Preferred size and location of an image canvas.</font>
+<td><font size=-1>Preferred size and location of an image canvas.</font><font size=-1></font>
 <p><font size=-1>Use this option to specify the dimensions and position
 of the Postscript page in dots per inch or a TEXT page in pixels. This
-option is typically used in concert with <i><a href="#density">density</a></i>.</font>
+option is typically used in concert with <i><a href="#density">density</a></i>.</font><font size=-1></font>
 <p><font size=-1>Page may also be used to position a GIF image (such as
 for a scene in an animation)</font></td>
 </tr>
@@ -2525,6 +2537,20 @@ of signature.</font></td>
 not support width and height information).&nbsp; Size may also be used
 to affect the image size read from a multi-resolution format (e.g. Photo
 CD, JBIG, or JPEG.</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="strokeAntiAlias"></a><font size=-1>strokeAntiAlias</font></center>
+</td>
+
+<td><font size=-1>bool</font></td>
+
+<td><font size=-1>void</font></td>
+
+<td><font size=-1>bool flag_</font></td>
+
+<td><font size=-1>Enable or disable anti-aliasing when drawing object outlines.</font></td>
 </tr>
 
 <tr>
