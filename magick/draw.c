@@ -2057,7 +2057,7 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
                     "unbalanced graphic context push/pop",token);
                 break;
               }
-            if (LocaleCompare("linear-gradient",token) == 0)
+            if (LocaleCompare("gradient",token) == 0)
               break;
             if (LocaleCompare("pattern",token) == 0)
               break;
@@ -2087,6 +2087,39 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
                 (void) strncpy(token,p,q-p-4);
                 token[q-p-4]='\0';
                 (void) SetImageAttribute(image,name,token);
+                GetToken(q,&q,token);
+                break;
+              }
+            if (LocaleCompare("gradient",token) == 0)
+              {
+                char
+                  geometry[MaxTextExtent],
+                  key[2*MaxTextExtent],
+                  name[MaxTextExtent],
+                  type[MaxTextExtent];
+
+                GetToken(q,&q,token);
+                (void) strncpy(name,token,MaxTextExtent-1);
+                GetToken(q,&q,token);
+                (void) strncpy(type,token,MaxTextExtent-1);
+                GetToken(q,&q,token);
+                (void) strncpy(geometry,token,MaxTextExtent-1);
+                for (p=q; *q != '\0'; )
+                {
+                  GetToken(q,&q,token);
+                  if (LocaleCompare(token,"pop") != 0)
+                    continue;
+                  GetToken(q,(char **) NULL,token);
+                  if (LocaleCompare(token,"gradient") != 0)
+                    continue;
+                  break;
+                }
+                (void) strncpy(token,p,q-p-4);
+                token[q-p-4]='\0';
+                FormatString(key,"[%.1024s]",name);
+                (void) SetImageAttribute(image,key,token);
+                FormatString(key,"[%.1024s-geometry]",name);
+                (void) SetImageAttribute(image,key,geometry);
                 GetToken(q,&q,token);
                 break;
               }
@@ -2137,11 +2170,6 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
               }
             if (LocaleCompare("defs",token) == 0)
               break;
-            if (LocaleCompare("linear-gradient",token) == 0)
-              {
-                GetToken(q,&q,token);
-                break;
-              }
             status=False;
             break;
           }

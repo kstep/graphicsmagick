@@ -883,7 +883,9 @@ static void SVGStartElement(void *context,const xmlChar *name,
         }
       if (LocaleCompare((char *) name,"linearGradient") == 0)
         {
-          (void) fprintf(svg_info->file,"push linear-gradient %s\n",id);
+          (void) fprintf(svg_info->file,
+            "push gradient %s linear '%gx%g%+g%+g'\n",id,svg_info->bounds.width,
+            svg_info->bounds.height,svg_info->bounds.x,svg_info->bounds.y);
           break;
         }
       break;
@@ -918,6 +920,13 @@ static void SVGStartElement(void *context,const xmlChar *name,
     case 'R':
     case 'r':
     {
+      if (LocaleCompare((char *) name,"radialGradient") == 0)
+        {
+          (void) fprintf(svg_info->file,
+            "push gradient %s radial '%gx%g%+g%+g'\n",id,svg_info->bounds.width,
+            svg_info->bounds.height,svg_info->bounds.x,svg_info->bounds.y);
+          break;
+        }
       if (LocaleCompare((char *) name,"rect") == 0)
         {
           (void) fprintf(svg_info->file,"push graphic-context\n");
@@ -1906,10 +1915,7 @@ static void SVGEndElement(void *context,const xmlChar *name)
         }
       if (LocaleCompare((char *) name,"linearGradient") == 0)
         {
-          (void) fprintf(svg_info->file,"gradient %g,%g %g,%g\n",
-            svg_info->segment.x1,svg_info->segment.y1,svg_info->segment.x2,
-            svg_info->segment.y2);
-          (void) fprintf(svg_info->file,"pop linear-gradient\n");
+          (void) fprintf(svg_info->file,"pop gradient\n");
           break;
         }
       break;
@@ -1945,6 +1951,11 @@ static void SVGEndElement(void *context,const xmlChar *name)
     case 'R':
     case 'r':
     {
+      if (LocaleCompare((char *) name,"radialGradient") == 0)
+        {
+          (void) fprintf(svg_info->file,"pop gradient\n");
+          break;
+        }
       if (LocaleCompare((char *) name,"rect") == 0)
         {
           if ((svg_info->radius.x == 0.0) && (svg_info->radius.y == 0.0))
@@ -3103,9 +3114,9 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
                     "unbalanced graphic context push/pop",image);
                 (void) WriteBlobString(image,"</g>\n");
               }
-            if (LocaleCompare("linear-gradient",token) == 0)
+            if (LocaleCompare("gradient",token) == 0)
               {
-                (void) WriteBlobString(image,"</linearGradient>\n");
+                (void) WriteBlobString(image,"</gadient>\n");
                 break;
               }
             if (LocaleCompare("pattern",token) == 0)
@@ -3143,10 +3154,25 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
                 (void) WriteBlobString(image,"<g style=\"");
                 active=True;
               }
-            if (LocaleCompare("linear-gradient",token) == 0)
+            if (LocaleCompare("gradient",token) == 0)
               {
+                char
+                  name[MaxTextExtent],
+                  type[MaxTextExtent];
+
+                RectangleInfo
+                  bounds;
+
                 GetToken(q,&q,token);
-                FormatString(message,"<linearGradient id=\"%s\">\n",token);
+                (void) strncpy(name,token,MaxTextExtent-1);
+                GetToken(q,&q,token);
+                (void) strncpy(type,token,MaxTextExtent-1);
+                GetToken(q,&q,token);
+                (void) ParseGeometry(token,&bounds.x,&bounds.y,&bounds.width,
+                  &bounds.height);
+                FormatString(message,"<%sGradient id=\"%s\" x1=\"%ld\" "
+                  "y1=\"%ld\" x1=\"%lu\" y2=\"%lu\">\n",type,name,bounds.x,
+                  bounds.y,bounds.width,bounds.height);
                 (void) WriteBlobString(image,message);
                 break;
               }
