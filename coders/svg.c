@@ -82,6 +82,15 @@ char
   Typedef declaractions.
 */
 #if defined(HasXML)
+typedef struct _BoundingBox
+{
+  double
+    width,
+    height,
+    x,
+    y;
+} BoundingBox;
+
 typedef struct _ElementInfo
 {
   double
