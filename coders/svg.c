@@ -55,15 +55,24 @@
 */
 #include "magick.h"
 #include "defines.h"
+#if defined(HasXML)
+#if !defined(_VISUALC_)
+#include <gnome-xml/parser.h>
+#include <gnome-xml/xmlmemory.h>
+#include <gnome-xml/parserInternals.h>
+#include <gnome-xml/xml-error.h>
+#else
+#include <parser.h>
+#include <xmlmemory.h>
+#include <parserInternals.h>
+#include <xml-error.h>
+#endif
+#endif
 
 /*
   Typedef declaractions.
 */
 #if defined(HasXML)
-#include <gnome-xml/parser.h>
-#include <gnome-xml/xmlmemory.h>
-#include <gnome-xml/parserInternals.h>
-#include <gnome-xml/xml-error.h>
 typedef struct _ElementInfo
 {
   double
