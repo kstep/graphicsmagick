@@ -5872,12 +5872,19 @@ Mogrify(ref,...)
         }
         case 76:  /* Compare */
         {
+          ErrorInfo
+            error_info;
+
           if (!attribute_flag[0])
             {
               MagickError(OptionError,"Missing image to compare",NULL);
               goto ReturnIt;
             }
-          (void) IsImagesEqual(image,argument_list[0].image_reference);
+          (void) IsImagesEqual(image,argument_list[0].image_reference,
+            &error_info,&exception);
+          image->mean_error_per_pixel=error_info.mean_error_per_pixel;
+          image->normalized_mean_error=error_info.normalized_mean_error;
+          image->normalized_maximum_error=error_info.normalized_maximum_error;
           break;
         }
       }

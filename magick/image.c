@@ -2628,7 +2628,8 @@ MagickExport unsigned int GradientImage(Image *image,
 %
 %  The format of the IsImagesEqual method is:
 %
-%      unsigned int IsImagesEqual(Image *image,Image *reference)
+%      unsigned int IsImagesEqual(const Image *image,const Image *reference,
+%        ErrorInfo *error,ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
@@ -2636,9 +2637,14 @@ MagickExport unsigned int GradientImage(Image *image,
 %
 %    o reference: The reference image.
 %
+%    o error: The error measurements are returned here.
+%
+%    o exception: Return any errors or warnings in this structure.
+%
 %
 */
-MagickExport unsigned int IsImagesEqual(Image *image,Image *reference)
+MagickExport unsigned int IsImagesEqual(const Image *image,
+  const Image *reference,ErrorInfo *error,ExceptionInfo *exception)
 {
   double
     distance,
@@ -2654,25 +2660,21 @@ MagickExport unsigned int IsImagesEqual(Image *image,Image *reference)
     y;
 
   register const PixelPacket
-    *p;
+    *p,
+    *q;
 
   register long
     x;
 
-  register PixelPacket
-    *q;
-
   /*
     Initialize measurement.
   */
-  assert(image != (Image *) NULL);
+  assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
-  assert(reference != (Image *) NULL);
+  assert(reference != (const Image *) NULL);
   assert(reference->signature == MagickSignature);
-  (void) GetNumberColors(image,(FILE *) NULL,&image->exception);
-  image->mean_error_per_pixel=0.0;
-  image->normalized_mean_error=0.0;
-  image->normalized_maximum_error=0.0;
+  memset(error,0,sizeof(ErrorInfo));
+  (void) GetNumberColors(image,(FILE *) NULL,exception);
   if ((image->rows != reference->rows) ||
       (image->columns != reference->columns) ||
       (image->interlace != reference->interlace) ||
@@ -2688,8 +2690,8 @@ MagickExport unsigned int IsImagesEqual(Image *image,Image *reference)
   pixel.opacity=0;
   for (y=0; y < (long) image->rows; y++)
   {
-    p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
-    q=GetImagePixels(reference,0,y,reference->columns,1);
+    p=AcquireImagePixels(image,0,y,image->columns,1,exception);
+    q=AcquireImagePixels(reference,0,y,reference->columns,1,exception);
     if (p == (const PixelPacket *) NULL)
       break;
     for (x=0; x < (long) image->columns; x+=count)
@@ -2718,10 +2720,10 @@ MagickExport unsigned int IsImagesEqual(Image *image,Image *reference)
   normalize=3.0*((double) MaxRGB+1.0)*((double) MaxRGB+1.0);
   if (image->matte)
     normalize=4.0*((double) MaxRGB+1.0)*((double) MaxRGB+1.0);
-  image->mean_error_per_pixel=total_error/image->columns/image->rows;
-  image->normalized_mean_error=image->mean_error_per_pixel/normalize;
-  image->normalized_maximum_error=maximum_error_per_pixel/normalize;
-  return(image->normalized_mean_error == 0.0);
+  error->mean_error_per_pixel=total_error/image->columns/image->rows;
+  error->normalized_mean_error=image->mean_error_per_pixel/normalize;
+  error->normalized_maximum_error=maximum_error_per_pixel/normalize;
+  return(error->normalized_mean_error == 0.0);
 }
 
 /*

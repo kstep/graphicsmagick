@@ -160,6 +160,14 @@ typedef struct _DoublePixelPacket
     opacity;
 } DoublePixelPacket;
 
+typedef struct _ErrorInfo
+{
+  double
+    mean_error_per_pixel,
+    normalized_mean_error,
+    normalized_maximum_error;
+} ErrorInfo;
+
 typedef struct _FrameInfo
 {
   unsigned long
@@ -672,7 +680,7 @@ extern MagickExport unsigned int
   GetNumberScenes(const Image *),
   GradientImage(Image *,const PixelPacket *,const PixelPacket *),
   IsGrayImage(const Image *,ExceptionInfo *),
-  IsImagesEqual(Image *,Image *),
+  IsImagesEqual(const Image *,const Image *,ErrorInfo *,ExceptionInfo *),
   IsTaintImage(const Image *),
   IsMagickConflict(const char *),
   IsMonochromeImage(const Image *,ExceptionInfo *),
