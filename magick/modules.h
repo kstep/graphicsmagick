@@ -76,7 +76,7 @@ extern MagickExport ModuleInfo
   *SetModuleInfo(const char *);
 
 extern MagickExport unsigned int
-  CallImageFilter(const char *,Image *,const char *);
+  ExecuteModuleProcess(const char *,Image *,const int,char **);
 
 extern MagickExport void
   DestroyModuleInfo(void),

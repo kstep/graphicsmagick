@@ -75,63 +75,6 @@ static ModuleInfo
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   C a l l I m a g e F i l t e r                                             %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method CallImageFilter ...
-%
-%  The format of the CallImageFilter method is:
-%
-%      unsigned int CallImageFilter(const char *tag,Image *image,
-%        const char *options)
-%
-*/
-MagickExport unsigned int CallImageFilter(const char *tag,Image *image,
-  const char *options)
-{
-  char
-    *module_name;
-
-  ModuleHandle
-    handle;
-
-  unsigned int
-    (*method)(Image *,const char *),
-    status;
-
-  status=False;
-  module_name=TagToModule(tag);
-  handle=lt_dlopen(module_name);
-  if (handle == 0)
-    {
-      char
-        message[MaxTextExtent];
-
-      FormatString(message,"failed to load module \"%s\"",module_name);
-      MagickWarning(MissingDelegateWarning,message,lt_dlerror());
-    }
-  else
-    {
-      (void) strcpy(module_name,tag);
-      (void) strcat(module_name,"Image");
-      method=(unsigned int (*)(Image *image, const char *options))
-        lt_dlsym(handle,module_name);
-      if (method != NULL)
-        status=(*method)(image,options);
-      lt_dlclose(handle);
-    }
-  FreeMemory((void **) &module_name);
-  return(status);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   D e s t r o y M o d u l e I n f o                                         %
 %                                                                             %
 %                                                                             %
@@ -163,6 +106,80 @@ MagickExport void DestroyModuleInfo(void)
     FreeMemory((void **) &entry);
   }
   module_list=(ModuleInfo *) NULL;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   E x e c u t e M o d u l e P r o c e s s                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method ExecuteModuleProcess executes a dynamic modules.  It is passed the
+%  specified parameters and returns True on success otherwise False.
+%
+%  The format of the ExecuteModuleProcess method is:
+%
+%      unsigned int ExecuteModuleProcess(const char *tag,Image *image,
+%        const int argc,char **argv)
+%
+%  A description of each parameter follows:
+%
+%    o status: Method ExecuteModuleProcess returns True if the dynamic module is
+%      loaded and returns successfully, otherwise False.
+%
+%    o tag: a character string that represents the name of the particular
+%      module.
+%
+%    o image: The address of a structure of type Image.
+%
+%    o argc: Specifies a pointer to an integer describing the number of
+%      elements in the argument vector.
+%
+%    o argv: Specifies a pointer to a text array containing the command line
+%      arguments.
+%
+*/
+MagickExport unsigned int ExecuteModuleProcess(const char *tag,Image *image,
+  const int argc,char **argv)
+{
+  char
+    *module_name;
+
+  ModuleHandle
+    handle;
+
+  unsigned int
+    (*method)(Image *,const int,char **),
+    status;
+
+  status=False;
+  module_name=TagToModule(tag);
+  handle=lt_dlopen(module_name);
+  if (handle == 0)
+    {
+      char
+        message[MaxTextExtent];
+
+      FormatString(message,"failed to load module \"%s\"",module_name);
+      MagickWarning(MissingDelegateWarning,message,lt_dlerror());
+    }
+  else
+    {
+      (void) strcpy(module_name,tag);
+      (void) strcat(module_name,"Image");
+      method=(unsigned int (*)(Image *,const int,char **))
+        lt_dlsym(handle,module_name);
+      if (method != NULL)
+        status=(*method)(image,argc,argv);
+      lt_dlclose(handle);
+    }
+  FreeMemory((void **) &module_name);
+  return(status);
 }
 
 /*
