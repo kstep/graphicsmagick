@@ -2,15 +2,17 @@
 
 use Image::Magick;
 
+#$font = '-adobe-helvetica-medium-r-normal--25-180-100-100-p-130-iso8729-1';
 #$font = 'Times';
-#$font = 'Generic.ttf';
-$font = '-adobe-helvetica-medium-r-normal--25-180-100-100-p-130-iso8729-1';
+$font = 'Generic.ttf';
 
 $image = Image::Magick->new();
 $x = 100;
 $y = 100;
 for ($angle=0; $angle < 360; $angle+=30)
 {
+  my ($label);
+
   print "angle $angle\n";
   $label=Image::Magick->new(size=>"600x600",pointsize=>24,font=>$font,
     fill=>'black');
@@ -39,4 +41,4 @@ for ($angle=0; $angle < 360; $angle+=30)
 }
 $image->Set(delay=>20);
 $image->Write(filename=>"gravity.miff",compress=>'RunlengthEncoded');
-system("animate gravity.miff");
+$image->Animate();

@@ -13,13 +13,13 @@ require 't/subroutines.pl';
 
 chdir 't' || die 'Cd failed';
 
-testGetAttribute('input.miff','base_columns','70');
+testGetAttribute('input.miff','base-columns','70');
 
 ++$test;
-testGetAttribute('input.miff','base_filename','input.miff');
+testGetAttribute('input.miff','base-filename','input.miff');
 
 ++$test;
-testGetAttribute('input.miff','base_rows','46');
+testGetAttribute('input.miff','base-rows','46');
 
 ++$test;
 testGetAttribute('input.miff','class','DirectClass');
@@ -57,16 +57,16 @@ testGetAttribute('input.miff','label',undef);
 testGetAttribute('input.miff','matte','0');
 
 ++$test;
-testGetAttribute('input.miff','mean','0');
+testGetAttribute('input.miff','error','0');
 
 ++$test;
 testGetAttribute('input.miff','montage',undef);
 
 ++$test;
-testGetAttribute('input.miff','normalized_max','0');
+testGetAttribute('input.miff','maximum-error','0');
 
 ++$test;
-testGetAttribute('input.miff','normalized_mean','0');
+testGetAttribute('input.miff','mean-error','0');
 
 ++$test;
 testGetAttribute('input.miff','rows','46');
@@ -90,9 +90,9 @@ testGetAttribute('input.miff','view',undef);
 testGetAttribute('input.miff','width','70');
 
 ++$test;
-testGetAttribute('input.miff','x_resolution','0');
+testGetAttribute('input.miff','x-resolution','0');
 
 ++$test;
-testGetAttribute('input.miff','y_resolution','0');
+testGetAttribute('input.miff','y-resolution','0');
 
 1;
