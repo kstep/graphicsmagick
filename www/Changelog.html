@@ -56,6 +56,8 @@
 2004-03-23  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> coders/plasma.c (ReadPlasmaImage): srand() is already invoked by
+        InitializeMagick() so don't call it here.
   <LI> configure.ac: Check for rand_r().
   <LI> magick/tempfile.c (ComposeTemporaryFileName): The full range of
         safe characters was not being used, thereby limiting the number of
