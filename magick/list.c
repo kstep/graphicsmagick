@@ -206,14 +206,12 @@ MagickExport unsigned int DeleteImageFromList(Image **images)
       if (p->previous != (Image *) NULL)
         {
           p->previous->next=p->next;
-          if (p == *images)
-            *images=p->previous;
+          *images=p->previous;
         }
       if (p->next != (Image *) NULL)
         {
           p->next->previous=p->previous;
-          if (p == *images)
-            *images=p->next;
+          *images=p->next;
         }
     }
   DestroyImage(p);
