@@ -513,7 +513,8 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
       }
     min_value=0.0;
     scale_factor=1.0;
-    if (viff_info.map_scheme == VFF_MS_NONE)
+    if ((viff_info.data_storage_type != VFF_TYP_1_BYTE) &&
+        (viff_info.map_scheme == VFF_MS_NONE))
       {
         double
           max_value;
