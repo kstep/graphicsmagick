@@ -25,6 +25,7 @@
 		<LI><A HREF="#destroydrawinfo">DestroyDrawInfo</A></LI>
 		<LI><A HREF="#drawclippath">DrawClipPath</A></LI>
 		<LI><A HREF="#drawimage">DrawImage</A></LI>
+		<LI><A HREF="#drawpatternpath">DrawPatternPath</A></LI>
 		<LI><A HREF="#mattefloodfillimage">MatteFloodfillImage</A></LI>
 		<LI><A HREF="#opaqueimage">OpaqueImage</A></LI>
 		<LI><A HREF="#transparentimage">TransparentImage</A></LI>
@@ -47,6 +48,7 @@
 <P>void  <STRONG>DestroyDrawInfo</STRONG>( DrawInfo *draw_info );</P>
 <P>unsigned int  <STRONG>DrawClipPath</STRONG>( Image *image, DrawInfo *draw_info );</P>
 <P>unsigned int  <STRONG>DrawImage</STRONG>( Image *image, DrawInfo *draw_info );</P>
+<P>unsigned int  <STRONG>DrawPatternPath</STRONG>( Image *image, DrawInfo *draw_info, const char *name, Image ** pattern );</P>
 <P>unsigned int  <STRONG>MatteFloodfillImage</STRONG>( Image *image, const PixelPacket target, const unsigned int opacity, const long x_offset, const long y_offset, const PaintMethod method );</P>
 <P>unsigned int  <STRONG>OpaqueImage</STRONG>( Image *image, const PixelPacket target, const PixelPacket fill );</P>
 <P>unsigned int  <STRONG>TransparentImage</STRONG>( Image *image, const PixelPacket target, const unsigned int opacity );</P>
@@ -135,6 +137,28 @@ The image.
 <p><dt><STRONG>draw_info:</STRONG><BR>
 <DD>
 The draw info.
+<P></P></DL></DL>
+<P>
+<H2><A NAME="drawpatternpath">DrawPatternPath</A></H2>
+<blockquote>DrawPatternPath ( ) draws a pattern.; </blockquote><P>The format of the DrawPatternPath method is:</P>
+<blockquote>unsigned int DrawPatternPath ( <A HREF="types/Image.html">Image</A> *image, <A HREF="types/DrawInfo.html">DrawInfo</A> *draw_info, const char *name, <A HREF="types/Image.html">Image</A> **pattern ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
+<DL><DL>
+<p><dt><STRONG>image:</STRONG><BR>
+<DD>
+The image.
+<P></P>
+<p><dt><STRONG>draw_info:</STRONG><BR>
+<DD>
+The draw info.
+<P></P>
+<p><dt><STRONG><A NAME="item_o_name%3A">name:</A></STRONG><BR>
+<DD>
+The pattern name.
+<P></P>
+<p><dt><STRONG>image:</STRONG><BR>
+<DD>
+The image.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="mattefloodfillimage">MatteFloodfillImage</A></H2>

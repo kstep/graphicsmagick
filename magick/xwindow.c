@@ -2658,8 +2658,7 @@ MagickExport void XGetPixelPacket(Display *display,
   /*
     Set background color.
   */
-  (void) XParseColor(display,colormap,(char *) BackgroundColor,
-    &pixel->background_color);
+  (void) XParseColor(display,colormap,"#ffffff",&pixel->background_color);
   status=XParseColor(display,colormap,resource_info->background_color,
     &pixel->background_color);
   if (status == 0)
@@ -3089,7 +3088,7 @@ MagickExport void XGetResourceInfo(XrmDatabase database,char *client_name,
     (char *) "False");
   resource_info->backdrop=IsTrue(resource_value);
   resource_info->background_color=XGetResourceInstance(database,client_name,
-    (char *) "background",BackgroundColor);
+    (char *) "background","#ffffff");
   resource_info->border_color=XGetResourceInstance(database,client_name,
     (char *) "borderColor",BorderColor);
   resource_value=XGetResourceClass(database,client_name,(char *) "borderWidth",
@@ -7937,7 +7936,7 @@ MagickExport unsigned int XQueryColorDatabase(const char *target,XColor *color)
   color->blue=0;
   color->flags=DoRed | DoGreen | DoBlue;
   if ((target == (char *) NULL) || (*target == '\0'))
-    target=BackgroundColor;
+    target="#ffffff";
   /*
     Let the X server define the color for us.
   */

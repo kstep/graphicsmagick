@@ -61,7 +61,7 @@
 */
 const char
   *AppendBinaryType = "ab",
-  *BackgroundColor = "#ffffff",  /* white */
+  *BackgroundColor = "none",
   *BorderColor = "#dfdfdf",  /* gray */
   *DefaultTileFrame = "15x15+3+3",
   *DefaultTileGeometry = "120x120+4+3>",
@@ -2706,7 +2706,7 @@ MagickExport void GetImageInfo(ImageInfo *image_info)
   image_info->antialias=True;
   image_info->pointsize=12;
   (void) QueryColorDatabase("#000000ff",&image_info->pen);
-  (void) QueryColorDatabase("#ffffff",&image_info->background_color);
+  (void) QueryColorDatabase(BackgroundColor,&image_info->background_color);
   (void) QueryColorDatabase(BorderColor,&image_info->border_color);
   (void) QueryColorDatabase(MatteColor,&image_info->matte_color);
   image_info->dither=True;

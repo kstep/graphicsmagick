@@ -1,3 +1,7 @@
+2001-11-10  Cristy  <cristy@mystic.es.dupont.com>
+	* Added SVG pattern support.
+	* Changed default background color to none.
+
 2001-11-05  Cristy  <cristy@mystic.es.dupont.com>
 	* Added -level to convert/mogrify (suggested by
 	  mericson@phillynews.kom).
