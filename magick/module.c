@@ -898,7 +898,8 @@ static unsigned int ReadConfigureFile(const char *basename,
                     filename[MaxTextExtent];
 
                   GetPathComponent(path,HeadPath,filename);
-                  (void) strcat(filename,DirectorySeparator);
+                  if (*filename != '\0')
+                    (void) strcat(filename,DirectorySeparator);
                   (void) strncat(filename,token,MaxTextExtent-
                     strlen(filename)-1);
                   (void) ReadConfigureFile(filename,depth+1,exception);
