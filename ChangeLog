@@ -8,8 +8,7 @@
 	* ttf/include/freetype/config/ftoption.h: Modified to achieve
 	BCBMagick compilation
 	* Magick++/lib/Magick++/Include.h: Modified to achieve BCBMagick compilation.
-	
-	
+		
 2004-01-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/wpg.c: Applied patch from Jaroslav Fojtik to support
