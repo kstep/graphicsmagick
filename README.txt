@@ -779,12 +779,6 @@ MAGICK DELEGATES
       background while "-texture plasma:fractal" renders on a fractal
       image.
 
-      A set of Windows 3.1 compatible TrueType fonts (Arial, Times New
-      Roman, and Courier New) may be downloaded without charge from
-      Microsoft's web site via the URL
-
-         http://www.microsoft.com/typography/fontpack/default.htm
-
       The WMF renderer is not capable of using Windows fonts with libwmf
       0.2.2. Windows fonts are fully supported when using libwmf 0.2.5
       or later.
