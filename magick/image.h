@@ -165,10 +165,6 @@ typedef struct _ExceptionInfo
     *reason,
     *description;
 
-  char
-    *message,
-    *qualifier;
-
   unsigned long
     signature;
 } ExceptionInfo;
@@ -597,7 +593,7 @@ typedef struct _MagickInfo
     *module;
 
   void
-    *data;
+    *client_data;
 
   struct _MagickInfo
     *previous,
@@ -639,7 +635,7 @@ extern MagickExport const ColorlistInfo
   Image utilities methods.
 */
 extern MagickExport char 
-  *GetImageMagick(const unsigned char *),
+  *GetImageMagick(const unsigned char *,const unsigned int),
   *GetMagickConfigurePath(const char *);
 
 extern MagickExport Image

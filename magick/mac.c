@@ -441,47 +441,47 @@ MagickExport int ImageFormatConflict(const char *magick)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method MACErrorHandler displays an error message and then terminates
+%  Method MACErrorHandler displays an error reason and then terminates
 %  the program.
 %
 %  The format of the MACErrorHandler method is:
 %
-%      void MACErrorHandler(const ExceptionType error,const char *message,
-%        const char *qualifier)
+%      void MACErrorHandler(const ExceptionType error,const char *reason,
+%        const char *description)
 %
 %  A description of each parameter follows:
 %
 %    o exception: Specifies the numeric error category.
 %
-%    o message: Specifies the message to display before terminating the
+%    o reason: Specifies the reason to display before terminating the
 %      program.
 %
-%    o qualifier: Specifies any qualifier to the message.
+%    o description: Specifies any description to the reason.
 %
 %
 */
-MagickExport void MACErrorHandler(const ExceptionType error,const char *message,
-  const char *qualifier)
+MagickExport void MACErrorHandler(const ExceptionType error,const char *reason,
+  const char *description)
 {
   char
     buffer[3*MaxTextExtent];
 
-  if (message == (char *) NULL)
+  if (reason == (char *) NULL)
     Exit(0);
-  if ((qualifier != (char *) NULL) && errno)
+  if ((description != (char *) NULL) && errno)
     FormatString(buffer,"%.1024s: %.1024s (%.1024s) [%.1024s].\n",
-      SetClientName((char *) NULL),message,qualifier,strerror(errno));
+      SetClientName((char *) NULL),reason,description,strerror(errno));
   else
-    if (qualifier != (char *) NULL)
+    if (description != (char *) NULL)
       FormatString(buffer,"%.1024s: %.1024s (%.1024s).\n",
-        SetClientName((char *) NULL),message,qualifier);
+        SetClientName((char *) NULL),reason,description);
     else
       if (errno)
         FormatString(buffer,"%.1024s: %.1024s [%.1024s].\n",
-          SetClientName((char *) NULL),message,strerror(errno));
+          SetClientName((char *) NULL),reason,strerror(errno));
       else
         FormatString(buffer,"%.1024s: %.1024s.\n",SetClientName((char *) NULL),
-          message);
+          reason);
   puts(buffer);
   Exit(0);
 }
@@ -776,38 +776,38 @@ MagickExport int MACSystemCommand(const char * command)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method MACWarningHandler displays a warning message.
+%  Method MACWarningHandler displays a warning reason.
 %
 %  The format of the MACWarningHandler method is:
 %
-+      void MACWarningHandler(const ExceptionType warning,const char *message,
-%        const char *qualifier)
++      void MACWarningHandler(const ExceptionType warning,const char *reason,
+%        const char *description)
 %
 %  A description of each parameter follows:
 %
 %    o warning: Specifies the numeric warning category.
 %
-%    o message: Specifies the message to display before terminating the
+%    o reason: Specifies the reason to display before terminating the
 %      program.
 %
-%    o qualifier: Specifies any qualifier to the message.
+%    o description: Specifies any description to the reason.
 %
 %
 */
 MagickExport void MACWarningHandler(const ExceptionType warning,
-  const char *message,const char *qualifier)
+  const char *reason,const char *description)
 {
   char
     buffer[1664];
 
-  if (message == (char *) NULL)
+  if (reason == (char *) NULL)
     return;
-  if (qualifier == (char *) NULL)
+  if (description == (char *) NULL)
     FormatString(buffer,"%.1024s: %.1024s.\n",
-      SetClientName((char *) NULL),message);
+      SetClientName((char *) NULL),reason);
   else
     FormatString(buffer,"%.1024s: %.1024s (%.1024s).\n",
-      SetClientName((char *) NULL),message,qualifier);
+      SetClientName((char *) NULL),reason,description);
   puts(buffer);
 }
 

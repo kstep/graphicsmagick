@@ -327,7 +327,6 @@ CUT_KO:  ThrowReaderException(CorruptImageWarning,"Not a CUT image file",image);
  image->depth=i;
  image->colors=1l >> i;
 
-//printf("CUT colors\n",image->colors);
  
 /* ----- Do something with palette ----- */
  if ((clone_info=CloneImageInfo(image_info)) == NULL) goto NoPalette;
@@ -409,8 +408,6 @@ ErasePalette:
 	   image->colormap[i].red=UpScale(LSBFirstReadShort(palette));
 	   image->colormap[i].green=UpScale(LSBFirstReadShort(palette));
 	   image->colormap[i].blue=UpScale(LSBFirstReadShort(palette));       
-//	   printf("<%d,%d,%d;%d>",image->colormap[i].red,image->colormap[i].green,
-//	           image->colormap[i].blue,i);
 	   }
    }
 
@@ -454,14 +451,13 @@ printf("CUT colormap OK\n");
       RunCount=ReadByte(image);
       RunCountMasked=RunCount & 0x7F;
 
-      while(RunCountMasked>0)  	//end of line?
+      while(RunCountMasked>0)  	
     		{
     		if(RunCountMasked>j)
 			{		/*Wrong Data*/
 			RunCountMasked=j;
 			if(j==0) 
 			    {
-//			    printf("Wrong data\n");
 			    break;
 			    }
 			}
@@ -483,7 +479,6 @@ printf("CUT colormap OK\n");
 		RunCountMasked=RunCount & 0x7F;
     		}
 
-//printf("Inserting row %d %d %ld\n",i,j,ldblk);
 	InsertRow(BImgBuff,i,image);
    	}
 

@@ -419,7 +419,7 @@ static unsigned int ReadMagicConfigureFiles(const char *filename)
   if (getenv("HOME") != (char *) NULL)
     {
       FormatString(path,"%.1024s%.1024s%.1024s%.1024s%.1024s",getenv("HOME"),
-        *getenv("HOME") == '/' ? ".magick" : "",DirectorySeparator,
+        *getenv("HOME") == '/' ? "/.magick" : "",DirectorySeparator,
         DirectorySeparator,filename);
       status|=ReadMagicConfigureFile(path);
     }
@@ -495,13 +495,10 @@ MagickExport unsigned int SetImageMagic(const unsigned char *magick,
   register StringMethodArgument
     *p;
 
-  unsigned int
-    status;
-
   assert(magick != (const unsigned char *) NULL);
   assert(magic != (char *) NULL);
   *magic='\0';
-  q=GetImageMagick(magick);
+  q=GetImageMagick(magick,length);
   if (q != (char *) NULL)
     {
       (void) strcpy(magic,q);

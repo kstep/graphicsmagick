@@ -112,16 +112,12 @@ MagickExport unsigned int AnnotateImage(Image *image,
     *clone_info;
 
   char
-    label[MaxTextExtent],
     *text,
     **textlist;
 
   double
     font_height,
     font_width;
-
-  Image
-    *annotate_image;
 
   int
     j,
@@ -627,7 +623,6 @@ static unsigned int RenderTruetype(Image *image,
     origin;
 
   int
-    bit,
     length,
     y;
 

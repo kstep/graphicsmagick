@@ -89,28 +89,24 @@
 */
 static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
-  AnnotateInfo
-    *annotate_info;
-
   char
-    geometry[MaxTextExtent],
-    text[MaxTextExtent];
+    filename[MaxTextExtent],
+    geometry[MaxTextExtent];
+
+  FILE
+    *file;
 
   Image
-    *annotate_image,
     *image;
+
+  ImageInfo
+    *clone_info;
 
   int
     y;
 
-  long
-    magick;
-
   register int
     i;
-
-  ImageInfo
-    *clone_info;
 
   unsigned int
     status;
@@ -122,95 +118,44 @@ static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
     ThrowReaderException(FileOpenWarning,"Unable to open file",image);
-  magick=MSBFirstReadLong(image);
-  if ((magick != 256) && (magick != 65536))
-    ThrowReaderException(CorruptImageWarning,"Not a TTF font file",image);
-  DestroyImage(image);
   /*
-    Start with a white canvas.
+    Open draw file.
   */
-  y=0;
-  clone_info=CloneImageInfo(image_info);
-  if (clone_info == (ImageInfo *) NULL)
-    return((Image *) NULL);
-  (void) CloneString(&clone_info->font,"");
-  FormatString(clone_info->font,"@%.1024s",image_info->filename);
-  annotate_info=CloneAnnotateInfo(clone_info,(AnnotateInfo *) NULL);
-  (void) CloneString(&clone_info->size,"800x480");
-  (void) strcpy(clone_info->filename,"xc:white");
-  image=ReadImage(clone_info,exception);
-  if (image == (Image *) NULL)
-    {
-      DestroyAnnotateInfo(annotate_info);
-      return((Image *) NULL);
-    }
-  (void) strcpy(image->filename,image_info->filename);
-  if (image_info->ping)
-    {
-      DestroyAnnotateInfo(annotate_info);
-      DestroyImageInfo(clone_info);
-      CloseBlob(image);
-      return(image);
-    }
-  clone_info->pointsize=18;
-  /*
-    Annotate canvas with text rendered with font at different point sizes.
-  */
-  y=30;
-  FormatString(clone_info->filename,"label:white");
-  annotate_image=ReadImage(clone_info,exception);
-  DestroyImageInfo(clone_info);
-  if (annotate_image != (Image *) NULL)
-    {
-      ImageAttribute
-        *attribute;
-
-      annotate_info->pointsize=30;
-      FormatString(geometry,"+10%+d",y);
-      (void) CloneString(&annotate_info->geometry,geometry);
-      (void) CloneString(&annotate_info->text,"Unknown family");
-      attribute=GetImageAttribute(annotate_image,"Label");
-      if (attribute != (ImageAttribute *) NULL)
-        (void) CloneString(&annotate_info->text,attribute->value);
-      AnnotateImage(image,annotate_info);
-      DestroyImage(annotate_image);
-      y+=42;
-    }
-  annotate_info->pointsize=18;
-  FormatString(geometry,"+10%+d",y);
-  (void) CloneString(&annotate_info->geometry,geometry);
-  (void) CloneString(&annotate_info->text,"abcdefghijklmnopqrstuvwxyz");
-  AnnotateImage(image,annotate_info);
-  y+=20;
-  FormatString(geometry,"+10%+d",y);
-  (void) CloneString(&annotate_info->geometry,geometry);
-  (void) CloneString(&annotate_info->text,"ABCDEFGHIJKLMNOPQRSTUVWXYZ");
-  AnnotateImage(image,annotate_info);
-  y+=20;
-  FormatString(geometry,"+10%+d",y);
-  (void) CloneString(&annotate_info->geometry,geometry);
-  (void) CloneString(&annotate_info->text,"1234567890.:,;(:*!?')");
-  AnnotateImage(image,annotate_info);
+  TemporaryFilename(filename);
+  file=fopen(filename,"w");
+  if (file == (FILE *) NULL)
+    ThrowReaderException(FileOpenWarning,"Unable to open file",image);
+  (void) fprintf(file,"font @%s\n",image_info->filename);
+  (void) fprintf(file,"pointsize 18\n");
+  (void) fprintf(file,"text +10%+d 'abcdefghijklmnopqrstuvwxyz'\n",y+=20);
+  (void) fprintf(file,"text +10%+d 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'\n",y+=20);
+  (void) fprintf(file,"text +10%+d '1234567890.:,;(:*!?\")'\n",y+=20);
   y+=20;
   for (i=12; i <= 72; i+=6)
   {
     y+=i+6;
-    annotate_info->pointsize=18;
-    FormatString(geometry,"+10%+d",y);
-    (void) CloneString(&annotate_info->geometry,geometry);
-    FormatString(text,"%d",i);
-    (void) CloneString(&annotate_info->text,text);
-    AnnotateImage(image,annotate_info);
-    annotate_info->pointsize=i;
-    FormatString(geometry,"+50%+d",y);
-    (void) CloneString(&annotate_info->geometry,geometry);
-    (void) CloneString(&annotate_info->text,
-      "That which does not destroy me, only makes me stronger");
-    AnnotateImage(image,annotate_info);
+    (void) fprintf(file,"pointsize 18\n");
+    (void) fprintf(file,"text +10+%d '%d'\n",y,i);
+    (void) fprintf(file,"pointsize %d",i);
+    (void) fprintf(file,
+      "text +50+%d 'That which does not destroy me, only makes me stronger'\n",
+      y);
     if (i >= 24)
       i+=6;
   }
-  DestroyAnnotateInfo(annotate_info);
+  (void) fclose(file);
+  CloseBlob(image);
+  DestroyImage(image);
+  /*
+    Draw image.
+  */
+  clone_info=CloneImageInfo(image_info);
+  FormatString(geometry,"800x480");
+  CloneString(&clone_info->size,geometry);
+  FormatString(clone_info->filename,"mvg:%.1024s",filename);
+  image=ReadImage(clone_info,exception);
+  (void) remove(filename);
+  DestroyImageInfo(clone_info);
   return(image);
 }
 #else

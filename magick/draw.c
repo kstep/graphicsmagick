@@ -61,6 +61,7 @@
 #define BezierQuantum  200
 #define MatteMatch(color,target,delta) \
   (ColorMatch(color,target,delta) && ((color).opacity == (target).opacity))
+#define MaxDashPatterns  256
 #define MaxStacksize  (1 << 15)
 #define Push(up,left,right,delta) \
   if ((s < (segment_stack+MaxStacksize)) && (((up)+(delta)) >= 0) && \
@@ -188,6 +189,16 @@ MagickExport DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
   *cloned_info=(*draw_info);
   if (draw_info->primitive != (char *) NULL)
     cloned_info->primitive=AllocateString(draw_info->primitive);
+  if (draw_info->dash_pattern != (unsigned int *) NULL)
+    {
+      cloned_info->dash_pattern=(unsigned int *)
+        AcquireMemory(MaxDashPatterns*sizeof(unsigned int));
+      if (cloned_info->dash_pattern == (unsigned int *) NULL)
+        MagickError(ResourceLimitError,"Unable to clone dash pattern",
+          "Memory allocation failed");
+      memcpy(cloned_info->dash_pattern,draw_info->dash_pattern,
+        MaxDashPatterns*sizeof(unsigned int));
+    }
   if (draw_info->font != (char *) NULL)
     cloned_info->font=AllocateString(draw_info->font);
   if (draw_info->density != (char *) NULL)
@@ -1049,14 +1060,14 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
             if (IsGeometry(q))
               {
                 graphic_context[n]->dash_pattern=(unsigned int *)
-                  AcquireMemory(256*sizeof(unsigned int));
+                  AcquireMemory(MaxDashPatterns*sizeof(unsigned int));
                 if (graphic_context[n]->dash_pattern == (unsigned int *) NULL)
                   {
                     ThrowException(&image->exception,ResourceLimitWarning,
                       "Unable to draw image","Memory allocation failed");
                     break;
                   }
-                for (x=0; IsGeometry(q) && (x < 255); x++)
+                for (x=0; IsGeometry(q) && (x < (MaxDashPatterns-1)); x++)
                   graphic_context[n]->dash_pattern[x]=
                     (unsigned int) strtod(q,&q);
                 graphic_context[n]->dash_pattern[x]=0;

@@ -1657,7 +1657,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
       (magick_info->decoder !=
         (Image *(*)(const ImageInfo *,ExceptionInfo *)) NULL))
     {
-      clone_info->client_data=magick_info->data;
+      clone_info->client_data=magick_info->client_data;
       image=(magick_info->decoder)(clone_info,exception);
     }
   else
@@ -2059,7 +2059,7 @@ MagickExport unsigned int WriteImage(const ImageInfo *image_info,Image *image)
       (magick_info->encoder !=
         (unsigned int (*)(const ImageInfo *,Image *)) NULL))
     {
-      clone_info->client_data=magick_info->data;
+      clone_info->client_data=magick_info->client_data;
       status=(magick_info->encoder)(clone_info,image);
     }
   else

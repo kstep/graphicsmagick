@@ -298,9 +298,6 @@ MagickExport Image *MontageImages(Image *image,const MontageInfo *montage_info,
     bounds,
     tile_info;
 
-  SegmentInfo
-    font_info;
-
   unsigned int
     border_width,
     bevel_width,

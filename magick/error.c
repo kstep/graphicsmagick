@@ -504,6 +504,4 @@ MagickExport void ThrowException(ExceptionInfo *exception,
   exception->severity=(ExceptionType) severity;
   CloneString(&exception->reason,reason);
   CloneString(&exception->description,description);
-  exception->message=exception->reason;
-  exception->qualifier=exception->description;
 }

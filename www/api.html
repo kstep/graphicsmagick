@@ -184,9 +184,12 @@ format.
 &nbsp;&nbsp;&nbsp; }</pre>
 Now we need to compile. On Unix, the command would look something like
 this:
-<pre>&nbsp;&nbsp;&nbsp; gcc `Magick-config --cflags --cppflags --ldflags --libs` example.c </pre>
+<pre>&nbsp;&nbsp;&nbsp; gcc `Magick-config --cflags --cppflags` example.c `Magick-config --ldflags --libs`</pre>
 Another example is <a href="smile.c">smile.c</a>. Compile and excute it
 to display a smiley face on your X server.
+<p>
+For C++, use:
+<pre>&nbsp;&nbsp;&nbsp; g++ `Magick++-config --cxxflags --cppflags` demo.cpp `Magick++-config --ldflags --libs`</pre>
 <hr>
 <p><a href="../ImageMagick.html"><img SRC="../images/home.png" ALT="Home Page" BORDER=0 height=40 width=40 align=CENTER></a><font size=-2>&nbsp;&nbsp;
 Image manipulation software that works like magic.</font>

@@ -3104,7 +3104,7 @@ MagickExport int XCommandWidget(Display *display,XWindows *windows,
 %  The format of the XConfirmWidget method is:
 %
 %      int XConfirmWidget(Display *display,XWindows *windows,
-%        const char *message,const char *qualifier)
+%        const char *reason,const char *description)
 %
 %  A description of each parameter follows:
 %
@@ -3116,15 +3116,15 @@ MagickExport int XCommandWidget(Display *display,XWindows *windows,
 %
 %    o window: Specifies a pointer to a XWindows structure.
 %
-%    o message: Specifies the message to display before terminating the
+%    o reason: Specifies the message to display before terminating the
 %      program.
 %
-%    o qualifier: Specifies any qualifier to the message.
+%    o description: Specifies any description to the message.
 %
 %
 */
 MagickExport int XConfirmWidget(Display *display,XWindows *windows,
-  const char *message,const char *qualifier)
+  const char *reason,const char *description)
 {
 #define CancelButtonText  "Cancel"
 #define DismissButtonText  "Dismiss"
@@ -3163,8 +3163,8 @@ MagickExport int XConfirmWidget(Display *display,XWindows *windows,
   */
   assert(display != (Display *) NULL);
   assert(windows != (XWindows *) NULL);
-  assert(message != (char *) NULL);
-  assert(qualifier != (char *) NULL);
+  assert(reason != (char *) NULL);
+  assert(description != (char *) NULL);
   XCheckRefreshWindows(display,windows);
   font_info=windows->widget.font_info;
   width=XTextWidth(font_info,CancelButtonText,Extent(CancelButtonText));
@@ -3173,12 +3173,12 @@ MagickExport int XConfirmWidget(Display *display,XWindows *windows,
   if (XTextWidth(font_info,YesButtonText,Extent(YesButtonText)) > width)
     width=XTextWidth(font_info,YesButtonText,Extent(YesButtonText));
   width<<=1;
-  if (qualifier != (char *) NULL)
-    if (XTextWidth(font_info,(char *) qualifier,Extent(qualifier)) > width)
-      width=XTextWidth(font_info,(char *) qualifier,Extent(qualifier));
-  if (qualifier != (char *) NULL)
-    if (XTextWidth(font_info,(char *) qualifier,Extent(qualifier)) > width)
-      width=XTextWidth(font_info,(char *) qualifier,Extent(qualifier));
+  if (description != (char *) NULL)
+    if (XTextWidth(font_info,(char *) description,Extent(description)) > width)
+      width=XTextWidth(font_info,(char *) description,Extent(description));
+  if (description != (char *) NULL)
+    if (XTextWidth(font_info,(char *) description,Extent(description)) > width)
+      width=XTextWidth(font_info,(char *) description,Extent(description));
   height=(font_info->ascent+font_info->descent);
   /*
     Position Confirm widget.
@@ -3235,14 +3235,14 @@ MagickExport int XConfirmWidget(Display *display,XWindows *windows,
         cancel_info.y=windows->widget.height-(cancel_info.height << 1);
         dismiss_info=cancel_info;
         dismiss_info.text=DismissButtonText;
-        if (LocaleCompare(qualifier,"Do you want to save it") == 0)
+        if (LocaleCompare(description,"Do you want to save it") == 0)
           dismiss_info.text="Don't Save";
         dismiss_info.width=QuantumMargin+
           XTextWidth(font_info,dismiss_info.text,Extent(dismiss_info.text));
         dismiss_info.x=(windows->widget.width >> 1)-(dismiss_info.width >> 1);
         yes_info=cancel_info;
         yes_info.text=YesButtonText;
-        if (LocaleCompare(qualifier,"Do you want to save it") == 0)
+        if (LocaleCompare(description,"Do you want to save it") == 0)
           yes_info.text="Save";
         yes_info.width=QuantumMargin+
           XTextWidth(font_info,yes_info.text,Extent(yes_info.text));
@@ -3256,17 +3256,17 @@ MagickExport int XConfirmWidget(Display *display,XWindows *windows,
         /*
           Redraw Confirm widget.
         */
-        width=XTextWidth(font_info,(char *) message,Extent(message));
+        width=XTextWidth(font_info,(char *) reason,Extent(reason));
         x=(windows->widget.width >> 1)-(width >> 1);
         y=(windows->widget.height >> 1)-(height << 1);
         XDrawString(display,windows->widget.id,windows->widget.annotate_context,
-          x,y,(char *) message,Extent(message));
-        if (qualifier != (char *) NULL)
+          x,y,(char *) reason,Extent(reason));
+        if (description != (char *) NULL)
           {
             char
               question[MaxTextExtent];
 
-            (void) strcpy(question,qualifier);
+            (void) strcpy(question,description);
             (void) strcat(question,"?");
             width=XTextWidth(font_info,question,Extent(question));
             x=(windows->widget.width >> 1)-(width >> 1);
@@ -7985,7 +7985,7 @@ MagickExport void XMonitorWidget(Display *display,XWindows *windows,
 %  The format of the XNoticeWidget method is:
 %
 %      void XNoticeWidget(Display *display,XWindows *windows,
-%        const char *message,const char *qualifier)
+%        const char *reason,const char *description)
 %
 %  A description of each parameter follows:
 %
@@ -7994,15 +7994,15 @@ MagickExport void XMonitorWidget(Display *display,XWindows *windows,
 %
 %    o window: Specifies a pointer to a XWindows structure.
 %
-%    o message: Specifies the message to display before terminating the
+%    o reason: Specifies the message to display before terminating the
 %      program.
 %
-%    o qualifier: Specifies any qualifier to the message.
+%    o description: Specifies any description to the message.
 %
 %
 */
 MagickExport void XNoticeWidget(Display *display,XWindows *windows,
-  const char *message,const char *qualifier)
+  const char *reason,const char *description)
 {
 #define DismissButtonText  "Dismiss"
 #define Timeout  8
@@ -8042,19 +8042,19 @@ MagickExport void XNoticeWidget(Display *display,XWindows *windows,
   */
   assert(display != (Display *) NULL);
   assert(windows != (XWindows *) NULL);
-  assert(message != (char *) NULL);
+  assert(reason != (char *) NULL);
   XDelay(display,SuspendTime << 3);  /* avoid surpise with delay */
   XSetCursorState(display,windows,True);
   XCheckRefreshWindows(display,windows);
   font_info=windows->widget.font_info;
   width=XTextWidth(font_info,DismissButtonText,Extent(DismissButtonText));
-  if (message != (char *) NULL)
-    if (XTextWidth(font_info,(char *) message,Extent(message)) > (int) width)
-      width=XTextWidth(font_info,(char *) message,Extent(message));
-  if (qualifier != (char *) NULL)
-    if (XTextWidth(font_info,(char *) qualifier,Extent(qualifier)) >
+  if (reason != (char *) NULL)
+    if (XTextWidth(font_info,(char *) reason,Extent(reason)) > (int) width)
+      width=XTextWidth(font_info,(char *) reason,Extent(reason));
+  if (description != (char *) NULL)
+    if (XTextWidth(font_info,(char *) description,Extent(description)) >
         (int) width)
-      width=XTextWidth(font_info,(char *) qualifier,Extent(qualifier));
+      width=XTextWidth(font_info,(char *) description,Extent(description));
   height=(font_info->ascent+font_info->descent);
   /*
     Position Notice widget.
@@ -8115,19 +8115,19 @@ MagickExport void XNoticeWidget(Display *display,XWindows *windows,
         /*
           Redraw Notice widget.
         */
-        width=XTextWidth(font_info,(char *) message,Extent(message));
+        width=XTextWidth(font_info,(char *) reason,Extent(reason));
         x=(windows->widget.width >> 1)-(width >> 1);
         y=(windows->widget.height >> 1)-(height << 1);
         XDrawString(display,windows->widget.id,windows->widget.annotate_context,
-          x,y,(char *) message,Extent(message));
-        if (qualifier != (char *) NULL)
+          x,y,(char *) reason,Extent(reason));
+        if (description != (char *) NULL)
           {
-            width=XTextWidth(font_info,(char *) qualifier,Extent(qualifier));
+            width=XTextWidth(font_info,(char *) description,Extent(description));
             x=(windows->widget.width >> 1)-(width >> 1);
             y+=height;
             XDrawString(display,windows->widget.id,
-              windows->widget.annotate_context,x,y,(char *) qualifier,
-              Extent(qualifier));
+              windows->widget.annotate_context,x,y,(char *) description,
+              Extent(description));
           }
         XDrawBeveledButton(display,&windows->widget,&dismiss_info);
         XHighlightWidget(display,&windows->widget,BorderOffset,BorderOffset);

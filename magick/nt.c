@@ -560,47 +560,47 @@ MagickExport double NTElapsedTime(void)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method NTErrorHandler displays an error message and then terminates
+%  Method NTErrorHandler displays an error reason and then terminates
 %  the program.
 %
 %  The format of the NTErrorHandler method is:
 %
-%      void NTErrorHandler(const ExceptionType error,const char *message,
-%        const char *qualifier)
+%      void NTErrorHandler(const ExceptionType error,const char *reason,
+%        const char *description)
 %
 %  A description of each parameter follows:
 %
 %    o error: Specifies the numeric error category.
 %
-%    o message: Specifies the message to display before terminating the
+%    o reason: Specifies the reason to display before terminating the
 %      program.
 %
-%    o qualifier: Specifies any qualifier to the message.
+%    o description: Specifies any description to the reason.
 %
 %
 */
-MagickExport void NTErrorHandler(const ExceptionType error,const char *message,
-  const char *qualifier)
+MagickExport void NTErrorHandler(const ExceptionType error,const char *reason,
+  const char *description)
 {
   char
     buffer[3*MaxTextExtent];
 
-  if (message == (char *) NULL)
+  if (reason == (char *) NULL)
     Exit(0);
-  if ((qualifier != (char *) NULL) && errno)
+  if ((description != (char *) NULL) && errno)
     FormatString(buffer,"%.1024s: %.1024s (%.1024s) [%.1024s].\n",
-      SetClientName((char *) NULL),message,qualifier,strerror(errno));
+      SetClientName((char *) NULL),reason,description,strerror(errno));
   else
-    if (qualifier != (char *) NULL)
+    if (description != (char *) NULL)
       FormatString(buffer,"%.1024s: %.1024s (%.1024s).\n",
-        SetClientName((char *) NULL),message,qualifier);
+        SetClientName((char *) NULL),reason,description);
     else
       if (errno)
         FormatString(buffer,"%.1024s: %.1024s [%.1024s].\n",
-          SetClientName((char *) NULL),message,strerror(errno));
+          SetClientName((char *) NULL),reason,strerror(errno));
       else
         FormatString(buffer,"%.1024s: %.1024s.\n",SetClientName((char *) NULL),
-          message);
+          reason);
   (void) MessageBox(NULL,buffer,"ImageMagick Exception",MB_OK | MB_TASKMODAL |
     MB_SETFOREGROUND | MB_ICONEXCLAMATION);
   Exit(0);
@@ -658,7 +658,7 @@ MagickExport char *NTGetExecutionPath(void)
 char *NTGetLastError(void)
 {
   char
-    *message;
+    *reason;
 
   int
     status;
@@ -670,13 +670,13 @@ char *NTGetLastError(void)
     FORMAT_MESSAGE_FROM_SYSTEM,NULL,GetLastError(),
     MAKELANGID(LANG_NEUTRAL,SUBLANG_DEFAULT),(LPTSTR) &buffer,0,NULL);
   if (!status)
-    message=AllocateString("An unknown error occurred");
+    reason=AllocateString("An unknown error occurred");
   else
     {
-      message=AllocateString(buffer);
+      reason=AllocateString(buffer);
       LocalFree(buffer);
     }
-  return(message);
+  return(reason);
 }
 
 /*
@@ -870,38 +870,38 @@ MagickExport double NTUserTime(void)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method NTWarningHandler displays a warning message.
+%  Method NTWarningHandler displays a warning reason.
 %
 %  The format of the NTWarningHandler method is:
 %
-%      void NTWarningHandler(const ExceptionType warning,const char *message,
-%        const char *qualifier)
+%      void NTWarningHandler(const ExceptionType warning,const char *reason,
+%        const char *description)
 %
 %  A description of each parameter follows:
 %
 %    o warning: Specifies the numeric warning category.
 %
-%    o message: Specifies the message to display before terminating the
+%    o reason: Specifies the reason to display before terminating the
 %      program.
 %
-%    o qualifier: Specifies any qualifier to the message.
+%    o description: Specifies any description to the reason.
 %
 %
 */
 MagickExport void NTWarningHandler(const ExceptionType warning,
-  const char *message,const char *qualifier)
+  const char *reason,const char *description)
 {
   char
     buffer[2*MaxTextExtent];
 
-  if (message == (char *) NULL)
+  if (reason == (char *) NULL)
     return;
-  if (qualifier == (char *) NULL)
+  if (description == (char *) NULL)
     FormatString(buffer,"%.1024s: %.1024s.\n",
-      SetClientName((char *) NULL),message);
+      SetClientName((char *) NULL),reason);
   else
     FormatString(buffer,"%.1024s: %.1024s (%.1024s).\n",
-      SetClientName((char *) NULL),message,qualifier);
+      SetClientName((char *) NULL),reason,description);
   (void) MessageBox(NULL,buffer,"ImageMagick Warning",MB_OK | MB_TASKMODAL |
     MB_SETFOREGROUND | MB_ICONINFORMATION);
 }

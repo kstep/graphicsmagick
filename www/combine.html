@@ -563,13 +563,9 @@ Use <b>+dither</b> to render Postscript without text or graphic aliasing.</dd>
 This option specifies the font to be used for displaying normal text.</dd>
 
 <dd>
-If the font is a fully qualified X server font name, the font is obtained
-from an X server (e.g.
-<tt>-*-helvetica-medium-r-*-*-12-*-*-*-*-*-iso8859-*</tt>).
-To use a TrueType font, precede the TrueType filename with a <tt>@</tt>
-(e.g.
-<tt>@times.ttf</tt>). Otherwise, specify a Postscript font (e.g.
-<tt>helvetica</tt>).</dd>
+You can tag a font to specify whether it is a Postscript, Truetype, or X11
+font.  For example, <tt>Arial.ttf</tt> is a Truetype font, <tt>ps:helvetica</tt>
+is Postscript, and <tt>x:fixed</tt> is X11. </dd>
 
 <table BORDER=0 WIDTH="65%" >
 <tr>

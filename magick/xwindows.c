@@ -98,31 +98,31 @@ static void
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method IsTrue returns True if the message is "true", "on", "yes" or "1".
+%  Method IsTrue returns True if the reason is "true", "on", "yes" or "1".
 %
 %  The format of the IsTrue method is:
 %
-%      unsigned int IsTrue(const char *message)
+%      unsigned int IsTrue(const char *reason)
 %
 %  A description of each parameter follows:
 %
-%    o option: either True or False depending on the message parameter.
+%    o option: either True or False depending on the reason parameter.
 %
-%    o message: Specifies a pointer to a character array.
+%    o reason: Specifies a pointer to a character array.
 %
 %
 */
-MagickExport unsigned int IsTrue(const char *message)
+MagickExport unsigned int IsTrue(const char *reason)
 {
-  if (message == (char *) NULL)
+  if (reason == (char *) NULL)
     return(False);
-  if (LocaleCompare(message,"true") == 0)
+  if (LocaleCompare(reason,"true") == 0)
     return(True);
-  if (LocaleCompare(message,"on") == 0)
+  if (LocaleCompare(reason,"on") == 0)
     return(True);
-  if (LocaleCompare(message,"yes") == 0)
+  if (LocaleCompare(reason,"yes") == 0)
     return(True);
-  if (LocaleCompare(message,"1") == 0)
+  if (LocaleCompare(reason,"1") == 0)
     return(True);
   return(False);
 }
@@ -1165,12 +1165,12 @@ MagickExport void XCheckRefreshWindows(Display *display,XWindows *windows)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method XClientMessage sends a message to a window with XSendEvent.  The
-%  message is initialized with a particular protocol type and atom.
+%  Method XClientMessage sends a reason to a window with XSendEvent.  The
+%  reason is initialized with a particular protocol type and atom.
 %
 %  The format of the XClientMessage function is:
 %
-%      XClientMessage(display,window,protocol,message,timestamp)
+%      XClientMessage(display,window,protocol,reason,timestamp)
 %
 %  A description of each parameter follows:
 %
@@ -1181,14 +1181,14 @@ MagickExport void XCheckRefreshWindows(Display *display,XWindows *windows)
 %
 %    o protocol: Specifies an atom value.
 %
-%    o message: Specifies an atom value which is the message to send.
+%    o reason: Specifies an atom value which is the reason to send.
 %
 %    o timestamp: Specifies a value of type Time.
 %
 %
 */
 MagickExport void XClientMessage(Display *display,const Window window,
-  const Atom protocol,const Atom message,const Time timestamp)
+  const Atom protocol,const Atom reason,const Time timestamp)
 {
   XClientMessageEvent
     client_event;
@@ -1198,7 +1198,7 @@ MagickExport void XClientMessage(Display *display,const Window window,
   client_event.window=window;
   client_event.message_type=protocol;
   client_event.format=32;
-  client_event.data.l[0]=(long) message;
+  client_event.data.l[0]=(long) reason;
   client_event.data.l[1]=(long) timestamp;
   XSendEvent(display,window,False,NoEventMask,(XEvent *) &client_event);
 }
@@ -8659,26 +8659,26 @@ MagickExport char *XVisualClassName(const int visual_class)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method XWarning displays a warning message in a Notice widget.
+%  Method XWarning displays a warning reason in a Notice widget.
 %
 %  The format of the XWarning method is:
 %
-%      void XWarning(const unsigned int warning,const char *message,
-%        const char *qualifier)
+%      void XWarning(const unsigned int warning,const char *reason,
+%        const char *description)
 %
 %  A description of each parameter follows:
 %
 %    o warning: Specifies the numeric warning category.
 %
-%    o message: Specifies the message to display before terminating the
+%    o reason: Specifies the reason to display before terminating the
 %      program.
 %
-%    o qualifier: Specifies any qualifier to the message.
+%    o description: Specifies any description to the reason.
 %
 %
 */
-MagickExport void XWarning(const ExceptionType warning,const char *message,
-  const char *qualifier)
+MagickExport void XWarning(const ExceptionType warning,const char *reason,
+  const char *description)
 {
   char
     text[MaxTextExtent];
@@ -8686,12 +8686,12 @@ MagickExport void XWarning(const ExceptionType warning,const char *message,
   XWindows
     *windows;
 
-  if (message == (char *) NULL)
+  if (reason == (char *) NULL)
     return;
-  (void) strcpy(text,message);
+  (void) strcpy(text,reason);
   (void) strcat(text,":");
   windows=XSetWindows((XWindows *) ~0);
-  XNoticeWidget(windows->display,windows,text,(char *) qualifier);
+  XNoticeWidget(windows->display,windows,text,(char *) description);
 }
 
 /*

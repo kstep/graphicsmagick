@@ -100,9 +100,12 @@ MagickExport void DestroyMagickInfo(void)
   {
     entry=p;
     p=p->next;
-    LiberateMemory((void **) &entry->tag);
-    LiberateMemory((void **) &entry->description);
-    LiberateMemory((void **) &entry->module);
+    if (entry->tag != (char *) NULL)
+      LiberateMemory((void **) &entry->tag);
+    if (entry->description != (char *) NULL)
+      LiberateMemory((void **) &entry->description);
+    if (entry->module != (char *) NULL)
+      LiberateMemory((void **) &entry->module);
     LiberateMemory((void **) &entry);
   }
   magick_list=(MagickInfo *) NULL;
@@ -126,7 +129,8 @@ MagickExport void DestroyMagickInfo(void)
 %
 %  The format of the GetImageMagick method is:
 %
-%      char *GetImageMagick(const unsigned char *magick)
+%      char *GetImageMagick(const unsigned char *magick,
+%        const unsigned int length)
 %
 %  A description of each parameter follows:
 %
@@ -136,9 +140,12 @@ MagickExport void DestroyMagickInfo(void)
 %    o magick: a character string that represents the image format we are
 %      looking for.
 %
+%    o length: The length of the binary string.
+%
 %
 */
-MagickExport char *GetImageMagick(const unsigned char *magick)
+MagickExport char *GetImageMagick(const unsigned char *magick,
+  const unsigned int length)
 {
   register MagickInfo
     *p;
@@ -147,7 +154,7 @@ MagickExport char *GetImageMagick(const unsigned char *magick)
   AcquireSemaphore(magick_semaphore);
   for (p=magick_list; p != (MagickInfo *) NULL; p=p->next)
     if (p->magick)
-      if (p->magick(magick,MaxTextExtent))
+      if (p->magick(magick,length))
         break;
   LiberateSemaphore(magick_semaphore);
   if (p != (MagickInfo *) NULL)
@@ -203,7 +210,7 @@ MagickExport char *GetMagickConfigurePath(const char *filename)
   if (getenv("HOME") != (char *) NULL)
     {
       FormatString(path,"%.1024s%.1024s%.1024s%.1024s%.1024s",getenv("HOME"),
-        *getenv("HOME") == '/' ? ".magick" : "",DirectorySeparator,
+        *getenv("HOME") == '/' ? "/.magick" : "",DirectorySeparator,
         DirectorySeparator,filename);
       if (IsAccessible(path))
         return(path);
@@ -284,6 +291,7 @@ MagickExport MagickInfo *GetMagickInfo(const char *tag)
       RegisterBMPImage();
       RegisterCACHEImage();
       RegisterCMYKImage();
+      RegisterCUTImage();
       RegisterDCMImage();
       RegisterEPTImage();
       RegisterFAXImage();
@@ -624,7 +632,7 @@ MagickExport MagickInfo *SetMagickInfo(const char *tag)
   entry->raw=False;
   entry->description=(char *) NULL;
   entry->module=(char *) NULL;
-  entry->data=(void *) NULL;
+  entry->client_data=(void *) NULL;
   entry->signature=MagickSignature;
   entry->previous=(MagickInfo *) NULL;
   entry->next=(MagickInfo *) NULL;

@@ -25,7 +25,6 @@
 		<LI><A HREF="#destroyannotateinfo">DestroyAnnotateInfo</A></LI>
 		<LI><A HREF="#getannotateinfo">GetAnnotateInfo</A></LI>
 		<LI><A HREF="#getfontmetrics">GetFontMetrics</A></LI>
-		<LI><A HREF="#renderfont">RenderFont</A></LI>
 	</UL>
 
 </UL>
@@ -45,7 +44,6 @@
 <P>void  <STRONG>DestroyAnnotateInfo</STRONG>( AnnotateInfo *annotate_info );</P>
 <P>void  <STRONG>GetAnnotateInfo</STRONG>( const ImageInfo *image_info, AnnotateInfo *annotate_info );</P>
 <P>void  <STRONG>GetFontMetrics</STRONG>( const AnnotateInfo *annotate_info, SegmentInfo bounds );</P>
-<P>unsigned int  <STRONG>RenderFont</STRONG>( Image *image, AnnotateInfo *annotate_info, const PointInfo *offset, SegmentInfo *bounds );</P>
 <P>
 <HR>
 <H1><A NAME="function descriptions">
@@ -53,11 +51,15 @@
 <FONT SIZE=-1>DESCRIPTIONS</FONT></A></H1>
 <P>
 <H2><A NAME="annotateimage">AnnotateImage</A></H2>
-<P>Method AnnotateImage annotates an image with text.  Optionally the annotation can include the image filename, type, width, height, or scene number by embedding special format characters.</P>
+<P>Method AnnotateImage annotates an image with text.  Optionally the annotation can include the image filename, type, width, height, or scene</P>
 <P>The format of the AnnotateImage method is:</P>
 <blockquote>unsigned int AnnotateImage ( <A HREF="types/Image.html">Image</A> *image, <A HREF="types/AnnotateInfo.html">AnnotateInfo</A> *annotate_info ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
+<p><dt><STRONG><A NAME="item_o_status%3A">status:</A></STRONG><BR>
+<DD>
+Method AnnotateImage returns True if the image is annotated otherwise False.
+<P></P>
 <p><dt><STRONG><A NAME="item_o_image%3A">image:</A></STRONG><BR>
 <DD>
 The address of a structure of type Image.
@@ -126,34 +128,7 @@ Specifies a pointer to a AnnotateInfo structure.
 <P></P>
 <p><dt><STRONG><A NAME="item_o_bounds%3A">bounds:</A></STRONG><BR>
 <DD>
-bounding box of text.
-<P></P></DL></DL>
-<P>
-<H2><A NAME="renderfont">RenderFont</A></H2>
-<P>Method RenderFont renders text on the image.  It also returns the bounding box of the text relative to the image.</P>
-<P>The format of the RenderFont method is:</P>
-<blockquote>unsigned int RenderFont ( <A HREF="types/Image.html">Image</A> *image, <A HREF="types/AnnotateInfo.html">AnnotateInfo</A> *annotate_info, const <A HREF="types/PointInfo.html">PointInfo</A> *offset, SegmentInfo *bounds ); </blockquote><P>
-<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DL>
-<p><dt><STRONG><A NAME="item_o_status%3A">status:</A></STRONG><BR>
-<DD>
-Method RenderFont returns True if the text is rendered on the image, otherwise False.
-<P></P>
-<p><dt><STRONG>image:</STRONG><BR>
-<DD>
-The address of a structure of type Image.
-<P></P>
-<p><dt><STRONG>annotate_info:</STRONG><BR>
-<DD>
-The address of a AnnotateInfo structure.
-<P></P>
-<p><dt><STRONG><A NAME="item_o_offset%3A">offset:</A></STRONG><BR>
-<DD>
-(x,y) location of text relative to image.
-<P></P>
-<p><dt><STRONG>bounds:</STRONG><BR>
-<DD>
-bounding box of text.
+Method GetFontMetrics returns the bounding box of text.
 </DL></DL>
 
 </BODY>
