@@ -52,6 +52,7 @@
 #include "magick/quantize.h"
 #include "magick/resize.h"
 #include "magick/tempfile.h"
+#include "magick/tsd.h"
 #include "magick/utility.h"
 #include "magick/version.h"
 #if defined(HasTIFF)
@@ -79,8 +80,10 @@
 /*
   Global declarations.
 */
-static ExceptionInfo
-  *tiff_exception;
+static MagickTsdKey_t tsd_key = (MagickTsdKey_t) NULL;
+
+/* static ExceptionInfo */
+/*   *tiff_exception; */
 
 /*
   Forward declarations.
@@ -381,10 +384,13 @@ static int TIFFCloseBlob(thandle_t image)
   return(0);
 }
 
-/* Report errors. Not thread safe!  */
+/* Report errors. */
 static unsigned int TIFFErrors(const char *module,const char *format,
   va_list warning)
 {
+  ExceptionInfo
+    *tiff_exception;
+
   char
     message[MaxTextExtent];
 
@@ -392,6 +398,7 @@ static unsigned int TIFFErrors(const char *module,const char *format,
   (void) vsnprintf(message,MaxTextExtent-2,format,warning);
   message[MaxTextExtent-2]='\0';
   (void) strlcat(message,".",MaxTextExtent);
+  tiff_exception=(ExceptionInfo *) MagickTsdGetSpecific(tsd_key);
   ThrowException2(tiff_exception,CoderError,message,module);
   return(True);
 }
@@ -450,10 +457,13 @@ static void TIFFUnmapBlob(thandle_t ARGUNUSED(image),
 /*       "TIFF unmap blob: base=%p size=%ld", base, size); */
 }
 
-/* Report warnings. Not thread safe! */
+/* Report warnings. */
 static unsigned int TIFFWarnings(const char *module,const char *format,
   va_list warning)
 {
+  ExceptionInfo
+    *tiff_exception;
+
   char
     message[MaxTextExtent];
 
@@ -461,6 +471,7 @@ static unsigned int TIFFWarnings(const char *module,const char *format,
   (void) vsnprintf(message,MaxTextExtent-2,format,warning);
   message[MaxTextExtent-2]='\0';
   (void) strlcat(message,".",MaxTextExtent);
+  tiff_exception=(ExceptionInfo *) MagickTsdGetSpecific(tsd_key);
   ThrowException2(tiff_exception,CoderWarning,message,module);
   return(True);
 }
@@ -1048,7 +1059,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == MagickFail)
     ThrowReaderException(FileOpenError,UnableToOpenFile,image);
-  tiff_exception=exception;
+  (void) MagickTsdSetSpecific(tsd_key,(void *) exception);
   (void) TIFFSetErrorHandler((TIFFErrorHandler) TIFFErrors);
   (void) TIFFSetWarningHandler((TIFFErrorHandler) TIFFWarnings);
   if (BlobIsSeekable(image))
@@ -2472,6 +2483,11 @@ ModuleExport void RegisterTIFFImage(void)
   */
   ExtensionTagsInitialize();
 #endif /* defined(EXTEND_TIFF_TAGS) */
+  /*
+    Initialize thread specific data key.
+  */
+  if (tsd_key == (MagickTsdKey_t) NULL)
+    (void) MagickTsdKeyCreate(&tsd_key);
 
 #endif
 }
@@ -2498,6 +2514,14 @@ ModuleExport void RegisterTIFFImage(void)
 ModuleExport void UnregisterTIFFImage(void)
 {
 #if defined(HasTIFF)
+  /*
+    Destroy thread specific data key.
+  */
+  if (tsd_key != (MagickTsdKey_t) NULL)
+    {
+      (void) MagickTsdKeyDelete(tsd_key);
+      tsd_key = (MagickTsdKey_t) NULL;
+    }
   (void) UnregisterMagickInfo("PTIF");
   (void) UnregisterMagickInfo("TIF");
   (void) UnregisterMagickInfo("TIFF");
@@ -2758,7 +2782,7 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == MagickFail)
     ThrowWriterException(FileOpenError,UnableToOpenFile,image);
-  tiff_exception=(&image->exception);
+  (void) MagickTsdSetSpecific(tsd_key,(void *) (&image->exception));
   (void) TIFFSetErrorHandler((TIFFErrorHandler) TIFFErrors);
   (void) TIFFSetWarningHandler((TIFFErrorHandler) TIFFWarnings);
   (void) strlcpy(filename,image->filename,MaxTextExtent);

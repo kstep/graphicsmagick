@@ -1,3 +1,15 @@
+2005-03-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/tiff.c (TIFFErrors): Update to make thread safe via
+	thread specific data.
+	(TIFFWarnings): Update to make thread safe via thread specific
+	data.
+	* magick/tsd.c (MagickTsdKeyCreate): New function to support
+	thread specific data.
+	(MagickTsdKeyDelete): ditto
+	(MagickTsdSetSpecific): ditto
+	(MagickTsdGetSpecific): ditto.
+
 2005-03-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/image.c (ReplaceImageColormap): New function to replace

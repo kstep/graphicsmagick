@@ -703,34 +703,35 @@ am__magick_libGraphicsMagick_la_SOURCES_DIST =  \
 	magick/stream.h magick/studio.h magick/symbols.h \
 	magick/tempfile.c magick/tempfile.h magick/timer.c \
 	magick/timer.h magick/transform.c magick/transform.h \
-	magick/type.c magick/utility.c magick/utility.h \
-	magick/version.c magick/version.h magick/widget.c \
-	magick/widget.h magick/xwindow.c magick/xwindow.h \
-	magick/nt_feature.c magick/nt_feature.h magick/nt_base.c \
-	magick/nt_base.h coders/art.c coders/avi.c coders/avs.c \
-	coders/bmp.c coders/caption.c coders/cineon.c coders/cmyk.c \
-	coders/cut.c coders/dcm.c coders/dib.c coders/dps.c \
-	coders/dpx.c coders/fax.c coders/fits.c coders/gif.c \
-	coders/gradient.c coders/gray.c coders/histogram.c \
-	coders/html.c coders/icon.c coders/label.c coders/locale.c \
-	coders/logo.c coders/map.c coders/mat.c coders/matte.c \
-	coders/meta.c coders/miff.c coders/mono.c coders/mpc.c \
-	coders/mpeg.c coders/mpr.c coders/msl.c coders/mtv.c \
-	coders/mvg.c coders/null.c coders/otb.c coders/palm.c \
-	coders/pcd.c coders/pcl.c coders/pcx.c coders/pdb.c \
-	coders/pdf.c coders/pict.c coders/pix.c coders/plasma.c \
-	coders/pnm.c coders/preview.c coders/ps.c coders/ps2.c \
-	coders/ps3.c coders/psd.c coders/pwp.c coders/rgb.c \
-	coders/rla.c coders/rle.c coders/sct.c coders/sfw.c \
-	coders/sgi.c coders/stegano.c coders/sun.c coders/svg.c \
-	coders/tga.c coders/tile.c coders/tim.c coders/topol.c \
-	coders/ttf.c coders/txt.c coders/uil.c coders/url.c \
-	coders/uyvy.c coders/vicar.c coders/vid.c coders/viff.c \
-	coders/wbmp.c coders/wmf.c coders/wpg.c coders/xbm.c \
-	coders/xc.c coders/xcf.c coders/xpm.c coders/yuv.c \
-	coders/clipboard.c coders/emf.c coders/fpx.c coders/jbig.c \
-	coders/jpeg.c coders/jp2.c coders/png.c coders/ept.c \
-	coders/tiff.c coders/x.c coders/xwd.c filters/analyze.c
+	magick/tsd.c magick/tsd.h magick/type.c magick/utility.c \
+	magick/utility.h magick/version.c magick/version.h \
+	magick/widget.c magick/widget.h magick/xwindow.c \
+	magick/xwindow.h magick/nt_feature.c magick/nt_feature.h \
+	magick/nt_base.c magick/nt_base.h coders/art.c coders/avi.c \
+	coders/avs.c coders/bmp.c coders/caption.c coders/cineon.c \
+	coders/cmyk.c coders/cut.c coders/dcm.c coders/dib.c \
+	coders/dps.c coders/dpx.c coders/fax.c coders/fits.c \
+	coders/gif.c coders/gradient.c coders/gray.c \
+	coders/histogram.c coders/html.c coders/icon.c coders/label.c \
+	coders/locale.c coders/logo.c coders/map.c coders/mat.c \
+	coders/matte.c coders/meta.c coders/miff.c coders/mono.c \
+	coders/mpc.c coders/mpeg.c coders/mpr.c coders/msl.c \
+	coders/mtv.c coders/mvg.c coders/null.c coders/otb.c \
+	coders/palm.c coders/pcd.c coders/pcl.c coders/pcx.c \
+	coders/pdb.c coders/pdf.c coders/pict.c coders/pix.c \
+	coders/plasma.c coders/pnm.c coders/preview.c coders/ps.c \
+	coders/ps2.c coders/ps3.c coders/psd.c coders/pwp.c \
+	coders/rgb.c coders/rla.c coders/rle.c coders/sct.c \
+	coders/sfw.c coders/sgi.c coders/stegano.c coders/sun.c \
+	coders/svg.c coders/tga.c coders/tile.c coders/tim.c \
+	coders/topol.c coders/ttf.c coders/txt.c coders/uil.c \
+	coders/url.c coders/uyvy.c coders/vicar.c coders/vid.c \
+	coders/viff.c coders/wbmp.c coders/wmf.c coders/wpg.c \
+	coders/xbm.c coders/xc.c coders/xcf.c coders/xpm.c \
+	coders/yuv.c coders/clipboard.c coders/emf.c coders/fpx.c \
+	coders/jbig.c coders/jpeg.c coders/jp2.c coders/png.c \
+	coders/ept.c coders/tiff.c coders/x.c coders/xwd.c \
+	filters/analyze.c
 am__objects_2 = magick/magick_libGraphicsMagick_la-animate.lo \
 	magick/magick_libGraphicsMagick_la-annotate.lo \
 	magick/magick_libGraphicsMagick_la-attribute.lo \
@@ -783,6 +784,7 @@ am__objects_2 = magick/magick_libGraphicsMagick_la-animate.lo \
 	magick/magick_libGraphicsMagick_la-tempfile.lo \
 	magick/magick_libGraphicsMagick_la-timer.lo \
 	magick/magick_libGraphicsMagick_la-transform.lo \
+	magick/magick_libGraphicsMagick_la-tsd.lo \
 	magick/magick_libGraphicsMagick_la-type.lo \
 	magick/magick_libGraphicsMagick_la-utility.lo \
 	magick/magick_libGraphicsMagick_la-version.lo \
@@ -1261,6 +1263,7 @@ CCDEPMODE = @CCDEPMODE@
 CCMALLOCDelegate = @CCMALLOCDelegate@
 CFLAGS = @CFLAGS@
 CGMDecodeDelegate = @CGMDecodeDelegate@
+CONFIG_STATUS_DEPENDENCIES = @CONFIG_STATUS_DEPENDENCIES@
 CONVENIENCE_LTDL_FALSE = @CONVENIENCE_LTDL_FALSE@
 CONVENIENCE_LTDL_TRUE = @CONVENIENCE_LTDL_TRUE@
 CPP = @CPP@
@@ -2552,6 +2555,8 @@ MAGICK_BASE_SRCS = \
 	magick/timer.h \
 	magick/transform.c \
 	magick/transform.h \
+	magick/tsd.c \
+	magick/tsd.h \
 	magick/type.c \
 	magick/utility.c \
 	magick/utility.h \
@@ -4647,6 +4652,8 @@ magick/magick_libGraphicsMagick_la-timer.lo: magick/$(am__dirstamp) \
 	magick/$(DEPDIR)/$(am__dirstamp)
 magick/magick_libGraphicsMagick_la-transform.lo:  \
 	magick/$(am__dirstamp) magick/$(DEPDIR)/$(am__dirstamp)
+magick/magick_libGraphicsMagick_la-tsd.lo: magick/$(am__dirstamp) \
+	magick/$(DEPDIR)/$(am__dirstamp)
 magick/magick_libGraphicsMagick_la-type.lo: magick/$(am__dirstamp) \
 	magick/$(DEPDIR)/$(am__dirstamp)
 magick/magick_libGraphicsMagick_la-utility.lo: magick/$(am__dirstamp) \
@@ -5638,6 +5645,8 @@ mostlyclean-compile:
 	-rm -f magick/magick_libGraphicsMagick_la-timer.lo
 	-rm -f magick/magick_libGraphicsMagick_la-transform.$(OBJEXT)
 	-rm -f magick/magick_libGraphicsMagick_la-transform.lo
+	-rm -f magick/magick_libGraphicsMagick_la-tsd.$(OBJEXT)
+	-rm -f magick/magick_libGraphicsMagick_la-tsd.lo
 	-rm -f magick/magick_libGraphicsMagick_la-type.$(OBJEXT)
 	-rm -f magick/magick_libGraphicsMagick_la-type.lo
 	-rm -f magick/magick_libGraphicsMagick_la-utility.$(OBJEXT)
@@ -5948,6 +5957,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-tempfile.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-timer.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-transform.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-tsd.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-type.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-utility.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@magick/$(DEPDIR)/magick_libGraphicsMagick_la-version.Plo@am__quote@
@@ -6997,6 +7007,13 @@ magick/magick_libGraphicsMagick_la-transform.lo: magick/transform.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='magick/transform.c' object='magick/magick_libGraphicsMagick_la-transform.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o magick/magick_libGraphicsMagick_la-transform.lo `test -f 'magick/transform.c' || echo '$(srcdir)/'`magick/transform.c
+
+magick/magick_libGraphicsMagick_la-tsd.lo: magick/tsd.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT magick/magick_libGraphicsMagick_la-tsd.lo -MD -MP -MF "magick/$(DEPDIR)/magick_libGraphicsMagick_la-tsd.Tpo" -c -o magick/magick_libGraphicsMagick_la-tsd.lo `test -f 'magick/tsd.c' || echo '$(srcdir)/'`magick/tsd.c; \
+@am__fastdepCC_TRUE@	then mv -f "magick/$(DEPDIR)/magick_libGraphicsMagick_la-tsd.Tpo" "magick/$(DEPDIR)/magick_libGraphicsMagick_la-tsd.Plo"; else rm -f "magick/$(DEPDIR)/magick_libGraphicsMagick_la-tsd.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='magick/tsd.c' object='magick/magick_libGraphicsMagick_la-tsd.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o magick/magick_libGraphicsMagick_la-tsd.lo `test -f 'magick/tsd.c' || echo '$(srcdir)/'`magick/tsd.c
 
 magick/magick_libGraphicsMagick_la-type.lo: magick/type.c
 @am__fastdepCC_TRUE@	if $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(magick_libGraphicsMagick_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT magick/magick_libGraphicsMagick_la-type.lo -MD -MP -MF "magick/$(DEPDIR)/magick_libGraphicsMagick_la-type.Tpo" -c -o magick/magick_libGraphicsMagick_la-type.lo `test -f 'magick/type.c' || echo '$(srcdir)/'`magick/type.c; \

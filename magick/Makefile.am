@@ -149,6 +149,8 @@ MAGICK_BASE_SRCS = \
 	magick/timer.h \
 	magick/transform.c \
 	magick/transform.h \
+	magick/tsd.c \
+	magick/tsd.h \
 	magick/type.c \
 	magick/utility.c \
 	magick/utility.h \

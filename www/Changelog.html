@@ -21,6 +21,21 @@
 </tr>
 </table>
 <p>
+2005-03-18  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/tiff.c (TIFFErrors): Update to make thread safe via
+        thread specific data.<BR>
+        (TIFFWarnings): Update to make thread safe via thread specific
+        data.<BR>
+  <LI> magick/tsd.c (MagickTsdKeyCreate): New function to support
+        thread specific data.<BR>
+        (MagickTsdKeyDelete): ditto<BR>
+        (MagickTsdSetSpecific): ditto<BR>
+        (MagickTsdGetSpecific): ditto.
+
+</UL>
+<p>
 2005-03-17  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

@@ -135,19 +135,6 @@ extern MagickExport const GhostscriptVectors
 #endif /* defined(MAGICK_IMPLEMENTATION) */
 
 /*
-  Thread specific data support.
-*/
-typedef void * NTThreadSDKey_t;
-
-extern MagickExport int
-  NTThreadSDKeyCreate(NTThreadSDKey_t *key, void (void (*)(void *))),
-  NTThreadSDKeyDelete(NTThreadSDKey_t key),
-  NTThreadSDSetSpecific(NTThreadSDKey_t key, const void *value);
-
-extern MagickExport void
-  *NTThreadSDGetSpecific(NTThreadSDKey_t key);
-
-/*
   Directory access functions
 */
 #if !defined(HAVE_DIRENT_H) || defined(__MINGW32__)
