@@ -342,24 +342,17 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
   /*
     Open image.
   */
-  AcquireSemaphore(&tiff_semaphore);
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
-    {
-      LiberateSemaphore(&tiff_semaphore);
-      ThrowReaderException(FileOpenWarning,"Unable to open file",image);
-    }
+    ThrowReaderException(FileOpenWarning,"Unable to open file",image);
   /*
     Copy image to temporary file.
   */
   TemporaryFilename((char *) image_info->filename);
   file=fopen(image_info->filename,WriteBinaryType);
   if (file == (FILE *) NULL)
-    {
-      LiberateSemaphore(&tiff_semaphore);
-      ThrowReaderException(FileOpenWarning,"Unable to write file",image);
-    }
+    ThrowReaderException(FileOpenWarning,"Unable to write file",image);
   c=ReadBlobByte(image);
   while (c != EOF)
   {
@@ -368,6 +361,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
   }
   (void) fclose(file);
   (void) strcpy(image->filename,image_info->filename);
+  AcquireSemaphore(&tiff_semaphore);
   tiff_exception=exception;
   TIFFSetErrorHandler((TIFFErrorHandler) TIFFErrors);
   TIFFSetWarningHandler((TIFFErrorHandler) TIFFWarnings);

@@ -217,24 +217,17 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Open image file.
   */
-  AcquireSemaphore(&jp2_semaphore);
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
-    {
-      LiberateSemaphore(&jp2_semaphore);
-      ThrowWriterException(FileOpenWarning,"Unable to open file",image);
-    }
+    ThrowWriterException(FileOpenWarning,"Unable to open file",image);
   /*
     Copy image to temporary file.
   */
   TemporaryFilename((char *) image_info->filename);
   file=fopen(image_info->filename,WriteBinaryType);
   if (file == (FILE *) NULL)
-    {
-      LiberateSemaphore(&jp2_semaphore);
-      ThrowReaderException(FileOpenWarning,"Unable to write file",image);
-    }
+    ThrowReaderException(FileOpenWarning,"Unable to write file",image);
   c=ReadBlobByte(image);
   while (c != EOF)
   {
@@ -245,6 +238,7 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Initialize JPEG 2000 API.
   */
+  AcquireSemaphore(&jp2_semaphore);
   jas_init();
   (void) strcpy(image->filename,image_info->filename);
   jp2_stream=jas_stream_fopen(image->filename,ReadBinaryType);
@@ -448,7 +442,8 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
 {
   char
     filename[MaxTextExtent],
-    magick[MaxTextExtent];
+    magick[MaxTextExtent],
+    options[MaxTextExtent];
 
   int
     format,
@@ -574,7 +569,8 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
   (void) strcpy(magick,image_info->magick);
   LocaleLower(magick);
   format=jas_image_strtofmt(magick);
-  status=jas_image_encode(jp2_image,jp2_stream,format,0);
+  FormatString(options,"rate=%lf",(double) image_info->quality/100.0);
+  status=jas_image_encode(jp2_image,jp2_stream,format,options);
   if (status)
     ThrowWriterException(FileOpenWarning,"Unable to encode image file",image);
   (void) jas_stream_close(jp2_stream);
