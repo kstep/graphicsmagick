@@ -2875,7 +2875,7 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
   for (q=translated_text; *p != '\0'; p++)
   {
     *q='\0';
-    if ((q-translated_text+MaxTextExtent) >= length)
+    if ((size_t) (q-translated_text+MaxTextExtent) >= length)
       {
         length<<=1;
         ReacquireMemory((void **) &translated_text,length);

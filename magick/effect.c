@@ -1778,12 +1778,14 @@ MagickExport Image *MorphImages(Image *image,const unsigned int number_frames,
     *next;
 
   register int
-    i,
     x;
 
   register PixelPacket
     *p,
     *q;
+
+  register size_t
+    i;
 
   unsigned int
     scene;
@@ -3119,7 +3121,7 @@ MagickExport Image *SteganoImage(Image *image,Image *watermark,
   (byte)&=(~0x01); \
   (byte)|=((unsigned int) Intensity(*p) >> shift) & 0x01; \
   j++; \
-  if (j == (size_t) (watermark->columns*watermark->rows)) \
+  if (j == (long) (watermark->columns*watermark->rows)) \
     { \
       j=0; \
       shift--; \
@@ -3207,7 +3209,7 @@ MagickExport Image *SteganoImage(Image *image,Image *watermark,
   {
     for (x=0; x < (int) image->columns; x++)
     {
-      if (i == (size_t) (stegano_image->columns*stegano_image->rows))
+      if (i == (long) (stegano_image->columns*stegano_image->rows))
         i=0;
       q=GetImagePixels(stegano_image,(int) (i % stegano_image->columns),
         (int) (i/stegano_image->columns),1,1);

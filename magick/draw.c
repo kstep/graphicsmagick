@@ -3142,25 +3142,25 @@ static void PrintPrimitiveInfo(const PrimitiveInfo *primitive_info)
     if (coordinates <= 0)
       {
         coordinates=primitive_info[i].coordinates;
-        (void) fprintf(stdout,"    begin open (%d)\n",coordinates);
+        (void) fprintf(stdout,"    begin open (%ld)\n",coordinates);
         p=point;
       }
     point=primitive_info[i].point;
     if ((fabs(q.x-point.x) > MagickEpsilon) ||
         (fabs(q.y-point.y) > MagickEpsilon))
-      (void) fprintf(stdout,"      %d: %g,%g\n",coordinates,point.x,point.y);
+      (void) fprintf(stdout,"      %ld: %g,%g\n",coordinates,point.x,point.y);
     else
-      (void) fprintf(stdout,"      %d: %g,%g (duplicate)\n",coordinates,point.x,
-        point.y);
+      (void) fprintf(stdout,"      %ld: %g,%g (duplicate)\n",coordinates,
+        point.x,point.y);
     q=point;
     coordinates--;
     if (coordinates > 0)
       continue;
     if ((fabs(p.x-point.x) > MagickEpsilon) ||
         (fabs(p.y-point.y) > MagickEpsilon))
-      (void) fprintf(stdout,"    end last (%d)\n",coordinates);
+      (void) fprintf(stdout,"    end last (%ld)\n",coordinates);
     else
-      (void) fprintf(stdout,"    end open (%d)\n",coordinates);
+      (void) fprintf(stdout,"    end open (%ld)\n",coordinates);
   }
 }
 
@@ -4666,11 +4666,14 @@ static void TraceSquareLinecap(PrimitiveInfo *primitive_info,
   double
     distance;
 
+  long
+    j;
+
   register double
     dx,
     dy;
 
-  register long
+  register size_t
     i;
 
   dx=0.0;
@@ -4687,17 +4690,17 @@ static void TraceSquareLinecap(PrimitiveInfo *primitive_info,
     dx*(distance+offset)/distance;
   primitive_info[0].point.y=primitive_info[i].point.y+
     dy*(distance+offset)/distance;
-  for (i=number_vertices-2; i >= 0;  i--)
+  for (j=number_vertices-2; j >= 0;  j--)
   {
-    dx=primitive_info[number_vertices-1].point.x-primitive_info[i].point.x;
-    dy=primitive_info[number_vertices-1].point.y-primitive_info[i].point.y;
+    dx=primitive_info[number_vertices-1].point.x-primitive_info[j].point.x;
+    dy=primitive_info[number_vertices-1].point.y-primitive_info[j].point.y;
     if ((fabs(dx) >= MagickEpsilon) || (fabs(dy) >= MagickEpsilon))
       break;
   }
   distance=sqrt(dx*dx+dy*dy+MagickEpsilon);
-  primitive_info[number_vertices-1].point.x=primitive_info[i].point.x+
+  primitive_info[number_vertices-1].point.x=primitive_info[j].point.x+
     dx*(distance+offset)/distance;
-  primitive_info[number_vertices-1].point.y=primitive_info[i].point.y+
+  primitive_info[number_vertices-1].point.y=primitive_info[j].point.y+
     dy*(distance+offset)/distance;
 }
 
@@ -4723,10 +4726,6 @@ static PrimitiveInfo *TraceStrokePolygon(const DrawInfo *draw_info,
     slope,
     theta;
 
-  long
-    arc_segments,
-    max_strokes;
-
   PointInfo
     box_p[5],
     box_q[5],
@@ -4746,8 +4745,10 @@ static PrimitiveInfo *TraceStrokePolygon(const DrawInfo *draw_info,
     closed_path;
 
   unsigned long
+    arc_segments,
     j,
     n,
+    max_strokes,
     number_vertices,
     p,
     q;
