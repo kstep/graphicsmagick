@@ -1539,18 +1539,16 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     number_pixels=tile_image->columns*tile_image->rows;
     if ((compression == FaxCompression) ||
         ((image_info->type != TrueColorType) &&
-         IsGrayImage(image,&image->exception)))
+         IsGrayImage(tile_image,&image->exception)))
       {
         switch (compression)
         {
           case FaxCompression:
           {
-            tile_image->blob->file=image->blob->file;
             if (LocaleCompare(CCITTParam,"0") == 0)
               (void) HuffmanEncodeImage(image_info,tile_image);
             else
               (void) Huffman2DEncodeImage(image_info,tile_image);
-            image->blob->file=tile_image->blob->file;
             break;
           }
           case JPEGCompression:
@@ -1567,7 +1565,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
             /*
               Write image in JPEG format.
             */
-            jpeg_image=CloneImage(image,0,0,True,&image->exception);
+            jpeg_image=CloneImage(tile_image,0,0,True,&image->exception);
             if (jpeg_image == (Image *) NULL)
               ThrowWriterException(DelegateError,"Unable to clone image",image);
             blob=ImageToBlob(image_info,jpeg_image,&length,&image->exception);
@@ -1645,8 +1643,8 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
         }
       }
     else
-      if ((image->storage_class == DirectClass) || (image->colors > 256) ||
-          (compression == JPEGCompression))
+      if ((tile_image->storage_class == DirectClass) ||
+          (tile_image->colors > 256) || (compression == JPEGCompression))
         switch (compression)
         {
           case JPEGCompression:
@@ -1663,7 +1661,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
             /*
               Write image in JPEG format.
             */
-            jpeg_image=CloneImage(image,0,0,True,&image->exception);
+            jpeg_image=CloneImage(tile_image,0,0,True,&image->exception);
             if (jpeg_image == (Image *) NULL)
               ThrowWriterException(DelegateError,"Unable to clone image",image);
             blob=ImageToBlob(image_info,jpeg_image,&length,&image->exception);
@@ -1678,7 +1676,8 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
             /*
               Allocate pixel array.
             */
-            length=(image->colorspace == CMYKColorspace ? 4 : 3)*number_pixels;
+            length=(tile_image->colorspace == CMYKColorspace ? 4 : 3)*
+              number_pixels;
             pixels=(unsigned char *) AcquireMemory(length);
             if (pixels == (unsigned char *) NULL)
               {
