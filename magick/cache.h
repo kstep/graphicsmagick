@@ -159,6 +159,7 @@ typedef struct _CacheInfo
     virtual_pixel;
 
   char
+    filename[MaxTextExtent],
     cache_filename[MaxTextExtent];
 
   CacheMethods

@@ -705,6 +705,9 @@ MagickExport void DestroyCache(void)
 */
 MagickExport void DestroyCacheInfo(Cache cache)
 {
+  char
+    message[MaxTextExtent];
+
   CacheInfo
     *cache_info;
 
@@ -752,6 +755,8 @@ MagickExport void DestroyCacheInfo(Cache cache)
     }
   if (cache_info->semaphore != (SemaphoreInfo *) NULL)
     DestroySemaphoreInfo(&cache_info->semaphore);
+  FormatString(message,"destroy pixel cache (%.1024s)",cache_info->filename);
+  LogMagickEvent(CacheEvent,message);
   LiberateMemory((void **) &cache_info);
 }
 
@@ -1919,6 +1924,7 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
       default:
         break;
     }
+  (void) strncpy(cache_info->filename,image->filename,MaxTextExtent-1);
   cache_info->rows=image->rows;
   cache_info->columns=image->columns;
   number_pixels=cache_info->columns*cache_info->rows;
@@ -1978,8 +1984,9 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
             if ((cache_info->storage_class == PseudoClass) ||
                 (cache_info->colorspace == CMYKColorspace))
               cache_info->indexes=(IndexPacket *) (pixels+number_pixels);
-            FormatString(message,"%.1024s in-memory pixel cache (%lumb)",
-              image->filename,(unsigned long) (cache_info->length/1024/1024));
+            FormatString(message,"memory pixel cache %lumb (%.1024s)",
+              (unsigned long) (cache_info->length/1024/1024),
+              cache_info->filename);
             LogMagickEvent(CacheEvent,message);
             return(True);
           }
@@ -2024,9 +2031,6 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
   cache_info->storage_class=image->storage_class;
   cache_info->colorspace=image->colorspace;
   cache_info->type=DiskCache;
-  FormatString(message,"%.1024s disk-based pixel cache (%lumb)",
-    image->filename,(unsigned long) (cache_info->length/1024/1024));
-  LogMagickEvent(CacheEvent,message);
   if ((cache_info->length > MinBlobExtent) &&
       (cache_info->length == (size_t) cache_info->length))
     {
@@ -2043,15 +2047,19 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
           if ((cache_info->storage_class == PseudoClass) ||
               (cache_info->colorspace == CMYKColorspace))
             cache_info->indexes=(IndexPacket *) (pixels+number_pixels);
-          FormatString(message,"%.1024s memory-mapped pixel cache (%lumb)",
-            image->filename,(unsigned long) (cache_info->length/1024/1024));
-          LogMagickEvent(CacheEvent,message);
         }
     }
   (void) close(file);
 #if defined(SIGBUS)
   (void) signal(SIGBUS,CacheSignalHandler);
 #endif
+  if (cache_info->type == MemoryMappedCache)
+    FormatString(message,"memory-mapped pixel cache %lumb (%.1024s)",
+      (unsigned long) (cache_info->length/1024/1024),cache_info->filename);
+  else
+    FormatString(message,"disk pixel cache %lumb (%.1024s)",
+      (unsigned long) (cache_info->length/1024/1024),cache_info->filename);
+  LogMagickEvent(CacheEvent,message);
   return(True);
 }
 

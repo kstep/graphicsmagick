@@ -572,7 +572,7 @@ MagickExport unsigned int LogMagickEvent(const LogEventType type,
 #endif
   va_end(operands);
   if ((log_info->file == stdout) || (log_info->file == stderr))
-    (void) fprintf(log_info->file,"%.1024s[%ld %.2fu]: %.1024s\n",domain,
+    (void) fprintf(log_info->file,"%.1024s[%ld][%.2fu]: %.1024s\n",domain,
       GetThreadId(),GetElapsedTime(&log_info->timer),event);
   else
     {
