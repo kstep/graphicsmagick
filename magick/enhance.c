@@ -123,7 +123,7 @@ MagickExport unsigned int ContrastImage(Image *image,const unsigned int sharpen)
         q=GetImagePixels(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
           break;
-        for (x=0; x < (long) image->columns; x++)
+        for (x=(long) image->columns; x > 0; x--)
         {
           Contrast(sign,&q->red,&q->green,&q->blue);
           q++;
@@ -149,9 +149,12 @@ MagickExport unsigned int ContrastImage(Image *image,const unsigned int sharpen)
       /*
         Contrast enhance PseudoClass image.
       */
-      for (i=0; i < (long) image->colors; i++)
-        Contrast(sign,&image->colormap[i].red,&image->colormap[i].green,
-          &image->colormap[i].blue);
+      q=image->colormap;
+      for (i=(long) image->colors; i > 0; i--)
+        {
+          Contrast(sign,&(q->red),&(q->green),&(q->blue));
+          q++;
+        }
       SyncImage(image);
       break;
     }
@@ -845,9 +848,6 @@ MagickExport unsigned int ModulateImage(Image *image,const char *modulate)
   register PixelPacket
     *q;
 
-  /*
-    Initialize gamma table.
-  */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   if (modulate == (char *) NULL)
@@ -857,6 +857,13 @@ MagickExport unsigned int ModulateImage(Image *image,const char *modulate)
   percent_hue=100.0;
   (void) sscanf(modulate,"%lf%*[,/]%lf%*[,/]%lf",&percent_brightness,
     &percent_saturation,&percent_hue);
+  /*
+    Ensure that adjustment values are positive so they don't need to
+    be checked in Modulate.
+  */
+  percent_brightness=AbsoluteValue(percent_brightness);
+  percent_saturation=AbsoluteValue(percent_saturation);
+  percent_hue=AbsoluteValue(percent_hue);
   switch (image->storage_class)
   {
     case DirectClass:
@@ -870,7 +877,7 @@ MagickExport unsigned int ModulateImage(Image *image,const char *modulate)
         q=GetImagePixels(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
           break;
-        for (x=0; x < (long) image->columns; x++)
+        for (x=(long) image->columns; x > 0; x--)
         {
           Modulate(percent_hue,percent_saturation,percent_brightness,
             &q->red,&q->green,&q->blue);
@@ -889,10 +896,16 @@ MagickExport unsigned int ModulateImage(Image *image,const char *modulate)
       /*
         Modulate the color for a PseudoClass image.
       */
-      for (i=0; i < (long) image->colors; i++)
-        Modulate(percent_hue,percent_saturation,percent_brightness,
-          &image->colormap[i].red,&image->colormap[i].green,
-          &image->colormap[i].blue);
+      PixelPacket
+        *colormap;
+
+      colormap=image->colormap;
+      for (i=(long) image->colors; i > 0; i--)
+        {
+          Modulate(percent_hue,percent_saturation,percent_brightness,
+                   &(colormap->red),&(colormap->green),&(colormap->blue));
+                   colormap++;
+        }
       SyncImage(image);
       break;
     }

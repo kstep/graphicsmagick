@@ -8,6 +8,8 @@
 extern "C" {
 #endif /* defined(__cplusplus) || defined(c_plusplus) */
 
+#define DefaultResizeFilter LanczosFilter
+
 extern MagickExport Image
   *MagnifyImage(const Image *,ExceptionInfo *),
   *MinifyImage(const Image *,ExceptionInfo *),

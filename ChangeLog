@@ -1,3 +1,45 @@
+2003-01-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/montage.c (MontageImages): Use ThumbnailImage() rather
+ 	than ZoomImage() to resize montage thumbnails provided that the
+ 	user has not specified an image filter, and the montage thumbnail
+ 	is smaller than the image. This should provide faster montages
+	for large images.
+
+	* magick/resize.c (ResizeImage): Added logging support.
+	(MagnifyImage): Added logging support.
+	(MinifyImage): Added logging support.
+	(SampleImage): Added logging support.
+	(ScaleImage): Added logging support.
+
+2003-01-14  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/transform.c (ProfileImage): Duplicate ImageMagick changes
+ 	to image colorspace handling.  Avoids using
+ 	SetImageType(image,ColorSeparationMatteType).
+
+	* magick/fx.c (OilPaintImage): Replaced with ImageMagick version
+ 	since ImageMagick version has been updated to not penalize Q:8.
+	Optimized loops.
+
+	* magick/display.c (XDisplayImage): Display to 100% of
+	the screen size rather than 90% of the screen size.
+
+	* magick/enhance.c (ModulateImage): Ensure that arguments
+	are always positive values.  Optimized loops.
+	(ContrastImage): Optimized loops.
+
+	* magick/gem.c (HSLTransform): Optimized performance by
+	eliminating redundant intermediate calculations. This
+	makes 'gm convert -contrast' 21% faster.
+	(HSLTransform): Set to inline within the gem.c module.
+	(TransformHSL): Set to inline within the gem.c module.
+	(Contrast): Moved to bottom of gem.c module so HSLTransform
+	and TransformHSL can be inlined. Simplified conditionals.
+	(Modulate): Moved to bottom of gem.c module so HSLTransform
+	and TransformHSL can be inlined. No longer check/correct
+	negative values.
+
 2003-01-14 William Radcliffe <billr@corbis.com>
 	* magick/blob.c
 	* magick/blob.h

@@ -2773,8 +2773,8 @@ static unsigned int XConfigureImage(Display *display,
     Notify window manager of the new configuration.
   */
   FormatString(geometry,"%ux%u+0+0>!",
-    90*XDisplayWidth(display,windows->image.screen)/100,
-    90*XDisplayHeight(display,windows->image.screen)/100);
+    XDisplayWidth(display,windows->image.screen),
+    XDisplayHeight(display,windows->image.screen));
   (void) GetMagickGeometry(geometry,&x,&y,&width,&height);
   window_changes.width=(unsigned int) width;
   window_changes.height=(unsigned int) height;
@@ -12309,8 +12309,8 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   windows->image.use_pixmap=resource_info->use_pixmap;
   windows->image.geometry=resource_info->image_geometry;
   FormatString(geometry,"%ux%u+0+0>!",
-    90*XDisplayWidth(display,visual_info->screen)/100,
-    90*XDisplayHeight(display,visual_info->screen)/100);
+    XDisplayWidth(display,visual_info->screen),
+    XDisplayHeight(display,visual_info->screen));
   width=display_image->columns;
   height=display_image->rows;
   x=0;

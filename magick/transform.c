@@ -1199,8 +1199,6 @@ MagickExport unsigned int ProfileImage(Image *image,const char *name,
           if (transform == (cmsHTRANSFORM) NULL)
             ThrowBinaryException(ResourceLimitError,"UnableToManageColor",
               "UnableToCreateColorTransform");
-          if (image->colorspace == CMYKColorspace)
-            SetImageType(image,ColorSeparationMatteType);
           for (y=0; y < (long) image->rows; y++)
           {
             q=GetImagePixels(image,0,y,image->columns,1);
@@ -1222,11 +1220,13 @@ MagickExport unsigned int ProfileImage(Image *image,const char *name,
             if (!SyncImagePixels(image))
               break;
           }
-          if (image->colorspace == CMYKColorspace)
-            image->matte=False;
           cmsDeleteTransform(transform);
           cmsCloseProfile(image_profile);
           cmsCloseProfile(transform_profile);
+          if (colorspace == CMYKColorspace)
+            image->colorspace=CMYKColorspace;
+          else
+            image->colorspace=RGBColorspace;
 #endif
           LiberateMemory((void **) &image->color_profile.info);
         }

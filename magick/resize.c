@@ -52,6 +52,7 @@
 */
 #include "studio.h"
 #include "cache.h"
+#include "log.h"
 #include "monitor.h"
 #include "resize.h"
 #include "utility.h"
@@ -322,6 +323,11 @@ MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
   magnify_image=CloneImage(image,2*image->columns,2*image->rows,True,exception);
   if (magnify_image == (Image *) NULL)
     return((Image *) NULL);
+
+  LogMagickEvent(TransformEvent,GetMagickModule(),
+    "Magnifying image of size %lux%lu to %lux%lu",
+    image->columns,image->rows,magnify_image->columns,magnify_image->rows);
+
   magnify_image->storage_class=DirectClass;
   /*
     Allocate image buffer and scanline buffer for 4 rows of the image.
@@ -502,10 +508,16 @@ MagickExport Image *MinifyImage(const Image *image,ExceptionInfo *exception)
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
+
   minify_image=CloneImage(image,Max(image->columns/2,1),Max(image->rows/2,1),
     True,exception);
   if (minify_image == (Image *) NULL)
     return((Image *) NULL);
+
+  LogMagickEvent(TransformEvent,GetMagickModule(),
+    "Minifying image of size %lux%lu to %lux%lu",
+    image->columns,image->rows,minify_image->columns,minify_image->rows);
+
   minify_image->storage_class=DirectClass;
   /*
     Reduce each row.
@@ -998,6 +1010,66 @@ static unsigned int VerticalFilter(const Image *source,Image *destination,
   return(y == (long) destination->rows);
 }
 
+static const char *ResizeFilterToString(const FilterTypes filter)
+{
+  const char *
+    filter_string = "Unknown";
+
+  switch (filter)
+    {
+    case UndefinedFilter:
+      filter_string="Undefined";
+      break;
+    case PointFilter:
+      filter_string="Point";
+      break;
+    case BoxFilter:
+      filter_string="Box";
+      break;
+    case TriangleFilter:
+      filter_string="Triangle";
+      break;
+    case HermiteFilter:
+      filter_string="Hermite";
+      break;
+    case HanningFilter:
+      filter_string="Hanning";
+      break;
+    case HammingFilter:
+      filter_string="Hamming";
+      break;
+    case BlackmanFilter:
+      filter_string="Blackman";
+      break;
+    case GaussianFilter:
+      filter_string="Gaussian";
+      break;
+    case QuadraticFilter:
+      filter_string="Quadratic";
+      break;
+    case CubicFilter:
+      filter_string="Cubi";
+      break;
+    case CatromFilter:
+      filter_string="Catrom";
+      break;
+    case MitchellFilter:
+      filter_string="Mitchell";
+      break;
+    case LanczosFilter:
+      filter_string="Lanczos";
+      break;
+    case BesselFilter:
+      filter_string="Bessel";
+      break;
+    case SincFilter:
+      filter_string="Sinc";
+      break;
+    }
+
+  return filter_string;
+}
+
 MagickExport Image *ResizeImage(const Image *image,const unsigned long columns,
   const unsigned long rows,const FilterTypes filter,const double blur,
   ExceptionInfo *exception)
@@ -1070,13 +1142,19 @@ MagickExport Image *ResizeImage(const Image *image,const unsigned long columns,
   */
   x_factor=(double) resize_image->columns/image->columns;
   y_factor=(double) resize_image->rows/image->rows;
-  i=(long) LanczosFilter;
+  i=(long) DefaultResizeFilter;
   if (image->filter != UndefinedFilter)
     i=(long) image->filter;
   else
     if ((image->storage_class == PseudoClass) || image->matte ||
         ((x_factor*y_factor) > 1.0))
       i=(long) MitchellFilter;
+
+  LogMagickEvent(TransformEvent,GetMagickModule(),
+    "Resizing image of size %lux%lu to %lux%lu using %s filter",
+    image->columns,image->rows,columns,rows,
+    ResizeFilterToString((FilterTypes)i));
+
   x_support=blur*Max(1.0/x_factor,1.0)*filters[i].support;
   y_support=blur*Max(1.0/y_factor,1.0)*filters[i].support;
   support=Max(x_support,y_support);
@@ -1090,6 +1168,7 @@ MagickExport Image *ResizeImage(const Image *image,const unsigned long columns,
       ThrowImageException(ResourceLimitError,"MemoryAllocationFailed",
         "UnableToResizeImage")
     }
+
   /*
     Resize image.
   */
@@ -1218,6 +1297,11 @@ MagickExport Image *SampleImage(const Image *image,const unsigned long columns,
   sample_image=CloneImage(image,columns,rows,True,exception);
   if (sample_image == (Image *) NULL)
     return((Image *) NULL);
+
+  LogMagickEvent(TransformEvent,GetMagickModule(),
+    "Sampling image of size %lux%lu to %lux%lu",
+    image->columns,image->rows,sample_image->columns,sample_image->rows);
+
   /*
     Allocate scan line buffer and column offset buffers.
   */
@@ -1367,6 +1451,11 @@ MagickExport Image *ScaleImage(const Image *image,const unsigned long columns,
   scale_image=CloneImage(image,columns,rows,True,exception);
   if (scale_image == (Image *) NULL)
     return((Image *) NULL);
+
+  LogMagickEvent(TransformEvent,GetMagickModule(),
+    "Scaling image of size %lux%lu to %lux%lu",
+    image->columns,image->rows,scale_image->columns,scale_image->rows);
+
   scale_image->storage_class=DirectClass;
   /*
     Allocate memory.

@@ -798,13 +798,19 @@ MagickExport Image *MorphImages(const Image *image,
 MagickExport Image *OilPaintImage(const Image *image,const double radius,
   ExceptionInfo *exception)
 {
-#define OilPaintImageText  "  Oil paint image...  "
+#define OilPaintImageTag  "OilPaint/Image"
+
+  const PixelPacket
+    *s;
+
+  unsigned long
+    count,
+    *histogram;
 
   Image
     *paint_image;
 
   long
-    k,
     width,
     y;
 
@@ -813,16 +819,10 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
     *r;
 
   register long
-    u,
-    v,
     x;
 
   register PixelPacket
     *q;
-
-  unsigned long
-    count,
-    *histogram;
 
   /*
     Initialize painted image attributes.
@@ -835,14 +835,14 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
   if (((long) image->columns < width) || ((long) image->rows < width))
     ThrowImageException(OptionError,"UnableToPaintImage",
       "ImageSmallerThanRadius");
-  paint_image=CloneImage(image,0,0,True,exception);
+  paint_image=CloneImage(image,image->columns,image->rows,True,exception);
   if (paint_image == (Image *) NULL)
     return((Image *) NULL);
   SetImageType(paint_image,TrueColorType);
   /*
     Allocate histogram and scanline.
   */
-  histogram=(unsigned long *) AcquireMemory(65536L*sizeof(unsigned long));
+  histogram=(unsigned long *) AcquireMemory((MaxMap+1)*sizeof(unsigned long));
   if (histogram == (unsigned long *) NULL)
     {
       DestroyImage(paint_image);
@@ -859,36 +859,49 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
     q=SetImagePixels(paint_image,0,y,paint_image->columns,1);
     if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
-    for (x=0; x < (long) image->columns; x++)
+    for (x=(long) image->columns; x > 0; x--)
     {
+      register long
+        v;
+
       /*
         Determine most frequent color.
       */
       count=0;
-      (void) memset(histogram,0,65536L*sizeof(unsigned long));
-      r=p;
-      for (v=0; v < width; v++)
+      (void) memset(histogram,0,(MaxMap+1)*sizeof(unsigned long));
+      r=p++;
+      s=r;
+      for (v=width; v > 0; v--)
       {
-        for (u=0; u < width; u++)
+        register long
+          u;
+
+        register const PixelPacket
+          *ru;
+
+        ru=r;
+        for (u=width; u > 0; u--)
         {
-          k=ScaleQuantumToShort(PixelIntensityToQuantum(r+u));
-          histogram[k]++;
-          if (histogram[k] > count)
+          register unsigned long
+            *hp;
+
+          hp=histogram+ScaleQuantumToMap(PixelIntensityToQuantum(ru));
+          (*hp)++;
+          if (*hp > count)
             {
-              *q=(r[u]);
-              count=histogram[k];
+              s=ru;
+              count=*hp;
             }
-          k++;
+          ru++;
         }
         r+=image->columns+width;
       }
-      p++;
-      q++;
+      *q++=(*s);
     }
     if (!SyncImagePixels(paint_image))
       break;
     if (QuantumTick(y,image->rows))
-      if (!MagickMonitor(OilPaintImageText,y,image->rows,exception))
+      if (!MagickMonitor(OilPaintImageTag,y,image->rows,exception))
         break;
   }
   LiberateMemory((void **) &histogram);

@@ -757,6 +757,9 @@ sub testMontage {
 
   # Set image options
   #print "Image Options  : $imageOptions\n";
+  if ("$imageOptions" ne "") {
+    print("\$images->Set($imageOptions)\n");
+  }
   eval "\$status = \$images->Set($imageOptions) ;";
   warn "SetImage: $status" if "$status";
 
@@ -766,6 +769,7 @@ sub testMontage {
 
   # Do montage
   #print "Montage Options: $montageOptions\n";
+  print("\$montage=\$images->Montage( $montageOptions )\n");
   eval "\$montage=\$images->Montage( $montageOptions ) ;";
   if( $@ ) {
     print "$@";
@@ -776,8 +780,8 @@ sub testMontage {
   if( ! ref($montage) ) {
     print "not ok $test\n";
   } else {
-    #$montage->Display();
     # Check MD5 signature
+    #$montage->Display();
     $signature=$montage->GetAttribute('signature');
     if ( defined( $signature ) ) {
       if ( ( $signature ne $md5 ) and ( $signature ne $md5_16 ) ) {
@@ -790,7 +794,7 @@ sub testMontage {
         
         $status = $montage->Write("test_${test}_out.miff");
         warn "Write: $status" if "$status";
-        
+          
         print "not ok $test\n";
       } else {
         # Check montage directory

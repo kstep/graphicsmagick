@@ -373,7 +373,17 @@ MagickExport Image *MontageImages(const Image *images,
     SetGeometry(image,&geometry);
     flags=GetMagickGeometry(montage_info->geometry,&geometry.x,&geometry.y,
       &geometry.width,&geometry.height);
-    thumbnail=ZoomImage(image,geometry.width,geometry.height,exception);
+    /*
+      Use ThumbnailImage() rather than ZoomImage() to resize montage
+      thumbnails provided that the user has not specified an image
+      filter, and the montage thumbnail is smaller than the
+      image. This should lead to faster montages for large images.
+    */
+    if ((image->filter != UndefinedFilter) ||
+        (geometry.width>image->columns) || (geometry.height>image->rows))
+      thumbnail=ZoomImage(image,geometry.width,geometry.height,exception);
+    else
+      thumbnail=ThumbnailImage(image,geometry.width,geometry.height,exception);
     if (thumbnail == (Image *) NULL)
       break;
     image_list[i]=thumbnail;

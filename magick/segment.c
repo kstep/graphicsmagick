@@ -539,6 +539,12 @@ static unsigned int Classify(Image *image,short **extrema,
                 squares[ScaleQuantumToChar(q->green)-(long) ScaleQuantumToChar(p->green)]+
                 squares[ScaleQuantumToChar(q->blue)-(long) ScaleQuantumToChar(p->blue)];
               ratio=numerator/sqrt(distance_squared);
+              /*
+                Most of the time spent running this algorithm is
+                spent executing the following line of code.  A 427x640
+                image with 76503 colors executes the pow() function
+                401,581,395 times!
+              */
               sum+=pow(ratio,(double) (2.0/(weighting_exponent-1.0)));
             }
             if (sum && ((1.0/sum) > local_minima))

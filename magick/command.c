@@ -4294,7 +4294,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
 
             if (*option == '+')
               {
-                (*image)->filter=LanczosFilter;
+                (*image)->filter=DefaultResizeFilter;
                 continue;
               }
             option=argv[++i];
