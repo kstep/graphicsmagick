@@ -5552,7 +5552,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
               palette[i].green=ScaleQuantumToChar(image->colormap[i].green);
               palette[i].blue=ScaleQuantumToChar(image->colormap[i].blue);
               if (logging)
-                (void) LogMagickEvent(CoderEvent,__MagickMethod,"    %3d (%3d,%3d,%3d)",
+                (void) LogMagickEvent(CoderEvent,__MagickMethod,"    %3ld (%3d,%3d,%3d)",
                   i,palette[i].red,palette[i].green,palette[i].blue);
 
             }
