@@ -18,7 +18,7 @@
 %                            P      SSSSS  33333                              %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                    Write Postscript Level III Format.                       %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %

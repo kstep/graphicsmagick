@@ -17,7 +17,7 @@
 %                             M   M  SSSSS  LLLLL                             %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                    Execute Magick Scripting Language Scripts.               %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %
@@ -4117,7 +4117,7 @@ ModuleExport void UnregisterMSLImage(void)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method WriteMSLImage writes an image to a file in MVG image format.
+%  Method WriteMSLImage processes the image via a MSL script.
 %
 %  The format of the WriteMSLImage method is:
 %

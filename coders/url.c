@@ -17,7 +17,7 @@
 %                             UUU   R  R   LLLLL                              %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                       Retrieve An Image Via a URL.                          %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %

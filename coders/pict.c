@@ -18,7 +18,7 @@
 %                        P      IIIII   CCCC    T                             %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%              Read/Write Apple Macintosh QuickDraw/PICT Format.              %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %

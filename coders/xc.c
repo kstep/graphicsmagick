@@ -18,7 +18,7 @@
 %                               X   X   CCCC                                  %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                        Read Constant Color Image.                           %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %

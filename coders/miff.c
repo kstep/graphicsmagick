@@ -18,7 +18,7 @@
 %                        M   M  IIIII  F      F                               %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                      Read/Write MIFF Image Format.                          %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %

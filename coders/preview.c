@@ -18,7 +18,7 @@
 %              P      R  R   EEEEE    V    IIIII  EEEEE   W W                 %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                           Write A Preview Image.                            %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %

@@ -18,7 +18,7 @@
 %                            P      N   N  M   M                              %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%              Read/Write PBMPlus Portable Anymap Image Format.               %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %

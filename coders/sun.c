@@ -18,7 +18,7 @@
 %                            SSSSS   UUU   N   N                              %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                   Read/Write Sun Rasterfile Image Format.                   %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %

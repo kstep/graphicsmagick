@@ -18,7 +18,7 @@
 %                            P       CCCC  LLLLL                              %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                        Write HP PCL Printer Format.                         %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %

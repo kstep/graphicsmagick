@@ -18,7 +18,7 @@
 %                            P      SSSSS  DDDD                               %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                  Read/Write Adobe Photoshop Image Format.                   %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %

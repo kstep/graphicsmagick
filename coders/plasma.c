@@ -18,7 +18,7 @@
 %                 P      LLLLL  A   A  SSSSS  M   M  A   A                    %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                          Read a Plasma Image.                               %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %

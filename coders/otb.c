@@ -17,7 +17,7 @@
 %                              OOO     T    BBBB                              %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                     Read/Write On-The-Air Image Format.                     %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %

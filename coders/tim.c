@@ -18,7 +18,7 @@
 %                              T    IIIII  M   M                              %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                          Read PSX TIM Image Format.                         %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %

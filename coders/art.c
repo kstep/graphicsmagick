@@ -16,7 +16,7 @@
 %                            A   A  R  R     T                                %
 %                                                                             %
 %                                                                             %
-%                    Read/Write GrahpicsMagick Image Format.                    %
+%                Read/Write PFS: 1st Publisher Image Format.                  %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %

@@ -18,7 +18,7 @@
 %                     M   M  A   A    T      T    EEEEE                       %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                     Write Matte Channel To MIFF File.                       %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %

@@ -18,7 +18,7 @@
 %                        N   N   UUU   LLLLL  LLLLL                           %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                   Read/Write Image Of Uniform Color                         %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %

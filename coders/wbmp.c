@@ -18,7 +18,7 @@
 %                         W   W  BBBB   M   M  P                              %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%              Read/Write Wireless Bitmap (level 0) Image Format.             %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %

@@ -18,7 +18,7 @@
 %                            EEEEE  P        T                                %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%           Read/Write Encapsulated Postscript Format (with preview).         %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %

@@ -18,7 +18,7 @@
 %                             UUU   IIIII  LLLLL                              %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                         Write X-Motif UIL Table                             %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %

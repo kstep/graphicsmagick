@@ -16,7 +16,7 @@
 %                            M   M   V V   G   G                              %
 %                            M   M    V     GGG                               %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                 Read/Write Magick Vector Graphics Metafiles.                %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %

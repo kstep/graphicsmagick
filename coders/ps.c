@@ -18,7 +18,7 @@
 %                               P      SSSSS                                  %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                        Read/Write Postscript Format.                        %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %

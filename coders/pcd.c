@@ -18,7 +18,7 @@
 %                            P       CCCC  DDDD                               %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                     Read/Write Photo CD Image Format.                       %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %

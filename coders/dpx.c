@@ -18,7 +18,7 @@
 %                            DDDD   P      X   X                              %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                     Read/Write SMTPE DPX Image Format.                      %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %

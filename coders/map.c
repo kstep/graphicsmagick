@@ -18,7 +18,7 @@
 %                            M   M  A   A  P                                  %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                 Read/Write Image Colormaps As An Image File                 %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %

@@ -18,7 +18,7 @@
 %                            M   M    T      V                                %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                   Read/Write MTV Raytracer Image Format.                    %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %

@@ -18,7 +18,7 @@
 %                              V    IIIII  DDDD                               %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%             Return a Visual Image Directory for matching images.            %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %

@@ -18,7 +18,7 @@
 %                            BBBB   M   M  P                                  %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%             Read/Write Microsoft Windows Bitmap Image Format.               %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %

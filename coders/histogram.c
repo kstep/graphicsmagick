@@ -18,7 +18,7 @@
 %       H   H  IIIII  SSSSS    T     OOO    GGG   R  R   A   A  M   M         %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                          Write A Histogram Image.                           %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %

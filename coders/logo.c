@@ -21,7 +21,7 @@
 %                        LLLLL   OOO    GGG    OOO                            %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                  Read Embedded GraphicsMagick Images                        %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %

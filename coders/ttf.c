@@ -18,7 +18,7 @@
 %                              T      T    F                                  %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%             Return A Preview For A TrueType or Postscript Font              %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %

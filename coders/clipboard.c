@@ -12,7 +12,7 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                        Read/Write Windows Clipboard.                        %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %

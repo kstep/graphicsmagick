@@ -17,7 +17,7 @@
 %                             JJ    P      22222                              %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                    Read/Write JPEG-2000 Image Format.                       %
 %                                                                             %
 %                                                                             %
 %                                John Cristy                                  %

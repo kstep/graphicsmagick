@@ -18,7 +18,7 @@
 %                            P      DDDD   F                                  %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                  Read/Write Portable Document Format.                       %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %

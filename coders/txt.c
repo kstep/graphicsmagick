@@ -18,7 +18,7 @@
 %                              T    X   X    T                                %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                      Render Text Onto A Canvas Image.                       %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %

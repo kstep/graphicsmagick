@@ -18,7 +18,7 @@
 %                             GGG   IIIII  F                                  %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%            Read/Write Compuserv Graphics Interchange Format.                %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %

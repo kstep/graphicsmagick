@@ -18,7 +18,7 @@
 %                            A   A    V    SSSSS                              %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                        Read/Write AVS X Image Format.                       %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %

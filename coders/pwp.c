@@ -18,7 +18,7 @@
 %                            P       W W   P                                  %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                   Read Seattle Film Works Image Format.                     %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %

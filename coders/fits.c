@@ -18,7 +18,7 @@
 %                        F      IIIII    T    SSSSS                           %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%            Read/Write Flexible Image Transport System Images.               %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %

@@ -17,7 +17,7 @@
 %                            M   M  P       CCCC                              %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%              Read/Write Magick Persistant Cache Image Format.               %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %

@@ -18,7 +18,7 @@
 %            GGG   R  R   A   A  DDDD   IIIII  EEEEE  N   N    T              %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                 Read An Image Filled Using Gradient.                        %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %

@@ -18,7 +18,7 @@
 %                         CCCC  M   M    Y    K   K                           %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                     Read/Write RAW CMYK Image Format.                       %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %

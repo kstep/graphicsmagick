@@ -17,7 +17,7 @@
 %                            A   A    V    IIIII                              %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%            Read Microsoft Audio/Visual Interleaved Image Format.            %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %

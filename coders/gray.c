@@ -18,7 +18,7 @@
 %                         GGG   R  R   A   A    Y                             %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                    Read/Write RAW Gray Image Format.                        %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %

@@ -18,7 +18,7 @@
 %                            F      P      X   X                              %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                     Read/Write FlashPIX Image Format.                       %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %

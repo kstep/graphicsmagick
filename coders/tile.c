@@ -18,7 +18,7 @@
 %                          T    IIIII  LLLLL  EEEEE                           %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                    Return A Tiled Image Using Texture.                      %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %

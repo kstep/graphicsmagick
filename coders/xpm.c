@@ -18,7 +18,7 @@
 %                            X   X  P      M   M                              %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                 Read/Write X Windows system Pixmap Format.                  %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %

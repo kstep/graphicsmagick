@@ -16,7 +16,7 @@
 %                  L      O   O  C      A   A  L      E                       %
 %                  LLLLL   OOO    CCCC  A   A  LLLLL  EEEEE                   %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                   Read/Write GraphicsMagick Locale Files                    %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %

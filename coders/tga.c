@@ -18,7 +18,7 @@
 %                              T     GGG   A   A                              %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                   Read/Write Truevision Targa Image Format.                 %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %

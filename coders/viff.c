@@ -18,7 +18,7 @@
 %                          V    IIIII  F      F                               %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%               Read/Write Khoros Visualization Image Format.                 %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %

@@ -18,7 +18,7 @@
 %                            R  R   LLLLL  EEEEE                              %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                         Read URT RLE Image Format.                          %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %

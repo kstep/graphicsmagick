@@ -18,7 +18,7 @@
 %                            H   H  DDDD   F                                  %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                   Read/Write Heirarchical Data Format.                      %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %

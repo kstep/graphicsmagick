@@ -18,7 +18,7 @@
 %                         UUU     Y      V      Y                             %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%           Read/Write 16bit/pixel Interleaved YUV Image Format.              %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %

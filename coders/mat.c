@@ -9,14 +9,14 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
-%               M   M   AAA   TTTTT  L       AAA   BBBB                       %
-%               MM MM  A   A    T    L      A   A  B   B                      %
-%               M M M  AAAAA    T    L      AAAAA  BBBB                       %
-%               M   M  A   A    T    L      A   A  B   B                      %
-%               M   M  A   A    T    LLLLL  A   A  BBBB                       %
+%                  M   M   AAA   TTTTT  L       AAA   BBBB                    %
+%                  MM MM  A   A    T    L      A   A  B   B                   %
+%                  M M M  AAAAA    T    L      AAAAA  BBBB                    %
+%                  M   M  A   A    T    L      A   A  B   B                   %
+%                  M   M  A   A    T    LLLLL  A   A  BBBB                    %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                        Read MATLAB Image Format.                            %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %

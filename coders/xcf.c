@@ -17,7 +17,7 @@
 %                            X   X   CCCC  F                                  %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                       Read GIMP XCF Image Format.                           %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %

@@ -18,7 +18,7 @@
 %                            DDDD   P      SSSSS                              %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%            Read Postscript Using the Display Postscript System.             %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %

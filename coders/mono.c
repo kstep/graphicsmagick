@@ -11,14 +11,14 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%                        M   M   OOO   N   N   OOO                            %
-%                        MM MM  O   O  NN  N  O   O                           %
-%                        M M M  O   O  N N N  O   O                           %
-%                        M   M  O   O  N  NN  O   O                           %
-%                        M   M   OOO   N   N   OOO                            %
+%                         M   M   OOO   N   N   OOO                           %
+%                         MM MM  O   O  NN  N  O   O                          %
+%                         M M M  O   O  N N N  O   O                          %
+%                         M   M  O   O  N  NN  O   O                          %
+%                         M   M   OOO   N   N   OOO                           %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                   Read/Write Raw Bi-Level Bitmap Format.                    %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %

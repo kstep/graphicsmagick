@@ -9,14 +9,14 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
-%                             CCC   U   U  TTTTT                              %
-%                            C   C  U   U    T                                %
-%                            C      U   U    T                                %
-%                            C   C  U   U    T                                %
-%                             CCC    UUU     T                                %
+%                              CCC  U   U  TTTTT                              %
+%                             C     U   U    T                                %
+%                             C     U   U    T                                %
+%                             C     U   U    T                                %
+%                              CCC   UUU     T                                %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                         Read DR Halo Image Format.                          %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %

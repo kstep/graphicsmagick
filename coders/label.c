@@ -18,7 +18,7 @@
 %                     LLLLL  A   A  BBBB   EEEEE  LLLLL                       %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                      Read ASCII String As An Image                          %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %

@@ -17,7 +17,7 @@
 %                        M   M  EEEEE    T    A   A                           %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                   Read/Write Embedded Image Profiles                        %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %

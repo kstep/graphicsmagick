@@ -18,7 +18,7 @@
 %                            R  R   LLLLL  A   A                              %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                     Read Alias/Wavefront Image Format.                      %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %

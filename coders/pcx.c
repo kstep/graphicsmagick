@@ -18,7 +18,7 @@
 %                            P       CCCC  X   X                              %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%               Read/Write ZSoft IBM PC Paintbrush Image Format.              %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %

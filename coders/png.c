@@ -18,7 +18,7 @@
 %                            P      N   N   GGG                               %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%             Read/Write Portable Network Graphics Image Format.              %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %

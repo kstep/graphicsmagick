@@ -18,7 +18,7 @@
 %                            P      IIIII  X   X                              %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                   Read Alias/Wavefront RLE Image Format.                    %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %

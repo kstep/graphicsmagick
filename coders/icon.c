@@ -18,7 +18,7 @@
 %                        IIIII   CCCC   OOO   N   N                           %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                   Read Microsoft Windows Icon Format.                       %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %

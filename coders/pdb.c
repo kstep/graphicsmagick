@@ -17,7 +17,7 @@
 %                            P      DDDD   BBBB                               %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%              Read/Write Palm Database ImageViewer Image Format.             %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %

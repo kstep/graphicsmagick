@@ -18,7 +18,7 @@
 %                            P      SSSSS  22222                              %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                     Write Postscript Level II Format.                       %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %

@@ -17,7 +17,7 @@
 %                            SSSSS    V     GGG                               %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                 Read/Write Scalable Vector Graphics Format.                 %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %

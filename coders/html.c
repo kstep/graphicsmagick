@@ -18,7 +18,8 @@
 %                        H   H    T    M   M  LLLLL                           %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                  Write A Client-Side Image Map Using                        %
+%                Image Montage & Directory Information.                       %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %

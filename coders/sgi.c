@@ -18,7 +18,7 @@
 %                            SSSSS   GGG   IIIII                              %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                     Read/Write Irix RGB Image Format.                       %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %

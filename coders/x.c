@@ -18,7 +18,7 @@
 %                                   X   X                                     %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                    Read/Write Image from/to X11 Server.                     %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %

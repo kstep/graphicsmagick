@@ -18,7 +18,7 @@
 %              SSSSS    T    EEEEE   GGG   A   A  N   N   OOO                 %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                      Write A Steganographic Image.                          %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %

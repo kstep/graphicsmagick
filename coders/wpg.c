@@ -16,7 +16,7 @@
 %                            W   W  P       GGG                               %
 %                                                                             %
 %                                                                             %
-%                    Read/Write WordPerfect Image Format.                     %
+%                       Read WordPerfect Image Format.                        %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %

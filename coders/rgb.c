@@ -18,7 +18,7 @@
 %                            R  R    GGG   BBBB                               %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                    Read/Write Raw RGB Image Format.                         %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %

@@ -18,7 +18,7 @@
 %                        JJJ    BBBB   IIIII   GGG                            %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                       Read/Write JBIG Image Format.                         %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %

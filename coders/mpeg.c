@@ -17,7 +17,7 @@
 %                        M   M  P      EEEEE   GGGG                           %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                          Write MPEG Image Format.                           %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %

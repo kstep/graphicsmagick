@@ -18,7 +18,7 @@
 %                            F      A   A  X   X                              %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                   Read/Write Group 3 FIX Image Format.                      %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %

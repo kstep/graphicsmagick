@@ -18,7 +18,7 @@
 %                       V    IIIII   CCCC  A   A  R  R                        %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                   Read/Write VICAR Rasterfile Format.                       %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %

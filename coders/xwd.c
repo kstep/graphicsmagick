@@ -18,7 +18,7 @@
 %                            X   X   W W   DDDD                               %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%               Read/Write X Windows System Window Dump Format.               %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %

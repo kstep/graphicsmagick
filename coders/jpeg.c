@@ -18,7 +18,7 @@
 %                        JJJ    P      EEEEE   GGG                            %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                       Read/Write JPEG Image Format.                         %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %

@@ -18,7 +18,7 @@
 %                            SSSSS   CCCC    T                                %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                   Read Scitex HandShake Image Format.                       %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %

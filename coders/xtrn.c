@@ -17,7 +17,7 @@
 %                        X   X    T    R  R   N   N                           %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                    ImageMagickObject BLOB Interface.                        %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %

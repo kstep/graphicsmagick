@@ -17,7 +17,7 @@
 %               CCCC  A   A  P        T    IIIII   OOO   N   N                %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                             Read Text Caption.                              %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %

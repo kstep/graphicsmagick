@@ -17,7 +17,7 @@
 %                        P      A   A  LLLLL  M   M                           %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                          Read/Write Palm Pixmap.                            %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %

@@ -18,7 +18,7 @@
 %                            DDDD    CCCC  M   M                              %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                          Read DICOM Image Format.                           %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %

@@ -17,7 +17,7 @@
 %                            DDDD   IIIII  BBBB                               %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                   Read/Write Windows DIB Image Format.                      %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %
