@@ -143,7 +143,7 @@ Magick::Color::operator std::string() const
   if ( !isValid() )
     return std::string("none");
 
-  char colorbuf[17];
+  char colorbuf[20];
   ostrstream colorstr( colorbuf, sizeof(colorbuf ));
   colorstr.setf(ios::right | ios::uppercase );
   colorstr.fill('0');

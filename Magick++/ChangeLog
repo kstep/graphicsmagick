@@ -1,3 +1,8 @@
+2001-12-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Color.cpp (operator std::string): Color string buffer was
+ 	one character too short!
+
 2001-12-20  Bob Friesenhahn  <bfriesen@sun1107.ssd.usa.alcatel.com>
 
 	* lib/TypeMetric.cpp (characterWidth): Eliminate method.
