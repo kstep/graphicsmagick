@@ -3200,7 +3200,7 @@ MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
 %  transforms include image scaling, image rotation, color reduction, and
 %  others. The transmogrified image overwrites the original image.
 %
-%  The format of the MogrifyCommand method is:
+%  The format of the MogrifyImageCommand method is:
 %
 %      unsigned int MogrifyImageCommand(ImageInfo *image_info,const int argc,
 %        char **argv,ExceptionInfo *exception)
