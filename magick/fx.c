@@ -322,7 +322,7 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
   convolve_image=CloneImage(image,image->columns,image->rows,True,exception);
   if (convolve_image == (Image *) NULL)
     return((Image *) NULL);
-  SetImageType(convolve_image,TrueColorType);
+  convolve_image->storage_class=DirectClass;
   /*
     Convolve image.
   */
