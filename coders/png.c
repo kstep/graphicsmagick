@@ -438,14 +438,14 @@ static unsigned int CompressColormapTransFirst(Image *image)
   marker=(unsigned char *) AcquireMemory(image->colors);
   if (marker == (unsigned char *) NULL)
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-      "unable to compress colormap");
+      "UnableToCompressColormap")
   opacity=(IndexPacket *)
     AcquireMemory(image->colors*sizeof(IndexPacket));
   if (opacity == (IndexPacket *) NULL)
     {
       LiberateMemory((void **) &marker);
       ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-        "unable to compress colormap");
+        "UnableToCompressColormap")
     }
   /*
     Mark colors that are present.
@@ -546,7 +546,7 @@ static unsigned int CompressColormapTransFirst(Image *image)
       LiberateMemory((void **) &marker);
       LiberateMemory((void **) &opacity);
       ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-        "unable to compress colormap");
+        "UnableToCompressColormap")
     }
   /*
     Eliminate unused colormap entries.
@@ -558,7 +558,7 @@ static unsigned int CompressColormapTransFirst(Image *image)
       LiberateMemory((void **) &opacity);
       LiberateMemory((void **) &colormap);
       ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-        "unable to compress colormap");
+        "UnableToCompressColormap")
     }
   k=0;
   for (i=0; i < number_colors; i++)
