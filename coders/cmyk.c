@@ -417,7 +417,11 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
       }
     }
     if (EOFBlob(image))
-      ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile",image);
+      {
+        ThrowException(exception,CorruptImageError,"UnexpectedEndOfFile",
+          image->filename);
+        break;
+      }
     /*
       Proceed to next image.
     */

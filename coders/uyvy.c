@@ -177,7 +177,8 @@ static Image *ReadUYVYImage(const ImageInfo *image_info,
   }
   (void) TransformRGBImage(image,YCbCrColorspace);
   if (EOFBlob(image))
-    ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile",image);
+    ThrowException(exception,CorruptImageError,"UnexpectedEndOfFile",
+      image->filename);
   CloseBlob(image);
   return(image);
 }

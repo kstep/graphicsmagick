@@ -261,7 +261,8 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       ThrowReaderException(CorruptImageError,"ColorTypeNotSupported",image)
   }
   if (EOFBlob(image))
-    ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile",image);
+    ThrowException(exception,CorruptImageError,"UnexpectedEndOfFile",
+      image->filename);
   CloseBlob(image);
   return(image);
 }
@@ -399,8 +400,9 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
   (void) WriteBlobMSBLong(image,0x496D6167);
   (void) WriteBlobMSBLong(image,0x654D6167);
   (void) WriteBlobMSBLong(image,0x69636B20);
-  for (i=0; i < 600; i++)
+  for (i=0; i < 599; i++)
     (void) WriteBlobByte(image,0x00);
+  (void) WriteBlobByte(image,0x01);
   (void) WriteBlobMSBLong(image,image->columns);
   (void) WriteBlobMSBLong(image,image->rows);
   for (i=0; i < 20; i++)
@@ -409,7 +411,9 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
   (void) WriteBlobByte(image,0x00);
   (void) WriteBlobByte(image,0x00);
   (void) WriteBlobByte(image,10);  /* bit depth */
-  for (i=0; i < (0x2000-804); i++)
+  (void) WriteBlobByte(image,0x00);
+  (void) WriteBlobByte(image,0x01);
+  for (i=0; i < (0x2000-806); i++)
     (void) WriteBlobByte(image,0x00);
   /*
     Convert pixel packets to DPX raster image.

@@ -195,7 +195,8 @@ NoMemory:
       }
  if(BImgBuff!=NULL) free(BImgBuff);
  if (EOFBlob(image))
-   ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile",image);
+   ThrowException(exception,CorruptImageError,"UnexpectedEndOfFile",
+      image->filename);
  CloseBlob(image);
  return(image);
 }

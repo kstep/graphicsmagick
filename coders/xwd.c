@@ -457,7 +457,8 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   LiberateMemory((void **) &ximage->data);
   LiberateMemory((void **) &ximage);
   if (EOFBlob(image))
-    ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile",image);
+    ThrowException(exception,CorruptImageError,"UnexpectedEndOfFile",
+      image->filename);
   CloseBlob(image);
   return(image);
 }

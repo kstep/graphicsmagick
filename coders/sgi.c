@@ -565,7 +565,11 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
     LiberateMemory((void **) &iris_pixels);
     if (EOFBlob(image))
-      ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile",image);
+      {
+        ThrowException(exception,CorruptImageError,"UnexpectedEndOfFile",
+          image->filename);
+        break;
+      }
     /*
       Proceed to next image.
     */

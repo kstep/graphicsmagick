@@ -289,7 +289,8 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
   }
   LiberateMemory((void **) &scanline);
   if (EOFBlob(image))
-    ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile",image);
+    ThrowException(exception,CorruptImageError,"UnexpectedEndOfFile",
+      image->filename);
   CloseBlob(image);
   return(image);
 }

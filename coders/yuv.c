@@ -347,7 +347,11 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (interlace == PartitionInterlace)
       (void) strncpy(image->filename,image_info->filename,MaxTextExtent-1);
     if (EOFBlob(image))
-      ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile",image);
+      {
+        ThrowException(exception,CorruptImageError,"UnexpectedEndOfFile",
+          image->filename);
+        break;
+      }
     /*
       Proceed to next image.
     */

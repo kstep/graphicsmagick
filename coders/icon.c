@@ -452,7 +452,11 @@ static Image *ReadIconImage(const ImageInfo *image_info,
             break;
     }
     if (EOFBlob(image))
-      ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile",image);
+      {
+        ThrowException(exception,CorruptImageError,"UnexpectedEndOfFile",
+          image->filename);
+        break;
+      }
     /*
       Proceed to next image.
     */

@@ -1055,7 +1055,11 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
         return((Image *) NULL);
       }
     if (EOFBlob(image))
-      ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile",image);
+      {
+        ThrowException(exception,CorruptImageError,"UnexpectedEndOfFile",
+          image->filename);
+        break;
+      }
     /*
       Proceed to next image.
     */

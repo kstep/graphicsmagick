@@ -1282,9 +1282,11 @@ MagickExport unsigned int PopImagePixels(const Image *image,
   register unsigned char
     *q;
 
-  unsigned long
-    number_pixels,
+  register unsigned int
     pixel;
+
+  unsigned long
+    number_pixels;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -1297,49 +1299,56 @@ MagickExport unsigned int PopImagePixels(const Image *image,
   {
     case IndexQuantum:
     {
+      assert(image->colors <= MaxColormapSize);
       if (image->colors <= 256)
         {
-          for (x=0; x < (long) number_pixels; x++)
-            *q++=(Quantum) indexes[x];
+          for (x= (long) number_pixels; x > 0; --x)
+            *q++=(Quantum) *indexes++;
           break;
         }
+#if MaxColormapSize > 256
       if (image->colors <= 65536L)
         {
-          for (x=0; x < (long) number_pixels; x++)
+          for (x= (long) number_pixels; x > 0; --x)
           {
-            *q++=(Quantum) (indexes[x] >> 8);
-            *q++=(Quantum) indexes[x];
+            *q++=(Quantum) (*indexes >> 8);
+            *q++=(Quantum) *indexes++;
           }
           break;
         }
-      for (x=0; x < (long) number_pixels; x++)
+#endif /* MaxColormapSize > 256 */
+#if MaxColormapSize > 65536
+      for (x= (long) number_pixels; x > 0; --x)
       {
-        *q++=(Quantum) (indexes[x] >> 24);
-        *q++=(Quantum) (indexes[x] >> 16);
-        *q++=(Quantum) (indexes[x] >> 8);
-        *q++=(Quantum) indexes[x];
+        *q++=(Quantum) (*indexes >> 24);
+        *q++=(Quantum) (*indexes >> 16);
+        *q++=(Quantum) (*indexes >> 8);
+        *q++=(Quantum) *indexes++;
       }
       break;
+#endif /* MaxColormapSize > 65536 */
     }
     case IndexAlphaQuantum:
     {
+      assert(image->colors <= MaxColormapSize);
       if (image->colors <= 256)
         {
-          for (x=0; x < (long) number_pixels; x++)
+          for (x= (long) number_pixels; x > 0; --x)
           {
-            *q++=(Quantum) indexes[x];
+            *q++=(Quantum) *indexes++;
             pixel=ScaleQuantumToChar(MaxRGB-p->opacity);
             *q++=(Quantum) pixel;
             p++;
           }
           break;
         }
+#if MaxColormapSize > 256
       if (image->colors <= 65536L)
         {
-          for (x=0; x < (long) number_pixels; x++)
+          for (x= (long) number_pixels; x > 0; --x)
           {
-            *q++=(Quantum) (indexes[x] >> 8);
-            *q++=(Quantum) indexes[x];
+            *q++=(Quantum) (*indexes >> 8);
+            *q++=(Quantum) *indexes++;
             pixel=ScaleQuantumToShort(MaxRGB-p->opacity);
             *q++=(Quantum) (pixel >> 8);
             *q++=(Quantum) pixel;
@@ -1347,12 +1356,14 @@ MagickExport unsigned int PopImagePixels(const Image *image,
           }
           break;
         }
-      for (x=0; x < (long) number_pixels; x++)
+#endif /* MaxColormapSize > 256 */
+#if MaxColormapSize > 65536
+      for (x= (long) number_pixels; x > 0; --x)
       {
-        *q++=(Quantum) (indexes[x] >> 24);
-        *q++=(Quantum) (indexes[x] >> 16);
-        *q++=(Quantum) (indexes[x] >> 8);
-        *q++=(Quantum) indexes[x];
+        *q++=(Quantum) (*indexes >> 24);
+        *q++=(Quantum) (*indexes >> 16);
+        *q++=(Quantum) (*indexes >> 8);
+        *q++=(Quantum) *indexes++;
         pixel=ScaleQuantumToLong(MaxRGB-p->opacity);
         *q++=(Quantum) (pixel >> 24);
         *q++=(Quantum) (pixel >> 16);
@@ -1361,12 +1372,13 @@ MagickExport unsigned int PopImagePixels(const Image *image,
         p++;
       }
       break;
+#endif /* MaxColormapSize > 65536 */
     }
     case GrayQuantum:
     {
       if (image->depth <= 8)
         {
-          for (x=0; x < (long) number_pixels; x++)
+          for (x= (long) number_pixels; x > 0; --x)
           {
             pixel=ScaleQuantumToChar(PixelIntensityToQuantum(p));
             *q++=(Quantum) pixel;
@@ -1376,7 +1388,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
         }
       if (image->depth <= 16)
         {
-          for (x=0; x < (long) number_pixels; x++)
+          for (x= (long) number_pixels; x > 0; --x)
           {
             pixel=ScaleQuantumToShort(PixelIntensityToQuantum(p));
             *q++=(Quantum) (pixel >> 8);
@@ -1385,7 +1397,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
           }
           break;
         }
-      for (x=0; x < (long) number_pixels; x++)
+      for (x= (long) number_pixels; x > 0; --x)
       {
         pixel=ScaleQuantumToLong(PixelIntensityToQuantum(p));
         *q++=(Quantum) (pixel >> 24);
@@ -1400,7 +1412,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
     {
       if (image->depth <= 8)
         {
-          for (x=0; x < (long) number_pixels; x++)
+          for (x= (long) number_pixels; x > 0; --x)
           {
             pixel=ScaleQuantumToChar(PixelIntensityToQuantum(p));
             *q++=(Quantum) pixel;
@@ -1412,7 +1424,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
         }
       if (image->depth <= 16)
         {
-          for (x=0; x < (long) number_pixels; x++)
+          for (x= (long) number_pixels; x > 0; --x)
           {
             pixel=ScaleQuantumToShort(PixelIntensityToQuantum(p));
             *q++=(Quantum) (pixel >> 8);
@@ -1424,7 +1436,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
           }
           break;
         }
-      for (x=0; x < (long) number_pixels; x++)
+      for (x= (long) number_pixels; x > 0; --x)
       {
         pixel=ScaleQuantumToLong(PixelIntensityToQuantum(p));
         *q++=(Quantum) (pixel >> 24);
@@ -1445,7 +1457,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
     {
       if (image->depth <= 8)
         {
-          for (x=0; x < (long) number_pixels; x++)
+          for (x= (long) number_pixels; x > 0; --x)
           {
             pixel=ScaleQuantumToChar(p->red);
             *q++=(Quantum) pixel;
@@ -1455,7 +1467,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
         }
       if (image->depth <= 16)
         {
-         for (x=0; x < (long) number_pixels; x++)
+         for (x= (long) number_pixels; x > 0; --x)
          {
            pixel=ScaleQuantumToShort(p->red);
            *q++=(Quantum) (pixel >> 8);
@@ -1464,7 +1476,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
          }
           break;
         }
-      for (x=0; x < (long) number_pixels; x++)
+      for (x= (long) number_pixels; x > 0; --x)
       {
         pixel=ScaleQuantumToLong(p->red);
         *q++=(Quantum) (pixel >> 24);
@@ -1480,7 +1492,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
     {
       if (image->depth <= 8)
         {
-          for (x=0; x < (long) number_pixels; x++)
+          for (x= (long) number_pixels; x > 0; --x)
           {
             pixel=ScaleQuantumToChar(p->green);
             *q++=(Quantum) pixel;
@@ -1490,7 +1502,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
         }
       if (image->depth <= 16)
         {
-          for (x=0; x < (long) number_pixels; x++)
+          for (x= (long) number_pixels; x > 0; --x)
           {
             pixel=ScaleQuantumToShort(p->green);
             *q++=(Quantum) (pixel >> 8);
@@ -1499,7 +1511,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
           }
           break;
         }
-      for (x=0; x < (long) number_pixels; x++)
+      for (x= (long) number_pixels; x > 0; --x)
       {
         pixel=ScaleQuantumToLong(p->green);
         *q++=(Quantum) (pixel >> 24);
@@ -1515,7 +1527,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
     {
       if (image->depth <= 8)
         {
-          for (x=0; x < (long) number_pixels; x++)
+          for (x= (long) number_pixels; x > 0; --x)
           {
             pixel=ScaleQuantumToChar(p->blue);
             *q++=(Quantum) pixel;
@@ -1525,7 +1537,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
         }
       if (image->depth <= 16)
         {
-          for (x=0; x < (long) number_pixels; x++)
+          for (x= (long) number_pixels; x > 0; --x)
           {
             pixel=ScaleQuantumToShort(p->blue);
             *q++=(Quantum) (pixel >> 8);
@@ -1534,7 +1546,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
           }
           break;
         }
-      for (x=0; x < (long) number_pixels; x++)
+      for (x= (long) number_pixels; x > 0; --x)
       {
         pixel=ScaleQuantumToLong(p->blue);
         *q++=(Quantum) (pixel >> 24);
@@ -1551,7 +1563,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
         {
           if (image->depth <= 8)
             {
-              for (x=0; x < (long) number_pixels; x++)
+              for (x= (long) number_pixels; x > 0; --x)
               {
                 pixel=ScaleQuantumToChar(MaxRGB-indexes[x]);
                 *q++=(Quantum) pixel;
@@ -1561,7 +1573,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
             }
           if (image->depth <= 16)
             {
-              for (x=0; x < (long) number_pixels; x++)
+              for (x= (long) number_pixels; x > 0; --x)
               {
                 pixel=ScaleQuantumToShort(MaxRGB-indexes[x]);
                 *q++=(Quantum) (pixel >> 8);
@@ -1570,7 +1582,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
               }
               break;
             }
-          for (x=0; x < (long) number_pixels; x++)
+          for (x= (long) number_pixels; x > 0; --x)
           {
             pixel=ScaleQuantumToLong(MaxRGB-indexes[x]);
             *q++=(Quantum) (pixel >> 24);
@@ -1583,7 +1595,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
         }
       if (image->depth <= 8)
         {
-          for (x=0; x < (long) number_pixels; x++)
+          for (x= (long) number_pixels; x > 0; --x)
           {
             pixel=ScaleQuantumToChar(MaxRGB-p->opacity);
             *q++=(Quantum) pixel;
@@ -1593,7 +1605,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
         }
       if (image->depth <= 16)
         {
-          for (x=0; x < (long) number_pixels; x++)
+          for (x= (long) number_pixels; x > 0; --x)
           {
             pixel=ScaleQuantumToShort(MaxRGB-p->opacity);
             *q++=(Quantum) (pixel >> 8);
@@ -1602,7 +1614,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
           }
           break;
         }
-      for (x=0; x < (long) number_pixels; x++)
+      for (x= (long) number_pixels; x > 0; --x)
       {
         pixel=ScaleQuantumToLong(MaxRGB-p->opacity);
         *q++=(Quantum) (pixel >> 24);
@@ -1617,7 +1629,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
     {
       if (image->depth <= 8)
         {
-          for (x=0; x < (long) number_pixels; x++)
+          for (x= (long) number_pixels; x > 0; --x)
           {
             pixel=ScaleQuantumToChar(p->opacity);
             *q++=(Quantum) pixel;
@@ -1627,7 +1639,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
         }
       if (image->depth <= 16)
         {
-          for (x=0; x < (long) number_pixels; x++)
+          for (x= (long) number_pixels; x > 0; --x)
           {
             pixel=ScaleQuantumToShort(p->opacity);
             *q++=(Quantum) (pixel >> 8);
@@ -1636,7 +1648,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
           }
           break;
         }
-      for (x=0; x < (long) number_pixels; x++)
+      for (x= (long) number_pixels; x > 0; --x)
       {
         pixel=ScaleQuantumToLong(p->opacity);
         *q++=(Quantum) (pixel >> 24);
@@ -1652,7 +1664,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
     {
       if (image->depth <= 8)
         {
-          for (x=0; x < (long) number_pixels; x++)
+          for (x= (long) number_pixels; x > 0; --x)
           {
             pixel=ScaleQuantumToChar(p->red);
             *q++=(Quantum) pixel;
@@ -1666,7 +1678,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
         }
       if (image->depth <= 16)
         {
-          for (x=0; x < (long) number_pixels; x++)
+          for (x= (long) number_pixels; x > 0; --x)
           {
             pixel=ScaleQuantumToShort(p->red);
             *q++=(Quantum) (pixel >> 8);
@@ -1681,7 +1693,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
           }
           break;
         }
-      for (x=0; x < (long) number_pixels; x++)
+      for (x= (long) number_pixels; x > 0; --x)
       {
         pixel=ScaleQuantumToLong(p->red);
         *q++=(Quantum) (pixel >> 24);
@@ -1706,7 +1718,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
     {
       if (image->depth <= 8)
         {
-          for (x=0; x < (long) number_pixels; x++)
+          for (x= (long) number_pixels; x > 0; --x)
           {
             pixel=ScaleQuantumToChar(p->red);
             *q++=(Quantum) pixel;
@@ -1722,7 +1734,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
         }
       if (image->depth <= 16)
         {
-          for (x=0; x < (long) number_pixels; x++)
+          for (x= (long) number_pixels; x > 0; --x)
           {
             pixel=ScaleQuantumToShort(p->red);
             *q++=(Quantum) (pixel >> 8);
@@ -1740,7 +1752,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
           }
           break;
         }
-      for (x=0; x < (long) number_pixels; x++)
+      for (x= (long) number_pixels; x > 0; --x)
       {
         pixel=ScaleQuantumToLong(p->red);
         *q++=(Quantum) (pixel >> 24);
@@ -1770,7 +1782,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
     {
       if (image->depth <= 8)
         {
-          for (x=0; x < (long) number_pixels; x++)
+          for (x= (long) number_pixels; x > 0; --x)
           {
             pixel=ScaleQuantumToChar(p->red);
             *q++=(Quantum) pixel;
@@ -1786,7 +1798,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
         }
       if (image->depth <= 16)
         {
-          for (x=0; x < (long) number_pixels; x++)
+          for (x= (long) number_pixels; x > 0; --x)
           {
             pixel=ScaleQuantumToShort(p->red);
             *q++=(Quantum) (pixel >> 8);
@@ -1804,7 +1816,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
           }
           break;
         }
-      for (x=0; x < (long) number_pixels; x++)
+      for (x= (long) number_pixels; x > 0; --x)
       {
         pixel=ScaleQuantumToLong(p->red);
         *q++=(Quantum) (pixel >> 24);
@@ -1834,7 +1846,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
     {
       if (image->depth <= 8)
         {
-          for (x=0; x < (long) number_pixels; x++)
+          for (x= (long) number_pixels; x > 0; --x)
           {
             pixel=ScaleQuantumToChar(p->red);
             *q++=(Quantum) pixel;
@@ -1844,7 +1856,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
             *q++=(Quantum) pixel;
             pixel=ScaleQuantumToChar(p->opacity);
             *q++=(Quantum) pixel;
-            pixel=ScaleQuantumToChar(MaxRGB-indexes[x]);
+            pixel=ScaleQuantumToChar(MaxRGB-(*indexes++));
             *q++=(Quantum) pixel;
             p++;
           }
@@ -1852,7 +1864,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
         }
       if (image->depth <= 16)
         {
-          for (x=0; x < (long) number_pixels; x++)
+          for (x= (long) number_pixels; x > 0; --x)
           {
             pixel=ScaleQuantumToShort(p->red);
             *q++=(Quantum) (pixel >> 8);
@@ -1866,14 +1878,14 @@ MagickExport unsigned int PopImagePixels(const Image *image,
             pixel=ScaleQuantumToShort(p->opacity);
             *q++=(Quantum) (pixel >> 8);
             *q++=(Quantum) pixel;
-            pixel=ScaleQuantumToShort(MaxRGB-indexes[x]);
+            pixel=ScaleQuantumToShort(MaxRGB-(*indexes++));
             *q++=(Quantum) (pixel >> 8);
             *q++=(Quantum) pixel;
             p++;
           }
           break;
         }
-      for (x=0; x < (long) number_pixels; x++)
+      for (x= (long) number_pixels; x > 0; --x)
       {
         pixel=ScaleQuantumToLong(p->red);
         *q++=(Quantum) (pixel >> 24);
@@ -1895,7 +1907,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
         *q++=(Quantum) (pixel >> 16);
         *q++=(Quantum) (pixel >> 8);
         *q++=(Quantum) pixel;
-        pixel=ScaleQuantumToLong(MaxRGB-indexes[x]);
+        pixel=ScaleQuantumToLong(MaxRGB-(*indexes++));
         *q++=(Quantum) (pixel >> 24);
         *q++=(Quantum) (pixel >> 16);
         *q++=(Quantum) (pixel >> 8);

@@ -502,7 +502,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 break;
         }
         if (EOFBlob(image))
-          ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile",image);
+          ThrowException(exception,CorruptImageError,"UnexpectedEndOfFile",
+            image->filename);
         break;
       }
       case '5':
@@ -563,7 +564,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         }
         LiberateMemory((void **) &pixels);
         if (EOFBlob(image))
-          ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile",image);
+          ThrowException(exception,CorruptImageError,"UnexpectedEndOfFile",
+            image->filename);
         break;
       }
       case '6':
@@ -634,7 +636,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         handler=SetMonitorHandler((MonitorHandler) NULL);
         (void) SetMonitorHandler(handler);
         if (EOFBlob(image))
-          ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile",image);
+          ThrowException(exception,CorruptImageError,"UnexpectedEndOfFile",
+            image->filename);
         break;
       }
       default:

@@ -1,4 +1,16 @@
-2003-01-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+2003-01-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+	* magick/constitute.c: Minor optimizations to PopImagePixels()
+	* coders/dpx.c: Reading the DPX header was off by 4 bytes.
+	* coders/(art.c,avs.c,bmp.c,cmyk.c,dcm.c,dib.c,dpx.c,fax.c,
+	fits.c,gray.c,icon.c,map.c,miff.c,mono.c,mpc.c,mtv.c,otb.c,
+	pcx.c,pdb.c,pict.c,pix.c,pnm.c,pwp.c,rgb.c,rla.c,rle.c,sct.c,
+	sgi.c,sun.c,tga.c,tim.c,uyvy.c,vicar.c,viff.c,wbmp.c,xwd.c,
+	yuv.c): Ensure that blob is closed on unexpected EOF.
+	* magick/image.c: Optimized SetImageOpacity().
+	Optimized SetImage() for intializing non-opaque images.  The
+	opacity channel was being intialized twice.
+
+2003-01-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 	* magick/constitute.c: Log entry and exit from coders so that
 	coders don't need to.
 	* Finished re-writing PushImagePixels() using coding practices

@@ -3804,41 +3804,37 @@ MagickExport void SetImage(Image *image,const Quantum opacity)
   if (opacity != OpaqueOpacity)
     background_color.opacity=opacity;
   if (background_color.opacity != OpaqueOpacity)
-    SetImageType(image,TrueColorMatteType);
-  if ((image->storage_class == PseudoClass) ||
-      (image->colorspace == CMYKColorspace))
     {
-      /*
-        Set colormapped or CMYK image.
-      */
-      for (y=0; y < (long) image->rows; y++)
-      {
-        q=SetImagePixels(image,0,y,image->columns,1);
-        if (q == (PixelPacket *) NULL)
-          break;
-        for (x=(long) image->columns; x > 0; x--)
-          *q++=background_color;
-        indexes=GetIndexes(image);
-        for (x=(long) image->columns; x > 0; x--)
-          *indexes++=0;
-        if (!SyncImagePixels(image))
-          break;
-      }
-      return;
+      image->matte=True;
+      image->colorspace=RGBColorspace;
+      image->storage_class=DirectClass;
     }
-  /*
-    Set DirectClass image.
-  */
+
   for (y=0; y < (long) image->rows; y++)
-  {
-    q=SetImagePixels(image,0,y,image->columns,1);
-    if (q == (PixelPacket *) NULL)
-      break;
-    for (x=(long) image->columns; x > 0; x--)
-      *q++=background_color;
-    if (!SyncImagePixels(image))
-      break;
-  }
+    {
+      q=SetImagePixels(image,0,y,image->columns,1);
+      if (q == (PixelPacket *) NULL)
+        break;
+
+      /*
+        Set DirectClass pixels
+      */
+      for (x=(long) image->columns; x > 0; x--)
+        *q++=background_color;
+      
+      if ((image->storage_class == PseudoClass) ||
+          (image->colorspace == CMYKColorspace))
+        {
+          /*
+            Set PseudoClass pixel indexes.
+          */
+          indexes=GetIndexes(image);
+          for (x=(long) image->columns; x > 0; x--)
+            *indexes++=0;
+        }
+      if (!SyncImagePixels(image))
+        break;
+    }
 }
 
 /*
@@ -4318,29 +4314,42 @@ MagickExport void SetImageOpacity(Image *image,const unsigned int opacity)
   assert(image->signature == MagickSignature);
   if (image->matte)
     {
+      /*
+        Attenuate existing opacity channel
+      */
       for (y=0; y < (long) image->rows; y++)
       {
         q=GetImagePixels(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
           break;
         indexes=GetIndexes(image);
-        for (x=0; x < (long) image->columns; x++)
-        {
-          if (image->colorspace == CMYKColorspace)
-            {
-              indexes[x]=(IndexPacket)
-                ((unsigned long) (opacity*indexes[x])/MaxRGB);
-              continue;
-            }
-          q->opacity=(Quantum)
-            ((unsigned long) (opacity*q->opacity)/MaxRGB);
-          q++;
-        }
+
+        if (image->colorspace == CMYKColorspace)
+          {
+            for (x=(long) image->columns; x > 0; --x)
+              {
+              *indexes=(IndexPacket)
+                ((unsigned long) (opacity*(*indexes))/MaxRGB);
+              indexes++;
+              }
+          }
+        else
+          {
+            for (x=(long) image->columns; x > 0; --x)
+              {
+                q->opacity=(Quantum)
+                  ((unsigned long) (opacity*q->opacity)/MaxRGB);
+                q++;
+              }
+          }
         if (!SyncImagePixels(image))
           break;
       }
       return;
     }
+  /*
+    Add new opacity channel
+  */
   image->matte=True;
   for (y=0; y < (long) image->rows; y++)
   {
@@ -4348,16 +4357,19 @@ MagickExport void SetImageOpacity(Image *image,const unsigned int opacity)
     if (q == (PixelPacket *) NULL)
       break;
     indexes=GetIndexes(image);
-    for (x=0; x < (long) image->columns; x++)
-    {
-      if (image->colorspace == CMYKColorspace)
-        {
-          indexes[x]=opacity;
-          continue;
-        }
-      q->opacity=opacity;
-      q++;
-    }
+    if (image->colorspace == CMYKColorspace)
+      {
+        for (x=(long) image->columns; x > 0; --x)
+          *indexes++=opacity;
+      }
+    else
+      {
+        for (x=(long) image->columns; x > 0; --x)
+          {
+            q->opacity=opacity;
+            q++;
+          }
+      }
     if (!SyncImagePixels(image))
       break;
   }

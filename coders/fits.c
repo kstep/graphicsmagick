@@ -556,7 +556,11 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
     }
     LiberateMemory((void **) &fits_pixels);
     if (EOFBlob(image))
-      ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile",image);
+      {
+        ThrowException(exception,CorruptImageError,"UnexpectedEndOfFile",
+          image->filename);
+        break;
+      }
     /*
       Proceed to next image.
     */
