@@ -469,7 +469,7 @@ static unsigned short *ConvertTextToUnicode(const char *text,int *count)
   for (p=text; ; p+=length)
   {
     length=Extent(p);
-    *q=GetUnicodeCharacter(p,&length);
+    *q=GetUnicodeCharacter((const unsigned char *) p,&length);
     if (length == 0)
       break;
     q++;

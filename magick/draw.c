@@ -5090,7 +5090,7 @@ static PrimitiveInfo *TraceStrokePolygon(const DrawInfo *draw_info,
           stroke_polygon[i].point=stroke_polygon[0].point;
           i++;
         }
-      for ( ; i < (p+q+closed_path); i++)
+      for ( ; i < (int) (p+q+closed_path); i++)
       {
         stroke_polygon[i]=polygon_primitive[0];
         stroke_polygon[i].point=path_q[p+q+closed_path-(i+1)];

@@ -19,7 +19,8 @@ extern "C" {
 #define MagickVersion \
   "@(#)ImageMagick 5.3.9 10/01/01 Q:16 http://www.imagemagick.org"
 #else
-# error "Specified value of QuantumDepth is not supported"
+#define MagickVersion \
+  "@(#)ImageMagick 5.3.9 10/01/01 http://www.imagemagick.org"
 #endif
 
 #if defined(__cplusplus) || defined(c_plusplus)
