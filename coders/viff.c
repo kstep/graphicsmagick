@@ -729,7 +729,9 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
             return((Image *) NULL);
           }
         image=image->next;
-        if (!MagickMonitor(LoadImagesText,TellBlob(image),GetBlobSize(image),exception))
+        status=MagickMonitor(LoadImagesText,TellBlob(image),GetBlobSize(image),
+          exception);
+        if (status == False)
           break;
       }
   } while ((count != 0) && (viff_info.identifier == 0xab));

@@ -753,8 +753,12 @@ static unsigned int WriteFITSImage(const ImageInfo *image_info,Image *image)
     (void) PopImagePixels(image,GrayQuantum,pixels);
     (void) WriteBlob(image,packet_size*image->columns,pixels);
     if (QuantumTick(image->rows-y-1,image->rows))
-      if (!MagickMonitor(SaveImageText,image->rows-y-1,image->rows,&image->exception))
-        break;
+      {
+        status=MagickMonitor(SaveImageText,image->rows-y-1,image->rows,
+          &image->exception);
+        if (status == False)
+          break;
+      }
   }
   LiberateMemory((void **) &pixels);
   CloseBlob(image);
