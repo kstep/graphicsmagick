@@ -1126,6 +1126,7 @@ Export Image *ImplodeImage(Image *image,const double factor)
       return((Image *) NULL);
     }
   implode_image->class=DirectClass;
+  implode_image->matte=True;
   /*
     Compute scaling factor.
   */
@@ -2714,6 +2715,7 @@ Export Image *SwirlImage(Image *image,double degrees)
       return((Image *) NULL);
     }
   swirl_image->class=DirectClass;
+  swirl_image->matte=True;
   /*
     Compute scaling factor.
   */
@@ -2923,6 +2925,7 @@ Export Image *WaveImage(Image *image,const double amplitude,
       return((Image *) NULL);
     }
   wave_image->class=DirectClass;
+  wave_image->matte=True;
   /*
     Allocate sine map.
   */
