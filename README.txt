@@ -510,7 +510,7 @@ MAGICK DELEGATES
       to read the TIFF image format.  It in turn optionally requires
       the JPEG and ZLIB libraries.
 
-    o ImageMagick requires wmftogif available from
+    o ImageMagick requires wmftopng available from
 
           http://www.csn.ul.ie/~caolan/docs/libwmf.html
 
