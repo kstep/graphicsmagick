@@ -484,43 +484,42 @@ Export PixelPacket InterpolateColor(Image *image,const double x_offset,
   assert(image != (Image *) NULL);
   x=x_offset;
   y=y_offset;
-  p=image->background_color;
   if ((x < -1) || (x >= image->columns) || (y < -1) || (y >= image->rows))
-    return(p);
-  q=p;
-  r=p;
-  s=p;
+    return(image->background_color);
   if ((x >= 0) && (y >= 0) && (x < (image->columns-1)) && (y < (image->rows-1)))
     {
       register PixelPacket
         *t;
 
       t=GetPixelCache(image,x,y,2,2);
-      if (t != (PixelPacket *) NULL)
-        {
-          p=(*t++);
-          q=(*t++);
-          r=(*t++);
-          s=(*t++);
-        }
+      if (t == (PixelPacket *) NULL)
+        return(image->background_color);
+      p=(*t++);
+      q=(*t++);
+      r=(*t++);
+      s=(*t++);
     }
   else
     {
+      p=image->background_color;
       if ((x >= 0) && (y >= 0))
         {
           if (GetPixelCache(image,x,y,1,1))
             p=(*image->pixels);
         }
+      q=image->background_color;
       if (((x+1) < image->columns) && (y >= 0))
         {
           if (GetPixelCache(image,x+1,y,1,1))
             q=(*image->pixels);
         }
+      r=image->background_color;
       if ((x >= 0) && ((y+1) < image->rows))
         {
           if (GetPixelCache(image,x,y+1,1,1))
             r=(*image->pixels);
         }
+      s=image->background_color;
       if (((x+1) < image->columns) && ((y+1) < image->rows))
         {
           if (GetPixelCache(image,x+1,y+1,1,1))
