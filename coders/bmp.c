@@ -210,7 +210,6 @@ static unsigned int DecodeImage(Image *image,const unsigned long compression,
             for ( i=count; i != 0; --i )
               {
                 *q++=(unsigned char) byte;
-                x++;
               }
           }
         else
@@ -219,9 +218,9 @@ static unsigned int DecodeImage(Image *image,const unsigned long compression,
               {
                 *q++=(unsigned char)
                   ((i & 0x01) ? (byte & 0x0f) : ((byte >> 4) & 0x0f));
-                x++;
               }
           }
+        x+=count;
       }
     else
       {
@@ -269,8 +268,8 @@ static unsigned int DecodeImage(Image *image,const unsigned long compression,
                   *q++=(unsigned char)
                     ((i & 0x01) ? (byte & 0x0f) : ((byte >> 4) & 0x0f));
                 }
-              x++;
             }
+            x+=count;
             /*
               Read pad byte.
             */
