@@ -532,17 +532,15 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     size;
 
   ExtendedSignedIntegralType
-    offset,
-    diff_offset;
+    offset/* , */
+/*     diff_offset */;
 
   unsigned char
     *data;
 
   unsigned int
     logging,
-    mask_size,
     packet_size,
-    skip_first_alpha = 0,
     status;
 
   unsigned short
@@ -757,16 +755,16 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       offset = TellBlob(image);
       size=ReadBlobMSBLong(image);
       number_layers=(short) ReadBlobMSBShort(image);
-    if(logging)
-    {
-      (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  image contains %ld layers", number_layers);
-    }
+      if(logging)
+        {
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  image contains %ld layers",
+            number_layers);
+        }
       if (number_layers < 0)
         {
           /*
             Weird hack in PSD format to ignore first alpha channel.
           */
-          skip_first_alpha=1;
           number_layers=AbsoluteValue(number_layers);
       if(logging)
       {
@@ -1206,9 +1204,9 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
       }
 
-    diff_offset = TellBlob(image) - offset;
+    /* diff_offset = TellBlob(image) - offset; */
 
-    mask_size = ReadBlobMSBLong(image);  /* global mask size: currently ignored */
+      (void) ReadBlobMSBLong(image);  /* global mask size: currently ignored */
 
       if (number_layers > 0)
         {

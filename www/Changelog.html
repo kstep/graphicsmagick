@@ -53,6 +53,25 @@
 </tr>
 </table>
 <p>
+2003-09-09  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/image.c (SetImageChannelDepth): Depth parameter was being
+        returned rather than status.  Oops!
+  <LI> magick/effect.c (BlurScanline): Due to automatic casting
+        conventions, computation was being done (at least with SGI
+        compiler) as type 'unsigned long' rather than 'long' as it should
+        have been.<BR>
+  <LI> coders/jpeg.c, coders/meta.c, coders/miff.c, coders/msl.c,
+        coders/palm.c, coders/pcd.c, coders/psd.c, coders/svg.c,
+        coders/tiff.c, coders/xcf.c, magick/render.c, : Quench many SGI
+        compiler warnings regarding variables which are initialized but
+        never used.<BR>
+  <LI> magick/xwindow.h: Undef gravity defines so that enumerated type
+        is used instead.
+
+</UL>
+<p>
 2003-09-08  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

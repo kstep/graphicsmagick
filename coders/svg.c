@@ -602,14 +602,14 @@ static void SVGUnparsedEntityDeclaration(void *context,const xmlChar *name,
 
 static void SVGSetDocumentLocator(void *context,xmlSAXLocatorPtr location)
 {
-  SVGInfo
-    *svg_info;
+/*   SVGInfo */
+/*     *svg_info; */
 
   /*
     Receive the document locator at startup, actually xmlDefaultSAXLocator.
   */
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  SAX.setDocumentLocator()");
-  svg_info=(SVGInfo *) context;
+/*   svg_info=(SVGInfo *) context; */
 }
 
 static void SVGStartDocument(void *context)
@@ -2387,22 +2387,22 @@ static void SVGReference(void *context,const xmlChar *name)
 
 static void SVGIgnorableWhitespace(void *context,const xmlChar *c,int length)
 {
-  SVGInfo
-    *svg_info;
+/*   SVGInfo */
+/*     *svg_info; */
 
   /*
     Receiving some ignorable whitespaces from the parser.
   */
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
     "  SAX.ignorableWhitespace(%.30s, %d)",c,length);
-  svg_info=(SVGInfo *) context;
+/*   svg_info=(SVGInfo *) context; */
 }
 
 static void SVGProcessingInstructions(void *context,const xmlChar *target,
   const xmlChar *data)
 {
-  SVGInfo
-    *svg_info;
+/*   SVGInfo */
+/*     *svg_info; */
 
   /*
     A processing instruction has been parsed.
@@ -2410,7 +2410,7 @@ static void SVGProcessingInstructions(void *context,const xmlChar *target,
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
     "  SAX.processingInstruction(%.1024s, %.1024s)",
     target,data);
-  svg_info=(SVGInfo *) context;
+/*   svg_info=(SVGInfo *) context; */
 }
 
 static void SVGComment(void *context,const xmlChar *value)

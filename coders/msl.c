@@ -389,14 +389,14 @@ static void MSLUnparsedEntityDeclaration(void *context,const xmlChar *name,
 
 static void MSLSetDocumentLocator(void *context,xmlSAXLocatorPtr location)
 {
-  MSLInfo
-    *msl_info;
+/*   MSLInfo */
+/*     *msl_info; */
 
   /*
     Receive the document locator at startup, actually xmlDefaultSAXLocator.
   */
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  SAX.setDocumentLocator()\n");
-  msl_info=(MSLInfo *) context;
+/*   msl_info=(MSLInfo *) context; */
 }
 
 static void MSLStartDocument(void *context)
@@ -425,13 +425,13 @@ static void MSLStartDocument(void *context)
 
 static void MSLEndDocument(void *context)
 {
-  MSLInfo
-    *msl_info;
+/*   MSLInfo */
+/*     *msl_info; */
 
   /*
     Called when the document end has been detected.
   */
-  msl_info=(MSLInfo *) context;
+/*   msl_info=(MSLInfo *) context; */
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  SAX.endDocument()");
 }
 
@@ -1065,9 +1065,6 @@ static void MSLStartElement(void *context,const xmlChar *name,
         */
         if (srcImage != (Image*)NULL)
         {
-          unsigned int
-              result;
-
           switch (gravity)
           {
             case ForgetGravity:
@@ -1132,7 +1129,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
             }
           }
 
-          result = CompositeImage(msl_info->image[n], compositeOp, srcImage, x, y);
+          CompositeImage(msl_info->image[n], compositeOp, srcImage, x, y);
           break;
         } else
           ThrowException(msl_info->exception,OptionError,NoImagesDefined,(char *) name);
@@ -3687,14 +3684,14 @@ static void MSLEndElement(void *context,const xmlChar *name)
 
 static void MSLCharacters(void *context,const xmlChar *c,int length)
 {
-  MSLInfo
-    *msl_info;
+/*   MSLInfo */
+/*     *msl_info; */
 
   /*
     Receiving some characters from the parser.
   */
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  SAX.characters(%.1024s,%d)",c,length);
-  msl_info=(MSLInfo *) context;
+/*   msl_info=(MSLInfo *) context; */
 }
 
 static void MSLReference(void *context,const xmlChar *name)
@@ -3719,40 +3716,41 @@ static void MSLReference(void *context,const xmlChar *name)
 
 static void MSLIgnorableWhitespace(void *context,const xmlChar *c,int length)
 {
-  MSLInfo
-    *msl_info;
+/*   MSLInfo */
+/*     *msl_info; */
 
   /*
     Receiving some ignorable whitespaces from the parser.
   */
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  SAX.ignorableWhitespace(%.30s, %d)",c,length);
-  msl_info=(MSLInfo *) context;
+/*   msl_info=(MSLInfo *) context; */
 }
 
 static void MSLProcessingInstructions(void *context,const xmlChar *target,
   const xmlChar *data)
 {
-  MSLInfo
-    *msl_info;
+/*   MSLInfo */
+/*     *msl_info; */
 
   /*
     A processing instruction has been parsed.
   */
-  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  SAX.processingInstruction(%.1024s, %.1024s)",
+  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+    "  SAX.processingInstruction(%.1024s, %.1024s)",
     target,data);
-  msl_info=(MSLInfo *) context;
+/*   msl_info=(MSLInfo *) context; */
 }
 
 static void MSLComment(void *context,const xmlChar *value)
 {
-  MSLInfo
-    *msl_info;
+/*   MSLInfo */
+/*     *msl_info; */
 
   /*
     A comment has been parsed.
   */
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  SAX.comment(%.1024s)",value);
-  msl_info=(MSLInfo *) context;
+/*   msl_info=(MSLInfo *) context; */
 }
 
 static void MSLWarning(void *context,const char *format,...)

@@ -94,13 +94,12 @@ static unsigned int IsJPEG(const unsigned char *magick,const size_t length)
 }
 
 #if defined(HasJPEG)
-#ifdef HAVE_STDLIB_H
-# undef HAVE_STDLIB_H
-# define HAVE_STDLIB_H  /* Avoid conflicting macro with jpeglib,h */
-#endif
 #define JPEG_INTERNAL_OPTIONS
+/*
+  Avoid conflicting typedef for INT32
+*/
 #if defined(__MINGW32__)
-# define XMD_H 1  /* Avoid conflicting typedef for INT32 */
+# define XMD_H 1
 #endif
 /*
   The JPEG headers have the annoying problem that they define

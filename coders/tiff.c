@@ -368,7 +368,9 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
 
   uint32
     height,
+#if defined(ICC_SUPPORT) || defined(IPTC_SUPPORT) || defined(PHOTOSHOP_SUPPORT)
     length,
+#endif
     rows_per_strip,
     width;
 

@@ -802,9 +802,7 @@ static int jpeg_skip_1(Image *ifile)
 
 static int jpeg_read_remaining(Image *ifile, Image *ofile)
 {
-   int c;
-
-  while ((c = jpeg_transfer_1(ifile, ofile)) != EOF)
+  while ((jpeg_transfer_1(ifile, ofile)) != EOF)
     continue;
   return M_EOI;
 }
@@ -1959,9 +1957,6 @@ static int format8BIM(Image *ifile, Image *ofile)
   char
     temp[MaxTextExtent];
 
-  unsigned int
-    foundOSType;
-
   ExtendedSignedIntegralType
     Size;
 
@@ -1975,7 +1970,7 @@ static int format8BIM(Image *ifile, Image *ofile)
     *PString,
     *str;
 
-  resCount = foundOSType = 0; /* found the OSType */
+  resCount = 0;
 
   c =ReadBlobByte(ifile);
   while (c != EOF)
@@ -1993,9 +1988,7 @@ static int format8BIM(Image *ifile, Image *ofile)
           buffer[i] = (unsigned char) c;
         }
         buffer[4] = 0;
-        if (strcmp((const char *)buffer, "8BIM") == 0)
-          foundOSType = 1;
-        else
+        if (strcmp((const char *)buffer, "8BIM") != 0)
           continue;
       }
     else

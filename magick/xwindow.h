@@ -46,6 +46,23 @@ extern "C" {
 # include <keysym.h>
 # include <XWDFile.h>
 #endif
+
+
+/*
+  Remove X11 defines so enums are used
+*/
+#undef ForgetGravity
+#undef NorthWestGravity
+#undef NorthGravity
+#undef NorthEastGravity
+#undef WestGravity
+#undef CenterGravity
+#undef EastGravity
+#undef SouthWestGravity
+#undef SouthGravity
+#undef SouthEastGravity
+#undef StaticGravity
+
 #include "magick/quantize.h"
 #include "magick/PreRvIcccm.h"
 

@@ -500,9 +500,7 @@ static int load_level (Image* image, XCFDocInfo* inDocInfo, XCFLayerInfo*
   unsigned long
     ntiles,
     ntile_rows,
-    ntile_cols,
-    junk_width,
-    junk_height;
+    ntile_cols;
 
   int
     i,
@@ -521,8 +519,8 @@ static int load_level (Image* image, XCFDocInfo* inDocInfo, XCFLayerInfo*
     *exception = inDocInfo->exception;
   
   /* start reading the data */
-  junk_width = ReadBlobMSBLong(image);
-  junk_height = ReadBlobMSBLong(image);
+  (void) ReadBlobMSBLong(image); /* width */
+  (void) ReadBlobMSBLong(image); /* height */
 
   /* read in the first tile offset.
    *  if it is '0', then this tile level is empty
@@ -635,14 +633,9 @@ static int load_hierarchy (Image *image, XCFDocInfo* inDocInfo, XCFLayerInfo*
   offset,
   junk;
 
-  unsigned long
-  junk_width,
-  junk_height,
-  junk_bpp;
-
-  junk_width = ReadBlobMSBLong(image);
-  junk_height = ReadBlobMSBLong(image);
-  junk_bpp = inDocInfo->bpp = ReadBlobMSBLong(image);
+  (void) ReadBlobMSBLong(image); /* width */
+  (void) ReadBlobMSBLong(image); /* height */
+  inDocInfo->bpp = ReadBlobMSBLong(image); /* bpp */
 
   /* load in the levels...we make sure that the number of levels
    *  calculated when the TileManager was created is the same

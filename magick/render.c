@@ -2238,8 +2238,8 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
                   name[MaxTextExtent],
                   type[MaxTextExtent];
 
-                ElementInfo
-                  element;
+/*                 ElementInfo */
+/*                   element; */
 
                 SegmentInfo
                   segment;
@@ -2250,28 +2250,28 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
                 (void) strncpy(type,token,MaxTextExtent-1);
                 GetToken(q,&q,token);
                 segment.x1=atof(token);
-                element.cx=atof(token);
+/*                 element.cx=atof(token); */
                 GetToken(q,&q,token);
                 if (*token == ',')
                   GetToken(q,&q,token);
                 segment.y1=atof(token);
-                element.cy=atof(token);
+/*                 element.cy=atof(token); */
                 GetToken(q,&q,token);
                 if (*token == ',')
                   GetToken(q,&q,token);
                 segment.x2=atof(token);
-                element.major=atof(token);
+/*                 element.major=atof(token); */
                 GetToken(q,&q,token);
                 if (*token == ',')
                   GetToken(q,&q,token);
                 segment.y2=atof(token);
-                element.minor=atof(token);
+/*                 element.minor=atof(token); */
                 if (LocaleCompare(type,"radial") == 0)
                   {
                     GetToken(q,&q,token);
                     if (*token == ',')
                       GetToken(q,&q,token);
-                    element.angle=atof(token);
+/*                     element.angle=atof(token); */
                   }
                 for (p=q; *q != '\0'; )
                 {

@@ -355,7 +355,7 @@ static void BlurScanline(const double *kernel,const unsigned long width,
               aggregate.blue+=(*p)*q->blue;
               aggregate.opacity+=(*p)*q->opacity;
             }
-          if (((i+width/2-x) >= 0) && ((i+width/2-x) < width))
+          if (((i+(long)(width/2)-x) >= 0) && ((i+width/2-x) < width))
             scale+=kernel[i+width/2-x];
           p++;
           q++;

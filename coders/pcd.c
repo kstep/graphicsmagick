@@ -157,7 +157,6 @@ static unsigned int DecodeImage(Image *image,unsigned char *luma,
   unsigned long
     bits,
     plane,
-    number_pixels,
     pcd_length[3],
     row,
     sum;
@@ -222,7 +221,6 @@ static unsigned int DecodeImage(Image *image,unsigned char *luma,
   */
   count=0;
   length=0;
-  number_pixels=image->columns*image->rows;
   plane=0;
   row=0;
   q=luma;

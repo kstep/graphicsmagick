@@ -4652,6 +4652,7 @@ MagickExport unsigned int SetImageChannelDepth(Image *image,
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
 
+  status=True;
   is_grayscale=image->is_grayscale;
 
   desired_depth=depth;
@@ -4737,7 +4738,7 @@ MagickExport unsigned int SetImageChannelDepth(Image *image,
 
   image->is_grayscale=is_grayscale;
 
-  return depth;
+  return status;
 }
 
 /*

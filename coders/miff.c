@@ -669,9 +669,6 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
   Image
     *image;
 
-  IndexPacket
-    index;
-
   int
     c,
     code,
@@ -682,9 +679,6 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
 
   QuantumType
     quantum_type;
-
-  register IndexPacket
-    *indexes;
 
   register long
     i;
@@ -1367,7 +1361,6 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
         quantum_type=image->matte ? CMYKAQuantum : CMYKQuantum;
       else
         quantum_type=image->matte ? RGBAQuantum : RGBQuantum;
-    index=0;
     length=0;
     switch (image->compression)
       {
@@ -1379,7 +1372,6 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
               q=SetImagePixels(image,0,y,image->columns,1);
               if (q == (PixelPacket *) NULL)
                 break;
-              indexes=GetIndexes(image);
               if (y == 0)
                 {
                   zip_info.zalloc=(alloc_func) NULL;
@@ -1427,7 +1419,6 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
               q=SetImagePixels(image,0,y,image->columns,1);
               if (q == (PixelPacket *) NULL)
                 break;
-              indexes=GetIndexes(image);
               if (y == 0)
                 {
                   bzip_info.bzalloc=NULL;
@@ -1474,7 +1465,6 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
               q=SetImagePixels(image,0,y,image->columns,1);
               if (q == (PixelPacket *) NULL)
                 break;
-              indexes=GetIndexes(image);
               /*
                 Collect one pixel row
               */
@@ -1498,7 +1488,6 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
               q=SetImagePixels(image,0,y,image->columns,1);
               if (q == (PixelPacket *) NULL)
                 break;
-              indexes=GetIndexes(image);
               pixels_p=pixels;
               (void) ReadBlobZC(image,packet_size*image->columns,&pixels_p);
               (void) PushImagePixels(image,quantum_type,pixels_p);

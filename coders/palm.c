@@ -436,18 +436,11 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
     bytes_per_row,
     flags,
     bits_per_pixel,
-    version,
-    nextDepthOffset,
     transparentIndex,
     compressionType,
     byte,
     count,
     mask,
-    redbits,
-    greenbits,
-    bluebits,
-    pad,
-    size,
     bit;
 
   unsigned short
@@ -466,11 +459,11 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
   bytes_per_row = ReadBlobMSBShort(image);
   flags = ReadBlobMSBShort(image);
   bits_per_pixel = ReadBlobByte(image);
-  version = ReadBlobByte(image);
-  nextDepthOffset = ReadBlobMSBShort(image);
+  (void) ReadBlobByte(image); /* version */
+  (void) ReadBlobMSBShort(image); /* nextDepthOffset */
   transparentIndex = ReadBlobByte(image);
   compressionType = ReadBlobByte(image);
-  pad = ReadBlobMSBShort(image);
+  (void) ReadBlobMSBShort(image); /* pad */
 
   /*
     Initialize image colormap.
@@ -481,9 +474,9 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
   if(bits_per_pixel < 8 && flags & PALM_IS_COMPRESSED_FLAG)    /* compressed size */
     {
     if(flags & PALM_HAS_FOUR_BYTE_FIELD)  /* big size */
-      size = ReadBlobMSBLong(image);
+      (void) ReadBlobMSBLong(image); /* size */
     else
-      size = ReadBlobMSBShort(image);
+      (void) ReadBlobMSBShort(image); /* size */
     }
   else  /* is color */
   if(bits_per_pixel == 8)
@@ -504,9 +497,9 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
       {
   if(bits_per_pixel == 16)  /* Direct Color */
     {
-    redbits = ReadBlobByte(image);     /* # of bits of red */
-    greenbits = ReadBlobByte(image);   /* # of bits of green */
-    bluebits = ReadBlobByte(image);    /* # of bits of blue */
+    (void) ReadBlobByte(image);     /* # of bits of red */
+    (void) ReadBlobByte(image);   /* # of bits of green */
+    (void) ReadBlobByte(image);    /* # of bits of blue */
     ReadBlobByte(image);               /* reserved by Palm */
     ReadBlobByte(image);               /* reserved by Palm */
     transpix.red = ReadBlobByte(image) * MaxRGB / 31;
