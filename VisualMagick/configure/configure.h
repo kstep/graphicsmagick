@@ -30,6 +30,12 @@ using namespace std;
 // See Configure.cpp for the implementation of this class
 /////////////////////////////////////////////////////////////////////////////
 
+enum {MULTITHREADEDDLL, SINGLETHREADEDSTATIC, MULTITHREADEDSTATIC, MULTITHREADEDSTATICDLL};
+enum {DLLPROJECT, LIBPROJECT, EXEPROJECT};
+enum {DISABLED, UTILITY, LIBRARY, STATICLIB, MODULE, ADD_ON, THIRDPARTY, PROJECT};
+enum {CPPCOMPILETOOL, RESCOMPILETOOL, MIDLCOMPILETOOL, LIBRARYTOOL, LINKERTOOL};
+enum {OP_REPLACEFILES, OP_RENAMEFILES};
+
 class ConfigureProject
 {
 public:
@@ -327,7 +333,9 @@ private:
           const char *root, const int runtime,
           const char *stype, const int btype);
   void process_project_replacements(
-          const char *root, const char *stype);
+          const char *root, const char *top,
+            const char *stype, const char *newstype,
+              int operation);
   ConfigureProject *write_project_lib(
     bool dll,
     int runtime,

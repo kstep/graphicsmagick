@@ -28,6 +28,7 @@ public:
 	BOOL	m_optionalFiles;
 	BOOL	m_standalone;
 	BOOL	m_visualStudio7;
+	BOOL	m_bigCoderDLL;
 	//}}AFX_DATA
 
 
@@ -47,6 +48,8 @@ protected:
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 
+public:
+  afx_msg void OnBnClickedProjectType();
 };
 
 //{{AFX_INSERT_LOCATION}}

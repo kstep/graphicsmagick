@@ -25,6 +25,7 @@ CTargetPage::CTargetPage() : CPropertyPage(CTargetPage::IDD)
 	m_optionalFiles = FALSE;
 	m_standalone = FALSE;
 	m_visualStudio7 = FALSE;
+	m_bigCoderDLL = FALSE;
 	//}}AFX_DATA_INIT
 }
 
@@ -42,6 +43,7 @@ void CTargetPage::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX, IDC_INCLUDE_OPTIONAL, m_optionalFiles);
 	DDX_Check(pDX, IDC_STANDALONE, m_standalone);
 	DDX_Check(pDX, IDC_GENERATE_VS7, m_visualStudio7);
+	DDX_Check(pDX, IDC_BIGCODERDLL, m_bigCoderDLL);
 	//}}AFX_DATA_MAP
 }
 
@@ -49,6 +51,7 @@ BEGIN_MESSAGE_MAP(CTargetPage, CPropertyPage)
 	//{{AFX_MSG_MAP(CTargetPage)
 	ON_BN_CLICKED(IDC_EditConfig, OnEditConfig)
 	//}}AFX_MSG_MAP
+  ON_BN_CLICKED(IDC_PROJECT_TYPE, OnBnClickedProjectType)
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -74,4 +77,8 @@ void CTargetPage::OnEditConfig()
 
   if (WinExec(strCommandLine, SW_SHOW) <= 31)
 	  MessageBox(_T("Unable to run notepad"));
+}
+void CTargetPage::OnBnClickedProjectType()
+{
+  // TODO: Add your control notification handler code here
 }

@@ -2,7 +2,7 @@
 //
 
 #include "stdafx.h"
-#include "Configure.h"
+#include "configure.h"
 #include "configure_wizard.h"
 #include "WaitDlg.h"
 //#include "CStringEx.h"
@@ -45,11 +45,6 @@ CConfigureApp theApp;
 /////////////////////////////////////////////////////////////////////////////
 // CConfigureApp initialization
 
-enum {MULTITHREADEDDLL, SINGLETHREADEDSTATIC, MULTITHREADEDSTATIC, MULTITHREADEDSTATICDLL};
-enum {DLLPROJECT, LIBPROJECT, EXEPROJECT};
-enum {DISABLED, UTILITY, LIBRARY, STATICLIB, MODULE, ADD_ON, THIRDPARTY, PROJECT};
-enum {CPPCOMPILETOOL, RESCOMPILETOOL, MIDLCOMPILETOOL, LIBRARYTOOL, LINKERTOOL};
-
 BOOL useX11Stubs = TRUE;
 BOOL decorateFiles = FALSE;
 BOOL optionalFiles = FALSE;
@@ -58,6 +53,7 @@ BOOL standaloneMode = FALSE;
 BOOL onebigdllMode = FALSE;
 //BOOL generateFontmap = FALSE;
 BOOL visualStudio7 = TRUE;
+BOOL m_bigCoderDLL = FALSE;
 
 string release_loc;
 string debug_loc;
@@ -677,6 +673,16 @@ void CConfigureApp::process_utility(
     extra = "..\\Magick++";
     add_includes(includes_list, extra, levels-2);
   }
+  if (LocalFindNoCase(name,"jpeg",0) >= 0)
+  {
+    extra = "..\\jpeg";
+    add_includes(includes_list, extra, levels-2);
+  }
+  if (LocalFindNoCase(name,"tiff",0) >= 0)
+  {
+    extra = "..\\tiff";
+    add_includes(includes_list, extra, levels-2);
+  }
 
 #ifdef _DEBUG
   debuglog  << "process_utility "
@@ -740,173 +746,17 @@ ConfigureProject *project = write_project_exe(
         {
           workspace->write_project_dependency(project,"CORE_jp2");
         }
+        if (LocalFindNoCase(name,"jpeg",0) >= 0)
+        {
+          workspace->write_project_dependency(project,"CORE_jpeg");
+        }
+        if (LocalFindNoCase(name,"tiff",0) >= 0)
+        {
+          workspace->write_project_dependency(project,"CORE_tiff");
+        }
       }
       workspace->write_end_project(project);
       break;
-  }
-}
-
-void CConfigureApp::process_library(
-    const char *root, const char *filename, int runtime, int project_type)
-{
-  bool dll = false;
-  string basename = filename;
-  string name = LocalGetField(basename,'.',0);
-  string extn = LocalGetField(basename,'.',1);
-  // filename is not a source file name so don't check extension length!
-  string prefix = "CORE_";
-  string staging = root;
-  int levels;
-
-  lib_release_list.clear();
-  lib_debug_list.clear();
-  includes_list.clear();
-  defines_list.clear();
-  source_list.clear();
-  resource_list.clear();
-  exclude_list.clear();
-
-  if (runtime == MULTITHREADEDDLL)
-  {
-    dll = true;
-    defines_list.push_back("_DLL");
-    defines_list.push_back("_MAGICKMOD_");
-  }
-  else
-  {
-    dll = false;
-    defines_list.push_back("_LIB");
-  }
-  // For the static library case we force the system to build this
-  // as a standard library instead of a DLL. Magick++ and some of
-  // the other libraries are build this way for various reasons.
-  if (project_type == STATICLIB)
-    dll = false;
-
-  levels = LocalGetFieldCount(staging,'\\');
-
-  string extra;
-  extra = "..\\zlib";
-  add_includes(includes_list, extra, levels-2);
-  extra = "..\\bzlib";
-  add_includes(includes_list, extra, levels-2);
-  extra = "..\\jpeg";
-  add_includes(includes_list, extra, levels-2);
-  //extra = "..\\tiff\\libtiff";
-  //add_includes(includes_list, extra, levels-2);
-  extra = "..\\lcms\\src";
-  add_includes(includes_list, extra, levels-2);
-  extra = "..\\lcms\\include";
-  add_includes(includes_list, extra, levels-2);
-  extra = "..\\ttf\\include";
-  add_includes(includes_list, extra, levels-2);
-  extra = "..\\libxml\\include";
-  add_includes(includes_list, extra, levels-2);
-  add_includes(includes_list, staging, levels-2);
-
-  string envpath;
-  envpath = staging;
-  if (project_type == LIBRARY)
-  {
-    envpath += "\\LIBRARY.txt";
-    load_environment_file(envpath.c_str(), runtime);
-  }
-  if (project_type == STATICLIB)
-  {
-    envpath += "\\STATICLIB.txt";
-    load_environment_file(envpath.c_str(), runtime);
-  }
-
-#ifdef _DEBUG
-  debuglog  << "process_library "
-            << "dll:" << dll << ","
-            << "runtime:" << runtime <<","
-            << "project_type:" << project_type << ","
-            << "staging:" << staging.c_str() << ","
-            << "search:" << "*,"
-            << "name:" << name.c_str() << ","
-            << "prefix:" << prefix.c_str() << endl;
-#endif
-
-ConfigureProject *project = write_project_lib(
-    dll,
-    runtime, // multi-threaded
-    project_type,
-    staging,
-    "*",
-    name,
-    prefix,
-    extn);
-
-  string projectname;
-  string pname;
-  pname = prefix + name;
-
-  project->name = prefix + "%s" + name + "%s";
-  dependency_list.push_back(project);
-#ifdef _DEBUG
-    debuglog  << "dependency:" << project->name.c_str() << endl;
-#endif
-
-  projectname = get_project_name(
-    dll?DLLPROJECT:LIBPROJECT,runtime,staging.substr(1),prefix,name);
-  if (dll && (runtime==MULTITHREADEDDLL))
-  {
-    workspace->write_begin_project(project, pname.c_str(), projectname.c_str());
-    if (name.compare("magick") == 0)
-    {
-      if (useX11Stubs)
-        workspace->write_project_dependency(project,"CORE_xlib");
-      //workspace->write_project_dependency(project,"CORE_tiff");
-      workspace->write_project_dependency(project,"CORE_jpeg");
-      workspace->write_project_dependency(project,"CORE_zlib");
-      workspace->write_project_dependency(project,"CORE_bzlib");
-      workspace->write_project_dependency(project,"CORE_lcms");
-      workspace->write_project_dependency(project,"CORE_ttf");
-      workspace->write_project_dependency(project,"CORE_libxml");
-    }
-    if (name.compare("Magick++") == 0)
-    {
-      workspace->write_project_dependency(project,"CORE_magick");
-    }
-    if (name.compare("SDL") == 0)
-    {
-      workspace->write_project_dependency(project,"CORE_magick");
-    }
-    if (name.compare("hdf") == 0)
-    {
-      workspace->write_project_dependency(project,"CORE_zlib");
-    }
-    if (name.compare("pdf") == 0)
-    {
-      workspace->write_project_dependency(project,"CORE_tiff");
-      workspace->write_project_dependency(project,"CORE_zlib");
-    }
-    if (name.compare("ps2") == 0)
-    {
-      workspace->write_project_dependency(project,"CORE_tiff");
-      workspace->write_project_dependency(project,"CORE_zlib");
-    }
-    if (name.compare("ps3") == 0)
-    {
-      workspace->write_project_dependency(project,"CORE_tiff");
-      workspace->write_project_dependency(project,"CORE_zlib");
-    }
-    if (name.compare("png") == 0)
-    {
-      workspace->write_project_dependency(project,"CORE_zlib");
-    }
-    if (name.compare("tiff") == 0)
-    {
-      workspace->write_project_dependency(project,"CORE_jpeg");
-      workspace->write_project_dependency(project,"CORE_zlib");
-    }
-    workspace->write_end_project(project);
-  }
-  else
-  {
-    workspace->write_begin_project(project, pname.c_str(), projectname.c_str());
-    workspace->write_end_project(project);
   }
 }
 
@@ -993,6 +843,192 @@ void AddExtraLibs(string &name,string root,
   }
 }
 
+void CConfigureApp::process_library(
+    const char *root, const char *filename, int runtime, int project_type)
+{
+  bool dll = false;
+  string basename = filename;
+  string name = LocalGetField(basename,'.',0);
+  string extn = LocalGetField(basename,'.',1);
+  // filename is not a source file name so don't check extension length!
+  string prefix = "CORE_";
+  string staging = root;
+  int levels;
+
+  lib_release_list.clear();
+  lib_debug_list.clear();
+  includes_list.clear();
+  defines_list.clear();
+  source_list.clear();
+  resource_list.clear();
+  exclude_list.clear();
+
+  if (runtime == MULTITHREADEDDLL)
+  {
+    dll = true;
+    defines_list.push_back("_DLL");
+    defines_list.push_back("_MAGICKMOD_");
+  }
+  else
+  {
+    dll = false;
+    defines_list.push_back("_LIB");
+  }
+  // For the static library case we force the system to build this
+  // as a standard library instead of a DLL. Magick++ and some of
+  // the other libraries are build this way for various reasons.
+  if (project_type == STATICLIB)
+    dll = false;
+
+  levels = LocalGetFieldCount(staging,'\\');
+
+  string extra;
+  extra = "..\\zlib";
+  add_includes(includes_list, extra, levels-2);
+  extra = "..\\bzlib";
+  add_includes(includes_list, extra, levels-2);
+  extra = "..\\jpeg";
+  add_includes(includes_list, extra, levels-2);
+  //extra = "..\\tiff\\libtiff";
+  //add_includes(includes_list, extra, levels-2);
+  extra = "..\\lcms\\src";
+  add_includes(includes_list, extra, levels-2);
+  extra = "..\\lcms\\include";
+  add_includes(includes_list, extra, levels-2);
+  extra = "..\\ttf\\include";
+  add_includes(includes_list, extra, levels-2);
+  extra = "..\\libxml\\include";
+  add_includes(includes_list, extra, levels-2);
+  add_includes(includes_list, staging, levels-2);
+
+  // This is a kind of kludge that is on its way to becoming a more
+  // general facility. It looks for special libraries that are named
+  // a specific way and adds these in if it finds them. If it does
+  // not find the specially named ones, it add anything it finds in.
+  //AddExtraLibs(name,root,lib_release_list,lib_debug_list);
+
+  string envpath;
+  envpath = staging;
+  if (project_type == LIBRARY)
+  {
+    envpath += "\\LIBRARY.txt";
+    load_environment_file(envpath.c_str(), runtime);
+  }
+  if (project_type == STATICLIB)
+  {
+    envpath += "\\STATICLIB.txt";
+    load_environment_file(envpath.c_str(), runtime);
+  }
+
+#ifdef _DEBUG
+  debuglog  << "process_library "
+            << "dll:" << dll << ","
+            << "runtime:" << runtime <<","
+            << "project_type:" << project_type << ","
+            << "staging:" << staging.c_str() << ","
+            << "search:" << "*,"
+            << "name:" << name.c_str() << ","
+            << "prefix:" << prefix.c_str() << endl;
+#endif
+
+ConfigureProject *project = write_project_lib(
+    dll,
+    runtime, // multi-threaded
+    project_type,
+    staging,
+    "*",
+    name,
+    prefix,
+    extn);
+
+  string projectname;
+  string pname;
+  pname = prefix + name;
+
+  project->name = prefix + "%s" + name + "%s";
+  dependency_list.push_back(project);
+#ifdef _DEBUG
+    debuglog  << "dependency:" << project->name.c_str() << endl;
+#endif
+
+  projectname = get_project_name(
+    dll?DLLPROJECT:LIBPROJECT,runtime,staging.substr(1),prefix,name);
+  if (dll && (runtime==MULTITHREADEDDLL))
+  {
+    workspace->write_begin_project(project, pname.c_str(), projectname.c_str());
+    if (name.compare("magick") == 0)
+    {
+      if (useX11Stubs)
+        workspace->write_project_dependency(project,"CORE_xlib");
+      //workspace->write_project_dependency(project,"CORE_tiff");
+      workspace->write_project_dependency(project,"CORE_jpeg");
+      workspace->write_project_dependency(project,"CORE_zlib");
+      workspace->write_project_dependency(project,"CORE_bzlib");
+      workspace->write_project_dependency(project,"CORE_lcms");
+      workspace->write_project_dependency(project,"CORE_ttf");
+      workspace->write_project_dependency(project,"CORE_libxml");
+    }
+    if (name.compare("coders") == 0)
+    {
+      workspace->write_project_dependency(project,"CORE_zlib");
+      workspace->write_project_dependency(project,"CORE_bzlib");
+      workspace->write_project_dependency(project,"CORE_jpeg");
+      workspace->write_project_dependency(project,"CORE_fpx");
+      workspace->write_project_dependency(project,"CORE_jbig");
+      workspace->write_project_dependency(project,"CORE_jp2");
+      workspace->write_project_dependency(project,"CORE_png");
+      workspace->write_project_dependency(project,"CORE_libxml");
+      workspace->write_project_dependency(project,"CORE_tiff");
+      workspace->write_project_dependency(project,"CORE_wmf");
+      if (useX11Stubs)
+        workspace->write_project_dependency(project,"CORE_xlib");
+       workspace->write_project_dependency(project,"CORE_magick");
+   }
+    if (name.compare("Magick++") == 0)
+    {
+      workspace->write_project_dependency(project,"CORE_magick");
+    }
+    if (name.compare("SDL") == 0)
+    {
+      workspace->write_project_dependency(project,"CORE_magick");
+    }
+    if (name.compare("hdf") == 0)
+    {
+      workspace->write_project_dependency(project,"CORE_zlib");
+    }
+    if (name.compare("pdf") == 0)
+    {
+      workspace->write_project_dependency(project,"CORE_tiff");
+      workspace->write_project_dependency(project,"CORE_zlib");
+    }
+    if (name.compare("ps2") == 0)
+    {
+      workspace->write_project_dependency(project,"CORE_tiff");
+      workspace->write_project_dependency(project,"CORE_zlib");
+    }
+    if (name.compare("ps3") == 0)
+    {
+      workspace->write_project_dependency(project,"CORE_tiff");
+      workspace->write_project_dependency(project,"CORE_zlib");
+    }
+    if (name.compare("png") == 0)
+    {
+      workspace->write_project_dependency(project,"CORE_zlib");
+    }
+    if (name.compare("tiff") == 0)
+    {
+      workspace->write_project_dependency(project,"CORE_jpeg");
+      workspace->write_project_dependency(project,"CORE_zlib");
+    }
+    workspace->write_end_project(project);
+  }
+  else
+  {
+    workspace->write_begin_project(project, pname.c_str(), projectname.c_str());
+    workspace->write_end_project(project);
+  }
+}
+
 void CConfigureApp::process_module(
     const char *root, const char *filename,
       int runtime, int project_type)
@@ -1006,6 +1042,13 @@ void CConfigureApp::process_module(
   string prefix;
   string staging = root;
   int i,levels;
+
+  //
+  // Temporary kludge to disable any modules for anything but the DLL
+  // versions of the projects.
+  //
+  if (runtime != MULTITHREADEDDLL)
+    return;
 
   if (project_type == MODULE)
     prefix = MODULE_PREFIX;    
@@ -1646,7 +1689,7 @@ BOOL SetFileTimeEx(LPCTSTR lpFileName)
 }
 
 void CConfigureApp::process_project_replacements(
-      const char *root, const char *stype)
+      const char *root, const char *top, const char *stype, const char *newstype, int operation)
 {
     int project_type = DISABLED;
     HANDLE tophandle;
@@ -1655,7 +1698,8 @@ void CConfigureApp::process_project_replacements(
     // Scan all top level directories and process the ones
     // that we are allowed to.
     string rootpath = root;
-    rootpath += "\\*";
+    rootpath += "\\";
+    rootpath += top;
     tophandle = FindFirstFile(rootpath.c_str(), &topdata);
     do
     {
@@ -1714,35 +1758,55 @@ void CConfigureApp::process_project_replacements(
               char dir[_MAX_DIR];
               char fname[_MAX_FNAME];
               char ext[_MAX_EXT];
+              const char *s1,*s2,*s3,*s4;
 
-              _splitpath( filepath.c_str(), drive, dir, fname, ext );
-
-              rootpath = "..\\";
-              rootpath += root;
-              rootpath += "\\";
-              rootpath += topdata.cFileName;
-              rootpath += "\\";
-              rootpath += fname;
-              handle = FindFirstFile(rootpath.c_str(), &nestdata);
-              if (handle != INVALID_HANDLE_VALUE)
+              s1 = filepath.c_str();
+              _splitpath( s1, drive, dir, fname, ext );
+              if (operation == OP_REPLACEFILES)
               {
-                string renamed;
-                FindClose(handle);
-                renamed = rootpath;
-                renamed += ".bak";
-                MoveFile(rootpath.c_str(),renamed.c_str());
-                if (CopyFile(filepath.c_str(),rootpath.c_str(),FALSE))
+                rootpath = "..\\";
+                rootpath += root;
+                rootpath += "\\";
+                rootpath += topdata.cFileName;
+                s2 = rootpath.c_str();
+
+                string original;
+                original = rootpath;
+                original += "\\";
+                original += fname;
+                s3 = original.c_str();
+
+                handle = FindFirstFile(s2, &nestdata);
+                if (handle != INVALID_HANDLE_VALUE)
                 {
-                  SetFileTimeEx(rootpath.c_str());
+                  FindClose(handle);
+
+                  string renamed;
+                  renamed = rootpath;
+                  renamed += "\\";
+                  renamed += fname;
+                  renamed += ".bak";
+                  s4 = renamed.c_str();
+                  MoveFile(s3,s4);
+                }
+                // If the file does not exist, then we are free to copy it over.
+                if (CopyFile(s1,s3,FALSE))
+                {
+                  SetFileTimeEx(s3);
                 }
               }
-              else
+              else if (operation == OP_RENAMEFILES)
               {
-                // If the file does not exist, then we are free to copy it over.
-                if (CopyFile(filepath.c_str(),rootpath.c_str(),FALSE))
-                {
-                  SetFileTimeEx(rootpath.c_str());
-                }
+                string renamed;
+                const char *s5;
+
+                renamed = root;
+                renamed += "\\";
+                renamed += topdata.cFileName;
+                renamed += "\\";
+                renamed += newstype;
+                s5 = renamed.c_str();
+                MoveFile(s1,s5);
               }
             }
           } while (FindNextFile(nesthandle, &nestdata));
@@ -1751,13 +1815,18 @@ void CConfigureApp::process_project_replacements(
           rootpath = root;
           rootpath += "\\";
           rootpath += data.cFileName;
-          process_project_replacements(rootpath.c_str(),stype);
+          process_project_replacements(rootpath.c_str(),"*",stype,newstype,operation);
         }
       }
     } while (FindNextFile(tophandle, &topdata));
     FindClose(tophandle);
 }
 
+//
+// This routine just traverses the VisualMagick directory structure
+// in a top down fasion looking for any that have a corresponding
+// directory of the same name in the root of the ImageMagick tree.
+//
 void CConfigureApp::process_project_type(
       const char *root, int runtime, const char *stype, const int btype)
 {
@@ -1767,39 +1836,43 @@ void CConfigureApp::process_project_type(
     // that we are allowed to.
     WIN32_FIND_DATA topdata;
     string rootpath = root;
-    rootpath += "\\*";
+    rootpath += "\\*"; // look just for directorties
     tophandle = FindFirstFile(rootpath.c_str(), &topdata);
     do
     {
       if (tophandle == INVALID_HANDLE_VALUE)
         break;
+      // Look just for directories - not files.
       if ((topdata.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) ==
               FILE_ATTRIBUTE_DIRECTORY)
       {
         HANDLE handle;
         WIN32_FIND_DATA data;
 
+        // Ignore ones that we don't care about
         if (stricmp(topdata.cFileName,".") == 0)
           continue;
         if (stricmp(topdata.cFileName,"..") == 0)
           continue;
 
+        // Check to see if the directory we found has the type of .txt
+        // file we are looking for.
         string searchpath = root;
         searchpath += "\\";
         searchpath += topdata.cFileName;
         searchpath += "\\";
         searchpath += stype;
-
         handle = FindFirstFile(searchpath.c_str(), &data);
         if (handle == INVALID_HANDLE_VALUE)
           continue;
         FindClose(handle);
 
+        // Next check to see if there is a correspoding directory of the
+        // same name one level above the VisualMagick directory
         searchpath = "..\\";
         searchpath += root;
         searchpath += "\\";
         searchpath += topdata.cFileName;
-
         handle = FindFirstFile(searchpath.c_str(), &data);
         if (handle == INVALID_HANDLE_VALUE)
           continue;
@@ -1811,9 +1884,19 @@ void CConfigureApp::process_project_type(
           rootpath += "\\";
           rootpath += topdata.cFileName;
           process_one_folder(rootpath.c_str(),data,btype,runtime);
+          // We allow only certain project types to be below the top level
+          // of the tree structure. Most library types are like this, since
+          // they are unlikely to contain more then one instance of the
+          // particular project type. Another way of looking at this is that
+          // for some project types - the entire tree of files is part of
+          // the project, while others have multiple projects in a given
+          // tree or subtree.
           if (btype == UTILITY || btype == PROJECT
             || btype == ADD_ON || btype == MODULE)
           {
+            // We don't nest down for LIBRARY, STATICLIB, or THIRDPARTY
+            // because everything in the tree is assumed to be part of
+            // the project.
             rootpath = root;
             rootpath += "\\";
             rootpath += data.cFileName;
@@ -2588,6 +2671,7 @@ BOOL CConfigureApp::InitInstance()
   wizard.m_Page2.m_optionalFiles = optionalFiles;
   wizard.m_Page2.m_standalone = standaloneMode;
   wizard.m_Page2.m_visualStudio7 = visualStudio7;
+  //wizard.m_Page2.m_bigCoderDLL = m_bigCoderDLL;
 
   wizard.m_Page3.m_tempRelease = release_loc.c_str();
   wizard.m_Page3.m_tempDebug = debug_loc.c_str();
@@ -2678,6 +2762,7 @@ BOOL CConfigureApp::InitInstance()
     optionalFiles = wizard.m_Page2.m_optionalFiles;
     standaloneMode = wizard.m_Page2.m_standalone;
     visualStudio7 = wizard.m_Page2.m_visualStudio7;
+    //m_bigCoderDLL = wizard.m_Page2.m_bigCoderDLL;
     release_loc = wizard.m_Page3.m_tempRelease;
     debug_loc = wizard.m_Page3.m_tempDebug;
     bin_loc = wizard.m_Page3.m_outputBin;
@@ -2692,16 +2777,20 @@ BOOL CConfigureApp::InitInstance()
     {
       case SINGLETHREADEDSTATIC:
         theprojectname = "..\\VisualStaticST";
+        m_bigCoderDLL = TRUE;
         break;
       case MULTITHREADEDSTATIC:
         theprojectname = "..\\VisualStaticMT";
+        m_bigCoderDLL = TRUE;
         break;
       case MULTITHREADEDSTATICDLL:
         theprojectname = "..\\VisualStaticMTDLL";
+        m_bigCoderDLL = TRUE;
         break;
       default:
       case MULTITHREADEDDLL:
         theprojectname = "..\\VisualDynamicMT";
+        m_bigCoderDLL = FALSE;
         break;
     }
     if (visualStudio7)
@@ -2762,8 +2851,23 @@ BOOL CConfigureApp::InitInstance()
       workspace->write_begin_project(dummy_project, "All", ".\\All\\All.vcproj");
 
     waitdlg.Pumpit();
-    process_project_replacements("..","*.in");
-    waitdlg.Pumpit();
+    process_project_replacements("..","*","*.in",NULL,OP_REPLACEFILES);
+    //
+    // This is pretty kludgy. It looks in the coder directory and swaps the library and
+    // module files back and forth. These are mutually exclusive setups, so only one can
+    // be used at a time.
+    //
+    if (m_bigCoderDLL)
+    {
+      process_project_replacements("..","coders","LIBRARY.bak","LIBRARY.txt",OP_RENAMEFILES);
+      process_project_replacements("..","coders","MODULE.txt","MODULE.bak",OP_RENAMEFILES);
+    }
+    else
+    {
+      process_project_replacements("..","coders","LIBRARY.txt","LIBRARY.bak",OP_RENAMEFILES);
+      process_project_replacements("..","coders","MODULE.bak","MODULE.txt",OP_RENAMEFILES);
+    }
+    //waitdlg.Pumpit();
     process_project_type("..",projectType,"THIRDPARTY.txt",THIRDPARTY);
     waitdlg.Pumpit();
     process_project_type("..",projectType,"LIBRARY.txt",   LIBRARY);
@@ -2799,6 +2903,8 @@ BOOL CConfigureApp::InitInstance()
     {
       delete (*depit);
     }
+    if (workspace)
+      delete workspace;
   }
 #ifdef _DEBUG
   debuglog.close();
