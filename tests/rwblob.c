@@ -30,7 +30,12 @@ static int CompareImage( int fuzz, Image *original, Image *final )
     diff;
 
   PixelPacket
-    *orig_p, *final_p;
+    *orig_p,
+    *final_p;
+
+  ViewInfo
+    *orig_view,
+    *final_view;
 
   factor = ( MaxRGB * fuzz ) / 100;
 
@@ -53,13 +58,15 @@ static int CompareImage( int fuzz, Image *original, Image *final )
       final->class = DirectClass;
     }
 
+  orig_view=OpenCacheView(original);
+  final_view=OpenCacheView(final);
   for ( y = 0; y < (int) original->rows; y++ )
     {
       /* Get row from original */
-      if (!(orig_p = GetPixelCache(original,0,y,original->columns,1)))
+      if (!(orig_p = GetCacheView(orig_view,0,y,original->columns,1)))
 	return 1;
       /* Get row from final */
-      if (!(final_p = GetPixelCache(final,0,y,final->columns,1)))
+      if (!(final_p = GetCacheView(final_view,0,y,final->columns,1)))
 	return 1;
 
       /* Compare pixels in row */
@@ -68,17 +75,27 @@ static int CompareImage( int fuzz, Image *original, Image *final )
 	  if ( ( ( diff = labs((long)orig_p->red     - (long)final_p->red   ) )  > factor ) ||
 	       ( ( diff = labs((long)orig_p->green   - (long)final_p->green ) )  > factor ) ||
 	       ( ( diff = labs((long)orig_p->blue    - (long)final_p->blue  ) )  > factor ) )
-	    return ((float)diff/MaxRGB*100);
+	    {
+	      CloseCacheView(orig_view);
+	      CloseCacheView(final_view);
+	      return ((float)diff/MaxRGB*100);
+	    }
 	  if ( original->matte )
 	    {
 	      if ( ( diff = labs((long)orig_p->opacity - (long)final_p->opacity) ) > factor )
-		return ((float)diff/MaxRGB*100);
+		{
+		  CloseCacheView(orig_view);
+		  CloseCacheView(final_view);
+		  return ((float)diff/MaxRGB*100);
+		}
 	    }
 	}
 
       orig_p++;
       final_p++;
     }
+  CloseCacheView(orig_view);
+  CloseCacheView(final_view);
 
   return 0;
 }
