@@ -204,7 +204,7 @@ static Image *ReadEPTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Open image file.
   */
   image=AllocateImage(image_info);
-  status=OpenBlob(image_info,image,ReadBinaryType);
+  status=OpenBlob(image_info,image,ReadBinaryType,exception);
   if (status == False)
     ThrowReaderException(FileOpenWarning,"Unable to open file",image);
   /*
@@ -503,7 +503,7 @@ static unsigned int WriteEPTImage(const ImageInfo *image_info,Image *image)
     Write EPT image.
   */
   (void) strncpy(image->filename,filename,MaxTextExtent-1);
-  status=OpenBlob(image_info,image,WriteBinaryType);
+  status=OpenBlob(image_info,image,WriteBinaryType,&image->exception);
   ps_file=fopen(ps_filename,ReadBinaryType);
   status&=ps_file != (FILE *) NULL;
   tiff_file=fopen(tiff_filename,ReadBinaryType);

@@ -239,7 +239,7 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
   /*
     Open image.
   */
-  status=OpenBlob(image_info,image,WriteBinaryType);
+  status=OpenBlob(image_info,image,WriteBinaryType,&image->exception);
   if (status == False)
     ThrowWriterException(FileOpenWarning,"Unable to open file",image);
   CloseBlob(image);
@@ -282,7 +282,7 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
       /*
         Open output image file.
       */
-      status=OpenBlob(image_info,image,WriteBinaryType);
+      status=OpenBlob(image_info,image,WriteBinaryType,&image->exception);
       if (status == False)
         ThrowWriterException(FileOpenWarning,"Unable to open file",image);
       /*
@@ -388,7 +388,7 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
   /*
     Open image map.
   */
-  status=OpenBlob(clone_info,image,WriteBinaryType);
+  status=OpenBlob(clone_info,image,WriteBinaryType,&image->exception);
   if (status == False)
     ThrowWriterException(FileOpenWarning,"Unable to open file",image);
   DestroyImageInfo(clone_info);

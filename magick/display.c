@@ -6743,7 +6743,8 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         }
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      status=InvokeDelegate(image_info,*image,"edit",(char *) NULL);
+      status=InvokeDelegate(image_info,*image,"edit",(char *) NULL,
+        &(*image)->exception);
       if (status == False)
         XNoticeWidget(display,windows,"Unable to edit image comment",
           (char *) NULL);
@@ -6992,7 +6993,8 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         }
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      status=InvokeDelegate(image_info,*image,"browse",(char *) NULL);
+      status=InvokeDelegate(image_info,*image,"browse",(char *) NULL,
+        &(*image)->exception);
       if (status == False)
         XNoticeWidget(display,windows,"Unable to browse documentation",
           (char *) NULL);

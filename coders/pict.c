@@ -760,7 +760,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
     Open image file.
   */
   image=AllocateImage(image_info);
-  status=OpenBlob(image_info,image,ReadBinaryType);
+  status=OpenBlob(image_info,image,ReadBinaryType,exception);
   if (status == False)
     ThrowReaderException(FileOpenWarning,"Unable to open file",image);
   /*
@@ -1436,7 +1436,7 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
   if ((image->columns > 65535L) || (image->rows > 65535L))
     ThrowWriterException(ResourceLimitWarning,
       "Width or height limit exceeded",image);
-  status=OpenBlob(image_info,image,WriteBinaryType);
+  status=OpenBlob(image_info,image,WriteBinaryType,&image->exception);
   if (status == False)
     ThrowWriterException(FileOpenWarning,"Unable to open file",image);
   (void) TransformRGBImage(image,RGBColorspace);

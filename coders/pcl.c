@@ -229,7 +229,7 @@ static unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
   /*
     Open output image file.
   */
-  status=OpenBlob(image_info,image,WriteBinaryType);
+  status=OpenBlob(image_info,image,WriteBinaryType,&image->exception);
   if (status == False)
     ThrowWriterException(FileOpenWarning,"Unable to open file",image);
   (void) TransformRGBImage(image,RGBColorspace);

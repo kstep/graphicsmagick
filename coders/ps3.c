@@ -219,7 +219,7 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
   /*
     Open output image file.
   */
-  status=OpenBlob(image_info,image,WriteBinaryType);
+  status=OpenBlob(image_info,image,WriteBinaryType,&image->exception);
   if (status == False)
     ThrowWriterException(FileOpenWarning,"Unable to open file",image);
   compression=image->compression;

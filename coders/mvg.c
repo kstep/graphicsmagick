@@ -124,7 +124,7 @@ static Image *ReadMVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       /*
         Determine size of image canvas.
       */
-      status=OpenBlob(image_info,image,ReadBinaryType);
+      status=OpenBlob(image_info,image,ReadBinaryType,exception);
       if (status == False)
         ThrowReaderException(FileOpenWarning,"Unable to open file",image);
       while (ReadBlobString(image,primitive) != (char *) NULL)
@@ -254,7 +254,7 @@ static unsigned int WriteMVGImage(const ImageInfo *image_info,Image *image)
   attribute=GetImageAttribute(image,"[MVG]");
   if (attribute == (ImageAttribute *) NULL)
     ThrowWriterException(DelegateWarning,"no image vector graphics",image);
-  status=OpenBlob(image_info,image,WriteBinaryType);
+  status=OpenBlob(image_info,image,WriteBinaryType,&image->exception);
   if (status == False)
     ThrowWriterException(FileOpenWarning,"Unable to open file",image);
   (void) WriteBlob(image,strlen(attribute->value),attribute->value);

@@ -165,7 +165,7 @@ static Image *ReadPWPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Open image file.
   */
   pwp_image=AllocateImage(image_info);
-  status=OpenBlob(image_info,pwp_image,ReadBinaryType);
+  status=OpenBlob(image_info,pwp_image,ReadBinaryType,exception);
   if (status == False)
     ThrowReaderException(FileOpenWarning,"Unable to open file",pwp_image);
   count=ReadBlob(pwp_image,5,(char *) magick);

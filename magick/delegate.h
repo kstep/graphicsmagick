@@ -35,14 +35,16 @@ typedef struct _DelegateInfo
   Magick delegate methods.
 */
 extern MagickExport char
-  *GetDelegateCommand(const ImageInfo *,Image *,const char *,const char *);
+  *GetDelegateCommand(const ImageInfo *,Image *,const char *,const char *,
+    ExceptionInfo *);
 
 extern MagickExport DelegateInfo
   *GetDelegateInfo(const char *,const char *,ExceptionInfo *exception),
   *SetDelegateInfo(DelegateInfo *);
 
 extern MagickExport unsigned int
-  InvokeDelegate(const ImageInfo *,Image *,const char *,const char *),
+  InvokeDelegate(const ImageInfo *,Image *,const char *,const char *,
+    ExceptionInfo *),
   ListDelegateInfo(FILE *,ExceptionInfo *);
 
 extern MagickExport void

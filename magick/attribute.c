@@ -1034,7 +1034,8 @@ MagickExport ImageAttribute *GetImageClippingPathAttribute(const Image *image)
 %
 %  The format of the GetImageInfoAttribute method is:
 %
-%      ImageAttribute *GetImageAttribute(const Image *image,const char *key)
+%      ImageAttribute *GetImageAttribute(const ImageInfo *image_info,
+%        Image *image,const char *key)
 %
 %  A description of each parameter follows:
 %

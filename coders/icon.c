@@ -176,7 +176,7 @@ static Image *ReadIconImage(const ImageInfo *image_info,
     Open image file.
   */
   image=AllocateImage(image_info);
-  status=OpenBlob(image_info,image,ReadBinaryType);
+  status=OpenBlob(image_info,image,ReadBinaryType,exception);
   if (status == False)
     ThrowReaderException(FileOpenWarning,"Unable to open file",image);
   icon_file.reserved=ReadBlobLSBShort(image);

@@ -90,19 +90,17 @@
 %
 %
 */
-MagickExport Image *BorderImage(Image *image,const RectangleInfo *border_info,
-  ExceptionInfo *exception)
+MagickExport Image *BorderImage(const Image *image,
+  const RectangleInfo *border_info,ExceptionInfo *exception)
 {
-  PixelPacket
-    matte_color;
-
   Image
-    *border_image;
+    *border_image,
+    *clone_image;
 
   FrameInfo
     frame_info;
 
-  assert(image != (Image *) NULL);
+  assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(border_info != (RectangleInfo *) NULL);
   frame_info.width=image->columns+(border_info->width << 1);
@@ -111,11 +109,12 @@ MagickExport Image *BorderImage(Image *image,const RectangleInfo *border_info,
   frame_info.y=border_info->height;
   frame_info.inner_bevel=0;
   frame_info.outer_bevel=0;
-  matte_color=image->matte_color;
-  image->matte_color=image->border_color;
-  border_image=FrameImage(image,&frame_info,exception);
-  border_image->matte_color=matte_color;
-  image->matte_color=matte_color;
+  clone_image=CloneImage(image,0,0,False,exception);
+  if (clone_image == (Image *) NULL)
+    return((Image *) NULL);
+  clone_image->matte_color=image->border_color;
+  border_image=FrameImage(clone_image,&frame_info,exception);
+  DestroyImage(clone_image);
   return(border_image);
 }
 

@@ -1411,7 +1411,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   image=AllocateImage(image_info);
   mng_info=(MngInfo *) NULL;
-  status=OpenBlob(image_info,image,ReadBinaryType);
+  status=OpenBlob(image_info,image,ReadBinaryType,exception);
   if (status == False)
     ThrowReaderException((ExceptionType) FileOpenWarning,
     "Unable to open file",image);
@@ -4313,7 +4313,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
   /*
     Open image file.
   */
-  status=OpenBlob(image_info,image,WriteBinaryType);
+  status=OpenBlob(image_info,image,WriteBinaryType,&image->exception);
   if (status == False)
     ThrowWriterException((ExceptionType) FileOpenWarning,
       "Unable to open file",image);

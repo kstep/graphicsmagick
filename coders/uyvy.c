@@ -127,7 +127,7 @@ static Image *ReadUYVYImage(const ImageInfo *image_info,
   if ((image->columns == 0) || (image->rows == 0))
     ThrowReaderException(OptionWarning,"Must specify image size",image);
   (void) strncpy(image->filename,image_info->filename,MaxTextExtent-1);
-  status=OpenBlob(image_info,image,ReadBinaryType);
+  status=OpenBlob(image_info,image,ReadBinaryType,exception);
   if (status == False)
     ThrowReaderException(FileOpenWarning,"Unable to open file",image)
   for (i=0; i < image->offset; i++)
@@ -291,7 +291,7 @@ static unsigned int WriteUYVYImage(const ImageInfo *image_info,Image *image)
   /*
     Open output image file.
   */
-  status=OpenBlob(image_info,image,WriteBinaryType);
+  status=OpenBlob(image_info,image,WriteBinaryType,&image->exception);
   if (status == False)
     ThrowWriterException(FileOpenWarning,"Unable to open file",image);
   (void) TransformRGBImage(image,RGBColorspace);

@@ -1943,9 +1943,8 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
         }
       (void) strncpy(image->filename,clone_info->filename,MaxTextExtent-1);
       TemporaryFilename(clone_info->filename);
-      status=InvokeDelegate(clone_info,image,clone_info->magick,(char *) NULL);
-      ThrowException(exception,image->exception.severity,
-        image->exception.reason,image->exception.description);
+      status=InvokeDelegate(clone_info,image,clone_info->magick,(char *) NULL,
+        exception);
       DestroyImages(image);
       image=(Image *) NULL;
       if (status != False)
@@ -2283,7 +2282,7 @@ MagickExport unsigned int WriteImage(const ImageInfo *image_info,Image *image)
           (void) strncpy(image->filename,image->magick_filename,
             MaxTextExtent-1);
           status=InvokeDelegate(clone_info,image,image->magick,
-            clone_info->magick);
+            clone_info->magick,&image->exception);
           DestroyImageInfo(clone_info);
           return(!status);
         }
@@ -2315,8 +2314,8 @@ MagickExport unsigned int WriteImage(const ImageInfo *image_info,Image *image)
             Let our encoding delegate process the image.
           */
           TemporaryFilename(image->filename);
-          status=
-            InvokeDelegate(clone_info,image,(char *) NULL,clone_info->magick);
+          status=InvokeDelegate(clone_info,image,(char *) NULL,clone_info->magick,
+            &image->exception);
           (void) remove(image->filename);
           DestroyImageInfo(clone_info);
           return(!status);

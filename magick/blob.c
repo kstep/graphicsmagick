@@ -896,7 +896,7 @@ MagickExport void MSBOrderShort(register char *p,const size_t length)
 %  The format of the OpenBlob method is:
 %
 %      unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
-%        const char *type)
+%        const char *type,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -911,7 +911,7 @@ MagickExport void MSBOrderShort(register char *p,const size_t length)
 %
 */
 MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
-  const char *type)
+  const char *type,ExceptionInfo *exception)
 {
   char
     filename[MaxTextExtent];
@@ -960,7 +960,7 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
             Decrypt image file with PGP encryption utilities.
           */
           if (*type == 'r')
-            p=GetDelegateCommand(image_info,image,"pgp",(char *) NULL);
+            p=GetDelegateCommand(image_info,image,"pgp",(char *) NULL,exception);
         }
       else
         if ((strlen(filename) > 4) &&
@@ -970,9 +970,11 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
               Uncompress/compress image file with BZIP compress utilities.
             */
             if (*type == 'r')
-              p=GetDelegateCommand(image_info,image,"bzip",(char *) NULL);
+              p=GetDelegateCommand(image_info,image,"bzip",(char *) NULL,
+                exception);
             else
-              p=GetDelegateCommand(image_info,image,(char *) NULL,"bzip");
+              p=GetDelegateCommand(image_info,image,(char *) NULL,"bzip",
+                exception);
           }
         else
           if ((strlen(filename) > 3) &&
@@ -982,9 +984,11 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
                 Uncompress/compress image file with GNU compress utilities.
               */
               if (*type == 'r')
-                p=GetDelegateCommand(image_info,image,"zip",(char *) NULL);
+                p=GetDelegateCommand(image_info,image,"zip",(char *) NULL,
+                  exception);
               else
-                p=GetDelegateCommand(image_info,image,(char *) NULL,"zip");
+                p=GetDelegateCommand(image_info,image,(char *) NULL,"zip",
+                  exception);
             }
           else
             if ((strlen(filename) > 2) &&
@@ -995,10 +999,10 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
                 */
                 if (*type == 'r')
                   p=GetDelegateCommand(image_info,image,"compress",
-                    (char *) NULL);
+                    (char *) NULL,exception);
                 else
                   p=GetDelegateCommand(image_info,image,(char *) NULL,
-                    "compress");
+                    "compress",exception);
               }
     }
   if (p != (char *) NULL)
@@ -1608,7 +1612,7 @@ MagickExport off_t SeekBlob(Image *image,const off_t offset,const int whence)
 %
 %
 */
-MagickExport off_t SizeBlob(Image *image)
+MagickExport off_t SizeBlob(const Image *image)
 {
   struct stat
     attributes;
@@ -1619,7 +1623,7 @@ MagickExport off_t SizeBlob(Image *image)
     return(image->blob->length);
   if (image->file == (FILE *) NULL)
     return(image->blob->size);
-  (void) SyncBlob(image);
+  (void) fflush(image->file);
   return(fstat(fileno(image->file),&attributes) < 0 ? 0 : attributes.st_size);
 }
 
@@ -1696,7 +1700,7 @@ MagickExport int SyncBlob(Image *image)
 %
 %
 */
-MagickExport off_t TellBlob(Image *image)
+MagickExport off_t TellBlob(const Image *image)
 {
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);

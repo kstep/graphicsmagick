@@ -136,7 +136,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
       /*
         Open image file.
       */
-      status=OpenBlob(image_info,image,ReadBinaryType);
+      status=OpenBlob(image_info,image,ReadBinaryType,exception);
       if (status == False)
         ThrowReaderException(FileOpenWarning,"Unable to open file",image);
       for (i=0; i < image->offset; i++)
@@ -156,7 +156,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (image_info->interlace == PartitionInterlace)
       {
         AppendImageFormat("Y",image->filename);
-        status=OpenBlob(image_info,image,ReadBinaryType);
+        status=OpenBlob(image_info,image,ReadBinaryType,exception);
         if (status == False)
           ThrowReaderException(FileOpenWarning,"Unable to open file",image);
       }
@@ -184,7 +184,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
       {
         CloseBlob(image);
         AppendImageFormat("U",image->filename);
-        status=OpenBlob(image_info,image,ReadBinaryType);
+        status=OpenBlob(image_info,image,ReadBinaryType,exception);
         if (status == False)
           ThrowReaderException(FileOpenWarning,"Unable to open file",image);
       }
@@ -213,7 +213,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
       {
         CloseBlob(image);
         AppendImageFormat("V",image->filename);
-        status=OpenBlob(image_info,image,ReadBinaryType);
+        status=OpenBlob(image_info,image,ReadBinaryType,exception);
         if (status == False)
           ThrowReaderException(FileOpenWarning,"Unable to open file",image);
       }
@@ -413,14 +413,14 @@ static unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
       /*
         Open output image file.
       */
-      status=OpenBlob(image_info,image,WriteBinaryType);
+      status=OpenBlob(image_info,image,WriteBinaryType,&image->exception);
       if (status == False)
         ThrowWriterException(FileOpenWarning,"Unable to open file",image);
     }
   if (image_info->interlace == PartitionInterlace)
     {
       AppendImageFormat("Y",image->filename);
-      status=OpenBlob(image_info,image,WriteBinaryType);
+      status=OpenBlob(image_info,image,WriteBinaryType,&image->exception);
       if (status == False)
         ThrowWriterException(FileOpenWarning,"Unable to open file",image);
     }
@@ -476,7 +476,7 @@ static unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
       {
         CloseBlob(image);
         AppendImageFormat("U",image->filename);
-        status=OpenBlob(image_info,image,WriteBinaryType);
+        status=OpenBlob(image_info,image,WriteBinaryType,&image->exception);
         if (status == False)
           ThrowWriterException(FileOpenWarning,"Unable to open file",image);
       }
@@ -498,7 +498,7 @@ static unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
       {
         CloseBlob(image);
         AppendImageFormat("V",image->filename);
-        status=OpenBlob(image_info,image,WriteBinaryType);
+        status=OpenBlob(image_info,image,WriteBinaryType,&image->exception);
         if (status == False)
           ThrowWriterException(FileOpenWarning,"Unable to open file",image);
       }

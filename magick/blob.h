@@ -28,8 +28,8 @@ extern MagickExport int
 
 extern MagickExport off_t
   SeekBlob(Image *,const off_t,const int),
-  SizeBlob(Image *image),
-  TellBlob(Image *image);
+  SizeBlob(const Image *image),
+  TellBlob(const Image *image);
 
 extern MagickExport size_t
   ReadBlob(Image *,const size_t,void *),
@@ -43,7 +43,7 @@ extern MagickExport size_t
   WriteBlobString(Image *,const char *);
 
 extern MagickExport unsigned int
-  OpenBlob(const ImageInfo *,Image *,const char *),
+  OpenBlob(const ImageInfo *,Image *,const char *,ExceptionInfo *),
   UnmapBlob(void *,const size_t);
 
 extern MagickExport unsigned long

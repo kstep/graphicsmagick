@@ -3983,7 +3983,7 @@ static unsigned int WriteLOGOImage(const ImageInfo *image_info,Image *image)
   /*
     Write logo image.
   */
-  status=OpenBlob(image_info,image,WriteBinaryType);
+  status=OpenBlob(image_info,image,WriteBinaryType,&image->exception);
   if (status == False)
     ThrowWriterException(FileOpenWarning,"Unable to open file",image);
   logo_image=CloneImage(image,0,0,True,&image->exception);

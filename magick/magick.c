@@ -816,7 +816,7 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
     Determine the image format from the first few bytes of the file.
   */
   (void) strncpy(image->filename,image_info->filename,MaxTextExtent-1);
-  status=OpenBlob(image_info,image,ReadBinaryType);
+  status=OpenBlob(image_info,image,ReadBinaryType,exception);
   if (status == False)
     {
       CloseBlob(image);

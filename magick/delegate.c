@@ -231,7 +231,7 @@ MagickExport DelegateInfo *GetDelegateInfo(const char *decode,
 %  The format of the GetDelegateCommand method is:
 %
 %      char *GetDelegateCommand(const ImageInfo *image_info,Image *image,
-%        const char *decode,const char *encode)
+%        const char *decode,const char *encode,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -248,10 +248,12 @@ MagickExport DelegateInfo *GetDelegateInfo(const char *decode,
 %    o encode: Specifies the encode delegate we are searching for as a
 %      character string.
 %
+%    o exception: Return any errors or warnings in this structure.
+%
 %
 */
 MagickExport char *GetDelegateCommand(const ImageInfo *image_info,Image *image,
-  const char *decode,const char *encode)
+  const char *decode,const char *encode,ExceptionInfo *exception)
 {
   char
     *command,
@@ -268,24 +270,24 @@ MagickExport char *GetDelegateCommand(const ImageInfo *image_info,Image *image,
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(decode!= (char *) NULL);
-  delegate_info=GetDelegateInfo(decode,encode,&image->exception);
+  delegate_info=GetDelegateInfo(decode,encode,exception);
   if (delegate_info == (DelegateInfo *) NULL)
     {
-      ThrowException(&image->exception,MissingDelegateWarning,"no tag found",
+      ThrowException(exception,MissingDelegateWarning,"no tag found",
         decode ? decode : encode);
       return((char *) NULL);
     }
   commands=StringToList(delegate_info->commands);
   if (commands == (char **) NULL)
     {
-      ThrowException(&image->exception,ResourceLimitWarning,
-        "Memory allocation failed",decode ? decode : encode);
+      ThrowException(exception,ResourceLimitWarning,"Memory allocation failed",
+        decode ? decode : encode);
       return((char *) NULL);
     }
   command=TranslateText(image_info,image,commands[0]);
   if (command == (char *) NULL)
-    ThrowException(&image->exception,ResourceLimitWarning,
-      "Memory allocation failed",commands[0]);
+    ThrowException(exception,ResourceLimitWarning,"Memory allocation failed",
+      commands[0]);
   /*
     Free resources.
   */
@@ -313,7 +315,8 @@ MagickExport char *GetDelegateCommand(const ImageInfo *image_info,Image *image,
 %  The format of the InvokeDelegate method is:
 %
 %      unsigned int InvokeDelegate(const ImageInfo *image_info,
-%        Image *image,const char *decode,const char *encode)
+%        Image *image,const char *decode,const char *encode,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -321,10 +324,12 @@ MagickExport char *GetDelegateCommand(const ImageInfo *image_info,Image *image,
 %
 %    o image: The image.
 %
+%    o exception: Return any errors or warnings in this structure.
+%
 %
 */
 MagickExport unsigned int InvokeDelegate(const ImageInfo *image_info,
-  Image *image,const char *decode,const char *encode)
+  Image *image,const char *decode,const char *encode,ExceptionInfo *exception)
 {
   char
     *command,
@@ -353,8 +358,11 @@ MagickExport unsigned int InvokeDelegate(const ImageInfo *image_info,
   (void) strncpy(filename,image->filename,MaxTextExtent-1);
   delegate_info=GetDelegateInfo(decode,encode,&image->exception);
   if (delegate_info == (DelegateInfo *) NULL)
-    ThrowBinaryException(MissingDelegateWarning,"no tag found",
-      decode ? decode : encode);
+    {
+      ThrowException(exception,MissingDelegateWarning,"no tag found",
+        decode ? decode : encode);
+      return(False);
+    }
   clone_info=CloneImageInfo(image_info);
   TemporaryFilename(clone_info->unique);
   TemporaryFilename(clone_info->zero);
@@ -367,8 +375,9 @@ MagickExport unsigned int InvokeDelegate(const ImageInfo *image_info,
         if (status == False)
           {
             DestroyImageInfo(clone_info);
-            ThrowBinaryException(DelegateWarning,"delegate failed",
-              decode ? decode : encode)
+            ThrowException(exception,DelegateWarning,"delegate failed",
+              decode ? decode : encode);
+            return(False);
           }
       }
   if (delegate_info->mode != 0)
@@ -390,8 +399,9 @@ MagickExport unsigned int InvokeDelegate(const ImageInfo *image_info,
         if (magick == (char *) NULL)
           {
             DestroyImageInfo(clone_info);
-            ThrowBinaryException(DelegateWarning,"delegate failed",
-              decode ? decode : encode)
+            ThrowException(exception,DelegateWarning,"delegate failed",
+              decode ? decode : encode);
+            return(False);
           }
         LocaleUpper(magick);
         (void) strncpy((char *) clone_info->magick,magick,MaxTextExtent-1);
@@ -408,8 +418,9 @@ MagickExport unsigned int InvokeDelegate(const ImageInfo *image_info,
           if (status == False)
             {
               DestroyImageInfo(clone_info);
-              ThrowBinaryException(DelegateWarning,"delegate failed",
-                decode ? decode : encode)
+              ThrowException(exception,DelegateWarning,"delegate failed",
+                decode ? decode : encode);
+              return(False);
             }
           if (clone_info->adjoin)
             break;
@@ -423,8 +434,9 @@ MagickExport unsigned int InvokeDelegate(const ImageInfo *image_info,
   if (commands == (char **) NULL)
     {
       DestroyImageInfo(clone_info);
-      ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
-        decode ? decode : encode)
+      ThrowException(exception,ResourceLimitWarning,"Memory allocation failed",
+        decode ? decode : encode);
+      return(False);
     }
   command=(char *) NULL;
   status=True;
@@ -454,8 +466,7 @@ MagickExport unsigned int InvokeDelegate(const ImageInfo *image_info,
           (void) remove(filename);
         }
     if (status != False)
-      ThrowException(&image->exception,DelegateWarning,"delegate failed",
-        commands[i]);
+      ThrowException(exception,DelegateWarning,"delegate failed",commands[i]);
     LiberateMemory((void **) &commands[i]);
   }
   for ( ; commands[i] != (char *) NULL; i++)

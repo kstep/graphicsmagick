@@ -709,7 +709,7 @@ static void ConsolidateCrossings(ZeroCrossing *zero_crossing,
 %
 %  The format of the DefineRegion method is:
 %
-%      status=DefineRegion(extrema,extents)
+%      int DefineRegion(const short *extrema,ExtentPacket *extents)
 %
 %  A description of each parameter follows.
 %
@@ -766,7 +766,7 @@ static int DefineRegion(const short *extrema,ExtentPacket *extents)
 %
 %  The format of the DerivativeHistogram method is:
 %
-%      DerivativeHistogram(histogram,derivative)
+%      DerivativeHistogram(const double *histogram,double *derivative
 %
 %  A description of each parameter follows.
 %
@@ -813,7 +813,7 @@ static void DerivativeHistogram(const double *histogram,double *derivative)
 %
 %  The format of the InitializeHistogram method is:
 %
-%      InitializeHistogram(image,histogram)
+%      InitializeHistogram(Image *image,long **histogram)
 %
 %  A description of each parameter follows.
 %
@@ -878,7 +878,8 @@ static void InitializeHistogram(Image *image,long **histogram)
 %
 %  The format of the InitializeIntervalTree method is:
 %
-%      InitializeIntervalTree(zero_crossing,number_crossings)
+%      InitializeIntervalTree(IntervalTree **list,int *number_nodes,
+%        IntervalTree *node
 %
 %  A description of each parameter follows.
 %
@@ -1052,8 +1053,9 @@ static IntervalTree *InitializeIntervalTree(const ZeroCrossing *zero_crossing,
 %
 %  The format of the OptimalTau method is:
 %
-%      OptimalTau(histogram,max_tau,min_tau,delta_tau,smoothing_threshold,
-%        extrema)
+%    double OptimalTau(const long *histogram,const double max_tau,
+%      const double min_tau,const double delta_tau,
+%      const double smoothing_threshold,short *extrema)
 %
 %  A description of each parameter follows.
 %
@@ -1278,7 +1280,8 @@ static double OptimalTau(const long *histogram,const double max_tau,
 %
 %  The format of the ScaleSpace method is:
 %
-%      ScaleSpace(histogram,tau,scaled_histogram)
+%      ScaleSpace(const long *histogram,const double tau,
+%        double *scaled_histogram)
 %
 %  A description of each parameter follows.
 %
@@ -1337,7 +1340,8 @@ static void ScaleSpace(const long *histogram,const double tau,
 %
 %  The format of the ZeroCrossHistogram method is:
 %
-%      ZeroCrossHistogram(second_derivative,smoothing_threshold,crossings)
+%      ZeroCrossHistogram(double *second_derivative,
+%        const double smoothing_threshold,short *crossings)
 %
 %  A description of each parameter follows.
 %

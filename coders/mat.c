@@ -215,7 +215,7 @@ static Image *ReadMATImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   image=AllocateImage(image_info);
   
-  status=OpenBlob(image_info,image,ReadBinaryType);
+  status=OpenBlob(image_info,image,ReadBinaryType,exception);
   if (status == False)
     ThrowReaderException(FileOpenWarning,"Unable to open file",image);
   /*
