@@ -30,8 +30,7 @@ may be expected to implemented APIs based on operational experience.
 Download the latest Magick++ library sources from
 http://www.cyberramp.net/~bfriesen/Magick++/.
 
-   * Version 0.8 (requires ImageMagick 4.2.1 dated Mar 28, 1999 11:10 or
-     later)
+   * Version 0.8 (requires ImageMagick 4.2.2)
         o Magick++-0.8.tar.gz (gzip'ed tar format, 278K)
         o Magick++-0.8.zip (PK-ZIP format, 301K)
    * Version 0.7.3 (requires ImageMagick 4.2.1)
@@ -44,7 +43,7 @@ http://www.cyberramp.net/~bfriesen/Magick++/.
 General
 
 In order to compile Magic++ you must have access to a standard C++
-implementation and have ImageMagick 4.2.1 installed
+implementation and have ImageMagick installed
 (ftp://ftp.wizards.dupont.com/pub/ImageMagick/) . The author uses the egcs
 1.1.2 version of GNU C++ which is available under UNIX and under the Cygwin
 UNIX-emulation environment for Windows. Standards compliant commercial C++

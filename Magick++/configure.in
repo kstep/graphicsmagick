@@ -10,7 +10,7 @@ AC_INIT(lib/Magick++.h)
 AC_CANONICAL_SYSTEM
 
 AM_INIT_AUTOMAKE(Magick++, 0.8, ' ')
-TESTED_MAGICK_VERSION="4.2.1"
+TESTED_MAGICK_VERSION="4.2.2"
 
 # Check for ImageMagick release and warn if not what we expect
 AC_MSG_CHECKING(ImageMagick version)

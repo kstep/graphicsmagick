@@ -862,7 +862,7 @@ else
 fi
 
 
-TESTED_MAGICK_VERSION="4.2.1"
+TESTED_MAGICK_VERSION="4.2.2"
 
 # Check for ImageMagick release and warn if not what we expect
 echo $ac_n "checking ImageMagick version""... $ac_c" 1>&6
