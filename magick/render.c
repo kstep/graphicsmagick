@@ -2697,6 +2697,8 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
           }
         if (LocaleCompare("stroke-dasharray",keyword) == 0)
           {
+            if (graphic_context[n]->dash_pattern != (double *) NULL)
+              LiberateMemory((void **) &graphic_context[n]->dash_pattern);
             if (IsPoint(q))
               {
                 char
@@ -2735,11 +2737,6 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
                 break;
               }
             GetToken(q,&q,token);
-            if (LocaleCompare(token,"#000000ff") != 0)
-              break;
-            if (graphic_context[n]->dash_pattern != (double *) NULL)
-              LiberateMemory((void **) &graphic_context[n]->dash_pattern);
-            graphic_context[n]->dash_pattern=(double *) NULL;
             break;
           }
         if (LocaleCompare("stroke-dashoffset",keyword) == 0)
