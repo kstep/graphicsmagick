@@ -1,3 +1,7 @@
+2002-04-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+  * magick/utility.c (MagickToMime): New function to return the MIME
+    media type corresponding to a specified magick tag.
+
 2002-04-12  Leonard Rosenthol  <leonardr@lazerware.com>
   * Fixed a bug in writing layer names in PSD files
 
