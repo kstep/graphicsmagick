@@ -1,3 +1,7 @@
+2003-06-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* INSTALL-unix.txt: Add additional information regarding LZW.
+
 2003-06-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/bmp.c (ReadBMPImage): Only validate the file size value
