@@ -434,7 +434,7 @@ RECURSIVE_TARGETS = info-recursive dvi-recursive pdf-recursive \
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/configure AUTHORS \
 	ChangeLog GraphicsMagick.spec.in Makefile.am NEWS acinclude.m4 \
 	aclocal.m4 config.guess config.sub configure configure.ac \
-	depcomp install-sh ltmain.sh missing mkinstalldirs
+	depcomp install-sh ltconfig ltmain.sh missing mkinstalldirs
 all: all-recursive
 
 .SUFFIXES:

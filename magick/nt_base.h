@@ -95,7 +95,9 @@ struct dirent
 };
 
 /* ssize_t is the type returned by _read and _write */
+#if !defined(ssize_t)
 typedef int ssize_t;
+#endif
 
 typedef struct _DIR
 {

@@ -1,5 +1,7 @@
 2003-10-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* libtool.m4: Updated libtool again to CVS latest version.
+	Libtool required some fixes for building DLLs under MinGW.
 	* magick/resource.c (InitializeMagickResources): Some code is
 	conditional based on HAVE_POPEN.
 	* magick/utility.c (SystemCommand): Improved conditional
