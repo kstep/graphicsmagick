@@ -62,7 +62,7 @@
 /*
   Define declarations.
 */
-#define DefaultCacheMemory  ((((off_t) 1L) << (8L*sizeof(off_t)-1L))-1L)
+#define DefaultCacheMemory  (((off_t) 1L << (8*sizeof(off_t)))-1)
 
 /*
   Global declarations.
