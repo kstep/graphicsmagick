@@ -4,6 +4,20 @@
 </HEAD>
 <BODY TEXT="#000000" BGCOLOR="#FFFFFF" LINK="#0000EE" VLINK="#551A8B" ALINK="#FF0000">
 <p>
+2002-04-19  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Magick++/Drawable.h (DrawableDashOffset): Change dashoffset
+        type to 'double' rather than 'unsigned int' in order to match
+        ImageMagick.
+
+  <LI> lib/Drawable.cpp (DrawableDashArray): Change dasharray type to
+        'double' rather than 'unsigned int' in order to match
+        ImageMagick. Previous 'unsigned int' methods remain for
+        compatability reasons.
+
+</UL>
+<p>
 2002-04-14  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

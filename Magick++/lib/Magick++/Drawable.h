@@ -1593,8 +1593,9 @@ namespace Magick
   class DrawableDashArray : public DrawableBase
   {
   public:
-    DrawableDashArray ( const unsigned int* dasharray_ );
-    DrawableDashArray(const Magick::DrawableDashArray &original_);
+    DrawableDashArray( const double* dasharray_ );
+    DrawableDashArray( const unsigned int* dasharray_ ); // Deprecated
+    DrawableDashArray( const Magick::DrawableDashArray &original_ );
 
     // Support a polymorphic print-to-stream operator
     /*virtual*/ void print (std::ostream& stream_) const;
@@ -1606,9 +1607,10 @@ namespace Magick
         return new DrawableDashArray(*this);
       }
 
-    void dasharray( const unsigned int* dasharray_ );
+    void dasharray( const double* dasharray_ );
+    void dasharray( const unsigned int* dasharray_ ); // Deprecated
 
-    const unsigned int* dasharray( void ) const
+    const double* dasharray( void ) const
       {
         return _dasharray;
       }
@@ -1616,15 +1618,14 @@ namespace Magick
     DrawableDashArray& operator=(const Magick::DrawableDashArray &original_);
 
   private:
-
-    unsigned int* _dasharray;
+    double* _dasharray;
   };
 
   // Stroke dashoffset
   class DrawableDashOffset : public DrawableBase
   {
   public:
-    DrawableDashOffset ( unsigned int offset_ )
+    DrawableDashOffset ( const double offset_ )
       : _offset(offset_)
       { }
 
@@ -1638,17 +1639,17 @@ namespace Magick
         return new DrawableDashOffset(*this);
       }
 
-    void offset( unsigned int offset_ )
+    void offset( const double offset_ )
       {
         _offset = offset_;
       }
-    unsigned int offset( void ) const
+    double offset( void ) const
       {
         return _offset;
       }
 
   private:
-    unsigned int _offset;
+    double _offset;
   };
 
   // Stroke linecap

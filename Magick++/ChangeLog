@@ -1,3 +1,14 @@
+2002-04-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Magick++/Drawable.h (DrawableDashOffset): Change dashoffset
+ 	type to 'double' rather than 'unsigned int' in order to match
+ 	ImageMagick.
+
+	* lib/Drawable.cpp (DrawableDashArray): Change dasharray type to
+ 	'double' rather than 'unsigned int' in order to match
+ 	ImageMagick. Previous 'unsigned int' methods remain for
+ 	compatability reasons.
+
 2002-04-14  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Drawable.cpp (DrawableCompositeImage): Always output

@@ -799,6 +799,12 @@ void Magick::DrawableSkewY::print (std::ostream& stream_) const
 }
 
 // Stroke dasharray
+Magick::DrawableDashArray::DrawableDashArray( const double* dasharray_ )
+  : _dasharray(0)
+{
+  dasharray( dasharray_ );
+}
+// Deprecated, do not use for new code, and migrate existing code to using double*
 Magick::DrawableDashArray::DrawableDashArray( const unsigned int* dasharray_ )
   : _dasharray(0)
 {
@@ -817,6 +823,34 @@ Magick::DrawableDashArray& Magick::DrawableDashArray::operator=(const Magick::Dr
     }
   return *this;
 }
+void Magick::DrawableDashArray::dasharray ( const double* dasharray_ )
+{
+  LiberateMemory(reinterpret_cast<void**>(&_dasharray));
+
+  if(dasharray_)
+    {
+      // Count elements in dash array
+      unsigned int n = 0;
+      {
+        const double *p = dasharray_;
+        while(*p++ != 0)
+          n++;
+      }
+
+      // Allocate elements
+      _dasharray=static_cast<double*>(AcquireMemory((n+1)*sizeof(double)));
+      // Copy elements
+      {
+        double *q = _dasharray;
+        const double *p = dasharray_;
+        while( *p )
+          *q++=*p++;
+        *q=0;
+      }
+    }
+}
+// This method is deprecated.  Don't use for new code, and migrate existing
+// code to the const double* version.
 void Magick::DrawableDashArray::dasharray( const unsigned int* dasharray_ )
 {
   LiberateMemory(reinterpret_cast<void**>(&_dasharray));
@@ -824,13 +858,23 @@ void Magick::DrawableDashArray::dasharray( const unsigned int* dasharray_ )
   if(dasharray_)
     {
       // Count elements in dash array
-      unsigned int x;
-      for (x=0; dasharray_[x]; x++);
+      unsigned int n = 0;
+      {
+        const unsigned int *p = dasharray_;
+        while(*p++ != 0)
+          n++;
+      }
+
       // Allocate elements
-      _dasharray=static_cast<unsigned int*>(AcquireMemory((x+1)*sizeof(unsigned int)));
+      _dasharray=static_cast<double*>(AcquireMemory((n+1)*sizeof(double)));
       // Copy elements
-      memcpy(_dasharray,dasharray_,
-             (x+1)*sizeof(unsigned int));
+      {
+        double *q = _dasharray;
+        const unsigned int *p = dasharray_;
+        while( *p )
+          *q++=static_cast<double>(*p++);
+        *q=0;
+      }
     }
 }
 void Magick::DrawableDashArray::print (std::ostream& stream_) const
@@ -838,12 +882,12 @@ void Magick::DrawableDashArray::print (std::ostream& stream_) const
   stream_ << "stroke-dasharray ";
   if( _dasharray )
     {
-      int x;
-      for (x=0; _dasharray[x]; x++)
+      unsigned int n;
+      for (n=0; _dasharray[n]; n++)
         {
-          if(x)
+          if(n)
             stream_ << ",";
-          stream_ << _dasharray[x];
+          stream_ << _dasharray[n];
         }
     }
   else
