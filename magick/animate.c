@@ -54,7 +54,6 @@
 */
 #include "studio.h"
 #include "delegate.h"
-#include "list.h"
 #include "log.h"
 #include "monitor.h"
 #include "utility.h"

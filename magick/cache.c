@@ -56,7 +56,6 @@
 #include "studio.h"
 #include "blob.h"
 #include "cache.h"
-#include "list.h"
 #include "log.h"
 #include "resource.h"
 #include "utility.h"

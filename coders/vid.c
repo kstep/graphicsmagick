@@ -56,7 +56,6 @@
 #include "attribute.h"
 #include "blob.h"
 #include "magick.h"
-#include "list.h"
 #include "monitor.h"
 #include "utility.h"
 

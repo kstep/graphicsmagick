@@ -59,7 +59,6 @@
 #include "cache.h"
 #include "compress.h"
 #include "gem.h"
-#include "list.h"
 #include "magic.h"
 #include "magick.h"
 #include "module.h"

@@ -57,7 +57,6 @@
 #include "blob.h"
 #include "compress.h"
 #include "delegate.h"
-#include "list.h"
 #include "magick.h"
 #include "monitor.h"
 #include "utility.h"

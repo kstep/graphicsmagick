@@ -57,7 +57,6 @@
 #include "blob.h"
 #include "draw.h"
 #include "gem.h"
-#include "list.h"
 #include "log.h"
 #include "magick.h"
 #include "monitor.h"

@@ -57,7 +57,6 @@
 #include "cache.h"
 #include "command.h"
 #include "delegate.h"
-#include "list.h"
 #include "log.h"
 #include "magic.h"
 #include "magick.h"

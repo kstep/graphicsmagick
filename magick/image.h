@@ -12,6 +12,7 @@ extern "C" {
   Include declarations.
 */
 #include "semaphore.h"
+#include "list.h"
 #include "error.h"
 #include "timer.h"
 

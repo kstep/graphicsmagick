@@ -57,7 +57,6 @@
 #include "blob.h"
 #include "cache.h"
 #include "delegate.h"
-#include "list.h"
 #include "log.h"
 #include "magick.h"
 #include "resource.h"
