@@ -304,12 +304,11 @@ MATLAB_KO:  ThrowReaderException(CorruptImageWarning,"Not a MATLAB image file!",
              break;
       case 4:image->depth=16;    	/*Word type cell*/
              ldblk=2*MATLAB_HDR.SizeX;break; 
-             break; 
       case 9:image->depth=24;    	/*double type cell*/
              if(sizeof(double)!=8) ThrowReaderException(CorruptImageWarning,"Incompatible size of double!",image);
              ldblk=8*MATLAB_HDR.SizeX;
              break; 
-      default:ThrowReaderException(CorruptImageWarning,"Unsupported cell type in the matrix!",image);   
+      default:ThrowReaderException(CorruptImageWarning,"Unsupported cell type in the matrix!",image)
       }	  
 
    image->columns= MATLAB_HDR.SizeX;
@@ -343,8 +342,6 @@ NoMemory:  ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
    if(BImgBuff==NULL) goto NoMemory;
 
 
-   Min=0;
-   Max=0;
    if(CellType==9) /*Find Min and Max Values for floats*/
      {
      filepos=TellBlob(image);
@@ -363,7 +360,6 @@ NoMemory:  ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
      SeekBlob(image,filepos,SEEK_SET);
      }
    
-
    for(i=0;i<(long) MATLAB_HDR.SizeY;i++)
         {
         (void) ReadBlob(image,ldblk,(char *)BImgBuff);
@@ -377,9 +373,10 @@ NoMemory:  ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
   rotated_image=RotateImage(image,90.0,exception);
   if (rotated_image != (Image *) NULL)
         {
+	DestroyImage(image);
         image=FlopImage(rotated_image,exception);
 	if(image==NULL) image=rotated_image;  /*Obtain something if flop operation fails*/
-	    /*else rotated image must be freed up here to avoid leaks*/	
+		   else DestroyImage(rotated_image);
 	}
 
   CloseBlob(image);
@@ -426,7 +423,7 @@ ModuleExport void RegisterMATImage(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   U n r e g i s t e r C U T I m a g e                                       %
+%   U n r e g i s t e r M A T I m a g e                                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %

@@ -22,6 +22,7 @@
   <delegate decode="html" command='@HTMLDecodeDelegate@ -U -o "%o" "%i"' />
   <delegate decode="ilbm" command='@ILBMDecodeDelegate@ "%i" > "%o"' />
   <delegate decode="man" command='@MANDelegate@ -man -Tps "%i" > "%o"' />
+  <delegate decode="mpeg-decode" stealth="True" command='@MPEGDecodeDelegate@ -q -b "%i" -f -r -o3 "%u%%d"' />
   <delegate encode="mpeg-encode" stealth="True" command='@MPEGEncodeDelegate@ "%i" "%o"' />
   <delegate decode="pdf" encode="eps" mode="bi" command='@PSDelegate@ -q -dBATCH -dMaxBitmap=300000000 -dNOPAUSE -dSAFER -sDEVICE=@GSEPSDevice@ -sOutputFile=%o -- "%i" -c quit' />
   <delegate decode="pdf" encode="ps" mode="bi" command='@PSDelegate@ -q -dBATCH -dMaxBitmap=300000000 -dNOPAUSE -dSAFER -sDEVICE=@GSPSDevice@ -sOutputFile=%o -- "%i" -c quit' />

@@ -43,8 +43,7 @@ extern MagickExport DelegateInfo
   *SetDelegateInfo(DelegateInfo *);
 
 extern MagickExport unsigned int
-  InvokeDelegate(const ImageInfo *,Image *,const char *,const char *,
-    ExceptionInfo *),
+  InvokeDelegate(ImageInfo *,Image *,const char *,const char *,ExceptionInfo *),
   ListDelegateInfo(FILE *,ExceptionInfo *);
 
 extern MagickExport void
