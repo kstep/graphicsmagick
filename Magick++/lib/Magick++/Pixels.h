@@ -1,12 +1,12 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999, 2000
+// Copyright Bob Friesenhahn, 1999, 2000, 2001
 //
 // Representation of a pixel view.
 //
 
-#if !defined(Pixels_header)
-#define Pixels_header
+#if !defined(Magick_Pixels_header)
+#define Magick_Pixels_header
 
 #include "Magick++/Color.h"
 #include "Magick++/Image.h"
@@ -118,4 +118,4 @@ inline unsigned int Magick::Pixels::rows ( void ) const
   return _rows;
 }
 
-#endif // Pixels_header
+#endif // Magick_Pixels_header

@@ -6,8 +6,8 @@
 // Magick::Image with STL containers.
 //
 
-#ifndef MagickSTL_header
-#define MagickSTL_header
+#ifndef Magick_STL_header
+#define Magick_STL_header
 
 #include <algorithm>
 #include <functional>
@@ -2492,4 +2492,4 @@ namespace Magick
 
 } // namespace Magick
 
-#endif // MagickSTL_header
+#endif // Magick_STL_header

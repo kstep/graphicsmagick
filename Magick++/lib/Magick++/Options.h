@@ -11,8 +11,8 @@
 // Magick++ API
 //
 
-#if !defined(Options_header)
-#define Options_header
+#if !defined(Magick_Options_header)
+#define Magick_Options_header
 
 #include <string>
 #include "Magick++/Color.h"
@@ -487,4 +487,4 @@ inline MagickLib::QuantizeInfo * Magick::Options::quantizeInfo( void )
   return _quantizeInfo;
 }
 
-#endif // Options_header
+#endif // Magick_Options_header

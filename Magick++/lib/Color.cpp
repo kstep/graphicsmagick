@@ -368,9 +368,9 @@ Magick::ColorHSL& Magick::ColorHSL::operator = ( const Magick::Color& color_ )
 // ColorGray Implementation
 //
 Magick::ColorGray::ColorGray ( double shade_ )
-  : Color ( ScaleDoubleToQuantum( shade_ ),
-	    ScaleDoubleToQuantum( shade_ ),
-	    ScaleDoubleToQuantum( shade_ ) )
+  : Color ( scaleDoubleToQuantum( shade_ ),
+	    scaleDoubleToQuantum( shade_ ),
+	    scaleDoubleToQuantum( shade_ ) )
 {
 }
 
@@ -394,7 +394,7 @@ Magick::ColorGray::~ColorGray ()
 
 void Magick::ColorGray::shade ( double shade_ )
 {
-  Quantum gray = ScaleDoubleToQuantum( shade_ );
+  Quantum gray = scaleDoubleToQuantum( shade_ );
   redQuantum   ( gray );
   greenQuantum ( gray );
   blueQuantum  ( gray );
@@ -402,7 +402,7 @@ void Magick::ColorGray::shade ( double shade_ )
 
 double Magick::ColorGray::shade ( void ) const
 {
-  return ScaleQuantumToDouble ( greenQuantum() );
+  return scaleQuantumToDouble ( greenQuantum() );
 }
 
 // Assignment from base class
@@ -470,9 +470,9 @@ Magick::ColorMono& Magick::ColorMono::operator = ( const Magick::Color& color_ )
 Magick::ColorRGB::ColorRGB ( double red_,
 			     double green_,
 			     double blue_ )
-  : Color ( ScaleDoubleToQuantum(red_),
-	    ScaleDoubleToQuantum(green_),
-	    ScaleDoubleToQuantum(blue_) )
+  : Color ( scaleDoubleToQuantum(red_),
+	    scaleDoubleToQuantum(green_),
+	    scaleDoubleToQuantum(blue_) )
 {
 }
 // Null constructor
@@ -521,9 +521,9 @@ Magick::ColorRGB& Magick::ColorRGB::operator = ( const Magick::Color& color_ )
 Magick::ColorYUV::ColorYUV ( double y_,
 			     double u_,
 			     double v_ )
-  : Color ( ScaleDoubleToQuantum(y_ + 1.13980 * v_ ),
-	    ScaleDoubleToQuantum(y_ - 0.39380 * u_ - 0.58050 * v_ ),
-	    ScaleDoubleToQuantum(y_ + 2.02790 * u_ ) )
+  : Color ( scaleDoubleToQuantum(y_ + 1.13980 * v_ ),
+	    scaleDoubleToQuantum(y_ - 0.39380 * u_ - 0.58050 * v_ ),
+	    scaleDoubleToQuantum(y_ + 2.02790 * u_ ) )
 {
 }
 // Null constructor
@@ -547,14 +547,14 @@ void Magick::ColorYUV::u ( double u_ )
   double V = v();
   double Y = y();
 
-  redQuantum   ( ScaleDoubleToQuantum( Y + 1.13980 * V ) );
-  greenQuantum ( ScaleDoubleToQuantum( Y - 0.39380 * u_ - 0.58050 * V ) );
-  blueQuantum  ( ScaleDoubleToQuantum( Y + 2.02790 * u_ ) );
+  redQuantum   ( scaleDoubleToQuantum( Y + 1.13980 * V ) );
+  greenQuantum ( scaleDoubleToQuantum( Y - 0.39380 * u_ - 0.58050 * V ) );
+  blueQuantum  ( scaleDoubleToQuantum( Y + 2.02790 * u_ ) );
 }
 
 double Magick::ColorYUV::u ( void ) const
 {
-  return ScaleQuantumToDouble( -0.14740 * redQuantum() - 0.28950 *
+  return scaleQuantumToDouble( -0.14740 * redQuantum() - 0.28950 *
 			       greenQuantum() + 0.43690 * blueQuantum() );
 }
 
@@ -563,14 +563,14 @@ void Magick::ColorYUV::v ( double v_ )
   double U = u();
   double Y = y();
 
-  redQuantum   ( ScaleDoubleToQuantum( Y + 1.13980 * v_ ) );
-  greenQuantum ( ScaleDoubleToQuantum( Y - 0.39380 * U - 0.58050 * v_ ) );
-  blueQuantum  ( ScaleDoubleToQuantum( Y + 2.02790 * U ) );
+  redQuantum   ( scaleDoubleToQuantum( Y + 1.13980 * v_ ) );
+  greenQuantum ( scaleDoubleToQuantum( Y - 0.39380 * U - 0.58050 * v_ ) );
+  blueQuantum  ( scaleDoubleToQuantum( Y + 2.02790 * U ) );
 }
 
 double Magick::ColorYUV::v ( void ) const
 {
-  return ScaleQuantumToDouble(  0.61500 * redQuantum() - 0.51500 *
+  return scaleQuantumToDouble(  0.61500 * redQuantum() - 0.51500 *
 				greenQuantum() - 0.10000 * blueQuantum() );
 }
 
@@ -579,14 +579,14 @@ void Magick::ColorYUV::y ( double y_ )
   double U = u();
   double V = v();
 
-  redQuantum   ( ScaleDoubleToQuantum( y_ + 1.13980 * V ) );
-  greenQuantum ( ScaleDoubleToQuantum( y_ - 0.39380 * U - 0.58050 * V ) );
-  blueQuantum  ( ScaleDoubleToQuantum( y_ + 2.02790 * U ) );
+  redQuantum   ( scaleDoubleToQuantum( y_ + 1.13980 * V ) );
+  greenQuantum ( scaleDoubleToQuantum( y_ - 0.39380 * U - 0.58050 * V ) );
+  blueQuantum  ( scaleDoubleToQuantum( y_ + 2.02790 * U ) );
 }
 
 double Magick::ColorYUV::y ( void ) const
 {
-  return ScaleQuantumToDouble(  0.29900 * redQuantum() + 0.58700 *
+  return scaleQuantumToDouble(  0.29900 * redQuantum() + 0.58700 *
 				greenQuantum() + 0.11400 * blueQuantum() );
 }
 

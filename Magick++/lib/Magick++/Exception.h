@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999, 2000
+// Copyright Bob Friesenhahn, 1999, 2000, 2001
 //
 // Definition of Magick::Exception and derived classes
 // Magick::Warning* and Magick::Error*.  Derived from C++ STD
@@ -9,8 +9,8 @@
 // These classes form part of the Magick++ user interface.
 //
 
-#if !defined(Exception_header)
-#define Exception_header
+#if !defined(Magick_Exception_header)
+#define Magick_Exception_header
 
 #include <string>
 #include <exception>
@@ -189,4 +189,4 @@ namespace Magick
 std::ostream& operator<<( std::ostream& stream_,
 			  const Magick::Exception& exception_);
 
-#endif
+#endif // Magick_Exception_header

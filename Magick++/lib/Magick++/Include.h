@@ -1,11 +1,11 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999, 2000
+// Copyright Bob Friesenhahn, 1999, 2000, 2001
 //
 // Inclusion of ImageMagick headers (with namespace magic)
 
-#ifndef MagickInclude_header
-#define MagickInclude_header
+#ifndef Magick_Include_header
+#define Magick_Include_header
 
 // Have standard <iosfwd>
 #define HAVE_IOSFWD 1
@@ -501,4 +501,4 @@ namespace Magick
 
 }
 
-#endif // MagickInclude_header
+#endif // Magick_Include_header

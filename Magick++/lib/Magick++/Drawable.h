@@ -1,12 +1,12 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999, 2000
+// Copyright Bob Friesenhahn, 1999, 2000, 2001
 //
 // Definition of Drawable (Graphic objects)
 //
 
-#if !defined(Drawable_header)
-#define Drawable_header
+#if !defined(Magick_Drawable_header)
+#define Magick_Drawable_header
 
 #include "Magick++/Include.h"
 
@@ -2646,4 +2646,4 @@ std::ostream& operator<<( std::ostream& stream_,
 
 } // namespace Magick
 
-#endif // Drawable_header
+#endif // Magick_Drawable_header

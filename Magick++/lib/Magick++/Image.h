@@ -5,8 +5,8 @@
 // Definition of Image, the representation of a single image in Magick++
 //
 
-#if !defined(Image_header)
-#define Image_header
+#if !defined(Magick_Image_header)
+#define Magick_Image_header
 
 #include <string>
 #include <list>
@@ -1070,4 +1070,4 @@ inline const MagickLib::ImageInfo * Magick::Image::constImageInfo( void ) const
   return _imgRef->options()->imageInfo();
 }
 
-#endif // Image_header
+#endif // Magick_Image_header

@@ -1,14 +1,14 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999
+// Copyright Bob Friesenhahn, 1999, 2001
 //
 // Geometry Definition
 //
 // Representation of an ImageMagick geometry specification
 // X11 geometry specification plus hints
 
-#if !defined (Geometry_header)
-#define Geometry_header
+#if !defined (Magick_Geometry_header)
+#define Magick_Geometry_header
 
 #include "Magick++/Include.h"
 #include <string>
@@ -239,4 +239,4 @@ inline bool Magick::Geometry::less ( void ) const
 }
 
 
-#endif // Geometry_header
+#endif // Magick_Geometry_header

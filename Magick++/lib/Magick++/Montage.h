@@ -1,10 +1,12 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
+// Copyright Bob Friesenhahn, 1999, 2000, 2001
+//
 // Definition of Montage class used to specify montage options.
 //
 
-#if !defined(Montage_header)
-#define Montage_header
+#if !defined(Magick_Montage_header)
+#define Magick_Montage_header
 
 #include <string>
 #include "Magick++/Color.h"
@@ -344,4 +346,4 @@ inline Magick::Color Magick::MontageFramed::matteColor ( void ) const
   return _matteColor;
 }
 
-#endif // Montage_header
+#endif // Magick_Montage_header

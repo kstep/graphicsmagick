@@ -4,15 +4,12 @@
 //
 // Color Implementation
 //
-#if !defined (Color_header)
-#define Color_header
+#if !defined (Magick_Color_header)
+#define Magick_Color_header
 
 #include <string>
 
 #include "Magick++/Include.h"
-
-#define ScaleDoubleToQuantum(quantum) (static_cast<unsigned int>(quantum * MaxRGB))
-#define ScaleQuantumToDouble(quantum) ((static_cast<double>(quantum)/MaxRGB))
 
 namespace Magick
 {
@@ -56,11 +53,12 @@ namespace Magick
     void           blueQuantum ( Quantum blue_ );
     Quantum        blueQuantum ( void ) const;
 
-    // Alpha level (range OpaqueOpacity to TransparentOpacity)
+    // Alpha level (range OpaqueOpacity=0 to TransparentOpacity=MaxRGB)
     void           alphaQuantum ( Quantum alpha_ );
     Quantum        alphaQuantum ( void ) const;
 
     // Scaled (to 1.0) version of alpha for use in sub-classes
+    // (range opaque=0 to transparent=1.0)
     void           alpha ( double alpha_ );
     double         alpha ( void ) const;
         
@@ -90,6 +88,12 @@ namespace Magick
 
     // Return ImageMagick PixelPacket
     operator PixelPacket() const;
+
+    // Scale a value expressed as a double (0-1) to Quantum range (0-MaxRGB)
+    static Quantum scaleDoubleToQuantum( const double double_ );
+
+    // Scale a value expressed as a Quantum (0-MaxRGB) to double range (0-1)
+    static double scaleQuantumToDouble( const Quantum quantum_ );
 
   protected:
 
@@ -127,7 +131,7 @@ namespace Magick
     //  red     = red   (range 0 to MaxRGB)
     //  green   = green (range 0 to MaxRGB)
     //  blue    = blue  (range 0 to MaxRGB)
-    //  opacity = alpha (range OpaqueOpacity to TransparentOpacity)
+    //  opacity = alpha (range OpaqueOpacity=0 to TransparentOpacity=MaxRGB)
     //  index   = PseudoColor colormap index
     PixelPacket*     _pixel;
 
@@ -290,6 +294,18 @@ namespace Magick
 // Color
 //
 
+// Scale a value expressed as a double (0-1) to Quantum range (0-MaxRGB)
+inline Magick::Quantum Magick::Color::scaleDoubleToQuantum( const double double_ )
+{
+  return (static_cast<Magick::Quantum>(double_*MaxRGB));
+}
+
+// Scale a value expressed as a Quantum (0-MaxRGB) to double range (0-1)
+inline double Magick::Color::scaleQuantumToDouble( const Magick::Quantum quantum_ )
+{
+  return (static_cast<double>(quantum_/MaxRGB));
+}
+
 // Common initializer for PixelPacket representation
 // Initialized to state that ImageMagick considers to be
 // an invalid color.
@@ -421,11 +437,11 @@ inline Magick::Color::~Color( void )
 // Scaled version of alpha for use in sub-classes
 inline void  Magick::Color::alpha ( double alpha_ )
 {
-  alphaQuantum( ScaleDoubleToQuantum(alpha_) );
+  alphaQuantum( scaleDoubleToQuantum(alpha_) );
 }
 inline double Magick::Color::alpha ( void ) const
 {
-  return ScaleQuantumToDouble( alphaQuantum() );
+  return scaleQuantumToDouble( alphaQuantum() );
 }
 
 // Does object contain valid color?
@@ -500,32 +516,32 @@ inline Magick::ColorRGB::ColorRGB ( PixelPacket* rep_,
 
 inline void Magick::ColorRGB::red ( double red_ )
 {
-  redQuantum( ScaleDoubleToQuantum(red_) );
+  redQuantum( scaleDoubleToQuantum(red_) );
 }
 
 inline double Magick::ColorRGB::red ( void ) const
 {
-  return ScaleQuantumToDouble( redQuantum() );
+  return scaleQuantumToDouble( redQuantum() );
 }
 
 inline void Magick::ColorRGB::green ( double green_ )
 {
-  greenQuantum( ScaleDoubleToQuantum(green_) );
+  greenQuantum( scaleDoubleToQuantum(green_) );
 }
 
 inline double Magick::ColorRGB::green ( void ) const
 {
-  return ScaleQuantumToDouble( greenQuantum() );
+  return scaleQuantumToDouble( greenQuantum() );
 }
 
 inline void Magick::ColorRGB::blue ( double blue_ )
 {
-  blueQuantum( ScaleDoubleToQuantum(blue_) );
+  blueQuantum( scaleDoubleToQuantum(blue_) );
 }
 
 inline double Magick::ColorRGB::blue ( void ) const
 {
-  return ScaleQuantumToDouble( blueQuantum() );
+  return scaleQuantumToDouble( blueQuantum() );
 }
 
 //
@@ -538,4 +554,4 @@ inline Magick::ColorYUV::ColorYUV ( PixelPacket* rep_,
 {
 }
 
-#endif // Color_header
+#endif // Magick_Color_header

@@ -10,8 +10,8 @@
 // invoked by the library to decode, encode, or identify an image.
 //
 
-#if !defined(Coder_header)
-#define Coder_header
+#if !defined(Magick_Coder_header)
+#define Magick_Coder_header
 
 #include <string>
 
@@ -69,4 +69,4 @@ namespace Magick
 
 } // namespace Magick
 
-#endif // Coder_header
+#endif // Magick_Coder_header

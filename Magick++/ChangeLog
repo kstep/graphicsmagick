@@ -1,3 +1,10 @@
+2001-09-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Magick++/Color.h (scaleDoubleToQuantum): Inline static
+ 	method made from previous ScaleDoubleToQuantum #define.
+	(scaleQuantumToDouble): Inline static method made from previous
+ 	ScaleQuantumToDouble #define. Helps avoid possibility of clash
+ 	with user code.
 
 2001-08-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 

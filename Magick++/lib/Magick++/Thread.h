@@ -7,8 +7,8 @@
 // This class is a Magick++ implementation class and is not intended
 // for use by end-users.
 // 
-#if !defined (Thread_header)
-#define Thread_header
+#if !defined (Magick_Thread_header)
+#define Magick_Thread_header
 
 #if defined(_VISUALC_)
 #include <windows.h>
@@ -96,4 +96,4 @@ inline Magick::Lock::~Lock( void )
   _mutexLock->unlock();
 }
 
-#endif // Thread_header
+#endif // Magick_Thread_header

@@ -1,12 +1,12 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999
+// Copyright Bob Friesenhahn, 1999, 2001
 //
 // Reference counted container class for Binary Large Objects (BLOBs)
 //
 
-#if !defined(Blob_header)
-#define Blob_header
+#if !defined(Magick_Blob_header)
+#define Magick_Blob_header
 
 #include "Magick++/Thread.h"
 
@@ -98,4 +98,4 @@ inline size_t Magick::Blob::length( void ) const
   return _blobRef->_length;
 }
 
-#endif // Blob_header
+#endif // Magick_Blob_header
