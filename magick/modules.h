@@ -36,7 +36,7 @@ extern Export void
 
 extern Export int
   LoadModule(const char* module),
-  RegisterModuleInfo(const char *tag),
+  RegisterModuleInfo(ModuleInfo *entry),
   UnloadModule(const char* module);
 
 extern Export char

@@ -278,8 +278,8 @@ Export int LoadModule(const char* module)
     }
   module_info->handle=handle;
   time(&module_info->load_time);
-/*   if(!RegisterModuleInfo(module_info)) */
-/*     return False; */
+  if(!RegisterModuleInfo(module_info))
+    return False;
 
   /*
     Locate and execute RegisterFORMATImage function
@@ -306,7 +306,42 @@ Export int LoadModule(const char* module)
 
   return True;
 }
+
+/*
+ * Register a module with the ModuleInfo list
+ *
+ */
+Export int RegisterModuleInfo(ModuleInfo *entry)
+{
+  register ModuleInfo
+    *p;
 
+  p=(ModuleInfo *) NULL;
+  if (module_info != (ModuleInfo *) NULL)
+    {
+      for (p=module_info; p->next != (ModuleInfo *) NULL; p=p->next)
+	{
+	  if (Latin1Compare(p->tag,entry->tag) >= 0)
+	    {
+	      if (Latin1Compare(p->tag,entry->tag) == 0)
+		{
+		  p=p->previous;
+		  UnregisterModuleInfo(entry->tag);
+		}
+	      break;
+	    }
+	}
+    }
+  if (module_info == (ModuleInfo *) NULL)
+    {
+      module_info=entry;
+      return(entry);
+    }
+  entry->previous=p;
+  entry->next=p->next;
+  p->next=entry;
+  return(entry);
+}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
