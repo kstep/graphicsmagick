@@ -3526,7 +3526,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
           draw_info->debug=(*option == '-');
         if (LocaleNCompare("-delay",option,4) == 0)
           {
-            int
+            double
               maximum_delay,
               minimun_delay;
 
