@@ -69,7 +69,7 @@
 
 #define MaxTextExtent  1664
 
-#if !defined(vms) && !defined(macintosh) && !defined(WIN32)
+#if !defined(vms) && !defined(WIN32)
 #if defined(HAVE_CONFIG_H)
 #include "magick/config.h"
 #endif
