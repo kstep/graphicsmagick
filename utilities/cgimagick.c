@@ -160,7 +160,7 @@ int convertHTMLcodes(char *s, int len)
   return 0;
 }
 
-#define IsCGIDelimiter(c)  ((c) == '&')
+#define IsCGIDelimiter(c)  (((c) == '&') || ((c) == '='))
 
 unsigned int CGIToArgv(const char *text,int *argc,char ***argv)
 {
@@ -250,10 +250,7 @@ int main(int argc,char **argv)
 {
   char
     **argv_hw,
-    *command,
-    *mime_type,
-    prefix[MaxTextExtent],
-    *option;
+    prefix[MaxTextExtent];
 
   int
     argc_hw,
@@ -267,40 +264,40 @@ int main(int argc,char **argv)
   */
   ReadCommandlLine(argc,&argv);
   MagickIncarnate(*argv);
-	if (getenv("GATEWAY_INTERFACE"))
+	if (getenv("GATEWAY_INTERFACE") || (argc>1))
     {
-      FormatString(prefix,"HTTP/1.0 200 Ok\r\nContent-Type: %s\r\n","image/jpeg");
-      status=CGIToArgv(getenv("QUERY_STRING"),&argc,&argv);
+      FormatString(prefix,"HTTP/1.0 200 Ok\nContent-Type: %s\n\n","image/jpeg");
+      if (!getenv("GATEWAY_INTERFACE"))
+          status=CGIToArgv(argv[1],&argc,&argv);
+      else
+          status=CGIToArgv(getenv("QUERY_STRING"),&argc,&argv);
       if (status == True)
         {
           for (argc_hw=1; argc_hw < argc; argc_hw++)
           {
-            if (LocaleCompare("convert",argv[argc_hw]) == 0)
+            argv_hw = &argv[argc_hw];
+            if (LocaleCompare("-convert",argv[argc_hw]) == 0)
+              {
+                for (i=argc_hw; i < argc; i++)
+                {
+                  if (LocaleCompare("convert-",argv[i]) == 0)
+                    break;
+                }
+                convert_main(i-argc_hw,argv_hw,prefix,Extent(prefix));
+                argc_hw = i+1;
+                argv_hw = &argv[argc_hw];
+              }
+            else if (LocaleCompare("-combine",argv[i]) == 0)
               {
                 argv_hw = &argv[argc_hw];
-                for (i=argc_hw; i < argc; i++)
+                for (i=argc_hw+1; i < argc; i++)
                 {
-                  option=argv[i];
-                  if ((Extent(option) < 2) || ((*option != '-') && (*option != '+')))
-                    {
-                      convert_main(argc-argc_hw-1,argv_hw,prefix,Extent(prefix));
-                      argc_hw = i+1;
-                      argv_hw = &argv[argc_hw];
-                    }
+                  if (LocaleCompare("combine-",argv[i]) == 0)
+                    break;
                 }
-              }
-            else if (LocaleCompare("combine",argv[i]) == 0)
-              {
-                for (i=argc_hw; i < argc; i++)
-                {
-                  option=argv[i];
-                  if ((Extent(option) < 2) || ((*option != '-') && (*option != '+')))
-                    {
-                      combine_main(argc-argc_hw-1,argv_hw,prefix,Extent(prefix));
-                      argc_hw = i+1;
-                      argv_hw = &argv[argc_hw];
-                    }
-                }
+                combine_main(argc-argc_hw-1,argv_hw,prefix,Extent(prefix));
+                argc_hw = i+1;
+                argv_hw = &argv[argc_hw];
               }
           }
         }
