@@ -1969,12 +1969,16 @@ MagickExport void DescribeImage(Image *image,FILE *file,
       */
       (void) fprintf(file,"  Profile-iptc: %u bytes\n",
         image->iptc_profile.length);
-      for (i=0; i < image->iptc_profile.length; i++)
+      for (i=0; i < image->iptc_profile.length; )
       {
         if (image->iptc_profile.info[i] != 0x1c)
-          continue;
-        i++;  /* skip dataset byte */
-        switch (image->iptc_profile.info[++i])
+          {
+            i++;
+            continue;
+          }
+        i++;  /* skip file separator */
+        i++;  /* skip record number */
+        switch (image->iptc_profile.info[i])
         {
           case 5: tag="Image Name"; break;
           case 7: tag="Edit Status"; break;
@@ -2030,9 +2034,10 @@ MagickExport void DescribeImage(Image *image,FILE *file,
           case 219: tag="Custom Field 20"; break;
           default: tag="unknown"; break;
         }
+        i++;
         (void) fprintf(file,"    %s:\n",tag);
-        length=image->iptc_profile.info[++i] << 8;
-        length|=image->iptc_profile.info[++i];
+        length=image->iptc_profile.info[i++] << 8;
+        length|=image->iptc_profile.info[i++];
         text=(char *) AcquireMemory(length+1);
         if (text != (char *) NULL)
           {
@@ -2056,6 +2061,7 @@ MagickExport void DescribeImage(Image *image,FILE *file,
               }
             LiberateMemory((void **) &text);
           }
+        i+=length;
       }
     }
   for (i=0; i < image->generic_profiles; i++)
