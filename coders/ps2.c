@@ -733,10 +733,10 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
       (void) WriteBlobString(image,"%%PageResources: font Times-Roman\n");
     if (LocaleCompare(image_info->magick,"PS2") != 0)
       (void) WriteBlobString(image,"userdict begin\n");
-    start=TellBlob(image);
     FormatString(buffer,"%%%%BeginData:%13ld %s Bytes\n",0L,
-      compression == NoCompression ? "ASCII" : "BINARY");
+      compression == NoCompression ? "ASCII" : "Binary");
     (void) WriteBlobString(image,buffer);
+    start=TellBlob(image);
     (void) WriteBlobString(image,"DisplayImage\n");
     /*
       Output image data.
@@ -1115,8 +1115,8 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
     (void) WriteBlobByte(image,'\n');
     stop=TellBlob(image);
     (void) SeekBlob(image,start,SEEK_SET);
-    FormatString(buffer,"%%%%BeginData:%13ld %s Bytes\n",(long) (stop-start+1),
-      compression == NoCompression ? "ASCII" : "BINARY");
+    FormatString(buffer,"%%%%BeginData:%13ld %s Bytes\n",(long) (stop-start),
+      compression == NoCompression ? "ASCII" : "Binary");
     (void) WriteBlobString(image,buffer);
     (void) SeekBlob(image,stop,SEEK_SET);
     (void) WriteBlobString(image,"%%EndData\n");
