@@ -315,6 +315,8 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (scanline == (unsigned char *) NULL)
           ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
             image);
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+            "   Reading SGI scanlines"); 
         for (z=0; z < (int) iris_info.depth; z++)
         {
           p=iris_pixels+bytes_per_pixel*z;
@@ -322,6 +324,12 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
           {
             (void) ReadBlob(image,bytes_per_pixel*iris_info.columns,
               (char *) scanline);
+            if (EOFBlob(image))
+              {
+                ThrowReaderException(CorruptImageError,
+                  UnexpectedEndOfFile, image);
+                break;
+              }
             if (bytes_per_pixel == 2)
               for (x=0; x < (long) iris_info.columns; x++)
               {
@@ -336,6 +344,8 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 p+=4;
               }
           }
+          if (EOFBlob(image))
+            break;
         }
         MagickFreeMemory(scanline);
       }
@@ -369,6 +379,11 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
           offsets[i]=ReadBlobMSBLong(image);
         for (i=0; i < (int) (iris_info.rows*iris_info.depth); i++)
           runlength[i]=ReadBlobMSBLong(image);
+        if (EOFBlob(image))
+          {
+            ThrowReaderException(CorruptImageError,
+              UnexpectedEndOfFile, image);
+          }
         /*
           Check data order.
         */
@@ -396,6 +411,12 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   }
                 (void) ReadBlob(image,runlength[y+z*iris_info.rows],
                   (char *) max_packets);
+                if (EOFBlob(image))
+                  {
+                    ThrowReaderException(CorruptImageError,
+                      UnexpectedEndOfFile, image);
+                    break;
+                  }
                 offset+=runlength[y+z*iris_info.rows];
                 SGIDecode(bytes_per_pixel,max_packets,p+bytes_per_pixel*z);
                 p+=(iris_info.columns*4*bytes_per_pixel);
@@ -416,10 +437,18 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   }
                 (void) ReadBlob(image,runlength[y+z*iris_info.rows],
                   (char *) max_packets);
+                if (EOFBlob(image))
+                  {
+                    ThrowReaderException(CorruptImageError,
+                      UnexpectedEndOfFile, image);
+                    break;
+                  }
                 offset+=runlength[y+z*iris_info.rows];
                 SGIDecode(bytes_per_pixel,max_packets,p+bytes_per_pixel*z);
               }
               p+=(iris_info.columns*4*bytes_per_pixel);
+              if (EOFBlob(image))
+                break;
             }
           }
         MagickFreeMemory(runlength);
@@ -429,6 +458,8 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /*
       Initialize image structure.
     */
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+        "   Initializing SGI image structure"); 
     image->matte=iris_info.depth == 4;
     image->columns=iris_info.columns;
     image->rows=iris_info.rows;
@@ -551,8 +582,8 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
     MagickFreeMemory(iris_pixels);
     if (EOFBlob(image))
       {
-        ThrowException(exception,CorruptImageError,UnexpectedEndOfFile,
-          image->filename);
+        ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,
+          image);
         break;
       }
     /*
