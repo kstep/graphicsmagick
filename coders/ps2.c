@@ -342,7 +342,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
       "      /Width columns",
       "      /Height rows",
       "      /BitsPerComponent 8",
-      "      /Decode [0 1 0 1 0 1 0 1]",
+      "      /Decode [1 0 1 0 1 0 1 0]",
       "      /ImageMatrix [columns 0 0 rows neg 0 rows]",
       "      compression 0 gt",
       "      { /DataSource pixel_stream /%.1024s filter }",
