@@ -605,22 +605,22 @@ Windows NT/95 VISUAL C++ 6.0 COMPILATION
 
   The three options for runtime support are:
 
-    1) Multi-threaded DLL runtimes
-    2) Single-threaded library runtimes
-    3) Multi-threaded library runtimes
+    1) Dynamic Multi-threaded DLL runtimes.
+    2) Static Single-threaded runtimes
+    3) Static Multi-threaded runtimes
+    4) Static Multi-threaded DLL runtimes
 
   In addition to these runtimes, the VisualMagick build environement
-  allows you to select the way the ImageMagick components will be built.
-  The three options for this are:
-
-    1) Everything as DLL's - using real X11 libraries
-    2) Everything as DLL's - using stubbed out X11 libraries
-    3) Everything as static libraries - always using stubbed out X11.
+  allows you to select whether to include the X11 libraries in the
+  build or use the X11 "stubs". The assumption is that most Win32
+  user could care less about X11 support, so we stub out all the X11
+  functionality so that everything compiles. However, the X11 utility
+  programs like display and animage will not work.
 
   This leads to five different possible build options, which should
   cover almost any particular situation. The default binary distribution
-  is built using #1 from the first list and #1 from the second list.
-  This results in an X11 compatible build using all DLL's for everything
+  is built using #1 from above with the X11 libraries included. This
+  results in an X11 compatible build using all DLL's for everything
   and multi-threaded support (the only option for DLL's).
 
   To do a build for your requirements, simply go to the configure sub-
@@ -642,7 +642,7 @@ Windows NT/95 VISUAL C++ 6.0 COMPILATION
   (Debug, or Release) and do a "clean" followed by a "build". You should
   do the build in a specific way:
 
-    1) Make the "All" prkect the active project (Bold)
+    1) Make the "All" project the active project (Bold)
        Right click on the All project and select "Set As Active Project"
     2) Select "Build..., Clean"
     3) Select "Build..., Build"
@@ -664,19 +664,76 @@ Windows NT/95 VISUAL C++ 6.0 COMPILATION
   The Visual C++ distribution of ImageMagick comes with the Magick++
   C++ wrapper by default. This add-on layer has a large number of demo
   and test files that can be found in ImageMagick\Magick++\demo, and
-  ImageMagick\Magick++\tests.
+  ImageMagick\Magick++\tests. There are also a variety of tests that
+  use the straight C API as well in ImageMagick\tests.
 
-  All of these programs are configured to be built in the default
-  workspace created by the configure program. You can feel free to pick
-  any of these as the basis for a new program by copying them to the
-  top level...
+  All of these programs are NOT configured to be built in the default
+  workspace created by the configure program. You can cause all of these
+  demos and test programs to be built by checking the box in configure
+  that says:
 
-    ImageMagick\demo, ImageMagick\tests or ImageMagick\utilities
+    "Include all demo and test programs"
 
-  folders, renaming then to something unique and re-running configure.
-  After re-running the configure program, you should see projects for all
-  of the programs you have added which will now be part of the entire
-  build procedure. This technique works equally well for C API programs.
+  In addition, there is another related checkbox (checked by default)
+  that causes all generate project files to be creatted standalone so
+  that they can be copied to other areas of you system.
+
+  This is the checkbox:
+
+   "Generate all utility projects with full paths rather then relative
+     paths"
+
+  WOW - that a mouthfull - eh?
+
+  The problem is that Visual C++ uses a concept of "dependencies" that
+  tell it what other things need to be build when a particular project
+  is being build. This mechanism is also used to cause things to link
+  properly. In my normal development environment, I want to be able to
+  make changes and debug the system as a whole, so I like and NEED to
+  use dependencies. However, most end users don't want to work this way.
+
+  Instead they really just want to build the package and then get down
+  to business working on their application. The solution is to make all
+  the utility projects (UTIL_xxxx_yy_exe.dsp) use full absolute paths
+  to all the things they need. This way the projects stand on their own
+  and can actually be copied and used as templates to get a particular
+  custom application compiling with little effort.
+
+  Withg this feature enabled, you should be able to nab a copy of...
+    
+    VisualMagick\utilities\UTIL_convert_xxx_exe.dsp  (for C)
+
+     -or-
+
+    VisualMagick\Magick++\demo\UTIL_demo_xxx_exe.dsp (for C++)
+
+  ... and pop it into notepad, modify it (carefully) to your needs and
+  be on your way to happy compiling and linking. 
+
+  You can feel free to pick any of the standard utilities, tests, or
+  demo programs as the basis for a new program by copying the project
+  and the source and hacking away.
+
+  The choice of what to use as a starting point is very easy...
+
+  For straight C API command line applications use something from:
+
+    ImageMagick\tests or ImageMagick\utilities (source code)
+    ImageMagick\VisualMagick\tests or ImageMagick\Visualmagick\utilities
+      (project - DSP)
+
+  For C++ and Magick++ command line applications use something from:
+
+    ImageMagick\Magick++\tests or ImageMagick\Magick++\demo
+      (source code)
+    ImageMagick\VisualMagick\Magick++\tests or
+      ImageMagick\VisualMagick\Magick++\demo (project - DSP)
+
+  For C++ and Magick++ and MFC windows applications use:
+   
+    ImageMagick\contrib\win32\MFC\NtMagick (source code)
+    ImageMagick\VisualMagick\contrib\win32\MFC\NtMagick
+      (project - DSP)
 
   NOTE #2:
 

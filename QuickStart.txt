@@ -65,7 +65,8 @@ Win2K, NT, Win98, Win95 Install:
     ftp://www.wizards.dupont.com/pub/ImageMagick/win2k/ImageMagick-5.2.2.zip
 
   and read README.txt for detailed instructions on compiling the ImageMagick
-  source.
+  source as well as additional details on ways to tell ImageMagick how to
+  find any of its configuration files and components.
 
 
 MAC Install:
