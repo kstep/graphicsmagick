@@ -611,7 +611,8 @@ HRESULT OleRegGetUserType(REFCLSID clsid, DWORD whatever, LPOLESTR FAR* pszUserT
     if (*pszUserType == NULL) {
         *pszUserType = new OLECHAR[512];
     }
-    *pszUserType = OLESTR("Flashpix Toolkit Application");
+    // *pszUserType = OLESTR("Flashpix Toolkit Application"); FIXME
+    wcscpy(*pszUserType,OLESTR("Flashpix Toolkit Application"));
     return S_OK;
 }
 
@@ -658,7 +659,11 @@ Boolean PFileFlashPixView::CreateCompObj()
     OLECHAR chZero = 0;
     LPOLESTR lpszNew = NULL;
     if (OleRegGetUserType(clsID, USERCLASSTYPE_APPNAME, &lpszNew) != S_OK)
-      lpszNew = &chZero;
+    {
+      lpszNew = new OLECHAR[1];
+      lpszNew[0]=chZero;
+    }
+
 #if defined(macintosh) || defined(__unix)
     curCompObj->WriteVT_LPSTR_NoPad(lpszNew);
 #elif _WINDOWS
@@ -710,9 +715,8 @@ Boolean PFileFlashPixView::CreateCompObj()
     curCompObj->WriteVT_LPWSTR_NoPad(&chZero);
 #endif    
 
-        // We may need to call some other memory methods.
-        delete[] lpszNew;
-
+    // We may need to call some other memory methods.
+    delete[] lpszNew;  // FIXME: Crashes here with assertion error.
   } 
   else
     return FALSE; 
