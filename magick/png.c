@@ -3737,9 +3737,6 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
                     (unsigned short) DownScale(image->colormap[i].blue);
                 }
                 png_set_PLTE(ping, ping_info, palette, num_palette);
-#if (PNG_LIBPNG_VER >= 10100)
-                FreeMemory((void **) &palette);
-#endif
               }
             ping_info->bit_depth=1;
             while ((1 << ping_info->bit_depth) < (int) image->colors)
@@ -4085,14 +4082,8 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     /*
       Free PNG resources.
     */
-#if (PNG_LIBPNG_VER < 10100)
-    /* Prior to libpng version 1.1.0, the palette had to be free'ed manually. */
-    if (ping_info->valid & PNG_INFO_PLTE)
-      {
-        FreeMemory((void **) &ping_info->palette);
-        ping_info->valid &= (~PNG_INFO_PLTE);
-      }
-#endif
+    if (palette)
+        FreeMemory((void **) &palette);
     png_destroy_write_struct(&ping,&ping_info);
     FreeMemory((void **) &scanlines);
     FreeMemory((void **) &png_pixels);
