@@ -869,7 +869,7 @@ static unsigned int ReadConfigureFile(const char *basename,
     if (LocaleCompare(keyword,"<!") == 0)
       {
         /*
-          Comment.
+          Comment element.
         */
         while ((*token != '>') && (*q != '\0'))
           GetToken(q,&q,token);
@@ -878,7 +878,7 @@ static unsigned int ReadConfigureFile(const char *basename,
     if (LocaleCompare(keyword,"<include") == 0)
       {
         /*
-          Include.
+          Include element.
         */
         while ((*token != '>') && (*q != '\0'))
         {
