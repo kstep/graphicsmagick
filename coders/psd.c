@@ -548,7 +548,8 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
         }
         count=ReadBlob(image,4,(char *) type);
         if ((count == 0) || (LocaleNCompare(type,"8BIM",4) != 0))
-          ThrowReaderException(CorruptImageWarning,"Not a PSD image file",image);
+          ThrowReaderException(CorruptImageWarning,"Not a PSD image file",
+            image);
         (void) ReadBlob(image,4,(char *) layer_info[i].blendkey);
         layer_info[i].opacity=MaxRGB-UpScale(ReadBlobByte(image));
         layer_info[i].clipping=ReadBlobByte(image);
