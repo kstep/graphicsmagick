@@ -20,8 +20,7 @@ extern MagickExport unsigned int
   SetImageAttribute(Image *,const char *,const char *);
 
 extern MagickExport void
-  DestroyImageAttributes(Image *),
-  StoreImageAttribute(Image *,char *);
+  DestroyImageAttributes(Image *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
