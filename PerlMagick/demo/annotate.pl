@@ -41,5 +41,5 @@ for ($angle=0; $angle < 360; $angle+=30)
   push(@$image,$label);
 }
 $image->Set(delay=>20);
-$image->Write(filename=>"annotate.miff",compress=>'RunlengthEncoded');
+$image->Write("annotate.miff");
 $image->Animate();

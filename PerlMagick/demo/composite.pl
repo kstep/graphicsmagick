@@ -44,5 +44,5 @@ for ($angle=0; $angle < 360; $angle+=30)
   push(@$image,$thumbnail);
 }
 $image->Set(delay=>20);
-$image->Write(filename=>"composite.miff",compress=>'RunlengthEncoded');
+$image->Write("composite.miff");
 $image->Animate();
