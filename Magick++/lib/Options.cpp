@@ -210,9 +210,12 @@ std::string Magick::Options::font ( void ) const
 
 std::string Magick::Options::format ( void ) const
 {
+  ExceptionInfo exception;
+
   const MagickInfo * magick_info = 0;
+  GetExceptionInfo(&exception);
   if ( _imageInfo->magick && ( *_imageInfo->magick != '\0' ))
-    magick_info = GetMagickInfo( _imageInfo->magick );
+    magick_info = GetMagickInfo( _imageInfo->magick , &exception);
   
   if (( magick_info != 0 ) && 
       ( *magick_info->description != '\0' ))
@@ -226,6 +229,7 @@ void Magick::Options::magick ( const std::string &magick_ )
   ExceptionInfo exception;
 
   FormatString( _imageInfo->filename, "%.1024s:", magick_.c_str() );
+  GetExceptionInfo(&exception);
   SetImageInfo( _imageInfo, 1, &exception);
   if ( _imageInfo->magick == '\0' )
     throwExceptionExplicit( OptionWarning,

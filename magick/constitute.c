@@ -1753,7 +1753,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
     Call appropriate image reader based on image type.
   */
   image=(Image *) NULL;
-  magick_info=(MagickInfo *) GetMagickInfo(clone_info->magick);
+  magick_info=(MagickInfo *) GetMagickInfo(clone_info->magick,exception);
   if ((magick_info != (MagickInfo *) NULL) &&
       (magick_info->decoder !=
         (Image *(*)(const ImageInfo *,ExceptionInfo *)) NULL))
@@ -1798,7 +1798,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
       if (status != False)
         clone_info->temporary=True;
       SetImageInfo(clone_info,False,exception);
-      magick_info=(MagickInfo *) GetMagickInfo(clone_info->magick);
+      magick_info=(MagickInfo *) GetMagickInfo(clone_info->magick,exception);
       if ((magick_info == (MagickInfo *) NULL) ||
           (magick_info->decoder ==
             (Image *(*)(const ImageInfo *,ExceptionInfo *)) NULL))
@@ -2174,7 +2174,8 @@ MagickExport unsigned int WriteImage(const ImageInfo *image_info,Image *image)
     Call appropriate image writer based on image type.
   */
   status=False;
-  magick_info=(MagickInfo *) GetMagickInfo(clone_info->magick);
+  magick_info=(MagickInfo *)
+    GetMagickInfo(clone_info->magick,&image->exception);
   if ((magick_info != (MagickInfo *) NULL) &&
       (magick_info->encoder !=
         (unsigned int (*)(const ImageInfo *,Image *)) NULL))
@@ -2198,11 +2199,13 @@ MagickExport unsigned int WriteImage(const ImageInfo *image_info,Image *image)
           DestroyImageInfo(clone_info);
           return(!status);
         }
-      magick_info=(MagickInfo *) GetMagickInfo(clone_info->magick);
+      magick_info=(MagickInfo *)
+        GetMagickInfo(clone_info->magick,&image->exception);
       if ((magick_info == (MagickInfo *) NULL) ||
           (magick_info->encoder ==
             (unsigned int (*)(const ImageInfo *,Image *)) NULL))
-        magick_info=(MagickInfo *) GetMagickInfo(image->magick);
+        magick_info=(MagickInfo *)
+          GetMagickInfo(image->magick,&image->exception);
       if ((magick_info == (MagickInfo *) NULL) ||
           (magick_info->encoder ==
            (unsigned int (*)(const ImageInfo *,Image *)) NULL))

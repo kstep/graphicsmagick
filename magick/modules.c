@@ -939,6 +939,7 @@ static int UnloadDynamicModule(const char *module)
     (*method)(void);
 
   assert(module != (const char *) NULL);
+  GetExceptionInfo(&exception);
   module_info=GetModuleInfo(module,&exception);
   if (module_info == (ModuleInfo *) NULL)
     return(False);

@@ -272,7 +272,7 @@ MagickExport char *GetMagickConfigurePath(const char *filename)
 %
 %  The format of the GetMagickInfo method is:
 %
-%      MagickInfo *GetMagickInfo(const char *tag)
+%      MagickInfo *GetMagickInfo(const char *tag,Exception *exception)
 %
 %  A description of each parameter follows:
 %
@@ -282,13 +282,12 @@ MagickExport char *GetMagickConfigurePath(const char *filename)
 %    o tag: a character string that represents the image format we are
 %      looking for.
 %
+%    o exception: return any errors or warnings in this structure.
+%
 %
 */
-MagickExport MagickInfo *GetMagickInfo(const char *tag)
+MagickExport MagickInfo *GetMagickInfo(const char *tag,ExceptionInfo *exception)
 {
-  ExceptionInfo
-    exception;
-
   register MagickInfo
     *p;
 
@@ -300,7 +299,7 @@ MagickExport MagickInfo *GetMagickInfo(const char *tag)
       */
       LiberateSemaphore(&magick_semaphore);
 #if defined(HasLTDL) || defined(_MAGICKMOD_)
-      (void) GetModuleInfo((char *) NULL,&exception);
+      (void) GetModuleInfo((char *) NULL,exception);
 #else
       Register8BIMImage();
       RegisterARTImage();
@@ -473,6 +472,9 @@ MagickExport char *GetMagickVersion(unsigned int *version)
 */
 MagickExport void ListMagickInfo(FILE *file)
 {
+  ExceptionInfo
+    exception;
+
   register MagickInfo
     *p;
 
@@ -484,7 +486,8 @@ MagickExport void ListMagickInfo(FILE *file)
   (void) fprintf(file,"    Format  Mode  Description\n");
   (void) fprintf(file,"--------------------------------------------------------"
     "-----------------\n");
-  (void) GetMagickInfo((char *) NULL);
+  GetExceptionInfo(&exception);
+  (void) GetMagickInfo((char *) NULL,&exception);
 #if defined(HasLTDL) || defined(_MAGICKMOD_)
   OpenModules();
 #endif    

@@ -124,7 +124,7 @@ MagickExport Image *BlobToImage(const ImageInfo *image_info,const void *blob,
   clone_info->blob.length=length;
   clone_info->blob.extent=length;
   SetImageInfo(clone_info,False,exception);
-  magick_info=(MagickInfo *) GetMagickInfo(clone_info->magick);
+  magick_info=(MagickInfo *) GetMagickInfo(clone_info->magick,exception);
   if (magick_info == (MagickInfo *) NULL)
     {
       DestroyImageInfo(clone_info);
@@ -411,7 +411,7 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
   GetExceptionInfo(exception);
   clone_info=CloneImageInfo(image_info);
   (void) strcpy(clone_info->magick,image->magick);
-  magick_info=(MagickInfo *) GetMagickInfo(clone_info->magick);
+  magick_info=(MagickInfo *) GetMagickInfo(clone_info->magick,exception);
   if (magick_info == (MagickInfo *) NULL)
      {
        DestroyImageInfo(clone_info);
@@ -880,7 +880,8 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
             MagickInfo
               *magick_info;
 
-            magick_info=(MagickInfo *) GetMagickInfo(image_info->magick);
+            magick_info=(MagickInfo *)
+              GetMagickInfo(image_info->magick,&image->exception);
             if (magick_info != (MagickInfo *) NULL)
               {
                 if (magick_info->blob_support)

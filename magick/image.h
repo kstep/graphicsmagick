@@ -689,7 +689,7 @@ extern MagickExport int
   ParseImageGeometry(const char *,int *,int *,unsigned int *,unsigned int *);
 
 extern MagickExport MagickInfo
-  *GetMagickInfo(const char *),
+  *GetMagickInfo(const char *,ExceptionInfo *exception),
   *RegisterMagickInfo(MagickInfo *),
   *SetMagickInfo(const char *);
 

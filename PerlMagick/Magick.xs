@@ -2827,6 +2827,9 @@ Get(ref,...)
       *attribute,
       color[MaxTextExtent];
 
+    ExceptionInfo
+      exception;
+
     Image
       *image;
 
@@ -2856,6 +2859,7 @@ Get(ref,...)
         XSRETURN_EMPTY;
       }
     EXTEND(sp,items-1);
+    GetExceptionInfo(&exception);
     for (i=1; i < items; i++)
     {
       attribute=(char *) SvPV(ST(i),na);
@@ -3136,10 +3140,11 @@ Get(ref,...)
 
               if (info && (*info->image_info->magick != '\0'))
                 magick_info=(MagickInfo *)
-                  GetMagickInfo(info->image_info->magick);
+                  GetMagickInfo(info->image_info->magick,&exception);
               else
                 if (image)
-                  magick_info=(MagickInfo *) GetMagickInfo(image->magick);
+                  magick_info=(MagickInfo *)
+                    GetMagickInfo(image->magick,&image->exception);
                 if ((magick_info != (MagickInfo *) NULL) &&
                     (*magick_info->description != '\0'))
                   s=newSVpv((char *) magick_info->description,0);

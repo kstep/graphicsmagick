@@ -1687,6 +1687,9 @@ MagickExport void DescribeImage(Image *image,FILE *file,
     elapsed_time,
     user_time;
 
+  ExceptionInfo
+    exception;
+
   Image
     *p;
 
@@ -1776,7 +1779,8 @@ MagickExport void DescribeImage(Image *image,FILE *file,
   SignatureImage(image);
   number_colors=GetNumberColors(image,(FILE *) NULL);
   (void) fprintf(file,"Image: %.1024s\n",image->filename);
-  magick_info=(MagickInfo *) GetMagickInfo(image->magick);
+  GetExceptionInfo(&exception);
+  magick_info=(MagickInfo *) GetMagickInfo(image->magick,&exception);
   if ((magick_info == (MagickInfo *) NULL) ||
       (*magick_info->description == '\0'))
     (void) fprintf(file,"  Format: %.1024s\n",image->magick);
@@ -6004,7 +6008,7 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
       if ((LocaleCompare(filename,image_info->filename) != 0) &&
           (strchr(filename,'%') == (char *) NULL))
         image_info->adjoin=False;
-      magick_info=(MagickInfo *) GetMagickInfo(magic);
+      magick_info=(MagickInfo *) GetMagickInfo(magic,exception);
       if (magick_info != (MagickInfo *) NULL)
         image_info->adjoin&=magick_info->adjoin;
       return(True);

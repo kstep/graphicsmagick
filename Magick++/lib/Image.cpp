@@ -2105,9 +2105,11 @@ double Magick::Image::fontPointsize ( void ) const
 
 std::string Magick::Image::format ( void ) const
 {
+  ExceptionInfo exception;
   //  return options()->format ( );
+  GetExceptionInfo(&exception);
   const MagickInfo * magick_info
-  = GetMagickInfo( constImage()->magick );
+  = GetMagickInfo( constImage()->magick , &exception);
 
   if (( magick_info != 0 ) && 
       ( *magick_info->description != '\0' ))

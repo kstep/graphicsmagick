@@ -554,6 +554,7 @@ MagickExport unsigned int ListDelegateInfo(FILE *file)
   (void) fprintf(file,"Decode-Tag   Encode-Tag  Delegate\n");
   (void) fprintf(file,"--------------------------------------------------------"
     "-----------------\n");
+  GetExceptionInfo(&exception);
   (void) GetDelegateInfo("*","*",&exception);
   for (p=delegate_list; p != (DelegateInfo *) NULL; p=p->next)
   {
