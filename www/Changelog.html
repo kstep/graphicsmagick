@@ -23,6 +23,14 @@ ImageMagick Changes</font></font></font></b></td>
 <dl>
 <dd>
 <pre>
+2002-09-29  Bob Friesenhahn &lt;bfriesen@simple.dallas.tx.us&gt;
+  * Updated to Automake 1.7.
+
+2002-09-29  Bob Friesenhahn &lt;bfriesen@simple.dallas.tx.us&gt;
+  * Under Windows, a DllMain function which automatically initializes
+    ImageMagick (when ImageMagick is built using DLLs) may be added
+    by defining ProvideDllMain in magick_config.h
+
 2002-09-28  Cristy  &lt;cristy@mystic.es.dupont.com&gt;
   * Added resource consumption methods, see magick/resource.c.
 
@@ -50,7 +58,7 @@ ImageMagick Changes</font></font></font></b></td>
 
 2002-08-08  Cristy  &lt;cristy@mystic.es.dupont.com&gt;
   * Added logging capabilities to the CORE API.  This facility is useful
-    for debugging.
+    for debugging.  Added "events" parameter to the -debug commandline option.
   * AcquireImagePixels() did not always return the same pixel values
     for virtual pixels when the cache was stored on disk (very rare).
   * new -virtual-pixel command line option.
