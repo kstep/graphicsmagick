@@ -1,14 +1,15 @@
-2002-07-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
-  * Added NTRegistryKeyLookup() to nt.c in order to look up
-    ImageMagick installation parameters from the Windows
-    Registry.
-  * Updated GetMagickConfigurePath() in magick.c to use
-    installation path data from the Windows Registry
-    (if available).
-  * Updated VisualMagick/ImageMagick.iss so that Windows Registry
-    is updated by install package.
-
 2002-07-04  Cristy  <cristy@mystic.es.dupont.com>
+  * Typos corrected in perl.html (thanks to Ron Savage);
+
+2002-07-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+  * Added NTRegistryKeyLookup() to nt.c in order to look up ImageMagick
+    installation parameters from the Windows Registry.
+  * Updated GetMagickConfigurePath() in magick.c to use installation
+    path data from the Windows Registry (if available).
+  * Updated VisualMagick/ImageMagick.iss so that Windows Registry is
+    updated by install package.
+
+2002-07-03  Cristy  <cristy@mystic.es.dupont.com>
   * Semaphore.c will compile now when pthreads are not present.
   * 8-Bit Quantum PCD images now read correctly.
   * The antialias member of the ImageInfo structure was not being cloned.
