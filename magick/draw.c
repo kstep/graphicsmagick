@@ -1391,7 +1391,6 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
     x;
 
   unsigned int
-    indirection,
     length,
     status;
 
@@ -1405,16 +1404,13 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
   assert(draw_info->primitive != (char *) NULL);
   if (*draw_info->primitive == '\0')
     return(False);
-  n=0;
-  graphic_context=(DrawInfo **) AcquireMemory(sizeof(DrawInfo *));
-  if (graphic_context == (DrawInfo **) NULL)
-    MagickError(ResourceLimitWarning,"Unable to draw image",
-      "Memory allocation failed");
-  graphic_context[n]=CloneDrawInfo((ImageInfo *) NULL,draw_info);
-  primitive=graphic_context[n]->primitive;
-  indirection=(*primitive == '@');
-  if (indirection)
+  if (*draw_info->primitive != '@')
+    primitive=TranslateText((ImageInfo *) NULL,image,draw_info->primitive);
+  else
     {
+      char
+        *text;
+
       FILE
         *file;
 
@@ -1427,55 +1423,55 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       /*
         Read text from a file.
       */
-      file=(FILE *) fopen(primitive+1,"r");
+      file=(FILE *) fopen(draw_info->primitive+1,"r");
       if (file == (FILE *) NULL)
-        {
-          for ( ; n >= 0; n--)
-            DestroyDrawInfo(graphic_context[n]);
-          LiberateMemory((void **) &graphic_context);
-          ThrowBinaryException(FileOpenWarning,"Unable to read primitive file",
-            primitive+1);
-        }
+        ThrowBinaryException(FileOpenWarning,"Unable to read primitive file",
+          draw_info->primitive+1);
       length=MaxTextExtent;
-      primitive=AllocateString((char *) NULL);
-      q=primitive;
-      while (primitive != (char *) NULL)
+      text=AllocateString((char *) NULL);
+      q=text;
+      while (text != (char *) NULL)
       {
         c=fgetc(file);
         if (c == EOF)
           break;
-        if ((q-primitive+1) >= (int) length)
+        if ((q-text+1) >= (int) length)
           {
             *q='\0';
             length<<=1;
-            ReacquireMemory((void **) &primitive,length);
-            if (primitive == (char *) NULL)
+            ReacquireMemory((void **) &text,length);
+            if (text == (char *) NULL)
               break;
-            q=primitive+Extent(primitive);
+            q=text+Extent(text);
           }
         *q++=c;
       }
       (void) fclose(file);
-      if (primitive == (char *) NULL)
-        {
-          for ( ; n >= 0; n--)
-            DestroyDrawInfo(graphic_context[n]);
-          LiberateMemory((void **) &graphic_context);
-          ThrowBinaryException(ResourceLimitWarning,"Unable to draw image",
-            "Memory allocation failed");
-        }
+      if (text == (char *) NULL)
+        ThrowBinaryException(ResourceLimitWarning,"Unable to draw image",
+          "Memory allocation failed");
       *q='\0';
+      primitive=TranslateText((ImageInfo *) NULL,image,text);
+      LiberateMemory((void **) &text);
     }
   /*
     Allocate primitive info memory.
   */
+  n=0;
+  graphic_context=(DrawInfo **) AcquireMemory(sizeof(DrawInfo *));
+  if (graphic_context == (DrawInfo **) NULL)
+    {
+      LiberateMemory((void **) &primitive);
+      ThrowBinaryException(ResourceLimitWarning,"Unable to draw image",
+        "Memory allocation failed");
+    }
+  graphic_context[n]=CloneDrawInfo((ImageInfo *) NULL,draw_info);
   number_points=2047;
   primitive_info=(PrimitiveInfo *)
     AcquireMemory(number_points*sizeof(PrimitiveInfo));
   if (primitive_info == (PrimitiveInfo *) NULL)
     {
-      if (indirection)
-        LiberateMemory((void **) &primitive);
+      LiberateMemory((void **) &primitive);
       for ( ; n >= 0; n--)
         DestroyDrawInfo(graphic_context[n]);
       LiberateMemory((void **) &graphic_context);
@@ -1827,8 +1823,11 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
                 DestroyDrawInfo(graphic_context[n]);
                 n--;
                 if (n < 0)
-                  ThrowBinaryException(CorruptImageWarning,
-                    "unbalanced graphic context push/pop",value);
+                  {
+                    ThrowException(&image->exception,CorruptImageWarning,
+                      "unbalanced graphic context push/pop",value);
+                    break;
+                  }
               }
             break;
           }
@@ -1852,8 +1851,11 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
                 ReacquireMemory((void **) &graphic_context,
                   (n+1)*sizeof(DrawInfo *));
                 if (graphic_context == (DrawInfo **) NULL)
-                  MagickError(ResourceLimitWarning,"Unable to draw image",
-                    "Memory allocation failed");
+                  {
+                    ThrowException(&image->exception,ResourceLimitWarning,
+                      "Unable to draw image","Memory allocation failed");
+                    break;
+                  }
                 graphic_context[n]=
                   CloneDrawInfo((ImageInfo *) NULL,graphic_context[n-1]);
               }
@@ -2460,8 +2462,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
   */
   if (primitive_info != (PrimitiveInfo *) NULL)
     LiberateMemory((void **) &primitive_info);
-  if (indirection)
-    LiberateMemory((void **) &primitive);
+  LiberateMemory((void **) &primitive);
   for ( ; n >= 0; n--)
     DestroyDrawInfo(graphic_context[n]);
   LiberateMemory((void **) &graphic_context);
