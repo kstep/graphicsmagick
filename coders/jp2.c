@@ -181,14 +181,10 @@ static unsigned int IsJPC(const unsigned char *magick,const unsigned int length)
 #if defined(HasJP2)
 static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
 {
-  FILE
-    *file;
-
   Image
     *image;
 
   int
-    c,
     y;
 
   jas_image_t
@@ -225,32 +221,13 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
   if (image->blob.data != (unsigned char *) NULL)
     jp2_stream=jas_stream_memopen(image->blob.data,image->blob.length);
   else
-    {
-      /*
-        Copy image to temporary file.
-      */
-      (void) strcpy(image->filename,image_info->filename);
-      TemporaryFilename((char *) image_info->filename);
-      file=fopen(image_info->filename,WriteBinaryType);
-      if (file == (FILE *) NULL)
-        ThrowReaderException(FileOpenWarning,"Unable to write file",image);
-      c=ReadBlobByte(image);
-      while (c != EOF)
-      {
-        (void) fputc(c,file);
-        c=ReadBlobByte(image);
-      }
-      (void) fclose(file);
-      jp2_stream=jas_stream_fopen(image->filename,ReadBinaryType);
-    }
+    jp2_stream=jas_stream_freopen(image->filename,ReadBinaryType,image->file);
   if (jp2_stream == (jas_stream_t *) NULL)
     ThrowReaderException(FileOpenWarning,"Unable to open file",image);
   jp2_image=jas_image_decode(jp2_stream,-1,0);
   if (jp2_image == (jas_image_t *) NULL)
     ThrowReaderException(FileOpenWarning,"Unable to decode image file",image);
   (void) jas_stream_close(jp2_stream);
-  if (image->blob.data == (unsigned char *) NULL)
-    (void) remove(image->filename);
   /*
     Convert JPEG 2000 pixels.
   */
