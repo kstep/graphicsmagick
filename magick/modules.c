@@ -522,9 +522,9 @@ Export int UnloadModule(const char* module)
   if(module_info!=(ModuleInfo*)NULL)
     {
       /*
-	Locate and execute UnRegisterFORMATImage function
+	Locate and execute UnregisterFORMATImage function
       */
-      strcpy(func_name, "UnRegister");
+      strcpy(func_name, "Unregister");
       strcat(func_name,module);
       strcat(func_name, "Image");
 
