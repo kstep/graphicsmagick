@@ -1484,14 +1484,14 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
 
   sampling_factors=image_info->sampling_factor;
 
-  if (preserve_settings && preserve_settings[0])
+  if (preserve_settings)
     {
       const ImageAttribute
         *attribute;
 
       if (logging)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-            "  JPEG:preserve-settings=%s",(char *) preserve_settings);
+            "  JPEG:preserve-settings flag is defined.");
 
       /* Retrieve input file quality */
       attribute=GetImageAttribute(image,"JPEG-Quality");

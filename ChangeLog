@@ -1,3 +1,10 @@
+2003-12-17  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
+
+	* coders/jpeg.c: Changed "JPEG:preserve-settings from a key/value
+	pair to a simple flag.  Save and restore attributes when
+	"-define JPEG:preserve-settings" appears on the commandline.  Use
+	"+define JPEG:preserve-settings" to unset the flag.
+
 2003-12-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/wmf.c: Include <ft2build.h> if it is available since some
