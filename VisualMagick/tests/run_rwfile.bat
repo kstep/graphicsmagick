@@ -1,227 +1,232 @@
 @echo off
 set exedir=..\bin\
 set srcdir=..\..\tests\
+set events="exception"
+set bilevel_file=%srcdir%input_bilevel.miff
+set gray_file=%srcdir%input_gray.miff
+set pallette_file=%srcdir%input_pallette.miff
+set truecolor_file=%srcdir%input_truecolor.miff
 %exedir%drawtest drawtest_out.miff
 %exedir%drawtest drawtest_out.mvg
 %exedir%drawtest drawtest_out.svg
-%exedir%rwfile.exe %srcdir%input_bilevel.miff AVS 
-%exedir%rwfile.exe %srcdir%input_gray.miff AVS 
-%exedir%rwfile.exe %srcdir%input_256c.miff AVS 
-%exedir%rwfile.exe %srcdir%input_truecolor.miff AVS 
-%exedir%rwfile.exe %srcdir%input_bilevel.miff BMP 
-%exedir%rwfile.exe %srcdir%input_gray.miff BMP 
-%exedir%rwfile.exe %srcdir%input_256c.miff BMP 
-%exedir%rwfile.exe %srcdir%input_truecolor.miff BMP 
-%exedir%rwfile.exe %srcdir%input_bilevel.miff DIB 
-%exedir%rwfile.exe %srcdir%input_gray.miff DIB 
-%exedir%rwfile.exe %srcdir%input_256c.miff DIB 
-%exedir%rwfile.exe %srcdir%input_truecolor.miff DIB 
-%exedir%rwfile.exe %srcdir%input_bilevel.miff DPX 
-%exedir%rwfile.exe %srcdir%input_gray.miff DPX 
-%exedir%rwfile.exe %srcdir%input_256c.miff DPX 
-%exedir%rwfile.exe %srcdir%input_truecolor.miff DPX 
-%exedir%rwfile.exe %srcdir%input_bilevel.miff EPDF 
-%exedir%rwfile.exe %srcdir%input_gray.miff EPDF 
-%exedir%rwfile.exe %srcdir%input_256c.miff EPDF 
-%exedir%rwfile.exe %srcdir%input_truecolor.miff EPDF 
-%exedir%rwfile.exe %srcdir%input_bilevel.miff EPSF 
-%exedir%rwfile.exe %srcdir%input_gray.miff EPSF 
-%exedir%rwfile.exe %srcdir%input_256c.miff EPSF 
-%exedir%rwfile.exe %srcdir%input_truecolor.miff EPSF 
-%exedir%rwfile.exe %srcdir%input_bilevel.miff EPSI 
-%exedir%rwfile.exe %srcdir%input_gray.miff EPSI 
-%exedir%rwfile.exe %srcdir%input_256c.miff EPSI 
-%exedir%rwfile.exe %srcdir%input_truecolor.miff EPSI 
-%exedir%rwfile.exe %srcdir%input_bilevel.miff EPI 
-%exedir%rwfile.exe %srcdir%input_gray.miff EPI 
-%exedir%rwfile.exe %srcdir%input_256c.miff EPI 
-%exedir%rwfile.exe %srcdir%input_truecolor.miff EPI 
-%exedir%rwfile.exe %srcdir%input_bilevel.miff EPS 
-%exedir%rwfile.exe %srcdir%input_gray.miff EPS 
-%exedir%rwfile.exe %srcdir%input_256c.miff EPS 
-%exedir%rwfile.exe %srcdir%input_truecolor.miff EPS 
-%exedir%rwfile.exe %srcdir%input_bilevel.miff EPT 
-%exedir%rwfile.exe %srcdir%input_gray.miff EPT 
-%exedir%rwfile.exe %srcdir%input_256c.miff EPT 
-%exedir%rwfile.exe %srcdir%input_truecolor.miff EPT 
-%exedir%rwfile.exe %srcdir%input_bilevel.miff FAX 
-%exedir%rwfile.exe %srcdir%input_gray.miff FAX 
-%exedir%rwfile.exe %srcdir%input_256c.miff FAX 
-%exedir%rwfile.exe %srcdir%input_truecolor.miff FAX 
-%exedir%rwfile.exe %srcdir%input_bilevel.miff FITS 
-%exedir%rwfile.exe %srcdir%input_gray.miff FITS 
-%exedir%rwfile.exe %srcdir%input_256c.miff FITS 
-%exedir%rwfile.exe %srcdir%input_truecolor.miff FITS 
-%exedir%rwfile.exe %srcdir%input_bilevel.miff GIF 
-%exedir%rwfile.exe %srcdir%input_gray.miff GIF 
-%exedir%rwfile.exe %srcdir%input_256c.miff GIF 
-%exedir%rwfile.exe %srcdir%input_truecolor.miff GIF 
-%exedir%rwfile.exe %srcdir%input_bilevel.miff GRAY 
-%exedir%rwfile.exe %srcdir%input_gray.miff GRAY 
-%exedir%rwfile.exe %srcdir%input_256c.miff GRAY 
-%exedir%rwfile.exe %srcdir%input_truecolor.miff GRAY 
-%exedir%rwfile.exe %srcdir%input_bilevel.miff ICB 
-%exedir%rwfile.exe %srcdir%input_gray.miff ICB 
-%exedir%rwfile.exe %srcdir%input_256c.miff ICB 
-%exedir%rwfile.exe %srcdir%input_truecolor.miff ICB 
-%exedir%rwfile.exe %srcdir%input_bilevel.miff JBIG 
-%exedir%rwfile.exe %srcdir%input_gray.miff JBIG 
-%exedir%rwfile.exe %srcdir%input_256c.miff JBIG 
-%exedir%rwfile.exe %srcdir%input_truecolor.miff JBIG 
-%exedir%rwfile.exe %srcdir%input_bilevel.miff JPEG 
-%exedir%rwfile.exe %srcdir%input_gray.miff JPEG 
-%exedir%rwfile.exe %srcdir%input_256c.miff JPEG 
-%exedir%rwfile.exe %srcdir%input_truecolor.miff JPEG 
-%exedir%rwfile.exe %srcdir%input_bilevel.miff JP2 
-%exedir%rwfile.exe %srcdir%input_gray.miff JP2 
-%exedir%rwfile.exe %srcdir%input_256c.miff JP2 
-%exedir%rwfile.exe %srcdir%input_truecolor.miff JP2 
-%exedir%rwfile.exe %srcdir%input_bilevel.miff MIFF 
-%exedir%rwfile.exe %srcdir%input_gray.miff MIFF 
-%exedir%rwfile.exe %srcdir%input_256c.miff MIFF 
-%exedir%rwfile.exe %srcdir%input_truecolor.miff MIFF 
-%exedir%rwfile.exe %srcdir%input_bilevel.miff MNG 
-%exedir%rwfile.exe %srcdir%input_gray.miff MNG 
-%exedir%rwfile.exe %srcdir%input_256c.miff MNG 
-%exedir%rwfile.exe %srcdir%input_truecolor.miff MNG 
-%exedir%rwfile.exe %srcdir%input_bilevel.miff MTV 
-%exedir%rwfile.exe %srcdir%input_gray.miff MTV 
-%exedir%rwfile.exe %srcdir%input_256c.miff MTV 
-%exedir%rwfile.exe %srcdir%input_truecolor.miff MTV 
-%exedir%rwfile.exe %srcdir%input_bilevel.miff P7 
-%exedir%rwfile.exe %srcdir%input_gray.miff P7 
-%exedir%rwfile.exe %srcdir%input_256c.miff P7 
-%exedir%rwfile.exe %srcdir%input_truecolor.miff P7 
-%exedir%rwfile.exe %srcdir%input_bilevel.miff PBM 
-%exedir%rwfile.exe %srcdir%input_gray.miff PBM 
-%exedir%rwfile.exe %srcdir%input_256c.miff PBM 
-%exedir%rwfile.exe %srcdir%input_truecolor.miff PBM 
-%exedir%rwfile.exe %srcdir%input_bilevel.miff PCD 
-%exedir%rwfile.exe %srcdir%input_gray.miff PCD 
-%exedir%rwfile.exe %srcdir%input_256c.miff PCD 
-%exedir%rwfile.exe %srcdir%input_truecolor.miff PCD 
-%exedir%rwfile.exe %srcdir%input_bilevel.miff PCDS 
-%exedir%rwfile.exe %srcdir%input_gray.miff PCDS 
-%exedir%rwfile.exe %srcdir%input_256c.miff PCDS 
-%exedir%rwfile.exe %srcdir%input_truecolor.miff PCDS 
-%exedir%rwfile.exe %srcdir%input_bilevel.miff PCX 
-%exedir%rwfile.exe %srcdir%input_gray.miff PCX 
-%exedir%rwfile.exe %srcdir%input_256c.miff PCX 
-%exedir%rwfile.exe %srcdir%input_truecolor.miff PCX 
-%exedir%rwfile.exe %srcdir%input_bilevel.miff PGM 
-%exedir%rwfile.exe %srcdir%input_gray.miff PGM 
-%exedir%rwfile.exe %srcdir%input_256c.miff PGM 
-%exedir%rwfile.exe %srcdir%input_truecolor.miff PGM 
-%exedir%rwfile.exe %srcdir%input_bilevel.miff PICON 
-%exedir%rwfile.exe %srcdir%input_gray.miff PICON 
-%exedir%rwfile.exe %srcdir%input_256c.miff PICON 
-%exedir%rwfile.exe %srcdir%input_truecolor.miff PICON 
-%exedir%rwfile.exe %srcdir%input_bilevel.miff PICT 
-%exedir%rwfile.exe %srcdir%input_gray.miff PICT 
-%exedir%rwfile.exe %srcdir%input_256c.miff PICT 
-%exedir%rwfile.exe %srcdir%input_truecolor.miff PICT 
-%exedir%rwfile.exe %srcdir%input_bilevel.miff PNG 
-%exedir%rwfile.exe %srcdir%input_gray.miff PNG 
-%exedir%rwfile.exe %srcdir%input_256c.miff PNG 
-%exedir%rwfile.exe %srcdir%input_truecolor.miff PNG 
-%exedir%rwfile.exe %srcdir%input_bilevel.miff PNM 
-%exedir%rwfile.exe %srcdir%input_gray.miff PNM 
-%exedir%rwfile.exe %srcdir%input_256c.miff PNM 
-%exedir%rwfile.exe %srcdir%input_truecolor.miff PNM 
-%exedir%rwfile.exe %srcdir%input_bilevel.miff PPM 
-%exedir%rwfile.exe %srcdir%input_gray.miff PPM 
-%exedir%rwfile.exe %srcdir%input_256c.miff PPM 
-%exedir%rwfile.exe %srcdir%input_truecolor.miff PPM 
-%exedir%rwfile.exe %srcdir%input_bilevel.miff PS 
-%exedir%rwfile.exe %srcdir%input_gray.miff PS 
-%exedir%rwfile.exe %srcdir%input_256c.miff PS 
-%exedir%rwfile.exe %srcdir%input_truecolor.miff PS 
-%exedir%rwfile.exe %srcdir%input_bilevel.miff PSD 
-%exedir%rwfile.exe %srcdir%input_gray.miff PSD 
-%exedir%rwfile.exe %srcdir%input_256c.miff PSD 
-%exedir%rwfile.exe %srcdir%input_truecolor.miff PSD 
-%exedir%rwfile.exe %srcdir%input_bilevel.miff RAS 
-%exedir%rwfile.exe %srcdir%input_gray.miff RAS 
-%exedir%rwfile.exe %srcdir%input_256c.miff RAS 
-%exedir%rwfile.exe %srcdir%input_truecolor.miff RAS 
-%exedir%rwfile.exe %srcdir%input_bilevel.miff SGI 
-%exedir%rwfile.exe %srcdir%input_gray.miff SGI 
-%exedir%rwfile.exe %srcdir%input_256c.miff SGI 
-%exedir%rwfile.exe %srcdir%input_truecolor.miff SGI 
-%exedir%rwfile.exe %srcdir%input_bilevel.miff SUN 
-%exedir%rwfile.exe %srcdir%input_gray.miff SUN 
-%exedir%rwfile.exe %srcdir%input_256c.miff SUN 
-%exedir%rwfile.exe %srcdir%input_truecolor.miff SUN 
-%exedir%rwfile.exe %srcdir%input_bilevel.miff TGA 
-%exedir%rwfile.exe %srcdir%input_gray.miff TGA 
-%exedir%rwfile.exe %srcdir%input_256c.miff TGA 
-%exedir%rwfile.exe %srcdir%input_truecolor.miff TGA 
-%exedir%rwfile.exe %srcdir%input_bilevel.miff TIFF 
-%exedir%rwfile.exe %srcdir%input_gray.miff TIFF 
-%exedir%rwfile.exe %srcdir%input_256c.miff TIFF 
-%exedir%rwfile.exe %srcdir%input_truecolor.miff TIFF 
-%exedir%rwfile.exe %srcdir%input_bilevel.miff VDA 
-%exedir%rwfile.exe %srcdir%input_gray.miff VDA 
-%exedir%rwfile.exe %srcdir%input_256c.miff VDA 
-%exedir%rwfile.exe %srcdir%input_truecolor.miff VDA 
-%exedir%rwfile.exe %srcdir%input_bilevel.miff VICAR 
-%exedir%rwfile.exe %srcdir%input_gray.miff VICAR 
-%exedir%rwfile.exe %srcdir%input_256c.miff VICAR 
-%exedir%rwfile.exe %srcdir%input_truecolor.miff VICAR 
-%exedir%rwfile.exe %srcdir%input_bilevel.miff VIFF 
-%exedir%rwfile.exe %srcdir%input_gray.miff VIFF 
-%exedir%rwfile.exe %srcdir%input_256c.miff VIFF 
-%exedir%rwfile.exe %srcdir%input_truecolor.miff VIFF 
-%exedir%rwfile.exe %srcdir%input_bilevel.miff VST 
-%exedir%rwfile.exe %srcdir%input_gray.miff VST 
-%exedir%rwfile.exe %srcdir%input_256c.miff VST 
-%exedir%rwfile.exe %srcdir%input_truecolor.miff VST 
-%exedir%rwfile.exe %srcdir%input_bilevel.miff WBMP 
-%exedir%rwfile.exe %srcdir%input_gray.miff WBMP 
-%exedir%rwfile.exe %srcdir%input_256c.miff WBMP 
-%exedir%rwfile.exe %srcdir%input_truecolor.miff WBMP 
-%exedir%rwfile.exe %srcdir%input_bilevel.miff XBM 
-%exedir%rwfile.exe %srcdir%input_gray.miff XBM 
-%exedir%rwfile.exe %srcdir%input_256c.miff XBM 
-%exedir%rwfile.exe %srcdir%input_truecolor.miff XBM 
-%exedir%rwfile.exe %srcdir%input_bilevel.miff XPM 
-%exedir%rwfile.exe %srcdir%input_gray.miff XPM 
-%exedir%rwfile.exe %srcdir%input_256c.miff XPM 
-%exedir%rwfile.exe %srcdir%input_truecolor.miff XPM 
-%exedir%rwfile.exe %srcdir%input_bilevel.miff XWD 
-%exedir%rwfile.exe %srcdir%input_gray.miff XWD 
-%exedir%rwfile.exe %srcdir%input_256c.miff XWD 
-%exedir%rwfile.exe %srcdir%input_truecolor.miff XWD
-%exedir%rwfile.exe -size 70x46 %srcdir%input_bilevel.miff CMYK 
-%exedir%rwfile.exe -size 70x46 %srcdir%input_gray.miff CMYK 
-%exedir%rwfile.exe -size 70x46 %srcdir%input_256c.miff CMYK 
-%exedir%rwfile.exe -size 70x46 %srcdir%input_truecolor.miff CMYK 
-%exedir%rwfile.exe -size 70x46 %srcdir%input_bilevel.miff GRAY 
-%exedir%rwfile.exe -size 70x46 %srcdir%input_gray.miff GRAY 
-%exedir%rwfile.exe -size 70x46 %srcdir%input_256c.miff GRAY 
-%exedir%rwfile.exe -size 70x46 %srcdir%input_truecolor.miff GRAY 
-%exedir%rwfile.exe -size 70x46 %srcdir%input_bilevel.miff MONO 
-%exedir%rwfile.exe -size 70x46 %srcdir%input_gray.miff MONO 
-%exedir%rwfile.exe -size 70x46 %srcdir%input_256c.miff MONO 
-%exedir%rwfile.exe -size 70x46 %srcdir%input_truecolor.miff MONO 
-%exedir%rwfile.exe -size 70x46 %srcdir%input_bilevel.miff PAL 
-%exedir%rwfile.exe -size 70x46 %srcdir%input_gray.miff PAL 
-%exedir%rwfile.exe -size 70x46 %srcdir%input_256c.miff PAL 
-%exedir%rwfile.exe -size 70x46 %srcdir%input_truecolor.miff PAL 
-%exedir%rwfile.exe -size 70x46 %srcdir%input_bilevel.miff RGB 
-%exedir%rwfile.exe -size 70x46 %srcdir%input_gray.miff RGB 
-%exedir%rwfile.exe -size 70x46 %srcdir%input_256c.miff RGB 
-%exedir%rwfile.exe -size 70x46 %srcdir%input_truecolor.miff RGB 
-%exedir%rwfile.exe -size 70x46 %srcdir%input_bilevel.miff RGBA 
-%exedir%rwfile.exe -size 70x46 %srcdir%input_gray.miff RGBA 
-%exedir%rwfile.exe -size 70x46 %srcdir%input_256c.miff RGBA 
-%exedir%rwfile.exe -size 70x46 %srcdir%input_truecolor.miff RGBA 
-%exedir%rwfile.exe -size 70x46 %srcdir%input_bilevel.miff UYVY 
-%exedir%rwfile.exe -size 70x46 %srcdir%input_gray.miff UYVY 
-%exedir%rwfile.exe -size 70x46 %srcdir%input_256c.miff UYVY 
-%exedir%rwfile.exe -size 70x46 %srcdir%input_truecolor.miff UYVY 
-%exedir%rwfile.exe -size 70x46 %srcdir%input_bilevel.miff YUV 
-%exedir%rwfile.exe -size 70x46 %srcdir%input_gray.miff YUV 
-%exedir%rwfile.exe -size 70x46 %srcdir%input_256c.miff YUV 
-%exedir%rwfile.exe -size 70x46 %srcdir%input_truecolor.miff YUV 
+%exedir%rwfile.exe -debug %events% %bilevel_file% AVS 
+%exedir%rwfile.exe -debug %events% %gray_file% AVS 
+%exedir%rwfile.exe -debug %events% %pallette_file% AVS 
+%exedir%rwfile.exe -debug %events% %truecolor_file% AVS 
+%exedir%rwfile.exe -debug %events% %bilevel_file% BMP 
+%exedir%rwfile.exe -debug %events% %gray_file% BMP 
+%exedir%rwfile.exe -debug %events% %pallette_file% BMP 
+%exedir%rwfile.exe -debug %events% %truecolor_file% BMP 
+%exedir%rwfile.exe -debug %events% %bilevel_file% DIB 
+%exedir%rwfile.exe -debug %events% %gray_file% DIB 
+%exedir%rwfile.exe -debug %events% %pallette_file% DIB 
+%exedir%rwfile.exe -debug %events% %truecolor_file% DIB 
+%exedir%rwfile.exe -debug %events% %bilevel_file% DPX 
+%exedir%rwfile.exe -debug %events% %gray_file% DPX 
+%exedir%rwfile.exe -debug %events% %pallette_file% DPX 
+%exedir%rwfile.exe -debug %events% %truecolor_file% DPX 
+%exedir%rwfile.exe -debug %events% %bilevel_file% EPDF 
+%exedir%rwfile.exe -debug %events% %gray_file% EPDF 
+%exedir%rwfile.exe -debug %events% %pallette_file% EPDF 
+%exedir%rwfile.exe -debug %events% %truecolor_file% EPDF 
+%exedir%rwfile.exe -debug %events% %bilevel_file% EPSF 
+%exedir%rwfile.exe -debug %events% %gray_file% EPSF 
+%exedir%rwfile.exe -debug %events% %pallette_file% EPSF 
+%exedir%rwfile.exe -debug %events% %truecolor_file% EPSF 
+%exedir%rwfile.exe -debug %events% %bilevel_file% EPSI 
+%exedir%rwfile.exe -debug %events% %gray_file% EPSI 
+%exedir%rwfile.exe -debug %events% %pallette_file% EPSI 
+%exedir%rwfile.exe -debug %events% %truecolor_file% EPSI 
+%exedir%rwfile.exe -debug %events% %bilevel_file% EPI 
+%exedir%rwfile.exe -debug %events% %gray_file% EPI 
+%exedir%rwfile.exe -debug %events% %pallette_file% EPI 
+%exedir%rwfile.exe -debug %events% %truecolor_file% EPI 
+%exedir%rwfile.exe -debug %events% %bilevel_file% EPS 
+%exedir%rwfile.exe -debug %events% %gray_file% EPS 
+%exedir%rwfile.exe -debug %events% %pallette_file% EPS 
+%exedir%rwfile.exe -debug %events% %truecolor_file% EPS 
+%exedir%rwfile.exe -debug %events% %bilevel_file% EPT 
+%exedir%rwfile.exe -debug %events% %gray_file% EPT 
+%exedir%rwfile.exe -debug %events% %pallette_file% EPT 
+%exedir%rwfile.exe -debug %events% %truecolor_file% EPT 
+%exedir%rwfile.exe -debug %events% %bilevel_file% FAX 
+%exedir%rwfile.exe -debug %events% %gray_file% FAX 
+%exedir%rwfile.exe -debug %events% %pallette_file% FAX 
+%exedir%rwfile.exe -debug %events% %truecolor_file% FAX 
+%exedir%rwfile.exe -debug %events% %bilevel_file% FITS 
+%exedir%rwfile.exe -debug %events% %gray_file% FITS 
+%exedir%rwfile.exe -debug %events% %pallette_file% FITS 
+%exedir%rwfile.exe -debug %events% %truecolor_file% FITS 
+%exedir%rwfile.exe -debug %events% %bilevel_file% GIF 
+%exedir%rwfile.exe -debug %events% %gray_file% GIF 
+%exedir%rwfile.exe -debug %events% %pallette_file% GIF 
+%exedir%rwfile.exe -debug %events% %truecolor_file% GIF 
+%exedir%rwfile.exe -debug %events% %bilevel_file% GRAY 
+%exedir%rwfile.exe -debug %events% %gray_file% GRAY 
+%exedir%rwfile.exe -debug %events% %pallette_file% GRAY 
+%exedir%rwfile.exe -debug %events% %truecolor_file% GRAY 
+%exedir%rwfile.exe -debug %events% %bilevel_file% ICB 
+%exedir%rwfile.exe -debug %events% %gray_file% ICB 
+%exedir%rwfile.exe -debug %events% %pallette_file% ICB 
+%exedir%rwfile.exe -debug %events% %truecolor_file% ICB 
+%exedir%rwfile.exe -debug %events% %bilevel_file% JBIG 
+%exedir%rwfile.exe -debug %events% %gray_file% JBIG 
+%exedir%rwfile.exe -debug %events% %pallette_file% JBIG 
+%exedir%rwfile.exe -debug %events% %truecolor_file% JBIG 
+%exedir%rwfile.exe -debug %events% %bilevel_file% JPEG 
+%exedir%rwfile.exe -debug %events% %gray_file% JPEG 
+%exedir%rwfile.exe -debug %events% %pallette_file% JPEG 
+%exedir%rwfile.exe -debug %events% %truecolor_file% JPEG 
+%exedir%rwfile.exe -debug %events% %bilevel_file% JP2 
+%exedir%rwfile.exe -debug %events% %gray_file% JP2 
+%exedir%rwfile.exe -debug %events% %pallette_file% JP2 
+%exedir%rwfile.exe -debug %events% %truecolor_file% JP2 
+%exedir%rwfile.exe -debug %events% %bilevel_file% MIFF 
+%exedir%rwfile.exe -debug %events% %gray_file% MIFF 
+%exedir%rwfile.exe -debug %events% %pallette_file% MIFF 
+%exedir%rwfile.exe -debug %events% %truecolor_file% MIFF 
+%exedir%rwfile.exe -debug %events% %bilevel_file% MNG 
+%exedir%rwfile.exe -debug %events% %gray_file% MNG 
+%exedir%rwfile.exe -debug %events% %pallette_file% MNG 
+%exedir%rwfile.exe -debug %events% %truecolor_file% MNG 
+%exedir%rwfile.exe -debug %events% %bilevel_file% MTV 
+%exedir%rwfile.exe -debug %events% %gray_file% MTV 
+%exedir%rwfile.exe -debug %events% %pallette_file% MTV 
+%exedir%rwfile.exe -debug %events% %truecolor_file% MTV 
+%exedir%rwfile.exe -debug %events% %bilevel_file% P7 
+%exedir%rwfile.exe -debug %events% %gray_file% P7 
+%exedir%rwfile.exe -debug %events% %pallette_file% P7 
+%exedir%rwfile.exe -debug %events% %truecolor_file% P7 
+%exedir%rwfile.exe -debug %events% %bilevel_file% PBM 
+%exedir%rwfile.exe -debug %events% %gray_file% PBM 
+%exedir%rwfile.exe -debug %events% %pallette_file% PBM 
+%exedir%rwfile.exe -debug %events% %truecolor_file% PBM 
+%exedir%rwfile.exe -debug %events% %bilevel_file% PCD 
+%exedir%rwfile.exe -debug %events% %gray_file% PCD 
+%exedir%rwfile.exe -debug %events% %pallette_file% PCD 
+%exedir%rwfile.exe -debug %events% %truecolor_file% PCD 
+%exedir%rwfile.exe -debug %events% %bilevel_file% PCDS 
+%exedir%rwfile.exe -debug %events% %gray_file% PCDS 
+%exedir%rwfile.exe -debug %events% %pallette_file% PCDS 
+%exedir%rwfile.exe -debug %events% %truecolor_file% PCDS 
+%exedir%rwfile.exe -debug %events% %bilevel_file% PCX 
+%exedir%rwfile.exe -debug %events% %gray_file% PCX 
+%exedir%rwfile.exe -debug %events% %pallette_file% PCX 
+%exedir%rwfile.exe -debug %events% %truecolor_file% PCX 
+%exedir%rwfile.exe -debug %events% %bilevel_file% PGM 
+%exedir%rwfile.exe -debug %events% %gray_file% PGM 
+%exedir%rwfile.exe -debug %events% %pallette_file% PGM 
+%exedir%rwfile.exe -debug %events% %truecolor_file% PGM 
+%exedir%rwfile.exe -debug %events% %bilevel_file% PICON 
+%exedir%rwfile.exe -debug %events% %gray_file% PICON 
+%exedir%rwfile.exe -debug %events% %pallette_file% PICON 
+%exedir%rwfile.exe -debug %events% %truecolor_file% PICON 
+%exedir%rwfile.exe -debug %events% %bilevel_file% PICT 
+%exedir%rwfile.exe -debug %events% %gray_file% PICT 
+%exedir%rwfile.exe -debug %events% %pallette_file% PICT 
+%exedir%rwfile.exe -debug %events% %truecolor_file% PICT 
+%exedir%rwfile.exe -debug %events% %bilevel_file% PNG 
+%exedir%rwfile.exe -debug %events% %gray_file% PNG 
+%exedir%rwfile.exe -debug %events% %pallette_file% PNG 
+%exedir%rwfile.exe -debug %events% %truecolor_file% PNG 
+%exedir%rwfile.exe -debug %events% %bilevel_file% PNM 
+%exedir%rwfile.exe -debug %events% %gray_file% PNM 
+%exedir%rwfile.exe -debug %events% %pallette_file% PNM 
+%exedir%rwfile.exe -debug %events% %truecolor_file% PNM 
+%exedir%rwfile.exe -debug %events% %bilevel_file% PPM 
+%exedir%rwfile.exe -debug %events% %gray_file% PPM 
+%exedir%rwfile.exe -debug %events% %pallette_file% PPM 
+%exedir%rwfile.exe -debug %events% %truecolor_file% PPM 
+%exedir%rwfile.exe -debug %events% %bilevel_file% PS 
+%exedir%rwfile.exe -debug %events% %gray_file% PS 
+%exedir%rwfile.exe -debug %events% %pallette_file% PS 
+%exedir%rwfile.exe -debug %events% %truecolor_file% PS 
+%exedir%rwfile.exe -debug %events% %bilevel_file% PSD 
+%exedir%rwfile.exe -debug %events% %gray_file% PSD 
+%exedir%rwfile.exe -debug %events% %pallette_file% PSD 
+%exedir%rwfile.exe -debug %events% %truecolor_file% PSD 
+%exedir%rwfile.exe -debug %events% %bilevel_file% RAS 
+%exedir%rwfile.exe -debug %events% %gray_file% RAS 
+%exedir%rwfile.exe -debug %events% %pallette_file% RAS 
+%exedir%rwfile.exe -debug %events% %truecolor_file% RAS 
+%exedir%rwfile.exe -debug %events% %bilevel_file% SGI 
+%exedir%rwfile.exe -debug %events% %gray_file% SGI 
+%exedir%rwfile.exe -debug %events% %pallette_file% SGI 
+%exedir%rwfile.exe -debug %events% %truecolor_file% SGI 
+%exedir%rwfile.exe -debug %events% %bilevel_file% SUN 
+%exedir%rwfile.exe -debug %events% %gray_file% SUN 
+%exedir%rwfile.exe -debug %events% %pallette_file% SUN 
+%exedir%rwfile.exe -debug %events% %truecolor_file% SUN 
+%exedir%rwfile.exe -debug %events% %bilevel_file% TGA 
+%exedir%rwfile.exe -debug %events% %gray_file% TGA 
+%exedir%rwfile.exe -debug %events% %pallette_file% TGA 
+%exedir%rwfile.exe -debug %events% %truecolor_file% TGA 
+%exedir%rwfile.exe -debug %events% %bilevel_file% TIFF 
+%exedir%rwfile.exe -debug %events% %gray_file% TIFF 
+%exedir%rwfile.exe -debug %events% %pallette_file% TIFF 
+%exedir%rwfile.exe -debug %events% %truecolor_file% TIFF 
+%exedir%rwfile.exe -debug %events% %bilevel_file% VDA 
+%exedir%rwfile.exe -debug %events% %gray_file% VDA 
+%exedir%rwfile.exe -debug %events% %pallette_file% VDA 
+%exedir%rwfile.exe -debug %events% %truecolor_file% VDA 
+%exedir%rwfile.exe -debug %events% %bilevel_file% VICAR 
+%exedir%rwfile.exe -debug %events% %gray_file% VICAR 
+%exedir%rwfile.exe -debug %events% %pallette_file% VICAR 
+%exedir%rwfile.exe -debug %events% %truecolor_file% VICAR 
+%exedir%rwfile.exe -debug %events% %bilevel_file% VIFF 
+%exedir%rwfile.exe -debug %events% %gray_file% VIFF 
+%exedir%rwfile.exe -debug %events% %pallette_file% VIFF 
+%exedir%rwfile.exe -debug %events% %truecolor_file% VIFF 
+%exedir%rwfile.exe -debug %events% %bilevel_file% VST 
+%exedir%rwfile.exe -debug %events% %gray_file% VST 
+%exedir%rwfile.exe -debug %events% %pallette_file% VST 
+%exedir%rwfile.exe -debug %events% %truecolor_file% VST 
+%exedir%rwfile.exe -debug %events% %bilevel_file% WBMP 
+%exedir%rwfile.exe -debug %events% %gray_file% WBMP 
+%exedir%rwfile.exe -debug %events% %pallette_file% WBMP 
+%exedir%rwfile.exe -debug %events% %truecolor_file% WBMP 
+%exedir%rwfile.exe -debug %events% %bilevel_file% XBM 
+%exedir%rwfile.exe -debug %events% %gray_file% XBM 
+%exedir%rwfile.exe -debug %events% %pallette_file% XBM 
+%exedir%rwfile.exe -debug %events% %truecolor_file% XBM 
+%exedir%rwfile.exe -debug %events% %bilevel_file% XPM 
+%exedir%rwfile.exe -debug %events% %gray_file% XPM 
+%exedir%rwfile.exe -debug %events% %pallette_file% XPM 
+%exedir%rwfile.exe -debug %events% %truecolor_file% XPM 
+%exedir%rwfile.exe -debug %events% %bilevel_file% XWD 
+%exedir%rwfile.exe -debug %events% %gray_file% XWD 
+%exedir%rwfile.exe -debug %events% %pallette_file% XWD 
+%exedir%rwfile.exe -debug %events% %truecolor_file% XWD
+%exedir%rwfile.exe -debug %events% -size 70x46 %bilevel_file% CMYK 
+%exedir%rwfile.exe -debug %events% -size 70x46 %gray_file% CMYK 
+%exedir%rwfile.exe -debug %events% -size 70x46 %pallette_file% CMYK 
+%exedir%rwfile.exe -debug %events% -size 70x46 %truecolor_file% CMYK 
+%exedir%rwfile.exe -debug %events% -size 70x46 %bilevel_file% GRAY 
+%exedir%rwfile.exe -debug %events% -size 70x46 %gray_file% GRAY 
+%exedir%rwfile.exe -debug %events% -size 70x46 %pallette_file% GRAY 
+%exedir%rwfile.exe -debug %events% -size 70x46 %truecolor_file% GRAY 
+%exedir%rwfile.exe -debug %events% -size 70x46 %bilevel_file% MONO 
+%exedir%rwfile.exe -debug %events% -size 70x46 %gray_file% MONO 
+%exedir%rwfile.exe -debug %events% -size 70x46 %pallette_file% MONO 
+%exedir%rwfile.exe -debug %events% -size 70x46 %truecolor_file% MONO 
+%exedir%rwfile.exe -debug %events% -size 70x46 %bilevel_file% PAL 
+%exedir%rwfile.exe -debug %events% -size 70x46 %gray_file% PAL 
+%exedir%rwfile.exe -debug %events% -size 70x46 %pallette_file% PAL 
+%exedir%rwfile.exe -debug %events% -size 70x46 %truecolor_file% PAL 
+%exedir%rwfile.exe -debug %events% -size 70x46 %bilevel_file% RGB 
+%exedir%rwfile.exe -debug %events% -size 70x46 %gray_file% RGB 
+%exedir%rwfile.exe -debug %events% -size 70x46 %pallette_file% RGB 
+%exedir%rwfile.exe -debug %events% -size 70x46 %truecolor_file% RGB 
+%exedir%rwfile.exe -debug %events% -size 70x46 %bilevel_file% RGBA 
+%exedir%rwfile.exe -debug %events% -size 70x46 %gray_file% RGBA 
+%exedir%rwfile.exe -debug %events% -size 70x46 %pallette_file% RGBA 
+%exedir%rwfile.exe -debug %events% -size 70x46 %truecolor_file% RGBA 
+%exedir%rwfile.exe -debug %events% -size 70x46 %bilevel_file% UYVY 
+%exedir%rwfile.exe -debug %events% -size 70x46 %gray_file% UYVY 
+%exedir%rwfile.exe -debug %events% -size 70x46 %pallette_file% UYVY 
+%exedir%rwfile.exe -debug %events% -size 70x46 %truecolor_file% UYVY 
+%exedir%rwfile.exe -debug %events% -size 70x46 %bilevel_file% YUV 
+%exedir%rwfile.exe -debug %events% -size 70x46 %gray_file% YUV 
+%exedir%rwfile.exe -debug %events% -size 70x46 %pallette_file% YUV 
+%exedir%rwfile.exe -debug %events% -size 70x46 %truecolor_file% YUV 
 

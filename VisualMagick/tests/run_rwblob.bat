@@ -1,204 +1,229 @@
 @echo off
 set exedir=..\bin\
 set srcdir=..\..\tests\
-%exedir%rwblob.exe %srcdir%input_bilevel.miff AVS 
-%exedir%rwblob.exe %srcdir%input_gray.miff AVS 
-%exedir%rwblob.exe %srcdir%input_256c.miff AVS 
-%exedir%rwblob.exe %srcdir%input_truecolor.miff AVS 
-%exedir%rwblob.exe %srcdir%input_bilevel.miff BMP 
-%exedir%rwblob.exe %srcdir%input_gray.miff BMP 
-%exedir%rwblob.exe %srcdir%input_256c.miff BMP 
-%exedir%rwblob.exe %srcdir%input_truecolor.miff BMP 
-%exedir%rwblob.exe %srcdir%input_bilevel.miff DIB 
-%exedir%rwblob.exe %srcdir%input_gray.miff DIB 
-%exedir%rwblob.exe %srcdir%input_256c.miff DIB 
-%exedir%rwblob.exe %srcdir%input_truecolor.miff DIB 
-%exedir%rwblob.exe %srcdir%input_bilevel.miff DPX 
-%exedir%rwblob.exe %srcdir%input_gray.miff DPX 
-%exedir%rwblob.exe %srcdir%input_256c.miff DPX 
-%exedir%rwblob.exe %srcdir%input_truecolor.miff DPX 
-%exedir%rwblob.exe %srcdir%input_bilevel.miff EPDF 
-%exedir%rwblob.exe %srcdir%input_gray.miff EPDF 
-%exedir%rwblob.exe %srcdir%input_256c.miff EPDF 
-%exedir%rwblob.exe %srcdir%input_truecolor.miff EPDF 
-%exedir%rwblob.exe %srcdir%input_bilevel.miff EPT 
-%exedir%rwblob.exe %srcdir%input_gray.miff EPT 
-%exedir%rwblob.exe %srcdir%input_256c.miff EPT 
-%exedir%rwblob.exe %srcdir%input_truecolor.miff EPT 
-%exedir%rwblob.exe %srcdir%input_bilevel.miff FAX 
-%exedir%rwblob.exe %srcdir%input_gray.miff FAX 
-%exedir%rwblob.exe %srcdir%input_256c.miff FAX 
-%exedir%rwblob.exe %srcdir%input_truecolor.miff FAX 
-%exedir%rwblob.exe %srcdir%input_bilevel.miff G3 
-%exedir%rwblob.exe %srcdir%input_gray.miff G3 
-%exedir%rwblob.exe %srcdir%input_256c.miff G3 
-%exedir%rwblob.exe %srcdir%input_truecolor.miff G3 
-%exedir%rwblob.exe %srcdir%input_bilevel.miff FITS 
-%exedir%rwblob.exe %srcdir%input_gray.miff FITS 
-%exedir%rwblob.exe %srcdir%input_256c.miff FITS 
-%exedir%rwblob.exe %srcdir%input_truecolor.miff FITS 
-%exedir%rwblob.exe %srcdir%input_bilevel.miff GIF 
-%exedir%rwblob.exe %srcdir%input_gray.miff GIF 
-%exedir%rwblob.exe %srcdir%input_256c.miff GIF 
-%exedir%rwblob.exe %srcdir%input_truecolor.miff GIF 
-%exedir%rwblob.exe %srcdir%input_bilevel.miff GIF87 
-%exedir%rwblob.exe %srcdir%input_gray.miff GIF87 
-%exedir%rwblob.exe %srcdir%input_256c.miff GIF87 
-%exedir%rwblob.exe %srcdir%input_truecolor.miff GIF87 
-%exedir%rwblob.exe %srcdir%input_bilevel.miff JBIG 
-%exedir%rwblob.exe %srcdir%input_gray.miff JBIG 
-%exedir%rwblob.exe %srcdir%input_256c.miff JBIG 
-%exedir%rwblob.exe %srcdir%input_truecolor.miff JBIG 
-%exedir%rwblob.exe %srcdir%input_bilevel.miff JPEG 
-%exedir%rwblob.exe %srcdir%input_gray.miff JPEG 
-%exedir%rwblob.exe %srcdir%input_256c.miff JPEG 
-%exedir%rwblob.exe %srcdir%input_truecolor.miff JPEG 
-%exedir%rwblob.exe %srcdir%input_bilevel.miff JP2 
-%exedir%rwblob.exe %srcdir%input_gray.miff JP2 
-%exedir%rwblob.exe %srcdir%input_256c.miff JP2 
-%exedir%rwblob.exe %srcdir%input_truecolor.miff JP2 
-%exedir%rwblob.exe %srcdir%input_bilevel.miff MIFF 
-%exedir%rwblob.exe %srcdir%input_gray.miff MIFF 
-%exedir%rwblob.exe %srcdir%input_256c.miff MIFF 
-%exedir%rwblob.exe %srcdir%input_truecolor.miff MIFF 
-%exedir%rwblob.exe %srcdir%input_bilevel.miff MNG 
-%exedir%rwblob.exe %srcdir%input_gray.miff MNG 
-%exedir%rwblob.exe %srcdir%input_256c.miff MNG 
-%exedir%rwblob.exe %srcdir%input_truecolor.miff MNG 
-%exedir%rwblob.exe %srcdir%input_bilevel.miff MTV 
-%exedir%rwblob.exe %srcdir%input_gray.miff MTV 
-%exedir%rwblob.exe %srcdir%input_256c.miff MTV 
-%exedir%rwblob.exe %srcdir%input_truecolor.miff MTV 
-%exedir%rwblob.exe %srcdir%input_bilevel.miff P7 
-%exedir%rwblob.exe %srcdir%input_gray.miff P7 
-%exedir%rwblob.exe %srcdir%input_256c.miff P7 
-%exedir%rwblob.exe %srcdir%input_truecolor.miff P7 
-%exedir%rwblob.exe %srcdir%input_bilevel.miff PBM 
-%exedir%rwblob.exe %srcdir%input_gray.miff PBM 
-%exedir%rwblob.exe %srcdir%input_256c.miff PBM 
-%exedir%rwblob.exe %srcdir%input_truecolor.miff PBM 
-%exedir%rwblob.exe %srcdir%input_bilevel.miff PCD 
-%exedir%rwblob.exe %srcdir%input_gray.miff PCD 
-%exedir%rwblob.exe %srcdir%input_256c.miff PCD 
-%exedir%rwblob.exe %srcdir%input_truecolor.miff PCD 
-%exedir%rwblob.exe %srcdir%input_bilevel.miff PCDS 
-%exedir%rwblob.exe %srcdir%input_gray.miff PCDS 
-%exedir%rwblob.exe %srcdir%input_256c.miff PCDS 
-%exedir%rwblob.exe %srcdir%input_truecolor.miff PCDS 
-%exedir%rwblob.exe %srcdir%input_bilevel.miff PCX 
-%exedir%rwblob.exe %srcdir%input_gray.miff PCX 
-%exedir%rwblob.exe %srcdir%input_256c.miff PCX 
-%exedir%rwblob.exe %srcdir%input_truecolor.miff PCX 
-%exedir%rwblob.exe %srcdir%input_bilevel.miff PGM 
-%exedir%rwblob.exe %srcdir%input_gray.miff PGM 
-%exedir%rwblob.exe %srcdir%input_256c.miff PGM 
-%exedir%rwblob.exe %srcdir%input_truecolor.miff PGM 
-%exedir%rwblob.exe %srcdir%input_bilevel.miff PICON 
-%exedir%rwblob.exe %srcdir%input_gray.miff PICON 
-%exedir%rwblob.exe %srcdir%input_256c.miff PICON 
-%exedir%rwblob.exe %srcdir%input_truecolor.miff PICON 
-%exedir%rwblob.exe %srcdir%input_bilevel.miff PICT 
-%exedir%rwblob.exe %srcdir%input_gray.miff PICT 
-%exedir%rwblob.exe %srcdir%input_256c.miff PICT 
-%exedir%rwblob.exe %srcdir%input_truecolor.miff PICT 
-%exedir%rwblob.exe %srcdir%input_bilevel.miff PNG 
-%exedir%rwblob.exe %srcdir%input_gray.miff PNG 
-%exedir%rwblob.exe %srcdir%input_256c.miff PNG 
-%exedir%rwblob.exe %srcdir%input_truecolor.miff PNG 
-%exedir%rwblob.exe %srcdir%input_bilevel.miff PNM 
-%exedir%rwblob.exe %srcdir%input_gray.miff PNM 
-%exedir%rwblob.exe %srcdir%input_256c.miff PNM 
-%exedir%rwblob.exe %srcdir%input_truecolor.miff PNM 
-%exedir%rwblob.exe %srcdir%input_bilevel.miff PPM 
-%exedir%rwblob.exe %srcdir%input_gray.miff PPM 
-%exedir%rwblob.exe %srcdir%input_256c.miff PPM 
-%exedir%rwblob.exe %srcdir%input_truecolor.miff PPM 
-%exedir%rwblob.exe %srcdir%input_bilevel.miff PSD 
-%exedir%rwblob.exe %srcdir%input_gray.miff PSD 
-%exedir%rwblob.exe %srcdir%input_256c.miff PSD 
-%exedir%rwblob.exe %srcdir%input_truecolor.miff PSD 
-%exedir%rwblob.exe %srcdir%input_bilevel.miff RAS 
-%exedir%rwblob.exe %srcdir%input_gray.miff RAS 
-%exedir%rwblob.exe %srcdir%input_256c.miff RAS 
-%exedir%rwblob.exe %srcdir%input_truecolor.miff RAS 
-%exedir%rwblob.exe %srcdir%input_bilevel.miff SGI 
-%exedir%rwblob.exe %srcdir%input_gray.miff SGI 
-%exedir%rwblob.exe %srcdir%input_256c.miff SGI 
-%exedir%rwblob.exe %srcdir%input_truecolor.miff SGI 
-%exedir%rwblob.exe %srcdir%input_bilevel.miff SUN 
-%exedir%rwblob.exe %srcdir%input_gray.miff SUN 
-%exedir%rwblob.exe %srcdir%input_256c.miff SUN 
-%exedir%rwblob.exe %srcdir%input_truecolor.miff SUN 
-%exedir%rwblob.exe %srcdir%input_bilevel.miff TGA 
-%exedir%rwblob.exe %srcdir%input_gray.miff TGA 
-%exedir%rwblob.exe %srcdir%input_256c.miff TGA 
-%exedir%rwblob.exe %srcdir%input_truecolor.miff TGA 
-%exedir%rwblob.exe %srcdir%input_bilevel.miff TIFF 
-%exedir%rwblob.exe %srcdir%input_gray.miff TIFF 
-%exedir%rwblob.exe %srcdir%input_256c.miff TIFF 
-%exedir%rwblob.exe %srcdir%input_truecolor.miff TIFF 
-%exedir%rwblob.exe %srcdir%input_bilevel.miff VDA 
-%exedir%rwblob.exe %srcdir%input_gray.miff VDA 
-%exedir%rwblob.exe %srcdir%input_256c.miff VDA 
-%exedir%rwblob.exe %srcdir%input_truecolor.miff VDA 
-%exedir%rwblob.exe %srcdir%input_bilevel.miff VICAR 
-%exedir%rwblob.exe %srcdir%input_gray.miff VICAR 
-%exedir%rwblob.exe %srcdir%input_256c.miff VICAR 
-%exedir%rwblob.exe %srcdir%input_truecolor.miff VICAR 
-%exedir%rwblob.exe %srcdir%input_bilevel.miff VIFF 
-%exedir%rwblob.exe %srcdir%input_gray.miff VIFF 
-%exedir%rwblob.exe %srcdir%input_256c.miff VIFF 
-%exedir%rwblob.exe %srcdir%input_truecolor.miff VIFF 
-%exedir%rwblob.exe %srcdir%input_bilevel.miff VST 
-%exedir%rwblob.exe %srcdir%input_gray.miff VST 
-%exedir%rwblob.exe %srcdir%input_256c.miff VST 
-%exedir%rwblob.exe %srcdir%input_truecolor.miff VST 
-%exedir%rwblob.exe %srcdir%input_bilevel.miff WBMP 
-%exedir%rwblob.exe %srcdir%input_gray.miff WBMP 
-%exedir%rwblob.exe %srcdir%input_256c.miff WBMP 
-%exedir%rwblob.exe %srcdir%input_truecolor.miff WBMP 
-%exedir%rwblob.exe %srcdir%input_bilevel.miff XBM 
-%exedir%rwblob.exe %srcdir%input_gray.miff XBM 
-%exedir%rwblob.exe %srcdir%input_256c.miff XBM 
-%exedir%rwblob.exe %srcdir%input_truecolor.miff XBM 
-%exedir%rwblob.exe %srcdir%input_bilevel.miff XPM 
-%exedir%rwblob.exe %srcdir%input_gray.miff XPM 
-%exedir%rwblob.exe %srcdir%input_256c.miff XPM 
-%exedir%rwblob.exe %srcdir%input_truecolor.miff XPM 
-%exedir%rwblob.exe %srcdir%input_bilevel.miff XWD 
-%exedir%rwblob.exe %srcdir%input_gray.miff XWD 
-%exedir%rwblob.exe %srcdir%input_256c.miff XWD 
-%exedir%rwblob.exe %srcdir%input_truecolor.miff XWD 
-%exedir%rwblob.exe -size 70x46 %srcdir%input_bilevel.miff CMYK 
-%exedir%rwblob.exe -size 70x46 %srcdir%input_gray.miff CMYK 
-%exedir%rwblob.exe -size 70x46 %srcdir%input_256c.miff CMYK 
-%exedir%rwblob.exe -size 70x46 %srcdir%input_truecolor.miff CMYK 
-%exedir%rwblob.exe -size 70x46 %srcdir%input_bilevel.miff GRAY 
-%exedir%rwblob.exe -size 70x46 %srcdir%input_gray.miff GRAY 
-%exedir%rwblob.exe -size 70x46 %srcdir%input_256c.miff GRAY 
-%exedir%rwblob.exe -size 70x46 %srcdir%input_truecolor.miff GRAY 
-%exedir%rwblob.exe -size 70x46 %srcdir%input_bilevel.miff MONO 
-%exedir%rwblob.exe -size 70x46 %srcdir%input_gray.miff MONO 
-%exedir%rwblob.exe -size 70x46 %srcdir%input_256c.miff MONO 
-%exedir%rwblob.exe -size 70x46 %srcdir%input_truecolor.miff MONO 
-%exedir%rwblob.exe -size 70x46 %srcdir%input_bilevel.miff PAL 
-%exedir%rwblob.exe -size 70x46 %srcdir%input_gray.miff PAL 
-%exedir%rwblob.exe -size 70x46 %srcdir%input_256c.miff PAL 
-%exedir%rwblob.exe -size 70x46 %srcdir%input_truecolor.miff PAL 
-%exedir%rwblob.exe -size 70x46 %srcdir%input_bilevel.miff RGB 
-%exedir%rwblob.exe -size 70x46 %srcdir%input_gray.miff RGB 
-%exedir%rwblob.exe -size 70x46 %srcdir%input_256c.miff RGB 
-%exedir%rwblob.exe -size 70x46 %srcdir%input_truecolor.miff RGB 
-%exedir%rwblob.exe -size 70x46 %srcdir%input_bilevel.miff RGBA 
-%exedir%rwblob.exe -size 70x46 %srcdir%input_gray.miff RGBA 
-%exedir%rwblob.exe -size 70x46 %srcdir%input_256c.miff RGBA 
-%exedir%rwblob.exe -size 70x46 %srcdir%input_truecolor.miff RGBA 
-%exedir%rwblob.exe -size 70x46 %srcdir%input_bilevel.miff UYVY 
-%exedir%rwblob.exe -size 70x46 %srcdir%input_gray.miff UYVY 
-%exedir%rwblob.exe -size 70x46 %srcdir%input_256c.miff UYVY 
-%exedir%rwblob.exe -size 70x46 %srcdir%input_truecolor.miff UYVY 
-%exedir%rwblob.exe -size 70x46 %srcdir%input_bilevel.miff YUV 
-%exedir%rwblob.exe -size 70x46 %srcdir%input_gray.miff YUV 
-%exedir%rwblob.exe -size 70x46 %srcdir%input_256c.miff YUV 
-%exedir%rwblob.exe -size 70x46 %srcdir%input_truecolor.miff YUV
+set events="exception"
+set bilevel_file=%srcdir%input_bilevel.miff
+set gray_file=%srcdir%input_gray.miff
+set pallette_file=%srcdir%input_pallette.miff
+set truecolor_file=%srcdir%input_truecolor.miff
+%exedir%rwblob.exe -debug %events% %bilevel_file% AVS 
+%exedir%rwblob.exe -debug %events% %gray_file% AVS 
+%exedir%rwblob.exe -debug %events% %pallette_file% AVS 
+%exedir%rwblob.exe -debug %events% %truecolor_file% AVS 
+%exedir%rwblob.exe -debug %events% %bilevel_file% BMP 
+%exedir%rwblob.exe -debug %events% %gray_file% BMP 
+%exedir%rwblob.exe -debug %events% %pallette_file% BMP 
+%exedir%rwblob.exe -debug %events% %truecolor_file% BMP 
+%exedir%rwblob.exe -debug %events% %bilevel_file% DIB 
+%exedir%rwblob.exe -debug %events% %gray_file% DIB 
+%exedir%rwblob.exe -debug %events% %pallette_file% DIB 
+%exedir%rwblob.exe -debug %events% %truecolor_file% DIB 
+%exedir%rwblob.exe -debug %events% %bilevel_file% DPX 
+%exedir%rwblob.exe -debug %events% %gray_file% DPX 
+%exedir%rwblob.exe -debug %events% %pallette_file% DPX 
+%exedir%rwblob.exe -debug %events% %truecolor_file% DPX 
+%exedir%rwblob.exe -debug %events% %bilevel_file% EPDF 
+%exedir%rwblob.exe -debug %events% %gray_file% EPDF 
+%exedir%rwblob.exe -debug %events% %pallette_file% EPDF 
+%exedir%rwblob.exe -debug %events% %truecolor_file% EPDF 
+%exedir%rwblob.exe -debug %events% %bilevel_file% EPSF 
+%exedir%rwblob.exe -debug %events% %gray_file% EPSF 
+%exedir%rwblob.exe -debug %events% %pallette_file% EPSF 
+%exedir%rwblob.exe -debug %events% %truecolor_file% EPSF 
+%exedir%rwblob.exe -debug %events% %bilevel_file% EPSI 
+%exedir%rwblob.exe -debug %events% %gray_file% EPSI 
+%exedir%rwblob.exe -debug %events% %pallette_file% EPSI 
+%exedir%rwblob.exe -debug %events% %truecolor_file% EPSI 
+%exedir%rwblob.exe -debug %events% %bilevel_file% EPI 
+%exedir%rwblob.exe -debug %events% %gray_file% EPI 
+%exedir%rwblob.exe -debug %events% %pallette_file% EPI 
+%exedir%rwblob.exe -debug %events% %truecolor_file% EPI 
+%exedir%rwblob.exe -debug %events% %bilevel_file% EPS 
+%exedir%rwblob.exe -debug %events% %gray_file% EPS 
+%exedir%rwblob.exe -debug %events% %pallette_file% EPS 
+%exedir%rwblob.exe -debug %events% %truecolor_file% EPS 
+%exedir%rwblob.exe -debug %events% %bilevel_file% EPT 
+%exedir%rwblob.exe -debug %events% %gray_file% EPT 
+%exedir%rwblob.exe -debug %events% %pallette_file% EPT 
+%exedir%rwblob.exe -debug %events% %truecolor_file% EPT 
+%exedir%rwblob.exe -debug %events% %bilevel_file% FAX 
+%exedir%rwblob.exe -debug %events% %gray_file% FAX 
+%exedir%rwblob.exe -debug %events% %pallette_file% FAX 
+%exedir%rwblob.exe -debug %events% %truecolor_file% FAX 
+%exedir%rwblob.exe -debug %events% %bilevel_file% FITS 
+%exedir%rwblob.exe -debug %events% %gray_file% FITS 
+%exedir%rwblob.exe -debug %events% %pallette_file% FITS 
+%exedir%rwblob.exe -debug %events% %truecolor_file% FITS 
+%exedir%rwblob.exe -debug %events% %bilevel_file% GIF 
+%exedir%rwblob.exe -debug %events% %gray_file% GIF 
+%exedir%rwblob.exe -debug %events% %pallette_file% GIF 
+%exedir%rwblob.exe -debug %events% %truecolor_file% GIF 
+%exedir%rwblob.exe -debug %events% %bilevel_file% GRAY 
+%exedir%rwblob.exe -debug %events% %gray_file% GRAY 
+%exedir%rwblob.exe -debug %events% %pallette_file% GRAY 
+%exedir%rwblob.exe -debug %events% %truecolor_file% GRAY 
+%exedir%rwblob.exe -debug %events% %bilevel_file% ICB 
+%exedir%rwblob.exe -debug %events% %gray_file% ICB 
+%exedir%rwblob.exe -debug %events% %pallette_file% ICB 
+%exedir%rwblob.exe -debug %events% %truecolor_file% ICB 
+%exedir%rwblob.exe -debug %events% %bilevel_file% JBIG 
+%exedir%rwblob.exe -debug %events% %gray_file% JBIG 
+%exedir%rwblob.exe -debug %events% %pallette_file% JBIG 
+%exedir%rwblob.exe -debug %events% %truecolor_file% JBIG 
+%exedir%rwblob.exe -debug %events% %bilevel_file% JPEG 
+%exedir%rwblob.exe -debug %events% %gray_file% JPEG 
+%exedir%rwblob.exe -debug %events% %pallette_file% JPEG 
+%exedir%rwblob.exe -debug %events% %truecolor_file% JPEG 
+%exedir%rwblob.exe -debug %events% %bilevel_file% JP2 
+%exedir%rwblob.exe -debug %events% %gray_file% JP2 
+%exedir%rwblob.exe -debug %events% %pallette_file% JP2 
+%exedir%rwblob.exe -debug %events% %truecolor_file% JP2 
+%exedir%rwblob.exe -debug %events% %bilevel_file% MIFF 
+%exedir%rwblob.exe -debug %events% %gray_file% MIFF 
+%exedir%rwblob.exe -debug %events% %pallette_file% MIFF 
+%exedir%rwblob.exe -debug %events% %truecolor_file% MIFF 
+%exedir%rwblob.exe -debug %events% %bilevel_file% MNG 
+%exedir%rwblob.exe -debug %events% %gray_file% MNG 
+%exedir%rwblob.exe -debug %events% %pallette_file% MNG 
+%exedir%rwblob.exe -debug %events% %truecolor_file% MNG 
+%exedir%rwblob.exe -debug %events% %bilevel_file% MTV 
+%exedir%rwblob.exe -debug %events% %gray_file% MTV 
+%exedir%rwblob.exe -debug %events% %pallette_file% MTV 
+%exedir%rwblob.exe -debug %events% %truecolor_file% MTV 
+%exedir%rwblob.exe -debug %events% %bilevel_file% P7 
+%exedir%rwblob.exe -debug %events% %gray_file% P7 
+%exedir%rwblob.exe -debug %events% %pallette_file% P7 
+%exedir%rwblob.exe -debug %events% %truecolor_file% P7 
+%exedir%rwblob.exe -debug %events% %bilevel_file% PBM 
+%exedir%rwblob.exe -debug %events% %gray_file% PBM 
+%exedir%rwblob.exe -debug %events% %pallette_file% PBM 
+%exedir%rwblob.exe -debug %events% %truecolor_file% PBM 
+%exedir%rwblob.exe -debug %events% %bilevel_file% PCD 
+%exedir%rwblob.exe -debug %events% %gray_file% PCD 
+%exedir%rwblob.exe -debug %events% %pallette_file% PCD 
+%exedir%rwblob.exe -debug %events% %truecolor_file% PCD 
+%exedir%rwblob.exe -debug %events% %bilevel_file% PCDS 
+%exedir%rwblob.exe -debug %events% %gray_file% PCDS 
+%exedir%rwblob.exe -debug %events% %pallette_file% PCDS 
+%exedir%rwblob.exe -debug %events% %truecolor_file% PCDS 
+%exedir%rwblob.exe -debug %events% %bilevel_file% PCX 
+%exedir%rwblob.exe -debug %events% %gray_file% PCX 
+%exedir%rwblob.exe -debug %events% %pallette_file% PCX 
+%exedir%rwblob.exe -debug %events% %truecolor_file% PCX 
+%exedir%rwblob.exe -debug %events% %bilevel_file% PGM 
+%exedir%rwblob.exe -debug %events% %gray_file% PGM 
+%exedir%rwblob.exe -debug %events% %pallette_file% PGM 
+%exedir%rwblob.exe -debug %events% %truecolor_file% PGM 
+%exedir%rwblob.exe -debug %events% %bilevel_file% PICON 
+%exedir%rwblob.exe -debug %events% %gray_file% PICON 
+%exedir%rwblob.exe -debug %events% %pallette_file% PICON 
+%exedir%rwblob.exe -debug %events% %truecolor_file% PICON 
+%exedir%rwblob.exe -debug %events% %bilevel_file% PICT 
+%exedir%rwblob.exe -debug %events% %gray_file% PICT 
+%exedir%rwblob.exe -debug %events% %pallette_file% PICT 
+%exedir%rwblob.exe -debug %events% %truecolor_file% PICT 
+%exedir%rwblob.exe -debug %events% %bilevel_file% PNG 
+%exedir%rwblob.exe -debug %events% %gray_file% PNG 
+%exedir%rwblob.exe -debug %events% %pallette_file% PNG 
+%exedir%rwblob.exe -debug %events% %truecolor_file% PNG 
+%exedir%rwblob.exe -debug %events% %bilevel_file% PNM 
+%exedir%rwblob.exe -debug %events% %gray_file% PNM 
+%exedir%rwblob.exe -debug %events% %pallette_file% PNM 
+%exedir%rwblob.exe -debug %events% %truecolor_file% PNM 
+%exedir%rwblob.exe -debug %events% %bilevel_file% PPM 
+%exedir%rwblob.exe -debug %events% %gray_file% PPM 
+%exedir%rwblob.exe -debug %events% %pallette_file% PPM 
+%exedir%rwblob.exe -debug %events% %truecolor_file% PPM 
+%exedir%rwblob.exe -debug %events% %bilevel_file% PS 
+%exedir%rwblob.exe -debug %events% %gray_file% PS 
+%exedir%rwblob.exe -debug %events% %pallette_file% PS 
+%exedir%rwblob.exe -debug %events% %truecolor_file% PS 
+%exedir%rwblob.exe -debug %events% %bilevel_file% PSD 
+%exedir%rwblob.exe -debug %events% %gray_file% PSD 
+%exedir%rwblob.exe -debug %events% %pallette_file% PSD 
+%exedir%rwblob.exe -debug %events% %truecolor_file% PSD 
+%exedir%rwblob.exe -debug %events% %bilevel_file% RAS 
+%exedir%rwblob.exe -debug %events% %gray_file% RAS 
+%exedir%rwblob.exe -debug %events% %pallette_file% RAS 
+%exedir%rwblob.exe -debug %events% %truecolor_file% RAS 
+%exedir%rwblob.exe -debug %events% %bilevel_file% SGI 
+%exedir%rwblob.exe -debug %events% %gray_file% SGI 
+%exedir%rwblob.exe -debug %events% %pallette_file% SGI 
+%exedir%rwblob.exe -debug %events% %truecolor_file% SGI 
+%exedir%rwblob.exe -debug %events% %bilevel_file% SUN 
+%exedir%rwblob.exe -debug %events% %gray_file% SUN 
+%exedir%rwblob.exe -debug %events% %pallette_file% SUN 
+%exedir%rwblob.exe -debug %events% %truecolor_file% SUN 
+%exedir%rwblob.exe -debug %events% %bilevel_file% TGA 
+%exedir%rwblob.exe -debug %events% %gray_file% TGA 
+%exedir%rwblob.exe -debug %events% %pallette_file% TGA 
+%exedir%rwblob.exe -debug %events% %truecolor_file% TGA 
+%exedir%rwblob.exe -debug %events% %bilevel_file% TIFF 
+%exedir%rwblob.exe -debug %events% %gray_file% TIFF 
+%exedir%rwblob.exe -debug %events% %pallette_file% TIFF 
+%exedir%rwblob.exe -debug %events% %truecolor_file% TIFF 
+%exedir%rwblob.exe -debug %events% %bilevel_file% VDA 
+%exedir%rwblob.exe -debug %events% %gray_file% VDA 
+%exedir%rwblob.exe -debug %events% %pallette_file% VDA 
+%exedir%rwblob.exe -debug %events% %truecolor_file% VDA 
+%exedir%rwblob.exe -debug %events% %bilevel_file% VICAR 
+%exedir%rwblob.exe -debug %events% %gray_file% VICAR 
+%exedir%rwblob.exe -debug %events% %pallette_file% VICAR 
+%exedir%rwblob.exe -debug %events% %truecolor_file% VICAR 
+%exedir%rwblob.exe -debug %events% %bilevel_file% VIFF 
+%exedir%rwblob.exe -debug %events% %gray_file% VIFF 
+%exedir%rwblob.exe -debug %events% %pallette_file% VIFF 
+%exedir%rwblob.exe -debug %events% %truecolor_file% VIFF 
+%exedir%rwblob.exe -debug %events% %bilevel_file% VST 
+%exedir%rwblob.exe -debug %events% %gray_file% VST 
+%exedir%rwblob.exe -debug %events% %pallette_file% VST 
+%exedir%rwblob.exe -debug %events% %truecolor_file% VST 
+%exedir%rwblob.exe -debug %events% %bilevel_file% WBMP 
+%exedir%rwblob.exe -debug %events% %gray_file% WBMP 
+%exedir%rwblob.exe -debug %events% %pallette_file% WBMP 
+%exedir%rwblob.exe -debug %events% %truecolor_file% WBMP 
+%exedir%rwblob.exe -debug %events% %bilevel_file% XBM 
+%exedir%rwblob.exe -debug %events% %gray_file% XBM 
+%exedir%rwblob.exe -debug %events% %pallette_file% XBM 
+%exedir%rwblob.exe -debug %events% %truecolor_file% XBM 
+%exedir%rwblob.exe -debug %events% %bilevel_file% XPM 
+%exedir%rwblob.exe -debug %events% %gray_file% XPM 
+%exedir%rwblob.exe -debug %events% %pallette_file% XPM 
+%exedir%rwblob.exe -debug %events% %truecolor_file% XPM 
+%exedir%rwblob.exe -debug %events% %bilevel_file% XWD 
+%exedir%rwblob.exe -debug %events% %gray_file% XWD 
+%exedir%rwblob.exe -debug %events% %pallette_file% XWD 
+%exedir%rwblob.exe -debug %events% %truecolor_file% XWD
+%exedir%rwblob.exe -debug %events% -size 70x46 %bilevel_file% CMYK 
+%exedir%rwblob.exe -debug %events% -size 70x46 %gray_file% CMYK 
+%exedir%rwblob.exe -debug %events% -size 70x46 %pallette_file% CMYK 
+%exedir%rwblob.exe -debug %events% -size 70x46 %truecolor_file% CMYK 
+%exedir%rwblob.exe -debug %events% -size 70x46 %bilevel_file% GRAY 
+%exedir%rwblob.exe -debug %events% -size 70x46 %gray_file% GRAY 
+%exedir%rwblob.exe -debug %events% -size 70x46 %pallette_file% GRAY 
+%exedir%rwblob.exe -debug %events% -size 70x46 %truecolor_file% GRAY 
+%exedir%rwblob.exe -debug %events% -size 70x46 %bilevel_file% MONO 
+%exedir%rwblob.exe -debug %events% -size 70x46 %gray_file% MONO 
+%exedir%rwblob.exe -debug %events% -size 70x46 %pallette_file% MONO 
+%exedir%rwblob.exe -debug %events% -size 70x46 %truecolor_file% MONO 
+%exedir%rwblob.exe -debug %events% -size 70x46 %bilevel_file% PAL 
+%exedir%rwblob.exe -debug %events% -size 70x46 %gray_file% PAL 
+%exedir%rwblob.exe -debug %events% -size 70x46 %pallette_file% PAL 
+%exedir%rwblob.exe -debug %events% -size 70x46 %truecolor_file% PAL 
+%exedir%rwblob.exe -debug %events% -size 70x46 %bilevel_file% RGB 
+%exedir%rwblob.exe -debug %events% -size 70x46 %gray_file% RGB 
+%exedir%rwblob.exe -debug %events% -size 70x46 %pallette_file% RGB 
+%exedir%rwblob.exe -debug %events% -size 70x46 %truecolor_file% RGB 
+%exedir%rwblob.exe -debug %events% -size 70x46 %bilevel_file% RGBA 
+%exedir%rwblob.exe -debug %events% -size 70x46 %gray_file% RGBA 
+%exedir%rwblob.exe -debug %events% -size 70x46 %pallette_file% RGBA 
+%exedir%rwblob.exe -debug %events% -size 70x46 %truecolor_file% RGBA 
+%exedir%rwblob.exe -debug %events% -size 70x46 %bilevel_file% UYVY 
+%exedir%rwblob.exe -debug %events% -size 70x46 %gray_file% UYVY 
+%exedir%rwblob.exe -debug %events% -size 70x46 %pallette_file% UYVY 
+%exedir%rwblob.exe -debug %events% -size 70x46 %truecolor_file% UYVY 
+%exedir%rwblob.exe -debug %events% -size 70x46 %bilevel_file% YUV 
+%exedir%rwblob.exe -debug %events% -size 70x46 %gray_file% YUV 
+%exedir%rwblob.exe -debug %events% -size 70x46 %pallette_file% YUV 
+%exedir%rwblob.exe -debug %events% -size 70x46 %truecolor_file% YUV 
 
