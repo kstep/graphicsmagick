@@ -1,4 +1,4 @@
-#  Makefile for building ImageMagick coder modules
+#  Makefile for building ImageMagick coder module
 #
 # Copyright (C) 2001 ImageMagick Studio, a non-profit organization dedicated
 # to making software imaging solutions freely available.
@@ -52,17 +52,17 @@ libCoders_la_SOURCES = $(MAGICK_CODER_SRCS)
 endif # WITH_MODULES
 
 # Additional files to distribute
-EXTRA_DIST = modules.mgk delegate.mgk.in type.mgk.in
+EXTRA_DIST = module.mgk delegate.mgk.in type.mgk.in
 
 # Headers which are not installed but which are distributed
 noinst_HEADERS = 
 
 if WITH_MODULES
-# Where modules are installed
-pkgdir = $(libdir)/ImageMagick/modules/coders
+# Where module are installed
+pkgdir = $(libdir)/ImageMagick/module/coders
 
-# Architecture-dependent data files installed with modules
-pkg_DATA = modules.mgk
+# Architecture-dependent data files installed with module
+pkg_DATA = module.mgk
 
 # Architecture independent data files installed in the package's data directory
 pkgdata_DATA = 

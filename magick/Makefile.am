@@ -47,7 +47,7 @@ libMagick_la_LDFLAGS = -version-info $(MAJOR_VERSION):$(MINOR_VERSION)$(MICRO_VE
 
 # Library base sources
 MAGICK_BASE_SRCS=PreRvIcccm.c animate.c annotate.c attribute.c blob.c \
-  cache.c cache_view.c colors.c compress.c constitute.c decorate.c delegate.c \
+  cache.c cache_view.c color.c compress.c constitute.c decorate.c delegate.c \
   display.c draw.c effect.c enhance.c error.c gem.c image.c  \
   semaphore.c magic.c magick.c memory.c module.c monitor.c montage.c \
   quantize.c segment.c shear.c signature.c stream.c timer.c transform.c \
@@ -72,7 +72,7 @@ bin_SCRIPTS = Magick-config
 
 # Headers which are installed
 include_HEADERS = PreRvIcccm.h api.h attribute.h blob.h cache.h cache_view.h \
-  classify.h colors.h compress.h config.h delegate.h draw.h error.h \
+  classify.h color.h compress.h config.h delegate.h draw.h error.h \
   gem.h image.h magic.h magick.h module.h monitor.h quantize.h semaphore.h \
   timer.h utility.h version.h widget.h xwindow.h
 
@@ -80,7 +80,7 @@ include_HEADERS = PreRvIcccm.h api.h attribute.h blob.h cache.h cache_view.h \
 noinst_HEADERS = animate.h define.h display.h mac.h magic.h nt.h vms.h
 
 # Additional files to distribute
-EXTRA_DIST = $(ALLMANPAGES) colors.mgk magic.mgk Magick-config.in \
+EXTRA_DIST = $(ALLMANPAGES) color.mgk magic.mgk Magick-config.in \
   Magick-config.in Make.com mac.c nt.c vms.c $(MAGICK_BASE_SRCS)
 
 # Where module are installed
@@ -90,7 +90,7 @@ pkgdir = $(libdir)/ImageMagick/module/coders
 pkg_DATA = 
 
 # Architecture independent data files installed in the package's data directory
-pkgdata_DATA = colors.mgk magic.mgk
+pkgdata_DATA = color.mgk magic.mgk
 
 # Manual pages to install
 man_MANS = $(ALLMANPAGES)

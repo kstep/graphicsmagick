@@ -47,11 +47,11 @@ END
 //
 /////////////////////////////////////////////////////////////////////////////
 
-COLORS.MGK        IMAGEMAGICK DISCARDABLE "..\\VisualMagick\\bin\\colors.mgk"
-DELEGATES.MGK     IMAGEMAGICK DISCARDABLE "..\\VisualMagick\\bin\\delegates.mgk"
-TYPE.MGK          IMAGEMAGICK DISCARDABLE "..\\VisualMagick\\bin\\type.mgk"
-MAGIC.MGK         IMAGEMAGICK DISCARDABLE "..\\VisualMagick\\bin\\magic.mgk"
-MODULES.MGK       IMAGEMAGICK DISCARDABLE "..\\VisualMagick\\bin\\modules.mgk"
+COLOR.MGK        IMAGEMAGICK DISCARDABLE "..\\VisualMagick\\bin\\color.mgk"
+DELEGATE.MGK     IMAGEMAGICK DISCARDABLE "..\\VisualMagick\\bin\\delegate.mgk"
+TYPE.MGK         IMAGEMAGICK DISCARDABLE "..\\VisualMagick\\bin\\type.mgk"
+MAGIC.MGK        IMAGEMAGICK DISCARDABLE "..\\VisualMagick\\bin\\magic.mgk"
+MODULE.MGK       IMAGEMAGICK DISCARDABLE "..\\VisualMagick\\bin\\module.mgk"
 
 /////////////////////////////////////////////////////////////////////////////
 //

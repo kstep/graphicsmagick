@@ -26,7 +26,7 @@ $call Make attribute.c
 $call Make blob.c
 $call Make cache.c
 $call Make cache_view.c
-$call Make colors.c
+$call Make color.c
 $call Make compress.c
 $call Make constitute.c
 $call Make decorate.c
@@ -59,7 +59,7 @@ $call Make widget.c
 $call Make xwindow.c
 $call Make zoom.c
 $library/create libMagick.olb PreRvIcccm,animate,annotate,attribute,blob, -
-  cache,cache_view,colors,compress,constitute,decorate,delegate,display,draw, -
+  cache,cache_view,color,compress,constitute,decorate,delegate,display,draw, -
   effect,enhance,error,gem,image,magic,magick,memory,module,monitor, -
   montage,quantize,segment,semaphore,shear,signature,stream,timer,transform, -
   type,utility,vms,widget,xwindow,zoom

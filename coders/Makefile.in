@@ -170,7 +170,7 @@ ZipDelegate = @ZipDelegate@
 freetype_config = @freetype_config@
 install_sh = @install_sh@
 
-#  Makefile for building ImageMagick coder modules
+#  Makefile for building ImageMagick coder module
 #
 # Copyright (C) 2001 ImageMagick Studio, a non-profit organization dedicated
 # to making software imaging solutions freely available.
@@ -224,16 +224,16 @@ MICRO_VERSION = @MICRO_VERSION@
 @WITH_MODULES_FALSE@libCoders_la_SOURCES = @WITH_MODULES_FALSE@$(MAGICK_CODER_SRCS)
 
 # Additional files to distribute
-EXTRA_DIST = modules.mgk delegate.mgk.in type.mgk.in
+EXTRA_DIST = module.mgk delegate.mgk.in type.mgk.in
 
 # Headers which are not installed but which are distributed
 noinst_HEADERS = 
 
-# Where modules are installed
-@WITH_MODULES_TRUE@pkgdir = @WITH_MODULES_TRUE@$(libdir)/ImageMagick/modules/coders
+# Where module are installed
+@WITH_MODULES_TRUE@pkgdir = @WITH_MODULES_TRUE@$(libdir)/ImageMagick/module/coders
 
-# Architecture-dependent data files installed with modules
-@WITH_MODULES_TRUE@pkg_DATA = @WITH_MODULES_TRUE@modules.mgk
+# Architecture-dependent data files installed with module
+@WITH_MODULES_TRUE@pkg_DATA = @WITH_MODULES_TRUE@module.mgk
 
 # Architecture independent data files installed in the package's data directory
 @WITH_MODULES_TRUE@pkgdata_DATA = 
