@@ -475,7 +475,7 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
       }
       case ImplodePreview:
       {
-        FormatString(factor,"%.1f",percentage);
+        FormatString(factor,"%.1f",percentage/100.0);
         FormatString(label,"implode %.1024s",factor);
         commands[argc++]=(char *) "-implode";
         commands[argc++]=factor;
