@@ -17,6 +17,12 @@ extern "C" {
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
+#if !defined(_VISUALC_)
+#  include <unistd.h>
+#else
+#  include <direct.h>
+#  define HAVE_STRERROR
+#endif
 
 #if defined _FILE_OFFSET_BITS && _FILE_OFFSET_BITS == 64
 #define fseek  fseeko
@@ -27,6 +33,7 @@ extern "C" {
 #include <ctype.h>
 #include <locale.h>
 #include <errno.h>
+#include <fcntl.h>
 #include <math.h>
 #include <time.h>
 #include <limits.h>
@@ -35,16 +42,22 @@ extern "C" {
 #if !defined(vms) && !defined(macintosh)
 #  include <sys/types.h>
 #  include <sys/stat.h>
+#if !defined(WIN32)
+#  include <sys/time.h>
+#  include <sys/times.h>
+#endif
 #  include "magick/api.h"
 #else
 #  include <types.h>
 #  include <stat.h>
+#if defined(macintosh)
+#  include <SIOUX.h>
+#  include <console.h>
+#  include <unix.h>
+#endif
 #  include "api.h"
 #endif
 
-#if !defined(vms) && !defined(macintosh) && !defined(WIN32)
-#  include <sys/time.h>
-#  include <sys/times.h>
 #if defined(HAVE_MMAP)
 #  include <sys/mman.h>
 #endif
@@ -54,20 +67,7 @@ extern "C" {
 #if defined(HAVE_POLL)
 #  include <sys/poll.h>
 #endif
-#else
-#if defined(macintosh)
-#  include <SIOUX.h>
-#  include <console.h>
-#  include <unix.h>
-#endif
-#endif
-#include <fcntl.h>
-#if defined(_VISUALC_)
-#  include <direct.h>
-#  define HAVE_STRERROR
-#else
-#  include <unistd.h>
-#endif
+
 #undef index
 #undef pipe
 
