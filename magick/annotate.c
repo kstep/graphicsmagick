@@ -393,6 +393,7 @@ MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
   return(status);
 }
 
+#if defined(HasTTF)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -676,6 +677,7 @@ static unsigned short *EncodeUnicode(const char *text,size_t *count)
   return(unicode);
 }
 
+#endif /* HasTTF */
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
