@@ -226,7 +226,7 @@ MagickExport void CloseBlob(Image *image)
   if (image->exempt)
     return;
 #if !defined(vms) && !defined(macintosh) && !defined(WIN32)
-  if (image->pipe)
+  if (image->pipet)
     (void) pclose(image->file);
   else
 #endif
@@ -820,7 +820,7 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
   /*
     Open image file.
   */
-  image->pipe=False;
+  image->pipet=False;
   if (LocaleCompare(filename,"-") == 0)
     {
       image->file=(*type == 'r') ? stdin : stdout;
@@ -845,7 +845,7 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
         (void) strncpy(mode,type,1);
         mode[1]='\0';
         image->file=(FILE *) popen(filename+1,mode);
-        image->pipe=True;
+        image->pipet=True;
         image->exempt=True;
       }
     else

@@ -562,7 +562,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
   status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
     ThrowWriterException(FileOpenWarning,"Unable to open file",image);
-  if ((image->file == stdout) || image->pipe)
+  if ((image->file == stdout) || image->pipet)
     {
       /*
         Write standard output or pipe to temporary file.

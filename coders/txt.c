@@ -392,7 +392,7 @@ static unsigned int WriteTXTImage(const ImageInfo *image_info,Image *image)
             FormatString(buffer,"%d,%d: %u,%u,%u  ",x,y,
               p->red,p->green,p->blue);
             (void) WriteBlobString(image,buffer);
-            FormatString(buffer,HexColorFormat,p->red,p->green,p->blue);
+	    (void) QueryColorName(p,buffer);
             (void) WriteBlobString(image,buffer);
           }
         (void) WriteBlobByte(image,'\n');

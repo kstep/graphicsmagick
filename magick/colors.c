@@ -829,9 +829,8 @@ static void Histogram(CubeInfo *cube_info,const NodeInfo *node_info,FILE *file)
       p=node_info->list;
       for (i=0; i < (int) node_info->number_unique; i++)
       {
-        (void) fprintf(file,"%10d: (%5d,%5d,%5d)  #%04x%04x%04x",
-          (int) p->count,p->red,p->green,p->blue,(unsigned int) p->red,
-          (unsigned int) p->green,(unsigned int) p->blue);
+        (void) fprintf(file,"%10d: (%5d,%5d,%5d)  ",(int) p->count,
+          p->red,p->green,p->blue);
         (void) fprintf(file,"  ");
         color.red=p->red;
         color.green=p->green;
@@ -1628,10 +1627,35 @@ MagickExport unsigned int QueryColorName(const PixelPacket *color,char *name)
   }
   if (LocaleCompare(name,"gray100") == 0)
     (void) strcpy(name,"white");
-  if (min_distance != 0.0)
-    FormatString(name,HexColorFormat,(unsigned int) color->red,
-      (unsigned int) color->green,(unsigned int) color->blue,
-      (unsigned int) color->opacity);
+  if (min_distance == 0.0)
+    return(0.0);
+  if (color->opacity == OpaqueOpacity)
+    {
+      if ((color->red == UpScale(DownScale(color->red))) &&
+          (color->green == UpScale(DownScale(color->green))) &&
+          (color->blue == UpScale(DownScale(color->blue))))
+        {
+          FormatString(name,"#%02x%02x%02x",DownScale(color->red),
+            DownScale(color->green),DownScale(color->blue));
+          return((unsigned int) min_distance);
+        }
+      FormatString(name,"#%04x%04x%04x",DownScale(color->red),
+        DownScale(color->green),DownScale(color->blue));
+      return((unsigned int) min_distance);
+    }
+  if ((color->red == UpScale(DownScale(color->red))) &&
+      (color->green == UpScale(DownScale(color->green))) &&
+      (color->blue == UpScale(DownScale(color->blue))) &&
+      (color->opacity == UpScale(DownScale(color->opacity))))
+    {
+      FormatString(name,"#%02x%02x%02x%02x",(unsigned int) color->red,
+        (unsigned int) color->green,(unsigned int) color->blue,
+        (unsigned int) color->opacity);
+      return((unsigned int) min_distance);
+    }
+  FormatString(name,"#%04x%04x%04x%04x",(unsigned int) color->red,
+    (unsigned int) color->green,(unsigned int) color->blue,
+    (unsigned int) color->opacity);
   return((unsigned int) min_distance);
 }
 

@@ -3343,12 +3343,6 @@ Get(ref,...)
                   }
               break;
             }
-          if (strEQcase(attribute,"pipe"))
-            {
-              if (image)
-                s=newSViv(image->pipe);
-              break;
-            }
           if (strEQcase(attribute,"pixel"))
             {
               char
