@@ -1,3 +1,9 @@
+2002-12-09 William Radcliffe <billr@corbis.com>
+	* Moved xtrn.c from contrib area into coders area so that it can
+	be used form within the COM object. This is windows only code that
+	provides a back door way for the COM object to have data read or
+	written into VB arrays.
+
 2002-12-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 	* magick/mac.c: Merged in fixes from ImageMagick version.
 	* magick/magick.mgk: Merged in fixes from ImageMagick version.
