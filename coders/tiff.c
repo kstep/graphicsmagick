@@ -547,7 +547,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       }
 #if defined(ICC_SUPPORT)
     if (TIFFGetField(tiff,TIFFTAG_ICCPROFILE,&length,&text) == 1)
-      (void) ReadColorProfile(text,length,image);
+      (void) ReadColorProfile(text,(long) length,image);
 #endif
 #if defined(IPTC_SUPPORT)
 #if defined(PHOTOSHOP_SUPPORT)
@@ -815,7 +815,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
               /*
                 Extract index and matte values
               */
-              for (x = width; x > 0 ; x--)
+              for (x = (long) width; x > 0 ; x--)
                 {
                   /* index */
                   quantum=ReadBitStream(&stream,bits_per_sample);
@@ -831,7 +831,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                     quantum <<= (QuantumDepth-bits_per_sample);
                   else
                     quantum >>= (bits_per_sample - QuantumDepth);
-                  q->opacity = (MaxRGB - quantum);
+                  q->opacity = (Quantum) (MaxRGB - quantum);
                   q++;
                 }
             }
@@ -840,7 +840,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
               /*
                 Extract index value
               */
-              for (x = width; x > 0 ; x--)
+              for (x = (long) width; x > 0 ; x--)
                 {
                   quantum=ReadBitStream(&stream,bits_per_sample);
 #if QuantumDepth < 16
