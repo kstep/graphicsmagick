@@ -113,7 +113,6 @@ LIB_HDF = @LIB_HDF@
 LIB_JBIG = @LIB_JBIG@
 LIB_JPEG = @LIB_JPEG@
 LIB_LCMS = @LIB_LCMS@
-LIB_LF = @LIB_LF@
 LIB_MATH = @LIB_MATH@
 LIB_PNG = @LIB_PNG@
 LIB_THREAD = @LIB_THREAD@
@@ -141,6 +140,7 @@ MINOR_VERSION = @MINOR_VERSION@
 MPEGDecodeDelegate = @MPEGDecodeDelegate@
 MPEGEncodeDelegate = @MPEGEncodeDelegate@
 MVDelegate = @MVDelegate@
+MagickSharePath = @MagickSharePath@
 MogrifyDelegate = @MogrifyDelegate@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
@@ -231,7 +231,7 @@ DISTDIRS = contrib guide images scenes scripts www PerlMagick
 #
 
 # Install HTML files
-pkgdocdir = $(DESTDIR)$(pkgdatadir)
+pkgdocdir = @MagickSharePath@
 DOCDIRS = images www www/api www/api/types www/Magick++
 
 @WITH_PERL_TRUE@PERLMAGICK = @WITH_PERL_TRUE@PerlMagick

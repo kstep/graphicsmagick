@@ -113,7 +113,6 @@ LIB_HDF = @LIB_HDF@
 LIB_JBIG = @LIB_JBIG@
 LIB_JPEG = @LIB_JPEG@
 LIB_LCMS = @LIB_LCMS@
-LIB_LF = @LIB_LF@
 LIB_MATH = @LIB_MATH@
 LIB_PNG = @LIB_PNG@
 LIB_THREAD = @LIB_THREAD@
@@ -141,6 +140,7 @@ MINOR_VERSION = @MINOR_VERSION@
 MPEGDecodeDelegate = @MPEGDecodeDelegate@
 MPEGEncodeDelegate = @MPEGEncodeDelegate@
 MVDelegate = @MVDelegate@
+MagickSharePath = @MagickSharePath@
 MogrifyDelegate = @MogrifyDelegate@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
@@ -170,7 +170,7 @@ install_sh = @install_sh@
 
 #  Makefile for building ImageMagick library
 #
-# Copyright (C) 2000 ImageMagick Studio, a non-profit organization dedicated
+# Copyright (C) 2001 ImageMagick Studio, a non-profit organization dedicated
 # to making software imaging solutions freely available.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
@@ -251,7 +251,7 @@ noinst_HEADERS = animate.h defines.h display.h mac.h magic.h modules.h nt.h \
 
 
 # Additional files to distribute
-EXTRA_DIST = $(ALLMANPAGES) colors.mgk magic.mgk \
+EXTRA_DIST = $(ALLMANPAGES) colors.mgk magic.mgk Magick-config.in \
   Magick-config.in Make.com mac.c nt.c vms.c $(MAGICK_BASE_SRCS)
 
 

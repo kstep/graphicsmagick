@@ -134,7 +134,7 @@ dpx_la_LIBADD       = ../magick/libMagick.la
 # EPT module
 ept_la_SOURCES      = ept.c
 ept_la_LDFLAGS      = -no-undefined -module -avoid-version
-ept_la_LIBADD       = ../magick/libMagick.la
+ept_la_LIBADD       = ../magick/libMagick.la $(LIB_MATH)
 
 # FAX module
 fax_la_SOURCES      = fax.c
@@ -279,7 +279,7 @@ pdb_la_LIBADD       = ../magick/libMagick.la
 # PDF module
 pdf_la_SOURCES      = pdf.c
 pdf_la_LDFLAGS      = -no-undefined -module -avoid-version
-pdf_la_LIBADD       = ../magick/libMagick.la @LIB_TIFF@
+pdf_la_LIBADD       = ../magick/libMagick.la @LIB_TIFF@ $(LIB_MATH)
 
 # PICT module
 pict_la_SOURCES     = pict.c
@@ -314,17 +314,17 @@ preview_la_LIBADD   = ../magick/libMagick.la
 # PS module
 ps_la_SOURCES       = ps.c
 ps_la_LDFLAGS       = -no-undefined -module -avoid-version
-ps_la_LIBADD        = ../magick/libMagick.la
+ps_la_LIBADD        = ../magick/libMagick.la $(LIB_MATH)
 
 # PS2 module
 ps2_la_SOURCES      = ps2.c
 ps2_la_LDFLAGS      = -no-undefined -module -avoid-version
-ps2_la_LIBADD       = ../magick/libMagick.la @LIB_TIFF@
+ps2_la_LIBADD       = ../magick/libMagick.la @LIB_TIFF@ $(LIB_MATH)
 
 # PS3 module
 ps3_la_SOURCES      = ps3.c
 ps3_la_LDFLAGS      = -no-undefined -module -avoid-version
-ps3_la_LIBADD       = ../magick/libMagick.la
+ps3_la_LIBADD       = ../magick/libMagick.la $(LIB_MATH)
 
 # PSD module
 psd_la_SOURCES      = psd.c
@@ -379,7 +379,7 @@ sun_la_LIBADD       = ../magick/libMagick.la
 # SVG module
 svg_la_SOURCES      = svg.c
 svg_la_LDFLAGS      = -no-undefined -module -avoid-version
-svg_la_LIBADD       = ../magick/libMagick.la @LIB_XML@ @LIB_ZLIB@
+svg_la_LIBADD       = ../magick/libMagick.la @LIB_XML@ @LIB_ZLIB@ $(LIB_MATH)
 
 # TGA module
 tga_la_SOURCES      = tga.c
@@ -409,7 +409,7 @@ ttf_la_LIBADD       = ../magick/libMagick.la
 # TXT module
 txt_la_SOURCES      = txt.c
 txt_la_LDFLAGS      = -no-undefined -module -avoid-version
-txt_la_LIBADD       = ../magick/libMagick.la
+txt_la_LIBADD       = ../magick/libMagick.la $(LIB_MATH)
 
 # UIL module
 uil_la_SOURCES      = uil.c
@@ -449,7 +449,7 @@ wbmp_la_LIBADD      = ../magick/libMagick.la
 # WMF module
 wmf_la_SOURCES      = wmf.c
 wmf_la_LDFLAGS      = -no-undefined -module -avoid-version
-wmf_la_LIBADD       = ../magick/libMagick.la @LIB_WMF@
+wmf_la_LIBADD       = ../magick/libMagick.la @LIB_WMF@ $(LIB_MATH)
 
 # WPG module
 wpg_la_SOURCES     = wpg.c
