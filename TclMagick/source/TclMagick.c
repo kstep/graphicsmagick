@@ -473,7 +473,8 @@ static int magickCmd(
 
     case TM_FONTS:    /* fonts pattern */
     {
-        int     i, listLen;
+        int     i;
+	long listLen = 0;
         Tcl_Obj *listPtr;
         char    *pattern, **fonts;
 
@@ -498,7 +499,8 @@ static int magickCmd(
 
     case TM_FORMATS:    /* formats pattern */
     {
-        int     i, listLen;
+        int     i;
+	long listLen = 0;
         Tcl_Obj *listPtr;
         char    *pattern, **fonts;
 
@@ -863,8 +865,8 @@ static int wandObjCmd(
         (char *) NULL
     };
     static ChannelType chanTypes[] = {
-        UndefinedChannel, RedChannel,    CyanChannel,    GreenChannel, MagentaChannel,
-        BlueChannel,      YellowChannel, OpacityChannel, BlackChannel, MatteChannel,
+        UndefinedChannel, RedChannel, CyanChannel, GreenChannel, MagentaChannel,
+        BlueChannel, YellowChannel, OpacityChannel, BlackChannel, MatteChannel,
         IndexChannel
     };
     static CONST char *metricNames[] = {
@@ -3051,7 +3053,7 @@ static int wandObjCmd(
     case TM_SET_PROFILE: /* GetProfile name profile */
     {
 	char *profile, *name;
-        int  length;
+        long length;
 
 	if( ((enum subIndex)index == TM_PROFILE) && (objc != 3) && (objc != 4) ) {
 	    Tcl_WrongNumArgs(interp, 2, objv, "name ?profile?");
@@ -3071,7 +3073,7 @@ static int wandObjCmd(
             /*
              * Set/Add image profile
              */
-	    profile = Tcl_GetByteArrayFromObj(objv[3], &length);
+	    profile = Tcl_GetByteArrayFromObj(objv[3], (int *)&length);
 	    result = MagickProfileImage(wandPtr, name, profile, length);
 	    if (!result) {
 	        return myMagickError(interp, wandPtr);
@@ -3508,7 +3510,8 @@ static int wandObjCmd(
     case TM_SET_SAMPLING_FACTORS:  /* GetSamplingFactors factorList */
     {
         double  *factors;
-        int     i, listLen;
+        int     i;
+	long listLen = 0;
 
 	if( ((enum subIndex)index == TM_SAMPLING_FACTORS) && (objc != 2) && (objc != 3) ) {
 	    Tcl_WrongNumArgs(interp, 2, objv, "?factorList?");
@@ -3528,7 +3531,7 @@ static int wandObjCmd(
 	     */
             Tcl_Obj **listPtr;
 
-	    if( (stat = Tcl_ListObjGetElements(interp, objv[2], &listLen, &listPtr)) != TCL_OK) {
+	    if( (stat = Tcl_ListObjGetElements(interp, objv[2], (int *)&listLen, &listPtr)) != TCL_OK) {
 	        return stat;
 	    }
 	    factors = (double *)ckalloc(listLen * sizeof(double));

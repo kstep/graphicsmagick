@@ -1,3 +1,9 @@
+2003-12-26  David N. Welton  <davidw@dedasys.com>
+
+	* source/TclMagick.c: Removed funny ^M characters.  I hope this
+	isn't a problem with CVS.
+	(magickCmd): Make listlen a long instead of an int.
+
 2003-12-17  David N. Welton  <davidw@dedasys.com>
 
 	* source/TclMagick.h: Updated to latest working TclMagick.h.
