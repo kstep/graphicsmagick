@@ -232,7 +232,7 @@ Export Image *BlurImage(Image *image,const double factor)
   /*
     Blur image.
   */
-  weight=((100.0-factor)/2)+13;
+  weight=((100.0-factor)/2)+1;
   quantum=Max(weight+12.0,1.0);
   for (y=0; y < (int) image->rows; y++)
   {

@@ -20,7 +20,7 @@ testFilter('input.miff', 'Border',
 ++$test;
 testFilter('input.miff', 'Blur',
   q/60/,
-  '04c74bb9afad48fdef9345131523f67b',
+  '6f686c9082206187c20c3329fa7ad6d6',
   '2d5000287c7742170e12db75512e7b4d');
 
 ++$test;
