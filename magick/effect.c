@@ -1504,15 +1504,15 @@ static void AddNodeMedianList(MedianPixelList *pixel_list,int channel,
     Initialize the node.
   */
   list=pixel_list->lists+channel;
-  list->nodes[ScaleQuantumToShort(color)].signature=pixel_list->signature;
-  list->nodes[ScaleQuantumToShort(color)].count=1;
+  list->nodes[color].signature=pixel_list->signature;
+  list->nodes[color].count=1;
   /*
     Determine where it belongs in the list.
   */
   search=65536;
   for (level=list->level; level >= 0; level--)
   {
-    while (list->nodes[search].next[level] < ScaleQuantumToShort(color))
+    while (list->nodes[search].next[level] < color)
       search=list->nodes[search].next[level];
     update[level]=search;
   }
@@ -1542,9 +1542,8 @@ static void AddNodeMedianList(MedianPixelList *pixel_list,int channel,
   */
   do
   {
-    list->nodes[ScaleQuantumToShort(color)].next[level]=
-      list->nodes[update[level]].next[level];
-    list->nodes[update[level]].next[level]=ScaleQuantumToShort(color);
+    list->nodes[color].next[level]=list->nodes[update[level]].next[level];
+    list->nodes[update[level]].next[level]=color;
   }
   while (level-- > 0);
 }
@@ -1606,25 +1605,25 @@ static inline void InsertMedianList(MedianPixelList *pixel_list,
   signature=
     pixel_list->lists[0].nodes[ScaleQuantumToShort(pixel->red)].signature;
   if (signature != pixel_list->signature)
-    AddNodeMedianList(pixel_list,0,pixel->red);
+    AddNodeMedianList(pixel_list,0,ScaleQuantumToShort(pixel->red));
   else
     pixel_list->lists[0].nodes[ScaleQuantumToShort(pixel->red)].count++;
   signature=
     pixel_list->lists[1].nodes[ScaleQuantumToShort(pixel->green)].signature;
   if (signature != pixel_list->signature)
-    AddNodeMedianList(pixel_list,1,pixel->green);
+    AddNodeMedianList(pixel_list,1,ScaleQuantumToShort(pixel->green));
   else
     pixel_list->lists[1].nodes[ScaleQuantumToShort(pixel->green)].count++;
   signature=
     pixel_list->lists[2].nodes[ScaleQuantumToShort(pixel->blue)].signature;
   if (signature != pixel_list->signature)
-    AddNodeMedianList(pixel_list,2,pixel->blue);
+    AddNodeMedianList(pixel_list,2,ScaleQuantumToShort(pixel->blue));
   else
     pixel_list->lists[2].nodes[ScaleQuantumToShort(pixel->blue)].count++;
   signature=
     pixel_list->lists[3].nodes[ScaleQuantumToShort(pixel->opacity)].signature;
   if (signature != pixel_list->signature)
-    AddNodeMedianList(pixel_list,3,pixel->opacity);
+    AddNodeMedianList(pixel_list,3,ScaleQuantumToShort(pixel->opacity));
   else
     pixel_list->lists[3].nodes[ScaleQuantumToShort(pixel->opacity)].count++;
 }
@@ -2495,7 +2494,7 @@ static PixelPacket GetNonpeakMedianList(MedianPixelList *pixel_list)
   for (channel=0; channel < 4; channel++)
   {
     list=pixel_list->lists+channel;
-    color=MaxRGB+1L;
+    color=65536;
     next=list->nodes[color].next[0];
     count=0;
     do
@@ -2506,17 +2505,17 @@ static PixelPacket GetNonpeakMedianList(MedianPixelList *pixel_list)
       count+=list->nodes[color].count;
     }
     while (count <= center);
-    if ((previous == (MaxRGB+1L)) && (next != (MaxRGB+1L)))
+    if ((previous == 65536) && (next != 65536))
       color=next;
     else
-      if ((previous != (MaxRGB+1L)) && (next == (MaxRGB+1L)))
+      if ((previous != 65536) && (next == 65536))
         color=previous;
     channels[channel]=color;
   }
-  pixel.red=(Quantum) channels[0];
-  pixel.green=(Quantum) channels[1];
-  pixel.blue=(Quantum) channels[2];
-  pixel.opacity=(Quantum) channels[3];
+  pixel.red=ScaleShortToQuantum(channels[0]);
+  pixel.green=ScaleShortToQuantum(channels[1]);
+  pixel.blue=ScaleShortToQuantum(channels[2]);
+  pixel.opacity=ScaleShortToQuantum(channels[3]);
   return(pixel);
 }
 
