@@ -1060,7 +1060,7 @@ MagickExport void DrawComposite(DrawContext context,
       char
         buffer[MaxTextExtent];
 
-      FormatString(buffer,"%d bytes", (4*blob_length/3+4));
+      FormatString(buffer,"%ld bytes", (4*blob_length/3+4));
       ThrowDrawException(ResourceLimitWarning, "allocating Base64 memory",buffer);
     }
 
@@ -1717,7 +1717,7 @@ MagickExport void DrawPopPattern(DrawContext context)
   (void) SetImageAttribute(context->image,key,geometry);
 
   LiberateMemory( (void**)&context->pattern_id );
-  context->pattern_offset = NULL;
+  context->pattern_offset = 0;
 
   context->pattern_bounds.x = 0;
   context->pattern_bounds.y = 0;
