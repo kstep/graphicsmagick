@@ -105,6 +105,7 @@ static unsigned int IsJPEG(const unsigned char *magick,const size_t length)
 
 #if defined(HasJPEG)
 #define JPEG_INTERNAL_OPTIONS
+#include <setjmp.h>
 #include "jpeglib.h"
 #include "jerror.h"
 
@@ -126,6 +127,15 @@ typedef struct _DestinationManager
   JOCTET
     *buffer;
 } DestinationManager;
+
+typedef struct _ErrorManager
+{
+  Image
+    *image;
+
+  jmp_buf
+	  error_recovery;
+} ErrorManager;
 
 typedef struct _SourceManager
 {
@@ -240,12 +250,12 @@ static void InitializeSource(j_decompress_ptr cinfo)
 
 static void JPEGErrorHandler(j_common_ptr jpeg_info)
 {
-  Image
-    *image;
+  ErrorManager
+	  *error_manager;
 
   (void) EmitMessage(jpeg_info,0);
-  image=(Image *) jpeg_info->client_data;
-  longjmp(image->error_recovery,1);
+  error_manager=( ErrorManager *) jpeg_info->client_data;
+  longjmp(error_manager->error_recovery,1);
 }
 
 static boolean ReadComment(j_decompress_ptr jpeg_info)
@@ -545,6 +555,9 @@ static void JPEGSourceManager(j_decompress_ptr cinfo,Image *image)
 static Image *ReadJPEGImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
+  ErrorManager
+	  error_manager;
+
   Image
     *image;
 
@@ -599,12 +612,13 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   /*
     Initialize image structure.
   */
-  jpeg_info.client_data=(void *) image;
+  jpeg_pixels=(JSAMPLE *) NULL;
   jpeg_info.err=jpeg_std_error(&jpeg_error);
   jpeg_info.err->emit_message=(void (*)(j_common_ptr,int)) EmitMessage;
   jpeg_info.err->error_exit=(void (*)(j_common_ptr)) JPEGErrorHandler;
-  jpeg_pixels=(JSAMPLE *) NULL;
-  if (setjmp(image->error_recovery))
+  error_manager.image=image;
+  jpeg_info.client_data=(void *) &error_manager;
+  if (setjmp(error_manager.error_recovery))
     {
       if (jpeg_pixels != (JSAMPLE *) NULL)
         LiberateMemory((void **) &jpeg_pixels);
