@@ -1,3 +1,8 @@
+2004-11-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* configure.ac: Pick up font search code from CVS head so that
+	Ghostscript fonts are automatically discovered under Cygwin.
+
 2004-11-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/gif.c: Fix two error-path memory leaks which were noticed

@@ -2308,8 +2308,11 @@ else
     fi
 
   else
+    # Check ${prefix}/share/ghostscript/fonts first
     # Red Hat Linux puts Ghostscript fonts in /usr/share/fonts/default/Type1
-    for font_dir in '/usr/share/fonts/default/Type1/' "${prefix}/share/ghostscript/fonts/"
+    # Recent Cygwin puts Ghostscript fonts in /usr/share/ghostscript/fonts
+    # Recent Gentoo Linux puts Ghostscript fonts in /usr/share/fonts/ghostscript
+    for font_dir in "${prefix}/share/ghostscript/fonts/" '/usr/share/fonts/default/Type1/' '/usr/share/ghostscript/fonts/' '/usr/share/fonts/ghostscript/'
     do
       if test -f "${font_dir}a010013l.pfb"
       then
