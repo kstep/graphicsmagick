@@ -3,6 +3,7 @@
     --with-quantum-depth in order to make its usage more
     straightforward and generic.  Build ImageMagick using
     an eight-bit quantum via --with-quantum-depth=8.
+  * Magick++ library builds as a DLL under Windows now.
 
 2002-07-31  Cristy  <cristy@mystic.es.dupont.com>
   * Delegates/modules are restricted to hard-coded search paths (a
