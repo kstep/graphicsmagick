@@ -432,11 +432,11 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
           for (x=0; x < (long) image->columns; x++)
           {
-            q->red=ScaleByteToQuantum(*p++);
-            q->green=ScaleByteToQuantum(*p++);
-            q->blue=ScaleByteToQuantum(*p++);
+            q->red=ScaleCharToQuantum(*p++);
+            q->green=ScaleCharToQuantum(*p++);
+            q->blue=ScaleCharToQuantum(*p++);
             if (image->matte)
-              q->opacity=(Quantum) (MaxRGB-ScaleByteToQuantum(*p++));
+              q->opacity=(Quantum) (MaxRGB-ScaleCharToQuantum(*p++));
             q++;
           }
           if (!SyncImagePixels(image))
@@ -463,17 +463,17 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
             /*
               Pseudocolor.
             */
-            image->colormap[i].red=ScaleByteToQuantum(i);
-            image->colormap[i].green=ScaleByteToQuantum(i);
-            image->colormap[i].blue=ScaleByteToQuantum(i);
+            image->colormap[i].red=ScaleCharToQuantum(i);
+            image->colormap[i].green=ScaleCharToQuantum(i);
+            image->colormap[i].blue=ScaleCharToQuantum(i);
           }
         else
           if (number_colormaps > 1)
             for (i=0; i < (long) image->colors; i++)
             {
-              image->colormap[i].red=ScaleByteToQuantum(*p);
-              image->colormap[i].green=ScaleByteToQuantum(*(p+map_length));
-              image->colormap[i].blue=ScaleByteToQuantum(*(p+map_length*2));
+              image->colormap[i].red=ScaleCharToQuantum(*p);
+              image->colormap[i].green=ScaleCharToQuantum(*(p+map_length));
+              image->colormap[i].blue=ScaleCharToQuantum(*(p+map_length*2));
               p++;
             }
         p=rle_pixels;
@@ -513,7 +513,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 q->red=image->colormap[*p++].red;
                 q->green=image->colormap[*p++].green;
                 q->blue=image->colormap[*p++].blue;
-                q->opacity=(Quantum) (MaxRGB-ScaleByteToQuantum(*p++));
+                q->opacity=(Quantum) (MaxRGB-ScaleCharToQuantum(*p++));
                 q++;
               }
               if (!SyncImagePixels(image))

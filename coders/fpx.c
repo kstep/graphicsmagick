@@ -462,20 +462,20 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     {
       if (fpx_info.numberOfComponents > 2)
         {
-          q->red=ScaleByteToQuantum(*r);
-          q->green=ScaleByteToQuantum(*g);
-          q->blue=ScaleByteToQuantum(*b);
+          q->red=ScaleCharToQuantum(*r);
+          q->green=ScaleCharToQuantum(*g);
+          q->blue=ScaleCharToQuantum(*b);
         }
       else
         {
-          index=ScaleByteToQuantum(*r);
+          index=ScaleCharToQuantum(*r);
           indexes[x]=index;
           q->red=index;
           q->green=index;
           q->blue=index;
         }
       if (image->matte)
-        q->opacity=MaxRGB-ScaleByteToQuantum(*a);
+        q->opacity=MaxRGB-ScaleCharToQuantum(*a);
       q++;
       r+=red_component->columnStride;
       g+=green_component->columnStride;

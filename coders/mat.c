@@ -387,9 +387,9 @@ NoMemory:  ThrowReaderException(ResourceLimitError,"Memory allocation failed",
    
      for (i=0; i < (long)image->colors; i++)
            {
-           image->colormap[i].red=ScaleByteToQuantum(i);
-           image->colormap[i].green=ScaleByteToQuantum(i);
-           image->colormap[i].blue=ScaleByteToQuantum(i);
+           image->colormap[i].red=ScaleCharToQuantum(i);
+           image->colormap[i].green=ScaleCharToQuantum(i);
+           image->colormap[i].blue=ScaleCharToQuantum(i);
            }
      }      
 

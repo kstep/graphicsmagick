@@ -2625,8 +2625,8 @@ static unsigned int XCompositeImage(Display *display,
         Create mattes for blending.
       */
       SetImageOpacity(composite_image,OpaqueOpacity);
-      opacity=(Quantum) (ScaleQuantumToByte(MaxRGB)-
-        ((long) ScaleQuantumToByte(MaxRGB)*blend)/100);
+      opacity=(Quantum) (ScaleQuantumToChar(MaxRGB)-
+        ((long) ScaleQuantumToChar(MaxRGB)*blend)/100);
       SetImageType(image,TrueColorMatteType);
       for (y=0; y < (long) image->rows; y++)
       {

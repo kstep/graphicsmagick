@@ -1225,7 +1225,7 @@ static unsigned int RenderFreetype(Image *image,const DrawInfo *draw_info,
                     continue;
                   }
                 if (draw_info->text_antialias)
-                  opacity=ScaleByteToQuantum(*p);
+                  opacity=ScaleCharToQuantum(*p);
                 else
                   opacity=(Quantum)
                     ((*p) < 127 ? OpaqueOpacity : TransparentOpacity);

@@ -980,9 +980,9 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         p=global_colormap;
         for (i=0; i < (long) image->colors; i++)
         {
-          image->colormap[i].red=ScaleByteToQuantum(*p++);
-          image->colormap[i].green=ScaleByteToQuantum(*p++);
-          image->colormap[i].blue=ScaleByteToQuantum(*p++);
+          image->colormap[i].red=ScaleCharToQuantum(*p++);
+          image->colormap[i].green=ScaleCharToQuantum(*p++);
+          image->colormap[i].blue=ScaleCharToQuantum(*p++);
         }
         image->background_color=
           image->colormap[Min(background,image->colors-1)];
@@ -1003,9 +1003,9 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         p=colormap;
         for (i=0; i < (long) image->colors; i++)
         {
-          image->colormap[i].red=ScaleByteToQuantum(*p++);
-          image->colormap[i].green=ScaleByteToQuantum(*p++);
-          image->colormap[i].blue=ScaleByteToQuantum(*p++);
+          image->colormap[i].red=ScaleCharToQuantum(*p++);
+          image->colormap[i].green=ScaleCharToQuantum(*p++);
+          image->colormap[i].blue=ScaleCharToQuantum(*p++);
         }
         LiberateMemory((void **) &colormap);
       }
@@ -1322,9 +1322,9 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
     q=colormap;
     for (i=0; i < (long) image->colors; i++)
     {
-      *q++=ScaleQuantumToByte(image->colormap[i].red);
-      *q++=ScaleQuantumToByte(image->colormap[i].green);
-      *q++=ScaleQuantumToByte(image->colormap[i].blue);
+      *q++=ScaleQuantumToChar(image->colormap[i].red);
+      *q++=ScaleQuantumToChar(image->colormap[i].green);
+      *q++=ScaleQuantumToChar(image->colormap[i].blue);
     }
     for ( ; i < (1L << bits_per_pixel); i++)
     {

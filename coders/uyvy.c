@@ -155,13 +155,13 @@ static Image *ReadUYVYImage(const ImageInfo *image_info,
       y1=ReadBlobByte(image);
       v=ReadBlobByte(image);
       y2=ReadBlobByte(image);
-      q->red=ScaleByteToQuantum(y1);
-      q->green=ScaleByteToQuantum(u);
-      q->blue=ScaleByteToQuantum(v);
+      q->red=ScaleCharToQuantum(y1);
+      q->green=ScaleCharToQuantum(u);
+      q->blue=ScaleCharToQuantum(v);
       q++;
-      q->red=ScaleByteToQuantum(y2);
-      q->green=ScaleByteToQuantum(u);
-      q->blue=ScaleByteToQuantum(v);
+      q->red=ScaleCharToQuantum(y2);
+      q->green=ScaleCharToQuantum(u);
+      q->blue=ScaleCharToQuantum(v);
       q++;
     }
     if (!SyncImagePixels(image))
@@ -328,10 +328,10 @@ static unsigned int WriteUYVYImage(const ImageInfo *image_info,Image *image)
     {
       if (full)
         {
-          (void) WriteBlobByte(image,ScaleQuantumToByte((u+p->green) >> 1));
-          (void) WriteBlobByte(image,ScaleQuantumToByte(y1));
-          (void) WriteBlobByte(image,ScaleQuantumToByte((v+p->blue) >> 1));
-          (void) WriteBlobByte(image,ScaleQuantumToByte(p->red));
+          (void) WriteBlobByte(image,ScaleQuantumToChar((u+p->green) >> 1));
+          (void) WriteBlobByte(image,ScaleQuantumToChar(y1));
+          (void) WriteBlobByte(image,ScaleQuantumToChar((v+p->blue) >> 1));
+          (void) WriteBlobByte(image,ScaleQuantumToChar(p->red));
           full=False;
         }
       else

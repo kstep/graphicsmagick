@@ -3294,11 +3294,11 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             {
               switch ((int) i)
               {
-                case 0: q->red=ScaleByteToQuantum(ReadBlobByte(image)); break;
-                case 1: q->green=ScaleByteToQuantum(ReadBlobByte(image)); break;
-                case 2: q->blue=ScaleByteToQuantum(ReadBlobByte(image)); break;
+                case 0: q->red=ScaleCharToQuantum(ReadBlobByte(image)); break;
+                case 1: q->green=ScaleCharToQuantum(ReadBlobByte(image)); break;
+                case 2: q->blue=ScaleCharToQuantum(ReadBlobByte(image)); break;
                 case 3: q->opacity=(Quantum)
-                  (MaxRGB-ScaleByteToQuantum(ReadBlobByte(image))); break;
+                  (MaxRGB-ScaleCharToQuantum(ReadBlobByte(image))); break;
                 default: break;
               }
               q++;

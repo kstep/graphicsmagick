@@ -352,15 +352,15 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
         (unsigned int) image->columns,1,pixels[i]);
     for (x=0; x < (long) image->columns; x++)
     {
-      q->red=ScaleByteToQuantum(jas_matrix_getv(pixels[0],x));
+      q->red=ScaleCharToQuantum(jas_matrix_getv(pixels[0],x));
       q->green=q->red;
       q->blue=q->red;
       if (number_components > 1)
-        q->green=ScaleByteToQuantum(jas_matrix_getv(pixels[1],x));
+        q->green=ScaleCharToQuantum(jas_matrix_getv(pixels[1],x));
       if (number_components > 2)
-        q->blue=ScaleByteToQuantum(jas_matrix_getv(pixels[2],x));
+        q->blue=ScaleCharToQuantum(jas_matrix_getv(pixels[2],x));
       if (number_components > 3)
-        q->opacity=ScaleByteToQuantum(jas_matrix_getv(pixels[3],x));
+        q->opacity=ScaleCharToQuantum(jas_matrix_getv(pixels[3],x));
       q++;
     }
     if (!SyncImagePixels(image))
@@ -585,14 +585,14 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
     for (x=0; x < (long) image->columns; x++)
     {
       if (number_components == 1)
-        jas_matrix_setv(pixels[0],x,(Quantum) ScaleQuantumToByte(Intensity(p)));
+        jas_matrix_setv(pixels[0],x,(Quantum) ScaleQuantumToChar(Intensity(p)));
       else
         {
-          jas_matrix_setv(pixels[0],x,(Quantum) ScaleQuantumToByte(p->red));
-          jas_matrix_setv(pixels[1],x,(Quantum) ScaleQuantumToByte(p->green));
-          jas_matrix_setv(pixels[2],x,(Quantum) ScaleQuantumToByte(p->blue));
+          jas_matrix_setv(pixels[0],x,(Quantum) ScaleQuantumToChar(p->red));
+          jas_matrix_setv(pixels[1],x,(Quantum) ScaleQuantumToChar(p->green));
+          jas_matrix_setv(pixels[2],x,(Quantum) ScaleQuantumToChar(p->blue));
           if (number_components > 3)
-            jas_matrix_setv(pixels[3],x,(Quantum) ScaleQuantumToByte(p->opacity));
+            jas_matrix_setv(pixels[3],x,(Quantum) ScaleQuantumToChar(p->opacity));
         }
       p++;
     }

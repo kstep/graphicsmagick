@@ -715,9 +715,9 @@ static unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
         *q++=indexes[x];
       else
         {
-          *q++=ScaleQuantumToByte(p->red);
-          *q++=ScaleQuantumToByte(p->green);
-          *q++=ScaleQuantumToByte(p->blue);
+          *q++=ScaleQuantumToChar(p->red);
+          *q++=ScaleQuantumToChar(p->green);
+          *q++=ScaleQuantumToChar(p->blue);
         }
       p++;
     }

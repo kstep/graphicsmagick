@@ -384,9 +384,9 @@ static Image *ReadEMFImage(const ImageInfo *image_info,
   {
     for (x=0; x < (long) image->columns; x++)
     {
-      pBits->rgbRed=ScaleQuantumToByte(image->background_color.red);
-      pBits->rgbGreen=ScaleQuantumToByte(image->background_color.green);
-      pBits->rgbBlue=ScaleQuantumToByte(image->background_color.blue);
+      pBits->rgbRed=ScaleQuantumToChar(image->background_color.red);
+      pBits->rgbGreen=ScaleQuantumToChar(image->background_color.green);
+      pBits->rgbBlue=ScaleQuantumToChar(image->background_color.blue);
       pBits++;
     }
   }
@@ -406,9 +406,9 @@ static Image *ReadEMFImage(const ImageInfo *image_info,
       break;
     for (x=0; x < (long) image->columns; x++)
     {
-      q->red=ScaleByteToQuantum(pBits->rgbRed);
-      q->green=ScaleByteToQuantum(pBits->rgbGreen);
-      q->blue=ScaleByteToQuantum(pBits->rgbBlue);
+      q->red=ScaleCharToQuantum(pBits->rgbRed);
+      q->green=ScaleCharToQuantum(pBits->rgbGreen);
+      q->blue=ScaleCharToQuantum(pBits->rgbBlue);
       q->opacity=OpaqueOpacity;
       pBits++;
       q++;

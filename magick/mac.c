@@ -1214,9 +1214,9 @@ MagickExport Image *ReadPICTImage(const ImageInfo *image_info,
     for (x=0; x < image->columns; x++)
     {
       GetCPixel(x,y,&Pixel);
-      q->red=ScaleByteToQuantum(Pixel.red & 0xff);
-      q->green=ScaleByteToQuantum(Pixel.green & 0xff);
-      q->blue=ScaleByteToQuantum(Pixel.blue & 0xff);
+      q->red=ScaleCharToQuantum(Pixel.red & 0xff);
+      q->green=ScaleCharToQuantum(Pixel.green & 0xff);
+      q->blue=ScaleCharToQuantum(Pixel.blue & 0xff);
       if (image->storage_class == PseudoClass)
         indexes[x]=Color2Index(&Pixel);
       q++;

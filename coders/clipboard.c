@@ -195,9 +195,9 @@ static Image *ReadCLIPBOARDImage(const ImageInfo *image_info,ExceptionInfo *exce
               break;
             for (x=0; x < (long) image->columns; x++)
               {
-                q->red=ScaleByteToQuantum(pBits->rgbRed);
-                q->green=ScaleByteToQuantum(pBits->rgbGreen);
-                q->blue=ScaleByteToQuantum(pBits->rgbBlue);
+                q->red=ScaleCharToQuantum(pBits->rgbRed);
+                q->green=ScaleCharToQuantum(pBits->rgbGreen);
+                q->blue=ScaleCharToQuantum(pBits->rgbBlue);
                 q->opacity=OpaqueOpacity;
                 pBits++;
                 q++;
@@ -300,9 +300,9 @@ static unsigned int WriteCLIPBOARDImage(const ImageInfo *image_info,Image *image
       pPixels = AcquireImagePixels(image,0,0,image->columns,image->rows,&image->exception);
       for( nPixelCount = nPixels; nPixelCount ; nPixelCount-- )
         {
-          pDestPixel->rgbRed      = ScaleQuantumToByte(pPixels->red);
-          pDestPixel->rgbGreen    = ScaleQuantumToByte(pPixels->green);
-          pDestPixel->rgbBlue      = ScaleQuantumToByte(pPixels->blue);
+          pDestPixel->rgbRed      = ScaleQuantumToChar(pPixels->red);
+          pDestPixel->rgbGreen    = ScaleQuantumToChar(pPixels->green);
+          pDestPixel->rgbBlue      = ScaleQuantumToChar(pPixels->blue);
           pDestPixel->rgbReserved = 0;
           ++pDestPixel;
           ++pPixels;

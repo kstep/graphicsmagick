@@ -159,9 +159,9 @@ static Image *ReadMAPImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (image->colors <= 256)
     for (i=0; i < (long) image->colors; i++)
     {
-      image->colormap[i].red=ScaleByteToQuantum(*p++);
-      image->colormap[i].green=ScaleByteToQuantum(*p++);
-      image->colormap[i].blue=ScaleByteToQuantum(*p++);
+      image->colormap[i].red=ScaleCharToQuantum(*p++);
+      image->colormap[i].green=ScaleCharToQuantum(*p++);
+      image->colormap[i].blue=ScaleCharToQuantum(*p++);
     }
   else
     for (i=0; i < (long) image->colors; i++)

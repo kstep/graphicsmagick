@@ -587,8 +587,8 @@ MagickExport void Hull(const long x_offset,const long y_offset,
       for (x=0; x < (long) columns; x++)
       {
         v=(*p);
-        if (*r >= (v+ScaleByteToQuantum(2)))
-          v+=ScaleByteToQuantum(1);
+        if (*r >= (v+ScaleCharToQuantum(2)))
+          v+=ScaleCharToQuantum(1);
         *q=(Quantum) v;
         p++;
         q++;
@@ -598,8 +598,8 @@ MagickExport void Hull(const long x_offset,const long y_offset,
       for (x=0; x < (long) columns; x++)
       {
         v=(*p);
-        if (*r <= (v-(long) ScaleByteToQuantum(2)))
-          v-=(long) ScaleByteToQuantum(1);
+        if (*r <= (v-(long) ScaleCharToQuantum(2)))
+          v-=(long) ScaleCharToQuantum(1);
         *q=(Quantum) v;
         p++;
         q++;
@@ -623,8 +623,8 @@ MagickExport void Hull(const long x_offset,const long y_offset,
       for (x=0; x < (long) columns; x++)
       {
         v=(*q);
-        if ((*s >= (v+ScaleByteToQuantum(2))) && (*r > v))
-          v+=ScaleByteToQuantum(1);
+        if ((*s >= (v+ScaleCharToQuantum(2))) && (*r > v))
+          v+=ScaleCharToQuantum(1);
         *p=(Quantum) v;
         p++;
         q++;
@@ -635,8 +635,8 @@ MagickExport void Hull(const long x_offset,const long y_offset,
       for (x=0; x < (long) columns; x++)
       {
         v=(*q);
-        if ((*s <= (v-(long) ScaleByteToQuantum(2))) && (*r < v))
-          v-=(long) ScaleByteToQuantum(1);
+        if ((*s <= (v-(long) ScaleCharToQuantum(2))) && (*r < v))
+          v-=(long) ScaleCharToQuantum(1);
         *p=(Quantum) v;
         p++;
         q++;

@@ -203,7 +203,7 @@ MagickExport Image *ConstituteImage(const unsigned long width,
               case 'c':
               case 'C':
               {
-                q->red=ScaleByteToQuantum(*p++);
+                q->red=ScaleCharToQuantum(*p++);
                 break;
               }
               case 'g':
@@ -211,7 +211,7 @@ MagickExport Image *ConstituteImage(const unsigned long width,
               case 'm':
               case 'M':
               {
-                q->green=ScaleByteToQuantum(*p++);
+                q->green=ScaleCharToQuantum(*p++);
                 break;
               }
               case 'b':
@@ -219,7 +219,7 @@ MagickExport Image *ConstituteImage(const unsigned long width,
               case 'y':
               case 'Y':
               {
-                q->blue=ScaleByteToQuantum(*p++);
+                q->blue=ScaleCharToQuantum(*p++);
                 break;
               }
               case 'a':
@@ -227,12 +227,12 @@ MagickExport Image *ConstituteImage(const unsigned long width,
               case 'k':
               case 'K':
               {
-                q->opacity=ScaleByteToQuantum(*p++);
+                q->opacity=ScaleCharToQuantum(*p++);
                 break;
               }
               case 'I':
               {
-                q->red=ScaleByteToQuantum(*p++);
+                q->red=ScaleCharToQuantum(*p++);
                 q->green=q->red;
                 q->blue=q->red;
                 break;
@@ -749,7 +749,7 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
               case 'c':
               case 'C':
               {
-                *q++=ScaleQuantumToByte(p->red);
+                *q++=ScaleQuantumToChar(p->red);
                 break;
               }
               case 'g':
@@ -757,7 +757,7 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
               case 'm':
               case 'M':
               {
-                *q++=ScaleQuantumToByte(p->green);
+                *q++=ScaleQuantumToChar(p->green);
                 break;
               }
               case 'b':
@@ -765,7 +765,7 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
               case 'y':
               case 'Y':
               {
-                *q++=ScaleQuantumToByte(p->blue);
+                *q++=ScaleQuantumToChar(p->blue);
                 break;
               }
               case 'a':
@@ -773,13 +773,13 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
               case 'k':
               case 'K':
               {
-                *q++=ScaleQuantumToByte(p->opacity);
+                *q++=ScaleQuantumToChar(p->opacity);
                 break;
               }
               case 'i':
               case 'I':
               {
-                *q++=ScaleQuantumToByte(Intensity(p));
+                *q++=ScaleQuantumToChar(Intensity(p));
                 break;
               }
               default:
@@ -1274,7 +1274,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
           for (x=0; x < (long) image->columns; x++)
           {
             *q++=(*indexes++);
-            *q++=ScaleQuantumToByte(MaxRGB-p->opacity);
+            *q++=ScaleQuantumToChar(MaxRGB-p->opacity);
             p++;
           }
           break;
@@ -1296,7 +1296,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
         {
           for (x=0; x < (long) image->columns; x++)
           {
-            *q++=(unsigned char) ScaleQuantumToByte(Intensity(p));
+            *q++=(unsigned char) ScaleQuantumToChar(Intensity(p));
             p++;
           }
           break;
@@ -1315,8 +1315,8 @@ MagickExport unsigned int PopImagePixels(const Image *image,
         {
           for (x=0; x < (long) image->columns; x++)
           {
-            *q++=(unsigned char) ScaleQuantumToByte(Intensity(p));
-            *q++=ScaleQuantumToByte(MaxRGB-p->opacity);
+            *q++=(unsigned char) ScaleQuantumToChar(Intensity(p));
+            *q++=ScaleQuantumToChar(MaxRGB-p->opacity);
             p++;
           }
           break;
@@ -1338,7 +1338,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
         {
           for (x=0; x < (long) image->columns; x++)
           {
-            *q++=ScaleQuantumToByte(p->red);
+            *q++=ScaleQuantumToChar(p->red);
             p++;
           }
           break;
@@ -1358,7 +1358,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
         {
           for (x=0; x < (long) image->columns; x++)
           {
-            *q++=ScaleQuantumToByte(p->green);
+            *q++=ScaleQuantumToChar(p->green);
             p++;
           }
           break;
@@ -1378,7 +1378,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
         {
           for (x=0; x < (long) image->columns; x++)
           {
-            *q++=ScaleQuantumToByte(p->blue);
+            *q++=ScaleQuantumToChar(p->blue);
             p++;
           }
           break;
@@ -1399,7 +1399,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
             {
               for (x=0; x < (long) image->columns; x++)
               {
-                *q++=ScaleQuantumToByte(MaxRGB-(*indexes++));
+                *q++=ScaleQuantumToChar(MaxRGB-(*indexes++));
                 p++;
               }
               break;
@@ -1416,7 +1416,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
         {
           for (x=0; x < (long) image->columns; x++)
           {
-            *q++=ScaleQuantumToByte(MaxRGB-p->opacity);
+            *q++=ScaleQuantumToChar(MaxRGB-p->opacity);
             p++;
           }
           break;
@@ -1435,7 +1435,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
         {
           for (x=0; x < (long) image->columns; x++)
           {
-            *q++=ScaleQuantumToByte(p->opacity);
+            *q++=ScaleQuantumToChar(p->opacity);
             p++;
           }
           break;
@@ -1455,9 +1455,9 @@ MagickExport unsigned int PopImagePixels(const Image *image,
         {
           for (x=0; x < (long) image->columns; x++)
           {
-            *q++=ScaleQuantumToByte(p->red);
-            *q++=ScaleQuantumToByte(p->green);
-            *q++=ScaleQuantumToByte(p->blue);
+            *q++=ScaleQuantumToChar(p->red);
+            *q++=ScaleQuantumToChar(p->green);
+            *q++=ScaleQuantumToChar(p->blue);
             p++;
           }
           break;
@@ -1480,10 +1480,10 @@ MagickExport unsigned int PopImagePixels(const Image *image,
         {
           for (x=0; x < (long) image->columns; x++)
           {
-            *q++=ScaleQuantumToByte(p->red);
-            *q++=ScaleQuantumToByte(p->green);
-            *q++=ScaleQuantumToByte(p->blue);
-            *q++=ScaleQuantumToByte(MaxRGB-p->opacity);
+            *q++=ScaleQuantumToChar(p->red);
+            *q++=ScaleQuantumToChar(p->green);
+            *q++=ScaleQuantumToChar(p->blue);
+            *q++=ScaleQuantumToChar(MaxRGB-p->opacity);
             p++;
           }
           break;
@@ -1508,10 +1508,10 @@ MagickExport unsigned int PopImagePixels(const Image *image,
         {
           for (x=0; x < (long) image->columns; x++)
           {
-            *q++=ScaleQuantumToByte(p->red);
-            *q++=ScaleQuantumToByte(p->green);
-            *q++=ScaleQuantumToByte(p->blue);
-            *q++=ScaleQuantumToByte(p->opacity);
+            *q++=ScaleQuantumToChar(p->red);
+            *q++=ScaleQuantumToChar(p->green);
+            *q++=ScaleQuantumToChar(p->blue);
+            *q++=ScaleQuantumToChar(p->opacity);
             p++;
           }
           break;
@@ -1536,11 +1536,11 @@ MagickExport unsigned int PopImagePixels(const Image *image,
         {
           for (x=0; x < (long) image->columns; x++)
           {
-            *q++=ScaleQuantumToByte(p->red);
-            *q++=ScaleQuantumToByte(p->green);
-            *q++=ScaleQuantumToByte(p->blue);
-            *q++=ScaleQuantumToByte(p->opacity);
-            *q++=ScaleQuantumToByte(MaxRGB-(*indexes++));
+            *q++=ScaleQuantumToChar(p->red);
+            *q++=ScaleQuantumToChar(p->green);
+            *q++=ScaleQuantumToChar(p->blue);
+            *q++=ScaleQuantumToChar(p->opacity);
+            *q++=ScaleQuantumToChar(MaxRGB-(*indexes++));
             p++;
           }
           break;
@@ -1669,7 +1669,7 @@ MagickExport unsigned int PushImagePixels(Image *image,
             *indexes++=index;
             *q=image->colormap[index];
             p++;
-            q->opacity=MaxRGB-(long) ScaleByteToQuantum(*p);
+            q->opacity=MaxRGB-(long) ScaleCharToQuantum(*p);
             p++;
             q++;
           }
@@ -1744,7 +1744,7 @@ MagickExport unsigned int PushImagePixels(Image *image,
         {
           for (x=0; x < (long) image->columns; x++)
           {
-            q->red=ScaleByteToQuantum(*p++);
+            q->red=ScaleCharToQuantum(*p++);
             q++;
           }
           break;
@@ -1764,7 +1764,7 @@ MagickExport unsigned int PushImagePixels(Image *image,
         {
           for (x=0; x < (long) image->columns; x++)
           {
-            q->green=ScaleByteToQuantum(*p++);
+            q->green=ScaleCharToQuantum(*p++);
             q++;
           }
           break;
@@ -1784,7 +1784,7 @@ MagickExport unsigned int PushImagePixels(Image *image,
         {
           for (x=0; x < (long) image->columns; x++)
           {
-            q->blue=ScaleByteToQuantum(*p++);
+            q->blue=ScaleCharToQuantum(*p++);
             q++;
           }
           break;
@@ -1804,7 +1804,7 @@ MagickExport unsigned int PushImagePixels(Image *image,
           if (image->depth <= 8)
             {
               for (x=0; x < (long) image->columns; x++)
-                *indexes++=(IndexPacket) ScaleByteToQuantum(*p++);
+                *indexes++=(IndexPacket) ScaleCharToQuantum(*p++);
               break;
             }
           for (x=0; x < (long) image->columns; x++)
@@ -1818,7 +1818,7 @@ MagickExport unsigned int PushImagePixels(Image *image,
         {
           for (x=0; x < (long) image->columns; x++)
           {
-            q->opacity=MaxRGB-(long) ScaleByteToQuantum(*p++);
+            q->opacity=MaxRGB-(long) ScaleCharToQuantum(*p++);
             q++;
           }
           break;
@@ -1837,7 +1837,7 @@ MagickExport unsigned int PushImagePixels(Image *image,
         {
           for (x=0; x < (long) image->columns; x++)
           {
-            q->opacity=ScaleByteToQuantum(*p++);
+            q->opacity=ScaleCharToQuantum(*p++);
             q++;
           }
           break;
@@ -1857,9 +1857,9 @@ MagickExport unsigned int PushImagePixels(Image *image,
         {
           for (x=0; x < (long) image->columns; x++)
           {
-            q->red=ScaleByteToQuantum(*p++);
-            q->green=ScaleByteToQuantum(*p++);
-            q->blue=ScaleByteToQuantum(*p++);
+            q->red=ScaleCharToQuantum(*p++);
+            q->green=ScaleCharToQuantum(*p++);
+            q->blue=ScaleCharToQuantum(*p++);
             q++;
           }
           break;
@@ -1882,10 +1882,10 @@ MagickExport unsigned int PushImagePixels(Image *image,
         {
           for (x=0; x < (long) image->columns; x++)
           {
-            q->red=ScaleByteToQuantum(*p++);
-            q->green=ScaleByteToQuantum(*p++);
-            q->blue=ScaleByteToQuantum(*p++);
-            q->opacity=MaxRGB-(long) ScaleByteToQuantum(*p++);
+            q->red=ScaleCharToQuantum(*p++);
+            q->green=ScaleCharToQuantum(*p++);
+            q->blue=ScaleCharToQuantum(*p++);
+            q->opacity=MaxRGB-(long) ScaleCharToQuantum(*p++);
             q++;
           }
           break;
@@ -1910,10 +1910,10 @@ MagickExport unsigned int PushImagePixels(Image *image,
         {
           for (x=0; x < (long) image->columns; x++)
           {
-            q->red=ScaleByteToQuantum(*p++);
-            q->green=ScaleByteToQuantum(*p++);
-            q->blue=ScaleByteToQuantum(*p++);
-            q->opacity=ScaleByteToQuantum(*p++);
+            q->red=ScaleCharToQuantum(*p++);
+            q->green=ScaleCharToQuantum(*p++);
+            q->blue=ScaleCharToQuantum(*p++);
+            q->opacity=ScaleCharToQuantum(*p++);
             q++;
           }
           break;
@@ -1938,11 +1938,11 @@ MagickExport unsigned int PushImagePixels(Image *image,
         {
           for (x=0; x < (long) image->columns; x++)
           {
-            q->red=ScaleByteToQuantum(*p++);
-            q->green=ScaleByteToQuantum(*p++);
-            q->blue=ScaleByteToQuantum(*p++);
-            q->opacity=ScaleByteToQuantum(*p++);
-            *indexes++=(IndexPacket) (MaxRGB-(long) ScaleByteToQuantum(*p++));
+            q->red=ScaleCharToQuantum(*p++);
+            q->green=ScaleCharToQuantum(*p++);
+            q->blue=ScaleCharToQuantum(*p++);
+            q->opacity=ScaleCharToQuantum(*p++);
+            *indexes++=(IndexPacket) (MaxRGB-(long) ScaleCharToQuantum(*p++));
             q++;
           }
           break;

@@ -740,9 +740,9 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (image->colors == 0)
           for (i=0; i < 256; i++)
           {
-            image->colormap[i].red=ScaleByteToQuantum(i);
-            image->colormap[i].green=ScaleByteToQuantum(i);
-            image->colormap[i].blue=ScaleByteToQuantum(i);
+            image->colormap[i].red=ScaleCharToQuantum(i);
+            image->colormap[i].green=ScaleCharToQuantum(i);
+            image->colormap[i].blue=ScaleCharToQuantum(i);
             image->colors++;
           }
         else
@@ -766,9 +766,9 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (image->depth <= 8)
               for (i=0; i < (long) image->colors; i++)
               {
-                image->colormap[i].red=ScaleByteToQuantum(*p++);
-                image->colormap[i].green=ScaleByteToQuantum(*p++);
-                image->colormap[i].blue=ScaleByteToQuantum(*p++);
+                image->colormap[i].red=ScaleCharToQuantum(*p++);
+                image->colormap[i].green=ScaleCharToQuantum(*p++);
+                image->colormap[i].blue=ScaleCharToQuantum(*p++);
               }
             else
               for (i=0; i < (long) image->colors; i++)

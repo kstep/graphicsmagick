@@ -5761,9 +5761,9 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
                   break;
                 for (x=0; x < (long) image->columns; x++)
                 {
-                  *q++=ScaleQuantumToByte(gamma_map[p->blue].blue);
-                  *q++=ScaleQuantumToByte(gamma_map[p->green].green);
-                  *q++=ScaleQuantumToByte(gamma_map[p->red].red);
+                  *q++=ScaleQuantumToChar(gamma_map[p->blue].blue);
+                  *q++=ScaleQuantumToChar(gamma_map[p->green].green);
+                  *q++=ScaleQuantumToChar(gamma_map[p->red].red);
                   *q++=0;
                   p++;
                 }
@@ -5786,9 +5786,9 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
                     break;
                   for (x=0; x < (long) image->columns; x++)
                   {
-                    *q++=ScaleQuantumToByte(gamma_map[p->red].red);
-                    *q++=ScaleQuantumToByte(gamma_map[p->green].green);
-                    *q++=ScaleQuantumToByte(gamma_map[p->blue].blue);
+                    *q++=ScaleQuantumToChar(gamma_map[p->red].red);
+                    *q++=ScaleQuantumToChar(gamma_map[p->green].green);
+                    *q++=ScaleQuantumToChar(gamma_map[p->blue].blue);
                     *q++=0;
                     p++;
                   }
@@ -6298,9 +6298,9 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
                 for (x=0; x < (long) image->columns; x++)
                 {
                   *q++=0;
-                  *q++=ScaleQuantumToByte(gamma_map[p->red].red);
-                  *q++=ScaleQuantumToByte(gamma_map[p->green].green);
-                  *q++=ScaleQuantumToByte(gamma_map[p->blue].blue);
+                  *q++=ScaleQuantumToChar(gamma_map[p->red].red);
+                  *q++=ScaleQuantumToChar(gamma_map[p->green].green);
+                  *q++=ScaleQuantumToChar(gamma_map[p->blue].blue);
                   p++;
                 }
               }
@@ -6323,9 +6323,9 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
                   for (x=0; x < (long) image->columns; x++)
                   {
                     *q++=0;
-                    *q++=ScaleQuantumToByte(gamma_map[p->blue].blue);
-                    *q++=ScaleQuantumToByte(gamma_map[p->green].green);
-                    *q++=ScaleQuantumToByte(gamma_map[p->red].red);
+                    *q++=ScaleQuantumToChar(gamma_map[p->blue].blue);
+                    *q++=ScaleQuantumToChar(gamma_map[p->green].green);
+                    *q++=ScaleQuantumToChar(gamma_map[p->red].red);
                     p++;
                   }
                 }

@@ -200,9 +200,9 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         {
           word=(*p++);
           word|=(unsigned short) (*p++ << 8);
-          image->colormap[i].blue=ScaleByteToQuantum(ScaleColor5to8((word >> 10) & 0x1f));
-          image->colormap[i].green=ScaleByteToQuantum(ScaleColor5to8((word >> 5) & 0x1f));
-          image->colormap[i].red=ScaleByteToQuantum(ScaleColor5to8(word & 0x1f));
+          image->colormap[i].blue=ScaleCharToQuantum(ScaleColor5to8((word >> 10) & 0x1f));
+          image->colormap[i].green=ScaleCharToQuantum(ScaleColor5to8((word >> 5) & 0x1f));
+          image->colormap[i].red=ScaleCharToQuantum(ScaleColor5to8(word & 0x1f));
         }
         LiberateMemory((void **) &tim_colormap);
       }
@@ -301,9 +301,9 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           {
             word=(*p++);
             word|=(*p++ << 8);
-            q->blue=ScaleByteToQuantum(ScaleColor5to8((word >> 10) & 0x1f));
-            q->green=ScaleByteToQuantum(ScaleColor5to8((word >> 5) & 0x1f));
-            q->red=ScaleByteToQuantum(ScaleColor5to8(word & 0x1f));
+            q->blue=ScaleCharToQuantum(ScaleColor5to8((word >> 10) & 0x1f));
+            q->green=ScaleCharToQuantum(ScaleColor5to8((word >> 5) & 0x1f));
+            q->red=ScaleCharToQuantum(ScaleColor5to8(word & 0x1f));
             q++;
           }
           if (!SyncImagePixels(image))
@@ -326,9 +326,9 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
           for (x=0; x < (long) image->columns; x++)
           {
-            q->red=ScaleByteToQuantum(*p++);
-            q->green=ScaleByteToQuantum(*p++);
-            q->blue=ScaleByteToQuantum(*p++);
+            q->red=ScaleCharToQuantum(*p++);
+            q->green=ScaleCharToQuantum(*p++);
+            q->blue=ScaleCharToQuantum(*p++);
             q++;
           }
           if (!SyncImagePixels(image))

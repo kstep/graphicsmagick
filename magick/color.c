@@ -580,13 +580,13 @@ MagickExport void GetColorTuple(const PixelPacket *color,
       if (matte)
         {
           FormatString(tuple,hex ? "#%02X%02X%02X%02X" : "(%3u,%3u,%3u,%3u)",
-            ScaleQuantumToByte(color->red),ScaleQuantumToByte(color->green),
-            ScaleQuantumToByte(color->blue),ScaleQuantumToByte(color->opacity));
+            ScaleQuantumToChar(color->red),ScaleQuantumToChar(color->green),
+            ScaleQuantumToChar(color->blue),ScaleQuantumToChar(color->opacity));
           return;
         }
       FormatString(tuple,hex ? "#%02X%02X%02X" : "(%3u,%3u,%3u)",
-        ScaleQuantumToByte(color->red),ScaleQuantumToByte(color->green),
-        ScaleQuantumToByte(color->blue));
+        ScaleQuantumToChar(color->red),ScaleQuantumToChar(color->green),
+        ScaleQuantumToChar(color->blue));
       return;
     }
   if (matte)
@@ -783,9 +783,9 @@ MagickExport unsigned long GetNumberColors(const Image *image,FILE *file,
       for (level=1; level <= MaxTreeDepth; level++)
       {
         id=(unsigned int)
-          (((ScaleQuantumToByte(p->red) >> index) & 0x01) << 2 |
-           ((ScaleQuantumToByte(p->green) >> index) & 0x01) << 1 |
-           ((ScaleQuantumToByte(p->blue) >> index) & 0x01));
+          (((ScaleQuantumToChar(p->red) >> index) & 0x01) << 2 |
+           ((ScaleQuantumToChar(p->green) >> index) & 0x01) << 1 |
+           ((ScaleQuantumToChar(p->blue) >> index) & 0x01));
         if (node_info->child[id] == (NodeInfo *) NULL)
           {
             node_info->child[id]=GetNodeInfo(cube_info,level);
@@ -1211,9 +1211,9 @@ MagickExport unsigned int IsPaletteImage(const Image *image,
       for (level=1; level < MaxTreeDepth; level++)
       {
         id=(unsigned int)
-          (((ScaleQuantumToByte(p->red) >> index) & 0x01) << 2 |
-           ((ScaleQuantumToByte(p->green) >> index) & 0x01) << 1 |
-           ((ScaleQuantumToByte(p->blue) >> index) & 0x01));
+          (((ScaleQuantumToChar(p->red) >> index) & 0x01) << 2 |
+           ((ScaleQuantumToChar(p->green) >> index) & 0x01) << 1 |
+           ((ScaleQuantumToChar(p->blue) >> index) & 0x01));
         if (node_info->child[id] == (NodeInfo *) NULL)
           {
             node_info->child[id]=GetNodeInfo(cube_info,level);
@@ -1485,11 +1485,11 @@ MagickExport unsigned int QueryColorDatabase(const char *name,
         scale;
 
       scale=strchr(name,'%') == (char *) NULL ? 1.0 :
-        ScaleQuantumToByte(MaxRGB)/100.0;
+        ScaleQuantumToChar(MaxRGB)/100.0;
       (void) sscanf(name,"%*[^(](%lf%*[%,]%lf%*[%,]%lf",&red,&green,&blue);
-      color->red=ScaleByteToQuantum((long) (scale*red+0.5));
-      color->green=ScaleByteToQuantum((long) (scale*green+0.5));
-      color->blue=ScaleByteToQuantum((long) (scale*blue+0.5));
+      color->red=ScaleCharToQuantum((long) (scale*red+0.5));
+      color->green=ScaleCharToQuantum((long) (scale*green+0.5));
+      color->blue=ScaleCharToQuantum((long) (scale*blue+0.5));
       color->opacity=OpaqueOpacity;
       return(True);
     }
@@ -1503,13 +1503,13 @@ MagickExport unsigned int QueryColorDatabase(const char *name,
         scale;
 
       scale=strchr(name,'%') == (char *) NULL ? 1.0 :
-        ScaleQuantumToByte(MaxRGB)/100.0;
+        ScaleQuantumToChar(MaxRGB)/100.0;
       (void) sscanf(name,"%*[^(](%lf%*[%,]%lf%*[%,]%lf%*[%,]%lf",&red,&green,
         &blue,&opacity);
-      color->red=ScaleByteToQuantum((long) (scale*red+0.5));
-      color->green=ScaleByteToQuantum((long) (scale*green+0.5));
-      color->blue=ScaleByteToQuantum((long) (scale*blue+0.5));
-      color->opacity=ScaleByteToQuantum((long) (scale*opacity+0.5));
+      color->red=ScaleCharToQuantum((long) (scale*red+0.5));
+      color->green=ScaleCharToQuantum((long) (scale*green+0.5));
+      color->blue=ScaleCharToQuantum((long) (scale*blue+0.5));
+      color->opacity=ScaleCharToQuantum((long) (scale*opacity+0.5));
       return(True);
     }
   p=GetColorInfo(name,exception);
@@ -1724,7 +1724,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
       {
         if (LocaleCompare((char *) keyword,"blue") == 0)
           {
-            color_list->color.blue=ScaleByteToQuantum(atol(token));
+            color_list->color.blue=ScaleCharToQuantum(atol(token));
             break;
           }
         break;
@@ -1749,7 +1749,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
       {
         if (LocaleCompare((char *) keyword,"green") == 0)
           {
-            color_list->color.green=ScaleByteToQuantum(atol(token));
+            color_list->color.green=ScaleCharToQuantum(atol(token));
             break;
           }
         break;
@@ -1769,7 +1769,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
       {
         if (LocaleCompare((char *) keyword,"opacity") == 0)
           {
-            color_list->color.opacity=ScaleByteToQuantum(atol(token));
+            color_list->color.opacity=ScaleCharToQuantum(atol(token));
             break;
           }
         break;
@@ -1779,7 +1779,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
       {
         if (LocaleCompare((char *) keyword,"red") == 0)
           {
-            color_list->color.red=ScaleByteToQuantum(atol(token));
+            color_list->color.red=ScaleCharToQuantum(atol(token));
             break;
           }
         break;

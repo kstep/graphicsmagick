@@ -606,9 +606,9 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
           for (x=0; x < (long) image->columns; x++)
           {
-            q->red=ScaleByteToQuantum(*yy++);
-            q->green=ScaleByteToQuantum(*c1++);
-            q->blue=ScaleByteToQuantum(*c2++);
+            q->red=ScaleCharToQuantum(*yy++);
+            q->green=ScaleCharToQuantum(*c1++);
+            q->blue=ScaleCharToQuantum(*c2++);
             q++;
           }
           if (!SyncImagePixels(image))
@@ -710,9 +710,9 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       break;
     for (x=0; x < (long) image->columns; x++)
     {
-      q->red=ScaleByteToQuantum(*yy++);
-      q->green=ScaleByteToQuantum(*c1++);
-      q->blue=ScaleByteToQuantum(*c2++);
+      q->red=ScaleCharToQuantum(*yy++);
+      q->green=ScaleCharToQuantum(*c1++);
+      q->blue=ScaleCharToQuantum(*c2++);
       q++;
     }
     if (!SyncImagePixels(image))
@@ -942,7 +942,7 @@ static unsigned int WritePCDTile(const ImageInfo *image_info,Image *image,
       break;
     for (x=0; x < (long) (tile_image->columns << 1); x++)
     {
-      (void) WriteBlobByte(image,ScaleQuantumToByte(p->red));
+      (void) WriteBlobByte(image,ScaleQuantumToChar(p->red));
       p++;
     }
     q=AcquireImagePixels(downsample_image,0,y >> 1,downsample_image->columns,
@@ -951,7 +951,7 @@ static unsigned int WritePCDTile(const ImageInfo *image_info,Image *image,
       break;
     for (x=0; x < (long) downsample_image->columns; x++)
     {
-      (void) WriteBlobByte(image,ScaleQuantumToByte(q->green));
+      (void) WriteBlobByte(image,ScaleQuantumToChar(q->green));
       q++;
     }
     q=AcquireImagePixels(downsample_image,0,y >> 1,downsample_image->columns,
@@ -960,7 +960,7 @@ static unsigned int WritePCDTile(const ImageInfo *image_info,Image *image,
       break;
     for (x=0; x < (long) downsample_image->columns; x++)
     {
-      (void) WriteBlobByte(image,ScaleQuantumToByte(q->blue));
+      (void) WriteBlobByte(image,ScaleQuantumToChar(q->blue));
       q++;
     }
     if (QuantumTick(y,tile_image->rows))

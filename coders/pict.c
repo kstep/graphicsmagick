@@ -1086,24 +1086,24 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
                       {
                         i=(*p++);
                         j=(*p);
-                        q->red=ScaleByteToQuantum((i & 0x7c) << 1);
-                        q->green=ScaleByteToQuantum(((i & 0x03) << 6) | ((j & 0xe0) >> 2));
-                        q->blue=ScaleByteToQuantum((j & 0x1f) << 3);
+                        q->red=ScaleCharToQuantum((i & 0x7c) << 1);
+                        q->green=ScaleCharToQuantum(((i & 0x03) << 6) | ((j & 0xe0) >> 2));
+                        q->blue=ScaleCharToQuantum((j & 0x1f) << 3);
                       }
                     else
                       if (!tile_image->matte)
                         {
-                          q->red=ScaleByteToQuantum(*p);
-                          q->green=ScaleByteToQuantum(*(p+tile_image->columns));
-                          q->blue=ScaleByteToQuantum(*(p+2*tile_image->columns));
+                          q->red=ScaleCharToQuantum(*p);
+                          q->green=ScaleCharToQuantum(*(p+tile_image->columns));
+                          q->blue=ScaleCharToQuantum(*(p+2*tile_image->columns));
                         }
                       else
                         {
-                          q->opacity=(Quantum) (MaxRGB-ScaleByteToQuantum(*p));
-                          q->red=ScaleByteToQuantum(*(p+tile_image->columns));
+                          q->opacity=(Quantum) (MaxRGB-ScaleCharToQuantum(*p));
+                          q->red=ScaleCharToQuantum(*(p+tile_image->columns));
                           q->green=(Quantum)
-                            ScaleByteToQuantum(*(p+2*tile_image->columns));
-                          q->blue=ScaleByteToQuantum(*(p+3*tile_image->columns));
+                            ScaleCharToQuantum(*(p+2*tile_image->columns));
+                          q->blue=ScaleCharToQuantum(*(p+3*tile_image->columns));
                         }
                   }
                 p++;
@@ -1767,11 +1767,11 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
             }
           for (x=0; x < (long) image->columns; x++)
           {
-            *red++=ScaleQuantumToByte(p->red);
-            *green++=ScaleQuantumToByte(p->green);
-            *blue++=ScaleQuantumToByte(p->blue);
+            *red++=ScaleQuantumToChar(p->red);
+            *green++=ScaleQuantumToChar(p->green);
+            *blue++=ScaleQuantumToChar(p->blue);
             if (image->matte)
-              *opacity++=MaxRGB-ScaleQuantumToByte(p->opacity);
+              *opacity++=MaxRGB-ScaleQuantumToChar(p->opacity);
             p++;
           }
           count+=EncodeImage(image,scanline,row_bytes & 0x7FFF,packed_scanline);

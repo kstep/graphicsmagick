@@ -17,10 +17,10 @@ extern "C" {
 /*
   Color quantum is [0..255].
 */
-#define ScaleByteToQuantum(value)  (value)
-#define ScaleQuantumToByte(quantum)  (quantum)
+#define ScaleCharToQuantum(value)  (value)
+#define ScaleQuantumToChar(quantum)  (quantum)
+#define ScaleQuantumToInt(quantum) (16843009UL*(quantum))
 #define ScaleQuantumToShort(quantum)  (257*(quantum))
-#define ScaleQuantumToUnsignedLong(quantum) (16843009UL*(quantum))
 #define ScaleShortToQuantum(value)  ((value)/257)
 
 typedef unsigned char Quantum;
@@ -28,10 +28,10 @@ typedef unsigned char Quantum;
 /*
   Color quantum is [0..65535].
 */
-#define ScaleByteToQuantum(value)  (257*(value))
-#define ScaleQuantumToByte(quantum)  ((quantum)/257)
+#define ScaleCharToQuantum(value)  (257*(value))
+#define ScaleQuantumToChar(quantum)  ((quantum)/257)
+#define ScaleQuantumToInt(quantum) (65537UL*(quantum))
 #define ScaleQuantumToShort(quantum)  (quantum)
-#define ScaleQuantumToUnsignedLong(quantum) (65537UL*(quantum))
 #define ScaleShortToQuantum(value)  (value)
 
 typedef unsigned short Quantum;
@@ -39,10 +39,10 @@ typedef unsigned short Quantum;
 /*
   Experimental: Color quantum is [0..4294967295].
 */
-#define ScaleByteToQuantum(value)  (16843009L*(value))
-#define ScaleQuantumToByte(quantum)  ((quantum)/16843009L)
+#define ScaleCharToQuantum(value)  (16843009L*(value))
+#define ScaleQuantumToChar(quantum)  ((quantum)/16843009L)
+#define ScaleQuantumToInt(quantum)  (quantum)
 #define ScaleQuantumToShort(quantum)  ((quantum)/65537L)
-#define ScaleQuantumToUnsignedLong(quantum)  (quantum)
 #define ScaleShortToQuantum(value)  (65537L*(value))
 
 typedef unsigned int Quantum;
@@ -52,13 +52,13 @@ typedef unsigned int Quantum;
 
 #define ColorMatch(p,q) (((p)->red == (q)->red) && \
   ((p)->green == (q)->green) && ((p)->blue == (q)->blue))
-#define Downscale(quantum)  ScaleQuantumToByte(quantum)
+#define Downscale(quantum)  ScaleQuantumToChar(quantum)
 #define Intensity(color)  \
   ((9798L*(color)->red+19235L*(color)->green+3735L*(color)->blue)/32768L)
 #define MaxRGB  ((1 << QuantumDepth)-1)
 #define OpaqueOpacity  0
 #define TransparentOpacity  MaxRGB
-#define Upscale(value)  ScaleByteToQuantum(value)
+#define Upscale(value)  ScaleCharToQuantum(value)
 #define XDownscale(value)  ScaleShortToQuantum(value)
 #define XUpscale(quantum)  ScaleQuantumToShort(quantum)
 

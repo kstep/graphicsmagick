@@ -274,9 +274,9 @@ static void draw_color_fill_rgb( wmfAPI* API, const wmfRGB* rgb )
   PixelPacket
     fill_color;
 
-  fill_color.red     = ScaleByteToQuantum(rgb->r);
-  fill_color.green   = ScaleByteToQuantum(rgb->g);
-  fill_color.blue    = ScaleByteToQuantum(rgb->b);
+  fill_color.red     = ScaleCharToQuantum(rgb->r);
+  fill_color.green   = ScaleCharToQuantum(rgb->g);
+  fill_color.blue    = ScaleCharToQuantum(rgb->b);
   fill_color.opacity = OpaqueOpacity;
 
   DrawSetFillColor(WmfDrawContext,&fill_color);
@@ -289,9 +289,9 @@ static void draw_color_stroke_rgb( wmfAPI* API, const wmfRGB* rgb )
   PixelPacket
     stroke_color;
   
-  stroke_color.red     = ScaleByteToQuantum(rgb->r);
-  stroke_color.green   = ScaleByteToQuantum(rgb->g);
-  stroke_color.blue    = ScaleByteToQuantum(rgb->b);
+  stroke_color.red     = ScaleCharToQuantum(rgb->r);
+  stroke_color.green   = ScaleCharToQuantum(rgb->g);
+  stroke_color.blue    = ScaleCharToQuantum(rgb->b);
   stroke_color.opacity = OpaqueOpacity;
   
   DrawSetStrokeColor(WmfDrawContext,&stroke_color);
@@ -1309,9 +1309,9 @@ static void ipa_draw_text(wmfAPI * API, wmfDrawText_t * draw_text)
           PixelPacket
             under_color;
 
-          under_color.red     = ScaleByteToQuantum(box->r);
-          under_color.green   = ScaleByteToQuantum(box->g);
-          under_color.blue    = ScaleByteToQuantum(box->b);
+          under_color.red     = ScaleCharToQuantum(box->r);
+          under_color.green   = ScaleCharToQuantum(box->g);
+          under_color.blue    = ScaleCharToQuantum(box->b);
           under_color.opacity = OpaqueOpacity;
 
           DrawSetTextUnderColor(WmfDrawContext,&under_color);

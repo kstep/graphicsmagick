@@ -484,10 +484,10 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
               break;
             for (x=0; x < (long) image->columns; x++)
             {
-              q->red=ScaleByteToQuantum(*p);
-              q->green=ScaleByteToQuantum(*(p+1));
-              q->blue=ScaleByteToQuantum(*(p+2));
-              q->opacity=(Quantum) (MaxRGB-ScaleByteToQuantum(*(p+3)));
+              q->red=ScaleCharToQuantum(*p);
+              q->green=ScaleCharToQuantum(*(p+1));
+              q->blue=ScaleCharToQuantum(*(p+2));
+              q->opacity=(Quantum) (MaxRGB-ScaleCharToQuantum(*(p+3)));
               p+=4;
               q++;
             }
@@ -796,7 +796,7 @@ static unsigned int WriteSGIImage(const ImageInfo *image_info,Image *image)
         iris_info.depth=1;
       }
     iris_info.minimum_value=0;
-    iris_info.maximum_value=ScaleQuantumToByte(MaxRGB);
+    iris_info.maximum_value=ScaleQuantumToChar(MaxRGB);
     for (i=0; i < (int) sizeof(iris_info.filler); i++)
       iris_info.filler[i]=0;
     /*
@@ -832,10 +832,10 @@ static unsigned int WriteSGIImage(const ImageInfo *image_info,Image *image)
       q=iris_pixels+((iris_info.rows-1)-y)*(iris_info.columns*4);
       for (x=0; x < (long) image->columns; x++)
       {
-        *q++=ScaleQuantumToByte(p->red);
-        *q++=ScaleQuantumToByte(p->green);
-        *q++=ScaleQuantumToByte(p->blue);
-        *q++=MaxRGB-ScaleQuantumToByte(p->opacity);
+        *q++=ScaleQuantumToChar(p->red);
+        *q++=ScaleQuantumToChar(p->green);
+        *q++=ScaleQuantumToChar(p->blue);
+        *q++=MaxRGB-ScaleQuantumToChar(p->opacity);
         p++;
       }
       if (image->previous == (Image *) NULL)

@@ -825,7 +825,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
                 break;
               for (x=0; x < (long) image->columns; x++)
               {
-                *q++=ScaleQuantumToByte(Intensity(p));
+                *q++=ScaleQuantumToChar(Intensity(p));
                 p++;
               }
               if (image->previous == (Image *) NULL)
@@ -858,7 +858,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
                 break;
               for (x=0; x < (long) image->columns; x++)
               {
-                Ascii85Encode(image,ScaleQuantumToByte(Intensity(p)));
+                Ascii85Encode(image,ScaleQuantumToChar(Intensity(p)));
                 p++;
               }
               if (image->previous == (Image *) NULL)
@@ -934,23 +934,23 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
                 {
                   if (image->matte && (p->opacity == TransparentOpacity))
                     {
-                      *q++=ScaleQuantumToByte(MaxRGB);
-                      *q++=ScaleQuantumToByte(MaxRGB);
-                      *q++=ScaleQuantumToByte(MaxRGB);
+                      *q++=ScaleQuantumToChar(MaxRGB);
+                      *q++=ScaleQuantumToChar(MaxRGB);
+                      *q++=ScaleQuantumToChar(MaxRGB);
                     }
                   else
                     if (image->colorspace != CMYKColorspace)
                       {
-                        *q++=ScaleQuantumToByte(p->red);
-                        *q++=ScaleQuantumToByte(p->green);
-                        *q++=ScaleQuantumToByte(p->blue);
+                        *q++=ScaleQuantumToChar(p->red);
+                        *q++=ScaleQuantumToChar(p->green);
+                        *q++=ScaleQuantumToChar(p->blue);
                       }
                     else
                       {
-                        *q++=ScaleQuantumToByte(p->red);
-                        *q++=ScaleQuantumToByte(p->green);
-                        *q++=ScaleQuantumToByte(p->blue);
-                        *q++=ScaleQuantumToByte(p->opacity);
+                        *q++=ScaleQuantumToChar(p->red);
+                        *q++=ScaleQuantumToChar(p->green);
+                        *q++=ScaleQuantumToChar(p->blue);
+                        *q++=ScaleQuantumToChar(p->opacity);
                       }
                   p++;
                 }
@@ -986,23 +986,23 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
                 {
                   if (image->matte && (p->opacity == TransparentOpacity))
                     {
-                      Ascii85Encode(image,ScaleQuantumToByte(MaxRGB));
-                      Ascii85Encode(image,ScaleQuantumToByte(MaxRGB));
-                      Ascii85Encode(image,ScaleQuantumToByte(MaxRGB));
+                      Ascii85Encode(image,ScaleQuantumToChar(MaxRGB));
+                      Ascii85Encode(image,ScaleQuantumToChar(MaxRGB));
+                      Ascii85Encode(image,ScaleQuantumToChar(MaxRGB));
                     }
                   else
                     if (image->colorspace != CMYKColorspace)
                       {
-                        Ascii85Encode(image,ScaleQuantumToByte(p->red));
-                        Ascii85Encode(image,ScaleQuantumToByte(p->green));
-                        Ascii85Encode(image,ScaleQuantumToByte(p->blue));
+                        Ascii85Encode(image,ScaleQuantumToChar(p->red));
+                        Ascii85Encode(image,ScaleQuantumToChar(p->green));
+                        Ascii85Encode(image,ScaleQuantumToChar(p->blue));
                       }
                     else
                       {
-                        Ascii85Encode(image,ScaleQuantumToByte(p->red));
-                        Ascii85Encode(image,ScaleQuantumToByte(p->green));
-                        Ascii85Encode(image,ScaleQuantumToByte(p->blue));
-                        Ascii85Encode(image,ScaleQuantumToByte(p->opacity));
+                        Ascii85Encode(image,ScaleQuantumToChar(p->red));
+                        Ascii85Encode(image,ScaleQuantumToChar(p->green));
+                        Ascii85Encode(image,ScaleQuantumToChar(p->blue));
+                        Ascii85Encode(image,ScaleQuantumToChar(p->opacity));
                       }
                   p++;
                 }
@@ -1030,9 +1030,9 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
           for (i=0; i < (long) image->colors; i++)
           {
             FormatString(buffer,"%02x%02x%02x\n",
-              ScaleQuantumToByte(image->colormap[i].red),
-              ScaleQuantumToByte(image->colormap[i].green),
-              ScaleQuantumToByte(image->colormap[i].blue));
+              ScaleQuantumToChar(image->colormap[i].red),
+              ScaleQuantumToChar(image->colormap[i].green),
+              ScaleQuantumToChar(image->colormap[i].blue));
             (void) WriteBlobString(image,buffer);
           }
           switch (compression)

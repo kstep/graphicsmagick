@@ -343,13 +343,13 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
             image);
         (void) ReadBlob(image,image->colors,(char *) sun_colormap);
         for (i=0; i < (long) image->colors; i++)
-          image->colormap[i].red=ScaleByteToQuantum(sun_colormap[i]);
+          image->colormap[i].red=ScaleCharToQuantum(sun_colormap[i]);
         (void) ReadBlob(image,image->colors,(char *) sun_colormap);
         for (i=0; i < (long) image->colors; i++)
-          image->colormap[i].green=ScaleByteToQuantum(sun_colormap[i]);
+          image->colormap[i].green=ScaleCharToQuantum(sun_colormap[i]);
         (void) ReadBlob(image,image->colors,(char *) sun_colormap);
         for (i=0; i < (long) image->colors; i++)
-          image->colormap[i].blue=ScaleByteToQuantum(sun_colormap[i]);
+          image->colormap[i].blue=ScaleCharToQuantum(sun_colormap[i]);
         LiberateMemory((void **) &sun_colormap);
         break;
       }
@@ -465,18 +465,18 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
           for (x=0; x < (long) image->columns; x++)
           {
             if (image->matte)
-              q->opacity=(Quantum) (MaxRGB-ScaleByteToQuantum(*p++));
+              q->opacity=(Quantum) (MaxRGB-ScaleCharToQuantum(*p++));
             if (sun_info.type == RT_STANDARD)
               {
-                q->blue=ScaleByteToQuantum(*p++);
-                q->green=ScaleByteToQuantum(*p++);
-                q->red=ScaleByteToQuantum(*p++);
+                q->blue=ScaleCharToQuantum(*p++);
+                q->green=ScaleCharToQuantum(*p++);
+                q->red=ScaleCharToQuantum(*p++);
               }
             else
               {
-                q->red=ScaleByteToQuantum(*p++);
-                q->green=ScaleByteToQuantum(*p++);
-                q->blue=ScaleByteToQuantum(*p++);
+                q->red=ScaleCharToQuantum(*p++);
+                q->green=ScaleCharToQuantum(*p++);
+                q->blue=ScaleCharToQuantum(*p++);
               }
             if (image->colors != 0)
               {
@@ -773,10 +773,10 @@ static unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
           for (x=0; x < (long) image->columns; x++)
           {
             if (image->matte)
-              *q++=MaxRGB-ScaleQuantumToByte(p->opacity);
-            *q++=ScaleQuantumToByte(p->red);
-            *q++=ScaleQuantumToByte(p->green);
-            *q++=ScaleQuantumToByte(p->blue);
+              *q++=MaxRGB-ScaleQuantumToChar(p->opacity);
+            *q++=ScaleQuantumToChar(p->red);
+            *q++=ScaleQuantumToChar(p->green);
+            *q++=ScaleQuantumToChar(p->blue);
             p++;
           }
           if (image->columns & 0x01)
@@ -841,11 +841,11 @@ static unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
             Dump colormap to file.
           */
           for (i=0; i < (long) image->colors; i++)
-            (void) WriteBlobByte(image,ScaleQuantumToByte(image->colormap[i].red));
+            (void) WriteBlobByte(image,ScaleQuantumToChar(image->colormap[i].red));
           for (i=0; i < (long) image->colors; i++)
-            (void) WriteBlobByte(image,ScaleQuantumToByte(image->colormap[i].green));
+            (void) WriteBlobByte(image,ScaleQuantumToChar(image->colormap[i].green));
           for (i=0; i < (long) image->colors; i++)
-            (void) WriteBlobByte(image,ScaleQuantumToByte(image->colormap[i].blue));
+            (void) WriteBlobByte(image,ScaleQuantumToChar(image->colormap[i].blue));
           /*
             Convert PseudoClass packet to SUN colormapped pixel.
           */

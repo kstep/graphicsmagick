@@ -298,24 +298,24 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
               {
                 case 0:
                 {
-                  q->red=ScaleByteToQuantum(byte);
+                  q->red=ScaleCharToQuantum(byte);
                   *indexes=0;
                   break;
                 }
                 case 1:
                 {
-                  q->green=ScaleByteToQuantum(byte);
+                  q->green=ScaleCharToQuantum(byte);
                   break;
                 }
                 case 2:
                 {
-                  q->blue=ScaleByteToQuantum(byte);
+                  q->blue=ScaleCharToQuantum(byte);
                   break;
                 }
                 case 3:
                 default:
                 {
-                  q->opacity=(Quantum) (MaxRGB-ScaleByteToQuantum(byte));
+                  q->opacity=(Quantum) (MaxRGB-ScaleCharToQuantum(byte));
                   break;
                 }
               }
@@ -339,24 +339,24 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
           {
             case 0:
             {
-              q->red=ScaleByteToQuantum(byte);
+              q->red=ScaleCharToQuantum(byte);
               *indexes=0;
               break;
             }
             case 1:
             {
-              q->green=ScaleByteToQuantum(byte);
+              q->green=ScaleCharToQuantum(byte);
               break;
             }
             case 2:
             {
-              q->blue=ScaleByteToQuantum(byte);
+              q->blue=ScaleCharToQuantum(byte);
               break;
             }
             case 3:
             default:
             {
-              q->opacity=(Quantum) (MaxRGB-ScaleByteToQuantum(byte));
+              q->opacity=(Quantum) (MaxRGB-ScaleCharToQuantum(byte));
               break;
             }
           }

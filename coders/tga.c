@@ -250,7 +250,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
               /*
                 Gray scale.
               */
-              pixel.red=ScaleByteToQuantum(ReadBlobByte(image));
+              pixel.red=ScaleCharToQuantum(ReadBlobByte(image));
               pixel.green=pixel.red;
               pixel.blue=pixel.red;
               break;
@@ -277,9 +277,9 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
               /*
                 8 bits each of blue, green and red.
               */
-              pixel.blue=ScaleByteToQuantum(ReadBlobByte(image));
-              pixel.green=ScaleByteToQuantum(ReadBlobByte(image));
-              pixel.red=ScaleByteToQuantum(ReadBlobByte(image));
+              pixel.blue=ScaleCharToQuantum(ReadBlobByte(image));
+              pixel.green=ScaleCharToQuantum(ReadBlobByte(image));
+              pixel.red=ScaleCharToQuantum(ReadBlobByte(image));
               break;
             }
           }
@@ -345,9 +345,9 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 pixel=image->colormap[index];
               else
                 {
-                  pixel.red=ScaleByteToQuantum(index);
-                  pixel.green=ScaleByteToQuantum(index);
-                  pixel.blue=ScaleByteToQuantum(index);
+                  pixel.red=ScaleCharToQuantum(index);
+                  pixel.green=ScaleCharToQuantum(index);
+                  pixel.blue=ScaleCharToQuantum(index);
                 }
               break;
             }
@@ -373,11 +373,11 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
               /*
                 8 bits each of blue green and red.
               */
-              pixel.blue=ScaleByteToQuantum(ReadBlobByte(image));
-              pixel.green=ScaleByteToQuantum(ReadBlobByte(image));
-              pixel.red=ScaleByteToQuantum(ReadBlobByte(image));
+              pixel.blue=ScaleCharToQuantum(ReadBlobByte(image));
+              pixel.green=ScaleCharToQuantum(ReadBlobByte(image));
+              pixel.red=ScaleCharToQuantum(ReadBlobByte(image));
               if (tga_info.bits_per_pixel == 32)
-                pixel.opacity=(Quantum) (MaxRGB-ScaleByteToQuantum(ReadBlobByte(image)));
+                pixel.opacity=(Quantum) (MaxRGB-ScaleCharToQuantum(ReadBlobByte(image)));
               break;
             }
           }
@@ -704,9 +704,9 @@ static unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
         q=targa_colormap;
         for (i=0; i < (long) image->colors; i++)
         {
-          *q++=ScaleQuantumToByte(image->colormap[i].blue);
-          *q++=ScaleQuantumToByte(image->colormap[i].green);
-          *q++=ScaleQuantumToByte(image->colormap[i].red);
+          *q++=ScaleQuantumToChar(image->colormap[i].blue);
+          *q++=ScaleQuantumToChar(image->colormap[i].green);
+          *q++=ScaleQuantumToChar(image->colormap[i].red);
         }
         (void) WriteBlob(image,3*targa_info.colormap_length,
           (char *) targa_colormap);
@@ -733,14 +733,14 @@ static unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
           *q++=indexes[x];
         else
           {
-            *q++=ScaleQuantumToByte(p->blue);
-            *q++=ScaleQuantumToByte(p->green);
-            *q++=ScaleQuantumToByte(p->red);
+            *q++=ScaleQuantumToChar(p->blue);
+            *q++=ScaleQuantumToChar(p->green);
+            *q++=ScaleQuantumToChar(p->red);
             if (image->colorspace == CMYKColorspace)
-              *q++=ScaleQuantumToByte(p->opacity);
+              *q++=ScaleQuantumToChar(p->opacity);
             else
               if (image->matte)
-                *q++=MaxRGB-ScaleQuantumToByte(p->opacity);
+                *q++=MaxRGB-ScaleQuantumToChar(p->opacity);
           }
         p++;
       }

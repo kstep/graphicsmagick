@@ -262,9 +262,9 @@ register IndexPacket *indexes;
       break;
           for (x=0; x < (long) image->columns; x++)
              {
-             q->red=ScaleByteToQuantum(*p++);
-             q->green=ScaleByteToQuantum(*p++);
-             q->blue=ScaleByteToQuantum(*p++);
+             q->red=ScaleCharToQuantum(*p++);
+             q->green=ScaleCharToQuantum(*p++);
+             q->blue=ScaleCharToQuantum(*p++);
              q++;
              }
           if (!SyncImagePixels(image))
@@ -649,9 +649,9 @@ typedef struct {
       goto NoMemory;
      for (i=WPG_Palette.StartIndex; i < (int)WPG_Palette.NumOfEntries; i++)
        {
-       image->colormap[i].red=ScaleByteToQuantum(ReadBlobByte(image));
-       image->colormap[i].green=ScaleByteToQuantum(ReadBlobByte(image));
-       image->colormap[i].blue=ScaleByteToQuantum(ReadBlobByte(image));
+       image->colormap[i].red=ScaleCharToQuantum(ReadBlobByte(image));
+       image->colormap[i].green=ScaleCharToQuantum(ReadBlobByte(image));
+       image->colormap[i].blue=ScaleCharToQuantum(ReadBlobByte(image));
        }
      break;
      
@@ -713,7 +713,7 @@ NoMemory:    ThrowReaderException(ResourceLimitError,"Memory allocation failed",
         {  /*fix crippled monochrome palette*/
         image->colormap[1].red =
         image->colormap[1].green =
-        image->colormap[1].blue = ScaleByteToQuantum(255);
+        image->colormap[1].blue = ScaleCharToQuantum(255);
         }
            }      
 
@@ -767,9 +767,9 @@ DecompressionFailed: ThrowReaderException(ResourceLimitError,"Cannot decompress 
            image);
        for (i=WPG_Palette.StartIndex; i < (int)WPG_Palette.NumOfEntries; i++)
        {
-       image->colormap[i].red=ScaleByteToQuantum(ReadBlobByte(image));
-       image->colormap[i].green=ScaleByteToQuantum(ReadBlobByte(image));
-       image->colormap[i].blue=ScaleByteToQuantum(ReadBlobByte(image));
+       image->colormap[i].red=ScaleCharToQuantum(ReadBlobByte(image));
+       image->colormap[i].green=ScaleCharToQuantum(ReadBlobByte(image));
+       image->colormap[i].blue=ScaleCharToQuantum(ReadBlobByte(image));
        (void) ReadBlobByte(image);   /*Opacity??*/
        }
        break;
