@@ -87,14 +87,12 @@
 */
 static unsigned int IsTTF(const unsigned char *magick,const size_t length)
 {
-  if (length < 23)
+  if (length < 14)
     return(False);
-  if (LocaleNCompare((char *) magick,"%!PS-AdobeFont-1.0",0) == 0)
+  if (LocaleNCompare((char *) magick,"%!PS-AdobeFont-1.0",14) == 0)
     return(True);
-  if (LocaleNCompare((char *) magick,"%!PS-AdobeFont-1.0",6) == 0)
-    return(True);
-  if(magick[0] == 0x0 && magick[1] == 0x1 && magick[2] == 0x0 &&
-     magick[3] == 0x0 && magick[4] == 0x0)
+  if ((magick[0] == 0x00) && (magick[1] == 0x01) && (magick[2] == 0x00) &&
+      (magick[3] == 0x00) && (magick[4] == 0x0))
     return(True);
   return(False);
 }
@@ -134,6 +132,7 @@ static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   char
     filename[MaxTextExtent],
+    magick[MaxTextExtent],
     geometry[MaxTextExtent];
 
   const char
@@ -171,6 +170,7 @@ static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   status=OpenBlob(image_info,image,ReadBinaryType,exception);
   if (status == False)
     ThrowReaderException(FileOpenWarning,"Unable to open file",image);
+  (void) strncpy(magick,image->magick,MaxTextExtent-1);
   /*
     Open draw file.
   */
@@ -208,7 +208,10 @@ static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   FormatString(clone_info->filename,"mvg:%.1024s",filename);
   image=ReadImage(clone_info,exception);
   if (image != (Image *) NULL)
-    (void) strncpy(image->filename,image_info->filename,MaxTextExtent-1);
+    {
+      (void) strncpy(image->magick,magick,MaxTextExtent-1);
+      (void) strncpy(image->filename,image_info->filename,MaxTextExtent-1);
+    }
   (void) remove(filename);
   DestroyImageInfo(clone_info);
   return(image);
