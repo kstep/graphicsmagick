@@ -276,7 +276,7 @@ MagickExport Image *GetImageList(const Image *images,const unsigned long offset,
 %
 %  The format of the GetImageListIndex method is:
 %
-%      size_t GetImageListIndex(const Image *images)
+%      off_t GetImageListIndex(const Image *images)
 %
 %  A description of each parameter follows:
 %
@@ -284,9 +284,9 @@ MagickExport Image *GetImageList(const Image *images,const unsigned long offset,
 %
 %
 */
-MagickExport unsigned long GetImageListIndex(const Image *images)
+MagickExport off_t GetImageListIndex(const Image *images)
 {
-  register long
+  register off_t
     i;
 
   if (images == (Image *) NULL)
@@ -356,7 +356,7 @@ MagickExport size_t GetImageListSize(const Image *images)
 %
 %  The format of the GetNextImage method is:
 %
-%      Image *GetNextImage(Image *images)
+%      Image *GetNextImage(const Image *images)
 %
 %  A description of each parameter follows:
 %
@@ -364,7 +364,7 @@ MagickExport size_t GetImageListSize(const Image *images)
 %
 %
 */
-MagickExport Image *GetNextImage(Image *images)
+MagickExport Image *GetNextImage(const Image *images)
 {
   if (images == (Image *) NULL)
     return((Image *) NULL);
@@ -784,7 +784,7 @@ MagickExport Image *SpliceImageList(Image *images,const unsigned long offset,
   q=images;
   splice=CloneImageList(splices,exception);
   if (splice == (Image *) NULL)
-    return((Image *) NULL);
+    return(q);
   if (p->previous != (Image *) NULL)
     {
       p->previous->next=splice;
