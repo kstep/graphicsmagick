@@ -926,11 +926,11 @@ MagickExport void MSBOrderLong(unsigned char *buffer,const size_t length)
     p=buffer+3;
     c=(*p);
     *p=(*buffer);
-    *buffer++=c;
+    *buffer++=(unsigned char) c;
     p=buffer+1;
     c=(*p);
     *p=(*buffer);
-    *buffer++=c;
+    *buffer++=(unsigned char) c;
     buffer+=2;
   }
 }
@@ -976,7 +976,7 @@ MagickExport void MSBOrderShort(unsigned char *p,const size_t length)
     c=(*p);
     *p=(*(p+1));
     p++;
-    *p++=c;
+    *p++=(unsigned char) c;
   }
 }
 
