@@ -1215,6 +1215,47 @@ Export int LocaleCompare(const char *p,const char *q)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   L o c a l e L o w e r                                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method LocaleLower copies a null terminated string from source to
+%  destination (including the null), changing all uppercase letters to
+%  lowercase.
+%
+%  The format of the LocaleLower method is:
+%
+%      void LocaleLower(char *string)
+%
+%  A description of each parameter follows:
+%
+%    o string: A pointer to the string to convert to lower-case Locale.
+%
+%
+*/
+Export void LocaleLower(char *string)
+{
+  register int
+    c;
+
+  assert(string != (char *) NULL);
+  for ( ; *string != '\0'; string++)
+  {
+    c=(*string);
+    if (islower(c))
+      continue;
+    c=tolower(c);
+    *string=(char) c;
+  }
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   L o c a l e N C o m p a r e                                               %
 %                                                                             %
 %                                                                             %

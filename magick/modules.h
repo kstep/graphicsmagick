@@ -62,7 +62,8 @@ typedef struct _ModuleAliases
 extern Export void
   DestroyModuleInfo(),
   ExitModules(void),
-  InitializeModules(void);
+  InitializeModules(void),
+  ModuleToTag(const char *,const char *, char *);
 
 extern Export int
   LoadAllModules(void),
@@ -71,7 +72,8 @@ extern Export int
   UnloadDynamicModule(const char *);
 
 extern Export char
-  **ListModules(void);
+  **ListModules(void),
+  *TagToModule(const char *);
 
 extern Export ModuleInfo
   *GetModuleInfo(const char *),

@@ -77,31 +77,6 @@ static char
 static int
     modules_initialized = False;
 
-static char *TagToModule(const char *tag)
-{
-  char
-    *module_name;
-
-  assert(tag != (char *) NULL);
-  module_name=(char *) AllocateMemory(MaxTextExtent);
-  if (module_name == (char *) NULL)
-    MagickError(ResourceLimitError,"Unable to get module name",
-      "Memory allocation failed");
-#if !defined(_VISUALC_)
-  (void) strcpy(module_name,tag);
-  (void) strcat(module_name, ".la");
-#else
-#if defined(_DEBUG)
-  (void) strcpy(module_name, "IM_MOD_DB_");
-#else
-  (void) strcpy(module_name, "IM_MOD_RL_");
-#endif
-  (void) strcat(module_name, tag);
-  (void) strcat(module_name, "_.dll");
-#endif
-  return(module_name);
-}
-
 unsigned int CallImageFilter(const char *tag,
   Image *image, const char *options)
 {
@@ -133,6 +108,7 @@ unsigned int CallImageFilter(const char *tag,
   FreeMemory((void **) &module_name);
   return results;
 }
+
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -664,49 +640,6 @@ Export char **ListModules(void)
   return module_list;
 }
 
-#if defined(_VISUALC_)
-#define IsTagSeparator(c)  ((c) == '_')
-static void AddModuleTag(const char *filename, char *module)
-{
-  char
-    *basename;
-
-  register char
-    *p;
-
-  int
-    count;
-
-  assert(filename != (char *) NULL);
-  basename=(char *) AllocateMemory(strlen(filename)+1);
-  if (basename == (char *) NULL)
-    MagickError(ResourceLimitError,"Unable to get module tag",
-      "Memory allocation failed");
-  (void) strcpy(basename,filename);
-  p=basename+(Extent(basename)-1);
-  count=0;
-  while (p > basename)
-  {
-    if (IsTagSeparator(*p))
-      {
-        if (!count)
-          {
-            *p='\0';
-            count++;
-          }
-        else
-          {
-            LocaleUpper(&p[1]);
-            strcat(module,&p[1]);
-            break;
-          }
-      }
-    p--;
-  }
-  FreeMemory((void **) &basename);
-}
-#endif /* defined(_VISUALC_) */
-
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -733,12 +666,8 @@ static void AddModuleTag(const char *filename, char *module)
 Export int LoadDynamicModule(const char* module)
 {
   char
-#if !defined(_VISUALC_)
-    *dest,
-    *source,
-#endif
     func_name[MaxTextExtent],
-    module_file[MaxTextExtent],
+    *module_file,
     module_name[MaxTextExtent];
 
   ModuleHandle
@@ -765,50 +694,19 @@ Export int LoadDynamicModule(const char* module)
     }
 
   /*
-    Build module file name from module name
-  */
-#if !defined(_VISUALC_)
-  dest=module_file;
-  source=module_name;
-  while(*source)
-    {
-      *dest = tolower(*source);
-      ++dest;
-      ++source;
-    }
-  *dest=0;
-  strcat(module_file,".la");
-#else
-  if (strlen(module_name) < 6)
-  {
-    char
-      scratch[MaxTextExtent];
-  
-    scratch[0]='\0';
-#if defined(_DEBUG)
-    strcat(scratch, "IM_MOD_DB_");
-#else
-    strcat(scratch, "IM_MOD_RL_");
-#endif
-    strcat(scratch, module_name);
-    strcat(scratch, "_.dll");
-    strcpy(module_file,scratch);
-  }
-  else
-    strcpy(module_file,module_name);
-#endif
-
-  /*
     Load module file
   */
+  module_file=TagToModule(module_name);
   if( ( handle=lt_dlopen( module_file ) ) == 0)
     {
 #if 0
       printf("WARNING: failed to load module \"%s\": %s\n",
              module_file, lt_dlerror());
 #endif
+      FreeMemory((void **) &module_file);
       return False;
     }
+  FreeMemory((void **) &module_file);
 
   /*
     Add module to module list
@@ -827,26 +725,7 @@ Export int LoadDynamicModule(const char* module)
   /*
     Locate and execute RegisterFORMATImage function
   */
-#if !defined(_VISUALC_)
-  strcpy(func_name, "Register");
-  /* Hack due to 8BIM vs bim.c naming difference */
-  if(!strcmp("BIM", module_name))
-    strcat(func_name,"8");
-
-  strcat(func_name,module_name);
-  strcat(func_name, "Image");
-#else
-  strcpy(func_name, "Register");
-  if (strlen(module_name) < 6)
-    strcat(func_name,module_name);
-  else
-    AddModuleTag(module_name, func_name);
-  strcat(func_name, "Image");
-#endif
-
-  /*
-    Locate and invoke module registration function
-  */
+  ModuleToTag(module_name, "Register%sImage", func_name);
   register_func=(void (*)(void))lt_dlsym(handle, func_name);
   if (register_func == NULL)
     {
@@ -856,6 +735,88 @@ Export int LoadDynamicModule(const char* module)
   register_func();
 
   return True;
+}
+
+#define IsTagSeparator(c)  ((c) == '_')
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   M o d u l e T o T a g                                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method ModuleToTag parser a file system module name into the basic name
+%  of the module.
+%
+%  The format of the ModuleToTag method is:
+%
+%      int ModuleToTag(const char *filename, const char *format, char *module)
+%
+%  A description of each parameter follows:
+%
+%    o filename: the filesystem name of the module.
+%
+%    o format: a string used to format the result of the parsing.
+%
+%    o module: pointer to a destination buffer for the formatted result.
+%
+*/
+void ModuleToTag(const char *filename, const char *format, char *module)
+{
+#if !defined(_VISUALC_)
+  assert(format != (char *) NULL);
+  assert(module != (char *) NULL);
+  assert(filename != (char *) NULL);
+  FormatString(module, format, filename);
+#else
+  char
+    *basename;
+
+  register char
+    *p;
+
+  int
+    count;
+
+  assert(format != (char *) NULL);
+  assert(module != (char *) NULL);
+  assert(filename != (char *) NULL);
+  if (LocaleNCompare("IM_MOD_",filename,6) != 0)
+    {
+      FormatString(module,format,filename);
+      return;
+    }
+  basename=(char *) AllocateMemory(strlen(filename)+1);
+  if (basename == (char *) NULL)
+    MagickError(ResourceLimitError,"Unable to get module tag",
+      "Memory allocation failed");
+  (void) strcpy(basename,filename);
+  p=basename+(Extent(basename)-1);
+  count=0;
+  while (p > basename)
+  {
+    if (IsTagSeparator(*p))
+      {
+        if (!count)
+          {
+            *p='\0';
+            count++;
+          }
+        else
+          {
+            LocaleUpper(&p[1]);
+            FormatString(module,format,&p[1]);
+            break;
+          }
+      }
+    p--;
+  }
+  FreeMemory((void **) &basename);
+#endif
 }
 
 /*
@@ -966,6 +927,59 @@ Export ModuleInfo *SetModuleInfo(const char *tag)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%  T a g T o M o d u l e                                                      %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method TagToModule takes a module "name" and returnes a complete file
+%  system dynamic module name.
+%
+%  The format of the TagToModule method is:
+%
+%      void TagToModule(const char *tag)
+%
+%  A description of each parameter follows:
+%
+%    o tag: a character string that represents the name of the particular
+%           module.
+%
+%
+*/
+char *TagToModule(const char *tag)
+{
+  char
+    *module_name;
+
+  assert(tag != (char *) NULL);
+  module_name=(char *) AllocateMemory(MaxTextExtent);
+  if (module_name == (char *) NULL)
+    MagickError(ResourceLimitError,"Unable to get module name",
+      "Memory allocation failed");
+#if !defined(_VISUALC_)
+  (void) FormatString(module_name, "%s.la",tag);
+  (void) LocalLower(module_name);
+#else
+  if (LocaleNCompare("IM_MOD_",tag,6) == 0)
+    strcpy(module_name,tag);
+  else
+  {
+#if defined(_DEBUG)
+    FormatString(module_name,"IM_MOD_DB_%s_.dll",tag);
+#else
+    FormatString(module_name,"IM_MOD_RL_%s_.dll",tag);
+#endif
+  }
+#endif
+  return(module_name);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   U n l o a d D y n a m i c M o d u l e                                     %
 %                                                                             %
 %                                                                             %
@@ -1000,22 +1014,7 @@ Export int UnloadDynamicModule(const char* module)
       /*
         Locate and execute UnregisterFORMATImage function
       */
-#if !defined(_VISUALC_)
-      strcpy(func_name, "Unregister");
-      strcat(func_name, module);
-      strcat(func_name, "Image");
-#else
-      strcpy(func_name, "Unregister");
-      if (strlen(module) < 6)
-        strcat(func_name,module);
-      else
-        AddModuleTag(module, func_name);
-      strcat(func_name, "Image");
-#endif
-
-      /*
-        Locate and invoke module de-registration function
-      */
+      ModuleToTag(module, "Unregister%sImage", func_name);
       unregister_func=(void (*)(void))lt_dlsym(module_info->handle, func_name);
       if (unregister_func == NULL)
         printf("WARNING: failed to find symbol : %s\n", lt_dlerror());

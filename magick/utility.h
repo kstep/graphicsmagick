@@ -79,6 +79,7 @@ extern Export void
   DestroyPostscriptGeometry(char *),
   ExpandFilename(char *),
   FormatString(char *,const char *,...),
+  LocaleLower(char *),
   LocaleUpper(char *),
   LocaleFilename(char *),
   Strip(char *),
