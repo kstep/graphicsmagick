@@ -10,7 +10,6 @@
   <delegate decode="dot" command='dot -Tps "%i" -o "%o"' />
   <delegate decode="dvi" command='dvips -q -o "%o" "%i"' />
   <delegate decode="edit" restrain="True" command='notepad "%o"' />
-  <delegate decode="emf" command='wmftopng "%i" "%o"' />
   <delegate decode="eps" encode="pdf" mode="bi" command='gswin32c -q -dBATCH -dMaxBitmap=300000000 -dNOPAUSE -dSAFER -sDEVICE=pdfwrite -sOutputFile=%o -- "%i" -c quit' />
   <delegate decode="eps" encode="ps" mode="bi" command='gswin32c -q -dBATCH -dMaxBitmap=300000000 -dNOPAUSE -dSAFER -sDEVICE=pswrite -sOutputFile=%o -- "%i" -c quit' />
   <delegate decode="fig" command='/usr/X11R6/bin/fig2dev -L ps "%i" "%o"' />
@@ -40,7 +39,6 @@
   <delegate decode="scan" command='scanimage -d "%i" > "%o"' />
   <delegate decode="shtml" command='html2ps -U -o "%o" "%i"' />
   <delegate decode="txt" encode="ps" mode="bi" command='enscript -o "%o" "%i"' />
-  <delegate decode="wmf" command='wmftopng "%i" "%o"' />
   <delegate decode="xcf" command='xcftopnm "%i" > "%o"' />
   <delegate decode="zip" restrain="True" command='|gzip -cdfq "%i"' />
   <delegate encode="bzip" restrain="True" command='|bzip2 -f > "%o"' />
