@@ -1,14 +1,14 @@
 2002-05-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
-  * (utility.c) Modified Base64Encode so that it returns the number of
-    characters encoded. This avoids having to invoke strlen on possibly
+  * Modified Base64Encode() of utility.c so that it returns the number of
+    characters encoded. This avoids having to invoke strlen() on possibly
     megabytes of data.
 
 2002-05-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
-  * (wmf.c) Fix compilation error with Sun Workshop compiler.
+  * Fixed compilation error with Sun Workshop compiler (wmf.c).
 
 2002-05-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
-  * Implement polypolygon support in WMF renderer.  Requires
-    libwmf 0.2.4 with draw_polypolygon IPA callback.
+  * Implement polypolygon support in WMF renderer.  Requires libwmf
+    0.2.4 with draw_polypolygon IPA callback.
 
 2002-05-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
   * Added --enable-ccmalloc configure option.

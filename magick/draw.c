@@ -1029,7 +1029,8 @@ MagickExport void DrawComposite(DrawContext context,
     *blob = (unsigned char*)NULL;
 
   size_t
-    blob_length = 2048;
+    blob_length = 2048,
+    encode_length = 0;
 
   assert(context != (DrawContext)NULL);
   assert(image != (Image *) NULL);
@@ -1053,7 +1054,7 @@ MagickExport void DrawComposite(DrawContext context,
   if(!blob)
     return;
 
-  base64 = Base64Encode(blob,blob_length);
+  base64 = Base64Encode(blob,blob_length,&encode_length);
   LiberateMemory((void**)&blob);
   if(!base64)
     {
