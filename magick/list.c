@@ -372,9 +372,13 @@ MagickExport Image *GetNextImage(Image *images)
   assert(images->signature == MagickSignature);
   if (images->next == (Image *) NULL)
     return((Image *) NULL);
-  images->next->file=images->file;
-  DestroyBlobInfo(images->next->blob);
-  images->next->blob=ReferenceBlob(images->blob);
+  if (images->file != images->next->file)
+    images->next->file=images->file;
+  if (images->blob != images->next->blob)
+    {
+      DestroyBlobInfo(images->next->blob);
+      images->next->blob=ReferenceBlob(images->blob);
+    }
   return(images->next);
 }
 

@@ -306,7 +306,8 @@ MagickExport void AllocateNextImage(const ImageInfo *image_info,Image *image)
   (void) strncpy(image->next->filename,image->filename,MaxTextExtent-1);
   if (image_info != (ImageInfo *) NULL)
     (void) strncpy(image->next->filename,image_info->filename,MaxTextExtent-1);
-  *image->next->blob=(*image->blob);
+  DestroyBlobInfo(image->next->blob);
+  image->next->blob=ReferenceBlob(image->blob);
   image->next->file=image->file;
   image->next->scene=image->scene+1;
   image->next->previous=image;
