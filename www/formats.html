@@ -6,7 +6,7 @@
 	<META NAME="GENERATOR" CONTENT="StarOffice 6.0  (Solaris Sparc)">
 	<META NAME="CREATED" CONTENT="20020810;12535100">
 	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
-	<META NAME="CHANGED" CONTENT="20030511;21591000">
+	<META NAME="CHANGED" CONTENT="20030617;13550600">
 	<META NAME="CLASSIFICATION" CONTENT="Describes the file formats supported by GraphicsMagick.">
 	<META NAME="DESCRIPTION" CONTENT="GraphicsMagick is a    robust collection of tools and libraries to read, write, and manipulate    an image in any of the more popular image formats including GIF, JPEG,    PNG, PDF, and Photo CD.  With GraphicsMagick you can create GIFs dynamically    making it suitable for Web applications.  You can also resize, rotate,    sharpen, color reduce, or add special effects to an image and save your    completed work in the same or  differing image format.">
 	<META NAME="KEYWORDS" CONTENT="GraphicsMagick, Image Magick, Image Magic,    PerlMagick, Perl Magick, Perl Magic, CineMagick, PixelMagick, Pixel Magic,    WebMagick, Web Magic, visualization, image processing, software    development, simulation, image, software, AniMagick, Animagic,    Magick++">
@@ -60,7 +60,26 @@
 <P STYLE="margin-bottom: 0in"><FONT SIZE=3>GraphicsMagick uses an
 ASCII string known as &quot;magick&quot; (e.g. &quot;GIF&quot;) to
 identify file formats, algorithms acting as formats, built-in images,
-and embedded profile types.</FONT></P>
+and embedded profile types. After a file has been read or &quot;pinged&quot;,
+the associated magick string is stored in the &quot;magick&quot;
+member of the Image structure, and is reported in the default output
+of 'gm identify'.</FONT></P>
+<P STYLE="margin-bottom: 0in"><BR>
+</P>
+<P STYLE="margin-bottom: 0in"><FONT SIZE=3>Several formats optionally
+rely on the LZW algorithm, which is </FONT><A HREF="http://www.unisys.com/about__unisys/lzw/"><FONT SIZE=3>patented
+by the UNISYS corporation</FONT></A><FONT SIZE=3>. The U.S. LZW
+patent expires June 20, 2003, the counterpart Canadian patent expires
+July 7, 2004, the counterpart patents in the United Kingdom, France,
+Germany and Italy expire June 18, 2004, and the Japanese counterpart
+patents expire June 20, 2004. It is illegal to use LZW in a country
+where the patent is in effect unless a license is obtained from
+UNISYS. GraphicsMagick provides optional compilation-time  support
+for LZW. When LZW support is disabled, GIF files are encoded in an
+uncompressed format which is accepted by LZW decoders. The TIFF
+library supports LZW via an optional patch. If the TIFF library is
+not patched to support LZW, then an error is returned if there is an
+attempt to save the image in a LZW-compressed TIFF format.</FONT></P>
 <P STYLE="margin-bottom: 0in"><FONT SIZE=3><BR>GraphicsMagick
 supports reading over 88 major file formats (not including
 sub-formats). The following table provides a summary of the supported
