@@ -36,7 +36,7 @@
 AppName=ImageMagick
 ; When updating the version string, remember to also update the version in
 ; the [Registry] section
-AppVerName=ImageMagick 5.4.8 Q:16 (Beta August 5, 2002)
+AppVerName=ImageMagick 5.4.8 Q:16 (August 10, 2002)
 AppVersion=5.4.8
 AppCopyright=Copyright (C) 2002 ImageMagick Studio LLC
 AppPublisher=ImageMagick Studio
@@ -821,6 +821,7 @@ Source: "..\Magick++\lib\Magick++\*.h"; DestDir: "{app}\include\Magick++"; CopyM
 
 [Icons]
 Name: "{group}\ImageMagick Web Pages"; Filename: "{app}\ImageMagick.html"
+Name: "{group}\ImageMagick Windows Setup"; Filename: "{app}\www\windows.html"
 ; Name: "{group}\ImageMagick Readme"; Filename: "{app}\README.txt"
 ; Name: "{group}\ImageMagick Quick Start"; Filename: "{app}\QuickStart.txt"
 ; Name: "{group}\ImageMagick License"; Filename: "{app}\Copyright.txt"
