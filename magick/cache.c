@@ -307,7 +307,7 @@ static unsigned int CompressCache(Cache cache)
     if ((long) gzwrite(file,pixels,(unsigned) count) != count)
       break;
   }
-  if (y == (int) cache_info->rows)
+  if (y == cache_info->rows)
     if ((cache_info->storage_class == PseudoClass) ||
         (cache_info->colorspace == CMYKColorspace))
       for (y=0; y < cache_info->rows; y++)
@@ -324,7 +324,7 @@ static unsigned int CompressCache(Cache cache)
     (void) remove(filename);
   else
     (void) remove(cache_info->cache_filename);
-  return(y == (int) cache_info->rows);
+  return(y == cache_info->rows);
 #else
   return(True);
 #endif
@@ -2259,7 +2259,7 @@ static unsigned int UncompressCache(Cache cache)
     if (write(cache_info->file,pixels,count) != count)
       break;
   }
-  if (y == (int) cache_info->rows)
+  if (y == cache_info->rows)
     if ((cache_info->storage_class == PseudoClass) ||
         (cache_info->colorspace == CMYKColorspace))
       for (y=0; y < cache_info->rows; y++)
@@ -2272,7 +2272,7 @@ static unsigned int UncompressCache(Cache cache)
   LiberateMemory((void **) &pixels);
   (void) gzclose(file);
   (void) remove(filename);
-  return(y == (int) cache_info->rows);
+  return(y == cache_info->rows);
 #else
   return(True);
 #endif
