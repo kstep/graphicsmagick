@@ -15,13 +15,13 @@ extern "C" {
 # define GNUC_Prerequiste(major,minor)  0
 #endif
 
-#if defined(__cplusplus) ? GNUC_Prerequiste(2,6) : GNUC_Prerequiste(2,4)
-#  define __MagickMethod  __PRETTY_FUNCTION__
+#if defined __STDC_VERSION__ && (__STDC_VERSION__ >= 199901L)
+# define __MagickMethod  __func__
 #else
-# if defined __STDC_VERSION__ && (__STDC_VERSION__ >= 199901L)
-#  define __MagickMethod  __func__
+# if defined(__cplusplus) ? GNUC_Prerequiste(2,6) : GNUC_Prerequiste(2,4)
+#  define __MagickMethod  __PRETTY_FUNCTION__
 # else
-#  define __MagickMethod  "unknown"
+#  define __MagickMethod  __FILE__
 # endif
 #endif
 
