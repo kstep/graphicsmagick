@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 GraphicsMagick Group
+% Copyright (C) 2003, 2004 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 %
 % This program is covered by multiple licenses, which are described in
@@ -1084,7 +1084,7 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
             WriteBlobByte(buff,c);
           }
         }
-      image->iptc_profile.info = buff->blob->data;
+      image->iptc_profile.info = GetBlobStreamData(buff);
       image->iptc_profile.length=GetBlobSize(buff);
       DetachBlob(buff->blob);
       DestroyImage(buff);
@@ -1212,7 +1212,7 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
             }
 #endif
         }
-      image->generic_profile[i].info = buff->blob->data;
+      image->generic_profile[i].info = GetBlobStreamData(buff);
       image->generic_profile[i].length=GetBlobSize(buff);
       DetachBlob(buff->blob);
       DestroyImage(buff);
@@ -1238,7 +1238,7 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
           break;
         WriteBlobByte(buff,c);
       }
-      image->color_profile.info = buff->blob->data;
+      image->color_profile.info = GetBlobStreamData(buff);
       image->color_profile.length=GetBlobSize(buff);
       DetachBlob(buff->blob);
       DestroyImage(buff);
@@ -1277,7 +1277,7 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
             WriteBlobByte(buff,c);
           }
         }
-      image->iptc_profile.info = buff->blob->data;
+      image->iptc_profile.info = GetBlobStreamData(buff);
       image->iptc_profile.length=GetBlobSize(buff);
       DetachBlob(buff->blob);
       DestroyImage(buff);

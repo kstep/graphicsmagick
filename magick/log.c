@@ -127,7 +127,7 @@ static const char
     "</magicklog>";
 
 /* This table maps between masks and the various event id's that can occur
-   This following id's are not represetned in this table yet, since each of
+   This following id's are not represented in this table yet, since each of
    them would require a bit in the bitmask and none of these are actually
    used in the code at this point.
 
@@ -224,7 +224,8 @@ static LogEventType ParseEvents(const char *event_string)
 
       for (i=0; eventmask_map[i].name != 0; i++)
         {
-          if (LocaleNCompare(p,eventmask_map[i].name,strlen(eventmask_map[i].name)) == 0)
+          if (LocaleNCompare(p,eventmask_map[i].name,
+                             strlen(eventmask_map[i].name)) == 0)
             {
               events|=eventmask_map[i].mask;
               break;

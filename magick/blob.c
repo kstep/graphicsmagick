@@ -65,6 +65,70 @@
 */
 #define DefaultBlobQuantum  65541
 
+
+/*
+  Enum declarations.
+*/
+typedef enum
+{
+  UndefinedStream,
+  FileStream,
+  StandardStream,
+  PipeStream,
+  ZipStream,
+  BZipStream,
+  FifoStream,
+  BlobStream
+} StreamType;
+
+/*
+  Typedef declarations.
+*/
+struct _BlobInfo
+{
+  size_t
+    length,
+    extent,
+    quantum;
+
+  unsigned int
+    mapped,
+    eof;
+
+  magick_off_t
+    offset,
+    size;
+
+  unsigned int
+    exempt,             /* True if file descriptor should not be closed.*/
+    status,             /* Error status. 0 == good */
+    temporary;          /* Associated file is a temporary file */
+
+  StreamType
+    type;
+
+  FILE
+    *file;
+
+  BlobMode
+    mode;               /* Blob open mode */
+
+  StreamHandler
+    stream;
+
+  unsigned char
+    *data;
+
+  void
+    *semaphore;
+
+  long
+    reference_count;
+
+  unsigned long
+    signature;
+};
+
 /*
   Some systems have unlocked versions of getc & putc which are faster
   when multi-threading is enabled.  Blobs do not require multi-thread
@@ -250,6 +314,39 @@ MagickExport void AttachBlob(BlobInfo *blob_info,const void *blob,
   blob_info->type=BlobStream;
   blob_info->file=(FILE *) NULL;
   blob_info->data=(unsigned char *) blob;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   B l o b I s S e e k a b l e                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  BlobIsSeekable() returns True if the blob supports seeks (SeekBlob() is
+%  functional).
+%
+%  The format of the BlobIsSeekable method is:
+%
+%      unsigned int BlobIsSeekable(const Image *image)
+%
+%  A description of each parameter follows:
+%
+%    o image: Image to query
+%
+%
+*/
+MagickExport unsigned int BlobIsSeekable(const Image *image)
+{
+  assert(image != (const Image *) NULL);
+  assert(image->blob != (const BlobInfo *) NULL);
+
+  return ((image->blob->type == FileStream) ||
+          (image->blob->type == BlobStream));
 }
 
 /*
@@ -535,10 +632,16 @@ MagickExport void CloseBlob(Image *image)
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(image->blob != (BlobInfo *) NULL);
-  assert(image->blob->type != UndefinedStream);
   (void) LogMagickEvent(BlobEvent,GetMagickModule(),
     "Closing %sStream blob %p",BlobStreamTypeToString(image->blob->type),
       &image->blob);
+
+  /*
+    If blob type is UndefinedStream then it doesn't need to be closed.
+  */
+  if (image->blob->type == UndefinedStream)
+    return;
+
   status=0;
   switch (image->blob->type)
   {
@@ -574,6 +677,7 @@ MagickExport void CloseBlob(Image *image)
   image->blob->size=GetBlobSize(image);
   image->blob->eof=False;
   image->blob->status=status < 0;
+  image->blob->mode=UndefinedBlobMode;
   if (image->blob->exempt)
     return;
   switch (image->blob->type)
@@ -872,6 +976,69 @@ MagickExport void *FileToBlob(const char *filename,size_t *length,
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   G e t B l o b C l o s a b l e                                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetBlobClosable() returns True if the blob may be closed, or False if it
+%  is exempt from being closed.
+%
+%  The format of the GetBlobClosable method is:
+%
+%      unsigned int GetBlobClosable(const Image *image)
+%
+%  A description of each parameter follows:
+%
+%    o image: Image to query
+%
+%
+*/
+MagickExport unsigned int GetBlobClosable(const Image *image)
+{
+  assert(image != (const Image *) NULL);
+  assert(image->blob != (const BlobInfo *) NULL);
+  return (image->blob->exempt == 0);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   G e t B l o b F i l e H a n d l e                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetBlobFileHandle() returns the stdio file handle associated with the
+%  image blob.  If there is no associated file handle, then a null pointer
+%  is returned.
+%
+%  The format of the GetBlobFileHandle method is:
+%
+%      FILE *GetBlobFileHandle(const Image *image)
+%
+%  A description of each parameter follows:
+%
+%    o image: Image to query
+%
+%
+*/
+MagickExport FILE *GetBlobFileHandle(const Image *image)
+{
+  assert(image != (const Image *) NULL);
+  assert(image->blob != (const BlobInfo *) NULL);
+  return (image->blob->file);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   G e t B l o b I n f o                                                     %
 %                                                                             %
 %                                                                             %
@@ -983,13 +1150,45 @@ MagickExport magick_off_t GetBlobSize(const Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   G e t B l o b S t a t u s                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetBlobStatus() returns the blob error status.
+%
+%  The format of the GetBlobStatus method is:
+%
+%      int GetBlobStatus(const Image *image)
+%
+%  A description of each parameter follows:
+%
+%    o image: The image.
+%
+%
+*/
+MagickExport int GetBlobStatus(const Image *image)
+{
+  assert(image != (const Image *) NULL);
+  assert(image->signature == MagickSignature);
+  return(image->blob->status);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   G e t B l o b S t r e a m D a t a                                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetBlobStreamData() returns the stream data for the image.
+%  GetBlobStreamData() returns the stream data for the image. The data is only
+%  available if the data is stored on the heap, or is memory mapped.
+%  otherwise a NULL value is returned.
 %
 %  The format of the GetBlobStreamData method is:
 %
@@ -1005,7 +1204,39 @@ MagickExport unsigned char *GetBlobStreamData(const Image *image)
 {
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
+  if (image->blob->type != BlobStream)
+    return 0;
   return(image->blob->data);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   G e t B l o b S t r e a m H a n d l e r                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetBlobStreamHandler() returns the stream handler associated with the image.
+%
+%  The format of the GetBlobStreamHandler method is:
+%
+%      const StreamHandler GetBlobStreamHandler(const Image *image)
+%
+%  A description of each parameter follows:
+%
+%    o image: The image.
+%
+%
+*/
+MagickExport const StreamHandler GetBlobStreamHandler(const Image *image)
+{
+  assert(image != (const Image *) NULL);
+  assert(image->signature == MagickSignature);
+  return (image->blob->stream);
 }
 
 /*
@@ -1031,11 +1262,45 @@ MagickExport unsigned char *GetBlobStreamData(const Image *image)
 %
 %
 */
+#if 0
 MagickExport StreamType GetBlobStreamType(const Image *image)
 {
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
   return(image->blob->type);
+}
+#endif
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   G e t B l o b T e m p o r a r y                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetBlobTemporary() returns True if the file associated with the blob is
+%  a temporary file and should be removed when the associated image is
+%  destroyed.
+%
+%  The format of the GetBlobTemporary method is:
+%
+%      unsigned int GetBlobTemporary(const Image *image)
+%
+%  A description of each parameter follows:
+%
+%    o image: Image to query
+%
+%
+*/
+MagickExport unsigned int GetBlobTemporary(const Image *image)
+{
+  assert(image != (const Image *) NULL);
+  assert(image->blob != (const BlobInfo *) NULL);
+  return (image->blob->temporary != False);
 }
 
 /*
@@ -1892,6 +2157,7 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
       return(True);
     }
   DetachBlob(image->blob);
+  image->blob->mode=mode;
   switch (mode)
   {
     default: type=(char *) "r"; break;
@@ -2808,6 +3074,7 @@ MagickExport magick_off_t SeekBlob(Image *image,const magick_off_t offset,
     }
     case StandardStream:
     case PipeStream:
+      return(-1);
     case ZipStream:
     {
 #if defined(HasZLIB)
@@ -2869,6 +3136,73 @@ MagickExport magick_off_t SeekBlob(Image *image,const magick_off_t offset,
     }
   }
   return(image->blob->offset);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   S e t B l o b C l o s a b l e                                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  SetBlobClosable() enables closing the blob if True is passed, and exempts
+%  the blob from being closed if False is passed.  Blobs are closable by
+%  default (default True).
+%
+%  The format of the SetBlobClosable method is:
+%
+%      void SetBlobClosable(Image *image, unsigned int closeable)
+%
+%  A description of each parameter follows:
+%
+%    o image: Image to update
+%
+%    o closeable: Set to FALSE in order to disable closing the blob.
+%
+*/
+MagickExport void SetBlobClosable(Image *image, unsigned int closeable)
+{
+  assert(image != (const Image *) NULL);
+  assert(image->blob != (const BlobInfo *) NULL);
+  image->blob->exempt = (closeable != False);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   S e t B l o b T e m p o r a r y                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  SetBlobTemporary() sets a boolean flag (default False) to specify if
+%  the file associated with the blob is a temporary file and should be
+%  removed when the associated image is destroyed. 
+%
+%  The format of the SetBlobTemporary method is:
+%
+%      void SetBlobTemporary(Image *image, unsigned int isTemporary)
+%
+%  A description of each parameter follows:
+%
+%    o image: Image to update
+%
+%    o isTemporary: Set to True to indicate that the file associated with
+%        the blob is temporary.
+%
+*/
+MagickExport void SetBlobTemporary(Image *image, unsigned int isTemporary)
+{
+  assert(image != (const Image *) NULL);
+  assert(image->blob != (const BlobInfo *) NULL);
+  image->blob->temporary = isTemporary;
 }
 
 /*

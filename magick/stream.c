@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 GraphicsMagick Group
+% Copyright (C) 2003, 2004 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 %
 % This program is covered by multiple licenses, which are described in
@@ -533,6 +533,9 @@ static PixelPacket *SetPixelStream(Image *image,const long x,const long y,
   StreamInfo
     *stream_info;
 
+  const StreamHandler
+    stream;
+
   magick_uint64_t
     number_pixels;
 
@@ -547,7 +550,8 @@ static PixelPacket *SetPixelStream(Image *image,const long x,const long y,
         ImageDoesNotContainTheStreamGeometry);
       return((PixelPacket *) NULL);
     }
-  if (image->blob->stream == (StreamHandler) NULL)
+  stream=GetBlobStreamHandler(image);
+  if (stream == (const StreamHandler) NULL)
     {
       ThrowException3(&image->exception,StreamError,UnableToSetPixelStream,
         NoStreamHandlerIsDefined);
@@ -559,8 +563,7 @@ static PixelPacket *SetPixelStream(Image *image,const long x,const long y,
       (image->colorspace != GetCacheColorspace(image->cache)))
     {
       if (GetCacheClass(image->cache) == UndefinedClass)
-        (void) image->blob->stream(image,(const void *) NULL,
-          stream_info->columns);
+        (void) stream(image,(const void *) NULL,stream_info->columns);
       stream_info->storage_class=image->storage_class;
       stream_info->colorspace=image->colorspace;
       stream_info->columns=image->columns;
@@ -630,17 +633,21 @@ static unsigned int SyncPixelStream(Image *image)
   StreamInfo
     *stream_info;
 
+  StreamHandler
+    stream;
+
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   stream_info=(StreamInfo *) image->cache;
   assert(stream_info->signature == MagickSignature);
-  if (image->blob->stream == (StreamHandler) NULL)
+  stream=GetBlobStreamHandler(image);
+  if (stream == (StreamHandler) NULL)
     {
       ThrowException3(&image->exception,StreamError,UnableToSyncPixelStream,
         NoStreamHandlerIsDefined);
       return(False);
     }
-  return(image->blob->stream(image,stream_info->pixels,stream_info->columns));
+  return(stream(image,stream_info->pixels,stream_info->columns));
 }
 
 /*

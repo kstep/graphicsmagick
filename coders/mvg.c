@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 GraphicsMagick Group
+% Copyright (C) 2003, 2004 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 %
 % This program is covered by multiple licenses, which are described in
@@ -177,7 +177,7 @@ static Image *ReadMVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   SetImage(image,OpaqueOpacity);
   draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
   draw_info->fill=image_info->pen;
-  if (GetBlobStreamType(image) == BlobStream)
+  if (GetBlobStreamData(image))
     draw_info->primitive=AllocateString((char *) GetBlobStreamData(image));
   else
     draw_info->primitive=FileToBlob(image->filename,&length,exception);

@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 GraphicsMagick Group
+% Copyright (C) 2003, 2004 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -680,8 +680,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
       jpeg_destroy_decompress(&jpeg_info);
       if (image->exception.severity > exception->severity)
         CopyException(exception,&image->exception);
-      if (image->blob->type != UndefinedStream)
-        CloseBlob(image);
+      CloseBlob(image);
       number_pixels=image->columns*image->rows;
       if (number_pixels != 0)
         return(image);

@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 GraphicsMagick Group
+% Copyright (C) 2003, 2004 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 %
 % This program is covered by multiple licenses, which are described in
@@ -2715,6 +2715,45 @@ MagickExport unsigned int PushImagePixels(Image *image,
 %
 %
 */
+static void RemoveTemporaryInputFile(ImageInfo *image_info)
+{
+  int
+    filename_length;
+
+  /*
+    Remove normal file name.
+  */
+  if(!LiberateTemporaryFile(image_info->filename))
+    remove(image_info->filename);
+
+  /*
+    Remove a .cache file corresponding to a .mpc file.
+    This stupidity is necessary because MPC "files" are comprised of two
+    separate files.
+  */
+  filename_length=strlen(image_info->filename);
+  if ((filename_length > 4) &&
+      (LocaleCompare(image_info->filename+filename_length-4,".mpc") == 0))
+    {
+      char remove_name[MaxTextExtent];
+      strcpy(remove_name,image_info->filename);
+      remove_name[filename_length-4]=0;
+      strcat(remove_name,".cache");
+      printf("removing %s\n", remove_name);
+      remove(remove_name);
+    }
+  else if (LocaleCompare(image_info->magick,"mpc") == 0)
+    {
+      char remove_name[MaxTextExtent];
+      strcpy(remove_name,image_info->filename);
+      strcat(remove_name,".cache");
+      printf("removing %s\n", remove_name);
+      remove(remove_name);
+    }
+
+  errno=0;
+}
+
 MagickExport Image *ReadImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
@@ -2775,15 +2814,15 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
           DestroyImage(image);
           return(False);
         }
-      if ((GetBlobStreamType(image) != FileStream) &&
-          (GetBlobStreamType(image) != BlobStream))
+      if (!BlobIsSeekable(image))
         {
           /*
             Coder requires a random access stream.
           */
           if(!AcquireTemporaryFileName(clone_info->filename))
             {
-              ThrowException(exception,FileOpenError,UnableToCreateTemporaryFile,clone_info->filename);
+              ThrowException(exception,FileOpenError,
+                UnableToCreateTemporaryFile,clone_info->filename);
               CloseBlob(image);
               DestroyImageInfo(clone_info);
               DestroyImage(image);
@@ -2838,7 +2877,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
               }
             }
           if (clone_info->temporary)
-            LiberateTemporaryFile(clone_info->filename);
+            RemoveTemporaryInputFile(clone_info);
           DestroyImageInfo(clone_info);
           return((Image *) NULL);
         }
@@ -2885,7 +2924,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
                 clone_info->filename);
           }
           if (clone_info->temporary)
-            LiberateTemporaryFile(clone_info->filename);
+            RemoveTemporaryInputFile(clone_info);
           DestroyImageInfo(clone_info);
           return((Image *) NULL);
         }
@@ -2912,8 +2951,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
     }
   if (clone_info->temporary)
     {
-      if(!LiberateTemporaryFile(clone_info->filename))
-        remove(clone_info->filename); /* Must be user-provided temporary */
+      RemoveTemporaryInputFile(clone_info);
       clone_info->temporary=False;
       if (image != (Image *) NULL)
         (void) strncpy(image->filename,filename,MaxTextExtent-1);
@@ -2923,8 +2961,8 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
       DestroyImageInfo(clone_info);
       return(image);
     }
-  if (image->blob->temporary)
-    remove(clone_info->filename); /* Maybe this should be LiberateTemporaryFile? */
+  if (GetBlobTemporary(image))
+    RemoveTemporaryInputFile(clone_info);
   if ((image->next != (Image *) NULL) && IsSubimage(clone_info->tile,False))
     {
       char
@@ -2984,7 +3022,9 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
         }
       }
       if (subimages == (Image *) NULL)
-        ThrowException(exception,OptionError,SubimageSpecificationReturnsNoImages,clone_info->filename);
+        ThrowException(exception,OptionError,
+                       SubimageSpecificationReturnsNoImages,
+                       clone_info->filename);
       else
         {
           while (subimages->previous != (Image *) NULL)
@@ -2993,9 +3033,11 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
           image=subimages;
         }
     }
-  if (image->blob->status)
+  if (GetBlobStatus(image))
     {
-      ThrowException(exception,CorruptImageError,AnErrorHasOccurredReadingFromFile,clone_info->filename);
+      ThrowException(exception,CorruptImageError,
+                     AnErrorHasOccurredReadingFromFile,
+                     clone_info->filename);
       DestroyImageInfo(clone_info);
       return((Image *) NULL);
     }
@@ -3014,7 +3056,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
       }
     next->taint=False;
     (void) strncpy(next->magick_filename,filename,MaxTextExtent-1);
-    if (image->blob->temporary)
+    if (GetBlobTemporary(image))
       (void) strncpy(next->filename,filename,MaxTextExtent-1);
     if (next->magick_columns == 0)
       next->magick_columns=next->columns;
@@ -3327,7 +3369,7 @@ MagickExport unsigned int WriteImage(const ImageInfo *image_info,Image *image)
     }
   (void) strncpy(image->magick,clone_info->magick,MaxTextExtent-1);
   DestroyImageInfo(clone_info);
-  if (image->blob->status)
+  if (GetBlobStatus(image))
     ThrowBinaryException(CorruptImageError,AnErrorHasOccurredWritingToFile,
       image->filename);
   return(status);

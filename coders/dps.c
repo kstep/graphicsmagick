@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 GraphicsMagick Group
+% Copyright (C) 2003, 2004 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -64,7 +64,8 @@
 %
 %  The format of the ReadDPSImage method is:
 %
-%      Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
+%      Image *ReadDPSImage(const ImageInfo *image_info,
+%                          ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -78,7 +79,8 @@
 %
 %
 */
-static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
+static Image *ReadDPSImage(const ImageInfo *image_info,
+  ExceptionInfo *exception)
 {
   char
     *client_name;
@@ -150,7 +152,8 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   display=XOpenDisplay(image_info->server_name);
   if (display == (Display *) NULL)
     {
-      LogMagickEvent(CoderEvent,GetMagickModule(),"failed to open X11 display!");
+      LogMagickEvent(CoderEvent,GetMagickModule(),
+                     "failed to open X11 display!");
       return((Image *) NULL);
     }
   /*
@@ -196,7 +199,8 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
       DestroyImage(image);
       XFreeResources(display,visual_info,map_info,(XPixelInfo *) NULL,
         (XFontStruct *) NULL,&resource_info,(XWindowInfo *) NULL);
-      LogMagickEvent(CoderEvent,GetMagickModule(),"failed to initialize visual info!");
+      LogMagickEvent(CoderEvent,GetMagickModule(),
+                     "failed to initialize visual info!");
       return((Image *) NULL);
     }
   /*
@@ -206,28 +210,30 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   pixels_per_point=XDPSPixelsPerPoint(screen);
   if ((image->x_resolution != 0.0) && (image->y_resolution != 0.0))
     pixels_per_point=Min(image->x_resolution,image->y_resolution)/72.0;
-  status=XDPSCreatePixmapForEPSF((DPSContext) NULL,screen,image->blob->file,
+  status=XDPSCreatePixmapForEPSF((DPSContext) NULL,screen,GetBlobFileHandle(image),
     visual_info->depth,pixels_per_point,&pixmap,&bits_per_pixel,&page);
   if ((status == dps_status_failure) || (status == dps_status_no_extension))
     {
       DestroyImage(image);
       XFreeResources(display,visual_info,map_info,(XPixelInfo *) NULL,
         (XFontStruct *) NULL,&resource_info,(XWindowInfo *) NULL);
-      LogMagickEvent(CoderEvent,GetMagickModule(),"failed to create pixmap for image!");
+      LogMagickEvent(CoderEvent,GetMagickModule(),
+                     "failed to create pixmap for image!");
       return((Image *) NULL);
     }
   /*
     Rasterize the file into the pixmap.
   */
   status=XDPSImageFileIntoDrawable((DPSContext) NULL,screen,pixmap,
-    image->blob->file,bits_per_pixel.height,visual_info->depth,&page,-page.x,
+    GetBlobFileHandle(image),bits_per_pixel.height,visual_info->depth,&page,-page.x,
     -page.y,pixels_per_point,True,False,True,&sans);
   if (status != dps_status_success)
     {
       DestroyImage(image);
       XFreeResources(display,visual_info,map_info,(XPixelInfo *) NULL,
         (XFontStruct *) NULL,&resource_info,(XWindowInfo *) NULL);
-      LogMagickEvent(CoderEvent,GetMagickModule(),"failed to rasterize EPS into pixmap!");
+      LogMagickEvent(CoderEvent,GetMagickModule(),
+                     "failed to rasterize EPS into pixmap!");
       return((Image *) NULL);
     }
   /*
@@ -241,20 +247,23 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
       DestroyImage(image);
       XFreeResources(display,visual_info,map_info,(XPixelInfo *) NULL,
         (XFontStruct *) NULL,&resource_info,(XWindowInfo *) NULL);
-      LogMagickEvent(CoderEvent,GetMagickModule(),"failed initialize DPS X image!");
+      LogMagickEvent(CoderEvent,GetMagickModule(),
+                     "failed initialize DPS X image!");
       return((Image *) NULL);
     }
   /*
     Get the colormap colors.
   */
-  colors=MagickAllocateMemory(XColor *,visual_info->colormap_size*sizeof(XColor));
+  colors=MagickAllocateMemory(XColor *,
+                              visual_info->colormap_size*sizeof(XColor));
   if (colors == (XColor *) NULL)
     {
       DestroyImage(image);
       XDestroyImage(dps_image);
       XFreeResources(display,visual_info,map_info,(XPixelInfo *) NULL,
         (XFontStruct *) NULL,&resource_info,(XWindowInfo *) NULL);
-      LogMagickEvent(CoderEvent,GetMagickModule(),"failed allocate memory for colormap!");
+      LogMagickEvent(CoderEvent,GetMagickModule(),
+                     "failed allocate memory for colormap!");
       return((Image *) NULL);
     }
   if ((visual_info->storage_class != DirectColor) &&
@@ -418,14 +427,18 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
           XDestroyImage(dps_image);
           XFreeResources(display,visual_info,map_info,(XPixelInfo *) NULL,
             (XFontStruct *) NULL,&resource_info,(XWindowInfo *) NULL);
-          LogMagickEvent(CoderEvent,GetMagickModule(),"failed allocate image colormap!");
+          LogMagickEvent(CoderEvent,GetMagickModule(),
+                         "failed allocate image colormap!");
           return((Image *) NULL);
         }
       for (i=0; i < (long) image->colors; i++)
       {
-        image->colormap[colors[i].pixel].red=ScaleShortToQuantum(colors[i].red);
-        image->colormap[colors[i].pixel].green=ScaleShortToQuantum(colors[i].green);
-        image->colormap[colors[i].pixel].blue=ScaleShortToQuantum(colors[i].blue);
+        image->colormap[colors[i].pixel].red=
+          ScaleShortToQuantum(colors[i].red);
+        image->colormap[colors[i].pixel].green=
+          ScaleShortToQuantum(colors[i].green);
+        image->colormap[colors[i].pixel].blue=
+          ScaleShortToQuantum(colors[i].blue);
       }
       /*
         Convert X image to PseudoClass packets.
@@ -454,12 +467,12 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Rasterize matte image.
   */
-  status=XDPSCreatePixmapForEPSF((DPSContext) NULL,screen,image->blob->file,1,
+  status=XDPSCreatePixmapForEPSF((DPSContext) NULL,screen,GetBlobFileHandle(image),1,
     pixels_per_point,&pixmap,&bits_per_pixel,&page);
   if ((status != dps_status_failure) && (status != dps_status_no_extension))
     {
       status=XDPSImageFileIntoDrawable((DPSContext) NULL,screen,pixmap,
-        image->blob->file,bits_per_pixel.height,1,&page,-page.x,
+        GetBlobFileHandle(image),bits_per_pixel.height,1,&page,-page.x,
         -page.y,pixels_per_point,True,True,True,&sans);
       if (status == dps_status_success)
         {
@@ -504,7 +517,8 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   return(image);
 }
 #else
-static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
+static Image *ReadDPSImage(const ImageInfo *image_info,
+  ExceptionInfo *exception)
 {
   ThrowException(exception,MissingDelegateError,DPSLibraryIsNotAvailable,
     image_info->filename);

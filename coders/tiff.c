@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 GraphicsMagick Group
+% Copyright (C) 2003, 2004 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -355,12 +355,16 @@ static unsigned int ReadNewsProfile(char *text,long int length,Image *image,
 extern "C" {
 #endif
 
+/* Close BLOB */
 static int TIFFCloseBlob(thandle_t image)
 {
+/*   if (((Image *) image)->logging) */
+/*     (void) LogMagickEvent(CoderEvent,GetMagickModule(),"TIFF close blob"); */
   CloseBlob((Image *) image);
   return(0);
 }
 
+/* Report errors */
 static unsigned int TIFFErrors(const char *module,const char *format,
   va_list warning)
 {
@@ -373,30 +377,59 @@ static unsigned int TIFFErrors(const char *module,const char *format,
   return(True);
 }
 
+/* Memory map entire input file in read-only mode. */
 static int TIFFMapBlob(thandle_t image,tdata_t *base,toff_t *size)
 {
+  *base = (tdata_t *) GetBlobStreamData((Image *) image);
+  if (*base)
+    *size = (toff_t) GetBlobSize((Image *) image);
+
+  if (*base)
+    {
+/*       if (((Image *) image)->logging) */
+/*         (void) LogMagickEvent(CoderEvent,GetMagickModule(), */
+/*           "TIFF mapped blob: base=%p size=%ld",*base, *size); */
+      return 1;
+    }
   return(0);
 }
 
+/* Read BLOB data at current offset */
 static tsize_t TIFFReadBlob(thandle_t image,tdata_t data,tsize_t size)
 {
+/*   if (((Image *) image)->logging) */
+/*     (void) LogMagickEvent(CoderEvent,GetMagickModule(), */
+/*                           "TIFF read blob: data=%p size=%ld", data, size); */
   return((tsize_t) ReadBlob((Image *) image,(size_t) size,data));
 }
 
+/* Seek to BLOB offset */
 static toff_t TIFFSeekBlob(thandle_t image,toff_t offset,int whence)
 {
+/*   if (((Image *) image)->logging) */
+/*     (void) LogMagickEvent(CoderEvent,GetMagickModule(), */
+/*       "TIFF seek blob: offset=%ld whence=%d", offset, whence); */
   return((toff_t) SeekBlob((Image *) image,offset,whence));
 }
 
+/* Obtain BLOB size */
 static toff_t TIFFGetBlobSize(thandle_t image)
 {
+/*   if (((Image *) image)->logging) */
+/*     (void) LogMagickEvent(CoderEvent,GetMagickModule(), */
+/*       "TIFF get blob size"); */
   return((toff_t) GetBlobSize((Image *) image));
 }
 
+/* Unmap BLOB memory */
 static void TIFFUnmapBlob(thandle_t image,tdata_t base,toff_t size)
 {
+/*   if (((Image *) image)->logging) */
+/*     (void) LogMagickEvent(CoderEvent,GetMagickModule(), */
+/*       "TIFF unmap blob: base=%p size=%ld", base, size); */
 }
 
+/* Report warnings */
 static unsigned int TIFFWarnings(const char *module,const char *format,
   va_list warning)
 {
@@ -409,8 +442,12 @@ static unsigned int TIFFWarnings(const char *module,const char *format,
   return(True);
 }
 
+/* Write data a current offset */
 static tsize_t TIFFWriteBlob(thandle_t image,tdata_t data,tsize_t size)
 {
+  if (((Image *) image)->logging)
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+      "TIFF write blob: data=%p size=%ld", data, size);
   return((tsize_t) WriteBlob((Image *) image,(size_t) size,data));
 }
 
@@ -508,7 +545,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
   tiff_exception=exception;
   (void) TIFFSetErrorHandler((TIFFErrorHandler) TIFFErrors);
   (void) TIFFSetWarningHandler((TIFFErrorHandler) TIFFWarnings);
-  if ((image->blob->type == FileStream) || (image->blob->type == BlobStream))
+  if (BlobIsSeekable(image))
     tiff=TIFFClientOpen(image->filename,"rb",(thandle_t) image,TIFFReadBlob,
       TIFFWriteBlob,TIFFSeekBlob,TIFFCloseBlob,TIFFGetBlobSize,TIFFMapBlob,
       TIFFUnmapBlob);
@@ -682,8 +719,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         if (!AllocateImageColormap(image,image->colors))
           {
             TIFFClose(tiff);
-            if ((image->blob->type != FileStream) &&
-                (image->blob->type != BlobStream))
+            if (filename_is_temporary)
               remove(filename);
             ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
               image)
@@ -1710,9 +1746,6 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
     scene,
     strip_size;
 
-  StreamType
-    btype;
-
   /*
     Open TIFF file.
   */
@@ -1722,14 +1755,13 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   logging=IsEventLogging();
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
-  btype=image->blob->type;
   if (status == False)
     ThrowWriterException(FileOpenError,UnableToOpenFile,image);
   tiff_exception=(&image->exception);
   (void) TIFFSetErrorHandler((TIFFErrorHandler) TIFFErrors);
   (void) TIFFSetWarningHandler((TIFFErrorHandler) TIFFWarnings);
   (void) strncpy(filename,image->filename,MaxTextExtent-1);
-  if (btype != FileStream)
+  if (!BlobIsSeekable(image))
     {
       filename_is_temporary=True;
       if(!AcquireTemporaryFileName(filename))
@@ -2420,7 +2452,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
   while (image->previous != (Image *) NULL)
     image=image->previous;
   TIFFClose(tiff);
-  if (btype != FileStream)
+  if (filename_is_temporary)
 #ifdef SLOW_METHOD
     {
       FILE

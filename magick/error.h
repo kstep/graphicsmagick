@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2003 GraphicsMagick Group
+  Copyright (C) 2003, 2004 GraphicsMagick Group
   Copyright (C) 2002 ImageMagick Studio
   Copyright 1991-1999 E. I. du Pont de Nemours and Company
  
@@ -402,8 +402,7 @@ extern MagickExport WarningHandler
   ThrowException(exception,code_,reason_,image_ ? (image_)->filename : 0); \
   if (image_) \
     { \
-       if (image_->blob->type != UndefinedStream) \
-         CloseBlob(image_); \
+       CloseBlob(image_); \
        DestroyImageList(image_); \
     } \
   return((Image *) NULL); \
@@ -415,8 +414,7 @@ extern MagickExport WarningHandler
   if (image_info->adjoin) \
     while ((image_)->previous != (Image *) NULL) \
       (image_)=(image_)->previous; \
-  if (image_->blob->type != UndefinedStream) \
-    CloseBlob(image_); \
+  CloseBlob(image_); \
   return(False); \
 }
 #define ThrowWriterException2(code_,reason_,image_) \
@@ -426,8 +424,7 @@ extern MagickExport WarningHandler
   if (image_info->adjoin) \
     while ((image_)->previous != (Image *) NULL) \
       (image_)=(image_)->previous; \
-  if (image_->blob->type != UndefinedStream) \
-    CloseBlob(image_); \
+  CloseBlob(image_); \
   return(False); \
 }
 #define ThrowWriterException3(code_,reason_,image_) \
@@ -437,8 +434,7 @@ extern MagickExport WarningHandler
   if (image_info->adjoin) \
     while ((image_)->previous != (Image *) NULL) \
       (image_)=(image_)->previous; \
-  if (image_->blob->type != UndefinedStream) \
-    CloseBlob(image_); \
+  CloseBlob(image_); \
   return(False); \
 }
 

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2003 GraphicsMagick Group
+  Copyright (C) 2003, 2004 GraphicsMagick Group
   Copyright (C) 2002 ImageMagick Studio
  
   This program is covered by multiple licenses, which are described in
@@ -65,7 +65,8 @@ typedef enum
   UserEventMask          = 0x00000400,
   ResourceEventMask      = 0x00000800,
   TemporaryFileEventMask = 0x00001000,
-  ExceptionEventMask     = 0x00002000,
+  /* ExceptionEventMask = WarningEventMask | ErrorEventMask |  FatalErrorEventMask */
+  ExceptionEventMask     = 0x00070000,
   OptionEventMask        = 0x00004000,
   InformationEventMask   = 0x00008000,
   WarningEventMask       = 0x00010000,

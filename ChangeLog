@@ -1,3 +1,47 @@
+2004-01-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/tiff.c (TIFFMapBlob): Allow libtiff to access memory
+	mapped file (or BLOB in memory) directly.  This provides a small
+	performance increase.
+	* magick/constitute.c (ReadImage): If a .mpc file is a temporary
+	file, then be sure to remove the associated .cache file when
+	removing the .mpc file.
+	* magick/log.h (LogEventType): ExceptionEventMask now maps to
+	WarningEventMask|ErrorEventMask|FatalErrorEventMask so that
+	'-debug exception' works again.
+	* magick/blob.c (CloseBlob): Allow CloseBlob to be invoked on a
+	blob which is not open (in UndefinedStream state).
+	(BlobInfo): The definition of BlobInfo is now private to blob.c.
+	(StreamType): The StreamType enumeration is now private to blob.c.
+	(GetBlobFileHandle): New function to access the blob file handle.
+	(GetBlobStreamHandler): New function to access the blob stream
+	handler.
+	(GetBlobStreamType): This function is removed entirely.
+	(BlobIsSeekable): New function to test if SeekBlob will work
+	properly for this blob type.
+	(GetBlobClosable): New function to test if the blob is allowed to
+	be closed by the library (may be an externally provided file
+	descriptor).
+	(GetBlobTemporary): New function to test if input file is a
+	temporary file which is to be removed.
+	(SetBlobClosable): New function to support setting the flag which
+	keeps the input file from being closed.
+	(SetBlobTemporary): New function to support setting the flag which
+	indicates that the input file is a temporary file.
+	* coders/jpeg.c (ReadJPEGImage): Invoke CloseBlob even if
+	blob is in UndefinedStream state.
+	* magick/error.h (ThrowReaderException): Ditto.
+	(ThrowWriterException): Ditto.
+	(ThrowWriterException2): Ditto.
+	(ThrowWriterException3): Ditto.
+	* magick/tempfile.h (ThrowReaderTemporaryFileException): Ditto.
+	(ThrowWriterTemporaryFileException): Ditto.
+	* coders/dps.c,coders/jpeg.c, coders/meta.c, coders/mvg.c,
+	coders/png.c, coders/tiff.c, magick/constitute.c, magick/stream.c:
+	Use new blob accessor functions.
+	* magick/cache.c (OpenCache): For Windows, set the sequential
+	access flag in all cases.  Maybe it will make a difference.
+
 2004-01-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/blob.c (GetConfigureBlob): Don't check Windows registry

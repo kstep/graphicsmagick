@@ -2256,7 +2256,7 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
     case WriteMode:
       {
         file=open(cache_info->cache_filename,O_WRONLY | O_CREAT | O_BINARY |
-                  O_EXCL,S_MODE);
+                  O_EXCL | _O_SEQUENTIAL,S_MODE);
         if (file == -1)
           file=open(cache_info->cache_filename,O_WRONLY | O_BINARY,S_MODE);
         break;
@@ -2265,7 +2265,7 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
     default:
       {
         file=open(cache_info->cache_filename,O_RDWR | O_CREAT | O_BINARY |
-                  O_EXCL | _O_RANDOM, S_MODE);
+                  O_EXCL | _O_SEQUENTIAL, S_MODE);
         if (file == -1)
           file=open(cache_info->cache_filename,O_RDWR | O_BINARY | _O_RANDOM,
                     S_MODE);

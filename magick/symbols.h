@@ -7,6 +7,11 @@
 
   Library symbol name-scoping support.
 
+  Obtained via:
+
+  nm magick/.libs/libGraphicsMagick.a | grep ' T ' | egrep -v '(Gm)|(lt_)' | sort | \
+     awk '{ printf("#define %s Gm%s\n", $3, $3); }'
+
 */
 
 #if !defined(_MAGICK_SYMBOLS_H)
@@ -52,6 +57,7 @@
 #define BackgroundColor GmBackgroundColor
 #define Base64Decode GmBase64Decode
 #define Base64Encode GmBase64Encode
+#define BlobIsSeekable GmBlobIsSeekable
 #define BlobToFile GmBlobToFile
 #define BlobToImage GmBlobToImage
 #define BlobWriteByteHook GmBlobWriteByteHook
@@ -106,6 +112,7 @@
 #define DefineClientPathAndName GmDefineClientPathAndName
 #define DeleteImageFromList GmDeleteImageFromList
 #define DeleteImageList GmDeleteImageList
+#define DeleteImageProfile GmDeleteImageProfile
 #define DeleteMagickRegistry GmDeleteMagickRegistry
 #define DescribeImage GmDescribeImage
 #define DespeckleImage GmDespeckleImage
@@ -127,6 +134,7 @@
 #define DestroyMagicInfo GmDestroyMagicInfo
 #define DestroyMagick GmDestroyMagick
 #define DestroyMagickInfo GmDestroyMagickInfo
+#define DestroyMagickModules GmDestroyMagickModules
 #define DestroyMagickRegistry GmDestroyMagickRegistry
 #define DestroyMagickResources GmDestroyMagickResources
 #define DestroyModuleInfo GmDestroyModuleInfo
@@ -282,10 +290,14 @@
 #define GammaImage GmGammaImage
 #define GaussianBlurImage GmGaussianBlurImage
 #define GenerateNoise GmGenerateNoise
+#define GetBlobClosable GmGetBlobClosable
+#define GetBlobFileHandle GmGetBlobFileHandle
 #define GetBlobInfo GmGetBlobInfo
 #define GetBlobSize GmGetBlobSize
+#define GetBlobStatus GmGetBlobStatus
 #define GetBlobStreamData GmGetBlobStreamData
-#define GetBlobStreamType GmGetBlobStreamType
+#define GetBlobStreamHandler GmGetBlobStreamHandler
+#define GetBlobTemporary GmGetBlobTemporary
 #define GetCacheClass GmGetCacheClass
 #define GetCacheColorspace GmGetCacheColorspace
 #define GetCacheInfo GmGetCacheInfo
@@ -329,6 +341,7 @@
 #define GetImageListSize GmGetImageListSize
 #define GetImageMagick GmGetImageMagick
 #define GetImagePixels GmGetImagePixels
+#define GetImageProfile GmGetImageProfile
 #define GetImageQuantizeError GmGetImageQuantizeError
 #define GetImageType GmGetImageType
 #define GetImageVirtualPixelMethod GmGetImageVirtualPixelMethod
@@ -397,6 +410,7 @@
 #define InitializeLogInfo GmInitializeLogInfo
 #define InitializeMagick GmInitializeMagick
 #define InitializeMagickClientPathAndName GmInitializeMagickClientPathAndName
+#define InitializeMagickModules GmInitializeMagickModules
 #define InitializeMagickResources GmInitializeMagickResources
 #define InitializeMagickSignalHandlers GmInitializeMagickSignalHandlers
 #define InitializeSemaphore GmInitializeSemaphore
@@ -447,8 +461,6 @@
 #define MSBOrderLong GmMSBOrderLong
 #define MSBOrderShort GmMSBOrderShort
 #define MagickCommand GmMagickCommand
-/* #define MagickError GmMagickError */
-/* #define MagickFatalError GmMagickFatalError */
 #define MagickMapAccessEntry GmMagickMapAccessEntry
 #define MagickMapAddEntry GmMagickMapAddEntry
 #define MagickMapAllocateIterator GmMagickMapAllocateIterator
@@ -469,7 +481,6 @@
 #define MagickMapRemoveEntry GmMagickMapRemoveEntry
 #define MagickMonitor GmMagickMonitor
 #define MagickToMime GmMagickToMime
-/* #define MagickWarning GmMagickWarning */
 #define MagnifyImage GmMagnifyImage
 #define MapBlob GmMapBlob
 #define MapImage GmMapImage
@@ -652,6 +663,8 @@
 #define ScaleImage GmScaleImage
 #define SeekBlob GmSeekBlob
 #define SegmentImage GmSegmentImage
+#define SetBlobClosable GmSetBlobClosable
+#define SetBlobTemporary GmSetBlobTemporary
 #define SetCacheNexus GmSetCacheNexus
 #define SetCacheThreshold GmSetCacheThreshold
 #define SetCacheView GmSetCacheView
@@ -672,6 +685,7 @@
 #define SetImageList GmSetImageList
 #define SetImageOpacity GmSetImageOpacity
 #define SetImagePixels GmSetImagePixels
+#define SetImageProfile GmSetImageProfile
 #define SetImageType GmSetImageType
 #define SetImageVirtualPixelMethod GmSetImageVirtualPixelMethod
 #define SetLogEventMask GmSetLogEventMask
@@ -713,7 +727,6 @@
 #define TellBlob GmTellBlob
 #define TextureImage GmTextureImage
 #define ThresholdImage GmThresholdImage
-/* #define ThrowException GmThrowException */
 #define ThrowLoggedException GmThrowLoggedException
 #define ThumbnailImage GmThumbnailImage
 #define Tokenizer GmTokenizer
@@ -910,6 +923,10 @@
 #define _MagickError Gm_MagickError
 #define _MagickFatalError Gm_MagickFatalError
 #define _MagickWarning Gm_MagickWarning
+/* #define MagickError GmMagickError */
+/* #define MagickFatalError GmMagickFatalError */
+/* #define MagickWarning GmMagickWarning */
+/* #define ThrowException GmThrowException */
 
 #endif /* defined(PREFIX_MAGICK_SYMBOLS) */
 #endif /* defined(_MAGICK_SYMBOLS_H) */

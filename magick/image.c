@@ -276,6 +276,7 @@ MagickExport Image *AllocateImage(const ImageInfo *image_info)
   GetTimerInfo(&allocate_image->timer);
   GetCacheInfo(&allocate_image->cache);
   allocate_image->blob=CloneBlobInfo((BlobInfo *) NULL);
+  allocate_image->logging=IsEventLogging();
   allocate_image->reference_count=1;
   allocate_image->signature=MagickSignature;
   if (image_info == (ImageInfo *) NULL)
@@ -283,7 +284,7 @@ MagickExport Image *AllocateImage(const ImageInfo *image_info)
   /*
     Transfer image info.
   */
-  allocate_image->blob->exempt=image_info->file != (FILE *) NULL;
+  SetBlobClosable(allocate_image,(image_info->file == NULL));
   (void) strncpy(allocate_image->filename,image_info->filename,MaxTextExtent-1);
   (void) strncpy(allocate_image->magick_filename,image_info->filename,
     MaxTextExtent-1);
@@ -1306,6 +1307,7 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
   clone_image->total_colors=image->total_colors;
   clone_image->error=image->error;
   clone_image->semaphore=0;
+  clone_image->logging=image->logging;
   clone_image->timer=image->timer;
   GetExceptionInfo(&clone_image->exception);
   CopyException(&clone_image->exception,&image->exception);
@@ -5469,8 +5471,7 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
       DestroyImage(image);
       return(False);
     }
-  if ((GetBlobStreamType(image) == StandardStream) ||
-      (GetBlobStreamType(image) == PipeStream))
+  if (!BlobIsSeekable(image))
     {
       /*
         Copy standard input or pipe to temporary file.

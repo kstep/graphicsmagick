@@ -184,8 +184,8 @@ MagickExport void CopyException(ExceptionInfo *copy, const ExceptionInfo *origin
 %
 %  The format of the DefaultErrorHandler method is:
 %
-%      void MagickError(const ExceptionType severity,const char *reason,
-%        const char *description)
+%      void DefaultMagickError(const ExceptionType severity,
+%        const char *reason, const char *description)
 %
 %  A description of each parameter follows:
 %
@@ -252,8 +252,8 @@ static void DefaultErrorHandler(const ExceptionType severity,const char *reason,
 %
 %  The format of the DefaultFatalErrorHandler method is:
 %
-%      void MagickFatalError(const ExceptionType severity,const char *reason,
-%        const char *description)
+%      void DefaultMagickFatalError(const ExceptionType severity,
+%        const char *reason, const char *description)
 %
 %  A description of each parameter follows:
 %

@@ -773,6 +773,9 @@ typedef struct _Image
   void
     *semaphore;         /* Private, Per image lock (for reference count) */
 
+  unsigned int
+    logging;            /* Private, True if logging is enabled */
+
   struct _Image
     *list;              /* Private, used only by display */
 
