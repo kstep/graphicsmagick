@@ -1280,7 +1280,7 @@ static unsigned int RenderX11(Image *image,const DrawInfo *draw_info,
     Initialize annotate info.
   */
   XGetAnnotateInfo(&annotate_info);
-  annotate_info.stencil=OpaqueStencil;
+  annotate_info.stencil=ForegroundStencil;
   if (cache_info.font != draw_info->font)
     {
       /*

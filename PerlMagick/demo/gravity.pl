@@ -2,9 +2,9 @@
 
 use Image::Magick;
 
-#$font = '-adobe-helvetica-medium-r-normal--25-180-100-100-p-130-iso8729-1';
 #$font = 'Times';
-$font = 'Generic.ttf';
+#$font = 'Generic.ttf';
+$font = '-adobe-helvetica-medium-r-normal--25-180-100-100-p-130-iso8729-1';
 
 $image = Image::Magick->new();
 $x = 100;

@@ -255,16 +255,16 @@ MagickExport unsigned int XAnnotateImage(Display *display,
   y=0;
   (void) XParseGeometry(annotate_info->geometry,&x,&y,&width,&height);
   annotate_image->background_color=GetOnePixel(image,x,y);
-  annotate_image->matte=True;
+  annotate_image->matte=annotate_info->stencil == ForegroundStencil;
   for (y=0; y < (int) annotate_image->rows; y++)
   {
-    q=SetImagePixels(annotate_image,0,y,annotate_image->columns,1);
+    q=GetImagePixels(annotate_image,0,y,annotate_image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
     for (x=0; x < (int) annotate_image->columns; x++)
     {
-      q->opacity=MaxRGB-XGetPixel(annotate_ximage,x,y);
-      if (q->opacity == TransparentOpacity)
+      q->opacity=OpaqueOpacity;
+      if (XGetPixel(annotate_ximage,x,y) == 0)
         {
           /*
             Set this pixel to the background color.
@@ -272,13 +272,9 @@ MagickExport unsigned int XAnnotateImage(Display *display,
           q->red=XDownScale(pixel->box_color.red);
           q->green=XDownScale(pixel->box_color.green);
           q->blue=XDownScale(pixel->box_color.blue);
-          q->opacity=OpaqueOpacity;
           if ((annotate_info->stencil == ForegroundStencil) ||
               (annotate_info->stencil == OpaqueStencil))
-            {
-              *q=annotate_image->background_color;
-              q->opacity=TransparentOpacity;
-            }
+            q->opacity=TransparentOpacity;
         }
       else
         {
@@ -288,12 +284,8 @@ MagickExport unsigned int XAnnotateImage(Display *display,
           q->red=XDownScale(pixel->pen_color.red);
           q->green=XDownScale(pixel->pen_color.green);
           q->blue=XDownScale(pixel->pen_color.blue);
-          q->opacity=OpaqueOpacity;
           if (annotate_info->stencil == BackgroundStencil)
-            {
-              *q=annotate_image->background_color;
-              q->opacity=TransparentOpacity;
-            }
+            q->opacity=TransparentOpacity;
         }
       q++;
     }
@@ -394,7 +386,8 @@ MagickExport unsigned int XAnnotateImage(Display *display,
   }
   (void) XParseGeometry(annotate_info->geometry,&x,&y,&width,&height);
   matte=image->matte;
-  CompositeImage(image,OverCompositeOp,annotate_image,x,y);
+  CompositeImage(image,annotate_image->matte ? OverCompositeOp :
+    ReplaceCompositeOp,annotate_image,x,y);
   image->matte=matte;
   DestroyImage(annotate_image);
   return(True);
