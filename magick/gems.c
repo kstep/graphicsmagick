@@ -252,21 +252,20 @@ MagickExport PixelPacket AlphaComposite(const CompositeOperator compose,
     }
     case MultiplyCompositeOp:
     {
-      gamma=MaxRGB*MaxRGB*MaxRGB;
-      red==((MaxRGB-alpha)*p->red*(MaxRGB-beta)*q->red)/gamma;
-      green==((MaxRGB-alpha)*p->green*(MaxRGB-beta)*q->green)/gamma;
-      blue==((MaxRGB-alpha)*p->blue*(MaxRGB-beta)*q->blue)/gamma;
-      opacity==((MaxRGB-alpha)*alpha*(MaxRGB-beta)*beta)/gamma;
+      gamma=MaxRGB;
+      red=p->red*q->red/gamma;
+      green=p->red*q->red/gamma;
+      blue=p->red*q->red/gamma;
+      opacity=p->red*q->red/gamma;
       break;
     }
     case DifferenceCompositeOp:
     {
-      gamma=MaxRGB;
-      red=fabs((MaxRGB-alpha)*p->red-(MaxRGB-beta)*q->red)/gamma;
-      green=fabs((MaxRGB-alpha)*p->green-(MaxRGB-beta)*q->green)/gamma;
-      blue=fabs((MaxRGB-alpha)*p->blue-(MaxRGB-beta)*q->blue)/gamma;
-      opacity=fabs((MaxRGB-alpha)*alpha-(MaxRGB-beta)*beta)/gamma;
-      break;
+      color.red=fabs(p->red-q->red);
+      color.green=fabs(p->green-q->green);
+      color.blue=fabs(p->blue-q->blue);
+      color.opacity=fabs(alpha-beta);
+      return(color);
     }
     case BumpmapCompositeOp:
     {
