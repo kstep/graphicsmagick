@@ -182,7 +182,7 @@ MagickExport DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
   clone_info=(DrawInfo *) AcquireMemory(sizeof(DrawInfo));
   if (clone_info == (DrawInfo *) NULL)
     MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
-			"unable to clone draw info");
+      "unable to clone draw info");
   GetDrawInfo(image_info,clone_info);
   if (draw_info == (DrawInfo *) NULL)
     return(clone_info);
@@ -2574,7 +2574,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
                 if (graphic_context == (DrawInfo **) NULL)
                   {
                     ThrowException(&image->exception,ResourceLimitError,
-											"MemoryAllocationFailed","UnableToDrawOnImage");
+                      "MemoryAllocationFailed","UnableToDrawOnImage");
                     break;
                   }
                 graphic_context[n]=
@@ -2698,7 +2698,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
                 if (graphic_context[n]->dash_pattern == (double *) NULL)
                   {
                     ThrowException(&image->exception,ResourceLimitError,
-											"MemoryAllocationFailed","UnableToDrawOnImage");
+                      "MemoryAllocationFailed","UnableToDrawOnImage");
                     break;
                   }
                 for (j=0; j < x; j++)
@@ -2926,7 +2926,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       if (primitive_info == (PrimitiveInfo *) NULL)
         {
           ThrowException(&image->exception,ResourceLimitError,
-						"MemoryAllocationFailed","UnableToDrawOnImage");
+            "MemoryAllocationFailed","UnableToDrawOnImage");
           break;
         }
     }
@@ -2965,7 +2965,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
         if (primitive_info == (PrimitiveInfo *) NULL)
           {
             ThrowException(&image->exception,ResourceLimitError,
-							"MemoryAllocationFailed","UnableToDrawOnImage");
+              "MemoryAllocationFailed","UnableToDrawOnImage");
             break;
           }
       }
@@ -3115,7 +3115,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
             if (primitive_info == (PrimitiveInfo *) NULL)
               {
                 ThrowException(&image->exception,ResourceLimitError,
-									"MemoryAllocationFailed","UnableToDrawOnImage");
+                  "MemoryAllocationFailed","UnableToDrawOnImage");
                 break;
               }
           }

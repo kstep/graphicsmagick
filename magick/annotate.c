@@ -536,7 +536,7 @@ static unsigned short *EncodeText(const char *text,size_t *count)
     AcquireMemory((strlen(text)+MaxTextExtent)*sizeof(unsigned short));
   if (encoding == (unsigned short *) NULL)
     MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
-			"unable to convert text to Text");
+      "unable to convert text to Text");
   q=encoding;
   for (p=text; *p != '\0'; p++)
     *q++=(unsigned char) *p;

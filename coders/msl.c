@@ -465,15 +465,16 @@ static void MSLPushImage(MSLInfo *msl_info,Image *image)
     (msl_info->attributes == (Image **) NULL) ||
     (msl_info->image == (Image **) NULL))
       ThrowException(msl_info->exception,ResourceLimitFatalError,
-				"MemoryAllocationFailed","unable to allocate image");
+        "MemoryAllocationFailed","UnableToAllocateImage");
   msl_info->image_info[n]=CloneImageInfo(msl_info->image_info[n-1]);
-  msl_info->draw_info[n]=CloneDrawInfo(msl_info->image_info[n-1], msl_info->draw_info[n-1]);
+  msl_info->draw_info[n]=
+    CloneDrawInfo(msl_info->image_info[n-1], msl_info->draw_info[n-1]);
   msl_info->attributes[n]=AllocateImage(msl_info->image_info[n]);
   msl_info->image[n]=(Image *) image;
   if ((msl_info->image_info[n] == (ImageInfo *) NULL) ||
     (msl_info->attributes[n] == (Image *) NULL))
     ThrowException(msl_info->exception,ResourceLimitFatalError,
-			"MemoryAllocationFailed","unable to allocate image");
+      "MemoryAllocationFailed","UnableToAllocateImage");
   if ( msl_info->nGroups )
     msl_info->group_info[msl_info->nGroups-1].numImages++;
   attribute=GetImageAttribute(msl_info->attributes[n-1],(char *) NULL);

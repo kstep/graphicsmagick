@@ -161,7 +161,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
   register unsigned char
     *p;
 
-	size_t
+  size_t
     length;
 
   unsigned int

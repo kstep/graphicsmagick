@@ -310,7 +310,7 @@ int main(int argc,char **argv)
   image_marker=(unsigned int *) AcquireMemory((argc+1)*sizeof(unsigned int));
   if (image_marker == (unsigned int *) NULL)
     MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
-			"UnableToDisplayImage");
+      "UnableToDisplayImage");
   for (i=0; i <= argc; i++)
     image_marker[i]=argc;
   resource_database=(XrmDatabase) NULL;

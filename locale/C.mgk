@@ -1485,6 +1485,9 @@
         </Message>
       </Error>
       <FatalError>
+        <Message name="UnableToAllocateImage">
+          unable to allocate image
+        </Message>
         <Message name="MemoryAllocationFailed">
           Memory allocation failed
         </Message>
@@ -1509,6 +1512,9 @@
     <Error>
       <Message name="FontSubstitutionRequired">
         Font substitution required
+      </Message>
+      <Message name="UnableToConvertStringtoARGV">
+        Unable to convert string to ARGV
       </Message>
       <Message name="UnableToGetTypeMetrics">
         Unable to get type metrics
