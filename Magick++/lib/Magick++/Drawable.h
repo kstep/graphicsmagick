@@ -79,7 +79,11 @@ namespace Magick
 
 #if defined(MagickDLLBuild)
   MagickDrawableExtern template class MagickDLLDecl
-  std::list<Magick::Coordinate>;
+    std::allocator<Magick::Coordinate>;
+
+  MagickDrawableExtern template class MagickDLLDecl
+    std::list<Magick::Coordinate>;
+
 #endif // MagickDLLBuild
 
   // Compare two Coordinate objects regardless of LHS/RHS
