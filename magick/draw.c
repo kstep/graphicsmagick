@@ -1703,10 +1703,6 @@ MagickExport void DrawSetStopColor(DrawContext context,
 MagickExport void DrawSetStroke(DrawContext context,
                                 const PixelPacket * stroke_color)
 {
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
-  assert(stroke_color != (const PixelPacket *)NULL);
-
   PixelPacket
     *current_stroke,
     new_stroke;
