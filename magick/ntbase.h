@@ -81,6 +81,9 @@ extern MagickExport char
 extern MagickExport int
   Exit(int),
   IsWindows95(),
+  NTGhostscriptDLL(char *path, int path_length),
+  NTGhostscriptEXE(char *path, int path_length),
+  NTGhostscriptFonts(char *path, int path_length),
   NTSystemCommand(const char *);
 
 #if !defined(XS_VERSION)

@@ -791,6 +791,405 @@ char *NTGetLastError(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   N T G h o s t s c r i p t D L L                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%   Method NTGhostscriptDLL obtains the path to the latest Ghostscript DLL.
+%   The method returns False if a value is not obtained.
+%
+%  The format of the NTGhostscriptDLL method is:
+%
+%      int NTGhostscriptDLL(char *path, int path_length)
+%
+%  A description of each parameter follows:
+%
+%    o path: Pointer to buffer in which to return result.
+%
+%    o path_length: Length of buffer
+%
+*/
+
+/* Portions of the following code fall under the following copyright: */
+
+/* Copyright (C) 2000-2002, Ghostgum Software Pty Ltd.  All rights reserved.
+  
+  Permission is hereby granted, free of charge, to any person obtaining
+  a copy of this file ("Software"), to deal in the Software without 
+  restriction, including without limitation the rights to use, copy, 
+  modify, merge, publish, distribute, sublicense, and/or sell copies of 
+  this Software, and to permit persons to whom this file is furnished to 
+  do so, subject to the following conditions: 
+
+  This Software is distributed with NO WARRANTY OF ANY KIND.  No author
+  or distributor accepts any responsibility for the consequences of using it,
+  or for whether it serves any particular purpose or works at all, unless he
+  or she says so in writing.  
+
+  The above copyright notice and this permission notice shall be included
+  in all copies or substantial portions of the Software.
+*/
+
+#define GS_PRODUCT_AFPL "AFPL Ghostscript"
+#define GS_PRODUCT_ALADDIN "Aladdin Ghostscript"
+#define GS_PRODUCT_GNU "GNU Ghostscript"
+#define GS_MINIMUM_VERSION 550
+
+/* Get Ghostscript versions for given product.
+ * Store results starting at pver + 1 + offset.
+ * Returns total number of versions in pver.
+ */
+static int NTGhostscriptProductVersions(int *pver, int offset, 
+    const char *gs_productfamily)
+{
+  HKEY
+    hkey,
+    hkeyroot;
+
+  DWORD
+    cbData;
+
+  char
+    key[256],
+    *p;
+
+  int
+    n = 0,
+    ver;
+
+  sprintf(key, "Software\\%s", gs_productfamily);
+  hkeyroot = HKEY_LOCAL_MACHINE;
+  if (RegOpenKeyExA(hkeyroot, key, 0, KEY_READ, &hkey) == ERROR_SUCCESS) {
+    /* Now enumerate the keys */
+    cbData = sizeof(key) / sizeof(char);
+    while (RegEnumKeyA(hkey, n, key, cbData) == ERROR_SUCCESS) {
+      n++;
+      ver = 0;
+      p = key;
+      while (*p && (*p!='.')) {
+        ver = (ver * 10) + (*p - '0')*100;
+        p++;
+      }
+      if (*p == '.')
+        p++;
+      if (*p) {
+        ver += (*p - '0') * 10;
+        p++;
+      }
+      if (*p)
+        ver += (*p - '0');
+      if (n + offset < pver[0])
+        pver[n+offset] = ver;
+    }
+  }
+  return n+offset;
+}
+
+/* Query registry to find which versions of Ghostscript are installed.
+ * Return version numbers in an integer array.   
+ * On entry, the first element in the array must be the array size 
+ * in elements.
+ * If all is well, TRUE is returned.
+ * On exit, the first element is set to the number of Ghostscript
+ * versions installed, and subsequent elements to the version
+ * numbers of Ghostscript.
+ * e.g. on entry {5, 0, 0, 0, 0}, on exit {3, 550, 600, 596, 0}
+ * Returned version numbers may not be sorted.
+ *
+ * If Ghostscript is not installed at all, return FALSE
+ * and set pver[0] to 0.
+ * If the array is not large enough, return FALSE 
+ * and set pver[0] to the number of Ghostscript versions installed.
+ */
+
+static int NTGhostscriptEnumerateVersions(int *pver)
+{
+  int
+    n;
+
+  assert(pver != (int *) NULL);
+
+  n = NTGhostscriptProductVersions(pver, 0, GS_PRODUCT_AFPL);
+  n = NTGhostscriptProductVersions(pver, n, GS_PRODUCT_ALADDIN);
+  n = NTGhostscriptProductVersions(pver, n, GS_PRODUCT_GNU);
+
+  if (n >= pver[0]) {
+    pver[0] = n;
+    return FALSE;	/* too small */
+  }
+
+  if (n == 0) {
+    pver[0] = 0;
+    return FALSE;	/* not installed */
+  }
+  pver[0] = n;
+  return TRUE;
+}
+
+/*
+ * Get a named registry value.
+ * Key = hkeyroot\\key, named value = name.
+ * name, ptr, plen and return values are the same as in gp_getenv();
+ */
+
+static int  NTGetRegistryValue(HKEY hkeyroot, const char *key, const char *name, 
+    char *ptr, int *plen)
+{
+  HKEY
+    hkey;
+
+  DWORD
+    cbData,
+    keytype;
+
+  BYTE
+    b,
+    *bptr = (BYTE *)ptr;
+
+  LONG
+    rc;
+
+  if (RegOpenKeyExA(hkeyroot, key, 0, KEY_READ, &hkey)
+      == ERROR_SUCCESS) {
+    keytype = REG_SZ;
+    cbData = *plen;
+    if (bptr == (BYTE *)NULL)
+      bptr = &b;	/* Registry API won't return ERROR_MORE_DATA */
+    /* if ptr is NULL */
+    rc = RegQueryValueExA(hkey, (char *)name, 0, &keytype, bptr, &cbData);
+    RegCloseKey(hkey);
+    if (rc == ERROR_SUCCESS) {
+      *plen = cbData;
+      return 0;	/* found environment variable and copied it */
+    } else if (rc == ERROR_MORE_DATA) {
+      /* buffer wasn't large enough */
+      *plen = cbData;
+      return -1;
+    }
+  }
+  return 1;	/* not found */
+}
+
+static int NTGhostscriptGetProductString(int gs_revision, const char *name, 
+    char *ptr, int len, const char *gs_productfamily)
+{
+  /* If using Win32, look in the registry for a value with
+   * the given name.  The registry value will be under the key
+   * HKEY_CURRENT_USER\Software\AFPL Ghostscript\N.NN
+   * or if that fails under the key
+   * HKEY_LOCAL_MACHINE\Software\AFPL Ghostscript\N.NN
+   * where "AFPL Ghostscript" is actually gs_productfamily
+   * and N.NN is obtained from gs_revision.
+   */
+
+  int
+    code,
+    length;
+
+  char
+    dotversion[16],
+    key[256];
+
+  DWORD version = GetVersion();
+
+  if (((HIWORD(version) & 0x8000) != 0)
+      && ((HIWORD(version) & 0x4000) == 0)) {
+    /* Win32s */
+    return FALSE;
+  }
+
+  sprintf(dotversion, "%d.%02d", 
+          (int)(gs_revision / 100), (int)(gs_revision % 100));
+  sprintf(key, "Software\\%s\\%s", gs_productfamily, dotversion);
+
+  length = len;
+  code = NTGetRegistryValue(HKEY_CURRENT_USER, key, name, ptr, &length);
+  if ( code == 0 )
+    return TRUE;	/* found it */
+
+  length = len;
+  code = NTGetRegistryValue(HKEY_LOCAL_MACHINE, key, name, ptr, &length);
+
+  if ( code == 0 )
+    return TRUE;	/* found it */
+
+  return FALSE;
+}
+
+static int NTGhostscriptGetString(int gs_revision, const char *name, char *ptr, int len)
+{
+  if (NTGhostscriptGetProductString(gs_revision, name, ptr, len, GS_PRODUCT_AFPL))
+    return TRUE;
+  if (NTGhostscriptGetProductString(gs_revision, name, ptr, len, GS_PRODUCT_ALADDIN))
+    return TRUE;
+  if (NTGhostscriptGetProductString(gs_revision, name, ptr, len, GS_PRODUCT_GNU))
+    return TRUE;
+  return FALSE;
+}
+
+static int NTGetLatestGhostscript( void )
+{
+  int
+    count,
+    i,
+    gsver,
+    *ver;
+
+  DWORD version = GetVersion();
+  if ( ((HIWORD(version) & 0x8000)!=0) && ((HIWORD(version) & 0x4000)==0) )
+    return FALSE;  // win32s
+
+  count = 1;
+  NTGhostscriptEnumerateVersions(&count);
+  if (count < 1)
+    return FALSE;
+  ver = (int *)malloc((count+1)*sizeof(int));
+  if (ver == (int *)NULL)
+    return FALSE;
+  ver[0] = count+1;
+  if (!NTGhostscriptEnumerateVersions(ver)) {
+    free(ver);
+    return FALSE;
+  }
+  gsver = 0;
+  for (i=1; i<=ver[0]; i++) {
+    if (ver[i] > gsver)
+      gsver = ver[i];
+  }
+  free(ver);
+  return gsver;
+}
+
+MagickExport int NTGhostscriptDLL(char *path, int path_length)
+{
+  int
+    gsver;
+
+  char
+    buf[256];
+
+  gsver = NTGetLatestGhostscript();
+  if ((gsver == FALSE) || (gsver < GS_MINIMUM_VERSION))
+    return FALSE;
+    
+  if (!NTGhostscriptGetString(gsver, "GS_DLL", buf, sizeof(buf)))
+    return FALSE;
+
+  strncpy(path, buf, path_length-1);
+  return TRUE;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   N T G h o s t s c r i p t E X E                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%   Method NTGhostscriptEXE obtains the path to the latest Ghostscript
+%   executable.  The method returns False if a value is not obtained.
+%
+%  The format of the NTGhostscriptEXE method is:
+%
+%      int NTGhostscriptEXE(char *path, int path_length)
+%
+%  A description of each parameter follows:
+%
+%    o path: Pointer to buffer in which to return result.
+%
+%    o path_length: Length of buffer
+%
+*/
+MagickExport int NTGhostscriptEXE(char *path, int path_length)
+{
+  int
+    gsver;
+
+  char
+    buf[256],
+    *p;
+
+  gsver = NTGetLatestGhostscript();
+  if ((gsver == FALSE) || (gsver < GS_MINIMUM_VERSION))
+    return FALSE;
+    
+  if (!NTGhostscriptGetString(gsver, "GS_DLL", buf, sizeof(buf)))
+    return FALSE;
+
+  p = strrchr(buf, '\\');
+  if (p) {
+    p++;
+    *p = 0;
+    strncpy(p, "gswin32c.exe", sizeof(buf)-1-strlen(buf));
+    strncpy(path, buf, path_length-1);
+    return TRUE;
+  }
+
+  return FALSE;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   N T G h o s t s c r i p t F o n t s                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%   Method NTGhostscriptFonts obtains the path to the Ghostscript fonts.
+%   The method returns False if a value is not obtained.
+%
+%  The format of the NTGhostscriptFonts method is:
+%
+%      int NTGhostscriptFonts(char *path, int path_length)
+%
+%  A description of each parameter follows:
+%
+%    o path: Pointer to buffer in which to return result.
+%
+%    o path_length: Length of buffer
+%
+*/
+MagickExport int NTGhostscriptFonts(char *path, int path_length)
+{
+    int
+    gsver;
+
+  char
+    buf[256],
+    *p;
+
+  gsver = NTGetLatestGhostscript();
+  if ((gsver == FALSE) || (gsver < GS_MINIMUM_VERSION))
+    return FALSE;
+    
+  if (!NTGhostscriptGetString(gsver, "GS_LIB", buf, sizeof(buf)))
+    return FALSE;
+
+ p = strrchr(buf, ';');
+  if (p) {
+    p++;
+    strncpy(path,p,path_length-1);
+    return TRUE;
+  }
+
+  return FALSE;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   N T R e g i s t r y K e y L o o k u p                                     %
 %                                                                             %
 %                                                                             %

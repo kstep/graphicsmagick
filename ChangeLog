@@ -1,3 +1,9 @@
+2002-07-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+  * Added the Windows utility functions NTGhostscriptDLL(),
+    NTGhostscriptEXE(), and NTGhostscriptFonts(), to find the
+    DLL, executable, and font directory corresponding to the
+    newest Ghostscript install on the system.
+
 2002-07-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
   * Split nt.c into ntbase.c and ntfeature.c
   * Split nt.h into ntbase.h and ntfeature.h
