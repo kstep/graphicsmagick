@@ -15,7 +15,7 @@ extern "C" {
 #if !defined(CoderModuleDirectory)
 #define CoderModuleDirectory  ""
 #endif
-#define ModuleGlobExpression "*.so"
+#define ModuleGlobExpression "*.la"
 #else
 #if defined(_DEBUG)
 #define ModuleGlobExpression "IM_MOD_DB_*.dll"
