@@ -313,8 +313,7 @@ static unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
   (void) WriteBlobString(image,buffer);
   width=(density*width)/75;
   height=(density*height)/75;
-  if ((image->storage_class == DirectClass) ||
-      !IsGrayImage(image,&image->exception))
+  if (!IsGrayImage(image,&image->exception))
     {
       /*
         Write PCL color image.
@@ -367,7 +366,6 @@ static unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
       /*
         Write PCL monochrome image.
       */
-      SetImageType(image,GrayscaleType);
       monochrome_image=image;
       if ((width != image->columns) || (height != image->rows))
         {

@@ -3779,10 +3779,8 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
               }
             if (LocaleCompare("gray",option) == 0)
               {
+                (void) TransformRGBImage(*image,GRAYColorspace);
                 quantize_info.colorspace=GRAYColorspace;
-                if (quantize_info.number_colors == 0)
-                  quantize_info.number_colors=256;
-                quantize_info.tree_depth=8;
               }
             if (LocaleCompare("ohta",option) == 0)
               quantize_info.colorspace=OHTAColorspace;

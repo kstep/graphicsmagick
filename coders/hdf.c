@@ -681,7 +681,7 @@ static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
           Convert PseudoClass packet to HDF pixels.
         */
         q=hdf_pixels;
-        if (IsGrayImage(image ,  &image->exception ))
+        if (IsGrayImage(image,&image->exception))
           for (y=0; y < (long) image->rows; y++)
           {
             p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);

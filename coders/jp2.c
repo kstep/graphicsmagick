@@ -535,8 +535,7 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
   if (jp2_stream == (jas_stream_t *) NULL)
     ThrowWriterException(FileOpenWarning,"Unable to manage JP2 stream",image);
   number_components=image->matte ? 4 : 3;
-  if ((image->storage_class == PseudoClass) &&
-      IsGrayImage(image,&image->exception))
+  if (IsGrayImage(image,&image->exception))
     number_components=1;
   for (i=0; i < (long) number_components; i++)
   {
@@ -573,9 +572,11 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
       break;
     for (x=0; x < (long) image->columns; x++)
     {
-      jas_matrix_setv(pixels[0],x,(Quantum) Downscale(p->red));
-      if (number_components > 1)
+      if (number_components == 1)
+        jas_matrix_setv(pixels[0],x,(Quantum) Downscale(Intensity(p)));
+      else
         {
+          jas_matrix_setv(pixels[0],x,(Quantum) Downscale(p->red));
           jas_matrix_setv(pixels[1],x,(Quantum) Downscale(p->green));
           jas_matrix_setv(pixels[2],x,(Quantum) Downscale(p->blue));
           if (number_components > 3)
