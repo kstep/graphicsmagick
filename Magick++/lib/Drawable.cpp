@@ -18,6 +18,50 @@ using namespace std;
 
 #define DegreesToRadians(x) ((x)*3.14159265358979323846/180.0)
 
+//Write Coordinate to stream
+std::ostream& operator<<( std::ostream& stream_,
+			  const Magick::Coordinate& coordinate_)
+{
+  stream_ << coordinate_.x() << "," << coordinate_.y();
+  return stream_;
+}
+
+// Write DrawableBase to stream
+std::ostream& operator<< (std::ostream& stream_,
+			  const Magick::DrawableBase& drawable_)
+{
+  drawable_.print (stream_);
+  return stream_;
+}
+
+// Write Drawable to stream
+std::ostream& operator<< (std::ostream& stream_,
+			  const Magick::Drawable& drawable_)
+  
+{
+  if (drawable_.dp != 0)
+    stream_ << *drawable_.dp;
+  return stream_;
+}
+
+// Write VPathBase to stream
+std::ostream& operator<< (std::ostream& stream_,
+			  const Magick::VPathBase& drawable_)
+{
+  drawable_.print (stream_);
+  return stream_;
+}
+
+// Write Path to stream
+std::ostream& operator<< (std::ostream& stream_,
+			  const Magick::VPath& drawable_)
+  
+{
+  if (drawable_.dp != 0)
+    stream_ << *drawable_.dp;
+  return stream_;
+}
+
 //
 // Drawable Objects
 //
@@ -471,9 +515,8 @@ void Magick::DrawableTextAntialias::print (std::ostream& stream_) const
 // PathArcAbs
 //
 
-// Print coordinate to stream.
-std::ostream& operator<<( std::ostream& stream_, const Magick::PathArcArgs& args_
-)
+// Write PathArcArgs to stream
+std::ostream& operator<<( std::ostream& stream_, const Magick::PathArcArgs& args_ )
 {
   stream_ << args_.radiusX()
           << ","
@@ -498,7 +541,7 @@ std::ostream& operator<<( std::ostream& stream_, const Magick::PathArcArgs& args
 
   return stream_;
 }
-// Support a polymorphic print-to-stream operator
+// Path Arc
 void Magick::PathArcAbs::print (std::ostream& stream_) const
 {
   std::list<Magick::PathArcArgs>::const_iterator p = _coordinates.begin();
