@@ -2208,7 +2208,7 @@ namespace Magick
     // Obtain first entry in MagickInfo list
     MagickLib::ExceptionInfo exceptionInfo;
     MagickLib::GetExceptionInfo( &exceptionInfo );
-    MagickLib::MagickInfo *magickInfo = GetMagickInfo( "*", &exceptionInfo );
+    MagickLib::MagickInfo *magickInfo = MagickLib::GetMagickInfo( "*", &exceptionInfo );
     throwException( exceptionInfo );
     if( !magickInfo )
       throwExceptionExplicit(MagickLib::MissingDelegateError,
