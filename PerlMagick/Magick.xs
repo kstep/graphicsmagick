@@ -5853,7 +5853,7 @@ Morph(ref,...)
     image=SetupList(reference,&info,&reference_vector);
     if (!image)
       {
-        MagickWarning(OptionWarning,"No images to montage",NULL);
+        MagickWarning(OptionWarning,"No images to morph",NULL);
         goto MethodException;
       }
     info=GetPackageInfo((void *) av,info);
