@@ -1,3 +1,8 @@
+2005-01-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/tiff.c (ReadTIFFImage): Re-wrote TIFF reading code again
+	for more flexibility and performance.
+
 2005-01-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* configure.ac: Remove --disable-lzw option and HasLZW define.
@@ -9,7 +14,8 @@
 	v. Wachter to enable writing grayscale images as well as adding
 	more image type option smarts.
 	* coders/psd.c (ReadPSDImage): Fix stack overflow vulnerability
-	reported by Andrei Nigmatulin.
+	reported by Andrei Nigmatulin. See http://lwn.net/Articles/119713/
+	for details.
 
 2005-01-14  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
