@@ -383,8 +383,7 @@ static void UpdateSignature(SignatureInfo *signature_info,
       i=SignatureSize-signature_info->offset;
       if (i > (long) n)
         i=(long) n;
-      (void) memcpy(signature_info->message+signature_info->offset,
-        message,i);
+      (void) memcpy(signature_info->message+signature_info->offset,message,i);
       n-=i;
       message+=i;
       signature_info->offset+=i;
@@ -440,11 +439,11 @@ MagickExport unsigned int SignatureImage(Image *image)
   long
     y;
 
-  register long
-    x;
-
   register const PixelPacket
     *p;
+
+  register long
+    x;
 
   register unsigned char
     *q;
