@@ -218,9 +218,9 @@ static void Usage(void)
       "-remote command    execute a command in an remote display process",
       "-roll geometry     roll an image vertically or horizontally",
       "-rotate degrees    apply Paeth rotation to the image",
+      "-sample geometry   scale image with pixel sampling",
       "-scene value       image scene number",
       "-segment value     segment an image",
-      "-sample geometry   scale image with pixel sampling",
       "-sharpen geometry  sharpen the image",
       "-size geometry     width and height of image",
       "-texture filename  name of texture to tile onto the image background",
@@ -990,8 +990,7 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if ((LocaleCompare("mono",option+1) == 0) ||
-              (LocaleCompare("monochrome",option+1) == 0))
+            if (LocaleCompare("monochrome",option+1) == 0)
             {
               image_info->monochrome=(*option == '-');
               if (image_info->monochrome)
