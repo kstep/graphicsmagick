@@ -722,7 +722,8 @@ MagickExport DelegateInfo *SetDelegateInfo(DelegateInfo *delegate_info)
   if (delegate_info == (DelegateInfo *) NULL)
     {
       (void) ReadDelegates(DelegatePath,(char *) NULL);
-      (void) ReadDelegates((char *) getenv("DELEGATE_PATH"),DirectorySeparator);
+      (void) ReadDelegates((char *) getenv("MAGICK_DELEGATE_PATH"),
+        DirectorySeparator);
       (void) ReadDelegates((char *) getenv("HOME"),"/.magick/");
       (void) ReadDelegates((char *) NULL,(char *) NULL);
       atexit(DestroyDelegateInfo);

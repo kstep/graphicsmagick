@@ -397,8 +397,9 @@ static void InitializeModuleSearchPath(void)
       /*
         Add user specified path.
       */
-      if ((path=getenv("MAGICK_MODULE_PATH")) != NULL)
+      if (getenv("MAGICK_MODULE_PATH") != (char *) NULL)
         {
+          path=getenv("MAGICK_MODULE_PATH");
           while (path_index < max_path_elements)
           {
             path_end=strchr(path,DirectoryListSeparator);

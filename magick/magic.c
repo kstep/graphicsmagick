@@ -398,7 +398,7 @@ static unsigned int InitializeMagic(void)
   char
     path[MaxTextExtent];
 
-  if (getenv("DELEGATE_PATH") != (char *) NULL)
+  if (getenv("MAGICK_DELEGATE_PATH") != (char *) NULL)
     {
       (void) strcpy(path,getenv("DELEGATE_PATH"));
       (void) strcat(path,DirectorySeparator);

@@ -226,6 +226,8 @@ MagickExport MagickInfo *GetMagickInfo(const char *tag)
       RegisterYUVImage();
 #endif
       atexit(DestroyMagickInfo);
+      if (getenv("MAGIGK_CACHE_THRESHOLD") != (char *) NULL)
+        SetCacheThreshold(atoi(getenv("MAGIGK_CACHE_THRESHOLD")));
     }
   magick_info=magick_list;
   if ((tag != (char *) NULL) && (*tag != '\0'))

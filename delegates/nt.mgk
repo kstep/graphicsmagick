@@ -57,10 +57,10 @@
 # ImageMagick looks for the delegate configurarion file in this order:
 # 
 #     c:\ImageMagick\delegates.mgk
-#     DELEGATE_PATH\delegates.mgk
+#     MAGICK_DELEGATE_PATH\delegates.mgk
 #     delegates.mgk
 # 
-# where DELEGATE_PATH is an environment variable.
+# where MAGICK_DELEGATE_PATH is an environment variable.
 # 
 # Like entries in the later two directory overrides the specification in
 # the system-wide delegates file.
