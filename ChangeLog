@@ -1,3 +1,7 @@
+2003-05-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* version.sh : Update to reflect development status.
+
 2003-05-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* GraphicsMagick 1.0 Released.

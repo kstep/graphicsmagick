@@ -9,11 +9,12 @@ PACKAGE_NAME='GraphicsMagick'
 #
 # Package version.  This is is the numeric version suffix applied to
 # PACKAGE_NAME (e.g. "1.0").
-PACKAGE_VERSION='1.0'
+PACKAGE_VERSION='1.1'
 
 #
 # Formal Package release date
-PACKAGE_RELEASE_DATE="05/05/03"
+#PACKAGE_RELEASE_DATE="05/05/03"
+PACKAGE_RELEASE_DATE="unreleased"
 
 #
 # Package version addendum.  This is an arbitrary suffix (if any)
@@ -29,7 +30,7 @@ else
 fi
 
 # To hardcode the version addendum, uncomment the following line
-PACKAGE_VERSION_ADDENDUM=''
+#PACKAGE_VERSION_ADDENDUM=''
 
 #
 # Libtool library revision control info

@@ -6,7 +6,7 @@
 	<META NAME="GENERATOR" CONTENT="StarOffice 6.0  (Solaris Sparc)">
 	<META NAME="CREATED" CONTENT="20020908;16044300">
 	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
-	<META NAME="CHANGED" CONTENT="20030421;13563000">
+	<META NAME="CHANGED" CONTENT="20030506;293800">
 	<META NAME="DESCRIPTION" CONTENT="GraphicsMagick is a    robust collection of tools and libraries to read, write, and manipulate    an image in any of the more popular image formats including GIF, JPEG,    PNG, PDF, and Photo CD.  With GraphicsMagick you can create GIFs dynamically    making it suitable for Web applications.  You can also resize, rotate,    sharpen, color reduce, or add special effects to an image and save your    completed work in the same or  differing image format.">
 	<META NAME="KEYWORDS" CONTENT="GraphicsMagick, Image Magick, Image Magic,    PerlMagick, Perl Magick, Perl Magic, CineMagick, PixelMagick, Pixel Magic,    WebMagick, Web Magic, visualization, image processing, software     development, simulation, image, software, AniMagick, Animagic,    Magick++">
 	<STYLE>
@@ -30,9 +30,10 @@
 		<TR>
 			<TD WIDTH=81%>
 				<P ALIGN=LEFT>[<A HREF="../index.html">Home</A>] [<A HREF="mission.html">Mission
-				Statement</A>] [<A HREF="development.html">Development Process</A>] [<A HREF="contribute.html">Contribute</A>]
-				[<A HREF="download.html">Download</A>] [<A HREF="install.html">Installation</A>]
-				[<A HREF="">CVS</A>] [<A HREF="http://sourceforge.net/mail/?group_id=73485">Mailing
+				Statement</A>] [<A HREF="development.html">Development Process</A>]
+				[<A HREF="contribute.html">Contribute</A>] [<A HREF="download.html">Download</A>]
+				[<A HREF="install.html">Installation</A>] [<A HREF="">CVS</A>]
+				[<A HREF="http://sourceforge.net/mail/?group_id=73485">Mailing
 				Lists</A>] [<A HREF="FAQ.html">FAQ</A>] [<A HREF="formats.html">Formats</A>]
 				[<A HREF="NEWS.html">News</A> ] [<A HREF="Changelog.html">ChangeLog</A>]
 				[<A HREF="http://sourceforge.net/projects/graphicsmagick/">Report
@@ -268,11 +269,11 @@ CVS login is needed. </FONT>
 <P><FONT SIZE=3>To get the tree and place it in a sub-directory of
 your current working directory, issue the command: </FONT>
 </P>
-<PRE STYLE="margin-bottom: 0.2in"> cvs co -P -r GraphicsMagick-1_0 GraphicsMagick</PRE><P>
+<PRE STYLE="margin-bottom: 0.2in"> cvs co -P GraphicsMagick</PRE><P>
 <FONT SIZE=3>Or to save bandwidth get the compressed version, type: </FONT>
 </P>
-<PRE STYLE="margin-bottom: 0.2in"> cvs -z3 co -P -r GraphicsMagick-1_0 GraphicsMagick</PRE><P>
-<FONT SIZE=3>Note that the &quot;<FONT FACE="Courier New">-r
+<PRE STYLE="margin-bottom: 0.2in"> cvs -z3 co -P GraphicsMagick</PRE><P>
+<FONT SIZE=3>Note that adding &quot;<FONT FACE="Courier New">-r
 GraphicsMagick-1_0</FONT>&quot; requests the sources from the
 GraphicsMagick 1.0 development branch.</FONT></P>
 <P><FONT SIZE=3>To update the sources within a checked out directory
@@ -325,21 +326,20 @@ execute </FONT>
 		</TR>
 	</TABLE>
 </DL>
-<P><FONT SIZE=3>To check out the GraphicsMagick source for NT, try
-this commmand line: </FONT>
+<P><FONT SIZE=3>To check out the GraphicsMagick source for Microsoft
+Windows, try this command line: </FONT>
 </P>
 <PRE STYLE="margin-bottom: 0.2in"> cvs -z3 co -P -r GraphicsMagick-1_0 GraphicsMagick-NT</PRE><P>
-<FONT SIZE=3>If you require a specific release of GraphicsMagick, you
-may check it out like</FONT></P>
-<PRE STYLE="margin-bottom: 0.2in"> cvs -z3 co-r GraphicsMagick-1_0_1 -P GraphicsMagick</PRE><P>
-<FONT SIZE=3>where the &quot;<FONT FACE="Cumberland">GraphicsMagick-1_0_1</FONT>&quot;
-is the release tag. Note that this is just an illustration. This
-release tag may not actually exist. You can use</FONT></P>
+<FONT SIZE=3>If you require a specific release of GraphicsMagick
+(e.g. 1.0), you may check it out like</FONT></P>
+<PRE STYLE="margin-bottom: 0.2in"> cvs -z3 co-r GraphicsMagick-1_0_0 -P GraphicsMagick</PRE><P>
+<FONT SIZE=3>where the &quot;<FONT FACE="Cumberland">GraphicsMagick-1_0_0</FONT>&quot;
+is the release tag. You can use</FONT></P>
 <PRE STYLE="margin-bottom: 0.2in">  cvs status -v README.txt</PRE><P>
 <FONT SIZE=3>from within an existing checked out directory to see
 what branch and release tags are available.</FONT></P>
 <P><FONT SIZE=3>You can use</FONT></P>
-<PRE STYLE="margin-bottom: 0.2in"> cvs -z3 update -r GraphicsMagick-1_0_1</PRE><P>
+<PRE STYLE="margin-bottom: 0.2in"> cvs -z3 update -r GraphicsMagick-1_0_0</PRE><P>
 <FONT SIZE=3>from within an existing checked out directory to move it
 up (or down) to that branch or release tag.</FONT></P>
 <P><FONT SIZE=3>Checking out from release tag, or updating to a

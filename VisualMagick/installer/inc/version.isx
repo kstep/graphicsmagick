@@ -9,6 +9,6 @@
 #endif
 
 #define public MagickPackageName "GraphicsMagick"
-#define public MagickPackageVersion "1.0"
-#define public MagickPackageVersionAddendum ""
-#define public MagickPackageReleaseDate "05/05/03"
+#define public MagickPackageVersion "1.1"
+#define public MagickPackageVersionAddendum "-030506"
+#define public MagickPackageReleaseDate "unreleased"
