@@ -350,19 +350,34 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
     for (i=0; i < (long) number_components; i++)
       (void) jas_image_readcmpt(jp2_image,(short) i,0,(unsigned int) y,
         (unsigned int) image->columns,1,pixels[i]);
-    for (x=0; x < (long) image->columns; x++)
-    {
-      q->red=ScaleShortToQuantum(jas_matrix_getv(pixels[0],x));
-      q->green=q->red;
-      q->blue=q->red;
-      if (number_components > 1)
-        q->green=ScaleCharToQuantum(jas_matrix_getv(pixels[1],x));
-      if (number_components > 2)
-        q->blue=ScaleCharToQuantum(jas_matrix_getv(pixels[2],x));
-      if (number_components > 3)
-        q->opacity=ScaleCharToQuantum(jas_matrix_getv(pixels[3],x));
-      q++;
-    }
+    if (image->depth <= 8)
+      for (x=0; x < (long) image->columns; x++)
+      {
+        q->red=ScaleCharToQuantum(jas_matrix_getv(pixels[0],x));
+        q->green=q->red;
+        q->blue=q->red;
+        if (number_components > 1)
+          q->green=ScaleCharToQuantum(jas_matrix_getv(pixels[1],x));
+        if (number_components > 2)
+          q->blue=ScaleCharToQuantum(jas_matrix_getv(pixels[2],x));
+        if (number_components > 3)
+          q->opacity=ScaleCharToQuantum(jas_matrix_getv(pixels[3],x));
+        q++;
+      }
+		else
+      for (x=0; x < (long) image->columns; x++)
+      {
+        q->red=ScaleShortToQuantum(jas_matrix_getv(pixels[0],x));
+        q->green=q->red;
+        q->blue=q->red;
+        if (number_components > 1)
+          q->green=ScaleShortToQuantum(jas_matrix_getv(pixels[1],x));
+        if (number_components > 2)
+          q->blue=ScaleShortToQuantum(jas_matrix_getv(pixels[2],x));
+        if (number_components > 3)
+          q->opacity=ScaleShortToQuantum(jas_matrix_getv(pixels[3],x));
+        q++;
+      }
     if (!SyncImagePixels(image))
       break;
     if (image->previous == (Image *) NULL)
@@ -556,7 +571,7 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
     component_info[i].vstep=1;
     component_info[i].width=(unsigned int) image->columns;
     component_info[i].height=(unsigned int) image->rows;
-    component_info[i].prec=(unsigned int) image->depth;
+    component_info[i].prec=(unsigned int) image->depth <= 8 ? 8 : 16;
   }
   jp2_image=jas_image_create((short) number_components,component_info,
     number_components == 1 ? JAS_IMAGE_CM_GRAY : JAS_IMAGE_CM_RGB);
@@ -582,21 +597,38 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
     p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
     if (p == (const PixelPacket *) NULL)
       break;
-    for (x=0; x < (long) image->columns; x++)
-    {
-      if (number_components == 1)
-        jas_matrix_setv(pixels[0],x,
-          ScaleQuantumToShort(PixelIntensityToQuantum(p)));
-      else
-        {
-          jas_matrix_setv(pixels[0],x,ScaleQuantumToChar(p->red));
-          jas_matrix_setv(pixels[1],x,ScaleQuantumToChar(p->green));
-          jas_matrix_setv(pixels[2],x,ScaleQuantumToChar(p->blue));
-          if (number_components > 3)
-            jas_matrix_setv(pixels[3],x,ScaleQuantumToChar(p->opacity));
-        }
-      p++;
-    }
+    if (image->depth <= 8)
+      for (x=0; x < (long) image->columns; x++)
+      {
+        if (number_components == 1)
+          jas_matrix_setv(pixels[0],x,
+            ScaleQuantumToChar(PixelIntensityToQuantum(p)));
+        else
+          {
+            jas_matrix_setv(pixels[0],x,ScaleQuantumToChar(p->red));
+            jas_matrix_setv(pixels[1],x,ScaleQuantumToChar(p->green));
+            jas_matrix_setv(pixels[2],x,ScaleQuantumToChar(p->blue));
+            if (number_components > 3)
+              jas_matrix_setv(pixels[3],x,ScaleQuantumToChar(p->opacity));
+          }
+        p++;
+      }
+		else
+      for (x=0; x < (long) image->columns; x++)
+      {
+        if (number_components == 1)
+          jas_matrix_setv(pixels[0],x,
+            ScaleQuantumToShort(PixelIntensityToQuantum(p)));
+        else
+          {
+            jas_matrix_setv(pixels[0],x,ScaleQuantumToShort(p->red));
+            jas_matrix_setv(pixels[1],x,ScaleQuantumToShort(p->green));
+            jas_matrix_setv(pixels[2],x,ScaleQuantumToShort(p->blue));
+            if (number_components > 3)
+              jas_matrix_setv(pixels[3],x,ScaleQuantumToShort(p->opacity));
+          }
+        p++;
+      }
     for (i=0; i < (long) number_components; i++)
       (void) jas_image_writecmpt(jp2_image,(short) i,0,(unsigned int) y,
         (unsigned int) image->columns,1,pixels[i]);
