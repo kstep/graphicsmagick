@@ -634,15 +634,6 @@ static unsigned int PushImageRLEPixels(Image *image,
                       quantum|=(*p++);
                       pixel.blue=ScaleLongToQuantum(quantum);
                       length=(*p++)+1;
-#if 0
-                      {
-                        char
-                          tuple[MaxTextExtent];
-
-                        GetColorTuple(&pixel,32,False,True,tuple);
-                        printf("%i #%s\n", length,tuple);
-                      }
-#endif
                     }
                   length--;
                   *q++=pixel;
