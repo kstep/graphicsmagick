@@ -1490,6 +1490,7 @@ int main(int argc,char **argv)
       XSync(display,False);
     }
   DestroyDelegateInfo();
+  DestroyMagickInfo();
   FreeMemory(argv);
   Exit(0);
 #endif

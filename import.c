@@ -862,6 +862,7 @@ int main(int argc,char **argv)
     DescribeImage(image,stderr,False);
   DestroyImages(image);
   DestroyDelegateInfo();
+  DestroyMagickInfo();
   FreeMemory(argv);
   Exit(status ? 0 : errno);
 #endif

@@ -966,6 +966,7 @@ int main(int argc,char **argv)
       }
     }
   DestroyDelegateInfo();
+  DestroyMagickInfo();
   FreeMemory(argv);
   Exit(0);
 #endif

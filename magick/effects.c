@@ -1240,7 +1240,7 @@ Export Image *MedianFilterImage(Image *image,const unsigned int radius)
     y;
 
   PixelPacket
-    *window;
+    *neighbors;
 
   register int
     i,
@@ -1250,7 +1250,7 @@ Export Image *MedianFilterImage(Image *image,const unsigned int radius)
     *p,
     *q,
     *s,
-    *w;
+    *t;
 
   assert(image != (Image *) NULL);
   if ((image->columns < (2*radius+1)) || (image->rows < (2*radius+1)))
@@ -1271,11 +1271,11 @@ Export Image *MedianFilterImage(Image *image,const unsigned int radius)
     }
   median_image->class=DirectClass;
   /*
-    Allocate window and scanline.
+    Allocate neighbors and scanline.
   */
-  window=(PixelPacket *)
-    AllocateMemory((2*radius+1)*(2*radius+1)*sizeof(PixelPacket));
-  if (window == (PixelPacket *) NULL)
+  neighbors=(PixelPacket *)
+    AllocateMemory(M_PI*(radius+1)*(radius+1)*sizeof(PixelPacket));
+  if (neighbors == (PixelPacket *) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Unable to reduce noise",
         "Memory allocation failed");
@@ -1298,23 +1298,23 @@ Export Image *MedianFilterImage(Image *image,const unsigned int radius)
       /*
         Determine most frequent color.
       */
-      w=window;
+      t=neighbors;
       for (i=0; i < (int) radius; i++)
       {
         s=p-(radius-i)*image->columns-i-1;
         for (j=0; j < (2*i+1); j++)
-          *w++=(*s++);
+          *t++=(*s++);
         s=p+(radius-i)*image->columns-i-1;
         for (j=0; j < (2*i+1); j++)
-          *w++=(*s++);
+          *t++=(*s++);
       }
       s=p-radius;
       for (j=0; j < (int) (radius+radius+1); j++)
-        *w++=(*s++);
-      qsort((void *) window,w-window,sizeof(PixelPacket),
+        *t++=(*s++);
+      qsort((void *) neighbors,t-neighbors,sizeof(PixelPacket),
         (int (*)(const void *, const void *)) MedianCompare);
-      w-=(w-window)/2;
-      *q=(*w);
+      t-=(t-neighbors)/2;
+      *q=(*t);
       p++;
       q++;
     }
@@ -1323,7 +1323,7 @@ Export Image *MedianFilterImage(Image *image,const unsigned int radius)
     if (QuantumTick(y,image->rows))
       ProgressMonitor(MedianFilterImageText,y,image->rows);
   }
-  FreeMemory(window);
+  FreeMemory(neighbors);
   return(median_image);
 }
 

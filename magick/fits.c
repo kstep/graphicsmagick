@@ -524,8 +524,7 @@ Export unsigned int WriteFITSImage(const ImageInfo *image_info,Image *image)
     y;
 
   register int
-    i,
-    x;
+    i;
 
   register PixelPacket
     *p;

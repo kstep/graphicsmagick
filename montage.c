@@ -1186,6 +1186,7 @@ int main(int argc,char **argv)
     DescribeImage(montage_image,stderr,False);
   DestroyImages(montage_image);
   DestroyDelegateInfo();
+  DestroyMagickInfo();
   FreeMemory(argv);
   Exit(status ? 0 : errno);
   return(False);

@@ -67,6 +67,44 @@ static MagickInfo
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   D e s t r o y M a g i c k I n f o                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method DestroyMagickInfo deallocates memory associated MagickInfo list.
+%
+%  The format of the DestroyMagickInfo method is:
+%
+%      void DestroyMagickInfo()
+%
+*/
+Export void DestroyMagickInfo()
+{
+  MagickInfo
+    *entry;
+
+  register MagickInfo
+    *p;
+
+  for (p=GetMagickInfo((char *) NULL); p != (MagickInfo *) NULL; )
+  {
+    entry=p;
+    p=p->next;
+    if (entry->tag != (char *) NULL)
+      FreeMemory(entry->tag);
+    if (entry->description != (char *) NULL)
+      FreeMemory(entry->description);
+    FreeMemory(entry);
+  }
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   G e t M a g i c k I n f o                                                 %
 %                                                                             %
 %                                                                             %
@@ -648,22 +686,22 @@ Export unsigned int UnregisterMagickInfo(const char *tag)
   for (p=GetMagickInfo((char *) NULL); p != (MagickInfo *) NULL; p=p->next)
   {
     if (Latin1Compare(p->tag,tag) == 0)
-    {
-      if (p->tag != (char *) NULL)
-	FreeMemory(p->tag);
-      if (p->description != (char *) NULL)
-	FreeMemory(p->description);
-      if (p->previous != (MagickInfo *) NULL)
-         p->previous->next=p->next;
-      else
-        {
-          magick_info=p->next;
-          p->next->previous=(MagickInfo *) NULL;
-        }
-      if (p->next != (MagickInfo*) NULL)
-	p->next->previous=p->previous;
-      FreeMemory(p);
-      return(True);
+      {
+        if (p->tag != (char *) NULL)
+          FreeMemory(p->tag);
+        if (p->description != (char *) NULL)
+          FreeMemory(p->description);
+        if (p->previous != (MagickInfo *) NULL)
+           p->previous->next=p->next;
+        else
+          {
+            magick_info=p->next;
+            p->next->previous=(MagickInfo *) NULL;
+          }
+        if (p->next != (MagickInfo*) NULL)
+          p->next->previous=p->previous;
+        FreeMemory(p);
+        return(True);
     }
   }
   return(False);
