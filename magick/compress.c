@@ -865,7 +865,8 @@ MagickExport unsigned int HuffmanEncodeImage(const ImageInfo *image_info,
 %
 %  The format of the Huffman2DEncodeImage method is:
 %
-%      unsigned int Huffman2DEncodeImage(ImageInfo *image_info,Image *image)
+%      unsigned int Huffman2DEncodeImage(const ImageInfo *image_info,
+%        Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -877,7 +878,7 @@ MagickExport unsigned int HuffmanEncodeImage(const ImageInfo *image_info,
 %    o image: The image.
 %
 */
-MagickExport unsigned int Huffman2DEncodeImage(ImageInfo *image_info,
+MagickExport unsigned int Huffman2DEncodeImage(const ImageInfo *image_info,
   Image *image)
 {
   char

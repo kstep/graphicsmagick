@@ -509,9 +509,9 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
       case FaxCompression:
       {
         if (LocaleCompare(CCITTParam,"0") == 0)
-          (void) HuffmanEncodeImage((ImageInfo *) image_info,image);
+          (void) HuffmanEncodeImage(image_info,image);
         else
-          (void) Huffman2DEncodeImage((ImageInfo *) image_info,image);
+          (void) Huffman2DEncodeImage(image_info,image);
         break;
       }
       case NoCompression:

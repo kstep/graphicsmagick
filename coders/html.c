@@ -272,8 +272,6 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
   (void) strncpy(image->filename,image_info->filename,MaxTextExtent-1);
   (void) strncpy(filename,image->filename,MaxTextExtent-1);
   clone_info=CloneImageInfo(image_info);
-  if (clone_info == (ImageInfo *) NULL)
-    ThrowWriterException(FileOpenWarning,"Unable to allocate memory",image);
   clone_info->adjoin=True;
   status=True;
   if (LocaleCompare(image_info->magick,"SHTML") != 0)

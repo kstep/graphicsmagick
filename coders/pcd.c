@@ -402,8 +402,6 @@ static Image *OverviewImage(const ImageInfo *image_info,Image *image,
     Create image tiles.
   */
   clone_info=CloneImageInfo(image_info);
-  if (clone_info == (ImageInfo *) NULL)
-    return((Image *) NULL);
   commands[0]=SetClientName((char *) NULL);
   commands[1]=(char *) "-label";
   commands[2]=(char *) DefaultTileLabel;

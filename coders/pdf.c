@@ -302,12 +302,13 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     FormatString(options,"-dFirstPage=%u -dLastPage=%u",
       image_info->subimage+1,image_info->subimage+image_info->subrange);
   (void) strncpy(filename,image_info->filename,MaxTextExtent-1);
-  TemporaryFilename((char *) image_info->filename);
-  FormatString(command,delegate_info->commands,image_info->antialias ? 4 : 1,
-    image_info->antialias ? 4 : 1,geometry,density,options,image_info->filename,
+  clone_info=CloneImageInfo(image_info);
+  TemporaryFilename(clone_info->filename);
+  FormatString(command,delegate_info->commands,clone_info->antialias ? 4 : 1,
+    clone_info->antialias ? 4 : 1,geometry,density,options,clone_info->filename,
     postscript_filename);
   MagickMonitor(RenderPostscriptText,0,8);
-  status=ExecutePostscriptInterpreter(image_info->verbose,command);
+  status=ExecutePostscriptInterpreter(clone_info->verbose,command);
   MagickMonitor(RenderPostscriptText,7,8);
   if (status)
     {
@@ -316,20 +317,18 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         image)
     }
   DestroyImage(image);
-  clone_info=CloneImageInfo(image_info);
   DetachBlob(clone_info->blob);
   image=ReadImage(clone_info,exception);
-  DestroyImageInfo(clone_info);
   (void) remove(postscript_filename);
-  (void) remove(image_info->filename);
+  (void) remove(clone_info->filename);
+  DestroyImageInfo(clone_info);
   if (image == (Image *) NULL)
     ThrowReaderException(CorruptImageWarning,
       "Portable Document delegate failed",image);
-  (void) strncpy((char *) image_info->filename,filename,MaxTextExtent-1);
   do
   {
     (void) strcpy(image->magick,"PDF");
-    (void) strncpy(filename,image_info->filename,MaxTextExtent-1);
+    (void) strncpy(image->filename,filename,MaxTextExtent-1);
     if (!portrait)
       {
         Image
@@ -916,9 +915,9 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     if (compression == FaxCompression)
       {
         if (LocaleCompare(CCITTParam,"0") == 0)
-          (void) HuffmanEncodeImage((ImageInfo *) image_info,image);
+          (void) HuffmanEncodeImage(image_info,image);
         else
-          (void) Huffman2DEncodeImage((ImageInfo *) image_info,image);
+          (void) Huffman2DEncodeImage(image_info,image);
       }
     else
       if (image->storage_class == DirectClass)
@@ -1212,9 +1211,9 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
         *tile_image->blob=(*image->blob);
         tile_image->file=image->file;
         if (LocaleCompare(CCITTParam,"0") == 0)
-          (void) HuffmanEncodeImage((ImageInfo *) image_info,tile_image);
+          (void) HuffmanEncodeImage(image_info,tile_image);
         else
-          (void) Huffman2DEncodeImage((ImageInfo *) image_info,tile_image);
+          (void) Huffman2DEncodeImage(image_info,tile_image);
         *image->blob=(*tile_image->blob);
         image->file=tile_image->file;
       }

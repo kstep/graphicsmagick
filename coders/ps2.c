@@ -626,9 +626,9 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
         (void) WriteBlobByte(image,'0');
         (void) WriteBlobByte(image,'\n');
         if (LocaleCompare(CCITTParam,"0") == 0)
-          (void) HuffmanEncodeImage((ImageInfo *) image_info,image);
+          (void) HuffmanEncodeImage(image_info,image);
         else
-          (void) Huffman2DEncodeImage((ImageInfo *) image_info,image);
+          (void) Huffman2DEncodeImage(image_info,image);
       }
     else
       if (image->storage_class == DirectClass)

@@ -347,7 +347,7 @@ static Image *ReadEPTImage(const ImageInfo *image_info,ExceptionInfo *exception)
         Ghostscript has failed-- try the Display Postscript Extension.
       */
       (void) FormatString((char *) image_info->filename,"dps:%.1024s",filename);
-      image=ReadImage((ImageInfo *) image_info,exception);
+      image=ReadImage(image_info,exception);
       if (image != (Image *) NULL)
         return(image);
       ThrowReaderException(CorruptImageWarning,"Postscript delegate failed",
@@ -361,11 +361,10 @@ static Image *ReadEPTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (image == (Image *) NULL)
     ThrowReaderException(CorruptImageWarning,"Postscript delegate failed",
       image);
-  (void) strncpy(image_info->filename,filename,MaxTextExtent-1);
   do
   {
     (void) strcpy(image->magick,"PS");
-    (void) strncpy(image->filename,image_info->filename,MaxTextExtent-1);
+    (void) strncpy(image->filename,filename,MaxTextExtent-1);
     next_image=image->next;
     if (next_image != (Image *) NULL)
       image=next_image;
