@@ -1,3 +1,6 @@
+2001-10-30  Cristy  <cristy@mystic.es.dupont.com>
+	* Added support for On-the-air bitmap.
+
 2001-10-29  Cristy  <cristy@mystic.es.dupont.com>
 	* ImageMagick now has a registry for storing image blobs.
 
