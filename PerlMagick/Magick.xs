@@ -5710,6 +5710,7 @@ Montage(ref,...)
               montage_info->border_width=SvIV(ST(i));
               break;
             }
+          break;
         }
         case 'C':
         case 'c':
@@ -5795,7 +5796,7 @@ Montage(ref,...)
              montage_info->gravity=(GravityType) in;
              break;
            }
-         break;
+          break;
         }
         case 'L':
         case 'l':
@@ -6376,8 +6377,7 @@ QueryColorname(ref,...)
       *info;
 
     SV
-      *reference,  /* reference is the SV* of ref=SvIV(reference) */
-      *s;
+      *reference;  /* reference is the SV* of ref=SvIV(reference) */
 
     EXTEND(sp,items-1);
     error_list=newSVpv("",0);
@@ -6389,9 +6389,249 @@ QueryColorname(ref,...)
     {
       (void) QueryColorDatabase(SvPV(ST(i),na),&target_color);
       (void) QueryColorname(image,&target_color,AllCompliance,message);
-      s=sv_2mortal(newSVpv(message,0));
-      PUSHs(s);
+      PUSHs(sv_2mortal(newSVpv(message,0)));
     }
+    SvREFCNT_dec(error_list);
+    error_list=NULL;
+  }
+
+#
+###############################################################################
+#                                                                             #
+#                                                                             #
+#                                                                             #
+#   Q u e r y C o n f i g u r a t i o n                                       #
+#                                                                             #
+#                                                                             #
+#                                                                             #
+###############################################################################
+#
+#
+void
+QueryConfigration(ref,...)
+  Image::Magick ref=NO_INIT
+  ALIAS:
+    queryconfiguration = 1
+  PPCODE:
+  {
+    AV
+      *av;
+
+    char
+      *attribute,
+      message[MaxTextExtent],
+      *value;
+
+    ExceptionInfo
+      exception;
+
+    register int
+      i;
+
+    struct PackageInfo
+      *info;
+
+    SV
+      *reference;  /* reference is the SV* of ref=SvIV(reference) */
+
+    EXTEND(sp,items-1);
+    error_list=newSVpv("",0);
+    reference=SvRV(ST(0));
+    av=(AV *) reference;
+    info=GetPackageInfo((void *) av,(struct PackageInfo *) NULL);
+    EXTEND(sp,7*items-1);
+    GetExceptionInfo(&exception);
+    for (i=2; i < items; i+=2)
+    {
+      attribute=(char *) SvPV(ST(i-1),na);
+      value=(char *) SvPV(ST(i),na);
+      switch (*attribute)
+      {
+        case 'c':
+        case 'C':
+        {
+          if (strEQcase(attribute,"color"))
+            {
+              register ColorInfo
+                *p;
+
+              p=GetColorInfo(value,&exception);
+              if (p == (ColorInfo *) NULL)
+                break;
+              if (LocalCompare(value,"*") == 0)
+                {
+                  for ( ; p != (ColorInfo *) NULL; p=p->next)
+                  {
+                    *message='\0';
+                    if (p->name != (char *) NULL)
+                      (void) strcpy(message,p->name);
+                    PUSHs(sv_2mortal(newSVpv(message,0)));
+                  }
+                  break;
+                }
+              FormatString(message,"%u",p->color.red);
+              PUSHs(sv_2mortal(newSVpv(message,0)));
+              FormatString(message,"%u",p->color.green);
+              PUSHs(sv_2mortal(newSVpv(message,0)));
+              FormatString(message,"%u",p->color.blue);
+              PUSHs(sv_2mortal(newSVpv(message,0)));
+              break;
+            }
+          break;
+        }
+        case 'f':
+        case 'F':
+        {
+          if (strEQcase(attribute,"font"))
+            {
+              register FontInfo
+                *p;
+
+              p=GetFontInfo(value,&exception);
+              if (p == (FontInfo *) NULL)
+                break;
+              if (LocalCompare(value,"*") == 0)
+                {
+                  for ( ; p != (FontInfo *) NULL; p=p->next)
+                  {
+                    *message='\0';
+                    if (p->name != (char *) NULL)
+                      (void) strcpy(message,p->name);
+                    PUSHs(sv_2mortal(newSVpv(message,0)));
+                  }
+                  break;
+                }
+              *message='\0';
+              if (p->family != (char *) NULL)
+                (void) strcpy(message,p->family);
+              PUSHs(sv_2mortal(newSVpv(message,0)));
+              *message='\0';
+              if (p->alias != (char *) NULL)
+                (void) strcpy(message,p->alias);
+              PUSHs(sv_2mortal(newSVpv(message,0)));
+              *message='\0';
+              if (p->description != (char *) NULL)
+                (void) strcpy(message,p->description);
+              PUSHs(sv_2mortal(newSVpv(message,0)));
+              *message='\0';
+              if (p->format != (char *) NULL)
+                (void) strcpy(message,p->format);
+              PUSHs(sv_2mortal(newSVpv(message,0)));
+              *message='\0';
+              if (p->weight != (char *) NULL)
+                (void) strcpy(message,p->weight);
+              PUSHs(sv_2mortal(newSVpv(message,0)));
+              *message='\0';
+              if (p->weight != (char *) NULL)
+                (void) strcpy(message,p->weight);
+              PUSHs(sv_2mortal(newSVpv(message,0)));
+              *message='\0';
+              if (p->glyphs != (char *) NULL)
+                (void) strcpy(message,p->glyphs);
+              PUSHs(sv_2mortal(newSVpv(message,0)));
+              *message='\0';
+              if (p->metrics != (char *) NULL)
+                (void) strcpy(message,p->metrics);
+              PUSHs(sv_2mortal(newSVpv(message,0)));
+              *message='\0';
+              if (p->version != (char *) NULL)
+                (void) strcpy(message,p->version);
+              PUSHs(sv_2mortal(newSVpv(message,0)));
+              break;
+            }
+          if (strEQcase(attribute,"format"))
+            {
+              register MagickInfo
+                *p;
+
+              p=GetMagickInfo(value,&exception);
+              if (p == (MagickInfo *) NULL)
+                break;
+              if (LocalCompare(value,"*") == 0)
+                {
+                  for ( ; p != (MagickInfo *) NULL; p=p->next)
+                  {
+                    *message='\0';
+                    if (p->tag != (char *) NULL)
+                      (void) strcpy(message,p->tag);
+                    PUSHs(sv_2mortal(newSVpv(message,0)));
+                  }
+                  break;
+                }
+              PUSHs(sv_2mortal(newSVpv(p->adjoin ? "True" : "False",0)));
+              PUSHs(sv_2mortal(newSVpv(p->blob_support ? "True" : "False",0)));
+              PUSHs(sv_2mortal(newSVpv(p->raw ? "True" : "False",0)));
+              *message='\0';
+              if (p->description != (char *) NULL)
+                (void) strcpy(message,p->description);
+              PUSHs(sv_2mortal(newSVpv(message,0)));
+              *message='\0';
+              if (p->module != (char *) NULL)
+                (void) strcpy(message,p->module);
+              PUSHs(sv_2mortal(newSVpv(message,0)));
+              break;
+            }
+          break;
+        }
+        case 'm':
+        case 'M':
+        {
+          if (strEQcase(attribute,"magic"))
+            {
+              register MagicInfo
+                *p;
+
+              p=GetMagicInfo((unsigned char *) value,Extent(value),&exception);
+              if (p == (MagicInfo *) NULL)
+                break;
+              if (LocalCompare(value,"*") == 0)
+                {
+                  for ( ; p != (MagicInfo *) NULL; p=p->next)
+                  {
+                    *message='\0';
+                    if (p->name != (char *) NULL)
+                      (void) strcpy(message,p->name);
+                    PUSHs(sv_2mortal(newSVpv(message,0)));
+                  }
+                  break;
+                }
+              FormatString(message,"%u",p->offset);
+              PUSHs(sv_2mortal(newSVpv(message,0)));
+              *message='\0';
+              if (p->target != (char *) NULL)
+                (void) strcpy(message,p->target);
+              PUSHs(sv_2mortal(newSVpv(message,0)));
+              break;
+            }
+          if (strEQcase(attribute,"module"))
+            {
+              register ModuleAlias
+                *p;
+
+              p=GetModuleAlias(value,&exception);
+              if (p == (ModuleAlias *) NULL)
+                break;
+              if (LocalCompare(value,"*") == 0)
+                {
+                  for ( ; p != (ModuleAlias *) NULL; p=p->next)
+                  {
+                    *message='\0';
+                    if (p->name != (char *) NULL)
+                      (void) strcpy(message,p->name);
+                    PUSHs(sv_2mortal(newSVpv(message,0)));
+                  }
+                  break;
+                }
+              PUSHs(sv_2mortal(newSVpv(p->alias,0)));
+              break;
+            }
+          break;
+        }
+      }
+      MagickWarning(OptionWarning,"Invalid attribute",attribute);
+    }
+
+  MethodException:
     SvREFCNT_dec(error_list);
     error_list=NULL;
   }
@@ -6460,7 +6700,7 @@ QueryFontMetrics(ref,...)
     image=SetupList(reference,&info,(SV ***) NULL);
     if (!image)
       {
-        MagickWarning(OptionWarning,"No images to animate",NULL);
+        MagickWarning(OptionWarning,"No image to query",NULL);
         goto MethodException;
       }
     draw_info=CloneDrawInfo(info->image_info,(DrawInfo *) NULL);
@@ -6592,9 +6832,8 @@ QueryFontMetrics(ref,...)
             }
           break;
         }
-        default:
-          break;
       }
+      MagickWarning(OptionWarning,"Invalid attribute",attribute);
     }
     draw_info->affine.sx=current.sx*affine.sx+current.ry*affine.rx;
     draw_info->affine.rx=current.rx*affine.sx+current.sy*affine.rx;
