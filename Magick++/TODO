@@ -8,9 +8,6 @@ Items large and small which remain to be completed
 * Port to Sun Workshop 5.0 under Solaris.  The library compiles now
   but some of the tests and demos do not.
 
-The colorize method is broken since the color parameter has changed to
-an opacity parameter of the form R/G/B.
-
 Add support for ConstituteImage() and DispatchImage().
 
 Items which will require the aid of volunteers.  Volunteers?
