@@ -1,6 +1,8 @@
 2002-08-15  Cristy  <cristy@mystic.es.dupont.com>
   * Finished 32-Bit QuantumDepth support.
 	* Subimage memory leak fixed (bug report by William Radcliffe).
+	* Fixed subimage specification memory overrun.
+	* Subimage specification did not work properly under Windows.
 
 2002-08-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
   * Fix problem with TEXT encoder.  It was prepending the
