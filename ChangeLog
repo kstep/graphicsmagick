@@ -1,3 +1,8 @@
+2004-05-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/image.c (SetImageClipMask): Consistently report any
+	exceptions to image->exception.
+
 2004-05-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* Makefile.am: Update to Automake 1.8.5.

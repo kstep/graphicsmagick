@@ -5993,7 +5993,6 @@ MagickExport MagickPassFail SetImageChannelDepth(Image *image,
 */
 MagickExport MagickPassFail SetImageClipMask(Image *image,const Image *clip_mask)
 {
-  ExceptionInfo exception_info;
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   if (clip_mask != (const Image *) NULL)
@@ -6002,14 +6001,10 @@ MagickExport MagickPassFail SetImageClipMask(Image *image,const Image *clip_mask
       ThrowBinaryException3(ImageError,UnableToSetClipMask,ImageSizeDiffers);
   if (image->clip_mask != (Image *) NULL)
     DestroyImage(image->clip_mask);
+  image->clip_mask=(Image *) NULL;
   if (clip_mask == (Image *) NULL)
-    {
-      image->clip_mask=(Image *) NULL;
-      return(True);
-    }
-  GetExceptionInfo( &exception_info );
-  image->clip_mask=CloneImage(clip_mask,0,0,True,&exception_info);
-  DestroyExceptionInfo( &exception_info );
+    return(MagickPass);
+  image->clip_mask=CloneImage(clip_mask,0,0,True,&image->exception);
   if (image->clip_mask)
     return (MagickPass);
   return (MagickFail);
