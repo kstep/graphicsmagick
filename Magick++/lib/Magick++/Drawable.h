@@ -8,13 +8,12 @@
 #if !defined(Drawable_header)
 #define Drawable_header
 
+#include "Magick++/Include.h"
+
 #include <string>
 #include <list>
-#include <iosfwd> // iostreams forward declarations
-
 #include "Magick++/Color.h"
 #include "Magick++/Geometry.h"
-#include "Magick++/Include.h"
 
 namespace Magick
 {

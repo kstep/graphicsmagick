@@ -7,6 +7,11 @@
 #ifndef MagickInclude_header
 #define MagickInclude_header
 
+// Have standard <iosfwd>
+#define HAVE_IOSFWD 1
+// Have <sys/types.h>
+#define HAVE_SYS_TYPES_H 1
+
 //
 // Include ImageMagick headers into namespace "MagickLib". If
 // MAGICK_IMPLEMENTATION is defined, include ImageMagick development
@@ -22,14 +27,37 @@
 #include <vcl.h>
 #endif // defined(__BORLANDC__)
 
+#if defined(macintosh)
+#  undef HAVE_IOSFWD
+#  undef HAVE_SYS_TYPES_H
+#  include <stat.mac.h>  // Needed for off_t
+#endif // defined(macintosh)
+
 // Needed for stdio FILE
 #include <stdio.h>
 
 // Needed for time_t
 #include <time.h>
 
-// Needed for off_t
+// Needed for off_t on Unix and Windows
+#if defined(HAVE_SYS_TYPES_H)
 #include <sys/types.h>
+#endif
+
+// Forward declarations for iostream classes
+#if defined(HAVE_IOSFWD)
+# include <iosfwd>
+#else
+class std::ios;
+class std::streambuf;
+class std::istream;
+class std::ostream;
+class std::iostream;
+class std::filebuf;
+class std::ifstream;
+class std::ofstream;
+class std::fstream;
+#endif // HAVE_IOSFWD
 
 namespace MagickLib
 {
@@ -302,7 +330,6 @@ namespace Magick
   using MagickLib::DestroyMagickInfo;
   using MagickLib::DestroyPostscriptGeometry;
   using MagickLib::DestroyQuantizeInfo;
-  using MagickLib::DirectClass;
   using MagickLib::DisplayImages;
   using MagickLib::DrawImage;
   using MagickLib::DrawInfo;

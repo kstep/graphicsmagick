@@ -12,10 +12,10 @@
 #if !defined(Exception_header)
 #define Exception_header
 
+#include "Magick++/Include.h"
+
 #include <string>
 #include <exception>
-#include <iosfwd> // iostreams forward declarations
-#include "Magick++/Include.h"
 
 namespace Magick
 {

@@ -10,10 +10,8 @@
 #if !defined (Geometry_header)
 #define Geometry_header
 
-#include <string>
-#include <iosfwd> // iostreams forward declarations
-
 #include "Magick++/Include.h"
+#include <string>
 
 namespace Magick
 {
