@@ -88,7 +88,7 @@ Export Image *ReadPLASMAImage(const ImageInfo *image_info)
 #define PlasmaImageText  "  Applying image plasma...  "
 #define PlasmaPixel(x,y) \
 { \
-  q=GetPixelCache(image,x,y,1,1); \
+  q=GetPixelCache(image,(int) x,(int) y,1,1); \
   if (q != (PixelPacket *) NULL) \
     { \
       q->red=(Quantum) (rand() % (MaxRGB+1)); \

@@ -32,13 +32,13 @@ extern Export off_t
 
 extern Export size_t
   LSBFirstWriteLong(Image *,const unsigned long),
-  LSBFirstWriteShort(Image *,const unsigned short),
+  LSBFirstWriteShort(Image *,const unsigned int),
   MSBFirstWriteLong(Image *,const unsigned long),
-  MSBFirstWriteShort(Image *,const unsigned short),
+  MSBFirstWriteShort(Image *,const unsigned int),
   ReadBlob(Image *,const size_t,void *),
   ReadBlobBlock(Image *,char *),
   WriteBlob(Image *,const size_t,const void *),
-  WriteByte(Image *,const char value);
+  WriteByte(Image *,const int value);
 
 extern Export unsigned int
   OpenBlob(const ImageInfo *,Image *,const char *),

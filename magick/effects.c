@@ -1520,7 +1520,7 @@ Export Image *OilPaintImage(Image *image,const unsigned int radius)
 %
 %  The format of the PlasmaImage method is:
 %
-%      unsigned int PlasmaImage(Image *image,const SegmentInfo *segment_info,
+%      unsigned int PlasmaImage(Image *image,const SegmentInfo *segment,
 %        int attenuate,int depth)
 %
 %  A description of each parameter follows:
@@ -1531,7 +1531,7 @@ Export Image *OilPaintImage(Image *image,const unsigned int radius)
 %    o image: The address of a structure of type Image;  returned from
 %      ReadImage.
 %
-%    o segment_info:  specifies a structure of type SegmentInfo that defines
+%    o segment:  specifies a structure of type SegmentInfo that defines
 %      the boundaries of the area where the plasma fractals are applied.
 %
 %    o attenuate:  specifies the plasma attenuation factor.
@@ -1554,7 +1554,7 @@ static Quantum PlasmaPixel(const double pixel,const double noise)
   return((Quantum) (value+0.5));
 }
 
-Export unsigned int PlasmaImage(Image *image,const SegmentInfo *segment_info,
+Export unsigned int PlasmaImage(Image *image,const SegmentInfo *segment,
   int attenuate,int depth)
 {
   double
@@ -1580,44 +1580,44 @@ Export unsigned int PlasmaImage(Image *image,const SegmentInfo *segment_info,
       */
       depth--;
       attenuate++;
-      x_mid=(segment_info->x1+segment_info->x2)/2;
-      y_mid=(segment_info->y1+segment_info->y2)/2;
-      local_info=(*segment_info);
+      x_mid=(segment->x1+segment->x2)/2;
+      y_mid=(segment->y1+segment->y2)/2;
+      local_info=(*segment);
       local_info.x2=x_mid;
       local_info.y2=y_mid;
       (void) PlasmaImage(image,&local_info,attenuate,depth);
-      local_info=(*segment_info);
+      local_info=(*segment);
       local_info.y1=y_mid;
       local_info.x2=x_mid;
       (void) PlasmaImage(image,&local_info,attenuate,depth);
-      local_info=(*segment_info);
+      local_info=(*segment);
       local_info.x1=x_mid;
       local_info.y2=y_mid;
       (void) PlasmaImage(image,&local_info,attenuate,depth);
-      local_info=(*segment_info);
+      local_info=(*segment);
       local_info.x1=x_mid;
       local_info.y1=y_mid;
       return(PlasmaImage(image,&local_info,attenuate,depth));
     }
-  x_mid=(segment_info->x1+segment_info->x2)/2;
-  y_mid=(segment_info->y1+segment_info->y2)/2;
-  if ((segment_info->x1 == x_mid) && (segment_info->x2 == x_mid) &&
-      (segment_info->y1 == y_mid) && (segment_info->y2 == y_mid))
+  x_mid=(segment->x1+segment->x2)/2;
+  y_mid=(segment->y1+segment->y2)/2;
+  if ((segment->x1 == x_mid) && (segment->x2 == x_mid) &&
+      (segment->y1 == y_mid) && (segment->y2 == y_mid))
     return(False);
   /*
     Average pixels and apply plasma.
   */
   plasma=(MaxRGB+1)/(2.0*(double) attenuate);
-  if ((segment_info->x1 != x_mid) || (segment_info->x2 != x_mid))
+  if ((segment->x1 != x_mid) || (segment->x2 != x_mid))
     {
       /*
         Left pixel.
       */
-      if (GetPixelCache(image,segment_info->x1,segment_info->y1,1,1))
+      if (GetPixelCache(image,(int) segment->x1,(int) segment->y1,1,1))
         pixel_1=(*image->pixels);
-      if (GetPixelCache(image,segment_info->x1,segment_info->y2,1,1))
+      if (GetPixelCache(image,(int) segment->x1,(int) segment->y2,1,1))
         pixel_2=(*image->pixels);
-      if (SetPixelCache(image,segment_info->x1,y_mid,1,1))
+      if (SetPixelCache(image,(int) segment->x1,(int) y_mid,1,1))
         {
           q=image->pixels;
           q->red=PlasmaPixel((int) (pixel_1.red+pixel_2.red)/2,plasma);
@@ -1625,16 +1625,16 @@ Export unsigned int PlasmaImage(Image *image,const SegmentInfo *segment_info,
           q->blue=PlasmaPixel((int) (pixel_1.blue+pixel_2.blue)/2,plasma);
           (void) SyncPixelCache(image);
         }
-      if (segment_info->x1 != segment_info->x2)
+      if (segment->x1 != segment->x2)
         {
           /*
             Right pixel.
           */
-          if (GetPixelCache(image,segment_info->x2,segment_info->y1,1,1))
+          if (GetPixelCache(image,(int) segment->x2,(int) segment->y1,1,1))
             pixel_1=(*image->pixels);
-          if (GetPixelCache(image,segment_info->x2,segment_info->y2,1,1))
+          if (GetPixelCache(image,(int) segment->x2,(int) segment->y2,1,1))
             pixel_2=(*image->pixels);
-          if (SetPixelCache(image,segment_info->x2,y_mid,1,1))
+          if (SetPixelCache(image,(int) segment->x2,(int) y_mid,1,1))
             {
               q=image->pixels;
               q->red=PlasmaPixel((int) (pixel_1.red+pixel_2.red)/2,plasma);
@@ -1645,18 +1645,18 @@ Export unsigned int PlasmaImage(Image *image,const SegmentInfo *segment_info,
             }
         }
     }
-  if ((segment_info->y1 != y_mid) || (segment_info->y2 != y_mid))
+  if ((segment->y1 != y_mid) || (segment->y2 != y_mid))
     {
-      if ((segment_info->x1 != x_mid) || (segment_info->y2 != y_mid))
+      if ((segment->x1 != x_mid) || (segment->y2 != y_mid))
         {
           /*
             Bottom pixel.
           */
-          if (GetPixelCache(image,segment_info->x1,segment_info->y2,1,1))
+          if (GetPixelCache(image,(int) segment->x1,(int) segment->y2,1,1))
             pixel_1=(*image->pixels);
-          if (GetPixelCache(image,segment_info->x2,segment_info->y2,1,1))
+          if (GetPixelCache(image,(int) segment->x2,(int) segment->y2,1,1))
             pixel_2=(*image->pixels);
-          if (SetPixelCache(image,x_mid,segment_info->y2,1,1))
+          if (SetPixelCache(image,(int) x_mid,(int) segment->y2,1,1))
             {
               q=image->pixels;
               q->red=PlasmaPixel((int) (pixel_1.red+pixel_2.red)/2,plasma);
@@ -1666,16 +1666,16 @@ Export unsigned int PlasmaImage(Image *image,const SegmentInfo *segment_info,
               (void) SyncPixelCache(image);
             }
         }
-      if (segment_info->y1 != segment_info->y2)
+      if (segment->y1 != segment->y2)
         {
           /*
             Top pixel.
           */
-          if (GetPixelCache(image,segment_info->x1,segment_info->y1,1,1))
+          if (GetPixelCache(image,(int) segment->x1,(int) segment->y1,1,1))
             pixel_1=(*image->pixels);
-          if (GetPixelCache(image,segment_info->x2,segment_info->y1,1,1))
+          if (GetPixelCache(image,(int) segment->x2,(int) segment->y1,1,1))
             pixel_2=(*image->pixels);
-          if (SetPixelCache(image,x_mid,segment_info->y1,1,1))
+          if (SetPixelCache(image,(int) x_mid,(int) segment->y1,1,1))
             {
               q=image->pixels;
               q->red=PlasmaPixel((int) (pixel_1.red+pixel_2.red)/2,plasma);
@@ -1686,17 +1686,17 @@ Export unsigned int PlasmaImage(Image *image,const SegmentInfo *segment_info,
             }
         }
     }
-  if ((segment_info->x1 != segment_info->x2) ||
-      (segment_info->y1 != segment_info->y2))
+  if ((segment->x1 != segment->x2) ||
+      (segment->y1 != segment->y2))
     {
       /*
         Middle pixel.
       */
-      if (GetPixelCache(image,segment_info->x1,segment_info->y1,1,1))
+      if (GetPixelCache(image,(int) segment->x1,(int) segment->y1,1,1))
         pixel_1=(*image->pixels);
-      if (GetPixelCache(image,segment_info->x2,segment_info->y2,1,1))
+      if (GetPixelCache(image,(int) segment->x2,(int) segment->y2,1,1))
         pixel_2=(*image->pixels);
-      if (SetPixelCache(image,x_mid,y_mid,1,1))
+      if (SetPixelCache(image,(int) x_mid,(int) y_mid,1,1))
         {
           q=image->pixels;
           q->red=PlasmaPixel((int) (pixel_1.red+pixel_2.red)/2,plasma);
@@ -1705,8 +1705,7 @@ Export unsigned int PlasmaImage(Image *image,const SegmentInfo *segment_info,
         }
       (void) SyncPixelCache(image);
     }
-  if (((segment_info->x2-segment_info->x1) < 3.0) &&
-      ((segment_info->y2-segment_info->y1) < 3.0))
+  if (((segment->x2-segment->x1) < 3.0) && ((segment->y2-segment->y1) < 3.0))
     return(True);
   return(False);
 }

@@ -547,7 +547,7 @@ Export Image *ReadMIFFImage(const ImageInfo *image_info)
       packet_size++;
     pixels=(unsigned char *)
       AllocateMemory(packet_size*image->columns*sizeof(unsigned char));
-    compressed_pixels=(unsigned char *) AllocateMemory(
+    compressed_pixels=(unsigned char *) AllocateMemory((unsigned int)
       (1.01*packet_size*image->columns+600)*sizeof(unsigned char));
     if ((pixels == (unsigned char *) NULL) ||
         (compressed_pixels == (unsigned char *) NULL))
@@ -843,7 +843,7 @@ Export unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
       packet_size++;
     pixels=(unsigned char *)
       AllocateMemory(packet_size*image->columns*sizeof(unsigned char));
-    compressed_pixels=(unsigned char *) AllocateMemory(
+    compressed_pixels=(unsigned char *) AllocateMemory((unsigned int)
       (1.01*packet_size*image->columns+600)*sizeof(unsigned char));
     if ((pixels == (unsigned char *) NULL) ||
         (compressed_pixels == (unsigned char *) NULL))

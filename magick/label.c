@@ -431,7 +431,8 @@ Export Image *ReadLABELImage(const ImageInfo *image_info)
         }
       error|=TT_Set_Instance_Resolutions(instance,(unsigned short)
         image->x_resolution,(unsigned short) image->y_resolution);
-      error|=TT_Set_Instance_CharSize(instance,local_info->pointsize*64);
+      error|=
+        TT_Set_Instance_CharSize(instance,(int) (64.0*local_info->pointsize));
       if (error)
         ReaderExit(DelegateWarning,"Cannot initialize TTF instance",image);
       for (code=0; (int) code < (int) face_properties.num_CharMaps; code++)

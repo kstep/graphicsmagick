@@ -558,10 +558,10 @@ Export unsigned long LSBFirstReadLong(Image *image)
   value=ReadBlob(image,4,(char *) buffer);
   if (value == 0)
     return((unsigned long) ~0);
-  value=(unsigned long) (buffer[3] << 24);
-  value|=(unsigned long) (buffer[2] << 16);
-  value|=(unsigned long) (buffer[1] << 8);
-  value|=(unsigned long) (buffer[0]);
+  value=buffer[3] << 24;
+  value|=buffer[2] << 16;
+  value|=buffer[1] << 8;
+  value|=buffer[0];
   return(value);
 }
 
@@ -604,8 +604,8 @@ Export unsigned short LSBFirstReadShort(Image *image)
   value=ReadBlob(image,2,(char *) buffer);
   if (value == 0)
     return((unsigned short) ~0);
-  value=(unsigned short) (buffer[1] << 8);
-  value|=(unsigned short) (buffer[0]);
+  value=buffer[1] << 8;
+  value|=buffer[0];
   return(value);
 }
 
@@ -644,10 +644,10 @@ Export size_t LSBFirstWriteLong(Image *image,const unsigned long value)
     buffer[4];
 
   assert(image != (Image *) NULL);
-  buffer[0]=(unsigned char) (value);
-  buffer[1]=(unsigned char) ((value) >> 8);
-  buffer[2]=(unsigned char) ((value) >> 16);
-  buffer[3]=(unsigned char) ((value) >> 24);
+  buffer[0]=value;
+  buffer[1]=value >> 8;
+  buffer[2]=value >> 16;
+  buffer[3]=value >> 24;
   return(WriteBlob(image,4,buffer));
 }
 
@@ -667,7 +667,7 @@ Export size_t LSBFirstWriteLong(Image *image,const unsigned long value)
 %
 %  The format of the LSBFirstWriteShort method is:
 %
-%      size_t LSBFirstWriteShort(Image *image,const unsigned short value)
+%      size_t LSBFirstWriteShort(Image *image,const unsigned int value)
 %
 %  A description of each parameter follows.
 %
@@ -680,14 +680,14 @@ Export size_t LSBFirstWriteLong(Image *image,const unsigned long value)
 %
 %
 */
-Export size_t LSBFirstWriteShort(Image *image,const unsigned short value)
+Export size_t LSBFirstWriteShort(Image *image,const unsigned int value)
 {
   unsigned char
     buffer[2];
 
   assert(image != (Image *) NULL);
-  buffer[0]=(unsigned char) (value);
-  buffer[1]=(unsigned char) ((value) >> 8);
+  buffer[0]=value;
+  buffer[1]=(value) >> 8;
   return(WriteBlob(image,2,buffer));
 }
 
@@ -916,8 +916,8 @@ Export unsigned short MSBFirstReadShort(Image *image)
   value=ReadBlob(image,2,(char *) buffer);
   if (value == 0)
     return((unsigned short) ~0);
-  value=(unsigned int) (buffer[0] << 8);
-  value|=(unsigned int) (buffer[1]);
+  value=buffer[0] << 8;
+  value|=buffer[1];
   return(value);
 }
 
@@ -961,10 +961,10 @@ Export unsigned long MSBFirstReadLong(Image *image)
   value=ReadBlob(image,4,(char *) buffer);
   if (value == 0)
     return((unsigned long) ~0);
-  value=(unsigned int) (buffer[0] << 24);
-  value|=(unsigned int) (buffer[1] << 16);
-  value|=(unsigned int) (buffer[2] << 8);
-  value|=(unsigned int) (buffer[3]);
+  value=buffer[0] << 24;
+  value|=buffer[1] << 16;
+  value|=buffer[2] << 8;
+  value|=buffer[3];
   return(value);
 }
 
@@ -1003,10 +1003,10 @@ Export size_t MSBFirstWriteLong(Image *image,const unsigned long value)
     buffer[4];
 
   assert(image != (Image *) NULL);
-  buffer[0]=(unsigned char) ((value) >> 24);
-  buffer[1]=(unsigned char) ((value) >> 16);
-  buffer[2]=(unsigned char) ((value) >> 8);
-  buffer[3]=(unsigned char) (value);
+  buffer[0]=value >> 24;
+  buffer[1]=value >> 16;
+  buffer[2]=value >> 8;
+  buffer[3]=value;
   return(WriteBlob(image,4,buffer));
 }
 
@@ -1036,14 +1036,14 @@ Export size_t MSBFirstWriteLong(Image *image,const unsigned long value)
 %
 %
 */
-Export size_t MSBFirstWriteShort(Image *image,const unsigned short value)
+Export size_t MSBFirstWriteShort(Image *image,const unsigned int value)
 {
   unsigned char
     buffer[2];
 
   assert(image != (Image *) NULL);
-  buffer[0]=(unsigned char) ((value) >> 8);
-  buffer[1]=(unsigned char) (value);
+  buffer[0]=(value) >> 8;
+  buffer[1]=value;
   return(WriteBlob(image,2,buffer));
 }
 
@@ -1730,7 +1730,7 @@ Export size_t WriteBlob(Image *image,const size_t number_bytes,const void *data)
 %
 %  The format of the WriteByte method is:
 %
-%      size_t WriteByte(Image *image,const char value)
+%      size_t WriteByte(Image *image,const int value)
 %
 %  A description of each parameter follows.
 %
@@ -1742,12 +1742,16 @@ Export size_t WriteBlob(Image *image,const size_t number_bytes,const void *data)
 %
 %
 */
-Export size_t WriteByte(Image *image,const char value)
+Export size_t WriteByte(Image *image,const int value)
 {
+  char
+    c;
+
   size_t
     count;
 
   assert(image != (Image *) NULL);
-  count=WriteBlob(image,1,&value);
+  c=(char) value;
+  count=WriteBlob(image,1,&c);
   return(count);
 }

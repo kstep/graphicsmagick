@@ -492,7 +492,7 @@ Export PixelPacket InterpolateColor(Image *image,const double x_offset,
       register PixelPacket
         *t;
 
-      t=GetPixelCache(image,x,y,2,2);
+      t=GetPixelCache(image,(int) x,(int) y,2,2);
       if (t == (PixelPacket *) NULL)
         return(image->background_color);
       p=(*t++);
@@ -505,25 +505,25 @@ Export PixelPacket InterpolateColor(Image *image,const double x_offset,
       p=image->background_color;
       if ((x >= 0) && (y >= 0))
         {
-          if (GetPixelCache(image,x,y,1,1))
+          if (GetPixelCache(image,(int) x,(int) y,1,1))
             p=(*image->pixels);
         }
       q=image->background_color;
       if (((x+1) < image->columns) && (y >= 0))
         {
-          if (GetPixelCache(image,x+1,y,1,1))
+          if (GetPixelCache(image,(int) x+1,(int) y,1,1))
             q=(*image->pixels);
         }
       r=image->background_color;
       if ((x >= 0) && ((y+1) < image->rows))
         {
-          if (GetPixelCache(image,x,y+1,1,1))
+          if (GetPixelCache(image,(int) x,(int) y+1,1,1))
             r=(*image->pixels);
         }
       s=image->background_color;
       if (((x+1) < image->columns) && ((y+1) < image->rows))
         {
-          if (GetPixelCache(image,x+1,y+1,1,1))
+          if (GetPixelCache(image,(int) x+1,(int) y+1,1,1))
             s=(*image->pixels);
         }
     }

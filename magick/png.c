@@ -679,9 +679,6 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
     subframe_width,
     ticks_per_second;
 
-  unsigned short
-    opacity;
-
 #ifdef MNG_LEVEL
   mng_level=MNG_LEVEL;
 #endif

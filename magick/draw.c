@@ -1263,10 +1263,10 @@ static unsigned short InsidePrimitive(PrimitiveInfo *primitive_info,
 
             if ((pixel->x == 0) && (pixel->y == 0))
               {
-                if (GetPixelCache(image,p->x,p->y,1,1))
+                if (GetPixelCache(image,(int) p->x,(int) p->y,1,1))
                   target=(*image->pixels);
               }
-            if (GetPixelCache(image,pixel->x,pixel->y,1,1))
+            if (GetPixelCache(image,(int) pixel->x,(int) pixel->y,1,1))
               color=(*image->pixels);
             if (ColorMatch(color,target,(int) image->fuzz))
               opacity=Opaque;
@@ -1278,7 +1278,7 @@ static unsigned short InsidePrimitive(PrimitiveInfo *primitive_info,
             if ((pixel->x != (int) (p->x+0.5)) &&
                 (pixel->y != (int) (p->y+0.5)))
               break;
-            if (GetPixelCache(image,pixel->x,pixel->y,1,1))
+            if (GetPixelCache(image,(int) pixel->x,(int) pixel->y,1,1))
               target=(*image->pixels);
             if (p->method == FillToBorderMethod)
               {
@@ -1311,7 +1311,7 @@ static unsigned short InsidePrimitive(PrimitiveInfo *primitive_info,
             if ((pixel->x != (int) (p->x+0.5)) &&
                 (pixel->y != (int) (p->y+0.5)))
               break;
-            if (GetPixelCache(image,pixel->x,pixel->y,1,1))
+            if (GetPixelCache(image,(int) pixel->x,(int) pixel->y,1,1))
               {
                 image->pixels->opacity=Transparent;
                 (void) SyncPixelCache(image);
@@ -1328,10 +1328,10 @@ static unsigned short InsidePrimitive(PrimitiveInfo *primitive_info,
 
             if ((pixel->x == 0) && (pixel->y == 0))
               {
-                if (GetPixelCache(image,p->x,p->y,1,1))
+                if (GetPixelCache(image,(int) p->x,(int) p->y,1,1))
                   target=(*image->pixels);
               }
-            if (GetPixelCache(image,pixel->x,pixel->y,1,1))
+            if (GetPixelCache(image,(int) pixel->x,(int) pixel->y,1,1))
               color=(*image->pixels);
             if (ColorMatch(color,target,image->fuzz))
               {
@@ -1346,7 +1346,7 @@ static unsigned short InsidePrimitive(PrimitiveInfo *primitive_info,
             if ((pixel->x != (int) (p->x+0.5)) &&
                 (pixel->y != (int) (p->y+0.5)))
               break;
-            if (GetPixelCache(image,pixel->x,pixel->y,1,1))
+            if (GetPixelCache(image,(int) pixel->x,(int) pixel->y,1,1))
               target=(*image->pixels);
             if (p->method == FillToBorderMethod)
               {
@@ -1361,7 +1361,7 @@ static unsigned short InsidePrimitive(PrimitiveInfo *primitive_info,
           }
           case ResetMethod:
           {
-            if (GetPixelCache(image,pixel->x,pixel->y,1,1))
+            if (GetPixelCache(image,(int) pixel->x,(int) pixel->y,1,1))
               {
                 image->pixels->opacity=Opaque;
                 (void) SyncPixelCache(image);

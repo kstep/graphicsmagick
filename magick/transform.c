@@ -744,6 +744,8 @@ Export Image *FlipImage(Image *image)
       break;
     for (x=0; x < (int) flip_image->columns; x++)
     {
+      if (flip_image->class == PseudoClass)
+        flip_image->indexes[x]=image->indexes[x];
       *q=(*p);
       p++;
       q++;
@@ -829,6 +831,8 @@ Export Image *FlopImage(Image *image)
     q+=flop_image->columns;
     for (x=0; x < (int) flop_image->columns; x++)
     {
+      if (flop_image->class == PseudoClass)
+        flop_image->indexes[flop_image->columns-x-1]=image->indexes[x];
       q--;
       *q=(*p);
       p++;
