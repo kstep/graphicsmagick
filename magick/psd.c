@@ -123,7 +123,12 @@ static unsigned int DecodeImage(Image *image,const int channel)
             {
               q->red=pixel;
               if (image->class == PseudoClass)
-                *image->indexes=pixel;
+                {
+                  *image->indexes=pixel;
+                  q->red=image->colormap[pixel].red;
+                  q->green=image->colormap[pixel].green;
+                  q->blue=image->colormap[pixel].blue;
+                }
               break;
             }
             case 1:
@@ -163,7 +168,12 @@ static unsigned int DecodeImage(Image *image,const int channel)
         {
           q->red=(Quantum) pixel;
           if (image->class == PseudoClass)
-            *image->indexes=(unsigned short) pixel;
+            {
+              *image->indexes=pixel;
+              q->red=image->colormap[pixel].red;
+              q->green=image->colormap[pixel].green;
+              q->blue=image->colormap[pixel].blue;
+            }
           break;
         }
         case 1:
@@ -697,31 +707,28 @@ Export Image *ReadPSDImage(const ImageInfo *image_info)
         }
       }
     }
-  if (image->class == PseudoClass)
-    SyncImage(image);
-  else
-    if (image->colorspace == CMYKColorspace)
+  if (image->colorspace == CMYKColorspace)
+    {
+      /*
+        Correct CMYK levels.
+      */
+      for (y=0; y < (int) image->rows; y++)
       {
-        /*
-          Correct CMYK levels.
-        */
-        for (y=0; y < (int) image->rows; y++)
+        q=GetPixelCache(image,0,y,image->columns,1);
+        if (q == (PixelPacket *) NULL)
+          break;
+        for (x=0; x < (int) image->columns; x++)
         {
-          q=GetPixelCache(image,0,y,image->columns,1);
-          if (q == (PixelPacket *) NULL)
-            break;
-          for (x=0; x < (int) image->columns; x++)
-          {
-            q->red=MaxRGB-q->red;
-            q->green=MaxRGB-q->green;
-            q->blue=MaxRGB-q->blue;
-            q->opacity=MaxRGB-q->opacity;
-            q++;
-          }
-          if (!SyncPixelCache(image))
-            break;
+          q->red=MaxRGB-q->red;
+          q->green=MaxRGB-q->green;
+          q->blue=MaxRGB-q->blue;
+          q->opacity=MaxRGB-q->opacity;
+          q++;
         }
+        if (!SyncPixelCache(image))
+          break;
       }
+    }
   for (i=0; i < number_layers; i++)
   {
     /*

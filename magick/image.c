@@ -6485,8 +6485,6 @@ Export void SetImage(Image *image)
     *q;
 
   assert(image != (Image *) NULL);
-  if (image->class == PseudoClass)
-    image->colormap[0]=image->background_color;
   for (y=0; y < (int) image->rows; y++)
   {
     q=SetPixelCache(image,0,y,image->columns,1);
