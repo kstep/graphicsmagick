@@ -100,7 +100,8 @@ UNIX/Cygwin COMPILATION
 
       CC          Name of C compiler (e.g. 'cc -Xa') to use
       CXX         Name of C++ compiler to use
-      CFLAGS      Compiler flags (e.g. '-g -O2') to compile with
+      CFLAGS      Compiler flags (e.g. '-g -O2') to compile C code
+      CXXFLAGS    Compiler flags (e.g. '-g -O2') to compile C++ code
       CPPFLAGS    Include paths (-I/somedir) to look for header files
       LDFLAGS     Library paths (-L/somedir) to look for libraries
                   Systems that support the notion of a library
@@ -220,7 +221,9 @@ UNIX/Cygwin COMPILATION
 
     o --with-magick_plus_plus: Enable building Magick++, the C++
       application programming interface to ImageMagick.  A suitable
-      C++ compiler is required.
+      C++ compiler is required. Specify the CXX configure variable to
+      select the C++ compiler to use, and CXXFLAGS to select the
+      desired compiler opimization and debug flags.
 
     o --without-frozenpaths: By default, the configure script will
       determine the location of all delegates (external programs) and
