@@ -92,6 +92,26 @@ static unsigned int
 %
 %
 */
+
+static void ChopPathComponents(char *path,const unsigned long components)
+{
+  long
+    count;
+
+  register char
+    *p;
+
+  p=path+strlen(path)-1;
+  if (*p == '/')
+    *p='\0';
+  for (count=0; (count < (long) components) && (p > path); p--)
+    if (*p == *DirectorySeparator)
+      {
+        *p='\0';
+        count++;
+      }
+}
+
 static unsigned int ReadConfigureFile(Image *image,const char *basename,
   const unsigned long depth,ExceptionInfo *exception)
 {
@@ -99,7 +119,6 @@ static unsigned int ReadConfigureFile(Image *image,const char *basename,
     keyword[MaxTextExtent],
     locale[MaxTextExtent],
     message[MaxTextExtent],
-    name[MaxTextExtent],
     path[MaxTextExtent],
     *q,
     *token,
@@ -111,9 +130,6 @@ static unsigned int ReadConfigureFile(Image *image,const char *basename,
   size_t
     length;
 
-  unsigned long
-    level;
-
   /*
     Read the locale configure file.
   */
@@ -121,9 +137,7 @@ static unsigned int ReadConfigureFile(Image *image,const char *basename,
   xml=(char *) FileToBlob(basename,&length,exception);
   if (xml == (char *) NULL)
     return(False);
-  *locale='\0';
-  *name='\0';
-  level=0;
+  (void) strcpy(locale,"/");
   token=AllocateString(xml);
   for (q=xml; *q != '\0'; )
   {
@@ -190,14 +204,18 @@ static unsigned int ReadConfigureFile(Image *image,const char *basename,
           GetToken(q,&q,token);
           if (LocaleCompare(keyword,"name") == 0)
             {
-              (void) strncpy(name,token,MaxTextExtent-2);
+              (void) strncpy(locale,token,MaxTextExtent-2);
               (void) strcat(locale,"/");
             }
         }
         continue;
       }
     if (LocaleCompare(keyword,"</locale>") == 0)
-      continue;
+      {
+        ChopPathComponents(locale,2);
+        (void) strcat(locale,"/");
+        continue;
+      }
     if (LocaleCompare(keyword,"<localemap>") == 0)
       continue;
     if (LocaleCompare(keyword,"</localemap>") == 0)
@@ -226,14 +244,13 @@ static unsigned int ReadConfigureFile(Image *image,const char *basename,
           message[q-p]='\0';
           Strip(message);
           (void) strcat(message,"\n");
-          SetImageAttribute(image,"[Locale]",name);
           SetImageAttribute(image,"[Locale]",locale);
           SetImageAttribute(image,"[Locale]",message);
         }
         continue;
       }
     if (LocaleCompare(keyword,"</message>") == 0)
-      continue;
+        continue;
     if (*keyword == '<')
       {
         /*
@@ -243,16 +260,14 @@ static unsigned int ReadConfigureFile(Image *image,const char *basename,
           continue;
         if (*(keyword+1) == '/')
           {
-            level--;
-            if (level == 0)
-              *message='\0';
+            ChopPathComponents(locale,2);
+            (void) strcat(locale,"/");
             continue;
           }
         token[strlen(token)-1]='\0';
         (void) strcpy(token,token+1);
-        (void) strncat(message,token,MaxTextExtent-strlen(message)-2);
-        (void) strcat(message,"/");
-        level++;
+        (void) strncat(locale,token,MaxTextExtent-strlen(message)-2);
+        (void) strcat(locale,"/");
         continue;
       }
     if (*keyword == '<')
@@ -421,11 +436,21 @@ ModuleExport void UnregisterLOCALEImage(void)
 */
 static unsigned int WriteLOCALEImage(const ImageInfo *image_info,Image *image)
 {
+  char
+    **locale;
+
   const ImageAttribute
     *attribute;
 
+  register long
+    i,
+    j;
+
   unsigned int
     status;
+
+  unsigned long
+    count;
 
   assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
@@ -438,7 +463,27 @@ static unsigned int WriteLOCALEImage(const ImageInfo *image_info,Image *image)
   attribute=GetImageAttribute(image,"[Locale]");
   if (attribute == (const ImageAttribute *) NULL)
     ThrowWriterException(FileOpenError,"No [LOCALE] image attribute",image);
-  (void) puts(attribute->value);
+  locale=StringToList(attribute->value);
+  if (locale == (char **) NULL)
+    ThrowWriterException(FileOpenError,"Memory allocation failed",image);
+  for (i=0; locale[i] != (char *) NULL; i++);
+  count=i-1;
+  for (i=0; i < count; i++)
+    for (j=(i+1); j < count; j++)
+      if (LocaleCompare(locale[i],locale[j]) > 0)
+        {
+          char
+            *swap;
+
+          swap=locale[i];
+          locale[i]=locale[j];
+          locale[j]=swap;
+        }
+  for (i=0; i < count; i++)
+    printf("%d %s\n",i,locale[i]);
+  for (i=0; i <= count; i++)
+    LiberateMemory((void **) &locale[i]);
+  LiberateMemory((void **) &locale);
   CloseBlob(image);
   return(False);
 }
