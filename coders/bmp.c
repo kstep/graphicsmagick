@@ -1493,9 +1493,7 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
           Colormapped BMP raster.
         */
         bmp_info.bits_per_pixel=8;
-        /* FIXME: Do bilevel BMPs *really* have to be black/white?  Windows
-           XP will use the color values in a 2-color colormap */
-        if (image->colors <= 2 && IsMonochromeImage(image,&image->exception))
+        if (image->colors <= 2)
           bmp_info.bits_per_pixel=1;
         else if (image->colors <= 16)
           bmp_info.bits_per_pixel=4;

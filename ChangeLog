@@ -4,6 +4,10 @@
 	bits_per_pixel==4.
 	(WriteBMPImage): Convert PseudoClass images with more than 256
 	colors to DirectClass.
+	(WriteBMPImage): Do not require 2-color images to pass the
+	IsMonochromeImage() test before writing them as one-bit-per-pixel
+	BMPs.  Decided to allow this after four readers (including Windows
+	XP) displayed the image using the proper colormap.
 
 	* images: Updated logo images to GraphicsMagick
 
