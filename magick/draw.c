@@ -2969,15 +2969,15 @@ static void DrawPolygonPrimitive(const DrawInfo *draw_info,
       /*
         Fill and/or stroke.
       */
-      fill_opacity=GetPixelOpacity(polygon_info,mid,fill,draw_info->fill_rule,x,y,
-        &stroke_opacity);
+      fill_opacity=GetPixelOpacity(polygon_info,mid,fill,draw_info->fill_rule,
+        x,y,&stroke_opacity);
       if (draw_info->tile != (Image *) NULL)
         fill_color=GetOnePixel(draw_info->tile,x % draw_info->tile->columns,
           y % draw_info->tile->rows);
       if (!draw_info->stroke_antialias)
         {
-          fill_opacity=fill_opacity >= 0.25-MagickEpsilon ? 1.0 : 0.0;
-          stroke_opacity=stroke_opacity >= 0.25-MagickEpsilon ? 1.0 : 0.0;
+          fill_opacity=fill_opacity > 0.50 ? 1.0 : 0.0;
+          stroke_opacity=stroke_opacity > 0.50 ? 1.0 : 0.0;
         }
       fill_opacity=MaxRGB-fill_opacity*(MaxRGB-fill_color.opacity);
       AlphaComposite(&fill_color,fill_opacity,q,q->opacity);
