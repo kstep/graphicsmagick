@@ -52,7 +52,7 @@
 AppName=GraphicsMagick 1.0.0 Q:8
 ; When updating the version string, remember to also update the version in
 ; the [Registry] section
-AppVerName=GraphicsMagick 1.0.0 Q:8 Beta (March 10, 2003)
+AppVerName=GraphicsMagick 1.0.0 Q:8 Snapshot (March 15, 2003)
 AppVersion=1.0.0
 AppCopyright=Copyright (C) 2003 GraphicsMagick Group
 AppPublisher=GraphicsMagick Group
@@ -69,7 +69,7 @@ InfoBeforeFile=before.txt
 InfoAfterFile=after.txt
 UninstallDisplayIcon={app}\ImageMagick.ico
 OutputDir=..\bin
-OutputBaseFilename=GraphicsMagick-1.0.0-Q8-windows
+OutputBaseFilename=GraphicsMagick-1.0.0-030315-Q8-windows
 ; uncomment the following line if you want your installation to run on NT 3.51 too.
 ; MinVersion=4,3.51
 

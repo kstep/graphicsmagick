@@ -1267,6 +1267,7 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
+  (void) LogMagickEvent(BlobEvent,GetMagickModule(),"Entering ImageToBlob");
   SetExceptionInfo(exception,UndefinedException);
   clone_info=CloneImageInfo(image_info);
   (void) strncpy(clone_info->magick,image->magick,MaxTextExtent-1);
@@ -1274,6 +1275,8 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
   if (magick_info == (const MagickInfo *) NULL)
      {
        DestroyImageInfo(clone_info);
+       (void) LogMagickEvent(BlobEvent,GetMagickModule(),
+         "Exiting ImageToBlob");
        return((void *) NULL);
      }
   if (magick_info->blob_support)
@@ -1287,6 +1290,8 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
           ThrowException(exception,BlobError,"MemoryAllocationFailed",
             "UnableToCreateBlob");
           DestroyImageInfo(clone_info);
+          (void) LogMagickEvent(BlobEvent,GetMagickModule(),
+            "Exiting ImageToBlob");
           return((void *) NULL);
         }
       clone_info->length=0;
@@ -1299,6 +1304,8 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
             clone_info->magick);
           LiberateMemory((void **) &image->blob->data);
           DestroyImageInfo(clone_info);
+          (void) LogMagickEvent(BlobEvent,GetMagickModule(),
+            "Exiting ImageToBlob");
           return((void *) NULL);
         }
       ReacquireMemory((void **) &image->blob->data,image->blob->length+1);
@@ -1306,6 +1313,8 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
       *length=image->blob->length;
       DetachBlob(image->blob);
       DestroyImageInfo(clone_info);
+      (void) LogMagickEvent(BlobEvent,GetMagickModule(),
+        "Exiting ImageToBlob");
       return(blob);
     }
   /*
@@ -1319,6 +1328,8 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
   if (status == False)
     {
       ThrowException(exception,BlobError,"UnableToWriteBlob",image->filename);
+      (void) LogMagickEvent(BlobEvent,GetMagickModule(),
+        "Exiting ImageToBlob");
       return((void *) NULL);
     }
   /*
@@ -1330,8 +1341,12 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
   if (blob == (unsigned char ) NULL)
     {
       ThrowException(exception,BlobError,"UnableToReadFile",filename);
+      (void) LogMagickEvent(BlobEvent,GetMagickModule(),
+        "Exiting ImageToBlob");
       return((void *) NULL);
     }
+    (void) LogMagickEvent(BlobEvent,GetMagickModule(),
+      "Exiting ImageToBlob");
   return(blob);
 }
 

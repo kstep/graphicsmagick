@@ -298,52 +298,120 @@ MagickExport unsigned long GetMagickResource(const ResourceType type)
 MagickExport void InitializeMagickResources(void)
 {
   long
-    files,
-    total_memory,
-    pagesize,
-    pages;
+    max_files=256,
+    max_disk=ResourceInfinity,
+    max_map=4096,
+    max_memory=1024;
 
   /*
     Set Magick resource limits.
   */
-  files=0;
-#if defined(HAVE_SYSCONF) && defined(_SC_OPEN_MAX)
-  files=sysconf(_SC_OPEN_MAX);
-#endif
 
-  total_memory=0;
-  pagesize=-1;
-  pages=-1;
-#if defined(HAVE_SYSCONF) && defined(_SC_PAGE_SIZE)
-  pagesize=sysconf(_SC_PAGE_SIZE);
-#endif /* defined(HAVE_SYSCONF) && defined(_SC_PAGE_SIZE) */
+#if defined(POSIX)
+  {
+    long
+      files=-1,
+      total_memory=0,
+      pagesize=-1,
+      pages=-1;
 
-#if defined(HAVE_GETPAGESIZE)
-  if (pagesize <= 0)
-    pagesize=getpagesize();
-#endif /* defined(HAVE_GETPAGESIZE) */
+#  if defined(HAVE_SYSCONF) && defined(_SC_OPEN_MAX)
+    files=sysconf(_SC_OPEN_MAX);
+#  endif
 
-#if defined(PAGESIZE)
-  if (pagesize <= 0)
-    pagesize=PAGESIZE;
-#endif /* defined(PAGESIZE) */
+#  if defined(HAVE_SYSCONF) && defined(_SC_PAGE_SIZE)
+    pagesize=sysconf(_SC_PAGE_SIZE);
+#  endif /* defined(HAVE_SYSCONF) && defined(_SC_PAGE_SIZE) */
 
-#if defined(HAVE_SYSCONF) && defined(_SC_PHYS_PAGES)
-  pages=sysconf(_SC_PHYS_PAGES);
-#endif /* defined(HAVE_SYSCONF) && defined(_SC_PHYS_PAGES) */
-  if (pages > 0 && pagesize > 0)
-    total_memory=((pages+512)/1024)*((pagesize+512)/1024);
-  (void) LogMagickEvent(ResourceEvent,GetMagickModule(),
-    "Total physical memory %ldMB (%ld pages and %ld bytes per page)",
-      total_memory, pages, pagesize);
+#  if defined(HAVE_GETPAGESIZE)
+    if (pagesize <= 0)
+      pagesize=getpagesize();
+#  endif /* defined(HAVE_GETPAGESIZE) */
 
-#if defined(PixelCacheThreshold)
-  total_memory=PixelCacheThreshold;
-#endif
+#  if defined(PAGESIZE)
+    if (pagesize <= 0)
+      pagesize=PAGESIZE;
+#  endif /* defined(PAGESIZE) */
 
-  SetMagickResourceLimit(FileResource,files > 0 ? files/2 : 256);
-  SetMagickResourceLimit(MemoryResource,total_memory > 0 ? 2*total_memory : 1024);
-  SetMagickResourceLimit(MapResource,total_memory > 0 ? 8*total_memory : 4096);
+#  if defined(HAVE_SYSCONF) && defined(_SC_PHYS_PAGES)
+    pages=sysconf(_SC_PHYS_PAGES);
+#  endif /* defined(HAVE_SYSCONF) && defined(_SC_PHYS_PAGES) */
+    if (pages > 0 && pagesize > 0)
+      total_memory=((pages+512)/1024)*((pagesize+512)/1024);
+    (void) LogMagickEvent(ResourceEvent,GetMagickModule(),
+      "Total physical memory %ld MB (%ld pages and %ld bytes per page)",
+        total_memory, pages, pagesize);
+
+    if (files > 0)
+      max_files=files/2;
+
+    if (total_memory > 0)
+      max_memory=2*total_memory;
+
+    if (total_memory > 0)
+      max_map=8*total_memory;
+  }
+#endif /* defined(POSIX) */
+
+#if NOT_USING_THIS_YET
+  {
+    //MEMORYSTATUSEX
+    //  stat_ex;
+
+    long
+      total_physical_memory,
+      total_virtual_memory;
+
+    //if (GlobalMemoryStatusEx(&stat_ex))
+    //{
+    //  total_physical_memory=(long)(stat_ex.ullTotalPhys/1048576);
+    //  total_virtual_memory=(long)(stat_ex.ullTotalVirtual/1048576);
+    //}
+    //else
+    //{
+      MEMORYSTATUS
+        stat;
+
+      GlobalMemoryStatus(&stat);
+      total_physical_memory=stat.dwTotalPhys/1048576;
+      total_virtual_memory=stat.dwTotalVirtual/1048576;
+  /*  }*/
+
+    if (total_virtual_memory > 3*total_physical_memory)
+      max_memory=2*total_physical_memory;
+    else
+      max_memory=(long)(0.7*total_virtual_memory);
+    max_map=(long)(8*total_physical_memory);
+    (void) LogMagickEvent(ResourceEvent,GetMagickModule(),
+      "Total physical memory %ld MB, Total virtual memory %ld MB",
+        total_physical_memory, total_virtual_memory);
+  }
+#endif /* defined(WIN32) */
+
+  /*
+    Support using environment variables to set limits
+  */
+  {
+    const char
+      *envp;
+
+    if ((envp=getenv("MAGICK_LIMIT_DISK")))
+      max_disk=atol(envp);
+
+    if ((envp=getenv("MAGICK_LIMIT_FILES")))
+      max_files=atol(envp);
+
+    if ((envp=getenv("MAGICK_LIMIT_MEMORY")))
+      max_memory=atol(envp);
+
+    if ((envp=getenv("MAGICK_LIMIT_MAP")))
+      max_map=atol(envp);
+  }
+
+  SetMagickResourceLimit(DiskResource,max_disk);
+  SetMagickResourceLimit(FileResource,max_files);
+  SetMagickResourceLimit(MapResource,max_map);
+  SetMagickResourceLimit(MemoryResource,max_memory);
 }
 
 /*

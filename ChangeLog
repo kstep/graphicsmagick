@@ -3,6 +3,9 @@
 	* magick/image.c (GrayscalePseudoClassImage): Properly invoke SyncImagePixels.
 	* magick/cache.c (SyncCacheNexus): Add back in is_monochrome and is_grayscale
 	flag resetting which was lost by copying over ImageMagick's cache.c.
+	* magick/resource.c (InitializeMagickResources): Support setting resource
+	limits via the environment variables MAGICK_LIMIT_DISK, MAGICK_LIMIT_FILES,
+	MAGICK_LIMIT_MEMORY, and MAGICK_LIMIT_MAP.
 
 2003-03-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 

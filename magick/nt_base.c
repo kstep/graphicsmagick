@@ -377,6 +377,65 @@ MagickExport int Exit(int status)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   f t r u n c a t e                                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method ftruncate truncates a file to the specified size.  If the file is
+%  longer than the specified size, it is shortened to the specified size. If
+%  the file is shorter than the specified size, it is extended to the
+%  specified size by filling with zeros.
+%  This is a POSIX compatability function.
+%
+%  The format of the ftruncate method is:
+%
+%      int ftruncate(int filedes, off_t length)
+%
+%  A description of each parameter follows:
+%
+%    o status: Zero is returned on successful completion. Otherwise -1
+%        is returned and errno is set to indicate the error.
+%
+%    o filedes: File descriptor from the _open() call.
+%
+%    o length: Desired file length.
+%
+*/
+MagickExport int ftruncate(int filedes, off_t length)
+{
+  int
+    status;
+
+  __int64
+    current_pos;
+
+  status=0;
+  current_pos=_telli64(filedes);
+  /*
+    Truncate file to size, filling any extension with nulls.
+    Notice that this interface is limited to 2GB due to its
+    use of a 'long' offset. Ftruncate also has this shortcoming
+    if off_t is a 'long'.
+  */ 
+  status=_chsize(filedes,length);
+
+  /*
+    It is not documented if _chsize preserves the seek 
+    position, so restore the seek position like ftruncate
+    does
+  */
+  if (!status)
+    status=_lseeki64(filedes,current_pos,SEEK_SET);
+  return(status);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   I s W i n d o w s 9 5                                                     %
 %                                                                             %
 %                                                                             %
