@@ -2686,10 +2686,10 @@ MagickExport Image *ShadeImage(const Image *image,
   */
   azimuth=DegreesToRadians(azimuth);
   elevation=DegreesToRadians(elevation);
-  light.x=65535*cos(azimuth)*cos(elevation);
-  light.y=65535*sin(azimuth)*cos(elevation);
-  light.z=65535*sin(elevation);
-  normal.z=2*65535;  /* constant Z of surface normal */
+  light.x=(double) MaxRGB*cos(azimuth)*cos(elevation);
+  light.y=(double) MaxRGB*sin(azimuth)*cos(elevation);
+  light.z=(double) MaxRGB*sin(elevation);
+  normal.z=2.0*MaxRGB;  /* constant Z of surface normal */
   /*
     Shade image.
   */
