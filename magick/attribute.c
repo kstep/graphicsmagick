@@ -1452,7 +1452,7 @@ MagickExport unsigned int SetImageAttribute(Image *image,const char *key,
 %
 %
 */
-void StoreImageAttribute(Image *image,char *text)
+MagickExport void StoreImageAttribute(Image *image,char *text)
 {
   char
     breaker,
@@ -1501,5 +1501,4 @@ void StoreImageAttribute(Image *image,char *text)
     LiberateMemory((void **) &key);
   if (value != (char *) NULL)
     LiberateMemory((void **) &value);
-  return;
 }
