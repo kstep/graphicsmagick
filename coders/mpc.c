@@ -374,7 +374,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   }
                 if (LocaleCompare(keyword,"depth") == 0)
                   {
-                    image->depth=atol(values) <= 8 ? 8 : 16;
+                    image->depth=atol(values);
                     break;
                   }
                 if (LocaleCompare(keyword,"dispose") == 0)
@@ -532,7 +532,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
               {
                 if (LocaleCompare(keyword,"quantum-depth") == 0)
                   {
-                    quantum_depth=atol(values) <= 8 ? 8 : 16;
+                    quantum_depth=atol(values);
                     break;
                   }
                 (void) SetImageAttribute(image,keyword,
