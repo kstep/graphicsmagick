@@ -609,7 +609,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         image=image->next;
         MagickMonitor(LoadImagesText,TellBlob(image),SizeBlob(image));
       }
-  } while ((status == True) && (format == 'P'));
+  } while ((count != 0) && (format == 'P'));
   while (image->previous != (Image *) NULL)
     image=image->previous;
   CloseBlob(image);

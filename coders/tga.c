@@ -408,8 +408,8 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
     count=ReadBlob(image,1,(char *) &tga_info.id_length);
     tga_info.colormap_type=ReadBlobByte(image);
     tga_info.image_type=ReadBlobByte(image);
-    status&=((tga_info.image_type != 0) && (tga_info.image_type <= 11));
-    if (count != 0)
+    status=((tga_info.image_type != 0) && (tga_info.image_type <= 11));
+    if (status == True)
       {
         /*
           Allocate next image structure.

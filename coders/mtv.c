@@ -103,6 +103,9 @@ static Image *ReadMTVImage(const ImageInfo *image_info,ExceptionInfo *exception)
   int
     y;
 
+  long
+    count;
+
   register int
     x;
 
@@ -111,9 +114,6 @@ static Image *ReadMTVImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   register unsigned char
     *p;
-
-  size_t
-    count;
 
   unsigned char
     *pixels;
@@ -135,7 +135,7 @@ static Image *ReadMTVImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   (void) ReadBlobString(image,buffer);
   count=sscanf(buffer,"%u %u\n",&columns,&rows);
-  if (count == 0)
+  if (count <= 0)
     ThrowReaderException(CorruptImageWarning,"Not a MTV image file",image);
   do
   {

@@ -545,7 +545,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
         image=image->next;
         MagickMonitor(LoadImagesText,TellBlob(image),SizeBlob(image));
       }
-  } while ((status == True) && (memcmp(magick,"\122\314",2) == 0));
+  } while ((count != 0) && (memcmp(magick,"\122\314",2) == 0));
   while (image->previous != (Image *) NULL)
     image=image->previous;
   CloseBlob(image);
