@@ -901,7 +901,7 @@ void CConfigureApp::process_module(ofstream &dsw,
         if (name.compare("label") == 0)
         {
           if (doesDirExist("..\\..\\freetype"))
-		        add_project_dependency(dsw, "LIBR_freetype");
+		        add_project_dependency(dsw, "CORE_freetype");
           else
 		        add_project_dependency(dsw, "LIBR_ttf");
           if (useX11Stubs)
