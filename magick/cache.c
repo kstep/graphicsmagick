@@ -114,9 +114,6 @@ typedef struct _CacheInfo
   off_t
     length;
 
-  int
-    id;
-
   VistaInfo
     *vista;
 } CacheInfo;
@@ -208,7 +205,7 @@ Export unsigned int AllocateCache(Cache cache,const ClassType class_type,
       /*
         Allocate cache vistas.
       */
-      cache_info->id=0;
+      id=0;
       cache_info->vista=(VistaInfo *)
         AllocateMemory((cache_info->rows+1)*sizeof(VistaInfo));
       if (cache_info->vista == (VistaInfo *) NULL)
@@ -411,25 +408,27 @@ Export void DestroyCacheInfo(Cache cache)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   D e s t r o y V i s t a I n f o                                           %
+%   D e s t r o y C a c h e V i s t a                                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method DestroyCacheVista destroys the current cache vista.
+%  Method DestroyCacheVista destroys a cache vista.
 %
 %  The format of the DestroyCacheVista method is:
 %
-%      void DestroyCacheVista(Cache cache)
+%      void DestroyCacheVista(Cache cache,const unsigned int id)
 %
 %  A description of each parameter follows:
 %
 %    o cache: Specifies a pointer to a Cache structure.
 %
+%    o id: specifies which cache vista to destroy. 
+%
 %
 */
-Export void DestroyCacheVista(Cache cache)
+Export void DestroyCacheVista(Cache cache,const unsigned int id)
 {
   CacheInfo
     *cache_info;
@@ -439,7 +438,7 @@ Export void DestroyCacheVista(Cache cache)
 
   assert(cache != (Cache) NULL);
   cache_info=(CacheInfo *) cache;
-  vista=cache_info->vista+cache_info->id;
+  vista=cache_info->vista+id;
   vista->available=True;
   if (vista->stash != (void *) NULL)
     FreeMemory(vista->stash);
@@ -563,7 +562,6 @@ Export void GetCacheInfo(Cache *cache)
   *cache_info->filename='\0';
   cache_info->file=(-1);
   cache_info->length=0;
-  cache_info->id=0;
   cache_info->vista=(VistaInfo *) NULL;
   *cache=cache_info;
 }
@@ -767,29 +765,31 @@ Export unsigned int GetCacheVista(Cache cache)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   G e t I n d e x e s                                                       %
+%   G e t V i s t a I n d e x e s                                             %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method GetIndexes returns the colormap indexes associated with the current
-%  vista.
+%  Method GetVistaIndexes returns the colormap indexes associated with the
+%  specified vista.
 %
-%  The format of the GetIndexes method is:
+%  The format of the GetVistaIndexes method is:
 %
-%      IndexPacket *GetIndexes(const Cache cache)
+%      IndexPacket *GetVistaIndexes(const Cache cache,const unsigned int id)
 %
 %  A description of each parameter follows:
 %
-%    o indexes: Method GetIndexes returns the indexes associated with the
-%      current cache vista.
+%    o indexes: Method GetVistaIndexes returns the indexes associated with the
+%      specified cache vista.
 %
 %    o cache: Specifies a pointer to a Cache structure.
 %
+%    o id: specifies which cache vista to return the colormap indexes. 
+%
 %
 */
-Export IndexPacket *GetIndexes(const Cache cache)
+Export IndexPacket *GetVistaIndexes(const Cache cache,const unsigned int id)
 {
   CacheInfo
     *cache_info;
@@ -801,7 +801,7 @@ Export IndexPacket *GetIndexes(const Cache cache)
   cache_info=(CacheInfo *) cache;
   if (cache_info->class == UndefinedClass)
     return((IndexPacket *) NULL);
-  vista=cache_info->vista+cache_info->id;
+  vista=cache_info->vista+id;
   return(vista->indexes);
 }
 
@@ -810,28 +810,30 @@ Export IndexPacket *GetIndexes(const Cache cache)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   G e t P i x e l s                                                         %
+%   G e t V i s t a P i x e l s                                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method GetPixels returns the pixels associated with the current cache vista.
+%  Method GetVistaPixels returns the pixels associated with the specified cache
+%  vista.
 %
-%  The format of the GetPixels method is:
+%  The format of the GetVistaPixels method is:
 %
-%      PixelPacket *GetPixels(const Cache cache)
+%      PixelPacket *GetVistaPixels(const Cache cache,const unsigned int id)
 %
 %  A description of each parameter follows:
 %
-%    o pixels: Method GetPixels returns the indexes associated with the
-%      the current cache vista.
+%    o pixels: Method GetVistaPixels returns the indexes associated with the
+%      the specified cache vista.
 %
-%    o cache: Specifies a pointer to a Cache structure.
+%    o id: specifies which cache vista to return the pixels. 
+%
 %
 %
 */
-Export PixelPacket *GetPixels(const Cache cache)
+Export PixelPacket *GetVistaPixels(const Cache cache,const unsigned int id)
 {
   CacheInfo
     *cache_info;
@@ -843,7 +845,7 @@ Export PixelPacket *GetPixels(const Cache cache)
   cache_info=(CacheInfo *) cache;
   if (cache_info->class == UndefinedClass)
     return((PixelPacket *) NULL);
-  vista=cache_info->vista+cache_info->id;
+  vista=cache_info->vista+id;
   return(vista->pixels);
 }
 
@@ -863,7 +865,7 @@ Export PixelPacket *GetPixels(const Cache cache)
 %
 %  The format of the ReadCacheIndexes method is:
 %
-%      unsigned int ReadCacheIndexes(Cache cache)
+%      unsigned int ReadCacheIndexes(Cache cache,const unsigned int id)
 %
 %  A description of each parameter follows:
 %
@@ -872,9 +874,11 @@ Export PixelPacket *GetPixels(const Cache cache)
 %
 %    o cache: Specifies a pointer to a CacheInfo structure.
 %
+%    o id: specifies which cache vista to read the colormap indexes. 
+%
 %
 */
-Export unsigned int ReadCacheIndexes(Cache cache)
+Export unsigned int ReadCacheIndexes(Cache cache,const unsigned int id)
 {
   CacheInfo
     *cache_info;
@@ -896,7 +900,7 @@ Export unsigned int ReadCacheIndexes(Cache cache)
   cache_info=(CacheInfo *) cache;
   if (cache_info->class != PseudoClass)
     return(False);
-  vista=cache_info->vista+cache_info->id;
+  vista=cache_info->vista+id;
   offset=vista->y*cache_info->columns+vista->x;
   indexes=vista->indexes;
   if (cache_info->type != DiskCache)
@@ -956,7 +960,7 @@ Export unsigned int ReadCacheIndexes(Cache cache)
 %
 %  The format of the ReadCachePixels method is:
 %
-%      unsigned int ReadCachePixels(Cache cache)
+%      unsigned int ReadCachePixels(Cache cache,const unsigned int id)
 %
 %  A description of each parameter follows:
 %
@@ -965,9 +969,11 @@ Export unsigned int ReadCacheIndexes(Cache cache)
 %
 %    o cache: Specifies a pointer to a CacheInfo structure.
 %
+%    o id: specifies which cache vista to read the pixels. 
+%
 %
 */
-Export unsigned int ReadCachePixels(Cache cache)
+Export unsigned int ReadCachePixels(Cache cache,const unsigned int id)
 {
   CacheInfo
     *cache_info;
@@ -987,7 +993,7 @@ Export unsigned int ReadCachePixels(Cache cache)
 
   assert(cache != (Cache *) NULL);
   cache_info=(CacheInfo *) cache;
-  vista=cache_info->vista+cache_info->id;
+  vista=cache_info->vista+id;
   offset=vista->y*cache_info->columns+vista->x;
   pixels=vista->pixels;
   if (cache_info->type != DiskCache)
@@ -1113,50 +1119,12 @@ Export void SetCacheType(Cache cache,const CacheType type)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method SetCacheVista defines the current cache vista.
+%  Method SetCacheVista defines the region of the cache for the specified
+%  cache vista.
 %
 %  The format of the SetCacheVista method is:
 %
-%      void SetCacheVista(Cache cache,const unsigned int id)
-%
-%  A description of each parameter follows:
-%
-%    o cache: Specifies a pointer to a Cache structure.
-%
-%    o id: This integer specifies the current cache vista.
-%
-%
-*/
-Export void SetCacheVista(Cache cache,const unsigned int id)
-{
-  CacheInfo
-    *cache_info;
-
-  register VistaInfo
-    *vista;
-
-  assert(cache != (Cache) NULL);
-  cache_info=(CacheInfo *) cache;
-  cache_info->id=id;
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   S e t C a c h e V i s t a R e g i o n                                     %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method SetCacheVistaRegion defines the region of the cache for the current
-%  cache vista.
-%
-%  The format of the SetCacheVistaRegion method is:
-%
-%      void SetCacheVistaRegion(Cache cache,const RectangleInfo *region)
+%      void SetCacheVista(Cache cache,const RectangleInfo *region)
 %
 %  A description of each parameter follows:
 %
@@ -1167,7 +1135,8 @@ Export void SetCacheVista(Cache cache,const unsigned int id)
 %
 %
 */
-Export void SetCacheVistaRegion(Cache cache,const RectangleInfo *region)
+Export void SetCacheVista(Cache cache,const unsigned int id,
+  const RectangleInfo *region)
 {
   CacheInfo
     *cache_info;
@@ -1178,15 +1147,12 @@ Export void SetCacheVistaRegion(Cache cache,const RectangleInfo *region)
   register VistaInfo
     *vista;
 
-  register int
-    id;
-
   unsigned int
     number_pixels;
 
   assert(cache != (Cache) NULL);
   cache_info=(CacheInfo *) cache;
-  vista=cache_info->vista+cache_info->id;
+  vista=cache_info->vista+id;
   vista->columns=region->width;
   vista->rows=region->height;
   vista->x=region->x;
@@ -1195,11 +1161,17 @@ Export void SetCacheVistaRegion(Cache cache,const RectangleInfo *region)
       (vista->rows == 1)) || ((vista->x == 0) &&
       ((vista->columns % cache_info->columns) == 0)))
     {
+      /*
+        Pixels are accessed directly from memory.
+      */
       vista->pixels=GetCachePixels(cache,vista->x,vista->y);
       vista->indexes=GetCacheIndexes(cache,vista->x,vista->y);
       if (vista->pixels != (PixelPacket *) NULL)
         return;
     }
+  /*
+    Pixels are stored in a temporary buffer until they are synced to the cache.
+  */
   number_pixels=vista->columns*vista->rows;
   length=number_pixels*sizeof(PixelPacket);
   if (cache_info->class == PseudoClass)
@@ -1239,9 +1211,11 @@ Export void SetCacheVistaRegion(Cache cache,const RectangleInfo *region)
 %
 %    o cache: Specifies a pointer to a CacheInfo structure.
 %
+%    o id: specifies which cache vista to write the colormap indexes. 
+%
 %
 */
-Export unsigned int WriteCacheIndexes(Cache cache)
+Export unsigned int WriteCacheIndexes(Cache cache,const unsigned int id)
 {
   CacheInfo
     *cache_info;
@@ -1263,7 +1237,7 @@ Export unsigned int WriteCacheIndexes(Cache cache)
   cache_info=(CacheInfo *) cache;
   if (cache_info->class != PseudoClass)
     return(False);
-  vista=cache_info->vista+cache_info->id;
+  vista=cache_info->vista+id;
   indexes=vista->indexes;
   offset=vista->y*cache_info->columns+vista->x;
   if (cache_info->type != DiskCache)
@@ -1332,9 +1306,11 @@ Export unsigned int WriteCacheIndexes(Cache cache)
 %
 %    o cache: Specifies a pointer to a Cache structure.
 %
+%    o id: specifies which cache vista to write the pixels. 
+%
 %
 */
-Export unsigned int WriteCachePixels(Cache cache)
+Export unsigned int WriteCachePixels(Cache cache,const unsigned int id)
 {
   CacheInfo
     *cache_info;
@@ -1354,7 +1330,7 @@ Export unsigned int WriteCachePixels(Cache cache)
 
   assert(cache != (Cache) NULL);
   cache_info=(CacheInfo *) cache;
-  vista=cache_info->vista+cache_info->id;
+  vista=cache_info->vista+id;
   pixels=vista->pixels;
   offset=vista->y*cache_info->columns+vista->x;
   if (cache_info->type != DiskCache)
