@@ -1793,9 +1793,9 @@ Export unsigned int QueryColorDatabase(const char *target,PixelPacket *color)
         left=mid;
         continue;
       }
-    color->red=XColorlist[mid].red;
-    color->green=XColorlist[mid].green;
-    color->blue=XColorlist[mid].blue;
+    color->red=UpScale(XColorlist[mid].red);
+    color->green=UpScale(XColorlist[mid].green);
+    color->blue=UpScale(XColorlist[mid].blue);
     color->opacity=Opaque;
     return(True);
   }

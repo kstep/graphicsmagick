@@ -1045,7 +1045,8 @@ Export unsigned int UnregisterMagickInfo(const char *tag)
         else
           {
             magick_info=p->next;
-            p->next->previous=(MagickInfo *) NULL;
+            if (p->next != (MagickInfo*) NULL)
+              p->next->previous=(MagickInfo *) NULL;
           }
         if (p->next != (MagickInfo*) NULL)
           p->next->previous=p->previous;

@@ -231,7 +231,10 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       FormatString(windows->image.name,"ImageMagick: %.1024s",
         BaseFilename((*image)->filename));
       if (resource_info->title != (char *) NULL)
-        (void) strcpy(windows->image.name,(*image)->label);
+        {
+          LabelImage(*image,resource_info->title);
+          (void) strcpy(windows->image.name,(*image)->label);
+        }
       status=XStringListToTextProperty(&windows->image.name,1,&window_name);
       if (status == 0)
         break;
@@ -1711,7 +1714,10 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
               FormatString(windows->image.name,
                 "ImageMagick: %.1024s[%u of %u]",p,scene,number_scenes);
               if (resource_info->title != (char *) NULL)
-                (void) strcpy(windows->image.name,image->label);
+                {
+                  LabelImage(image,resource_info->title);
+                  (void) strcpy(windows->image.name,image->label);
+                }
               status=
                 XStringListToTextProperty(&windows->image.name,1,&window_name);
               if (status != 0)
