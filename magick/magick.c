@@ -64,11 +64,6 @@
 */
 static MagickInfo
   *magick_list = (MagickInfo *) NULL;
-
-#if defined(HasPPTHREADS)
-  static pthread_mutex_t
-    magick_mutex = PPTHREAD_MUTEX_INITIALIZER;
-#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -96,9 +91,6 @@ MagickExport void DestroyMagickInfo(void)
   register MagickInfo
     *p;
 
-#if defined(HasPPTHREADS)
-  pthread_mutex_lock(&magick_mutex);
-#endif
   for (p=magick_list; p != (MagickInfo *) NULL; )
   {
     entry=p;
@@ -109,9 +101,6 @@ MagickExport void DestroyMagickInfo(void)
     FreeMemory((void **) &entry);
   }
   magick_list=(MagickInfo *) NULL;
-#if defined(HasPPTHREADS)
-  pthread_mutex_unlock(&magick_mutex);
-#endif
 }
 
 /*
@@ -151,9 +140,6 @@ MagickExport MagickInfo *GetMagickInfo(const char *tag)
   register MagickInfo
     *p;
 
-#if defined(HasPPTHREADS)
-  pthread_mutex_lock(&magick_mutex);
-#endif
   if (magick_list == (MagickInfo *) NULL)
     {
       /*
@@ -263,9 +249,6 @@ MagickExport MagickInfo *GetMagickInfo(const char *tag)
             }
 #endif
     }
-#if defined(HasPPTHREADS)
-  pthread_mutex_unlock(&magick_mutex);
-#endif
   return(magick_info);
 }
 
@@ -354,9 +337,6 @@ MagickExport MagickInfo *RegisterMagickInfo(MagickInfo *entry)
   register MagickInfo
     *p;
 
-#if defined(HasPPTHREADS)
-  pthread_mutex_lock(&magick_mutex);
-#endif
   /*
     Add tag info to the image format list.
   */
@@ -377,9 +357,6 @@ MagickExport MagickInfo *RegisterMagickInfo(MagickInfo *entry)
   if (magick_list == (MagickInfo *) NULL)
     {
       magick_list=entry;
-#if defined(HasPPTHREADS)
-      pthread_mutex_unlock(&magick_mutex);
-#endif
       return(entry);
     }
   entry->previous=p;
@@ -387,9 +364,6 @@ MagickExport MagickInfo *RegisterMagickInfo(MagickInfo *entry)
   if (p->next != (MagickInfo *) NULL)
     p->next->previous=entry;
   p->next=entry;
-#if defined(HasPPTHREADS)
-  pthread_mutex_unlock(&magick_mutex);
-#endif
   return(entry);
 }
 
@@ -426,9 +400,6 @@ MagickExport MagickInfo *SetMagickInfo(const char *tag)
   MagickInfo
     *entry;
 
-#if defined(HasPPTHREADS)
-  pthread_mutex_lock(&magick_mutex);
-#endif
   entry=(MagickInfo *) AllocateMemory(sizeof(MagickInfo));
   if (entry == (MagickInfo *) NULL)
     MagickError(ResourceLimitError,"Unable to allocate image",
@@ -446,9 +417,6 @@ MagickExport MagickInfo *SetMagickInfo(const char *tag)
   entry->data=(void *) NULL;
   entry->previous=(MagickInfo *) NULL;
   entry->next=(MagickInfo *) NULL;
-#if defined(HasPPTHREADS)
-  pthread_mutex_unlock(&magick_mutex);
-#endif
   return(entry);
 }
 
