@@ -1216,7 +1216,7 @@ static unsigned int MontageUtility(int argc,char **argv)
   if (i != (argc-1))
     MagickError(OptionError,"Missing an image file name",(char *) NULL);
   if ((image == (Image *) NULL) && (image_list == (Image *) NULL))
-	  return(False);
+    MagickError(OptionError,"Missing an image file name",(char *) NULL);
   if (image != (Image *) NULL)
     {
       status&=MogrifyImages(image_info,i-j,argv+j,&image);
