@@ -26,41 +26,41 @@ typedef unsigned int
 typedef struct _MagickInfo
 {
   char
-    *name,
-    *description,
-    *note,
-    *version,
-    *module;
+    *name,              /* format ID ("magick") */
+    *description,       /* format description */
+    *note,              /* usage note for user */
+    *version,           /* support library version */
+    *module;            /* name of loadable module */
 
   ImageInfo
-    *image_info;
+    *image_info;        /* huh??? */
 
   DecoderHandler
-    decoder;
+    decoder;            /* function vector to decoding routine */
 
   EncoderHandler
-    encoder;
+    encoder;            /* function vector to encoding routine */
 
   MagickHandler
-    magick;
+    magick;             /* function vector to format test routine */
 
   void
-    *client_data;
+    *client_data;       /* arbitrary user supplied data */
 
   unsigned int
-    adjoin,
-    raw,
-    stealth,
-    seekable_stream,
-    blob_support,
-    thread_support;
+    adjoin,             /* coder may read/write multiple frames (default True) */
+    raw,                /* coder requires that size be set (default False) */
+    stealth,            /* coder should not appear in formats listing (default False) */
+    seekable_stream,    /* coder uses BLOB "seek" APIs (default False) */
+    blob_support,	/* coder uses BLOB APIs (default True) */
+    thread_support;     /* coder is thread safe (default True) */
 
   unsigned long
-    signature;
+    signature;          /* private, structure validator */
 
   struct _MagickInfo
-    *previous,
-    *next;
+    *previous,          /* private, previous member in list */
+    *next;              /* private, next member in list */
 } MagickInfo;
 
 /*

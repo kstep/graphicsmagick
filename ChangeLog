@@ -1,3 +1,20 @@
+2003-06-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/magick.h (MagickInfo): Add member usage comments.
+	* magick/error.c (CatchException): Restore saved errno from
+	exception->error_number.
+	(CopyException): Copy error_number.
+	(DestroyExceptionInfo): Reset error_number to zero.
+	(GetExceptionInfo): Initialize error_number to zero.
+	(ThrowException): Save errno to exception-> error_number.
+	(ThrowLoggedException): Save errno to exception-> error_number.
+	* magick/error.h (ExceptionInfo): Borrow John Cristy's idea and
+	add a error_number member to ExceptionInfo to save the current
+	errno value. Otherwise CatchException may use some random errno.
+	* coders/Makefile.am: Build topol.c.
+	* coders/topol.c: Added initial TOPOL X image coder which is under
+	development by Jaroslav Fojtik. Not working yet.
+
 2003-06-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/pwp.c (ReadPWPImage): Ensure that image is initialized

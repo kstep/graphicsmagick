@@ -1,0 +1,595 @@
+/*
+% Copyright (C) 2003 GraphicsMagick Group
+%
+% This program is covered by multiple licenses, which are described in
+% Copyright.txt. You should have received a copy of Copyright.txt with this
+% package; otherwise see http://www.graphicsmagick.org/www/Copyright.html.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                    TTTTT   OOO    PPPP    OOO    L                          %
+%                      T    O   O   P   P  O   O   L                          %
+%                      T    O   O   PPPP   O   O   L                          %
+%                      T    O   O   P      O   O   L                          %
+%                      T     OOO    P       OOO    LLLL                       %
+%                                                                             %
+%                                                                             %
+%                    Read/Write TOPOL X Image Raster Format.                  %
+%                                                                             %
+%                                                                             %
+%                              Software Design                                %
+%                              Jaroslav Fojtik                                %
+%                                 June 2003                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%
+*/
+
+/*
+  Include declarations.
+*/
+#include "magick/studio.h"
+#include "magick/blob.h"
+#include "magick/cache.h"
+#include "magick/color.h"
+#include "magick/error.h"
+#include "magick/list.h"
+#include "magick/magick.h"
+#include "magick/static.h"
+#include "magick/utility.h"
+
+#if !defined(SWORD)
+#  define SWORD unsigned int
+#endif
+#if !defined(SDWORD)
+#  define SDWORD unsigned long
+#endif
+#if !defined(WORD)
+#  define WORD  int
+#endif
+#if !defined(BYTE)
+#  define BYTE  unsigned char
+#endif
+
+typedef struct
+{
+  char Name[20];
+  SWORD Rows;
+  SWORD Cols;
+  SWORD TypSou;			/* 0-binary, 1-8 bitu, 2-8 bits+PAL, 3-4 bits,
+				   4-4 bits+PAL, 5-24 bits, 6-16 bits, 7-32
+				   bits */
+  SDWORD Zoom;
+  SWORD Version;
+  SWORD Komprese;		/* 0 - uncompressed (from release 1) */
+  SWORD Stav;
+  double xRasMin;
+  double yRasMin;
+  double xRasMax;
+  double yRasMax;
+  double Scale;			/* from release 2 */
+  WORD TileWidth;		/* tile width in pixels */
+  WORD TileHeight;		/* tile height in pixels */
+  SDWORD TileOffsets;		/* offset to array of longints that contains
+				   adresses of tiles in the raster (adreses
+				   are counted from 0) */
+  SDWORD TileByteCounts;	/* offset to array of words, that contain amount of bytes stored in
+				   tiles. The tile size might vary depending on
+				   the value TileCompression */
+  BYTE TileCompression;		/* 0 - uncompressed, 1 - variant TIFF
+				   Packbits, 2 - CCITT G3 */
+
+  BYTE Dummy[423];
+} RasHeader;
+
+typedef struct
+{
+/*   BYTE Flag;
+   BYTE Red;
+   BYTE Green;
+   BYTE Blue;*/
+} paletteRAS;
+
+static void InsertRow(int depth, unsigned char *p, long y, Image * image)
+{
+  int
+    bit;
+
+  long
+    x;
+
+  register PixelPacket
+    *q;
+
+  IndexPacket
+    index;
+
+  register IndexPacket
+    *indexes;
+
+  switch (depth)
+    {
+    case 1:			/* Convert bitmap scanline. */
+      {
+	q = SetImagePixels(image, 0, y, image->columns, 1);
+	if (q == (PixelPacket *) NULL)
+	  break;
+	indexes = GetIndexes(image);
+	for (x = 0; x < ((long) image->columns - 7); x += 8)
+          {
+            for (bit = 0; bit < 8; bit++)
+              {
+                index = ((*p) & (0x80 >> bit) ? 0x01 : 0x00);
+                indexes[x + bit] = index;
+                *q++ = image->colormap[index];
+              }
+            p++;
+          }
+	if ((image->columns % 8) != 0)
+          {
+            for (bit = 0; bit < (long) (image->columns % 8); bit++)
+              {
+                index = ((*p) & (0x80 >> bit) ? 0x01 : 0x00);
+                indexes[x + bit] = index;
+                *q++ = image->colormap[index];
+              }
+            p++;
+          }
+	if (!SyncImagePixels(image))
+	  break;
+	/* if (image->previous == (Image *) NULL)
+	   if (QuantumTick(y,image->rows))
+	   ProgressMonitor(LoadImageText,image->rows-y-1,image->rows); */
+	break;
+      }
+    case 2:			/* Convert PseudoColor scanline. */
+      {
+	q = SetImagePixels(image, 0, y, image->columns, 1);
+	if (q == (PixelPacket *) NULL)
+	  break;
+	indexes = GetIndexes(image);
+	for (x = 0; x < ((long) image->columns - 1); x += 2)
+          {
+            index = (IndexPacket) ((*p >> 6) & 0x3);
+            VerifyColormapIndex(image, index);
+            indexes[x] = index;
+            *q++ = image->colormap[index];
+            index = (IndexPacket) ((*p >> 4) & 0x3);
+            VerifyColormapIndex(image, index);
+            indexes[x] = index;
+            *q++ = image->colormap[index];
+            index = (IndexPacket) ((*p >> 2) & 0x3);
+            VerifyColormapIndex(image, index);
+            indexes[x] = index;
+            *q++ = image->colormap[index];
+            index = (IndexPacket) ((*p) & 0x3);
+            VerifyColormapIndex(image, index);
+            indexes[x + 1] = index;
+            *q++ = image->colormap[index];
+            p++;
+          }
+	if ((image->columns % 4) != 0)
+          {
+            index = (IndexPacket) ((*p >> 6) & 0x3);
+            VerifyColormapIndex(image, index);
+            indexes[x] = index;
+            *q++ = image->colormap[index];
+            if ((image->columns % 4) >= 1)
+
+              {
+                index = (IndexPacket) ((*p >> 4) & 0x3);
+                VerifyColormapIndex(image, index);
+                indexes[x] = index;
+                *q++ = image->colormap[index];
+                if ((image->columns % 4) >= 2)
+
+                  {
+                    index = (IndexPacket) ((*p >> 2) & 0x3);
+                    VerifyColormapIndex(image, index);
+                    indexes[x] = index;
+                    *q++ = image->colormap[index];
+                  }
+              }
+            p++;
+          }
+	if (!SyncImagePixels(image))
+	  break;
+	/*         if (image->previous == (Image *) NULL)
+                   if (QuantumTick(y,image->rows))
+                   ProgressMonitor(LoadImageText,image->rows-y-1,image->rows); */
+	break;
+      }
+
+    case 4:			/* Convert PseudoColor scanline. */
+      {
+	q = SetImagePixels(image, 0, y, image->columns, 1);
+	if (q == (PixelPacket *) NULL)
+	  break;
+	indexes = GetIndexes(image);
+	for (x = 0; x < ((long) image->columns - 1); x += 2)
+          {
+            index = (IndexPacket) ((*p >> 4) & 0xf);
+            VerifyColormapIndex(image, index);
+            indexes[x] = index;
+            *q++ = image->colormap[index];
+            index = (IndexPacket) ((*p) & 0xf);
+            VerifyColormapIndex(image, index);
+            indexes[x + 1] = index;
+            *q++ = image->colormap[index];
+            p++;
+          }
+	if ((image->columns % 2) != 0)
+          {
+            index = (IndexPacket) ((*p >> 4) & 0xf);
+            VerifyColormapIndex(image, index);
+            indexes[x] = index;
+            *q++ = image->colormap[index];
+            p++;
+          }
+	if (!SyncImagePixels(image))
+	  break;
+	/*         if (image->previous == (Image *) NULL)
+                   if (QuantumTick(y,image->rows))
+                   ProgressMonitor(LoadImageText,image->rows-y-1,image->rows); */
+	break;
+      }
+    case 8:			/* Convert PseudoColor scanline. */
+      {
+	q = SetImagePixels(image, 0, y, image->columns, 1);
+	if (q == (PixelPacket *) NULL)
+	  break;
+	indexes = GetIndexes(image);
+
+	for (x = 0; x < (long) image->columns; x++)
+          {
+            index = (IndexPacket) (*p);
+            VerifyColormapIndex(image, index);
+            indexes[x] = index;
+            *q++ = image->colormap[index];
+            p++;
+          }
+	if (!SyncImagePixels(image))
+	  break;
+	/*           if (image->previous == (Image *) NULL)
+                     if (QuantumTick(y,image->rows))
+                     ProgressMonitor(LoadImageText,image->rows-y-1,image->rows); */
+      }
+      break;
+    }
+}
+
+static double ReadBlobLSBdouble(Image * image)
+{
+  typedef union
+  {
+    double d;
+    char chars[8];
+  } dbl;
+
+  static unsigned long
+    lsb_first = 1;
+
+  dbl
+    buffer;
+
+  char
+    c;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+
+  if (ReadBlob(image, 8, (unsigned char *) &buffer) == 0)
+    return (0.0);
+
+  if (*(char *) &lsb_first == 1)
+    return (buffer.d);
+
+  c = buffer.chars[0];
+  buffer.chars[0] = buffer.chars[7];
+  buffer.chars[7] = c;
+  c = buffer.chars[1];
+  buffer.chars[1] = buffer.chars[6];
+  buffer.chars[6] = c;
+  c = buffer.chars[2];
+  buffer.chars[2] = buffer.chars[5];
+  buffer.chars[5] = c;
+  c = buffer.chars[3];
+  buffer.chars[3] = buffer.chars[4];
+  buffer.chars[4] = c;
+  return (buffer.d);
+}
+
+/* This function reads one block of unsigned shortS */
+static void ReadBlobWordLSB(Image * I, size_t len, unsigned short *data)
+{
+  while (len >= 2)
+    {
+      *data++ = ReadBlobLSBShort(I);
+      len -= 2;
+    }
+  if (len > 0)
+    (void) SeekBlob(I, len, SEEK_CUR);
+}
+
+/* This function reads one block of unsigned longS */
+static void ReadBlobDwordLSB(Image * I, size_t len, unsigned long *data)
+{
+  while (len >= 2)
+    {
+      *data++ = ReadBlobLSBLong(I);
+      len -= 2;
+    }
+  if (len > 0)
+    (void) SeekBlob(I, len, SEEK_CUR);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   R e a d T O P O L I m a g e                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method ReadTOPOLImage reads an TOPOL X image file and returns it.  It
+%  allocates the memory necessary for the new Image structure and returns a
+%  pointer to the new image.
+%
+%  The format of the ReadTOPOLImage method is:
+%
+%      Image *ReadTOPOLImage(const ImageInfo *image_info,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image:  Method ReadTOPOLImage returns a pointer to the image after
+%      reading. A null image is returned if there is a memory shortage or if
+%      the image cannot be read.
+%
+%    o image_info: The image info.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+%
+*/
+static Image *ReadTOPOLImage(const ImageInfo * image_info, ExceptionInfo * exception)
+{
+  Image
+    *image,
+    *palette;
+
+  ImageInfo
+    *clone_info;
+
+  RasHeader
+    Header;
+
+  /* paletteRAS
+     Pal; */
+
+  int
+    depth,
+    status;
+
+  long
+    i,
+    ldblk;
+
+  unsigned char
+    *BImgBuff = NULL;
+
+  palette = NULL;
+  clone_info = NULL;
+
+  /*
+    Open image file.
+  */
+  assert(image_info != (const ImageInfo *) NULL);
+  assert(image_info->signature == MagickSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
+  image = AllocateImage(image_info);
+  status = OpenBlob(image_info, image, ReadBinaryBlobMode, exception);
+  if (status == False)
+    ThrowReaderException(FileOpenError, "UnableToOpenFile", image);
+
+  /*
+    Read TopoL RAS header.
+  */
+  memset(&Header, 0, sizeof(Header));
+  ReadBlob(image, 20, &Header.Name);
+  Header.Rows = ReadBlobLSBShort(image);
+  Header.Cols = ReadBlobLSBShort(image);
+  Header.TypSou = ReadBlobLSBShort(image);
+  Header.Zoom = ReadBlobLSBLong(image);
+  Header.Version = ReadBlobLSBShort(image);
+  if (Header.Version >= 1)
+    {
+      Header.Komprese = ReadBlobLSBShort(image);
+      Header.Stav = ReadBlobLSBShort(image);
+      Header.xRasMin = ReadBlobLSBdouble(image);
+      Header.yRasMin = ReadBlobLSBdouble(image);
+      Header.xRasMax = ReadBlobLSBdouble(image);
+      Header.yRasMax = ReadBlobLSBdouble(image);
+      if (Header.Version >= 2)	/* from release 2 */
+        {
+          Header.Scale = ReadBlobLSBdouble(image);
+          Header.TileWidth = ReadBlobLSBShort(image);
+          Header.TileHeight = ReadBlobLSBShort(image);
+          Header.TileOffsets = ReadBlobLSBLong(image);
+          Header.TileByteCounts = ReadBlobLSBLong(image);
+          Header.TileCompression = ReadBlobByte(image);
+          /* BYTE Dummy[423]; */
+        }
+    }
+
+  for (i = 0; i < sizeof(Header.Name); i++)
+    {
+      if (Header.Name[i] < ' ')
+        TOPOL_KO:ThrowReaderException(CorruptImageError, "NotATOPOLImageFile",
+                                      image);
+    }
+  if (Header.Komprese != 0 || (Header.Version >= 2 && Header.TileCompression != 0))
+    ThrowReaderException(CorruptImageError, "CompressionNotSupported", image);
+  if (Header.Rows == 0 || Header.Cols == 0)
+    goto TOPOL_KO;
+  if (Header.Version > 2)
+    ThrowReaderException(CorruptImageError, "UnsupportedVersion", image); /* unknown version */
+
+  switch (Header.TypSou)
+    {
+    case 0:
+      image->colors = 2;
+      depth = 1;
+      break;
+    case 1:
+    case 2:
+      image->colors = 256;
+      depth = 8;
+      break;
+    case 3:
+    case 4:
+      image->colors = 16;
+      depth = 4;
+      break;
+    case 5:
+      image->colors = 0;
+      depth = 24;
+      break;			/* ????????? 24 bits */
+    case 6:
+      image->colors = 0;
+      depth = 16;
+      break;			/* ????????? 16 bits */
+    case 7:
+      image->colors = 0;
+      depth = 32;
+      break;			/* ????????? 32 bits */
+    default:
+      goto TOPOL_KO;
+    }
+
+  image->columns = Header.Cols;
+  image->rows = Header.Rows;
+  /* image->colors = 1l >> 8; */
+
+  /* ----- Do something with palette ----- */
+
+  /* not finished */
+
+ NoPalette:
+  if (palette == NULL && image->colors != 0)
+    {
+      if (!AllocateImageColormap(image, image->colors))
+        {
+        NoMemory:
+          ThrowReaderException(ResourceLimitError, "MemoryAllocationFailed", image);
+        }
+
+      for (i = 0; i < (long) image->colors; i++)
+        {
+          image->colormap[i].red = ScaleCharToQuantum(i);
+          image->colormap[i].green = ScaleCharToQuantum(i);
+          image->colormap[i].blue = ScaleCharToQuantum(i);
+        }
+    }
+
+  /* ----- Load TopoL raster ----- */
+  ldblk = (((long) depth * image->columns + 7) / 8);
+  BImgBuff = (unsigned char *) AcquireMemory(ldblk);	/*Ldblk was set in the check phase */
+  if (BImgBuff == NULL)
+    goto NoMemory;
+
+  (void) SeekBlob(image, 6 /*sizeof(Header) */ , SEEK_SET);
+  for (i = 0; i < (int) Header.Rows; i++)
+    {
+      switch (Header.TypSou)
+        {
+        case 6:
+          ReadBlobWordLSB(image, ldblk, (unsigned short *) BImgBuff);
+          break;
+        case 7:
+          ReadBlobDwordLSB(image, ldblk, (unsigned long *) BImgBuff);
+          break;
+        default:
+          (void) ReadBlob(image, ldblk, (char *) BImgBuff);
+        }
+      InsertRow(depth, BImgBuff, i, image);
+    }
+
+ Finish:
+  if (BImgBuff != NULL)
+    free(BImgBuff);
+  if (palette != NULL)
+    DestroyImage(palette);
+  if (clone_info != NULL)
+    DestroyImageInfo(clone_info);
+  /* if (EOFBlob(image))
+     ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile",image); */
+  CloseBlob(image);
+  return (image);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   R e g i s t e r T O P O L I m a g e                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method RegisterTOPOLImage adds attributes for the TOPOL image format to
+%  the list of supported formats.  The attributes include the image format
+%  tag, a method to read and/or write the format, whether the format
+%  supports the saving of more than one frame to the same file or blob,
+%  whether the format supports native in-memory I/O, and a brief
+%  description of the format.
+%
+%  The format of the RegisterTOPOLImage method is:
+%
+%      RegisterTOPOLImage(void)
+%
+*/
+ModuleExport void RegisterTOPOLImage(void)
+{
+  MagickInfo * entry;
+
+  entry = SetMagickInfo("TOPOL");
+  entry->decoder = (DecoderHandler) ReadTOPOLImage;
+  entry->seekable_stream = True;
+  entry->description = AcquireString("TOPOL X Image");
+  entry->module = AcquireString("TOPOL");
+  (void) RegisterMagickInfo(entry);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   U n r e g i s t e r T O P O L I m a g e                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method UnregisterTOPOLImage removes format registrations made by the
+%  TOPOL module from the list of supported formats.
+%
+%  The format of the UnregisterTOPOLImage method is:
+%
+%      UnregisterTOPOLImage(void)
+%
+*/
+ModuleExport void UnregisterTOPOLImage(void)
+{
+  (void) UnregisterMagickInfo("TOPOL");
+}

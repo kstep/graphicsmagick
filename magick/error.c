@@ -98,6 +98,7 @@ MagickExport void CatchException(const ExceptionInfo *exception)
   assert(exception->signature == MagickSignature);
   if (exception->severity == UndefinedException)
     return;
+  errno=exception->error_number; /* Shabby work-around for parameter limits */
   if ((exception->severity >= WarningException) &&
       (exception->severity < ErrorException))
     {
@@ -157,6 +158,7 @@ MagickExport void CopyException(ExceptionInfo *copy, const ExceptionInfo *origin
   MagickFreeMemory(copy->description);
   if (original->description)
     copy->description=AcquireString(original->description);
+  copy->error_number=original->error_number;
   MagickFreeMemory(copy->module);
   if (original->module)
     copy->module=AcquireString(original->module);
@@ -343,6 +345,7 @@ MagickExport void DestroyExceptionInfo(ExceptionInfo *exception)
   exception->severity=UndefinedException;
   MagickFreeMemory(exception->reason);
   MagickFreeMemory(exception->description);
+  exception->error_number=0;
   MagickFreeMemory(exception->module);
   MagickFreeMemory(exception->function);
   exception->line=0UL;
@@ -378,6 +381,7 @@ MagickExport void GetExceptionInfo(ExceptionInfo *exception)
   exception->severity=UndefinedException;
   exception->reason=0;
   exception->description=0;
+  exception->error_number=0;
   exception->module=0;
   exception->function=0;
   exception->line=0UL;
@@ -785,6 +789,7 @@ MagickExport void ThrowException(ExceptionInfo *exception,
   if (description)
     exception->description=
       AcquireString(GetLocaleExceptionMessage(severity,description));
+  exception->error_number=errno;
   MagickFreeMemory(exception->module);
   MagickFreeMemory(exception->function);
   exception->line=0UL;
@@ -847,6 +852,7 @@ MagickExport void ThrowLoggedException(ExceptionInfo *exception,
   if (description)
     exception->description=
       AcquireString(GetLocaleExceptionMessage(severity,description));
+  exception->error_number=errno;
   MagickFreeMemory(exception->module);
   if (module)
     exception->module=AcquireString(module);

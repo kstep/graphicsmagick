@@ -102,6 +102,12 @@ typedef struct _ExceptionInfo
     *description;
 
   /*
+    Value of errno (or equivalent) when exception was thrown.
+  */
+  int
+    error_number;
+
+  /*
     Reporting source module, function (if available), and source
     module line.
   */

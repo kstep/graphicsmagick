@@ -53,6 +53,26 @@
 </tr>
 </table>
 <p>
+2003-06-30  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/magick.h (MagickInfo): Add member usage comments.
+  <LI> magick/error.c (CatchException): Restore saved errno from
+        exception-&gt;error_number.<BR>
+        (CopyException): Copy error_number.
+        (DestroyExceptionInfo): Reset error_number to zero.
+        (GetExceptionInfo): Initialize error_number to zero.
+        (ThrowException): Save errno to exception-&gt; error_number.
+        (ThrowLoggedException): Save errno to exception-&gt; error_number.
+  <LI> magick/error.h (ExceptionInfo): Borrow John Cristy's idea and
+        add a error_number member to ExceptionInfo to save the current
+        errno value. Otherwise CatchException may use some random errno.
+  <LI> coders/Makefile.am: Build topol.c.
+  <LI> coders/topol.c: Added initial TOPOL X image coder which is under
+        development by Jaroslav Fojtik. Not working yet.
+
+</UL>
+<p>
 2003-06-29  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

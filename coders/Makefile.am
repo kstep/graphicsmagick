@@ -29,7 +29,7 @@ MAGICK_CODER_SRCS = \
   mpr.c msl.c mtv.c mvg.c null.c otb.c palm.c pcd.c pcl.c pcx.c pdb.c pdf.c \
   pict.c pix.c plasma.c png.c pnm.c preview.c ps.c ps2.c ps3.c psd.c \
   pwp.c rgb.c rla.c rle.c sct.c sfw.c sgi.c stegano.c sun.c svg.c \
-  tga.c tiff.c tile.c tim.c ttf.c txt.c uil.c url.c uyvy.c vicar.c \
+  tga.c tiff.c tile.c tim.c topol.c ttf.c txt.c uil.c url.c uyvy.c vicar.c \
   vid.c viff.c wbmp.c wmf.c wpg.c x.c xbm.c xc.c xcf.c xpm.c xwd.c \
   yuv.c
 
@@ -73,7 +73,7 @@ pkg_LTLIBRARIES = \
   msl.la mtv.la mvg.la null.la otb.la palm.la pcd.la pcl.la pcx.la pdb.la \
   pdf.la pict.la pix.la plasma.la png.la pnm.la preview.la ps.la ps2.la ps3.la \
   psd.la pwp.la rgb.la rla.la rle.la sct.la sfw.la sgi.la stegano.la sun.la \
-  svg.la tga.la tiff.la tile.la tim.la ttf.la txt.la uil.la url.la uyvy.la \
+  svg.la tga.la tiff.la tile.la tim.la topol.la ttf.la txt.la uil.la url.la uyvy.la \
   vicar.la vid.la viff.la wbmp.la wmf.la wpg.la x.la xbm.la xc.la xcf.la \
   xpm.la xwd.la yuv.la $(MAGICK_GDI32_MODULES)
 MODULECOMMONFLAGS = -no-undefined -module -avoid-version
@@ -446,6 +446,11 @@ tile_la_LIBADD      = $(LIBMAGICK)
 tim_la_SOURCES      = tim.c
 tim_la_LDFLAGS      = $(MODULECOMMONFLAGS)
 tim_la_LIBADD       = $(LIBMAGICK)
+
+# TOPOL module
+topol_la_SOURCES    = topol.c
+topol_la_LDFLAGS    = $(MODULECOMMONFLAGS)
+topol_la_LIBADD     = $(LIBMAGICK)
 
 # TTF module
 ttf_la_SOURCES      = ttf.c
