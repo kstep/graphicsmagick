@@ -292,9 +292,6 @@ static void LiberateCompositeOptions(CompositeOptions *option_info)
     LiberateMemory((void **) &(option_info->watermark_geometry));
 }
 
-MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
-  int argc,char **argv,char **metadata,ExceptionInfo *exception)
-{
 #define NotInitialized  (unsigned int) (~0)
 #define ThrowCompositeException(code,reason,description) \
 { \
@@ -306,7 +303,9 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
   LiberateArgumentList(argc,argv); \
   return(False); \
 }
-
+MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
+  int argc,char **argv,char **metadata,ExceptionInfo *exception)
+{
   char
     *filename,
     *format,
@@ -2862,6 +2861,16 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
           }
         if (LocaleCompare("render",option+1) == 0)
           break;
+        if (LocaleCompare("resample",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                i++;
+                if ((i == (argc-1)) || !IsGeometry(argv[i]))
+                  ThrowConvertException(OptionError,"MissingGeometry",option);
+              }
+            break;
+          }
         if (LocaleCompare("resize",option+1) == 0)
           {
             if (*option == '-')
@@ -3343,9 +3352,6 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
 %
 %
 */
-MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
-  int argc,char **argv,char **metadata,ExceptionInfo *exception)
-{
 #define ThrowIdentifyException(code,reason,description) \
 { \
   if (format != (char *) NULL) \
@@ -3355,7 +3361,9 @@ MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
   LiberateArgumentList(argc,argv); \
   return(False); \
 }
-
+MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
+  int argc,char **argv,char **metadata,ExceptionInfo *exception)
+{
   char
     *format,
     *option,
@@ -5147,6 +5155,58 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             draw_info->render=(*option == '+');
             continue;
           }
+        if (LocaleCompare("resample",option+1) == 0)
+          {
+            Image
+              *resample_image;
+
+            unsigned char
+              resample_density[MaxTextExtent];
+
+            unsigned long
+              x_resolution,
+              y_resolution;
+
+            unsigned long
+              resample_height,
+              resample_width;
+
+            long
+              x,
+              y;
+
+            int
+              flags;
+
+            /*
+              Resample image.
+            */
+            flags=GetGeometry(argv[++i],&x,&y,&x_resolution,&y_resolution);
+            if (!(flags & HeightValue))
+              y_resolution=x_resolution;
+            FormatString(resample_density,"%lux%lu",x_resolution,y_resolution);
+            if ((*image)->x_resolution == 0)
+              (*image)->x_resolution=72.0;
+            if ((*image)->y_resolution == 0)
+              (*image)->y_resolution=72.0;
+            resample_width=(unsigned long)
+              ((*image)->columns*((double)x_resolution/(*image)->x_resolution)+0.5);
+            resample_height=(unsigned long)
+              ((*image)->rows*((double)y_resolution/(*image)->y_resolution)+0.5);
+            (void) CloneString(&clone_info->density,resample_density);
+            (void) CloneString(&draw_info->density,resample_density);
+            (*image)->x_resolution=x_resolution;
+            (*image)->y_resolution=y_resolution;
+            if ((((*image)->columns == resample_width)) && ((*image)->rows == resample_height))
+              break;
+            resample_image=ResizeImage(*image,resample_width,resample_height,(*image)->filter,
+              (*image)->blur,&(*image)->exception);
+            if (resample_image == (Image *) NULL)
+              break;
+            DestroyImage(*image);
+            *image=resample_image;
+            continue;
+          }
         if (LocaleCompare("resize",option+1) == 0)
           {
             Image
@@ -6074,15 +6134,15 @@ MagickExport unsigned int MogrifyImages(const ImageInfo *image_info,
 %
 %
 */
-MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
-  int argc,char **argv,char **metadata,ExceptionInfo *exception)
-{
 #define ThrowMogrifyException(code,reason,description) \
 { \
   ThrowException(exception,code,reason,description); \
   LiberateArgumentList(argc,argv); \
   return(False); \
 }
+MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
+  int argc,char **argv,char **metadata,ExceptionInfo *exception)
+{
 
   char
     filename[MaxTextExtent],
@@ -7348,6 +7408,26 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
           }
         if (LocaleCompare("render",option+1) == 0)
           break;
+        if (LocaleCompare("resample",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                i++;
+                if ((i == (argc-1)) || !IsGeometry(argv[i]))
+                  ThrowMogrifyException(OptionError,"MissingGeometry",option);
+              }
+            break;
+          }
+        if (LocaleCompare("resize",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                i++;
+                if ((i == argc) || !IsGeometry(argv[i]))
+                  ThrowMogrifyException(OptionError,"MissingGeometry",option);
+              }
+            break;
+          }
         if (LocaleCompare("resize",option+1) == 0)
           {
             if (*option == '-')
@@ -7792,9 +7872,6 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
 %
 %
 */
-MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
-  int argc,char **argv,char **metadata,ExceptionInfo *exception)
-{
 #define ThrowMontageException(code,reason,description) \
 { \
   DestroyImageList(image); \
@@ -7804,6 +7881,9 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
   LiberateArgumentList(argc,argv); \
   return(False); \
 }
+MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
+  int argc,char **argv,char **metadata,ExceptionInfo *exception)
+{
   char
     *format,
     *option,

@@ -6,6 +6,10 @@
 
 2003-04-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/jpeg.c (WriteJPEGImage): Don't overwrite the image
+	resolution if it is valid.
+	* magick/command.c (MogrifyImageCommand): Added -resample
+	option to match documentation.
 	* VisualMagick/configure: Added rpcrt4.lib to project settings
 	for Visual C++ 6.0 so that configure links.  The code which
 	needs these interfaces is to support Visual C++ 7.0 XML-style

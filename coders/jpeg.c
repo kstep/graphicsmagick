@@ -1345,10 +1345,6 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
   const ImageAttribute
     *attribute;
 
-  double
-    x_resolution,
-    y_resolution;
-
   JSAMPLE
     *jpeg_pixels;
 
@@ -1442,19 +1438,21 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
       jpeg_info.in_color_space=JCS_GRAYSCALE;
     }
   jpeg_set_defaults(&jpeg_info);
-  x_resolution=72.0;
-  y_resolution=72.0;
+  if ((image->x_resolution == 0) || (image->y_resolution == 0))
+    {
+      image->x_resolution=72.0;
+      image->y_resolution=72.0;
+    }
   if (image_info->density != (char *) NULL)
     {
       int
         count;
 
-      count=sscanf(image_info->density,"%lfx%lf",&x_resolution,&y_resolution);
-      if (count != 2)
-        y_resolution=x_resolution;
+      count=sscanf(image_info->density,"%lfx%lf",&image->x_resolution,
+        &image->y_resolution);
+      if (count == 1 )
+        image->y_resolution=image->x_resolution;
     }
-  image->x_resolution=x_resolution;
-  image->y_resolution=y_resolution;
   jpeg_info.density_unit=1;  /* default to DPI */
   if (logging)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
