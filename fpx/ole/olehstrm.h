@@ -64,7 +64,7 @@
     virtual Boolean WriteHeader(); 
 
     // Set the stream pointer to desired position. The default mode is from the begining
-    virtual Boolean Seek( long offset = 0, const unsigned long mode = STREAM_SEEK_SET);
+    virtual Boolean Seek( const long offset = 0, const unsigned long mode = STREAM_SEEK_SET);
 
     // Get the end pointer of the stream, excluding the header length
     virtual Boolean GetEndOfFile( long* endPosition);
