@@ -30,8 +30,6 @@ AM_INIT_AUTOMAKE(ImageMagick,$MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION, ' ')
 #
 # The following is extracted from AC_OUTPUT since we need the values of
 # prefix and exec_prefix earlier.
-# Reportedly fixed in autoconf 1.13 by the addition of AC_DEFINE_DIR but
-# does not seem to appear anywhere.
 #
 test "x$prefix" = xNONE && prefix=$ac_default_prefix
 # Let make expand exec_prefix.
@@ -128,10 +126,6 @@ fi
 # option to avoid confusing end users.
 AM_MAINTAINER_MODE
 
-# Add configure option --with-dmalloc to enable malloc debugging.
-# dmalloc is available at ftp://ftp.letters.com/src/dmalloc/dmalloc.tar.gz
-AM_WITH_DMALLOC
-
 # Enable prof-based profiling support
 AC_ARG_ENABLE(prof,
 	      [  --enable-prof           enable prof source profiling support (default is no)],
@@ -202,14 +196,16 @@ AC_ARG_WITH(largefiles,
 	      [with_largefiles='yes'])
 
 # Enable build/install of Magick++
-AC_ARG_WITH(magick_plus_plus,
-	      [  --with-magick_plus_plus enable build/install of Magick++],
+AC_ARG_WITH(magick-plus-plus,
+	      [  --without-magick-plus-plus disable build/install of Magick++],
 	      [with_magick_plus_plus=$withval],
-	      [with_magick_plus_plus='no'])
+	      [with_magick_plus_plus='yes'])
 
 # Disable build/install of PerlMagick.
 AC_ARG_WITH(perl,
-	      [  --without-perl          disable build/install of PerlMagick],
+	      [  --without-perl          disable build/install of PerlMagick
+       or
+  --with-perl=PERL        use specified Perl binary to configure PerlMagick],
 	      [with_perl=$withval],
 	      [with_perl='yes'])
 
@@ -1383,7 +1379,7 @@ fi
 # Specify path to shared libstdc++ if not in normal location
 #
 AC_ARG_WITH(libstdc,
-  [  --with-libstdc=DIR      use libstdc++ in DIR],
+  [  --with-libstdc=DIR      use libstdc++ in DIR (for GNU C++)],
   [if test "$withval" != no -a "$withval" != yes; then
     if test -d "$withval"; then
       LIBSTDC_LDFLAGS="-L$withval"
@@ -1394,6 +1390,7 @@ AC_SUBST(LIBSTDC_LDFLAGS)
 #
 # C++ Support Tests (For Magick++)
 #
+want_magick_plus_plus="$with_magick_plus_plus"
 if test "$with_magick_plus_plus" = 'yes'
 then
  with_magick_plus_plus='no'
@@ -1448,15 +1445,9 @@ CFLAGS=`echo $CFLAGS | sed -e 's/  */ /g'`
 CPPFLAGS=`echo $CPPFLAGS | sed -e 's/  */ /g'`
 CXXFLAGS=`echo $CXXFLAGS | sed -e 's/  */ /g'`
 LDFLAGS=`echo $LDFLAGS | sed -e 's/  */ /g'`
+TESTED_LIBS=`echo $LIBS | sed -e 's/  */ /g'`
 #LIBS=`echo $LIBS | sed -e 's/  */ /g'`
-if test "$with_modules" = 'no'
-then
-#  LIBS=`echo "$LIB_JBIG $LIB_HDF $LIB_TIFF $LIB_TTF $LIB_JPEG $LIB_PNG $LIB_FPX $LIB_DPS $LIB_XEXT $LIB_XT $LIB_X11 $LIB_BZLIB $LIB_ZLIB $LIB_THREAD $LIB_LF $LIB_MATH" | sed -e 's/  */ /g'`
-  LIBS=`echo "" | sed -e 's/  */ /g'`
-else
-#  LIBS=`echo "$LIB_THREAD $LIB_LF $LIB_MATH" | sed -e 's/  */ /g'`
-  LIBS=`echo "" | sed -e 's/  */ /g'`
-fi
+LIBS=""
 
 #AC_SUBST(CPPFLAGS)
 AC_SUBST(X_CFLAGS)
@@ -1487,6 +1478,7 @@ echo "GNU ld            --with-gnu-ld=$with_gnu_ld		$ac_cv_prog_gnu_ld"
 echo "Ghostscript       None                          $have_gs"
 echo "LZW support       --enable-lzw=$with_lzw		$with_lzw"
 echo "16 bit pixels     --enable-16bit-pixel=$with_16_bit_pixel	$with_16_bit_pixel"
+echo "Magick++          --with-magick-plus-plus=$want_magick_plus_plus	$with_magick_plus_plus"
 echo "PERL              --with-perl=$with_perl		$have_perl"
 echo "BZLIB             --with-bzlib=$with_bzlib		$with_bzlib"
 echo "DPS               --with-dps=$with_dps		$have_dps"
@@ -1515,12 +1507,13 @@ else
   echo "  Not using X11."
 fi
 echo ""
-echo "Final Compilation Flags:"
+echo "Options used to compile and link:"
 echo "  CC       = $CC"
 echo "  CFLAGS   = $CFLAGS"
 echo "  CPPFLAGS = $CPPFLAGS"
+echo "  CXX      = $CXX"
 echo "  CXXFLAGS = $CXXFLAGS"
 echo "  LDFLAGS  = $LDFLAGS"
-#echo "  LIBS     = $LIBS"
+echo "  LIBS     = $TESTED_LIBS"
 echo ""
 
