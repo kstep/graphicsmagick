@@ -6116,7 +6116,7 @@ QueryFontMetrics(ref,...)
 
     Image
       *image;
-    
+
     register int
       i;
 
@@ -6292,8 +6292,23 @@ QueryFontMetrics(ref,...)
     status=GetFontMetrics(image,annotate_info,&bounds);
     if (status != False)
       {
+        PointInfo
+          resolution;
+    
+        resolution.x=72.0;
+        resolution.y=72.0;
+        if (annotate_info->density != (char *) NULL)
+          {
+            int
+              count;
+
+            count=sscanf(annotate_info->density,"%lfx%lf",&resolution.x,
+              &resolution.y);
+            if (count != 2)
+              resolution.y=resolution.x;
+          }
         FormatString(message,"%g,%g,%g,%g,%g",bounds.x1,bounds.y1,bounds.x2,
-          bounds.y2,ExpandAffine(&annotate_info->affine)*
+          bounds.y2,(resolution.y/72.0)*ExpandAffine(&annotate_info->affine)*
           annotate_info->pointsize);
         s=sv_2mortal(newSVpv(message,0));
         PUSHs(s);

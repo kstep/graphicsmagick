@@ -1066,7 +1066,7 @@ static unsigned int RenderPostscript(Image *image,
     ExpandAffine(&annotate_info->affine)*annotate_info->pointsize;
   bounds->y1=ceil(-font_height/4.0+0.5);
   bounds->x1=ceil(-bounds->y1/4.0-0.5);
-  bounds->x2=annotate_image->columns;
+  bounds->x2=annotate_image->columns+bounds->x1;
   bounds->y2=ceil(3.0*font_height/4.0+0.5);
   if (!render)
     {

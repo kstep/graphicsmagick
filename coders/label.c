@@ -93,8 +93,14 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
   AnnotateInfo
     *annotate_info;
 
+  double
+    font_height;
+
   Image
     *image;
+
+  PointInfo
+    resolution;
 
   SegmentInfo
     bounds;
@@ -112,8 +118,22 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
   status=GetFontMetrics(image,annotate_info,&bounds);
   if (status == False)
     ThrowReaderException(DelegateWarning,"Unable to get font metrics",image);
+  resolution.x=72.0;
+  resolution.y=72.0;
+  if (annotate_info->density != (char *) NULL)
+    {
+      int
+        count;
+
+      count=sscanf(annotate_info->density,"%lfx%lf",&resolution.x,
+        &resolution.y);
+      if (count != 2)
+        resolution.y=resolution.x;
+    }
+  font_height=(unsigned int) ceil((resolution.y/72.0)*
+    ExpandAffine(&annotate_info->affine)*annotate_info->pointsize-0.5);
   image->columns=ceil(bounds.x2-bounds.x1-0.5);
-  image->rows=ceil(bounds.y2-bounds.y1-0.5);
+  image->rows=ceil(Max(bounds.y2-bounds.y1,font_height)-0.5);
   SetImage(image,OpaqueOpacity);
   (void) AnnotateImage(image,annotate_info);
   DestroyAnnotateInfo(annotate_info);
