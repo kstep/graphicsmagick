@@ -5886,33 +5886,40 @@ MagickExport void SetImage(Image *image,const Quantum opacity)
     background_color.opacity=opacity;
   if (background_color.opacity != OpaqueOpacity)
     SetImageType(image,TrueColorMatteType);
-  if ((image->storage_class != PseudoClass) &&
-      (image->colorspace != CMYKColorspace))
-    for (y=0; y < (long) image->rows; y++)
+  if ((image->storage_class == PseudoClass) ||
+      (image->colorspace == CMYKColorspace))
     {
-      q=SetImagePixels(image,0,y,image->columns,1);
-      if (q == (PixelPacket *) NULL)
-        break;
-      for (x=0; x < (long) image->columns; x++)
-        *q++=background_color;
-      if (!SyncImagePixels(image))
-        break;
-    }
-  else
-    for (y=0; y < (long) image->rows; y++)
-    {
-      q=SetImagePixels(image,0,y,image->columns,1);
-      if (q == (PixelPacket *) NULL)
-        break;
-      indexes=GetIndexes(image);
-      if (indexes != (IndexPacket *) NULL)
-        for (x=0; x < (long) image->columns; x++)
+      /*
+        Set colormapped or CMYK image.
+      */
+      for (y=0; y < (long) image->rows; y++)
+      {
+        q=SetImagePixels(image,0,y,image->columns,1);
+        if (q == (PixelPacket *) NULL)
+          break;
+        for (x=(long) image->columns; x > 0; x--)
+          *q++=background_color;
+        indexes=GetIndexes(image);
+        for (x=(long) image->columns; x > 0; x--)
           *indexes++=0;
-      for (x=0; x < (long) image->columns; x++)
-        *q++=background_color;
-      if (!SyncImagePixels(image))
-        break;
+        if (!SyncImagePixels(image))
+          break;
+      }
+      return;
     }
+  /*
+    Set DirectClass image.
+  */
+  for (y=0; y < (long) image->rows; y++)
+  {
+    q=SetImagePixels(image,0,y,image->columns,1);
+    if (q == (PixelPacket *) NULL)
+      break;
+    for (x=(long) image->columns; x > 0; x--)
+      *q++=background_color;
+    if (!SyncImagePixels(image))
+      break;
+  }
 }
 
 /*
