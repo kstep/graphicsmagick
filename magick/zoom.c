@@ -615,7 +615,8 @@ Export Image *SampleImage(Image *image,const unsigned int columns,
 #define SampleImageText  "  Sampling image...  "
 
   double
-    scale_factor;
+    *x_offset,
+    *y_offset;
 
   Image
     *sample_image;
@@ -638,11 +639,7 @@ Export Image *SampleImage(Image *image,const unsigned int columns,
     *s;
 
   PixelPacket
-    *scanline;
-
-  unsigned int
-    *x_offset,
-    *y_offset;
+    *pixels;
 
   assert(image != (Image *) NULL);
   if ((columns == 0) || (rows == 0))
@@ -666,17 +663,14 @@ Export Image *SampleImage(Image *image,const unsigned int columns,
   /*
     Allocate scan line buffer and column offset buffers.
   */
-  scanline=(PixelPacket *)
+  pixels=(PixelPacket *)
     AllocateMemory(image->columns*sizeof(PixelPacket));
   indexes=(IndexPacket *)
     AllocateMemory(image->columns*sizeof(IndexPacket));
-  x_offset=(unsigned int *)
-    AllocateMemory(sample_image->columns*sizeof(unsigned int));
-  y_offset=(unsigned int *)
-    AllocateMemory(sample_image->rows*sizeof(unsigned int));
-  if ((scanline == (PixelPacket *) NULL) || (indexes == (IndexPacket *) NULL) ||
-      (x_offset == (unsigned int *) NULL) ||
-      (y_offset == (unsigned int *) NULL))
+  x_offset=(double *) AllocateMemory(sample_image->columns*sizeof(double));
+  y_offset=(double *) AllocateMemory(sample_image->rows*sizeof(double));
+  if ((pixels == (PixelPacket *) NULL) || (indexes == (IndexPacket *) NULL) ||
+      (x_offset == (double *) NULL) || (y_offset == (double *) NULL))
     {
       MagickWarning(ResourceLimitWarning,"Unable to sample image",
         "Memory allocation failed");
@@ -684,80 +678,55 @@ Export Image *SampleImage(Image *image,const unsigned int columns,
       return((Image *) NULL);
     }
   /*
-    Initialize column pixel offsets.
+    Initialize pixel offsets.
   */
-  scale_factor=(double) image->columns/sample_image->columns;
-  i=0;
   for (x=0; x < (int) sample_image->columns; x++)
-  {
-    x_offset[x]=(unsigned int) ((x+1)*scale_factor-i);
-    i+=x_offset[x];
-  }
-  /*
-    Initialize row pixel offsets.
-  */
-  scale_factor=(double) image->rows/sample_image->rows;
-  i=0;
+    x_offset[x]=x*image->columns/(double) sample_image->columns;
   for (y=0; y < (int) sample_image->rows; y++)
-  {
-    y_offset[y]=(unsigned int) ((y+1)*scale_factor-i);
-    i+=y_offset[y];
-  }
-  p=GetPixelCache(image,0,0,image->columns,1);
-  if (p != (PixelPacket *) NULL)
-    {
-      /*
-        Preload first scanline.
-      */
-      if (image->class == PseudoClass)
-        (void) memcpy(indexes,image->indexes,
-          image->columns*sizeof(IndexPacket));
-      (void) memcpy(scanline,p,image->columns*sizeof(PixelPacket));
-    }
+    y_offset[y]=y*image->rows/(double) sample_image->rows;
   /*
     Sample each row.
   */
-  j=0;
+  j=(-1);
   for (y=0; y < (int) sample_image->rows; y++)
   {
     q=SetPixelCache(sample_image,0,y,sample_image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
-    for (i=0; i < (int) y_offset[y]; i++)
-    {
-      /*
-        Read a scan line.
-      */
-      p=GetPixelCache(image,0,j++,image->columns,1);
-      if (p == (PixelPacket *) NULL)
-        break;
-      if (image->class == PseudoClass)
-        (void) memcpy(indexes,image->indexes,
-          image->columns*sizeof(IndexPacket));
-      (void) memcpy(scanline,p,image->columns*sizeof(PixelPacket));
-    }
+    if (j != y_offset[y])
+      {
+        /*
+          Read a scan line.
+        */
+        j=y_offset[y];
+        p=GetPixelCache(image,0,j,image->columns,1);
+        if (p == (PixelPacket *) NULL)
+          break;
+        if (image->class == PseudoClass)
+          (void) memcpy(indexes,image->indexes,
+            image->columns*sizeof(IndexPacket));
+        (void) memcpy(pixels,p,image->columns*sizeof(PixelPacket));
+      }
     /*
       Sample each column.
     */
-    k=0;
-    s=scanline;
+    s=pixels;
     for (x=0; x < (int) sample_image->columns; x++)
     {
+      k=x_offset[x];
       if (sample_image->class == PseudoClass)
         sample_image->indexes[x]=indexes[k];
-      *q++=(*s);
-      k+=x_offset[x];
-      s+=x_offset[x];
+      *q++=pixels[k];
     }
     if (!SyncPixelCache(sample_image))
       break;
     if (QuantumTick(y,sample_image->rows))
       ProgressMonitor(SampleImageText,y,sample_image->rows);
   }
-  FreeMemory(scanline);
-  FreeMemory(indexes);
-  FreeMemory(x_offset);
   FreeMemory(y_offset);
+  FreeMemory(x_offset);
+  FreeMemory(indexes);
+  FreeMemory(pixels);
   return(sample_image);
 }
 
