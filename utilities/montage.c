@@ -283,6 +283,7 @@ int main(int argc,char **argv)
     *image_info;
 
   int
+    j,
     x;
 
   long
@@ -333,6 +334,7 @@ int main(int argc,char **argv)
   /*
     Parse command line.
   */
+  j=0;
   for (i=1; i < (argc-1); i++)
   {
     option=argv[i];
@@ -1191,6 +1193,7 @@ int main(int argc,char **argv)
         /*
           Option is a file name: begin by reading image from specified file.
         */
+        j=i+1;
         (void) strncpy(image_info->filename,argv[i],MaxTextExtent-1);
         if (first_scene != last_scene)
           {
@@ -1236,6 +1239,9 @@ int main(int argc,char **argv)
     MagickError(OptionError,"Missing an image file name",(char *) NULL);
   while (image->previous != (Image *) NULL)
     image=image->previous;
+  status=MogrifyImages(image_info,argc-j-1,argv+j,&image);
+  if (status == False)
+    CatchImageException(image);
   /*
     Create composite image.
   */

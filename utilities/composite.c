@@ -215,7 +215,8 @@ int main(int argc,char **argv)
     *image_info;
 
   int
-    gravity;
+    gravity,
+    j;
 
   long
     stegano,
@@ -284,6 +285,7 @@ int main(int argc,char **argv)
     Check command syntax.
   */
   filename=(char *) NULL;
+  j=0;
   for (i=1; i < (argc-1); i++)
   {
     option=argv[i];
@@ -292,6 +294,7 @@ int main(int argc,char **argv)
         /*
           Read input images.
         */
+        j=i+1;
         filename=argv[i];
         (void) strncpy(image_info->filename,filename,MaxTextExtent-1);
         if (composite_image == (Image *) NULL)
@@ -920,10 +923,14 @@ int main(int argc,char **argv)
         }
       }
   }
-  if ((image == (Image *) NULL) || (composite_image == (Image *) NULL))
+  if ((i != (argc-1)) || (image == (Image *) NULL) ||
+      (composite_image == (Image *) NULL))
     MagickError(OptionError,"Missing an image file name",(char *) NULL);
-  if (i != (argc-1))
-    MagickError(OptionError,"Missing an image file name",(char *) NULL);
+  while (image->previous != (Image *) NULL)
+    image=image->previous;
+  status=MogrifyImages(image_info,argc-j-1,argv+j,&image);
+  if (status == False)
+    CatchImageException(image);
   if (mask_image != (Image *) NULL)
     SetImageClipMask(image,mask_image);
   if (compose == DissolveCompositeOp)
@@ -1071,12 +1078,6 @@ int main(int argc,char **argv)
   if (combine_image == (Image *) NULL)
     MagickError(OptionError,"Missing an image file name",(char *) NULL);
   combine_image->matte=matte;
-  /*
-    Transmogrify image as defined by the image processing options.
-  */
-  status=MogrifyImage(image_info,argc,argv,&combine_image);
-  if (status == False)
-    CatchImageException(combine_image);
   /*
     Write image.
   */

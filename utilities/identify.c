@@ -342,10 +342,10 @@ int main(int argc,char **argv)
       Identify image.
     */
     (void) strncpy(image_info->filename,argv[i],MaxTextExtent-1);
-    if (image_info->verbose)
-      image=ReadImage(image_info,&exception);
-    else
+    if (!image_info->verbose)
       image=PingImage(image_info,&exception);
+    else
+      image=ReadImage(image_info,&exception);
     if (exception.severity != UndefinedException)
       MagickWarning(exception.severity,exception.reason,
         exception.description);

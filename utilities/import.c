@@ -235,7 +235,7 @@ int main(int argc,char **argv)
     *image_info;
 
   int
-    i,
+    j,
     x;
 
   long
@@ -246,6 +246,9 @@ int main(int argc,char **argv)
 
   register Image
     *p;
+
+  register int
+    i;
 
   unsigned int
     status;
@@ -364,11 +367,15 @@ int main(int argc,char **argv)
   */
   filename=(char *) NULL;
   target_window=(char *) NULL;
+  j=0;
   for (i=1; i < argc; i++)
   {
     option=argv[i];
     if ((strlen(option) < 2) || ((*option != '-') && (*option != '+')))
-      filename=argv[i];
+      {
+        filename=argv[i];
+        j=i+1;
+      }
     else
       switch(*(option+1))
       {
@@ -915,12 +922,6 @@ int main(int argc,char **argv)
     MagickError(OptionError,"Missing an image file name",(char *) NULL);
   while (image->previous != (Image *) NULL)
     image=image->previous;
-  /*
-    Transmogrify image as defined by the image processing options.
-  */
-  status=MogrifyImages(image_info,argc,argv,&image);
-  if (status == False)
-    CatchImageException(image);
   (void) SetImageInfo(image_info,True,&image->exception);
   status=0;
   for (p=image; p != (Image *) NULL; p=p->next)

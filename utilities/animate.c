@@ -268,7 +268,7 @@ int main(int argc,char **argv)
     *image_info;
 
   int
-    i,
+    j,
     x;
 
   long
@@ -281,6 +281,9 @@ int main(int argc,char **argv)
 
   register Image
     *p;
+
+  register int
+    i;
 
   unsigned int
     status;
@@ -376,6 +379,7 @@ int main(int argc,char **argv)
   /*
     Parse command line.
   */
+  j=0;
   for (i=1; i <= argc; i++)
   {
     if (i < argc)
@@ -981,12 +985,16 @@ int main(int argc,char **argv)
               p->next=next_image;
             }
         }
+        j=i+1;
       }
   }
   if ((i != argc) || (image == (Image *) NULL))
     MagickError(OptionError,"Missing an image file name",(char *) NULL);
   while (image->previous != (Image *) NULL)
     image=image->previous;
+  status=MogrifyImages(image_info,argc-j-1,argv+j,&image);
+  if (status == False)
+    CatchImageException(image);
   if (resource_info.window_id != (char *) NULL)
     XAnimateBackgroundImage(display,&resource_info,image);
   else

@@ -419,6 +419,7 @@ int main(int argc,char **argv)
 
   int
     append,
+    j,
     x;
 
   long
@@ -494,6 +495,7 @@ int main(int argc,char **argv)
   */
   if ((argc > 2) && (LocaleCompare("-concatenate",argv[1]) == 0))
     ConcatenateImages(argc,argv);
+  j=0;
   for (i=1; i < (argc-1); i++)
   {
     option=argv[i];
@@ -502,6 +504,7 @@ int main(int argc,char **argv)
         /*
           Read input image.
         */
+        j=i+1;
         filename=argv[i];
         (void) strncpy(image_info->filename,filename,MaxTextExtent-1);
         if (ping)
@@ -1914,17 +1917,11 @@ int main(int argc,char **argv)
   }
   if ((i != (argc-1)) || (image == (Image *) NULL))
     MagickError(OptionError,"Missing an image file name",(char *) NULL);
-  /*
-    Write images.
-  */
-  if ((strlen(option) > 2) && ((*option == '-') || (*option == '+')))
-    {
-      status=MogrifyImages(image_info,i,argv,&image);
-      if (status == False)
-        CatchImageException(image);
-    }
   while (image->previous != (Image *) NULL)
     image=image->previous;
+  status=MogrifyImages(image_info,argc-j-1,argv+j,&image);
+  if (status == False)
+    CatchImageException(image);
   if (append != 0)
     {
       Image
@@ -2033,7 +2030,7 @@ int main(int argc,char **argv)
   if (global_colormap)
     (void) MapImages(image,(Image *) NULL,image_info->dither);
   /*
-    Write converted image.
+    Write converted images.
   */
   (void) strncpy(image_info->filename,argv[i],MaxTextExtent-1);
   for (p=image; p != (Image *) NULL; p=p->next)
