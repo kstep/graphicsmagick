@@ -367,7 +367,7 @@ static struct
     { "Map", { {"image", ImageReference}, {"dither", BooleanTypes} } },
     { "MatteFloodfill", { {"geom", StringReference}, {"x", IntegerReference},
       {"y", IntegerReference}, {"matte", IntegerReference},
-      {"bordercolor", StringReference} } },
+      {"bordercolor", StringReference}, {"fuzz", DoubleReference} } },
     { "Modulate", { {"factor", StringReference}, {"bright", DoubleReference},
       {"satur", DoubleReference}, {"hue", DoubleReference} } },
     { "Negate", { {"gray", BooleanTypes} } },
@@ -4963,6 +4963,8 @@ Mogrify(ref,...)
             rectangle_info.y % image->rows);
           if (attribute_flag[4])
             target=fill_color;
+          if (attribute_flag[5])
+            image->fuzz=argument_list[5].int_reference;
           MatteFloodfillImage(image,target,matte,rectangle_info.x,
             rectangle_info.y,attribute_flag[4] ? FillToBorderMethod :
             FloodfillMethod);
