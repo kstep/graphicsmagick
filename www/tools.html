@@ -1,222 +1,237 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-  "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <HTML>
 <HEAD>
-   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-   <title>Tools: GraphicsMagick - Image Processing and Display Package</title>
-   <meta name="description" content="GraphicsMagick is a    robust collection of tools and libraries to read, write, and manipulate    an image in any of the more popular image formats including GIF, JPEG,    PNG, PDF, and Photo CD.  With GraphicsMagick you can create GIFs dynamically    making it suitable for Web applications.  You can also resize, rotate,    sharpen, color reduce, or add special effects to an image and save your    completed work in the same or  differing image format.">
-   <meta name="keywords" content="GraphicsMagick, Image Magick, Image Magic,    PerlMagick, Perl Magick, Perl Magic, CineMagick, PixelMagick, Pixel Magic,    WebMagick, Web Magic, visualization, image processing, software     development, simulation, image, software, AniMagick, Animagic,    Magick++">
-   <link rel="StyleSheet" href="magick.css" type="text/css">
-</head>
-<body bgcolor="#FFFFFF" text="#000000" link="#0085c0" vlink="#800080" alink="#0085c0" >
-
-
-<center><img SRC="../images/gm-188x120t.png" alt="" height="118" width="114"></center>
-
-<p><br>
-<dl>&nbsp;
-<table BORDER=0 WIDTH="100%" >
-<tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.png" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">Display</font></font></font></b></td>
-</tr>
-</table>
-
-<dd>
-<a href="display.html">Display</a> is a machine architecture independent
-image processing and display program. It can display an image on any workstation
-display running an <i>X</i> server. The image can be displayed as background
-image of any window.</dd>
-
-<dd>
-<b>Display</b> first determines the hardware capabilities of your workstation.
-If the number of unique colors in an image is less than or equal to the
-number the workstation can support, the image is displayed in an <i>X window</i>.
-Otherwise the number of colors in the image is first reduced to match the
-color resolution of the workstation before it is displayed.</dd>
-
-<dd>
-This means that a continuous-tone 24 bits/pixel image can display on a
-8 bit pseudo-color device or monochrome device. In most instances the reduced
-color image closely resembles the original. Alternatively, a monochrome
-or pseudo-color image sequence can display on a continuous-tone 24 bits/pixels
-device.</dd>
-</dl>
-
-<dl>&nbsp;
-<table BORDER=0 WIDTH="100%" >
-<tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.png" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">Import</font></font></font></b></td>
-</tr>
-</table>
-
-<dd>
-<a href="import.html">Import</a> reads an image from any visible window
-on an <i>X server</i> and outputs it as an image file. You can capture
-a single window, the entire screen, or any rectangular portion of the screen.
-You can use the <b>display</b> utility for redisplay, printing, editing,
-formatting, archiving, image processing, etc. of the captured image.</dd>
-
-<br>&nbsp;
-<dd>
-The target window can be specified by id, name, or may be selected by clicking
-the mouse in the desired window. If you press a button and then drag, a
-rectangle will form which expands and contracts as the mouse moves. To
-save the portion of the screen defined by the rectangle, just release the
-button. The keyboard bell is rung once at the beginning of the screen capture
-and twice when it completes.</dd>
-</dl>
-
-<dl>&nbsp;
-<table BORDER=0 WIDTH="100%" >
-<tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.png" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">Animate</font></font></font></b></td>
-</tr>
-</table>
-
-<dd>
-<a href="animate.html">Animate</a> displays a sequence of images on any
-workstation display running an <i>X server</i>. <b>Animate</b> first determines
-the hardware capabilities of the workstation. If the number of unique colors
-in an image is less than or equal to the number the workstation can support,
-the image is displayed in an <i>X window</i>. Otherwise the number of colors
-in the image is first reduced to match the color resolution of the workstation
-before it is displayed.</dd>
-
-<br>This means that a continuous-tone 24 bits/pixel image can display on
-a 8 bit pseudo-color device or monochrome device. In most instances the
-reduced color image closely resembles the original. Alternatively, a monochrome
-or pseudo-color image sequence can display on a continuous-tone 24 bits/pixels
-device.</dl>
-
-<dl>&nbsp;
-<table BORDER=0 WIDTH="100%" >
-<tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.png" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">Montage</font></font></font></b></td>
-</tr>
-</table>
-
-<dd>
-<a href="montage.html">Montage</a> creates a composite by combining several
-separate images. The images are tiled on the composite image with the name
-of the image optionally appearing just below the individual tile.</dd>
-</dl>
-
-<dl>&nbsp;
-<table BORDER=0 WIDTH="100%" >
-<tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.png" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">Convert</font></font></font></b></td>
-</tr>
-</table>
-
-<dd>
-<a href="convert.html">Convert</a> converts an input file using one image
-format to an output file with a differing image format. By default, the
-image format is determined by its magic number. To specify a particular
-image format, precede the filename with an image format name and a <b>colon</b>
-(i.e. ps:image) or specify the image type as the filename <b>suffix</b>
-(i.e. image.ps). Specify file as - for <b>standard input</b> or <b>output</b>.
-If file has the extension .Z, the file is decoded with uncompress.</dd>
-</dl>
-
-<dl>&nbsp;
-<table BORDER=0 WIDTH="100%" >
-<tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.png" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">Mogrify</font></font></font></b></td>
-</tr>
-</table>
-
-<dd>
-<a href="mogrify.html">Mogrify</a> transforms an image or a sequence of
-images. These transforms include <b>image scaling</b>, <b>image rotation</b>,
-<b>color
-reduction</b>, and others. The transmogrified image
-<b>overwrites</b> the
-original image.</dd>
-</dl>
-
-<dl>&nbsp;
-<table BORDER=0 WIDTH="100%" >
-<tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.png" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">Identify</font></font></font></b></td>
-</tr>
-</table>
-
-<dd>
-<a href="identify.html">Identify</a> describes the format and characteristics
-of one or more image files. It will also report if an image is incomplete
-or corrupt. The information displayed includes the scene number, the file
-name, the width and height of the image, whether the image is colormapped
-or not, the number of colors in the image, the number of bytes in the image,
-the format of the image (JPEG, PNM, etc.), and finally the number of seconds
-it took to read and process the image.</dd>
-</dl>
-
-<dl>&nbsp;
-<table BORDER=0 WIDTH="100%" >
-<tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.png" ALT=">"
-BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font
-color="#FFFFFF"><font size="+1">Composite</font></font></font></b></td>
-</tr>
-</table>
-
-<dd>
-<a href="composite.html">Composite</a> composites images to create new images.</dd>
-</dl>
-
-<dl>&nbsp;
-<table BORDER=0 WIDTH="100%" >
-<tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.png" ALT=">"
-BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font
-color="#FFFFFF"><font size="+1">Conjure</font></font></font></b></td>
-</tr>
-</table>
-
-<dd>
-<a href="conjure.html">Conjure</a> interprets and executes scripts in
-the Magick Scripting Language (MSL).</dd>
-
-<dd>
-The Magick scripting language (MSL) will primarily
-benefit those that want to accomplish custom image processing tasks but
-do not wish to program, or those that do not have access to a Perl
-interpreter or a compiler.  The interpreter is called conjure and here
-is an example script:
-</dd>
-<pre>
-    &lt;?xml version="1.0" encoding="UTF-8"?&gt;
-    &lt;image size="400x400" &gt;
-      &lt;read filename="image.gif" /&gt;
-      &lt;get width="base-width" height="base-height" /&gt;
-      &lt;resize geometry="%[dimensions]" /&gt;
-      &lt;get width="width" height="height" /&gt;
+	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=iso-8859-1">
+	<TITLE>Tools: GraphicsMagick - Image Processing and Display Package</TITLE>
+	<META NAME="GENERATOR" CONTENT="StarOffice 7  (Solaris Sparc)">
+	<META NAME="CREATED" CONTENT="20040418;19175700">
+	<META NAME="CHANGEDBY" CONTENT="Robert Friesenhahn">
+	<META NAME="CHANGED" CONTENT="20040418;19181700">
+	<META NAME="DESCRIPTION" CONTENT="GraphicsMagick is a    robust collection of tools and libraries to read, write, and manipulate    an image in any of the more popular image formats including GIF, JPEG,    PNG, PDF, and Photo CD.  With GraphicsMagick you can create GIFs dynamically    making it suitable for Web applications.  You can also resize, rotate,    sharpen, color reduce, or add special effects to an image and save your    completed work in the same or  differing image format.">
+	<META NAME="KEYWORDS" CONTENT="GraphicsMagick, Image Magick, Image Magic,    PerlMagick, Perl Magick, Perl Magic, CineMagick, PixelMagick, Pixel Magic,    WebMagick, Web Magic, visualization, image processing, software     development, simulation, image, software, AniMagick, Animagic,    Magick++">
+	<STYLE>
+	<!--
+		TD P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 14pt }
+		P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 14pt }
+		DD { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 14pt }
+		PRE { color: #000000 }
+		A:link { color: #0085c0 }
+		A:visited { color: #800080 }
+	-->
+	</STYLE>
+</HEAD>
+<BODY LANG="en-US" TEXT="#000000" LINK="#0085c0" VLINK="#800080" BGCOLOR="#ffffff" DIR="LTR">
+<P ALIGN=CENTER><IMG SRC="../images/gm-188x120t.png" NAME="Graphic1" ALIGN=BOTTOM WIDTH=114 HEIGHT=118 BORDER=0></P>
+<P><BR><BR>
+</P>
+<P STYLE="margin-bottom: 0in">&nbsp; 
+</P>
+<TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=2>
+	<TR>
+		<TD BGCOLOR="#52799e">
+			<P ALIGN=LEFT><IMG SRC="../images/right_triangle.png" NAME="Graphic2" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0><B><FONT SIZE=4><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">Display</FONT></FONT></FONT></B></P>
+		</TD>
+	</TR>
+</TABLE>
+<DL>
+	<DD><A HREF="display.html">Display</A> is a machine architecture
+	independent image processing and display program. It can display an
+	image on any workstation display running an <I>X</I> server. The
+	image can be displayed as background image of any window. 
+	</DD><DD>
+	<B>Display</B> first determines the hardware capabilities of your
+	workstation. If the number of unique colors in an image is less than
+	or equal to the number the workstation can support, the image is
+	displayed in an <I>X window</I>. Otherwise the number of colors in
+	the image is first reduced to match the color resolution of the
+	workstation before it is displayed. 
+	</DD><DD STYLE="margin-bottom: 0.2in">
+	This means that a continuous-tone 24 bits/pixel image can display on
+	a 8 bit pseudo-color device or monochrome device. In most instances
+	the reduced color image closely resembles the original.
+	Alternatively, a monochrome or pseudo-color image sequence can
+	display on a continuous-tone 24 bits/pixels device. 
+	</DD></DL>
+<P STYLE="margin-bottom: 0in">
+&nbsp; 
+</P>
+<TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=2>
+	<TR>
+		<TD BGCOLOR="#52799e">
+			<P ALIGN=LEFT><IMG SRC="../images/right_triangle.png" NAME="Graphic3" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0><B><FONT SIZE=4><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">Import</FONT></FONT></FONT></B></P>
+		</TD>
+	</TR>
+</TABLE>
+<DL>
+	<DD><A HREF="import.html">Import</A> reads an image from any visible
+	window on an <I>X server</I> and outputs it as an image file. You
+	can capture a single window, the entire screen, or any rectangular
+	portion of the screen. You can use the <B>display</B> utility for
+	redisplay, printing, editing, formatting, archiving, image
+	processing, etc. of the captured image. <BR>&nbsp; 
+	</DD><DD STYLE="margin-bottom: 0.2in">
+	The target window can be specified by id, name, or may be selected
+	by clicking the mouse in the desired window. If you press a button
+	and then drag, a rectangle will form which expands and contracts as
+	the mouse moves. To save the portion of the screen defined by the
+	rectangle, just release the button. The keyboard bell is rung once
+	at the beginning of the screen capture and twice when it completes. 
+	</DD></DL>
+<P STYLE="margin-bottom: 0in">
+&nbsp; 
+</P>
+<TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=2>
+	<TR>
+		<TD BGCOLOR="#52799e">
+			<P ALIGN=LEFT><IMG SRC="../images/right_triangle.png" NAME="Graphic4" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0><B><FONT SIZE=4><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">Animate</FONT></FONT></FONT></B></P>
+		</TD>
+	</TR>
+</TABLE>
+<DL>
+	<DD STYLE="margin-bottom: 0.2in"><A HREF="animate.html">Animate</A>
+	displays a sequence of images on any workstation display running an
+	<I>X server</I>. <B>Animate</B> first determines the hardware
+	capabilities of the workstation. If the number of unique colors in
+	an image is less than or equal to the number the workstation can
+	support, the image is displayed in an <I>X window</I>. Otherwise the
+	number of colors in the image is first reduced to match the color
+	resolution of the workstation before it is displayed. <BR>This means
+	that a continuous-tone 24 bits/pixel image can display on a 8 bit
+	pseudo-color device or monochrome device. In most instances the
+	reduced color image closely resembles the original. Alternatively, a
+	monochrome or pseudo-color image sequence can display on a
+	continuous-tone 24 bits/pixels device.</DD></DL>
+<P STYLE="margin-bottom: 0in">
+&nbsp; 
+</P>
+<TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=2>
+	<TR>
+		<TD BGCOLOR="#52799e">
+			<P ALIGN=LEFT><IMG SRC="../images/right_triangle.png" NAME="Graphic5" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0><B><FONT SIZE=4><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">Montage</FONT></FONT></FONT></B></P>
+		</TD>
+	</TR>
+</TABLE>
+<DL>
+	<DD STYLE="margin-bottom: 0.2in"><A HREF="montage.html">Montage</A>
+	creates a composite by combining several separate images. The images
+	are tiled on the composite image with the name of the image
+	optionally appearing just below the individual tile. 
+	</DD></DL>
+<P STYLE="margin-bottom: 0in">
+&nbsp; 
+</P>
+<TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=2>
+	<TR>
+		<TD BGCOLOR="#52799e">
+			<P ALIGN=LEFT><IMG SRC="../images/right_triangle.png" NAME="Graphic6" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0><B><FONT SIZE=4><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">Convert</FONT></FONT></FONT></B></P>
+		</TD>
+	</TR>
+</TABLE>
+<DL>
+	<DD STYLE="margin-bottom: 0.2in"><A HREF="convert.html">Convert</A>
+	converts an input file using one image format to an output file with
+	a differing image format. By default, the image format is determined
+	by its magic number. To specify a particular image format, precede
+	the filename with an image format name and a <B>colon</B> (i.e.
+	ps:image) or specify the image type as the filename <B>suffix</B>
+	(i.e. image.ps). Specify file as - for <B>standard input</B> or
+	<B>output</B>. If file has the extension .Z, the file is decoded
+	with uncompress. 
+	</DD></DL>
+<P STYLE="margin-bottom: 0in">
+&nbsp; 
+</P>
+<TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=2>
+	<TR>
+		<TD BGCOLOR="#52799e">
+			<P ALIGN=LEFT><IMG SRC="../images/right_triangle.png" NAME="Graphic7" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0><B><FONT SIZE=4><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">Mogrify</FONT></FONT></FONT></B></P>
+		</TD>
+	</TR>
+</TABLE>
+<DL>
+	<DD STYLE="margin-bottom: 0.2in"><A HREF="mogrify.html">Mogrify</A>
+	transforms an image or a sequence of images. These transforms
+	include <B>image scaling</B>, <B>image rotation</B>, <B>color
+	reduction</B>, and others. The transmogrified image <B>overwrites</B>
+	the original image. 
+	</DD></DL>
+<P STYLE="margin-bottom: 0in">
+&nbsp; 
+</P>
+<TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=2>
+	<TR>
+		<TD BGCOLOR="#52799e">
+			<P ALIGN=LEFT><IMG SRC="../images/right_triangle.png" NAME="Graphic8" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0><B><FONT SIZE=4><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">Identify</FONT></FONT></FONT></B></P>
+		</TD>
+	</TR>
+</TABLE>
+<DL>
+	<DD STYLE="margin-bottom: 0.2in"><A HREF="identify.html">Identify</A>
+	describes the format and characteristics of one or more image files.
+	It will also report if an image is incomplete or corrupt. The
+	information displayed includes the scene number, the file name, the
+	width and height of the image, whether the image is colormapped or
+	not, the number of colors in the image, the number of bytes in the
+	image, the format of the image (JPEG, PNM, etc.), and finally the
+	number of seconds it took to read and process the image. 
+	</DD></DL>
+<P STYLE="margin-bottom: 0in">
+&nbsp; 
+</P>
+<TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=2>
+	<TR>
+		<TD BGCOLOR="#52799e">
+			<P ALIGN=LEFT><IMG SRC="../images/right_triangle.png" NAME="Graphic9" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0><B><FONT SIZE=4><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">Composite</FONT></FONT></FONT></B></P>
+		</TD>
+	</TR>
+</TABLE>
+<DL>
+	<DD STYLE="margin-bottom: 0.2in"><A HREF="composite.html">Composite</A>
+	composites images to create new images. 
+	</DD></DL>
+<P STYLE="margin-bottom: 0in">
+&nbsp; 
+</P>
+<TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=2>
+	<TR>
+		<TD BGCOLOR="#52799e">
+			<P ALIGN=LEFT><IMG SRC="../images/right_triangle.png" NAME="Graphic10" ALT="&gt;" ALIGN=BOTTOM WIDTH=15 HEIGHT=14 BORDER=0><B><FONT SIZE=4><FONT FACE="Helvetica, Arial"><FONT COLOR="#ffffff">Conjure</FONT></FONT></FONT></B></P>
+		</TD>
+	</TR>
+</TABLE>
+<DL>
+	<DD><A HREF="conjure.html">Conjure</A> interprets and executes
+	scripts in the Magick Scripting Language (MSL). 
+	</DD><DD STYLE="margin-bottom: 0.2in">
+	The Magick scripting language (MSL) will primarily benefit those
+	that want to accomplish custom image processing tasks but do not
+	wish to program, or those that do not have access to a Perl
+	interpreter or a compiler. The interpreter is called conjure and
+	here is an example script: 
+	</DD></DL>
+<PRE>    &lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+    &lt;image size=&quot;400x400&quot; &gt;
+      &lt;read filename=&quot;image.gif&quot; /&gt;
+      &lt;get width=&quot;base-width&quot; height=&quot;base-height&quot; /&gt;
+      &lt;resize geometry=&quot;%[dimensions]&quot; /&gt;
+      &lt;get width=&quot;width&quot; height=&quot;height&quot; /&gt;
       &lt;print output=
-        "Image sized from %[base-width]x%[base-height]
-         to %[width]x%[height].\n" /&gt;
-      &lt;write filename="image.png" /&gt;
-    &lt;/image&gt;
-</pre>
-<dd>
-invoked with
-</dd>
-<pre>
-    conjure -dimensions 400x400 incantation.msl
-</pre>
-<dd>
-All operations will closely follow the key/value pairs defined in
-PerlMagick, unless otherwise noted.
-</dd>
-</dl>
-
-
-<hr>
-<p><a href="../index.html"><img SRC="../images/home.png"
-ALT="GraphicsMagick Home Page" BORDER=0 height=40 width=40
-align=MIDDLE></a><a 
-href="mailto:webmaster@graphicsmagick.org"><img SRC="../images/mail.png"
-ALT="GraphicsMagick Home Page" BORDER=0 height=40 width=40
-align=MIDDLE></a><font size="-2">
-Image manipulation software that works like magic.</font>
-</body>
-</html>
+        &quot;Image sized from %[base-width]x%[base-height]
+         to %[width]x%[height].\n&quot; /&gt;
+      &lt;write filename=&quot;image.png&quot; /&gt;
+    &lt;/image&gt;</PRE>
+<DL>
+	<DD STYLE="margin-bottom: 0.2in">
+	invoked with 
+	</DD></DL>
+<PRE STYLE="margin-bottom: 0.2in">    conjure -dimensions 400x400 incantation.msl</PRE>
+<DL>
+	<DD STYLE="margin-bottom: 0.2in">
+	All operations will closely follow the key/value pairs defined in
+	PerlMagick, unless otherwise noted. 
+	</DD><HR>
+</DL>
+<P ALIGN=CENTER><A HREF="Copyright.html">Copyright</A> <FONT FACE="Abadi Mt Condensed Extra Bold">&copy;</FONT>
+GraphicsMagick Group 2002, 2003, 2004</P>
+</BODY>
+</HTML>

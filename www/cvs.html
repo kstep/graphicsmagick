@@ -1,12 +1,12 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <HTML>
 <HEAD>
-	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=ibm437">
+	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=iso-8859-1">
 	<TITLE>GraphicsMagick Source Access Using CVS</TITLE>
-	<META NAME="GENERATOR" CONTENT="StarOffice 6.0  (Solaris Sparc)">
+	<META NAME="GENERATOR" CONTENT="StarOffice 7  (Solaris Sparc)">
 	<META NAME="CREATED" CONTENT="20020908;16044300">
-	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
-	<META NAME="CHANGED" CONTENT="20030506;293800">
+	<META NAME="CHANGEDBY" CONTENT="Robert Friesenhahn">
+	<META NAME="CHANGED" CONTENT="20040418;19072200">
 	<META NAME="DESCRIPTION" CONTENT="GraphicsMagick is a    robust collection of tools and libraries to read, write, and manipulate    an image in any of the more popular image formats including GIF, JPEG,    PNG, PDF, and Photo CD.  With GraphicsMagick you can create GIFs dynamically    making it suitable for Web applications.  You can also resize, rotate,    sharpen, color reduce, or add special effects to an image and save your    completed work in the same or  differing image format.">
 	<META NAME="KEYWORDS" CONTENT="GraphicsMagick, Image Magick, Image Magic,    PerlMagick, Perl Magick, Perl Magic, CineMagick, PixelMagick, Pixel Magic,    WebMagick, Web Magic, visualization, image processing, software     development, simulation, image, software, AniMagick, Animagic,    Magick++">
 	<STYLE>
@@ -20,8 +20,8 @@
 	-->
 	</STYLE>
 </HEAD>
-<BODY LANG="en-US" TEXT="#000000" LINK="#0085c0" VLINK="#800080" BGCOLOR="#ffffff">
-<TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=0>
+<BODY LANG="en-US" TEXT="#000000" LINK="#0085c0" VLINK="#800080" BGCOLOR="#ffffff" DIR="LTR">
+<TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=0 STYLE="page-break-before: always">
 	<COL WIDTH=256*>
 	<TR>
 		<TD WIDTH=100% BGCOLOR="#52799e">
@@ -59,10 +59,10 @@ of this repository that they make their changes to. </FONT>
 		</TD>
 	</TR>
 </TABLE>
-<P STYLE="margin-bottom: 0in"><FONT SIZE=3>A </FONT><A HREF="http://cvs.graphicsmagick.org/cgi-bin/cvsweb.cgi/"><FONT SIZE=3>CVSWeb</FONT></A><FONT SIZE=3>
+<P STYLE="margin-bottom: 0in">A <A HREF="http://cvs.graphicsmagick.org/cgi-bin/cvsweb.cgi/">CVSWeb</A>
 interface is available which may be used to interactively view the
 latest versions of files, or the changes to files, using your web
-browser. </FONT>
+browser. 
 </P>
 <TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=2>
 	<TR>
@@ -72,122 +72,121 @@ browser. </FONT>
 		</TD>
 	</TR>
 </TABLE>
-<P STYLE="margin-bottom: 0in"><FONT SIZE=3>Here is a summary of CVS
-commands. See the </FONT><A HREF="http://www.cvshome.org/"><FONT SIZE=3>CVS
-Home Page</FONT></A><FONT SIZE=3> for detailed information and
-documentation about CVS. The command &quot;cvs &ndash;help-commands&quot;
-will print out all of the available commands. The command &quot;cvs
-<I>command</I> &ndash;help&quot; will cause a help message to be
-printed for the specified &quot;<I>command</I>&quot;.</FONT></P>
+<P STYLE="margin-bottom: 0in">Here is a summary of CVS commands. See
+the <A HREF="http://www.cvshome.org/">CVS Home Page</A> for detailed
+information and documentation about CVS. The command &quot;cvs
+&ndash;help-commands&quot; will print out all of the available
+commands. The command &quot;cvs <I>command</I> &ndash;help&quot; will
+cause a help message to be printed for the specified &quot;<I>command</I>&quot;.</P>
 <CENTER>
 	<TABLE WIDTH=96% BORDER=1 BORDERCOLOR="#000000" CELLPADDING=4 CELLSPACING=0 BGCOLOR="#99ccff">
 		<COL WIDTH=30*>
 		<COL WIDTH=226*>
 		<TR>
 			<TD WIDTH=12% BGCOLOR="#52799e">
-				<P ALIGN=CENTER STYLE="font-style: normal; text-decoration: none">
+				<P ALIGN=CENTER STYLE="font-variant: normal; color: #ffffff; font-style: normal; text-decoration: none">
 				<FONT COLOR="#ffffff"><FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3><B><SPAN STYLE="background: transparent">Action</SPAN></B></FONT></FONT></FONT></P>
 			</TD>
 			<TD WIDTH=88% BGCOLOR="#52799e">
-				<P ALIGN=CENTER STYLE="font-style: normal; text-decoration: none">
+				<P ALIGN=CENTER STYLE="font-variant: normal; color: #ffffff; font-style: normal; text-decoration: none">
 				<FONT COLOR="#ffffff"><FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3><B><SPAN STYLE="background: transparent">Result</SPAN></B></FONT></FONT></FONT></P>
 			</TD>
 		</TR>
 		<TR>
 			<TD WIDTH=12% BGCOLOR="#ffffff">
-				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<P ALIGN=LEFT STYLE="font-variant: normal; font-style: normal; font-weight: medium; text-decoration: none">
 				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>add</FONT></FONT></P>
 			</TD>
 			<TD WIDTH=88% BGCOLOR="#ffffff">
-				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<P ALIGN=LEFT STYLE="font-variant: normal; font-style: normal; font-weight: medium; text-decoration: none">
 				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>Add
 				a new file or directory to the repository.</FONT></FONT></P>
 			</TD>
 		</TR>
 		<TR>
 			<TD WIDTH=12% BGCOLOR="#ffffff">
-				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<P ALIGN=LEFT STYLE="font-variant: normal; font-style: normal; font-weight: medium; text-decoration: none">
 				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>checkout</FONT></FONT></P>
 			</TD>
 			<TD WIDTH=88% BGCOLOR="#ffffff">
-				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<P ALIGN=LEFT STYLE="font-variant: normal; font-style: normal; font-weight: medium; text-decoration: none">
 				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>Make
 				a working directory of source files for editing.</FONT></FONT></P>
 			</TD>
 		</TR>
 		<TR>
 			<TD WIDTH=12% BGCOLOR="#ffffff">
-				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<P ALIGN=LEFT STYLE="font-variant: normal; font-style: normal; font-weight: medium; text-decoration: none">
 				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>commit</FONT></FONT></P>
 			</TD>
 			<TD WIDTH=88% BGCOLOR="#ffffff">
-				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<P ALIGN=LEFT STYLE="font-variant: normal; font-style: normal; font-weight: medium; text-decoration: none">
 				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>Apply
 				changes to the source repository (write access).</FONT></FONT></P>
 			</TD>
 		</TR>
 		<TR>
 			<TD WIDTH=12% BGCOLOR="#ffffff">
-				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<P ALIGN=LEFT STYLE="font-variant: normal; font-style: normal; font-weight: medium; text-decoration: none">
 				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>diff</FONT></FONT></P>
 			</TD>
 			<TD WIDTH=88% BGCOLOR="#ffffff">
-				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<P ALIGN=LEFT STYLE="font-variant: normal; font-style: normal; font-weight: medium; text-decoration: none">
 				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>Show
 				differences between local files and the source repository.</FONT></FONT></P>
 			</TD>
 		</TR>
 		<TR>
 			<TD WIDTH=12% BGCOLOR="#ffffff">
-				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<P ALIGN=LEFT STYLE="font-variant: normal; font-style: normal; font-weight: medium; text-decoration: none">
 				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>history</FONT></FONT></P>
 			</TD>
 			<TD WIDTH=88% BGCOLOR="#ffffff">
-				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<P ALIGN=LEFT STYLE="font-variant: normal; font-style: normal; font-weight: medium; text-decoration: none">
 				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>Show
 				reports on cvs commands against the source repository.</FONT></FONT></P>
 			</TD>
 		</TR>
 		<TR>
 			<TD WIDTH=12% BGCOLOR="#ffffff">
-				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<P ALIGN=LEFT STYLE="font-variant: normal; font-style: normal; font-weight: medium; text-decoration: none">
 				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>log</FONT></FONT></P>
 			</TD>
 			<TD WIDTH=88% BGCOLOR="#ffffff">
-				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<P ALIGN=LEFT STYLE="font-variant: normal; font-style: normal; font-weight: medium; text-decoration: none">
 				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>Display
 				CVS log information.</FONT></FONT></P>
 			</TD>
 		</TR>
 		<TR>
 			<TD WIDTH=12% BGCOLOR="#ffffff">
-				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<P ALIGN=LEFT STYLE="font-variant: normal; font-style: normal; font-weight: medium; text-decoration: none">
 				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>rdiff</FONT></FONT></P>
 			</TD>
 			<TD WIDTH=88% BGCOLOR="#ffffff">
-				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<P ALIGN=LEFT STYLE="font-variant: normal; font-style: normal; font-weight: medium; text-decoration: none">
 				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>Prepare
 				a collection of differences reflecting changes between release.</FONT></FONT></P>
 			</TD>
 		</TR>
 		<TR>
 			<TD WIDTH=12% BGCOLOR="#ffffff">
-				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<P ALIGN=LEFT STYLE="font-variant: normal; font-style: normal; font-weight: medium; text-decoration: none">
 				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>status</FONT></FONT></P>
 			</TD>
 			<TD WIDTH=88% BGCOLOR="#ffffff">
-				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<P ALIGN=LEFT STYLE="font-variant: normal; font-style: normal; font-weight: medium; text-decoration: none">
 				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>Show
 				current status of files in the repository and local copies.</FONT></FONT></P>
 			</TD>
 		</TR>
 		<TR>
 			<TD WIDTH=12% BGCOLOR="#ffffff">
-				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<P ALIGN=LEFT STYLE="font-variant: normal; font-style: normal; font-weight: medium; text-decoration: none">
 				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>update</FONT></FONT></P>
 			</TD>
 			<TD WIDTH=88% BGCOLOR="#ffffff">
-				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<P ALIGN=LEFT STYLE="font-variant: normal; font-style: normal; font-weight: medium; text-decoration: none">
 				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>Bring
 				your working directory up to date with the repository.</FONT></FONT></P>
 			</TD>
@@ -204,11 +203,10 @@ printed for the specified &quot;<I>command</I>&quot;.</FONT></P>
 		</TD>
 	</TR>
 </TABLE>
-<P><FONT SIZE=3>The source tree for GraphicsMagick is stored on
-</FONT><TT><FONT SIZE=3>cvs.graphicsmagick.org</FONT></TT><FONT SIZE=3>.
-To access the tree you need to first set up your CVSROOT environment
-variable so that cvs knows where to go to grab the source from. The
-proper value for CVSROOT is: </FONT>
+<P>The source tree for GraphicsMagick is stored on
+<TT>cvs.graphicsmagick.org</TT>. To access the tree you need to first
+set up your CVSROOT environment variable so that cvs knows where to
+go to grab the source from. The proper value for CVSROOT is: 
 </P>
 <PRE STYLE="margin-bottom: 0.2in"> :pserver:anonymous@cvs.graphicsmagick.org:/GraphicsMagick</PRE><P>
 <FONT SIZE=3>For example, in tcsh do: </FONT>
@@ -319,9 +317,9 @@ trunk, use</FONT></P>
 release tag is the only reliable way to obtain release files from CVS
 since the default is to check out the most current sources on the
 requested branch, which may not be stable or released.</FONT></P>
-<P><FONT SIZE=3>Using compression levels over </FONT><TT><FONT SIZE=3>-z3</FONT></TT><FONT SIZE=3>,may
-slow the CVS transfer since they require the CVS server to work much
-harder, yet don't compress the data much more.</FONT></P>
+<P>Using compression levels over <TT>-z3</TT>,may slow the CVS
+transfer since they require the CVS server to work much harder, yet
+don't compress the data much more.</P>
 <TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=2>
 	<TR>
 		<TD BGCOLOR="#52799e">
@@ -330,14 +328,13 @@ harder, yet don't compress the data much more.</FONT></P>
 		</TD>
 	</TR>
 </TABLE>
-<P STYLE="margin-bottom: 0in"><FONT SIZE=3>The best place to look for
-the latest version of CVS is at the </FONT><A HREF="http://www.cvshome.org/"><FONT SIZE=3>CVS
-Home Page </FONT></A><FONT SIZE=3>. There is also a lot of
-information and documentation about CVS available. </FONT>
+<P STYLE="margin-bottom: 0in">The best place to look for the latest
+version of CVS is at the <A HREF="http://www.cvshome.org/">CVS Home
+Page </A>. There is also a lot of information and documentation about
+CVS available. 
 </P>
 <HR>
-<P><A HREF="../index.html"><IMG SRC="../images/home.png" NAME="Graphic9" ALT="GraphicsMagick Home Page" ALIGN=MIDDLE WIDTH=40 HEIGHT=40 BORDER=0></A><A HREF="mailto:webmaster@graphicsmagick.org"><IMG SRC="../images/mail.png" NAME="Graphic10" ALT="GraphicsMagick Home Page" ALIGN=MIDDLE WIDTH=40 HEIGHT=40 BORDER=0></A><FONT SIZE=3>
-Image manipulation software that works like magic. </FONT>
-</P>
+<P ALIGN=CENTER><A HREF="Copyright.html">Copyright</A> <FONT FACE="Abadi Mt Condensed Extra Bold">&copy;</FONT>
+GraphicsMagick Group 2002, 2003, 2004</P>
 </BODY>
 </HTML>
