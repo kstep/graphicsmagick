@@ -117,7 +117,7 @@ typedef struct _CompositeOptions
 
 static unsigned int CompositeImageList(ImageInfo *image_info,Image **image,
   Image *composite_image,Image *mask_image,CompositeOptions *option_info,
-  const char *filename,ExceptionInfo *exception)
+  ExceptionInfo *exception)
 {
   long
     x,
@@ -254,10 +254,6 @@ static unsigned int CompositeImageList(ImageInfo *image_info,Image **image,
             }
       (*image)->matte=matte;
     }
-  /*
-    Write composite images.
-  */
-  status&=WriteImages(image_info,*image,filename,exception);
   return(status);
 }
 
@@ -887,6 +883,23 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
       {
         if (LocaleCompare("negate",option+1) == 0)
           break;
+        if (LocaleCompare("noop",option+1) == 0)
+          {
+            status&=CompositeImageList(image_info,&image,composite_image,mask_image,
+              &option_info,exception);
+            if (composite_image != (Image *) NULL)
+              {
+                DestroyImages(composite_image);
+                composite_image=(Image *) NULL;
+              }
+            if (mask_image != (Image *) NULL)
+              {
+                DestroyImages(mask_image);
+                mask_image=(Image *) NULL;
+              }
+            (void) CatchImageException(image);
+          }
+          break;
         ThrowCompositeException(OptionError,"Unrecognized option",option);
         break;
       }
@@ -1178,7 +1191,11 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
   status&=MogrifyImages(image_info,i-j,argv+j,&image);
   (void) CatchImageException(image);
   status&=CompositeImageList(image_info,&image,composite_image,mask_image,
-    &option_info,argv[argc-1],exception);
+    &option_info,exception);
+  /*
+    Write composite images.
+  */
+  status&=WriteImages(image_info,image,argv[argc-1],exception);
   if (option_info.displace_geometry != (char *) NULL)
     LiberateMemory((void **) &option_info.displace_geometry);
   if (option_info.geometry != (char *) NULL)
