@@ -1,113 +1,111 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"><HTML>
-<HEAD>
-<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=utf-8">
-<STYLE>
-<!--
-@page { size: 8.5in 11in }
-TD P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 12pt }
-P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 12pt }
-H2 { color: #000000 }
-A:link { color: #0085c0 }
-A:visited { color: #800080 }
--->
-</STYLE>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>display - Interactively display and edit an image</title>
+<link rev="made" href="mailto:bfriesen@scooby.simplesystems.org" />
+</head>
 
-<TITLE>display - Interactively display and edit an image</TITLE>
-<LINK REV="made" HREF="mailto:bfriesen@shaggy.simplesystems.org">
-</HEAD>
+<body style="background-color: white">
 
-<BODY LANG="en-US" TEXT="#000000" LINK="#0085c0" VLINK="#800080" BGCOLOR="#ffffff">
-
-<A NAME="__index__"></A>
+<P><a name="__index__"></a></P>
 <!-- INDEX BEGIN -->
 
-<UL>
+<ul>
 
-	<LI><A HREF="#name">
-NAME</A>
-	<LI><A HREF="#synopsis">
-SYNOPSIS</A>
-	<LI><A HREF="#function descriptions">
-FUNCTION 
-DESCRIPTIONS</A>
-	<UL>
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#function_descriptions">FUNCTION DESCRIPTIONS</a></li>
+	<ul>
 
-		<LI><A HREF="#xdisplaybackgroundimage">XDisplayBackgroundImage</A>
-		<LI><A HREF="#xdisplayimage">XDisplayImage</A>
-	</UL>
+		<li><a href="#xdisplaybackgroundimage">XDisplayBackgroundImage</a></li>
+		<li><a href="#xdisplayimage">XDisplayImage</a></li>
+	</ul>
 
-</UL>
+</ul>
 <!-- INDEX END -->
 
-<HR>
+<hr />
 <P>
-<H2><A NAME="name">
-NAME</A></H2>
+</P>
+<h1><a name="name">NAME</a></h1>
 <P>display - Interactively display and edit an image</P>
 <P>
-<HR>
-<H2><A NAME="synopsis">
-SYNOPSIS</A></H2>
-<P>unsigned int  <STRONG>XDisplayBackgroundImage</STRONG>( Display *display, XResourceInfo *resource_info, Image *image );</P>
-<P>Image * <STRONG>XDisplayImage</STRONG>( Display *display, XResourceInfo *resource_info, char ** argv, int argc, Image ** image, unsigned long *state );</P>
+</P>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<P>unsigned int  <strong>XDisplayBackgroundImage</strong>( Display *display, XResourceInfo *resource_info, Image *image );</P>
+<P>Image * <strong>XDisplayImage</strong>( Display *display, XResourceInfo *resource_info, char ** argv, int argc, Image ** image, unsigned long *state );</P>
 <P>
-<HR>
-<H2><A NAME="function descriptions">
-FUNCTION 
-DESCRIPTIONS</A></H2>
+</P>
+<hr />
+<h1><a name="function_descriptions">FUNCTION DESCRIPTIONS</a></h1>
 <P>
-<H3><A NAME="xdisplaybackgroundimage">XDisplayBackgroundImage</A></H3>
+</P>
+<h2><a name="xdisplaybackgroundimage">XDisplayBackgroundImage</a></h2>
 <blockquote>XDisplayBackgroundImage() displays an image in the background of a window. </blockquote><P>The format of the XDisplayBackgroundImage method is:</P>
-<blockquote>unsigned int XDisplayBackgroundImage ( Display *display, <A HREF="types.html#XResourceInfo">XResourceInfo</A> *resource_info, <A HREF="types.html#Image">Image</A> *image ); </blockquote><P>
-A description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<DD><P></P><DT><STRONG><A NAME="item_o_display%3A">display:</A></STRONG><BR>
+<blockquote>unsigned int XDisplayBackgroundImage ( Display *display, <A HREF="types.html#XResourceInfo">XResourceInfo</A> *resource_info, <A HREF="types.html#Image">Image</A> *image ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong><a name="item_o_display_3a">display:</a></strong><br />
+</dt>
 <DD>
-Specifies a connection to an 
-X server; returned from XOpenDisplay.
+Specifies a connection to an X server; returned from XOpenDisplay.
+</dd>
 <P></P>
-<DD><P></P><DT><STRONG><A NAME="item_o_resource_info%3A">resource_info:</A></STRONG><BR>
+<dt><strong><a name="item_o_resource_info_3a">resource_info:</a></strong><br />
+</dt>
 <DD>
-Specifies a pointer to a 
-X11 XResourceInfo structure.
+Specifies a pointer to a X11 XResourceInfo structure.
+</dd>
 <P></P>
-<DD><P></P><DT><STRONG><A NAME="item_o_image%3A">image:</A></STRONG><BR>
+<dt><strong><a name="item_o_image_3a">image:</a></strong><br />
+</dt>
 <DD>
 Specifies a pointer to an Image structure; returned from ReadImage.
-<P></P></DL></DL>
+</dd>
+<P></P></dl>
 <P>
-<H3><A NAME="xdisplayimage">XDisplayImage</A></H3>
+</P>
+<h2><a name="xdisplayimage">XDisplayImage</a></h2>
 <blockquote>XDisplayImage() displays an image via X11. A new image is created and returned if the user interactively transforms the displayed image. </blockquote><P>The format of the XDisplayImage method is:</P>
-<blockquote><A HREF="types.html#Image">Image</A> *XDisplayImage ( Display *display, <A HREF="types.html#XResourceInfo">XResourceInfo</A> *resource_info, char **argv, int argc, <A HREF="types.html#Image">Image</A> **image, unsigned long *state ); </blockquote><P>
-A description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<DD><P></P><DT><STRONG><A NAME="item_o_nexus%3A">nexus:</A></STRONG><BR>
+<blockquote><A HREF="types.html#Image">Image</A> *XDisplayImage ( Display *display, <A HREF="types.html#XResourceInfo">XResourceInfo</A> *resource_info, char **argv, int argc, <A HREF="types.html#Image">Image</A> **image, unsigned long *state ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong><a name="item_o_nexus_3a">nexus:</a></strong><br />
+</dt>
 <DD>
 Method XDisplayImage returns an image when the user chooses 'Open Image' from the command menu or picks a tile from the image directory.  Otherwise a null image is returned.
+</dd>
 <P></P>
-<DD><P></P><DT><STRONG>display:</STRONG><BR>
+<dt><strong>display:</strong><br />
+</dt>
 <DD>
-Specifies a connection to an 
-X server; returned from XOpenDisplay.
+Specifies a connection to an X server; returned from XOpenDisplay.
+</dd>
 <P></P>
-<DD><P></P><DT><STRONG>resource_info:</STRONG><BR>
+<dt><strong>resource_info:</strong><br />
+</dt>
 <DD>
-Specifies a pointer to a 
-X11 XResourceInfo structure.
+Specifies a pointer to a X11 XResourceInfo structure.
+</dd>
 <P></P>
-<DD><P></P><DT><STRONG><A NAME="item_o_argv%3A">argv:</A></STRONG><BR>
+<dt><strong><a name="item_o_argv_3a">argv:</a></strong><br />
+</dt>
 <DD>
 Specifies the application's argument list.
+</dd>
 <P></P>
-<DD><P></P><DT><STRONG><A NAME="item_o_argc%3A">argc:</A></STRONG><BR>
+<dt><strong><a name="item_o_argc_3a">argc:</a></strong><br />
+</dt>
 <DD>
 Specifies the number of arguments.
+</dd>
 <P></P>
-<DD><P></P><DT><STRONG>image:</STRONG><BR>
+<dt><strong>image:</strong><br />
+</dt>
 <DD>
 Specifies an address to an address of an Image structure; returned from ReadImage.
-</DL></DL>
+</dd>
+</dl>
 
-</BODY>
+</body>
 
-</HTML>
+</html>

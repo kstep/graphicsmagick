@@ -1,3 +1,8 @@
+2004-11-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/constitute.c (DispatchImage): Fix documentation error
+	regarding return status.
+
 2004-11-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/tiff.c (WriteTIFFImage): Ensure that words in the

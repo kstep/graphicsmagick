@@ -1,163 +1,175 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"><HTML>
-<HEAD>
-<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=utf-8">
-<STYLE>
-<!--
-@page { size: 8.5in 11in }
-TD P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 12pt }
-P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 12pt }
-H2 { color: #000000 }
-A:link { color: #0085c0 }
-A:visited { color: #800080 }
--->
-</STYLE>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>paint - Methods to fill image pixel regions</title>
+<link rev="made" href="mailto:bfriesen@scooby.simplesystems.org" />
+</head>
 
-<TITLE>paint - Methods to fill image pixel regions</TITLE>
-<LINK REV="made" HREF="mailto:bfriesen@shaggy.simplesystems.org">
-</HEAD>
+<body style="background-color: white">
 
-<BODY LANG="en-US" TEXT="#000000" LINK="#0085c0" VLINK="#800080" BGCOLOR="#ffffff">
-
-<A NAME="__index__"></A>
+<P><a name="__index__"></a></P>
 <!-- INDEX BEGIN -->
 
-<UL>
+<ul>
 
-	<LI><A HREF="#name">
-NAME</A>
-	<LI><A HREF="#synopsis">
-SYNOPSIS</A>
-	<LI><A HREF="#function descriptions">
-FUNCTION 
-DESCRIPTIONS</A>
-	<UL>
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#function_descriptions">FUNCTION DESCRIPTIONS</a></li>
+	<ul>
 
-		<LI><A HREF="#colorfloodfillimage">ColorFloodfillImage</A>
-		<LI><A HREF="#mattefloodfillimage">MatteFloodfillImage</A>
-		<LI><A HREF="#opaqueimage">OpaqueImage</A>
-		<LI><A HREF="#transparentimage">TransparentImage</A>
-	</UL>
+		<li><a href="#colorfloodfillimage">ColorFloodfillImage</a></li>
+		<li><a href="#mattefloodfillimage">MatteFloodfillImage</a></li>
+		<li><a href="#opaqueimage">OpaqueImage</a></li>
+		<li><a href="#transparentimage">TransparentImage</a></li>
+	</ul>
 
-</UL>
+</ul>
 <!-- INDEX END -->
 
-<HR>
+<hr />
 <P>
-<H2><A NAME="name">
-NAME</A></H2>
+</P>
+<h1><a name="name">NAME</a></h1>
 <P>paint - Methods to fill image pixel regions</P>
 <P>
-<HR>
-<H2><A NAME="synopsis">
-SYNOPSIS</A></H2>
-<P>unsigned int  <STRONG>ColorFloodfillImage</STRONG>( Image *image, const DrawInfo *draw_info, const PixelPacket target, const long x_offset, const long y_offset, const PaintMethod method );</P>
-<P>unsigned int  <STRONG>MatteFloodfillImage</STRONG>( Image *image, const PixelPacket target, const unsigned int opacity, const long x_offset, const long y_offset, const PaintMethod method );</P>
-<P>unsigned int  <STRONG>OpaqueImage</STRONG>( Image *image, const PixelPacket target, const PixelPacket fill );</P>
-<P>unsigned int  <STRONG>TransparentImage</STRONG>( Image *image, const PixelPacket target, const unsigned int opacity );</P>
+</P>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<P>unsigned int  <strong>ColorFloodfillImage</strong>( Image *image, const DrawInfo *draw_info, const PixelPacket target, const long x_offset, const long y_offset, const PaintMethod method );</P>
+<P>unsigned int  <strong>MatteFloodfillImage</strong>( Image *image, const PixelPacket target, const unsigned int opacity, const long x_offset, const long y_offset, const PaintMethod method );</P>
+<P>unsigned int  <strong>OpaqueImage</strong>( Image *image, const PixelPacket target, const PixelPacket fill );</P>
+<P>unsigned int  <strong>TransparentImage</strong>( Image *image, const PixelPacket target, const unsigned int opacity );</P>
 <P>
-<HR>
-<H2><A NAME="function descriptions">
-FUNCTION 
-DESCRIPTIONS</A></H2>
+</P>
+<hr />
+<h1><a name="function_descriptions">FUNCTION DESCRIPTIONS</a></h1>
 <P>
-<H3><A NAME="colorfloodfillimage">ColorFloodfillImage</A></H3>
-<P><CODE>ColorFloodfill()</CODE> changes the color value of any pixel that matches target and is an immediate neighbor.  If the method FillToBorderMethod is specified, the color value is changed for any neighbor pixel that does not match the bordercolor member of image.</P>
+</P>
+<h2><a name="colorfloodfillimage">ColorFloodfillImage</a></h2>
+<P><code>ColorFloodfill()</code> changes the color value of any pixel that matches target and is an immediate neighbor.  If the method FillToBorderMethod is specified, the color value is changed for any neighbor pixel that does not match the bordercolor member of image.</P>
 <P>By default target must match a particular pixel color exactly.  However, in many cases two colors may differ by a small amount.  The fuzz member of image defines how much tolerance is acceptable to consider two colors as the same.  For example, set fuzz to 10 and the color red at intensities of 100 and 102 respectively are now interpreted as the same color for the purposes of the floodfill.</P>
 <P>The format of the ColorFloodfillImage method is:</P>
-<blockquote>unsigned int ColorFloodfillImage ( <A HREF="types.html#Image">Image</A> *image, const <A HREF="types.html#DrawInfo">DrawInfo</A> *draw_info, const <A HREF="types.html#PixelPacket">PixelPacket</A> target, const long x_offset, const long y_offset, const <A HREF="types.html#PaintMethod">PaintMethod</A> method ); </blockquote><P>
-A description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<DD><P></P><DT><STRONG><A NAME="item_o_image%3A">image:</A></STRONG><BR>
+<blockquote>unsigned int ColorFloodfillImage ( <A HREF="types.html#Image">Image</A> *image, const <A HREF="types.html#DrawInfo">DrawInfo</A> *draw_info, const <A HREF="types.html#PixelPacket">PixelPacket</A> target, const long x_offset, const long y_offset, const <A HREF="types.html#PaintMethod">PaintMethod</A> method ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong><a name="item_o_image_3a">image:</a></strong><br />
+</dt>
 <DD>
 The image.
+</dd>
 <P></P>
-<DD><P></P><DT><STRONG><A NAME="item_o_draw_info%3A">draw_info:</A></STRONG><BR>
+<dt><strong><a name="item_o_draw_info_3a">draw_info:</a></strong><br />
+</dt>
 <DD>
 The draw info.
+</dd>
 <P></P>
-<DD><P></P><DT><STRONG><A NAME="item_o_target%3A">target:</A></STRONG><BR>
+<dt><strong><a name="item_o_target_3a">target:</a></strong><br />
+</dt>
 <DD>
-The 
-RGB value of the target color.
+The RGB value of the target color.
+</dd>
 <P></P>
-<DD><P></P><DT><STRONG><A NAME="item_o_x%2Cy%3A">x,y:</A></STRONG><BR>
+<dt><strong><a name="item_o_x_2cy_3a">x,y:</a></strong><br />
+</dt>
 <DD>
 The starting location of the operation.
+</dd>
 <P></P>
-<DD><P></P><DT><STRONG><A NAME="item_o_method%3A">method:</A></STRONG><BR>
+<dt><strong><a name="item_o_method_3a">method:</a></strong><br />
+</dt>
 <DD>
 Choose either FloodfillMethod or FillToBorderMethod.
-<P></P></DL></DL>
+</dd>
+<P></P></dl>
 <P>
-<H3><A NAME="mattefloodfillimage">MatteFloodfillImage</A></H3>
-<P><CODE>MatteFloodfill()</CODE> changes the transparency value of any pixel that matches target and is an immediate neighbor.  If the method FillToBorderMethod is specified, the transparency value is changed for any neighbor pixel that does not match the bordercolor member of image.</P>
+</P>
+<h2><a name="mattefloodfillimage">MatteFloodfillImage</a></h2>
+<P><code>MatteFloodfill()</code> changes the transparency value of any pixel that matches target and is an immediate neighbor.  If the method FillToBorderMethod is specified, the transparency value is changed for any neighbor pixel that does not match the bordercolor member of image.</P>
 <P>By default target must match a particular pixel transparency exactly.  However, in many cases two transparency values may differ by a small amount.  The fuzz member of image defines how much tolerance is acceptable to consider two transparency values as the same.  For example, set fuzz to 10 and the opacity values of 100 and 102 respectively are now interpreted as the same value for the purposes of the floodfill.</P>
 <P>The format of the MatteFloodfillImage method is:</P>
-<blockquote>unsigned int MatteFloodfillImage ( <A HREF="types.html#Image">Image</A> *image, const <A HREF="types.html#PixelPacket">PixelPacket</A> target, const unsigned int opacity, const long x_offset, const long y_offset, const <A HREF="types.html#PaintMethod">PaintMethod</A> method ); </blockquote><P>
-A description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<DD><P></P><DT><STRONG>image:</STRONG><BR>
+<blockquote>unsigned int MatteFloodfillImage ( <A HREF="types.html#Image">Image</A> *image, const <A HREF="types.html#PixelPacket">PixelPacket</A> target, const unsigned int opacity, const long x_offset, const long y_offset, const <A HREF="types.html#PaintMethod">PaintMethod</A> method ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>image:</strong><br />
+</dt>
 <DD>
 The image.
+</dd>
 <P></P>
-<DD><P></P><DT><STRONG>target:</STRONG><BR>
+<dt><strong>target:</strong><br />
+</dt>
 <DD>
-The 
-RGB value of the target color.
+The RGB value of the target color.
+</dd>
 <P></P>
-<DD><P></P><DT><STRONG><A NAME="item_o_opacity%3A">opacity:</A></STRONG><BR>
+<dt><strong><a name="item_o_opacity_3a">opacity:</a></strong><br />
+</dt>
 <DD>
 The level of transparency: 0 is fully opaque and MaxRGB is fully transparent.
+</dd>
 <P></P>
-<DD><P></P><DT><STRONG>x,y:</STRONG><BR>
+<dt><strong>x,y:</strong><br />
+</dt>
 <DD>
 The starting location of the operation.
+</dd>
 <P></P>
-<DD><P></P><DT><STRONG>method:</STRONG><BR>
+<dt><strong>method:</strong><br />
+</dt>
 <DD>
 Choose either FloodfillMethod or FillToBorderMethod.
-<P></P></DL></DL>
+</dd>
+<P></P></dl>
 <P>
-<H3><A NAME="opaqueimage">OpaqueImage</A></H3>
+</P>
+<h2><a name="opaqueimage">OpaqueImage</a></h2>
 <blockquote>OpaqueImage() changes any pixel that matches color with the color defined by fill. </blockquote><P>By default color must match a particular pixel color exactly.  However, in many cases two colors may differ by a small amount.  Fuzz defines how much tolerance is acceptable to consider two colors as the same.  For example, set fuzz to 10 and the color red at intensities of 100 and 102 respectively are now interpreted as the same color.</P>
 <P>The format of the OpaqueImage method is:</P>
-<blockquote>unsigned int OpaqueImage ( <A HREF="types.html#Image">Image</A> *image, const <A HREF="types.html#PixelPacket">PixelPacket</A> target, const <A HREF="types.html#PixelPacket">PixelPacket</A> fill ); </blockquote><P>
-A description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<DD><P></P><DT><STRONG>image:</STRONG><BR>
+<blockquote>unsigned int OpaqueImage ( <A HREF="types.html#Image">Image</A> *image, const <A HREF="types.html#PixelPacket">PixelPacket</A> target, const <A HREF="types.html#PixelPacket">PixelPacket</A> fill ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>image:</strong><br />
+</dt>
 <DD>
 The image.
+</dd>
 <P></P>
-<DD><P></P><DT><STRONG>target:</STRONG><BR>
+<dt><strong>target:</strong><br />
+</dt>
 <DD>
-The 
-RGB value of the target color.
+The RGB value of the target color.
+</dd>
 <P></P>
-<DD><P></P><DT><STRONG><A NAME="item_o_fill%3A">fill:</A></STRONG><BR>
+<dt><strong><a name="item_o_fill_3a">fill:</a></strong><br />
+</dt>
 <DD>
 The replacement color.
-<P></P></DL></DL>
+</dd>
+<P></P></dl>
 <P>
-<H3><A NAME="transparentimage">TransparentImage</A></H3>
+</P>
+<h2><a name="transparentimage">TransparentImage</a></h2>
 <blockquote>TransparentImage() changes the opacity value associated with any pixel that matches color to the value defined by opacity. </blockquote><P>By default color must match a particular pixel color exactly.  However, in many cases two colors may differ by a small amount.  Fuzz defines how much tolerance is acceptable to consider two colors as the same.  For example, set fuzz to 10 and the color red at intensities of 100 and 102 respectively are now interpreted as the same color.</P>
 <P>The format of the TransparentImage method is:</P>
-<blockquote>unsigned int TransparentImage ( <A HREF="types.html#Image">Image</A> *image, const <A HREF="types.html#PixelPacket">PixelPacket</A> target, const unsigned int opacity ); </blockquote><P>
-A description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<DD><P></P><DT><STRONG>image:</STRONG><BR>
+<blockquote>unsigned int TransparentImage ( <A HREF="types.html#Image">Image</A> *image, const <A HREF="types.html#PixelPacket">PixelPacket</A> target, const unsigned int opacity ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong>image:</strong><br />
+</dt>
 <DD>
 The image.
+</dd>
 <P></P>
-<DD><P></P><DT><STRONG>target:</STRONG><BR>
+<dt><strong>target:</strong><br />
+</dt>
 <DD>
-The 
-RGB value of the target color.
+The RGB value of the target color.
+</dd>
 <P></P>
-<DD><P></P><DT><STRONG>opacity:</STRONG><BR>
+<dt><strong>opacity:</strong><br />
+</dt>
 <DD>
 The replacement opacity value.
-</DL></DL>
+</dd>
+</dl>
 
-</BODY>
+</body>
 
-</HTML>
+</html>

@@ -1,89 +1,81 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"><HTML>
-<HEAD>
-<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=utf-8">
-<STYLE>
-<!--
-@page { size: 8.5in 11in }
-TD P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 12pt }
-P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 12pt }
-H2 { color: #000000 }
-A:link { color: #0085c0 }
-A:visited { color: #800080 }
--->
-</STYLE>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>monitor - Progress monitor support</title>
+<link rev="made" href="mailto:bfriesen@scooby.simplesystems.org" />
+</head>
 
-<TITLE>monitor - Progress monitor support</TITLE>
-<LINK REV="made" HREF="mailto:bfriesen@shaggy.simplesystems.org">
-</HEAD>
+<body style="background-color: white">
 
-<BODY LANG="en-US" TEXT="#000000" LINK="#0085c0" VLINK="#800080" BGCOLOR="#ffffff">
-
-<A NAME="__index__"></A>
+<P><a name="__index__"></a></P>
 <!-- INDEX BEGIN -->
 
-<UL>
+<ul>
 
-	<LI><A HREF="#name">
-NAME</A>
-	<LI><A HREF="#synopsis">
-SYNOPSIS</A>
-	<LI><A HREF="#function descriptions">
-FUNCTION 
-DESCRIPTIONS</A>
-	<UL>
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#function_descriptions">FUNCTION DESCRIPTIONS</a></li>
+	<ul>
 
-		<LI><A HREF="#magickmonitor">MagickMonitor</A>
-		<LI><A HREF="#setmonitorhandler">SetMonitorHandler</A>
-	</UL>
+		<li><a href="#magickmonitor">MagickMonitor</a></li>
+		<li><a href="#setmonitorhandler">SetMonitorHandler</a></li>
+	</ul>
 
-</UL>
+</ul>
 <!-- INDEX END -->
 
-<HR>
+<hr />
 <P>
-<H2><A NAME="name">
-NAME</A></H2>
+</P>
+<h1><a name="name">NAME</a></h1>
 <P>monitor - Progress monitor support</P>
 <P>
-<HR>
-<H2><A NAME="synopsis">
-SYNOPSIS</A></H2>
-<P>unsigned int  <STRONG>MagickMonitor</STRONG>( const char *text, const magick_int64_t quantum, const magick_uint64_t span, ExceptionInfo *exception );</P>
-<P>MonitorHandler  <STRONG>SetMonitorHandler</STRONG>( MonitorHandler handler );</P>
+</P>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<P>unsigned int  <strong>MagickMonitor</strong>( const char *text, const magick_int64_t quantum, const magick_uint64_t span, ExceptionInfo *exception );</P>
+<P>MonitorHandler  <strong>SetMonitorHandler</strong>( MonitorHandler handler );</P>
 <P>
-<HR>
-<H2><A NAME="function descriptions">
-FUNCTION 
-DESCRIPTIONS</A></H2>
+</P>
+<hr />
+<h1><a name="function_descriptions">FUNCTION DESCRIPTIONS</a></h1>
 <P>
-<H3><A NAME="magickmonitor">MagickMonitor</A></H3>
+</P>
+<h2><a name="magickmonitor">MagickMonitor</a></h2>
 <blockquote>MagickMonitor() calls the monitor handler method with a text string that describes the task and a measure of completion. The method returns True on success otherwise False if an error is encountered, e.g. if there was a user interrupt. </blockquote><P>The format of the MagickMonitor method is:</P>
-<blockquote>unsigned int MagickMonitor ( const char *text, const magick_int64_t quantum, const magick_uint64_t span, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>
-A description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<DD><P></P><DT><STRONG><A NAME="item_o_quantum%3A">quantum:</A></STRONG><BR>
+<blockquote>unsigned int MagickMonitor ( const char *text, const magick_int64_t quantum, const magick_uint64_t span, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong><a name="item_o_quantum_3a">quantum:</a></strong><br />
+</dt>
 <DD>
 The position relative to the span parameter which represents how much progress has been made toward completing a task.
+</dd>
 <P></P>
-<DD><P></P><DT><STRONG><A NAME="item_o_span%3A">span:</A></STRONG><BR>
+<dt><strong><a name="item_o_span_3a">span:</a></strong><br />
+</dt>
 <DD>
 The span relative to completing a task.
+</dd>
 <P></P>
-<DD><P></P><DT><STRONG><A NAME="item_o_exception%3A">exception:</A></STRONG><BR>
+<dt><strong><a name="item_o_exception_3a">exception:</a></strong><br />
+</dt>
 <DD>
 Return any errors or warnings in this structure.
-<P></P></DL></DL>
+</dd>
+<P></P></dl>
 <P>
-<H3><A NAME="setmonitorhandler">SetMonitorHandler</A></H3>
+</P>
+<h2><a name="setmonitorhandler">SetMonitorHandler</a></h2>
 <blockquote>SetMonitorHandler() sets the monitor handler to the specified method and returns the previous monitor handler. </blockquote><P>The format of the SetMonitorHandler method is:</P>
-<blockquote><A HREF="types.html#MonitorHandler">MonitorHandler</A> SetMonitorHandler ( <A HREF="types.html#MonitorHandler">MonitorHandler</A> handler ); </blockquote><P>
-A description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<DD><P></P><DT><STRONG><A NAME="item_o_handler%3A">handler:</A></STRONG><BR>
+<blockquote><A HREF="types.html#MonitorHandler">MonitorHandler</A> SetMonitorHandler ( <A HREF="types.html#MonitorHandler">MonitorHandler</A> handler ); </blockquote><P>A description of each parameter follows:</P>
+<dl>
+<dt><strong><a name="item_o_handler_3a">handler:</a></strong><br />
+</dt>
 <DD>
 Specifies a pointer to a method to handle monitors.
-</DL></DL>
+</dd>
+</dl>
 
-</BODY>
+</body>
 
-</HTML>
+</html>
