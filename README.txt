@@ -677,9 +677,6 @@ VMS COMPILATION
 
       ftp://ftp.imagemagick.org/pub/ImageMagick/vms/ImageMagick-5.4.3.zip
 
-  The VMS JPEG, PNG, TIFF, and TTF  source libraries are available on
-  axp.psl.ku.dk in [anonymous.decwindows.lib].
-
   Thanks to pmoreau@cenaath.cena.dgac.fr for supplying invaluable help
   as well as the VMS versions of the JPEG, PNG, TTF, and TIFF
   libraries.
