@@ -801,16 +801,35 @@ then
     else
 	failed=`expr $failed + 1`
     fi
-    AC_CHECK_LIB(ttf,TT_Init_FreeType,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
+    if test "$LIB_TTF" = ''
+    then
+      AC_CHECK_LIB(freetype,FT_Init_FreeType,LIB_TTF='-lfreetype',,)
+      if test "$LIB_TTF" != ''
+      then
+         passed=`expr $passed + 1`
+      else
+         failed=`expr $failed + 1`
+      fi
+    fi
+    if test "$LIB_TTF" = ''
+    then
+      AC_CHECK_LIB(ttf,TT_Init_FreeType,LIB_TTF='-lttf',,)
+      if test "$LIB_TTF" != ''
+      then
+         passed=`expr $passed + 1`
+      else
+         failed=`expr $failed + 1`
+      fi
+    fi
     AC_MSG_CHECKING(if FreeType package is complete)
     if test $passed -gt 0
     then
 	if test $failed -gt 0
 	then
+            LIB_TTF=''
 	    AC_MSG_RESULT(no -- some components failed test)
 	    have_ttf='no (failed tests)'
 	else
-	    LIB_TTF='-lttf'
 	    LIBS="$LIB_TTF $LIBS"
 	    AC_DEFINE(HasTTF,,Define if you have FreeType (TrueType font) library)
 	    AC_MSG_RESULT(yes)
