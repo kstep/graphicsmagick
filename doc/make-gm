@@ -7,31 +7,34 @@ html:	gm-$(UTILITY).html
 
 tex:	gm-$(UTILITY).tex
 
+gm-$(UTILITY):
+	mkdir gm-$(UTILITY)
+
 brief_options.imdoc:	options.imdoc
 	imdoc_select_brief options.imdoc brief_options.imdoc
 
-gm-$(UTILITY)/Expanded.imdoc: $(UTILITY).imdoc brief_options.imdoc copyright.imdoc
+gm-$(UTILITY)/Expanded.imdoc: gm-$(UTILITY) $(UTILITY).imdoc brief_options.imdoc copyright.imdoc
 	imdocinclude $(UTILITY).imdoc > gm-$(UTILITY)/Expanded.imdoc
 
-gm-$(UTILITY)/man.imdoc: gm-$(UTILITY)/Expanded.imdoc
+gm-$(UTILITY)/man.imdoc: gm-$(UTILITY) gm-$(UTILITY)/Expanded.imdoc
 	gmdocselect $(UTILITY) man gm-$(UTILITY)/Expanded.imdoc > \
 	gm-$(UTILITY)/man.imdoc
 
-gm-$(UTILITY)/html.imdoc: gm-$(UTILITY)/Expanded.imdoc
+gm-$(UTILITY)/html.imdoc: gm-$(UTILITY) gm-$(UTILITY)/Expanded.imdoc
 	gmdocselect $(UTILITY) html gm-$(UTILITY)/Expanded.imdoc > \
 	gm-$(UTILITY)/html.imdoc
 
-gm-$(UTILITY)/tex.imdoc: gm-$(UTILITY)/Expanded.imdoc
+gm-$(UTILITY)/tex.imdoc: gm-$(UTILITY) gm-$(UTILITY)/Expanded.imdoc
 	gmdocselect $(UTILITY) tex gm-$(UTILITY)/Expanded.imdoc > \
 	gm-$(UTILITY)/tex.imdoc
 
-gm-$(UTILITY).1:  gm-$(UTILITY)/man.imdoc
+gm-$(UTILITY).1:  gm-$(UTILITY) gm-$(UTILITY)/man.imdoc
 	imdoc2man $(UTILITY) gm-$(UTILITY)/man.imdoc > gm-$(UTILITY).1
 
-gm-$(UTILITY).html:  gm-$(UTILITY)/html.imdoc
+gm-$(UTILITY).html:  gm-$(UTILITY) gm-$(UTILITY)/html.imdoc
 	gmdoc2html $(UTILITY) gm-$(UTILITY)/html.imdoc > gm-$(UTILITY).html
 
-gm-$(UTILITY).tex:  gm-$(UTILITY)/tex.imdoc
+gm-$(UTILITY).tex:  gm-$(UTILITY) gm-$(UTILITY)/tex.imdoc
 	imdoc2tex < gm-$(UTILITY)/tex.imdoc > gm-$(UTILITY).tex
 
 install: www/gm-$(UTILITY).html utilities/gm-$(UTILITY).1
@@ -45,3 +48,5 @@ utilities/gm-$(UTILITY).1: gm-$(UTILITY).1
 clean:
 	/bin/rm -f gm-$(UTILITY).1 gm-$(UTILITY).html gm-$(UTILITY).tex gm-$(UTILITY)/*
 	/bin/rm -f www/gm-$(UTILITY).html utilities/gm-$(UTILITY).1
+	/bin/rm -f gm-$(UTILITY)/Expanded.imdoc gm-$(UTILITY)/man.imdoc gm-$(UTILITY)/html.imdoc gm-$(UTILITY)/tex.imdoc
+	if test -d gm-$(UTILITY); then rmdir gm-$(UTILITY); fi

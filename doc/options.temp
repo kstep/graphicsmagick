@@ -1402,7 +1402,6 @@ Use <s>+endian</s> to revert to unspecified endianness.
 
 
 
-<im>
 <!-- ------------ -extract ------------------------------------------ -->
 
 <utils apps=animate,composite,convert,display,identify,import,mogrify,montage>
@@ -1411,7 +1410,6 @@ Use <s>+endian</s> to revert to unspecified endianness.
 <abs>extract an area from the image while decoding</abs>
 
 </utils>
-</im>
 
 
 
@@ -2328,6 +2326,8 @@ This option lists information about the ImageMagick configuration.
 
 <utils apps=animate,composite,conjure,convert,display,identify,import,mogrify,montage>
 <dopt>-log <string></opt>
+
+<abs>Specify format for debug log</abs>
 
 <pp>
 This option specifies the format for the log printed when the <s>-debug</s>

@@ -22,7 +22,7 @@ sed "
        t dummy
 
      : dummy
-       s/<UTIL/<utils ImageMagick/
+       s/<UTIL/<utils GraphicsMagick/
        t inutil
 
        s/<gm//

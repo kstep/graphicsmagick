@@ -1,11 +1,14 @@
 
-rm gm-Gm/*
+rm -f gm.1 gm.html gm.tex
+rm -f gm-Gm/*
+if test ! -d 'gm-Gm'; then mkdir 'gm-Gm'; fi
+
 makegm clean
 makem clean
 makegm
 
-set -x
 
+set -x
 cat gm-*/man.imdoc > gm-Gm/man.imdoc
 cat gm-*/html.imdoc > gm-Gm/html.imdoc
 cat gm-*/tex.imdoc > gm-Gm/tex.imdoc
