@@ -36,7 +36,7 @@
 AppName=ImageMagick
 ; When updating the version string, remember to also update the version in
 ; the [Registry] section
-AppVerName=ImageMagick version 5.4.8 Q:16 (Beta 7/26/02)
+AppVerName=ImageMagick version 5.4.8 Q:16 (Beta 7/29/02)
 AppVersion=5.4.8
 AppCopyright=Copyright (C) 2002 ImageMagick Studio LLC
 AppPublisher=ImageMagick Studio
