@@ -1173,8 +1173,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
       break;
     }
   }
-  if ((image->storage_class == PseudoClass) &&
-      IsGrayImage(image,&image->exception))
+  if (IsGrayImage(image,&image->exception))
     {
       jpeg_info.input_components=1;
       jpeg_info.in_color_space=JCS_GRAYSCALE;

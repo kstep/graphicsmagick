@@ -3188,14 +3188,16 @@ Get(ref,...)
           if (LocaleCompare(attribute,"icm") == 0)
             {
               if (image)
-                s=newSVpv(image->color_profile.info,image->color_profile.length);
+                s=newSVpv((void *) image->color_profile.info,
+                  image->color_profile.length);
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
             }
           if (LocaleCompare(attribute,"id") == 0)
             {
               if (image)
-                s=newSViv(SetMagickRegistry(ImageRegistryType,image,0,&image->exception));
+                s=newSViv(SetMagickRegistry(ImageRegistryType,image,0,
+                  &image->exception));
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
             }
@@ -3229,7 +3231,8 @@ Get(ref,...)
           if (LocaleCompare(attribute,"iptc") == 0)
             {
               if (image)
-                s=newSVpv(image->iptc_profile.info,image->iptc_profile.length);
+                s=newSVpv((void *) image->iptc_profile.info,
+                  image->iptc_profile.length);
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
             }
