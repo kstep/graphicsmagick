@@ -1,13 +1,15 @@
 @echo off
+set PATH=..\VisualMagick\bin\;%PATH%
+pushd ..\VisualMagick\bin
 set TESTS=0
 set TYPE=NONE
 
 if not {%1}=={} (
   (if {%1}=={all} goto :_testall)
   if not {%2}=={} (
-    call :_dorwtest %2 %1 & goto :EOF
+    call :_dorwtest %2 %1 & goto :_exit
   ) else (
-    call :_dorwtest both %1 & goto :EOF
+    call :_dorwtest both %1 & goto :_exit
   )
 )
 @echo to run all tests:
@@ -16,7 +18,7 @@ if not {%1}=={} (
 @echo    runtest XXX were XXX is a format like BMP, TIFF, or JPEG
 @echo to run a subset of a single test:
 @echo    runtest XXX YYY were YYY is none, file, blob, or both
-goto :EOF
+goto :_exit
 
 :_testall
 call :_dorwtest both AVS
@@ -145,3 +147,5 @@ goto :EOF
 
 :_failed
 @echo Test failed on test %TESTS% type %TYPE%!
+:_exit
+popd
