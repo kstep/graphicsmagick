@@ -989,7 +989,7 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (LocaleNCompare("shadow",option+1,2) == 0)
+          if (LocaleNCompare("shadow",option+1,4) == 0)
             {
               montage_info->shadow=(*option == '-');
               break;

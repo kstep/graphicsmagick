@@ -340,7 +340,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   (void) strcpy(filename,image_info->filename);
   TemporaryFilename((char *) image_info->filename);
   FormatString(command,delegate_info.commands,image_info->antialias ? 4 : 1,
-    image_info->antialias ? 4 : 1,geometry,density,options,image_info->filename,
+    image_info->antialias ? 1 : 1,geometry,density,options,image_info->filename,
     postscript_filename);
   ProgressMonitor(RenderPostscriptText,0,8);
   status=SystemCommand(image_info->verbose,command);

@@ -1150,8 +1150,9 @@ Export unsigned int CompositeImage(Image *image,const CompositeOperator compose,
                   }
             }
         }
-      if (image->matte && !composite_image->matte)
-        MatteImage(composite_image,Opaque);
+      if (image->colorspace == RGBColorspace)
+        if (image->matte && !composite_image->matte)
+          MatteImage(composite_image,Opaque);
       break;
     }
     default:
@@ -1370,7 +1371,7 @@ Export unsigned int CompositeImage(Image *image,const CompositeOperator compose,
           red=p->red;
           green=p->green;
           blue=p->blue;
-          if (composite_image->matte)
+          if ((image->colorspace != RGBColorspace) || composite_image->matte)
             opacity=p->opacity;
           break;
         }
