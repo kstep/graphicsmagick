@@ -87,6 +87,7 @@ namespace Magick
   //
   // Representation of a drawable surrogate object to manage drawable objects
   //
+#undef Drawable  // Conflict with <X11/Xproto.h>
   class Drawable
   {
   public:
