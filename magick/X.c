@@ -8825,6 +8825,7 @@ Export unsigned int XQueryColorDatabase(const char *target,XColor *color)
             /*
               Parse RGBA specification.
             */
+            color->flags|=DoMatte;
             n/=4;
             do
             {

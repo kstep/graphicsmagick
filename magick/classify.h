@@ -236,6 +236,11 @@ typedef enum
 
 typedef enum
 {
+  DoMatte = 0x1000
+} XColorFlags;
+
+typedef enum
+{
   DefaultState = 0x0000,
   EscapeState = 0x0001,
   ExitState = 0x0002,
