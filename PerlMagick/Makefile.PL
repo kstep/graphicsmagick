@@ -58,11 +58,7 @@ WriteMakefile
    'INSTALLBIN'	=> '${exec_prefix}/bin',
 
    # Library specification
-   'LIBS'	=> ['-L/usr/lib -L/usr/lib -L/usr/local/lib -L/usr/X11R6/lib -L/home/cristy/ImageMagick/magick -lMagick    ' .
-                    '-ltiff -lfreetype -ljpeg -ljasper  ' .
-                    '-lpng  -ldpstk -ldps -lXext -lXt ' . 
-                    ' -lSM -lICE -lX11  -lbz2 -lxml2 -lz -lpthread ' .
-                    ' -lm'],
+   'LIBS'	=> ['-L/usr/lib -L/usr/lib -L/usr/local/lib -L/usr/X11R6/lib -L/home/cristy/ImageMagick/magick -lMagick -ltiff -lfreetype -ljasper -ljpeg -lpng -ldpstk -ldps -lXext -lXt -lSM -lICE -lX11 -lbz2 -lxml2 -lz -lpthread -lm'],
 
    # Perl binary name (if a Perl binary is built)
    'MAP_TARGET'	=> 'PerlMagick',
