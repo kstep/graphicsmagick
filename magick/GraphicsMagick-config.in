@@ -24,7 +24,7 @@ while test $# -gt 0; do
       echo @EXEC_PREFIX_DIR@
       ;;
     --version)
-      echo @MAJOR_VERSION@.@MINOR_VERSION@.@MICRO_VERSION@
+      echo @PACKAGE_VERSION@
       ;;
     --cflags)
       echo '@CFLAGS@'

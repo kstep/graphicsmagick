@@ -33,6 +33,12 @@ libGraphicsMagick___la_LIBADD = ../../magick/libGraphicsMagick.la
 
 include_HEADERS = Magick++.h
 
-EXTRA_DIST =
+EXTRA_DIST = GraphicsMagick.pc.in
 
 AM_LDFLAGS = @LDFLAGS@ $(LIBSTDCLDFLAGS)
+
+# Pkgconfig directory
+pkgconfigdir = $(libdir)/pkgconfig
+
+# Files to install in Pkgconfig directory
+pkgconfig_DATA = GraphicsMagick++.pc

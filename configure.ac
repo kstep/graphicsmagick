@@ -2223,13 +2223,29 @@ AC_SUBST(X_CFLAGS)
 #AC_SUBST(X_LIBS)
 #AC_SUBST(X_EXTRA_LIBS)
 
-AC_OUTPUT(Makefile magick/Makefile coders/delegates.mgk coders/Makefile \
-  utilities/Makefile tests/Makefile coders/type.mgk \
-  coders/type-ghostscript.mgk coders/type-windows.mgk coders/type-solaris.mgk \
-  ltdl/Makefile magick/GraphicsMagick-config Magick++/bin/Makefile \
-  Magick++/bin/GraphicsMagick++-config Magick++/Makefile Magick++/lib/Makefile \
-  Magick++/lib/Magick++/Makefile Magick++/demo/Makefile Magick++/tests/Makefile \
-  PerlMagick/Makefile.PL)
+AC_OUTPUT( \
+        Makefile \
+        magick/Makefile \
+        coders/delegates.mgk \
+        coders/Makefile \
+        utilities/Makefile \
+        tests/Makefile \
+        coders/type-ghostscript.mgk \
+        coders/type-solaris.mgk \
+        coders/type-windows.mgk \
+        coders/type.mgk \
+        ltdl/Makefile \
+        magick/GraphicsMagick-config \
+        magick/GraphicsMagick.pc \
+        Magick++/Makefile \
+        Magick++/bin/GraphicsMagick++-config \
+        Magick++/bin/Makefile \
+        Magick++/demo/Makefile \
+        Magick++/lib/GraphicsMagick++.pc \
+        Magick++/lib/Makefile \
+        Magick++/lib/Magick++/Makefile \
+        Magick++/tests/Makefile \
+        PerlMagick/Makefile.PL )
 
 echo ""
 

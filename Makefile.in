@@ -599,7 +599,7 @@ distcleancheck_listfiles = find . -type f -print
 distdir: $(DISTFILES)
 	$(am__remove_distdir)
 	mkdir $(distdir)
-	$(mkinstalldirs) $(distdir)/Magick++/bin $(distdir)/PerlMagick $(distdir)/coders $(distdir)/magick
+	$(mkinstalldirs) $(distdir)/Magick++/bin $(distdir)/Magick++/lib $(distdir)/PerlMagick $(distdir)/coders $(distdir)/magick
 	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
 	list='$(DISTFILES)'; for file in $$list; do \

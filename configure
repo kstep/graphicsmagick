@@ -37287,7 +37287,7 @@ LIBS=""
 #AC_SUBST(X_LIBS)
 #AC_SUBST(X_EXTRA_LIBS)
 
-                                                                                                                                                                                                        ac_config_files="$ac_config_files Makefile magick/Makefile coders/delegates.mgk coders/Makefile utilities/Makefile tests/Makefile coders/type.mgk coders/type-ghostscript.mgk coders/type-windows.mgk coders/type-solaris.mgk ltdl/Makefile magick/GraphicsMagick-config Magick++/bin/Makefile Magick++/bin/GraphicsMagick++-config Magick++/Makefile Magick++/lib/Makefile Magick++/lib/Magick++/Makefile Magick++/demo/Makefile Magick++/tests/Makefile PerlMagick/Makefile.PL"
+                                                                                                                                                                                                                            ac_config_files="$ac_config_files Makefile magick/Makefile coders/delegates.mgk coders/Makefile utilities/Makefile tests/Makefile coders/type-ghostscript.mgk coders/type-solaris.mgk coders/type-windows.mgk coders/type.mgk ltdl/Makefile magick/GraphicsMagick-config magick/GraphicsMagick.pc Magick++/Makefile Magick++/bin/GraphicsMagick++-config Magick++/bin/Makefile Magick++/demo/Makefile Magick++/lib/GraphicsMagick++.pc Magick++/lib/Makefile Magick++/lib/Magick++/Makefile Magick++/tests/Makefile PerlMagick/Makefile.PL"
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
 # tests run on this system so they can be shared between configure
@@ -38059,18 +38059,20 @@ do
   "coders/Makefile" ) CONFIG_FILES="$CONFIG_FILES coders/Makefile" ;;
   "utilities/Makefile" ) CONFIG_FILES="$CONFIG_FILES utilities/Makefile" ;;
   "tests/Makefile" ) CONFIG_FILES="$CONFIG_FILES tests/Makefile" ;;
-  "coders/type.mgk" ) CONFIG_FILES="$CONFIG_FILES coders/type.mgk" ;;
   "coders/type-ghostscript.mgk" ) CONFIG_FILES="$CONFIG_FILES coders/type-ghostscript.mgk" ;;
-  "coders/type-windows.mgk" ) CONFIG_FILES="$CONFIG_FILES coders/type-windows.mgk" ;;
   "coders/type-solaris.mgk" ) CONFIG_FILES="$CONFIG_FILES coders/type-solaris.mgk" ;;
+  "coders/type-windows.mgk" ) CONFIG_FILES="$CONFIG_FILES coders/type-windows.mgk" ;;
+  "coders/type.mgk" ) CONFIG_FILES="$CONFIG_FILES coders/type.mgk" ;;
   "ltdl/Makefile" ) CONFIG_FILES="$CONFIG_FILES ltdl/Makefile" ;;
   "magick/GraphicsMagick-config" ) CONFIG_FILES="$CONFIG_FILES magick/GraphicsMagick-config" ;;
-  "Magick++/bin/Makefile" ) CONFIG_FILES="$CONFIG_FILES Magick++/bin/Makefile" ;;
-  "Magick++/bin/GraphicsMagick++-config" ) CONFIG_FILES="$CONFIG_FILES Magick++/bin/GraphicsMagick++-config" ;;
+  "magick/GraphicsMagick.pc" ) CONFIG_FILES="$CONFIG_FILES magick/GraphicsMagick.pc" ;;
   "Magick++/Makefile" ) CONFIG_FILES="$CONFIG_FILES Magick++/Makefile" ;;
+  "Magick++/bin/GraphicsMagick++-config" ) CONFIG_FILES="$CONFIG_FILES Magick++/bin/GraphicsMagick++-config" ;;
+  "Magick++/bin/Makefile" ) CONFIG_FILES="$CONFIG_FILES Magick++/bin/Makefile" ;;
+  "Magick++/demo/Makefile" ) CONFIG_FILES="$CONFIG_FILES Magick++/demo/Makefile" ;;
+  "Magick++/lib/GraphicsMagick++.pc" ) CONFIG_FILES="$CONFIG_FILES Magick++/lib/GraphicsMagick++.pc" ;;
   "Magick++/lib/Makefile" ) CONFIG_FILES="$CONFIG_FILES Magick++/lib/Makefile" ;;
   "Magick++/lib/Magick++/Makefile" ) CONFIG_FILES="$CONFIG_FILES Magick++/lib/Magick++/Makefile" ;;
-  "Magick++/demo/Makefile" ) CONFIG_FILES="$CONFIG_FILES Magick++/demo/Makefile" ;;
   "Magick++/tests/Makefile" ) CONFIG_FILES="$CONFIG_FILES Magick++/tests/Makefile" ;;
   "PerlMagick/Makefile.PL" ) CONFIG_FILES="$CONFIG_FILES PerlMagick/Makefile.PL" ;;
   "depfiles" ) CONFIG_COMMANDS="$CONFIG_COMMANDS depfiles" ;;

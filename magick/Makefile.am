@@ -156,7 +156,7 @@ noinst_HEADERS = animate.h display.h mac.h nt_base.h nt_feature.h \
 
 # Additional files to distribute
 EXTRA_DIST = $(ALLMANPAGES) colors.mgk log.mgk magic.mgk GraphicsMagick-config.in \
-  Make.com mac.c nt_base.c nt_feature.c vms.c $(MAGICK_BASE_SRCS)
+  GraphicsMagick.pc.in Make.com mac.c nt_base.c nt_feature.c vms.c $(MAGICK_BASE_SRCS)
 
 # Where configuration files get installed
 pkgdir = @MagickLibPath@
@@ -166,6 +166,12 @@ pkg_DATA = colors.mgk log.mgk magic.mgk
 
 # Architecture independent data files installed into ImageMagick/share
 pkgdata_DATA = 
+
+# Pkgconfig directory
+pkgconfigdir = $(libdir)/pkgconfig
+
+# Files to install in Pkgconfig directory
+pkgconfig_DATA = GraphicsMagick.pc
 
 # Manual pages to install
 man_MANS = $(ALLMANPAGES)

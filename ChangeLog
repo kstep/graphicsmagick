@@ -1,3 +1,11 @@
+2003-03-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* configure.ac: Configure magick/GraphicsMagick.pc and
+	Magick++/lib/GraphicsMagick++.pc.
+	* magick/Makefile.am: Added rules to install GraphicsMagick.pc.
+	* magick/GraphicsMagick.pc.in: Added pkgconfig file for
+	-lGraphicsMagick.
+
 2003-02-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/jp2.c (WriteJP2Image): Quality factor calculation had

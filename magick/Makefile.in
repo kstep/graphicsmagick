@@ -457,7 +457,7 @@ noinst_HEADERS = animate.h display.h mac.h nt_base.h nt_feature.h \
 
 # Additional files to distribute
 EXTRA_DIST = $(ALLMANPAGES) colors.mgk log.mgk magic.mgk GraphicsMagick-config.in \
-  Make.com mac.c nt_base.c nt_feature.c vms.c $(MAGICK_BASE_SRCS)
+  GraphicsMagick.pc.in Make.com mac.c nt_base.c nt_feature.c vms.c $(MAGICK_BASE_SRCS)
 
 
 # Where configuration files get installed
@@ -469,12 +469,18 @@ pkg_DATA = colors.mgk log.mgk magic.mgk
 # Architecture independent data files installed into ImageMagick/share
 pkgdata_DATA = 
 
+# Pkgconfig directory
+pkgconfigdir = $(libdir)/pkgconfig
+
+# Files to install in Pkgconfig directory
+pkgconfig_DATA = GraphicsMagick.pc
+
 # Manual pages to install
 man_MANS = $(ALLMANPAGES)
 subdir = magick
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = magick_config.h
-CONFIG_CLEAN_FILES = GraphicsMagick-config
+CONFIG_CLEAN_FILES = GraphicsMagick-config GraphicsMagick.pc
 LTLIBRARIES = $(lib_LTLIBRARIES)
 
 @WITH_LTDL_FALSE@@WITH_MODULES_TRUE@libGraphicsMagick_la_DEPENDENCIES =
@@ -557,13 +563,13 @@ DIST_SOURCES = $(am__libGraphicsMagick_la_SOURCES_DIST) \
 
 NROFF = nroff
 MANS = $(man_MANS)
-DATA = $(pkg_DATA) $(pkgdata_DATA)
+DATA = $(pkg_DATA) $(pkgconfig_DATA) $(pkgdata_DATA)
 
 HEADERS = $(noinst_HEADERS) $(pkginclude_HEADERS)
 
 DIST_COMMON = $(noinst_HEADERS) $(pkginclude_HEADERS) \
-	GraphicsMagick-config.in Makefile.am Makefile.in \
-	magick_config.h.in
+	GraphicsMagick-config.in GraphicsMagick.pc.in Makefile.am \
+	Makefile.in magick_config.h.in
 SOURCES = $(libGraphicsMagick_la_SOURCES) $(EXTRA_libGraphicsMagick_la_SOURCES)
 
 all: $(BUILT_SOURCES) magick_config.h
@@ -594,6 +600,8 @@ $(srcdir)/magick_config.h.in: @MAINTAINER_MODE_TRUE@ $(top_srcdir)/configure.ac 
 distclean-hdr:
 	-rm -f magick_config.h stamp-h1
 GraphicsMagick-config: $(top_builddir)/config.status GraphicsMagick-config.in
+	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@
+GraphicsMagick.pc: $(top_builddir)/config.status GraphicsMagick.pc.in
 	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@
 libLTLIBRARIES_INSTALL = $(INSTALL)
 install-libLTLIBRARIES: $(lib_LTLIBRARIES)
@@ -817,6 +825,24 @@ uninstall-pkgDATA:
 	  echo " rm -f $(DESTDIR)$(pkgdir)/$$f"; \
 	  rm -f $(DESTDIR)$(pkgdir)/$$f; \
 	done
+pkgconfigDATA_INSTALL = $(INSTALL_DATA)
+install-pkgconfigDATA: $(pkgconfig_DATA)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(pkgconfigdir)
+	@list='$(pkgconfig_DATA)'; for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  f="`echo $$p | sed -e 's|^.*/||'`"; \
+	  echo " $(pkgconfigDATA_INSTALL) $$d$$p $(DESTDIR)$(pkgconfigdir)/$$f"; \
+	  $(pkgconfigDATA_INSTALL) $$d$$p $(DESTDIR)$(pkgconfigdir)/$$f; \
+	done
+
+uninstall-pkgconfigDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(pkgconfig_DATA)'; for p in $$list; do \
+	  f="`echo $$p | sed -e 's|^.*/||'`"; \
+	  echo " rm -f $(DESTDIR)$(pkgconfigdir)/$$f"; \
+	  rm -f $(DESTDIR)$(pkgconfigdir)/$$f; \
+	done
 pkgdataDATA_INSTALL = $(INSTALL_DATA)
 install-pkgdataDATA: $(pkgdata_DATA)
 	@$(NORMAL_INSTALL)
@@ -949,7 +975,7 @@ all-am: Makefile $(LTLIBRARIES) $(SCRIPTS) $(MANS) $(DATA) $(HEADERS) \
 		magick_config.h
 
 installdirs:
-	$(mkinstalldirs) $(DESTDIR)$(libdir) $(DESTDIR)$(bindir) $(DESTDIR)$(man1dir) $(DESTDIR)$(pkgdir) $(DESTDIR)$(pkgdatadir) $(DESTDIR)$(pkgincludedir)
+	$(mkinstalldirs) $(DESTDIR)$(libdir) $(DESTDIR)$(bindir) $(DESTDIR)$(man1dir) $(DESTDIR)$(pkgdir) $(DESTDIR)$(pkgconfigdir) $(DESTDIR)$(pkgdatadir) $(DESTDIR)$(pkgincludedir)
 
 install: install-am
 install-exec: install-exec-am
@@ -995,8 +1021,8 @@ info: info-am
 
 info-am:
 
-install-data-am: install-man install-pkgDATA install-pkgdataDATA \
-	install-pkgincludeHEADERS
+install-data-am: install-man install-pkgDATA install-pkgconfigDATA \
+	install-pkgdataDATA install-pkgincludeHEADERS
 
 install-exec-am: install-binSCRIPTS install-libLTLIBRARIES
 
@@ -1025,7 +1051,8 @@ ps-am:
 
 uninstall-am: uninstall-binSCRIPTS uninstall-info-am \
 	uninstall-libLTLIBRARIES uninstall-man uninstall-pkgDATA \
-	uninstall-pkgdataDATA uninstall-pkgincludeHEADERS
+	uninstall-pkgconfigDATA uninstall-pkgdataDATA \
+	uninstall-pkgincludeHEADERS
 
 uninstall-man: uninstall-man1
 
@@ -1036,15 +1063,15 @@ uninstall-man: uninstall-man1
 	dvi-am info info-am install install-am install-binSCRIPTS \
 	install-data install-data-am install-exec install-exec-am \
 	install-info install-info-am install-libLTLIBRARIES install-man \
-	install-man1 install-pkgDATA install-pkgdataDATA \
-	install-pkgincludeHEADERS install-strip installcheck \
-	installcheck-am installdirs maintainer-clean \
+	install-man1 install-pkgDATA install-pkgconfigDATA \
+	install-pkgdataDATA install-pkgincludeHEADERS install-strip \
+	installcheck installcheck-am installdirs maintainer-clean \
 	maintainer-clean-generic mostlyclean mostlyclean-compile \
 	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
 	tags uninstall uninstall-am uninstall-binSCRIPTS \
 	uninstall-info-am uninstall-libLTLIBRARIES uninstall-man \
-	uninstall-man1 uninstall-pkgDATA uninstall-pkgdataDATA \
-	uninstall-pkgincludeHEADERS
+	uninstall-man1 uninstall-pkgDATA uninstall-pkgconfigDATA \
+	uninstall-pkgdataDATA uninstall-pkgincludeHEADERS
 
 
 # Ensure that configuration header is not distributed

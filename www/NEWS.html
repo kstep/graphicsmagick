@@ -2,14 +2,14 @@
   "http://www.w3.org/TR/html4/loose.dtd">
 <HTML>
 <HEAD>
-<TITLE>GraphicsMagick News</TITLE>
+<TITLE>GraphicsMagick 1.0.0 News</TITLE>
 </HEAD>
 <body text="#000000" bgcolor="#FFFFFF" link="#1F00FF" vlink="#9900DD" alink="#FF0000">
 <center><img SRC="../images/magick_small.png" width=129 height=133></center><p>
 <table BORDER=0 WIDTH="100%" >
 <tr>
 <td BGCOLOR="#52799E"><img SRC="../images/right_triangle.png" ALT=">" height=14 width=15>
-<b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">GraphicsMagick News</font></font></font></b></td>
+<b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">GraphicsMagick 1.0.0 News</font></font></font></b></td>
 </tr>
 </table>
 <p>
@@ -47,7 +47,9 @@ Major changes associated with GraphicsMagick 1.0.0
   <LI> Script Magick++-config renamed to GraphicsMagick++-config.
   <LI> Headers installed under ${PREFIX}/include/GraphicsMagick.
   <LI> PerlMagick namespace renamed from "Image::Magick" to
-    "Graphics::Magick".
+    "Graphics::Magick".<BR>
+  <LI> Pkgconfig files GraphicsMagick.pc and GraphicsMagick++.pc are
+    installed in $libdir/pkgconfig to assist pkg-config users.
 
 </UL>
 <p>
@@ -87,7 +89,8 @@ Major changes associated with GraphicsMagick 1.0.0
   <LI> JNG/MNG/PNG format support tracks ImageMagick version.
   <LI> BMP encoder can write 16-color indexed BMPs now as well as 2-color
     BMPs (not restricted to monochrome).
-  <LI> TIFF decoder now includes optimized support for tiled TIFF.
+  <LI> TIFF decoder now includes optimized support for tiled and stripped
+<STRONG>TIFF.</STRONG>
 
 </UL>
 <p>
@@ -98,7 +101,7 @@ Major changes associated with GraphicsMagick 1.0.0
     may cause these translations to be much faster.
   <LI> PICON format works with BLOBs.
   <LI> No longer removes input file when pinging a FlashPIX file.
-  <LI> Arc drawing fixes from ImageMagick.
+  <LI> Arc drawing and texture fill fixes from ImageMagick.
 
 </UL>
 <p>

@@ -25,6 +25,8 @@ Major changes associated with GraphicsMagick 1.0.0
     * Headers installed under ${PREFIX}/include/GraphicsMagick.
     * PerlMagick namespace renamed from "Image::Magick" to
     "Graphics::Magick".
+    * Pkgconfig files GraphicsMagick.pc and GraphicsMagick++.pc are
+    installed in $libdir/pkgconfig to assist pkg-config users.
 
   Many performance enhancements:
     * Default QuantumDepth is 8 since this is adequate for most purposes
@@ -55,7 +57,8 @@ Major changes associated with GraphicsMagick 1.0.0
     * JNG/MNG/PNG format support tracks ImageMagick version.
     * BMP encoder can write 16-color indexed BMPs now as well as 2-color
     BMPs (not restricted to monochrome).
-    * TIFF decoder now includes optimized support for tiled TIFF.
+    * TIFF decoder now includes optimized support for tiled and stripped
+    TIFF.
 
   Major bug fixes:
     * When dithering is disabled, don't dither when converting to a
@@ -63,7 +66,7 @@ Major changes associated with GraphicsMagick 1.0.0
     may cause these translations to be much faster.
     * PICON format works with BLOBs.
     * No longer removes input file when pinging a FlashPIX file.
-    * Arc drawing fixes from ImageMagick.
+    * Arc drawing and texture fill fixes from ImageMagick.
 
   Windows platform enhancements:
     * Configure updated for Visual C++ 7.0.

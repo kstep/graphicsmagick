@@ -878,8 +878,8 @@ DATADELEGATES = \
 subdir = coders
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/magick/magick_config.h
-CONFIG_CLEAN_FILES = delegates.mgk type.mgk type-ghostscript.mgk \
-	type-windows.mgk type-solaris.mgk
+CONFIG_CLEAN_FILES = delegates.mgk type-ghostscript.mgk type-solaris.mgk \
+	type-windows.mgk type.mgk
 LTLIBRARIES = $(noinst_LTLIBRARIES) $(pkg_LTLIBRARIES)
 
 art_la_DEPENDENCIES = ../magick/libGraphicsMagick.la
@@ -1292,13 +1292,13 @@ Makefile: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.in  $(top_builddir)/config.s
 	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ $(am__depfiles_maybe)
 delegates.mgk: $(top_builddir)/config.status delegates.mgk.in
 	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@
-type.mgk: $(top_builddir)/config.status type.mgk.in
-	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@
 type-ghostscript.mgk: $(top_builddir)/config.status type-ghostscript.mgk.in
+	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@
+type-solaris.mgk: $(top_builddir)/config.status type-solaris.mgk.in
 	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@
 type-windows.mgk: $(top_builddir)/config.status type-windows.mgk.in
 	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@
-type-solaris.mgk: $(top_builddir)/config.status type-solaris.mgk.in
+type.mgk: $(top_builddir)/config.status type.mgk.in
 	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@
 
 clean-noinstLTLIBRARIES:

@@ -13,6 +13,38 @@
 </tr>
 </table>
 <p>
+2003-03-01  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> configure.ac: Configure magick/GraphicsMagick.pc and
+        Magick++/lib/GraphicsMagick++.pc.
+  <LI> magick/Makefile.am: Added rules to install GraphicsMagick.pc.
+  <LI> magick/GraphicsMagick.pc.in: Added pkgconfig file for
+        -lGraphicsMagick.
+
+</UL>
+<p>
+2003-02-28  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/jp2.c (WriteJP2Image): Quality factor calculation had
+        accidentally been removed.  The calculation is back, but has been
+        biased up slightly so that a quality factor of 75 results in a
+        more reasonable 16:1 compression. Past a quality factor of 99.5,
+        the compression is set to 1:1 (non-lossy).
+
+</UL>
+<p>
+2003-02-27  Glenn Randers-Pehrson &lt;randeg@alum.rpi.edu&gt;
+
+<UL>
+  <LI> Fixed bug with reading interlaced PNG images, introduced
+        yesterday.<BR>
+  <LI> Fixed bug with skipping MNG subimages, also introduced
+        yesterday.
+
+</UL>
+<p>
 2003-02-27  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
