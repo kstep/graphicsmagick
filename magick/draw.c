@@ -4472,8 +4472,8 @@ static void TraceEllipse(PrimitiveInfo *primitive_info,const PointInfo start,
   p=primitive_info;
   for ( ; angle.x < angle.y; angle.x+=step)
   {
-    point.x=cos(angle.x)*end.x+start.x;
-    point.y=sin(angle.x)*end.y+start.y;
+    point.x=start.x+cos(angle.x)*end.x;
+    point.y=start.y+sin(angle.x)*end.y;
     TracePoint(p,point);
     p++;
   }
