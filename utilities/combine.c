@@ -249,7 +249,10 @@ int main(int argc,char **argv)
     {
       sendmode=UndefinedTransmitType;
       ReadCommandlLine(argc,&argv);
-      MagickIncarnate(*argv);
+      if (LocaleCompare("combine",argv[0]) == 0)
+        MagickIncarnate(GetExecutionPath(argv[0]));
+      else
+        MagickIncarnate(*argv);
       status=ExpandFilenames(&argc,&argv);
       if (status == False)
         MagickError(ResourceLimitError,"Memory allocation failed",
