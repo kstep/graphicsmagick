@@ -32,10 +32,8 @@ typedef struct _NexusInfo
   off_t
     length;
 
-  void
-    *line;
-
   PixelPacket
+    *staging,
     *pixels;
 
   IndexPacket

@@ -1690,7 +1690,6 @@ MagickExport PixelPacket *SetCacheNexus(Image *image,const unsigned int id,
   nexus_info->rows=region->height;
   nexus_info->x=region->x;
   nexus_info->y=region->y;
-if (0)
   if ((cache_info->type != DiskCache) && (image->clip_mask == (Image *) NULL))
     if ((((nexus_info->x+nexus_info->columns) <= cache_info->columns) &&
         (nexus_info->rows == 1)) || ((nexus_info->x == 0) &&
