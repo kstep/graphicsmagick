@@ -38,6 +38,7 @@
   <module name="MPEG" alias="M2V"/>
   <module name="PNG" alias="MNG"/>
   <module name="MPEG" alias="MPG"/>
+  <module name="MPR" alias="MPRI"/>
   <module name="LOGO" alias="NETSCAPE"/>
   <module name="PNM" alias="P7"/>
   <module name="UYVY" alias="PAL"/>
@@ -61,4 +62,6 @@
   <module name="TGA" alias="VDA"/>
   <module name="TGA" alias="VST"/>
   <module name="VIFF" alias="XV"/>
+  <module name="WMF" alias="EMF"/>
+  <module name="WMF" alias="WMFWIN32"/>
 </modulemap>
