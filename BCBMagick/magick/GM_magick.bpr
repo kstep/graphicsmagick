@@ -10,10 +10,11 @@
       deprecate.obj display.obj draw.obj effect.obj enhance.obj error.obj fx.obj 
       gem.obj image.obj list.obj locale.obj log.obj magic.obj magick.obj map.obj 
       memory.obj module.obj monitor.obj montage.obj nt_base.obj nt_feature.obj 
-      paint.obj PreRvIcccm.obj profile.obj quantize.obj registry.obj render.obj resize.obj 
-      resource.obj segment.obj semaphore.obj shear.obj signature.obj static.obj 
-      stream.obj tempfile.obj timer.obj transform.obj type.obj utility.obj 
-      version.obj widget.obj xwindow.obj ..\coders\art.obj ..\coders\avi.obj 
+      paint.obj pixel_iterator.obj PreRvIcccm.obj profile.obj quantize.obj registry.obj
+      render.obj resize.obj resource.obj segment.obj semaphore.obj shear.obj 
+      signature.obj static.obj stream.obj tempfile.obj timer.obj transform.obj 
+      type.obj utility.obj version.obj widget.obj xwindow.obj 
+      ..\coders\art.obj ..\coders\avi.obj 
       ..\coders\avs.obj ..\coders\bmp.obj ..\coders\caption.obj 
       ..\coders\cineon.obj ..\coders\clipboard.obj ..\coders\cmyk.obj 
       ..\coders\cut.obj ..\coders\dcm.obj ..\coders\dib.obj ..\coders\dps.obj 
@@ -118,6 +119,7 @@
       <FILE FILENAME="nt_base.c" FORMNAME="" UNITNAME="nt_base.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="nt_feature.c" FORMNAME="" UNITNAME="nt_feature.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="paint.c" FORMNAME="" UNITNAME="paint.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="pixel_iterator.c" FORMNAME="" UNITNAME="pixel_iterator.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="PreRvIcccm.c" FORMNAME="" UNITNAME="PreRvIcccm.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="profile.c" FORMNAME="" UNITNAME="profile.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="quantize.c" FORMNAME="" UNITNAME="quantize.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
