@@ -7151,6 +7151,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
               break;
           ping_info->background.index=(unsigned short) i;
         }
+#if defined(PNG_WRITE_sRGB_SUPPORTED)
     if (image->rendering_intent != UndefinedIntent)
       {
         /*
@@ -7159,6 +7160,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
         ping_info->valid|=PNG_INFO_sRGB;
         ping_info->srgb_intent=(int) image->rendering_intent-1;
       }
+#endif
     if (image->gamma != 0.0)
       {
         /*

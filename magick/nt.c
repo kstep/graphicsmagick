@@ -585,245 +585,28 @@ Export long telldir(DIR *entry)
 %
 %
 */
-
-static LRESULT CALLBACK DisplayWindow(HWND window,UINT message,WPARAM wparam,
-  LPARAM lparam)
-{
-  switch (message)
-  {
-    case WM_PAINT:
-    {
-      BITMAPINFO
-        *bitmap_info;
-
-      char buffer
-        [sizeof(BITMAPINFOHEADER)+256*sizeof(RGBQUAD)];
-
-      HDC
-        device_context;
-
-      int
-        x,
-        y;
-
-      PAINTSTRUCT
-        paint;
-
-      register int
-        i,
-        j;
-
-      register RunlengthPacket
-        *p;
-
-      register unsigned char
-        *q;
-
-      unsigned char
-        *pixels;
-
-      unsigned int
-        bytes_per_line;
-
-      device_context=BeginPaint(window,&paint);
-      bitmap_info=(BITMAPINFO *) buffer;
-      bitmap_info->bmiHeader.biSize=sizeof(BITMAPINFOHEADER);
-      bitmap_info->bmiHeader.biWidth=nt_image->columns;
-      bitmap_info->bmiHeader.biHeight=nt_image->rows;
-      bitmap_info->bmiHeader.biPlanes=1;
-      bitmap_info->bmiHeader.biBitCount=(WORD) nt_image->matte ? 32 : 24;
-      bitmap_info->bmiHeader.biCompression=BI_RGB;
-      bitmap_info->bmiHeader.biSizeImage=0;
-      bitmap_info->bmiHeader.biXPelsPerMeter=0;
-      bitmap_info->bmiHeader.biYPelsPerMeter=0;
-      bitmap_info->bmiHeader.biClrUsed=0;
-      bitmap_info->bmiHeader.biClrImportant=0;
-      bytes_per_line=
-        ((nt_image->columns*bitmap_info->bmiHeader.biBitCount+31)/32)*4;
-      if (IsPseudoClass(nt_image)|| IsGrayImage(nt_image))
-        {
-          bitmap_info->bmiHeader.biBitCount=(WORD) 8;
-          bytes_per_line=
-            ((nt_image->columns*bitmap_info->bmiHeader.biBitCount+31)/32)*4;
-          if (IsMonochromeImage(nt_image))
-            {
-              bitmap_info->bmiHeader.biBitCount=1;
-              bytes_per_line=((nt_image->columns*
-                bitmap_info->bmiHeader.biBitCount+31)/32)*4;
-            }
-          bitmap_info->bmiHeader.biClrUsed=nt_image->colors;
-          bitmap_info->bmiHeader.biClrImportant=nt_image->colors;
-          for (i=0; i < nt_image->colors; i++)
-          {
-            bitmap_info->bmiColors[i].rgbRed=nt_image->colormap[i].red;
-            bitmap_info->bmiColors[i].rgbGreen=nt_image->colormap[i].green;
-            bitmap_info->bmiColors[i].rgbBlue=nt_image->colormap[i].blue;
-            bitmap_info->bmiColors[i].rgbReserved=0;
-          }
-        }
-      pixels=(unsigned char *) AllocateMemory(bytes_per_line*nt_image->rows);
-      if (pixels == (unsigned char *) NULL)
-        {
-          MagickWarning(ResourceLimitWarning,"Memory allocation failed",
-            nt_image->filename);
-          return(0);
-        }
-      x=0;
-      y=nt_image->rows-1;
-      switch (bitmap_info->bmiHeader.biBitCount)
-      {
-        case 1:
-        {
-          register unsigned char
-            bit,
-            byte,
-            polarity;
-
-          /*
-            Convert PseudoClass image to a BMP monochrome image.
-          */
-          p=nt_image->pixels;
-          polarity=0;
-          if (nt_image->colors == 2)
-            polarity=Intensity(nt_image->colormap[1]) >
-              Intensity(nt_image->colormap[0]);
-          bit=0;
-          byte=0;
-          q=pixels+y*bytes_per_line;
-          for (i=0; i < nt_image->packets; i++)
-          {
-            for (j=0; j <= ((int) p->length); j++)
-            {
-              byte<<=1;
-              if (p->index == polarity)
-                byte|=0x01;
-              bit++;
-              if (bit == 8)
-                {
-                  *q++=byte;
-                  bit=0;
-                  byte=0;
-                }
-              x++;
-              if (x == nt_image->columns)
-                {
-                  /*
-                    Advance to the next scanline.
-                  */
-                  if (bit != 0)
-                    *q++=byte << (8-bit);
-                  bit=0;
-                  byte=0;
-                  x=0;
-                  y--;
-                  q=pixels+y*bytes_per_line;
-               }
-            }
-            p++;
-          }
-          break;
-        }
-        case 8:
-        {
-          /*
-            Convert PseudoClass packet to BMP pixel.
-          */
-          p=nt_image->pixels;
-          q=pixels+y*bytes_per_line;
-          for (i=0; i < nt_image->packets; i++)
-          {
-            for (j=0; j <= ((int) p->length); j++)
-            {
-              *q++=p->index;
-              x++;
-              if (x == nt_image->columns)
-                {
-                  x=0;
-                  y--;
-                  q=pixels+y*bytes_per_line;
-                }
-            }
-            p++;
-          }
-          break;
-        }
-        case 24:
-        case 32:
-        {
-          /*
-            Convert DirectClass packet to BMP RGB pixel.
-          */
-          p=nt_image->pixels;
-          q=pixels+y*bytes_per_line;
-          for (i=0; i < nt_image->packets; i++)
-          {
-            for (j=0; j <= ((int) p->length); j++)
-            {
-              *q++=DownScale(p->blue);
-              *q++=DownScale(p->green);
-              *q++=DownScale(p->red);
-              if (nt_image->matte)
-                *q++=Opaque-DownScale(p->index);
-              x++;
-              if (x == nt_image->columns)
-                {
-                  x=0;
-                  y--;
-                  q=pixels+y*bytes_per_line;
-                }
-            }
-            p++;
-          }
-          break;
-        }
-      }
-      SetDIBitsToDevice(device_context,10,10,nt_image->columns,nt_image->rows,0,
-        0,0,bitmap_info->bmiHeader.biHeight,pixels,bitmap_info,DIB_RGB_COLORS);
-      FreeMemory((char *) pixels);
-      EndPaint(window,&paint);
-      return(0);
-    }
-    case WM_DESTROY:
-    {
-      PostQuitMessage(0);
-      return(0);
-    }
-  }
-  return(DefWindowProc(window,message,wparam,lparam));
-}
-
 Export unsigned int WriteNTImage(const ImageInfo *image_info,Image *image)
 {
-  HWND
-    window;
+  char
+    command[MaxTextExtent],
+    filename[MaxTextExtent];
 
-  MSG
-    message;
+  unsigned int
+    status;
 
-  WNDCLASS
-    class_info;
-
-  nt_image=image;
-  class_info.style=CS_HREDRAW | CS_VREDRAW;
-  class_info.lpfnWndProc=DisplayWindow;
-  class_info.cbClsExtra=0;
-  class_info.cbWndExtra=0;
-  class_info.hInstance=nt_instance;
-  class_info.hIcon=LoadIcon(NULL,IDI_APPLICATION);
-  class_info.hCursor=LoadCursor(NULL,IDC_CROSS);
-  class_info.lpszMenuName=NULL;
-  class_info.lpszClassName="ImageMagick";
-  RegisterClass(&class_info);
-  window=CreateWindow(class_info.lpszClassName,"ImageMagick",
-    WS_OVERLAPPEDWINDOW,CW_USEDEFAULT,CW_USEDEFAULT,CW_USEDEFAULT,
-    CW_USEDEFAULT,NULL,NULL,nt_instance,NULL);
-  ShowWindow(window,1);
-  while (GetMessage(&message,NULL,0,0))
-  {
-    TranslateMessage(&message);
-    DispatchMessage(&message);
-  }
-  return(message.wParam);
+  TemporaryFilename(filename);
+  (void) sprintf(command,LauncherCommand,filename);
+  (void) sprintf(image->filename,"%s:%s",LaunchFormat,filename);
+  status=WriteImage((ImageInfo *) image_info,image);
+  if (status != False)
+    {
+      status=SystemCommand(command);
+      if (status)
+        MagickWarning(MissingDelegateWarning,"Unable to display image",
+          image->filename);
+    }
+  remove(filename);
+  return(status);
 }
 
 /*

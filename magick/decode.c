@@ -4580,12 +4580,6 @@ static Image *ReadJPEGImage(const ImageInfo *image_info)
   struct jpeg_error_mgr
     jpeg_error;
 
-  unsigned int
-    black,
-    cyan,
-    magenta,
-    yellow;
-
   unsigned long
     max_packets;
 
@@ -4742,26 +4736,6 @@ static Image *ReadJPEGImage(const ImageInfo *image_info)
              if (jpeg_info.out_color_space == JCS_CMYK)
                index=(Quantum) UpScale(GETJSAMPLE(*p++));
            }
-      if (jpeg_info.out_color_space == JCS_CMYK)
-        {
-          cyan=red;
-          magenta=green;
-          yellow=blue;
-          black=index;
-          if ((cyan+black) > MaxRGB)
-            red=0;
-          else
-            red=MaxRGB-(cyan+black);
-          if ((magenta+black) > MaxRGB)
-            green=0;
-          else
-            green=MaxRGB-(magenta+black);
-          if ((yellow+black) > MaxRGB)
-            blue=0;
-          else
-            blue=MaxRGB-(yellow+black);
-          index=0;
-        }
       if ((red == q->red) && (green == q->green) && (blue == q->blue) &&
           (index == q->index) && ((int) q->length < MaxRunlength))
         q->length++;
@@ -4794,8 +4768,11 @@ static Image *ReadJPEGImage(const ImageInfo *image_info)
     ProgressMonitor(LoadImageText,y,image->rows);
   }
   SetRunlengthPackets(image,packets);
-  if (image->class == PseudoClass)
-    SyncImage(image);
+  if (jpeg_info.out_color_space == JCS_CMYK)
+    TransformRGBImage(image,CMYKColorspace);
+  else
+    if (image->class == PseudoClass)
+      SyncImage(image);
   /*
     Free jpeg resources..
   */
@@ -9428,8 +9405,10 @@ static Image *ReadPNGImage(const ImageInfo *image_info)
           png_set_packing(ping);
         image->depth=8;
       }
+#if defined(PNG_READ_sRGB_SUPPORTED)
     if (ping_info->valid & PNG_INFO_sRGB)
       image->rendering_intent=(RenderingIntent) (ping_info->srgb_intent+1);
+#endif
     if (ping_info->valid & PNG_INFO_gAMA)
       image->gamma=ping_info->gamma;
     if (ping_info->valid & PNG_INFO_cHRM)
@@ -10899,7 +10878,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info)
     image->matte=psd_header.channels >= 4;
   image->columns=psd_header.columns;
   image->rows=psd_header.rows;
-  image->depth=Max(psd_header.depth,8);
+  image->depth=Max(psd_header.depth,QuantumDepth);
   length=MSBFirstReadLong(image->file);
   if ((psd_header.mode == BitmapMode) ||
       (psd_header.mode == GrayscaleMode) ||

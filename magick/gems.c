@@ -596,12 +596,14 @@ Export unsigned int InsidePrimitive(PrimitiveInfo *primitive_info,
           if (p->x == (p+1)->x)
             {
               inside|=(x >= (p->x-mid)) && (x < (p->x+mid)) &&
-                (y >= Min(p->y,(p+1)->y)) && (y <= Max(p->y,(p+1)->y));
+                (y >= (Min(p->y,(p+1)->y)-mid)) &&
+                (y < (Max(p->y,(p+1)->y)+mid));
               continue;
             }
           if (p->y == (p+1)->y)
             {
-              inside|=(x >= Min(p->x,(p+1)->x)) && (x <= Max(p->x,(p+1)->x)) &&
+              inside|=(x >= Min(p->x,(p+1)->x)-mid) &&
+                (x < Max(p->x,(p+1)->x)+mid) &&
                 (y >= (p->y-mid)) && (y < (p->y+mid));
               continue;
             }
@@ -619,10 +621,10 @@ Export unsigned int InsidePrimitive(PrimitiveInfo *primitive_info,
         q=primitive_info;
         if (p->x == q->x)
           inside=(x >= (p->x-mid)) && (x < (p->x+mid)) &&
-            (y >= Min(p->y,q->y)) && (y <= Max(p->y,q->y));
+            (y >= (Min(p->y,q->y)-mid)) && (y < (Max(p->y,q->y)+mid));
         else
           if (p->y == q->y)
-            inside=(x >= Min(p->x,q->x)) && (x <= Max(p->x,q->x)) &&
+            inside=(x >= (Min(p->x,q->x)-mid)) && (x < (Max(p->x,q->x)+mid)) &&
               (y >= (p->y-mid)) && (y < (p->y+mid));
           else
             {
