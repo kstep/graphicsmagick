@@ -49,6 +49,14 @@ extern "C" {
 # endif
 #endif
 
+#if !defined(const)
+  /*
+    For some stupid reason the zlib headers define 'const' to nothing
+    under AIX unless STDC is defined.
+  */
+#  define STDC
+#endif
+
 #if defined(WIN32) && !defined(__CYGWIN__)
 # if defined(_MT) && defined(_DLL) && !defined(_MAGICKDLL_) && !defined(_LIB)
 #  define _MAGICKDLL_

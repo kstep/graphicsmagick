@@ -1,5 +1,9 @@
 2003-05-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/studio.h: Add fix to avoid problems caused by zlib
+	under AIX.
+	* magick/cache.h: Parameterized prototypes to make them easier
+	to follow.
 	* filters/analyze.c: Replace C++ comments with C comments.
 	* magick/command.c: For the composite, convert, identify, mogrify,
 	and montage commands, make sure a usage error is returned if a
