@@ -90,6 +90,8 @@ int main ( int argc, char **argv )
               if (LocaleCompare("Zip",option) == 0)
                 imageInfo.compression=ZipCompression;
             }
+          else if (LocaleCompare("debug",option+1) == 0)
+              (void) SetLogEventMask(argv[++arg]);
           else if (LocaleCompare("depth",option+1) == 0)
             {
               imageInfo.depth=QuantumDepth;
@@ -105,6 +107,8 @@ int main ( int argc, char **argv )
                   exit (1);
                 }
             }
+          else if (LocaleCompare("log",option+1) == 0)
+              (void) SetLogFormat(argv[++arg]);
           else if (LocaleCompare("size",option+1) == 0)
             {
               arg++;
@@ -122,7 +126,7 @@ int main ( int argc, char **argv )
   if (arg != argc-2)
     {
       printf("arg=%d, argc=%d\n", arg, argc);
-      printf ( "Usage: %s [-compress algorithm -depth integer -size geometry] infile format\n", argv[0] );
+      printf ( "Usage: %s [-compress algorithm -debug events -depth integer -log format -size geometry] infile format\n", argv[0] );
       exit( 1 );
     }
   
@@ -224,6 +228,7 @@ int main ( int argc, char **argv )
 
   if ( !strcmp( "DPX", format ) ||
        !strcmp( "JPEG", format ) ||
+       !strcmp( "JNG", format ) ||
        !strcmp( "JPG", format ) ||
        !strcmp( "JPG24", format ) ||
        !strcmp( "JP2", format ) ||
