@@ -1095,6 +1095,7 @@ MagickExport Image *EnhanceImage(Image *image,ExceptionInfo *exception)
 %    o sigma: The standard deviation of the gaussian, in pixels.
 %
 */
+#ifdef TWOPASS_METHOD
 MagickExport Image *GaussianBlurImage(Image *image,const double width,
   const double sigma,ExceptionInfo *exception)
 {
@@ -1282,6 +1283,128 @@ MagickExport Image *GaussianBlurImage(Image *image,const double width,
   LiberateMemory((void **) &scanline);
   return(blur_image);
 }
+#else
+MagickExport Image *GaussianBlurImage(Image *image,const double radius,
+  const double std_dev,ExceptionInfo *exception)
+{
+  double
+    sum,
+    val,
+    *kernel;
+
+  Image
+    *blur_image;
+
+  int
+    i,
+    matrix_length;
+
+  register int
+    u,
+    v;
+
+	/* go out 'radius' in each direction */
+  if (radius > 0.0)
+    {
+	    matrix_length = 2 * ceil(radius-0.5) + 1;
+	    if (matrix_length < 4)
+        matrix_length = 3;
+    }
+  else
+    {
+      matrix_length=0;
+      sum=0.0;
+      while(1)
+      {
+        val=exp(-(double)((matrix_length*matrix_length)/(std_dev*std_dev)));
+        sum+=val;
+#ifdef PRINT_KERNEL
+        fprintf(stdout,"%d) %f, %f, %f\n",matrix_length,val,sum,val/sum);
+#endif
+        if((val/sum) < (1.0/255.0))
+        {
+	        if (matrix_length < 4)
+            matrix_length=3;
+          else
+            matrix_length=(2*(matrix_length-1))-1;
+          break;
+        }
+        matrix_length++;
+      }
+    }
+#ifdef PRINT_KERNEL
+  fprintf(stdout,"length: %d\n",matrix_length);
+#endif
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
+  if ((image->columns < matrix_length) || (image->rows < matrix_length))
+    ThrowImageException(ResourceLimitWarning,"Unable to gaussian blur image",
+      "image is smaller than radius");
+  kernel=(double *) AcquireMemory(matrix_length*matrix_length*sizeof(double));
+  if (kernel == (double *) NULL)
+    ThrowImageException(ResourceLimitWarning,"Unable to gaussian blur image",
+      "Memory allocation failed");
+  i=0;
+  sum=0;
+  for (v=(-(int) matrix_length/2); v <= ((int) matrix_length/2); v++)
+  {
+    for (u=(-(int) matrix_length/2); u <= ((int) matrix_length/2); u++)
+    {
+      kernel[i]=exp(-(double)((v*v+u*u)/(std_dev*std_dev)));
+      sum+=kernel[i];
+      i++;
+    }
+  }
+
+#ifdef PRINT_KERNEL
+  /* print out the raw unormalized kernel values */
+  i=0;
+  fprintf(stdout,"kernel:\n");
+  for (v=(-(int) matrix_length/2); v <= ((int) matrix_length/2); v++)
+  {
+    int first=True;
+    for (u=(-(int) matrix_length/2); u <= ((int) matrix_length/2); u++)
+    {
+      if (!first)
+        fprintf(stdout,",");
+      first=False;
+      fprintf(stdout,"%f",kernel[i]);
+      i++;
+    }
+    fprintf(stdout,"\n");
+  }
+#endif
+
+  for (i=0; i<matrix_length*matrix_length; i++)
+    kernel[i] = kernel[i] / sum;
+
+#ifdef PRINT_KERNEL
+  /* print out the scaled and normalized kernel values */
+  i=0;
+  fprintf(stdout,"kernel:\n");
+  for (v=(-(int) matrix_length/2); v <= ((int) matrix_length/2); v++)
+  {
+    int first=True;
+    for (u=(-(int) matrix_length/2); u <= ((int) matrix_length/2); u++)
+    {
+      if (!first)
+        fprintf(stdout,",");
+      first=False;
+      fprintf(stdout,"%03d",255-(int)(255.0 * kernel[i]));
+      i++;
+    }
+    fprintf(stdout,"\n");
+  }
+#endif
+
+  blur_image=ConvolveImage(image,matrix_length,kernel,exception);
+  LiberateMemory((void **) &kernel);
+  return(blur_image);
+}
+#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -3201,6 +3324,74 @@ MagickExport unsigned int ThresholdImage(Image *image,const double threshold)
       ProgressMonitor(ThresholdImageText,y,image->rows);
   }
   return(True);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%     U n s h a r p M a s k I m a g e                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method UnsharpMaskImage creates a new image that is sharpened version of
+%  the original image using the unsharp mask algorithm.
+%
+%  The format of the UnsharpMaskImage method is:
+%
+%    Image *UnsharpMaskImage(Image *image,
+%      const double radius,const double std_dev,
+%      const double amount,const double threshold,
+%      ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o blur_image: Method UnsharpMaskImage returns a pointer to the image
+%      after it is blurred.  A null image is returned if there is a memory
+%      shortage.
+%
+%    o radius: The radius of the gaussian, in pixels, not counting the center
+%      pixel.
+%
+%    o sigma: The standard deviation of the gaussian, in pixels.
+%
+%    o amount: The percentage of the difference between the original and the
+%      blurred image that is added back into the original.
+%
+%    o threshold: The threshold in pixels needed to apply the diffence amount.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+%
+*/
+MagickExport Image *UnsharpMaskImage(Image *image,
+  const double radius,const double std_dev,
+  const double amount,const double threshold,
+  ExceptionInfo *exception)
+{
+  Image
+    *blurred_image;
+
+  blurred_image=GaussianBlurImage(image,radius,std_dev,&(image->exception));
+  if (blurred_image != (Image *) NULL)
+    {
+      blurred_image->geometry=(char *) AcquireMemory(MaxTextExtent);
+      if (blurred_image->geometry != (char *) NULL)
+        {
+          FormatString(blurred_image->geometry,"%.2fx%.2f",amount,threshold);
+          CompositeImage(image,ThresholdCompositeOp,blurred_image,0,0);
+          DestroyImage(blurred_image);
+        }
+      else
+        {
+          DestroyImage(blurred_image);
+          ThrowImageException(ResourceLimitWarning,"Unable to unsharp mask image",
+            "Memory allocation failed");
+        }
+    }
+  return(image);
 }
 
 /*
