@@ -3198,7 +3198,7 @@ MagickExport unsigned int WriteImage(const ImageInfo *image_info,Image *image)
         magick_info->description);
       status=(magick_info->encoder)(clone_info,image);
       LogMagickEvent(CoderEvent,GetMagickModule(),
-        "Returned from \"%.1024s\" decoder",magick_info->name);
+        "Returned from \"%.1024s\" encoder",magick_info->name);
       if (!magick_info->thread_support)
         LiberateSemaphoreInfo(&constitute_semaphore);
     }

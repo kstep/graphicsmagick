@@ -744,6 +744,7 @@ MagickExport unsigned int LogMagickEvent(const LogEventType type,
     }
   }
   (void) fprintf(stdout,"\n");
+  (void) fflush(stdout);
   ContinueTimer((TimerInfo *) &log_info->timer);
   LiberateSemaphoreInfo(&log_semaphore);
   return(True);

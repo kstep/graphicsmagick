@@ -406,7 +406,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
   assert(image_info->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  logging=LogMagickEvent(CoderEvent,GetMagickModule(),"enter");
+  logging=IsEventLogging();
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
@@ -684,6 +684,10 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         /*
           Convert TIFF image to PseudoClass MIFF image.
         */
+        if (logging)
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+            "Using PseudoClass read method with %u bits per sample",
+               bits_per_sample);
         packet_size=bits_per_sample > 8 ? 2 : 1;
         if (image->matte)
           packet_size*=2;
@@ -897,6 +901,10 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         /*
           Convert TIFF image to DirectClass MIFF image.
         */
+        if (logging)
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+            "Using DirectClassScanLine read method with %u bits per sample",
+               bits_per_sample);
         scanline=(unsigned char *) AcquireMemory(8*TIFFScanlineSize(tiff));
         if (scanline == (unsigned char *) NULL)
           {
@@ -978,6 +986,10 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         unsigned long
           tile_total_pixels;
         
+        if (logging)
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+            "Using DirectClassTiled read method with %u bits per sample",
+               bits_per_sample);
         /*
           Obtain tile geometry
         */
@@ -1102,6 +1114,10 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         register uint32
           *p;
 
+        if (logging)
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+            "Using DirectClassStripped read method with %u bits per sample",
+               bits_per_sample);
         /*
           Convert stripped TIFF image to DirectClass MIFF image.
         */
@@ -1167,6 +1183,11 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
 
         unsigned long
           number_pixels;
+
+        if (logging)
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+            "Using DirectClassPunt (catch all) read method with %u bits per sample",
+              bits_per_sample);
 
         /*
           Convert TIFF image to DirectClass MIFF image.
@@ -1257,15 +1278,13 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     remove(filename);
   while (image->previous != (Image *) NULL)
     image=image->previous;
-  if (logging)
-    (void) LogMagickEvent(CoderEvent,GetMagickModule(),"return");
   return(image);
 }
 #else
 static Image *ReadTIFFImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
-  ThrowException(exception,CoderError,"TIFFLibraryIsNotAvailable",
+  ThrowException(exception,MissingDelegateError,"TIFFLibraryIsNotAvailable",
     image_info->filename);
   return((Image *) NULL);
 }
@@ -1297,6 +1316,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
 ModuleExport void RegisterTIFFImage(void)
 {
 #define TIFFDescription  "Tagged Image File Format"
+#if defined(HasTIFF)
 
   char
     version[MaxTextExtent];
@@ -1308,6 +1328,7 @@ ModuleExport void RegisterTIFFImage(void)
 #if defined(TIFF_VERSION)
   FormatString(version,"%d",TIFF_VERSION);
 #endif
+
   entry=SetMagickInfo("PTIF");
   entry->decoder=(DecoderHandler) ReadTIFFImage;
   entry->encoder=(EncoderHandler) WritePTIFImage;
@@ -1315,6 +1336,7 @@ ModuleExport void RegisterTIFFImage(void)
   entry->description=AcquireString("Pyramid encoded TIFF");
   entry->module=AcquireString("TIFF");
   (void) RegisterMagickInfo(entry);
+
   entry=SetMagickInfo("TIF");
   entry->decoder=(DecoderHandler) ReadTIFFImage;
   entry->encoder=(EncoderHandler) WriteTIFFImage;
@@ -1323,6 +1345,7 @@ ModuleExport void RegisterTIFFImage(void)
     entry->version=AcquireString(version);
   entry->module=AcquireString("TIFF");
   (void) RegisterMagickInfo(entry);
+
   entry=SetMagickInfo("TIFF");
   entry->decoder=(DecoderHandler) ReadTIFFImage;
   entry->encoder=(EncoderHandler) WriteTIFFImage;
@@ -1332,6 +1355,7 @@ ModuleExport void RegisterTIFFImage(void)
     entry->version=AcquireString(version);
   entry->module=AcquireString("TIFF");
   (void) RegisterMagickInfo(entry);
+#endif
 }
 
 /*
@@ -1434,7 +1458,7 @@ static unsigned int WritePTIFImage(const ImageInfo *image_info,Image *image)
 #else
 static unsigned int WritePTIFImage(const ImageInfo *image_info,Image *image)
 {
-  ThrowBinaryException(CoderError,"TIFFLibraryIsNotAvailable",
+  ThrowBinaryException(MissingDelegateError,"TIFFLibraryIsNotAvailable",
     image->filename);
 }
 #endif
@@ -1681,7 +1705,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
   assert(image_info->signature == MagickSignature);
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  logging=LogMagickEvent(CoderEvent,GetMagickModule(),"enter");
+  logging=IsEventLogging();
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   btype=image->blob->type;
   if (status == False)
@@ -2342,8 +2366,6 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
       CloseBlob(image);
     }
 #endif
-  if (logging)
-    (void) LogMagickEvent(CoderEvent,GetMagickModule(),"return");
   return(True);
 }
 #else

@@ -1,8 +1,9 @@
 2003-03-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* demo/Makefile.am (CLEANFILES): Fix clean target to remove
+	*_out.mvg output files as well.
 	* demo/zoom.cpp: Added a command-line parser for dash
 	arguments as well as an image "resample" capability.
-
 	* lib/Image.cpp (density): Obtain density from Image
 	rather than ImageInfo if the Image is valid.
 

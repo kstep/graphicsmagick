@@ -13,6 +13,27 @@
 </tr>
 </table>
 <p>
+2003-03-16  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/log.c (LogMagickEvent): fflush(stdout) at the end of
+        each log.  Otherwise output may not be seen for a long time.
+  <LI> coders/tiff.c (RegisterTIFFImage): Don't register encode and
+        decode handlers for TIFF if TIFF library is not available.
+  <LI> magick/constitute.c (WriteImage): Fix cut-n-paste error
+        in log message ("decoder" --&gt; "encoder").
+
+</UL>
+<p>
+2003-03-15  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> index.html: Added a link to the GraphicsMagick mailing lists.
+  <LI> Magick++/demo/zoom.cpp: Added dashed option support, including
+        a -resample option for image resampling.
+
+</UL>
+<p>
 2003-03-14  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
