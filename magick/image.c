@@ -1727,8 +1727,7 @@ MagickExport void DescribeImage(Image *image,FILE *file,
   if ((image->page.width != 0) && (image->page.height != 0))
     (void) fprintf(file,"  Page geometry: %lux%lu%+ld%+ld\n",image->page.width,
       image->page.height,image->page.x,image->page.y);
-  if (image->dispose != 0)
-    (void) fprintf(file,"  Dispose Method: %lu\n",image->dispose);
+  void) fprintf(file,"  Dispose: ");
   switch (image->dispose)
   {
     case UndefinedDispose: (void) fprintf(file,"Undefined\n"); break;
