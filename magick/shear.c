@@ -603,23 +603,17 @@ static void XShearImage(Image *image,const double degrees,
         {
           if ((x_offset+i) < step)
             {
-              p++;
-              pixel=(*p);
+              pixel=(*++p);
               q++;
               continue;
             }
-          *q=AlphaComposite(&pixel,pixel.opacity,p,p->opacity);
-          pixel=(*p);
-          p++;
-          q++;
+          *q++=AlphaComposite(&pixel,pixel.opacity,p,p->opacity);
+          pixel=(*p++);
         }
-        *q=AlphaComposite(&pixel,pixel.opacity,&image->background_color,
+        *q++=AlphaComposite(&pixel,pixel.opacity,&image->background_color,
           image->background_color.opacity);
         for (i=0; i < (step-1); i++)
-				{
-				  q++;
-          *q=image->background_color;
-				}
+          *q++=image->background_color;
         break;
       }
       case RIGHT:
@@ -641,14 +635,10 @@ static void XShearImage(Image *image,const double degrees,
           *q=AlphaComposite(&pixel,pixel.opacity,p,p->opacity);
           pixel=(*p);
         }
-        q--;
-        *q=AlphaComposite(&pixel,pixel.opacity,&image->background_color,
+        *--q=AlphaComposite(&pixel,pixel.opacity,&image->background_color,
           image->background_color.opacity);
         for (i=0; i < (step-1); i++)
-				{
-          q--;
-          *q=image->background_color;
-				}
+          *--q=image->background_color;
         break;
       }
     }
@@ -810,18 +800,19 @@ static void YShearImage(Image *image,const double degrees,
         q=p-step;
         for (i=0; i < (long) height; i++)
         {
-          *q=AlphaComposite(&pixel,pixel.opacity,p,p->opacity);
-          pixel=(*p);
-          p++;
-          q++;
+          if ((y_offset+i) < step)
+            {
+              pixel=(*++p);
+              q++;
+              continue;
+            }
+          *q++=AlphaComposite(&pixel,pixel.opacity,p,p->opacity);
+          pixel=(*p++);
         }
-        *q=AlphaComposite(&pixel,pixel.opacity,&image->background_color,
+        *q++=AlphaComposite(&pixel,pixel.opacity,&image->background_color,
           image->background_color.opacity);
         for (i=0; i < (step-1); i++)
-				{
-				  q++;
-          *q=image->background_color;
-				}
+          *q++=image->background_color;
         break;
       }
       case DOWN:
@@ -843,14 +834,10 @@ static void YShearImage(Image *image,const double degrees,
           *q=AlphaComposite(&pixel,pixel.opacity,p,p->opacity);
           pixel=(*p);
         }
-        q--;
-        *q=AlphaComposite(&pixel,pixel.opacity,&image->background_color,
+        *--q=AlphaComposite(&pixel,pixel.opacity,&image->background_color,
           image->background_color.opacity);
         for (i=0; i < (step-1); i++)
-				{
-          q--;
-          *q=image->background_color;
-				}
+          *--q=image->background_color;
         break;
       }
     }
