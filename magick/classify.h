@@ -467,14 +467,16 @@ typedef enum
 	SemiExpandedStretch,
 	ExpandedStretch,
 	ExtraExpandedStretch,
-	UltraExpandedStretch
+	UltraExpandedStretch,
+  AnyStretch
 } StretchType;
 
 typedef enum
 {
   NormalStyle,
   ItalicStyle,
-  ObliqueStyle
+  ObliqueStyle,
+  AnyStyle
 } StyleType;
 
 typedef enum
