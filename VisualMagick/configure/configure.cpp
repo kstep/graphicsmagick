@@ -192,6 +192,7 @@ string get_project_name(int project, int runtime,
   return filename;
 }
 
+// Lower case string
 void LocalMakeLower(string &s)
 {
   char* pszTemp = new char[s.length() + 1];
@@ -202,6 +203,7 @@ void LocalMakeLower(string &s)
   return;
 };
 
+// Case insensitive sub-string search
 int LocalFindNoCase( string &a, char *b, int startpos )
 {
   string sa = a;
@@ -213,6 +215,7 @@ int LocalFindNoCase( string &a, char *b, int startpos )
   return sa.find( sb, startpos );
 }
 
+// "Sprintf" to std::string
 void LocalFormat(string &a, const char *s, ... )
 {
   va_list vl;
@@ -241,6 +244,7 @@ void LocalFormat(string &a, const char *s, ... )
   return;
 };
 
+// Return number of matching characters in string
 int LocalGetFieldCount( string &s, const TCHAR* psz )
 {
   int len = _tcslen( psz );
@@ -255,6 +259,7 @@ int LocalGetFieldCount( string &s, const TCHAR* psz )
   return iCount;
 };
 
+// Return number of matching characters in string
 int LocalGetFieldCount( string &s, const TCHAR& ch )
 {
   int pos = 0;
@@ -716,6 +721,7 @@ void CConfigureApp::process_utility(ofstream &dsw,
     extra = "..\\SDL";
     add_includes(includes_list, extra, levels-2);
   }
+// No one should need hp2xx includes yet
 //   if (LocalFindNoCase(staging,"..\\hp2xx",0) == 0)
 //   {
 //     extra = "..\\hp2xx";
@@ -782,10 +788,7 @@ void CConfigureApp::process_utility(ofstream &dsw,
       if (!standaloneMode)
       {
         // hp2xx and jp2 do not depend on CORE_magick
-        string strDepends = staging.c_str();
-        if ( (LocalFindNoCase(strDepends,"..\\hp2xx",0) != 0) &&
-             (LocalFindNoCase(strDepends,"..\\jp2",0) != 0) )
-          add_project_dependency(dsw, "CORE_magick");
+        add_project_dependency(dsw, "CORE_magick");
 
         // FIXME: Only CORE_magick, UTIL_animate, UTIL_display, &
         // UTIL_import should link with X11
@@ -795,6 +798,7 @@ void CConfigureApp::process_utility(ofstream &dsw,
         {
           add_project_dependency(dsw, "CORE_Magick++");
         }
+        string strDepends = staging.c_str();
         if (LocalFindNoCase(strDepends,"\\SDL",0) >= 0)
         {
           add_project_dependency(dsw, "CORE_SDL");
