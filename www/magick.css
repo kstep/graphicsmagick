@@ -2,7 +2,7 @@
 
 BODY, P, TD, TH, UL, OL  {
 	font-family : Verdana, Arial, Helvetica, sans-serif;
-	font-size : 10pt;
+	font-size : medium;
 }
 
 H1, H2, H3, H4  {
@@ -68,18 +68,18 @@ A.leftcolnav:VISITED  {
 }
 
 .stripes  {
-	font-size : 9pt;
+	font-size : smaller;
 }
 
 .navtopon  {
 	background-color : #999999;
-	font-size : 9pt;
+	font-size : smaller;
 	text-align : center;
 	font-weight : bold;
 }
 
 .navtopoff  {
-	font-size : 9pt;
+	font-size : smaller;
 	text-align : center;
 	font-weight : bold;
 }
@@ -92,8 +92,8 @@ A.leftcolnav:VISITED  {
 }
 
 .bannergutter {
-	margin-top : 2mm;
-	margin-right : 3mm;
+        margin-top : 2mm;
+        margin-right : 3mm;
 }
 
 .pagebodygutter  {
@@ -118,7 +118,7 @@ A.leftcolnav:VISITED  {
 }
 
 .textpromo  {
-	font-size : 10pt;
+	font-size : medium;
 	margin-top : 2mm;
 	margin-right : 1mm;
 	margin-left : 2mm;
@@ -128,12 +128,12 @@ A.leftcolnav:VISITED  {
 	margin-left : 1mm;
 	margin-top : 2mm;
 	margin-bottom : 3mm;
-	font-size : 10pt;
+	font-size : medium;
 }
 
 .itemgutter  {
 	margin-left : 1.5mm;
-	font-size : 8pt;
+	font-size : small;
 }
 
 .logogutter  {
@@ -143,15 +143,15 @@ A.leftcolnav:VISITED  {
 }
 
 .navtext  {
-	font-size : 9pt;
+	font-size : smaller;
 }
 
 .navlevel2 {
-	font-size : 9pt;
+        font-size : 9pt;
 }
 
 .navlevel3 {
-	font-size : 8pt;
+        font-size : 8pt;
 }
 
 .navlevel2on {
@@ -178,11 +178,11 @@ A.leftcolnav:VISITED  {
 }
 
 .small  {
-	font-size : 9pt;
+	font-size : smaller;
 }
 
 .tiny  {
-	font-size : 8pt;
+	font-size : smaller;
 }
 
 .confirmation  {
@@ -198,11 +198,12 @@ A.leftcolnav:VISITED  {
 }
 
 .disclaimer  {
-	font-size : 9pt;
+	font-size : smaller;
 	color : Gray;
 	margin-top : 1em;
 	margin-bottom : 1em;
 }
+
 
 .bgwhite {
         background-color: White;
