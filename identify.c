@@ -141,7 +141,7 @@ int main(int argc,char **argv)
     exception;
 
   ExceptionType
-    type;
+    severity;
 
   Image
     *image,
@@ -176,7 +176,7 @@ int main(int argc,char **argv)
   count=0;
   image_info=CloneImageInfo((ImageInfo *) NULL);
   number_images=0;
-  type=UndefinedException;
+  severity=UndefinedException;
   /*
     Identify an image.
   */
@@ -277,9 +277,9 @@ int main(int argc,char **argv)
     image=ReadImage(image_info,&exception);
     if (image == (Image *) NULL)
       {
-        MagickWarning(exception.type,exception.message,exception.qualifier);
-        if (exception.type > type)
-          type=exception.type;
+        MagickWarning(exception.severity,exception.message,exception.qualifier);
+        if (exception.severity > severity)
+          severity=exception.severity;
         continue;
       }
     for (p=image; p != (Image *) NULL; p=p->next)
@@ -297,6 +297,6 @@ int main(int argc,char **argv)
   DestroyDelegateInfo();
   DestroyMagickInfo();
   FreeMemory(argv);
-  Exit((int) type);
+  Exit((int) severity);
   return(False);
 }

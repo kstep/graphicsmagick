@@ -374,7 +374,7 @@ Export unsigned int AnimateImages(const ImageInfo *image_info,Image *image)
     resource.delay=atoi(image_info->delay);
   (void) XAnimateImages(display,&resource,&client_name,1,image);
   XCloseDisplay(display);
-  return(image->exception.type == UndefinedException);
+  return(image->exception.severity == UndefinedException);
 #else
   ThrowBinaryException(MissingDelegateWarning,"X11 library is not available",
     image->filename);
@@ -2804,7 +2804,7 @@ Export unsigned int DisplayImages(const ImageInfo *image_info,Image *image)
       break;
   }
   XCloseDisplay(display);
-  return(image->exception.type != UndefinedException);
+  return(image->exception.severity != UndefinedException);
 #else
   ThrowBinaryException(MissingDelegateWarning,"X11 library is not available",
     image->filename);
@@ -3760,9 +3760,8 @@ Export Image **ListToGroupImage(Image *image,unsigned int *number_images)
   images=(Image **) AllocateMemory(i*sizeof(Image *));
   if (images == (Image **) NULL)
     {
-      image->exception.type=ResourceLimitWarning;
-      image->exception.message="Unable to convert image list";
-      image->exception.qualifier="Memory allocation failed";
+      ThrowException(&image->exception,ResourceLimitWarning,
+        "Unable to convert image list","Memory allocation failed");
       return((Image **) NULL);
     }
   *number_images=i;
@@ -3913,12 +3912,7 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
   assert(image != (Image **) NULL);
   for (i=1; i < argc; i++)
     if (Extent(argv[i]) > (MaxTextExtent/2-1))
-      {
-        (*image)->exception.type=OptionWarning;
-        (*image)->exception.message="Option length exceeds limit";
-        (*image)->exception.qualifier=argv[i];
-        return(False);
-      }
+      MagickError(OptionWarning,"Option length exceeds limit",argv[i]);
   /*
     Initialize method variables.
   */
@@ -5112,7 +5106,7 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
     FreeMemory(geometry);
   DestroyImageInfo(clone_info);
   CloseCache((*image)->cache);
-  return((*image)->exception.type == UndefinedException);
+  return((*image)->exception.severity == UndefinedException);
 }
 
 /*

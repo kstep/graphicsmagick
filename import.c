@@ -223,7 +223,7 @@ int main(int argc,char **argv)
     sans;
 
   ExceptionType
-    type;
+    severity;
 
   Image
     *image,
@@ -354,7 +354,7 @@ int main(int argc,char **argv)
   /*
     Check command syntax.
   */
-  type=UndefinedException;
+  severity=UndefinedException;
   filename=(char *) NULL;
   target_window=(char *) NULL;
   for (i=1; i < argc; i++)
@@ -858,14 +858,14 @@ int main(int argc,char **argv)
   */
   status=MogrifyImages(image_info,argc,argv,&image);
   if (status == False)
-    CatchImageException(image,&type);
+    CatchImageException(image,&severity);
   SetImageInfo(image_info,True);
   status=0;
   for (p=image; p != (Image *) NULL; p=p->next)
   {
     status=WriteImage(image_info,p);
     if (status == False)
-      CatchImageException(p,&type);
+      CatchImageException(p,&severity);
     if (image_info->adjoin)
       break;
   }
@@ -875,7 +875,7 @@ int main(int argc,char **argv)
   DestroyDelegateInfo();
   DestroyMagickInfo();
   FreeMemory(argv);
-  Exit((int) type);
+  Exit((int) severity);
 #endif
   return(False);
 }

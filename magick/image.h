@@ -108,7 +108,7 @@ typedef struct _ColorlistInfo
 typedef struct _ExceptionInfo
 {
   ExceptionType
-    type;
+    severity;
 
   const char
     *message,

@@ -25,9 +25,9 @@ extern int
 #endif
 #define ThrowException(exception,code,reason,description) \
 { \
-  if (code >= (exception)->type) \
+  if (code >= (exception)->severity) \
     { \
-      (exception)->type=code; \
+      (exception)->severity=code; \
       (exception)->message=reason; \
       (exception)->qualifier=description; \
     } \

@@ -312,7 +312,7 @@ int main(int argc,char **argv)
     exception;
 
   ExceptionType
-    type;
+    severity;
 
   Image
     *image,
@@ -374,7 +374,7 @@ int main(int argc,char **argv)
     image_marker[i]=argc;
   resource_database=(XrmDatabase) NULL;
   state=0;
-  type=UndefinedException;
+  severity=UndefinedException;
   /*
     Check for server name specified on the command line.
   */
@@ -1340,10 +1340,10 @@ int main(int argc,char **argv)
           image=ReadImage(image_info,&exception);
           if (image == (Image *) NULL)
             {
-              MagickWarning(exception.type,exception.message,
+              MagickWarning(exception.severity,exception.message,
                 exception.qualifier);
-              if (exception.type > type)
-                type=exception.type;
+              if (exception.severity > severity)
+                severity=exception.severity;
               if ((i < (argc-1)) || (scene < last_scene))
                 continue;
               else
@@ -1360,7 +1360,7 @@ int main(int argc,char **argv)
             resource_info.quantum=1;
             status=MogrifyImage(image_info,i,argv,&image);
             if (status == False)
-              CatchImageException(image,&type);
+              CatchImageException(image,&severity);
             if (first_scene != last_scene)
               image->scene=scene;
             /*
@@ -1404,7 +1404,7 @@ int main(int argc,char **argv)
                     }
                   status=MogrifyImage(image_info,i,argv,&loaded_image);
                   if (status == False)
-                    CatchImageException(loaded_image,&type);
+                    CatchImageException(loaded_image,&severity);
                   if (first_scene != last_scene)
                     image->scene=scene;
                   next_image=XDisplayImage(display,&resource_info,argv,argc,
@@ -1433,7 +1433,7 @@ int main(int argc,char **argv)
                 SetImageInfo(image_info,True);
                 status=WriteImage(image_info,image);
                 if (status == False)
-                  CatchImageException(image,&type);
+                  CatchImageException(image,&severity);
               }
             if (image_info->verbose)
               DescribeImage(image,stderr,False);
@@ -1512,7 +1512,7 @@ int main(int argc,char **argv)
   DestroyDelegateInfo();
   DestroyMagickInfo();
   FreeMemory(argv);
-  Exit((int) type);
+  Exit((int) severity);
 #endif
   return(False);
 }

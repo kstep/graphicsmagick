@@ -97,17 +97,17 @@ static WarningHandler
 %
 %  The format of the CatchImageException method is:
 %
-%      CatchImageException(Image *images,ExceptionType *type)
+%      CatchImageException(Image *images,ExceptionType *severity)
 %
 %  A description of each parameter follows:
 %
 %    o images: Specifies a pointer to a list of one or more images.
 %
-%    o type: return the highest exception type.
+%    o severity: return the highest severity exception.
 %
 %
 */
-Export void CatchImageException(Image *images,ExceptionType *type)
+Export void CatchImageException(Image *images,ExceptionType *severity)
 {
   register Image
     *image;
@@ -116,17 +116,17 @@ Export void CatchImageException(Image *images,ExceptionType *type)
     return;
   for (image=images; image != (Image *) NULL; image=image->next)
   {
-    if (image->exception.type == UndefinedException)
+    if (image->exception.severity == UndefinedException)
       continue;
-    if (image->exception.type > *type)
-      *type=image->exception.type;
-    if (image->exception.type < ResourceLimitError)
+    if (image->exception.severity > *severity)
+      *severity=image->exception.severity;
+    if (image->exception.severity < ResourceLimitError)
       {
-        MagickWarning(image->exception.type,image->exception.message,
+        MagickWarning(image->exception.severity,image->exception.message,
           image->exception.qualifier);
         continue;
       }
-    MagickError(image->exception.type,image->exception.message,
+    MagickError(image->exception.severity,image->exception.message,
       image->exception.qualifier);
   }
 }
@@ -244,7 +244,7 @@ static void DefaultWarningHandler(const ExceptionType warning,
 Export void GetExceptionInfo(ExceptionInfo *exception_info)
 {
   assert(exception_info != (ExceptionInfo *) NULL);
-  exception_info->type=UndefinedException;
+  exception_info->severity=UndefinedException;
   exception_info->message=(char *) NULL;
   exception_info->qualifier=(char *) NULL;
 }
