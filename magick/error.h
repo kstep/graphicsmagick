@@ -30,7 +30,7 @@ extern "C" {
     { \
       ThrowException(exception,code,reason,(image)->filename); \
       CloseBlob(image); \
-      DestroyImages(image); \
+      DestroyImageList(image); \
     } \
   return((Image *) NULL); \
 }
