@@ -43,7 +43,7 @@ int main( int /*argc*/, char ** /*argv*/)
     string textFont = "@Generic.ttf";
 
     // Font point size
-    int textFontPointSize = 10;
+    int textFontPointSize = 16;
 
     //
     // Magick++ operations

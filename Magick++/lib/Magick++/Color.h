@@ -28,10 +28,6 @@ namespace Magick
   int operator <= ( const Magick::Color& left_, const Magick::Color& right_ );
 
   // Base color class stores RGB components scaled to fit Quantum
-  //
-  // Please note that this base class is subject to change so if you
-  // want to be totally safe, don't rely on it.
-  //
   class Color
   {
   public:
@@ -87,13 +83,13 @@ namespace Magick
     //
 
     // Construct color via ImageMagick PixelPacket
-    Color ( MagickLib::PixelPacket &color_ );
+    Color ( PixelPacket &color_ );
 
     // Set color via ImageMagick PixelPacket
-    const Color& operator= ( MagickLib::PixelPacket &color_ );
+    const Color& operator= ( PixelPacket &color_ );
 
     // Return ImageMagick PixelPacket
-    operator MagickLib::PixelPacket() const;
+    operator PixelPacket() const;
 
   protected:
 
@@ -121,11 +117,11 @@ namespace Magick
 
     // Constructor to construct with PixelPacket*
     // Used to point Color at a pixel in an image
-    Color ( MagickLib::PixelPacket* rep_, PixelType pixelType_ );
+    Color ( PixelPacket* rep_, PixelType pixelType_ );
 
     // Set pixel
     // Used to point Color at a pixel in an image
-    void pixel ( MagickLib::PixelPacket* rep_, PixelType pixelType_ );
+    void pixel ( PixelPacket* rep_, PixelType pixelType_ );
 
     // PixelPacket represents a color pixel:
     //  red     = red   (range 0 to MaxRGB)
@@ -133,7 +129,7 @@ namespace Magick
     //  blue    = blue  (range 0 to MaxRGB)
     //  opacity = alpha (range Transparent to Opaque)
     //  index   = PseudoColor colormap index
-    MagickLib::PixelPacket*     _pixel;
+    PixelPacket*     _pixel;
 
   private:
 
@@ -169,7 +165,7 @@ namespace Magick
 
   protected:
     // Constructor to construct with PixelPacket*
-    ColorHSL ( MagickLib::PixelPacket* rep_, PixelType pixelType_ );
+    ColorHSL ( PixelPacket* rep_, PixelType pixelType_ );
   };
   
   //
@@ -189,7 +185,7 @@ namespace Magick
 
   protected:
     // Constructor to construct with PixelPacket*
-    ColorGray ( MagickLib::PixelPacket* rep_, PixelType pixelType_ );
+    ColorGray ( PixelPacket* rep_, PixelType pixelType_ );
   };
   
   //
@@ -209,7 +205,7 @@ namespace Magick
 
   protected:
     // Constructor to construct with PixelPacket*
-    ColorMono ( MagickLib::PixelPacket* rep_, PixelType pixelType_ );
+    ColorMono ( PixelPacket* rep_, PixelType pixelType_ );
   };
   
   //
@@ -235,7 +231,7 @@ namespace Magick
 
   protected:
     // Constructor to construct with PixelPacket*
-    ColorRGB ( MagickLib::PixelPacket* rep_, PixelType pixelType_ );
+    ColorRGB ( PixelPacket* rep_, PixelType pixelType_ );
   };
   
   //
@@ -263,7 +259,7 @@ namespace Magick
 
   protected:
     // Constructor to construct with PixelPacket*
-    ColorYUV ( MagickLib::PixelPacket* rep_, PixelType pixelType_ );
+    ColorYUV ( PixelPacket* rep_, PixelType pixelType_ );
   };
 } // namespace Magick
 
@@ -329,7 +325,7 @@ inline Magick::Quantum Magick::Color::alphaQuantum ( void ) const
 inline Magick::Color::Color ( Quantum red_,
 			      Quantum green_,
 			      Quantum blue_ )
-  : _pixel(new MagickLib::PixelPacket),
+  : _pixel(new PixelPacket),
     _pixelOwn(true),
     _pixelType(RGBPixel)
 {
@@ -343,7 +339,7 @@ inline Magick::Color::Color ( Quantum red_,
 			      Quantum green_,
 			      Quantum blue_,
 			      Quantum alpha_ )
-  : _pixel(new MagickLib::PixelPacket),
+  : _pixel(new PixelPacket),
     _pixelOwn(true),
     _pixelType(RGBAPixel)
 {
@@ -355,7 +351,7 @@ inline Magick::Color::Color ( Quantum red_,
 
 // Construct from color expressed as C++ string
 inline Magick::Color::Color ( const std::string x11color_ )
-  : _pixel(new MagickLib::PixelPacket),
+  : _pixel(new PixelPacket),
     _pixelOwn(true),
     _pixelType(RGBPixel)
 {
@@ -367,7 +363,7 @@ inline Magick::Color::Color ( const std::string x11color_ )
 
 // Construct from color expressed as C string
 inline Magick::Color::Color ( const char * x11color_ )
-  : _pixel(new MagickLib::PixelPacket),
+  : _pixel(new PixelPacket),
     _pixelOwn(true),
     _pixelType(RGBPixel)
 {
@@ -379,7 +375,7 @@ inline Magick::Color::Color ( const char * x11color_ )
 
 // Default constructor
 inline Magick::Color::Color ( void )
-  : _pixel(new MagickLib::PixelPacket),
+  : _pixel(new PixelPacket),
     _pixelOwn(true),
     _pixelType(RGBPixel)
 {
@@ -388,7 +384,7 @@ inline Magick::Color::Color ( void )
 
 // Protected constructor to construct with PixelPacket*
 // Used to point Color at a pixel.
-inline Magick::Color::Color ( MagickLib::PixelPacket* rep_, PixelType pixelType_  )
+inline Magick::Color::Color ( PixelPacket* rep_, PixelType pixelType_  )
   : _pixel(rep_),
     _pixelOwn(false),
     _pixelType(pixelType_)
@@ -428,7 +424,7 @@ inline void Magick::Color::isValid ( bool valid_ )
 
   if ( !_pixelOwn )
     {
-      _pixel = new MagickLib::PixelPacket;
+      _pixel = new PixelPacket;
       _pixelOwn = true;
     }
 
@@ -438,7 +434,7 @@ inline void Magick::Color::isValid ( bool valid_ )
 
     // Set pixel
     // Used to point Color at a pixel in an image
-inline void Magick::Color::pixel ( MagickLib::PixelPacket* rep_, PixelType pixelType_ )
+inline void Magick::Color::pixel ( PixelPacket* rep_, PixelType pixelType_ )
 {
   if ( _pixelOwn )
     delete _pixel;
@@ -450,7 +446,7 @@ inline void Magick::Color::pixel ( MagickLib::PixelPacket* rep_, PixelType pixel
 //
 // ColorHSL
 //
-inline Magick::ColorHSL::ColorHSL ( MagickLib::PixelPacket* rep_,
+inline Magick::ColorHSL::ColorHSL ( PixelPacket* rep_,
                                     PixelType pixelType_ )
 : Color( rep_, pixelType_ )
 {
@@ -459,7 +455,7 @@ inline Magick::ColorHSL::ColorHSL ( MagickLib::PixelPacket* rep_,
 //
 // ColorGray
 //
-inline Magick::ColorGray::ColorGray ( MagickLib::PixelPacket* rep_,
+inline Magick::ColorGray::ColorGray ( PixelPacket* rep_,
                                       PixelType pixelType_ )
 : Color( rep_, pixelType_ )
 {
@@ -468,7 +464,7 @@ inline Magick::ColorGray::ColorGray ( MagickLib::PixelPacket* rep_,
 //
 // ColorMono
 //
-inline Magick::ColorMono::ColorMono ( MagickLib::PixelPacket* rep_,
+inline Magick::ColorMono::ColorMono ( PixelPacket* rep_,
                                       PixelType pixelType_ )
   : Color( rep_, pixelType_ )
 {
@@ -477,7 +473,7 @@ inline Magick::ColorMono::ColorMono ( MagickLib::PixelPacket* rep_,
 //
 // ColorRGB
 //
-inline Magick::ColorRGB::ColorRGB ( MagickLib::PixelPacket* rep_,
+inline Magick::ColorRGB::ColorRGB ( PixelPacket* rep_,
                                     PixelType pixelType_ )
   : Color( rep_, pixelType_ )
 {
@@ -517,7 +513,7 @@ inline double Magick::ColorRGB::blue ( void ) const
 // ColorYUV
 //
 
-inline Magick::ColorYUV::ColorYUV ( MagickLib::PixelPacket* rep_,
+inline Magick::ColorYUV::ColorYUV ( PixelPacket* rep_,
                                     PixelType pixelType_ )
   : Color( rep_, pixelType_ )
 {

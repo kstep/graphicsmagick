@@ -82,17 +82,17 @@ int main( int /*argc*/, char ** /*argv*/)
     //
     image.fillColor( "red" );
     image.font( "@Generic.ttf" );
-    image.fontPointsize( 12 );
+    image.fontPointsize( 18 );
     image.annotate( "Hello world!", "+150+10" );
 
     image.fillColor( "blue" );
     image.font( "@Generic.ttf" );
-    image.fontPointsize( 10 );
+    image.fontPointsize( 14 );
     image.annotate( "Goodbye cruel world!", "+150+28" );
 
     image.fillColor( "black" );
     image.font( "@Generic.ttf" );
-    image.fontPointsize( 10 );
+    image.fontPointsize( 14 );
     image.annotate( "I'm climbing the wall!", "+280+150",
                     NorthWestGravity, 90.0);
     //image.display();

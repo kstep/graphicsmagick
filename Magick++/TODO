@@ -5,6 +5,8 @@ Items large and small which remain to be done before Magick++ 1.0
   <BillR@corbis.com> has agreed to write a container class to support
   this.
 
+* Support conversion from Color base class to subordinate classes.
+
 * Port to Sun Workshop 5.0 under Solaris
 
 Items which will require the aid of volunteers.  Volunteers?
