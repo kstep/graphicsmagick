@@ -120,34 +120,16 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
   assert(exception->signature == MagickSignature);
   image=AllocateImage(image_info);
   draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
-  (void) QueryColorDatabase("black",&draw_info->fill);
   draw_info->gravity=WestGravity;
   draw_info->text=AllocateString(image_info->filename);
   status=GetTypeMetrics(image,draw_info,&metrics);
   if (status == False)
     ThrowReaderException(DelegateWarning,"Unable to get type metrics",image);
-  image->columns=(unsigned long) floor(metrics.width+0.5);
+  image->columns=(unsigned long)
+    floor(metrics.width+0.5*metrics.max_advance+0.5);
   image->rows=(unsigned long) floor(metrics.height+0.5);
-  (void) QueryColorDatabase("white",&image->background_color);
   SetImage(image,OpaqueOpacity);
   (void) AnnotateImage(image,draw_info);
-  image->matte=True;
-  for (y=0; y < (long) image->rows; y++)
-  {
-    q=GetImagePixels(image,0,y,image->columns,1);
-    if (q == (PixelPacket *) NULL)
-      break;
-    for (x=0; x < (long) image->columns; x++)
-    {
-      q->opacity=Intensity(q);
-      q->red=image_info->pen.red;
-      q->green=image_info->pen.green;
-      q->blue=image_info->pen.blue;
-      q++;
-    }
-    if (!SyncImagePixels(image))
-      break;
-  }
   DestroyDrawInfo(draw_info);
   return(image);
 }
