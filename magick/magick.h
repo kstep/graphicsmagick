@@ -14,6 +14,13 @@ extern "C" {
 #define _XOPEN_SOURCE  500
 #define _POSIX_C_SOURCE  199506L
 
+#define _MAGICK_CONFIG_H
+#if !defined(vms) && !defined(macintosh)
+#include "magick/config.h"
+#else
+#include "config.h"
+#endif
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
