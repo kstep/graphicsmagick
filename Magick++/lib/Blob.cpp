@@ -9,8 +9,6 @@
 
 #include <string.h>
 
-using namespace std;
-
 #include "Magick++/Thread.h"
 #include "Magick++/Include.h"
 #include "Magick++/Blob.h"

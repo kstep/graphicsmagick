@@ -1959,13 +1959,9 @@ void Magick::Image::iccColorProfile( const Magick::Blob &colorProfile_ )
 
   if ( colorProfile_.data() != 0 )
     {
-      color_profile->info =
-	static_cast<unsigned char*>(AllocateMemory(colorProfile_.length()));
-
-      if ( color_profile->info == 0 )
-	throw std::bad_alloc();
-
-      memcpy( color_profile->info, colorProfile_.data(), colorProfile_.length());
+      color_profile->info = new unsigned char[colorProfile_.length()];
+      memcpy( color_profile->info, colorProfile_.data(),
+              colorProfile_.length());
       color_profile->length = colorProfile_.length();
     }
 }
@@ -1996,13 +1992,9 @@ void Magick::Image::iptcProfile( const Magick::Blob &iptcProfile_ )
 
   if ( iptcProfile_.data() != 0 )
     {
-      iptc_profile->info =
-	static_cast<unsigned char*>(AllocateMemory(iptcProfile_.length()));
-
-      if ( iptc_profile->info == 0 )
-	throw std::bad_alloc();
-
-      memcpy( iptc_profile->info, iptcProfile_.data(), iptcProfile_.length());
+      iptc_profile->info = new unsigned char[iptcProfile_.length()];
+      memcpy( iptc_profile->info, iptcProfile_.data(),
+              iptcProfile_.length());
 
       iptc_profile->length = iptcProfile_.length();
     }
