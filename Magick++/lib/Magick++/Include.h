@@ -578,10 +578,11 @@ namespace Magick
   using MagickLib::EdgeImage;
   using MagickLib::EmbossImage;
   using MagickLib::EnhanceImage;
-  using MagickLib::ExecuteModuleProcess;
   using MagickLib::EqualizeImage;
   using MagickLib::ExceptionInfo;
   using MagickLib::ExceptionType;
+  using MagickLib::ExecuteModuleProcess;
+  using MagickLib::ExportImagePixelArea;
   using MagickLib::FileOpenError;
   using MagickLib::FileOpenFatalError;
   using MagickLib::FileOpenWarning;
@@ -596,7 +597,6 @@ namespace Magick
   using MagickLib::GaussianBlurImage;
   using MagickLib::GetCacheView;
   using MagickLib::GetCacheViewIndexes;
-  using MagickLib::GetImageClipMask;
   using MagickLib::GetColorTuple;
   using MagickLib::GetDrawInfo;
   using MagickLib::GetExceptionInfo;
@@ -604,6 +604,7 @@ namespace Magick
   using MagickLib::GetImageAttribute;
   using MagickLib::GetImageBoundingBox;
   using MagickLib::GetImageChannelDepth;
+  using MagickLib::GetImageClipMask;
   using MagickLib::GetImageDepth;
   using MagickLib::GetImageInfo;
   using MagickLib::GetImagePixels;
@@ -635,6 +636,7 @@ namespace Magick
   using MagickLib::ImageToBlob;
   using MagickLib::ImageWarning;
   using MagickLib::ImplodeImage;
+  using MagickLib::ImportImagePixelArea;
   using MagickLib::IsEventLogging;
   using MagickLib::IsGeometry;
   using MagickLib::IsImagesEqual;
@@ -675,10 +677,8 @@ namespace Magick
   using MagickLib::PingBlob;
   using MagickLib::PingImage;
   using MagickLib::PointInfo;
-  using MagickLib::PopImagePixels;
   using MagickLib::ProfileImage;
   using MagickLib::ProfileInfo;
-  using MagickLib::PushImagePixels;
   using MagickLib::QuantizeImage;
   using MagickLib::QuantizeInfo;
   using MagickLib::QuantumOperatorImage;

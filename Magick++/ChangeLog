@@ -1,3 +1,9 @@
+2004-08-17  Volker Lukas  <vlukas@gmx.de>
+
+	* lib/Drawable.cpp: Fixes to ensure that drawable objects remain
+	coherent even if an exception is thrown within the assignment
+	operator.
+
 2004-07-22  Bob Friesenhahn <bfriesen@simple.dallas.tx.us>  <bfriesen@simple.dallas.tx.us>
 
 	* demo/Makefile.am (AUTOMAKE_OPTIONS): Added nostdinc in order

@@ -85,8 +85,9 @@ Magick::Drawable& Magick::Drawable::operator= (const Magick::Drawable& original_
 {
   if (this != &original_)
     {
+      DrawableBase* temp_dp = (original_.dp ? original_.dp->copy() : 0);
       delete dp;
-      dp = (original_.dp ? original_.dp->copy() : 0);
+      dp = temp_dp;
     }
   return *this;
 }
@@ -164,8 +165,9 @@ Magick::VPath& Magick::VPath::operator= (const Magick::VPath& original_ )
 {
   if (this != &original_)
     {
+      VPathBase* temp_dp = (original_.dp ? original_.dp->copy() : 0);
       delete dp;
-      dp = (original_.dp ? original_.dp->copy() : 0);
+      dp = temp_dp;
     }
   return *this;
 }
@@ -493,15 +495,17 @@ Magick::DrawableCompositeImage& Magick::DrawableCompositeImage::operator=
       _y = original_._y;
       _width = original_._width;
       _height = original_._height;
+      Image* temp_image = new Image(*original_._image);
       delete _image;
-      _image = new Image(*original_._image);
+      _image = temp_image;
     }
   return *this;
 }
 void Magick::DrawableCompositeImage::filename( const std::string &filename_ )
 {
+  Image* temp_image = new Image(filename_);
   delete _image;
-  _image = new Image(filename_);
+  _image = temp_image;
 }
 std::string Magick::DrawableCompositeImage::filename( void ) const
 {
@@ -510,8 +514,9 @@ std::string Magick::DrawableCompositeImage::filename( void ) const
 
 void Magick::DrawableCompositeImage::image( const Magick::Image &image_ )
 {
+  Image* temp_image = new Image(image_);
   delete _image;
-  _image = new Image(image_);
+  _image = temp_image;
 }
 Magick::Image Magick::DrawableCompositeImage::image( void ) const
 {
