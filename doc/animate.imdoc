@@ -104,15 +104,13 @@ it eliminates the need to compute a global colormap.</p>
 <sect NAME="exam">Examples
 
 <p>
-To animate a set of images of a cockatoo, use:
-</p>
+To animate a set of images of a cockatoo, use:</p>
 <pre>
     animate cockatoo.*
 </pre>
 <p>
 To animate a cockatoo image sequence while using the Standard Colormap
-<i>best</i>, use:
-</p>
+<i>best</i>, use:</p>
 <pre>
     xstdcmap -best
     animate -map best cockatoo.*

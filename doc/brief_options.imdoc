@@ -117,6 +117,7 @@
 <utils apps=convert,mogrify>
 <lopt>-convolve <kernel></opt>
 <abs>convolve image with the specified convolution kernel</abs>
+</utils>
 <utils apps=animate,convert,display,import,mogrify,montage>
 <lopt>-crop <width>x<height>{+-}<x>{+-}<y>{%}</opt>
 <abs>preferred size and location of the cropped image</abs>
@@ -358,8 +359,7 @@
 </utils>
 <utils apps=animate,display>
 <lopt>-map <type></opt>
-<abs>
-display image using this type.</abs>
+<abs>display image using this type.</abs>
 </utils>
 <utils apps=convert,mogrify>
 <lopt>-mask <filename></opt>
@@ -425,9 +425,10 @@ display image using this type.</abs>
 <lopt>-operator channel operator rvalue[%]</opt>
 <abs>apply a mathematical or bitwise operator to an image channel</abs>
 </utils>
-<utils apps=composite,convert,display,import,mogrify,montage>
+<utils apps=convert,mogrify>
 <lopt>-ordered-dither <channeltype> <NxN></opt>
 <abs>ordered dither the image</abs>
+</utils>
 <utils apps=composite,convert,display,import,mogrify,montage>
 <lopt>-page <width>x<height>{+-}<x>{+-}<y>{%}{!}{<}{>}</opt>
 <abs>size and location of an image canvas</abs>
@@ -480,9 +481,10 @@ display image using this type.</abs>
 <lopt>-raise <width>x<height></opt>
 <abs>lighten or darken image edges</abs>
 </utils>
-<utils apps=composite,convert,display,import,mogrify,montage>
+<utils apps=convert,mogrify>
 <lopt>-random-threshold <channeltype> <LOWxHIGH></opt>
 <abs>random threshold the image</abs>
+</utils>
 <utils apps=composite,convert,mogrify,montage>
 <lopt>-red-primary <x>,<y></opt>
 <abs>red chromaticity primary point</abs>
@@ -493,7 +495,7 @@ display image using this type.</abs>
 </utils>
 <utils apps=animate,display>
 <lopt>-remote</opt>
-<abs>perform a remote operation</abs>
+<abs>perform a X11 remote operation</abs>
 </utils>
 <utils apps=composite,convert,mogrify,montage>
 <lopt>-render</opt>
@@ -502,6 +504,7 @@ display image using this type.</abs>
 <utils apps=convert,mogrify>
 <lopt>-resample <horizontal>x<vertical></opt>
 <abs>Resample image to specified horizontal and vertical resolution</abs>
+</utils>
 <utils apps=composite,convert,import,mogrify,montage>
 <lopt>-resize <width>x<height>{%}{@}{!}{<}{>}</opt>
 <abs>resize an image</abs>
@@ -601,6 +604,7 @@ display image using this type.</abs>
 <utils apps=composite>
 <lopt>-stereo</opt>
 <abs>composite two images to create a stereo anaglyph</abs>
+</utils>
 <utils apps=convert,mogrify,montage>
 <lopt>-stroke <color></opt>
 <abs>color to use when stroking a graphic primitive</abs>
@@ -661,6 +665,7 @@ display image using this type.</abs>
 <lopt>-update <seconds></opt>
 <abs>
 detect when image file is modified and redisplay.</abs>
+</utils>
 <utils apps=composite,convert,mogrify>
 <lopt>-units <type></opt>
 <abs>the units of image resolution</abs>

@@ -13147,7 +13147,7 @@ MagickExport void MontageUsage(void)
       "-matte               store matte channel if the image has one",
       "-mode type           Frame, Unframe, or Concatenate",
       "-monochrome          transform image to black and white",
-      "-noop                do not apply options to image"
+      "-noop                do not apply options to image",
       "-page geometry       size and location of an image canvas",
       "-pointsize value     font point size",
       "-quality value       JPEG/MIFF/PNG compression level",

@@ -73,52 +73,42 @@ gm - GraphicsMagick command-line utilities to create, edit, or convert images
 
 <p>
 <s>gm animate</s> <s>[</s> <i>options ...</i> <s>]</s> <i>file</i> <s>[ [</s>
-<i>options ...</i> <s>]</s> <i>file ...</i> <s>]</s>
-</p>
+<i>options ...</i> <s>]</s> <i>file ...</i> <s>]</s></p>
 
 <p>
 <s>gm composite</s> <s>[</s> <i>options ...</i> <s>]</s> <i>change-image base-image</i>
-<s>[</s> <i>mask-image</i> <s>]</s> <i>output-image</i>
-</p>
+<s>[</s> <i>mask-image</i> <s>]</s> <i>output-image</i></p>
 
 <p>
 <s>gm conjure</s> <s>[</s> <i>options</i> <s>]</s> <i>script.msl</i>
-<s>[ [</s> <i>options</i> <s>]</s> <i>script.msl</i> <s>]</s>
-</p>
+<s>[ [</s> <i>options</i> <s>]</s> <i>script.msl</i> <s>]</s></p>
 
 <p>
 <s>gm convert</s> <s>[ [</s> <i>options ...</i> <s>] [</s> <i>input-file ...</i>
-<s>]</s> <i>...</i> <s>[</s> <i>output-file</i> <s>] ]</s>
-</p>
+<s>]</s> <i>...</i> <s>[</s> <i>output-file</i> <s>] ]</s></p>
 
 <p>
 <s>gm display</s> <s>[</s> <i>options ...</i> <s>]</s> <i>file ...</i>
-<s>[ [</s><i>options ...</i> <s>]</s><i>file ...</i> <s>]</s>
-</p>
+<s>[ [</s><i>options ...</i> <s>]</s><i>file ...</i> <s>]</s></p>
 
 <p>
-<s>gm identify</s> <i>file</i> <s>[</s> <i>file ...</i> <s>]</s>
-</p>
+<s>gm identify</s> <i>file</i> <s>[</s> <i>file ...</i> <s>]</s></p>
 
 <p>
-<s>gm import</s> <s>[</s> <i>options ...</i> <s>]</s> <i>file</i>
-</p>
+<s>gm import</s> <s>[</s> <i>options ...</i> <s>]</s> <i>file</i></p>
 
 <p>
-<s>gm mogrify</s> <s>[</s> <i>options ...</i> <s>]</s> <i>file ...</i>
-</p>
+<s>gm mogrify</s> <s>[</s> <i>options ...</i> <s>]</s> <i>file ...</i></p>
 
 <p>
 <s>gm montage</s> <s>[</s> <i>options ...</i> <s>]</s> <i>file</i> <s>[ [</s>
-<i>options ...</i> <s>]</s> <i>file ...</i> <s>]</s> <i>output-file</i>
-</p>
+<i>options ...</i> <s>]</s> <i>file ...</i> <s>]</s> <i>output-file</i></p>
 
 </sect>
 <sect NAME="desc">Description
-<p>
-GraphicsMagick's <s>gm</s> provides a suite of command-line utilities for
-creating,
-converting, editing, and displaying images:</p>
+<p> GraphicsMagick's <s>gm</s> provides a suite of command-line
+utilities for creating, converting, editing, and displaying
+images:</p>
 
 <p>
 <format type=man,tex>
