@@ -283,13 +283,8 @@ MagickExport MagickInfo *GetMagickInfo(const char *tag)
   register MagickInfo
     *p;
 
-  unsigned int
-    initialize;
-
   AcquireSemaphore(&magick_semaphore);
-  initialize=magick_list == (MagickInfo *) NULL;
-  LiberateSemaphore(&magick_semaphore);
-  if (initialize)
+  if (magick_list == (MagickInfo *) NULL)
     {
       /*
         Register image formats.
@@ -378,27 +373,33 @@ MagickExport MagickInfo *GetMagickInfo(const char *tag)
 #endif
     }
   if ((tag == (char *) NULL) || (*tag == '\0'))
-    return(magick_list);
+    {
+      LiberateSemaphore(&magick_semaphore);
+      return(magick_list);
+    }
   /*
     Find tag in list
   */
-  AcquireSemaphore(&magick_semaphore);
   for (p=magick_list; p != (MagickInfo *) NULL; p=p->next)
     if (LocaleCompare(p->tag,tag) == 0)
       break;
-  LiberateSemaphore(&magick_semaphore);
   if (p != (MagickInfo *) NULL)
-    return(p);
+    {
+      LiberateSemaphore(&magick_semaphore);
+      return(p);
+    }
 #if defined(HasLTDL) || defined(_MAGICKMOD_)
   (void) OpenModule(tag);
-  AcquireSemaphore(&magick_semaphore);
   for (p=magick_list; p != (MagickInfo *) NULL; p=p->next)
     if (LocaleCompare(p->tag,tag) == 0)
       break;
-  LiberateSemaphore(&magick_semaphore);
   if (p != (MagickInfo *) NULL)
-    return(p);
+    {
+      LiberateSemaphore(&magick_semaphore);
+      return(p);
+    }
 #endif
+  LiberateSemaphore(&magick_semaphore);
   return((MagickInfo *) NULL);
 }
 
@@ -472,19 +473,19 @@ MagickExport void ListMagickInfo(FILE *file)
   (void) fprintf(file,"--------------------------------------------------------"
     "-----------------\n");
   (void) GetMagickInfo((char *) NULL);
+  AcquireSemaphore(&magick_semaphore);
 #if defined(HasLTDL) || defined(_MAGICKMOD_)
   OpenModules();
 #endif    
-  AcquireSemaphore(&magick_semaphore);
   for (p=magick_list; p != (MagickInfo *) NULL; p=p->next)
-    if(p->stealth!=True)
+    if (p->stealth != True)
       (void) fprintf(file,"%10s%c  %c%c%c  %s\n",p->tag ? p->tag : "",
         p->blob_support ? '*' : ' ',p->decoder ? 'r' : '-',
         p->encoder ? 'w' : '-',p->encoder && p->adjoin ? '+' : '-',
         p->description ? p->description : "");
-  LiberateSemaphore(&magick_semaphore);
   (void) fprintf(file,"\n* native blob support\n\n");
   (void) fflush(file);
+  LiberateSemaphore(&magick_semaphore);
 }
 
 /*
@@ -602,7 +603,6 @@ MagickExport MagickInfo *RegisterMagickInfo(MagickInfo *entry)
   */
   assert(entry != (MagickInfo *) NULL);
   assert(entry->signature == MagickSignature);
-  AcquireSemaphore(&magick_semaphore);
   p=(MagickInfo *) NULL;
   if (magick_list != (MagickInfo *) NULL)
     for (p=magick_list; p->next != (MagickInfo *) NULL; p=p->next)
@@ -629,7 +629,6 @@ MagickExport MagickInfo *RegisterMagickInfo(MagickInfo *entry)
         p->next->previous=entry;
       p->next=entry;
     }
-  LiberateSemaphore(&magick_semaphore);
   return(entry);
 }
 
