@@ -190,6 +190,7 @@ static void wmf_magick_region_frame(wmfAPI *API,
                                     wmfPolyRectangle_t *poly_rect);
 static void wmf_magick_region_paint(wmfAPI *API,
                                     wmfPolyRectangle_t *poly_rect);
+static void wmf_magick_render_mvg(wmfAPI *API, const char* mvg);
 static void wmf_magick_rop_draw(wmfAPI *API, wmfROP_Draw_t *rop_draw);
 static void wmf_magick_udata_copy(wmfAPI *API, wmfUserData_t *userdata);
 static void wmf_magick_udata_free(wmfAPI *API, wmfUserData_t *userdata);
@@ -199,9 +200,22 @@ static void wmf_magick_udata_set(wmfAPI *API, wmfUserData_t *userdata);
 
 static void wmf_magick_rop_draw (wmfAPI* API,wmfROP_Draw_t* rop_draw)
 {
-  /* wmf_magick_t* ddata = WMF_MAGICK_GetData (API); */
+  wmf_magick_t
+    *ddata = WMF_MAGICK_GetData (API);
 
-	
+  wmfStream
+    *out = ddata->out;
+
+  if (out == 0) return;
+
+  /* Save graphic context */
+  wmf_stream_printf (API,out,"push graphic-context\n");
+
+  /* FIXME: implement */
+  printf("wmf_magick_rop_draw not implemented\n");
+
+  /* Restore graphic context */
+  wmf_stream_printf (API,out,"pop graphic-context\n");
 }
 
 /*
@@ -274,6 +288,9 @@ static void wmf_magick_bmp_draw (wmfAPI* API,wmfBMP_Draw_t* bmp_draw)
 
   if (bmp_draw->bmp.data == 0) return;
 
+  /* Save graphic context */
+  wmf_stream_printf (API,out,"push graphic-context\n");
+
   imgspec = (char*)AcquireMemory(MaxTextExtent*sizeof(char));
   *imgspec = '\0';
 
@@ -308,7 +325,11 @@ static void wmf_magick_bmp_draw (wmfAPI* API,wmfBMP_Draw_t* bmp_draw)
   wmf_ipa_bmp_png (API,bmp_draw,imgspec);
 
   if (ERR (API))
-    return;
+    {
+      /* Restore graphic context */
+      wmf_stream_printf (API,out,"pop graphic-context\n");
+      return;
+    }
 #endif /* WMF_USE_NATIVE_READ */
 
   /* Okay, if we've got this far then "imgspec" is the filename of an png
@@ -322,6 +343,9 @@ static void wmf_magick_bmp_draw (wmfAPI* API,wmfBMP_Draw_t* bmp_draw)
 /*   printf("x=%.10g, y=%.10g, width=%.10g, height=%.10g\n", x,y,width,height); */
   wmf_stream_printf (API,out,"image Copy %.10g,%.10g %.10g,%.10g '%s'\n",
                      x,y,width,height,imgspec);
+
+  /* Restore graphic context */
+  wmf_stream_printf (API,out,"pop graphic-context\n");
 }
 
 #if 0
@@ -610,32 +634,24 @@ static void wmf_magick_draw_pixel (wmfAPI* API,wmfDrawPixel_t* draw_pixel)
 static void wmf_magick_draw_pie (wmfAPI* API,
                                  wmfDrawArc_t* draw_arc)
 {
-  /* wmf_magick_t* ddata = WMF_MAGICK_GetData (API); */
-
   magick_draw_arc (API,draw_arc,magick_arc_pie);
 }
 
 static void wmf_magick_draw_chord (wmfAPI* API,
                                    wmfDrawArc_t* draw_arc)
 {
-  /* wmf_magick_t* ddata = WMF_MAGICK_GetData (API); */
-
   magick_draw_arc (API,draw_arc,magick_arc_chord);
 }
 
 static void wmf_magick_draw_arc (wmfAPI* API,
                                  wmfDrawArc_t* draw_arc)
 {
-  /* wmf_magick_t* ddata = WMF_MAGICK_GetData (API); */
-
   magick_draw_arc (API,draw_arc,magick_arc_open);
 }
 
 static void wmf_magick_draw_ellipse (wmfAPI* API,
                                      wmfDrawArc_t* draw_arc)
 {
-  /* wmf_magick_t* ddata = WMF_MAGICK_GetData (API); */
-
   magick_draw_arc (API,draw_arc,magick_arc_ellipse);
 }
 
@@ -866,25 +882,65 @@ static void wmf_magick_draw_rectangle (wmfAPI* API,
 static void wmf_magick_region_frame (wmfAPI* API,
                                      wmfPolyRectangle_t* poly_rect)
 {
-  /* wmf_magick_t* ddata = WMF_MAGICK_GetData (API); */
+  wmf_magick_t
+    *ddata = WMF_MAGICK_GetData (API);
 
+  wmfStream
+    *out = ddata->out;
+
+  if (out == 0) return;
+
+  /* Save graphic context */
+  wmf_stream_printf (API,out,"push graphic-context\n");
+
+  /* FIXME: implement */
+  printf("wmf_magick_region_frame not implemented\n");
+
+  /* Restore graphic context */
+  wmf_stream_printf (API,out,"pop graphic-context\n");
 	
 }
 
 static void wmf_magick_region_paint (wmfAPI* API,
                                      wmfPolyRectangle_t* poly_rect)
 {
-  /* wmf_magick_t* ddata = WMF_MAGICK_GetData (API); */
+  wmf_magick_t
+    *ddata = WMF_MAGICK_GetData (API);
 
-	
+  wmfStream
+    *out = ddata->out;
+
+  if (out == 0) return;
+
+  /* Save graphic context */
+  wmf_stream_printf (API,out,"push graphic-context\n");
+
+  /* FIXME: implement */
+  printf("wmf_magick_region_paint not implemented\n");
+
+  /* Restore graphic context */
+  wmf_stream_printf (API,out,"pop graphic-context\n");	
 }
 
 static void wmf_magick_region_clip (wmfAPI* API,
                                     wmfPolyRectangle_t* poly_rect)
 {
-  /* wmf_magick_t* ddata = WMF_MAGICK_GetData (API); */
+  wmf_magick_t
+    *ddata = WMF_MAGICK_GetData (API);
 
-	
+  wmfStream
+    *out = ddata->out;
+
+  if (out == 0) return;
+
+  /* Save graphic context */
+  wmf_stream_printf (API,out,"push graphic-context\n");
+
+  /* FIXME: implement */
+  printf("wmf_magick_region_clip not implemented\n");
+
+  /* Restore graphic context */
+  wmf_stream_printf (API,out,"pop graphic-context\n");	
 }
 
 static void wmf_magick_function (wmfAPI* API)
@@ -951,27 +1007,27 @@ static void wmf_magick_draw_text (wmfAPI* API,
                                   wmfDrawText_t* draw_text)
 {
   char
-    *p,
-    *font_name=0,
-    *font_path=0,
-    *q;
+    *font_name=0;	/* final font name */
 
   double
-    angle = 0, /* text rotation angle */
-    bbox_height,
-    bbox_width,
-    font_height_points,
-    font_width_points,
-    pointsize = 0;
+    angle = 0,		/* text rotation angle */
+    bbox_height,	/* bounding box height */
+    bbox_width,		/* bounding box width */
+    font_height_points,	/* font height in points */
+    font_width_points,	/* font width in points */
+    pointsize = 0;	/* pointsize to output font with desired height */
+
+  TypeMetric
+    metrics;
 
   wmfD_Coord
-    BL,
-    BR,
-    TL,
-    TR;
+    BL,			/* bottom left of bounding box */
+    BR,			/* bottom right of bounding box */
+    TL,			/* top let of bounding box */
+    TR;			/* top right of bounding box */
 
   wmfD_Coord
-    point;
+    point;		/* text placement point */
 
   wmfFont
     *font;
@@ -1018,7 +1074,6 @@ static void wmf_magick_draw_text (wmfAPI* API,
   
   font = WMF_DC_FONT (draw_text->dc);
   font_name = WMF_FONT_PSNAME (font);
-  font_path = wmf_ipa_font_lookup (API,font_name);
 
   /* pixel_height and pixel_width provide the conversion factor from
      WMF_FONT_HEIGHT & WMF_FONT_WIDTH units to points */
@@ -1054,9 +1109,6 @@ static void wmf_magick_draw_text (wmfAPI* API,
     ImageInfo
       *image_info;
 
-    TypeMetric
-      metrics;
-
     image_info=CloneImageInfo((ImageInfo*)NULL);
     CloneString(&image_info->font,font_name);
     image_info->pointsize=font_height_points;
@@ -1065,68 +1117,41 @@ static void wmf_magick_draw_text (wmfAPI* API,
 
     if(GetTypeMetrics(image,&draw_info,&metrics) != False)
       {
-        /* Pointsize appears to specify the hight of the ascent only
-           so calculate final pointsize based on ratio of ascent to
-           ascent+descent */
-        pointsize = font_height_points * ((double)font_height_points/(metrics.ascent + abs(metrics.descent)));
-        draw_info.pointsize = pointsize;
-        GetTypeMetrics(image,&draw_info,&metrics);
-
-#if 0
-        printf("Pointsize            = %.10g\n", pointsize);
-        printf("Metric ascent        = %li\n", metrics.ascent);
-        printf("Metric descent       = %li\n", metrics.descent);
-        printf("Metric width         = %lu\n", metrics.width);
-        printf("Metric height        = %lu\n", metrics.height );
-#endif
-
-        if(strlen(draw_text->str) > 1)
+        if(strlen(draw_text->str) <= 1)
           {
-/*             wmf_stream_printf (API,out,"stroke-opacity 0.25\n"); */
-/*             wmf_stream_printf (API,out,"stroke-width 1\n"); */
-/*             wmf_stream_printf (API,out,"stroke red\n"); */
-/*             wmf_stream_printf (API,out,"fill none\n"); */
-/*             wmf_stream_printf (API,out,"rectangle %.10g,%.10g %.10g,%.10g\n", */
-/*                                draw_text->bbox.TL.x,draw_text->bbox.TL.y, */
-/*                                draw_text->bbox.BR.x,draw_text->bbox.BR.y); */
-/*             wmf_stream_printf (API,out,"stroke-opacity 1.0\n"); */
-/*             wmf_stream_printf (API,out,"stroke blue\n"); */
-/*             wmf_stream_printf (API,out,"fill blue\n"); */
-/*             wmf_stream_printf (API,out,"stroke-width 1\n"); */
-/*             wmf_stream_printf (API,out,"line %.10g,%.10g %.10g,%.10g\n", */
-/*                                point.x-3, point.y, point.x+3, point.y); */
-/*             wmf_stream_printf (API,out,"line %.10g,%.10g %.10g,%.10g\n", */
-/*                                point.x, point.y-3, point.x, point.y+3); */
-            
-/*             printf("Text bbox: TL(%.10g,%.10g), TR(%.10g,%.10g), BL(%.10g,%.10g), BR(%.10g,%.10g)\n",  */
-/*                    TL.x, TL.y, TR.x,TR.y, BL.x,BL.y,BR.x,BR.y); */
-            
-/*             printf("reference point %.10g,%.10g\n",draw_text->pt.x, draw_text->pt.y); */
-            
-            /* Center the text if it is not yet centered and should be */ 
-            if((WMF_DC_TEXTALIGN (draw_text->dc) & TA_CENTER) &&
-               (point.x < (BL.x + 1)))
+            /* For individual characters, FONT_HEIGHT appears to
+               specify the hight of the ascent only so calculate final
+               pointsize based on ratio of ascent to ascent+descent */
+            pointsize = font_height_points *
+              ((double)font_height_points/(metrics.ascent + abs(metrics.descent)));
+            draw_info.pointsize = pointsize;
+          }
+        else
+          {
+            /* For multi-character strings, the height metric seems to
+               offer the best pointsize estimation */
+            pointsize = font_height_points * ((double)font_height_points/(metrics.height));
+            draw_info.pointsize = pointsize;
+
+            if( (WMF_DC_TEXTALIGN(draw_text->dc)&TA_CENTER) ||
+                (WMF_TEXT_UNDERLINE(font)) ||
+                (WMF_TEXT_STRIKEOUT(font)))
               {
-                double
-                  text_width;
+                GetTypeMetrics(image,&draw_info,&metrics);
 
-                text_width = metrics.width
-                  *(ddata->bbox_to_pixels_scale_y/ddata->bbox_to_pixels_scale_x);
+                /* Center the text if it is not yet centered and should be */ 
+                if((WMF_DC_TEXTALIGN (draw_text->dc) & TA_CENTER) &&
+                   (point.x < (BL.x + 1)))
+                  {
+                    double
+                      text_width;
 
-                point.x += bbox_width/2 - text_width/2;
+                    text_width = metrics.width
+                      *(ddata->bbox_to_pixels_scale_y/ddata->bbox_to_pixels_scale_x);
+
+                    point.x += bbox_width/2 - text_width/2;
+                  }
               }
-/*             wmf_stream_printf (API,out,"stroke blue\n"); */
-/*             wmf_stream_printf (API,out,"line %.10g,%.10g %.10g,%.10g\n", */
-/*                                point.x-3, point.y, point.x+3, point.y); */
-/*             wmf_stream_printf (API,out,"line %.10g,%.10g %.10g,%.10g\n", */
-/*                                point.x, point.y-3, point.x, point.y+3); */
-
-/*             printf("final point %.10g,%.10g\n", point.x,point.y); */
-
-/*             wmf_stream_printf (API,out,"stroke none\n"); */
-/*             wmf_stream_printf (API,out,"fill none\n"); */
-/*             wmf_stream_printf (API,out,"stroke-opacity 1.0\n"); */
-
           }
       }
   }
@@ -1141,7 +1166,7 @@ static void wmf_magick_draw_text (wmfAPI* API,
                        (int)fill->r,(int)fill->g,(int)fill->b);
   }
 
-  /* Set box color */
+  /* Set under-box color */
   if(WMF_DC_OPAQUE(draw_text->dc))
     {
       wmfRGB* box = WMF_DC_BACKGROUND (draw_text->dc);
@@ -1150,14 +1175,6 @@ static void wmf_magick_draw_text (wmfAPI* API,
     }
   else
     wmf_stream_printf (API,out,"decorate none\n");
-
-  /* Set underline */
-  if(WMF_TEXT_UNDERLINE(font))
-    wmf_stream_printf (API,out,"decorate underline\n");
-
-  /* Set strikeout */
-  if(WMF_TEXT_STRIKEOUT(font))
-    wmf_stream_printf (API,out,"decorate line-through\n");
 
   /* Output font size */
   wmf_stream_printf (API,out,"font-size %.10g\n", pointsize);
@@ -1189,7 +1206,9 @@ static void wmf_magick_draw_text (wmfAPI* API,
 
   {
     char
-      escaped_string[MaxTextExtent];
+      escaped_string[MaxTextExtent],
+      *p,
+      *q;
 
     int
       string_length;
@@ -1217,6 +1236,48 @@ static void wmf_magick_draw_text (wmfAPI* API,
     
     /* Output string */
     wmf_stream_printf (API,out,"text 0,0 '%.1024s'\n",escaped_string);
+
+    /* Underline text the Windows way (at the bottom) */
+    if(WMF_TEXT_UNDERLINE(font))
+      {
+        double
+          line_height;
+
+        wmfD_Coord
+          ulBR,		/* bottom right of underline rectangle */
+          ulTL;		/* top left of underline rectangle */
+
+        line_height = max(((double)1/(ddata->bbox_to_pixels_scale_x)),((double)abs(metrics.descent))*0.5);
+        ulTL.x = 0;
+        ulTL.y = abs(metrics.descent) - line_height;
+        ulBR.x = metrics.width;
+        ulBR.y = abs(metrics.descent);
+
+        wmf_stream_printf (API,out,"rectangle %.10g,%.10g %.10g,%.10g\n",
+                           ulTL.x,ulTL.y, ulBR.x,ulBR.y);
+
+      }
+
+    /* Strikeout text the Windows way */
+      if(WMF_TEXT_STRIKEOUT(font))
+        {
+        double
+          line_height;
+
+        wmfD_Coord
+          ulBR,		/* bottom right of strikeout rectangle */
+          ulTL;		/* top left of strikeout rectangle */
+
+        line_height = max(((double)1/(ddata->bbox_to_pixels_scale_x)),((double)abs(metrics.descent))*0.5);
+        ulTL.x = 0;
+        ulTL.y = -(((double)metrics.ascent)/2 + line_height/2);
+        ulBR.x = metrics.width;
+        ulBR.y = -(((double)metrics.ascent)/2 -  line_height/2);
+
+        wmf_stream_printf (API,out,"rectangle %.10g,%.10g %.10g,%.10g\n",
+                           ulTL.x,ulTL.y, ulBR.x,ulBR.y);
+
+        }
   }
 
   /* Restore graphic context */
@@ -1288,17 +1349,20 @@ static void magick_brush (wmfAPI* API,wmfDC* dc)
 
   brush_bmp = WMF_BRUSH_BITMAP (brush);
 
-  if (brush_style == BS_NULL)
+  /* Filled ? */
+  if (brush_style == BS_NULL) /* BS_HOLLOW same as BS_NULL */
     {
       wmf_stream_printf (API,out,"fill none\n");
       return;
     }
 
+  /* Set fill opacity */
   if (fill_opaque)
     wmf_stream_printf (API,out,"fill-opacity 1.0\n");
   else
     wmf_stream_printf (API,out,"fill-opacity 0.5\n"); /* semi-transparent?? */
 
+  /* Set polygon fill rule */
   switch (fill_polyfill) /* Is this correct ?? */
     {
     case WINDING:
@@ -1311,136 +1375,99 @@ static void magick_brush (wmfAPI* API,wmfDC* dc)
       break;
     }
 
+  /* FIXME: implement */
   switch (brush_style)
     {
-#ifdef WRITE_EPS_NOT_MAGICK
-      /* float side; */
-
-    case BS_HATCHED:
-      wmf_stream_printf (API,out,"clip ");
-
-      if (dc->bgmode != TRANSPARENT)
+      case BS_SOLID:
         {
-          rgb = dc->bgcolor;
-
-          red   = (float) ((int) rgb.r) / 255;
-          green = (float) ((int) rgb.g) / 255;
-          blue  = (float) ((int) rgb.b) / 255;
-
-          wmf_stream_printf (API,out,"%.10g %.10g %.10g setrgbcolor ",red,green,blue);
-
-          wmf_stream_printf (API,out,"fill ");
-        }
-
-      wmf_stream_printf (API,out,"\n");
-      wmf_stream_printf (API,out,"1 setlinewidth ");
-      wmf_stream_printf (API,out,"[] 0 setdash ");
-
-      rgb = brush->lbColor;
-
-      red   = (float) ((int) rgb.r) / 255;
-      green = (float) ((int) rgb.g) / 255;
-      blue  = (float) ((int) rgb.b) / 255;
-
-      wmf_stream_printf (API,out,"%.10g %.10g %.10g setrgbcolor\n",red,green,blue);
-
-      switch (brush->lbHatch)
-        {
-        case HS_HORIZONTAL:
-          wmf_stream_printf (API,out,"%.10g 5 %.10g { newpath dup %.10g exch moveto %.10g exch lineto stroke } for\n",
-                             bbox->TL.y,bbox->BR.y,bbox->TL.x,bbox->BR.x);
-          break;
-
-        case HS_VERTICAL:
-          wmf_stream_printf (API,out,"%.10g 5 %.10g { newpath dup %.10g moveto %.10g lineto stroke } for\n",
-                             bbox->TL.x,bbox->BR.x,bbox->TL.y,bbox->BR.y);
-          break;
-
-        case HS_FDIAGONAL:
-          wmf_stream_printf (API,out,"gsave %% HS_FDIAGONAL\n");
-          wmf_stream_printf (API,out,"%.10g %.10g translate -45 rotate ",
-                             bbox->TL.x-(bbox->BR.y-bbox->TL.y)/2,(bbox->TL.y+bbox->BR.y)/2);
-          side = ((bbox->BR.x-bbox->TL.x) + (bbox->BR.y-bbox->TL.y)) / 1.41421356237309504880;
-          wmf_stream_printf (API,out,"0 5 %.10g { newpath dup 0 moveto %.10g lineto stroke } for ",
-                             side,side);
-          wmf_stream_printf (API,out,"grestore\n");
-          break;
-
-        case HS_BDIAGONAL:
-          wmf_stream_printf (API,out,"gsave %% HS_BDIAGONAL\n");
-          wmf_stream_printf (API,out,"%.10g %.10g translate -45 rotate ",
-                             bbox->TL.x-(bbox->BR.y-bbox->TL.y)/2,(bbox->TL.y+bbox->BR.y)/2);
-          side = ((bbox->BR.x-bbox->TL.x) + (bbox->BR.y-bbox->TL.y)) / 1.41421356237309504880;
-          wmf_stream_printf (API,out,"0 5 %.10g { newpath dup 0 exch moveto %.10g exch lineto stroke } for ",
-                             side,side);
-          wmf_stream_printf (API,out,"grestore\n");
-          break;
-
-        case HS_CROSS:
-          wmf_stream_printf (API,out,"%.10g 5 %.10g { newpath dup %.10g exch moveto %.10g exch lineto stroke } for\n",
-                             bbox->TL.y,bbox->BR.y,bbox->TL.x,bbox->BR.x);
-          wmf_stream_printf (API,out,"%.10g 5 %.10g { newpath dup %.10g moveto %.10g lineto stroke } for\n",
-                             bbox->TL.x,bbox->BR.x,bbox->TL.y,bbox->BR.y);
-          break;
-
-        case HS_DIAGCROSS:
-          wmf_stream_printf (API,out,"gsave %% HS_DIAGCROSS\n");
-          wmf_stream_printf (API,out,"%.10g %.10g translate -45 rotate ",
-                             bbox->TL.x-(bbox->BR.y-bbox->TL.y)/2,(bbox->TL.y+bbox->BR.y)/2);
-          side = ((bbox->BR.x-bbox->TL.x) + (bbox->BR.y-bbox->TL.y)) / 1.41421356237309504880;
-          wmf_stream_printf (API,out,"0 5 %.10g { newpath dup 0 moveto %.10g lineto stroke } for ",
-                             side,side);
-          wmf_stream_printf (API,out,"0 5 %.10g { newpath dup 0 exch moveto %.10g exch lineto stroke } for ",
-                             side,side);
-          wmf_stream_printf (API,out,"grestore\n");
-          break;
-
-        default:
-          if (API->flags & WMF_OPT_IGNORE_NONFATAL)
-            WMF_DEBUG (API,"Unsupported brush/hatch style!");
-          else
-            {
-              WMF_ERROR (API,"Unsupported brush/hatch style!");
-              API->err = wmf_E_Glitch;
-            }
+          wmf_stream_printf (API,out,"fill #%02x%02x%02x\n",
+                             (int)brush_color->r,
+                             (int)brush_color->g,
+                             (int)brush_color->b);
           break;
         }
-      break;
-#endif /* WRITE_EPS_NOT_MAGICK */
-
-    case BS_DIBPATTERN:
-      if (brush_bmp->data == 0)
-        {
-          if (API->flags & WMF_OPT_IGNORE_NONFATAL)
-            WMF_DEBUG (API,"Attempt to fill with non-existent pattern!");
-          else
+      case BS_HATCHED:
+      {
+        switch (brush_hatch)
+          {
+          case HS_HORIZONTAL:	/* ----- */
             {
-              WMF_ERROR (API,"Attempt to fill with non-existent pattern!");
-              API->err = wmf_E_Glitch;
+              /* This is an 8x8 pattern with horizontal line at y=3 */
+              printf("magick_brush: horizontal hatch not implemented\n");
               break;
             }
-        }
-      /* no break here - TODO: implement bitmap fill */
+          case HS_VERTICAL:	/* ||||| */
+            {
+              /* This is an 8x8 pattern with vertical line at x=3 */
+              printf("magick_brush: vertical hatch not implemented\n");
+              break;
+            }
+          case HS_FDIAGONAL:	/* \\\\\ */
+            {
+              /* This is an 8x8 pattern with line from bottom right to top left */
+              printf("magick_brush: fdiagonal hatch not implemented\n");
+              break;
+            }
+          case HS_BDIAGONAL:	/* ///// */
+            {
+               /* This is an 8x8 pattern with line from bottom left to top right */
+             printf("magick_brush: bdiagonal hatch not implemented\n");
+              break;
+            }
+          case HS_CROSS:	/* +++++ */
+            {
+              /* This is an 8x8 pattern with horizontal line at y=3
+                 and vertical line at x=3 */
+              printf("magick_brush: cross hatch not implemented\n");
+              break;
+            }
+          case HS_DIAGCROSS:	/* xxxxx */
+            {
+              /* This is an 8x8 pattern with line from bottom left to
+                 top right and line from bottom right to top left */
+              printf("magick_brush: diagcross hatch not implemented\n");
+              break;
+            }
+          default:
+            {
+            }
+          }
+        break;
+      }
+    case BS_PATTERN:
+      {
+        printf("magick_brush: BS_PATTERN not supported\n");
+        break;
+      }
+    case BS_INDEXED:
+      {
+        printf("magick_brush: BS_INDEXED not supported\n");
+        break;
+      }
+    case BS_DIBPATTERN:
+      {
+        printf("magick_brush: BS_DIBPATTERN not supported\n");
+        break;
+      }
+    case BS_DIBPATTERNPT:
+      {
+        printf("magick_brush: BS_DIBPATTERNPT not supported\n");
+        break;
+      }
+    case BS_PATTERN8X8:
+      {
+        printf("magick_brush: BS_PATTERN8X8 not supported\n");
+        break;
+      }
+    case BS_DIBPATTERN8X8:
+      {
+        printf("magick_brush: BS_DIBPATTERN8X8 not supported\n");
+        break;
+      }
     default:
-      if (API->flags & WMF_OPT_IGNORE_NONFATAL)
-        {
-          WMF_DEBUG (API,"Unsupported brush style!");
-          /* no break here */
-        }
-      else
-        {
-          WMF_ERROR (API,"Unsupported brush style!");
-          API->err = wmf_E_Glitch;
-          break;
-        }
-    case BS_SOLID:
-      break;
+      {
+      }
     }
-
-  wmf_stream_printf (API,out,"fill #%02x%02x%02x\n",
-                     (int)brush_color->r,
-                     (int)brush_color->g,
-                     (int)brush_color->b);
 }
 
 static void magick_pen (wmfAPI* API, wmfDC* dc)
@@ -1489,6 +1516,7 @@ static void magick_pen (wmfAPI* API, wmfDC* dc)
   pen_join   = (unsigned int) WMF_PEN_JOIN (pen);
   pen_type   = (unsigned int) WMF_PEN_TYPE (pen);
 
+  /* Pen style specified? */
   if (pen_style == PS_NULL)
     {
       wmf_stream_printf (API,out,"stroke none\n");
@@ -1532,25 +1560,29 @@ static void magick_pen (wmfAPI* API, wmfDC* dc)
 
   switch (pen_style)
     {
-    case PS_DASH: /* DASH_LINE, 18,7 */
+    case PS_DASH: /* -------  */
+      /* Pattern 18,7 */
       wmf_stream_printf (API,out,"stroke-dasharray %.10g,%.10g\n",
 		         pixel_width*17,pixel_width*8);
       break;
 
     case PS_ALTERNATE:
-    case PS_DOT: /* DOTTED_LINE, 3,3 */
+    case PS_DOT: /* .......  */
+      /* Pattern 3,3 */
       wmf_stream_printf (API,out,"stroke-antialias 0\n");
       wmf_stream_printf (API,out,"stroke-dasharray %.10g,%.10g\n",
 		         pixel_width*3,pixel_width*3);
       break;
 
-    case PS_DASHDOT: /* DASH_DOT_LINE, 9,6,3,6 */
+    case PS_DASHDOT: /* _._._._  */
+      /* Pattern 9,6,3,6 */
       wmf_stream_printf (API,out,"stroke-antialias 0\n");
       wmf_stream_printf (API,out,"stroke-dasharray %.10g,%.10g,%.10g,%.10g\n",
 		         pixel_width*9,pixel_width*6,pixel_width*3,pixel_width*6);
       break;
 
-    case PS_DASHDOTDOT: /* DASH_2_DOTS_LINE, 9,3,3,3,3,3 */
+    case PS_DASHDOTDOT: /* _.._.._  */
+      /* Pattern 9,3,3,3,3,3 */
       wmf_stream_printf (API,out,"stroke-antialias 0\n");
       wmf_stream_printf (API,out,"stroke-dasharray %.10g,%.10g,%.10g,%.10g,%.10g,%.10g\n",
 		         pixel_width*9,pixel_width*3,pixel_width*3,pixel_width*3,
@@ -1569,7 +1601,7 @@ static void magick_pen (wmfAPI* API, wmfDC* dc)
 }
 
 /* Scribble MVG on image */
-static void wmf_draw_mvg(Image* image, const char* mvg)
+static void wmf_magick_render_mvg(wmfAPI *API, const char* mvg)
 {
   DrawInfo*
     draw_info;
@@ -1577,13 +1609,16 @@ static void wmf_draw_mvg(Image* image, const char* mvg)
   ImageInfo*
     image_info;
 
+  wmf_magick_t
+    *ddata = WMF_MAGICK_GetData (API);
+
   image_info=(ImageInfo*)AcquireMemory(sizeof(ImageInfo));
   GetImageInfo(image_info);
   draw_info = (DrawInfo*)AcquireMemory(sizeof(DrawInfo));
   GetDrawInfo( image_info, draw_info );
   draw_info->primitive=(char*)mvg;
 /*   puts(draw_info->primitive); */
-  DrawImage(image,draw_info);
+  DrawImage(ddata->image,draw_info);
   draw_info->primitive = (char*)NULL;
   DestroyDrawInfo(draw_info);
   DestroyImageInfo(image_info);
@@ -1829,7 +1864,7 @@ static Image *ReadWMFImage(const ImageInfo *image_info,
    * Scribble on canvas image
    *
    */
-  wmf_draw_mvg(image,mvg);
+  wmf_magick_render_mvg(API,mvg);
 
   /* Cleanup allocated data */
   DestroyImageInfo(canvas_info);
