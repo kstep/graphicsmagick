@@ -1,23 +1,24 @@
 The ImageMagick Studio LLC development group announces the release of
-ImageMagick 5.5.1.  Version 5.5.1 is a feature release but also resolves
-bugs reported against 5.4.9.
+ImageMagick 5.5.1. Version 5.5.1 is primarily a bug-fix release but does
+provide a number of significant new features.
 
 ImageMagick is a robust collection of tools and libraries to read,
-write, and manipulate an image in many image formats (over 72 major
+write, and manipulate an image in many image formats (over 87 major
 formats) including popular formats like FlashPIX, GIF, JPEG, PDF, PNG,
 Photo CD, SVG, TIFF, and WMF. With ImageMagick images can be created
 dynamically, making it suitable for Web applications. You can also
 resize, rotate, sharpen, color reduce, or add special effects to an
 image and save your completed work in the same or differing image
 format. Image processing operations are available from the command line,
-as well as through C, C++, PERL, Visual Basic, and WSH based programming
-interfaces. Support for programming with Java and Python is provided by
-3rd parties.
+as well as through C, C++, PERL, Visual Basic, VBscript, and Jscript
+based programming interfaces. Support for programming with Java and
+Python is provided by 3rd parties.
 
-ImageMagick is copyrighted by ImageMagick Studio, a nonprofit organization
-dedicated to making software imaging solutions freely available.
-ImageMagick is available for free, may be used to support both open and
-proprietary applications, and may be redistributed without fee.
+ImageMagick is copyrighted by ImageMagick Studio, a nonprofit
+organization dedicated to making software imaging solutions freely
+available. ImageMagick is available for free, may be used to support
+both open and proprietary applications, and may be redistributed without
+fee.
 
 Significant changes from the 5.4.9 release (see release ChangeLog for
 details):
@@ -26,56 +27,22 @@ details):
 
     - Platform independent changes
 
-      + ImageMagick now supports an "installed" configuration and
-        an "uninstalled" configuration.  The installed configuration
-        looks in precise pre-determined places for configuration
-        files and modules.  The uninstalled configuration uses
-        heuristics to try to find configuration files and modules.
-        The default from the Unix configured build is to use the
-        "installed" configuration, while the default for the Windows build
-        is the "uninstalled" configuration.  Unix binary distributions
-        provided by ImageMagick Studio are configured using the "uninstalled"
-        configuration and should run using the file heirarchy of the
-        distribution archive.
-
-      + ImageMagick may now be compiled with a 32-bit QuantumDepth (16-bytes
-        per pixel + 4 bytes per colormap index). This mode is recommended for
-        those who need to preserve maximum resolution when processing their
-        NSA spy photos.
-
-      + Arcs are now rendered according to the SVG standard.
-
-      + 'convert -list type' output is now more useful.
-
-      + 16-bit RAW PPM files can now be written.
+      + 
 
     - Windows specific changes
 
-     + Magick++ demos plus supporting Visual C++ 6.0 project files
-       are installed as part of the binary install package in order
-       to assist those want to use the DLLs provided with the package.
-
-     + Magick++ (C++ API) now builds as a DLL under Windows using Visual
-       C++ 7.0 (in addition to Visual C++ 6.0).
+     + 
   
   o Utilities enhancements/changes:
 
-     - Use the -authenticate option to specify a password when viewing
-       encrypted PDF files.
+     - 
 
   o C API enhancements:
      - No changes in this release.
 
   o C++ API enhancements:
 
-     - The API now supports the ability to specify UTF-8 (Unicode)
-       text encoding for annotation text.
-
-     - The compare() method supports comparing two images and obtaining
-       error values representing the degree of difference.
-
-     - The API headers have been made "cleaner" by moving more
-       implementation definitions to private headers.
+     - 
 
   o Perl API enhancements:
      - No changes in this release.
