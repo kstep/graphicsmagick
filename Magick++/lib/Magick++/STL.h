@@ -70,6 +70,18 @@ namespace Magick
     NoiseType _noiseType;
   };
 
+  // Transform image by specified affine (or free transform) matrix.
+  class MagickDLLDecl affineTransformImage : public std::unary_function<Image&,void>
+  {
+  public:
+    affineTransformImage( const DrawableAffine &affine_ );
+
+    void operator()( Image &image_ ) const;
+
+  private:
+    DrawableAffine _affine;
+  };
+
   // Annotate image (draw text on image)
   class MagickDLLDecl annotateImage : public std::unary_function<Image&,void>
   {

@@ -1,6 +1,6 @@
 /*
 % Copyright (C) 2003 GraphicsMagick Group
-% Copyright (C) 2002 ImageMagick Studio
+% Copyright (C) 2003 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
 % This program is covered by multiple licenses, which are described in
@@ -5227,77 +5227,65 @@ MagickExport void SyncImage(Image *image)
 %
 %
 */
-static Image *CreateTextureImage(unsigned int width, unsigned int height,
-                                 const Image *texture, ExceptionInfo *exception)
-{
-  Image
-    *image;
 
-  ImageInfo
-    *image_info;
-
-  long
-    x,
-    y;
-
-  char
-    size[MaxTextExtent];
-
-  image_info=CloneImageInfo(0);
-  FormatString(size,"%ux%u",width,height);
-  CloneString(&image_info->size,size);
-  image=AllocateImage(image_info);
-  DestroyImageInfo(image_info);
-
-  image->background_color=texture->background_color;
-  SetImage(image,OpaqueOpacity);
-
-  for (y=0; y < (long) image->rows; y+=texture->rows)
-  {
-    for (x=0; x < (long) image->columns; x+=texture->columns)
-      (void) CompositeImage(image,CopyCompositeOp,texture,x,y);
-  }
-  return image;
-}
 MagickExport void TextureImage(Image *image,const Image *texture)
 {
 #define TextureImageText  "  Apply image texture...  "
 
-  Image
-    *texture_image;
+  const PixelPacket
+    *pixels;
 
   long
     x,
     y;
 
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  if (texture == (const Image *) NULL)
-    return;
-  assert(texture->signature == MagickSignature);
+  register long
+    z;
 
-  if ((image->columns > texture->columns) &&
-      (((ExtendedUnsignedIntegralType)texture->rows*texture->columns)<320000UL))
-    texture_image=CreateTextureImage(image->columns,texture->rows,
-      texture,&image->exception);
-  else
-    texture_image=CloneImage(texture,0,0,True,&image->exception);
+  register const PixelPacket
+    *p;
 
-  if (!texture_image)
-    return;
+  register PixelPacket
+    *q;
+
+  unsigned long
+    width;
 
   /*
     Tile texture onto the image background.
   */
-  for (y=0; y < (long) image->rows; y+=texture_image->rows)
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  if (texture == (const Image *) NULL)
+    return;
+  image->storage_class=DirectClass;
+  for (y=0; y < (long) image->rows; y++)
   {
-    for (x=0; x < (long) image->columns; x+=texture_image->columns)
-      (void) CompositeImage(image,CopyCompositeOp,texture_image,x,y);
+    p=AcquireImagePixels(texture,0,y % texture->rows,texture->columns,1,
+      &image->exception);
+    q=GetImagePixels(image,0,y,image->columns,1);
+    if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+      break;
+    pixels=p;
+    for (x=0; x < (long) image->columns; x+=texture->columns)
+    {
+      width=texture->columns;
+      if ((x+width) > image->columns)
+        width=image->columns-x;
+      p=pixels;
+      for (z=(long) width; z != 0; z--)
+      {
+        *q=(*p);
+        p++;
+        q++;
+      }
+    }
+    if (!SyncImagePixels(image))
+      break;
     if (QuantumTick(y,image->rows))
       if (!MagickMonitor(TextureImageText,y,image->rows,&image->exception))
         break;
   }
-  DestroyImage(texture_image);
 }
 
 /*

@@ -53,6 +53,34 @@
 </tr>
 </table>
 <p>
+2003-05-22  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/magick.c (InitializeMagick): Added a static flag to
+        ensure that the Magick library is initialized only one time.
+        (DestroyMagick): Ensure that Magick library resources are only
+        destroyed if it has previously been initialized.
+  <LI> magick/nt_base.c (DllMain): Fix contributed by Achim Domma. For
+        a DLL build, update PATH during Magick DLL initialization to
+        include the directory where the Magick core DLL resides. This
+        allows the loadable modules to find the core DLLs, even if the
+        core DLLs are not already in the PATH.
+  <LI> magick/image.c (TextureImage): Incorporate new implementation
+        authored by John Cristy of ImageMagick Studio.  This
+        implementation is a full 7X (run-time) or 14X (user-time) faster
+        than the original ImageMagick implementation, and is about 2X
+        faster than the speeded-up version I commited on the 19th.
+
+</UL>
+<p>
+2003-05-20  William Radcliffe  &lt;billr@corbis.com&gt;
+
+<UL>
+  <LI> VisualMagick\configure : Fixed bug with add on (plug-ins) not
+        building automatically in DLL mode.
+
+</UL>
+<p>
 2003-05-19  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

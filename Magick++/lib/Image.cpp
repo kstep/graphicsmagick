@@ -271,6 +271,26 @@ void Magick::Image::addNoise( const NoiseType noiseType_ )
   throwException( exceptionInfo );
 }
 
+// Affine Transform image
+void Magick::Image::affineTransform ( const DrawableAffine &affine_ )
+{
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  
+  AffineMatrix _affine;
+  _affine.sx = affine_.sx();
+  _affine.sy = affine_.sy();
+  _affine.rx = affine_.rx();
+  _affine.ry = affine_.ry();
+  _affine.tx = affine_.tx();  
+  _affine.ty = affine_.ty();
+  
+  MagickLib::Image* newImage =
+    AffineTransformImage( image(), &_affine, &exceptionInfo);     
+  replaceImage( newImage );
+  throwException( exceptionInfo );
+}
+
 // Annotate using specified text, and placement location
 void Magick::Image::annotate ( const std::string &text_,
 			       const Geometry &location_ )

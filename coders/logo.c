@@ -5151,8 +5151,6 @@ static Image *ReadLOGOImage(const ImageInfo *image_info,
       */
       pattern_image=image;
       image=AllocateImage(clone_info);
-/*       image->background_color=pattern_image->background_color; */
-/*       SetImage(image,OpaqueOpacity); */
       TextureImage(image,pattern_image);
       DestroyImage(pattern_image);
     }

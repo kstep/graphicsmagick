@@ -64,6 +64,8 @@ static SemaphoreInfo
 static MagickInfo
   *magick_list = (MagickInfo *) NULL;
 
+static int MagickInitialized = False;
+
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -86,6 +88,10 @@ static MagickInfo
 */
 MagickExport void DestroyMagick(void)
 {
+
+  if (MagickInitialized == False)
+    return;
+
   DestroyColorInfo();
   DestroyDelegateInfo();
   DestroyTypeInfo();
@@ -102,6 +108,8 @@ MagickExport void DestroyMagick(void)
   DestroyTracingCriticalSection();
   NTGhostscriptUnLoadDLL();
 #endif
+
+  MagickInitialized=False;
 }
 
 /*
@@ -432,6 +440,11 @@ MagickExport void InitializeMagick(const char *path)
 {
   char
     execution_path[MaxTextExtent];
+
+  if (MagickInitialized == True)
+    return;
+
+  MagickInitialized=True;
 
   (void) setlocale(LC_ALL,"");
   (void) setlocale(LC_NUMERIC,"C");

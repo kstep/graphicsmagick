@@ -402,6 +402,7 @@ namespace Magick
   using MagickLib::AdaptiveThresholdImage;
   using MagickLib::AddNoiseImage;
   using MagickLib::AffineMatrix;
+  using MagickLib::AffineTransformImage;
   using MagickLib::AllocateImage;
   using MagickLib::AnnotateImage;
   using MagickLib::AspectValue;

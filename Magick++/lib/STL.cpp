@@ -34,6 +34,16 @@ void Magick::addNoiseImage::operator()( Magick::Image &image_ ) const
   image_.addNoise( _noiseType );
 }
 
+// Transform image by specified affine (or free transform) matrix.
+Magick::affineTransformImage::affineTransformImage( const DrawableAffine &affine_  )
+  : _affine( affine_ )
+{
+}
+void Magick::affineTransformImage::operator()( Magick::Image &image_ ) const
+{
+  image_.affineTransform( _affine );
+}
+
 // Annotate image (draw text on image)
 
 // Annotate using specified text, and placement location

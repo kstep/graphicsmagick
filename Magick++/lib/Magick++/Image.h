@@ -118,6 +118,9 @@ namespace Magick
     // Add noise to image with specified noise type
     void            addNoise ( const NoiseType noiseType_ );
 
+    // Transform image by specified affine (or free transform) matrix.
+    void            affineTransform ( const DrawableAffine &affine );
+
     //
     // Annotate image (draw text on image)
     //

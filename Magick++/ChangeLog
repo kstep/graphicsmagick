@@ -1,3 +1,12 @@
+2003-05-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Magick++/STL.h (affineTransformImage): Add function object
+	contributed by Vladimir Lukianov to apply an affine transform to
+	the image.  Still needs documentation!
+	* lib/Image.cpp (affineTransform): Added method contributed by
+	Vladimir Lukianov to apply an affine transform to the image. Still
+	needs documentation!
+
 2003-05-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Magick++/Include.h: Decided to back out change
