@@ -1,5 +1,5 @@
 
-AUTOMAKE_OPTIONS = 1.4 dist-zip dist-bzip2 #foreign
+AUTOMAKE_OPTIONS = 1.6 dist-zip dist-bzip2 foreign
 
 # Directories to include in distribution
 DIST_SUBDIRS = basics fpx jpeg ole oless ri_image
