@@ -66,6 +66,7 @@ fi
 #
 # Configure libtool and ltdl
 #
+AC_LIBTOOL_WIN32_DLL
 AC_ENABLE_SHARED(no)
 AC_ENABLE_STATIC(yes)
 AC_LIBLTDL_CONVENIENCE
