@@ -463,6 +463,9 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
      }
   if (magick_info->blob_support)
     {
+      register Image
+        *p;
+
       /*
         Native blob support for this image format.
       */
@@ -486,9 +489,12 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
           return((void *) NULL);
         }
       DestroyImageInfo(clone_info);
-      *length=image->blob.length;
-      blob=image->blob.data;
-      GetBlobInfo(&(image->blob));
+      for (p=image; p->next != (Image *) NULL; p++)
+      {
+        *length=p->blob.length;
+        blob=p->blob.data;
+        GetBlobInfo(&(p->blob));
+      }
       return(blob);
     }
   /*
