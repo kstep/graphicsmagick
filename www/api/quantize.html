@@ -1,7 +1,7 @@
 <HTML>
 <HEAD>
 <TITLE>quantize - Methods to Reduce the Number of Unique Colors in an Image</TITLE>
-<LINK REV="made" HREF="mailto:magick@wizards.dupont.com">
+<LINK REV="made" HREF="mailto:ActivePerl@ActiveState.com">
 </HEAD>
 
 <body bgcolor="#FFFFFF" text="#000000" link="#1F00FF" alink="#FF0000"  vlink="#9900DD">
@@ -21,6 +21,7 @@
 	<UL>
 
 		<LI><A HREF="#clonequantizeinfo">CloneQuantizeInfo</A></LI>
+		<LI><A HREF="#compresscolormap">CompressColormap</A></LI>
 		<LI><A HREF="#destroyquantizeinfo">DestroyQuantizeInfo</A></LI>
 		<LI><A HREF="#getquantizeinfo">GetQuantizeInfo</A></LI>
 		<LI><A HREF="#mapimage">MapImage</A></LI>
@@ -44,6 +45,7 @@
 <H1><A NAME="synopsis">
 <FONT SIZE=-1>SYNOPSIS</FONT></A></H1>
 <P>QuantizeInfo * <STRONG>CloneQuantizeInfo</STRONG>( const QuantizeInfo *quantize_info );</P>
+<P>void  <STRONG>CompressColormap</STRONG>( Image *image );</P>
 <P><STRONG>DestroyQuantizeInfo</STRONG>( QuantizeInfo *quantize_info );</P>
 <P><STRONG>GetQuantizeInfo</STRONG>( QuantizeInfo *quantize_info );</P>
 <P>unsigned int  <STRONG>MapImage</STRONG>( Image *image, Image *map_image, const unsigned int dither );</P>
@@ -75,6 +77,17 @@ Method CloneQuantizeInfo returns a duplicate of the given quantize info, or if i
 a structure of type info.
 <P></P></DL></DL>
 <P>
+<H2><A NAME="compresscolormap">CompressColormap</A></H2>
+<P>Method CompressColormap compresses an image colormap removing any duplicate and unused color entries.</P>
+<P>The format of the CompressColormap method is:</P>
+<blockquote>void CompressColormap ( <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
+<DL><DL>
+<p><dt><STRONG><A NAME="item_o_image%3A">image:</A></STRONG><BR>
+<DD>
+The address of a structure of type Image.
+<P></P></DL></DL>
+<P>
 <H2><A NAME="destroyquantizeinfo">DestroyQuantizeInfo</A></H2>
 <P>Method DestroyQuantizeInfo deallocates memory associated with an QuantizeInfo structure.</P>
 <P>The format of the DestroyQuantizeInfo method is:</P>
@@ -103,7 +116,7 @@ Specifies a pointer to a QuantizeInfo structure.
 <blockquote>unsigned int MapImage ( <A HREF="types/Image.html">Image</A> *image, <A HREF="types/Image.html">Image</A> *map_image, const unsigned int dither ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG><A NAME="item_o_image%3A">image:</A></STRONG><BR>
+<p><dt><STRONG>image:</STRONG><BR>
 <DD>
 Specifies a pointer to an Image structure.
 <P></P>

@@ -1,7 +1,7 @@
 <HTML>
 <HEAD>
 <TITLE>magick - Methods to Read or List ImageMagick Image formats</TITLE>
-<LINK REV="made" HREF="mailto:magick@wizards.dupont.com">
+<LINK REV="made" HREF="mailto:ActivePerl@ActiveState.com">
 </HEAD>
 
 <body bgcolor="#FFFFFF" text="#000000" link="#1F00FF" alink="#FF0000"  vlink="#9900DD">
@@ -25,9 +25,11 @@
 		<LI><A HREF="#getmagickconfigurepath">GetMagickConfigurePath</A></LI>
 		<LI><A HREF="#getmagickinfo">GetMagickInfo</A></LI>
 		<LI><A HREF="#getmagickversion">GetMagickVersion</A></LI>
+		<LI><A HREF="#ismagickconflict">IsMagickConflict</A></LI>
 		<LI><A HREF="#listmagickinfo">ListMagickInfo</A></LI>
 		<LI><A HREF="#magickincarnate">MagickIncarnate</A></LI>
 		<LI><A HREF="#registermagickinfo">RegisterMagickInfo</A></LI>
+		<LI><A HREF="#setimageinfo">SetImageInfo</A></LI>
 		<LI><A HREF="#setmagickinfo">SetMagickInfo</A></LI>
 		<LI><A HREF="#unregistermagickinfo">UnregisterMagickInfo</A></LI>
 	</UL>
@@ -49,10 +51,12 @@
 <P>char * <STRONG>GetMagickConfigurePath</STRONG>( const char *filename );</P>
 <P>MagickInfo * <STRONG>GetMagickInfo</STRONG>( const char *tag, Exception *exception );</P>
 <P>char * <STRONG>GetMagickVersion</STRONG>( unsigned int *version );</P>
+<P>unsigned int  <STRONG>IsMagickConflict</STRONG>( const char *magick );</P>
 <P>unsigned int  <STRONG>ListMagickInfo</STRONG>( 
 <FONT SIZE=-1>FILE</FONT> *file, ExceptionInfo *exception );</P>
 <P><STRONG>MagickIncarnate</STRONG>( const char *path );</P>
-<P>MagickInfo * <STRONG>RegisterMagickInfo</STRONG>( MagickInfo *entry );</P>
+<P>MagickInfo * <STRONG>RegisterMagickInfo</STRONG>( MagickInfo *magick_info );</P>
+<P>unsigned int  <STRONG>SetImageInfo</STRONG>( ImageInfo *image_info, const unsigned int rectify, ExceptionInfo *exception );</P>
 <P>MagickInfo * <STRONG>SetMagickInfo</STRONG>( const char *tag );</P>
 <P>unsigned int  <STRONG>UnregisterMagickInfo</STRONG>( const char *tag );</P>
 <P>
@@ -146,6 +150,22 @@ Method GetMagickVersion returns the ImageMagick version string.
 The ImageMagick version is returned as a number.
 <P></P></DL></DL>
 <P>
+<H2><A NAME="ismagickconflict">IsMagickConflict</A></H2>
+<P>Method IsMagickConflict returns true if the image format conflicts with a logical drive (.e.g.  
+<FONT SIZE=-1>X:).</FONT></P>
+<P>The format of the IsMagickConflict method is:</P>
+<blockquote>unsigned int IsMagickConflict ( const char *magick ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
+<DL><DL>
+<p><dt><STRONG><A NAME="item_o_status%3A">status:</A></STRONG><BR>
+<DD>
+Method IsMagickConflict returns true if the image format conflicts with a logical drive.
+<P></P>
+<p><dt><STRONG>magick:</STRONG><BR>
+<DD>
+Specifies the image format.
+<P></P></DL></DL>
+<P>
 <H2><A NAME="listmagickinfo">ListMagickInfo</A></H2>
 <P>Method ListMagickInfo lists the image formats to a file.</P>
 <P>The format of the ListMagickInfo method is:</P>
@@ -178,17 +198,39 @@ Specifies a pointer to the execution path of the current ImageMagick client.
 <P>Method RegisterMagickInfo adds attributes for a particular image format to the list of supported formats.  The attributes include the image format tag, a method to read and/or write the format, whether the format supports the saving of more than one frame to the same file or blob, whether the format supports native in-memory 
 <FONT SIZE=-1>I/O,</FONT> and a brief description of the format.</P>
 <P>The format of the RegisterMagickInfo method is:</P>
-<blockquote><A HREF="types/MagickInfo.html">MagickInfo</A> *RegisterMagickInfo ( <A HREF="types/MagickInfo.html">MagickInfo</A> *entry ); </blockquote><P>
+<blockquote><A HREF="types/MagickInfo.html">MagickInfo</A> *RegisterMagickInfo ( <A HREF="types/MagickInfo.html">MagickInfo</A> *magick_info ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>magick_info:</STRONG><BR>
 <DD>
 Method RegisterMagickInfo returns a pointer MagickInfo structure that contains the specified tag info.
 <P></P>
-<p><dt><STRONG><A NAME="item_o_entry%3A">entry:</A></STRONG><BR>
+<p><dt><STRONG>magick_info:</STRONG><BR>
 <DD>
 
 <FONT SIZE=-1>A</FONT> pointer to a structure of type MagickInfo.
+<P></P></DL></DL>
+<P>
+<H2><A NAME="setimageinfo">SetImageInfo</A></H2>
+<P>Method SetImageInfo initializes the `magick' field of the ImageInfo structure.  It is set to a type of image format based on the prefix or suffix of the filename.  For example, `ps:image' returns 
+<FONT SIZE=-1>PS</FONT> indicating a Postscript image.  
+<FONT SIZE=-1>JPEG</FONT> is returned for this filename: `image.jpg'. The filename prefix has precendence over the suffix.  Use an optional index enclosed in brackets after a file name to specify a desired subimage of a multi-resolution image format like Photo 
+<FONT SIZE=-1>CD</FONT> (e.g.  img0001.pcd[4]).</P>
+<P>The format of the SetImageInfo method is:</P>
+<blockquote>unsigned int SetImageInfo ( <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, const unsigned int rectify, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
+<DL><DL>
+<p><dt><STRONG><A NAME="item_o_image_info%3A">image_info:</A></STRONG><BR>
+<DD>
+Specifies a pointer to an ImageInfo structure.
+<P></P>
+<p><dt><STRONG><A NAME="item_o_rectify%3A">rectify:</A></STRONG><BR>
+<DD>
+an unsigned value other than zero rectifies the attribute for multi-frame support (user may want multi-frame but image format may not support it).
+<P></P>
+<p><dt><STRONG>exception:</STRONG><BR>
+<DD>
+return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="setmagickinfo">SetMagickInfo</A></H2>
@@ -212,7 +254,7 @@ a character string that represents the image format associated with the MagickIn
 <blockquote>unsigned int UnregisterMagickInfo ( const char *tag ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
-<p><dt><STRONG><A NAME="item_o_status%3A">status:</A></STRONG><BR>
+<p><dt><STRONG>status:</STRONG><BR>
 <DD>
 Method UnregisterMagickInfo returns False if the tag does not exist in the list otherwise True.
 <P></P>

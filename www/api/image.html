@@ -1,7 +1,7 @@
 <HTML>
 <HEAD>
 <TITLE>image - ImageMagick Image Methods</TITLE>
-<LINK REV="made" HREF="mailto:magick@wizards.dupont.com">
+<LINK REV="made" HREF="mailto:ActivePerl@ActiveState.com">
 </HEAD>
 
 <body bgcolor="#FFFFFF" text="#000000" link="#1F00FF" alink="#FF0000"  vlink="#9900DD">
@@ -56,7 +56,6 @@
 		<LI><A HREF="#rgbtransformimage">RGBTransformImage</A></LI>
 		<LI><A HREF="#setimage">SetImage</A></LI>
 		<LI><A HREF="#setimagedepth">SetImageDepth</A></LI>
-		<LI><A HREF="#setimageinfo">SetImageInfo</A></LI>
 		<LI><A HREF="#setimageopacity">SetImageOpacity</A></LI>
 		<LI><A HREF="#setimagetype">SetImageType</A></LI>
 		<LI><A HREF="#sortcolormapbyintentsity">SortColormapByIntentsity</A></LI>
@@ -115,7 +114,6 @@
 <P>unsigned int  <STRONG>RGBTransformImage</STRONG>( Image *image, const ColorspaceType colorspace );</P>
 <P>void  <STRONG>SetImage</STRONG>( Image *image, opacity );</P>
 <P>unsigned int  <STRONG>SetImageDepth</STRONG>( Image *image, const unsigned int );</P>
-<P>unsigned int  <STRONG>SetImageInfo</STRONG>( ImageInfo *image_info, const unsigned int rectify, ExceptionInfo *exception );</P>
 <P>void  <STRONG>SetImageOpacity</STRONG>( Image *image, const unsigned int opacity );</P>
 <P><STRONG>SetImageType</STRONG>( Image *image, const ImageType image_type );</P>
 <P>void  <STRONG>SyncImage</STRONG>( Image *image );</P>
@@ -758,28 +756,6 @@ The address of a structure of type Image.
 <p><dt><STRONG>depth:</STRONG><BR>
 <DD>
 specified the image depth.
-<P></P></DL></DL>
-<P>
-<H2><A NAME="setimageinfo">SetImageInfo</A></H2>
-<P>Method SetImageInfo initializes the `magick' field of the ImageInfo structure.  It is set to a type of image format based on the prefix or suffix of the filename.  For example, `ps:image' returns 
-<FONT SIZE=-1>PS</FONT> indicating a Postscript image.  
-<FONT SIZE=-1>JPEG</FONT> is returned for this filename: `image.jpg'. The filename prefix has precendence over the suffix.  Use an optional index enclosed in brackets after a file name to specify a desired subimage of a multi-resolution image format like Photo 
-<FONT SIZE=-1>CD</FONT> (e.g.  img0001.pcd[4]).</P>
-<P>The format of the SetImageInfo method is:</P>
-<blockquote>unsigned int SetImageInfo ( <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, const unsigned int rectify, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
-<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DL>
-<p><dt><STRONG>image_info:</STRONG><BR>
-<DD>
-Specifies a pointer to an ImageInfo structure.
-<P></P>
-<p><dt><STRONG><A NAME="item_o_rectify%3A">rectify:</A></STRONG><BR>
-<DD>
-an unsigned value other than zero rectifies the attribute for multi-frame support (user may want multi-frame but image format may not support it).
-<P></P>
-<p><dt><STRONG>exception:</STRONG><BR>
-<DD>
-return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="setimageopacity">SetImageOpacity</A></H2>
