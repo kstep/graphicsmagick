@@ -15,9 +15,8 @@
 	* Started a new scripting language utility, conjure.
 
 2001-12-20  Cristy  <cristy@mystic.es.dupont.com>
-	* ImageMagick displays the search path in the event it
-	  cannot find a particular configuration file (thanks to
-	  billr@corbis.com)
+	* Display the search path in the event a utility cannot find a
+	  particular configuration file (thanks to billr@corbis.com)
 
 2001-12-14  Leonard Rosenthol  <leonardr@lazerware.com>
 	* Fixed some bugs in the new composite operators.
