@@ -1070,12 +1070,13 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
               Form filename for multi-part images.
             */
             FormatString(filename,image->filename,image->scene);
+            if (strchr(filename,'%') != (char *) NULL)
+              (void) strncpy(filename,image->filename,MaxTextExtent-1);
             if (!image_info->adjoin)
               if ((image->previous != (Image *) NULL) ||
                   (image->next != (Image *) NULL))
                 {
-                  if ((LocaleCompare(filename,image->filename) == 0) ||
-                      (strchr(filename,'%') != (char *) NULL))
+                  if (LocaleCompare(filename,image->filename) == 0)
                     FormatString(filename,"%.1024s.%lu",image->filename,
                       image->scene);
                   if (image->next != (Image *) NULL)
