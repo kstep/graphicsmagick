@@ -4702,6 +4702,7 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
       */
       if(!AcquireTemporaryFileName(filename))
         {
+          CloseBlob(image);
           DestroyImage(image);
           return(False);
         }

@@ -53,9 +53,22 @@
 </tr>
 </table>
 <p>
+2003-05-02  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/image.c (SetImageInfo): Added missing CloseBlob
+        in error path for failure to allocate temporary file.
+  <LI> coders/pcx.c (ReadPCXImage): Added support for reading
+        uncompressed PCX images based on code from Jean Piquemal.
+
+</UL>
+<p>
 2003-05-01  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> magick/effect.c (AddNoiseImage): For gray images, wrong
+        pointer was being used to evaluate intensity, leading to a
+        black image with noise.<BR>
   <LI> magick/image.c (ChannelImage): Return the channel
         image in RGBColorspace. Also properly support extracting
         the opacity channel for images which are not CMYK.
