@@ -1,3 +1,9 @@
+2003-04-04  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
+
+	* magick/command.c, utilities/gm.c: Print "help" screen for a
+	tool when user types "gm tool" or "gm tool -help"
+	* magick/command.c, magick/effect.c: add -ordered-dither option.
+
 2003-04-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* locale/C.mgk: Fixed message associated with

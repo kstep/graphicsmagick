@@ -1847,6 +1847,8 @@ MagickExport Image *MotionBlurImage(const Image *image,const double radius,
 %    o channel: The channel or channels to be thresholded.
 %
 %    o thresholds: a geometry string containing LOWxHIGH thresholds.
+%      If the string contains 2x2, 3x3, or 4x4, then an ordered
+%      dither of order 2, 3, or 4 will be performed instead.
 %
 %    o exception: Return any errors or warnings in this structure.
 %
@@ -1857,8 +1859,11 @@ MagickExport unsigned int RandomChannelThresholdImage(Image *image,const char
 #define RandomChannelThresholdImageText  "  RandomChannelThreshold image...  "
 
   double
-    threshold,
     lower_threshold,
+    o2[4]={.2,.6,.8,.4},
+    o3[9]={.1,.6,.3,.7,.5,.8,.4,.9,.2},
+    o4[16]={.1,.7,1.1,.3,1.0,.5,1.5,.8,1.4,1.6,.6,1.2,.4,.9,1.3,.2},
+    threshold=128,
     upper_threshold;
 
   register IndexPacket
@@ -1878,7 +1883,8 @@ MagickExport unsigned int RandomChannelThresholdImage(Image *image,const char
     *q;
 
   unsigned long
-    logging;
+    logging,
+    order;
 
   /*
     Threshold image.
@@ -1892,25 +1898,36 @@ MagickExport unsigned int RandomChannelThresholdImage(Image *image,const char
     return(True);
   if (thresholds == (const char *) NULL)
     return(True);
-  lower_threshold=0;
-  upper_threshold=0;
-  count=sscanf(thresholds,"%lf[/x%%]%lf",
-    &lower_threshold,&upper_threshold);
 
-  if (strchr(thresholds,'%') != (char *) NULL)
+  if (LocaleCompare(thresholds,"2x2") == 0)
+    order=2;
+  else if (LocaleCompare(thresholds,"3x3") == 0)
+    order=3;
+  else if (LocaleCompare(thresholds,"4x4") == 0)
+    order=4;
+  else
     {
-      upper_threshold*=(.01*MaxRGB);
-      lower_threshold*=(.01*MaxRGB);
+      order=1;
+      lower_threshold=0;
+      upper_threshold=0;
+      count=sscanf(thresholds,"%lf[/x%%]%lf",
+        &lower_threshold,&upper_threshold);
+
+      if (strchr(thresholds,'%') != (char *) NULL)
+        {
+          upper_threshold*=(.01*MaxRGB);
+          lower_threshold*=(.01*MaxRGB);
+        }
+      if (count == 1)
+        upper_threshold=MaxRGB-lower_threshold;
     }
-  if (count == 1)
-    upper_threshold=MaxRGB-lower_threshold;
 
   logging=LogMagickEvent(TransformEvent,GetMagickModule(),
-     "  RandomChannelThresholdImage with %s (%lfx%lf) thresholds",
-     thresholds,lower_threshold,upper_threshold);
+      "  RandomChannelThresholdImage: channel type=%s",channel);
   if (logging)
-    (void) LogMagickEvent(TransformEvent,GetMagickModule(),
-        "  channel type=%s",channel);
+    (void)LogMagickEvent(TransformEvent,GetMagickModule(),
+        "    Thresholds: %s (%fx%f)",
+        thresholds,lower_threshold,upper_threshold);
 
   if (LocaleCompare(channel,"all") == 0 ||
       LocaleCompare(channel,"intensity") == 0)
@@ -1933,12 +1950,21 @@ MagickExport unsigned int RandomChannelThresholdImage(Image *image,const char
               {
                 for (x=(long) image->columns; x > 0; x--)
                   {
-                    if ((double) q->red < lower_threshold)
-                      threshold=lower_threshold;
-                    else if ((double) q->red > upper_threshold)
-                      threshold=upper_threshold;
-                    else
-                      threshold=(double) (MaxRGB*rand()/(double) RAND_MAX);
+                    if (order == 1)
+                      {
+                        if ((double) q->red < lower_threshold)
+                          threshold=lower_threshold;
+                        else if ((double) q->red > upper_threshold)
+                          threshold=upper_threshold;
+                        else
+                          threshold=(double) (MaxRGB*rand()/(double) RAND_MAX);
+                      }
+                    else if (order == 2)
+                      threshold=(double) MaxRGB*o2[(x%2)+2*(y%2)];
+                    else if (order == 3)
+                      threshold=(double) MaxRGB*o3[(x%3)+3*(y%3)];
+                    else if (order == 4)
+                      threshold=(double) MaxRGB*o4[(x%4)+4*(y%4)];
                     index=(double) q->red <= threshold ? 0 : 1;
                     *indexes++=index;
                     q->red=q->green=q->blue=image->colormap[index].red;
@@ -1953,12 +1979,22 @@ MagickExport unsigned int RandomChannelThresholdImage(Image *image,const char
                       intensity;
       
                     intensity=(double) PixelIntensityToQuantum(q);
-                    if (intensity < lower_threshold)
-                      threshold=lower_threshold;
-                    else if (intensity > upper_threshold)
-                      threshold=upper_threshold;
-                    else
-                      threshold=(double) (MaxRGB*(rand()/(double) RAND_MAX));
+                    if (order == 1)
+                      {
+                        if (intensity < lower_threshold)
+                          threshold=lower_threshold;
+                        else if (intensity > upper_threshold)
+                          threshold=upper_threshold;
+                        else
+                          threshold=(double) (MaxRGB*(rand()
+                              /(double) RAND_MAX));
+                      }
+                    else if (order == 2)
+                      threshold=(double) MaxRGB*o2[(x%2)+2*(y%2)];
+                    else if (order == 3)
+                      threshold=(double) MaxRGB*o3[(x%3)+3*(y%3)];
+                    else if (order == 4)
+                      threshold=(double) MaxRGB*o4[(x%4)+4*(y%4)];
                     q->red=q->green=q->blue=(Quantum) (intensity <=
                        threshold ? 0 : MaxRGB);
                     q++;
@@ -1973,12 +2009,21 @@ MagickExport unsigned int RandomChannelThresholdImage(Image *image,const char
         if (image->matte)
           for (x=(long) image->columns; x > 0; x--)
             {
-              if ((double) q->opacity < lower_threshold)
-                threshold=lower_threshold;
-              else if ((double) q->opacity > upper_threshold)
-                threshold=upper_threshold;
-              else
-                threshold=(double) (MaxRGB*(rand()/(double) RAND_MAX));
+              if (order == 1)
+                {
+                  if ((double) q->opacity < lower_threshold)
+                    threshold=lower_threshold;
+                  else if ((double) q->opacity > upper_threshold)
+                    threshold=upper_threshold;
+                  else
+                    threshold=(double) (MaxRGB*(rand()/(double) RAND_MAX));
+                }
+              else if (order == 2)
+                threshold=(double) MaxRGB*o2[(x%2)+2*(y%2)];
+              else if (order == 3)
+                threshold=(double) MaxRGB*o3[(x%3)+3*(y%3)];
+              else if (order == 4)
+                threshold=(double) MaxRGB*o4[(x%4)+4*(y%4)];
               q->opacity=(Quantum) ((double) q->opacity <= threshold ?
                  0 : MaxRGB);
               q++;

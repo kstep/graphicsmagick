@@ -346,6 +346,12 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
   /*
     Check command syntax.
   */
+  if (argc < 2 || ((argc < 3) && (LocaleCompare("-help",argv[1]) == 0 ||
+      LocaleCompare("-?",argv[1]) == 0)))
+    {
+      CompositeUsage();
+      Exit(0);
+    }
   j=1;
   for (i=1; i < (argc-1); i++)
   {
@@ -898,7 +904,10 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
       case 'h':
       {
         if (LocaleCompare("help",option+1) == 0)
-          break;
+          {
+            CompositeUsage();
+            break;
+          }
         ThrowCompositeException(OptionError,"UnrecognizedOption",option)
       }
       case 'i':
@@ -1504,6 +1513,12 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
   */
   if ((argc > 2) && (LocaleCompare("-concatenate",argv[1]) == 0))
     return(ConcatenateImages(argc,argv,exception));
+  if (argc < 2 || ((argc < 3) && (LocaleCompare("-help",argv[1]) == 0 ||
+      LocaleCompare("-?",argv[1]) == 0)))
+    {
+      ConvertUsage();
+      Exit(0);
+    }
   j=1;
   k=0;
   for (i=1; i < (argc-1); i++)
@@ -2223,7 +2238,10 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
       case 'h':
       {
         if (LocaleCompare("help",option+1) == 0)
-          break;
+          {
+            ConvertUsage();
+            continue;
+          }
         ThrowConvertException(OptionError,"UnrecognizedOption",option)
       }
       case 'i':
@@ -2600,6 +2618,19 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               }
             break;
           }
+        if (LocaleCompare("ordered-dither",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  ThrowConvertException(OptionError,"MissingType",option);
+                i++;
+                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
+                  ThrowConvertException(OptionError,"MissingOrder",option);
+              }
+            break;
+          }
         ThrowConvertException(OptionError,"UnrecognizedOption",option)
       }
       case 'p':
@@ -2775,7 +2806,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
                 if ((i == argc) || !sscanf(argv[i],"%ld",&x))
                   ThrowConvertException(OptionError,"MissingThreshold",option);
               }
-          break;
+            break;
           }
         if (LocaleCompare("red-primary",option+1) == 0)
           {
@@ -3197,7 +3228,8 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
         ThrowConvertException(OptionError,"UnrecognizedOption",option)
       }
       case '?':
-        break;
+        ConvertUsage();
+        continue;
       default:
         ThrowConvertException(OptionError,"UnrecognizedOption",option)
     }
@@ -3325,6 +3357,12 @@ MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
   /*
     Identify an image.
   */
+  if (argc < 2 || ((argc < 3) && (LocaleCompare("-help",argv[1]) == 0 ||
+      LocaleCompare("-?",argv[1]) == 0)))
+    {
+      IdentifyUsage();
+      Exit(0);
+    }
   for (i=1; i < argc; i++)
   {
     option=argv[i];
@@ -4870,6 +4908,16 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             (void) OpaqueImage(*image,target,draw_info->fill);
             continue;
           }
+        if (LocaleCompare("ordered-dither",option+1) == 0)
+          {
+            /*
+              Ordered-dither image.
+            */
+            (void) RandomChannelThresholdImage(*image,argv[i+1],argv[i+2],
+                &(*image)->exception);
+            i+=2;
+            continue;
+          }
         break;
       }
       case 'p':
@@ -6027,6 +6075,12 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
   /*
     Parse command line.
   */
+  if (argc < 2 || ((argc < 3) && (LocaleCompare("-help",argv[1]) == 0 ||
+      LocaleCompare("-?",argv[1]) == 0)))
+    {
+      MogrifyUsage();
+      Exit(0);
+    }
   j=1;
   k=0;
   for (i=1; i < argc; i++)
@@ -7121,6 +7175,19 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               }
             break;
           }
+        if (LocaleCompare("ordered-dither",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  ThrowMogrifyException(OptionError,"MissingType",option);
+                i++;
+                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
+                  ThrowMogrifyException(OptionError,"MissingOrder",option);
+              }
+            break;
+          }
         ThrowMogrifyException(OptionError,"UnrecognizedOption",option)
       }
       case 'p':
@@ -7740,6 +7807,12 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
   /*
     Parse command line.
   */
+  if (argc < 2 || ((argc < 3) && (LocaleCompare("-help",argv[1]) == 0 ||
+      LocaleCompare("-?",argv[1]) == 0)))
+    {
+      MontageUsage();
+      Exit(0);
+    }
   j=1;
   k=0;
   for (i=1; i < (argc-1); i++)
@@ -10111,7 +10184,8 @@ MagickExport unsigned int ImportImageCommand(int argc,char **argv)
         server_name=argv[i];
         break;
       }
-    if (LocaleCompare("help",option+1) == 0)
+    if (LocaleCompare("help",option+1) == 0 ||
+        LocaleCompare("?", option+1) == 0)
       ImportUsage();
     if (LocaleCompare("version",option+1) == 0)
       {
@@ -10524,10 +10598,7 @@ MagickExport unsigned int ImportImageCommand(int argc,char **argv)
       case 'h':
       {
         if (LocaleCompare("help",option+1) == 0)
-          {
-            ImportUsage();
-            break;
-          }
+          break;
         MagickFatalError(OptionFatalError,"UnrecognizedOption",option);
         break;
       }
@@ -10848,14 +10919,6 @@ MagickExport unsigned int ImportImageCommand(int argc,char **argv)
         MagickFatalError(OptionFatalError,"UnrecognizedOption",option);
         break;
       }
-      case 'w':
-      {
-        i++;
-        if (i == argc)
-          MagickFatalError(OptionFatalError,"MissingIDNameOrRoot",option);
-        (void) CloneString(&target_window,argv[i]);
-        break;
-      }
       case 'v':
       {
         if (LocaleCompare("verbose",option+1) == 0)
@@ -10868,9 +10931,16 @@ MagickExport unsigned int ImportImageCommand(int argc,char **argv)
         MagickFatalError(OptionFatalError,"UnrecognizedOption",option);
         break;
       }
+      case 'w':
+      {
+        i++;
+        if (i == argc)
+          MagickFatalError(OptionFatalError,"MissingIDNameOrRoot",option);
+        (void) CloneString(&target_window,argv[i]);
+        break;
+      }
       case '?':
       {
-        ImportUsage();
         break;
       }
       default:
@@ -11020,7 +11090,8 @@ MagickExport unsigned int ConjureImageCommand(int argc,char **argv)
               }
             continue;
           }
-        if (LocaleCompare("help",option+1) == 0)
+        if (LocaleCompare("help",option+1) == 0 ||
+            LocaleCompare("?",option+1) == 0)
           {
             if (*option == '-')
               ConjureUsage();
@@ -12786,6 +12857,8 @@ MagickExport void ConvertUsage(void)
       "-noise radius        add or reduce noise in an image",
       "-normalize           transform image to span the full range of colors",
       "-opaque color        change this color to the fill color",
+      "-ordered-dither channeltype LOWxHIGH",
+      "                     ordered dither the image",
       "-page geometry       size and location of an image canvas",
       "-paint radius        simulate an oil painting",
       "-ping                efficiently determine image attributes",
@@ -12956,6 +13029,8 @@ MagickExport void MogrifyUsage(void)
       "-noise radius        add or reduce noise in an image.",
       "-normalize           transform image to span the full range of colors",
       "-opaque color        change this color to the fill color",
+      "-ordered-dither channeltype LOWxHIGH",
+      "                     ordered dither the image",
       "-page geometry       size and location of an image canvas",
       "-paint radius        simulate an oil painting",
       "-fill color           color for annotating or changing opaque color",

@@ -162,8 +162,8 @@ int main(int argc,char **argv)
           }
         break;
       }
-    if (LocaleCompare("help",option+1) == 0 ||
-        LocaleCompare("?",option+1) == 0)
+    if (argc < 3 && (LocaleCompare("help",option+1) == 0 ||
+        LocaleCompare("?",option+1) == 0))
       {
         help_wanted=True;
         GMUsage();
