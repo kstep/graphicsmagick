@@ -16,11 +16,63 @@ extern "C" {
 
 typedef struct _DrawContext *DrawContext;
 
+extern MagickExport ClipPathUnits
+  DrawGetClipUnits(DrawContext context);
+
+extern MagickExport DecorationType
+  DrawGetTextDecoration(DrawContext context);
+
 extern MagickExport DrawContext
   DrawAllocateContext(const DrawInfo *draw_info, Image *image);
 
+extern MagickExport FillRule
+  DrawGetClipRule(DrawContext context),
+  DrawGetFillRule(DrawContext context);
+
+extern MagickExport GravityType
+  DrawGetGravity(DrawContext context);
+
+extern MagickExport LineCap
+  DrawGetStrokeLineCap(DrawContext context);
+
+extern MagickExport LineJoin
+  DrawGetStrokeLineJoin(DrawContext context);
+
+extern MagickExport PixelPacket
+  DrawGetFillColor(DrawContext context),
+  DrawGetStrokeColor(DrawContext context),
+  DrawGetTextUnderColor(DrawContext context);
+
+extern MagickExport StretchType
+  DrawGetFontStretch(DrawContext context);
+
+extern MagickExport StyleType
+  DrawGetFontStyle(DrawContext context);
+
+extern MagickExport char
+  *DrawGetClipPath(DrawContext context),
+  *DrawGetFont(DrawContext context),
+  *DrawGetFontFamily(DrawContext context),
+  *DrawGetTextEncoding(DrawContext context);
+
 extern MagickExport int
   DrawRender(const DrawContext context);
+
+extern MagickExport unsigned int
+  DrawGetStrokeAntialias(DrawContext context),
+  DrawGetTextAntialias(DrawContext context);
+
+extern MagickExport unsigned long
+  DrawGetFontWeight(DrawContext context),
+  DrawGetStrokeMiterLimit(DrawContext context);
+
+extern double
+  DrawGetFillOpacity(DrawContext context),
+  DrawGetFontSize(DrawContext context),
+  *DrawGetStrokeDashArray(DrawContext context, size_t *num_elems),
+  DrawGetStrokeDashOffset(DrawContext context),
+  DrawGetStrokeOpacity(DrawContext context),
+  DrawGetStrokeWidth(DrawContext context);
 
 extern MagickExport void
   DrawAffine(DrawContext context, const AffineMatrix *affine),
@@ -130,34 +182,21 @@ extern MagickExport void
                      double x1, double y1,
                      double x2, double y2,
                      double rx, double ry),
-  DrawGetClipPath(DrawContext context, char **clip_path),
   DrawScale(DrawContext context, const double x, const double y),
   DrawSetClipPath(DrawContext context, const char *clip_path),
-  DrawGetClipRule(DrawContext context, FillRule *fill_rule),
   DrawSetClipRule(DrawContext context, const FillRule fill_rule),
-  DrawGetClipUnits(DrawContext context, ClipPathUnits *clip_units),
   DrawSetClipUnits(DrawContext context, const ClipPathUnits clip_units),
-  DrawGetFillColor(DrawContext context, PixelPacket *fill_color),
   DrawSetFillColor(DrawContext context, const PixelPacket *fill_color),
   DrawSetFillColorString(DrawContext context, const char *fill_color),
-  DrawGetFillOpacity(DrawContext context, double *fill_opacity),
   DrawSetFillOpacity(DrawContext context, const double fill_opacity),
-  DrawGetFillRule(DrawContext context, FillRule *fill_rule),
   DrawSetFillRule(DrawContext context, const FillRule fill_rule),
   DrawSetFillPatternURL(DrawContext context, const char *fill_url),
-  DrawGetFont(DrawContext context, char **font_name),
   DrawSetFont(DrawContext context, const char *font_name),
-  DrawGetFontFamily(DrawContext context, char **font_family),
   DrawSetFontFamily(DrawContext context, const char *font_family),
-  DrawGetFontSize(DrawContext context, double *font_pointsize),
   DrawSetFontSize(DrawContext context, const double font_pointsize),
-  DrawGetFontStretch(DrawContext context, StretchType *font_stretch),
   DrawSetFontStretch(DrawContext context, const StretchType font_stretch),
-  DrawGetFontStyle(DrawContext context, StyleType *font_style),
   DrawSetFontStyle(DrawContext context, const StyleType font_style),
-  DrawGetFontWeight(DrawContext context, unsigned long *font_weight),
   DrawSetFontWeight(DrawContext context, const unsigned long font_weight),
-  DrawGetGravity(DrawContext context, GravityType *gravity),
   DrawSetGravity(DrawContext context, const GravityType gravity),
   DrawRotate(DrawContext context, const double degrees),
   DrawSkewX(DrawContext context, const double degrees),
@@ -166,35 +205,21 @@ extern MagickExport void
    DrawSetStopColor(DrawContext context, const PixelPacket * color,
                     const double offset),
   */
-  DrawGetStrokeAntialias(DrawContext context, unsigned int *true_false),
   DrawSetStrokeAntialias(DrawContext context, const unsigned int true_false),
-  DrawGetStrokeColor(DrawContext context, PixelPacket *stroke_color),
   DrawSetStrokeColor(DrawContext context, const PixelPacket *stroke_color),
   DrawSetStrokeColorString(DrawContext context, const char *stroke_color),
-  DrawGetStrokeDashArray(DrawContext context, size_t *num_elems,
-                         double **dasharray),
   DrawSetStrokeDashArray(DrawContext context, const size_t num_elems,
                          const double *dasharray),
-  DrawGetStrokeDashOffset(DrawContext context,double *dashoffset),
   DrawSetStrokeDashOffset(DrawContext context,const double dashoffset),
-  DrawGetStrokeLineCap(DrawContext context, LineCap *linecap),
   DrawSetStrokeLineCap(DrawContext context, const LineCap linecap),
-  DrawGetStrokeLineJoin(DrawContext context, LineJoin *linejoin),
   DrawSetStrokeLineJoin(DrawContext context, const LineJoin linejoin),
-  DrawGetStrokeMiterLimit(DrawContext context,unsigned long *miterlimit),
   DrawSetStrokeMiterLimit(DrawContext context,const unsigned long miterlimit),
-  DrawGetStrokeOpacity(DrawContext context, double *opacity),
   DrawSetStrokeOpacity(DrawContext context, const double opacity),
   DrawSetStrokePatternURL(DrawContext context, const char* stroke_url),
-  DrawGetStrokeWidth(DrawContext context, double *width),
   DrawSetStrokeWidth(DrawContext context, const double width),
-  DrawGetTextAntialias(DrawContext context, unsigned int *true_false),
   DrawSetTextAntialias(DrawContext context, const unsigned int true_false),
-  DrawGetTextDecoration(DrawContext context, DecorationType *decoration),
   DrawSetTextDecoration(DrawContext context, const DecorationType decoration),
-  DrawGetTextEncoding(DrawContext context, char **encoding),
   DrawSetTextEncoding(DrawContext context, const char *encoding),
-  DrawGetTextUnderColor(DrawContext context, PixelPacket *color),
   DrawSetTextUnderColor(DrawContext context, const PixelPacket *color),
   DrawSetTextUnderColorString(DrawContext context, const char *under_color),
   DrawSetViewbox(DrawContext context,
