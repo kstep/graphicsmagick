@@ -564,6 +564,7 @@ typedef struct _MagickInfo
 */
 extern const char
   *Alphabet,
+  *AppendBinaryType,
   *BackgroundColor,
   *BorderColor,
   *DefaultPointSize,

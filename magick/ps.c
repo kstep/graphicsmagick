@@ -56,14 +56,6 @@
 #include "defines.h"
 
 /*
-  Constant declarations.
-*/
-const char
-  *AppendBinaryType = "ab",
-  *PSDensityGeometry = "72x72",
-  *PSPageGeometry = "612x792>";
-
-/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %

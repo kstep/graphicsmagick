@@ -63,23 +63,24 @@
   Constant declaration.
 */
 const char
+  *AppendBinaryType = "ab",
+  *BackgroundColor = "#bdbdbd",  /* gray */
+  *BorderColor = "#bdbdbd",  /* gray */
   *DefaultPointSize = "12",
   *DefaultTileFrame = "15x15+3+3",
-  *DefaultTileLabel = "%f\n%wx%h\n%b",
   *DefaultTileGeometry = "106x106+4+3>",
+  *DefaultTileLabel = "%f\n%wx%h\n%b",
+  *ForegroundColor = "#000000",  /* black */
   *LoadImageText = "  Loading image...  ",
   *LoadImagesText = "  Loading images...  ",
+  *MatteColor = "#bdbdbd",  /* gray */
+  *PSDensityGeometry = "72x72",
+  *PSPageGeometry = "612x792>",
   *ReadBinaryType = "rb",
   *ReadBinaryUnbufferedType = "rbu",
   *SaveImageText = "  Saving image...  ",
   *SaveImagesText = "  Saving images...  ",
   *WriteBinaryType = "wb";
-
-const char
-  *BackgroundColor = "#bdbdbd",  /* gray */
-  *BorderColor = "#bdbdbd",  /* gray */
-  *ForegroundColor = "#000000",  /* black */
-  *MatteColor = "#bdbdbd";  /* gray */
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
