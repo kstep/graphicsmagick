@@ -1,0 +1,71 @@
+#ECF - this file contains additional configuration info.
+DEFINE = _TTFLIB_
+DEFINE = HAVE_FREETYPE_FREETYPE_H
+#
+EXCLUDE = ahangles.c
+EXCLUDE = ahglobal.c
+EXCLUDE = ahglyph.c
+EXCLUDE = ahhint.c
+EXCLUDE = ahmodule.c
+EXCLUDE = ahoptim.c
+#
+EXCLUDE = ftcalc.c
+EXCLUDE = ftobjs.c
+EXCLUDE = ftstream.c
+EXCLUDE = ftlist.c
+EXCLUDE = ftoutln.c
+EXCLUDE = ftextend.c
+EXCLUDE = ftnames.c
+#
+EXCLUDE = t2driver.c
+EXCLUDE = t2gload.c
+EXCLUDE = t2load.c
+EXCLUDE = t2objs.c
+EXCLUDE = t2parse.c
+#
+EXCLUDE = cidafm.c
+EXCLUDE = cidgload.c
+EXCLUDE = cidload.c
+EXCLUDE = cidobjs.c
+EXCLUDE = cidparse.c
+EXCLUDE = cidriver.c
+#
+EXCLUDE = psmodule.c
+#
+EXCLUDE = ftraster.c
+EXCLUDE = ftrend1.c
+#
+EXCLUDE = sfdriver.c
+EXCLUDE = sfobjs.c
+EXCLUDE = ttcmap.c
+EXCLUDE = ttload.c
+EXCLUDE = ttpost.c
+EXCLUDE = ttsbit.c
+#
+EXCLUDE = ftgrays.c
+EXCLUDE = ftsmooth.c
+#
+EXCLUDE = ttdriver.c
+EXCLUDE = ttgload.c
+EXCLUDE = ttinterp.c
+EXCLUDE = ttobjs.c
+EXCLUDE = ttpload.c
+#
+EXCLUDE = t1afm.c
+EXCLUDE = t1driver.c
+EXCLUDE = t1gload.c
+EXCLUDE = t1hinter.c
+EXCLUDE = t1load.c
+EXCLUDE = t1objs.c
+EXCLUDE = t1parse.c
+EXCLUDE = t1tokens.c
+#
+EXCLUDE = z1afm.c
+EXCLUDE = z1driver.c
+EXCLUDE = z1gload.c
+EXCLUDE = z1load.c
+EXCLUDE = z1objs.c
+EXCLUDE = z1parse.c
+#
+EXCLUDE = type1z.c
+
