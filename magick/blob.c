@@ -933,7 +933,7 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
 %
 %  The format of the ReadBlob method is:
 %
-%      size_t ReadBlob(Image *image,const size_t length,char *data)
+%      size_t ReadBlob(Image *image,const size_t length,void *data)
 %
 %  A description of each parameter follows:
 %
@@ -1016,7 +1016,7 @@ MagickExport size_t ReadBlobBlock(Image *image,unsigned char *data)
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(data != (unsigned char *) NULL);
-  count=ReadBlob(image,1,(char *) &block_count);
+  count=ReadBlob(image,1,&block_count);
   if (count == 0)
     return(0);
   count=ReadBlob(image,(size_t) block_count,data);
