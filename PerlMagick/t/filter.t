@@ -145,7 +145,7 @@ testFilter('input.miff', 'Negate',
 testFilter('input.miff', 'Normalize',
   q/ /,
   'eec8915ee71f18ce398da7254517d982e9adcd5d1c23d5ce014ce9a30c57f855',
-  '15b6d228cd32a5004f1947f4ce319d537c752f823298fe094717a90fb34479ca');
+  '5b187edc0f2b0e6b8c940bc1b5cebd6b6efb7938f9d1f32c53fa71dc478ca43e');
 
 ++$test;
 testFilter('input.miff', 'OilPaint',
