@@ -1,5 +1,8 @@
 2003-05-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* www/Copyright.html: Try to fix formatting of XFig entry.
+	* www/windows.html: Update file names for 1.0.1 release.
+	* index.html: Mention 1.0.1 release as latest release.
 	* magick/magick_config_api.h.in: Add define for HasX11
 	so that it is possible to use functions in the installed
 	xwindow.h
