@@ -57,6 +57,7 @@
 #include "attribute.h"
 #include "blob.h"
 #include "magick.h"
+#include "paint.h"
 #include "quantize.h"
 #include "utility.h"
 
