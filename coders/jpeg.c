@@ -1043,15 +1043,15 @@ static void WriteIPTCProfile(j_compress_ptr jpeg_info,Image *image)
     if (profile == (unsigned char *) NULL)
       break;
 #ifdef GET_ONLY_IPTC_DATA
-    (void) memcpy(profile,"Photoshop 3.0 8BIM\04\04\0\0\0\0",24);
+    (void) CopyMemory(profile,"Photoshop 3.0 8BIM\04\04\0\0\0\0",24);
     profile[13]=0x00;
     profile[24]=length >> 8;
     profile[25]=length & 0xff;
 #else
-    (void) memcpy(profile,"Photoshop 3.0 ",14);
+    (void) CopyMemory(profile,"Photoshop 3.0 ",14);
     profile[13]=0x00;
 #endif
-    (void) memcpy(&(profile[tag_length]),&(image->iptc_profile.info[i]),length);
+    (void) CopyMemory(&(profile[tag_length]),&(image->iptc_profile.info[i]),length);
     if (roundup)
       profile[length+tag_length]=0;
     jpeg_write_marker(jpeg_info,IPTC_MARKER,profile,(unsigned int)

@@ -959,10 +959,10 @@ static unsigned int WriteMPCImage(const ImageInfo *image_info,Image *image)
     q=SetImagePixels(clone_image,0,y,clone_image->columns,1);
     if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
-    (void) memcpy(q,p,image->columns*sizeof(PixelPacket));
+    (void) CopyMemory(q,p,image->columns*sizeof(PixelPacket));
     indexes=GetIndexes(clone_image);
     if (indexes != (IndexPacket *) NULL)
-      (void) memcpy(indexes,GetIndexes(image),
+      (void) CopyMemory(indexes,GetIndexes(image),
         image->columns*sizeof(IndexPacket));
     if (!SyncImagePixels(clone_image))
       break;

@@ -69,7 +69,7 @@ bin_SCRIPTS = Magick-config
 # Headers which are installed
 include_HEADERS = PreRvIcccm.h api.h attribute.h blob.h cache.h \
   cache_view.h classify.h compress.h magick_config.h delegate.h draw.h \
-  error.h gem.h image.h list.h magic.h magick.h module.h monitor.h \
+  error.h gem.h image.h list.h magic.h magick.h memory.h module.h monitor.h \
   quantize.h registry.h semaphore.h timer.h utility.h version.h widget.h \
   xwindow.h
 

@@ -240,12 +240,12 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
         q=SetImagePixels(rotate_image,0,y,rotate_image->columns,1);
         if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
           break;
-        (void) memcpy(q,p,image->columns*sizeof(PixelPacket));
+        (void) CopyMemory(q,p,image->columns*sizeof(PixelPacket));
         indexes=GetIndexes(image);
         rotate_indexes=GetIndexes(rotate_image);
         if ((indexes != (IndexPacket *) NULL) &&
             (rotate_indexes != (IndexPacket *) NULL))
-          (void) memcpy(rotate_indexes,indexes,image->columns*
+          (void) CopyMemory(rotate_indexes,indexes,image->columns*
             sizeof(IndexPacket));
         if (!SyncImagePixels(rotate_image))
           break;
@@ -266,12 +266,12 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
           rotate_image->rows);
         if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
           break;
-        (void) memcpy(q,p,image->columns*sizeof(PixelPacket));
+        (void) CopyMemory(q,p,image->columns*sizeof(PixelPacket));
         indexes=GetIndexes(image);
         rotate_indexes=GetIndexes(rotate_image);
         if ((indexes != (IndexPacket *) NULL) &&
             (rotate_indexes != (IndexPacket *) NULL))
-          (void) memcpy(rotate_indexes,indexes,image->columns*
+          (void) CopyMemory(rotate_indexes,indexes,image->columns*
             sizeof(IndexPacket));
         if (!SyncImagePixels(rotate_image))
           break;
@@ -448,7 +448,7 @@ static void XShearImage(Image *image,const double degrees,
               break;
             p+=x_offset;
             q=p-step;
-            (void) memcpy(q,p,width*sizeof(PixelPacket));
+            (void) CopyMemory(q,p,width*sizeof(PixelPacket));
             /*
               Set old row to background color.
             */
@@ -713,7 +713,7 @@ static void YShearImage(Image *image,const double degrees,
               break;
             p+=y_offset;
             q=p-step;
-            (void) memcpy(q,p,height*sizeof(PixelPacket));
+            (void) CopyMemory(q,p,height*sizeof(PixelPacket));
             /*
               Set old column to background color.
             */

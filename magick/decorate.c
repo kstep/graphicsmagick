@@ -306,7 +306,7 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
     /*
       Transfer scanline.
     */
-    (void) memcpy(q,p,image->columns*sizeof(PixelPacket));
+    (void) CopyMemory(q,p,image->columns*sizeof(PixelPacket));
     q+=image->columns;
     for (x=0; x < frame_info->inner_bevel; x++)
       *q++=highlight;

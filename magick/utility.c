@@ -1152,7 +1152,7 @@ MagickExport void GetPathComponent(const char *path,PathType type,
     case TailPath:
     {
       if (IsBasenameSeparator(*p))
-        (void) memmove(component,p+1,strlen(p+1)+1);
+        (void) CopyMemory(component,p+1,strlen(p+1)+1);
       break;
     }
     case BasePath:
@@ -2555,7 +2555,7 @@ MagickExport void Strip(char *data)
       q--;
   count=q-p+1;
   q=data;
-  (void) memcpy(q,p,count);
+  (void) CopyMemory(q,p,count);
   *(q+count)='\0';
 }
 

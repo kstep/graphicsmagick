@@ -426,7 +426,7 @@ static int Generate8BIMAttribute(Image *image,const char *key)
     attribute=(char *) AcquireMemory(count+MaxTextExtent);
     if (attribute != (char *) NULL)
       {
-        memcpy(attribute,(char *) info,count);
+        CopyMemory(attribute,(char *) info,count);
         attribute[count]='\0';
         info+=count;
         length-=count;

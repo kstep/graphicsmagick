@@ -68,16 +68,13 @@ extern MagickExport unsigned long
   MultilineCensus(const char *);
 
 extern MagickExport void
-  *AcquireMemory(const size_t),
   AppendImageFormat(const char *,char *),
   ExpandFilename(char *),
   GetPathComponent(const char *,PathType,char *),
   GetToken(const char *,char **,char *),
   FormatString(char *,const char *,...),
-  LiberateMemory(void **),
   LocaleLower(char *),
   LocaleUpper(char *),
-  ReacquireMemory(void **,const size_t),
   Strip(char *),
   SetGeometry(const Image *,RectangleInfo *),
   TemporaryFilename(char *);

@@ -351,7 +351,7 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
             one_row[i + bit] = lastrow[i + bit];
           }
         }
-      memcpy(lastrow, one_row, bytes_per_row);
+      CopyMemory(lastrow, one_row, bytes_per_row);
       }
     else
       {
@@ -690,7 +690,7 @@ static unsigned int WritePALMImage(const ImageInfo *image_info,Image *image)
         (void) WriteBlobByte(image, byte);
         (void) WriteBlob(image, tptr - tmpbuf, tmpbuf);
        }
-      memcpy (lastrow, one_row, bytes_per_row);
+      CopyMemory (lastrow, one_row, bytes_per_row);
       }
     else
       {

@@ -425,12 +425,12 @@ MagickExport Image *CropImage(const Image *image,const RectangleInfo *geometry,
     q=SetImagePixels(crop_image,0,y,crop_image->columns,1);
     if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
-    (void) memcpy(q,p,crop_image->columns*sizeof(PixelPacket));
+    (void) CopyMemory(q,p,crop_image->columns*sizeof(PixelPacket));
     indexes=GetIndexes(image);
     crop_indexes=GetIndexes(crop_image);
     if ((indexes != (IndexPacket *) NULL) &&
         (crop_indexes != (IndexPacket *) NULL))
-      (void) memcpy(crop_indexes,indexes,crop_image->columns*
+      (void) CopyMemory(crop_indexes,indexes,crop_image->columns*
         sizeof(IndexPacket));
     if (!SyncImagePixels(crop_image))
       break;
@@ -763,12 +763,12 @@ MagickExport Image *FlipImage(const Image *image,ExceptionInfo *exception)
       flip_image->columns,1);
     if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
-    (void) memcpy(q,p,flip_image->columns*sizeof(PixelPacket));
+    (void) CopyMemory(q,p,flip_image->columns*sizeof(PixelPacket));
     indexes=GetIndexes(image);
     flip_indexes=GetIndexes(flip_image);
     if ((indexes != (IndexPacket *) NULL) &&
         (flip_indexes != (IndexPacket *) NULL))
-      (void) memcpy(flip_indexes,indexes,image->columns*sizeof(IndexPacket));
+      (void) CopyMemory(flip_indexes,indexes,image->columns*sizeof(IndexPacket));
     status=SyncImagePixels(flip_image);
     if (status == False)
       break;
@@ -1054,7 +1054,7 @@ MagickExport unsigned int ProfileImage(Image *image,const char *name,
         ThrowBinaryException(ResourceLimitWarning,"Unable to add IPTC profile",
           "Memory allocation failed");
       image->iptc_profile.length=length;
-      (void) memcpy(image->iptc_profile.info,profile,length);
+      (void) CopyMemory(image->iptc_profile.info,profile,length);
       return(True);
     }
   if (LocaleCompare("icm",name) == 0)
@@ -1182,7 +1182,7 @@ MagickExport unsigned int ProfileImage(Image *image,const char *name,
         ThrowBinaryException(ResourceLimitWarning,"Unable to add ICM profile",
           "Memory allocation failed");
       image->color_profile.length=length;
-      (void) memcpy(image->color_profile.info,profile,length);
+      (void) CopyMemory(image->color_profile.info,profile,length);
       return(True);
     }
   for (i=0; i < (long) image->generic_profiles; i++)
@@ -1204,7 +1204,7 @@ MagickExport unsigned int ProfileImage(Image *image,const char *name,
     ThrowBinaryException(ResourceLimitWarning,"Unable to add profile",
       "Memory allocation failed");
   image->generic_profile[i].length=length;
-  (void) memcpy(image->generic_profile[i].info,profile,length);
+  (void) CopyMemory(image->generic_profile[i].info,profile,length);
   return(True);
 }
 

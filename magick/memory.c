@@ -95,6 +95,64 @@ MagickExport void *AcquireMemory(const size_t size)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   C o p y M e m o r y                                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  CopyMemory() copies size bytes from memory area source to the
+%  destination.  Copying between objects that overlap will take place
+%  correctly.  It returns destination.
+%
+%  The format of the CopyMemory method is:
+%
+%      void *CopyMemory(void *destination,const void *source,const size_t size)
+%
+%  A description of each parameter follows:
+%
+%    o size: The size of the memory in bytes to allocate.
+%
+%
+*/
+MagickExport void *CopyMemory(void *destination,const void *source,
+	const size_t size)
+{
+	register char
+		*q;
+
+	register const char
+		*p;
+
+  register int
+		i;
+
+  assert(destination != (void *) NULL);
+  assert(source != (const void *) NULL);
+  p=(const char *) source;
+	q=(char *) destination;
+  if (((q < p) && ((q+size) < p)) || ((q > p) && ((p+size) < q)))
+    return(memcpy(destination,source,size));
+  if (p == q)
+    return(destination);
+  if (q < p)
+    {
+      for (i=0; i < size; i++)
+        *q++=(*p++);
+      return(destination);
+    }
+  p+=size;
+  q+=size;
+  for (i=size-1; i >= 0; i--)
+    *--q=(*--p);
+  return(destination);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   L i b e r a t e M e m o r y                                               %
 %                                                                             %
 %                                                                             %
