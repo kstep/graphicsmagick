@@ -24,7 +24,7 @@ AVAILABILITY
 
   ImageMagick is available as
 
-    ftp://ftp.simplesystems.org/pub/ImageMagick/ImageMagick-5.2.9.tar.gz
+    ftp://ftp.simplesystems.org/pub/ImageMagick/ImageMagick-5.3.0.tar.gz
 
   ImageMagick client executables are available for some platforms. See
 
@@ -71,8 +71,8 @@ UNIX/Cygwin COMPILATION
 
   Type:
 
-    gzip -dc ImageMagick-5.2.9.tar.gz | tar xvf -
-    cd ImageMagick-5.2.9
+    gzip -dc ImageMagick-5.3.0.tar.gz | tar xvf -
+    cd ImageMagick-5.3.0
 
   If you do not have gunzip(1), it is available as
   ftp.gnu.org:pub/gnu/gzip-1.2.4.shar.
@@ -102,10 +102,13 @@ UNIX/Cygwin COMPILATION
       CXXFLAGS    Compiler flags (e.g. '-g -O2') to compile C++ code
       CPPFLAGS    Include paths (-I/somedir) to look for header files
       LDFLAGS     Library paths (-L/somedir) to look for libraries
-                  Systems that support the notion of a library
-                  run-path may additionally require -R/somedir or
-                  '-rpath /somedir' in order to find shared libraries
-                  at run time.
+                  Systems that support the notion of a library run-path may
+                  require an additional argument in order to find shared
+                  libraries at run time. For example, the Solaris linker
+                  requires an argument of the form '-R/somedir', some Linux
+                  systems will work with '-rpath /somedir', while some other
+                  Linux systems who's gcc does not pass -rpath to the linker
+                  require an argument of the form '-Wl,-rpath,/somedir'.
       LIBS        Extra libraries (-lsomelib) required to link
 
   Any variable (e.g. CPPFLAGS or LDFLAGS) which requires a directory
@@ -594,7 +597,7 @@ VMS COMPILATION
 
   Type
 
-      unzip ImageMagick-5.2.9.zip set default [.imagemagick] @make set
+      unzip ImageMagick-5.3.0.zip set default [.imagemagick] @make set
       display/create/node=node_name::
 
   where node_name is the DECNET X server to contact.
@@ -606,7 +609,7 @@ VMS COMPILATION
   Alternatively, get a zipped distribution (with JPEG, PNG, TIFF, TTF)
   from
 
-      ftp://ftp.simplesystems.org/pub/ImageMagick/vms/ImageMagick-5.2.9.zip
+      ftp://ftp.simplesystems.org/pub/ImageMagick/vms/ImageMagick-5.3.0.zip
 
   The VMS JPEG, PNG, TIFF, and TTF  source libraries are available on
   axp.psl.ku.dk in [anonymous.decwindows.lib].
