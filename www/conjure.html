@@ -18,185 +18,183 @@
    <link rel="StyleSheet" href="magick.css" type="text/css">
 </head>
 <body bgcolor="#FFFFFF" text="#000000" link="#0085c0" vlink="#800080" alink="#0085c0" >
-<a NAME="top"></a>
 <center>
 <img SRC="../images/magick_small.png" alt="" width=129 height=133>
 </center>
-
-<br>&nbsp;
-<table BORDER=0 WIDTH="100%" >
-<tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.png"
-ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font
-color="#FFFFFF"><font size="+1">Contents</font></font></font></b></td>
-</tr>
-</table>
-
-<ul>
-<li>
-<a href="#syno">Synopsis</a></li>
-
-<li>
-<a href="#desc">Description</a></li>
-
-<li>
-<a href="#opti">Options</a></li>
-
-<li>
-<a href="#msl">Magick Scripting Language</a></li>
-
-<li>
-<a href="#auth">Authors</a></li>
-
-<li>
-<a href="#copy">Copyright</a></li>
-</ul>
-
-<p><a NAME="syno"></a>
-<table BORDER=0 WIDTH="100%" >
-<tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.png"
-ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font
-color="#FFFFFF"><font size="+1">Synopsis</font></font></font></b></td>
-</tr>
-</table>
+     <table BORDER=0 WIDTH="100%"> 
+     <tr> 
+     <td ALIGN=LEFT BGCOLOR="#52799E"><img 
+     SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
+     height=14 width=15><b><font face="Helvetica, Arial"><font 
+     color="#FFFFFF"><font size="+1">
+<a NAME="top">Contents</a>
+     </font></font></font></b></td></tr></table>
+     <table width="90%" border="0" cellspacing="0" cellpadding="8">
+     <tr><td width="3%"><br></td><td>
 <dl>
-<dd>
-<b>conjure</b> [ options ] script_file.msl</dd>
+<dt>
+<a href="#syno">Synopsis</a>
+</dt>
+<dt>
+<a href="#desc">Description</a>
+</dt>
+<dt>
+<a href="#opti">Options</a>
+</dt>
+<dt>
+<a href="#msl">Magick Scripting Language</a>
+</dt>
+<dt>
+<a href="#auth">Authors</a>
+</dt>
+<dt>
+<a href="#copy">Copyright</a>
+</dt>
 </dl>
-<i><a href="#top">Back to Contents</a></i>
-<br>&nbsp;
-<br>&nbsp;
-<p><a NAME="desc"></a>
-<table BORDER=0 WIDTH="100%" >
-<tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.png"
-ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font
-color="#FFFFFF"><font size="+1">Description</font></font></font></b></td>
-</tr>
-</table>
-<dl>
-<dd>
+     </td></tr></table>
+     <p>
+     <i><a href="#top">Back to Contents</a></i> 
+     &nbsp;</p>
+     <table BORDER=0 WIDTH="100%"> 
+     <tr> 
+     <td ALIGN=LEFT BGCOLOR="#52799E"><img 
+     SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
+     height=14 width=15><b><font face="Helvetica, Arial"><font 
+     color="#FFFFFF"><font size="+1">
+<a NAME="syno">Synopsis</a>
+     </font></font></font></b></td></tr></table>
+     <table width="90%" border="0" cellspacing="0" cellpadding="8">
+     <tr><td width="3%"><br></td><td>
+<p><strong>conjure</strong> [ options ] script_file.msl</p>
+<p><strong>WARNING: Conjure is in very early development and the syntax is
+subject to change!</strong></p>
+     </td></tr></table>
+     <p>
+     <i><a href="#top">Back to Contents</a></i> 
+     &nbsp;</p>
+     <table BORDER=0 WIDTH="100%"> 
+     <tr> 
+     <td ALIGN=LEFT BGCOLOR="#52799E"><img 
+     SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
+     height=14 width=15><b><font face="Helvetica, Arial"><font 
+     color="#FFFFFF"><font size="+1">
+<a NAME="desc">Description</a>
+     </font></font></font></b></td></tr></table>
+     <table width="90%" border="0" cellspacing="0" cellpadding="8">
+     <tr><td width="3%"><br></td><td>
+<p>
 The Magick scripting language (MSL) will primarily
 benefit those that want to accomplish custom image processing tasks but
 do not wish to program, or those that do not have access to a Perl
 interpreter or a compiler.  The interpreter is called conjure and here
 is an example script:
-</dd>
-<dd>
+</p>
 <pre>
     &lt;?xml version="1.0" encoding="UTF-8"?&gt;
     &lt;image size="400x400" &gt;
       &lt;read filename="image.gif" /&gt;
       &lt;get width="base-width" height="base-height" /&gt;
-      &lt;resize geometry="%[geometry]" /&gt;
+      &lt;resize geometry="%[dimensions]" /&gt;
       &lt;get width="width" height="height" /&gt;
-      &lt;print output="Image sized from %[base-width]x%[base-height] to
-         %[width]x%[height].\n" /&gt;
+      &lt;print output="Image sized from %[base-width]x%[base-height]
+         to %[width]x%[height].\n" /&gt;
       &lt;write filename="image.png" /&gt;
     &lt;/image&gt;
 </pre>
-</dd>
-
-<dd>
+<p>
 invoked with
-</dd>
-
-<dd>
+</p>
 <pre>
-    conjure -geometry 400x400 incantation.msl
+    conjure -dimensions 400x400 incantation.msl
 </pre>
-</dd>
-
-<dd>All operations will closely follow the key/value pairs defined in
-PerlMagick, unless otherwise noted.</dd>
-<dd>You can also define your own keyword/value pairs on the command line.
-The script can then use this information when setting values by including
-%[keyword] in the string.  For example, if you included
-&quot;-geometry 400x400&quot; on the command line, then any string
-containing &quot;%[geometry]&quot; would have 400x400 substituted.
-This can be either an entire string, such as
-geometry=&quot;%[geometry]&quot; or part of a string such as
-filename=&quot;%[basename].png&quot;.</dd>
-<dd>
+<p>
+All operations will closely follow the key/value pairs defined in
+PerlMagick, unless otherwise noted.
+</p><p>
 <strong>Conjure</strong> is in the early stages of development as of
 December 2001.
-</dd>
-
-<dd>
+</p><p>
 This early announcement is to allow ImageMagick users to contibute ideas 
 early in the process so when the scripting language is released it will
 be useful/stable from the get-go!  If you want to contribute suggestions
 about the Magick scripting langauge (MSL), post them to
 magick-developers@imagemagick.org.
-</dd>
-</dl>
-<p>&nbsp;
-<i><a href="#top">Back to Contents</a></i>
-<br>&nbsp;
-<br>&nbsp;
-<a NAME="opti"></a>
-<table BORDER=0 WIDTH="100%" >
-<tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.png"
-ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font
-color="#FFFFFF"><font size="+1">Options</font></font></font></b></td>
-</table>
-
-<dl>
-<dd>
+</p>
+     </td></tr></table>
+     <p>
+     <i><a href="#top">Back to Contents</a></i> 
+     &nbsp;</p>
+     <table BORDER=0 WIDTH="100%"> 
+     <tr> 
+     <td ALIGN=LEFT BGCOLOR="#52799E"><img 
+     SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
+     height=14 width=15><b><font face="Helvetica, Arial"><font 
+     color="#FFFFFF"><font size="+1">
+<a NAME="opti">Options</a>
+     </font></font></font></b></td></tr></table>
+     <table width="90%" border="0" cellspacing="0" cellpadding="8">
+     <tr><td width="3%"><br></td><td>
+<p>
 Options are processed in command line order. Any option you specify on
 the command line remains in effect until it is explicitly changed by specifying
 the option again with a different effect, or if it is changed by a statement
 in the scripting language.
-</dd>
-</dl>
-
-
-<p>&nbsp;
-<i><a href="#top">Back to Contents</a></i>
-<br>&nbsp;
-<a NAME="msl"></a>
-<table BORDER=0 WIDTH="100%" >
-<tr>
-<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.png"
-ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font
-color="#FFFFFF"><font size="+1"
->Magick Scripting Language</font></font></font></b></td>
-</table>
-
-<table width="90%" border="0" cellspacing="0" cellpadding="8">
-<tr><td width="9%"><br></td><td>
-<p>The Magick Scripting Language (MSL) presently defines the following
+</p><p>
+You can define your own keyword/value pairs on the command line.
+The script can then use this information when setting values by including
+%[keyword] in the string.  For example, if you included
+"-dimensions 400x400" on the command line, as illustrated above,
+then any string
+containing "%[dimensions]" would have 400x400 substituted.
+This can be either an entire string, such as
+geometry="%[dimensions]" or part of a string such as
+filename="%[basename].png".
+</p>
+     </td></tr></table>
+     <p>
+     <i><a href="#top">Back to Contents</a></i> 
+     &nbsp;</p>
+     <table BORDER=0 WIDTH="100%"> 
+     <tr> 
+     <td ALIGN=LEFT BGCOLOR="#52799E"><img 
+     SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
+     height=14 width=15><b><font face="Helvetica, Arial"><font 
+     color="#FFFFFF"><font size="+1">
+<a NAME="msl">Magick Scripting Language</a>
+     </font></font></font></b></td></tr></table>
+     <table width="90%" border="0" cellspacing="0" cellpadding="8">
+     <tr><td width="3%"><br></td><td>
+<p>
+The Magick Scripting Language (MSL) presently defines the following
 elements and their attributes:
+</p>
 <dl>
-<dt><strong>&lt;image&gt;</strong>
-<dd><strong>&lt;image&gt;</strong> defines a new image object and
+<dt>&lt;image&gt;</dt>
+<dd>Define a new image object.
 <strong>&lt;/image&gt;</strong> destroys it. Because of this, if you wish
-to reference multiple &quot;subimages&quot;&nbsp;(aka pages or layers),
-you can embed one &lt;<strong>image</strong>&gt; element inside of
+to reference multiple "subimages"&amp;nbsp;(aka pages or layers),
+you can embed one <strong>image</strong> element inside of
 another. For example:
+</dd>
 <dd>
 <pre>
     &lt;image&gt;
-    &lt;read filename=&quot;input.png&quot; /&gt;
-    &lt;get width=&quot;base-width&quot; height=&quot;base-height&quot; /&gt;
-    &lt;image height=&quot;base-height&quot; width=&quot;base-width&quot;&gt;
+    &lt;read filename="input.png" /&gt;
+    &lt;get width="base-width" height="base-height" /&gt;
+    &lt;image height="base-height" width="base-width"&gt;
     &lt;label&gt;this is a simple label&lt;label/&gt;
     &lt;image /&gt;
-    &lt;write filename=&quot;output.mng&quot; /&gt;
+    &lt;write filename="output.mng" /&gt;
     &lt;/image&gt;
 </pre>
 </dd>
 <dd>
 <pre>
-    &lt;image size=&quot;400x400&quot; /&gt;
+    &lt;image size="400x400" /&gt;
 </pre>
 </dd>
-
-
-<dt><strong>&lt;group&gt;</strong>
-<dd><strong>&lt;group&gt;</strong> defines a new group of image objects.
+<dt>&lt;group&gt;</dt>
+<dd>Define a new group of image objects.
 By default, images are only valid for the life of
 their <strong>&lt;image&gt;</strong>element.
 </dd>
@@ -207,116 +205,117 @@ their <strong>&lt;image&gt;</strong>element.
     &lt;/image&gt;  -- dispose of the image
 </pre>
 </dd>
-
 <dd>
 However, in a group, all images in that group will stay 
 around for the life of the group:
 </dd>
-
 <dd>
 <pre>
-    &lt;group&gt;
-        &lt;image&gt;                  -- create an image
-        ....                               -- do stuff
-        &lt;/image&gt;                     -- NOOP
-        &lt;image&gt;                  -- create another image
-        ....                           -- do more stuff
-        &lt;/image&gt;                     -- NOOP
-        &lt;write filename=image.mng&quot; /&gt;  -- output
-    &lt;/group&gt;                     -- dispose of both images
+    &lt;group&gt;                           -- start a group
+        &lt;image&gt;                       -- create an image
+        ....                          -- do stuff
+        &lt;/image&gt;                      -- NOOP
+        &lt;image&gt;                       -- create another image
+        ....                          -- do more stuff
+        &lt;/image&gt;                      -- NOOP
+        &lt;write filename="image.mng" /&gt;  -- output
+    &lt;/group&gt;                          -- dispose of both images
 </pre>
 </dd>
-
-
-
-<dt><strong>&lt;read&gt;</strong>
-<dd><strong>&lt;read&gt; </strong>reads a new image from a disk file.
+<dt>&lt;read&gt;</dt>
+<dd>Read a new image from a disk file.
+</dd>
+<dd>
 <pre>
-    &lt;read filename=image.gif&quot; /&gt;
+    &lt;read filename="image.gif" /&gt;
 </pre>
 </dd>
 <dd>To read two images use
+</dd>
+<dd>
 <pre>
-    &lt;read filename=&quot;image.gif&quot; /&gt;
-    &lt;read filename=&quot;image.png /&gt;
+    &lt;read filename="image.gif" /&gt;
+    &lt;read filename="image.png" /&gt;
 </pre>
 </dd>
-<dt><strong>&lt;write&gt;</strong>
-<dd><strong>&lt;write&gt; </strong>writes the image(s) to disk, either as
+<dd>
+<dt>&lt;write&gt;</dt>
+<dd>Write the image(s) to disk, either as
 a single multiple-image file or multiple ones if necessary.
 </dd>
 <dd>
 <pre>
-     &lt;write filename=image.tiff&quot; /&gt;
-</pre>
-<dt><strong>&lt;get&gt;</strong>
-<dd><strong>&lt;get&gt;</strong>gets any attribute recognized by
-PerlMagick's GetAttribute() and stores it as an image attribute for later
-use. Currently only <em>width</em> and <em>height</em> are supported.
-
-<pre>
-    &lt;get width=&quot;base-width&quot; height=&quot;base-height&quot; /&gt;
-    &lt;print output=&quot;Image size is %[base-width]x%[base-height].\n&quot; /&gt;
+     &lt;write filename=image.tiff" /&gt;
 </pre>
 </dd>
-
-<dt><strong>&lt;border&gt;</strong>
-    <dd>fill, geometry, height, width
-<dt><strong>&lt;blur&gt;</strong>
-    <dd>radius, sigma
-<dt><strong>&lt;charcoal&gt;</strong>
-    <dd>radius, sigma
-<dt><strong>&lt;chop&gt;</strong>
-    <dd>geometry, height, width, x, y
-<dt><strong>&lt;crop&gt;</strong>
-    <dd>geometry, height, width, x, y
-<dt><strong>&lt;despeckle&gt;</strong>
-<dt><strong>&lt;emboss&gt;</strong>
-    <dd>radius, sigma
-<dt><strong>&lt;enhance&gt;</strong>
-<dt><strong>&lt;equalize&gt;</strong>
-<dt><strong>&lt;flip&gt;</strong>
-<dt><strong>&lt;flop&gt;</strong>
-<dt><strong>&lt;frame&gt;</strong>
-    <dd>fill, geometry, height, width, x, y, inner, outer
-<dt><strong>&lt;get&gt;</strong>
-<dt><strong>&lt;image&gt;</strong>
-<dt><strong>&lt;magnify&gt;</strong>
-<dt><strong>&lt;minify&gt;</strong>
-<dt><strong>&lt;normalize&gt;</strong>
-<dt><strong>&lt;print&gt;</strong>
-    <dd>output
-<dt><strong>&lt;read&gt;</strong>
-<dt><strong>&lt;resize&gt;</strong>
-    <dd>blur, filter, height, width
-<dt><strong>&lt;roll&gt;</strong>
-    <dd>geometry, x, y
-<dt><strong>&lt;rotate&gt;</strong>
-    <dd>degrees
-<dt><strong>&lt;sample&gt;</strong>
-    <dd>geometry, height, width
-<dt><strong>&lt;scale&gt;</strong>
-    <dd>geometry, height, width
-<dt><strong>&lt;sharpen&gt;</strong>
-    <dd>radius, sigma
-<dt><strong>&lt;shave&gt;</strong>
-    <dd>geometry, height, width
-<dt><strong>&lt;shear&gt;</strong>
-    <dd>x, y
-<dt><strong>&lt;solarize&gt;</strong>
-    <dd>threshold
-<dt><strong>&lt;spread&gt;</strong>
-    <dd>radius
-<dt><strong>&lt;swirl&gt;</strong>
-    <dd>degrees
-<dt><strong>&lt;threshold&gt;</strong>
-    <dd>threshold
-<dt><strong>&lt;trim&gt;</strong>
+<dt>&lt;get&gt;</dt>
+<dd>Get any attribute recognized by
+PerlMagick's GetAttribute() and stores it as an image attribute for later
+use. Currently only <em>width</em> and <em>height</em> are supported.
+</dd>
+<dd>
+<pre>
+    &lt;get width="base-width" height="base-height" /&gt;
+    &lt;print output="Image size is %[base-width]x%[base-height].\n" /&gt;
+</pre>
+</dd>
+<dt>&lt;border&gt;</dt>
+    <dd>fill, geometry, height, width</dd>
+<dt>&lt;blur&gt;</dt>
+    <dd>radius, sigma</dd>
+<dt>&lt;charcoal&gt;</dt>
+    <dd>radius, sigma</dd>
+<dt>&lt;chop&gt;</dt>
+    <dd>geometry, height, width, x, y</dd>
+<dt>&lt;crop&gt;</dt>
+    <dd>geometry, height, width, x, y</dd>
+<dt>&lt;despeckle&gt;</dt>
+<dt>&lt;emboss&gt;</dt>
+    <dd>radius, sigma</dd>
+<dt>&lt;enhance&gt;</dt>
+<dt>&lt;equalize&gt;</dt>
+<dt>&lt;flip&gt;</dt>
+<dt>&lt;flop&gt;</dt>
+<dt>&lt;frame&gt;</dt>
+    <dd>fill, geometry, height, width, x, y, inner, outer</dd>
+<dt>&lt;get&gt;</dt>
+<dt>&lt;image&gt;</dt>
+<dt>&lt;magnify&gt;</dt>
+<dt>&lt;minify&gt;</dt>
+<dt>&lt;normalize&gt;</dt>
+<dt>&lt;print&gt;</dt>
+    <dd>output</dd>
+<dt>&lt;read&gt;</dt>
+<dt>&lt;resize&gt;</dt>
+    <dd>blur, filter, height, width</dd>
+<dt>&lt;roll&gt;</dt>
+    <dd>geometry, x, y</dd>
+<dt>&lt;rotate&gt;</dt>
+    <dd>degrees</dd>
+<dt>&lt;sample&gt;</dt>
+    <dd>geometry, height, width</dd>
+<dt>&lt;scale&gt;</dt>
+    <dd>geometry, height, width</dd>
+<dt>&lt;sharpen&gt;</dt>
+    <dd>radius, sigma</dd>
+<dt>&lt;shave&gt;</dt>
+    <dd>geometry, height, width</dd>
+<dt>&lt;shear&gt;</dt>
+    <dd>x, y</dd>
+<dt>&lt;solarize&gt;</dt>
+    <dd>threshold</dd>
+<dt>&lt;spread&gt;</dt>
+    <dd>radius</dd>
+<dt>&lt;swirl&gt;</dt>
+    <dd>degrees</dd>
+<dt>&lt;threshold&gt;</dt>
+    <dd>threshold</dd>
+<dt>&lt;trim&gt;</dt>
 </dl>
-</td></tr>
-</table>
-<br>&nbsp;
-<br>
+     </td></tr></table>
+     <p>
+     <i><a href="#top">Back to Contents</a></i> 
+     &nbsp;</p>
 <a NAME="auth"></a>
 <table BORDER=0 WIDTH="100%" >
 <tr>
