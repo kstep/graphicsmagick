@@ -348,12 +348,15 @@ static unsigned int DecodeImage(Image *image,const short int opacity)
 %
 %  The format of the EncodeImage method is:
 %
-%      unsigned int EncodeImage(Image *image,const unsigned int data_size)
+%      unsigned int EncodeImage(const ImageInfo *image_info,Image *image,
+%        const unsigned int data_size)
 %
 %  A description of each parameter follows:
 %
 %    o status:  Method EncodeImage returns True if all the pixels are
 %      compressed without error, otherwise False.
+%
+%    o image_info: Specifies a pointer to an ImageInfo structure.
 %
 %    o image: The address of a structure of type Image.
 %
@@ -361,7 +364,8 @@ static unsigned int DecodeImage(Image *image,const short int opacity)
 %
 %
 */
-static unsigned int EncodeImage(Image *image,const unsigned int data_size)
+static unsigned int EncodeImage(const ImageInfo *image_info,Image *image,
+  const unsigned int data_size)
 {
 #define MaxCode(number_bits)  ((1 << (number_bits))-1)
 #define MaxHashTable  5003
@@ -488,7 +492,7 @@ static unsigned int EncodeImage(Image *image,const unsigned int data_size)
       if (k >= MaxHashTable)
         k-=MaxHashTable;
 #if defined(HasLZW)
-      if ((image->compression != NoCompression) && (hash_code[k] > 0))
+      if ((image_info->compression != NoCompression) && (hash_code[k] > 0))
         {
           if ((hash_prefix[k] == waiting_code) && (hash_suffix[k] == index))
             {
@@ -1256,7 +1260,7 @@ Export unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
     c=Max(bits_per_pixel,2);
     (void) WriteByte(image,(char) c);
     if (interlace == NoInterlace)
-      status=EncodeImage(image,Max(bits_per_pixel,2)+1);
+      status=EncodeImage(image_info,image,Max(bits_per_pixel,2)+1);
     else
       {
         Image
@@ -1304,7 +1308,7 @@ Export unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
           }
         }
         interlace_image->file=image->file;
-        status=EncodeImage(interlace_image,Max(bits_per_pixel,2)+1);
+        status=EncodeImage(image_info,interlace_image,Max(bits_per_pixel,2)+1);
         interlace_image->file=(FILE *) NULL;
         DestroyImage(interlace_image);
       }
