@@ -239,7 +239,9 @@ typedef struct _MngInfo
 
   long
     loop_count[256],
-    loop_iteration[256],
+    loop_iteration[256];
+
+  off_t
     loop_jump[256];
 
   unsigned char
@@ -356,7 +358,8 @@ static unsigned int CompressColormapTransFirst(Image *image)
     transparent_pixels,
     j,
     k,
-    y;
+    y,
+    zero=0;
 
   PixelPacket
     *colormap;
@@ -428,7 +431,7 @@ static unsigned int CompressColormapTransFirst(Image *image)
   */
   for (i=0; i < number_colors; i++)
   {
-    if (ColorMatch(image->colormap[i],image->background_color,0))
+    if (ColorMatch(image->colormap[i],image->background_color,zero))
       {
         marker[i]=True;
         break;
@@ -442,7 +445,7 @@ static unsigned int CompressColormapTransFirst(Image *image)
       {
         for (j=i+1; j<number_colors; j++)
           if ((opacity[i] == opacity[j]) &&
-              (ColorMatch(image->colormap[i],image->colormap[j],0)))
+              (ColorMatch(image->colormap[i],image->colormap[j],zero)))
             marker[j]=False;
        }
   /*
@@ -499,7 +502,7 @@ static unsigned int CompressColormapTransFirst(Image *image)
         for (j=i+1; j < number_colors; j++)
         {
           if ((opacity[i] == opacity[j]) &&
-              (ColorMatch(image->colormap[i],image->colormap[j],0)))
+              (ColorMatch(image->colormap[i],image->colormap[j],zero)))
             {
                map[j]=k;
                marker[j]=False;
@@ -658,7 +661,8 @@ unsigned int ImageIsMonochrome(Image *image)
   register int
     i,
     x,
-    y;
+    y,
+    zero=0;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -667,7 +671,7 @@ unsigned int ImageIsMonochrome(Image *image)
     {
       for (i=0; i < (int) image->colors; i++)
       {
-        if (!IsGray(image->colormap[i]) || (image->colormap[i].red != 0) ||
+        if (!IsGray(image->colormap[i]) || (image->colormap[i].red != zero) ||
             (image->colormap[i].red != MaxRGB))
           return(False);
       }
@@ -985,7 +989,7 @@ static void png_flush_data(png_structp png_ptr)
 }
 #endif
 
-static int PalettesAreEqual(const ImageInfo *image_info,Image *a,Image *b)
+static int PalettesAreEqual(Image *a,Image *b)
 {
   int
     i;
@@ -1169,8 +1173,8 @@ static png_free_ptr png_IM_free(png_structp png_ptr,png_voidp ptr)
 #endif
 
 static int
-png_read_raw_profile(Image *image, const ImageInfo *image_info,png_struct *ping,
-   png_info *ping_info,png_textp text,int ii)
+png_read_raw_profile(Image *image, const ImageInfo *image_info,
+   png_textp text,int ii)
 {
    unsigned char
      *info;
@@ -2775,8 +2779,13 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
 #if defined(PNG_READ_sBIT_SUPPORTED)
     if (have_global_sbit)
-      if ((!ping_info->valid & PNG_INFO_sBIT))
-        png_set_sBIT(ping,ping_info,mng_info->global_sbit);
+      {
+        int
+           not_valid;
+        not_valid=!ping_info->valid;
+        if (not_valid & PNG_INFO_sBIT)
+          png_set_sBIT(ping,ping_info,mng_info->global_sbit);
+      }
 #endif
     png_read_update_info(ping,ping_info);
     /*
@@ -3100,7 +3109,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   {
                     q->opacity=((*p++) << 8);
                     q->opacity|=(*p++);
-                    q->opacity=MaxRGB-q->opacity;
+                    q->opacity=(Quantum) (MaxRGB-q->opacity);
                     q++;
                   }
 #else
@@ -3108,7 +3117,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 p++; /* strip low byte */
                 if (ping_info->color_type == 4)
                   {
-                    q->opacity=MaxRGB-(*p++);
+                    q->opacity=(Quantum) (MaxRGB-(*p++));
                     p++;
                     q++;
                   }
@@ -3198,12 +3207,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /* Check for a profile */
 
         if (!memcmp(text[i].key, "Raw profile type ",17))
-          {
-#if (PNG_LIBPNG_VER > 10008)
-            png_read_raw_profile(image,image_info,ping,ping_info,text,i);
-            png_free_data(ping,ping_info,PNG_FREE_TEXT, i);
-#endif
-          }
+            png_read_raw_profile(image,image_info,text,i);
         else
           {
             char
@@ -3405,7 +3409,6 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                          MngInfoFreeStruct(mng_info,&have_mng_structure);
                          ThrowReaderException(ResourceLimitWarning,
                            "Memory allocation failed while magnifying", image);
-                         return((Image *) NULL);
                       }
                    }
 
@@ -3446,7 +3449,6 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                      MngInfoFreeStruct(mng_info,&have_mng_structure);
                      ThrowReaderException(ResourceLimitWarning,
                        "Memory allocation failed while magnifying", image);
-                     return((Image *) NULL);
                   }
                 n=GetImagePixels(image,0,0,image->columns,1);
                 memcpy(next,n,length);
@@ -3986,11 +3988,26 @@ static void PNGType(png_bytep p,png_bytep type)
 }
 #endif
 
+#if (PNG_LIBPNG_VER > 99 && PNG_LIBPNG_VER < 10007)
+/* This function became available in libpng version 1.0.6g. */
+static void
+png_set_compression_buffer_size(png_structp png_ptr, png_uint_32 size)
+{
+    if(png_ptr->zbuf)
+       png_free(png_ptr, png_ptr->zbuf); png_ptr->zbuf=NULL;
+    png_ptr->zbuf_size = (png_size_t)size;
+    png_ptr->zbuf = (png_bytep)png_malloc(png_ptr, size);
+    if(!png_ptr->zbuf)
+       png_error(png_ptr,"Unable to allocate zbuf");
+}
+#endif
+
 static void
 png_write_raw_profile(const ImageInfo *image_info,png_struct *ping,
    png_info *ping_info, unsigned char *profile_type, unsigned char
-   *profile_description, unsigned char *profile_data, int length)
+   *profile_description, unsigned char *profile_data, png_uint_32 length)
 {
+#if (PNG_LIBPNG_VER > 10005)
    png_textp
      text;
 
@@ -4005,15 +4022,22 @@ png_write_raw_profile(const ImageInfo *image_info,png_struct *ping,
 
    png_uint_32
      allocated_length,
-     description_length,
-     zbuffer_size;
+     description_length;
 
    unsigned char
      hex[16]={'0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f'};
+#endif
 
 #if (PNG_LIBPNG_VER <= 10005)
    if (image_info->verbose)
      printf("Not ");
+   image_info=image_info;
+   ping=ping;
+   ping_info=ping_info;
+   profile_type=profile_type;
+   profile_description=profile_description;
+   profile_data=profile_data;
+   length=length;
 #endif
    if (image_info->verbose)
      {
@@ -4025,8 +4049,8 @@ png_write_raw_profile(const ImageInfo *image_info,png_struct *ping,
    description_length=strlen((const char *) profile_description);
    allocated_length= (png_uint_32) (length*2 + (length>>5) + 10
       + description_length);
-   text[0].text=(png_textp) png_malloc(ping,allocated_length);
-   text[0].key=(png_textp) png_malloc(ping, (png_uint_32) 80);
+   text[0].text=(png_charp) png_malloc(ping,allocated_length);
+   text[0].key=(png_charp) png_malloc(ping, (png_uint_32) 80);
    text[0].key[0]='\0';
    strcat(text[0].key, "Raw profile type ");
    strncat(text[0].key, (const char *) profile_type, 61);
@@ -4052,12 +4076,7 @@ png_write_raw_profile(const ImageInfo *image_info,png_struct *ping,
      (image_info->compression == UndefinedCompression &&
      text[0].text_length < 128) ? -1 : 0;
    assert(text[0].text_length <= allocated_length);
-   zbuffer_size=png_get_compression_buffer_size(ping);
-   if(allocated_length >= zbuffer_size)
-     png_set_compression_buffer_size(ping,allocated_length+1);
    png_set_text(ping,ping_info,text,1);
-   if(allocated_length >= zbuffer_size)
-     png_set_compression_buffer_size(ping,zbuffer_size);
    png_free(ping,text[0].text);
    png_free(ping,text[0].key);
    png_free(ping,text);
@@ -4095,7 +4114,8 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     rowbytes,
     save_image_depth,
     use_global_plte,
-    y;
+    y,
+    zero=0;
 
   register IndexPacket
     *indexes;
@@ -4220,7 +4240,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
           {
             if (!ImageIsGray(image))
               all_images_are_gray=False;
-            equal_palettes=PalettesAreEqual(image_info,image,next_image);
+            equal_palettes=PalettesAreEqual(image,next_image);
             if (!use_global_plte)
               use_global_plte=equal_palettes;
             need_local_plte=!equal_palettes;
@@ -4491,7 +4511,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
      if (!need_local_plte && image->storage_class==PseudoClass
          && !all_images_are_gray)
        {
-         long
+         unsigned int
            data_length;
 
          /*
@@ -4519,6 +4539,9 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     png_colorp
        palette;
 
+    int
+       not_valid;
+
     /*
       If we aren't using a global palette for the entire MNG, check to
       see if we can use one for two or more consecutive images.
@@ -4532,13 +4555,13 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
               as the previous PseudoClass image
             */
             have_write_global_plte=equal_palettes;
-            equal_palettes=PalettesAreEqual(image_info,image,image->next);
+            equal_palettes=PalettesAreEqual(image,image->next);
             if (equal_palettes && !have_write_global_plte)
               {
                 /*
                   Write MNG PLTE chunk
                 */
-                long
+                unsigned int
                   data_length;
 
                 data_length=3*image->colors;
@@ -4796,7 +4819,8 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
             ping_info->trans_values.green=p->green;
             ping_info->trans_values.blue=p->blue;
             ping_info->trans_values.gray=(png_uint_16) Intensity(*p);
-            ping_info->trans_values.index=MaxRGB-DownScale(p->opacity);
+            ping_info->trans_values.index=(unsigned char)
+               (MaxRGB-DownScale(p->opacity));
           }
         if (ping_info->valid & PNG_INFO_tRNS)
           {
@@ -4814,7 +4838,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
               {
                 if (p->opacity != OpaqueOpacity)
                   {
-                    if (!ColorMatch(ping_info->trans_values,*p,0))
+                    if (!ColorMatch(ping_info->trans_values,*p,zero))
                     {
                        break;  /* Can't use RGB + tRNS for multiple transparent
                                   colors.  */
@@ -4826,7 +4850,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
                   }
                  else
                   {
-                    if (ColorMatch(ping_info->trans_values,*p,0))
+                    if (ColorMatch(ping_info->trans_values,*p,zero))
                         break; /* Can't use RGB + tRNS when another pixel
                                   having the same RGB samples is transparent. */
                   }
@@ -4975,7 +4999,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
               Identify which colormap entry is the background color.
             */
             for (i=0; i < (int) Max(number_colors-1,1); i++)
-              if (ColorMatch(ping_info->background,image->colormap[i],0))
+              if (ColorMatch(ping_info->background,image->colormap[i],zero))
                 break;
             ping_info->background.index=i;
           }
@@ -4996,7 +5020,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     /*
       Initialize compression level and filtering.
     */
-#if (PNG_LIBPNG_VER > 10008)
+#if (PNG_LIBPNG_VER > 99)
     png_set_compression_buffer_size(ping,32768L);
 #endif
     png_set_compression_mem_level(ping, 9);
@@ -5023,9 +5047,6 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
           png_set_filter(ping,PNG_FILTER_TYPE_BASE,PNG_NO_FILTERS);
         else
           png_set_filter(ping,PNG_FILTER_TYPE_BASE,PNG_ALL_FILTERS);
-
-
-
 
     if (image->color_profile.length)
 #if (PNG_LIBPNG_VER > 10008) && defined(PNG_WRITE_iCCP_SUPPORTED)
@@ -5079,7 +5100,8 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
         png_set_sRGB(ping,ping_info,(int) image->rendering_intent+1);
         png_set_gAMA(ping,ping_info,0.45455);
       }
-    if (!image_info->adjoin || (!ping_info->valid & PNG_INFO_sRGB))
+    not_valid=(!ping_info->valid);
+    if ((!image_info->adjoin) || not_valid & PNG_INFO_sRGB)
 #endif
       {
         if (!have_write_global_gama && (image->gamma != 0.0))
@@ -5308,8 +5330,10 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     attribute=GetImageAttribute(image,(char *) NULL);
     for ( ; attribute != (ImageAttribute *) NULL; attribute=attribute->next)
     {
+#if (PNG_LIBPNG_VER > 10005)
       png_textp
         text;
+#endif
 
       if (*attribute->key == '[')
         continue;
