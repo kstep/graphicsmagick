@@ -1102,6 +1102,7 @@ static unsigned int MontageUtility(int argc,char **argv)
           if (LocaleCompare("tile",option+1) == 0)
             {
               (void) CloneString(&montage_info->tile,(char *) NULL);
+              argv[i]=(char *) "+sans";
               if (*option == '-')
                 {
                   i++;
