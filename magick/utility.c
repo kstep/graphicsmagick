@@ -59,7 +59,8 @@
   Forward declaration.
 */
 static int
-  IsDirectory(const char *);
+  IsDirectory(const char *),
+  ParseGeometry(const char *,long *,long *,unsigned long *,unsigned long *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1809,7 +1810,7 @@ MagickExport unsigned long MultilineCensus(const char *label)
 %
 %
 */
-MagickExport int ParseGeometry(const char *geometry,long *x,long *y,
+static int ParseGeometry(const char *geometry,long *x,long *y,
   unsigned long *width,unsigned long *height)
 {
   char

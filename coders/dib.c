@@ -508,7 +508,7 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       RectangleInfo
         geometry;
 
-      flags=ParseGeometry(image_info->size,&geometry.x,&geometry.y,
+      flags=GetGeometry(image_info->size,&geometry.x,&geometry.y,
         &geometry.width,&geometry.height);
       if ((flags & WidthValue) && (geometry.width < image->columns))
         image->columns=geometry.width;
