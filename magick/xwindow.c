@@ -5167,7 +5167,7 @@ MagickExport unsigned int XMakeImage(Display *display,
 #endif
   window->ximage=ximage;
   matte_image=(XImage *) NULL;
-  if (window->image != (Image *) NULL)
+  if (window->shape && (window->image != (Image *) NULL))
     if (window->image->matte &&
         (width <= (unsigned int) XDisplayWidth(display,window->screen)) &&
         (height <= (unsigned int) XDisplayHeight(display,window->screen)))
@@ -5185,12 +5185,15 @@ MagickExport unsigned int XMakeImage(Display *display,
           }
         if (matte_image != (XImage *) NULL)
           {
+            size_t
+              length;
+
             /*
               Allocate matte image pixel data.
             */
-            matte_image->data=(char *)
-              AcquireMemory(matte_image->bytes_per_line*
-              matte_image->height*matte_image->depth);
+            length=matte_image->bytes_per_line*
+              matte_image->height*matte_image->depth;
+            matte_image->data=(char *) AcquireMemory(length);
             if (matte_image->data == (char *) NULL)
               {
                 XDestroyImage(matte_image);
