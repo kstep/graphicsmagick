@@ -1263,7 +1263,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
             *q++=indexes[x];
           break;
         }
-      if (image->colors <= 65536)
+      if (image->colors <= 65535)
         {
           for (x=0; x < (long) number_pixels; x++)
           {
@@ -1954,7 +1954,7 @@ MagickExport unsigned int PushImagePixels(Image *image,
           }
           break;
         }
-      if (image->colors <= 65536)
+      if (image->colors <= 65535)
         {
           for (x=0; x < (long) number_pixels; x++)
           {
