@@ -2536,7 +2536,8 @@ MagickExport void DrawPathCurveToQuadraticBezierRelative(DrawContext context,
 %    o x: x ordinate of final point
 %
 %    o y: y ordinate of final point
-% */
+%
+*/
 static void DrawPathCurveToQuadraticBezierSmooth(DrawContext context,
                                                  const PathMode mode,
                                                  const double x, const double y)
@@ -2605,6 +2606,7 @@ MagickExport void DrawPathCurveToQuadraticBezierSmoothAbsolute(DrawContext
 %
 %    o y: y ordinate of final point
 %
+%
 */
 MagickExport void DrawPathCurveToQuadraticBezierSmoothRelative(DrawContext
                                                                context,
@@ -2655,7 +2657,8 @@ MagickExport void DrawPathCurveToQuadraticBezierSmoothRelative(DrawContext
 %
 %    o y: y ordinate of termination point
 %
-% */
+%
+*/
 static void DrawPathCurveToSmooth(DrawContext context, const PathMode mode,
                                   const double x2, const double y2,
                                   const double x, const double y)
@@ -2725,6 +2728,7 @@ MagickExport void DrawPathCurveToSmoothAbsolute(DrawContext context,
 %
 %    o y: y ordinate of termination point
 %
+%
 */
 MagickExport void DrawPathCurveToSmoothRelative(DrawContext context,
                                                 const double x2, const double y2,
@@ -2784,7 +2788,8 @@ MagickExport void DrawPathCurveToSmoothRelative(DrawContext context,
 %    o sweep_flag: If non-zero (true) then draw the arc matching a
 %                  clock-wise rotation
 %
-% */
+%
+*/
 static void DrawPathEllipticArc(DrawContext context, const PathMode mode,
                                 const double rx, const double ry,
                                 const double x_axis_rotation,
