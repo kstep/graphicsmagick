@@ -379,10 +379,9 @@ static struct
       {"colorsp", ColorspaceTypes}, {"dither", BooleanTypes},
       {"measure", BooleanTypes}, {"global", BooleanTypes} } },
     { "Raise", { {"geom", StringReference}, {"width", IntegerReference},
-      {"height", IntegerReference}, {"x", IntegerReference},
-      {"y", IntegerReference}, {"raise", BooleanTypes} } },
-    { "Segment", { {"colorsp", ColorspaceTypes}, {"verbose", BooleanTypes},
-      {"clust", DoubleReference}, {"smooth", DoubleReference} } },
+      {"height", IntegerReference}, {"raise", BooleanTypes} } },
+    { "Segment", { {"cluster", DoubleReference}, {"smooth", DoubleReference},
+      {"colorsp", ColorspaceTypes}, {"verbose", BooleanTypes} } },
     { "Signature", },
     { "Solarize", { {"factor", DoubleReference} } },
     { "Sync", },
@@ -5074,13 +5073,9 @@ Mogrify(ref,...)
               if (attribute_flag[2])
                 rectangle_info.height=argument_list[2].int_reference;
               if (attribute_flag[3])
-                rectangle_info.x=argument_list[3].int_reference;
-              if (attribute_flag[4])
-                rectangle_info.y=argument_list[4].int_reference;
-              if (attribute_flag[5])
-                argument_list[5].int_reference=1;
+                argument_list[3].int_reference=1;
             }
-          RaiseImage(image,&rectangle_info,argument_list[5].int_reference);
+          RaiseImage(image,&rectangle_info,argument_list[3].int_reference);
           break;
         }
         case 50:  /* Segment */
@@ -5088,18 +5083,19 @@ Mogrify(ref,...)
           if (first)
             {
               if (!attribute_flag[0])
-                argument_list[0].int_reference=
-                  info ? info->quantize_info->colorspace : RGBColorspace;
+                argument_list[0].double_reference=1.0;
               if (!attribute_flag[1])
-                argument_list[1].int_reference=0;
+                argument_list[1].double_reference=1.5;
               if (!attribute_flag[2])
-                argument_list[2].double_reference=1.0;
+                argument_list[2].int_reference=
+                  info ? info->quantize_info->colorspace : RGBColorspace;
               if (!attribute_flag[3])
-                argument_list[3].double_reference=1.5;
+                argument_list[3].int_reference=0;
             }
           (void) SegmentImage(image,(ColorspaceType)
-            argument_list[0].int_reference,argument_list[1].int_reference,
-            argument_list[2].double_reference,argument_list[3].double_reference);
+            argument_list[2].int_reference,argument_list[3].int_reference,
+            argument_list[0].double_reference,
+            argument_list[1].double_reference);
           break;
         }
         case 51:  /* Signature */
