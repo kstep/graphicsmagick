@@ -2310,6 +2310,8 @@ MagickExport void Strip(char *data)
   assert(data != (char *) NULL);
   if (*data == '\0')
     return;
+  if (strlen(data) == 1)
+    return;
   p=data;
   while (isspace((int) (*p)))
     p++;
