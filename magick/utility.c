@@ -2988,12 +2988,11 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
   if ((formatted_text == (const char *) NULL) || (*formatted_text == '\0'))
     return((char *) NULL);
   text=(char *) formatted_text;
-  if (*text == '@')
+  if ((*text == '@') && IsAccessible(text+1))
     {
       text=(char *) FileToBlob(text+1,&length,&image->exception);
       if (text == (char *) NULL)
-        MagickError(ResourceLimitError,"Unable to translate text",
-          "Memory allocation failed");
+        return((char *) NULL);
     }
   /*
     Translate any embedded format characters.
