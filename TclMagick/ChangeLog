@@ -1,6 +1,21 @@
+2004-03-07  David N. Welton  <davidw@dedasys.com>
+
+	* doc/TclMagick.html: Added some credits/copyright notices.
+
+	* doc/TkMagick.html: Added brief TkMagick.html page to document
+	the TkMagick extension.
+
+	* generic/TkMagick.c (MagickToPhoto): Add alpha channel mapping.
+
+	* generic/Makefile.am (libTkMagick_la_CFLAGS): Added GM_LDFLAGS to
+	LDFLAGS for TkMagick compile, added TCL_INCLUDES to CFLAGS for
+	TclMagick.
+
+	* configure.ac: Bumped version here too.
+
 2004-02-27  Rolf Schroedter <rolf.schroedter@dlr.de>
 	* TclMagick version 0.4
-	
+
 	* Fixed ClipImage and ClipPathImage tests
 
 	* [magick library] list now includes -maxrgb
@@ -8,13 +23,13 @@
 2004-02-25  Rolf Schroedter <rolf.schroedter@dlr.de>
 	* New API
 	    magick library -maxrgb
-	    
+
 	* generic/TclMagick.c:
 	    Emtpy borderPix argument allowed for ColorFloodfillImage
-	    
+
 	* test/test-wand.tcl
 	    Fixed tests for ColorFloodfillImage, MapImage, TextureImage
-	
+
 2004-02-15  David N. Welton  <davidw@dedasys.com>
 
 	* doc/TclMagick.html: Fixed a few phrases, indented code according

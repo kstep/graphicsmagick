@@ -6,9 +6,10 @@
 AM_CFLAGS = @TCL_INCLUDES@ @GM_CPPFLAGS@
 
 lib_LTLIBRARIES = libTclMagick.la libTkMagick.la
-libTclMagick_la_LDFLAGS = -no-undefined -module
-libTkMagick_la_LDFLAGS = -no-undefined -module
+libTclMagick_la_LDFLAGS = @GM_LDFLAGS@ -no-undefined -module
+libTkMagick_la_LDFLAGS = @GM_LDFLAGS@ -no-undefined -module
 
+libTclMagick_la_CFLAGS = @TCL_INCLUDES@ @GM_CPPFLAGS@
 libTclMagick_la_LIBADD = @TCL_LIBS@ @GM_LIBS@
 libTclMagick_la_SOURCES = TclMagick.c
 

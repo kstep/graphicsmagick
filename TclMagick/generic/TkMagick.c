@@ -61,7 +61,7 @@ static int MagickToPhoto(
     }
 
     /* pixelSize corresponds to "RGB" format below. */
-    magickblock.pixelSize = 3;
+    magickblock.pixelSize = 4;
     magickblock.width = MagickGetImageWidth (wand);
     magickblock.height = MagickGetImageHeight (wand);
     magickblock.pixelPtr = ckalloc((unsigned)magickblock.height *
@@ -76,7 +76,7 @@ static int MagickToPhoto(
     /* RGB corresponds to pixelSize above. */
     if (MagickGetImagePixels (
 	    wand, 0, 0, (unsigned)magickblock.width, (unsigned)magickblock.height,
-	    "RGB", CharPixel, magickblock.pixelPtr) == False) {
+	    "RGBO", CharPixel, magickblock.pixelPtr) == False) {
 	return myMagickError(interp, wand);
     }
 

@@ -4,10 +4,17 @@
   <head>
     <title>TclMagick</title>
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <!-- $Id$ -->
   </head>
 
   <body>
     <h1>A Tcl interface to ImageMagick & GraphicsMagick</h1>
+    <p>
+      <small>
+	TclMagick and TkMagick the work of Rolf Schr&ouml;dter and David
+	N. Welton.
+      </small>
+    </p>
     <p>
       TclMagick is a Tcl wrapper for ImageMagick's high-level Wand
       interface.  It lets you convert and manipulate a large variety
@@ -15,10 +22,10 @@
       toolkit or an active windowing system!
     </p>
     <p>
-    There is also a TkMagick, which exists to bridge TclMagick and
-    Tk.  It lets you use make Tk images from data loaded with
-    TclMagick.
-  </p>
+      There is also a <a href="TkMagick.html">TkMagick</a> module, which exists to bridge
+      TclMagick and Tk.  It lets you use make Tk images from data
+      loaded with TclMagick, and vice versa.
+    </p>
     <p>
       <a href="http://www.imagemagick.org"
 	target="http://www.imagemagick.org">http://www.imagemagick.org</a><br>
@@ -42,8 +49,9 @@
       created and deleted with the <i>magick</i> command similar to
       Tcl's <i>image</i>command.  Wand-API methods are then called as
       subcommands of the created TclMagick object.<br>
-	  If an ImageMagick-API allows a NULL object argument, 
-	  it can be specified as an empty string {} or "".
+
+      If an ImageMagick-API allows a NULL object argument, it can be
+      specified as an empty string {} or "".
     </p>
     <h2>General design:</h2>
 
@@ -3974,5 +3982,8 @@
 	</tr>
     </table>
     <p>&nbsp;  </p>
+    <hr>
+    <small>Copyright 2004 Rolf Schr&ouml;dter - &lt;Rolf.Schroedter (AT) web.de&gt;
+      and David N. Welton &lt;davidw (AT) dedasys.com&gt;- </small>
   </body>
 </html>
