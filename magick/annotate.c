@@ -845,14 +845,8 @@ static unsigned int RenderTruetype(Image *image,
     if ((bitmap->bitmap.width == 0) || (bitmap->bitmap.rows == 0))
       continue;
     point.x=offset->x+bitmap->left-bounds->x1;
-#if !defined(_VISUALC_)
     point.y=offset->y+bounds->y2-bitmap->top-3.0*
       AffineExpansion(&annotate_info->affine)*annotate_info->pointsize/4.0+1.5;
-#else
-    temp=(3.0*annotate_info->pointsize/4.0)+1.5;
-    temp=AffineExpansion(&annotate_info->affine)*temp;
-    point.y=(bounds->y2-bitmap->top)+offset->y;
-#endif
     p=bitmap->bitmap.buffer;
     for (y=0; y < bitmap->bitmap.rows; y++)
     {
