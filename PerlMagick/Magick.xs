@@ -450,6 +450,7 @@ static struct
       {"translate", StringReference}, {"scale", StringReference},
       {"rotate", DoubleReference}, {"skewX", DoubleReference},
       {"skewY", DoubleReference} } },
+    { "Compare", { {"image", ImageReference} } },
   };
 
 #ifdef START_MY_CXT
@@ -4197,6 +4198,8 @@ Mogrify(ref,...)
     ClipImage          = 148
     AffineTransform    = 149
     AffineTransformImage = 150
+    Compare            = 151
+    CompareImage       = 152
     MogrifyRegion      = 666
   PPCODE:
   {
@@ -5865,6 +5868,16 @@ Mogrify(ref,...)
           }
           image=AffineTransformImage(image,&draw_info->affine,&exception);
           DestroyDrawInfo(draw_info);
+          break;
+        }
+        case 76:  /* Compare */
+        {
+          if (!attribute_flag[0])
+            {
+              MagickError(OptionError,"Missing image to compare",NULL);
+              goto ReturnIt;
+            }
+          (void) IsImagesEqual(image,argument_list[0].image_reference);
           break;
         }
       }

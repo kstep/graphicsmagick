@@ -432,6 +432,11 @@ changed for any neighbor pixel that is not that color.</td>
   <td>add a comment to your image</td>
  </tr>
   <tr>
+ <td>Compare</td>
+  <td>image=&gt;<i>image-handle</i></td>
+  <td>compare image to a reference image</td>
+ </tr>
+  <tr>
  <td>Composite</td>
   <td> image=&gt;<i>image-handle</i>,
   compose=&gt;{Over, In, Out, Atop, Xor, Plus, Minus, Add, Subtract,
@@ -1214,7 +1219,8 @@ In addition to all the attributes listed in <a href="#seta">Set an Image Attribu
   <tr>
  <td>error</td>
   <td><i>double</i></td>
-  <td>the mean error per pixel computed when an image is color reduced</td>
+  <td>the mean error per pixel computed with methods Compare()
+     or Quantize()</td>
  </tr>
   <tr>
  <td>filesize</td>
@@ -1254,13 +1260,14 @@ In addition to all the attributes listed in <a href="#seta">Set an Image Attribu
   <tr>
  <td>maximum-error</td>
   <td><i>double</i></td>
-  <td>the normalized max error per pixel computed when an image is color reduced</td>
+  <td>the normalized max error per pixel computed with methods Compare()
+     or Quantize()</td>
  </tr>
   <tr>
  <td>mean-error</td>
   <td><i>double</i></td>
-  <td>the normalized mean error per pixel computed when an image is color
-reduced</td>
+  <td>the normalized mean error per pixel computed with methods Compare()
+     or Quantize()</td>
  </tr>
   <tr>
  <td>montage</td>
