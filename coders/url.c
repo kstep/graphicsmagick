@@ -148,12 +148,15 @@ static Image *ReadURLImage(const ImageInfo *image_info,ExceptionInfo *exception)
       char
         *type;
 
+      int
+        bytes;
+
       type=(char *) NULL;
       context=xmlNanoHTTPOpen(filename,&type);
       if (context != (void *) NULL)
         {
-          while (xmlNanoHTTPRead(context,buffer,MaxTextExtent) > 0)
-            (void) fwrite(buffer,MaxTextExtent,1,file);
+          while ((bytes=xmlNanoHTTPRead(context,buffer,MaxTextExtent)) > 0)
+            (void) fwrite(buffer,bytes,1,file);
           xmlNanoHTTPClose(context);
           xmlFree(type);
           xmlNanoHTTPCleanup();
