@@ -8,6 +8,9 @@
 	* coders/logo.c (ReadLOGOImage): Added a "TRANSPARENT:" pattern
 	image which can be tiled to form the background of transparent
 	images.
+	* win32/IMDisplay/IMDisplayView.cpp: When displaying images which
+	include an opacity channel, use a checker-board pattern as the
+	image background so non-opaque pixels become evident.
 
 2003-05-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 

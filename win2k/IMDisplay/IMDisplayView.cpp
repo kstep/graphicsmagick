@@ -821,17 +821,32 @@ void CIMDisplayView::DoDisplayImage( Image &inImage, CDC* pDC )
         }
 
         //
+        // If image is non-opaque, create overlay the image on top of
+        // a pattern background so non-opaque regions become evident.
+        //
+
+        Magick::Image image=inImage;
+        if (inImage.matte())
+        {
+          Magick::Image matteImage;
+          matteImage.size(Magick::Geometry(inImage.columns(), inImage.rows()));
+          matteImage.read("tile:transparent:");
+          matteImage.composite(inImage,0,0,AtopCompositeOp);
+          image=matteImage;
+        }
+
+        //
         // Extract the pixels from Magick++ image object and convert to a DIB section
         //
 
-        const unsigned int columns = inImage.columns();
-        const unsigned int rows = inImage.rows();
+        const unsigned int columns = image.columns();
+        const unsigned int rows = image.rows();
 
         RGBQUAD *pDestPixel = prgbaDIB;
 
         for( unsigned int row = 0 ; row < rows ; row++ )
           {
-            const PixelPacket *pPixels = inImage.getConstPixels(0,row,columns,1);
+            const PixelPacket *pPixels = image.getConstPixels(0,row,columns,1);
 #if QuantumDepth == 8
             // Form of PixelPacket is identical to RGBQUAD when QuantumDepth==8
             memcpy((void*)pDestPixel,(const void*)pPixels,sizeof(PixelPacket)*columns);
