@@ -6304,11 +6304,11 @@ QueryColor(ref,...)
   PPCODE:
   {
     char
-      *attribute,
+      *name,
       message[MaxTextExtent];
 
     PixelPacket
-      target_color;
+      color;
 
     register int
       i;
@@ -6317,23 +6317,57 @@ QueryColor(ref,...)
       *s;
 
     error_list=newSVpv("",0);
+    if (items == 1)
+      {
+        ColorInfo
+          *color_info;
+
+        ExceptionInfo 
+          exception;
+
+        register ColorInfo
+          *p;
+
+        GetExceptionInfo(&exception);
+        color_info=GetColorInfo("*",&exception);
+        if (color_info == (ColorInfo *) NULL)
+          PUSHs(&sv_undef);
+        else
+          {
+            i=0;
+            for (p=color_info; p != (ColorInfo *) NULL; p=p->next)
+              i++;
+            EXTEND(sp,i);
+            for (p=color_info; p != (ColorInfo *) NULL; p=p->next)
+            {
+              *message='\0'; 
+              if (p->name == (char *) NULL)
+                PUSHs(&sv_undef);
+              else
+                PUSHs(sv_2mortal(newSVpv(p->name,0)));
+            }
+          }
+        SvREFCNT_dec(error_list);
+        error_list=NULL;
+        return;
+      }
     EXTEND(sp,4*items);
     for (i=1; i < items; i++)
     {
-      attribute=(char *) SvPV(ST(i),na);
-      if (!QueryColorDatabase(attribute,&target_color))
-        PUSHs(&sv_undef);
-      else
+      name=(char *) SvPV(ST(i),na);
+      if (!QueryColorDatabase(name,&color))
         {
-          FormatString(message,"%u",target_color.red);
-          PUSHs(sv_2mortal(newSVpv(message,0)));
-          FormatString(message,"%u",target_color.green);
-          PUSHs(sv_2mortal(newSVpv(message,0)));
-          FormatString(message,"%u",target_color.blue);
-          PUSHs(sv_2mortal(newSVpv(message,0)));
-          FormatString(message,"%u",target_color.opacity);
-          PUSHs(sv_2mortal(newSVpv(message,0)));
+          PUSHs(&sv_undef);
+          continue;
         }
+      FormatString(message,"%u",color.red);
+      PUSHs(sv_2mortal(newSVpv(message,0)));
+      FormatString(message,"%u",color.green);
+      PUSHs(sv_2mortal(newSVpv(message,0)));
+      FormatString(message,"%u",color.blue);
+      PUSHs(sv_2mortal(newSVpv(message,0)));
+      FormatString(message,"%u",color.opacity);
+      PUSHs(sv_2mortal(newSVpv(message,0)));
     }
     SvREFCNT_dec(error_list);
     error_list=NULL;
@@ -6400,7 +6434,7 @@ QueryColorname(ref,...)
 #                                                                             #
 #                                                                             #
 #                                                                             #
-#   Q u e r y C o n f i g u r a t i o n                                       #
+#   Q u e r y F o n t                                                         #
 #                                                                             #
 #                                                                             #
 #                                                                             #
@@ -6408,271 +6442,98 @@ QueryColorname(ref,...)
 #
 #
 void
-QueryConfiguration(ref,...)
+QueryFont(ref,...)
   Image::Magick ref=NO_INIT
   ALIAS:
-    queryconfiguration = 1
+    queryfont = 1
   PPCODE:
   {
-    AV
-      *av;
-
     char
-      *attribute,
-      message[MaxTextExtent],
-      *value;
+      *name;
 
-    ExceptionInfo
+    ExceptionInfo 
       exception;
+
+    FontInfo
+      *font_info;
 
     register int
       i;
 
-    struct PackageInfo
-      *info;
-
     SV
-      *reference;  /* reference is the SV* of ref=SvIV(reference) */
+      *s;
 
     error_list=newSVpv("",0);
-    reference=SvRV(ST(0));
-    av=(AV *) reference;
-    info=GetPackageInfo((void *) av,(struct PackageInfo *) NULL);
     GetExceptionInfo(&exception);
-    EXTEND(sp,8*items);
-    for (i=2; i < items; i+=2)
-    {
-      attribute=(char *) SvPV(ST(i-1),na);
-      value=(char *) SvPV(ST(i),na);
-      switch (*attribute)
+    if (items == 1)
       {
-        case 'c':
-        case 'C':
-        {
-          if (strEQcase(attribute,"color"))
+        register FontInfo
+          *p;
+
+        font_info=GetFontInfo("*",&exception);
+        if (font_info == (FontInfo *) NULL)
+          PUSHs(&sv_undef);
+        else
+          {
+            i=0;
+            for (p=font_info; p != (FontInfo *) NULL; p=p->next)
+              i++;
+            EXTEND(sp,i);
+            for (p=font_info; p != (FontInfo *) NULL; p=p->next)
             {
-              ColorInfo
-                *color_info;
-
-              register ColorInfo
-                *p;
-
-              color_info=GetColorInfo(value,&exception);
-              if (color_info == (ColorInfo *) NULL)
-                break;
-              if (LocaleCompare(value,"*") == 0)
-                {
-                  i=0;
-                  for (p=color_info; p != (ColorInfo *) NULL; p=p->next)
-                    i++;
-                  EXTEND(sp,i);
-                  for (p=color_info; p != (ColorInfo *) NULL; p=p->next)
-                  {
-                    *message='\0';
-                    if (p->name != (char *) NULL)
-                      (void) strcpy(message,p->name);
-                    PUSHs(sv_2mortal(newSVpv(message,0)));
-                  }
-                  break;
-                }
-              FormatString(message,"%u",p->color.red);
-              PUSHs(sv_2mortal(newSVpv(message,0)));
-              FormatString(message,"%u",p->color.green);
-              PUSHs(sv_2mortal(newSVpv(message,0)));
-              FormatString(message,"%u",p->color.blue);
-              PUSHs(sv_2mortal(newSVpv(message,0)));
-              if (p->compliance == AllCompliance)
-                (void) strcpy(message,"SVG, X11");
+              if (p->name == (char *) NULL)
+                PUSHs(&sv_undef);
               else
-                if (p->compliance == X11Compliance)
-                  (void) strcpy(message,"X11");
-                else
-                  (void) strcpy(message,"SVG");
-              PUSHs(sv_2mortal(newSVpv(message,0)));
-              break;
+                PUSHs(sv_2mortal(newSVpv(p->name,0)));
             }
-          break;
-        }
-        case 'f':
-        case 'F':
-        {
-          if (strEQcase(attribute,"font"))
-            {
-              FontInfo
-                *font_info;
-
-              register FontInfo
-                *p;
-
-              font_info=GetFontInfo(value,&exception);
-              if (font_info == (FontInfo *) NULL)
-                break;
-              if (LocaleCompare(value,"*") == 0)
-                {
-                  i=0;
-                  for (p=font_info; p != (FontInfo *) NULL; p=p->next)
-                    i++;
-                  EXTEND(sp,i);
-                  for (p=font_info; p != (FontInfo *) NULL; p=p->next)
-                  {
-                    *message='\0';
-                    if (p->name != (char *) NULL)
-                      (void) strcpy(message,p->name);
-                    PUSHs(sv_2mortal(newSVpv(message,0)));
-                  }
-                  break;
-                }
-              *message='\0';
-              if (p->family != (char *) NULL)
-                (void) strcpy(message,p->family);
-              PUSHs(sv_2mortal(newSVpv(message,0)));
-              *message='\0';
-              if (p->alias != (char *) NULL)
-                (void) strcpy(message,p->alias);
-              PUSHs(sv_2mortal(newSVpv(message,0)));
-              *message='\0';
-              if (p->description != (char *) NULL)
-                (void) strcpy(message,p->description);
-              PUSHs(sv_2mortal(newSVpv(message,0)));
-              *message='\0';
-              if (p->format != (char *) NULL)
-                (void) strcpy(message,p->format);
-              PUSHs(sv_2mortal(newSVpv(message,0)));
-              *message='\0';
-              if (p->weight != (char *) NULL)
-                (void) strcpy(message,p->weight);
-              PUSHs(sv_2mortal(newSVpv(message,0)));
-              *message='\0';
-              if (p->glyphs != (char *) NULL)
-                (void) strcpy(message,p->glyphs);
-              PUSHs(sv_2mortal(newSVpv(message,0)));
-              *message='\0';
-              if (p->metrics != (char *) NULL)
-                (void) strcpy(message,p->metrics);
-              PUSHs(sv_2mortal(newSVpv(message,0)));
-              *message='\0';
-              if (p->version != (char *) NULL)
-                (void) strcpy(message,p->version);
-              PUSHs(sv_2mortal(newSVpv(message,0)));
-              break;
-            }
-          if (strEQcase(attribute,"format"))
-            {
-              MagickInfo
-                *magick_info;
-
-              register MagickInfo
-                *p;
-
-              magick_info=GetMagickInfo(value,&exception);
-              if (magick_info == (MagickInfo *) NULL)
-                break;
-              if (LocaleCompare(value,"*") == 0)
-                {
-                  i=0;
-                  for (p=magick_info; p != (MagickInfo *) NULL; p=p->next)
-                    i++;
-                  EXTEND(sp,i);
-                  for (p=magick_info; p != (MagickInfo *) NULL; p=p->next)
-                  {
-                    *message='\0';
-                    if (p->tag != (char *) NULL)
-                      (void) strcpy(message,p->tag);
-                    PUSHs(sv_2mortal(newSVpv(message,0)));
-                  }
-                  break;
-                }
-              PUSHs(sv_2mortal(newSVpv(p->adjoin ? "True" : "False",0)));
-              PUSHs(sv_2mortal(newSVpv(p->blob_support ? "True" : "False",0)));
-              PUSHs(sv_2mortal(newSVpv(p->raw ? "True" : "False",0)));
-              *message='\0';
-              if (p->description != (char *) NULL)
-                (void) strcpy(message,p->description);
-              PUSHs(sv_2mortal(newSVpv(message,0)));
-              *message='\0';
-              if (p->module != (char *) NULL)
-                (void) strcpy(message,p->module);
-              PUSHs(sv_2mortal(newSVpv(message,0)));
-              break;
-            }
-          break;
-        }
-        case 'm':
-        case 'M':
-        {
-          if (strEQcase(attribute,"magic"))
-            {
-              MagicInfo
-                *magic_info;
-
-              register MagicInfo
-                *p;
-
-              magic_info=GetMagicInfo((unsigned char *) value,Extent(value),
-                &exception);
-              if (LocaleCompare(value,"*") == 0)
-                magic_info=GetMagicInfo((unsigned char *) NULL,0,&exception);
-              if (magic_info == (MagicInfo *) NULL)
-                break;
-              if (LocaleCompare(value,"*") == 0)
-                {
-                  i=0;
-                  for (p=magic_info; p != (MagicInfo *) NULL; p=p->next)
-                    i++;
-                  EXTEND(sp,i);
-                  for (p=magic_info; p != (MagicInfo *) NULL; p=p->next)
-                  {
-                    *message='\0';
-                    if (p->name != (char *) NULL)
-                      (void) strcpy(message,p->name);
-                    PUSHs(sv_2mortal(newSVpv(message,0)));
-                  }
-                  break;
-                }
-              FormatString(message,"%u",p->offset);
-              PUSHs(sv_2mortal(newSVpv(message,0)));
-              *message='\0';
-              if (p->target != (char *) NULL)
-                (void) strcpy(message,p->target);
-              PUSHs(sv_2mortal(newSVpv(message,0)));
-              break;
-            }
-          if (strEQcase(attribute,"module"))
-            {
-              ModuleAlias
-                *module_alias;
-
-              register ModuleAlias
-                *p;
-
-              module_alias=GetModuleAlias(value,&exception);
-              if (module_alias == (ModuleAlias *) NULL)
-                break;
-              if (LocaleCompare(value,"*") == 0)
-                {
-                  i=0;
-                  for (p=module_alias; p != (ModuleAlias *) NULL; p=p->next)
-                    i++;
-                  EXTEND(sp,i);
-                  for (p=module_alias; p != (ModuleAlias *) NULL; p=p->next)
-                  {
-                    *message='\0';
-                    if (p->name != (char *) NULL)
-                      (void) strcpy(message,p->name);
-                    PUSHs(sv_2mortal(newSVpv(message,0)));
-                  }
-                  break;
-                }
-              PUSHs(sv_2mortal(newSVpv(p->alias,0)));
-              break;
-            }
-          break;
-        }
+          }
+        SvREFCNT_dec(error_list);
+        error_list=NULL;
+        return;
       }
-      MagickWarning(OptionWarning,"Invalid attribute",attribute);
+    EXTEND(sp,8*items);
+    for (i=1; i < items; i++)
+    {
+      name=(char *) SvPV(ST(i),na);
+      font_info=GetFontInfo(name,&exception);
+      if (font_info == (FontInfo *) NULL)
+        {
+          PUSHs(&sv_undef);
+          continue;
+        }
+      if (font_info->family == (char *) NULL)
+        PUSHs(&sv_undef);
+      else
+        PUSHs(sv_2mortal(newSVpv(font_info->family,0)));
+      if (font_info->alias == (char *) NULL)
+        PUSHs(&sv_undef);
+      else
+        PUSHs(sv_2mortal(newSVpv(font_info->alias,0)));
+      if (font_info->description == (char *) NULL)
+        PUSHs(&sv_undef);
+      else
+        PUSHs(sv_2mortal(newSVpv(font_info->description,0)));
+      if (font_info->format == (char *) NULL)
+        PUSHs(&sv_undef);
+      else
+        PUSHs(sv_2mortal(newSVpv(font_info->format,0)));
+      if (font_info->weight == (char *) NULL)
+        PUSHs(&sv_undef);
+      else
+        PUSHs(sv_2mortal(newSVpv(font_info->weight,0)));
+      if (font_info->glyphs == (char *) NULL)
+        PUSHs(&sv_undef);
+      else
+        PUSHs(sv_2mortal(newSVpv(font_info->glyphs,0)));
+      if (font_info->metrics == (char *) NULL)
+        PUSHs(&sv_undef);
+      else
+        PUSHs(sv_2mortal(newSVpv(font_info->metrics,0)));
+      if (font_info->version == (char *) NULL)
+        PUSHs(&sv_undef);
+      else
+        PUSHs(sv_2mortal(newSVpv(font_info->version,0)));
     }
-
-  MethodException:
     SvREFCNT_dec(error_list);
     error_list=NULL;
   }
@@ -6909,6 +6770,97 @@ QueryFontMetrics(ref,...)
     DestroyDrawInfo(draw_info);
 
   MethodException:
+    SvREFCNT_dec(error_list);
+    error_list=NULL;
+  }
+
+#
+###############################################################################
+#                                                                             #
+#                                                                             #
+#                                                                             #
+#   Q u e r y F o r m a t                                                     #
+#                                                                             #
+#                                                                             #
+#                                                                             #
+###############################################################################
+#
+#
+void
+QueryMagick(ref,...)
+  Image::Magick ref=NO_INIT
+  ALIAS:
+    querymagick = 1
+  PPCODE:
+  {
+    char
+      message[MaxTextExtent],
+      *name;
+
+    ExceptionInfo 
+      exception;
+
+    MagickInfo
+      *magick_info;
+
+    register int
+      i;
+
+    SV
+      *s;
+
+    error_list=newSVpv("",0);
+    GetExceptionInfo(&exception);
+    if (items == 1)
+      {
+        register MagickInfo
+          *p;
+
+        magick_info=GetMagickInfo("*",&exception);
+        if (magick_info == (MagickInfo *) NULL)
+          PUSHs(&sv_undef);
+        else
+          {
+            i=0;
+            for (p=magick_info; p != (MagickInfo *) NULL; p=p->next)
+              i++;
+            EXTEND(sp,i);
+            for (p=magick_info; p != (MagickInfo *) NULL; p=p->next)
+            {
+              if (p->name == (char *) NULL)
+                PUSHs(&sv_undef);
+              else
+                PUSHs(sv_2mortal(newSVpv(p->name,0)));
+            }
+          }
+        SvREFCNT_dec(error_list);
+        error_list=NULL;
+        return;
+      }
+    EXTEND(sp,8*items);
+    for (i=1; i < items; i++)
+    {
+      name=(char *) SvPV(ST(i),na);
+      magick_info=GetMagickInfo(name,&exception);
+      if (magick_info == (MagickInfo *) NULL)
+        {
+          PUSHs(&sv_undef);
+          continue;
+        }
+      PUSHs(sv_2mortal(newSVpv(magick_info->adjoin ? "1" : "0",0)));
+      PUSHs(sv_2mortal(newSVpv(magick_info->blob_support ? "1" : "0",0)));
+      PUSHs(sv_2mortal(newSVpv(magick_info->raw ? "1" : "0",0)));
+      PUSHs(sv_2mortal(newSVpv(magick_info->decoder ? "1" : "0",0)));
+      PUSHs(sv_2mortal(newSVpv(magick_info->encoder ? "1" : "0",0)));
+      if (magick_info->description == (char *) NULL)
+        PUSHs(&sv_undef);
+      else
+        PUSHs(sv_2mortal(newSVpv(magick_info->description,0)));
+      if (magick_info->module == (char *) NULL)
+        PUSHs(&sv_undef);
+      else
+        PUSHs(sv_2mortal(newSVpv(magick_info->module,0)));
+    }
     SvREFCNT_dec(error_list);
     error_list=NULL;
   }

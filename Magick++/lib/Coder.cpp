@@ -136,7 +136,7 @@ Magick::Coder::Coder (
   info->adjoin  = static_cast<unsigned int>(adjoin_);
   info->blob_support = static_cast<unsigned int>(blobSupport_);
   info->raw     = static_cast<unsigned int>(rawImage_);
-  info->tag     = 0;
+  info->name     = 0;
   Magick::CloneString( &info->description, description_ );
   info->module  = 0;
   info->client_data = static_cast<void *>(this); // coder object

@@ -352,13 +352,13 @@ or image sequence.</dd>
 </tr>
 </table>
 
-<p>For convenience, methods <tt>Write</tt>, <tt>Display</tt>, and
-<tt>Animate</tt>
-can take any parameter that <a href="#seta">SetAttribute</a> knows about.
+<p>For convenience, methods Write(), Display(), and
+Animate() can take any parameter that <a href="#seta">SetAttribute</a> knows
+about.
 For example,
 <pre>&nbsp;&nbsp;&nbsp; $image->Write(filename=>'image.png', compression=>'None');</pre>
-Use <tt>-</tt> as the filename to method <tt>Read</tt> to read from standard
-in or to method <tt>Write</tt> to write to standard out:
+Use <tt>-</tt> as the filename to method Read() to read from standard
+in or to method Write() to write to standard out:
 <pre>&nbsp;&nbsp;&nbsp; binmode STDOUT;
 &nbsp;&nbsp;&nbsp; $image->Write('png:-');</pre>
 To read an image in the GIF format from a PERL filehandle, use:
@@ -372,11 +372,10 @@ To write an image in the PNG format to a PERL filehandle, use:
 &nbsp;&nbsp;&nbsp; $image->Write(file=>DATA, filename=>$filename);
 &nbsp;&nbsp;&nbsp; close(DATA);</pre>
 The <tt>%</tt> character is always interpreted in output filenames. To
-get a
-<tt>%</tt> character in the filename, use <tt>%%</tt>.
-<p>You can optionally add <tt>Image</tt> to any method name. For example,
-<tt>ReadImage</tt>
-is an alias for method <tt>Read</tt>.</dl>
+get a <tt>%</tt> character in the filename, use <tt>%%</tt>.
+<p>You can optionally add <i>Image</i> to any method name. For example,
+ReadImage()
+is an alias for method Read().</dl>
 <i><a href="#contents">Back to Contents</a></i>
 <br>&nbsp;
 <br>&nbsp;
@@ -389,7 +388,7 @@ an Image</font></font></font></b></td>
 </table>
 
 <dd>
-Once you create an image with, for example, method <tt>ReadImage</tt> you
+Once you create an image with, for example, method ReadImage() you
 may want to operate on it. Below is a list of all the image manipulations
 methods available to you with <b>PerlMagick</b>. There are <a href="../images/examples.jpg">examples</a>
 of select
@@ -1010,7 +1009,7 @@ amount=><i>double</i>, threshold=><i>double</i></td>
 <tt>width</tt>
 and <tt>height</tt> parameters (e.g. <tt>geometry=>'106x80'</tt> is equivalent
 to <tt>width=>106, height=>80</tt>).
-<p>You can specify <tt>@filename</tt> in both <tt>Annotate</tt> and <tt>Draw</tt>.
+<p>You can specify <tt>@filename</tt> in both Annotate() and Draw().
 This reads the text or graphic primitive instructions from a file on disk.
 For example,
 <pre>&nbsp;&nbsp; $image->Draw(pen=>'red', primitive=>'rectangle',&nbsp;
@@ -1021,9 +1020,8 @@ Where <tt>draw.txt</tt> is a file on disk that contains this:
 <pre>&nbsp; rectangle 20, 20 100, 100
 &nbsp; rectangle 40, 40 200, 200
 &nbsp; rectangle 60, 60 300, 300</pre>
-The <i>text</i> parameter for methods, <tt>Annotate</tt>, <tt>Comment</tt>,
-<tt>Draw</tt>,
-and <tt>Label</tt> can include the image filename, type, width, height,
+The <i>text</i> parameter for methods, Annotate(), Comment(),
+Draw(), and Label() can include the image filename, type, width, height,
 or other image attribute by embedding these special format characters:
 <pre>&nbsp;&nbsp;&nbsp; %b&nbsp;&nbsp; file size
 &nbsp;&nbsp;&nbsp; %d&nbsp;&nbsp; comment
@@ -1054,9 +1052,9 @@ and whose width is 512 and height is 480.</dd>
 <br>&nbsp;
 <br>&nbsp;
 <br>&nbsp;
-<p>You can optionally add <tt>Image</tt> to any method name. For example,
-<tt>TrimImage</tt>
-is an alias for method <tt>Trim</tt>.
+<p>You can optionally add <i>Image</i> to any method name. For example,
+TrimImage()
+is an alias for method Trim().
 <p>Most of the attributes listed above have an analog in
 <a href="convert.html">convert</a>.
 See the documentation for a more detailed description of these attributes.</dl>
@@ -1072,7 +1070,7 @@ an Image Attribute</font></font></font></b></td>
 </table>
 
 <dd>
-Use method <tt>Set</tt> to set an image attribute. For example,</dd>
+Use method Set() to set an image attribute. For example,</dd>
 
 <pre>&nbsp;&nbsp;&nbsp; $image->Set(dither=>'True');
 &nbsp;&nbsp;&nbsp; $image->[$x]->Set(delay=>3);</pre>
@@ -1464,7 +1462,7 @@ TrueColorMatte, ColorSeparation, ColorSeparationMatte
 <tt>width</tt>
 and <tt>height</tt> parameters (e.g. <tt>geometry=>'106x80'</tt> is equivalent
 to <tt>width=>106, height=>80</tt>).
-<p><tt>SetAttribute</tt> is an alias for method <tt>Set</tt>.
+<p>SetAttribute() is an alias for method Set().
 <p>Most of the attributes listed above have an analog in
 <a href="convert.html">convert</a>.
 See the documentation for a more detailed description of these attributes.</dl>
@@ -1480,7 +1478,7 @@ an Image Attribute</font></font></font></b></td>
 </table>
 
 <dd>
-Use method <tt>Get</tt> to get an image attribute. For example,</dd>
+Use method Get() to get an image attribute. For example,</dd>
 
 <pre>&nbsp;&nbsp;&nbsp; ($a, $b, $c) = $image->Get('colorspace', 'magick', 'adjoin');
 &nbsp;&nbsp;&nbsp; $width = $image->[3]->Get('columns');</pre>
@@ -1700,7 +1698,7 @@ reduced</td>
 </tr>
 </table>
 
-<p><tt>GetAttribute</tt> is an alias for method <tt>Get</tt>.
+<p>GetAttribute() is an alias for method Get().
 <p>Most of the attributes listed above have an analog in
 <a href="convert.html">convert</a>.
 See the documentation for a more detailed description of these attributes.</dl>
@@ -1716,12 +1714,12 @@ an Image Montage</font></font></font></b></td>
 </table>
 
 <dd>
-Use method <tt>Montage</tt> to create a composite image by combining several
+Use method Montage() to create a composite image by combining several
 separate images. The images are tiled on the composite image with the name
 of the image optionally appearing just below the individual tile. For example,</dd>
 
 <pre>&nbsp;&nbsp;&nbsp; $image->Montage(geometry=>'160x160', tile=>'2x2', texture=>'granite:');</pre>
-And here is a list of <tt>Montage</tt> parameters you can set:
+And here is a list of Montage() parameters you can set:
 <table BORDER >
 <caption>Montage Parameters</caption>
 
@@ -1884,7 +1882,7 @@ SouthEast}</td>
 <tt>width</tt>
 and <tt>height</tt> parameters (e.g. <tt>geometry=>'106x80'</tt> is equivalent
 to <tt>width=>106, height=>80</tt>).
-<p><tt>MontageImage</tt> is an alias for method <tt>Montage</tt>.
+<p>MontageImage() is an alias for method Montage().
 <p>Most of the attributes listed above have an analog in
 <a href="montage.html">montage</a>.
 See the documentation for a more detailed description of these attributes.</dl>
@@ -1939,7 +1937,7 @@ convert a blob to or from a particular image format.</dd>
 </tr>
 </table>
 
-<p><tt>ImageToBlob</tt> returns the image data in their respective formats.
+<p>ImageToBlob() returns the image data in their respective formats.
 You can then print it, save it to an ODBC database, write it to a file,
 or pipe it to a display program:
 <pre>&nbsp;&nbsp;&nbsp; @blobs = $image->ImageToBlob();
@@ -1947,7 +1945,7 @@ or pipe it to a display program:
 &nbsp;&nbsp;&nbsp; binmode DISPLAY;
 &nbsp;&nbsp;&nbsp; print DISPLAY $blobs[0];
 &nbsp;&nbsp;&nbsp; close DISPLAY;</pre>
-Method <tt>BlobToImage</tt> returns an image or image sequence converted
+Method BlobToImage() returns an image or image sequence converted
 from the supplied blob:
 <pre>&nbsp;&nbsp;&nbsp; $blob=$db->GetImage();
 &nbsp;&nbsp;&nbsp; $image=Image::Magick->new(magick=>'jpg');
@@ -1965,7 +1963,7 @@ Methods</font></font></font></b></td>
 </table>
 
 <dd>
-The <tt>Append</tt> method append a set of images. For example,</dd>
+The Append() method append a set of images. For example,</dd>
 
 <pre>&nbsp;&nbsp;&nbsp; $p = $image->Append(stack=>{true,false});</pre>
 appends all the images associated with object <tt>$image</tt>. All the
@@ -1973,34 +1971,34 @@ input images must have the same width or height. Images of the same width
 are stacked top-to-bottom. Images of the same height are stacked left-to-right.
 If the stack parameter is false, rectangular images are stacked left-to-right
 otherwise top-to-bottom.
-<p>The <tt>Average</tt> method averages a set of images. For example,
+<p>The Average() method averages a set of images. For example,
 <pre>&nbsp;&nbsp;&nbsp; $p = $image->Average();</pre>
 averages all the images associated with object <tt>$image</tt>.
-<p>The <tt>Clone</tt> method copies a set of images. For example,
+<p>The Clone() method copies a set of images. For example,
 <pre>&nbsp;&nbsp;&nbsp; $p = $image->Clone();</pre>
 copies all the images from object <tt>$q</tt> to <tt>$p</tt>. You can use
 this method for single or multi-image sequences.
-<p>The <tt>Morph</tt> method morphs a set of images. Both the image pixels
+<p>The Morph() method morphs a set of images. Both the image pixels
 and size are linearly interpolated to give the appearance of a meta-morphosis
 from one image to the next:
 <pre>&nbsp;&nbsp;&nbsp; $p = $image->Morph(frames=><i>integer</i>);</pre>
 where <i>frames</i> is the number of in-between images to generate. The
 default is 1.
-<p><tt>Mosaic</tt> creates an mosaic from an image sequence.
-<p>Method <tt>Mogrify</tt> is a single entry point for the image manipulation
+<p>Mosaic() creates an mosaic from an image sequence.
+<p>Method Mogrify() is a single entry point for the image manipulation
 methods (<a href="#mani">Manipulate an Image</a>). The parameters are the
 name of a method followed by any parameters the method may require. For
 example, these calls are equivalent:
 <pre>&nbsp;&nbsp;&nbsp; $image->Crop('340x256+0+0');
 &nbsp;&nbsp;&nbsp; $image->Mogrify('crop', '340x256+0+0');</pre>
-Method <tt>MogrifyRegion</tt> applies a transform to a region of the image.
-It is similiar to <tt>Mogrify</tt> but begins with the region geometry.
+Method MogrifyRegion() applies a transform to a region of the image.
+It is similiar to Mogrify() but begins with the region geometry.
 For example, suppose you want to brighten a 100x100 region of your image
 at location (40, 50):
 <pre>&nbsp;&nbsp;&nbsp; $image->MogrifyRegion('100x100+40+50', 'modulate', brightness=>50);</pre>
 
 <dd>
-<tt>Ping</tt> accepts one or more image file names and returns their respective
+Ping() accepts one or more image file names and returns their respective
 width, height, size in bytes, and format (e.g. GIF, JPEG, etc.). For example,</dd>
 
 <pre>&nbsp;&nbsp;&nbsp; ($width, $height, $size, $format) = $image->Ping('logo.png');</pre>
@@ -2037,26 +2035,55 @@ text height, expressed in 26.6 fixed point pixels.</li>
 maximum horizontal advance, expressed in 26.6 fixed point pixels.</li>
 </ul>
 <p>
-For convenience, method <tt>QueryColor</tt> accepts one or more color names
-or hex value and returns their respective red, green, and blue color values:
-<pre>&nbsp;&nbsp;&nbsp; ($red, $green, $blue, $opacity) = $image->QueryColor('cyan');
-&nbsp;&nbsp;&nbsp; ($red, $green, $blue, $opacity) = $image->QueryColor('#716bae');</pre>
+<dd>
+Call QueryColor() with no parameters to return a list of known colors names
+or specify one or more color names to get these attributes: red, green, blue,
+and opacity value. </dd>
+<p>
+<pre>
+&nbsp;&nbsp;&nbsp; @colors = $image->QueryColor();
+&nbsp;&nbsp;&nbsp; ($red, $green, $blue, $opacity) = $image->QueryColor('cyan');
+&nbsp;&nbsp;&nbsp; ($red, $green, $blue, $opacity) = $image->QueryColor('#716bae');
+</pre>
 
 <dd>
-<tt>QueryColorName</tt> accepts a color value and returns its respective
+QueryColorName() accepts a color value and returns its respective
 name or hex value;</dd>
 
 <pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $name = $image->QueryColorName('rgba(80,60,0,0)');</pre>
 <p>
-Use <tt>RemoteCommand</tt> to send a command to an already running <a href="display.html">display</a>
+<dd>
+Call QueryFont() with no parameters to return a list of known fonts
+or specify one or more font names to get these attributes: font family, alias,
+description, format, weight, glyphs, metrics, and version values.</dd>
+<p>
+<pre>
+&nbsp;&nbsp;&nbsp; @fonts = $image->QueryFont();
+&nbsp;&nbsp;&nbsp; ($family, $alias, $description, $format, $weight, $glyphs, $metrics, $version) = $image->QueryFont('Helvetica');
+</pre>
+
+<p>
+<dd>
+Call QueryFormat() with no parameters to return a list of known image formats
+or specify one or more format names to get these attributes: adjoin,
+blob support, raw, format, decoder, encoder, description, and module.
+</dd>
+<p>
+<pre>
+&nbsp;&nbsp;&nbsp; @formats = $image->QueryFormat();
+&nbsp;&nbsp;&nbsp; ($adjoin, $blob_support, $raw, $format, $decoder, $encoder, $description, $module) = $image->QueryFormat('gif');
+</pre>
+
+<p>
+Use RemoteCommand() to send a command to an already running <a href="display.html">display</a>
 or <a href="animate.html">animate</a> application. The only parameter is
 the name of the image file to display or animate.
-<p>Finally, the <tt>Transform</tt> method accepts a fully-qualified geometry
+<p>Finally, the Transform() method accepts a fully-qualified geometry
 specification for cropping or resizing one or more images. For example,
 <pre>&nbsp;&nbsp;&nbsp; $p = $image->Transform(crop=>'100x100');</pre>
-You can optionally add <tt>Image</tt> to any method name above. For example,
-<tt>PingImage</tt>
-is an alias for method <tt>Ping</tt>.</dl>
+You can optionally add <i>Image</i> to any method name above. For example,
+PingImage()
+is an alias for method Ping().</dl>
 <a href="#contents">Back to Contents</a>
 <br>&nbsp;
 <br>&nbsp;
@@ -2078,7 +2105,7 @@ failed completely. Here is how errors are returned for the different methods:</d
 
 <ul>
 <li>
-Methods which return a number (e.g. <tt>Read</tt>, <tt>Write</tt>):</li>
+Methods which return a number (e.g. Read(), Write()):</li>
 
 <pre>&nbsp;&nbsp;&nbsp; $x = $image->Read(...);
 &nbsp;&nbsp;&nbsp; warn "$x" if "$x";&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; # print the error message
@@ -2087,7 +2114,7 @@ Methods which return a number (e.g. <tt>Read</tt>, <tt>Write</tt>):</li>
 &nbsp;&nbsp;&nbsp; print 0+$x;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; # print the number of images read</pre>
 
 <li>
-Methods which operate on an image (e.g. <tt>Resize</tt>, <tt>Crop</tt>):</li>
+Methods which operate on an image (e.g. Resize(), Crop()):</li>
 
 <pre>&nbsp;&nbsp;&nbsp; $x = $image->Crop(...);
 &nbsp;&nbsp;&nbsp; warn "$x" if "$x";&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; # print the error message
@@ -2095,7 +2122,7 @@ Methods which operate on an image (e.g. <tt>Resize</tt>, <tt>Crop</tt>):</li>
 &nbsp;&nbsp;&nbsp; print $1;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; # print the error number</pre>
 
 <li>
-Methods which return images (<tt>Average</tt>, <tt>Montage</tt>, <tt>Clone</tt>)
+Methods which return images (Average(), Montage(), Clone())
 should be checked for errors this way:</li>
 
 <pre>&nbsp;&nbsp;&nbsp; $x = $image->Montage(...);

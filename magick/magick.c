@@ -105,8 +105,8 @@ static void DestroyMagickInfo(void)
   {
     magick_info=p;
     p=p->next;
-    if (magick_info->tag != (char *) NULL)
-      LiberateMemory((void **) &magick_info->tag);
+    if (magick_info->name != (char *) NULL)
+      LiberateMemory((void **) &magick_info->name);
     if (magick_info->description != (char *) NULL)
       LiberateMemory((void **) &magick_info->description);
     if (magick_info->module != (char *) NULL)
@@ -133,7 +133,7 @@ static void DestroyMagickInfo(void)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  Method GetImageMagick searches for an image format that matches the
-%  specified magick string.  If one is found the tag is returned otherwise
+%  specified magick string.  If one is found the name is returned otherwise
 %  NULL.
 %
 %  The format of the GetImageMagick method is:
@@ -143,7 +143,7 @@ static void DestroyMagickInfo(void)
 %
 %  A description of each parameter follows:
 %
-%    o tag: Method GetImageMagick returns a tag that matches the
+%    o name: Method GetImageMagick returns a name that matches the
 %      specified magick string.
 %
 %    o magick: a character string that represents the image format we are
@@ -166,7 +166,7 @@ MagickExport char *GetImageMagick(const unsigned char *magick,
       break;
   LiberateSemaphore(&magick_semaphore);
   if (p != (MagickInfo *) NULL)
-    return(p->tag);
+    return(p->name);
   return((char *) NULL);
 }
 
@@ -260,26 +260,27 @@ MagickExport char *GetMagickConfigurePath(const char *filename)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  Method GetMagickInfo returns a pointer MagickInfo structure that matches
-%  the specified tag.  If tag is NULL, the head of the image format list is
+%  the specified name.  If name is NULL, the head of the image format list is
 %  returned.
 %
 %  The format of the GetMagickInfo method is:
 %
-%      MagickInfo *GetMagickInfo(const char *tag,Exception *exception)
+%      MagickInfo *GetMagickInfo(const char *name,Exception *exception)
 %
 %  A description of each parameter follows:
 %
 %    o magick_info: Method GetMagickInfo returns a pointer MagickInfo
-%      structure that matches the specified tag.
+%      structure that matches the specified name.
 %
-%    o tag: a character string that represents the image format we are
+%    o name: a character string that represents the image format we are
 %      looking for.
 %
 %    o exception: Return any errors or warnings in this structure.
 %
 %
 */
-MagickExport MagickInfo *GetMagickInfo(const char *tag,ExceptionInfo *exception)
+MagickExport MagickInfo *GetMagickInfo(const char *name,
+  ExceptionInfo *exception)
 {
   register MagickInfo
     *p;
@@ -378,14 +379,14 @@ MagickExport MagickInfo *GetMagickInfo(const char *tag,ExceptionInfo *exception)
       atexit(DestroyMagickInfo);
     }
   LiberateSemaphore(&magick_semaphore);
-  if ((tag == (const char *) NULL) ||  (LocaleCompare(tag,"*") == 0))
+  if ((name == (const char *) NULL) ||  (LocaleCompare(name,"*") == 0))
     return(magick_list);
   /*
-    Find tag in list
+    Find name in list
   */
   AcquireSemaphore(&magick_semaphore);
   for (p=magick_list; p != (MagickInfo *) NULL; p=p->next)
-    if (LocaleCompare(p->tag,tag) == 0)
+    if (LocaleCompare(p->name,name) == 0)
       break;
   if (p != (MagickInfo *) NULL)
     {
@@ -394,10 +395,10 @@ MagickExport MagickInfo *GetMagickInfo(const char *tag,ExceptionInfo *exception)
     }
   LiberateSemaphore(&magick_semaphore);
 #if defined(HasMODULES)
-  (void) OpenModule(tag,exception);
+  (void) OpenModule(name,exception);
   AcquireSemaphore(&magick_semaphore);
   for (p=magick_list; p != (MagickInfo *) NULL; p=p->next)
-    if (LocaleCompare(p->tag,tag) == 0)
+    if (LocaleCompare(p->name,name) == 0)
       break;
   if (p != (MagickInfo *) NULL)
     {
@@ -531,7 +532,7 @@ MagickExport unsigned int ListMagickInfo(FILE *file,ExceptionInfo *exception)
   AcquireSemaphore(&magick_semaphore);
   for ( ; p != (MagickInfo *) NULL; p=p->next)
     if (p->stealth != True)
-      (void) fprintf(file,"%10s%c  %c%c%c  %s\n",p->tag ? p->tag : "",
+      (void) fprintf(file,"%10s%c  %c%c%c  %s\n",p->name ? p->name : "",
         p->blob_support ? '*' : ' ',p->decoder ? 'r' : '-',
         p->encoder ? 'w' : '-',p->encoder && p->adjoin ? '+' : '-',
         p->description ? p->description : "");
@@ -594,7 +595,7 @@ MagickExport void MagickIncarnate(const char *path)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  Method RegisterMagickInfo adds attributes for a particular image format to
-%  the list of supported formats.  The attributes include the image format tag,
+%  the list of supported formats.  The attributes include the image format name,
 %  a method to read and/or write the format, whether the format supports
 %  the saving of more than one frame to the same file or blob, whether the
 %  format supports native in-memory I/O, and a brief description of the format.
@@ -606,7 +607,7 @@ MagickExport void MagickIncarnate(const char *path)
 %  A description of each parameter follows:
 %
 %    o magick_info: Method RegisterMagickInfo returns a pointer MagickInfo
-%      structure that contains the specified tag info.
+%      structure that contains the specified name info.
 %
 %    o magick_info: A pointer to a structure of type MagickInfo.
 %
@@ -617,11 +618,11 @@ MagickExport MagickInfo *RegisterMagickInfo(MagickInfo *magick_info)
     *p;
 
   /*
-    Delete any existing tag.
+    Delete any existing name.
   */
   assert(magick_info != (MagickInfo *) NULL);
   assert(magick_info->signature == MagickSignature);
-  UnregisterMagickInfo(magick_info->tag);
+  UnregisterMagickInfo(magick_info->name);
   AcquireSemaphore(&magick_semaphore);
   magick_info->previous=(MagickInfo *) NULL;
   magick_info->next=(MagickInfo *) NULL;
@@ -638,9 +639,9 @@ MagickExport MagickInfo *RegisterMagickInfo(MagickInfo *magick_info)
     Tag is added in lexographic order.
   */
   for (p=magick_list; p->next != (MagickInfo *) NULL; p=p->next)
-    if (LocaleCompare(p->tag,magick_info->tag) >= 0)
+    if (LocaleCompare(p->name,magick_info->name) >= 0)
       break;
-  if (LocaleCompare(p->tag,magick_info->tag) < 0)
+  if (LocaleCompare(p->name,magick_info->name) < 0)
     {
       /*
         Add entry after target.
@@ -942,30 +943,30 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
 %
 %  The format of the SetMagickInfo method is:
 %
-%      MagickInfo *SetMagickInfo(const char *tag)
+%      MagickInfo *SetMagickInfo(const char *name)
 %
 %  A description of each parameter follows:
 %
 %    o magick_info: Method SetMagickInfo returns the allocated and initialized
 %      MagickInfo structure.
 %
-%    o tag: a character string that represents the image format associated
+%    o name: a character string that represents the image format associated
 %      with the MagickInfo structure.
 %
 %
 */
-MagickExport MagickInfo *SetMagickInfo(const char *tag)
+MagickExport MagickInfo *SetMagickInfo(const char *name)
 {
   MagickInfo
     *magick_info;
 
-  assert(tag != (const char *) NULL);
+  assert(name != (const char *) NULL);
   magick_info=(MagickInfo *) AcquireMemory(sizeof(MagickInfo));
   if (magick_info == (MagickInfo *) NULL)
     MagickError(ResourceLimitError,"Unable to allocate image",
       "Memory allocation failed");
   memset(magick_info,0,sizeof(MagickInfo));
-  magick_info->tag=AllocateString(tag);
+  magick_info->name=AllocateString(name);
   magick_info->adjoin=True;
   magick_info->blob_support=True;
   magick_info->signature=MagickSignature;
@@ -983,23 +984,23 @@ MagickExport MagickInfo *SetMagickInfo(const char *tag)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method UnregisterMagickInfo removes a tag from the magick info list.  It
-%  returns False if the tag does not exist in the list otherwise True.
+%  Method UnregisterMagickInfo removes a name from the magick info list.  It
+%  returns False if the name does not exist in the list otherwise True.
 %
 %  The format of the UnregisterMagickInfo method is:
 %
-%      unsigned int UnregisterMagickInfo(const char *tag)
+%      unsigned int UnregisterMagickInfo(const char *name)
 %
 %  A description of each parameter follows:
 %
-%    o status: Method UnregisterMagickInfo returns False if the tag does not
+%    o status: Method UnregisterMagickInfo returns False if the name does not
 %      exist in the list otherwise True.
 %
-%    o tag: a character string that represents the image format we are
+%    o name: a character string that represents the image format we are
 %      looking for.
 %
 */
-MagickExport unsigned int UnregisterMagickInfo(const char *tag)
+MagickExport unsigned int UnregisterMagickInfo(const char *name)
 {
   MagickInfo
     *p;
@@ -1007,12 +1008,12 @@ MagickExport unsigned int UnregisterMagickInfo(const char *tag)
   unsigned int
     status;
 
-  assert(tag != (const char *) NULL);
+  assert(name != (const char *) NULL);
   status=False;
   AcquireSemaphore(&magick_semaphore);
   for (p=magick_list; p != (MagickInfo *) NULL; p=p->next)
   {
-    if (LocaleCompare(p->tag,tag) != 0)
+    if (LocaleCompare(p->name,name) != 0)
       continue;
     if (p->next != (MagickInfo *) NULL)
       p->next->previous=p->previous;
@@ -1020,7 +1021,7 @@ MagickExport unsigned int UnregisterMagickInfo(const char *tag)
       p->previous->next=p->next;
     else
       magick_list=p->next;
-    LiberateMemory((void **) &p->tag);
+    LiberateMemory((void **) &p->name);
     LiberateMemory((void **) &p->description);
     LiberateMemory((void **) &p->module);
     LiberateMemory((void **) &p);

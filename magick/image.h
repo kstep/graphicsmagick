@@ -550,7 +550,7 @@ typedef struct _ImageInfo
 typedef struct _MagickInfo
 {
   char
-    *tag;
+    *name;
 
   ImageInfo
     *image_info;
