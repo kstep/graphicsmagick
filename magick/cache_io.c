@@ -156,135 +156,91 @@ Export unsigned int AllocateCache(Cache cache,const ClassType class_type,
   CacheInfo
     *cache_info;
 
-  char
-    zero = 0;
-
   off_t
-    length,
-    offset;
-
-  size_t
-    sans;
+    length;
 
   void
     *allocation;
 
   assert(cache != (Cache) NULL);
+  if (class_type == GetCacheClassType(cache))
+    return(True);
   cache_info=(CacheInfo *) cache;
-  if (cache_info->class == UndefinedClass)
+  length=cache_info->number_pixels*sizeof(PixelPacket);
+  if (cache_info->class == PseudoClass)
+    length+=cache_info->number_pixels*sizeof(IndexPacket);
+  if (cache_info->class != UndefinedClass)
     {
-      cache_info->rows=rows;
-      cache_info->columns=columns;
-      cache_info->number_pixels=columns*rows;
-      length=cache_info->number_pixels*sizeof(PixelPacket);
-      if (class_type == PseudoClass)
-        length+=cache_info->number_pixels*sizeof(IndexPacket);
-      if ((cache_info->type == UndefinedCache) ||
-          (cache_info->type == MemoryCache))
-        if (length <= GetCacheMemory(0))
-          {
-            allocation=AllocateMemory(length);
-            if (allocation != (void *) NULL)
-              {
-                /*
-                  Create in-memory pixel cache.
-                */
-                (void) GetCacheMemory(-length);
-                cache_info->class=class_type;
-                cache_info->type=MemoryCache;
-                cache_info->pixels=(PixelPacket *) allocation;
-                if (cache_info->class == PseudoClass)
-                  cache_info->indexes=(IndexPacket *)
-                    (cache_info->pixels+cache_info->number_pixels);
-              }
-          }
+      /*
+        Free memory-based cache resources.
+      */
+      if (cache_info->type == MemoryCache)
+        (void) GetCacheMemory(length);
+      if (cache_info->type == MemoryMappedCache)
+        (void) UnmapBlob(cache_info->pixels,length);
+    }
+  cache_info->rows=rows;
+  cache_info->columns=columns;
+  cache_info->number_pixels=columns*rows;
+  length=cache_info->number_pixels*sizeof(PixelPacket);
+  if (class_type == PseudoClass)
+    length+=cache_info->number_pixels*sizeof(IndexPacket);
+  if ((cache_info->type == MemoryCache) ||
+      ((cache_info->type == UndefinedCache) && (length <= GetCacheMemory(0))))
+    {
       if (cache_info->class == UndefinedClass)
+        allocation=AllocateMemory(length);
+      else
+        {
+          allocation=ReallocateMemory(cache_info->pixels,length);
+          if (allocation == (void *) NULL)
+            return(False);
+        }
+      if (allocation != (void *) NULL)
         {
           /*
-            Create pixel cache on disk.
+            Create in-memory pixel cache.
           */
-          TemporaryFilename(cache_info->filename);
-          cache_info->file=
-            open(cache_info->filename,O_RDWR | O_CREAT | O_EXCL,0777);
-          if (cache_info->file == -1)
-            return(False);
-          offset=lseek(cache_info->file,length-1,SEEK_SET);
-          (void) write(cache_info->file,&zero,1);
-          (void) close(cache_info->file);
-          cache_info->file=(-1);
-          if (offset == -1)
-            return(False);
+          (void) GetCacheMemory(-length);
           cache_info->class=class_type;
-          if (cache_info->type != DiskCache)
-            {
-              cache_info->type=DiskCache;
-              allocation=MapBlob(cache_info->filename,IOMode,&sans);
-              if (allocation != (void *) NULL)
-                {
-                  /*
-                    Create memory-mapped pixel cache.
-                  */
-                  cache_info->type=MemoryMappedCache;
-                  cache_info->pixels=(PixelPacket *) allocation;
-                  if (cache_info->class == PseudoClass)
-                    cache_info->indexes=(IndexPacket *)
-                      (cache_info->pixels+cache_info->number_pixels);
-                }
-            }
+          cache_info->type=MemoryCache;
+          cache_info->pixels=(PixelPacket *) allocation;
+          if (cache_info->class == PseudoClass)
+            cache_info->indexes=(IndexPacket *)
+              (cache_info->pixels+cache_info->number_pixels);
+          return(True);
         }
     }
-  if (class_type == PseudoClass)
+  /*
+    Create pixel cache on disk.
+  */
+  if (cache_info->class == UndefinedClass)
+    TemporaryFilename(cache_info->filename);
+  if (cache_info->file == -1)
     {
-      if (cache_info->class != PseudoClass)
+      cache_info->file=open(cache_info->filename,O_RDWR | O_CREAT,0777);
+      if (cache_info->file == -1)
+        return(False);
+    }
+  (void) ftruncate(cache_info->file,length);
+  cache_info->class=class_type;
+  if (cache_info->type != DiskCache)
+    {
+      size_t
+        offset;
+
+      cache_info->type=DiskCache;
+      allocation=MapBlob(cache_info->filename,IOMode,&offset);
+      if (allocation != (void *) NULL)
         {
-          if (cache_info->type == MemoryCache)
-            {
-              /*
-                Create in-memory colormap index cache.
-              */
-              length=cache_info->number_pixels*sizeof(IndexPacket);
-              cache_info->indexes=(IndexPacket *) AllocateMemory(length);
-              if (cache_info->indexes == (IndexPacket *) NULL)
-                return(False);
-              cache_info->class=PseudoClass;
-              (void) GetCacheMemory(-length);
-            }
-          else
-            {
-              /*
-                Create colormap index cache on disk.
-              */
-              if (cache_info->file == -1)
-                cache_info->file=open(cache_info->filename,O_RDWR,0777);
-              if (cache_info->file == -1)
-                return(False);
-              length=cache_info->number_pixels*sizeof(PixelPacket)+
-                cache_info->number_pixels*sizeof(IndexPacket);
-              offset=lseek(cache_info->file,length-1,SEEK_SET);
-              (void) write(cache_info->file,&zero,1);
-              (void) close(cache_info->file);
-              cache_info->file=(-1);
-              if (offset == -1)
-                return(False);
-              cache_info->class=class_type;
-              if (cache_info->type == MemoryMappedCache)
-                {
-                  cache_info->type=DiskCache;
-                  length=cache_info->number_pixels*sizeof(PixelPacket);
-                  (void) UnmapBlob(cache_info->pixels,length);
-                  allocation=MapBlob(cache_info->filename,IOMode,&sans);
-                  if (allocation != (void *) NULL)
-                    {
-                      /*
-                        Create memory-mapped pixel cache.
-                      */
-                      cache_info->type=MemoryMappedCache;
-                      cache_info->pixels=(PixelPacket *) allocation;
-                      cache_info->indexes=(IndexPacket *)
-                        (cache_info->pixels+cache_info->number_pixels);
-                    }
-                }
-            }
+          /*
+            Create memory-mapped pixel cache.
+          */
+          cache_info->type=MemoryMappedCache;
+          cache_info->pixels=(PixelPacket *) allocation;
+          if (cache_info->class == PseudoClass)
+            cache_info->indexes=(IndexPacket *)
+              (cache_info->pixels+cache_info->number_pixels);
         }
     }
   return(True);
@@ -362,14 +318,9 @@ Export void DestroyCacheInfo(Cache cache)
     case MemoryCache:
     {
       FreeMemory(cache_info->pixels);
-      (void) GetCacheMemory(cache_info->number_pixels*sizeof(PixelPacket));
       if (cache_info->class == PseudoClass)
-        {
-          if (cache_info->indexes !=
-              (IndexPacket *) (cache_info->pixels+cache_info->number_pixels))
-            FreeMemory(cache_info->indexes);
-          (void) GetCacheMemory(cache_info->number_pixels*sizeof(IndexPacket));
-        }
+        (void) GetCacheMemory(cache_info->number_pixels*sizeof(IndexPacket));
+      (void) GetCacheMemory(cache_info->number_pixels*sizeof(PixelPacket));
       break;
     }
     case MemoryMappedCache:

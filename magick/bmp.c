@@ -659,7 +659,7 @@ Export Image *ReadBMPImage(const ImageInfo *image_info)
           {
             for (bit=0; bit < 8; bit++)
             {
-              index=((*p) & (0x80 >> bit) ? 0x00 : 0x01);
+              index=((*p) & (0x80 >> bit) ? 0x01 : 0x00);
               image->indexes[x+bit]=index;
               *q++=image->colormap[index];
             }
@@ -669,7 +669,7 @@ Export Image *ReadBMPImage(const ImageInfo *image_info)
             {
               for (bit=0; bit < (int) (image->columns % 8); bit++)
               {
-                index=((*p) & (0x80 >> bit) ? 0x00 : 0x01);
+                index=((*p) & (0x80 >> bit) ? 0x01 : 0x00);
                 image->indexes[x+bit]=index;
                 *q++=image->colormap[index];
               }
