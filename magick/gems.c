@@ -555,16 +555,15 @@ Export Quantum InsidePrimitive(PrimitiveInfo *primitive_info,
       }
       case RectanglePrimitive:
       {
-        if ((x >= (int) (Min(p->x-mid,q->x+mid)+0.5)) &&
-            (x < (int) (Max(p->x-mid,q->x+mid)+0.5)) &&
-            (y >= (int) (Min(p->y-mid,q->y+mid)+0.5)) &&
-            (y < (int) (Max(p->y-mid,q->y+mid)+0.5)))
+        if (((x >= (int) (Min(p->x-mid,q->x+mid)+0.5)) &&
+             (x < (int) (Max(p->x-mid,q->x+mid)+0.5)) &&
+             (y >= (int) (Min(p->y-mid,q->y+mid)+0.5)) &&
+             (y < (int) (Max(p->y-mid,q->y+mid)+0.5))) &&
+           !((x >= (int) (Min(p->x+mid,q->x-mid)+0.5)) &&
+             (x < (int) (Max(p->x+mid,q->x-mid)+0.5)) &&
+             (y >= (int) (Min(p->y+mid,q->y-mid)+0.5)) &&
+             (y < (int) (Max(p->y+mid,q->y-mid)+0.5))))
           opacity=Opaque;
-        if ((x >= (int) (Min(p->x+mid,q->x-mid)+0.5)) &&
-            (x < (int) (Max(p->x+mid,q->x-mid)+0.5)) &&
-            (y >= (int) (Min(p->y+mid,q->y-mid)+0.5)) &&
-            (y < (int) (Max(p->y+mid,q->y-mid)+0.5)))
-          opacity=Transparent;
         break;
       }
       case FillRectanglePrimitive:
@@ -612,12 +611,12 @@ Export Quantum InsidePrimitive(PrimitiveInfo *primitive_info,
         Quantum
           poly_opacity;
 
-         poly_opacity=Transparent;
-         for (r=p; (r < q) && (poly_opacity != Opaque); r++)
-           poly_opacity=InsideLinePrimitive(r,r+1,x,y,
-             (Quantum) Max(opacity,poly_opacity),mid);
-         poly_opacity=InsideLinePrimitive(q,p,x,y,poly_opacity,mid);
-         opacity=Max(opacity,poly_opacity);
+        poly_opacity=Transparent;
+        for (r=p; (r < q) && (poly_opacity != Opaque); r++)
+          poly_opacity=InsideLinePrimitive(r,r+1,x,y,
+            (Quantum) Max(opacity,poly_opacity),mid);
+        poly_opacity=InsideLinePrimitive(q,p,x,y,poly_opacity,mid);
+        opacity=Max(opacity,poly_opacity);
         break;
       }
       case FillPolygonPrimitive:
@@ -651,7 +650,7 @@ Export Quantum InsidePrimitive(PrimitiveInfo *primitive_info,
               else
                 if (crossing)
                   crossings++;
-              break;
+              continue;
             }
          while ((p <= q) && (p->y < y))
            p++;

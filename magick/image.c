@@ -407,6 +407,7 @@ Export void AnnotateImage(Image *image,AnnotateInfo *annotate_info)
     {
       MagickWarning(ResourceLimitWarning,"Unable to annotate image",
         "Memory allocation failed");
+      DestroyImageInfo(local_info);
       return;
     }
   width=image->columns;
@@ -457,6 +458,10 @@ Export void AnnotateImage(Image *image,AnnotateInfo *annotate_info)
       {
         MagickWarning(ResourceLimitWarning,"Unable to annotate image",
           (char *) NULL);
+        for ( ; textlist[i] != (char *) NULL; i++)
+          FreeMemory(textlist[i]);
+        FreeMemory((char *) textlist);
+        DestroyImageInfo(local_info);
         break;
       }
     /*
@@ -553,6 +558,7 @@ Export void AnnotateImage(Image *image,AnnotateInfo *annotate_info)
   for ( ; textlist[i] != (char *) NULL; i++)
     FreeMemory(textlist[i]);
   FreeMemory((char *) textlist);
+  DestroyImageInfo(local_info);
 }
 
 /*
@@ -4142,11 +4148,13 @@ Export void DrawImage(Image *image,AnnotateInfo *annotate_info)
       case EllipsePrimitive:
       case FillEllipsePrimitive:
       {
-        RectangleInfo
-          arc;
+        double
+          n;
 
         PointInfo
-          degrees;
+          degrees,
+          end,
+	  start;
 
         if (primitive_info[j].coordinates != 3)
           {
@@ -4156,19 +4164,22 @@ Export void DrawImage(Image *image,AnnotateInfo *annotate_info)
         /*
           Arc's are just short segmented polygons.
         */
+        primitive_info[j].primitive=PolygonPrimitive;
+        if (primitive_type == FillEllipsePrimitive)
+          primitive_info[j].primitive=FillPolygonPrimitive;
+        start.x=primitive_info[j].x;
+        start.y=primitive_info[j].y;
+        end.x=primitive_info[j+1].x/2;
+        end.y=primitive_info[j+1].y/2;
+        degrees.x=primitive_info[j+2].x;
+        degrees.y=primitive_info[j+2].y;
+        while (degrees.x > (degrees.y+360.0))
+          degrees.x-=360.0;
         i=j;
-        arc.x=(int) primitive_info[i].x;
-        arc.y=(int) primitive_info[i].y;
-        arc.width=(int) primitive_info[i+1].x/2;
-        arc.height=(int) primitive_info[i+1].y/2;
-        degrees.x=primitive_info[i+2].x;
-        degrees.y=primitive_info[i+2].y;
-        while (degrees.y < degrees.x)
-          degrees.y+=360;
-        for (n=(int) degrees.x+1; n <= (int) degrees.y; n++)
+        for (n=(degrees.x+1.0); n <= degrees.y; n+=1.0)
         {
-          point.x=cos(DegreesToRadians(i % 360))*arc.width+arc.x;
-          point.y=sin(DegreesToRadians(i % 360))*arc.height+arc.y;
+          point.x=cos(DegreesToRadians(fmod(n,360.0)))*end.x+start.x;
+          point.y=sin(DegreesToRadians(fmod(n,360.0)))*end.y+start.y;
           if (point.x < bounds.x1)
             bounds.x1=point.x;
           if (point.y < bounds.y1)
@@ -4177,14 +4188,11 @@ Export void DrawImage(Image *image,AnnotateInfo *annotate_info)
             bounds.x2=point.x;
           if (point.y > bounds.y2)
             bounds.y2=point.y;
-          primitive_info[i].primitive=PolygonPrimitive;
-          if (primitive_type == FillEllipsePrimitive)
-            primitive_info[i].primitive=FillPolygonPrimitive;
           primitive_info[i].coordinates=0;
           primitive_info[i].x=point.x;
           primitive_info[i].y=point.y;
-          i++;
           primitive_info[j].coordinates++;
+          i++;
         }
         break;
       }

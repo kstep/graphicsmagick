@@ -5869,6 +5869,7 @@ Image *ReadLABELImage(const ImageInfo *image_info)
       TT_Done_Instance(instance);
       TT_Close_Face(face);
       TT_Done_FreeType(engine);
+      DestroyImageInfo(local_info);
       return(image);
 #else
       MagickWarning(MissingDelegateWarning,"FreeType library is not available",
@@ -6038,6 +6039,7 @@ Image *ReadLABELImage(const ImageInfo *image_info)
           }
         q++;
       }
+      DestroyImageInfo(local_info);
       return(image);
     }
   /*
