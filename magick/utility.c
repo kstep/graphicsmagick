@@ -2038,7 +2038,7 @@ MagickExport unsigned int IsAccessible(const char *filename)
     }
   if (magick_debug)
     (void) fprintf(stdout,"  %.1024s%.1024s.\n",filename,
-      status ? "" : GetErrorMessageString(errno));
+      status ? "" : strerror(errno));
   return(status);
 }
 
