@@ -6112,7 +6112,7 @@ QueryFontMetrics(ref,...)
     IdentityAffine(&affine);
     x=0.0;
     y=0.0;
-    for (i=1; i < items; i+=2)
+    for (i=2; i < items; i+=2)
     {
       attribute=(char *) SvPV(ST(i-1),na);
       switch (*attribute)
