@@ -114,7 +114,7 @@ int main ( int argc, char **argv )
   if ( original == (Image *)NULL )
     {
       printf ( "Failed to read image from BLOB in format %s\n",imageInfo.magick );
-      exit(1)
+      exit(1);
     }
   LiberateMemory( (void**)&blob );
 
@@ -132,7 +132,7 @@ int main ( int argc, char **argv )
   if ( blob == NULL )
     {
       printf ( "Failed to write BLOB in format %s\n", imageInfo.magick );
-      exit(1)
+      exit(1);
     }
 
   /*
