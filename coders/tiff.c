@@ -102,10 +102,9 @@ static unsigned int IsTIFF(const unsigned char *magick,
 {
   if (length < 4)
     return(False);
-  if ((magick[0] == 0x4D) && (magick[1] == 0x4D))
-    if ((magick[2] == 0x00) && (magick[3] == 0x2A))
-      return(True);
-  if (LocaleNCompare((char *) magick,"\111\111\052\000",4) == 0)
+  if (memcmp(magick,"\115\115\000\052",4) == 0)
+    return(True);
+  if (memcmp(magick,"\111\111\052\000",4) == 0)
     return(True);
   return(False);
 }

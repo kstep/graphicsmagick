@@ -93,13 +93,13 @@ static unsigned int
 */
 static unsigned int IsPS(const unsigned char *magick,const unsigned int length)
 {
-  if (length < 3)
+  if (length < 4)
     return(False);
-  if (LocaleNCompare((char *) magick,"\004%!",3) == 0)
+  if (memcmp(magick,"\004%!",3) == 0)
     return(True);
   if (LocaleNCompare((char *) magick,"%!",2) == 0)
     return(True);
-  if (LocaleNCompare((char *) magick,"\305\320\323\306",4) == 0)
+  if (memcmp(magick,"\305\320\323\306",4) == 0)
     return(True);
   return(False);
 }

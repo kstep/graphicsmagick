@@ -305,7 +305,7 @@ static unsigned int IsAVI(const unsigned char *magick,
 {
   if (length < 4)
     return(False);
-  if (LocaleNCompare((char *) magick,"RIFF",4) == 0)
+  if (memcmp(magick,"RIFF",4) == 0)
     return(True);
   return(False);
 }

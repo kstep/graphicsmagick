@@ -89,7 +89,7 @@ static unsigned int IsRLE(const unsigned char *magick,const unsigned int length)
 {
   if (length < 2)
     return(False);
-  if (LocaleNCompare((char *) magick,"\122\314",2) == 0)
+  if (memcmp(magick,"\122\314",2) == 0)
     return(True);
   return(False);
 }
@@ -184,7 +184,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Determine if this is a RLE file.
   */
   status=ReadBlob(image,2,(char *) magick);
-  if ((status == False) || (LocaleNCompare(magick,"\122\314",2) != 0))
+  if ((status == False) || (memcmp(magick,"\122\314",2) != 0))
     ThrowReaderException(CorruptImageWarning,"Not a RLE image file",image);
   do
   {
@@ -526,7 +526,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
         break;
     (void) ReadByte(image);
     status=ReadBlob(image,2,(char *) magick);
-    if ((status == True) && (LocaleNCompare(magick,"\122\314",2) == 0))
+    if ((status == True) && (memcmp(magick,"\122\314",2) == 0))
       {
         /*
           Allocate next image structure.
@@ -540,7 +540,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
         image=image->next;
         ProgressMonitor(LoadImagesText,TellBlob(image),image->filesize);
       }
-  } while ((status == True) && (LocaleNCompare(magick,"\122\314",2) == 0));
+  } while ((status == True) && (memcmp(magick,"\122\314",2) == 0));
   while (image->previous != (Image *) NULL)
     image=image->previous;
   CloseBlob(image);

@@ -126,7 +126,7 @@ static unsigned int IsDCX(const unsigned char *magick,const unsigned int length)
 {
   if (length < 4)
     return(False);
-  if (LocaleNCompare((char *) magick,"\261\150\336\72",4) == 0)
+  if (memcmp(magick,"\261\150\336\72",4) == 0)
     return(True);
   return(False);
 }
@@ -165,9 +165,9 @@ static unsigned int IsPCX(const unsigned char *magick,const unsigned int length)
 {
   if (length < 2)
     return(False);
-  if (LocaleNCompare((char *) magick,"\12\2",2) == 0)
+  if (memcmp(magick,"\012\002",2) == 0)
     return(True);
-  if (LocaleNCompare((char *) magick,"\12\5",2) == 0)
+  if (memcmp(magick,"\012\005",2) == 0)
     return(True);
   return(False);
 }
@@ -318,7 +318,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     pcx_info.planes=ReadByte(image);
     if ((pcx_info.bits_per_pixel != 8) || (pcx_info.planes == 1))
       if ((pcx_info.version == 3) || (pcx_info.version == 5) ||
-	  ((pcx_info.bits_per_pixel*pcx_info.planes) == 1))
+          ((pcx_info.bits_per_pixel*pcx_info.planes) == 1))
         image->colors=1 << (pcx_info.bits_per_pixel*pcx_info.planes);
     if (!AllocateImageColormap(image,image->colors))
       ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
@@ -380,7 +380,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       image->matte=pcx_info.planes > 3;
     else
       if ((pcx_info.version == 5) ||
-	  ((pcx_info.bits_per_pixel*pcx_info.planes) == 1))
+          ((pcx_info.bits_per_pixel*pcx_info.planes) == 1))
         {
           /*
             Initialize image colormap.

@@ -100,7 +100,7 @@ static unsigned int IsJPEG(const unsigned char *magick,
 {
   if (length < 3)
     return(False);
-  if (LocaleNCompare((char *) magick,"\377\330\377",3) == 0)
+  if (memcmp(magick,"\377\330\377",3) == 0)
     return(True);
   return(False);
 }

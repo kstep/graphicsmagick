@@ -95,10 +95,13 @@ static unsigned int IsXWD(const unsigned char *magick,const unsigned int length)
 {
   if (length < 8)
     return(False);
-  if ((magick[1] == 0x00) && (magick[2] == 0x00))
-    if ((magick[5] == 0x00) && (magick[6] == 0x00))
-      if ((magick[4] == 0x07) || (magick[7] == 0x07))
+  if (memcmp(magick+1,"\000\000",2) == 0)
+    {
+      if (memcmp(magick+4,"\007\000\000",3) == 0)
         return(True);
+      if (memcmp(magick+5,"\000\000\007",3) == 0)
+        return(True);
+    }
   return(False);
 }
 

@@ -85,7 +85,7 @@ static unsigned int IsWPG(const unsigned char *magick,const unsigned int length)
 {
   if (length < 4)
     return(False);
-  if (LocaleNCompare((char *) magick,"\377WPC",4) == 0)
+  if (memcmp(magick,"\377WPC",4) == 0)
     return(True);
   return(False);
 }

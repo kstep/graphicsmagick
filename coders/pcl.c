@@ -95,9 +95,9 @@ static unsigned int IsPCL(const unsigned char *magick,const unsigned int length)
 {
   if (length < 4)
     return(False);
-  if (LocaleNCompare((char *) magick,"\033E\033&",4) == 0)
+  if (memcmp(magick,"\033E\033&",4) == 0)
     return(False);
-  if (LocaleNCompare((char *) magick,"\033E\033",3) == 0)
+  if (memcmp(magick,"\033E\033",3) == 0)
     return(True);
   return(False);
 }

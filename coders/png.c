@@ -584,7 +584,7 @@ static unsigned int IsMNG(const unsigned char *magick,const unsigned int length)
 {
   if (length < 8)
     return(False);
-  if (LocaleNCompare((char *) magick,"\212MNG\r\n\032\n",8) == 0)
+  if (memcmp(magick,"\212MNG\r\n\032\n",8) == 0)
     return(True);
   return(False);
 }
@@ -623,7 +623,7 @@ static unsigned int IsPNG(const unsigned char *magick,const unsigned int length)
 {
   if (length < 8)
     return(False);
-  if (LocaleNCompare((char *) magick,"\211PNG\r\n\032\n",8) == 0)
+  if (memcmp(magick,"\211PNG\r\n\032\n",8) == 0)
     return(True);
   return(False);
 }
@@ -791,9 +791,9 @@ static void mng_get_data(png_structp png_ptr,png_bytep data,png_size_t length)
                 (char *) mng_info->read_buffer);
               mng_info->read_buffer[4]=0;
               mng_info->bytes_in_read_buffer=4;
-              if (!png_memcmp(mng_info->read_buffer,mng_PLTE,4))
+              if (!memcmp(mng_info->read_buffer,mng_PLTE,4))
                 mng_info->found_empty_plte=True;
-              if (!png_memcmp(mng_info->read_buffer,mng_IEND,4))
+              if (!memcmp(mng_info->read_buffer,mng_IEND,4))
                 {
                   mng_info->found_empty_plte=False;
                   mng_info->have_saved_bkgd_index=False;
@@ -806,7 +806,7 @@ static void mng_get_data(png_structp png_ptr,png_bytep data,png_size_t length)
                 (char *) mng_info->read_buffer);
               mng_info->read_buffer[4]=0;
               mng_info->bytes_in_read_buffer=4;
-              if (!png_memcmp(mng_info->read_buffer,mng_bKGD,4))
+              if (!memcmp(mng_info->read_buffer,mng_bKGD,4))
                 if (mng_info->found_empty_plte)
                   {
                     /*
@@ -1185,7 +1185,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         Verify MNG signature.
       */
       (void) ReadBlob(image,8,magic_number);
-      if (LocaleNCompare(magic_number,"\212MNG\r\n\032\n",8) != 0)
+      if (memcmp(magic_number,"\212MNG\r\n\032\n",8) != 0)
         ThrowReaderException(CorruptImageWarning,"Not a MNG image file",image);
       first_mng_object=1;
       /*
@@ -1277,7 +1277,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
           status=False;
         if (status == False)
           ThrowReaderException(CorruptImageWarning,"Corrupt MNG image",image);
-        if (!png_memcmp(type,mng_JHDR,4))
+        if (!memcmp(type,mng_JHDR,4))
           {
             skip_to_iend=True;
             if (!mng_info->jhdr_warning)
@@ -1285,7 +1285,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 "JNG is not implemented yet",image->filename);
             mng_info->jhdr_warning++;
           }
-        if (!png_memcmp(type,mng_DHDR,4))
+        if (!memcmp(type,mng_DHDR,4))
           {
             skip_to_iend=True;
             if (!mng_info->dhdr_warning)
@@ -1304,18 +1304,18 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             p=chunk;
           }
         (void) MSBFirstReadLong(image);  /* read crc word */
-        if (!png_memcmp(type,mng_MEND,4))
+        if (!memcmp(type,mng_MEND,4))
           break;
         if (skip_to_iend)
           {
-            if (!png_memcmp(type,mng_IEND,4))
+            if (!memcmp(type,mng_IEND,4))
               skip_to_iend=False;
             if (length)
               LiberateMemory((void **) &chunk);
             continue;
           }
 
-        if (!png_memcmp(type,mng_MHDR,4))
+        if (!memcmp(type,mng_MHDR,4))
           {
             MngPair
                pair;
@@ -1375,7 +1375,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             continue;
           }
 
-        if (!png_memcmp(type,mng_TERM,4))
+        if (!memcmp(type,mng_TERM,4))
           {
             int
               repeat=0;
@@ -1398,7 +1398,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             LiberateMemory((void **) &chunk);
             continue;
           }
-        if (!png_memcmp(type,mng_DEFI,4))
+        if (!memcmp(type,mng_DEFI,4))
           {
             if (mng_type == 3)
               ThrowException(&image->exception,DelegateWarning,
@@ -1450,7 +1450,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             LiberateMemory((void **) &chunk);
             continue;
           }
-        if (!png_memcmp(type,mng_bKGD,4))
+        if (!memcmp(type,mng_bKGD,4))
           {
             have_global_bkgd=False;
             if (length > 5)
@@ -1466,7 +1466,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             LiberateMemory((void **) &chunk);
             continue;
           }
-        if (!png_memcmp(type,mng_BACK,4))
+        if (!memcmp(type,mng_BACK,4))
           {
             if (length>6)
               mandatory_back=p[6];
@@ -1486,7 +1486,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             LiberateMemory((void **) &chunk);
             continue;
           }
-        if (!png_memcmp(type,mng_PLTE,4))
+        if (!memcmp(type,mng_PLTE,4))
           {
             register int
              i;
@@ -1522,7 +1522,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             LiberateMemory((void **) &chunk);
             continue;
           }
-        if (!png_memcmp(type,mng_tRNS,4))
+        if (!memcmp(type,mng_tRNS,4))
           {
             register int
               i;
@@ -1541,7 +1541,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             LiberateMemory((void **) &chunk);
             continue;
           }
-        if (!png_memcmp(type,mng_gAMA,4))
+        if (!memcmp(type,mng_gAMA,4))
           {
             if (length == 4)
               {
@@ -1555,7 +1555,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             continue;
           }
 
-        if (!png_memcmp(type,mng_cHRM,4))
+        if (!memcmp(type,mng_cHRM,4))
           {
             /*
               Read global cHRM
@@ -1577,7 +1577,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             LiberateMemory((void **) &chunk);
             continue;
           }
-        if (!png_memcmp(type,mng_sRGB,4))
+        if (!memcmp(type,mng_sRGB,4))
           {
             /*
               Read global sRGB.
@@ -1592,7 +1592,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             LiberateMemory((void **) &chunk);
             continue;
           }
-        if (!png_memcmp(type,mng_FRAM,4))
+        if (!memcmp(type,mng_FRAM,4))
           {
             if (mng_type == 3)
               ThrowException(&image->exception,DelegateWarning,
@@ -1693,7 +1693,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             LiberateMemory((void **) &chunk);
             continue;
           }
-        if (!png_memcmp(type,mng_CLIP,4))
+        if (!memcmp(type,mng_CLIP,4))
           {
             unsigned int
               first_object,
@@ -1718,7 +1718,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             LiberateMemory((void **) &chunk);
             continue;
           }
-        if (!png_memcmp(type,mng_SAVE,4))
+        if (!memcmp(type,mng_SAVE,4))
           {
             register int
               i;
@@ -1737,7 +1737,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             continue;
           }
 
-        if (!png_memcmp(type,mng_DISC,4) || !png_memcmp(type,mng_SEEK,4))
+        if (!memcmp(type,mng_DISC,4) || !memcmp(type,mng_SEEK,4))
           {
             register int
               i;
@@ -1745,7 +1745,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             /*
               Read DISC or SEEK.
             */
-            if ((length == 0) || !png_memcmp(type,mng_SEEK,4))
+            if ((length == 0) || !memcmp(type,mng_SEEK,4))
               {
                 for (i=1; i < MNG_MAX_OBJECTS; i++)
                   MngInfoDiscardObject(mng_info,i);
@@ -1765,7 +1765,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
               LiberateMemory((void **) &chunk);
             continue;
           }
-        if (!png_memcmp(type,mng_MOVE,4))
+        if (!memcmp(type,mng_MOVE,4))
           {
             long
               first_object,
@@ -1795,7 +1795,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             continue;
           }
 
-        if (!png_memcmp(type,mng_LOOP,4))
+        if (!memcmp(type,mng_LOOP,4))
           {
             long loop_iters=1;
             loop_level=chunk[0];
@@ -1816,7 +1816,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             LiberateMemory((void **) &chunk);
             continue;
           }
-        if (!png_memcmp(type,mng_ENDL,4))
+        if (!memcmp(type,mng_ENDL,4))
           {
             loop_level=chunk[0];
             if (skipping_loop > 0)
@@ -1861,28 +1861,28 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             LiberateMemory((void **) &chunk);
             continue;
           }
-        if (!png_memcmp(type,mng_CLON,4))
+        if (!memcmp(type,mng_CLON,4))
           {
             if (!mng_info->clon_warning)
               ThrowException(&image->exception,DelegateWarning,
                 "CLON is not implemented yet",image->filename);
             mng_info->clon_warning++;
           }
-        if (!png_memcmp(type,mng_PAST,4))
+        if (!memcmp(type,mng_PAST,4))
           {
             if (!mng_info->past_warning)
               ThrowException(&image->exception,DelegateWarning,
                 "PAST is not implemented yet",image->filename);
             mng_info->past_warning++;
           }
-        if (!png_memcmp(type,mng_SHOW,4))
+        if (!memcmp(type,mng_SHOW,4))
           {
             if (!mng_info->show_warning)
               ThrowException(&image->exception,DelegateWarning,
                 "SHOW is not implemented yet",image->filename);
             mng_info->show_warning++;
           }
-        if (!png_memcmp(type,mng_sBIT,4))
+        if (!memcmp(type,mng_sBIT,4))
           {
             if (length < 4)
               have_global_sbit=False;
@@ -1899,7 +1899,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 have_global_sbit=True;
              }
           }
-        if (!png_memcmp(type,mng_pHYs,4))
+        if (!memcmp(type,mng_pHYs,4))
           {
             if (length > 8)
               {
@@ -1911,14 +1911,14 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             else
               have_global_phys=False;
           }
-        if (!png_memcmp(type,mng_pHYg,4))
+        if (!memcmp(type,mng_pHYg,4))
           {
             if (!mng_info->phyg_warning)
               ThrowException(&image->exception,DelegateWarning,
                 "pHYg is not implemented.",image->filename);
             mng_info->phyg_warning++;
           }
-        if (!png_memcmp(type,mng_BASI,4))
+        if (!memcmp(type,mng_BASI,4))
           {
 #ifdef MNG_BASI_SUPPORTED
             MngInfoPair
@@ -1968,7 +1968,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             LiberateMemory((void **) &chunk);
             continue;
           }
-        if (png_memcmp(type,mng_IHDR,4))
+        if (memcmp(type,mng_IHDR,4))
           {
             if (length > 0)
               LiberateMemory((void **) &chunk);
