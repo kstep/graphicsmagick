@@ -36,7 +36,7 @@ typedef unsigned short Quantum;
 #else
 # error "Specified value of QuantumSize is not supported"
 #endif
-#define MaxRGB  ((1 << QuantumDepth)-1)
+#define MaxRGB  ((1L << QuantumDepth)-1L)
 #define OpaqueOpacity  0
 #define TransparentOpacity  MaxRGB
 
