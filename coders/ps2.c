@@ -1064,10 +1064,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
                   break;
                 indexes=GetIndexes(image);
                 for (x=0; x < (long) image->columns; x++)
-                {
                   *q++=indexes[x];
-                  p++;
-                }
                 if (image->previous == (Image *) NULL)
                   if (QuantumTick(y,image->rows))
                     MagickMonitor(SaveImageText,y,image->rows);
