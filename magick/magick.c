@@ -236,7 +236,6 @@ Export MagickInfo *GetMagickInfo(const char *tag)
       if (Latin1Compare(p->tag,tag) == 0)
 	return(p);
 #endif
-printf( "Didn't find coder for %s\n", tag );
   return((MagickInfo *) NULL);
 }
 
