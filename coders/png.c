@@ -8494,6 +8494,7 @@ static unsigned int WriteMNGImage(const ImageInfo *image_info,Image *image)
        mng_info->old_framing_mode=mng_info->framing_mode;
      }
 
+#if defined(JNG_SUPPORTED)
    if (image->compression == JPEGCompression)
      {
        if (logging)
@@ -8504,6 +8505,7 @@ static unsigned int WriteMNGImage(const ImageInfo *image_info,Image *image)
        status=WriteOneJNGImage(mng_info,image_info,image);
      }
    else
+#endif
      {
        if (logging)
          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
