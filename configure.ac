@@ -1975,10 +1975,22 @@ fi
 AC_DEFINE_UNQUOTED(MagickLibPath,"$MagickLibPathDefine",Directory where architecture-dependent files live.)
 AC_SUBST(MagickLibPath)
 
+# Subdirectory under lib to place GraphicsMagick configuration files
+MagickLibConfigSubDir="${MagickLibSubdir}/config"
+AC_DEFINE_UNQUOTED(MagickLibConfigSubDir,"$MagickLibConfigSubDir",Subdirectory of lib where architecture-dependent configuration files live.)
+MagickLibConfigPath="${LIB_DIR}/${MagickLibConfigSubDir}"
+MagickLibConfigPathDefine="${MagickLibConfigPath}/"
+if test "$native_win32_build" = 'yes'
+then
+  MagickLibConfigPathDefine=`$WinPathScript "$MagickLibConfigPathDefine" 1`
+fi
+AC_DEFINE_UNQUOTED(MagickLibConfigPath,"$MagickLibConfigPathDefine",Directory where architecture-dependent configuration files live.)
+AC_SUBST(MagickLibConfigPath)
+
 #
 # Subdirectory under lib to place GraphicsMagick coder module files
 MagickCoderModulesSubdir="${MagickLibSubdir}/modules-Q${QuantumDepth}/coders"
-AC_DEFINE_UNQUOTED(MagickCoderModulesSubdir,"$MagickCoderModulesSubdir",Subdirectory of lib where GraphicsMagick coder modules are installed)
+AC_DEFINE_UNQUOTED(MagickCoderModulesSubdir,"$MagickCoderModulesSubdir",Subdirectory of lib where coder modules are installed)
 MagickCoderModulesPath="${LIB_DIR}/${MagickCoderModulesSubdir}"
 MagickCoderModulesPathDefine="${MagickCoderModulesPath}/"
 if test "$native_win32_build" = 'yes'
@@ -1991,7 +2003,7 @@ AC_SUBST(MagickCoderModulesPath)
 #
 # Subdirectory under lib to place GraphicsMagick filter module files
 MagickFilterModulesSubdir="${MagickLibSubdir}/modules-Q${QuantumDepth}/filters"
-AC_DEFINE_UNQUOTED(MagickFilterModulesSubdir,"$MagickFilterModulesSubdir",Subdirectory of lib where GraphicsMagick filter modules are installed)
+AC_DEFINE_UNQUOTED(MagickFilterModulesSubdir,"$MagickFilterModulesSubdir",Subdirectory of lib where filter modules are installed)
 MagickFilterModulesPath="${LIB_DIR}/${MagickFilterModulesSubdir}"
 MagickFilterModulesPathDefine="${MagickFilterModulesPath}/"
 if test "$native_win32_build" = 'yes'
@@ -2012,6 +2024,18 @@ then
 fi
 AC_DEFINE_UNQUOTED(MagickSharePath,"$MagickSharePathDefine",Directory where architecture-independent files live.)
 AC_SUBST(MagickSharePath)
+
+# Subdirectory under share to place GraphicsMagick configuration files
+MagickShareConfigSubDir="${MagickLibSubdir}/config"
+AC_DEFINE_UNQUOTED(MagickShareConfigSubDir,"$MagickShareConfigSubDir",Subdirectory of lib where architecture-independent configuration files live.)
+MagickShareConfigPath="${DATA_DIR}/${MagickShareConfigSubDir}"
+MagickShareConfigPathDefine="${MagickShareConfigPath}/"
+if test "$native_win32_build" = 'yes'
+then
+  MagickShareConfigPathDefine=`$WinPathScript "$MagickShareConfigPathDefine" 1`
+fi
+AC_DEFINE_UNQUOTED(MagickShareConfigPath,"$MagickShareConfigPathDefine",Directory where architecture-independent configuration files live.)
+AC_SUBST(MagickShareConfigPath)
 
 #
 # program_transform_name is formed for use in a Makefile, so create a
@@ -2575,11 +2599,12 @@ AC_OUTPUT( \
         PerlMagick/Magick.pm \
         PerlMagick/Makefile.PL \
         coders/Makefile \
-        coders/delegates.mgk \
-        coders/type-ghostscript.mgk \
-        coders/type-solaris.mgk \
-        coders/type-windows.mgk \
-        coders/type.mgk \
+        config/Makefile \
+        config/delegates.mgk \
+        config/type-ghostscript.mgk \
+        config/type-solaris.mgk \
+        config/type-windows.mgk \
+        config/type.mgk \
         filters/Makefile \
         ltdl/Makefile \
         magick/GraphicsMagick-config \

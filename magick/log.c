@@ -46,7 +46,7 @@
 /*
   Define declarations.
 */
-#define LogFilename  "log.mgk"
+#define MagickLogFilename  "log.mgk"
 
 /*
   Typedef declarations.
@@ -198,7 +198,7 @@ static SemaphoreInfo
   Forward declarations.
 */
 static unsigned int
-  ReadConfigureFile(const char *,const unsigned long,ExceptionInfo *);
+  ReadLogConfigureFile(const char *,const unsigned long,ExceptionInfo *);
 
 static void
   *LogToBlob(const char *,size_t *,ExceptionInfo *);
@@ -283,171 +283,6 @@ MagickExport void DestroyLogInfo(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+  G e t L o g B l o b                                                        %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  GetLogBlob() returns the specified configure file as a blob.
-%
-%  The format of the GetLogBlob method is:
-%
-%      void *GetLogBlob(const char *filename,ExceptionInfo *exception)
-%
-%  A description of each parameter follows:
-%
-%    o filename: The configure file name.
-%
-%    o path: return the full path information of the configure file.
-%
-%    o length: This pointer to a size_t integer sets the initial length of the
-%      blob.  On return, it reflects the actual length of the blob.
-%
-%    o exception: Return any errors or warnings in this structure.
-%
-%
-*/
-
-#if !defined(UseInstalledMagick) && defined(POSIX)
-static void ChopPathComponents(char *path,const unsigned long components)
-{
-  long
-    count;
-
-  register char
-    *p;
-
-  if (*path == '\0')
-    return;
-  p=path+strlen(path);
-  if (*p == *DirectorySeparator)
-    *p='\0';
-  for (count=0; (count < (long) components) && (p > path); p--)
-    if (*p == *DirectorySeparator)
-      {
-        *p='\0';
-        count++;
-      }
-}
-#endif
-
-static void *GetLogBlob(const char *filename,char *path,size_t *length,
-  ExceptionInfo *exception)
-{
-  assert(filename != (const char *) NULL);
-  assert(path != (char *) NULL);
-  assert(length != (size_t *) NULL);
-  assert(exception != (ExceptionInfo *) NULL);
-  (void) strncpy(path,filename,MaxTextExtent-1);
-#if defined(UseInstalledMagick)
-# if defined(MagickLibPath)
-  /*
-    Search hard coded paths.
-  */
-  FormatString(path,"%.1024s%.1024s",MagickLibPath,filename);
-  return(LogToBlob(path,length,exception));
-# else
-#  if defined(WIN32)
-  {
-    char
-      *key,
-      *key_value;
-
-    /*
-      Locate file via registry key.
-    */
-    key="ConfigurePath";
-    key_value=NTRegistryKeyLookup(key);
-    if (!key_value)
-      {
-        ThrowException(exception,ConfigureError,RegistryKeyLookupFailed,key);
-        return 0;
-      }
-
-    FormatString(path,"%.1024s%s%.1024s",key_value,DirectorySeparator,
-      filename);
-    return(LogToBlob(path,length,exception));
-  }
-#  endif /* defined(WIN32) */
-# endif /* !defined(MagickLibPath) */
-# if !defined(MagickLibPath) && !defined(WIN32)
-#  error MagickLibPath or WIN32 must be defined when UseInstalledMagick is defined
-# endif
-#else
-
-  /*
-    Search MAGICK_HOME.
-  */
-  if (getenv("MAGICK_HOME") != (char *) NULL)
-    {
-#if defined(POSIX)
-      FormatString(path,"%.1024s/lib/%s/%.1024s",getenv("MAGICK_HOME"),
-        MagickLibSubdir,filename);
-#else
-      FormatString(path,"%.1024s%s%.1024s",getenv("MAGICK_HOME"),
-        DirectorySeparator,filename);
-#endif
-      if (IsAccessibleNoLogging(path))
-        return(LogToBlob(path,length,exception));
-    }
-
-  /*
-    Search $HOME/.magick.
-  */
-  if (getenv("HOME") != (char *) NULL)
-    {
-      FormatString(path,"%.1024s%s%s%.1024s",getenv("HOME"),
-        *getenv("HOME") == '/' ? "/.magick" : "",DirectorySeparator,filename);
-      if (IsAccessibleNoLogging(path))
-        return(LogToBlob(path,length,exception));
-    }
-
-  /*
-    Search based on executable directory if directory is known.
-  */
-  if (*SetClientPath((char *) NULL) != '\0')
-    {
-#if defined(POSIX)
-      char
-        prefix[MaxTextExtent];
-      (void) strncpy(prefix,SetClientPath((char *) NULL),MaxTextExtent-1);
-      ChopPathComponents(prefix,1);
-      FormatString(path,"%.1024s/lib/%s/%.1024s",prefix,MagickLibSubdir,
-        filename);
-#else
-      FormatString(path,"%.1024s%s%.1024s",SetClientPath((char *) NULL),
-        DirectorySeparator,filename);
-#endif
-      if (IsAccessibleNoLogging(path))
-        return(LogToBlob(path,length,exception));
-    }
-  /*
-    Search current directory.
-  */
-  (void) strncpy(path,filename,MaxTextExtent-1);
-  if (IsAccessibleNoLogging(path))
-    return(LogToBlob(path,length,exception));
-#if defined(WIN32)
-  {
-    void
-      *resource;
-
-    resource=NTResourceToBlob(filename);
-    if (resource)
-      return resource;
-  }
-#endif /* defined(WIN32) */
-  ThrowException(exception,ConfigureError,UnableToAccessLogFile,filename);
-  return 0;
-#endif /* defined(UseInstalledMagick) */
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 +   I n i t i a l i z e L o g I n f o                                         %
 %                                                                             %
 %                                                                             %
@@ -492,7 +327,7 @@ MagickExport unsigned int InitializeLogInfo(ExceptionInfo *exception)
       LiberateSemaphoreInfo(&log_semaphore);
 
       if (initialize == True)
-        (void) ReadConfigureFile(LogFilename,0,exception);
+        (void) ReadLogConfigureFile(MagickLogFilename,0,exception);
     }
   return(log_info != (LogInfo *) NULL);
 }
@@ -567,69 +402,32 @@ MagickExport unsigned int IsEventLogging(void)
 static void *LogToBlob(const char *filename,size_t *length,
   ExceptionInfo *exception)
 {
-  int
-    file;
-
-  magick_off_t
-    offset;
-
   unsigned char
-    *blob;
+    *blob=0;
 
-  void
-    *map;
+  FILE
+    *file;
 
-  assert(filename != (const char *) NULL);
-  assert(exception != (ExceptionInfo *) NULL);
+  *length=0;
   SetExceptionInfo(exception,UndefinedException);
-  file=open(filename,O_RDONLY | O_BINARY,0777);
-  if (file == -1)
-    return(0);
-  offset=MagickSeek(file,0,SEEK_END);
-  if ((offset < 0) || (offset != (size_t) offset))
+  file=fopen(filename,"rb");
+  if (file )
     {
-      (void) close(file);
-      return(0);
-    }
-  (void) MagickSeek(file,0,SEEK_SET);
-  *length=(size_t) offset;
-  blob=MagickAllocateMemory(unsigned char *,*length+1);
-  if (blob == 0)
-    {
-      (void) close(file);
-      return(0);
-    }
-  map=MapBlob(file,ReadMode,0,*length);
-  if (map != 0)
-    {
-      (void) memcpy(blob,map,*length);
-      UnmapBlob(map,*length);
-    }
-  else
-    {
-      ssize_t
-        count;
-
-      register size_t
-        i;
-
-      count=0;
-      for (i=0; i < *length; i+=count)
-      {
-        count=read(file,blob+i,*length-i);
-        if (count <= 0)
-          break;
-      }
-      if (i < *length)
+      (void) fseek(file,0L,SEEK_END);
+      *length=ftell(file);
+      if (*length > 0)
         {
-          (void) close(file);
-          MagickFreeMemory(blob);
-          return(0);
+          (void) fseek(file,0L,SEEK_SET);
+          blob=MagickAllocateMemory(unsigned char *,*length+1);
+          if (blob)
+            {
+              *length=fread((void  *)blob, 1, *length, file);
+              blob[*length]='\0';
+            }
         }
+      (void) fclose(file);
     }
-  blob[*length]='\0';
-  (void) close(file);
-  return(blob);
+  return (blob);
 }
 
 /*
@@ -1069,16 +867,16 @@ MagickExport unsigned int LogMagickEvent(const ExceptionType type,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ReadConfigureFile() reads the log configuration file.
+%  ReadLogConfigureFile() reads the log configuration file.
 %
-%  The format of the ReadConfigureFile method is:
+%  The format of the ReadLogConfigureFile method is:
 %
-%      unsigned int ReadConfigureFile(const char *basename,
+%      unsigned int ReadLogConfigureFile(const char *basename,
 %        const unsigned long depth,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
-%    o status: ReadConfigureFile() returns True if at least one log entry
+%    o status: ReadLogConfigureFile() returns True if at least one log entry
 %      is defined otherwise False.
 %
 %    o basename:  The log configuration filename.
@@ -1089,7 +887,7 @@ MagickExport unsigned int LogMagickEvent(const ExceptionType type,
 %
 %
 */
-static unsigned int ReadConfigureFile(const char *basename,
+static unsigned int ReadLogConfigureFile(const char *basename,
   const unsigned long depth,ExceptionInfo *exception)
 {
   char
@@ -1107,7 +905,7 @@ static unsigned int ReadConfigureFile(const char *basename,
   */
   (void) strcpy(path,basename);
   if (depth == 0)
-    xml=(char *) GetLogBlob(basename,path,&length,exception);
+    xml=(char *) GetConfigureBlob(basename,path,&length,exception);
   else
     xml=(char *) LogToBlob(basename,&length,exception);
   if (xml == (char *) NULL)
@@ -1158,7 +956,7 @@ static unsigned int ReadConfigureFile(const char *basename,
                     (void) strcat(filename,DirectorySeparator);
                   (void) strncat(filename,token,MaxTextExtent-
                     strlen(filename)-1);
-                  (void) ReadConfigureFile(filename,depth+1,exception);
+                  (void) ReadLogConfigureFile(filename,depth+1,exception);
                 }
             }
         }

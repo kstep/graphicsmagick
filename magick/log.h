@@ -20,6 +20,11 @@ extern "C" {
 #endif
 
   /*
+    Define declarations.
+  */
+#define MagickLogFilename  "log.mgk"
+
+  /*
     Obtain the current C function name (if possible)
   */
 #  if !defined(GetCurrentFunction)

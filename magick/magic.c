@@ -57,7 +57,7 @@ static MagicInfo
   Forward declarations.
 */
 static unsigned int
-  ReadConfigureFile(const char *,const unsigned long,ExceptionInfo *);
+  ReadMagicConfigureFile(const char *,const unsigned long,ExceptionInfo *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -150,7 +150,7 @@ MagickExport const MagicInfo *GetMagicInfo(const unsigned char *magic,
     {
       AcquireSemaphoreInfo(&magic_semaphore);
       if (magic_list == (MagicInfo *) NULL)
-        (void) ReadConfigureFile(MagicFilename,0,exception);
+        (void) ReadMagicConfigureFile(MagicFilename,0,exception);
       LiberateSemaphoreInfo(&magic_semaphore);
       if (exception->severity > UndefinedException)
         return 0;
@@ -259,20 +259,19 @@ MagickExport unsigned int ListMagicInfo(FILE *file,ExceptionInfo *exception)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ReadConfigureFile reads the color configuration file which maps
-%  color strings with a particular image format.
+%  Method ReadMagicConfigureFile reads the magic configuration file which provides
+%  the file header strings for identifying an image format.
 %
-%  The format of the ReadConfigureFile method is:
+%  The format of the ReadMagicConfigureFile method is:
 %
-%      unsigned int ReadConfigureFile(const char *basename,
+%      unsigned int ReadMagicConfigureFile(const char *basename,
 %        const unsigned long depth,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
-%    o status: Method ReadConfigureFile returns True if at least one color
-%      is defined otherwise False.
+%    o status: Method ReadMagicConfigureFile returns True if loading is successful.
 %
-%    o basename:  The color configuration filename.
+%    o basename:  The magic configuration filename.
 %
 %    o depth: depth of <include /> statements.
 %
@@ -280,7 +279,7 @@ MagickExport unsigned int ListMagicInfo(FILE *file,ExceptionInfo *exception)
 %
 %
 */
-static unsigned int ReadConfigureFile(const char *basename,
+static unsigned int ReadMagicConfigureFile(const char *basename,
   const unsigned long depth,ExceptionInfo *exception)
 {
   char
@@ -350,7 +349,7 @@ static unsigned int ReadConfigureFile(const char *basename,
                     (void) strcat(filename,DirectorySeparator);
                   (void) strncat(filename,token,MaxTextExtent-
                     strlen(filename)-1);
-                  (void) ReadConfigureFile(filename,depth+1,exception);
+                  (void) ReadMagicConfigureFile(filename,depth+1,exception);
                 }
               if (magic_list != (MagicInfo *) NULL)
                 while (magic_list->next != (MagicInfo *) NULL)

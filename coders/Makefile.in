@@ -22,7 +22,7 @@
 # Copyright.txt. You should have received a copy of Copyright.txt with this
 # package; otherwise see http://www.graphicsmagick.org/www/Copyright.html.
 #
-#  Makefile for building GraphicsMagick coder modules
+# Makefile for building GraphicsMagick coder modules
 #
 #
 
@@ -239,7 +239,9 @@ MVDelegate = @MVDelegate@
 MagickBinPath = @MagickBinPath@
 MagickCoderModulesPath = @MagickCoderModulesPath@
 MagickFilterModulesPath = @MagickFilterModulesPath@
+MagickLibConfigPath = @MagickLibConfigPath@
 MagickLibPath = @MagickLibPath@
+MagickShareConfigPath = @MagickShareConfigPath@
 MagickSharePath = @MagickSharePath@
 MogrifyDelegate = @MogrifyDelegate@
 OBJDUMP = @OBJDUMP@
@@ -388,7 +390,7 @@ MAGICK_CODER_SRCS = \
 @WITH_MODULES_FALSE@EXTRA_libCoders_la_SOURCES = clipboard.c emf.c
 
 # Additional files to distribute
-EXTRA_DIST = modules.mgk delegates.mgk.in type.mgk.in
+EXTRA_DIST = 
 
 # Headers which are not installed but which are distributed
 noinst_HEADERS = 
@@ -400,7 +402,7 @@ LIBMAGICK = $(top_builddir)/magick/libGraphicsMagick.la
 pkgdir = $(MagickCoderModulesPath)
 
 # Architecture-dependent data files installed with modules
-pkg_DATA = modules.mgk
+pkg_DATA = 
 
 # Architecture independent data files installed into GraphicsMagick/share
 pkgdata_DATA = 
@@ -886,22 +888,12 @@ xwd_la_LIBADD = $(LIBMAGICK) $(LIB_X11)
 yuv_la_SOURCES = yuv.c
 yuv_la_LDFLAGS = $(MODULECOMMONFLAGS)
 yuv_la_LIBADD = $(LIBMAGICK)
-
-# Install delegates files
-DATADELEGATES = \
-	delegates.mgk \
-	type-ghostscript.mgk \
-	type-windows.mgk \
-	type-solaris.mgk \
-	type.mgk
-
 subdir = coders
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/magick/magick_config.h \
 	$(top_builddir)/magick/magick_config_api.h
-CONFIG_CLEAN_FILES = delegates.mgk type-ghostscript.mgk type-solaris.mgk \
-	type-windows.mgk type.mgk
+CONFIG_CLEAN_FILES =
 LTLIBRARIES = $(noinst_LTLIBRARIES) $(pkg_LTLIBRARIES)
 
 art_la_DEPENDENCIES = $(top_builddir)/magick/libGraphicsMagick.la
@@ -1307,9 +1299,7 @@ DATA = $(pkg_DATA) $(pkgdata_DATA)
 
 HEADERS = $(noinst_HEADERS)
 
-DIST_COMMON = $(noinst_HEADERS) $(srcdir)/Makefile.in Makefile.am \
-	delegates.mgk.in type-ghostscript.mgk.in type-solaris.mgk.in \
-	type-windows.mgk.in type.mgk.in
+DIST_COMMON = $(noinst_HEADERS) $(srcdir)/Makefile.in Makefile.am
 SOURCES = $(art_la_SOURCES) $(avi_la_SOURCES) $(avs_la_SOURCES) $(bmp_la_SOURCES) $(caption_la_SOURCES) $(cineon_la_SOURCES) $(clipboard_la_SOURCES) $(cmyk_la_SOURCES) $(cut_la_SOURCES) $(dcm_la_SOURCES) $(dib_la_SOURCES) $(dps_la_SOURCES) $(dpx_la_SOURCES) $(emf_la_SOURCES) $(ept_la_SOURCES) $(fax_la_SOURCES) $(fits_la_SOURCES) $(fpx_la_SOURCES) $(gif_la_SOURCES) $(gradient_la_SOURCES) $(gray_la_SOURCES) $(histogram_la_SOURCES) $(html_la_SOURCES) $(icon_la_SOURCES) $(jbig_la_SOURCES) $(jp2_la_SOURCES) $(jpeg_la_SOURCES) $(label_la_SOURCES) $(libCoders_la_SOURCES) $(EXTRA_libCoders_la_SOURCES) $(locale_la_SOURCES) $(logo_la_SOURCES) $(map_la_SOURCES) $(mat_la_SOURCES) $(matte_la_SOURCES) $(meta_la_SOURCES) $(miff_la_SOURCES) $(mono_la_SOURCES) $(mpc_la_SOURCES) $(mpeg_la_SOURCES) $(mpr_la_SOURCES) $(msl_la_SOURCES) $(mtv_la_SOURCES) $(mvg_la_SOURCES) $(null_la_SOURCES) $(otb_la_SOURCES) $(palm_la_SOURCES) $(pcd_la_SOURCES) $(pcl_la_SOURCES) $(pcx_la_SOURCES) $(pdb_la_SOURCES) $(pdf_la_SOURCES) $(pict_la_SOURCES) $(pix_la_SOURCES) $(plasma_la_SOURCES) $(png_la_SOURCES) $(pnm_la_SOURCES) $(preview_la_SOURCES) $(ps_la_SOURCES) $(ps2_la_SOURCES) $(ps3_la_SOURCES) $(psd_la_SOURCES) $(pwp_la_SOURCES) $(rgb_la_SOURCES) $(rla_la_SOURCES) $(rle_la_SOURCES) $(sct_la_SOURCES) $(sfw_la_SOURCES) $(sgi_la_SOURCES) $(stegano_la_SOURCES) $(sun_la_SOURCES) $(svg_la_SOURCES) $(tga_la_SOURCES) $(tiff_la_SOURCES) $(tile_la_SOURCES) $(tim_la_SOURCES) $(topol_la_SOURCES) $(ttf_la_SOURCES) $(txt_la_SOURCES) $(uil_la_SOURCES) $(url_la_SOURCES) $(uyvy_la_SOURCES) $(vicar_la_SOURCES) $(vid_la_SOURCES) $(viff_la_SOURCES) $(wbmp_la_SOURCES) $(wmf_la_SOURCES) $(wpg_la_SOURCES) $(x_la_SOURCES) $(xbm_la_SOURCES) $(xc_la_SOURCES) $(xcf_la_SOURCES) $(xpm_la_SOURCES) $(xwd_la_SOURCES) $(yuv_la_SOURCES)
 
 all: all-am
@@ -1321,16 +1311,6 @@ $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am  $(top_srcdir)/configu
 	  $(AUTOMAKE) --foreign  coders/Makefile
 Makefile: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ $(am__depfiles_maybe)
-delegates.mgk: $(top_builddir)/config.status delegates.mgk.in
-	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@
-type-ghostscript.mgk: $(top_builddir)/config.status type-ghostscript.mgk.in
-	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@
-type-solaris.mgk: $(top_builddir)/config.status type-solaris.mgk.in
-	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@
-type-windows.mgk: $(top_builddir)/config.status type-windows.mgk.in
-	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@
-type.mgk: $(top_builddir)/config.status type.mgk.in
-	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@
 
 clean-noinstLTLIBRARIES:
 	-test -z "$(noinst_LTLIBRARIES)" || rm -f $(noinst_LTLIBRARIES)
@@ -1873,7 +1853,7 @@ info-am:
 install-data-am: install-pkgDATA install-pkgLTLIBRARIES \
 	install-pkgdataDATA
 
-install-exec-am: install-exec-local
+install-exec-am:
 
 install-info: install-info-am
 
@@ -1899,7 +1879,7 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am: uninstall-info-am uninstall-local uninstall-pkgDATA \
+uninstall-am: uninstall-info-am uninstall-pkgDATA \
 	uninstall-pkgLTLIBRARIES uninstall-pkgdataDATA
 
 .PHONY: CTAGS GTAGS all all-am check check-am clean clean-generic \
@@ -1907,32 +1887,15 @@ uninstall-am: uninstall-info-am uninstall-local uninstall-pkgDATA \
 	ctags distclean distclean-compile distclean-generic \
 	distclean-libtool distclean-tags distdir dvi dvi-am info \
 	info-am install install-am install-data install-data-am \
-	install-exec install-exec-am install-exec-local install-info \
-	install-info-am install-man install-pkgDATA \
-	install-pkgLTLIBRARIES install-pkgdataDATA install-strip \
-	installcheck installcheck-am installdirs maintainer-clean \
-	maintainer-clean-generic mostlyclean mostlyclean-compile \
-	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
-	tags uninstall uninstall-am uninstall-info-am uninstall-local \
-	uninstall-pkgDATA uninstall-pkgLTLIBRARIES \
-	uninstall-pkgdataDATA
+	install-exec install-exec-am install-info install-info-am \
+	install-man install-pkgDATA install-pkgLTLIBRARIES \
+	install-pkgdataDATA install-strip installcheck installcheck-am \
+	installdirs maintainer-clean maintainer-clean-generic \
+	mostlyclean mostlyclean-compile mostlyclean-generic \
+	mostlyclean-libtool pdf pdf-am ps ps-am tags uninstall \
+	uninstall-am uninstall-info-am uninstall-pkgDATA \
+	uninstall-pkgLTLIBRARIES uninstall-pkgdataDATA
 
-
-install-data-delegates: 
-	$(mkinstalldirs) $(DESTDIR)$(pkglibdir)
-	for file in $(DATADELEGATES) ; do  \
-	  $(INSTALL_DATA) $$file $(DESTDIR)$(pkglibdir) ; \
-	done
-
-# Uninstall delegates files
-uninstall-data-delegates:
-	for file in $(DATADELEGATES) ; do \
-	  rm -f $(DESTDIR)$(pkglibdir)/$$file ; \
-	done
-
-install-exec-local: install-data-delegates
-
-uninstall-local: uninstall-data-delegates
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

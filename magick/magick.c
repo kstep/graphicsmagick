@@ -105,7 +105,9 @@ MagickExport void DestroyMagick(void)
   DestroyColorInfo();
   DestroyDelegateInfo();
   DestroyTypeInfo();
-  DestroyModuleInfo();
+#if defined(SupportMagickModules)
+  DestroyMagickModules();
+#endif /* defined(SupportMagickModules) */
   DestroyMagicInfo();
   DestroyMagickInfo();
   DestroyLogInfo();
@@ -249,10 +251,17 @@ MagickExport const MagickInfo *GetMagickInfo(const char *name,
   register MagickInfo
     *p;
 
+#if defined(SupportMagickModules)
+  /*
+    If all modules are requested, then use OpenModules to load
+    all modules.
+  */
   if ((name != (const char *) NULL) && (LocaleCompare(name,"*") == 0))
-    (void) OpenModules(exception);
-  if (exception->severity > UndefinedException)
-    return 0;
+    {
+      if (!OpenModules(exception))
+        return 0;
+    }
+#endif /* #if defined(SupportMagickModules) */
 
   AcquireSemaphoreInfo(&magick_semaphore);
   if (magick_list != (MagickInfo *) NULL)
@@ -270,12 +279,18 @@ MagickExport const MagickInfo *GetMagickInfo(const char *name,
       entry->stealth=True;
       (void) RegisterMagickInfo(entry);
 
+#if defined(SupportMagickModules)
       /*
-        Load modules and check for any error
+        Load module aliases and check for any error
       */
-      (void) GetModuleInfo((char *) NULL,exception);
-      if (exception->severity > UndefinedException)
+      if (!GetModuleInfo((char *) NULL,exception))
         return 0;
+#else
+      /*
+        Register all static modules
+      */
+      RegisterStaticModules();
+#endif
     }
   if ((name == (const char *) NULL) ||  (LocaleCompare(name,"*") == 0))
     return((const MagickInfo *) magick_list);
@@ -286,11 +301,15 @@ MagickExport const MagickInfo *GetMagickInfo(const char *name,
   for (p=magick_list; p != (MagickInfo *) NULL; p=p->next)
     if (LocaleCompare(p->name,name) == 0)
       break;
+#if defined(SupportMagickModules)
   if (p == (MagickInfo *) NULL)
     {
+      /*
+        Try to load a supporting module.
+      */
       if (*name != '\0')
         {
-#if 0
+#if 1
           /* Pass all exceptions up */
           LiberateSemaphoreInfo(&magick_semaphore);
           (void) OpenModule(name,exception);
@@ -311,6 +330,7 @@ MagickExport const MagickInfo *GetMagickInfo(const char *name,
         if (LocaleCompare(p->name,name) == 0)
           break;
     }
+#endif /* #if defined(SupportMagickModules) */
   if (p != (MagickInfo *) NULL)
     if (p != magick_list)
       {
@@ -391,7 +411,7 @@ MagickExport MagickInfo **GetMagickInfoArray(ExceptionInfo *exception)
     Load all modules and obtain pointer to head of list
   */
   GetMagickInfo("*",exception);
-  if ((!magick_list) || (exception->severity > UndefinedException))
+  if (!magick_list)
     return 0;
 
   AcquireSemaphoreInfo(&magick_semaphore);
@@ -785,6 +805,13 @@ MagickExport void InitializeMagick(const char *path)
      to the client is setup */
   InitializeMagickResources();
 
+  /*
+    Initialize module loader
+  */
+#if defined(SupportMagickModules)
+  InitializeMagickModules();
+#endif /* defined(SupportMagickModules) */
+
   /* Let's log the three important setting as we exit this routine */
   (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
     "Path: \"%s\" Name: \"%s\" Filename: \"%s\"",
@@ -871,7 +898,7 @@ MagickExport unsigned int ListMagickInfo(FILE *file,ExceptionInfo *exception)
     file=stdout;
 
   magick_array=GetMagickInfoArray(exception);
-  if ((!magick_array) || (exception->severity > UndefinedException))
+  if (!magick_array)
     return False;
 
   (void) fprintf(file,"   Format  Mode  Description\n");

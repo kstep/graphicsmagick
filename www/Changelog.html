@@ -53,6 +53,84 @@
 </tr>
 </table>
 <p>
+2003-10-22  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/static.c (ExecuteModuleProcess): Renamed from
+        ExecuteStaticModuleProcess. Only compiled if SupportMagickModules
+        is not defined.<BR>
+  <LI> magick/type.c (GetTypeBlob): Eliminated function.
+        (ReadTypeConfigureFile): Use GetConfigureBlob() rather than
+        GetTypeBlob().<BR>
+  <LI> magick/module.c (GetModuleBlob): Eliminate this function since
+        modules.mgk is now installed under
+        ${prefix}/share/GraphicsMagick-version/config so
+        GetConfigureBlob() may be used.
+        (lt_dlexit, etc.) Eliminate fake libltdl function wrappers used
+        for the static build.<BR>
+        (DestroyMagickModules): Added a new destroy function (simply
+        invokes DestroyModuleInfo()).<BR>
+        (GetModuleList): Learn where modules live by using
+        FindMagickModule() to locate the LOGO module rather than by using
+        the location of modules.mgk.  This is necessary since now
+        modules.mgk may be seperate from the modules.
+        (GetModuleBlob): Eliminated function.
+        (InitializeMagickModules): New function to safely initialize the
+        module loader.<BR>
+        (OpenModule): Added logging messages.
+        (OpenModules): Added logging messages.
+        (ReadModuleConfigureFile): Use GetConfigureBlob() rather than
+        GetModuleBlob().<BR>
+        Totally eliminated the rat's-nest of conditional code dependent on
+        SupportMagickModules.  Now all the code in module.c is dependent
+        on #if defined(SupportMagickModules).
+  <LI> magick/magick.c (DestroyMagick): Invoke DestroyMagickModules().
+        (GetMagickInfo): #ifdef chunks of code which exist to support the
+        modules-build rather than forcing the module loader to pretend
+        that modules are being used when they are not. Pass module loading
+        exceptions back to the user rather than discarding them.
+        (GetMagickInfoArray): Don't inspect the exception status since may
+        short-circuits the operation.  Use best-effort instead.
+        (ListMagickInfo): Don't inspect the current exception status so
+        that all the modules which did load successfully will be
+        represented.<BR>
+        (InitializeMagick): Invoke InitializeMagickModules().
+  <LI> magick/log.c: (GetLogBlob): Eliminated function.
+        GetConfigureBlob() is safe to use now when configuring logging.
+        (LogToBlob): Simplified function.  Only exists since FileToBlob()
+        may throw exceptions (which are logged, causing deadlock).
+        (ReadLogConfigureFile): Use GetConfigureBlob().
+  <LI> magick/blob.c (GetConfigureBlob): Re-written to use the
+        MagickMap interface and to support the new 'lib' and 'share'
+        config directories.  The directory
+        ${prefix}/lib/GraphicsMagick-version/config is scanned before
+        ${prefix}/share/GraphicsMagick-version/config.
+        (FileToBlob): Simplified implementation.
+  <LI> config/Makefile.am: New makefile to install .mgk files.
+  <LI> magick/magick_config.h.in: Added MagickLibConfigPath and
+        MagickShareConfigPath defines.<BR>
+  <LI> configure.ac: Install configuration files (.mgk files) in
+        ${prefix}/lib/GraphicsMagick-version/config and
+        ${prefix}/share/GraphicsMagick-version/config.  Architecture
+        independent files to under "share" while architecture dependnet
+        files go under "lib".<BR>
+  <LI> Makefile.am: Added 'config' subdirectory to distribution.  All
+        .mgk files are moved from 'coders' &amp; 'magick' into this single
+        directory.
+
+</UL>
+<p>
+2003-10-21  Mike Chiarappa  &lt;mikechiarappa@libero.it&gt;
+
+<UL>
+  <LI> magick/studio.h: small modifications to achieve DLL
+        compilation of library with Borland C++ Builder.
+  <LI> coders/ps3.c (ZLIBEncode2Image): Fixed bug. Compilation
+        fail when HasZLIB is undefined because parameters 5 and 6,
+        are undefined.
+
+</UL>
+<p>
 2003-10-16  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

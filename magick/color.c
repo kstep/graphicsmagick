@@ -147,7 +147,7 @@ static NodeInfo
   *GetNodeInfo(CubeInfo *,const unsigned int);
 
 static unsigned int
-  ReadConfigureFile(const char *,const unsigned long,ExceptionInfo *);
+  ReadColorConfigureFile(const char *,const unsigned long,ExceptionInfo *);
 
 static void
   DestroyColorList(NodeInfo *node_info),
@@ -503,7 +503,7 @@ MagickExport const ColorInfo *GetColorInfo(const char *name,
     {
       AcquireSemaphoreInfo(&color_semaphore);
       if (color_list == (ColorInfo *) NULL)
-        (void) ReadConfigureFile(ColorFilename,0,exception);
+        (void) ReadColorConfigureFile(ColorFilename,0,exception);
       LiberateSemaphoreInfo(&color_semaphore);
     }
   if ((name == (const char *) NULL) || (LocaleCompare(name,"*") == 0))
@@ -1851,17 +1851,17 @@ MagickExport unsigned int QueryColorname(const Image *image,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ReadConfigureFile reads the color configuration file which maps
+%  Method ReadColorConfigureFile reads the color configuration file which maps
 %  color strings with a particular image format.
 %
-%  The format of the ReadConfigureFile method is:
+%  The format of the ReadColorConfigureFile method is:
 %
-%      unsigned int ReadConfigureFile(const char *basename,
+%      unsigned int ReadColorConfigureFile(const char *basename,
 %        const unsigned long depth,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
-%    o status: Method ReadConfigureFile returns True if at least one color
+%    o status: Method ReadColorConfigureFile returns True if at least one color
 %      is defined otherwise False.
 %
 %    o basename:  The color configuration filename.
@@ -1872,7 +1872,7 @@ MagickExport unsigned int QueryColorname(const Image *image,
 %
 %
 */
-static unsigned int ReadConfigureFile(const char *basename,
+static unsigned int ReadColorConfigureFile(const char *basename,
   const unsigned long depth,ExceptionInfo *exception)
 {
   char
@@ -1940,7 +1940,7 @@ static unsigned int ReadConfigureFile(const char *basename,
                     (void) strcat(filename,DirectorySeparator);
                   (void) strncat(filename,token,MaxTextExtent-
                     strlen(filename)-1);
-                  (void) ReadConfigureFile(filename,depth+1,exception);
+                  (void) ReadColorConfigureFile(filename,depth+1,exception);
                 }
               if (color_list != (ColorInfo *) NULL)
                 while (color_list->next != (ColorInfo *) NULL)

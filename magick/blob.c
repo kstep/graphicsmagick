@@ -45,6 +45,7 @@
 #include "magick/constitute.h"
 #include "magick/delegate.h"
 #include "magick/log.h"
+#include "magick/map.h"
 #include "magick/magick.h"
 #include "magick/module.h"
 #include "magick/resource.h"
@@ -812,13 +813,14 @@ MagickExport void *FileToBlob(const char *filename,size_t *length,
   unsigned char
     *blob;
 
-  void
-    *map;
+  ssize_t
+    count;
+
+  register size_t
+    i;
 
   assert(filename != (const char *) NULL);
   assert(exception != (ExceptionInfo *) NULL);
-  (void) LogMagickEvent(BlobEvent,GetMagickModule(),
-    "Copying file %s to memory BLOB",filename);
   SetExceptionInfo(exception,UndefinedException);
   file=open(filename,O_RDONLY | O_BINARY,0777);
   if (file == -1)
@@ -843,36 +845,23 @@ MagickExport void *FileToBlob(const char *filename,size_t *length,
         MagickMsg(BlobError,UnableToCreateBlob));
       return((void *) NULL);
     }
-  map=MapBlob(file,ReadMode,0,*length);
-  if (map != (void *) NULL)
-    {
-      (void) memcpy(blob,map,*length);
-      UnmapBlob(map,*length);
-    }
-  else
-    {
-      ssize_t
-        count;
 
-      register size_t
-        i;
-
-      (void) MagickSeek(file,0,SEEK_SET);
-      for (i=0; i < *length; i+=count)
-      {
-        count=read(file,blob+i,*length-i);
-        if (count <= 0)
-          break;
-      }
-      if (i < *length)
-        {
-          (void) close(file);
-          MagickFreeMemory(blob);
-          ThrowException3(exception,BlobError,UnableToReadToOffset,
-            UnableToCreateBlob);
-          return((void *) NULL);
-        }
+  (void) MagickSeek(file,0,SEEK_SET);
+  for (i=0; i < *length; i+=count)
+    {
+      count=read(file,blob+i,*length-i);
+      if (count <= 0)
+        break;
     }
+  if (i < *length)
+    {
+      (void) close(file);
+      MagickFreeMemory(blob);
+      ThrowException3(exception,BlobError,UnableToReadToOffset,
+                      UnableToCreateBlob);
+      return((void *) NULL);
+    }
+
   blob[*length]='\0';
   (void) close(file);
   return(blob);
@@ -1103,87 +1092,116 @@ static void ChopPathComponents(char *path,const unsigned long components)
 }
 #endif
 
+static void AddConfigurePath(MagickMap path_map, unsigned int *path_index,
+  const char *path,ExceptionInfo *exception)
+{
+  char
+    key[MaxTextExtent];
+
+  FormatString(key,"%u",*path_index);
+  MagickMapAddEntry(path_map,key,(void *)path,0,exception);
+  (*path_index)++;
+}
+
 MagickExport void *GetConfigureBlob(const char *filename,char *path,
   size_t *length,ExceptionInfo *exception)
 {
+  MagickMap
+    path_map;
+
+  MagickMapIterator
+    path_map_iterator;
+
+  const char
+    *key;
+
+  unsigned char
+    *blob=0;
+
+  unsigned int
+    logging,
+    path_index=0;
+
   assert(filename != (const char *) NULL);
   assert(path != (char *) NULL);
   assert(length != (size_t *) NULL);
   assert(exception != (ExceptionInfo *) NULL);
+
+  logging=((LocaleCompare(filename,MagickLogFilename) != 0) && (IsEventLogging()));
+
   (void) strncpy(path,filename,MaxTextExtent-1);
-  (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
-    "Searching for configure file \"%s\" ...",filename);
+  path_map=MagickMapAllocateMap(MagickMapCopyString,MagickMapDeallocateString);
+
 #if defined(UseInstalledMagick)
-# if defined(MagickLibPath)
-  /*
-    Search hard coded paths.
-  */
-  FormatString(path,"%.1024s%.1024s",MagickLibPath,filename);
-  if (!IsAccessible(path))
-    {
-      ThrowException(exception,ConfigureError,UnableToAccessConfigureFile,
-                     path);
-      return 0;
-    }
-  return(FileToBlob(path,length,exception));
-# else /* defined(MagickLibPath) */
-#  if defined(WIN32)
+
+# if defined(MagickLibConfigPath)
+  AddConfigurePath(path_map,&path_index,MagickLibConfigPath,exception);
+# endif /* defined(MagickLibConfigPath) */
+
+# if defined(MagickShareConfigPath)
+  AddConfigurePath(path_map,&path_index,MagickShareConfigPath,exception);
+# endif /* defined(MagickShareConfigPath) */
+
+# if defined(WIN32)
   {
     char
-      *key,
+      *registry_key,
       *key_value;
 
     /*
       Locate file via registry key.
     */
-    key="ConfigurePath";
-    key_value=NTRegistryKeyLookup(key);
+    registry_key="ConfigurePath";
+    key_value=NTRegistryKeyLookup(registry_key);
     if (key_value == (char *) NULL)
       {
-        ThrowException(exception,ConfigureError,RegistryKeyLookupFailed,key);
+        ThrowException(exception,ConfigureError,RegistryKeyLookupFailed,registry_key);
         return 0;
       }
 
-    FormatString(path,"%.1024s%s%.1024s",key_value,DirectorySeparator,
-                 filename);
-    if (!IsAccessible(path))
-      {
-        ThrowException(exception,ConfigureError,UnableToAccessConfigureFile,path);
-        return 0;
-      }
-    return(FileToBlob(path,length,exception));
+    FormatString(path,"%.1024s%s",key_value,DirectorySeparator);
+    AddConfigurePath(path_map,&path_index,path,exception);
   }
 #  endif /* defined(WIN32) */
-# endif /* !defined(MagickLibPath) */
-# if !defined(MagickLibPath) && !defined(WIN32)
-#  error MagickLibPath or WIN32 must be defined when UseInstalledMagick is defined
-# endif
+
 #else /* !defined(UseInstalledMagick) */
-  if (getenv("MAGICK_HOME") != (char *) NULL)
-    {
-      /*
-        Search MAGICK_HOME.
-      */
+
+  {
+    const char
+      *magick_home;
+    
+    /*
+      Search under MAGICK_HOME.
+    */
+    magick_home=getenv("MAGICK_HOME");
+    if (magick_home)
+      {
 #if defined(POSIX)
-      FormatString(path,"%.1024s/lib/%s/%.1024s",getenv("MAGICK_HOME"),
-        MagickLibSubdir,filename);
+        FormatString(path,"%.1024s/lib/%s/",magick_home,
+          MagickLibConfigSubDir);
+        AddConfigurePath(path_map,&path_index,path,exception);
+
+        FormatString(path,"%.1024s/share/%s/",magick_home,
+          MagickShareConfigSubDir);
+        AddConfigurePath(path_map,&path_index,path,exception);
 #else
-      FormatString(path,"%.1024s%s%.1024s",getenv("MAGICK_HOME"),
-        DirectorySeparator,filename);
+        FormatString(path,"%.1024s%s",magick_home,
+          DirectorySeparator);
+        AddConfigurePath(path_map,&path_index,path,exception);
 #endif /* defined(POSIX) */
-      if (IsAccessible(path))
-        return(FileToBlob(path,length,exception));
+      }
     }
+
   if (getenv("HOME") != (char *) NULL)
     {
       /*
         Search $HOME/.magick.
       */
-      FormatString(path,"%.1024s%s%s%.1024s",getenv("HOME"),
-        *getenv("HOME") == '/' ? "/.magick" : "",DirectorySeparator,filename);
-      if (IsAccessible(path))
-        return(FileToBlob(path,length,exception));
+      FormatString(path,"%.1024s%s%s",getenv("HOME"),
+        *getenv("HOME") == '/' ? "/.magick" : "",DirectorySeparator);
+      AddConfigurePath(path_map,&path_index,path,exception);
     }
+
   if (*SetClientPath((char *) NULL) != '\0')
     {
 #if defined(POSIX)
@@ -1195,20 +1213,96 @@ MagickExport void *GetConfigureBlob(const char *filename,char *path,
       */
       (void) strncpy(prefix,SetClientPath((char *) NULL),MaxTextExtent-1);
       ChopPathComponents(prefix,1);
-      FormatString(path,"%.1024s/lib/%s/%.1024s",prefix,MagickLibSubdir,
-        filename);
+
+      FormatString(path,"%.1024s/lib/%s/",prefix,MagickLibConfigSubDir);
+      AddConfigurePath(path_map,&path_index,path,exception);
+
+      FormatString(path,"%.1024s/share/%s/",prefix,MagickShareConfigSubDir);
+      AddConfigurePath(path_map,&path_index,path,exception);
 #else /* defined(POSIX) */
-      FormatString(path,"%.1024s%s%.1024s",SetClientPath((char *) NULL),
-        DirectorySeparator,filename);
+      FormatString(path,"%.1024s%s",SetClientPath((char *) NULL),
+        DirectorySeparator);
+      AddConfigurePath(path_map,&path_index,path,exception);
 #endif /* !defined(POSIX) */
-      if (IsAccessible(path))
-        return(FileToBlob(path,length,exception));
     }
+
   /*
     Search current directory.
   */
-  if (IsAccessible(path))
-    return(FileToBlob(path,length,exception));
+  AddConfigurePath(path_map,&path_index,"",exception);
+#endif /* !defined(UseInstalledMagick) */
+
+  path_map_iterator=MagickMapAllocateIterator(path_map);
+
+  if (logging)
+    {
+      char
+        list_seperator[2],
+        *search_path=0;
+
+      list_seperator[0]=DirectoryListSeparator;
+      list_seperator[1]='\0';
+      while(MagickMapIterateNext(path_map_iterator,&key))
+        {
+          if (search_path)
+            ConcatenateString(&search_path,list_seperator);
+          ConcatenateString(&search_path,
+            MagickMapDereferenceIterator(path_map_iterator,0));
+        }
+      
+      (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
+         "Searching for file \"%s\" in path \"%s\"",filename,search_path);
+
+      MagickFreeMemory(search_path);
+      MagickMapIterateToFront(path_map_iterator);
+    }
+
+  while(MagickMapIterateNext(path_map_iterator,&key))
+    {
+      char
+        test_path[MaxTextExtent];
+
+      FILE
+        *file;
+
+      FormatString(test_path,"%.1024s%.256s",
+        (const char *)MagickMapDereferenceIterator(path_map_iterator,0),
+        filename);
+
+      file=fopen(test_path,"rb");
+      if (file )
+        {
+          if (logging)
+            (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
+              "Found: %.1024s",test_path);
+          strcpy(path,test_path);
+          (void) fseek(file,0L,SEEK_END);
+          *length=ftell(file);
+          if (*length > 0)
+            {
+              (void) fseek(file,0L,SEEK_SET);
+              blob=MagickAllocateMemory(unsigned char *,*length+1);
+              if (blob)
+                {
+                  *length=fread((void  *)blob, 1, *length, file);
+                  blob[*length]='\0';
+                }
+            }
+          (void) fclose(file);
+          if (blob)
+            break;
+        }
+
+      if (logging)
+        (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
+          "Tried: %.1024s [%.1024s]",test_path,strerror(errno));
+    }
+  MagickMapDeallocateIterator(path_map_iterator);
+  MagickMapDeallocateMap(path_map);
+
+  if (blob)
+    return(blob);
+
 #if defined(WIN32)
   {
     void
@@ -1219,10 +1313,11 @@ MagickExport void *GetConfigureBlob(const char *filename,char *path,
       return resource;
   }
 #endif /* defined(WIN32) */
+
   ThrowException(exception,ConfigureError,UnableToAccessConfigureFile,
     filename);
+
   return 0;
-#endif /* !defined(UseInstalledMagick) */
 }
 
 /*

@@ -6,7 +6,7 @@
 # Copyright.txt. You should have received a copy of Copyright.txt with this
 # package; otherwise see http://www.graphicsmagick.org/www/Copyright.html.
 #
-#  Makefile for building GraphicsMagick coder modules
+# Makefile for building GraphicsMagick coder modules
 #
 #
 
@@ -42,7 +42,7 @@ EXTRA_libCoders_la_SOURCES = clipboard.c emf.c
 endif # WITH_MODULES
 
 # Additional files to distribute
-EXTRA_DIST = modules.mgk delegates.mgk.in type.mgk.in
+EXTRA_DIST = 
 
 # Headers which are not installed but which are distributed
 noinst_HEADERS = 
@@ -57,7 +57,7 @@ pkgdir = $(MagickCoderModulesPath)
 pkglibdir = $(MagickLibPath)
 
 # Architecture-dependent data files installed with modules
-pkg_DATA = modules.mgk
+pkg_DATA = 
 
 # Architecture independent data files installed into GraphicsMagick/share
 pkgdata_DATA =
@@ -546,28 +546,3 @@ xwd_la_LIBADD       = $(LIBMAGICK) $(LIB_X11)
 yuv_la_SOURCES      = yuv.c
 yuv_la_LDFLAGS      = $(MODULECOMMONFLAGS)
 yuv_la_LIBADD       = $(LIBMAGICK)
-
-# Install delegates files
-DATADELEGATES = \
-	delegates.mgk \
-	type-ghostscript.mgk \
-	type-windows.mgk \
-	type-solaris.mgk \
-	type.mgk
-
-install-data-delegates: 
-	$(mkinstalldirs) $(DESTDIR)$(pkglibdir)
-	for file in $(DATADELEGATES) ; do  \
-	  $(INSTALL_DATA) $$file $(DESTDIR)$(pkglibdir) ; \
-	done
-
-# Uninstall delegates files
-uninstall-data-delegates:
-	for file in $(DATADELEGATES) ; do \
-	  rm -f $(DESTDIR)$(pkglibdir)/$$file ; \
-	done
-
-
-install-exec-local: install-data-delegates
-
-uninstall-local: uninstall-data-delegates

@@ -22,7 +22,7 @@ MAGICK_PLUS_PLUS=Magick++
 endif # WITH_MAGICK_PLUS_PLUS
 
 # Directories to include in distribution
-DIST_SUBDIRS=ltdl coders filters magick utilities tests Magick++ wand
+DIST_SUBDIRS=ltdl config coders filters magick utilities tests Magick++ wand
 
 if WITH_LTDL
 LTDL=ltdl
@@ -31,9 +31,9 @@ LTDL=
 endif
 
 if WITH_MODULES
-SUBDIRS = $(LTDL) magick coders filters wand $(MAGICK_PLUS_PLUS) utilities tests
+SUBDIRS = $(LTDL) config magick coders filters wand $(MAGICK_PLUS_PLUS) utilities tests
 else
-SUBDIRS = $(LTDL) coders filters magick wand $(MAGICK_PLUS_PLUS) utilities tests
+SUBDIRS = $(LTDL) config coders filters magick wand $(MAGICK_PLUS_PLUS) utilities tests
 endif # WITH_MODULES
 
 # Architecture independent data files installed in the package's data directory

@@ -60,6 +60,8 @@ extern MagickExport unsigned int
 
 extern MagickExport void
   DestroyModuleInfo(void),
+  DestroyMagickModules(void),
+  InitializeMagickModules(void),
   RegisterStaticModules(void);
 
 #if defined(__cplusplus) || defined(c_plusplus)

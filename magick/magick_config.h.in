@@ -420,14 +420,21 @@
 /* Location of coder modules */
 #undef MagickCoderModulesPath
 
-/* Subdirectory of lib where GraphicsMagick coder modules are installed */
+/* Subdirectory of lib where coder modules are installed */
 #undef MagickCoderModulesSubdir
 
 /* Location of filter modules */
 #undef MagickFilterModulesPath
 
-/* Subdirectory of lib where GraphicsMagick filter modules are installed */
+/* Subdirectory of lib where filter modules are installed */
 #undef MagickFilterModulesSubdir
+
+/* Directory where architecture-dependent configuration files live. */
+#undef MagickLibConfigPath
+
+/* Subdirectory of lib where architecture-dependent configuration files live.
+   */
+#undef MagickLibConfigSubDir
 
 /* Directory where architecture-dependent files live. */
 #undef MagickLibPath
@@ -435,6 +442,13 @@
 /* Subdirectory of lib where GraphicsMagick architecture dependent files are
    installed */
 #undef MagickLibSubdir
+
+/* Directory where architecture-independent configuration files live. */
+#undef MagickShareConfigPath
+
+/* Subdirectory of lib where architecture-independent configuration files
+   live. */
+#undef MagickShareConfigSubDir
 
 /* Directory where architecture-independent files live. */
 #undef MagickSharePath

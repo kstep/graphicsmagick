@@ -19,9 +19,9 @@ pkgincludedir = $(includedir)/GraphicsMagick/magick
 # Shared libraries built in this directory
 lib_LTLIBRARIES = libGraphicsMagick.la
 
-LIBRARY_CURRENT    = @MAGICK_LIBRARY_CURRENT@
-LIBRARY_REVISION   = @MAGICK_LIBRARY_REVISION@
-LIBRARY_AGE        = @MAGICK_LIBRARY_AGE@
+LIBRARY_CURRENT    = $(MAGICK_LIBRARY_CURRENT)
+LIBRARY_REVISION   = $(MAGICK_LIBRARY_REVISION)
+LIBRARY_AGE        = $(MAGICK_LIBRARY_AGE)
 
 BUILT_SOURCES = magick_config.h magick_config_api.h
 
@@ -30,7 +30,7 @@ ALLMANPAGES = GraphicsMagick-config.1
 libGraphicsMagick_la_LDFLAGS = -no-undefined \
 	-version-info $(LIBRARY_CURRENT):$(LIBRARY_REVISION):$(LIBRARY_AGE)
 
-AM_CPPFLAGS = -I$(top_builddir) -I$(top_srcdir) $(INCLTDL) @LIBRARY_EXTRA_CPPFLAGS@
+AM_CPPFLAGS = -I$(top_builddir) -I$(top_srcdir) $(INCLTDL) $(LIBRARY_EXTRA_CPPFLAGS)
 
 # Library base sources
 MAGICK_BASE_SRCS = \
@@ -112,10 +112,10 @@ endif
 
 if WITH_MODULES
 libGraphicsMagick_la_SOURCES = $(MAGICK_BASE_SRCS) $(MAGICK_PLATFORM_SRCS)
-libGraphicsMagick_la_LIBADD = @MAGICK_DEP_LIBS@ $(LIB_LTDL)
+libGraphicsMagick_la_LIBADD = $(MAGICK_DEP_LIBS) $(LIB_LTDL)
 else
 libGraphicsMagick_la_SOURCES = $(MAGICK_BASE_SRCS) $(MAGICK_PLATFORM_SRCS)
-libGraphicsMagick_la_LIBADD = ../coders/libCoders.la ../filters/libFilters.la @MAGICK_DEP_LIBS@ $(LIB_LTDL)
+libGraphicsMagick_la_LIBADD = ../coders/libCoders.la ../filters/libFilters.la $(MAGICK_DEP_LIBS) $(LIB_LTDL)
 endif # WITH_MODULES
 
 # Binary scripts
@@ -198,16 +198,23 @@ uninstall-hook:
 	rm -f $(DESTDIR)$(pkgincludedir)/magick_config.h
 
 # Additional files to distribute
-EXTRA_DIST = $(ALLMANPAGES) colors.mgk log.mgk magic.mgk GraphicsMagick-config.in \
-  GraphicsMagick.pc.in Make.com mac.c nt_base.c nt_feature.c vms.c $(MAGICK_BASE_SRCS)
+EXTRA_DIST = \
+	$(ALLMANPAGES) \
+	GraphicsMagick-config.in \
+	GraphicsMagick.pc.in \
+	Make.com mac.c \
+	nt_base.c \
+	nt_feature.c \
+	vms.c \
+	$(MAGICK_BASE_SRCS)
 
 # Where configuration files get installed
-pkgdir = @MagickLibPath@
+pkgdir = $(MagickLibPath)
 
-# Architecture-dependent data files installed into ImageMagick/lib
-pkg_DATA = colors.mgk log.mgk magic.mgk
+# Architecture-dependent data files installed into GraphicsMagick/lib
+pkg_DATA = 
 
-# Architecture independent data files installed into ImageMagick/share
+# Architecture independent data files installed into GraphicsMagick/share
 pkgdata_DATA = 
 
 # Pkgconfig directory

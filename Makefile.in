@@ -241,7 +241,9 @@ MVDelegate = @MVDelegate@
 MagickBinPath = @MagickBinPath@
 MagickCoderModulesPath = @MagickCoderModulesPath@
 MagickFilterModulesPath = @MagickFilterModulesPath@
+MagickLibConfigPath = @MagickLibConfigPath@
 MagickLibPath = @MagickLibPath@
+MagickShareConfigPath = @MagickShareConfigPath@
 MagickSharePath = @MagickSharePath@
 MogrifyDelegate = @MogrifyDelegate@
 OBJDUMP = @OBJDUMP@
@@ -371,13 +373,13 @@ AUTOMAKE_OPTIONS = 1.7.8 dist-zip dist-bzip2 foreign
 @WITH_MAGICK_PLUS_PLUS_TRUE@MAGICK_PLUS_PLUS = Magick++
 
 # Directories to include in distribution
-DIST_SUBDIRS = ltdl coders filters magick utilities tests Magick++ wand
+DIST_SUBDIRS = ltdl config coders filters magick utilities tests Magick++ wand
 
 @WITH_LTDL_TRUE@LTDL = ltdl
 @WITH_LTDL_FALSE@LTDL = 
-@WITH_MODULES_FALSE@SUBDIRS = $(LTDL) coders filters magick wand $(MAGICK_PLUS_PLUS) utilities tests
+@WITH_MODULES_FALSE@SUBDIRS = $(LTDL) config coders filters magick wand $(MAGICK_PLUS_PLUS) utilities tests
 
-@WITH_MODULES_TRUE@SUBDIRS = $(LTDL) magick coders filters wand $(MAGICK_PLUS_PLUS) utilities tests
+@WITH_MODULES_TRUE@SUBDIRS = $(LTDL) config magick coders filters wand $(MAGICK_PLUS_PLUS) utilities tests
 pkgdata_DATA = Copyright.txt
 
 # Additional files to distribute
@@ -629,7 +631,7 @@ distcleancheck_listfiles = find . -type f -print
 distdir: $(DISTFILES)
 	$(am__remove_distdir)
 	mkdir $(distdir)
-	$(mkinstalldirs) $(distdir)/. $(distdir)/Magick++/bin $(distdir)/Magick++/lib $(distdir)/PerlMagick $(distdir)/coders $(distdir)/magick $(distdir)/wand
+	$(mkinstalldirs) $(distdir)/. $(distdir)/Magick++/bin $(distdir)/Magick++/lib $(distdir)/PerlMagick $(distdir)/config $(distdir)/magick $(distdir)/wand
 	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
 	list='$(DISTFILES)'; for file in $$list; do \

@@ -76,7 +76,7 @@ static void
     ExceptionInfo *exception);
 
 static unsigned int
-  ReadConfigureFile(const char *,const unsigned long,ExceptionInfo *);
+  ReadTypeConfigureFile(const char *,const unsigned long,ExceptionInfo *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -140,182 +140,6 @@ MagickExport void DestroyTypeInfo(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%  G e t T y p e B l o b                                                      %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  GetTypeBlob() returns the specified font file as a blob.
-%
-%  The format of the GetTypeBlob method is:
-%
-%      void *GetTypeBlob(const char *filename,ExceptionInfo *exception)
-%
-%  A description of each parameter follows:
-%
-%    o filename: The font file name.
-%
-%    o path: return the full path information of the font file.
-%
-%    o length: This pointer to a size_t integer sets the initial length of the
-%      blob.  On return, it reflects the actual length of the blob.
-%
-%    o exception: Return any errors or warnings in this structure.
-%
-%
-*/
-#if !defined(UseInstalledMagick) && defined(POSIX)
-static void ChopPathComponents(char *path,const unsigned long components)
-{
-  long
-    count;
-
-  register char
-    *p;
-
-  if (*path == '\0')
-    return;
-  p=path+strlen(path);
-  if (*p == *DirectorySeparator)
-    *p='\0';
-  for (count=0; (count < (long) components) && (p > path); p--)
-    if (*p == *DirectorySeparator)
-      {
-        *p='\0';
-        count++;
-      }
-}
-#endif
-
-static void *GetTypeBlob(const char *filename,char *path,size_t *length,
-  ExceptionInfo *exception)
-{
-  assert(filename != (const char *) NULL);
-  assert(path != (char *) NULL);
-  assert(length != (size_t *) NULL);
-  assert(exception != (ExceptionInfo *) NULL);
-  (void) strncpy(path,filename,MaxTextExtent-1);
-  (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
-    "Searching for type file \"%s\" ...",filename);
-  /*
-    Search MAGICK_FONT_PATH.
-  */
-  if (getenv("MAGICK_FONT_PATH") != (char *) NULL)
-    {
-      FormatString(path,"%.1024s%s%.1024s",getenv("MAGICK_FONT_PATH"),
-        DirectorySeparator,filename);
-      if (IsAccessible(path))
-        return(FileToBlob(path,length,exception));
-    }
-#if defined(UseInstalledMagick)
-# if defined(MagickLibPath)
-  /*
-    Search hard coded paths.
-  */
-  FormatString(path,"%.1024s%.1024s",MagickLibPath,filename);
-  if (!IsAccessible(path))
-    {
-      ThrowException(exception,ConfigureError,UnableToAccessFontFile,path);
-      return 0;
-    }
-  return(FileToBlob(path,length,exception));
-# else
-#  if defined(WIN32)
-  {
-    char
-      *key,
-      *key_value;
-
-    /*
-      Locate file via registry key.
-    */
-    key="ConfigurePath";
-    key_value=NTRegistryKeyLookup(key);
-    if (!key_value)
-      {
-        ThrowException(exception,ConfigureError,RegistryKeyLookupFailed,key);
-        return 0;
-      }
-
-    FormatString(path,"%.1024s%s%.1024s",key_value,DirectorySeparator,filename);
-    if (!IsAccessible(path))
-      {
-        ThrowException(exception,ConfigureError,UnableToAccessFontFile,path);
-        return 0;
-      }
-    return(FileToBlob(path,length,exception));
-  }
-#  endif /* defined(WIN32) */
-# endif /* !defined(MagickLibPath) */
-# if !defined(MagickLibPath) && !defined(WIN32)
-#  error MagickLibPath or WIN32 must be defined when UseInstalledMagick is defined
-# endif
-#else
-
-  /*
-    Search MAGICK_HOME.
-  */
-  if (getenv("MAGICK_HOME") != (char *) NULL)
-    {
-# if defined(POSIX)
-      FormatString(path,"%.512s/lib/%s/%.256s",getenv("MAGICK_HOME"),
-        MagickLibSubdir,filename);
-# else
-      FormatString(path,"%.512s%s%.256s",getenv("MAGICK_HOME"),
-        DirectorySeparator,filename);
-# endif /* !POSIX */
-      if (IsAccessible(path))
-        return(FileToBlob(path,length,exception));
-    }
-
-  /*
-    Search based on executable directory
-  */
-  if (*SetClientPath((char *) NULL) != '\0')
-    {
-#if defined(POSIX)
-      char
-        prefix[MaxTextExtent];
-
-      (void) strncpy(prefix,SetClientPath((char *) NULL),MaxTextExtent-1);
-      ChopPathComponents(prefix,1);
-      FormatString(path,"%.1024s/lib/%s/%.1024s",prefix,MagickLibSubdir,
-        filename);
-#else
-      FormatString(path,"%.1024s%s%.1024s",SetClientPath((char *) NULL),
-        DirectorySeparator,filename);
-#endif
-      if (IsAccessible(path))
-        return(FileToBlob(path,length,exception));
-    }
-
-  /*
-    Search current directory.
-  */
-  if (IsAccessible(path))
-    return(FileToBlob(path,length,exception));
-
-#if defined(WIN32)
-  {
-    void
-      *resource;
-
-    resource=NTResourceToBlob(filename);
-    if (resource)
-      return resource;
-  }
-#endif /* defined(WIN32) */
-  ThrowException(exception,ConfigureError,UnableToAccessFontFile,filename);
-  return 0;
-#endif /* defined(UseInstalledMagick) */
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 +   G e t T y p e I n f o                                                     %
 %                                                                             %
 %                                                                             %
@@ -351,7 +175,7 @@ MagickExport const TypeInfo *GetTypeInfo(const char *name,
       AcquireSemaphoreInfo(&type_semaphore);
       if (type_list == (TypeInfo *) NULL)
         {
-          (void) ReadConfigureFile(TypeFilename,0,exception);
+          (void) ReadTypeConfigureFile(TypeFilename,0,exception);
 #if defined(WIN32) || defined(__CYGWIN__)
           {
             TypeInfo
@@ -769,23 +593,23 @@ MagickExport unsigned int ListTypeInfo(FILE *file,ExceptionInfo *exception)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   R e a d C o n f i g u r e F i l e                                         %
++   R e a d T y p e C o n f i g u r e F i l e                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ReadConfigureFile() reads the type configuration file which provides
+%  ReadTypeConfigureFile() reads the type configuration file which provides
 %  a mapping between type attributes and font files.
 %
-%  The format of the ReadConfigureFile method is:
+%  The format of the ReadTypeConfigureFile method is:
 %
-%      unsigned int ReadConfigureFile(const char *basename,
+%      unsigned int ReadTypeConfigureFile(const char *basename,
 %        const unsigned long depth,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
-%    o status: ReadConfigureFile() returns True if at least one entry
+%    o status: ReadTypeConfigureFile() returns True if at least one entry
 %      is read, otherwise False is returned.
 %
 %    o basename:  The type configuration filename.
@@ -796,7 +620,7 @@ MagickExport unsigned int ListTypeInfo(FILE *file,ExceptionInfo *exception)
 %
 %
 */
-static unsigned int ReadConfigureFile(const char *basename,
+static unsigned int ReadTypeConfigureFile(const char *basename,
   const unsigned long depth,ExceptionInfo *exception)
 {
   char
@@ -814,7 +638,7 @@ static unsigned int ReadConfigureFile(const char *basename,
   */
   (void) strcpy(path,basename);
   if (depth == 0)
-    xml=(char *) GetTypeBlob(basename,path,&length,exception);
+    xml=(char *) GetConfigureBlob(basename,path,&length,exception);
   else
     xml=(char *) FileToBlob(basename,&length,exception);
   if (xml == (char *) NULL)
@@ -864,7 +688,7 @@ static unsigned int ReadConfigureFile(const char *basename,
                     (void) strcat(filename,DirectorySeparator);
                   (void) strncat(filename,token,MaxTextExtent-
                     strlen(filename)-1);
-                  (void) ReadConfigureFile(filename,depth+1,exception);
+                  (void) ReadTypeConfigureFile(filename,depth+1,exception);
                 }
               if (type_list != (TypeInfo *) NULL)
                 while (type_list->next != (TypeInfo *) NULL)

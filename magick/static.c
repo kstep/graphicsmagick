@@ -45,17 +45,18 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   E x e c u t e S t a t i c M o d u l e P r o c e s s                       %
+%   E x e c u t e M o d u l e P r o c e s s                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ExecuteStaticModuleProcess() is just a template method.
+%  ExecuteModuleProcess() is just a template method. This version is only
+%  used for static builds.  See the version in module.c for module builds.
 %
-%  The format of the ExecuteStaticModuleProcess method is:
+%  The format of the ExecuteModuleProcess method is:
 %
-%      unsigned int ExecuteStaticModuleProcess(const char *tag,
+%      unsigned int ExecuteModuleProcess(const char *tag,
 %        Image **image,const int argc,char **argv)
 %
 %  A description of each parameter follows:
@@ -69,15 +70,15 @@
 %    o argv: A text array containing the command line arguments.
 %
 */
-MagickExport unsigned int ExecuteStaticModuleProcess(const char *tag,
+#if !defined(BuildMagickModules)
+MagickExport unsigned int ExecuteModuleProcess(const char *tag,
   Image **image,const int argc,char **argv)
 {
-#if !defined(BuildMagickModules)
   if (LocaleCompare("analyze",tag) == 0)
     return AnalyzeImage(image,argc,argv);
-#endif
   return(False);
 }
+#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
