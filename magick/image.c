@@ -3393,7 +3393,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
   /*
     Transmogrify the image.
   */
-  for (i=1; i < argc; i++)
+  for (i=0; i < argc; i++)
   {
     option=argv[i];
     if ((strlen(option) <= 1) || ((*option != '-') && (*option != '+')))
@@ -5053,7 +5053,7 @@ MagickExport unsigned int MogrifyImages(const ImageInfo *image_info,
   if (argc <= 1)
     return(True);
   scene=False;
-  for (i=1; i < argc; i++)
+  for (i=0; i < argc; i++)
   {
     option=argv[i];
     if ((strlen(option) <= 1) || ((*option != '-') && (*option != '+')))
