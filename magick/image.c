@@ -249,14 +249,15 @@ MagickExport unsigned int AllocateImageColormap(Image *image,
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(colors != 0);
+  image->storage_class=DirectClass;
   if (image->colormap != (PixelPacket *) NULL)
     LiberateMemory((void **) &image->colormap);
-  image->storage_class=PseudoClass;
-  image->colors=colors;
   image->colormap=(PixelPacket *)
     AcquireMemory(Max(colors,256)*sizeof(PixelPacket));
   if (image->colormap == (PixelPacket *) NULL)
     return(False);
+  image->storage_class=PseudoClass;
+  image->colors=colors;
   for (i=0; i < (int) colors; i++)
   {
     image->colormap[i].red=((unsigned long) (MaxRGB*i)/Max(colors-1,1));
@@ -3168,7 +3169,7 @@ MagickExport unsigned int IsImageTainted(const Image *image)
 %
 %    o geometry: This string is the geometry specification.
 %
-%    o pedantic: A value other than 0 invokes a more restrictive set of
+%    o pedantic: A value other than 0 invokes a more restriction set of
 %      conditions for a valid specification (e.g. [1], [1-4], [4-1]).
 %
 %

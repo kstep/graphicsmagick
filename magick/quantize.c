@@ -1594,7 +1594,7 @@ MagickExport unsigned int MapImages(Image *images,Image *map_image,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   O r d e r e d D i t h e r I m a g e                                       %
+%   O r d e r e d D i t h e r I m a g e                                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -1615,7 +1615,7 @@ MagickExport unsigned int MapImages(Image *images,Image *map_image,
 %
 %
 */
-static unsigned int OrderedDitherImage(Image *image)
+MagickExport unsigned int OrderedDitherImage(Image *image)
 {
 #define DitherImageText  "  Dithering image...  "
 
@@ -1646,9 +1646,6 @@ static unsigned int OrderedDitherImage(Image *image)
   int
     y;
 
-  PixelPacket
-    *colormap;
-
   register IndexPacket
     *indexes;
 
@@ -1662,21 +1659,9 @@ static unsigned int OrderedDitherImage(Image *image)
     Initialize colormap.
   */
   NormalizeImage(image);
-  image->storage_class=PseudoClass;
-  image->colors=2;
-  colormap=(PixelPacket *) AcquireMemory(image->colors*sizeof(PixelPacket));
-  if (colormap == (PixelPacket *) NULL)
+  if (!AllocateImageColormap(image,2))
     ThrowBinaryException(ResourceLimitWarning,"Unable to dither image",
       "Memory allocation failed");
-  if (image->colormap != (PixelPacket *) NULL)
-    LiberateMemory((void **) &image->colormap);
-  image->colormap=colormap;
-  image->colormap[0].red=0;
-  image->colormap[0].green=0;
-  image->colormap[0].blue=0;
-  image->colormap[1].red=MaxRGB;
-  image->colormap[1].green=MaxRGB;
-  image->colormap[1].blue=MaxRGB;
   /*
     Dither image with the ordered dithering technique.
   */

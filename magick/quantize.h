@@ -49,6 +49,7 @@ extern MagickExport size_t
 extern MagickExport unsigned int
   MapImage(Image *,Image *,const unsigned int),
   MapImages(Image *,Image *,const unsigned int),
+  OrderedDitherImage(Image *),
   QuantizationError(Image *),
   QuantizeImage(const QuantizeInfo *,Image *),
   QuantizeImages(const QuantizeInfo *,Image *),

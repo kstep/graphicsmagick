@@ -412,6 +412,7 @@ static struct
       {"threshold", DoubleReference} } },
     { "MotionBlur", { {"geom", StringReference}, {"radius", DoubleReference},
       {"sigma", DoubleReference}, {"angle", DoubleReference} } },
+    { "OrderedDither", },
   };
 
 /*
@@ -3864,6 +3865,8 @@ Mogrify(ref,...)
     UnsharpMaskImage   = 138
     MotionBlur         = 139
     MotionBlurImage    = 140
+    OrderedDither      = 141
+    OrderedDitherImage = 142
     MogrifyRegion      = 666
   PPCODE:
   {
@@ -5455,6 +5458,11 @@ Mogrify(ref,...)
             (void) sscanf(argument_list[0].string_reference,"%lfx%lf",
               &radius,&sigma);
           image=MotionBlurImage(image,radius,sigma,angle,&exception);
+          break;
+        }
+        case 71:  /* OrderedDither */
+        {
+          (void) OrderedDitherImage(image);
           break;
         }
       }
