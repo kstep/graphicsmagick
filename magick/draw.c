@@ -1977,12 +1977,13 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
               break;
             if (LocaleCompare("graphic-context",token) == 0)
               {
-                if (graphic_context[n]->clip_mask != 
-                    graphic_context[n-1]->clip_mask)
-                  {
-                    DestroyImage(graphic_context[n]->clip_mask);
-                    SetImageClipMask(image,(Image *) NULL);
-                 }
+                if (graphic_context[n]->clip_mask != (Image *) NULL)
+                  if (graphic_context[n]->clip_mask != 
+                      graphic_context[n-1]->clip_mask)
+                    {
+                      DestroyImage(graphic_context[n]->clip_mask);
+                      SetImageClipMask(image,(Image *) NULL);
+                    }
                 DestroyDrawInfo(graphic_context[n]);
                 n--;
                 if (n < 0)
@@ -2545,8 +2546,9 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       if (point.y > graphic_context[n]->bounds.y2)
         graphic_context[n]->bounds.y2=point.y;
     }
-    if (graphic_context[n]->clip_mask != graphic_context[n-1]->clip_mask)
-      (void) DrawClipPath(image,graphic_context[n]);
+    if (graphic_context[n]->clip_mask != (Image *) NULL)
+      if (graphic_context[n]->clip_mask != graphic_context[n-1]->clip_mask)
+        (void) DrawClipPath(image,graphic_context[n]);
     (void) DrawPrimitive(image,graphic_context[n],primitive_info);
     if (primitive_info->text != (char *) NULL)
       LiberateMemory((void **) &primitive_info->text);

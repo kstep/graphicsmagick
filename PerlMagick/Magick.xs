@@ -431,6 +431,9 @@ static jmp_buf
 /*
   Forward declarations.
 */
+static Image
+  *SetupList(SV *,struct PackageInfo **,SV ***);
+
 static int
   strEQcase(const char *,const char *);
 
@@ -1060,6 +1063,16 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
       if (LocaleCompare(attribute,"cache-threshold") == 0)
         {
           SetCacheThreshold(SvIV(sval));
+          return;
+        }
+      if (LocaleCompare(attribute,"clip-mask") == 0)
+        {
+          Image
+            *clip_mask;
+
+          clip_mask=SetupList(SvRV(sval),&info,(SV ***) NULL);
+          for ( ; image; image=image->next)
+            SetImageClipMask(image,clip_mask);
           return;
         }
       if (LocaleNCompare(attribute,"colormap",8) == 0)
