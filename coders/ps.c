@@ -1191,67 +1191,18 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
     i=0;
     index=0;
     x=0;
-    if (image->storage_class == DirectClass)
+    if ((image_info->type != TrueColorType) &&
+        IsGrayImage(image,&image->exception))
       {
-        /*
-          Dump DirectClass image.
-        */
-        FormatString(buffer,"%lu %lu\n%d\n%d\n",image->columns,image->rows,
-          (int) (image->storage_class == PseudoClass),
-          (int) (image_info->compression == RunlengthEncodedCompression));
+        FormatString(buffer,"%lu %lu\n1\n1\n1\n%d\n",image->columns,
+          image->rows,IsMonochromeImage(image,&image->exception) ? 1 : 8);
         (void) WriteBlobString(image,buffer);
-        switch (image_info->compression)
-        {
-          case RunlengthEncodedCompression:
+        if (!IsMonochromeImage(image,&image->exception))
           {
             /*
-              Dump runlength-encoded DirectColor packets.
+              Dump image as grayscale.
             */
-            for (y=0; y < (long) image->rows; y++)
-            {
-              p=AcquireImagePixels(image,0,y,image->columns,1,
-                &image->exception);
-              if (p == (const PixelPacket *) NULL)
-                break;
-              pixel=(*p);
-              length=255;
-              for (x=0; x < (long) image->columns; x++)
-              {
-                if ((p->red == pixel.red) && (p->green == pixel.green) &&
-                    (p->blue == pixel.blue) && (p->opacity == pixel.opacity) &&
-                    (length < 255) && (x < (long) (image->columns-1)))
-                  length++;
-                else
-                  {
-                    if (x > 0)
-                      {
-                        WriteRunlengthPacket(image,pixel,length,p);
-                        i++;
-                        if (i == 9)
-                          {
-                            (void) WriteBlobByte(image,'\n');
-                            i=0;
-                          }
-                      }
-                    length=0;
-                  }
-                pixel=(*p);
-                p++;
-              }
-              WriteRunlengthPacket(image,pixel,length,p);
-              if (image->previous == (Image *) NULL)
-                if (QuantumTick(y,image->rows))
-                  MagickMonitor(SaveImageText,y,image->rows);
-            }
-            break;
-          }
-          case NoCompression:
-          default:
-          {
-            /*
-              Dump uncompressed DirectColor packets.
-            */
-            i=0;
+            i++;
             for (y=0; y < (long) image->rows; y++)
             {
               p=AcquireImagePixels(image,0,y,image->columns,1,
@@ -1260,17 +1211,13 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                 break;
               for (x=0; x < (long) image->columns; x++)
               {
-                if (image->matte && (p->opacity == TransparentOpacity))
-                  (void) strcpy(buffer,"ffffff");
-                else
-                  FormatString(buffer,"%02lx%02lx%02lx",
-                    Downscale(p->red),Downscale(p->green),Downscale(p->blue));
+                FormatString(buffer,"%02lx",Downscale(Intensity(p)));
                 (void) WriteBlobString(image,buffer);
                 i++;
-                if (i == 12)
+                if (i == 36)
                   {
-                    i=0;
                     (void) WriteBlobByte(image,'\n');
+                    i=0;
                   }
                 p++;
               }
@@ -1278,93 +1225,37 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                 if (QuantumTick(y,image->rows))
                   MagickMonitor(SaveImageText,y,image->rows);
             }
-            break;
           }
-        }
-        (void) WriteBlobByte(image,'\n');
-      }
-    else
-      if (IsGrayImage(image,&image->exception))
-        {
-          FormatString(buffer,"%lu %lu\n1\n1\n1\n%d\n",
-            image->columns,image->rows,
-            IsMonochromeImage(image,&image->exception) ? 1 : 8);
-          (void) WriteBlobString(image,buffer);
-          if (!IsMonochromeImage(image,&image->exception))
-            {
-              /*
-                Dump image as grayscale.
-              */
-              i++;
-              for (y=0; y < (long) image->rows; y++)
-              {
-                p=AcquireImagePixels(image,0,y,image->columns,1,
-                  &image->exception);
-                if (p == (const PixelPacket *) NULL)
-                  break;
-                for (x=0; x < (long) image->columns; x++)
-                {
-                  FormatString(buffer,"%02lx",Downscale(Intensity(p)));
-                  (void) WriteBlobString(image,buffer);
-                  i++;
-                  if (i == 36)
-                    {
-                      (void) WriteBlobByte(image,'\n');
-                      i=0;
-                    }
-                  p++;
-                }
-                if (image->previous == (Image *) NULL)
-                  if (QuantumTick(y,image->rows))
-                    MagickMonitor(SaveImageText,y,image->rows);
-              }
-            }
-          else
-            {
-              int
-                y;
+        else
+          {
+            int
+              y;
 
-              /*
-                Dump image as bitmap.
-              */
-              polarity=Intensity(&image->colormap[0]) > (0.5*MaxRGB);
-              if (image->colors == 2)
-                polarity=Intensity(&image->colormap[1]) >
-                  Intensity(&image->colormap[0]);
-              count=0;
-              for (y=0; y < (long) image->rows; y++)
+            /*
+              Dump image as bitmap.
+            */
+            polarity=Intensity(&image->colormap[0]) > (0.5*MaxRGB);
+            if (image->colors == 2)
+              polarity=Intensity(&image->colormap[1]) >
+                Intensity(&image->colormap[0]);
+            count=0;
+            for (y=0; y < (long) image->rows; y++)
+            {
+              p=AcquireImagePixels(image,0,y,image->columns,1,
+                &image->exception);
+              if (p == (const PixelPacket *) NULL)
+                break;
+              indexes=GetIndexes(image);
+              bit=0;
+              byte=0;
+              for (x=0; x < (long) image->columns; x++)
               {
-                p=AcquireImagePixels(image,0,y,image->columns,1,
-                  &image->exception);
-                if (p == (const PixelPacket *) NULL)
-                  break;
-                indexes=GetIndexes(image);
-                bit=0;
-                byte=0;
-                for (x=0; x < (long) image->columns; x++)
-                {
-                  byte<<=1;
-                  if (indexes[x] == polarity)
-                    byte|=0x01;
-                  bit++;
-                  if (bit == 8)
-                    {
-                      FormatString(buffer,"%02x",byte & 0xff);
-                      (void) WriteBlobString(image,buffer);
-                      count++;
-                      if (count == 36)
-                        {
-                          (void) WriteBlobByte(image,'\n');
-                          count=0;
-                        };
-                      bit=0;
-                      byte=0;
-                    }
-                  p++;
-                }
-                if (bit != 0)
+                byte<<=1;
+                if (indexes[x] == polarity)
+                  byte|=0x01;
+                bit++;
+                if (bit == 8)
                   {
-                    byte<<=(8-bit);
                     FormatString(buffer,"%02x",byte & 0xff);
                     (void) WriteBlobString(image,buffer);
                     count++;
@@ -1373,14 +1264,122 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                         (void) WriteBlobByte(image,'\n');
                         count=0;
                       };
-                  };
+                    bit=0;
+                    byte=0;
+                  }
+                p++;
+              }
+              if (bit != 0)
+                {
+                  byte<<=(8-bit);
+                  FormatString(buffer,"%02x",byte & 0xff);
+                  (void) WriteBlobString(image,buffer);
+                  count++;
+                  if (count == 36)
+                    {
+                      (void) WriteBlobByte(image,'\n');
+                      count=0;
+                    };
+                };
+              if (image->previous == (Image *) NULL)
+                if (QuantumTick(y,image->rows))
+                  MagickMonitor(SaveImageText,y,image->rows);
+            }
+          }
+        if (count != 0)
+          (void) WriteBlobByte(image,'\n');
+      }
+    else
+      if (image->storage_class == DirectClass)
+        {
+          /*
+            Dump DirectClass image.
+          */
+          FormatString(buffer,"%lu %lu\n0\n%d\n",image->columns,image->rows,
+            (int) (image_info->compression == RunlengthEncodedCompression));
+          (void) WriteBlobString(image,buffer);
+          switch (image_info->compression)
+          {
+            case RunlengthEncodedCompression:
+            {
+              /*
+                Dump runlength-encoded DirectColor packets.
+              */
+              for (y=0; y < (long) image->rows; y++)
+              {
+                p=AcquireImagePixels(image,0,y,image->columns,1,
+                  &image->exception);
+                if (p == (const PixelPacket *) NULL)
+                  break;
+                pixel=(*p);
+                length=255;
+                for (x=0; x < (long) image->columns; x++)
+                {
+                  if ((p->red == pixel.red) && (p->green == pixel.green) &&
+                      (p->blue == pixel.blue) && (p->opacity == pixel.opacity) &&
+                      (length < 255) && (x < (long) (image->columns-1)))
+                    length++;
+                  else
+                    {
+                      if (x > 0)
+                        {
+                          WriteRunlengthPacket(image,pixel,length,p);
+                          i++;
+                          if (i == 9)
+                            {
+                              (void) WriteBlobByte(image,'\n');
+                              i=0;
+                            }
+                        }
+                      length=0;
+                    }
+                  pixel=(*p);
+                  p++;
+                }
+                WriteRunlengthPacket(image,pixel,length,p);
                 if (image->previous == (Image *) NULL)
                   if (QuantumTick(y,image->rows))
                     MagickMonitor(SaveImageText,y,image->rows);
               }
+              break;
             }
-          if (count != 0)
-            (void) WriteBlobByte(image,'\n');
+            case NoCompression:
+            default:
+            {
+              /*
+                Dump uncompressed DirectColor packets.
+              */
+              i=0;
+              for (y=0; y < (long) image->rows; y++)
+              {
+                p=AcquireImagePixels(image,0,y,image->columns,1,
+                  &image->exception);
+                if (p == (const PixelPacket *) NULL)
+                  break;
+                for (x=0; x < (long) image->columns; x++)
+                {
+                  if (image->matte && (p->opacity == TransparentOpacity))
+                    (void) strcpy(buffer,"ffffff");
+                  else
+                    FormatString(buffer,"%02lx%02lx%02lx",
+                      Downscale(p->red),Downscale(p->green),Downscale(p->blue));
+                  (void) WriteBlobString(image,buffer);
+                  i++;
+                  if (i == 12)
+                    {
+                      i=0;
+                      (void) WriteBlobByte(image,'\n');
+                    }
+                  p++;
+                }
+                if (image->previous == (Image *) NULL)
+                  if (QuantumTick(y,image->rows))
+                    MagickMonitor(SaveImageText,y,image->rows);
+              }
+              break;
+            }
+          }
+          (void) WriteBlobByte(image,'\n');
         }
       else
         {
