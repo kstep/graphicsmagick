@@ -2,8 +2,8 @@
 <delegatemap>
   <delegate decode="browse" stealth="True" spawn="True" command='@BrowseDelegate@ http://www.imagemagick.org/ImageMagick/'  />
   <delegate decode="bzip" stealth="True" command='|@BZIPDelegate@ -cd "%i"' />
-  <delegate decode="cgm" command='@CGMDecodeDelegate@ -d ps "%i" "%o" %u
-    @ConvertDelegate@ -concatenate "%o"*.ps "%o"' />
+  <delegate decode="cgm" command='@CGMDecodeDelegate@ -d ps "%i" "%o" "%u"
+    @ConvertDelegate@ -concatenate %o*.ps "%o"' />
   <delegate decode="compress" stealth="True" command='|@LZWDecodeDelegate@ -c "%i"' />
   <delegate decode="dot" command='@DOTDecodeDelegate@ -Tps "%i" -o "%o"' />
   <delegate decode="dvi" command='@DVIDecodeDelegate@ -q -o "%o" "%i"' />
