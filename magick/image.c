@@ -4098,8 +4098,10 @@ MagickExport unsigned int RGBTransformImage(Image *image,
   assert(image->signature == MagickSignature);
 
   /* Detect bogus request to convert to RGB */
-  assert((colorspace != RGBColorspace) &&
-         (colorspace != TransparentColorspace));
+  assert(colorspace != RGBColorspace);
+  assert(colorspace != TransparentColorspace);
+  assert(colorspace != UndefinedColorspace);
+
   /* if ((colorspace == RGBColorspace) || (colorspace == TransparentColorspace)) */
 /*     return(True); */
 
@@ -6012,6 +6014,8 @@ MagickExport unsigned int TextureImage(Image *image,const Image *texture)
 MagickExport void TransformColorspace(Image *image,
   const ColorspaceType colorspace)
 {
+  assert(colorspace != UndefinedColorspace);
+
   /*
     If the image colorspace is the same as requested, do nothing.
   */
@@ -6230,11 +6234,14 @@ MagickExport unsigned int TransformRGBImage(Image *image,
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
+  assert(image->colorspace != UndefinedColorspace);
+
   is_grayscale=(image->is_grayscale ||
                 (image->colorspace == GRAYColorspace));
 
   /*
-    If colorspace is already RGB type, then simply return.
+    If colorspace is already RGB type, or undefined, then set
+    colorspace to RGBColorspace and return
   */
   if ((image->colorspace == RGBColorspace) ||
       (image->colorspace == GRAYColorspace) ||

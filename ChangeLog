@@ -10,6 +10,10 @@
 	* magick/image.c (ChannelImage): The OpacityChannel, MatteChannel,
 	and BlackChannel operations set the matte channel to opaque, so
 	set image->matte to False for those operations.
+	(RGBTransformImage): Add an assertion to prevent passing the
+	colorspace argument 'UndefinedColorspace'.
+	(TransformRGBImage): Add an assertion to prevent passing an image
+	with colorspace set to 'UndefinedColorspace'.
 
 2003-10-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
