@@ -291,12 +291,6 @@ typedef struct _CubeInfo
 } CubeInfo;
 
 /*
-  Const declarations.
-*/
-const long
-  MaxColormapSize = 65535L;
-
-/*
   Method prototypes.
 */
 static NodeInfo
@@ -1994,8 +1988,8 @@ MagickExport unsigned int QuantizeImage(const QuantizeInfo *quantize_info,
   number_colors=quantize_info->number_colors;
   if (number_colors == 0)
     number_colors=MaxRGB+1;
-  if ((int) number_colors > MaxColormapSize)
-    number_colors=MaxColormapSize;
+  if (number_colors > (MaxRGB+1))
+    number_colors=MaxRGB+1;
   depth=quantize_info->tree_depth;
   if (depth == 0)
     {
@@ -2102,8 +2096,8 @@ MagickExport unsigned int QuantizeImages(const QuantizeInfo *quantize_info,
   number_colors=quantize_info->number_colors;
   if (number_colors == 0)
     number_colors=MaxRGB+1;
-  if ((int) number_colors > MaxColormapSize)
-    number_colors=MaxColormapSize;
+  if (number_colors > (MaxRGB+1))
+    number_colors=MaxRGB+1;
   depth=quantize_info->tree_depth;
   if (depth == 0)
     {

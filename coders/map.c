@@ -337,7 +337,7 @@ static unsigned int WriteMAPImage(const ImageInfo *image_info,Image *image)
         Demote DirectClass to PseudoClass.
       */
       GetQuantizeInfo(&quantize_info);
-      quantize_info.number_colors=MaxColormapSize;
+      quantize_info.number_colors=MaxRGB+1;
       quantize_info.dither=image_info->dither;
       (void) QuantizeImage(&quantize_info,image);
     }

@@ -177,7 +177,7 @@ static char
   },
   *ColorspaceTypes[] =
   {
-    "Undefined", "RGB", "Gray", "TransparentOpacity", "OHTA", "XYZ", "YCbCr",
+    "Undefined", "RGB", "Gray", "Transparent", "OHTA", "XYZ", "YCbCr",
     "YCC", "YIQ", "YPbPr", "YUV", "CMYK", "sRGB", (char *) NULL
   },
   *CompositeTypes[] =
@@ -375,7 +375,7 @@ static struct
     { "Texture", { {"texture", ImageReference} } },
     { "Transform", { {"crop", StringReference}, {"geom", StringReference},
       {"filter", FilterTypes} } },
-    { "TransparentOpacity", { {"color", StringReference} } },
+    { "Transparent", { {"color", StringReference} } },
     { "Threshold", { {"threshold", DoubleReference} } },
     { "Charcoal", { {"factor", StringReference} } },
     { "Trim", },
@@ -1054,12 +1054,10 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
                 green=color->green;
                 blue=color->blue;
                 (void) sscanf(SvPV(sval,na),"%d,%d,%d",&red,&green,&blue);
-                color->red=(Quantum)
-                  ((red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red);
-                color->green=(Quantum)
+                color->red=((red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red);
+                color->green=
                   ((green < 0) ? 0 : (green > MaxRGB) ? MaxRGB : green);
-                color->blue=(Quantum)
-                  ((blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue);
+                color->blue=((blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue);
               }
           }
           return;
@@ -1388,15 +1386,12 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
                 opacity=pixel->opacity;
                 (void) sscanf(SvPV(sval,na),"%d,%d,%d,%d",&red,&green,&blue,
                   &opacity);
-                pixel->red=(Quantum)
-                  ((red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red);
-                pixel->green=(Quantum)
+                pixel->red=((red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red);
+                pixel->green=
                   ((green < 0) ? 0 : (green > MaxRGB) ? MaxRGB : green);
-                pixel->blue=(Quantum)
-                  ((blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue);
-                pixel->opacity=((opacity < TransparentOpacity) ?
-                  TransparentOpacity : (opacity > OpaqueOpacity) ?
-                  OpaqueOpacity : opacity);
+                pixel->blue=((blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue);
+                pixel->opacity=
+                  ((opacity < 0) ? 0 : (opacity > MaxRGB) ? MaxRGB : opacity);
               }
             (void) SyncImagePixels(image);
           }
@@ -3556,7 +3551,7 @@ Mogrify(ref,...)
     TextureImage       = 108
     Transform          = 109
     TransformImage     = 110
-    TransparentOpacity        = 111
+    Transparent        = 111
     TransparentImage   = 112
     Threshold          = 113
     ThresholdImage     = 114
@@ -4834,7 +4829,7 @@ Mogrify(ref,...)
             argument_list[1].string_reference);
           break;
         }
-        case 56:  /* TransparentOpacity */
+        case 56:  /* Transparent */
         {
           PixelPacket
             target;

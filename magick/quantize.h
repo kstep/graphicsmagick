@@ -32,12 +32,6 @@ typedef struct _QuantizeInfo
 } QuantizeInfo;
 
 /*
-  Constant declarations.
-*/
-extern MagickExport const long
-  MaxColormapSize;
-
-/*
   Quantization utilities methods.
 */
 extern MagickExport QuantizeInfo

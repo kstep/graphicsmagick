@@ -2374,6 +2374,7 @@ MagickExport int SystemCommand(const unsigned int verbose,const char *command)
   int
     status;
 
+  errno=0;
 #if !defined(vms) && !defined(macintosh) && !defined(WIN32)
   status=system(command);
 #endif
@@ -2387,7 +2388,7 @@ MagickExport int SystemCommand(const unsigned int verbose,const char *command)
   status=NTSystemCommand(command);
 #endif
   if (verbose)
-    MagickWarning(DelegateWarning,command,status ? strerror(errno) :
+    MagickWarning(DelegateWarning,command,!status ? strerror(status) :
       (char *) NULL);
   return(status);
 }

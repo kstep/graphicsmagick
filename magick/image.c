@@ -1606,7 +1606,7 @@ MagickExport void CycleColormapImage(Image *image,const int amount)
         quantize_info;
 
       GetQuantizeInfo(&quantize_info);
-      quantize_info.number_colors=MaxColormapSize;
+      quantize_info.number_colors=MaxRGB+1;
       (void) QuantizeImage(&quantize_info,image);
     }
   for (y=0; y < (int) image->rows; y++)

@@ -538,7 +538,7 @@ static unsigned int Classify(Image *image,short **extrema,
                   Classify this pixel.
                 */
                 local_minima=1.0/sum;
-                indexes[x]=(IndexPacket) j;
+                indexes[x]=j;
               }
           }
         }
@@ -681,7 +681,7 @@ static void ConsolidateCrossings(ZeroCrossing *zero_crossing,
       l=zero_crossing[i].crossings[j];
       zero_crossing[i].crossings[j]=0;
       if (correct != -1)
-        zero_crossing[i].crossings[correct]=(IndexPacket) l;
+        zero_crossing[i].crossings[correct]=l;
     }
 }
 

@@ -2081,14 +2081,14 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                         png_color_16
                            background;
 
-    #ifndef PNG_READ_EMPTY_PLTE_SUPPORTED
+#ifndef PNG_READ_EMPTY_PLTE_SUPPORTED
                         if (mng_info->have_saved_bkgd_index)
                           background.index=mng_info->saved_bkgd_index;
                         else
-    #endif
+#endif
                           background.index=ping_info->background.index;
-                        background.red=
-                          (png_uint_16) mng_info->global_plte[background.index].red;
+                        background.red=(png_uint_16)
+                          mng_info->global_plte[background.index].red;
                         background.green= (png_uint_16)
                           mng_info->global_plte[background.index].green;
                         background.blue=(png_uint_16)
@@ -3638,9 +3638,8 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
             ping_info->trans_values.red=p->red;
             ping_info->trans_values.green=p->green;
             ping_info->trans_values.blue=p->blue;
-            ping_info->trans_values.gray=(unsigned short) Intensity(*p);
-            ping_info->trans_values.index=(unsigned short)
-              DownScale(p->opacity);
+            ping_info->trans_values.gray=Intensity(*p);
+            ping_info->trans_values.index=DownScale(p->opacity);
           }
         if (ping_info->valid & PNG_INFO_tRNS)
           {
