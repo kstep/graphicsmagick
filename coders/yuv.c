@@ -677,7 +677,7 @@ static unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
       (void) strncpy(image->filename,image_info->filename,MaxTextExtent-1);
     if (image->next == (Image *) NULL)
       break;
-    image=GetNextImageInList(image);
+    image=image->next;
     status=MagickMonitor(SaveImagesText,scene++,GetImageListLength(image),
       &image->exception);
     if (status == False)

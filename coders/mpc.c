@@ -1278,7 +1278,7 @@ static unsigned int WriteMPCImage(const ImageInfo *image_info,Image *image)
       ThrowWriterException(CacheError,"UnableToPeristPixelCache",image);
     if (image->next == (Image *) NULL)
       break;
-    image=GetNextImageInList(image);
+    image=image->next;
     status=MagickMonitor(SaveImagesText,scene++,GetImageListLength(image),
       &image->exception);
     if (status == False)

@@ -762,7 +762,7 @@ static unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
     LiberateMemory((void **) &targa_pixels);
     if (image->next == (Image *) NULL)
       break;
-    image=GetNextImageInList(image);
+    image=image->next;
     if (!MagickMonitor(SaveImagesText,scene++,GetImageListLength(image),&image->exception))
       break;
   } while (image_info->adjoin);

@@ -1460,7 +1460,7 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
     (void) WriteBlobByte(image,0x0);
     if (image->next == (Image *) NULL)
       break;
-    image=GetNextImageInList(image);
+    image=image->next;
     status=MagickMonitor(SaveImagesText,scene++,GetImageListLength(image),
       &image->exception);
     if (status == False)
