@@ -8,27 +8,32 @@
 extern "C" {
 #endif
 
-#if defined(HasLTDL)
-#include "ltdl/ltdl.h"
-typedef lt_dlhandle ModuleHandle;
-#else
-typedef void *ModuleHandle;
-#endif
+typedef struct _ModuleAlias
+{
+  char
+    *filename,
+    *name,
+    *alias;
+
+  struct _ModuleAlias
+    *previous,
+    *next;
+} ModuleAlias;
 
 typedef struct _ModuleInfo
 {
   char
     *tag;
-
-  ModuleHandle
-    handle;
-
+  
+  void
+    *handle;
+  
   time_t
     load_time;
-
+  
   unsigned long
     signature;
-
+  
   struct _ModuleInfo
     *previous,
     *next;
@@ -37,7 +42,6 @@ typedef struct _ModuleInfo
 /*
   Modules declarations.
 */
-
 extern MagickExport ModuleInfo
   *GetModuleInfo(const char *,ExceptionInfo *);
 

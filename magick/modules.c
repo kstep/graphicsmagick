@@ -1099,7 +1099,7 @@ static int UnloadDynamicModule(const char *module)
     Locate and execute UnregisterFORMATImage function
   */
   ModuleToTag(module,"Unregister%sImage",name);
-  method=(void (*)(void)) lt_dlsym(module_info->handle,name);
+  method=(void (*)(void)) lt_dlsym((ModuleHandle) module_info->handle,name);
   if (method == (void (*)(void)) NULL)
     MagickWarning(DelegateWarning,"failed to find symbol",lt_dlerror());
   else
