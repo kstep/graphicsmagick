@@ -69,6 +69,11 @@
 #if !defined(ulonglong)
 #define ulonglong  unsigned long long
 #endif
+#ifdef __VMS
+#define JAS_VERSION 1.500.4
+#define PACKAGE jasper
+#define VERSION 1.500.4
+#endif
 #include "jasper/jasper.h"
 #endif
 

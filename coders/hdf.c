@@ -201,7 +201,7 @@ static Image *ReadHDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (status == -1)
     {
       class=PseudoClass;
-      status=DFR8getdims(image->filename,&width,&height,&is_palette);
+      status=DFR8getdims(image->filename,&width,&height,(int *) &is_palette);
     }
   if (status == -1)
     ThrowReaderException(CorruptImageError,
@@ -358,7 +358,7 @@ static Image *ReadHDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (status == -1)
       {
         class=PseudoClass;
-        status=DFR8getdims(image->filename,&width,&height,&is_palette);
+        status=DFR8getdims(image->filename,&width,&height,(int *) &is_palette);
       }
     if (status != -1)
       {
