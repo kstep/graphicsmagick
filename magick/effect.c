@@ -3064,12 +3064,8 @@ MagickExport Image *SteganoImage(Image *image,Image *watermark,
     *stegano_image;
 
   int
-    j,
     shift,
     y;
-
-  register int
-    i;
 
   register IndexPacket
     *indexes;
@@ -3080,6 +3076,10 @@ MagickExport Image *SteganoImage(Image *image,Image *watermark,
   register PixelPacket
     *p,
     *q;
+
+  size_t
+    i,
+    j;
 
   /*
     Initialize steganographic image attributes.

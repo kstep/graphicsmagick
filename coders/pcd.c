@@ -156,6 +156,9 @@ static unsigned int DecodeImage(Image *image,unsigned char *luma,
     *p,
     *q;
 
+  size_t
+    number_pixels;
+
   unsigned char
     *buffer;
 
@@ -225,6 +228,7 @@ static unsigned int DecodeImage(Image *image,unsigned char *luma,
   */
   count=0;
   length=0;
+  number_pixels=image->columns*image->rows;
   plane=0;
   q=luma;
   for ( ; ; )
@@ -280,7 +284,7 @@ static unsigned int DecodeImage(Image *image,unsigned char *luma,
     r=pcd_table[plane];
     for (i=0; ((i < (int) length) && ((sum & r->mask) != r->sequence)); i++)
       r++;
-    if (((q-luma) > (image->columns*image->rows)) || (r == (PCDTable *) NULL))
+    if (((size_t) (q-luma) > number_pixels) || (r == (PCDTable *) NULL))
       {
         ThrowException(&image->exception,CorruptImageWarning,
           "Corrupt PCD image, skipping to sync byte",image->filename);

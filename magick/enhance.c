@@ -679,6 +679,9 @@ MagickExport unsigned int NormalizeImage(Image *image)
     *histogram,
     y;
 
+  long
+    threshold_intensity;
+
   Quantum
     gray_value,
     *normalize_map;
@@ -695,9 +698,6 @@ MagickExport unsigned int NormalizeImage(Image *image)
   unsigned int
     high,
     low;
-
-  unsigned long
-    threshold_intensity;
 
   /*
     Allocate histogram and normalize map.

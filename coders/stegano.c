@@ -117,7 +117,6 @@ static Image *ReadSTEGANOImage(const ImageInfo *image_info,
     *clone_info;
 
   int
-    j,
     shift,
     y;
 
@@ -126,12 +125,15 @@ static Image *ReadSTEGANOImage(const ImageInfo *image_info,
     *stegano_indexes;
 
   register int
-    i,
     x;
 
   register PixelPacket
     *p,
     *q;
+
+  size_t
+    i,
+    j;
 
   /*
     Initialize Image structure.

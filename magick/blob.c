@@ -162,7 +162,7 @@ MagickExport Image *BlobToImage(const ImageInfo *image_info,const void *blob,
     }
   count=write(file,blob,length);
   (void) close(file);
-  if (count != length)
+  if ((size_t) count != length)
     {
       DestroyImageInfo(clone_info);
       ThrowException(exception,BlobWarning,"Unable to convert blob to an image",
@@ -461,7 +461,7 @@ MagickExport void *FileToBlob(const char *filename,size_t *length,
   count=read(file,blob,*length);
   blob[*length]='\0';
   (void) close(file);
-  if (count != *length)
+  if ((size_t) count != *length)
     {
       ThrowException(exception,BlobWarning,"Unable to read file",filename);
       return((void *) NULL);
@@ -665,7 +665,7 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
   (void) close(file);
   (void) remove(image->filename);
   (void) strcpy(image->filename,filename);
-  if (count != *length)
+  if ((size_t) count != *length)
     {
       ThrowException(exception,BlobWarning,"Unable to read file",filename);
       return((void *) NULL);
