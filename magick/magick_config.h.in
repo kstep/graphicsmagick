@@ -85,12 +85,6 @@
 /* Define to 1 if you have the `getpagesize' function. */
 #undef HAVE_GETPAGESIZE
 
-/* Define to 1 if you have the <hdf.h> header file. */
-#undef HAVE_HDF_H
-
-/* Define to 1 if you have the <hdf/hdf.h> header file. */
-#undef HAVE_HDF_HDF_H
-
 /* Define to 1 if you have the `index' function. */
 #undef HAVE_INDEX
 
@@ -237,9 +231,6 @@
 /* Define if you have Ghostscript library */
 #undef HasGS
 
-/* Define if you have HDF library */
-#undef HasHDF
-
 /* Define if you have JBIG library */
 #undef HasJBIG
 
@@ -257,9 +248,6 @@
 
 /* Include LZW compression */
 #undef HasLZW
-
-/* Define if you have MPEG2 library */
-#undef HasMPEG2
 
 /* Define if you have PNG library */
 #undef HasPNG

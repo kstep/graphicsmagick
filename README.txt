@@ -197,12 +197,10 @@ UNIX/Cygwin/MinGW COMPILATION
    --without-dps           disable Display Postscript support
    --without-fpx           disable FlashPIX support
    --without-gslib         disable Ghostscript library support
-   --with-hdf              enable HDF support
    --without-jbig          disable JBIG support
    --without-jpeg          disable JPEG support
    --without-jp2           disable JPEG v2 support
    --without-lcms          disable LCMS support
-   --without-mpeg2         disable MPEG support
    --without-png           disable PNG support
    --without-tiff          disable TIFF support
    --without-ttf           disable TrueType support
@@ -644,14 +642,6 @@ MAGICK DELEGATES
       fail, it may be necessary to use Ghostscript's copy of libjpeg for
       ImageMagick, and all delegate libraries which depend on libjpeg.
 
-    o ImageMagick requires the NCSA HDF5 library available via anonymous
-      FTP as
-
-         ftp://ftp.ncsa.uiuc.edu/HDF/HDF/HDF_Current
-
-      to read and write the HDF image format.  By default HDF support is
-      disabled because HDF5 is not yet complete.
-
     o ImageMagick requires hp2xx available from
 
          http://www.gnu.org/software/hp2xx/hp2xx.html
@@ -916,6 +906,50 @@ Windows Win2K/95 VISUAL C++ 6.0 COMPILATION
   Build and execute the configure program and follow the instructions.
   You should probably not change any of the defaults unless you have a
   specific reason to do so.
+
+  The configure program provides a button entitled
+
+     Edit "magick_config.h"
+
+  Clicking this button brings up magick_config.h in Windows notepad for
+  changing any preprocessor defines in ImageMagick's magick_config.h file.
+  This file is copied to magick\magick_config.h. You may safely modify
+  magick\magick_config.h and recompile without re-running the configure
+  program.
+
+  Key user tunables in magick_config.h include:
+
+    QuantumDepth (default 16)
+
+      Specify size of PixelPacket color Quantums (8, 16, or 32) A value
+      of 8 uses half the memory than 16 and may run 30% faster, but
+      provides 256 times less color precision than a value of 16.
+
+    UseInstalledImageMagick (default undefined)
+
+      Define to build an ImageMagick which uses registry settings or
+      embedded paths to locate installed components (coder modules and
+      configuration files). The default is to look for all files in the
+      same directory as the executable.
+
+    ProvideDllMain (default undefined)
+
+      Define to include a DllMain() function ensures that the ImageMagick
+      DLL is properly initialized without participation from dependent
+      applications.
+
+    Windows95 (default undefined)
+
+      Define to allow binaries to execute under Windows '95. Note that
+      enabling support for Windows '95 disables support for the large
+      (>2GB) pixel cache.
+
+    HasLZW (default undefined)
+
+      Define to enable use of LZW compression in GIF, Postscript, PDF,
+      and TIFF. Enabling LZW for TIFF also requires enabling LZW in the
+      TIFF library. Note that LZW compression is patented by Unisys so it
+      can not be used without a license.
 
   After creating your build environment you can proceed to open the DSW
   file that was generated in the VisualMagick directory and build

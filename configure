@@ -459,7 +459,7 @@ ac_includes_default="\
 # include <unistd.h>
 #endif"
 
-ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS build build_cpu build_vendor build_os host host_cpu host_vendor host_os target target_cpu target_vendor target_os MAJOR_VERSION MINOR_VERSION MICRO_VERSION INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA CYGPATH_W PACKAGE VERSION ACLOCAL AUTOCONF AUTOMAKE AUTOHEADER MAKEINFO AMTAR install_sh STRIP ac_ct_STRIP INSTALL_STRIP_PROGRAM AWK SET_MAKE PREFIX_DIR EXEC_PREFIX_DIR BIN_DIR SBIN_DIR LIBEXEC_DIR DATA_DIR SYSCONF_DIR SHAREDSTATE_DIR LOCALSTATE_DIR LIB_DIR INCLUDE_DIR OLDINCLUDE_DIR INFO_DIR MAN_DIR WinPathScript CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT DEPDIR am__include am__quote AMDEP_TRUE AMDEP_FALSE AMDEPBACKSLASH CCDEPMODE am__fastdepCC_TRUE am__fastdepCC_FALSE CPP LD LN_S LIB_GDI32 HasWINGDI32_TRUE HasWINGDI32_FALSE WIN32_NATIVE_BUILD_TRUE WIN32_NATIVE_BUILD_FALSE CYGWIN_BUILD_TRUE CYGWIN_BUILD_FALSE EGREP INSTALL_LTDL_TRUE INSTALL_LTDL_FALSE CONVENIENCE_LTDL_TRUE CONVENIENCE_LTDL_FALSE LIBADD_DL INCLTDL LIBLTDL ECHO RANLIB ac_ct_RANLIB DLLTOOL ac_ct_DLLTOOL AS ac_ct_AS OBJDUMP ac_ct_OBJDUMP CXX CXXFLAGS ac_ct_CXX CXXDEPMODE am__fastdepCXX_TRUE am__fastdepCXX_FALSE CXXCPP F77 FFLAGS ac_ct_F77 LIBTOOL LIBTOOL_DEPS WITH_MODULES_TRUE WITH_MODULES_FALSE DLLDFLAGS MAINTAINER_MODE_TRUE MAINTAINER_MODE_FALSE MAINT HasLZW_TRUE HasLZW_FALSE PERL_MAKE_OPTIONS LIBSTDCLDFLAGS MODULE_EXTRA_CPPFLAGS LIBRARY_EXTRA_CPPFLAGS LIB_LF WITH_MAGICK_PLUS_PLUS_TRUE WITH_MAGICK_PLUS_PLUS_FALSE CCMALLOCDelegate LIB_MATH LIB_THREAD HasZLIB_TRUE HasZLIB_FALSE LIB_ZLIB HasBZLIB_TRUE HasBZLIB_FALSE LIB_BZLIB X_CFLAGS X_PRE_LIBS X_LIBS X_EXTRA_LIBS HasX11_TRUE HasX11_FALSE LIB_X11 LIB_XEXT LIB_DL HasDPS_TRUE HasDPS_FALSE LIB_DPS HasFPX_TRUE HasFPX_FALSE LIB_FPX HasLCMS_TRUE HasLCMS_FALSE LIB_LCMS HasPNG_TRUE HasPNG_FALSE LIB_PNG HasJPEG_TRUE HasJPEG_FALSE LIB_JPEG HasJP2_TRUE HasJP2_FALSE LIB_JP2 HasGS_TRUE HasGS_FALSE LIB_GS HasMPEG2_TRUE HasMPEG2_FALSE LIB_MPEG2 freetype_config HasTTF_TRUE HasTTF_FALSE LIB_TTF HasTIFF_TRUE HasTIFF_FALSE LIB_TIFF HasHDF_TRUE HasHDF_FALSE LIB_HDF HasJBIG_TRUE HasJBIG_FALSE LIB_JBIG xml2_config HasXML_TRUE HasXML_FALSE LIB_XML HasWMF_TRUE HasWMF_FALSE LIB_WMF LIB_WMF_DEPS MagickLibPath MagickModulesPath MagickSharePath AutotraceDecodeDelegate BZIPDelegate BrowseDelegate CGMDecodeDelegate CatDelegate DOTDecodeDelegate DVIDecodeDelegate EchoDelegate EditorDelegate FIGDecodeDelegate GnuplotDecodeDelegate HPGLDecodeDelegate HTMLDecodeDelegate ILBMDecodeDelegate ILBMEncodeDelegate LPDelegate LPRDelegate LZWDecodeDelegate LZWEncodeDelegate LaunchDelegate MANDelegate MPEGDecodeDelegate MPEGEncodeDelegate MVDelegate PGPDecodeDelegate POVDelegate PSDelegate RADDecodeDelegate RLEEncodeDelegate RMDelegate SCANDecodeDelegate TXTDelegate WMFDecodeDelegate WWWDecodeDelegate ZipDelegate PrintDelegate TXT2HTML HasTXT2HTML_TRUE HasTXT2HTML_FALSE windows_font_dir ghostscript_font_dir type_include_files ConvertDelegate MogrifyDelegate ShowImageDelegate GSMonoDevice GSPDFDevice GSPSDevice GSColorDevice GSEPSDevice PERL WITH_PERL_TRUE WITH_PERL_FALSE WITH_PERL_STATIC_TRUE WITH_PERL_STATIC_FALSE WITH_PERL_DYNAMIC_TRUE WITH_PERL_DYNAMIC_FALSE MAGICKLIB DELEGATES MAGICK_DEP_LIBS LIBOBJS LTLIBOBJS'
+ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS build build_cpu build_vendor build_os host host_cpu host_vendor host_os target target_cpu target_vendor target_os MAJOR_VERSION MINOR_VERSION MICRO_VERSION INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA CYGPATH_W PACKAGE VERSION ACLOCAL AUTOCONF AUTOMAKE AUTOHEADER MAKEINFO AMTAR install_sh STRIP ac_ct_STRIP INSTALL_STRIP_PROGRAM AWK SET_MAKE PREFIX_DIR EXEC_PREFIX_DIR BIN_DIR SBIN_DIR LIBEXEC_DIR DATA_DIR SYSCONF_DIR SHAREDSTATE_DIR LOCALSTATE_DIR LIB_DIR INCLUDE_DIR OLDINCLUDE_DIR INFO_DIR MAN_DIR WinPathScript CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT DEPDIR am__include am__quote AMDEP_TRUE AMDEP_FALSE AMDEPBACKSLASH CCDEPMODE am__fastdepCC_TRUE am__fastdepCC_FALSE CPP LD LN_S LIB_GDI32 HasWINGDI32_TRUE HasWINGDI32_FALSE WIN32_NATIVE_BUILD_TRUE WIN32_NATIVE_BUILD_FALSE CYGWIN_BUILD_TRUE CYGWIN_BUILD_FALSE EGREP INSTALL_LTDL_TRUE INSTALL_LTDL_FALSE CONVENIENCE_LTDL_TRUE CONVENIENCE_LTDL_FALSE LIBADD_DL INCLTDL LIBLTDL ECHO RANLIB ac_ct_RANLIB DLLTOOL ac_ct_DLLTOOL AS ac_ct_AS OBJDUMP ac_ct_OBJDUMP CXX CXXFLAGS ac_ct_CXX CXXDEPMODE am__fastdepCXX_TRUE am__fastdepCXX_FALSE CXXCPP F77 FFLAGS ac_ct_F77 LIBTOOL LIBTOOL_DEPS WITH_MODULES_TRUE WITH_MODULES_FALSE DLLDFLAGS MAINTAINER_MODE_TRUE MAINTAINER_MODE_FALSE MAINT HasLZW_TRUE HasLZW_FALSE PERL_MAKE_OPTIONS LIBSTDCLDFLAGS MODULE_EXTRA_CPPFLAGS LIBRARY_EXTRA_CPPFLAGS LIB_LF WITH_MAGICK_PLUS_PLUS_TRUE WITH_MAGICK_PLUS_PLUS_FALSE CCMALLOCDelegate LIB_MATH LIB_THREAD HasZLIB_TRUE HasZLIB_FALSE LIB_ZLIB HasBZLIB_TRUE HasBZLIB_FALSE LIB_BZLIB X_CFLAGS X_PRE_LIBS X_LIBS X_EXTRA_LIBS HasX11_TRUE HasX11_FALSE LIB_X11 LIB_XEXT LIB_DL HasDPS_TRUE HasDPS_FALSE LIB_DPS HasFPX_TRUE HasFPX_FALSE LIB_FPX HasLCMS_TRUE HasLCMS_FALSE LIB_LCMS HasPNG_TRUE HasPNG_FALSE LIB_PNG HasJPEG_TRUE HasJPEG_FALSE LIB_JPEG HasJP2_TRUE HasJP2_FALSE LIB_JP2 HasGS_TRUE HasGS_FALSE LIB_GS freetype_config HasTTF_TRUE HasTTF_FALSE LIB_TTF HasTIFF_TRUE HasTIFF_FALSE LIB_TIFF HasJBIG_TRUE HasJBIG_FALSE LIB_JBIG xml2_config HasXML_TRUE HasXML_FALSE LIB_XML HasWMF_TRUE HasWMF_FALSE LIB_WMF LIB_WMF_DEPS MagickLibPath MagickModulesPath MagickSharePath AutotraceDecodeDelegate BZIPDelegate BrowseDelegate CGMDecodeDelegate CatDelegate DOTDecodeDelegate DVIDecodeDelegate EchoDelegate EditorDelegate FIGDecodeDelegate GnuplotDecodeDelegate HPGLDecodeDelegate HTMLDecodeDelegate ILBMDecodeDelegate ILBMEncodeDelegate LPDelegate LPRDelegate LZWDecodeDelegate LZWEncodeDelegate LaunchDelegate MANDelegate MPEGDecodeDelegate MPEGEncodeDelegate MVDelegate PGPDecodeDelegate POVDelegate PSDelegate RADDecodeDelegate RLEEncodeDelegate RMDelegate SCANDecodeDelegate TXTDelegate WMFDecodeDelegate WWWDecodeDelegate ZipDelegate PrintDelegate TXT2HTML HasTXT2HTML_TRUE HasTXT2HTML_FALSE windows_font_dir ghostscript_font_dir type_include_files ConvertDelegate MogrifyDelegate ShowImageDelegate GSMonoDevice GSPDFDevice GSPSDevice GSColorDevice GSEPSDevice PERL WITH_PERL_TRUE WITH_PERL_FALSE WITH_PERL_STATIC_TRUE WITH_PERL_STATIC_FALSE WITH_PERL_DYNAMIC_TRUE WITH_PERL_DYNAMIC_FALSE MAGICKLIB DELEGATES MAGICK_DEP_LIBS LIBOBJS LTLIBOBJS'
 ac_subst_files=''
 
 # Initialize some variables set by options.
@@ -1072,12 +1072,10 @@ Optional Packages:
   --without-dps           disable Display Postscript support
   --without-fpx           disable FlashPIX support
   --without-gslib         disable Ghostscript library support
-  --with-hdf              enable HDF support
   --without-jbig          disable JBIG support
   --without-jpeg          disable JPEG support
   --without-jp2           disable JPEG v2 support
   --without-lcms          disable LCMS support
-  --without-mpeg2         disable MPEG support
   --without-png           disable PNG support
   --without-tiff          disable TIFF support
   --without-ttf           disable TrueType support
@@ -5548,7 +5546,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 5551 "configure"
+#line 5549 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -7098,7 +7096,7 @@ ia64-*-hpux*)
   ;;
 *-*-irix6*)
   # Find out which ABI we are using.
-  echo '#line 7101 "configure"' > conftest.$ac_ext
+  echo '#line 7099 "configure"' > conftest.$ac_ext
   if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -8224,7 +8222,7 @@ fi
 
 
 # Provide some information about the compiler.
-echo "$as_me:8227:" \
+echo "$as_me:8225:" \
      "checking for Fortran 77 compiler version" >&5
 ac_compiler=`set X $ac_compile; echo $2`
 { (eval echo "$as_me:$LINENO: \"$ac_compiler --version </dev/null >&5\"") >&5
@@ -11161,7 +11159,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 11164 "configure"
+#line 11162 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -11259,7 +11257,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 11262 "configure"
+#line 11260 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -14210,7 +14208,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 14213 "configure"
+#line 14211 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -14308,7 +14306,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 14311 "configure"
+#line 14309 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -18907,7 +18905,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 18910 "configure"
+#line 18908 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -19005,7 +19003,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 19008 "configure"
+#line 19006 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -20003,7 +20001,7 @@ _ACEOF
 fi
 
 # Enable build using delegate libraries built in subdirectories rather than installed
-# delegate libraries (bzlib fpx hdf jasper jbig jpeg lcms mpeg2 png tiff ttf wmf xml zlib)
+# delegate libraries (bzlib fpx jasper jbig jpeg lcms png tiff ttf wmf xml zlib)
 # Check whether --enable-delegate-build or --disable-delegate-build was given.
 if test "${enable_delegate_build+set}" = set; then
   enableval="$enable_delegate_build"
@@ -20297,15 +20295,11 @@ else
   with_gslib='yes'
 fi;
 
-# Enable HDF.
-
-# Check whether --with-hdf or --without-hdf was given.
-if test "${with_hdf+set}" = set; then
-  withval="$with_hdf"
-  with_hdf=$withval
-else
-  with_hdf='no'
-fi;
+# # Enable HDF.
+# AC_ARG_WITH(hdf,
+# 	      [  --with-hdf              enable HDF support],
+# 	      [with_hdf=$withval],
+# 	      [with_hdf='no'])
 
 # Disable JBIG.
 
@@ -20347,15 +20341,11 @@ else
   with_lcms='yes'
 fi;
 
-# Disable MPEG.
-
-# Check whether --with-mpeg2 or --without-mpeg2 was given.
-if test "${with_mpeg2+set}" = set; then
-  withval="$with_mpeg2"
-  with_mpeg2=$withval
-else
-  with_mpeg2='yes'
-fi;
+# # Disable MPEG.
+# AC_ARG_WITH(mpeg2,
+# 	      [  --without-mpeg2         disable MPEG support],
+# 	      [with_mpeg2=$withval],
+# 	      [with_mpeg2='yes'])
 
 # Disable PNG.
 
@@ -23376,7 +23366,7 @@ then
   # Most delegates have includes in the same directory as the library, but not all ...
   #
   # Includes
-  for dir in bzlib fpx hdf/hdf/src jasper jbig/libjbig jpeg lcms lcms/src mpeg2/include png tiff/libtiff ttf/include wmf/include xml zlib
+  for dir in bzlib fpx jasper jbig/libjbig jpeg lcms lcms/src png tiff/libtiff ttf/include wmf/include xml zlib
   do
     if test -d "$builddir/$dir"
     then
@@ -23390,7 +23380,7 @@ then
   done
 
   # Libraries
-  for dir in bzlib fpx/obj hdf/hdf/src jasper jbig/libjbig jpeg lcms lcms/src png mpeg2/libmpeg2 tiff/libtiff ttf/objs wmf/src xml zlib
+  for dir in bzlib fpx/obj jasper jbig/libjbig jpeg lcms lcms/src png tiff/libtiff ttf/objs wmf/src xml zlib
   do
     if test -d "$builddir/$dir"
     then
@@ -28191,219 +28181,39 @@ fi
 
 
 
-#
-# Check for MPEG2 library
-#
-have_mpeg2='no'
-LIB_MPEG2=''
-if test "$with_mpeg2" != 'no'
-then
-    echo "$as_me:$LINENO: checking for MPEG version 2 support " >&5
-echo $ECHO_N "checking for MPEG version 2 support ... $ECHO_C" >&6
-    echo "$as_me:$LINENO: result: " >&5
-echo "${ECHO_T}" >&6
-    failed=0;
-    passed=0;
-    if test "${ac_cv_header_mpeg2dec_mpeg2_h+set}" = set; then
-  echo "$as_me:$LINENO: checking for mpeg2dec/mpeg2.h" >&5
-echo $ECHO_N "checking for mpeg2dec/mpeg2.h... $ECHO_C" >&6
-if test "${ac_cv_header_mpeg2dec_mpeg2_h+set}" = set; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-fi
-echo "$as_me:$LINENO: result: $ac_cv_header_mpeg2dec_mpeg2_h" >&5
-echo "${ECHO_T}$ac_cv_header_mpeg2dec_mpeg2_h" >&6
-else
-  # Is the header compilable?
-echo "$as_me:$LINENO: checking mpeg2dec/mpeg2.h usability" >&5
-echo $ECHO_N "checking mpeg2dec/mpeg2.h usability... $ECHO_C" >&6
-cat >conftest.$ac_ext <<_ACEOF
-#line $LINENO "configure"
-#include "confdefs.h"
-$ac_includes_default
-#include <mpeg2dec/mpeg2.h>
-_ACEOF
-rm -f conftest.$ac_objext
-if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
-  (eval $ac_compile) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } &&
-         { ac_try='test -s conftest.$ac_objext'
-  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
-  (eval $ac_try) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; }; then
-  ac_header_compiler=yes
-else
-  echo "$as_me: failed program was:" >&5
-cat conftest.$ac_ext >&5
-ac_header_compiler=no
-fi
-rm -f conftest.$ac_objext conftest.$ac_ext
-echo "$as_me:$LINENO: result: $ac_header_compiler" >&5
-echo "${ECHO_T}$ac_header_compiler" >&6
-
-# Is the header present?
-echo "$as_me:$LINENO: checking mpeg2dec/mpeg2.h presence" >&5
-echo $ECHO_N "checking mpeg2dec/mpeg2.h presence... $ECHO_C" >&6
-cat >conftest.$ac_ext <<_ACEOF
-#line $LINENO "configure"
-#include "confdefs.h"
-#include <mpeg2dec/mpeg2.h>
-_ACEOF
-if { (eval echo "$as_me:$LINENO: \"$ac_cpp conftest.$ac_ext\"") >&5
-  (eval $ac_cpp conftest.$ac_ext) 2>conftest.er1
-  ac_status=$?
-  grep -v '^ *+' conftest.er1 >conftest.err
-  rm -f conftest.er1
-  cat conftest.err >&5
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } >/dev/null; then
-  if test -s conftest.err; then
-    ac_cpp_err=$ac_c_preproc_warn_flag
-  else
-    ac_cpp_err=
-  fi
-else
-  ac_cpp_err=yes
-fi
-if test -z "$ac_cpp_err"; then
-  ac_header_preproc=yes
-else
-  echo "$as_me: failed program was:" >&5
-  cat conftest.$ac_ext >&5
-  ac_header_preproc=no
-fi
-rm -f conftest.err conftest.$ac_ext
-echo "$as_me:$LINENO: result: $ac_header_preproc" >&5
-echo "${ECHO_T}$ac_header_preproc" >&6
-
-# So?  What about this header?
-case $ac_header_compiler:$ac_header_preproc in
-  yes:no )
-    { echo "$as_me:$LINENO: WARNING: mpeg2dec/mpeg2.h: accepted by the compiler, rejected by the preprocessor!" >&5
-echo "$as_me: WARNING: mpeg2dec/mpeg2.h: accepted by the compiler, rejected by the preprocessor!" >&2;}
-    { echo "$as_me:$LINENO: WARNING: mpeg2dec/mpeg2.h: proceeding with the preprocessor's result" >&5
-echo "$as_me: WARNING: mpeg2dec/mpeg2.h: proceeding with the preprocessor's result" >&2;};;
-  no:yes )
-    { echo "$as_me:$LINENO: WARNING: mpeg2dec/mpeg2.h: present but cannot be compiled" >&5
-echo "$as_me: WARNING: mpeg2dec/mpeg2.h: present but cannot be compiled" >&2;}
-    { echo "$as_me:$LINENO: WARNING: mpeg2dec/mpeg2.h: check for missing prerequisite headers?" >&5
-echo "$as_me: WARNING: mpeg2dec/mpeg2.h: check for missing prerequisite headers?" >&2;}
-    { echo "$as_me:$LINENO: WARNING: mpeg2dec/mpeg2.h: proceeding with the preprocessor's result" >&5
-echo "$as_me: WARNING: mpeg2dec/mpeg2.h: proceeding with the preprocessor's result" >&2;};;
-esac
-echo "$as_me:$LINENO: checking for mpeg2dec/mpeg2.h" >&5
-echo $ECHO_N "checking for mpeg2dec/mpeg2.h... $ECHO_C" >&6
-if test "${ac_cv_header_mpeg2dec_mpeg2_h+set}" = set; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-  ac_cv_header_mpeg2dec_mpeg2_h=$ac_header_preproc
-fi
-echo "$as_me:$LINENO: result: $ac_cv_header_mpeg2dec_mpeg2_h" >&5
-echo "${ECHO_T}$ac_cv_header_mpeg2dec_mpeg2_h" >&6
-
-fi
-if test $ac_cv_header_mpeg2dec_mpeg2_h = yes; then
-  passed=`expr $passed + 1`
-else
-  failed=`expr $failed + 1`
-fi
-
-
-    echo "$as_me:$LINENO: checking for mpeg2_decode_data in -lmpeg2" >&5
-echo $ECHO_N "checking for mpeg2_decode_data in -lmpeg2... $ECHO_C" >&6
-if test "${ac_cv_lib_mpeg2_mpeg2_decode_data+set}" = set; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lmpeg2  $LIBS"
-cat >conftest.$ac_ext <<_ACEOF
-#line $LINENO "configure"
-#include "confdefs.h"
-
-/* Override any gcc2 internal prototype to avoid an error.  */
-#ifdef __cplusplus
-extern "C"
-#endif
-/* We use char because int might match the return type of a gcc2
-   builtin and then its argument prototype would still apply.  */
-char mpeg2_decode_data ();
-int
-main ()
-{
-mpeg2_decode_data ();
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest.$ac_objext conftest$ac_exeext
-if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
-  (eval $ac_link) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } &&
-         { ac_try='test -s conftest$ac_exeext'
-  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
-  (eval $ac_try) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; }; then
-  ac_cv_lib_mpeg2_mpeg2_decode_data=yes
-else
-  echo "$as_me: failed program was:" >&5
-cat conftest.$ac_ext >&5
-ac_cv_lib_mpeg2_mpeg2_decode_data=no
-fi
-rm -f conftest.$ac_objext conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-echo "$as_me:$LINENO: result: $ac_cv_lib_mpeg2_mpeg2_decode_data" >&5
-echo "${ECHO_T}$ac_cv_lib_mpeg2_mpeg2_decode_data" >&6
-if test $ac_cv_lib_mpeg2_mpeg2_decode_data = yes; then
-  passed=`expr $passed + 1`
-else
-  failed=`expr $failed + 1`
-fi
-
-    echo "$as_me:$LINENO: checking if MPEG version 2 support package is complete" >&5
-echo $ECHO_N "checking if MPEG version 2 support package is complete... $ECHO_C" >&6
-    if test $passed -gt 0
-    then
-    if test $failed -gt 0
-    then
-	echo "$as_me:$LINENO: result: no -- some components failed test" >&5
-echo "${ECHO_T}no -- some components failed test" >&6
-	have_mpeg2='no (failed tests)'
-    else
-	LIB_MPEG2='-lmpeg2'
-	LIBS="$LIB_MPEG2 $LIBS"
-
-cat >>confdefs.h <<\_ACEOF
-#define HasMPEG2
-_ACEOF
-
-	echo "$as_me:$LINENO: result: yes" >&5
-echo "${ECHO_T}yes" >&6
-	have_mpeg2='yes'
-    fi
-    else
-    echo "$as_me:$LINENO: result: no" >&5
-echo "${ECHO_T}no" >&6
-    fi
-fi
-
-
-if test "$have_mpeg2" = 'yes'; then
-  HasMPEG2_TRUE=
-  HasMPEG2_FALSE='#'
-else
-  HasMPEG2_TRUE='#'
-  HasMPEG2_FALSE=
-fi
-
-
+# #
+# # Check for MPEG2 library
+# #
+# have_mpeg2='no'
+# LIB_MPEG2=''
+# if test "$with_mpeg2" != 'no'
+# then
+#     AC_MSG_CHECKING(for MPEG version 2 support )
+#     AC_MSG_RESULT()
+#     failed=0;
+#     passed=0;
+#     AC_CHECK_HEADER(mpeg2dec/mpeg2.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
+#     AC_CHECK_LIB(mpeg2,mpeg2_decode_data,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
+#     AC_MSG_CHECKING(if MPEG version 2 support package is complete)
+#     if test $passed -gt 0
+#     then
+#     if test $failed -gt 0
+#     then
+# 	AC_MSG_RESULT(no -- some components failed test)
+# 	have_mpeg2='no (failed tests)'
+#     else
+# 	LIB_MPEG2='-lmpeg2'
+# 	LIBS="$LIB_MPEG2 $LIBS"
+# 	AC_DEFINE(HasMPEG2,,Define if you have MPEG2 library)
+# 	AC_MSG_RESULT(yes)
+# 	have_mpeg2='yes'
+#     fi
+#     else
+#     AC_MSG_RESULT(no)
+#     fi
+# fi
+# AM_CONDITIONAL(HasMPEG2, test "$have_mpeg2" = 'yes')
+# AC_SUBST(LIB_MPEG2)
 
 #
 # Check for TTF
@@ -29134,232 +28944,45 @@ fi
 
 
 
-#
-# Check for HDF
-#
-have_hdf='no'
-LIB_HDF=''
-if test "$with_hdf" != 'no'
-then
-    echo "$as_me:$LINENO: checking for HDF components " >&5
-echo $ECHO_N "checking for HDF components ... $ECHO_C" >&6
-    echo "$as_me:$LINENO: result: " >&5
-echo "${ECHO_T}" >&6
-    failed=0;
-    passed=0;
-
-
-for ac_header in hdf.h hdf/hdf.h
-do
-as_ac_Header=`echo "ac_cv_header_$ac_header" | $as_tr_sh`
-if eval "test \"\${$as_ac_Header+set}\" = set"; then
-  echo "$as_me:$LINENO: checking for $ac_header" >&5
-echo $ECHO_N "checking for $ac_header... $ECHO_C" >&6
-if eval "test \"\${$as_ac_Header+set}\" = set"; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-fi
-echo "$as_me:$LINENO: result: `eval echo '${'$as_ac_Header'}'`" >&5
-echo "${ECHO_T}`eval echo '${'$as_ac_Header'}'`" >&6
-else
-  # Is the header compilable?
-echo "$as_me:$LINENO: checking $ac_header usability" >&5
-echo $ECHO_N "checking $ac_header usability... $ECHO_C" >&6
-cat >conftest.$ac_ext <<_ACEOF
-#line $LINENO "configure"
-#include "confdefs.h"
-$ac_includes_default
-#include <$ac_header>
-_ACEOF
-rm -f conftest.$ac_objext
-if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
-  (eval $ac_compile) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } &&
-         { ac_try='test -s conftest.$ac_objext'
-  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
-  (eval $ac_try) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; }; then
-  ac_header_compiler=yes
-else
-  echo "$as_me: failed program was:" >&5
-cat conftest.$ac_ext >&5
-ac_header_compiler=no
-fi
-rm -f conftest.$ac_objext conftest.$ac_ext
-echo "$as_me:$LINENO: result: $ac_header_compiler" >&5
-echo "${ECHO_T}$ac_header_compiler" >&6
-
-# Is the header present?
-echo "$as_me:$LINENO: checking $ac_header presence" >&5
-echo $ECHO_N "checking $ac_header presence... $ECHO_C" >&6
-cat >conftest.$ac_ext <<_ACEOF
-#line $LINENO "configure"
-#include "confdefs.h"
-#include <$ac_header>
-_ACEOF
-if { (eval echo "$as_me:$LINENO: \"$ac_cpp conftest.$ac_ext\"") >&5
-  (eval $ac_cpp conftest.$ac_ext) 2>conftest.er1
-  ac_status=$?
-  grep -v '^ *+' conftest.er1 >conftest.err
-  rm -f conftest.er1
-  cat conftest.err >&5
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } >/dev/null; then
-  if test -s conftest.err; then
-    ac_cpp_err=$ac_c_preproc_warn_flag
-  else
-    ac_cpp_err=
-  fi
-else
-  ac_cpp_err=yes
-fi
-if test -z "$ac_cpp_err"; then
-  ac_header_preproc=yes
-else
-  echo "$as_me: failed program was:" >&5
-  cat conftest.$ac_ext >&5
-  ac_header_preproc=no
-fi
-rm -f conftest.err conftest.$ac_ext
-echo "$as_me:$LINENO: result: $ac_header_preproc" >&5
-echo "${ECHO_T}$ac_header_preproc" >&6
-
-# So?  What about this header?
-case $ac_header_compiler:$ac_header_preproc in
-  yes:no )
-    { echo "$as_me:$LINENO: WARNING: $ac_header: accepted by the compiler, rejected by the preprocessor!" >&5
-echo "$as_me: WARNING: $ac_header: accepted by the compiler, rejected by the preprocessor!" >&2;}
-    { echo "$as_me:$LINENO: WARNING: $ac_header: proceeding with the preprocessor's result" >&5
-echo "$as_me: WARNING: $ac_header: proceeding with the preprocessor's result" >&2;};;
-  no:yes )
-    { echo "$as_me:$LINENO: WARNING: $ac_header: present but cannot be compiled" >&5
-echo "$as_me: WARNING: $ac_header: present but cannot be compiled" >&2;}
-    { echo "$as_me:$LINENO: WARNING: $ac_header: check for missing prerequisite headers?" >&5
-echo "$as_me: WARNING: $ac_header: check for missing prerequisite headers?" >&2;}
-    { echo "$as_me:$LINENO: WARNING: $ac_header: proceeding with the preprocessor's result" >&5
-echo "$as_me: WARNING: $ac_header: proceeding with the preprocessor's result" >&2;};;
-esac
-echo "$as_me:$LINENO: checking for $ac_header" >&5
-echo $ECHO_N "checking for $ac_header... $ECHO_C" >&6
-if eval "test \"\${$as_ac_Header+set}\" = set"; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-  eval "$as_ac_Header=$ac_header_preproc"
-fi
-echo "$as_me:$LINENO: result: `eval echo '${'$as_ac_Header'}'`" >&5
-echo "${ECHO_T}`eval echo '${'$as_ac_Header'}'`" >&6
-
-fi
-if test `eval echo '${'$as_ac_Header'}'` = yes; then
-  cat >>confdefs.h <<_ACEOF
-#define `echo "HAVE_$ac_header" | $as_tr_cpp` 1
-_ACEOF
-
-fi
-
-done
-
-    if test "$ac_cv_header_hdf_h" = 'yes' -o "$ac_cv_header_hdf_hdf_h" = 'yes'
-    then
-        passed=`expr $passed + 1`
-    else
-        failed=`expr $failed + 1`
-    fi
-    echo "$as_me:$LINENO: checking for DFANputlabel in -ldf" >&5
-echo $ECHO_N "checking for DFANputlabel in -ldf... $ECHO_C" >&6
-if test "${ac_cv_lib_df_DFANputlabel+set}" = set; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-ldf  $LIBS"
-cat >conftest.$ac_ext <<_ACEOF
-#line $LINENO "configure"
-#include "confdefs.h"
-
-/* Override any gcc2 internal prototype to avoid an error.  */
-#ifdef __cplusplus
-extern "C"
-#endif
-/* We use char because int might match the return type of a gcc2
-   builtin and then its argument prototype would still apply.  */
-char DFANputlabel ();
-int
-main ()
-{
-DFANputlabel ();
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest.$ac_objext conftest$ac_exeext
-if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
-  (eval $ac_link) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } &&
-         { ac_try='test -s conftest$ac_exeext'
-  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
-  (eval $ac_try) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; }; then
-  ac_cv_lib_df_DFANputlabel=yes
-else
-  echo "$as_me: failed program was:" >&5
-cat conftest.$ac_ext >&5
-ac_cv_lib_df_DFANputlabel=no
-fi
-rm -f conftest.$ac_objext conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-echo "$as_me:$LINENO: result: $ac_cv_lib_df_DFANputlabel" >&5
-echo "${ECHO_T}$ac_cv_lib_df_DFANputlabel" >&6
-if test $ac_cv_lib_df_DFANputlabel = yes; then
-  passed=`expr $passed + 1`
-else
-  failed=`expr $failed + 1`
-fi
-
-    echo "$as_me:$LINENO: checking if HDF package is complete" >&5
-echo $ECHO_N "checking if HDF package is complete... $ECHO_C" >&6
-    if test $passed -gt 0
-    then
-    if test $failed -gt 0
-    then
-        echo "$as_me:$LINENO: result: no -- some components failed test" >&5
-echo "${ECHO_T}no -- some components failed test" >&6
-        have_hdf='no (failed tests)'
-    else
-        LIB_HDF='-ldf'
-        LIBS="$LIB_HDF $LIBS"
-
-cat >>confdefs.h <<\_ACEOF
-#define HasHDF
-_ACEOF
-
-        echo "$as_me:$LINENO: result: yes" >&5
-echo "${ECHO_T}yes" >&6
-        have_hdf='yes'
-    fi
-    else
-    echo "$as_me:$LINENO: result: no" >&5
-echo "${ECHO_T}no" >&6
-    fi
-fi
-
-
-if test "$have_hdf" = 'yes'; then
-  HasHDF_TRUE=
-  HasHDF_FALSE='#'
-else
-  HasHDF_TRUE='#'
-  HasHDF_FALSE=
-fi
-
-
+# #
+# # Check for HDF
+# #
+# have_hdf='no'
+# LIB_HDF=''
+# if test "$with_hdf" != 'no'
+# then
+#     AC_MSG_CHECKING(for HDF components )
+#     AC_MSG_RESULT()
+#     failed=0;
+#     passed=0;
+#     AC_CHECK_HEADERS(hdf.h hdf/hdf.h)
+#     if test "$ac_cv_header_hdf_h" = 'yes' -o "$ac_cv_header_hdf_hdf_h" = 'yes'
+#     then
+#         passed=`expr $passed + 1`
+#     else
+#         failed=`expr $failed + 1`
+#     fi
+#     AC_CHECK_LIB(df,DFANputlabel,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
+#     AC_MSG_CHECKING(if HDF package is complete)
+#     if test $passed -gt 0
+#     then
+#     if test $failed -gt 0
+#     then
+#         AC_MSG_RESULT(no -- some components failed test)
+#         have_hdf='no (failed tests)'
+#     else
+#         LIB_HDF='-ldf'
+#         LIBS="$LIB_HDF $LIBS"
+#         AC_DEFINE(HasHDF,,Define if you have HDF library)
+#         AC_MSG_RESULT(yes)
+#         have_hdf='yes'
+#     fi
+#     else
+#     AC_MSG_RESULT(no)
+#     fi
+# fi
+# AM_CONDITIONAL(HasHDF, test "$have_hdf" = 'yes')
+# AC_SUBST(LIB_HDF)
 
 #
 # Check for JBIG
@@ -32112,12 +31735,12 @@ if test "$have_bzlib"  = 'yes' ; then DELEGATES="$DELEGATES bzlib"  ; fi
 if test "$have_ralcgm" = 'yes' ; then DELEGATES="$DELEGATES cgm"  ; fi
 if test "$have_fpx"    = 'yes' ; then DELEGATES="$DELEGATES fpx"  ; fi
 if test "$have_hp2xx"  = 'yes' ; then DELEGATES="$DELEGATES hpgl"  ; fi
-if test "$have_hdf"    = 'yes' ; then DELEGATES="$DELEGATES hdf"  ; fi
+# if test "$have_hdf"    = 'yes' ; then DELEGATES="$DELEGATES hdf"  ; fi
 if test "$have_jbig"   = 'yes' ; then DELEGATES="$DELEGATES jbig" ; fi
 if test "$have_jp2"   = 'yes' ; then DELEGATES="$DELEGATES jp2" ; fi
 if test "$have_jpeg"   = 'yes' ; then DELEGATES="$DELEGATES jpeg" ; fi
 if test "$have_lcms"    = 'yes' ; then DELEGATES="$DELEGATES lcms"  ; fi
-if test "$have_mpeg2"   = 'yes' ; then DELEGATES="$DELEGATES mpeg2" ; fi
+# if test "$have_mpeg2"   = 'yes' ; then DELEGATES="$DELEGATES mpeg2" ; fi
 if test "$have_mpeg2decode" = 'yes' && test "$have_mpeg2encode"  = 'yes' ; then DELEGATES="$DELEGATES mpeg" ; fi
 if test "$have_png"    = 'yes' ; then DELEGATES="$DELEGATES png"  ; fi
 
@@ -32169,9 +31792,9 @@ fi
 #
 if test "$with_modules" != 'no'
 then
-  MAGICK_DEP_LIBS="$LIB_LCMS $LIB_TTF $LIB_GS $LIB_XEXT $LIB_X11 $LIB_ZLIB $LIB_GDI32 $LIB_THREAD $LIB_LF $LIB_MATH $LIB_CCMALLOC"
+  MAGICK_DEP_LIBS="$LIB_LCMS $LIB_TTF $LIB_GS $LIB_XEXT $LIB_X11 $LIB_BZLIB $LIB_ZLIB $LIB_GDI32 $LIB_THREAD $LIB_LF $LIB_MATH $LIB_CCMALLOC"
 else
-  MAGICK_DEP_LIBS="$LIB_JBIG $LIB_HDF $LIB_LCMS $LIB_MPEG2 $LIB_TIFF $LIB_TTF $LIB_JP2 $LIB_JPEG $LIB_GS $LIB_PNG $LIB_FPX $LIB_WMF $LIB_DPS $LIB_XEXT $LIB_X11 $LIB_BZLIB $LIB_XML $LIB_ZLIB $LIB_GDI32 $LIB_THREAD $LIB_LF $LIB_MATH $LIB_CCMALLOC"
+  MAGICK_DEP_LIBS="$LIB_JBIG $LIB_LCMS $LIB_TIFF $LIB_TTF $LIB_JP2 $LIB_JPEG $LIB_GS $LIB_PNG $LIB_FPX $LIB_WMF $LIB_DPS $LIB_XEXT $LIB_X11 $LIB_BZLIB $LIB_XML $LIB_ZLIB $LIB_GDI32 $LIB_THREAD $LIB_LF $LIB_MATH $LIB_CCMALLOC"
 fi
 
 
@@ -32453,13 +32076,6 @@ echo "$as_me: error: conditional \"HasGS\" was never defined.
 Usually this means the macro was only invoked conditionally." >&2;}
    { (exit 1); exit 1; }; }
 fi
-if test -z "${HasMPEG2_TRUE}" && test -z "${HasMPEG2_FALSE}"; then
-  { { echo "$as_me:$LINENO: error: conditional \"HasMPEG2\" was never defined.
-Usually this means the macro was only invoked conditionally." >&5
-echo "$as_me: error: conditional \"HasMPEG2\" was never defined.
-Usually this means the macro was only invoked conditionally." >&2;}
-   { (exit 1); exit 1; }; }
-fi
 if test -z "${HasTTF_TRUE}" && test -z "${HasTTF_FALSE}"; then
   { { echo "$as_me:$LINENO: error: conditional \"HasTTF\" was never defined.
 Usually this means the macro was only invoked conditionally." >&5
@@ -32471,13 +32087,6 @@ if test -z "${HasTIFF_TRUE}" && test -z "${HasTIFF_FALSE}"; then
   { { echo "$as_me:$LINENO: error: conditional \"HasTIFF\" was never defined.
 Usually this means the macro was only invoked conditionally." >&5
 echo "$as_me: error: conditional \"HasTIFF\" was never defined.
-Usually this means the macro was only invoked conditionally." >&2;}
-   { (exit 1); exit 1; }; }
-fi
-if test -z "${HasHDF_TRUE}" && test -z "${HasHDF_FALSE}"; then
-  { { echo "$as_me:$LINENO: error: conditional \"HasHDF\" was never defined.
-Usually this means the macro was only invoked conditionally." >&5
-echo "$as_me: error: conditional \"HasHDF\" was never defined.
 Usually this means the macro was only invoked conditionally." >&2;}
    { (exit 1); exit 1; }; }
 fi
@@ -33214,9 +32823,6 @@ s,@LIB_JP2@,$LIB_JP2,;t t
 s,@HasGS_TRUE@,$HasGS_TRUE,;t t
 s,@HasGS_FALSE@,$HasGS_FALSE,;t t
 s,@LIB_GS@,$LIB_GS,;t t
-s,@HasMPEG2_TRUE@,$HasMPEG2_TRUE,;t t
-s,@HasMPEG2_FALSE@,$HasMPEG2_FALSE,;t t
-s,@LIB_MPEG2@,$LIB_MPEG2,;t t
 s,@freetype_config@,$freetype_config,;t t
 s,@HasTTF_TRUE@,$HasTTF_TRUE,;t t
 s,@HasTTF_FALSE@,$HasTTF_FALSE,;t t
@@ -33224,9 +32830,6 @@ s,@LIB_TTF@,$LIB_TTF,;t t
 s,@HasTIFF_TRUE@,$HasTIFF_TRUE,;t t
 s,@HasTIFF_FALSE@,$HasTIFF_FALSE,;t t
 s,@LIB_TIFF@,$LIB_TIFF,;t t
-s,@HasHDF_TRUE@,$HasHDF_TRUE,;t t
-s,@HasHDF_FALSE@,$HasHDF_FALSE,;t t
-s,@LIB_HDF@,$LIB_HDF,;t t
 s,@HasJBIG_TRUE@,$HasJBIG_TRUE,;t t
 s,@HasJBIG_FALSE@,$HasJBIG_FALSE,;t t
 s,@LIB_JBIG@,$LIB_JBIG,;t t
@@ -33949,12 +33552,12 @@ then
 fi
 echo "Ghostscript fonts --with-gs-font-dir=$with_gs_font_dir    $result_ghostscript_font_dir"
 echo "Ghostscript lib   --with-gslib=$with_gslib       	$have_gslib"
-echo "HDF               --with-hdf=$with_hdf          	$have_hdf"
+# echo "HDF               --with-hdf=$with_hdf          	$have_hdf"
 echo "JBIG              --with-jbig=$with_jbig        	$have_jbig"
 echo "JPEG v1           --with-jpeg=$with_jpeg        	$have_jpeg"
 echo "JPEG v2           --with-jp2=$with_jp2          	$have_jp2"
 echo "LCMS              --with-lcms=$with_lcms        	$have_lcms"
-echo "MPEG v2           --with-mpeg2=$with_mpeg2      	$have_mpeg2"
+# echo "MPEG v2           --with-mpeg2=$with_mpeg2      	$have_mpeg2"
 echo "Magick++          --with-magick-plus-plus=$with_magick_plus_plus 	$have_magick_plus_plus"
 echo "PERL              --with-perl=$with_perl            	$have_perl"
 echo "PNG               --with-png=$with_png          	$have_png"

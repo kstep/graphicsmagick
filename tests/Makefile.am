@@ -74,12 +74,6 @@ else
 FPX=
 endif
 
-if HasHDF
-HDF=HDF
-else
-HDF=
-endif
-
 if HasJBIG
 JBIG=JBIG
 else
@@ -135,7 +129,6 @@ CHECK_BLOB_FORMATS = \
 	GIF \
 	GIF87 \
 	GRAY \
-	$(HDF) \
 	$(JBIG) \
 	$(JPEG) \
 	$(JP2) \
@@ -191,7 +184,6 @@ CHECK_FILE_FORMATS = \
 	$(FPX) \
 	GIF \
 	GRAY \
-	$(HDF) \
 	ICB \
 	$(JBIG) \
 	$(JPEG) \

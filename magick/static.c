@@ -55,6 +55,7 @@
 */
 #include "studio.h"
 #include "module.h"
+#include "static.h"
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -134,7 +135,6 @@ MagickExport void RegisterStaticModules(void)
   RegisterGIFImage();
   RegisterGRAYImage();
   RegisterGRADIENTImage();
-  RegisterHDFImage();
   RegisterHISTOGRAMImage();
   RegisterHTMLImage();
   RegisterICONImage();

@@ -198,7 +198,7 @@ then
 fi
 
 # Enable build using delegate libraries built in subdirectories rather than installed
-# delegate libraries (bzlib fpx hdf jasper jbig jpeg lcms mpeg2 png tiff ttf wmf xml zlib)
+# delegate libraries (bzlib fpx jasper jbig jpeg lcms png tiff ttf wmf xml zlib)
 AC_ARG_ENABLE(delegate-build,
 	      [  --enable-delegate-build enable using delegate libs in subdirectories
                           (default disabled)],
@@ -373,11 +373,11 @@ AC_ARG_WITH(gslib,
 	      [with_gslib=$withval],
 	      [with_gslib='yes'])
 
-# Enable HDF.
-AC_ARG_WITH(hdf,
-	      [  --with-hdf              enable HDF support],
-	      [with_hdf=$withval],
-	      [with_hdf='no'])
+# # Enable HDF.
+# AC_ARG_WITH(hdf,
+# 	      [  --with-hdf              enable HDF support],
+# 	      [with_hdf=$withval],
+# 	      [with_hdf='no'])
 
 # Disable JBIG.
 AC_ARG_WITH(jbig,
@@ -403,11 +403,11 @@ AC_ARG_WITH(lcms,
 	      [with_lcms=$withval],
 	      [with_lcms='yes'])
 
-# Disable MPEG.
-AC_ARG_WITH(mpeg2,
-	      [  --without-mpeg2         disable MPEG support],
-	      [with_mpeg2=$withval],
-	      [with_mpeg2='yes'])
+# # Disable MPEG.
+# AC_ARG_WITH(mpeg2,
+# 	      [  --without-mpeg2         disable MPEG support],
+# 	      [with_mpeg2=$withval],
+# 	      [with_mpeg2='yes'])
 
 # Disable PNG.
 AC_ARG_WITH(png,
@@ -661,7 +661,7 @@ then
   # Most delegates have includes in the same directory as the library, but not all ...
   #
   # Includes
-  for dir in bzlib fpx hdf/hdf/src jasper jbig/libjbig jpeg lcms lcms/src mpeg2/include png tiff/libtiff ttf/include wmf/include xml zlib
+  for dir in bzlib fpx jasper jbig/libjbig jpeg lcms lcms/src png tiff/libtiff ttf/include wmf/include xml zlib
   do
     if test -d "$builddir/$dir"
     then
@@ -675,7 +675,7 @@ then
   done
 
   # Libraries
-  for dir in bzlib fpx/obj hdf/hdf/src jasper jbig/libjbig jpeg lcms lcms/src png mpeg2/libmpeg2 tiff/libtiff ttf/objs wmf/src xml zlib
+  for dir in bzlib fpx/obj jasper jbig/libjbig jpeg lcms lcms/src png tiff/libtiff ttf/objs wmf/src xml zlib
   do
     if test -d "$builddir/$dir"
     then
@@ -1222,39 +1222,39 @@ fi
 AM_CONDITIONAL(HasGS, test "$have_gslib" = 'yes')
 AC_SUBST(LIB_GS)
 
-#
-# Check for MPEG2 library
-#
-have_mpeg2='no'
-LIB_MPEG2=''
-if test "$with_mpeg2" != 'no'
-then
-    AC_MSG_CHECKING(for MPEG version 2 support )
-    AC_MSG_RESULT()
-    failed=0;
-    passed=0;
-    AC_CHECK_HEADER(mpeg2dec/mpeg2.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
-    AC_CHECK_LIB(mpeg2,mpeg2_decode_data,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
-    AC_MSG_CHECKING(if MPEG version 2 support package is complete)
-    if test $passed -gt 0
-    then
-    if test $failed -gt 0
-    then
-	AC_MSG_RESULT(no -- some components failed test)
-	have_mpeg2='no (failed tests)'
-    else
-	LIB_MPEG2='-lmpeg2'
-	LIBS="$LIB_MPEG2 $LIBS"
-	AC_DEFINE(HasMPEG2,,Define if you have MPEG2 library)
-	AC_MSG_RESULT(yes)
-	have_mpeg2='yes'
-    fi
-    else
-    AC_MSG_RESULT(no)
-    fi
-fi
-AM_CONDITIONAL(HasMPEG2, test "$have_mpeg2" = 'yes')
-AC_SUBST(LIB_MPEG2)
+# #
+# # Check for MPEG2 library
+# #
+# have_mpeg2='no'
+# LIB_MPEG2=''
+# if test "$with_mpeg2" != 'no'
+# then
+#     AC_MSG_CHECKING(for MPEG version 2 support )
+#     AC_MSG_RESULT()
+#     failed=0;
+#     passed=0;
+#     AC_CHECK_HEADER(mpeg2dec/mpeg2.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
+#     AC_CHECK_LIB(mpeg2,mpeg2_decode_data,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
+#     AC_MSG_CHECKING(if MPEG version 2 support package is complete)
+#     if test $passed -gt 0
+#     then
+#     if test $failed -gt 0
+#     then
+# 	AC_MSG_RESULT(no -- some components failed test)
+# 	have_mpeg2='no (failed tests)'
+#     else
+# 	LIB_MPEG2='-lmpeg2'
+# 	LIBS="$LIB_MPEG2 $LIBS"
+# 	AC_DEFINE(HasMPEG2,,Define if you have MPEG2 library)
+# 	AC_MSG_RESULT(yes)
+# 	have_mpeg2='yes'
+#     fi
+#     else
+#     AC_MSG_RESULT(no)
+#     fi
+# fi
+# AM_CONDITIONAL(HasMPEG2, test "$have_mpeg2" = 'yes')
+# AC_SUBST(LIB_MPEG2)
 
 #
 # Check for TTF
@@ -1365,45 +1365,45 @@ fi
 AM_CONDITIONAL(HasTIFF, test "$have_tiff" = 'yes')
 AC_SUBST(LIB_TIFF)
 
-#
-# Check for HDF
-#
-have_hdf='no'
-LIB_HDF=''
-if test "$with_hdf" != 'no'
-then
-    AC_MSG_CHECKING(for HDF components )
-    AC_MSG_RESULT()
-    failed=0;
-    passed=0;
-    AC_CHECK_HEADERS(hdf.h hdf/hdf.h)
-    if test "$ac_cv_header_hdf_h" = 'yes' -o "$ac_cv_header_hdf_hdf_h" = 'yes'
-    then
-        passed=`expr $passed + 1`
-    else
-        failed=`expr $failed + 1`
-    fi
-    AC_CHECK_LIB(df,DFANputlabel,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
-    AC_MSG_CHECKING(if HDF package is complete)
-    if test $passed -gt 0
-    then
-    if test $failed -gt 0
-    then
-        AC_MSG_RESULT(no -- some components failed test)
-        have_hdf='no (failed tests)'
-    else
-        LIB_HDF='-ldf'
-        LIBS="$LIB_HDF $LIBS"
-        AC_DEFINE(HasHDF,,Define if you have HDF library)
-        AC_MSG_RESULT(yes)
-        have_hdf='yes'
-    fi
-    else
-    AC_MSG_RESULT(no)
-    fi
-fi
-AM_CONDITIONAL(HasHDF, test "$have_hdf" = 'yes')
-AC_SUBST(LIB_HDF)
+# #
+# # Check for HDF
+# #
+# have_hdf='no'
+# LIB_HDF=''
+# if test "$with_hdf" != 'no'
+# then
+#     AC_MSG_CHECKING(for HDF components )
+#     AC_MSG_RESULT()
+#     failed=0;
+#     passed=0;
+#     AC_CHECK_HEADERS(hdf.h hdf/hdf.h)
+#     if test "$ac_cv_header_hdf_h" = 'yes' -o "$ac_cv_header_hdf_hdf_h" = 'yes'
+#     then
+#         passed=`expr $passed + 1`
+#     else
+#         failed=`expr $failed + 1`
+#     fi
+#     AC_CHECK_LIB(df,DFANputlabel,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
+#     AC_MSG_CHECKING(if HDF package is complete)
+#     if test $passed -gt 0
+#     then
+#     if test $failed -gt 0
+#     then
+#         AC_MSG_RESULT(no -- some components failed test)
+#         have_hdf='no (failed tests)'
+#     else
+#         LIB_HDF='-ldf'
+#         LIBS="$LIB_HDF $LIBS"
+#         AC_DEFINE(HasHDF,,Define if you have HDF library)
+#         AC_MSG_RESULT(yes)
+#         have_hdf='yes'
+#     fi
+#     else
+#     AC_MSG_RESULT(no)
+#     fi
+# fi
+# AM_CONDITIONAL(HasHDF, test "$have_hdf" = 'yes')
+# AC_SUBST(LIB_HDF)
 
 #
 # Check for JBIG
@@ -2004,12 +2004,12 @@ if test "$have_bzlib"  = 'yes' ; then DELEGATES="$DELEGATES bzlib"  ; fi
 if test "$have_ralcgm" = 'yes' ; then DELEGATES="$DELEGATES cgm"  ; fi
 if test "$have_fpx"    = 'yes' ; then DELEGATES="$DELEGATES fpx"  ; fi
 if test "$have_hp2xx"  = 'yes' ; then DELEGATES="$DELEGATES hpgl"  ; fi
-if test "$have_hdf"    = 'yes' ; then DELEGATES="$DELEGATES hdf"  ; fi
+# if test "$have_hdf"    = 'yes' ; then DELEGATES="$DELEGATES hdf"  ; fi
 if test "$have_jbig"   = 'yes' ; then DELEGATES="$DELEGATES jbig" ; fi
 if test "$have_jp2"   = 'yes' ; then DELEGATES="$DELEGATES jp2" ; fi
 if test "$have_jpeg"   = 'yes' ; then DELEGATES="$DELEGATES jpeg" ; fi
 if test "$have_lcms"    = 'yes' ; then DELEGATES="$DELEGATES lcms"  ; fi
-if test "$have_mpeg2"   = 'yes' ; then DELEGATES="$DELEGATES mpeg2" ; fi
+# if test "$have_mpeg2"   = 'yes' ; then DELEGATES="$DELEGATES mpeg2" ; fi
 if test "$have_mpeg2decode" = 'yes' && test "$have_mpeg2encode"  = 'yes' ; then DELEGATES="$DELEGATES mpeg" ; fi
 if test "$have_png"    = 'yes' ; then DELEGATES="$DELEGATES png"  ; fi
 
@@ -2063,7 +2063,7 @@ if test "$with_modules" != 'no'
 then
   MAGICK_DEP_LIBS="$LIB_LCMS $LIB_TTF $LIB_GS $LIB_XEXT $LIB_X11 $LIB_BZLIB $LIB_ZLIB $LIB_GDI32 $LIB_THREAD $LIB_LF $LIB_MATH $LIB_CCMALLOC"
 else
-  MAGICK_DEP_LIBS="$LIB_JBIG $LIB_HDF $LIB_LCMS $LIB_MPEG2 $LIB_TIFF $LIB_TTF $LIB_JP2 $LIB_JPEG $LIB_GS $LIB_PNG $LIB_FPX $LIB_WMF $LIB_DPS $LIB_XEXT $LIB_X11 $LIB_BZLIB $LIB_XML $LIB_ZLIB $LIB_GDI32 $LIB_THREAD $LIB_LF $LIB_MATH $LIB_CCMALLOC"
+  MAGICK_DEP_LIBS="$LIB_JBIG $LIB_LCMS $LIB_TIFF $LIB_TTF $LIB_JP2 $LIB_JPEG $LIB_GS $LIB_PNG $LIB_FPX $LIB_WMF $LIB_DPS $LIB_XEXT $LIB_X11 $LIB_BZLIB $LIB_XML $LIB_ZLIB $LIB_GDI32 $LIB_THREAD $LIB_LF $LIB_MATH $LIB_CCMALLOC"
 fi
 AC_SUBST(MAGICK_DEP_LIBS)
 
@@ -2128,12 +2128,12 @@ then
 fi
 echo "Ghostscript fonts --with-gs-font-dir=$with_gs_font_dir    $result_ghostscript_font_dir"
 echo "Ghostscript lib   --with-gslib=$with_gslib       	$have_gslib"
-echo "HDF               --with-hdf=$with_hdf          	$have_hdf"
+# echo "HDF               --with-hdf=$with_hdf          	$have_hdf"
 echo "JBIG              --with-jbig=$with_jbig        	$have_jbig"
 echo "JPEG v1           --with-jpeg=$with_jpeg        	$have_jpeg"
 echo "JPEG v2           --with-jp2=$with_jp2          	$have_jp2"
 echo "LCMS              --with-lcms=$with_lcms        	$have_lcms"
-echo "MPEG v2           --with-mpeg2=$with_mpeg2      	$have_mpeg2"
+# echo "MPEG v2           --with-mpeg2=$with_mpeg2      	$have_mpeg2"
 echo "Magick++          --with-magick-plus-plus=$with_magick_plus_plus 	$have_magick_plus_plus"
 echo "PERL              --with-perl=$with_perl            	$have_perl"
 echo "PNG               --with-png=$with_png          	$have_png"
