@@ -177,7 +177,7 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
     threshold;
 
   Image
-		*images,
+    *images,
     *montage_image,
     *preview_image;
 
@@ -556,7 +556,7 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
   }
   DestroyImageInfo(clone_info);
   if (images == (Image *) NULL)
-		return(False);
+    return(False);
   /*
     Create the montage.
   */
