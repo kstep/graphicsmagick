@@ -49,6 +49,7 @@
 #include "magick/magick.h"
 #include "magick/monitor.h"
 #include "magick/profile.h"
+#include "magick/quantize.h"
 #include "magick/resize.h"
 #include "magick/tempfile.h"
 #include "magick/utility.h"
@@ -411,125 +412,52 @@ static tsize_t TIFFWriteBlob(thandle_t image,tdata_t data,tsize_t size)
 }
 
 /*
-  Get a TIFF scanline, returning scanline data in big-endian order.
+  Convert TIFF data from libtiff "native" format to byte-parsable big endian
 */
-static int ReadScanline(TIFF *tiff, tdata_t scanline, uint32 row, tsample_t sample)
-{
-  int
-    status;
-
-  status = TIFFReadScanline(tiff, scanline, row, sample);
-
 #if !defined(WORDS_BIGENDIAN)
-  /*
-    On little-endian machines, the scanline must be converted to
-    big-endian format for parsing.  Libtiff gives us something we
-    don't want for "free".
-  */
-  if (-1 != status)
+void SwabDataToBigEndian(uint16 bits_per_sample, tdata_t data, tsize_t size)
+{
+  if (bits_per_sample == 64U)
     {
-      uint16
-        bits_per_sample;
-      
-    tsize_t
-      scanline_size;
-    
-    (void) TIFFGetField(tiff,TIFFTAG_BITSPERSAMPLE,&bits_per_sample);
-    scanline_size=TIFFScanlineSize(tiff);
-    if (bits_per_sample >= 32)
-      {
-        TIFFSwabArrayOfLong((uint32*) scanline,
-                            (scanline_size+(sizeof(uint32)-1))/sizeof(uint32));
-      }
-    else
-      if (bits_per_sample >= 16)
-      {
-        TIFFSwabArrayOfShort((uint16*) scanline,
-                             (scanline_size+(sizeof(uint16)-1))/sizeof(uint16));
-      }
+      TIFFSwabArrayOfDouble((double*) data,
+                            (size+sizeof(double)-1)/sizeof(double));
     }
-#endif /* !defined(WORDS_BIGENDIAN) */
-  return (status);
+  else if (bits_per_sample == 32U)
+    {
+      TIFFSwabArrayOfLong((uint32*) data,
+                          (size+sizeof(uint32)-1)/sizeof(uint32));
+    }
+  else if (bits_per_sample == 16U)
+    {
+      TIFFSwabArrayOfShort((uint16*) data,
+                           (size+sizeof(uint16)-1)/sizeof(uint16));
+    }
 }
+#endif
 
 /*
-  Get a TIFF strip, returning strip data in big-endian order.  Returns number
-  of bytes read, or -1 on error.
+  Convert TIFF data from byte-parsable big endian to libtiff "native" format.
 */
-static tsize_t ReadStrip(TIFF *tiff, tstrip_t strip_id, tdata_t strip_data)
-{
-  tsize_t
-    strip_size;
-
-  strip_size=TIFFStripSize(tiff);
-  strip_size=TIFFReadEncodedStrip(tiff,strip_id,strip_data, strip_size);
 #if !defined(WORDS_BIGENDIAN)
-  /*
-    On little-endian machines, the scanline must be converted to
-    big-endian format for parsing.  Libtiff gives us something we
-    don't want for "free".
-  */
-  if (-1 != strip_size)
-    {
-      uint16
-        bits_per_sample;
-    
-      (void) TIFFGetField(tiff,TIFFTAG_BITSPERSAMPLE,&bits_per_sample);
-      if (bits_per_sample >= 32)
-        {
-          TIFFSwabArrayOfLong((uint32*) strip_data,
-                              (strip_size+(sizeof(uint32)-1))/sizeof(uint32));
-        }
-      else
-        if (bits_per_sample >= 16)
-          {
-            TIFFSwabArrayOfShort((uint16*) strip_data,
-                                 (strip_size+(sizeof(uint16)-1))/sizeof(uint16));
-          }
-    }
-#endif /* !defined(WORDS_BIGENDIAN) */
-  return (strip_size);
-}
-
-
-/*
-  Get a TIFF tile, returning tile data in big-endian order. Returns
-  number of bytes read, or -1 on error.
-*/
-static tsize_t ReadTile(TIFF *tiff, tdata_t tile_data, uint32 x, uint32 y, uint32 z, tsample_t sample)
+void SwabDataToNativeEndian(uint16 bits_per_sample, tdata_t data, tsize_t size)
 {
-  tsize_t
-    tile_size;
-
-  tile_size=TIFFReadTile(tiff, tile_data, x, y, z, sample);
-
-#if !defined(WORDS_BIGENDIAN)
-  /*
-    On little-endian machines, the scanline must be converted to
-    big-endian format for parsing.  Libtiff gives us something we
-    don't want for "free".
-  */
-  if (-1 != tile_size)
+  if (bits_per_sample == 64)
     {
-      uint16
-        bits_per_sample;
-
-      (void) TIFFGetField(tiff,TIFFTAG_BITSPERSAMPLE,&bits_per_sample);
-      if (bits_per_sample >= 32)
-        {
-          TIFFSwabArrayOfLong((uint32*) tile_data,
-                              (tile_size+(sizeof(uint32)-1))/sizeof(uint32));
-        }
-      else
-        if (bits_per_sample >= 16)
-          {
-            TIFFSwabArrayOfShort((uint16*) tile_data,
-                                 (tile_size+(sizeof(uint16)-1))/sizeof(uint16));
-          }
+      TIFFSwabArrayOfDouble((double*) data,
+                            (size+sizeof(double)-1)/sizeof(double));
     }
-#endif /* !defined(WORDS_BIGENDIAN) */
-  return tile_size;
+  else if (bits_per_sample == 32)
+    {
+      TIFFSwabArrayOfLong((uint32*) data,
+                          (size+sizeof(uint32)-1)/sizeof(uint32));
+    }
+  else if (bits_per_sample == 16)
+    {
+      TIFFSwabArrayOfShort((uint16*) data,
+                           (size+sizeof(uint16)-1)/sizeof(uint16));
+    }
 }
+#endif
 
 static MagickPassFail InitializeImageColormap(Image *image, TIFF *tiff)
 {
@@ -1253,8 +1181,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
 
             if (logging)
               (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                                    "Using scanline read method with %u bits per sample",
-                                    bits_per_sample);
+                                    "Using scanline %s read method with %u bits per sample",
+                                    PhotometricTagToString(photometric),bits_per_sample);
             /*
               Allocate memory for one scanline.
             */
@@ -1292,11 +1220,14 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                     /*
                       Obtain a scanline
                     */
-                    if (ReadScanline(tiff,(char *) scanline,(uint32) y,sample) == -1)
+                    if (TIFFReadScanline(tiff,(char *) scanline,(uint32) y,sample) == -1)
                       {
                         status=MagickFail;
                         break;
                       }
+#if !defined(WORDS_BIGENDIAN)
+                    SwabDataToBigEndian(bits_per_sample,scanline,scanline_size);
+#endif
                     /*
                       Determine quantum parse method.
                     */
@@ -1405,10 +1336,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             /*
               Compute per-row stride.
             */
-            if (planar_config == PLANARCONFIG_SEPARATE)
-              stride=(image->columns*bits_per_sample+7)/8;
-            else
-              stride=(image->columns*samples_per_pixel*bits_per_sample+7)/8;
+            stride=TIFFVStripSize(tiff,1);
             /*
               Process each plane
             */
@@ -1443,11 +1371,15 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                         /*
                           Obtain a strip
                         */
-                        if ((strip_size=ReadStrip(tiff,strip_id,(char *) strip)) == -1)
+                        if (((strip_size=TIFFReadEncodedStrip(tiff,strip_id,strip,
+                                                              strip_size_max)) == -1))
                           {
                             status=MagickFail;
                             break;
                           }
+#if !defined(WORDS_BIGENDIAN)
+                        SwabDataToBigEndian(bits_per_sample,strip,strip_size);
+#endif
                         rows_remaining=rows_per_strip;
                         if (y+rows_per_strip > image->rows)
                           rows_remaining=(rows_per_strip-(y+rows_per_strip-image->rows));
@@ -1510,11 +1442,9 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
               tile_rows;
 
             tsize_t
+              stride,
               tile_size,
               tile_size_max;
-
-            unsigned long
-              stride;
 
             int
               max_sample,
@@ -1529,8 +1459,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         
             if (logging)
               (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                                    "Using tiled read method with %u bits per sample",
-                                    bits_per_sample);
+                                    "Using tiled %s read method with %u bits per sample",
+                                    PhotometricTagToString(photometric), bits_per_sample);
             /*
               Obtain tile geometry
             */
@@ -1584,10 +1514,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             /*
               Compute per-row stride.
             */
-            if (planar_config == PLANARCONFIG_SEPARATE)
-              stride=(tile_columns*bits_per_sample+7)/8;
-            else
-              stride=(tile_columns*samples_per_pixel*bits_per_sample+7)/8;
+            stride=TIFFTileRowSize(tiff);
+
             for (y=0; y < image->rows; y+=tile_rows)
               {
                 for (x=0; x < image->columns; x+=tile_columns)
@@ -1631,11 +1559,14 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                         /*
                           Read a tile.
                         */
-                        if ((tile_size=ReadTile(tiff,tile,x,y,0,sample)) == -1)
+                        if ((tile_size=TIFFReadTile(tiff,tile,x,y,0,sample)) == -1)
                           {
                             status=MagickFail;
                             break;
                           }
+#if !defined(WORDS_BIGENDIAN)
+                        SwabDataToBigEndian(bits_per_sample,tile,tile_size);
+#endif
                         p=tile;
                         for (yy=y; yy < (long) y+tile_set_rows; yy++)
                           {
@@ -2200,12 +2131,18 @@ static MagickPassFail WritePTIFImage(const ImageInfo *image_info,Image *image)
   ImageInfo
     *clone_info;
 
+  FilterTypes
+    filter;
+
   unsigned int
     status;
 
   /*
     Create pyramid-encoded TIFF image.
   */
+  filter=TriangleFilter;
+  if (image->is_monochrome)
+    filter=PointFilter;
   pyramid_image=CloneImage(image,0,0,True,&image->exception);
   if (pyramid_image == (Image *) NULL)
     ThrowWriterException2(FileOpenError,image->exception.reason,image);
@@ -2215,6 +2152,10 @@ static MagickPassFail WritePTIFImage(const ImageInfo *image_info,Image *image)
       pyramid_image->rows/2,TriangleFilter,1.0,&image->exception);
     if (pyramid_image->next == (Image *) NULL)
       ThrowWriterException2(FileOpenError,image->exception.reason,image);
+    if ((!image->is_monochrome) && (image->storage_class == PseudoClass))
+      (void) MapImage(pyramid_image->next,image,False);
+    pyramid_image->next->x_resolution=pyramid_image->x_resolution/2;
+    pyramid_image->next->y_resolution=pyramid_image->y_resolution/2;
     pyramid_image->next->previous=pyramid_image;
     pyramid_image=pyramid_image->next;
   } while ((pyramid_image->columns > 64) && (pyramid_image->rows > 64));
@@ -2224,6 +2165,7 @@ static MagickPassFail WritePTIFImage(const ImageInfo *image_info,Image *image)
     Write pyramid-encoded TIFF image.
   */
   clone_info=CloneImageInfo(image_info);
+  /* (void) AddDefinitions(clone_info,"tiff:tile",&image->exception); */
   clone_info->adjoin=True;
   status=WriteTIFFImage(clone_info,pyramid_image);
   DestroyImageList(pyramid_image);
@@ -2337,39 +2279,6 @@ static void WriteNewsProfile(TIFF *tiff,
   MagickFreeMemory(profile);
 }
 
-static int32 WriteScanline(TIFF *tiff,tdata_t scanline,unsigned long row,
-  tsample_t sample)
-{
-#if !defined(WORDS_BIGENDIAN)
-  {
-    /*
-      On little-endian machines, the scanline must be converted to
-      little-endian format for libtiff.
-    */
-
-    uint16
-      bits_per_sample;
-
-    tsize_t
-      scanline_size;
-    
-    (void) TIFFGetField(tiff,TIFFTAG_BITSPERSAMPLE,&bits_per_sample);
-    scanline_size=TIFFScanlineSize(tiff);
-    if (bits_per_sample >= 32)
-      {
-        TIFFSwabArrayOfLong((uint32*) scanline,
-                            (TIFFScanlineSize(tiff)+(sizeof(uint32)-1))/sizeof(uint32));
-      }
-    else if (bits_per_sample >= 16)
-      {
-        TIFFSwabArrayOfShort((uint16*) scanline,
-                             (TIFFScanlineSize(tiff)+(sizeof(uint16)-1))/sizeof(uint16));
-      }
-  }
-#endif /* !defined(WORDS_BIGENDIAN) */
-  return(TIFFWriteScanline(tiff,scanline,(uint32) row,sample));
-}
-
 #if !defined(TIFFDefaultStripSize)
 #define TIFFDefaultStripSize(tiff,request)  ((8*1024)/TIFFScanlineSize(tiff))
 #endif
@@ -2382,6 +2291,7 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
     *attribute;
 
   unsigned int
+    x,
     y;
 
   register unsigned int
@@ -2393,6 +2303,7 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
   uint16
     bits_per_sample,
     compress_tag,
+    fill_order,
     photometric,
     planar_config,
     samples_per_pixel;
@@ -2470,6 +2381,11 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
       depth=image->depth;
       bits_per_sample=8;
       method=ScanLineMethod;
+      if ((AccessDefinition(image_info,"tiff","tile")) ||
+          (AccessDefinition(image_info,"tiff","tile-geometry")) ||
+          (AccessDefinition(image_info,"tiff","tile-width")) ||
+          (AccessDefinition(image_info,"tiff","tile-height")))
+        method=TiledMethod;
       compress_tag=COMPRESSION_NONE;
       switch (image->compression)
         {
@@ -2688,24 +2604,6 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
                                     "User override (samples-per-pixel): %u samples per pixel (was %u)",
                                     (unsigned int) samples_per_pixel, old_value);
           }
-
-#if 0
-        /*
-          Tiled TIFF options.
-        */
-        if (PHOTOMETRIC_RGB == photometric)
-          {
-            uint32
-              tile_height=0,
-              tile_width=0;
-
-            TIFFDefaultTileSize(tiff,&tile_width,&tile_height);
-
-            (void) TIFFSetField(tiff,TIFFTAG_TILEWIDTH,tile_width);
-            (void) TIFFSetField(tiff,TIFFTAG_TILELENGTH,tile_height);
-          
-          }
-#endif
       }
 
       (void) TIFFSetField(tiff,TIFFTAG_SAMPLESPERPIXEL,samples_per_pixel);
@@ -2721,16 +2619,19 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
       (void) TIFFSetField(tiff,TIFFTAG_PHOTOMETRIC,photometric);
       (void) TIFFSetField(tiff,TIFFTAG_COMPRESSION,compress_tag);
 
+      /*
+        Determine bit ordering in a byte.
+      */
       switch (image_info->endian)
         {
         case LSBEndian:
-          (void) TIFFSetField(tiff,TIFFTAG_FILLORDER,FILLORDER_LSB2MSB);
+          fill_order=FILLORDER_LSB2MSB;
           if (logging)
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                                   "Using LSB2MSB bit fillorder");
           break;
         case MSBEndian:
-          (void) TIFFSetField(tiff,TIFFTAG_FILLORDER,FILLORDER_MSB2LSB);
+          fill_order=FILLORDER_MSB2LSB;
           if (logging)
             (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                                   "Using MSB2LSB bit fillorder");
@@ -2738,9 +2639,12 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
         default:
         case UndefinedEndian:
           {
+            (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_FILLORDER,&fill_order);
             break;
           }
         }
+      (void) TIFFSetField(tiff,TIFFTAG_FILLORDER,fill_order);
+
       (void) TIFFSetField(tiff,TIFFTAG_ORIENTATION,ORIENTATION_TOPLEFT);
       /*
         Determine planar configuration.
@@ -2935,6 +2839,42 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
       if (attribute != (const ImageAttribute *) NULL)
         (void) TIFFSetField(tiff,TIFFTAG_IMAGEDESCRIPTION,attribute->value);
 
+      if (photometric == PHOTOMETRIC_PALETTE)
+        {
+          uint16
+            *blue,
+            *green,
+            *red;
+
+          /*
+            Initialize TIFF colormap.
+          */
+          blue=MagickAllocateMemory(unsigned short *,
+                                    65536L*sizeof(unsigned short));
+          green=MagickAllocateMemory(unsigned short *,
+                                     65536L*sizeof(unsigned short));
+          red=MagickAllocateMemory(unsigned short *,
+                                   65536L*sizeof(unsigned short));
+          if ((blue == (unsigned short *) NULL) ||
+              (green == (unsigned short *) NULL) ||
+              (red == (unsigned short *) NULL))
+            ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,
+                                 image);
+          (void) memset(red,0,65536L*sizeof(unsigned short));
+          (void) memset(green,0,65536L*sizeof(unsigned short));
+          (void) memset(blue,0,65536L*sizeof(unsigned short));
+          for (i=0; i < image->colors; i++)
+            {
+              red[i]=ScaleQuantumToShort(image->colormap[i].red);
+              green[i]=ScaleQuantumToShort(image->colormap[i].green);
+              blue[i]=ScaleQuantumToShort(image->colormap[i].blue);
+            }
+          (void) TIFFSetField(tiff,TIFFTAG_COLORMAP,red,green,blue);
+          MagickFreeMemory(red);
+          MagickFreeMemory(green);
+          MagickFreeMemory(blue);
+        }
+
       switch (method)
         {
         default:
@@ -2962,44 +2902,8 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
             
             if (logging)
               (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                                    "Using scanline write method with %u bits per sample",
-                                    bits_per_sample);
-
-            if (photometric == PHOTOMETRIC_PALETTE)
-              {
-                uint16
-                  *blue,
-                  *green,
-                  *red;
-
-                /*
-                  Initialize TIFF colormap.
-                */
-                blue=MagickAllocateMemory(unsigned short *,
-                                          65536L*sizeof(unsigned short));
-                green=MagickAllocateMemory(unsigned short *,
-                                           65536L*sizeof(unsigned short));
-                red=MagickAllocateMemory(unsigned short *,
-                                         65536L*sizeof(unsigned short));
-                if ((blue == (unsigned short *) NULL) ||
-                    (green == (unsigned short *) NULL) ||
-                    (red == (unsigned short *) NULL))
-                  ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,
-                                       image);
-                (void) memset(red,0,65536L*sizeof(unsigned short));
-                (void) memset(green,0,65536L*sizeof(unsigned short));
-                (void) memset(blue,0,65536L*sizeof(unsigned short));
-                for (i=0; i < image->colors; i++)
-                  {
-                    red[i]=ScaleQuantumToShort(image->colormap[i].red);
-                    green[i]=ScaleQuantumToShort(image->colormap[i].green);
-                    blue[i]=ScaleQuantumToShort(image->colormap[i].blue);
-                  }
-                (void) TIFFSetField(tiff,TIFFTAG_COLORMAP,red,green,blue);
-                MagickFreeMemory(red);
-                MagickFreeMemory(green);
-                MagickFreeMemory(blue);
-              }
+                                    "Using scanline %s write method with %u bits per sample",
+                                    PhotometricTagToString(photometric),bits_per_sample);
             /*
               Allocate memory for one scanline.
             */
@@ -3052,7 +2956,10 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
                     /*
                       Write scanline.
                     */
-                    if (WriteScanline(tiff,(char *) scanline,y,sample) < 0)
+#if !defined(WORDS_BIGENDIAN)
+                    SwabDataToNativeEndian(bits_per_sample,scanline,scanline_size);
+#endif
+                    if (TIFFWriteScanline(tiff, scanline,y,sample) < 0)
                       {
                         status=MagickFail;
                         break;
@@ -3071,9 +2978,214 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
             MagickFreeMemory(scanline);
             break;
           }
-          case TiledMethod:
+        case TiledMethod:
           {
-            /* FIXME - implement */
+            /*
+              Write TIFF image as tiles
+            */
+            unsigned char
+              *tile;
+
+            uint32
+              tile_columns,
+              tile_rows;
+
+            tsize_t
+              stride,
+              tile_size,
+              tile_size_max;
+
+            int
+              max_sample,
+              quantum_samples,
+              sample;
+
+            QuantumType
+              quantum_type;
+
+            unsigned long
+              tile_total_pixels;
+        
+            if (logging)
+              (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                    "Using tiled %s write method with %u bits per sample",
+                                    PhotometricTagToString(photometric),bits_per_sample);
+
+            /*
+              Determine tile size
+            */
+            {
+              const char *
+                value;
+
+              tile_columns=0;
+              tile_rows=0;
+              
+              /*
+                Enable tiled output (with default size, or specified separately)
+                -define tiff:tile
+                
+                Use an exact tile size in rows & columns
+                -define tiff:tile-geometry=128x128
+                
+                Use a specific tile width (pixels)
+                -define tiff:tile-width=128
+                
+                Use a specific tile height (pixels)
+                -define tiff:tile-height=128
+              */
+              if ((value=AccessDefinition(image_info,"tiff","tile-geometry")))
+                {
+                  double
+                    width,
+                    height;
+
+                  if (GetMagickDimension(value,&width,&height) == 2)
+                    {
+                      tile_rows=(uint32) height;
+                      tile_columns=(uint32) width;
+                    }
+                }
+              if ((value=AccessDefinition(image_info,"tiff","tile-width")))
+                {
+                  tile_columns=atol(value);
+                }
+              if ((value=AccessDefinition(image_info,"tiff","tile-height")))
+                {
+                  tile_rows=atol(value);
+                }
+              
+              TIFFDefaultTileSize(tiff,&tile_columns,&tile_rows);
+            }
+
+            if (!TIFFSetField(tiff,TIFFTAG_TILEWIDTH,tile_columns))
+              status=MagickFail;
+            if (!TIFFSetField(tiff,TIFFTAG_TILELENGTH,tile_rows))
+              status=MagickFail;
+            /*
+              Obtain the maximum number of bytes required to contain a tile.
+            */
+            tile_size_max=TIFFTileSize(tiff);
+            /*
+              Compute the total number of pixels in one tile
+            */
+            tile_total_pixels=tile_columns*tile_rows;
+            if (logging)
+              {
+                (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                      "TIFF tile geometry %ux%u, %lu pixels",
+                                      (unsigned int)tile_columns,
+                                      (unsigned int)tile_rows,
+                                      tile_total_pixels);
+              }
+            /*
+              Allocate tile buffer
+            */
+            tile=MagickAllocateMemory(unsigned char *,(size_t) tile_size_max);
+            if (tile == (unsigned char *) NULL)
+              ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);            
+            /*
+              Prepare for separate/contiguous retrieval.
+            */
+            max_sample=1;
+            if (planar_config == PLANARCONFIG_SEPARATE)
+              {
+                if (QuantumTransferMode(image,photometric,PLANARCONFIG_CONTIG,
+                                        0,&quantum_type,&quantum_samples)
+                    == MagickPass)
+                  max_sample=quantum_samples;
+              }
+            /*
+              Obtain per-row stride.
+            */
+            stride=TIFFTileRowSize(tiff);
+
+            for (y=0; y < image->rows; y+=tile_rows)
+              {
+                for (x=0; x < image->columns; x+=tile_columns)
+                  {
+                    const PixelPacket
+                      *p;
+
+                    long
+                      tile_set_columns,
+                      tile_set_rows;
+
+                    /*
+                      Compute image region corresponding to tile.
+                    */
+                    if (x+tile_columns > image->columns)
+                      tile_set_columns=(tile_columns-(x+tile_columns-image->columns));
+                    else
+                      tile_set_columns=tile_columns;
+                    if (y+tile_rows > image->rows)
+                      tile_set_rows=(tile_rows-(y+tile_rows-image->rows));
+                    else
+                      tile_set_rows=tile_rows;
+                    /*
+                      Process each plane.
+                    */
+                    for (sample=0; sample < max_sample; sample++)
+                      {
+                        unsigned char
+                          *q;
+
+                        register long
+                          yy;
+
+                        /*
+                          Determine quantum parse method.
+                        */
+                        if (QuantumTransferMode(image,photometric,planar_config,
+                                                sample,&quantum_type,
+                                                &quantum_samples) == MagickFail)
+                          {
+                            status=MagickFail;
+                            break;
+                          }
+                        q=tile;
+                        for (yy=y; yy < (long) y+tile_set_rows; yy++)
+                          {
+                            /*
+                              Obtain pixel region corresponding to tile row.
+                            */
+                            p=AcquireImagePixels(image,x,yy,tile_set_columns,1,&image->exception);
+                            if (p == (const PixelPacket *) NULL)
+                              {
+                                status=MagickFail;
+                                break;
+                              }
+                            /*
+                              Export tile row
+                            */
+                            if (ExportImagePixelArea(image,quantum_type,bits_per_sample,
+                                                     q) == MagickFail)
+                              {
+                                status=MagickFail;
+                                break;
+                              }
+                            q += stride;
+                          } /* for yy */
+                        if (status == MagickFail)
+                          break;
+                        /*
+                          Write tile.
+                        */
+#if !defined(WORDS_BIGENDIAN)
+                        SwabDataToNativeEndian(bits_per_sample,tile,tile_size_max);
+#endif
+                        if ((tile_size=TIFFWriteTile(tiff,tile,x,y,0,sample)) < 0)
+                          {
+                            status=MagickFail;
+                          }
+                      } /* for sample */
+                    if (status == MagickFail)
+                      break;
+                  } /* for x */
+                if (status == MagickFail)
+                  break;
+              } /* for y */
+            MagickFreeMemory(tile);
             break;
           }
         }
