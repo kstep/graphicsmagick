@@ -2,6 +2,8 @@
 
 	* coders/png.c: Some grayscale PNG images and the
 	JNG alpha channel were decoded improperly at Q:32.
+	* magick/constitute.c (PopImagePixels): Changed many
+	instances of (Quantum) typecast to (unsigned char).
 
 2003-04-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
