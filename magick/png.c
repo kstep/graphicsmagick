@@ -2133,9 +2133,9 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
                 if(class == PseudoClass)
                   {
                     index=image->indexes[x];
-                    q->red=(Quantum) UpScale(image->colormap[index].red);
-                    q->green=(Quantum) UpScale(image->colormap[index].green);
-                    q->blue=(Quantum) UpScale(image->colormap[index].blue);
+                    q->red=image->colormap[index].red;
+                    q->green=image->colormap[index].green;
+                    q->blue=image->colormap[index].blue;
                     if (ping_info->color_type == PNG_COLOR_TYPE_PALETTE)
                       {
                         if (index < ping_info->num_trans)
