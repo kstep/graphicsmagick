@@ -12,7 +12,7 @@
  * IMAGE POWER JPEG-2000 PUBLIC LICENSE
  * ************************************
  * 
- * WHEREAS:
+ * GRANT:
  * 
  * Permission is hereby granted, free of charge, to any person (the "User")
  * obtaining a copy of this software and associated documentation, to deal
@@ -1271,7 +1271,7 @@ static int jpc_poc_putparms(jpc_ms_t *ms, jpc_cstate_t *cstate, jas_stream_t *ou
 		  ((cstate->numcomps > 256) ?
 		  jpc_putuint16(out, pchg->compnostart) :
 		  jpc_putuint8(out, pchg->compnostart)) ||
-		  jpc_putuint8(out, pchg->lyrnoend) ||
+		  jpc_putuint16(out, pchg->lyrnoend) ||
 		  jpc_putuint8(out, pchg->rlvlnoend) ||
 		  ((cstate->numcomps > 256) ?
 		  jpc_putuint16(out, pchg->compnoend) :

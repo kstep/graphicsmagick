@@ -12,7 +12,7 @@
  * IMAGE POWER JPEG-2000 PUBLIC LICENSE
  * ************************************
  * 
- * WHEREAS:
+ * GRANT:
  * 
  * Permission is hereby granted, free of charge, to any person (the "User")
  * obtaining a copy of this software and associated documentation, to deal
@@ -171,9 +171,13 @@ typedef struct {
 *
 \******************************************************************************/
 
+/* COD/COC parameters have been specified. */
 #define	JPC_CSET	0x0001
+/* QCD/QCC parameters have been specified. */
 #define	JPC_QSET	0x0002
+/* COD/COC parameters set from a COC marker segment. */
 #define	JPC_COC	0x0004
+/* QCD/QCC parameters set from a QCC marker segment. */
 #define	JPC_QCC	0x0008
 
 /******************************************************************************\

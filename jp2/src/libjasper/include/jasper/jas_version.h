@@ -12,7 +12,7 @@
  * IMAGE POWER JPEG-2000 PUBLIC LICENSE
  * ************************************
  * 
- * WHEREAS:
+ * GRANT:
  * 
  * Permission is hereby granted, free of charge, to any person (the "User")
  * obtaining a copy of this software and associated documentation, to deal
@@ -128,13 +128,13 @@ extern "C" {
 #if !defined(JAS_VERSION)
 /* The version information below should match that specified in
   the "configure.in" file! */
-#define	JAS_VERSION		"1.500.0"
+#define	JAS_VERSION		"1.500.4"
 #endif
 
 #define	JAS_COPYRIGHT \
 	"Copyright (c) 1999-2000 Image Power, Inc. and the University of\n" \
 	"  British Columbia.\n" \
-	"Copyright (c) 2001 Michael David Adams.\n" \
+	"Copyright (c) 2001-2002 Michael David Adams.\n" \
 	"All rights reserved.\n"
 
 #define	JAS_NOTES \
@@ -142,10 +142,22 @@ extern "C" {
 	"web sites/pages:\n" \
 	"    http://www.ece.ubc.ca/~mdadams/jasper\n" \
 	"    http://www.imagepower.com\n" \
-	"To be added to the JasPer mailing list, send an email to:\n" \
-	"    jasper-project-subscribe@yahoogroups.com\n" \
+	"To be added to the (moderated) JasPer software announcements\n" \
+	"mailing list, send an email to:\n" \
+	"    jasper-announce-subscribe@yahoogroups.com\n" \
+	"To be added to the (unmoderated) JasPer software discussion\n" \
+	"mailing list, send an email to:\n" \
+	"    jasper-discussion-subscribe@yahoogroups.com\n" \
 	"Please send any bug reports to:\n" \
 	"    mdadams@ieee.org\n"
+
+#define	JAS_JP2DISCLAIMER \
+	"Note: The JasPer software only partially implements the JPEG-2000\n" \
+	"JP2 file format.  More specifically, JasPer does not provide\n" \
+	"a fully conforming JP2 decoder as defined in ISO/IEC 15444-1\n" \
+	"(i.e., JPEG-2000 Part 1).  Therefore, the JP2 support in JasPer\n" \
+	"is provided for informational purposes only and is not meant to\n" \
+	"represent a complete and fully conforming JP2 implementation.\n"
 
 /******************************************************************************\
 * Functions.

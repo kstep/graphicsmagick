@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 1999-2000 Image Power, Inc. and the University of
+ *   British Columbia.
  * Copyright (c) 2001 Michael David Adams.
  * All rights reserved.
  */
@@ -10,7 +12,7 @@
  * IMAGE POWER JPEG-2000 PUBLIC LICENSE
  * ************************************
  * 
- * WHEREAS:
+ * GRANT:
  * 
  * Permission is hereby granted, free of charge, to any person (the "User")
  * obtaining a copy of this software and associated documentation, to deal

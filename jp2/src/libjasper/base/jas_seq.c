@@ -12,7 +12,7 @@
  * IMAGE POWER JPEG-2000 PUBLIC LICENSE
  * ************************************
  * 
- * WHEREAS:
+ * GRANT:
  * 
  * Permission is hereby granted, free of charge, to any person (the "User")
  * obtaining a copy of this software and associated documentation, to deal
@@ -254,7 +254,6 @@ void jas_matrix_bindsub(jas_matrix_t *mat0, jas_matrix_t *mat1, int r0, int c0,
 {
 	int i;
 
-	mat0->flags_ |= JAS_MATRIX_REF;
 	if (mat0->data_) {
 		if (!(mat0->flags_ & JAS_MATRIX_REF)) {
 			jas_free(mat0->data_);
@@ -266,6 +265,7 @@ void jas_matrix_bindsub(jas_matrix_t *mat0, jas_matrix_t *mat1, int r0, int c0,
 		jas_free(mat0->rows_);
 		mat0->rows_ = 0;
 	}
+	mat0->flags_ |= JAS_MATRIX_REF;
 	mat0->numrows_ = r1 - r0 + 1;
 	mat0->numcols_ = c1 - c0 + 1;
 	mat0->maxrows_ = mat0->numrows_;

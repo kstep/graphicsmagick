@@ -20,7 +20,7 @@
 # IMAGE POWER JPEG-2000 PUBLIC LICENSE
 # ************************************
 # 
-# WHEREAS:
+# GRANT:
 # 
 # Permission is hereby granted, free of charge, to any person (the "User")
 # obtaining a copy of this software and associated documentation, to deal
@@ -189,6 +189,8 @@ PACKAGE = @PACKAGE@
 RANLIB = @RANLIB@
 VERSION = @VERSION@
 
+EXTRA_DIST = README
+
 noinst_LTLIBRARIES = libjp2.la
 libjp2_la_SOURCES =  	jp2_cod.h 	jp2_dec.h 	jp2_cod.c 	jp2_dec.c 	jp2_enc.c
 
@@ -211,7 +213,7 @@ COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CF
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
 LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
-DIST_COMMON =  Makefile.am Makefile.in
+DIST_COMMON =  README Makefile.am Makefile.in
 
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)

@@ -1,64 +1,9 @@
 Hi, Folks.
 
 I am pleased to announce the availability of the next release of JasPer,
-version 1.500.0.  Many changes have been made to the software since the
-last public release (i.e., version 1.200).  A few of the highlights are
-listed below.  This list is in no particular order, and is not intended
-to be exhaustive.
-
-1) Major changes have been made to the software in order to better
-facilitate the use of the JasPer software as an external library.
-All of the JasPer library code is now placed in a single library
-called libjasper (instead of several libraries as done previously).
-All of the externally visible symbols have been prefixed with "jas_",
-"JAS_", etc. as appropriate.  This should greatly lower the probability of
-namespace collisions.  The libjasper library now uses jas_malloc, jas_free,
-etc. for memory allocation (instead of calling malloc and friends
-directly), allowing one to drop in platform-specific memory allocators
-more easily.  The configure-based build method now uses libtool in order
-to allow libjasper to be built as a shared library.
-
-2) Support for the (original) JPEG format has been added.  More specifically,
-a JPEG codec is provided via hooks into the IJG JPEG library.  The IJG
-JPEG library is quite portable and should be useable in both Microsoft
-Windows and UNIX/POSIX-like environments.  (Some distributions of Linux
-include the IJG JPEG library, including Red Hat.)  This JPEG support
-allows JasPer to directly transcode between the JPEG and JPEG-2000
-formats.  If you are using the configure-based build method for JasPer,
-JPEG support will be automatically included if the IJG JPEG library
-is detected on your system.  If you are not using this build method
-(e.g., if you are using Microsoft Visual C), you will need to customize
-the build process yourself.
-
-3) Support for the PGX format (used by the JPEG-2000 VM) has been added.
-This support is really only intended for testing purposes.
-
-4) The JPEG-2000 decoder now handles ROIs in a more robust manner.
-
-5) Some minor tweaks were made to the code to reduce the likelihood of
-numerical overflow.
-
-6) A bug in the JPEG-2000 decoder that degraded coding efficiency
-slightly (when "mode=real" is used) has been fixed.  Thanks to Austin
-Lan of Eastman Kodak for discovering this bug.
-
-7) Some minor changes have been made to the command line interface for
-the jasper command.  For example, verbose mode is now disabled by default.
-Too much crud was being printed before by default, often obscuring
-error/warning messages. :-(
-
-8) More of the code has been cleaned up and some new comments added.
-Some dead code has also been removed.
-
-9) I have included a somewhat detailed JPEG-2000 tutorial along with the
-other documents in the doc directory of the JasPer software distribution.
-Hopefully, this tutorial will prove helpful to individuals who would like
-a better understanding of the JPEG-2000 standard.  Please note that this
-tutorial does not accompany the JasPer releases for the JPEG-2000 Part-5
-standard, since such a tutorial might inadvertantly be interpreted as a
-normative specification of the JPEG-2000 standard.  In any case, the
-most recent revision of the above JPEG-2000 tutorial is available from
-my home page (i.e., http://www.ece.ubc.ca/~mdadams).
+version 1.500.4.  This release does not contain any significant code
+changes.  It does, however, contain updated documentation, including
+a detailed technical tutorial on the JPEG-2000 standard.
 
 The new JasPer release is available via the JasPer Project Home Page
 (i.e., http://www.ece.ubc.ca/~mdadams/jasper).
@@ -72,5 +17,5 @@ Michael
 Michael Adams
 Department of Electrical and Computer Engineering
 University of British Columbia
-2356 Main Mall, Vancouver, B.C., Canada V6T 1Z4
+2356 Main Mall, Vancouver, BC, Canada V6T 1Z4
 http://www.ece.ubc.ca/~mdadams

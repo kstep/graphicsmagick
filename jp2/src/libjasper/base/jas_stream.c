@@ -12,7 +12,7 @@
  * IMAGE POWER JPEG-2000 PUBLIC LICENSE
  * ************************************
  * 
- * WHEREAS:
+ * GRANT:
  * 
  * Permission is hereby granted, free of charge, to any person (the "User")
  * obtaining a copy of this software and associated documentation, to deal
@@ -340,7 +340,6 @@ jas_stream_t *jas_stream_fopen(const char *filename, const char *mode)
 jas_stream_t *jas_stream_freopen(const char *path, const char *mode, FILE *fp)
 {
 	jas_stream_t *stream;
-	int *obj;
 	int openflags;
 
 	/* Allocate a stream object. */
@@ -372,18 +371,10 @@ jas_stream_t *jas_stream_freopen(const char *path, const char *mode, FILE *fp)
 		openflags |= O_CREAT | O_TRUNC;
 	}
 
-	/* Allocate space for the underlying file stream object. */
-	if (!(obj = jas_malloc(sizeof(FILE *)))) {
-		jas_stream_destroy(stream);
-		return 0;
-	}
-	stream->obj_ = (void *) obj;
+	stream->obj_ = JAS_CAST(void *, fp);
 
 	/* Select the operations for a file stream object. */
 	stream->ops_ = &jas_stream_sfileops;
-
-	/* Open the underlying file. */
-	obj = JAS_CAST(void *, fp);
 
 	/* By default, use full buffering for this type of stream. */
 	jas_stream_initbuf(stream, JAS_STREAM_FULLBUF, 0, 0);
@@ -1152,27 +1143,27 @@ static int file_close(jas_stream_obj_t *obj)
 static int sfile_read(jas_stream_obj_t *obj, char *buf, int cnt)
 {
 	FILE *fp;
-	fp = *((FILE **)obj);
+	fp = JAS_CAST(FILE *, obj);
 	return fread(buf, 1, cnt, fp);
 }
 
 static int sfile_write(jas_stream_obj_t *obj, char *buf, int cnt)
 {
 	FILE *fp;
-	fp = *((FILE **)obj);
+	fp = JAS_CAST(FILE *, obj);
 	return fwrite(buf, 1, cnt, fp);
 }
 
 static long sfile_seek(jas_stream_obj_t *obj, long offset, int origin)
 {
 	FILE *fp;
-	fp = *((FILE **)obj);
+	fp = JAS_CAST(FILE *, obj);
 	return fseek(fp, offset, origin);
 }
 
 static int sfile_close(jas_stream_obj_t *obj)
 {
 	FILE *fp;
-	fp = *((FILE **)obj);
+	fp = JAS_CAST(FILE *, obj);
 	return fclose(fp);
 }

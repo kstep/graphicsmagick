@@ -1,13 +1,8 @@
 This directory contains documentation related to the JasPer software.
 
-jasper.html
+jasper.pdf
 	JasPer Software Reference Manual
 
-jpeg2000.ps
-	An introduction to the JPEG-2000 standard.
-	Please note that this tutorial is not included in the JPEG-2000
-	Part-5 JasPer releases, since such a tutorial might inadvertantly
-	be interpreted as a normative specification of the JPEG-2000 standard.
-	If this document is not available in the software release that you have,
-	you can download the document from:
-		http://www.ece.ubc.ca/~mdadams
+jpeg2000.pdf
+	A detailed technical tutorial on the JPEG-2000 standard.
+

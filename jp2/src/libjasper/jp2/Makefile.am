@@ -8,7 +8,7 @@
 # IMAGE POWER JPEG-2000 PUBLIC LICENSE
 # ************************************
 # 
-# WHEREAS:
+# GRANT:
 # 
 # Permission is hereby granted, free of charge, to any person (the "User")
 # obtaining a copy of this software and associated documentation, to deal
@@ -104,6 +104,8 @@
 # NOTICE SPECIFIED IN THIS SECTION.
 # 
 # __END_OF_JASPER_LICENSE__
+
+EXTRA_DIST = README
 
 noinst_LTLIBRARIES = libjp2.la
 libjp2_la_SOURCES = \
