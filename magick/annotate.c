@@ -1013,6 +1013,7 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
   affine.xy=(FT_Fixed) (-65536.0*draw_info->affine.ry);
   affine.yy=(FT_Fixed) (65536.0*draw_info->affine.sy);
   clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
+  QueryColorDatabase("none",&clone_info->fill);
   CloneString(&clone_info->primitive,"");
   for (i=0; i < length; i++)
   {
@@ -1033,7 +1034,7 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
     if (status != False)
       continue;
     FT_Vector_Transform(&glyph.origin,&affine);
-    if (render && (clone_info->stroke.opacity != TransparentOpacity))
+    if (render && (draw_info->stroke.opacity != TransparentOpacity))
       {
         /*
           Trace the glyph.
@@ -1044,17 +1045,10 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
         status=FT_Outline_Decompose(&((FT_OutlineGlyph) glyph.image)->outline,
           &OutlineMethods,clone_info);
         if (status == False)
-          {
-            /*
-              Draw the glyph.
-            */
-            ConcatenateString(&clone_info->primitive,"'");
-            DrawImage(image,clone_info);
-          }
+          ConcatenateString(&clone_info->primitive,"'");
       }
     FT_Glyph_Transform(glyph.image,&affine,&glyph.origin);
-    if ((clone_info->fill.opacity != TransparentOpacity) &&
-        (clone_info->stroke.opacity == TransparentOpacity) && render)
+    if (render && (draw_info->fill.opacity != TransparentOpacity))
       {
         /*
           Rasterize the glyph.
@@ -1090,13 +1084,13 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
                 p++;
                 continue;
               }
-            opacity=clone_info->fill.opacity+((unsigned long)
-              (MaxRGB-UpScale(*p))*(MaxRGB-clone_info->fill.opacity))/MaxRGB;
-            q->red=((unsigned long) (clone_info->fill.red*(MaxRGB-opacity)+
+            opacity=draw_info->fill.opacity+((unsigned long)
+              (MaxRGB-UpScale(*p))*(MaxRGB-draw_info->fill.opacity))/MaxRGB;
+            q->red=((unsigned long) (draw_info->fill.red*(MaxRGB-opacity)+
               q->red*opacity)/MaxRGB);
-            q->green=((unsigned long) (clone_info->fill.green*(MaxRGB-opacity)+
+            q->green=((unsigned long) (draw_info->fill.green*(MaxRGB-opacity)+
               q->green*opacity)/MaxRGB);
-            q->blue=((unsigned long) (clone_info->fill.blue*(MaxRGB-opacity)+
+            q->blue=((unsigned long) (draw_info->fill.blue*(MaxRGB-opacity)+
               q->blue*opacity)/MaxRGB);
             p++;
             if (!SyncImagePixels(image))
@@ -1104,6 +1098,8 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
           }
         }
       }
+    if (render && (draw_info->stroke.opacity != TransparentOpacity))
+      DrawImage(image,clone_info);  /* draw text stroke */
     FT_Glyph_Get_CBox(glyph.image,ft_glyph_bbox_pixels,&bounding_box);
     if (bounding_box.xMin < extent.x1)
       extent.x1=bounding_box.xMin;
