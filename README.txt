@@ -443,7 +443,7 @@ MAGICK DELEGATES
       FTP as
 
           ftp://ftp.informatik.uni-erlangen.de/pub/doc/ISO/JBIG/
-            jbigkit-1.1.tar.gz
+            jbigkit-1.2.tar.gz
 
       to read the JBIG image format.
 
