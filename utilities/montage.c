@@ -343,7 +343,6 @@ static unsigned int MontageUtility(int argc,char **argv)
   /*
     Parse command line.
   */
-	j=1;
   for (i=1; i < (argc-1); i++)
   {
     option=argv[i];
@@ -1244,7 +1243,7 @@ static unsigned int MontageUtility(int argc,char **argv)
         status&=next_image != (Image *) NULL;
         if (next_image != (Image *) NULL)
           {
-            status&=MogrifyImages(image_info,i-j,argv+j,&next_image);
+            status&=MogrifyImages(image_info,i,argv,&next_image);
             (void) CatchImageException(next_image);
             if (image == (Image *) NULL)
               image=next_image;
@@ -1258,7 +1257,6 @@ static unsigned int MontageUtility(int argc,char **argv)
                 p->next=next_image;
               }
           }
-        j=i+1;
       }
   }
   if ((i != (argc-1)) || (image == (Image *) NULL))
@@ -1268,7 +1266,7 @@ static unsigned int MontageUtility(int argc,char **argv)
   /*
     Create composite image.
   */
-  status&=MogrifyImages(image_info,i-j,argv+j,&image);
+  status&=MogrifyImages(image_info,i,argv,&image);
   (void) CatchImageException(image);
   (void) strncpy(montage_info->filename,argv[argc-1],MaxTextExtent-1);
   montage_image=MontageImages(image,montage_info,&exception);

@@ -515,7 +515,6 @@ static unsigned int ConvertUtility(int argc,char **argv)
                 p->next=next_image;
               }
           }
-        j=i+1;
       }
     else
       switch (*(option+1))
