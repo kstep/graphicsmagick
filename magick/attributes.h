@@ -21,7 +21,8 @@ extern Export unsigned int
   SetImageAttribute(Image *,const char *,const char *);
 
 extern Export void
-  DestroyImageAttributes(Image *);
+  DestroyImageAttributes(Image *),
+  StoreImageAttribute(Image *,char *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

@@ -1210,7 +1210,7 @@ Export int LocaleCompare(const char *p,const char *q)
     p++;
     q++;
   }
-  return(i-j);
+  return(*p-(*q));
 }
 
 /*
@@ -1266,7 +1266,7 @@ Export void LocaleLower(char *string)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  Method LocaleNCompare compares two strings byte-by-byte, according to
-%  the ordering of the current locale encoding. LocaleNCompare returns an
+%  the ordering of the currnet locale encoding. LocaleNCompare returns an
 %  integer greater than, equal to, or less than 0, if the string pointed
 %  to by p is greater than, equal to, or less than the string pointed to
 %  by q respectively.  The sign of a non-zero return value is determined
@@ -1319,7 +1319,7 @@ Export int LocaleNCompare(const char *p,const char *q,size_t n)
     p++;
     q++;
   }
-  return(i-j);
+  return(*p-(*q));
 }
 
 /*
@@ -2503,6 +2503,340 @@ Export void TemporaryFilename(char *filename)
   (void) tmpnam(filename+strlen(filename));
 #endif
 #endif
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   T o k e n i z e r                                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method Tokenizer is a generalized, finite state token parser. It allows
+%  you extract tokens one at a time from a string of characters. The
+%  characters used for white space, for break characters, and for quotes
+%  can be specified. Also, characters in the string can be preceded by
+%  a specifiable escape character which removes any special meaning the
+%  character may have.
+%
+%  The format of the Tokenizer method is:
+%
+%      int Tokenizer(int flag,char *token,int maxtok,char *string,
+%        char *white,char *break,char *quote,char escape,
+%          int *brkused,charr *next,char *quoted)
+%
+%  A description of each parameter follows:
+%
+%  but first, some terminology:
+%
+%  token: A single unit of information in the form of a group of
+%         characters.
+%
+%  white space: Apace that gets ignored (except within quotes or when
+%         escaped), like blanks and tabs. in addition, white space
+%         terminates a non-quoted token.
+%
+%  break character: A character that separates non-quoted tokens.
+%         Commas are a common break character.The usage of break
+%         characters to signal the end of a token is the same as that
+%         of white space, except multiple break characters with nothing
+%         or only white space between generate a null token for each
+%         two break characters together.
+%
+%  For example, if blank is set to be the white space and comma is set to
+%  be the break character, the line ...
+%
+%    A, B, C ,  , DEF
+%
+%    ... consists of 5 tokens:
+%
+%    1)  "A"
+%    2)  "B"
+%    3)  "C"
+%    4)  "" (the null string)
+%    5)  "DEF"
+%
+%  Quote character: A character that, when surrounding a group of other
+%         characters, causes the group of characters to be treated as a
+%         single token, no matter how many white spaces or break
+%         characters exist in the group. Also, a token always terminates
+%         after the closing quote. For example, if ' is the quote character,
+%         blank is white space, and comma is the break character, the
+%         following string ...
+%
+%    A, ' B, CD'EF GHI
+%
+%    ... consists of 4 tokens:
+%
+%    1)  "A"
+%    2)  " B, CD" (note the blanks & comma)
+%    3)  "EF"
+%    4)  "GHI"
+%
+%  The quote characters themselves do not appear in the resultant tokens.
+%  The double quotes are delimiters i use here for documentation purposes
+%  only.
+%
+%  Escape character:	A character which itself is ignored but which causes
+%         the next character to be used as is.  ^ and \ are often used as
+%         escape characters. An escape in the last position of the string
+%         gets treated as a "normal" (i.e., non-quote, non-white, non-break,
+%         and non-escape) character. For example, assume white space, break
+%         character, and quote are the same as in the above examples, and
+%         further, assume that ^ is the escape character. Then, in the
+%         string ...
+%
+%    ABC, ' DEF ^' GH' I ^ J K^ L ^
+%
+%    ... there are 7 tokens:
+%
+%    1)  "ABC"
+%    2)  " DEF ' GH"
+%    3)  "I"
+%    4)  " "     (a lone blank)
+%    5)  "J"
+%    6)  "K L"
+%    7)  "^"     (passed as is at end of line)
+%
+%    o flag: right now, only the low order 3 bits are used.
+%            1 => convert non-quoted tokens to upper case
+%            2 => convert non-quoted tokens to lower case
+%            0 => do not convert non-quoted tokens
+%
+%    o token: a character string containing the returned next token
+%
+%    o maxtok: the maximum size of "token". Characters beyond
+%            "maxtok" are truncated.
+%
+%    o string: the string to be parsed.
+%
+%    o white: a string of the valid white spaces.  example:
+%
+%            char whitesp[]={" \t"};
+%
+%            blank and tab will be valid white space.
+%
+%    o break: a string of the valid break characters. example:
+%
+%            char breakch[]={";,"};
+%
+%            semicolon and comma will be valid break characters
+%
+%    o quote:	a string of the valid quote characters. An example
+%            would be
+%
+%            char whitesp[]={"'\"");
+%
+%            (this causes single and double quotes to be valid)
+%            Note that a token starting with one of these characters
+%            needs the same quote character to terminate it.
+%
+%            for example:
+%
+%              "ABC '
+%
+%            is unterminated, but
+%
+%              "DEF" and 'GHI'
+%
+%            are properly terminated.  Note that different quote
+%            characters can appear on the same line; only for
+%            a given token do the quote characters have to be
+%            the same.
+%
+%    o escape: the escape character (NOT a string ... only one
+%            allowed). Use zero if none is desired.
+%
+%    o brkused:	the break character used to terminate the current
+%            token.	if the token was quoted, this will be the
+%            quote used.  If the token is the last one on the
+%            line, this will be zero.
+%
+%    o next: this variable points to the first character of the
+%            next token.  it gets reset by "tokenizer" as it steps
+%            through the string.  set it to 0 upon initialization,
+%            and leave it alone after that.	you can change it
+%            if you want to jump around in the string or re-parse
+%            from the beginning, but be careful.
+%
+%    o quoted: 	set to 1 (true) if the token was quoted and 0 (false)
+%            if not.  You may need this information (for example:
+%            in C, a string with quotes around it is a character
+%            string, while one without is an identifier).
+%
+%    o result: 0 if we haven't reached EOS (end of string), and 1
+%            if we have.
+*/
+
+/* routine to find character in string ... used only by "tokenizer" */
+static int sindex(char ch,char *string)
+{
+  char *cp;
+  for(cp=string;*cp;++cp)
+    if(ch==*cp)
+      return (int)(cp-string);	/* return postion of character */
+  return -1;			/* eol ... no match found */
+}
+
+/* routine to store a character in a string ... used only by "tokenizer" */
+static void chstore(_tstate *state,char *string,int max,char ch)
+{
+  char c;
+  if(state->_p_tokpos>=0&&state->_p_tokpos<max-1)
+  {
+    if(state->_p_state==IN_QUOTE)
+      c=ch;
+    else
+      switch(state->_p_flag&3)
+      {
+	    case 1: 	    /* convert to upper */
+	      c=toupper(ch);
+	      break;
+
+	    case 2: 	    /* convert to lower */
+	      c=tolower(ch);
+	      break;
+
+	    default:	    /* use as is */
+	      c=ch;
+	      break;
+      }
+    string[state->_p_tokpos++]=c;
+  }
+  return;
+}
+
+int Tokenizer(_tstate *state,unsigned inflag,char *token,int tokmax,
+  char *line,char *white,char *brkchar,char *quote,char eschar,char *brkused,
+    int *next,char *quoted)
+{
+  int qp;
+  char c,nc;
+
+  *brkused=0;		/* initialize to null */
+  *quoted=0;		/* assume not quoted  */
+
+  if(!line[*next])	/* if we're at end of line, indicate such */
+    return 1;
+
+  state->_p_state=IN_WHITE;   /* initialize state */
+  state->_p_curquote=0;	   /* initialize previous quote char */
+  state->_p_flag=inflag;	   /* set option flag */
+
+  for(state->_p_tokpos=0;c=line[*next];++(*next))	/* main loop */
+  {
+    if((qp=sindex(c,brkchar))>=0)  /* break */
+    {
+      switch(state->_p_state)
+      {
+	    case IN_WHITE:		/* these are the same here ...	*/
+	    case IN_TOKEN:		/* ... just get out		*/
+	    case IN_OZONE:		/* ditto			*/
+	      ++(*next);
+	      *brkused=brkchar[qp];
+	      goto byebye;
+
+	    case IN_QUOTE:		 /* just keep going */
+	      chstore(state,token,tokmax,c);
+	      break;
+      }
+    }
+    else if((qp=sindex(c,quote))>=0)  /* quote */
+    {
+      switch(state->_p_state)
+      {
+	    case IN_WHITE:	 /* these are identical, */
+	      state->_p_state=IN_QUOTE; /* change states   */
+	      state->_p_curquote=quote[qp]; /* save quote char */
+	      *quoted=1;	/* set to true as long as something is in quotes */
+	      break;
+
+	    case IN_QUOTE:
+	      if(quote[qp]==state->_p_curquote) /* same as the beginning quote? */
+	      {
+	        state->_p_state=IN_OZONE;
+	        state->_p_curquote=0;
+	      }
+	      else
+	        chstore(state,token,tokmax,c); /* treat as regular char */
+	      break;
+
+	    case IN_TOKEN:
+	    case IN_OZONE:
+	      *brkused=c; /* uses quote as break char */
+	      goto byebye;
+      }
+    }
+    else if((qp=sindex(c,white))>=0) /* white */
+    {
+      switch(state->_p_state)
+      {
+	    case IN_WHITE:
+	    case IN_OZONE:
+	      break;		/* keep going */
+
+	    case IN_TOKEN:
+	      state->_p_state=IN_OZONE;
+	      break;
+
+	    case IN_QUOTE:
+	      chstore(state,token,tokmax,c); /* it's valid here */
+	      break;
+      }
+    }
+    else if(c==eschar)  /* escape */
+    {
+      nc=line[(*next)+1];
+      if(nc==0) 		/* end of line */
+      {
+	    *brkused=0;
+	    chstore(state,token,tokmax,c);
+	    ++(*next);
+	    goto byebye;
+      }
+      switch(state->_p_state)
+      {
+	    case IN_WHITE:
+	      --(*next);
+	      state->_p_state=IN_TOKEN;
+	      break;
+
+	    case IN_TOKEN:
+	    case IN_QUOTE:
+	      ++(*next);
+	      chstore(state,token,tokmax,nc);
+	      break;
+
+	    case IN_OZONE:
+	      goto byebye;
+      }
+    }
+    else	/* anything else is just a real character */
+    {
+      switch(state->_p_state)
+      {
+	    case IN_WHITE:
+	      state->_p_state=IN_TOKEN; /* switch states */
+
+	    case IN_TOKEN:		 /* these 2 are     */
+	    case IN_QUOTE:		 /*  identical here */
+	      chstore(state,token,tokmax,c);
+	      break;
+
+	    case IN_OZONE:
+	      goto byebye;
+      }
+    }
+  }		/* end of main loop */
+
+byebye:
+  token[state->_p_tokpos]=0;	/* make sure token ends with EOS */
+
+  return 0;
 }
 
 /*

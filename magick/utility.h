@@ -42,6 +42,19 @@ extern "C" {
 #define S_ISDIR(mode) (((mode) & S_IFMT) == S_IFDIR)
 #endif
 
+/* states */
+#define IN_WHITE 0
+#define IN_TOKEN 1
+#define IN_QUOTE 2
+#define IN_OZONE 3
+
+typedef struct _state {
+  int _p_state;      /* current state	 */
+  unsigned _p_flag;  /* option flag	 */
+  char _p_curquote;  /* current quote char */
+  int _p_tokpos;     /* current token pos  */
+} _tstate;
+
 /*
   Utilities methods.
 */
@@ -62,7 +75,9 @@ extern Export int
   LocaleNCompare(const char *,const char *,size_t),
   LocaleCompare(const char *,const char *),
   MultilineCensus(const char *),
-  SystemCommand(const unsigned int,const char *);
+  SystemCommand(const unsigned int,const char *),
+  Tokenizer(_tstate *,unsigned,char *,int,char *,char *,char *,char *,
+               char,char *,int *,char *);
 
 extern Export unsigned int
   CloneString(char **,const char *),
