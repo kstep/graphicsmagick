@@ -431,6 +431,8 @@ static void UpdateSignature(SignatureInfo *signature_info,
 */
 MagickExport unsigned int SignatureImage(Image *image)
 {
+#define Normalize(quantum)  ((quantum) << (16-QuantumDepth))
+
   char
     signature[MaxTextExtent];
 
@@ -455,12 +457,15 @@ MagickExport unsigned int SignatureImage(Image *image)
   unsigned char
     *message;
 
+  unsigned long
+    quantum;
+
   /*
     Allocate memory for digital signature.
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  message=(unsigned char *) AcquireMemory(10*image->columns);
+  message=(unsigned char *) AcquireMemory(20*image->columns);
   if (message == (unsigned char *) NULL)
     ThrowBinaryException(ResourceLimitError,"Unable to compute signature",
       "Memory allocation failed");
@@ -477,30 +482,37 @@ MagickExport unsigned int SignatureImage(Image *image)
     q=message;
     for (x=0; x < (long) image->columns; x++)
     {
-      *q++=XUpscale(p->red) >> 8;
-      *q++=XUpscale(p->red);
-      *q++=XUpscale(p->green) >> 8;
-      *q++=XUpscale(p->green);
-      *q++=XUpscale(p->blue) >> 8;
-      *q++=XUpscale(p->blue);
+      quantum=Normalize(p->red);
+      *q++=(unsigned char) (quantum >> 8);
+      *q++=(unsigned char) quantum;
+      quantum=Normalize(p->green);
+      *q++=(unsigned char) (quantum >> 8);
+      *q++=(unsigned char) quantum;
+      quantum=Normalize(p->blue);
+      *q++=(unsigned char) (quantum >> 8);
+      *q++=(unsigned char) quantum;
       if (!image->matte)
         {
           if (image->colorspace == CMYKColorspace)
             {
-              *q++=XUpscale(p->opacity) >> 8;
-              *q++=XUpscale(p->opacity);
+              quantum=Normalize(p->opacity);
+              *q++=(unsigned char) (quantum >> 8);
+              *q++=(unsigned char) quantum;
             }
-          *q++=XUpscale(OpaqueOpacity) >> 8;
-          *q++=XUpscale(OpaqueOpacity) & 0xff;
+          quantum=Normalize(OpaqueOpacity);
+          *q++=(unsigned char) (quantum >> 8);
+          *q++=(unsigned char) quantum;
         }
       else
         {
-          *q++=XUpscale(p->opacity) >> 8;
-          *q++=XUpscale(p->opacity);
+          quantum=Normalize(p->opacity);
+          *q++=(unsigned char) (quantum >> 8);
+          *q++=(unsigned char) quantum;
           if (image->colorspace == CMYKColorspace)
             {
-              *q++=XUpscale(indexes[x]) >> 8;
-              *q++=XUpscale(indexes[x]);
+              quantum=Normalize(indexes[x]);
+              *q++=(unsigned char) (quantum >> 8);
+              *q++=(unsigned char) quantum;
             }
         }
       p++;
