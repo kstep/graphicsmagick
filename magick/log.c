@@ -232,7 +232,7 @@ static void *GetLogBlob(const char *filename,char *path,size_t *length,
     /*
       Locate file via registry key.
     */
-    key_value=NTRegistryKeyLookup("LogPath");
+    key_value=NTRegistryKeyLookup("ConfigurePath");
     if (key_value != (char *) NULL)
       {
         FormatString(path,"%.1024s%s%.1024s",key_value,DirectorySeparator,

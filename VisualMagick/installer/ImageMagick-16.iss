@@ -744,6 +744,7 @@ Source: "..\bin\X11.dll"; DestDir: "{app}"; CopyMode: alwaysoverwrite
 Source: "..\bin\Xext.dll"; DestDir: "{app}"; CopyMode: alwaysoverwrite
 ; Configuration files
 Source: "..\..\magick\colors.mgk"; DestDir: "{app}\config"; CopyMode: alwaysoverwrite
+Source: "..\..\magick\log.mgk"; DestDir: "{app}\config"; CopyMode: alwaysoverwrite
 Source: "..\bin\delegates.mgk"; DestDir: "{app}\config"; CopyMode: alwaysoverwrite
 Source: "..\..\magick\magic.mgk"; DestDir: "{app}\config"; CopyMode: alwaysoverwrite
 Source: "..\..\coders\modules.mgk"; DestDir: "{app}\modules"; CopyMode: alwaysoverwrite
