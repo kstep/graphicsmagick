@@ -496,9 +496,9 @@ Export void QuitMagic(void)
             entry;
 
           entry=member;
+          FreeMemory((void**)&entry->argument);
+          FreeMemory((void**)&entry);
           member=member->next;
-          FreeMemory((void**)&member->argument);
-          FreeMemory((void**)&member);
         }
     }
   FreeMemory((void**)&magic_test_list[i]);
