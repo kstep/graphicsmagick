@@ -1073,7 +1073,7 @@ MagickExport void *GetModuleBlob(const char *filename,char *path,size_t *length,
         Search based on executable directory if directory is known.
       */
       (void) strncpy(prefix,SetClientPath((char *) NULL),MaxTextExtent-1);
-      ChopBlobComponents(prefix,1.debug);
+      ChopBlobComponents(prefix,1,debug);
       FormatString(path,"%.1024s/lib/ImageMagick/modules/coders/%.1024s",
         prefix,filename);
 #else
