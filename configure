@@ -1074,7 +1074,7 @@ Optional Packages:
   --without-bzlib         disable BZLIB support
   --without-dps           disable Display Postscript support
   --without-fpx           disable FlashPIX support
-  --without-gslib         disable Ghostscript library support
+  --with-gslib            enable Ghostscript library support
   --without-jbig          disable JBIG support
   --without-jpeg          disable JPEG support
   --without-jp2           disable JPEG v2 support
@@ -21511,14 +21511,14 @@ else
   with_fpx='yes'
 fi;
 
-# Disable Ghostscript library support.
+# Enable Ghostscript library support.
 
 # Check whether --with-gslib or --without-gslib was given.
 if test "${with_gslib+set}" = set; then
   withval="$with_gslib"
   with_gslib=$withval
 else
-  with_gslib='yes'
+  with_gslib='no'
 fi;
 
 # # Enable HDF.

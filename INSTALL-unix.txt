@@ -125,7 +125,7 @@ UNIX/Cygwin/MinGW COMPILATION
    --without-bzlib         disable BZLIB support
    --without-dps           disable Display Postscript support
    --without-fpx           disable FlashPIX support
-   --without-gslib         disable Ghostscript library support
+   --with-gslib            enable Ghostscript library support
    --without-jbig          disable JBIG support
    --without-jpeg          disable JPEG support
    --without-jp2           disable JPEG v2 support

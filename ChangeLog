@@ -1,3 +1,11 @@
+2003-03-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* configure.ac (LIB_GS): Do not test for the Ghostscript
+	library by default due to the issue of its embedded libjpeg
+	conflicting with libjpeg.
+	* coders/ept.c (ReadEPTImage): "PostscriptDelegateFailed" should
+	be classified as a DelegateError type.
+
 2003-03-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/blob.c (BlobToFile): Truncate while opening file.

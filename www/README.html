@@ -164,11 +164,12 @@ Copyright.txt for the GraphicsMagick licence.
 
       to annotate with TrueType and Postscript Type 1 fonts.
 
-    o GraphicsMagick requires Ghostscript software available from
+    o GraphicsMagick requires Ghostscript software (version 7.05 recommended)
+      available from
 
         http://www.cs.wisc.edu/~ghost/
 
-      to read the Postscript or the Portable Document format. It is used to
+      to read the Postscript or the Portable Document format. Ghostscript is used to
       annotate an image when the FreeType library is not used, or an X
       server is not available. See the FreeType library above for another
       means to annotate an image. Note, Ghostscript must support the ppmraw
@@ -178,14 +179,17 @@ Copyright.txt for the GraphicsMagick licence.
       extension is less robust than Ghostscript in that it will only
       rasterize one page of a multi-page document.
 
-      Ghostscript (release 7.0 and later) may optionally install a library
-      (libgs). If this library is installed, GraphicsMagick will attempt to
-      use it unless the option --without-gslib is passed to configure. Note
-      that Ghostscript provides its own modified version of libjpeg and
-      that symbols from this libjpeg may be confused with symbols with the
-      stand-alone libjpeg. If conflicts cause JPEG to fail, it may be
-      necessary to use Ghostscript's copy of libjpeg for GraphicsMagick,
-      and all delegate libraries which depend on libjpeg.
+      Ghostscript (release 7.0 and later) may optionally install a
+      library (libgs). If this library is installed, GraphicsMagick may
+      be configured to use it. Note that Ghostscript provides its own
+      modified version of libjpeg and that symbols from this libjpeg may
+      be confused with symbols with the stand-alone libjpeg. If
+      conflicts cause JPEG to fail (JPEG returns an error regarding
+      expected structure sizes), it may be necessary to use
+      Ghostscript's copy of libjpeg for GraphicsMagick, and all delegate
+      libraries which depend on libjpeg, or convince Ghostscript to
+      build against an unmodified installed JPEG library (and loose
+      compatibility with some Postscript files).
 
     o GraphicsMagick requires hp2xx available from
 

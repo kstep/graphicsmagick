@@ -411,11 +411,11 @@ AC_ARG_WITH(fpx,
 	      [with_fpx=$withval],
 	      [with_fpx='yes'])
 
-# Disable Ghostscript library support.
+# Enable Ghostscript library support.
 AC_ARG_WITH(gslib,
-	      [  --without-gslib         disable Ghostscript library support],
+	      [  --with-gslib            enable Ghostscript library support],
 	      [with_gslib=$withval],
-	      [with_gslib='yes'])
+	      [with_gslib='no'])
 
 # # Enable HDF.
 # AC_ARG_WITH(hdf,

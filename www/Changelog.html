@@ -13,6 +13,17 @@
 </tr>
 </table>
 <p>
+2003-03-13  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> configure.ac (LIB_GS): Do not test for the Ghostscript
+        library by default due to the issue of its embedded libjpeg
+        conflicting with libjpeg.<BR>
+  <LI> coders/ept.c (ReadEPTImage): "PostscriptDelegateFailed" should
+        be classified as a DelegateError type.
+
+</UL>
+<p>
 2003-03-12  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
@@ -26,6 +37,8 @@
         Visual C++ 7.0.<BR>
   <LI> coders/jpeg.c (ReadICCProfile): Incorporate ImageMagick fix
         to handle short JPEG ICC profiles.
+  <LI> magick/integral_types.h: Ignore SIZEOF_LONG_LONG and
+        SIZEOF_UNSIGNED_LONG_LONG defines if _VISUALC_ is defined.
 
 </UL>
 <p>
