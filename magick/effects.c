@@ -1376,6 +1376,7 @@ Export Image *MorphImages(Image *images,const unsigned int number_frames)
     beta;
 
   Image
+    *clone_image,
     *image,
     *morph_image,
     *morph_images;
@@ -1425,9 +1426,17 @@ Export Image *MorphImages(Image *images,const unsigned int number_frames)
     {
       beta=(double) (i+1.0)/(number_frames+1.0);
       alpha=1.0-beta;
-      morph_images->next=ZoomImage(image,
+      clone_image=CloneImage(image,image->columns,image->rows,True);
+      if (clone_image == (Image *) NULL)
+        {
+          MagickWarning(ResourceLimitWarning,"Unable to morph image sequence",
+            "Memory allocation failed");
+          break;
+        }
+      morph_images->next=ZoomImage(clone_image,
         (unsigned int) (alpha*image->columns+beta*image->next->columns+0.5),
         (unsigned int) (alpha*image->rows+beta*image->next->rows+0.5));
+      DestroyImage(clone_image);
       if (morph_images->next == (Image *) NULL)
         {
           MagickWarning(ResourceLimitWarning,"Unable to morph image sequence",
@@ -1436,8 +1445,17 @@ Export Image *MorphImages(Image *images,const unsigned int number_frames)
         }
       morph_images->next->previous=morph_images;
       morph_images=morph_images->next;
+      clone_image=
+        CloneImage(image->next,image->next->columns,image->next->rows,True);
+      if (clone_image == (Image *) NULL)
+        {
+          MagickWarning(ResourceLimitWarning,"Unable to morph image sequence",
+            "Memory allocation failed");
+          break;
+        }
       morph_image=
-        ZoomImage(image->next,morph_images->columns,morph_images->rows);
+        ZoomImage(clone_image,morph_images->columns,morph_images->rows);
+      DestroyImage(clone_image);
       if (morph_image == (Image *) NULL)
         {
           MagickWarning(ResourceLimitWarning,"Unable to morph image sequence",
@@ -1448,15 +1466,15 @@ Export Image *MorphImages(Image *images,const unsigned int number_frames)
       for (y=0; y < (int) morph_images->rows; y++)
       {
         p=GetPixelCache(morph_image,0,y,morph_image->columns,1);
-        q=SetPixelCache(morph_images,0,y,morph_images->columns,1);
+        q=GetPixelCache(morph_images,0,y,morph_images->columns,1);
         if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
           break;
         for (x=0; x < (int) morph_images->columns; x++)
         {
-          q->red=(Quantum) (alpha*q->red+beta*p->red+0.5);
-          q->green=(Quantum) (alpha*q->green+beta*p->green+0.5);
-          q->blue=(Quantum) (alpha*q->blue+beta*p->blue+0.5);
-          q->opacity=(Quantum) (alpha*q->opacity+beta*p->opacity+0.5);
+          q->red=(alpha*q->red+beta*p->red+0.5);
+          q->green=(alpha*q->green+beta*p->green+0.5);
+          q->blue=(alpha*q->blue+beta*p->blue+0.5);
+          q->opacity=(alpha*q->opacity+beta*p->opacity+0.5);
           p++;
           q++;
         }
