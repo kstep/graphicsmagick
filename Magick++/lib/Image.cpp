@@ -444,8 +444,8 @@ void Magick::Image::composite ( const Image &compositeImage_,
   CompositeImage( image(),
 		  compose_,
 		  compositeImage_.constImage(),
-		  static_cast<const long>(xOffset_),
-                  static_cast<const long>(yOffset_) );
+		  xOffset_,
+                  yOffset_ );
   throwImageException();
 }
 void Magick::Image::composite ( const Image &compositeImage_,
@@ -733,9 +733,9 @@ void Magick::Image::floodFillOpacity( const unsigned int x_, const unsigned int 
 {
   modifyImage();
   MatteFloodfillImage ( image(),
-                        static_cast<const PixelPacket>(pixelColor(x_,y_)),
+                        static_cast<PixelPacket>(pixelColor(x_,y_)),
                         opacity_,
-			static_cast<const long>(x_), static_cast<const long>(y_), method_ );
+			static_cast<long>(x_), static_cast<long>(y_), method_ );
   throwImageException();
 }
 
@@ -758,8 +758,8 @@ void Magick::Image::floodFillTexture( const unsigned int x_, const unsigned int 
     ColorFloodfillImage ( image(), // Image *image
                           options()->drawInfo(), // const DrawInfo *draw_info
                           *target, // const PixelPacket target
-                          static_cast<const long>(x_), // const long x_offset
-                          static_cast<const long>(y_), // const long y_offset
+                          static_cast<long>(x_), // const long x_offset
+                          static_cast<long>(y_), // const long y_offset
                           FloodfillMethod // const PaintMethod method
       );
 
@@ -785,9 +785,9 @@ void Magick::Image::floodFillTexture( const unsigned int x_, const unsigned int 
 
   ColorFloodfillImage ( image(), // Image *image
                         options()->drawInfo(), // const DrawInfo *draw_info
-                        static_cast<const PixelPacket>(borderColor_), // const PixelPacket target
-                        static_cast<const long>(x_), // const long x_offset
-                        static_cast<const long>(y_), // const long y_offset
+                        static_cast<PixelPacket>(borderColor_), // const PixelPacket target
+                        static_cast<long>(x_), // const long x_offset
+                        static_cast<long>(y_), // const long y_offset
                         FillToBorderMethod // const PaintMethod method
                         );
 
@@ -1236,8 +1236,8 @@ void Magick::Image::roll ( const unsigned int columns_, const unsigned int rows_
   GetExceptionInfo( &exceptionInfo );
   MagickLib::Image* newImage =
     RollImage( image(),
-               static_cast<const long>(columns_),
-               static_cast<const long>(rows_), &exceptionInfo );
+               static_cast<long>(columns_),
+               static_cast<long>(rows_), &exceptionInfo );
   replaceImage( newImage );
   throwException( exceptionInfo );
 }
