@@ -153,8 +153,8 @@ int main( int /*argc*/, char ** /*argv*/)
     // backgroundColor
     //
 
-    // Test default value. BackgroundColor comes from magick/image.h
-    if ( image.backgroundColor() != ColorRGB("#bdbdbd") )
+    // Test default value.
+    if ( image.backgroundColor() != ColorRGB("#ffffff") )
       {
 	++failures;
 	cout << "Line: " << __LINE__ << ", backgroundColor default ("
@@ -285,7 +285,7 @@ int main( int /*argc*/, char ** /*argv*/)
     //
     // borderColor
     //
-    if ( image.borderColor() != ColorRGB("#bdbdbd") )
+    if ( image.borderColor() != ColorRGB("#dfdfdf") )
       {
 	++failures;
 	cout << "Line: " << __LINE__

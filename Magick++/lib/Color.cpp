@@ -113,7 +113,7 @@ const Magick::Color& Magick::Color::operator = ( std::string x11color_ )
       blueQuantum( target_color.blue );
       alphaQuantum( target_color.opacity );
 
-      if ( target_color.opacity < OpaqueOpacity )
+      if ( target_color.opacity > OpaqueOpacity )
 	_pixelType = RGBAPixel;
       else
 	_pixelType = RGBPixel;

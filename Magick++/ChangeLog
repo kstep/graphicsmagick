@@ -1,3 +1,8 @@
+2000-06-22  Bob Friesenhahn <bfriesen@simple.dallas.tx.us>
+
+        * lib/Magick++/Pixels.cpp (indexes): Bugfix, use GetCacheViewIndexes()
+        rather than GetIndexes().
+
 2000-05-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Magick++/Montage.h (gravity): Type of gravity_ argument, and

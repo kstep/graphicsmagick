@@ -105,5 +105,5 @@ Magick::IndexPacket* Magick::Pixels::indexes ( void )
     throwException( MagickLib::OptionError,
 		    "Image class does not support colormap");
 
-  return MagickLib::GetIndexes( _image.image() );
+  return MagickLib::GetCacheViewIndexes( _view );
 }

@@ -1,4 +1,7 @@
 This file records noteworthy changes.
+(0.9.3)
+  * Bugfix to the Pixels GetIndexes() method.
+  * Adapted to ImageMagick 5.2.1's revised matte channel interpretation.
 
 (0.9.3)
   * New class 'Pixels' to support low-level pixel access in image. New
