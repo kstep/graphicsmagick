@@ -154,6 +154,8 @@ MagickExport void DestroyMagickInfo(void)
       LiberateMemory((void **) &magick_info->description);
     if (magick_info->version != (char *) NULL)
       LiberateMemory((void **) &magick_info->version);
+    if (magick_info->note != (char *) NULL)
+      LiberateMemory((void **) &magick_info->note);
     if (magick_info->module != (char *) NULL)
       LiberateMemory((void **) &magick_info->module);
     LiberateMemory((void **) &magick_info);
@@ -590,6 +592,25 @@ MagickExport unsigned int ListMagickInfo(FILE *file,ExceptionInfo *exception)
     if (p->version != (char *) NULL)
       (void) fprintf(file," (%.1024s)",p->version);
     (void) fprintf(file,"\n");
+    if (p->note != (char *) NULL)
+      {
+        char
+          **text;
+
+        text=StringToList(p->note);
+        if (text != (char **) NULL)
+          {
+            register long
+              i;
+
+            for (i=0; text[i] != (char *) NULL; i++)
+	    			{
+              (void) fprintf(file,"            %.1024s\n",text[i]);
+              LiberateMemory((void **) &text[i]);
+    				}
+            LiberateMemory((void **) &text);
+          }
+      }
   }
   (void) fprintf(file,"\n* native blob support\n\n");
   (void) fflush(file);
@@ -865,6 +886,8 @@ MagickExport unsigned int UnregisterMagickInfo(const char *name)
       LiberateMemory((void **) &magick_info->description);
     if (magick_info->version != (char *) NULL)
       LiberateMemory((void **) &magick_info->version);
+    if (magick_info->note != (char *) NULL)
+      LiberateMemory((void **) &magick_info->note);
     if (magick_info->module != (char *) NULL)
       LiberateMemory((void **) &magick_info->module);
     LiberateMemory((void **) &magick_info);

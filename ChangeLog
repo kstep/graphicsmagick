@@ -1,3 +1,8 @@
+2002-01-08  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
+	* magick/magick.c, magick/magick.h: Add "note" member of magick_info.
+	* coders/art.c, coders/fax.c, coders/dcm.c, coders/png.c: add notes
+	to format registrations.
+
 2003-01-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 	* magick/svg.c: Allow the user to specify the initial background
 	color via the -background option.  This is only useful if the SVG
