@@ -31,7 +31,7 @@ typedef struct _MagicInfo
   unsigned long
     signature;
 
-  volatile struct _MagicInfo
+  struct _MagicInfo
     *previous,
     *next;
 } MagicInfo;

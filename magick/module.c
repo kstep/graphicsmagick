@@ -96,10 +96,10 @@ static char
 static SemaphoreInfo
   *module_semaphore = (SemaphoreInfo *) NULL;
 
-static volatile CoderInfo
+static CoderInfo
   *coder_list = (CoderInfo *) NULL;
 
-static volatile ModuleInfo
+static ModuleInfo
   *module_list = (ModuleInfo *) NULL;
 
 /*
@@ -171,20 +171,20 @@ static void *lt_dlsym(void *handle,char *symbol)
 
 MagickExport void DestroyModuleInfo(void)
 {
+  CoderInfo
+    *coder_info;
+
   ExceptionInfo
     exception;
 
-  register volatile CoderInfo
+  ModuleInfo
+    *module_info;
+
+  register CoderInfo
     *p;
 
-  register volatile ModuleInfo
+  register ModuleInfo
     *q;
-
-  volatile CoderInfo
-    *coder_info;
-
-  volatile ModuleInfo
-    *module_info;
 
   /*
     Free module & coder list.
@@ -337,7 +337,7 @@ MagickExport unsigned int ExecuteModuleProcess(const char *tag,Image **image,
 MagickExport const CoderInfo *GetCoderInfo(const char *tag,
   ExceptionInfo *exception)
 {
-  register volatile CoderInfo
+  register CoderInfo
     *p;
 
   (void) GetMagicInfo((unsigned char *) NULL,0,exception);
@@ -491,7 +491,7 @@ static char **GetModuleList(ExceptionInfo *exception)
 MagickExport const ModuleInfo *GetModuleInfo(const char *name,
   ExceptionInfo *exception)
 {
-  register volatile ModuleInfo
+  register ModuleInfo
     *p;
 
   if (module_list == (const ModuleInfo *) NULL)
@@ -561,11 +561,11 @@ MagickExport const ModuleInfo *GetModuleInfo(const char *name,
 */
 MagickExport unsigned int ListModuleInfo(FILE *file,ExceptionInfo *exception)
 {
+  register const ModuleInfo
+    *p;
+
   register long
     i;
-
-  register volatile const ModuleInfo
-    *p;
 
   if (file == (const FILE *) NULL)
     file=stdout;
@@ -684,7 +684,7 @@ MagickExport unsigned int OpenModule(const char *module,
   ModuleHandle
     handle;
 
-  register volatile ModuleInfo
+  register ModuleInfo
     *p;
 
   void
@@ -1027,7 +1027,7 @@ static unsigned int ReadConfigureFile(const char *basename,
 */
 static CoderInfo *RegisterModule(CoderInfo *entry,ExceptionInfo *exception)
 {
-  register volatile CoderInfo
+  register CoderInfo
     *p;
 
   /*
@@ -1305,11 +1305,11 @@ static unsigned int UnloadModule(const CoderInfo *coder_info,
 */
 static unsigned int UnregisterModule(const char *tag,ExceptionInfo *exception)
 {
-  register volatile CoderInfo
-    *p;
-
-  volatile CoderInfo
+  CoderInfo
     *coder_info;
+
+  register CoderInfo
+    *p;
 
   assert(tag != (const char *) NULL);
   for (p=coder_list; p != (CoderInfo *) NULL; p=p->next)

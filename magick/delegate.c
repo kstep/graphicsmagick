@@ -84,7 +84,7 @@ static char
 static SemaphoreInfo
   *delegate_semaphore = (SemaphoreInfo *) NULL;
 
-static volatile DelegateInfo
+static DelegateInfo
   *delegate_list = (DelegateInfo *) NULL;
 
 /*
@@ -114,11 +114,11 @@ static unsigned int
 */
 MagickExport void DestroyDelegateInfo(void)
 {
-  register volatile DelegateInfo
-    *p;
-
-  volatile DelegateInfo
+  DelegateInfo
     *delegate_info;
+
+  register DelegateInfo
+    *p;
 
   AcquireSemaphoreInfo(&delegate_semaphore);
   for (p=delegate_list; p != (DelegateInfo *) NULL; )
@@ -184,11 +184,11 @@ MagickExport char *GetDelegateCommand(const ImageInfo *image_info,Image *image,
     *command,
     **commands;
 
+  const DelegateInfo
+    *delegate_info;
+
   register long
     i;
-
-  volatile const DelegateInfo
-    *delegate_info;
 
   assert(image_info != (ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
@@ -258,7 +258,7 @@ MagickExport char *GetDelegateCommand(const ImageInfo *image_info,Image *image,
 MagickExport const DelegateInfo *GetDelegateInfo(const char *decode,
   const char *encode,ExceptionInfo *exception)
 {
-  register volatile DelegateInfo
+  register DelegateInfo
     *p;
 
   if (delegate_list == (DelegateInfo *) NULL)
@@ -355,14 +355,14 @@ MagickExport unsigned int InvokeDelegate(ImageInfo *image_info,Image *image,
     **commands,
     filename[MaxTextExtent];
 
+  const DelegateInfo
+    *delegate_info;
+
   register long
     i;
 
   unsigned int
     status;
-
-  volatile const DelegateInfo
-    *delegate_info;
 
   /*
     Get delegate.
@@ -606,7 +606,7 @@ MagickExport unsigned int ListDelegateInfo(FILE *file,ExceptionInfo *exception)
   register long
     i;
 
-  register volatile const DelegateInfo
+  register const DelegateInfo
     *p;
 
   if (file == (const FILE *) NULL)
@@ -908,10 +908,10 @@ static unsigned int ReadConfigureFile(const char *basename,
 */
 MagickExport DelegateInfo *SetDelegateInfo(DelegateInfo *delegate_info)
 {
-  register volatile DelegateInfo
+  register DelegateInfo
     *p;
 
-  volatile DelegateInfo
+  DelegateInfo
     *delegate;
 
   /*

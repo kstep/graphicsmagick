@@ -133,7 +133,7 @@ static int TypeInfoCompare(const void *x,const void *y)
 }
 MagickExport TypeInfo* NTGetTypeList( void )
 {
-  volatile TypeInfo
+  TypeInfo
     *type_list;
 
   HKEY
@@ -392,7 +392,7 @@ MagickExport TypeInfo* NTGetTypeList( void )
 
   /* Sort entries */
   {
-    volatile TypeInfo
+    TypeInfo
       **type_array;
 
     int

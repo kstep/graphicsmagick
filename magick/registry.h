@@ -38,7 +38,7 @@ typedef struct _RegistryInfo
   unsigned long
     signature;
 
-  volatile struct _RegistryInfo
+  struct _RegistryInfo
     *previous,
     *next;
 } RegistryInfo;

@@ -282,7 +282,7 @@ typedef struct _TypeInfo
   unsigned long
     signature;
 
-  volatile struct _TypeInfo
+  struct _TypeInfo
     *previous,
     *next;
 } TypeInfo;

@@ -84,7 +84,7 @@ typedef struct _ResourceInfo
 static SemaphoreInfo
   *resource_semaphore = (SemaphoreInfo *) NULL;
 
-static volatile ResourceInfo
+static ResourceInfo
   resource_info =
   {
     0, 0, 0, 512, 1024, ResourceInfinity

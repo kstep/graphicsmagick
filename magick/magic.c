@@ -77,7 +77,7 @@ static char
 static SemaphoreInfo
   *magic_semaphore = (SemaphoreInfo *) NULL;
 
-static volatile MagicInfo
+static MagicInfo
   *magic_list = (MagicInfo *) NULL;
 
 /*
@@ -107,11 +107,11 @@ static unsigned int
 */
 MagickExport void DestroyMagicInfo(void)
 {
-  register volatile MagicInfo
-    *p;
-
-  volatile MagicInfo
+  MagicInfo
     *magic_info;
+
+  register MagicInfo
+    *p;
 
   AcquireSemaphoreInfo(&magic_semaphore);
   for (p=magic_list; p != (MagicInfo *) NULL; )
@@ -169,7 +169,7 @@ MagickExport void DestroyMagicInfo(void)
 MagickExport const MagicInfo *GetMagicInfo(const unsigned char *magic,
   const size_t length,ExceptionInfo *exception)
 {
-  register volatile MagicInfo
+  register MagicInfo
     *p;
 
   if (magic_list == (MagicInfo *) NULL)
@@ -234,7 +234,7 @@ MagickExport const MagicInfo *GetMagicInfo(const unsigned char *magic,
 */
 MagickExport unsigned int ListMagicInfo(FILE *file,ExceptionInfo *exception)
 {
-  register volatile const MagicInfo
+  register const MagicInfo
     *p;
 
   register long

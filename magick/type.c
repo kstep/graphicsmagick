@@ -78,7 +78,7 @@ static char
 static SemaphoreInfo
   *type_semaphore = (SemaphoreInfo *) NULL;
 
-static volatile TypeInfo
+static TypeInfo
   *type_list = (TypeInfo *) NULL;
 
 /*
@@ -108,10 +108,10 @@ static unsigned int
 */
 MagickExport void DestroyTypeInfo(void)
 {
-  register volatile TypeInfo
+  register TypeInfo
     *p;
 
-  volatile TypeInfo
+  TypeInfo
     *type_info;
 
   AcquireSemaphoreInfo(&type_semaphore);
@@ -175,7 +175,7 @@ MagickExport void DestroyTypeInfo(void)
 MagickExport const TypeInfo *GetTypeInfo(const char *name,
   ExceptionInfo *exception)
 {
-  register volatile TypeInfo
+  register TypeInfo
     *p;
 
   if (type_list == (TypeInfo *) NULL)
@@ -287,13 +287,13 @@ MagickExport const TypeInfo *GetTypeInfoByFamily(const char *family,
       *substitute;
   } Fontmap;
 
-  volatile const TypeInfo
+  const TypeInfo
     *type_info;
 
   long
     range;
 
-  register volatile const TypeInfo
+  register const TypeInfo
     *p;
 
   register long
@@ -452,11 +452,11 @@ MagickExport char **GetTypeList(const char *pattern,unsigned long *number_types)
   ExceptionInfo
     exception;
 
+  register const TypeInfo
+    *p;
+
   register long
     i;
-
-  register volatile const TypeInfo
-    *p;
 
   /*
     Allocate type list.
@@ -556,7 +556,7 @@ MagickExport unsigned int ListTypeInfo(FILE *file,ExceptionInfo *exception)
     *stretch,
     *style;
 
-  register volatile const TypeInfo
+  register const TypeInfo
     *p;
 
   if (file == (FILE *) NULL)

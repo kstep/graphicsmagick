@@ -143,7 +143,7 @@ typedef struct _CubeInfo
 static SemaphoreInfo
   *color_semaphore = (SemaphoreInfo *) NULL;
 
-static volatile ColorInfo
+static ColorInfo
   *color_list = (ColorInfo *) NULL;
 
 /*
@@ -229,11 +229,11 @@ MagickExport IndexPacket ConstrainColormapIndex(Image *image,
 */
 MagickExport void DestroyColorInfo(void)
 {
-  register volatile ColorInfo
-    *p;
-
-  volatile ColorInfo
+  ColorInfo
     *color_info;
+
+  register ColorInfo
+    *p;
 
   AcquireSemaphoreInfo(&color_semaphore);
   for (p=color_list; p != (const ColorInfo *) NULL; )
@@ -428,7 +428,7 @@ MagickExport const ColorInfo *GetColorInfo(const char *name,
   register char
     *q;
 
-  register volatile ColorInfo
+  register ColorInfo
     *p;
 
   if (color_list == (ColorInfo *) NULL)
@@ -517,7 +517,7 @@ MagickExport char **GetColorList(const char *pattern,
   register long
     i;
 
-  register volatile const ColorInfo
+  register const ColorInfo
     *p;
 
   /*
@@ -1327,7 +1327,7 @@ MagickExport unsigned int ListColorInfo(FILE *file,ExceptionInfo *exception)
   register long
     i;
 
-  register volatile const ColorInfo
+  register const ColorInfo
     *p;
 
   if (file == (const FILE *) NULL)
@@ -1590,7 +1590,7 @@ MagickExport unsigned int QueryColorname(const Image *image,
   const PixelPacket *color,const ComplianceType compliance,char *name,
   ExceptionInfo *exception)
 {
-  register volatile const ColorInfo
+  register const ColorInfo
     *p;
 
   *name='\0';

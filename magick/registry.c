@@ -63,10 +63,10 @@
 static SemaphoreInfo
   *registry_semaphore = (SemaphoreInfo *) NULL;
 
-static volatile long
+static long
   id = 0;
 
-static volatile RegistryInfo
+static RegistryInfo
   *registry_list = (RegistryInfo *) NULL;
 
 /*
@@ -96,10 +96,10 @@ static volatile RegistryInfo
 */
 MagickExport unsigned int DeleteMagickRegistry(const long id)
 {
-  register volatile RegistryInfo
+  register RegistryInfo
     *p;
 
-  volatile RegistryInfo
+  RegistryInfo
     *registry_info;
 
   AcquireSemaphoreInfo(&registry_semaphore);
@@ -161,10 +161,10 @@ MagickExport unsigned int DeleteMagickRegistry(const long id)
 */
 MagickExport void DestroyMagickRegistry(void)
 {
-  register volatile RegistryInfo
+  register RegistryInfo
     *p;
 
-  volatile RegistryInfo
+  RegistryInfo
     *registry_info;
 
   AcquireSemaphoreInfo(&registry_semaphore);
@@ -231,7 +231,7 @@ MagickExport Image *GetImageFromMagickRegistry(const char *name,long *id,
   Image
     *image;
 
-  register volatile RegistryInfo
+  register RegistryInfo
     *p;
 
   *id=(-1);
@@ -288,13 +288,13 @@ MagickExport Image *GetImageFromMagickRegistry(const char *name,long *id,
 MagickExport void *GetMagickRegistry(const long id,RegistryType *type,
   size_t *length,ExceptionInfo *exception)
 {
-  register volatile RegistryInfo
+  register RegistryInfo
     *p;
 
   void
     *blob;
 
-  volatile RegistryInfo
+  RegistryInfo
     *registry_info;
 
   blob=(void *) NULL;
@@ -468,7 +468,7 @@ MagickExport long SetMagickRegistry(const RegistryType type,const void *blob,
     registry_list=registry_info;
   else
     {
-      register volatile RegistryInfo
+      register RegistryInfo
         *p;
 
       for (p=registry_list; p->next != (RegistryInfo *) NULL; p=p->next);

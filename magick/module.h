@@ -22,7 +22,7 @@ typedef struct _CoderInfo
   unsigned long
     signature;
 
-  volatile struct _CoderInfo
+  struct _CoderInfo
     *previous,
     *next;
 } CoderInfo;
@@ -40,7 +40,7 @@ typedef struct _ModuleInfo
   unsigned long
     signature;
 
-  volatile struct _ModuleInfo
+  struct _ModuleInfo
     *previous,
     *next;
 } ModuleInfo;

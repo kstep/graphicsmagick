@@ -92,7 +92,7 @@ static pthread_mutex_t
 static CRITICAL_SECTION
   semaphore_mutex;
 
-static volatile unsigned int
+static unsigned int
   active_semaphore = False;
 #endif
 

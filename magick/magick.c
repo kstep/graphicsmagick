@@ -72,7 +72,7 @@
 static SemaphoreInfo
   *magick_semaphore = (SemaphoreInfo *) NULL;
 
-static volatile MagickInfo
+static MagickInfo
   *magick_list = (MagickInfo *) NULL;
 
 
@@ -134,11 +134,11 @@ MagickExport void DestroyMagick(void)
 */
 MagickExport void DestroyMagickInfo(void)
 {
-  register volatile MagickInfo
-    *p;
-
-  volatile MagickInfo
+  MagickInfo
     *magick_info;
+
+  register MagickInfo
+    *p;
 
   AcquireSemaphoreInfo(&magick_semaphore);
   for (p=magick_list; p != (MagickInfo *) NULL; )
@@ -190,7 +190,7 @@ MagickExport void DestroyMagickInfo(void)
 MagickExport const char *GetImageMagick(const unsigned char *magick,
   const size_t length)
 {
-  register volatile MagickInfo
+  register MagickInfo
     *p;
 
   assert(magick != (const unsigned char *) NULL);
@@ -234,7 +234,7 @@ MagickExport const char *GetImageMagick(const unsigned char *magick,
 MagickExport const MagickInfo *GetMagickInfo(const char *name,
   ExceptionInfo *exception)
 {
-  register volatile MagickInfo
+  register MagickInfo
     *p;
 
   if ((name != (const char *) NULL) && (LocaleCompare(name,"*") == 0))
@@ -477,7 +477,7 @@ MagickExport int unsigned IsMagickConflict(const char *magick)
 */
 MagickExport unsigned int ListMagickInfo(FILE *file,ExceptionInfo *exception)
 {
-  register volatile const MagickInfo
+  register const MagickInfo
     *p;
 
   if (file == (FILE *) NULL)
@@ -637,7 +637,7 @@ MagickExport char *MagickToMime(const char *magick)
 */
 MagickExport MagickInfo *RegisterMagickInfo(MagickInfo *magick_info)
 {
-  register volatile MagickInfo
+  register MagickInfo
     *p;
 
   /*
@@ -767,14 +767,14 @@ MagickExport MagickInfo *SetMagickInfo(const char *name)
 */
 MagickExport unsigned int UnregisterMagickInfo(const char *name)
 {
-  register volatile MagickInfo
+  MagickInfo
+    *magick_info;
+
+  register MagickInfo
     *p;
 
   unsigned int
     status;
-
-  volatile MagickInfo
-    *magick_info;
 
   assert(name != (const char *) NULL);
   status=False;

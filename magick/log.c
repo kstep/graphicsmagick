@@ -104,7 +104,7 @@ static char
 /*
   Static declarations.
 */
-static volatile LogInfo
+static LogInfo
   *log_info = (LogInfo *) NULL;
 
 static SemaphoreInfo

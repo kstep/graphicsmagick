@@ -483,7 +483,7 @@ typedef struct _ColorInfo
   unsigned long
     signature;
 
-  volatile struct _ColorInfo
+  struct _ColorInfo
     *previous,
     *next;
 } ColorInfo;
@@ -737,7 +737,7 @@ typedef struct _Image
   ExceptionInfo
     exception;
 
-  volatile long
+  long
     reference_count;
 
   SemaphoreInfo

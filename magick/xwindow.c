@@ -84,7 +84,7 @@
 /*
   Constant declaractions.
 */
-static volatile unsigned int
+static unsigned int
   xerror_alert = False;
 
 /*

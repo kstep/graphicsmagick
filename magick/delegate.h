@@ -36,7 +36,7 @@ typedef struct _DelegateInfo
   unsigned long
     signature;
 
-  volatile struct _DelegateInfo
+  struct _DelegateInfo
     *previous,
     *next;
 } DelegateInfo;
